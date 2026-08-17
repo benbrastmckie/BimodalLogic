@@ -366,9 +366,9 @@ abstracted to `itemF`/`huniq`. Min/max-witness sort via the landed `kvE_pastMaxP
     descending order and terminating in `endF`. Generic port of the frozen `kvE2PastChain`. -/
 noncomputable def kvEPastChainG {α : Type}
     (itemF : α → Formula) (endF D : Formula) : List α → Formula
-  | [] => Formula.snceQ D endF
+  | [] => Formula.snce D endF
   | a :: rest =>
-      Formula.snceQ
+      Formula.snce
         D
         (formulaConjList [itemF a, kvEPastChainG itemF endF D rest])
 
@@ -518,9 +518,9 @@ noncomputable def kvEPastRayForm {sig : MonadicSignature} [Fintype sig.preds]
     {atomMap : Formula → sig.preds} {k : Nat}
     (P : ExistProviders sig atomMap k) (σ : NormalForm sig (k + 1) 4) : Formula :=
   formulaConjList
-    ((Formula.snceQ Formula.top (kvEPastRayD P σ).neg).neg ::
+    ((Formula.snce Formula.top (kvEPastRayD P σ).neg).neg ::
       (kvEFiberZoneList σ kvEPastRayZone).map fun s =>
-        Formula.snceQ Formula.top (P.existF 4 (renameNF rot5Fwd rot5Bwd s)))
+        Formula.snce Formula.top (P.existF 4 (renameNF rot5Fwd rot5Bwd s)))
 
 /-- **Endpoint description** at `x1` (depth-`k` analog of `kvE2PastEnd`, :436): the self-zone
     fiber content (the endpoint's own shift-bridged full-fiber realization, at the self zone

@@ -112,14 +112,14 @@ private def andF (A B : Formula) : Formula := .imp (.imp A (.imp B .bot)) .bot
 private def untlSelfWitnessed (b : Branch) (l : Label) : Bool :=
   b.all fun sf =>
     match sf.sign, sf.formula with
-    | .pos, .untlQ _ φ => if sf.label == l then b.hasPosAt φ l else true
+    | .pos, .untl _ φ => if sf.label == l then b.hasPosAt φ l else true
     | _, _ => true
 
 /-- The mirror, for a **lower-ray** label and `snce`. -/
 private def snceSelfWitnessed (b : Branch) (l : Label) : Bool :=
   b.all fun sf =>
     match sf.sign, sf.formula with
-    | .pos, .snceQ _ φ => if sf.label == l then b.hasPosAt φ l else true
+    | .pos, .snce _ φ => if sf.label == l then b.hasPosAt φ l else true
     | _, _ => true
 
 /-- Does every world's upper-ray label witness its own untils? -/
@@ -210,7 +210,7 @@ produce and a hand-built branch can. -/
 private def rayTimes : TimeOrdering := { constraints := [(0, 1)] }
 
 private def rayRefuteBranch : Branch :=
-  [ SignedFormula.pos (.untlQ .top p) ⟨0, 0⟩
+  [ SignedFormula.pos (.untl .top p) ⟨0, 0⟩
   , SignedFormula.pos Formula.top ⟨0, 0⟩
   , SignedFormula.pos Formula.top ⟨0, 1⟩
   , SignedFormula.pos p ⟨0, 1⟩ ]

@@ -161,9 +161,9 @@ Formulas with nested temporal operators testing complexity boundary behavior.
   IO.println "=== Complexity 5 Edge Cases ==="
   let tests : List (Formula × String × FormulaLabel) := [
     -- U(p, q) — bare Until is not valid
-    (Formula.untlQ q p, "U(p, q)", .invalid),
+    (Formula.untl q p, "U(p, q)", .invalid),
     -- S(p, q) — bare Since is not valid
-    (Formula.snceQ q p, "S(p, q)", .invalid),
+    (Formula.snce q p, "S(p, q)", .invalid),
     -- F(p) = U(p, ⊤) — not valid
     (Formula.someFuture p, "Fp", .invalid),
     -- p → G(F(p)) is NOT valid in general for strict future
@@ -197,7 +197,7 @@ Verify that labeled formulas have non-null metrics fields.
     Formula.imp (Formula.box Formula.bot) (Formula.box r),
     Formula.imp (Formula.box p) p,
     p,
-    Formula.untlQ q p
+    Formula.untl q p
   ]
   let mut passed := 0
   let mut failed := 0

@@ -211,7 +211,7 @@ is scheduled for resolution, this theorem provides the witness MCS where ψ hold
 -/
 theorem canonical_forward_U (M : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M)
-    (φ ψ : Formula) (h_U : Formula.untlQ φ ψ ∈ M) :
+    (φ ψ : Formula) (h_U : Formula.untl φ ψ ∈ M) :
     ∃ W : Set Formula, SetMaximalConsistent (fc := FrameClass.Base) W ∧ ExistsTask M W ∧ ψ ∈ W := by
   -- Step 1: {ψ} ∪ GContent(M) is consistent (uses until_induction)
   have h_seed_cons : SetConsistent (fc := FrameClass.Base) (UntilWitnessSeed M ψ) :=
@@ -234,7 +234,7 @@ Symmetric to `canonical_forward_U` using since_induction.
 -/
 theorem canonical_backward_S (M : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M)
-    (φ ψ : Formula) (h_S : Formula.snceQ φ ψ ∈ M) :
+    (φ ψ : Formula) (h_S : Formula.snce φ ψ ∈ M) :
     ∃ W : Set Formula, SetMaximalConsistent (fc := FrameClass.Base) W ∧ ExistsTaskPast M W ∧ ψ ∈
         W := by
   -- Step 1: {ψ} ∪ HContent(M) is consistent (uses since_induction)

@@ -175,9 +175,9 @@ structure TableauClosed (C : Finset Formula) : Prop where
   /-- `serialityRule`: `T(P⊤)` at every label, from no trigger at all. -/
   serialPast : Formula.top.somePast ∈ C
   /-- `priorUZ` (Discrete): `T(Fψ)` yields `T(U(ψ, ¬ψ))`. The plan's constraint-7 case. -/
-  priorU : ∀ ψ : Formula, ψ.someFuture ∈ C → Formula.untlQ ψ.neg ψ ∈ C
+  priorU : ∀ ψ : Formula, ψ.someFuture ∈ C → Formula.untl ψ.neg ψ ∈ C
   /-- `priorSZ` (Discrete): `T(Pψ)` yields `T(S(ψ, ¬ψ))`. -/
-  priorS : ∀ ψ : Formula, ψ.somePast ∈ C → Formula.snceQ ψ.neg ψ ∈ C
+  priorS : ∀ ψ : Formula, ψ.somePast ∈ C → Formula.snce ψ.neg ψ ∈ C
   /--
   `priorUGap` (Dedekind): the trigger is the **conjunction** `U(⊤, g) ∧ F(¬g)`, which is what
   the rule tests (`asAnd?` then `e == ⊤ && b == F(¬g)`), and it yields `U(¬g ∨ K⁺(¬g), g)`.
@@ -189,12 +189,12 @@ structure TableauClosed (C : Finset Formula) : Prop where
   re-fire.
   -/
   gapU : ∀ g : Formula,
-    Formula.and (Formula.untlQ g Formula.top) (Formula.someFuture g.neg) ∈ C →
-    Formula.untlQ g (Formula.or g.neg (Formula.kPlus g.neg)) ∈ C
+    Formula.and (Formula.untl g Formula.top) (Formula.someFuture g.neg) ∈ C →
+    Formula.untl g (Formula.or g.neg (Formula.kPlus g.neg)) ∈ C
   /-- `priorSGap` (Dedekind): past dual of `gapU`, keyed on `S(⊤, g) ∧ P(¬g)`. -/
   gapS : ∀ g : Formula,
-    Formula.and (Formula.snceQ g Formula.top) (Formula.somePast g.neg) ∈ C →
-    Formula.snceQ g (Formula.or g.neg (Formula.kMinus g.neg)) ∈ C
+    Formula.and (Formula.snce g Formula.top) (Formula.somePast g.neg) ∈ C →
+    Formula.snce g (Formula.or g.neg (Formula.kMinus g.neg)) ∈ C
   /--
   `sepRule` (Dedekind): the trigger is `K⁺ψ ∧ ¬K⁺(ψ ∧ U(ψ, ¬ψ))`, yielding `K⁺(K⁺ψ ∧ K⁻ψ)`.
 
@@ -204,7 +204,7 @@ structure TableauClosed (C : Finset Formula) : Prop where
   -/
   sep : ∀ ψ : Formula,
     Formula.and (Formula.kPlus ψ)
-        (Formula.neg (Formula.kPlus (Formula.and ψ (Formula.untlQ ψ.neg ψ)))) ∈ C →
+        (Formula.neg (Formula.kPlus (Formula.and ψ (Formula.untl ψ.neg ψ)))) ∈ C →
     Formula.kPlus (Formula.and (Formula.kPlus ψ) (Formula.kMinus ψ)) ∈ C
 
 /--
@@ -268,16 +268,16 @@ theorem imp_right (hC : TableauClosed C) (h : Formula.imp ψ χ ∈ C) : χ ∈ 
 theorem box_inner (hC : TableauClosed C) (h : Formula.box ψ ∈ C) : ψ ∈ C :=
   hC.of_sub h (by simp [Formula.subformulas, Formula.self_mem_subformulas])
 
-theorem untl_left (hC : TableauClosed C) (h : Formula.untlQ χ ψ ∈ C) : ψ ∈ C :=
+theorem untl_left (hC : TableauClosed C) (h : Formula.untl χ ψ ∈ C) : ψ ∈ C :=
   hC.of_sub h (by simp [Formula.subformulas, Formula.self_mem_subformulas])
 
-theorem untl_right (hC : TableauClosed C) (h : Formula.untlQ χ ψ ∈ C) : χ ∈ C :=
+theorem untl_right (hC : TableauClosed C) (h : Formula.untl χ ψ ∈ C) : χ ∈ C :=
   hC.of_sub h (by simp [Formula.subformulas, Formula.self_mem_subformulas])
 
-theorem snce_left (hC : TableauClosed C) (h : Formula.snceQ χ ψ ∈ C) : ψ ∈ C :=
+theorem snce_left (hC : TableauClosed C) (h : Formula.snce χ ψ ∈ C) : ψ ∈ C :=
   hC.of_sub h (by simp [Formula.subformulas, Formula.self_mem_subformulas])
 
-theorem snce_right (hC : TableauClosed C) (h : Formula.snceQ χ ψ ∈ C) : χ ∈ C :=
+theorem snce_right (hC : TableauClosed C) (h : Formula.snce χ ψ ∈ C) : χ ∈ C :=
   hC.of_sub h (by simp [Formula.subformulas, Formula.self_mem_subformulas])
 
 /-- `T(A ∧ B)`: `and ψ χ` is `((ψ → (χ → ⊥)) → ⊥)`. -/
@@ -309,13 +309,13 @@ theorem diamond_inner (hC : TableauClosed C)
 
 /-- `T(Gψ)`: `allFuture ψ` is `((U(ψ → ⊥, ⊥ → ⊥)) → ⊥)`. -/
 theorem allFuture_inner (hC : TableauClosed C)
-    (h : Formula.imp (Formula.untlQ (Formula.imp .bot .bot) (Formula.imp ψ .bot)) .bot ∈ C) :
+    (h : Formula.imp (Formula.untl (Formula.imp .bot .bot) (Formula.imp ψ .bot)) .bot ∈ C) :
     ψ ∈ C :=
   hC.of_sub h (by simp [Formula.subformulas, Formula.self_mem_subformulas])
 
 /-- `T(Hψ)`: `allPast ψ` is `((S(ψ → ⊥, ⊥ → ⊥)) → ⊥)`. -/
 theorem allPast_inner (hC : TableauClosed C)
-    (h : Formula.imp (Formula.snceQ (Formula.imp .bot .bot) (Formula.imp ψ .bot)) .bot ∈ C) :
+    (h : Formula.imp (Formula.snce (Formula.imp .bot .bot) (Formula.imp ψ .bot)) .bot ∈ C) :
     ψ ∈ C :=
   hC.of_sub h (by simp [Formula.subformulas, Formula.self_mem_subformulas])
 
@@ -359,19 +359,19 @@ theorem asDiamond?_eq_iff {φ ψ : Formula} :
   · rintro rfl; rfl
 
 theorem asSomeFuture?_eq_iff {φ ψ : Formula} :
-    asSomeFuture? φ = some ψ ↔ φ = .untlQ (.imp .bot .bot) ψ := by
+    asSomeFuture? φ = some ψ ↔ φ = .untl (.imp .bot .bot) ψ := by
   constructor
   · intro h; unfold asSomeFuture? at h; split at h <;> simp_all
   · rintro rfl; rfl
 
 theorem asSomePast?_eq_iff {φ ψ : Formula} :
-    asSomePast? φ = some ψ ↔ φ = .snceQ (.imp .bot .bot) ψ := by
+    asSomePast? φ = some ψ ↔ φ = .snce (.imp .bot .bot) ψ := by
   constructor
   · intro h; unfold asSomePast? at h; split at h <;> simp_all
   · rintro rfl; rfl
 
 theorem asUntil?_eq_iff {φ e g : Formula} :
-    asUntil? φ = some (e, g) ↔ (φ = .untlQ g e ∧ ¬ (g = Formula.top)) := by
+    asUntil? φ = some (e, g) ↔ (φ = .untl g e ∧ ¬ (g = Formula.top)) := by
   constructor
   · intro h; unfold asUntil? at h
     split at h
@@ -382,7 +382,7 @@ theorem asUntil?_eq_iff {φ e g : Formula} :
     simp [beq_iff_eq, hg]
 
 theorem asSince?_eq_iff {φ e g : Formula} :
-    asSince? φ = some (e, g) ↔ (φ = .snceQ g e ∧ ¬ (g = Formula.top)) := by
+    asSince? φ = some (e, g) ↔ (φ = .snce g e ∧ ¬ (g = Formula.top)) := by
   constructor
   · intro h; unfold asSince? at h
     split at h

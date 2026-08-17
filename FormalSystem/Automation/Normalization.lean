@@ -72,10 +72,10 @@ section UnfoldLemmas
 @[simp] theorem top_unfold : Formula.top = bot.imp bot := rfl
 
 /-- Unfold next: `next φ = untl φ bot` -/
-@[simp] theorem next_unfold (φ : Formula) : φ.next = bot.untlQ φ := rfl
+@[simp] theorem next_unfold (φ : Formula) : φ.next = bot.untl φ := rfl
 
 /-- Unfold prev: `prev φ = snce φ bot` -/
-@[simp] theorem prev_unfold (φ : Formula) : φ.prev = bot.snceQ φ := rfl
+@[simp] theorem prev_unfold (φ : Formula) : φ.prev = bot.snce φ := rfl
 
 /-! ### Level 2: Depend on Level 1 operators -/
 
@@ -93,33 +93,33 @@ section UnfoldLemmas
 
 /-- Unfold someFuture: `someFuture φ = φ.untl (bot.imp bot)` -/
 @[simp] theorem some_future_unfold (φ : Formula) :
-    φ.someFuture = (bot.imp bot).untlQ φ := rfl
+    φ.someFuture = (bot.imp bot).untl φ := rfl
 
 /-- Unfold somePast: `somePast φ = φ.snce (bot.imp bot)` -/
 @[simp] theorem some_past_unfold (φ : Formula) :
-    φ.somePast = (bot.imp bot).snceQ φ := rfl
+    φ.somePast = (bot.imp bot).snce φ := rfl
 
 /-! ### Level 3: Depend on Level 2 operators -/
 
 /-- Unfold allFuture: `allFuture φ = ((φ.imp bot).untl (bot.imp bot)).imp bot` -/
 @[simp] theorem all_future_unfold (φ : Formula) :
-    φ.allFuture = ((bot.imp bot).untlQ (φ.imp bot)).imp bot := rfl
+    φ.allFuture = ((bot.imp bot).untl (φ.imp bot)).imp bot := rfl
 
 /-- Unfold allPast: `allPast φ = ((φ.imp bot).snce (bot.imp bot)).imp bot` -/
 @[simp] theorem all_past_unfold (φ : Formula) :
-    φ.allPast = ((bot.imp bot).snceQ (φ.imp bot)).imp bot := rfl
+    φ.allPast = ((bot.imp bot).snce (φ.imp bot)).imp bot := rfl
 
 /-! ### Level 4: Depend on Level 3 operators -/
 
 /-- Unfold weakFuture: `weakFuture φ = and φ (allFuture φ)` expanded to primitives -/
 @[simp] theorem weak_future_unfold (φ : Formula) :
     φ.weakFuture =
-      (φ.imp ((((bot.imp bot).untlQ (φ.imp bot)).imp bot).imp bot)).imp bot := rfl
+      (φ.imp ((((bot.imp bot).untl (φ.imp bot)).imp bot).imp bot)).imp bot := rfl
 
 /-- Unfold weakPast: `weakPast φ = and φ (allPast φ)` expanded to primitives -/
 @[simp] theorem weak_past_unfold (φ : Formula) :
     φ.weakPast =
-      (φ.imp ((((bot.imp bot).snceQ (φ.imp bot)).imp bot).imp bot)).imp bot := rfl
+      (φ.imp ((((bot.imp bot).snce (φ.imp bot)).imp bot).imp bot)).imp bot := rfl
 
 /-! ### Level 5: Depend on Level 4 operators -/
 
@@ -137,29 +137,29 @@ section UnfoldLemmas
 
 /-- Unfold strongRelease: `strongRelease φ ψ = untl (and ψ φ) ψ` -/
 @[simp] theorem strong_release_unfold (φ ψ : Formula) :
-    Formula.strongRelease φ ψ = Formula.untlQ ψ (Formula.and ψ φ) := rfl
+    Formula.strongRelease φ ψ = Formula.untl ψ (Formula.and ψ φ) := rfl
 
 /-- Unfold strongTrigger: `strongTrigger φ ψ = snce (and ψ φ) ψ` -/
 @[simp] theorem strong_trigger_unfold (φ ψ : Formula) :
-    Formula.strongTrigger φ ψ = Formula.snceQ ψ (Formula.and ψ φ) := rfl
+    Formula.strongTrigger φ ψ = Formula.snce ψ (Formula.and ψ φ) := rfl
 
 /-! ### Level 8: Release, Weak Until, Trigger, Weak Since (depend on Level 2/3 operators) -/
 
 /-- Unfold release: `release φ ψ = neg (untl (neg φ) (neg ψ))` -/
 @[simp] theorem release_unfold (φ ψ : Formula) :
-    Formula.release φ ψ = ((ψ.neg.untlQ φ.neg).neg) := rfl
+    Formula.release φ ψ = ((ψ.neg.untl φ.neg).neg) := rfl
 
 /-- Unfold weakUntil: `weakUntil φ ψ = or (untl φ ψ) (allFuture ψ)` -/
 @[simp] theorem weak_until_unfold (φ ψ : Formula) :
-    Formula.weakUntil φ ψ = ((ψ.untlQ φ).or ψ.allFuture) := rfl
+    Formula.weakUntil φ ψ = ((ψ.untl φ).or ψ.allFuture) := rfl
 
 /-- Unfold trigger: `trigger φ ψ = neg (snce (neg φ) (neg ψ))` -/
 @[simp] theorem trigger_unfold (φ ψ : Formula) :
-    Formula.trigger φ ψ = ((ψ.neg.snceQ φ.neg).neg) := rfl
+    Formula.trigger φ ψ = ((ψ.neg.snce φ.neg).neg) := rfl
 
 /-- Unfold weakSince: `weakSince φ ψ = or (snce φ ψ) (allPast ψ)` -/
 @[simp] theorem weak_since_unfold (φ ψ : Formula) :
-    Formula.weakSince φ ψ = ((ψ.snceQ φ).or ψ.allPast) := rfl
+    Formula.weakSince φ ψ = ((ψ.snce φ).or ψ.allPast) := rfl
 
 end UnfoldLemmas
 
@@ -272,7 +272,7 @@ example (p : Atom) : (atom p).diamond = ((atom p).neg).box.neg := by
   rfl  -- diamond is definitionally neg(box(neg φ))
 
 -- Test: temporalNorm unfolds temporal operators
-example (p : Atom) : (atom p).someFuture = (bot.imp bot).untlQ (atom p) := by
+example (p : Atom) : (atom p).someFuture = (bot.imp bot).untl (atom p) := by
   temporalNorm
 
 -- Test: modalNorm reduces conjunction
@@ -327,9 +327,9 @@ inductive EnrichedFormula : Type where
   /-- Modal necessity (box) -/
   | box : EnrichedFormula → EnrichedFormula
   /-- Until (temporal) -/
-  | untlQ : EnrichedFormula → EnrichedFormula → EnrichedFormula
+  | untl : EnrichedFormula → EnrichedFormula → EnrichedFormula
   /-- Since (temporal) -/
-  | snceQ : EnrichedFormula → EnrichedFormula → EnrichedFormula
+  | snce : EnrichedFormula → EnrichedFormula → EnrichedFormula
   /-- Negation (derived: φ → ⊥) -/
   | neg : EnrichedFormula → EnrichedFormula
   /-- Top/verum (derived: ⊥ → ⊥) -/
@@ -385,8 +385,8 @@ def toPrimitive : EnrichedFormula → Formula
   | .bot          => Formula.bot
   | .imp φ ψ      => Formula.imp φ.toPrimitive ψ.toPrimitive
   | .box φ        => Formula.box φ.toPrimitive
-  | .untlQ ψ φ     => Formula.untlQ ψ.toPrimitive φ.toPrimitive
-  | .snceQ ψ φ     => Formula.snceQ ψ.toPrimitive φ.toPrimitive
+  | .untl ψ φ     => Formula.untl ψ.toPrimitive φ.toPrimitive
+  | .snce ψ φ     => Formula.snce ψ.toPrimitive φ.toPrimitive
   | .neg φ        => Formula.neg φ.toPrimitive
   | .top          => Formula.top
   | .and_ φ ψ     => Formula.and φ.toPrimitive ψ.toPrimitive
@@ -442,7 +442,7 @@ def _root_.FormalSystem.Syntax.Formula.foldFormula : Formula → EnrichedFormula
   | Formula.atom a => .atom a
   | Formula.bot => .bot
   | Formula.box φ => .box φ.foldFormula
-  | Formula.untlQ ψ φ =>
+  | Formula.untl ψ φ =>
     let φ' := φ.foldFormula
     let ψ' := ψ.foldFormula
     match ψ' with
@@ -451,9 +451,9 @@ def _root_.FormalSystem.Syntax.Formula.foldFormula : Formula → EnrichedFormula
     | _ =>
       -- strongRelease φ ψ = untl (and ψ φ) ψ: left is `and_ g b` with g == ψ'
       match φ' with
-      | .and_ a b => if a == ψ' then .strong_release b ψ' else .untlQ ψ' φ'
-      | _ => .untlQ ψ' φ'
-  | Formula.snceQ ψ φ =>
+      | .and_ a b => if a == ψ' then .strong_release b ψ' else .untl ψ' φ'
+      | _ => .untl ψ' φ'
+  | Formula.snce ψ φ =>
     let φ' := φ.foldFormula
     let ψ' := ψ.foldFormula
     match ψ' with
@@ -462,8 +462,8 @@ def _root_.FormalSystem.Syntax.Formula.foldFormula : Formula → EnrichedFormula
     | _ =>
       -- strongTrigger φ ψ = snce (and ψ φ) ψ: left is `and_ g b` with g == ψ'
       match φ' with
-      | .and_ a b => if a == ψ' then .strong_trigger b ψ' else .snceQ ψ' φ'
-      | _ => .snceQ ψ' φ'
+      | .and_ a b => if a == ψ' then .strong_trigger b ψ' else .snce ψ' φ'
+      | _ => .snce ψ' φ'
   | Formula.imp φ ψ =>
     let φ' := φ.foldFormula
     let ψ' := ψ.foldFormula
@@ -492,9 +492,9 @@ where
     -- release φ ψ = ¬(¬φ U ¬ψ) = imp (untl (neg φ) (neg ψ)) bot
     -- Placed after the someFuture/somePast ⊥-guards so `release(φ,⊥)` (which folds
     -- to `someFuture (neg φ)` via the ⊤-collapse of `neg ⊥`) still routes to allFuture.
-    | .untlQ (.neg ψ) (.neg φ), .bot => .release φ ψ
+    | .untl (.neg ψ) (.neg φ), .bot => .release φ ψ
     -- trigger φ ψ = ¬(¬φ S ¬ψ) = imp (snce (neg φ) (neg ψ)) bot
-    | .snceQ (.neg ψ) (.neg φ), .bot => .trigger φ ψ
+    | .snce (.neg ψ) (.neg φ), .bot => .trigger φ ψ
     -- imp (and_ (allPast φ) (and_ ψ (allFuture χ))) bot where φ = neg α, ψ = neg α, χ = neg α
     -- This is neg(always(neg α)) = sometimes α
     -- After folding always: neg(always(neg α))
@@ -549,13 +549,13 @@ def EnrichedFormula.recognizeComposites : EnrichedFormula → EnrichedFormula
       -- weakUntil φ ψ = (φ U ψ) ∨ Gψ = or_ (untl φ ψ) (allFuture ψ)
       -- weakSince φ ψ = (φ S ψ) ∨ Hψ = or_ (snce φ ψ) (allPast ψ)
       match inner, ψ' with
-      | .untlQ b a, .all_future b' => if b == b' then .weak_until a b else .or_ inner ψ'
-      | .snceQ b a, .all_past b'   => if b == b' then .weak_since a b else .or_ inner ψ'
+      | .untl b a, .all_future b' => if b == b' then .weak_until a b else .or_ inner ψ'
+      | .snce b a, .all_past b'   => if b == b' then .weak_since a b else .or_ inner ψ'
       | _, _ => .or_ inner ψ'
     | _ => .imp φ' ψ'
   | .box φ => .box φ.recognizeComposites
-  | .untlQ ψ φ => .untlQ ψ.recognizeComposites φ.recognizeComposites
-  | .snceQ ψ φ => .snceQ ψ.recognizeComposites φ.recognizeComposites
+  | .untl ψ φ => .untl ψ.recognizeComposites φ.recognizeComposites
+  | .snce ψ φ => .snce ψ.recognizeComposites φ.recognizeComposites
   | .neg φ =>
     let φ' := φ.recognizeComposites
     -- Recognize sometimes: neg (always (neg φ)) → sometimes φ
@@ -812,27 +812,27 @@ section FoldLemmas
 
 /-- Fold someFuture: `untl φ top = someFuture φ` -/
 @[simp] theorem some_future_fold (φ : Formula) :
-    (bot.imp bot).untlQ φ = someFuture φ := rfl
+    (bot.imp bot).untl φ = someFuture φ := rfl
 
 /-- Fold somePast: `snce φ top = somePast φ` -/
 @[simp] theorem some_past_fold (φ : Formula) :
-    (bot.imp bot).snceQ φ = somePast φ := rfl
+    (bot.imp bot).snce φ = somePast φ := rfl
 
 /-- Fold next: `untl φ bot = next φ` -/
 @[simp] theorem next_fold (φ : Formula) :
-    bot.untlQ φ = next φ := rfl
+    bot.untl φ = next φ := rfl
 
 /-- Fold prev: `snce φ bot = prev φ` -/
 @[simp] theorem prev_fold (φ : Formula) :
-    bot.snceQ φ = prev φ := rfl
+    bot.snce φ = prev φ := rfl
 
 /-- Fold allFuture: `(φ.neg.someFuture).neg = allFuture φ` -/
 @[simp] theorem all_future_fold (φ : Formula) :
-    ((bot.imp bot).untlQ (φ.imp bot)).imp bot = allFuture φ := rfl
+    ((bot.imp bot).untl (φ.imp bot)).imp bot = allFuture φ := rfl
 
 /-- Fold allPast: `(φ.neg.somePast).neg = allPast φ` -/
 @[simp] theorem all_past_fold (φ : Formula) :
-    ((bot.imp bot).snceQ (φ.imp bot)).imp bot = allPast φ := rfl
+    ((bot.imp bot).snce (φ.imp bot)).imp bot = allPast φ := rfl
 
 end FoldLemmas
 
@@ -894,8 +894,8 @@ example (φ : Formula) : sometimes φ = sometimes φ := by modalNorm
 -- Test: modalFold recovers derived operators from primitive form
 -- These tests verify that modalFold actually does work on primitive-form goals.
 example (φ : Formula) : φ.imp Formula.bot = φ.neg := by modalFold
-example (φ : Formula) : Formula.bot.untlQ φ = φ.next := by modalFold
-example (φ : Formula) : Formula.bot.snceQ φ = φ.prev := by modalFold
+example (φ : Formula) : Formula.bot.untl φ = φ.next := by modalFold
+example (φ : Formula) : Formula.bot.snce φ = φ.prev := by modalFold
 
 -- Test: fold lemmas work individually via rw
 example (φ ψ : Formula) :
@@ -981,9 +981,9 @@ def toJson : EnrichedFormula → String
     "{\"tag\": \"imp\", \"left\": " ++ φ.toJson ++ ", \"right\": " ++ ψ.toJson ++ "}"
   | .box φ =>
     "{\"tag\": \"box\", \"child\": " ++ φ.toJson ++ "}"
-  | .untlQ ψ φ =>
+  | .untl ψ φ =>
     "{\"tag\": \"untl\", \"event\": " ++ φ.toJson ++ ", \"guard\": " ++ ψ.toJson ++ "}"
-  | .snceQ ψ φ =>
+  | .snce ψ φ =>
     "{\"tag\": \"snce\", \"event\": " ++ φ.toJson ++ ", \"guard\": " ++ ψ.toJson ++ "}"
   | .neg φ =>
     "{\"tag\": \"neg\", \"child\": " ++ φ.toJson ++ "}"
@@ -1044,8 +1044,8 @@ def prettyPrint : EnrichedFormula → String
   | .top          => "⊤"
   | .imp φ ψ      => "(" ++ φ.prettyPrint ++ " → " ++ ψ.prettyPrint ++ ")"
   | .box φ        => "□" ++ φ.prettyPrint
-  | .untlQ ψ φ     => "U(" ++ φ.prettyPrint ++ ", " ++ ψ.prettyPrint ++ ")"
-  | .snceQ ψ φ     => "S(" ++ φ.prettyPrint ++ ", " ++ ψ.prettyPrint ++ ")"
+  | .untl ψ φ     => "U(" ++ φ.prettyPrint ++ ", " ++ ψ.prettyPrint ++ ")"
+  | .snce ψ φ     => "S(" ++ φ.prettyPrint ++ ", " ++ ψ.prettyPrint ++ ")"
   | .neg φ        => "~" ++ φ.prettyPrint
   | .and_ φ ψ     => "(" ++ φ.prettyPrint ++ " & " ++ ψ.prettyPrint ++ ")"
   | .or_ φ ψ      => "(" ++ φ.prettyPrint ++ " | " ++ ψ.prettyPrint ++ ")"
@@ -1083,8 +1083,8 @@ def toSExpr : EnrichedFormula → String
   | .top          => "top"
   | .imp φ ψ      => "(imp " ++ φ.toSExpr ++ " " ++ ψ.toSExpr ++ ")"
   | .box φ        => "(box " ++ φ.toSExpr ++ ")"
-  | .untlQ ψ φ     => "(untl " ++ φ.toSExpr ++ " " ++ ψ.toSExpr ++ ")"
-  | .snceQ ψ φ     => "(snce " ++ φ.toSExpr ++ " " ++ ψ.toSExpr ++ ")"
+  | .untl ψ φ     => "(untl " ++ φ.toSExpr ++ " " ++ ψ.toSExpr ++ ")"
+  | .snce ψ φ     => "(snce " ++ φ.toSExpr ++ " " ++ ψ.toSExpr ++ ")"
   | .neg φ        => "(neg " ++ φ.toSExpr ++ ")"
   | .and_ φ ψ     => "(and " ++ φ.toSExpr ++ " " ++ ψ.toSExpr ++ ")"
   | .or_ φ ψ      => "(or " ++ φ.toSExpr ++ " " ++ ψ.toSExpr ++ ")"
@@ -1204,8 +1204,8 @@ def normalizeFormula : Formula → Formula
   | .bot       => .bot
   | .imp φ ψ   => .imp (normalizeFormula φ) (normalizeFormula ψ)
   | .box φ     => .box (normalizeFormula φ)
-  | .untlQ ψ φ  => .untlQ (normalizeFormula ψ) (normalizeFormula φ)
-  | .snceQ ψ φ  => .snceQ (normalizeFormula ψ) (normalizeFormula φ)
+  | .untl ψ φ  => .untl (normalizeFormula ψ) (normalizeFormula φ)
+  | .snce ψ φ  => .snce (normalizeFormula ψ) (normalizeFormula φ)
 
 /--
 `normalizeFormula` is the identity function.
@@ -1221,8 +1221,8 @@ the inductive hypothesis at each node.
   | bot => rfl
   | imp φ ψ ih_φ ih_ψ => simp [normalizeFormula, ih_φ, ih_ψ]
   | box φ ih => simp [normalizeFormula, ih]
-  | untlQ ψ φ ih_ψ ih_φ => simp [normalizeFormula, ih_φ, ih_ψ]
-  | snceQ ψ φ ih_ψ ih_φ => simp [normalizeFormula, ih_φ, ih_ψ]
+  | untl ψ φ ih_ψ ih_φ => simp [normalizeFormula, ih_φ, ih_ψ]
+  | snce ψ φ ih_ψ ih_φ => simp [normalizeFormula, ih_φ, ih_ψ]
 
 end ProgrammaticNormalization
 
@@ -1257,22 +1257,22 @@ section OperatorCensus
     - `strongTrigger φ ψ = (ψ ∧ φ) S ψ`      = `snce (and ψ φ) ψ` -/
 def _root_.FormalSystem.Syntax.Formula.matchBinaryDerived : Formula → Option String
   -- weakUntil: imp (imp (untl φ ψ) ⊥) (imp (untl (imp ψ' ⊥) (imp ⊥ ⊥)) ⊥), ψ == ψ'
-  | .imp (.imp (.untlQ ψ _) .bot) (.imp (.untlQ (.imp .bot .bot) (.imp ψ' .bot)) .bot) =>
+  | .imp (.imp (.untl ψ _) .bot) (.imp (.untl (.imp .bot .bot) (.imp ψ' .bot)) .bot) =>
     if ψ == ψ' then some "weakUntil" else none
   -- weakSince: imp (imp (snce φ ψ) ⊥) (imp (snce (imp ψ' ⊥) (imp ⊥ ⊥)) ⊥), ψ == ψ'
-  | .imp (.imp (.snceQ ψ _) .bot) (.imp (.snceQ (.imp .bot .bot) (.imp ψ' .bot)) .bot) =>
+  | .imp (.imp (.snce ψ _) .bot) (.imp (.snce (.imp .bot .bot) (.imp ψ' .bot)) .bot) =>
     if ψ == ψ' then some "weakSince" else none
   -- release: imp (untl (imp φ ⊥) (imp ψ ⊥)) ⊥, with φ ≠ ⊥ and ψ ≠ ⊥ (else collapses to G/¬)
-  | .imp (.untlQ (.imp ψ .bot) (.imp φ .bot)) .bot =>
+  | .imp (.untl (.imp ψ .bot) (.imp φ .bot)) .bot =>
     if φ == .bot || ψ == .bot then none else some "release"
   -- trigger: imp (snce (imp φ ⊥) (imp ψ ⊥)) ⊥, with φ ≠ ⊥ and ψ ≠ ⊥ (else collapses to H/¬)
-  | .imp (.snceQ (.imp ψ .bot) (.imp φ .bot)) .bot =>
+  | .imp (.snce (.imp ψ .bot) (.imp φ .bot)) .bot =>
     if φ == .bot || ψ == .bot then none else some "trigger"
   -- strongRelease: untl (and ψ φ) ψ = untl (imp (imp ψ (imp φ ⊥)) ⊥) ψ'
-  | .untlQ ψ' (.imp (.imp ψ (.imp _ .bot)) .bot) =>
+  | .untl ψ' (.imp (.imp ψ (.imp _ .bot)) .bot) =>
     if ψ == ψ' then some "strongRelease" else none
   -- strongTrigger: snce (and ψ φ) ψ = snce (imp (imp ψ (imp φ ⊥)) ⊥) ψ'
-  | .snceQ ψ' (.imp (.imp ψ (.imp _ .bot)) .bot) =>
+  | .snce ψ' (.imp (.imp ψ (.imp _ .bot)) .bot) =>
     if ψ == ψ' then some "strongTrigger" else none
   | _ => none
 

@@ -128,7 +128,7 @@ theorem mem_pastKnown {t v : TimeIndex} (hv : v ∈ b.knownTimes)
 def untlNegFuture (b : Branch) (ord : TimeOrdering) : Bool :=
   b.all fun sf =>
     match sf.sign, sf.formula with
-    | .neg, .untlQ _ φ =>
+    | .neg, .untl _ φ =>
         (futureKnown b ord sf.label.time).all fun v =>
           b.hasNegAt φ ⟨sf.label.world, v⟩
     | _, _ => true
@@ -137,7 +137,7 @@ def untlNegFuture (b : Branch) (ord : TimeOrdering) : Bool :=
 def snceNegPast (b : Branch) (ord : TimeOrdering) : Bool :=
   b.all fun sf =>
     match sf.sign, sf.formula with
-    | .neg, .snceQ _ φ =>
+    | .neg, .snce _ φ =>
         (pastKnown b ord sf.label.time).all fun v =>
           b.hasNegAt φ ⟨sf.label.world, v⟩
     | _, _ => true
@@ -146,7 +146,7 @@ def snceNegPast (b : Branch) (ord : TimeOrdering) : Bool :=
 def untlRaySelf (b : Branch) (ord : TimeOrdering) : Bool :=
   b.all fun sf =>
     match sf.sign, sf.formula with
-    | .pos, .untlQ _ φ =>
+    | .pos, .untl _ φ =>
         if sf.label.time == regionLabel b ord sf.label.world b.knownTimes.length then
           b.hasPosAt φ sf.label
         else true
@@ -156,7 +156,7 @@ def untlRaySelf (b : Branch) (ord : TimeOrdering) : Bool :=
 def snceRaySelf (b : Branch) (ord : TimeOrdering) : Bool :=
   b.all fun sf =>
     match sf.sign, sf.formula with
-    | .pos, .snceQ _ φ =>
+    | .pos, .snce _ φ =>
         if sf.label.time == regionLabel b ord sf.label.world 0 then
           b.hasPosAt φ sf.label
         else true
@@ -186,7 +186,7 @@ the gate accepts, and its single `false` is the row on which `uRL` already fails
 def untlNegRegionUp (b : Branch) (ord : TimeOrdering) : Bool :=
   b.all fun sf =>
     match sf.sign, sf.formula with
-    | .neg, .untlQ _ φ =>
+    | .neg, .untl _ φ =>
         (List.range (b.knownTimes.length + 1)).all fun j =>
           if sf.label.time == regionLabel b ord sf.label.world j then
             (b.knownTimes.all fun v =>
@@ -203,7 +203,7 @@ region can see **below** itself. Recovers the old upper-ray row as its `j = n` i
 def snceNegRegionDn (b : Branch) (ord : TimeOrdering) : Bool :=
   b.all fun sf =>
     match sf.sign, sf.formula with
-    | .neg, .snceQ _ φ =>
+    | .neg, .snce _ φ =>
         (List.range (b.knownTimes.length + 1)).all fun j =>
           if sf.label.time == regionLabel b ord sf.label.world j then
             (b.knownTimes.all fun v =>
@@ -228,7 +228,7 @@ is the pointwise conjunction of. -/
 def untlPosGuardedWitness (b : Branch) (ord : TimeOrdering) : Bool :=
   b.all fun sf =>
     match sf.sign, sf.formula with
-    | .pos, .untlQ ψ φ =>
+    | .pos, .untl ψ φ =>
         (futureKnown b ord sf.label.time).any fun t =>
           b.hasPosAt φ ⟨sf.label.world, t⟩ &&
             (ψ == Formula.top ||
@@ -240,7 +240,7 @@ def untlPosGuardedWitness (b : Branch) (ord : TimeOrdering) : Bool :=
 def sncePosGuardedWitness (b : Branch) (ord : TimeOrdering) : Bool :=
   b.all fun sf =>
     match sf.sign, sf.formula with
-    | .pos, .snceQ ψ φ =>
+    | .pos, .snce ψ φ =>
         (pastKnown b ord sf.label.time).any fun t =>
           b.hasPosAt φ ⟨sf.label.world, t⟩ &&
             (ψ == Formula.top ||
@@ -264,7 +264,7 @@ which it never differs on the corpus. -/
 def untlRayDnGuard (b : Branch) (ord : TimeOrdering) : Bool :=
   b.all fun sf =>
     match sf.sign, sf.formula with
-    | .pos, .untlQ ψ φ =>
+    | .pos, .untl ψ φ =>
         if sf.label.time == regionLabel b ord sf.label.world 0 then
           b.knownTimes.any fun t =>
             b.hasPosAt φ ⟨sf.label.world, t⟩ &&
@@ -280,7 +280,7 @@ positive direction exactly as they do in the negative one, and the same way roun
 def snceRayUpGuard (b : Branch) (ord : TimeOrdering) : Bool :=
   b.all fun sf =>
     match sf.sign, sf.formula with
-    | .pos, .snceQ ψ φ =>
+    | .pos, .snce ψ φ =>
         if sf.label.time == regionLabel b ord sf.label.world b.knownTimes.length then
           b.knownTimes.any fun t =>
             b.hasPosAt φ ⟨sf.label.world, t⟩ &&
@@ -316,7 +316,7 @@ disjunction is load-bearing rather than decorative. -/
 def untlPosRegion (b : Branch) (ord : TimeOrdering) : Bool :=
   b.all fun sf =>
     match sf.sign, sf.formula with
-    | .pos, .untlQ ψ φ =>
+    | .pos, .untl ψ φ =>
         (List.range (b.knownTimes.length + 1)).all fun j =>
           if sf.label.time == regionLabel b ord sf.label.world j then
             (b.hasPosAt φ sf.label && (ψ == Formula.top || b.hasPosAt ψ sf.label)) ||
@@ -338,7 +338,7 @@ def untlPosRegion (b : Branch) (ord : TimeOrdering) : Bool :=
 def sncePosRegion (b : Branch) (ord : TimeOrdering) : Bool :=
   b.all fun sf =>
     match sf.sign, sf.formula with
-    | .pos, .snceQ ψ φ =>
+    | .pos, .snce ψ φ =>
         (List.range (b.knownTimes.length + 1)).all fun j =>
           if sf.label.time == regionLabel b ord sf.label.world j then
             (b.hasPosAt φ sf.label && (ψ == Formula.top || b.hasPosAt ψ sf.label)) ||
@@ -401,7 +401,7 @@ after three refuted policies, and the shape the induction consumes.
 /-- **The negative `untl` spread.** `F(U(φ,ψ))` anywhere denies `φ` at every known later time. -/
 theorem untlNeg_spread (h : temporalWitnessCheck b ord = true)
     {φ ψ : Formula} {w : WorldIndex} {t v : TimeIndex}
-    (hmem : (⟨.neg, .untlQ ψ φ, ⟨w, t⟩⟩ : SignedFormula) ∈ b)
+    (hmem : (⟨.neg, .untl ψ φ, ⟨w, t⟩⟩ : SignedFormula) ∈ b)
     (hv : v ∈ b.knownTimes) (hlt : strictBefore ord t v = true) :
     b.hasNegAt φ ⟨w, v⟩ = true := by
   have hrow := List.all_eq_true.mp (untlNegFuture_of_check h) _ hmem
@@ -411,7 +411,7 @@ theorem untlNeg_spread (h : temporalWitnessCheck b ord = true)
 /-- **The negative `snce` spread**, the mirror. -/
 theorem snceNeg_spread (h : temporalWitnessCheck b ord = true)
     {φ ψ : Formula} {w : WorldIndex} {t v : TimeIndex}
-    (hmem : (⟨.neg, .snceQ ψ φ, ⟨w, t⟩⟩ : SignedFormula) ∈ b)
+    (hmem : (⟨.neg, .snce ψ φ, ⟨w, t⟩⟩ : SignedFormula) ∈ b)
     (hv : v ∈ b.knownTimes) (hlt : strictBefore ord v t = true) :
     b.hasNegAt φ ⟨w, v⟩ = true := by
   have hrow := List.all_eq_true.mp (snceNegPast_of_check h) _ hmem
@@ -422,7 +422,7 @@ theorem snceNeg_spread (h : temporalWitnessCheck b ord = true)
 event there — the only place an upper-ray point can find one. -/
 theorem untlRay_self (h : temporalWitnessCheck b ord = true)
     {φ ψ : Formula} {w : WorldIndex}
-    (hmem : (⟨.pos, .untlQ ψ φ, ⟨w, regionLabel b ord w b.knownTimes.length⟩⟩ : SignedFormula) ∈ b) :
+    (hmem : (⟨.pos, .untl ψ φ, ⟨w, regionLabel b ord w b.knownTimes.length⟩⟩ : SignedFormula) ∈ b) :
     b.hasPosAt φ ⟨w, regionLabel b ord w b.knownTimes.length⟩ = true := by
   have hrow := List.all_eq_true.mp (untlRaySelf_of_check h) _ hmem
   simpa using hrow
@@ -430,7 +430,7 @@ theorem untlRay_self (h : temporalWitnessCheck b ord = true)
 /-- **The lower-ray self-witness**, the mirror. -/
 theorem snceRay_self (h : temporalWitnessCheck b ord = true)
     {φ ψ : Formula} {w : WorldIndex}
-    (hmem : (⟨.pos, .snceQ ψ φ, ⟨w, regionLabel b ord w 0⟩⟩ : SignedFormula) ∈ b) :
+    (hmem : (⟨.pos, .snce ψ φ, ⟨w, regionLabel b ord w 0⟩⟩ : SignedFormula) ∈ b) :
     b.hasPosAt φ ⟨w, regionLabel b ord w 0⟩ = true := by
   have hrow := List.all_eq_true.mp (snceRaySelf_of_check h) _ hmem
   simpa using hrow
@@ -438,7 +438,7 @@ theorem snceRay_self (h : temporalWitnessCheck b ord = true)
 /-- Row 5, unpacked at one region index: both reaches at once. -/
 private theorem untlNegRegion_raw (h : temporalWitnessCheck b ord = true)
     {φ ψ : Formula} {w : WorldIndex} {j : Nat} (hj : j ≤ b.knownTimes.length)
-    (hmem : (⟨.neg, .untlQ ψ φ, ⟨w, regionLabel b ord w j⟩⟩ : SignedFormula) ∈ b) :
+    (hmem : (⟨.neg, .untl ψ φ, ⟨w, regionLabel b ord w j⟩⟩ : SignedFormula) ∈ b) :
     (b.knownTimes.all fun v =>
         if j ≤ branchRank b ord v then b.hasNegAt φ ⟨w, v⟩ else true) = true ∧
       ((List.range (b.knownTimes.length + 1)).all fun j' =>
@@ -453,7 +453,7 @@ private theorem untlNegRegion_raw (h : temporalWitnessCheck b ord = true)
 region `j`'s label denies its event at every known time whose rank puts it at or above `j`. -/
 theorem untlNegRegion_up (h : temporalWitnessCheck b ord = true)
     {φ ψ : Formula} {w : WorldIndex} {j : Nat} {v : TimeIndex} (hj : j ≤ b.knownTimes.length)
-    (hmem : (⟨.neg, .untlQ ψ φ, ⟨w, regionLabel b ord w j⟩⟩ : SignedFormula) ∈ b)
+    (hmem : (⟨.neg, .untl ψ φ, ⟨w, regionLabel b ord w j⟩⟩ : SignedFormula) ∈ b)
     (hv : v ∈ b.knownTimes) (hrk : j ≤ branchRank b ord v) :
     b.hasNegAt φ ⟨w, v⟩ = true := by
   have := List.all_eq_true.mp (untlNegRegion_raw h hj hmem).1 _ hv
@@ -465,7 +465,7 @@ which is exactly why this is a separate reach and not a corollary of the one abo
 theorem untlNegRegion_label (h : temporalWitnessCheck b ord = true)
     {φ ψ : Formula} {w : WorldIndex} {j j' : Nat} (hj : j ≤ b.knownTimes.length)
     (hj' : j' ≤ b.knownTimes.length)
-    (hmem : (⟨.neg, .untlQ ψ φ, ⟨w, regionLabel b ord w j⟩⟩ : SignedFormula) ∈ b)
+    (hmem : (⟨.neg, .untl ψ φ, ⟨w, regionLabel b ord w j⟩⟩ : SignedFormula) ∈ b)
     (hle : j ≤ j') :
     b.hasNegAt φ ⟨w, regionLabel b ord w j'⟩ = true := by
   have := List.all_eq_true.mp (untlNegRegion_raw h hj hmem).2 j'
@@ -477,7 +477,7 @@ carried as a row of its own: at region `0` the rank side condition is vacuous, s
 every known time — which is every label any point above a lower-ray point can read. -/
 theorem untlNegRay_low (h : temporalWitnessCheck b ord = true)
     {φ ψ : Formula} {w : WorldIndex} {v : TimeIndex}
-    (hmem : (⟨.neg, .untlQ ψ φ, ⟨w, regionLabel b ord w 0⟩⟩ : SignedFormula) ∈ b)
+    (hmem : (⟨.neg, .untl ψ φ, ⟨w, regionLabel b ord w 0⟩⟩ : SignedFormula) ∈ b)
     (hv : v ∈ b.knownTimes) :
     b.hasNegAt φ ⟨w, v⟩ = true :=
   untlNegRegion_up h (Nat.zero_le _) hmem hv (Nat.zero_le _)
@@ -485,7 +485,7 @@ theorem untlNegRay_low (h : temporalWitnessCheck b ord = true)
 /-- Row 6, unpacked at one region index, the mirror. -/
 private theorem snceNegRegion_raw (h : temporalWitnessCheck b ord = true)
     {φ ψ : Formula} {w : WorldIndex} {j : Nat} (hj : j ≤ b.knownTimes.length)
-    (hmem : (⟨.neg, .snceQ ψ φ, ⟨w, regionLabel b ord w j⟩⟩ : SignedFormula) ∈ b) :
+    (hmem : (⟨.neg, .snce ψ φ, ⟨w, regionLabel b ord w j⟩⟩ : SignedFormula) ∈ b) :
     (b.knownTimes.all fun v =>
         if branchRank b ord v < j then b.hasNegAt φ ⟨w, v⟩ else true) = true ∧
       ((List.range (b.knownTimes.length + 1)).all fun j' =>
@@ -499,7 +499,7 @@ private theorem snceNegRegion_raw (h : temporalWitnessCheck b ord = true)
 /-- **The negative `snce` region spread, at a placed point below the region**, the mirror. -/
 theorem snceNegRegion_dn (h : temporalWitnessCheck b ord = true)
     {φ ψ : Formula} {w : WorldIndex} {j : Nat} {v : TimeIndex} (hj : j ≤ b.knownTimes.length)
-    (hmem : (⟨.neg, .snceQ ψ φ, ⟨w, regionLabel b ord w j⟩⟩ : SignedFormula) ∈ b)
+    (hmem : (⟨.neg, .snce ψ φ, ⟨w, regionLabel b ord w j⟩⟩ : SignedFormula) ∈ b)
     (hv : v ∈ b.knownTimes) (hrk : branchRank b ord v < j) :
     b.hasNegAt φ ⟨w, v⟩ = true := by
   have := List.all_eq_true.mp (snceNegRegion_raw h hj hmem).1 _ hv
@@ -509,7 +509,7 @@ theorem snceNegRegion_dn (h : temporalWitnessCheck b ord = true)
 theorem snceNegRegion_label (h : temporalWitnessCheck b ord = true)
     {φ ψ : Formula} {w : WorldIndex} {j j' : Nat} (hj : j ≤ b.knownTimes.length)
     (hj' : j' ≤ b.knownTimes.length)
-    (hmem : (⟨.neg, .snceQ ψ φ, ⟨w, regionLabel b ord w j⟩⟩ : SignedFormula) ∈ b)
+    (hmem : (⟨.neg, .snce ψ φ, ⟨w, regionLabel b ord w j⟩⟩ : SignedFormula) ∈ b)
     (hle : j' ≤ j) :
     b.hasNegAt φ ⟨w, regionLabel b ord w j'⟩ = true := by
   have := List.all_eq_true.mp (snceNegRegion_raw h hj hmem).2 j'
@@ -526,7 +526,7 @@ rather than here, because `branchRank_lt_length` is downstream of this file. -/
 theorem snceNegRay_up (h : temporalWitnessCheck b ord = true)
     {φ ψ : Formula} {w : WorldIndex} {v : TimeIndex}
     (hmem :
-      (⟨.neg, .snceQ ψ φ, ⟨w, regionLabel b ord w b.knownTimes.length⟩⟩ : SignedFormula) ∈ b)
+      (⟨.neg, .snce ψ φ, ⟨w, regionLabel b ord w b.knownTimes.length⟩⟩ : SignedFormula) ∈ b)
     (hv : v ∈ b.knownTimes) (hrk : branchRank b ord v < b.knownTimes.length) :
     b.hasNegAt φ ⟨w, v⟩ = true :=
   snceNegRegion_dn h (le_refl _) hmem hv hrk
@@ -560,7 +560,7 @@ guard at every known time strictly between the two — the `⊤` case exempted f
 **not** from the witness. -/
 theorem untlPos_witness (h : temporalWitnessCheck b ord = true)
     {φ ψ : Formula} {w : WorldIndex} {t : TimeIndex}
-    (hmem : (⟨.pos, .untlQ ψ φ, ⟨w, t⟩⟩ : SignedFormula) ∈ b) :
+    (hmem : (⟨.pos, .untl ψ φ, ⟨w, t⟩⟩ : SignedFormula) ∈ b) :
     ∃ t' ∈ b.knownTimes, strictBefore ord t t' = true ∧ b.hasPosAt φ ⟨w, t'⟩ = true ∧
       (ψ = Formula.top ∨ ∀ v ∈ b.knownTimes, strictBefore ord t v = true →
         strictBefore ord v t' = true → b.hasPosAt ψ ⟨w, v⟩ = true) := by
@@ -580,7 +580,7 @@ theorem untlPos_witness (h : temporalWitnessCheck b ord = true)
 /-- **The guarded witness**, past-directed mirror. -/
 theorem sncePos_witness (h : temporalWitnessCheck b ord = true)
     {φ ψ : Formula} {w : WorldIndex} {t : TimeIndex}
-    (hmem : (⟨.pos, .snceQ ψ φ, ⟨w, t⟩⟩ : SignedFormula) ∈ b) :
+    (hmem : (⟨.pos, .snce ψ φ, ⟨w, t⟩⟩ : SignedFormula) ∈ b) :
     ∃ t' ∈ b.knownTimes, strictBefore ord t' t = true ∧ b.hasPosAt φ ⟨w, t'⟩ = true ∧
       (ψ = Formula.top ∨ ∀ v ∈ b.knownTimes, strictBefore ord v t = true →
         strictBefore ord t' v = true → b.hasPosAt ψ ⟨w, v⟩ = true) := by
@@ -602,7 +602,7 @@ witness among *all* the known times, with the guard at the ray label itself and 
 time strictly below the witness. -/
 theorem untlRayDn_witness (h : temporalWitnessCheck b ord = true)
     {φ ψ : Formula} {w : WorldIndex}
-    (hmem : (⟨.pos, .untlQ ψ φ, ⟨w, regionLabel b ord w 0⟩⟩ : SignedFormula) ∈ b) :
+    (hmem : (⟨.pos, .untl ψ φ, ⟨w, regionLabel b ord w 0⟩⟩ : SignedFormula) ∈ b) :
     ∃ t ∈ b.knownTimes, b.hasPosAt φ ⟨w, t⟩ = true ∧
       (ψ = Formula.top ∨
         (b.hasPosAt ψ ⟨w, regionLabel b ord w 0⟩ = true ∧
@@ -623,7 +623,7 @@ theorem untlRayDn_witness (h : temporalWitnessCheck b ord = true)
 theorem snceRayUp_witness (h : temporalWitnessCheck b ord = true)
     {φ ψ : Formula} {w : WorldIndex}
     (hmem :
-      (⟨.pos, .snceQ ψ φ, ⟨w, regionLabel b ord w b.knownTimes.length⟩⟩ : SignedFormula) ∈ b) :
+      (⟨.pos, .snce ψ φ, ⟨w, regionLabel b ord w b.knownTimes.length⟩⟩ : SignedFormula) ∈ b) :
     ∃ t ∈ b.knownTimes, b.hasPosAt φ ⟨w, t⟩ = true ∧
       (ψ = Formula.top ∨
         (b.hasPosAt ψ ⟨w, regionLabel b ord w b.knownTimes.length⟩ = true ∧
@@ -676,7 +676,7 @@ def SncePosRegionWitness (b : Branch) (ord : TimeOrdering) (w : WorldIndex) (j :
 /-- **Row 11, consumed.** -/
 theorem untlPosRegion_witness (h : temporalWitnessCheck b ord = true)
     {φ ψ : Formula} {w : WorldIndex} {j : Nat} (hj : j ≤ b.knownTimes.length)
-    (hmem : (⟨.pos, .untlQ ψ φ, ⟨w, regionLabel b ord w j⟩⟩ : SignedFormula) ∈ b) :
+    (hmem : (⟨.pos, .untl ψ φ, ⟨w, regionLabel b ord w j⟩⟩ : SignedFormula) ∈ b) :
     UntlPosRegionWitness b ord w j φ ψ := by
   have hrow := List.all_eq_true.mp (untlPosRegion_of_check h) _ hmem
   simp only at hrow
@@ -700,7 +700,7 @@ theorem untlPosRegion_witness (h : temporalWitnessCheck b ord = true)
 /-- **Row 12, consumed**, the mirror. -/
 theorem sncePosRegion_witness (h : temporalWitnessCheck b ord = true)
     {φ ψ : Formula} {w : WorldIndex} {j : Nat} (hj : j ≤ b.knownTimes.length)
-    (hmem : (⟨.pos, .snceQ ψ φ, ⟨w, regionLabel b ord w j⟩⟩ : SignedFormula) ∈ b) :
+    (hmem : (⟨.pos, .snce ψ φ, ⟨w, regionLabel b ord w j⟩⟩ : SignedFormula) ∈ b) :
     SncePosRegionWitness b ord w j φ ψ := by
   have hrow := List.all_eq_true.mp (sncePosRegion_of_check h) _ hmem
   simp only at hrow

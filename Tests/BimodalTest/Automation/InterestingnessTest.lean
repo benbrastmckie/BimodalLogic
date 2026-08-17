@@ -123,13 +123,13 @@ Verify that derived operator patterns are correctly detected.
 
 -- U(p, q) (non-top guard) should detect hasUntil
 #eval do
-  let profile := extractOperatorProfile (.untlQ q p)
+  let profile := extractOperatorProfile (.untl q p)
   if !profile.hasUntil then throw (IO.userError "Expected hasUntil for U(p,q)")
   IO.println "PASS: U(p,q) detected as until"
 
 -- S(p, q) (non-top guard) should detect hasSince
 #eval do
-  let profile := extractOperatorProfile (.snceQ q p)
+  let profile := extractOperatorProfile (.snce q p)
   if !profile.hasSince then throw (IO.userError "Expected hasSince for S(p,q)")
   IO.println "PASS: S(p,q) detected as since"
 

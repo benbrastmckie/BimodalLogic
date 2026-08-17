@@ -368,8 +368,8 @@ guard to carry (printed pp.109-110).
 -/
 def BFMCS.LimitGuardEventual {fc : FrameClass} (B : BFMCS (fc := fc) Rat) : Prop :=
   ∀ fam ∈ B.families, ∀ r : ℝ, (¬ ∃ q : Rat, (q : ℝ) = r) → ∀ φ ψ : Formula,
-    (Formula.untlQ ψ φ ∈ limitMCSBelow fam.mcs r ∨
-     Formula.snceQ ψ φ ∈ limitMCSBelow fam.mcs r) →
+    (Formula.untl ψ φ ∈ limitMCSBelow fam.mcs r ∨
+     Formula.snce ψ φ ∈ limitMCSBelow fam.mcs r) →
     ψ ∈ limitSetBelow fam.mcs r
 
 /--

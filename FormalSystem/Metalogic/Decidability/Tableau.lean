@@ -311,7 +311,7 @@ This filters out `someFuture φ = untl φ top` which is handled by someFuturePos
 Burgess convention: first component = event, second = guard.
 -/
 def asUntil? : Formula → Option (Formula × Formula)
-  | .untlQ guard event =>
+  | .untl guard event =>
     if guard == Formula.top then none
     else some (event, guard)
   | _ => none
@@ -323,7 +323,7 @@ This filters out `somePast φ = snce φ top` which is handled by somePastPos/som
 Burgess convention: first component = event, second = guard.
 -/
 def asSince? : Formula → Option (Formula × Formula)
-  | .snceQ guard event =>
+  | .snce guard event =>
     if guard == Formula.top then none
     else some (event, guard)
   | _ => none
@@ -376,7 +376,7 @@ def isApplicable (rule : TableauRule) (sf : SignedFormula)
   -- because they are exactly this rule's own output.
   | .orderTrichotomy, .pos, φ => (asAnd? φ).isNone
   -- Dense-specific rules (gated by fc >= .Dense)
-  | .denseIndicatorClosure, .pos, .untlQ .bot (.imp .bot .bot) =>
+  | .denseIndicatorClosure, .pos, .untl .bot (.imp .bot .bot) =>
       decide (FrameClass.Dense ≤ fc)
   | .densityRule, .pos, .allFuture _ =>
       decide (FrameClass.Dense ≤ fc)
@@ -930,7 +930,7 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
         let branch1 := [SignedFormula.pos event freshLabel]
         -- Branch 2: guard holds at fresh time + Until continues from fresh time
         let branch2 := [SignedFormula.pos guard freshLabel,
-                         SignedFormula.pos (.untlQ guard event) freshLabel]
+                         SignedFormula.pos (.untl guard event) freshLabel]
         -- Auto-propagate all T(GA) formulas to freshTime
         let gProps := branch.allFuturePosFormulas.filterMap fun gsf =>
           match gsf.formula with
@@ -978,7 +978,7 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
         let branch1 := [SignedFormula.pos event freshLabel]
         -- Branch 2: guard holds at fresh time + Since continues from fresh time
         let branch2 := [SignedFormula.pos guard freshLabel,
-                         SignedFormula.pos (.snceQ guard event) freshLabel]
+                         SignedFormula.pos (.snce guard event) freshLabel]
         -- Auto-propagate all T(HA) formulas to freshTime
         let hProps := branch.allPastPosFormulas.filterMap fun hsf =>
           match hsf.formula with
@@ -1332,7 +1332,7 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
   -- Dense: T(U(⊤,⊥)) closes the branch on dense frames
   -- U(⊤,⊥) asserts "⊥ holds until ⊤" which requires an immediate successor,
   -- but ¬U(⊤,⊥) is a Dense axiom (no immediate successors on dense frames).
-  | .denseIndicatorClosure, .pos, .untlQ .bot (.imp .bot .bot) =>
+  | .denseIndicatorClosure, .pos, .untl .bot (.imp .bot .bot) =>
       -- Close branch: T(U(top, bot)) contradicts density
       -- Return as linear with empty list -- the closure will be detected by checkAxiomNeg
       -- since F(¬U(top, bot)) is the dense_indicator axiom
@@ -1392,7 +1392,7 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
   | .priorUZ, .pos, φ =>
       match asSomeFuture? φ with
       | some ψ =>
-        let untilFormula := Formula.untlQ ψ.neg ψ
+        let untilFormula := Formula.untl ψ.neg ψ
         let newSf := SignedFormula.pos untilFormula l
         if branch.contains newSf then (.notApplicable, timeOrd)
         else (.persistent [newSf], timeOrd)
@@ -1402,7 +1402,7 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
   | .priorSZ, .pos, φ =>
       match asSomePast? φ with
       | some ψ =>
-        let sinceFormula := Formula.snceQ ψ.neg ψ
+        let sinceFormula := Formula.snce ψ.neg ψ
         let newSf := SignedFormula.pos sinceFormula l
         if branch.contains newSf then (.notApplicable, timeOrd)
         else (.persistent [newSf], timeOrd)
@@ -1412,7 +1412,7 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
   | .z1Rule, .pos, .allFuture φ_inner =>
       -- Check if sf matches T(G(G(φ) → φ)) pattern
       match φ_inner with
-      | .imp (.imp (.untlQ (.imp .bot .bot) (.imp inner .bot)) .bot) rhs =>
+      | .imp (.imp (.untl (.imp .bot .bot) (.imp inner .bot)) .bot) rhs =>
         -- This is G(G(inner) → rhs) -- verify rhs = inner
         if inner == rhs then
           -- Look for T(F(G(inner))) on the branch at the same label
@@ -1434,11 +1434,11 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
       match asAnd? χ with
       | some (a, b) =>
           match a with
-          | .untlQ g e =>
+          | .untl g e =>
               if e == Formula.top
                   && b == Formula.someFuture (Formula.neg g) then
                 let concl :=
-                  Formula.untlQ g (Formula.or (Formula.neg g) (Formula.kPlus (Formula.neg g)))
+                  Formula.untl g (Formula.or (Formula.neg g) (Formula.kPlus (Formula.neg g)))
                 let newSf := SignedFormula.pos concl l
                 if branch.contains newSf then (.notApplicable, timeOrd)
                 else (.persistent [newSf], timeOrd)
@@ -1450,11 +1450,11 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
       match asAnd? χ with
       | some (a, b) =>
           match a with
-          | .snceQ g e =>
+          | .snce g e =>
               if e == Formula.top
                   && b == Formula.somePast (Formula.neg g) then
                 let concl :=
-                  Formula.snceQ g (Formula.or (Formula.neg g) (Formula.kMinus (Formula.neg g)))
+                  Formula.snce g (Formula.or (Formula.neg g) (Formula.kMinus (Formula.neg g)))
                 let newSf := SignedFormula.pos concl l
                 if branch.contains newSf then (.notApplicable, timeOrd)
                 else (.persistent [newSf], timeOrd)
@@ -1469,10 +1469,10 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
       match asAnd? χ with
       | some (a, b) =>
           match a with
-          | .imp (.untlQ (.imp ψ .bot) e) .bot =>
+          | .imp (.untl (.imp ψ .bot) e) .bot =>
               if e == Formula.top
                   && b == Formula.neg
-                        (Formula.kPlus (Formula.and ψ (Formula.untlQ (Formula.neg ψ) ψ))) then
+                        (Formula.kPlus (Formula.and ψ (Formula.untl (Formula.neg ψ) ψ))) then
                 let concl :=
                   Formula.kPlus (Formula.and (Formula.kPlus ψ) (Formula.kMinus ψ))
                 let newSf := SignedFormula.pos concl l
@@ -1877,7 +1877,7 @@ def witnessPresent (rule : TableauRule) (sf : SignedFormula) (branch : Branch)
             let lab : Label := { world := l.world, time := t }
             branch.contains (SignedFormula.pos event lab) ||
               (branch.contains (SignedFormula.pos guard lab) &&
-               branch.contains (SignedFormula.pos (.untlQ guard event) lab))
+               branch.contains (SignedFormula.pos (.untl guard event) lab))
       | none => false
   | .sncePos, .pos, φ =>
       match asSince? φ with
@@ -1886,7 +1886,7 @@ def witnessPresent (rule : TableauRule) (sf : SignedFormula) (branch : Branch)
             let lab : Label := { world := l.world, time := t }
             branch.contains (SignedFormula.pos event lab) ||
               (branch.contains (SignedFormula.pos guard lab) &&
-               branch.contains (SignedFormula.pos (.snceQ guard event) lab))
+               branch.contains (SignedFormula.pos (.snce guard event) lab))
       | none => false
   | _, _, _ => false
 
@@ -1925,11 +1925,11 @@ def trivialEventWitnessed (rule : TableauRule) (sf : SignedFormula) (_branch : B
     (timeOrd : TimeOrdering) : Bool :=
   let l := sf.label
   match rule, sf.sign, sf.formula with
-  | .someFuturePos, .pos, .untlQ guard event
-  | .untlPos, .pos, .untlQ guard event =>
+  | .someFuturePos, .pos, .untl guard event
+  | .untlPos, .pos, .untl guard event =>
       event == Formula.top && guard == Formula.top && !(timeOrd.futureOf l.time).isEmpty
-  | .somePastPos, .pos, .snceQ guard event
-  | .sncePos, .pos, .snceQ guard event =>
+  | .somePastPos, .pos, .snce guard event
+  | .sncePos, .pos, .snce guard event =>
       event == Formula.top && guard == Formula.top && !(timeOrd.pastOf l.time).isEmpty
   | _, _, _ => false
 

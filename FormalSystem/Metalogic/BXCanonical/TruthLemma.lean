@@ -287,7 +287,7 @@ This is the forward half of the truth lemma for Until. The backward half
 structurally difficult without a deterministic successor relation.
 -/
 theorem until_forward_mcs (w : BXPoint) (φ ψ : Formula)
-    (h_until : Formula.untlQ ψ φ ∈ w.formulas) :
+    (h_until : Formula.untl ψ φ ∈ w.formulas) :
     φ ∈ w.formulas ∨
       (∃ v : BXPoint, BxLe w v ∧ φ ∈ v.formulas) := by
   by_cases h_φ : φ ∈ w.formulas
@@ -302,7 +302,7 @@ Under open guard semantics, the return type no longer claims φ ∈ w.
 Mirror of until_forward_mcs for the past direction.
 -/
 theorem since_forward_mcs (w : BXPoint) (φ ψ : Formula)
-    (h_since : Formula.snceQ ψ φ ∈ w.formulas) :
+    (h_since : Formula.snce ψ φ ∈ w.formulas) :
     φ ∈ w.formulas ∨
       (∃ v : BXPoint, BxLe v w ∧ φ ∈ v.formulas) := by
   by_cases h_φ : φ ∈ w.formulas

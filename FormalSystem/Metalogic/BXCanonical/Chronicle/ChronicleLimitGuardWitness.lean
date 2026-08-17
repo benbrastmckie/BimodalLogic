@@ -104,11 +104,11 @@ available. See the module docstring. `Axiom.prior_S_gap` is consumed at `ψ`, wh
 -/
 theorem limitGuardBelow_of_priorS {fc : FrameClass} (hfc : FrameClass.Dedekind ≤ fc)
     (m : Rat → Set Formula) (hm : ∀ q : Rat, SetMaximalConsistent (fc := fc) (m q))
-    (hSf : ∀ (t : Rat) (α β : Formula), Formula.snceQ β α ∈ m t →
+    (hSf : ∀ (t : Rat) (α β : Formula), Formula.snce β α ∈ m t →
       ∃ s : Rat, s < t ∧ α ∈ m s ∧ ∀ p : Rat, s < p → p < t → β ∈ m p)
     (hSb : ∀ (t : Rat) (α β : Formula),
       (∃ s : Rat, s < t ∧ α ∈ m s ∧ ∀ p : Rat, s < p → p < t → β ∈ m p) →
-      Formula.snceQ β α ∈ m t)
+      Formula.snce β α ∈ m t)
     (r : ℝ) (hr : ¬ ∃ q : Rat, (q : ℝ) = r) (ψ : Formula)
     (c : Rat) (hc : r < (c : ℝ))
     (hguard : ∀ q : Rat, r < (q : ℝ) → (q : ℝ) < (c : ℝ) → ψ ∈ m q) :
@@ -129,17 +129,17 @@ theorem limitGuardBelow_of_priorS {fc : FrameClass} (hfc : FrameClass.Dedekind �
   · -- **Case 2 — `P(¬ψ) ∈ m t`.** The Prior-S antecedent is available; the axiom applies.
     -- `S(⊤, ψ) ∈ m t`: witness any rational in `(r, t)`, guard supplied by `hguard`.
     obtain ⟨w₀, hrw₀, hw₀t⟩ := exists_rat_btwn hrt
-    have hA1 : Formula.snceQ ψ Formula.top ∈ m t := by
+    have hA1 : Formula.snce ψ Formula.top ∈ m t := by
       refine hSb t Formula.top ψ ⟨w₀, by exact_mod_cast hw₀t, htop w₀, ?_⟩
       intro p hw₀p hpt
       have hrp : r < (p : ℝ) := lt_trans hrw₀ (by exact_mod_cast hw₀p)
       have hpc : (p : ℝ) < (c : ℝ) := lt_trans (by exact_mod_cast hpt) htc
       exact hguard p hrp hpc
-    have hand : Formula.and (Formula.snceQ ψ Formula.top) ψ.neg.somePast ∈ m t :=
+    have hand : Formula.and (Formula.snce ψ Formula.top) ψ.neg.somePast ∈ m t :=
       conj_mcs fc (hm t) _ _ hA1 hcase
     have himp := theorem_in_mcs (hm t)
       (DerivationTree.axiom [] _ (Axiom.prior_S_gap ψ) hfc)
-    have hcons : Formula.snceQ ψ (Formula.or ψ.neg (Formula.kMinus ψ.neg)) ∈ m t :=
+    have hcons : Formula.snce ψ (Formula.or ψ.neg (Formula.kMinus ψ.neg)) ∈ m t :=
       SetMaximalConsistent.implication_property (hm t) himp hand
     -- Prior-S's consequent, read backwards: a rational `w < t` carrying `¬ψ ∨ K⁻(¬ψ)`, with
     -- `ψ` uninterrupted on `(w, t)`.
@@ -158,7 +158,7 @@ theorem limitGuardBelow_of_priorS {fc : FrameClass} (hfc : FrameClass.Dedekind �
         -- `Formula.or a b = a.neg.imp b`, so the disjunction at `w` is an implication.
         have hor' : (ψ.neg).neg.imp (Formula.kMinus ψ.neg) ∈ m w := hor
         -- `Formula.kMinus a = (S(⊤, ¬a)).neg`, so `K⁻(¬ψ)` at `w` excludes `S(⊤, ¬¬ψ)` at `w`.
-        have hkminus : (Formula.snceQ ψ.neg.neg Formula.top).neg ∈ m w :=
+        have hkminus : (Formula.snce ψ.neg.neg Formula.top).neg ∈ m w :=
           SetMaximalConsistent.implication_property (hm w) hor' hnn
         refine SetMaximalConsistent.neg_excludes (hm w) _ hkminus ?_
         -- But `¬¬ψ` does hold throughout `(r, w) ⊆ (r, c)`, by `hguard`.
@@ -201,17 +201,17 @@ theorem cantor_bfmcs_dense_limit_guard_below (fc : FrameClass)
     (h_box_dense : Formula.box nextTop.neg ∈ A) :
     (cantorBfmcsDense fc A h_mcs h_box_dense).LimitGuardBelow := by
   intro fam hfam r hr ψ c hc hguard
-  have hSf : ∀ (t : Rat) (α β : Formula), Formula.snceQ β α ∈ fam.mcs t →
+  have hSf : ∀ (t : Rat) (α β : Formula), Formula.snce β α ∈ fam.mcs t →
       ∃ s : Rat, s < t ∧ α ∈ fam.mcs s ∧ ∀ p : Rat, s < p → p < t → β ∈ fam.mcs p :=
     fun t α β h =>
       (cantor_bfmcs_dense_restricted_fuc fc A h_mcs h_box_dense
-        (Formula.snceQ β α) fam hfam).2 t α β (self_mem_subformulaClosure _) h
+        (Formula.snce β α) fam hfam).2 t α β (self_mem_subformulaClosure _) h
   have hSb : ∀ (t : Rat) (α β : Formula),
       (∃ s : Rat, s < t ∧ α ∈ fam.mcs s ∧ ∀ p : Rat, s < p → p < t → β ∈ fam.mcs p) →
-      Formula.snceQ β α ∈ fam.mcs t :=
+      Formula.snce β α ∈ fam.mcs t :=
     fun t α β h =>
       (cantor_bfmcs_dense_restricted_buc fc A h_mcs h_box_dense
-        (Formula.snceQ β α) fam hfam).2 t α β (self_mem_subformulaClosure _) h
+        (Formula.snce β α) fam hfam).2 t α β (self_mem_subformulaClosure _) h
   exact limitGuardBelow_of_priorS hfc fam.mcs fam.is_mcs hSf hSb r hr ψ c hc hguard
 
 end FormalSystem.Metalogic.BXCanonical.Chronicle

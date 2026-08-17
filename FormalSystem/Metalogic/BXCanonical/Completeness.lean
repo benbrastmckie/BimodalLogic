@@ -309,7 +309,7 @@ theorem completeness_discrete (φ : Formula) :
         (DerivationTree.axiom [] _ Axiom.serial_future (FrameClass.base_le _)) h_top
     -- Steps 4-5: U(T, ¬T) from prior_UZ + MP
     have h_ut_negT : ⊢[FrameClass.Discrete]
-        (Formula.untlQ Chronicle.topFormula.neg Chronicle.topFormula) :=
+        (Formula.untl Chronicle.topFormula.neg Chronicle.topFormula) :=
       DerivationTree.modus_ponens [] _ _
         (DerivationTree.axiom [] _ (Axiom.prior_UZ Chronicle.topFormula) (by trivial)) h_ft
     -- Step 6: ¬T → ⊥ via deduction theorem (assume T→⊥, derive T from identity, MP gives ⊥)
@@ -327,13 +327,13 @@ theorem completeness_discrete (φ : Formula) :
     -- Step 8: left_mono_until_G: G(¬T→⊥) → (U(T,¬T) → U(T,⊥))
     have h_mono : ⊢[FrameClass.Discrete]
         ((Chronicle.topFormula.neg.imp Formula.bot).allFuture.imp
-          ((Formula.untlQ Chronicle.topFormula.neg Chronicle.topFormula).imp
-            (Formula.untlQ Formula.bot Chronicle.topFormula))) :=
+          ((Formula.untl Chronicle.topFormula.neg Chronicle.topFormula).imp
+            (Formula.untl Formula.bot Chronicle.topFormula))) :=
       DerivationTree.axiom [] _ (Axiom.left_mono_until_G Chronicle.topFormula.neg Formula.bot
           Chronicle.topFormula) (FrameClass.base_le _)
     -- Step 9: U(T,¬T) → U(T,⊥)
     have h_imp_next : ⊢[FrameClass.Discrete]
-        ((Formula.untlQ Chronicle.topFormula.neg Chronicle.topFormula).imp Chronicle.nextTop) :=
+        ((Formula.untl Chronicle.topFormula.neg Chronicle.topFormula).imp Chronicle.nextTop) :=
       DerivationTree.modus_ponens [] _ _ h_mono h_G_negT_bot
     -- Step 10: U(T,⊥) = nextTop
     have h_next_top : ⊢[FrameClass.Discrete] Chronicle.nextTop :=

@@ -59,10 +59,10 @@ example : normalizeFormula (.imp p q) = .imp p q := normalizeFormula_id _
 example : normalizeFormula (.box p) = .box p := normalizeFormula_id _
 
 -- Test 5: untl is preserved
-example : normalizeFormula (.untlQ q p) = .untlQ q p := normalizeFormula_id _
+example : normalizeFormula (.untl q p) = .untl q p := normalizeFormula_id _
 
 -- Test 6: snce is preserved
-example : normalizeFormula (.snceQ q p) = .snceQ q p := normalizeFormula_id _
+example : normalizeFormula (.snce q p) = .snce q p := normalizeFormula_id _
 
 /-!
 ## Section 2: Derived Operator Tests
@@ -153,8 +153,8 @@ example : normalizeFormula (Formula.imp (Formula.diamond p) (Formula.allFuture q
     Formula.imp (Formula.diamond p) (Formula.allFuture q) := normalizeFormula_id _
 
 -- Test 27: untl (neg p) (or q r) is preserved
-example : normalizeFormula (Formula.untlQ (Formula.or q r) (Formula.neg p)) =
-    Formula.untlQ (Formula.or q r) (Formula.neg p) := normalizeFormula_id _
+example : normalizeFormula (Formula.untl (Formula.or q r) (Formula.neg p)) =
+    Formula.untl (Formula.or q r) (Formula.neg p) := normalizeFormula_id _
 
 /-!
 ## Section 5: Round-Trip Eval Tests
@@ -166,7 +166,7 @@ using computable equality.
 #eval do
   let formulas : List Formula := [
     -- Primitives
-    p, q, .bot, .imp p q, .box p, .untlQ q p, .snceQ q p,
+    p, q, .bot, .imp p q, .box p, .untl q p, .snce q p,
     -- Derived propositional
     Formula.neg p, Formula.top, Formula.and p q, Formula.or p q,
     -- Derived modal

@@ -456,7 +456,7 @@ noncomputable def agg2EpPastL (atomMap : Formula → sig.preds)
     (((nfChar2AtomOffdiagEndpoint atomMap h_surj (sub_nf.1 : NormalForm sig 0 2)).formula
       :: (Finset.univ.toList : List (NormalForm sig 0 1)).map (fun χ =>
           agg2Lit (agg2Bit sub_nf agg2ZPastPast χ)
-            (Formula.snceQ Formula.top (nfDepth0CharFormula atomMap h_surj χ))))
+            (Formula.snce Formula.top (nfDepth0CharFormula atomMap h_surj χ))))
       ++ (Finset.univ.toList : List (NormalForm sig 0 1)).map (fun χ =>
           agg2Lit (agg2Bit sub_nf agg2ZAtXPast χ)
             (nfDepth0CharFormula atomMap h_surj χ)))⟩
@@ -473,7 +473,7 @@ noncomputable def agg2EpPastR (atomMap : Formula → sig.preds)
             (nfDepth0CharFormula atomMap h_surj χ)))
       ++ (Finset.univ.toList : List (NormalForm sig 0 1)).map (fun χ =>
           agg2Lit (agg2Bit sub_nf agg2ZFutFut χ)
-            (Formula.untlQ Formula.top (nfDepth0CharFormula atomMap h_surj χ))))⟩
+            (Formula.untl Formula.top (nfDepth0CharFormula atomMap h_surj χ))))⟩
 
 /-- Past-arm uniform interior exclusion segment (negative fibers; G3 — genuine content,
     never top). -/
@@ -555,7 +555,7 @@ theorem agg2Past_holdsRight_iff (atomMap : Formula → sig.preds)
     -- Fold-bit literal facts at the two anchors.
     have hPastLit : ∀ χ : NormalForm sig 0 1, TemporalTruth M atomMap x
         (agg2Lit (agg2Bit sub_nf agg2ZPastPast χ)
-          (Formula.snceQ Formula.top (nfDepth0CharFormula atomMap h_surj χ))) :=
+          (Formula.snce Formula.top (nfDepth0CharFormula atomMap h_surj χ))) :=
       fun χ => hepL _ (List.mem_append_left _
         (List.mem_cons_of_mem _ (List.mem_map_of_mem (by simp))))
     have hAtXLit : ∀ χ : NormalForm sig 0 1, TemporalTruth M atomMap x
@@ -569,7 +569,7 @@ theorem agg2Past_holdsRight_iff (atomMap : Formula → sig.preds)
         (List.mem_cons_of_mem _ (List.mem_map_of_mem (by simp))))
     have hFutLit : ∀ χ : NormalForm sig 0 1, TemporalTruth M atomMap t
         (agg2Lit (agg2Bit sub_nf agg2ZFutFut χ)
-          (Formula.untlQ Formula.top (nfDepth0CharFormula atomMap h_surj χ))) :=
+          (Formula.untl Formula.top (nfDepth0CharFormula atomMap h_surj χ))) :=
       fun χ => hepR _ (List.mem_append_right _ (List.mem_map_of_mem (by simp)))
     -- Bracket structure: witnesses + gap classification.
     obtain ⟨hwit, hgap⟩ := aggBracket_extract M atomMap _ _ x t hbr
@@ -956,7 +956,7 @@ noncomputable def agg2EpFutL (atomMap : Formula → sig.preds)
     ((nfChar2AtomOffdiagOriginFuture atomMap h_surj (sub_nf.1 : NormalForm sig 0 2)
       :: (Finset.univ.toList : List (NormalForm sig 0 1)).map (fun χ =>
           agg2Lit (agg2Bit sub_nf agg2ZPastPast χ)
-            (Formula.snceQ Formula.top (nfDepth0CharFormula atomMap h_surj χ))))
+            (Formula.snce Formula.top (nfDepth0CharFormula atomMap h_surj χ))))
       ++ (Finset.univ.toList : List (NormalForm sig 0 1)).map (fun χ =>
           agg2Lit (agg2Bit sub_nf agg2ZAtTFut χ)
             (nfDepth0CharFormula atomMap h_surj χ)))⟩
@@ -973,7 +973,7 @@ noncomputable def agg2EpFutR (atomMap : Formula → sig.preds)
             (nfDepth0CharFormula atomMap h_surj χ)))
       ++ (Finset.univ.toList : List (NormalForm sig 0 1)).map (fun χ =>
           agg2Lit (agg2Bit sub_nf agg2ZFutFut χ)
-            (Formula.untlQ Formula.top (nfDepth0CharFormula atomMap h_surj χ))))⟩
+            (Formula.untl Formula.top (nfDepth0CharFormula atomMap h_surj χ))))⟩
 
 /-- Future-arm uniform interior exclusion segment (`t < v < x` negative fibers; G3). -/
 noncomputable def agg2SegFut (atomMap : Formula → sig.preds)
@@ -1047,7 +1047,7 @@ theorem agg2Fut_holdsLeft_iff (atomMap : Formula → sig.preds)
       hepR _ (List.mem_append_left _ List.mem_cons_self)
     have hPastLit : ∀ χ : NormalForm sig 0 1, TemporalTruth M atomMap t
         (agg2Lit (agg2Bit sub_nf agg2ZPastPast χ)
-          (Formula.snceQ Formula.top (nfDepth0CharFormula atomMap h_surj χ))) :=
+          (Formula.snce Formula.top (nfDepth0CharFormula atomMap h_surj χ))) :=
       fun χ => hepL _ (List.mem_append_left _
         (List.mem_cons_of_mem _ (List.mem_map_of_mem (by simp))))
     have hAtTLit : ∀ χ : NormalForm sig 0 1, TemporalTruth M atomMap t
@@ -1061,7 +1061,7 @@ theorem agg2Fut_holdsLeft_iff (atomMap : Formula → sig.preds)
         (List.mem_cons_of_mem _ (List.mem_map_of_mem (by simp))))
     have hFutLit : ∀ χ : NormalForm sig 0 1, TemporalTruth M atomMap x
         (agg2Lit (agg2Bit sub_nf agg2ZFutFut χ)
-          (Formula.untlQ Formula.top (nfDepth0CharFormula atomMap h_surj χ))) :=
+          (Formula.untl Formula.top (nfDepth0CharFormula atomMap h_surj χ))) :=
       fun χ => hepR _ (List.mem_append_right _ (List.mem_map_of_mem (by simp)))
     obtain ⟨hwit, hgap⟩ := aggBracket_extract M atomMap _ _ t x hbr
     refine ⟨x, htx, ?_⟩
@@ -1434,13 +1434,13 @@ noncomputable def agg2Diag (atomMap : Formula → sig.preds)
       (((nfChar2AtomPart atomMap h_surj (sub_nf.1 : NormalForm sig 0 2)
         :: (Finset.univ.toList : List (NormalForm sig 0 1)).map (fun χ =>
             agg2Lit (agg2Bit sub_nf agg2ZPastPast χ)
-              (Formula.snceQ Formula.top (nfDepth0CharFormula atomMap h_surj χ))))
+              (Formula.snce Formula.top (nfDepth0CharFormula atomMap h_surj χ))))
         ++ (Finset.univ.toList : List (NormalForm sig 0 1)).map (fun χ =>
             agg2Lit (agg2Bit sub_nf agg2ZAtDiag χ)
               (nfDepth0CharFormula atomMap h_surj χ)))
         ++ (Finset.univ.toList : List (NormalForm sig 0 1)).map (fun χ =>
             agg2Lit (agg2Bit sub_nf agg2ZFutFut χ)
-              (Formula.untlQ Formula.top (nfDepth0CharFormula atomMap h_surj χ)))))
+              (Formula.untl Formula.top (nfDepth0CharFormula atomMap h_surj χ)))))
     (fun _ => Formula.bot)
 
 /-- Constant-tail env identity: `Fin.cons t (fun _ => t) = fun _ => t` at arity 2. -/
@@ -1494,7 +1494,7 @@ theorem agg2Diag_iff (atomMap : Formula → sig.preds)
         h _ (List.mem_append_left _ (List.mem_append_left _ List.mem_cons_self))
       have hPastLit : ∀ χ : NormalForm sig 0 1, TemporalTruth M atomMap t
           (agg2Lit (agg2Bit sub_nf agg2ZPastPast χ)
-            (Formula.snceQ Formula.top (nfDepth0CharFormula atomMap h_surj χ))) :=
+            (Formula.snce Formula.top (nfDepth0CharFormula atomMap h_surj χ))) :=
         fun χ => h _ (List.mem_append_left _ (List.mem_append_left _
           (List.mem_cons_of_mem _ (List.mem_map_of_mem (by simp)))))
       have hAtLit : ∀ χ : NormalForm sig 0 1, TemporalTruth M atomMap t
@@ -1504,7 +1504,7 @@ theorem agg2Diag_iff (atomMap : Formula → sig.preds)
           (List.mem_append_right _ (List.mem_map_of_mem (by simp))))
       have hFutLit : ∀ χ : NormalForm sig 0 1, TemporalTruth M atomMap t
           (agg2Lit (agg2Bit sub_nf agg2ZFutFut χ)
-            (Formula.untlQ Formula.top (nfDepth0CharFormula atomMap h_surj χ))) :=
+            (Formula.untl Formula.top (nfDepth0CharFormula atomMap h_surj χ))) :=
         fun χ => h _ (List.mem_append_right _ (List.mem_map_of_mem (by simp)))
       rw [nf_eval_depth1_fold_iff]
       refine ⟨?_, ?_, hg.1⟩

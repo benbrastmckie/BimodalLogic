@@ -136,9 +136,9 @@ def knownInvalidFormulas : List Formula :=
   , -- □p ∧ □¬p (modal contradiction)
     Formula.and (Formula.box p) (Formula.box p.neg)
   , -- U(p, q) (not valid: no guarantee of future p with guard q)
-    Formula.untlQ q p
+    Formula.untl q p
   , -- S(p, q) (not valid: no guarantee of past p with guard q)
-    Formula.snceQ q p
+    Formula.snce q p
   , -- ⊥ (bottom is not a theorem)
     Formula.bot
   , -- q → p (not valid without further assumptions)

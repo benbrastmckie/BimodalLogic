@@ -177,7 +177,7 @@ parameter, making density conditional rather than unconditional.
 def topFormula : Formula := Formula.bot.imp Formula.bot
 
 /-- `U(⊤, ⊥)` — "next top", true iff there is an immediate successor. -/
-def nextTop : Formula := Formula.untlQ Formula.bot topFormula
+def nextTop : Formula := Formula.untl Formula.bot topFormula
 
 /--
 Density of `LimitDom` from the hypothesis that `F'⊤ = neg(U(⊤,⊥))` is in
@@ -199,7 +199,7 @@ theorem limit_dom_dense_from_F'T (fc : FrameClass) (A : Set Formula)
     (x y : Rat) (hx : x ∈ LimitDom fc A h_mcs) (hy : y ∈ LimitDom fc A h_mcs)
     (hxy : x < y) :
     ∃ z ∈ LimitDom fc A h_mcs, x < z ∧ z < y := by
-  have h_neg_until : (Formula.untlQ Formula.bot topFormula).neg ∈ LimitF fc A h_mcs x :=
+  have h_neg_until : (Formula.untl Formula.bot topFormula).neg ∈ LimitF fc A h_mcs x :=
     h_dense x hx
   have h_mcs_y := limit_c0 fc A h_mcs y hy
   have h_event : topFormula ∈ LimitF fc A h_mcs y :=
@@ -686,10 +686,10 @@ theorem cantor_bfmcs_dense_restricted_buc (fc : FrameClass) (A : Set Formula)
     intro t φ ψ _ ⟨u, htu, hφu, h_guard⟩
     by_contra h_not_until
     simp only [rootedCantorFmcsDense, shiftedCantorFmcsDense'] at h_not_until hφu h_guard
-    have h_neg_until : (Formula.untlQ ψ φ).neg ∈ CantorFDense fc N h_N h_dense_N (t + offset) := by
+    have h_neg_until : (Formula.untl ψ φ).neg ∈ CantorFDense fc N h_N h_dense_N (t + offset) := by
       rcases SetMaximalConsistent.negation_complete
           (cantor_f_dense_is_mcs fc N h_N h_dense_N (t + offset))
-        (Formula.untlQ ψ φ) with h | h
+        (Formula.untl ψ φ) with h | h
       · exact absurd h h_not_until
       · exact h
     set xt := iso.symm (t + offset); set xu := iso.symm (u + offset)
@@ -715,10 +715,10 @@ theorem cantor_bfmcs_dense_restricted_buc (fc : FrameClass) (A : Set Formula)
     intro t φ ψ _ ⟨u, hut, hφu, h_guard⟩
     by_contra h_not_since
     simp only [rootedCantorFmcsDense, shiftedCantorFmcsDense'] at h_not_since hφu h_guard
-    have h_neg_since : (Formula.snceQ ψ φ).neg ∈ CantorFDense fc N h_N h_dense_N (t + offset) := by
+    have h_neg_since : (Formula.snce ψ φ).neg ∈ CantorFDense fc N h_N h_dense_N (t + offset) := by
       rcases SetMaximalConsistent.negation_complete
           (cantor_f_dense_is_mcs fc N h_N h_dense_N (t + offset))
-        (Formula.snceQ ψ φ) with h | h
+        (Formula.snce ψ φ) with h | h
       · exact absurd h h_not_since
       · exact h
     set xt := iso.symm (t + offset); set xu := iso.symm (u + offset)
@@ -888,7 +888,7 @@ exists `y ∈ LimitDom` that is the immediate predecessor of `x`.
 theorem limit_dom_has_pred (fc : FrameClass) (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) A)
     (x : Rat) (hx : x ∈ LimitDom fc A h_mcs)
-    (h_since : Formula.snceQ Formula.bot topFormula ∈ LimitF fc A h_mcs x) :
+    (h_since : Formula.snce Formula.bot topFormula ∈ LimitF fc A h_mcs x) :
     ∃ y ∈ LimitDom fc A h_mcs, y < x ∧
       ∀ w ∈ LimitDom fc A h_mcs, y < w → w < x → False := by
   obtain ⟨y, hy, hyx, _, h_guard⟩ :=
@@ -905,7 +905,7 @@ theorem next_top_gives_since (fc : FrameClass) (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) A)
     (x : Rat) (hx : x ∈ LimitDom fc A h_mcs)
     (h_next : nextTop ∈ LimitF fc A h_mcs x) :
-    Formula.snceQ Formula.bot topFormula ∈ LimitF fc A h_mcs x := by
+    Formula.snce Formula.bot topFormula ∈ LimitF fc A h_mcs x := by
   have h_mcs_x := limit_c0 fc A h_mcs x hx
   exact SetMaximalConsistent.implication_property h_mcs_x
     (theorem_in_mcs h_mcs_x (DerivationTree.axiom [] _ Axiom.discrete_symm_fwd trivial))

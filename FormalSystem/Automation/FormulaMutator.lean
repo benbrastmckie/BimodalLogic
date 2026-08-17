@@ -150,8 +150,8 @@ def substAtom (φ : Formula) (target : Atom) (replacement : Formula) : Formula :
   | .bot => .bot
   | .imp ψ χ => .imp (substAtom ψ target replacement) (substAtom χ target replacement)
   | .box ψ => .box (substAtom ψ target replacement)
-  | .untlQ χ ψ => .untlQ (substAtom χ target replacement) (substAtom ψ target replacement)
-  | .snceQ χ ψ => .snceQ (substAtom χ target replacement) (substAtom ψ target replacement)
+  | .untl χ ψ => .untl (substAtom χ target replacement) (substAtom ψ target replacement)
+  | .snce χ ψ => .snce (substAtom χ target replacement) (substAtom ψ target replacement)
 
 /--
 Collect all atoms in a formula as a `List Atom` (computable version of `Formula.atoms`).
@@ -164,8 +164,8 @@ def collectAtoms : Formula → List Atom
   | .bot => []
   | .imp ψ χ => (collectAtoms ψ ++ collectAtoms χ).eraseDups
   | .box ψ => collectAtoms ψ
-  | .untlQ χ ψ => (collectAtoms ψ ++ collectAtoms χ).eraseDups
-  | .snceQ χ ψ => (collectAtoms ψ ++ collectAtoms χ).eraseDups
+  | .untl χ ψ => (collectAtoms ψ ++ collectAtoms χ).eraseDups
+  | .snce χ ψ => (collectAtoms ψ ++ collectAtoms χ).eraseDups
 
 /-!
 ## Derived Operator Recognition
@@ -181,7 +181,7 @@ Pattern: `imp (untl (imp inner bot) (imp bot bot)) bot`
 Returns `some inner` if the formula matches this pattern.
 -/
 def matchAllFuture : Formula → Option Formula
-  | .imp (.untlQ (.imp .bot .bot) (.imp inner .bot)) .bot => some inner
+  | .imp (.untl (.imp .bot .bot) (.imp inner .bot)) .bot => some inner
   | _ => none
 
 /--
@@ -191,7 +191,7 @@ Pattern: `imp (snce (imp inner bot) (imp bot bot)) bot`
 Returns `some inner` if the formula matches this pattern.
 -/
 def matchAllPast : Formula → Option Formula
-  | .imp (.snceQ (.imp .bot .bot) (.imp inner .bot)) .bot => some inner
+  | .imp (.snce (.imp .bot .bot) (.imp inner .bot)) .bot => some inner
   | _ => none
 
 /-!
@@ -228,17 +228,17 @@ def mutateSingleOccurrence (φ : Formula) (transform : Formula → Option Formul
         let (m1, i1) := go a (idx + 1)
         let wrapped := m1.map (fun (m, i) => (.box m, i))
         (wrapped, i1)
-      | .untlQ b a =>
+      | .untl b a =>
         let (m1, i1) := go a (idx + 1)
         let (m2, i2) := go b i1
-        let wrapped := m1.map (fun (m, i) => (.untlQ b m, i)) ++ m2.map
-            (fun (m, i) => (.untlQ m a, i))
+        let wrapped := m1.map (fun (m, i) => (.untl b m, i)) ++ m2.map
+            (fun (m, i) => (.untl m a, i))
         (wrapped, i2)
-      | .snceQ b a =>
+      | .snce b a =>
         let (m1, i1) := go a (idx + 1)
         let (m2, i2) := go b i1
-        let wrapped := m1.map (fun (m, i) => (.snceQ b m, i)) ++ m2.map
-            (fun (m, i) => (.snceQ m a, i))
+        let wrapped := m1.map (fun (m, i) => (.snce b m, i)) ++ m2.map
+            (fun (m, i) => (.snce m a, i))
         (wrapped, i2)
       ((mutated, idx) :: childMuts, nextIdx)
     | none =>
@@ -253,17 +253,17 @@ def mutateSingleOccurrence (φ : Formula) (transform : Formula → Option Formul
         let (m1, i1) := go a idx
         let wrapped := m1.map (fun (m, i) => (.box m, i))
         (wrapped, i1)
-      | .untlQ b a =>
+      | .untl b a =>
         let (m1, i1) := go a idx
         let (m2, i2) := go b i1
-        let wrapped := m1.map (fun (m, i) => (.untlQ b m, i)) ++ m2.map
-            (fun (m, i) => (.untlQ m a, i))
+        let wrapped := m1.map (fun (m, i) => (.untl b m, i)) ++ m2.map
+            (fun (m, i) => (.untl m a, i))
         (wrapped, i2)
-      | .snceQ b a =>
+      | .snce b a =>
         let (m1, i1) := go a idx
         let (m2, i2) := go b i1
-        let wrapped := m1.map (fun (m, i) => (.snceQ b m, i)) ++ m2.map
-            (fun (m, i) => (.snceQ m a, i))
+        let wrapped := m1.map (fun (m, i) => (.snce b m, i)) ++ m2.map
+            (fun (m, i) => (.snce m a, i))
         (wrapped, i2)
       (childMuts, nextIdx)
   go φ 0 |>.1
@@ -284,60 +284,60 @@ def trySwapDiamondBox : Formula → Option Formula
 
 /-- Match `untl φ ψ` and return `release φ ψ`. -/
 def trySwapUntilRelease : Formula → Option Formula
-  | .untlQ ψ φ => some (Formula.release φ ψ)
+  | .untl ψ φ => some (Formula.release φ ψ)
   | _ => none
 
 /-- Match `release φ ψ` (primitive: `imp (untl (imp φ bot) (imp ψ bot)) bot`) and return `untl φ
 ψ`. -/
 def trySwapReleaseUntil : Formula → Option Formula
-  | .imp (.untlQ (.imp inner2 .bot) (.imp inner1 .bot)) .bot =>
-    some (.untlQ inner2 inner1)
+  | .imp (.untl (.imp inner2 .bot) (.imp inner1 .bot)) .bot =>
+    some (.untl inner2 inner1)
   | _ => none
 
 /-- Match `someFuture φ` (primitive: `untl φ top`) and return `allFuture φ`. -/
 def trySwapFutureGlobally : Formula → Option Formula
-  | .untlQ (.imp .bot .bot) φ => some (Formula.allFuture φ)
+  | .untl (.imp .bot .bot) φ => some (Formula.allFuture φ)
   | _ => none
 
 /-- Match `allFuture φ` (primitive: `imp (untl (imp φ bot) top) bot`) and return `someFuture φ`. -/
 def trySwapGloballyFuture : Formula → Option Formula
-  | .imp (.untlQ (.imp .bot .bot) (.imp inner .bot)) .bot =>
+  | .imp (.untl (.imp .bot .bot) (.imp inner .bot)) .bot =>
     some (Formula.someFuture inner)
   | _ => none
 
 /-- Match `somePast φ` (primitive: `snce φ top`) and return `allPast φ`. -/
 def trySwapPastHistorically : Formula → Option Formula
-  | .snceQ (.imp .bot .bot) φ => some (Formula.allPast φ)
+  | .snce (.imp .bot .bot) φ => some (Formula.allPast φ)
   | _ => none
 
 /-- Match `allPast φ` (primitive: `imp (snce (imp φ bot) top) bot`) and return `somePast φ`. -/
 def trySwapHistoricallyPast : Formula → Option Formula
-  | .imp (.snceQ (.imp .bot .bot) (.imp inner .bot)) .bot =>
+  | .imp (.snce (.imp .bot .bot) (.imp inner .bot)) .bot =>
     some (Formula.somePast inner)
   | _ => none
 
 /-- Match `weakUntil φ ψ` and return `strongRelease φ ψ`. -/
 def trySwapWeakUntilStrongRelease : Formula → Option Formula
-  | .imp (.imp (.untlQ ψ1 φ) .bot) (.imp (.untlQ (.imp .bot .bot) (.imp ψ2 .bot)) .bot) =>
+  | .imp (.imp (.untl ψ1 φ) .bot) (.imp (.untl (.imp .bot .bot) (.imp ψ2 .bot)) .bot) =>
     if ψ1 == ψ2 then some (Formula.strongRelease φ ψ1) else none
   | _ => none
 
 /-- Match `strongRelease φ ψ` and return `weakUntil φ ψ`. -/
 def trySwapStrongReleaseWeakUntil : Formula → Option Formula
-  | .untlQ ψ2 (.imp (.imp ψ1 (.imp φ .bot)) .bot) =>
+  | .untl ψ2 (.imp (.imp ψ1 (.imp φ .bot)) .bot) =>
     if ψ1 == ψ2 then some (Formula.weakUntil φ ψ1) else none
   | _ => none
 
 /-- Match `trigger φ ψ` (primitive: `imp (snce (imp φ bot) (imp ψ bot)) bot`) and
 return `strongTrigger φ ψ`. -/
 def trySwapTriggerStrongTrigger : Formula → Option Formula
-  | .imp (.snceQ (.imp ψ .bot) (.imp φ .bot)) .bot =>
+  | .imp (.snce (.imp ψ .bot) (.imp φ .bot)) .bot =>
     some (Formula.strongTrigger φ ψ)
   | _ => none
 
 /-- Match `strongTrigger φ ψ` and return `trigger φ ψ`. -/
 def trySwapStrongTriggerTrigger : Formula → Option Formula
-  | .snceQ ψ2 (.imp (.imp ψ1 (.imp φ .bot)) .bot) =>
+  | .snce ψ2 (.imp (.imp ψ1 (.imp φ .bot)) .bot) =>
     if ψ1 == ψ2 then some (Formula.trigger φ ψ1) else none
   | _ => none
 
@@ -378,8 +378,8 @@ def weakenBoxToDiamond : Formula → Formula
   | .bot => .bot
   | .box ψ => (weakenBoxToDiamond ψ).diamond
   | .imp ψ χ => .imp (weakenBoxToDiamond ψ) (weakenBoxToDiamond χ)
-  | .untlQ χ ψ => .untlQ (weakenBoxToDiamond χ) (weakenBoxToDiamond ψ)
-  | .snceQ χ ψ => .snceQ (weakenBoxToDiamond χ) (weakenBoxToDiamond ψ)
+  | .untl χ ψ => .untl (weakenBoxToDiamond χ) (weakenBoxToDiamond ψ)
+  | .snce χ ψ => .snce (weakenBoxToDiamond χ) (weakenBoxToDiamond ψ)
 
 /--
 Weaken G (all future) to F (some future) and H (all past) to P (some past).
@@ -392,15 +392,15 @@ Uses direct pattern matching on the primitive encoding rather than calling
 -/
 def weakenAllToSome : Formula → Formula
   -- G(inner) = imp (untl (imp inner bot) (imp bot bot)) bot → F(inner) = untl inner (imp bot bot)
-  | .imp (.untlQ (.imp .bot .bot) (.imp inner .bot)) .bot =>
+  | .imp (.untl (.imp .bot .bot) (.imp inner .bot)) .bot =>
     Formula.someFuture (weakenAllToSome inner)
   -- H(inner) = imp (snce (imp inner bot) (imp bot bot)) bot → P(inner) = snce inner (imp bot bot)
-  | .imp (.snceQ (.imp .bot .bot) (.imp inner .bot)) .bot =>
+  | .imp (.snce (.imp .bot .bot) (.imp inner .bot)) .bot =>
     Formula.somePast (weakenAllToSome inner)
   | .imp ψ χ => .imp (weakenAllToSome ψ) (weakenAllToSome χ)
   | .box ψ => .box (weakenAllToSome ψ)
-  | .untlQ χ ψ => .untlQ (weakenAllToSome χ) (weakenAllToSome ψ)
-  | .snceQ χ ψ => .snceQ (weakenAllToSome χ) (weakenAllToSome ψ)
+  | .untl χ ψ => .untl (weakenAllToSome χ) (weakenAllToSome ψ)
+  | .snce χ ψ => .snce (weakenAllToSome χ) (weakenAllToSome ψ)
   | φ => φ
 
 /--
@@ -416,10 +416,10 @@ def deleteSubformula (φ : Formula) (target : Formula) (replacement : Formula) :
   | .bot => .bot
   | .imp ψ χ => .imp (deleteSubformula ψ target replacement) (deleteSubformula χ target replacement)
   | .box ψ => .box (deleteSubformula ψ target replacement)
-  | .untlQ χ ψ =>
-      .untlQ (deleteSubformula χ target replacement) (deleteSubformula ψ target replacement)
-  | .snceQ χ ψ =>
-      .snceQ (deleteSubformula χ target replacement) (deleteSubformula ψ target replacement)
+  | .untl χ ψ =>
+      .untl (deleteSubformula χ target replacement) (deleteSubformula ψ target replacement)
+  | .snce χ ψ =>
+      .snce (deleteSubformula χ target replacement) (deleteSubformula ψ target replacement)
 
 /--
 Reduce modal depth by stripping outermost box operators.
@@ -432,8 +432,8 @@ def reduceModalDepth : Formula → Formula
   | .bot => .bot
   | .box ψ => ψ
   | .imp ψ χ => .imp (reduceModalDepth ψ) (reduceModalDepth χ)
-  | .untlQ χ ψ => .untlQ (reduceModalDepth χ) (reduceModalDepth ψ)
-  | .snceQ χ ψ => .snceQ (reduceModalDepth χ) (reduceModalDepth ψ)
+  | .untl χ ψ => .untl (reduceModalDepth χ) (reduceModalDepth ψ)
+  | .snce χ ψ => .snce (reduceModalDepth χ) (reduceModalDepth ψ)
 
 /--
 Reduce temporal depth by stripping outermost untl/snce operators.
@@ -444,8 +444,8 @@ recursing into other operators to find temporal operators at the top level.
 def reduceTemporalDepth : Formula → Formula
   | .atom a => .atom a
   | .bot => .bot
-  | .untlQ _ ψ => ψ
-  | .snceQ _ ψ => ψ
+  | .untl _ ψ => ψ
+  | .snce _ ψ => ψ
   | .imp ψ χ => .imp (reduceTemporalDepth ψ) (reduceTemporalDepth χ)
   | .box ψ => .box (reduceTemporalDepth ψ)
 
@@ -461,29 +461,29 @@ def hasBox : Formula → Bool
   | .bot => false
   | .box _ => true
   | .imp ψ χ => hasBox ψ || hasBox χ
-  | .untlQ χ ψ => hasBox ψ || hasBox χ
-  | .snceQ χ ψ => hasBox ψ || hasBox χ
+  | .untl χ ψ => hasBox ψ || hasBox χ
+  | .snce χ ψ => hasBox ψ || hasBox χ
 
 /--
 Check whether a formula contains any G (allFuture) patterns.
 -/
 def hasAllFuture : Formula → Bool
-  | .imp (.untlQ (.imp .bot .bot) (.imp _ .bot)) .bot => true
+  | .imp (.untl (.imp .bot .bot) (.imp _ .bot)) .bot => true
   | .imp ψ χ => hasAllFuture ψ || hasAllFuture χ
   | .box ψ => hasAllFuture ψ
-  | .untlQ χ ψ => hasAllFuture ψ || hasAllFuture χ
-  | .snceQ χ ψ => hasAllFuture ψ || hasAllFuture χ
+  | .untl χ ψ => hasAllFuture ψ || hasAllFuture χ
+  | .snce χ ψ => hasAllFuture ψ || hasAllFuture χ
   | _ => false
 
 /--
 Check whether a formula contains any H (allPast) patterns.
 -/
 def hasAllPast : Formula → Bool
-  | .imp (.snceQ (.imp .bot .bot) (.imp _ .bot)) .bot => true
+  | .imp (.snce (.imp .bot .bot) (.imp _ .bot)) .bot => true
   | .imp ψ χ => hasAllPast ψ || hasAllPast χ
   | .box ψ => hasAllPast ψ
-  | .untlQ χ ψ => hasAllPast ψ || hasAllPast χ
-  | .snceQ χ ψ => hasAllPast ψ || hasAllPast χ
+  | .untl χ ψ => hasAllPast ψ || hasAllPast χ
+  | .snce χ ψ => hasAllPast ψ || hasAllPast χ
   | _ => false
 
 /--
@@ -492,8 +492,8 @@ Check whether a formula contains any temporal operators (untl or snce).
 def hasTemporal : Formula → Bool
   | .atom _ => false
   | .bot => false
-  | .untlQ _ _ => true
-  | .snceQ _ _ => true
+  | .untl _ _ => true
+  | .snce _ _ => true
   | .imp ψ χ => hasTemporal ψ || hasTemporal χ
   | .box ψ => hasTemporal ψ
 

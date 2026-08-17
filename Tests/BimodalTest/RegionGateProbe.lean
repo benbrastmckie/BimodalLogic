@@ -176,8 +176,8 @@ private def posDemands (b : Branch) (ord : TimeOrdering) (w : WorldIndex) (j : N
     if sf.sign == .pos && sf.label.world == w then
       let rk := rankOf b ord sf.label.time
       match sf.formula with
-      | .untlQ ψ _ => if rk < j then some ψ else none
-      | .snceQ ψ _ => if j ≤ rk then some ψ else none
+      | .untl ψ _ => if rk < j then some ψ else none
+      | .snce ψ _ => if j ≤ rk then some ψ else none
       | _ => none
     else none
 
@@ -189,8 +189,8 @@ private def negDemands (b : Branch) (ord : TimeOrdering) (w : WorldIndex) (j : N
     if sf.sign == .neg && sf.label.world == w then
       let rk := rankOf b ord sf.label.time
       match sf.formula with
-      | .untlQ _ φ => if rk < j then some φ else none
-      | .snceQ _ φ => if j ≤ rk then some φ else none
+      | .untl _ φ => if rk < j then some φ else none
+      | .snce _ φ => if j ≤ rk then some φ else none
       | _ => none
     else none
 
@@ -246,7 +246,7 @@ private def refuteTimes : TimeOrdering := { constraints := [(0, 1)] }
 /-- `T(G q)` at `(0,0)` in the form a saturated branch carries it, with `T(p)` at both times
 and nothing about `q` anywhere else. -/
 private def refuteBranch : Branch :=
-  [ SignedFormula.neg (.untlQ .top (.imp q .bot)) ⟨0, 0⟩
+  [ SignedFormula.neg (.untl .top (.imp q .bot)) ⟨0, 0⟩
   , SignedFormula.pos p ⟨0, 0⟩
   , SignedFormula.pos p ⟨0, 1⟩ ]
 

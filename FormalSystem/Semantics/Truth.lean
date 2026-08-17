@@ -134,7 +134,7 @@ though `def:BL-semantics`'s atom clause has no domain conjunct. Under totality t
 vacuously satisfiable at every `t`, so the two readings agree on `H_F`; the conjunct is what keeps
 `TruthAt` meaningful at the partial histories that the extension machinery still traffics in.
 
-**Until / Since argument order**: `untlQ`/`snceQ` are **guard-first / event-second** — `untlQ φ ψ`
+**Until / Since argument order**: `untl`/`snce` are **guard-first / event-second** — `untl φ ψ`
 reads "φ is the guard, ψ is the event". The two clauses below transcribe
 `def:BLplus-semantics`'s clause bodies directly:
 
@@ -146,8 +146,8 @@ reads "φ is the guard, ψ is the event". The two clauses below transcribe
 In both, the existential witness is the **second** argument and the universally quantified
 open-interval condition is the **first**. `def:BLplus-defined` corroborates independently:
 `past φ := ⊤ since φ`, `future φ := ⊤ until φ`, `Next φ := ⊥ until φ`, `Previous φ := ⊥ since φ`
-— in each the operand is the event and sits second. `Formula.someFuture φ = untlQ ⊤ φ` and
-`Formula.next φ = untlQ ⊥ φ` match character for character.
+— in each the operand is the event and sits second. `Formula.someFuture φ = untl ⊤ φ` and
+`Formula.next φ = untl ⊥ φ` match character for character.
 
 Earlier revisions of this docstring quoted an argument-order **footnote** of
 `def:BLplus-semantics` and asserted that the Lean tree was deliberately event-first. Both are
@@ -162,9 +162,9 @@ def TruthAt (M : TaskModel F)
   | Formula.bot => False
   | Formula.imp φ ψ => TruthAt M τ t φ → TruthAt M τ t ψ
   | Formula.box φ => ∀ (σ : WorldHistory F), σ.IsTotal → TruthAt M σ t φ
-  | Formula.untlQ ψ φ => ∃ s : D, t < s ∧ TruthAt M τ s φ ∧
+  | Formula.untl ψ φ => ∃ s : D, t < s ∧ TruthAt M τ s φ ∧
       ∀ r : D, t < r → r < s → TruthAt M τ r ψ
-  | Formula.snceQ ψ φ => ∃ s : D, s < t ∧ TruthAt M τ s φ ∧
+  | Formula.snce ψ φ => ∃ s : D, s < t ∧ TruthAt M τ s φ ∧
       ∀ r : D, s < r → r < t → TruthAt M τ r ψ
 
 -- Note: We avoid defining a notation for TruthAt as it causes parsing conflicts
@@ -419,14 +419,14 @@ theorem truth_double_shift_cancel (M : TaskModel F)
     -- Box quantifies over the total histories at time t, independent of the current history.
     -- Both sides quantify over the same `IsTotal` predicate, so this is definitionally closed
     -- and leaves no residual goal.
-  | untlQ ψ φ ih_ψ ih_φ =>
+  | untl ψ φ ih_ψ ih_φ =>
     simp only [TruthAt]
     constructor
     · intro ⟨s, h_le, h_event, h_guard⟩
       exact ⟨s, h_le, (ih_φ s).mp h_event, fun r hr1 hr2 => (ih_ψ r).mp (h_guard r hr1 hr2)⟩
     · intro ⟨s, h_le, h_event, h_guard⟩
       exact ⟨s, h_le, (ih_φ s).mpr h_event, fun r hr1 hr2 => (ih_ψ r).mpr (h_guard r hr1 hr2)⟩
-  | snceQ ψ φ ih_ψ ih_φ =>
+  | snce ψ φ ih_ψ ih_φ =>
     simp only [TruthAt]
     constructor
     · intro ⟨s, h_le, h_event, h_guard⟩
@@ -520,7 +520,7 @@ theorem time_shift_preserves_truth (M : TaskModel F)
           (WorldHistory.timeShift ρ (x - y)) (y - x) (-(x - y)) h_cancel
       have h2' := (truth_history_eq M _ _ x h_hist_eq ψ).mp h2
       exact (truth_double_shift_cancel M ρ (x - y) x ψ).mp h2'
-  | untlQ ψ φ ih_ψ ih_φ =>
+  | untl ψ φ ih_ψ ih_φ =>
     -- Until (Burgess convention): untl(event=φ, guard=ψ)
     -- ∃ s > t, φ(s) ∧ ∀ r ∈ (t,s), ψ(r)
     -- Direction (→): shifted history at x → original history at y
@@ -607,7 +607,7 @@ theorem time_shift_preserves_truth (M : TaskModel F)
             (y - x) h_shift_eq
         have h_conv := (ih_ψ σ r' (r' + (y - x))).mpr h_grd
         exact (truth_history_eq M _ _ r' h_hist_eq ψ).mp h_conv
-  | snceQ ψ φ ih_ψ ih_φ =>
+  | snce ψ φ ih_ψ ih_φ =>
     -- Since (Burgess convention): snce(event=φ, guard=ψ)
     -- ∃ s < t, φ(s) ∧ ∀ r ∈ (s,t), ψ(r)
     -- Mirror of Until with reversed inequalities.

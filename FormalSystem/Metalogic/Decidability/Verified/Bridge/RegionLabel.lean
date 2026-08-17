@@ -145,7 +145,7 @@ def diaNegContents (b : Branch) : List Formula :=
 def untlGuards (b : Branch) (ord : TimeOrdering) (w : WorldIndex) (j : Nat) : List Formula :=
   b.filterMap fun sf =>
     match sf.sign, sf.formula with
-    | .pos, .untlQ ψ _ =>
+    | .pos, .untl ψ _ =>
         if sf.label.world = w ∧ branchRank b ord sf.label.time < j then some ψ else none
     | _, _ => none
 
@@ -153,7 +153,7 @@ def untlGuards (b : Branch) (ord : TimeOrdering) (w : WorldIndex) (j : Nat) : Li
 def snceGuards (b : Branch) (ord : TimeOrdering) (w : WorldIndex) (j : Nat) : List Formula :=
   b.filterMap fun sf =>
     match sf.sign, sf.formula with
-    | .pos, .snceQ ψ _ =>
+    | .pos, .snce ψ _ =>
         if sf.label.world = w ∧ j ≤ branchRank b ord sf.label.time then some ψ else none
     | _, _ => none
 
@@ -162,7 +162,7 @@ def snceGuards (b : Branch) (ord : TimeOrdering) (w : WorldIndex) (j : Nat) : Li
 def untlNegSubjects (b : Branch) (ord : TimeOrdering) (w : WorldIndex) (j : Nat) : List Formula :=
   b.filterMap fun sf =>
     match sf.sign, sf.formula with
-    | .neg, .untlQ _ φ =>
+    | .neg, .untl _ φ =>
         if sf.label.world = w ∧ branchRank b ord sf.label.time < j then some φ else none
     | _, _ => none
 
@@ -170,7 +170,7 @@ def untlNegSubjects (b : Branch) (ord : TimeOrdering) (w : WorldIndex) (j : Nat)
 def snceNegSubjects (b : Branch) (ord : TimeOrdering) (w : WorldIndex) (j : Nat) : List Formula :=
   b.filterMap fun sf =>
     match sf.sign, sf.formula with
-    | .neg, .snceQ _ φ =>
+    | .neg, .snce _ φ =>
         if sf.label.world = w ∧ j ≤ branchRank b ord sf.label.time then some φ else none
     | _, _ => none
 
@@ -198,25 +198,25 @@ theorem mem_diaNegContents {b : Branch} {χ : Formula} {l : Label}
   exact ⟨_, h, rfl⟩
 
 theorem mem_untlGuards {b : Branch} {ord : TimeOrdering} {w : WorldIndex} {j : Nat}
-    {φ ψ : Formula} {t : TimeIndex} (h : (⟨.pos, .untlQ ψ φ, ⟨w, t⟩⟩ : SignedFormula) ∈ b)
+    {φ ψ : Formula} {t : TimeIndex} (h : (⟨.pos, .untl ψ φ, ⟨w, t⟩⟩ : SignedFormula) ∈ b)
     (hrk : branchRank b ord t < j) : ψ ∈ untlGuards b ord w j := by
   rw [untlGuards, List.mem_filterMap]
   exact ⟨_, h, by simp [hrk]⟩
 
 theorem mem_snceGuards {b : Branch} {ord : TimeOrdering} {w : WorldIndex} {j : Nat}
-    {φ ψ : Formula} {t : TimeIndex} (h : (⟨.pos, .snceQ ψ φ, ⟨w, t⟩⟩ : SignedFormula) ∈ b)
+    {φ ψ : Formula} {t : TimeIndex} (h : (⟨.pos, .snce ψ φ, ⟨w, t⟩⟩ : SignedFormula) ∈ b)
     (hrk : j ≤ branchRank b ord t) : ψ ∈ snceGuards b ord w j := by
   rw [snceGuards, List.mem_filterMap]
   exact ⟨_, h, by simp [hrk]⟩
 
 theorem mem_untlNegSubjects {b : Branch} {ord : TimeOrdering} {w : WorldIndex} {j : Nat}
-    {φ ψ : Formula} {t : TimeIndex} (h : (⟨.neg, .untlQ ψ φ, ⟨w, t⟩⟩ : SignedFormula) ∈ b)
+    {φ ψ : Formula} {t : TimeIndex} (h : (⟨.neg, .untl ψ φ, ⟨w, t⟩⟩ : SignedFormula) ∈ b)
     (hrk : branchRank b ord t < j) : φ ∈ untlNegSubjects b ord w j := by
   rw [untlNegSubjects, List.mem_filterMap]
   exact ⟨_, h, by simp [hrk]⟩
 
 theorem mem_snceNegSubjects {b : Branch} {ord : TimeOrdering} {w : WorldIndex} {j : Nat}
-    {φ ψ : Formula} {t : TimeIndex} (h : (⟨.neg, .snceQ ψ φ, ⟨w, t⟩⟩ : SignedFormula) ∈ b)
+    {φ ψ : Formula} {t : TimeIndex} (h : (⟨.neg, .snce ψ φ, ⟨w, t⟩⟩ : SignedFormula) ∈ b)
     (hrk : j ≤ branchRank b ord t) : φ ∈ snceNegSubjects b ord w j := by
   rw [snceNegSubjects, List.mem_filterMap]
   exact ⟨_, h, by simp [hrk]⟩
@@ -373,7 +373,7 @@ the region. -/
 theorem regionLabel_untlGuard (h : regionLabelCheck b ord = true)
     (hw : w ∈ b.knownWorlds) (hj : j ≤ b.knownTimes.length)
     {φ ψ : Formula} {t : TimeIndex}
-    (hmem : (⟨.pos, .untlQ ψ φ, ⟨w, t⟩⟩ : SignedFormula) ∈ b)
+    (hmem : (⟨.pos, .untl ψ φ, ⟨w, t⟩⟩ : SignedFormula) ∈ b)
     (hrk : branchRank b ord t < j) :
     (⟨.pos, ψ, ⟨w, regionLabel b ord w j⟩⟩ : SignedFormula) ∈ b :=
   mem_of_branch_contains
@@ -384,7 +384,7 @@ theorem regionLabel_untlGuard (h : regionLabelCheck b ord = true)
 theorem regionLabel_snceGuard (h : regionLabelCheck b ord = true)
     (hw : w ∈ b.knownWorlds) (hj : j ≤ b.knownTimes.length)
     {φ ψ : Formula} {t : TimeIndex}
-    (hmem : (⟨.pos, .snceQ ψ φ, ⟨w, t⟩⟩ : SignedFormula) ∈ b)
+    (hmem : (⟨.pos, .snce ψ φ, ⟨w, t⟩⟩ : SignedFormula) ∈ b)
     (hrk : j ≤ branchRank b ord t) :
     (⟨.pos, ψ, ⟨w, regionLabel b ord w j⟩⟩ : SignedFormula) ∈ b :=
   mem_of_branch_contains
@@ -395,7 +395,7 @@ region, which is why no separate `G`/`H` row is needed. -/
 theorem regionLabel_untlNeg (h : regionLabelCheck b ord = true)
     (hw : w ∈ b.knownWorlds) (hj : j ≤ b.knownTimes.length)
     {φ ψ : Formula} {t : TimeIndex}
-    (hmem : (⟨.neg, .untlQ ψ φ, ⟨w, t⟩⟩ : SignedFormula) ∈ b)
+    (hmem : (⟨.neg, .untl ψ φ, ⟨w, t⟩⟩ : SignedFormula) ∈ b)
     (hrk : branchRank b ord t < j) :
     (⟨.neg, φ, ⟨w, regionLabel b ord w j⟩⟩ : SignedFormula) ∈ b :=
   mem_of_branch_contains
@@ -406,7 +406,7 @@ theorem regionLabel_untlNeg (h : regionLabelCheck b ord = true)
 theorem regionLabel_snceNeg (h : regionLabelCheck b ord = true)
     (hw : w ∈ b.knownWorlds) (hj : j ≤ b.knownTimes.length)
     {φ ψ : Formula} {t : TimeIndex}
-    (hmem : (⟨.neg, .snceQ ψ φ, ⟨w, t⟩⟩ : SignedFormula) ∈ b)
+    (hmem : (⟨.neg, .snce ψ φ, ⟨w, t⟩⟩ : SignedFormula) ∈ b)
     (hrk : j ≤ branchRank b ord t) :
     (⟨.neg, φ, ⟨w, regionLabel b ord w j⟩⟩ : SignedFormula) ∈ b :=
   mem_of_branch_contains

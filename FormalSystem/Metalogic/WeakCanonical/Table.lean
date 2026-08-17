@@ -50,8 +50,8 @@ def operatorDepth : Formula → Nat
   | .bot => 0
   | .imp φ ψ => max (operatorDepth φ) (operatorDepth ψ)
   | .box φ => operatorDepth φ + 1
-  | .untlQ ψ φ => max (operatorDepth φ) (operatorDepth ψ) + 2
-  | .snceQ ψ φ => max (operatorDepth φ) (operatorDepth ψ) + 2
+  | .untl ψ φ => max (operatorDepth φ) (operatorDepth ψ) + 2
+  | .snce ψ φ => max (operatorDepth φ) (operatorDepth ψ) + 2
 
 /-! ## Standard Translation Table -/
 
@@ -111,7 +111,7 @@ def table (sig : MonadicSignature) (atomMap : Formula → sig.preds)
   --   t < u: lt ⟨2, ..⟩ ⟨0, ..⟩
   --   u < s: lt ⟨0, ..⟩ ⟨1, ..⟩
   --   C_ψ(u): ((table ψ).lift 1).lift 1 [var 0 = u preserved]
-  | .untlQ ψ₂ ψ₁ =>
+  | .untl ψ₂ ψ₁ =>
     .ex (.and
       (.lt ⟨1, by omega⟩ ⟨0, by omega⟩)  -- t < s
       (.and
@@ -128,7 +128,7 @@ def table (sig : MonadicSignature) (atomMap : Formula → sig.preds)
   -- In sig 3 (after ex then all): var 0 = u, var 1 = s, var 2 = t
   --   s < u: lt ⟨1, ..⟩ ⟨0, ..⟩
   --   u < t: lt ⟨0, ..⟩ ⟨2, ..⟩
-  | .snceQ ψ₂ ψ₁ =>
+  | .snce ψ₂ ψ₁ =>
     .ex (.and
       (.lt ⟨0, by omega⟩ ⟨1, by omega⟩)  -- s < t
       (.and
@@ -164,10 +164,10 @@ theorem table_depth_bound (sig : MonadicSignature) (atomMap : Formula → sig.pr
     simp only [table, MonadicFormula.quantifierDepth, operatorDepth]
     omega
   | box _ => simp [table, MonadicFormula.quantifierDepth, operatorDepth]
-  | untlQ ψ₂ ψ₁ ih₂ ih₁ =>
+  | untl ψ₂ ψ₁ ih₂ ih₁ =>
     simp only [table, MonadicFormula.quantifierDepth, operatorDepth, lift_quantifier_depth]
     omega
-  | snceQ ψ₂ ψ₁ ih₂ ih₁ =>
+  | snce ψ₂ ψ₁ ih₂ ih₁ =>
     simp only [table, MonadicFormula.quantifierDepth, operatorDepth, lift_quantifier_depth]
     omega
 
@@ -193,9 +193,9 @@ def TemporalTruth {sig : MonadicSignature}
   | .bot => False
   | .imp φ ψ => TemporalTruth M atomMap t φ → TemporalTruth M atomMap t ψ
   | .box φ => M.interp (atomMap (.box φ)) t
-  | .untlQ ψ φ => ∃ s : M.carrier, t < s ∧ TemporalTruth M atomMap s φ ∧
+  | .untl ψ φ => ∃ s : M.carrier, t < s ∧ TemporalTruth M atomMap s φ ∧
       ∀ r : M.carrier, t < r → r < s → TemporalTruth M atomMap r ψ
-  | .snceQ ψ φ => ∃ s : M.carrier, s < t ∧ TemporalTruth M atomMap s φ ∧
+  | .snce ψ φ => ∃ s : M.carrier, s < t ∧ TemporalTruth M atomMap s φ ∧
       ∀ r : M.carrier, s < r → r < t → TemporalTruth M atomMap r ψ
 
 /--
@@ -271,7 +271,7 @@ theorem table_correctness {sig : MonadicSignature}
       exact hψ₂_not ((ih₂ t).mpr (h ((ih₁ t).mp hψ₁_eval)))
   | box ψ =>
     simp only [table, eval, TemporalTruth]
-  | untlQ ψ₂ ψ₁ ih₂ ih₁ =>
+  | untl ψ₂ ψ₁ ih₂ ih₁ =>
     simp only [table, eval, TemporalTruth]
     exact Iff.intro
       (fun ⟨s, hts, h1, h2⟩ => ⟨s, hts, by rw [lift1_eval] at h1; exact (ih₁ s).mp h1,
@@ -281,7 +281,7 @@ theorem table_correctness {sig : MonadicSignature}
       (fun ⟨s, hts, h1, h2⟩ => ⟨s, hts, by rw [lift1_eval]; exact (ih₁ s).mpr h1,
         fun r => by
             push Not; intro ⟨htr, hrs⟩; rw [lift1_lift1_eval]; exact (ih₂ r).mpr (h2 r htr hrs)⟩)
-  | snceQ ψ₂ ψ₁ ih₂ ih₁ =>
+  | snce ψ₂ ψ₁ ih₂ ih₁ =>
     simp only [table, eval, TemporalTruth]
     exact Iff.intro
       (fun ⟨s, hst, h1, h2⟩ => ⟨s, hst, by rw [lift1_eval] at h1; exact (ih₁ s).mp h1,

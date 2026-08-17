@@ -360,7 +360,7 @@ theorem temp_linearity_past_valid (φ ψ : Formula) :
 If F(φ) holds at t, there exists s ≥ t with φ(s). Take this s as the Until witness.
 The guard ⊤ is trivially satisfied on (t, s). -/
 theorem F_until_equiv_valid (φ : Formula) :
-    ⊨ ((Formula.someFuture φ).imp (Formula.untlQ (Formula.bot.imp Formula.bot) φ)) := by
+    ⊨ ((Formula.someFuture φ).imp (Formula.untl (Formula.bot.imp Formula.bot) φ)) := by
   intro T _ _ _ _ F M τ _h_mem t
   simp only [TruthAt, Truth.some_future_iff]
   intro ⟨s, hts, h_φs⟩
@@ -369,7 +369,7 @@ theorem F_until_equiv_valid (φ : Formula) :
 /-- P-Since equivalence axiom validity (BX12'):
 `P(φ) → S(φ, ⊤)` is valid. Past dual of F-Until equivalence. -/
 theorem P_since_equiv_valid (φ : Formula) :
-    ⊨ ((Formula.somePast φ).imp (Formula.snceQ (Formula.bot.imp Formula.bot) φ)) := by
+    ⊨ ((Formula.somePast φ).imp (Formula.snce (Formula.bot.imp Formula.bot) φ)) := by
   intro T _ _ _ _ F M τ _h_mem t
   simp only [TruthAt, Truth.some_past_iff]
   intro ⟨s, hst, h_φs⟩
@@ -379,7 +379,7 @@ theorem P_since_equiv_valid (φ : Formula) :
 On a densely ordered frame, `U(⊤,⊥)` at t requires s > t with empty (t,s),
 but `DenselyOrdered` provides r with t < r < s, contradiction. -/
 theorem dense_indicator_valid :
-    ValidDense (Formula.untlQ Formula.bot (Formula.bot.imp Formula.bot)).neg := by
+    ValidDense (Formula.untl Formula.bot (Formula.bot.imp Formula.bot)).neg := by
   intro T _ _ _ h_dense _ F M τ _h_mem t
   simp only [Formula.neg, TruthAt]
   intro ⟨s, hts, _h_top, h_guard⟩
@@ -467,7 +467,7 @@ Recall the reflexive semantics:
 Under open guard (t,s): G(φ→χ) gives (φ→χ) at all r > t, covering guard interval (t,s).
 No pointwise condition at t needed since the guard is the open interval (t,s). -/
 theorem left_mono_until_G_valid (φ χ ψ : Formula) :
-    ⊨ ((φ.imp χ).allFuture.imp ((Formula.untlQ φ ψ).imp (Formula.untlQ χ ψ))) := by
+    ⊨ ((φ.imp χ).allFuture.imp ((Formula.untl φ ψ).imp (Formula.untl χ ψ))) := by
   intro T _ _ _ _ F M τ _h_mem t
   simp only [TruthAt, Truth.future_iff]
   intro h_G ⟨s, hts, h_event, h_guard⟩
@@ -477,7 +477,7 @@ theorem left_mono_until_G_valid (φ χ ψ : Formula) :
 Under open guard (s,t): H(φ→χ) gives (φ→χ) at all r < t, covering guard interval (s,t).
 No pointwise condition at t needed since the guard is the open interval (s,t). -/
 theorem left_mono_since_H_valid (φ χ ψ : Formula) :
-    ⊨ ((φ.imp χ).allPast.imp ((Formula.snceQ φ ψ).imp (Formula.snceQ χ ψ))) := by
+    ⊨ ((φ.imp χ).allPast.imp ((Formula.snce φ ψ).imp (Formula.snce χ ψ))) := by
   intro T _ _ _ _ F M τ _h_mem t
   simp only [TruthAt, Truth.past_iff]
   intro h_H ⟨s, hst, h_event, h_guard⟩
@@ -486,7 +486,7 @@ theorem left_mono_since_H_valid (φ χ ψ : Formula) :
 /-- BX3: Right monotonicity of Until: `G(φ → ψ) → ((χ U φ) → (χ U ψ))`.
 Same witness s; φ(s) and (φ → ψ)(s) give ψ(s). Guard is unchanged. -/
 theorem right_mono_until_valid (φ ψ χ : Formula) :
-    ⊨ ((φ.imp ψ).allFuture.imp ((Formula.untlQ χ φ).imp (Formula.untlQ χ ψ))) := by
+    ⊨ ((φ.imp ψ).allFuture.imp ((Formula.untl χ φ).imp (Formula.untl χ ψ))) := by
   intro T _ _ _ _ F M τ _h_mem t
   simp only [TruthAt, Truth.future_iff]
   intro h_G ⟨s, hts, h_φs, h_guard⟩
@@ -494,7 +494,7 @@ theorem right_mono_until_valid (φ ψ χ : Formula) :
 
 /-- BX3': Right monotonicity of Since: `H(φ → ψ) → ((χ S φ) → (χ S ψ))`. -/
 theorem right_mono_since_valid (φ ψ χ : Formula) :
-    ⊨ ((φ.imp ψ).allPast.imp ((Formula.snceQ χ φ).imp (Formula.snceQ χ ψ))) := by
+    ⊨ ((φ.imp ψ).allPast.imp ((Formula.snce χ φ).imp (Formula.snce χ ψ))) := by
   intro T _ _ _ _ F M τ _h_mem t
   simp only [TruthAt, Truth.past_iff]
   intro h_H ⟨s, hst, h_φs, h_guard⟩
@@ -528,8 +528,8 @@ Valid under open guard (t,s): given p(t) and untl(φ, ψ) at t with witness s > 
 - snce(φ, p)(s): take u = t as Since witness. t < s, p(t), and φ on (t,s) = the Until guard.
 - Guard φ on (t,s): same as the hypothesis guard. -/
 theorem enrichment_until_valid (φ ψ p : Formula) :
-    ⊨ (Formula.and p (Formula.untlQ φ ψ) |>.imp
-      (Formula.untlQ φ (Formula.and ψ (Formula.snceQ φ p)))) := by
+    ⊨ (Formula.and p (Formula.untl φ ψ) |>.imp
+      (Formula.untl φ (Formula.and ψ (Formula.snce φ p)))) := by
   intro T _ _ _ _ F M τ _h_mem t
   simp only [Formula.and, Formula.neg, TruthAt]
   intro h_conj
@@ -547,8 +547,8 @@ theorem enrichment_until_valid (φ ψ p : Formula) :
 `p ∧ snce(φ, ψ) → snce(φ, ψ ∧ untl(φ, p))`.
 Mirror of enrichment_until for the Since direction. -/
 theorem enrichment_since_valid (φ ψ p : Formula) :
-    ⊨ (Formula.and p (Formula.snceQ φ ψ) |>.imp
-      (Formula.snceQ φ (Formula.and ψ (Formula.untlQ φ p)))) := by
+    ⊨ (Formula.and p (Formula.snce φ ψ) |>.imp
+      (Formula.snce φ (Formula.and ψ (Formula.untl φ p)))) := by
   intro T _ _ _ _ F M τ _h_mem t
   simp only [Formula.and, Formula.neg, TruthAt]
   intro h_conj
@@ -568,8 +568,8 @@ Guard at r ∈ (t, s): need φ(r) ∧ (φ U ψ)(r).
 φ(r) comes from original guard. (φ U ψ)(r) uses same witness s:
 ψ(s), and guard ∀ q ∈ (r, s) is a subset of (t, s). -/
 theorem self_accum_until_valid (φ ψ : Formula) :
-    ⊨ ((Formula.untlQ φ ψ).imp
-      (Formula.untlQ (Formula.and φ (Formula.untlQ φ ψ)) ψ)) := by
+    ⊨ ((Formula.untl φ ψ).imp
+      (Formula.untl (Formula.and φ (Formula.untl φ ψ)) ψ)) := by
   intro T _ _ _ _ F M τ _h_mem t
   simp only [Formula.and, Formula.neg, TruthAt]
   intro ⟨s, hts, h_ψs, h_guard⟩
@@ -578,8 +578,8 @@ theorem self_accum_until_valid (φ ψ : Formula) :
 
 /-- BX5': Self-accumulation of Since: `(φ S ψ) → ((φ ∧ (φ S ψ)) S ψ)`. -/
 theorem self_accum_since_valid (φ ψ : Formula) :
-    ⊨ ((Formula.snceQ φ ψ).imp
-      (Formula.snceQ (Formula.and φ (Formula.snceQ φ ψ)) ψ)) := by
+    ⊨ ((Formula.snce φ ψ).imp
+      (Formula.snce (Formula.and φ (Formula.snce φ ψ)) ψ)) := by
   intro T _ _ _ _ F M τ _h_mem t
   simp only [Formula.and, Formula.neg, TruthAt]
   intro ⟨s, hst, h_ψs, h_guard⟩
@@ -587,7 +587,7 @@ theorem self_accum_since_valid (φ ψ : Formula) :
   exact h_imp (h_guard r hsr hrt) ⟨s, hsr, h_ψs, fun q hsq hqr => h_guard q hsq (lt_trans hqr hrt)⟩
 
 theorem absorb_until_valid (φ ψ : Formula) :
-    ⊨ ((Formula.untlQ φ (Formula.and φ (Formula.untlQ φ ψ))).imp (Formula.untlQ φ ψ)) := by
+    ⊨ ((Formula.untl φ (Formula.and φ (Formula.untl φ ψ))).imp (Formula.untl φ ψ)) := by
   intro T _ _ _ _ F M τ _h_mem t
   simp only [Formula.and, Formula.neg, TruthAt]
   intro ⟨s₁, hts₁, h_conj, h_guard₁⟩
@@ -608,7 +608,7 @@ theorem absorb_until_valid (φ ψ : Formula) :
 
 /-- BX6': Absorption of Since: `(φ S (φ ∧ (φ S ψ))) → (φ S ψ)`. -/
 theorem absorb_since_valid (φ ψ : Formula) :
-    ⊨ ((Formula.snceQ φ (Formula.and φ (Formula.snceQ φ ψ))).imp (Formula.snceQ φ ψ)) := by
+    ⊨ ((Formula.snce φ (Formula.and φ (Formula.snce φ ψ))).imp (Formula.snce φ ψ)) := by
   intro T _ _ _ _ F M τ _h_mem t
   simp only [Formula.and, Formula.neg, TruthAt]
   intro ⟨s₁, hs₁t, h_conj, h_guard₁⟩
@@ -632,12 +632,12 @@ Given witnesses s1 for φ U ψ and s2 for χ U θ, by linearity s1 ≤ s2 or s2 
 - s1 < s2: second disjunct with witness s1 (ψ(s1) ∧ χ(s1) where χ(s1) from χ U θ guard).
 - s2 < s1: third disjunct with witness s2 (φ(s2) ∧ θ(s2) where φ(s2) from φ U ψ guard). -/
 theorem linear_until_valid (φ ψ χ θ : Formula) :
-    ⊨ (Formula.and (Formula.untlQ φ ψ) (Formula.untlQ χ θ)
+    ⊨ (Formula.and (Formula.untl φ ψ) (Formula.untl χ θ)
       |>.imp (Formula.or
         (Formula.or
-          (Formula.untlQ (Formula.and φ χ) (Formula.and ψ θ))
-          (Formula.untlQ (Formula.and φ χ) (Formula.and ψ χ)))
-        (Formula.untlQ (Formula.and φ χ) (Formula.and φ θ)))) := by
+          (Formula.untl (Formula.and φ χ) (Formula.and ψ θ))
+          (Formula.untl (Formula.and φ χ) (Formula.and ψ χ)))
+        (Formula.untl (Formula.and φ χ) (Formula.and φ θ)))) := by
   intro T _ _ _ _ F M τ _h_mem t
   simp only [Formula.and, Formula.or, Formula.neg, TruthAt]
   intro h_conj
@@ -668,12 +668,12 @@ theorem linear_until_valid (φ ψ χ θ : Formula) :
     · exact h_imp (h_guard₁ r htr (lt_trans hrs h_gt)) (h_guard₂ r htr hrs)
 
 theorem linear_since_valid (φ ψ χ θ : Formula) :
-    ⊨ (Formula.and (Formula.snceQ φ ψ) (Formula.snceQ χ θ)
+    ⊨ (Formula.and (Formula.snce φ ψ) (Formula.snce χ θ)
       |>.imp (Formula.or
         (Formula.or
-          (Formula.snceQ (Formula.and φ χ) (Formula.and ψ θ))
-          (Formula.snceQ (Formula.and φ χ) (Formula.and ψ χ)))
-        (Formula.snceQ (Formula.and φ χ) (Formula.and φ θ)))) := by
+          (Formula.snce (Formula.and φ χ) (Formula.and ψ θ))
+          (Formula.snce (Formula.and φ χ) (Formula.and ψ χ)))
+        (Formula.snce (Formula.and φ χ) (Formula.and φ θ)))) := by
   intro T _ _ _ _ F M τ _h_mem t
   simp only [Formula.and, Formula.or, Formula.neg, TruthAt]
   intro h_conj
@@ -708,7 +708,7 @@ theorem linear_since_valid (φ ψ χ θ : Formula) :
 /-- BX10: Until implies eventuality: `(φ U ψ) → F(ψ)`.
 F(ψ) = ¬G(¬ψ). Under reflexive Until, witness s ≥ t gives ψ(s), so ¬∀u≥t.¬ψ(u). -/
 theorem until_F_valid (φ ψ : Formula) :
-    ⊨ ((Formula.untlQ φ ψ).imp (Formula.someFuture ψ)) := by
+    ⊨ ((Formula.untl φ ψ).imp (Formula.someFuture ψ)) := by
   intro T _ _ _ _ F M τ _h_mem t
   simp only [TruthAt, Truth.some_future_iff]
   intro ⟨s, hts, h_ψs, _⟩
@@ -717,7 +717,7 @@ theorem until_F_valid (φ ψ : Formula) :
 /-- BX10': Since implies past eventuality: `(φ S ψ) → P(ψ)`.
 P(ψ) = ¬H(¬ψ). Under reflexive Since, witness s ≤ t gives ψ(s), so ¬∀u≤t.¬ψ(u). -/
 theorem since_P_valid (φ ψ : Formula) :
-    ⊨ ((Formula.snceQ φ ψ).imp (Formula.somePast ψ)) := by
+    ⊨ ((Formula.snce φ ψ).imp (Formula.somePast ψ)) := by
   intro T _ _ _ _ F M τ _h_mem t
   simp only [TruthAt, Truth.some_past_iff]
   intro ⟨s, hst, h_ψs, _⟩
@@ -738,8 +738,8 @@ lie in (t,s). The event `bot.imp bot` is `⊤` which is always True.
 /-- Discrete symmetry forward: U(⊤,⊥) → S(⊤,⊥).
 If there is a gap (t, s) with s > t, then (t-(s-t), t) is also empty by translation. -/
 theorem discrete_symm_fwd_valid :
-    ⊨ ((Formula.untlQ Formula.bot (Formula.bot.imp Formula.bot)).imp
-      (Formula.snceQ Formula.bot (Formula.bot.imp Formula.bot))) := by
+    ⊨ ((Formula.untl Formula.bot (Formula.bot.imp Formula.bot)).imp
+      (Formula.snce Formula.bot (Formula.bot.imp Formula.bot))) := by
   intro T _ _ _ _ F M τ _h_mem t
   simp only [TruthAt]
   intro ⟨s, hts, _h_top_s, h_guard⟩
@@ -756,8 +756,8 @@ theorem discrete_symm_fwd_valid :
 /-- Discrete symmetry backward: S(⊤,⊥) → U(⊤,⊥).
 If there is a gap (r, t) with r < t, then (t, t+(t-r)) is also empty by translation. -/
 theorem discrete_symm_bwd_valid :
-    ⊨ ((Formula.snceQ Formula.bot (Formula.bot.imp Formula.bot)).imp
-      (Formula.untlQ Formula.bot (Formula.bot.imp Formula.bot))) := by
+    ⊨ ((Formula.snce Formula.bot (Formula.bot.imp Formula.bot)).imp
+      (Formula.untl Formula.bot (Formula.bot.imp Formula.bot))) := by
   intro T _ _ _ _ F M τ _h_mem t
   simp only [TruthAt]
   intro ⟨r, hrt, _h_top_r, h_guard⟩
@@ -774,8 +774,8 @@ theorem discrete_symm_bwd_valid :
 /-- Discrete propagation forward: U(⊤,⊥) → G(U(⊤,⊥)).
 If there is a gap (t, s), then for any u > t, (u, u+(s-t)) is also empty. -/
 theorem discrete_propagate_fwd_valid :
-    ⊨ ((Formula.untlQ Formula.bot (Formula.bot.imp Formula.bot)).imp
-      (Formula.allFuture (Formula.untlQ Formula.bot (Formula.bot.imp Formula.bot)))) := by
+    ⊨ ((Formula.untl Formula.bot (Formula.bot.imp Formula.bot)).imp
+      (Formula.allFuture (Formula.untl Formula.bot (Formula.bot.imp Formula.bot)))) := by
   intro T _ _ _ _ F M τ _h_mem t
   simp only [TruthAt, Truth.future_iff]
   intro ⟨s, hts, _h_top_s, h_guard⟩ u _htu
@@ -792,8 +792,8 @@ theorem discrete_propagate_fwd_valid :
 /-- Discrete propagation backward: U(⊤,⊥) → H(U(⊤,⊥)).
 If there is a gap (t, s), then for any u < t, (u, u+(s-t)) is also empty. -/
 theorem discrete_propagate_bwd_valid :
-    ⊨ ((Formula.untlQ Formula.bot (Formula.bot.imp Formula.bot)).imp
-      (Formula.allPast (Formula.untlQ Formula.bot (Formula.bot.imp Formula.bot)))) := by
+    ⊨ ((Formula.untl Formula.bot (Formula.bot.imp Formula.bot)).imp
+      (Formula.allPast (Formula.untl Formula.bot (Formula.bot.imp Formula.bot)))) := by
   intro T _ _ _ _ F M τ _h_mem t
   simp only [TruthAt, Truth.past_iff]
   intro ⟨s, hts, _h_top_s, h_guard⟩ u _hut
@@ -811,8 +811,8 @@ theorem discrete_propagate_bwd_valid :
 If there is a gap (t, s) at history τ, then for any total history σ,
 the same gap exists (truth of U(⊤,⊥) depends only on D's order, not on τ). -/
 theorem discrete_box_necessity_valid :
-    ⊨ ((Formula.untlQ Formula.bot (Formula.bot.imp Formula.bot)).imp
-      (Formula.box (Formula.untlQ Formula.bot (Formula.bot.imp Formula.bot)))) := by
+    ⊨ ((Formula.untl Formula.bot (Formula.bot.imp Formula.bot)).imp
+      (Formula.box (Formula.untl Formula.bot (Formula.bot.imp Formula.bot)))) := by
   intro T _ _ _ _ F M τ _h_mem t
   simp only [TruthAt]
   intro ⟨s, hts, _h_top_s, h_guard⟩ σ _h_σ_mem
@@ -821,13 +821,13 @@ theorem discrete_box_necessity_valid :
 /-- Prior-UZ is valid on discrete orders: F(φ) → U(φ, ¬φ).
 If φ holds at some future time, there is a nearest future time where φ holds. -/
 theorem prior_UZ_valid (φ : Formula) :
-    ValidDiscrete (φ.someFuture.imp (Formula.untlQ φ.neg φ)) := by
+    ValidDiscrete (φ.someFuture.imp (Formula.untl φ.neg φ)) := by
   intro D _ _ _ _ _ _ _ _ F M τ h_mem t
   exact SoundnessLemmas.prior_UZ_is_valid φ F M τ h_mem t
 
 /-- Prior-SZ is valid on discrete orders: P(φ) → S(φ, ¬φ).
 If φ held at some past time, there is a nearest past time where φ held. -/
-theorem prior_SZ_valid (φ : Formula) : ValidDiscrete (φ.somePast.imp (Formula.snceQ φ.neg φ)) := by
+theorem prior_SZ_valid (φ : Formula) : ValidDiscrete (φ.somePast.imp (Formula.snce φ.neg φ)) := by
   intro D _ _ _ _ _ _ _ _ F M τ h_mem t
   exact SoundnessLemmas.prior_SZ_is_valid φ F M τ h_mem t
 
@@ -1483,8 +1483,8 @@ The `DenselyOrdered` binder is present for consistency with the rest of the chai
 the mathematics needs it; see the `ValidDedekindDense` discussion above for why the weaker binder
 set is required here and must not be relaxed. -/
 theorem prior_U_gap_valid (φ : Formula) :
-    ValidDedekindDense ((Formula.and (Formula.untlQ φ Formula.top) φ.neg.someFuture).imp
-      (Formula.untlQ φ (Formula.or φ.neg (Formula.kPlus φ.neg)))) := by
+    ValidDedekindDense ((Formula.and (Formula.untl φ Formula.top) φ.neg.someFuture).imp
+      (Formula.untl φ (Formula.or φ.neg (Formula.kPlus φ.neg)))) := by
   intro D _ _ _ _ _ h_lub F M τ h_mem t h_ant
   simp only [TruthAt, Formula.and, Formula.neg, Formula.someFuture, Formula.top] at h_ant
   obtain ⟨h1, h2⟩ := and_of_not_imp_not h_ant
@@ -1532,8 +1532,8 @@ The trichotomy branches in the final step run in the mirror order to the Prior-U
 between `w` and `t`, the case `r < s` is handled by the refuting witness and `s < r` by the
 interval guard, because the `K⁻` interval now lies to the left of `s` rather than the right. -/
 theorem prior_S_gap_valid (φ : Formula) :
-    ValidDedekindDense ((Formula.and (Formula.snceQ φ Formula.top) φ.neg.somePast).imp
-      (Formula.snceQ φ (Formula.or φ.neg (Formula.kMinus φ.neg)))) := by
+    ValidDedekindDense ((Formula.and (Formula.snce φ Formula.top) φ.neg.somePast).imp
+      (Formula.snce φ (Formula.or φ.neg (Formula.kMinus φ.neg)))) := by
   intro D _ _ _ _ _ h_lub F M τ h_mem t h_ant
   simp only [TruthAt, Formula.and, Formula.neg, Formula.somePast, Formula.top] at h_ant
   obtain ⟨h1, h2⟩ := and_of_not_imp_not h_ant
@@ -1603,7 +1603,7 @@ reader comparing this proof against Reynolds §7 should expect no `S ≅ ℚ` st
 `nested_core` in its place. -/
 theorem sep_valid (φ : Formula) :
     ValidDedekindDense ((Formula.and (Formula.kPlus φ)
-        (Formula.kPlus (Formula.and φ (Formula.untlQ φ.neg φ))).neg).imp
+        (Formula.kPlus (Formula.and φ (Formula.untl φ.neg φ))).neg).imp
         (Formula.kPlus (Formula.and (Formula.kPlus φ) (Formula.kMinus φ)))) := by
   intro D _ _ _ _ _ h_lub F M τ h_mem t h_ant
   obtain ⟨Q, hQc, hQd⟩ := SoundnessLemmas.exists_countable_order_dense h_lub
@@ -1618,7 +1618,7 @@ theorem sep_valid (φ : Formula) :
     intro r htr hrv hrφ
     exact hc ⟨r, htr, hrv, hrφ⟩
   have h2' : ∃ s₁, t < s₁ ∧ (True) ∧ ∀ u, t < u → u < s₁ →
-      (TruthAt M τ u φ → TruthAt M τ u (Formula.untlQ φ.neg φ) → False) := by
+      (TruthAt M τ u φ → TruthAt M τ u (Formula.untl φ.neg φ) → False) := by
     refine Classical.byContradiction (fun hc => h2 ?_)
     intro hbad
     exact hc (by
@@ -1669,7 +1669,7 @@ past mirror with `ψ := φ.swapTemporal`, and a single `simp only` performs the 
 See `sep_valid` for the separability input and the recorded fidelity deviation from Reynolds. -/
 theorem sep_swap_valid (φ : Formula) :
     ValidDedekindDense (((Formula.and (Formula.kPlus φ)
-        (Formula.kPlus (Formula.and φ (Formula.untlQ φ.neg φ))).neg).imp
+        (Formula.kPlus (Formula.and φ (Formula.untl φ.neg φ))).neg).imp
         (Formula.kPlus (Formula.and (Formula.kPlus φ) (Formula.kMinus φ)))).swapTemporal) := by
   intro D _ _ _ _ _ h_lub F M τ h_mem t h_ant
   obtain ⟨Q, hQc, hQd⟩ := SoundnessLemmas.exists_countable_order_dense h_lub
@@ -1685,7 +1685,7 @@ theorem sep_swap_valid (φ : Formula) :
     exact hc ⟨r, hvr, hrt, hrφ⟩
   have h2' : ∃ s₁, s₁ < t ∧ (True) ∧ ∀ u, u < t → s₁ < u →
       (TruthAt M τ u φ.swapTemporal →
-        TruthAt M τ u (Formula.snceQ φ.swapTemporal.neg φ.swapTemporal) → False) := by
+        TruthAt M τ u (Formula.snce φ.swapTemporal.neg φ.swapTemporal) → False) := by
     refine Classical.byContradiction (fun hc => h2 ?_)
     intro hbad
     exact hc (by

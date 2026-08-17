@@ -409,37 +409,37 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
 
       -- discrete_symm_fwd: U(⊤,⊥) → S(⊤,⊥)
       <|> (match lhs, rhs with
-           | .untlQ .bot (.imp .bot .bot), .snceQ .bot (.imp .bot .bot) =>
+           | .untl .bot (.imp .bot .bot), .snce .bot (.imp .bot .bot) =>
                some ⟨_, Axiom.discrete_symm_fwd⟩
            | _, _ => none)
 
       -- discrete_symm_bwd: S(⊤,⊥) → U(⊤,⊥)
       <|> (match lhs, rhs with
-           | .snceQ .bot (.imp .bot .bot), .untlQ .bot (.imp .bot .bot) =>
+           | .snce .bot (.imp .bot .bot), .untl .bot (.imp .bot .bot) =>
                some ⟨_, Axiom.discrete_symm_bwd⟩
            | _, _ => none)
 
       -- discrete_propagate_fwd: U(⊤,⊥) → G(U(⊤,⊥))
       <|> (match lhs, rhs with
-           | .untlQ .bot (.imp .bot .bot), .allFuture (.untlQ .bot (.imp .bot .bot)) =>
+           | .untl .bot (.imp .bot .bot), .allFuture (.untl .bot (.imp .bot .bot)) =>
                some ⟨_, Axiom.discrete_propagate_fwd⟩
            | _, _ => none)
 
       -- discrete_propagate_bwd: U(⊤,⊥) → H(U(⊤,⊥))
       <|> (match lhs, rhs with
-           | .untlQ .bot (.imp .bot .bot), .allPast (.untlQ .bot (.imp .bot .bot)) =>
+           | .untl .bot (.imp .bot .bot), .allPast (.untl .bot (.imp .bot .bot)) =>
                some ⟨_, Axiom.discrete_propagate_bwd⟩
            | _, _ => none)
 
       -- discrete_box_necessity: U(⊤,⊥) → □(U(⊤,⊥))
       <|> (match lhs, rhs with
-           | .untlQ .bot (.imp .bot .bot), .box (.untlQ .bot (.imp .bot .bot)) =>
+           | .untl .bot (.imp .bot .bot), .box (.untl .bot (.imp .bot .bot)) =>
                some ⟨_, Axiom.discrete_box_necessity⟩
            | _, _ => none)
 
       -- dense_indicator: ¬U(⊤,⊥) = U(⊤,⊥) → ⊥
       <|> (match lhs, rhs with
-           | .untlQ .bot (.imp .bot .bot), .bot =>
+           | .untl .bot (.imp .bot .bot), .bot =>
                some ⟨_, Axiom.dense_indicator⟩
            | _, _ => none)
 
@@ -465,7 +465,7 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
 
       -- F_until_equiv (BX12): F(φ) → U(φ, ⊤)
       <|> (match lhs, rhs with
-           | .someFuture phi, .untlQ (.imp .bot .bot) phi' =>
+           | .someFuture phi, .untl (.imp .bot .bot) phi' =>
                if phi = phi' then
                  some ⟨_, Axiom.F_until_equiv phi⟩
                else none
@@ -473,7 +473,7 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
 
       -- P_since_equiv (BX12'): P(φ) → S(φ, ⊤)
       <|> (match lhs, rhs with
-           | .somePast phi, .snceQ (.imp .bot .bot) phi' =>
+           | .somePast phi, .snce (.imp .bot .bot) phi' =>
                if phi = phi' then
                  some ⟨_, Axiom.P_since_equiv phi⟩
                else none
@@ -502,7 +502,7 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
 
       -- self_accum_until (BX5): U(ψ,φ) → U(ψ, φ∧U(ψ,φ))
       <|> (match lhs, rhs with
-           | .untlQ phi psi, .untlQ (.and phi' (.untlQ phi'' psi'')) psi' =>
+           | .untl phi psi, .untl (.and phi' (.untl phi'' psi'')) psi' =>
                if phi = phi' ∧ phi' = phi'' ∧ psi = psi' ∧ psi' = psi'' then
                  some ⟨_, Axiom.self_accum_until phi psi⟩
                else none
@@ -510,7 +510,7 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
 
       -- self_accum_since (BX5'): S(ψ,φ) → S(ψ, φ∧S(ψ,φ))
       <|> (match lhs, rhs with
-           | .snceQ phi psi, .snceQ (.and phi' (.snceQ phi'' psi'')) psi' =>
+           | .snce phi psi, .snce (.and phi' (.snce phi'' psi'')) psi' =>
                if phi = phi' ∧ phi' = phi'' ∧ psi = psi' ∧ psi' = psi'' then
                  some ⟨_, Axiom.self_accum_since phi psi⟩
                else none
@@ -518,7 +518,7 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
 
       -- absorb_until (BX6): U(φ∧U(ψ,φ), φ) → U(ψ,φ)
       <|> (match lhs, rhs with
-           | .untlQ phi'' (.and phi (.untlQ phi' psi)), .untlQ phi''' psi' =>
+           | .untl phi'' (.and phi (.untl phi' psi)), .untl phi''' psi' =>
                if phi = phi' ∧ phi' = phi'' ∧ phi'' = phi''' ∧ psi = psi' then
                  some ⟨_, Axiom.absorb_until phi psi⟩
                else none
@@ -526,7 +526,7 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
 
       -- absorb_since (BX6'): S(φ∧S(ψ,φ), φ) → S(ψ,φ)
       <|> (match lhs, rhs with
-           | .snceQ phi'' (.and phi (.snceQ phi' psi)), .snceQ phi''' psi' =>
+           | .snce phi'' (.and phi (.snce phi' psi)), .snce phi''' psi' =>
                if phi = phi' ∧ phi' = phi'' ∧ phi'' = phi''' ∧ psi = psi' then
                  some ⟨_, Axiom.absorb_since phi psi⟩
                else none
@@ -534,7 +534,7 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
 
       -- until_F (BX10): U(ψ,φ) → F(ψ)
       <|> (match lhs, rhs with
-           | .untlQ _phi psi, .someFuture psi' =>
+           | .untl _phi psi, .someFuture psi' =>
                if psi = psi' then
                  some ⟨_, Axiom.until_F _phi psi⟩
                else none
@@ -542,7 +542,7 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
 
       -- since_P (BX10'): S(ψ,φ) → P(ψ)
       <|> (match lhs, rhs with
-           | .snceQ _phi psi, .somePast psi' =>
+           | .snce _phi psi, .somePast psi' =>
                if psi = psi' then
                  some ⟨_, Axiom.since_P _phi psi⟩
                else none
@@ -574,7 +574,7 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
 
       -- prior_UZ: F(φ) → U(φ, ¬φ)
       <|> (match lhs, rhs with
-           | .someFuture phi1, .untlQ (.neg phi3) phi2 =>
+           | .someFuture phi1, .untl (.neg phi3) phi2 =>
                if phi1 = phi2 ∧ phi2 = phi3 then
                  some ⟨_, Axiom.prior_UZ phi1⟩
                else none
@@ -582,7 +582,7 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
 
       -- prior_SZ: P(φ) → S(φ, ¬φ)
       <|> (match lhs, rhs with
-           | .somePast phi1, .snceQ (.neg phi3) phi2 =>
+           | .somePast phi1, .snce (.neg phi3) phi2 =>
                if phi1 = phi2 ∧ phi2 = phi3 then
                  some ⟨_, Axiom.prior_SZ phi1⟩
                else none
@@ -595,7 +595,7 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
       -- left_mono_until_G (BX2G): G(φ→χ) → (U(ψ,φ) → U(ψ,χ))
       <|> (match lhs, rhs with
            | .allFuture (.imp phi chi),
-             .imp (.untlQ phi' psi) (.untlQ chi' psi') =>
+             .imp (.untl phi' psi) (.untl chi' psi') =>
                if phi = phi' ∧ chi = chi' ∧ psi = psi' then
                  some ⟨_, Axiom.left_mono_until_G phi chi psi⟩
                else none
@@ -604,7 +604,7 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
       -- left_mono_since_H (BX2H): H(φ→χ) → (S(ψ,φ) → S(ψ,χ))
       <|> (match lhs, rhs with
            | .allPast (.imp phi chi),
-             .imp (.snceQ phi' psi) (.snceQ chi' psi') =>
+             .imp (.snce phi' psi) (.snce chi' psi') =>
                if phi = phi' ∧ chi = chi' ∧ psi = psi' then
                  some ⟨_, Axiom.left_mono_since_H phi chi psi⟩
                else none
@@ -613,7 +613,7 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
       -- right_mono_until (BX3): G(φ→ψ) → (U(φ,χ) → U(ψ,χ))
       <|> (match lhs, rhs with
            | .allFuture (.imp phi psi),
-             .imp (.untlQ chi phi') (.untlQ chi' psi') =>
+             .imp (.untl chi phi') (.untl chi' psi') =>
                if phi = phi' ∧ psi = psi' ∧ chi = chi' then
                  some ⟨_, Axiom.right_mono_until phi psi chi⟩
                else none
@@ -622,7 +622,7 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
       -- right_mono_since (BX3'): H(φ→ψ) → (S(φ,χ) → S(ψ,χ))
       <|> (match lhs, rhs with
            | .allPast (.imp phi psi),
-             .imp (.snceQ chi phi') (.snceQ chi' psi') =>
+             .imp (.snce chi phi') (.snce chi' psi') =>
                if phi = phi' ∧ psi = psi' ∧ chi = chi' then
                  some ⟨_, Axiom.right_mono_since phi psi chi⟩
                else none
@@ -630,8 +630,8 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
 
       -- enrichment_until (BX13): p∧U(ψ,φ) → U(ψ∧S(p,φ), φ)
       <|> (match lhs, rhs with
-           | .and pp (.untlQ phi psi),
-             .untlQ phi'' (.and psi' (.snceQ phi' pp')) =>
+           | .and pp (.untl phi psi),
+             .untl phi'' (.and psi' (.snce phi' pp')) =>
                if phi = phi' ∧ phi' = phi'' ∧ psi = psi' ∧ pp = pp' then
                  some ⟨_, Axiom.enrichment_until phi psi pp⟩
                else none
@@ -639,8 +639,8 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
 
       -- enrichment_since (BX13'): p∧S(ψ,φ) → S(ψ∧U(p,φ), φ)
       <|> (match lhs, rhs with
-           | .and pp (.snceQ phi psi),
-             .snceQ phi'' (.and psi' (.untlQ phi' pp')) =>
+           | .and pp (.snce phi psi),
+             .snce phi'' (.and psi' (.untl phi' pp')) =>
                if phi = phi' ∧ phi' = phi'' ∧ psi = psi' ∧ pp = pp' then
                  some ⟨_, Axiom.enrichment_since phi psi pp⟩
                else none
@@ -652,10 +652,10 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
 
       -- linear_until (BX7): U(ψ,φ)∧U(θ,χ) → U(ψ∧θ,φ∧χ) ∨ U(ψ∧χ,φ∧χ) ∨ U(φ∧θ,φ∧χ)
       <|> (match lhs, rhs with
-           | .and (.untlQ phi psi) (.untlQ chi theta),
-             .or (.or (.untlQ (.and phi' chi') (.and psi' theta'))
-                      (.untlQ (.and phi'' chi''') (.and psi'' chi'')))
-                 (.untlQ (.and phi''''' chi'''') (.and phi'''' theta'')) =>
+           | .and (.untl phi psi) (.untl chi theta),
+             .or (.or (.untl (.and phi' chi') (.and psi' theta'))
+                      (.untl (.and phi'' chi''') (.and psi'' chi'')))
+                 (.untl (.and phi''''' chi'''') (.and phi'''' theta'')) =>
                if psi = psi' ∧ psi' = psi'' ∧
                   theta = theta' ∧ theta' = theta'' ∧
                   phi = phi' ∧ phi' = phi'' ∧ phi'' = phi'''' ∧ phi'''' = phi''''' ∧
@@ -666,10 +666,10 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
 
       -- linear_since (BX7'): S(ψ,φ)∧S(θ,χ) → S(ψ∧θ,φ∧χ) ∨ S(ψ∧χ,φ∧χ) ∨ S(φ∧θ,φ∧χ)
       <|> (match lhs, rhs with
-           | .and (.snceQ phi psi) (.snceQ chi theta),
-             .or (.or (.snceQ (.and phi' chi') (.and psi' theta'))
-                      (.snceQ (.and phi'' chi''') (.and psi'' chi'')))
-                 (.snceQ (.and phi''''' chi'''') (.and phi'''' theta'')) =>
+           | .and (.snce phi psi) (.snce chi theta),
+             .or (.or (.snce (.and phi' chi') (.and psi' theta'))
+                      (.snce (.and phi'' chi''') (.and psi'' chi'')))
+                 (.snce (.and phi''''' chi'''') (.and phi'''' theta'')) =>
                if psi = psi' ∧ psi' = psi'' ∧
                   theta = theta' ∧ theta' = theta'' ∧
                   phi = phi' ∧ phi' = phi'' ∧ phi'' = phi'''' ∧ phi'''' = phi''''' ∧
@@ -844,7 +844,7 @@ def heuristicScore (weights : HeuristicWeights := {}) (Γ : Context) (φ : Formu
       match φ with
       | Formula.box _ =>
           weights.modalBase + weights.contextPenaltyWeight * Γ.length
-      | Formula.untlQ _ _ =>
+      | Formula.untl _ _ =>
           weights.temporalBase + weights.contextPenaltyWeight * Γ.length
       | _ => weights.deadEnd
     else
@@ -1017,7 +1017,7 @@ def boundedSearch (Γ : Context) (φ : Formula) (depth : Nat)
                     boundedSearch (boxContext Γ) ψ (depth - 1) cacheAfterMp visitedAfterMp
                         visitsAfterMp visitLimit weights statsAfterMp
                   (found, cache'.insert key found, visited', stats', visits')
-              | Formula.untlQ _ ψ =>
+              | Formula.untl _ ψ =>
                   let (found, cache', visited', stats', visits') :=
                     boundedSearch (futureContext Γ) ψ (depth - 1) cacheAfterMp visitedAfterMp
                         visitsAfterMp visitLimit weights statsAfterMp

@@ -430,7 +430,7 @@ These are persistent formulas that must be propagated to every known future time
 def untlNegFormulas (b : Branch) : List SignedFormula :=
   b.filter fun sf =>
     match sf.sign, sf.formula with
-    | .neg, .untlQ guard _ => guard != Formula.top
+    | .neg, .untl guard _ => guard != Formula.top
     | _, _ => false
 
 /--
@@ -441,7 +441,7 @@ These are persistent formulas that must be propagated to every known past time.
 def snceNegFormulas (b : Branch) : List SignedFormula :=
   b.filter fun sf =>
     match sf.sign, sf.formula with
-    | .neg, .snceQ guard _ => guard != Formula.top
+    | .neg, .snce guard _ => guard != Formula.top
     | _, _ => false
 
 /--
@@ -452,7 +452,7 @@ These are consumable formulas that decompose via branching.
 def untlPosFormulas (b : Branch) : List SignedFormula :=
   b.filter fun sf =>
     match sf.sign, sf.formula with
-    | .pos, .untlQ guard _ => guard != Formula.top
+    | .pos, .untl guard _ => guard != Formula.top
     | _, _ => false
 
 /--
@@ -463,7 +463,7 @@ These are consumable formulas that decompose via branching.
 def sncePosFormulas (b : Branch) : List SignedFormula :=
   b.filter fun sf =>
     match sf.sign, sf.formula with
-    | .pos, .snceQ guard _ => guard != Formula.top
+    | .pos, .snce guard _ => guard != Formula.top
     | _, _ => false
 
 /--
@@ -516,7 +516,7 @@ Used by world-creation rules to propagate Until-neg universals to fresh worlds.
 def untlNegAtTime (b : Branch) (t : TimeIndex) : List SignedFormula :=
   b.filter fun sf =>
     match sf.sign, sf.formula with
-    | .neg, .untlQ guard _ => guard != Formula.top && sf.label.time == t
+    | .neg, .untl guard _ => guard != Formula.top && sf.label.time == t
     | _, _ => false
 
 /--
@@ -527,7 +527,7 @@ Used by world-creation rules to propagate Since-neg universals to fresh worlds.
 def snceNegAtTime (b : Branch) (t : TimeIndex) : List SignedFormula :=
   b.filter fun sf =>
     match sf.sign, sf.formula with
-    | .neg, .snceQ guard _ => guard != Formula.top && sf.label.time == t
+    | .neg, .snce guard _ => guard != Formula.top && sf.label.time == t
     | _, _ => false
 
 /--
@@ -924,8 +924,8 @@ def subformulas : Formula → List Formula
   | φ@.bot => [φ]
   | φ@(.imp ψ χ) => φ :: (subformulas ψ ++ subformulas χ)
   | φ@(.box ψ) => φ :: subformulas ψ
-  | φ@(.untlQ χ ψ) => φ :: (subformulas ψ ++ subformulas χ)
-  | φ@(.snceQ χ ψ) => φ :: (subformulas ψ ++ subformulas χ)
+  | φ@(.untl χ ψ) => φ :: (subformulas ψ ++ subformulas χ)
+  | φ@(.snce χ ψ) => φ :: (subformulas ψ ++ subformulas χ)
 
 /-- Count of distinct subformulas (used for termination). -/
 def subformulaCount (φ : Formula) : Nat := (subformulas φ).eraseDups.length
@@ -982,7 +982,7 @@ theorem subformulas_trans {chi psi phi : Formula}
     · simp only [subformulas, List.mem_cons]
       right
       exact iha h2
-  | untlQ b a ihb iha =>
+  | untl b a ihb iha =>
     simp only [subformulas, List.mem_cons, List.mem_append] at h2
     rcases h2 with rfl | ha | hb
     · exact h1
@@ -992,7 +992,7 @@ theorem subformulas_trans {chi psi phi : Formula}
     · simp only [subformulas, List.mem_cons, List.mem_append]
       right; right
       exact ihb hb
-  | snceQ b a ihb iha =>
+  | snce b a ihb iha =>
     simp only [subformulas, List.mem_cons, List.mem_append] at h2
     rcases h2 with rfl | ha | hb
     · exact h1
@@ -1039,8 +1039,8 @@ def unexpandedComplexity (sf : SignedFormula) : Nat :=
   | .bot => 0
   | .imp _ _ => sf.formula.complexity
   | .box _ => sf.formula.complexity
-  | .untlQ _ _ => sf.formula.complexity
-  | .snceQ _ _ => sf.formula.complexity
+  | .untl _ _ => sf.formula.complexity
+  | .snce _ _ => sf.formula.complexity
 
 /--
 Total unexpanded complexity of a branch.

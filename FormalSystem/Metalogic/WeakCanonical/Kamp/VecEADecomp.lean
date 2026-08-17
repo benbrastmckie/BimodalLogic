@@ -477,7 +477,7 @@ noncomputable def sinceWitnessPred {sig : MonadicSignature} [Fintype sig.preds]
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (pointNf witNf : NormalForm sig 0 1) : TemporalPred :=
   ⟨Formula.and (nfPred atomMap h_surj pointNf).formula
-    (Formula.snceQ Formula.top (nfPred atomMap h_surj witNf).formula)⟩
+    (Formula.snce Formula.top (nfPred atomMap h_surj witNf).formula)⟩
 
 /-- Correctness of sinceWitnessPred: evaluates to pred(z) ∧ ∃ y < z, wit(y). -/
 theorem sinceWitnessPred_correct {sig : MonadicSignature} [Fintype sig.preds]
@@ -510,7 +510,7 @@ noncomputable def untilWitnessPred {sig : MonadicSignature} [Fintype sig.preds]
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (pointNf witNf : NormalForm sig 0 1) : TemporalPred :=
   ⟨Formula.and (nfPred atomMap h_surj pointNf).formula
-    (Formula.untlQ Formula.top (nfPred atomMap h_surj witNf).formula)⟩
+    (Formula.untl Formula.top (nfPred atomMap h_surj witNf).formula)⟩
 
 /-- Correctness of untilWitnessPred: evaluates to pred(z) ∧ ∃ y > z, wit(y). -/
 theorem untilWitnessPred_correct {sig : MonadicSignature} [Fintype sig.preds]

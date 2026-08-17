@@ -177,8 +177,8 @@ lemma neg_FF_implies_GG_neg_in_mcs (M : Set Formula)
       FormalSystem.ProofSystem.DerivationTree.temporal_necessitation _ h_dne2_base
     have h_dne2_bx3 : [] ⊢ ((Formula.someFuture phi.neg.neg).neg.neg.imp
         (Formula.someFuture phi.neg.neg)).allFuture.imp
-        ((Formula.untlQ Formula.top (Formula.someFuture phi.neg.neg).neg.neg).imp
-         (Formula.untlQ Formula.top (Formula.someFuture phi.neg.neg))) :=
+        ((Formula.untl Formula.top (Formula.someFuture phi.neg.neg).neg.neg).imp
+         (Formula.untl Formula.top (Formula.someFuture phi.neg.neg))) :=
       FormalSystem.ProofSystem.DerivationTree.axiom [] _
         (FormalSystem.ProofSystem.Axiom.right_mono_until
           (Formula.someFuture phi.neg.neg).neg.neg
@@ -195,7 +195,7 @@ lemma neg_FF_implies_GG_neg_in_mcs (M : Set Formula)
     have h_dne3_nec : [] ⊢ (phi.neg.neg.imp phi).allFuture :=
       FormalSystem.ProofSystem.DerivationTree.temporal_necessitation _ h_dne3_base
     have h_dne3_bx3 : [] ⊢ (phi.neg.neg.imp phi).allFuture.imp
-        ((Formula.untlQ Formula.top phi.neg.neg).imp (Formula.untlQ Formula.top phi)) :=
+        ((Formula.untl Formula.top phi.neg.neg).imp (Formula.untl Formula.top phi)) :=
       FormalSystem.ProofSystem.DerivationTree.axiom [] _
         (FormalSystem.ProofSystem.Axiom.right_mono_until phi.neg.neg phi Formula.top) trivial
     have h_F_dne3 : [] ⊢ (Formula.someFuture phi.neg.neg).imp (Formula.someFuture phi) :=
@@ -206,8 +206,8 @@ lemma neg_FF_implies_GG_neg_in_mcs (M : Set Formula)
       FormalSystem.ProofSystem.DerivationTree.temporal_necessitation _ h_F_dne3
     have h_lift_bx3 : [] ⊢ ((Formula.someFuture phi.neg.neg).imp
         (Formula.someFuture phi)).allFuture.imp
-        ((Formula.untlQ Formula.top (Formula.someFuture phi.neg.neg)).imp
-         (Formula.untlQ Formula.top (Formula.someFuture phi))) :=
+        ((Formula.untl Formula.top (Formula.someFuture phi.neg.neg)).imp
+         (Formula.untl Formula.top (Formula.someFuture phi))) :=
       FormalSystem.ProofSystem.DerivationTree.axiom [] _
         (FormalSystem.ProofSystem.Axiom.right_mono_until
           (Formula.someFuture phi.neg.neg) (Formula.someFuture phi) Formula.top) trivial
@@ -340,8 +340,8 @@ lemma neg_PP_implies_HH_neg_in_mcs (M : Set Formula)
       FormalSystem.Theorems.pastNecessitation _ h_dne2_base
     have h_dne2_bx3 : [] ⊢ ((Formula.somePast phi.neg.neg).neg.neg.imp
         (Formula.somePast phi.neg.neg)).allPast.imp
-        ((Formula.snceQ Formula.top (Formula.somePast phi.neg.neg).neg.neg).imp
-         (Formula.snceQ Formula.top (Formula.somePast phi.neg.neg))) :=
+        ((Formula.snce Formula.top (Formula.somePast phi.neg.neg).neg.neg).imp
+         (Formula.snce Formula.top (Formula.somePast phi.neg.neg))) :=
       FormalSystem.ProofSystem.DerivationTree.axiom [] _
         (FormalSystem.ProofSystem.Axiom.right_mono_since
           (Formula.somePast phi.neg.neg).neg.neg
@@ -357,7 +357,7 @@ lemma neg_PP_implies_HH_neg_in_mcs (M : Set Formula)
     have h_dne3_nec : [] ⊢ (phi.neg.neg.imp phi).allPast :=
       FormalSystem.Theorems.pastNecessitation _ h_dne3_base
     have h_dne3_bx3 : [] ⊢ (phi.neg.neg.imp phi).allPast.imp
-        ((Formula.snceQ Formula.top phi.neg.neg).imp (Formula.snceQ Formula.top phi)) :=
+        ((Formula.snce Formula.top phi.neg.neg).imp (Formula.snce Formula.top phi)) :=
       FormalSystem.ProofSystem.DerivationTree.axiom [] _
         (FormalSystem.ProofSystem.Axiom.right_mono_since phi.neg.neg phi Formula.top) trivial
     have h_P_dne3 : [] ⊢ (Formula.somePast phi.neg.neg).imp (Formula.somePast phi) :=
@@ -367,8 +367,8 @@ lemma neg_PP_implies_HH_neg_in_mcs (M : Set Formula)
       FormalSystem.Theorems.pastNecessitation _ h_P_dne3
     have h_lift_bx3 : [] ⊢ ((Formula.somePast phi.neg.neg).imp
         (Formula.somePast phi)).allPast.imp
-        ((Formula.snceQ Formula.top (Formula.somePast phi.neg.neg)).imp
-         (Formula.snceQ Formula.top (Formula.somePast phi))) :=
+        ((Formula.snce Formula.top (Formula.somePast phi.neg.neg)).imp
+         (Formula.snce Formula.top (Formula.somePast phi))) :=
       FormalSystem.ProofSystem.DerivationTree.axiom [] _
         (FormalSystem.ProofSystem.Axiom.right_mono_since
           (Formula.somePast phi.neg.neg) (Formula.somePast phi) Formula.top) trivial

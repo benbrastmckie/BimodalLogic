@@ -61,7 +61,7 @@ noncomputable def bracketBuildRight :
     let shifted : BracketFormula n :=
       { pointTypes := fun i => bf.pointTypes ⟨i.val + 1, Nat.succ_lt_succ i.isLt⟩
         segmentTypes := fun i => bf.segmentTypes ⟨i.val + 1, Nat.succ_lt_succ i.isLt⟩ }
-    Formula.untlQ
+    Formula.untl
       (bf.segmentTypes ⟨0, by omega⟩).formula
       (Formula.and (bf.pointTypes ⟨0, by omega⟩).formula
         (bracketBuildRight shifted endRight))
@@ -285,7 +285,7 @@ noncomputable def bracketBuildLeft :
     let shifted : BracketFormula n :=
       { pointTypes := fun i => bf.pointTypes ⟨i.val, by omega⟩
         segmentTypes := fun i => bf.segmentTypes ⟨i.val, by omega⟩ }
-    Formula.snceQ
+    Formula.snce
       (bf.segmentTypes ⟨n + 1, by omega⟩).formula
       (Formula.and (bf.pointTypes ⟨n, by omega⟩).formula
         (bracketBuildLeft shifted endLeft))
@@ -321,7 +321,7 @@ theorem bracketBuildLeft_zero_eq (bf : BracketFormula 0) (endLeft : TemporalPred
 theorem bracketBuildLeft_succ_eq {n : Nat} (bf : BracketFormula (n + 1))
     (endLeft : TemporalPred) :
     bracketBuildLeft bf endLeft =
-      Formula.snceQ
+      Formula.snce
         (bf.segmentTypes ⟨n + 1, by omega⟩).formula
         (Formula.and (bf.pointTypes ⟨n, by omega⟩).formula
           (bracketBuildLeft

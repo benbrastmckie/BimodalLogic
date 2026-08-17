@@ -911,23 +911,71 @@ across 74 JSONL lines. Confirm the regenerated line count matches the baseline's
 
 ---
 
-### Phase 10: Rename Back and Final Verification Build [NOT STARTED]
+### Phase 10: Rename Back and Final Verification Build [COMPLETED]
 
 **Goal**: Restore the constructor names. This step is provably meaning-preserving — a lexical
 rename with no possible collision, since zero `untl`/`snce` tokens exist at this point.
 
 **Tasks**:
-- [ ] Run `scripts/swap_untl_snce.py --rename-back` over live scope: `untlQ`→`untl`,
-      `snceQ`→`snce`, **identifier-boundary anchored**, with no argument movement (D5).
-- [ ] Confirm `grep -c 'untlQ\|snceQ'` over live scope returns 0.
-- [ ] Confirm `untlGuards`, `snceGuards`, `untlGuard`, `snceGuard` are present and unmodified in
+- [x] Run `scripts/swap_untl_snce.py --rename-back untlQ,snceQ` over live scope,
+      identifier-boundary anchored, no argument movement. *(140 files changed)*
+- [x] Confirm zero `untlQ`/`snceQ` over live scope. *(0 occurrences)*
+- [x] Confirm `untlGuards`, `snceGuards`, `untlGuard`, `snceGuard` present and unmodified in
       `Metalogic/Decidability/Verified/Bridge/` — the D5 corruption check.
-- [ ] Run the **final full `lake build`** to green.
-- [ ] Regenerate the per-file `sorry` table and re-confirm a zero delta against baseline.
-- [ ] Re-run the Phase 9 Gate A byte-diff after the rename-back (the JSON is role-keyed, so
-      renaming the constructor changes the `"tag"` value back to `"untl"`/`"snce"` — the diff must
-      be empty against the original baseline, not against the Phase 9 output).
-- [ ] Commit.
+      *(20 occurrences: `untlGuards` 7, `untlGuard` 4, `snceGuards` 6, `snceGuard` 3 — all intact)*
+- [x] Run the **final full `lake build`** to green. *(2,457 jobs)*
+- [x] Regenerate the per-file `sorry` table and re-confirm a zero delta against baseline.
+- [x] Re-run the Phase 9 Gate A byte-diff after the rename-back, against the **original** baseline.
+- [x] Commit.
+
+**The rename-back file set matches the migration file set exactly.** Phase 3 changed 6 files and
+Phase 4 changed 134; the rename-back changed 140. Both directions of the symmetric difference are
+**empty** — no file was renamed forward without being renamed back, and none the other way.
+
+**The syntactic form census is identical before and after the whole migration**, which is the
+strongest closure invariant available for a pure argument reorder. Re-running the classifier over
+the finished tree gives, form for form:
+
+```
+anon-dot=432  arm-2=275  arm-4=109  bare-app=26  bare-ref=2  ctor-decl=4
+lemma-ref=7   no-arg=2   qualified=1627  receiver-dot=57   (+ embedded=400, foreign=32 skips)
+constructor references = 2,541
+```
+
+— byte-for-byte the Phase 2 pre-migration breakdown. Nothing was created, destroyed, or
+reclassified; only argument order moved.
+
+**Ledger regex reads 3,709 against the baseline's 3,711 (−2), fully accounted for**, three files
+and no others:
+
+| File | Before | After | Cause |
+|---|---|---|---|
+| `Automation/Normalization.lean` | 128 | 122 | −6: six `φ.untl bot` sites became `bot.untl φ`. The ledger pattern's `(?<![A-Za-z0-9_.])` lookbehind is ASCII-only, so it sees `φ.untl` but not `bot.untl` — the same 8-site blind spot enumerated in Phase 2, now 14 sites. |
+| `Semantics/Truth.lean` | 16 | 17 | +1: the replacement docstring names the constructors; the ledger counts comment occurrences. |
+| `Syntax/Formula.lean` | 110 | 113 | +3: likewise, the two replacement constructor docstrings. |
+
+Net −6 + 4 = −2. The classifier count (2,541, unchanged) is the authoritative measure; the ledger
+regex is a lossy proxy whose absolute value depends on which side of the dot each receiver sits.
+
+**Axiom count unchanged**: 7 `axiom` declarations in live scope before, 7 after.
+
+**Gate A and Gate B re-run post-rename-back against the original baseline**: 74 lines, **0 Gate A
+diffs**, **0 Gate B diffs** across 66 string fields. Whole-file `diff` reports exactly the one
+metadata line, differing only in `stamp_commit`/`stamp_date`. The regenerated appendix's tag set is
+`['atom','bot','box','imp','snce','untl']` — the tags are string literals in the printer, so they
+never moved during the `untlQ` window either.
+
+**Final spot-check of the definitional sites**, post-rename-back:
+
+```lean
+someFuture φ = Formula.untl Formula.top φ          -- ⊤ U φ
+somePast   φ = Formula.snce Formula.top φ          -- ⊤ S φ
+next       φ = Formula.untl Formula.bot φ          -- ⊥ U φ
+prev       φ = Formula.snce Formula.bot φ          -- ⊥ S φ
+kPlus      φ = (Formula.untl φ.neg Formula.top).neg   -- ¬(¬φ U ⊤), Reynolds' K⁺
+dense_indicator : Axiom (Formula.untl Formula.bot (Formula.bot.imp Formula.bot)).neg  -- ¬(⊥ U ⊤)
+| Formula.untl ψ φ => ∃ s, t < s ∧ TruthAt M τ s φ ∧ ∀ r, t < r → r < s → TruthAt M τ r ψ
+```
 
 **Timing**: 1.5 hours plus a 60-90 minute build cycle
 
@@ -937,16 +985,22 @@ rename with no possible collision, since zero `untl`/`snce` tokens exist at this
 
 **Scope Hypothesis**: the rename-back touches exactly the same file set as Phases 3-8 combined
 (~152 live files). Confirm by diffing the rename-back log's file list against the Phase 4
-rewrite log plus the Phase 3 file list; a file appearing in one and not the other is a defect.
+rewrite log plus the Phase 3 file list.
+
+**Scope Hypothesis outcome**: confirmed, at 140 rather than ~152 — the ~152 figure counted files
+whose only occurrences are in comments or are `embedded`/`foreign` skips. Symmetric difference
+against Phase 3 + Phase 4 is empty in both directions.
 
 **Files to modify**:
-- All ~152 live files carrying constructor references
+- 140 live files carrying constructor references; `typst/generated/machine-appendix.{jsonl,typ}`
 
 **Verification**:
-- Zero `untlQ`/`snceQ` tokens in live scope.
-- `untlGuards`/`snceGuards` intact.
-- Full `lake build` green; per-file `sorry` delta zero.
-- Gate A byte-diff against the original baseline empty.
+- [x] Zero `untlQ`/`snceQ` tokens in live scope.
+- [x] `untlGuards`/`snceGuards`/`untlGuard`/`snceGuard` intact (20 occurrences).
+- [x] Full `lake build` green (2,457 jobs); per-file `sorry` delta zero across all 424 files;
+  axiom declarations unchanged at 7.
+- [x] Gate A byte-diff against the original baseline empty; Gate B likewise.
+- [x] `lake build BimodalTest`: the same 7 pre-existing pinned-stale failures, zero new.
 
 ---
 

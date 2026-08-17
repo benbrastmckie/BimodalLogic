@@ -37,7 +37,7 @@ The F operator is `someFuture φ = φ.neg.allFuture.neg`
   = `Formula.imp (Formula.allFuture (Formula.imp φ Formula.bot)) Formula.bot`
 -/
 def fNestingDepth : Formula → Nat
-  | .untlQ (.imp .bot .bot) inner => 1 + fNestingDepth inner
+  | .untl (.imp .bot .bot) inner => 1 + fNestingDepth inner
   | _ => 0
 
 /-- fNestingDepth is always non-negative (trivially true for Nat). -/
@@ -45,7 +45,7 @@ theorem f_nesting_depth_nonneg (phi : Formula) : fNestingDepth phi ≥ 0 := Nat.
 
 /-- The someFuture (F) operator unfolds to untl. -/
 theorem some_future_unfold (psi : Formula) :
-    Formula.someFuture psi = Formula.untlQ Formula.top psi := by
+    Formula.someFuture psi = Formula.untl Formula.top psi := by
   rfl
 
 /-- F-nesting depth of F(psi) is 1 + depth of psi. -/
@@ -121,7 +121,7 @@ The P operator is `somePast φ = φ.neg.allPast.neg`
   = `Formula.imp (Formula.allPast (Formula.imp φ Formula.bot)) Formula.bot`
 -/
 def pNestingDepth : Formula → Nat
-  | .snceQ (.imp .bot .bot) inner => 1 + pNestingDepth inner
+  | .snce (.imp .bot .bot) inner => 1 + pNestingDepth inner
   | _ => 0
 
 /-- pNestingDepth is always non-negative (trivially true for Nat). -/
@@ -129,7 +129,7 @@ theorem p_nesting_depth_nonneg (phi : Formula) : pNestingDepth phi ≥ 0 := Nat.
 
 /-- The somePast (P) operator unfolds to snce. -/
 theorem some_past_unfold (psi : Formula) :
-    Formula.somePast psi = Formula.snceQ Formula.top psi := by
+    Formula.somePast psi = Formula.snce Formula.top psi := by
   rfl
 
 /-- P-nesting depth of P(psi) is 1 + depth of psi. -/
@@ -198,7 +198,7 @@ F(chi) = chi.neg.allFuture.neg
        = Formula.imp (Formula.allFuture (Formula.imp chi Formula.bot)) Formula.bot
 -/
 def extractFutureInner : Formula → Option Formula
-  | .untlQ (.imp .bot .bot) inner => some inner
+  | .untl (.imp .bot .bot) inner => some inner
   | _ => none
 
 /--
@@ -207,7 +207,7 @@ Extract the inner formula chi from P(chi) = somePast chi.
 P(chi) = Formula.snce chi Formula.top = Formula.snce chi (Formula.bot.imp Formula.bot)
 -/
 def extractPastInner : Formula → Option Formula
-  | .snceQ (.imp .bot .bot) inner => some inner
+  | .snce (.imp .bot .bot) inner => some inner
   | _ => none
 
 /-- extractFutureInner correctly extracts from someFuture. -/

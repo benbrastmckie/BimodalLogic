@@ -288,7 +288,7 @@ theorem until_bot_iff_succ {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig)
     [SuccOrder M.carrier] [NoMaxOrder M.carrier]
     (atomMap : Formula → sig.preds) (t : M.carrier) (B : Formula) :
-    TemporalTruth M atomMap t (.untlQ .bot B) ↔
+    TemporalTruth M atomMap t (.untl .bot B) ↔
     TemporalTruth M atomMap (Order.succ t) B := by
   simp only [TemporalTruth]
   constructor
@@ -312,7 +312,7 @@ theorem since_bot_iff_pred {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig)
     [PredOrder M.carrier] [NoMinOrder M.carrier]
     (atomMap : Formula → sig.preds) (t : M.carrier) (B : Formula) :
-    TemporalTruth M atomMap t (.snceQ .bot B) ↔
+    TemporalTruth M atomMap t (.snce .bot B) ↔
     TemporalTruth M atomMap (Order.pred t) B := by
   simp only [TemporalTruth]
   constructor
@@ -453,8 +453,8 @@ noncomputable def flattenStavi : StaviFormula → Formula
   | .stavi_snce _A _B =>
     -- S'(A,B) is always false on discrete orders, so flatten to ⊥
     Formula.bot
-  | .std_untl A B => Formula.untlQ (flattenStavi B) (flattenStavi A)
-  | .std_snce A B => Formula.snceQ (flattenStavi B) (flattenStavi A)
+  | .std_untl A B => Formula.untl (flattenStavi B) (flattenStavi A)
+  | .std_snce A B => Formula.snce (flattenStavi B) (flattenStavi A)
 
 /-! ## Helper Lemmas: TemporalTruth of derived operators -/
 

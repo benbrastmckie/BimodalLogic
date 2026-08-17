@@ -60,9 +60,9 @@ theorem bot_not_mem_predFormulas (φ : Formula) : Formula.bot ∉ φ.predFormula
     simp only [Formula.predFormulas, Finset.mem_union]; push Not; exact ⟨ih1, ih2⟩
   | box _ ih => simp only [Formula.predFormulas, Finset.singleton_union, Finset.mem_insert,
       reduceCtorEq, false_or]; exact ih
-  | untlQ _ _ ih2 ih1 =>
+  | untl _ _ ih2 ih1 =>
     simp only [Formula.predFormulas, Finset.mem_union]; push Not; exact ⟨ih1, ih2⟩
-  | snceQ _ _ ih2 ih1 =>
+  | snce _ _ ih2 ih1 =>
     simp only [Formula.predFormulas, Finset.mem_union]; push Not; exact ⟨ih1, ih2⟩
 
 /--
@@ -99,13 +99,13 @@ theorem predFormulas_trans (φ : Formula) :
       · exact Or.inr hg
     · -- f ∈ ψ.predFormulas
       exact Or.inr (ih f hf g hg)
-  | untlQ β α ihβ ihα =>
+  | untl β α ihβ ihα =>
     intro f hf g hg
     simp only [Formula.predFormulas, Finset.mem_union] at hf ⊢
     rcases hf with hf | hf
     · exact Or.inl (ihα f hf g hg)
     · exact Or.inr (ihβ f hf g hg)
-  | snceQ β α ihβ ihα =>
+  | snce β α ihβ ihα =>
     intro f hf g hg
     simp only [Formula.predFormulas, Finset.mem_union] at hf ⊢
     rcases hf with hf | hf
@@ -473,7 +473,7 @@ theorem chronicle_temporal_truth {fc : FrameClass} (M : ChronicleAsPriorModel fc
       have h_eq := h_section (.box φ) (Or.inl rfl)
       rw [h_eq]
       exact h
-  | untlQ φ₂ φ₁ ih₂ ih₁ =>
+  | untl φ₂ φ₁ ih₂ ih₁ =>
     intro t h_section
     simp only [TemporalTruth, Formula.predFormulas] at *
     have h_sec1 : ∀ f ∈ φ₁.predFormulas, atomMap_rev (atomMap_fwd f) = f :=
@@ -486,8 +486,8 @@ theorem chronicle_temporal_truth {fc : FrameClass} (M : ChronicleAsPriorModel fc
       intro ⟨s, hts, h_tt_φ₁, h_guard_tt⟩
       by_contra h_not_until
       have h_mcs_t := M.fmcs_is_mcs t
-      have h_neg_until : (Formula.untlQ φ₂ φ₁).neg ∈ M.fmcs t :=
-        (SetMaximalConsistent.negation_complete h_mcs_t (Formula.untlQ φ₂ φ₁)).resolve_left
+      have h_neg_until : (Formula.untl φ₂ φ₁).neg ∈ M.fmcs t :=
+        (SetMaximalConsistent.negation_complete h_mcs_t (Formula.untl φ₂ φ₁)).resolve_left
           h_not_until
       have hφ₁s : φ₁ ∈ M.fmcs s := (ih₁ s h_sec1).mp h_tt_φ₁
       obtain ⟨z, htz, hzs, h_neg_φ₂⟩ :=
@@ -500,7 +500,7 @@ theorem chronicle_temporal_truth {fc : FrameClass} (M : ChronicleAsPriorModel fc
       obtain ⟨s, hts, hφ₁s, h_guard⟩ := M.until_coherent_fwd t φ₁ φ₂ h_until
       refine ⟨s, hts, (ih₁ s h_sec1).mpr hφ₁s, fun r htr hrs =>
         (ih₂ r h_sec2).mpr (h_guard r htr hrs)⟩
-  | snceQ φ₂ φ₁ ih₂ ih₁ =>
+  | snce φ₂ φ₁ ih₂ ih₁ =>
     intro t h_section
     simp only [TemporalTruth, Formula.predFormulas] at *
     have h_sec1 : ∀ f ∈ φ₁.predFormulas, atomMap_rev (atomMap_fwd f) = f :=
@@ -513,8 +513,8 @@ theorem chronicle_temporal_truth {fc : FrameClass} (M : ChronicleAsPriorModel fc
       intro ⟨s, hst, h_tt_φ₁, h_guard_tt⟩
       by_contra h_not_since
       have h_mcs_t := M.fmcs_is_mcs t
-      have h_neg_since : (Formula.snceQ φ₂ φ₁).neg ∈ M.fmcs t :=
-        (SetMaximalConsistent.negation_complete h_mcs_t (Formula.snceQ φ₂ φ₁)).resolve_left
+      have h_neg_since : (Formula.snce φ₂ φ₁).neg ∈ M.fmcs t :=
+        (SetMaximalConsistent.negation_complete h_mcs_t (Formula.snce φ₂ φ₁)).resolve_left
           h_not_since
       have hφ₁s : φ₁ ∈ M.fmcs s := (ih₁ s h_sec1).mp h_tt_φ₁
       obtain ⟨z, hsz, hzt, h_neg_φ₂⟩ :=
@@ -852,9 +852,9 @@ def effectiveFormula {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq s
   | .imp φ ψ => .imp (effectiveFormula atomMap_rev atomMap_fwd φ)
       (effectiveFormula atomMap_rev atomMap_fwd ψ)
   | .box φ => atomMap_rev (atomMap_fwd (.box φ))
-  | .untlQ ψ φ => .untlQ (effectiveFormula atomMap_rev atomMap_fwd ψ)
+  | .untl ψ φ => .untl (effectiveFormula atomMap_rev atomMap_fwd ψ)
       (effectiveFormula atomMap_rev atomMap_fwd φ)
-  | .snceQ ψ φ => .snceQ (effectiveFormula atomMap_rev atomMap_fwd ψ)
+  | .snce ψ φ => .snce (effectiveFormula atomMap_rev atomMap_fwd ψ)
       (effectiveFormula atomMap_rev atomMap_fwd φ)
 
 /--
@@ -895,7 +895,7 @@ theorem chronicle_temporal_truth_effective {fc : FrameClass}
     change (chronicleAsMonadicStructure M sig atomMap_rev).interp (atomMap_fwd (.box φ)) t ↔
         atomMap_rev (atomMap_fwd (.box φ)) ∈ M.fmcs t
     simp only [chronicleAsMonadicStructure]
-  | untlQ φ₂ φ₁ ih₂ ih₁ =>
+  | untl φ₂ φ₁ ih₂ ih₁ =>
     intro t
     simp only [TemporalTruth, effectiveFormula]
     constructor
@@ -908,7 +908,7 @@ theorem chronicle_temporal_truth_effective {fc : FrameClass}
       -- any future s with eff φ₁ ∈ fmcs(s), there exists r ∈ (t,s) with ¬(eff φ₂) ∈ fmcs(r).
       -- But eff φ₂ ∈ fmcs(r) for all such r, contradiction.
       by_contra h_neg
-      have h_neg_until : (Formula.untlQ (effectiveFormula atomMap_rev atomMap_fwd φ₂)
+      have h_neg_until : (Formula.untl (effectiveFormula atomMap_rev atomMap_fwd φ₂)
           (effectiveFormula atomMap_rev atomMap_fwd φ₁)).neg ∈ M.fmcs t := by
         exact (SetMaximalConsistent.negation_complete (M.fmcs_is_mcs t) _).resolve_left h_neg
       obtain ⟨z, htz, hzs, h_neg_guard⟩ := M.neg_until_coherent t s hts _ _ h_neg_until h₁
@@ -919,7 +919,7 @@ theorem chronicle_temporal_truth_effective {fc : FrameClass}
       intro h_until
       obtain ⟨s, hts, h_phi1, h_guard⟩ := M.until_coherent_fwd t _ _ h_until
       exact ⟨s, hts, (ih₁ s).mpr h_phi1, fun r htr hrs => (ih₂ r).mpr (h_guard r htr hrs)⟩
-  | snceQ φ₂ φ₁ ih₂ ih₁ =>
+  | snce φ₂ φ₁ ih₂ ih₁ =>
     intro t
     simp only [TemporalTruth, effectiveFormula]
     constructor
@@ -929,7 +929,7 @@ theorem chronicle_temporal_truth_effective {fc : FrameClass}
       have h₂ : ∀ r, s < r → r < t → effectiveFormula atomMap_rev atomMap_fwd φ₂ ∈ M.fmcs r :=
         fun r hsr hrt => (ih₂ r).mp (h_guard r hsr hrt)
       by_contra h_neg
-      have h_neg_since : (Formula.snceQ (effectiveFormula atomMap_rev atomMap_fwd φ₂)
+      have h_neg_since : (Formula.snce (effectiveFormula atomMap_rev atomMap_fwd φ₂)
           (effectiveFormula atomMap_rev atomMap_fwd φ₁)).neg ∈ M.fmcs t := by
         exact (SetMaximalConsistent.negation_complete (M.fmcs_is_mcs t) _).resolve_left h_neg
       obtain ⟨z, hsz, hzt, h_neg_guard⟩ := M.neg_since_coherent t s hst _ _ h_neg_since h₁
@@ -982,7 +982,7 @@ theorem chronicle_semantic_prior_UZ {fc : FrameClass}
   -- Step 3: Apply MCS-level Prior-UZ: F(eff_ψ) → U(eff_ψ, ¬eff_ψ) ∈ fmcs(t)
   have h_prior := M.prior_UZ_valid t eff_ψ
   -- prior_UZ_valid gives: (F(eff_ψ) → U(eff_ψ, ¬eff_ψ)) ∈ fmcs(t)
-  have h_until : Formula.untlQ eff_ψ.neg eff_ψ ∈ M.fmcs t :=
+  have h_until : Formula.untl eff_ψ.neg eff_ψ ∈ M.fmcs t :=
     (FormalSystem.Metalogic.BXCanonical.imp_iff_mcs (M.fmcs_is_mcs t) _ _).mp h_prior h_F_eff
   -- Step 4: C5 forward: U(eff_ψ, ¬eff_ψ) ∈ fmcs(t) → ∃s' > t, eff_ψ ∈ fmcs(s') ∧ guard
   obtain ⟨s', hts', h_eff_s', h_guard⟩ := M.until_coherent_fwd t eff_ψ eff_ψ.neg h_until
@@ -1031,7 +1031,7 @@ theorem chronicle_semantic_prior_SZ {fc : FrameClass}
     exact absurd h_bot (FormalSystem.Metalogic.BXCanonical.bot_not_in_mcs (M.fmcs_is_mcs z))
   -- Step 3: Apply MCS-level Prior-SZ
   have h_prior := M.prior_SZ_valid t eff_ψ
-  have h_since : Formula.snceQ eff_ψ.neg eff_ψ ∈ M.fmcs t :=
+  have h_since : Formula.snce eff_ψ.neg eff_ψ ∈ M.fmcs t :=
     (FormalSystem.Metalogic.BXCanonical.imp_iff_mcs (M.fmcs_is_mcs t) _ _).mp h_prior h_P_eff
   -- Step 4: C5 forward for Since
   obtain ⟨s', hst', h_eff_s', h_guard⟩ := M.since_coherent_fwd t eff_ψ eff_ψ.neg h_since

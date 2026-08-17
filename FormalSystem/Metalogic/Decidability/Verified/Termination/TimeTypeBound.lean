@@ -229,17 +229,17 @@ discussion in `SubformulaProperty.lean`.
 -/
 def conjEmissions (a b : Formula) : Finset Formula :=
   match a with
-  | .untlQ g e =>
+  | .untl g e =>
       if e = Formula.top ∧ b = Formula.someFuture g.neg then
-        {Formula.untlQ g (Formula.or g.neg (Formula.kPlus g.neg))}
+        {Formula.untl g (Formula.or g.neg (Formula.kPlus g.neg))}
       else ∅
-  | .snceQ g e =>
+  | .snce g e =>
       if e = Formula.top ∧ b = Formula.somePast g.neg then
-        {Formula.snceQ g (Formula.or g.neg (Formula.kMinus g.neg))}
+        {Formula.snce g (Formula.or g.neg (Formula.kMinus g.neg))}
       else ∅
-  | .imp (.untlQ (.imp ψ .bot) e) .bot =>
+  | .imp (.untl (.imp ψ .bot) e) .bot =>
       if e = Formula.top ∧
-          b = Formula.neg (Formula.kPlus (Formula.and ψ (Formula.untlQ ψ.neg ψ))) then
+          b = Formula.neg (Formula.kPlus (Formula.and ψ (Formula.untl ψ.neg ψ))) then
         {Formula.kPlus (Formula.and (Formula.kPlus ψ) (Formula.kMinus ψ))}
       else ∅
   | _ => ∅
@@ -256,8 +256,8 @@ def emissions (φ : Formula) : Finset Formula :=
   subformulasFinset φ
     ∪ (match φ with
        | .box ψ => {ψ.allFuture, ψ.allPast}
-       | .untlQ χ ψ => if χ = Formula.top then {Formula.untlQ ψ.neg ψ} else ∅
-       | .snceQ χ ψ => if χ = Formula.top then {Formula.snceQ ψ.neg ψ} else ∅
+       | .untl χ ψ => if χ = Formula.top then {Formula.untl ψ.neg ψ} else ∅
+       | .snce χ ψ => if χ = Formula.top then {Formula.snce ψ.neg ψ} else ∅
        | _ => ∅)
     ∪ (match asAnd? φ with
        | some (a, b) => conjEmissions a b
@@ -370,7 +370,7 @@ private def stabilisesAt (φ : Formula) (fuel : Nat) : Option (Nat × Nat) :=
 /-- info: some (3, 20) -/
 #guard_msgs in
 #eval stabilisesAt
-  (Formula.and (Formula.untlQ (probeAtom "p") Formula.top)
+  (Formula.and (Formula.untl (probeAtom "p") Formula.top)
     (Formula.someFuture (probeAtom "p").neg)) 8
 
 -- `K⁺p ∧ ¬K⁺(p ∧ U(p, ¬p))` — the real `sepRule` trigger.
@@ -379,7 +379,7 @@ private def stabilisesAt (φ : Formula) (fuel : Nat) : Option (Nat × Nat) :=
 #eval stabilisesAt
   (Formula.and (Formula.kPlus (probeAtom "p"))
     (Formula.neg (Formula.kPlus
-      (Formula.and (probeAtom "p") (Formula.untlQ (probeAtom "p").neg (probeAtom "p")))))) 8
+      (Formula.and (probeAtom "p") (Formula.untl (probeAtom "p").neg (probeAtom "p")))))) 8
 
 /-! #### Cascade rows
 
@@ -401,24 +401,24 @@ not compound, because the delayed trigger's own emission introduces no further t
 
 /-- The raw implication whose negation is the `priorUGap` trigger `U(⊤, g) ∧ F(¬g)`. -/
 private def probeGapBody (g : Formula) : Formula :=
-  Formula.imp (Formula.untlQ g Formula.top) (Formula.neg (Formula.someFuture g.neg))
+  Formula.imp (Formula.untl g Formula.top) (Formula.neg (Formula.someFuture g.neg))
 
 -- `F(U(⊤,p) → ¬F(¬p))` — the trigger appears only after `priorUZ` fires.
 /-- info: some (4, 22) -/
 #guard_msgs in
-#eval stabilisesAt (Formula.untlQ Formula.top (probeGapBody (probeAtom "p"))) 8
+#eval stabilisesAt (Formula.untl Formula.top (probeGapBody (probeAtom "p"))) 8
 
 -- The same construction nested twice: still round 4.
 /-- info: some (4, 33) -/
 #guard_msgs in
 #eval stabilisesAt
-  (Formula.untlQ Formula.top (probeGapBody (probeGapBody (probeAtom "p")))) 8
+  (Formula.untl Formula.top (probeGapBody (probeGapBody (probeAtom "p")))) 8
 
 -- Nested three deep: still round 4. Depth of delay does not compound.
 /-- info: some (4, 44) -/
 #guard_msgs in
 #eval stabilisesAt
-  (Formula.untlQ Formula.top (probeGapBody (probeGapBody (probeGapBody (probeAtom "p"))))) 8
+  (Formula.untl Formula.top (probeGapBody (probeGapBody (probeGapBody (probeAtom "p"))))) 8
 
 -- `□` routes the same delayed trigger through `allFuture`.
 /-- info: some (4, 28) -/
@@ -429,13 +429,13 @@ private def probeGapBody (g : Formula) : Formula :=
 /-- info: some (4, 42) -/
 #guard_msgs in
 #eval stabilisesAt
-  (Formula.box (Formula.untlQ Formula.top (probeGapBody (probeGapBody (probeAtom "p"))))) 8
+  (Formula.box (Formula.untl Formula.top (probeGapBody (probeGapBody (probeAtom "p"))))) 8
 
 -- The degenerate `g = ⊤` gap, where the emission `U(X, ⊤)` is itself a `priorUZ` trigger.
 /-- info: some (3, 19) -/
 #guard_msgs in
 #eval stabilisesAt
-  (Formula.and (Formula.untlQ Formula.top Formula.top)
+  (Formula.and (Formula.untl Formula.top Formula.top)
     (Formula.someFuture Formula.top.neg)) 8
 
 end Probes
@@ -755,13 +755,13 @@ theorem subformulasFinset_imp (ψ χ : Formula) :
   simp [subformulasFinset, Formula.subformulas]
 
 theorem subformulasFinset_untl (ψ χ : Formula) :
-    subformulasFinset (Formula.untlQ χ ψ)
-      = insert (Formula.untlQ χ ψ) (subformulasFinset ψ ∪ subformulasFinset χ) := by
+    subformulasFinset (Formula.untl χ ψ)
+      = insert (Formula.untl χ ψ) (subformulasFinset ψ ∪ subformulasFinset χ) := by
   simp [subformulasFinset, Formula.subformulas]
 
 theorem subformulasFinset_snce (ψ χ : Formula) :
-    subformulasFinset (Formula.snceQ χ ψ)
-      = insert (Formula.snceQ χ ψ) (subformulasFinset ψ ∪ subformulasFinset χ) := by
+    subformulasFinset (Formula.snce χ ψ)
+      = insert (Formula.snce χ ψ) (subformulasFinset ψ ∪ subformulasFinset χ) := by
   simp [subformulasFinset, Formula.subformulas]
 
 theorem closureStep_mono {A B : Finset Formula} (h : A ⊆ B) : closureStep A ⊆ closureStep B := by
@@ -859,27 +859,27 @@ theorem emissions_imp_of_asAnd_eq_none {ψ χ : Formula} (h : asAnd? (Formula.im
   simp [emissions, subformulasFinset_imp, h]
 
 theorem emissions_untl_top (ψ : Formula) :
-    emissions (Formula.untlQ Formula.top ψ)
-      = insert (Formula.untlQ Formula.top ψ)
+    emissions (Formula.untl Formula.top ψ)
+      = insert (Formula.untl Formula.top ψ)
           (subformulasFinset ψ ∪ subformulasFinset Formula.top)
-        ∪ {Formula.untlQ ψ.neg ψ} := by
+        ∪ {Formula.untl ψ.neg ψ} := by
   simp [emissions, subformulasFinset_untl, asAnd?]
 
 theorem emissions_untl_of_ne {ψ χ : Formula} (h : χ ≠ Formula.top) :
-    emissions (Formula.untlQ χ ψ)
-      = insert (Formula.untlQ χ ψ) (subformulasFinset ψ ∪ subformulasFinset χ) := by
+    emissions (Formula.untl χ ψ)
+      = insert (Formula.untl χ ψ) (subformulasFinset ψ ∪ subformulasFinset χ) := by
   simp [emissions, subformulasFinset_untl, asAnd?, h]
 
 theorem emissions_snce_top (ψ : Formula) :
-    emissions (Formula.snceQ Formula.top ψ)
-      = insert (Formula.snceQ Formula.top ψ)
+    emissions (Formula.snce Formula.top ψ)
+      = insert (Formula.snce Formula.top ψ)
           (subformulasFinset ψ ∪ subformulasFinset Formula.top)
-        ∪ {Formula.snceQ ψ.neg ψ} := by
+        ∪ {Formula.snce ψ.neg ψ} := by
   simp [emissions, subformulasFinset_snce, asAnd?]
 
 theorem emissions_snce_of_ne {ψ χ : Formula} (h : χ ≠ Formula.top) :
-    emissions (Formula.snceQ χ ψ)
-      = insert (Formula.snceQ χ ψ) (subformulasFinset ψ ∪ subformulasFinset χ) := by
+    emissions (Formula.snce χ ψ)
+      = insert (Formula.snce χ ψ) (subformulasFinset ψ ∪ subformulasFinset χ) := by
   simp [emissions, subformulasFinset_snce, asAnd?, h]
 
 /--
@@ -920,12 +920,12 @@ theorem subConfining_box {ψ : Formula} (h : SubConfining ψ) : SubConfining (Fo
     · exact Or.inr (hsubneg hx)
     · exact Or.inr hbot
   have hand₁ : asAnd? (Formula.imp (Formula.box ψ) Formula.bot) = none := rfl
-  have hand₂ : asAnd? (Formula.imp (Formula.untlQ Formula.top ψ.neg) Formula.bot) = none := rfl
-  have hand₃ : asAnd? (Formula.imp (Formula.snceQ Formula.top ψ.neg) Formula.bot) = none := rfl
+  have hand₂ : asAnd? (Formula.imp (Formula.untl Formula.top ψ.neg) Formula.bot) = none := rfl
+  have hand₃ : asAnd? (Formula.imp (Formula.snce Formula.top ψ.neg) Formula.bot) = none := rfl
   have hand₄ : asAnd? (Formula.imp ψ.neg Formula.bot) = none := rfl
   refine ⟨({Formula.box ψ, (Formula.box ψ).neg, ψ.allFuture, ψ.allPast,
-      Formula.untlQ Formula.top ψ.neg, Formula.snceQ Formula.top ψ.neg,
-      Formula.untlQ ψ.neg.neg ψ.neg, Formula.snceQ ψ.neg.neg ψ.neg,
+      Formula.untl Formula.top ψ.neg, Formula.snce Formula.top ψ.neg,
+      Formula.untl ψ.neg.neg ψ.neg, Formula.snce ψ.neg.neg ψ.neg,
       ψ.neg.neg} : Finset Formula) ∪ B, hB.extendEmissions ?_, ?_⟩
   · intro θ hθ
     simp only [Finset.mem_insert, Finset.mem_singleton] at hθ
@@ -1056,7 +1056,7 @@ conclusion is closed: its own `priorUZ` guard asks for `¬ψ = ⊤`, in which ca
 the formula itself. Neither `U(ψ, χ)` nor its negation is a conjunction, so no Dedekind arm fires.
 -/
 theorem subConfining_untl {ψ χ : Formula} (hψ : SubConfining ψ) (hχ : SubConfining χ) :
-    SubConfining (Formula.untlQ χ ψ) := by
+    SubConfining (Formula.untl χ ψ) := by
   classical
   obtain ⟨B₁, hB₁, hc₁⟩ := hψ
   obtain ⟨B₂, hB₂, hc₂⟩ := hχ
@@ -1068,9 +1068,9 @@ theorem subConfining_untl {ψ χ : Formula} (hψ : SubConfining ψ) (hχ : SubCo
   have hsubχ := hcχ.subformulas_subset
   have hsubψn := subformulasFinset_neg_subset hcψ hbot
   have hsubtop := subformulasFinset_top_subset hB
-  have hand : asAnd? (Formula.imp (Formula.untlQ χ ψ) Formula.bot) = none := rfl
-  refine ⟨({Formula.untlQ χ ψ, (Formula.untlQ χ ψ).neg,
-      Formula.untlQ ψ.neg ψ} : Finset Formula) ∪ (B₁ ∪ B₂), hB.extendEmissions ?_, ?_⟩
+  have hand : asAnd? (Formula.imp (Formula.untl χ ψ) Formula.bot) = none := rfl
+  refine ⟨({Formula.untl χ ψ, (Formula.untl χ ψ).neg,
+      Formula.untl ψ.neg ψ} : Finset Formula) ∪ (B₁ ∪ B₂), hB.extendEmissions ?_, ?_⟩
   · intro θ hθ
     simp only [Finset.mem_insert, Finset.mem_singleton] at hθ
     rcases hθ with rfl | rfl | rfl
@@ -1127,7 +1127,7 @@ theorem subConfining_untl {ψ χ : Formula} (hψ : SubConfining ψ) (hχ : SubCo
 
 /-- The `S` case, dual to `subConfining_untl`. -/
 theorem subConfining_snce {ψ χ : Formula} (hψ : SubConfining ψ) (hχ : SubConfining χ) :
-    SubConfining (Formula.snceQ χ ψ) := by
+    SubConfining (Formula.snce χ ψ) := by
   classical
   obtain ⟨B₁, hB₁, hc₁⟩ := hψ
   obtain ⟨B₂, hB₂, hc₂⟩ := hχ
@@ -1139,9 +1139,9 @@ theorem subConfining_snce {ψ χ : Formula} (hψ : SubConfining ψ) (hχ : SubCo
   have hsubχ := hcχ.subformulas_subset
   have hsubψn := subformulasFinset_neg_subset hcψ hbot
   have hsubtop := subformulasFinset_top_subset hB
-  have hand : asAnd? (Formula.imp (Formula.snceQ χ ψ) Formula.bot) = none := rfl
-  refine ⟨({Formula.snceQ χ ψ, (Formula.snceQ χ ψ).neg,
-      Formula.snceQ ψ.neg ψ} : Finset Formula) ∪ (B₁ ∪ B₂), hB.extendEmissions ?_, ?_⟩
+  have hand : asAnd? (Formula.imp (Formula.snce χ ψ) Formula.bot) = none := rfl
+  refine ⟨({Formula.snce χ ψ, (Formula.snce χ ψ).neg,
+      Formula.snce ψ.neg ψ} : Finset Formula) ∪ (B₁ ∪ B₂), hB.extendEmissions ?_, ?_⟩
   · intro θ hθ
     simp only [Finset.mem_insert, Finset.mem_singleton] at hθ
     rcases hθ with rfl | rfl | rfl
@@ -1210,13 +1210,13 @@ theorem subformulasFinset_or (a b : Formula) :
 theorem subformulasFinset_kPlus (a : Formula) :
     subformulasFinset (Formula.kPlus a)
       = insert (Formula.kPlus a)
-          (subformulasFinset (Formula.untlQ a.neg Formula.top) ∪ {Formula.bot}) := by
+          (subformulasFinset (Formula.untl a.neg Formula.top) ∪ {Formula.bot}) := by
   rw [Formula.kPlus, subformulasFinset_neg]
 
 theorem subformulasFinset_kMinus (a : Formula) :
     subformulasFinset (Formula.kMinus a)
       = insert (Formula.kMinus a)
-          (subformulasFinset (Formula.snceQ a.neg Formula.top) ∪ {Formula.bot}) := by
+          (subformulasFinset (Formula.snce a.neg Formula.top) ∪ {Formula.bot}) := by
   rw [Formula.kMinus, subformulasFinset_neg]
 
 /--
@@ -1233,7 +1233,7 @@ which is exactly what the `#guard_msgs` cascade rows measure.
 theorem exists_confining_gapU {g : Formula} {B : Finset Formula} (hB : Confining B)
     (hcg : Carries B g) (hcgn : Carries B g.neg) :
     ∃ M, Confining M ∧ B ⊆ M ∧
-      Formula.untlQ g (Formula.or g.neg (Formula.kPlus g.neg)) ∈ M := by
+      Formula.untl g (Formula.or g.neg (Formula.kPlus g.neg)) ∈ M := by
   classical
   have hbot := bot_mem_of_confining hB
   have hsubg := hcg.subformulas_subset
@@ -1249,23 +1249,23 @@ theorem exists_confining_gapU {g : Formula} {B : Finset Formula} (hB : Confining
     emissions_imp_of_asAnd_eq_none rfl
   have eK : emissions (Formula.kPlus g.neg)
       = insert (Formula.kPlus g.neg)
-          (subformulasFinset (Formula.untlQ g.neg.neg Formula.top)
+          (subformulasFinset (Formula.untl g.neg.neg Formula.top)
             ∪ subformulasFinset Formula.bot) :=
     emissions_imp_of_asAnd_eq_none rfl
   have eY : emissions (Formula.or g.neg (Formula.kPlus g.neg)).neg
       = insert (Formula.or g.neg (Formula.kPlus g.neg)).neg
           (subformulasFinset (Formula.or g.neg (Formula.kPlus g.neg))
             ∪ subformulasFinset Formula.bot)
-        ∪ conjEmissions g.neg.neg (Formula.untlQ g.neg.neg Formula.top) :=
+        ∪ conjEmissions g.neg.neg (Formula.untl g.neg.neg Formula.top) :=
     emissions_imp_of_asAnd rfl
-  have hconj : conjEmissions g.neg.neg (Formula.untlQ g.neg.neg Formula.top) = ∅ := rfl
+  have hconj : conjEmissions g.neg.neg (Formula.untl g.neg.neg Formula.top) = ∅ := rfl
   have sX : subformulasFinset (Formula.or g.neg (Formula.kPlus g.neg))
       = insert (Formula.or g.neg (Formula.kPlus g.neg))
           (subformulasFinset g.neg.neg ∪ subformulasFinset (Formula.kPlus g.neg)) :=
     subformulasFinset_imp _ _
   have sK : subformulasFinset (Formula.kPlus g.neg)
       = insert (Formula.kPlus g.neg)
-          (subformulasFinset (Formula.untlQ g.neg.neg Formula.top)
+          (subformulasFinset (Formula.untl g.neg.neg Formula.top)
             ∪ subformulasFinset Formula.bot) :=
     subformulasFinset_imp _ _
   have sY : subformulasFinset (Formula.or g.neg (Formula.kPlus g.neg)).neg
@@ -1274,12 +1274,12 @@ theorem exists_confining_gapU {g : Formula} {B : Finset Formula} (hB : Confining
             ∪ subformulasFinset Formula.bot) :=
     subformulasFinset_imp _ _
   set A : Finset Formula :=
-    {Formula.untlQ g (Formula.or g.neg (Formula.kPlus g.neg)),
+    {Formula.untl g (Formula.or g.neg (Formula.kPlus g.neg)),
       Formula.or g.neg (Formula.kPlus g.neg),
       Formula.kPlus g.neg,
-      Formula.untlQ g.neg.neg Formula.top,
+      Formula.untl g.neg.neg Formula.top,
       (Formula.or g.neg (Formula.kPlus g.neg)).neg,
-      Formula.untlQ (Formula.or g.neg (Formula.kPlus g.neg)).neg
+      Formula.untl (Formula.or g.neg (Formula.kPlus g.neg)).neg
         (Formula.or g.neg (Formula.kPlus g.neg))} with hAdef
   have hsubK : subformulasFinset (Formula.kPlus g.neg) ⊆ A ∪ B := by
     rw [sK, subformulasFinset_untl, subformulasFinset_bot]
@@ -1382,7 +1382,7 @@ which is exactly what the `#guard_msgs` cascade rows measure.
 theorem exists_confining_gapS {g : Formula} {B : Finset Formula} (hB : Confining B)
     (hcg : Carries B g) (hcgn : Carries B g.neg) :
     ∃ M, Confining M ∧ B ⊆ M ∧
-      Formula.snceQ g (Formula.or g.neg (Formula.kMinus g.neg)) ∈ M := by
+      Formula.snce g (Formula.or g.neg (Formula.kMinus g.neg)) ∈ M := by
   classical
   have hbot := bot_mem_of_confining hB
   have hsubg := hcg.subformulas_subset
@@ -1398,23 +1398,23 @@ theorem exists_confining_gapS {g : Formula} {B : Finset Formula} (hB : Confining
     emissions_imp_of_asAnd_eq_none rfl
   have eK : emissions (Formula.kMinus g.neg)
       = insert (Formula.kMinus g.neg)
-          (subformulasFinset (Formula.snceQ g.neg.neg Formula.top)
+          (subformulasFinset (Formula.snce g.neg.neg Formula.top)
             ∪ subformulasFinset Formula.bot) :=
     emissions_imp_of_asAnd_eq_none rfl
   have eY : emissions (Formula.or g.neg (Formula.kMinus g.neg)).neg
       = insert (Formula.or g.neg (Formula.kMinus g.neg)).neg
           (subformulasFinset (Formula.or g.neg (Formula.kMinus g.neg))
             ∪ subformulasFinset Formula.bot)
-        ∪ conjEmissions g.neg.neg (Formula.snceQ g.neg.neg Formula.top) :=
+        ∪ conjEmissions g.neg.neg (Formula.snce g.neg.neg Formula.top) :=
     emissions_imp_of_asAnd rfl
-  have hconj : conjEmissions g.neg.neg (Formula.snceQ g.neg.neg Formula.top) = ∅ := rfl
+  have hconj : conjEmissions g.neg.neg (Formula.snce g.neg.neg Formula.top) = ∅ := rfl
   have sX : subformulasFinset (Formula.or g.neg (Formula.kMinus g.neg))
       = insert (Formula.or g.neg (Formula.kMinus g.neg))
           (subformulasFinset g.neg.neg ∪ subformulasFinset (Formula.kMinus g.neg)) :=
     subformulasFinset_imp _ _
   have sK : subformulasFinset (Formula.kMinus g.neg)
       = insert (Formula.kMinus g.neg)
-          (subformulasFinset (Formula.snceQ g.neg.neg Formula.top)
+          (subformulasFinset (Formula.snce g.neg.neg Formula.top)
             ∪ subformulasFinset Formula.bot) :=
     subformulasFinset_imp _ _
   have sY : subformulasFinset (Formula.or g.neg (Formula.kMinus g.neg)).neg
@@ -1423,12 +1423,12 @@ theorem exists_confining_gapS {g : Formula} {B : Finset Formula} (hB : Confining
             ∪ subformulasFinset Formula.bot) :=
     subformulasFinset_imp _ _
   set A : Finset Formula :=
-    {Formula.snceQ g (Formula.or g.neg (Formula.kMinus g.neg)),
+    {Formula.snce g (Formula.or g.neg (Formula.kMinus g.neg)),
       Formula.or g.neg (Formula.kMinus g.neg),
       Formula.kMinus g.neg,
-      Formula.snceQ g.neg.neg Formula.top,
+      Formula.snce g.neg.neg Formula.top,
       (Formula.or g.neg (Formula.kMinus g.neg)).neg,
-      Formula.snceQ (Formula.or g.neg (Formula.kMinus g.neg)).neg
+      Formula.snce (Formula.or g.neg (Formula.kMinus g.neg)).neg
         (Formula.or g.neg (Formula.kMinus g.neg))} with hAdef
   have hsubK : subformulasFinset (Formula.kMinus g.neg) ⊆ A ∪ B := by
     rw [sK, subformulasFinset_snce, subformulasFinset_bot]
@@ -1532,16 +1532,16 @@ theorem exists_confining_sep {ψ₀ : Formula} {B : Finset Formula} (hB : Confin
   have hbot := bot_mem_of_confining hB
   have hsubψn : subformulasFinset ψ₀.neg ⊆ B := hcψn.subformulas_subset
   have hsubtop := subformulasFinset_top_subset hB
-  have hFtn : Formula.untlQ Formula.top.neg Formula.top ∈ B :=
+  have hFtn : Formula.untl Formula.top.neg Formula.top ∈ B :=
     constCore_subset_of_confining hB (by decide)
-  have hPtn : Formula.snceQ Formula.top.neg Formula.top ∈ B :=
+  have hPtn : Formula.snce Formula.top.neg Formula.top ∈ B :=
     constCore_subset_of_confining hB (by decide)
   have hCne : (Formula.and (Formula.kPlus ψ₀) (Formula.kMinus ψ₀)).neg ≠ Formula.top := by
     simp [Formula.neg, Formula.top, Formula.and]
   have hconjPQ : conjEmissions (Formula.kPlus ψ₀) (Formula.kMinus ψ₀) = ∅ := rfl
   have eO : emissions (Formula.kPlus (Formula.and (Formula.kPlus ψ₀) (Formula.kMinus ψ₀)))
       = insert (Formula.kPlus (Formula.and (Formula.kPlus ψ₀) (Formula.kMinus ψ₀)))
-          (subformulasFinset (Formula.untlQ (Formula.and (Formula.kPlus ψ₀) (Formula.kMinus ψ₀)).neg
+          (subformulasFinset (Formula.untl (Formula.and (Formula.kPlus ψ₀) (Formula.kMinus ψ₀)).neg
               Formula.top)
             ∪ subformulasFinset Formula.bot) :=
     emissions_imp_of_asAnd_eq_none rfl
@@ -1562,11 +1562,11 @@ theorem exists_confining_sep {ψ₀ : Formula} {B : Finset Formula} (hB : Confin
     emissions_imp_of_asAnd_eq_none rfl
   have eP : emissions (Formula.kPlus ψ₀)
       = insert (Formula.kPlus ψ₀)
-          (subformulasFinset (Formula.untlQ ψ₀.neg Formula.top) ∪ subformulasFinset Formula.bot) :=
+          (subformulasFinset (Formula.untl ψ₀.neg Formula.top) ∪ subformulasFinset Formula.bot) :=
     emissions_imp_of_asAnd_eq_none rfl
   have eQ : emissions (Formula.kMinus ψ₀)
       = insert (Formula.kMinus ψ₀)
-          (subformulasFinset (Formula.snceQ ψ₀.neg Formula.top) ∪ subformulasFinset Formula.bot) :=
+          (subformulasFinset (Formula.snce ψ₀.neg Formula.top) ∪ subformulasFinset Formula.bot) :=
     emissions_imp_of_asAnd_eq_none rfl
   have eQn : emissions (Formula.kMinus ψ₀).neg
       = insert (Formula.kMinus ψ₀).neg
@@ -1574,11 +1574,11 @@ theorem exists_confining_sep {ψ₀ : Formula} {B : Finset Formula} (hB : Confin
     emissions_imp_of_asAnd_eq_none rfl
   have sP : subformulasFinset (Formula.kPlus ψ₀)
       = insert (Formula.kPlus ψ₀)
-          (subformulasFinset (Formula.untlQ ψ₀.neg Formula.top) ∪ subformulasFinset Formula.bot) :=
+          (subformulasFinset (Formula.untl ψ₀.neg Formula.top) ∪ subformulasFinset Formula.bot) :=
     subformulasFinset_imp _ _
   have sQ : subformulasFinset (Formula.kMinus ψ₀)
       = insert (Formula.kMinus ψ₀)
-          (subformulasFinset (Formula.snceQ ψ₀.neg Formula.top) ∪ subformulasFinset Formula.bot) :=
+          (subformulasFinset (Formula.snce ψ₀.neg Formula.top) ∪ subformulasFinset Formula.bot) :=
     subformulasFinset_imp _ _
   have sQn : subformulasFinset (Formula.kMinus ψ₀).neg
       = insert (Formula.kMinus ψ₀).neg
@@ -1600,12 +1600,12 @@ theorem exists_confining_sep {ψ₀ : Formula} {B : Finset Formula} (hB : Confin
     subformulasFinset_imp _ _
   set A : Finset Formula :=
     {Formula.kPlus (Formula.and (Formula.kPlus ψ₀) (Formula.kMinus ψ₀)),
-      Formula.untlQ (Formula.and (Formula.kPlus ψ₀) (Formula.kMinus ψ₀)).neg Formula.top,
+      Formula.untl (Formula.and (Formula.kPlus ψ₀) (Formula.kMinus ψ₀)).neg Formula.top,
       (Formula.and (Formula.kPlus ψ₀) (Formula.kMinus ψ₀)).neg,
       Formula.and (Formula.kPlus ψ₀) (Formula.kMinus ψ₀),
       Formula.imp (Formula.kPlus ψ₀) (Formula.kMinus ψ₀).neg,
       Formula.kPlus ψ₀, Formula.kMinus ψ₀, (Formula.kMinus ψ₀).neg,
-      Formula.untlQ ψ₀.neg Formula.top, Formula.snceQ ψ₀.neg Formula.top} with hAdef
+      Formula.untl ψ₀.neg Formula.top, Formula.snce ψ₀.neg Formula.top} with hAdef
   have hsubP : subformulasFinset (Formula.kPlus ψ₀) ⊆ A ∪ B := by
     rw [sP, subformulasFinset_untl, subformulasFinset_bot]
     intro x hx
@@ -1790,7 +1790,7 @@ theorem exists_confining_conjEmissions {a b : Formula} {B : Finset Formula} (hB 
   | atom c => exact triv _ _ rfl
   | bot => exact triv _ _ rfl
   | box p => exact triv _ _ rfl
-  | untlQ g e =>
+  | untl g e =>
       by_cases h : e = Formula.top ∧ b = Formula.someFuture g.neg
       · obtain ⟨rfl, rfl⟩ := h
         have hcg : Carries B g :=
@@ -1802,7 +1802,7 @@ theorem exists_confining_conjEmissions {a b : Formula} {B : Finset Formula} (hB 
         obtain ⟨M, hM, hs, hmem⟩ := exists_confining_gapU hB hcg hcgn
         exact ⟨M, hM, hs, by simp [conjEmissions, hmem]⟩
       · exact ⟨B, hB, Finset.Subset.refl B, by simp [conjEmissions, h]⟩
-  | snceQ g e =>
+  | snce g e =>
       by_cases h : e = Formula.top ∧ b = Formula.somePast g.neg
       · obtain ⟨rfl, rfl⟩ := h
         have hcg : Carries B g :=
@@ -1820,32 +1820,32 @@ theorem exists_confining_conjEmissions {a b : Formula} {B : Finset Formula} (hB 
       | bot => exact triv _ _ rfl
       | imp r t => exact triv _ _ rfl
       | box r => exact triv _ _ rfl
-      | snceQ r e => exact triv _ _ rfl
-      | untlQ r e =>
+      | snce r e => exact triv _ _ rfl
+      | untl r e =>
           cases r with
           | atom c => exact triv _ _ rfl
           | bot => exact triv _ _ rfl
           | box t => exact triv _ _ rfl
-          | untlQ u t => exact triv _ _ rfl
-          | snceQ u t => exact triv _ _ rfl
+          | untl u t => exact triv _ _ rfl
+          | snce u t => exact triv _ _ rfl
           | imp ψ₀ w =>
               cases w with
               | atom c => exact triv _ _ rfl
               | imp t u => exact triv _ _ rfl
               | box t => exact triv _ _ rfl
-              | untlQ u t => exact triv _ _ rfl
-              | snceQ u t => exact triv _ _ rfl
+              | untl u t => exact triv _ _ rfl
+              | snce u t => exact triv _ _ rfl
               | bot =>
                   cases q with
                   | atom c => exact triv _ _ rfl
                   | imp t u => exact triv _ _ rfl
                   | box t => exact triv _ _ rfl
-                  | untlQ u t => exact triv _ _ rfl
-                  | snceQ u t => exact triv _ _ rfl
+                  | untl u t => exact triv _ _ rfl
+                  | snce u t => exact triv _ _ rfl
                   | bot =>
                       by_cases h : e = Formula.top ∧
                           b = Formula.neg (Formula.kPlus
-                            (Formula.and ψ₀ (Formula.untlQ ψ₀.neg ψ₀)))
+                            (Formula.and ψ₀ (Formula.untl ψ₀.neg ψ₀)))
                       · obtain ⟨rfl, rfl⟩ := h
                         have hcψn : Carries B ψ₀.neg :=
                           hca.sub (by
@@ -1971,8 +1971,8 @@ theorem subConfining (φ : Formula) : SubConfining φ := by
   | bot => exact subConfining_bot
   | imp ψ χ ihψ ihχ => exact subConfining_imp ihψ ihχ
   | box ψ ih => exact subConfining_box ih
-  | untlQ χ ψ ihχ ihψ => exact subConfining_untl ihψ ihχ
-  | snceQ χ ψ ihχ ihψ => exact subConfining_snce ihψ ihχ
+  | untl χ ψ ihχ ihψ => exact subConfining_untl ihψ ihχ
+  | snce χ ψ ihχ ihψ => exact subConfining_snce ihψ ihχ
 
 theorem confinesFormula (φ : Formula) : ConfinesFormula φ :=
   confinesFormula_of_subConfining (subConfining φ)

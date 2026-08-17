@@ -801,7 +801,7 @@ def parseSExprFormula (st : SExprPS) : (fuel : Nat) → Option (Formula × SExpr
           | some (rhs, st) =>
             let st := st.skipWS
             match st.peek with
-            | some ')' => some (Formula.untlQ rhs lhs, st.advance)
+            | some ')' => some (Formula.untl rhs lhs, st.advance)
             | _ => none
           | none => none
         | none => none
@@ -813,7 +813,7 @@ def parseSExprFormula (st : SExprPS) : (fuel : Nat) → Option (Formula × SExpr
           | some (rhs, st) =>
             let st := st.skipWS
             match st.peek with
-            | some ')' => some (Formula.snceQ rhs lhs, st.advance)
+            | some ')' => some (Formula.snce rhs lhs, st.advance)
             | _ => none
           | none => none
         | none => none
@@ -856,8 +856,8 @@ or `S(atom, X) → S(Y, Z)`. These patterns cause temporal-modal feedback loop
 timeouts and should be excluded from stratified sampling.
 -/
 private def isTimeoutPattern : Formula → Bool
-  | .imp (.untlQ _ (.atom _)) (.untlQ _ _) => true
-  | .imp (.snceQ _ (.atom _)) (.snceQ _ _) => true
+  | .imp (.untl _ (.atom _)) (.untl _ _) => true
+  | .imp (.snce _ (.atom _)) (.snce _ _) => true
   | _ => false
 
 /--

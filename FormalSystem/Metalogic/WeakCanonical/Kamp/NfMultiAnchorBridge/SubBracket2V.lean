@@ -196,13 +196,13 @@ noncomputable def kvESubBracket2V {sig : MonadicSignature} [Fintype sig.preds]
   let epL : TemporalPred :=
     ⟨formulaConjList
       (xType.formula
-        :: (allTypes.map fun χ => lit (bits zPastX χ) (Formula.snceQ Formula.top (charBase χ)))
+        :: (allTypes.map fun χ => lit (bits zPastX χ) (Formula.snce Formula.top (charBase χ)))
         ++ (allTypes.map fun χ => lit (bits zAtX χ) (charBase χ)))⟩
   let epR : TemporalPred :=
     ⟨formulaConjList
       (tType.formula
         :: (allTypes.map fun χ => lit (bits zAtT χ) (charBase χ))
-        ++ (allTypes.map fun χ => lit (bits zFutT χ) (Formula.untlQ Formula.top (charBase χ))))⟩
+        ++ (allTypes.map fun χ => lit (bits zFutT χ) (Formula.untl Formula.top (charBase χ))))⟩
   -- THREE per-region segment types: each excludes ONLY its own region's interior negatives (real
   -- exclusion segments, G3; arity-4 lift of `bracketFromLists.segmentTypes` :1902 from a 2-way to a
   -- 3-way keying). NOT the constant tri-zone `segExcl` of the refuted :6149. Rabinovich Cor 5.4

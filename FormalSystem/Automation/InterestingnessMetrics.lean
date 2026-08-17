@@ -133,11 +133,11 @@ Detects both primitive operators and derived operator patterns:
 -/
 def extractOperatorProfile : Formula → OperatorProfile
   -- G pattern: ¬F(¬φ) = imp (untl (imp φ bot) (imp bot bot)) bot
-  | .imp (.untlQ (.imp .bot .bot) (.imp _φ .bot)) .bot =>
+  | .imp (.untl (.imp .bot .bot) (.imp _φ .bot)) .bot =>
     let inner := extractOperatorProfile _φ
     { inner with hasAllFuture := true }
   -- H pattern: ¬P(¬φ) = imp (snce (imp φ bot) (imp bot bot)) bot
-  | .imp (.snceQ (.imp .bot .bot) (.imp _φ .bot)) .bot =>
+  | .imp (.snce (.imp .bot .bot) (.imp _φ .bot)) .bot =>
     let inner := extractOperatorProfile _φ
     { inner with hasAllPast := true }
   -- Diamond pattern: ¬□¬φ = imp (box (imp φ bot)) bot
@@ -145,11 +145,11 @@ def extractOperatorProfile : Formula → OperatorProfile
     let inner := extractOperatorProfile _φ
     { inner with hasDiamond := true }
   -- F pattern: U(φ, ⊤) = untl φ (imp bot bot)
-  | .untlQ (.imp .bot .bot) _φ =>
+  | .untl (.imp .bot .bot) _φ =>
     let inner := extractOperatorProfile _φ
     { inner with hasSomeFuture := true }
   -- P pattern: S(φ, ⊤) = snce φ (imp bot bot)
-  | .snceQ (.imp .bot .bot) _φ =>
+  | .snce (.imp .bot .bot) _φ =>
     let inner := extractOperatorProfile _φ
     { inner with hasSomePast := true }
   -- Primitive box
@@ -157,12 +157,12 @@ def extractOperatorProfile : Formula → OperatorProfile
     let inner := extractOperatorProfile φ
     { inner with hasBox := true }
   -- Primitive until (non-top guard)
-  | .untlQ ψ φ =>
+  | .untl ψ φ =>
     let p1 := extractOperatorProfile φ
     let p2 := extractOperatorProfile ψ
     { p1.merge p2 with hasUntil := true }
   -- Primitive since (non-top guard)
-  | .snceQ ψ φ =>
+  | .snce ψ φ =>
     let p1 := extractOperatorProfile φ
     let p2 := extractOperatorProfile ψ
     { p1.merge p2 with hasSince := true }

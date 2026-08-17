@@ -139,7 +139,7 @@ def navLProjW (row : NormalForm sig 0 3) : NormalForm sig 0 1 :=
 
 /-- Native past Since-lit: `S(charF χ, ⊤)` — "some strict-past point realizes `χ`". -/
 noncomputable def navLPastLit (χ : NormalForm sig 0 1) : Formula :=
-  Formula.snceQ Formula.top (nfDepth0CharFormula atomMap h_surj χ)
+  Formula.snce Formula.top (nfDepth0CharFormula atomMap h_surj χ)
 
 omit [DecidableEq sig.preds] in
 /-- Reading of the past Since-lit. -/
@@ -287,8 +287,8 @@ private theorem navL_segGuard_iff (M : OrderedMonadicStructure sig)
     w-package in place of the `H`-closure base. -/
 noncomputable def navLChain (σ : NormalForm sig 1 3) :
     List (NormalForm sig 0 1) → Formula
-  | [] => Formula.snceQ (navLSegGuard atomMap h_surj σ) (navLAtWPack atomMap h_surj σ)
-  | χ :: rest => Formula.snceQ
+  | [] => Formula.snce (navLSegGuard atomMap h_surj σ) (navLAtWPack atomMap h_surj σ)
+  | χ :: rest => Formula.snce
       (navLSegGuard atomMap h_surj σ)
       (Formula.and (nfDepth0CharFormula atomMap h_surj χ) (navLChain σ rest))
 
@@ -540,7 +540,7 @@ def navDProjT (row : NormalForm sig 0 3) : NormalForm sig 0 1 :=
 /-- Native future Until-lit: `U(charF χ, ⊤)` — "some strict-future point realizes `χ`".
     The future dual of `navLPastLit`. -/
 noncomputable def navDFutLit (χ : NormalForm sig 0 1) : Formula :=
-  Formula.untlQ Formula.top (nfDepth0CharFormula atomMap h_surj χ)
+  Formula.untl Formula.top (nfDepth0CharFormula atomMap h_surj χ)
 
 omit [DecidableEq sig.preds] in
 /-- Reading of the future Until-lit. -/

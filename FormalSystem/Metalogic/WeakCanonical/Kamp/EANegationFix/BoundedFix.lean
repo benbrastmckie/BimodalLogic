@@ -42,12 +42,12 @@ an endpoint predicate. -/
 /-- `goal` is reachable strictly to the right, with `seg` holding at all
     points strictly in between (native `Formula.untl` semantics). -/
 def TemporalPred.untl (goal seg : TemporalPred) : TemporalPred :=
-  ⟨Formula.untlQ seg.formula goal.formula⟩
+  ⟨Formula.untl seg.formula goal.formula⟩
 
 /-- `goal` is reachable strictly to the left, with `seg` holding at all
     points strictly in between (native `Formula.snce` semantics). -/
 def TemporalPred.snce (goal seg : TemporalPred) : TemporalPred :=
-  ⟨Formula.snceQ seg.formula goal.formula⟩
+  ⟨Formula.snce seg.formula goal.formula⟩
 
 /-- Semantics of `TemporalPred.untl`. -/
 theorem TemporalPred.eval_at_untl {sig : MonadicSignature}

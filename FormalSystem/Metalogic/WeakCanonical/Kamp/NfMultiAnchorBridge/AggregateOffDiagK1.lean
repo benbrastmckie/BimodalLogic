@@ -590,7 +590,7 @@ theorem agg2Past_holds_pin_iff (sub_nf : NormalForm sig 1 2)
     -- Fold-bit literal facts at the two anchors.
     have hPastLit : ∀ χ : NormalForm sig 0 1, TemporalTruth M atomMap x
         (agg2Lit (agg2Bit sub_nf agg2ZPastPast χ)
-          (Formula.snceQ Formula.top (nfDepth0CharFormula atomMap h_surj χ))) :=
+          (Formula.snce Formula.top (nfDepth0CharFormula atomMap h_surj χ))) :=
       fun χ => hepL _ (List.mem_append_left _
         (List.mem_cons_of_mem _ (List.mem_map_of_mem (by simp))))
     have hAtXLit : ∀ χ : NormalForm sig 0 1, TemporalTruth M atomMap x
@@ -604,7 +604,7 @@ theorem agg2Past_holds_pin_iff (sub_nf : NormalForm sig 1 2)
         (List.mem_cons_of_mem _ (List.mem_map_of_mem (by simp))))
     have hFutLit : ∀ χ : NormalForm sig 0 1, TemporalTruth M atomMap t
         (agg2Lit (agg2Bit sub_nf agg2ZFutFut χ)
-          (Formula.untlQ Formula.top (nfDepth0CharFormula atomMap h_surj χ))) :=
+          (Formula.untl Formula.top (nfDepth0CharFormula atomMap h_surj χ))) :=
       fun χ => hepR _ (List.mem_append_right _ (List.mem_map_of_mem (by simp)))
     -- Bracket structure: witnesses + gap classification.
     obtain ⟨hwit, hgap⟩ := aggBracket_extract M atomMap _ _ x t hbr

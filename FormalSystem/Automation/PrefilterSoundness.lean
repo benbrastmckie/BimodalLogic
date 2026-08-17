@@ -86,11 +86,11 @@ theorem isUnsatBotTemporal_not_truth
     ¬ TruthAt M τ t φ := by
   induction φ generalizing τ t with
   | bot => exact Truth.bot_false
-  | untlQ guard event _ih_guard ih_event =>
+  | untl guard event _ih_guard ih_event =>
     simp only [isUnsatBotTemporal] at h
     intro ⟨s, _hts, h_event, _h_guard⟩
     exact ih_event hτ h h_event
-  | snceQ guard event _ih_guard ih_event =>
+  | snce guard event _ih_guard ih_event =>
     simp only [isUnsatBotTemporal] at h
     intro ⟨s, _hst, h_event, _h_guard⟩
     exact ih_event hτ h h_event
@@ -121,7 +121,7 @@ theorem unfulfillable_until_not_truth
     {τ : WorldHistory F} {t : D}
     {event guard : Formula}
     (h_g_neg : TruthAt M τ t (Formula.allFuture event.neg)) :
-    ¬ TruthAt M τ t (Formula.untlQ guard event) := by
+    ¬ TruthAt M τ t (Formula.untl guard event) := by
   rw [Truth.future_iff] at h_g_neg
   intro ⟨s, hts, h_event_s, _h_guard⟩
   have h_neg_event_s := h_g_neg s hts
@@ -141,7 +141,7 @@ theorem unfulfillable_since_not_truth
     {τ : WorldHistory F} {t : D}
     {event guard : Formula}
     (h_h_neg : TruthAt M τ t (Formula.allPast event.neg)) :
-    ¬ TruthAt M τ t (Formula.snceQ guard event) := by
+    ¬ TruthAt M τ t (Formula.snce guard event) := by
   rw [Truth.past_iff] at h_h_neg
   intro ⟨s, hst, h_event_s, _h_guard⟩
   have h_neg_event_s := h_h_neg s hst

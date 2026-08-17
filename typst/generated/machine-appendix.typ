@@ -8,10 +8,10 @@
 // which is produced by the Lean exporter (interpreted via `lake env lean
 // --run`) with schema formulas extracted from the Axiom type index --
 // never hand-copied.
-// Stamped from live source at commit ae4b641ab (2026-08-17).
+// Stamped from live source at commit 499cd783c (2026-08-17).
 // ============================================================================
 
-#let stamp-commit = "ae4b641ab"
+#let stamp-commit = "499cd783c"
 #let stamp-date = "2026-08-17"
 
 #let machine-axiom-count = 45

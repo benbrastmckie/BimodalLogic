@@ -286,7 +286,7 @@ theorem hintikka_step_g_prop
 produce a `BxLe`-later point realizing `ψ`. Delegates to the frame-level lemma. -/
 theorem until_eventuality_resolution
     (w : BXPoint) (φ ψ : Formula)
-    (h_until : Formula.untlQ φ ψ ∈ w.formulas)
+    (h_until : Formula.untl φ ψ ∈ w.formulas)
     (h_not_psi : ψ ∉ w.formulas) :
     ∃ v : BXPoint, BxLe w v ∧ ψ ∈ v.formulas :=
   bx_until_eventuality_resolution w φ ψ h_until h_not_psi
@@ -298,7 +298,7 @@ theorem until_eventuality_resolution
 produce a `BxLe`-earlier point realizing `ψ`. Delegates to the frame-level lemma. -/
 theorem since_eventuality_resolution
     (w : BXPoint) (φ ψ : Formula)
-    (h_since : Formula.snceQ φ ψ ∈ w.formulas)
+    (h_since : Formula.snce φ ψ ∈ w.formulas)
     (h_not_psi : ψ ∉ w.formulas) :
     ∃ v : BXPoint, BxLe v w ∧ ψ ∈ v.formulas :=
   bx_since_eventuality_resolution w φ ψ h_since h_not_psi
@@ -337,7 +337,7 @@ private theorem subformulas_subset_of_mem {g target : Formula}
     · exact Finset.Subset.refl _
     · exact Finset.Subset.trans (ih ha) (by
         intro f hf; exact Finset.mem_insert_of_mem hf)
-  | untlQ b a ihb iha =>
+  | untl b a ihb iha =>
     simp only [subformulas, Finset.mem_insert, Finset.mem_union] at h
     rcases h with rfl | ha | hb
     · exact Finset.Subset.refl _
@@ -345,7 +345,7 @@ private theorem subformulas_subset_of_mem {g target : Formula}
         intro f hf; exact Finset.mem_insert_of_mem (Finset.mem_union_left _ hf))
     · exact Finset.Subset.trans (ihb hb) (by
         intro f hf; exact Finset.mem_insert_of_mem (Finset.mem_union_right _ hf))
-  | snceQ b a ihb iha =>
+  | snce b a ihb iha =>
     simp only [subformulas, Finset.mem_insert, Finset.mem_union] at h
     rcases h with rfl | ha | hb
     · exact Finset.Subset.refl _
@@ -381,12 +381,12 @@ private theorem subformulas_H_unwrap {target χ : Formula}
 
 /-- φ and ψ are subformulas of (φ U ψ). -/
 private theorem untl_components_mem_subformulas (φ ψ : Formula) :
-    φ ∈ subformulas (Formula.untlQ φ ψ) ∧ ψ ∈ subformulas (Formula.untlQ φ ψ) := by
+    φ ∈ subformulas (Formula.untl φ ψ) ∧ ψ ∈ subformulas (Formula.untl φ ψ) := by
   simp [subformulas, Finset.mem_insert, Finset.mem_union, self_mem_subformulas]
 
 /-- `(φ U ψ) ∈ subformulas target → φ, ψ ∈ subformulas target`. -/
 private theorem subformulas_untl_unwrap {target φ ψ : Formula}
-    (h : Formula.untlQ φ ψ ∈ subformulas target) :
+    (h : Formula.untl φ ψ ∈ subformulas target) :
     φ ∈ subformulas target ∧ ψ ∈ subformulas target := by
   have hsub := subformulas_subset_of_mem h
   obtain ⟨hφ, hψ⟩ := untl_components_mem_subformulas φ ψ
@@ -422,7 +422,7 @@ theorem SubformulaClosure_G_closed {target χ : Formula}
       have : χ = f := by
         simp only [Formula.allFuture, Formula.someFuture, Formula.neg, Formula.top] at hfeq
         -- Guard-first: the operand is the constructor's SECOND argument, hence `.2`.
-        exact Formula.imp.inj (Formula.untlQ.inj (Formula.imp.inj hfeq).1).2 |>.1
+        exact Formula.imp.inj (Formula.untl.inj (Formula.imp.inj hfeq).1).2 |>.1
       subst this; exact subformula_mem hf
     · -- allFuture χ = allPast f: impossible (untl ≠ snce)
       simp only [Formula.allFuture, Formula.allPast, Formula.someFuture, Formula.somePast,
@@ -466,7 +466,7 @@ theorem SubformulaClosure_H_closed {target χ : Formula}
       have : χ = f := by
         simp only [Formula.allPast, Formula.somePast, Formula.neg, Formula.top] at hfeq
         -- Guard-first: the operand is the constructor's SECOND argument, hence `.2`.
-        exact Formula.imp.inj (Formula.snceQ.inj (Formula.imp.inj hfeq).1).2 |>.1
+        exact Formula.imp.inj (Formula.snce.inj (Formula.imp.inj hfeq).1).2 |>.1
       subst this; exact subformula_mem hf
   · -- allPast χ = neg g: g = somePast(neg χ)
     have hg_is : g = Formula.somePast (Formula.neg χ) := by
@@ -488,7 +488,7 @@ theorem SubformulaClosure_H_closed {target χ : Formula}
 
 /-- If `(φ U ψ) ∈ SubformulaClosure target`, then `φ, ψ ∈ SubformulaClosure target`. -/
 theorem SubformulaClosure_untl_closed {target φ ψ : Formula}
-    (h : Formula.untlQ φ ψ ∈ SubformulaClosure target) :
+    (h : Formula.untl φ ψ ∈ SubformulaClosure target) :
     φ ∈ SubformulaClosure target ∧ ψ ∈ SubformulaClosure target := by
   rcases SubformulaClosure_mem_cases h with h_base | ⟨g, _, hg_eq⟩
   · rcases ghEnrichment_mem_cases h_base with h_sub | ⟨f, _, hfeq⟩ | ⟨f, _, hfeq⟩

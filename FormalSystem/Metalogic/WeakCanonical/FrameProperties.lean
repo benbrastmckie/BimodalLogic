@@ -39,7 +39,7 @@ BLOCKED: Same issue — prior_UZ has minFrameClass = .Discrete but
 ReflCanDomain uses fc := .Base. -/
 theorem prior_UZ_in_frame {fc : FrameClass} (h_fc : FrameClass.Discrete ≤ fc)
     (x : ReflCanDomain fc) (psi : Formula) :
-    Formula.imp (Formula.someFuture psi) (Formula.untlQ psi.neg psi) ∈ x.val :=
+    Formula.imp (Formula.someFuture psi) (Formula.untl psi.neg psi) ∈ x.val :=
   theorem_in_mcs x.property (DerivationTree.axiom [] _ (Axiom.prior_UZ psi) h_fc)
 
 /-- Prior-SZ: P(psi) → S(psi, ¬psi) is in every MCS.
@@ -47,7 +47,7 @@ BLOCKED: Same issue — prior_SZ has minFrameClass = .Discrete but
 ReflCanDomain uses fc := .Base. -/
 theorem prior_SZ_in_frame {fc : FrameClass} (h_fc : FrameClass.Discrete ≤ fc)
     (x : ReflCanDomain fc) (psi : Formula) :
-    Formula.imp (Formula.somePast psi) (Formula.snceQ psi.neg psi) ∈ x.val :=
+    Formula.imp (Formula.somePast psi) (Formula.snce psi.neg psi) ∈ x.val :=
   theorem_in_mcs x.property (DerivationTree.axiom [] _ (Axiom.prior_SZ psi) h_fc)
 
 /-! ## Seriality (No Endpoints) -/

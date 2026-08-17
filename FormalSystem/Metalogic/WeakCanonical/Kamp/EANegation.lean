@@ -535,13 +535,13 @@ def BracketFormula.fChainFrom {n : Nat} (bf : BracketFormula (n + 1))
   if h : i.val = n then
     -- Base: F_n = alpha_n AND (beta_{n+1} Until top)
     ⟨Formula.and (bf.pointTypes ⟨n, by omega⟩).formula
-      (Formula.untlQ (bf.segmentTypes ⟨n + 1, by omega⟩).formula Formula.top)⟩
+      (Formula.untl (bf.segmentTypes ⟨n + 1, by omega⟩).formula Formula.top)⟩
   else
     -- Step: F_i = alpha_i AND (beta_{i+1} Until F_{i+1})
     have h_lt : i.val < n := by omega
     let F_next := bf.fChainFrom ⟨i.val + 1, by omega⟩
     ⟨Formula.and (bf.pointTypes i).formula
-      (Formula.untlQ (bf.segmentTypes ⟨i.val + 1, by omega⟩).formula F_next.formula)⟩
+      (Formula.untl (bf.segmentTypes ⟨i.val + 1, by omega⟩).formula F_next.formula)⟩
 termination_by n - i.val
 
 /-- The F-chain predicate at the first witness (index 0). -/
@@ -562,7 +562,7 @@ theorem BracketFormula.fChainFrom_base {sig : MonadicSignature} {n : Nat}
   -- Unfold fChainFrom at the base case (i = n)
   have h_eq : bf.fChainFrom ⟨n, by omega⟩ =
     ⟨Formula.and (bf.pointTypes ⟨n, by omega⟩).formula
-      (Formula.untlQ (bf.segmentTypes ⟨n + 1, by omega⟩).formula Formula.top)⟩ := by
+      (Formula.untl (bf.segmentTypes ⟨n + 1, by omega⟩).formula Formula.top)⟩ := by
     conv_lhs => rw [fChainFrom]; simp only [Fin.val_mk, dite_true]
   rw [h_eq]
   simp only [TemporalPred.EvalAt, Formula.and, Formula.neg, TemporalTruth]
@@ -601,7 +601,7 @@ theorem BracketFormula.fChainFrom_step {sig : MonadicSignature} {n : Nat}
   -- Unfold fChainFrom at i (step case)
   have h_eq : bf.fChainFrom i =
     ⟨Formula.and (bf.pointTypes i).formula
-      (Formula.untlQ (bf.segmentTypes ⟨i.val + 1, by omega⟩).formula
+      (Formula.untl (bf.segmentTypes ⟨i.val + 1, by omega⟩).formula
         (bf.fChainFrom ⟨i.val + 1, by omega⟩).formula)⟩ := by
     conv_lhs => rw [fChainFrom]
     split

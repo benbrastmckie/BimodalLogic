@@ -51,9 +51,9 @@ def IntTruth (M : IntStructure) (t : ℤ) : Formula → Prop
   | .bot => False
   | .imp φ ψ => IntTruth M t φ → IntTruth M t ψ
   | .box _ => True  -- degenerate: modal not relevant for separation
-  | .untlQ ψ φ => ∃ s : ℤ, t < s ∧ IntTruth M s φ ∧
+  | .untl ψ φ => ∃ s : ℤ, t < s ∧ IntTruth M s φ ∧
       ∀ r : ℤ, t < r → r < s → IntTruth M r ψ
-  | .snceQ ψ φ => ∃ s : ℤ, s < t ∧ IntTruth M s φ ∧
+  | .snce ψ φ => ∃ s : ℤ, s < t ∧ IntTruth M s φ ∧
       ∀ r : ℤ, s < r → r < t → IntTruth M r ψ
 
 /-! ## IntTruth simp lemmas for derived temporal operators -/
@@ -104,8 +104,8 @@ def FormulaAtoms : Formula → Set Atom
   | .bot => ∅
   | .imp φ ψ => FormulaAtoms φ ∪ FormulaAtoms ψ
   | .box φ => FormulaAtoms φ
-  | .untlQ ψ φ => FormulaAtoms φ ∪ FormulaAtoms ψ
-  | .snceQ ψ φ => FormulaAtoms φ ∪ FormulaAtoms ψ
+  | .untl ψ φ => FormulaAtoms φ ∪ FormulaAtoms ψ
+  | .snce ψ φ => FormulaAtoms φ ∪ FormulaAtoms ψ
 
 @[simp] theorem formula_atoms_all_past (φ : Formula) :
     FormulaAtoms (Formula.allPast φ) = FormulaAtoms φ := by
@@ -164,8 +164,8 @@ def isUFree : Formula → Bool
   | .bot => true
   | .imp φ ψ => isUFree φ && isUFree ψ
   | .box φ => isUFree φ
-  | .untlQ _ _ => false
-  | .snceQ ψ φ => isUFree φ && isUFree ψ
+  | .untl _ _ => false
+  | .snce ψ φ => isUFree φ && isUFree ψ
 
 /-- A formula is "syntactically S-free": contains no `snce` constructor. -/
 def isSFree : Formula → Bool
@@ -173,8 +173,8 @@ def isSFree : Formula → Bool
   | .bot => true
   | .imp φ ψ => isSFree φ && isSFree ψ
   | .box φ => isSFree φ
-  | .untlQ ψ φ => isSFree φ && isSFree ψ
-  | .snceQ _ _ => false
+  | .untl ψ φ => isSFree φ && isSFree ψ
+  | .snce _ _ => false
 
 /-! ### Simp lemmas for isUFree and isSFree at derived temporal operators -/
 
@@ -216,8 +216,8 @@ def isSyntacticallySeparated : Formula → Bool
   | .bot => true
   | .imp φ ψ => isSyntacticallySeparated φ && isSyntacticallySeparated ψ
   | .box _ => true  -- box treated as atomic
-  | .untlQ ψ φ => isSFree φ && isSFree ψ
-  | .snceQ ψ φ => isUFree φ && isUFree ψ
+  | .untl ψ φ => isSFree φ && isSFree ψ
+  | .snce ψ φ => isUFree φ && isUFree ψ
 
 @[simp] theorem is_syntactically_separated_all_past (φ : Formula) :
     isSyntacticallySeparated (Formula.allPast φ) = isUFree φ := by
@@ -249,8 +249,8 @@ def isFutureOnly : Formula → Bool
   | .bot => true
   | .imp φ ψ => isFutureOnly φ && isFutureOnly ψ
   | .box φ => isFutureOnly φ
-  | .untlQ ψ φ => isFutureOnly φ && isFutureOnly ψ
-  | .snceQ _ _ => false
+  | .untl ψ φ => isFutureOnly φ && isFutureOnly ψ
+  | .snce _ _ => false
 
 @[simp] theorem is_future_only_all_past (φ : Formula) :
     isFutureOnly (Formula.allPast φ) = false := by
@@ -270,8 +270,8 @@ def isPastOnly : Formula → Bool
   | .bot => true
   | .imp φ ψ => isPastOnly φ && isPastOnly ψ
   | .box φ => isPastOnly φ
-  | .untlQ _ _ => false
-  | .snceQ ψ φ => isPastOnly φ && isPastOnly ψ
+  | .untl _ _ => false
+  | .snce ψ φ => isPastOnly φ && isPastOnly ψ
 
 @[simp] theorem is_past_only_all_past (φ : Formula) :
     isPastOnly (Formula.allPast φ) = isPastOnly φ := by
@@ -296,8 +296,8 @@ def isProperlySeparated : Formula → Bool
   | .bot => true
   | .imp φ ψ => isProperlySeparated φ && isProperlySeparated ψ
   | .box _ => true
-  | .untlQ ψ φ => isFutureOnly φ && isFutureOnly ψ
-  | .snceQ ψ φ => isPastOnly φ && isPastOnly ψ
+  | .untl ψ φ => isFutureOnly φ && isFutureOnly ψ
+  | .snce ψ φ => isPastOnly φ && isPastOnly ψ
 
 @[simp] theorem is_properly_separated_all_past (φ : Formula) :
     isProperlySeparated (Formula.allPast φ) = isPastOnly φ := by
@@ -325,8 +325,8 @@ def junctionDepth : Formula -> Nat
   | .bot => 0
   | .imp phi psi => max (junctionDepth phi) (junctionDepth psi)
   | .box phi => junctionDepth phi
-  | .untlQ psi phi => max (junctionDepthU phi) (junctionDepthU psi)
-  | .snceQ psi phi => max (junctionDepthS phi) (junctionDepthS psi)
+  | .untl psi phi => max (junctionDepthU phi) (junctionDepthU psi)
+  | .snce psi phi => max (junctionDepthS phi) (junctionDepthS psi)
 
 /-- Junction depth of a formula read from inside an `untl`: like `junctionDepth`,
     but a nested `snce` counts as one alternation and resets the measure to the
@@ -337,8 +337,8 @@ def junctionDepthU : Formula -> Nat
   | .bot => 0
   | .imp phi psi => max (junctionDepthU phi) (junctionDepthU psi)
   | .box phi => junctionDepthU phi
-  | .untlQ psi phi => max (junctionDepthU phi) (junctionDepthU psi)
-  | .snceQ psi phi => 1 + max (junctionDepth phi) (junctionDepth psi)
+  | .untl psi phi => max (junctionDepthU phi) (junctionDepthU psi)
+  | .snce psi phi => 1 + max (junctionDepth phi) (junctionDepth psi)
 
 /-- Junction depth of a formula read from inside an `snce`: the past-directed
     mirror of `junctionDepthU`, so a nested `untl` is what counts as an
@@ -349,8 +349,8 @@ def junctionDepthS : Formula -> Nat
   | .bot => 0
   | .imp phi psi => max (junctionDepthS phi) (junctionDepthS psi)
   | .box phi => junctionDepthS phi
-  | .untlQ psi phi => 1 + max (junctionDepth phi) (junctionDepth psi)
-  | .snceQ psi phi => max (junctionDepthS phi) (junctionDepthS psi)
+  | .untl psi phi => 1 + max (junctionDepth phi) (junctionDepth psi)
+  | .snce psi phi => max (junctionDepthS phi) (junctionDepthS psi)
 end
 
 /-! ### Simp lemmas for junctionDepth at derived temporal operators -/
@@ -372,8 +372,8 @@ def uDepthUnderS : Formula → Nat
   | .bot => 0
   | .imp φ ψ => max (uDepthUnderS φ) (uDepthUnderS ψ)
   | .box φ => uDepthUnderS φ
-  | .untlQ ψ φ => 1 + max (uDepthUnderS φ) (uDepthUnderS ψ)
-  | .snceQ _ _ => 0  -- S resets the counter
+  | .untl ψ φ => 1 + max (uDepthUnderS φ) (uDepthUnderS ψ)
+  | .snce _ _ => 0  -- S resets the counter
 
 /-- Count of maximal U-subformulas in a formula.
     Used for Lemma 10.2.6 induction on the number of distinct U-patterns. -/
@@ -382,8 +382,8 @@ def countUSubformulas : Formula → Nat
   | .bot => 0
   | .imp φ ψ => countUSubformulas φ + countUSubformulas ψ
   | .box φ => countUSubformulas φ
-  | .untlQ _ _ => 1  -- count the U itself, not sub-U's
-  | .snceQ ψ φ => countUSubformulas φ + countUSubformulas ψ
+  | .untl _ _ => 1  -- count the U itself, not sub-U's
+  | .snce ψ φ => countUSubformulas φ + countUSubformulas ψ
 
 /-- Total count of ALL `.untl` nodes at ALL depths in a formula.
     Unlike `countUSubformulas` (which counts surface-level `.untl` nodes as 1 each),
@@ -394,8 +394,8 @@ def countUTotal : Formula → Nat
   | .bot => 0
   | .imp φ ψ => countUTotal φ + countUTotal ψ
   | .box φ => countUTotal φ
-  | .untlQ ψ φ => 1 + countUTotal φ + countUTotal ψ
-  | .snceQ ψ φ => countUTotal φ + countUTotal ψ
+  | .untl ψ φ => 1 + countUTotal φ + countUTotal ψ
+  | .snce ψ φ => countUTotal φ + countUTotal ψ
 
 /-- `countUTotal phi = 0` iff the formula is U-free. -/
 theorem count_U_total_zero_iff_U_free (phi : Formula) :
@@ -406,10 +406,10 @@ theorem count_U_total_zero_iff_U_free (phi : Formula) :
   | imp a b ih1 ih2 =>
     simp only [countUTotal, isUFree, Nat.add_eq_zero_iff, Bool.and_eq_true, ih1, ih2]
   | box a ih => simp only [countUTotal, isUFree]; exact ih
-  | untlQ _ _ =>
+  | untl _ _ =>
     simp only [countUTotal, isUFree]
     exact iff_of_false (by omega) (by decide)
-  | snceQ b a ih2 ih1 =>
+  | snce b a ih2 ih1 =>
     simp only [countUTotal, isUFree, Nat.add_eq_zero_iff, Bool.and_eq_true, ih1, ih2]
 
 /-- S-nesting depth above U occurrences. Used for Lemma 10.2.5 induction.
@@ -419,8 +419,8 @@ def sNestingAboveU : Formula → Nat
   | .bot => 0
   | .imp φ ψ => max (sNestingAboveU φ) (sNestingAboveU ψ)
   | .box φ => sNestingAboveU φ
-  | .untlQ _ _ => 0  -- U found; no S above it on this path
-  | .snceQ ψ φ =>
+  | .untl _ _ => 0  -- U found; no S above it on this path
+  | .snce ψ φ =>
     -- If there's a U below, this S adds 1 to the nesting
     let sub := max (sNestingAboveUInner φ) (sNestingAboveUInner ψ)
     if sub > 0 then 1 + sub else 0
@@ -432,8 +432,8 @@ where
     | .bot => 0
     | .imp φ ψ => max (sNestingAboveUInner φ) (sNestingAboveUInner ψ)
     | .box φ => sNestingAboveUInner φ
-    | .untlQ _ _ => 1  -- U found inside S: contributes 1 (the S we're in)
-    | .snceQ ψ φ =>
+    | .untl _ _ => 1  -- U found inside S: contributes 1 (the S we're in)
+    | .snce ψ φ =>
       let sub := max (sNestingAboveUInner φ) (sNestingAboveUInner ψ)
       if sub > 0 then 1 + sub else 0
 
@@ -446,8 +446,8 @@ def UAppearancesTopLevelOnly : Formula → Formula → Formula → Prop
   | .bot, _, _ => True
   | .imp φ ψ, A, B => UAppearancesTopLevelOnly φ A B ∧ UAppearancesTopLevelOnly ψ A B
   | .box φ, A, B => UAppearancesTopLevelOnly φ A B
-  | .untlQ ψ φ, A, B => φ = A ∧ ψ = B  -- Only the specific U(A,B) is allowed
-  | .snceQ ψ φ, _, _ =>
+  | .untl ψ φ, A, B => φ = A ∧ ψ = B  -- Only the specific U(A,B) is allowed
+  | .snce ψ φ, _, _ =>
     -- Under S: no untl allowed at all (U must be at top level, not under S)
     isUFree φ = true ∧ isUFree ψ = true
 
@@ -458,8 +458,8 @@ def UAppearsOnlyAsTopLevel : Formula → Formula → Formula → Prop
   | .bot, _, _ => True
   | .imp φ ψ, A, B => UAppearsOnlyAsTopLevel φ A B ∧ UAppearsOnlyAsTopLevel ψ A B
   | .box φ, A, B => UAppearsOnlyAsTopLevel φ A B
-  | .untlQ ψ φ, A, B => UAppearsOnlyAsTopLevel φ A B ∧ UAppearsOnlyAsTopLevel ψ A B
-  | .snceQ ψ φ, _, _ => isUFree φ = true ∧ isUFree ψ = true
+  | .untl ψ φ, A, B => UAppearsOnlyAsTopLevel φ A B ∧ UAppearsOnlyAsTopLevel ψ A B
+  | .snce ψ φ, _, _ => isUFree φ = true ∧ isUFree ψ = true
 
 /-- Predicate: the formula has no S nested within any U. -/
 def NoSNestedInU : Formula -> Prop
@@ -467,8 +467,8 @@ def NoSNestedInU : Formula -> Prop
   | .bot => True
   | .imp phi psi => NoSNestedInU phi ∧ NoSNestedInU psi
   | .box phi => NoSNestedInU phi
-  | .untlQ psi phi => isSFree phi = true ∧ isSFree psi = true
-  | .snceQ psi phi => NoSNestedInU phi ∧ NoSNestedInU psi
+  | .untl psi phi => isSFree phi = true ∧ isSFree psi = true
+  | .snce psi phi => NoSNestedInU phi ∧ NoSNestedInU psi
 
 @[simp] theorem no_S_nested_in_U_all_past (φ : Formula) :
     NoSNestedInU (Formula.allPast φ) ↔ NoSNestedInU φ := by
@@ -497,7 +497,7 @@ theorem int_truth_depends_only_on_atoms (φ : Formula) (M₁ M₂ : IntStructure
       (ih1 t (fun a ha => h a (Set.mem_union_left _ ha)))
       (ih2 t (fun a ha => h a (Set.mem_union_right _ ha)))
   | box _ => rfl
-  | untlQ d c ih2 ih1 =>
+  | untl d c ih2 ih1 =>
     simp only [IntTruth]; constructor
     · rintro ⟨s, hts, hc, hd⟩
       exact ⟨s, hts, (ih1 s (fun a ha => h a (Set.mem_union_left _ ha))).mp hc,
@@ -505,7 +505,7 @@ theorem int_truth_depends_only_on_atoms (φ : Formula) (M₁ M₂ : IntStructure
     · rintro ⟨s, hts, hc, hd⟩
       exact ⟨s, hts, (ih1 s (fun a ha => h a (Set.mem_union_left _ ha))).mpr hc,
         fun r hr1 hr2 => (ih2 r (fun a ha => h a (Set.mem_union_right _ ha))).mpr (hd r hr1 hr2)⟩
-  | snceQ d c ih2 ih1 =>
+  | snce d c ih2 ih1 =>
     simp only [IntTruth]; constructor
     · rintro ⟨s, hst, hc, hd⟩
       exact ⟨s, hst, (ih1 s (fun a ha => h a (Set.mem_union_left _ ha))).mp hc,
@@ -529,8 +529,8 @@ theorem s_free_eq_future_only (φ : Formula) : isSFree φ = isFutureOnly φ := b
   | bot => rfl
   | imp a b ih1 ih2 => simp [isSFree, isFutureOnly, ih1, ih2]
   | box a ih => simp [isSFree, isFutureOnly, ih]
-  | untlQ b a ih2 ih1 => simp [isSFree, isFutureOnly, ih1, ih2]
-  | snceQ _ _ => rfl
+  | untl b a ih2 ih1 => simp [isSFree, isFutureOnly, ih1, ih2]
+  | snce _ _ => rfl
 
 /-- `isUFree` and `isPastOnly` are identical predicates on the 6-constructor Formula type.
     Both forbid `untl` and permit `snce`, `box`, `imp`, `atom`, `bot`. -/
@@ -540,8 +540,8 @@ theorem u_free_eq_past_only (φ : Formula) : isUFree φ = isPastOnly φ := by
   | bot => rfl
   | imp a b ih1 ih2 => simp [isUFree, isPastOnly, ih1, ih2]
   | box a ih => simp [isUFree, isPastOnly, ih]
-  | untlQ _ _ => rfl
-  | snceQ b a ih2 ih1 => simp [isUFree, isPastOnly, ih1, ih2]
+  | untl _ _ => rfl
+  | snce b a ih2 ih1 => simp [isUFree, isPastOnly, ih1, ih2]
 
 /-- `isSyntacticallySeparated` and `isProperlySeparated` are identical predicates.
     At the `.untl` case, both require S-free/future-only arguments (equal by
@@ -555,8 +555,8 @@ theorem syn_sep_eq_proper_sep (φ : Formula) :
   | bot => rfl
   | imp a b ih1 ih2 => simp [isSyntacticallySeparated, isProperlySeparated, ih1, ih2]
   | box _ => rfl
-  | untlQ b a _ _ => simp [isSyntacticallySeparated, isProperlySeparated, s_free_eq_future_only]
-  | snceQ b a _ _ => simp [isSyntacticallySeparated, isProperlySeparated, u_free_eq_past_only]
+  | untl b a _ _ => simp [isSyntacticallySeparated, isProperlySeparated, s_free_eq_future_only]
+  | snce b a _ _ => simp [isSyntacticallySeparated, isProperlySeparated, u_free_eq_past_only]
 
 /-- Corollary: a formula is separable iff it is properly separable. -/
 theorem separable_iff_properly_separable (φ : Formula) :

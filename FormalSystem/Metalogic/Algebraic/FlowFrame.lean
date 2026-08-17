@@ -735,7 +735,7 @@ theorem bundleFlow_truth_lemma [Nontrivial D] (B : BFMCS (fc := fc) D) (root : F
         exact (ih h_ψ_sub ⟨fam', hfam'⟩ w₀ t).mpr
           (h_all_σ (bundleFlowHistory ⟨fam', hfam'⟩ w₀) (bundleFlowHistory_total _ _))
       exact B.modal_backward fam.val fam.property ψ (w₀ + t) h_all_fam
-  | untlQ β α ih_β ih_α =>
+  | untl β α ih_β ih_α =>
     have h_α_sub : α ∈ subformulaClosure root := closure_untl_left root α β h_sub
     have h_β_sub : β ∈ subformulaClosure root := closure_untl_right root α β h_sub
     simp only [TruthAt]
@@ -758,7 +758,7 @@ theorem bundleFlow_truth_lemma [Nontrivial D] (B : BFMCS (fc := fc) D) (root : F
       have h_mem := (ih_β h_β_sub fam w₀ (r - w₀)).mpr
         (h_β_guard (r - w₀) (lt_sub_iff_add_lt'.mpr h_tr) (sub_lt_iff_lt_add'.mpr h_rs))
       rwa [show w₀ + (r - w₀) = r from by abel] at h_mem
-  | snceQ β α ih_β ih_α =>
+  | snce β α ih_β ih_α =>
     have h_α_sub : α ∈ subformulaClosure root := closure_snce_left root α β h_sub
     have h_β_sub : β ∈ subformulaClosure root := closure_snce_right root α β h_sub
     simp only [TruthAt]

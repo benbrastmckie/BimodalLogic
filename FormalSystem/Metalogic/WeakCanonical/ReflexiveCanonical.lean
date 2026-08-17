@@ -208,7 +208,7 @@ noncomputable def someFutureMono {A B : Formula}
     DerivationTree.temporal_necessitation _ h
   -- BX3: G(A → B) → (U(A, ⊤) → U(B, ⊤)) = G(A → B) → (F(A) → F(B))
   have h_bx3 : [] ⊢ (A.imp B).allFuture.imp
-      ((Formula.untlQ Formula.top A).imp (Formula.untlQ Formula.top B)) :=
+      ((Formula.untl Formula.top A).imp (Formula.untl Formula.top B)) :=
     DerivationTree.axiom [] _ (Axiom.right_mono_until A B Formula.top) trivial
   -- F(A) → F(B) by MP
   exact DerivationTree.modus_ponens [] _ _ h_bx3 h_G
@@ -691,7 +691,7 @@ def reflCanV (x : ReflCanDomain) (p : Atom) : Prop :=
 /-! ## Discreteness -/
 
 /-- U(⊤,⊥): asserts existence of immediate successor (guard ⊥ is vacuous). -/
-def nextTop : Formula := Formula.untlQ Formula.bot (Formula.bot.imp Formula.bot)
+def nextTop : Formula := Formula.untl Formula.bot (Formula.bot.imp Formula.bot)
 
 /-- If □(nextTop) ∈ A, then nextTop ∈ x.val for all x box-accessible from A. -/
 theorem next_top_in_box_class (A : ReflCanDomain) (x : ReflCanDomain)

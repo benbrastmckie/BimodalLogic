@@ -192,7 +192,7 @@ Burgess 1984 §2.7, printed pp.109-110 (the far-side placement, which carries no
 def NoGuardAccumulation (D : Set Rat) (m : Rat → Set Formula) (G : Set Formula) : Prop :=
   ∀ ψ ∈ G, ∀ φ : Formula, ∀ S₀ : Set Rat, AscendsToGap D S₀ →
     (∀ q ∈ S₀, Formula.neg ψ ∈ m q) →
-    ¬ (CofinalBelowGap D m S₀ (Formula.untlQ ψ φ) ∨ CofinalBelowGap D m S₀ (Formula.snceQ ψ φ))
+    ¬ (CofinalBelowGap D m S₀ (Formula.untl ψ φ) ∨ CofinalBelowGap D m S₀ (Formula.snce ψ φ))
 
 /-- The invariant is antitone in the guard set: fewer guards is a weaker demand. -/
 theorem noGuardAccumulation_mono_guards {D : Set Rat} {m : Rat → Set Formula}
@@ -364,7 +364,7 @@ theorem not_noGuardAccumulation_of_cofinal_guard_failure
     (m : Rat → Set Formula) (G : Set Formula) (r : ℝ) (hr : ¬ ∃ q : Rat, (q : ℝ) = r)
     (φ ψ : Formula) (hψG : ψ ∈ G)
     (hfail : ∀ z : ℝ, z < r → ∃ q : Rat, z < (q : ℝ) ∧ (q : ℝ) < r ∧ Formula.neg ψ ∈ m q)
-    (hlive : ∀ z : ℝ, z < r → ∃ q : Rat, z < (q : ℝ) ∧ (q : ℝ) < r ∧ Formula.untlQ ψ φ ∈ m q) :
+    (hlive : ∀ z : ℝ, z < r → ∃ q : Rat, z < (q : ℝ) ∧ (q : ℝ) < r ∧ Formula.untl ψ φ ∈ m q) :
     ¬ NoGuardAccumulation Set.univ m G := by
   intro hinv
   set S : Set Rat := {q : Rat | (q : ℝ) < r ∧ Formula.neg ψ ∈ m q} with hS
@@ -402,7 +402,7 @@ structure FamilyQShape (m : Rat → Set Formula) (P : Formula) (T : ℝ) : Prop 
   guard_fails_cofinally :
     ∀ z : ℝ, z < T → ∃ t : Rat, z < (t : ℝ) ∧ (t : ℝ) < T ∧ Formula.neg (Formula.neg P) ∈ m t
   /-- The obligation `U(P, ¬P)` holds at every rational below the gap. -/
-  until_below : ∀ q : Rat, (q : ℝ) < T → Formula.untlQ (Formula.neg P) P ∈ m q
+  until_below : ∀ q : Rat, (q : ℝ) < T → Formula.untl (Formula.neg P) P ∈ m q
 
 /--
 **The accumulating family violates the invariant.**
@@ -520,7 +520,7 @@ interval below it — the permanent form, already closed under all later inserti
 **No source.** Original work.
 -/
 def C5StrongData (D : Set Rat) (m : Rat → Set Formula) : Prop :=
-  ∀ x ∈ D, ∀ φ ψ : Formula, Formula.untlQ ψ φ ∈ m x →
+  ∀ x ∈ D, ∀ φ ψ : Formula, Formula.untl ψ φ ∈ m x →
     ∃ y ∈ D, x < y ∧ φ ∈ m y ∧ ∀ w ∈ D, x < w → w < y → ψ ∈ m w
 
 /--
@@ -529,7 +529,7 @@ The backward mirror of `C5StrongData`.
 **No source.** Original work.
 -/
 def C5BackwardStrongData (D : Set Rat) (m : Rat → Set Formula) : Prop :=
-  ∀ x ∈ D, ∀ φ ψ : Formula, Formula.snceQ ψ φ ∈ m x →
+  ∀ x ∈ D, ∀ φ ψ : Formula, Formula.snce ψ φ ∈ m x →
     ∃ y ∈ D, y < x ∧ φ ∈ m y ∧ ∀ w ∈ D, y < w → w < x → ψ ∈ m w
 
 /--
@@ -540,7 +540,7 @@ point has a guard failure strictly in between.
 -/
 def C4Data (D : Set Rat) (m : Rat → Set Formula) : Prop :=
   ∀ x ∈ D, ∀ y ∈ D, x < y → ∀ φ ψ : Formula,
-    (Formula.untlQ ψ φ).neg ∈ m x → φ ∈ m y →
+    (Formula.untl ψ φ).neg ∈ m x → φ ∈ m y →
     ∃ z ∈ D, x < z ∧ z < y ∧ ψ.neg ∈ m z
 
 /--
@@ -550,7 +550,7 @@ The backward mirror of `C4Data`.
 -/
 def C4BackwardData (D : Set Rat) (m : Rat → Set Formula) : Prop :=
   ∀ x ∈ D, ∀ y ∈ D, y < x → ∀ φ ψ : Formula,
-    (Formula.snceQ ψ φ).neg ∈ m x → φ ∈ m y →
+    (Formula.snce ψ φ).neg ∈ m x → φ ∈ m y →
     ∃ z ∈ D, y < z ∧ z < x ∧ ψ.neg ∈ m z
 
 /-! ### A monotone rational approach to a gap
@@ -646,7 +646,7 @@ The family that realizes the accumulating shape against the full limit-level dat
 -/
 noncomputable def guardAccumFamily (r : ℝ) (a : Atom) (q : Rat) : Set Formula :=
   {χ | (q : ℝ) < r ∧
-    (χ = Formula.untlQ (Formula.neg (Formula.atom a)) (Formula.atom a) ∨
+    (χ = Formula.untl (Formula.neg (Formula.atom a)) (Formula.atom a) ∨
      (q ∈ Set.range (gapApproach r) ∧
        (χ = Formula.atom a ∨ χ = Formula.neg (Formula.neg (Formula.atom a)))) ∨
      (q ∉ Set.range (gapApproach r) ∧ χ = Formula.neg (Formula.atom a)))}
@@ -655,7 +655,7 @@ noncomputable def guardAccumFamily (r : ℝ) (a : Atom) (q : Rat) : Set Formula 
 theorem guardAccumFamily_mem_cases (r : ℝ) (a : Atom) {q : Rat} {χ : Formula}
     (h : χ ∈ guardAccumFamily r a q) :
     (q : ℝ) < r ∧
-      (χ = Formula.untlQ (Formula.neg (Formula.atom a)) (Formula.atom a) ∨
+      (χ = Formula.untl (Formula.neg (Formula.atom a)) (Formula.atom a) ∨
        χ = Formula.atom a ∨ χ = Formula.neg (Formula.neg (Formula.atom a)) ∨
        χ = Formula.neg (Formula.atom a)) := by
   obtain ⟨hq, hcase⟩ := h
@@ -668,7 +668,7 @@ theorem guardAccumFamily_mem_cases (r : ℝ) (a : Atom) {q : Rat} {χ : Formula}
 
 /-- The obligation holds at every rational strictly below the gap. -/
 theorem guardAccumFamily_untl_mem (r : ℝ) (a : Atom) {q : Rat} (hq : (q : ℝ) < r) :
-    Formula.untlQ (Formula.neg (Formula.atom a)) (Formula.atom a) ∈ guardAccumFamily r a q :=
+    Formula.untl (Formula.neg (Formula.atom a)) (Formula.atom a) ∈ guardAccumFamily r a q :=
   ⟨hq, Or.inl rfl⟩
 
 /-- The event formula holds at each approach point. -/

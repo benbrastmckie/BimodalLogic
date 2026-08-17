@@ -708,8 +708,8 @@ private theorem navR_segGuard_iff (M : OrderedMonadicStructure sig)
     the future w-point package. The time-reversed mirror of `navLChain`. -/
 noncomputable def navRChain (σ : NormalForm sig 1 3) :
     List (NormalForm sig 0 1) → Formula
-  | [] => Formula.untlQ (navRSegGuard atomMap h_surj σ) (navRAtWPack atomMap h_surj σ)
-  | χ :: rest => Formula.untlQ
+  | [] => Formula.untl (navRSegGuard atomMap h_surj σ) (navRAtWPack atomMap h_surj σ)
+  | χ :: rest => Formula.untl
       (navRSegGuard atomMap h_surj σ)
       (Formula.and (nfDepth0CharFormula atomMap h_surj χ) (navRChain σ rest))
 

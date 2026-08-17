@@ -117,7 +117,7 @@ def kplus {sig : MonadicSignature}
 
 /-- K+(P) is TL-definable: the formula P.neg ∧ ¬(⊤ U P.neg). -/
 noncomputable def kplusFormula (P : Formula) : Formula :=
-  Formula.and P.neg (Formula.imp (Formula.untlQ P.neg Formula.top) Formula.bot)
+  Formula.and P.neg (Formula.imp (Formula.untl P.neg Formula.top) Formula.bot)
 
 /-- K-(P)(t) **as this tree defines it — not as the sources define it**: the dual of `kplus`,
     for the Since direction. `P` holds arbitrarily close before `t`, **and** not at `t` itself.

@@ -76,8 +76,8 @@ where
     | .bot, state => state
     | .imp l r, state => go r (go l state)
     | .box child, state => go child state
-    | .untlQ r l, state => go r (go l state)
-    | .snceQ r l, state => go r (go l state)
+    | .untl r l, state => go r (go l state)
+    | .snce r l, state => go r (go l state)
 
 /--
 Build a renaming map from the DFS-ordered atoms to canonical names.
@@ -105,8 +105,8 @@ def applyAtomMap (m : Std.HashMap Atom Atom) : Formula → Formula
   | .bot => .bot
   | .imp l r => .imp (applyAtomMap m l) (applyAtomMap m r)
   | .box child => .box (applyAtomMap m child)
-  | .untlQ r l => .untlQ (applyAtomMap m r) (applyAtomMap m l)
-  | .snceQ r l => .snceQ (applyAtomMap m r) (applyAtomMap m l)
+  | .untl r l => .untl (applyAtomMap m r) (applyAtomMap m l)
+  | .snce r l => .snce (applyAtomMap m r) (applyAtomMap m l)
 
 /--
 Canonicalize a formula under atom permutation.

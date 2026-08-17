@@ -731,7 +731,7 @@ theorem kvE2_sepEpL_owner_lits {sig : MonadicSignature} [Fintype sig.preds] [Dec
     (x : M.carrier) (σ : NormalForm sig 1 4) (hσ : σ ∈ kvE2SepPosIn qnf kvE2SepZXW3)
     (hep : (kvE2SepEpL charBase charK qnf).EvalAt M atomMap x) (χ : NormalForm sig 0 1) :
     TemporalTruth M atomMap x
-        (kvE2SepLit (kvE2SepBits σ kvE2SepZPastX4 χ) (Formula.snceQ Formula.top (charBase χ)))
+        (kvE2SepLit (kvE2SepBits σ kvE2SepZPastX4 χ) (Formula.snce Formula.top (charBase χ)))
       ∧ TemporalTruth M atomMap x
         (kvE2SepLit (kvE2SepBits σ kvE2SepZAtX4 χ) (charBase χ)) := by
   have hep' : TemporalTruth M atomMap x (kvE2SepEpL charBase charK qnf).formula := hep
@@ -760,7 +760,7 @@ theorem kvE2_sepEpR_owner_lits {sig : MonadicSignature} [Fintype sig.preds] [Dec
         (kvE2SepLit (kvE2SepBits σ kvE2SepZAtT4 χ) (charBase χ))
       ∧ TemporalTruth M atomMap t
         (kvE2SepLit (kvE2SepBits σ kvE2SepZFutT4 χ)
-            (Formula.untlQ Formula.top (charBase χ))) := by
+            (Formula.untl Formula.top (charBase χ))) := by
   have hep' : TemporalTruth M atomMap t (kvE2SepEpR charBase charK qnf).formula := hep
   simp only [kvE2SepEpR] at hep'
   have hall := (formula_conjList_iff M atomMap t _).mp hep'

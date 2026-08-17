@@ -533,7 +533,7 @@ variable [Fintype ι] [DenselyOrdered D]
 private theorem untl_forward [NoMaxOrder D] {φ ψ : Formula}
     (hφ : InterpInvariant f M φ) (hψ : InterpInvariant f M ψ)
     {τ : WorldHistory F} (hτ : τ.IsTotal) {r r' : D} (hrr' : SameRegion f r r') (hlt : r < r')
-    (h : TruthAt M τ r (ψ.untlQ φ)) : TruthAt M τ r' (ψ.untlQ φ) := by
+    (h : TruthAt M τ r (ψ.untl φ)) : TruthAt M τ r' (ψ.untl φ) := by
   obtain ⟨s, hrs, hφs, hg⟩ := h
   by_cases hcase : r' < s
   · exact ⟨s, hcase, hφs, fun x hx hxs => hg x (lt_trans hlt hx) hxs⟩
@@ -554,7 +554,7 @@ private theorem untl_forward [NoMaxOrder D] {φ ψ : Formula}
 private theorem untl_backward [NoMaxOrder D] {φ ψ : Formula}
     (hψ : InterpInvariant f M ψ)
     {τ : WorldHistory F} (hτ : τ.IsTotal) {r r' : D} (hrr' : SameRegion f r r') (hlt : r < r')
-    (h : TruthAt M τ r' (ψ.untlQ φ)) : TruthAt M τ r (ψ.untlQ φ) := by
+    (h : TruthAt M τ r' (ψ.untl φ)) : TruthAt M τ r (ψ.untl φ) := by
   obtain ⟨s, hr's, hφs, hg⟩ := h
   have hnp := placed_ne_of_sameRegion_ne hrr' (ne_of_lt hlt)
   obtain ⟨s₁, hr's₁, hs₁reg⟩ := exists_gt_sameRegion (f := f) (r := r') hnp.2
@@ -581,7 +581,7 @@ replaced by a fresh one inside the region.
 -/
 theorem interpInvariant_untl [NoMaxOrder D] {φ ψ : Formula}
     (hφ : InterpInvariant f M φ) (hψ : InterpInvariant f M ψ) :
-    InterpInvariant f M (Formula.untlQ ψ φ) := by
+    InterpInvariant f M (Formula.untl ψ φ) := by
   intro τ hτ r r' hrr'
   rcases lt_trichotomy r r' with hlt | heq | hgt
   · exact ⟨untl_forward hφ hψ hτ hrr' hlt, untl_backward hψ hτ hrr' hlt⟩
@@ -592,7 +592,7 @@ theorem interpInvariant_untl [NoMaxOrder D] {φ ψ : Formula}
 private theorem snce_forward [NoMinOrder D] {φ ψ : Formula}
     (hψ : InterpInvariant f M ψ)
     {τ : WorldHistory F} (hτ : τ.IsTotal) {r r' : D} (hrr' : SameRegion f r r') (hlt : r < r')
-    (h : TruthAt M τ r (ψ.snceQ φ)) : TruthAt M τ r' (ψ.snceQ φ) := by
+    (h : TruthAt M τ r (ψ.snce φ)) : TruthAt M τ r' (ψ.snce φ) := by
   obtain ⟨s, hsr, hφs, hg⟩ := h
   have hnp := placed_ne_of_sameRegion_ne hrr' (ne_of_lt hlt)
   obtain ⟨s₁, hs₁r, hs₁reg⟩ := exists_lt_sameRegion (f := f) (r := r) hnp.1
@@ -613,7 +613,7 @@ private theorem snce_forward [NoMinOrder D] {φ ψ : Formula}
 private theorem snce_backward [NoMinOrder D] {φ ψ : Formula}
     (hφ : InterpInvariant f M φ) (hψ : InterpInvariant f M ψ)
     {τ : WorldHistory F} (hτ : τ.IsTotal) {r r' : D} (hrr' : SameRegion f r r') (hlt : r < r')
-    (h : TruthAt M τ r' (ψ.snceQ φ)) : TruthAt M τ r (ψ.snceQ φ) := by
+    (h : TruthAt M τ r' (ψ.snce φ)) : TruthAt M τ r (ψ.snce φ) := by
   obtain ⟨s, hsr', hφs, hg⟩ := h
   by_cases hcase : s < r
   · exact ⟨s, hcase, hφs, fun x hsx hxr => hg x hsx (lt_trans hxr hlt)⟩
@@ -637,7 +637,7 @@ least element.
 -/
 theorem interpInvariant_snce [NoMinOrder D] {φ ψ : Formula}
     (hφ : InterpInvariant f M φ) (hψ : InterpInvariant f M ψ) :
-    InterpInvariant f M (Formula.snceQ ψ φ) := by
+    InterpInvariant f M (Formula.snce ψ φ) := by
   intro τ hτ r r' hrr'
   rcases lt_trichotomy r r' with hlt | heq | hgt
   · exact ⟨snce_forward hψ hτ hrr' hlt, snce_backward hφ hψ hτ hrr' hlt⟩
@@ -688,8 +688,8 @@ theorem interpInvariant [NoMaxOrder D] [NoMinOrder D]
   | bot => exact interpInvariant_bot
   | imp φ ψ hφ hψ => exact interpInvariant_imp hφ hψ
   | box φ hφ => exact interpInvariant_box hφ
-  | untlQ ψ φ hψ hφ => exact interpInvariant_untl hφ hψ
-  | snceQ ψ φ hψ hφ => exact interpInvariant_snce hφ hψ
+  | untl ψ φ hψ hφ => exact interpInvariant_untl hφ hψ
+  | snce ψ φ hψ hφ => exact interpInvariant_snce hφ hψ
 
 end Invariance
 

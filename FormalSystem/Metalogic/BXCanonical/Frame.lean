@@ -693,7 +693,7 @@ The witness v with ψ ∈ v comes from BX10 (until_F) + bx_forward_witness.
 -/
 theorem bx_until_eventuality_resolution
     (w : BXPoint) (φ ψ : Formula)
-    (h_until : Formula.untlQ φ ψ ∈ w.formulas)
+    (h_until : Formula.untl φ ψ ∈ w.formulas)
     (_h_not_psi : ψ ∉ w.formulas) :
     ∃ v : BXPoint, BxLe w v ∧ ψ ∈ v.formulas := by
   -- By BX10: F(ψ) ∈ w
@@ -713,7 +713,7 @@ Under open guard semantics, the return type does not claim φ ∈ w (BX9' remove
 -/
 theorem bx_since_eventuality_resolution
     (w : BXPoint) (φ ψ : Formula)
-    (h_since : Formula.snceQ φ ψ ∈ w.formulas)
+    (h_since : Formula.snce φ ψ ∈ w.formulas)
     (_h_not_psi : ψ ∉ w.formulas) :
     ∃ v : BXPoint, BxLe v w ∧ ψ ∈ v.formulas := by
   -- By BX10': P(ψ) ∈ w

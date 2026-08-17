@@ -524,9 +524,9 @@ noncomputable def kvE2PastRayForm {sig : MonadicSignature} [Fintype sig.preds]
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (σ : NormalForm sig 1 4) : Formula :=
   formulaConjList
-    ((Formula.snceQ Formula.top (kvE2PastRayD atomMap h_surj σ).neg).neg ::
+    ((Formula.snce Formula.top (kvE2PastRayD atomMap h_surj σ).neg).neg ::
       (kvE2PastRayList σ).map fun χ =>
-        Formula.snceQ Formula.top (nfDepth0CharFormula atomMap h_surj χ))
+        Formula.snce Formula.top (nfDepth0CharFormula atomMap h_surj χ))
 
 /-- Endpoint description: fresh profile + exact ray content. -/
 noncomputable def kvE2PastEnd {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
@@ -544,9 +544,9 @@ noncomputable def kvE2PastChain {sig : MonadicSignature} [Fintype sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (endF D : Formula) : List (NormalForm sig 0 1) → Formula
-  | [] => Formula.snceQ D endF
+  | [] => Formula.snce D endF
   | χ :: rest =>
-      Formula.snceQ
+      Formula.snce
         D
         (formulaConjList
           [nfDepth0CharFormula atomMap h_surj χ,
@@ -1040,7 +1040,7 @@ theorem kvE2_extNegPast_complete {sig : MonadicSignature} [Fintype sig.preds]
     (nf_depth0_char_correct' M atomMap h_surj _ x1).mp hchfr
   rw [kvE2PastRayForm, formula_conjList_iff] at hrayform
   have hnoray : TemporalTruth M atomMap x1
-      (Formula.snceQ Formula.top (kvE2PastRayD atomMap h_surj σ).neg).neg :=
+      (Formula.snce Formula.top (kvE2PastRayD atomMap h_surj σ).neg).neg :=
     hrayform _ (by simp)
   have hray : ∀ u : M.carrier, u < x1 →
       TemporalTruth M atomMap u (kvE2PastRayD atomMap h_surj σ) := by

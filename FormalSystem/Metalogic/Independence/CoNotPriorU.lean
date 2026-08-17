@@ -208,8 +208,8 @@ character-for-character:
 `(U(⊤, φ) ∧ F(¬φ)) → U(¬φ ∨ K⁺(¬φ), φ)`.
 -/
 def priorUGapFormula (φ : Formula) : Formula :=
-  (Formula.and (Formula.untlQ φ Formula.top) φ.neg.someFuture).imp
-    (Formula.untlQ φ (Formula.or φ.neg (Formula.kPlus φ.neg)))
+  (Formula.and (Formula.untl φ Formula.top) φ.neg.someFuture).imp
+    (Formula.untl φ (Formula.or φ.neg (Formula.kPlus φ.neg)))
 
 /-- The transcription **is** the axiom's formula: `Axiom.prior_U_gap` elaborates at it directly,
 which is the acceptance test for the transcription being character-for-character. -/
@@ -220,7 +220,7 @@ def priorUGapFormula_isAxiom (φ : Formula) : Axiom (priorUGapFormula φ) := Axi
 /-- **Membership fact 1**: `U(⊤, p)` holds at time `0` — witness `s = 1/4`, which is inside the
 arc because `1/4 < α`. -/
 theorem untl_top_atom_true (a : Atom) :
-    TruthAt clockModel clockHistory 0 (Formula.untlQ (Formula.atom a) Formula.top) := by
+    TruthAt clockModel clockHistory 0 (Formula.untl (Formula.atom a) Formula.top) := by
   refine ⟨1 / 4, by norm_num, truth_top, ?_⟩
   intro r hr1 hr2
   rw [clock_atom_truth]
@@ -241,7 +241,7 @@ theorem someFuture_neg_atom_true (a : Atom) :
 /-- The antecedent of `Axiom.prior_U_gap p` holds at time `0`. -/
 theorem priorUGap_antecedent_true (a : Atom) :
     TruthAt clockModel clockHistory 0
-      (Formula.and (Formula.untlQ (Formula.atom a) Formula.top)
+      (Formula.and (Formula.untl (Formula.atom a) Formula.top)
         (Formula.atom a).neg.someFuture) :=
   (truth_and_iff _ _).mpr ⟨untl_top_atom_true a, someFuture_neg_atom_true a⟩
 
@@ -256,7 +256,7 @@ there too; the event disjunction is therefore false at `s`.
 -/
 theorem priorUGap_consequent_false (a : Atom) :
     ¬ TruthAt clockModel clockHistory 0
-      (Formula.untlQ (Formula.atom a)
+      (Formula.untl (Formula.atom a)
         (Formula.or (Formula.atom a).neg (Formula.kPlus (Formula.atom a).neg))) := by
   rintro ⟨s, hs, hev, hg⟩
   have hs' : (0 : ℝ) < (s : ℝ) := by exact_mod_cast hs
@@ -459,7 +459,7 @@ theorem truthAt_mirror (φ : Formula) :
           exact (cneg_cneg (ρ.states (-x) (hρ (-x)))).symm
         exact (ihA (reflect ρ hρ) ρ (reflect_isTotal ρ hρ) hρ hrel2 t).mpr
           (h (reflect ρ hρ) (reflect_isTotal ρ hρ))
-  | untlQ B A ihB ihA =>
+  | untl B A ihB ihA =>
       intro τ σ hτ hσ hrel t
       constructor
       · rintro ⟨s, hs, hev, hg⟩
@@ -476,7 +476,7 @@ theorem truthAt_mirror (φ : Formula) :
         have hiB := ihB τ σ hτ hσ hrel (-r)
         rw [neg_neg] at hiB
         exact hiB.mpr (hg (-r) (by linarith) (by linarith))
-  | snceQ B A ihB ihA =>
+  | snce B A ihB ihA =>
       intro τ σ hτ hσ hrel t
       constructor
       · rintro ⟨s, hs, hev, hg⟩

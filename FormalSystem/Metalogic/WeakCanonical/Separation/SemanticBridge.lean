@@ -44,8 +44,8 @@ def isBoxFree : Formula → Bool
   | .bot => true
   | .imp φ ψ => isBoxFree φ && isBoxFree ψ
   | .box _ => false
-  | .untlQ ψ φ => isBoxFree φ && isBoxFree ψ
-  | .snceQ ψ φ => isBoxFree φ && isBoxFree ψ
+  | .untl ψ φ => isBoxFree φ && isBoxFree ψ
+  | .snce ψ φ => isBoxFree φ && isBoxFree ψ
 
 /-! ## Core Bridge: IntTruth ↔ TemporalTruth on Z-carrier -/
 
@@ -68,14 +68,14 @@ theorem int_truth_eq_temporal_truth_Z {sig : MonadicSignature}
     simp only [IntTruth, TemporalTruth]
     exact Iff.imp (ih₁ t h_bf.1) (ih₂ t h_bf.2)
   | box _ => simp [isBoxFree] at h_bf
-  | untlQ ψ₂ ψ₁ ih₂ ih₁ =>
+  | untl ψ₂ ψ₁ ih₂ ih₁ =>
     simp only [isBoxFree, Bool.and_eq_true] at h_bf
     simp only [IntTruth, TemporalTruth, ZStructure.toOrdered]
     exact ⟨fun ⟨s, hts, h1, h2⟩ => ⟨s, hts, (ih₁ s h_bf.1).mp h1,
         fun r htr hrs => (ih₂ r h_bf.2).mp (h2 r htr hrs)⟩,
       fun ⟨s, hts, h1, h2⟩ => ⟨s, hts, (ih₁ s h_bf.1).mpr h1,
         fun r htr hrs => (ih₂ r h_bf.2).mpr (h2 r htr hrs)⟩⟩
-  | snceQ ψ₂ ψ₁ ih₂ ih₁ =>
+  | snce ψ₂ ψ₁ ih₂ ih₁ =>
     simp only [isBoxFree, Bool.and_eq_true] at h_bf
     simp only [IntTruth, TemporalTruth, ZStructure.toOrdered]
     exact ⟨fun ⟨s, hst, h1, h2⟩ => ⟨s, hst, (ih₁ s h_bf.1).mp h1,
@@ -122,7 +122,7 @@ theorem temporal_truth_order_iso {sig : MonadicSignature}
     simp only [TemporalTruth]
     exact Iff.imp (ih₁ t h_bf.1) (ih₂ t h_bf.2)
   | box _ => simp [isBoxFree] at h_bf
-  | untlQ ψ₂ ψ₁ ih₂ ih₁ =>
+  | untl ψ₂ ψ₁ ih₂ ih₁ =>
     simp only [isBoxFree, Bool.and_eq_true] at h_bf
     simp only [TemporalTruth]
     constructor
@@ -145,7 +145,7 @@ theorem temporal_truth_order_iso {sig : MonadicSignature}
           rw [← f.apply_symm_apply s]; exact f.lt_iff_lt.mpr hrs
         have := hψ₂ (f r) hfr_gt hfr_lt
         exact (ih₂ r h_bf.2).mpr this
-  | snceQ ψ₂ ψ₁ ih₂ ih₁ =>
+  | snce ψ₂ ψ₁ ih₂ ih₁ =>
     simp only [isBoxFree, Bool.and_eq_true] at h_bf
     simp only [TemporalTruth]
     constructor

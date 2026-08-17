@@ -157,8 +157,8 @@ private def nt (φ : Formula) : Formula := Formula.neg φ
 private def im (φ ψ : Formula) : Formula := Formula.imp φ ψ
 private def an (φ ψ : Formula) : Formula := Formula.and φ ψ
 private def orr (φ ψ : Formula) : Formula := Formula.or φ ψ
-private def U (e g : Formula) : Formula := Formula.untlQ g e
-private def S (e g : Formula) : Formula := Formula.snceQ g e
+private def U (e g : Formula) : Formula := Formula.untl g e
+private def S (e g : Formula) : Formula := Formula.snce g e
 
 /-- `F^n φ`. Used by the `F q → F^k ⊤` seriality-iteration family. -/
 private def iterF : Nat → Formula → Formula

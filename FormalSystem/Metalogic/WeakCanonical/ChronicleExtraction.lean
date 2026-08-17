@@ -60,7 +60,7 @@ the Prior-UZ axiom instance (for any formula ψ) is in that MCS.
 theorem prior_UZ_in_limit_domain {fc : FrameClass} (h_fc : FrameClass.Discrete ≤ fc)
     (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
     (x : Rat) (hx : x ∈ LimitDom fc A h_mcs) (ψ : Formula) :
-    Formula.imp (Formula.someFuture ψ) (Formula.untlQ ψ.neg ψ) ∈ LimitF fc A h_mcs x :=
+    Formula.imp (Formula.someFuture ψ) (Formula.untl ψ.neg ψ) ∈ LimitF fc A h_mcs x :=
   theorem_in_mcs (limit_c0 fc A h_mcs x hx)
     (DerivationTree.axiom [] _ (Axiom.prior_UZ ψ) h_fc)
 
@@ -70,7 +70,7 @@ Prior-SZ holds at every point in the limit domain.
 theorem prior_SZ_in_limit_domain {fc : FrameClass} (h_fc : FrameClass.Discrete ≤ fc)
     (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
     (x : Rat) (hx : x ∈ LimitDom fc A h_mcs) (ψ : Formula) :
-    Formula.imp (Formula.somePast ψ) (Formula.snceQ ψ.neg ψ) ∈ LimitF fc A h_mcs x :=
+    Formula.imp (Formula.somePast ψ) (Formula.snce ψ.neg ψ) ∈ LimitF fc A h_mcs x :=
   theorem_in_mcs (limit_c0 fc A h_mcs x hx)
     (DerivationTree.axiom [] _ (Axiom.prior_SZ ψ) h_fc)
 
@@ -124,31 +124,31 @@ structure ChronicleAsPriorModel (fc : FrameClass := FrameClass.Base) where
   next_top_everywhere : ∀ t : domain, nextTop ∈ fmcs t
   /-- Prior-UZ valid: for all ψ, Prior-UZ(ψ) ∈ MCS at every point -/
   prior_UZ_valid : ∀ t : domain, ∀ ψ : Formula,
-    Formula.imp (Formula.someFuture ψ) (Formula.untlQ ψ.neg ψ) ∈ fmcs t
+    Formula.imp (Formula.someFuture ψ) (Formula.untl ψ.neg ψ) ∈ fmcs t
   /-- Prior-SZ valid: for all ψ, Prior-SZ(ψ) ∈ MCS at every point -/
   prior_SZ_valid : ∀ t : domain, ∀ ψ : Formula,
-    Formula.imp (Formula.somePast ψ) (Formula.snceQ ψ.neg ψ) ∈ fmcs t
+    Formula.imp (Formula.somePast ψ) (Formula.snce ψ.neg ψ) ∈ fmcs t
   /-- C5 forward for Until: if U(φ,ψ) ∈ fmcs(t), then there exists s > t
       with φ ∈ fmcs(s) and ψ ∈ fmcs(r) for all r ∈ (t,s). -/
   until_coherent_fwd : ∀ (t : domain) (φ ψ : Formula),
-    Formula.untlQ ψ φ ∈ fmcs t →
+    Formula.untl ψ φ ∈ fmcs t →
     ∃ (s : domain), t < s ∧ φ ∈ fmcs s ∧
       ∀ (r : domain), t < r → r < s → ψ ∈ fmcs r
   /-- C5 forward for Since: if S(φ,ψ) ∈ fmcs(t), then there exists s < t
       with φ ∈ fmcs(s) and ψ ∈ fmcs(r) for all r ∈ (s,t). -/
   since_coherent_fwd : ∀ (t : domain) (φ ψ : Formula),
-    Formula.snceQ ψ φ ∈ fmcs t →
+    Formula.snce ψ φ ∈ fmcs t →
     ∃ (s : domain), s < t ∧ φ ∈ fmcs s ∧
       ∀ (r : domain), s < r → r < t → ψ ∈ fmcs r
   /-- C4 backward for Until: if ¬U(φ,ψ) ∈ fmcs(t) and φ ∈ fmcs(s) with t < s,
       there exists an intermediate z ∈ (t,s) with ¬ψ ∈ fmcs(z). -/
   neg_until_coherent : ∀ (t s : domain), t < s → ∀ (φ ψ : Formula),
-    (Formula.untlQ ψ φ).neg ∈ fmcs t → φ ∈ fmcs s →
+    (Formula.untl ψ φ).neg ∈ fmcs t → φ ∈ fmcs s →
     ∃ (z : domain), t < z ∧ z < s ∧ ψ.neg ∈ fmcs z
   /-- C4 backward for Since: if ¬S(φ,ψ) ∈ fmcs(t) and φ ∈ fmcs(s) with s < t,
       there exists an intermediate z ∈ (s,t) with ¬ψ ∈ fmcs(z). -/
   neg_since_coherent : ∀ (t s : domain), s < t → ∀ (φ ψ : Formula),
-    (Formula.snceQ ψ φ).neg ∈ fmcs t → φ ∈ fmcs s →
+    (Formula.snce ψ φ).neg ∈ fmcs t → φ ∈ fmcs s →
     ∃ (z : domain), s < z ∧ z < t ∧ ψ.neg ∈ fmcs z
 
 attribute [instance] ChronicleAsPriorModel.domainLo

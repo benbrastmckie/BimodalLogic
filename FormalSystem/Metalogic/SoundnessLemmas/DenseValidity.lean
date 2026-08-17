@@ -169,7 +169,7 @@ theorem swap_axiom_tl_valid (φ : Formula) :
 Swap of F_until_equiv: `F(φ) → ⊤ U φ` swaps to `P(φ') → ⊤ S φ'`. -/
 theorem swap_axiom_F_until_equiv_valid (φ : Formula) :
     IsValid D ((Formula.someFuture φ).imp
-      (Formula.untlQ (Formula.bot.imp Formula.bot) φ)).swapTemporal := by
+      (Formula.untl (Formula.bot.imp Formula.bot) φ)).swapTemporal := by
   intro F M τ _hτ t
   simp only [Formula.swapTemporal, TruthAt, Formula.someFuture]
   intro ⟨s, hst, h_φs, _⟩
@@ -179,7 +179,7 @@ theorem swap_axiom_F_until_equiv_valid (φ : Formula) :
 Swap of P_since_equiv: `P(φ) → ⊤ S φ` swaps to `F(φ') → ⊤ U φ'`. -/
 theorem swap_axiom_P_since_equiv_valid (φ : Formula) :
     IsValid D ((Formula.somePast φ).imp
-      (Formula.snceQ (Formula.bot.imp Formula.bot) φ)).swapTemporal := by
+      (Formula.snce (Formula.bot.imp Formula.bot) φ)).swapTemporal := by
   intro F M τ _hτ t
   simp only [Formula.swapTemporal, TruthAt, Formula.somePast]
   intro ⟨s, hts, h_φs, _⟩
@@ -938,7 +938,7 @@ If there exists s ≥ t with φ(s), then ⊤ U φ holds at t (take witness s, gu
 satisfied). -/
 theorem axiom_F_until_equiv_valid (φ : Formula) :
     IsValid D ((Formula.someFuture φ).imp
-      (Formula.untlQ (Formula.bot.imp Formula.bot) φ)) := by
+      (Formula.untl (Formula.bot.imp Formula.bot) φ)) := by
   intro F M τ _hτ t
   simp only [TruthAt, Truth.some_future_iff]
   intro ⟨s, hts, h_φs⟩
@@ -948,7 +948,7 @@ theorem axiom_F_until_equiv_valid (φ : Formula) :
 `P(φ) → (⊤ S φ)` is locally valid. Past dual of F-Until equivalence. -/
 theorem axiom_P_since_equiv_valid (φ : Formula) :
     IsValid D ((Formula.somePast φ).imp
-      (Formula.snceQ (Formula.bot.imp Formula.bot) φ)) := by
+      (Formula.snce (Formula.bot.imp Formula.bot) φ)) := by
   intro F M τ _hτ t
   simp only [TruthAt, Truth.some_past_iff]
   intro ⟨s, hst, h_φs⟩

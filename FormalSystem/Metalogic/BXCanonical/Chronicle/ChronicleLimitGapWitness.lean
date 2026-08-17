@@ -85,11 +85,11 @@ docstring. `Axiom.prior_U_gap` is consumed at `χ`, whence the hypothesis `hfc`.
 -/
 theorem limitFutureWitness_of_priorU {fc : FrameClass} (hfc : FrameClass.Dedekind ≤ fc)
     (m : Rat → Set Formula) (hm : ∀ q : Rat, SetMaximalConsistent (fc := fc) (m q))
-    (hUf : ∀ (t : Rat) (α β : Formula), Formula.untlQ β α ∈ m t →
+    (hUf : ∀ (t : Rat) (α β : Formula), Formula.untl β α ∈ m t →
       ∃ s : Rat, t < s ∧ α ∈ m s ∧ ∀ p : Rat, t < p → p < s → β ∈ m p)
     (hUb : ∀ (t : Rat) (α β : Formula),
       (∃ s : Rat, t < s ∧ α ∈ m s ∧ ∀ p : Rat, t < p → p < s → β ∈ m p) →
-      Formula.untlQ β α ∈ m t)
+      Formula.untl β α ∈ m t)
     (r : ℝ) (hr : ¬ ∃ q : Rat, (q : ℝ) = r) (φ : Formula)
     (hF : Formula.someFuture φ ∈ limitMCSBelow m r) :
     ∃ s : Rat, r < (s : ℝ) ∧ φ ∈ m s := by
@@ -132,12 +132,12 @@ theorem limitFutureWitness_of_priorU {fc : FrameClass} (hfc : FrameClass.Dedekin
     · exact h
   -- **Step C.** The Prior-U consequent at every rational strictly below `r`.
   have stepC : ∀ t : Rat, (t : ℝ) < r →
-      Formula.untlQ (Formula.someFuture φ) (Formula.or (Formula.someFuture φ).neg
+      Formula.untl (Formula.someFuture φ) (Formula.or (Formula.someFuture φ).neg
         (Formula.kPlus (Formula.someFuture φ).neg)) ∈ m t := by
     intro t ht
     -- `U(⊤, χ) ∈ m t`: witness any rational in `(t, r)`, guard true by Step A.
     obtain ⟨s0, hts0, hs0r⟩ := exists_rat_btwn ht
-    have hA1 : Formula.untlQ (Formula.someFuture φ) Formula.top ∈ m t := by
+    have hA1 : Formula.untl (Formula.someFuture φ) Formula.top ∈ m t := by
       refine hUb t Formula.top (Formula.someFuture φ) ⟨s0, by exact_mod_cast hts0, htop s0, ?_⟩
       intro p _ hps0
       exact stepA p (lt_trans (by exact_mod_cast hps0) hs0r)
@@ -145,7 +145,7 @@ theorem limitFutureWitness_of_priorU {fc : FrameClass} (hfc : FrameClass.Dedekin
     obtain ⟨u0, hu0⟩ := exists_rat_gt r
     have hA2 : Formula.someFuture (Formula.someFuture φ).neg ∈ m t :=
       hSFb t u0 (Formula.someFuture φ).neg (by exact_mod_cast lt_trans ht hu0) (stepB u0 hu0)
-    have hand : Formula.and (Formula.untlQ (Formula.someFuture φ) Formula.top)
+    have hand : Formula.and (Formula.untl (Formula.someFuture φ) Formula.top)
         (Formula.someFuture φ).neg.someFuture ∈ m t := conj_mcs fc (hm t) _ _ hA1 hA2
     have himp := theorem_in_mcs (hm t)
       (DerivationTree.axiom [] _ (Axiom.prior_U_gap (Formula.someFuture φ)) hfc)
@@ -174,7 +174,7 @@ theorem limitFutureWitness_of_priorU {fc : FrameClass} (hfc : FrameClass.Dedekin
   have hor' : ((Formula.someFuture φ).neg.neg).imp
       (Formula.kPlus (Formula.someFuture φ).neg) ∈ m u := hor
   -- `Formula.kPlus a = (U(⊤, ¬a)).neg`, so `K⁺(¬χ)` at `u` excludes `U(⊤, ¬¬χ)` at `u`.
-  have hkplus : (Formula.untlQ (Formula.someFuture φ).neg.neg Formula.top).neg ∈ m u :=
+  have hkplus : (Formula.untl (Formula.someFuture φ).neg.neg Formula.top).neg ∈ m u :=
     SetMaximalConsistent.implication_property (hm u) hor' hnn
   refine SetMaximalConsistent.neg_excludes (hm u) _ hkplus ?_
   -- But `¬¬χ` does hold throughout `(u, r)`, by Step A plus negation completeness.
@@ -205,17 +205,17 @@ theorem cantor_bfmcs_dense_limit_future_witness (fc : FrameClass)
     (h_box_dense : Formula.box nextTop.neg ∈ A) (root : Formula) :
     (cantorBfmcsDense fc A h_mcs h_box_dense).LimitFutureWitness root := by
   intro fam hfam r hr φ _ hF
-  have hUf : ∀ (t : Rat) (α β : Formula), Formula.untlQ β α ∈ fam.mcs t →
+  have hUf : ∀ (t : Rat) (α β : Formula), Formula.untl β α ∈ fam.mcs t →
       ∃ s : Rat, t < s ∧ α ∈ fam.mcs s ∧ ∀ p : Rat, t < p → p < s → β ∈ fam.mcs p :=
     fun t α β h =>
       (cantor_bfmcs_dense_restricted_fuc fc A h_mcs h_box_dense
-        (Formula.untlQ β α) fam hfam).1 t α β (self_mem_subformulaClosure _) h
+        (Formula.untl β α) fam hfam).1 t α β (self_mem_subformulaClosure _) h
   have hUb : ∀ (t : Rat) (α β : Formula),
       (∃ s : Rat, t < s ∧ α ∈ fam.mcs s ∧ ∀ p : Rat, t < p → p < s → β ∈ fam.mcs p) →
-      Formula.untlQ β α ∈ fam.mcs t :=
+      Formula.untl β α ∈ fam.mcs t :=
     fun t α β h =>
       (cantor_bfmcs_dense_restricted_buc fc A h_mcs h_box_dense
-        (Formula.untlQ β α) fam hfam).1 t α β (self_mem_subformulaClosure _) h
+        (Formula.untl β α) fam hfam).1 t α β (self_mem_subformulaClosure _) h
   exact limitFutureWitness_of_priorU hfc fam.mcs fam.is_mcs hUf hUb r hr φ hF
 
 end FormalSystem.Metalogic.BXCanonical.Chronicle

@@ -308,7 +308,7 @@ noncomputable def kvE2FutSpikeEnd {sig : MonadicSignature} [Fintype sig.preds]
     (χfr : NormalForm sig 0 1) : Formula :=
   formulaConjList
     [nfDepth0CharFormula atomMap h_surj χfr,
-     (Formula.untlQ Formula.top Formula.top).neg]
+     (Formula.untl Formula.top Formula.top).neg]
 
 /-- Positive local-existence form: `U(χmid ∧ U(end, χmid), χmid)` at `t` — "some
     `χmid`-point `s` and endpoint `x1 > s` with `(t,x1)` all-`χmid`, `x1` of profile
@@ -319,11 +319,11 @@ noncomputable def kvE2FutSpikePos {sig : MonadicSignature} [Fintype sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (χmid χfr : NormalForm sig 0 1) : Formula :=
-  Formula.untlQ
+  Formula.untl
     (nfDepth0CharFormula atomMap h_surj χmid)
     (formulaConjList
       [nfDepth0CharFormula atomMap h_surj χmid,
-       Formula.untlQ (nfDepth0CharFormula atomMap h_surj χmid)
+       Formula.untl (nfDepth0CharFormula atomMap h_surj χmid)
          (kvE2FutSpikeEnd atomMap h_surj χfr)])
 
 /-- **The spike complement clause** (Cor 5.4(2) exterior analog): the negation of the
@@ -753,14 +753,14 @@ theorem kvE2_extNegFutSpike_complete {sig : MonadicSignature} [Fintype sig.preds
   have hchmid_s : TemporalTruth M atomMap s (nfDepth0CharFormula atomMap h_surj χmid) :=
     hAs _ (by simp)
   have hinner : TemporalTruth M atomMap s
-      (Formula.untlQ (nfDepth0CharFormula atomMap h_surj χmid)
+      (Formula.untl (nfDepth0CharFormula atomMap h_surj χmid)
         (kvE2FutSpikeEnd atomMap h_surj χfr)) := hAs _ (by simp)
   obtain ⟨x1, hsx1, hend, hgap2⟩ := hinner
   simp only [kvE2FutSpikeEnd] at hend
   rw [formula_conjList_iff] at hend
   have hchfr : TemporalTruth M atomMap x1 (nfDepth0CharFormula atomMap h_surj χfr) :=
     hend _ (by simp)
-  have hnoF : TemporalTruth M atomMap x1 (Formula.untlQ Formula.top Formula.top).neg :=
+  have hnoF : TemporalTruth M atomMap x1 (Formula.untl Formula.top Formula.top).neg :=
     hend _ (by simp)
   have htx1 : t < x1 := hts.trans hsx1
   have hx1fr : NfEvalNf M 0 1 (fun _ => x1) χfr :=
@@ -1220,9 +1220,9 @@ noncomputable def kvE2FutRayForm {sig : MonadicSignature} [Fintype sig.preds]
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (σ : NormalForm sig 1 4) : Formula :=
   formulaConjList
-    ((Formula.untlQ Formula.top (kvE2FutRayD atomMap h_surj σ).neg).neg ::
+    ((Formula.untl Formula.top (kvE2FutRayD atomMap h_surj σ).neg).neg ::
       (kvE2FutRayList σ).map fun χ =>
-        Formula.untlQ Formula.top (nfDepth0CharFormula atomMap h_surj χ))
+        Formula.untl Formula.top (nfDepth0CharFormula atomMap h_surj χ))
 
 /-- Endpoint description: fresh profile + exact ray content. -/
 noncomputable def kvE2FutEnd {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
@@ -1239,9 +1239,9 @@ noncomputable def kvE2FutChain {sig : MonadicSignature} [Fintype sig.preds] [Dec
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (endF D : Formula) : List (NormalForm sig 0 1) → Formula
-  | [] => Formula.untlQ D endF
+  | [] => Formula.untl D endF
   | χ :: rest =>
-      Formula.untlQ
+      Formula.untl
         D
         (formulaConjList
           [nfDepth0CharFormula atomMap h_surj χ,
@@ -1699,7 +1699,7 @@ theorem kvE2_extNegFut_complete {sig : MonadicSignature} [Fintype sig.preds] [De
     (nf_depth0_char_correct' M atomMap h_surj _ x1).mp hchfr
   rw [kvE2FutRayForm, formula_conjList_iff] at hrayform
   have hnoray : TemporalTruth M atomMap x1
-      (Formula.untlQ Formula.top (kvE2FutRayD atomMap h_surj σ).neg).neg :=
+      (Formula.untl Formula.top (kvE2FutRayD atomMap h_surj σ).neg).neg :=
     hrayform _ (by simp)
   have hray : ∀ u : M.carrier, x1 < u →
       TemporalTruth M atomMap u (kvE2FutRayD atomMap h_surj σ) := by

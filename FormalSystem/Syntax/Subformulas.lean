@@ -46,8 +46,8 @@ def subformulas : Formula → List Formula
   | φ@.bot => [φ]
   | φ@(.imp ψ χ) => φ :: (subformulas ψ ++ subformulas χ)
   | φ@(.box ψ) => φ :: subformulas ψ
-  | φ@(.untlQ χ ψ) => φ :: (subformulas ψ ++ subformulas χ)
-  | φ@(.snceQ χ ψ) => φ :: (subformulas ψ ++ subformulas χ)
+  | φ@(.untl χ ψ) => φ :: (subformulas ψ ++ subformulas χ)
+  | φ@(.snce χ ψ) => φ :: (subformulas ψ ++ subformulas χ)
 
 /-- Count of distinct subformulas (used for termination). -/
 def subformulaCount (φ : Formula) : Nat := (subformulas φ).eraseDups.length
@@ -123,7 +123,7 @@ theorem subformulas_trans {chi psi phi : Formula}
     · simp only [subformulas, List.mem_cons]
       right
       exact iha h2
-  | untlQ b a ihb iha =>
+  | untl b a ihb iha =>
     simp only [subformulas, List.mem_cons, List.mem_append] at h2
     rcases h2 with rfl | ha | hb
     · exact h1
@@ -133,7 +133,7 @@ theorem subformulas_trans {chi psi phi : Formula}
     · simp only [subformulas, List.mem_cons, List.mem_append]
       right; right
       exact ihb hb
-  | snceQ b a ihb iha =>
+  | snce b a ihb iha =>
     simp only [subformulas, List.mem_cons, List.mem_append] at h2
     rcases h2 with rfl | ha | hb
     · exact h1
@@ -187,47 +187,47 @@ theorem mem_subformulas_of_all_future {ψ phi : Formula}
   exact subformulas_trans h_inner h
 
 /-- Subformulas of untl include the left component. -/
-theorem untl_left_mem_subformulas (ψ χ : Formula) : ψ ∈ subformulas (.untlQ χ ψ) := by
+theorem untl_left_mem_subformulas (ψ χ : Formula) : ψ ∈ subformulas (.untl χ ψ) := by
   simp only [subformulas, List.mem_cons, List.mem_append]
   right; left
   exact self_mem_subformulas ψ
 
 /-- Subformulas of untl include the right component. -/
-theorem untl_right_mem_subformulas (ψ χ : Formula) : χ ∈ subformulas (.untlQ χ ψ) := by
+theorem untl_right_mem_subformulas (ψ χ : Formula) : χ ∈ subformulas (.untl χ ψ) := by
   simp only [subformulas, List.mem_cons, List.mem_append]
   right; right
   exact self_mem_subformulas χ
 
 /-- Subformulas of snce include the left component. -/
-theorem snce_left_mem_subformulas (ψ χ : Formula) : ψ ∈ subformulas (.snceQ χ ψ) := by
+theorem snce_left_mem_subformulas (ψ χ : Formula) : ψ ∈ subformulas (.snce χ ψ) := by
   simp only [subformulas, List.mem_cons, List.mem_append]
   right; left
   exact self_mem_subformulas ψ
 
 /-- Subformulas of snce include the right component. -/
-theorem snce_right_mem_subformulas (ψ χ : Formula) : χ ∈ subformulas (.snceQ χ ψ) := by
+theorem snce_right_mem_subformulas (ψ χ : Formula) : χ ∈ subformulas (.snce χ ψ) := by
   simp only [subformulas, List.mem_cons, List.mem_append]
   right; right
   exact self_mem_subformulas χ
 
 /-- Direct membership: left of untl is in subformulas. -/
 theorem mem_subformulas_of_untl_left {ψ χ phi : Formula}
-    (h : Formula.untlQ χ ψ ∈ subformulas phi) : ψ ∈ subformulas phi := by
+    (h : Formula.untl χ ψ ∈ subformulas phi) : ψ ∈ subformulas phi := by
   exact subformulas_trans (untl_left_mem_subformulas ψ χ) h
 
 /-- Direct membership: right of untl is in subformulas. -/
 theorem mem_subformulas_of_untl_right {ψ χ phi : Formula}
-    (h : Formula.untlQ χ ψ ∈ subformulas phi) : χ ∈ subformulas phi := by
+    (h : Formula.untl χ ψ ∈ subformulas phi) : χ ∈ subformulas phi := by
   exact subformulas_trans (untl_right_mem_subformulas ψ χ) h
 
 /-- Direct membership: left of snce is in subformulas. -/
 theorem mem_subformulas_of_snce_left {ψ χ phi : Formula}
-    (h : Formula.snceQ χ ψ ∈ subformulas phi) : ψ ∈ subformulas phi := by
+    (h : Formula.snce χ ψ ∈ subformulas phi) : ψ ∈ subformulas phi := by
   exact subformulas_trans (snce_left_mem_subformulas ψ χ) h
 
 /-- Direct membership: right of snce is in subformulas. -/
 theorem mem_subformulas_of_snce_right {ψ χ phi : Formula}
-    (h : Formula.snceQ χ ψ ∈ subformulas phi) : χ ∈ subformulas phi := by
+    (h : Formula.snce χ ψ ∈ subformulas phi) : χ ∈ subformulas phi := by
   exact subformulas_trans (snce_right_mem_subformulas ψ χ) h
 
 end Formula

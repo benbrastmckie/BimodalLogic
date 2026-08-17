@@ -145,7 +145,7 @@ with `¬P(t)`, is exactly `K⁻(P)(t)`. -/
     (and hence a `∨∃⃗∀`) formula in the canonical expansion"*; this tree needs no canonical
     expansion in either direction, since both operators are outright TL-definable. -/
 noncomputable def kminusFormula (P : Formula) : Formula :=
-  Formula.and P.neg (Formula.imp (Formula.snceQ P.neg Formula.top) Formula.bot)
+  Formula.and P.neg (Formula.imp (Formula.snce P.neg Formula.top) Formula.bot)
 
 /-- `kminusFormula P` defines `K⁻(P)` in the object language: its truth at `t` is exactly the
     semantic `kminus M atomMap P t`.

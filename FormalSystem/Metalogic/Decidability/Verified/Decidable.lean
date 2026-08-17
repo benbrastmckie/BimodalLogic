@@ -1965,13 +1965,13 @@ for the `Since` mirror.
 
 /-- A genuine `Until` (guard not `⊤`) really is an `untl`. -/
 theorem asUntil?_eq_some {φ e g : Formula} (h : asUntil? φ = some (e, g)) :
-    φ = Formula.untlQ g e := by
+    φ = Formula.untl g e := by
   unfold asUntil? at h
   split at h <;> simp_all
 
 /-- A genuine `Since` (guard not `⊤`) really is a `snce`. -/
 theorem asSince?_eq_some {φ e g : Formula} (h : asSince? φ = some (e, g)) :
-    φ = Formula.snceQ g e := by
+    φ = Formula.snce g e := by
   unfold asSince? at h
   split at h <;> simp_all
 
@@ -1979,7 +1979,7 @@ theorem asSince?_eq_some {φ e g : Formula} (h : asSince? φ = some (e, g)) :
 `untlPos` asserts only the event, and the fresh time is interpreted as the witness. -/
 theorem exists_gt_truthAt_of_untl {M : TaskModel F}
     {τ : WorldHistory F} {t : D} {e g : Formula}
-    (h : TruthAt M τ t (Formula.untlQ g e)) : ∃ d, t < d ∧ TruthAt M τ d e := by
+    (h : TruthAt M τ t (Formula.untl g e)) : ∃ d, t < d ∧ TruthAt M τ d e := by
   simp only [TruthAt] at h
   obtain ⟨s, hts, hs, _⟩ := h
   exact ⟨s, hts, hs⟩
@@ -1987,7 +1987,7 @@ theorem exists_gt_truthAt_of_untl {M : TaskModel F}
 /-- The witness half of `Since`'s truth condition, the past mirror. -/
 theorem exists_lt_truthAt_of_snce {M : TaskModel F}
     {τ : WorldHistory F} {t : D} {e g : Formula}
-    (h : TruthAt M τ t (Formula.snceQ g e)) : ∃ d, d < t ∧ TruthAt M τ d e := by
+    (h : TruthAt M τ t (Formula.snce g e)) : ∃ d, d < t ∧ TruthAt M τ d e := by
   simp only [TruthAt] at h
   obtain ⟨s, hst, hs, _⟩ := h
   exact ⟨s, hst, hs⟩
@@ -2004,7 +2004,7 @@ theorem ruleSound_untlPos : RuleSound carrierBase .untlPos := by
     | none => simp [applyRule, hA, SatResult]
     | some eg =>
       obtain ⟨e, g⟩ := eg
-      have hφ : φ = Formula.untlQ g e := asUntil?_eq_some hA
+      have hφ : φ = Formula.untl g e := asUntil?_eq_some hA
       have hsrc : SatAt M hist tv ⟨.pos, φ, l⟩ := hst.sat _ hmem
       simp only [SatAt, hφ] at hsrc
       simp only [applyRule, hA]
@@ -2041,7 +2041,7 @@ theorem ruleSound_sncePos : RuleSound carrierBase .sncePos := by
     | none => simp [applyRule, hA, SatResult]
     | some eg =>
       obtain ⟨e, g⟩ := eg
-      have hφ : φ = Formula.snceQ g e := asSince?_eq_some hA
+      have hφ : φ = Formula.snce g e := asSince?_eq_some hA
       have hsrc : SatAt M hist tv ⟨.pos, φ, l⟩ := hst.sat _ hmem
       simp only [SatAt, hφ] at hsrc
       simp only [applyRule, hA]
@@ -2127,7 +2127,7 @@ one — the passive arm asserted the split at a time the *branch* named, `t'`, w
 since the guard failure `¬U(e,g)@t` licenses lies strictly inside `(t,t')`. -/
 theorem exists_gt_not_untl_disj [Nontrivial D] {M : TaskModel F}
     {τ : WorldHistory F} {t : D} {e g : Formula}
-    (h : ¬ TruthAt M τ t (Formula.untlQ g e)) :
+    (h : ¬ TruthAt M τ t (Formula.untl g e)) :
     ∃ d, t < d ∧ (¬ TruthAt M τ d e ∨ ¬ TruthAt M τ d g) := by
   by_contra hcon
   push Not at hcon
@@ -2137,7 +2137,7 @@ theorem exists_gt_not_untl_disj [Nontrivial D] {M : TaskModel F}
 /-- The past mirror of `exists_gt_not_untl_disj`. -/
 theorem exists_lt_not_snce_disj [Nontrivial D] {M : TaskModel F}
     {τ : WorldHistory F} {t : D} {e g : Formula}
-    (h : ¬ TruthAt M τ t (Formula.snceQ g e)) :
+    (h : ¬ TruthAt M τ t (Formula.snce g e)) :
     ∃ d, d < t ∧ (¬ TruthAt M τ d e ∨ ¬ TruthAt M τ d g) := by
   by_contra hcon
   push Not at hcon
@@ -2158,7 +2158,7 @@ theorem ruleSound_untlNeg : RuleSound carrierBase .untlNeg := by
     | none => simp only [applyRule, hA]; trivial
     | some eg =>
       obtain ⟨e, g⟩ := eg
-      have hφ : φ = Formula.untlQ g e := asUntil?_eq_some hA
+      have hφ : φ = Formula.untl g e := asUntil?_eq_some hA
       simp only [SatAt, hφ] at hsrc
       simp only [applyRule, hA]
       split
@@ -2221,7 +2221,7 @@ theorem ruleSound_snceNeg : RuleSound carrierBase .snceNeg := by
     | none => simp only [applyRule, hA]; trivial
     | some eg =>
       obtain ⟨e, g⟩ := eg
-      have hφ : φ = Formula.snceQ g e := asSince?_eq_some hA
+      have hφ : φ = Formula.snce g e := asSince?_eq_some hA
       simp only [SatAt, hφ] at hsrc
       simp only [applyRule, hA]
       split
@@ -2555,8 +2555,8 @@ supremum. -/
 private theorem truthAt_priorUGap {M : TaskModel F}
     (h_lub : ∀ s : Set D, s.Nonempty → BddAbove s → ∃ x, IsLUB s x)
     {τ : WorldHistory F} {t : D} {g : Formula}
-    (h_ant : TruthAt M τ t (Formula.and (Formula.untlQ g Formula.top) g.neg.someFuture)) :
-    TruthAt M τ t (Formula.untlQ g (Formula.or g.neg (Formula.kPlus g.neg))) := by
+    (h_ant : TruthAt M τ t (Formula.and (Formula.untl g Formula.top) g.neg.someFuture)) :
+    TruthAt M τ t (Formula.untl g (Formula.or g.neg (Formula.kPlus g.neg))) := by
   simp only [TruthAt, Formula.and, Formula.neg, Formula.someFuture, Formula.top] at h_ant
   obtain ⟨h1, h2⟩ := and_of_not_imp_not' h_ant
   obtain ⟨s0, hts0, -, hp0⟩ := h1
@@ -2595,8 +2595,8 @@ the mirror order: the `K⁻` interval lies to the left of `s`, not the right. -/
 private theorem truthAt_priorSGap {M : TaskModel F}
     (h_lub : ∀ s : Set D, s.Nonempty → BddAbove s → ∃ x, IsLUB s x)
     {τ : WorldHistory F} {t : D} {g : Formula}
-    (h_ant : TruthAt M τ t (Formula.and (Formula.snceQ g Formula.top) g.neg.somePast)) :
-    TruthAt M τ t (Formula.snceQ g (Formula.or g.neg (Formula.kMinus g.neg))) := by
+    (h_ant : TruthAt M τ t (Formula.and (Formula.snce g Formula.top) g.neg.somePast)) :
+    TruthAt M τ t (Formula.snce g (Formula.or g.neg (Formula.kMinus g.neg))) := by
   simp only [TruthAt, Formula.and, Formula.neg, Formula.somePast, Formula.top] at h_ant
   obtain ⟨h1, h2⟩ := and_of_not_imp_not' h_ant
   obtain ⟨s0, hs0t, -, hp0⟩ := h1
@@ -2729,7 +2729,7 @@ private theorem truthAt_sep {M : TaskModel F}
     (h_lub : ∀ s : Set D, s.Nonempty → BddAbove s → ∃ x, IsLUB s x)
     {τ : WorldHistory F} {t : D} {ψ : Formula}
     (h_ant : TruthAt M τ t (Formula.and (Formula.kPlus ψ)
-        (Formula.kPlus (Formula.and ψ (Formula.untlQ ψ.neg ψ))).neg)) :
+        (Formula.kPlus (Formula.and ψ (Formula.untl ψ.neg ψ))).neg)) :
     TruthAt M τ t (Formula.kPlus (Formula.and (Formula.kPlus ψ) (Formula.kMinus ψ))) := by
   obtain ⟨Q, hQc, hQd⟩ :=
     FormalSystem.Metalogic.SoundnessLemmas.exists_countable_order_dense h_lub
@@ -2744,7 +2744,7 @@ private theorem truthAt_sep {M : TaskModel F}
     intro r htr hrv hrφ
     exact hc ⟨r, htr, hrv, hrφ⟩
   have h2' : ∃ s₁, t < s₁ ∧ (True) ∧ ∀ u, t < u → u < s₁ →
-      (TruthAt M τ u ψ → TruthAt M τ u (Formula.untlQ ψ.neg ψ) → False) := by
+      (TruthAt M τ u ψ → TruthAt M τ u (Formula.untl ψ.neg ψ) → False) := by
     refine Classical.byContradiction (fun hc => h2 ?_)
     intro hbad
     exact hc (by
@@ -2801,7 +2801,7 @@ theorem ruleSound_sepRule : RuleSound carrierDedekind .sepRule := by
       obtain ⟨he, hbb⟩ := Bool.and_eq_true _ _ |>.mp hbeq
       have he' : e = Formula.top := by simpa using he
       have hbb' : bb = Formula.neg
-          (Formula.kPlus (Formula.and ψ (Formula.untlQ (Formula.neg ψ) ψ))) := by simpa using hbb
+          (Formula.kPlus (Formula.and ψ (Formula.untl (Formula.neg ψ) ψ))) := by simpa using hbb
       subst he'
       subst hbb'
       split

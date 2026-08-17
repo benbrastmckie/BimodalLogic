@@ -151,14 +151,14 @@ definition's name-collision warning.
 This is the syntactic side of `SemanticPriorU`; `Axiom.prior_U_gap` (`ProofSystem/Axioms.lean:377`)
 is the same scheme on the proof-theoretic side. -/
 def priorUFormula (p : Formula) : Formula :=
-  .imp (.and (.untlQ p .top) (.untlQ .top p.neg))
-    (.untlQ p (.or p.neg (Formula.kPlus p.neg)))
+  .imp (.and (.untl p .top) (.untl .top p.neg))
+    (.untl p (.or p.neg (Formula.kPlus p.neg)))
 
 /-- **The Prior-S instance at `p`, as a temporal formula** — the past mirror,
 `S(⊤,p) ∧ P¬p → S(¬p ∨ K⁻(¬p), p)`, with `Formula.kMinus` for `K⁻`. -/
 def priorSFormula (p : Formula) : Formula :=
-  .imp (.and (.snceQ p .top) (.snceQ .top p.neg))
-    (.snceQ p (.or p.neg (Formula.kMinus p.neg)))
+  .imp (.and (.snce p .top) (.snce .top p.neg))
+    (.snce p (.or p.neg (Formula.kMinus p.neg)))
 
 variable {M atomMap}
 
@@ -171,14 +171,14 @@ Each is a single unfolding against a landed helper (`Kamp/Translation.lean`'s
 
 /-- `U(⊤, p)` at `t`: *"`p` holds throughout some initial stretch above `t`"*. -/
 theorem temporalTruth_untl_top (t : M.carrier) (p : Formula) :
-    TemporalTruth M atomMap t (.untlQ p .top) ↔
+    TemporalTruth M atomMap t (.untl p .top) ↔
       ∃ s : M.carrier, t < s ∧ ∀ r : M.carrier, t < r → r < s → TemporalTruth M atomMap r p :=
   ⟨fun ⟨s, hts, _, h⟩ => ⟨s, hts, h⟩,
     fun ⟨s, hts, h⟩ => ⟨s, hts, Kamp.temporal_truth_top M atomMap s, h⟩⟩
 
 /-- `F ¬p` at `t`, i.e. `U(¬p, ⊤)`: *"`¬p` holds somewhere above `t`"*. -/
 theorem temporalTruth_someFuture_neg (t : M.carrier) (p : Formula) :
-    TemporalTruth M atomMap t (.untlQ .top p.neg) ↔
+    TemporalTruth M atomMap t (.untl .top p.neg) ↔
       ∃ u : M.carrier, t < u ∧ ¬ TemporalTruth M atomMap u p :=
   ⟨fun ⟨u, htu, hu, _⟩ => ⟨u, htu, (Kamp.temporal_truth_neg M atomMap u p).mp hu⟩,
     fun ⟨u, htu, hu⟩ => ⟨u, htu, (Kamp.temporal_truth_neg M atomMap u p).mpr hu,
@@ -200,7 +200,7 @@ The one classical step of the whole bridge lives here: the formula's disjunction
 `¬p(s) ∨ K⁺(¬p)(s)` while `SemanticPriorU` writes `¬p(s) ∨ (p(s) ∧ K⁺(¬p)(s))`, and
 `A ∨ B ↔ A ∨ (¬A ∧ B)` needs excluded middle on `A`. -/
 theorem temporalTruth_untl_stop (t : M.carrier) (p : Formula) :
-    TemporalTruth M atomMap t (.untlQ p (.or p.neg (Formula.kPlus p.neg))) ↔
+    TemporalTruth M atomMap t (.untl p (.or p.neg (Formula.kPlus p.neg))) ↔
       ∃ s : M.carrier, t < s ∧
         (∀ r : M.carrier, t < r → r < s → TemporalTruth M atomMap r p) ∧
         (¬ TemporalTruth M atomMap s p ∨
@@ -267,14 +267,14 @@ below is a definitional unfolding against a landed helper. -/
 
 /-- `S(⊤, p)` at `t`: *"`p` holds throughout some final stretch below `t`"*. -/
 theorem temporalTruth_snce_top (t : M.carrier) (p : Formula) :
-    TemporalTruth M atomMap t (.snceQ p .top) ↔
+    TemporalTruth M atomMap t (.snce p .top) ↔
       ∃ s : M.carrier, s < t ∧ ∀ r : M.carrier, s < r → r < t → TemporalTruth M atomMap r p :=
   ⟨fun ⟨s, hst, _, h⟩ => ⟨s, hst, h⟩,
     fun ⟨s, hst, h⟩ => ⟨s, hst, Kamp.temporal_truth_top M atomMap s, h⟩⟩
 
 /-- `P ¬p` at `t`, i.e. `S(¬p, ⊤)`: *"`¬p` held somewhere below `t`"*. -/
 theorem temporalTruth_somePast_neg (t : M.carrier) (p : Formula) :
-    TemporalTruth M atomMap t (.snceQ .top p.neg) ↔
+    TemporalTruth M atomMap t (.snce .top p.neg) ↔
       ∃ u : M.carrier, u < t ∧ ¬ TemporalTruth M atomMap u p :=
   ⟨fun ⟨u, hut, hu, _⟩ => ⟨u, hut, (Kamp.temporal_truth_neg M atomMap u p).mp hu⟩,
     fun ⟨u, hut, hu⟩ => ⟨u, hut, (Kamp.temporal_truth_neg M atomMap u p).mpr hu,
@@ -291,7 +291,7 @@ theorem temporalTruth_kMinus_neg (s : M.carrier) (p : Formula) :
 
 /-- `S(¬p ∨ K⁻(¬p), p)` at `t`, in the form `SemanticPriorS`'s consequent is written. -/
 theorem temporalTruth_snce_stop (t : M.carrier) (p : Formula) :
-    TemporalTruth M atomMap t (.snceQ p (.or p.neg (Formula.kMinus p.neg))) ↔
+    TemporalTruth M atomMap t (.snce p (.or p.neg (Formula.kMinus p.neg))) ↔
       ∃ s : M.carrier, s < t ∧
         (∀ r : M.carrier, s < r → r < t → TemporalTruth M atomMap r p) ∧
         (¬ TemporalTruth M atomMap s p ∨
