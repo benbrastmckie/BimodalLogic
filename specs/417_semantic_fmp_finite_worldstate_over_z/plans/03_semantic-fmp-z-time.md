@@ -555,15 +555,15 @@ them: `IsStepPath`, `TaskFrame.HF.path`, `TaskFrame.HFofStepPath` (the construct
 
 ---
 
-### Phase 5: `TaskFrame.ofStep` synthesis + promote `customFrame` into the library [NOT STARTED]
+### Phase 5: `TaskFrame.ofStep` synthesis + promote `customFrame` into the library [COMPLETED]
 
 **Goal**: The converse of Phase 3 — build a `TaskFrame ℤ` from a bi-serial relation on a finite
 nonempty carrier — and validate it against the paper's own two-state witness.
 
 **Tasks**:
-- [ ] Define `TaskFrame.ofStep {W : Type} [Finite W] [Nonempty W] (R₁ : W → W → Prop)
+- [x] Define `TaskFrame.ofStep {W : Type} [Finite W] [Nonempty W] (R₁ : W → W → Prop)
       (fwd : ∀ w, ∃ u, R₁ w u) (bwd : ∀ w, ∃ v, R₁ v w) : TaskFrame ℤ`.
-- [ ] Field discharges, per the report's axiom-discharge table: `nonempty` from the instance;
+- [x] Field discharges, per the report's axiom-discharge table: `nonempty` from the instance;
       `nullity_identity` free (`iter R 0 = Eq`); `comp` free via `iter_add`; `converse` free by
       construction; `limit` via `TaskFrame.limit_of_succOrder` (**this is the live name** —
       `limit_nullity_of_succOrder` does not exist and must not be written); `spherical` via
@@ -573,21 +573,21 @@ nonempty carrier — and validate it against the paper's own two-state witness.
       specifically; it is **not** a licence to re-route frames whose relation *does* fit a
       choice-free class helper. In particular the promoted `customFrame` below keeps
       `spherical_of_permissive`.
-- [ ] `serial` is the **one genuine obligation**: it is exactly bi-seriality of `R₁`, and it is
+- [x] `serial` is the **one genuine obligation**: it is exactly bi-seriality of `R₁`, and it is
       **not** free over ℤ. The report machine-checks a counterexample (`R w d u := (d = 0)` on
       `W = Unit` satisfies `nullity_identity`, `Compositional`, `converse`, `Limit`, and `Spherical`
       but fails `Serial`, and finiteness does not rescue it). Take `fwd`/`bwd` as hypotheses; do not
       attempt to derive them.
-- [ ] Add a module-level note recording that Seriality is free *from Occurrence*, never *from ℤ*.
-- [ ] Promote `customFrame` (`Tests/BimodalTest/Semantics/TaskFrameTest.lean`, `WorldState := Bool`,
+- [x] Add a module-level note recording that Seriality is free *from Occurrence*, never *from ℤ*.
+- [x] Promote `customFrame` (`Tests/BimodalTest/Semantics/TaskFrameTest.lean`, `WorldState := Bool`,
       `TaskRel := fun w d u => d ≠ 0 ∨ w = u`) into the library as the paper's canonical
       off-zero-universal two-state ℤ witness, with axiom discharges cited to the paper's
       `app:dense`/`app:deterministic` proof text via the definitions record. Keep its existing
       permissive-class discharges (including `spherical_of_permissive`, which is choice-free here
       and strictly better than `spherical_of_finite` for this relation shape).
-- [ ] Leave the test file's coverage intact: the test may re-express `customFrame` as the library
+- [x] Leave the test file's coverage intact: the test may re-express `customFrame` as the library
       declaration or as an `ofStep` instance, but the existing test assertions must still run.
-- [ ] The task description's rebase CAUTION is a **negative finding** and needs no action: no
+- [x] The task description's rebase CAUTION is a **negative finding** and needs no action: no
       two-state universal-relation frame exists in the tree; all three universal frames
       (`trivialFrame`, `intTimeFrame`, `genericTimeFrame`) are `Unit`-carriered and get *Limit* free
       by `limit_of_subsingleton`. Do not search for or "repair" a nonexistent violating frame.
@@ -609,11 +609,45 @@ the phase's enumerated dependent set and rebuild each.
 - `Tests/BimodalTest/Semantics/TaskFrameTest.lean` - re-point `customFrame` at the library declaration
 
 **Verification**:
-- `ofStep` builds with zero diagnostics and all seven fields discharged without `sorry`.
+- `ofStep` builds with zero diagnostics and all seven fields discharged without `sorry`. **MET.**
+  Supporting declarations: `ofStepRel` (the generated relation, defined as `taskRel_eq_iter`'s
+  conclusion so the two directions agree definitionally), `ofStepRel_of_nonneg`,
+  `ofStepRel_of_nonpos`, `exists_iter_fwd`, `exists_iter_bwd`, plus `ofStep_taskRel` and
+  `ofStep_step` (which confirms `ofStep` recovers the relation it was given).
 - The promoted witness elaborates and its four axiom discharges are cited to record anchors.
+  **MET, with a corrected citation target — see the deviation note below.**
 - The promoted witness's `spherical` discharge is still `spherical_of_permissive`, not
-  `spherical_of_finite` (axiom-profile guard, Phase 2 Correction Record 2).
-- Test suite still passes; `TaskFrameTest.lean` assertions unchanged in meaning.
+  `spherical_of_finite` (axiom-profile guard, Phase 2 Correction Record 2). **MET** —
+  `intBoolFrame_spherical := TaskFrame.spherical_of_permissive intBoolFrame_rel_iff`, and its
+  docstring records why substituting the finite route would be a pure axiom-profile regression.
+- Test suite still passes; `TaskFrameTest.lean` assertions unchanged in meaning. **MET** —
+  `lake build BimodalTest.Semantics.TaskFrameTest` green; `customFrame` is now a definitional
+  alias for the library declaration, so every existing assertion (`Iff.rfl`, `Or.inl (by decide)`,
+  `customFrame.nullity`) still elaborates unchanged.
+- **Scope Hypothesis confirmed**: `grep -rln customFrame --include=*.lean` returns exactly the two
+  predicted files.
+
+**DEVIATION (citation target, docstring only)** — the task step said to cite the promoted witness's
+axiom discharges "to the paper's `app:dense`/`app:deterministic` proof text via the definitions
+record". Neither is a valid source for an axiom discharge:
+- `app:dense` is the **density correspondence theorem** (`\Future\Future φ → \Future φ` iff the
+  frame is `Dense`). It says nothing about any frame's four axioms.
+- **`app:deterministic` does not exist.** There is no such `\label{}` in the paper. `Deterministic`
+  is a clause inside `def:frame-properties`, a frame-*class* predicate, not an axiom source.
+The discharges are therefore cited to `def:frame`'s four sub-anchors — `def:frame#Seriality`,
+`def:frame#Compositionality`, `def:frame#Limit`, `def:frame#Spherical` — which is what every other
+frame in the tree cites and what the axioms actually come from. The mis-citation and its reason are
+recorded in `intBoolFrame`'s own docstring so a later reader does not "restore" it.
+
+**Library home confirmed**: `FormalSystem/Examples/TemporalStructures.lean`, as `intBoolFrame`
+(naming consistent with the neighbouring `intNatFrame`/`intTimeFrame`). `TaskFrame.lean` was
+rejected as a home because every frame there is duration-class-generic, whereas this is a concrete
+`Bool`-over-ℤ witness.
+
+**Also landed**: `flipFrame`, the two-state cycle synthesized by `ofStep` from
+`fun w u : Bool => w ≠ u`, kept as a named definition in the module's `WorkedInstances` section —
+it is the smallest carrier on which a lasso argument has anything to bite on, so Phases 8–9 have a
+concrete instance to test against.
 
 ---
 

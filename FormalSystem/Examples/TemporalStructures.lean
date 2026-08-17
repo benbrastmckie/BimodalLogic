@@ -200,6 +200,108 @@ theorem intNatFrame_spherical : TaskFrame.Spherical intNatFrame.TaskRel :=
   TaskFrame.spherical_of_permissive intNatFrame_rel_iff
 
 /--
+**The canonical off-zero-universal two-state ℤ frame.**
+
+Two world states, ℤ time, and the permissive relation `d ≠ 0 ∨ w = u`: at zero duration the
+relation is the identity, and at every other duration it is universal. This is the smallest frame
+that is *not* subsingleton-carriered, which is what makes it the standard witness whenever a claim
+has to be checked against a carrier where `Subsingleton`-based shortcuts are unavailable.
+
+It was previously defined only inside `Tests/BimodalTest/Semantics/TaskFrameTest.lean` as
+`customFrame`; it is promoted here because it is a reusable object rather than a test fixture, and
+the test now points at this declaration.
+
+**Axiom discharges** are cited to `def:frame`'s four sub-anchors below, exactly as `intNatFrame`
+and `intTimeFrame` above cite theirs. Note that `app:dense` and a putative `app:deterministic` are
+*not* the right anchors for these discharges, despite occasionally being named as such:
+`app:dense` is the density **correspondence** theorem (`FF φ → F φ` iff the frame is `Dense`),
+which says nothing about this frame's axioms, and there is no `app:deterministic` anchor at all —
+`Deterministic` is a clause inside `def:frame-properties`, a frame-class predicate rather than an
+axiom-discharge source. `def:frame` is the source of record for all four discharges.
+-/
+def intBoolFrame : TaskFrame Int where
+  WorldState := Bool
+  nonempty := inferInstanceAs (Nonempty Bool)
+  TaskRel := fun w d u => d ≠ 0 ∨ w = u
+  nullity_identity := fun w u => by
+    constructor
+    · intro h
+      cases h with
+      | inl h => exact absurd rfl h
+      | inr h => exact h
+    · intro h
+      right; exact h
+  comp := TaskFrame.comp_of (TaskFrame.interpolates_of_permissive fun _ _ _ => Iff.rfl)
+    fun w u v x y hx hy h1 h2 => by
+      cases h1 with
+      | inl hxne =>
+        left
+        intro heq
+        have hy_eq : y = -x := (neg_eq_of_add_eq_zero_right heq).symm
+        have h1 : 0 ≤ -x := hy_eq ▸ hy
+        have h2 : x ≤ 0 := neg_nonneg.mp h1
+        exact hxne (le_antisymm h2 hx)
+      | inr hw =>
+        cases h2 with
+        | inl hyne =>
+          left
+          intro heq
+          have hx_eq : x = -y := (neg_eq_of_add_eq_zero_left heq).symm
+          have h1 : 0 ≤ -y := hx_eq ▸ hx
+          have h2 : y ≤ 0 := neg_nonneg.mp h1
+          exact hyne (le_antisymm h2 hy)
+        | inr hu => right; exact hw.trans hu
+  serial := TaskFrame.serial_of_permissive fun _ _ _ => Iff.rfl
+  limit := TaskFrame.limit_of_permissive fun _ _ _ => Iff.rfl
+  spherical := TaskFrame.spherical_of_permissive fun _ _ _ => Iff.rfl
+  converse := fun w d u => by
+    constructor
+    · intro h
+      cases h with
+      | inl hd => left; simp [hd]
+      | inr heq => right; exact heq.symm
+    · intro h
+      cases h with
+      | inl hnd => left; simp only [ne_eq, neg_eq_zero] at hnd; exact hnd
+      | inr heq => right; exact heq.symm
+
+/-! ### `intBoolFrame` discharges `def:frame`'s four axioms (permissive class) -/
+
+/-- `intBoolFrame`'s relation is the permissive class `d ≠ 0 ∨ w = u`. -/
+theorem intBoolFrame_rel_iff :
+    ∀ w d u, intBoolFrame.TaskRel w d u ↔ (d ≠ 0 ∨ w = u) := fun _ _ _ => Iff.rfl
+
+/-- *Seriality* (`def:frame#Seriality`, verbatim: "$w \Rightarrow_x u$ and $v \Rightarrow_x w$
+for some $u, v \in W$") for `intBoolFrame`, via the `w = u` disjunct. -/
+theorem intBoolFrame_serial : TaskFrame.Serial intBoolFrame.TaskRel :=
+  TaskFrame.serial_of_permissive intBoolFrame_rel_iff
+
+/-- The interpolation half of *Compositionality* (`def:frame#Compositionality`, verbatim:
+"$w \Rightarrow_{x + y} v$ if and only if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some
+$u \in W$") for `intBoolFrame`. -/
+theorem intBoolFrame_interpolates : TaskFrame.Interpolates intBoolFrame.TaskRel :=
+  TaskFrame.interpolates_of_permissive intBoolFrame_rel_iff
+
+/-- *Limit* (`def:frame#Limit`, verbatim: "$\bigcap\limits_{x > 0} (w)_x = \set{w}$") for
+`intBoolFrame`, in the literal transcribed shape. -/
+theorem intBoolFrame_limit :
+    ∀ w u, (∀ x : Int, 0 < x → ∃ y, |y| < x ∧ intBoolFrame.TaskRel w y u) → u = w :=
+  TaskFrame.limit_of_permissive intBoolFrame_rel_iff
+
+/--
+*Spherical* (`def:frame#Spherical`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
+directed family $\mathcal{S}$ of nonempty fibers and segments") for `intBoolFrame`.
+
+**The discharge route matters.** `Bool` is finite, so `TaskFrame.spherical_of_finite` would also
+apply — but it is *not* used here, and must not be substituted. `spherical_of_permissive` is
+choice-free for this relation shape, while `spherical_of_finite` carries `Classical.choice`
+(unavoidably: weak excluded middle follows from `Spherical` at a finite carrier). Routing this
+frame through the finite lemma would be a pure axiom-profile regression with nothing gained.
+-/
+theorem intBoolFrame_spherical : TaskFrame.Spherical intBoolFrame.TaskRel :=
+  TaskFrame.spherical_of_permissive intBoolFrame_rel_iff
+
+/--
 Integer time world history with universal domain.
 
 All integer times are in the domain. This is the simplest possible history.

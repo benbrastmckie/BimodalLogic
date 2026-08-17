@@ -7,6 +7,7 @@ Authors: Benjamin Brast-McKie
 import Mathlib.Algebra.Order.Group.Int
 import Mathlib.Data.Int.SuccPred
 import FormalSystem.Semantics.TaskFrame
+import FormalSystem.Examples.TemporalStructures
 
 /-!
 # TaskFrame Tests
@@ -57,50 +58,11 @@ example : (TaskFrame.natFrame (D := Int)).TaskRel (0 : Nat) 10 (42 : Nat) := Or.
 
 /-! ## Custom Frame Tests -/
 
--- Test: Construct custom simple task frame with explicit Int time
-def customFrame : TaskFrame Int where
-  WorldState := Bool
-  nonempty := inferInstanceAs (Nonempty Bool)
-  -- Permissive within non-zero durations; identity at zero duration (mirrors `natFrame`).
-  TaskRel := fun w d u => d ≠ 0 ∨ w = u
-  nullity_identity := fun w u => by
-    constructor
-    · intro h
-      cases h with
-      | inl h => exact absurd rfl h
-      | inr h => exact h
-    · intro h; right; exact h
-  comp := TaskFrame.comp_of (TaskFrame.interpolates_of_permissive fun _ _ _ => Iff.rfl)
-    fun w u v x y hx hy h1 h2 => by
-      cases h1 with
-      | inl hxne =>
-        left; intro heq
-        have hy_eq : y = -x := (neg_eq_of_add_eq_zero_right heq).symm
-        have h1 : 0 ≤ -x := hy_eq ▸ hy
-        have h2 : x ≤ 0 := neg_nonneg.mp h1
-        exact hxne (le_antisymm h2 hx)
-      | inr hw =>
-        cases h2 with
-        | inl hyne =>
-          left; intro heq
-          have hx_eq : x = -y := (neg_eq_of_add_eq_zero_left heq).symm
-          have h1 : 0 ≤ -y := hx_eq ▸ hx
-          have h2 : y ≤ 0 := neg_nonneg.mp h1
-          exact hyne (le_antisymm h2 hy)
-        | inr hu => right; exact hw.trans hu
-  serial := TaskFrame.serial_of_permissive fun _ _ _ => Iff.rfl
-  limit := TaskFrame.limit_of_permissive fun _ _ _ => Iff.rfl
-  spherical := TaskFrame.spherical_of_permissive fun _ _ _ => Iff.rfl
-  converse := fun w d u => by
-    constructor
-    · intro h
-      cases h with
-      | inl hd => left; simp [hd]
-      | inr heq => right; exact heq.symm
-    · intro h
-      cases h with
-      | inl hnd => left; simp at hnd; exact hnd
-      | inr heq => right; exact heq.symm
+-- Test: the custom two-state Int frame. Its definition has been promoted into the library as
+-- `FormalSystem.Semantics.intBoolFrame` (Examples/TemporalStructures.lean), where it is the
+-- canonical off-zero-universal two-state Z witness; this is now an alias, so every assertion
+-- below still exercises the same frame and the same relation, definitionally.
+def customFrame : TaskFrame Int := FormalSystem.Examples.TemporalStructures.intBoolFrame
 
 -- Test: Custom frame satisfies properties
 example : customFrame.TaskRel true 0 true := customFrame.nullity true
