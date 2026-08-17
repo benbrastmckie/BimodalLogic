@@ -215,7 +215,7 @@ whatever constructors actually exist and note any divergence from six.
 
 ---
 
-### Phase 3: The Prior-U refutation in the arc model [IN PROGRESS]
+### Phase 3: The Prior-U refutation in the arc model [COMPLETED]
 
 **Goal**: A concrete model on `clockFrame` in which `Axiom.prior_U_gap p` is false at time `0`.
 
@@ -263,7 +263,7 @@ reconstruct the formula from the prose in this plan.
 
 ---
 
-### Phase 4: Statement S1 and module wiring [NOT STARTED]
+### Phase 4: Statement S1 and module wiring [IN PROGRESS]
 
 **Goal**: The first machine-checked independence theorem in the tree, wired into the library.
 
