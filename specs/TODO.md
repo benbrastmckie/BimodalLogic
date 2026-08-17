@@ -83,9 +83,9 @@ next_project_number: 452
 
 ### Paper Refactor
 
-440 [RESEARCHED] — RE-ISSUED 2026-08-12 (description rewrite only; status unchanged)
+440 [PLANNED] — RE-ISSUED 2026-08-12 (description rewrite only; status unchanged)
   └─ 441 [NOT STARTED] — Strengthen `thm:extension` for the finite discrete case into an E
-417 [RESEARCHED] — RE-ISSUED 2026-08-10 (supersedes the prior maximal-history framin
+417 [PLANNED] — RE-ISSUED 2026-08-10 (supersedes the prior maximal-history framin
 
 ### Strong Completeness
 
@@ -309,11 +309,12 @@ DEPENDENCIES. BimodalLogic 440 (the finite axiom bundle, which supplies *Spheric
 ---
 
 ### 440. Finite frame discharge of spherical and limit
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: paper-refactor
 - **Dependencies**: None
 - **Research**: [440_finite_frame_discharge_of_spherical_and_limit/reports/01_finite-spherical-limit-discharge.md]
+- **Plan**: [440_finite_frame_discharge_of_spherical_and_limit/plans/01_finite-spherical-discharge.md]
 
 **Description**: RE-ISSUED 2026-08-12 (description rewrite only; status unchanged) after round-1 research machine-checked the live tree and forced a re-scope that the user has reviewed and approved. THREE of this task's original claims are RETRACTED -- Deliverable 2 in its entirety, the choice-free acceptance test, and the framing of Deliverable 3. See WHAT SURVIVES, WHAT DOES NOT below, which is authoritative over any earlier phrasing. The evidence is in `specs/440_finite_frame_discharge_of_spherical_and_limit/reports/01_finite-spherical-limit-discharge.md`; read it before planning.
 
@@ -733,7 +734,7 @@ Acceptance: the refuted-route comment no longer appears at Transfer.lean:1239-12
 
 ### 417. Semantic fmp finite worldstate over z
 - **Effort**: medium
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: paper-refactor
 - **Dependencies**: Task 414, Task 420, Task 438, Task 439, Task 450
@@ -741,12 +742,10 @@ Acceptance: the refuted-route comment no longer appears at Transfer.lean:1239-12
   - [417_semantic_fmp_finite_worldstate_over_z/reports/02_semantic-fmp-rescoped-z-time.md]
   - [417_semantic_fmp_finite_worldstate_over_z/reports/01_semantic-fmp-finite-worldstate.md]
   - [417_semantic_fmp_finite_worldstate_over_z/reports/04_filteredstep-fwd-gating-spike.md]
-- **Plan**:
-  - [417_semantic_fmp_finite_worldstate_over_z/plans/03_semantic-fmp-z-time.md]
-  - [417_semantic_fmp_finite_worldstate_over_z/plans/02_semantic-fmp-z-time.md]
 - **Summary**: [417_semantic_fmp_finite_worldstate_over_z/summaries/03_semantic-fmp-z-time-summary.md]
 - **Handoff**: [417_semantic_fmp_finite_worldstate_over_z/handoffs/01_phase-7-12-revision-handoff.md]
 - **Evidence**: [417_semantic_fmp_finite_worldstate_over_z/evidence/spike-untl-unfolding-and-fwd-obstruction.lean]
+- **Plan**: [417_semantic_fmp_finite_worldstate_over_z/plans/04_bi-lasso-decision-layer.md]
 
 **Description**: RE-ISSUED 2026-08-10 (supersedes the prior maximal-history framing). SEMANTIC FMP OVER A FIXED CARRIER, stated against the TOTAL-history semantics of task 414: prove the TruthAt-connected finite model property the paper's decidability corollary proof text cites -- any formula satisfiable over the Discrete class is satisfiable in a model with FINITE WorldState over D = Z -- replacing reliance on the syntactic closure-MCS FMP theorems (FormalSystem/Metalogic/Decidability/FMP/FMP.lean) that never connect to TruthAt. Add decidable model checking for the finite-W-over-Z presentation to back the paper's enumeration argument (restated paper-side as finite W over Z, since every model has infinite D). This is the semantic-FMP follow-on explicitly descoped by the task-165 redirect; the tableau programme remains the decision-procedure route and also rebases onto the new semantics. Related: 165, 410, 411, 412.
 
