@@ -1,6 +1,13 @@
 # Research: Migrating `snce`/`untl` to Guard-First Argument Order
 
 - **Task**: 448
+- **Started**: TBD
+- **Completed**: TBD
+- **Effort**: TBD
+- **Dependencies**: TBD
+- **Sources/Inputs**: TBD
+- **Artifacts**: TBD
+- **Standards**: TBD
 - **Type**: lean4
 - **Session**: sess_1786990544_629448
 - **Date**: 2026-08-17

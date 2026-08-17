@@ -4,6 +4,10 @@
   guard-first (paper) argument order
 - **Plan**: `specs/448_migrate_snce_untl_to_guard_first_order/plans/01_guard-first-migration.md`
 - **Status**: COMPLETED — all 13 phases closed
+- **Started**: TBD
+- **Completed**: TBD
+- **Artifacts**: TBD
+- **Standards**: TBD
 - **Session**: sess_1786995652_39d0c1
 
 ## What was done

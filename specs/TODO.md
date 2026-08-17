@@ -11,11 +11,11 @@ next_project_number: 452
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,231,257,298,413,423,424,437,440,445,448,450,451 | -- | completeness, decidability, frame-extensions, ... |
-| 2 | 193,219,282,296,417,421,425,436,441,446 | 231,298,423,437,440,445,448,450 | decidability, publication-quality, automation, ... |
-| 3 | 178,422,434,447 | 193,421,436,446 | decidability, formula-refactor, publication-quality, ... |
-| 4 | 169,432 | 422,434 | decidability, strong_completeness |
-| 5 | 362,433 | 169,432 | decidability, strong_completeness |
+| 1 | 125,127,128,193,231,257,298,413,421,423,424,437,440,445,450,451 | -- | completeness, decidability, frame-extensions, ... |
+| 2 | 178,219,282,296,417,422,425,436,441,446 | 193,231,298,421,423,437,440,445,450 | decidability, formula-refactor, publication-quality, ... |
+| 3 | 169,434,447 | 422,436,446 | decidability, publication-quality, strong_completeness |
+| 4 | 362,432 | 169,434 | decidability, strong_completeness |
+| 5 | 433 | 432 | decidability |
 | 6 | 428 | 433 | decidability |
 | 7 | 429 | 428 | decidability |
 | 8 | 410 | 429 | -- |
@@ -23,7 +23,7 @@ next_project_number: 452
 | 10 | 430 | 411 | decidability |
 | 11 | 412 | 430 | -- |
 | 12 | 426 | 412 | completeness |
-| 13 | 95,177 | 193,426,441,448 | completeness, formula-refactor |
+| 13 | 95,177 | 193,426,441 | completeness, formula-refactor |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -89,18 +89,13 @@ next_project_number: 452
 
 ### Strong Completeness
 
+421 [NOT STARTED] — Two deliverables on the Base weak terminus, both small.
+  └─ 422 [NOT STARTED] — Construct the discrete-case analogue of the existing dense chroni
+    └─ 169 [NOT STARTED] — Base (FrameClass.Base / general) WEAK completeness green: make th
+      └─ 362 [NOT STARTED] — Implement the completeness capstone under the SETTLED TERMINOLOGY
 423 [NOT STARTED] — Create FormalSystem/Metalogic/SetConsequence.lean containing the 
   └─ 425 [NOT STARTED] — Convert the informal argument at FormalSystem/Metalogic/StrongCom
 424 [NOT STARTED] — RE-ISSUED 2026-08-10 (description rewrite only; status remains `n
-169 [NOT STARTED] — Base (FrameClass.Base / general) WEAK completeness green: make th
-  └─ 362 [NOT STARTED] — Implement the completeness capstone under the SETTLED TERMINOLOGY
-421 [NOT STARTED] — Two deliverables on the Base weak terminus, both small.
-  └─ 422 [NOT STARTED] — Construct the discrete-case analogue of the existing dense chroni
-    └─ 169 [NOT STARTED] — Base (FrameClass.Base / general) WEAK completeness green: make th (see above)
-
-### Lean4
-
-448 [IMPLEMENTING] — GOAL. Migrate the Lean tree's `snce`/`untl` constructors from the
 
 ### Proof System Infrastructure
 
@@ -237,7 +232,7 @@ Task 417's recommended Task B (the filtered step relation) cannot start before (
 ---
 
 ### 448. Migrate snce untl to guard first order
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: lean4
 - **Dependencies**: None
