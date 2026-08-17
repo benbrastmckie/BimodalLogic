@@ -698,7 +698,62 @@ which would have changed the planned signature.
 
 ---
 
-### Phase 7: Truth-lemma target statement + atom, `⊥`, `→`, and `□` cases [NOT STARTED]
+### Phase 7: Truth-lemma target statement + atom, `⊥`, `→`, and `□` cases [BLOCKED]
+
+**BLOCKER** (Phase 7):
+
+- **What failed**: The truth lemma this phase exists to state is **false** on the frame the plan
+  names. `FiniteFilteredTaskFrame D φ`'s task relation is not a filtration of any temporal
+  accessibility relation — it is the *permissive placeholder*
+  `refinedFilteredTaskRel := fun w d u => if d = 0 then w = u else True`
+  (`FMP/Filtration.lean:237`), i.e. **universal at every nonzero duration**. It carries no MCS
+  information whatsoever.
+
+- **What was tried / machine-checked**: three probes, all proved green against the live tree via
+  `lake env lean`:
+  1. `(FiniteFilteredTaskFrame ℤ φ).toTaskFrame.step w u` holds for **all** `w, u` — the one-step
+     relation is the complete graph.
+  2. `IsStepPath (FiniteFilteredTaskFrame ℤ φ).toTaskFrame f` holds for **every**
+     `f : ℤ → FilteredWorld φ` — so by Phase 4's `mem_HF_iff_adjacent`, `H_F` over that frame is
+     the entire function space `ℤ → FilteredWorld φ`.
+  3. `(FiniteFilteredTaskFrame ℤ φ).toTaskFrame.TaskRel w d u` holds for every `d ≠ 0` and every
+     pair `w, u`.
+
+- **Why it's stuck**: with `H_F` equal to the full function space, `TruthAt M τ t ψ` varies freely
+  with `τ` while `ψ ∈ (τ.states t _).carrier` is fixed by `τ.states t` alone. Take
+  `ψ = someFuture χ` (`= untl χ ⊤`): choose `τ` agreeing at `t` with a filtered world whose carrier
+  contains `someFuture χ`, and whose every later state omits `χ`. That `τ` is a legal total history
+  (probe 2), so the right-hand side holds and the left-hand side fails. No eventuality-fulfilment
+  argument can repair this, because the defect is not in the argument — it is that the frame admits
+  histories the MCS structure was never meant to license. Phase 8's pigeonhole/lasso machinery is
+  irrelevant to it: the obstruction appears before any bounded-witness reasoning starts.
+
+  The plan's premise ("the finite frame **already exists** and already carries all four axioms —
+  nothing new is constructed here") is half right and misleading in the half that matters. The
+  frame does carry all four axioms. It does **not** carry the dynamics, and the axioms were
+  discharged *because* the relation is permissive — every one of them goes through
+  `TaskFrame.*_of_permissive`. The plan's own confirmed premise that `FMP/` contains zero
+  occurrences of `TruthAt` (re-verified: still 0) is a symptom of the same fact: `FMP/`'s theorems
+  are about MCS membership and were never connected to a semantic accessibility relation.
+
+- **What is needed** (none of it in this plan's scope): a genuine filtered *task relation* on
+  `FilteredWorld φ` — one whose one-step relation is derived from the MCS structure (the standard
+  choice being `w ⇒₁ u` iff every `G`-/`untl`-obligation in `w`'s carrier is discharged
+  appropriately in `u`'s) — together with fresh discharges of all four `def:frame` axioms for
+  *that* relation. Note that those discharges will be genuinely hard where the permissive ones were
+  free: *Limit* and *Spherical* currently come from permissiveness, and a non-universal relation
+  loses both routes (*Spherical* would then be exactly the `spherical_of_finite` case Phase 2
+  landed, so that phase's output is still directly useful). This is a filtration-construction task
+  in its own right, not a step of a truth-lemma phase.
+
+- **Prohibited workarounds**: no `sorry`, no `def X := True`, no restatement of the truth lemma in
+  a vacuous form that happens to hold on a universal relation. None was used.
+
+- **Downstream**: Phases 9 and 10 are blocked by this (9 discharges cases of the lemma this phase
+  cannot state; 10 assembles the FMP from it). Phase 13's README/retirement-note bullets are
+  partly blocked. Phases 8, 11, 12 and Phase 13's `check_correct`/`Decidable` bullets are
+  **independent of this blocker** and were carried to completion — they concern
+  `IntPresentation`'s own `ofStep`-built frame, not the filtered frame.
 
 **Goal**: State the truth lemma for `FiniteFilteredTaskFrame ℤ φ` and discharge the four
 non-eventuality cases. The finite frame **already exists** and already carries all four axioms
