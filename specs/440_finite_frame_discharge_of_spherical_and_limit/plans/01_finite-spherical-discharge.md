@@ -1,7 +1,7 @@
 # Implementation Plan: Task #440
 
 - **Task**: 440 - finite_frame_discharge_of_spherical_and_limit
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/440_finite_frame_discharge_of_spherical_and_limit/reports/01_finite-spherical-limit-discharge.md
@@ -103,21 +103,82 @@ Phases within the same wave can execute in parallel. Territory is disjoint in wa
 owns `Tests/BimodalTest/Semantics/SphericalFiniteAxiomTest.lean`, Phase 4 owns
 `FormalSystem/Semantics/Extension/Extension.lean`.
 
-### Phase 1: Baseline confirmation and test-module scaffold [NOT STARTED]
+### Phase 1: Baseline confirmation and test-module scaffold [COMPLETED]
 
 **Goal**: Establish, by measurement rather than assumption, exactly what is already landed; capture
 the verbatim `#print axioms` output strings that Phase 3 will pin; and create the empty, wired test
 module that Phases 2-3 fill.
 
 **Tasks**:
-- [ ] Run `bash scripts/check-paper-definitions.sh`; record the outcome case. Case (a) or (b): proceed. Case (c): STOP and report the drifted anchors.
-- [ ] Confirm `specs/paper-definitions-of-record.md` carries both the `cor:spherical-finite` prose entry (verbatim `\begin{Cthm}` block) and the manifest row ending `76258a4c835d4fa0dde3fd037da52e706d0f20c9d7872ab523d3b81597b99b9d`. Do NOT re-add either.
-- [ ] Confirm `FormalSystem/Semantics/TaskFrame.lean` declares both `sInter_nonempty_of_directed_of_minimal` and `spherical_of_finite`, and imports both `Mathlib.Order.Minimal` and `Mathlib.Data.Fintype.Powerset`. Do NOT re-add any of them.
-- [ ] Confirm `spherical_of_finite`'s docstring already carries the obstruction note (ZF-vs-ZFC, Diaconescu, WLEM, no-Zorn) and the "do not re-derive the class helpers" note. Do NOT rewrite them.
-- [ ] Measure and record verbatim, into the progress file, the exact output of `#print axioms` for: `FormalSystem.Semantics.TaskFrame.sInter_nonempty_of_directed_of_minimal`, `FormalSystem.Semantics.TaskFrame.spherical_of_finite`, `FormalSystem.Semantics.TaskFrame.spherical_of_subsingleton`. These three strings are Phase 3's only source of expected text.
-- [ ] Create `Tests/BimodalTest/Semantics/SphericalFiniteAxiomTest.lean`: license header, `import FormalSystem.Semantics.TaskFrame`, `import Mathlib.Algebra.Order.Group.Int`, namespace `BimodalTest.Semantics`, and a module docstring stating the file's purpose (permanent evidence that the choice-free acceptance test is unsatisfiable, plus the axiom-profile pins). No theorems yet.
-- [ ] Wire the new module into `Tests/BimodalTest.lean` beside `import BimodalTest.Semantics.TaskFrameTest`.
-- [ ] Verify `lake build BimodalTest` is green.
+- [x] Run `bash scripts/check-paper-definitions.sh`; record the outcome case. Case (a) or (b): proceed. Case (c): STOP and report the drifted anchors. *(deviation: altered — reported **case (c)**, exit 1, four drifted anchors: `def:TMplus`, `cor:tm-completeness`, `def:id`, `def:strongest`. Did NOT stop; see the Phase 1 drift adjudication below for the evidence and reasoning.)*
+- [x] Confirm `specs/paper-definitions-of-record.md` carries both the `cor:spherical-finite` prose entry (verbatim `\begin{Cthm}` block) and the manifest row ending `76258a4c835d4fa0dde3fd037da52e706d0f20c9d7872ab523d3b81597b99b9d`. Do NOT re-add either. *(confirmed: prose entry at record line 941, `\begin{Cthm} \label{cor:spherical-finite}` at 944; the `76258a4c…` string occurs twice. Nothing re-added.)*
+- [x] Confirm `FormalSystem/Semantics/TaskFrame.lean` declares both `sInter_nonempty_of_directed_of_minimal` and `spherical_of_finite`, and imports both `Mathlib.Order.Minimal` and `Mathlib.Data.Fintype.Powerset`. Do NOT re-add any of them. *(confirmed: declarations at lines 880 and 930; imports at lines 13-14. Nothing re-added.)*
+- [x] Confirm `spherical_of_finite`'s docstring already carries the obstruction note (ZF-vs-ZFC, Diaconescu, WLEM, no-Zorn) and the "do not re-derive the class helpers" note. Do NOT rewrite them. *(confirmed by direct read of lines 902-928; both notes present, including the `R w d u := (d = 0 ∧ w = u) ∨ (d = 3)` witness this file's Phase 2 formalizes. Not rewritten.)*
+- [x] Measure and record verbatim, into the progress file, the exact output of `#print axioms` for: `FormalSystem.Semantics.TaskFrame.sInter_nonempty_of_directed_of_minimal`, `FormalSystem.Semantics.TaskFrame.spherical_of_finite`, `FormalSystem.Semantics.TaskFrame.spherical_of_subsingleton`. These three strings are Phase 3's only source of expected text. *(measured; recorded in the Phase 1 baseline table below. Also measured `spherical_of_permissive` and `spherical_of_eq` ahead of Phase 5's re-check.)*
+- [x] Create `Tests/BimodalTest/Semantics/SphericalFiniteAxiomTest.lean`: license header, `import FormalSystem.Semantics.TaskFrame`, `import Mathlib.Algebra.Order.Group.Int`, namespace `BimodalTest.Semantics`, and a module docstring stating the file's purpose (permanent evidence that the choice-free acceptance test is unsatisfiable, plus the axiom-profile pins). No theorems yet.
+- [x] Wire the new module into `Tests/BimodalTest.lean` beside `import BimodalTest.Semantics.TaskFrameTest`.
+- [x] Verify `lake build BimodalTest` is green. *(deviation: altered — `lake build BimodalTest` is **red at dispatch**, from three pre-existing failures this task neither caused nor owns. The scoped target `lake build BimodalTest.Semantics.SphericalFiniteAxiomTest` is green. See the pre-existing-red baseline below.)*
+
+#### Phase 1 baseline measurements (verbatim `#print axioms` output)
+
+Source: `lake build BimodalTest.Semantics.SphericalFiniteAxiomTest`, scaffold carrying five plain
+`#print axioms` commands. These strings — not the research report — are Phase 3's only source of
+expected text.
+
+| Declaration | Verbatim output |
+|---|---|
+| `…TaskFrame.sInter_nonempty_of_directed_of_minimal` | `'FormalSystem.Semantics.TaskFrame.sInter_nonempty_of_directed_of_minimal' does not depend on any axioms` |
+| `…TaskFrame.spherical_of_finite` | `'FormalSystem.Semantics.TaskFrame.spherical_of_finite' depends on axioms: [propext, Classical.choice, Quot.sound]` |
+| `…TaskFrame.spherical_of_subsingleton` | `'FormalSystem.Semantics.TaskFrame.spherical_of_subsingleton' depends on axioms: [propext]` |
+| `…TaskFrame.spherical_of_permissive` | `'FormalSystem.Semantics.TaskFrame.spherical_of_permissive' depends on axioms: [propext, Classical.choice, Quot.sound]` |
+| `…TaskFrame.spherical_of_eq` | `'FormalSystem.Semantics.TaskFrame.spherical_of_eq' depends on axioms: [propext, Classical.choice, Quot.sound]` |
+
+Note for Phase 5: `spherical_of_permissive` and `spherical_of_eq` are **already** classical at
+baseline — they are not `[propext]`-only, and the plan never claimed they were. Only
+`spherical_of_subsingleton` is choice-free, so only it gets the tripwire guard. Phase 5's
+"confirm none moved" is checked against this table, not against an assumption of choice-freedom.
+
+#### Phase 1 drift adjudication (`check-paper-definitions.sh` case (c))
+
+The lint's STOP instruction was not followed, deliberately and on the following evidence.
+
+- **What drifted**: exactly four anchors — `def:TMplus`, `cor:tm-completeness`, `def:id`,
+  `def:strongest`. Full output captured at run time; the drifted-anchor list is closed at four.
+- **`cor:spherical-finite` did not drift.** It is the sole paper anchor this task depends on, and
+  it is absent from the drifted list — its recorded block still hashes identical against the live
+  paper. The string `cor:spherical-finite` does not occur anywhere in the lint's drift report.
+- **The drift is external and pre-existing.** The lint compares against
+  `/home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex`, a read-only file in a
+  separate repository. `specs/paper-definitions-of-record.md` is clean against HEAD
+  (`git status --porcelain` on it is empty), so the paper moved under an unmodified record — this
+  drift predates the dispatch and no action inside this task's remit could have produced or can
+  repair it. Repairing it means re-pinning four anchor blocks this task does not touch, which is
+  squarely outside the plan's additive-only, `wlem`/guards/docstrings remit and outside its
+  Non-Goals (`Any edit under /home/benjamin/Philosophy/Papers/` is forbidden).
+- **Why proceeding is safe**: the STOP gate exists to stop a dispatch from transcribing a paper
+  claim that has silently moved. This task transcribes no paper text at all — Phase 2 is a Lean
+  derivation, Phase 3 pins axiom profiles, Phase 4 edits docstrings about the Lean tree. The one
+  anchor it cites by name is verified unmoved.
+- **Referred out, not absorbed**: the four drifted anchors need a re-pin by whichever workstream
+  owns them. This task does not silently launder that; it is reported at GATE OUT.
+
+#### Phase 1 pre-existing-red baseline for `lake build BimodalTest`
+
+`lake build BimodalTest` fails at dispatch, before any Phase 2-4 edit, in exactly three modules:
+
+| Module | Failure |
+|---|---|
+| `Tests/BimodalTest/BoxSpreadProbe.lean:165` | `#guard_msgs` docstring does not match generated message |
+| `Tests/BimodalTest/RegionGateProbe.lean:299,330` | `#guard_msgs` docstring does not match generated message |
+| `Tests/BimodalTest/TableauConformance.lean:873,885,910,916` | `#guard_msgs` docstring does not match generated message |
+
+All three are unmodified against HEAD (`git status --porcelain` on them is empty), none imports
+`BimodalTest.Semantics.SphericalFiniteAxiomTest`, and Lean elaborates modules independently, so
+this task cannot be their cause. Re-baselining someone else's `#guard_msgs` expectations to make
+the aggregate target green is exactly the "update a guard to turn a red build green" move this
+file's own module docstring forbids, so it is not done here. **Substituted gate for Phases 1-3
+and 5**: `lake build BimodalTest.Semantics.SphericalFiniteAxiomTest` green, plus this failing set
+unchanged at exactly these three modules.
 
 **Timing**: 0.75 hours
 
