@@ -518,14 +518,14 @@ E2 governs paper citations only.)
 - **Done when:** layer tables sum to 45 across nine layers; four-class correspondence stated;
   paper-name columns present; TM+ is the primary comparandum; gates green.
 
-### Phase 5: Metalogic Chapter — Target Completeness Statements [NOT STARTED]
+### Phase 5: Metalogic Chapter — Target Completeness Statements [COMPLETED]
 
 - **Goal:** `04-metalogic.typ` states the target completeness results as clean mathematics
   with CONFIRM obligations; the old incompleteness exposition is cut entirely (Decision D1,
   resolved); genuine negative results stay in the body.
 - **Territory:** `typst/chapters/04-metalogic.typ`
 - **Tasks:**
-  - [ ] R5a (directive-re-aimed; source: restated `cor:tm-completeness`): replace the
+  - [x] R5a (directive-re-aimed; source: restated `cor:tm-completeness`): replace the
     completeness-status table with the four target statements — TM+ strongly complete over
     all task frames; TM+_d strongly complete over the dense frames; TM+_f weakly complete
     over Z-time; TM+_c weakly complete over the dense-and-complete class — as theorem-box
@@ -537,28 +537,28 @@ E2 governs paper citations only.)
     and for the base weak row:
     `// CONFIRM(lean): completeness (FrameClass.Base weak) is axiom-free (WeakCanonical.countermodel_discrete discharged)`.
     Keep the existing `canonical-completeness` LEAN-ANCHOR-MAY-MOVE markers adjacent.
-  - [ ] R5a-negative (body, permanent mathematics): state as results that strong completeness
+  - [x] R5a-negative (body, permanent mathematics): state as results that strong completeness
     fails for Z-time and for R (non-compactness; the paper's own rider), and that Discrete
     strong completeness is provably false (non-compactness witness {F p} ∪ {¬Xⁿp}).
-  - [ ] R5b: delete the "none is established as complete" citation and every quotation of the
+  - [x] R5b: delete the "none is established as complete" citation and every quotation of the
     old corollary text.
-  - [ ] R5c (Decision D1 — resolved: CUT): delete §Why TM Is Incomplete, the (DD) theorem
+  - [x] R5c (Decision D1 — resolved: CUT): delete §Why TM Is Incomplete, the (DD) theorem
     boxes, the Halldén paragraphs, and the two-fibre cetz diagram outright — no compressed
     remark, no replacement exposition. Retain ONLY the discrete-or-dense dichotomy theorem
     (verified sound; independently used by the introduction) as a standalone stated result
     relocated into this chapter's frame-class-correspondence context, detached from any
     incompleteness narrative, and give it a stable label the introduction can reference.
-  - [ ] D1 stranded-reference cleanup (this file): remove any `@`-labels, figure labels, and
+  - [x] D1 stranded-reference cleanup (this file): remove any `@`-labels, figure labels, and
     now-unused imports (e.g. cetz, if the two-fibre diagram was this chapter's only usage)
     left by the cut; remove any subsection heading left empty by the deletion rather than
     leaving a stub. `typst compile` failing on a dangling `@`-reference is the mechanical
     check that nothing was missed.
-  - [ ] R5d (finding D5): restate the CO/Reynolds-triple independence question as an open
+  - [x] R5d (finding D5): restate the CO/Reynolds-triple independence question as an open
     mathematical problem (open problems are permanent mathematical statements, not progress
     reports) without "under active formalization" phrasing; the existing
     `co-reynolds-independence` marker convention already guards the frame-classes chapter's
     site — no new marker here.
-  - [ ] R5e: rewrite §Implementation Status consistently with the directive — remove
+  - [x] R5e: rewrite §Implementation Status consistently with the directive — remove
     sorry-count displays (status.typ imports for sorry counts go), replacing the load-bearing
     census claim with
     `// CONFIRM(lean): scripts/typst-status-counts.sh --json reports sorry_total_excl_boneyard = 0`;
