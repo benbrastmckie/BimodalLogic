@@ -20,8 +20,18 @@ Three result clusters, all machine-checked and free of `sorry`:
    i.e. the Phase 7 defect recorded in `phase7-filtered-frame-is-universal.lean` is not
    repeated, and `noBlockingTriple` shows the schema does real work at `Discrete`.
 
-Argument order is event-first / guard-second throughout, per
-`specs/decisions/untl-snce-argument-order.md`.
+ARGUMENT ORDER (corrected 2026-08-17).  Every Lean term below is **guard-first /
+event-second**: `Formula.untl g e` reads "the guard `g` holds throughout the open interval
+`(t, s)` and the event `e` is witnessed at `s > t`", and `Formula.snce g e` is its past mirror
+(`Syntax/Formula.lean:85,97`; `specs/decisions/untl-snce-argument-order.md`, DECIDED
+2026-08-17).  The event-first / guard-second text this paragraph replaces is RETIRED: it
+described the constructors as they stood when this file was first written, before the
+guard-first migration landed, and the file no longer compiled against the migrated tree.
+
+The *prose* of this file, and of the report that cites it, uses `Formula.prettyPrint`'s prefix
+rendering `U(e, g)`, which is event-first and is still correct as written.  Three renderings
+legitimately coexist and each is named where used: the constructor is guard-first, the
+pretty-printer's prefix `U(e, g)` is event-first, and the paper's infix `φ U ψ` is guard-first.
 
 Compile with: `lake env lean <this file>`.
 -/
@@ -41,11 +51,14 @@ namespace Spike417
 
 noncomputable section
 
-/-- `X ψ`, the next-operator, in the primitive vocabulary: `U(ψ, ⊥)`.
-Event-first / guard-second (`specs/decisions/untl-snce-argument-order.md`): the event `ψ`
-is witnessed at the first strictly-future point, and the guard `⊥` forces the open interval
-strictly between to be empty, i.e. the witness is the immediate successor. -/
-def nxt (ψ : Formula) : Formula := Formula.untl ψ Formula.bot
+/-- `X ψ`, the next-operator, in the primitive vocabulary: `Formula.untl ⊥ ψ`.
+
+**Guard-first / event-second** (`specs/decisions/untl-snce-argument-order.md`, DECIDED
+2026-08-17; `Syntax/Formula.lean:85`): argument 1 is the *guard* `⊥`, which forces the open
+interval strictly between to be empty, and argument 2 is the *event* `ψ`, witnessed at the
+first strictly-future point — so the witness is the immediate successor. This is definitionally
+`Formula.next` (`Syntax/Formula.lean:511`). -/
+def nxt (ψ : Formula) : Formula := Formula.untl Formula.bot ψ
 
 /-! ## Frame-class-polymorphic Hilbert plumbing -/
 
@@ -118,19 +131,25 @@ def orElim {fc : FrameClass} (Γ : Context) (A B C : Formula)
   exact DerivationTree.modus_ponens Γ (C.neg.imp C) C
     (wk Γ _ (peirceAxiom C Formula.bot)) (deductionTheorem Γ C.neg C step)
 
-/-- Guard monotonicity (BX2G, `Axiom.left_mono_until_G`) in usable form. -/
+/-- Guard monotonicity (BX2G, `Axiom.left_mono_until_G`) in usable form.
+
+The *helper's* parameter order is `(event, guard, guard')` — deliberately unchanged from the
+pre-migration version so that every call site below still reads the same — while the *terms* it
+builds are guard-first (`Formula.untl g e`). Do not conflate the two. -/
 def guardMono {fc : FrameClass} (Γ : Context) (e g g' : Formula)
-    (hg : ⊢[fc] g.imp g') (h : Γ ⊢[fc] Formula.untl e g) : Γ ⊢[fc] Formula.untl e g' :=
-  DerivationTree.modus_ponens Γ (Formula.untl e g) (Formula.untl e g')
+    (hg : ⊢[fc] g.imp g') (h : Γ ⊢[fc] Formula.untl g e) : Γ ⊢[fc] Formula.untl g' e :=
+  DerivationTree.modus_ponens Γ (Formula.untl g e) (Formula.untl g' e)
     (DerivationTree.modus_ponens Γ (g.imp g').allFuture _
       (DerivationTree.axiom Γ _ (Axiom.left_mono_until_G g g' e) (FrameClass.base_le fc))
       (necG Γ _ hg))
     h
 
-/-- Event monotonicity (BX3, `Axiom.right_mono_until`) in usable form. -/
+/-- Event monotonicity (BX3, `Axiom.right_mono_until`) in usable form.
+
+Parameter order `(event, event', guard)`; terms guard-first, as in `guardMono`. -/
 def eventMono {fc : FrameClass} (Γ : Context) (e e' g : Formula)
-    (he : ⊢[fc] e.imp e') (h : Γ ⊢[fc] Formula.untl e g) : Γ ⊢[fc] Formula.untl e' g :=
-  DerivationTree.modus_ponens Γ (Formula.untl e g) (Formula.untl e' g)
+    (he : ⊢[fc] e.imp e') (h : Γ ⊢[fc] Formula.untl g e) : Γ ⊢[fc] Formula.untl g e' :=
+  DerivationTree.modus_ponens Γ (Formula.untl g e) (Formula.untl g e')
     (DerivationTree.modus_ponens Γ (e.imp e').allFuture _
       (DerivationTree.axiom Γ _ (Axiom.right_mono_until e e' g) (FrameClass.base_le fc))
       (necG Γ _ he))
@@ -148,16 +167,16 @@ def topNegImpBot {fc : FrameClass} : ⊢[fc] Formula.top.neg.imp Formula.bot := 
 Route: `Axiom.until_F` to `F ⊥`, event monotonicity to `F ¬¬⊥`, and temporal
 necessitation of `¬⊥`, whose `allFuture` unfolds to exactly `¬F ¬¬⊥`. -/
 def untlBotFalse {fc : FrameClass} (X : Formula) :
-    ⊢[fc] (Formula.untl Formula.bot X).imp Formula.bot := by
-  refine deductionTheorem [] (Formula.untl Formula.bot X) Formula.bot ?_
-  have h1 : [Formula.untl Formula.bot X] ⊢[fc] Formula.untl Formula.bot X :=
+    ⊢[fc] (Formula.untl X Formula.bot).imp Formula.bot := by
+  refine deductionTheorem [] (Formula.untl X Formula.bot) Formula.bot ?_
+  have h1 : [Formula.untl X Formula.bot] ⊢[fc] Formula.untl X Formula.bot :=
     DerivationTree.assumption _ _ (by simp)
-  have h2 : [Formula.untl Formula.bot X] ⊢[fc] Formula.someFuture Formula.bot :=
+  have h2 : [Formula.untl X Formula.bot] ⊢[fc] Formula.someFuture Formula.bot :=
     DerivationTree.modus_ponens _ _ _
       (DerivationTree.axiom _ _ (Axiom.until_F X Formula.bot) (FrameClass.base_le fc)) h1
-  have h3 : [Formula.untl Formula.bot X] ⊢[fc] Formula.someFuture Formula.bot.neg.neg :=
+  have h3 : [Formula.untl X Formula.bot] ⊢[fc] Formula.someFuture Formula.bot.neg.neg :=
     eventMono _ Formula.bot Formula.bot.neg.neg Formula.top (efqAxiom _) h2
-  have h4 : [Formula.untl Formula.bot X] ⊢[fc] Formula.allFuture Formula.bot.neg :=
+  have h4 : [Formula.untl X Formula.bot] ⊢[fc] Formula.allFuture Formula.bot.neg :=
     wk _ _ (DerivationTree.temporal_necessitation _ (efqAxiom Formula.bot))
   exact DerivationTree.modus_ponens _ _ _ h4 h3
 
@@ -173,7 +192,7 @@ def succIndicator : ⊢[FrameClass.Discrete] nxt Formula.top := by
   have h1 : ⊢[FrameClass.Discrete] Formula.someFuture Formula.top :=
     DerivationTree.modus_ponens _ Formula.top _
       (DerivationTree.axiom _ _ Axiom.serial_future (by decide)) topThm
-  have h2 : ⊢[FrameClass.Discrete] Formula.untl Formula.top Formula.top.neg :=
+  have h2 : ⊢[FrameClass.Discrete] Formula.untl Formula.top.neg Formula.top :=
     DerivationTree.modus_ponens _ _ _
       (DerivationTree.axiom _ _ (Axiom.prior_UZ Formula.top) (by decide)) h1
   exact guardMono [] Formula.top Formula.top.neg Formula.bot topNegImpBot h2
@@ -192,34 +211,34 @@ the eventuality itself, then `Axiom.linear_until` compares that `untl` against `
 and the middle disjunct is killed by `untlBotFalse`. -/
 def unfoldForward (e g : Formula) :
     ⊢[FrameClass.Discrete]
-      (Formula.untl e g).imp ((nxt e).or (nxt (Formula.and g (Formula.untl e g)))) := by
-  set G' := Formula.and g (Formula.untl e g) with hG'
+      (Formula.untl g e).imp ((nxt e).or (nxt (Formula.and g (Formula.untl g e)))) := by
+  set G' := Formula.and g (Formula.untl g e) with hG'
   set C := (nxt e).or (nxt G') with hC
-  set Γ : Context := [Formula.untl e g] with hΓ
-  refine deductionTheorem [] (Formula.untl e g) C ?_
-  have h1 : Γ ⊢[FrameClass.Discrete] Formula.untl e g :=
+  set Γ : Context := [Formula.untl g e] with hΓ
+  refine deductionTheorem [] (Formula.untl g e) C ?_
+  have h1 : Γ ⊢[FrameClass.Discrete] Formula.untl g e :=
     DerivationTree.assumption _ _ (by simp [hΓ])
-  have h2 : Γ ⊢[FrameClass.Discrete] Formula.untl e G' :=
+  have h2 : Γ ⊢[FrameClass.Discrete] Formula.untl G' e :=
     DerivationTree.modus_ponens _ _ _
       (DerivationTree.axiom _ _ (Axiom.self_accum_until g e) (FrameClass.base_le _)) h1
-  have h3 : Γ ⊢[FrameClass.Discrete] Formula.untl Formula.top Formula.bot :=
+  have h3 : Γ ⊢[FrameClass.Discrete] Formula.untl Formula.bot Formula.top :=
     wk _ _ succIndicator
   have h4 : Γ ⊢[FrameClass.Discrete]
-      (Formula.untl e G').and (Formula.untl Formula.top Formula.bot) := andIntro _ _ _ h2 h3
+      (Formula.untl G' e).and (Formula.untl Formula.bot Formula.top) := andIntro _ _ _ h2 h3
   have h5 : Γ ⊢[FrameClass.Discrete]
-      ((Formula.untl (Formula.and e Formula.top) (Formula.and G' Formula.bot)).or
-        (Formula.untl (Formula.and e Formula.bot) (Formula.and G' Formula.bot))).or
-        (Formula.untl (Formula.and G' Formula.top) (Formula.and G' Formula.bot)) :=
+      ((Formula.untl (Formula.and G' Formula.bot) (Formula.and e Formula.top)).or
+        (Formula.untl (Formula.and G' Formula.bot) (Formula.and e Formula.bot))).or
+        (Formula.untl (Formula.and G' Formula.bot) (Formula.and G' Formula.top)) :=
     DerivationTree.modus_ponens _ _ _
       (DerivationTree.axiom _ _ (Axiom.linear_until G' e Formula.bot Formula.top) (FrameClass.base_le _)) h4
   -- Disjunct 1: `U(e ∧ ⊤, G' ∧ ⊥)` collapses to `X e`.
   have d1 : Γ ⊢[FrameClass.Discrete]
-      (Formula.untl (Formula.and e Formula.top) (Formula.and G' Formula.bot)).imp C := by
+      (Formula.untl (Formula.and G' Formula.bot) (Formula.and e Formula.top)).imp C := by
     refine deductionTheorem Γ
-      (Formula.untl (Formula.and e Formula.top) (Formula.and G' Formula.bot)) C ?_
+      (Formula.untl (Formula.and G' Formula.bot) (Formula.and e Formula.top)) C ?_
     have a1 := DerivationTree.assumption (fc := FrameClass.Discrete)
-      (Formula.untl (Formula.and e Formula.top) (Formula.and G' Formula.bot) :: Γ)
-      (Formula.untl (Formula.and e Formula.top) (Formula.and G' Formula.bot)) (by simp)
+      (Formula.untl (Formula.and G' Formula.bot) (Formula.and e Formula.top) :: Γ)
+      (Formula.untl (Formula.and G' Formula.bot) (Formula.and e Formula.top)) (by simp)
     have a2 := guardMono _ (Formula.and e Formula.top) (Formula.and G' Formula.bot)
       Formula.bot (rceImp G' Formula.bot) a1
     have a3 := eventMono _ (Formula.and e Formula.top) e Formula.bot
@@ -227,12 +246,12 @@ def unfoldForward (e g : Formula) :
     exact orIntroL _ _ _ a3
   -- Disjunct 2: `U(e ∧ ⊥, _)` has a refutable event.
   have d2 : Γ ⊢[FrameClass.Discrete]
-      (Formula.untl (Formula.and e Formula.bot) (Formula.and G' Formula.bot)).imp C := by
+      (Formula.untl (Formula.and G' Formula.bot) (Formula.and e Formula.bot)).imp C := by
     refine deductionTheorem Γ
-      (Formula.untl (Formula.and e Formula.bot) (Formula.and G' Formula.bot)) C ?_
+      (Formula.untl (Formula.and G' Formula.bot) (Formula.and e Formula.bot)) C ?_
     have a1 := DerivationTree.assumption (fc := FrameClass.Discrete)
-      (Formula.untl (Formula.and e Formula.bot) (Formula.and G' Formula.bot) :: Γ)
-      (Formula.untl (Formula.and e Formula.bot) (Formula.and G' Formula.bot)) (by simp)
+      (Formula.untl (Formula.and G' Formula.bot) (Formula.and e Formula.bot) :: Γ)
+      (Formula.untl (Formula.and G' Formula.bot) (Formula.and e Formula.bot)) (by simp)
     have a2 := eventMono _ (Formula.and e Formula.bot) Formula.bot
       (Formula.and G' Formula.bot) (rceImp e Formula.bot) a1
     have a3 : _ ⊢[FrameClass.Discrete] Formula.bot :=
@@ -240,12 +259,12 @@ def unfoldForward (e g : Formula) :
     exact DerivationTree.modus_ponens _ _ _ (wk _ _ (efqAxiom C)) a3
   -- Disjunct 3: `U(G' ∧ ⊤, G' ∧ ⊥)` collapses to `X G'`.
   have d3 : Γ ⊢[FrameClass.Discrete]
-      (Formula.untl (Formula.and G' Formula.top) (Formula.and G' Formula.bot)).imp C := by
+      (Formula.untl (Formula.and G' Formula.bot) (Formula.and G' Formula.top)).imp C := by
     refine deductionTheorem Γ
-      (Formula.untl (Formula.and G' Formula.top) (Formula.and G' Formula.bot)) C ?_
+      (Formula.untl (Formula.and G' Formula.bot) (Formula.and G' Formula.top)) C ?_
     have a1 := DerivationTree.assumption (fc := FrameClass.Discrete)
-      (Formula.untl (Formula.and G' Formula.top) (Formula.and G' Formula.bot) :: Γ)
-      (Formula.untl (Formula.and G' Formula.top) (Formula.and G' Formula.bot)) (by simp)
+      (Formula.untl (Formula.and G' Formula.bot) (Formula.and G' Formula.top) :: Γ)
+      (Formula.untl (Formula.and G' Formula.bot) (Formula.and G' Formula.top)) (by simp)
     have a2 := guardMono _ (Formula.and G' Formula.top) (Formula.and G' Formula.bot)
       Formula.bot (rceImp G' Formula.bot) a1
     have a3 := eventMono _ (Formula.and G' Formula.top) G' Formula.bot
@@ -260,17 +279,17 @@ def unfoldForward (e g : Formula) :
 Engine: guard weakening `⊥ → g`, then `Axiom.absorb_until`. -/
 def unfoldBackward (e g : Formula) :
     ⊢[FrameClass.Base]
-      ((nxt e).or (nxt (Formula.and g (Formula.untl e g)))).imp (Formula.untl e g) := by
-  set G' := Formula.and g (Formula.untl e g) with hG'
+      ((nxt e).or (nxt (Formula.and g (Formula.untl g e)))).imp (Formula.untl g e) := by
+  set G' := Formula.and g (Formula.untl g e) with hG'
   set A := (nxt e).or (nxt G') with hA
   set Δ : Context := [A] with hΔ
-  refine deductionTheorem [] A (Formula.untl e g) ?_
-  refine orElim Δ (nxt e) (nxt G') (Formula.untl e g)
+  refine deductionTheorem [] A (Formula.untl g e) ?_
+  refine orElim Δ (nxt e) (nxt G') (Formula.untl g e)
     (DerivationTree.assumption Δ A (by simp [hΔ])) ?_ ?_
-  · refine deductionTheorem Δ (nxt e) (Formula.untl e g) ?_
+  · refine deductionTheorem Δ (nxt e) (Formula.untl g e) ?_
     exact guardMono (nxt e :: Δ) e Formula.bot g (efqAxiom g)
       (DerivationTree.assumption (nxt e :: Δ) (nxt e) (by simp))
-  · refine deductionTheorem Δ (nxt G') (Formula.untl e g) ?_
+  · refine deductionTheorem Δ (nxt G') (Formula.untl g e) ?_
     have a1 := DerivationTree.assumption (fc := FrameClass.Base) (nxt G' :: Δ) (nxt G') (by simp)
     have a2 := guardMono (nxt G' :: Δ) G' Formula.bot g (efqAxiom g) a1
     exact DerivationTree.modus_ponens _ _ _
@@ -287,9 +306,9 @@ def nextConj {fc : FrameClass} (A B : Formula) :
   set D := (nxt A).and (nxt B) with hD
   set Γ : Context := [D] with hΓ
   set W := Formula.and Formula.bot Formula.bot with hW
-  set E1 := Formula.untl (Formula.and A B) W with hE1
-  set E2 := Formula.untl (Formula.and A Formula.bot) W with hE2
-  set E3 := Formula.untl (Formula.and Formula.bot B) W with hE3
+  set E1 := Formula.untl W (Formula.and A B) with hE1
+  set E2 := Formula.untl W (Formula.and A Formula.bot) with hE2
+  set E3 := Formula.untl W (Formula.and Formula.bot B) with hE3
   refine deductionTheorem [] D T ?_
   have h4 : Γ ⊢[fc] D := DerivationTree.assumption Γ D (by simp [hΓ])
   have h5 : Γ ⊢[fc] (E1.or E2).or E3 :=
@@ -297,12 +316,12 @@ def nextConj {fc : FrameClass} (A B : Formula) :
       (DerivationTree.axiom Γ _ (Axiom.linear_until Formula.bot A Formula.bot B)
         (FrameClass.base_le _)) h4
   have kill : ∀ (Δ : Context) (E : Formula), (⊢[fc] E.imp Formula.bot) →
-      (Δ ⊢[fc] (Formula.untl E W).imp T) := by
+      (Δ ⊢[fc] (Formula.untl W E).imp T) := by
     intro Δ E hE
-    refine deductionTheorem Δ (Formula.untl E W) T ?_
-    have a1 := DerivationTree.assumption (fc := fc) (Formula.untl E W :: Δ)
-      (Formula.untl E W) (by simp)
-    have a2 := eventMono (Formula.untl E W :: Δ) E Formula.bot W hE a1
+    refine deductionTheorem Δ (Formula.untl W E) T ?_
+    have a1 := DerivationTree.assumption (fc := fc) (Formula.untl W E :: Δ)
+      (Formula.untl W E) (by simp)
+    have a2 := eventMono (Formula.untl W E :: Δ) E Formula.bot W hE a1
     exact DerivationTree.modus_ponens _ _ _ (wk _ _ (efqAxiom T))
       (DerivationTree.modus_ponens _ _ _ (wk _ _ (untlBotFalse _)) a2)
   have keep : ∀ Δ : Context, Δ ⊢[fc] E1.imp T := by
@@ -327,44 +346,44 @@ U(e, g)   <->   X e  \/  ( X g  /\  X U(e, g) )
 /-- Table shape, forward. -/
 def unfoldTableForward (e g : Formula) :
     ⊢[FrameClass.Discrete]
-      (Formula.untl e g).imp ((nxt e).or ((nxt g).and (nxt (Formula.untl e g)))) := by
-  set G' := Formula.and g (Formula.untl e g) with hG'
-  set C := (nxt e).or ((nxt g).and (nxt (Formula.untl e g))) with hC
-  set Γ : Context := [Formula.untl e g] with hΓ
-  refine deductionTheorem [] (Formula.untl e g) C ?_
+      (Formula.untl g e).imp ((nxt e).or ((nxt g).and (nxt (Formula.untl g e)))) := by
+  set G' := Formula.and g (Formula.untl g e) with hG'
+  set C := (nxt e).or ((nxt g).and (nxt (Formula.untl g e))) with hC
+  set Γ : Context := [Formula.untl g e] with hΓ
+  refine deductionTheorem [] (Formula.untl g e) C ?_
   have h1 : Γ ⊢[FrameClass.Discrete] (nxt e).or (nxt G') :=
     DerivationTree.modus_ponens Γ _ _ (wk Γ _ (unfoldForward e g))
-      (DerivationTree.assumption Γ (Formula.untl e g) (by simp [hΓ]))
+      (DerivationTree.assumption Γ (Formula.untl g e) (by simp [hΓ]))
   refine orElim Γ (nxt e) (nxt G') C h1 ?_ ?_
   · refine deductionTheorem Γ (nxt e) C ?_
     exact orIntroL _ _ _ (DerivationTree.assumption _ _ (by simp))
   · refine deductionTheorem Γ (nxt G') C ?_
     have a1 := DerivationTree.assumption (fc := FrameClass.Discrete) (nxt G' :: Γ) (nxt G')
       (by simp)
-    have a2 := eventMono (nxt G' :: Γ) G' g Formula.bot (lceImp g (Formula.untl e g)) a1
-    have a3 := eventMono (nxt G' :: Γ) G' (Formula.untl e g) Formula.bot
-      (rceImp g (Formula.untl e g)) a1
+    have a2 := eventMono (nxt G' :: Γ) G' g Formula.bot (lceImp g (Formula.untl g e)) a1
+    have a3 := eventMono (nxt G' :: Γ) G' (Formula.untl g e) Formula.bot
+      (rceImp g (Formula.untl g e)) a1
     exact orIntroR _ _ _ (andIntro _ _ _ a2 a3)
 
 /-- Table shape, backward (still `Base`). -/
 def unfoldTableBackward (e g : Formula) :
     ⊢[FrameClass.Base]
-      ((nxt e).or ((nxt g).and (nxt (Formula.untl e g)))).imp (Formula.untl e g) := by
-  set G' := Formula.and g (Formula.untl e g) with hG'
-  set A := (nxt e).or ((nxt g).and (nxt (Formula.untl e g))) with hA
+      ((nxt e).or ((nxt g).and (nxt (Formula.untl g e)))).imp (Formula.untl g e) := by
+  set G' := Formula.and g (Formula.untl g e) with hG'
+  set A := (nxt e).or ((nxt g).and (nxt (Formula.untl g e))) with hA
   set Δ : Context := [A] with hΔ
-  refine deductionTheorem [] A (Formula.untl e g) ?_
-  refine orElim Δ (nxt e) ((nxt g).and (nxt (Formula.untl e g))) (Formula.untl e g)
+  refine deductionTheorem [] A (Formula.untl g e) ?_
+  refine orElim Δ (nxt e) ((nxt g).and (nxt (Formula.untl g e))) (Formula.untl g e)
     (DerivationTree.assumption Δ A (by simp [hΔ])) ?_ ?_
-  · refine deductionTheorem Δ (nxt e) (Formula.untl e g) ?_
+  · refine deductionTheorem Δ (nxt e) (Formula.untl g e) ?_
     exact DerivationTree.modus_ponens _ _ _ (wk _ _ (unfoldBackward e g))
       (orIntroL _ _ _ (DerivationTree.assumption _ _ (by simp)))
-  · refine deductionTheorem Δ ((nxt g).and (nxt (Formula.untl e g))) (Formula.untl e g) ?_
+  · refine deductionTheorem Δ ((nxt g).and (nxt (Formula.untl g e))) (Formula.untl g e) ?_
     have a1 := DerivationTree.assumption (fc := FrameClass.Base)
-      ((nxt g).and (nxt (Formula.untl e g)) :: Δ)
-      ((nxt g).and (nxt (Formula.untl e g))) (by simp)
+      ((nxt g).and (nxt (Formula.untl g e)) :: Δ)
+      ((nxt g).and (nxt (Formula.untl g e))) (by simp)
     have a2 := DerivationTree.modus_ponens _ _ _
-      (wk _ _ (nextConj g (Formula.untl e g))) a1
+      (wk _ _ (nextConj g (Formula.untl g e))) a1
     exact DerivationTree.modus_ponens _ _ _ (wk _ _ (unfoldBackward e g))
       (orIntroR _ _ _ a2)
 
@@ -378,14 +397,14 @@ At `FrameClass.Discrete` that pattern is *derivably* inconsistent, so no such `w
 because `unfoldForward` is. -/
 def noBlockingTriple (p q r s : Formula) :
     ⊢[FrameClass.Discrete]
-      (Formula.untl p q).imp ((Formula.untl p r).or (Formula.untl q s)) := by
-  set C := (Formula.untl p r).or (Formula.untl q s) with hC
-  set Γ : Context := [Formula.untl p q] with hΓ
-  set G' := Formula.and q (Formula.untl p q) with hG'
-  refine deductionTheorem [] (Formula.untl p q) C ?_
+      (Formula.untl q p).imp ((Formula.untl r p).or (Formula.untl s q)) := by
+  set C := (Formula.untl r p).or (Formula.untl s q) with hC
+  set Γ : Context := [Formula.untl q p] with hΓ
+  set G' := Formula.and q (Formula.untl q p) with hG'
+  refine deductionTheorem [] (Formula.untl q p) C ?_
   have h1 : Γ ⊢[FrameClass.Discrete] (nxt p).or (nxt G') :=
     DerivationTree.modus_ponens Γ _ _ (wk Γ _ (unfoldForward p q))
-      (DerivationTree.assumption Γ (Formula.untl p q) (by simp [hΓ]))
+      (DerivationTree.assumption Γ (Formula.untl q p) (by simp [hΓ]))
   refine orElim Γ (nxt p) (nxt G') C h1 ?_ ?_
   · refine deductionTheorem Γ (nxt p) C ?_
     exact orIntroL _ _ _
@@ -394,7 +413,7 @@ def noBlockingTriple (p q r s : Formula) :
   · refine deductionTheorem Γ (nxt G') C ?_
     have a1 := DerivationTree.assumption (fc := FrameClass.Discrete) (nxt G' :: Γ) (nxt G')
       (by simp)
-    have a2 := eventMono (nxt G' :: Γ) G' q Formula.bot (lceImp q (Formula.untl p q)) a1
+    have a2 := eventMono (nxt G' :: Γ) G' q Formula.bot (lceImp q (Formula.untl q p)) a1
     exact orIntroR _ _ _ (guardMono (nxt G' :: Γ) q Formula.bot s (efqAxiom s) a2)
 
 /-! ## Result 3: `filteredStep` and the refutation of `filteredStep_fwd`
@@ -402,14 +421,16 @@ def noBlockingTriple (p q r s : Formula) :
 The relation below is handoff §4.4's table, verbatim, on closure-MCS bundles, then lifted
 through `Quotient.lift₂` to `FilteredWorld`. -/
 
-/-- The one-step relation on closure-MCS bundles.  Event-first / guard-second throughout. -/
+/-- The one-step relation on closure-MCS bundles.  **Guard-first / event-second** throughout:
+in `Formula.untl g e` the guard is `g` and the event is `e`, so the table's first disjunct is
+*event at the successor* and the second is *guard at the successor, obligation carried on*. -/
 def StepBundle (φ : Formula) (w u : ClosureMCSBundle φ) : Prop :=
-  (∀ χ ψ, Formula.untl χ ψ ∈ subformulaClosure φ →
-      (Formula.untl χ ψ ∈ w.carrier ↔
-        (χ ∈ u.carrier ∨ (ψ ∈ u.carrier ∧ Formula.untl χ ψ ∈ u.carrier)))) ∧
-  (∀ χ ψ, Formula.snce χ ψ ∈ subformulaClosure φ →
-      (Formula.snce χ ψ ∈ u.carrier ↔
-        (χ ∈ w.carrier ∨ (ψ ∈ w.carrier ∧ Formula.snce χ ψ ∈ w.carrier)))) ∧
+  (∀ g e, Formula.untl g e ∈ subformulaClosure φ →
+      (Formula.untl g e ∈ w.carrier ↔
+        (e ∈ u.carrier ∨ (g ∈ u.carrier ∧ Formula.untl g e ∈ u.carrier)))) ∧
+  (∀ g e, Formula.snce g e ∈ subformulaClosure φ →
+      (Formula.snce g e ∈ u.carrier ↔
+        (e ∈ w.carrier ∨ (g ∈ w.carrier ∧ Formula.snce g e ∈ w.carrier)))) ∧
   (∀ χ, Formula.box χ ∈ subformulaClosure φ →
       (Formula.box χ ∈ w.carrier ↔ Formula.box χ ∈ u.carrier))
 
@@ -422,16 +443,16 @@ theorem stepBundle_respects (φ : Formula) {w₁ w₂ u₁ u₂ : ClosureMCSBund
       ClosureMCSEquiv φ b₁ b₂ → StepBundle φ a₁ b₁ → StepBundle φ a₂ b₂ := by
     rintro a₁ a₂ b₁ b₂ ha hb ⟨hU, hS, hB⟩
     refine ⟨?_, ?_, ?_⟩
-    · intro χ ψ hmem
-      have hχ := closure_untl_left φ χ ψ hmem
-      have hψ := closure_untl_right φ χ ψ hmem
-      rw [← ha _ hmem, ← hb _ hχ, ← hb _ hψ, ← hb _ hmem]
-      exact hU χ ψ hmem
-    · intro χ ψ hmem
-      have hχ := closure_snce_left φ χ ψ hmem
-      have hψ := closure_snce_right φ χ ψ hmem
-      rw [← hb _ hmem, ← ha _ hχ, ← ha _ hψ, ← ha _ hmem]
-      exact hS χ ψ hmem
+    · intro g e hmem
+      have he := closure_untl_left φ e g hmem
+      have hg := closure_untl_right φ e g hmem
+      rw [← ha _ hmem, ← hb _ he, ← hb _ hg, ← hb _ hmem]
+      exact hU g e hmem
+    · intro g e hmem
+      have he := closure_snce_left φ e g hmem
+      have hg := closure_snce_right φ e g hmem
+      rw [← hb _ hmem, ← ha _ he, ← ha _ hg, ← ha _ hmem]
+      exact hS g e hmem
     · intro χ hmem
       rw [← ha _ hmem, ← hb _ hmem]
       exact hB χ hmem
@@ -450,7 +471,7 @@ theorem filteredStep_mk (φ : Formula) (w u : ClosureMCSBundle φ) :
 /-! ### The obstruction
 
 Take `Φ := U(⊤, ⊥)`, the discreteness indicator, as the target formula.  Its closure is
-`{U(⊤,⊥), ⊤, ⊥}`.  The `untl` clause of the table at `χ := ⊤`, `ψ := ⊥` reads
+`{U(⊤,⊥), ⊤, ⊥}`.  The `untl` clause of the table at guard `g := ⊥`, event `e := ⊤` reads
 
 ```
 U(⊤,⊥) ∈ w  ↔  ⊤ ∈ u  ∨  (⊥ ∈ u ∧ U(⊤,⊥) ∈ u)
@@ -474,9 +495,9 @@ theorem top_mem (φ : Formula) (w : ClosureMCSBundle φ)
 /-- **Any `StepBundle`-successor forces `U(⊤,⊥)` into the source world.** -/
 theorem stepBundle_forces_phi (w u : ClosureMCSBundle Phi) (h : StepBundle Phi w u) :
     Phi ∈ w.carrier := by
-  have hmem : Formula.untl Formula.top Formula.bot ∈ subformulaClosure Phi :=
+  have hmem : Formula.untl Formula.bot Formula.top ∈ subformulaClosure Phi :=
     self_mem_subformulaClosure Phi
-  exact (h.1 Formula.top Formula.bot hmem).mpr (Or.inl (top_mem Phi u top_mem_closure))
+  exact (h.1 Formula.bot Formula.top hmem).mpr (Or.inl (top_mem Phi u top_mem_closure))
 
 /-- **No successor for any world omitting the indicator.** -/
 theorem no_successor (w : ClosureMCSBundle Phi) (h : Phi ∉ w.carrier) :

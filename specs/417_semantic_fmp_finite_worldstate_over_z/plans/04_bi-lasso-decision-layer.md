@@ -1,7 +1,7 @@
 # Implementation Plan: Task #417 — the bi-lasso decision layer (handoff Task A)
 
 - **Task**: 417 - Semantic FMP, finite WorldState over ℤ
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 16.5 hours
 - **Dependencies**: Task 414, Task 420, Task 438, Task 439 (semantics/frame prerequisites, all landed upstream of the phases below); Task 450 is a dependency of the DEFERRED half only (see Non-Goals) and does **not** gate any phase in this plan
 - **Research Inputs**:
@@ -169,26 +169,26 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Repair the spike evidence file to guard-first order [NOT STARTED]
+### Phase 1: Repair the spike evidence file to guard-first order [COMPLETED]
 
 **Goal**: `evidence/spike-untl-unfolding-and-fwd-obstruction.lean` compiles clean again against the
 migrated tree, with its nine `#print axioms` audits still reporting no `sorryAx`, and its header
 docstring recording the transposition.
 
 **Tasks**:
-- [ ] Capture the repository baseline first: `bash scripts/check-module-invariants.sh` and
+- [x] Capture the repository baseline first: `bash scripts/check-module-invariants.sh` and
       `lake build` output, recorded so later phases can distinguish inherited red from new red.
-- [ ] Re-run `lake env lean specs/417_semantic_fmp_finite_worldstate_over_z/evidence/spike-untl-unfolding-and-fwd-obstruction.lean`
+- [x] Re-run `lake env lean specs/417_semantic_fmp_finite_worldstate_over_z/evidence/spike-untl-unfolding-and-fwd-obstruction.lean`
       and capture the **complete** error list (planning captured only the first 40 lines).
-- [ ] Transpose every `Formula.untl` / `Formula.snce` application to guard-first. Confirmed anchors
+- [x] Transpose every `Formula.untl` / `Formula.snce` application to guard-first. Confirmed anchors
       from the live tree: `Axiom.left_mono_until_G g g' e` varies the **guard** (first argument);
       `Axiom.right_mono_until e e' g` varies the **event** (second argument);
       `Axiom.prior_UZ φ : φ.someFuture.imp (φ.neg.untl φ)`, i.e. guard `¬φ`, event `φ`.
-- [ ] Fix `nxt` (`:48`): it must become `Formula.untl Formula.bot ψ` — guard `⊥` (empty open
+- [x] Fix `nxt` (`:48`): it must become `Formula.untl Formula.bot ψ` — guard `⊥` (empty open
       interval), event `ψ`. The file currently has the arguments the other way round.
-- [ ] Replace the file's own convention paragraph (`:45`) with the live guard-first statement and a
+- [x] Replace the file's own convention paragraph (`:45`) with the live guard-first statement and a
       dated note that the event-first text it replaces is retired.
-- [ ] Re-run the `#print axioms` block and confirm all nine declarations still report
+- [x] Re-run the `#print axioms` block and confirm all nine declarations still report
       `[propext, Classical.choice, Quot.sound]` with no `sorryAx`.
 
 **Timing**: 1.5 hours
