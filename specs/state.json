@@ -4,8 +4,18 @@
     "total_tasks": 29,
     "last_sync": "2026-06-08T03:09:30Z"
   },
-  "next_project_number": 449,
+  "next_project_number": 450,
   "active_projects": [
+    {
+      "project_number": 449,
+      "project_name": "review_paper_to_improve_bimodal_reference_manual",
+      "status": "not_started",
+      "task_type": "formal",
+      "description": "Systematically review /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex in order to improve typst/BimodalReference.typ while observing the aim to accurately represent the Lean code in this repository, which is actively being improved to also be in better alignment with the possible_worlds.tex paper. The key difference between the paper and this Lean repo with its corresponding BimodalReference.typ manual is that this repo should focus entirely on constructing/presenting the full bimodal logic system where snce/untl operators are primitive, leaving the fragment with past/future operators as primitives as a subsystem to be developed later in order to establish conservative extension results if possible, though for now that effort can be ignored",
+      "topic": "reference-book",
+      "created": "2026-08-17T15:49:45Z",
+      "last_updated": "2026-08-17T15:49:45Z"
+    },
     {
       "project_number": 448,
       "project_name": "migrate_snce_untl_to_guard_first_order",

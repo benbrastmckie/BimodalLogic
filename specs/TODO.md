@@ -1,5 +1,5 @@
 ---
-next_project_number: 449
+next_project_number: 450
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 449
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,193,231,257,298,413,415,417,419,421,423,424,437,440,445,448 | -- | completeness, decidability, frame-extensions, ... |
+| 1 | 125,127,128,193,231,257,298,413,415,417,419,421,423,424,437,440,445,448,449 | -- | completeness, decidability, frame-extensions, ... |
 | 2 | 178,219,282,296,422,425,436,441,446 | 193,231,298,421,423,437,440,445 | decidability, formula-refactor, publication-quality, ... |
 | 3 | 169,434,447 | 422,436,446 | decidability, publication-quality, strong_completeness |
 | 4 | 362,432 | 169,434 | decidability, strong_completeness |
@@ -81,6 +81,10 @@ next_project_number: 449
   └─ 282 [PARTIAL] — exhaustive_enumeration_by_default
   └─ 296 [PARTIAL] — Re-add the 6 derived binary temporal operators (release, weak_unt
 
+### Reference Book
+
+449 [NOT STARTED] — Systematically review /home/benjamin/Philosophy/Papers/PossibleWo
+
 ### Paper Refactor
 
 415 [IMPLEMENTING] — RE-ISSUED 2026-08-10 (supersedes the prior maximal-history framin
@@ -106,6 +110,16 @@ next_project_number: 449
 ### Uncategorized
 
 ## Tasks
+
+### 449. Review paper to improve bimodal reference manual
+- **Status**: [NOT STARTED]
+- **Task Type**: formal
+- **Topic**: reference-book
+- **Dependencies**: None
+
+**Description**: Systematically review /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex in order to improve typst/BimodalReference.typ while observing the aim to accurately represent the Lean code in this repository, which is actively being improved to also be in better alignment with the possible_worlds.tex paper. The key difference between the paper and this Lean repo with its corresponding BimodalReference.typ manual is that this repo should focus entirely on constructing/presenting the full bimodal logic system where snce/untl operators are primitive, leaving the fragment with past/future operators as primitives as a subsystem to be developed later in order to establish conservative extension results if possible, though for now that effort can be ignored
+
+---
 
 ### 448. Migrate snce untl to guard first order
 - **Status**: [NOT STARTED]
