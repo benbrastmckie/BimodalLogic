@@ -510,22 +510,22 @@ transitively.
 
 ---
 
-### Phase 4: `mem_HF_iff_adjacent` — `H_F` over ℤ is the bi-infinite step-paths [NOT STARTED]
+### Phase 4: `mem_HF_iff_adjacent` — `H_F` over ℤ is the bi-infinite step-paths [COMPLETED]
 
 **Goal**: Characterize the total-history space of an arbitrary `TaskFrame ℤ` as the set of
 `τ : ℤ → WorldState` with `step (τ n) (τ (n+1))` for all `n`. This is what makes both the truth
 lemma and the model checker tractable.
 
 **Tasks**:
-- [ ] Prove the forward direction: a total `WorldHistory` on ℤ satisfies the adjacency condition
+- [x] Prove the forward direction: a total `WorldHistory` on ℤ satisfies the adjacency condition
       (instantiate `respects_task` at consecutive times).
-- [ ] Prove the converse: any adjacency-satisfying `τ : ℤ → WorldState` yields a total
+- [x] Prove the converse: any adjacency-satisfying `τ : ℤ → WorldState` yields a total
       `WorldHistory`; the all-pairs `respects_task` obligation follows from `taskRel_eq_iter` plus
       `iter_add`, by induction on the gap.
-- [ ] State the result as `mem_HF_iff_adjacent` over `TaskFrame.HF`, in whichever of the two
+- [x] State the result as `mem_HF_iff_adjacent` over `TaskFrame.HF`, in whichever of the two
       equivalent forms (predicate on histories vs. membership in `HF`) elaborates most cleanly;
       supply the other as a one-line corollary.
-- [ ] Do **not** route through `regionFrame`. `not_regionConstant_regionHistory` machine-checks that
+- [x] Do **not** route through `regionFrame`. `not_regionConstant_regionHistory` machine-checks that
       no history on that carrier repeats a state, foreclosing every lasso argument on it; this phase
       exists precisely so later phases have an obstruction-free carrier.
 
@@ -539,8 +539,19 @@ lemma and the model checker tractable.
 - `FormalSystem/Semantics/IntNormalForm.lean` - `mem_HF_iff_adjacent` and its corollary form
 
 **Verification**:
-- Module builds with zero diagnostics; both directions are theorems, not `sorry`.
+- Module builds with zero diagnostics; both directions are theorems, not `sorry`. **MET.**
 - A smoke `example` instantiates the characterization at an existing ℤ frame in the tree and closes.
+  **MET** — two `example`s in the module's `Smoke` section, both over
+  `TaskFrame.staticFrame W (D := ℤ)`: one shows the constant path is an `IsStepPath`, the second
+  runs it through `mem_HF_iff_adjacent` to produce an actual member of `H_F`.
+
+**Chosen form**: the membership form is primary (`(∃ τ : F.HF, τ.path = f) ↔ IsStepPath F f`), with
+the predicate-on-histories form supplied as the corollary `isTotal_respects_iff_adjacent`
+(`(∀ s t, TaskRel (f s) (t - s) (f t)) ↔ IsStepPath F f`). Supporting declarations landed with
+them: `IsStepPath`, `TaskFrame.HF.path`, `TaskFrame.HFofStepPath` (the construction),
+`TaskFrame.iter_of_isStepPath` (the induction on the gap), and
+`TaskFrame.respects_of_isStepPath`. `mem_HF_iff_adjacent` verifies at
+`[propext, Classical.choice, Quot.sound]`. `regionFrame` is not touched anywhere in the module.
 
 ---
 

@@ -36,12 +36,17 @@ synthesis from a bare bi-serial relation, and computable model checking — rest
 - `iter` — `n`-fold iteration of a binary relation, `iter R 0 = Eq` and
   `iter R (n+1) w u = ∃ v, iter R n w v ∧ R v u`
 - `TaskFrame.step` — the one-step relation of a `TaskFrame ℤ`
+- `IsStepPath` — a bi-infinite walk `f : ℤ → WorldState` stepping between consecutive times
+- `TaskFrame.HF.path` — the bare path underlying a total world history
+- `TaskFrame.HFofStepPath` — the total world history determined by a bi-infinite step-path
 
 ## Main Results
 
 - `iter_add` — `iter R (m + n)` factors as `iter R m` followed by `iter R n`
 - `TaskFrame.taskRel_natCast_iff_iter` — the nonnegative core: `TaskRel w (n : ℤ) u ↔ step^n w u`
 - `TaskFrame.taskRel_eq_iter` — the uniform two-sided characterization, valid at every `d : ℤ`
+- `TaskFrame.mem_HF_iff_adjacent` — `H_F` over ℤ is exactly the set of bi-infinite step-paths
+- `TaskFrame.isTotal_respects_iff_adjacent` — the predicate-on-histories form of the same fact
 
 ## The Mathlib succ-Archimedean-to-ℤ transfer: binder-fit finding
 
@@ -210,5 +215,130 @@ theorem taskRel_one_iff_step (F : TaskFrame ℤ) (w u : F.WorldState) :
     F.TaskRel w 1 u ↔ F.step w u := Iff.rfl
 
 end TaskFrame
+
+/-!
+## `H_F` over ℤ is exactly the set of bi-infinite step-paths
+
+`def:world-history` makes a total world history a task-respecting assignment on *all* of `D`, with
+an all-pairs obligation. Over ℤ that all-pairs obligation is redundant: adjacency at consecutive
+integers implies it, by `taskRel_eq_iter`. This is what makes both the truth lemma and the model
+checker tractable — a total history over a finite carrier becomes a bi-infinite walk in a finite
+directed graph.
+
+`regionFrame` is deliberately **not** the carrier used here. Its
+`not_regionConstant_regionHistory` machine-checks that no history on that carrier ever repeats a
+state, which forecloses every lasso argument on it. This presentation exists precisely so that the
+downstream periodicity arguments have an obstruction-free carrier.
+-/
+
+/--
+A **bi-infinite step-path** in a frame over ℤ: a state at every integer time, with a one-step
+transition between consecutive times.
+-/
+def IsStepPath (F : TaskFrame ℤ) (f : ℤ → F.WorldState) : Prop :=
+  ∀ n : ℤ, F.step (f n) (f (n + 1))
+
+namespace TaskFrame
+
+/-- The bare path underlying a total world history: totality makes the domain proof uniform, so
+the dependent `states` field collapses to a plain function `ℤ → WorldState`. -/
+def HF.path {F : TaskFrame ℤ} (τ : F.HF) : ℤ → F.WorldState :=
+  fun t => τ.val.states t (τ.property t)
+
+/--
+Along a bi-infinite step-path, an `n`-step iterate connects a state to the state `n` times later.
+
+This is the induction that discharges the all-pairs `respects_task` obligation from adjacency
+alone; it is the technical heart of `mem_HF_iff_adjacent`'s converse direction.
+-/
+theorem iter_of_isStepPath {F : TaskFrame ℤ} {f : ℤ → F.WorldState} (h : IsStepPath F f)
+    (n : ℕ) (s : ℤ) : iter F.step n (f s) (f (s + n)) := by
+  induction n with
+  | zero => simp
+  | succ n ih =>
+    refine ⟨f (s + n), ih, ?_⟩
+    have hs : s + ((n : ℤ) + 1) = (s + n) + 1 := by omega
+    have := h (s + n)
+    rwa [show ((n + 1 : ℕ) : ℤ) = (n : ℤ) + 1 by push_cast; rfl, hs]
+
+/-- A bi-infinite step-path satisfies the all-pairs task-respect obligation. -/
+theorem respects_of_isStepPath {F : TaskFrame ℤ} {f : ℤ → F.WorldState} (h : IsStepPath F f)
+    (s t : ℤ) : F.TaskRel (f s) (t - s) (f t) := by
+  refine (F.taskRel_eq_iter (f s) (f t) (t - s)).mpr ⟨fun hd => ?_, fun hd => ?_⟩
+  · have hst : t = s + ((t - s).natAbs : ℤ) := by omega
+    simpa [← hst] using iter_of_isStepPath h (t - s).natAbs s
+  · have hst : s = t + ((t - s).natAbs : ℤ) := by omega
+    simpa [← hst] using iter_of_isStepPath h (t - s).natAbs t
+
+/--
+The total world history determined by a bi-infinite step-path. Every field is discharged from
+adjacency: the domain is all of ℤ (so `nonempty_domain` and `convex` are trivial), and
+`respects_task` is `respects_of_isStepPath`.
+-/
+def HFofStepPath (F : TaskFrame ℤ) (f : ℤ → F.WorldState) (h : IsStepPath F f) : F.HF :=
+  ⟨{ domain := fun _ => True
+     nonempty_domain := ⟨0, trivial⟩
+     states := fun t _ => f t
+     respects_task := fun s t _ _ => respects_of_isStepPath h s t
+     convex := fun _ _ _ _ _ _ _ => trivial }, fun _ => trivial⟩
+
+@[simp]
+theorem HFofStepPath_path (F : TaskFrame ℤ) (f : ℤ → F.WorldState) (h : IsStepPath F f) :
+    (HFofStepPath F f h).path = f := rfl
+
+/-- Every total world history over ℤ is a bi-infinite step-path. -/
+theorem HF.isStepPath {F : TaskFrame ℤ} (τ : F.HF) : IsStepPath F τ.path := by
+  intro n
+  have := τ.val.respects_task n (n + 1) (τ.property n) (τ.property (n + 1))
+  rwa [show n + 1 - n = (1 : ℤ) by omega] at this
+
+/--
+**`H_F` over ℤ is exactly the set of bi-infinite step-paths.**
+
+A function `f : ℤ → WorldState` is the underlying path of some total world history if and only if
+it steps between consecutive times. The forward direction instantiates `def:world-history`'s
+all-pairs task-respect at consecutive times; the converse rebuilds the all-pairs obligation from
+adjacency alone, by `taskRel_eq_iter` and induction on the gap.
+-/
+theorem mem_HF_iff_adjacent (F : TaskFrame ℤ) (f : ℤ → F.WorldState) :
+    (∃ τ : F.HF, τ.path = f) ↔ IsStepPath F f := by
+  constructor
+  · rintro ⟨τ, rfl⟩; exact τ.isStepPath
+  · intro h; exact ⟨HFofStepPath F f h, rfl⟩
+
+/--
+The predicate-on-histories form of `mem_HF_iff_adjacent`: for a world history already known to be
+total, task-respect at consecutive times is equivalent to task-respect at all pairs. The `←`
+direction is the substantive one — it is what lets a construction discharge `respects_task` from a
+single adjacency hypothesis.
+-/
+theorem isTotal_respects_iff_adjacent (F : TaskFrame ℤ) (f : ℤ → F.WorldState) :
+    (∀ s t : ℤ, F.TaskRel (f s) (t - s) (f t)) ↔ IsStepPath F f := by
+  constructor
+  · intro h n
+    have := h n (n + 1)
+    rwa [show n + 1 - n = (1 : ℤ) by omega] at this
+  · intro h s t; exact respects_of_isStepPath h s t
+
+end TaskFrame
+
+/-! ### Smoke check on an existing ℤ frame in the tree -/
+
+section Smoke
+
+/-- `staticFrame W` over ℤ relates a state only to itself, so its step relation is equality and
+its bi-infinite step-paths are exactly the constant paths. -/
+example (W : Type) [Nonempty W] (w : W) :
+    IsStepPath (TaskFrame.staticFrame W (D := ℤ)) (fun _ => w) := by
+  intro _
+  exact (TaskFrame.staticFrame_rel_iff W (D := ℤ) w 1 w).mpr rfl
+
+/-- …and the characterization then produces an actual member of `H_F` over that frame. -/
+example (W : Type) [Nonempty W] (w : W) :
+    ∃ τ : (TaskFrame.staticFrame W (D := ℤ)).HF, τ.path = fun _ => w :=
+  (TaskFrame.mem_HF_iff_adjacent (TaskFrame.staticFrame W (D := ℤ)) (fun _ => w)).mpr
+    (fun _ => (TaskFrame.staticFrame_rel_iff W (D := ℤ) w 1 w).mpr rfl)
+
+end Smoke
 
 end FormalSystem.Semantics
