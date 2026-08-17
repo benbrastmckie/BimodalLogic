@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Metalogic.Decidability.FMP.TruthPreservation
+import FormalSystem.Metalogic.Decidability.FMP.Periodicity
 import FormalSystem.Semantics.Validity
 import FormalSystem.Theorems.Propositional.Core
 

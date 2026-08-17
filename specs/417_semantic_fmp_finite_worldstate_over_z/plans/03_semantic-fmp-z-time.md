@@ -800,7 +800,7 @@ constructed here.
 
 ---
 
-### Phase 8: Pigeonhole/lasso machinery over finite `W` and ℤ [NOT STARTED]
+### Phase 8: Pigeonhole/lasso machinery over finite `W` and ℤ [COMPLETED]
 
 **Goal**: Build the reusable periodicity toolkit that Phase 9 and Phase 12 both consume. Landing it
 separately shrinks the highest-risk phase from tool-building-plus-proof to proof-assembly. **No
@@ -808,15 +808,24 @@ such machinery exists anywhere in the tree** — no `UltimatelyPeriodic`, `Event
 lasso detection — so this is new construction.
 
 **Tasks**:
-- [ ] New module (proposed `FormalSystem/Metalogic/Decidability/FMP/Periodicity.lean`).
-- [ ] Prove the core pigeonhole: on a bi-infinite step-path in a finite carrier, any window of
+- [x] New module (proposed `FormalSystem/Metalogic/Decidability/FMP/Periodicity.lean`).
+- [x] Prove the core pigeonhole: on a bi-infinite step-path in a finite carrier, any window of
       length exceeding `card W` repeats a state.
-- [ ] Derive the bounded-witness-distance lemma: if a state satisfying a property is reachable along
+- [x] Derive the bounded-witness-distance lemma: if a state satisfying a property is reachable along
       the path at all, it is reachable within a bound expressible in `card W`.
-- [ ] Derive the segment-splice lemma: a repeated state licenses excising or inserting the loop
+      *(deviation: altered — the phrase "along the path" makes the statement FALSE for a fixed
+      path, and the lemma is stated as a reachability bound instead. Counterexample, recorded in
+      the module docstring: over `W = Fin 3` with steps `0 → 1`, `1 → 0`, `1 → 2`, the path
+      `0, 1, 0, 1, 0, 1, 2, …` is a legitimate step-path whose first `· = 2` state sits at
+      distance 6 > `card W = 3`. A path may circle a loop arbitrarily often before leaving it;
+      pigeonhole forces a repeat but does not let one delete it without changing the path. The
+      true — and usable — form quantifies over paths:
+      `exists_bounded_iter : (∃ n u, iter R n w u ∧ P u) → ∃ n u, n < Nat.card W ∧ iter R n w u ∧ P u`.
+      That is exactly the bound a bounded search enumerates to.)*
+- [x] Derive the segment-splice lemma: a repeated state licenses excising or inserting the loop
       between its two occurrences, yielding another adjacency-satisfying path
       (`mem_HF_iff_adjacent`, Phase 4).
-- [ ] State everything against `mem_HF_iff_adjacent`'s adjacency form so it applies to any
+- [x] State everything against `mem_HF_iff_adjacent`'s adjacency form so it applies to any
       `TaskFrame ℤ` with finite `WorldState`, not only to the filtered frame.
 
 **Timing**: 2 hours
@@ -834,8 +843,23 @@ it to this module rather than inlining it into the eventuality proof.
 - `FormalSystem/Metalogic/Decidability/FMP/Periodicity.lean` (new)
 
 **Verification**:
-- Module builds with zero diagnostics and zero `sorry`.
-- Each lemma has a standalone `example` exercising it on a concrete small frame.
+- Module builds with zero diagnostics and zero `sorry`. **MET.**
+- Each lemma has a standalone `example` exercising it on a concrete small frame. **MET** — four
+  `example`s in the module's `WorkedInstances` section, on the two-state cycle (`Bool` with the
+  flip relation, which is `flipFrame.step` from Phase 5): a length-3 window repeat, the
+  `true → false → true` loop excision, `false` reachable from `true` inside `Nat.card Bool`, and
+  the same bound reached through `exists_bounded_iter_step` on `flipFrame` itself.
+
+**Landed**: `exists_path_of_iter` and `iter_of_path` (converting between the `iter` predicate and
+an explicit path function — `iter` hides the intermediate states, which is what pigeonhole needs),
+`exists_repeat_of_card_lt` and its `IsStepPath` phrasing `exists_repeat_of_isStepPath`,
+`exists_lt_iter_of_card_le` (the splice), `exists_bounded_iter` and its frame-step phrasing
+`exists_bounded_iter_step`. Wired into `FMP/FMP.lean`.
+
+**Scope Hypothesis outcome**: five substantive lemmas rather than three — the two path/iterate
+conversions were not anticipated by the plan and are genuinely needed, since pigeonhole cannot be
+run on `iter` directly. Phase 9's consumption report is unavailable: Phase 9 is blocked upstream by
+Phase 7, so which lemmas it would have consumed is not determinable from this dispatch.
 
 ---
 
