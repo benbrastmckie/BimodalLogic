@@ -203,19 +203,36 @@ corresponding phase and record it as a reasoned exclusion rather than duplicatin
 
 ---
 
-### Phase 2: Land `wlem_of_spherical` [NOT STARTED]
+### Phase 2: Land `wlem_of_spherical` [COMPLETED]
 
 **Goal**: Land the constructive derivation of weak excluded middle from `Spherical` at the finite
 carrier `Bool` over `D = Int`, as the permanent evidence that no `Classical.choice`-free proof of
 `spherical_of_finite` can exist.
 
 **Tasks**:
-- [ ] In `Tests/BimodalTest/Semantics/SphericalFiniteAxiomTest.lean`, define `R : Bool → Int → Bool → Prop := fun w d u => (d = 0 ∧ w = u) ∨ (d = 3)`, with a docstring recording that `Fib R w 0 = {w}` and `Fib R w 3 = Set.univ`.
-- [ ] Prove the family `S := {s | (s = {true} ∧ P) ∨ (s = {false} ∧ ¬P) ∨ s = Set.univ}` is directed, by `rintro` on the membership disjunctions. The two cross cases (`P` and `¬P` simultaneously assumed) discharge by `absurd`.
-- [ ] Prove every member of `S` is a nonempty fiber of `R`, constructively.
-- [ ] State and prove `theorem wlem_of_spherical (hSph : TaskFrame.Spherical R) (P : Prop) : ¬¬P ∨ ¬P`, closing by `cases` on the intersection witness `b : Bool` and `by decide` on the two `Bool` disequalities.
-- [ ] Write the theorem's docstring: what it proves, and why it exists — a future dispatch reading it must understand that "fixing" `spherical_of_finite`'s axiom profile is provably impossible, not merely unattempted.
-- [ ] Verify `#print axioms wlem_of_spherical` reports exactly `[propext, Quot.sound]`.
+- [x] In `Tests/BimodalTest/Semantics/SphericalFiniteAxiomTest.lean`, define `R : Bool → Int → Bool → Prop := fun w d u => (d = 0 ∧ w = u) ∨ (d = 3)`, with a docstring recording that `Fib R w 0 = {w}` and `Fib R w 3 = Set.univ`. *(landed as `wlemRel`; the two fiber facts are proved outright as `Fib_wlemRel_zero` / `Fib_wlemRel_three`, not merely asserted in the docstring, since `wlemFamily_fiber_nonempty` needs them as terms.)*
+- [x] Prove the family `S := {s | (s = {true} ∧ P) ∨ (s = {false} ∧ ¬P) ∨ s = Set.univ}` is directed, by `rintro` on the membership disjunctions. The two cross cases (`P` and `¬P` simultaneously assumed) discharge by `absurd`. *(landed as `wlemFamily` / `wlemFamily_directed`; exactly nine cases, exactly as the report estimated; the two cross cases discharge by `absurd h₁ h₂` and `absurd h₂ h₁`.)*
+- [x] Prove every member of `S` is a nonempty fiber of `R`, constructively. *(landed as `wlemFamily_fiber_nonempty`; the `IsFiber` disjunct fires in all three cases, so `IsSegment` is never used.)*
+- [x] State and prove `theorem wlem_of_spherical (hSph : TaskFrame.Spherical R) (P : Prop) : ¬¬P ∨ ¬P`, closing by `cases` on the intersection witness `b : Bool` and `by decide` on the two `Bool` disequalities.
+- [x] Write the theorem's docstring: what it proves, and why it exists — a future dispatch reading it must understand that "fixing" `spherical_of_finite`'s axiom profile is provably impossible, not merely unattempted.
+- [x] Verify `#print axioms wlem_of_spherical` reports exactly `[propext, Quot.sound]`. *(measured: `'BimodalTest.Semantics.wlem_of_spherical' depends on axioms: [propext, Quot.sound]` — no `Classical.choice`.)*
+
+#### Phase 2 result
+
+The proof elaborated on the first build with no classical fallback needed at any step. Measured
+profile, verbatim:
+
+```
+'BimodalTest.Semantics.wlem_of_spherical' depends on axioms: [propext, Quot.sound]
+```
+
+The MUST NOT constraints were also checked mechanically, not just by intent: a grep for
+`by_cases`, `tauto`, `Classical.`, `by_contra`, `push_neg`, `omega`, and `simp` across the file
+returns hits only inside docstring prose (which names `Classical.choice` when explaining the
+obstruction) and false positives on the substring `em` inside `theorem`/`Family`. No proof term
+or tactic in the file is classical. `decide` is used twice, both times on closed `Bool`/`Int`
+disequalities, which is `Decidable`-instance evaluation and carries no classical content — the
+`[propext, Quot.sound]` profile is the binding evidence either way.
 
 **Timing**: 1.5 hours
 
