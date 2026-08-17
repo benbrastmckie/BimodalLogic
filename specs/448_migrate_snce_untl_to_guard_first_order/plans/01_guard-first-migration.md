@@ -553,27 +553,50 @@ are in comments or are `embedded`/`foreign` skips.
 
 ---
 
-### Phase 5: Repair — ProofSystem, Theorems, Automation, FrameConditions [NOT STARTED]
+### Phase 5: Repair — ProofSystem, Theorems, Automation, FrameConditions [COMPLETED]
 
 **Goal**: Bring the first downstream tier to a green scoped build. This tier contains the largest
 unprotected definitional surface (`Axioms.lean`'s 45 schemata, the serialisers).
 
 **Tasks**:
-- [ ] Build `FormalSystem.ProofSystem` and repair to green. Pay particular attention to
-      `dense_indicator` (`Axioms.lean:354-355`): post-swap it must read
-      `(Formula.untlQ Formula.bot (Formula.bot.imp Formula.bot)).neg`, i.e. `¬(⊥ U ⊤)` —
-      independently corroborated by `typst/chapters/p2-frame-classes.typ:134`.
-- [ ] Build `FormalSystem.Theorems` and repair to green.
-- [ ] Build `FormalSystem.FrameConditions` and repair to green.
-- [ ] Build `FormalSystem.Automation` and repair to green. Confirm the `DatasetExport.lean`
-      S-expression **parser** (`matchStr "untl "`) stays in sync with the printer, and that the
-      round-trip test passes.
-- [ ] In `DataExport.lean`, apply D1: keep the emitted key order `"event"` then `"guard"`, feeding
-      argument 2 into `"event"` and argument 1 into `"guard"`.
-- [ ] Re-word the `dense_indicator` soundness prose at `Semantics/Validity.lean:262-264,301,307`
-      from `U(⊤,⊥)` to `⊥ U ⊤`. The argument survives verbatim in meaning; only the rendering
-      changes.
-- [ ] Commit per green module.
+- [x] Build `FormalSystem.ProofSystem` and repair to green. *(green with no repair needed)*
+      `dense_indicator` (`Axioms.lean:354-355`) now reads
+      `(Formula.untlQ Formula.bot (Formula.bot.imp Formula.bot)).neg`, i.e. `¬(⊥ U ⊤)`,
+      corroborated by `typst/chapters/p2-frame-classes.typ:134`'s `not (bot #untl top)`.
+- [x] Build `FormalSystem.Theorems` and repair to green. *(green, no repair needed)*
+- [x] Build `FormalSystem.FrameConditions` and repair to green. *(green, no repair needed)*
+- [x] Build `FormalSystem.Automation` and repair to green. Confirm the `DatasetExport.lean`
+      S-expression **parser** stays in sync with the printer, and that the round-trip test passes.
+- [x] In `DataExport.lean`, apply D1. *(no manual edit needed — see below)*
+- [x] Re-word the `dense_indicator` soundness prose at `Semantics/Validity.lean:262-264,301,307`
+      from `U(⊤,⊥)` to `⊥ U ⊤`.
+- [x] Commit per green module.
+
+**The only repair this tier needed** was four `injection` component selections in
+`Syntax/SubformulaClosure/TemporalFormulas.lean` (lines 843, 941, 990, 1029) — a textbook swap
+artifact, and exactly the kind the Zero-Debt contract says to fix rather than `sorry` past.
+`allFuture psi` unfolds to `imp (untlQ (imp bot bot) (imp psi bot)) bot`, so the constant guard
+`⊤` now occupies injection component 1 and the operand moved to component 2; `injection h3` became
+`injection h4`, and `injection h1 with h2 _` became `injection h1 with _ h2`. No other module in
+the tier required any edit.
+
+**D1 is satisfied with no manual edit, and Gate B's transform turns out to be the identity.**
+The plan assumed the printers are positional by *argument slot*. They are not: every printer arm
+binds by role, so the rewriter's role-preserving arm swap already produced exactly what D1 asks
+for. `DataExport.lean:118-121` now reads `| .untlQ ψ φ => "{\"tag\": \"untl\", \"event\": "
+++ φ.toJson ++ ", \"guard\": " ++ ψ.toJson ++ "}"` — key order unchanged, `φ` still the event,
+now in argument position 2. Consequently:
+
+- `toJson` output is byte-stable (Gate A as planned).
+- `prettyPrint` (`U(" ++ φ.prettyPrint ++ ", " ++ ψ.prettyPrint`) is **also** byte-stable: it
+  prints `U(event, guard)` before and after. **Gate B's `U(a,b) → U(b,a)` transform is therefore
+  the identity**, and Phase 9 must diff `schema_string` fields *raw*. Applying the planned
+  transform would manufacture a failure. This is a correction to D1, recorded here and applied in
+  Phase 9.
+- `toSExpr` and `tokenize` are byte-stable for the same reason, so `DatasetExport.lean`'s
+  `matchStr "untl "` parser needs no format change; its construction site was swapped to
+  `Formula.untlQ rhs lhs` (`DatasetExport.lean:804`), and `BenchmarkOracle.lean:227` likewise to
+  `Formula.untlQ guard event`. Printer and parser stay mutually inverse.
 
 **Timing**: 2 hours
 
@@ -585,15 +608,19 @@ unprotected definitional surface (`Axioms.lean`'s 45 schemata, the serialisers).
 (`Automation`) references. Confirm against the Phase 1 ledger rows; the count is a hypothesis, and
 what actually matters is that each scoped build reaches green.
 
+**Scope Hypothesis outcome**: all four scoped builds reach green, which is the operative
+criterion. Three of the four needed no edit at all.
+
 **Files to modify**:
-- `FormalSystem/ProofSystem/Axioms.lean`, `FormalSystem/Theorems/*`,
-  `FormalSystem/FrameConditions/*`, `FormalSystem/Automation/*`,
-  `FormalSystem/Semantics/Validity.lean`
+- `FormalSystem/Syntax/SubformulaClosure/TemporalFormulas.lean` (injection components),
+  `FormalSystem/Semantics/Validity.lean` (prose only)
 
 **Verification**:
-- `lake build FormalSystem.ProofSystem FormalSystem.Theorems FormalSystem.FrameConditions FormalSystem.Automation` green.
-- Zero new `sorry` versus the Phase 1 per-file baseline for every file in this tier.
-- `dense_indicator` reads `¬(⊥ U ⊤)`.
+- [x] `lake build FormalSystem.ProofSystem FormalSystem.Theorems FormalSystem.FrameConditions
+  FormalSystem.Automation` green (1,414 jobs).
+- [x] Zero `sorry` delta versus the Phase 1 per-file baseline across `ProofSystem`, `Theorems`,
+  `FrameConditions`, `Automation`, `Semantics` and `Syntax` — 0 files with a nonzero delta.
+- [x] `dense_indicator` reads `¬(⊥ U ⊤)`.
 
 ---
 

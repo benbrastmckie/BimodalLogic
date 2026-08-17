@@ -259,9 +259,9 @@ element corresponds to it — see the `FrameClass` docstring in
 **This predicate is NOT the target of `soundness_dedekind`, and that is not an oversight.**
 `FrameClass.Dedekind` sits strictly above `FrameClass.Dense` (see the `FrameClass` docstring
 in `FormalSystem/ProofSystem/Axioms.lean`), so `Axiom.density` (`GGφ → Gφ`) and
-`Axiom.dense_indicator` (`¬U(⊤,⊥)`) are admissible in `DerivationTree FrameClass.Dedekind`.
+`Axiom.dense_indicator` (`¬(⊥ U ⊤)`) are admissible in `DerivationTree FrameClass.Dedekind`.
 Both are FALSE on `ℤ`: for `density`, take `φ` true exactly at times `≥ t + 2`, so `GGφ` holds
-at `t` while `Gφ` fails; for `dense_indicator`, `U(⊤,⊥)` is true on `ℤ` because every point has
+at `t` while `Gφ` fails; for `dense_indicator`, `⊥ U ⊤` is true on `ℤ` because every point has
 an immediate successor. Since `ℤ` also satisfies the binders above, a
 `soundness_dedekind : DerivationTree .Dedekind … → ValidDedekind` would be refutable.
 `soundness_dedekind` therefore targets `ValidDedekindDense`. This predicate is landed as the
@@ -304,7 +304,8 @@ the result would be refutable.
 
 The placement of `Dedekind` above `Dense` is itself primary-source: Reynolds 1992 (printed
 p.168) includes in US/R "axioms for density and no end points: `K⁺⊤`, `K⁻⊤`, `F⊤`, `P⊤`", and
-`K⁺⊤ = ¬U(⊤,¬⊤)` normalises (`¬⊤ ↝ ⊥`) to `¬U(⊤,⊥)`, this tree's `Axiom.dense_indicator`.
+`K⁺⊤` is `¬(¬⊤ U ⊤)` in this tree's guard-first infix, which normalises (`¬⊤ ↝ ⊥`) to
+`¬(⊥ U ⊤)`, this tree's `Axiom.dense_indicator`.
 -/
 def ValidDedekindDense (φ : Formula) : Prop :=
   ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [DenselyOrdered D]

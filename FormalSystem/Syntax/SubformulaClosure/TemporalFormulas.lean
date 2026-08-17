@@ -839,7 +839,8 @@ theorem all_future_in_deferralClosure_cases (phi psi : Formula)
         have h_psi_eq : psi = chi.neg := by
           injection hf_eq with h1 h2
           injection h1 with h3 h4
-          injection h3 with h5 h6
+          -- Guard-first: the operand sits in the second component, `h4`.
+          injection h4 with h5 h6
           exact h5.symm
         -- F(chi) in closureWithNeg
         have h_F_chi : Formula.someFuture chi ∈ closureWithNeg phi := by
@@ -937,7 +938,8 @@ theorem all_past_in_deferralClosure_cases (phi psi : Formula)
         have h_psi_eq : psi = chi.neg := by
           injection hf_eq with h1 h2
           injection h1 with h3 h4
-          injection h3 with h5 h6
+          -- Guard-first: the operand sits in the second component, `h4`.
+          injection h4 with h5 h6
           exact h5.symm
         have h_P_chi : Formula.somePast chi ∈ closureWithNeg phi := by
           have h_g_eq : g = Formula.somePast chi := by
@@ -990,7 +992,7 @@ theorem deferralClosure_all_future (phi psi : Formula)
     have h_psi_eq : psi = negNegBot := by
       unfold gNegNegBot Formula.allFuture Formula.someFuture
         Formula.neg Formula.top at h_eq_G
-      injection h_eq_G with h1 _; injection h1 with h2 _; injection h2
+      injection h_eq_G with h1 _; injection h1 with _ h2; injection h2
     rw [h_psi_eq]
     exact neg_neg_bot_mem_deferralClosure phi
   · -- G(psi) is a temporal blocking formula: psi = chi.neg, F(chi) in closureWithNeg
@@ -1029,7 +1031,7 @@ theorem deferralClosure_all_past (phi psi : Formula)
     have h_psi_eq : psi = negNegBot := by
       unfold hNegNegBot Formula.allPast Formula.somePast
         Formula.neg Formula.top at h_eq_H
-      injection h_eq_H with h1 _; injection h1 with h2 _; injection h2
+      injection h_eq_H with h1 _; injection h1 with _ h2; injection h2
     rw [h_psi_eq]
     exact neg_neg_bot_mem_deferralClosure phi
   · -- H(psi) is a temporal blocking formula: psi = chi.neg, P(chi) in closureWithNeg
