@@ -87,7 +87,7 @@ next_project_number: 450
 
 ### Paper Refactor
 
-417 [BLOCKED] — RE-ISSUED 2026-08-10 (supersedes the prior maximal-history framin
+417 [RESEARCHED] — RE-ISSUED 2026-08-10 (supersedes the prior maximal-history framin
 440 [RESEARCHED] — RE-ISSUED 2026-08-12 (description rewrite only; status unchanged)
   └─ 441 [NOT STARTED] — Strengthen `thm:extension` for the finite discrete case into an E
 
@@ -750,18 +750,20 @@ Run `bash scripts/check-paper-definitions.sh` and read specs/paper-definitions-o
 
 ### 417. Semantic fmp finite worldstate over z
 - **Effort**: medium
-- **Status**: [BLOCKED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: paper-refactor
 - **Dependencies**: Task 414, Task 420, Task 438, Task 439
 - **Research**:
   - [417_semantic_fmp_finite_worldstate_over_z/reports/02_semantic-fmp-rescoped-z-time.md]
   - [417_semantic_fmp_finite_worldstate_over_z/reports/01_semantic-fmp-finite-worldstate.md]
+  - [417_semantic_fmp_finite_worldstate_over_z/reports/04_filteredstep-fwd-gating-spike.md]
 - **Plan**:
   - [417_semantic_fmp_finite_worldstate_over_z/plans/03_semantic-fmp-z-time.md]
   - [417_semantic_fmp_finite_worldstate_over_z/plans/02_semantic-fmp-z-time.md]
 - **Summary**: [417_semantic_fmp_finite_worldstate_over_z/summaries/03_semantic-fmp-z-time-summary.md]
 - **Handoff**: [417_semantic_fmp_finite_worldstate_over_z/handoffs/01_phase-7-12-revision-handoff.md]
+- **Evidence**: [417_semantic_fmp_finite_worldstate_over_z/evidence/spike-untl-unfolding-and-fwd-obstruction.lean]
 
 **Description**: RE-ISSUED 2026-08-10 (supersedes the prior maximal-history framing). SEMANTIC FMP OVER A FIXED CARRIER, stated against the TOTAL-history semantics of task 414: prove the TruthAt-connected finite model property the paper's decidability corollary proof text cites -- any formula satisfiable over the Discrete class is satisfiable in a model with FINITE WorldState over D = Z -- replacing reliance on the syntactic closure-MCS FMP theorems (FormalSystem/Metalogic/Decidability/FMP/FMP.lean) that never connect to TruthAt. Add decidable model checking for the finite-W-over-Z presentation to back the paper's enumeration argument (restated paper-side as finite W over Z, since every model has infinite D). This is the semantic-FMP follow-on explicitly descoped by the task-165 redirect; the tableau programme remains the decision-procedure route and also rebases onto the new semantics. Related: 165, 410, 411, 412.
 
