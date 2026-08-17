@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Semantics.TaskFrame
+import FormalSystem.Semantics.IntNormalForm
 import FormalSystem.Semantics.PartialHistory
 import FormalSystem.Semantics.PartialHistoryOrder
 import FormalSystem.Semantics.FrameAxioms
@@ -29,6 +30,10 @@ polymorphic over temporal types.
 
 - `TaskFrame`: Task frame structure `F = (W, T, ·)` with world states, temporal type,
   and task relation satisfying nullity and compositionality constraints
+- `IntNormalForm`: the ℤ-frame normal form — over `D = ℤ` a task frame is determined by its
+  one-step relation `step w u := TaskRel w 1 u`, with `iter`/`iter_add` as the arithmetic core and
+  `taskRel_eq_iter` as the decomposition theorem; also records the binder-fit finding for the two
+  Mathlib succ-Archimedean-to-ℤ transfer routes
 - `PartialHistory`: The paper's partial-history layer (`def:world-history`) — task-respecting
   state assignments on a *nonempty* time set, with no convexity requirement; carries the
   totality predicate `IsTotal` and the extension relation `Extends`

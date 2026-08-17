@@ -453,25 +453,25 @@ dependent's elaboration changes, the additive assumption is falsified and the ph
 
 ---
 
-### Phase 3: ℤ normal form, decomposition direction [NOT STARTED]
+### Phase 3: ℤ normal form, decomposition direction [COMPLETED]
 
 **Goal**: Establish that over `D = ℤ` an arbitrary `TaskFrame ℤ` is determined by its one-step
 relation. This is the plan's spine and every later phase consumes it.
 
 **Tasks**:
-- [ ] New module (proposed `FormalSystem/Semantics/IntNormalForm.lean`).
-- [ ] Transcribe the machine-checked arithmetic core verbatim: `iter (R : W → W → Prop) : ℕ → W → W → Prop`
+- [x] New module (proposed `FormalSystem/Semantics/IntNormalForm.lean`).
+- [x] Transcribe the machine-checked arithmetic core verbatim: `iter (R : W → W → Prop) : ℕ → W → W → Prop`
       and `iter_add : iter R (m + n) w u ↔ ∃ v, iter R m w v ∧ iter R n v u`.
-- [ ] Define `TaskFrame.step (F : TaskFrame ℤ) : F.WorldState → F.WorldState → Prop :=
+- [x] Define `TaskFrame.step (F : TaskFrame ℤ) : F.WorldState → F.WorldState → Prop :=
       fun w u => F.TaskRel w 1 u`.
-- [ ] Prove `taskRel_eq_iter`: for all `d : ℤ`, `F.TaskRel w d u ↔ (0 ≤ d → iter F.step d.natAbs w u)`
+- [x] Prove `taskRel_eq_iter`: for all `d : ℤ`, `F.TaskRel w d u ↔ (0 ≤ d → iter F.step d.natAbs w u)`
       and the negative-`d` case via the `converse` field. State it as a single clean
       characterization; the sign split is an implementation detail of the proof, not of the
       statement, if a uniform form is available.
-- [ ] Derivation chain to follow (all field-carried, no new axioms): `⇒₀ = Eq` is the
+- [x] Derivation chain to follow (all field-carried, no new axioms): `⇒₀ = Eq` is the
       `nullity_identity` field; `⇒ₙ = step^n` for `n ≥ 0` by induction from `Compositional` at
       `x = n, y = 1`; negative durations by the `converse` field.
-- [ ] Verify the Mathlib succ-Archimedean-to-ℤ binder fit early in this phase (report's Risks row):
+- [x] Verify the Mathlib succ-Archimedean-to-ℤ binder fit early in this phase (report's Risks row):
       confirm `LinearOrderedAddCommGroup.int_orderAddMonoidIso_of_isLeast_pos` and
       `orderIsoIntOfLinearSuccPredArch` have binders compatible with `ValidDiscrete`'s
       `[SuccOrder] [PredOrder] [IsSuccArchimedean] [IsPredArchimedean] [Nontrivial]`. Record the
@@ -485,12 +485,28 @@ relation. This is the plan's spine and every later phase consumes it.
 
 **Files to modify**:
 - `FormalSystem/Semantics/IntNormalForm.lean` (new) - `iter`, `iter_add`, `TaskFrame.step`, `taskRel_eq_iter`
-- import-aggregator module (confirm which at implementation time)
+- import-aggregator module (confirm which at implementation time) — **confirmed**:
+  `FormalSystem/Semantics.lean`
 
 **Verification**:
-- New module builds with zero diagnostics.
-- `iter_add` and `taskRel_eq_iter` each `lean_verify` clean.
-- Binder-fit finding for the Mathlib ℤ transfer is recorded in the module docstring.
+- New module builds with zero diagnostics. **MET** (`lake build FormalSystem.Semantics.IntNormalForm`
+  green; the only diagnostics on the build path are pre-existing `unusedSectionVars` /
+  `overlappingInstances` linter warnings inside `TaskFrame.lean`, none in the new module).
+- `iter_add` and `taskRel_eq_iter` each `lean_verify` clean. **MET** — `iter_add` reports
+  `[propext, Quot.sound]`; `taskRel_eq_iter` reports `[propext, Classical.choice, Quot.sound]`.
+  Neither introduces a new axiom beyond Lean's standard three.
+- Binder-fit finding for the Mathlib ℤ transfer is recorded in the module docstring. **MET** — and
+  the finding is a *negative* one worth flagging: `orderIsoIntOfLinearSuccPredArch` fits
+  `ValidDiscrete`'s binder bundle verbatim but yields only an **order** iso, while
+  `LinearOrderedAddCommGroup.int_orderAddMonoidIso_of_isLeast_pos` yields the **additive** iso a
+  duration transfer actually needs and does *not* fit the bundle (`Archimedean D` fails to
+  synthesize from `[IsSuccArchimedean D] [IsPredArchimedean D]`, and an `IsLeast {y | 0 < y} x`
+  witness is additionally required). Both fits were machine-checked before the module was written.
+
+**Additional note**: `Mathlib.Algebra.Order.Group.Int` had to be imported — without it
+`IsOrderedAddMonoid ℤ` does not synthesize, so `TaskFrame ℤ` will not even elaborate. No module in
+the tree had previously named `TaskFrame ℤ` outside a context that already pulled that instance in
+transitively.
 
 ---
 
