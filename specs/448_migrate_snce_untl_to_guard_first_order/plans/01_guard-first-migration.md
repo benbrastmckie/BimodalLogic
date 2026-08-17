@@ -1004,7 +1004,7 @@ against Phase 3 + Phase 4 is empty in both directions.
 
 ---
 
-### Phase 11: Role-Naming Comment and Docstring Migration [IN PROGRESS]
+### Phase 11: Role-Naming Comment and Docstring Migration [COMPLETED]
 
 **Goal**: Correct the comments that state or depend on the argument-order convention. These are
 now false and cannot be fixed by a swap — several describe *other authors'* conventions relative
@@ -1067,26 +1067,61 @@ docstrings only.
 
 ---
 
-### Phase 12: Typst Regeneration and Sync [NOT STARTED]
+### Phase 12: Typst Regeneration and Sync [COMPLETED]
 
 **Goal**: Make the manual's four `CONFIRM(lean)` assertions true, and refresh the generated
 artifacts (acceptance 6).
 
 **Tasks**:
-- [ ] Re-run `scripts/typst-machine-appendix.sh` to regenerate both
+- [x] Re-run `scripts/typst-machine-appendix.sh` to regenerate both
       `typst/generated/machine-appendix.jsonl` and `machine-appendix.typ` at the current commit.
-- [ ] Run `scripts/typst-sync-check.sh` and confirm all three checks PASS
-      (`TOTAL_VIOLATIONS=0`, `MISMATCH_COUNT=0`, `MA_COUNT_MISMATCHES=0`).
-- [ ] Re-verify the four `// CONFIRM(lean):` markers now hold, one by one, against live Lean
+      Regenerated at `b811bc100` (2026-08-17): 45 axioms, 7 rules, 21 derived operators.
+- [x] Run `scripts/typst-sync-check.sh` and confirm all three checks PASS
+      (`TOTAL_VIOLATIONS=0`, `MISMATCH_COUNT=0`, `MA_COUNT_MISMATCHES=0`). PASS 3/3, before and
+      after the chapter edit below.
+- [x] Re-verify the four `// CONFIRM(lean):` markers now hold, one by one, against live Lean
       source: `01-syntax.typ:25`, `01-syntax.typ:112`, `p2-frame-classes.typ:171`,
-      `ax-machine-appendix.typ:24`.
-- [ ] Leave `ax-machine-appendix.typ`'s JSON-shape table as `{"tag":"untl","event":…,"guard":…}` —
+      `ax-machine-appendix.typ:24`. All four hold — see the per-marker evidence below.
+- [x] Leave `ax-machine-appendix.typ`'s JSON-shape table as `{"tag":"untl","event":…,"guard":…}` —
       under D1 the emitted key order is unchanged, so the table stays correct. Add a one-line note
       that the keys are role-keyed and therefore order-stable across the argument-order change.
-- [ ] Refresh the stale line-number reference at `typst/SYNC-MAP.md:232` ("added from
-      Truth.lean:125-130") to the current `Truth.lean` clause lines.
-- [ ] Make no prose change to the manual body — it is already guard-first and already correct.
-- [ ] Commit.
+- [x] Refresh the stale line-number reference at `typst/SYNC-MAP.md:232` ("added from
+      Truth.lean:125-130") to the current `Truth.lean` clause lines — now `Truth.lean:165-168`.
+- [x] Make no prose change to the manual body — it is already guard-first and already correct.
+      Confirmed at `01-syntax.typ:22-23`, whose footnote already contrasts the Burgess prefix
+      event-first convention with the manual's guard-first infix. No body prose was touched; the
+      only chapter edit is the additive role-keyed note in the appendix.
+- [x] Commit.
+
+**Per-marker verification evidence**:
+1. `01-syntax.typ:25` — `Formula.untl`/`Formula.snce` declare "Argument 1 is the guard"
+   (`Syntax/Formula.lean:85`, `:97`) and `TruthAt`'s clauses read
+   `| Formula.untl ψ φ => ∃ s, t < s ∧ TruthAt … s φ ∧ ∀ r, t < r → r < s → TruthAt … r ψ`
+   (`Semantics/Truth.lean:165-168`) — guard first. **TRUE.**
+2. `01-syntax.typ:112` — `def next φ := Formula.untl Formula.bot φ` (`Formula.lean:511`),
+   `def prev φ := Formula.snce Formula.bot φ` (`:516`); unfold lemmas
+   `next_unfold : φ.next = bot.untl φ := rfl` and `prev_unfold : φ.prev = bot.snce φ := rfl`
+   (`Automation/Normalization.lean:75`, `:78`). **TRUE.**
+3. `p2-frame-classes.typ:171` — same two defs take `bot` in the guard (first) position, and both
+   unfold lemmas are `@[simp]`-tagged and close by `rfl`. **TRUE.**
+4. `ax-machine-appendix.typ:24` — `Formula.toJson` reads
+   `| .untl ψ φ => "{\"tag\": \"untl\", \"event\": " ++ φ.toJson ++ ", \"guard\": " ++ ψ.toJson`
+   (`Automation/DataExport.lean:118-121`), feeding the role keys from the guard-first constructor
+   positions. **TRUE.**
+
+**Gate A outcome (measured this phase)**: the regenerated JSONL differs from
+`baseline/machine-appendix.jsonl` on **exactly one line** — the `metadata` stamp
+(`stamp_commit`/`stamp_date`). All 45 axiom bodies, 7 rules and 21 derived operators are
+byte-identical, which is the role-stability D1 predicted.
+
+**Gate B outcome — the predicted transform turned out to be the identity.** D1 expected every
+`U(a,b)` to become `U(b,a)` in `schema_string`, requiring a documented transform before
+comparison. Measured: `schema_string` is byte-identical to the baseline with **no** transform,
+because `prettyPrint` was made role-stable rather than left positional
+(`| .untl ψ φ => "U(" ++ φ.prettyPrint ++ ", " ++ ψ.prettyPrint ++ ")"`,
+`DataExport.lean:138-139`) — it still emits the event first, now reading it out of the second
+constructor position. This is a stronger result than the plan required: both gates reduce to
+byte-identity.
 
 **Timing**: 1 hour
 

@@ -44,6 +44,8 @@ Schemas and definitions are given over the six-constructor primitive basis, in t
   caption: [The `Formula.toJson` tag encoding (`Automation/DataExport.lean`), shared by the machine appendix and the dataset pipeline.],
 )
 
+The `untl` and `snce` shapes are keyed by *role*, not by argument position, so they are unaffected by the constructor's guard-first argument order: `event` always names the formula witnessed at the existential time and `guard` always names the formula holding throughout the open interval, whichever position each occupies in the Lean constructor.
+
 Loading the artifact is two lines of Python:
 
 ```python

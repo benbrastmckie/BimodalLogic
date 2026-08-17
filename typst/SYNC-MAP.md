@@ -229,7 +229,7 @@ Locations abbreviated: PS = ProofSystem, SEM = Semantics, ML = Metalogic, TH = T
 |------|-------|---------|------------------------------|
 | 34-38 | Task frame: Nullity + Compositionality (2 constraints) | stale | 3 fields: nullity_identity, forward_comp, converse (SEM/TaskFrame.lean:93-131); paper: Nullity/Reflection/Compositionality (possible_worlds.tex:902-907) |
 | 85-90 | strict `<` truth conditions for H/G | verified (preserve) | SEM/Truth.lean:10-17, 120-131 |
-| — | missing untl/snce truth clauses | gap | added from Truth.lean:125-130 |
+| — | missing untl/snce truth clauses | gap | added from Truth.lean:165-168 (guard-first: `untl ψ φ` reads guard `ψ`, event `φ`) |
 
 ### 03-proof-theory.typ
 
