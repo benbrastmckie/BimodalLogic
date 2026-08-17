@@ -150,6 +150,39 @@ headline theorem boxes and summary claims for each scope, which is where a re-sy
 start; a full re-audit after 415/417/419 land may still surface secondary prose mentions the
 grep-based sweep above did not individually mark.
 
+## CONFIRM Tag Convention
+
+The manual states the *target end state* of the system — what the finished Lean repository and
+the finished source paper both deliver — rather than a progress report. Wherever the body asserts
+a result that one of those two artifacts has not yet established, the obligation is carried by a
+`CONFIRM` comment, invisible in the compiled PDF:
+
+```
+// CONFIRM(lean): <assertion>
+// CONFIRM(paper): <assertion>
+```
+
+- **Syntax**: exactly this shape — two slashes, one space, `CONFIRM`, parenthesized lowercase
+  target qualifier, colon, space, assertion on one line (continuation lines start `//   `).
+- **Target qualifiers**: `lean` = the finished Lean repo must satisfy the assertion; `paper` =
+  the finished paper must state/restore the assertion.
+- **Placement**: immediately above the claim it guards (adjacent line, same indentation), the
+  same placement rule as `LEAN-ANCHOR-MAY-MOVE`.
+- **Checkability**: every CONFIRM states a checkable proposition — a fully qualified Lean
+  theorem name that must exist and be axiom-free (verifiable via `lean_verify` or
+  `#print axioms`), a script output condition (e.g. `scripts/typst-status-counts.sh --json`
+  reports `sorry_total_excl_boneyard = 0`), or a named paper anchor that must state a given
+  proposition. Never "verify this section". CONFIRM comments are the ONLY place in `typst/`
+  where paper anchors may appear, and anchors there are written WITHOUT backticks so they never
+  become sync-check Check-1 candidates.
+- **Extraction commands** (scoped to `.typ` sources so this README's own examples never match):
+  `grep -rn --include='*.typ' 'CONFIRM(' typst/` — filter with
+  `grep -rn --include='*.typ' 'CONFIRM(lean)' typst/` or
+  `grep -rn --include='*.typ' 'CONFIRM(paper)' typst/`.
+- **Well-formedness check**:
+  `grep -rn --include='*.typ' 'CONFIRM(' typst/ | grep -vE '// *CONFIRM\((lean|paper)\): ' | grep -vE '//   '`
+  must output nothing.
+
 ## Relationship to LaTeX Version
 
 This directory began as a parallel port of `latex/`.
