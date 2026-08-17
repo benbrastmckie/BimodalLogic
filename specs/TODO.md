@@ -1,5 +1,5 @@
 ---
-next_project_number: 450
+next_project_number: 451
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 450
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,231,257,298,413,417,423,424,437,440,445,448 | -- | completeness, decidability, frame-extensions, ... |
+| 1 | 125,127,128,231,257,298,413,417,423,424,437,440,445,448,450 | -- | completeness, decidability, frame-extensions, ... |
 | 2 | 193,219,282,296,421,425,436,441,446 | 231,298,423,437,440,445,448 | decidability, publication-quality, automation, ... |
 | 3 | 178,422,434,447 | 193,421,436,446 | decidability, formula-refactor, publication-quality, ... |
 | 4 | 169,432 | 422,434 | decidability, strong_completeness |
@@ -100,11 +100,68 @@ next_project_number: 450
 
 ### Lean4
 
-448 [NOT STARTED] — GOAL. Migrate the Lean tree's `snce`/`untl` constructors from the
+448 [PLANNING] — GOAL. Migrate the Lean tree's `snce`/`untl` constructors from the
+
+### Proof System Infrastructure
+
+450 [NOT STARTED] — FRAME-CLASS UNIFORMITY: parameterise the restricted-MCS layer (an
 
 ### Uncategorized
 
 ## Tasks
+
+### 450. Frame class parameterization restricted mcs
+- **Effort**: high
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: proof-system-infrastructure
+- **Dependencies**: None
+
+**Description**: FRAME-CLASS UNIFORMITY: parameterise the restricted-MCS layer (and the derived-theorem libraries beneath it) by FrameClass, removing ad hoc FrameClass.Base pins repo-wide.
+
+=== 1. WHY (machine-checked ground truth) ===
+Established by specs/417_semantic_fmp_finite_worldstate_over_z/reports/04_filteredstep-fwd-gating-spike.md and its sorry-free evidence file evidence/spike-untl-unfolding-and-fwd-obstruction.lean (9 declarations, all audited via #print axioms, no sorryAx):
+
+RestrictedConsistent (Core/RestrictedMCS/Basic.lean:72) and RestrictedMCS (:80) explicitly pin SetConsistent to FrameClass.Base, even though SetConsistent {fc : FrameClass} (Core/MaximalConsistent.lean:96) is ALREADY frame-class polymorphic. The pin is the anomaly, not the parameter.
+
+Consequence, machine-checked: filteredStep_fwd is FALSE for the existing FilteredWorld. A Base-consistent closure MCS may contain the negation of U(TOP,BOT), which is true at every point of every Z-model, so Base-MCSs include worlds realizable in NO Z-model. At Phi = U(TOP,BOT) there is a filtered world with no successor at all (filteredStep_fwd_fails). Any Z-frame construction over Base-filtered worlds is unsound at the first point it touches Z dynamics.
+
+There is no third option: U(TOP,BOT) derives from Axiom.prior_UZ whose minFrameClass IS Discrete, so "add an axiom to Base" and "instantiate at Discrete" are the same act. The only other escape -- weakening the step table until Base worlds satisfy it -- is the machine-checked-dead Phase 7 universal-relation failure (evidence/phase7-filtered-frame-is-universal.lean).
+
+=== 2. SCOPE: UNIFORMITY AND GENERALITY, NOT A MINIMAL PATCH ===
+The charter is explicitly NOT the smallest change that unblocks the FMP work. It is a repo-wide discipline pass. Measured surface at task creation: 668 FrameClass.Base occurrences across 59 live (non-Boneyard) .lean files.
+
+The governing principle: a declaration MUST be stated at the weakest frame class at which it is derivable, and parameterised by {fc : FrameClass} wherever it is class-independent. A Base pin is legitimate ONLY when the statement is genuinely about the Base system (e.g. fmp_contrapositive's conclusion). Every other pin is a defect to be removed.
+
+Known instances of the defect (non-exhaustive; the audit is part of the work):
+- Theorems/Propositional/Core.lean is HALF polymorphic already ({fc} on efqAxiom, peirceAxiom, doubleNegation, lceImp, rceImp) and half Base-pinned (12 occurrences); Connectives.lean has 5 more. This inconsistency is why the spike had to rebuild orElim/andIntro/guardMono/eventMono from scratch instead of reusing the library.
+- Theorems/ModalS5.lean (9), ModalS4.lean (2), DedekindDerived.lean (4).
+- Metalogic/Bundle (11), BXCanonical (6+2+2+1), Algebraic (4), WeakCanonical (4).
+
+=== 3. DELIVERABLES ===
+(a) Parameterise RestrictedConsistent / RestrictedMCS / closure_mcs_deductively_closed (FMP/ClosureMCS.lean:171) by {fc : FrameClass}, DEFAULTING TO Base so every existing call site elaborates unchanged. Downstream: ClosureMCS, ClosureMCSBundle, FilteredWorld, FiniteModel, TruthPreservation, Correctness.
+(b) PRESERVE the landed Base results verbatim -- mcs_finite_model_property (FMP/FMP.lean:230), fmp_contrapositive (:243), fmp_size_bound (:269) are genuine theorems ABOUT the Base system and their statements must not drift. Hard-coding Discrete instead of parameterising is explicitly rejected for this reason.
+(c) Discrete-system consistency lemma. The tree has "the base system is consistent" (Soundness.lean:1957) but NO Discrete analogue, and a Discrete-instantiated MCS layer is vacuous without one. Route: soundness_discrete_valid (Soundness.lean:1334) at D = Z on TaskFrame.trivialFrame -- the same shape the spike used for dense_consistent at Q. This is the FIRST lemma of the task, not an afterthought: everything else is vacuous until it lands.
+(d) Promote the spike's Discrete unfolding schema into the library (Theorems/TemporalDerived.lean or a new Theorems/DiscreteUnfolding.lean): succIndicator, nextConj, unfoldTableForward, unfoldTableBackward, unfoldForward, unfoldBackward, noBlockingTriple. All are already sorry-free in the evidence file and are general-purpose facts about the Discrete system, useful well beyond the FMP. Promote the frame-class-polymorphic plumbing alongside rather than leaving it duplicated.
+(e) Generalise Theorems/Propositional (and ModalS4/ModalS5/DedekindDerived where derivable at a weaker class) so the library is uniformly {fc}-polymorphic. Any declaration that cannot be generalised must carry a docstring line saying WHY its class is essential.
+(f) Repo-wide audit: enumerate every remaining FrameClass.Base occurrence and classify it as (i) legitimately Base-specific, (ii) generalised by this task, or (iii) deliberately deferred with a reason. The audit table is a deliverable artifact, not scratch work.
+
+=== 4. NON-GOALS ===
+- Does NOT implement the filtered step relation, filteredStep_fwd/bwd, FilteredStepFrame, the bi-lasso layer, or the semantic FMP. Those remain the A/B/C split of handoff 01 in specs/417_semantic_fmp_finite_worldstate_over_z/handoffs/.
+- No edits under /home/benjamin/Philosophy/Papers/ (read-only ground truth).
+- Does not attempt to reconcile Discrete with Dense/Dedekind: they are INCOMPARABLE in FrameClass's order (Axioms.lean:511-517), so nothing proved at Dedekind can be borrowed at Discrete. Do not add a joint class.
+
+=== 5. VERIFICATION CONTRACT ===
+- Zero new sorry. Repository live-sorry count stays at exactly 1 (countermodel_discrete, WeakCanonical/Transfer.lean), verified via scripts/check-module-invariants.sh, NEVER naive grep.
+- lake build exits 0 at every commit; no landed theorem statement weakens silently. Any statement change must be called out explicitly in the summary.
+- PRE-EXISTING RED, inherited not caused (verify before blaming this work): check-module-invariants.sh currently fails C6 (SoundnessLemmas/CoValidity.lean:104 `simp` made no progress), C9 (task-number citation in WeakCanonical/PriorExpressivenessDense.lean:185), and lake build BimodalTest (#guard_msgs drift in RegionGateProbe, TableauConformance, BoxSpreadProbe). C6 is a genuine FormalSystem compile failure that predates this task and is unowned -- fixing it is IN SCOPE as part of the uniformity pass if it proves frame-class-related, otherwise report it.
+- No vacuous definitions, no restating a lemma in a trivially-true form.
+- Default-to-Base is the regression firewall: verify with lake build FormalSystem.Metalogic.Decidability.FMP.FMP before touching anything downstream.
+
+=== 6. UNBLOCKS ===
+Task 417's recommended Task B (the filtered step relation) cannot start before (a) and (c) land. Task A (bi-lasso layer) is independent and unaffected.
+
+---
 
 ### 449. Review paper to improve bimodal reference manual
 - **Status**: [COMPLETED]
@@ -120,10 +177,11 @@ next_project_number: 450
 ---
 
 ### 448. Migrate snce untl to guard first order
-- **Status**: [NOT STARTED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Topic**: lean4
 - **Dependencies**: None
+- **Research**: [448_migrate_snce_untl_to_guard_first_order/reports/01_guard-first-migration-strategy.md]
 
 **Description**: GOAL. Migrate the Lean tree's `snce`/`untl` constructors from the current EVENT-FIRST (Burgess)
 argument order to the GUARD-FIRST order used by the paper, so that `FormalSystem/` and

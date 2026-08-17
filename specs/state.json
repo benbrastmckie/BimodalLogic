@@ -4,7 +4,7 @@
     "total_tasks": 29,
     "last_sync": "2026-06-08T03:09:30Z"
   },
-  "next_project_number": 450,
+  "next_project_number": 451,
   "active_projects": [
     {
       "project_number": 449,
@@ -83,15 +83,21 @@
     {
       "project_number": 448,
       "project_name": "migrate_snce_untl_to_guard_first_order",
-      "status": "not_started",
+      "status": "planning",
       "task_type": "lean4",
       "description": "GOAL. Migrate the Lean tree's `snce`/`untl` constructors from the current EVENT-FIRST (Burgess)\nargument order to the GUARD-FIRST order used by the paper, so that `FormalSystem/` and\n`possible_worlds.tex` agree on what `φ S ψ` and `φ U ψ` mean.\n\nBACKGROUND. `specs/decisions/untl-snce-argument-order.md` records this divergence and is currently\nmarked OPEN awaiting a user decision. That decision has now been made: align Lean to the paper\n(guard-first), not the paper to Lean. The record should be updated to CLOSED/DECIDED as part of\nthis work.\n\nThe divergence, precisely:\n- Paper (`def:BLplus-semantics`, `def:BLplus-defined`): guard-first. In `φ S ψ`, `φ` is the guard\n  holding throughout the interval and `ψ` is the event witnessed at the endpoint. Corroborated by\n  `Past φ := ⊤ S φ` and `Future φ := ⊤ U φ` — guard `⊤` first, event second.\n- Lean (`FormalSystem/Syntax/Formula.lean`, `untl`/`snce` constructors): event-first. In\n  `untl φ ψ`, `φ` is the event and `ψ` is the guard.\n\nKNOWN STALE ARTIFACTS. Both `specs/decisions/untl-snce-argument-order.md` and\n`FormalSystem/Semantics/Truth.lean`'s docstring quote a since-corrected version of the paper\nfootnote. Re-derive the paper side from the tracked anchors in\n`specs/paper-definitions-of-record.md` rather than trusting either quotation.\n\nSCOPE. `snce`/`untl` occur ~7065 times across `FormalSystem/` and `Tests/`, concentrated in\n`Metalogic/BXCanonical/` (Chronicle, Filtration, TruthLemma, Frame), `Metalogic/Soundness*`,\n`Metalogic/Decidability.lean`, `Metalogic/StrongCompleteness.lean`, and `Semantics/Truth.lean`.\nA swap of this size is not a search-and-replace: the two arguments are both `Formula`, so the\ntype checker will NOT catch a missed or half-applied site. Plan for a mechanical, verifiable\nstrategy — e.g. swap the constructor signature and let `lake build` drive site-by-site repair, or\nintroduce guard-first smart constructors first and migrate call sites before flipping the\nunderlying constructor.\n\nACCEPTANCE.\n1. `FormalSystem/Syntax/Formula.lean`'s `untl`/`snce` take guard first, event second, with\n   docstrings naming the roles and citing the paper convention.\n2. `FormalSystem/Semantics/Truth.lean`'s clauses and docstring match, with the stale footnote\n   quotation replaced by the tracked anchor's current text.\n3. `lake build` is green with no new `sorry`.\n4. Derived operators (`somePast`, `next`, `Past`, `Future`) still hold their intended meanings —\n   verify against the paper's `def:BLplus-defined`, not against the pre-migration Lean code.\n5. `specs/decisions/untl-snce-argument-order.md` updated from OPEN to a decided record.\n6. Typst documents citing these constructors (`typst/`) re-checked via\n   `scripts/typst-sync-check.sh`.",
       "topic": "lean4",
       "priority": "high",
       "created": "2026-08-17T15:20:41Z",
-      "last_updated": "2026-08-17T15:20:41Z",
-      "session_id": "sess_1786979701_27ad01",
-      "artifacts": [],
+      "last_updated": "2026-08-17T18:28:06Z",
+      "session_id": "sess_1786990544_629448",
+      "artifacts": [
+        {
+          "path": "specs/448_migrate_snce_untl_to_guard_first_order/reports/01_guard-first-migration-strategy.md",
+          "type": "report",
+          "summary": ""
+        }
+      ],
       "next_artifact_number": 1,
       "dependencies": [],
       "blockers": [],
@@ -1315,6 +1321,30 @@
           "type": "report",
           "summary": "Source-to-target mapping, full axiom transcriptions (S5 + 17 BX keys + frame-class axioms), Extension proof repair options, task-topology style spec, section-intro coverage list, 445/446 collision map, adversarial verification with contradiction log."
         }
+      ]
+    },
+    {
+      "project_number": 450,
+      "project_name": "frame_class_parameterization_restricted_mcs",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "FRAME-CLASS UNIFORMITY: parameterise the restricted-MCS layer (and the derived-theorem libraries beneath it) by FrameClass, removing ad hoc FrameClass.Base pins repo-wide.\n\n=== 1. WHY (machine-checked ground truth) ===\nEstablished by specs/417_semantic_fmp_finite_worldstate_over_z/reports/04_filteredstep-fwd-gating-spike.md and its sorry-free evidence file evidence/spike-untl-unfolding-and-fwd-obstruction.lean (9 declarations, all audited via #print axioms, no sorryAx):\n\nRestrictedConsistent (Core/RestrictedMCS/Basic.lean:72) and RestrictedMCS (:80) explicitly pin SetConsistent to FrameClass.Base, even though SetConsistent {fc : FrameClass} (Core/MaximalConsistent.lean:96) is ALREADY frame-class polymorphic. The pin is the anomaly, not the parameter.\n\nConsequence, machine-checked: filteredStep_fwd is FALSE for the existing FilteredWorld. A Base-consistent closure MCS may contain the negation of U(TOP,BOT), which is true at every point of every Z-model, so Base-MCSs include worlds realizable in NO Z-model. At Phi = U(TOP,BOT) there is a filtered world with no successor at all (filteredStep_fwd_fails). Any Z-frame construction over Base-filtered worlds is unsound at the first point it touches Z dynamics.\n\nThere is no third option: U(TOP,BOT) derives from Axiom.prior_UZ whose minFrameClass IS Discrete, so \"add an axiom to Base\" and \"instantiate at Discrete\" are the same act. The only other escape -- weakening the step table until Base worlds satisfy it -- is the machine-checked-dead Phase 7 universal-relation failure (evidence/phase7-filtered-frame-is-universal.lean).\n\n=== 2. SCOPE: UNIFORMITY AND GENERALITY, NOT A MINIMAL PATCH ===\nThe charter is explicitly NOT the smallest change that unblocks the FMP work. It is a repo-wide discipline pass. Measured surface at task creation: 668 FrameClass.Base occurrences across 59 live (non-Boneyard) .lean files.\n\nThe governing principle: a declaration MUST be stated at the weakest frame class at which it is derivable, and parameterised by {fc : FrameClass} wherever it is class-independent. A Base pin is legitimate ONLY when the statement is genuinely about the Base system (e.g. fmp_contrapositive's conclusion). Every other pin is a defect to be removed.\n\nKnown instances of the defect (non-exhaustive; the audit is part of the work):\n- Theorems/Propositional/Core.lean is HALF polymorphic already ({fc} on efqAxiom, peirceAxiom, doubleNegation, lceImp, rceImp) and half Base-pinned (12 occurrences); Connectives.lean has 5 more. This inconsistency is why the spike had to rebuild orElim/andIntro/guardMono/eventMono from scratch instead of reusing the library.\n- Theorems/ModalS5.lean (9), ModalS4.lean (2), DedekindDerived.lean (4).\n- Metalogic/Bundle (11), BXCanonical (6+2+2+1), Algebraic (4), WeakCanonical (4).\n\n=== 3. DELIVERABLES ===\n(a) Parameterise RestrictedConsistent / RestrictedMCS / closure_mcs_deductively_closed (FMP/ClosureMCS.lean:171) by {fc : FrameClass}, DEFAULTING TO Base so every existing call site elaborates unchanged. Downstream: ClosureMCS, ClosureMCSBundle, FilteredWorld, FiniteModel, TruthPreservation, Correctness.\n(b) PRESERVE the landed Base results verbatim -- mcs_finite_model_property (FMP/FMP.lean:230), fmp_contrapositive (:243), fmp_size_bound (:269) are genuine theorems ABOUT the Base system and their statements must not drift. Hard-coding Discrete instead of parameterising is explicitly rejected for this reason.\n(c) Discrete-system consistency lemma. The tree has \"the base system is consistent\" (Soundness.lean:1957) but NO Discrete analogue, and a Discrete-instantiated MCS layer is vacuous without one. Route: soundness_discrete_valid (Soundness.lean:1334) at D = Z on TaskFrame.trivialFrame -- the same shape the spike used for dense_consistent at Q. This is the FIRST lemma of the task, not an afterthought: everything else is vacuous until it lands.\n(d) Promote the spike's Discrete unfolding schema into the library (Theorems/TemporalDerived.lean or a new Theorems/DiscreteUnfolding.lean): succIndicator, nextConj, unfoldTableForward, unfoldTableBackward, unfoldForward, unfoldBackward, noBlockingTriple. All are already sorry-free in the evidence file and are general-purpose facts about the Discrete system, useful well beyond the FMP. Promote the frame-class-polymorphic plumbing alongside rather than leaving it duplicated.\n(e) Generalise Theorems/Propositional (and ModalS4/ModalS5/DedekindDerived where derivable at a weaker class) so the library is uniformly {fc}-polymorphic. Any declaration that cannot be generalised must carry a docstring line saying WHY its class is essential.\n(f) Repo-wide audit: enumerate every remaining FrameClass.Base occurrence and classify it as (i) legitimately Base-specific, (ii) generalised by this task, or (iii) deliberately deferred with a reason. The audit table is a deliverable artifact, not scratch work.\n\n=== 4. NON-GOALS ===\n- Does NOT implement the filtered step relation, filteredStep_fwd/bwd, FilteredStepFrame, the bi-lasso layer, or the semantic FMP. Those remain the A/B/C split of handoff 01 in specs/417_semantic_fmp_finite_worldstate_over_z/handoffs/.\n- No edits under /home/benjamin/Philosophy/Papers/ (read-only ground truth).\n- Does not attempt to reconcile Discrete with Dense/Dedekind: they are INCOMPARABLE in FrameClass's order (Axioms.lean:511-517), so nothing proved at Dedekind can be borrowed at Discrete. Do not add a joint class.\n\n=== 5. VERIFICATION CONTRACT ===\n- Zero new sorry. Repository live-sorry count stays at exactly 1 (countermodel_discrete, WeakCanonical/Transfer.lean), verified via scripts/check-module-invariants.sh, NEVER naive grep.\n- lake build exits 0 at every commit; no landed theorem statement weakens silently. Any statement change must be called out explicitly in the summary.\n- PRE-EXISTING RED, inherited not caused (verify before blaming this work): check-module-invariants.sh currently fails C6 (SoundnessLemmas/CoValidity.lean:104 `simp` made no progress), C9 (task-number citation in WeakCanonical/PriorExpressivenessDense.lean:185), and lake build BimodalTest (#guard_msgs drift in RegionGateProbe, TableauConformance, BoxSpreadProbe). C6 is a genuine FormalSystem compile failure that predates this task and is unowned -- fixing it is IN SCOPE as part of the uniformity pass if it proves frame-class-related, otherwise report it.\n- No vacuous definitions, no restating a lemma in a trivially-true form.\n- Default-to-Base is the regression firewall: verify with lake build FormalSystem.Metalogic.Decidability.FMP.FMP before touching anything downstream.\n\n=== 6. UNBLOCKS ===\nTask 417's recommended Task B (the filtered step relation) cannot start before (a) and (c) land. Task A (bi-lasso layer) is independent and unaffected.",
+      "effort": "high",
+      "dependencies": [],
+      "parent_task": null,
+      "artifacts": [],
+      "created": "2026-08-17T18:35:27Z",
+      "last_updated": "2026-08-17T18:35:27Z",
+      "topic": "proof-system-infrastructure",
+      "session_id": "sess_1786988555_d60cfa",
+      "next_artifact_number": 1,
+      "file_scope": [
+        "FormalSystem/Metalogic/Core/RestrictedMCS/",
+        "FormalSystem/Metalogic/Core/MaximalConsistent.lean",
+        "FormalSystem/Metalogic/Decidability/FMP/",
+        "FormalSystem/Metalogic/Decidability/Correctness.lean",
+        "FormalSystem/Theorems/",
+        "FormalSystem/Metalogic/Soundness.lean"
       ]
     }
   ],
