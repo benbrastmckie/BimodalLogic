@@ -2,7 +2,7 @@
 
 - **Task**: 449 - review_paper_to_improve_bimodal_reference_manual
 - **Status**: [NOT STARTED]
-- **Effort**: 10 hours
+- **Effort**: 10 hours (per-phase timings sum to ~10.5 serial; Wave-2 parallelism compresses wall clock)
 - **Dependencies**: None (edits `typst/` and `specs/` only; no Lean files, no paper files)
 - **Research Inputs**: specs/449_review_paper_to_improve_bimodal_reference_manual/reports/01_paper-manual-lean-alignment.md
 - **Artifacts**: plans/01_manual-to-target-state.md (this file)
@@ -104,7 +104,6 @@ anchor only, never by line number — the paper is actively edited). Lean symbol
 |------------------------|-------------|----------------|------|
 | `def:BLplus-language`, `def:BLplus-semantics` (⊲/⊳ infix guard-first) | R1, R2a, A1 | notation/bimodal-notation.typ; 01-syntax.typ | Infix guard-first macros + book-wide display switch |
 | `def:BLplus-defined` (since-first ordering; Next/Previous), `thm:BLplus-NextPrevious` | R2b, R2e, A2, A4 | 01-syntax.typ | Reorder snce/past first; add Next/Previous with discrete caveat |
-| Paper glyph macros (Historical/Henceforth boxes) | R2f, E1 | 01-syntax.typ | Paper-glyph correspondence table (default path, Decision E1) |
 | `def:time-shift-histories` (translation form) | R3b, B4 | 02-semantics.typ | Restate time-shift as translation ā(z)=z+d, τ(z)=σ(ā(z)) |
 | `def:task-topology`, `app:topology-t1`, `app:topology-r0` | R3c, B6 | 02-semantics.typ | Optional one-footnote topology enrichment |
 | `Axioms.lean` 45 constructors / 9 layers / `FrameClass` 4 values | R4a–c, C1 | 03-proof-theory.typ | Nine layers, Layer 9 table, four-class Hasse |
@@ -118,46 +117,52 @@ anchor only, never by line number — the paper is actively edited). Lean symbol
 | JSONL `frame_class` incl. `Dedekind` (3 rows verified) | R12, C1 | ax-machine-appendix.typ | Add Dedekind to prose |
 | All newly load-bearing anchors | R14 | specs/paper-definitions-of-record.md | Re-pin definitions of record |
 
-## Decisions Required (user input — do not silently resolve)
+## Decisions (RESOLVED by user, 2026-08-17)
 
-Phases gated on an unmade decision are explicitly marked in their headers. Each decision has a
-stated default so implementation can proceed if the user defers; the default is the research
-report's recommendation.
+Both formerly-gating decisions are resolved; no phase remains gated. The record below states
+what was decided and the design principle each resolution carries.
 
-**E1 — Tense-operator glyphs.** The paper writes decorated boxes/diamonds (□ᴾ "Historical",
-□ꟳ "Henceforth", ◇ᴾ/◇ꟳ, ◯ꟳ/◯ᴾ) and never the letters H/G/P/F; the manual and the Lean
-names (`allPast`/`allFuture`/...) use letters.
-- *Option A (report recommendation, plan default)*: keep H/G/P/F letters; add a three-column
-  correspondence table (paper glyph | book symbol | Lean name) to 01-syntax; adopt
-  "Historical"/"Henceforth" as alternative glosses.
-- *Option B*: adopt the paper's glyphs wholesale — confined to `notation/bimodal-notation.typ`
-  plus a mechanical sweep, but touches every chapter's displays.
-- *Trade-off*: A keeps the manual legible against Lean identifiers and the tense-logic
-  literature; B maximizes paper alignment. Gates: Phase 1 (macro set) and Phase 2 (table
-  form); both proceed on Option A by default. Choosing B later adds one mechanical sweep
-  follow-up, not a replan.
+**E1 — Tense-operator glyphs: RESOLVED — keep the H/G/P/F letters; NO paper-glyph
+correspondence table.** The user's reasoning is a plan-wide design principle, stronger than
+the report's Option A: **the reference manual stands on its own** — it is not a companion
+document to the paper and must not require the paper to be read alongside it. Consequences,
+applied throughout the phases:
+- No glyph correspondence table, no "the paper writes this as ..." asides, no
+  notation-mapping tables, no parenthetical paper-glyph glosses anywhere in the manual.
+- The Burgess-convention footnote survives only as a note about the *literature's* alternative
+  convention (a timeless scholarly fact), phrased without "the paper writes ..." framing.
+- **Verdict on the axiom-name cross-index (paper-name column, Phase 4)**: KEPT. Judged
+  against the stand-on-its-own principle: the short axiom names (TB, UG, UC, TA, ...) are
+  stable *names for the axioms themselves* — scholarly citation apparatus a reference manual
+  owes its reader (one cites an axiom by name), meaningful within the book once introduced,
+  exactly as a theorem-numbering scheme is. A glyph table, by contrast, is pure translation
+  scaffolding whose only use is reading the two documents side by side. The same verdict
+  covers the extended-system names (TM+_f/TM+_d/TM+_c): they are the names of the systems,
+  introduced and used by the book in its own right, anchored once by the introduction's
+  naming remark (N1).
+- Ordinary scholarly citations of the paper by anchor (crediting a theorem's source, pointing
+  to where the deferred subsystem is developed) are citations, not bridges — they stay. The
+  plan's own phase task items likewise continue citing paper anchors as internal provenance
+  (plan-facing, not manual-facing).
 
-**D1 — Disposition of the (DD)/two-fibre incompleteness exposition** (04-metalogic §Why TM Is
-Incomplete, the (DD) boxes, Halldén paragraphs, two-fibre cetz diagram). Its paper anchor is
-deleted (survives only in the paper's comments).
-- *Option A (report recommendation, plan default)*: compress to ONE self-contained remark
-  ("why completeness is carried at the Until/Since level"), unattributed to the live paper,
-  retaining the discrete-or-dense dichotomy theorem (verified sound, independently used by the
-  introduction) and a one-paragraph sketch of the split-validity phenomenon.
-- *Option B*: cut entirely (keeping only the dichotomy theorem).
-- *Note*: under the governing directive's "no historical narrative" rule, cutting has become
-  more attractive than when the report was written — the exposition is subsystem material
-  whose framing was the old edition's headline. The mathematics itself is permanent and sound,
-  which argues for the compressed remark. User's choice. Gates: Phase 5 (proceeds on Option A
-  by default).
+**D1 — (DD)/two-fibre incompleteness exposition: RESOLVED — CUT ENTIRELY.** Not compressed
+to a remark; removed (the non-default option). The 04-metalogic §Why TM Is Incomplete
+section, the (DD) theorem boxes, the Halldén paragraphs, and the two-fibre cetz diagram are
+all deleted (Phase 5). The discrete-or-dense dichotomy theorem — a standalone, verified-sound
+mathematical fact independently used by the introduction — is retained as a bare stated
+result inside 04-metalogic's frame-class-correspondence context, detached from any
+incompleteness narrative. Stranded-reference cleanup is assigned explicitly: Phase 5 (labels,
+unused imports in 04-metalogic), Phase 6 (the frame-classes chapter's "(DD) split validity"
+cross-reference — already removed by R6b), Phase 8 (abstract/introduction sentences, verify
+the introduction's dichotomy use still resolves, whitelist entries orphaned by the cut).
+Bibliography needs no action: the References section renders cited entries only, so entries
+cited solely by the deleted paragraphs drop out automatically.
 
-**N1 — Book's name for the headline system** (non-gating; default stated for confirmation).
-The current text implicitly uses "TM" as the book's name for the Until/Since-primitive system
-(the paper's TM+), inconsistently. Plan default: keep "TM" as the book's name, fixed by one
-early remark in the introduction ("this book's TM is the paper's TM+; the paper reserves TM
-for the tense-primitive subsystem deferred here"). Alternative: rename the book's system
-"TM+" throughout. Default requires no sweep; the alternative would. Phases proceed on the
-default.
+**N1 — Book's name for the headline system** (non-gating; proceeding on default). Keep "TM"
+as the book's name for the Until/Since-primitive system, fixed by one early introduction
+remark identifying it with the published paper's TM+ (the single deliberate anchor point for
+readers arriving from the paper). Alternative (rename to "TM+" throughout) would require a
+sweep; not chosen.
 
 ## Postmortem Constraints
 
@@ -187,6 +192,13 @@ derive from the research report's risk factors, the governing directive, and rep
 - Delete or reword the seven existing `LEAN-ANCHOR-MAY-MOVE` markers.
 - Plan or draft any past/future-primitive subsystem development — divergences of that kind are
   intended (task-description scoping constraint), and the subsystem is deferred wholesale.
+- Add paper-bridging apparatus to the manual: glyph correspondence tables, notation-mapping
+  tables, "the paper writes this as ..." asides, or parenthetical paper-glyph glosses (Decision
+  E1's stand-on-its-own principle). Scholarly anchor-form citations of the paper as a *source*
+  remain correct; side-by-side translation scaffolding does not.
+- Reintroduce the (DD)/two-fibre incompleteness exposition in any form, compressed or
+  otherwise (Decision D1: cut entirely). The dichotomy theorem alone survives, as a
+  standalone result.
 
 **MUST preserve**:
 - `typst-sync-check.sh` PASS at every phase boundary (see Preserved Assets).
@@ -200,6 +212,11 @@ derive from the research report's risk factors, the governing directive, and rep
   deferred-subsystem content consolidated to one note plus footnotes.
 - CONFIRM comments (convention below) are the sole carrier for "finished-repo must satisfy X"
   obligations; no new marker vocabulary is invented for this purpose.
+- The manual stands on its own (user, Decision E1 resolution): H/G/P/F letters kept, no
+  paper-glyph bridging apparatus; the axiom-name cross-index and system names are kept as
+  the book's own scholarly apparatus (verdict recorded under Decisions).
+- The (DD)/two-fibre incompleteness exposition is cut entirely (user, Decision D1
+  resolution); only the standalone dichotomy theorem survives.
 
 ## CONFIRM Tag Convention (established by Phase 1, used by all later phases)
 
@@ -250,9 +267,10 @@ derive from the research report's risk factors, the governing directive, and rep
 - **Notation sweep misses a display** (chapters hardcode operator glyphs). Mitigation:
   Phase 1 macros + per-phase grep for residual event-first `U(`/`S(` operator displays;
   Phase 8 runs the book-wide residual grep as a closing gate.
-- **Decision E1/D1 reversal after implementation**. Mitigation: defaults are the report's
-  recommendations; E1 Option B is confined to the notation module + one mechanical sweep;
-  D1 Option B is a strict subset (delete the remark) of Option A's output.
+- **Stranded references from the D1 cut** (labels, imports, whitelist entries, the
+  introduction's dichotomy use). Mitigation: cleanup tasks assigned explicitly to Phases 5,
+  6, and 8; `typst compile` fails on dangling `@`-references, making the residue mechanical
+  to catch; bibliography self-prunes (cited-entries-only rendering).
 
 ## Surfaced to User (informational — NOT work phases; this task edits typst/ only)
 
@@ -296,9 +314,8 @@ passes; CONFIRM well-formedness grep (convention section above) outputs nothing.
   - [ ] R1 (source: `def:BLplus-language`, macros `\since = \lhd` / `\until = \rhd`): add to
     `notation/bimodal-notation.typ` infix macros `#let snce = $lt.tri$`, `#let untl =
     $gt.tri$`, plus display helpers taking guard-first arguments (e.g. `#let snceOp(g, e)`,
-    `#let untlOp(g, e)` rendering `g ⊲ e` / `g ⊳ e`). Under Decision E1 default (Option A),
-    add NO tense-glyph replacements; if the user has chosen Option B by dispatch time, also
-    add paper-glyph macros for Historical/Henceforth/past/future/Next/Previous.
+    `#let untlOp(g, e)` rendering `g ⊲ e` / `g ⊳ e`). Per Decision E1 (resolved): the
+    H/G/P/F letter macros stay as-is; add NO paper-glyph macros of any kind.
   - [ ] Document the CONFIRM convention in `typst/README.md` as a new subsection beside the
     existing Marker Convention section, reproducing the syntax, qualifiers, placement rule,
     checkability rule, and extraction commands from this plan's convention section verbatim.
@@ -331,28 +348,30 @@ passes; CONFIRM well-formedness grep (convention section above) outputs nothing.
     in the grammar display, operator table, and swap definition.
   - [ ] R2b (source: `def:BLplus-defined` ordering; finding A2): reorder so snce/past precede
     untl/future in every table and definition list.
-  - [ ] R2c (directive-re-aimed): delete the long Burgess-convention paragraph and the
-    "Known, Deliberate Divergence" remark. Add one timeless footnote: the literature's
-    Burgess convention writes since/until prefix event-first; this book follows the paper's
-    infix guard-first form. Place `// CONFIRM(lean): Formula.snce and Formula.untl
-    (Syntax/Formula.lean) take arguments guard-first, matching def:BLplus-semantics` above
-    the constructor-citing display. No hedging prose about current Lean argument order.
+  - [ ] R2c (directive-re-aimed; E1 stand-on-its-own phrasing): delete the long
+    Burgess-convention paragraph and the "Known, Deliberate Divergence" remark. Add one
+    timeless footnote noting that part of the literature (the Burgess convention) writes
+    since/until prefix and event-first — phrased as a fact about the literature, with no
+    "this book follows the paper" framing. Place `// CONFIRM(lean): Formula.snce and
+    Formula.untl (Syntax/Formula.lean) take arguments guard-first, matching
+    def:BLplus-semantics` above the constructor-citing display. No hedging prose about
+    current Lean argument order.
   - [ ] R2d (FIX at the L-vs-L+ paragraph): move the base-language-L contrast into a footnote
     after F/P/H/G are defined, citing the paper; the body presents L+ as the book's language
     throughout, standalone.
   - [ ] R2e (source: `def:BLplus-defined`, `thm:BLplus-NextPrevious`): add Next := ⊥⊳φ and
     Previous := ⊥⊲φ to the derived-operator section with the discrete-frames caveat.
-  - [ ] R2f (Decision E1 default): add the three-column correspondence table (paper glyph |
-    book symbol | Lean name) covering Historical/Henceforth/past/future/always/sometimes/
-    Next/Previous, adopting "Historical"/"Henceforth" as alternative glosses. (If E1
-    Option B was chosen, this table instead documents the adopted glyphs against Lean names.)
+  - [ ] R2f — DROPPED (Decision E1, resolved): no paper-glyph correspondence table, and no
+    paper-glyph glosses. While applying R2a–e, also delete any existing "the paper writes
+    this as ..." aside or parenthetical paper-glyph gloss encountered in the chapter (the
+    stand-on-its-own sweep).
   - [ ] Delete the three inline FIX comments once addressed.
 - **Timing:** ~1.5 hours
 - **Depends on:** 1
 - **Verification Tier:** local — phase gates, plus `grep -nE '\bU\(|\bS\(' typst/chapters/01-syntax.typ`
   returns only the Burgess footnote (if it renders the literature form) or nothing; plus
   `grep -c 'FIX:' typst/chapters/01-syntax.typ` returns 0.
-- **Estimated output:** ~150–250 lines
+- **Estimated output:** ~120–200 lines
 - **Scope Hypothesis:** three FIX comments and one Known-Deliberate-Divergence remark exist in
   the chapter; confirm by grepping `FIX:` and the remark title at dispatch before editing.
 - **Done when:** chapter has zero FIX comments, zero prefix event-first operator displays
@@ -402,10 +421,12 @@ passes; CONFIRM well-formedness grep (convention section above) outputs nothing.
     Dense↔TM+_d, Discrete↔TM+_f, Dedekind↔TM+_c, with a pointer to the frame-classes chapter
     for detail. Also fix the stale sentence claiming the paper's complete/combined extensions
     have no corresponding frame class (predates the Dedekind class; finding C6 ripple).
-  - [ ] R4d (source: `def:BX`/`def:TMplus-*`; finding C2's verified constructor map): add a
-    paper-name column to the Layer 3 and Layer 5–9 tables using the report's table verbatim;
-    note TB vs `serial_future` as trivially interderivable, and that the paper derives CO in
-    BX_c rather than taking it as an axiom.
+  - [ ] R4d (source: `def:BX`/`def:TMplus-*`; finding C2's verified constructor map; KEPT
+    under the Decision E1 axiom-name verdict — citation apparatus, not translation
+    scaffolding): add the short-name column (TB, UG, UC, TA, ...) to the Layer 3 and
+    Layer 5–9 tables using the report's table verbatim, introduced as the axioms' names in
+    the book's own right (source credited once by anchor); note TB vs `serial_future` as
+    trivially interderivable, and that CO is derivable in BX_c rather than axiomatic.
   - [ ] R4e (finding C4): rewrite §Relation to the Paper's Presentation — primary contrast is
     `def:S5` + `def:BX` + `def:TMplus` (the book's system IS this system); the tense-primitive
     12-schema TM is one deferred-subsystem paragraph pointing to the back-matter table. The
@@ -425,11 +446,11 @@ passes; CONFIRM well-formedness grep (convention section above) outputs nothing.
 - **Done when:** layer tables sum to 45 across nine layers; four-class correspondence stated;
   paper-name columns present; TM+ is the primary comparandum; gates green.
 
-### Phase 5: Metalogic Chapter — Target Completeness Statements [GATED: Decision D1] [NOT STARTED]
+### Phase 5: Metalogic Chapter — Target Completeness Statements [NOT STARTED]
 
 - **Goal:** `04-metalogic.typ` states the target completeness results as clean mathematics
-  with CONFIRM obligations; the old incompleteness narrative is compressed (D1 default) or
-  cut (D1 Option B); genuine negative results stay in the body.
+  with CONFIRM obligations; the old incompleteness exposition is cut entirely (Decision D1,
+  resolved); genuine negative results stay in the body.
 - **Territory:** `typst/chapters/04-metalogic.typ`
 - **Tasks:**
   - [ ] R5a (directive-re-aimed; source: restated `cor:tm-completeness`): replace the
@@ -449,11 +470,17 @@ passes; CONFIRM well-formedness grep (convention section above) outputs nothing.
     strong completeness is provably false (non-compactness witness {F p} ∪ {¬Xⁿp}).
   - [ ] R5b: delete the "none is established as complete" citation and every quotation of the
     old corollary text.
-  - [ ] R5c (Decision D1 — default Option A): compress §Why TM Is Incomplete + the (DD)
-    boxes + Halldén paragraphs + two-fibre cetz diagram into one self-contained remark on why
-    completeness is carried at the Until/Since level, retaining the discrete-or-dense
-    dichotomy theorem, without live-paper attribution and without "headline correction"
-    framing. (Option B: delete the remark too, keeping only the dichotomy theorem.)
+  - [ ] R5c (Decision D1 — resolved: CUT): delete §Why TM Is Incomplete, the (DD) theorem
+    boxes, the Halldén paragraphs, and the two-fibre cetz diagram outright — no compressed
+    remark, no replacement exposition. Retain ONLY the discrete-or-dense dichotomy theorem
+    (verified sound; independently used by the introduction) as a standalone stated result
+    relocated into this chapter's frame-class-correspondence context, detached from any
+    incompleteness narrative, and give it a stable label the introduction can reference.
+  - [ ] D1 stranded-reference cleanup (this file): remove any `@`-labels, figure labels, and
+    now-unused imports (e.g. cetz, if the two-fibre diagram was this chapter's only usage)
+    left by the cut; remove any subsection heading left empty by the deletion rather than
+    leaving a stub. `typst compile` failing on a dangling `@`-reference is the mechanical
+    check that nothing was missed.
   - [ ] R5d (finding D5): restate the CO/Reynolds-triple independence question as an open
     mathematical problem (open problems are permanent mathematical statements, not progress
     reports) without "under active formalization" phrasing; the existing
@@ -465,17 +492,19 @@ passes; CONFIRM well-formedness grep (convention section above) outputs nothing.
     `// CONFIRM(lean): scripts/typst-status-counts.sh --json reports sorry_total_excl_boneyard = 0`;
     retitle/reshape the section as the chapter's formalization-anchor index (which Lean
     theorems carry which results) rather than a status report.
-- **Timing:** ~1.5 hours
-- **Depends on:** 1 (content); Decision D1 (defaulting to Option A if unanswered)
+- **Timing:** ~1 hour (cutting is less work than the formerly-planned compression)
+- **Depends on:** 1
 - **Verification Tier:** local — phase gates; `grep -n 'sorry' typst/chapters/04-metalogic.typ`
   shows no body-prose sorry counts (CONFIRM comments and Lean identifiers are permitted
   matches); event-first residual grep.
-- **Estimated output:** ~150–250 lines
+- **Estimated output:** ~100–180 lines (net deletion-heavy after the D1 cut)
 - **Scope Hypothesis:** the affected sections are as the report mapped them (status table,
   incompleteness exposition, implementation-status section); confirm section presence by
   heading grep at dispatch before editing.
 - **Done when:** four target statements stated with CONFIRM obligations; negative results in
-  body; no old-corollary quotations; D1 disposition applied; gates green.
+  body; no old-corollary quotations; incompleteness exposition fully removed with the
+  dichotomy theorem retained standalone and labeled; no dangling labels or stub headings;
+  gates green.
 
 ### Phase 6: Frame-Classes and Decidability-in-Practice Chapters [NOT STARTED]
 
@@ -496,7 +525,9 @@ passes; CONFIRM well-formedness grep (convention section above) outputs nothing.
     `thm:BLplus-PastFuture`); proof-system conservativity is the deferred subsystem's future
     result, recorded as
     `// CONFIRM(paper): a conservative-extension theorem for the tense-primitive subsystem is stated (successor of the deleted thm:ConservativeExtension)` —
-    no theorem box, no four-part status, and drop the "(DD) split validity" cross-reference.
+    no theorem box, no four-part status, and drop the "(DD) split validity" cross-reference
+    (this removal also closes this chapter's only dangling reference into the incompleteness
+    exposition Phase 5 cuts under Decision D1).
   - [ ] R6c: notation sweep of the Next/Previous section (guard-first infix).
   - [ ] R7 (directive-re-aimed; finding D3): in the decidability-practice chapter, remove the
     dead `cor:tm-decidability` citation (whitelist entry removal deferred to Phase 8). State
@@ -587,6 +618,11 @@ passes; CONFIRM well-formedness grep (convention section above) outputs nothing.
   - [ ] R9c–d (finding C1, F3): "8 layers" → nine in the introduction; fix the Z/Q phrasing —
     frame classes are discrete/dense ordered abelian groups generally, with Z the
     successor-Archimedean completeness carrier and Q the dense chronicle carrier.
+  - [ ] D1 stranded-reference check (front matter): the introduction independently uses the
+    discrete-or-dense dichotomy theorem — verify its reference resolves to the standalone
+    labeled statement Phase 5 retained in 04-metalogic, and that no abstract/introduction
+    sentence still mentions the (DD) split validity, the two-fibre countermodel, or Halldén
+    completeness (grep both files for `DD`, `two-fibre`, `Halldén`/`Hallden`).
   - [ ] R9e: ordering/notation sweep of operator mentions in both files.
   - [ ] R13: append a dated verdict section to `typst/SYNC-MAP.md` recording this revision
     (target-state directive, notation switch, completeness restatement, CONFIRM convention
@@ -594,7 +630,10 @@ passes; CONFIRM well-formedness grep (convention section above) outputs nothing.
   - [ ] Whitelist cleanup (deferred here from Phases 6–7 by postmortem constraint): remove
     the `cor:tm-decidability` entry, and the `thm:ConservativeExtension` entry if its last
     citation is gone; verify with `grep -rn 'cor:tm-decidability\|thm:ConservativeExtension'
-    typst/chapters/` before removing each.
+    typst/chapters/` before removing each. Additionally, check for whitelist entries orphaned
+    by the Phase 5 D1 cut (e.g. the `⊥ U φ` rejected-construction illustration or any
+    two-fibre-countermodel candidate): for each whitelist entry, confirm a citing occurrence
+    still exists in `typst/**/*.typ`; remove entries with none.
   - [ ] Closing gate set (full): `bash scripts/typst-status-counts.sh` (regenerate, confirm
     no count drift); `cd typst && typst compile BimodalReference.typ
     build/BimodalReference.pdf` exit 0; `bash scripts/typst-sync-check.sh` PASS all checks;
@@ -645,10 +684,9 @@ passes; CONFIRM well-formedness grep (convention section above) outputs nothing.
 - If the paper drifts mid-implementation (`check-paper-definitions.sh` fails at a phase
   gate-in): stop, re-pin `specs/paper-definitions-of-record.md` against the new state, and
   re-verify only the anchors the current phase cites before proceeding.
-- If Decision E1 flips to Option B after Wave 2: the change is confined to
-  `notation/bimodal-notation.typ` plus one mechanical sweep — a small follow-up, not a
-  replan. If D1 flips to Option B after Phase 5: delete the compressed remark (strict subset
-  of Option A's output).
+- Decisions E1 and D1 are resolved (2026-08-17) and settled by postmortem constraint; no
+  decision-flip contingency remains. Should the user later reverse D1, the cut exposition is
+  recoverable from git history (it was committed content before this task).
 - If `typst compile` breaks and cannot be fixed forward within a phase: revert that phase's
   working-tree edits only (via `git-snapshot.sh` + targeted restore per
   `.claude/rules/git-workflow.md`), never the committed prior phases.
