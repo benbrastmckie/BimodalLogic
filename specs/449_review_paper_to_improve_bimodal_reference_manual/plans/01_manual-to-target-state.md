@@ -401,18 +401,18 @@ E2 governs paper citations only.)
 - **Done when:** macros compile and render `g ⊲ e` correctly in a scratch display; README
   documents CONFIRM; `check-paper-definitions.sh` passes; all three phase gates green.
 
-### Phase 2: Syntax Chapter to Guard-First Target State [NOT STARTED]
+### Phase 2: Syntax Chapter to Guard-First Target State [COMPLETED]
 
 - **Goal:** Resolve all three inline FIX comments in `01-syntax.typ`; the chapter presents
   L+ as the book's language in guard-first infix notation with snce/past-first ordering.
 - **Territory:** `typst/chapters/01-syntax.typ`
 - **Tasks:**
-  - [ ] R2a (source: `def:BLplus-language`, `def:BLplus-semantics`): replace `U(φ,ψ)`/
+  - [x] R2a (source: `def:BLplus-language`, `def:BLplus-semantics`): replace `U(φ,ψ)`/
     `S(φ,ψ)` prefix event-first displays with infix guard-first `⊲`/`⊳` (via Phase 1 macros)
     in the grammar display, operator table, and swap definition.
-  - [ ] R2b (source: `def:BLplus-defined` ordering; finding A2): reorder so snce/past precede
+  - [x] R2b (source: `def:BLplus-defined` ordering; finding A2): reorder so snce/past precede
     untl/future in every table and definition list.
-  - [ ] R2c (directive-re-aimed; E1 stand-on-its-own phrasing): delete the long
+  - [x] R2c (directive-re-aimed; E1 stand-on-its-own phrasing): delete the long
     Burgess-convention paragraph and the "Known, Deliberate Divergence" remark. Add one
     timeless footnote noting that part of the literature (the Burgess convention) writes
     since/until prefix and event-first — phrased as a fact about the literature, with no
@@ -420,17 +420,17 @@ E2 governs paper citations only.)
     Formula.untl (Syntax/Formula.lean) take arguments guard-first, matching
     def:BLplus-semantics` above the constructor-citing display. No hedging prose about
     current Lean argument order.
-  - [ ] R2d (FIX at the L-vs-L+ paragraph): move the base-language-L contrast into a footnote
+  - [x] R2d (FIX at the L-vs-L+ paragraph): move the base-language-L contrast into a footnote
     after F/P/H/G are defined — phrased as the book's own remark on the tense-primitive
     sublanguage, with NO paper-anchor citation (Decision E2; the front-matter credit covers
     provenance); the body presents L+ as the book's language throughout, standalone.
-  - [ ] R2e (source: `def:BLplus-defined`, `thm:BLplus-NextPrevious`): add Next := ⊥⊳φ and
+  - [x] R2e (source: `def:BLplus-defined`, `thm:BLplus-NextPrevious`): add Next := ⊥⊳φ and
     Previous := ⊥⊲φ to the derived-operator section with the discrete-frames caveat.
-  - [ ] R2f — DROPPED (Decision E1, resolved): no paper-glyph correspondence table, and no
+  - [x] R2f — DROPPED (Decision E1, resolved): no paper-glyph correspondence table, and no
     paper-glyph glosses. While applying R2a–e, also delete any existing "the paper writes
     this as ..." aside or parenthetical paper-glyph gloss encountered in the chapter (the
     stand-on-its-own sweep).
-  - [ ] Delete the three inline FIX comments once addressed.
+  - [x] Delete the three inline FIX comments once addressed.
 - **Timing:** ~1.5 hours
 - **Depends on:** 1
 - **Verification Tier:** local — phase gates, plus `grep -nE '\bU\(|\bS\(' typst/chapters/01-syntax.typ`

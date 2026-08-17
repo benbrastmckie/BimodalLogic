@@ -11,23 +11,18 @@
 
 == Formulas <sec:formulas>
 
-Formulas are defined inductively with six primitive constructors, with *Until* and *Since* as the primitive temporal operators.
+Formulas are defined inductively with six primitive constructors, with *Since* and *Until* as the primitive temporal operators.
 
 #definition("Formula")[
   The type `Formula` is defined by:
-  $ phi.alt, psi ::= p | bot | phi.alt arrow.r psi | square.stroked phi.alt | U(phi.alt, psi) | S(phi.alt, psi) $
+  $ phi.alt, psi ::= p | bot | phi.alt arrow.r psi | square.stroked phi.alt | phi.alt #snce psi | phi.alt #untl psi $
   where $p$ ranges over sentence letters (type `Atom`).#footnote[`Atom` (`Syntax/Atom.lean`) pairs a base string with an optional freshness index, so that a fresh atom exists outside any finite set of atoms; `Formula.atomS` builds an atom formula directly from a string.]
 ]
 
-The binary temporal operators follow the *Burgess convention* @burgess1982axioms (`Syntax/Formula.lean`): in $U(phi.alt, psi)$ the first argument $phi.alt$ is the *event*, true at some strictly future witness time, and the second argument $psi$ is the *guard*, true at all times strictly between now and the witness.
-$S(phi.alt, psi)$ is the past mirror: the event held at some strictly past time, with the guard holding strictly in between.
+The two temporal primitives are written infix and are *guard-first*: in $#snceOp($phi.alt$, $psi$)$ the *guard* is $phi.alt$, holding at all times strictly between a past witness and now, and the *event* is $psi$, witnessed at that strictly past time.
+$#untlOp($phi.alt$, $psi$)$ is the future mirror: the guard $phi.alt$ holds at all times strictly between now and a future witness, at which the event $psi$ is true.#footnote[Part of the literature, following Burgess's axiomatization of Until and Since @burgess1982axioms, instead writes the two operators prefix and event-first: there $U(psi, phi.alt)$ has the event $psi$ first and the guard $phi.alt$ second. The infix guard-first form used here reads aloud directly --- "$phi.alt$ since $psi$", "$phi.alt$ until $psi$" --- with the guard in subject position.]
 
-#remark("The Argument Order Is a Known, Deliberate Divergence -- Not a Bug")[
-  The paper's surface notation $phi.alt op("Since") psi$ / $phi.alt op("Until") psi$ is *guard-first* ($phi.alt$ the guard, $psi$ the event) -- the opposite of the event-first Burgess convention `untl`/`snce` use here.
-  The two readings are not in tension: the truth conditions agree exactly once the argument order is swapped, and `def:BLplus-semantics`'s own footnote states the direction of the divergence explicitly.
-  This is worth flagging because an earlier version of the paper stated the direction *backwards* (as Pnueli-style guard-first, matching a different literature convention than the one now adopted) -- a corrected error, not a live one, and this book does not repeat it: every truth-condition and axiom-schema statement here uses the event-first Burgess/Lean convention consistently, matching `untl`/`snce`, `dense_indicator`, and the derived-operator unfold lemmas throughout.
-]
-
+// CONFIRM(lean): Formula.snce and Formula.untl (Syntax/Formula.lean) take arguments guard-first, matching def:BLplus-semantics
 #figure(
   table(
     columns: 4,
@@ -41,15 +36,14 @@ $S(phi.alt, psi)$ is the past mirror: the event held at some strictly past time,
     [$bot$], [Bottom], [`bot`], [falsity],
     [$phi.alt arrow.r psi$], [Implication], [`imp`], ["if $phi.alt$, then $psi$"],
     [$square.stroked phi.alt$], [Necessity], [`box`], ["necessarily $phi.alt$"],
-    [$U(phi.alt, psi)$], [Until], [`untl`], ["$psi$ until $phi.alt$"],
-    [$S(phi.alt, psi)$], [Since], [`snce`], ["$psi$ since $phi.alt$"],
+    [$phi.alt #snce psi$], [Since], [`snce`], ["$phi.alt$ since $psi$"],
+    [$phi.alt #untl psi$], [Until], [`untl`], ["$phi.alt$ until $psi$"],
     table.hline(),
   ),
   caption: none,
 )
 
-The paper's base language $cal(L)$ for *TM* instead takes the one-place tense operators $H$ and $G$ as primitive, introducing Until and Since only in its extended language $cal(L)^+$.
-The Lean formalization works with the Until/Since basis throughout --- the paper's language embedding $cal(L) subset.eq cal(L)^+$ is unconditional (@sec:conservative-extension in the Frame Classes chapter gives the finer, *not* unconditional, proof-system conservativity status between *TM* and *TM*#super[+]) --- under which $H$, $G$, $F$, and $P$ become derived operators.
+This Since/Until basis is the book's language throughout: the one-place tense operators $P$, $F$, $H$, and $G$ arise as derived operators below.
 
 == Derived Operators
 
@@ -104,15 +98,26 @@ The following operators are defined in terms of the primitives; each equation is
 )
 
 #definition("Temporal")[
-  Following Burgess @burgess1982axioms, the one-place tense operators are defined from Until and Since with a vacuous guard:
+  The one-place tense operators are defined from Since and Until with a vacuous guard:
   $
-    F phi.alt &:= U(phi.alt, top) \
-    P phi.alt &:= S(phi.alt, top) \
-    G phi.alt &:= not F not phi.alt \
+    P phi.alt &:= top #snce phi.alt \
+    F phi.alt &:= top #untl phi.alt \
     H phi.alt &:= not P not phi.alt \
+    G phi.alt &:= not F not phi.alt \
     triangle.stroked.t phi.alt &:= H phi.alt and phi.alt and G phi.alt \
     triangle.stroked.b phi.alt &:= P phi.alt or phi.alt or F phi.alt
   $
+]#footnote[The tense-primitive sublanguage --- taking the one-place $H$ and $G$ as primitive and lacking Since and Until --- embeds into the full language under these definitions. That sublanguage, and the proof system axiomatized over it, is a deferred subsystem of this book: the Frame Classes chapter's conservativity note and the back matter's axiom map record its intended development.]
+
+// CONFIRM(lean): Formula.prev (bot snce-guard-first) and Formula.next (bot untl-guard-first) exist as def abbreviations
+//   in Syntax/Formula.lean with unfold lemmas matching the discrete-frame characterization stated below.
+#definition("Next and Previous")[
+  Over discrete temporal orders, the one-step operators are defined with an unsatisfiable guard:
+  $
+    "Prev" phi.alt &:= bot #snce phi.alt \
+    "Next" phi.alt &:= bot #untl phi.alt
+  $
+  Since no time can lie strictly between the witness and now while $bot$ holds there, the witness must be an immediate neighbor: over discrete frames $"Next" phi.alt$ holds exactly when $phi.alt$ holds at the immediate successor, and $"Prev" phi.alt$ exactly when $phi.alt$ holds at the immediate predecessor. Over a dense order the guard is never dischargeable and both operators are unsatisfiable, so their intended reading is specific to the discrete frame classes.
 ]
 
 #figure(
@@ -124,10 +129,10 @@ The following operators are defined in terms of the primitives; each equation is
       [*Symbol*], [*Name*], [*Lean*], [*Reading*],
     ),
     table.hline(),
-    [$F phi.alt$], [Sometime future], [`someFuture`], ["it is going to be that $phi.alt$"],
-    [$P phi.alt$], [Sometime past], [`somePast`], ["it has been that $phi.alt$"],
-    [$G phi.alt$], [Always future], [`allFuture`], ["it is always going to be that $phi.alt$"],
-    [$H phi.alt$], [Always past], [`allPast`], ["it has always been that $phi.alt$"],
+    [$P phi.alt$], [Sometime past], [`somePast`], ["it has been $phi.alt$"],
+    [$F phi.alt$], [Sometime future], [`someFuture`], ["it is going to be $phi.alt$"],
+    [$H phi.alt$], [Always past], [`allPast`], ["it has always been $phi.alt$"],
+    [$G phi.alt$], [Always future], [`allFuture`], ["it is always going to be $phi.alt$"],
     [$triangle.stroked.t phi.alt$], [Always], [`always`], ["always $phi.alt$"],
     [$triangle.stroked.b phi.alt$], [Sometimes], [`sometimes`], ["sometimes $phi.alt$"],
     table.hline(),
@@ -135,7 +140,7 @@ The following operators are defined in terms of the primitives; each equation is
   caption: none,
 )
 
-Because $F$, $P$, $G$, and $H$ are `def` abbreviations rather than constructors, they unfold definitionally; the semantics chapter gives their truth conditions as derived characterizations.
+Because $P$, $F$, $H$, and $G$ are `def` abbreviations rather than constructors, they unfold definitionally; the semantics chapter gives their truth conditions as derived characterizations.
 
 == Temporal Duality
 
@@ -148,10 +153,10 @@ The `swapTemporal` function exchanges past and future operators.
     chevron.l S chevron.r bot &= bot \
     chevron.l S chevron.r (phi.alt arrow.r psi) &= (chevron.l S chevron.r phi.alt arrow.r chevron.l S chevron.r psi) \
     chevron.l S chevron.r square.stroked phi.alt &= square.stroked chevron.l S chevron.r phi.alt \
-    chevron.l S chevron.r U(phi.alt, psi) &= S(chevron.l S chevron.r phi.alt, chevron.l S chevron.r psi) \
-    chevron.l S chevron.r S(phi.alt, psi) &= U(chevron.l S chevron.r phi.alt, chevron.l S chevron.r psi)
+    chevron.l S chevron.r (phi.alt #snce psi) &= chevron.l S chevron.r phi.alt #untl chevron.l S chevron.r psi \
+    chevron.l S chevron.r (phi.alt #untl psi) &= chevron.l S chevron.r phi.alt #snce chevron.l S chevron.r psi
   $
-  On the derived operators this exchanges $G$ with $H$ and $F$ with $P$.
+  On the derived operators this exchanges $H$ with $G$ and $P$ with $F$.
 ]
 
 #theorem("Involution")[
