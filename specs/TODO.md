@@ -1,19 +1,19 @@
 ---
-next_project_number: 445
+next_project_number: 448
 ---
 
 # TODO
 
 ## Task Order
 
-*Updated 2026-08-13. Generated from state.json dependency graph.*
+*Updated 2026-08-17. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,193,231,257,298,413,415,417,419,421,423,424,437,440 | -- | completeness, decidability, frame-extensions, ... |
-| 2 | 178,219,282,296,422,425,436,441 | 193,231,298,421,423,437,440 | decidability, formula-refactor, dataset-enhancement, ... |
-| 3 | 169,434 | 422,436 | decidability, strong_completeness |
+| 1 | 125,127,128,193,231,257,298,413,415,417,419,421,423,424,437,440,445 | -- | completeness, decidability, frame-extensions, ... |
+| 2 | 178,219,282,296,422,425,436,441,446 | 193,231,298,421,423,437,440,445 | decidability, formula-refactor, publication-quality, ... |
+| 3 | 169,434,447 | 422,436,446 | decidability, publication-quality, strong_completeness |
 | 4 | 362,432 | 169,434 | decidability, strong_completeness |
 | 5 | 433 | 432 | decidability |
 | 6 | 428 | 433 | decidability |
@@ -62,6 +62,12 @@ next_project_number: 445
 
 125 [NOT STARTED] — Implement a Jonsson-Tarski representation theorem for TM logic: e
 
+### Publication Quality
+
+445 [NOT STARTED] — Address 39 FIX: tags in `typst/FormalFoundations.typ`, each of th
+  └─ 446 [NOT STARTED] — Address 6 bare `// FIX:` tags in `typst/FormalFoundations.typ`, e
+    └─ 447 [NOT STARTED] — Address 6 substantive FIX: directives in `typst/FormalFoundations
+
 ### Automation
 
 193 [NOT STARTED] — Apply validity-intro and truth-simp macros to the soundness layer
@@ -96,6 +102,72 @@ next_project_number: 445
 ### Uncategorized
 
 ## Tasks
+
+### 447. Substantive rewrites in FormalFoundations.typ: proof repair, axiom presentation, section restructure
+- **Status**: [NOT STARTED]
+- **Task Type**: logic
+- **Topic**: publication-quality
+- **Dependencies**: Task 446
+
+**Description**: Address 6 substantive FIX: directives in `typst/FormalFoundations.typ`. Unlike the footnote and commented-block restorations, these call for new mathematical exposition, grounded in the source paper at `/home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex`.
+
+- `:244` — The Extension proof is inadequate. Repair it by including the lemmas it needs to cite, drawing on `possible_worlds.tex` where these results are established.
+- `:267` — The Task Topology definition needs expansion for readability, including indented definitions in the same style as the definitions above it.
+- `:353` — Indent the axioms and formalize all of them to improve readability.
+- `:362` — The S5 / BX axiom presentation is unreadable and must be expanded so the document is self-contained rather than requiring the reader to look the axioms up elsewhere.
+- `:369` — Everything in the remainder of the proof-systems section is inadequate. Present what is carefully developed in `possible_worlds.tex`, giving a systematic account of the various proof systems with each clearly defined.
+- `:393` — Replace the section introduction. Avoid platitudes; give a brief, concrete overview of what the section covers.
+
+**Reference grounding**: `/home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex` is the authoritative source for the proof-system definitions and the lemmas the Extension proof depends on. Transcribe faithfully rather than reconstructing from memory.
+
+**Verification**: `typst compile typst/FormalFoundations.typ` must succeed; every axiom named must be stated in full; the Extension proof must cite lemmas that are actually present in the document or in the cited source.
+
+**Important**: When making changes, remove the FIX: tags from the source file.
+
+---
+
+### 446. Restore or retire 6 commented-out prose/proof blocks in FormalFoundations.typ
+- **Status**: [NOT STARTED]
+- **Task Type**: logic
+- **Topic**: publication-quality
+- **Dependencies**: Task 445
+
+**Description**: Address 6 bare `// FIX:` tags in `typst/FormalFoundations.typ`, each marking a block of commented-out prose or proof text that must be restored as live document text, rewritten, or deleted.
+
+Tag locations (line numbers as of scan) and their commented-out content:
+
+- `:214` — the proof of the Nullity lemma ($w arrow.r.double.long_(0) w$), which argues from *Seriality* at $x = 0$.
+- `:257` — prose on the Step Lemma being the sole application site of *Spherical*, with Extension its sole consumer, plus the footnote at `lem:step` and the observation that Extension and Occurrence are ZFC theorems while Nullity is not; this localization is what makes *Spherical* the identified obstruction of the representation section.
+- `:263` — prose stating the cones form a basis for a topology on world states and that the topology is separated.
+- `:277` — block following the Separation theorem (T1, hence R0).
+- `:323` — block following the BL/BL+ semantics definition.
+- `:342` — block following the frame-validity and logical-consequence definitions.
+
+For each, decide restore / rewrite / delete, apply, and remove the FIX: tag.
+
+**Verification**: `typst compile typst/FormalFoundations.typ` must succeed; restored proofs must be mathematically correct and consistent with the surrounding definitions.
+
+**Important**: When making changes, remove the FIX: tags from the source file.
+
+---
+
+### 445. Restore or retire 39 commented-out footnotes in FormalFoundations.typ
+- **Status**: [NOT STARTED]
+- **Task Type**: logic
+- **Topic**: publication-quality
+- **Dependencies**: None
+
+**Description**: Address 39 FIX: tags in `typst/FormalFoundations.typ`, each of the form `] // FIX: #footnote[...]` trailing a definition, lemma, theorem, or corollary block. Each commented-out footnote carries either a paper anchor (`def:BLplus-language`, `def:temporal-order`, `def:task-relation`, `def:directed`, `def:frame`, `lem:nullity`, `def:world-history`, `thm:extension`, `cor:occurrence`, `def:task-topology`, `app:topology-t1`/`app:topology-r0`, `def:BL-model`, `def:BL-semantics`/`def:BLplus-semantics`, `def:frame-properties`, `def:frame-validity`/`def:logical-consequence`, `def:S5`, `def:BX`, `thm:TM-soundness`, `app:discrete`/`app:dense`/`app:complete`, `cor:tm-completeness`, `def:TMplus`, `cor:tm-decidability`, `def:strongest`, `thm:exist`, `lem:uniq`/`thm:s4`/`thm:sym`, `sub:Extension`) with an `@brastmckie2026possibleworlds` citation, or a Lean source reference (`Metalogic/Core/MaximalConsistent.lean`, `Metalogic/Bundle/BFMCS.lean`, `Metalogic/BXCanonical/Chronicle/ChronicleConstruction.lean`, `WeakCanonical/Transfer.lean`, `IntegerModel/GoodStructures.lean`, `RealModel/DoetsTheorem.lean`, `Metalogic/Algebraic/*`).
+
+For each, decide whether the footnote should be restored as live document text, folded into the surrounding prose, or deleted, then apply that decision and remove the FIX: tag.
+
+Tag locations (line numbers as of scan): 149, 178, 191, 196, 211, 213, 238, 242, 255, 274, 276, 305, 321, 333, 340, 359, 367, 409, 418, 434, 448, 488, 505, 511, 523, 554, 575, 663, 691, 714, 739, 832, 841, 855, 883, 885, 891, 902, 944.
+
+**Verification**: `typst compile typst/FormalFoundations.typ` must succeed and all `@`-references and bibliography keys must resolve.
+
+**Important**: When making changes, remove the FIX: tags from the source file.
+
+---
 
 ### 444. Overhaul formalfoundations presentation
 - **Status**: [COMPLETED]

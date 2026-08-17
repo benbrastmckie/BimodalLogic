@@ -4,7 +4,7 @@
     "total_tasks": 29,
     "last_sync": "2026-06-08T03:09:30Z"
   },
-  "next_project_number": 445,
+  "next_project_number": 448,
   "active_projects": [
     {
       "project_number": 444,
@@ -1449,6 +1449,39 @@
       "next_artifact_number": 1,
       "session_id": "sess_1786602947_2f48be_443",
       "completion_summary": "Authored typst/FormalFoundations.typ, a new standalone ~17-page Typst research report on the formal foundations of bimodal TM logic (completeness and representation), covering the compressed system, unsoftened completeness/decidability status, the three axiomatization pain points (temporal-axiom contingency, split-validity incompleteness with both proofs given in full, and the higher-order cost of axiomatizing the strongest objective modality), the completeness construction as actually implemented and measured, and a corrected, reasoned account of early representation work and the way forward. All 10 plan phases completed; the page-count target was not met and is recorded as a reasoned exclusion."
+    },
+    {
+      "project_number": 445,
+      "project_name": "restore_commented_footnotes_formalfoundations",
+      "status": "not_started",
+      "task_type": "logic",
+      "title": "Restore or retire 39 commented-out footnotes in FormalFoundations.typ",
+      "description": "Address 39 FIX: tags in `typst/FormalFoundations.typ`, each of the form `] // FIX: #footnote[...]` trailing a definition, lemma, theorem, or corollary block. Each commented-out footnote carries either a paper anchor (`def:BLplus-language`, `def:temporal-order`, `def:task-relation`, `def:directed`, `def:frame`, `lem:nullity`, `def:world-history`, `thm:extension`, `cor:occurrence`, `def:task-topology`, `app:topology-t1`/`app:topology-r0`, `def:BL-model`, `def:BL-semantics`/`def:BLplus-semantics`, `def:frame-properties`, `def:frame-validity`/`def:logical-consequence`, `def:S5`, `def:BX`, `thm:TM-soundness`, `app:discrete`/`app:dense`/`app:complete`, `cor:tm-completeness`, `def:TMplus`, `cor:tm-decidability`, `def:strongest`, `thm:exist`, `lem:uniq`/`thm:s4`/`thm:sym`, `sub:Extension`) with an `@brastmckie2026possibleworlds` citation, or a Lean source reference (`Metalogic/Core/MaximalConsistent.lean`, `Metalogic/Bundle/BFMCS.lean`, `Metalogic/BXCanonical/Chronicle/ChronicleConstruction.lean`, `WeakCanonical/Transfer.lean`, `IntegerModel/GoodStructures.lean`, `RealModel/DoetsTheorem.lean`, `Metalogic/Algebraic/*`).\n\nFor each, decide whether the footnote should be restored as live document text, folded into the surrounding prose, or deleted, then apply that decision and remove the FIX: tag.\n\nTag locations (line numbers as of scan): 149, 178, 191, 196, 211, 213, 238, 242, 255, 274, 276, 305, 321, 333, 340, 359, 367, 409, 418, 434, 448, 488, 505, 511, 523, 554, 575, 663, 691, 714, 739, 832, 841, 855, 883, 885, 891, 902, 944.\n\n**Verification**: `typst compile typst/FormalFoundations.typ` must succeed and all `@`-references and bibliography keys must resolve.\n\n**Important**: When making changes, remove the FIX: tags from the source file.",
+      "topic": "publication-quality"
+    },
+    {
+      "project_number": 446,
+      "project_name": "restore_commented_prose_proof_blocks",
+      "status": "not_started",
+      "task_type": "logic",
+      "title": "Restore or retire 6 commented-out prose/proof blocks in FormalFoundations.typ",
+      "description": "Address 6 bare `// FIX:` tags in `typst/FormalFoundations.typ`, each marking a block of commented-out prose or proof text that must be restored as live document text, rewritten, or deleted.\n\nTag locations (line numbers as of scan) and their commented-out content:\n\n- `:214` — the proof of the Nullity lemma ($w arrow.r.double.long_(0) w$), which argues from *Seriality* at $x = 0$.\n- `:257` — prose on the Step Lemma being the sole application site of *Spherical*, with Extension its sole consumer, plus the footnote at `lem:step` and the observation that Extension and Occurrence are ZFC theorems while Nullity is not; this localization is what makes *Spherical* the identified obstruction of the representation section.\n- `:263` — prose stating the cones form a basis for a topology on world states and that the topology is separated.\n- `:277` — block following the Separation theorem (T1, hence R0).\n- `:323` — block following the BL/BL+ semantics definition.\n- `:342` — block following the frame-validity and logical-consequence definitions.\n\nFor each, decide restore / rewrite / delete, apply, and remove the FIX: tag.\n\n**Verification**: `typst compile typst/FormalFoundations.typ` must succeed; restored proofs must be mathematically correct and consistent with the surrounding definitions.\n\n**Important**: When making changes, remove the FIX: tags from the source file.",
+      "topic": "publication-quality",
+      "dependencies": [
+        445
+      ]
+    },
+    {
+      "project_number": 447,
+      "project_name": "substantive_rewrites_formalfoundations",
+      "status": "not_started",
+      "task_type": "logic",
+      "title": "Substantive rewrites in FormalFoundations.typ: proof repair, axiom presentation, section restructure",
+      "description": "Address 6 substantive FIX: directives in `typst/FormalFoundations.typ`. Unlike the footnote and commented-block restorations, these call for new mathematical exposition, grounded in the source paper at `/home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex`.\n\n- `:244` — The Extension proof is inadequate. Repair it by including the lemmas it needs to cite, drawing on `possible_worlds.tex` where these results are established.\n- `:267` — The Task Topology definition needs expansion for readability, including indented definitions in the same style as the definitions above it.\n- `:353` — Indent the axioms and formalize all of them to improve readability.\n- `:362` — The S5 / BX axiom presentation is unreadable and must be expanded so the document is self-contained rather than requiring the reader to look the axioms up elsewhere.\n- `:369` — Everything in the remainder of the proof-systems section is inadequate. Present what is carefully developed in `possible_worlds.tex`, giving a systematic account of the various proof systems with each clearly defined.\n- `:393` — Replace the section introduction. Avoid platitudes; give a brief, concrete overview of what the section covers.\n\n**Reference grounding**: `/home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex` is the authoritative source for the proof-system definitions and the lemmas the Extension proof depends on. Transcribe faithfully rather than reconstructing from memory.\n\n**Verification**: `typst compile typst/FormalFoundations.typ` must succeed; every axiom named must be stated in full; the Extension proof must cite lemmas that are actually present in the document or in the cited source.\n\n**Important**: When making changes, remove the FIX: tags from the source file.",
+      "topic": "publication-quality",
+      "dependencies": [
+        446
+      ]
     }
   ],
   "artifacts": [
