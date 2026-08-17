@@ -624,7 +624,7 @@ E2 governs paper citations only.)
 - **Done when:** TM+_c labeling consistent with the metalogic chapter; conservativity box
   replaced by the deferred-subsystem note; decidability CONFIRM-guarded; gates green.
 
-### Phase 7: Back Matter and Periphery — Notes, LTL/Vlach/Frontier, Machine Appendix [NOT STARTED]
+### Phase 7: Back Matter and Periphery — Notes, LTL/Vlach/Frontier, Machine Appendix [COMPLETED]
 
 - **Goal:** Recast the notes chapter as permanent design notes; fix retired vocabulary and
   citation forms in the three periphery chapters; complete the machine appendix's frame-class
@@ -633,7 +633,7 @@ E2 governs paper citations only.)
   `typst/chapters/p3-vlach-blstar.typ`, `typst/chapters/p3-decidability-frontier.typ`,
   `typst/chapters/ax-machine-appendix.typ`
 - **Tasks:**
-  - [ ] R8a–c (directive-re-aimed): in `06-notes.typ` — "eight layers" → nine; delete
+  - [x] R8a–c (directive-re-aimed): in `06-notes.typ` — "eight layers" → nine; delete
     §Completeness Status's old-corollary quotation and replace the section with a one-line
     pointer to the metalogic chapter's target statements (no parallel status prose); tighten
     §Language Basis to the deferred-subsystem framing with its conservativity sentence
@@ -642,17 +642,17 @@ E2 governs paper citations only.)
     mirrors, CPL layer, argument-order-free notational facts) are design records and stay;
     sorry-count displays and "current status" prose go (CONFIRM comments where load-bearing,
     reusing Phase 5's census CONFIRM shape).
-  - [ ] R8d–e (source: `sub:RestrictedModalities`; finding E3; re-aimed by Decision E2):
+  - [x] R8d–e (source: `sub:RestrictedModalities`; finding E3; re-aimed by Decision E2):
     DELETE the Restricted-Modalities paper citation outright (do not convert it to anchor
     form) — if the sentence needs provenance, carry it as `// CONFIRM(paper):
     sub:RestrictedModalities develops the restricted-modality material this note mentions`;
     keep the 12-schema TM correspondence table, labeled explicitly as the deferred
     subsystem's axiom map.
-  - [ ] R10 (finding F4): in `p3-ltl-to-tm.typ` — fix the retired axiom vocabulary (the
+  - [x] R10 (finding F4): in `p3-ltl-to-tm.typ` — fix the retired axiom vocabulary (the
     embedding frame satisfies Compositionality/Seriality/Limit/Spherical); notation sweep of
     the translation table and Next discussion; shrink §The Conservativity Bridge to match
     Phase 6's deferred-subsystem note (pointer, not a restatement).
-  - [ ] R11 (finding E3, F5; re-aimed by Decision E2): in `p3-vlach-blstar.typ` and
+  - [x] R11 (finding E3, F5; re-aimed by Decision E2): in `p3-vlach-blstar.typ` and
     `p3-decidability-frontier.typ` — DELETE all paper citations outright (line-number,
     section-number, and anchor forms alike); the chapters present their material as the
     book's own, with `// CONFIRM(paper):` comments (anchors un-backticked) carrying
@@ -662,7 +662,7 @@ E2 governs paper citations only.)
     shape (CONFIRM-guarded target, dead citation removed); notation sweep where S/U displays
     appear. No content rewrites in the Vlach chapter beyond citation removal (finding F5:
     aligned).
-  - [ ] R12 (finding C1): in `ax-machine-appendix.typ` — add `Dedekind` to the `frame_class`
+  - [x] R12 (finding C1): in `ax-machine-appendix.typ` — add `Dedekind` to the `frame_class`
     prose enumeration. Add
     `// CONFIRM(lean): the machine appendix JSONL's since/until argument fields reflect guard-first constructor order`
     above the field-schema prose (the JSONL regenerates from Lean when the migration lands;

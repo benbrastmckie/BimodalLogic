@@ -33,7 +33,7 @@ LTL is interpreted over traces: $omega$-sequences of states (or of atomic-propos
 
 - *Time domain.* A trace is indexed by $NN$; a *TM* history $tau : X arrow.r W$ has a convex domain $X$ in an arbitrary totally ordered abelian group of durations -- discrete, dense, or neither -- and may be bi-infinite or partial.
 - *Initial point.* A trace begins somewhere, and LTL validity is anchored at that initial position; a task-frame history has no distinguished start, and *TM* validity is floating -- quantified over all frames, histories, _and_ times.
-- *The underlying system.* A task frame is itself a labeled transition system in which the transition labels are durations carrying group structure @brastmckie2026possibleworlds @baierkatoen2008, so the model-checking reading of "system plus runs" transfers directly: a history is a labeled run of the system.
+- *The underlying system.* A task frame is itself a labeled transition system in which the transition labels are durations carrying group structure @baierkatoen2008, so the model-checking reading of "system plus runs" transfers directly: a history is a labeled run of the system.
   What LTL calls the set of traces of a system, *TM* constructs as the history space $H_(cal(F))$ -- and then quantifies over it with $square.stroked$ in the object language.
 
 The semantics chapter (@sec:truth) gives the full truth conditions; nothing in this comparison modifies them.
@@ -51,7 +51,7 @@ Against the shared Until vocabulary, four conventions differ, each adjudicated e
     table.header([*Convention*], [*LTL*], [*TM*]),
     table.hline(),
     [Until reading], [Non-strict (present included)], [Strict/irreflexive (@sec:design-choices)],
-    [Next step], [Primitive operator], [Derived: `next`/`prev` as $phi.alt thin U thin bot$ / $phi.alt thin S thin bot$, Burgess convention, unfold lemmas `next_unfold`/`prev_unfold` (frame-classes chapter)],
+    [Next step], [Primitive operator], [Derived: $"Prev"$/$"Next"$ as $bot #snce phi.alt$ / $bot #untl phi.alt$, unfold lemmas `prev_unfold`/`next_unfold` (frame-classes chapter)],
     [Past operators], [Absent (future-only)], [Present: Since is primitive alongside Until],
     [Validity], [Anchored at the initial position], [Floating over all frames, histories, and times],
     table.hline(),
@@ -64,7 +64,7 @@ The future-only convention of LTL is principled, not an oversight: over discrete
 == Translating LTL into TM
 
 The convention deltas above compose into a systematic translation.
-An LTL trace -- an $omega$-sequence of states -- embeds into the task-frame setting as a history over the duration group $ZZ$ with convex domain ${ x : x gt.eq 0 }$, realized in the frame whose task relation is trivial: the identity at duration $0$ and the total relation at every other duration (this relation satisfies the nullity, reflection, and compositionality constraints outright).
+An LTL trace -- an $omega$-sequence of states -- embeds into the task-frame setting as a history over the duration group $ZZ$ with convex domain ${ x : x gt.eq 0 }$, realized in the frame whose task relation is trivial: the identity at duration $0$ and the total relation at every other duration (this relation satisfies the *Compositionality*, *Seriality*, *Limit*, and *Spherical* frame axioms outright).
 Position $i$ of the trace becomes time $i$ of the history, and atoms are false at times outside the domain, matching the semantics chapter's convention.
 On formulas, each non-strict LTL operator has a strict *TM* rendering:
 
@@ -76,8 +76,8 @@ On formulas, each non-strict LTL operator has a strict *TM* rendering:
     table.hline(),
     table.header([*LTL operator*], [*TM rendering*], [*Comment*]),
     table.hline(),
-    [$X phi.alt$], [$U(phi.alt, bot)$], [`next`, exact over discrete frames],
-    [$psi thin U^"ns" phi.alt$], [$phi.alt or (psi and U(phi.alt, psi))$], [Non-strict Until: witness now, or strictly later with the guard from now],
+    [$X phi.alt$], [$bot #untl phi.alt$], [$"Next"$, exact over discrete frames],
+    [$psi thin U^"ns" phi.alt$], [$phi.alt or (psi and (psi #untl phi.alt))$], [Non-strict Until: witness now, or strictly later with the guard from now],
     [$F^"ns" phi.alt$], [$phi.alt or F phi.alt$], [Reflexive "eventually"],
     [$G^"ns" phi.alt$], [$phi.alt and G phi.alt$], [Reflexive "henceforth"],
     table.hline(),
@@ -89,8 +89,8 @@ The translation is truth-preserving position by position, and two worked example
 
 *Next and self-duality.*
 LTL validates $not X phi.alt arrow.l.r X not phi.alt$: every trace position has exactly one successor, so "not: $phi.alt$ next" and "next: not $phi.alt$" coincide.
-In *TM* the rendering $U(phi.alt, bot)$ makes this equivalence a *frame-class* fact rather than a logical one.
-Over $ZZ$, $U(phi.alt, bot)$ holds at $x$ exactly when $phi.alt$ holds at $x + 1$, and self-duality follows; over a dense order, no point has an immediate successor, so $U(phi.alt, bot)$ is false for *every* $phi.alt$ -- both $X phi.alt$ and $X not phi.alt$ fail while $not X phi.alt$ holds.
+In *TM* the rendering $bot #untl phi.alt$ makes this equivalence a *frame-class* fact rather than a logical one.
+Over $ZZ$, $bot #untl phi.alt$ holds at $x$ exactly when $phi.alt$ holds at $x + 1$, and self-duality follows; over a dense order, no point has an immediate successor, so $bot #untl phi.alt$ is false for *every* $phi.alt$ -- both $X phi.alt$ and $X not phi.alt$ fail while $not X phi.alt$ holds.
 The equivalence is thus valid over discrete frames and invalid over dense ones: what LTL builds into its models, *TM* exposes as a frame-class distinction.
 
 *Anchoring.*
@@ -103,13 +103,13 @@ The frame-class machinery is exactly the instrument for that check -- renderings
 The many-dimensional modal logic literature provides the right vocabulary for the combination itself @gabbay2003manyvalued.
 Two stock recipes combine a temporal logic with S5: the _fusion_, which imposes no interaction between the operator families, and the _product_, which imposes full commutation interaction by evaluating at pairs of a time and a world.
 *TM* is neither.
-It is more than the fusion, because MF (and the derived TF) are theorems relating $square.stroked$ to the temporal operators; and it is not literally the product of a linear tense logic with S5, because its interaction principles are not _imposed_ on a two-dimensional grid of evaluation points -- they _hold_ in virtue of the construction of the history space, whose time-shift invariance makes perpetuity come out valid @brastmckie2026possibleworlds.
+It is more than the fusion, because MF (and the derived TF) are theorems relating $square.stroked$ to the temporal operators; and it is not literally the product of a linear tense logic with S5, because its interaction principles are not _imposed_ on a two-dimensional grid of evaluation points -- they _hold_ in virtue of the construction of the history space, whose time-shift invariance makes perpetuity come out valid.
 In the general product landscape such principles must be stipulated frame condition by frame condition; here a single semantic decision -- worlds are shift-invariant families of task-respecting functions -- yields them wholesale.
 This distinction matters again at the decidability frontier, since products and fusions have sharply different computational profiles -- the final chapter of this part surveys that landscape.
 
 == Linear, Branching, and Hyper
 
-The paper positions *TM* inside the classical triangle of linear-time, branching-time, and hyper logics @brastmckie2026possibleworlds, and the coordinates are worth restating.
+*TM* sits inside the classical triangle of linear-time, branching-time, and hyper logics, and the coordinates are worth restating.
 Individual possible worlds are linearly ordered, as in LTL @pnueli1977; the set of possible worlds passing through a given world state branches, as in CTL @clarke1982; and CTL#super[$star$] combines path quantifiers with temporal operators freely @emerson1986, in the debate initiated by Lamport @lamport1980 and pressed to its "final showdown" by Vardi @vardi2001.
 The key difference from the branching-time family is that $square.stroked$ quantifies over _all_ possible worlds in $H_(cal(F))$ at the evaluation time, rather than employing the state-relativized path quantifiers $A$ and $E$ of CTL; it is precisely this unrestricted quantification, combined with time-shift invariance, that validates perpetuity.
 HyperLTL provides the sharpest contrast: it extends LTL with quantifiers $forall pi$ and $exists pi$ that bind trace variables in the object language @clarkson2014, and that binding power makes its satisfiability problem undecidable @finkbeiner2016.
@@ -126,6 +126,5 @@ When the state space is finite and durations are the integers, the complete hist
 == The Conservativity Bridge
 
 One last bookkeeping point lets this chapter compare *TM* with LTL operator-by-operator without changing systems mid-argument.
-The *language* embedding is unconditional: $op("BL")$ (H/G-primitive) embeds into $op("BL")^+$ (Until/Since-primitive) with the tense fragment recovered inside it, and the book's Lean system works in the Until/Since basis natively -- `untl` and `snce` are the primitive constructors, with $H$/$G$/$F$/$P$ derived (see the Language Basis note of @sec:notes) -- so the LTL-style operator vocabulary is the native one here.
-The *proof-system* conservativity between *TM* and *TM*#super[+] is a different, weaker matter, given precisely at @sec:conservative-extension: the backward direction holds unconditionally, but the forward direction fails for the base case and for the discrete extension, and remains open for the dense and complete extensions -- no Lean module formalizes an unconditional conservative-extension theorem, and none should be cited as if one existed.
-The comparison in this chapter rests only on the unconditional language embedding, not on the weaker proof-system conservativity.
+The *language* embedding is unconditional: the tense-primitive sublanguage is recovered inside the book's Since/Until language, whose `snce` and `untl` are the primitive constructors with $P$/$F$/$H$/$G$ derived (see the Language Basis note of @sec:notes) -- so the LTL-style operator vocabulary is the native one here.
+Proof-system conservativity for the tense-primitive subsystem is that deferred subsystem's own matter, treated at @sec:conservative-extension; the comparison in this chapter rests only on the unconditional language embedding.

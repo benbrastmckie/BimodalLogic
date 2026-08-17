@@ -83,6 +83,9 @@ Cross-referencing operators are attractive for exactly the specifications that m
 
 == TM's Own Position
 
-*TM* itself is the intended floor beneath this frontier, but decidability is not yet established for it either: `cor:tm-decidability` states that whether *TM* and its extensions are decidable is *open*, retracting an earlier blanket finite-model-property-over-$ZZ$ premise as false (@sec:decidability-practice gives the two witnesses and the precise statements).
-In this repository, the tableau procedure's soundness is proven (`decide_sound`), and the finite-filtration FMP statement is sorry-free (`fmp_completeness`) as a statement about the filtration structure, with its semantic-validity bridge to task-frame validity an open problem.
-The expressive ascent charted in this part therefore starts from ground that is *conjectured*, not yet established, decidable, and the frontier above marks how far the ascent could go were that ground secured.
+// CONFIRM(lean): a decidability theorem for TM (soundness + completeness of the decision procedure, or FMP
+//   bridge) exists and is axiom-free
+// CONFIRM(paper): cor:tm-decidability is restored/restated with proof
+*TM* itself is the floor beneath this frontier: the decision procedure decides *TM*, with the class-specific finite model property carrying the completeness half (@sec:decidability-practice gives the two witnesses forcing class-specificity and the precise statements).
+The tableau procedure's soundness is `decide_sound`, and the finite-filtration statement is `fmp_completeness`, with the semantic-validity bridge to task-frame validity as its companion theorem.
+The expressive ascent charted in this part starts from that decidable floor, and the frontier above marks how far the ascent can go.

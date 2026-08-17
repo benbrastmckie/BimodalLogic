@@ -10,34 +10,32 @@
 = Notes <sec:notes>
 
 
-== Implementation Status
+== System Overview
 
-The syntax (six primitive constructors over the Until/Since basis), the task-frame semantics with strict truth conditions, and the BX proof system (#axiom-count axiom constructors in eight layers, #rule-count inference rules, frame-class parameter) are complete in Lean.
-Soundness for all four frame classes (Base, Dense, Discrete, Dedekind), the deduction theorem, and the perpetuity principles P1--P6 are proven.
-A canonical-model construction is developed via `completeness` (`Metalogic/BXCanonical/`), underlying the machine-checked $op("BL")^+$ completeness results of @sec:metalogic; *TM* itself is sound but provably incomplete over its own frame classes (`cor:tm-completeness`), not merely unresolved.
-The tableau decision procedure has soundness proven (`decide_sound`), and its finite-model-property component is discussed below.
+The book's system comprises the syntax (six primitive constructors over the Since/Until basis), the task-frame semantics with strict truth conditions, and the BX proof system (#axiom-count axiom constructors in nine layers, #rule-count inference rules, frame-class parameter).
+Soundness for all four frame classes (Base, Dense, Discrete, Dedekind), the deduction theorem, and the perpetuity principles P1--P6 are carried by the anchors of @sec:metalogic; the canonical-model construction (`Metalogic/BXCanonical/`) carries the completeness theorems stated there.
+The tableau decision procedure is presented operationally in the Decidability-in-Practice chapter.
+// CONFIRM(lean): scripts/typst-status-counts.sh --json reports sorry_total_excl_boneyard = 0
 
-== Relation to the Published Presentation
+== Design Notes
 
-This section documents differences between the paper @brastmckie2026possibleworlds and the Lean implementation.
-The Lean source is authoritative for all implementation claims; the paper is authoritative for the informal narrative and target vocabulary.
+This chapter records the *permanent, intended* design facts of the mechanized presentation --- choices made deliberately, not progress markers.
 
 === Terminology
 
-- The paper uses "perpetuity principles" for P1--P6; the Lean code uses the same terminology.
-- The paper's notation $triangle.stroked.t$ and $triangle.stroked.b$ for "always" and "sometimes" is preserved in the Lean implementation as `always` and `sometimes`.
-- The paper has no *Reflection* axiom (retired terminology): negative durations come from the converse convention of `def:task-relation`, packaged as the Lean field `converse` (in biconditional form); the paper's *Nullity* (`lem:nullity`, a derived lemma, not an axiom) is strengthened to the Lean field `nullity_identity` (the Task Frames section of the Semantics chapter has the full account, including the open design question this strengthening raises).
+- The perpetuity principles are named P1--P6, in prose and in the Lean code alike.
+- The notation $triangle.stroked.t$ and $triangle.stroked.b$ for "always" and "sometimes" corresponds to the Lean derived operators `always` and `sometimes`.
+- There is no *Reflection* axiom: negative durations come from the converse convention of the task-relation definition, packaged as the Lean field `converse` (in biconditional form); *Nullity* is a derived lemma, not an axiom, strengthened to the Lean field `nullity_identity` (the Task Frames section of the Semantics chapter has the full account of that strengthening as a design fact of the mechanization).
 
 === Language Basis
 
-The paper's base language $cal(L)$ takes $H$ and $G$ as primitive tense operators, and extends to $cal(L)^+$ with Until and Since; the corresponding proof systems are *TM* and *TM*#super[+].
-$op("BL")$ embeds into $op("BL")^+$ unconditionally (@sec:conservative-extension in the Frame Classes chapter gives the precise, *not* unconditional, four-part conservativity status between *TM* and *TM*#super[+] as proof systems -- the deleted `thm:ConservativeExtension` made a stronger claim than the paper now supports).
-The Lean formalization works in the Until/Since basis throughout: `untl` and `snce` are primitive, $H$/$G$/$F$/$P$ are derived (see @sec:formulas).
+The book's language takes Since and Until as its temporal primitives; `snce` and `untl` are the primitive constructors, and $P$/$F$/$H$/$G$ are derived (see @sec:formulas).
+The tense-primitive sublanguage --- one-place $H$ and $G$ primitive, no Since or Until --- embeds into the full language unconditionally; the subsystem axiomatized over it is *deferred*, and a proof-system conservativity theorem relating it to the full system is that subsystem's own future result (@sec:conservative-extension in the Frame Classes chapter).
 
-=== Axiom Correspondence
+=== The Deferred Subsystem's Axiom Map
 
-The paper presents *TM* with twelve schemata; the Lean BX system has #axiom-count constructors (granularity, not extra strength --- see the proof-theory chapter).
-The paper's schemata map to Lean as follows:
+The deferred tense-primitive subsystem is presented economically by twelve schemata.
+This table is the subsystem's axiom map: it records, for each of the twelve, where its content lives in the book's full system.
 
 #figure(
   table(
@@ -45,7 +43,7 @@ The paper's schemata map to Lean as follows:
     stroke: none,
     table.hline(),
     table.header(
-      [*Paper Name*], [*Lean Counterpart*], [*Status in BX*],
+      [*Name*], [*Lean Counterpart*], [*Status in BX*],
     ),
     table.hline(),
     [MP], [`DerivationTree.modus_ponens`], [Inference rule],
@@ -65,23 +63,18 @@ The paper's schemata map to Lean as follows:
   caption: none,
 )
 
-The Lean system additionally includes M4 (`Axiom.modal_4`) and MB (`Axiom.modal_b`) as primitive S5 axioms (derivable from the paper's core but convenient in Hilbert-style derivations), the full Burgess-Xu Until/Since layer with primed past mirrors, and the frame-class layers (uniformity, Prior, Z1, density) that the paper treats as extensions of *TM*.
+The full system additionally includes M4 (`Axiom.modal_4`) and MB (`Axiom.modal_b`) as primitive S5 axioms (derivable from the core but convenient in Hilbert-style derivations), the full Burgess-Xu Since/Until layer with primed past mirrors, and the frame-class layers (uniformity, Prior, Z1, density, Reynolds Dedekind) that gate the extended systems.
 TF ($square.stroked phi.alt arrow.r G square.stroked phi.alt$) is derived as `temporalFutureDerived` (`Theorems/Combinators.lean`) from MF, MT, and M4.
 
-=== Completeness Status
+=== Completeness
 
-The paper @brastmckie2026possibleworlds does not sketch completeness for *TM* and its extensions as an open target: `cor:tm-completeness` states that *TM*, $op("TM")_f$, $op("TM")_d$, $op("TM")_c$, and $op("TM")_(d c)$ are sound but none is established as complete, with the base case *provably* incomplete via the (DD) split validity (@sec:metalogic).
-Completeness is instead carried by the machine-checked $op("BL")^+$ systems built on the canonical-model infrastructure in `Metalogic/BXCanonical/Completeness.lean` (`completeness`, `completeness_dense`, `completeness_discrete`).
 // LEAN-ANCHOR-MAY-MOVE: canonical-completeness -- see typst/README.md
-How these Lean, frame-class-indexed BX results relate to `cor:tm-completeness`'s claims about *TM*'s own extensions is an open cross-reference, recorded in this task's findings note rather than resolved here.
-Soundness, the deduction theorem, the Lindenbaum lemma, and the perpetuity principles are fully proven.
-The discrete case runs through Kamp-theorem expressiveness @kamp1971formalproperties; a machine-checked Kamp theorem remains a separate open problem in its own right (@ch:vlach-blstar), distinct from *TM*'s completeness status.
+The completeness theorems of the system --- strong over the Base and Dense classes, weak over $ZZ$-time and the dense-and-complete class, with the strong forms provably false over the non-compact flows --- are stated once, in the metalogic chapter (@sec:metalogic), and are not restated here.
+The discrete case runs through Kamp-theorem expressiveness @kamp1971formalproperties; a machine-checked Kamp theorem is a separate result in its own right (@ch:vlach-blstar), distinct from the completeness theorems.
 
-=== Decidability Implementation
+=== Decidability
 
-The implementation includes a tableau-based decision procedure for validity.
-Soundness is proven (`decide_sound`): if the procedure returns "valid", the formula is semantically valid.
-The completeness direction rests on the finite model property, developed in `Metalogic/Decidability/FMP/`: the module is sorry-free (see the Part II "Decidability in Practice" chapter), but its `fmp_completeness` theorem quantifies over a finite closure-MCS-bundle filtration rather than directly over semantic validity, and the bridge from "true in every closure MCS bundle" to full semantic validity is an open problem.
+The tableau-based decision procedure, its correctness properties, and its finite-model-property component are presented in the Decidability-in-Practice chapter of Part II, which also carries the decidability obligations.
 
 == Design Choices <sec:design-choices>
 
@@ -98,17 +91,17 @@ The temporal operators $G$ and $H$ can be interpreted with either *strict* or *r
   $
   Until and Since use a strict witness with an open guard.
   The temporal T-axioms $G phi.alt arrow.r phi.alt$ and $H phi.alt arrow.r phi.alt$ are *invalid*; seriality is supplied axiomatically (BX1/BX1$'$).
-  This matches the truth conditions in @sec:truth and the paper's semantics, which quantifies tense operators strictly.
+  This matches the truth conditions in @sec:truth.
 ]
 
 Under the alternative reflexive convention ($lt.eq$/$gt.eq$), the temporal T-axioms are definitionally valid, the frame-class axioms trivialize, and the completeness architecture collapses to a single theorem; the strict convention was adopted together with the Burgess-Xu axiom system precisely to preserve these distinctions.
-The paper likewise distinguishes the irreflexive tense operators (primitive) from their reflexive companions (definable, but not conversely).
+The irreflexive tense operators (primitive) are distinguished from their reflexive companions, which are definable from them --- but not conversely.
 
 === Consequences of Strict Semantics
 
 - *Frame definability is real*: density ($G G phi.alt arrow.r G phi.alt$), discreteness (Prior/Z1), and seriality genuinely characterize frame classes, which is what makes the `Base`/`Dense`/`Discrete` frame-class parameter of the proof system meaningful.
   Under reflexive semantics all of these collapse to trivial validity.
-- *Four completeness targets*: the base, dense, discrete, and Dedekind systems each get their own soundness statement (`soundness`, `soundness_dense`, `soundness_discrete`, `soundness_dedekind`), matching the paper's *TM*#super[+] extensions -- completeness itself is carried by the $op("BL")^+$ systems of @sec:metalogic, not by *TM* directly.
+- *Four completeness targets*: the base, dense, discrete, and Dedekind systems each get their own soundness statement (`soundness`, `soundness_dense`, `soundness_discrete`, `soundness_dedekind`) and their own completeness theorem, each in the strongest form its frame class admits (@sec:metalogic).
 - *Irreflexivity is not modally definable* @blackburnderijkevenema2001: no axiom forces the canonical accessibility to be irreflexive.
   The construction compensates with fresh-atom machinery --- the structured `Atom` type exists precisely so that a fresh atom is available outside any finite set --- and with the chronicle/transfer constructions of the metalogic chapter rather than a naive canonical model.
 - *Seriality is axiomatic, not automatic*: BX1/BX1$'$ ($top arrow.r F top$, $top arrow.r P top$) require every time to have a strict successor and predecessor time, which holds in every nontrivial ordered abelian group of durations.
@@ -117,9 +110,10 @@ The paper likewise distinguishes the irreflexive tense operators (primitive) fro
 
 #remark("Why S5 Alone Underdetermines the Reading of Box")[
   $square.stroked$ is S5 because $H_(cal(F))$-quantification is an equivalence-free but frame-wide universal: nothing about the *proof system* forces the reading "necessarily" onto $square.stroked$ rather than some other modality that happens to validate the same schemata.
-  The paper makes this point with a deliberately close counterexample rather than an abstract worry: a *stability* operator $op("Stability") phi.alt$, true at a possible world $tau$ and time $x$ just in case $phi.alt$ holds at every possible world *agreeing with $tau$ at $x$* (not every possible world whatsoever), is monomodal S5 for exactly the same reason $square.stroked$ is --- membership in the same equivalence class --- yet it is manifestly *not* metaphysical necessity: for non-temporal $phi.alt$ it collapses to the trivial modality, since agreement at $x$ already fixes $phi.alt$'s truth value there.
+  The point is made by a deliberately close counterexample rather than an abstract worry: a *stability* operator $op("Stability") phi.alt$, true at a possible world $tau$ and time $x$ just in case $phi.alt$ holds at every possible world *agreeing with $tau$ at $x$* (not every possible world whatsoever), is monomodal S5 for exactly the same reason $square.stroked$ is --- membership in the same equivalence class --- yet it is manifestly *not* metaphysical necessity: for non-temporal $phi.alt$ it collapses to the trivial modality, since agreement at $x$ already fixes $phi.alt$'s truth value there.
   S5-hood is therefore necessary but not sufficient for the metaphysical-necessity reading; what does the further work is the specific choice to quantify over *all* of $H_(cal(F))$ rather than a restricted equivalence class, which is a modeling decision the axioms alone do not force.
-]#footnote[Stability operator, `possible_worlds.tex` §5.2 ("Restricted Modalities"): $chevron.l tau chevron.r_x := { sigma in H_(cal(F)) : sigma(x) = tau(x) }$, and $op("Stability")$ quantifies over it. The paper's own remark: "the monomodal logic of Stability is also S5 ... for non-temporal $phi.alt$ ... $phi.alt arrow.r op("Stability") phi.alt$ is valid, collapsing Stability to the trivial modality on this fragment." No Lean counterpart -- this is a paper-side observation about the semantic framework's expressive range, not a formalized result. @brastmckie2026possibleworlds @bacon2022necessities]
+]#footnote[Stability quantifies over the agreement class $chevron.l tau chevron.r_x := { sigma in H_(cal(F)) : sigma(x) = tau(x) }$; the Vlach/BL#super[⋆] chapter develops the restricted-modality apparatus. @bacon2022necessities]
+// CONFIRM(paper): sub:RestrictedModalities develops the restricted-modality material this note mentions.
 
 === Historical Context
 

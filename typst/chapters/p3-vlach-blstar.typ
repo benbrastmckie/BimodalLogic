@@ -19,7 +19,7 @@
 
 == Why Cross-Reference?
 
-The systems developed so far -- *TM* over the tense basis and *TM*#super[+] over the Until/Since basis -- are expressive enough for a wide range of temporal-modal reasoning, yet they lack the means by which to cross reference either times or worlds @brastmckie2026possibleworlds.
+The system developed so far is expressive enough for a wide range of temporal-modal reasoning, yet it lacks the means by which to cross reference either times or worlds.
 Natural language routinely performs exactly this kind of cross-referencing.
 Consider the sentence "Once, everyone now alive hadn't yet been born."
 Its truth conditions require evaluating "now alive" at the utterance time even though the phrase sits under a past-tense operator that has shifted the evaluation time; no nesting of $P$, $F$, $S$, and $U$ reproduces this behavior, because every operator of *TM*#super[+] shifts the point of evaluation without remembering where evaluation began.
@@ -28,7 +28,9 @@ The same phenomenon arises in the world dimension: hypothetical and modal discou
 
 == The Store and Recall Operators
 
-Following @brastmckie2026possibleworlds, the point of evaluation is extended with a vector $arrow(v) = chevron.l v_1, v_2, dots chevron.r$ of stored times and a vector $arrow(mu) = chevron.l mu_1, mu_2, dots chevron.r$ of stored worlds.
+// CONFIRM(paper): sub:RestrictedModalities (and the surrounding Vlach-operator development) states the
+//   store/recall semantics, the stability operator, and the definability results this chapter presents.
+The point of evaluation is extended with a vector $arrow(v) = chevron.l v_1, v_2, dots chevron.r$ of stored times and a vector $arrow(mu) = chevron.l mu_1, mu_2, dots chevron.r$ of stored worlds.
 Four indexed families of operators read and write these registers, for each $i in NN$:
 
 #definition("Store and Recall")[
@@ -80,16 +82,17 @@ Given a world $tau in H_(cal(F))$ and time $x : D$, let $chevron.l tau chevron.r
 ]
 
 The *stability* operator $dot.square$ quantifies over the worlds occupying the same world state as the world of evaluation at the time of evaluation.
-Since intersection-at-$x$ is an equivalence relation on $H_(cal(F))$, the monomodal logic of $dot.square$ is again S5; and for non-temporal $phi.alt$, truth at $chevron.l cal(M), tau, x chevron.r$ depends only on the world state $tau(x)$, so $phi.alt arrow.r dot.square phi.alt$ is valid on that fragment -- stability collapses to the trivial modality on non-temporal formulas @brastmckie2026possibleworlds.
+Since intersection-at-$x$ is an equivalence relation on $H_(cal(F))$, the monomodal logic of $dot.square$ is again S5; and for non-temporal $phi.alt$, truth at $chevron.l cal(M), tau, x chevron.r$ depends only on the world state $tau(x)$, so $phi.alt arrow.r dot.square phi.alt$ is valid on that fragment -- stability collapses to the trivial modality on non-temporal formulas.
 Letting $diamond.stroked.dot phi.alt := not dot.square not phi.alt$, the stability operators make _Will_ and _Could_ modals definable ($dot.square G phi.alt$, $dot.square F phi.alt$, $diamond.stroked.dot G phi.alt$, $diamond.stroked.dot F phi.alt$): what will or could unfold from the present world state.
 Restricting the intersection set forward or backward yields the open-future and open-past sets $lr(|tau chevron.r)_x := { sigma in H_(cal(F)) | sigma(y) = tau(y) "for all" y lt.eq x }$ and $lr(chevron.l tau|)_x := { sigma in H_(cal(F)) | sigma(y) = tau(y) "for all" y gt.eq x }$, with corresponding operators quantifying over the worlds that share the evaluation world's past or future.
-The philosophical payoff is that all three restricted quantifier domains are _definable_ from the construction of possible worlds -- provably $lr(|tau chevron.r)_x subset.eq chevron.l tau chevron.r_x$ and $lr(chevron.l tau|)_x subset.eq chevron.l tau chevron.r_x$ with $lr(|tau chevron.r)_x inter lr(chevron.l tau|)_x = {tau}$ -- whereas a semantics over structureless points would have to posit primitive accessibility relations and then impose frame constraints to keep them aligned with their intended readings @brastmckie2026possibleworlds.
+The philosophical payoff is that all three restricted quantifier domains are _definable_ from the construction of possible worlds -- provably $lr(|tau chevron.r)_x subset.eq chevron.l tau chevron.r_x$ and $lr(chevron.l tau|)_x subset.eq chevron.l tau chevron.r_x$ with $lr(|tau chevron.r)_x inter lr(chevron.l tau|)_x = {tau}$ -- whereas a semantics over structureless points would have to posit primitive accessibility relations and then impose frame constraints to keep them aligned with their intended readings.
 
 The language that collects all of these resources is
 $ "BL"^star := chevron.l "SL", bot, arrow.r, square.stroked, S, U, dot.square, arrow.t^i, arrow.b^i, arrow.t.double^i, arrow.b.double^i chevron.r, $
 the terminus of the extension tower that begins with the tense basis and passes through the Until/Since basis.
-The paper explicitly declines to axiomatize BL#super[⋆] -- extending *TM* to a proof system for it is outside that paper's scope @brastmckie2026possibleworlds -- and this book inherits the same boundary: no proof system for BL#super[⋆] is presented here, and none is formalized.
-The paper's one worked use of the Vlach operators is its analysis of the open future, for which see @brastmckie2026possibleworlds and the closing remark of the semantics chapter on the determined/deterministic distinction.
+// CONFIRM(paper): the source work explicitly declines to axiomatize BL-star (no proof system for it is stated).
+BL#super[⋆] is deliberately left without a proof system: axiomatizing it lies outside this book's scope, and none is formalized.
+The signature worked use of the Vlach operators is the analysis of the open future; see the closing remark of the semantics chapter on the determined/deterministic distinction.
 
 == Prior Art: From "Now" to Hybrid Binders
 

@@ -1,0 +1,45 @@
+{
+  "phase": 7,
+  "phase_name": "Back Matter and Periphery \u2014 Notes, LTL/Vlach/Frontier, Machine Appendix",
+  "started_at": "2026-08-17T19:41:00Z",
+  "last_updated": "2026-08-17T20:10:00Z",
+  "objectives": [
+    {
+      "id": 1,
+      "description": "R8a-e: 06-notes design-notes recast",
+      "status": "done",
+      "files_touched": [
+        "typst/chapters/06-notes.typ"
+      ]
+    },
+    {
+      "id": 2,
+      "description": "R10: p3-ltl-to-tm vocabulary + sweep",
+      "status": "done",
+      "files_touched": [
+        "typst/chapters/p3-ltl-to-tm.typ"
+      ]
+    },
+    {
+      "id": 3,
+      "description": "R11: p3-vlach-blstar + p3-decidability-frontier citation removal",
+      "status": "done",
+      "files_touched": [
+        "typst/chapters/p3-vlach-blstar.typ",
+        "typst/chapters/p3-decidability-frontier.typ"
+      ]
+    },
+    {
+      "id": 4,
+      "description": "R12: ax-machine-appendix Dedekind + CONFIRM",
+      "status": "done",
+      "files_touched": [
+        "typst/chapters/ax-machine-appendix.typ"
+      ]
+    }
+  ],
+  "current_objective": 4,
+  "approaches_tried": [],
+  "deviations": [],
+  "handoff_count": 0
+}
