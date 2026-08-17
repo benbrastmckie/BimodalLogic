@@ -9,13 +9,13 @@
     {
       "project_number": 449,
       "project_name": "review_paper_to_improve_bimodal_reference_manual",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "formal",
       "description": "Systematically review /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex in order to improve typst/BimodalReference.typ while observing the aim to accurately represent the Lean code in this repository, which is actively being improved to also be in better alignment with the possible_worlds.tex paper. The key difference between the paper and this Lean repo with its corresponding BimodalReference.typ manual is that this repo should focus entirely on constructing/presenting the full bimodal logic system where snce/untl operators are primitive, leaving the fragment with past/future operators as primitives as a subsystem to be developed later in order to establish conservative extension results if possible, though for now that effort can be ignored",
       "topic": "reference-book",
       "created": "2026-08-17T15:49:45Z",
-      "last_updated": "2026-08-17T16:23:23Z",
-      "session_id": "sess_1786983269_cbcf65",
+      "last_updated": "2026-08-17T17:28:11Z",
+      "session_id": "sess_1786987666_e2a982",
       "artifacts": [
         {
           "path": "specs/449_review_paper_to_improve_bimodal_reference_manual/reports/01_paper-manual-lean-alignment.md",
@@ -834,6 +834,11 @@
           "path": "specs/417_semantic_fmp_finite_worldstate_over_z/summaries/03_semantic-fmp-z-time-summary.md",
           "type": "summary",
           "summary": "The Z-frame normal form, spherical_of_finite, the periodicity toolkit and IntPresentation landed sorry-free; the truth-lemma/semantic-FMP half is blocked by two machine-checked structural defects in the plan's targets."
+        },
+        {
+          "path": "specs/417_semantic_fmp_finite_worldstate_over_z/handoffs/01_phase-7-12-revision-handoff.md",
+          "type": "handoff",
+          "summary": "Revision handoff: both blockers share one root cause (state-vs-path); recommends bi-lasso layer, filteredStep via ofStep, fulfilling-path lemma, and an A/B/C task split with a gating spike."
         }
       ],
       "created": "2026-07-28T22:51:10Z",
