@@ -398,7 +398,7 @@ construction. Phase 8 states and proves it and uses it for `Fulfilling`'s decida
 
 ---
 
-### Phase 4: The exact ℤ one-step unfolding of `TruthAt` [NOT STARTED]
+### Phase 4: The exact ℤ one-step unfolding of `TruthAt` [COMPLETED]
 
 **Goal**: the semantic unfolding equations handoff §4.1 asserts, proved, in the live guard-first
 order — the prerequisite Phases 7 and 10 both consume.
@@ -406,29 +406,39 @@ order — the prerequisite Phases 7 and 10 both consume.
 **Argument order used in this phase**: guard first. `Formula.untl g e` has guard `g`, event `e`.
 
 **Tasks**:
-- [ ] Re-capture the repository baseline before touching anything: `bash scripts/check-module-invariants.sh`
+- [x] Re-capture the repository baseline before touching anything: `bash scripts/check-module-invariants.sh`
       and `lake build`, plus `lake build BimodalTest`. Record the three known-red test modules
       (`BoxSpreadProbe`, `RegionGateProbe`, `TableauConformance`) so their failure is never
-      attributed to this work and is never "fixed" here.
-- [ ] Check first whether the general unfolding already exists:
+      attributed to this work and is never "fixed" here. *(Baseline captured: `lake build` exits 0;
+      invariants FAIL at C6 (7 unreachable live modules) and C9 (1 task-number citation at
+      `WeakCanonical/PriorExpressivenessDense.lean:185`); `lake build BimodalTest` red at exactly
+      `BoxSpreadProbe:165`, `RegionGateProbe:299,330`, `TableauConformance:873,885,910,916`, all
+      `#guard_msgs` mismatches. All inherited, none repaired here.)*
+- [x] Check first whether the general unfolding already exists:
       `grep -rn "untl_unfold\|snce_unfold\|untl_succ\|unfold_untl" FormalSystem/ --include=*.lean | grep -v Boneyard`.
       The tree is expected to contain only the `⊥`-guarded case, and that only inside the evidence
       file (`truth_prev`, `phase3-scan-bound-is-false.lean:110`). If a general form exists, consume
-      it and reduce this phase to the missing half.
-- [ ] Create `FormalSystem/Metalogic/Decidability/BiLasso/Unfold.lean`.
-- [ ] Prove, for any `TaskModel` over `ℤ`, any history and any `t`:
+      it and reduce this phase to the missing half. *(Grep returned empty — scope hypothesis
+      confirmed, no general form exists; the phase was written in full.)*
+- [x] Create `FormalSystem/Metalogic/Decidability/BiLasso/Unfold.lean`.
+- [x] Prove, for any `TaskModel` over `ℤ`, any history and any `t`:
       `TruthAt M τ t (Formula.untl g e) ↔ TruthAt M τ (t+1) e ∨ (TruthAt M τ (t+1) g ∧ TruthAt M τ (t+1) (Formula.untl g e))`.
       Forward: take the witness `s > t`; if `s = t+1` the left disjunct holds, otherwise `s > t+1`,
       the guard gives `g` at `t+1`, and the same `s` witnesses `untl g e` at `t+1`. Backward: the
       left disjunct gives witness `t+1` with a vacuous guard obligation; the right gives a witness
       `s > t+1` whose guard interval `(t, s)` is `{t+1} ∪ (t+1, s)`.
-- [ ] Prove the `snce` mirror. Derive it from `temporal_duality` if that is available and applies;
-      otherwise prove it directly — do not leave it as "by symmetry" prose.
-- [ ] Prove the ℤ-distance induction principle the truth lemma needs: for `P : ℤ → Prop`, if `P t`
+- [x] Prove the `snce` mirror. Derive it from `temporal_duality` if that is available and applies;
+      otherwise prove it directly — do not leave it as "by symmetry" prose. *(Proved directly as
+      `truth_snce_pred`; `temporal_duality` is a derivability statement, not a `TruthAt` one, so it
+      does not apply. Recorded in the lemma docstring.)*
+- [x] Prove the ℤ-distance induction principle the truth lemma needs: for `P : ℤ → Prop`, if `P t`
       and `∀ u ≥ t, P u → P (u+1)`, then `∀ s ≥ t, P s` (and the leftward mirror). If Mathlib
       supplies this directly for `ℤ` (`Int.le_induction` and its downward counterpart), use it and
-      note the name rather than re-proving.
-- [ ] Docstring: state that the exactness of this unfolding is what scopes the task to ℤ-time and
+      note the name rather than re-proving. *(Mathlib supplies them; the current names are
+      `Int.leInduction` / `Int.leInductionDown` — `Int.le_induction` / `Int.le_induction_down` are
+      deprecated aliases. Landed as one-line `Prop`-level wrappers `Int.rightInduction` /
+      `Int.leftInduction` in the plan's exact shape, with the Mathlib names noted.)*
+- [x] Docstring: state that the exactness of this unfolding is what scopes the task to ℤ-time and
       is what fails over a dense duration type, and that `subformulaClosure` is therefore adequate
       with no Fischer–Ladner enlargement.
 
