@@ -471,31 +471,31 @@ E2 governs paper citations only.)
 - **Done when:** snce clause precedes untl in guard-first infix; time-shift is
   translation-form; gates green.
 
-### Phase 4: Proof-Theory Chapter — Nine Layers, Four Classes, Paper Cross-Index [NOT STARTED]
+### Phase 4: Proof-Theory Chapter — Nine Layers, Four Classes, Paper Cross-Index [COMPLETED]
 
 - **Goal:** `03-proof-theory.typ` presents all 45 constructors in nine layers with the
   four-value FrameClass and a paper-name cross-index; the paper's TM+ system is the primary
   comparandum.
 - **Territory:** `typst/chapters/03-proof-theory.typ`
 - **Tasks:**
-  - [ ] R4a (source: `Axioms.lean` 45 constructors, 9 layers; finding C1): fix "eight
+  - [x] R4a (source: `Axioms.lean` 45 constructors, 9 layers; finding C1): fix "eight
     layers" → nine and the frame-class parameter description to four values.
-  - [ ] R4b (source: `Axioms.lean` Layer 9 `prior_U_gap`/`prior_S_gap`/`sep`; paper
+  - [x] R4b (source: `Axioms.lean` Layer 9 `prior_U_gap`/`prior_S_gap`/`sep`; paper
     `def:TMplus-c` Prior-U/Sep with K+/K− abbreviations): add a Layer 9 table so the layer
     tables sum to 45.
-  - [ ] R4c (source: `Axioms.lean` `FrameClass`; finding C1): rewrite §Frame Classes —
+  - [x] R4c (source: `Axioms.lean` `FrameClass`; finding C1): rewrite §Frame Classes —
     four values, Dedekind above Dense in the Hasse description, correspondence Base↔TM+,
     Dense↔TM+_d, Discrete↔TM+_f, Dedekind↔TM+_c, with a pointer to the frame-classes chapter
     for detail. Also fix the stale sentence claiming the paper's complete/combined extensions
     have no corresponding frame class (predates the Dedekind class; finding C6 ripple).
-  - [ ] R4d (source: `def:BX`/`def:TMplus-*`; finding C2's verified constructor map; KEPT
+  - [x] R4d (source: `def:BX`/`def:TMplus-*`; finding C2's verified constructor map; KEPT
     under the Decision E1 axiom-name verdict — citation apparatus, not translation
     scaffolding): add the short-name column (TB, UG, UC, TA, ...) to the Layer 3 and
     Layer 5–9 tables using the report's table verbatim, introduced as the axioms' names in
     the book's own right with NO anchor credit in the chapter (Decision E2 — the
     front-matter citation already covers provenance); note TB vs `serial_future` as
     trivially interderivable, and that CO is derivable in BX_c rather than axiomatic.
-  - [ ] R4e (finding C4; plan-facing grounding: `def:S5` + `def:BX` + `def:TMplus` are the
+  - [x] R4e (finding C4; plan-facing grounding: `def:S5` + `def:BX` + `def:TMplus` are the
     system the book's proof system transcribes): replace §Relation to the Paper's
     Presentation with a stand-alone section (retitle, e.g. §The Tense-Primitive Subsystem)
     presenting, in the book's own terms and with NO paper-anchor citations (Decision E2),
@@ -504,7 +504,7 @@ E2 governs paper citations only.)
     CPL layer, M4/MB primitive; finding C3) as design facts of the book's axiomatization.
     Place `// CONFIRM(paper): def:S5 + def:BX + def:TMplus jointly state the system this
     chapter axiomatizes` at the section head as the non-rendered provenance link.
-  - [ ] R4f: notation/ordering sweep of every schema display (guard-first infix; axiom tables
+  - [x] R4f: notation/ordering sweep of every schema display (guard-first infix; axiom tables
     MAY stay future/until-direction-primary matching `def:BX`'s stated direction — the paper's
     own exception per finding A2).
 - **Timing:** ~2 hours
