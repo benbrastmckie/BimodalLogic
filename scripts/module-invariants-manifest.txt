@@ -29,6 +29,12 @@ FormalSystem.Metalogic.Bundle
 FormalSystem.Metalogic.Algebraic
 FormalSystem.Metalogic.SoundnessLemmas
 
+# The bi-lasso decision layer is additive and deliberately unwired: nothing in the
+# build graph imports it until its own re-export lands beside `Decidability/BiLasso/`.
+# Listed here so it is still compile-checked in isolation in the meantime. DELETE
+# this line when that re-export is added.
+FormalSystem.Metalogic.Decidability.BiLasso.Basic
+
 # --- Tests -----------------------------------------------------------------
 # Test modules present under Tests/ but not imported by Tests/BimodalTest.lean,
 # so `lake build BimodalTest` never compiles them.

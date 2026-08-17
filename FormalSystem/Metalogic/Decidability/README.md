@@ -26,6 +26,7 @@ This directory implements a verified decision procedure that:
 | `DecisionProcedure.lean` | Main `decide` function with proof search | Sorry-free |
 | `IntPresentation.lean` | Computational presentation of a finite ℤ-time frame (`Fin card` adjacency matrix + valuation) | Sorry-free |
 | `FMP/` | Finite model property proofs (7 files) | Sorry-free |
+| `BiLasso/` | Finitely presented bi-infinite ultimately-periodic step paths over an `IntPresentation` — the decision layer for *presented* ℤ-frames (1 file) | Sorry-free; unwired (no re-export yet) |
 
 ## Quick Reference
 
@@ -103,6 +104,7 @@ open FormalSystem.Metalogic.Decidability
 - [Bundle README](../Bundle/README.md) - BFMCS completeness approach
 - [Core README](../Core/README.md) - MCS foundations
 - [FMP README](FMP/README.md) - Finite model property
+- [BiLasso README](BiLasso/README.md) - Bi-lasso decision layer for presented ℤ-frames
 
 ## References
 

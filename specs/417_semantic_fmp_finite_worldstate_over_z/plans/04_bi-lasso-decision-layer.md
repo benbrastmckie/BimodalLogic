@@ -258,16 +258,61 @@ proved to land in the frame's step paths.
 
 ---
 
-### Phase 3: Periodicity of `unroll` and the bounded-scan lemmas [NOT STARTED]
+### Phase 3: Periodicity of `unroll` and the bounded-scan lemmas [BLOCKED]
 
 **Goal**: the lemmas that make the `untl` / `snce` cases of `eval` finite scans rather than
 searches over ℤ.
 
+**BLOCKER** (Phase 3):
+- **What failed**: the third task — "Derive the scan bounds: any property of `L.unroll` that holds
+  at some `s > t` holds at some `s` with `t < s ≤ t + |mid| + |fwd|`" — is **false** in the reading
+  Phase 4 and Phase 5 require ("in exactly the form they will be consumed"). `eval`'s `untl` case
+  searches for a time at which a *formula* holds, not a time at which a *state predicate* holds,
+  and the truth of a formula along `L.unroll` at `s` is not a function of `L.unroll s`.
+- **What was tried**: the two periodicity lemmas the phase asks for were proved and are landed in
+  `BiLasso/Basic.lean` (`unroll_sub_back_length`, `unroll_add_fwd_length`) — the periodicity half of
+  the phase is fine. The scan-bound half was then attacked directly and refuted, machine-checked and
+  `sorry`-free, in `evidence/phase3-scan-bound-is-false.lean`:
+  - `plan_scan_bound_fails`: on a two-state presentation and the bi-lasso `back=[0]`, `mid=[]`,
+    `fwd=[1]`, at `t = -5` the formula `untl ⊤ p` is true (witness `s = 0`) while `p` is false at
+    every `s` in the literal scan range `(t, t + |mid| + |fwd|] = (-5, -4]`.
+  - `no_formula_independent_scan_bound`: for **every** integer `N` there is a formula witnessed
+    strictly after `t = -1` but at no time in `(-1, N]`, on that same fixed bi-lasso. The family is
+    `prevⁿ p`, whose truth set along the path is exactly `[n, ∞)`. Since `N` ranges over every
+    quantity computable from `|back|`, `|mid|`, `|fwd|` and `t`, **no** scan bound that is a
+    function of the lasso alone is correct.
+- **Why it's stuck**: `L.unroll (t + |fwd|) = L.unroll t` for `t ≥ |mid|` (proved), but the
+  *shifted path* `λ u. L.unroll (u + |fwd|)` is not `L.unroll` — the leftward tail moves. So
+  `TruthAt` along the path is **not** periodic in `t`, and the counterexample above exhibits the
+  failure at temporal-nesting depth 1. A correct bound must depend on the formula, and the theorem
+  that would justify it is: *the truth set of `ψ` along a bi-lasso is eventually periodic beyond a
+  `ψ`-dependent threshold* (threshold growing with `ψ`'s temporal nesting). That is a substantially
+  larger result than this phase is sized for and it reshapes Phases 4 and 5, which are written
+  around a lasso-only bound.
+- **What is needed**: a design decision, taken at re-plan time, between two routes —
+  1. **Formula-dependent threshold.** Prove eventual periodicity of `TruthAt` along a bi-lasso with
+     an explicit `ψ`-dependent threshold (e.g. `|mid| + |fwd| · d(ψ)`), then restate the scan bounds
+     against it and rewrite Phases 4–5 to carry the threshold through `eval`.
+  2. **Annotated bi-lassos.** Enumerate bi-lassos that carry per-position *type* labels with local
+     consistency conditions (a Hintikka structure over the lasso) and replace `eval` by a label
+     read-off, making the truth lemma a Hintikka-structure argument. This is the shape Phase 7's
+     `(state, type, pending)` pigeonhole already anticipates, and it dissolves the periodicity
+     problem rather than solving it — repeated positions carry equal types by construction.
+  Route 2 is the better fit with Phase 7 as already written, and merges the Phase 3/4/5 work into
+  the small-model construction rather than layering it before.
+- **Prohibited workarounds**: do NOT use `sorry`, `def X := True`, or any vacuous placeholder, and
+  do NOT weaken `eval_correct` to a statement restricted to formulas without temporal nesting.
+
+Phases 4, 5, 7, 8 and 9 all transitively consume this result and are **not started**. Phase 6
+(`boundedBiLassos`) depends only on Phase 2 and remains independently executable; it was not
+started, per this plan's Rollback/Contingency instruction to stop on a blocked phase.
+
+
 **Tasks**:
 - [ ] Create `FormalSystem/Metalogic/Decidability/BiLasso/Unroll.lean`.
-- [ ] Prove rightward periodicity: `∃ n₁, ∀ t ≥ n₁, L.unroll (t + L.fwd.length) = L.unroll t`.
-- [ ] Prove leftward periodicity: `∃ n₀, ∀ t ≤ n₀, L.unroll (t - L.back.length) = L.unroll t`.
-- [ ] Derive the scan bounds: any property of `L.unroll` that holds at some `s > t` holds at some
+- [x] Prove rightward periodicity: `∃ n₁, ∀ t ≥ n₁, L.unroll (t + L.fwd.length) = L.unroll t`. *(deviation: altered — landed in `BiLasso/Basic.lean` as `unroll_add_fwd_length`, in the stronger explicit-threshold form `|mid| ≤ t → L.unroll (t + |fwd|) = L.unroll t`, because `unroll_isStepPath` in Phase 2 already needed it.)*
+- [x] Prove leftward periodicity: `∃ n₀, ∀ t ≤ n₀, L.unroll (t - L.back.length) = L.unroll t`. *(deviation: altered — landed in `BiLasso/Basic.lean` as `unroll_sub_back_length`, explicit threshold `t < 0`.)*
+- [ ] **REFUTED — see BLOCKER above.** Derive the scan bounds: any property of `L.unroll` that holds at some `s > t` holds at some
       `s` with `t < s ≤ t + |mid| + |fwd|` (and the leftward mirror). State these as the two lemmas
       `eval`'s temporal cases consume, in exactly the form they will be consumed.
 - [ ] Do **not** attempt well-founded recursion on ℤ; the handoff (§4.2) is explicit that
@@ -280,7 +325,8 @@ searches over ℤ.
 **Verification Tier**: local
 
 **Files to modify**:
-- `FormalSystem/Metalogic/Decidability/BiLasso/Unroll.lean` — new
+- `FormalSystem/Metalogic/Decidability/BiLasso/Unroll.lean` — NOT created (phase blocked)
+- `specs/417_semantic_fmp_finite_worldstate_over_z/evidence/phase3-scan-bound-is-false.lean` — new, the refutation
 
 **Verification**:
 - `lake build FormalSystem.Metalogic.Decidability.BiLasso.Unroll` exits 0, sorry-free.
