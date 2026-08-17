@@ -259,19 +259,45 @@ elaborates but reports `Classical.choice` in its axiom profile has failed this p
 
 ---
 
-### Phase 3: Pin the axiom profiles as build-breaking guards [NOT STARTED]
+### Phase 3: Pin the axiom profiles as build-breaking guards [COMPLETED]
 
 **Goal**: Convert the three measured axiom profiles, plus the `spherical_of_subsingleton` tripwire,
 into guards that break the build if any of them moves — replacing the unsatisfiable choice-free
 acceptance test the task retracted.
 
 **Tasks**:
-- [ ] Add a `#guard_msgs in #print axioms` block for `FormalSystem.Semantics.TaskFrame.sInter_nonempty_of_directed_of_minimal`, pinning the axiom-free result, using the string measured in Phase 1.
-- [ ] Add a `#guard_msgs in #print axioms` block for `FormalSystem.Semantics.TaskFrame.spherical_of_finite`, pinning exactly `[propext, Classical.choice, Quot.sound]` and no other axiom.
-- [ ] Add a `#guard_msgs in #print axioms` block for `FormalSystem.Semantics.TaskFrame.spherical_of_subsingleton`, pinning `[propext]`. Docstring this one explicitly as the tripwire against re-deriving it through `spherical_of_finite`.
-- [ ] Add the guard for `wlem_of_spherical`'s `[propext, Quot.sound]` profile from Phase 2.
-- [ ] Record the no-Zorn claim as prose with import-graph evidence: `TaskFrame.lean` does not import `FormalSystem.Semantics.Extension.*`, so a dependency on `PartialHistory.exists_maximal_extension` is structurally impossible; state that `#print axioms` cannot express this and that the import direction is the evidence. Do not fabricate an axiom-based test for it.
-- [ ] Add a short section docstring explaining how to react when one of these guards fires: the expected block is updated in the same commit as the change that moved it, with the move justified — never updated to make a red build green.
+- [x] Add a `#guard_msgs in #print axioms` block for `FormalSystem.Semantics.TaskFrame.sInter_nonempty_of_directed_of_minimal`, pinning the axiom-free result, using the string measured in Phase 1.
+- [x] Add a `#guard_msgs in #print axioms` block for `FormalSystem.Semantics.TaskFrame.spherical_of_finite`, pinning exactly `[propext, Classical.choice, Quot.sound]` and no other axiom.
+- [x] Add a `#guard_msgs in #print axioms` block for `FormalSystem.Semantics.TaskFrame.spherical_of_subsingleton`, pinning `[propext]`. Docstring this one explicitly as the tripwire against re-deriving it through `spherical_of_finite`.
+- [x] Add the guard for `wlem_of_spherical`'s `[propext, Quot.sound]` profile from Phase 2.
+- [x] Record the no-Zorn claim as prose with import-graph evidence: `TaskFrame.lean` does not import `FormalSystem.Semantics.Extension.*`, so a dependency on `PartialHistory.exists_maximal_extension` is structurally impossible; state that `#print axioms` cannot express this and that the import direction is the evidence. Do not fabricate an axiom-based test for it. *(landed, with the evidence tightened during verification — see below: `TaskFrame.lean` imports no `FormalSystem.*` module **at all**, which is stronger than the planned "does not import the Extension chain", and the Zorn appeal was located precisely in `PartialHistoryOrder.lean`, not the Extension directory.)*
+- [x] Add a short section docstring explaining how to react when one of these guards fires: the expected block is updated in the same commit as the change that moved it, with the move justified — never updated to make a red build green. *(placed in the module docstring as "When one of these guards fires", so it is read before any guard is reached; each guard's own note cross-references it.)*
+
+#### Phase 3 result
+
+`#guard_msgs in #print axioms` **does** capture the info message in this toolchain, so the
+planned fallback to a plain `#print axioms` plus a prose-recorded expectation was not needed and
+no downgrade is recorded. All four guards are live.
+
+The Scope Hypothesis warned that a silently non-gating "guard" is worse than an honest comment,
+so gating was verified **positively** rather than assumed from a green build: the
+`wlem_of_spherical` expected block was deliberately corrupted to
+`[propext, Classical.choice, Quot.sound]` and the module was rebuilt. It failed, as required:
+
+```
+error: Tests/BimodalTest/Semantics/SphericalFiniteAxiomTest.lean:283:0:
+  ❌️ Docstring on `#guard_msgs` does not match generated message:
+```
+
+The correct expectation was then restored and the module rebuilt green. A green build of this
+module is therefore evidence that the four profiles are what they claim to be, not merely that
+the file parses.
+
+One structural detail worth recording for whoever edits this file next: two `/-- -/` doc comments
+cannot be stacked, so a guard's explanatory prose cannot sit in its own `/-- -/` block
+immediately above the `/-- info: … -/` expectation (Lean reports `unexpected token '/--'`). The
+explanatory prose is therefore carried in `/-! -/` section blocks, with the `/-- info: … -/`
+docstring reserved for the expectation itself.
 
 **Timing**: 1 hour
 
@@ -289,8 +315,8 @@ downgrade explicitly — a silently non-gating "guard" is worse than an honest c
 - `Tests/BimodalTest/Semantics/SphericalFiniteAxiomTest.lean` - the four guards plus the no-Zorn record
 
 **Verification**:
-- `lake build BimodalTest` green with all guards satisfied
-- Each guard's expected block matches the Phase 1/2 measurement character for character
+- `lake build BimodalTest` green with all guards satisfied *(substituted per Phase 1's pre-existing-red baseline: `lake build BimodalTest.Semantics.SphericalFiniteAxiomTest` green with all four guards satisfied)*
+- Each guard's expected block matches the Phase 1/2 measurement character for character *(verified, and additionally verified to be gating by a deliberate-corruption test)*
 
 ---
 

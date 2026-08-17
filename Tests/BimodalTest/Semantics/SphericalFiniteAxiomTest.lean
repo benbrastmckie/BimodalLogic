@@ -34,9 +34,9 @@ is the absence of **Zorn**, recorded under "The no-Zorn claim" below.
 ## Contents
 
 1. `wlem_of_spherical` — the constructive obstruction, proved without any classical tactic
-   or term (Phase 2 of the file's construction).
-2. Four `#guard_msgs`-gated `#print axioms` blocks pinning the axiom profiles that matter
-   (below). These are **build-breaking**: if any profile moves, this module stops compiling.
+   or term.
+2. Four `#guard_msgs`-gated `#print axioms` blocks pinning the axiom profiles that matter.
+   These are **build-breaking**: if any profile moves, this module stops compiling.
 3. The no-Zorn record, which is an import-graph argument rather than an axiom-profile one.
 
 ## When one of these guards fires
@@ -207,6 +207,112 @@ theorem wlem_of_spherical (hSph : TaskFrame.Spherical wlemRel) (P : Prop) : ¬¬
         hb' _ (singleton_true_mem_wlemFamily hP)
       exact absurd (Set.mem_singleton_iff.mp h) (by decide)
 
+/-! ## The axiom-profile guards
+
+Each block below is **build-breaking**: `#guard_msgs` compares the `#print axioms` info message
+against the expected text character for character, and a mismatch fails elaboration of this
+module. Every expected string was measured from this toolchain, not transcribed from prose.
+
+Read the "When one of these guards fires" note in this file's module docstring before editing any
+expected block.
+
+### The constructive core
+
+The constructive core of the finite-carrier discharge depends on **no axioms at all** — not even
+`propext`. This is the part of `cor:spherical-finite`'s choice-free claim that survives
+transcription into Lean intact, and the guard below is what keeps it surviving: the lemma is
+deliberately separated from `spherical_of_finite` so that the classical step is isolated in the
+*production* of a `⊆`-minimal member and nowhere else. A profile appearing here at all means the
+separation has leaked.
+-/
+
+/-- info: 'FormalSystem.Semantics.TaskFrame.sInter_nonempty_of_directed_of_minimal' does not depend on any axioms -/
+#guard_msgs in
+#print axioms FormalSystem.Semantics.TaskFrame.sInter_nonempty_of_directed_of_minimal
+
+/-! ### The full discharge
+
+The full finite-carrier discharge costs exactly `Classical.choice` and nothing more exotic.
+
+Both directions of this guard carry information. If the profile ever **grows** past these three,
+something new and unaccounted-for entered the proof. If it ever **shrinks** — specifically, if
+`Classical.choice` disappears — that is not a win to celebrate but a contradiction to
+investigate, because `wlem_of_spherical` above shows such a proof would derive weak excluded
+middle in Lean's intuitionistic core. Suspect a change in what `Spherical` *means* before
+believing the profile.
+-/
+
+/-- info: 'FormalSystem.Semantics.TaskFrame.spherical_of_finite' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Semantics.TaskFrame.spherical_of_finite
+
+/-! ### The tripwire
+
+`spherical_of_subsingleton` is choice-free at `[propext]`, and must stay that way.
+
+`spherical_of_finite` discharges *Spherical* for an arbitrary relation on any finite carrier, so
+it subsumes this helper's statement — which makes "simplify by routing the subsingleton case
+through the general lemma" a tempting and entirely wrong consolidation. It would regress this
+helper from `[propext]` to `[propext, Classical.choice, Quot.sound]`, and propagate that
+regression to the three `Unit`-carriered universal frames that consume it (`trivialFrame`,
+`intTimeFrame`, `genericTimeFrame`). `TaskFrame.spherical_of_finite`'s own docstring records the
+prohibition in prose; this guard is what enforces it mechanically. If this block fails with
+`Classical.choice` in the actual output, the correct response is to revert the consolidation, not
+to update this expected text.
+
+The two other shape-constrained helpers, `spherical_of_permissive` and `spherical_of_eq`, are
+**already** classical at `[propext, Classical.choice, Quot.sound]` and are deliberately not
+guarded here: there is no choice-freedom left in them to protect.
+-/
+
+/-- info: 'FormalSystem.Semantics.TaskFrame.spherical_of_subsingleton' depends on axioms: [propext] -/
+#guard_msgs in
+#print axioms FormalSystem.Semantics.TaskFrame.spherical_of_subsingleton
+
+/-! ### The obstruction itself
+
+`wlem_of_spherical` must stay constructive, or it proves nothing.
+
+It is evidence that a choice-free `spherical_of_finite` is impossible only if its *own*
+derivation is choice-free. A version carrying `Classical.choice` would derive weak excluded
+middle from classical logic, which is trivially true and says nothing whatever about
+`spherical_of_finite`. This guard is therefore load-bearing for the entire argument of this file.
+-/
+
+/-- info: 'BimodalTest.Semantics.wlem_of_spherical' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
 #print axioms wlem_of_spherical
+
+/-! ## The no-Zorn claim
+
+`cor:spherical-finite`'s substantive surviving content is that the finite-carrier discharge does
+**not** route through Zorn's lemma — in deliberate contrast with `thm:extension`, whose own
+recorded footnote says it "appeals to Zorn's lemma and hence to the axiom of choice", and
+contrasts itself against exactly this corollary.
+
+**This claim is not, and cannot be, expressed by any block above.** `#print axioms` reports
+`Classical.choice`, and Zorn's lemma is a theorem derived from `Classical.choice`, not an axiom
+in its own right — it never appears in a profile. There is no honest axiom-based test for "no
+Zorn", so none is fabricated here.
+
+The evidence is the **import graph**, which is a stronger guarantee than a profile check anyway
+because it is structural rather than observational:
+
+- `FormalSystem/Semantics/TaskFrame.lean`, which declares both
+  `sInter_nonempty_of_directed_of_minimal` and `spherical_of_finite`, imports **no**
+  `FormalSystem.*` module whatsoever — its import list is eight Mathlib modules and nothing else
+  — and does not import `Mathlib.Order.Zorn`.
+- `PartialHistory.exists_maximal_extension`, the Zorn appeal in this development, lives in
+  `FormalSystem/Semantics/PartialHistoryOrder.lean`, which is the module that imports
+  `Mathlib.Order.Zorn`.
+- That module imports `FormalSystem.Semantics.PartialHistory`, which sits **downstream** of
+  `TaskFrame.lean`. The dependency therefore runs `TaskFrame ← PartialHistory ←
+  PartialHistoryOrder`, so a dependency of `spherical_of_finite` on `exists_maximal_extension`
+  would require an import cycle. It is not merely absent; it is unconstructible.
+
+The self-enforcing part is that Lean rejects import cycles outright. Any future edit that gave
+`TaskFrame.lean` access to the extension chain would have to add the import, and would fail to
+compile. That is the guard, and it needs no expected-output block.
+-/
 
 end BimodalTest.Semantics
