@@ -119,7 +119,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: The periodic clock frame [IN PROGRESS]
+### Phase 1: The periodic clock frame [COMPLETED]
 
 **Goal**: A sorry-free `clockFrame : TaskFrame ℚ` over `W = ℚ ⧸ ℤ` with every `TaskFrame`
 obligation discharged, plus the reference history.
@@ -171,7 +171,7 @@ to crib the axiom discharges from.
 
 ---
 
-### Phase 2: The looping-duration lemmas [NOT STARTED]
+### Phase 2: The looping-duration lemmas [COMPLETED]
 
 **Goal**: The reusable generalization — any frame carrying a looping duration validates every CO
 instance — proved once and instantiated at `clockFrame`.
@@ -215,7 +215,7 @@ whatever constructors actually exist and note any divergence from six.
 
 ---
 
-### Phase 3: The Prior-U refutation in the arc model [NOT STARTED]
+### Phase 3: The Prior-U refutation in the arc model [IN PROGRESS]
 
 **Goal**: A concrete model on `clockFrame` in which `Axiom.prior_U_gap p` is false at time `0`.
 
