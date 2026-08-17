@@ -1,7 +1,7 @@
 # Implementation Plan: Semantic FMP over ℤ-Time (finite WorldState)
 
 - **Task**: 417 - `semantic_fmp_finite_worldstate_over_z`
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 20 hours
 - **Dependencies**: 414 (totality semantics — landed), 420 (four-axiom `TaskFrame` — landed), 438 (paper reconciliation — landed)
 - **Research Inputs**: `specs/417_semantic_fmp_finite_worldstate_over_z/reports/02_semantic-fmp-rescoped-z-time.md` (authoritative for the ℤ-time spine; its Finding 2 `spherical_of_finite` transcription is **retracted**, see Research Integration); `specs/440_finite_frame_discharge_of_spherical_and_limit/reports/01_finite-spherical-limit-discharge.md` (cross-task; authoritative for everything Phase 2 touches); `reports/01_semantic-fmp-finite-worldstate.md` (superseded, retained as history)
@@ -169,31 +169,38 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Track `cor:spherical-finite`, `lem:nesting`, `lem:nonempty` in the definitions record [NOT STARTED]
+### Phase 1: Track `cor:spherical-finite`, `lem:nesting`, `lem:nonempty` in the definitions record [COMPLETED]
 
 **Goal**: This task quotes `cor:spherical-finite` verbatim as its transcription source while that
 anchor is **untracked** by `specs/paper-definitions-of-record.md` — so the central citation is
 unprotected by the drift lint. Close that gap before any phase relies on the quote.
 
 **Tasks**:
-- [ ] Follow the record's own four-step extension protocol (its `## How to extend this record`
+- [x] Follow the record's own four-step extension protocol (its `## How to extend this record`
       section): resolve each anchor by `\label{}` name, never by line number.
-- [ ] For each of `cor:spherical-finite`, `lem:nesting`, `lem:nonempty`, run
+- [x] For each of `cor:spherical-finite`, `lem:nesting`, `lem:nonempty`, run
       `bash scripts/check-paper-definitions.sh --resolve "ANCHOR|KIND|ENCLOSING|LOCATOR"` and record
-      the printed text and sha256.
-- [ ] Add one `### \`ANCHOR\`` entry per anchor quoting the resolved text verbatim (including any
+      the printed text and sha256. *(deviation: altered — `cor:spherical-finite` was already
+      resolved and tracked by task 440, so only the remaining two were resolved here; this is the
+      two-anchor case the Scope Hypothesis anticipated.)*
+- [x] Add one `### \`ANCHOR\`` entry per anchor quoting the resolved text verbatim (including any
       in-block `%%` editorial comments — they are literal source text and are hashed).
-- [ ] Add one row per anchor to the machine-readable manifest with the printed hash.
-- [ ] Update the record's "Known residual gap" prose: it currently names these three as untracked
+      `lem:nesting`'s hashed region additionally contains a single-`%` `% FIX:` authorial note,
+      transcribed verbatim on the same grounds.
+- [x] Add one row per anchor to the machine-readable manifest with the printed hash.
+- [x] Update the record's "Known residual gap" prose: it currently names these three as untracked
       and notes that tracked `thm:extension` cross-references untracked `cor:spherical-finite`.
       That note is discharged by this phase.
 - [ ] Re-pin the provenance table's file checksum and line count if the run reports the paper moved.
-- [ ] **Coordination check before writing**: task 440 proposes tracking the `cor:spherical-finite`
+      *(deviation: skipped — the paper has moved, but per the record's own dirty-pin convention a
+      re-pin is warranted only when a drift *correction* is absorbed, and this phase absorbs none.
+      The unabsorbed drift is recorded instead, in the new coverage-extension section.)*
+- [x] **Coordination check before writing**: task 440 proposes tracking the `cor:spherical-finite`
       third of this same gap (its report §6, resolved hash
       `76258a4c835d4fa0dde3fd037da52e706d0f20c9d7872ab523d3b81597b99b9d`). Re-read the record
       first; if that anchor is already present, leave it alone, add only the remaining two, and
       adjust the residual-gap prose to match what is actually there. Do not duplicate an entry or a
-      manifest row.
+      manifest row. **Result**: already present at that exact hash; left untouched.
 
 **Timing**: 1 hour
 
@@ -213,8 +220,21 @@ three, record what the paper actually says — never restate or "improve" it.
 
 **Verification**:
 - `bash scripts/check-paper-definitions.sh` (no arguments) reports the quiet case-(a) pass.
+  **NOT MET — pre-existing, recorded, not caused by this task.** The lint reports **case (c)** both
+  before and after this phase: 19 recorded blocks drifted and two recorded anchors
+  (`def:BL-model`, `cor:tm-decidability`) no longer resolve. This state predates the task; the
+  before/after drift sets are identical, so this phase introduced none of it. **Crucially, no
+  anchor this task transcribes is in the drifted set** — `cor:spherical-finite`, `def:frame`,
+  `def:frame#Spherical`, `def:directed`, `def:task-relation`, `cor:occurrence`, and
+  `def:frame-properties` all still hash clean, as do the two anchors added here. See the
+  task-level blocker note under Phase 10 for `cor:tm-decidability`, the one dangling anchor a
+  later phase of this plan was going to cite.
 - The three anchors each appear in both the entry section and the manifest, exactly once each.
+  **MET** — `grep -c` over the three anchor names returns 3 manifest rows; manifest row count
+  moved 47 → 49 (two added here, `cor:spherical-finite` pre-landed).
 - No file under `/home/benjamin/Philosophy/Papers/` is modified (`git -C /home/benjamin/Philosophy/Papers/PossibleWorlds status --porcelain` unchanged from its pre-phase state).
+  **MET** — that tree's only dirty paths are its own `specs/**` session artifacts; no `.tex` file
+  is modified.
 
 ---
 

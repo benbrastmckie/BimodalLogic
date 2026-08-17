@@ -141,18 +141,37 @@ lint itself reported for the live text):
   guard on the `t < z < s` condition. The constraint family itself — segments between bracketing
   times, fibers otherwise — is the same family.
 
-**Known residual gap (recorded, deliberately not resolved here).** The same wave added three
-anchors this record does **not** track at all: `cor:spherical-finite` (finite `W` satisfies
-*Spherical*, choice-free), `lem:nesting` (imposed fibers and segments nest along the time order),
-and `lem:nonempty` (every imposed constraint is nonempty). They are not added here because
-widening this record's coverage is a scoping decision reserved to whoever owns the record, and it
-is not needed for the lint: the lint checks *recorded* anchors for drift, and an untracked anchor
-cannot drift. Concretely, this leaves **`thm:extension`'s re-quoted footnote citing
-`\ref{cor:spherical-finite}`, an anchor outside the tracked set** — a tracked entry now
-references an untracked one, so a future rename or restatement of `cor:spherical-finite` would
-silently invalidate the cross-reference inside `thm:extension`'s recorded text without the lint
-saying anything. That is stated plainly rather than resolved silently in either direction. See
-"How to extend this record" for the protocol if the owner decides to close it.
+**Known residual gap — DISCHARGED (see "Coverage extension (2026-08-17)" below).** The same wave
+added three anchors this record did **not** track at all: `cor:spherical-finite` (finite `W`
+satisfies *Spherical*, choice-free), `lem:nesting` (imposed fibers and segments nest along the time
+order), and `lem:nonempty` (every imposed constraint is nonempty). The gap they left was concrete:
+**`thm:extension`'s re-quoted footnote cites `\ref{cor:spherical-finite}`**, so while that anchor
+was untracked a tracked entry referenced an untracked one, and a future rename or restatement of
+`cor:spherical-finite` would have silently invalidated the cross-reference inside `thm:extension`'s
+recorded text without the lint saying anything. All three are now tracked and the gap is closed;
+the paragraph is retained rather than deleted so the reasoning that closed it stays legible.
+
+### Coverage extension (2026-08-17): the three constraint-neighborhood anchors
+
+`cor:spherical-finite`, `lem:nesting`, and `lem:nonempty` are now tracked, discharging the residual
+gap recorded above. The semantic-FMP-over-ℤ work transcribes `cor:spherical-finite` verbatim as the
+source for `TaskFrame.spherical_of_finite`, so leaving its central citation unprotected by the lint
+was the immediate motivation; `lem:nesting` and `lem:nonempty` were added with it because they are
+the other two members of the same untracked gap and sit in the same `def:constraints` →
+`lem:constraint` → `lem:step` chain. `cor:spherical-finite` was resolved and added first, in
+isolation, by the finite-frame discharge work; the two constraint lemmas followed. The record moves
+from 47 to **49** tracked definitions.
+
+**Lint state at this extension**: the paper has drifted again since the previous coverage
+extension, and `scripts/check-paper-definitions.sh` reports **case (c)** — 19 recorded blocks
+changed, and two recorded anchors (`def:BL-model`, `cor:tm-decidability`) no longer resolve at all.
+That drift is *not* corrected here, and is recorded rather than absorbed: it predates this
+extension, it spans anchors this extension does not touch, and re-quoting 19 blocks plus repairing
+two dangling anchors is a paper-reconciliation pass in its own right rather than a side effect of
+adding three rows. None of the three anchors added here is among the drifted set, and neither are
+`def:frame`, `def:frame#Spherical`, `def:directed`, `def:task-relation`, `cor:occurrence`, or
+`def:frame-properties`. The whole-file checksum sentinels are therefore **not** re-pinned, per the
+dirty-pin convention above: no drift correction was absorbed.
 
 ### Coverage extension (2026-08-11): the extension-machinery anchors
 
@@ -369,6 +388,36 @@ The 2026-08-12 wave shortened the defined term to "the *constraints on `z`*" and
 "when both `t,s ∈ X`" guard to the segment case; the family being defined is unchanged. Note that
 surrounding paper text (and `lem:nonempty`, untracked) still says "imposed on", so both phrasings
 appear in the live paper — this record quotes whichever one appears inside the tracked block.
+
+### `lem:nesting` — DERIVED: imposed fibers and segments nest along the time order
+
+```latex
+\begin{Lthm} \label{lem:nesting}
+  % FIX: if possible, I'd like \Fib to always show up in the same way rather than taking on the italics of this environment. I also want to use \fib if available to match with the others. Fix the macro accordingly.
+	For any partial history $\tau : X \to W$ over a frame $\F = \tuple{W, \D, \Rightarrow}$ and duration $z \in D \setminus X$, the fibers $\Fib(\tau(t'), z - t') \subseteq \Fib(\tau(t), z - t)$ nest for all times $t \leq t' < z$ in $X$ and symmetrically for all times $z < t' \leq t$ in $X$, while the segments $[\tau(t'), \tau(s')]_{z - t'}^{s' - z} \subseteq [\tau(t), \tau(s)]_{z - t}^{s - z}$ nest for all times $t \leq t' < z < s' \leq s$ in $X$.
+\end{Lthm}
+```
+sha256: `ffc2d16fbded65204f743530a43834025048ac59d7f70524389ba488c9305266`
+
+The block carries an in-source `% FIX:` authorial note about the `\Fib` macro's italics. That line
+is literal paper source and is inside the hashed region, so it is quoted here verbatim like any
+other in-block comment; it is the paper author's note to themselves, not an instruction to this
+repository. Paper order places this lemma immediately after `def:constraints` and before
+`lem:nonempty`, which is why both sit here rather than beside `lem:constraint`.
+
+### `lem:nonempty` — DERIVED: every imposed constraint is nonempty
+
+```latex
+\begin{Lthm} \label{lem:nonempty}
+	For any partial history $\tau : X \to W$ over a frame $\F = \tuple{W, \D, \Rightarrow}$ and duration $z \in D \setminus X$, every constraint imposed on $z$ is nonempty.
+\end{Lthm}
+```
+sha256: `04a49ef8a67071b45bb42ad91ae8e7eba8a3c89a7fd785017e33507b7f8cc6c7`
+
+Note the phrasing divergence already recorded under `def:constraints`: that definition was renamed
+to "the constraints *on* `z`", while this lemma (and `lem:nesting`, `lem:constraint`, `lem:fibers`,
+`lem:admissible` above and below) still says "imposed on". Both phrasings are live in the paper and
+both are quoted as they stand; neither is silently normalized here.
 
 ### `lem:constraint` — DERIVED: the constraint family is directed and nonempty
 
@@ -1031,6 +1080,8 @@ def:world-history|env|-|-|4aaa6ec0db38ccbba25ce6dc61d81b8a28f82913ba6b2b1defabaa
 thm:extension|env|-|-|e63eac74fb8de22197f9bbb732bf83ea49def7308ca499817683145c99762b3e
 cor:occurrence|env|-|-|b0228712e0d847f600b5b353b783ec3bc24e7722620f7e39e284af1f1fa5ebea
 def:constraints|env|-|-|3678ab023f5c7f51e790eb1f8790ae78f4c7f6bb4cd4f7dc3e41b0408b3ac581
+lem:nesting|env|-|-|ffc2d16fbded65204f743530a43834025048ac59d7f70524389ba488c9305266
+lem:nonempty|env|-|-|04a49ef8a67071b45bb42ad91ae8e7eba8a3c89a7fd785017e33507b7f8cc6c7
 lem:constraint|env|-|-|9ebed5d29cd939e0b3486dee775b8135077819f0de7228877ffeef6a928bf5e7
 lem:fibers|env|-|-|42ec404f8082ceeff30b1da5a28c076c9880704c92d500cb5068ce8b0a1ba7e2
 lem:admissible|env|-|-|cc94cfdca6f3c1f581f3876ba737525288417ac9c05b3293c8fa4a621d262469
