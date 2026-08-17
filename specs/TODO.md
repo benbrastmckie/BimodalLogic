@@ -11,8 +11,8 @@ next_project_number: 451
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,231,257,298,413,417,423,424,437,440,445,448,450 | -- | completeness, decidability, frame-extensions, ... |
-| 2 | 193,219,282,296,421,425,436,441,446 | 231,298,423,437,440,445,448 | decidability, publication-quality, automation, ... |
+| 1 | 125,127,128,231,257,298,413,423,424,437,440,445,448,450 | -- | completeness, decidability, frame-extensions, ... |
+| 2 | 193,219,282,296,417,421,425,436,441,446 | 231,298,423,437,440,445,448,450 | decidability, publication-quality, automation, ... |
 | 3 | 178,422,434,447 | 193,421,436,446 | decidability, formula-refactor, publication-quality, ... |
 | 4 | 169,432 | 422,434 | decidability, strong_completeness |
 | 5 | 362,433 | 169,432 | decidability, strong_completeness |
@@ -83,9 +83,9 @@ next_project_number: 451
 
 ### Paper Refactor
 
-417 [RESEARCHED] — RE-ISSUED 2026-08-10 (supersedes the prior maximal-history framin
 440 [RESEARCHED] — RE-ISSUED 2026-08-12 (description rewrite only; status unchanged)
   └─ 441 [NOT STARTED] — Strengthen `thm:extension` for the finite discrete case into an E
+417 [RESEARCHED] — RE-ISSUED 2026-08-10 (supersedes the prior maximal-history framin
 
 ### Strong Completeness
 
@@ -809,7 +809,7 @@ Run `bash scripts/check-paper-definitions.sh` and read specs/paper-definitions-o
 - **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: paper-refactor
-- **Dependencies**: Task 414, Task 420, Task 438, Task 439
+- **Dependencies**: Task 414, Task 420, Task 438, Task 439, Task 450
 - **Research**:
   - [417_semantic_fmp_finite_worldstate_over_z/reports/02_semantic-fmp-rescoped-z-time.md]
   - [417_semantic_fmp_finite_worldstate_over_z/reports/01_semantic-fmp-finite-worldstate.md]
