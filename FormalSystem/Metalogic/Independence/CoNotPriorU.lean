@@ -303,4 +303,282 @@ theorem priorUGapFormula_false (a : Atom) :
     ¬ TruthAt clockModel clockHistory 0 (priorUGapFormula (Formula.atom a)) :=
   fun h => priorUGap_consequent_false a (h (priorUGap_antecedent_true a))
 
+/-! ## Statement S1 — the context form -/
+
+/--
+**`CO` does not derive Prior-U (context form).**
+
+Over the dense base, no context of `CO` instances derives `Axiom.prior_U_gap p`. Since a context
+is a finite list and every derivation is finite, this already says: *no finite set of `CO`
+instances, together with the dense base, derives Prior-U.*
+
+**What is and is not claimed.**
+
+* Claimed: `FrameClass.Dense`'s axioms plus finitely many `CO` instances as assumptions do not
+  derive `priorUGapFormula p`. The witness is `clockModel` at `clockHistory`, time `0`.
+* Also claimed, and strictly stronger: the schema-level statement
+  `co_not_derives_prior_U_gap_schema` below, which closes the gap left by this one — a context
+  cannot appear under `necessitation`, `temporal_necessitation` or `temporal_duality`, since
+  `DerivationTree`'s rule constructors are restricted to the empty context.
+* **Not** claimed, and in fact false: any *frame*-level statement. `def:frame-validity`
+  quantifies over all valuations, and under that quantifier frame-validity of `CO` on a dense
+  flow forces gap-freeness and hence Prior-U. See this module's docstring.
+-/
+theorem co_not_derives_prior_U_gap (a : Atom) (Γ : Context)
+    (hΓ : ∀ ψ ∈ Γ, ∃ χ, ψ = Formula.co χ) :
+    ¬ Derivable FrameClass.Dense Γ (priorUGapFormula (Formula.atom a)) := by
+  rintro ⟨d⟩
+  refine priorUGapFormula_false a ?_
+  refine soundness_dense Γ _ d ℚ clockFrame clockModel clockHistory clockHistory_isTotal 0 ?_
+  intro ψ hψ
+  obtain ⟨χ, rfl⟩ := hΓ ψ hψ
+  exact clock_co_true clockModel χ clockHistory clockHistory_isTotal 0
+
+/-! ## The time-reversal mirror
+
+`temporal_duality` (`⊢ φ` gives `⊢ φ.swapTemporal`) is the one closure rule whose soundness over a
+*fixed* model is not automatic: it needs the model to be isomorphic to its own time reversal. The
+clock model is, and that is precisely why the arc was centred at `0`: negation `w ↦ -w` is an
+automorphism of the circle that preserves the arc and reverses durations. An asymmetric arc would
+break this, and must not be substituted.
+-/
+
+/-- Transporting a history's state assignment along an equality of times. -/
+theorem states_congr {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+    [Nontrivial D] {F : TaskFrame D} {τ : WorldHistory F} {a b : D} (h : a = b)
+    (ha : τ.domain a) (hb : τ.domain b) : τ.states a ha = τ.states b hb := by
+  subst h; rfl
+
+/--
+Negation on the clock's world states.
+
+A named wrapper rather than bare `-`: `clockFrame.WorldState` does not elaborate as `ClockState`
+when it appears as the type of a history's state, so the group operation is not directly
+available there, whereas an application of this function unifies by definitional unfolding.
+-/
+def cneg (w : ClockState) : ClockState := -w
+
+@[simp] theorem cneg_cneg (w : ClockState) : cneg (cneg w) = w := neg_neg w
+
+/-- The arc is symmetric about `0`, so negation preserves the valuation. -/
+theorem onArc_neg (w : ClockState) : OnArc (cneg w) ↔ OnArc w := by
+  show OnArc (-w) ↔ OnArc w
+  constructor
+  · rintro ⟨q, hq, hlt⟩
+    refine ⟨-q, ?_, ?_⟩
+    · rw [cmk_neg, hq, neg_neg]
+    · push_cast; rwa [abs_neg]
+  · rintro ⟨q, hq, hlt⟩
+    refine ⟨-q, ?_, ?_⟩
+    · rw [cmk_neg, hq]
+    · push_cast; rwa [abs_neg]
+
+/-- Negation on the circle reverses durations: it is an automorphism of the clock relation. -/
+theorem clockRel_neg {a b : ClockState} {d : ℚ} (h : clockRel a d b) :
+    clockRel (cneg a) (-d) (cneg b) := by
+  show cneg b = cneg a + cmk (-d)
+  have hb : b = a + cmk d := h
+  simp only [cneg, hb, cmk_neg]
+  abel
+
+theorem reflect_respects (τ : WorldHistory clockFrame) (hτ : τ.IsTotal) (s t : ℚ) :
+    clockRel (cneg (τ.states (-s) (hτ (-s)))) (t - s) (cneg (τ.states (-t) (hτ (-t)))) := by
+  have h2 := clockRel_neg (a := τ.states (-s) (hτ (-s))) (b := τ.states (-t) (hτ (-t)))
+    (d := -t - -s) (τ.respects_task (-s) (-t) (hτ (-s)) (hτ (-t)))
+  have he : -(-t - -s) = t - s := by ring
+  rwa [he] at h2
+
+/--
+The **time reversal** of a total history: `t ↦ -τ(-t)`.
+
+It is again a history of the clock frame — negation on `ℚ ⧸ ℤ` reverses durations, so
+task-respect at `(-s, -t)` becomes task-respect at `(s, t)`.
+-/
+def reflect (τ : WorldHistory clockFrame) (hτ : τ.IsTotal) : WorldHistory clockFrame where
+  domain := fun _ => True
+  nonempty_domain := ⟨0, trivial⟩
+  states := fun t _ => cneg (τ.states (-t) (hτ (-t)))
+  respects_task := fun s t _ _ => reflect_respects τ hτ s t
+  convex := by intro _ _ _ _ _ _ _; trivial
+
+theorem reflect_isTotal (τ : WorldHistory clockFrame) (hτ : τ.IsTotal) :
+    (reflect τ hτ).IsTotal := fun _ => trivial
+
+/--
+**The mirror lemma.** If `σ` is the time reversal of `τ` — pointwise, `σ(-x) = -τ(x)` — then `σ`
+at `-t` satisfies `φ.swapTemporal` exactly when `τ` at `t` satisfies `φ`.
+
+Stated relationally (over a *pair* of histories tied by the reversal equation) rather than through
+`reflect` alone. That is what makes the `□` case work in both directions without needing `reflect`
+to be an involution on the nose: the case supplies whichever of the two histories it is missing by
+constructing its reflection.
+-/
+theorem truthAt_mirror (φ : Formula) :
+    ∀ (τ σ : WorldHistory clockFrame) (hτ : τ.IsTotal) (hσ : σ.IsTotal),
+      (∀ x : ℚ, σ.states (-x) (hσ (-x)) = cneg (τ.states x (hτ x))) →
+      ∀ t : ℚ, (TruthAt clockModel σ (-t) φ.swapTemporal ↔ TruthAt clockModel τ t φ) := by
+  induction φ with
+  | atom p =>
+      intro τ σ hτ hσ hrel t
+      constructor
+      · rintro ⟨_, hv⟩
+        refine ⟨hτ t, ?_⟩
+        show OnArc (τ.states t (hτ t))
+        have hv' : OnArc (σ.states (-t) (hσ (-t))) := hv
+        rw [hrel t] at hv'
+        exact (onArc_neg _).mp hv'
+      · rintro ⟨_, hv⟩
+        refine ⟨hσ (-t), ?_⟩
+        show OnArc (σ.states (-t) (hσ (-t)))
+        rw [hrel t]
+        exact (onArc_neg _).mpr hv
+  | bot => intro _ _ _ _ _ _; exact Iff.rfl
+  | imp A B ihA ihB =>
+      intro τ σ hτ hσ hrel t
+      constructor
+      · intro h hA
+        exact (ihB τ σ hτ hσ hrel t).mp (h ((ihA τ σ hτ hσ hrel t).mpr hA))
+      · intro h hA
+        exact (ihB τ σ hτ hσ hrel t).mpr (h ((ihA τ σ hτ hσ hrel t).mp hA))
+  | box A ihA =>
+      intro τ σ hτ hσ _ t
+      constructor
+      · intro h ρ hρ
+        have hrel1 : ∀ x : ℚ,
+            (reflect ρ hρ).states (-x) (reflect_isTotal ρ hρ (-x)) = cneg (ρ.states x (hρ x)) := by
+          intro x
+          show cneg (ρ.states (- -x) (hρ (- -x))) = cneg (ρ.states x (hρ x))
+          rw [states_congr (neg_neg x) (hρ (- -x)) (hρ x)]
+        exact (ihA ρ (reflect ρ hρ) hρ (reflect_isTotal ρ hρ) hrel1 t).mp
+          (h (reflect ρ hρ) (reflect_isTotal ρ hρ))
+      · intro h ρ hρ
+        have hrel2 : ∀ x : ℚ,
+            ρ.states (-x) (hρ (-x)) =
+              cneg ((reflect ρ hρ).states x (reflect_isTotal ρ hρ x)) := by
+          intro x
+          exact (cneg_cneg (ρ.states (-x) (hρ (-x)))).symm
+        exact (ihA (reflect ρ hρ) ρ (reflect_isTotal ρ hρ) hρ hrel2 t).mpr
+          (h (reflect ρ hρ) (reflect_isTotal ρ hρ))
+  | untl A B ihA ihB =>
+      intro τ σ hτ hσ hrel t
+      constructor
+      · rintro ⟨s, hs, hev, hg⟩
+        refine ⟨-s, by linarith, ?_, ?_⟩
+        · have hiA := ihA τ σ hτ hσ hrel (-s)
+          rw [neg_neg] at hiA
+          exact hiA.mp hev
+        · intro r hr1 hr2
+          have hiB := ihB τ σ hτ hσ hrel r
+          exact hiB.mp (hg (-r) (by linarith) (by linarith))
+      · rintro ⟨s, hs, hev, hg⟩
+        refine ⟨-s, by linarith, (ihA τ σ hτ hσ hrel s).mpr hev, ?_⟩
+        intro r hr1 hr2
+        have hiB := ihB τ σ hτ hσ hrel (-r)
+        rw [neg_neg] at hiB
+        exact hiB.mpr (hg (-r) (by linarith) (by linarith))
+  | snce A B ihA ihB =>
+      intro τ σ hτ hσ hrel t
+      constructor
+      · rintro ⟨s, hs, hev, hg⟩
+        refine ⟨-s, by linarith, ?_, ?_⟩
+        · have hiA := ihA τ σ hτ hσ hrel (-s)
+          rw [neg_neg] at hiA
+          exact hiA.mp hev
+        · intro r hr1 hr2
+          have hiB := ihB τ σ hτ hσ hrel r
+          exact hiB.mp (hg (-r) (by linarith) (by linarith))
+      · rintro ⟨s, hs, hev, hg⟩
+        refine ⟨-s, by linarith, (ihA τ σ hτ hσ hrel s).mpr hev, ?_⟩
+        intro r hr1 hr2
+        have hiB := ihB τ σ hτ hσ hrel (-r)
+        rw [neg_neg] at hiB
+        exact hiB.mpr (hg (-r) (by linarith) (by linarith))
+
+/--
+The form `temporal_duality` consumes: a formula true at every total history and every time of the
+clock model has a temporal dual with the same property.
+-/
+theorem truthAt_swapTemporal (φ : Formula)
+    (h : ∀ (σ : WorldHistory clockFrame), σ.IsTotal → ∀ t : ℚ, TruthAt clockModel σ t φ)
+    (τ : WorldHistory clockFrame) (hτ : τ.IsTotal) (t : ℚ) :
+    TruthAt clockModel τ t φ.swapTemporal := by
+  have hrel : ∀ x : ℚ,
+      τ.states (-x) (hτ (-x)) = cneg ((reflect τ hτ).states x (reflect_isTotal τ hτ x)) := by
+    intro x
+    exact (cneg_cneg (τ.states (-x) (hτ (-x)))).symm
+  have hm := truthAt_mirror φ (reflect τ hτ) τ (reflect_isTotal τ hτ) hτ hrel (-t)
+  rw [neg_neg] at hm
+  exact hm.mpr (h (reflect τ hτ) (reflect_isTotal τ hτ) (-t))
+
+/-! ## Statement S2 — the CO-closed derivation system -/
+
+/--
+The **`CO`-closed schema system**: the dense base, every instance of `CO`, and closure under
+every rule of `DerivationTree` that the empty-context schema form admits.
+
+`DerivationTree`'s `necessitation`, `temporal_necessitation` and `temporal_duality` constructors
+all require `Γ = []`, so no `CO` instance supplied as a *context* can ever appear under them. That
+is exactly the gap `co_not_derives_prior_U_gap` leaves open and this system closes: here the `CO`
+instances are axioms of the system, not assumptions, so they sit under every rule.
+
+`assumption` and `weakening` are absent because they are context rules with nothing to act on in
+the schema form. `temporal_duality` is present and must stay present: dropping it would silently
+weaken what the theorem below claims.
+-/
+inductive CoDerivation : Formula → Type where
+  /-- Any axiom admissible at `FrameClass.Dense`. -/
+  | «axiom» (φ : Formula) (h : Axiom φ) (h_fc : h.minFrameClass ≤ FrameClass.Dense) :
+      CoDerivation φ
+  /-- Every instance of the paper's `CO` schema. -/
+  | co (χ : Formula) : CoDerivation (Formula.co χ)
+  /-- Modus ponens. -/
+  | modus_ponens (φ ψ : Formula) (d₁ : CoDerivation (φ.imp ψ)) (d₂ : CoDerivation φ) :
+      CoDerivation ψ
+  /-- Modal necessitation. -/
+  | necessitation (φ : Formula) (d : CoDerivation φ) : CoDerivation (Formula.box φ)
+  /-- Temporal necessitation. -/
+  | temporal_necessitation (φ : Formula) (d : CoDerivation φ) :
+      CoDerivation (Formula.allFuture φ)
+  /-- Temporal duality. -/
+  | temporal_duality (φ : Formula) (d : CoDerivation φ) : CoDerivation φ.swapTemporal
+
+/--
+**Soundness of the `CO`-closed system over the arc model.**
+
+The axiom case is `soundness_dense` applied to the one-step derivation; the `co` case is
+`LoopingDuration.lean`'s Lemma C; `temporal_duality` is the mirror lemma. The conclusion is
+universally quantified over the history and the time, which is what the three rule cases need.
+-/
+theorem coDerivation_sound (φ : Formula) (d : CoDerivation φ) :
+    ∀ (τ : WorldHistory clockFrame), τ.IsTotal → ∀ t : ℚ, TruthAt clockModel τ t φ := by
+  induction d with
+  | «axiom» ψ h h_fc =>
+      intro τ hτ t
+      exact soundness_dense [] ψ (DerivationTree.axiom [] ψ h h_fc) ℚ clockFrame clockModel τ hτ t
+        (by simp)
+  | co χ => intro τ hτ t; exact clock_co_true clockModel χ τ hτ t
+  | modus_ponens _ _ _ _ ih₁ ih₂ => intro τ hτ t; exact (ih₁ τ hτ t) (ih₂ τ hτ t)
+  | necessitation _ _ ih => intro τ hτ t; exact fun σ hσ => ih σ hσ t
+  | temporal_necessitation ψ _ ih =>
+      intro τ hτ t
+      exact (Truth.future_iff ψ).mpr fun s _ => ih τ hτ s
+  | temporal_duality ψ _ ih => intro τ hτ t; exact truthAt_swapTemporal ψ ih τ hτ t
+
+/--
+**`CO` does not derive Prior-U (schema form).** The unqualified statement.
+
+There is no derivation of `Axiom.prior_U_gap p` in the system consisting of the dense base, the
+whole `CO` schema, modus ponens, modal and temporal necessitation, and temporal duality. Unlike
+`co_not_derives_prior_U_gap`, this leaves no residue: the `CO` instances here are axioms, so they
+are available under every rule, including the three that `DerivationTree` restricts to the empty
+context.
+
+Still not claimed, and still false, is any *frame*-level statement — see this module's docstring.
+-/
+theorem co_not_derives_prior_U_gap_schema (a : Atom) :
+    ¬ Nonempty (CoDerivation (priorUGapFormula (Formula.atom a))) := by
+  rintro ⟨d⟩
+  exact priorUGapFormula_false a
+    (coDerivation_sound _ d clockHistory clockHistory_isTotal 0)
+
 end FormalSystem.Metalogic.Independence

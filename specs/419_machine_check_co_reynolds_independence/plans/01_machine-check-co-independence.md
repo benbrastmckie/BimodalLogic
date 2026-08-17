@@ -263,7 +263,7 @@ reconstruct the formula from the prose in this plan.
 
 ---
 
-### Phase 4: Statement S1 and module wiring [IN PROGRESS]
+### Phase 4: Statement S1 and module wiring [COMPLETED]
 
 **Goal**: The first machine-checked independence theorem in the tree, wired into the library.
 
@@ -306,7 +306,7 @@ import line suffices.
 
 ---
 
-### Phase 5: Statement S2 — the CO-closed derivation system [NOT STARTED]
+### Phase 5: Statement S2 — the CO-closed derivation system [COMPLETED]
 
 **Goal**: The unqualified schema-level claim, including closure under `temporal_duality`.
 
@@ -355,7 +355,7 @@ mirror lemma named as the blocker target and escalate. Do **not** weaken `CoDeri
 
 ---
 
-### Phase 6: Correct the Layer 9 prose and add the forward pointer [NOT STARTED]
+### Phase 6: Correct the Layer 9 prose and add the forward pointer [IN PROGRESS]
 
 **Goal**: Remove the refuted ℚ-accumulation/Stavi sketch from `Axioms.lean` and point both
 directions of the CO/Reynolds relationship at their machine-checked artifacts.
