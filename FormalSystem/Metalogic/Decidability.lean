@@ -12,6 +12,7 @@ import FormalSystem.Metalogic.Decidability.ProofExtraction
 import FormalSystem.Metalogic.Decidability.CountermodelExtraction
 import FormalSystem.Metalogic.Decidability.DecisionProcedure
 import FormalSystem.Metalogic.Decidability.Correctness
+import FormalSystem.Metalogic.Decidability.IntPresentation
 import FormalSystem.Metalogic.Decidability.Propositional.PropForm
 import FormalSystem.Metalogic.Decidability.Propositional.Kalmar
 import FormalSystem.Metalogic.Decidability.Propositional.Decidable

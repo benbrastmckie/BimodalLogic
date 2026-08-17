@@ -963,21 +963,27 @@ in a model with finite `WorldState` over `D = ℤ`.
 
 ---
 
-### Phase 11: `IntPresentation` and `toFiniteFrame` [NOT STARTED]
+### Phase 11: `IntPresentation` and `toFiniteFrame` [COMPLETED]
 
 **Goal**: A computational presentation of a finite-`W`-over-ℤ frame. `FiniteTaskFrame.finite_world`
 is `Finite`, which is non-constructive and yields no enumeration, so it **cannot** drive `decide` —
 a `Fintype`/`DecidableEq` presentation is required and is what this phase supplies.
 
 **Tasks**:
-- [ ] New module (proposed `FormalSystem/Metalogic/Decidability/IntPresentation.lean`).
-- [ ] Define the structure along the report's recommended shape:
+- [x] New module (proposed `FormalSystem/Metalogic/Decidability/IntPresentation.lean`).
+- [x] Define the structure along the report's recommended shape:
       `card : ℕ`, `step : Fin card → Fin card → Bool`, `val : Atom → Fin card → Bool`,
       `fwd : ∀ w, ∃ u, step w u = true`, `bwd : ∀ w, ∃ v, step v w = true`.
-- [ ] `IntPresentation.toFiniteFrame : IntPresentation → FiniteTaskFrame ℤ` built through
+      *(deviation: altered — one field added, `card_pos : 0 < card`. It is not optional:
+      `TaskFrame` carries a mandatory `nonempty : Nonempty WorldState` field and `Fin 0` is empty,
+      so `toFiniteFrame` does not elaborate without it. `fwd`/`bwd` do not rescue the case —
+      at `card = 0` both are vacuously true, so the empty presentation would otherwise be legal
+      and unusable. An `instNeZeroCard` instance is derived from it, without which
+      `(0 : Fin P.card)` does not even elaborate for a general `P`.)*
+- [x] `IntPresentation.toFiniteFrame : IntPresentation → FiniteTaskFrame ℤ` built through
       `TaskFrame.ofStep` (Phase 5) — do not re-discharge the seven fields by hand.
-- [ ] `IntPresentation.toModel` supplying the valuation.
-- [ ] Carry `Fin card` throughout; never route computation through `Finite`.
+- [x] `IntPresentation.toModel` supplying the valuation.
+- [x] Carry `Fin card` throughout; never route computation through `Finite`.
 
 **Timing**: 1.5 hours
 
@@ -989,9 +995,17 @@ a `Fintype`/`DecidableEq` presentation is required and is what this phase suppli
 - `FormalSystem/Metalogic/Decidability/IntPresentation.lean` (new)
 
 **Verification**:
-- Module builds with zero diagnostics.
+- Module builds with zero diagnostics. **MET.**
 - `#eval`-able smoke instance: the promoted two-state witness from Phase 5 expressed as an
-  `IntPresentation` and its `toFiniteFrame` elaborating.
+  `IntPresentation` and its `toFiniteFrame` elaborating. **MET** — `flipPresentation` in the
+  module's `WorkedInstance` section, with `decide`-checked adjacency entries, its
+  `Nat.card … = 2` fact, and its `toFiniteFrame` elaborating as a `FiniteTaskFrame ℤ`.
+
+**Landed**: `IntPresentation` (with `card_pos`), `instNeZeroCard`, `instNonemptyFin`, `stepRel`
+and its `DecidablePred` instance, `toTaskFrame` (through `TaskFrame.ofStep` — none of the seven
+fields is re-discharged), `toFiniteFrame`, `worldState_eq`, `card_worldState`, `step_iff`,
+`isStepPath_iff`, `toModel`, `toModel_valuation`. Wired into
+`FormalSystem/Metalogic/Decidability.lean`.
 
 ---
 
