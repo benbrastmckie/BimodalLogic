@@ -1,0 +1,12 @@
+# Swap-invariant functions (report §4.1) — these recurse structurally over BOTH
+# constructor arguments symmetrically, so a guard/event swap changes neither their
+# type-correctness nor their behaviour. They will produce NO build error and NO wrong
+# result. Do not chase them during the Phase 9 audit or the repair phases.
+Formula.swapTemporal
+Formula.complexity
+Formula.modalDepth
+Formula.temporalDepth
+Formula.countImplications
+Formula.atoms
+Formula.predFormulas
+Formula.subformulas

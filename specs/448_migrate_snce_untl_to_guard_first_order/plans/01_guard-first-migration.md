@@ -1,7 +1,7 @@
 # Implementation Plan: Guard-First Migration of `snce`/`untl`
 
 - **Task**: 448 - Migrate the Lean tree's `snce`/`untl` constructors from EVENT-FIRST (Burgess) to GUARD-FIRST (paper) argument order
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 19 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/448_migrate_snce_untl_to_guard_first_order/reports/01_guard-first-migration-strategy.md`
@@ -226,27 +226,32 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Baseline Snapshot and Migration Ledger [NOT STARTED]
+### Phase 1: Baseline Snapshot and Migration Ledger [COMPLETED]
 
 **Goal**: Capture every pre-migration measurement the later gates diff against, and freeze the
 scope boundary. Nothing downstream is auditable without this.
 
 **Tasks**:
-- [ ] Confirm `lake build` green and record the job count.
-- [ ] Confirm `scripts/typst-sync-check.sh` PASS and record all three check results.
-- [ ] Copy `typst/generated/machine-appendix.jsonl` and `machine-appendix.typ` to
+- [x] Confirm `lake build` green and record the job count. *(green, 2457 jobs, 425 oleans)*
+- [x] Confirm `scripts/typst-sync-check.sh` PASS and record all three check results. *(PASS 3/3)*
+- [x] Copy `typst/generated/machine-appendix.jsonl` and `machine-appendix.typ` to
       `specs/448_migrate_snce_untl_to_guard_first_order/baseline/`.
-- [ ] Write a **per-file** `sorry` count table for live scope to
+- [x] Write a **per-file** `sorry` count table for live scope to
       `baseline/sorry-baseline.txt` (per-file, never a total — the total double-counts).
-- [ ] Write a **per-file** `untl`/`snce` occurrence table for live scope to
+- [x] Write a **per-file** `untl`/`snce` occurrence table for live scope to
       `baseline/reference-ledger.txt` using the identifier-boundary pattern
       `(?<![A-Za-z0-9_.])(?:Formula\.|\.)?(untl|snce)(?![A-Za-z0-9_])`.
-- [ ] Record the excluded-path predicate (any path containing a `Boneyard` segment) at the top of
+- [x] Record the excluded-path predicate (any path containing a `Boneyard` segment) at the top of
       the ledger, and re-confirm D3's evidence: 0 Boneyard oleans, 0 non-Boneyard importers.
-- [ ] Enumerate the swap-invariant sites from report §4.1 (`Formula.swapTemporal`, `complexity`,
+      *(both re-confirmed: 0 of 425 oleans under Boneyard; 0 non-Boneyard importers)*
+- [x] Enumerate the swap-invariant sites from report §4.1 (`Formula.swapTemporal`, `complexity`,
       `modalDepth`, `temporalDepth`, `countImplications`, `atoms`, `predFormulas`, `subformulas`)
       into `baseline/swap-invariant-sites.txt` so the audit does not chase them.
-- [ ] Commit the baseline directory.
+- [x] Commit the baseline directory.
+
+**Phase 1 result**: Scope hypothesis confirmed **exactly** — live scope 3,711 occurrences across
+152 files; excluded Boneyard scope 1,934 across 51 files. Divergence 0.0%, well inside the 2%
+tolerance, so the exclusion predicate and identifier pattern are both correct as specified.
 
 **Timing**: 45 minutes
 

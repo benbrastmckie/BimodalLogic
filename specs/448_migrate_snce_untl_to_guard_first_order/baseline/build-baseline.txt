@@ -1,0 +1,9 @@
+# Phase 1 baseline, task 448
+lake build: GREEN, 2457 jobs
+oleans built: 425
+Boneyard oleans: 0   (D3 evidence re-confirmed)
+non-Boneyard modules importing a Boneyard module: 0   (D3 evidence re-confirmed)
+scripts/typst-sync-check.sh: PASS (3/3)
+  Check 1 backtick name resolution: TOTAL_VIOLATIONS=0 (TOTAL_CANDIDATES=623)
+  Check 2 count freshness:          MISMATCH_COUNT=0
+  Check 3 machine appendix:         MA_COUNT_MISMATCHES=0
