@@ -11,7 +11,7 @@
 
 == Task Frames
 
-Task frames are the fundamental semantic structures for *TM*; the semantics presented in this chapter follows @brastmckie2026possibleworlds.
+Task frames are the fundamental semantic structures for *TM*.
 They abstract from universal laws governing transitions between world states while still retaining the temporal duration for a transition to complete.
 
 The following primitives are required to define a task frame:
@@ -33,12 +33,14 @@ The following primitives are required to define a task frame:
   caption: none,
 )
 
+// CONFIRM(paper): def:temporal-order states this definition (source text pinned verbatim in
+//   specs/paper-definitions-of-record.md)
 #definition("Temporal Order")[
-  A *temporal order* is a nontrivial totally ordered abelian group $D = (D, +, 0, lt.eq)$ with *positive cone* $D^+ := { x in D : x gt.eq 0 }$.#footnote[`def:temporal-order`; source text pinned verbatim in `specs/paper-definitions-of-record.md`. @brastmckie2026possibleworlds]
+  A *temporal order* is a nontrivial totally ordered abelian group $D = (D, +, 0, lt.eq)$ with *positive cone* $D^+ := { x in D : x gt.eq 0 }$.
 ]
 
 This algebraic choice is not incidental to the rest of the book: the discrete-or-dense dichotomy driving the completeness architecture of @sec:metalogic depends on $D$ being an ordered abelian group and *fails* for a bare linear order (translation invariance is what globalizes a local gap or density witness).
-The Lean structure `TaskFrame` (`Semantics/TaskFrame.lean`) requires exactly this: `D` carries `AddCommGroup`, `LinearOrder`, `IsOrderedAddMonoid`, and `Nontrivial` instances, matching `def:temporal-order` field for field.
+The Lean structure `TaskFrame` (`Semantics/TaskFrame.lean`) requires exactly this: `D` carries `AddCommGroup`, `LinearOrder`, `IsOrderedAddMonoid`, and `Nontrivial` instances, matching the definition field for field.
 
 #definition("Task Relation")[
   A *task relation* on a nonempty set of world states $W$ over a temporal order $D$ is any parameterized relation $w arrow.r.double.long_x u$ for $w, u in W$ and $x in D^+$, extended to negative durations by the *converse convention*
@@ -47,10 +49,12 @@ The Lean structure `TaskFrame` (`Semantics/TaskFrame.lean`) requires exactly thi
   - *Fiber*: $"Fib"(w, x) := { u in W : w arrow.r.double.long_x u }$.
   - *Cone*: $(w)_x := union.big_(|y| < x) "Fib"(w, y)$ where $x > 0$.
   - *Segment*: $[w, v]_x^y := "Fib"(w, x) inter "Fib"(v, -y)$ where $x, y gt.eq 0$.
-]#footnote[`def:task-relation`; source text pinned verbatim in `specs/paper-definitions-of-record.md`. @brastmckie2026possibleworlds]
+]
+// CONFIRM(paper): def:task-relation states this definition (source text pinned verbatim in
+//   specs/paper-definitions-of-record.md)
 
 There is therefore no separate *Reflection* axiom: the equivalence $w arrow.r.double.long_x u arrow.l.r.double u arrow.r.double.long_(-x) w$ is built into the task relation's definition by the converse convention above, not imposed as a further constraint on frames.
-Any converse operation written explicitly in this book uses a superscript inverse ($arrow.r.double.long^(-1)$), never the relation-algebra breve or smile common in the arrow-logic literature; the paper itself introduces no operator symbol for the convention at all, writing it only as subscript negation.
+Any converse operation written explicitly in this book uses a superscript inverse ($arrow.r.double.long^(-1)$), never the relation-algebra breve or smile common in the arrow-logic literature; the convention itself carries no operator symbol, being written only as subscript negation.
 
 #align(center)[
   #cetz.canvas({
@@ -97,21 +101,26 @@ Any converse operation written explicitly in this book uses a superscript invers
 
 #align(center)[
   #text(size: 0.85em, style: "italic")[
-    The fiber/cone/segment apparatus of `def:task-relation`. Shaded regions are $w$'s forward cone (blue) and $v$'s backward cone (orange); the dashed line is the fiber $"Fib"(w,x)$ at duration $x$ above $w$; the darker overlap band is the segment $[w,v]_x^y$, where $v$ sits at duration $x+y$ above $w$ so that $"Fib"(w,x)$ and $"Fib"(v,-y)$ share the same duration level.
+    The fiber/cone/segment apparatus of the task relation. Shaded regions are $w$'s forward cone (blue) and $v$'s backward cone (orange); the dashed line is the fiber $"Fib"(w,x)$ at duration $x$ above $w$; the darker overlap band is the segment $[w,v]_x^y$, where $v$ sits at duration $x+y$ above $w$ so that $"Fib"(w,x)$ and $"Fib"(v,-y)$ share the same duration level.
   ]
 ]
 
+// CONFIRM(paper): def:directed states this definition (source text pinned verbatim in
+//   specs/paper-definitions-of-record.md)
 #definition("Directed Family")[
   A nonempty family of sets $S$ is *directed* just in case $S' subset.eq S_1 inter S_2$ for some $S' in S$ whenever $S_1, S_2 in S$.
-]#footnote[`def:directed`; source text pinned verbatim in `specs/paper-definitions-of-record.md`. @brastmckie2026possibleworlds]
+]
 
+// CONFIRM(paper): def:frame states this definition (source text pinned verbatim in
+//   specs/paper-definitions-of-record.md); app:topology-t1 and app:topology-r0 prove the T1 and R0 claims the
+//   topology footnote below states.
 #definition("Frame")[
   A *frame* is any $cal(F) = (W, D, arrow.r.double.long)$ where $W$ is a nonempty set of world states, $D$ is a temporal order, and $arrow.r.double.long$ is a task relation satisfying the following for $x, y gt.eq 0$:
   + *Compositionality*: $w arrow.r.double.long_(x+y) v$ if and only if $w arrow.r.double.long_x u$ and $u arrow.r.double.long_y v$ for some $u in W$.
   + *Seriality*: $w arrow.r.double.long_x u$ and $v arrow.r.double.long_x w$ for some $u, v in W$.
   + *Limit*: $inter.big_(x > 0) (w)_x = {w}$.
   + *Spherical*: $inter.big S eq.not emptyset$ for any directed family $S$ of nonempty fibers and segments.
-]#footnote[`def:frame`; source text pinned verbatim in `specs/paper-definitions-of-record.md`. @brastmckie2026possibleworlds Compositionality is a *biconditional*, load bearing in both directions.]
+]#footnote[Compositionality is a *biconditional*, load bearing in both directions.]#footnote[The basic cones $(w)_x$ for $w in W$ and $x > 0$ form the basis of a topology on the world states, and that topology is separated: it is *T1* (each singleton ${w}$ is closed) and hence *R0* (topological indistinguishability is symmetric). Separation is exactly what *Limit* delivers topologically --- no world state other than $w$ lies in every cone around $w$.]
 
 *Compositionality* ensures that executing tasks sequentially yields results consistent with a single task of combined duration, in both directions.
 *Seriality* ensures every world state has a successor and a predecessor at every nonnegative duration.
@@ -123,29 +132,35 @@ Nullity is conspicuously absent from this list because it is not an axiom:
 
 #lemma("Nullity")[
   $w arrow.r.double.long_0 w$ for every world state $w in W$ in every frame $cal(F) = (W, D, arrow.r.double.long)$.
-]#footnote[`lem:nullity`; source text pinned verbatim in `specs/paper-definitions-of-record.md`. @brastmckie2026possibleworlds]
+]
+// CONFIRM(paper): lem:nullity states this lemma (source text pinned verbatim in
+//   specs/paper-definitions-of-record.md)
 
 The proof is choice-free and short: instantiate *Seriality* at $x = 0$ to get some $u in W$ with $w arrow.r.double.long_0 u$; *Limit* at $x arrow.r 0^+$ then forces $u = w$, since $w$ is the unique point in every cone around itself.
 
 #remark("Why Nullity Is a Lemma, Not an Axiom")[
   A reader who has seen other presentations of similar systems might expect "zero duration is a no-op" to be postulated outright, as it was in an earlier draft of this book.
-  Demoting it to a derived lemma is a genuine simplification, not mere reshuffling: *Seriality* and *Limit* alone already force it, so a frame satisfying the four axioms of `def:frame` automatically satisfies Nullity, and nothing beyond those four axioms is needed to get it.
+  Demoting it to a derived lemma is a genuine simplification, not mere reshuffling: *Seriality* and *Limit* alone already force it, so a frame satisfying the four frame axioms automatically satisfies Nullity, and nothing beyond those four axioms is needed to get it.
   Stating it as a fifth axiom would therefore not strengthen the theory, only lengthen the definition.
 ]
 
-The Lean structure `TaskFrame` (`Semantics/TaskFrame.lean`) packages this presentation field-for-field, and the correspondence is one of *agreement*, not divergence: the primitive `TaskRel` relation carries #leanComp, the paper's biconditional *Compositionality* in full (of which the composition, i.e. $arrow.l$, direction is projected out separately as #leanForwardComp, restricted to $x, y gt.eq 0$ exactly as `def:frame` states it); #leanConverse packages the *converse convention* of `def:task-relation` as structure data, since a two-sided Lean relation cannot carry the convention in its type, so the pair (two-sided `TaskRel`, #leanConverse) *is* the paper's extended relation over a primitive relation on $D^+$, constraining rather than adding to it; #leanSerial is *Seriality* verbatim, stated by citation as `TaskFrame.Serial TaskRel`; #leanLimit is *Limit* verbatim, in the literal transcribed shape; and #leanSpherical is *Spherical* verbatim, stated by citation as `TaskFrame.Spherical TaskRel` so that fibers and segments remain two separate classes, exactly as `def:directed` and `def:frame` require --- this field is what the Step Lemma of @sec:world-histories consumes.
-#leanNullityDerived (`TaskRel w 0 w`) is *derived* from these fields via #leanNullityIdentity, matching `lem:nullity`'s derived status in the paper.
+The Lean structure `TaskFrame` (`Semantics/TaskFrame.lean`) packages this presentation field-for-field, and the correspondence is one of *agreement*, not divergence: the primitive `TaskRel` relation carries #leanComp, the biconditional *Compositionality* in full (of which the composition, i.e. $arrow.l$, direction is projected out separately as #leanForwardComp, restricted to $x, y gt.eq 0$ exactly as the frame definition states it); #leanConverse packages the *converse convention* as structure data, since a two-sided Lean relation cannot carry the convention in its type, so the pair (two-sided `TaskRel`, #leanConverse) *is* the extended relation over a primitive relation on $D^+$, constraining rather than adding to it; #leanSerial is *Seriality* verbatim, stated by citation as `TaskFrame.Serial TaskRel`; #leanLimit is *Limit* verbatim, in the literal transcribed shape; and #leanSpherical is *Spherical* verbatim, stated by citation as `TaskFrame.Spherical TaskRel` so that fibers and segments remain two separate classes, exactly as the directed-family and frame definitions require --- this field is what the Step Lemma of @sec:world-histories consumes.
+#leanNullityDerived (`TaskRel w 0 w`) is *derived* from these fields via #leanNullityIdentity, matching Nullity's derived status above.
 
-One open point should be recorded rather than smoothed over: #leanNullityIdentity is stated as an *iff* ($w arrow.r.double.long_0 u arrow.l.r.double w = u$), which is strictly stronger than `lem:nullity`'s reflexivity-only conclusion --- it additionally asserts injectivity at zero duration. The Lean module documents this as an open design question, not yet settled jointly with other in-flight formalization work, and it is left as-is here; no Lean change is made by this revision.
+A design fact of the mechanization worth recording: #leanNullityIdentity is stated as an *iff* ($w arrow.r.double.long_0 u arrow.l.r.double w = u$), which is strictly stronger than Nullity's reflexivity-only conclusion --- it additionally asserts injectivity at zero duration.
+// CONFIRM(lean): the intended strength of nullity_identity (iff vs reflexivity-only) is settled and documented in
+//   Semantics/TaskFrame.lean, consistently with the Nullity lemma this chapter states.
 
 == World Histories <sec:world-histories>
 
-The paper builds possible worlds up through three tiers, and the order matters: a *partial history* requires only a nonempty domain; a *world history* additionally requires the domain to be *convex*; and a world history is *total* --- equivalently, a *possible world* --- just in case its domain is all of $D$.
+Possible worlds are built up through three tiers, and the order matters: a *partial history* requires only a nonempty domain; a *world history* additionally requires the domain to be *convex*; and a world history is *total* --- equivalently, a *possible world* --- just in case its domain is all of $D$.
 Only the total tier is what the semantics of @sec:truth quantifies over.
 
 #definition("Partial History")[
   A *partial history* over a frame $cal(F) = (W, D, arrow.r.double.long)$ is a dependent function $tau : (x : D) arrow.r "dom"(x) arrow.r W$ where $"dom" : D arrow.r "Prop"$ is a *nonempty* subset of $D$ and $tau(x) arrow.r.double.long_(y-x) tau(y)$ for all times $x, y : D$ with $"dom"(x)$ and $"dom"(y)$.
-]#footnote[`def:world-history`; source text pinned verbatim in `specs/paper-definitions-of-record.md`. @brastmckie2026possibleworlds Nonemptiness of the domain is required; convexity is *not*.]
+]#footnote[Nonemptiness of the domain is required; convexity is *not*.]
+// CONFIRM(paper): def:world-history states the partial-history/world-history/totality tiers this section
+//   transcribes (source text pinned verbatim in specs/paper-definitions-of-record.md)
 
 #definition("Convex Domain")[
   A domain $"dom" : D arrow.r "Prop"$ is *convex* if whenever $a, c in "dom"$ with $a lt.eq c$, every time $b$ with $a lt.eq b lt.eq c$ is also in $"dom"$.
@@ -157,7 +172,7 @@ Only the total tier is what the semantics of @sec:truth quantifies over.
   A *world history* is any partial history whose domain is convex.
   A world history is *total* --- equivalently, a *possible world* --- just in case $"dom"$ holds of every time, i.e. $"dom" = D$.
   The set of all *total* world histories over frame $cal(F)$ is denoted $H_(cal(F))$: a world history with a proper convex domain is *not* a member of $H_(cal(F))$, only the total ones are.
-]#footnote[`def:world-history`. @brastmckie2026possibleworlds]
+]
 
 #align(center)[
   #cetz.canvas({
@@ -197,46 +212,53 @@ Only the total tier is what the semantics of @sec:truth quantifies over.
 
 #align(center)[
   #text(size: 0.85em, style: "italic")[
-    The layering of `def:world-history`: a partial history (any nonempty domain, row omitted here since it subsumes all three) narrows to a *world history* once the domain is convex (row 2), and narrows further to *total* -- a possible world -- once the domain is all of $D$ (row 3). Row 1 has a gap and so is not convex: not a world history at all, regardless of nonemptiness.
+    The three-tier layering: a partial history (any nonempty domain, row omitted here since it subsumes all three) narrows to a *world history* once the domain is convex (row 2), and narrows further to *total* -- a possible world -- once the domain is all of $D$ (row 3). Row 1 has a gap and so is not convex: not a world history at all, regardless of nonemptiness.
   ]
 ]
 
-Not every partial history is total, and it is not obvious that a frame has *any* total world histories at all --- the existence of $H_(cal(F))$ needs an argument, and this is exactly where *Spherical* earns its place in `def:frame`.
+Not every partial history is total, and it is not obvious that a frame has *any* total world histories at all --- the existence of $H_(cal(F))$ needs an argument, and this is exactly where *Spherical* earns its place among the frame axioms.
 
 #definition("Constraints on a New Time")[
   For a partial history $tau$ with domain $"dom"$ and a duration $z in.not "dom"$, the *constraints on* $z$ are the segments $[tau(t), tau(s)]_(z-t)^(s-z)$ for times $t, s : D$ with $"dom"(t)$, $"dom"(s)$, and $t < z < s$ when both hold, and the fibers $"Fib"(tau(t), z-t)$ for $t$ with $"dom"(t)$ otherwise.
-]#footnote[`def:constraints`. @brastmckie2026possibleworlds]
+]
+// CONFIRM(paper): def:constraints states this definition
 
 #lemma("Constraint Lemma")[
   The constraints on $z$ form a directed family of nonempty sets.
-]#footnote[`lem:constraint`; proof uses *Compositionality* in both directions plus *Seriality*. @brastmckie2026possibleworlds]
+]#footnote[The proof uses *Compositionality* in both directions plus *Seriality*.]
+// CONFIRM(paper): lem:constraint states this lemma
 
 #lemma("Step Lemma")[
   Every partial history extends to a partial history on $"dom" union {z}$ for any duration $z in D$.
-]#footnote[`lem:step`; the sole application site of *Spherical* in the whole existence chain. @brastmckie2026possibleworlds Closing remark, load bearing for the discrete case: when the constraint family has a $subset.eq$-least member, that member already contains a candidate and *Spherical* is not needed.]
+]#footnote[The sole application site of *Spherical* in the whole existence chain. Load bearing for the discrete case: when the constraint family has a $subset.eq$-least member, that member already contains a candidate and *Spherical* is not needed.]
+// CONFIRM(paper): lem:step states this lemma
 
 #theorem("Extension Theorem")[
   Every partial history $tau$ over a frame $cal(F)$ is extended by some total world history $sigma in H_(cal(F))$.
-]#footnote[`thm:extension`; proved by Zorn's lemma over partial histories ordered by extension, closing via the Step Lemma --- a ZFC, not choice-free, result. @brastmckie2026possibleworlds]
+]#footnote[Proved by Zorn's lemma over partial histories ordered by extension, closing via the Step Lemma --- a ZFC, not choice-free, result.]
+// CONFIRM(paper): thm:extension states this theorem (source text pinned verbatim in
+//   specs/paper-definitions-of-record.md)
 
 #corollary("Occurrence")[
   For any frame $cal(F)$, world state $w in W$, and time $x : D$, there is a total world history $tau in H_(cal(F))$ where $tau(x) = w$; in particular $H_(cal(F))$ is nonempty for every frame.
-]#footnote[`cor:occurrence`, extending the one-point partial history ${(x, w)}$ via the Extension Theorem. @brastmckie2026possibleworlds]
+]#footnote[Proved by extending the one-point partial history ${(x, w)}$ via the Extension Theorem.]
+// CONFIRM(paper): cor:occurrence states this corollary
 
 *Spherical* is genuinely needed for the Step Lemma in general, but it comes for free when the world-state carrier is finite:
 
 #corollary("Spherical for Finite Carriers")[
   Every frame $cal(F) = (W, D, arrow.r.double.long)$ with finite $W$ satisfies *Spherical*, choice-free.
-]#footnote[`cor:spherical-finite` --- an anchor outside the 26 tracked by `specs/paper-definitions-of-record.md`, re-verified directly against the live paper for this citation rather than assumed. @brastmckie2026possibleworlds]
+]
+// CONFIRM(paper): cor:spherical-finite states this corollary
 
 #remark("What the Finite-Carrier Discharge Does and Does Not Give")[
-  *Spherical* earns its place in `def:frame` because, without it, nothing guarantees a directed family of nonempty fibers and segments has a common point --- and the Step Lemma needs exactly that common point to extend a partial history by one more duration.
+  *Spherical* earns its place among the frame axioms because, without it, nothing guarantees a directed family of nonempty fibers and segments has a common point --- and the Step Lemma needs exactly that common point to extend a partial history by one more duration.
   The finite-carrier corollary above discharges *Spherical* choice-free whenever $W$ is finite, which covers every worked example and every finite countermodel this book constructs.
-  It does *not* discharge *Spherical* for infinite-$W$ frames: those still need the axiom in full, and the Lean-status footnote of @sec:metalogic records this as a genuine outstanding obligation for an infinite-$W$ frame, not a solved case dressed up as open.
+  It does *not* discharge *Spherical* for infinite-$W$ frames: those still need the axiom in full.
 ]
 
 The Lean formalization runs this exact chain. `PartialHistory` and `WorldHistory` (`Semantics/PartialHistory.lean`, `Semantics/WorldHistory.lean`) implement the two-tier structure, with `WorldHistory` extending `PartialHistory` by a single `convex` field, and `WorldHistory.IsTotal` as the totality predicate identifying membership in $H_(cal(F))$.
-`Semantics/Extension/Constraint.lean`, `Admissible.lean`, `Step.lean`, and `Extension.lean` carry `def:constraints` through `lem:constraint`, `lem:fibers`, `lem:admissible`, `lem:step`, `thm:extension`, and `cor:occurrence` as a machine-checked chain, cited by anchor throughout rather than restated inline.
+`Semantics/Extension/Constraint.lean`, `Admissible.lean`, `Step.lean`, and `Extension.lean` carry the whole existence chain --- constraints, the Constraint Lemma, admissibility, the Step Lemma, the Extension Theorem, and Occurrence --- as a machine-checked sequence of lemmas rather than restating it inline.
 
 == Task Models
 
@@ -255,8 +277,10 @@ World states themselves are specific configurations of the total system at an in
 Truth is evaluated relative to a model $cal(M)$ providing the interpretation, a *possible world* $tau in H_(cal(F))$ --- a total world history, per @sec:world-histories --- and a time $x : D$.
 Whereas the model fixes the interpretation of the language, the contextual parameters $tau$ and $x$ determine the truth value of every sentence of the language.
 
+// CONFIRM(paper): def:BL-semantics's box clause ranges over all sigma in H_F with no admissible-history or
+//   shift-closure parameter, and def:BLplus-semantics states the guard-first since/until clauses transcribed below.
 #definition("Truth")[
-  For model $cal(M)$, possible world $tau in H_(cal(F))$, and time $x : D$, truth is defined by recursion on the six primitive constructors:#footnote[`TruthAt` in `Semantics/Truth.lean`. `def:BL-semantics`'s box clause, verbatim, ranges over "all $sigma in H_F$" with no further parameter; the Lean implementation matches exactly, with the box case quantifying over `WorldHistory.IsTotal` and taking no admissible-history or shift-closure parameter. @brastmckie2026possibleworlds]
+  For model $cal(M)$, possible world $tau in H_(cal(F))$, and time $x : D$, truth is defined by recursion on the six primitive constructors:#footnote[`TruthAt` in `Semantics/Truth.lean`. The box clause quantifies over all total world histories (`WorldHistory.IsTotal`), with no admissible-history or shift-closure parameter.]
   $
     cal(M), tau, x tack.r.double p &#Iff x in "dom"(tau) "and" I(tau(x), p) \
     cal(M), tau, x tack.r.double.not bot \
@@ -264,31 +288,31 @@ Whereas the model fixes the interpretation of the language, the contextual param
       cal(M), tau, x tack.r.double.not phi.alt "or" cal(M), tau, x tack.r.double psi \
     cal(M), tau, x tack.r.double square.stroked phi.alt &#Iff
       cal(M), sigma, x tack.r.double phi.alt "for all" sigma : H_(cal(F)) \
-    cal(M), tau, x tack.r.double U(phi.alt, psi) &#Iff
-      "for some" y : D "with" x < y "we have" cal(M), tau, y tack.r.double phi.alt \
-      &quad "and" cal(M), tau, z tack.r.double psi "for all" z : D "where" x < z < y \
-    cal(M), tau, x tack.r.double S(phi.alt, psi) &#Iff
-      "for some" y : D "with" y < x "we have" cal(M), tau, y tack.r.double phi.alt \
-      &quad "and" cal(M), tau, z tack.r.double psi "for all" z : D "where" y < z < x
+    cal(M), tau, x tack.r.double phi.alt #snce psi &#Iff
+      "for some" y : D "with" y < x "we have" cal(M), tau, y tack.r.double psi \
+      &quad "and" cal(M), tau, z tack.r.double phi.alt "for all" z : D "where" y < z < x \
+    cal(M), tau, x tack.r.double phi.alt #untl psi &#Iff
+      "for some" y : D "with" x < y "we have" cal(M), tau, y tack.r.double psi \
+      &quad "and" cal(M), tau, z tack.r.double phi.alt "for all" z : D "where" x < z < y
   $
 ]
 
-The atom clause above carries a domain conjunct, $x in "dom"(tau)$; `def:BL-semantics`'s atom clause has none, since the paper's evaluation point is already total ($"dom" = D$), so the conjunct is vacuously true there.
-This is a deliberate, documented Lean-side choice, not an oversight: `TruthAt` keeps the conjunct so that it stays meaningful when applied to the *partial* histories the extension machinery of @sec:world-histories traffics in internally, and the two readings provably agree once restricted to $H_(cal(F))$.
+The atom clause carries a domain conjunct, $x in "dom"(tau)$. At a total evaluation point ($"dom" = D$) the conjunct is vacuously true, so it changes nothing about truth at possible worlds.
+It is kept deliberately: `TruthAt` stays meaningful when applied to the *partial* histories the extension machinery of @sec:world-histories traffics in internally, and the two readings provably agree once restricted to $H_(cal(F))$.
 
-Until and Since use a *strict witness* with an *open guard*: the witness time $y$ is strictly future (respectively strictly past), and the guard $psi$ is required only on the open interval strictly between $x$ and $y$.
+Since and Until use a *strict witness* with an *open guard*: the witness time $y$ is strictly past (respectively strictly future), and the guard $phi.alt$ is required only on the open interval strictly between $y$ and $x$.
 The derived tense operators then receive their expected *strict* truth conditions as characterization theorems:#footnote[`future_iff`, `past_iff`, and companions in `Semantics/Truth.lean`; the semantics is irreflexive: G and H exclude the present moment, so the temporal T-axioms $G phi.alt arrow.r phi.alt$ and $H phi.alt arrow.r phi.alt$ are not valid.]
 
 #theorem("Derived Truth Conditions")[
   $
-    cal(M), tau, x tack.r.double H phi.alt &#Iff
-      cal(M), tau, y tack.r.double phi.alt "for all" y : D "where" y < x \
-    cal(M), tau, x tack.r.double G phi.alt &#Iff
-      cal(M), tau, y tack.r.double phi.alt "for all" y : D "where" x < y \
     cal(M), tau, x tack.r.double P phi.alt &#Iff
       cal(M), tau, y tack.r.double phi.alt "for some" y : D "where" y < x \
     cal(M), tau, x tack.r.double F phi.alt &#Iff
-      cal(M), tau, y tack.r.double phi.alt "for some" y : D "where" x < y
+      cal(M), tau, y tack.r.double phi.alt "for some" y : D "where" x < y \
+    cal(M), tau, x tack.r.double H phi.alt &#Iff
+      cal(M), tau, y tack.r.double phi.alt "for all" y : D "where" y < x \
+    cal(M), tau, x tack.r.double G phi.alt &#Iff
+      cal(M), tau, y tack.r.double phi.alt "for all" y : D "where" x < y
   $
 ]
 
@@ -298,7 +322,7 @@ The temporal operators quantify over all earlier and later times $y : D$ --- ove
 #remark("Strict Semantics Costs the T-Axioms")[
   $G$ and $H$ exclude the present moment: they are genuinely *strict*, not the reflexive $lt.eq$/$gt.eq$ convention familiar from some model-checking traditions.
   This has a real cost worth stating plainly, because it is easy to expect otherwise: the temporal T-axioms $G phi.alt arrow.r phi.alt$ and $H phi.alt arrow.r phi.alt$ are *not* valid under this semantics --- truth at every strictly later time says nothing about truth right now.
-  What replaces them is *Seriality* (`def:frame`), supplied axiomatically by BX1/BX1$'$ ($top arrow.r F top$, $top arrow.r P top$) rather than following from the truth conditions themselves.
+  What replaces them is *Seriality* (a frame axiom, per the Task Frames section above), supplied axiomatically by BX1/BX1$'$ ($top arrow.r F top$, $top arrow.r P top$) rather than following from the truth conditions themselves.
   The strict convention is not a free stylistic choice: @sec:notes's Design Choices section shows that the reflexive alternative collapses the frame classes this book spends two chapters distinguishing.
 ]
 
@@ -312,7 +336,7 @@ It is natural to assume that whatever is necessary is always the case, or equiva
 Time-shift enables the validity proof of the bimodal interaction axiom MF ($square.stroked phi.alt arrow.r square.stroked G phi.alt$); together with the derived theorem TF ($square.stroked phi.alt arrow.r G square.stroked phi.alt$) it yields the perpetuity principles.
 
 #definition("Time-Shift")[
-  For $tau, sigma in H_(cal(F))$ and $x, y : D$, world histories $tau$ and $sigma$ are *time-shifted from $y$ to $x$*, written $tau #timeshift($y$, $x$) sigma$, if and only if there exists an order automorphism $overline(a) : D arrow.r D$ where $y = overline(a)(x)$, $"dom"_sigma = overline(a)^(-1)("dom"_tau)$, and $sigma(z) = tau(overline(a)(z))$ for all $z in "dom"_sigma$.
+  For $tau, sigma in H_(cal(F))$ and $x, y : D$, the possible worlds $tau$ and $sigma$ are *time-shifted from $x$ to $y$*, written $tau #timeshift($x$, $y$) sigma$, if and only if there exists a *translation* $overline(a) : D arrow.r D$, $overline(a)(z) = z + d$ for some $d in D$, where $y = overline(a)(x)$ and $tau(z) = sigma(overline(a)(z))$ for all $z in D$.#footnote[The Lean formalization (`timeShift` in `Semantics/WorldHistory.lean`) is stated in a deliberately more general form as a design fact of the mechanization: the shift map is an arbitrary order automorphism $overline(a) : D arrow.r D$ rather than a translation, and the definition applies to *partial* histories via the domain clause $"dom"_sigma = overline(a)^(-1)("dom"_tau)$, with $sigma(z) = tau(overline(a)(z))$ on that domain. Restricted to total histories and translations, the two definitions coincide.]
 ]
 
 Time-shifting preserves the essential structure of histories:
@@ -347,6 +371,6 @@ Logical consequence and validity are defined uniformly across all temporal types
 ]
 
 #remark("Determined and Deterministic")[
-  The task-frame setting supports a distinction between a history's future being *determined* (every history through the present world state agrees on it) and the frame being *deterministic* (the task relation is functional), developed together with actuality operators in @brastmckie2026possibleworlds.
-  Neither notion has a formal Lean counterpart in this repository; both belong to the semantic framework's paper-side development.
+  The task-frame setting supports a distinction between a history's future being *determined* (every history through the present world state agrees on it) and the frame being *deterministic* (the task relation is functional).
+  Both notions, together with the actuality operators that make them expressible, lie outside the scope of the book's formal system by design.
 ]

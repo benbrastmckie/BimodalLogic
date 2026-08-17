@@ -442,21 +442,21 @@ E2 governs paper citations only.)
 - **Done when:** chapter has zero FIX comments, zero prefix event-first operator displays
   outside the Burgess footnote, snce-first ordering throughout; gates green.
 
-### Phase 3: Semantics Chapter — Clause Ordering and Time-Shift [NOT STARTED]
+### Phase 3: Semantics Chapter — Clause Ordering and Time-Shift [COMPLETED]
 
 - **Goal:** Truth-condition displays match the paper's guard-first infix form with the snce
   clause first; time-shift restated in the paper's translation form.
 - **Territory:** `typst/chapters/02-semantics.typ`
 - **Tasks:**
-  - [ ] R3a (source: `def:BLplus-semantics`; finding B3): state the snce truth clause before
+  - [x] R3a (source: `def:BLplus-semantics`; finding B3): state the snce truth clause before
     the untl clause, both in infix guard-first form via Phase 1 macros. No other edits in the
     verified-aligned task-frame/extension-chain sections (findings B1/B2 — preserve).
-  - [ ] R3b (source: `def:time-shift-histories`; finding B4): restate Time-Shift as the
+  - [x] R3b (source: `def:time-shift-histories`; finding B4): restate Time-Shift as the
     paper's translation form ā(z) = z + d with τ(z) = σ(ā(z)); move the order-automorphism
     generality and the partial-history domain clause to a footnote presenting them as the
     Lean-side generalization (`WorldHistory.lean` `timeShift`), which is a design fact, not
     status.
-  - [ ] R3c (source: `def:task-topology`, `app:topology-t1`, `app:topology-r0`; finding B6,
+  - [x] R3c (source: `def:task-topology`, `app:topology-t1`, `app:topology-r0`; finding B6,
     optional): one footnote stating as the book's own mathematics that the basic opens (w)_x
     generate a T1, R0 topology on W — NO paper-anchor citation in the footnote (Decision E2);
     place `// CONFIRM(paper): app:topology-t1 and app:topology-r0 prove the T1 and R0 claims

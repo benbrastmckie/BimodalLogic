@@ -1,0 +1,44 @@
+{
+  "phase": 3,
+  "phase_name": "Semantics Chapter \u2014 Clause Ordering and Time-Shift",
+  "started_at": "2026-08-17T17:56:00Z",
+  "last_updated": "2026-08-17T18:15:00Z",
+  "objectives": [
+    {
+      "id": 1,
+      "description": "R3a: snce clause before untl, infix guard-first",
+      "status": "done",
+      "files_touched": [
+        "typst/chapters/02-semantics.typ"
+      ]
+    },
+    {
+      "id": 2,
+      "description": "R3b: time-shift restated in translation form",
+      "status": "done",
+      "files_touched": [
+        "typst/chapters/02-semantics.typ"
+      ]
+    },
+    {
+      "id": 3,
+      "description": "R3c: optional T1/R0 topology footnote",
+      "status": "done",
+      "files_touched": [
+        "typst/chapters/02-semantics.typ"
+      ]
+    }
+  ],
+  "current_objective": 3,
+  "approaches_tried": [],
+  "deviations": [
+    {
+      "task_id": "3.x",
+      "description": "Per-phase E2 sweep",
+      "type": "altered",
+      "reason": "Chapter carried ~25 paper-anchor citations (footnotes and body prose); all removed or converted to CONFIRM(paper) comments per the mandated per-phase E2 sweep \u2014 a larger edit than the phase's enumerated R3a-c tasks",
+      "annotation": "*(deviation: altered \u2014 full E2 citation sweep of chapter)*"
+    }
+  ],
+  "handoff_count": 0
+}
