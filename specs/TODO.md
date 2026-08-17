@@ -87,7 +87,7 @@ next_project_number: 450
 
 ### Paper Refactor
 
-417 [IMPLEMENTING] — RE-ISSUED 2026-08-10 (supersedes the prior maximal-history framin
+417 [BLOCKED] — RE-ISSUED 2026-08-10 (supersedes the prior maximal-history framin
 440 [RESEARCHED] — RE-ISSUED 2026-08-12 (description rewrite only; status unchanged)
   └─ 441 [NOT STARTED] — Strengthen `thm:extension` for the finite discrete case into an E
 
@@ -750,7 +750,7 @@ Run `bash scripts/check-paper-definitions.sh` and read specs/paper-definitions-o
 
 ### 417. Semantic fmp finite worldstate over z
 - **Effort**: medium
-- **Status**: [IMPLEMENTING]
+- **Status**: [BLOCKED]
 - **Task Type**: lean4
 - **Topic**: paper-refactor
 - **Dependencies**: Task 414, Task 420, Task 438, Task 439
