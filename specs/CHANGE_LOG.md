@@ -1,6 +1,18 @@
 # Change Log
 
 
+## 2026-08-17: Archive 4 completed tasks
+
+**Archived**:
+- **449** (completed, formal): Revised the Bimodal Reference Manual to the Since/Until-primitive target state -- CONFIRM tag convention, infix guard-first notation, completeness restated as four target theorems with the non-compactness negative results in the body, paper-anchor citations removed from rendered content, definitions-of-record re-pinned (25 anchors)
+- **448** (completed, lean4): Migrated `Formula.untl`/`Formula.snce` from event-first (Burgess) to guard-first (paper) argument order -- 3,711 occurrences across 152 files, executed as a rename-forced migration so unmigrated references became compiler errors; no proof changed shape, no `sorry` introduced, oracle regenerates byte-identically
+- **419** (completed, lean4): Landed the tree's first machine-checked independence result -- `co_not_derives_prior_U_gap` and its schema-level form `co_not_derives_prior_U_gap_schema`, both sorry-free, over a new rational-clock countermodel frame
+- **415** (completed, lean4): Restated and reproved weak completeness per frame class over total-history semantics outright -- countermodels are the frame's own `H_F`, no transfer or realization lemma in any final statement, Limit-violating parametric stack deleted
+
+**Directories moved**: 4 (specs/ -> specs/archive/)
+**Roadmap updates**: 0 (no eligible matches against the 111-row status table)
+**Memory harvest**: 3 memories created (PATTERN, WORKFLOW, TECHNIQUE) from task 449
+
 ## 2026-08-17: Archive 8 tasks
 
 **Archived**:

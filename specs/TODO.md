@@ -18,10 +18,10 @@ next_project_number: 452
 | 5 | 433 | 432 | decidability |
 | 6 | 428 | 433 | decidability |
 | 7 | 429 | 428 | decidability |
-| 8 | 410 | 429 | -- |
-| 9 | 411 | 410 | -- |
+| 8 | 410 | 429 | decidability |
+| 9 | 411 | 410 | decidability |
 | 10 | 430 | 411 | decidability |
-| 11 | 412 | 430 | -- |
+| 11 | 412 | 430 | decidability |
 | 12 | 426 | 412 | completeness |
 | 13 | 95,177 | 193,426,441 | completeness, formula-refactor |
 
@@ -104,8 +104,6 @@ next_project_number: 452
 ### Repo Hygiene
 
 451 [NOT STARTED] — CONSOLIDATE THE TWO BONEYARDS into a single archive tree under Fo
-
-### Uncategorized
 
 ## Tasks
 
@@ -215,71 +213,6 @@ Known instances of the defect (non-exhaustive; the audit is part of the work):
 
 === 6. UNBLOCKS ===
 Task 417's recommended Task B (the filtered step relation) cannot start before (a) and (c) land. Task A (bi-lasso layer) is independent and unaffected.
-
----
-
-### 449. Review paper to improve bimodal reference manual
-- **Status**: [COMPLETED]
-- **Task Type**: formal
-- **Topic**: reference-book
-- **Dependencies**: None
-- **Research**: [449_review_paper_to_improve_bimodal_reference_manual/reports/01_paper-manual-lean-alignment.md]
-- **Plan**: [449_review_paper_to_improve_bimodal_reference_manual/plans/01_manual-to-target-state.md]
-- **Summary**: [449_review_paper_to_improve_bimodal_reference_manual/summaries/01_manual-to-target-state-summary.md]
-
-**Description**: Systematically review /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex in order to improve typst/BimodalReference.typ while observing the aim to accurately represent the Lean code in this repository, which is actively being improved to also be in better alignment with the possible_worlds.tex paper. The key difference between the paper and this Lean repo with its corresponding BimodalReference.typ manual is that this repo should focus entirely on constructing/presenting the full bimodal logic system where snce/untl operators are primitive, leaving the fragment with past/future operators as primitives as a subsystem to be developed later in order to establish conservative extension results if possible, though for now that effort can be ignored
-
----
-
-### 448. Migrate snce untl to guard first order
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: lean4
-- **Dependencies**: None
-- **Research**: [448_migrate_snce_untl_to_guard_first_order/reports/01_guard-first-migration-strategy.md]
-- **Plan**: [448_migrate_snce_untl_to_guard_first_order/plans/01_guard-first-migration.md]
-
-**Description**: GOAL. Migrate the Lean tree's `snce`/`untl` constructors from the current EVENT-FIRST (Burgess)
-argument order to the GUARD-FIRST order used by the paper, so that `FormalSystem/` and
-`possible_worlds.tex` agree on what `φ S ψ` and `φ U ψ` mean.
-
-BACKGROUND. `specs/decisions/untl-snce-argument-order.md` records this divergence and is currently
-marked OPEN awaiting a user decision. That decision has now been made: align Lean to the paper
-(guard-first), not the paper to Lean. The record should be updated to CLOSED/DECIDED as part of
-this work.
-
-The divergence, precisely:
-- Paper (`def:BLplus-semantics`, `def:BLplus-defined`): guard-first. In `φ S ψ`, `φ` is the guard
-  holding throughout the interval and `ψ` is the event witnessed at the endpoint. Corroborated by
-  `Past φ := ⊤ S φ` and `Future φ := ⊤ U φ` — guard `⊤` first, event second.
-- Lean (`FormalSystem/Syntax/Formula.lean`, `untl`/`snce` constructors): event-first. In
-  `untl φ ψ`, `φ` is the event and `ψ` is the guard.
-
-KNOWN STALE ARTIFACTS. Both `specs/decisions/untl-snce-argument-order.md` and
-`FormalSystem/Semantics/Truth.lean`'s docstring quote a since-corrected version of the paper
-footnote. Re-derive the paper side from the tracked anchors in
-`specs/paper-definitions-of-record.md` rather than trusting either quotation.
-
-SCOPE. `snce`/`untl` occur ~7065 times across `FormalSystem/` and `Tests/`, concentrated in
-`Metalogic/BXCanonical/` (Chronicle, Filtration, TruthLemma, Frame), `Metalogic/Soundness*`,
-`Metalogic/Decidability.lean`, `Metalogic/StrongCompleteness.lean`, and `Semantics/Truth.lean`.
-A swap of this size is not a search-and-replace: the two arguments are both `Formula`, so the
-type checker will NOT catch a missed or half-applied site. Plan for a mechanical, verifiable
-strategy — e.g. swap the constructor signature and let `lake build` drive site-by-site repair, or
-introduce guard-first smart constructors first and migrate call sites before flipping the
-underlying constructor.
-
-ACCEPTANCE.
-1. `FormalSystem/Syntax/Formula.lean`'s `untl`/`snce` take guard first, event second, with
-   docstrings naming the roles and citing the paper convention.
-2. `FormalSystem/Semantics/Truth.lean`'s clauses and docstring match, with the stale footnote
-   quotation replaced by the tracked anchor's current text.
-3. `lake build` is green with no new `sorry`.
-4. Derived operators (`somePast`, `next`, `Past`, `Future`) still hold their intended meanings —
-   verify against the paper's `def:BLplus-defined`, not against the pre-migration Lean code.
-5. `specs/decisions/untl-snce-argument-order.md` updated from OPEN to a decided record.
-6. Typst documents citing these constructors (`typst/`) re-checked via
-   `scripts/typst-sync-check.sh`.
 
 ---
 
@@ -798,67 +731,6 @@ Acceptance: the refuted-route comment no longer appears at Transfer.lean:1239-12
 
 ---
 
-### 419. Machine check co reynolds independence
-- **Effort**: large
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: paper-refactor
-- **Dependencies**: Task 420, Task 438, Task 439
-- **Research**: [419_machine_check_co_reynolds_independence/reports/01_co-not-derives-prior-u.md]
-- **Plan**: [419_machine_check_co_reynolds_independence/plans/01_machine-check-co-independence.md]
-- **Summary**: [419_machine_check_co_reynolds_independence/summaries/01_machine-check-co-independence-summary.md]
-
-**Description**: RE-ISSUED 2026-08-10 (description rewrite only; status unchanged). Machine-check the CO-does-not-derive-Reynolds independence result. Currently recorded ONLY as a pen-and-paper model sketch in the Layer 9 prose of FormalSystem/ProofSystem/Axioms.lean (immediately above the `Axiom.prior_U_gap` constructor), where it is explicitly flagged as NOT machine-checked.
-
-GOAL: construct a Lean countermodel establishing that the paper's CO principle does not syntactically derive the Reynolds gap axioms -- specifically that CO does not derive `Axiom.prior_U_gap`.
-
-THE SKETCH TO FORMALIZE: a rational (Q) flow carrying isolated not-phi points that accumulate at an irrational from above validates every CO instance while refuting Prior-U; this is the classical Stavi US-vs-FO gap phenomenon.
-
-WHY IT MATTERS: this is the sole load-bearing justification for the paper-side amendment to \label{def:TMplus-c} / the TM completeness corollary in /home/benjamin/Philosophy/Papers/PossibleWorlds/ (fix.md C4 option 2) -- the paper's completeness claim is deferred to this repository with no independent citation, so if the sketch is right def:TMplus-c is deductively too weak, and if it is wrong the amendment is unnecessary. Right now that amendment rests on an unverified claim.
-
-=== 1. THE PRIMARY OPEN QUESTION: SPHERICAL MAY KILL THE Q-FLOW SKETCH ===
-This is the single highest-priority item for the next research pass and it is NOT a routine conformance check. Do not soften it.
-
-The paper's \label{def:frame} now requires FOUR axioms of every frame: "*Compositionality:* w =>_{x + y} v if and only if w =>_x u and u =>_y v for some u in W. *Seriality:* w =>_x u and v =>_x w for some u, v in W. *Limit:* intersection over x > 0 of (w)_x = {w}. *Spherical:* intersection of S is nonempty for any directed family S of nonempty fibers and segments." Any legitimate countermodel frame must satisfy all four -- and Spherical is load-bearing for H_F being nonempty at all, via \label{lem:constraint} -> \label{lem:step} -> \label{thm:extension}.
-
-The paper carries its OWN worked non-example for Spherical, and it is structurally the same family of construction this task's sketch proposes: a Q-carrier flow engineered around a point not reachable within Q. It appears as a footnote to the world-history sentence in the body of the Construction section; the footnote carries NO label of its own, so \label{def:world-history} is the durable formal anchor for it. Current text, verbatim:
-
-  "Convexity alone does not guarantee extendability: taking D = Q and W = {q in Q : q > 0} with r =>_x r' *iff* |r' - r| <= x yields a structure satisfying every axiom but *Spherical*, in which the partial history tau(t) = 1 - t defined for 0 < t < 1 admits no value u at the time 1, since |u - (1 - s)| <= 1 - s for every s < 1 forces u <= 0, and so tau restricts no total world history. *Spherical* is exactly what excludes this structure."
-
-CONSEQUENCE: this task's sketch is at serious risk of not being a legitimate frame at all under the four-axiom def:frame, potentially requiring an entirely different carrier or frame choice if it cannot be repaired to satisfy Spherical. This is a genuine open mathematical question, not a checkbox. By contrast, Compositionality's interpolation direction and Seriality are comparatively low-risk for a deterministic or near-deterministic flow construction; Spherical specifically targets "gaps", which is the entire mechanism the sketch is trying to exploit. Resolve this BEFORE investing in the Lean construction.
-
-Supporting definitions the Spherical check needs, quoted so the labels stay recoverable: \label{def:task-relation} gives Fiber: Fib(w, x) := {u in W : w =>_x u}; Cone: (w)_x := union over |y| < x of Fib(w, y) for x > 0; Segment: [w, v]_x^y := Fib(w, x) intersect Fib(v, -y) for x, y >= 0. \label{def:directed} gives "A nonempty family of sets S is *directed* just in case S' subset-of S_1 intersect S_2 for some S' in S whenever S_1, S_2 in S." \label{def:world-history} gives the partial/world/total layering: a partial history is a function tau : X -> W on a NONEMPTY X subset-of D with tau(x) =>_{y-x} tau(y), a world history is a partial history with convex domain, and total (equivalently: a possible world) means X = D.
-
-=== 2. CITATION CORRECTION FOR THE CO FORMULA ===
-The prior description cited "CO source formula: PossibleWorlds/JPL/possible_worlds.tex:3250". That locator is stale AND was wrong when written -- it was inherited from a stale citation in /home/benjamin/Philosophy/Papers/PossibleWorlds/Comments/fix.md, not introduced here. Replace it with LaTeX-key anchors, never a line number.
-
-Precise anchors, re-verified 2026-08-10 (note: CO and TMP-CO are `\aitem` axiom KEYS resolved by `\aref`, not `\label{}` names -- earlier research described them as labels, which is imprecise):
-- Base TM form: `\aitem{CO}`, inside the extension subsection anchored by \label{sub:Extension}. Verbatim: `\aitem{CO} $\always(\Past\varphi \rightarrow \future\Past\varphi) \rightarrow (\Past\varphi \rightarrow \Future\varphi)$.`
-- TM^+ restatement (the one `Formula.co` actually mirrors, per FormalSystem/ProofSystem/Axioms.lean): `\aitem[CO]{TMP-CO}`, inside \label{def:TMplus-c}. Verbatim: `\aitem[CO]{TMP-CO} $\always(\Past\varphi \rightarrow \future\Past\varphi) \rightarrow (\Past\varphi \rightarrow \Future\varphi)$.` with the paper's own footnote "This axiom coincides with \aref{CO} in **TM**, though it is expressed in $\BL^+$."
-TMP-CO is the more precise anchor for this task's Lean-facing claim, since it sits inside def:TMplus-c -- the exact definition the fix.md C4 amendment concerns. CO remains the useful base-TM cross-reference.
-
-STALE LOCATOR STILL LIVE IN THE LEAN TREE (this task's work, NOT task 438's): the same stale `possible_worlds.tex:3250` citation also persists at FormalSystem/Theorems/DedekindDerived.lean:359 and FormalSystem/Syntax/Formula.lean:467. Task 438 had no write scope in FormalSystem/ and deliberately did not touch them. Re-anchor both to the `\aitem` keys above as part of this task.
-
-=== 3. CONTEXT ALREADY IN THE TREE -- DO NOT REDO ===
-The CONVERSE direction is DONE and SORRY-FREE and must not be redone: `co_derived` in FormalSystem/Theorems/DedekindDerived.lean proves Reynolds |- CO, consuming `Axiom.prior_U_gap` and nothing else outside `FrameClass.Base`; `co_valid` in FormalSystem/Metalogic/SoundnessLemmas/CoValidity.lean gives the semantic side. `Formula.co` (FormalSystem/Syntax/Formula.lean) is the CO formula as a source-cited abbreviation; note the triangle there is `Formula.always`, NOT `Formula.box`. This survives untouched by the paper refactor -- it is a proof-system derivability fact that does not depend on def:frame's axiom count at all.
-
-The overall goal statement is likewise unaffected in kind: the paper never mentions Prior-U, Reynolds, or Stavi anywhere (zero grep hits), so this independence result is and remains an entirely repo-side concern layered on top of the paper's CO axiom. Nothing currently in the Lean tree depends on the claim, so the work is additive -- no rebase surface.
-
-Likely needs a /literature acquisition pass for Stavi and Reynolds 1992 on the US-vs-FO expressiveness gap.
-
-=== 4. WHAT SURVIVES, WHAT DOES NOT ===
-SURVIVES: the converse-direction proof and its sorry-free status (section 3); the overall goal and its motivation; the observation that this is additive with no rebase surface.
-SUPERSEDED by round 1 (the team research): the `possible_worlds.tex:3250` CO citation; the implicit assumption that the Q-flow sketch is an unproblematic frame.
-SUPERSEDED by round 2 (round-1 findings that no longer hold): round 1's version of the Q non-example quote, which predates the partial-history restatement and lacks the forcing computation, and its `:926` locator for it; round 1's description of CO/TMP-CO as `\label{}` names. Round 1 remains authoritative for everything round 2 did not touch, including the whole Spherical-risk verdict in section 1, which round 2 re-confirmed in full force.
-
-=== 5. NON-GOALS ===
-No edits under /home/benjamin/Philosophy/Papers/ -- the paper is READ-ONLY ground truth. Related: 416, 408, 390.
-
-=== 6. FIRST STEP FOR THE NEXT DISPATCH (do this before reading any definition) ===
-Run `bash scripts/check-paper-definitions.sh` and read specs/paper-definitions-of-record.md. That file -- not the paper -- is what specs in this repository cite: it pins every definition this cluster depends on (def:temporal-order, def:task-relation, def:directed, def:frame and each of its four axioms individually, lem:nullity, def:world-history, def:constraints, lem:constraint, lem:fibers, lem:admissible, lem:step, thm:extension, cor:occurrence, def:BL-model, def:BL-semantics, def:frame-validity, def:logical-consequence, and the CO / TMP-CO aitem anchors) with verbatim text and content hashes re-derived from the live paper on every run. Lint outcomes: case (a) silent pass and case (b) notice (paper changed but no recorded definition drifted) -- proceed; case (c) FAIL naming each drifted anchor -- STOP and re-issue the affected specs before consuming them. The md5/HEAD-baseline diff procedure this section formerly prescribed is RETIRED (its baselines were already three drift waves stale). Cite by \label (or \aitem key) only; a bare possible_worlds.tex:NNNN is never a citation. Quote definition TEXT verbatim alongside each anchor so a renamed anchor stays detectable by text search.
-
----
-
 ### 417. Semantic fmp finite worldstate over z
 - **Effort**: medium
 - **Status**: [RESEARCHED]
@@ -908,58 +780,6 @@ Run `bash scripts/check-paper-definitions.sh` and read specs/paper-definitions-o
 
 ---
 
-### 415. Completeness over total history semantics
-- **Effort**: large
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: paper-refactor
-- **Dependencies**: Task 414, Task 420, Task 438, Task 439
-- **Research**:
-  - [415_completeness_over_total_history_semantics/reports/02_total-history-internalization.md]
-  - [415_completeness_over_total_history_semantics/reports/01_completeness-maximal-history-rebase.md]
-- **Plan**: [415_completeness_over_total_history_semantics/plans/02_total-history-completeness.md]
-- **Summary**: [415_completeness_over_total_history_semantics/summaries/02_total-history-completeness-summary.md]
-
-**Description**: RE-ISSUED 2026-08-10 (supersedes the prior maximal-history framing in full). COMPLETENESS OVER TOTAL-HISTORY SEMANTICS -- INTERNALIZED, NOT BRIDGED: restate and reprove WEAK completeness per frame class so the canonical/chronicle constructions deliver countermodels that are total-history models OUTRIGHT.
-
-=== 1. THE COUNTERMODEL FAMILY (the corrected target) ===
-The required countermodel family is the FULL TOTAL-history set H_F -- every possible world of the frame -- not a maximal-history set and not a distinguished sub-family. Paper anchor \label{def:world-history}, verbatim: "A *partial history* over a frame F = <W, D, =>> is a function tau : X -> W on a nonempty set X subset-of D where tau(x) =>_{y-x} tau(y) for all times x, y in X. ... A *world history* is any partial history whose domain X is *convex* ... A world history is *total* --- equivalently, a *possible world* --- just in case X = D. ... The set of all total world histories over F is denoted H_F." The layering is partial history, then world history (convex domain), then total. Note that a partial history requires a NONEMPTY domain and does NOT require convexity; the vocabulary "task-constrained function" is retired paper-wide and must not appear as current terminology.
-
-Anchor \label{def:logical-consequence}, verbatim: "A conclusion phi is a *logical consequence* of a set of premises Gamma --- written Gamma |= phi --- just in case for all models M, possible worlds tau in H_F, and times x in D, if M,tau,x |= gamma for all premises gamma in Gamma, then M,tau,x |= phi." Anchor \label{def:BL-semantics} box clause, verbatim: "M,tau,x |= Box phi *iff* M,sigma,x |= phi for all sigma in H_F." The former singleton-Omega device (WeakCanonical/Transfer.lean) becomes: construct frames -- deterministic frames are the lead -- whose full total-history set IS the required countermodel family; no transfer or realization lemmas in the final statements. The mathematical content of realization is absorbed into the constructions; the headline theorems mention only the paper-aligned validity.
-
-=== 2. PER-CLASS PROOF OBLIGATIONS UNDER THE FOUR-AXIOM FRAME ===
-Every canonical/chronicle construction must now discharge FOUR axioms, not one. Paper anchor \label{def:frame}, verbatim: "A *frame* is any F = <W, D, =>> where W is a nonempty set of world states, D is a temporal order, and => is a task relation satisfying the following for x, y >= 0: *Compositionality:* w =>_{x + y} v if and only if w =>_x u and u =>_y v for some u in W. *Seriality:* w =>_x u and v =>_x w for some u, v in W. *Limit:* intersection over x > 0 of (w)_x = {w}. *Spherical:* intersection of S is nonempty for any directed family S of nonempty fibers and segments."
-
-- BICONDITIONAL COMPOSITIONALITY is a NEW obligation for every construction that previously relied only on the one-directional inclusion. The interpolation direction (from w =>_{x+y} v produce a witness u with w =>_x u and u =>_y v) must be proved, not assumed. The Lean tree's current `forward_comp` states only the inclusion, and TaskFrame.lean's own docstrings still say the equality is not adopted -- both are stale against the paper and are task 420's to fix; this task must construct frames that satisfy the biconditional.
-- SERIALITY: forward and backward fibers nonempty at every nonnegative duration.
-- LIMIT: the axiom formerly called "Limit Nullity" in this task's superseded description is now simply named *Limit*; the mathematics is unchanged. Discrete class: automatic over Z via task 420's `limit_nullity_of_succOrder` helper (|y| < 1 forces y = 0). Dense, Dedekind, and Base canonical/chronicle constructions: a genuine per-class obligation -- verify the constructed task relation does not relate distinct states in arbitrarily small durations. A class whose canonical frame violates Limit needs a repaired construction, not a weakened axiom.
-- SPHERICAL is the LEAST ROUTINE of the four and should be scheduled as such. It is not statable at all until fibers, segments, and directedness exist as Lean objects (task 420's territory). Paper anchors and notation, binding: \label{def:task-relation} gives Fiber: Fib(w, x) := {u in W : w =>_x u}; Cone: (w)_x := union over |y| < x of Fib(w, y) for x > 0; Segment: [w, v]_x^y := Fib(w, x) intersect Fib(v, -y) for x, y >= 0. \label{def:directed} gives "A nonempty family of sets S is *directed* just in case S' subset-of S_1 intersect S_2 for some S' in S whenever S_1, S_2 in S." *Spherical* quantifies over directed families of nonempty FIBERS AND SEGMENTS as two SEPARATE classes; the retired device by which one-sided fibers counted among the segments must not be reintroduced, and the paper's old `\Seg` macro is deleted from its preamble -- the bracket form [w, v]_x^y is the only current notation. CORRECTION (2026-08-10): the Spherical "calibration" footnote an earlier version of this description quoted here ("past and future constraints may tighten at different rates ... mismatched cofinalities ...") has been DELETED from the paper and must not be cited -- the only footnote remnant at def:frame's Spherical clause is a commented-out ball-spaces reference. The identity w =>_{x+y} v iff [w, v]_x^y is nonempty likewise no longer appears as paper text; it remains a one-line consequence of Compositionality plus def:task-relation's segment equation and is still likely the workhorse for discharging Spherical on a concrete construction, but it must now be DERIVED in Lean, not cited to the paper.
-
-=== 3. WHY THESE AXIOMS ARE NOT OPTIONAL FOR A COUNTERMODEL ===
-H_F must be NONEMPTY for a total-history countermodel to refute anything, and its nonemptiness is a theorem, not a stipulation: \label{def:constraints} defines the constraints imposed on any new time z (the segments [tau(t), tau(s)]_{z-t}^{s-z} when assignments flank z, the fibers Fib(tau(t), z - t) otherwise); \label{lem:constraint} (Constraint Lemma) shows they form a directed family of nonempty sets; \label{lem:fibers} and \label{lem:admissible} characterize when a one-point extension is a partial history; \label{lem:step} (Step Lemma) applies *Spherical* to the family and closes via lem:admissible to extend any partial history by one further duration; \label{thm:extension} then runs Zorn over partial histories and closes via lem:step; \label{cor:occurrence} follows (a MERGED anchor -- the former thm:occurrence and app:nonempty no longer exist; the merged statement is strictly stronger, giving tau(x) = w at any prescribed time x, and its proof extends {<x, w>} directly with no translation argument). A construction that satisfies only some of the axioms does not merely fail conformance -- it may have an empty or degenerate H_F and prove nothing. (The lemma formerly cited for the two-sided segment family no longer exists in the paper; cite lem:constraint and lem:step instead.)
-
-=== 4. WHAT SURVIVES FROM PRIOR RESEARCH, AND WHAT DOES NOT ===
-SURVIVES (round-1 findings, untouched by the round-2 audit):
-- The staging plan Discrete -> Dense -> Base -> Dedekind, and the decision to internalize realization into the constructions rather than bridge. This is a proof-architecture decision independent of the target predicate. Discrete is currently green under the old semantics; Dense, Base, and Dedekind targets all rebase onto the new semantics.
-- The identification of the deterministic lead frame `bundleFlowFrame` (WorldState := FamIdx x D) as the right countermodel engine. It is plausibly closer to a totality-native countermodel than a maximality-native one -- the "total-domain flow line" reasoning already underlies `multiFamHistory` / `isMax_of_total` -- so treat the deterministic lead-frame strategy as FAVORABLE for totality, not merely tolerant of it. This is a plausibility judgment to confirm, not a proven result.
-- The obligation already anticipated in this task's prior description (that constructions must discharge more than Compositionality) is correctly anticipated content: kept and strengthened, not discarded.
-
-SUPERSEDED, and by which round:
-- Superseded by round 1: "completeness over Omega-free, maximal-history semantics" as the target, inherited transitively from task 414; "the FULL maximal-history set is the required countermodel family"; the under-scoping of the new obligation to one axiom alone; the axiom name "Limit Nullity".
-- Superseded by round 2 (round-1 findings that no longer hold): round 1's quotes of def:world-history, thm:extension, and the *Spherical* axiom; its citation of the now-deleted segment lemma; its function-application segment notation; its "task-constrained function" vocabulary; and every parenthetical possible_worlds.tex:NNNN locator it carried. Round 1 remains authoritative for everything round 2 did not touch, including the entire SURVIVES list above.
-
-=== 4b. NEW PAPER CONTENT DIRECTLY RELEVANT TO THIS TASK (added 2026-08-10) ===
-(i) THE STRAND-CONSTRUCTION FOOTNOTE. cor:tm-completeness's proof now carries a footnote (source-tagged 'task 52 total-histories: optional S43 hedge') stating: the machine-checked completeness results in this repository are for "a parametric variant of the semantics in which validity is relativized to a designated shift-closed set of histories"; their transfer to the paper's total-history semantics "proceeds by a strand construction covering BL and BL+ only, and is not itself machine-checked"; and the transfer must verify the biconditional Compositionality, Seriality, and Spherical axioms of def:frame for the strand-delivered frames, whereupon Occurrence follows by cor:occurrence -- with Seriality free wherever Occurrence was already being checked, Spherical automatic for finite-W frames, and infinite W a genuine obligation external to the paper. CHARTER CONSEQUENCE: this task's 'internalized, not bridged' decision STANDS -- internalization strictly dominates, since landing it makes the footnote's hedge obsolete paper-side (updating the paper is the user's follow-on, not this task's). But treat the footnote's obligation list as the paper's own acceptance checklist for whatever constructions this task rebuilds.
-(ii) WORKED FOUR-AXIOM VERIFICATIONS NOW IN THE PAPER. The paper's proof prose now verifies all four def:frame axioms for two concrete frames: the translation-flow frame (W = D with w =>_d u iff u = w + d for d >= 0 -- both Compositionality directions via the unique intermediate u = w + x, Seriality via singleton forward/backward fibers, Limit via (w)_d = {u : |u - w| < d}, Spherical because every fiber and every nonempty segment is a singleton) and an off-zero-universal discrete frame (finite W; Spherical because a directed family of nonempty fibers and segments over finite W has finitely many distinct members and directedness yields a subset-least member equal to its nonempty intersection). These CORROBORATE the deterministic-lead-frame judgment in section 4's SURVIVES list (previously 'a plausibility judgment to confirm' -- now paper-corroborated) and supply reusable discharge patterns. CAUTION: the paper REPLACED its former two-state universal-relation witnesses precisely because they VIOLATE Limit; if the Lean tree ever transcribed those old witnesses (frame-property proofs, countermodels), that is rebase surface -- audit for it.
-
-=== 5. DEPENDENCIES AND NON-GOALS ===
-Depends on tasks 414 (the totality-based semantics API), 420 (the four-axiom TaskFrame and the fiber/segment/directedness machinery Spherical is stated with), and 438. Task 420's own phase 6 still phase-waits on this task's `bundleFlowFrame`, even though the task-level 420 -> 415 dependency edge was dropped to break a cycle -- coordinate directly rather than relying on the edge list. Order: Discrete, then Dense (task 170), Base (task 169), Dedekind (task 408). NON-GOAL: no edits under /home/benjamin/Philosophy/Papers/ -- the paper is read-only ground truth. NON-GOAL: do not weaken a frame axiom to make a construction go through.
-
-=== 6. FIRST STEP FOR THE NEXT DISPATCH (do this before reading any definition) ===
-Run `bash scripts/check-paper-definitions.sh` and read specs/paper-definitions-of-record.md. That file -- not the paper -- is what specs in this repository cite: it pins every definition this cluster depends on (def:temporal-order, def:task-relation, def:directed, def:frame and each of its four axioms individually, lem:nullity, def:world-history, def:constraints, lem:constraint, lem:fibers, lem:admissible, lem:step, thm:extension, cor:occurrence, def:BL-model, def:BL-semantics, def:frame-validity, def:logical-consequence, and the CO / TMP-CO aitem anchors) with verbatim text and content hashes re-derived from the live paper on every run. Lint outcomes: case (a) silent pass and case (b) notice (paper changed but no recorded definition drifted) -- proceed; case (c) FAIL naming each drifted anchor -- STOP and re-issue the affected specs before consuming them. The md5/HEAD-baseline diff procedure this section formerly prescribed is RETIRED (its baselines were already three drift waves stale). Cite by \label (or \aitem key) only; a bare possible_worlds.tex:NNNN is never a citation. Quote definition TEXT verbatim alongside each anchor so a renamed anchor stays detectable by text search.
-
----
-
 ### 413. Formalize tm conservativity bridge
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
@@ -978,6 +798,7 @@ NEW PAPER CONTENT THIS TASK MUST KNOW (2026-08-10): cor:tm-completeness's proof 
 - **Effort**: 10-15 hours
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
+- **Topic**: decidability
 - **Dependencies**: Task 165, Task 410, Task 411, Task 428, Task 430
 
 **Description**: Track B finish for the TM tableau decidability program (parent: task 165; grounding: reports/02_tableau-decidability-hard-research.md sections 3.1, 8.3, 8.5). Create Verified/Refutation/Core.lean proving allClosed_derivable as ONE induction over allRulesForFC fc, discharging each rule by its admissibility lemma (predecessor tasks) and its ruleFrameClass r <= fc hypothesis via the RuleSpec GATE lemmas — Dense/Discrete/Dedekind instantiate the generic theorem, they do not re-prove it. Then Verified/Provable.lean: Decidable (Derivable fc [] phi) combining allClosed_derivable with Track A's buildTableau_isSome and not_valid_of_hasOpen; the completeness corollaries ValidFor fc phi -> Derivable fc [] phi; discharge the pre-existing sorry countermodel_discrete at FormalSystem/Metalogic/WeakCanonical/Transfer.lean:1242; and supply the Dedekind engine consumed by completeness_dedekind_of_engine (StrongCompleteness.lean:308, target ValidDedekindDense). Acceptance: zero sorries repo-wide outside Boneyard; lake build green; update typst/latex decidability chapters to record headline result 2.
@@ -993,6 +814,7 @@ ALSO NOTE: this task inherits obstructions O2 and O3 (the boxAnchoredCheck and t
 - **Effort**: 15-20 hours
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
+- **Topic**: decidability
 - **Dependencies**: Task 165, Task 410
 
 **Description**: Track B part 2 for the TM tableau decidability program (parent: task 165; grounding: reports/02_tableau-decidability-hard-research.md sections 3.2-3.3 and 10). First run a /literature acquisition pass for Reynolds 1992 and Reynolds 2003 (the untlNeg co-decomposition and the Dedekind gap axioms; report 02 section 10 flags in-repo literature as thin). Then prove the hard admissibility block in Verified/Refutation/Rules/{UntilSince,Trichotomy,Discrete,Dense,Dedekind}.lean: untlPos (branch 1 via until_F, branch 2 via self_accum_until — follow the axiom literally), untlNeg (Reynolds co-decomposition via absorb_until + left_mono_until_G; the single largest lemma — budget it its own dispatch), sncePos/snceNeg duals, orderTrichotomy (one-liner if Phase 2.2 kept branches syntactically equal to temp_linearity disjuncts — verify, do not assume), z1Rule (two-premise instance of z1 + two modus ponens, relies on same-label internalization from the predecessor task), densityRule/denseIndicatorClosure via density/dense_indicator, and the Dedekind rules via prior_U_gap/prior_S_gap/sep. Acceptance: all admissibility lemmas sorry-free; lake build green.
@@ -1003,6 +825,7 @@ ALSO NOTE: this task inherits obstructions O2 and O3 (the boxAnchoredCheck and t
 - **Effort**: 12-18 hours
 - **Status**: [PLANNED]
 - **Task Type**: lean4
+- **Topic**: decidability
 - **Dependencies**: Task 165, Task 429
 - **Research**: [410_internalize_tableau_branches_and_prove_routine_rule_admissibility/reports/01_internalize-routine-admissibility.md]
 - **Plan**: [410_internalize_tableau_branches_and_prove_routine_rule_admissibility/plans/01_internalize-routine-admissibility.md]
