@@ -1,5 +1,5 @@
 ---
-next_project_number: 451
+next_project_number: 452
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 451
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,231,257,298,413,423,424,437,440,445,448,450 | -- | completeness, decidability, frame-extensions, ... |
+| 1 | 125,127,128,231,257,298,413,423,424,437,440,445,448,450,451 | -- | completeness, decidability, frame-extensions, ... |
 | 2 | 193,219,282,296,417,421,425,436,441,446 | 231,298,423,437,440,445,448,450 | decidability, publication-quality, automation, ... |
 | 3 | 178,422,434,447 | 193,421,436,446 | decidability, formula-refactor, publication-quality, ... |
 | 4 | 169,432 | 422,434 | decidability, strong_completeness |
@@ -100,15 +100,75 @@ next_project_number: 451
 
 ### Lean4
 
-448 [PLANNED] — GOAL. Migrate the Lean tree's `snce`/`untl` constructors from the
+448 [IMPLEMENTING] — GOAL. Migrate the Lean tree's `snce`/`untl` constructors from the
 
 ### Proof System Infrastructure
 
 450 [NOT STARTED] — FRAME-CLASS UNIFORMITY: parameterise the restricted-MCS layer (an
 
+### Repo Hygiene
+
+451 [NOT STARTED] — CONSOLIDATE THE TWO BONEYARDS into a single archive tree under Fo
+
 ### Uncategorized
 
 ## Tasks
+
+### 451. Consolidate boneyard archives
+- **Effort**: medium
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: repo-hygiene
+- **Dependencies**: None
+
+**Description**: CONSOLIDATE THE TWO BONEYARDS into a single archive tree under FormalSystem/Boneyard/, preserving git history via git mv, and add the missing infrastructure that keeps an UNCOMPILED archive honest.
+
+=== 1. THE SITUATION (verified 2026-08-17) ===
+The repository has two archive trees:
+  FormalSystem/Boneyard/                                  93 .lean, 59,019 lines
+  FormalSystem/Metalogic/WeakCanonical/Kamp/Boneyard/     63 .lean, 29,256 lines
+Total archived: 156 files; live tree is 373 of 529.
+
+The second is nested five levels deep and is easy to miss. Both READMEs already carry a "There Are TWO Boneyards" warning because past repository counts were wrong for exactly that reason -- a find/grep filter naming only the top-level archive silently counts ~29k archived lines as live code.
+
+Neither archive is excluded in lakefile.lean. Exclusion works two ways: (i) nothing live imports either tree, so they are outside the import closure and never compiled; (ii) tooling filters on the NAME glob `-not -path '*/Boneyard/*'` (scripts/check-module-invariants.sh:63, scripts/readme-lint.sh at :50,:70,:102,:133,:154,:161,:165). Because the filter is by name, it already covers both trees -- so consolidation does NOT change the build. The case for it is navigability, documentation discipline, and eliminating a class of counting bug, not build correctness.
+
+=== 2. PRE-VERIFIED SAFETY FACTS (do not re-litigate; re-confirm cheaply) ===
+- ZERO live importers: `grep -rn "^import .*Boneyard" FormalSystem/ Tests/ --include=*.lean | grep -v "/Boneyard/"` is EMPTY. Also empty for any non-import textual reference to Kamp.Boneyard or Kamp/Boneyard from a live file. The top-level Boneyard likewise has no live importers.
+- OUTBOUND imports are unaffected by the move. Kamp Boneyard files import three LIVE modules (FormalSystem.Metalogic.WeakCanonical.Kamp.EANegation, .EANegationClosure, .ESigmaCapture). Import statements name the IMPORTED module, which is not moving, so these keep resolving.
+- NAMESPACES are not path-derived. The moved files declare `namespace FormalSystem.Metalogic.WeakCanonical`, `...Kamp`, `...Separation`, `RenderGate` -- none tied to the Boneyard path segment. No namespace edits are required.
+
+=== 3. THE ONE REAL HAZARD ===
+52 INTRA-ARCHIVE import lines inside the Kamp Boneyard name modules under `FormalSystem.Metalogic.WeakCanonical.Kamp.Boneyard.*` (e.g. Separation/DualEliminations.lean:16-18, Separation/Hierarchy/HierarchyDefs.lean:16-17, ArityReduction.lean:1). Every one of these breaks when the files move, because the MOVED files' module names change.
+
+Because archived files are never compiled, a broken import here is SILENT -- no build, no test, and no existing check catches it. That is the defect this task must not introduce, and the reason deliverable 4 exists. (The top-level Boneyard has 47 analogous self-imports; those files are not moving and are unaffected, but the new checker must cover them too.)
+
+=== 4. DELIVERABLES ===
+(a) MOVE, with git mv exclusively -- never delete-and-re-add, never cp. History preservation is a hard requirement, not a preference: the whole point of a scrapyard is that `git log --follow` still explains why each file died. Target: FormalSystem/Boneyard/KampWeakCanonical/. PRESERVE the existing internal structure rather than flattening: ZetaProbes/, NfMultiAnchorBridgeRetired/, Separation/ (with Separation/DedekindZ/ and Separation/Hierarchy/), ExpressiveCompleteness/.
+(b) RECONCILE with the existing FormalSystem/Boneyard/KampBypassArchive/ (13 files: KampBypass*.lean, KampForward, KampMutualInduction, NfCharFormula, PriorComposition{,_old}, GeneralExistPart). Kamp material has been migrated to the top-level archive before, so the result must be ONE coherent Kamp region, not two sibling directories that each look authoritative. Either nest both under a Kamp umbrella or state in writing why they stay separate.
+(c) REWRITE the 52 intra-archive import lines to the new module paths. Mechanical, but every one must be verified to resolve -- see (d).
+(d) NEW CHECKER: a script (or a new check group in scripts/check-module-invariants.sh) asserting that EVERY import line in every Boneyard file names a module that exists on disk -- whether it points at live code or at another archived file. This is the missing infrastructure. Uncompiled code has no compiler to catch rot, so the archive needs its own resolution check or it silently decays into unrevivable rubble. Wire it into the invariant script so it runs with everything else.
+(e) UPDATE the B0 self-test (scripts/check-module-invariants.sh:70-74) from "exactly 2 directories" to 1. B0 is a PASS-asserting self-test and WILL fail loudly the moment anything moves -- that is correct behavior, not breakage. Also re-check the :20-22 comment block, whose two-Boneyard warning becomes obsolete.
+(f) READMEs. Merge the two contradictory "There Are TWO Boneyards" sections into one accurate statement. NOTE THE DRIFT: FormalSystem/Boneyard/README.md records the Kamp archive as 62 files / 27,394 lines while the Kamp README records 63 / 29,256 and the filesystem agrees with the latter; the top-level README also states 59,010 lines for itself against an actual 59,019. Stale hand-maintained counts are part of what this task retires -- prefer counts the invariant script emits (C7) over numbers re-typed into prose.
+(g) PER-APPROACH DOCUMENTATION, which is the user-facing point of the exercise. The top-level archive already has the right convention: one subdirectory per abandoned approach, each with a README explaining what it was, why it died, and what would have to change for it to be worth reviving (see ClosedGuardLegacy/, DenseChronicle/, UltrafilterFrame/, RoundRobinChain/, NonBurgessSeed/, StageInductionGapAnalysis/). The Kamp archive is largely flat under a single README. Bring it up to that convention. Every README must record the file's ORIGINAL PATH so provenance survives the move even for a reader who never runs git log.
+
+=== 5. NON-GOALS ===
+- Do NOT revive, repair, or compile any archived code. Archived files stay uncompiled and outside the import closure.
+- Do NOT modify any live module. If a live module turns out to need a change, that is a separate task -- stop and report.
+- Do NOT delete anything. This is a consolidation, not a purge. Deciding what deserves deletion is a different judgment call and is explicitly out of scope.
+- Do NOT add the archive to lakefile.lean in any form.
+
+=== 6. VERIFICATION CONTRACT ===
+- `git log --follow` resolves through the move for a sampled file from each moved subdirectory. If it does not, the move was done wrong -- redo it with git mv.
+- `git status` shows renames (R), not delete+add pairs, for all 63 files.
+- lake build exits 0 and its output is UNCHANGED from before the move -- nothing live imports either archive, so a build difference means something was moved that should not have been.
+- Repository live-sorry count stays at exactly 1 (countermodel_discrete, WeakCanonical/Transfer.lean), via scripts/check-module-invariants.sh, never naive grep.
+- check-module-invariants.sh: B0 green at 1 directory; C7's live inventory unchanged (373 live .lean) since only archived files move.
+- The new checker (d) is green, including the 47 pre-existing top-level self-imports.
+- scripts/readme-lint.sh still skips the consolidated tree correctly (its six *Boneyard* guards match by name, so they should, but verify rather than assume).
+- PRE-EXISTING RED, inherited not caused: C6 (SoundnessLemmas/CoValidity.lean:104 `simp` made no progress), C9 (task-number citation in WeakCanonical/PriorExpressivenessDense.lean:185), and `lake build BimodalTest` (#guard_msgs drift in RegionGateProbe, TableauConformance, BoxSpreadProbe). None are in scope here; do not attempt to fix them, but confirm they are no WORSE afterward.
+
+---
 
 ### 450. Frame class parameterization restricted mcs
 - **Effort**: high
@@ -177,7 +237,7 @@ Task 417's recommended Task B (the filtered step relation) cannot start before (
 ---
 
 ### 448. Migrate snce untl to guard first order
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: lean4
 - **Dependencies**: None
