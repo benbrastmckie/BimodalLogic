@@ -1,7 +1,7 @@
 # Implementation Plan: Machine-check CO ⊬ Prior-U (Reynolds gap axiom independence)
 
 - **Task**: 419 - Machine-check the CO-does-not-derive-Reynolds independence result
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 9 hours
 - **Dependencies**: None outstanding (420, 438, 439 satisfied; `scripts/check-paper-definitions.sh` exits 0)
 - **Research Inputs**: `specs/419_machine_check_co_reynolds_independence/reports/01_co-not-derives-prior-u.md`
@@ -119,7 +119,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: The periodic clock frame [NOT STARTED]
+### Phase 1: The periodic clock frame [IN PROGRESS]
 
 **Goal**: A sorry-free `clockFrame : TaskFrame ℚ` over `W = ℚ ⧸ ℤ` with every `TaskFrame`
 obligation discharged, plus the reference history.
