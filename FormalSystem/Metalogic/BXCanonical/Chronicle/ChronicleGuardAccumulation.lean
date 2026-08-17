@@ -703,8 +703,10 @@ theorem guardAccumFamily_c5Strong (r : ℝ) (hr : ¬ ∃ q : Rat, (q : ℝ) = r)
   obtain ⟨hxr, hcase⟩ := guardAccumFamily_mem_cases r a hmem
   have hφψ : φ = Formula.atom a ∧ ψ = Formula.neg (Formula.atom a) := by
     rcases hcase with h | h | h | h
-    · injection h with h1 h2
-      exact ⟨h1, h2⟩
+    · -- Guard-first: the guard is component 1 and the event component 2, so the
+      -- injection results arrive in the opposite order to the goal's conjunction.
+      injection h with h1 h2
+      exact ⟨h2, h1⟩
     · simp at h
     · simp [Formula.neg] at h
     · simp [Formula.neg] at h

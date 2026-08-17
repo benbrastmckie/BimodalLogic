@@ -624,16 +624,53 @@ criterion. Three of the four needed no edit at all.
 
 ---
 
-### Phase 6: Repair — Metalogic, Soundness and BXCanonical/Chronicle [NOT STARTED]
+### Phase 6: Repair — Metalogic, Soundness and BXCanonical/Chronicle [COMPLETED]
 
 **Goal**: Repair the first half of the bulk. Metalogic is 71% of the migration.
 
 **Tasks**:
-- [ ] Build and repair `FormalSystem.Metalogic.Soundness` and its `SoundnessLemmas/` tree.
-- [ ] Build and repair `FormalSystem.Metalogic.BXCanonical` and its `Chronicle/` tree.
-- [ ] Commit per green module.
-- [ ] Record the topological frontier reached in the phase notes so a resumed run knows where to
-      pick up.
+- [x] Build and repair `FormalSystem.Metalogic.Soundness` and its `SoundnessLemmas/` tree.
+- [x] Build and repair `FormalSystem.Metalogic.BXCanonical` and its `Chronicle/` tree.
+- [x] Commit per green module.
+- [x] Record the topological frontier reached.
+
+**Topological frontier reached**: `FormalSystem.Metalogic.Soundness` (1,000 jobs),
+`FormalSystem.Metalogic.SoundnessLemmas` (854 jobs) and `FormalSystem.Metalogic.BXCanonical`
+(2,246 jobs) all green. Remaining for Phase 7: `Metalogic.WeakCanonical` (incl. `Kamp/`),
+`Metalogic.Decidability` (incl. `Verified/`), `Metalogic.Algebraic`, `Metalogic.Bundle`,
+`Metalogic.Core`, `Metalogic.Independence`, `Metalogic.StrongCompleteness`, `Examples`.
+
+**Repairs: four sites, all one closed class plus one latent pre-existing bug.**
+
+The migration-caused class is *conjunct/component selection on constructor injectivity*. When the
+arguments swap, every `.1`/`.2`, `.left`/`.right` and `injection … with h1 h2` selection on an
+`untlQ`/`snceQ` equality flips index. This is a swap artifact with a mechanical fix, exactly what
+the Zero-Debt contract anticipates:
+
+| Site | Was | Now |
+|---|---|---|
+| `Quasimodel/Realization.lean:425,469` | `(Formula.untlQ.inj …).1` | `.2` (the operand is argument 2) |
+| `Chronicle/PointInsertion.lean:2000` | `formula_and_left_cancel fc h_eq.2` | `h_eq.1` (`β' ∧ xi` is argument 1) |
+| `Chronicle/PointInsertion.lean:2043` | `h_spec.2.1.symm` | `h_spec.2.2.symm` |
+| `Chronicle/PointInsertion.lean:2734` | `(Formula.untlQ.inj h_spec.2).1.symm` | `.2.symm` (extracts the event `γ'`) |
+| `Chronicle/PointInsertion.lean:2752` | `(… h_inj.2).1).1` | `h_inj.1` (extracts the guard `β'`) |
+| `Chronicle/ChronicleGuardAccumulation.lean:707` | `injection h with h1 h2; exact ⟨h1, h2⟩` | `exact ⟨h2, h1⟩` |
+
+An exhaustive grep for explicit `untlQ.inj`/`snceQ.inj`/`.injEq` **projections** over live scope
+returns 4 sites, all listed above; the other 3 occurrences are inside `simp only`/`rw` lists,
+which rewrite the whole conjunction and are order-insensitive. The `injection`-based instances
+cannot be enumerated statically (the tactic names no constructor) and were found by scoped build.
+
+**One latent, pre-existing bug surfaced** at `SoundnessLemmas/CoValidity.lean:103`
+(`co_valid`). Its `intro D _ _ _ _ _ h_lub F M _ _h_sc τ _h_mem t` supplies **14** names for
+`ValidDedekindDense`'s **12** binders, so `τ` was bound to the *time* and the two surplus names
+drove the goal straight through `Formula.co`'s implications — leaving the next line,
+`simp only [Formula.co]`, with no `Formula.co` to rewrite. Neither this file nor
+`ValidDedekindDense` was touched by the migration (`diff` against the pre-task commit is empty for
+the former and comment-only for the latter); what the migration did was force the module to be
+**re-elaborated**, which is when the mismatch became visible. Repaired to the evidently intended
+12-name form, `intro D _ _ _ _ _ h_lub F M τ _h_sc t`, so that `τ` is the history and `t` the time
+as the proof body's `TruthAt M τ r φ` requires. The theorem statement is unchanged.
 
 **Timing**: 2 hours
 
@@ -642,23 +679,26 @@ criterion. Three of the four needed no edit at all.
 **Verification Tier**: full
 
 **Scope Hypothesis**: `Metalogic` totals ~4,127 references across 133 files pre-exclusion; the
-live, Boneyard-excluded portion is smaller and split across Phases 6-7. Confirm the actual live
-per-file rows from the Phase 1 ledger at the start of the phase, and split the Phase 6/7 boundary
-by whatever the ledger shows rather than by the report's directory estimate.
+live, Boneyard-excluded portion is smaller and split across Phases 6-7.
 
-**Zero-Debt contract**: this migration is meaning-preserving by construction — every proof valid
-before remains valid after once its statement and body are swapped consistently. A build error
-that is not explicable as a swap artifact is a **rewriter bug at that site**, not a proof
-obligation. Fix the rewrite. Never insert a `sorry`. If a module's errors resist explanation,
-escalate to `[BLOCKED]` naming the module.
+**Scope Hypothesis outcome**: split by scoped build target rather than by the report's directory
+estimate, as the plan directs. Phase 6 took `Soundness`, `SoundnessLemmas` and `BXCanonical`;
+Phase 7 takes the rest. Both subtrees green.
+
+**Zero-Debt contract**: honoured — every error was explicable as a swap artifact (or, in the one
+case above, as a pre-existing latent bug) and was fixed at the site. No `sorry` inserted.
 
 **Files to modify**:
-- `FormalSystem/Metalogic/Soundness*`, `FormalSystem/Metalogic/SoundnessLemmas/*`,
-  `FormalSystem/Metalogic/BXCanonical/*`
+- `FormalSystem/Metalogic/SoundnessLemmas/CoValidity.lean`,
+  `FormalSystem/Metalogic/BXCanonical/Quasimodel/Realization.lean`,
+  `FormalSystem/Metalogic/BXCanonical/Chronicle/PointInsertion.lean`,
+  `FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleGuardAccumulation.lean`
 
 **Verification**:
-- Scoped builds for both subtrees green.
-- Zero new `sorry` versus baseline for every file touched.
+- [x] Scoped builds for both subtrees green (`Soundness` 1,000 jobs, `SoundnessLemmas` 854 jobs,
+  `BXCanonical` 2,246 jobs).
+- [x] Zero `sorry` delta versus baseline across `Soundness.lean`, `SoundnessLemmas/` and
+  `BXCanonical/` — 0 files with a nonzero delta.
 
 ---
 

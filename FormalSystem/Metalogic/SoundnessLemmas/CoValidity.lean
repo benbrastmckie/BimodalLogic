@@ -100,7 +100,9 @@ Hilbert-side companion is `FormalSystem.Theorems.DedekindDerived.co_derived`. Se
 `Formula.co` for the source citation and the operator-resolution warning.
 -/
 theorem co_valid (φ : Formula) : ValidDedekindDense (Formula.co φ) := by
-  intro D _ _ _ _ _ h_lub F M _ _h_sc τ _h_mem t
+  -- `ValidDedekindDense` binds exactly twelve: the order, its five instances, the LUB
+  -- hypothesis, the frame, the model, the history, its totality, and the time.
+  intro D _ _ _ _ _ h_lub F M τ _h_sc t
   simp only [Formula.co]
   intro h_tri h_H
   obtain ⟨-, h_mid, h_fut⟩ := always_elim h_tri

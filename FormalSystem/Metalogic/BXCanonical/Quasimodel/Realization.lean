@@ -421,7 +421,8 @@ theorem SubformulaClosure_G_closed {target χ : Formula}
     · -- allFuture χ = allFuture f: extract χ = f via unfolding
       have : χ = f := by
         simp only [Formula.allFuture, Formula.someFuture, Formula.neg, Formula.top] at hfeq
-        exact Formula.imp.inj (Formula.untlQ.inj (Formula.imp.inj hfeq).1).1 |>.1
+        -- Guard-first: the operand is the constructor's SECOND argument, hence `.2`.
+        exact Formula.imp.inj (Formula.untlQ.inj (Formula.imp.inj hfeq).1).2 |>.1
       subst this; exact subformula_mem hf
     · -- allFuture χ = allPast f: impossible (untl ≠ snce)
       simp only [Formula.allFuture, Formula.allPast, Formula.someFuture, Formula.somePast,
@@ -464,7 +465,8 @@ theorem SubformulaClosure_H_closed {target χ : Formula}
     · -- allPast χ = allPast f: extract χ = f
       have : χ = f := by
         simp only [Formula.allPast, Formula.somePast, Formula.neg, Formula.top] at hfeq
-        exact Formula.imp.inj (Formula.snceQ.inj (Formula.imp.inj hfeq).1).1 |>.1
+        -- Guard-first: the operand is the constructor's SECOND argument, hence `.2`.
+        exact Formula.imp.inj (Formula.snceQ.inj (Formula.imp.inj hfeq).1).2 |>.1
       subst this; exact subformula_mem hf
   · -- allPast χ = neg g: g = somePast(neg χ)
     have hg_is : g = Formula.somePast (Formula.neg χ) := by

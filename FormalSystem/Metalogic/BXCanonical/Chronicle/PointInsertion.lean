@@ -1997,7 +1997,7 @@ private theorem l27_guard_snce_xi_val (fc : FrameClass) {A B C : Set Formula}
     have h_spec := Classical.choose_spec h
     obtain ⟨α'', hα'', h_eq⟩ := h_spec.2
     rw [Formula.snceQ.injEq] at h_eq
-    have h_β_eq := (formula_and_left_cancel fc h_eq.2).symm
+    have h_β_eq := (formula_and_left_cancel fc h_eq.1).symm
     convert h_β_eq using 1; simp
   · next h =>
     exfalso; exact h ⟨β', hβ', α', hα', rfl⟩
@@ -2040,7 +2040,7 @@ private theorem l27_a_event_list_α_mem_xi (fc : FrameClass) {A B C : Set Formul
   congr 1
   have h_spec := Classical.choose_spec (Classical.choose_spec h_ex).2
   rw [Formula.snceQ.injEq] at h_spec
-  exact h_spec.2.1.symm
+  exact h_spec.2.2.symm
 
 
 /-- Consistency of the Lemma 2.7 D0 seed (Burgess 1982 p.372), simplified via Xu 3.2.1.
@@ -2731,7 +2731,7 @@ private theorem l27s_c5_γ_mem {B C : Set Formula} {xi : Formula}
       Formula.untlQ (Formula.and β'' xi) γ'' := ⟨β', hβ', γ', hγ', rfl⟩
   simp only [h, ↓reduceDIte]
   have h_spec := (Classical.choose_spec (Classical.choose_spec h).2)
-  exact congr_arg some (Formula.untlQ.inj h_spec.2).1.symm
+  exact congr_arg some (Formula.untlQ.inj h_spec.2).2.symm
 
 /-- For a component 3 element untl(γ', β'∧xi) in L, the extracted β' is in b5_guard_list. -/
 private theorem l27s_b5_β_mem {B C : Set Formula} {xi : Formula}
@@ -2749,7 +2749,7 @@ private theorem l27s_b5_β_mem {B C : Set Formula} {xi : Formula}
   obtain ⟨_, γ'', _, h_formula_eq⟩ := h_spec
   have h_inj := Formula.untlQ.inj h_formula_eq
   simp only [Formula.and, Formula.neg] at h_inj
-  exact congr_arg some ((Formula.imp.inj (Formula.imp.inj h_inj.2).1).1).symm
+  exact congr_arg some ((Formula.imp.inj (Formula.imp.inj h_inj.1).1).1).symm
 
 /-- Since-direction seed consistency (simplified via Xu 3.2.1):
 Given BurgessR3Maximal(A, B, C) with snce(xi, eta) ∈ C and xi ∉ B,
