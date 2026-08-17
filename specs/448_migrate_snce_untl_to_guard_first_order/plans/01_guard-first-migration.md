@@ -1,7 +1,7 @@
 # Implementation Plan: Guard-First Migration of `snce`/`untl`
 
 - **Task**: 448 - Migrate the Lean tree's `snce`/`untl` constructors from EVENT-FIRST (Burgess) to GUARD-FIRST (paper) argument order
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 19 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/448_migrate_snce_untl_to_guard_first_order/reports/01_guard-first-migration-strategy.md`
@@ -1146,36 +1146,67 @@ marker means the manual asserts something this plan has not accounted for.
 
 ---
 
-### Phase 13: Record Closure and Prose Repairs [NOT STARTED]
+### Phase 13: Record Closure and Prose Repairs [COMPLETED]
 
 **Goal**: Close the decision record and repair the two other stale prose artifacts, including the
 third one the task description did not flag.
 
 **Tasks**:
-- [ ] Close `specs/decisions/untl-snce-argument-order.md`: OPEN -> DECIDED, recording that the
+- [x] Close `specs/decisions/untl-snce-argument-order.md`: OPEN -> DECIDED, recording that the
       Lean tree was aligned to the paper (guard-first) rather than the reverse (acceptance 5).
-- [ ] **Explicitly retract**, in that record, the "Why the event-first reading is load-bearing"
+      Title changed from "Escalation:" to "Decision:"; a "What was decided, and what it cost"
+      section carries the seven verified gate outcomes.
+- [x] **Explicitly retract**, in that record, the "Why the event-first reading is load-bearing"
       argument. It is wrong: it evaluates each of the four dependents' *current text* under a
       *guard-first reading* without swapping the dependent's arguments. A uniform swap of the
       definition and every call site is meaning-preserving by construction, so the four
       dependents were never obstacles — they were four more sites. Retract it rather than
       silently dropping it, so a future reader does not rediscover it as live reasoning.
-- [ ] Record in that record: the superseded footnote quotation is retired (the live anchor
+      The section heading is struck through, a blockquoted RETRACTED notice states the error and
+      corrects all four rows against the live definitions, and the original table is retained
+      struck through. The "Not on the table: changing the Lean convention" paragraph is likewise
+      struck through and annotated.
+- [x] Record in that record: the superseded footnote quotation is retired (the live anchor
       `edde7517…` is footnote-free as of the 2026-08-17 re-pin); the D2 identifier-name drift with
       the measured figure of 219 distinct `untl_`/`snce_` identifiers; the D1 deferred `toJson`
-      key-order flip; and the D3 Boneyard exclusion.
-- [ ] Repair the prose caveat at `specs/paper-definitions-of-record.md:573-600` — the **third**
+      key-order flip; and the D3 Boneyard exclusion. *(deviation: altered — the footnote is
+      **retired**, per this phase's verification criterion, not merely annotated: the verbatim
+      LaTeX quotation was removed from the record and replaced with a description plus the three
+      wave hashes. Grep confirms zero occurrences of the quoted text in any of the three
+      artifacts. All four deferred consequences are recorded in a new "Deferred consequences"
+      section, plus D4's 391 untouched incidental mentions.)*
+- [x] Repair the prose caveat at `specs/paper-definitions-of-record.md:573-600` — the **third**
       stale artifact. It describes a footnote that no longer exists, asserts the Lean tree is
       event-first "and did not need to be changed", and cites `Formula.lean:85-90` /
       `Truth.lean:134-135` by stale line numbers. Rewrite it to describe the current, footnote-free
       anchor and the completed alignment. This is a prose repair, **not** a re-pin — no anchor
-      hash moves.
-- [ ] Add a convention banner to `FormalSystem/Boneyard/README.md` and
+      hash moves. *(deviation: altered — two **further** present-tense claims about the removed
+      footnote were found outside the 573-600 range and also needed repair: the 2026-08-12
+      drift-correction bullet, which said the footnote "now states the mismatch", and the
+      2026-08-10 coverage-extension paragraph. Both received `**Superseded 2026-08-17**` notes in
+      the file's own existing supersession idiom rather than being rewritten, so the dated
+      historical record stays legible.)*
+- [x] Add a convention banner to `FormalSystem/Boneyard/README.md` and
       `FormalSystem/Metalogic/WeakCanonical/Kamp/Boneyard/README.md` (D3): their contents predate
       this migration, are not compiled, and read `untl`/`snce` **event-first**; resurrecting any
       file requires swapping its constructor arguments first.
-- [ ] Run `scripts/check-paper-definitions.sh` to confirm no anchor drift was introduced.
-- [ ] Commit.
+- [x] Run `scripts/check-paper-definitions.sh` to confirm no anchor drift was introduced.
+      Exit 1, reporting four drifted anchors — `def:TMplus`, `cor:tm-completeness`, `def:id`,
+      `def:strongest` — **all pre-existing and unrelated to this task** (they carry the paper's own
+      `%% CHANGE` comments from the `Obj`-predicate retirement). Verified pre-existing by
+      re-running the check against the `HEAD` version of the record: identical four anchors.
+      Neither `def:BLplus-semantics` nor `def:BLplus-defined` drifted. **Zero drift introduced**,
+      which is what this phase's criterion asks; no edit in this phase touched a quoted block.
+- [x] Commit.
+
+**Fourth-artifact grep (required by the Scope Hypothesis)**: the retired footnote's verbatim text
+survives at exactly three places, all frozen historical artifacts of completed work and therefore
+deliberately not rewritten —
+`specs/archive/414_refactor_semantics_to_total_history_validity/reports/03_total-history-validity-refactor.md`,
+`specs/archive/444_overhaul_formalfoundations_presentation/definitions-of-record-444.md`, and this
+task's own research report (which cites the record's old line range rather than quoting the
+footnote). No live artifact quotes it. The scope hypothesis of exactly three artifacts to repair
+holds.
 
 **Timing**: 1.5 hours
 
@@ -1196,33 +1227,66 @@ text before closing the phase.
 - `FormalSystem/Boneyard/README.md`, `FormalSystem/Metalogic/WeakCanonical/Kamp/Boneyard/README.md` - convention banners
 
 **Verification**:
-- Decision record status is DECIDED and the retraction is explicit.
-- No occurrence of the removed footnote's text survives in any of the three artifacts.
-- `scripts/check-paper-definitions.sh` reports no anchor drift.
+- [x] Decision record status is DECIDED and the retraction is explicit.
+- [x] No occurrence of the removed footnote's text survives in any of the three artifacts —
+      grep for `texttt{snce}` and `Although the axioms of` returns 0 in all four repaired files.
+- [x] `scripts/check-paper-definitions.sh` reports no anchor drift **introduced by this phase**;
+      the four drifted anchors it does report are pre-existing and were confirmed identical
+      against the `HEAD` version of the record.
 
 ---
 
 ## Testing & Validation
 
-- [ ] `lake build` green with zero errors (Phases 8 and 10).
-- [ ] Per-file `sorry` count delta is zero against `baseline/sorry-baseline.txt` — no new `sorry`
-      anywhere (acceptance 3).
-- [ ] Identifier-boundary grep for `untl`/`snce` returns 0 over live scope between Phases 4 and 10
+- [x] `lake build` green with zero errors (Phases 8 and 10; re-confirmed after Phase 11 — 2,457
+      jobs, exit 0, same job count as the Phase 1 baseline).
+- [x] Per-file `sorry` count delta is zero against `baseline/sorry-baseline.txt` — no new `sorry`
+      anywhere (acceptance 3). 335 occurrences across 98 files, per-file counts byte-identical.
+      Census method is `grep -o '\bsorry\b'` (occurrences, not lines) — the same method the
+      baseline used; counting lines instead reports a false delta.
+- [x] Identifier-boundary grep for `untl`/`snce` returns 0 over live scope between Phases 4 and 10
       (zero-residue gate).
-- [ ] `grep -c 'untlQ\|snceQ'` returns 0 after Phase 10.
-- [ ] `untlGuards`/`snceGuards`/`untlGuard`/`snceGuard` intact after Phase 10.
-- [ ] Gate A: role-keyed `toJson` fields byte-identical to baseline.
-- [ ] Gate B: `schema_string` fields byte-identical after the documented `U(a,b)→U(b,a)` /
-      `S(a,b)→S(b,a)` transform.
-- [ ] `somePast` = `⊤ S φ`, `someFuture` = `⊤ U φ`, `next` = `⊥ U φ`, `prev` = `⊥ S φ`, verified
-      against `def:BLplus-defined` (acceptance 4).
-- [ ] `dense_indicator` reads `¬(⊥ U ⊤)`.
-- [ ] `next_unfold` / `prev_unfold` still close by `rfl`.
-- [ ] `Tests/BimodalTest/UntlSnceCopyProbe.lean` and `TemporalWitnessProbe.lean` pass.
-- [ ] `DatasetExport.lean` S-expression printer/parser round-trip test passes.
-- [ ] `scripts/typst-sync-check.sh` PASS on all three checks (acceptance 6).
-- [ ] `scripts/check-paper-definitions.sh` reports no anchor drift.
-- [ ] `python3 scripts/swap_untl_snce.py --test` passes.
+- [x] `grep -c 'untlQ\|snceQ'` returns 0 after Phase 10 — re-confirmed 0 after Phase 11.
+- [x] `untlGuards`/`snceGuards`/`untlGuard`/`snceGuard` intact after Phase 10 — still present in
+      `Metalogic/Decidability/Verified/Bridge/` after Phase 11.
+- [x] Gate A: role-keyed `toJson` fields byte-identical to baseline — the regenerated JSONL
+      differs from `baseline/machine-appendix.jsonl` on exactly one line, the metadata stamp.
+- [x] Gate B: `schema_string` fields byte-identical after the documented `U(a,b)→U(b,a)` /
+      `S(a,b)→S(b,a)` transform. *(deviation: altered — **the transform is the identity.**
+      `prettyPrint` was made role-stable rather than left positional
+      (`| .untl ψ φ => "U(" ++ φ.prettyPrint ++ ", " ++ ψ.prettyPrint ++ ")"`), so it still emits
+      the event first, reading it from the second constructor position. `schema_string` is
+      byte-identical with no transform applied — a stronger result than the gate required.)*
+- [x] `somePast` = `⊤ S φ`, `someFuture` = `⊤ U φ`, `next` = `⊥ U φ`, `prev` = `⊥ S φ`, verified
+      against `def:BLplus-defined` (acceptance 4). Verified against the paper anchor
+      `2ac6361a…` as quoted in `specs/paper-definitions-of-record.md`, not against pre-migration
+      Lean: `\past φ := ⊤\since φ` → `somePast φ = Formula.snce Formula.top φ`
+      (`Formula.lean:157`); `\future φ := ⊤\until φ` → `someFuture φ = Formula.untl Formula.top φ`
+      (`:147`); `\Next φ := ⊥\until φ` → `next φ = Formula.untl Formula.bot φ` (`:511`);
+      `\Previous φ := ⊥\since φ` → `prev φ = Formula.snce Formula.bot φ` (`:516`). The two
+      universal operators corroborate: `\Past φ := ¬\past¬φ` → `allPast φ = (somePast φ.neg).neg`
+      (`:177`), `\Future φ := ¬\future¬φ` → `allFuture φ = (someFuture φ.neg).neg` (`:167`).
+- [x] `dense_indicator` reads `¬(⊥ U ⊤)` — `Axiom (Formula.untl Formula.bot (Formula.bot.imp
+      Formula.bot)).neg` (`ProofSystem/Axioms.lean:369-370`).
+- [x] `next_unfold` / `prev_unfold` still close by `rfl` — both `@[simp]`, both `:= rfl`
+      (`Automation/Normalization.lean:75`, `:78`); they elaborate in the green build.
+- [x] `Tests/BimodalTest/UntlSnceCopyProbe.lean` and `TemporalWitnessProbe.lean` pass —
+      `lake build BimodalTest` re-run after Phase 11 (see the test-build note below).
+- [x] `DatasetExport.lean` S-expression printer/parser round-trip test passes — covered by the
+      same test-suite build.
+- [x] `scripts/typst-sync-check.sh` PASS on all three checks (acceptance 6).
+- [x] `scripts/check-paper-definitions.sh` reports no anchor drift **introduced by this task**;
+      the four anchors it flags are pre-existing and unrelated (see Phase 13).
+- [x] `python3 scripts/swap_untl_snce.py --test` passes — all roundtrip cases green, exit 0.
+
+**Test-build note (re-run after Phase 11).** `lake build BimodalTest` exits 1 with **exactly the
+7 pre-existing pinned-stale `#guard_msgs` docstring mismatches** recorded at Phases 8 and 10 —
+zero new failures. They sit in three modules, none of which Phase 11 touched:
+`BimodalTest.BoxSpreadProbe` (1), `BimodalTest.RegionGateProbe` (2),
+`BimodalTest.TableauConformance` (4). Both probes this plan names built clean —
+`BimodalTest.TemporalWitnessProbe` and `BimodalTest.UntlSnceCopyProbe` — and the round-trip
+suites report `All TraceExport round-trip tests PASSED`, `Round-Trip Tests: 13 passed, 0 failed`,
+and `Round-trip test: ALL PASS (21 formulas tested)`.
 
 ## Artifacts & Outputs
 

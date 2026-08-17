@@ -4,6 +4,28 @@ This directory contains archived Lean code that is no longer part of the active
 development path. Files are preserved for historical reference, documentation of
 dead-end approaches, and potential future consultation.
 
+## CONVENTION WARNING: this tree is EVENT-FIRST and predates the guard-first migration
+
+**`Formula.untl` and `Formula.snce` in the live tree take the GUARD first and the EVENT
+second.** Every file in this directory predates that change and reads them the **other way
+round** — event first, guard second.
+
+Nothing here was migrated, deliberately. This tree is not compiled: no built `.olean` lies under
+any `Boneyard` path, no live module imports one, and `lakefile.lean`'s `lean_lib FormalSystem`
+roots only `FormalSystem`. Rewriting ~1,900 occurrences that no compiler would ever check is pure
+added risk with no verification available, so the migration excluded both Boneyard trees and left
+this banner instead.
+
+**If you resurrect a file from here, swap the two arguments of every `untl` and `snce` — in
+constructor applications, in `match`/`induction` patterns, and in docstrings — before doing
+anything else.** The swap is meaning-preserving only when it is uniform; a half-swapped file
+compiles and silently means something different. Cross-check the result against
+`FormalSystem/Syntax/Formula.lean`'s constructor docstrings and
+`FormalSystem/Semantics/Truth.lean`'s clauses, and note that the prefix rendering `U(event, guard)`
+emitted by `Formula.prettyPrint` is still event-first and is *not* the constructor order.
+
+See `specs/decisions/untl-snce-argument-order.md` for the full record.
+
 ## There Are TWO Boneyards
 
 This is **not** the only archive directory in the repository:

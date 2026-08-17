@@ -5,6 +5,28 @@ Archived Lean files from the Kamp/Rabinovich expressive-completeness pipeline
 retired escalation paths, and superseded infrastructure that are no longer on
 any live proof path.
 
+## CONVENTION WARNING: this tree is EVENT-FIRST and predates the guard-first migration
+
+**`Formula.untl` and `Formula.snce` in the live tree take the GUARD first and the EVENT
+second.** Every file in this directory predates that change and reads them the **other way
+round** — event first, guard second.
+
+Nothing here was migrated, deliberately: this tree is not compiled, so a rewrite would have been
+unverifiable. **If you resurrect a file from here, swap the two arguments of every `untl` and
+`snce` — in constructor applications, in `match`/`induction` patterns, and in docstrings — before
+doing anything else.** The swap is meaning-preserving only when it is uniform; a half-swapped file
+compiles and silently means something different.
+
+This warning bites hardest in this tree specifically, because the Kamp/Reynolds material is dense
+in `K⁺`/`K⁻` and Stavi-operator transcriptions whose source notation (`¬U(⊤, ¬A)`) is prefix and
+event-first. Distinguish three renderings before trusting any line: the constructor is
+guard-first; the prefix `U(e, g)` form emitted by `Formula.prettyPrint` is event-first; the
+paper's infix `φ U ψ` is guard-first. Note also that `kPlus`/`kMinus` genuinely do take their
+operand in the *guard* position — `kPlus φ = (untl φ.neg ⊤).neg` is correct in the live tree and
+is not a stale event-first expression.
+
+See `specs/decisions/untl-snce-argument-order.md` for the full record.
+
 ## There Are TWO Boneyards
 
 This directory is the **second**, easily-missed archive in the repository:

@@ -158,6 +158,10 @@ lint itself reported for the live text):
   byte-for-byte** — no semantic claim moved. This resolves, in the paper, the divergence this
   record escalated in `specs/decisions/untl-snce-argument-order.md`; the caveat under that entry
   is rewritten below to describe the repaired footnote rather than the old defective one.
+  **Superseded 2026-08-17**: the paper has since removed the footnote outright — the live anchor
+  `edde7517…` is footnote-free — and the Lean tree has been migrated to guard-first, so there is
+  no longer a convention to describe on either side. The bullet above is retained as the record of
+  the 2026-08-12 wave; the caveat under the entry itself has been rewritten again accordingly.
 - **`thm:extension`** (`af9b23bf…` → `e63eac74…`): statement unchanged; the footnote's existing
   choice-contrast clause was extended to also name the finite-`W` case discharged choice-free by
   a new corollary (paper comment `%% CHANGE (finite-spherical-corollary)`). See the residual gap
@@ -233,7 +237,10 @@ guard-first/event-second, while the Lean tree is event-first/guard-second. That 
 quoted here (never silently corrected — this file records what the paper says) and escalated in
 `specs/decisions/untl-snce-argument-order.md`. **Superseded 2026-08-12**: the paper has since
 repaired the footnote in the direction that actually holds; see "Drift correction (2026-08-12)"
-above and the rewritten caveat under the entry itself.
+above and the rewritten caveat under the entry itself. **Superseded again 2026-08-17**: the
+footnote has since been removed from the paper entirely, and the Lean tree has been migrated to
+guard-first, discharging the caveat rather than restating it. The decision record is closed as
+DECIDED.
 
 ## How to read this file
 
@@ -570,34 +577,49 @@ sha256: `a43b3df2ea2fcb96eeb156b3403a33ac51fcafd2ad4eb55e7915c07cf509f8b7`
 ```
 sha256: `edde75176efc0936c96f8d9eb18628929c2dd3bdb1aa1c21d4a88af90276314a`
 
-**Argument-order caveat — the footnote now describes this repository correctly (repaired
-2026-08-12).** The `\footnote` inside the block above *previously* asserted that "the repository's
-`snce`/`untl` constructors follow the Pnueli convention with the guard as the first argument and
-the event as the second", which was false of the Lean tree. As of the wave re-quoted above, the
-paper has repaired that sentence itself (its own `%% CHANGE (halden-defect-repair,
-untl-snce-convention)` comment, retained verbatim in the quoted block): the footnote now says the
-paper's surface notation is guard-first while **the repository's constructors are event-first
-(Burgess)**, and adds that the truth conditions agree once the argument order is swapped.
+**Argument-order caveat — DISCHARGED 2026-08-17. There is no longer a divergence, and there is no
+longer a footnote.**
 
-That matches the Lean tree: `Formula.snce`/`Formula.untl` (`FormalSystem/Syntax/Formula.lean:85-90`)
-and `TruthAt`'s clauses (`FormalSystem/Semantics/Truth.lean:134-135`) are **event-first /
-guard-second**, and both `Axiom.dense_indicator` (`FormalSystem/Semantics/Validity.lean:229-231`)
-and the `K⁺` combinator (`FormalSystem/Syntax/Formula.lean:164-166`) depend on the event-first
-reading. The Lean convention was **not** changed and did not need to be. The divergence remains
-recorded in `specs/decisions/untl-snce-argument-order.md`; what changed is that the paper and this
-repository now *agree about which convention each of them uses*, so the remaining difference is a
-notational one the paper explicitly flags, not a defect. This record continues to quote the paper
-verbatim either way — it records what the paper says, including when what it says becomes correct.
+Two things changed, in this order:
 
-Precisely what does and does not diverge: the **shape** of each clause is identical to Lean's (one
-existentially witnessed time on the correct side of `x`, one universal quantifier over the open
-interval between them). What differs is **which argument plays which role**. The paper's infix
-`$\varphi\since\psi$` puts the *event* second (`ψ` is witnessed at `z < x`; `φ` holds throughout),
-consistent with its own `def:BLplus-defined` abbreviations `$\past\varphi \coloneq \top\since\varphi$`
-and `$\future\varphi \coloneq \top\until\varphi$`. Lean's prefix `Formula.untl φ ψ` puts the *event*
-first — `someFuture φ = untl φ ⊤` (`Formula.lean:131`), the mirror image. So the footnote accurately
-describes **the paper's own** infix convention; its error is attributing that convention to **this
-repository's constructors**, which are the other way round.
+1. **The paper removed the footnote.** The anchor re-quoted above (`edde7517…`) is
+   **footnote-free**: it carries the two `($\since$)` / `($\until$)` clauses and nothing else. Its
+   two predecessors did carry an argument-order `\footnote` — first attributing a guard-first
+   Pnueli convention to this repository's constructors (`3f56a996…`), then, after the paper's own
+   `%% CHANGE (halden-defect-repair, untl-snce-convention)` repair, asserting the reverse
+   (`f40f514e…`). Both are superseded. Neither sentence exists in the live paper, and neither
+   should be quoted as current paper text; the historical quotations are retained in
+   `specs/decisions/untl-snce-argument-order.md`.
+
+2. **The Lean tree was aligned to the paper.** `Formula.untl` and `Formula.snce`
+   (`FormalSystem/Syntax/Formula.lean:85-106`) now take the **guard first and the event second**,
+   and `TruthAt`'s clauses (`FormalSystem/Semantics/Truth.lean:165-168`) read
+   `| Formula.untl ψ φ => ∃ s, t < s ∧ TruthAt … s φ ∧ ∀ r, t < r → r < s → TruthAt … r ψ` — the
+   existential witness second, the open-interval condition first, exactly as the `(until)` clause
+   above states it. The migration was a uniform argument swap of the two constructors and every
+   call site, carried out under
+   `specs/448_migrate_snce_untl_to_guard_first_order/plans/01_guard-first-migration.md`. It is
+   meaning-preserving by construction: `lake build` green at the same job count, per-file `sorry`
+   census byte-identical to baseline, axiom count unchanged, and the role-keyed `toJson` oracle
+   regenerating byte-identically.
+
+Corroborated independently by `def:BLplus-defined` below, which the Lean derived operators now
+match character for character: `$\past\varphi \coloneq \top\since\varphi$` →
+`somePast φ = Formula.snce Formula.top φ` (`Formula.lean:157`);
+`$\future\varphi \coloneq \top\until\varphi$` → `someFuture φ = Formula.untl Formula.top φ`
+(`:147`); `$\Next\varphi \coloneq \bot\until\varphi$` → `next φ = Formula.untl Formula.bot φ`
+(`:511`); `$\Previous\varphi \coloneq \bot\since\varphi$` → `prev φ = Formula.snce Formula.bot φ`
+(`:516`).
+
+**This is a prose repair, not a re-pin — no anchor hash moved.** The verbatim block and its
+`edde7517…` checksum above are the live paper text; only this caveat, which described a footnote
+that no longer exists and a Lean convention that no longer holds, was rewritten.
+
+One residual asymmetry, deliberate and not a defect: the codebase's **prefix** rendering
+`U(event, guard)` (`Formula.prettyPrint`, the machine appendix's `schema_string`, and
+`asUntil?`/`asSince?`'s returned pair) remains **event-first**, unlike the constructor and unlike
+the paper's infix. Each such site now says so explicitly. Flipping it is deferred; see the
+"Deferred consequences" section of the decision record.
 
 ### `def:BLplus-defined` — the defined temporal operators of `BL^+`
 
