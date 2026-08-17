@@ -100,7 +100,7 @@ next_project_number: 451
 
 ### Lean4
 
-448 [PLANNING] — GOAL. Migrate the Lean tree's `snce`/`untl` constructors from the
+448 [PLANNED] — GOAL. Migrate the Lean tree's `snce`/`untl` constructors from the
 
 ### Proof System Infrastructure
 
@@ -177,11 +177,12 @@ Task 417's recommended Task B (the filtered step relation) cannot start before (
 ---
 
 ### 448. Migrate snce untl to guard first order
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: lean4
 - **Dependencies**: None
 - **Research**: [448_migrate_snce_untl_to_guard_first_order/reports/01_guard-first-migration-strategy.md]
+- **Plan**: [448_migrate_snce_untl_to_guard_first_order/plans/01_guard-first-migration.md]
 
 **Description**: GOAL. Migrate the Lean tree's `snce`/`untl` constructors from the current EVENT-FIRST (Burgess)
 argument order to the GUARD-FIRST order used by the paper, so that `FormalSystem/` and
