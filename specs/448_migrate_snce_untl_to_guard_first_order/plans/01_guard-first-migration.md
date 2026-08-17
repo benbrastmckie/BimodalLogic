@@ -702,18 +702,33 @@ case above, as a pre-existing latent bug) and was fixed at the site. No `sorry` 
 
 ---
 
-### Phase 7: Repair — Metalogic WeakCanonical/Kamp, Decidability/Verified, Examples [NOT STARTED]
+### Phase 7: Repair — Metalogic WeakCanonical/Kamp, Decidability/Verified, Examples [COMPLETED]
 
 **Goal**: Repair the remaining bulk.
 
 **Tasks**:
-- [ ] Build and repair `FormalSystem.Metalogic.WeakCanonical` and its `Kamp/` tree (excluding its
-      local `Boneyard/`).
-- [ ] Build and repair `FormalSystem.Metalogic.Decidability` and its `Verified/` tree. Confirm
-      `Bridge/RegionLabel.lean` and `Bridge/DenseTruth.lean` — which contain the
-      `untlGuards`/`snceGuards` identifiers behind D5 — are correct and untouched by the rename.
-- [ ] Build and repair `FormalSystem.Examples`.
-- [ ] Commit per green module.
+- [x] Build and repair `FormalSystem.Metalogic.WeakCanonical` and its `Kamp/` tree (excluding its
+      local `Boneyard/`). *(green with no repair needed — the largest single subtree in the
+      migration required zero edits)*
+- [x] Build and repair `FormalSystem.Metalogic.Decidability` and its `Verified/` tree. Confirm
+      `Bridge/RegionLabel.lean` and `Bridge/DenseTruth.lean` are correct and untouched by the
+      rename.
+- [x] Build and repair `FormalSystem.Examples`. *(green, no repair needed)*
+- [x] Commit per green module.
+
+**Repairs: three sites, one new closed class.** `Verified/Decidable.lean` uses `split` on
+`applyRule`'s shape matches and then `rename_i` to name the introduced pattern variables. `split`
+introduces them in **source order**, which guard-first reverses:
+
+| Site | `applyRule` pattern (`Tableau.lean`) | Was | Now |
+|---|---|---|---|
+| `Decidable.lean:2651` (`ruleSound_priorUGap`) | `\| .untlQ g e =>` (1437) | `rename_i e g` | `rename_i g e` |
+| `Decidable.lean:2687` (`ruleSound_priorSGap`) | `\| .snceQ g e =>` (1454) | `rename_i e g` | `rename_i g e` |
+| `Decidable.lean:2797` (`ruleSound_sep`) | `\| .imp (.untlQ (.imp ψ .bot) e) .bot =>` (1471) | `rename_i e ψ` | `rename_i ψ e` |
+
+The rewriter had already swapped the `applyRule` patterns correctly and preserved the role names
+(`g` guard, `e` event) on both sides; only the *positional* order in which `split` hands the
+variables over changed, which `rename_i` is sensitive to. Nine reported errors, all three sites.
 
 **Timing**: 2 hours
 
@@ -722,19 +737,24 @@ case above, as a pre-existing latent bug) and was fixed at the site. No `sorry` 
 **Verification Tier**: full
 
 **Scope Hypothesis**: the residual live Metalogic rows from the Phase 1 ledger not covered by
-Phase 6, plus `Examples`. Confirm by re-running the ledger scoped to these subtrees and checking
-that Phases 6 and 7 together account for every live Metalogic file.
+Phase 6, plus `Examples`.
 
-**Zero-Debt contract**: as Phase 6. No `sorry` under any circumstance.
+**Scope Hypothesis outcome**: Phases 6 and 7 together account for every live `Metalogic` file —
+confirmed transitively by the Phase 8 full build, which compiles every module reachable from
+`FormalSystem.lean` and therefore leaves no live Metalogic file unbuilt.
+
+**Zero-Debt contract**: honoured. Every error was explicable as a swap artifact and fixed at the
+site. No `sorry` inserted.
 
 **Files to modify**:
-- `FormalSystem/Metalogic/WeakCanonical/*` (minus `Kamp/Boneyard/`),
-  `FormalSystem/Metalogic/Decidability/*`, `FormalSystem/Examples/*`
+- `FormalSystem/Metalogic/Decidability/Verified/Decidable.lean`
 
 **Verification**:
-- Scoped builds green for all three subtrees.
-- `untlGuards`/`snceGuards` identifiers intact and unrenamed.
-- Zero new `sorry` versus baseline.
+- [x] Scoped builds green for all three subtrees (`WeakCanonical`; `Decidability` + `Examples`
+  together, 1,470 jobs).
+- [x] `untlGuards`/`snceGuards`/`untlGuard`/`snceGuard` intact and unrenamed — 20 occurrences
+  across `Bridge/RegionLabel.lean` and `Bridge/DenseTruth.lean`, D5's corruption check passing.
+- [x] Zero `sorry` delta versus baseline across **all 424 live files**, not just this tier.
 
 ---
 

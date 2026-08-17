@@ -2648,7 +2648,7 @@ theorem ruleSound_priorUGap : RuleSound carrierDedekind .priorUGap := by
       simp only [applyRule, hA]
       split
       all_goals try trivial
-      rename_i e g
+      rename_i g e
       split
       all_goals try trivial
       rename_i hbeq
@@ -2684,7 +2684,7 @@ theorem ruleSound_priorSGap : RuleSound carrierDedekind .priorSGap := by
       simp only [applyRule, hA]
       split
       all_goals try trivial
-      rename_i e g
+      rename_i g e
       split
       all_goals try trivial
       rename_i hbeq
@@ -2794,7 +2794,7 @@ theorem ruleSound_sepRule : RuleSound carrierDedekind .sepRule := by
       simp only [applyRule, hA]
       split
       all_goals try trivial
-      rename_i e ψ
+      rename_i ψ e
       split
       all_goals try trivial
       rename_i hbeq
