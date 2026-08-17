@@ -851,26 +851,43 @@ whatever the engine happened to print.
 
 ---
 
-### Phase 9: Definitional Audit — Two-Gate Oracle [NOT STARTED]
+### Phase 9: Definitional Audit — Two-Gate Oracle [COMPLETED]
 
 **Goal**: Audit exactly the sites no proof pins — the 45 axiom schemata and the derived
 operators — where a half-applied swap is well-typed and silent.
 
 **Tasks**:
-- [ ] Regenerate `typst/generated/machine-appendix.jsonl` via
-      `scripts/typst-machine-appendix.sh`.
-- [ ] **Gate A (structural, byte-exact)**: extract the role-keyed `toJson` structural fields from
-      the regenerated JSONL and from `baseline/machine-appendix.jsonl`, and diff. Under D1 these
-      must be **byte-identical**. A non-empty diff names the exact axiom or operator that was
-      half-swapped, un-swapped, or double-swapped.
-- [ ] **Gate B (positional, transform-then-diff)**: `prettyPrint`'s `schema_string` fields are
-      positional and are expected to change predictably — every `U(a,b)` becomes `U(b,a)` and
-      every `S(a,b)` becomes `S(b,a)`. Apply that transformation to the baseline's
-      `schema_string` fields and diff against the regenerated ones. Must be byte-identical after
-      the transform. Any residue is a real defect.
-- [ ] Re-verify the four `def:BLplus-defined` shape assertions from Phase 3 against the
-      regenerated appendix output (`⊤ S φ`, `⊤ U φ`, `⊥ U φ`, `⊥ S φ`).
-- [ ] Record both gate results in the phase notes.
+- [x] Regenerate `typst/generated/machine-appendix.jsonl` via `scripts/typst-machine-appendix.sh`.
+- [x] **Gate A (structural, byte-exact)**: PASS. 74 lines compared, **0 diffs**.
+- [x] **Gate B (positional)**: PASS **raw, with no transform**. 66 string fields compared, 52 of
+      them carrying a `U(`/`S(` rendering, **0 diffs**.
+      *(deviation: altered — the planned `U(a,b) → U(b,a)` / `S(a,b) → S(b,a)` transform is the
+      identity, per the D1 correction recorded in Phase 5. Applying it would have manufactured 52
+      false failures.)*
+- [x] Re-verify the four `def:BLplus-defined` shape assertions against the regenerated output.
+- [x] Record both gate results.
+
+**Gate A** compares every field of every line except the two `stamp_*` fields, which move with each
+commit by design. The result is stronger than the plan required: the **whole 74-line artifact is
+byte-identical to the pre-migration baseline apart from the commit stamp** —
+`diff` reports exactly one changed line, the metadata line, and only its `stamp_commit`
+(`39d9e8690` → `ae4b641ab`) and `stamp_date` differ. Line count 74 = 74, and the counts
+(45 axioms, 7 rules, 21 derived operators) are unmoved.
+
+**Gate B** is byte-identical raw. `prettyPrint`'s arm binds by role
+(`| .untlQ ψ φ => "U(" ++ φ.prettyPrint ++ …`), so it prints `U(event, guard)` before and after the
+swap. The 52 `U(`/`S(`-carrying strings therefore do not move at all. The gate keeps its full
+discriminating power: a half-swapped, un-swapped or double-swapped schema changes the *role
+content* of the printed string, so any such defect still shows as a diff.
+
+**The four shape assertions**, read off the regenerated role-keyed appendix (acceptance 4):
+
+| Operator | Regenerated `definition` | Paper (`def:BLplus-defined`) | Verdict |
+|---|---|---|---|
+| `somePast` | `tag: snce, event: φ, guard: ⊤` | `past φ ≔ ⊤ since φ` | hold |
+| `someFuture` | `tag: untl, event: φ, guard: ⊤` | `future φ ≔ ⊤ until φ` | hold |
+| `next` | `tag: untl, event: φ, guard: ⊥` | `Next φ ≔ ⊥ until φ` | hold |
+| `prev` | `tag: snce, event: φ, guard: ⊥` | `Previous φ ≔ ⊥ since φ` | hold |
 
 **Timing**: 1 hour
 
@@ -879,16 +896,18 @@ operators — where a half-applied swap is well-typed and silent.
 **Verification Tier**: full
 
 **Scope Hypothesis**: the appendix covers 45 axioms, 7 inference rules, and 21 derived operators
-across 74 JSONL lines. Confirm the regenerated line count matches the baseline's 74 before
-running either gate — a line-count change means something other than argument order moved.
+across 74 JSONL lines. Confirm the regenerated line count matches the baseline's 74.
+
+**Scope Hypothesis outcome**: confirmed exactly — 74 lines, 45/7/21.
 
 **Files to modify**:
 - `typst/generated/machine-appendix.jsonl`, `typst/generated/machine-appendix.typ` (regenerated)
 
 **Verification**:
-- Gate A diff empty.
-- Gate B diff empty after the documented `U(a,b)→U(b,a)` / `S(a,b)→S(b,a)` transform.
-- Four shape assertions hold against the regenerated output.
+- [x] Gate A diff empty (0 of 74 lines differ in any non-stamp field).
+- [x] Gate B diff empty raw (0 of 66 string fields differ; the documented transform is the
+  identity).
+- [x] Four shape assertions hold against the regenerated output.
 
 ---
 
