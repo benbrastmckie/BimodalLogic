@@ -424,3 +424,39 @@ diagrams (the two-fibre `Z`/`R` countermodel witnessing (DD) foremost among them
 No dead `.lean` path was whitelisted at any point in this revision (whitelist diff reviewed
 end-to-end against the pre-revision baseline commit `3c949d103`). This section is a dated
 addition; the historical tables above it are unmodified, per this file's own header.
+
+## 2026-08-17 Verdict — Target-State Revision (Directive: State the End State, CONFIRM the Gaps)
+
+This revision re-aimed the whole book from a progress report to a statement of the system's
+*target end state*, under the governing directive that the manual describes what the finished
+Lean repository and the finished source paper both deliver, with every not-yet-established
+claim guarded by a maintainer-only `CONFIRM` comment rather than status prose. Changes:
+
+- **CONFIRM convention introduced** (`typst/README.md`, new section beside the Marker
+  Convention): `// CONFIRM(lean): ...` / `// CONFIRM(paper): ...` line comments, placed
+  immediately above the claim they guard, each stating a checkable proposition. Extraction:
+  `grep -rn --include='*.typ' 'CONFIRM(' typst/`.
+- **Notation switch, book-wide**: the two temporal primitives are now written infix and
+  guard-first (`snce`/`untl` macros in `notation/bimodal-notation.typ`, glyphs `⊲`/`⊳`),
+  with since/past ordered before until/future in every table and definition list. The prefix
+  event-first Burgess form survives only as a literature-convention footnote in the syntax
+  chapter.
+- **Completeness restatement** (`04-metalogic.typ`): the old incompleteness exposition
+  ((DD) split validity, two-fibre countermodel, Halldén discussion, status table) was cut
+  entirely; the chapter now states four target completeness theorems (strong over Base and
+  Dense, weak over Z-time and the dense-and-complete class) with the genuine negative
+  results (strong completeness provably fails over Z and R by non-compactness) in the body.
+  The discrete-or-dense dichotomy survives as a standalone labeled theorem (`@sec:dichotomy`).
+- **Paper citations removed from rendered content** (Decision E2): the manual's single
+  acknowledgment of the paper is the front-matter Sources block; LaTeX anchors survive only
+  inside non-rendered CONFIRM comments (un-backticked) and in
+  `specs/paper-definitions-of-record.md`. Whitelist entries orphaned by the citation removal
+  and the incompleteness cut were removed after per-entry citation greps (entries still cited
+  by `FormalFoundations.typ`, a standalone report outside this revision's scope, were kept).
+- **Frame-class/naming alignment**: nine axiom layers (Layer 9 = Reynolds Dedekind triple),
+  four-value `FrameClass` with `Dedekind` hosting the complete extension TM_c
+  (dense-and-complete, real flow); short axiom names (TB, UG, UC, TA, ...) added as a
+  cross-index column; the tense-primitive fragment is presented throughout as a deferred
+  subsystem, with the conservativity theorem box replaced by a deferred-subsystem note.
+- The historical tables and prior verdict sections above are unmodified, per this file's own
+  header rule.

@@ -135,11 +135,12 @@
   ]
   #v(1em)
 
-  This book presents the Bimodal logic *TM* for tense and modality, implemented and verified in the #proofchecker Lean 4 project.
-  *TM* combines an S5 historical-necessity operator with linear temporal operators for past and future tense, axiomatized by the Burgess-Xu (BX) proof system over Until/Since primitives and interpreted over task-frame semantics.
-  Soundness, the deduction theorem, the Lindenbaum lemma, and the perpetuity principles are fully proven.
-  *TM* and its extensions are sound but *provably incomplete* over their respective frame classes -- every nontrivial totally ordered abelian group is discrete or dense and never both, so the class of all task frames is not closed under disjoint union, and a two-fibre countermodel witnesses a split validity that is TM-valid yet TM-unprovable.
-  Completeness is instead carried by machine-checked $op("BL")^+$ systems over the dense and successor-Archimedean (discrete, $ZZ$-time) classes, with the base case (all task frames) the stated formalization target and one proof obligation outstanding.
+  This book presents the Bimodal logic *TM* for tense and modality, formalized in the #proofchecker Lean 4 project.
+  *TM* combines an S5 historical-necessity operator with linear temporal operators for past and future tense, axiomatized by the Burgess-Xu (BX) proof system over Since/Until primitives and interpreted over task-frame semantics.
+  The system's metatheory delivers soundness for all four frame classes, the deduction theorem, the Lindenbaum lemma, and the perpetuity principles.
+  // CONFIRM(lean): the set-premise strong completeness theorems for FrameClass.Base and FrameClass.Dense named in
+  //   the metalogic chapter's CONFIRM obligations exist and are axiom-free, backing the abstract's completeness claims.
+  Completeness holds in the strongest form each frame class admits: *TM* is strongly complete over all task frames and *TM*#sub[d] over the dense frames, while *TM*#sub[f] and *TM*#sub[c] are weakly complete over $ZZ$-time and the dense-and-complete (real-flow) class respectively --- where strong completeness *provably fails*, by non-compactness.
 
   *Part I* (The Bimodal System) presents the formal system in full -- syntax, semantics, proof theory, frame classes, metalogic, the operational decision procedure, and the derived-theorem library -- and closes by positioning *TM* among richer temporal-modal logics (Vlach store/recall operators, the BL#super[⋆] tower, the decidability frontier).
   *Part II* (Applications) presents the proof-automation tactics, the dual-signal (proof-trace / countermodel) training-data pipeline, and worked dual-verification examples drawn directly from the Lean formalization.

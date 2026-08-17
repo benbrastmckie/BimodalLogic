@@ -682,42 +682,42 @@ E2 governs paper citations only.)
 - **Done when:** notes chapter carries no status prose; all periphery citations anchor-form;
   Dedekind enumerated in the appendix prose; gates green.
 
-### Phase 8: Front Matter, Sync Records, and Closure [NOT STARTED]
+### Phase 8: Front Matter, Sync Records, and Closure [COMPLETED]
 
 - **Goal:** Reframe the abstract and introduction to the target state, record the revision in
   SYNC-MAP, clean the whitelist, and run the full closing gate set.
 - **Territory:** `typst/BimodalReference.typ`, `typst/chapters/00-introduction.typ`,
   `typst/SYNC-MAP.md`, `typst/sync-check-whitelist.txt`
 - **Tasks:**
-  - [ ] R9a (finding F2; Decision N1 default; Decision E2 phrasing): reframe the abstract and
+  - [x] R9a (finding F2; Decision N1 default; Decision E2 phrasing): reframe the abstract and
     introduction — the book's system is the Until/Since-primitive bimodal logic presented in
     full; the tense-primitive TM is a deferred subsystem; one early introduction remark fixes
     the naming convention (the book's TM is the system the front-matter source work calls
     TM+) — prose only, naming the source work at most by its already-credited title, with no
     anchor citation.
-  - [ ] E2 single-credit check: confirm the front-matter Sources block in
+  - [x] E2 single-credit check: confirm the front-matter Sources block in
     `BimodalReference.typ` remains the manual's one citation of the paper; check
     `typst/bibliography.bib` for an existing possible-worlds entry and reuse it if the
     Sources block or any chapter needs a bib-key — do NOT add a duplicate entry.
-  - [ ] R9b (directive-re-aimed): replace the "provably incomplete ... headline correction"
+  - [x] R9b (directive-re-aimed): replace the "provably incomplete ... headline correction"
     sentences and the "one proof obligation outstanding" clause with the target-state
     completeness summary matching Phase 5's four statements; "fully proven" claims for
     soundness/deduction/Lindenbaum/perpetuity may stand only as statements of what the
     system's metatheory delivers, CONFIRM-guarded where the report found them ahead of the
     tree (soundness and perpetuity are verified sorry-free — no CONFIRM needed there).
-  - [ ] R9c–d (finding C1, F3): "8 layers" → nine in the introduction; fix the Z/Q phrasing —
+  - [x] R9c–d (finding C1, F3): "8 layers" → nine in the introduction; fix the Z/Q phrasing —
     frame classes are discrete/dense ordered abelian groups generally, with Z the
     successor-Archimedean completeness carrier and Q the dense chronicle carrier.
-  - [ ] D1 stranded-reference check (front matter): the introduction independently uses the
+  - [x] D1 stranded-reference check (front matter): the introduction independently uses the
     discrete-or-dense dichotomy theorem — verify its reference resolves to the standalone
     labeled statement Phase 5 retained in 04-metalogic, and that no abstract/introduction
     sentence still mentions the (DD) split validity, the two-fibre countermodel, or Halldén
     completeness (grep both files for `DD`, `two-fibre`, `Halldén`/`Hallden`).
-  - [ ] R9e: ordering/notation sweep of operator mentions in both files.
-  - [ ] R13: append a dated verdict section to `typst/SYNC-MAP.md` recording this revision
+  - [x] R9e: ordering/notation sweep of operator mentions in both files.
+  - [x] R13: append a dated verdict section to `typst/SYNC-MAP.md` recording this revision
     (target-state directive, notation switch, completeness restatement, CONFIRM convention
     introduction); do not rewrite historical sections (per that file's own header rule).
-  - [ ] Whitelist cleanup (deferred here from Phases 6–7 by postmortem constraint): remove
+  - [x] Whitelist cleanup (deferred here from Phases 6–7 by postmortem constraint): remove
     the `cor:tm-decidability` entry, and the `thm:ConservativeExtension` entry if its last
     citation is gone; verify with `grep -rn 'cor:tm-decidability\|thm:ConservativeExtension'
     typst/chapters/` before removing each. Additionally, audit the whole whitelist for
@@ -730,7 +730,7 @@ E2 governs paper citations only.)
     comments write anchors without backticks, so they generate no candidates). For each
     whitelist entry, confirm a backticked citing occurrence still exists in `typst/**/*.typ`;
     remove entries with none.
-  - [ ] Closing gate set (full): `bash scripts/typst-status-counts.sh` (regenerate, confirm
+  - [x] Closing gate set (full): `bash scripts/typst-status-counts.sh` (regenerate, confirm
     no count drift); `cd typst && typst compile BimodalReference.typ
     build/BimodalReference.pdf` exit 0; `bash scripts/typst-sync-check.sh` PASS all checks;
     CONFIRM well-formedness grep empty; book-wide event-first residual grep

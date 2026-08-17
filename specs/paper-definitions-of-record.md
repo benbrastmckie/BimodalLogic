@@ -42,8 +42,8 @@ re-derives every hash below directly from the live paper file on every run.
 
 <!-- PAPER_PATH: /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex -->
 <!-- PAPER_REPO_ROOT: /home/benjamin/Philosophy/Papers/PossibleWorlds -->
-<!-- PINNED_COMMIT: 831c599d3f76fc9ebb7fb297ef80442c4624a035 -->
-<!-- FILE_CHECKSUM: 9fa1c5fc829ecab11fbf5685be622fc90bf4f9198119db48f35ad8a81ce0a2bf -->
+<!-- PINNED_COMMIT: d1a26f75bcd3e0623d1593263471c5fc63126894 -->
+<!-- FILE_CHECKSUM: f134fd7d460c08aaf94c5b1c09571ab2663c509d1ee32f2d31b89ee640281381 -->
 <!-- LINE_COUNT: 4290 -->
 
 ### Drift correction and coverage extension (2026-08-17): the target-state-revision re-pin
@@ -64,6 +64,14 @@ Absorbed as one re-pin during the reference-manual target-state revision:
   paper repo `git HEAD` `831c599d3f76fc9ebb7fb297ef80442c4624a035` (file dirty against it, per
   the dirty-pin caveat below), 4228 lines, 2026-08-17T17:31Z. Post-edit verification run
   reported all 50 recorded definitions unchanged — pass.
+
+### Drift correction (2026-08-17, second wave): lem:fibers retired
+
+A later editing wave the same day removed `\label{lem:fibers}` from the live paper; every other
+recorded anchor verified unchanged. The `lem:fibers` entry is retained above, marked DANGLING and
+removed from the manifest. Sentinels re-pinned: checksum
+`f134fd7d460c08aaf94c5b1c09571ab2663c509d1ee32f2d31b89ee640281381`, paper repo `git HEAD`
+`d1a26f75bcd3e0623d1593263471c5fc63126894` (dirty-pin caveat applies), 4213 lines.
 
 ### Dirty-pin caveat (why the pin is a checksum, not a clean commit)
 
@@ -449,7 +457,12 @@ that an earlier paper wave carried inside this lemma was split out into `lem:adm
 task specs quoting the old merged statement are stale. Its proof consumes Compositionality in
 BOTH directions plus Seriality.
 
-### `lem:fibers` — DERIVED: membership in all constraints ⟺ fiber condition at every time
+### `lem:fibers` — DERIVED: membership in all constraints ⟺ fiber condition at every time — **DANGLING as of the 2026-08-17 second re-pin (removed from manifest)**
+
+The live paper no longer carries a `\label{lem:fibers}` (the lemma was removed or absorbed in
+a later editing wave the same day as the first re-pin). The quoted text below is retained as
+the last-resolved historical record. If the paper restores the anchor, re-add a manifest row
+via `check-paper-definitions.sh --resolve "lem:fibers|env|-|-"`.
 
 ```latex
 \begin{Lthm} \label{lem:fibers}
@@ -1121,7 +1134,6 @@ def:constraints|env|-|-|aaf87cd1fc4d88b372ed586194468ea9b7721ab8c5d5a52125c65e84
 lem:nesting|env|-|-|971a38bb2fb7169976868b9fdcedbb1b8bcc01793d96be6e26b982ba1e06fa4c
 lem:nonempty|env|-|-|04a49ef8a67071b45bb42ad91ae8e7eba8a3c89a7fd785017e33507b7f8cc6c7
 lem:constraint|env|-|-|9ebed5d29cd939e0b3486dee775b8135077819f0de7228877ffeef6a928bf5e7
-lem:fibers|env|-|-|42ec404f8082ceeff30b1da5a28c076c9880704c92d500cb5068ce8b0a1ba7e2
 lem:admissible|env|-|-|cc94cfdca6f3c1f581f3876ba737525288417ac9c05b3293c8fa4a621d262469
 lem:step|env|-|-|82ab9eb861c6e4cb99575946f4a74f4296b5c8b979d3c2f6e28ac9fa705da94f
 def:BL-semantics|env|-|-|f6f7ef8d1755ba2f0179bcf84fa2ad3171b759355e54fe720b48deb3c2c09585

@@ -5,11 +5,11 @@
 //   scripts/typst-status-counts.sh
 //
 // Reproduces the SYNC-MAP.md Phase 1 ground-truth-counts methodology.
-// Stamped from live source at commit 3c949d103 (2026-08-13).
+// Stamped from live source at commit 08927bc5e (2026-08-17).
 // ============================================================================
 
-#let stamp-commit = "3c949d103"
-#let stamp-date = "2026-08-13"
+#let stamp-commit = "08927bc5e"
+#let stamp-date = "2026-08-17"
 
 #let axiom-count = 45
 #let rule-count = 7

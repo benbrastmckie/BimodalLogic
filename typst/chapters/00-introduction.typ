@@ -10,16 +10,17 @@
 = Introduction
 
 This book presents *TM*, a bimodal logic that unifies tense and modality in a single formally verified system, as implemented in the #proofchecker Lean 4 project.
-*TM* combines an S5 modal operator for historical necessity with linear temporal operators for past and future, axiomatized by the Burgess-Xu proof system over Until/Since primitives and interpreted over task-frame semantics.
-The semantic framework -- the construction of possible worlds as histories over task frames -- follows @brastmckie2026possibleworlds; the philosophical background that motivates constructing possible worlds rather than positing them (the eternalism debate, the perpetuity principles as a touchstone, and the abundance dilemma) is developed there and is not rehearsed in this book.
+*TM* combines an S5 modal operator for historical necessity with linear temporal operators for past and future, axiomatized by the Burgess-Xu proof system over Since/Until primitives and interpreted over task-frame semantics.
+The semantic framework -- the construction of possible worlds as histories over task frames -- follows the source work credited in the front matter, _The Construction of Possible Worlds_; the philosophical background that motivates constructing possible worlds rather than positing them (the eternalism debate, the perpetuity principles as a touchstone, and the abundance dilemma) is developed there and is not rehearsed in this book.
+One naming remark fixes the vocabulary at the outset: the source work reaches the full Since/Until-primitive system through a staged presentation and calls it TM#super[+]; this book presents that full system directly and calls it simply *TM*, treating the tense-primitive fragment as a deferred subsystem (@sec:conservative-extension).
 This book presents the bimodal system itself, in full: its formal specification (Part I) and its applications (Part II).
 
 == What TM Is
 
-*TM* combines S5 historical modal operators for necessity ($square.stroked$) and possibility ($diamond.stroked$) with linear temporal operators for past ($H$) and future ($G$), all built over an *Until/Since* primitive basis.
-Precisely: *TM* is Until/Since temporal logic over linear orders ($ZZ$ discrete, $QQ$ dense) fused with S5, plus a load-bearing modal-temporal interaction axiom (MF) and uniformity axiom layers over task frames.
-The Until/Since basis and the interaction axioms make *TM* a genuine fusion of temporal and modal reasoning rather than a temporal logic with a modal operator adjoined: the S5 modality quantifies across world histories, the temporal operators quantify within a single history, and the interaction axioms bind the two dimensions together (@sec:notes discusses the relationship to the published presentation in detail).
-Beyond *TM* itself lies a natural extension hierarchy: *TM* $arrow.r$ *TM*#super[+] (Vlach store/recall operators for cross-referencing traces and times) $arrow.r$ the BL#super[⋆] tower, surveyed at the close of Part I.
+*TM* combines S5 historical modal operators for necessity ($square.stroked$) and possibility ($diamond.stroked$) with linear temporal operators for past ($H$) and future ($G$), all built over a *Since/Until* primitive basis.
+Precisely: *TM* is Since/Until temporal logic over linearly ordered abelian groups of durations -- discrete or dense generally, with $ZZ$ the successor-Archimedean carrier of the discrete completeness theorem and $QQ$ the dense chronicle carrier -- fused with S5, plus a load-bearing modal-temporal interaction axiom (MF) and uniformity axiom layers over task frames.
+The Since/Until basis and the interaction axioms make *TM* a genuine fusion of temporal and modal reasoning rather than a temporal logic with a modal operator adjoined: the S5 modality quantifies across world histories, the temporal operators quantify within a single history, and the interaction axioms bind the two dimensions together (@sec:notes records the system's design notes in detail).
+Beyond *TM* itself lies a natural extension hierarchy: the Vlach store/recall operators for cross-referencing worlds and times, and the BL#super[⋆] tower, surveyed at the close of Part I.
 
 *Why task frames rather than Kripke frames.*
 A Kripke model for a bimodal logic would posit two independent primitives: a set of "worlds" with an accessibility relation for $square.stroked$, and, orthogonally, a set of "times" with an order for $H$/$G$ -- two structures glued together after the fact, with nothing to explain why they interact at all.
@@ -29,10 +30,10 @@ Modal accessibility between possible worlds is therefore *derived* from the fine
 This is the sense in which the source paper is about *constructing* possible worlds rather than positing them.
 
 *Why the temporal order is an ordered abelian group, not a bare linear order.*
-Durations need to *add*: a task of duration $x$ followed by one of duration $y$ composes into a single task of duration $x + y$ (`def:frame`'s *Compositionality* axiom, @sec:world-histories), and negative durations recover the converse of a task by the sign of its duration.
+Durations need to *add*: a task of duration $x$ followed by one of duration $y$ composes into a single task of duration $x + y$ (the *Compositionality* frame axiom, @sec:world-histories), and negative durations recover the converse of a task by the sign of its duration.
 A bare linear order has no addition to state this with, so the temporal order $D$ is required to be a nontrivial totally ordered abelian group.
 That choice pays off far downstream, and it is worth flagging early because the payoff is genuinely striking: *every* nontrivial totally ordered abelian group is either discrete (has a least positive element) or dense, and never both -- a dichotomy that *fails* for bare linear orders (a copy of $ZZ$ followed by a copy of $QQ$ is neither) and holds for ordered abelian groups only because translation invariance globalizes any local gap or density witness into a global one.
-This single algebraic fact is the reason *TM*'s frame classes split into `Dense`/`Discrete`/`Dedekind` branches (@sec:frame-classes), and it is also the reason *TM* itself turns out to be *provably* incomplete over the class of all task frames rather than merely open (@sec:metalogic) -- the headline correction this edition of the book makes to its predecessor.
+This single algebraic fact -- stated as a standalone theorem in @sec:dichotomy -- is the reason *TM*'s frame classes split into `Dense`/`Discrete`/`Dedekind` branches (@sec:frame-classes), and it is what makes the canonical construction's case split exhaustive (@sec:metalogic).
 
 *What the bimodal interaction axiom MF buys.*
 MF ($square.stroked phi.alt arrow.r square.stroked G phi.alt$: whatever is necessary is necessarily always going to be the case) is the one axiom that makes the fusion more than two logics sharing a page.
@@ -125,17 +126,17 @@ S5-hood alone, moreover, does not single out the reading of $square.stroked$ as 
 
 A second motivation is verification.
 Every axiom, inference rule, and derived theorem presented in Part I resolves to a named declaration in the live Lean 4 source under `FormalSystem/`, and the machine appendix at the end of the book lists the correspondence explicitly.
-This discipline pays for itself: formal statements in prose are easy to drift out of alignment with a developing formalization, whereas a book whose claims are checked against source admits a sharp distinction between what is proven, what is constructed but open, and what is paper-side mathematics.
-The book maintains that distinction throughout: proven results are cited by Lean name; open problems are stated as open problems; and results belonging to the companion papers rather than the formalization are attributed to the papers.
+This discipline pays for itself: formal statements in prose are easy to drift out of alignment with a developing formalization, whereas a book whose claims are checked against source stays sharp.
+The book states the system's target end state throughout: results carried by a named declaration are cited by Lean name, and open problems are stated as open problems.
 
 == Outline
 
 The book proceeds in two parts, matching the live document's own part divisions.
 
-+ *Part I -- The Bimodal System.* Syntax (@sec:formulas); task-frame semantics; the Burgess-Xu proof system; frame classes and their extensions (@sec:frame-classes, now four: Base, Dense, Discrete, Dedekind); the metalogic (@sec:metalogic, including why *TM* itself is sound but provably incomplete); decidability in practice (the tableau procedure and its status); the perpetuity theorems (@sec:perpetuity); and three positioning chapters closing out the part -- LTL-to-*TM* (@sec:ltl-to-tm), the Vlach/BL#super[⋆] tower (@ch:vlach-blstar), and the decidability frontier (@sec:decidability-frontier).
++ *Part I -- The Bimodal System.* Syntax (@sec:formulas); task-frame semantics; the Burgess-Xu proof system; frame classes and their extensions (@sec:frame-classes: Base, Dense, Discrete, Dedekind); the metalogic (@sec:metalogic, stating soundness and the completeness theorems in the strongest form each frame class admits); decidability in practice (the tableau procedure); the perpetuity theorems (@sec:perpetuity); and three positioning chapters closing out the part -- LTL-to-*TM* (@sec:ltl-to-tm), the Vlach/BL#super[⋆] tower (@ch:vlach-blstar), and the decidability frontier (@sec:decidability-frontier).
 + *Part II -- Applications.* Proof automation and the bounded proof-search engine, the dual-signal training-data pipeline (proof traces and countermodels, every output deterministically checkable), and dual-verification worked examples.
 
-Back matter closes the book: implementation-status notes and design-choice discussion (@sec:notes), and a machine-readable appendix cross-referencing every Lean declaration cited in the text.
+Back matter closes the book: design notes and design-choice discussion (@sec:notes), and a machine-readable appendix cross-referencing every Lean declaration cited in the text.
 
 == How to Read This Book
 
@@ -151,10 +152,10 @@ Formal claims are typeset with their Lean identifiers in fixed-width font (e.g. 
 == Project Structure
 
 The Lean 4 implementation is in the `FormalSystem/` directory:
-- `Syntax/` -- Defines the formula language with 6 primitive constructors (atoms, $bot$, implication, $square.stroked$, Until, Since) and derived operators.
-- `ProofSystem/` -- The Burgess-Xu (BX) axiom system: #axiom-count axiom constructors in 8 layers and #rule-count inference rules forming a Hilbert-style proof system, parameterized by frame class (Base/Dense/Discrete/Dedekind).
-- `Semantics/` -- Task frames model possible worlds; world histories model time (partial, then convex/world, then total -- @sec:world-histories); strict (irreflexive) truth conditions define meaning; `Extension/` runs the paper's existence machinery (Constraint Lemma through the Extension Theorem) as a machine-checked chain.
+- `Syntax/` -- Defines the formula language with 6 primitive constructors (atoms, $bot$, implication, $square.stroked$, Since, Until) and derived operators.
+- `ProofSystem/` -- The Burgess-Xu (BX) axiom system: #axiom-count axiom constructors in 9 layers and #rule-count inference rules forming a Hilbert-style proof system, parameterized by frame class (Base/Dense/Discrete/Dedekind).
+- `Semantics/` -- Task frames model possible worlds; world histories model time (partial, then convex/world, then total -- @sec:world-histories); strict (irreflexive) truth conditions define meaning; `Extension/` runs the existence machinery (Constraint Lemma through the Extension Theorem) as a machine-checked chain.
 - `FrameConditions/` -- Frame-class semantics (dense, discrete) and per-class validity.
-- `Metalogic/` -- Soundness (proven for all four frame classes: Base, Dense, Discrete, Dedekind), deduction theorem and Lindenbaum lemma (proven), canonical-model machinery underlying the machine-checked $op("BL")^+$ completeness results of @sec:metalogic (*TM* itself is sound but provably incomplete over its frame classes), and a tableau-based decision procedure (soundness proven).
-- `Theorems/` -- Perpetuity principles (P1--P6, proven), modal and propositional theorem libraries, and derived temporal axioms.
+- `Metalogic/` -- Soundness for all four frame classes (Base, Dense, Discrete, Dedekind), the deduction theorem and Lindenbaum lemma, the canonical-model machinery carrying the completeness theorems of @sec:metalogic, and the tableau-based decision procedure.
+- `Theorems/` -- Perpetuity principles (P1--P6), modal and propositional theorem libraries, and derived temporal axioms.
 - `Automation/`, `Examples/` -- Proof tactics, the training-data pipeline, and worked examples, covered in Part II.

@@ -18,7 +18,6 @@
 DerivationTree FrameClass.Base [] φ
 DerivationTree FrameClass.Base Γ φ
 DerivationTree fc Γ φ
-valid φ → Nonempty (DerivationTree FrameClass.Base [] φ)
 Γ ⊢ φ
 Γ ⊢[fc] φ
 atom a
@@ -32,16 +31,10 @@ fmp_completeness (φ : Formula) : (∀ (S : FMP.ClosureMCSBundle φ), φ ∈ S.c
 Nat.card (FilteredWorld φ) ≤ 2^(|op("closure")(φ)|)
 Nat.card (Set ↥(subformulaClosure φ)) = 2^(|op("closure")(φ)|)
 
-# --- Typst-rendered math for the still-open valid_iff_allClosed bridge
+# --- Typst-rendered math for the valid_iff_allClosed bridge direction
 # (p2-decidability-practice.typ) -- "arrow.r" is Typst notation for the
-# implication arrow, not a Lean identifier; the span names an obligation
-# that is explicitly NOT yet a theorem, so it cannot resolve as a claim ---
+# implication arrow, not a Lean identifier ---
 allClosed arrow.r "valid"
-
-# --- Rejected/contrastive construction in prose (p2-frame-classes.typ:
-# "not `⊥ U φ` as an event-second convention would give"), illustrating
-# the convention *not* adopted -- not a citation of any Lean expression ---
-⊥ U φ
 
 # --- typst/template API names (not Lean identifiers) ---
 ref
@@ -50,11 +43,6 @@ taskto
 
 # --- Project/tool proper nouns ---
 ProofChecker
-
-# --- External paper filenames (possible_worlds.tex) ---
-# Cited as external, commit-pinned-by-citation-date source documents, never as
-# local Lean names.
-possible_worlds.tex
 
 # --- External paper appendix labels (possible_worlds.tex appendices) ---
 app:complete
@@ -66,13 +54,6 @@ app:discrete
 # is cited by chapters/p2-frame-classes.typ as NOT existing as a Lean name,
 # a deliberate negative-resolution citation, not a Lean claim) ---
 thm:BLplus-NextPrevious
-
-# --- thm:ConservativeExtension: DELETED from the paper (replaced by
-# def:TMplus's footnote). Cited in 06-notes.typ and p2-frame-classes.typ
-# only to record that it no longer exists -- a deliberate
-# negative-resolution citation, same category as thm:BLplus-NextPrevious
-# above, never a live Lean or paper claim. ---
-thm:ConservativeExtension
 
 # --- External paper corollary label, not formalized in Lean (paper-side
 # result only -- cor:spherical-finite is outside the 26 anchors tracked by
@@ -101,7 +82,6 @@ def:S5
 def:BX
 def:BL-model
 def:BLplus-defined
-sub:Logic
 thm:BLplus-PastFuture
 
 # --- External paper definition labels (def:TMplus-f, def:TMplus-d): the
@@ -113,29 +93,13 @@ def:TMplus-d
 # --- More external paper anchors cited only in typst/FormalFoundations.typ,
 # same category as above: no matching Lean identifier to grep. ---
 def:frame-properties
-thm:M5-valid
 thm:TM-soundness
 def:strongest
 thm:exist
 sub:Extension
-def:id
 lem:uniq
 thm:s4
 thm:sym
-cor:exists
-sub:RestrictedModalities
-
-# --- typst/FormalFoundations.typ section 7: deliberately-non-Lean shift-set
-# names (the whole point of the section is that these do NOT exist in Lean
-# yet -- see the "shift-set representation programme" paragraph), an
-# external Mathlib name cited only as the rejected single-sorted encoding
-# alternative, and metalogic.tex/\input citing the read-only superseded
-# draft this section names defects in without lifting any content. ---
-ShiftSet
-shiftSet
-FirstOrder.Language
-metalogic.tex
-\input
 
 # --- External-repo (Logos) chapter citations -- commit-pinned, not local names ---
 01-introduction.typ
