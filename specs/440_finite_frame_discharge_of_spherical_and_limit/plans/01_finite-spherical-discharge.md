@@ -320,18 +320,44 @@ downgrade explicitly — a silently non-gating "guard" is worse than an honest c
 
 ---
 
-### Phase 4: Repair `Extension.lean`'s stale docstrings and add the cost note [NOT STARTED]
+### Phase 4: Repair `Extension.lean`'s stale docstrings and add the cost note [COMPLETED]
 
 **Goal**: Bring `Extension.lean`'s docstrings back into agreement with the post-refactor tree they
 already partly describe, and record what `spherical_of_finite` costs.
 
 **Tasks**:
-- [ ] Repair the module-docstring passage beginning "*Spherical* is **not** threaded into `extension`'s proof directly: it enters only as a hypothesis binder…the four binders are pass-through arguments to `step` alone." There are no binders; the axioms are `TaskFrame` fields reaching `step` as projections.
-- [ ] Repair the module-docstring passage "…because the structure carries no `Nonempty WorldState` field yet." `TaskFrame.nonempty` exists.
-- [ ] Repair `hF_nonempty`'s own docstring passage "This needs a world state…which `TaskFrame` does not [supply]". Same reason. Record that `w` remains an explicit argument by choice here, and that `Validity.lean`'s `hF_nonempty_of_frameAxioms` already feeds it `F.nonempty.some`.
-- [ ] Reword `extension`'s docstring line "*Spherical* is not threaded in directly — it is handed to `step`" so it does not imply a hypothesis binder.
-- [ ] Add the cost note: `spherical_of_finite` is the only discharge route for an arbitrary relation on a finite carrier; it costs no Zorn but unavoidably costs `Classical.choice`; the reason is the WLEM derivation, cited by the name `wlem_of_spherical` and its file.
-- [ ] Do NOT change `hF_nonempty`'s signature. Record the "it could now drop `w`" observation as a flagged follow-up in the phase notes only.
+- [x] Repair the module-docstring passage beginning "*Spherical* is **not** threaded into `extension`'s proof directly: it enters only as a hypothesis binder…the four binders are pass-through arguments to `step` alone." There are no binders; the axioms are `TaskFrame` fields reaching `step` as projections.
+- [x] Repair the module-docstring passage "…because the structure carries no `Nonempty WorldState` field yet." `TaskFrame.nonempty` exists.
+- [x] Repair `hF_nonempty`'s own docstring passage "This needs a world state…which `TaskFrame` does not [supply]". Same reason. Record that `w` remains an explicit argument by choice here, and that `Validity.lean`'s `hF_nonempty_of_frameAxioms` already feeds it `F.nonempty.some`.
+- [x] Reword `extension`'s docstring line "*Spherical* is not threaded in directly — it is handed to `step`" so it does not imply a hypothesis binder.
+- [x] Add the cost note: `spherical_of_finite` is the only discharge route for an arbitrary relation on a finite carrier; it costs no Zorn but unavoidably costs `Classical.choice`; the reason is the WLEM derivation, cited by the name `wlem_of_spherical` and its file. *(landed as a new module-docstring section, "What the finite-carrier *Spherical* discharge costs, by contrast", placed directly after the `thm:extension` narrative so the Zorn contrast reads against the thing it contrasts with.)*
+- [x] Do NOT change `hF_nonempty`'s signature. Record the "it could now drop `w`" observation as a flagged follow-up in the phase notes only. *(signature untouched; the observation is carried to Phase 5's flagged-follow-up record.)*
+
+#### Phase 4 result
+
+**A fifth stale passage of the same kind was found and repaired**, as the Scope Hypothesis
+anticipated: `isTotal_of_isMax`'s own docstring carried "The four axiom hypotheses are
+**pass-through arguments to `step`**", the same false binder claim as passage (a) but in a
+theorem docstring rather than the module docstring. Repaired to say the four axioms are
+`TaskFrame` fields that `step` projects off `F` itself. None of the planned four turned out to be
+already repaired, so there is no reasoned exclusion to record here.
+
+The claims written into the docstrings were verified against the tree rather than taken on trust:
+
+- `TaskFrame.nonempty : Nonempty WorldState` is a real field (`TaskFrame.lean:492`), so passages
+  (b) and (c) were indeed false as written.
+- `hF_nonempty_of_frameAxioms` (`Validity.lean:573-574`) reads literally
+  `PartialHistory.hF_nonempty F F.nonempty.some`. The repaired docstring quotes that expression
+  exactly rather than paraphrasing it.
+
+Verification, both parts of the plan's criterion:
+
+- `lake build FormalSystem.Semantics.Extension.Extension` — green.
+- `git diff` — 36 insertions, 14 deletions, every hunk inside a `/-! -/` or `/-- -/` region. A
+  mechanical scan of the diff for added or removed `theorem`/`def`/`lemma`/`instance`/`structure`
+  /`import`/`namespace`/`variable` lines returns only one hit, which is prose beginning "structure
+  now carries it too" inside a comment. No declaration, signature, or proof changed.
+- No task-number reference anywhere in the file.
 
 **Timing**: 1 hour
 

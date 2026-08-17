@@ -42,16 +42,32 @@ source — is the citation source of record.
 1. `PartialHistory.exists_maximal_extension` (the extension order's Zorn instance), and
 2. `PartialHistory.step` (`lem:step`).
 
-*Spherical* is **not** threaded into `extension`'s proof directly: it enters only as a hypothesis
-binder handed straight to `step`, which remains its sole application site. Nothing in this module
-applies *Spherical*, *Seriality*, *Interpolation*, or *Limit* to anything; the four binders are
-pass-through arguments to `step` alone.
+*Spherical* is **not** threaded into `extension`'s proof directly: it reaches `step` — which
+remains its sole application site — as the projection `F.spherical` off the frame, taken by `step`
+itself. Nothing in this module applies *Spherical*, *Seriality*, *Interpolation*, or *Limit* to
+anything; all four are `TaskFrame` fields rather than hypothesis binders, so what this module
+passes along is the frame `F`, never the axioms.
 
 The maximal-to-total direction is isolated as `isTotal_of_isMax`, the converse companion to
 `PartialHistoryOrder`'s `isMax_of_total`. That companion is exactly where `lem:step` is spent:
 maximality plus the ability to extend by one arbitrary duration forces the domain to be all of
 `D`. Totality then yields convexity for free (`total_isConvex`), so the promotion of the maximal
 partial history to a `WorldHistory`, and thence to an `F.HF` element, is immediate.
+
+## What the finite-carrier *Spherical* discharge costs, by contrast
+
+`TaskFrame.spherical_of_finite` (`cor:spherical-finite`) is the only discharge route for an
+**arbitrary** relation on a finite carrier; the other helpers — `spherical_of_subsingleton`,
+`spherical_of_permissive`, `spherical_of_eq` — each constrain the relation's shape instead. Its
+cost profile is the mirror image of `extension`'s. It costs **no Zorn**: it does not route through
+`PartialHistory.exists_maximal_extension`, which is exactly what `thm:extension` above spends. It
+does unavoidably cost `Classical.choice`.
+
+"Unavoidably" is a proved obstruction rather than a guess: weak excluded middle is derivable from
+*Spherical* at the finite carrier `Bool` over `D = Int`, so a `Classical.choice`-free proof of that
+route would prove WLEM in Lean's intuitionistic core, where it is not derivable. That derivation is
+on the record as `wlem_of_spherical` in
+`Tests/BimodalTest/Semantics/SphericalFiniteAxiomTest.lean`.
 
 ## `cor:occurrence` is landed in **frame-intrinsic** form
 
@@ -63,9 +79,11 @@ structure data, each stated by citation of the bare-relation predicate rather th
 threading them through this chain is now a projection rather than a hypothesis — with zero
 restatement, exactly as the hypothesis-form discipline was designed to guarantee.
 
-One argument the paper's ambient convention supplies and `TaskFrame` still does not is the world
-state: `hF_nonempty` continues to take `w` explicitly, because the structure carries no
-`Nonempty WorldState` field yet.
+The one argument the paper's ambient convention supplies silently is the world state, and the
+structure now carries it too: `TaskFrame.nonempty` is a `Nonempty WorldState` field. `hF_nonempty`
+nonetheless continues to take `w` explicitly — **by choice, not by necessity** — so that a caller
+already holding a state passes it rather than discarding it, while a caller holding none passes
+`F.nonempty.some`.
 
 ## The one-point partial history, and what is *not* in this chain
 
@@ -150,8 +168,9 @@ is spent. If some time `z` were missing from a maximal `τ`'s domain, `step` wou
 extending `τ` with `z` in its domain; maximality then forces `τ` to extend `σ` in turn, putting
 `z` back in `τ`'s domain — a contradiction.
 
-The four axiom hypotheses are **pass-through arguments to `step`**. Nothing here applies any of
-them; in particular this is not a second *Spherical* application site.
+The four axioms are **`TaskFrame` fields that `step` projects off `F` for itself**, not hypotheses
+this theorem takes and forwards. Nothing here applies any of them; in particular this is not a
+second *Spherical* application site.
 -/
 theorem isTotal_of_isMax (F : TaskFrame D) {τ : PartialHistory F} (hmax : IsMax τ) :
     τ.IsTotal := by
@@ -178,8 +197,8 @@ choice-free derivation of the zero loops in \textbf{\ref{lem:nullity}}."
 history to be total (`isTotal_of_isMax`); totality yields convexity (`total_isConvex`), so the
 result is a world history, and totality is exactly its `H_F` membership.
 
-**These two are the whole proof.** *Spherical* is not threaded in directly — it is handed to
-`step`, which remains its sole application site.
+**These two are the whole proof.** *Spherical* is not threaded in directly — `step`, which remains
+its sole application site, reads it off the frame as `F.spherical`.
 -/
 theorem extension (F : TaskFrame D) (τ : PartialHistory F) :
     ∃ σ : F.HF, Extends σ.val.toPartialHistory τ := by
@@ -237,9 +256,12 @@ theorem occurrence (F : TaskFrame D) (w : F.WorldState) (x : D) :
 `cor:occurrence`'s closing clause: `H_F` is nonempty.
 
 Recorded source (`cor:occurrence`, verbatim, closing clause): "…and so
-$H_{\F} \neq \emptyset$." This needs a world state to start from, which the paper's ambient
-convention supplies and which `TaskFrame` does not; it is therefore taken here as the explicit
-argument `w`.
+$H_{\F} \neq \emptyset$." This needs a world state to start from. The paper's ambient convention
+supplies one silently, and the frame now supplies one too — `TaskFrame.nonempty` is a field — so
+the explicit argument `w` is retained here **by choice, not by necessity**: a caller already
+holding a state passes it, and a caller holding none passes `F.nonempty.some`.
+`Semantics/Validity.lean`'s `hF_nonempty_of_frameAxioms` is the second case, and reads literally
+`PartialHistory.hF_nonempty F F.nonempty.some`.
 -/
 theorem hF_nonempty (F : TaskFrame D) (w : F.WorldState) : Nonempty F.HF :=
   let ⟨τ, _⟩ := occurrence F w 0
