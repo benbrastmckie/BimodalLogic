@@ -617,22 +617,22 @@ the phase's enumerated dependent set and rebuild each.
 
 ---
 
-### Phase 6: `box_const` — `□` is a model constant [NOT STARTED]
+### Phase 6: `box_const` — `□` is a model constant [COMPLETED]
 
 **Goal**: Prove `TruthAt M τ t φ.box ↔ TruthAt M σ s φ.box` for all total `τ, σ` and all `t, s`.
 This dissolves the round-1 assessment that the box clause was the hardest case: the set of total
 histories is uncountable even for finite `W`, but the box **predicate** is constant on it.
 
 **Tasks**:
-- [ ] Prove `box_const` from time-homogeneity of `TaskRel` plus `WorldHistory.isTotal_timeShift`:
+- [x] Prove `box_const` from time-homogeneity of `TaskRel` plus `WorldHistory.isTotal_timeShift`:
       `TruthAt M τ t (box φ)` unfolds to `∀ σ, σ.IsTotal → TruthAt M σ t φ`, which is already
       `τ`-independent by the clause itself; the `t`-independence comes from substituting the
       `(t - s)`-shift of an arbitrary total `σ`.
-- [ ] Note in the docstring that the `τ`-independence is definitional (the clause does not mention
+- [x] Note in the docstring that the `τ`-independence is definitional (the clause does not mention
       `τ`) and only the `t`-independence needs the shift argument — do not over-engineer the proof.
-- [ ] State it for a general `D` if the shift lemma supports it; specialize to ℤ only if a general
+- [x] State it for a general `D` if the shift lemma supports it; specialize to ℤ only if a general
       statement does not elaborate.
-- [ ] Place under `namespace Truth` in `FormalSystem/Semantics/Truth.lean` (additive; no existing
+- [x] Place under `namespace Truth` in `FormalSystem/Semantics/Truth.lean` (additive; no existing
       signature changes).
 
 **Timing**: 1.5 hours
@@ -646,7 +646,21 @@ histories is uncountable even for finite `W`, but the box **predicate** is const
 
 **Verification**:
 - Module builds with zero diagnostics; no existing declaration in `Truth.lean` changes signature.
-- `lean_verify` on `box_const` is clean.
+  **MET** — the edit is purely additive (a new `namespace Truth` block appended after
+  `end TimeShift`).
+- `lean_verify` on `box_const` is clean. **MET** — `[propext, Classical.choice, Quot.sound]`.
+
+**Placement note**: `box_const` is under `namespace Truth` as specified, but in a *reopened* block
+after `end TimeShift` rather than inside the original `Truth` block (lines 159–336). Its proof
+consumes `TimeShift.time_shift_preserves_truth`, which is declared later in the file, so the
+original block is not a legal home for it. Stated for general `D` — the shift lemma supports it, so
+no ℤ specialization was needed. A one-line `box_time_const` corollary fixes the history and varies
+only the time.
+
+**Hypothesis note**: the two `IsTotal` hypotheses are stated as the plan specifies but are not
+consumed — history-independence is definitional, since the box clause does not mention `τ` at all.
+They are named `_hτ`/`_hσ` and the docstring records the fact rather than silently dropping them,
+which would have changed the planned signature.
 
 ---
 

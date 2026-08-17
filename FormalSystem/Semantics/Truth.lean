@@ -688,5 +688,58 @@ theorem exists_shifted_history (M : TaskModel F)
 
 end TimeShift
 
+namespace Truth
+
+/-!
+## `□` is a model constant
+
+The box clause quantifies over *all* total histories at a time. Under time-homogeneity of the task
+relation that makes its truth value depend on neither the history nor the time — a boxed formula is
+a fact about the model alone.
+
+This block is placed after `TimeShift` rather than beside the other `Truth` clause lemmas because
+its proof consumes `TimeShift.time_shift_preserves_truth`, which is declared there.
+-/
+
+/--
+**A boxed formula's truth value is a constant of the model**: it depends on neither the history nor
+the time.
+
+Two very different reasons combine, and the docstring separates them deliberately so that neither
+is over-engineered in the proof:
+
+- **History-independence is definitional.** `def:BL-semantics`'s box clause is
+  `∀ σ, σ.IsTotal → TruthAt M σ t φ` — it simply does not mention `τ`. Nothing has to be proved.
+- **Time-independence is the substantive half**, and it is exactly time-homogeneity: given a total
+  `ρ` at which `φ` is wanted at `s`, the `(s - t)`-shift of `ρ` is total
+  (`WorldHistory.isTotal_timeShift`) and is covered by the hypothesis at `t`, and
+  `TimeShift.time_shift_preserves_truth` transports the result back.
+
+The `IsTotal` hypotheses on `τ` and `σ` are stated because that is the setting the result is used
+in, but they are **not consumed**: the statement holds for arbitrary histories, precisely because
+of the definitional half above.
+
+This is what makes the box case of a finite-model truth lemma routine rather than the hardest
+clause: the set of total histories over a finite carrier is still uncountable, but the box
+*predicate* is constant on it, so a model has one finite set of box facts, computed once.
+-/
+theorem box_const (M : TaskModel F) (τ σ : WorldHistory F) (_hτ : τ.IsTotal) (_hσ : σ.IsTotal)
+    (t s : D) (φ : Formula) :
+    TruthAt M τ t φ.box ↔ TruthAt M σ s φ.box := by
+  simp only [TruthAt]
+  constructor
+  · intro h ρ hρ
+    exact (TimeShift.time_shift_preserves_truth M ρ t s φ).mp
+      (h (WorldHistory.timeShift ρ (s - t)) (WorldHistory.isTotal_timeShift hρ (s - t)))
+  · intro h ρ hρ
+    exact (TimeShift.time_shift_preserves_truth M ρ s t φ).mp
+      (h (WorldHistory.timeShift ρ (t - s)) (WorldHistory.isTotal_timeShift hρ (t - s)))
+
+/-- The time-only specialization of `box_const`, at a fixed history. -/
+theorem box_time_const (M : TaskModel F) (τ : WorldHistory F) (hτ : τ.IsTotal) (t s : D)
+    (φ : Formula) : TruthAt M τ t φ.box ↔ TruthAt M τ s φ.box :=
+  box_const M τ τ hτ hτ t s φ
+
+end Truth
 
 end FormalSystem.Semantics
