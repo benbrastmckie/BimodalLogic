@@ -45,10 +45,16 @@ Everything before `co_derived` is frame-class-generic base machinery, provable a
 
 ## Direction of the result
 
-The Reynolds basis derives CO. The **converse is not claimed and is believed false**: a ℚ-flow
-with isolated `¬p` points accumulating at a gap from above validates every CO instance while
-refuting Prior-U — the classical Stavi US-vs-FO phenomenon. That is a pen-and-paper
-observation, not a machine-checked one; nothing here depends on it.
+The Reynolds basis derives CO. The **converse fails, and the failure is machine-checked**: see
+`FormalSystem.Metalogic.Independence.CoNotPriorU`, where `co_not_derives_prior_U_gap` and
+`co_not_derives_prior_U_gap_schema` refute the derivation of `Axiom.prior_U_gap` from CO over
+the dense base, using the periodic clock model (`D = ℚ`, `W = ℚ ⧸ ℤ`) with a symmetric
+irrational arc valuation.
+
+An earlier note here proposed a different witness — a ℚ-flow with isolated `¬p` points
+accumulating at a gap from above, framed as "the classical Stavi US-vs-FO phenomenon". That
+witness is **refuted**: in it `¬U(¬p,p) ∧ F(U(¬p,p))` defines the cut, so CO fails there too.
+It should not be re-attempted.
 -/
 
 namespace FormalSystem.Theorems.DedekindDerived
@@ -386,8 +392,12 @@ middle conjunct of the triangle gives `F(Hφ)`, whence `φ` (L2) and `U(⊤, φ)
 by the triangle's `G`-component, refutes that enriched event outright, collapsing the `Until`
 to `U(⊥, φ)`, which is absurd.
 
-**Direction.** This is the Reynolds ⊢ CO direction only. The converse is not claimed; see the
-module docstring.
+**Direction.** This is the Reynolds ⊢ CO direction only. The converse direction now has a
+machine-checked **refutation**: `FormalSystem.Metalogic.Independence.CoNotPriorU` proves that
+CO does not derive `Axiom.prior_U_gap` over the dense base, both for contexts of CO instances
+(`co_not_derives_prior_U_gap`) and for a CO-closed schema system closed under modus ponens,
+modal and temporal necessitation, and temporal duality
+(`co_not_derives_prior_U_gap_schema`). See the module docstring.
 
 **Semantic cross-check.** `FormalSystem.Metalogic.SoundnessLemmas.co_valid` proves
 `ValidDedekindDense (Formula.co φ)` by an independent least-upper-bound argument, so soundness

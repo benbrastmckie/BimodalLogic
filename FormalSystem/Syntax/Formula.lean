@@ -482,8 +482,9 @@ Dedekind-class axiom basis remains the Reynolds triple `Axiom.prior_U_gap` /
 `Axiom.prior_S_gap` / `Axiom.sep`; CO is a *derived* object over that basis. See
 `FormalSystem/Theorems/DedekindDerived.lean` (proof-theoretic side) and
 `FormalSystem/Metalogic/SoundnessLemmas/CoValidity.lean` (`co_valid`, the semantic side).
-The converse direction — CO deriving the Reynolds gap axioms — is **not** claimed; see the
-Layer 9 discussion in `FormalSystem/ProofSystem/Axioms.lean`.
+The converse direction — CO deriving the Reynolds gap axioms — **fails**, and the failure is
+machine-checked in `FormalSystem.Metalogic.Independence.CoNotPriorU`; see also the Layer 9
+discussion in `FormalSystem/ProofSystem/Axioms.lean`.
 -/
 def co (φ : Formula) : Formula :=
   (Formula.always (φ.allPast.imp φ.allPast.someFuture)).imp (φ.allPast.imp φ.allFuture)

@@ -355,7 +355,7 @@ mirror lemma named as the blocker target and escalate. Do **not** weaken `CoDeri
 
 ---
 
-### Phase 6: Correct the Layer 9 prose and add the forward pointer [IN PROGRESS]
+### Phase 6: Correct the Layer 9 prose and add the forward pointer [COMPLETED]
 
 **Goal**: Remove the refuted ℚ-accumulation/Stavi sketch from `Axioms.lean` and point both
 directions of the CO/Reynolds relationship at their machine-checked artifacts.
@@ -376,7 +376,7 @@ directions of the CO/Reynolds relationship at their machine-checked artifacts.
 - [ ] Add a short forward pointer to `co_derived`'s docstring in
       `FormalSystem/Theorems/DedekindDerived.lean`: the converse direction now has a
       machine-checked refutation, with the module named.
-- [ ] Confirm every changed hunk lies inside a comment region and that no `--`/`/-- -/` boundary was
+- [x] Confirm every changed hunk lies inside a comment region and that no `--`/`/-- -/` boundary was
       crossed.
 
 **Timing**: 45 minutes
@@ -385,7 +385,9 @@ directions of the CO/Reynolds relationship at their machine-checked artifacts.
 
 **Verification Tier**: local
 
-**Scope Hypothesis**: Asserts that exactly **two files** carry stale CO/Reynolds prose and that the
+**Scope Hypothesis** *(deviation: altered — three files carried stale prose, not two; per this
+hypothesis's own instruction the third site (`Formula.lean`'s `Formula.co` docstring pointer) was
+corrected too)*: Asserts that exactly **two files** carry stale CO/Reynolds prose and that the
 refuted sketch occupies a single identifiable paragraph in `Axioms.lean`'s Layer 9 block. Confirm
 at implementation time with `grep -rn "Stavi\|accumulate at an irrational\|CONVERSE is NOT claimed"
 --include=*.lean .` before editing; if a third site surfaces, correct it too rather than matching

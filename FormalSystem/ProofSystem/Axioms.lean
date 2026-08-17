@@ -373,14 +373,31 @@ inductive Axiom : Formula → Type where
   -- axioms only -- neither `prior_S_gap` nor `sep` is needed. The semantic companion is
   -- `FormalSystem.Metalogic.SoundnessLemmas.co_valid`.
   --
-  -- The CONVERSE is NOT claimed: there is no derivation here of the gap axioms from CO, and
-  -- the direction is believed to FAIL. A ℚ-flow carrying isolated `¬φ` points that accumulate
-  -- at an irrational from above validates every CO instance while refuting Prior-U -- the
-  -- classical Stavi US-vs-FO phenomenon. That is a pen-and-paper model sketch, NOT a
-  -- machine-checked independence result, and nothing in this tree depends on it.
+  -- The CONVERSE FAILS, and this is now MACHINE-CHECKED. CO does not derive `prior_U_gap`
+  -- over the dense base: see `FormalSystem.Metalogic.Independence.CoNotPriorU`, whose
+  -- `co_not_derives_prior_U_gap` (contexts of CO instances) and
+  -- `co_not_derives_prior_U_gap_schema` (a CO-closed system with modus ponens, modal and
+  -- temporal necessitation, and temporal duality) are both sorry-free. The witness is the
+  -- periodic clock model -- `D = ℚ`, `W = ℚ ⧸ ℤ`, `w ⇒_x u iff u = w + ⟦x⟧`, with the
+  -- symmetric irrational arc valuation `|q| < √2/4` -- in which every CO instance is true and
+  -- `prior_U_gap p` is false at time `0`.
   --
-  -- CONSEQUENCE FOR THE PAPER (out of scope for this repository). If the sketch is right,
-  -- `def:TMplus-c` is deductively too weak for `cor:tm-completeness`, whose completeness claim
+  -- An EARLIER SKETCH RECORDED HERE WAS REFUTED, not merely left unverified, and must not be
+  -- re-attempted: it proposed a ℚ-flow with isolated `¬φ` points accumulating at an irrational
+  -- from above, framed as "the classical Stavi US-vs-FO phenomenon". In that model
+  -- `ξ := ¬U(¬p,p) ∧ F(U(¬p,p))` has truth set `{t : t < √2}`, so `ξ` DEFINES THE CUT and
+  -- `CO(ξ)` is false at `0`. Hiding an accumulation point never works -- some U/S formula
+  -- recovers the cut. What works is homogeneity: on the clock frame the time translation by
+  -- `1` fixes every world state, so no formula can see a distinguished time.
+  --
+  -- The countermodel is a fixed MODEL, not a frame, and that is forced rather than incidental.
+  -- `def:frame-validity` quantifies over all valuations, and under that quantifier
+  -- frame-validity of CO on a dense flow forces gap-freeness and hence forces Prior-U valid.
+  -- This matches Reynolds' own "definably Dedekind-complete" caveat quoted above.
+  --
+  -- CONSEQUENCE FOR THE PAPER (out of scope for this repository). Now that the independence is
+  -- established, `def:TMplus-c` is deductively too weak for `cor:tm-completeness`, whose
+  -- completeness claim
   -- is deferred to this repository with no independent citation. Correcting it means switching
   -- the paper's BX_c basis to the Reynolds axioms, which is an amendment to
   -- `/home/benjamin/Philosophy/Papers/PossibleWorlds/` routed through the fix.md C4 process.
