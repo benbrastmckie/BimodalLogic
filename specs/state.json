@@ -9,18 +9,23 @@
     {
       "project_number": 449,
       "project_name": "review_paper_to_improve_bimodal_reference_manual",
-      "status": "researched",
+      "status": "planned",
       "task_type": "formal",
       "description": "Systematically review /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex in order to improve typst/BimodalReference.typ while observing the aim to accurately represent the Lean code in this repository, which is actively being improved to also be in better alignment with the possible_worlds.tex paper. The key difference between the paper and this Lean repo with its corresponding BimodalReference.typ manual is that this repo should focus entirely on constructing/presenting the full bimodal logic system where snce/untl operators are primitive, leaving the fragment with past/future operators as primitives as a subsystem to be developed later in order to establish conservative extension results if possible, though for now that effort can be ignored",
       "topic": "reference-book",
       "created": "2026-08-17T15:49:45Z",
-      "last_updated": "2026-08-17T16:07:27Z",
-      "session_id": "sess_1786981863_777984",
+      "last_updated": "2026-08-17T16:23:23Z",
+      "session_id": "sess_1786983269_cbcf65",
       "artifacts": [
         {
           "path": "specs/449_review_paper_to_improve_bimodal_reference_manual/reports/01_paper-manual-lean-alignment.md",
           "type": "report",
           "summary": "paper manual lean alignment (backfilled by --sync)"
+        },
+        {
+          "path": "specs/449_review_paper_to_improve_bimodal_reference_manual/plans/01_manual-to-target-state.md",
+          "type": "plan",
+          "summary": "manual to target state (backfilled by --sync)"
         }
       ]
     },

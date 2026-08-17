@@ -83,7 +83,7 @@ next_project_number: 450
 
 ### Reference Book
 
-449 [RESEARCHED] — Systematically review /home/benjamin/Philosophy/Papers/PossibleWo
+449 [PLANNED] — Systematically review /home/benjamin/Philosophy/Papers/PossibleWo
 
 ### Paper Refactor
 
@@ -112,11 +112,12 @@ next_project_number: 450
 ## Tasks
 
 ### 449. Review paper to improve bimodal reference manual
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: formal
 - **Topic**: reference-book
 - **Dependencies**: None
 - **Research**: [449_review_paper_to_improve_bimodal_reference_manual/reports/01_paper-manual-lean-alignment.md]
+- **Plan**: [449_review_paper_to_improve_bimodal_reference_manual/plans/01_manual-to-target-state.md]
 
 **Description**: Systematically review /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex in order to improve typst/BimodalReference.typ while observing the aim to accurately represent the Lean code in this repository, which is actively being improved to also be in better alignment with the possible_worlds.tex paper. The key difference between the paper and this Lean repo with its corresponding BimodalReference.typ manual is that this repo should focus entirely on constructing/presenting the full bimodal logic system where snce/untl operators are primitive, leaving the fragment with past/future operators as primitives as a subsystem to be developed later in order to establish conservative extension results if possible, though for now that effort can be ignored
 
