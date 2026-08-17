@@ -66,7 +66,7 @@ next_project_number: 449
 
 445 [NOT STARTED] — Address 39 FIX: tags in `typst/FormalFoundations.typ`, each of th
   └─ 446 [NOT STARTED] — Address 6 bare `// FIX:` tags in `typst/FormalFoundations.typ`, e
-    └─ 447 [NOT STARTED] — Address 6 substantive FIX: directives in `typst/FormalFoundations
+    └─ 447 [RESEARCHED] — Address 6 substantive FIX: directives in `typst/FormalFoundations
 
 ### Automation
 
@@ -84,8 +84,8 @@ next_project_number: 449
 ### Paper Refactor
 
 415 [IMPLEMENTING] — RE-ISSUED 2026-08-10 (supersedes the prior maximal-history framin
-417 [PLANNED] — RE-ISSUED 2026-08-10 (supersedes the prior maximal-history framin
-419 [PLANNED] — RE-ISSUED 2026-08-10 (description rewrite only; status unchanged)
+417 [IMPLEMENTING] — RE-ISSUED 2026-08-10 (supersedes the prior maximal-history framin
+419 [IMPLEMENTING] — RE-ISSUED 2026-08-10 (description rewrite only; status unchanged)
 440 [RESEARCHED] — RE-ISSUED 2026-08-12 (description rewrite only; status unchanged)
   └─ 441 [NOT STARTED] — Strengthen `thm:extension` for the finite discrete case into an E
 
@@ -158,10 +158,11 @@ ACCEPTANCE.
 ---
 
 ### 447. Substantive rewrites in FormalFoundations.typ: proof repair, axiom presentation, section restructure
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: logic
 - **Topic**: publication-quality
 - **Dependencies**: Task 446
+- **Research**: [447_substantive_rewrites_formalfoundations/reports/01_substantive-rewrites-research.md]
 
 **Description**: Address 6 substantive FIX: directives in `typst/FormalFoundations.typ`. Unlike the footnote and commented-block restorations, these call for new mathematical exposition, grounded in the source paper at `/home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex`.
 
@@ -658,7 +659,7 @@ Acceptance: the refuted-route comment no longer appears at Transfer.lean:1239-12
 
 ### 419. Machine check co reynolds independence
 - **Effort**: large
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: paper-refactor
 - **Dependencies**: Task 420, Task 438, Task 439
@@ -718,7 +719,7 @@ Run `bash scripts/check-paper-definitions.sh` and read specs/paper-definitions-o
 
 ### 417. Semantic fmp finite worldstate over z
 - **Effort**: medium
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: paper-refactor
 - **Dependencies**: Task 414, Task 420, Task 438, Task 439
