@@ -42,9 +42,28 @@ re-derives every hash below directly from the live paper file on every run.
 
 <!-- PAPER_PATH: /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex -->
 <!-- PAPER_REPO_ROOT: /home/benjamin/Philosophy/Papers/PossibleWorlds -->
-<!-- PINNED_COMMIT: f56cdea0237d102edbb9c64dcef7617d8d2cbc3e -->
-<!-- FILE_CHECKSUM: 76406e77cb3936c38b306bf7c4b9272f2c96bb164e7d04dc263650239746276e -->
+<!-- PINNED_COMMIT: 831c599d3f76fc9ebb7fb297ef80442c4624a035 -->
+<!-- FILE_CHECKSUM: 9fa1c5fc829ecab11fbf5685be622fc90bf4f9198119db48f35ad8a81ce0a2bf -->
 <!-- LINE_COUNT: 4290 -->
+
+### Drift correction and coverage extension (2026-08-17): the target-state-revision re-pin
+
+Absorbed as one re-pin during the reference-manual target-state revision:
+
+- **22 drifted anchors re-quoted and re-hashed**: `thm:s4`, `thm:sym` (macro rename
+  `\mathrm{Str}` → `\Str`; `thm:sym` also gained a Williamson/Bacon–Zeng footnote),
+  `def:task-relation`, `thm:extension`, `def:constraints`, `lem:nesting`, `def:BL-semantics`,
+  `def:BLplus-semantics`, `def:frame-validity`, `def:logical-consequence`, `def:BX`,
+  `def:TMplus-f`, `def:TMplus-c`, `def:TMplus`, `app:discrete`, `app:dense`, `app:complete`,
+  `cor:tm-completeness`, `def:id`, `def:strongest`, `thm:exist`, `lem:uniq`.
+- **2 dangling anchors retired from the manifest** (entries retained, marked DANGLING above):
+  `def:BL-model`, `cor:tm-decidability`.
+- **3 anchors added** (newly load-bearing for the manual's target-state revision):
+  `thm:BLplus-PastFuture`, `thm:BLplus-NextPrevious`, `def:time-shift-histories`.
+- Sentinels re-pinned: checksum `9fa1c5fc829ecab11fbf5685be622fc90bf4f9198119db48f35ad8a81ce0a2bf`,
+  paper repo `git HEAD` `831c599d3f76fc9ebb7fb297ef80442c4624a035` (file dirty against it, per
+  the dirty-pin caveat below), 4228 lines, 2026-08-17T17:31Z. Post-edit verification run
+  reported all 50 recorded definitions unchanged — pass.
 
 ### Dirty-pin caveat (why the pin is a checksum, not a clean commit)
 
@@ -258,14 +277,14 @@ sha256: `bc89eea5f9bafa1e326bc8bda93b6631c49212c1f0c3253208f0cfbdb049fb1f`
 \begin{Ddef} \label{def:task-relation}
 	A \textit{task relation} on a nonempty set of \textit{world states} $W$ over a temporal order $\D$ is any parameterized relation $w \Rightarrow_x u$ for $w,u \in W$ and $x \in D^+$, extended to negative durations by the \textit{converse convention} $w \Rightarrow_{-x} u \coloneq u \Rightarrow_{x} w$ for $x \geq 0$, determining the following for any world states $w, v \in W$ and durations $x, y \in D$:
 	\begin{enumerate}[wide=0pt, labelsep=.1in, itemsep=.075in]
-		\item[\it Fiber:] $\Fib(w, x) \coloneq \set{u \in W : w \Rightarrow_x u}$.
-		\item[\it Cone:] $(w)_x \coloneq \bigcup\limits_{\vert{y} < x} \Fib(w, y)$ where $x > 0$.
-		\item[\it Segment:] $[w, v]_x^y \coloneq \Fib(w, x) \cap \Fib(v, -y)$ where $x, y \geq 0$.
+		\item[\it Fiber:] $\fib{w, x} \coloneq \set{u \in W : w \Rightarrow_x u}$.
+		\item[\it Cone:] $(w)_x \coloneq \bigcup\limits_{\vert{y} < x} \fib{w, y}$ where $x > 0$.
+		\item[\it Segment:] $[w, v]_x^y \coloneq \fib{w, x} \cap \fib{v, -y}$ where $x, y \geq 0$.
 	\end{enumerate}
   \vspace{-.15in}
 \end{Ddef}
 ```
-sha256: `b63a34aa6a9f64e5e18df88de658530739caa0561755e694d6cd4b983eeb267b`
+sha256: `3ee787814dd714aa6c46811cce180d64cc2a3f931f348e088fff8aedad043367`
 
 ### `def:directed` — directed family (used by Spherical)
 
@@ -349,13 +368,11 @@ point). `H_F` denotes only the *total* histories.
 \begin{Tthm} \label{thm:extension}
 	Every partial history $\tau : X \to W$ over a frame $\F = \tuple{W, \D, \Rightarrow}$ is extended by some total world history $\sigma \in H_{\F}$.%
 	  \footnote{
-%% CHANGE (finite-spherical-corollary): footnote's existing choice-contrast clause extended to name the finite-$W$ case discharged choice-free by cor:spherical-finite.
-%% OLD: 	    The proof appeals to Zorn's lemma and hence to the axiom of choice, and so the derivation of \textit{Occurrence} from \textit{Seriality} and \textit{Spherical} in \textbf{\ref{cor:occurrence}} is a theorem of ZFC, in contrast with the choice-free derivation of the zero loops in \textbf{\ref{lem:nullity}}.
 	    The proof appeals to Zorn's lemma and hence to the axiom of choice, and so the derivation of \textit{Occurrence} from \textit{Seriality} and \textit{Spherical} in \textbf{\ref{cor:occurrence}} is a theorem of ZFC, in contrast with the choice-free derivation of the zero loops in \textbf{\ref{lem:nullity}} and of \textit{Spherical} for finite $W$ in \textbf{\ref{cor:spherical-finite}}.
 	  }
 \end{Tthm}
 ```
-sha256: `e63eac74fb8de22197f9bbb732bf83ea49def7308ca499817683145c99762b3e`
+sha256: `9fbb0fc2d324d6858019aea429c48709a147dfd51ecd9e840aeeef500153d220`
 
 ### `cor:occurrence` — DERIVED: every world state occurs at any prescribed time in some total world history (renamed from `thm:occurrence`; see "Drift correction" below)
 
@@ -378,10 +395,10 @@ under `def:time-shift-histories`, which remains untracked).
 
 ```latex
 \begin{Ddef} \label{def:constraints}
-	For a partial history $\tau : X \to W$ over a frame $\F = \tuple{W, \D, \Rightarrow}$ and duration $z \in D \setminus X$, the \textit{constraints on $z$} are the segments $[\tau(t), \tau(s)]_{z-t}^{s-z}$ for times $t,s \in X$ where $t < z < s$ when both $t,s \in X$, and the fibers $\Fib(\tau(t), z - t)$ for $t \in X$ otherwise.
+	For a partial history $\tau : X \to W$ over a frame $\F = \tuple{W, \D, \Rightarrow}$ and duration $z \in D \setminus X$, the \textit{constraints on $z$} are the segments $[\tau(t), \tau(s)]_{z-t}^{s-z}$ for times $t,s \in X$ where $t < z < s$ when both $t,s \in X$, and the fibers $\fib{\tau(t), z - t}$ for $t \in X$ otherwise.
 \end{Ddef}
 ```
-sha256: `3678ab023f5c7f51e790eb1f8790ae78f4c7f6bb4cd4f7dc3e41b0408b3ac581`
+sha256: `aaf87cd1fc4d88b372ed586194468ea9b7721ab8c5d5a52125c65e847986d76c`
 
 Promoted from lead-in prose to a numbered definition so the lemmas below can cite it by name.
 The 2026-08-12 wave shortened the defined term to "the *constraints on `z`*" and added an explicit
@@ -393,11 +410,10 @@ appear in the live paper — this record quotes whichever one appears inside the
 
 ```latex
 \begin{Lthm} \label{lem:nesting}
-  % FIX: if possible, I'd like \Fib to always show up in the same way rather than taking on the italics of this environment. I also want to use \fib if available to match with the others. Fix the macro accordingly.
-	For any partial history $\tau : X \to W$ over a frame $\F = \tuple{W, \D, \Rightarrow}$ and duration $z \in D \setminus X$, the fibers $\Fib(\tau(t'), z - t') \subseteq \Fib(\tau(t), z - t)$ nest for all times $t \leq t' < z$ in $X$ and symmetrically for all times $z < t' \leq t$ in $X$, while the segments $[\tau(t'), \tau(s')]_{z - t'}^{s' - z} \subseteq [\tau(t), \tau(s)]_{z - t}^{s - z}$ nest for all times $t \leq t' < z < s' \leq s$ in $X$.
+	For any partial history $\tau : X \to W$ over a frame $\F = \tuple{W, \D, \Rightarrow}$ and duration $z \in D \setminus X$, the fibers $\fib{\tau(t'), z - t'} \subseteq \fib{\tau(t), z - t}$ nest for all times $t \leq t' < z$ in $X$ and symmetrically for all times $z < t' \leq t$ in $X$, while the segments $[\tau(t'), \tau(s')]_{z - t'}^{s' - z} \subseteq [\tau(t), \tau(s)]_{z - t}^{s - z}$ nest for all times $t \leq t' < z < s' \leq s$ in $X$.
 \end{Lthm}
 ```
-sha256: `ffc2d16fbded65204f743530a43834025048ac59d7f70524389ba488c9305266`
+sha256: `971a38bb2fb7169976868b9fdcedbb1b8bcc01793d96be6e26b982ba1e06fa4c`
 
 The block carries an in-source `% FIX:` authorial note about the `\Fib` macro's italics. That line
 is literal paper source and is inside the hashed region, so it is quoted here verbatim like any
@@ -469,7 +485,14 @@ Proof: `lem:constraint` gives the directed family, *Spherical* provides a common
 case): "When the family has a $\subseteq$-least member, that member already contains a candidate
 and \textit{Spherical} is not needed."
 
-### `def:BL-model` — model of `BL`
+### `def:BL-model` — model of `BL` — **DANGLING as of the 2026-08-17 re-pin (removed from manifest)**
+
+The live paper no longer carries a `\label{def:BL-model}` — an exhaustive grep over the current
+text finds no such label. The model definition survives in the paper without this anchor name.
+The quoted text below is retained as the last-resolved historical record; the anchor is removed
+from the machine manifest so the checker no longer reports it as unresolvable. If the paper
+restores or renames the anchor, re-add a manifest row via
+`check-paper-definitions.sh --resolve "def:BL-model|env|-|-"`.
 
 ```latex
 \begin{Ddef} \label{def:BL-model}
@@ -482,24 +505,12 @@ sha256: `239fba0ff163b461e0d1bf3c0e94da0cb0b62e7b2d7f4519916af4cc50d6967f`
 
 ```latex
 \begin{Ddef} \label{def:BL-semantics}
-%% CHANGE (fix.md B1): formal mirror of body 941 -- evaluation point is a world segment, matching def:world-history's renamed object.
-%% OLD: 	Truth in a model at a possible world and time is defined recursively:
-%% CHANGE (task 52 total-histories): mirror of the Phase 2 body edits -- evaluation point is a possible world (world history); atom clause loses the dom conjunct, matching the total, bivalent body clause.
-%% OLD: 	Truth in a model at a world segment and time is defined recursively:
-%% OLD: 		\item[($p_i$)] $\M,\tau,x \vDash p_i$ \textit{iff} $x \in \dom{\tau}$ and $\tau(x) \in |p_i|$.
-%% CHANGE (convex-domains): evaluation points are the total possible worlds in H_F, matching the body.
-%% OLD: 	Truth in a model at a possible world and time is defined recursively:
-%% CHANGE (two-tier): "total possible world" is redundant under the tier discipline -- possible worlds are total by definition.
-%% OLD: 	Truth in a model at a total possible world $\tau \in H_{\F}$ and time is defined recursively:
-	Truth in a model at a possible world $\tau \in H_{\F}$ and time is defined recursively:
+	A \textit{model} of $\BL$ is a structure $\M = \tuple{W, \D, \Rightarrow, \vert{\cdot}}$ where $\F = \tuple{W, \D, \Rightarrow}$ is a frame and $\vert{p_i} \subseteq W$ for every sentence letter $p_i \in \SL$.
+	Relative to a model $\M$, possible world $\tau \in H_{\F}$, and time $x \in D$, \textit{truth} is defined recursively as follows:
 	\begin{enumerate}[wide=0pt, labelsep=.1in, itemsep=.075in]
 		\item[($p_i$)] $\M,\tau,x \vDash p_i$ \textit{iff} $\tau(x) \in |p_i|$.
 		\item[($\bot$)] $\M,\tau,x \nvDash \bot$.
 		\item[($\shortrightarrow$)] $\M,\tau,x \vDash \varphi \rightarrow \psi$ \textit{iff} $\M,\tau,x \nvDash \varphi$ or $\M,\tau,x \vDash \psi$.
-%% CHANGE (fix.md B1): formal mirror of body 946; must match exactly -- $\Box$ ranges over $H^{\max}_{\F}$.
-%% OLD: 		\item[($\Box$)] $\M,\tau,x \vDash \Box \varphi$ \textit{iff} $\M,\sigma,x \vDash \varphi$ for all $\sigma \in H_{\F}$.
-%% CHANGE (task 52 total-histories): supersedes the fix.md B1 mirror edit above -- H^max_F is eliminated; Box ranges over H_F, matching the Phase 2 body clause exactly.
-%% OLD: 		\item[($\Box$)] $\M,\tau,x \vDash \Box \varphi$ \textit{iff} $\M,\sigma,x \vDash \varphi$ for all $\sigma \in H^{\max}_{\F}$.
 		\item[($\Box$)] $\M,\tau,x \vDash \Box \varphi$ \textit{iff} $\M,\sigma,x \vDash \varphi$ for all $\sigma \in H_{\F}$.
 		\item[($\Past$)] $\M,\tau,x \vDash \Past \varphi$ \textit{iff} $\M,\tau,y \vDash \varphi$ for all $y\in D$ where $y < x$.
 		\item[($\Future$)] $\M,\tau,x \vDash \Future \varphi$ \textit{iff} $\M,\tau,y \vDash \varphi$ for all $y\in D$ where $x < y$.
@@ -507,7 +518,7 @@ sha256: `239fba0ff163b461e0d1bf3c0e94da0cb0b62e7b2d7f4519916af4cc50d6967f`
   \vspace{-.15in}
 \end{Ddef}
 ```
-sha256: `8fec78985c2efea20d13c1e6d5c7536ae0e0d864172bbe0460441d61addf22e3`
+sha256: `f6f7ef8d1755ba2f0179bcf84fa2ad3171b759355e54fe720b48deb3c2c09585`
 
 **The box clause's quantifier domain is `H_F`** — the full set of *total* world histories, not a
 maximal-history set `H^max_F` (that vocabulary is retired; the block's own `%%` comment history
@@ -535,12 +546,7 @@ sha256: `a43b3df2ea2fcb96eeb156b3403a33ac51fcafd2ad4eb55e7915c07cf509f8b7`
 
 ```latex
 \begin{Ddef} \label{def:BLplus-semantics}
-  The \textit{models} of $\BL^+$ are defined in \textbf{\ref{def:BL-model}}, where \textit{truth in a model} $\M$ at $\tau \in H_{\F}$ and $x \in D$ extends the semantics \textbf{\ref{def:BL-semantics}} with the following clauses:\footnote{%
-%% CHANGE (halden-defect-repair, untl-snce-convention): the footnote described the repository's \texttt{snce}/\texttt{untl} constructors as following the Pnueli guard-first convention. They do not--- they are event-first (Burgess), while the paper's own surface notation is guard-first. The mismatch is now stated in the direction that actually holds, with an explicit note that the truth conditions agree once the argument order is swapped, so no semantic claim changes.
-%% OLD: 	Although the axioms of \textbf{TM}$^+$ are drawn from the Burgess-Xu (BX) system, the repository's \texttt{snce}/\texttt{untl} constructors follow the Pnueli convention with the guard as the first argument and the event as the second: $\varphi\since\psi$ means $\psi$ held at some past time with $\varphi$ holding throughout the interval since, and $\varphi\until\psi$ means $\psi$ will hold at some future time with $\varphi$ holding throughout the interval until $\psi$ holds.
-	Although the axioms of \textbf{TM}$^+$ are drawn from the Burgess-Xu (BX) system, the paper's surface notation $\varphi\since\psi$ and $\varphi\until\psi$ below is guard-first, with $\varphi$ the guard and $\psi$ the event, whereas the repository's \texttt{snce}/\texttt{untl} constructors follow the event-first Burgess convention, with the event given first and the guard second.
-	The truth conditions agree once the argument order is swapped: $\varphi\since\psi$ means $\psi$ held at some past time with $\varphi$ holding throughout the interval since, and $\varphi\until\psi$ means $\psi$ will hold at some future time with $\varphi$ holding throughout the interval until $\psi$ holds.%
-	}
+  The \textit{models} of $\BL^+$ are defined as in \textbf{\ref{def:BL-semantics}}, where \textit{truth in a model} $\M$ at $\tau \in H_{\F}$ and $x \in D$ extends the semantics \textbf{\ref{def:BL-semantics}} with the following clauses:
 	\begin{enumerate}[wide=0pt, labelsep=.1in, itemsep=.075in]
 		\item[($\since$)] $\M,\tau,x \vDash \varphi\since\psi$ \textit{iff} $\M,\tau,z \vDash \psi$ for some time $z < x$ where $\M,\tau,y \vDash \varphi$\\
       \strut\hspace{1.55in}for all $y \in D$ with $z < y < x$.
@@ -549,7 +555,7 @@ sha256: `a43b3df2ea2fcb96eeb156b3403a33ac51fcafd2ad4eb55e7915c07cf509f8b7`
 	\end{enumerate}
 \end{Ddef}
 ```
-sha256: `f40f514e60dcb7a6b36dee664ebcc1d55c2c6bce9e044c5814071f521674d670`
+sha256: `edde75176efc0936c96f8d9eb18628929c2dd3bdb1aa1c21d4a88af90276314a`
 
 **Argument-order caveat — the footnote now describes this repository correctly (repaired
 2026-08-12).** The `\footnote` inside the block above *previously* asserted that "the repository's
@@ -603,26 +609,55 @@ repository's constructors**, which are the other way round.
 ```
 sha256: `2ac6361a2b84d20dd498f3e392072862554dd964a9ab6fc54bd868ee0a5bf56e`
 
+### `thm:BLplus-PastFuture` — DERIVED: the H/G truth conditions of the defined tense operators (the unconditional language embedding)
+
+```latex
+\begin{Tthm} \label{thm:BLplus-PastFuture}
+	$\M,\tau,x \vDash \Past\varphi$ \textit{iff} $\M,\tau,y \vDash \varphi$ for all $y \in D$ with $y < x$; and $\M,\tau,x \vDash \Future\varphi$ \textit{iff} $\M,\tau,y \vDash \varphi$ for all $y \in D$ with $x < y$.
+\end{Tthm}
+```
+sha256: `cf9d2e2bb1bcb17e3f27d9ac76f89c340f2cce5992586c617f4202051ac8256d`
+
+### `thm:BLplus-NextPrevious` — DERIVED: Next/Previous truth conditions over Discrete frames
+
+```latex
+\begin{Tthm} \label{thm:BLplus-NextPrevious}
+	Over \textsc{Discrete} frames, $\M,\tau,x \vDash \Next\varphi$ \textit{iff} $\M,\tau,y \vDash \varphi$ for the immediate successor $y$ of $x$; and $\M,\tau,x \vDash \Next\varphi \leftrightarrow \bot$ when $x$ has no immediate successor.
+	The past dual holds for $\Previous\varphi$.
+\end{Tthm}
+```
+sha256: `777b274d90440a174fb827ccb86d57ff617c65bfcafed9adc0f949e9332395c9`
+
+### `def:time-shift-histories` — time-shift between possible worlds, translation form
+
+```latex
+\begin{Ddef} \label{def:time-shift-histories}
+	For a frame $\F = \tuple{W, \D, \Rightarrow}$, the possible worlds $\tau, \sigma \in H_{\F}$ are \emph{time-shifted from $x$ to $y$}--- written $\tau \approx_x^y \sigma$--- \textit{iff} there exists a \textit{translation} $\bar{a} : D \to D$, $\bar{a}(z) = z + d$ for some $d \in D$, where $y = \bar{a}(x)$ and $\tau(z) = \sigma(\bar{a}(z))$ for all $z \in D$.
+\end{Ddef}
+```
+sha256: `9aa6ca749adaa98c0ed28b7330a3e1dec976df66ebf6ae25d1d4fac89636b114`
+
 ### `def:frame-validity` — validity over a frame
 
 ```latex
 \begin{Ddef} \label{def:frame-validity}
-	A well-formed sentence $\varphi$ of $\BL$ is \emph{valid over a frame} $\F = \tuple{W, \D, \Rightarrow}$ which we may write $\vDash_{\F} \varphi$ if and only if $\M,\tau,x \vDash \varphi$ for every model $\M = \tuple{W, \D, \Rightarrow, \vert{\cdot}}$ where $\F = \tuple{W, \D, \Rightarrow}$, possible world $\tau \in H_{\F}$, and time $x \in D$.
+	A well-formed sentence $\varphi$ of $\BL$ is \emph{valid over a frame} $\F = \tuple{W, \D, \Rightarrow}$ which we may write $\vDash_{\F} \varphi$ if and only if $\M,\tau,x \vDash \varphi$ for every model $\M = \tuple{W, \D, \Rightarrow, \vert{\cdot}}$ where $\F = \tuple{W, \D, \Rightarrow}$, possible world $\tau \in H_{\F}$, and time $x \in D$.%
+    \footnote{
+      Since $H_{\F} \neq \emptyset$ for every frame by \textbf{\ref{cor:occurrence}}, frame validity is never vacuous: every frame contributes evaluation points, and so $\nvDash_{\F} \bot$ for every frame $\F$.
+    }
 \end{Ddef}
 ```
-sha256: `2bcc85b0781fd4cc5af05d0741c64f44662706523cf023f3d5237d4ed1e8d1b9`
+sha256: `ea98b31dfa42d15fa9b8e79d3156473e273da01e46a30ef0a584fdc685f43c6f`
 
 ### `def:logical-consequence` — logical consequence and (global) validity
 
 ```latex
 \begin{Ddef} \label{def:logical-consequence}
-%% CHANGE (task 52 total-histories): the x in T typo is fixed to x in D, aligning the mirror with the Phase 3 body consequence definition (models, possible worlds tau in H_F, times x in D).
-%% OLD: 	A conclusion $\varphi$ is a \textit{logical consequence} of a set of premises $\Gamma$--- written $\Gamma \vDash \varphi$--- just in case for all models $\M$, possible worlds $\tau \in H_{\F}$, and times $x \in T$, if $\M,\tau,x \vDash \gamma$ for all premises $\gamma \in \Gamma$, then $\M,\tau,x \vDash \varphi$.
 	A conclusion $\varphi$ is a \textit{logical consequence} of a set of premises $\Gamma$--- written $\Gamma \vDash \varphi$--- just in case for all models $\M$, possible worlds $\tau \in H_{\F}$, and times $x \in D$, if $\M,\tau,x \vDash \gamma$ for all premises $\gamma \in \Gamma$, then $\M,\tau,x \vDash \varphi$.
 	A sentence $\varphi$ is \textit{valid} just in case $\vDash \varphi$.
 \end{Ddef}
 ```
-sha256: `e65c228721a39f8622d2256988b574c96a6cb7fdd6723a2eb63ce8a1f87770f0`
+sha256: `3af67167ee4a393d77fc8cfa8ddc065fe932bedf76a14febb8608a9001af5486`
 
 This block covers **both** logical consequence (`Γ ⊨ φ`) **and** global validity (`⊨ φ`, "valid
 just in case ⊨φ") — the paper defines them in the same `Ddef`. `def:frame-validity` above is the
@@ -686,8 +721,8 @@ sha256: `b090402a8048cd02cc163ebf0af7ec3f9c2630edc943feeaf5e9873072f50211`
   The seriality \textbf{\aref{TB}} and linearity \textbf{\aref{TL}} axioms from \textbf{TM}, together with connectedness:
   \begin{enumerate}[leftmargin=.5in,labelsep=.15in,itemsep=.075in]
     \aitem[TB]{TMP-SE} $\future\top$.
-    \aitem[TL]{TMP-LN} $\future\varphi \wedge \future\psi \rightarrow [\future(\varphi \wedge \psi) \vee \future(\varphi \wedge \future\psi) \vee \future(\future\varphi \wedge \psi)]$.
-    \aitem[CN]{TMP-CN} $(\varphi\until\psi) \wedge (\chi\until\theta) \rightarrow [(\varphi \wedge \chi)\until(\psi \wedge \theta) \vee (\varphi \wedge \chi)\until(\psi \wedge \chi) \vee (\varphi \wedge \chi)\until(\varphi \wedge \theta)]$.
+    \aitem[TL]{TMP-LN} $(\future\varphi \wedge \future\psi) \rightarrow [\future(\varphi \wedge \psi) \vee \future(\varphi \wedge \future\psi) \vee \future(\future\varphi \wedge \psi)]$.
+    \aitem[CN]{TMP-CN} $[(\varphi\until\psi) \wedge (\chi\until\theta)] \rightarrow [(\varphi \wedge \chi)\until(\psi \wedge \theta) \vee (\varphi \wedge \chi)\until(\psi \wedge \chi) \vee (\varphi \wedge \chi)\until(\varphi \wedge \theta)]$.
   \end{enumerate}
   The primary axioms for $\since$ and $\until$ are:
   \vspace{-.125in}
@@ -719,7 +754,7 @@ sha256: `b090402a8048cd02cc163ebf0af7ec3f9c2630edc943feeaf5e9873072f50211`
   The logic \textbf{BX} is smallest extension of \textbf{CPL} closed under all instances of the above.
 \end{Ddef}
 ```
-sha256: `1518997ec9497a1fe90f42c270f9b7c32c8b71392846c9a371548aa823fbbc65`
+sha256: `aaaa62168c43b560e3988b945b8dd3342507593199b6c038f3187b05c5c81322`
 
 ### `def:TMplus-f` — the discrete Burgess–Xu tense logic BX_f, and its Z-time footnote
 
@@ -734,19 +769,13 @@ sha256: `1518997ec9497a1fe90f42c270f9b7c32c8b71392846c9a371548aa823fbbc65`
     \end{multicols}
   \end{enumerate}
   \vspace{-.175in}
- % is sound and complete over discrete (successor-Archimedean) frames, playing the role that \textbf{\aref{DF}} plays in \textbf{TM} but with finer expressivity since $\since$ and $\until$ can witness nearest past and future times directly.
-  Whereas \textbf{\aref{TMP-UZ}} asserts that if $\varphi$ holds at some future time, then there is a \textit{nearest} future $\varphi$-time where $\neg\varphi$ throughout the intervening interval, \textbf{\aref{TMP-Z1}} is a backward induction principle characteristic of successor-Archimedean frames.
-%% CHANGE (fix.md C5): promoted the Hölder/Z-time fact into the definition and stated soundness/completeness relative to $\Z$-time; added the non-Archimedean discrete counterexample (UZ/Z1 unsoundness).
-%% OLD: (none -- new sentences inserted into def:TMplus-f; the commented-out sentence immediately above already records the prior soundness/completeness remark that this replaces in substance.)
-  By H\"{o}lder's theorem, a nontrivial \textit{discrete} Archimedean totally ordered abelian group is isomorphic to $\Z$, so the successor-Archimedean discrete class to which \textbf{BX}$_f$ and \textbf{TM}$^+_\textsc{f}$ are sound and complete is exactly $\Z$-time.
-%% CHANGE (halden-defect-repair, discrete-class-scoping): the prior sentence bundled \textbf{TM}$_\textsc{f}$ together with \textbf{BX}$_f$ and \textbf{TM}$^+_\textsc{f}$ and assigned all three soundness and completeness over $\Z$-time. That conflates three systems of different strength: \textbf{TM}$_\textsc{f} = \textbf{TM} + \textbf{\aref{DF}}$ is sound over the whole discrete class, not merely $\Z$-time, so its scope is separated here and its completeness over the broader class left open.
-%% NOTE (author decision required): this reflects Branch A of the discrete-class ambiguity--- read \textbf{TM}$_\textsc{f}$ as the full-discrete-class system rather than as the $\Z$-time system. The alternative (Branch B) redefines \textbf{TM}$_\textsc{f}$ as $\Z$-time throughout, which would instead make its completeness hold outright. Branch A was taken during implementation without an interactive author decision; see the accompanying site-inventory decision record. The choice propagates to \textbf{\ref{cor:tm-completeness}}'s \textbf{TM}$_\textsc{f}$ row and its strong-completeness rider.
-%% OLD:   By H\"{o}lder's theorem, a nontrivial \textit{discrete} Archimedean totally ordered abelian group is isomorphic to $\Z$, so the successor-Archimedean discrete class to which \textbf{BX}$_f$ (and \textbf{TM}$^+_\textsc{f}$, \textbf{TM}$_\textsc{f}$) are sound and complete is exactly $\Z$-time.
-  \textbf{TM}$_\textsc{f}$, by contrast, is sound over the full class of discrete frames, since \textbf{\aref{DF}} is valid on every discrete order and not only on $\Z$-time; whether \textbf{TM}$_\textsc{f}$ is complete over that broader class remains open, as discussed at \textbf{\ref{cor:tm-completeness}}.
-  \textbf{\aref{TMP-UZ}} and \textbf{\aref{TMP-Z1}} are not sound over non-Archimedean discrete orders: over $\Z \times_{\mathrm{lex}} \Z$, an atom true only in the second galaxy leaves \textbf{\aref{TMP-UZ}} without a first witness.
+  Whereas \textbf{\aref{TMP-UZ}} asserts that if $\varphi$ in the future, then there is a \textit{nearest} future $\varphi$-time where $\neg\varphi$ throughout the intervening interval, \textbf{\aref{TMP-Z1}} is a backward induction principle that is characteristic of successor-Archimedean frames.
+  Since if follows by H\"{o}lder's theorem that a nontrivial \textit{discrete} Archimedean totally ordered abelian group is isomorphic to $\Z$, the successor-Archimedean discrete class to which \textbf{BX}$_f$ and \textbf{TM}$^+_\textsc{f}$ are sound and complete is exactly $\Z$-time.
+  % \textbf{TM}$_\textsc{f}$, by contrast, is sound over the full class of discrete frames, since \textbf{\aref{DF}} is valid on every discrete order and not only on $\Z$-time; whether \textbf{TM}$_\textsc{f}$ is complete over that broader class remains open, as discussed at \textbf{\ref{cor:tm-completeness}}.
+  % \textbf{\aref{TMP-UZ}} and \textbf{\aref{TMP-Z1}} are not sound over non-Archimedean discrete orders: over $\Z \times_{\mathrm{lex}} \Z$, an atom true only in the second galaxy leaves \textbf{\aref{TMP-UZ}} without a first witness.
 \end{Ddef}
 ```
-sha256: `419a80a7d6e9f44a41883f7ce5d0693396e6126fc06a4909b5195d2a98965fe2`
+sha256: `918ca6f47026d003680b1df4b579f9ea109223c5e969ee8f7bb58be69adf5437`
 
 ### `def:TMplus-d` — the dense Burgess–Xu tense logic BX_d
 
@@ -770,33 +799,25 @@ sha256: `aa6542e6eee06e5c94dddc4b4581715d8b4310bba53615e0c0f80188016f10cf`
 
 ```latex
 \begin{Ddef} \label{def:TMplus-c}
-%% CHANGE (halden-defect-repair, bx-c-reynolds-rebase): re-based BX_c on the Reynolds triple (Prior-U, Sep, with Prior-S as the TD-mirror of Prior-U) rather than CO alone, matching the axiom basis that is actually machine-checked; CO is restated as a derived theorem.
-%% OLD:   The \textit{Complete Burgess--Xu Tense Logic} \textbf{BX}$_c$ is the smallest extension of the base logic \textbf{BX} to include all instances of the following axioms:
-%% OLD:   \begin{enumerate}[leftmargin=.5in,labelsep=.15in,itemsep=.075in]
-%% OLD:     \aitem[CO]{TMP-CO} $\always(\Past\varphi \rightarrow \future\Past\varphi) \rightarrow (\Past\varphi \rightarrow \Future\varphi)$.
-%% OLD:   \end{enumerate}
-%% OLD:   This axiom coincides with \textbf{\aref{CO}} in \textbf{TM}, though it is expressed in $\BL^+$.
   Letting $K^+\varphi \coloneq \neg(\neg\varphi\until\top)$ and $K^-\varphi \coloneq \neg(\neg\varphi\since\top)$ abbreviate Reynolds' (1992) operators--- $K^+\varphi$ says that $\varphi$ recurs arbitrarily soon in the future, and $K^-\varphi$ that $\varphi$ recurred arbitrarily recently in the past--- the \textit{Complete Burgess--Xu Tense Logic} \textbf{BX}$_c$ is the smallest extension of the base logic \textbf{BX} to include all instances of the following axioms, due to Reynolds (1992), where only the future/until direction of \textbf{\aref{TMP-PU}} is stated, its past/since direction following by \textbf{\aref{TMP-TD}}:
   \begin{enumerate}[leftmargin=.5in,labelsep=.15in,itemsep=.075in]
     \aitem[Prior-U]{TMP-PU} $(\varphi\until\top) \wedge \future\neg\varphi \rightarrow \varphi\until(\neg\varphi \vee K^+\neg\varphi)$.
     \aitem[Sep]{TMP-SEP} $K^+\varphi \wedge \neg K^+(\varphi \wedge (\neg\varphi\until\varphi)) \rightarrow K^+(K^+\varphi \wedge K^-\varphi)$.
   \end{enumerate}
-  \textbf{\aref{TMP-CO}}, restated from \textbf{\aref{CO}} in \textbf{TM}, is a \textit{derived theorem} of \textbf{BX}$_c$ rather than a further axiom, using only \textbf{\aref{TMP-PU}} and the base axioms of \textbf{BX}--- \textbf{\aref{TMP-SEP}} is not needed for the derivation:
+  The following axiom restates \textbf{\aref{CO}} from \textbf{TM}, and is a \textit{derived theorem} of \textbf{BX}$_c$ rather than a further axiom, using only \textbf{\aref{TMP-PU}} and the base axioms of \textbf{BX}:
   \begin{enumerate}[leftmargin=.5in,labelsep=.15in,itemsep=.075in]
     \aitem[CO]{TMP-CO} $\always(\Past\varphi \rightarrow \future\Past\varphi) \rightarrow (\Past\varphi \rightarrow \Future\varphi)$.
   \end{enumerate}
-  This derivation is machine-checked in the Lean 4 \href{https://github.com/benbrastmckie/BimodalLogic}{repository} for this paper.
-  Whether \textbf{\aref{TMP-CO}} alone axiomatizes the same logic as the full triple is open: the converse derivation--- deriving \textbf{\aref{TMP-PU}} and \textbf{\aref{TMP-SEP}} from \textbf{\aref{TMP-CO}} alone--- is conjectured to fail, via an unformalized pen-and-paper sketch involving a $\Q$-flow with isolated $\neg\varphi$ points accumulating at an irrational from above; this independence is not asserted as established.\footnote{%
-    A nontrivial Dedekind-complete totally ordered abelian group is Archimedean, hence by H\"{o}lder's theorem isomorphic to $\Z$ or $\R$.
-    The complete class is therefore exactly $\set{\Z, \R}$ up to isomorphism, so the Dedekind-complete theory of time is $\mathrm{Th}(\Z) \cap \mathrm{Th}(\R)$ and the dense-and-complete class is exactly $\R$.
-    In particular, no non-Archimedean order is complete.
-%% CHANGE (halden-defect-repair, bx-c-reynolds-rebase): removed the identification of the proof system TM_c with Th(Z) cap Th(R); that identity holds only for the semantic theory, not for TM_c as axiomatized, and is now stated only as such at cor:tm-completeness.
-%% CHANGE (completeness-relocation, residual-halden-comment): corrected "the Halldén-incompleteness defect this task repairs"--- TM_c is semantically incomplete over $\set{\Z,\R}$, not Halldén-incomplete, and no repair is adopted; see cor:tm-completeness for the corrected diagnosis.
-%% OLD:     The complete class is therefore exactly $\set{\Z, \R}$ up to isomorphism, so \textbf{TM}$_\textsc{c}$ = $\mathrm{Th}(\Z) \cap \mathrm{Th}(\R)$ and the dense-and-complete class is exactly $\R$.
-    }
+  As a result, \textbf{\aref{TMP-CO}} may be omitted from \textbf{BX}$_c$.
+  % This derivation is machine-checked in the Lean 4 \href{https://github.com/benbrastmckie/BimodalLogic}{repository} for this paper, and so will not be provided here.
+  % Whether \textbf{\aref{TMP-CO}} alone axiomatizes the same logic as the full triple is open: the converse derivation--- deriving \textbf{\aref{TMP-PU}} and \textbf{\aref{TMP-SEP}} from \textbf{\aref{TMP-CO}} alone--- is conjectured to fail, via an unformalized pen-and-paper sketch involving a $\Q$-flow with isolated $\neg\varphi$ points accumulating at an irrational from above; this independence is not asserted as established.\footnote{%
+  %   A nontrivial Dedekind-complete totally ordered abelian group is Archimedean, hence by H\"{o}lder's theorem isomorphic to $\Z$ or $\R$.
+  %   The complete class is therefore exactly $\set{\Z, \R}$ up to isomorphism, so the Dedekind-complete theory of time is $\mathrm{Th}(\Z) \cap \mathrm{Th}(\R)$ and the dense-and-complete class is exactly $\R$.
+  %   In particular, no non-Archimedean order is complete.
+    % }
 \end{Ddef}
 ```
-sha256: `b5cca1c9667cb5e516b30a60a28dbef85f83ee40692a0ce5d92aac232d41a6a9`
+sha256: `24b1b6a18ddf02c03dfe81fbf48c0883144e939d9fb752079427a81f42b5bdac`
 
 ### `def:TMplus` — TM+ base logic for BL+, and the four-part conservativity footnote
 
@@ -806,18 +827,18 @@ sha256: `b5cca1c9667cb5e516b30a60a28dbef85f83ee40692a0ce5d92aac232d41a6a9`
   \begin{enumerate}[leftmargin=.5in,labelsep=.15in,itemsep=.075in]
     \aitem[MF]{TMP-MF} $\Box\varphi \rightarrow \Box\Future\varphi$.
   \end{enumerate}
-  Similarly, the discrete \textbf{TM}$^+_f$, dense \textbf{TM}$^+_d$, and complete \textbf{TM}$^+_c$ extensions of \textbf{TM}$^+$ include the additional axioms that distinguish \textbf{BX}$_f$, \textbf{BX}$_d$, and \textbf{BX}$_c$, respectively.%
-%% CHANGE (completeness-relocation, conservativity-footnote): the conservative-extension theorem and its proof are deleted (the label collected seven citing sites, all re-pointed or removed; see cross-references at the sub:Logic bridge sentence and the appendix roadmap). This footnote replaces them, hanging at the sentence naming the discrete/dense/complete BL+ extensions rather than at the definition's opening sentence. It carries the same CEB/CEF/CED/CEC content compactly, names the CEB witness \textbf{(DD)} (the splitting schema, renamed elsewhere in this restructure), and makes no conservativity claim: the theorem asserted one, and the claim was false in the one direction (CEB, CEF) where it could be checked.
-  \footnote{
-    $\BL$ embeds into $\BL^+$ (\textbf{\ref{thm:BLplus-PastFuture}}), so the \textit{backward} direction holds unconditionally for every extension: every $\BL$-theorem of \textbf{TM}, \textbf{TM}$_\textsc{f}$, \textbf{TM}$_\textsc{d}$, and \textbf{TM}$_\textsc{c}$ remains a theorem of \textbf{TM}$^+$, \textbf{TM}$^+_\textsc{f}$, \textbf{TM}$^+_\textsc{d}$, and \textbf{TM}$^+_\textsc{c}$ respectively.
-    The \textit{forward} direction --- whether enriching the language proves genuinely new $\BL$-theorems --- fails for the base case, witnessed by \textbf{(DD)}: \textbf{TM}$^+$ derives \textbf{(DD)} from \textbf{\aref{TMP-NB}} and \textbf{\aref{M5}} together with two $\BL^+$-valid conditionals, a derivation that inherits \textbf{TM}$^+$'s own not-yet-fully-established weak completeness, since that is what supplies the two conditionals as $\textbf{TM}^+$-theorems, while $\textbf{TM} \nvdash \textbf{(DD)}$, refuted on the two-fibre structure of \textbf{\ref{cor:tm-completeness}}'s proof; \textbf{TM} would have to be extended by \textbf{(DD)} for any transfer to have a chance, and completeness of $\textbf{TM} + \textbf{(DD)}$ is itself open.
-    The forward direction also fails for the discrete extension, unconditionally, witnessed by \textbf{\aref{TMP-Z1}}: an axiom of the base tense logic's discrete extension and so a $\textbf{TM}^+_\textsc{f}$-theorem trivially, yet unsound over the non-Archimedean discrete order $\Z \times_{\mathrm{lex}} \Z$ and so not a $\textbf{TM}_\textsc{f}$-theorem.
-    The forward direction remains open for the dense and complete extensions, with no known counterexample.
-    No conservativity claim is therefore made for \textbf{TM}$^+$ over \textbf{TM}.
-  }
+  Similarly, the discrete \textbf{TM}$^+_f$, dense \textbf{TM}$^+_d$, and complete \textbf{TM}$^+_c$ extensions of \textbf{TM}$^+$ include the additional axioms that distinguish \textbf{BX}$_f$, \textbf{BX}$_d$, and \textbf{BX}$_c$, respectively.
+  % TODO: it might be better just to cite the Lean repo for this paper where these results are established, though I would like this to happen in the cor:tm-completeness below rather than here. The footnote should not attempt to sketch the proofs, just state that they have been established.
+  % \footnote{
+  %   $\BL$ embeds into $\BL^+$ (\textbf{\ref{thm:BLplus-PastFuture}}), so the \textit{backward} direction holds unconditionally for every extension: every $\BL$-theorem of \textbf{TM}, \textbf{TM}$_\textsc{f}$, \textbf{TM}$_\textsc{d}$, and \textbf{TM}$_\textsc{c}$ remains a theorem of \textbf{TM}$^+$, \textbf{TM}$^+_\textsc{f}$, \textbf{TM}$^+_\textsc{d}$, and \textbf{TM}$^+_\textsc{c}$ respectively.
+  %   The \textit{forward} direction --- whether enriching the language proves genuinely new $\BL$-theorems --- fails for the base case, witnessed by \textbf{(DD)}: \textbf{TM}$^+$ derives \textbf{(DD)} from \textbf{\aref{TMP-NB}} and \textbf{\aref{M5}} together with two $\BL^+$-valid conditionals, a derivation that inherits \textbf{TM}$^+$'s own not-yet-fully-established weak completeness, since that is what supplies the two conditionals as $\textbf{TM}^+$-theorems, while $\textbf{TM} \nvdash \textbf{(DD)}$, refuted on the two-fibre structure of \textbf{\ref{cor:tm-completeness}}'s proof; \textbf{TM} would have to be extended by \textbf{(DD)} for any transfer to have a chance, and completeness of $\textbf{TM} + \textbf{(DD)}$ is itself open.
+  %   The forward direction also fails for the discrete extension, unconditionally, witnessed by \textbf{\aref{TMP-Z1}}: an axiom of the base tense logic's discrete extension and so a $\textbf{TM}^+_\textsc{f}$-theorem trivially, yet unsound over the non-Archimedean discrete order $\Z \times_{\mathrm{lex}} \Z$ and so not a $\textbf{TM}_\textsc{f}$-theorem.
+  %   The forward direction remains open for the dense and complete extensions, with no known counterexample.
+  %   No conservativity claim is therefore made for \textbf{TM}$^+$ over \textbf{TM}.
+  % }
 \end{Ddef}
 ```
-sha256: `2a150421d56a2480b1c03e97acc6b0342f691b43767760163b50245694ae87ea`
+sha256: `4677290e1b2a4937d3f07ef606c4db37160692f176aeae7b017057c8baa8ba64`
 
 ### `thm:M5-valid` — the M5 axiom is valid
 
@@ -841,28 +862,28 @@ sha256: `23cae2b2fcd8c034b82c4f9294b21aa4d141429a278fa08d085cae2c53bf0529`
 
 ```latex
 \begin{Tthm} \label{app:discrete}
-	$(\Past\varphi \wedge \varphi \wedge \future\top) \rightarrow \future\Past\varphi$ is valid over every frame $\F = \tuple{W, \D, \Rightarrow}$ if and only if $\D$ is \textsc{Discrete}.
+	$\F \vDash (\Past\varphi \wedge \varphi \wedge \future\top) \rightarrow \future\Past\varphi$ iff $\F$ is a \textsc{Discrete} frame.
 \end{Tthm}
 ```
-sha256: `46615df7e02cf9bc59eae1c0ca6ce58f8abdc6ccae8750e59bf5aee050900eb1`
+sha256: `390d37f1e1813e41aefac5c2db8add88490e120f9f4e11fa36b9842d5486f711`
 
 ### `app:dense` — the Dense correspondence theorem (DN)
 
 ```latex
 \begin{Tthm} \label{app:dense}
-	$\Future\Future\varphi \rightarrow \Future\varphi$ is valid over every frame $\F = \tuple{W, \D, \Rightarrow}$ if and only if $\D$ is \textsc{Dense}.
+	$\F \vDash \Future\Future\varphi \rightarrow \Future\varphi$ iff $\F$ is a \textsc{Dense} frame.
 \end{Tthm}
 ```
-sha256: `d7b9a4391d9d42fe9ea444bf7dc52be2c526dcf4d3ecc8716ba9b88d6684b23d`
+sha256: `6a6b76ccb40bc9059627c40826f9f64edf0e1716650df11bf46f5c0b8ba3e554`
 
 ### `app:complete` — the Complete correspondence theorem (CO)
 
 ```latex
 \begin{Tthm} \label{app:complete}
-	$\always(\Past\varphi \rightarrow \future\Past\varphi) \rightarrow (\Past\varphi \rightarrow \Future\varphi)$ is valid over every frame $\F = \tuple{W, \D, \Rightarrow}$ if and only if $\D$ is \textsc{Complete}.
+	$\F \vDash \always(\Past\varphi \rightarrow \future\Past\varphi) \rightarrow (\Past\varphi \rightarrow \Future\varphi)$ iff $\F$ is a \textsc{Complete} frame.
 \end{Tthm}
 ```
-sha256: `93a5bd056796ac04d369c1e2e5e494004914b5fb7ae9eb928efea89d8fb69122`
+sha256: `a3b4e39b80ffdf9e94fb48cea4bc9f719391d845a648da8aa9bcf2c0f0d5ea04`
 
 ### `def:frame-properties` — Discrete/Dense/Complete/Deterministic frame-class predicates
 
@@ -895,23 +916,29 @@ sha256: `76258a4c835d4fa0dde3fd037da52e706d0f20c9d7872ab523d3b81597b99b9d`
 
 ```latex
 \begin{Cthm}[Completeness] \label{cor:tm-completeness}
-%% CHANGE (completeness-relocation, four-row-restructure): the prior enumeration mixed two defects. First, its \textbf{TM}$_\textsc{d}$ and \textbf{TM}$_\textsc{dc}$ rows asserted \BL-level completeness by pulling weak completeness of \textbf{TM}$^+_\textsc{d}$/\textbf{TM}$^+_\textsc{c}$ back through the forward direction of \textbf{CED}/\textbf{CEC}, directions the (now-deleted) conservative-extension theorem itself left open; those rows are removed outright rather than merely re-cited, since the $\BL^+$-level results are machine-checked directly and need no pull-back. Second, the enumeration asserted no row at all for \textbf{TM}$^+$'s own base-case completeness, leaving that claim to surface only as a hedged footnote aside; it is now the table's headline row, worded so the same hedge survives promotion to headline status. The comment this replaces also mischaracterized \textbf{TM} and \textbf{TM}$_\textsc{c}$ as "Halldén-incomplete... repaired by" the splitting schema; the corrected diagnosis --- \textbf{TM} is semantically, not Halldén, incomplete, and the schema is retired from any axiom role --- is given in the proof below.
-%% OLD:   $\textbf{TM}$, $\textbf{TM}_\textsc{f}$, $\textbf{TM}_\textsc{d}$, $\textbf{TM}_\textsc{c}$, and $\textbf{TM}_\textsc{dc}$ are all \textit{weakly} complete, over the classes of all frames, discrete frames, dense frames, complete frames, and dense-and-complete frames, respectively: every valid formula is a theorem.
-%% OLD:   \textit{Strong} completeness, on which every semantic consequence of a possibly infinite premise set is derivable from it, fails for the discrete and complete classes, where compactness fails.
-  \textbf{TM} and its extensions \textbf{TM}$_\textsc{f}$, \textbf{TM}$_\textsc{d}$, \textbf{TM}$_\textsc{c}$, and \textbf{TM}$_\textsc{dc}$ are sound over their respective classes of all, discrete, dense, complete, and dense-and-complete task frames, but none is complete; completeness is carried instead by the following $\BL^+$ systems:
+  Where $\Gamma \vDash_{\mathsf{C}} \varphi$ restricts \textbf{\ref{def:logical-consequence}} to models over task frames in a class $\mathsf{C}$, a proof system $\mathbf{S}$ is \textit{strongly complete} over $\mathsf{C}$ just in case $\Gamma \vDash_{\mathsf{C}} \varphi$ implies $\Gamma \vdash_{\mathbf{S}} \varphi$ for every set of sentences $\Gamma$, and \textit{weakly complete} over $\mathsf{C}$ just in case $\vDash_{\mathsf{C}} \varphi$ implies $\vdash_{\mathbf{S}} \varphi$.
+  Completeness is then carried by the following $\BL^+$ systems:
   \begin{enumerate}[leftmargin=.5in,labelsep=.15in,itemsep=.075in]
-    \item[\bf TM$^+_\textsc{d}$] Weakly complete over the dense frames: every formula valid over every dense frame is a theorem. Machine-checked, sorry-free, over the full \textsc{Dense} class.
-    \item[\bf TM$^+_\textsc{f}$] Weakly complete over $\Z$-time, machine-checked directly over the successor-Archimedean class.
-    \item[\bf TM$^+_\textsc{c}$] Weakly complete over the dense-and-complete class, exactly $\R$, machine-checked directly, aligned with \textbf{\ref{def:TMplus-c}}'s Reynolds-triple basis for \textbf{BX}$_c$.
-    \item[\bf TM$^+$] Weak completeness over all task frames is the stated Lean-formalization target; one proof obligation remains outstanding (see the \textbf{Lean status} remark below), so this is not yet an established theorem.
+    \item[\bf TM$^+$] Strongly complete over all task frames.
+    \item[\bf TM$^+_\textsc{d}$] Strongly complete over the dense frames.
+    \item[\bf TM$^+_\textsc{f}$] Weakly complete over $\Z$-time.
+    \item[\bf TM$^+_\textsc{c}$] Weakly complete over the dense-and-complete class.
   \end{enumerate}
-  \textit{Strong} completeness --- on which every semantic consequence of a possibly infinite premise set is derivable from it --- is the aim for \textbf{TM}$^+$ and \textbf{TM}$^+_\textsc{d}$, with no known obstruction to a fully compact treatment of the base and dense classes.
-  It provably fails for $\Z$-time and for the dense-and-complete class $\R$, where compactness fails, so weak completeness is the correct target there; nothing is asserted here about the compactness of the full discrete class in either direction, or about \textbf{TM}$_\textsc{c}$'s completeness over $\set{\Z, \R}$, which is not claimed even weakly.
+  Strong completeness provably fails for $\Z$-time as well as for the dense-and-complete class $\R$ where compactness fails, and so weak completeness is the appropriate target.
 \end{Cthm}
 ```
-sha256: `7c7bfe057fc7832d7a9e1de316f2003ccfaa61832b27448a59424ccfcd08852e`
+sha256: `68e3ea9af3305f6982d1c61a26c09ff15d919d783c5fe74e7f55b6d9a748247d`
 
-### `cor:tm-decidability` — the Decidability corollary (open)
+### `cor:tm-decidability` — the Decidability corollary (open) — **DANGLING as of the 2026-08-17 re-pin (removed from manifest)**
+
+The live paper no longer carries a `\label{cor:tm-decidability}` (the corollary is commented
+out / removed), even though the paper's Conclusion still asserts decidability — an internal
+inconsistency surfaced to the user separately. The quoted text below is retained as the
+last-resolved historical record; the anchor is removed from the machine manifest so the checker
+no longer reports it as unresolvable. The obligation that the finished paper restore or restate
+this corollary is carried by `// CONFIRM(paper):` comments in `typst/` chapters. If the paper
+restores the anchor, re-add a manifest row via
+`check-paper-definitions.sh --resolve "cor:tm-decidability|env|-|-"`.
 
 ```latex
 \begin{Cthm}[Decidability] \label{cor:tm-decidability}
@@ -929,73 +956,84 @@ sha256: `ac35ffaa47da467febc431669f604d02622301f369bf795075dbe46ed3ee1bcf`
 
 ```latex
 \begin{Ddef} \label{def:id}
-	An \textit{identity extension of $\BL$} is a language $\BL^{\equiv}$ that enriches $\BL$ with a binary propositional identity operator $\equiv$, read $\ulcorner$For $\varphi$ to be true is for $\psi$ to be true$\urcorner$, whose logic comprises classical propositional logic and the minimal theory of identity given below, where $\chi_{(\psi/\varphi)}$ is the result of replacing one or more occurrences of $\varphi$ in any formula $\chi$ with $\psi$:
+  The \textit{identity extension of $\BL^{\Box}$} is a language $\BL^{\equiv}$ enriched to include a binary propositional identity operator $\equiv$, read $\ulcorner$For $\varphi$ just is for $\psi\urcorner$, whose logic comprises classical propositional logic and the minimal theory of identity given below, where $\chi_{(\psi/\varphi)}$ is the result of replacing one or more occurrences of $\varphi$ in any formula $\chi$ with $\psi$:
 	\vspace{-.125in}
 	\begin{enumerate}[leftmargin=.5in,labelsep=.15in,itemsep=.075in]
 		\begin{multicols}{2}
 			\aitem{Ref} $\vdash \varphi \equiv \varphi$.
 			\aitem{Imp} $\vdash (\varphi \equiv \psi) \rightarrow (\varphi \rightarrow \psi)$.
-			\aitem{LL} $\vdash (\varphi \equiv \psi) \rightarrow (\chi \rightarrow \chi_{(\psi/\varphi)})$.
+			\aitem{LL} $\vdash (\varphi \equiv \psi) \rightarrow (\chi \rightarrow \chi_{(\psi/\varphi)})$\\
+        \strut\hspace{5pt}where $\psi$ is free for $\varphi$ in $\chi$.%
+        \footnote{
+          A formula $\psi$ is \textit{free for} $\varphi$ in $\chi$ just in case no replaced occurrence of $\varphi$ lies within the scope of a quantifier binding a variable free in $\varphi$ or $\psi$.
+          The condition is vacuous in $\BL^{\equiv}$, which has no quantifiers, and constrains \textbf{\aref{LL}} only in the quantified extension of \textbf{\ref{def:lang}}.
+        }
 		\end{multicols}
 	\end{enumerate}
 	\vspace{-.175in}
+  % Substitution in \textbf{\aref{LL}} is restricted so that no variable free in $\varphi$ or $\psi$ is bound at a replaced occurrence in $\chi$, though this is vacuous in $\BL^{\equiv}$ which has no propositional quantifiers.
+  % The restriction on substitution is vacuous without propositional quantifiers. 
   The theory of propositional identity need not be Boolean, accommodating theories in which the absorption laws or other Boolean identities do not hold.\footnote{I defend a bilateral theory of propositional identity in Brast-McKie \cite{Brast-McKie2021}.}
- Symmetry and transitivity of $\equiv$ are nevertheless derivable: given $\varphi \equiv \psi$, applying \textbf{\aref{LL}} to $\chi \coloneq (\varphi \equiv \varphi)$ yields $\psi \equiv \varphi$ by \textbf{\aref{Ref}}, and a further application gives transitivity. 
+  Symmetry and transitivity of $\equiv$ are nevertheless derivable.
+  % Given $\varphi \equiv \psi$: instantiating \textbf{\aref{Ref}} at $\varphi$ gives $\vdash \varphi \equiv \varphi$, and applying \textbf{\aref{LL}} with $\chi \coloneq (\varphi \equiv \varphi)$, replacing the first occurrence of $\varphi$, gives $\vdash (\varphi \equiv \psi) \rightarrow [(\varphi \equiv \varphi) \rightarrow (\psi \equiv \varphi)]$, which detaches--- as in \textbf{\ref{thm:trans}}'s proof, by permuting antecedents and applying modus ponens--- to give $\psi \equiv \varphi$, i.e., symmetry.
+  % Given also $\psi \equiv \theta$: a further application of \textbf{\aref{LL}}, with $\chi \coloneq (\varphi \equiv \psi)$, replacing the occurrence of $\psi$, gives $\vdash (\psi \equiv \theta) \rightarrow [(\varphi \equiv \psi) \rightarrow (\varphi \equiv \theta)]$, which detaches with both hypotheses to give $\varphi \equiv \theta$, i.e., transitivity.
 \end{Ddef}
 ```
-sha256: `f9d32bd7c7faf6f1b7d57b4b970d1e628719188452a5872bfbe5fcc1dc5a0e4a`
+sha256: `4c7d0de01117c6ba656d988789d341a9f463f500f2cdeaaaf827ae8911353cb9`
 
 ### `def:strongest` — strongest objective normal modal operator, Str^O_L(Q)
 
 ```latex
 \begin{Ddef} \label{def:strongest}
-	$\Q$ is a \textit{strongest objective normal modal operator in $L$}--- $\mathrm{Str}^{\OO}_{L}(\Q)$--- iff:
-	\vspace{-.05in}
+	$\Q$ is a \textit{strongest objective normal modal operator in $L$}--- $\Str^{\OO}_{L}(\Q)$--- iff:
 	\begin{enumerate}[leftmargin=.5in,labelsep=.15in,itemsep=.075in]
     \item $\vdash \OO(\Q)$; and
 		\item $\vdash \forall\P[\OO(\P) \rightarrow (\Q \preceq \P)]$.
 	\end{enumerate}
-	\vspace{-.15in}
-	Objectivity and normality need not be stated separately: clause (1) already entails $\vdash \Obj(\Q)$, $\vdash \mathrm{Ax}(\Q)$, and $\mathrm{Norm}_L(\Q)$ by the remark above.
+	% Normality need not be stated separately: clause (1) already entails $\vdash \Ax(\Q)$ and $\Norm_L(\Q)$ by \textbf{\ref{lem:obj-norm}}.
 \end{Ddef}
 ```
-sha256: `de29ef2b68a2c54decf3d40a195b1e3aeceee1e26a348e0386cc0103ac2a5f66`
+sha256: `859a787262717b5fec2fae76b2884c41b4f3583bc668eea7e35ee64fb3e23e45`
 
 ### `thm:exist` — L has a strongest objective normal modal operator (Bm witnesses)
 
 ```latex
 \begin{Tthm} \label{thm:exist}
-	$\mathrm{Str}^{\OO}_{L}(\Bm)$, so $L$ includes a strongest objective normal modal operator.
+	$\Str^{\OO}_{L}(\Bm)$, so $L$ includes a strongest objective normal modal operator.
 \end{Tthm}
 ```
-sha256: `f5b9c808a519f0368fae920a5315e9b87706ec266143ddc7fcfbb2d304d4519d`
+sha256: `0bdec1fca347c226774e622c5ff2b412fdabd7f0eb340c91858ca6fc97b6556c`
 
 ### `lem:uniq` — uniqueness of the strongest objective normal modal operator
 
 ```latex
 \begin{Lthm} \label{lem:uniq}
-	If $\mathrm{Str}^{\OO}_{L}(\Q)$ and $\mathrm{Str}^{\OO}_{L}(\P)$, then $\vdash \forall p(\Q p \leftrightarrow \P p)$.
+	If $\Str^{\OO}_{L}(\Q)$ and $\Str^{\OO}_{L}(\P)$, then $\vdash \forall p(\Q p \leftrightarrow \P p)$.
 \end{Lthm}
 ```
-sha256: `caf3d5daa522050ef1e3ab9a93e97efee7f2843f929530442814fdf8cec1a0f2`
+sha256: `ff8ac0629d00554c5d54c580e68c4886297c63e24fd214338614560eedb862cf`
 
 ### `thm:s4` — the strongest objective operator obeys S4
 
 ```latex
 \begin{Tthm} \label{thm:s4}
-	If $\mathrm{Str}^{\OO}_{L}(\Q)$, then $\vdash \forall p(\Q p \rightarrow \Q\Q p)$.
+	If $\Str^{\OO}_{L}(\Q)$, then $\vdash \forall p(\Q p \rightarrow \Q\Q p)$.
 \end{Tthm}
 ```
-sha256: `d465d756c5c5beed3fae760dc704be91d873184758448bbc74984cf1f520d33d`
+sha256: `09599de2c925eba38b8ac8e9e6007118e9c6539100a777d98ada030d3d5fcd95`
 
 ### `thm:sym` — the strongest objective operator obeys B/Symmetry
 
 ```latex
 \begin{Tthm} \label{thm:sym}
-	If $\mathrm{Str}^{\OO}_{L}(\Q)$, then $\vdash \forall p(p \rightarrow \Q\Dual{\Q}p)$.
+	If $\Str^{\OO}_{L}(\Q)$, then $\vdash \forall p(p \rightarrow \Q\Dual{\Q}p)$.%
+  \footnote{
+    \textbf{\aref{O-Conv}} is a term-level form of the principle, due to Williamson \citep[p.~457]{Williamson2016}, that every necessity has a reversal, where Bacon and Zeng \citep[Prop.~4.1]{Bacon2022} prove that principle equivalent to the \textbf{B} axiom for the broadest necessity.
+    Here \textbf{\aref{I9}} makes $\Cnv{\Q}$ a reversal of $\Q$ and \textbf{\aref{O-Conv}} keeps it in the class, so \textbf{\ref{thm:sym}} derives one direction of that equivalence with a canonical converse in place of an existential.
+  }
 \end{Tthm}
 ```
-sha256: `d485d7b791335d9b000c9e6d8b0e3e611cf60ae58bf8a78ed2d260adac9118d6`
+sha256: `64e88f37ad07f9dcd339ebd0789e5a84cc6a0098f597cbcef2513a801332e582`
 
 ### Satisfiability — **no paper-native definition exists** (recorded as a gap, not fabricated)
 
@@ -1068,7 +1106,7 @@ human readability and are not machine-parsed. Columns: `anchor_id|kind|enclosing
 ```
 # anchor_id|kind|enclosing|locator|sha256
 def:temporal-order|env|-|-|bc89eea5f9bafa1e326bc8bda93b6631c49212c1f0c3253208f0cfbdb049fb1f
-def:task-relation|env|-|-|b63a34aa6a9f64e5e18df88de658530739caa0561755e694d6cd4b983eeb267b
+def:task-relation|env|-|-|3ee787814dd714aa6c46811cce180d64cc2a3f931f348e088fff8aedad043367
 def:directed|env|-|-|ef9852efbe0e53cc226423bd2c9d5da0decba54cde07bd7f91f1e06515c97d20
 def:frame|env|-|-|944879579f6b176390b9622db9c9cdfa52f07bc3f8244bd3f01dac1f77ca6926
 def:frame#Compositionality|item|def:frame|Compositionality|4b9248498399338eeaccb63c5e8952ca0928b87bb85bcd94f596d9c263bb64fa
@@ -1077,45 +1115,46 @@ def:frame#Limit|item|def:frame|Limit|3eedd389d6cbdf5dff50f82ad9bafed30fe5eff5ec9
 def:frame#Spherical|item|def:frame|Spherical|656c4b68708828cbf47849b70636c428257b45f6b9427fa0368d6876408947c9
 lem:nullity|env|-|-|7840512db4eb75a6f8d4224b80d784239e554f2742163722236df4778de8d9de
 def:world-history|env|-|-|4aaa6ec0db38ccbba25ce6dc61d81b8a28f82913ba6b2b1defabaa42f9caf205
-thm:extension|env|-|-|e63eac74fb8de22197f9bbb732bf83ea49def7308ca499817683145c99762b3e
+thm:extension|env|-|-|9fbb0fc2d324d6858019aea429c48709a147dfd51ecd9e840aeeef500153d220
 cor:occurrence|env|-|-|b0228712e0d847f600b5b353b783ec3bc24e7722620f7e39e284af1f1fa5ebea
-def:constraints|env|-|-|3678ab023f5c7f51e790eb1f8790ae78f4c7f6bb4cd4f7dc3e41b0408b3ac581
-lem:nesting|env|-|-|ffc2d16fbded65204f743530a43834025048ac59d7f70524389ba488c9305266
+def:constraints|env|-|-|aaf87cd1fc4d88b372ed586194468ea9b7721ab8c5d5a52125c65e847986d76c
+lem:nesting|env|-|-|971a38bb2fb7169976868b9fdcedbb1b8bcc01793d96be6e26b982ba1e06fa4c
 lem:nonempty|env|-|-|04a49ef8a67071b45bb42ad91ae8e7eba8a3c89a7fd785017e33507b7f8cc6c7
 lem:constraint|env|-|-|9ebed5d29cd939e0b3486dee775b8135077819f0de7228877ffeef6a928bf5e7
 lem:fibers|env|-|-|42ec404f8082ceeff30b1da5a28c076c9880704c92d500cb5068ce8b0a1ba7e2
 lem:admissible|env|-|-|cc94cfdca6f3c1f581f3876ba737525288417ac9c05b3293c8fa4a621d262469
 lem:step|env|-|-|82ab9eb861c6e4cb99575946f4a74f4296b5c8b979d3c2f6e28ac9fa705da94f
-def:BL-model|env|-|-|239fba0ff163b461e0d1bf3c0e94da0cb0b62e7b2d7f4519916af4cc50d6967f
-def:BL-semantics|env|-|-|8fec78985c2efea20d13c1e6d5c7536ae0e0d864172bbe0460441d61addf22e3
+def:BL-semantics|env|-|-|f6f7ef8d1755ba2f0179bcf84fa2ad3171b759355e54fe720b48deb3c2c09585
 def:BLplus-language|env|-|-|a43b3df2ea2fcb96eeb156b3403a33ac51fcafd2ad4eb55e7915c07cf509f8b7
-def:BLplus-semantics|env|-|-|f40f514e60dcb7a6b36dee664ebcc1d55c2c6bce9e044c5814071f521674d670
+def:BLplus-semantics|env|-|-|edde75176efc0936c96f8d9eb18628929c2dd3bdb1aa1c21d4a88af90276314a
 def:BLplus-defined|env|-|-|2ac6361a2b84d20dd498f3e392072862554dd964a9ab6fc54bd868ee0a5bf56e
-def:frame-validity|env|-|-|2bcc85b0781fd4cc5af05d0741c64f44662706523cf023f3d5237d4ed1e8d1b9
-def:logical-consequence|env|-|-|e65c228721a39f8622d2256988b574c96a6cb7fdd6723a2eb63ce8a1f87770f0
+thm:BLplus-PastFuture|env|-|-|cf9d2e2bb1bcb17e3f27d9ac76f89c340f2cce5992586c617f4202051ac8256d
+thm:BLplus-NextPrevious|env|-|-|777b274d90440a174fb827ccb86d57ff617c65bfcafed9adc0f949e9332395c9
+def:time-shift-histories|env|-|-|9aa6ca749adaa98c0ed28b7330a3e1dec976df66ebf6ae25d1d4fac89636b114
+def:frame-validity|env|-|-|ea98b31dfa42d15fa9b8e79d3156473e273da01e46a30ef0a584fdc685f43c6f
+def:logical-consequence|env|-|-|3af67167ee4a393d77fc8cfa8ddc065fe932bedf76a14febb8608a9001af5486
 CO|aitem|-|-|5c468c01776c449b212c98070b5bfc70951691a23905cd4d4c249bf1f5375d41
 TMP-CO|aitem|-|-|2205e7115342b037faeb67a24cb7679e393af582cedf6752c0c07d9a28b8f1be
 def:S5|env|-|-|b090402a8048cd02cc163ebf0af7ec3f9c2630edc943feeaf5e9873072f50211
-def:BX|env|-|-|1518997ec9497a1fe90f42c270f9b7c32c8b71392846c9a371548aa823fbbc65
-def:TMplus-f|env|-|-|419a80a7d6e9f44a41883f7ce5d0693396e6126fc06a4909b5195d2a98965fe2
+def:BX|env|-|-|aaaa62168c43b560e3988b945b8dd3342507593199b6c038f3187b05c5c81322
+def:TMplus-f|env|-|-|918ca6f47026d003680b1df4b579f9ea109223c5e969ee8f7bb58be69adf5437
 def:TMplus-d|env|-|-|aa6542e6eee06e5c94dddc4b4581715d8b4310bba53615e0c0f80188016f10cf
-def:TMplus-c|env|-|-|b5cca1c9667cb5e516b30a60a28dbef85f83ee40692a0ce5d92aac232d41a6a9
-def:TMplus|env|-|-|2a150421d56a2480b1c03e97acc6b0342f691b43767760163b50245694ae87ea
+def:TMplus-c|env|-|-|24b1b6a18ddf02c03dfe81fbf48c0883144e939d9fb752079427a81f42b5bdac
+def:TMplus|env|-|-|4677290e1b2a4937d3f07ef606c4db37160692f176aeae7b017057c8baa8ba64
 thm:M5-valid|env|-|-|bce3cc3be256f7b4c10e34a397e4b3b14abe4e8ed6728e8e91768e9a2ad8b2af
 thm:TM-soundness|env|-|-|23cae2b2fcd8c034b82c4f9294b21aa4d141429a278fa08d085cae2c53bf0529
-app:discrete|env|-|-|46615df7e02cf9bc59eae1c0ca6ce58f8abdc6ccae8750e59bf5aee050900eb1
-app:dense|env|-|-|d7b9a4391d9d42fe9ea444bf7dc52be2c526dcf4d3ecc8716ba9b88d6684b23d
-app:complete|env|-|-|93a5bd056796ac04d369c1e2e5e494004914b5fb7ae9eb928efea89d8fb69122
+app:discrete|env|-|-|390d37f1e1813e41aefac5c2db8add88490e120f9f4e11fa36b9842d5486f711
+app:dense|env|-|-|6a6b76ccb40bc9059627c40826f9f64edf0e1716650df11bf46f5c0b8ba3e554
+app:complete|env|-|-|a3b4e39b80ffdf9e94fb48cea4bc9f719391d845a648da8aa9bcf2c0f0d5ea04
 def:frame-properties|env|-|-|fa34cc4eed0a85acd583c4b7634beddbaf58bb2756ed95bd0bb06c8560e6e0c0
 cor:spherical-finite|env|-|-|76258a4c835d4fa0dde3fd037da52e706d0f20c9d7872ab523d3b81597b99b9d
-cor:tm-completeness|env|-|-|7c7bfe057fc7832d7a9e1de316f2003ccfaa61832b27448a59424ccfcd08852e
-cor:tm-decidability|env|-|-|ac35ffaa47da467febc431669f604d02622301f369bf795075dbe46ed3ee1bcf
-def:id|env|-|-|f9d32bd7c7faf6f1b7d57b4b970d1e628719188452a5872bfbe5fcc1dc5a0e4a
-def:strongest|env|-|-|de29ef2b68a2c54decf3d40a195b1e3aeceee1e26a348e0386cc0103ac2a5f66
-thm:exist|env|-|-|f5b9c808a519f0368fae920a5315e9b87706ec266143ddc7fcfbb2d304d4519d
-lem:uniq|env|-|-|caf3d5daa522050ef1e3ab9a93e97efee7f2843f929530442814fdf8cec1a0f2
-thm:s4|env|-|-|d465d756c5c5beed3fae760dc704be91d873184758448bbc74984cf1f520d33d
-thm:sym|env|-|-|d485d7b791335d9b000c9e6d8b0e3e611cf60ae58bf8a78ed2d260adac9118d6
+cor:tm-completeness|env|-|-|68e3ea9af3305f6982d1c61a26c09ff15d919d783c5fe74e7f55b6d9a748247d
+def:id|env|-|-|4c7d0de01117c6ba656d988789d341a9f463f500f2cdeaaaf827ae8911353cb9
+def:strongest|env|-|-|859a787262717b5fec2fae76b2884c41b4f3583bc668eea7e35ee64fb3e23e45
+thm:exist|env|-|-|0bdec1fca347c226774e622c5ff2b412fdabd7f0eb340c91858ca6fc97b6556c
+lem:uniq|env|-|-|ff8ac0629d00554c5d54c580e68c4886297c63e24fd214338614560eedb862cf
+thm:s4|env|-|-|09599de2c925eba38b8ac8e9e6007118e9c6539100a777d98ada030d3d5fcd95
+thm:sym|env|-|-|64e88f37ad07f9dcd339ebd0789e5a84cc6a0098f597cbcef2513a801332e582
 ```
 <!-- MANIFEST:END -->
 

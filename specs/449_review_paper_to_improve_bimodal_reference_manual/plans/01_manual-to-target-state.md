@@ -362,28 +362,34 @@ or converting it to a `// CONFIRM(paper):` comment (anchors un-backticked). Chec
 on `//`-comment lines only. (Lean-anchor citations of `FormalSystem/` symbols are unaffected —
 E2 governs paper citations only.)
 
-### Phase 1: Conventions Foundation — CONFIRM Convention, Infix Macros, Anchor Re-Pin [IN PROGRESS]
+### Phase 1: Conventions Foundation — CONFIRM Convention, Infix Macros, Anchor Re-Pin [COMPLETED]
 
 - **Goal:** Establish everything later phases consume: the CONFIRM tag convention documented
   in README, the infix guard-first since/until macros, and re-pinned paper anchors.
 - **Territory:** `typst/notation/bimodal-notation.typ`, `typst/README.md`,
   `specs/paper-definitions-of-record.md`
 - **Tasks:**
-  - [ ] R1 (source: `def:BLplus-language`, macros `\since = \lhd` / `\until = \rhd`): add to
+  - [x] R1 (source: `def:BLplus-language`, macros `\since = \lhd` / `\until = \rhd`): add to
     `notation/bimodal-notation.typ` infix macros `#let snce = $lt.tri$`, `#let untl =
     $gt.tri$`, plus display helpers taking guard-first arguments (e.g. `#let snceOp(g, e)`,
     `#let untlOp(g, e)` rendering `g ⊲ e` / `g ⊳ e`). Per Decision E1 (resolved): the
-    H/G/P/F letter macros stay as-is; add NO paper-glyph macros of any kind.
-  - [ ] Document the CONFIRM convention in `typst/README.md` as a new subsection beside the
+    H/G/P/F letter macros stay as-is; add NO paper-glyph macros of any kind. *(completed)*
+  - [x] Document the CONFIRM convention in `typst/README.md` as a new subsection beside the
     existing Marker Convention section, reproducing the syntax, qualifiers, placement rule,
     checkability rule, and extraction commands from this plan's convention section verbatim.
-  - [ ] R14: re-pin `specs/paper-definitions-of-record.md` against the live paper (known
+    *(deviation: altered — documented greps scoped with --include='*.typ' so the README's own
+    examples never self-match the well-formedness gate)*
+  - [x] R14: re-pin `specs/paper-definitions-of-record.md` against the live paper (known
     drift: `thm:s4`/`thm:sym` text changed; `def:BL-model`, `cor:tm-decidability` dangling)
     and add the newly load-bearing anchors: `def:BLplus-language`, `def:BLplus-semantics`,
     `def:BLplus-defined`, `def:BX`, `def:TMplus`, `def:TMplus-f`, `def:TMplus-d`,
     `def:TMplus-c`, restated `cor:tm-completeness`, `thm:BLplus-PastFuture`,
     `thm:BLplus-NextPrevious`, `def:time-shift-histories`. Run
     `bash scripts/check-paper-definitions.sh` and confirm it passes against the new pin.
+    *(deviation: altered — paper had drifted further than the known-drift list: 22 anchors
+    re-quoted/re-hashed under the plan's paper-drift contingency, 2 dangling anchors retired
+    from the manifest, 3 new anchors added; checker passes, all 50 recorded definitions
+    verified)*
 - **Timing:** ~1 hour
 - **Depends on:** none
 - **Verification Tier:** local — compile gate + `check-paper-definitions.sh` pass; no chapter
