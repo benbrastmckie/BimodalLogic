@@ -274,34 +274,61 @@ predicate or the identifier pattern is wrong and must be reconciled before Phase
 
 ---
 
-### Phase 2: Harden the Rewriter [NOT STARTED]
+### Phase 2: Harden the Rewriter [COMPLETED]
 
 **Goal**: Turn `scripts/swap_untl_snce.py` into a tool that can be trusted over 152 files, with a
 reviewable per-site audit log.
 
 **Tasks**:
-- [ ] Fix defect 1 — **bare tokens not matched**. `| untl φ ψ ih_φ ih_ψ =>` must be recognised;
+- [x] Fix defect 1 — **bare tokens not matched**. `| untl φ ψ ih_φ ih_ψ =>` must be recognised;
       these are `induction`/`cases` binder lists and an unswapped binder silently rebinds `φ`
-      from event to guard.
-- [ ] Fix defect 2 — **receiver dot-notation**. In `γ.untl β` the receiver `γ` is argument 1 and
+      from event to guard. *(implemented as the `arm-2`/`arm-4` forms; the 4-binder arm swaps the
+      induction hypotheses in step with the arguments)*
+- [x] Fix defect 2 — **receiver dot-notation**. In `γ.untl β` the receiver `γ` is argument 1 and
       sits to the *left*; the scanner currently only looks right, finds one argument, and bails.
-- [ ] Fix defect 3 — **underscore-suffixed identifiers corrupted**. `Formula.untl_inj h` currently
+- [x] Fix defect 3 — **underscore-suffixed identifiers corrupted**. `Formula.untl_inj h` currently
       becomes `Formula.untlh _inj`. Refuse to fire on any `untl`/`snce` token followed by `_`,
-      `.`, or an alphanumeric.
-- [ ] Keep defect 4 as **designed behaviour**: comments and docstrings stay untouched (D4).
-      Make this explicit in the script docstring so it is not later "fixed".
-- [ ] Add a `--rename-to untlQ,snceQ` mode performing rename-and-swap in one pass (D5).
-- [ ] Add an inverse `--rename-back` mode using identifier-boundary anchoring, no argument
-      movement (D5).
-- [ ] Add `--exclude-glob '*Boneyard*'`, applied by default (D3).
-- [ ] Add `--dry-run` and a **per-site log** (`file:line`, syntactic form, before, after) so the
-      migration is reviewable as a table rather than 3,711 scattered hunks.
-- [ ] Extend the `--test` suite with in-tree regression cases for all four defects, drawn from
-      real lines: the `| untl φ ψ ih_φ ih_ψ =>` induction arm, `φ.next = φ.untl bot := rfl`,
-      `exact Formula.untl_inj h`, and the already-correct cases (`Formula.untl.injEq` skipped,
-      `| Formula.untl φ ψ =>` swapped, `φ@(.untl ψ χ)` swapped, nested applications recursed).
-- [ ] Run `--dry-run` over live scope and confirm the log's site count reconciles against the
+      `.`, or an alphanumeric. *(`.`-followed names are now a distinct `lemma-ref` form: renamed,
+      never swapped, because `Formula.untl.injEq` is generated from the constructor)*
+- [x] Keep defect 4 as **designed behaviour**: comments and docstrings stay untouched (D4).
+      Made explicit in the script docstring under "Deliberately NOT touched".
+- [x] Add a `--rename-to untlQ,snceQ` mode performing rename-and-swap in one pass (D5).
+- [x] Add an inverse `--rename-back` mode using identifier-boundary anchoring, no argument
+      movement (D5). *(deviation: altered — see the anchoring note below)*
+- [x] Add `--exclude-glob '*Boneyard*'`, applied by default (D3).
+- [x] Add `--dry-run` and a **per-site log** (`file:line`, syntactic form, before, after) so the
+      migration is reviewable as a table.
+- [x] Extend the `--test` suite with in-tree regression cases for all four defects, drawn from
+      real lines. *(66 cases: swap, rename-to, rename-back, and a swap-twice-is-identity
+      round-trip over every swap case)*
+- [x] Run `--dry-run` over live scope and confirm the log's site count reconciles against the
       Phase 1 ledger.
+- [x] *(added)* Add a `--residue-scan` mode. The zero-residue gate is a statement about **code**;
+      comments deliberately keep the old token until Phase 11, so a raw-text grep can never reach
+      zero. `--residue-scan` greps code regions only and separates migratable hits from the two
+      allowed foreign-namespace references.
+
+**Four further defects found during implementation**, each fixed and regression-tested:
+
+5. **Character literals desynchronised the comment/string mask.** A bare `'"'` in a parser
+   (`TableauBridge`, `BenchmarkOracle`, `DatasetExport`, `Normalization`) opened a phantom string
+   literal, inverting the code/non-code classification for the remainder of the file. Symptom: the
+   string `| "untl" =>` was treated as code while the adjacent real `Formula.untl event guard`
+   was treated as a string.
+6. **Line-bounded argument scan.** Lean applications wrap; a two-argument application split over
+   two lines was reported as partially applied. Fixed with an indentation-guarded continuation
+   rule (a following line counts only when indented strictly deeper). 48 sites recovered.
+7. **`·` section placeholders and `?hole` arguments were not argument atoms.**
+   `(Formula.untl · q)` abbreviates `fun x => Formula.untl x q`, so `·` occupies argument
+   position 1 and must move with it (`Tests/BimodalTest/Property/Generators.lean:118-123`).
+8. **A sibling type shares the anonymous-dot syntax.** `Automation/Normalization.lean` declares
+   `EnrichedFormula` with its own `untl`/`snce` constructors, referenced exclusively as `.untl`
+   / bare case labels — indistinguishable from `Formula`'s. Handled by adding a `ctor-decl` form
+   so the declaration is renamed (never swapped, its signature being symmetric); `EnrichedFormula`
+   therefore migrates to guard-first in lockstep, which is coherent because every one of its
+   construction and pattern sites is swapped uniformly. Conversely `TemporalPred.untl`
+   (`Kamp/EANegationFix/BoundedFix.lean:44,49`) is a genuinely different function and is skipped
+   as `foreign`, together with the two unqualified `simp only [untl]` references to it.
 
 **Timing**: 1.5 hours
 
@@ -315,14 +342,56 @@ receiver-dot across 13 files, 12 underscore-suffix). Confirm at implementation t
 materially smaller than these figures, the new matcher is under-firing and must be re-examined
 before Phase 4 runs for real.
 
+**Scope Hypothesis outcome** — measured, with the two divergences chased to ground:
+
+| Class | Report estimate | Measured | Verdict |
+|---|---|---|---|
+| Underscore-suffix (defect 3) | 12 | **12** across 1 file | exact |
+| Occurrences on `\|`-prefixed lines | 540 / 63 files | **580** | report slightly *under*-counted |
+| — of which case-label heads | — | 384 (`arm-2` 275, `arm-4` 109) | the rest are nested patterns inside a label, handled by the ordinary 2-argument swap |
+| — of which written bare | — | 162 (`arm-2` 53, `arm-4` 109) | |
+| Receiver-dot (defect 2) | 100 / 13 files | **57** across 6 files | report over-estimated |
+
+The receiver-dot divergence is *not* the matcher under-firing. An independent Unicode-aware
+regex sweep over code regions for `‹receiver›.untl` shapes (excluding `Formula.` and foreign
+namespaces) returns exactly 57 across exactly 6 files, agreeing with the classifier site for
+site. The plan's re-examination trigger was therefore honoured and discharged by measurement.
+
+**Full reconciliation against the Phase 1 ledger** (all figures over live scope, 424 files):
+
+```
+2,973  substring occurrences of untl/snce in code regions (every classified site)
+ -400  embedded   — segments of longer identifiers (untl_left_mono_thm, untlGuards, …)
+  -32  foreign    — TemporalPred.untl / .snce, a different function in a different namespace
+=2,541  constructor references, the true migration surface
+```
+
+Cross-checks:
+- 2,541 = qualified 1,627 + anon-dot 432 + arm-2 275 + arm-4 109 + receiver-dot 57 + bare-app 26
+  + lemma-ref 7 + ctor-decl 4 + no-arg 2 + bare-ref 2.
+- The Phase 1 ledger's 3,711 = 2,533 code-region + 1,178 comment/string occurrences. The
+  2,533 differs from 2,541 by exactly **8**, all `receiver-dot` sites whose receiver ends in an
+  ASCII alphanumeric (`bot.untl φ`, `f.snce g`, `φ.neg.untl ψ.neg`, `φ.swapTemporal.untl …`):
+  the ledger pattern's `(?<![A-Za-z0-9_.])` lookbehind rejects those, while accepting the
+  Greek-receiver cases. Enumerated individually in the phase notes; no other divergence exists.
+
+**Rename-back anchoring** *(deviation: altered)*: D5 specifies
+`(?<![A-Za-z0-9_.])untlQ(?![A-Za-z0-9_])`. Taken literally that lookbehind's `.` refuses to match
+`Formula.untlQ`, which is 1,627 of the 2,541 sites — the rename-back would silently do almost
+nothing. The implemented anchor is `(?<![A-Za-z0-9_])untlQ(?![A-Za-z0-9_])`: identifier-boundary
+on both sides, `.` correctly treated as a boundary rather than as an identifier character. D5's
+actual intent — never match a *suffix* of a longer name — is preserved, and is regression-tested
+against `untlGuards`, `snceGuards`, `untlGuard` and `snceQGuard`.
+
 **Files to modify**:
 - `scripts/swap_untl_snce.py` - hardened matcher, rename modes, exclusion, per-site log, tests
 
 **Verification**:
-- `python3 scripts/swap_untl_snce.py --test` passes including all new regression cases.
-- `--dry-run` over live scope produces a per-site log whose total reconciles with the Phase 1
-  ledger, with zero sites classified "skipped, unrecognised form".
-- No file is modified by the dry run.
+- [x] `python3 scripts/swap_untl_snce.py --test` passes: 66 cases across swap, rename-to,
+  rename-back and swap-twice-is-identity round-trip.
+- [x] `--dry-run` over live scope produces a per-site log whose total reconciles with the Phase 1
+  ledger (reconciliation above), with **zero** sites classified `UNRECOGNISED`.
+- [x] No file is modified by the dry run (`git status --short FormalSystem Tests` clean).
 
 ---
 
