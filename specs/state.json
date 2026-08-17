@@ -9,12 +9,12 @@
     {
       "project_number": 449,
       "project_name": "review_paper_to_improve_bimodal_reference_manual",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "formal",
       "description": "Systematically review /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex in order to improve typst/BimodalReference.typ while observing the aim to accurately represent the Lean code in this repository, which is actively being improved to also be in better alignment with the possible_worlds.tex paper. The key difference between the paper and this Lean repo with its corresponding BimodalReference.typ manual is that this repo should focus entirely on constructing/presenting the full bimodal logic system where snce/untl operators are primitive, leaving the fragment with past/future operators as primitives as a subsystem to be developed later in order to establish conservative extension results if possible, though for now that effort can be ignored",
       "topic": "reference-book",
       "created": "2026-08-17T15:49:45Z",
-      "last_updated": "2026-08-17T17:28:11Z",
+      "last_updated": "2026-08-17T18:08:12Z",
       "session_id": "sess_1786987666_e2a982",
       "artifacts": [
         {
@@ -26,6 +26,57 @@
           "path": "specs/449_review_paper_to_improve_bimodal_reference_manual/plans/01_manual-to-target-state.md",
           "type": "plan",
           "summary": "manual to target state (backfilled by --sync)"
+        },
+        {
+          "path": "specs/449_review_paper_to_improve_bimodal_reference_manual/summaries/01_manual-to-target-state-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary: 8-phase target-state revision of the Bimodal Reference Manual (guard-first notation, CONFIRM convention, completeness restatement, citation removal, anchor re-pins)."
+        }
+      ],
+      "completion_summary": "Revised the Bimodal Reference Manual to state the Since/Until-primitive system's target end state: introduced the CONFIRM tag convention (19 lean / 22 paper obligation comments), switched the book to infix guard-first notation, restated completeness as four target theorems with the non-compactness negative results in the body, cut the incompleteness exposition, removed all paper-anchor citations from rendered content, and re-pinned specs/paper-definitions-of-record.md against the live paper twice (25 anchors updated). All closing gates green: typst compile, sync-check 3/3, CONFIRM well-formedness, citation and FIX greps, check-paper-definitions.",
+      "memory_candidates": [
+        {
+          "content": "typst-sync-check.sh Check 1 extracts every backticked span in typst/**/*.typ INCLUDING comment lines and standalone reports like FormalFoundations.typ. Two consequences: (1) paper anchors written inside CONFIRM/maintainer comments must be un-backticked or they become whitelist candidates; (2) before removing a sync-check-whitelist.txt entry, grep for the backticked span across ALL .typ files (grep -rF '`entry`' --include='*.typ' typst/) - entries kept alive only by FormalFoundations.typ or by commented-out lines are still load-bearing.",
+          "category": "TECHNIQUE",
+          "source_artifact": "specs/449_review_paper_to_improve_bimodal_reference_manual/summaries/01_manual-to-target-state-summary.md",
+          "confidence": 0.85,
+          "suggested_keywords": [
+            "typst",
+            "sync-check",
+            "whitelist",
+            "backtick",
+            "CONFIRM",
+            "FormalFoundations"
+          ]
+        },
+        {
+          "content": "check-paper-definitions.sh drift triage: run the checker WITHOUT tail-truncation first (the full drift list can be 20+ anchors; a tail -25 hides most of it). To absorb a drift wave programmatically: for each drifted anchor run --resolve 'anchor|env|-|-' to get live text+sha, rewrite the record entry's latex fence and sha line plus the manifest row, re-run the checker with the OLD checksum sentinel still in place (forces full anchor validation, expect case-b pass), and only then re-pin the FILE_CHECKSUM/PINNED_COMMIT sentinels. Dangling anchors are retired from the manifest with the entry retained and marked DANGLING.",
+          "category": "WORKFLOW",
+          "source_artifact": "specs/449_review_paper_to_improve_bimodal_reference_manual/summaries/01_manual-to-target-state-summary.md",
+          "confidence": 0.9,
+          "suggested_keywords": [
+            "check-paper-definitions",
+            "re-pin",
+            "drift",
+            "manifest",
+            "possible_worlds",
+            "anchors"
+          ]
+        },
+        {
+          "content": "Guard-first infix conversion rule for this repo's manual: the Lean constructors untl/snce are event-first (U(event, guard)), so every display U(a, b) transcribes to 'b UNTL a' (guard b left of the triangle, event a right), and S(a, b) to 'b SNCE a'. Derived forms: P = top snce phi, F = top untl phi, Prev = bot snce phi, Next = bot untl phi, discreteness witness U(top,bot) = bot untl top, Prior-UZ F phi -> U(phi, not phi) = (not phi) untl phi. Argument swap errors here silently change the mathematics.",
+          "category": "PATTERN",
+          "source_artifact": "specs/449_review_paper_to_improve_bimodal_reference_manual/summaries/01_manual-to-target-state-summary.md",
+          "confidence": 0.85,
+          "suggested_keywords": [
+            "guard-first",
+            "until",
+            "since",
+            "notation",
+            "event-first",
+            "Burgess",
+            "transcription"
+          ]
         }
       ]
     },
