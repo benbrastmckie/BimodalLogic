@@ -744,8 +744,8 @@ Acceptance: the refuted-route comment no longer appears at Transfer.lean:1239-12
   - [417_semantic_fmp_finite_worldstate_over_z/reports/04_filteredstep-fwd-gating-spike.md]
 - **Handoff**: [417_semantic_fmp_finite_worldstate_over_z/handoffs/01_phase-7-12-revision-handoff.md]
 - **Evidence**: [417_semantic_fmp_finite_worldstate_over_z/evidence/spike-untl-unfolding-and-fwd-obstruction.lean]
-- **Plan**: [417_semantic_fmp_finite_worldstate_over_z/plans/04_bi-lasso-decision-layer.md]
 - **Summary**: [417_semantic_fmp_finite_worldstate_over_z/summaries/04_bi-lasso-decision-layer-summary.md]
+- **Plan**: [417_semantic_fmp_finite_worldstate_over_z/plans/05_annotated-bi-lasso-decision-layer.md]
 
 **Description**: RE-ISSUED 2026-08-10 (supersedes the prior maximal-history framing). SEMANTIC FMP OVER A FIXED CARRIER, stated against the TOTAL-history semantics of task 414: prove the TruthAt-connected finite model property the paper's decidability corollary proof text cites -- any formula satisfiable over the Discrete class is satisfiable in a model with FINITE WorldState over D = Z -- replacing reliance on the syntactic closure-MCS FMP theorems (FormalSystem/Metalogic/Decidability/FMP/FMP.lean) that never connect to TruthAt. Add decidable model checking for the finite-W-over-Z presentation to back the paper's enumeration argument (restated paper-side as finite W over Z, since every model has infinite D). This is the semantic-FMP follow-on explicitly descoped by the task-165 redirect; the tableau programme remains the decision-procedure route and also rebases onto the new semantics. Related: 165, 410, 411, 412.
 
