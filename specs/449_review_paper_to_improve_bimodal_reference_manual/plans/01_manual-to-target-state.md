@@ -1,7 +1,7 @@
 # Implementation Plan: Revise BimodalReference.typ to Target State
 
 - **Task**: 449 - review_paper_to_improve_bimodal_reference_manual
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 10 hours (per-phase timings sum to ~10.5 serial; Wave-2 parallelism compresses wall clock)
 - **Dependencies**: None (edits `typst/` and `specs/` only; no Lean files, no paper files)
 - **Research Inputs**: specs/449_review_paper_to_improve_bimodal_reference_manual/reports/01_paper-manual-lean-alignment.md
@@ -362,7 +362,7 @@ or converting it to a `// CONFIRM(paper):` comment (anchors un-backticked). Chec
 on `//`-comment lines only. (Lean-anchor citations of `FormalSystem/` symbols are unaffected —
 E2 governs paper citations only.)
 
-### Phase 1: Conventions Foundation — CONFIRM Convention, Infix Macros, Anchor Re-Pin [NOT STARTED]
+### Phase 1: Conventions Foundation — CONFIRM Convention, Infix Macros, Anchor Re-Pin [IN PROGRESS]
 
 - **Goal:** Establish everything later phases consume: the CONFIRM tag convention documented
   in README, the infix guard-first since/until macros, and re-pinned paper anchors.

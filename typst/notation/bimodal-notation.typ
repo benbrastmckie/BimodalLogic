@@ -31,6 +31,17 @@
 #let somepast = $P$
 #let somefuture = $F$
 
+// --- Primitive Binary Temporal Operators (infix, guard-first) ---
+// The book writes since and until infix with the guard on the left and the
+// event on the right: in  g ⊲ e  the guard g holds throughout the interval
+// and the event e is witnessed at its far (past) endpoint; g ⊳ e is the
+// future mirror. Use snceOp/untlOp for displays; snce/untl are the bare
+// glyphs for inline composition.
+#let snce = $lt.tri$
+#let untl = $gt.tri$
+#let snceOp(g, e) = $#g lt.tri #e$
+#let untlOp(g, e) = $#g gt.tri #e$
+
 // --- Combined Temporal (always/sometimes triangles) ---
 // Using filled triangles for visual distinction
 #let always = $triangle.stroked.t$

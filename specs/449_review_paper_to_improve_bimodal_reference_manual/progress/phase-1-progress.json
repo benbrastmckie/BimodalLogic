@@ -1,0 +1,15 @@
+{
+  "phase": 1,
+  "phase_name": "Conventions Foundation — CONFIRM Convention, Infix Macros, Anchor Re-Pin",
+  "started_at": "2026-08-17T00:00:00Z",
+  "last_updated": "2026-08-17T00:00:00Z",
+  "objectives": [
+    {"id": 1, "description": "R1: infix guard-first snce/untl macros in notation/bimodal-notation.typ", "status": "not_started", "files_touched": []},
+    {"id": 2, "description": "Document CONFIRM convention in typst/README.md", "status": "not_started", "files_touched": []},
+    {"id": 3, "description": "R14: re-pin specs/paper-definitions-of-record.md and pass check-paper-definitions.sh", "status": "not_started", "files_touched": []}
+  ],
+  "current_objective": 1,
+  "approaches_tried": [],
+  "deviations": [],
+  "handoff_count": 0
+}
