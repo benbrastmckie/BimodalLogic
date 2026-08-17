@@ -12,6 +12,21 @@ import FormalSystem.Syntax.Formula
 This module defines the axiom schemata for bimodal logic TM (Tense and Modality)
 under the Burgess-Xu (BX) axiom system with irreflexive temporal semantics (A2 guard convention).
 
+## Notation for Until and Since in the docstrings below
+
+Three renderings appear in this file and they do **not** all order the arguments the same way.
+
+| Rendering | Order | Where it comes from |
+|---|---|---|
+| `untl(g, e)`, `snce(g, e)` | **guard** first, event second | the constructor's own argument order (`Syntax/Formula.lean`), matching `def:BLplus-semantics` |
+| `φ U ψ`, `φ S ψ` (infix) | **guard** first, event second | the paper's and the Typst manual's infix notation |
+| `U(e, g)`, `S(e, g)` (prefix) | **event** first, guard second | `Formula.prettyPrint`'s output and the `schema_string` field of `typst/generated/machine-appendix.jsonl` |
+
+The prefix `U(·,·)` form is deliberately *not* the constructor order: it is keyed to what the
+printer emits, so quoting it keeps these docstrings comparable line-for-line with the machine
+appendix. Where a docstring quotes **Burgess** or **Reynolds** directly, the rendering is that
+author's own and follows their convention rather than any of the three above.
+
 ## Axiom System
 
 The BX axiom system replaces the previous mixed-semantics axiom set. Under reflexive
@@ -116,25 +131,25 @@ inductive Axiom : Formula → Type where
   Under irreflexive semantics, every time point has a strict past. -/
   | serial_past :
     Axiom ((Formula.bot.imp Formula.bot).imp (Formula.somePast (Formula.bot.imp Formula.bot)))
-  /-- BX2G: Guard monotonicity of Until under G (Burgess convention: untl(event, guard)):
-  `G(φ→χ) → ((ψ U φ) → (ψ U χ))`.
+  /-- BX2G: Guard monotonicity of Until under G (guard-first: untl(guard, event)):
+  `G(φ→χ) → ((φ U ψ) → (χ U ψ))`.
   Under open guard (t,s): G(φ→χ) covers all r > t, which includes (t,s).
   Unlike BX2, the pointwise (φ→χ) at t is not needed since t ∉ (t,s). -/
   | left_mono_until_G (φ χ ψ : Formula) :
       Axiom ((φ.imp χ).allFuture.imp ((Formula.untl φ ψ).imp (Formula.untl χ ψ)))
-  /-- BX2H: Guard monotonicity of Since under H (Burgess convention: snce(event, guard)):
-  `H(φ→χ) → ((ψ S φ) → (ψ S χ))`.
+  /-- BX2H: Guard monotonicity of Since under H (guard-first: snce(guard, event)):
+  `H(φ→χ) → ((φ S ψ) → (χ S ψ))`.
   Under open guard (s,t): H(φ→χ) covers all r < t, which includes (s,t).
   Unlike BX2', the pointwise (φ→χ) at t is not needed since t ∉ (s,t). -/
   | left_mono_since_H (φ χ ψ : Formula) :
       Axiom ((φ.imp χ).allPast.imp ((Formula.snce φ ψ).imp (Formula.snce χ ψ)))
-  /-- BX3: Event monotonicity of Until (Burgess convention: untl(event, guard)):
-  `G(φ → ψ) → ((φ U χ) → (ψ U χ))`.
+  /-- BX3: Event monotonicity of Until (guard-first: untl(guard, event)):
+  `G(φ → ψ) → ((χ U φ) → (χ U ψ))`.
   If φ implies ψ at all times, then U(φ,χ) implies U(ψ,χ). -/
   | right_mono_until (φ ψ χ : Formula) :
       Axiom ((φ.imp ψ).allFuture.imp ((Formula.untl χ φ).imp (Formula.untl χ ψ)))
-  /-- BX3': Event monotonicity of Since (Burgess convention: snce(event, guard)):
-  `H(φ → ψ) → ((φ S χ) → (ψ S χ))`. -/
+  /-- BX3': Event monotonicity of Since (guard-first: snce(guard, event)):
+  `H(φ → ψ) → ((χ S φ) → (χ S ψ))`. -/
   | right_mono_since (φ ψ χ : Formula) :
       Axiom ((φ.imp ψ).allPast.imp ((Formula.snce χ φ).imp (Formula.snce χ ψ)))
   /-- BX4: Temporal connectedness (future): `φ → G(P(φ))`.
@@ -148,8 +163,8 @@ inductive Axiom : Formula → Type where
       Axiom (φ.imp (φ.someFuture.allPast))
   /-- BX13: Until-Since enrichment (Burgess A3a, Xu axiom (3)):
   Burgess: `p ∧ U(α, β) → U(α ∧ S(p, β), β)`.
-  In our Burgess convention (untl(event, guard)):
-  `p ∧ untl(ψ, φ) → untl(ψ ∧ snce(p, φ), φ)`.
+  In this tree's guard-first order (untl(guard, event)):
+  `p ∧ untl(φ, ψ) → untl(φ, ψ ∧ snce(φ, p))`.
   Enriches the Until event with Since information from the current point.
   Valid under open guard (t,s): the Until guard interval (t,s) provides
   the Since guard at the witness s, since both intervals are identical. -/
@@ -158,8 +173,8 @@ inductive Axiom : Formula → Type where
         (Formula.untl φ (Formula.and ψ (Formula.snce φ p))))
   /-- BX13': Since-Until enrichment (Burgess A3b, Xu axiom (4)):
   Burgess: `p ∧ S(α, β) → S(α ∧ U(p, β), β)`.
-  In our Burgess convention (snce(event, guard)):
-  `p ∧ snce(ψ, φ) → snce(ψ ∧ untl(p, φ), φ)`.
+  In this tree's guard-first order (snce(guard, event)):
+  `p ∧ snce(φ, ψ) → snce(φ, ψ ∧ untl(φ, p))`.
   Mirror of enrichment_until for the Since direction. -/
   | enrichment_since (φ ψ p : Formula) :
       Axiom (Formula.and p (Formula.snce φ ψ) |>.imp
@@ -167,29 +182,29 @@ inductive Axiom : Formula → Type where
   -- REMOVED: BX14 (separation_until) and BX14' (separation_since) constructors.
   -- These axioms (Burgess A4a/A4b) are unnecessary for axiom minimality.
   -- The chronicle splitting construction now uses Xu 1988 Lemma 3.2.1/3.2.2 instead.
-  /-- BX5: Self-accumulation of Until (Burgess convention: untl(event, guard)):
+  /-- BX5: Self-accumulation of Until (guard-first: untl(guard, event)):
   `U(ψ, φ) → U(ψ, φ ∧ U(ψ, φ))`.
   The eventuality enriches its own guard: at intermediate points, both φ holds
   AND the eventuality U(ψ,φ) persists. This is the key axiom for eventuality resolution. -/
   | self_accum_until (φ ψ : Formula) :
       Axiom ((Formula.untl φ ψ).imp
         (Formula.untl (Formula.and φ (Formula.untl φ ψ)) ψ))
-  /-- BX5': Self-accumulation of Since (Burgess convention: snce(event, guard)):
+  /-- BX5': Self-accumulation of Since (guard-first: snce(guard, event)):
   `S(ψ, φ) → S(ψ, φ ∧ S(ψ, φ))`. -/
   | self_accum_since (φ ψ : Formula) :
       Axiom ((Formula.snce φ ψ).imp
         (Formula.snce (Formula.and φ (Formula.snce φ ψ)) ψ))
-  /-- BX6: Absorption of Until (Burgess convention: untl(event, guard)):
+  /-- BX6: Absorption of Until (guard-first: untl(guard, event)):
   `U(φ ∧ U(ψ, φ), φ) → U(ψ, φ)`.
   Prevents infinite deferral: if the eventuality is deferred to a point where it
   still holds as φ ∧ U(ψ,φ), the two-step resolution collapses. -/
   | absorb_until (φ ψ : Formula) :
       Axiom ((Formula.untl φ (Formula.and φ (Formula.untl φ ψ))).imp (Formula.untl φ ψ))
-  /-- BX6': Absorption of Since (Burgess convention: snce(event, guard)):
+  /-- BX6': Absorption of Since (guard-first: snce(guard, event)):
   `S(φ ∧ S(ψ, φ), φ) → S(ψ, φ)`. -/
   | absorb_since (φ ψ : Formula) :
       Axiom ((Formula.snce φ (Formula.and φ (Formula.snce φ ψ))).imp (Formula.snce φ ψ))
-  /-- BX7: Linearity of Until (Burgess convention: untl(event, guard)):
+  /-- BX7: Linearity of Until (guard-first: untl(guard, event)):
   `U(ψ,φ) ∧ U(θ,χ) → U(ψ∧θ, φ∧χ) ∨ U(ψ∧χ, φ∧χ) ∨ U(φ∧θ, φ∧χ)`.
   If two Until formulas hold simultaneously, their witnesses are linearly ordered.
   The three disjuncts correspond to: witnesses coincide, first comes first, second comes first. -/
@@ -200,7 +215,7 @@ inductive Axiom : Formula → Type where
             (Formula.untl (Formula.and φ χ) (Formula.and ψ θ))
             (Formula.untl (Formula.and φ χ) (Formula.and ψ χ)))
           (Formula.untl (Formula.and φ χ) (Formula.and φ θ))))
-  /-- BX7': Linearity of Since (Burgess convention: snce(event, guard)):
+  /-- BX7': Linearity of Since (guard-first: snce(guard, event)):
   `S(ψ,φ) ∧ S(θ,χ) → S(ψ∧θ, φ∧χ) ∨ S(ψ∧χ, φ∧χ) ∨ S(φ∧θ, φ∧χ)`. -/
   | linear_since (φ ψ χ θ : Formula) :
       Axiom (Formula.and (Formula.snce φ ψ) (Formula.snce χ θ)
@@ -220,12 +235,12 @@ inductive Axiom : Formula → Type where
 
   -- NOTE: BX9/BX9' (until_elim/since_elim) removed -- unsound under open guard (t,s).
   -- Archived in Boneyard/ClosedGuardLegacy/ClosedGuardAxioms.lean.
-  /-- BX10: Until implies eventuality (Burgess convention: untl(event, guard)):
+  /-- BX10: Until implies eventuality (guard-first: untl(guard, event)):
   `U(ψ, φ) → F(ψ)`.
   U(ψ,φ) at t has witness s > t with ψ(s), so F(ψ) holds. -/
   | until_F (φ ψ : Formula) :
       Axiom ((Formula.untl φ ψ).imp (Formula.someFuture ψ))
-  /-- BX10': Since implies past eventuality (Burgess convention: snce(event, guard)):
+  /-- BX10': Since implies past eventuality (guard-first: snce(guard, event)):
   `S(ψ, φ) → P(ψ)`.
   Mirror of BX10 for the past direction. -/
   | since_P (φ ψ : Formula) :
@@ -248,13 +263,13 @@ inductive Axiom : Formula → Type where
         (Formula.or (Formula.somePast (Formula.and φ ψ))
           (Formula.or (Formula.somePast (Formula.and φ (Formula.somePast ψ)))
             (Formula.somePast (Formula.and (Formula.somePast φ) ψ)))))
-  /-- BX12: F-Until equivalence (Burgess convention: untl(event, guard)):
+  /-- BX12: F-Until equivalence (guard-first: untl(guard, event)):
   `F(φ) → U(φ, ⊤)`.
   Every future eventuality can be witnessed by an Until formula with vacuous guard.
   Here ⊤ = ¬⊥ = ⊥ → ⊥. Bridges F-formulas to Until-formulas. -/
   | F_until_equiv (φ : Formula) :
       Axiom ((Formula.someFuture φ).imp (Formula.untl (Formula.bot.imp Formula.bot) φ))
-  /-- BX12': P-Since equivalence (Burgess convention: snce(event, guard)):
+  /-- BX12': P-Since equivalence (guard-first: snce(guard, event)):
   `P(φ) → S(φ, ⊤)`.
   Past dual of BX12. -/
   | P_since_equiv (φ : Formula) :

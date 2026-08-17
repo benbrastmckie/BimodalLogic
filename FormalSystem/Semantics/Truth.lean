@@ -134,8 +134,8 @@ though `def:BL-semantics`'s atom clause has no domain conjunct. Under totality t
 vacuously satisfiable at every `t`, so the two readings agree on `H_F`; the conjunct is what keeps
 `TruthAt` meaningful at the partial histories that the extension machinery still traffics in.
 
-**Until / Since argument order**: `untl`/`snce` are **guard-first / event-second** — `untl φ ψ`
-reads "φ is the guard, ψ is the event". The two clauses below transcribe
+**Until / Since argument order**: `untl`/`snce` are **guard-first / event-second** — `untl ψ φ`
+reads "ψ is the guard, φ is the event". The two clauses below transcribe
 `def:BLplus-semantics`'s clause bodies directly:
 
 - (since) "M,τ,x ⊨ φ since ψ *iff* M,τ,z ⊨ ψ for some time z < x where M,τ,y ⊨ φ for all y ∈ D
@@ -521,7 +521,7 @@ theorem time_shift_preserves_truth (M : TaskModel F)
       have h2' := (truth_history_eq M _ _ x h_hist_eq ψ).mp h2
       exact (truth_double_shift_cancel M ρ (x - y) x ψ).mp h2'
   | untl ψ φ ih_ψ ih_φ =>
-    -- Until (Burgess convention): untl(event=φ, guard=ψ)
+    -- Until (guard-first): untl(guard=ψ, event=φ)
     -- ∃ s > t, φ(s) ∧ ∀ r ∈ (t,s), ψ(r)
     -- Direction (→): shifted history at x → original history at y
     --   Witness s in shifted maps to s+(y-x) in original.
@@ -608,7 +608,7 @@ theorem time_shift_preserves_truth (M : TaskModel F)
         have h_conv := (ih_ψ σ r' (r' + (y - x))).mpr h_grd
         exact (truth_history_eq M _ _ r' h_hist_eq ψ).mp h_conv
   | snce ψ φ ih_ψ ih_φ =>
-    -- Since (Burgess convention): snce(event=φ, guard=ψ)
+    -- Since (guard-first): snce(guard=ψ, event=φ)
     -- ∃ s < t, φ(s) ∧ ∀ r ∈ (s,t), ψ(r)
     -- Mirror of Until with reversed inequalities.
     simp only [TruthAt]

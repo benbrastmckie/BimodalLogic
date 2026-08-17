@@ -1004,23 +1004,38 @@ against Phase 3 + Phase 4 is empty in both directions.
 
 ---
 
-### Phase 11: Role-Naming Comment and Docstring Migration [NOT STARTED]
+### Phase 11: Role-Naming Comment and Docstring Migration [IN PROGRESS]
 
 **Goal**: Correct the comments that state or depend on the argument-order convention. These are
 now false and cannot be fixed by a swap — several describe *other authors'* conventions relative
 to ours and need rewriting.
 
 **Tasks**:
-- [ ] Enumerate the mandatory tier (D4): comment/docstring lines mentioning `untl`/`snce` that
-      also carry a role or convention word.
-- [ ] Rewrite each by review, not by regex. Known hard cases: `SoundnessLemmas/Core.lean:91`
+- [x] Enumerate the mandatory tier (D4): comment/docstring lines mentioning `untl`/`snce` that
+      also carry a role or convention word. *(deviation: altered — the role-word predicate was
+      widened, as the Scope Hypothesis anticipated. A comment-region-aware classifier measured
+      **204 mandatory lines across 43 files** against the plan-time 115/22, and two whole classes
+      of stale line carried **no** role word at all and so were invisible to the predicate: (a)
+      constant-form constructor expressions inside comments (`untl φ (imp bot bot)` for
+      `someFuture`, `untl φ bot` for `next`, `(untl φ.neg ⊤).neg` for `allFuture`) and (b)
+      paren-form renderings (`untl(γ, β∧xi)`, `snce(alpha, beta')`). Both classes were enumerated
+      by dedicated comment-region scanners — 79 and 343 candidate lines respectively — and
+      reviewed individually against the declaration each describes.)*
+- [x] Rewrite each by review, not by regex. Known hard cases: `SoundnessLemmas/Core.lean:91`
       ("Burgess: untl(event=φ, guard=ψ)") and `Chronicle/RRelation.lean:1527` ("In Xu's notation
       U(event, guard), so Xu's 'U(γ, β)' = our untl(β, γ)") — the correction of the latter is a
-      re-derivation of the cross-notation mapping, not a swap.
-- [ ] Leave the incidental tier untouched (D4) — those mentions are order-neutral and remain true.
-- [ ] Read the diff through to confirm every changed hunk lies inside a comment or docstring
-      region and does not cross into code.
-- [ ] Commit.
+      re-derivation of the cross-notation mapping, not a swap. *(deviation: altered —
+      `RRelation.lean:1527-1528` needed **no** rewrite. Its cross-notation mapping was already
+      stated in the guard-first direction and matches the migrated code; re-derived and confirmed
+      against `Formula.untl β₁ γ` at `untl_conj_guard` and `burgessR`. `RRelation.lean` as a whole
+      required zero Phase 11 edits — all 79 of its paren-form comment lines were already
+      guard-first. `Core.lean:91`/`:99` were corrected.)*
+- [x] Leave the incidental tier untouched (D4) — those mentions are order-neutral and remain true.
+- [x] Read the diff through to confirm every changed hunk lies inside a comment or docstring
+      region and does not cross into code. *(mechanised: each changed file's `HEAD` and
+      working-tree versions were run through a Lean comment/docstring stripper and diffed; the
+      code residue is byte-identical for all 38 changed files.)*
+- [x] Commit.
 
 **Timing**: 1.5 hours
 
@@ -1035,11 +1050,20 @@ larger mandatory set means the role-word predicate needs widening before the pas
 **Files to modify**:
 - ~22 files under `FormalSystem/` - comments and docstrings only
 
+**Measured**: 38 files changed (35 under `FormalSystem/`, 3 under `Tests/`), comments and
+docstrings only.
+
 **Verification**:
-- Every changed hunk lies inside a comment/docstring region (diff read-through).
-- No mandatory-tier line still asserts event-first.
-- `lake build` still green (a docstring edit should not affect it, but confirm — Lean docstrings
-  are elaborated).
+- [x] Every changed hunk lies inside a comment/docstring region — verified mechanically by
+      comment-stripped byte-diff against `HEAD` for all 38 files, not by read-through alone.
+- [x] No mandatory-tier line still asserts event-first. The only surviving `event-first` /
+      `Burgess convention` occurrences in live scope are six deliberate disambiguations that are
+      *true*: the prefix `U(e, g)` / `S(e, g)` rendering (`prettyPrint`, `asUntil?`/`asSince?`'s
+      returned pair, `PriorDefsDense.lean`, `TemporalDerived.lean`, `Formula.next`/`prev`) really
+      is event-first, and each now says so while naming the constructor's guard-first order
+      alongside it. `Truth.lean:153`'s retraction of the old event-first claim is retained by
+      design.
+- [x] `lake build` still green: 2457 jobs, exit 0 — same job count as the Phase 1 baseline.
 
 ---
 

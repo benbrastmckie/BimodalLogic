@@ -188,7 +188,7 @@ theorem kminusPred_eval {sig : MonadicSignature}
 
 /-- **The sources' `K⁻(P)` as a point type.** Mirror of `kplusOpenPred`
     (`Lemma53Faithful.lean`), and, like it, needing no new formula: `Formula.kMinus`
-    (`Syntax/Formula.lean:193`) is `(snce ⊤ P.neg).neg`, Reynolds' `¬S(⊤,¬P)` letter for letter
+    (`Syntax/Formula.lean:193`) is `(snce P.neg ⊤).neg`, Reynolds' `¬S(⊤,¬P)` letter for letter
     (abbreviation table §1, printed p.168).
 
     ADAPTED-FROM `kminusPred` above, which is pinned at `kminusFormula` and so carries this

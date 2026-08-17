@@ -71,10 +71,10 @@ section UnfoldLemmas
 /-- Unfold top: `top = imp bot bot` -/
 @[simp] theorem top_unfold : Formula.top = bot.imp bot := rfl
 
-/-- Unfold next: `next φ = untl φ bot` -/
+/-- Unfold next: `next φ = bot.untl φ` -/
 @[simp] theorem next_unfold (φ : Formula) : φ.next = bot.untl φ := rfl
 
-/-- Unfold prev: `prev φ = snce φ bot` -/
+/-- Unfold prev: `prev φ = bot.snce φ` -/
 @[simp] theorem prev_unfold (φ : Formula) : φ.prev = bot.snce φ := rfl
 
 /-! ### Level 2: Depend on Level 1 operators -/
@@ -91,21 +91,21 @@ section UnfoldLemmas
 @[simp] theorem diamond_unfold (φ : Formula) :
     φ.diamond = (φ.imp bot).box.imp bot := rfl
 
-/-- Unfold someFuture: `someFuture φ = φ.untl (bot.imp bot)` -/
+/-- Unfold someFuture: `someFuture φ = (bot.imp bot).untl φ` -/
 @[simp] theorem some_future_unfold (φ : Formula) :
     φ.someFuture = (bot.imp bot).untl φ := rfl
 
-/-- Unfold somePast: `somePast φ = φ.snce (bot.imp bot)` -/
+/-- Unfold somePast: `somePast φ = (bot.imp bot).snce φ` -/
 @[simp] theorem some_past_unfold (φ : Formula) :
     φ.somePast = (bot.imp bot).snce φ := rfl
 
 /-! ### Level 3: Depend on Level 2 operators -/
 
-/-- Unfold allFuture: `allFuture φ = ((φ.imp bot).untl (bot.imp bot)).imp bot` -/
+/-- Unfold allFuture: `allFuture φ = ((bot.imp bot).untl (φ.imp bot)).imp bot` -/
 @[simp] theorem all_future_unfold (φ : Formula) :
     φ.allFuture = ((bot.imp bot).untl (φ.imp bot)).imp bot := rfl
 
-/-- Unfold allPast: `allPast φ = ((φ.imp bot).snce (bot.imp bot)).imp bot` -/
+/-- Unfold allPast: `allPast φ = ((bot.imp bot).snce (φ.imp bot)).imp bot` -/
 @[simp] theorem all_past_unfold (φ : Formula) :
     φ.allPast = ((bot.imp bot).snce (φ.imp bot)).imp bot := rfl
 
@@ -135,11 +135,11 @@ section UnfoldLemmas
 
 /-! ### Level 7: Strong Release and Strong Trigger (depend on Level 2 operators) -/
 
-/-- Unfold strongRelease: `strongRelease φ ψ = untl (and ψ φ) ψ` -/
+/-- Unfold strongRelease: `strongRelease φ ψ = untl ψ (and ψ φ)` -/
 @[simp] theorem strong_release_unfold (φ ψ : Formula) :
     Formula.strongRelease φ ψ = Formula.untl ψ (Formula.and ψ φ) := rfl
 
-/-- Unfold strongTrigger: `strongTrigger φ ψ = snce (and ψ φ) ψ` -/
+/-- Unfold strongTrigger: `strongTrigger φ ψ = snce ψ (and ψ φ)` -/
 @[simp] theorem strong_trigger_unfold (φ ψ : Formula) :
     Formula.strongTrigger φ ψ = Formula.snce ψ (Formula.and ψ φ) := rfl
 
@@ -303,10 +303,10 @@ matching to reconstitute derived operators from their primitive expansions.
 | `imp (imp φ bot) ψ` | `or φ ψ` OR `imp (neg φ) ψ` | AMBIGUOUS: fold to `or_` when ψ is not `bot` |
 | `imp (imp φ (imp ψ bot)) bot` | `and φ ψ` | Unambiguous after `neg` recognition |
 | `imp (box (imp φ bot)) bot` | `diamond φ` | Unambiguous after `neg` recognition |
-| `untl φ (imp bot bot)` | `someFuture φ` | Unambiguous: guard is `top` |
-| `snce φ (imp bot bot)` | `somePast φ` | Unambiguous: guard is `top` |
-| `untl φ bot` | `next φ` | Unambiguous: guard is `bot` |
-| `snce φ bot` | `prev φ` | Unambiguous: guard is `bot` |
+| `untl (imp bot bot) φ` | `someFuture φ` | Unambiguous: guard is `top` |
+| `snce (imp bot bot) φ` | `somePast φ` | Unambiguous: guard is `top` |
+| `untl bot φ` | `next φ` | Unambiguous: guard is `bot` |
+| `snce bot φ` | `prev φ` | Unambiguous: guard is `bot` |
 
 Higher-level operators are recognized compositionally after folding subformulas.
 -/
@@ -431,12 +431,12 @@ The algorithm:
 - `imp (neg φ) ψ` → `or_ φ ψ` (when not further matchable)
 
 ### Pattern matching order at `untl` nodes:
-- `untl φ top` → `someFuture φ`
-- `untl φ bot` → `next φ`
+- `untl top φ` → `someFuture φ`
+- `untl bot φ` → `next φ`
 
 ### Pattern matching order at `snce` nodes:
-- `snce φ top` → `somePast φ`
-- `snce φ bot` → `prev φ`
+- `snce top φ` → `somePast φ`
+- `snce bot φ` → `prev φ`
 -/
 def _root_.FormalSystem.Syntax.Formula.foldFormula : Formula → EnrichedFormula
   | Formula.atom a => .atom a
@@ -546,8 +546,8 @@ def EnrichedFormula.recognizeComposites : EnrichedFormula → EnrichedFormula
     -- Recognize or_: imp (neg φ) ψ → or_ φ ψ
     match φ' with
     | .neg inner =>
-      -- weakUntil φ ψ = (φ U ψ) ∨ Gψ = or_ (untl φ ψ) (allFuture ψ)
-      -- weakSince φ ψ = (φ S ψ) ∨ Hψ = or_ (snce φ ψ) (allPast ψ)
+      -- weakUntil φ ψ = (φ U ψ) ∨ Gψ = or_ (untl ψ φ) (allFuture ψ)
+      -- weakSince φ ψ = (φ S ψ) ∨ Hψ = or_ (snce ψ φ) (allPast ψ)
       match inner, ψ' with
       | .untl b a, .all_future b' => if b == b' then .weak_until a b else .or_ inner ψ'
       | .snce b a, .all_past b'   => if b == b' then .weak_since a b else .or_ inner ψ'
@@ -810,19 +810,19 @@ section FoldLemmas
 @[simp] theorem diamond_fold (φ : Formula) :
     ((φ.imp bot).box).imp bot = diamond φ := rfl
 
-/-- Fold someFuture: `untl φ top = someFuture φ` -/
+/-- Fold someFuture: `(bot.imp bot).untl φ = someFuture φ` -/
 @[simp] theorem some_future_fold (φ : Formula) :
     (bot.imp bot).untl φ = someFuture φ := rfl
 
-/-- Fold somePast: `snce φ top = somePast φ` -/
+/-- Fold somePast: `(bot.imp bot).snce φ = somePast φ` -/
 @[simp] theorem some_past_fold (φ : Formula) :
     (bot.imp bot).snce φ = somePast φ := rfl
 
-/-- Fold next: `untl φ bot = next φ` -/
+/-- Fold next: `bot.untl φ = next φ` -/
 @[simp] theorem next_fold (φ : Formula) :
     bot.untl φ = next φ := rfl
 
-/-- Fold prev: `snce φ bot = prev φ` -/
+/-- Fold prev: `bot.snce φ = prev φ` -/
 @[simp] theorem prev_fold (φ : Formula) :
     bot.snce φ = prev φ := rfl
 

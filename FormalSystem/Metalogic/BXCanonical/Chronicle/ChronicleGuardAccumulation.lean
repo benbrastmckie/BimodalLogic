@@ -178,7 +178,7 @@ def CofinalBelowGap (D : Set Rat) (m : Rat → Set Formula) (S₀ : Set Rat) (A 
 **The guard-accumulation invariant.**
 
 For every guard `ψ ∈ G` and every event formula `φ`: no set of `¬ψ`-points of `D` ascends to a gap
-of `D` while the obligation `untl φ ψ` — or its past mirror `snce φ ψ` — stays cofinal in the
+of `D` while the obligation `untl ψ φ` — or its past mirror `snce ψ φ` — stays cofinal in the
 approach to that gap.
 
 The conditioning on the obligation is essential and is not a weakening for convenience: the
@@ -354,7 +354,7 @@ theorem limitGuardEventual_of_noGuardAccumulation {fc : FrameClass} (B : BFMCS (
 /--
 **The invariant excludes every accumulating guard-failure pattern.**
 
-If the `¬ψ`-points are cofinal below an unselected real `r` while `untl φ ψ` is likewise cofinal
+If the `¬ψ`-points are cofinal below an unselected real `r` while `untl ψ φ` is likewise cofinal
 there, the invariant fails. This is what distinguishes a real invariant from a vacuous one: the
 prohibited configuration is exhibited, in Lean, as an actual refutation of the predicate.
 

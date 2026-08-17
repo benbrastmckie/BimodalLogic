@@ -279,7 +279,7 @@ point, NEVER an `x1 < e_i` relative-position literal (LITMUS). The three BOUNDAR
 `w` respectively (the witness IS the anchor). -/
 
 /-- **`zPastX` soundness (exterior-past navigation).** From `epL` holding at the fixed left
-endpoint `x`, the `Since` literal `snce φ ⊤` (present when `bits zPastX χ = true`, with `φ =
+endpoint `x`, the `Since` literal `snce ⊤ φ` (present when `bits zPastX χ = true`, with `φ =
 charBase χ`)
 yields a past witness `v < x` realizing `φ` — the Prop 3.5 folding mechanism (md:87-94) read at the
 left endpoint. The witness rides the `Since` evaluation point (LITMUS: no `x1 < e_i` literal). -/
@@ -295,7 +295,7 @@ theorem kvE_nonInterior_zPastX_sound {sig : MonadicSignature} [Fintype sig.preds
   exact ⟨s, hs_lt, hs_phi⟩
 
 /-- **`zFutT` soundness (exterior-future navigation).** From `epR` holding at the fixed right
-endpoint `t`, the `Until` literal `untl φ ⊤` (present when `bits zFutT χ = true`) yields a future
+endpoint `t`, the `Until` literal `untl ⊤ φ` (present when `bits zFutT χ = true`) yields a future
 witness `t < v` realizing `φ` — the Prop 3.5 folding mechanism (md:87-94) read at the right
 endpoint. The witness rides the `Until` evaluation point (LITMUS: no `x1 < e_i` literal). -/
 theorem kvE_nonInterior_zFutT_sound {sig : MonadicSignature} [Fintype sig.preds]
@@ -356,8 +356,8 @@ abstraction
 the Phase-7 gate completeness assembly uniformly (NOT per-`(zone, χ:NormalForm sig 1 1)`).
 
 The two EXTERIOR zones carry the genuine NAVIGATION content (Prop 3.5 folding mechanism, md:87-94;
-Cor 5.4 md:154-157): `zPastX` INTRODUCES the `Since` literal `snce φ ⊤` from a past witness `v < x`,
-`zFutT` INTRODUCES the `Until` literal `untl φ ⊤` from a future witness `t < v` — the reconstruction
+Cor 5.4 md:154-157): `zPastX` INTRODUCES the `Since` literal `snce ⊤ φ` from a past witness `v < x`,
+`zFutT` INTRODUCES the `Until` literal `untl ⊤ φ` from a future witness `t < v` — the reconstruction
 rides the temporal evaluation point (the witness `v`), NEVER an `x1 < e_i` relative-position literal
 (LITMUS). The interval obligation is discharged by `temporal_truth_top` (the `⊤` segment is
 vacuous).
@@ -368,7 +368,7 @@ equation). -/
 
 /-- **`zPastX` completeness (exterior-past navigation).** A past witness `v < x` realizing `φ`
 BUILDS
-the `Since` literal `snce φ ⊤` at the fixed left endpoint `x` — the introduction direction of the
+the `Since` literal `snce ⊤ φ` at the fixed left endpoint `x` — the introduction direction of the
 Prop 3.5 folding mechanism (md:87-94). The witness rides the `Since` evaluation point; the `⊤`
 segment obligation is vacuous (`temporal_truth_top`). LITMUS: no `x1 < e_i` literal. -/
 theorem kvE_nonInterior_zPastX_complete {sig : MonadicSignature} [Fintype sig.preds]
@@ -381,7 +381,7 @@ theorem kvE_nonInterior_zPastX_complete {sig : MonadicSignature} [Fintype sig.pr
   ⟨v, hv_lt, hv_phi, fun r _ _ => temporal_truth_top M atomMap r⟩
 
 /-- **`zFutT` completeness (exterior-future navigation).** A future witness `t < v` realizing `φ`
-BUILDS the `Until` literal `untl φ ⊤` at the fixed right endpoint `t` — the introduction direction
+BUILDS the `Until` literal `untl ⊤ φ` at the fixed right endpoint `t` — the introduction direction
 of
 the Prop 3.5 folding mechanism (md:87-94; Cor 5.4 md:154-157). The witness rides the `Until`
 evaluation point; the `⊤` segment obligation is vacuous. LITMUS: no `x1 < e_i` literal. -/

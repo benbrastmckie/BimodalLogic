@@ -38,8 +38,9 @@ semantic side of exactly those two axioms, read at an `OrderedMonadicStructure` 
 
 Unfolding the temporal operators with this tree's `TemporalTruth` (`Table.lean:188`):
 
-* `U(A,B)(t)` is `∃ s > t, A(s) ∧ ∀ r ∈ (t,s), B(r)` (Burgess convention: first argument is the
-  event, second the guard);
+* `U(A,B)(t)` is `∃ s > t, A(s) ∧ ∀ r ∈ (t,s), B(r)` (the prefix `U(·,·)` rendering is
+  event-first: first argument the event, second the guard — the reverse of the `Formula.untl`
+  constructor's guard-first arguments);
 * `U(⊤,p)(t)` is therefore *"`p` holds throughout some initial stretch above `t`"*;
 * `F¬p(t)` is *"`¬p` somewhere above `t`"*;
 * `K⁺(A)(s)` is `kplus` (`Kamp/PriorINF.lean:86`): `¬A(s) ∧ ∀ u > s, ∃ r ∈ (s,u), A(r)`, so

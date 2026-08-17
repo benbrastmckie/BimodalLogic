@@ -225,7 +225,7 @@ def complexity : Formula → Nat
   | atom _ => 1
   | bot => 1
   -- always(φ) = H(φ) ∧ φ ∧ G(φ) → 1 + φ.complexity
-  -- Expansion: imp (imp (imp (snce (imp φ bot) (imp bot bot)) bot) (imp (imp (imp φ₂ (imp (imp
+  -- Expansion: imp (imp (imp (snce (imp bot bot) (imp φ bot)) bot) (imp (imp (imp φ₂ (imp (imp
   -- (untl (imp φ₃ bot) (imp bot bot)) bot) bot)) bot) bot)) bot
   | imp
     (imp (imp (snce (imp bot bot) (imp _φ1 bot)) bot)
@@ -245,17 +245,17 @@ def complexity : Formula → Nat
   -- weakPast(φ) = φ ∧ H(φ) → 1 + φ.complexity
   -- Expansion: imp (imp φ (imp (imp (snce (imp φ₂ bot) (imp bot bot)) bot) bot)) bot
   | imp (imp _φ1 (imp (imp (snce (imp bot bot) (imp _φ2 bot)) bot) bot)) bot => 1 + _φ1.complexity
-  -- WU(φ, ψ) = weakUntil φ ψ = (untl φ ψ).or ψ.allFuture → 1 + φ.complexity + ψ.complexity
+  -- WU(φ, ψ) = weakUntil φ ψ = (untl ψ φ).or ψ.allFuture → 1 + φ.complexity + ψ.complexity
   | imp (imp (untl ψ φ) bot) (imp (untl (imp bot bot) (imp _ψ2 bot)) bot) =>
     1 + φ.complexity + ψ.complexity
-  -- WS(φ, ψ) = weakSince φ ψ = (snce φ ψ).or ψ.allPast → 1 + φ.complexity + ψ.complexity
+  -- WS(φ, ψ) = weakSince φ ψ = (snce ψ φ).or ψ.allPast → 1 + φ.complexity + ψ.complexity
   | imp (imp (snce ψ φ) bot) (imp (snce (imp bot bot) (imp _ψ2 bot)) bot) =>
     1 + φ.complexity + ψ.complexity
   -- diamond(φ) = ¬□¬φ = imp (box (imp φ bot)) bot → 1 + φ.complexity
   | imp (box (imp φ bot)) bot => 1 + φ.complexity
-  -- G(φ) = imp (untl (imp φ bot) (imp bot bot)) bot → 1 + φ.complexity
+  -- G(φ) = imp (untl (imp bot bot) (imp φ bot)) bot → 1 + φ.complexity
   | imp (untl (imp bot bot) (imp φ bot)) bot => 1 + φ.complexity
-  -- H(φ) = imp (snce (imp φ bot) (imp bot bot)) bot → 1 + φ.complexity
+  -- H(φ) = imp (snce (imp bot bot) (imp φ bot)) bot → 1 + φ.complexity
   | imp (snce (imp bot bot) (imp φ bot)) bot => 1 + φ.complexity
   -- R(φ, ψ) = release φ ψ = (untl φ.neg ψ.neg).neg → 1 + φ.complexity + ψ.complexity
   | imp (untl (imp ψ bot) (imp φ bot)) bot => 1 + φ.complexity + ψ.complexity
@@ -263,16 +263,16 @@ def complexity : Formula → Nat
   | imp (snce (imp ψ bot) (imp φ bot)) bot => 1 + φ.complexity + ψ.complexity
   | imp φ ψ => 1 + φ.complexity + ψ.complexity
   | box φ => 1 + φ.complexity
-  -- next(φ) = untl φ bot → 1 + φ.complexity
+  -- next(φ) = untl bot φ → 1 + φ.complexity
   | untl .bot φ => 1 + φ.complexity
-  -- F(φ) = untl φ (imp bot bot) → 1 + φ.complexity
+  -- F(φ) = untl (imp bot bot) φ → 1 + φ.complexity
   | untl (imp bot bot) φ => 1 + φ.complexity
   -- M(φ, ψ) = strongRelease φ ψ = untl (and ψ φ) ψ → 2 + φ.complexity + ψ.complexity
   | untl _ψ2 (imp (imp ψ (imp φ bot)) bot) => 2 + φ.complexity + ψ.complexity
   | untl ψ φ => 1 + φ.complexity + ψ.complexity
-  -- prev(φ) = snce φ bot → 1 + φ.complexity
+  -- prev(φ) = snce bot φ → 1 + φ.complexity
   | snce .bot φ => 1 + φ.complexity
-  -- P(φ) = snce φ (imp bot bot) → 1 + φ.complexity
+  -- P(φ) = snce (imp bot bot) φ → 1 + φ.complexity
   | snce (imp bot bot) φ => 1 + φ.complexity
   -- ST(φ, ψ) = strongTrigger φ ψ = snce (and ψ φ) ψ → 2 + φ.complexity + ψ.complexity
   | snce _ψ2 (imp (imp ψ (imp φ bot)) bot) => 2 + φ.complexity + ψ.complexity
@@ -505,11 +505,13 @@ discussion in `FormalSystem/ProofSystem/Axioms.lean`.
 def co (φ : Formula) : Formula :=
   (Formula.always (φ.allPast.imp φ.allPast.someFuture)).imp (φ.allPast.imp φ.allFuture)
 
-/-- Next-step operator: X(phi) = U(phi, bot) (Burgess convention: event first, guard second).
+/-- Next-step operator: X(phi) = `untl bot phi`, rendered `U(phi, bot)` in the prefix notation
+    (which is event-first, the reverse of the constructor's guard-first arguments).
     X(phi) at t means phi holds at t+1 (event=phi at immediate successor, guard=bot vacuous). -/
 def next (φ : Formula) : Formula := Formula.untl Formula.bot φ
 
-/-- Previous-step operator: Y(phi) = S(phi, bot) (Burgess convention: event first, guard second).
+/-- Previous-step operator: Y(phi) = `snce bot phi`, rendered `S(phi, bot)` in the prefix notation
+    (which is event-first, the reverse of the constructor's guard-first arguments).
     Y(phi) at t means phi holds at t-1 (event=phi at immediate predecessor, guard=bot vacuous). -/
 def prev (φ : Formula) : Formula := Formula.snce Formula.bot φ
 
@@ -534,8 +536,8 @@ def weakPast (φ : Formula) : Formula := φ.and φ.allPast
 /--
 Release operator R(φ, ψ) — dual of Until.
 
-Release(φ, ψ) = ¬(¬φ U ¬ψ). In Burgess convention (untl event guard):
-`untl φ.neg ψ.neg` = "¬ψ holds until ¬φ becomes true", negating gives release.
+Release(φ, ψ) = ¬(¬φ U ¬ψ). Guard-first (`untl guard event`):
+`untl ψ.neg φ.neg` = "¬ψ holds until ¬φ becomes true", negating gives release.
 
 Semantically: ψ must hold at all future times until and including when φ first holds
 (and if φ never holds, ψ must hold forever).
@@ -545,8 +547,8 @@ def release (φ ψ : Formula) : Formula := (Formula.untl ψ.neg φ.neg).neg
 /--
 Weak Until operator W(φ, ψ) — Until without the liveness requirement.
 
-Weak_until(φ, ψ) = (ψ U φ) ∨ G(ψ). In Burgess convention:
-`untl φ ψ` = "ψ holds until φ", so weakUntil adds the possibility that
+Weak_until(φ, ψ) = (ψ U φ) ∨ G(ψ). Guard-first (`untl guard event`):
+`untl ψ φ` = "ψ holds until φ", so weakUntil adds the possibility that
 the guard ψ holds forever (the event φ may never occur).
 -/
 def weakUntil (φ ψ : Formula) : Formula := (Formula.untl ψ φ).or ψ.allFuture
@@ -554,16 +556,16 @@ def weakUntil (φ ψ : Formula) : Formula := (Formula.untl ψ φ).or ψ.allFutur
 /--
 Trigger operator T(φ, ψ) — dual of Since (past analog of Release).
 
-Trigger(φ, ψ) = ¬(¬φ S ¬ψ). In Burgess convention (snce event guard):
-`snce φ.neg ψ.neg` = "¬ψ held since ¬φ was true", negating gives trigger.
+Trigger(φ, ψ) = ¬(¬φ S ¬ψ). Guard-first (`snce guard event`):
+`snce ψ.neg φ.neg` = "¬ψ held since ¬φ was true", negating gives trigger.
 -/
 def trigger (φ ψ : Formula) : Formula := (Formula.snce ψ.neg φ.neg).neg
 
 /--
 Weak Since operator WS(φ, ψ) — Since without the liveness requirement.
 
-Weak_since(φ, ψ) = (ψ S φ) ∨ H(ψ). In Burgess convention:
-`snce φ ψ` = "ψ held since φ", so weakSince adds the possibility that
+Weak_since(φ, ψ) = (ψ S φ) ∨ H(ψ). Guard-first (`snce guard event`):
+`snce ψ φ` = "ψ held since φ", so weakSince adds the possibility that
 the guard ψ held forever in the past (the event φ may never have occurred).
 -/
 def weakSince (φ ψ : Formula) : Formula := (Formula.snce ψ φ).or ψ.allPast

@@ -730,7 +730,7 @@ They are valid over ALL `AddCommGroup D` with `IsOrderedAddMonoid D` because the
 group's translation invariance ensures that gaps (empty open intervals) are uniform
 across all time points.
 
-Key semantic fact: `TruthAt M τ t (Formula.untl (bot.imp bot) bot)` means
+Key semantic fact: `TruthAt M τ t (Formula.untl bot (bot.imp bot))` means
 ∃ s > t with (t,s) empty in D. The guard `bot` is always False, so no element can
 lie in (t,s). The event `bot.imp bot` is `⊤` which is always True.
 -/

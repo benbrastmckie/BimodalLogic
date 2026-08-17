@@ -491,7 +491,7 @@ def isAllFutureShape : Formula → Option Formula
   | _ => none
 
 /-- Recognize derived `someFuture` shape `F(φ) = U(φ, ⊤)`.
-    `Fφ = untl φ (imp bot bot)` -/
+    `Fφ = untl (imp bot bot) φ` -/
 def isSomeFutureShape : Formula → Option Formula
   | .untl (.imp .bot .bot) φ => some φ
   | _ => none
@@ -503,7 +503,7 @@ def isAllPastShape : Formula → Option Formula
   | _ => none
 
 /-- Recognize derived `somePast` shape `P(φ) = S(φ, ⊤)`.
-    `Pφ = snce φ (imp bot bot)` -/
+    `Pφ = snce (imp bot bot) φ` -/
 def isSomePastShape : Formula → Option Formula
   | .snce (.imp .bot .bot) φ => some φ
   | _ => none

@@ -204,7 +204,7 @@ def extractFutureInner : Formula → Option Formula
 /--
 Extract the inner formula chi from P(chi) = somePast chi.
 
-P(chi) = Formula.snce chi Formula.top = Formula.snce chi (Formula.bot.imp Formula.bot)
+P(chi) = Formula.snce Formula.top chi = Formula.snce (Formula.bot.imp Formula.bot) chi
 -/
 def extractPastInner : Formula → Option Formula
   | .snce (.imp .bot .bot) inner => some inner

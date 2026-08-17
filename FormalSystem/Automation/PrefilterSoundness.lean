@@ -69,10 +69,10 @@ that `isUnsatBotTemporal` is a sound "always false" recognizer.
 
 Proof by structural induction on `φ`:
 - `bot`: `TruthAt` for `bot` is `False` by definition.
-- `untl event guard`: If `isUnsatBotTemporal event = true`, then by IH,
+- `untl guard event`: If `isUnsatBotTemporal event = true`, then by IH,
   `event` is false at all times. But `U(event, guard)` requires `∃ s > t,
   TruthAt ... s event`, which is impossible.
-- `snce event guard`: Symmetric to Until.
+- `snce guard event`: Symmetric to Until.
 - `box a`: If `isUnsatBotTemporal a = true`, then by IH, `a` is false
   at every model point whose history is total. Since `τ` is total
   and `box(a)` requires `∀ σ, σ.IsTotal → TruthAt ... σ t a`, choosing

@@ -93,7 +93,7 @@ strictly increasing complexity. These are used to prove f_nesting_boundary.
 
 /-- Complexity of someFuture: F(phi) adds 1 to complexity.
 
-With pattern-aware complexity, `someFuture phi = untl phi top` is recognized
+With pattern-aware complexity, `someFuture phi = untl top phi` is recognized
 as a derived temporal operator with overhead 1 (matching box).
 -/
 lemma some_future_complexity (phi : Formula) :
@@ -741,7 +741,7 @@ strictly increasing complexity. Symmetric to iterF lemmas.
 
 /-- Complexity of somePast: P(phi) adds 1 to complexity.
 
-With pattern-aware complexity, `somePast phi = snce phi top` is recognized
+With pattern-aware complexity, `somePast phi = snce top phi` is recognized
 as a derived temporal operator with overhead 1 (matching box).
 -/
 lemma some_past_complexity (phi : Formula) :

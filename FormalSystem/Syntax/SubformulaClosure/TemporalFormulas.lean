@@ -997,7 +997,7 @@ theorem deferralClosure_all_future (phi psi : Formula)
     exact neg_neg_bot_mem_deferralClosure phi
   · -- G(psi) is a temporal blocking formula: psi = chi.neg, F(chi) in closureWithNeg
     subst h_psi_eq
-    -- F(chi) ∈ closureWithNeg. F(chi) = untl chi top, which is not imp, so it must be in
+    -- F(chi) ∈ closureWithNeg. F(chi) = untl top chi, which is not imp, so it must be in
     -- subformulaClosure
     unfold closureWithNeg at h_F_chi
     simp only [Finset.mem_union, Finset.mem_image] at h_F_chi
@@ -1005,7 +1005,7 @@ theorem deferralClosure_all_future (phi psi : Formula)
     · -- F(chi) ∈ subformulaClosure, so chi ∈ subformulaClosure
       have h_chi : chi ∈ subformulaClosure phi := closure_untl_left phi _ _ h_sub
       exact closureWithNeg_subset_deferralClosure phi (neg_mem_closureWithNeg phi chi h_chi)
-    · -- F(chi) = g.neg = imp g bot, but F(chi) = untl chi top: impossible
+    · -- F(chi) = g.neg = imp g bot, but F(chi) = untl top chi: impossible
       simp only [Formula.neg, Formula.someFuture, Formula.top] at h_g_eq
       exact absurd h_g_eq (by intro h'; exact Formula.noConfusion h')
 
@@ -1098,7 +1098,7 @@ theorem some_future_in_deferralClosure_cases (phi chi : Formula)
       cases h_ext : extractFutureInner g <;> simp [h_ext] at hg_F
       simp only [toFutureBlocking, h_ext] at hf_eq
       -- hf_eq : someFuture chi = allFuture(inner.neg) = imp ... bot
-      -- someFuture chi = untl chi top, allFuture = imp ... bot: untl ≠ imp
+      -- someFuture chi = untl top chi, allFuture = imp ... bot: untl ≠ imp
       simp only [Formula.someFuture, Formula.top, Formula.allFuture, Formula.neg] at hf_eq
       exact absurd hf_eq (by intro h'; exact Formula.noConfusion h')
     · simp only [IsPastFormula] at hg_P

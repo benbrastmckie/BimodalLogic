@@ -1260,7 +1260,7 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
           have hg_at_γ := hfg_at_γ ((Subtype.ext heq) ▸ hf_at_γ₁)
           exact hNLg (ih_g.mpr ⟨γ, hγ_lt, hγ_def, hγ_bet, hg_at_γ⟩)
     | untl g f _ _ =>
-      -- leftFormulaBase D (untl f g) = .stavi_untl (.conj (.base g) (.base (untl f g))) D
+      -- leftFormulaBase D (untl g f) = .stavi_untl (.conj (.base g) (.base (untl g f))) D
       -- This mirrors the stavi_untl outer case
       simp only [leftFormulaBase]
       rw [stavi_untl_gap_detection (.conj (.base g) (.base (.untl g f))) D hD m]

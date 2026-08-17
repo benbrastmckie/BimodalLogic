@@ -3275,7 +3275,7 @@ noncomputable def eliminatePotentialCounterexample (fc : FrameClass)
       -- ξ ∉ g(w, w_next), then split using lemma_2_6_splitting with β = ξ.
       --
       -- Key fact: if neg(untl(ξ,η)) ∈ f(w) and η ∈ f(w_next), then ξ ∉ g(w, w_next).
-      -- Proof: if ξ ∈ g, burgessRSet gives U(ξ, η) = untl(ξ,η) ∈ f(w),
+      -- Proof: if ξ ∈ g, burgessRSet gives untl(ξ,η) ∈ f(w) (guard ξ, event η),
       -- contradicting neg(untl(ξ,η)) ∈ f(w).
       --
       -- Find w = rightmost domain point in [x, y) with neg(untl(ξ,η)) ∈ f(w).
@@ -3598,7 +3598,7 @@ noncomputable def eliminatePotentialCounterexample (fc : FrameClass)
       -- ξ ∉ g(w_prev, w), then split using lemma_2_6_splitting with β = ξ.
       --
       -- Key fact: if neg(snce(ξ,η)) ∈ f(w) and η ∈ f(w_prev), then ξ ∉ g(w_prev, w).
-      -- Proof: if ξ ∈ g, burgessRSetSince gives S(ξ, η) = snce(ξ,η) ∈ f(w),
+      -- Proof: if ξ ∈ g, burgessRSetSince gives snce(ξ,η) ∈ f(w) (guard ξ, event η),
       -- contradicting neg(snce(ξ,η)) ∈ f(w).
       --
       -- Find w = leftmost domain point in (y, x] with neg(snce(ξ,η)) ∈ f(w).

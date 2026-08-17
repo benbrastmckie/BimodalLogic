@@ -346,7 +346,7 @@ theorem some_past_in_closureWithNeg_inner_in_subformulaClosure (phi chi : Formul
     -- P(chi) = somePast chi = chi.snce top
     -- psi.neg = (chi.snce top).imp bot = chi.snce top (impossible: snce ≠ imp)
     -- Actually psi.neg = Formula.imp psi Formula.bot
-    -- somePast chi = Formula.snce chi Formula.top = Formula.snce chi (Formula.bot.imp Formula.bot)
+    -- somePast chi = Formula.snce Formula.top chi = Formula.snce (Formula.bot.imp Formula.bot) chi
     -- So imp psi bot = snce chi (bot.imp bot) is impossible by constructor discrimination
     unfold Formula.somePast Formula.top at h_psi_neg_eq
     exact absurd h_psi_neg_eq (by intro h; cases h)
@@ -366,7 +366,7 @@ theorem some_future_in_closureWithNeg_inner_in_subformulaClosure (phi chi : Form
   · -- Case: F(chi) = chi.untl top in subformulaClosure phi
     exact closure_untl_left phi _ _ h_sub
   · -- Case: F(chi) = psi.neg for some psi in subformulaClosure phi
-    -- psi.neg = imp psi bot, someFuture chi = untl chi top: constructor mismatch
+    -- psi.neg = imp psi bot, someFuture chi = untl top chi: constructor mismatch
     unfold Formula.someFuture Formula.top at h_psi_neg_eq
     exact absurd h_psi_neg_eq (by intro h; cases h)
 

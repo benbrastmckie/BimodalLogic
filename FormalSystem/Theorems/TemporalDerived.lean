@@ -402,7 +402,7 @@ section TemporalMonotonicity
 `⊢ G(φ → ψ) → (F(φ) → F(ψ))`: F is monotone under G-guarded implication.
 
 Direct from BX3 (right_mono_until) with χ := ⊤:
-`G(φ → ψ) → (untl(φ, ⊤) → untl(ψ, ⊤))` = `G(φ → ψ) → (F(φ) → F(ψ))`.
+`G(φ → ψ) → (untl(⊤, φ) → untl(⊤, ψ))` = `G(φ → ψ) → (F(φ) → F(ψ))`.
 -/
 def fMono (φ ψ : Formula) :
     ⊢ (φ.imp ψ).allFuture.imp (φ.someFuture.imp ψ.someFuture) :=
@@ -412,7 +412,7 @@ def fMono (φ ψ : Formula) :
 `⊢ H(φ → ψ) → (P(φ) → P(ψ))`: P is monotone under H-guarded implication.
 
 Direct from BX3' (right_mono_since) with χ := ⊤:
-`H(φ → ψ) → (snce(φ, ⊤) → snce(ψ, ⊤))` = `H(φ → ψ) → (P(φ) → P(ψ))`.
+`H(φ → ψ) → (snce(⊤, φ) → snce(⊤, ψ))` = `H(φ → ψ) → (P(φ) → P(ψ))`.
 -/
 def pMono (φ ψ : Formula) :
     ⊢ (φ.imp ψ).allPast.imp (φ.somePast.imp ψ.somePast) :=
@@ -698,7 +698,8 @@ guard, the Until interval (t,s) and the Since interval (t,s) at the witness are 
 so A3a is valid. A3a/A3b are added as BX13/BX13' (enrichment_until/enrichment_since) in
 Axioms.lean.
 
-A3a: `p ∧ U(q,r) → U(q ∧ S(p,r), r)` (Burgess convention: U(event, guard))
+A3a: `p ∧ U(q,r) → U(q ∧ S(p,r), r)` (prefix rendering `U(event, guard)`; the `Formula.untl`
+constructor itself is guard-first)
 A3b: `p ∧ S(q,r) → S(q ∧ U(r,p), r)` (mirror)
 
 See Axioms.lean for the precise Lean formulation and Soundness.lean for the validity proof.

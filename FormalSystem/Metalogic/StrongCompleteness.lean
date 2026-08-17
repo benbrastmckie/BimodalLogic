@@ -56,7 +56,7 @@ it is easy to get backwards: the engine never sees a context. It is fed the sing
   class — which does *not* follow from the single-formula countermodel engines.
 * **`FrameClass.Discrete`**: strong completeness is provably FALSE — the consequence relation
   is not compact. `ValidDiscrete` requires `IsSuccArchimedean`/`IsPredArchimedean`, and
-  `Formula.next φ = Formula.untl φ Formula.bot` is a genuine next-step operator on discrete
+  `Formula.next φ = Formula.untl Formula.bot φ` is a genuine next-step operator on discrete
   orders, so the premise set `{F p} ∪ {(¬Xⁿ p) : n ∈ ℕ}` is finitely satisfiable over `ℤ`
   (place `p` far enough out) yet unsatisfiable over every Archimedean discrete carrier: the
   `F p` witness would lie at some finite successor distance. Only weak completeness, and its
@@ -385,7 +385,7 @@ completeness is the intended terminus. -/
 Reserved — the finite-context consequence layer only, against the `ValidDiscrete` binder list.
 Genuine strong completeness is provably unavailable for this class: `ValidDiscrete` requires
 `IsSuccArchimedean`/`IsPredArchimedean`, and the premise set `{F p} ∪ {(¬Xⁿ p) : n ∈ ℕ}` —
-expressible because `Formula.next φ = Formula.untl φ Formula.bot` is a genuine next-step
+expressible because `Formula.next φ = Formula.untl Formula.bot φ` is a genuine next-step
 operator on discrete orders — is finitely satisfiable over `ℤ` yet unsatisfiable over every
 Archimedean discrete carrier, so the class consequence relation is not compact. Weak
 completeness (`completeness_discrete`) is the strongest form for this class. -/

@@ -315,7 +315,7 @@ interval abutting `r`. The discharge is therefore **`fc`-conditional**, requirin
 *Why there is no closure hypothesis, and no `root` argument.* Its sibling `LimitFutureWitness`
 carries `φ ∈ deferralClosure root`, and its chronicle discharge discards that argument. Mirroring
 it here would be worse than redundant — it would be **actively wrong**. The consumers of this
-predicate apply it to the *guard* `ψ` of an `untl φ ψ ∈ subformulaClosure root`, and such a guard
+predicate apply it to the *guard* `ψ` of an `untl ψ φ ∈ subformulaClosure root`, and such a guard
 need not lie in `deferralClosure root`; the mirrored hypothesis would be an unprovable side
 condition at every call site. The asymmetry with `LimitFutureWitness` is deliberate and is not to
 be "fixed". With no closure hypothesis there is nothing for a `root` parameter to constrain, so
@@ -352,7 +352,7 @@ look for.
 
 *Why there is no closure hypothesis, and no `root` argument.* For the identical reason recorded for
 `BFMCS.LimitGuardBelow`: the consumers apply this predicate to the *guard* `ψ` of an
-`untl φ ψ ∈ subformulaClosure root`, and such a guard need not lie in `deferralClosure root`, so a
+`untl ψ φ ∈ subformulaClosure root`, and such a guard need not lie in `deferralClosure root`, so a
 mirrored closure hypothesis would be an unprovable side condition at every call site. With no
 closure hypothesis there is nothing for a `root` parameter to constrain, so the predicate takes
 none.

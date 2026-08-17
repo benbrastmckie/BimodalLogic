@@ -70,7 +70,7 @@ upper ray, and puts **nothing** strictly between consecutive placed points.
 
 The `⊤` exemption in rows 7-10 sits **inside** the witness, not outside the row. A row exempting
 itself entirely when `ψ = ⊤` asserts nothing on the `someFuture`/`somePast` fragment, and the
-positive case still needs a witness there, because `TruthAt … (untl φ ⊤)` demands one; only the
+positive case still needs a witness there, because `TruthAt … (untl ⊤ φ)` demands one; only the
 *guard* may be dropped, and it is dropped because `⊤` is true at every point of every model.
 
 ## What is deliberately **not** here
@@ -222,7 +222,7 @@ carries the guard.
 The `⊤` exemption sits *inside* the witness, not outside the row, and that placement is the whole
 content of the row on the `someFuture`/`somePast` fragment. `⊤` is never written on a branch, so a
 row exempting itself entirely when `ψ = ⊤` asserts nothing there — while the positive case still
-needs a witness, because `TruthAt … (untl φ ⊤)` demands one. Measured in this exact form
+needs a witness, because `TruthAt … (untl ⊤ φ)` demands one. Measured in this exact form
 (`Tests/BimodalTest/TemporalWitnessProbe.lean`, column `uGW`) beside the weaker `gw` and `wit` it
 is the pointwise conjunction of. -/
 def untlPosGuardedWitness (b : Branch) (ord : TimeOrdering) : Bool :=

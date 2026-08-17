@@ -1385,7 +1385,7 @@ private def q : Formula := .atom (Atom.mkBase "q")
   | some (.hasOpen _ _ _ _) => return "FAIL: S(p, bot) -> P(p) should be valid but got open branch"
   | none => return "FAIL: S(p, bot) -> P(p) ran out of fuel"
 
--- Test 3: F(p) -> U(p, top) should be valid (definitional equality: both = untl p top)
+-- Test 3: F(p) -> U(p, top) should be valid (definitional equality: both = untl top p)
 -- F(φ) = U(φ, ⊤) by definition, so this is U(p, ⊤) -> U(p, ⊤), trivial
 #eval do
   let φ := Formula.imp (Formula.someFuture p) (.untl Formula.top p)

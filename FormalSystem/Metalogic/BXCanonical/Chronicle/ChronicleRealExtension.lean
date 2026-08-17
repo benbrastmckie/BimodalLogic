@@ -363,7 +363,7 @@ theorem exists_rat_witness_of_realLimitMCS (m : Rat → Set Formula) (δ s : ℝ
 /-! ## Forward case A: a selected target -/
 
 /--
-**Forward `untl` at a selected real.** From `untl φ ψ` in the extension at a real `t` whose
+**Forward `untl` at a selected real.** From `untl ψ φ` in the extension at a real `t` whose
 shifted coordinate is the rational `p`, the rational forward coherence supplies a rational
 witness `s'` and a rational guard on `(p, s')`; the real witness is `(s' : ℝ) - δ`, whose own
 shifted coordinate is `s'`, and the guard transports by `guard_transport_realLimitMCS`.
@@ -424,7 +424,7 @@ theorem toRealBundle_forward_since_selected {fc : FrameClass} (B : BFMCS (fc := 
 
 /--
 **Backward `untl` at a selected real.** From a real witness pattern at a real `t` whose shifted
-coordinate is the rational `p`, the rational backward coherence delivers `untl φ ψ ∈ fam.mcs p`.
+coordinate is the rational `p`, the rational backward coherence delivers `untl ψ φ ∈ fam.mcs p`.
 
 The real witness `s` is interpolated to a rational `u` with `p < u ≤ s + δ`
 (`exists_rat_witness_of_realLimitMCS`). Every rational `q` with `p < q < u` has
@@ -509,7 +509,7 @@ interval abutting the gap `T` **from above**, so — no `ψ`-right gap at `T` be
 already holds on an interval `(a, T)` abutting `T` from below. The rational backward coherence
 then fires at *every* rational `q ∈ (a, T)` with the single witness `u`, its guard obligation on
 `(q, u)` being covered by `(a, T) ∪ (T, u)` — the two halves meet because `T` itself is not
-rational. So `untl φ ψ ∈ limitSetBelow fam.mcs T`, which is the extension's value at `t` by
+rational. So `untl ψ φ ∈ limitSetBelow fam.mcs T`, which is the extension's value at `t` by
 `limitSetBelow_subset_limitMCSBelow`.
 -/
 theorem toRealBundle_backward_until_unselected {fc : FrameClass} (B : BFMCS (fc := fc) Rat)
@@ -632,7 +632,7 @@ theorem toRealBundle_backward_since_selected_of_gap_witness {fc : FrameClass}
 
 No gap lemma is needed *at the target*: the relocated rational witness `u` lies below every
 rational `q ∈ (u, t + δ)`, and the guard covers `(u, q) ⊆ (u, t + δ)`, so rational backward
-coherence puts `snce φ ψ` in `fam.mcs q` for **every** such `q` at once. That is membership in
+coherence puts `snce ψ φ` in `fam.mcs q` for **every** such `q` at once. That is membership in
 `limitSetBelow fam.mcs (t + δ)` with threshold `(u : ℝ)`, hence in the extension at `t`.
 -/
 theorem toRealBundle_backward_since_unselected {fc : FrameClass} (B : BFMCS (fc := fc) Rat)
@@ -742,9 +742,9 @@ theorem forward_until_witness_of_straddling_rat (m : Rat → Set Formula) (δ t 
 /--
 **Forward `untl` at an unselected target: the descent dichotomy.**
 
-At an unselected `t` the membership `untl φ ψ ∈ realLimitMCS m δ t` is a statement about the
+At an unselected `t` the membership `untl ψ φ ∈ realLimitMCS m δ t` is a statement about the
 rationals *below* `t + δ`, and `exists_rat_witness_of_realLimitMCS` turns it into rationals
-`p ↗ t + δ` each carrying `untl φ ψ`. Rational forward coherence gives each such `p` a witness
+`p ↗ t + δ` each carrying `untl ψ φ`. Rational forward coherence gives each such `p` a witness
 `s'` and a guard on `(p, s')`. Exactly two things can happen, and this lemma is that case split
 made explicit:
 
@@ -791,7 +791,7 @@ theorem toRealBundle_forward_until_unselected_dichotomy {fc : FrameClass}
 **Cofinal `φ`-points below a real make `F φ` eventually true below it.**
 
 The right disjunct of `toRealBundle_forward_until_unselected_dichotomy` says `φ` holds at
-rationals arbitrarily close below `T`. Backward Until coherence at `untl φ ⊤ = F φ` then puts
+rationals arbitrarily close below `T`. Backward Until coherence at `untl ⊤ φ = F φ` then puts
 `F φ` in `m q` for **every** rational `q < T`, so `F φ` is not merely cofinally true below `T` but
 eventually true there — `limitSetBelow m T`, the strongest of the three grades of "true below `T`".
 
@@ -895,7 +895,7 @@ with `χ` and with nothing else, so obtaining a `ψ`-guard requires either `χ =
 antecedent is `U(⊤, χ)` — `χ` true *uninterruptedly* on an interval abutting `T` from below — and
 under `χ ⊢ ψ` that already forces `ψ` to hold uninterruptedly on that interval. **The antecedent
 is therefore available exactly when the conclusion's below-gap analogue already holds**, and
-nothing in forward case B supplies it: the hypothesis `untl φ ψ ∈ limitMCSBelow fam.mcs T` yields
+nothing in forward case B supplies it: the hypothesis `untl ψ φ ∈ limitMCSBelow fam.mcs T` yields
 `ψ` only on the intervals `(p, s'_p)` produced by the descent, each closing strictly below `T`,
 so `ψ` is cofinally but not eventually true below `T`.
 
@@ -1064,7 +1064,7 @@ directly, with no appeal to Prior-U, no bounded witness, and no guard-reach lemm
 
 Only the witness needs work, and it comes from the same cofinal descent used everywhere on the
 unselected side: `limitMCSBelow_cofinal_below` produces a rational `p` inside the predicate's own
-guard interval still carrying `snce φ ψ`, and rational forward coherence at `p` yields the witness
+guard interval still carrying `snce ψ φ`, and rational forward coherence at `p` yields the witness
 `s'` below it. The guard on `(s', t + δ)` is then covered piecewise — by rational coherence below
 `p`, by the predicate at and above `p` — which is exactly why `p` is chosen above the predicate's
 threshold `z`.

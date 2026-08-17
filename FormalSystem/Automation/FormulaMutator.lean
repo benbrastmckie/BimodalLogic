@@ -170,8 +170,8 @@ def collectAtoms : Formula → List Atom
 /-!
 ## Derived Operator Recognition
 
-G(φ) = ¬F(¬φ) = ¬(U(¬φ, ⊤)) = imp (untl (imp φ bot) (imp bot bot)) bot
-H(φ) = ¬P(¬φ) = ¬(S(¬φ, ⊤)) = imp (snce (imp φ bot) (imp bot bot)) bot
+G(φ) = ¬F(¬φ) = ¬(U(¬φ, ⊤)) = imp (untl (imp bot bot) (imp φ bot)) bot
+H(φ) = ¬P(¬φ) = ¬(S(¬φ, ⊤)) = imp (snce (imp bot bot) (imp φ bot)) bot
 -/
 
 /--
@@ -282,7 +282,7 @@ def trySwapDiamondBox : Formula → Option Formula
   | .imp (.box (.imp inner .bot)) .bot => some (.box inner)
   | _ => none
 
-/-- Match `untl φ ψ` and return `release φ ψ`. -/
+/-- Match `untl ψ φ` and return `release φ ψ`. -/
 def trySwapUntilRelease : Formula → Option Formula
   | .untl ψ φ => some (Formula.release φ ψ)
   | _ => none
@@ -294,7 +294,7 @@ def trySwapReleaseUntil : Formula → Option Formula
     some (.untl inner2 inner1)
   | _ => none
 
-/-- Match `someFuture φ` (primitive: `untl φ top`) and return `allFuture φ`. -/
+/-- Match `someFuture φ` (primitive: `untl top φ`) and return `allFuture φ`. -/
 def trySwapFutureGlobally : Formula → Option Formula
   | .untl (.imp .bot .bot) φ => some (Formula.allFuture φ)
   | _ => none
@@ -305,7 +305,7 @@ def trySwapGloballyFuture : Formula → Option Formula
     some (Formula.someFuture inner)
   | _ => none
 
-/-- Match `somePast φ` (primitive: `snce φ top`) and return `allPast φ`. -/
+/-- Match `somePast φ` (primitive: `snce top φ`) and return `allPast φ`. -/
 def trySwapPastHistorically : Formula → Option Formula
   | .snce (.imp .bot .bot) φ => some (Formula.allPast φ)
   | _ => none
@@ -391,10 +391,10 @@ Uses direct pattern matching on the primitive encoding rather than calling
 `matchAllFuture`/`matchAllPast` to ensure structural termination.
 -/
 def weakenAllToSome : Formula → Formula
-  -- G(inner) = imp (untl (imp inner bot) (imp bot bot)) bot → F(inner) = untl inner (imp bot bot)
+  -- G(inner) = imp (untl (imp bot bot) (imp inner bot)) bot → F(inner) = untl (imp bot bot) inner
   | .imp (.untl (.imp .bot .bot) (.imp inner .bot)) .bot =>
     Formula.someFuture (weakenAllToSome inner)
-  -- H(inner) = imp (snce (imp inner bot) (imp bot bot)) bot → P(inner) = snce inner (imp bot bot)
+  -- H(inner) = imp (snce (imp bot bot) (imp inner bot)) bot → P(inner) = snce (imp bot bot) inner
   | .imp (.snce (.imp .bot .bot) (.imp inner .bot)) .bot =>
     Formula.somePast (weakenAllToSome inner)
   | .imp ψ χ => .imp (weakenAllToSome ψ) (weakenAllToSome χ)
@@ -438,7 +438,7 @@ def reduceModalDepth : Formula → Formula
 /--
 Reduce temporal depth by stripping outermost untl/snce operators.
 
-Replaces each top-level `untl ψ χ` or `snce ψ χ` with `ψ` (the event formula),
+Replaces each top-level `untl χ ψ` or `snce χ ψ` with `ψ` (the event formula),
 recursing into other operators to find temporal operators at the top level.
 -/
 def reduceTemporalDepth : Formula → Formula

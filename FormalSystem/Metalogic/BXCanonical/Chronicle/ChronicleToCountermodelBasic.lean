@@ -185,7 +185,7 @@ every domain MCS.
 
 Given `x < y` in `LimitDom`, we invoke `limit_satisfies_c4` with `η = ⊤`
 (topFormula) and `ξ = ⊥`. The hypotheses are:
-- `(Formula.untl topFormula Formula.bot).neg ∈ LimitF(x)` — this is exactly
+- `(Formula.untl Formula.bot topFormula).neg ∈ LimitF(x)` — this is exactly
   `F'⊤ ∈ LimitF(x)`, provided by `h_dense`.
 - `topFormula ∈ LimitF(y)` — `⊤` is in every MCS.
 
@@ -757,7 +757,7 @@ theorem cantor_bfmcs_dense_restricted_fuc (fc : FrameClass) (A : Set Formula)
   set iso := cantorIsoDense fc N h_N h_dense_N
   set offset := cantorZeroDense fc N h_N h_dense_N - s
   constructor
-  · -- Until forward: untl(φ,ψ) ∈ fam.mcs t → ∃ u > t, φ ∈ fam.mcs u ∧ guard
+  · -- Until forward: untl(ψ,φ) ∈ fam.mcs t → ∃ u > t, φ ∈ fam.mcs u ∧ guard
     intro t φ ψ _ h_until
     simp only [rootedCantorFmcsDense, shiftedCantorFmcsDense'] at h_until ⊢
     set xt := iso.symm (t + offset)
@@ -782,7 +782,7 @@ theorem cantor_bfmcs_dense_restricted_fuc (fc : FrameClass) (A : Set Formula)
           (OrderIso.symm_apply_apply iso ⟨y, hy⟩).symm]
         exact iso.symm.strictMono (show r + offset < iso ⟨y, hy⟩ by linarith)
       exact h_guard (iso.symm (r + offset)).val (iso.symm (r + offset)).property h_lt1 h_lt2
-  · -- Since forward: snce(φ,ψ) ∈ fam.mcs t → ∃ u < t, φ ∈ fam.mcs u ∧ guard
+  · -- Since forward: snce(ψ,φ) ∈ fam.mcs t → ∃ u < t, φ ∈ fam.mcs u ∧ guard
     intro t φ ψ _ h_since
     simp only [rootedCantorFmcsDense, shiftedCantorFmcsDense'] at h_since ⊢
     set xt := iso.symm (t + offset)

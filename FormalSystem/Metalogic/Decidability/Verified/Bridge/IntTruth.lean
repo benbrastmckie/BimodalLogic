@@ -560,7 +560,7 @@ guard on nine of twelve rows, **including rows with no genuine until in them**: 
 `someFuture` is `⊤` and the engine never writes `T(⊤)`. So `ψ = ⊤` splits off at every leaf and is
 discharged semantically — `⊤` is true at every point of every model. What the positive halves
 changed is *where* the exemption sits: rows 7 and 9 exempt `ψ = ⊤` from the **guard** only and
-keep the witness, because `TruthAt … (untl φ ⊤)` still demands one. A row exempting itself
+keep the witness, because `TruthAt … (untl ⊤ φ)` still demands one. A row exempting itself
 entirely there asserts nothing on the whole `someFuture`/`somePast` fragment.
 
 ### The negative case tree
@@ -882,7 +882,7 @@ theorem branchTruthAt_snce (hf : Function.Injective f) (hOF : OrderFaithful b or
 /-! ## The assembled induction
 
 `Formula` has exactly six constructors — `atom`, `bot`, `imp`, `box`, `untl`, `snce`. There are
-no `G`/`H`/`F`/`P` constructors: `allFuture φ` is `(untl φ.neg ⊤).neg`, so every temporal
+no `G`/`H`/`F`/`P` constructors: `allFuture φ` is `(untl ⊤ φ.neg).neg`, so every temporal
 universal lands on the `untl`/`snce` cases through `imp`.
 -/
 

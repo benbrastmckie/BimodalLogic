@@ -88,7 +88,7 @@ theorem truth_at_swap_swap {F : TaskFrame D} (M : TaskModel F)
     · exact (ih σ t).mp (h σ h_σ_mem)
     · exact (ih σ t).mpr (h σ h_σ_mem)
   | untl ψ φ ih_ψ ih_φ =>
-    -- Until swaps to Since and back (Burgess: untl(event=φ, guard=ψ))
+    -- Until swaps to Since and back (guard-first: untl(guard=ψ, event=φ))
     simp only [Formula.swapTemporal, TruthAt]
     constructor
     · intro ⟨s, h_le, h_event, h_guard⟩
@@ -96,7 +96,7 @@ theorem truth_at_swap_swap {F : TaskFrame D} (M : TaskModel F)
     · intro ⟨s, h_le, h_event, h_guard⟩
       exact ⟨s, h_le, (ih_φ τ s).mpr h_event, fun r hr1 hr2 => (ih_ψ τ r).mpr (h_guard r hr1 hr2)⟩
   | snce ψ φ ih_ψ ih_φ =>
-    -- Since swaps to Until and back (Burgess: snce(event=φ, guard=ψ))
+    -- Since swaps to Until and back (guard-first: snce(guard=ψ, event=φ))
     simp only [Formula.swapTemporal, TruthAt]
     constructor
     · intro ⟨s, h_le, h_event, h_guard⟩

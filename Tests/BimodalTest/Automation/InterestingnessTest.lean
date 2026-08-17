@@ -85,13 +85,13 @@ Verify that trivial patterns receive SNT = 0.
 Verify that derived operator patterns are correctly detected.
 -/
 
--- F(p) = untl p top should detect hasSomeFuture
+-- F(p) = untl top p should detect hasSomeFuture
 #eval do
   let profile := extractOperatorProfile (Formula.someFuture p)
   if !profile.hasSomeFuture then throw (IO.userError "Expected hasSomeFuture for F(p)")
   IO.println "PASS: F(p) detected as someFuture"
 
--- P(p) = snce p top should detect hasSomePast
+-- P(p) = snce top p should detect hasSomePast
 #eval do
   let profile := extractOperatorProfile (Formula.somePast p)
   if !profile.hasSomePast then throw (IO.userError "Expected hasSomePast for P(p)")

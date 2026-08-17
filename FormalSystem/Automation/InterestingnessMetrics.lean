@@ -124,12 +124,12 @@ Extract the operator profile from a formula by recursive AST traversal.
 Detects both primitive operators and derived operator patterns:
 - `box φ` → hasBox
 - `imp (box (imp φ bot)) bot` → hasDiamond (diamond = ¬□¬φ)
-- `untl φ (imp bot bot)` → hasSomeFuture (F = U(φ, ⊤))
-- `snce φ (imp bot bot)` → hasSomePast (P = S(φ, ⊤))
+- `untl (imp bot bot) φ` → hasSomeFuture (F = U(φ, ⊤))
+- `snce (imp bot bot) φ` → hasSomePast (P = S(φ, ⊤))
 - `imp (untl (imp φ bot) (imp bot bot)) bot` → hasAllFuture (G = ¬F(¬φ))
 - `imp (snce (imp φ bot) (imp bot bot)) bot` → hasAllPast (H = ¬P(¬φ))
-- `untl φ ψ` (non-top guard) → hasUntil
-- `snce φ ψ` (non-top guard) → hasSince
+- `untl ψ φ` (non-top guard) → hasUntil
+- `snce ψ φ` (non-top guard) → hasSince
 -/
 def extractOperatorProfile : Formula → OperatorProfile
   -- G pattern: ¬F(¬φ) = imp (untl (imp φ bot) (imp bot bot)) bot
@@ -144,11 +144,11 @@ def extractOperatorProfile : Formula → OperatorProfile
   | .imp (.box (.imp _φ .bot)) .bot =>
     let inner := extractOperatorProfile _φ
     { inner with hasDiamond := true }
-  -- F pattern: U(φ, ⊤) = untl φ (imp bot bot)
+  -- F pattern: U(φ, ⊤) = untl (imp bot bot) φ
   | .untl (.imp .bot .bot) _φ =>
     let inner := extractOperatorProfile _φ
     { inner with hasSomeFuture := true }
-  -- P pattern: S(φ, ⊤) = snce φ (imp bot bot)
+  -- P pattern: S(φ, ⊤) = snce (imp bot bot) φ
   | .snce (.imp .bot .bot) _φ =>
     let inner := extractOperatorProfile _φ
     { inner with hasSomePast := true }

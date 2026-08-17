@@ -965,7 +965,7 @@ theorem chronicle_semantic_prior_UZ {fc : FrameClass}
     by_contra h_neg
     have h_neg_F : (Formula.someFuture eff_ψ).neg ∈ M.fmcs t :=
       (SetMaximalConsistent.negation_complete (M.fmcs_is_mcs t) _).resolve_left h_neg
-    -- someFuture eff_ψ = untl eff_ψ (imp bot bot)
+    -- someFuture eff_ψ = untl (imp bot bot) eff_ψ
     -- neg of this is in fmcs(t)
     -- By neg_until_coherent: ∃z ∈ (t,s) with ¬(imp bot bot) ∈ fmcs(z)
     -- But ¬(imp bot bot) = ¬top = bot, contradicting MCS consistency

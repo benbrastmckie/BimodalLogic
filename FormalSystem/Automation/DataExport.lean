@@ -103,8 +103,8 @@ The JSON schema uses a `"tag"` field for the constructor name:
 - `bot` → `{"tag": "bot"}`
 - `imp φ ψ` → `{"tag": "imp", "left": <φ>, "right": <ψ>}`
 - `box φ` → `{"tag": "box", "child": <φ>}`
-- `untl φ ψ` → `{"tag": "untl", "event": <φ>, "guard": <ψ>}`
-- `snce φ ψ` → `{"tag": "snce", "event": <φ>, "guard": <ψ>}`
+- `untl ψ φ` → `{"tag": "untl", "event": <φ>, "guard": <ψ>}`
+- `snce ψ φ` → `{"tag": "snce", "event": <φ>, "guard": <ψ>}`
 -/
 def _root_.FormalSystem.Syntax.Formula.toJson : Formula → String
   | .atom a   =>
@@ -127,8 +127,8 @@ Pretty-print a `Formula` in human-readable notation.
 - `bot` → `"⊥"`
 - `imp φ ψ` → `"(φ → ψ)"`
 - `box φ` → `"□φ"`
-- `untl φ ψ` → `"U(φ, ψ)"`
-- `snce φ ψ` → `"S(φ, ψ)"`
+- `untl ψ φ` → `"U(φ, ψ)"`
+- `snce ψ φ` → `"S(φ, ψ)"`
 -/
 def _root_.FormalSystem.Syntax.Formula.prettyPrint : Formula → String
   | .atom a   => a.base
@@ -146,8 +146,8 @@ Canonical parenthesized prefix notation using constructor names as heads:
 - `bot` → `bot`
 - `imp φ ψ` → `(imp <φ> <ψ>)`
 - `box φ` → `(box <φ>)`
-- `untl φ ψ` → `(untl <φ> <ψ>)`
-- `snce φ ψ` → `(snce <φ> <ψ>)`
+- `untl ψ φ` → `(untl <φ> <ψ>)`
+- `snce ψ φ` → `(snce <φ> <ψ>)`
 -/
 def _root_.FormalSystem.Syntax.Formula.toSExpr : Formula → String
   | .atom a   =>

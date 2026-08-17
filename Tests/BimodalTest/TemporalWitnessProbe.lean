@@ -13,7 +13,7 @@ import FormalSystem.Metalogic.Decidability.Verified.Bridge.RegionLabel
 `T(U(φ,ψ))` at a ray's chosen label needs `T(φ)` at that same label — and found it `true` on six
 engine rows. This file measures the rest of the bundle, and it exists because of a gap in that
 corpus: **not one of those six rows carries a genuine until.** `F p → p`, `P p → p`, `G p → p`
-and the three modal shapes produce only `untl · ⊤` and `snce · ⊤`, where the acting rules are
+and the three modal shapes produce only `untl ⊤ ·` and `snce ⊤ ·`, where the acting rules are
 `someFuturePos`/`someFutureNeg` (linear, and `sat_some_future_neg` already gives `F(φ)` at
 *every* known future time). The branching `untlPos`/`untlNeg` rules — the ones whose second arm
 is `T(guard) ∧ T(U)` resp. `F(guard) ∧ F(U)` — are never exercised. Any conclusion about them
@@ -796,7 +796,7 @@ being stated in `Verified/`, and each is reported beside the weaker form it stre
 
 *The `⊤` exemption has to move inside the witness.* `untlPosGuardedWitness` exempts the whole row
 when `ψ = ⊤`, so on the `someFuture` fragment it asserts nothing at all — and the positive case
-still needs a witness there, because `TruthAt … (untl φ ⊤)` demands one. The adopted form asks for
+still needs a witness there, because `TruthAt … (untl ⊤ φ)` demands one. The adopted form asks for
 a future known time carrying the event **always**, and attaches the guard obligation only when
 `ψ ≠ ⊤`. Pointwise on each signed formula that is exactly `gw`'s body when `ψ ≠ ⊤` and `wit`'s
 body when `ψ = ⊤`, and `wit` is `true` on all twelve rows above; `uGW` measures the conjunction
@@ -1114,7 +1114,7 @@ disjuncts are the two places a witness can be:
   `cutIndex_mono` and `cutIndex_le_branchRank` read off as branch facts.
 
 The `⊤` exemption sits inside each disjunct, exempting the guard and keeping the witness, exactly
-as rows 7-10 do: `TruthAt … (untl φ ⊤)` still demands a witness.
+as rows 7-10 do: `TruthAt … (untl ⊤ φ)` still demands a witness.
 
 Unlike the negative candidate this one does **not** subsume the rows it generalises — its `self`
 disjunct is an escape rows 9 and 10 do not offer — so rows 3, 9 and 10 stay, and this is measured

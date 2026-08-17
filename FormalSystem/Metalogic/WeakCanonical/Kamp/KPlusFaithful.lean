@@ -138,7 +138,7 @@ truth condition**. These two lemmas are that bridge. -/
 
     `TemporalTruth M atomMap t (Formula.kPlus P) ↔ kplusOpen M atomMap P t`.
 
-    `Formula.kPlus P` is `(untl ⊤ P.neg).neg` (`Syntax/Formula.lean:180`), which is Reynolds'
+    `Formula.kPlus P` is `(untl P.neg ⊤).neg` (`Syntax/Formula.lean:180`), which is Reynolds'
     `¬U(⊤,¬P)` (abbreviation table §1, printed p.168) letter for letter under
     `Formula.untl`'s truth clause (`Table.lean:188`). Unwinding: `U(⊤,¬P)(t)` says some `(t,s)` is
     entirely `P`-free, so its negation says every `(t,s)` contains a point at which `P` holds —
@@ -166,7 +166,7 @@ theorem kPlus_formula_correct {sig : MonadicSignature}
 
 /-- **The bridge, mirrored: `Formula.kMinus` is `kminusOpen`.**
 
-    `Formula.kMinus P` is `(snce ⊤ P.neg).neg` (`Syntax/Formula.lean:193`), Reynolds' `¬S(⊤,¬P)`
+    `Formula.kMinus P` is `(snce P.neg ⊤).neg` (`Syntax/Formula.lean:193`), Reynolds' `¬S(⊤,¬P)`
     (printed p.168). `Axiom.prior_S_gap` (`ProofSystem/Axioms.lean:387`) and `Axiom.sep` (`:390`)
     are stated with it. -/
 theorem kMinus_formula_correct {sig : MonadicSignature}

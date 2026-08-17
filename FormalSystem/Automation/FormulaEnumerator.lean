@@ -572,13 +572,13 @@ structure OperatorDistribution where
   boxCount : Nat := 0
   untlCount : Nat := 0
   snceCount : Nat := 0
-  /-- Count of formulas matching the F (someFuture) pattern: untl(φ, ⊤). -/
+  /-- Count of formulas matching the F (someFuture) pattern: untl(⊤, φ). -/
   allFutureCount : Nat := 0
   /-- Count of formulas matching the H (allPast) pattern: ¬P(¬φ). -/
   allPastCount : Nat := 0
-  /-- Count of formulas matching the F (someFuture) pattern: untl(φ, ⊤). -/
+  /-- Count of formulas matching the F (someFuture) pattern: untl(⊤, φ). -/
   someFutureCount : Nat := 0
-  /-- Count of formulas matching the P (somePast) pattern: snce(φ, ⊤). -/
+  /-- Count of formulas matching the P (somePast) pattern: snce(⊤, φ). -/
   somePastCount : Nat := 0
   deriving Repr, Inhabited
 
@@ -601,17 +601,17 @@ def countTopOperator (dist : OperatorDistribution) (φ : Formula) : OperatorDist
   | .box _ => { dist with boxCount := dist.boxCount + 1 }
   | .untl rhs _ =>
     let dist' := { dist with untlCount := dist.untlCount + 1 }
-    -- Check for F pattern: untl(φ, ⊤)
+    -- Check for F pattern: untl(⊤, φ)
     if isTop rhs then { dist' with someFutureCount := dist'.someFutureCount + 1 }
     else dist'
   | .snce rhs _ =>
     let dist' := { dist with snceCount := dist.snceCount + 1 }
-    -- Check for P pattern: snce(φ, ⊤)
+    -- Check for P pattern: snce(⊤, φ)
     if isTop rhs then { dist' with somePastCount := dist'.somePastCount + 1 }
     else dist'
   | .imp inner .bot =>
-    -- Check for G pattern: ¬(F(¬φ)) = imp(untl(imp(φ, bot), imp(bot, bot)), bot)
-    -- Check for H pattern: ¬(P(¬φ)) = imp(snce(imp(φ, bot), imp(bot, bot)), bot)
+    -- Check for G pattern: ¬(F(¬φ)) = imp(untl(imp(bot, bot), imp(φ, bot)), bot)
+    -- Check for H pattern: ¬(P(¬φ)) = imp(snce(imp(bot, bot), imp(φ, bot)), bot)
     let dist' := { dist with impCount := dist.impCount + 1 }
     match inner with
     | .untl guard negChild =>
@@ -1103,11 +1103,11 @@ partial def randomSubFormula (atoms : List Atom) (maxSize : Nat) : IO Formula :=
       let child ← randomSubFormula atoms (max 1 (maxSize - 1))
       return child.allPast
     | 5 =>
-      -- someFuture (F(φ) = untl(φ, ⊤)): unary temporal, overhead 1
+      -- someFuture (F(φ) = untl(⊤, φ)): unary temporal, overhead 1
       let child ← randomSubFormula atoms (max 1 (maxSize - 1))
       return child.someFuture
     | 6 =>
-      -- somePast (P(φ) = snce(φ, ⊤)): unary temporal, overhead 1
+      -- somePast (P(φ) = snce(⊤, φ)): unary temporal, overhead 1
       let child ← randomSubFormula atoms (max 1 (maxSize - 1))
       return child.somePast
     | 7 =>
@@ -2052,11 +2052,11 @@ private def hasDerivedTemporal : Formula → Bool
     | .snce (.imp _ .bot) (.imp _ .bot) => true  -- T pattern
     | _ => hasDerivedTemporal inner
   | .imp a b => hasDerivedTemporal a || hasDerivedTemporal b
-  -- Check for next/F patterns: untl(φ, ⊥) is next, untl(φ, ⊤) is F
+  -- Check for next/F patterns: untl(⊥, φ) is next, untl(⊤, φ) is F
   | .untl .bot _ => true   -- next pattern
   | .untl (.imp .bot .bot) _ => true   -- F pattern
   | .untl b a => hasDerivedTemporal a || hasDerivedTemporal b
-  -- Check for prev/P patterns: snce(φ, ⊥) is prev, snce(φ, ⊤) is P
+  -- Check for prev/P patterns: snce(⊥, φ) is prev, snce(⊤, φ) is P
   | .snce .bot _ => true   -- prev pattern
   | .snce (.imp .bot .bot) _ => true   -- P pattern
   | .snce b a => hasDerivedTemporal a || hasDerivedTemporal b

@@ -270,7 +270,7 @@ def asDiamond? : Formula → Option Formula
 
 /--
 Try to decompose a formula as somePast (PA = S(A, ⊤)).
-Note: somePast A = snce A top = snce A (imp bot bot)
+Note: somePast A = snce top A = snce (imp bot bot) A
 Returns `some A` if it matches the pattern, otherwise `none`.
 -/
 def asSomePast? : Formula → Option Formula
@@ -279,7 +279,7 @@ def asSomePast? : Formula → Option Formula
 
 /--
 Try to decompose a formula as someFuture (FA = U(A, ⊤)).
-Note: someFuture A = untl A top = untl A (imp bot bot)
+Note: someFuture A = untl top A = untl (imp bot bot) A
 Returns `some A` if it matches the pattern, otherwise `none`.
 -/
 def asSomeFuture? : Formula → Option Formula
@@ -306,9 +306,10 @@ def asAllPast? : Formula → Option Formula
 
 /--
 Try to decompose a formula as a genuine Until (not someFuture).
-Returns `some (event, guard)` if the formula is `untl event guard` with `guard != top`.
-This filters out `someFuture φ = untl φ top` which is handled by someFuturePos/someFutureNeg.
-Burgess convention: first component = event, second = guard.
+Returns `some (event, guard)` if the formula is `untl guard event` with `guard != top`.
+This filters out `someFuture φ = untl top φ` which is handled by someFuturePos/someFutureNeg.
+Note the returned pair is *event-first*, the reverse of the constructor's guard-first arguments:
+first component = event, second = guard.
 -/
 def asUntil? : Formula → Option (Formula × Formula)
   | .untl guard event =>
@@ -318,9 +319,10 @@ def asUntil? : Formula → Option (Formula × Formula)
 
 /--
 Try to decompose a formula as a genuine Since (not somePast).
-Returns `some (event, guard)` if the formula is `snce event guard` with `guard != top`.
-This filters out `somePast φ = snce φ top` which is handled by somePastPos/somePastNeg.
-Burgess convention: first component = event, second = guard.
+Returns `some (event, guard)` if the formula is `snce guard event` with `guard != top`.
+This filters out `somePast φ = snce top φ` which is handled by somePastPos/somePastNeg.
+Note the returned pair is *event-first*, the reverse of the constructor's guard-first arguments:
+first component = event, second = guard.
 -/
 def asSince? : Formula → Option (Formula × Formula)
   | .snce guard event =>

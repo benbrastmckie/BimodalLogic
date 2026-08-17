@@ -60,7 +60,7 @@ variable {b : Branch} {ord : TimeOrdering} {f : BranchTime b → D}
 /-! ## The assembly, with the temporal cases abstracted
 
 `Formula` has exactly six constructors — `atom`, `bot`, `imp`, `box`, `untl`, `snce`. There are
-no `G`/`H`/`F`/`P` constructors: `allFuture φ` is `(untl φ.neg ⊤).neg`, so every temporal
+no `G`/`H`/`F`/`P` constructors: `allFuture φ` is `(untl ⊤ φ.neg).neg`, so every temporal
 universal lands on the `untl`/`snce` cases through `imp`.
 -/
 
