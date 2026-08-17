@@ -11,11 +11,11 @@ next_project_number: 450
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,193,231,257,298,413,415,417,419,421,423,424,437,440,445,448,449 | -- | completeness, decidability, frame-extensions, ... |
-| 2 | 178,219,282,296,422,425,436,441,446 | 193,231,298,421,423,437,440,445 | decidability, formula-refactor, publication-quality, ... |
-| 3 | 169,434,447 | 422,436,446 | decidability, publication-quality, strong_completeness |
-| 4 | 362,432 | 169,434 | decidability, strong_completeness |
-| 5 | 433 | 432 | decidability |
+| 1 | 125,127,128,231,257,298,413,417,423,424,437,440,445,448,449 | -- | completeness, decidability, frame-extensions, ... |
+| 2 | 193,219,282,296,421,425,436,441,446 | 231,298,423,437,440,445,448 | decidability, publication-quality, automation, ... |
+| 3 | 178,422,434,447 | 193,421,436,446 | decidability, formula-refactor, publication-quality, ... |
+| 4 | 169,432 | 422,434 | decidability, strong_completeness |
+| 5 | 362,433 | 169,432 | decidability, strong_completeness |
 | 6 | 428 | 433 | decidability |
 | 7 | 429 | 428 | decidability |
 | 8 | 410 | 429 | -- |
@@ -23,7 +23,7 @@ next_project_number: 450
 | 10 | 430 | 411 | decidability |
 | 11 | 412 | 430 | -- |
 | 12 | 426 | 412 | completeness |
-| 13 | 95,177 | 193,426 | completeness, formula-refactor |
+| 13 | 95,177 | 193,426,441,448 | completeness, formula-refactor |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -87,21 +87,20 @@ next_project_number: 450
 
 ### Paper Refactor
 
-415 [IMPLEMENTING] — RE-ISSUED 2026-08-10 (supersedes the prior maximal-history framin
 417 [IMPLEMENTING] — RE-ISSUED 2026-08-10 (supersedes the prior maximal-history framin
-419 [IMPLEMENTING] — RE-ISSUED 2026-08-10 (description rewrite only; status unchanged)
 440 [RESEARCHED] — RE-ISSUED 2026-08-12 (description rewrite only; status unchanged)
   └─ 441 [NOT STARTED] — Strengthen `thm:extension` for the finite discrete case into an E
 
 ### Strong Completeness
 
-421 [NOT STARTED] — Two deliverables on the Base weak terminus, both small.
-  └─ 422 [NOT STARTED] — Construct the discrete-case analogue of the existing dense chroni
-    └─ 169 [NOT STARTED] — Base (FrameClass.Base / general) WEAK completeness green: make th
-      └─ 362 [NOT STARTED] — Implement the completeness capstone under the SETTLED TERMINOLOGY
 423 [NOT STARTED] — Create FormalSystem/Metalogic/SetConsequence.lean containing the 
   └─ 425 [NOT STARTED] — Convert the informal argument at FormalSystem/Metalogic/StrongCom
 424 [NOT STARTED] — RE-ISSUED 2026-08-10 (description rewrite only; status remains `n
+169 [NOT STARTED] — Base (FrameClass.Base / general) WEAK completeness green: make th
+  └─ 362 [NOT STARTED] — Implement the completeness capstone under the SETTLED TERMINOLOGY
+421 [NOT STARTED] — Two deliverables on the Base weak terminus, both small.
+  └─ 422 [NOT STARTED] — Construct the discrete-case analogue of the existing dense chroni
+    └─ 169 [NOT STARTED] — Base (FrameClass.Base / general) WEAK completeness green: make th (see above)
 
 ### Lean4
 
@@ -649,7 +648,7 @@ Acceptance (from design/01 section 6, all five required): zero sorries and zero 
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: strong_completeness
-- **Dependencies**: Task 414, Task 420, Task 421, Task 439
+- **Dependencies**: Task 414, Task 420, Task 421, Task 439, Task 448
 
 **Description**: Construct the discrete-case analogue of the existing dense chronicle machinery, over the non-Archimedean carrier Q x_lex Z confirmed by the predecessor task.
 
@@ -674,7 +673,7 @@ FOUR-AXIOM / TOTALITY EXPOSURE NOTE (added 2026-08-10): this task constructs a c
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: strong_completeness
-- **Dependencies**: Task 361
+- **Dependencies**: Task 361, Task 448
 
 **Description**: Two deliverables on the Base weak terminus, both small.
 
@@ -690,7 +689,7 @@ Acceptance: the refuted-route comment no longer appears at Transfer.lean:1239-12
 
 ### 419. Machine check co reynolds independence
 - **Effort**: large
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: paper-refactor
 - **Dependencies**: Task 420, Task 438, Task 439
@@ -761,6 +760,7 @@ Run `bash scripts/check-paper-definitions.sh` and read specs/paper-definitions-o
 - **Plan**:
   - [417_semantic_fmp_finite_worldstate_over_z/plans/03_semantic-fmp-z-time.md]
   - [417_semantic_fmp_finite_worldstate_over_z/plans/02_semantic-fmp-z-time.md]
+- **Summary**: [417_semantic_fmp_finite_worldstate_over_z/summaries/03_semantic-fmp-z-time-summary.md]
 
 **Description**: RE-ISSUED 2026-08-10 (supersedes the prior maximal-history framing). SEMANTIC FMP OVER A FIXED CARRIER, stated against the TOTAL-history semantics of task 414: prove the TruthAt-connected finite model property the paper's decidability corollary proof text cites -- any formula satisfiable over the Discrete class is satisfiable in a model with FINITE WorldState over D = Z -- replacing reliance on the syntactic closure-MCS FMP theorems (FormalSystem/Metalogic/Decidability/FMP/FMP.lean) that never connect to TruthAt. Add decidable model checking for the finite-W-over-Z presentation to back the paper's enumeration argument (restated paper-side as finite W over Z, since every model has infinite D). This is the semantic-FMP follow-on explicitly descoped by the task-165 redirect; the tableau programme remains the decision-procedure route and also rebases onto the new semantics. Related: 165, 410, 411, 412.
 
@@ -796,7 +796,7 @@ Run `bash scripts/check-paper-definitions.sh` and read specs/paper-definitions-o
 
 ### 415. Completeness over total history semantics
 - **Effort**: large
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: paper-refactor
 - **Dependencies**: Task 414, Task 420, Task 438, Task 439
@@ -999,7 +999,7 @@ DEPENDENCY STATUS (2026-07-27; dependencies array unchanged): 375 (discrete weak
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: automation
-- **Dependencies**: Task 165, Task 402
+- **Dependencies**: Task 165, Task 402, Task 448
 - **Research**: [193_codebase_tactic_refactor/reports/01_codebase-refactor-seed.md]
 
 **Description**: Apply validity-intro and truth-simp macros to the soundness layer.
@@ -1047,7 +1047,7 @@ Inventory groups drawn on: survey report section 4.2 groups 2 (intros_validity, 
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: formula-refactor
-- **Dependencies**: Task 131, Task 193, Task 402, Task 426, Task 428, Task 429, Task 430, Task 431, Task 432, Task 433, Task 434
+- **Dependencies**: Task 131, Task 193, Task 402, Task 426, Task 428, Task 429, Task 430, Task 431, Task 432, Task 433, Task 434, Task 440, Task 441, Task 448
 
 **Description**: Update all documentation to match final codebase state after refactoring. README.md axiom counts, architecture diagram, sorry obligations. Module-level docstrings for every file in the final structure. ROADMAP.md updates. Axiom Reference doc verification. This is the final documentation pass after all structural refactoring is complete.
 
@@ -1058,7 +1058,7 @@ Inventory groups drawn on: survey report section 4.2 groups 2 (intros_validity, 
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: strong_completeness
-- **Dependencies**: Task 361, Task 422
+- **Dependencies**: Task 361, Task 422, Task 448
 
 **Description**: Base (FrameClass.Base / general) WEAK completeness green: make the empty-context theorem `completeness` (BXCanonical/Completeness.lean:196, `valid φ → Derivable FrameClass.Base [] φ`) genuinely sorry-free.
 
@@ -1113,7 +1113,7 @@ FOUR-AXIOM EXPOSURE NOTE (added 2026-08-10): Phase 2's obligation 'Prove Uf(A) s
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: completeness
-- **Dependencies**: Task 165, Task 408, Task 412, Task 426, Task 428, Task 429, Task 430, Task 431, Task 432, Task 433, Task 434
+- **Dependencies**: Task 165, Task 408, Task 412, Task 426, Task 428, Task 429, Task 430, Task 431, Task 432, Task 433, Task 434, Task 448
 
 **Description**: Verify and record the final axiom/sorry status of the headline metalogical results, then close.
 
