@@ -83,7 +83,7 @@ next_project_number: 450
 
 ### Reference Book
 
-449 [NOT STARTED] — Systematically review /home/benjamin/Philosophy/Papers/PossibleWo
+449 [RESEARCHED] — Systematically review /home/benjamin/Philosophy/Papers/PossibleWo
 
 ### Paper Refactor
 
@@ -112,10 +112,11 @@ next_project_number: 450
 ## Tasks
 
 ### 449. Review paper to improve bimodal reference manual
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: formal
 - **Topic**: reference-book
 - **Dependencies**: None
+- **Research**: [449_review_paper_to_improve_bimodal_reference_manual/reports/01_paper-manual-lean-alignment.md]
 
 **Description**: Systematically review /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex in order to improve typst/BimodalReference.typ while observing the aim to accurately represent the Lean code in this repository, which is actively being improved to also be in better alignment with the possible_worlds.tex paper. The key difference between the paper and this Lean repo with its corresponding BimodalReference.typ manual is that this repo should focus entirely on constructing/presenting the full bimodal logic system where snce/untl operators are primitive, leaving the fragment with past/future operators as primitives as a subsystem to be developed later in order to establish conservative extension results if possible, though for now that effort can be ignored
 
@@ -370,6 +371,7 @@ PossibleWorlds 79 supplies the citable corollary; `specs/paper-definitions-of-re
 - **Research**:
   - [434_discharge_mintpaysfortime_residual/reports/02_spawn-analysis.md]
   - [436_fourth_termination_measure_component/reports/01_fourth-measure-component.md]
+  - [436_fourth_termination_measure_component/reports/02_spawn-analysis.md]
 - **Plan**: [436_fourth_termination_measure_component/plans/01_self-guard-potential.md]
 - **Summary**: [436_fourth_termination_measure_component/summaries/01_self-guard-potential-summary.md]
 
@@ -383,7 +385,10 @@ PossibleWorlds 79 supplies the citable corollary; `specs/paper-definitions-of-re
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 431, Task 435, Task 436
-- **Research**: [428_engine_totality_at_a_quantified_branch_budget/reports/05_spawn-analysis.md]
+- **Research**:
+  - [428_engine_totality_at_a_quantified_branch_budget/reports/05_spawn-analysis.md]
+  - [434_discharge_mintpaysfortime_residual/reports/01_spawn-inherited-research.md]
+  - [434_discharge_mintpaysfortime_residual/reports/02_spawn-analysis.md]
 - **Plan**: [434_discharge_mintpaysfortime_residual/plans/01_mintpaysfortime-time-analogue.md]
 
 **Description**: Discharge `MintPaysForTime fc U Tmax`, defined at FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean:3945, the open mathematical core among the four residual hypotheses on the totality terminus `buildTableauAt_isSome_of_budget` (MintBound.lean:4416). Two disjuncts to establish. First disjunct ('a step that does not raise the known-time count does not raise the rank'): the naive reading 'non-ruleMintsFreshLabel implies no new time' is FALSE -- `densityRule` interpolates a fresh time while deliberately absent from `ruleMintsFreshLabel` (it carries its own `existingIntermediates` guard), and the active-mode arms of `untlNeg`/`snceNeg` introduce times without being witness-guarded; the correct test is the ordering-length one `expandOnceNoFresh` already uses (`newOrd.constraints.length`), not the rule list. Establishing this disjunct means proving a time-dimension analogue of `applyRule_emitted_world_mem` keyed on that ordering-length test. Second disjunct (cashed at the once-only bound, carrying the sigma-hit obligation from `mintPotential_lt_of_pick_linear` / `_branching`): the formula the rule fires on must be `sigma sf` for some `sf in U`; this is entangled with the time-reuse question -- `Branch.nextTime = maxTime + 1` while `Branch.identifyTime` can LOWER `maxTime`, so whether the engine can re-issue a time an earlier identification retired is genuinely open (the live-times reformulation carries the identical obligation, confirming it is intrinsic rather than an artifact of the measure). Done means: a theorem proving `MintPaysForTime fc U Tmax` for a concrete, useful instantiation, landed sorry-free and axiom-free in MintBound.lean, with `lake build` green. Do not re-attempt anything in the do-not-re-attempt register at MintBound.lean:4455-4510 (eight entries; read before starting) -- in particular do not re-litigate `witnessPresent_identifyTime`'s unconditional form (entry 5, refuted by `witnessPresent_identifyTime_unconditional_false`) or `OrdTimesLeMaxTime` preservation across the identification arm (entry 7, refuted by `ordTimes_identifyTime_arm3_false`; the settled repair is `OrdTimesKnown`).
@@ -396,7 +401,9 @@ PossibleWorlds 79 supplies the citable corollary; `specs/paper-definitions-of-re
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 431, Task 432, Task 434
-- **Research**: [428_engine_totality_at_a_quantified_branch_budget/reports/05_spawn-analysis.md]
+- **Research**:
+  - [428_engine_totality_at_a_quantified_branch_budget/reports/05_spawn-analysis.md]
+  - [433_discharge_postblockingsettles_residual/reports/01_spawn-inherited-research.md]
 
 **Description**: Discharge `PostBlockingSettles fc`, defined at FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean:4344, one of the four residual hypotheses on the totality terminus `buildTableauAt_isSome_of_budget` (MintBound.lean:4416). It states that the post-blocking pass leaves a branch the blocking-aware saturation test certifies -- i.e. `findUnexpandedUnblockedWith satBr satOrd fc (blockedTimes satBr satOrd fc (armTracker satBr)) = none` whenever `saturateBlocked ob fuel oOrd fc = some (.inr (satBr, satOrd))`. It subsumes `resolveOpenArm`'s own `none` arm via `armSettlement_of_postBlockingSettles` (MintBound.lean:4354) -- `ArmSettlement` alone is proved strictly too weak (`resolveOpenArm` tests `findClosure satBr` before its saturation test; `buildTableauAt` does not), so do not attempt to discharge via `ArmSettlement` instead. The relevant definitions are frozen (md5-pinned) in Saturation.lean (`saturateBlocked`, :431) and Tableau.lean (`blockedTimes`, :2104; `findUnexpandedUnblockedWith`, :2115) -- do not edit either file; the residual's own docstring states the gap ('whether the fuel-vs-condition gap can be closed by fuel alone') is exactly what Saturation.lean leaves open using only its existing public interface. Done means: either (a) a proof of `PostBlockingSettles fc` for the frame classes the terminus is meant to be used at, using only the public interface of the frozen files, landed sorry-free and axiom-free with `lake build` green; or (b), if (a) turns out to be genuinely impossible without touching the frozen files, a return to [BLOCKED] with the specific counterexample or obstruction found, analogous to the parent task's own refutation-driven repairs (e.g. `ordTimes_identifyTime_arm3_false`, MintBound.lean:1217) -- do not paper over with a vacuous definition (`lean4.md`'s Vacuous Definitions prohibition applies).
 
@@ -408,7 +415,9 @@ PossibleWorlds 79 supplies the citable corollary; `specs/paper-definitions-of-re
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 431, Task 434
-- **Research**: [428_engine_totality_at_a_quantified_branch_budget/reports/05_spawn-analysis.md]
+- **Research**:
+  - [428_engine_totality_at_a_quantified_branch_budget/reports/05_spawn-analysis.md]
+  - [432_discharge_universeclosed_residual/reports/01_spawn-inherited-research.md]
 - **Plan**: [432_discharge_universeclosed_residual/plans/01_universeclosed-clause2-verdict-instantiation.md]
 - **Summary**: [432_discharge_universeclosed_residual/summaries/01_universeclosed-clause2-verdict-instantiation-summary.md]
 
@@ -476,10 +485,17 @@ DONE WHEN: `boxAnchoredCheck` and `temporalWitnessCheck` are dischargeable on re
   - [428_engine_totality_at_a_quantified_branch_budget/plans/02_lexicographic-splitordered-measure.md]
   - [428_engine_totality_at_a_quantified_branch_budget/plans/03_mint-bound-irreflexivity-totality.md]
   - [428_engine_totality_at_a_quantified_branch_budget/plans/04_ordtimesknown-strengthening-totality.md]
-- **Summary**: [428_engine_totality_at_a_quantified_branch_budget/summaries/02_lexicographic-splitordered-measure-summary.md]
+  - [428_engine_totality_at_a_quantified_branch_budget/plans/01_budget-totality-engine-repair.md]
+- **Summary**:
+  - [428_engine_totality_at_a_quantified_branch_budget/summaries/02_lexicographic-splitordered-measure-summary.md]
+  - [428_engine_totality_at_a_quantified_branch_budget/summaries/01_budget-totality-engine-repair-summary.md]
+  - [428_engine_totality_at_a_quantified_branch_budget/summaries/04_ordtimesknown-strengthening-totality-summary.md]
 - **Research**:
   - [428_engine_totality_at_a_quantified_branch_budget/reports/03_phase11-potential-obstruction.md]
   - [428_engine_totality_at_a_quantified_branch_budget/reports/04_witness-preservation-machine-checked.md]
+  - [428_engine_totality_at_a_quantified_branch_budget/reports/01_budget-totality-refuted-and-repair.md]
+  - [428_engine_totality_at_a_quantified_branch_budget/reports/02_splitordered-measure-blocker.md]
+  - [428_engine_totality_at_a_quantified_branch_budget/reports/05_spawn-analysis.md]
 
 **Description**: Engine totality at a quantified branch budget. Owns obstruction O1 of the Phase 7.3 deadlock recorded in specs/165_establish_semantic_finite_model_property/reports/09_phase7-deadlock-blocker-research.md section "The four obstructions" (read it first; do not re-derive the refutation).
 
@@ -679,6 +695,7 @@ Acceptance: the refuted-route comment no longer appears at Transfer.lean:1239-12
 - **Dependencies**: Task 420, Task 438, Task 439
 - **Research**: [419_machine_check_co_reynolds_independence/reports/01_co-not-derives-prior-u.md]
 - **Plan**: [419_machine_check_co_reynolds_independence/plans/01_machine-check-co-independence.md]
+- **Summary**: [419_machine_check_co_reynolds_independence/summaries/01_machine-check-co-independence-summary.md]
 
 **Description**: RE-ISSUED 2026-08-10 (description rewrite only; status unchanged). Machine-check the CO-does-not-derive-Reynolds independence result. Currently recorded ONLY as a pen-and-paper model sketch in the Layer 9 prose of FormalSystem/ProofSystem/Axioms.lean (immediately above the `Axiom.prior_U_gap` constructor), where it is explicitly flagged as NOT machine-checked.
 
@@ -737,8 +754,12 @@ Run `bash scripts/check-paper-definitions.sh` and read specs/paper-definitions-o
 - **Task Type**: lean4
 - **Topic**: paper-refactor
 - **Dependencies**: Task 414, Task 420, Task 438, Task 439
-- **Research**: [417_semantic_fmp_finite_worldstate_over_z/reports/02_semantic-fmp-rescoped-z-time.md]
-- **Plan**: [417_semantic_fmp_finite_worldstate_over_z/plans/03_semantic-fmp-z-time.md]
+- **Research**:
+  - [417_semantic_fmp_finite_worldstate_over_z/reports/02_semantic-fmp-rescoped-z-time.md]
+  - [417_semantic_fmp_finite_worldstate_over_z/reports/01_semantic-fmp-finite-worldstate.md]
+- **Plan**:
+  - [417_semantic_fmp_finite_worldstate_over_z/plans/03_semantic-fmp-z-time.md]
+  - [417_semantic_fmp_finite_worldstate_over_z/plans/02_semantic-fmp-z-time.md]
 
 **Description**: RE-ISSUED 2026-08-10 (supersedes the prior maximal-history framing). SEMANTIC FMP OVER A FIXED CARRIER, stated against the TOTAL-history semantics of task 414: prove the TruthAt-connected finite model property the paper's decidability corollary proof text cites -- any formula satisfiable over the Discrete class is satisfiable in a model with FINITE WorldState over D = Z -- replacing reliance on the syntactic closure-MCS FMP theorems (FormalSystem/Metalogic/Decidability/FMP/FMP.lean) that never connect to TruthAt. Add decidable model checking for the finite-W-over-Z presentation to back the paper's enumeration argument (restated paper-side as finite W over Z, since every model has infinite D). This is the semantic-FMP follow-on explicitly descoped by the task-165 redirect; the tableau programme remains the decision-procedure route and also rebases onto the new semantics. Related: 165, 410, 411, 412.
 
@@ -778,8 +799,11 @@ Run `bash scripts/check-paper-definitions.sh` and read specs/paper-definitions-o
 - **Task Type**: lean4
 - **Topic**: paper-refactor
 - **Dependencies**: Task 414, Task 420, Task 438, Task 439
-- **Research**: [415_completeness_over_total_history_semantics/reports/02_total-history-internalization.md]
+- **Research**:
+  - [415_completeness_over_total_history_semantics/reports/02_total-history-internalization.md]
+  - [415_completeness_over_total_history_semantics/reports/01_completeness-maximal-history-rebase.md]
 - **Plan**: [415_completeness_over_total_history_semantics/plans/02_total-history-completeness.md]
+- **Summary**: [415_completeness_over_total_history_semantics/summaries/02_total-history-completeness-summary.md]
 
 **Description**: RE-ISSUED 2026-08-10 (supersedes the prior maximal-history framing in full). COMPLETENESS OVER TOTAL-HISTORY SEMANTICS -- INTERNALIZED, NOT BRIDGED: restate and reprove WEAK completeness per frame class so the canonical/chronicle constructions deliver countermodels that are total-history models OUTRIGHT.
 

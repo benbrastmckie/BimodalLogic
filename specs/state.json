@@ -9,12 +9,20 @@
     {
       "project_number": 449,
       "project_name": "review_paper_to_improve_bimodal_reference_manual",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "formal",
       "description": "Systematically review /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex in order to improve typst/BimodalReference.typ while observing the aim to accurately represent the Lean code in this repository, which is actively being improved to also be in better alignment with the possible_worlds.tex paper. The key difference between the paper and this Lean repo with its corresponding BimodalReference.typ manual is that this repo should focus entirely on constructing/presenting the full bimodal logic system where snce/untl operators are primitive, leaving the fragment with past/future operators as primitives as a subsystem to be developed later in order to establish conservative extension results if possible, though for now that effort can be ignored",
       "topic": "reference-book",
       "created": "2026-08-17T15:49:45Z",
-      "last_updated": "2026-08-17T15:49:45Z"
+      "last_updated": "2026-08-17T16:07:27Z",
+      "session_id": "sess_1786981863_777984",
+      "artifacts": [
+        {
+          "path": "specs/449_review_paper_to_improve_bimodal_reference_manual/reports/01_paper-manual-lean-alignment.md",
+          "type": "report",
+          "summary": "paper manual lean alignment (backfilled by --sync)"
+        }
+      ]
     },
     {
       "project_number": 448,
@@ -210,6 +218,11 @@
           "path": "specs/419_machine_check_co_reynolds_independence/plans/01_machine-check-co-independence.md",
           "type": "plan",
           "summary": "Six-phase plan for the tree's first machine-checked independence result, ~9 hours, targeting FormalSystem/Metalogic/Independence/."
+        },
+        {
+          "path": "specs/419_machine_check_co_reynolds_independence/summaries/01_machine-check-co-independence-summary.md",
+          "type": "summary",
+          "summary": "machine check co independence summary (backfilled by --sync)"
         }
       ]
     },
@@ -753,6 +766,16 @@
           "path": "specs/415_completeness_over_total_history_semantics/plans/02_total-history-completeness.md",
           "type": "plan",
           "summary": "8-phase implementation plan: 414-independent tranche front-loaded, dense re-host marked as 420-unblocking milestone, 414-gated restatement phases with on-disk gate checks, 420-phase-10 field handshake"
+        },
+        {
+          "path": "specs/415_completeness_over_total_history_semantics/reports/01_completeness-maximal-history-rebase.md",
+          "type": "report",
+          "summary": "completeness maximal history rebase (backfilled by --sync)"
+        },
+        {
+          "path": "specs/415_completeness_over_total_history_semantics/summaries/02_total-history-completeness-summary.md",
+          "type": "summary",
+          "summary": "total history completeness summary (backfilled by --sync)"
         }
       ],
       "created": "2026-07-28T22:51:10Z",
@@ -783,6 +806,16 @@
         {
           "path": "specs/417_semantic_fmp_finite_worldstate_over_z/plans/03_semantic-fmp-z-time.md",
           "type": "plan"
+        },
+        {
+          "path": "specs/417_semantic_fmp_finite_worldstate_over_z/reports/01_semantic-fmp-finite-worldstate.md",
+          "type": "report",
+          "summary": "semantic fmp finite worldstate (backfilled by --sync)"
+        },
+        {
+          "path": "specs/417_semantic_fmp_finite_worldstate_over_z/plans/02_semantic-fmp-z-time.md",
+          "type": "plan",
+          "summary": "semantic fmp z time (backfilled by --sync)"
         }
       ],
       "created": "2026-07-28T22:51:10Z",
@@ -868,6 +901,36 @@
           "path": "specs/428_engine_totality_at_a_quantified_branch_budget/plans/04_ordtimesknown-strengthening-totality.md",
           "type": "plan",
           "summary": "Plan v4: Phase 4 reworked around the machine-checked OrdTimesKnown strengthening (shape (b), reopens no completed phase). Sub-phases 4.1 transcription / 4.2 branching analogue (the only genuinely new proof, risk R8) / 4.3 run invariant. Phases 8,10,13,14 change premise to RunInvariant; 9,11,12 unchanged."
+        },
+        {
+          "path": "specs/428_engine_totality_at_a_quantified_branch_budget/reports/01_budget-totality-refuted-and-repair.md",
+          "type": "report",
+          "summary": "budget totality refuted and repair (backfilled by --sync)"
+        },
+        {
+          "path": "specs/428_engine_totality_at_a_quantified_branch_budget/reports/02_splitordered-measure-blocker.md",
+          "type": "report",
+          "summary": "splitordered measure blocker (backfilled by --sync)"
+        },
+        {
+          "path": "specs/428_engine_totality_at_a_quantified_branch_budget/reports/05_spawn-analysis.md",
+          "type": "report",
+          "summary": "spawn analysis (backfilled by --sync)"
+        },
+        {
+          "path": "specs/428_engine_totality_at_a_quantified_branch_budget/plans/01_budget-totality-engine-repair.md",
+          "type": "plan",
+          "summary": "budget totality engine repair (backfilled by --sync)"
+        },
+        {
+          "path": "specs/428_engine_totality_at_a_quantified_branch_budget/summaries/01_budget-totality-engine-repair-summary.md",
+          "type": "summary",
+          "summary": "budget totality engine repair summary (backfilled by --sync)"
+        },
+        {
+          "path": "specs/428_engine_totality_at_a_quantified_branch_budget/summaries/04_ordtimesknown-strengthening-totality-summary.md",
+          "type": "summary",
+          "summary": "ordtimesknown strengthening totality summary (backfilled by --sync)"
         }
       ],
       "title": null,
@@ -956,6 +1019,11 @@
           "path": "specs/432_discharge_universeclosed_residual/summaries/01_universeclosed-clause2-verdict-instantiation-summary.md",
           "type": "summary",
           "summary": "8/9 phases; both verdict gates refutable; Phase 7 blocked on time analogue"
+        },
+        {
+          "path": "specs/432_discharge_universeclosed_residual/reports/01_spawn-inherited-research.md",
+          "type": "report",
+          "summary": "spawn inherited research (backfilled by --sync)"
         }
       ],
       "session_id": "sess_1786032616_1f0e93_432"
@@ -984,6 +1052,11 @@
           "type": "research",
           "path": "specs/428_engine_totality_at_a_quantified_branch_budget/reports/05_spawn-analysis.md",
           "summary": "Spawn analysis from parent task"
+        },
+        {
+          "path": "specs/433_discharge_postblockingsettles_residual/reports/01_spawn-inherited-research.md",
+          "type": "report",
+          "summary": "spawn inherited research (backfilled by --sync)"
         }
       ]
     },
@@ -1016,6 +1089,16 @@
           "path": "specs/434_discharge_mintpaysfortime_residual/plans/01_mintpaysfortime-time-analogue.md",
           "type": "plan",
           "summary": "9 phases; time dichotomy in wave 2; refutation vehicle via untlNeg"
+        },
+        {
+          "path": "specs/434_discharge_mintpaysfortime_residual/reports/01_spawn-inherited-research.md",
+          "type": "report",
+          "summary": "spawn inherited research (backfilled by --sync)"
+        },
+        {
+          "path": "specs/434_discharge_mintpaysfortime_residual/reports/02_spawn-analysis.md",
+          "type": "report",
+          "summary": "spawn analysis (backfilled by --sync)"
         }
       ],
       "session_id": "sess_1786115845_d6a7bd",
@@ -1059,6 +1142,11 @@
           "type": "summary",
           "path": "specs/436_fourth_termination_measure_component/summaries/01_self-guard-potential-summary.md",
           "summary": "Machine-checked negative result: selfGuardPotential refuted by mintPaysForTimeAt_reuse_false; register entry 17 landed; gapPotential density residual left unattempted"
+        },
+        {
+          "path": "specs/436_fourth_termination_measure_component/reports/02_spawn-analysis.md",
+          "type": "report",
+          "summary": "spawn analysis (backfilled by --sync)"
         }
       ],
       "session_id": "sess_1786211798_a93adc",
