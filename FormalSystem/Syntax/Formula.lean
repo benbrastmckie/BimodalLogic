@@ -82,12 +82,28 @@ inductive Formula : Type where
   | imp : Formula → Formula → Formula
   /-- Modal necessity (□φ, "necessarily φ") -/
   | box : Formula → Formula
-  /-- Until U(φ, ψ) — Burgess convention: φ = event (eventually true), ψ = guard (holds in between).
-      "ψ holds until φ becomes true": ∃ s > t, φ(s) ∧ ∀ r ∈ (t,s), ψ(r). -/
-  | untl : Formula → Formula → Formula
-  /-- Since S(φ, ψ) — Burgess convention: φ = event (was true), ψ = guard (held in between).
-      "ψ has held since φ was true": ∃ s < t, φ(s) ∧ ∀ r ∈ (s,t), ψ(r). -/
-  | snce : Formula → Formula → Formula
+  /-- Until, `φ U ψ`. **Argument 1 is the guard, argument 2 is the event.**
+
+      `untlQ φ ψ` holds at `t` iff the *event* `ψ` is witnessed at some strictly later time `s`,
+      and the *guard* `φ` holds at every time in the open interval `(t, s)`:
+      `∃ s > t, ψ(s) ∧ ∀ r ∈ (t,s), φ(r)`.
+
+      This is the guard-first order of the paper's `def:BLplus-semantics`, whose `(until)` clause
+      reads "M,τ,x ⊨ φ until ψ iff M,τ,z ⊨ ψ for some time z > x where M,τ,y ⊨ φ for all y ∈ D
+      with x < y < z" — the existential witness is the *second* argument, the universally
+      quantified interval condition the *first*. It agrees with the same definition's derived
+      operators `future φ := ⊤ until φ` and `Next φ := ⊥ until φ` (`def:BLplus-defined`). -/
+  | untlQ : Formula → Formula → Formula
+  /-- Since, `φ S ψ`. **Argument 1 is the guard, argument 2 is the event.**
+
+      `snceQ φ ψ` holds at `t` iff the *event* `ψ` is witnessed at some strictly earlier time `s`,
+      and the *guard* `φ` holds at every time in the open interval `(s, t)`:
+      `∃ s < t, ψ(s) ∧ ∀ r ∈ (s,t), φ(r)`.
+
+      The past mirror of `untlQ`, and the guard-first order of `def:BLplus-semantics`'s `(since)`
+      clause; it agrees with `past φ := ⊤ since φ` and `Previous φ := ⊥ since φ`
+      (`def:BLplus-defined`). -/
+  | snceQ : Formula → Formula → Formula
   deriving Repr, DecidableEq, BEq, Hashable, Countable
 
 /-!
@@ -128,7 +144,7 @@ This means: there exists a future time where φ is true.
 
 **DSL Notation**: `F φ` for "Future" / "Finally"
 -/
-def someFuture (φ : Formula) : Formula := Formula.untl φ Formula.top
+def someFuture (φ : Formula) : Formula := Formula.untlQ Formula.top φ
 
 /--
 Existential past operator (Pφ, "φ was true at some past time").
@@ -138,7 +154,7 @@ This means: there exists a past time where φ is true.
 
 **DSL Notation**: `P φ` for "Past" / "Previously"
 -/
-def somePast (φ : Formula) : Formula := Formula.snce φ Formula.top
+def somePast (φ : Formula) : Formula := Formula.snceQ Formula.top φ
 
 /--
 Universal future operator (Gφ, "φ will always be true").
@@ -177,7 +193,7 @@ downstream of `ProofSystem/`, so it is not importable from `Axioms.lean` in any 
 
 Used to state `Axiom.prior_U_gap` and `Axiom.sep`.
 -/
-def kPlus (φ : Formula) : Formula := (Formula.untl Formula.top φ.neg).neg
+def kPlus (φ : Formula) : Formula := (Formula.untlQ φ.neg Formula.top).neg
 
 /--
 Reynolds' `K⁻` operator: `K⁻A = ¬S(⊤, ¬A)` — the past dual of `kPlus`, "A held arbitrarily
@@ -190,7 +206,7 @@ Same name-collision caveat as `kPlus`: do not confuse with `Metalogic`'s `kminus
 
 Used to state `Axiom.prior_S_gap` and `Axiom.sep`.
 -/
-def kMinus (φ : Formula) : Formula := (Formula.snce Formula.top φ.neg).neg
+def kMinus (φ : Formula) : Formula := (Formula.snceQ φ.neg Formula.top).neg
 
 /--
 Structural complexity of a formula (number of connectives + 1).
@@ -212,55 +228,55 @@ def complexity : Formula → Nat
   -- Expansion: imp (imp (imp (snce (imp φ bot) (imp bot bot)) bot) (imp (imp (imp φ₂ (imp (imp
   -- (untl (imp φ₃ bot) (imp bot bot)) bot) bot)) bot) bot)) bot
   | imp
-    (imp (imp (snce (imp _φ1 bot) (imp bot bot)) bot)
-      (imp (imp (imp _φ2 (imp (imp (untl (imp _φ3 bot) (imp bot bot)) bot) bot)) bot) bot)) bot =>
+    (imp (imp (snceQ (imp bot bot) (imp _φ1 bot)) bot)
+      (imp (imp (imp _φ2 (imp (imp (untlQ (imp bot bot) (imp _φ3 bot)) bot) bot)) bot) bot)) bot =>
       1 + _φ1.complexity
   -- sometimes(φ) = ¬always(¬φ) → 1 + φ.complexity
   -- Expansion: imp (always(neg φ)) bot
   | imp
     (imp
-      (imp (imp (snce (imp (imp _φ1 bot) bot) (imp bot bot)) bot)
+      (imp (imp (snceQ (imp bot bot) (imp (imp _φ1 bot) bot)) bot)
         (imp
-          (imp (imp (imp _φ2 bot) (imp (imp (untl (imp (imp _φ3 bot) bot) (imp bot bot)) bot) bot))
+          (imp (imp (imp _φ2 bot) (imp (imp (untlQ (imp bot bot) (imp (imp _φ3 bot) bot)) bot) bot))
             bot) bot)) bot) bot => 1 + _φ1.complexity
   -- weakFuture(φ) = φ ∧ G(φ) → 1 + φ.complexity
   -- Expansion: imp (imp φ (imp (imp (untl (imp φ₂ bot) (imp bot bot)) bot) bot)) bot
-  | imp (imp _φ1 (imp (imp (untl (imp _φ2 bot) (imp bot bot)) bot) bot)) bot => 1 + _φ1.complexity
+  | imp (imp _φ1 (imp (imp (untlQ (imp bot bot) (imp _φ2 bot)) bot) bot)) bot => 1 + _φ1.complexity
   -- weakPast(φ) = φ ∧ H(φ) → 1 + φ.complexity
   -- Expansion: imp (imp φ (imp (imp (snce (imp φ₂ bot) (imp bot bot)) bot) bot)) bot
-  | imp (imp _φ1 (imp (imp (snce (imp _φ2 bot) (imp bot bot)) bot) bot)) bot => 1 + _φ1.complexity
+  | imp (imp _φ1 (imp (imp (snceQ (imp bot bot) (imp _φ2 bot)) bot) bot)) bot => 1 + _φ1.complexity
   -- WU(φ, ψ) = weakUntil φ ψ = (untl φ ψ).or ψ.allFuture → 1 + φ.complexity + ψ.complexity
-  | imp (imp (untl φ ψ) bot) (imp (untl (imp _ψ2 bot) (imp bot bot)) bot) =>
+  | imp (imp (untlQ ψ φ) bot) (imp (untlQ (imp bot bot) (imp _ψ2 bot)) bot) =>
     1 + φ.complexity + ψ.complexity
   -- WS(φ, ψ) = weakSince φ ψ = (snce φ ψ).or ψ.allPast → 1 + φ.complexity + ψ.complexity
-  | imp (imp (snce φ ψ) bot) (imp (snce (imp _ψ2 bot) (imp bot bot)) bot) =>
+  | imp (imp (snceQ ψ φ) bot) (imp (snceQ (imp bot bot) (imp _ψ2 bot)) bot) =>
     1 + φ.complexity + ψ.complexity
   -- diamond(φ) = ¬□¬φ = imp (box (imp φ bot)) bot → 1 + φ.complexity
   | imp (box (imp φ bot)) bot => 1 + φ.complexity
   -- G(φ) = imp (untl (imp φ bot) (imp bot bot)) bot → 1 + φ.complexity
-  | imp (untl (imp φ bot) (imp bot bot)) bot => 1 + φ.complexity
+  | imp (untlQ (imp bot bot) (imp φ bot)) bot => 1 + φ.complexity
   -- H(φ) = imp (snce (imp φ bot) (imp bot bot)) bot → 1 + φ.complexity
-  | imp (snce (imp φ bot) (imp bot bot)) bot => 1 + φ.complexity
+  | imp (snceQ (imp bot bot) (imp φ bot)) bot => 1 + φ.complexity
   -- R(φ, ψ) = release φ ψ = (untl φ.neg ψ.neg).neg → 1 + φ.complexity + ψ.complexity
-  | imp (untl (imp φ bot) (imp ψ bot)) bot => 1 + φ.complexity + ψ.complexity
+  | imp (untlQ (imp ψ bot) (imp φ bot)) bot => 1 + φ.complexity + ψ.complexity
   -- T(φ, ψ) = trigger φ ψ = (snce φ.neg ψ.neg).neg → 1 + φ.complexity + ψ.complexity
-  | imp (snce (imp φ bot) (imp ψ bot)) bot => 1 + φ.complexity + ψ.complexity
+  | imp (snceQ (imp ψ bot) (imp φ bot)) bot => 1 + φ.complexity + ψ.complexity
   | imp φ ψ => 1 + φ.complexity + ψ.complexity
   | box φ => 1 + φ.complexity
   -- next(φ) = untl φ bot → 1 + φ.complexity
-  | untl φ .bot => 1 + φ.complexity
+  | untlQ .bot φ => 1 + φ.complexity
   -- F(φ) = untl φ (imp bot bot) → 1 + φ.complexity
-  | untl φ (imp bot bot) => 1 + φ.complexity
+  | untlQ (imp bot bot) φ => 1 + φ.complexity
   -- M(φ, ψ) = strongRelease φ ψ = untl (and ψ φ) ψ → 2 + φ.complexity + ψ.complexity
-  | untl (imp (imp ψ (imp φ bot)) bot) _ψ2 => 2 + φ.complexity + ψ.complexity
-  | untl φ ψ => 1 + φ.complexity + ψ.complexity
+  | untlQ _ψ2 (imp (imp ψ (imp φ bot)) bot) => 2 + φ.complexity + ψ.complexity
+  | untlQ ψ φ => 1 + φ.complexity + ψ.complexity
   -- prev(φ) = snce φ bot → 1 + φ.complexity
-  | snce φ .bot => 1 + φ.complexity
+  | snceQ .bot φ => 1 + φ.complexity
   -- P(φ) = snce φ (imp bot bot) → 1 + φ.complexity
-  | snce φ (imp bot bot) => 1 + φ.complexity
+  | snceQ (imp bot bot) φ => 1 + φ.complexity
   -- ST(φ, ψ) = strongTrigger φ ψ = snce (and ψ φ) ψ → 2 + φ.complexity + ψ.complexity
-  | snce (imp (imp ψ (imp φ bot)) bot) _ψ2 => 2 + φ.complexity + ψ.complexity
-  | snce φ ψ => 1 + φ.complexity + ψ.complexity
+  | snceQ _ψ2 (imp (imp ψ (imp φ bot)) bot) => 2 + φ.complexity + ψ.complexity
+  | snceQ ψ φ => 1 + φ.complexity + ψ.complexity
 
 /-! ### Complexity verification: unary temporal operators -/
 
@@ -283,8 +299,8 @@ private def q_cmplx : Formula := .atom (Atom.mkBase "q")
 #eval p_cmplx.allFuture.box.complexity  -- 3
 
 -- Regular untl/snce still work correctly
-#eval (Formula.untl p_cmplx q_cmplx).complexity  -- 3
-#eval (Formula.snce p_cmplx q_cmplx).complexity  -- 3
+#eval (Formula.untlQ q_cmplx p_cmplx).complexity  -- 3
+#eval (Formula.snceQ q_cmplx p_cmplx).complexity  -- 3
 
 /-!
 ### BEq Reflexivity
@@ -302,10 +318,10 @@ private theorem beq_box_eq (a b : Formula) :
     (box a == box b) = (a == b) := rfl
 
 private theorem beq_untl_eq (a b c d : Formula) :
-    (untl a b == untl c d) = ((a == c) && (b == d)) := rfl
+    (untlQ a b == untlQ c d) = ((a == c) && (b == d)) := rfl
 
 private theorem beq_snce_eq (a b c d : Formula) :
-    (snce a b == snce c d) = ((a == c) && (b == d)) := rfl
+    (snceQ a b == snceQ c d) = ((a == c) && (b == d)) := rfl
 
 /-- BEq on Formula is reflexive. -/
 theorem beq_refl (φ : Formula) : (φ == φ) = true := by
@@ -314,8 +330,8 @@ theorem beq_refl (φ : Formula) : (φ == φ) = true := by
   | bot => rfl
   | imp a b iha ihb => rw [beq_imp_eq, iha, ihb]; rfl
   | box a ih => rw [beq_box_eq, ih]
-  | untl a b iha ihb => rw [beq_untl_eq, iha, ihb]; rfl
-  | snce a b iha ihb => rw [beq_snce_eq, iha, ihb]; rfl
+  | untlQ a b iha ihb => rw [beq_untl_eq, iha, ihb]; rfl
+  | snceQ a b iha ihb => rw [beq_snce_eq, iha, ihb]; rfl
 
 instance : ReflBEq Formula where
   rfl := beq_refl _
@@ -328,38 +344,38 @@ theorem eq_of_beq {φ ψ : Formula} (h : (φ == ψ) = true) : φ = ψ := by
     | atom q =>
       have heq : (atom p == atom q) = (p == q) := rfl
       rw [heq] at h; exact congrArg atom (beq_iff_eq.mp h)
-    | bot | imp _ _ | box _ | untl _ _ | snce _ _ => exact nomatch h
+    | bot | imp _ _ | box _ | untlQ _ _ | snceQ _ _ => exact nomatch h
   | bot =>
     match ψ with
     | bot => rfl
-    | atom _ | imp _ _ | box _ | untl _ _ | snce _ _ => exact nomatch h
+    | atom _ | imp _ _ | box _ | untlQ _ _ | snceQ _ _ => exact nomatch h
   | imp a b iha ihb =>
     match ψ with
     | imp c d =>
       have heq : (imp a b == imp c d) = ((a == c) && (b == d)) := rfl
       rw [heq] at h; simp only [Bool.and_eq_true] at h
       exact congrArg₂ imp (iha h.1) (ihb h.2)
-    | atom _ | bot | box _ | untl _ _ | snce _ _ => exact nomatch h
+    | atom _ | bot | box _ | untlQ _ _ | snceQ _ _ => exact nomatch h
   | box a ih =>
     match ψ with
     | box c =>
       have heq : (box a == box c) = (a == c) := rfl
       rw [heq] at h; exact congrArg box (ih h)
-    | atom _ | bot | imp _ _ | untl _ _ | snce _ _ => exact nomatch h
-  | untl a b iha ihb =>
+    | atom _ | bot | imp _ _ | untlQ _ _ | snceQ _ _ => exact nomatch h
+  | untlQ a b iha ihb =>
     match ψ with
-    | untl c d =>
-      have heq : (untl a b == untl c d) = ((a == c) && (b == d)) := rfl
+    | untlQ c d =>
+      have heq : (untlQ a b == untlQ c d) = ((a == c) && (b == d)) := rfl
       rw [heq] at h; simp only [Bool.and_eq_true] at h
-      exact congrArg₂ untl (iha h.1) (ihb h.2)
-    | atom _ | bot | imp _ _ | box _ | snce _ _ => exact nomatch h
-  | snce a b iha ihb =>
+      exact congrArg₂ untlQ (iha h.1) (ihb h.2)
+    | atom _ | bot | imp _ _ | box _ | snceQ _ _ => exact nomatch h
+  | snceQ a b iha ihb =>
     match ψ with
-    | snce c d =>
-      have heq : (snce a b == snce c d) = ((a == c) && (b == d)) := rfl
+    | snceQ c d =>
+      have heq : (snceQ a b == snceQ c d) = ((a == c) && (b == d)) := rfl
       rw [heq] at h; simp only [Bool.and_eq_true] at h
-      exact congrArg₂ snce (iha h.1) (ihb h.2)
-    | atom _ | bot | imp _ _ | box _ | untl _ _ => exact nomatch h
+      exact congrArg₂ snceQ (iha h.1) (ihb h.2)
+    | atom _ | bot | imp _ _ | box _ | untlQ _ _ => exact nomatch h
 
 instance : LawfulBEq Formula where
   eq_of_beq := eq_of_beq
@@ -383,8 +399,8 @@ def modalDepth : Formula → Nat
   | bot => 0
   | imp φ ψ => max φ.modalDepth ψ.modalDepth
   | box φ => 1 + φ.modalDepth
-  | untl φ ψ => max φ.modalDepth ψ.modalDepth
-  | snce φ ψ => max φ.modalDepth ψ.modalDepth
+  | untlQ ψ φ => max φ.modalDepth ψ.modalDepth
+  | snceQ ψ φ => max φ.modalDepth ψ.modalDepth
 
 /--
 Temporal depth: nesting level of temporal operators (G, F, H, P).
@@ -404,8 +420,8 @@ def temporalDepth : Formula → Nat
   | bot => 0
   | imp φ ψ => max φ.temporalDepth ψ.temporalDepth
   | box φ => φ.temporalDepth
-  | untl φ ψ => 1 + max φ.temporalDepth ψ.temporalDepth
-  | snce φ ψ => 1 + max φ.temporalDepth ψ.temporalDepth
+  | untlQ ψ φ => 1 + max φ.temporalDepth ψ.temporalDepth
+  | snceQ ψ φ => 1 + max φ.temporalDepth ψ.temporalDepth
 
 /--
 Count implication operators in a formula.
@@ -424,8 +440,8 @@ def countImplications : Formula → Nat
   | bot => 0
   | imp φ ψ => 1 + φ.countImplications + ψ.countImplications
   | box φ => φ.countImplications
-  | untl φ ψ => φ.countImplications + ψ.countImplications
-  | snce φ ψ => φ.countImplications + ψ.countImplications
+  | untlQ ψ φ => φ.countImplications + ψ.countImplications
+  | snceQ ψ φ => φ.countImplications + ψ.countImplications
 
 /--
 Conjunction (φ ∧ ψ) as derived operator: ¬(φ → ¬ψ)
@@ -491,11 +507,11 @@ def co (φ : Formula) : Formula :=
 
 /-- Next-step operator: X(phi) = U(phi, bot) (Burgess convention: event first, guard second).
     X(phi) at t means phi holds at t+1 (event=phi at immediate successor, guard=bot vacuous). -/
-def next (φ : Formula) : Formula := Formula.untl φ Formula.bot
+def next (φ : Formula) : Formula := Formula.untlQ Formula.bot φ
 
 /-- Previous-step operator: Y(phi) = S(phi, bot) (Burgess convention: event first, guard second).
     Y(phi) at t means phi holds at t-1 (event=phi at immediate predecessor, guard=bot vacuous). -/
-def prev (φ : Formula) : Formula := Formula.snce φ Formula.bot
+def prev (φ : Formula) : Formula := Formula.snceQ Formula.bot φ
 
 /--
 Derived reflexive future operator (G'φ := φ ∧ Gφ, "now and always in the future").
@@ -524,7 +540,7 @@ Release(φ, ψ) = ¬(¬φ U ¬ψ). In Burgess convention (untl event guard):
 Semantically: ψ must hold at all future times until and including when φ first holds
 (and if φ never holds, ψ must hold forever).
 -/
-def release (φ ψ : Formula) : Formula := (Formula.untl φ.neg ψ.neg).neg
+def release (φ ψ : Formula) : Formula := (Formula.untlQ ψ.neg φ.neg).neg
 
 /--
 Weak Until operator W(φ, ψ) — Until without the liveness requirement.
@@ -533,7 +549,7 @@ Weak_until(φ, ψ) = (ψ U φ) ∨ G(ψ). In Burgess convention:
 `untl φ ψ` = "ψ holds until φ", so weakUntil adds the possibility that
 the guard ψ holds forever (the event φ may never occur).
 -/
-def weakUntil (φ ψ : Formula) : Formula := (Formula.untl φ ψ).or ψ.allFuture
+def weakUntil (φ ψ : Formula) : Formula := (Formula.untlQ ψ φ).or ψ.allFuture
 
 /--
 Trigger operator T(φ, ψ) — dual of Since (past analog of Release).
@@ -541,7 +557,7 @@ Trigger operator T(φ, ψ) — dual of Since (past analog of Release).
 Trigger(φ, ψ) = ¬(¬φ S ¬ψ). In Burgess convention (snce event guard):
 `snce φ.neg ψ.neg` = "¬ψ held since ¬φ was true", negating gives trigger.
 -/
-def trigger (φ ψ : Formula) : Formula := (Formula.snce φ.neg ψ.neg).neg
+def trigger (φ ψ : Formula) : Formula := (Formula.snceQ ψ.neg φ.neg).neg
 
 /--
 Weak Since operator WS(φ, ψ) — Since without the liveness requirement.
@@ -550,13 +566,13 @@ Weak_since(φ, ψ) = (ψ S φ) ∨ H(ψ). In Burgess convention:
 `snce φ ψ` = "ψ held since φ", so weakSince adds the possibility that
 the guard ψ held forever in the past (the event φ may never have occurred).
 -/
-def weakSince (φ ψ : Formula) : Formula := (Formula.snce φ ψ).or ψ.allPast
+def weakSince (φ ψ : Formula) : Formula := (Formula.snceQ ψ φ).or ψ.allPast
 
 /-- Strong Release operator M(φ, ψ) — ψ U (ψ ∧ φ). Dual of weak until. -/
-def strongRelease (φ ψ : Formula) : Formula := Formula.untl (Formula.and ψ φ) ψ
+def strongRelease (φ ψ : Formula) : Formula := Formula.untlQ ψ (Formula.and ψ φ)
 
 /-- Strong Trigger operator ST(φ, ψ) — ψ S (ψ ∧ φ). Past dual of strong release. -/
-def strongTrigger (φ ψ : Formula) : Formula := Formula.snce (Formula.and ψ φ) ψ
+def strongTrigger (φ ψ : Formula) : Formula := Formula.snceQ ψ (Formula.and ψ φ)
 
 /-! ### Complexity verification: binary derived operators -/
 
@@ -651,8 +667,8 @@ def swapTemporal : Formula → Formula
   | bot => bot
   | imp φ ψ => imp φ.swapTemporal ψ.swapTemporal
   | box φ => box φ.swapTemporal
-  | untl φ ψ => snce φ.swapTemporal ψ.swapTemporal
-  | snce φ ψ => untl φ.swapTemporal ψ.swapTemporal
+  | untlQ ψ φ => snceQ ψ.swapTemporal φ.swapTemporal
+  | snceQ ψ φ => untlQ ψ.swapTemporal φ.swapTemporal
 
 
 /--
@@ -667,8 +683,8 @@ theorem swap_temporal_involution (φ : Formula) :
   | bot => rfl
   | imp _ _ ihp ihq => simp only [swapTemporal, ihp, ihq]
   | box _ ih => simp only [swapTemporal, ih]
-  | untl _ _ ih1 ih2 => simp only [swapTemporal, ih1, ih2]
-  | snce _ _ ih1 ih2 => simp only [swapTemporal, ih1, ih2]
+  | untlQ _ _ ih2 ih1 => simp only [swapTemporal, ih1, ih2]
+  | snceQ _ _ ih2 ih1 => simp only [swapTemporal, ih1, ih2]
 
 
 /--
@@ -762,10 +778,10 @@ def needsPositiveHypotheses : Formula → Bool
     (Formula.box psi).needsPositiveHypotheses = true := rfl
 
 @[simp] lemma needsPositiveHypotheses_untl (p q : Formula) :
-    (Formula.untl p q).needsPositiveHypotheses = true := rfl
+    (Formula.untlQ q p).needsPositiveHypotheses = true := rfl
 
 @[simp] lemma needsPositiveHypotheses_snce (p q : Formula) :
-    (Formula.snce p q).needsPositiveHypotheses = true := rfl
+    (Formula.snceQ q p).needsPositiveHypotheses = true := rfl
 
 @[simp] lemma needsPositiveHypotheses_imp (p q : Formula) :
     (Formula.imp p q).needsPositiveHypotheses = false := rfl
@@ -783,8 +799,8 @@ def atoms : Formula → Finset Atom
   | bot => ∅
   | imp φ ψ => φ.atoms ∪ ψ.atoms
   | box φ => φ.atoms
-  | untl φ ψ => φ.atoms ∪ ψ.atoms
-  | snce φ ψ => φ.atoms ∪ ψ.atoms
+  | untlQ ψ φ => φ.atoms ∪ ψ.atoms
+  | snceQ ψ φ => φ.atoms ∪ ψ.atoms
 
 /-- swapTemporal preserves atoms: swapping past/future does not change which atoms appear. -/
 theorem atoms_swap_temporal (φ : Formula) : φ.swapTemporal.atoms = φ.atoms := by
@@ -793,8 +809,8 @@ theorem atoms_swap_temporal (φ : Formula) : φ.swapTemporal.atoms = φ.atoms :=
   | bot => rfl
   | imp _ _ ih1 ih2 => simp only [swapTemporal, atoms, ih1, ih2]
   | box _ ih => simp only [swapTemporal, atoms, ih]
-  | untl _ _ ih1 ih2 => simp only [swapTemporal, atoms, ih1, ih2]
-  | snce _ _ ih1 ih2 => simp only [swapTemporal, atoms, ih1, ih2]
+  | untlQ _ _ ih2 ih1 => simp only [swapTemporal, atoms, ih1, ih2]
+  | snceQ _ _ ih2 ih1 => simp only [swapTemporal, atoms, ih1, ih2]
 
 /-!
 ### Predicate Formulas (for Standard Translation)
@@ -810,8 +826,8 @@ def predFormulas : Formula → Finset Formula
   | bot => ∅
   | imp φ ψ => φ.predFormulas ∪ ψ.predFormulas
   | box φ => {box φ} ∪ φ.predFormulas
-  | untl φ ψ => φ.predFormulas ∪ ψ.predFormulas
-  | snce φ ψ => φ.predFormulas ∪ ψ.predFormulas
+  | untlQ ψ φ => φ.predFormulas ∪ ψ.predFormulas
+  | snceQ ψ φ => φ.predFormulas ∪ ψ.predFormulas
 
 end Formula
 

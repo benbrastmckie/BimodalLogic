@@ -77,26 +77,26 @@ These correspond to the U-Unfolding and S-Unfolding axioms.
 
 /-- Check if a formula is an Until formula. -/
 def IsUntilFormula : Formula → Prop
-  | .untl _ _ => True
+  | .untlQ _ _ => True
   | _ => False
 
 /-- IsUntilFormula is decidable. -/
 instance : DecidablePred IsUntilFormula :=
   fun f => match f with
-  | .untl _ _ => isTrue True.intro
-  | .atom _ | .bot | .imp _ _ | .box _ | .snce _ _ =>
+  | .untlQ _ _ => isTrue True.intro
+  | .atom _ | .bot | .imp _ _ | .box _ | .snceQ _ _ =>
     isFalse (by simp [IsUntilFormula])
 
 /-- Check if a formula is a Since formula. -/
 def IsSinceFormula : Formula → Prop
-  | .snce _ _ => True
+  | .snceQ _ _ => True
   | _ => False
 
 /-- IsSinceFormula is decidable. -/
 instance : DecidablePred IsSinceFormula :=
   fun f => match f with
-  | .snce _ _ => isTrue True.intro
-  | .atom _ | .bot | .imp _ _ | .box _ | .untl _ _ =>
+  | .snceQ _ _ => isTrue True.intro
+  | .atom _ | .bot | .imp _ _ | .box _ | .untlQ _ _ =>
     isFalse (by simp [IsSinceFormula])
 
 /--
@@ -104,7 +104,7 @@ Convert an Until formula `φ U ψ` to its deferral disjunction `ψ ∨ (φ ∧ (
 For non-Until formulas, returns bot (placeholder, will be filtered).
 -/
 def toUntilDeferral : Formula → Formula
-  | .untl phi psi => Formula.or psi (Formula.and phi (.untl phi psi))
+  | .untlQ psi phi => Formula.or psi (Formula.and phi (.untlQ psi phi))
   | _ => Formula.bot
 
 /--
@@ -112,7 +112,7 @@ Convert a Since formula `φ S ψ` to its deferral disjunction `ψ ∨ (φ ∧ (�
 For non-Since formulas, returns bot (placeholder, will be filtered).
 -/
 def toSinceDeferral : Formula → Formula
-  | .snce phi psi => Formula.or psi (Formula.and phi (.snce phi psi))
+  | .snceQ psi phi => Formula.or psi (Formula.and phi (.snceQ psi phi))
   | _ => Formula.bot
 
 /--
@@ -726,8 +726,8 @@ or `all_past_in_deferralClosure_cases` instead.
 private theorem non_imp_in_deferralClosure_is_in_closureWithNeg (phi : Formula)
     (f : Formula) (h : f ∈ deferralClosure phi)
     (h_not_imp : ∀ a b : Formula, f ≠ Formula.imp a b)
-    (h_not_untl : ∀ a b : Formula, f ≠ Formula.untl a b)
-    (h_not_snce : ∀ a b : Formula, f ≠ Formula.snce a b)
+    (h_not_untl : ∀ a b : Formula, f ≠ Formula.untlQ b a)
+    (h_not_snce : ∀ a b : Formula, f ≠ Formula.snceQ b a)
     (h_not_G : f ≠ gNegNegBot)
     (h_not_H : f ≠ hNegNegBot) :
     f ∈ closureWithNeg phi := by
@@ -845,7 +845,7 @@ theorem all_future_in_deferralClosure_cases (phi psi : Formula)
         have h_F_chi : Formula.someFuture chi ∈ closureWithNeg phi := by
           have h_g_eq : g = Formula.someFuture chi := by
             cases g with
-            | untl a b =>
+            | untlQ b a =>
               simp only [extractFutureInner] at h_ext
               split at h_ext
               · next h_eq => injection h_ext with h_a; subst h_a; exact h_eq
@@ -942,7 +942,7 @@ theorem all_past_in_deferralClosure_cases (phi psi : Formula)
         have h_P_chi : Formula.somePast chi ∈ closureWithNeg phi := by
           have h_g_eq : g = Formula.somePast chi := by
             cases g with
-            | snce a b =>
+            | snceQ b a =>
               simp only [extractPastInner] at h_ext
               split at h_ext
               · next h_eq => injection h_ext with h_a; subst h_a; exact h_eq

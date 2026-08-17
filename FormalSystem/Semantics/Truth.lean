@@ -111,8 +111,8 @@ The evaluation is defined recursively on formula structure (6 constructors):
 - Bot (⊥): always false
 - Implication: standard material conditional
 - Box (□): true iff φ true at all **total** world histories at time t
-- Until U(φ,ψ): ∃ s > t, φ(s) ∧ ∀ r ∈ (t,s), ψ(r) (strict witness, open guard)
-- Since S(φ,ψ): ∃ s < t, φ(s) ∧ ∀ r ∈ (s,t), ψ(r) (strict witness, open guard)
+- Until `φ U ψ`: ∃ s > t, ψ(s) ∧ ∀ r ∈ (t,s), φ(r) (guard φ first, event ψ second)
+- Since `φ S ψ`: ∃ s < t, ψ(s) ∧ ∀ r ∈ (s,t), φ(r) (guard φ first, event ψ second)
 
 G (allFuture), H (allPast), F (someFuture), P (somePast) are `def` abbreviations
 with `@[simp]` characterization theorems (see `future_iff`, `past_iff`, etc.).
@@ -134,13 +134,27 @@ though `def:BL-semantics`'s atom clause has no domain conjunct. Under totality t
 vacuously satisfiable at every `t`, so the two readings agree on `H_F`; the conjunct is what keeps
 `TruthAt` meaningful at the partial histories that the extension machinery still traffics in.
 
-**Until / Since argument order** (do not "fix" this): `untl`/`snce` are **event-first /
-guard-second** here — `untl φ ψ` reads "φ is the event, ψ is the guard". `def:BLplus-semantics`'s
-footnote describes this repository's constructors as guard-first/event-second, which is
-**backwards**; `Formula.someFuture φ = untl φ ⊤` and the `dense_indicator`/K-plus machinery both
-depend on the event-first reading. The divergence is recorded, and the Lean convention is
-deliberately preserved, in `specs/decisions/untl-snce-argument-order.md`. These clauses are
-τ-local and are untouched by the box retarget.
+**Until / Since argument order**: `untlQ`/`snceQ` are **guard-first / event-second** — `untlQ φ ψ`
+reads "φ is the guard, ψ is the event". The two clauses below transcribe
+`def:BLplus-semantics`'s clause bodies directly:
+
+- (since) "M,τ,x ⊨ φ since ψ *iff* M,τ,z ⊨ ψ for some time z < x where M,τ,y ⊨ φ for all y ∈ D
+  with z < y < x."
+- (until) "M,τ,x ⊨ φ until ψ *iff* M,τ,z ⊨ ψ for some time z > x where M,τ,y ⊨ φ for all y ∈ D
+  with x < y < z."
+
+In both, the existential witness is the **second** argument and the universally quantified
+open-interval condition is the **first**. `def:BLplus-defined` corroborates independently:
+`past φ := ⊤ since φ`, `future φ := ⊤ until φ`, `Next φ := ⊥ until φ`, `Previous φ := ⊥ since φ`
+— in each the operand is the event and sits second. `Formula.someFuture φ = untlQ ⊤ φ` and
+`Formula.next φ = untlQ ⊥ φ` match character for character.
+
+Earlier revisions of this docstring quoted an argument-order **footnote** of
+`def:BLplus-semantics` and asserted that the Lean tree was deliberately event-first. Both are
+retired: the tracked anchor (sha256 `edde7517…`) carries no footnote, and the tree was aligned
+to the paper by a uniform argument swap of the definition and every call site. See
+`specs/decisions/untl-snce-argument-order.md`. These clauses are τ-local and are untouched by the
+box retarget.
 -/
 def TruthAt (M : TaskModel F)
     (τ : WorldHistory F) (t : D) : Formula → Prop
@@ -148,9 +162,9 @@ def TruthAt (M : TaskModel F)
   | Formula.bot => False
   | Formula.imp φ ψ => TruthAt M τ t φ → TruthAt M τ t ψ
   | Formula.box φ => ∀ (σ : WorldHistory F), σ.IsTotal → TruthAt M σ t φ
-  | Formula.untl φ ψ => ∃ s : D, t < s ∧ TruthAt M τ s φ ∧
+  | Formula.untlQ ψ φ => ∃ s : D, t < s ∧ TruthAt M τ s φ ∧
       ∀ r : D, t < r → r < s → TruthAt M τ r ψ
-  | Formula.snce φ ψ => ∃ s : D, s < t ∧ TruthAt M τ s φ ∧
+  | Formula.snceQ ψ φ => ∃ s : D, s < t ∧ TruthAt M τ s φ ∧
       ∀ r : D, s < r → r < t → TruthAt M τ r ψ
 
 -- Note: We avoid defining a notation for TruthAt as it causes parsing conflicts
@@ -405,14 +419,14 @@ theorem truth_double_shift_cancel (M : TaskModel F)
     -- Box quantifies over the total histories at time t, independent of the current history.
     -- Both sides quantify over the same `IsTotal` predicate, so this is definitionally closed
     -- and leaves no residual goal.
-  | untl φ ψ ih_φ ih_ψ =>
+  | untlQ ψ φ ih_ψ ih_φ =>
     simp only [TruthAt]
     constructor
     · intro ⟨s, h_le, h_event, h_guard⟩
       exact ⟨s, h_le, (ih_φ s).mp h_event, fun r hr1 hr2 => (ih_ψ r).mp (h_guard r hr1 hr2)⟩
     · intro ⟨s, h_le, h_event, h_guard⟩
       exact ⟨s, h_le, (ih_φ s).mpr h_event, fun r hr1 hr2 => (ih_ψ r).mpr (h_guard r hr1 hr2)⟩
-  | snce φ ψ ih_φ ih_ψ =>
+  | snceQ ψ φ ih_ψ ih_φ =>
     simp only [TruthAt]
     constructor
     · intro ⟨s, h_le, h_event, h_guard⟩
@@ -506,7 +520,7 @@ theorem time_shift_preserves_truth (M : TaskModel F)
           (WorldHistory.timeShift ρ (x - y)) (y - x) (-(x - y)) h_cancel
       have h2' := (truth_history_eq M _ _ x h_hist_eq ψ).mp h2
       exact (truth_double_shift_cancel M ρ (x - y) x ψ).mp h2'
-  | untl φ ψ ih_φ ih_ψ =>
+  | untlQ ψ φ ih_ψ ih_φ =>
     -- Until (Burgess convention): untl(event=φ, guard=ψ)
     -- ∃ s > t, φ(s) ∧ ∀ r ∈ (t,s), ψ(r)
     -- Direction (→): shifted history at x → original history at y
@@ -593,7 +607,7 @@ theorem time_shift_preserves_truth (M : TaskModel F)
             (y - x) h_shift_eq
         have h_conv := (ih_ψ σ r' (r' + (y - x))).mpr h_grd
         exact (truth_history_eq M _ _ r' h_hist_eq ψ).mp h_conv
-  | snce φ ψ ih_φ ih_ψ =>
+  | snceQ ψ φ ih_ψ ih_φ =>
     -- Since (Burgess convention): snce(event=φ, guard=ψ)
     -- ∃ s < t, φ(s) ∧ ∀ r ∈ (s,t), ψ(r)
     -- Mirror of Until with reversed inequalities.

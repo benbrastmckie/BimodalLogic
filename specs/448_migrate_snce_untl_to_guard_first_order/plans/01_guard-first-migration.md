@@ -395,34 +395,62 @@ against `untlGuards`, `snceGuards`, `untlGuard` and `snceQGuard`.
 
 ---
 
-### Phase 3: Root Migration — Formula.lean, Syntax, Truth.lean [NOT STARTED]
+### Phase 3: Root Migration — Formula.lean, Syntax, Truth.lean [COMPLETED]
 
 **Goal**: Perform the rename-and-swap by hand at the definitional root, where correctness is
 established by reading the paper rather than by the compiler.
 
 **Tasks**:
-- [ ] In `FormalSystem/Syntax/Formula.lean`: rename `untl`→`untlQ`, `snce`→`snceQ`; reorder both
+- [x] In `FormalSystem/Syntax/Formula.lean`: rename `untl`→`untlQ`, `snce`→`snceQ`; reorder both
       constructor signatures to guard-first; replace both docstrings with text naming the roles
       (arg 1 = guard, universally quantified over the open interval; arg 2 = event, witnessed at
       the existential time) and citing `def:BLplus-semantics`.
-- [ ] Swap all twelve derived-operator definitions per report §4: `someFuture`, `somePast`,
+      *(deviation: altered — "reorder both constructor signatures" is vacuous here. Both
+      signatures are `Formula → Formula → Formula`: the type is symmetric, so there is no
+      textual reordering to perform and no way for the signature to record the convention. The
+      entire semantic content of argument order lives in `Truth.lean`'s two clauses plus every
+      call site; the constructor declarations carry it only in their docstrings, which is what
+      was rewritten.)*
+- [x] Swap all twelve derived-operator definitions per report §4: `someFuture`, `somePast`,
       `next`, `prev`, `kPlus`, `kMinus`, `release`, `weakUntil`, `trigger`, `weakSince`,
-      `strongRelease`, `strongTrigger`.
-- [ ] **Verify the four paper-anchored operators against `def:BLplus-defined` directly**, not
-      against the pre-migration Lean: `somePast` = `⊤ S φ`, `someFuture` = `⊤ U φ`, `next` =
-      `⊥ U φ`, `prev` = `⊥ S φ`. Record the four shape assertions in the phase notes
-      (acceptance 4).
-- [ ] Leave `swapTemporal` and the symmetric recursors alone (report §4.1) — note in the phase
-      record that this is deliberate, not a miss.
-- [ ] Migrate the remainder of `FormalSystem/Syntax/` (`Subformulas.lean` and siblings) with the
-      hardened rewriter.
-- [ ] In `FormalSystem/Semantics/Truth.lean`: swap the two binding clauses so argument 1 is the
+      `strongRelease`, `strongTrigger`. *(all twelve swapped; verified in the diff)*
+- [x] **Verify the four paper-anchored operators against `def:BLplus-defined` directly**, not
+      against the pre-migration Lean.
+- [x] Leave `swapTemporal` and the symmetric recursors alone (report §4.1) — deliberate, not a
+      miss. *(`complexity`, `modalDepth`, `temporalDepth`, `countImplications` have their case
+      labels alpha-renamed by the rewriter so binder names keep their roles; their bodies are
+      symmetric and unchanged. `complexity`'s shape-matching arms for the derived operators are
+      NOT symmetric and were correctly swapped.)*
+- [x] Migrate the remainder of `FormalSystem/Syntax/` with the hardened rewriter.
+- [x] In `FormalSystem/Semantics/Truth.lean`: swap the two binding clauses so argument 1 is the
       universally-quantified guard and argument 2 the existentially-witnessed event.
-- [ ] Replace the stale `Truth.lean` docstring block. It must **not** quote a footnote — the
-      tracked anchor (sha256 `edde7517…`) is footnote-free as of the 2026-08-17 re-pin. Quote the
-      clause bodies instead, corroborate with `def:BLplus-defined`, and state that earlier
-      revisions' footnote quotations are retired. Use report §2.4's rendering as the base text.
-- [ ] Build the scoped target `FormalSystem.Semantics.Truth` only.
+- [x] Replace the stale `Truth.lean` docstring block, quoting the clause bodies rather than a
+      footnote, corroborating with `def:BLplus-defined`, and retiring the earlier revisions'
+      footnote quotation.
+- [x] Build the scoped target `FormalSystem.Semantics.Truth` only. *(green, 784 jobs, first try)*
+
+**The four shape assertions** (acceptance 4), each verified against `def:BLplus-defined` as
+quoted in `specs/paper-definitions-of-record.md`, never against pre-migration Lean:
+
+| Paper (`def:BLplus-defined`) | Lean, post-migration | Site |
+|---|---|---|
+| `Past: past φ ≔ ⊤ since φ` | `somePast φ = Formula.snceQ Formula.top φ` | `Formula.lean:157` |
+| `Future: future φ ≔ ⊤ until φ` | `someFuture φ = Formula.untlQ Formula.top φ` | `Formula.lean:147` |
+| `Next: Next φ ≔ ⊥ until φ` | `next φ = Formula.untlQ Formula.bot φ` | `Formula.lean:510` |
+| `Previous: Previous φ ≔ ⊥ since φ` | `prev φ = Formula.snceQ Formula.bot φ` | `Formula.lean:514` |
+
+In every row the paper's operand is the event and stands second; the constant (`⊤`/`⊥`) is the
+guard and stands first. All four hold.
+
+**One rewriter mis-fire found and repaired by hand.** `exact congrArg₂ untl (iha h.1) (ihb h.2)`
+(`Formula.lean:354,361`) passes the constructor as a **value** to a higher-order combinator; the
+two terms that follow are `congrArg₂`'s arguments, not the constructor's, so swapping them is
+wrong. A Unicode-aware sweep of the pre-migration tree for the general shape (`untl`/`snce`
+preceded by a non-keyword identifier) returns **exactly these two sites tree-wide**, so the class
+is closed, not merely sampled. Repaired together with the four adjacent `BEq` bookkeeping
+lemmas (`beq_untl_eq`, `beq_snce_eq`, `beq_refl`, `eq_of_beq`), whose constructor arguments carry
+no roles: those were restored to canonical positional naming (`a b c d` in position order), a
+pure alpha-rename that puts `rfl` back in front of an uncommuted conjunction.
 
 **Timing**: 1.5 hours
 
@@ -435,16 +463,21 @@ definitions; `Truth.lean` holds 16. Confirm against the Phase 1 per-file ledger 
 files before editing, and confirm zero residual `untl`/`snce` tokens in `Syntax/` and
 `Semantics/` after.
 
+**Scope Hypothesis outcome**: 132 sites across 6 changed files of the 22 scanned — `qualified` 28,
+`arm-2` 48, `arm-4` 14, `bare-app` 26, `anon-dot` 8, `ctor-decl` 2, plus 6 `embedded` skips. All
+twelve derived operators present and swapped. Confirmed.
+
 **Files to modify**:
-- `FormalSystem/Syntax/Formula.lean` - constructors renamed/reordered/documented, 12 derived ops swapped
-- `FormalSystem/Syntax/Subformulas.lean` and siblings - mechanical
+- `FormalSystem/Syntax/Formula.lean` - constructors renamed/documented, 12 derived ops swapped
+- `FormalSystem/Syntax/Subformulas.lean`, `SubformulaClosure/{Closure,NestingDepth,TemporalFormulas}.lean` - mechanical
 - `FormalSystem/Semantics/Truth.lean` - clauses swapped, docstring replaced
 
 **Verification**:
-- `lake build FormalSystem.Semantics.Truth` green.
-- Identifier-boundary grep for `untl`/`snce` returns 0 under `FormalSystem/Syntax/` and
-  `FormalSystem/Semantics/`.
-- The four shape assertions against `def:BLplus-defined` are recorded and hold.
+- [x] `lake build FormalSystem.Semantics.Truth` green (784 jobs).
+- [x] Code-region residue scan over `FormalSystem/Syntax/` and `FormalSystem/Semantics/` returns
+  `RESIDUE_MIGRATABLE=0  RESIDUE_ALLOWED=0`.
+- [x] The four shape assertions against `def:BLplus-defined` recorded above and holding.
+- [x] Per-file `sorry` delta zero for all six changed files (0 before, 0 after).
 
 ---
 
