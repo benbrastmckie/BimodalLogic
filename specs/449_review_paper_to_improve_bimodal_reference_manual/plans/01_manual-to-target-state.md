@@ -100,6 +100,12 @@ Reference tier: Tier 1 (literature-backed; source = `possible_worlds.tex`, cited
 anchor only, never by line number — the paper is actively edited). Lean symbols cited as
 `file.lean` + identifier. Full anchor list: research report Appendix.
 
+**Provenance-chain scope (Decision E2)**: every anchor in this table and in the phase task
+items is PLAN-FACING provenance — it grounds and lets the implementer verify the transcription
+(H3). None of these anchors is written into the manual's rendered content: the manual body
+carries no paper-anchor citations at all (see Decision E2 below). Anchors additionally live in
+`specs/paper-definitions-of-record.md` and inside non-rendered `// CONFIRM(paper):` comments.
+
 | Source anchor / symbol | Report item | Target file(s) | Edit |
 |------------------------|-------------|----------------|------|
 | `def:BLplus-language`, `def:BLplus-semantics` (⊲/⊳ infix guard-first) | R1, R2a, A1 | notation/bimodal-notation.typ; 01-syntax.typ | Infix guard-first macros + book-wide display switch |
@@ -158,11 +164,44 @@ the introduction's dichotomy use still resolves, whitelist entries orphaned by t
 Bibliography needs no action: the References section renders cited entries only, so entries
 cited solely by the deleted paragraphs drop out automatically.
 
+**E2 — Manual-facing paper citations: RESOLVED (user, 2026-08-17) — the manual's rendered
+content carries NO LaTeX-anchor citations into the paper.** The user's instruction, verbatim:
+"Aside from citing the paper in `typst/BimodalReference.typ`, I don't need the bimodal
+reference manual to include explicit citations throughout to latex anchors in
+`possible_worlds.tex`, and want to revise the plan accordingly." Consequences:
+- The paper is credited exactly once: the existing front-matter Sources block in
+  `BimodalReference.typ` (and/or one `bibliography.bib` entry — Phase 8 checks for an existing
+  entry and reuses it rather than adding a duplicate). That single credit is the manual's
+  entire acknowledgment of the paper.
+- No `def:`/`thm:`/`sub:`/`cor:`/`app:` anchors, no "see `def:X`" or "(cf. `thm:Y`)"
+  parentheticals, and no paper-anchor-bearing footnotes anywhere in rendered manual content.
+  Results proved only in the paper are stated as the book's own mathematics; their provenance
+  moves to a `// CONFIRM(paper):` comment.
+- The earlier "cite by anchor, never by line number" stability rule now governs only the
+  places anchors still live: this plan's task items (H3 provenance — KEPT),
+  `specs/paper-definitions-of-record.md` (KEPT exactly as planned), and CONFIRM comments.
+- **Verdict on anchors inside `// CONFIRM(paper):` comments: KEPT** (stated here explicitly so
+  the user can overrule in one edit). A Typst line comment is never rendered, so it is not
+  manual-facing content; and a CONFIRM whose assertion names the anchor the finished paper
+  must state ("thm:Y states X") is checkable in a way "verify the paper says X" is not —
+  checkability is the convention's entire point. Mechanical rule: anchors inside CONFIRM
+  comments are written WITHOUT backticks — `typst-sync-check.sh` Check 1 extracts every
+  backticked span in `typst/**/*.typ` including comment lines, so a backticked anchor in a
+  comment would become a new Check-1 candidate needing a whitelist entry.
+- **Sync-check interaction (verified, not assumed)**: Check 1's whitelist currently carries
+  paper-anchor entries (`thm:BLplus-NextPrevious`, `thm:ConservativeExtension`,
+  `cor:spherical-finite`, `def:BLplus-language`, `def:BLplus-defined`, `thm:BLplus-PastFuture`,
+  `cor:tm-decidability`, plus `possible_worlds.tex` filename/appendix-label entries) that exist
+  only because the manual body backticks those anchors today. Removing the citations orphans
+  these entries; Phase 8's whitelist audit (already scoped to remove entries with no surviving
+  citation) now also covers this larger orphan set. `check-paper-definitions.sh` reads
+  `specs/paper-definitions-of-record.md`, not `.typ` files — unaffected.
+
 **N1 — Book's name for the headline system** (non-gating; proceeding on default). Keep "TM"
 as the book's name for the Until/Since-primitive system, fixed by one early introduction
-remark identifying it with the published paper's TM+ (the single deliberate anchor point for
-readers arriving from the paper). Alternative (rename to "TM+" throughout) would require a
-sweep; not chosen.
+remark identifying it with the system of the source work already credited in the front matter
+— prose only, no anchor citation (Decision E2). Alternative (rename to "TM+" throughout)
+would require a sweep; not chosen.
 
 ## Postmortem Constraints
 
@@ -176,8 +215,13 @@ derive from the research report's risk factors, the governing directive, and rep
   sorry counts, in-flight-work notes, or edition-history narrative. The one exception:
   provably-false results (Discrete strong completeness; strong completeness over Z-time/R)
   are permanent mathematics and belong in the body.
-- Cite the paper by line number or section number. LaTeX anchors (`def:`/`thm:`/`cor:`/`sub:`/
-  `app:`) only — the paper is actively edited and line references rot immediately.
+- Write ANY paper citation into rendered manual content — no LaTeX anchors, no line/section
+  numbers, no "see def:X" parentheticals, no paper-anchor footnotes (Decision E2). The single
+  front-matter credit in `BimodalReference.typ` is the manual's entire acknowledgment of the
+  paper. Where anchors still live (this plan's task items, `specs/paper-definitions-of-record.md`,
+  `// CONFIRM(paper):` comments), cite by LaTeX anchor only, never by line or section number —
+  the paper is actively edited and line references rot immediately. In CONFIRM comments, write
+  anchors without backticks (sync-check Check 1 extracts backticked spans from comment lines).
 - Copy the paper's "machine-checked" proof line for `cor:tm-completeness` rows 1–2 into the
   body as an established fact; the manual asserts the target result, the CONFIRM comment
   carries the machine-checking obligation.
@@ -217,6 +261,10 @@ derive from the research report's risk factors, the governing directive, and rep
   the book's own scholarly apparatus (verdict recorded under Decisions).
 - The (DD)/two-fibre incompleteness exposition is cut entirely (user, Decision D1
   resolution); only the standalone dichotomy theorem survives.
+- The manual's rendered content carries no paper-anchor citations (user, Decision E2
+  resolution, 2026-08-17); the paper is credited once in the front matter, and anchors
+  survive only in plan artifacts, `specs/paper-definitions-of-record.md`, and non-rendered
+  CONFIRM comments.
 
 ## CONFIRM Tag Convention (established by Phase 1, used by all later phases)
 
@@ -232,7 +280,9 @@ derive from the research report's risk factors, the governing directive, and rep
   theorem name that must exist and be axiom-free (verifiable via `lean_verify` or
   `#print axioms`), a script output condition (e.g. `scripts/typst-status-counts.sh --json`
   reports `sorry_total_excl_boneyard = 0`), or a named paper anchor that must state a given
-  proposition. Never "verify this section".
+  proposition. Never "verify this section". Per Decision E2, CONFIRM comments are the ONLY
+  place in `typst/` where paper anchors may appear, and anchors there are written WITHOUT
+  backticks so they never become sync-check Check-1 candidates.
 - **Extraction command** (documented for the user):
   `grep -rn 'CONFIRM(' typst/` — filter with `grep -rn 'CONFIRM(lean)' typst/` or
   `grep -rn 'CONFIRM(paper)' typst/`.
@@ -304,6 +354,14 @@ Per-phase gate (all phases): `cd typst && typst compile BimodalReference.typ
 build/BimodalReference.pdf` exits 0; `bash scripts/typst-sync-check.sh` (from repo root)
 passes; CONFIRM well-formedness grep (convention section above) outputs nothing.
 
+**Per-phase E2 sweep obligation (all Wave-2 phases and Phase 8)**: beyond its enumerated
+tasks, each phase sweeps its OWN territory files for any remaining paper citation in rendered
+content — LaTeX anchors, `possible_worlds` mentions, line/section references — deleting each
+or converting it to a `// CONFIRM(paper):` comment (anchors un-backticked). Check with
+`grep -n 'possible_worlds\|def:\|thm:\|cor:\|sub:\|app:' <territory files>`: matches allowed
+on `//`-comment lines only. (Lean-anchor citations of `FormalSystem/` symbols are unaffected —
+E2 governs paper citations only.)
+
 ### Phase 1: Conventions Foundation — CONFIRM Convention, Infix Macros, Anchor Re-Pin [NOT STARTED]
 
 - **Goal:** Establish everything later phases consume: the CONFIRM tag convention documented
@@ -357,8 +415,9 @@ passes; CONFIRM well-formedness grep (convention section above) outputs nothing.
     def:BLplus-semantics` above the constructor-citing display. No hedging prose about
     current Lean argument order.
   - [ ] R2d (FIX at the L-vs-L+ paragraph): move the base-language-L contrast into a footnote
-    after F/P/H/G are defined, citing the paper; the body presents L+ as the book's language
-    throughout, standalone.
+    after F/P/H/G are defined — phrased as the book's own remark on the tense-primitive
+    sublanguage, with NO paper-anchor citation (Decision E2; the front-matter credit covers
+    provenance); the body presents L+ as the book's language throughout, standalone.
   - [ ] R2e (source: `def:BLplus-defined`, `thm:BLplus-NextPrevious`): add Next := ⊥⊳φ and
     Previous := ⊥⊲φ to the derived-operator section with the discrete-frames caveat.
   - [ ] R2f — DROPPED (Decision E1, resolved): no paper-glyph correspondence table, and no
@@ -392,8 +451,10 @@ passes; CONFIRM well-formedness grep (convention section above) outputs nothing.
     Lean-side generalization (`WorldHistory.lean` `timeShift`), which is a design fact, not
     status.
   - [ ] R3c (source: `def:task-topology`, `app:topology-t1`, `app:topology-r0`; finding B6,
-    optional): one footnote noting the basic opens (w)_x generate a T1, R0 topology on W,
-    cited to the paper's anchors; phrase as a paper-side result without Lean-status prose.
+    optional): one footnote stating as the book's own mathematics that the basic opens (w)_x
+    generate a T1, R0 topology on W — NO paper-anchor citation in the footnote (Decision E2);
+    place `// CONFIRM(paper): app:topology-t1 and app:topology-r0 prove the T1 and R0 claims
+    this footnote states` above it. No Lean-status prose.
 - **Timing:** ~1 hour
 - **Depends on:** 1
 - **Verification Tier:** local — phase gates, plus event-first residual grep on this file.
@@ -425,13 +486,18 @@ passes; CONFIRM well-formedness grep (convention section above) outputs nothing.
     under the Decision E1 axiom-name verdict — citation apparatus, not translation
     scaffolding): add the short-name column (TB, UG, UC, TA, ...) to the Layer 3 and
     Layer 5–9 tables using the report's table verbatim, introduced as the axioms' names in
-    the book's own right (source credited once by anchor); note TB vs `serial_future` as
+    the book's own right with NO anchor credit in the chapter (Decision E2 — the
+    front-matter citation already covers provenance); note TB vs `serial_future` as
     trivially interderivable, and that CO is derivable in BX_c rather than axiomatic.
-  - [ ] R4e (finding C4): rewrite §Relation to the Paper's Presentation — primary contrast is
-    `def:S5` + `def:BX` + `def:TMplus` (the book's system IS this system); the tense-primitive
-    12-schema TM is one deferred-subsystem paragraph pointing to the back-matter table. The
-    intended divergences (primed past mirrors, spelled-out CPL, M4/MB primitive; finding C3)
-    stay, re-anchored against `def:BX`/`def:TMplus`.
+  - [ ] R4e (finding C4; plan-facing grounding: `def:S5` + `def:BX` + `def:TMplus` are the
+    system the book's proof system transcribes): replace §Relation to the Paper's
+    Presentation with a stand-alone section (retitle, e.g. §The Tense-Primitive Subsystem)
+    presenting, in the book's own terms and with NO paper-anchor citations (Decision E2),
+    (1) the deferred tense-primitive subsystem in one paragraph pointing to the back-matter
+    table, and (2) the intended presentation divergences (primed past mirrors, spelled-out
+    CPL layer, M4/MB primitive; finding C3) as design facts of the book's axiomatization.
+    Place `// CONFIRM(paper): def:S5 + def:BX + def:TMplus jointly state the system this
+    chapter axiomatizes` at the section head as the non-rendered provenance link.
   - [ ] R4f: notation/ordering sweep of every schema display (guard-first infix; axiom tables
     MAY stay future/until-direction-primary matching `def:BX`'s stated direction — the paper's
     own exception per finding A2).
@@ -521,8 +587,10 @@ passes; CONFIRM well-formedness grep (convention section above) outputs nothing.
     that class), not as pending work.
   - [ ] R6b (source: `thm:BLplus-PastFuture` live; finding D4): replace §Conservativity's
     theorem box (its paper footnote-source is deleted) with a short "Deferred: the
-    tense-primitive subsystem" note — language embedding unconditional (cite
-    `thm:BLplus-PastFuture`); proof-system conservativity is the deferred subsystem's future
+    tense-primitive subsystem" note — the unconditional language embedding stated as the
+    book's own result with NO anchor citation (Decision E2), guarded by
+    `// CONFIRM(paper): thm:BLplus-PastFuture states the unconditional language embedding
+    this note asserts`; proof-system conservativity is the deferred subsystem's future
     result, recorded as
     `// CONFIRM(paper): a conservative-extension theorem for the tense-primitive subsystem is stated (successor of the deleted thm:ConservativeExtension)` —
     no theorem box, no four-part status, and drop the "(DD) split validity" cross-reference
@@ -568,18 +636,26 @@ passes; CONFIRM well-formedness grep (convention section above) outputs nothing.
     mirrors, CPL layer, argument-order-free notational facts) are design records and stay;
     sorry-count displays and "current status" prose go (CONFIRM comments where load-bearing,
     reusing Phase 5's census CONFIRM shape).
-  - [ ] R8d–e (source: `sub:RestrictedModalities`; finding E3): fix the Restricted-Modalities
-    citation to anchor form; keep the 12-schema TM correspondence table, labeled explicitly
-    as the deferred subsystem's axiom map.
+  - [ ] R8d–e (source: `sub:RestrictedModalities`; finding E3; re-aimed by Decision E2):
+    DELETE the Restricted-Modalities paper citation outright (do not convert it to anchor
+    form) — if the sentence needs provenance, carry it as `// CONFIRM(paper):
+    sub:RestrictedModalities develops the restricted-modality material this note mentions`;
+    keep the 12-schema TM correspondence table, labeled explicitly as the deferred
+    subsystem's axiom map.
   - [ ] R10 (finding F4): in `p3-ltl-to-tm.typ` — fix the retired axiom vocabulary (the
     embedding frame satisfies Compositionality/Seriality/Limit/Spherical); notation sweep of
     the translation table and Next discussion; shrink §The Conservativity Bridge to match
     Phase 6's deferred-subsystem note (pointer, not a restatement).
-  - [ ] R11 (finding E3, F5): in `p3-vlach-blstar.typ` and `p3-decidability-frontier.typ` —
-    replace paper line/section-number citations with anchors; update the frontier chapter's
-    `cor:tm-decidability` sentence per Phase 6's R7 shape (CONFIRM-guarded target, dead
-    citation removed); notation sweep where S/U displays appear. No content rewrites in the
-    Vlach chapter (finding F5: aligned).
+  - [ ] R11 (finding E3, F5; re-aimed by Decision E2): in `p3-vlach-blstar.typ` and
+    `p3-decidability-frontier.typ` — DELETE all paper citations outright (line-number,
+    section-number, and anchor forms alike); the chapters present their material as the
+    book's own, with `// CONFIRM(paper):` comments (anchors un-backticked) carrying
+    provenance for any claim proved only in the paper (the Vlach store/recall semantics,
+    the stability operator, the definability argument, the explicit non-axiomatization of
+    BL*). Update the frontier chapter's `cor:tm-decidability` sentence per Phase 6's R7
+    shape (CONFIRM-guarded target, dead citation removed); notation sweep where S/U displays
+    appear. No content rewrites in the Vlach chapter beyond citation removal (finding F5:
+    aligned).
   - [ ] R12 (finding C1): in `ax-machine-appendix.typ` — add `Dedekind` to the `frame_class`
     prose enumeration. Add
     `// CONFIRM(lean): the machine appendix JSONL's since/until argument fields reflect guard-first constructor order`
@@ -588,8 +664,10 @@ passes; CONFIRM well-formedness grep (convention section above) outputs nothing.
 - **Timing:** ~1.5 hours
 - **Depends on:** 1
 - **Verification Tier:** local — phase gates; event-first residual grep on all five files;
-  `grep -n 'possible_worlds' typst/chapters/p3-vlach-blstar.typ typst/chapters/p3-decidability-frontier.typ typst/chapters/06-notes.typ`
-  shows anchor-form citations only (no `:NNNN` line references, no bare §-numbers).
+  `grep -n 'possible_worlds\|def:\|thm:\|cor:\|sub:\|app:' typst/chapters/06-notes.typ
+  typst/chapters/p3-*.typ typst/chapters/ax-machine-appendix.typ` returns matches only on
+  `//`-comment lines (CONFIRM comments and existing maintainer markers), never in rendered
+  content (Decision E2).
 - **Estimated output:** ~150–250 lines
 - **Scope Hypothesis:** five files, with the notes chapter carrying the bulk; the p3 chapters'
   edits are citation-form and sweep-only. Confirm the citation inventory by the grep above at
@@ -605,10 +683,16 @@ passes; CONFIRM well-formedness grep (convention section above) outputs nothing.
 - **Territory:** `typst/BimodalReference.typ`, `typst/chapters/00-introduction.typ`,
   `typst/SYNC-MAP.md`, `typst/sync-check-whitelist.txt`
 - **Tasks:**
-  - [ ] R9a (finding F2; Decision N1 default): reframe the abstract and introduction — the
-    book's system is the Until/Since-primitive bimodal logic, the paper's TM+, presented in
+  - [ ] R9a (finding F2; Decision N1 default; Decision E2 phrasing): reframe the abstract and
+    introduction — the book's system is the Until/Since-primitive bimodal logic presented in
     full; the tense-primitive TM is a deferred subsystem; one early introduction remark fixes
-    the naming convention (book's TM = paper's TM+).
+    the naming convention (the book's TM is the system the front-matter source work calls
+    TM+) — prose only, naming the source work at most by its already-credited title, with no
+    anchor citation.
+  - [ ] E2 single-credit check: confirm the front-matter Sources block in
+    `BimodalReference.typ` remains the manual's one citation of the paper; check
+    `typst/bibliography.bib` for an existing possible-worlds entry and reuse it if the
+    Sources block or any chapter needs a bib-key — do NOT add a duplicate entry.
   - [ ] R9b (directive-re-aimed): replace the "provably incomplete ... headline correction"
     sentences and the "one proof obligation outstanding" clause with the target-state
     completeness summary matching Phase 5's four statements; "fully proven" claims for
@@ -630,16 +714,25 @@ passes; CONFIRM well-formedness grep (convention section above) outputs nothing.
   - [ ] Whitelist cleanup (deferred here from Phases 6–7 by postmortem constraint): remove
     the `cor:tm-decidability` entry, and the `thm:ConservativeExtension` entry if its last
     citation is gone; verify with `grep -rn 'cor:tm-decidability\|thm:ConservativeExtension'
-    typst/chapters/` before removing each. Additionally, check for whitelist entries orphaned
-    by the Phase 5 D1 cut (e.g. the `⊥ U φ` rejected-construction illustration or any
-    two-fibre-countermodel candidate): for each whitelist entry, confirm a citing occurrence
-    still exists in `typst/**/*.typ`; remove entries with none.
+    typst/chapters/` before removing each. Additionally, audit the whole whitelist for
+    entries orphaned by the Phase 5 D1 cut (e.g. the `⊥ U φ` rejected-construction
+    illustration or any two-fibre-countermodel candidate) AND by the Decision E2 citation
+    removal — the paper-anchor entries (`thm:BLplus-NextPrevious`, `cor:spherical-finite`,
+    `def:BLplus-language`, `def:BLplus-defined`, `thm:BLplus-PastFuture`, the
+    `possible_worlds.tex` filename/appendix-label entries) exist only because the manual body
+    backticks those anchors today, and E2 removes every such backticked occurrence (CONFIRM
+    comments write anchors without backticks, so they generate no candidates). For each
+    whitelist entry, confirm a backticked citing occurrence still exists in `typst/**/*.typ`;
+    remove entries with none.
   - [ ] Closing gate set (full): `bash scripts/typst-status-counts.sh` (regenerate, confirm
     no count drift); `cd typst && typst compile BimodalReference.typ
     build/BimodalReference.pdf` exit 0; `bash scripts/typst-sync-check.sh` PASS all checks;
     CONFIRM well-formedness grep empty; book-wide event-first residual grep
     (`grep -rnE '\bU\(|\bS\(' typst/chapters/`) shows only deliberate literature-form
-    mentions; `grep -rn 'FIX:' typst/chapters/` returns nothing for the three resolved
+    mentions; book-wide E2 gate:
+    `grep -rn 'possible_worlds\|def:\|thm:\|cor:\|sub:\|app:' typst/chapters/ typst/BimodalReference.typ`
+    returns matches only on `//`-comment lines and the front-matter Sources block;
+    `grep -rn 'FIX:' typst/chapters/` returns nothing for the three resolved
     comments; `bash scripts/check-paper-definitions.sh` still passes.
 - **Timing:** ~1.5 hours
 - **Depends on:** 2, 3, 4, 5, 6, 7
@@ -658,6 +751,8 @@ passes; CONFIRM well-formedness grep (convention section above) outputs nothing.
 
 - [ ] Per-phase (every phase): `typst compile` exit 0; `typst-sync-check.sh` PASS; CONFIRM
   well-formedness grep empty (commands in the convention section).
+- [ ] Per-phase E2 sweep grep on the phase's territory files; book-wide E2 gate at Phase 8
+  (matches only on comment lines and the front-matter Sources block).
 - [ ] Phase 4 arithmetic check: chapter layer-table counts sum to 45.
 - [ ] Phase 8 full gate set (enumerated in Phase 8's closing task).
 - [ ] User acceptance greps (documented deliverables): `grep -rn 'CONFIRM(lean)' typst/` and
