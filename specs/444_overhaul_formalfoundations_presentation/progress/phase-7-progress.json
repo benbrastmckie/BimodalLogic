@@ -1,5 +1,0 @@
-{"phase":7,"phase_name":"Section 4 - Two Costs of the Semantics","started_at":"2026-08-13T19:40:00Z","last_updated":"2026-08-13T20:05:00Z",
-"objectives":[{"id":1,"description":"Rewrite both costs through a formal lens","status":"done","files_touched":["typst/FormalFoundations.typ"]}],
-"current_objective":1,"approaches_tried":[],"deviations":[],
-"v1_verdicts":"Q1 irregular-worlds passage re-verified verbatim against possible_worlds.tex:1279-1283 on 2026-08-13; the displacement sentence remains commented out and is not cited as paper text. Q2 Stability footnote re-verified verbatim at possible_worlds.tex:1079-1083; the S5-via-equivalence-class reason and the non-temporal collapse both match. def:strongest (:1905) and thm:exist (:1918) diffed and PASS.",
-"page_count":26,"handoff_count":0}

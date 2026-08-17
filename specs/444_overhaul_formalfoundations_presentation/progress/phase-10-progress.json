@@ -1,6 +1,0 @@
-{"phase":10,"phase_name":"Mathematical Fidelity Audit","started_at":"2026-08-13T21:05:00Z","last_updated":"2026-08-13T21:35:00Z",
-"objectives":[{"id":1,"description":"Adversarial audit against paper and Lean tree; repair discrepancies","status":"done","files_touched":["typst/FormalFoundations.typ","specs/444_overhaul_formalfoundations_presentation/definitions-of-record-444.md"]}],
-"current_objective":1,"approaches_tried":[],"deviations":[],
-"audit":{"discrepancies_found":2,"discrepancies_repaired":2,"discrepancies_open":0,
-"A6":"G1 posture inconsistency between sections 2 and 3 -- repaired","A7":"case-split figure caption conflated the Dedekind construction with the dense branch -- repaired"},
-"handoff_count":0}

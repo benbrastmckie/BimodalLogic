@@ -1,7 +1,0 @@
-{"phase":3,"phase_name":"Section 1 - The System, Rewritten Semantics-First","started_at":"2026-08-13T17:05:00Z","last_updated":"2026-08-13T17:50:00Z",
-"objectives":[{"id":1,"description":"Rewrite section 1 semantics-first with corrected atom clause and topology","status":"done",
-"files_touched":["typst/FormalFoundations.typ","typst/sync-check-whitelist.txt"]}],
-"current_objective":1,"approaches_tried":[],"deviations":[],
-"v1_verdicts":"16 definitions/theorems diffed against recorded anchors; all PASS. Task Topology restates def:task-topology's basic-opens, closure, T1 and R0 clauses and omits its Discrete clause deliberately (unused below; app:topology-nondiscrete is commented out in the live paper and uncitable).",
-"page_count":21,
-"handoff_count":0}

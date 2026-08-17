@@ -1,6 +1,0 @@
-{"phase":9,"phase_name":"Abstract, Front Matter, and Document-Wide Register Sweep","started_at":"2026-08-13T20:45:00Z","last_updated":"2026-08-13T21:00:00Z",
-"objectives":[{"id":1,"description":"abstract-block, abstract rewrite, header comment, register sweep, Scott anchor, G4","status":"done","files_touched":["typst/FormalFoundations.typ"]}],
-"current_objective":1,"approaches_tried":[],"deviations":[],
-"scope_hypothesis":"CONFIRMED. E2 residual before this phase was 3 lines (header comment 14, 33-adjacent, 74) plus 2 abstract lines (116, 119) -- small and confined exactly as predicted. No section leaked; no owning phase reopened.",
-"gates":{"FIX_count":0,"E2":"clean document-wide","E5":"clean document-wide","E6":"clean document-wide","template_typ":"unmodified"},
-"page_count":28,"handoff_count":0}

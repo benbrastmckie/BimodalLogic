@@ -1,5 +1,5 @@
 ---
-next_project_number: 448
+next_project_number: 449
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 448
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,193,231,257,298,413,415,417,419,421,423,424,437,440,445 | -- | completeness, decidability, frame-extensions, ... |
+| 1 | 125,127,128,193,231,257,298,413,415,417,419,421,423,424,437,440,445,448 | -- | completeness, decidability, frame-extensions, ... |
 | 2 | 178,219,282,296,422,425,436,441,446 | 193,231,298,421,423,437,440,445 | decidability, formula-refactor, publication-quality, ... |
 | 3 | 169,434,447 | 422,436,446 | decidability, publication-quality, strong_completeness |
 | 4 | 362,432 | 169,434 | decidability, strong_completeness |
@@ -99,9 +99,63 @@ next_project_number: 448
   └─ 425 [NOT STARTED] — Convert the informal argument at FormalSystem/Metalogic/StrongCom
 424 [NOT STARTED] — RE-ISSUED 2026-08-10 (description rewrite only; status remains `n
 
+### Lean4
+
+448 [NOT STARTED] — GOAL. Migrate the Lean tree's `snce`/`untl` constructors from the
+
 ### Uncategorized
 
 ## Tasks
+
+### 448. Migrate snce untl to guard first order
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: lean4
+- **Dependencies**: None
+
+**Description**: GOAL. Migrate the Lean tree's `snce`/`untl` constructors from the current EVENT-FIRST (Burgess)
+argument order to the GUARD-FIRST order used by the paper, so that `FormalSystem/` and
+`possible_worlds.tex` agree on what `φ S ψ` and `φ U ψ` mean.
+
+BACKGROUND. `specs/decisions/untl-snce-argument-order.md` records this divergence and is currently
+marked OPEN awaiting a user decision. That decision has now been made: align Lean to the paper
+(guard-first), not the paper to Lean. The record should be updated to CLOSED/DECIDED as part of
+this work.
+
+The divergence, precisely:
+- Paper (`def:BLplus-semantics`, `def:BLplus-defined`): guard-first. In `φ S ψ`, `φ` is the guard
+  holding throughout the interval and `ψ` is the event witnessed at the endpoint. Corroborated by
+  `Past φ := ⊤ S φ` and `Future φ := ⊤ U φ` — guard `⊤` first, event second.
+- Lean (`FormalSystem/Syntax/Formula.lean`, `untl`/`snce` constructors): event-first. In
+  `untl φ ψ`, `φ` is the event and `ψ` is the guard.
+
+KNOWN STALE ARTIFACTS. Both `specs/decisions/untl-snce-argument-order.md` and
+`FormalSystem/Semantics/Truth.lean`'s docstring quote a since-corrected version of the paper
+footnote. Re-derive the paper side from the tracked anchors in
+`specs/paper-definitions-of-record.md` rather than trusting either quotation.
+
+SCOPE. `snce`/`untl` occur ~7065 times across `FormalSystem/` and `Tests/`, concentrated in
+`Metalogic/BXCanonical/` (Chronicle, Filtration, TruthLemma, Frame), `Metalogic/Soundness*`,
+`Metalogic/Decidability.lean`, `Metalogic/StrongCompleteness.lean`, and `Semantics/Truth.lean`.
+A swap of this size is not a search-and-replace: the two arguments are both `Formula`, so the
+type checker will NOT catch a missed or half-applied site. Plan for a mechanical, verifiable
+strategy — e.g. swap the constructor signature and let `lake build` drive site-by-site repair, or
+introduce guard-first smart constructors first and migrate call sites before flipping the
+underlying constructor.
+
+ACCEPTANCE.
+1. `FormalSystem/Syntax/Formula.lean`'s `untl`/`snce` take guard first, event second, with
+   docstrings naming the roles and citing the paper convention.
+2. `FormalSystem/Semantics/Truth.lean`'s clauses and docstring match, with the stale footnote
+   quotation replaced by the tracked anchor's current text.
+3. `lake build` is green with no new `sorry`.
+4. Derived operators (`somePast`, `next`, `Past`, `Future`) still hold their intended meanings —
+   verify against the paper's `def:BLplus-defined`, not against the pre-migration Lean code.
+5. `specs/decisions/untl-snce-argument-order.md` updated from OPEN to a decided record.
+6. Typst documents citing these constructors (`typst/`) re-checked via
+   `scripts/typst-sync-check.sh`.
+
+---
 
 ### 447. Substantive rewrites in FormalFoundations.typ: proof repair, axiom presentation, section restructure
 - **Status**: [NOT STARTED]
@@ -166,220 +220,6 @@ Tag locations (line numbers as of scan): 149, 178, 191, 196, 211, 213, 238, 242,
 **Verification**: `typst compile typst/FormalFoundations.typ` must succeed and all `@`-references and bibliography keys must resolve.
 
 **Important**: When making changes, remove the FIX: tags from the source file.
-
----
-
-### 444. Overhaul formalfoundations presentation
-- **Status**: [COMPLETED]
-- **Task Type**: formal
-- **Topic**: publication-quality
-- **Dependencies**: None
-- **Research**: [444_overhaul_formalfoundations_presentation/reports/01_team-research.md]
-- **Plan**: [444_overhaul_formalfoundations_presentation/plans/02_formalfoundations-presentation-overhaul.md]
-- **Summary**: [444_overhaul_formalfoundations_presentation/summaries/01_formalfoundations-presentation-overhaul-summary.md]
-
-**Description**: Review the email other/dana.md sent to Dana Scott regarding the paper /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex, and systematically overhaul typst/FormalFoundations.typ so it presents, for Dana Scott as reader: the core mechanics of the existing completeness results, the current state of decidability, and the best direction for developing a representation theorem. Carefully review and incorporate the FIX tags already added in the file. The rewrite must adopt the writing style of an advanced textbook -- no vague glosses or platitudes -- with clean, precise definitions and theorems, and terse but informative introductions and remarks only where needed to motivate and explain the flow of results. The current document has virtually no detectable narrative arc; the presentation must be rewritten at a much higher level of formal sophistication, taking the time needed to do so accurately and masterfully.
-
----
-
-### 443. Formal foundations report completeness and representation
-- **Status**: [COMPLETED]
-- **Task Type**: typst
-- **Topic**: paper-refactor
-- **Dependencies**: Task 442
-- **Plan**: [443_formal_foundations_report_completeness_and_representation/plans/01_formal-foundations-report.md]
-- **Summary**: [443_formal_foundations_report_completeness_and_representation/summaries/01_formal-foundations-report-summary.md]
-- **Research**: [443_formal_foundations_report_completeness_and_representation/reports/02_measured-status.md]
-
-**Description**: GOAL. Write a NEW, standalone ~10-page Typst report, `typst/FormalFoundations.typ`, presenting the formal foundations of the bimodal logic: a formally precise and compressed overview of the system and its logic, stating key theorems where appropriate; then the PAIN POINTS -- the contingency of the temporal axioms (density, discreteness, Dedekind-completeness) and the axiomatization of the strongest objective modality; then, and most importantly, THE COMPLETENESS CONSTRUCTION AS ACTUALLY IMPLEMENTED IN THIS REPOSITORY together with the early steps toward a representation theorem, closing with an outline of the best way forward to a fully adequate representation theorem and completeness results for a very weak, general base bimodal logic that assumes neither density nor discreteness nor perhaps even Dedekind-completeness.
-
-This is a research-facing document, not a chapter of the reference manual. It should read as the thing you would hand a logician who asks "what exactly is proved here, what is not, and what would it take to close the gap."
-
-=== 1. FORM AND LOCATION -- USER DECISION, 2026-08-13 ===
-A STANDALONE document at `typst/FormalFoundations.typ`, compiled to `typst/build/FormalFoundations.pdf`. It IMPORTS `typst/notation/bimodal-notation.typ` and `typst/template.typ` so that notation cannot drift between this report and the book, and cites `typst/bibliography.bib`. It is NOT a chapter of `BimodalReference.typ` and must not be `#include`d by it. Add its build command to `typst/README.md`.
-
-Target length ~10 pages of body text at the book's existing type settings. Compression is a design constraint, not an accident: prefer a stated theorem with an anchor over a rehearsed proof, and prefer one well-chosen diagram over a page of prose. Where a proof genuinely carries the argument -- the two-fibre incompleteness countermodel, the discrete-or-dense dichotomy -- give it in full, briefly.
-
-=== 2. DEPENDENCY AND WHY ===
-Depends on the BimodalReference revision task. That task establishes, in one place and against the repository's own guards, which claims about the paper and the Lean tree are currently TRUE -- the completeness reversal, the four frame classes, the deleted conservativity theorem, the open decidability status, the live module structure, and the corrected Since/Until convention. Writing this report first would mean re-deriving all of it and would risk the two documents disagreeing. Consume the predecessor's findings note from its `reports/` directory as settled input; re-verify anything it flags as exposed to the in-flight Lean chain.
-
-=== 3. SECTION PLAN (indicative; a better structure that covers the same ground is acceptable, a shorter one that drops a pain point is not) ===
-
-3.1 THE SYSTEM, COMPRESSED. The languages BL = <SL, bot, ->, Box, Past, Future> and BL^+ = <SL, bot, ->, Box, Since, Until> (\label{def:BLplus-language}), with the defined operators of \label{def:BLplus-defined} and the reduction \label{thm:BLplus-PastFuture} showing Past/Future definable from Since/Until, plus \label{thm:BLplus-NextPrevious} for Next/Previous over discrete frames. Task-frame semantics: \label{def:temporal-order}, \label{def:task-relation} with the converse convention and the fiber/cone/segment apparatus, \label{def:directed}, the FOUR axioms of \label{def:frame} (Compositionality biconditional, Seriality, Limit, Spherical -- Nullity is a LEMMA, \label{lem:nullity}, not an axiom), the partial/world/total history layering of \label{def:world-history}, \label{def:BL-semantics}, and \label{def:logical-consequence}. The proof systems: S5 (\label{def:S5}), the base Burgess-Xu tense logic BX (\label{def:BX}), TM^+ = S5 + BX + \aitem{TMP-MF} (\label{def:TMplus}), and the three extensions BX_f/TM^+_f (\label{def:TMplus-f}), BX_d/TM^+_d (\label{def:TMplus-d}), BX_c/TM^+_c (\label{def:TMplus-c}). State the BL-level TM axiomatization too, since the pain points are about it.
-
-3.2 KEY THEOREMS. Existence and occurrence -- \label{lem:step}, \label{thm:extension} (Zorn), \label{cor:occurrence}, \label{cor:spherical-finite} (finite W satisfies Spherical, choice-free -- and note the Lean-vs-ZF mismatch: choice-free in the paper's sense means "no AC given classical logic", whereas Lean's `Classical.choice` is the single axiom yielding both excluded middle and choice, so `#print axioms` CANNOT express the paper's distinction; this repository has machine-checked that Spherical on a finite carrier implies weak excluded middle, so no `Classical.choice`-free Lean proof can exist). Soundness -- \label{thm:TM-soundness} for TM and its extensions, \label{thm:M5-valid}. Correspondence -- \label{app:discrete} (\aitem{DF}), \label{app:dense} (\aitem{DN}), \label{app:complete} (\aitem{CO}). The perpetuity principles \aitem{P1}--\aitem{P6} and the derived \aitem{TF}, with the derivation from MF and MT by classical reasoning. The modal-temporal collapses \label{Pthm:11}--\label{Pthm:22} (in particular Sometimes-Box phi <-> Box phi, Always-Box phi <-> Box phi, Box-Always phi <-> Box phi, Diamond phi <-> Diamond-Sometimes phi) and what they suggest about the language's real expressive complexity. Order-theoretic facts that do real work: by Hölder, a nontrivial DISCRETE Archimedean totally ordered abelian group is isomorphic to Z, and a nontrivial DEDEKIND-COMPLETE one is Archimedean hence isomorphic to Z or R -- so the complete class is exactly {Z, R} up to isomorphism and the dense-and-complete class is exactly R.
-
-COMPLETENESS. State \label{cor:tm-completeness} exactly as it stands and do not soften it: TM, TM_f, TM_d, TM_c, TM_dc are SOUND over their classes but NONE IS COMPLETE; completeness is carried by the BL^+ systems -- TM^+_d weakly complete over the full Dense class (machine-checked, sorry-free); TM^+_f weakly complete over Z-time (machine-checked over the successor-Archimedean class); TM^+_c weakly complete over the dense-and-complete class, exactly R (machine-checked); TM^+ weak completeness over all task frames is the stated formalization TARGET with one obligation outstanding, NOT an established theorem. Strong completeness is the aim for TM^+ and TM^+_d with no known obstruction; it PROVABLY FAILS for Z-time and for R, where compactness fails. Nothing is asserted about compactness of the full discrete class in either direction. Record also the deletion of the conservative-extension theorem and the four-part replacement status at \label{def:TMplus}'s footnote (backward unconditional; forward fails for base via (DD) and for discrete via \aitem{TMP-Z1} over Z x_lex Z; open for dense and complete).
-
-DECIDABILITY -- USER-CONFIRMED FRAMING, 2026-08-13. State it FAITHFULLY AS OPEN, per \label{cor:tm-decidability}: "Whether TM, TM_f, TM_d, TM_c, and TM_dc are decidable is open." Do NOT present a decidability theorem. Give the honest anatomy: each system is recursively axiomatized so its theorems are r.e. regardless of completeness; decidability additionally needs the non-theorems r.e., standardly via a finite model property; the former blanket FMP-over-D=Z premise is RETRACTED AS FALSE, with two witnesses -- \aitem{DF} is a non-theorem of TM, TM_d, TM_c, TM_dc yet valid in every model over D = Z, and \aitem{CO} is a non-theorem of TM_f (witnessed by Z x_lex Z) yet likewise valid over D = Z; a repaired FMP must be CLASS-SPECIFIC and range over effective non-Archimedean carriers such as Z x_lex Z rather than Z alone. What exists here: a verified SOUND tableau procedure, and ongoing formalization of the semantic, truth-connected FMP for the Z-time discrete case. What would suffice: decidability of Log(all task frames) = Log(Discrete) intersect Log(Dense) follows from decidability of the two factor logics; decidability of Log(complete frames) = Th(Z) intersect Th(R) follows from decidability of Th(Z) and Th(R) separately. That intersection reduction is the target STRATEGY, not a result.
-
-3.3 PAIN POINT ONE -- THE CONTINGENCY OF THE TEMPORAL AXIOMS. This is the section the user singled out and it should be the most carefully written prose in the report.
-- The three frame conditions (Discrete, Dense, Complete) and the axioms characterizing them (\aitem{DF}, \aitem{DN}, \aitem{CO}), with the systems TM_f, TM_d, TM_c, TM_dc.
-- No temporal order is both discrete and dense, so TM cannot consistently contain both DF and DN.
-- The bite: since every possible world is defined over the frame's own temporal order D, the structure D has -- discrete or dense, Dedekind complete or not -- holds OF METAPHYSICAL NECESSITY for that system. If D is dense then \aitem{DN} AND its necessitation Box(FF phi -> F phi) are valid over that frame.
-- The worry, stated at its strongest: Dorr and Goodman (2020, p. 656) express sympathy for an account of metaphysical modality able to express theses about the contingency of the structure of time. Present this as a real cost, not a strawman.
-- The paper's IRREGULAR WORLDS response and its EXACT price. Relax totality, admitting functions tau : X -> W where X is a COSET DOMAIN -- a translate G + c of a nontrivial subgroup G <= D -- with tau(x) =>_{y-x} tau(y) throughout, and define consequence over the irregular and possible worlds alike. Cosets rather than subgroups, because a family of translates is closed under ambient translation and so preserves \aitem{MF} and the perpetuity principles, which the subgroup formulation loses. THE PRICE IS EXACT AND MUST BE STATED EXACTLY: every nontrivial ordered abelian group contains a discrete cyclic subgroup, so \aitem{DN} is then valid over NO frame whatever; \aitem{DF} fails over discrete orders possessing a subgroup that is itself dense, such as Q x_lex Z; the correspondence results \label{app:discrete}, \label{app:dense}, \label{app:complete} LAPSE TOGETHER; and the broadened operator, while still factive, normal, and closed under necessitation relative to the broadened consequence relation, is DISPLACED from its standing as the strongest objective modality.
-- The paper's DEFENSE, which the report should present fairly and then evaluate: necessity-if-true of density is an instance of the completely general fact that frame validity is closed under necessitation, with the Kripke B/symmetry case as precedent (over symmetric frames both B and Box-B are valid, and nobody counts this against the relational treatment of B); structural disputes about metaphysical accessibility -- S4 vs S5, whether the objective modalities are closed under converses -- are already conducted as questions about which frame class and logic are correct, never as claims that transitivity or symmetry is metaphysically contingent. Since possible worlds are only ever defined over a single frame, no modality quantifies across frames.
-- What the irregular worlds DO and DO NOT deliver: they express contingency in the structure and cardinality of the time series, but NOT composition contingency of the catastrophe or proper-initial-segment kind, since a difference-closed domain is a subgroup (or a translate of one) and so unbounded in both directions either way.
-- Close with the residual question the report should state rather than resolve: is there a semantics that recovers temporal-structure contingency without lapsing the correspondence results? The paper names a semantic class CLOSED UNDER DISJOINT UNION as the natural target, under which the Halldén phenomenon dissolves structurally. Connect this forward to 3.5.
-
-3.4 PAIN POINT TWO -- THE SPLIT VALIDITY AND TM'S SEMANTIC INCOMPLETENESS. Give this its own short section; it is the sharpest formal result among the pain points and it is closely tied to 3.3.
-- The dichotomy: every nontrivial totally ordered abelian group is either discrete (least positive element) or dense, never both. Give the two-line proof (if no least positive element then for x < y some positive e < y - x exists, giving x < x + e < y by translation invariance; conversely a least positive e forbids anything strictly between x and x + e). NOTE explicitly that the dichotomy depends essentially on the GROUP structure -- it fails for bare linear orders such as a copy of Z followed by a copy of the rationals -- and is exhaustive precisely because translation invariance globalizes any local witness.
-- Hence Log(all task frames) = Log(Discrete) intersect Log(Dense), and the class of all task frames is NOT closed under disjoint union.
-- Hence (DD): the schema Box phi_DF or Box psi_DN for arbitrary instances of \aitem{DF} and \aitem{DN} (no variable-disjointness restriction; \aitem{TD} supplies the past mirrors) is valid over every task frame yet TM-unprovable, refuted on a TWO-FIBRE structure -- one fibre over Z, one over R, Box read globally over both -- which is TM-sound because no TM axiom or rule constrains how Box interacts across fibres. DIAGRAM THIS.
-- The careful taxonomy, which the report must not blur: TM is SEMANTICALLY incomplete (a formula valid but unprovable), NOT Halldén-incomplete. TM + (DD) would CREATE Halldén-incompleteness (proving a variable-disjoint disjunction while proving neither disjunct, since each fails soundness on the complementary subclass). Halldén-incompleteness of Log(all task frames) ITSELF is a THEOREM -- the correct formal signature of a class that is a union of two incompatible kinds -- and not a defect.
-- In BL^+, (DD) is already a theorem with no added axiom (\aitem{TMP-NB} and \aitem{M5} give Box Next-top or Box not-Next-top), which inherits TM^+'s outstanding base-case obligation; carry that hedge. The schematic form (DD) takes in BL records nothing about the semantics and everything about the LANGUAGE: BL has no sentence naming discreteness, so it must disjoin schemas where BL^+ disjoins a sentence with its negation.
-- TM_c fails identically over {Z, R}. TM_f's status is DIFFERENT and must not be lumped in: it is sound over EVERY discrete frame (DF is valid there), but its completeness over that broader class is OPEN -- the machine-checked discrete result is for BX_f over Z-time specifically, a narrower and deductively stronger system than TM + DF, and no counterexample to TM_f's completeness over the full discrete class is known.
-
-3.5 PAIN POINT THREE -- AXIOMATIZING THE STRONGEST OBJECTIVE MODALITY. Compress the paper's \label{app:ObjectiveModality} to its load-bearing structure.
-- The setup: BL extended with a primitive propositional identity operator and higher-order quantifiers (\label{def:id}, with \aitem{Ref}, \aitem{Imp}, \aitem{LL}); operator variables over an unrestricted domain of operations on propositions; the objective modalities AXIOMATIZED by a primitive predicate O on operator terms rather than defined outright, following the theory of necessities in Bacon (2022). PREDICATIVITY: operator comprehension confined to formulas containing no operator variables and no occurrences of O, blocking Russell-Myhill and keeping the system consistent with a fine-grained identity; cite Walsh (2016) for the consistency proof of a predicative restriction of Church's intensional logic, and note that predicativity could be dropped by strengthening the theory of identity, since coarse-grained identity blocks Russell-Myhill.
-- \label{def:strongest}, verbatim in substance: Q is a STRONGEST OBJECTIVE NORMAL MODAL OPERATOR in L -- Str^O_L(Q) -- iff (1) |- O(Q), and (2) |- forall P [O(P) -> (Q <= P)], where <= is the dominance ordering. Objectivity and normality need not be stated separately: clause (1) already entails objectivity, the axiom condition, and normality. \label{thm:exist}: Str^O_L(Bm) -- the MEET operator Bm witnesses existence, clause (1) being the second conjunct of \aitem{O-Meet} and clause (2) following from the first, with T, N, K and closure under necessitation obtained by detaching \aitem{O-Fac}, \aitem{O-Ax}, and \aitem{O-Nec} at Bm. \label{lem:uniq}: any two strongest objective normal modal operators are provably equivalent, |- forall p (Q p <-> P p). \label{thm:s4}: Str^O_L(Q) yields |- forall p (Q p -> Q Q p). \label{thm:sym}: Str^O_L(Q) yields |- forall p (p -> Q Dual-Q p). So under the hypothesis Str^O_L(Box), lem:uniq gives |- forall p (Box p <-> Bm p), thm:s4 gives the S4 axiom, thm:sym gives the B axiom, and factivity and necessitation for the primitive Box follow by detaching \aitem{O-Fac} and \aitem{O-Nec} at Box -- together delivering an S5 logic for Box. Note that \label{cor:exists} is a SEPARATE, weaker route to existence that buys it at the price of a coarse-grained identity the paper does not assume; thm:exist replaces reliance on it, and the report should not present cor:exists as the paper's existence result.
-- THE ORTHOGONALITY POINT, which the report should foreground because it is what makes the characterization non-trivial: S5-hood alone CANNOT single Box out. The paper's own restricted case is the counterexample -- the stability modality is likewise S5 (its accessibility partitions H_F into equivalence classes) and yet on non-temporal formulas it collapses to the trivial modality. A strictly narrower accessibility relation can carry a strictly stronger logic; it is <=-leastness, not S5-hood, that picks Box out.
-- THE PAIN: what is actually axiomatized here is a HIGHER-ORDER theory of the objective modalities, not a BL-level or BL^+-level proof system, and the connection between the two levels is a hypothesis (Str^O_L(Box)) adopted afresh for each system under study rather than a theorem of TM or TM^+. State plainly what this leaves open: whether the leastness characterization is expressible or derivable at the propositional level at all; what a propositional axiomatization would have to add; whether the frame-relative plurality of Box operators is genuinely benign (the paper argues it is, since no cross-frame rival is even formulable within the theory and a reader wanting absoluteness may take the universal system); and how the irregular-worlds broadening of 3.3 interacts, given that it DISPLACES Box from its standing as Str^O_L(Box) -- so the two pain points are not independent, and the report should say so.
-
-3.6 THE COMPLETENESS CONSTRUCTION AS IMPLEMENTED HERE. This section and 3.7 are, per the user, the most important part of the report. Describe what is actually in `FormalSystem/Metalogic/`, with named anchors and HONEST status for each, verified against the live tree at authoring time.
-- The core layer: consistency, maximal consistent sets, negation-completeness, the deduction theorem, and Lindenbaum via Zorn (`Metalogic/Core/`, `set_lindenbaum` in `Core/MaximalConsistent.lean`). Note the set-level `SetConsistent` / `SetMaximalConsistent` layer is correctly finitary.
-- The architecture: contraposition -- if phi is underivable then {not phi} is consistent and extends to an MCS containing not phi -- followed by a THREE-WAY CASE SPLIT on the discreteness indicator U(top, bot), i.e. on whether Box-not-Next-top or Box-Next-top is in the MCS, with the MIXED CASE ELIMINATED OUTRIGHT (`mcs_mixed_case_absurd`): an MCS cannot be undecided about discreteness. Diagram this split. Note the structural rhyme with (DD) in 3.4 -- the same discrete/dense dichotomy that BREAKS TM at the BL level is what MAKES the BL^+ construction go through, because BL^+ has a sentence naming discreteness and BL does not. This is the single most illuminating connection in the report; make it explicit.
-- The dense path: the Burgess-style CHRONICLE construction over Q (`Metalogic/BXCanonical/Chronicle/`), filling in Until/Since eventualities, with `completeness_dense` in `BXCanonical/Completeness.lean`.
-- The discrete path: the Reynolds/Doets pipeline over Z (`Metalogic/WeakCanonical/`, `Transfer.lean`), running through a Kamp-theorem-based expressive-completeness argument (`WeakCanonical/Kamp/`, `Separation/`, `EFGames/`, `Expressiveness/`).
-- The Dedekind path, which the reference book currently omits entirely: `BXCanonical/CompletenessDedekind.lean`, `Metalogic/StrongCompleteness.lean` (`completeness_dedekind`, `consequence_completeness_dedekind`), the `RealModel/` subtree (Doets, shuffle, order-iso-to-R), on the Reynolds-triple basis Prior-U + Sep with CO derived.
-- The shared infrastructure: bundled families of MCSs with G/H coherence (`Metalogic/Bundle/`, BFMCS); the D-PARAMETRIC algebraic truth lemma (`Metalogic/Algebraic/`) that turns a coherent MCS family into a task model -- this parametricity is exactly what lets one construction serve several carriers and deserves emphasis; filtration and quasimodels (`BXCanonical/Filtration/`, `Quasimodel/`).
-- STATUS DISCIPLINE. For every headline result, state sorry-status and axiom profile as MEASURED, not as remembered. Use `#print axioms` and the repository's own count script; `bash scripts/typst-status-counts.sh` is the authority for aggregate sorry counts (a naive grep over `FormalSystem/` overcounts badly, since it catches commentary and `Boneyard/`). Do not describe `Boneyard/` content as live. Where the predecessor task's findings note flags an anchor as exposed to the in-flight Lean chain, re-verify it rather than inheriting it.
-- THE TERMINOLOGY IS SETTLED PROJECT-WIDE AND MUST BE USED CORRECTLY: "strong completeness" is reserved for consequence from possibly-INFINITE premise sets; because contexts are finite lists, any finite-context consequence statement is inter-derivable with weak completeness through the deduction theorem and is called CONSEQUENCE COMPLETENESS, never strong. The in-tree authority is the module docstring of `Metalogic/StrongCompleteness.lean`.
-
-3.7 EARLY STEPS TOWARD A REPRESENTATION THEOREM, AND THE WAY FORWARD. The report's terminus, and the reason it exists.
-- FIRST, A WARNING THAT MUST BE HEEDED. `/home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/metalogic.tex` contains a section titled "Representation Theorem" with a canonical model over Z, a Truth Lemma, and Weak/Strong Completeness theorems for TM. It is a SUPERSEDED SCRAP that is NOT part of the current paper (the paper's own preamble forbids \input of other tex files, and possible_worlds.tex does not include it). Its central claims CONTRADICT \label{cor:tm-completeness}: it asserts that TM is sound AND COMPLETE over the class of all task semantic frames and that TM is strongly complete, both of which the current paper REFUTES via (DD). Its Compositionality proof is hand-waved ("we can construct a history..."), its Box case assumes global agreement across all canonical histories, and its Nullity/Compositionality remark asserts frame properties the current four-axiom def:frame handles differently. DO NOT LIFT ANY OF IT. It may be cited only as a historical waypoint, and only with its defects named. If any of its statements are to be salvaged, they must be re-derived against the current def:frame and cor:tm-completeness.
-- WHAT ACTUALLY EXISTS HERE AS EARLY REPRESENTATION WORK, and it is real: (a) the ALGEBRAIC layer -- `Metalogic/Algebraic/BooleanStructure.lean`, `LindenbaumQuotient.lean`, `UltrafilterMCS.lean`, `InteriorOperators.lean`, `FlowFrame.lean` -- the Lindenbaum-Tarski algebra, its ultrafilters, and the interior-operator treatment of the modalities; (b) the SHIFT-SET representation programme, which is the live gate for the whole strong-completeness branch: prove in both directions that the task-model class is representable by shift sets <Omega, D, sh, A> with D an ordered abelian group, Omega a nonempty type carrying a D-action sh, and A : Atom -> Omega -> Prop -- the point being that the task-model class is then first-order axiomatizable over the two-sorted signature <Omega, D; <, +, 0, sh, (A_p)> BECAUSE the frame's algebraic content reaches truth only through the atom clause; (c) the JONSSON-TARSKI programme -- complex algebra Cm(F) of a task frame, ultrafilter frame Uf(A) of an abstract algebra, and the embedding eta(a) = {U : a in U} -- with the recorded and important obstruction that *Spherical* for an ultrafilter frame is a genuinely nontrivial NEW obligation, and that the finite-W discharge pattern (subset-least member of a finite directed family, \label{cor:spherical-finite}) does NOT apply to ultrafilter frames, which are typically infinite.
-- THE WAY FORWARD -- this is the section the user most wants, and it should be a reasoned OUTLINE with named obstructions, not a wish list. Target: a fully adequate representation theorem and completeness for a very weak, GENERAL base bimodal logic assuming neither density nor discreteness nor perhaps even Dedekind-completeness, abstracting away as much as possible. Address at minimum:
-  (a) WHAT MUST BE WEAKENED. Which of def:frame's four axioms are genuinely needed for a representation theorem, and which are strengthenings that could be dropped or made parametric? *Spherical* is the prime suspect -- it is the axiom that is hardest to discharge at infinite carriers, and it is exactly what the Jonsson-Tarski route stumbles on. Is there a weaker completeness/saturation condition that suffices for the Step Lemma?
-  (b) THE GROUP STRUCTURE IS THE CRUX, AND IT CUTS BOTH WAYS. The discrete-or-dense dichotomy -- the very thing that makes TM incomplete -- is a THEOREM ABOUT ORDERED ABELIAN GROUPS and fails for bare linear orders. So the most obvious abstraction, dropping D from an ordered abelian group to a linearly ordered set (or a monoid, or a partially ordered group), DISSOLVES the (DD) obstruction outright. What does it cost? \aitem{MF} and the perpetuity principles depend on translation invariance; the converse convention depends on negation; Compositionality is stated in terms of addition. The report should work out, honestly, what survives each weakening -- this is the single most valuable analysis it can contain.
-  (c) DISJOINT-UNION CLOSURE. The paper names a semantic class closed under disjoint union as the natural target under which the Halldén phenomenon dissolves structurally, and \S\ref{sub:Extension}'s irregular worlds are its gesture in that direction. Is the coset-domain construction of 3.3 the right route, given that its price (DN valid over no frame; DF failing over Q x_lex Z; correspondence lapsing) is precisely a LOSS of the correspondence results a representation theorem would want? Or is a genuinely multi-frame semantics needed, and what would Box then quantify over?
-  (d) THE ALGEBRAIC ROUTE VS THE SHIFT-SET ROUTE. Which is likelier to reach a general representation theorem, and are they the same theorem twice? The shift-set route's payoff is first-order axiomatizability and hence a compactness/ultraproduct argument; the Jonsson-Tarski route's payoff is a canonical embedding and duality. State what each would deliver and where each currently stops.
-  (e) WHAT WOULD COUNT AS ADEQUATE. Be explicit about the acceptance standard, since the surrounding project's is: a sorry-free Lean statement of BOTH directions with `#print axioms` reporting no `sorryAx`. A statement that type-checks with a sorry body does not count; one direction does not count; a prose argument does not count.
-  (f) WHAT IS FORECLOSED. Genuine strong completeness is IMPOSSIBLE for Z-time and for R (compactness fails; there is an explicit non-compactness witness recorded here for the successor-Archimedean discrete case, and Reynolds (1992) establishes the analogous failure over R). Any "way forward" that promises strong completeness for those classes is wrong on arrival. Base and Dense are open, not settled, and the relevant missing piece is a MODEL-EXISTENCE theorem (every consistent SET satisfiable in a class frame), which does NOT follow from the single-formula countermodel engines already built.
-
-=== 4. DIAGRAMS ===
-Use cetz, matching the reference book's existing light-cone-diagram style. At minimum: the two-fibre Z/R countermodel witnessing (DD); the three-way discreteness-indicator case split driving the completeness architecture; and one diagram for the representation-theorem landscape (algebraic route and shift-set route, what each connects, and where each currently stops). Additional candidates if space allows: the fiber/cone/segment apparatus; the frame-class lattice Base/Dense/Discrete/Dedekind. A diagram that only restates a formula does not earn its space.
-
-=== 5. ACCEPTANCE ===
-1. `cd typst && typst compile FormalFoundations.typ build/FormalFoundations.pdf` succeeds, no unresolved references or citations, body ~10 pages.
-2. `bash scripts/typst-sync-check.sh` still passes with the new file present -- every backticked Lean name in it resolves under `FormalSystem/` (excluding `Boneyard/`), or is whitelisted with a one-line reason.
-3. `bash scripts/check-paper-definitions.sh` exits case (a) or (b), run immediately before the final pass over quoted definitions.
-4. Every claim about Lean status is MEASURED at authoring time (`#print axioms`, `lake build`, `scripts/typst-status-counts.sh`) and dated in the text or a footnote, not recalled.
-5. Every "open" is marked open and every "target" marked target. The report's value is that a reader can trust its status claims; one overstatement destroys that.
-6. `typst/README.md` documents the new build target.
-
-=== 6. NON-GOALS ===
-NO Lean implementation -- this is a report, and any formalization gap it identifies is recorded, not closed. NO edits under /home/benjamin/Philosophy/Papers/ -- the paper is READ-ONLY ground truth, and `metalogic.tex` is read-only AND superseded (section 3.7). NO changes to `BimodalReference.typ` or `typst/chapters/` -- that is the predecessor task's territory; if this report finds a book defect, record it in this task's `reports/` and raise it rather than editing across the boundary. NO changes to `latex/`. Do NOT cite task numbers anywhere in `typst/**` (repository rule: deliverables carry durable anchors, never ephemeral task-management metadata). Do NOT propose or assert a decidability theorem (section 3.2). Do NOT restate `metalogic.tex`'s completeness claims in any form.
-
-=== 7. CITATION DISCIPLINE ===
-Identical to the predecessor task's: run `bash scripts/check-paper-definitions.sh` and read `specs/paper-definitions-of-record.md` before quoting any definition; cite by \label or \aitem key ONLY, never by line number; quote definition TEXT verbatim alongside each anchor so a renamed anchor stays detectable by text search; STOP on a case-(c) FAIL rather than quoting a drifted anchor. Anchors this report needs that the record file may not yet track (check, and extend the record file per its own four-step protocol if it does not): \label{def:strongest}, \label{thm:exist}, \label{lem:uniq}, \label{thm:s4}, \label{thm:sym}, \label{def:id}, \label{cor:tm-completeness}, \label{cor:tm-decidability}, \label{def:TMplus}, \label{def:TMplus-f}, \label{def:TMplus-d}, \label{def:TMplus-c}, \label{def:BX}, \label{def:S5}, \label{app:discrete}, \label{app:dense}, \label{app:complete}, \label{thm:TM-soundness}, \label{thm:M5-valid}.
-
----
-
-### 442. Revise bimodal reference book against paper and lean
-- **Status**: [COMPLETED]
-- **Task Type**: typst
-- **Topic**: paper-refactor
-- **Dependencies**: None
-- **Plan**: [442_revise_bimodal_reference_book_against_paper_and_lean/plans/01_book-paper-lean-revision.md]
-- **Summary**: [442_revise_bimodal_reference_book_against_paper_and_lean/summaries/01_book-paper-lean-revision-summary.md]
-- **Research**: [442_revise_bimodal_reference_book_against_paper_and_lean/reports/02_revision-findings.md]
-
-**Description**: ABSORBS AND SUPERSEDES 427 (`sync_typst_book_with_refactored_paper`), which is marked [EXPANDED] by this task's creation. 427's quote-backed anchor content is carried forward VERBATIM in sections 3 and 9 below and remains binding; nothing in 427 is discarded except its gating and its narrow definitional-only remit. Do not re-read 427 for instructions -- this description is authoritative over it.
-
-GOAL. Revise the BimodalReference book (`typst/BimodalReference.typ` and all of `typst/chapters/`) so that it is (a) FAITHFUL to the paper at /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex and to the Lean tree as it currently stands, and (b) ADEQUATE AS EXPOSITION -- a skillfully written reference with a real introduction, motivating remarks where a reader needs them, diagrams wherever a diagram carries the idea better than prose, and references that resolve. Accuracy is the floor here, not the ceiling. The book currently fails both tests.
-
-=== 1. GATING DECISION -- BINDING, USER-APPROVED 2026-08-13 ===
-427 was gated behind 414/415/417/419/420 with the rationale "WHY THIS RUNS LAST." That gate is LIFTED. This task proceeds NOW against the paper as ground truth and the Lean tree as it currently stands. `dependencies` is deliberately empty.
-
-The cost of lifting the gate is accepted and must be MANAGED, not ignored: 415 (`completeness_over_total_history_semantics`, [IMPLEMENTING]) will move canonical-frame and completeness anchors; 417 (`semantic_fmp_finite_worldstate_over_z`, [PLANNED]) will move the FMP anchors; 419 (`machine_check_co_reynolds_independence`, [PLANNED]) will land the CO/Reynolds-triple independence result. Therefore: wherever a claim's Lean anchor sits in territory those three will touch, write the claim so the PROSE survives the anchor moving, and mark the anchor itself in a form a follow-up sweep can find mechanically. Use a single consistent marker string for these (choose one, document it in `typst/README.md`, and list every occurrence there) so the later re-sync is a grep, not a re-audit. Paper-anchored content is NOT subject to this hedging: the paper is stable ground truth and its claims are written plainly.
-
-=== 2. VERIFIED STATE OF PLAY -- MEASURED 2026-08-13, DO NOT RE-DERIVE ===
-`bash scripts/check-paper-definitions.sh` -> EXIT 0, case (b): "possible_worlds.tex changed (new checksum c91b9799f124f31c46b9007bcb05b499294cd0faa77f7309193723bd50839762, last-touching commit f56cdea0237d102edbb9c64dcef7617d8d2cbc3e) but all 26 recorded definitions are unchanged -- pass." Proceed; re-run before quoting anything, and STOP on case (c).
-
-`bash scripts/typst-sync-check.sh` -> FAIL. This is the concrete work list and it is not optional. Check 1 reports TOTAL_VIOLATIONS=25; Check 2 reports MISMATCH_COUNT=3; Check 3 is clean.
-
-CHECK 1 -- 25 unresolvable backticked names. These fall into three kinds, and the kinds need different treatment:
-  (i) PATHS TO DELETED MODULES -- the book cites Lean files that do not exist. `Metalogic/DenseSoundness.lean` and `DenseSoundness.lean` (04-metalogic.typ); `Metalogic/DiscreteSoundness.lean` and `DiscreteSoundness.lean` (04-metalogic.typ); `ConservativeExtension/` (04-metalogic.typ); `Metalogic/ConservativeExtension/` (03-proof-theory.typ, 06-notes.typ, p2-frame-classes.typ, p3-ltl-to-tm.typ); `Metalogic/ConservativeExtension/Lifting.lean` (06-notes.typ); `Metalogic/ConservativeExtension/Lifting.lean:683-695` (p2-frame-classes.typ); `FMP/DenseFMP.lean` and `FMP/DiscreteFMP.lean` (p2-decidability-practice.typ); `Bridge.lean` (05-theorems.typ); `ExtFormula.lean` (p2-frame-classes.typ).
-  (ii) IDENTIFIERS THAT DO NOT EXIST -- `FMP.assignmentSpace_card`, `FMP.filtered_world_bound` (p2-decidability-practice.typ); `exists_fresh_atom`, `liftDerivationWith` (p2-frame-classes.typ); `lift_derivation_qfree` (06-notes.typ, p2-frame-classes.typ, p3-ltl-to-tm.typ); `rabinovich_translate` (p3-vlach-blstar.typ).
-  (iii) EXPOSITORY SPANS the checker cannot resolve because they are prose-in-backticks, not names -- `L.map embedFormula`, `embedFormula φ`, `⊥ U φ` (p2-frame-classes.typ); `Nat.card (FilteredWorld φ) ≤ 2^(|op("closure")(φ)|)`, `Nat.card (Set ↥(subformulaClosure φ)) = 2^(|op("closure")(φ)|)`, `allClosed arrow.r "valid"`, `and True` (p2-decidability-practice.typ).
-For (i) and (ii), the rule is: find the live replacement and repoint, or -- if the claim itself no longer holds -- DELETE THE CLAIM. Do NOT whitelist a dead path to silence the checker. That is the failure mode the checker exists to catch. For (iii), whitelist deliberately in `typst/sync-check-whitelist.txt` with a one-line reason each, or reformat so the span is no longer backticked as if it were a Lean name.
-THE CONSERVATIVE-EXTENSION CLUSTER IS THE LARGEST SINGLE ITEM and is NOT a repointing job -- see section 4.
-
-CHECK 2 -- 3 stale counts in `typst/generated/status.typ`: sorry-total committed=8 live=5; sorry-total-excl-boneyard committed=4 live=1; sorry-table[Core/, Decidability/, SoundnessLemmas/, top-level] committed=3 live=0. Fix by running `bash scripts/typst-status-counts.sh`, never by hand-editing the generated file. `scripts/typst-status-counts.sh` is the AUTHORITY for every count the book states; a naive `grep -c sorry` over `FormalSystem/` returns a much larger number because it counts commentary and Boneyard, and any dispatch that hand-writes a count from such a grep has introduced a defect. Re-run the script and quote it.
-
-=== 3. WHAT THE BOOK MUST SAY ABOUT THE SEMANTICS -- CARRIED FORWARD FROM 427 VERBATIM, STILL BINDING ===
-Paper anchor \label{def:frame}, verbatim: "A *frame* is any F = <W, D, =>> where W is a nonempty set of world states, D is a temporal order, and => is a task relation satisfying the following for x, y >= 0: *Compositionality:* w =>_{x + y} v if and only if w =>_x u and u =>_y v for some u in W. *Seriality:* w =>_x u and v =>_x w for some u, v in W. *Limit:* intersection over x > 0 of (w)_x = {w}. *Spherical:* intersection of S is nonempty for any directed family S of nonempty fibers and segments."
-
-FOUR axioms. Nullity is NOT among them: \label{lem:nullity}, verbatim, "w =>_0 w for every world state w in W in every frame F = <W, D, =>>", derived choice-free from *Seriality* at x = 0 plus *Limit*. Reflection is likewise not an axiom -- negative durations come from the converse convention.
-
-Supporting definitions the frame definition presupposes:
-- \label{def:temporal-order}: "A *temporal order* is a nontrivial totally ordered abelian group D = <D, +, 0, <=> with *positive cone* D^+ := {x in D : x >= 0}."
-- \label{def:task-relation}: a task relation on a NONEMPTY set of world states W over a temporal order D, "extended to negative durations by the *converse convention* w =>_{-x} u := u =>_x w for x >= 0", determining -- Fiber: Fib(w, x) := {u in W : w =>_x u}; Cone: (w)_x := union over |y| < x of Fib(w, y) where x > 0; Segment: [w, v]_x^y := Fib(w, x) intersect Fib(v, -y) where x, y >= 0.
-- \label{def:directed}: "A nonempty family of sets S is *directed* just in case S' subset-of S_1 intersect S_2 for some S' in S whenever S_1, S_2 in S."
-- \label{def:world-history}: "A *partial history* over a frame F = <W, D, =>> is a function tau : X -> W on a nonempty set X subset-of D where tau(x) =>_{y-x} tau(y) for all times x, y in X. ... A *world history* is any partial history whose domain X is *convex* ... A world history is *total* --- equivalently, a *possible world* --- just in case X = D. ... The set of all total world histories over F is denoted H_F." The layering is partial history, then world history (convex domain), then total. A partial history requires a NONEMPTY domain and does NOT require convexity.
-- The existence machinery, if the book states it: \label{def:constraints} defines the constraints a new time imposes; \label{lem:constraint} (Constraint Lemma) shows they form a directed family of nonempty fibers and segments; \label{lem:fibers} and \label{lem:admissible} characterize admissible one-point extensions; \label{lem:step} (Step Lemma) applies *Spherical* and closes via lem:admissible to extend a partial history by one duration; \label{thm:extension} runs Zorn over partial histories and closes via lem:step; \label{cor:occurrence} follows (a MERGED anchor -- the former thm:occurrence and app:nonempty no longer exist), giving tau(x) = w at any prescribed time x and H_F nonempty for every frame. \label{cor:spherical-finite}: "Every frame F = <W, D, =>> with finite W satisfies *Spherical*, choice-free."
-- \label{def:BL-semantics} evaluates at "a possible world tau in H_F and time", with the box clause quantifying over all sigma in H_F and the atom clause carrying no domain conjunct; \label{def:logical-consequence} quantifies over models, possible worlds tau in H_F, and times x in D.
-
-THREE VOCABULARY AND NOTATION TRAPS -- writing any of these into the book is precisely the failure this task exists to prevent:
-(a) Segments are written [w, v]_x^y with the defining equation above. The paper's old `\Seg` macro is DELETED from its preamble and survives only inside commented-out lines; function-application segment notation is not current notation.
-(b) *Spherical* ranges over directed families of nonempty FIBERS AND SEGMENTS as two SEPARATE classes, with directedness per \label{def:directed}. The retired device by which one-sided fibers counted among the segments must not be reintroduced. The lemma formerly cited for the two-sided segment family no longer exists in the paper -- cite lem:constraint and lem:step.
-(c) The vocabulary "task-constrained function" is RETIRED paper-wide. Use "partial history", "world history", and "total world history" / "possible world".
-
-GENERATIONAL GAP, carried forward from 427 and now one generation worse again: `typst/chapters/02-semantics.typ` still independently axiomatizes Reflection, has no Limit clause at all, and predates the positive-cone / converse-convention presentation entirely. Its prose gloss repeats the same errors AND frames the mixed-sign Compositionality form as a Lean/paper divergence -- that framing is INVERTED (the paper ADOPTED the positive-cone presentation, so the book should record AGREEMENT). Re-audit the stale-site list against the current four-axiom paper; do not trust any prior enumeration, including this one.
-
-NOTATION (binding user decision, carried forward unchanged): any explicit converse operation on the task relation is written with a superscript inverse -- Rightarrow^{-1} / R^{-1} -- NEVER the relation-algebra breve/smile common in the arrow-logic literature. The paper states the converse convention with subscript negation only and introduces no operator symbol at all; introduce none unless one is genuinely needed.
-
-=== 4. THE COMPLETENESS STORY IS REVERSED, NOT MERELY STALE -- THIS IS THE HEADLINE CORRECTION ===
-`typst/chapters/04-metalogic.typ` currently says, in three places, that "the completeness of TM with respect to its frame classes remains an open problem" (and `BimodalReference.typ`'s abstract says the same). That is not what the paper says, and the difference is not one of degree.
-
-Per \label{cor:tm-completeness}, verbatim in substance: "TM and its extensions TM_f, TM_d, TM_c, and TM_dc are sound over their respective classes of all, discrete, dense, complete, and dense-and-complete task frames, but NONE IS COMPLETE; completeness is carried instead by the following BL^+ systems: TM^+_d -- weakly complete over the dense frames, machine-checked, sorry-free, over the full Dense class. TM^+_f -- weakly complete over Z-time, machine-checked directly over the successor-Archimedean class. TM^+_c -- weakly complete over the dense-and-complete class, exactly R, machine-checked directly. TM^+ -- weak completeness over all task frames is the stated Lean-formalization target; one proof obligation remains outstanding, so this is not yet an established theorem."
-
-So TM is not "open"; TM is PROVABLY INCOMPLETE, and the book must say why, because the reason is one of the most interesting things in the system:
-- Every nontrivial totally ordered abelian group is either discrete or dense and never both (translation invariance globalizes any local gap or density witness; the dichotomy FAILS for bare linear orders, e.g. a copy of Z followed by a copy of the rationals).
-- Hence Log(all task frames) = Log(Discrete) intersect Log(Dense), and the class of all task frames is NOT closed under disjoint union.
-- Hence a SPLIT VALIDITY named (DD): the schema Box phi_DF or Box psi_DN, for arbitrary instances of \aitem{DF} and \aitem{DN}, is valid over every task frame yet TM-unprovable, refuted on a TWO-FIBRE countermodel (one fibre over Z, one over R, with Box read globally over both) over which every TM axiom and rule remains sound.
-- TM is therefore SEMANTICALLY incomplete, NOT Halldén-incomplete -- the book must not confuse these. TM + (DD) would CREATE Halldén-incompleteness. Halldén-incompleteness of Log(all task frames) itself is a THEOREM and the correct formal signature of a union of two incompatible kinds, not a defect.
-- In BL^+, (DD) is already a theorem with no added axiom, via \aitem{TMP-NB} and \aitem{M5} giving Box Next-top or Box not-Next-top. This inherits TM^+'s own outstanding base-case obligation and the book must carry that hedge, not drop it.
-
-THE CONSERVATIVE-EXTENSION THEOREM IS DELETED FROM THE PAPER. `thm:ConservativeExtension` no longer exists; the footnote at \label{def:TMplus} replaces it and makes NO conservativity claim. Backward direction (every BL-theorem of TM etc. survives in TM^+ etc.) holds unconditionally; the FORWARD direction FAILS for the base case (witnessed by (DD)) and unconditionally for the discrete extension (witnessed by \aitem{TMP-Z1}, unsound over Z x_lex Z), and remains open for dense and complete. Every book passage that presents conservativity as an established result -- and there are several, clustered around the dead `Metalogic/ConservativeExtension/` citations in 03-proof-theory.typ, 06-notes.typ, p2-frame-classes.typ, and p3-ltl-to-tm.typ -- must be rewritten to the four-part status above, not repointed to a live module. Note in passing that a separate Lean task exists to formalize a conservativity bridge; its premise is affected by this deletion. Record that as a finding for the user; do NOT modify that task from here.
-
-=== 5. DECIDABILITY IS OPEN -- USER-CONFIRMED FRAMING, 2026-08-13 ===
-\label{cor:tm-decidability} now reads: "Whether TM, TM_f, TM_d, TM_c, and TM_dc are decidable is OPEN." The former blanket finite-model-property-over-D=Z premise was retracted as FALSE, and the paper gives two witnesses: \aitem{DF} is a non-theorem of TM, TM_d, TM_c, TM_dc yet valid in every model over D = Z; \aitem{CO} is a non-theorem of TM_f (witnessed by Z x_lex Z) yet likewise valid in every model over D = Z. A repaired FMP would have to be CLASS-SPECIFIC, ranging over effective non-Archimedean carriers such as Z x_lex Z rather than Z alone; none of this is established.
-
-What IS true and should be stated: each system is recursively axiomatized, hence its theorems are r.e. regardless of completeness; a verified SOUND tableau procedure exists in this repository; the semantic, truth-connected FMP for the Z-time discrete case is the target of ongoing formalization; and decidability of Log(all task frames) = Log(Discrete) intersect Log(Dense) would FOLLOW from decidability of the two factor logics -- that intersection reduction is the target strategy, not a result. Audit `p2-decidability-practice.typ` and `p3-decidability-frontier.typ` against this; the latter carries SLOT-IN anchors for embargoed content that must be left alone.
-
-=== 6. FURTHER FACTUAL CORRECTIONS MEASURED IN THE LIVE TREE (2026-08-13) ===
-- FOUR frame classes, not three. `FormalSystem/ProofSystem/Axioms.lean` defines `Base`, `Dense`, `Discrete`, AND `Dedekind`, with minimum-class assignment mapping `density`/`dense_indicator` to Dense, `prior_UZ`/`prior_SZ`/`z1` to Discrete, and `prior_U_gap`/`prior_S_gap`/`sep` to Dedekind. The book says "three frame classes" and "all three frame-class variants" in several places, and its `Metalogic/` module table omits the Dedekind path entirely. The Dedekind path is substantial live code: `BXCanonical/CompletenessDedekind.lean`, `StrongCompleteness.lean` (`completeness_dedekind`, `consequence_completeness_dedekind`), and the `RealModel/` subtree.
-- The `Metalogic/` module table in 04-metalogic.typ is wrong in five rows. `DenseSoundness.lean`, `DiscreteSoundness.lean`, `Completeness.lean`, and `ConservativeExtension/` do not exist. Rebuild the table from the live tree; `Metalogic/` now also carries `Bundle/`, `Algebraic/`, `WeakCanonical/` (with `Kamp/`, `RealModel/`, `IntegerModel/`, `EFGames/`, `DenseModelSurgery/`, `Expressiveness/`), and `Decidability/Verified/`.
-- Axiom-constructor count: read it from `bash scripts/typst-status-counts.sh` into `typst/generated/status.typ`; do not hand-count.
-- The Since/Until argument-order mismatch is a KNOWN, DOCUMENTED, DELIBERATE divergence and must be stated as such rather than "fixed": the paper's surface notation phi-Since-psi / phi-Until-psi is GUARD-FIRST (phi guard, psi event), while the repository's `snce`/`untl` constructors are EVENT-FIRST (Burgess convention). The truth conditions agree once the argument order is swapped. The paper's footnote at \label{def:BLplus-semantics} states this in exactly this direction; an earlier version stated it backwards (as Pnueli guard-first), so if the book repeats the Pnueli framing it is repeating a corrected error.
-- `BX_c` is re-based on the REYNOLDS TRIPLE, not on CO alone: \aitem{TMP-PU} (Prior-U) and \aitem{TMP-SEP} (Sep), with K^+ phi := not(not-phi Until top) and K^- phi := not(not-phi Since top). \aitem{TMP-CO} is a DERIVED THEOREM of BX_c using only Prior-U and the BX base -- Sep is not needed -- and that derivation is machine-checked here. Whether CO alone axiomatizes the same logic as the full triple is OPEN; the conjectured failure rests on an unformalized pen-and-paper sketch and is explicitly NOT asserted as established.
-- `typst/README.md`'s follow-up table lists tasks by number for the in-progress chapters. Deliverable files must not cite task numbers (see NON-GOALS); rewrite those rows to name the scope without the numbers, or move the mapping into this task's own spec directory.
-
-=== 7. THE EXPOSITORY MANDATE -- THIS IS HALF THE TASK, NOT A GARNISH ===
-Correctness above is the floor. The user's standard is a book that reads well and teaches. Concretely:
-- INTRODUCTION. `00-introduction.typ` already carries one cetz light-cone diagram and sections "What TM Is" / "Why Tense and Modality Together" / "Outline" / "How to Read This Book" / "Project Structure". Rewrite it so a reader who knows modal logic but not this system can arrive at the frame definition understanding WHY task frames rather than Kripke frames, why the temporal order is an ordered abelian group rather than a bare linear order (the discrete-or-dense dichotomy of section 4 depends on exactly this, and it is a genuinely illuminating payoff to foreshadow), and what the bimodal interaction axiom MF buys. The outline must match the book's actual current structure.
-- REMARKS. Add short, clearly-marked remarks at the points where a reader predictably stumbles: why the temporal semantics is strict/irreflexive and what that costs (the temporal T-axioms are NOT valid; seriality is supplied axiomatically); why Nullity is a lemma and not an axiom; why *Spherical* is needed at all and what the finite-carrier discharge does and does not give; why S5-hood alone does not single out metaphysical necessity (the paper's own stability-modality case is the counterexample); why the perpetuity principles follow from MF and MT by classical reasoning alone.
-- DIAGRAMS. Use cetz, matching the existing light-cone diagram's style. Candidates, in rough priority: the two-fibre Z/R countermodel witnessing (DD) (this is the single highest-value diagram in the book -- the incompleteness argument is much easier to see than to read); the fiber / cone / segment apparatus of def:task-relation; the three-way case split on the discreteness indicator that drives the completeness architecture; the layering of partial history -> world history (convex) -> total history; the frame-class lattice Base / Dense / Discrete / Dedekind with which axioms enter where. Do not add a diagram that merely restates a formula.
-- REFERENCES. Every `@`-citation must resolve in `typst/bibliography.bib`, and the entries actually used must be correct. The book cites Burgess 1982, Reynolds 1992, Doets 1987, Kamp 1971; the paper additionally leans on Bacon 2022 (the theory of necessities), Dorr and Goodman 2020, Prior 1967, Vlach 1973, Rumberg and Zanardo 2019, Walsh 2016, and Hölder's theorem. Add what the revised text needs; do not pad. Compile and confirm no unresolved citations.
-
-=== 8. DELIVERABLE AND ACCEPTANCE ===
-1. `bash scripts/typst-sync-check.sh` exits with Check 1 TOTAL_VIOLATIONS=0, Check 2 MISMATCH_COUNT=0, Check 3 clean, with every whitelist addition carrying a one-line reason and NO dead path whitelisted.
-2. `cd typst && typst compile BimodalReference.typ build/BimodalReference.pdf` succeeds with no unresolved references or citations.
-3. `bash scripts/check-paper-definitions.sh` exits case (a) or (b).
-4. `typst/SYNC-MAP.md` gains a new dated verdict section for this revision. Do NOT rewrite its historical tables -- the file's own header says they are a retained historical record of a superseded structure.
-5. A short findings note in this task's `reports/` recording: every Lean/paper divergence found and NOT fixed here, the marker string chosen for 415/417/419-exposed anchors and every site carrying it, and the conservativity-bridge finding from section 4.
-
-=== 9. CITATION DISCIPLINE -- BINDING ===
-Run `bash scripts/check-paper-definitions.sh` and read `specs/paper-definitions-of-record.md` BEFORE quoting any definition. That file, not the paper, is what specs in this repository cite; it pins each definition with verbatim text and content hashes re-derived from the live paper on every run. Case (a) silent pass or case (b) notice -- proceed. Case (c) FAIL naming a drifted anchor -- STOP and re-issue rather than quoting. Cite by \label or \aitem key ONLY; a bare possible_worlds.tex:NNNN is never a citation and this cluster has already burned a full task on line-number drift. Quote definition TEXT verbatim alongside each anchor so a renamed anchor stays detectable by text search. Re-derive every stale Lean line-number anchor in the book rather than trusting it -- 02-semantics.typ's cited TaskFrame line number has already moved once.
-
-=== 10. NON-GOALS ===
-NO edits under /home/benjamin/Philosophy/Papers/ -- the paper is READ-ONLY ground truth. NO Lean changes: if the audit finds a Lean/paper divergence, RECORD it per section 8.5 and raise it with the user rather than fixing it here. NO changes to `latex/` -- the LaTeX mirror is separately stale and separately owned. Do NOT touch `FormalSystem/Boneyard/` or cite anything in it. Do NOT hand-edit `typst/generated/` -- regenerate. Do NOT cite task numbers anywhere in `typst/**` (repository rule: deliverables carry durable anchors -- filenames, headings, verified facts -- never ephemeral task-management metadata). Do NOT use `/home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/metalogic.tex` as a source for anything -- see the warning in the formal-foundations report task, which applies here identically.
-
-=== 11. SUPERSESSION RECORD ===
-427 is marked [EXPANDED] on this task's creation. Everything in 427 that remains binding has been carried into sections 3 and 9 above verbatim. What is DROPPED from 427: its gating on 414/415/417/419/420 (section 1), and its restriction to the definitional/semantic layer (sections 4-7 extend the remit to the completeness story, the decidability status, the module-structure corrections, and the expository mandate). What is CARRIED FORWARD UNCHANGED: the def:frame quote block, the supporting-definition quotes, the three notation traps, the converse-notation user decision, the audit-do-not-trust-prior-enumerations discipline, the paper-snapshot procedure, and the non-goals.
 
 ---
 
@@ -489,106 +329,6 @@ Do NOT do the frame-axiom-field refactor here -- it is done and COMPLETED. Do NO
 
 === DEPENDENCIES ===
 PossibleWorlds 79 supplies the citable corollary; `specs/paper-definitions-of-record.md` must be re-pinned (see RECORDED CONSTRAINT 2). Downstream consumers: BimodalLogic 441, and ModelChecker 153 and 154 -- consult 153/154's actual citation needs before deciding the fate of the withdrawn wrappers.
-
----
-
-### 439. Guard paper definition drift with definitions of record
-- **Effort**: medium
-- **Status**: [COMPLETED]
-- **Task Type**: general
-- **Topic**: paper-refactor
-- **Dependencies**: None
-- **Research**: [439_guard_paper_definition_drift_with_definitions_of_record/reports/01_paper-definition-drift-guard.md]
-- **Plan**: [439_guard_paper_definition_drift_with_definitions_of_record/plans/01_paper-definition-drift-guard.md]
-- **Summary**: [439_guard_paper_definition_drift_with_definitions_of_record/summaries/01_paper-definition-drift-guard-summary.md]
-
-**Description**: PAPER-DEFINITION DRIFT GUARD. Build a definitions-of-record file plus a local lint so that a change to the JPL paper's basic semantic definitions is DETECTED mechanically instead of being discovered by an agent mid-dispatch. This is infrastructure for the paper-refactor cluster, not cluster work: it does not restate, re-derive, or implement any definition, it only records the current ones and detects when they move.
-
-MOTIVATION (measured, not speculative): /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex moved through FIVE definitional waves between 2026-08-08 and 2026-08-10, two of them WHILE a dispatch against it was in flight. The cluster re-issue that fixed waves 1-3 was itself overtaken by wave 4 during its own execution (it re-verified at the new snapshot and continued), and by wave 5 within an hour of finishing. `git log --since='3 days ago' -- possible_worlds.tex` showed 20+ commits. Every wave silently invalidates task specifications that quote the paper, and the failure mode is always the same: an agent consumes a superseded definition, does correct work against a wrong target, and the error is only caught by a later human read.
-
-AUTHORITATIVE SOURCE: the paper is READ-ONLY input. Cite by \label and quote verbatim; never by bare line number -- line numbers in this cluster have gone stale repeatedly. Note also that some axioms are \aitem KEYS resolved by \aref (CO, TMP-CO), not \label{} names; the record must handle both anchor kinds.
-
-DELIVERABLE 1 -- specs/paper-definitions-of-record.md. A single file recording, for each definitional clause the repo depends on: the anchor (\label name, or \aitem key plus its enclosing \label), the verbatim quoted text, and a content hash of the quoted block. Cover at minimum: def:frame and each of its four axioms (Compositionality as a biconditional, Seriality, Limit, Spherical) plus its supporting machinery (fiber, cone, segment, converse convention, positive cone, nonempty W, nontrivial D); lem:nullity and thm:occurrence as DERIVED results; def:world-history including totality and the extension order; thm:extension; the truth clauses (especially the box clause's quantifier domain); logical consequence; validity; satisfiability. Head the file with the pinned paper commit SHA, file checksum, and line count at the time of recording. This file is the thing specs cite instead of re-quoting the paper themselves.
-
-DELIVERABLE 2 -- scripts/check-paper-definitions.sh. A local lint that re-reads the paper and reports drift against deliverable 1. It must distinguish THREE outcomes, because they carry different costs: (a) paper unchanged (SHA matches) -- silent pass; (b) paper changed but every recorded definition block still hashes identical -- pass with a notice naming the new SHA, since prose elsewhere moved but no recorded definition did (this is the common case and must NOT be reported as drift); (c) at least one recorded definition block changed -- FAIL, naming each drifted anchor and printing the old and new text. Exit non-zero only in case (c). Anchor resolution must be by \label / \aitem, never by line number, so that the lint survives the reflowing that has broken every previous line-based citation.
-
-PLACEMENT CONSTRAINT (verified, do not get this wrong): the script goes in scripts/, alongside its existing siblings check-copyright-headers.sh, check-module-invariants.sh, readme-lint.sh, and typst-sync-check.sh, which is the closest analogue. It must NOT go in .claude/scripts/ -- `/.claude` is listed in .gitignore at line 81 and is a disposable deploy artifact regenerated from an external source store, so a script written there is silently wiped on the next redeploy. This repo has no agent-system/extensions/ tree of its own, so .claude/ has no in-repo source-store alternative; scripts/ is the correct and only durable home.
-
-CI CONSTRAINT (verified): .github/workflows/ci.yml runs NONE of the scripts/ lints today, and the paper lives in a different repository (/home/benjamin/Philosophy/Papers/) that CI cannot see. A CI-enforced guard is therefore structurally impossible without vendoring or submoduling the paper. Do not attempt CI wiring as part of this task. The lint is a local, manually-invoked check in the same family as its siblings; decide and RECORD whether it should additionally be invoked from a skill preflight or a git hook, but do not implement that here.
-
-DELIVERABLE 3 -- audit task 424 for exposure to the TruthAt change. 424 (prove_shift_set_representation_theorem_compactness_feasibility_gate, file_scope FormalSystem/Semantics/ShiftSet.lean) carries topic strong_completeness, so it sat outside the paper-refactor cluster re-issue and its description was never checked against the current definitions. Determine whether it assumes the Omega-parameterized TruthAt or the pre-totality consequence relation; if it does, rewrite the affected part of its description the same way the cluster's six were rewritten (state the current definition as a settled input, name explicitly which of its own prior research survives and which is superseded, and preserve all still-valid scope boundaries and non-goals). If it does not, record the negative verdict explicitly rather than leaving it unstated. Do NOT perform 424's underlying work.
-
-NON-GOALS (hard boundaries): do NOT edit anything under /home/benjamin/Philosophy/Papers/ -- the paper is read-only. Do NOT edit any file under FormalSystem/, latex/, or typst/. Do NOT restate, re-derive, or "improve" any definition -- deliverable 1 records what the paper says, verbatim, and nothing more. Do NOT perform any paper-refactor cluster task's underlying work. Do NOT wire the lint into CI. Do NOT write to .claude/.
-
-SEQUENCING: this task has no hard dependency edges, but it is most valuable BEFORE the cluster runs -- 420, 414, 415, 417, 419, and 427 all consume paper-quoted specs that a sixth drift wave would invalidate. Consider running it first; add explicit dependency edges only if you want that enforced rather than advised.
-
-VERIFICATION: run the lint against the paper's CURRENT state and confirm it reports case (a) immediately after recording; then confirm it reports case (c) correctly by testing against an older paper commit known to differ (for instance c3da9852, the snapshot the cluster re-issue pinned, which differs from the post-re-issue state by 309 changed lines) and checking that each drifted anchor is named. Confirm every recorded anchor actually resolves in the current paper (no dangling \label or \aitem). Confirm the script is executable, passes `bash -n`, and exits 0 on the unchanged case and non-zero only on case (c).
-
----
-
-### 438. Reconcile semantic definitions with jpl paper
-- **Effort**: large
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: paper-refactor
-- **Dependencies**: None
-- **Research**:
-  - [438_reconcile_semantic_definitions_with_jpl_paper/reports/01_team-research.md]
-  - [438_reconcile_semantic_definitions_with_jpl_paper/reports/02_logical-consequence-discrepancy-audit.md]
-- **Plan**: [438_reconcile_semantic_definitions_with_jpl_paper/plans/03_reissue-paper-refactor-cluster.md]
-- **Summary**: [438_reconcile_semantic_definitions_with_jpl_paper/summaries/03_reissue-paper-refactor-cluster-summary.md]
-
-**Description**: DEFINITIONAL RECONCILIATION AND CLUSTER RE-ISSUE. The paper's basic semantic definitions have changed AGAIN since the paper-refactor cluster was specified, and every task in that cluster now carries a stale specification. This task has TWO parts: (A) establish from the authoritative source exactly which definitions are current, and (B) APPLY the resulting corrections to the existing cluster tasks so the whole cluster is back in sync. Part B is a required deliverable, not a recommendation -- this task is not finished while any cluster task still describes a superseded definition. What this task must NOT do is perform the cluster's underlying Lean, LaTeX, or typst work; see NON-GOALS.
-
-AUTHORITATIVE SOURCE (user decision, 2026-08-09): /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex is the single source of truth for the basic semantic definitions; the Lean tree, this repo's latex/ prose, and this repo's typst/ book are ALL downstream and must be refactored to match it faithfully. Any conflict resolves in the paper's favour. Cite the paper by \label and quote verbatim; do NOT cite bare line numbers, which have already gone stale repeatedly in this cluster (task 420 phase 1 had to re-anchor 7 citations; task 427's spec carries stale anchors for both the Lean structure and the paper range; task 419 cites possible_worlds.tex:3250 for the CO formula and must be re-anchored the same way).
-
-THE TWO CHANGES, AS ALREADY VERIFIED AGAINST THE PAPER (starting facts, not conclusions -- the audit re-verifies and completes them):
-
-(A) def:frame now carries FOUR axioms, and Nullity is NOT one of them:
-  - Compositionality is now a BICONDITIONAL: "w =>_{x+y} v if and only if w =>_x u and u =>_y v for some u in W". This REVERSES the settled decision recorded in task 420's description and repeated in task 427's, both of which adopted the LAX inclusion-only law and stated that equality "would additionally assert interpolation, NOT adopted". Interpolation is now asserted.
-  - Seriality (NEW): for every w and x in D+, w =>_x u for some u, and v =>_x w for some v.
-  - Limit: intersection over x > 0 of the cones (w)_x equals {w}. (Formerly named "Limit Nullity" in the cluster specs.)
-  - Spherical (NEW): every superset-directed family of nonempty segments has nonempty intersection -- condition Sd1 from the ball-space literature (Cmiel2021), applied to the ball space of segments.
-  - Nullity is DEMOTED to a derived lemma (lem:nullity), obtained from Seriality together with Limit, choice-free. The Occurrence condition, formerly required of every frame, is likewise now DERIVED (thm:occurrence, which appeals to Zorn and hence to AC).
-  - NEW primitive-level machinery the axioms consume: the segment Seg(w, v; a, b) := {u : w =>_a u and u =>_b v}, with the fibers {u : w =>_a u} and {u : u =>_b v} included among the segments as one-sided cases. Unchanged: positive-cone task relation on D+ and the definitional converse convention.
-
-(B) Logical consequence quantifies over TOTAL world histories, i.e. POSSIBLE WORLDS:
-  - def:world-history: a world history over F is a function tau : X -> W where X is a nonempty convex subset of D, task-constrained. It is TOTAL -- equivalently, a POSSIBLE WORLD -- just in case X = D. H_F denotes the set of all TOTAL world histories over F. The extension order is defined here too (sigma extends tau iff dom tau subset dom sigma and they agree on dom tau).
-  - The logical-consequence definition quantifies over "possible worlds tau in H_F", i.e. over TOTAL histories.
-  - thm:extension: every task-constrained function on a nonempty subset of D is extended by SOME total world history. This is what makes the totality restriction non-vacuous, and per the app:gluing footnote the DIRECTED case of gluing rests on Spherical rather than on Compositionality alone -- so change (A)'s Spherical axiom and change (B)'s totality restriction are coupled, not independent.
-  - CONSEQUENCE FOR TASK 414: 414's researched target is MAXIMAL histories (Mathlib IsMax under the extension order, reached by Zorn). The paper's target is TOTAL histories. These are NOT the same predicate, and totality is the paper's. 414's ~85-line machine-checked prototype (Preorder instance, timeShift_mono, isMax_timeShift, chainSup, exists_maximal_extension) is PARTIALLY reusable as the mathematical engine behind thm:extension, but the predicate appearing in TruthAt/valid/SemanticConsequence must be totality, not IsMax.
-
-CURRENT REPO STATE (verified 2026-08-09; re-verify before relying on any of it):
-  - FormalSystem/Semantics/TaskFrame.lean structure TaskFrame has exactly THREE fields beyond the carrier: nullity_identity (iff form, still an AXIOM -- paper has demoted it), forward_comp (with 0 <= x, 0 <= y hypotheses -- the lax law the paper has replaced with a biconditional), and converse (the definitional convention carried as structure data). ABSENT: Limit, Seriality, Spherical, segments, fibers. Also absent, and already flagged in-file as known gaps: a Nonempty WorldState field and a [Nontrivial D] structure binder, both of which def:frame requires.
-  - FormalSystem/Semantics/WorldHistory.lean has domain : D -> Prop, convex, states (dependent on the domain proof), respects_task. NO totality predicate, NO extension order, NO maximality notion. Repo-wide, every "maximal" hit is maximal-consistent-set vocabulary, not histories.
-  - FormalSystem/Semantics/Validity.lean and Truth.lean quantify over an arbitrary shift-closed Omega : Set (WorldHistory F): TruthAt takes Omega, the box clause reads "for all sigma in Omega", and valid/SemanticConsequence bind (Omega) (ShiftClosed Omega) (tau in Omega). Blast radius measured: 1194 occurrences of Omega across 45 files; ShiftClosed referenced in 32 files; 92 TaskFrame instantiation sites tree-wide; 519 Lean files / ~333k lines total.
-  - This repo's OWN prose is stale on BOTH counts and is NOT a valid secondary source: latex/subfiles/02-Semantics.tex and typst/chapters/02-semantics.typ state the PREVIOUS three-axiom frame and define logical consequence over "history tau in H_F" with no totality or maximality qualifier at all. Both must be re-derived from the paper, not patched. This matters especially for task 427, whose spec instructs the implementer to use the LaTeX subfile as the model for the typst restatement -- that instruction is now wrong and must be corrected as part of Part B.
-
-THE CLUSTER TO BE RE-ISSUED -- SIX TASKS, topic paper-refactor (this is the full set; confirm by re-querying topic == "paper-refactor" in specs/state.json before starting, since tasks may have been added):
-  - 414 refactor_semantics_to_maximal_history_validity [researched] -- target predicate is wrong (maximal vs total); its very name is now misleading.
-  - 415 completeness_over_maximal_history_semantics [researched] -- written explicitly against 414's maximal-history semantics; inherits the error transitively. Its bundleFlowFrame construction must additionally discharge Seriality and Spherical, not just Limit.
-  - 417 semantic_fmp_finite_worldstate_over_z [researched] -- also written against 414's maximal-history semantics; its target signatures name tau.IsMaximal.
-  - 419 machine_check_co_reynolds_independence [not_started] -- assess whether the new frame axioms disturb the independence argument. Compositionality becoming biconditional adds interpolation as a frame condition, and Seriality and Spherical are new constraints on admissible countermodels, so the Q-flow countermodel sketch must be re-checked for conformance to the new def:frame. Also re-anchor its possible_worlds.tex:3250 citation.
-  - 420 align_task_frame_with_positive_cone_limit_nullity [blocked] -- phases 1-5 landed and green (5 commits); its phase 6 target field and its phase 5 rewrite of latex/subfiles/02-Semantics.tex are both stale. Its title now names only one of four axioms.
-  - 427 sync_typst_book_with_refactored_paper [not_started] -- DOUBLY stale: it enumerates the previous-generation axioms as the CORRECT target to write into the typst book, and it directs the implementer to copy from the now-superseded LaTeX subfile. Left unrevised it would actively write wrong definitions into the book.
-
-PART A DELIVERABLES (research report):
-  1. A three-way reconciliation table with one row per definitional clause, columns: paper (verbatim + \label anchor) | current Lean (declaration + file) | current repo prose (file + section) | verdict (match / stale / absent). Cover at minimum: every def:frame axiom and its supporting machinery (cone, segment, fiber, converse convention, positive cone, nonempty W, nontrivial D), def:world-history including totality and the extension order, the truth clauses (especially the box clause's quantifier domain), logical consequence, validity, and satisfiability.
-  2. An explicit statement of the target Lean signatures for the changed definitions -- the TaskFrame structure fields and the TruthAt / valid / SemanticConsequence binder lists -- so downstream research has one unambiguous target. Do not implement them.
-  3. A coupling analysis of (A) and (B): which frame axioms are load-bearing for the totality restriction. In particular determine whether thm:extension (and hence a nonempty H_F) is derivable in Lean from the four axioms as stated, and what Spherical costs to state over a Lean TaskFrame given that segments must be introduced first. Flag any axiom whose Lean transcription is not routine.
-  4. A per-task staleness verdict for all six cluster tasks, each saying explicitly which parts of the existing research survive, which are refuted, and what the re-issued description must say. Known starting points, to be confirmed rather than assumed: 420's three helper theorems (limit_nullity_of_succOrder, limit_nullity_of_shift, exists_uniform_radius_of_finite) are stated against a bare relation rather than a frame field, so they plausibly survive verbatim; and 414's Omega-excision reachability analysis (of ~110 Omega-affected declarations: ~88 dead, 16 live-and-portable, 8 live-and-unportable) concerns Omega and is plausibly orthogonal to the totality-vs-maximality change.
-  5. A resolution for the dependency cycle 420 -> 415 -> 414 -> 420 currently in specs/state.json. Prior analysis found the cycle is an artifact of task-level rather than phase-level edges (420's helpers are already landed, so only 420's phase 6 genuinely waits on 415). Note that generate-todo.sh does NOT report this cycle: it currently places 415 in wave 1 with "Blocked by: --" despite three unmet dependencies, because Kahn's algorithm cannot assign cycle members. Propose the corrected edge set.
-
-PART B DELIVERABLES (apply the corrections -- this is what puts the cluster back in sync):
-  6. Rewrite the description field of each of the six cluster tasks in specs/state.json so that every one states the CURRENT definitions. Each rewritten description must: state the four-axiom def:frame and the totality-based consequence as settled inputs; carry \label-based paper anchors rather than bare line numbers; name explicitly which of its own prior research survives and which is superseded, so the next agent does not silently re-consume a refuted finding; and preserve all still-valid content (scope boundaries, non-goals, binding user notation decisions such as the superscript-inverse convention for the converse operation). Do not shorten a description merely to make it tidy -- these descriptions are the specs.
-  7. Rename any task whose project_name now misdescribes it. At minimum 414 ("maximal_history_validity") and 415 ("over_maximal_history_semantics") name a predicate the paper does not use, and 420 ("positive_cone_limit_nullity") names one of four axioms. Renaming a task means updating project_name in state.json AND renaming its specs/{NNN}_{SLUG}/ directory AND updating the artifacts paths that reference it; if that proves to have wide reference surface, record the rename decision and its cost rather than doing a partial rename that leaves dangling paths.
-  8. Set each cluster task's status to reflect the corrected spec. Rule: where a task's TARGET definition changed, its existing research was conducted against the wrong target and the task returns to not_started so research re-runs; where only anchors or peripheral details changed, the existing status stands. Task 420 is the exception requiring care -- phases 1-5 are landed, green, and committed, so it must NOT be reset in any way that presents landed work as undone; choose between blocked, partial, and a revised description that inventories what has landed versus what is stale, and justify the choice. Never delete or overwrite an existing report file: superseded reports stay on disk as history, and the re-issued description says which are superseded.
-  9. Apply the corrected dependency edges from deliverable 5, and add any new edges the re-issue implies (for instance 427 must remain last). Verify afterwards that the graph is acyclic by running .claude/scripts/generate-task-order.sh --print and confirming every task lands in a wave with its true blockers listed -- in particular that 415 is no longer shown in wave 1 with no blockers.
-  10. Regenerate specs/TODO.md via .claude/scripts/generate-todo.sh and commit the state.json + TODO.md changes together with the research report.
-
-NON-GOALS (hard boundaries): do NOT add, remove, or alter any field of TaskFrame; do NOT touch TruthAt, valid, SemanticConsequence, or any Omega binder; do NOT edit any file under FormalSystem/; do NOT edit latex/ or typst/ content; do NOT edit anything under /home/benjamin/Philosophy/Papers/ (the paper is read-only input); do NOT perform any of the six cluster tasks' underlying work. Part B changes task SPECIFICATIONS in specs/, nothing else. An output consisting of a reconciliation report plus rewritten specs and a corrected dependency graph IS the complete and correct deliverable -- this is deliberately a scoping-and-re-issue task, and analysis plus specification is the right outcome here rather than a deflection from implementation.
-
-VERIFICATION: every paper claim quoted verbatim with its \label; every Lean claim carrying file plus declaration name and confirmed against the current tree (re-run the greps -- the 18-site inventory in 420's report predates 415, and the counts in this description predate this task); every "unchanged" verdict positively checked rather than assumed; after Part B, every one of the six descriptions re-read end to end to confirm no superseded axiom statement survives anywhere in it -- grep the rewritten descriptions for the superseded vocabulary ("Limit Nullity", "lax", "maximal-history", "IsMaximal", "NOT adopted") and justify every remaining hit.
 
 ---
 
@@ -769,72 +509,6 @@ RESUME SEQUENCE: `/research 428` first (discharge the two uncertain claims above
 
 ---
 
-### 427. Sync typst book with refactored paper
-- **Effort**: large
-- **Status**: [EXPANDED]
-- **Task Type**: typst
-- **Topic**: paper-refactor
-- **Dependencies**: Task 414, Task 415, Task 417, Task 419, Task 420, Task 438, Task 439
-
-**Description**: SUPERSEDED 2026-08-13 by project 442 (`revise_bimodal_reference_book_against_paper_and_lean`), which ABSORBS this task in full. 427's binding content -- the def:frame quote block, the supporting-definition quotes, the three notation traps, the converse-notation user decision, the audit discipline, the paper-snapshot procedure, and the non-goals -- was carried into 442's description VERBATIM. What 442 drops from this task: the gating on 414/415/417/419/420 (lifted by user decision 2026-08-13) and the restriction to the definitional/semantic layer (442 extends the remit to the completeness story, the decidability status, the module-structure corrections, and the expository mandate). Do not dispatch this task; dispatch 442.
-
-=== ORIGINAL DESCRIPTION, RETAINED FOR THE RECORD ===
-
-RE-ISSUED 2026-08-10 (description rewrite only; status unchanged). Bring the BimodalReference typst book back into sync with the paper at /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex, and with the Lean tree as it stands once the paper-refactor task chain has landed. This is the typst-side counterpart of the LaTeX work in latex/subfiles/; it was deliberately deferred and declared out of scope there, so the typst chapters currently contradict both the paper and the corrected LaTeX.
-
-=== 1. THE MODEL TO COPY FROM -- CORRECTED, THIS IS THE POINT OF THE RE-ISSUE ===
-DO NOT use latex/subfiles/02-Semantics.tex as the model for the typst restatement. The prior description instructed exactly that, and the instruction is now WRONG: that subfile was rewritten by task 420 phase 5 against the THREE-axiom frame, which the paper has since superseded. Copying it today would write the same superseded definition into the typst book that the LaTeX subfile currently carries -- the precise failure mode this task exists to prevent.
-
-Instead, model the typst restatement DIRECTLY on the paper, the same way task 420 phase 5 originally modeled the LaTeX subfile on the paper. Treat latex/subfiles/02-Semantics.tex as a FELLOW DOWNSTREAM CONSUMER, not a second source of truth: it is task 420's remaining work to re-correct it, and it may still be mid-sync when this task runs. If the two disagree, the paper wins.
-
-GENERATIONAL GAP (this is asymmetric, and the asymmetry matters): latex/ and typst/ are stale by DIFFERENT amounts. latex/subfiles/02-Semantics.tex is one generation behind (it matches Lean's one-directional Compositionality and omits Seriality and Spherical entirely), while typst/chapters/02-semantics.typ is two further generations behind (it still independently axiomatizes Reflection, has no Limit clause at all, and predates even the positive-cone / converse-convention presentation the paper now uses in full). Neither directory has had a commit since 2026-08-08, so BOTH are now an additional generation behind again -- they also predate the partial-history restatement and the segment-notation change described below.
-
-=== 2. WHAT THE TYPST BOOK MUST SAY (quote-backed, so the anchors stay recoverable) ===
-Paper anchor \label{def:frame}, verbatim: "A *frame* is any F = <W, D, =>> where W is a nonempty set of world states, D is a temporal order, and => is a task relation satisfying the following for x, y >= 0: *Compositionality:* w =>_{x + y} v if and only if w =>_x u and u =>_y v for some u in W. *Seriality:* w =>_x u and v =>_x w for some u, v in W. *Limit:* intersection over x > 0 of (w)_x = {w}. *Spherical:* intersection of S is nonempty for any directed family S of nonempty fibers and segments."
-
-FOUR axioms. Nullity is NOT among them: \label{lem:nullity}, verbatim, "w =>_0 w for every world state w in W in every frame F = <W, D, =>>", derived choice-free from *Seriality* at x = 0 plus *Limit*. Reflection is likewise not an axiom -- negative durations come from the converse convention.
-
-Supporting definitions the frame definition presupposes:
-- \label{def:temporal-order}: "A *temporal order* is a nontrivial totally ordered abelian group D = <D, +, 0, <=> with *positive cone* D^+ := {x in D : x >= 0}."
-- \label{def:task-relation}: a task relation on a NONEMPTY set of world states W over a temporal order D, "extended to negative durations by the *converse convention* w =>_{-x} u := u =>_x w for x >= 0", determining -- Fiber: Fib(w, x) := {u in W : w =>_x u}; Cone: (w)_x := union over |y| < x of Fib(w, y) where x > 0; Segment: [w, v]_x^y := Fib(w, x) intersect Fib(v, -y) where x, y >= 0.
-- \label{def:directed}: "A nonempty family of sets S is *directed* just in case S' subset-of S_1 intersect S_2 for some S' in S whenever S_1, S_2 in S."
-- \label{def:world-history}: "A *partial history* over a frame F = <W, D, =>> is a function tau : X -> W on a nonempty set X subset-of D where tau(x) =>_{y-x} tau(y) for all times x, y in X. ... A *world history* is any partial history whose domain X is *convex* ... A world history is *total* --- equivalently, a *possible world* --- just in case X = D. ... The set of all total world histories over F is denoted H_F." The layering is partial history, then world history (convex domain), then total. A partial history requires a NONEMPTY domain and does NOT require convexity.
-- The existence machinery, if the book states it: \label{def:constraints} defines the constraints a new time imposes; \label{lem:constraint} (Constraint Lemma) shows they form a directed family of nonempty fibers and segments; the new \label{lem:fibers} and \label{lem:admissible} characterize admissible one-point extensions; \label{lem:step} (Step Lemma) applies *Spherical* and closes via lem:admissible to extend a partial history by one duration; \label{thm:extension} runs Zorn over partial histories and closes via lem:step; \label{cor:occurrence} follows (a MERGED anchor -- the former thm:occurrence and app:nonempty no longer exist), giving tau(x) = w at any prescribed time x and H_F nonempty for every frame.
-- \label{def:BL-semantics} evaluates at "a possible world tau in H_F and time", with the box clause quantifying over all sigma in H_F and the atom clause carrying no domain conjunct; \label{def:logical-consequence} quantifies over models, possible worlds tau in H_F, and times x in D.
-
-THREE VOCABULARY AND NOTATION TRAPS -- writing any of these into the typst book is precisely the failure this task exists to prevent:
-(a) Segments are written [w, v]_x^y with the defining equation above. The paper's old `\Seg` macro is DELETED from its preamble and survives only inside commented-out lines; function-application segment notation is not current notation.
-(b) *Spherical* ranges over directed families of nonempty FIBERS AND SEGMENTS as two SEPARATE classes, with directedness per \label{def:directed}. The retired device by which one-sided fibers counted among the segments must not be reintroduced. The lemma formerly cited for the two-sided segment family no longer exists in the paper -- cite lem:constraint and lem:step.
-(c) The vocabulary "task-constrained function" is RETIRED paper-wide (the extension theorem, the occurrence theorem, and the gluing footnote were all recast). Use "partial history", "world history", and "total world history" / "possible world".
-
-=== 3. KNOWN STALE SITES -- RE-AUDIT, DO NOT TRUST THIS LIST ===
-The prior description's stale-site enumeration for typst/chapters/02-semantics.typ (one-way Nullity rather than the iff, Reflection as a substantive axiom, unrestricted mixed-sign Compositionality, and a missing Limit clause) is itself now INCOMPLETE: it predates Seriality, Spherical, the interpolation direction of Compositionality, and the fiber/segment apparatus all becoming required def:frame content. The prose gloss in the same chapter repeats the same errors and frames the mixed-sign form as a Lean/paper divergence -- that framing was already inverted (the paper ADOPTED the positive-cone presentation, so it should record AGREEMENT), and is now stale on top of being inverted.
-
-Re-audit the stale-site enumeration against the CURRENT four-axiom paper rather than trusting either the prior description or the LaTeX subfile.
-
-STALE LINE ANCHORS, to be re-derived rather than trusted: 02-semantics.typ cites a Lean line number for the TaskFrame structure that has already moved once; typst/SYNC-MAP.md records the 02-semantics verdict against a pre-refactor paper line range. Re-derive both. Anchor paper claims by \label, never by line number -- this cluster has already burned a full task on line-number drift, and the paper file changes intra-day.
-
-=== 4. SCOPE ===
-Audit ALL of typst/chapters/ against the current paper and the post-chain Lean tree, not just 02-semantics.typ. Chapters carrying paper-anchored claims the refactor chain plausibly touches: 02-semantics.typ (frame and semantics), 04-metalogic.typ (completeness, FMP, decidability), p2-frame-classes.typ (the DF/DN/CO paper correspondence), p3-ltl-to-tm.typ and p3-vlach-blstar.typ (paper clause ranges). Update typst/SYNC-MAP.md verdict rows for every claim re-verified, and refresh typst/sync-check-whitelist.txt if paper labels changed -- note that def:temporal-order, def:task-relation, and def:directed are NEW labels that did not exist when the whitelist was last written, and the segment-lemma label was DELETED; also NEW since then are def:constraints, lem:fibers, lem:admissible, and lem:step, while thm:occurrence and app:nonempty were MERGED into the NEW cor:occurrence. Verify with scripts/typst-sync-check.sh (backtick name resolution plus count freshness) and a full typst compile of typst/BimodalReference.typ.
-
-=== 5. WHY THIS RUNS LAST ===
-Each predecessor changes what the typst book must say: 420 fixes the frame definition itself (its phase 6, re-scoped to add Seriality, Spherical, and the interpolation direction together, phase-waits on 415); 414 refactors the semantics to total-history validity; 415 replaces the canonical frame and reworks completeness; 417 moves FMP to a finite WorldState over Z; 419 machine-checks the CO-Reynolds independence result. Syncing typst before these land would guarantee a second full re-sync.
-
-=== 6. WHAT SURVIVES, WHAT DOES NOT ===
-SURVIVES: the overall charter (the typst book is stale and must be resynced last); the audit scope in section 4, which is a process statement and not definitional content; the stale-line-anchor discipline the prior description already called for, which is more urgent now, not less.
-SUPERSEDED by round 1 (the team research): the instruction to model the typst restatement on latex/subfiles/02-Semantics.tex; the completeness of the stale-site enumeration; the three-axiom framing throughout.
-SUPERSEDED by round 2 (round-1 findings that no longer hold): round 1's quotes of def:world-history, thm:extension, and the *Spherical* axiom; its citation of the now-deleted segment lemma; its function-application segment notation; its "task-constrained function" vocabulary; and every parenthetical possible_worlds.tex:NNNN locator. Round 2 also re-measured the latex/typst staleness and found both a further generation behind (section 1). Round 1 remains authoritative for everything round 2 did not touch.
-
-=== 7. NON-GOALS ===
-No edits under /home/benjamin/Philosophy/Papers/ -- the paper is READ-ONLY ground truth. No changes to latex/subfiles/ -- re-correcting 02-Semantics.tex is task 420's remaining work, not this task's. No Lean changes: if the audit finds a Lean/paper divergence, record it and raise a separate task rather than fixing it here.
-
-NOTATION (binding user decision, 2026-07-28, carried forward unchanged): any explicit converse operation on the task relation is written with a superscript inverse -- $Rightarrow^{-1}$ / $R^{-1}$ -- NEVER the relation-algebra breve/smile ($breve{R}$, $R^{smallsmile}$) common in the arrow-logic literature. The paper itself states the converse convention with subscript negation only and introduces no operator symbol at all; the corrected LaTeX subfile followed suit, so the typst restatement should also introduce none unless a symbol is genuinely needed.
-
-=== 8. PAPER SNAPSHOT DISCIPLINE (superseded baseline procedure; do this before quoting any definition) ===
-Run `bash scripts/check-paper-definitions.sh` and read specs/paper-definitions-of-record.md. That file -- not the paper -- is what specs in this repository cite: it pins every definition this cluster depends on (def:temporal-order, def:task-relation, def:directed, def:frame and each of its four axioms individually, lem:nullity, def:world-history, def:constraints, lem:constraint, lem:fibers, lem:admissible, lem:step, thm:extension, cor:occurrence, def:BL-model, def:BL-semantics, def:frame-validity, def:logical-consequence, and the CO / TMP-CO aitem anchors) with verbatim text and content hashes re-derived from the live paper on every run. Lint outcomes: case (a) silent pass and case (b) notice (paper changed but no recorded definition drifted) -- proceed; case (c) FAIL naming each drifted anchor -- STOP and re-issue the affected specs before consuming them. The md5/HEAD-baseline diff procedure this section formerly prescribed is RETIRED (its baselines were already three drift waves stale). Cite by \label (or \aitem key) only; a bare possible_worlds.tex:NNNN is never a citation. Quote definition TEXT verbatim alongside each anchor so a renamed anchor stays detectable by text search.
-
----
-
 ### 426. Settle anchor row countermodel or nontermination for g p box g p
 - **Effort**: 4-8 hours
 - **Status**: [NOT STARTED]
@@ -979,88 +653,6 @@ FOUR-AXIOM / TOTALITY EXPOSURE NOTE (added 2026-08-10): this task constructs a c
 Governing design document: specs/361_strong_completeness_architecture_and_weak_terminus_gap_analysis/design/03_weak-terminus-status.md, section 5.3 (the refutation), 5.5 (the carrier), 5.6 (the Mathlib instance).
 
 Acceptance: the refuted-route comment no longer appears at Transfer.lean:1239-1241; the probe block elaborates; lake build is green; #print axioms on any new declaration shows no sorryAx; the live non-Boneyard sorry count is unchanged at 2 (verify with: grep -rn --include='*.lean' -E '^\s*sorry\s*$' FormalSystem/ | grep -vc Boneyard).
-
----
-
-### 420. Align task frame with positive cone axioms
-- **Effort**: medium
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: paper-refactor
-- **Dependencies**: Task 438, Task 439
-- **Research**: [420_align_task_frame_with_positive_cone_axioms/reports/01_taskframe-positive-cone-limit-nullity.md]
-- **Summary**:
-  - [420_align_task_frame_with_positive_cone_axioms/summaries/01_taskframe-limit-nullity-alignment-summary.md]
-  - [420_align_task_frame_with_positive_cone_axioms/summaries/03_four-axiom-fields-unblocked-summary.md]
-  - [420_align_task_frame_with_positive_cone_axioms/summaries/04_axiom-fields-split-batch-summary.md]
-- **Plan**:
-  - [420_align_task_frame_with_positive_cone_axioms/plans/02_four-axiom-frame-alignment.md]
-  - [420_align_task_frame_with_positive_cone_axioms/plans/03_four-axiom-fields-unblocked.md]
-  - [420_align_task_frame_with_positive_cone_axioms/plans/04_axiom-fields-split-batch.md]
-
-**Description**: RE-ISSUED 2026-08-10 (description rewrite only; status remains `blocked` -- phases 1-5 are LANDED, GREEN, and COMMITTED and are not undone by this re-issue). ALIGN THE LEAN TaskFrame WITH THE PAPER'S FOUR-AXIOM def:frame.
-
-=== 1. THE PAPER'S CURRENT def:frame (settled; do not re-litigate) ===
-Paper anchor \label{def:frame}, verbatim: "A *frame* is any F = <W, D, =>> where W is a nonempty set of world states, D is a temporal order, and => is a task relation satisfying the following for x, y >= 0: *Compositionality:* w =>_{x + y} v if and only if w =>_x u and u =>_y v for some u in W. *Seriality:* w =>_x u and v =>_x w for some u, v in W. *Limit:* intersection over x > 0 of (w)_x = {w}. *Spherical:* intersection of S is nonempty for any directed family S of nonempty fibers and segments."
-
-FOUR axioms. Nullity is NOT among them -- it is DERIVED. \label{lem:nullity}, verbatim: "w =>_0 w for every world state w in W in every frame F = <W, D, =>>", proved choice-free from *Seriality* at x = 0 plus *Limit* (the paper also records that Compositionality plus Limit suffice, so it is over-determined).
-
-Preliminaries, each quoted so the label stays recoverable if renamed:
-- \label{def:temporal-order}: "A *temporal order* is a nontrivial totally ordered abelian group D = <D, +, 0, <=> with *positive cone* D^+ := {x in D : x >= 0}."
-- \label{def:task-relation}: a task relation on a NONEMPTY set of world states W over a temporal order D, "extended to negative durations by the *converse convention* w =>_{-x} u := u =>_x w for x >= 0", determining -- Fiber: Fib(w, x) := {u in W : w =>_x u}; Cone: (w)_x := union over |y| < x of Fib(w, y) where x > 0; Segment: [w, v]_x^y := Fib(w, x) intersect Fib(v, -y) where x, y >= 0.
-- \label{def:directed}: "A nonempty family of sets S is *directed* just in case S' subset-of S_1 intersect S_2 for some S' in S whenever S_1, S_2 in S."
-
-NOTATION IS BINDING: segments use the bracket form [w, v]_x^y with the defining equation spelled out above. The paper's old `\Seg` macro is DELETED from its preamble and survives only inside commented-out lines; function-application segment notation is not current notation. *Spherical* ranges over directed families of nonempty FIBERS AND SEGMENTS as two SEPARATE classes -- the retired device by which one-sided fibers counted among the segments must not be reintroduced. The lemma formerly cited for the two-sided segment family no longer exists in the paper; cite \label{lem:constraint} and \label{lem:step} instead.
-
-=== 2. WHAT LANDED (phases 1-5, PRESERVED -- do not redo, do not revert) ===
-Phases 1-5 landed green across five commits and are sorry-free, zero-new-axiom results. PRESERVED:
-- Phase 1's re-anchored def:frame citations, which still point at the live def:frame region (now larger and four-axiom).
-- Phase 2's docstring recast from "divergence" framing to "agreement" framing -- directionally still correct; do NOT re-invert it.
-- Phases 3-4's THREE helper theorems in FormalSystem/Semantics/TaskFrame.lean: `limit_nullity_of_succOrder`, `limit_nullity_of_shift`, and `exists_uniform_radius_of_finite`. Each is stated against a bare relation `R : W -> D -> W -> Prop` with hypotheses passed in explicitly, never against a TaskFrame structure field, and each was independently re-verified as SURVIVING VERBATIM in both research rounds. The one thing that changes is how their nullity hypothesis is discharged: Nullity is no longer a frame axiom to cite directly but a derived lemma (lem:nullity, from Seriality plus Limit), so the hypothesis must now be proved via that derived lemma rather than read off a structure field.
-- Phase 5's LaTeX restatement SCAFFOLDING -- the \label{def:frame} cross-reference, the positive-cone and task-cone macros, and the primitives table -- survives as reusable structure even though the definition TEXT it contains must be rewritten again (see section 3).
-
-=== 3. WHAT IS STALE (a second time) ===
-- The phase-5 LaTeX definition text in latex/subfiles/02-Semantics.tex is STALE A SECOND TIME. It was written against the superseded three-axiom presentation and must now be rewritten to state the biconditional *Compositionality* (interpolation included), *Seriality*, *Limit*, *Spherical*, and the fiber/segment/directedness apparatus.
-- PHASE 6 MUST BE RE-SCOPED. Its former scope -- add one structure field and discharge the instantiation sites -- is too small. It must add *Seriality*, *Spherical*, and the interpolation direction of *Compositionality* TOGETHER, with the fiber/segment/directedness definitions they are stated with, plus the `Nonempty WorldState` field and the `[Nontrivial D]` structure binder (def:temporal-order and def:task-relation both require them, and the structure currently has neither -- note that `valid` and `SemanticConsequence` in FormalSystem/Semantics/Validity.lean ALREADY carry `[Nontrivial D]`, so the gap is specifically at the structure level, not everywhere).
-- `forward_comp` states only the one-directional inclusion, and the module's own docstrings still say the equality is not adopted. Both are now backwards: the paper's Compositionality IS biconditional and interpolation IS asserted. The docstring text must be corrected along with the field.
-- The task's own former title named one axiom out of four, and that axiom's former name is itself superseded (it is now simply *Limit*). The task has been renamed accordingly.
-
-OPEN DESIGN QUESTION, not settled: `nullity_identity` currently exists as an axiom FIELD, in the strictly stronger iff form. The paper asserts reflexivity only, via lem:nullity. Whether Lean should demote it to a derived lemma, keep the iff form as a deliberate strengthening, or keep reflexivity as a derived lemma and drop the injectivity-at-zero direction is a decision for the target-signature work, taken jointly with task 414 -- flagged here, not resolved here.
-
-=== 4. THE MACHINERY THE AXIOMS EXIST TO SUPPORT ===
-Transcribe these because they are what makes the axioms load-bearing rather than decorative:
-- \label{def:constraints} (promoted from lead-in prose to a numbered Ddef): for a partial history tau : X -> W over a frame F and duration z in D \ X, the *constraints imposed on z* are the segments [tau(t), tau(s)]_{z-t}^{s-z} for times t, s in X where t < z < s, and the fibers Fib(tau(t), z - t) for t in X otherwise.
-- \label{lem:constraint} (Constraint Lemma): the constraints imposed on z form a directed family of nonempty sets. RESTRUCTURED: this lemma now states ONLY directedness plus nonemptiness -- the admissibility clause its earlier merged statement carried has been split out into lem:admissible below. Its proof consumes Compositionality in BOTH directions plus Seriality.
-- \label{lem:fibers} (NEW): a world state u belongs to every member of the constraints imposed on z just in case tau(t) =>_{z-t} u for every t in X.
-- \label{lem:admissible}: the function tau union {<z, u>} is a partial history on X union {z} just in case u belongs to every member of the constraints imposed on z. Proof = lem:nullity (the zero loop at z itself) + lem:fibers.
-- \label{lem:step} (Step Lemma): "Every partial history tau : X -> W over a frame F extends to a partial history on X union {z} for any duration z in D." Proof = lem:constraint + *Spherical* (its SOLE application site) + lem:admissible. Closing remark, verbatim: "When the family has a subset-least member, that member already contains a candidate and *Spherical* is not needed."
-- \label{thm:extension}: "Every partial history tau : X -> W over a frame F is extended by some total world history sigma in H_F." Proof = Zorn over partial histories ordered by extension, closed via lem:step. Nothing else.
-- \label{cor:occurrence} (MERGED anchor -- the former \label{thm:occurrence} and \label{app:nonempty} NO LONGER EXIST): "For any frame F = <W, D, =>>, world state w in W, and time x in D, there is a total world history tau in H_F where tau(x) = w, and so H_F is nonempty." Strictly stronger than the old pair (the time x is universally given, not merely witnessed); its proof extends the one-point partial history {<x, w>} directly via thm:extension -- the old translation argument is GONE from this chain.
-The Lean development should mirror this decomposition lemma-for-lemma per the literature-fidelity policy.
-
-=== 5. HISTORY STRUCTURES -- JOINT SCOPE WITH TASK 414 ===
-\label{def:world-history}, verbatim: "A *partial history* over a frame F = <W, D, =>> is a function tau : X -> W on a nonempty set X subset-of D where tau(x) =>_{y-x} tau(y) for all times x, y in X. ... A *world history* is any partial history whose domain X is *convex* ... A world history is *total* --- equivalently, a *possible world* --- just in case X = D. A partial history sigma *extends* tau just in case dom(tau) subset-of dom(sigma) and tau(x) = sigma(x) for all x in dom(tau). The set of all total world histories over F is denoted H_F." The layering is partial history, then world history, then total. Note a partial history requires a nonempty domain and does NOT require convexity. The vocabulary "task-constrained function" is retired paper-wide and must not appear as current terminology.
-
-GAP: Lean's `WorldHistory` (FormalSystem/Semantics/WorldHistory.lean) has `domain : D -> Prop` with NO nonemptiness field, so the empty history is a legal Lean WorldHistory but is not a world history in the paper. Earlier research scored the base definition a "match"; it is a match on four of five conjuncts. Impact on the consequence chain is nil, but it is real for thm:extension fidelity, whose hypothesis is a NONEMPTY partial history. Introduce the `PartialHistory` / `WorldHistory` layering and the nonemptiness field ONCE, jointly with task 414, BEFORE the consequence refactor -- not after, and not twice.
-
-=== 6. CROSS-TASK ACCEPTANCE CRITERION (shared with task 414) ===
-Phase 6 is NOT done when Spherical typechecks as a structure field. *Spherical*'s Lean statement must be literally the hypothesis that lem:step's proof consumes -- not an inert field, and no longer pointed at thm:extension's proof, which under the current architecture consumes only Zorn plus lem:step. If this task lands Spherical as an inert field while 414 separately rebuilds totality machinery without threading it through, both tasks can go green while jointly failing to reconstruct thm:extension. Landing the field and demonstrating lem:step consumes it are one deliverable, not two.
-
-=== 7. REMAINING MECHANICAL WORK CARRIED FORWARD ===
-Inventory and discharge ALL TaskFrame instantiation sites tree-wide -- re-run the site-inventory greps (`: TaskFrame`, `TaskFrame D where`, `.mk`) rather than trusting the prior inventory, which predates task 415's landing. Known cases: `trivialFrame` (Unit singleton, trivially fine), `identityFrame` (verify), `natFrame` (violates Limit over dense D -- any state is reachable in arbitrarily small nonzero duration; repair the relation or restrict its temporal parameter to discrete D), plus every canonical/countermodel frame in FormalSystem/Metalogic/ (coordinate with task 415, which owns the per-class canonical obligations). The LaTeX restatement must still compile standalone (pdflatex with TEXINPUTS=../assets: from latex/subfiles/). SCOPE BOUNDARY with task 409: 409 owns 04-Metalogic.tex and 06-Notes.tex identifier-architecture fidelity; THIS task owns the 02-Semantics.tex frame-definition subsection. OPTIONAL STRETCH (defer if nontrivial): formalize the paper's T1 topology theorem as a sanity check.
-
-=== 8. WHAT SURVIVES, WHAT DOES NOT ===
-SURVIVES: everything in section 2, plus the blocker MECHANISM (see the blockers field), plus the scope boundary with 409 and the notation decision below.
-SUPERSEDED by round 1 (the team research): the entire three-axiom framing -- iff-Nullity as a primitive axiom, the one-directional positive-cone Compositionality law with interpolation declared not adopted, the "Limit Nullity" axiom name, Reflection-as-derived-only framing, and Occurrence left unaddressed; the claim that `forward_comp` is exactly the official law; the assertion that Nullity matches as a primitive axiom.
-SUPERSEDED by round 2 (round-1 findings that no longer hold): round 1's quotes of def:world-history, thm:extension, and the *Spherical* axiom; its citation of the now-deleted segment lemma; its function-application segment notation; its "task-constrained function" vocabulary; its "match" verdict on the base WorldHistory definition (section 5); its cross-task acceptance criterion pointed at thm:extension rather than lem:step (section 6); and every parenthetical possible_worlds.tex:NNNN locator. Round 1 remains authoritative for everything round 2 did not touch, including the entire phases-1-5 survival inventory.
-
-=== 9. NON-GOALS ===
-No edits under /home/benjamin/Philosophy/Papers/ -- the paper is READ-ONLY ground truth. No change to `WorldHistory.respects_task` beyond the layering decision in section 5 (it evaluates at d = t - s with the converse convention handling signs). No validity/semantics refactor: task 414 owns that and depends on this task, so the Omega-free API lands once, against the final frame structure. Related: 414, 415, 417, 409.
-
-NOTATION (binding user decision, 2026-07-28, carried forward unchanged): any explicit converse operation on the task relation is written with a superscript inverse -- $\Rightarrow^{-1}$ (and $R^{-1}$ for abstract relations) -- NEVER the relation-algebra breve/smile ($\breve{R}$, $R^{\smallsmile}$) common in the arrow-logic literature. This applies to the 02-Semantics.tex restatement of the converse convention, to any Lean notation or declaration names (prefer inv / ^-1 vocabulary, e.g. `TaskRel.inv`, consistent with Mathlib's `Inv`), and to all module docstrings. The paper itself states the converse convention with subscript negation only and introduces no operator symbol; if one is ever introduced paper-side it uses the same superscript -1 form.
-
-=== 10. FIRST STEP FOR THE NEXT DISPATCH (do this before reading any definition) ===
-Run `bash scripts/check-paper-definitions.sh` and read specs/paper-definitions-of-record.md. That file -- not the paper -- is what specs in this repository cite: it pins every definition this cluster depends on (def:temporal-order, def:task-relation, def:directed, def:frame and each of its four axioms individually, lem:nullity, def:world-history, def:constraints, lem:constraint, lem:fibers, lem:admissible, lem:step, thm:extension, cor:occurrence, def:BL-model, def:BL-semantics, def:frame-validity, def:logical-consequence, and the CO / TMP-CO aitem anchors) with verbatim text and content hashes re-derived from the live paper on every run. Lint outcomes: case (a) silent pass and case (b) notice (paper changed but no recorded definition drifted) -- proceed; case (c) FAIL naming each drifted anchor -- STOP and re-issue the affected specs before consuming them. The md5/HEAD-baseline diff procedure this section formerly prescribed is RETIRED (its baselines were already three drift waves stale). Cite by \label (or \aitem key) only; a bare possible_worlds.tex:NNNN is never a citation. Quote definition TEXT verbatim alongside each anchor so a renamed anchor stays detectable by text search.
 
 ---
 
@@ -1210,150 +802,6 @@ SUPERSEDED, and by which round:
 Depends on tasks 414 (the totality-based semantics API), 420 (the four-axiom TaskFrame and the fiber/segment/directedness machinery Spherical is stated with), and 438. Task 420's own phase 6 still phase-waits on this task's `bundleFlowFrame`, even though the task-level 420 -> 415 dependency edge was dropped to break a cycle -- coordinate directly rather than relying on the edge list. Order: Discrete, then Dense (task 170), Base (task 169), Dedekind (task 408). NON-GOAL: no edits under /home/benjamin/Philosophy/Papers/ -- the paper is read-only ground truth. NON-GOAL: do not weaken a frame axiom to make a construction go through.
 
 === 6. FIRST STEP FOR THE NEXT DISPATCH (do this before reading any definition) ===
-Run `bash scripts/check-paper-definitions.sh` and read specs/paper-definitions-of-record.md. That file -- not the paper -- is what specs in this repository cite: it pins every definition this cluster depends on (def:temporal-order, def:task-relation, def:directed, def:frame and each of its four axioms individually, lem:nullity, def:world-history, def:constraints, lem:constraint, lem:fibers, lem:admissible, lem:step, thm:extension, cor:occurrence, def:BL-model, def:BL-semantics, def:frame-validity, def:logical-consequence, and the CO / TMP-CO aitem anchors) with verbatim text and content hashes re-derived from the live paper on every run. Lint outcomes: case (a) silent pass and case (b) notice (paper changed but no recorded definition drifted) -- proceed; case (c) FAIL naming each drifted anchor -- STOP and re-issue the affected specs before consuming them. The md5/HEAD-baseline diff procedure this section formerly prescribed is RETIRED (its baselines were already three drift waves stale). Cite by \label (or \aitem key) only; a bare possible_worlds.tex:NNNN is never a citation. Quote definition TEXT verbatim alongside each anchor so a renamed anchor stays detectable by text search.
-
----
-
-### 414. Refactor semantics to total history validity
-- **Effort**: large
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: paper-refactor
-- **Dependencies**: Task 420, Task 438, Task 439
-- **Research**: [414_refactor_semantics_to_total_history_validity/reports/05_seriality-witness-nontermination.md]
-- **Plan**: [414_refactor_semantics_to_total_history_validity/plans/04_seriality-witness-termination-fix.md]
-- **Summary**: [414_refactor_semantics_to_total_history_validity/summaries/09_phase29-2-preguard-differential-rebaseline.md]
-
-**Description**: === 0. EXECUTION STATUS (updated 2026-08-11; supersedes the sections named below) ===
-18 of 23 plan phases are COMPLETE, `lake build` is GREEN, 0 sorries were introduced (1
-pre-existing, Metalogic/WeakCanonical/Transfer.lean:1084, out of scope), 0 new axioms. Plan of
-record: plans/03_omega-free-totality-refactor.md, whose "## Execution Status" section carries the
-per-phase detail, the two lessons governing the remainder, and the four file-list corrections.
-REMAINING: phases 19-22 (the Omega-binder sweeps) and phase 23 (OPTIONAL frame-relative validity).
-
-The paper anchors, verbatim definitions, and NOTATION rules in sections 1-10 below remain ground
-truth and are unchanged. What follows records only which OPEN QUESTIONS and PENDING OBLIGATIONS
-have since been settled, so the charter stops posing as open work that is already done.
-
-SETTLED -- section 7 (CROSS-TASK ACCEPTANCE CRITERION), the most consequential: **DISCHARGED.**
-*Spherical* is verified as literally the hypothesis lem:step's proof consumes, by two independent
-checks -- a deletion probe (removing the `hSph` binder makes the proof fail to elaborate with
-`Unknown identifier`) and proof-term inspection (`#print` shows it applied as a function head).
-`Extension/Step.lean` is its SOLE application site repo-wide; every other occurrence is docstring
-prose. Phase 10 re-verified the invariant survived thm:extension, which forwards the axiom binders
-without applying them. The obligation "this task is not done until that threading is demonstrated"
-is met. One item task 420 must absorb: `step` carries an extra `hLim` binder (Limit in hypothesis
-form), because TaskFrame does not carry Limit as a field and lem:admissible needs lem:nullity at
-z; it discharges by the same mechanical substitution as the others when 420's frame-axiom-field
-phase lands.
-
-SETTLED -- section 3 (THE HISTORY-STRUCTURE GAP): the layering decision was made ONCE, at plan
-time, and is landed. `PartialHistory` (nonempty domain, respects_task, no convexity) exists with
-`WorldHistory` re-based onto it, plus the extension order and the Zorn machinery, in
-FormalSystem/Semantics/PartialHistory*.lean and Semantics/Extension/. The paper's decomposition
-(def:constraints -> lem:constraint -> lem:fibers -> lem:admissible -> lem:step -> thm:extension ->
-cor:occurrence) is transcribed lemma-for-lemma and is sorry-free. Frame-intrinsic cor:occurrence
-was deliberately NOT attempted and remains gated on task 420's frame-axiom-field phase, as scoped.
-
-SETTLED -- section 2 (THE ACTUAL BINDER DELTA): applied. TruthAt's box clause now reads
-`forall (sigma : WorldHistory F), sigma.IsTotal -> ...`, matching def:BL-semantics with no Omega
-and no shift-closure side condition; the target predicate is TOTALITY, never IsMax. The validity
-layer's binder delta landed across twelve definitions. `ShiftClosed` was DELETED from
-time_shift_preserves_truth rather than replaced -- the statement got strictly stronger while
-losing a hypothesis, confirming the charter's "strictly easier" prediction. untl/snce remain
-EVENT-FIRST; the paper footnote's contradictory guard-first reading was NOT adopted.
-
-SETTLED -- the three-way delete-vs-generalize question for Omega (section 5 / report 7.5): all
-five Omega-valued definitions are now provably = H_F, so no split-scope spawn was needed. The
-completeness side was largely the predicted rewrite; the decidability side required the real work
-the charter anticipated -- regionFrame was re-hosted onto a deterministic clock carrier
-(WorldState := W x D) IN THIS TASK, and its consumers repaired, closing the junk-history problem
-that totality alone does not fix. Note two corrections to prior research discovered en route:
-(a) "rewrite, not re-proof" held only for the two FlowFrame definitions; multiFamTaskFrame and
-zTaskFrameV2 are independent defs with no totality characterization to rewrite along, so two new
-proofs were required; (b) `regionConstant_regionHistory_zero` became FALSE, not merely unproved,
-under the deterministic carrier, and was replaced by `not_regionConstant_regionHistory`.
-
-CORRECTION to section 5's SURVIVES list: it states, on round-3 authority, that the extension-order
-machinery (Preorder, chainSup, exists_maximal_extension, isMax_of_total, timeShift_mono) "exists
-ONLY as a prototype inside report 01 and is NOT in the tree". That was true when written and is
-now STALE -- the order-machinery phase ported it, and it is in the tree. The rest of the SURVIVES
-list stands, including the soundness-survival analysis, which the ShiftClosed deletion above
-confirms a fortiori. The Group C 88/16/8 counts remain unverified against the current tree; still
-never present them as freshly derived.
-
-STILL OPEN -- section 8 (OPTIONAL DELIVERABLE): frame-relative validity |=_F has no Lean
-counterpart yet. It is the plan's final phase and remains explicitly OPTIONAL.
-
-STILL BINDING -- section 10 (FIRST STEP FOR THE NEXT DISPATCH): unchanged. Run
-`bash scripts/check-paper-definitions.sh` and read specs/paper-definitions-of-record.md before
-consuming any definition. It passed silently at the start of the 2026-08-11 run.RE-ISSUED 2026-08-10 (supersedes the prior maximal-history charter in full). TOTAL-HISTORY VALIDITY REFACTOR: make totality-based validity THE validity of the repo, eliminating the Omega parameter from the semantics core.
-
-=== 1. THE TARGET PREDICATE (the single most consequential correction) ===
-The target predicate for TruthAt's box clause, valid, SemanticConsequence, the satisfiable family, and H_F generally is TOTALITY -- in Lean, `IsTotal (tau) := forall t, tau.domain t` -- NOT Mathlib's `IsMax` and not any order-theoretic maximality predicate. The paper's own layering is partial history, then world history, then total (equivalently: possible world). Paper anchor \label{def:world-history}, verbatim: "A *partial history* over a frame F = <W, D, =>> is a function tau : X -> W on a nonempty set X subset-of D where tau(x) =>_{y-x} tau(y) for all times x, y in X. ... A *world history* is any partial history whose domain X is *convex*, so that y in X whenever x, z in X and x < y < z. A world history is *total* --- equivalently, a *possible world* --- just in case X = D. A partial history sigma *extends* tau just in case dom(tau) subset-of dom(sigma) and tau(x) = sigma(x) for all x in dom(tau). The set of all total world histories over F is denoted H_F."
-
-Note carefully: a partial history has NO convexity requirement and DOES require a nonempty domain; convexity is what promotes a partial history to a world history. The vocabulary "task-constrained function" is RETIRED throughout the paper (the extension theorem, the occurrence result -- now cor:occurrence -- and the gluing footnote were all recast); do not reintroduce it as current terminology.
-
-Consequence anchor \label{def:logical-consequence}, verbatim: "A conclusion phi is a *logical consequence* of a set of premises Gamma --- written Gamma |= phi --- just in case for all models M, possible worlds tau in H_F, and times x in D, if M,tau,x |= gamma for all premises gamma in Gamma, then M,tau,x |= phi. A sentence phi is *valid* just in case |= phi."
-
-Truth anchor \label{def:BL-semantics}: preamble "Truth in a model at a possible world tau in H_F and time is defined recursively"; atom clause "M,tau,x |= p_i *iff* tau(x) in |p_i|" (NO domain conjunct); box clause "M,tau,x |= Box phi *iff* M,sigma,x |= phi for all sigma in H_F"; tense clauses range over all y in D.
-
-=== 2. THE ACTUAL BINDER DELTA (corrected -- do not overstate it) ===
-`valid` (FormalSystem/Semantics/Validity.lean:80) and `SemanticConsequence` (:104) ALREADY carry `[Nontrivial D]`. The genuine binder gap is only at the `TaskFrame` STRUCTURE level: no `[Nontrivial D]` binder and no `Nonempty WorldState` field. At the consequence level the delta is exactly two moves: (i) drop `Omega` / `ShiftClosed` / the `tau in Omega` hypothesis, and (ii) add the totality constraint on tau. Earlier research presented `[Nontrivial D]` as new at every level; that presentation is superseded -- state the smaller delta. `ShiftClosed` becomes unnecessary in the STATEMENT of validity/consequence because totality is trivially preserved by `timeShift`. Whether the Omega machinery is deleted outright or retained as a generalization that `valid` specializes is 415-coupled and remains a planning decision. NOTE (new paper content, 2026-08-10): the paper itself now NAMES the repo's current Omega architecture -- a footnote inside cor:tm-completeness's proof describes the machine-checked results as stated for "a parametric variant of the semantics in which validity is relativized to a designated shift-closed set of histories", transferred by a non-machine-checked strand construction; landing this task (with 415) is what makes that hedge obsolete. See task 415's description for the footnote's full obligation list.
-
-Also in scope for the binder rewrite: Lean's `Formula` takes Until/Since (`untl` / `snce`) as PRIMITIVE with G/H/F/P derived -- mirroring the paper's extended \label{def:BLplus-semantics} rather than \label{def:BL-semantics}, which has primitive Past/Future only. The totality refactor must rewrite the `untl` / `snce` clauses' binders too; they are tau-local and unchanged in shape, but they sit inside TruthAt's binder list.
-
-=== 3. THE HISTORY-STRUCTURE GAP (corrected earlier error; joint scope with 420) ===
-Lean's `WorldHistory` (FormalSystem/Semantics/WorldHistory.lean) has `domain : D -> Prop` with NO nonemptiness field. The empty history is therefore a legal Lean `WorldHistory` but is not a world history in the paper. Earlier research scored the base definition a "match"; it is a match on four of five conjuncts. Impact on the consequence chain is nil (total histories have domain D, nonempty because a nontrivial ordered group is infinite), but it is real for \label{thm:extension} fidelity, whose hypothesis is a NONEMPTY partial history: a faithful transcription must either carry the nonemptiness field/hypothesis or make an explicit empty-case argument the paper does not make.
-
-Decide the layering ONCE, before the consequence refactor, not after: introduce `PartialHistory` (nonempty domain, respects_task, no convexity) with `WorldHistory` as the convex special case -- whether by `extends`, an `IsConvex` mixin, or adding a nonemptiness field to the existing standalone structure is an implementation-plan choice. Add `PartialHistory.Extends` (domain inclusion + agreement) as the extension order. `H_F` as a subtype (`{tau : WorldHistory F // tau.IsTotal}`) versus a witness pair remains an open planning decision. This decision is shared with task 420 and must not be made twice.
-
-=== 4. THE FOUR-AXIOM FRAME AND THE MACHINERY H_F DEPENDS ON ===
-Paper anchor \label{def:frame}, verbatim: "A *frame* is any F = <W, D, =>> where W is a nonempty set of world states, D is a temporal order, and => is a task relation satisfying the following for x, y >= 0: *Compositionality:* w =>_{x + y} v if and only if w =>_x u and u =>_y v for some u in W. *Seriality:* w =>_x u and v =>_x w for some u, v in W. *Limit:* intersection over x > 0 of (w)_x = {w}. *Spherical:* intersection of S is nonempty for any directed family S of nonempty fibers and segments."
-
-Supporting anchors, each with the text that makes the label recoverable if it is renamed:
-- \label{def:temporal-order}: "A *temporal order* is a nontrivial totally ordered abelian group D = <D, +, 0, <=> with *positive cone* D^+ := {x in D : x >= 0}."
-- \label{def:task-relation}: a task relation on a NONEMPTY set of world states W over a temporal order D, extended to negative durations by the *converse convention* "w =>_{-x} u := u =>_x w for x >= 0", determining -- Fiber: Fib(w, x) := {u in W : w =>_x u}; Cone: (w)_x := union over |y| < x of Fib(w, y) where x > 0; Segment: [w, v]_x^y := Fib(w, x) intersect Fib(v, -y) where x, y >= 0.
-- \label{def:directed}: "A nonempty family of sets S is *directed* just in case S' subset-of S_1 intersect S_2 for some S' in S whenever S_1, S_2 in S."
-- \label{lem:nullity}: "w =>_0 w for every world state w in W in every frame" -- Nullity is DERIVED (from Seriality at x = 0 plus Limit), choice-free, not an axiom.
-- \label{def:constraints} (promoted from lead-in prose to a numbered Ddef): for a partial history tau : X -> W over a frame F and duration z in D \ X, the *constraints imposed on z* are the segments [tau(t), tau(s)]_{z-t}^{s-z} for times t, s in X where t < z < s, and the fibers Fib(tau(t), z - t) for t in X otherwise.
-- \label{lem:constraint} (Constraint Lemma): the constraints imposed on z form a directed family of nonempty sets. RESTRUCTURED: this lemma now states ONLY directedness plus nonemptiness -- the admissibility clause its earlier merged statement carried has been split out into lem:admissible below. Its proof consumes Compositionality in BOTH directions plus Seriality.
-- \label{lem:fibers} (NEW): a world state u belongs to every member of the constraints imposed on z just in case tau(t) =>_{z-t} u for every t in X.
-- \label{lem:admissible}: the function tau union {<z, u>} is a partial history on X union {z} just in case u belongs to every member of the constraints imposed on z. Proof = lem:nullity (the zero loop at z itself) + lem:fibers.
-- \label{lem:step} (Step Lemma): "Every partial history tau : X -> W over a frame F extends to a partial history on X union {z} for any duration z in D." Proof = lem:constraint + *Spherical* (its SOLE application site) + lem:admissible. Closing remark, verbatim: "When the family has a subset-least member, that member already contains a candidate and *Spherical* is not needed."
-- \label{thm:extension}: "Every partial history tau : X -> W over a frame F is extended by some total world history sigma in H_F." Proof = Zorn over partial histories ordered by extension, closed via lem:step. Nothing else.
-- \label{cor:occurrence} (MERGED anchor -- the former \label{thm:occurrence} and \label{app:nonempty} NO LONGER EXIST): "For any frame F = <W, D, =>>, world state w in W, and time x in D, there is a total world history tau in H_F where tau(x) = w, and so H_F is nonempty." Strictly stronger than the old pair (the time x is universally given, not merely witnessed); its proof extends the one-point partial history {<x, w>} directly via thm:extension -- the old translation argument is GONE from this chain.
-
-NOTATION IS BINDING: segments are written in the bracket form [w, v]_x^y with the defining equation [w, v]_x^y := Fib(w, x) intersect Fib(v, -y) for x, y >= 0. The paper's old `\Seg` macro is DELETED from its preamble and survives only inside commented-out lines; the old function-application segment notation is not current notation and must not appear as such. *Spherical* ranges over directed families of nonempty FIBERS AND SEGMENTS as two SEPARATE classes -- the device by which one-sided fibers used to count among the segments is RETIRED, and directedness is now its own definition per \label{def:directed}. The lemma formerly cited for the two-sided segment family no longer exists in the paper; every such citation is replaced by lem:constraint + lem:step.
-
-=== 5. WHAT SURVIVES FROM PRIOR RESEARCH, AND WHAT DOES NOT ===
-SURVIVES (still authoritative, from the round-1 team research):
-- The extension `Preorder` on histories (tau <= sigma iff domain inclusion plus state agreement on the smaller domain), `timeShift_mono`, the shift/unshift lemma pair, and `chainSup` (chain-union) -- predicate-agnostic, axiom-content-free order machinery.
-- `exists_maximal_extension` (Zorn) -- still true and useful, but demoted from "the target existence theorem" to an internal lemma en route to thm:extension.
-- `isMax_of_total` (total implies maximal under the extension order) -- survives and becomes the load-bearing direction: it is exactly what lets a totality-based H_F sit inside the maximal-extension machinery.
-- The soundness-survival analysis: soundness consumes shift-preservation, not Zorn extension. A totality-based `time_shift_preserves_truth` is strictly EASIER than the maximality-based one already verified, so this survives a fortiori.
-- The Group C dead/live/portable bucketing (88 dead + 16 live-portable + 8 live-unportable). CARRY BOTH HALVES: the bucketing is a kernel-level reachability fact orthogonal to the predicate choice and survives; the COUNTS were verified only as an internally-consistent transcription of the source report and were NOT re-derived against the current tree, and that report predates task 415's landing, so the cardinalities may have drifted. Never present these counts as freshly derived.
-
-SUPERSEDED, and by which round:
-- Superseded by round 1 (the team research): the "make maximal-history validity THE validity of the repo" charter; the target Lean signatures using `IsMax` binders in TruthAt's box clause, valid, SemanticConsequence, and satisfiable; the `IsMax`-versus-alias naming discussion (moot -- whichever name is chosen must denote totality); this task's former "charter is mathematically unaffected" framing.
-- Superseded by round 2 (the discrepancy audit), i.e. round 1's own findings that no longer hold: round 1's quotes of def:world-history, thm:extension, and the *Spherical* axiom; its citation of the now-deleted segment lemma; its function-application segment notation; its "task-constrained function" vocabulary; its "match" verdict on the base `WorldHistory` definition (see section 3); its presentation of `[Nontrivial D]` as new at every level (see section 2); and every parenthetical `possible_worlds.tex:NNNN` locator it carried. Round 1 remains authoritative for everything round 2 did not touch, including the whole SURVIVES list above.
-- Still standing from round 1, explicitly: satisfiability has NO paper anchor -- Lean's satisfiable family inherits the totality fix as a design decision, not as a reconciliation finding.
-
-=== 6. TRANSCRIPTION-COST UPDATE (round 2, Findings 3) ===
-thm:extension is CHEAPER than round 1 estimated, because the paper now supplies the lemma decomposition (def:constraints -> lem:constraint -> lem:fibers -> lem:admissible -> lem:step -> Zorn wrapper) that round 1 said the Lean side would have to invent. Mirror it lemma-for-lemma per the literature-fidelity policy. The Zorn engine from this task's own prototype retargets to `PartialHistory`, with the final "maximal implies total" step going through lem:step -- which resolves cleanly what round 1 could only describe as "maximal-to-total requires Seriality and Spherical". All four def:frame axioms remain load-bearing for thm:extension and hence for H_F's nonemptiness: lem:constraint consumes Compositionality in BOTH directions plus Seriality; lem:admissible consumes lem:nullity (which rests on Seriality-at-0 plus Limit) via lem:fibers; and lem:step consumes lem:constraint plus Spherical plus lem:admissible.
-
-=== 7. CROSS-TASK ACCEPTANCE CRITERION (shared with task 420) ===
-*Spherical*'s Lean statement must be literally the hypothesis that lem:step's proof consumes -- NOT an inert structure field, and no longer pointed at thm:extension's proof, which under the current architecture consumes only Zorn plus lem:step. If 420 lands Spherical as an inert field while this task rebuilds totality machinery without threading it through, both tasks can go green while jointly failing to reconstruct thm:extension. This task is not done until that threading is demonstrated.
-
-=== 8. OPTIONAL DELIVERABLE (not required scope) ===
-Frame-relative validity: \label{def:frame-validity}'s |=_F has no Lean counterpart at all. It is the natural home for cor:occurrence's never-vacuous theorem -- the paper states "Since H_F is nonempty for every frame by cor:occurrence, frame validity is never vacuous: every frame contributes evaluation points, and so not-|=_F bottom for every frame F." (Anchor updated: the former app:nonempty was merged into cor:occurrence.) Mark OPTIONAL.
-
-=== 9. DEPENDENCIES, NON-GOALS, NOTATION ===
-Depends on task 420 (the four-axiom TaskFrame must land first so the validity refactor lands once, against the final frame structure) and on task 438. Downstream metalogic rebasing is task 415; 417 restates against this semantics; 427 syncs the typst book last. NO compatibility shims, aliases, or parallel validity notions: one uniform Omega-free API. NON-GOAL: no edits under /home/benjamin/Philosophy/Papers/ -- the paper is read-only ground truth.
-
-NOTATION (binding user decision, 2026-07-28, carried forward unchanged): any explicit converse operation on the task relation is written with a superscript inverse -- $\Rightarrow^{-1}$ (and $R^{-1}$ for abstract relations) -- NEVER the relation-algebra breve/smile ($\breve{R}$, $R^{\smallsmile}$) common in the arrow-logic literature. Prefer inv / ^-1 vocabulary in Lean declaration names, consistent with Mathlib's `Inv`. The paper itself states the converse convention with subscript negation only and introduces no operator symbol.
-
-=== 10. FIRST STEP FOR THE NEXT DISPATCH (do this before reading any definition) ===
 Run `bash scripts/check-paper-definitions.sh` and read specs/paper-definitions-of-record.md. That file -- not the paper -- is what specs in this repository cite: it pins every definition this cluster depends on (def:temporal-order, def:task-relation, def:directed, def:frame and each of its four axioms individually, lem:nullity, def:world-history, def:constraints, lem:constraint, lem:fibers, lem:admissible, lem:step, thm:extension, cor:occurrence, def:BL-model, def:BL-semantics, def:frame-validity, def:logical-consequence, and the CO / TMP-CO aitem anchors) with verbatim text and content hashes re-derived from the live paper on every run. Lint outcomes: case (a) silent pass and case (b) notice (paper changed but no recorded definition drifted) -- proceed; case (c) FAIL naming each drifted anchor -- STOP and re-issue the affected specs before consuming them. The md5/HEAD-baseline diff procedure this section formerly prescribed is RETIRED (its baselines were already three drift waves stale). Cite by \label (or \aitem key) only; a bare possible_worlds.tex:NNNN is never a citation. Quote definition TEXT verbatim alongside each anchor so a renamed anchor stays detectable by text search.
 
 ---

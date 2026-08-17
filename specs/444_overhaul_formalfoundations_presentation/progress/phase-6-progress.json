@@ -1,6 +1,0 @@
-{"phase":6,"phase_name":"Section 3 Part II - The Three Canonical Constructions and Status","started_at":"2026-08-13T19:00:00Z","last_updated":"2026-08-13T19:35:00Z",
-"objectives":[{"id":1,"description":"Three branch constructions with credits, plus the machine-status table","status":"done","files_touched":["typst/FormalFoundations.typ"]}],
-"current_objective":1,"approaches_tried":[],"deviations":[],
-"scope_hypothesis":"CONFIRMED. typst-status-counts.sh --json re-run at 7aae4e51c: sorry_total=5, sorry_total_excl_boneyard=1, sorry_algebraic=0, sorry_bxcanonical=0, sorry_bundle=0 -- all identical to Phase 1 and to the plan's hypothesis. Only stamp_commit moved.",
-"v2_catches":["limit_chronicle is NOT a declaration -- it appears only in a ChronicleConstruction.lean docstring, so the prior document cited a non-existent identifier. Replaced with limit_satisfies_c5_strong.","The discrete branch does NOT use Kamp's theorem. It uses Reynolds k-equivalence (one_class -> VeryGood -> good, truth_transfer). The prior document's 'Kamp-theorem-based expressive-completeness argument' was inaccurate; kampPriorExpressiveCompleteness is a separate, still-open target.","Kamp's expressive-completeness theorem is the 1968 dissertation, not the 1971 Theoria paper. Citation corrected."],
-"page_count":26,"handoff_count":0}

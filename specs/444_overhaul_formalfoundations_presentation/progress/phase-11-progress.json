@@ -1,8 +1,0 @@
-{"phase":11,"phase_name":"Consistency, Cross-Reference, and Narrative Read-Through","started_at":"2026-08-13T21:40:00Z","last_updated":"2026-08-13T21:55:00Z",
-"objectives":[{"id":1,"description":"Cross-reference, notation, narrative, page budget, final gates","status":"done","files_touched":["typst/FormalFoundations.typ"]}],
-"current_objective":1,"approaches_tried":[
-{"approach":"thmbox environment spacing override at 0.85em / 0.65em / 0.5em","result":"failed","reason":"28 -> 29/28/28 pages; no gain"},
-{"approach":"trim the six longest footnotes (~1100 chars)","result":"failed","reason":"still 28 pages; footnotes are 15% of source but a small share of rendered area"},
-{"approach":"paragraph-by-paragraph read of section 1 connective prose for removable fat","result":"failed","reason":"ten short paragraphs, each doing distinct work; no fat found"}],
-"deviations":[{"task_id":"11.5","description":"Reconcile page count against the Phase 2 budget","type":"altered","reason":"28 pages against a 17-page reference; not reachable without undoing the FIX tags. Recorded as a Reasoned Exclusion with Item/Reason/Evidence.","annotation":"see #### Reasoned Exclusions"}],
-"page_count":28,"handoff_count":0}

@@ -1,5 +1,0 @@
-{"phase":4,"phase_name":"Section 2 - What Is Proved, Stated Per System","started_at":"2026-08-13T17:55:00Z","last_updated":"2026-08-13T18:20:00Z",
-"objectives":[{"id":1,"description":"Rewrite section 2 per-system with #leansrc and measured axiom reports","status":"done","files_touched":["typst/FormalFoundations.typ"]}],
-"current_objective":1,"approaches_tried":[],"deviations":[],
-"v2_verdicts":"completeness_dense (Completeness.lean:250), completeness_discrete (:291), completeness_dedekind_engine (CompletenessDedekind.lean:585) each confirmed present in namespace FormalSystem.Metalogic.BXCanonical with in-file Sorry Status sections reporting exactly propext/Classical.choice/Quot.sound. completeness (:191) confirmed to carry sorryAx per the module docstring at :45; stated as outstanding and NOT upgraded.",
-"page_count":23,"handoff_count":0}
