@@ -193,7 +193,7 @@ noncomputable def kvE2SepEpL {sig : MonadicSignature} [Fintype sig.preds] [Decid
     (charBase (kvE2SepProj3 qnf.1 ⟨1, by omega⟩)
       :: ((Finset.univ.toList : List (NormalForm sig 1 1)).map fun χ =>
             kvE2SepLit (kvE2SepHasPos qnf kvE2SepZPastX3 χ)
-              (Formula.snce (charK χ) Formula.top))
+              (Formula.snceQ Formula.top (charK χ)))
       ++ ((Finset.univ.toList : List (NormalForm sig 1 1)).map fun χ =>
             kvE2SepLit (kvE2SepHasPos qnf kvE2SepZAtX3 χ) (charK χ))
       ++ ((kvE2SepPosIn qnf kvE2SepZXW3 ++ kvE2SepPosIn qnf kvE2SepZWT3).flatMap
@@ -201,7 +201,7 @@ noncomputable def kvE2SepEpL {sig : MonadicSignature} [Fintype sig.preds] [Decid
               charBase (kvE2SepProj4 σ ⟨2, by omega⟩)
                 :: ((Finset.univ.toList : List (NormalForm sig 0 1)).map fun χ =>
                       kvE2SepLit (kvE2SepBits σ kvE2SepZPastX4 χ)
-                        (Formula.snce (charBase χ) Formula.top))
+                        (Formula.snceQ Formula.top (charBase χ)))
                 ++ ((Finset.univ.toList : List (NormalForm sig 0 1)).map fun χ =>
                       kvE2SepLit (kvE2SepBits σ kvE2SepZAtX4 χ) (charBase χ))))⟩
 
@@ -217,7 +217,7 @@ noncomputable def kvE2SepEpR {sig : MonadicSignature} [Fintype sig.preds] [Decid
             kvE2SepLit (kvE2SepHasPos qnf kvE2SepZAtT3 χ) (charK χ))
       ++ ((Finset.univ.toList : List (NormalForm sig 1 1)).map fun χ =>
             kvE2SepLit (kvE2SepHasPos qnf kvE2SepZFutT3 χ)
-              (Formula.untl (charK χ) Formula.top))
+              (Formula.untlQ Formula.top (charK χ)))
       ++ ((kvE2SepPosIn qnf kvE2SepZXW3 ++ kvE2SepPosIn qnf kvE2SepZWT3).flatMap
             fun σ =>
               charBase (kvE2SepProj4 σ ⟨3, by omega⟩)
@@ -225,7 +225,7 @@ noncomputable def kvE2SepEpR {sig : MonadicSignature} [Fintype sig.preds] [Decid
                       kvE2SepLit (kvE2SepBits σ kvE2SepZAtT4 χ) (charBase χ))
                 ++ ((Finset.univ.toList : List (NormalForm sig 0 1)).map fun χ =>
                       kvE2SepLit (kvE2SepBits σ kvE2SepZFutT4 χ)
-                        (Formula.untl (charBase χ) Formula.top))))⟩
+                        (Formula.untlQ Formula.top (charBase χ)))))⟩
 
 /-- The ONE shared interior-witness point type (the object the SubBracket2V banner names):
     `charBase` of `qnf.1`'s w-coordinate 1-type (arity-3 analog of the per-σ `ptW`,

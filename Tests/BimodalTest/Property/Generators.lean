@@ -113,14 +113,14 @@ partial def shrinkFormula : Formula → List Formula
       (shrinkFormula q).map (Formula.imp p ·)
   | Formula.box p =>
       [p] ++ (shrinkFormula p).map Formula.box
-  | Formula.untl p q =>
+  | Formula.untlQ q p =>
       [p, q] ++
-      (shrinkFormula p).map (Formula.untl · q) ++
-      (shrinkFormula q).map (Formula.untl p ·)
-  | Formula.snce p q =>
+      (shrinkFormula p).map (Formula.untlQ q ·) ++
+      (shrinkFormula q).map (Formula.untlQ · p)
+  | Formula.snceQ q p =>
       [p, q] ++
-      (shrinkFormula p).map (Formula.snce · q) ++
-      (shrinkFormula q).map (Formula.snce p ·)
+      (shrinkFormula p).map (Formula.snceQ q ·) ++
+      (shrinkFormula q).map (Formula.snceQ · p)
 
 instance : Shrinkable Formula := ⟨shrinkFormula⟩
 

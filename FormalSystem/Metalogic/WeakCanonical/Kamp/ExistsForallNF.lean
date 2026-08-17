@@ -306,12 +306,12 @@ def buildRight : List (TemporalPred × TemporalPred) → TemporalPred → Formul
   | [], rightmost_interval =>
     -- No more points to the right: G(beta_right) = not(F(not beta_right))
     -- G F = not(not_F Until True) = (not_F Until True) -> bot
-    Formula.imp (Formula.untl rightmost_interval.formula.neg Formula.top) Formula.bot
+    Formula.imp (Formula.untlQ Formula.top rightmost_interval.formula.neg) Formula.bot
   | (alpha, beta_before) :: rest, rightmost_interval =>
     -- beta_before Until (alpha AND buildRight rest rightmost_interval)
     -- "beta_before holds until we find a witness where alpha holds and the rest continues"
-    Formula.untl (Formula.and alpha.formula (buildRight rest rightmost_interval))
-        beta_before.formula
+    Formula.untlQ beta_before.formula
+        (Formula.and alpha.formula (buildRight rest rightmost_interval))
 
 /-- Build the "left part" of the translation: from position k to the left end.
     Given witnesses at positions k, k-1, ..., 0 with interval types between them,
@@ -320,11 +320,11 @@ def buildLeft : List (TemporalPred × TemporalPred) → TemporalPred → Formula
   | [], leftmost_interval =>
     -- No more points to the left: H(beta_left) = not(P(not beta_left))
     -- H F = not(not_F Since True) = (not_F Since True) -> bot
-    Formula.imp (Formula.snce leftmost_interval.formula.neg Formula.top) Formula.bot
+    Formula.imp (Formula.snceQ Formula.top leftmost_interval.formula.neg) Formula.bot
   | (alpha, beta_after) :: rest, leftmost_interval =>
     -- beta_after Since (alpha AND buildLeft rest leftmost_interval)
     -- "beta_after holds since we find a witness where alpha holds and the rest continues"
-    Formula.snce (Formula.and alpha.formula (buildLeft rest leftmost_interval)) beta_after.formula
+    Formula.snceQ beta_after.formula (Formula.and alpha.formula (buildLeft rest leftmost_interval))
 
 /-- Translate a 1-variable exists-forall formula to a temporal formula.
     The free variable is at position `k` among `n+1` witness points.

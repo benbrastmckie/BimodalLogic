@@ -373,9 +373,9 @@ No limit reasoning occurs anywhere: at a selected target the extension *is* the 
 theorem toRealBundle_forward_until_selected {fc : FrameClass} (B : BFMCS (fc := fc) Rat)
     (root : Formula) (h_rfuc : B.RestrictedForwardUntilSinceCoherent root)
     (fam : FMCS (fc := fc) Rat) (hfam : fam ∈ B.families) (δ t : ℝ) (φ ψ : Formula)
-    (hsub : Formula.untl φ ψ ∈ subformulaClosure root)
+    (hsub : Formula.untlQ ψ φ ∈ subformulaClosure root)
     (p : Rat) (hp : (p : ℝ) = t + δ)
-    (hU : Formula.untl φ ψ ∈ realLimitMCS fam.mcs δ t) :
+    (hU : Formula.untlQ ψ φ ∈ realLimitMCS fam.mcs δ t) :
     ∃ s : ℝ, t < s ∧ φ ∈ realLimitMCS fam.mcs δ s ∧
       ∀ r : ℝ, t < r → r < s → ψ ∈ realLimitMCS fam.mcs δ r := by
   rw [realLimitMCS_of_rat fam.mcs δ t p hp] at hU
@@ -400,9 +400,9 @@ the witness below the target and the guard on `(s', p)`.
 theorem toRealBundle_forward_since_selected {fc : FrameClass} (B : BFMCS (fc := fc) Rat)
     (root : Formula) (h_rfuc : B.RestrictedForwardUntilSinceCoherent root)
     (fam : FMCS (fc := fc) Rat) (hfam : fam ∈ B.families) (δ t : ℝ) (φ ψ : Formula)
-    (hsub : Formula.snce φ ψ ∈ subformulaClosure root)
+    (hsub : Formula.snceQ ψ φ ∈ subformulaClosure root)
     (p : Rat) (hp : (p : ℝ) = t + δ)
-    (hS : Formula.snce φ ψ ∈ realLimitMCS fam.mcs δ t) :
+    (hS : Formula.snceQ ψ φ ∈ realLimitMCS fam.mcs δ t) :
     ∃ s : ℝ, s < t ∧ φ ∈ realLimitMCS fam.mcs δ s ∧
       ∀ r : ℝ, s < r → r < t → ψ ∈ realLimitMCS fam.mcs δ r := by
   rw [realLimitMCS_of_rat fam.mcs δ t p hp] at hS
@@ -440,11 +440,11 @@ past the gap first; see `exists_rat_since_witness_below_of_limitGuardBelow`.
 theorem toRealBundle_backward_until_selected {fc : FrameClass} (B : BFMCS (fc := fc) Rat)
     (root : Formula) (h_rbuc : B.RestrictedBackwardUntilSinceCoherent root)
     (fam : FMCS (fc := fc) Rat) (hfam : fam ∈ B.families) (δ t : ℝ) (φ ψ : Formula)
-    (hsub : Formula.untl φ ψ ∈ subformulaClosure root)
+    (hsub : Formula.untlQ ψ φ ∈ subformulaClosure root)
     (p : Rat) (hp : (p : ℝ) = t + δ)
     (hwit : ∃ s : ℝ, t < s ∧ φ ∈ realLimitMCS fam.mcs δ s ∧
       ∀ r : ℝ, t < r → r < s → ψ ∈ realLimitMCS fam.mcs δ r) :
-    Formula.untl φ ψ ∈ realLimitMCS fam.mcs δ t := by
+    Formula.untlQ ψ φ ∈ realLimitMCS fam.mcs δ t := by
   obtain ⟨s, hts, hφ, hguard⟩ := hwit
   rw [realLimitMCS_of_rat fam.mcs δ t p hp]
   obtain ⟨u, hpu, hus, hφu⟩ :=
@@ -477,12 +477,12 @@ theorem toRealBundle_backward_since_selected_of_rat_witness {fc : FrameClass}
     (B : BFMCS (fc := fc) Rat) (root : Formula)
     (h_rbuc : B.RestrictedBackwardUntilSinceCoherent root)
     (fam : FMCS (fc := fc) Rat) (hfam : fam ∈ B.families) (δ t : ℝ) (φ ψ : Formula)
-    (hsub : Formula.snce φ ψ ∈ subformulaClosure root)
+    (hsub : Formula.snceQ ψ φ ∈ subformulaClosure root)
     (p : Rat) (hp : (p : ℝ) = t + δ)
     (s : ℝ) (hst : s < t) (w : Rat) (hw : (w : ℝ) = s + δ)
     (hφ : φ ∈ realLimitMCS fam.mcs δ s)
     (hguard : ∀ r : ℝ, s < r → r < t → ψ ∈ realLimitMCS fam.mcs δ r) :
-    Formula.snce φ ψ ∈ realLimitMCS fam.mcs δ t := by
+    Formula.snceQ ψ φ ∈ realLimitMCS fam.mcs δ t := by
   rw [realLimitMCS_of_rat fam.mcs δ t p hp]
   rw [realLimitMCS_of_rat fam.mcs δ s w hw] at hφ
   have hwp : (w : ℝ) < (p : ℝ) := by rw [hw, hp]; linarith
@@ -516,11 +516,11 @@ theorem toRealBundle_backward_until_unselected {fc : FrameClass} (B : BFMCS (fc 
     (root : Formula) (h_rbuc : B.RestrictedBackwardUntilSinceCoherent root)
     (h_lgb : B.LimitGuardBelow)
     (fam : FMCS (fc := fc) Rat) (hfam : fam ∈ B.families) (δ t : ℝ) (φ ψ : Formula)
-    (hsub : Formula.untl φ ψ ∈ subformulaClosure root)
+    (hsub : Formula.untlQ ψ φ ∈ subformulaClosure root)
     (hx : ¬ ∃ p : Rat, (p : ℝ) = t + δ)
     (hwit : ∃ s : ℝ, t < s ∧ φ ∈ realLimitMCS fam.mcs δ s ∧
       ∀ r : ℝ, t < r → r < s → ψ ∈ realLimitMCS fam.mcs δ r) :
-    Formula.untl φ ψ ∈ realLimitMCS fam.mcs δ t := by
+    Formula.untlQ ψ φ ∈ realLimitMCS fam.mcs δ t := by
   obtain ⟨s, hts, hφ, hguard⟩ := hwit
   obtain ⟨u, hu1, hu2, hφu⟩ :=
     exists_rat_witness_of_realLimitMCS fam.mcs δ s φ hφ (t + δ) (by linarith)
@@ -611,11 +611,11 @@ theorem toRealBundle_backward_since_selected_of_gap_witness {fc : FrameClass}
     (B : BFMCS (fc := fc) Rat) (root : Formula)
     (h_rbuc : B.RestrictedBackwardUntilSinceCoherent root) (h_lgb : B.LimitGuardBelow)
     (fam : FMCS (fc := fc) Rat) (hfam : fam ∈ B.families) (δ t : ℝ) (φ ψ : Formula)
-    (hsub : Formula.snce φ ψ ∈ subformulaClosure root)
+    (hsub : Formula.snceQ ψ φ ∈ subformulaClosure root)
     (p : Rat) (hp : (p : ℝ) = t + δ)
     (s : ℝ) (hst : s < t) (hφ : φ ∈ realLimitMCS fam.mcs δ s)
     (hguard : ∀ r : ℝ, s < r → r < t → ψ ∈ realLimitMCS fam.mcs δ r) :
-    Formula.snce φ ψ ∈ realLimitMCS fam.mcs δ t := by
+    Formula.snceQ ψ φ ∈ realLimitMCS fam.mcs δ t := by
   obtain ⟨u, hut, hφu, hg⟩ :=
     exists_rat_since_witness_below_of_limitGuardBelow B h_lgb fam hfam δ t s φ ψ hst hφ hguard
   rw [realLimitMCS_of_rat fam.mcs δ t p hp]
@@ -639,11 +639,11 @@ theorem toRealBundle_backward_since_unselected {fc : FrameClass} (B : BFMCS (fc 
     (root : Formula) (h_rbuc : B.RestrictedBackwardUntilSinceCoherent root)
     (h_lgb : B.LimitGuardBelow)
     (fam : FMCS (fc := fc) Rat) (hfam : fam ∈ B.families) (δ t : ℝ) (φ ψ : Formula)
-    (hsub : Formula.snce φ ψ ∈ subformulaClosure root)
+    (hsub : Formula.snceQ ψ φ ∈ subformulaClosure root)
     (hx : ¬ ∃ p : Rat, (p : ℝ) = t + δ)
     (s : ℝ) (hst : s < t) (hφ : φ ∈ realLimitMCS fam.mcs δ s)
     (hguard : ∀ r : ℝ, s < r → r < t → ψ ∈ realLimitMCS fam.mcs δ r) :
-    Formula.snce φ ψ ∈ realLimitMCS fam.mcs δ t := by
+    Formula.snceQ ψ φ ∈ realLimitMCS fam.mcs δ t := by
   obtain ⟨u, hut, hφu, hg⟩ :=
     exists_rat_since_witness_below_of_limitGuardBelow B h_lgb fam hfam δ t s φ ψ hst hφ hguard
   rw [realLimitMCS_of_not_rat fam.mcs δ t hx]
@@ -689,7 +689,7 @@ theorem BFMCS.toRealBundle_restricted_backward_until_since {fc : FrameClass}
   · intro t φ ψ hsub hwit
     have hwit' : ∃ s : ℝ, t < s ∧ φ ∈ realLimitMCS fam.mcs δ s ∧
         ∀ r : ℝ, t < r → r < s → ψ ∈ realLimitMCS fam.mcs δ r := hwit
-    show Formula.untl φ ψ ∈ realLimitMCS fam.mcs δ t
+    show Formula.untlQ ψ φ ∈ realLimitMCS fam.mcs δ t
     by_cases hx : ∃ p : Rat, (p : ℝ) = t + δ
     · obtain ⟨p, hp⟩ := hx
       exact toRealBundle_backward_until_selected B root h_rbuc fam hfam δ t φ ψ hsub p hp hwit'
@@ -699,7 +699,7 @@ theorem BFMCS.toRealBundle_restricted_backward_until_since {fc : FrameClass}
     have hwit' : ∃ s : ℝ, s < t ∧ φ ∈ realLimitMCS fam.mcs δ s ∧
         ∀ r : ℝ, s < r → r < t → ψ ∈ realLimitMCS fam.mcs δ r := hwit
     obtain ⟨s, hst, hφ, hguard⟩ := hwit'
-    show Formula.snce φ ψ ∈ realLimitMCS fam.mcs δ t
+    show Formula.snceQ ψ φ ∈ realLimitMCS fam.mcs δ t
     by_cases hx : ∃ p : Rat, (p : ℝ) = t + δ
     · obtain ⟨p, hp⟩ := hx
       by_cases hy : ∃ w : Rat, (w : ℝ) = s + δ
@@ -763,9 +763,9 @@ theorem toRealBundle_forward_until_unselected_dichotomy {fc : FrameClass}
     (B : BFMCS (fc := fc) Rat) (root : Formula)
     (h_rfuc : B.RestrictedForwardUntilSinceCoherent root)
     (fam : FMCS (fc := fc) Rat) (hfam : fam ∈ B.families) (δ t : ℝ) (φ ψ : Formula)
-    (hsub : Formula.untl φ ψ ∈ subformulaClosure root)
+    (hsub : Formula.untlQ ψ φ ∈ subformulaClosure root)
     (hx : ¬ ∃ p : Rat, (p : ℝ) = t + δ)
-    (hU : Formula.untl φ ψ ∈ realLimitMCS fam.mcs δ t) :
+    (hU : Formula.untlQ ψ φ ∈ realLimitMCS fam.mcs δ t) :
     (∃ s : ℝ, t < s ∧ φ ∈ realLimitMCS fam.mcs δ s ∧
         ∀ r : ℝ, t < r → r < s → ψ ∈ realLimitMCS fam.mcs δ r) ∨
       ∀ z : ℝ, z < t + δ → ∃ w : Rat, z < (w : ℝ) ∧ (w : ℝ) < t + δ ∧ φ ∈ fam.mcs w := by
@@ -777,7 +777,7 @@ theorem toRealBundle_forward_until_unselected_dichotomy {fc : FrameClass}
   · refine Or.inr ?_
     intro z hz
     obtain ⟨p, hzp, hpt, hUp⟩ :=
-      exists_rat_witness_of_realLimitMCS fam.mcs δ t (Formula.untl φ ψ) hU z hz
+      exists_rat_witness_of_realLimitMCS fam.mcs δ t (Formula.untlQ ψ φ) hU z hz
     have hptlt : (p : ℝ) < t + δ := lt_of_le_of_ne hpt (fun h => hx ⟨p, h⟩)
     obtain ⟨s', hps', hφ, hguard⟩ := (h_rfuc fam hfam).1 p φ ψ hsub hUp
     have hs'le : (s' : ℝ) ≤ t + δ := by
@@ -804,7 +804,7 @@ that governs which formula Prior-U may be applied to (Reynolds 1992, printed p.1
 theorem limitSetBelow_someFuture_of_cofinal (m : Rat → Set Formula) (T : ℝ) (φ : Formula)
     (hUb : ∀ (t : Rat) (α β : Formula),
       (∃ s : Rat, t < s ∧ α ∈ m s ∧ ∀ p : Rat, t < p → p < s → β ∈ m p) →
-      Formula.untl α β ∈ m t)
+      Formula.untlQ β α ∈ m t)
     (htop : ∀ q : Rat, Formula.top ∈ m q)
     (hcof : ∀ z : ℝ, z < T → ∃ w : Rat, z < (w : ℝ) ∧ (w : ℝ) < T ∧ φ ∈ m w) :
     Formula.someFuture φ ∈ limitSetBelow m T := by
@@ -917,15 +917,15 @@ theorem forward_until_unselected_eventuality_of_priorU {fc : FrameClass}
     (B : BFMCS (fc := fc) Rat) (root : Formula)
     (h_rfuc : B.RestrictedForwardUntilSinceCoherent root)
     (fam : FMCS (fc := fc) Rat) (hfam : fam ∈ B.families)
-    (hUf : ∀ (t : Rat) (α β : Formula), Formula.untl α β ∈ fam.mcs t →
+    (hUf : ∀ (t : Rat) (α β : Formula), Formula.untlQ β α ∈ fam.mcs t →
       ∃ s : Rat, t < s ∧ α ∈ fam.mcs s ∧ ∀ p : Rat, t < p → p < s → β ∈ fam.mcs p)
     (hUb : ∀ (t : Rat) (α β : Formula),
       (∃ s : Rat, t < s ∧ α ∈ fam.mcs s ∧ ∀ p : Rat, t < p → p < s → β ∈ fam.mcs p) →
-      Formula.untl α β ∈ fam.mcs t)
+      Formula.untlQ β α ∈ fam.mcs t)
     (δ t : ℝ) (φ ψ : Formula)
-    (hsub : Formula.untl φ ψ ∈ subformulaClosure root)
+    (hsub : Formula.untlQ ψ φ ∈ subformulaClosure root)
     (hx : ¬ ∃ p : Rat, (p : ℝ) = t + δ)
-    (hU : Formula.untl φ ψ ∈ realLimitMCS fam.mcs δ t) :
+    (hU : Formula.untlQ ψ φ ∈ realLimitMCS fam.mcs δ t) :
     (∃ s : ℝ, t < s ∧ φ ∈ realLimitMCS fam.mcs δ s ∧
         ∀ r : ℝ, t < r → r < s → ψ ∈ realLimitMCS fam.mcs δ r) ∨
       ∃ w : Rat, t + δ < (w : ℝ) ∧ φ ∈ fam.mcs w := by
@@ -971,11 +971,11 @@ Since-side gap axiom rather than assumed.
 -/
 theorem boundedWitness_of_limitGuardBelow {fc : FrameClass} (hfc : FrameClass.Dedekind ≤ fc)
     (m : Rat → Set Formula) (hm : ∀ q : Rat, SetMaximalConsistent (fc := fc) (m q))
-    (hSf : ∀ (t : Rat) (α β : Formula), Formula.snce α β ∈ m t →
+    (hSf : ∀ (t : Rat) (α β : Formula), Formula.snceQ β α ∈ m t →
       ∃ s : Rat, s < t ∧ α ∈ m s ∧ ∀ p : Rat, s < p → p < t → β ∈ m p)
     (hSb : ∀ (t : Rat) (α β : Formula),
       (∃ s : Rat, s < t ∧ α ∈ m s ∧ ∀ p : Rat, s < p → p < t → β ∈ m p) →
-      Formula.snce α β ∈ m t)
+      Formula.snceQ β α ∈ m t)
     (r : ℝ) (hr : ¬ ∃ q : Rat, (q : ℝ) = r) (φ : Formula)
     (hcof : ∀ z : ℝ, z < r → ∃ w : Rat, z < (w : ℝ) ∧ (w : ℝ) < r ∧ φ ∈ m w)
     (c : Rat) (hc : r < (c : ℝ)) :
@@ -1017,22 +1017,22 @@ theorem toRealBundle_forward_until_unselected {fc : FrameClass}
     (hfc : FrameClass.Dedekind ≤ fc) (B : BFMCS (fc := fc) Rat) (root : Formula)
     (h_rfuc : B.RestrictedForwardUntilSinceCoherent root)
     (fam : FMCS (fc := fc) Rat) (hfam : fam ∈ B.families)
-    (hSf : ∀ (t : Rat) (α β : Formula), Formula.snce α β ∈ fam.mcs t →
+    (hSf : ∀ (t : Rat) (α β : Formula), Formula.snceQ β α ∈ fam.mcs t →
       ∃ s : Rat, s < t ∧ α ∈ fam.mcs s ∧ ∀ p : Rat, s < p → p < t → β ∈ fam.mcs p)
     (hSb : ∀ (t : Rat) (α β : Formula),
       (∃ s : Rat, s < t ∧ α ∈ fam.mcs s ∧ ∀ p : Rat, s < p → p < t → β ∈ fam.mcs p) →
-      Formula.snce α β ∈ fam.mcs t)
+      Formula.snceQ β α ∈ fam.mcs t)
     (h_lga : ∀ r : ℝ, (¬ ∃ q : Rat, (q : ℝ) = r) → ∀ χ : Formula,
       χ ∈ limitSetBelow fam.mcs r →
       ∃ c : Rat, r < (c : ℝ) ∧ ∀ q : Rat, r < (q : ℝ) → (q : ℝ) < (c : ℝ) → χ ∈ fam.mcs q)
     (h_lge : B.LimitGuardEventual)
     (δ t : ℝ) (φ ψ : Formula)
-    (hsub : Formula.untl φ ψ ∈ subformulaClosure root)
+    (hsub : Formula.untlQ ψ φ ∈ subformulaClosure root)
     (hx : ¬ ∃ p : Rat, (p : ℝ) = t + δ)
-    (hU : Formula.untl φ ψ ∈ realLimitMCS fam.mcs δ t) :
+    (hU : Formula.untlQ ψ φ ∈ realLimitMCS fam.mcs δ t) :
     ∃ s : ℝ, t < s ∧ φ ∈ realLimitMCS fam.mcs δ s ∧
       ∀ r : ℝ, t < r → r < s → ψ ∈ realLimitMCS fam.mcs δ r := by
-  have hUlim : Formula.untl φ ψ ∈ limitMCSBelow fam.mcs (t + δ) := by
+  have hUlim : Formula.untlQ ψ φ ∈ limitMCSBelow fam.mcs (t + δ) := by
     rwa [realLimitMCS_of_not_rat fam.mcs δ t hx] at hU
   rcases toRealBundle_forward_until_unselected_dichotomy B root h_rfuc fam hfam δ t φ ψ hsub hx hU
     with hleft | hcof
@@ -1078,9 +1078,9 @@ theorem toRealBundle_forward_since_unselected {fc : FrameClass}
     (fam : FMCS (fc := fc) Rat) (hfam : fam ∈ B.families)
     (h_lge : B.LimitGuardEventual)
     (δ t : ℝ) (φ ψ : Formula)
-    (hsub : Formula.snce φ ψ ∈ subformulaClosure root)
+    (hsub : Formula.snceQ ψ φ ∈ subformulaClosure root)
     (hx : ¬ ∃ p : Rat, (p : ℝ) = t + δ)
-    (hS : Formula.snce φ ψ ∈ realLimitMCS fam.mcs δ t) :
+    (hS : Formula.snceQ ψ φ ∈ realLimitMCS fam.mcs δ t) :
     ∃ s : ℝ, s < t ∧ φ ∈ realLimitMCS fam.mcs δ s ∧
       ∀ r : ℝ, s < r → r < t → ψ ∈ realLimitMCS fam.mcs δ r := by
   rw [realLimitMCS_of_not_rat fam.mcs δ t hx] at hS
@@ -1126,11 +1126,11 @@ produced.
 theorem BFMCS.toRealBundle_restricted_forward_until_since {fc : FrameClass}
     (hfc : FrameClass.Dedekind ≤ fc) (B : BFMCS (fc := fc) Rat) (root : Formula)
     (h_rfuc : B.RestrictedForwardUntilSinceCoherent root)
-    (hSf : ∀ fam ∈ B.families, ∀ (t : Rat) (α β : Formula), Formula.snce α β ∈ fam.mcs t →
+    (hSf : ∀ fam ∈ B.families, ∀ (t : Rat) (α β : Formula), Formula.snceQ β α ∈ fam.mcs t →
       ∃ s : Rat, s < t ∧ α ∈ fam.mcs s ∧ ∀ p : Rat, s < p → p < t → β ∈ fam.mcs p)
     (hSb : ∀ fam ∈ B.families, ∀ (t : Rat) (α β : Formula),
       (∃ s : Rat, s < t ∧ α ∈ fam.mcs s ∧ ∀ p : Rat, s < p → p < t → β ∈ fam.mcs p) →
-      Formula.snce α β ∈ fam.mcs t)
+      Formula.snceQ β α ∈ fam.mcs t)
     (h_lga : ∀ fam ∈ B.families, ∀ r : ℝ, (¬ ∃ q : Rat, (q : ℝ) = r) → ∀ χ : Formula,
       χ ∈ limitSetBelow fam.mcs r →
       ∃ c : Rat, r < (c : ℝ) ∧ ∀ q : Rat, r < (q : ℝ) → (q : ℝ) < (c : ℝ) → χ ∈ fam.mcs q)
@@ -1139,7 +1139,7 @@ theorem BFMCS.toRealBundle_restricted_forward_until_since {fc : FrameClass}
   rintro G ⟨fam, hfam, δ, rfl⟩
   constructor
   · intro t φ ψ hsub hU
-    have hU' : Formula.untl φ ψ ∈ realLimitMCS fam.mcs δ t := hU
+    have hU' : Formula.untlQ ψ φ ∈ realLimitMCS fam.mcs δ t := hU
     show ∃ s : ℝ, t < s ∧ φ ∈ realLimitMCS fam.mcs δ s ∧
       ∀ r : ℝ, t < r → r < s → ψ ∈ realLimitMCS fam.mcs δ r
     by_cases hx : ∃ p : Rat, (p : ℝ) = t + δ
@@ -1148,7 +1148,7 @@ theorem BFMCS.toRealBundle_restricted_forward_until_since {fc : FrameClass}
     · exact toRealBundle_forward_until_unselected hfc B root h_rfuc fam hfam (hSf fam hfam)
         (hSb fam hfam) (h_lga fam hfam) h_lge δ t φ ψ hsub hx hU'
   · intro t φ ψ hsub hS
-    have hS' : Formula.snce φ ψ ∈ realLimitMCS fam.mcs δ t := hS
+    have hS' : Formula.snceQ ψ φ ∈ realLimitMCS fam.mcs δ t := hS
     show ∃ s : ℝ, s < t ∧ φ ∈ realLimitMCS fam.mcs δ s ∧
       ∀ r : ℝ, s < r → r < t → ψ ∈ realLimitMCS fam.mcs δ r
     by_cases hx : ∃ p : Rat, (p : ℝ) = t + δ

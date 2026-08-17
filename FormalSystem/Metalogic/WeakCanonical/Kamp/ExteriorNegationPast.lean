@@ -524,9 +524,9 @@ noncomputable def kvE2PastRayForm {sig : MonadicSignature} [Fintype sig.preds]
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (σ : NormalForm sig 1 4) : Formula :=
   formulaConjList
-    ((Formula.snce (kvE2PastRayD atomMap h_surj σ).neg Formula.top).neg ::
+    ((Formula.snceQ Formula.top (kvE2PastRayD atomMap h_surj σ).neg).neg ::
       (kvE2PastRayList σ).map fun χ =>
-        Formula.snce (nfDepth0CharFormula atomMap h_surj χ) Formula.top)
+        Formula.snceQ Formula.top (nfDepth0CharFormula atomMap h_surj χ))
 
 /-- Endpoint description: fresh profile + exact ray content. -/
 noncomputable def kvE2PastEnd {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
@@ -544,13 +544,13 @@ noncomputable def kvE2PastChain {sig : MonadicSignature} [Fintype sig.preds]
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (endF D : Formula) : List (NormalForm sig 0 1) → Formula
-  | [] => Formula.snce endF D
+  | [] => Formula.snceQ D endF
   | χ :: rest =>
-      Formula.snce
+      Formula.snceQ
+        D
         (formulaConjList
           [nfDepth0CharFormula atomMap h_surj χ,
            kvE2PastChain atomMap h_surj endF D rest])
-        D
 
 /-- **Positive local-existence form** for σ (Cor 5.4(1) exterior analog, general form):
     admissibility-gated disjunction over the permutations of σ's gap-profile list of
@@ -1040,7 +1040,7 @@ theorem kvE2_extNegPast_complete {sig : MonadicSignature} [Fintype sig.preds]
     (nf_depth0_char_correct' M atomMap h_surj _ x1).mp hchfr
   rw [kvE2PastRayForm, formula_conjList_iff] at hrayform
   have hnoray : TemporalTruth M atomMap x1
-      (Formula.snce (kvE2PastRayD atomMap h_surj σ).neg Formula.top).neg :=
+      (Formula.snceQ Formula.top (kvE2PastRayD atomMap h_surj σ).neg).neg :=
     hrayform _ (by simp)
   have hray : ∀ u : M.carrier, u < x1 →
       TemporalTruth M atomMap u (kvE2PastRayD atomMap h_surj σ) := by

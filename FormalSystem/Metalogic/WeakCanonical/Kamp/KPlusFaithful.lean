@@ -154,7 +154,7 @@ theorem kPlus_formula_correct {sig : MonadicSignature}
   constructor
   · intro h s hs
     by_contra h_none
-    refine (temporal_truth_neg M atomMap t (Formula.untl Formula.top P.neg)).mp h ?_
+    refine (temporal_truth_neg M atomMap t (Formula.untlQ P.neg Formula.top)).mp h ?_
     refine ⟨s, hs, temporal_truth_top M atomMap s, fun r hr hrs => ?_⟩
     rw [temporal_truth_neg]
     exact fun hP => h_none ⟨r, hr, hrs, hP⟩
@@ -176,7 +176,7 @@ theorem kMinus_formula_correct {sig : MonadicSignature}
   constructor
   · intro h s hs
     by_contra h_none
-    refine (temporal_truth_neg M atomMap t (Formula.snce Formula.top P.neg)).mp h ?_
+    refine (temporal_truth_neg M atomMap t (Formula.snceQ P.neg Formula.top)).mp h ?_
     refine ⟨s, hs, temporal_truth_top M atomMap s, fun r hr hrs => ?_⟩
     rw [temporal_truth_neg]
     exact fun hP => h_none ⟨r, hr, hrs, hP⟩

@@ -63,14 +63,14 @@ noncomputable def leftFormulaBase (D : StaviFormula) : Formula → StaviFormula
         (.conj (.stavi_untl (.base Formula.top) D)
           (.neg (leftFormulaBase D ψ)))))
   | .box _ => .base .bot  -- box-subformulas are treated as atoms
-  | .untl φ ψ =>
+  | .untlQ ψ φ =>
     -- left(U(A,B), D) = U'(B ∧ U(A,B), D)
-    .stavi_untl (.conj (.base ψ) (.base (.untl φ ψ))) D
-  | .snce φ ψ =>
+    .stavi_untl (.conj (.base ψ) (.base (.untlQ ψ φ))) D
+  | .snceQ ψ φ =>
     -- left(S(A,B), D) = U(D ∧ B ∧ S(A,B) ∧ U'(⊤, B∧D) ∧ ¬U'(D, B∧D), D)
     -- Uses std_untl to represent standard Until of StaviFormula arguments.
     let bD := .base ψ  -- B as StaviFormula
-    let sAB := .base (.snce φ ψ)  -- S(A,B) as StaviFormula
+    let sAB := .base (.snceQ ψ φ)  -- S(A,B) as StaviFormula
     let bAndD := StaviFormula.conj bD D  -- B ∧ D
     let uPrimTopBD := StaviFormula.stavi_untl (.base Formula.top) bAndD  -- U'(⊤, B∧D)
     let negUPrimDBD := StaviFormula.neg (StaviFormula.stavi_untl D bAndD)  -- ¬U'(D, B∧D)
@@ -143,11 +143,11 @@ noncomputable def rightFormulaBase (D : StaviFormula) : Formula → StaviFormula
         (.conj (.stavi_snce (.base Formula.top) D)
           (.neg (rightFormulaBase D ψ)))))
   | .box _ => .base .bot
-  | .untl φ ψ =>
+  | .untlQ ψ φ =>
     -- right(U(A,B), D) = S(D ∧ B ∧ U(A,B) ∧ S'(⊤, B∧D) ∧ ¬S'(D, B∧D), D)
     -- Uses std_snce to represent standard Since of StaviFormula arguments.
     let bD := .base ψ
-    let uAB := .base (.untl φ ψ)
+    let uAB := .base (.untlQ ψ φ)
     let bAndD := StaviFormula.conj bD D
     let sPrimTopBD := StaviFormula.stavi_snce (.base Formula.top) bAndD
     let negSPrimDBD := StaviFormula.neg (StaviFormula.stavi_snce D bAndD)
@@ -156,9 +156,9 @@ noncomputable def rightFormulaBase (D : StaviFormula) : Formula → StaviFormula
         (StaviFormula.conj uAB
           (StaviFormula.conj sPrimTopBD negSPrimDBD)))
     .std_snce compound D
-  | .snce φ ψ =>
+  | .snceQ ψ φ =>
     -- right(S(A,B), D) = S'(B ∧ S(A,B), D)
-    .stavi_snce (.conj (.base ψ) (.base (.snce φ ψ))) D
+    .stavi_snce (.conj (.base ψ) (.base (.snceQ ψ φ))) D
 
 /--
 Gap detection formula `right(A, D)` from GHR93 Definition 8.5.
@@ -254,10 +254,10 @@ private theorem stavi_depth_left_formula_base (D : StaviFormula) (φ : Formula) 
     omega
   | box _ =>
     simp [leftFormulaBase, staviDepth, operatorDepth]
-  | untl φ ψ =>
+  | untlQ ψ φ =>
     simp only [leftFormulaBase, staviDepth, operatorDepth]
     omega
-  | snce φ ψ =>
+  | snceQ ψ φ =>
     -- The snce case uses std_untl. staviDepth of std_untl compound D =
     -- max (staviDepth compound) (staviDepth D) + 2. The compound contains
     -- U' subformulas giving +2, so total depth is bounded by
@@ -326,11 +326,11 @@ theorem stavi_depth_right_formula (A D : StaviFormula) :
     | imp φ ψ ih_φ ih_ψ =>
       simp only [rightFormulaBase, staviDepth, operatorDepth, Formula.top] at *; omega
     | box _ => simp [rightFormulaBase, staviDepth, operatorDepth]
-    | untl φ ψ =>
+    | untlQ ψ φ =>
       -- rightFormulaBase now uses std_snce instead of flattenStavi
       simp only [rightFormulaBase, staviDepth, operatorDepth, Formula.top]
       omega
-    | snce φ ψ => simp only [rightFormulaBase, staviDepth, operatorDepth]; omega
+    | snceQ ψ φ => simp only [rightFormulaBase, staviDepth, operatorDepth]; omega
   | neg A ih =>
     simp only [rightFormula, staviDepth, Formula.top, operatorDepth] at *
     omega
@@ -388,7 +388,7 @@ theorem temporal_truth_mu_at_point {sig : MonadicSignature}
     exact Iff.imp (ihφ m) (ihψ m)
   | box φ =>
     simp only [TemporalTruthMu, TemporalTruth, extendPoint]
-  | untl φ ψ ihφ ihψ =>
+  | untlQ ψ φ ihψ ihφ =>
     constructor
     · intro ⟨s, hms, hmu, hphi, hpsi⟩
       obtain ⟨s', rfl⟩ := hmu
@@ -402,7 +402,7 @@ theorem temporal_truth_mu_at_point {sig : MonadicSignature}
       obtain ⟨u', rfl⟩ := hmu_holds
       exact (ihψ u').mpr (hpsi u' ((extendPoint_lt_iff m u').mp hmu)
         ((extendPoint_lt_iff u' s).mp hus))
-  | snce φ ψ ihφ ihψ =>
+  | snceQ ψ φ ihψ ihφ =>
     constructor
     · intro ⟨s, hsm, hmu, hphi, hpsi⟩
       obtain ⟨s', rfl⟩ := hmu
@@ -1259,11 +1259,11 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
           simp only [StaviTemporalTruthMu, TemporalTruthMu] at hfg_at_γ
           have hg_at_γ := hfg_at_γ ((Subtype.ext heq) ▸ hf_at_γ₁)
           exact hNLg (ih_g.mpr ⟨γ, hγ_lt, hγ_def, hγ_bet, hg_at_γ⟩)
-    | untl f g _ _ =>
+    | untlQ g f _ _ =>
       -- leftFormulaBase D (untl f g) = .stavi_untl (.conj (.base g) (.base (untl f g))) D
       -- This mirrors the stavi_untl outer case
       simp only [leftFormulaBase]
-      rw [stavi_untl_gap_detection (.conj (.base g) (.base (.untl f g))) D hD m]
+      rw [stavi_untl_gap_detection (.conj (.base g) (.base (.untlQ g f))) D hD m]
       constructor
       · -- Forward: complement-point truth of g ∧ U(f,g) → U(f,g)^mu at γ
         intro ⟨γ, s_bound, hγ_lt, hs_not, hγ_def, hγ_bet, hX_compl⟩
@@ -1319,7 +1319,7 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
             change v ∉ γ.val.cut ∧ ¬(v ∈ γ.val.cut); exact ⟨hv_not, hv_not⟩
           exact (temporal_truth_mu_at_point v g).mp
             (hg_mu (extendPoint v) hγv ((extendPoint_lt_iff v s₁).mpr hvs₁) ⟨v, rfl⟩)
-    | snce f g _ _ =>
+    | snceQ g f _ _ =>
       -- leftFormulaBase D (.snce f g) = .std_untl compound D where
       -- compound = D ∧ g ∧ S(f,g) ∧ U'(⊤, g∧D) ∧ ¬U'(D, g∧D)
       simp only [leftFormulaBase]
@@ -1529,7 +1529,7 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
           simp only [TemporalTruth] at hSnce_s
           obtain ⟨q, hqs, hf_q, hg_qs⟩ := hSnce_s
           have hq_cut : q ∈ cut := h_dc s q hs_in_cut (le_of_lt hqs)
-          change TemporalTruthMu M atomMap r (Sum.inr γ) (f.snce g)
+          change TemporalTruthMu M atomMap r (Sum.inr γ) (g.snceQ f)
           exact ⟨extendPoint q, ⟨hq_cut, fun h => h hq_cut⟩, ⟨q, rfl⟩,
             (temporal_truth_mu_at_point q f).mpr hf_q,
             fun u hqu huγ hmu => by
@@ -1590,7 +1590,7 @@ theorem left_formula_gap_detection {sig : MonadicSignature}
           (temporal_truth_mu_at_point s g).mp
             (hg_mu (extendPoint s) hγs hγs' ⟨s, rfl⟩)
         -- S(f,g)(s): witness t_pt with f(t_pt) and g on (t_pt, s)
-        have hSnce_s : TemporalTruth M atomMap s (f.snce g) := by
+        have hSnce_s : TemporalTruth M atomMap s (g.snceQ f) := by
           simp only [TemporalTruth]
           refine ⟨t_pt, hts, (temporal_truth_mu_at_point t_pt f).mp hf_t, fun u htu hus => ?_⟩
           have hu_cut : u ∈ γ.val.cut := γ.val.downward_closed s u hs_cut (le_of_lt hus)
@@ -3276,7 +3276,7 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
           simp only [StaviTemporalTruthMu, TemporalTruthMu] at hfg_at_γ
           have hg_at_γ := hfg_at_γ ((Subtype.ext heq) ▸ hf_at_γ₁)
           exact hNRg (ih_g.mpr ⟨γ, hγ_lt, hγ_def, hγ_bet, hg_at_γ⟩)
-    | untl f g _ _ =>
+    | untlQ g f _ _ =>
       -- rightFormulaBase D (.untl f g) = .std_snce compound D where
       -- compound = D ∧ g ∧ U(f,g) ∧ S'(⊤, g∧D) ∧ ¬S'(D, g∧D)
       -- Mirrors left base.snce with direction reversed
@@ -3479,7 +3479,7 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
         · -- U(f,g)^mu at γ
           simp only [TemporalTruth] at hUntl_s
           obtain ⟨s₂, hss₂, hf_s₂, hg_bet⟩ := hUntl_s
-          change TemporalTruthMu M atomMap r (Sum.inr γ) (f.untl g)
+          change TemporalTruthMu M atomMap r (Sum.inr γ) (g.untlQ f)
           have hs_compl : s ∈ compl := hs_in_compl
           refine ⟨extendPoint s₂, ?_, ⟨s₂, rfl⟩,
             (temporal_truth_mu_at_point s₂ f).mpr hf_s₂, ?_⟩
@@ -3605,7 +3605,7 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
           (temporal_truth_mu_at_point s g).mp
             (hg_mu (extendPoint s) hγs hst' ⟨s, rfl⟩)
         -- U(f,g)(s): witness t_pt with f(t_pt) and g on (s, t_pt)
-        have hUntl_s : TemporalTruth M atomMap s (f.untl g) := by
+        have hUntl_s : TemporalTruth M atomMap s (g.untlQ f) := by
           simp only [TemporalTruth]
           refine ⟨t_pt, hst, (temporal_truth_mu_at_point t_pt f).mp hf_t, fun u hsu hut => ?_⟩
           have hu_not_cut : u ∉ γ.val.cut := by
@@ -3747,11 +3747,11 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
           exact h_no_final_D ⟨t₀, ht₀_cut, fun u ht₀u hu_cut =>
             hD_all_cut u (lt_of_lt_of_le hs₁t₀ ht₀u)
               (h_cut_lt u hu_cut s hs_not_cut) hu_cut⟩
-    | snce f g _ _ =>
+    | snceQ g f _ _ =>
       -- rightFormulaBase D (.snce f g) = S'(g ∧ S(f,g), D)
       -- Mirrors left base.untl with stavi_snce_gap_detection
       simp only [rightFormulaBase]
-      rw [stavi_snce_gap_detection (.conj (.base g) (.base (.snce f g))) D hD m]
+      rw [stavi_snce_gap_detection (.conj (.base g) (.base (.snceQ g f))) D hD m]
       constructor
       · -- Forward: cut-point truth of g ∧ S(f,g) → S(f,g)^mu at γ
         intro ⟨γ, s_bound, hγ_lt, hs_in, hγ_def, hγ_bet, hX_cut⟩

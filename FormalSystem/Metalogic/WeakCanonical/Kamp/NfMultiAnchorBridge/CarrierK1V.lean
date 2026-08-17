@@ -233,13 +233,13 @@ noncomputable def bracketEndCharK1 {sig : MonadicSignature} [Fintype sig.preds]
     let epL : TemporalPred :=
       ⟨formulaConjList
         (xType.formula
-          :: (allTypes.map fun χ => lit (b zPastX χ) (Formula.snce (char χ) Formula.top))
+          :: (allTypes.map fun χ => lit (b zPastX χ) (Formula.snceQ Formula.top (char χ)))
           ++ (allTypes.map fun χ => lit (b zAtX χ) (char χ)))⟩
     let epR : TemporalPred :=
       ⟨formulaConjList
         (tType.formula
           :: (allTypes.map fun χ => lit (b zAtT χ) (char χ))
-          ++ (allTypes.map fun χ => lit (b zFutT χ) (Formula.untl (char χ) Formula.top)))⟩
+          ++ (allTypes.map fun χ => lit (b zFutT χ) (Formula.untlQ Formula.top (char χ))))⟩
     -- Segment types: universal exclusion of the interior-zone NEGATIVE bits.
     let segL : TemporalPred :=
       ⟨formulaConjList (allTypes.map fun χ =>
@@ -486,13 +486,13 @@ noncomputable def bracketEndCharK1v {sig : MonadicSignature} [Fintype sig.preds]
     let epL : TemporalPred :=
       ⟨formulaConjList
         (xType.formula
-          :: (allTypes.map fun χ => lit (b zPastX χ) (Formula.snce (char χ) Formula.top))
+          :: (allTypes.map fun χ => lit (b zPastX χ) (Formula.snceQ Formula.top (char χ)))
           ++ (allTypes.map fun χ => lit (b zAtX χ) (char χ)))⟩
     let epR : TemporalPred :=
       ⟨formulaConjList
         (tType.formula
           :: (allTypes.map fun χ => lit (b zAtT χ) (char χ))
-          ++ (allTypes.map fun χ => lit (b zFutT χ) (Formula.untl (char χ) Formula.top)))⟩
+          ++ (allTypes.map fun χ => lit (b zFutT χ) (Formula.untlQ Formula.top (char χ))))⟩
     -- Segment types: universal exclusion of the interior-zone NEGATIVE bits.
     let segL : TemporalPred :=
       ⟨formulaConjList (allTypes.map fun χ =>
@@ -1070,8 +1070,8 @@ private theorem bracketEndChar_k1v_sound {sig : MonadicSignature} [Fintype sig.p
   have hPastX : ∀ χ' : NormalForm sig 0 1, TemporalTruth M atomMap x
       (if (efoldOfNf1 qnf).2
           (Fin.cons (true, false) (Fin.cons (true, false) (fun _ => (true, false))), χ') = true
-       then Formula.snce (nfDepth0CharFormula atomMap h_surj χ') Formula.top
-       else (Formula.snce (nfDepth0CharFormula atomMap h_surj χ') Formula.top).neg) :=
+       then Formula.snceQ Formula.top (nfDepth0CharFormula atomMap h_surj χ')
+       else (Formula.snceQ Formula.top (nfDepth0CharFormula atomMap h_surj χ')).neg) :=
     fun χ' => hepL _ (List.mem_append_left _
       (List.mem_cons_of_mem _ (List.mem_map_of_mem (by simp))))
   have hAtX : ∀ χ' : NormalForm sig 0 1, TemporalTruth M atomMap x
@@ -1096,8 +1096,8 @@ private theorem bracketEndChar_k1v_sound {sig : MonadicSignature} [Fintype sig.p
   have hFutT : ∀ χ' : NormalForm sig 0 1, TemporalTruth M atomMap t
       (if (efoldOfNf1 qnf).2
           (Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (false, true))), χ') = true
-       then Formula.untl (nfDepth0CharFormula atomMap h_surj χ') Formula.top
-       else (Formula.untl (nfDepth0CharFormula atomMap h_surj χ') Formula.top).neg) :=
+       then Formula.untlQ Formula.top (nfDepth0CharFormula atomMap h_surj χ')
+       else (Formula.untlQ Formula.top (nfDepth0CharFormula atomMap h_surj χ')).neg) :=
     fun χ' => hepR _ (List.mem_append_right _ (List.mem_map_of_mem (by simp)))
   -- Chain step 2 (atom layer at `[w, x, t]`, rule N1 framing).
   have h_atom : NfEvalNf M 0 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf.1 :=
@@ -1871,8 +1871,8 @@ private theorem bracketEndChar_k1v_complete {sig : MonadicSignature} [Fintype si
               if (efoldOfNf1 qnf).2
                   (Fin.cons (true, false) (Fin.cons (true, false) (fun _ => (true, false))),
                     χ) = true
-              then Formula.snce (nfDepth0CharFormula atomMap h_surj χ) Formula.top
-              else (Formula.snce (nfDepth0CharFormula atomMap h_surj χ) Formula.top).neg)
+              then Formula.snceQ Formula.top (nfDepth0CharFormula atomMap h_surj χ)
+              else (Formula.snceQ Formula.top (nfDepth0CharFormula atomMap h_surj χ)).neg)
           ++ (Finset.univ.toList).map fun χ =>
               if (efoldOfNf1 qnf).2
                   (Fin.cons (true, false) (Fin.cons (false, false) (fun _ => (true, false))),
@@ -1931,9 +1931,9 @@ private theorem bracketEndChar_k1v_complete {sig : MonadicSignature} [Fintype si
               if (efoldOfNf1 qnf).2
                   (Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (false, true))),
                     χ) = true
-              then Formula.untl (nfDepth0CharFormula atomMap h_surj χ) Formula.top
-              else (Formula.untl (nfDepth0CharFormula atomMap h_surj χ)
-                Formula.top).neg)⟩ t := by
+              then Formula.untlQ Formula.top (nfDepth0CharFormula atomMap h_surj χ)
+              else (Formula.untlQ Formula.top
+                (nfDepth0CharFormula atomMap h_surj χ)).neg)⟩ t := by
     simp only [TemporalPred.EvalAt]
     rw [formula_conjList_iff]
     intro f hf

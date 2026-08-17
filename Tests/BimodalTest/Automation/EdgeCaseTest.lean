@@ -352,7 +352,7 @@ allow unification-based matching in tryAxiomMatch and tryDerivedMatch.
 
 -- 9a: Non-base frame class axioms (empty context)
 -- Prior-UZ (Discrete): F(φ) → U(φ, ¬φ)
-example (φ : Formula) : ⊢[FrameClass.Discrete] φ.someFuture.imp (Formula.untl φ φ.neg) := by
+example (φ : Formula) : ⊢[FrameClass.Discrete] φ.someFuture.imp (Formula.untlQ φ.neg φ) := by
   modal_search
 
 -- Density (Dense): GGφ → Gφ
@@ -360,7 +360,7 @@ example (φ : Formula) : ⊢[FrameClass.Dense] φ.allFuture.allFuture.imp φ.all
   modal_search
 
 -- Dense indicator (Dense): ¬U(⊤,⊥)
-example : ⊢[FrameClass.Dense] (Formula.untl (Formula.bot.imp Formula.bot) Formula.bot).neg := by
+example : ⊢[FrameClass.Dense] (Formula.untlQ Formula.bot (Formula.bot.imp Formula.bot)).neg := by
   modal_search
 
 -- Z1 (Discrete): G(Gφ→φ) → (FGφ→Gφ)
@@ -389,8 +389,8 @@ example (φ : Formula) : ⊢ φ.imp (φ.somePast.allFuture) := by modal_search
 example (φ : Formula) : ⊢ φ.imp (φ.someFuture.allPast) := by modal_search
 
 -- self_accum_until: U(ψ,φ) → U(ψ, φ ∧ U(ψ,φ))
-example (φ ψ : Formula) : ⊢ (Formula.untl ψ φ).imp
-    (Formula.untl ψ (Formula.and φ (Formula.untl ψ φ))) := by modal_search
+example (φ ψ : Formula) : ⊢ (Formula.untlQ φ ψ).imp
+    (Formula.untlQ (Formula.and φ (Formula.untlQ φ ψ)) ψ) := by modal_search
 
 -- 9e: Temporal derived theorems
 -- temporalKDistDerived: G(φ→ψ) → (Gφ→Gψ) (derived, noncomputable)

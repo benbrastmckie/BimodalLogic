@@ -99,13 +99,13 @@ example (p : Formula) : p.sometimes = p.neg.always.neg := rfl
 -- Test: Derived 'some_past' operator (at some past time)
 -- Definition: somePast φ = S(φ, ⊤) (Task 116: direct def, not ¬H¬φ)
 -- The duality somePast φ ↔ ¬H¬φ is now a semantic equivalence via @[simp] theorems.
-example (p : Formula) : p.somePast = Formula.snce p Formula.top := rfl
+example (p : Formula) : p.somePast = Formula.snceQ Formula.top p := rfl
 
 -- Test: Derived 'some_future' operator (at some future time)
 -- Definition: someFuture φ = U(φ, ⊤) (Task 116: direct def, not ¬G¬φ)
 -- The duality someFuture φ ↔ ¬G¬φ is now a semantic equivalence via @[simp] theorems.
 -- Note: someFuture ≠ sometimes (sometimes covers past, present, AND future)
-example (p : Formula) : p.someFuture = Formula.untl p Formula.top := rfl
+example (p : Formula) : p.someFuture = Formula.untlQ Formula.top p := rfl
 
 -- Test: Triangle notation parsing - always (△)
 example (p : Formula) : △p = p.always := rfl
@@ -172,8 +172,8 @@ example (p : Formula) : p.swapTemporal.swapTemporal = p := by
   | bot => rfl
   | imp p q ihp ihq => simp only [Formula.swapTemporal, ihp, ihq]
   | box p ih => simp only [Formula.swapTemporal, ih]
-  | untl p q ih1 ih2 => simp only [Formula.swapTemporal, ih1, ih2]
-  | snce p q ih1 ih2 => simp only [Formula.swapTemporal, ih1, ih2]
+  | untlQ q p ih2 ih1 => simp only [Formula.swapTemporal, ih1, ih2]
+  | snceQ q p ih2 ih1 => simp only [Formula.swapTemporal, ih1, ih2]
 
 /-! ## Formula Complexity Metrics Tests -/
 
@@ -242,10 +242,10 @@ example : (p.allFuture.box.imp q).countImplications = 4 := rfl
 /-! ## Strong Release and Strong Trigger Tests (Task 276) -/
 
 -- Test: strongRelease construction
-example (φ ψ : Formula) : Formula.strongRelease φ ψ = Formula.untl (Formula.and ψ φ) ψ := rfl
+example (φ ψ : Formula) : Formula.strongRelease φ ψ = Formula.untlQ ψ (Formula.and ψ φ) := rfl
 
 -- Test: strongTrigger construction
-example (φ ψ : Formula) : Formula.strongTrigger φ ψ = Formula.snce (Formula.and ψ φ) ψ := rfl
+example (φ ψ : Formula) : Formula.strongTrigger φ ψ = Formula.snceQ ψ (Formula.and ψ φ) := rfl
 
 -- Test: strongRelease complexity for atoms (overhead 2)
 example : (Formula.strongRelease p q).complexity = 4 := rfl

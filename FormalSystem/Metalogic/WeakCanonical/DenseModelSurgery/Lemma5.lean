@@ -150,11 +150,11 @@ def temporalAt (atomMap : Formula → sig.preds) :
   | _, i, .bot => .and (.lt i i) (.not (.lt i i))
   | _, i, .imp φ ψ => .imp (temporalAt atomMap i φ) (temporalAt atomMap i ψ)
   | _, i, .box φ => .atom (atomMap (.box φ)) i
-  | _, i, .untl φ ψ =>
+  | _, i, .untlQ ψ φ =>
       .ex (.and (.lt i.succ 0)
         (.and (temporalAt atomMap 0 φ)
           (.all (.imp (.and (.lt i.succ.succ 0) (.lt 0 1)) (temporalAt atomMap 0 ψ)))))
-  | _, i, .snce φ ψ =>
+  | _, i, .snceQ ψ φ =>
       .ex (.and (.lt 0 i.succ)
         (.and (temporalAt atomMap 0 φ)
           (.all (.imp (.and (.lt 1 0) (.lt 0 i.succ.succ)) (temporalAt atomMap 0 ψ)))))
@@ -180,11 +180,11 @@ Checked rather than asserted, exactly as `rhoFormula_eval` (`Defs.lean:340`) che
   | imp φ ψ ihφ ihψ =>
       intro n env i; simp only [temporalAt, eval_imp, ihφ, ihψ, TemporalTruth]
   | box φ => intro n env i; simp [temporalAt, eval, TemporalTruth]
-  | untl φ ψ ihφ ihψ =>
+  | untlQ ψ φ ihψ ihφ =>
       intro n env i
       simp only [temporalAt, eval, eval_imp, ihφ, ihψ, Fin.cons_zero, Fin.cons_succ,
         consCons_one, TemporalTruth, and_imp]
-  | snce φ ψ ihφ ihψ =>
+  | snceQ ψ φ ihψ ihφ =>
       intro n env i
       simp only [temporalAt, eval, eval_imp, ihφ, ihψ, Fin.cons_zero, Fin.cons_succ,
         consCons_one, TemporalTruth, and_imp]

@@ -99,8 +99,8 @@ and their derived forms (G, H, F, P all reduce to untl/snce combinations).
 -/
 def isTemporalFormula (sf : SignedFormula) : Bool :=
   match sf.formula with
-  | .untl _ _ => true
-  | .snce _ _ => true
+  | .untlQ _ _ => true
+  | .snceQ _ _ => true
   | _ => false
 
 /--

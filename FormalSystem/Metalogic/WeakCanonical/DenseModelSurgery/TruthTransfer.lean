@@ -427,7 +427,7 @@ theorem untl_forward_of_mem {atomMap : Formula → sig.preds} {A B : Formula}
       TemporalTruth M atomMap y.val B ↔ TemporalTruth (surgeredStructure M ε Q t) atomMap y B)
     (hxs : x.val < s) (hA : TemporalTruth M atomMap s A)
     (hB : ∀ r : M.carrier, x.val < r → r < s → TemporalTruth M atomMap r B) :
-    TemporalTruth (surgeredStructure M ε Q t) atomMap x (.untl A B) :=
+    TemporalTruth (surgeredStructure M ε Q t) atomMap x (.untlQ B A) :=
   ⟨⟨s, hsD⟩, hxs, (ihA ⟨s, hsD⟩).mp hA, fun r hxr hrs => (ihB r).mp (hB r.val hxr hrs)⟩
 
 /-- The backward form of the same step: when no point of `M` strictly between `x` and the `N`
@@ -442,7 +442,7 @@ theorem untl_backward_of_between {atomMap : Formula → sig.preds} {A B : Formul
     (hB : ∀ r : (surgeredStructure M ε Q t).carrier, x < r → r < s →
       TemporalTruth (surgeredStructure M ε Q t) atomMap r B)
     (hbetween : ∀ r : M.carrier, x.val < r → r < s.val → SurgeryDomain M ε Q t r) :
-    TemporalTruth M atomMap x.val (.untl A B) :=
+    TemporalTruth M atomMap x.val (.untlQ B A) :=
   ⟨s.val, hxs, (ihA s).mpr hA, fun r hxr hrs =>
     (ihB ⟨r, hbetween r hxr hrs⟩).mpr (hB ⟨r, hbetween r hxr hrs⟩ hxr hrs)⟩
 
@@ -465,8 +465,8 @@ theorem reynolds_lemma8_untl_forward (atomMap : Formula → sig.preds)
     (ihB : ∀ y : (surgeredStructure M ε Q t).carrier,
       TemporalTruth M atomMap y.val B ↔ TemporalTruth (surgeredStructure M ε Q t) atomMap y B)
     (x : (surgeredStructure M ε Q t).carrier)
-    (h : TemporalTruth M atomMap x.val (.untl A B)) :
-    TemporalTruth (surgeredStructure M ε Q t) atomMap x (.untl A B) := by
+    (h : TemporalTruth M atomMap x.val (.untlQ B A)) :
+    TemporalTruth (surgeredStructure M ε Q t) atomMap x (.untlQ B A) := by
   obtain ⟨s, hxs, hA, hB⟩ := h
   rcases x.property with hxQ | hxI
   · -- `t ∉ Q₀`: either `t ∈ Q⁻` or `t ∈ Q⁺`.
@@ -553,14 +553,14 @@ theorem reynolds_lemma8_untl_backward (atomMap : Formula → sig.preds)
     (ihB : ∀ y : (surgeredStructure M ε Q t).carrier,
       TemporalTruth M atomMap y.val B ↔ TemporalTruth (surgeredStructure M ε Q t) atomMap y B)
     (x : (surgeredStructure M ε Q t).carrier)
-    (h : TemporalTruth (surgeredStructure M ε Q t) atomMap x (.untl A B)) :
-    TemporalTruth M atomMap x.val (.untl A B) := by
+    (h : TemporalTruth (surgeredStructure M ε Q t) atomMap x (.untlQ B A)) :
+    TemporalTruth M atomMap x.val (.untlQ B A) := by
   obtain ⟨s, hxs, hA, hB⟩ := h
   -- The `M`-points strictly between `x` and `s` that the surgery removed are exactly the points
   -- of `Q₀ \ I` there; every case below either shows there are none, or supplies `B` at all of
   -- `Q₀` by Lemma 7.
   have key : (∀ r : M.carrier, x.val < r → r < s.val → Q r → TemporalTruth M atomMap r B) →
-      TemporalTruth M atomMap x.val (.untl A B) := by
+      TemporalTruth M atomMap x.val (.untlQ B A) := by
     intro hQB
     refine ⟨s.val, hxs, (ihA s).mpr hA, ?_⟩
     intro r hxr hrs
@@ -756,17 +756,17 @@ theorem reynolds_lemma8_snce_forward (atomMap : Formula → sig.preds)
     (ihB : ∀ y : (surgeredStructure M ε Q t).carrier,
       TemporalTruth M atomMap y.val B ↔ TemporalTruth (surgeredStructure M ε Q t) atomMap y B)
     (x : (surgeredStructure M ε Q t).carrier)
-    (h : TemporalTruth M atomMap x.val (.snce A B)) :
-    TemporalTruth (surgeredStructure M ε Q t) atomMap x (.snce A B) := by
-  refine (temporalTruth_dual' (M := surgeredStructure M ε Q t) atomMap x (.snce A B)).mp ?_
+    (h : TemporalTruth M atomMap x.val (.snceQ B A)) :
+    TemporalTruth (surgeredStructure M ε Q t) atomMap x (.snceQ B A) := by
+  refine (temporalTruth_dual' (M := surgeredStructure M ε Q t) atomMap x (.snceQ B A)).mp ?_
   refine (temporalTruth_iso (surgeredDualIso M ε Q t) atomMap (d x)
-    (swapUS (.snce A B))).mp ?_
+    (swapUS (.snceQ B A))).mp ?_
   exact reynolds_lemma8_untl_forward atomMap h_surj (isContempEquivDense_dualize hε)
     (semanticPriorU_dual h_prior_S) (semanticPriorS_dual h_prior_U)
     (isBadIntervalSurgery_dual hS) (swapUS A) (swapUS B)
     (snce_mirror_ih atomMap ihA) (snce_mirror_ih atomMap ihB)
     ((surgeredDualIso M ε Q t).toEquiv (d x))
-    ((temporalTruth_dual' (M := M) atomMap x.val (.snce A B)).mpr h)
+    ((temporalTruth_dual' (M := M) atomMap x.val (.snceQ B A)).mpr h)
 
 /-- **Reynolds 1992, §6 Lemma 8, printed p.182 — the `S` case, backward direction.**
 
@@ -780,16 +780,16 @@ theorem reynolds_lemma8_snce_backward (atomMap : Formula → sig.preds)
     (ihB : ∀ y : (surgeredStructure M ε Q t).carrier,
       TemporalTruth M atomMap y.val B ↔ TemporalTruth (surgeredStructure M ε Q t) atomMap y B)
     (x : (surgeredStructure M ε Q t).carrier)
-    (h : TemporalTruth (surgeredStructure M ε Q t) atomMap x (.snce A B)) :
-    TemporalTruth M atomMap x.val (.snce A B) := by
-  refine (temporalTruth_dual' (M := M) atomMap x.val (.snce A B)).mp ?_
+    (h : TemporalTruth (surgeredStructure M ε Q t) atomMap x (.snceQ B A)) :
+    TemporalTruth M atomMap x.val (.snceQ B A) := by
+  refine (temporalTruth_dual' (M := M) atomMap x.val (.snceQ B A)).mp ?_
   refine reynolds_lemma8_untl_backward atomMap h_surj (isContempEquivDense_dualize hε)
     (semanticPriorU_dual h_prior_S) (semanticPriorS_dual h_prior_U)
     (isBadIntervalSurgery_dual hS) (swapUS A) (swapUS B)
     (snce_mirror_ih atomMap ihA) (snce_mirror_ih atomMap ihB)
     ((surgeredDualIso M ε Q t).toEquiv (d x)) ?_
-  exact (temporalTruth_iso (surgeredDualIso M ε Q t) atomMap (d x) (swapUS (.snce A B))).mpr
-    ((temporalTruth_dual' (M := surgeredStructure M ε Q t) atomMap x (.snce A B)).mpr h)
+  exact (temporalTruth_iso (surgeredDualIso M ε Q t) atomMap (d x) (swapUS (.snceQ B A))).mpr
+    ((temporalTruth_dual' (M := surgeredStructure M ε Q t) atomMap x (.snceQ B A)).mpr h)
 
 /-! ## Lemma 8
 
@@ -826,11 +826,11 @@ theorem reynolds_lemma8 (atomMap : Formula → sig.preds)
   | bot => exact fun _ => Iff.rfl
   | box _ => exact fun _ => Iff.rfl
   | imp φ ψ ihφ ihψ => exact fun x => imp_congr (ihφ x) (ihψ x)
-  | untl φ ψ ihφ ihψ =>
+  | untlQ ψ φ ihψ ihφ =>
       exact fun x =>
         ⟨reynolds_lemma8_untl_forward atomMap h_surj hε h_prior_U h_prior_S hS φ ψ ihφ ihψ x,
           reynolds_lemma8_untl_backward atomMap h_surj hε h_prior_U h_prior_S hS φ ψ ihφ ihψ x⟩
-  | snce φ ψ ihφ ihψ =>
+  | snceQ ψ φ ihψ ihφ =>
       exact fun x =>
         ⟨reynolds_lemma8_snce_forward atomMap h_surj hε h_prior_U h_prior_S hS φ ψ ihφ ihψ x,
           reynolds_lemma8_snce_backward atomMap h_surj hε h_prior_U h_prior_S hS φ ψ ihφ ihψ x⟩

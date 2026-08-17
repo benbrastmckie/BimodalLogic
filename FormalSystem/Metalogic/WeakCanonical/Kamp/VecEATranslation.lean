@@ -61,10 +61,10 @@ noncomputable def bracketBuildRight :
     let shifted : BracketFormula n :=
       { pointTypes := fun i => bf.pointTypes ⟨i.val + 1, Nat.succ_lt_succ i.isLt⟩
         segmentTypes := fun i => bf.segmentTypes ⟨i.val + 1, Nat.succ_lt_succ i.isLt⟩ }
-    Formula.untl
+    Formula.untlQ
+      (bf.segmentTypes ⟨0, by omega⟩).formula
       (Formula.and (bf.pointTypes ⟨0, by omega⟩).formula
         (bracketBuildRight shifted endRight))
-      (bf.segmentTypes ⟨0, by omega⟩).formula
 
 /-! ## Helper: prepend witness to bracket holds -/
 
@@ -285,10 +285,10 @@ noncomputable def bracketBuildLeft :
     let shifted : BracketFormula n :=
       { pointTypes := fun i => bf.pointTypes ⟨i.val, by omega⟩
         segmentTypes := fun i => bf.segmentTypes ⟨i.val, by omega⟩ }
-    Formula.snce
+    Formula.snceQ
+      (bf.segmentTypes ⟨n + 1, by omega⟩).formula
       (Formula.and (bf.pointTypes ⟨n, by omega⟩).formula
         (bracketBuildLeft shifted endLeft))
-      (bf.segmentTypes ⟨n + 1, by omega⟩).formula
 
 /-! ## Definitional unfolding lemmas (structural matches resist `simp`/`unfold`) -/
 
@@ -321,14 +321,14 @@ theorem bracketBuildLeft_zero_eq (bf : BracketFormula 0) (endLeft : TemporalPred
 theorem bracketBuildLeft_succ_eq {n : Nat} (bf : BracketFormula (n + 1))
     (endLeft : TemporalPred) :
     bracketBuildLeft bf endLeft =
-      Formula.snce
+      Formula.snceQ
+        (bf.segmentTypes ⟨n + 1, by omega⟩).formula
         (Formula.and (bf.pointTypes ⟨n, by omega⟩).formula
           (bracketBuildLeft
             (BracketFormula.mk
               (fun i : Fin n => bf.pointTypes ⟨i.val, by omega⟩)
               (fun i : Fin (n + 1) => bf.segmentTypes ⟨i.val, by omega⟩))
-            endLeft))
-        (bf.segmentTypes ⟨n + 1, by omega⟩).formula := rfl
+            endLeft)) := rfl
 
 /-! ## Helper: append witness to bracket holds (leftward peel) -/
 

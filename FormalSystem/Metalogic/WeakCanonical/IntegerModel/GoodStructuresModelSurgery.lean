@@ -1850,7 +1850,7 @@ private theorem gap_prior_UZ_contradiction (sig : MonadicSignature) [Fintype sig
       exact ⟨fun h_M h_N_φ => (ih_ψ t h_t).mp (h_M ((ih_φ t h_t).mpr h_N_φ)),
              fun h_N h_M_φ => (ih_ψ t h_t).mpr (h_N ((ih_φ t h_t).mp h_M_φ))⟩
     | box φ => intro t h_t; exact Iff.rfl
-    | untl φ ψ ih_φ ih_ψ =>
+    | untlQ ψ φ ih_ψ ih_φ =>
       intro t h_t
       constructor
       · -- Forward: M → N
@@ -1893,7 +1893,7 @@ private theorem gap_prior_UZ_contradiction (sig : MonadicSignature) [Fintype sig
         exact ⟨s, h_ts, (ih_φ s h_s).mpr h_φ_s, fun r h_tr h_rs => by
           have h_r_class := class_convex t r s h_t h_s (le_of_lt h_tr) (le_of_lt h_rs)
           exact (ih_ψ r h_r_class).mpr (h_ψ_between ⟨r, h_r_class⟩ h_tr h_rs)⟩
-    | snce φ ψ ih_φ ih_ψ =>
+    | snceQ ψ φ ih_ψ ih_φ =>
       intro t h_t
       constructor
       · -- Forward: M → N (mirror of Until)

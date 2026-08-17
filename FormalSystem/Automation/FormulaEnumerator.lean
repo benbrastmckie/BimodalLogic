@@ -293,10 +293,10 @@ def enumExactHelper (atoms : List Atom) (modalBudget temporalBudget sizeBudget :
                 let (tRights, c2b) := enumExactHelper atoms modalBudget (temporalBudget - 1)
                     rightSize c2a
                 let untls := tLefts.foldl (fun (acc : Array Formula) l =>
-                  tRights.foldl (fun (acc' : Array Formula) r => acc'.push (Formula.untl l r)) acc
+                  tRights.foldl (fun (acc' : Array Formula) r => acc'.push (Formula.untlQ r l)) acc
                 ) (Array.mkEmpty (tLefts.size * tRights.size))
                 let snces := tLefts.foldl (fun (acc : Array Formula) l =>
-                  tRights.foldl (fun (acc' : Array Formula) r => acc'.push (Formula.snce l r)) acc
+                  tRights.foldl (fun (acc' : Array Formula) r => acc'.push (Formula.snceQ r l)) acc
                 ) (Array.mkEmpty (tLefts.size * tRights.size))
                 let releases := tLefts.foldl (fun (acc : Array Formula) l =>
                   tRights.foldl (fun (acc' : Array Formula) r => acc'.push (Formula.release l r))
@@ -485,8 +485,8 @@ def sampleOne (atoms : List Atom) (modalBudget temporalBudget sizeBudget : Nat)
     else if hasTemporal && choice == offTempPrim then
       -- untl or snce
       let (rng2, sub) := rng1.randBound 2
-      if sub == 0 then mkBinary rng2 modalBudget (temporalBudget - 1) Formula.untl
-      else mkBinary rng2 modalBudget (temporalBudget - 1) Formula.snce
+      if sub == 0 then mkBinary rng2 modalBudget (temporalBudget - 1) Formula.untlQ
+      else mkBinary rng2 modalBudget (temporalBudget - 1) Formula.snceQ
     else if hasDerived && choice == offDerivedFP then
       -- F/P (someFuture/somePast)
       let (rng2, sub) := rng1.randBound 2
@@ -599,12 +599,12 @@ def countTopOperator (dist : OperatorDistribution) (φ : Formula) : OperatorDist
   | .atom _ => { dist with atomCount := dist.atomCount + 1 }
   | .bot => { dist with botCount := dist.botCount + 1 }
   | .box _ => { dist with boxCount := dist.boxCount + 1 }
-  | .untl _ rhs =>
+  | .untlQ rhs _ =>
     let dist' := { dist with untlCount := dist.untlCount + 1 }
     -- Check for F pattern: untl(φ, ⊤)
     if isTop rhs then { dist' with someFutureCount := dist'.someFutureCount + 1 }
     else dist'
-  | .snce _ rhs =>
+  | .snceQ rhs _ =>
     let dist' := { dist with snceCount := dist.snceCount + 1 }
     -- Check for P pattern: snce(φ, ⊤)
     if isTop rhs then { dist' with somePastCount := dist'.somePastCount + 1 }
@@ -614,11 +614,11 @@ def countTopOperator (dist : OperatorDistribution) (φ : Formula) : OperatorDist
     -- Check for H pattern: ¬(P(¬φ)) = imp(snce(imp(φ, bot), imp(bot, bot)), bot)
     let dist' := { dist with impCount := dist.impCount + 1 }
     match inner with
-    | .untl negChild guard =>
+    | .untlQ guard negChild =>
       if isNeg negChild && isTop guard then
         { dist' with allFutureCount := dist'.allFutureCount + 1 }
       else dist'
-    | .snce negChild guard =>
+    | .snceQ guard negChild =>
       if isNeg negChild && isTop guard then
         { dist' with allPastCount := dist'.allPastCount + 1 }
       else dist'
@@ -773,8 +773,8 @@ where
     | .bot => false
     | .imp a b => hasModalOrTemporal a || hasModalOrTemporal b
     | .box _ => true
-    | .untl _ _ => true
-    | .snce _ _ => true
+    | .untlQ _ _ => true
+    | .snceQ _ _ => true
 
 /--
 Enumerate all formulas of EXACTLY the given complexity, respecting modal and
@@ -886,7 +886,7 @@ partial def sampleOneRandom (atoms : List Atom) (budget : Nat) (maxModal : Nat)
         let split ← IO.rand 1 (budget - 1)
         let left ← sampleOneRandom atoms split maxModal (maxTemporal - 1)
         let right ← sampleOneRandom atoms (budget - 1 - split) maxModal (maxTemporal - 1)
-        return .untl left right
+        return .untlQ right left
       offset := offset + 1
     -- 5: since (if temporal)
     if maxTemporal > 0 then
@@ -894,7 +894,7 @@ partial def sampleOneRandom (atoms : List Atom) (budget : Nat) (maxModal : Nat)
         let split ← IO.rand 1 (budget - 1)
         let left ← sampleOneRandom atoms split maxModal (maxTemporal - 1)
         let right ← sampleOneRandom atoms (budget - 1 - split) maxModal (maxTemporal - 1)
-        return .snce left right
+        return .snceQ right left
       offset := offset + 1
     -- 6: F (someFuture) or P (somePast)
     if hasTemporal then
@@ -1120,7 +1120,7 @@ partial def randomSubFormula (atoms : List Atom) (maxSize : Nat) : IO Formula :=
         let rightSize := maxSize - 1 - leftSize
         let left ← randomSubFormula atoms (max 1 leftSize)
         let right ← randomSubFormula atoms (max 1 rightSize)
-        return .untl left right
+        return .untlQ right left
     | 9 =>
       -- Derived binary temporal: R, WU, T, WS, SR, ST
       if maxSize < 3 then
@@ -1149,7 +1149,7 @@ partial def randomSubFormula (atoms : List Atom) (maxSize : Nat) : IO Formula :=
         let rightSize := maxSize - 1 - leftSize
         let left ← randomSubFormula atoms (max 1 leftSize)
         let right ← randomSubFormula atoms (max 1 rightSize)
-        return .snce left right
+        return .snceQ right left
 
 /--
 Instantiate a random axiom schema with random sub-formulas.
@@ -1225,11 +1225,11 @@ partial def instantiateAxiom (atoms : List Atom) (maxParamSize : Nat) : IO Formu
     let φ ← randomSubFormula atoms maxParamSize
     let ψ ← randomSubFormula atoms maxParamSize
     let χ ← randomSubFormula atoms maxParamSize
-    return (φ.imp ψ).allFuture.imp ((Formula.untl φ χ).imp (Formula.untl ψ χ))
+    return (φ.imp ψ).allFuture.imp ((Formula.untlQ χ φ).imp (Formula.untlQ χ ψ))
   | 13 => do
     -- F_until_equiv(φ): F(φ) → (φ U ⊤)
     let φ ← randomSubFormula atoms maxParamSize
-    return (Formula.someFuture φ).imp (Formula.untl φ Formula.top)
+    return (Formula.someFuture φ).imp (Formula.untlQ Formula.top φ)
   -- Temporal-modal interaction schemata (8 schemata)
   | 14 => do
     -- modal_future(φ): □φ → G(□φ) (from temporalFutureDerived / boxToFuture via MF+MT)
@@ -1522,8 +1522,8 @@ private def theoremSeedFormulas : List Formula :=
     p.imp (p.somePast.allFuture),                          -- connectFutureThm
     p.imp (p.someFuture.allPast),                          -- connectPastThm
     p.allFuture.imp ((p.allFuture.imp p.allFuture).allFuture),  -- gImpliesGId
-    (Formula.untl q p).imp q.someFuture,                    -- untilImpliesSomeFuture
-    (Formula.snce q p).imp q.somePast,                      -- sinceImpliesSomePast
+    (Formula.untlQ p q).imp q.someFuture,                    -- untilImpliesSomeFuture
+    (Formula.snceQ p q).imp q.somePast,                      -- sinceImpliesSomePast
     -- Helpers (3)
     p.box.imp p.allFuture,                                  -- boxToFuture
     p.box.imp p.allPast,                                    -- boxToPast
@@ -2013,8 +2013,8 @@ private def hasBox : Formula → Bool
   | .bot => false
   | .imp a b => hasBox a || hasBox b
   | .box _ => true
-  | .untl a b => hasBox a || hasBox b
-  | .snce a b => hasBox a || hasBox b
+  | .untlQ b a => hasBox a || hasBox b
+  | .snceQ b a => hasBox a || hasBox b
 
 /-- Check if a formula contains at least one derived temporal operator pattern
     (G, H, F, P, always, sometimes, next, prev, weakFuture, weakPast, diamond,
@@ -2024,42 +2024,42 @@ private def hasDerivedTemporal : Formula → Bool
   | .bot => false
   | .box a => hasDerivedTemporal a
   -- always(φ) = H(φ) ∧ φ ∧ G(φ)
-  | .imp (.imp (.imp (.snce (.imp _ .bot) (.imp .bot .bot)) .bot)
-      (.imp (.imp (.imp _ (.imp (.imp (.untl (.imp _ .bot) (.imp .bot .bot)) .bot) .bot)) .bot)
+  | .imp (.imp (.imp (.snceQ (.imp .bot .bot) (.imp _ .bot)) .bot)
+      (.imp (.imp (.imp _ (.imp (.imp (.untlQ (.imp .bot .bot) (.imp _ .bot)) .bot) .bot)) .bot)
           .bot)) .bot => true
   -- sometimes(φ) = ¬always(¬φ)
-  | .imp (.imp (.imp (.imp (.snce (.imp (.imp _ .bot) .bot) (.imp .bot .bot)) .bot)
+  | .imp (.imp (.imp (.imp (.snceQ (.imp .bot .bot) (.imp (.imp _ .bot) .bot)) .bot)
       (.imp (.imp (.imp (.imp _ .bot) (.imp
-          (.imp (.untl (.imp (.imp _ .bot) .bot) (.imp .bot .bot)) .bot) .bot)) .bot) .bot)) .bot)
+          (.imp (.untlQ (.imp .bot .bot) (.imp (.imp _ .bot) .bot)) .bot) .bot)) .bot) .bot)) .bot)
               .bot => true
   -- weakFuture(φ) = φ ∧ G(φ)
-  | .imp (.imp _ (.imp (.imp (.untl (.imp _ .bot) (.imp .bot .bot)) .bot) .bot)) .bot => true
+  | .imp (.imp _ (.imp (.imp (.untlQ (.imp .bot .bot) (.imp _ .bot)) .bot) .bot)) .bot => true
   -- weakPast(φ) = φ ∧ H(φ)
-  | .imp (.imp _ (.imp (.imp (.snce (.imp _ .bot) (.imp .bot .bot)) .bot) .bot)) .bot => true
+  | .imp (.imp _ (.imp (.imp (.snceQ (.imp .bot .bot) (.imp _ .bot)) .bot) .bot)) .bot => true
   -- Weak Until / Weak Since patterns
-  | .imp (.imp (.untl _ _) .bot) (.imp (.untl (.imp _ .bot) (.imp .bot .bot)) .bot) => true  -- WU
+  | .imp (.imp (.untlQ _ _) .bot) (.imp (.untlQ (.imp .bot .bot) (.imp _ .bot)) .bot) => true  -- WU
   -- pattern
-  | .imp (.imp (.snce _ _) .bot) (.imp (.snce (.imp _ .bot) (.imp .bot .bot)) .bot) => true  -- WS
+  | .imp (.imp (.snceQ _ _) .bot) (.imp (.snceQ (.imp .bot .bot) (.imp _ .bot)) .bot) => true  -- WS
   -- pattern
   -- diamond(φ) = ¬□¬φ
   | .imp (.box (.imp _ .bot)) .bot => true
   -- Check for G/H patterns: ¬F(¬φ) or ¬P(¬φ)
   | .imp inner .bot =>
     match inner with
-    | .untl (.imp _ .bot) (.imp .bot .bot) => true  -- G pattern
-    | .snce (.imp _ .bot) (.imp .bot .bot) => true  -- H pattern
-    | .untl (.imp _ .bot) (.imp _ .bot) => true  -- R pattern
-    | .snce (.imp _ .bot) (.imp _ .bot) => true  -- T pattern
+    | .untlQ (.imp .bot .bot) (.imp _ .bot) => true  -- G pattern
+    | .snceQ (.imp .bot .bot) (.imp _ .bot) => true  -- H pattern
+    | .untlQ (.imp _ .bot) (.imp _ .bot) => true  -- R pattern
+    | .snceQ (.imp _ .bot) (.imp _ .bot) => true  -- T pattern
     | _ => hasDerivedTemporal inner
   | .imp a b => hasDerivedTemporal a || hasDerivedTemporal b
   -- Check for next/F patterns: untl(φ, ⊥) is next, untl(φ, ⊤) is F
-  | .untl _ .bot => true   -- next pattern
-  | .untl _ (.imp .bot .bot) => true   -- F pattern
-  | .untl a b => hasDerivedTemporal a || hasDerivedTemporal b
+  | .untlQ .bot _ => true   -- next pattern
+  | .untlQ (.imp .bot .bot) _ => true   -- F pattern
+  | .untlQ b a => hasDerivedTemporal a || hasDerivedTemporal b
   -- Check for prev/P patterns: snce(φ, ⊥) is prev, snce(φ, ⊤) is P
-  | .snce _ .bot => true   -- prev pattern
-  | .snce _ (.imp .bot .bot) => true   -- P pattern
-  | .snce a b => hasDerivedTemporal a || hasDerivedTemporal b
+  | .snceQ .bot _ => true   -- prev pattern
+  | .snceQ (.imp .bot .bot) _ => true   -- P pattern
+  | .snceQ b a => hasDerivedTemporal a || hasDerivedTemporal b
 
 /--
 Check if a formula has bimodal interaction: contains BOTH a box operator
@@ -2191,10 +2191,10 @@ private def partitionCrossProduct (atoms : List Atom) (modalBudget temporalBudge
       let (tLefts, _) := enumExactHelper atoms modalBudget (temporalBudget - 1) leftSize cache
       let (tRights, _) := enumExactHelper atoms modalBudget (temporalBudget - 1) rightSize cache
       let untls := tLefts.foldl (fun (acc : Array Formula) l =>
-        tRights.foldl (fun (acc' : Array Formula) r => acc'.push (Formula.untl l r)) acc
+        tRights.foldl (fun (acc' : Array Formula) r => acc'.push (Formula.untlQ r l)) acc
       ) (Array.mkEmpty (tLefts.size * tRights.size))
       let snces := tLefts.foldl (fun (acc : Array Formula) l =>
-        tRights.foldl (fun (acc' : Array Formula) r => acc'.push (Formula.snce l r)) acc
+        tRights.foldl (fun (acc' : Array Formula) r => acc'.push (Formula.snceQ r l)) acc
       ) (Array.mkEmpty (tLefts.size * tRights.size))
       let releases := tLefts.foldl (fun (acc : Array Formula) l =>
         tRights.foldl (fun (acc' : Array Formula) r => acc'.push (Formula.release l r)) acc

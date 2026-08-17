@@ -489,17 +489,17 @@ under open-guard `(t,s)` semantics).
 def BFMCS.UntilSinceCoherent (B : BFMCS (fc := fc) D) : Prop :=
   ∀ fam ∈ B.families,
     (∀ t : D, ∀ φ ψ : Formula,
-      Formula.untl φ ψ ∈ fam.mcs t →
+      Formula.untlQ ψ φ ∈ fam.mcs t →
       ∃ s : D, t < s ∧ φ ∈ fam.mcs s ∧ ∀ r : D, t < r → r < s → ψ ∈ fam.mcs r) ∧
     (∀ t : D, ∀ φ ψ : Formula,
       (∃ s : D, t < s ∧ φ ∈ fam.mcs s ∧ ∀ r : D, t < r → r < s → ψ ∈ fam.mcs r) →
-      Formula.untl φ ψ ∈ fam.mcs t) ∧
+      Formula.untlQ ψ φ ∈ fam.mcs t) ∧
     (∀ t : D, ∀ φ ψ : Formula,
-      Formula.snce φ ψ ∈ fam.mcs t →
+      Formula.snceQ ψ φ ∈ fam.mcs t →
       ∃ s : D, s < t ∧ φ ∈ fam.mcs s ∧ ∀ r : D, s < r → r < t → ψ ∈ fam.mcs r) ∧
     (∀ t : D, ∀ φ ψ : Formula,
       (∃ s : D, s < t ∧ φ ∈ fam.mcs s ∧ ∀ r : D, s < r → r < t → ψ ∈ fam.mcs r) →
-      Formula.snce φ ψ ∈ fam.mcs t)
+      Formula.snceQ ψ φ ∈ fam.mcs t)
 
 /-!
 ## Split Until/Since Coherence
@@ -527,10 +527,10 @@ def BFMCS.BackwardUntilSinceCoherent (B : BFMCS (fc := fc) D) : Prop :=
   ∀ fam ∈ B.families,
     (∀ t : D, ∀ φ ψ : Formula,
       (∃ s : D, t < s ∧ φ ∈ fam.mcs s ∧ ∀ r : D, t < r → r < s → ψ ∈ fam.mcs r) →
-      Formula.untl φ ψ ∈ fam.mcs t) ∧
+      Formula.untlQ ψ φ ∈ fam.mcs t) ∧
     (∀ t : D, ∀ φ ψ : Formula,
       (∃ s : D, s < t ∧ φ ∈ fam.mcs s ∧ ∀ r : D, s < r → r < t → ψ ∈ fam.mcs r) →
-      Formula.snce φ ψ ∈ fam.mcs t)
+      Formula.snceQ ψ φ ∈ fam.mcs t)
 
 /--
 Forward Until/Since coherence: conjuncts 1 and 3 of `UntilSinceCoherent`.
@@ -541,10 +541,10 @@ guard condition on intermediate times.
 def BFMCS.ForwardUntilSinceCoherent (B : BFMCS (fc := fc) D) : Prop :=
   ∀ fam ∈ B.families,
     (∀ t : D, ∀ φ ψ : Formula,
-      Formula.untl φ ψ ∈ fam.mcs t →
+      Formula.untlQ ψ φ ∈ fam.mcs t →
       ∃ s : D, t < s ∧ φ ∈ fam.mcs s ∧ ∀ r : D, t < r → r < s → ψ ∈ fam.mcs r) ∧
     (∀ t : D, ∀ φ ψ : Formula,
-      Formula.snce φ ψ ∈ fam.mcs t →
+      Formula.snceQ ψ φ ∈ fam.mcs t →
       ∃ s : D, s < t ∧ φ ∈ fam.mcs s ∧ ∀ r : D, s < r → r < t → ψ ∈ fam.mcs r)
 
 /--
@@ -559,12 +559,12 @@ def BFMCS.RestrictedForwardUntilSinceCoherent (B : BFMCS (fc := fc) D) (root : F
     Prop :=
   ∀ fam ∈ B.families,
     (∀ t : D, ∀ φ ψ : Formula,
-      Formula.untl φ ψ ∈ FormalSystem.Syntax.subformulaClosure root →
-      Formula.untl φ ψ ∈ fam.mcs t →
+      Formula.untlQ ψ φ ∈ FormalSystem.Syntax.subformulaClosure root →
+      Formula.untlQ ψ φ ∈ fam.mcs t →
       ∃ s : D, t < s ∧ φ ∈ fam.mcs s ∧ ∀ r : D, t < r → r < s → ψ ∈ fam.mcs r) ∧
     (∀ t : D, ∀ φ ψ : Formula,
-      Formula.snce φ ψ ∈ FormalSystem.Syntax.subformulaClosure root →
-      Formula.snce φ ψ ∈ fam.mcs t →
+      Formula.snceQ ψ φ ∈ FormalSystem.Syntax.subformulaClosure root →
+      Formula.snceQ ψ φ ∈ fam.mcs t →
       ∃ s : D, s < t ∧ φ ∈ fam.mcs s ∧ ∀ r : D, s < r → r < t → ψ ∈ fam.mcs r)
 
 omit [Zero D] in
@@ -590,13 +590,13 @@ def BFMCS.RestrictedBackwardUntilSinceCoherent (B : BFMCS (fc := fc) D) (root : 
     Prop :=
   ∀ fam ∈ B.families,
     (∀ t : D, ∀ φ ψ : Formula,
-      Formula.untl φ ψ ∈ FormalSystem.Syntax.subformulaClosure root →
+      Formula.untlQ ψ φ ∈ FormalSystem.Syntax.subformulaClosure root →
       (∃ s : D, t < s ∧ φ ∈ fam.mcs s ∧ ∀ r : D, t < r → r < s → ψ ∈ fam.mcs r) →
-      Formula.untl φ ψ ∈ fam.mcs t) ∧
+      Formula.untlQ ψ φ ∈ fam.mcs t) ∧
     (∀ t : D, ∀ φ ψ : Formula,
-      Formula.snce φ ψ ∈ FormalSystem.Syntax.subformulaClosure root →
+      Formula.snceQ ψ φ ∈ FormalSystem.Syntax.subformulaClosure root →
       (∃ s : D, s < t ∧ φ ∈ fam.mcs s ∧ ∀ r : D, s < r → r < t → ψ ∈ fam.mcs r) →
-      Formula.snce φ ψ ∈ fam.mcs t)
+      Formula.snceQ ψ φ ∈ fam.mcs t)
 
 omit [Zero D] in
 /--

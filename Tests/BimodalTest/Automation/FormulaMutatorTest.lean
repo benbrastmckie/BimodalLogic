@@ -68,13 +68,13 @@ example : trySwapDiamondBox p.diamond = some (.box p) := rfl
 example : trySwapUntilRelease p = none := rfl
 
 -- trySwapUntilRelease returns some on untl p q
-example : trySwapUntilRelease (.untl p q) = some (Formula.release p q) := rfl
+example : trySwapUntilRelease (.untlQ q p) = some (Formula.release p q) := rfl
 
 -- trySwapReleaseUntil returns none on atom
 example : trySwapReleaseUntil p = none := rfl
 
 -- trySwapReleaseUntil returns some on release p q
-example : trySwapReleaseUntil (Formula.release p q) = some (.untl p q) := rfl
+example : trySwapReleaseUntil (Formula.release p q) = some (.untlQ q p) := rfl
 
 -- trySwapFutureGlobally returns none on atom
 example : trySwapFutureGlobally p = none := rfl

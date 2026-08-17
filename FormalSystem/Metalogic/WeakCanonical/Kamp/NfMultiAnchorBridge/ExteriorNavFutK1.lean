@@ -708,10 +708,10 @@ private theorem navR_segGuard_iff (M : OrderedMonadicStructure sig)
     the future w-point package. The time-reversed mirror of `navLChain`. -/
 noncomputable def navRChain (σ : NormalForm sig 1 3) :
     List (NormalForm sig 0 1) → Formula
-  | [] => Formula.untl (navRAtWPack atomMap h_surj σ) (navRSegGuard atomMap h_surj σ)
-  | χ :: rest => Formula.untl
-      (Formula.and (nfDepth0CharFormula atomMap h_surj χ) (navRChain σ rest))
+  | [] => Formula.untlQ (navRSegGuard atomMap h_surj σ) (navRAtWPack atomMap h_surj σ)
+  | χ :: rest => Formula.untlQ
       (navRSegGuard atomMap h_surj σ)
+      (Formula.and (nfDepth0CharFormula atomMap h_surj χ) (navRChain σ rest))
 
 /-- **Chain soundness**: a chain at `u` yields the anchor `u < w` carrying the future
     w-point package, one witness per listed profile inside `(u, w)`, and the exclusion

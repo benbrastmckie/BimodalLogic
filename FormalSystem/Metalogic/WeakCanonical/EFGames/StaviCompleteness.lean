@@ -241,7 +241,7 @@ def tableMu {sig : MonadicSignature}
   | .imp ψ₁ ψ₂ =>
     .not (.and (tableMu atomMap ψ₁) (.not (tableMu atomMap ψ₂)))
   | .box ψ => .atom (.inl (atomMap (.box ψ))) ⟨0, by omega⟩
-  | .untl ψ₁ ψ₂ =>
+  | .untlQ ψ₂ ψ₁ =>
     -- ∃s. mu(s) ∧ t < s ∧ C_ψ₁(s) ∧ ∀u. (mu(u) ∧ t < u ∧ u < s) → C_ψ₂(u)
     let c1 := tableMu atomMap ψ₁  -- 1 var
     let c2 := tableMu atomMap ψ₂
@@ -255,7 +255,7 @@ def tableMu {sig : MonadicSignature}
               (.and (.lt ⟨2, by omega⟩ ⟨0, by omega⟩)  -- t < u
                     (.lt ⟨0, by omega⟩ ⟨1, by omega⟩)))  -- u < s
             (.not c2_3)))))))                          -- C_ψ₂(u)
-  | .snce ψ₁ ψ₂ =>
+  | .snceQ ψ₂ ψ₁ =>
     -- ∃s. mu(s) ∧ s < t ∧ C_ψ₁(s) ∧ ∀u. (mu(u) ∧ s < u ∧ u < t) → C_ψ₂(u)
     let c1 := tableMu atomMap ψ₁
     let c2 := tableMu atomMap ψ₂
@@ -341,7 +341,7 @@ theorem table_mu_correct {sig : MonadicSignature}
     · intro h ⟨hψ₁, hψ₂⟩; exact hψ₂ ((ih₂ t).mpr (h ((ih₁ t).mp hψ₁)))
   | box ψ =>
     simp [tableMu, eval, extendedStructureWithMu, TemporalTruthMu, extendedStructure]
-  | untl ψ₁ ψ₂ ih₁ ih₂ =>
+  | untlQ ψ₂ ψ₁ ih₂ ih₁ =>
     -- tableMu (.untl ψ₁ ψ₂) = .ex (.and mu(s) (.and (t < s) (.and C_ψ₁(s) (∀u...))))
     -- TemporalTruthMu (.untl ψ₁ ψ₂) = ∃ s, t < s ∧ mu(s) ∧ T_ψ₁(s) ∧ ∀ u, t<u→u<s→mu(u)→T_ψ₂(u)
     -- The key lift lemma: evaluating a lifted formula under Fin.cons
@@ -400,7 +400,7 @@ theorem table_mu_correct {sig : MonadicSignature}
       refine ⟨s, hmu, hts, (lift1_iff s).mpr hA, fun u => ?_⟩
       intro ⟨⟨hmu_u, htu, hus⟩, heval⟩
       exact heval ((lift2_iff s u).mpr (hB u htu hus hmu_u))
-  | snce ψ₁ ψ₂ ih₁ ih₂ =>
+  | snceQ ψ₂ ψ₁ ih₂ ih₁ =>
     -- Symmetric to untl case, with s < t instead of t < s
     have lift1_eq : ∀ (s : (extendedStructureWithMu M atomMap r).carrier)
         (α : MonadicFormula (muSig sig) 1),
@@ -508,10 +508,10 @@ theorem stavi_table_mu_depth {sig : MonadicSignature}
       simp only [tableMu, MonadicFormula.quantifierDepth, operatorDepth]
       exact Nat.max_le.mpr ⟨le_trans ih₁ (le_max_left _ _), le_trans ih₂ (le_max_right _ _)⟩
     | box ψ => simp [tableMu, MonadicFormula.quantifierDepth, operatorDepth]
-    | untl ψ1 ψ2 ih₁ ih₂ =>
+    | untlQ ψ2 ψ1 ih₂ ih₁ =>
       simp only [tableMu, MonadicFormula.quantifierDepth, operatorDepth, lift_quantifier_depth]
       omega
-    | snce ψ1 ψ2 ih₁ ih₂ =>
+    | snceQ ψ2 ψ1 ih₂ ih₁ =>
       simp only [tableMu, MonadicFormula.quantifierDepth, operatorDepth, lift_quantifier_depth]
       omega
   | neg A ih =>

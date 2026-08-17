@@ -164,14 +164,14 @@ where
         match parseFromTokens rest2 with
         | some (l, rest3) =>
           match parseFromTokens rest3 with
-          | some (r, ")" :: more) => some (.untl l r, more)
+          | some (r, ")" :: more) => some (.untlQ r l, more)
           | _ => none
         | _ => none
       | "snce" :: rest2 =>
         match parseFromTokens rest2 with
         | some (l, rest3) =>
           match parseFromTokens rest3 with
-          | some (r, ")" :: more) => some (.snce l r, more)
+          | some (r, ")" :: more) => some (.snceQ r l, more)
           | _ => none
         | _ => none
       | _ => none

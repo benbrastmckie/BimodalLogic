@@ -1204,11 +1204,11 @@ theorem cantor_bfmcs_discrete_restricted_buc (fc : FrameClass) (A : Set Formula)
     intro t φ ψ _ ⟨u, htu, hφu, h_guard⟩
     by_contra h_not_until
     rw [h_mcs_eq] at h_not_until hφu
-    have h_neg_until : (Formula.untl φ ψ).neg ∈
+    have h_neg_until : (Formula.untlQ ψ φ).neg ∈
         LimitF fc N h_N (succEmbed fc N h_N h_discrete_N (t + offset)).val := by
       rcases SetMaximalConsistent.negation_complete
         (limit_c0 fc N h_N _ (succEmbed fc N h_N h_discrete_N (t + offset)).property)
-        (Formula.untl φ ψ) with h | h
+        (Formula.untlQ ψ φ) with h | h
       · exact absurd h h_not_until
       · exact h
     obtain ⟨z, hz, htz, hzu, hψneg⟩ := limit_satisfies_c4 fc N h_N
@@ -1232,11 +1232,11 @@ theorem cantor_bfmcs_discrete_restricted_buc (fc : FrameClass) (A : Set Formula)
     intro t φ ψ _ ⟨u, hut, hφu, h_guard⟩
     by_contra h_not_since
     rw [h_mcs_eq] at h_not_since hφu
-    have h_neg_since : (Formula.snce φ ψ).neg ∈
+    have h_neg_since : (Formula.snceQ ψ φ).neg ∈
         LimitF fc N h_N (succEmbed fc N h_N h_discrete_N (t + offset)).val := by
       rcases SetMaximalConsistent.negation_complete
         (limit_c0 fc N h_N _ (succEmbed fc N h_N h_discrete_N (t + offset)).property)
-        (Formula.snce φ ψ) with h | h
+        (Formula.snceQ ψ φ) with h | h
       · exact absurd h h_not_since
       · exact h
     obtain ⟨z, hz, huz, hzt, hψneg⟩ := limit_satisfies_c4' fc N h_N

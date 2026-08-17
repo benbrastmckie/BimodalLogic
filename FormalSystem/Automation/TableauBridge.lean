@@ -262,11 +262,11 @@ partial def pFormula (st : PState) : Except String (Formula × PState) := do
   | "untl" =>
     let event ← getField "event"
     let guard ← getField "guard"
-    return (Formula.untl event guard, st)
+    return (Formula.untlQ guard event, st)
   | "snce" =>
     let event ← getField "event"
     let guard ← getField "guard"
-    return (Formula.snce event guard, st)
+    return (Formula.snceQ guard event, st)
   | _ => throw s!"unknown tag '{tag}'"
 
 /-!

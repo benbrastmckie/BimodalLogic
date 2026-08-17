@@ -7073,7 +7073,7 @@ private def mwP : Formula := .atom (Atom.mkBase "p")
 private def mwQ : Formula := .atom (Atom.mkBase "q")
 
 /-- The trigger: `F(U(e,g))` at the initial label. -/
-def mintWitnessTrigger : SignedFormula := SignedFormula.neg (Formula.untl mwE mwG) ⟨0, 0⟩
+def mintWitnessTrigger : SignedFormula := SignedFormula.neg (Formula.untlQ mwG mwE) ⟨0, 0⟩
 
 /-- The witness branch. The two atoms exist to carry times `1` and `2`, which the ordering's one
 constraint mentions and `OrdTimesKnown` therefore requires. -/
@@ -7519,7 +7519,7 @@ theorem selfGuard_no_column_at_retired_time {src tgt : TimeIndex} (h : tgt ≠ s
 
 /-- The gate's trigger: `F(U(e,g))` at the **re-issued** time `2`. Same formula shape as
 `mintWitnessTrigger`; the label's time is what differs, and it is the whole point. -/
-def gateTrigger : SignedFormula := SignedFormula.neg (Formula.untl mwE mwG) ⟨0, 2⟩
+def gateTrigger : SignedFormula := SignedFormula.neg (Formula.untlQ mwG mwE) ⟨0, 2⟩
 
 /-- The gate branch. The trigger sits at the re-issued time `2`; the two atoms carry times `0` and
 `1`, which the ordering's one constraint mentions and `OrdTimesKnown` therefore requires. Atoms fire

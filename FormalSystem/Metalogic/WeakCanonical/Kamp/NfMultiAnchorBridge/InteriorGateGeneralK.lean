@@ -234,7 +234,7 @@ def igEpL {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {
     (r : NormalForm sig 0 3) (b : ZoneSpec 3 → NormalForm sig k 1 → Bool) : TemporalPred :=
   ⟨formulaConjList
     (charBase (nfXProj3 r)
-      :: (igAllTypes sig k).map (fun χ => igLit (b igZPastX χ) (Formula.snce (charK χ) Formula.top))
+      :: (igAllTypes sig k).map (fun χ => igLit (b igZPastX χ) (Formula.snceQ Formula.top (charK χ)))
       ++ (igAllTypes sig k).map (fun χ => igLit (b igZAtX χ) (charK χ)))⟩
 
 /-- Right endpoint predicate `epR` at the fixed right endpoint `t` (verbatim from `kv_body`,
@@ -246,7 +246,7 @@ def igEpR {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {
     (charBase (nfTProj3 r)
       :: (igAllTypes sig k).map (fun χ => igLit (b igZAtT χ) (charK χ))
       ++ (igAllTypes sig k).map (fun χ => igLit (b igZFutT χ)
-          (Formula.untl (charK χ) Formula.top)))⟩
+          (Formula.untlQ Formula.top (charK χ))))⟩
 
 /-- Left segment exclusion `segL` (verbatim from `kv_body`, `CarrierKv.lean:189-191`). -/
 def igSegL {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : Nat}

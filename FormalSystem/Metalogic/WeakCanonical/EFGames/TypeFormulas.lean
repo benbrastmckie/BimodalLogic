@@ -319,13 +319,13 @@ noncomputable def TemporalTruthMu {sig : MonadicSignature}
   | .bot => False
   | .imp φ ψ => TemporalTruthMu M atomMap r t φ → TemporalTruthMu M atomMap r t ψ
   | .box φ => (extendedStructure M atomMap r).interp (atomMap (.box φ)) t
-  | .untl φ ψ =>
+  | .untlQ ψ φ =>
     -- U^mu: quantify only over mu-points
     ∃ s : ExtendedCarrier M atomMap r, t < s ∧ MuHolds s ∧
       TemporalTruthMu M atomMap r s φ ∧
       ∀ u : ExtendedCarrier M atomMap r, t < u → u < s → MuHolds u →
         TemporalTruthMu M atomMap r u ψ
-  | .snce φ ψ =>
+  | .snceQ ψ φ =>
     -- S^mu: quantify only over mu-points
     ∃ s : ExtendedCarrier M atomMap r, s < t ∧ MuHolds s ∧
       TemporalTruthMu M atomMap r s φ ∧
@@ -532,7 +532,7 @@ theorem rank_embed_temporal_truth_mu {sig : MonadicSignature}
     exact ⟨fun hf hφ => (ihψ e).mp (hf ((ihφ e).mpr hφ)),
            fun hf hφ => (ihψ e).mpr (hf ((ihφ e).mp hφ))⟩
   | box φ => exact rank_embed_interp h _ e
-  | untl φ ψ ihφ ihψ =>
+  | untlQ ψ φ ihψ ihφ =>
     simp only [TemporalTruthMu]; constructor
     · intro ⟨s, hlt, ⟨x, hx⟩, hφ, hψ⟩; subst hx
       refine ⟨Sum.inl x, (rank_embed_lt h _ _).mp hlt, ⟨x, rfl⟩, (ihφ _).mp hφ, ?_⟩
@@ -544,7 +544,7 @@ theorem rank_embed_temporal_truth_mu {sig : MonadicSignature}
       intro u heu hux ⟨y, hy⟩; subst hy
       exact (ihψ _).mpr (hψ (Sum.inl y)
         ((rank_embed_lt h _ _).mp heu) ((rank_embed_lt h _ _).mp hux) ⟨y, rfl⟩)
-  | snce φ ψ ihφ ihψ =>
+  | snceQ ψ φ ihψ ihφ =>
     simp only [TemporalTruthMu]; constructor
     · intro ⟨s, hlt, ⟨x, hx⟩, hφ, hψ⟩; subst hx
       refine ⟨Sum.inl x, (rank_embed_lt h _ _).mp hlt, ⟨x, rfl⟩, (ihφ _).mp hφ, ?_⟩

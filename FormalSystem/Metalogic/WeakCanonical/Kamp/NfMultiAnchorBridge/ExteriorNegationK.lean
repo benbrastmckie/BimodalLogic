@@ -243,11 +243,11 @@ through `kvEFiberPosOn P` (`itemF := P.existF 4` over fiber elements — G6). -/
     (ExteriorNegation.lean:1108): `itemF` replaces the hardwired `nfDepth0CharFormula`. -/
 noncomputable def kvEFutChainG {α : Type}
     (itemF : α → Formula) (endF D : Formula) : List α → Formula
-  | [] => Formula.untl endF D
+  | [] => Formula.untlQ D endF
   | a :: rest =>
-      Formula.untl
-        (formulaConjList [itemF a, kvEFutChainG itemF endF D rest])
+      Formula.untlQ
         D
+        (formulaConjList [itemF a, kvEFutChainG itemF endF D rest])
 
 /-- **Chain construction** (generic port of `kvE2_futChainBuild`, ExteriorNegation.lean:1180):
     from a `D`-uniform gap `(t, x1)`, an endpoint `endF` at `x1`, one occurrence in `(s, x1)`
@@ -417,9 +417,9 @@ noncomputable def kvEFutRayForm {sig : MonadicSignature} [Fintype sig.preds]
     {atomMap : Formula → sig.preds} {k : Nat}
     (P : ExistProviders sig atomMap k) (σ : NormalForm sig (k + 1) 4) : Formula :=
   formulaConjList
-    ((Formula.untl (kvEFutRayD P σ).neg Formula.top).neg ::
+    ((Formula.untlQ Formula.top (kvEFutRayD P σ).neg).neg ::
       (kvEFiberZoneList σ kvEFutRayZone).map fun s =>
-        Formula.untl (kvEFutItemShift P s) Formula.top)
+        Formula.untlQ Formula.top (kvEFutItemShift P s))
 
 /-- **Endpoint description** at `x1` (depth-`k` analog of `kvE2FutEnd`, :1098): the self-zone
     fiber content (the endpoint's own full-fiber realization, at the self zone

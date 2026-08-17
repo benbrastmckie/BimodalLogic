@@ -287,7 +287,7 @@ theorem kvE_nonInterior_zPastX_sound {sig : MonadicSignature} [Fintype sig.preds
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (x : M.carrier) (fs : List Formula) (φ : Formula)
-    (hmem : Formula.snce φ Formula.top ∈ fs)
+    (hmem : Formula.snceQ Formula.top φ ∈ fs)
     (hepL : TemporalTruth M atomMap x (formulaConjList fs)) :
     ∃ v : M.carrier, v < x ∧ TemporalTruth M atomMap v φ := by
   have hlit := (formula_conjList_iff M atomMap x fs).mp hepL _ hmem
@@ -302,7 +302,7 @@ theorem kvE_nonInterior_zFutT_sound {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (t : M.carrier) (fs : List Formula) (φ : Formula)
-    (hmem : Formula.untl φ Formula.top ∈ fs)
+    (hmem : Formula.untlQ Formula.top φ ∈ fs)
     (hepR : TemporalTruth M atomMap t (formulaConjList fs)) :
     ∃ v : M.carrier, t < v ∧ TemporalTruth M atomMap v φ := by
   have hlit := (formula_conjList_iff M atomMap t fs).mp hepR _ hmem
@@ -377,7 +377,7 @@ theorem kvE_nonInterior_zPastX_complete {sig : MonadicSignature} [Fintype sig.pr
     (x v : M.carrier) (φ : Formula)
     (hv_lt : v < x)
     (hv_phi : TemporalTruth M atomMap v φ) :
-    TemporalTruth M atomMap x (Formula.snce φ Formula.top) :=
+    TemporalTruth M atomMap x (Formula.snceQ Formula.top φ) :=
   ⟨v, hv_lt, hv_phi, fun r _ _ => temporal_truth_top M atomMap r⟩
 
 /-- **`zFutT` completeness (exterior-future navigation).** A future witness `t < v` realizing `φ`
@@ -391,7 +391,7 @@ theorem kvE_nonInterior_zFutT_complete {sig : MonadicSignature} [Fintype sig.pre
     (t v : M.carrier) (φ : Formula)
     (hv_lt : t < v)
     (hv_phi : TemporalTruth M atomMap v φ) :
-    TemporalTruth M atomMap t (Formula.untl φ Formula.top) :=
+    TemporalTruth M atomMap t (Formula.untlQ Formula.top φ) :=
   ⟨v, hv_lt, hv_phi, fun r _ _ => temporal_truth_top M atomMap r⟩
 
 /-- **`zAtX` completeness (left-boundary point-realization).** The bare literal `φ` realized AT the

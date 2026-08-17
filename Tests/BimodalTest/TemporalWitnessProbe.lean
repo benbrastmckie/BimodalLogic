@@ -249,7 +249,7 @@ private def pastTimes (b : Branch) (ord : TimeOrdering) (t : TimeIndex) : List T
 private def untlPosDichotomy (b : Branch) (ord : TimeOrdering) : Bool :=
   b.all fun sf =>
     match sf.sign, sf.formula with
-    | .pos, .untl φ ψ =>
+    | .pos, .untlQ ψ φ =>
         (futTimes b ord sf.label.time).all fun v =>
           b.hasPosAt φ ⟨sf.label.world, v⟩ || b.hasPosAt ψ ⟨sf.label.world, v⟩
     | _, _ => true
@@ -258,7 +258,7 @@ private def untlPosDichotomy (b : Branch) (ord : TimeOrdering) : Bool :=
 private def untlPosWitness (b : Branch) (ord : TimeOrdering) : Bool :=
   b.all fun sf =>
     match sf.sign, sf.formula with
-    | .pos, .untl φ _ =>
+    | .pos, .untlQ _ φ =>
         (futTimes b ord sf.label.time).any fun v => b.hasPosAt φ ⟨sf.label.world, v⟩
     | _, _ => true
 
@@ -266,7 +266,7 @@ private def untlPosWitness (b : Branch) (ord : TimeOrdering) : Bool :=
 private def untlNegStrong (b : Branch) (ord : TimeOrdering) : Bool :=
   b.all fun sf =>
     match sf.sign, sf.formula with
-    | .neg, .untl φ _ =>
+    | .neg, .untlQ _ φ =>
         (futTimes b ord sf.label.time).all fun v => b.hasNegAt φ ⟨sf.label.world, v⟩
     | _, _ => true
 
@@ -275,7 +275,7 @@ has a known time strictly between it and the until's own time denying the guard.
 private def untlNegCoDec (b : Branch) (ord : TimeOrdering) : Bool :=
   b.all fun sf =>
     match sf.sign, sf.formula with
-    | .neg, .untl φ ψ =>
+    | .neg, .untlQ ψ φ =>
         (futTimes b ord sf.label.time).all fun v =>
           b.hasNegAt φ ⟨sf.label.world, v⟩ ||
             (futTimes b ord sf.label.time).any fun u =>
@@ -288,7 +288,7 @@ private def untlRayPos (b : Branch) (ord : TimeOrdering) : Bool :=
     let l : Label := ⟨w, regionLabel b ord w b.knownTimes.length⟩
     b.all fun sf =>
       match sf.sign, sf.formula with
-      | .pos, .untl φ _ => if sf.label == l then b.hasPosAt φ l else true
+      | .pos, .untlQ _ φ => if sf.label == l then b.hasPosAt φ l else true
       | _, _ => true
 
 /-- The upper ray's chosen label denies the event of its own negative untils. -/
@@ -297,7 +297,7 @@ private def untlRayNeg (b : Branch) (ord : TimeOrdering) : Bool :=
     let l : Label := ⟨w, regionLabel b ord w b.knownTimes.length⟩
     b.all fun sf =>
       match sf.sign, sf.formula with
-      | .neg, .untl φ _ => if sf.label == l then b.hasNegAt φ l else true
+      | .neg, .untlQ _ φ => if sf.label == l then b.hasNegAt φ l else true
       | _, _ => true
 
 /-! ## The six `snce` mirrors -/
@@ -305,7 +305,7 @@ private def untlRayNeg (b : Branch) (ord : TimeOrdering) : Bool :=
 private def sncePosDichotomy (b : Branch) (ord : TimeOrdering) : Bool :=
   b.all fun sf =>
     match sf.sign, sf.formula with
-    | .pos, .snce φ ψ =>
+    | .pos, .snceQ ψ φ =>
         (pastTimes b ord sf.label.time).all fun v =>
           b.hasPosAt φ ⟨sf.label.world, v⟩ || b.hasPosAt ψ ⟨sf.label.world, v⟩
     | _, _ => true
@@ -313,21 +313,21 @@ private def sncePosDichotomy (b : Branch) (ord : TimeOrdering) : Bool :=
 private def sncePosWitness (b : Branch) (ord : TimeOrdering) : Bool :=
   b.all fun sf =>
     match sf.sign, sf.formula with
-    | .pos, .snce φ _ =>
+    | .pos, .snceQ _ φ =>
         (pastTimes b ord sf.label.time).any fun v => b.hasPosAt φ ⟨sf.label.world, v⟩
     | _, _ => true
 
 private def snceNegStrong (b : Branch) (ord : TimeOrdering) : Bool :=
   b.all fun sf =>
     match sf.sign, sf.formula with
-    | .neg, .snce φ _ =>
+    | .neg, .snceQ _ φ =>
         (pastTimes b ord sf.label.time).all fun v => b.hasNegAt φ ⟨sf.label.world, v⟩
     | _, _ => true
 
 private def snceNegCoDec (b : Branch) (ord : TimeOrdering) : Bool :=
   b.all fun sf =>
     match sf.sign, sf.formula with
-    | .neg, .snce φ ψ =>
+    | .neg, .snceQ ψ φ =>
         (pastTimes b ord sf.label.time).all fun v =>
           b.hasNegAt φ ⟨sf.label.world, v⟩ ||
             (pastTimes b ord sf.label.time).any fun u =>
@@ -339,7 +339,7 @@ private def snceRayPos (b : Branch) (ord : TimeOrdering) : Bool :=
     let l : Label := ⟨w, regionLabel b ord w 0⟩
     b.all fun sf =>
       match sf.sign, sf.formula with
-      | .pos, .snce φ _ => if sf.label == l then b.hasPosAt φ l else true
+      | .pos, .snceQ _ φ => if sf.label == l then b.hasPosAt φ l else true
       | _, _ => true
 
 private def snceRayNeg (b : Branch) (ord : TimeOrdering) : Bool :=
@@ -347,7 +347,7 @@ private def snceRayNeg (b : Branch) (ord : TimeOrdering) : Bool :=
     let l : Label := ⟨w, regionLabel b ord w 0⟩
     b.all fun sf =>
       match sf.sign, sf.formula with
-      | .neg, .snce φ _ => if sf.label == l then b.hasNegAt φ l else true
+      | .neg, .snceQ _ φ => if sf.label == l then b.hasNegAt φ l else true
       | _, _ => true
 
 
@@ -358,7 +358,7 @@ contiguous `ℤ` placement puts strictly inside the interval. -/
 private def untlPosGuardedWitness (b : Branch) (ord : TimeOrdering) : Bool :=
   b.all fun sf =>
     match sf.sign, sf.formula with
-    | .pos, .untl φ ψ =>
+    | .pos, .untlQ ψ φ =>
         ψ == Formula.top ||
         (futTimes b ord sf.label.time).any fun t =>
           b.hasPosAt φ ⟨sf.label.world, t⟩ &&
@@ -370,7 +370,7 @@ private def untlPosGuardedWitness (b : Branch) (ord : TimeOrdering) : Bool :=
 private def sncePosGuardedWitness (b : Branch) (ord : TimeOrdering) : Bool :=
   b.all fun sf =>
     match sf.sign, sf.formula with
-    | .pos, .snce φ ψ =>
+    | .pos, .snceQ ψ φ =>
         ψ == Formula.top ||
         (pastTimes b ord sf.label.time).any fun t =>
           b.hasPosAt φ ⟨sf.label.world, t⟩ &&
@@ -388,7 +388,7 @@ private def untlRayDnGuard (b : Branch) (ord : TimeOrdering) : Bool :=
     let l : Label := ⟨w, regionLabel b ord w 0⟩
     b.all fun sf =>
       match sf.sign, sf.formula with
-      | .pos, .untl φ ψ =>
+      | .pos, .untlQ ψ φ =>
           if sf.label == l && ψ != Formula.top then
             b.hasPosAt φ l ||
               (b.hasPosAt ψ l &&
@@ -405,7 +405,7 @@ private def snceRayUpGuard (b : Branch) (ord : TimeOrdering) : Bool :=
     let l : Label := ⟨w, regionLabel b ord w b.knownTimes.length⟩
     b.all fun sf =>
       match sf.sign, sf.formula with
-      | .pos, .snce φ ψ =>
+      | .pos, .snceQ ψ φ =>
           if sf.label == l && ψ != Formula.top then
             b.hasPosAt φ l ||
               (b.hasPosAt ψ l &&
@@ -423,8 +423,8 @@ measuring the `someFuture`/`somePast` fragment and says nothing about the branch
 private def hasGenuine (b : Branch) : Bool :=
   b.any fun sf =>
     match sf.formula with
-    | .untl _ ψ => ψ != Formula.top
-    | .snce _ ψ => ψ != Formula.top
+    | .untlQ ψ _ => ψ != Formula.top
+    | .snceQ ψ _ => ψ != Formula.top
     | _ => false
 
 private def report (b : Branch) (ord : TimeOrdering) : String :=
@@ -526,7 +526,7 @@ contain.
 -- now `"OPEN |T|=5 gen=true check=false U[dich=false wit=true gw=true rdG=true nStr=true nCo=true rP=false rN=true] S[dich=false wit=true gw=true ruG=true nStr=true nCo=true rP=true rN=true]"`. Owner: `trivialEventWitnessed` — see the Re-baseline record above.
 /-- info: "OPEN |T|=5 gen=true check=false U[dich=false wit=true gw=true rdG=true nStr=true nCo=true rP=false rN=true] S[dich=false wit=true gw=true ruG=true nStr=true nCo=true rP=true rN=true]" -/
 #guard_msgs in
-#eval probe (.imp (.untl p q) q)
+#eval probe (.imp (.untlQ q p) q)
 
 -- I. `p → U(p,q)`, a negative genuine until. **Was `check=true` with every candidate row
 -- holding.** The PASSIVE-arm retirement flipped `check` to `false` here, and with it the U-side
@@ -534,20 +534,20 @@ contain.
 -- the row the retirement cost the most, and the one the top-of-file banner is about.
 /-- info: "OPEN |T|=4 gen=true check=false U[dich=true wit=true gw=true rdG=true nStr=false nCo=false rP=false rN=false] S[dich=false wit=true gw=true ruG=true nStr=true nCo=true rP=true rN=true]" -/
 #guard_msgs in
-#eval probe (.imp p (.untl p q))
+#eval probe (.imp p (.untlQ q p))
 
 -- J. `S(p,q) → q`, the mirror of H, and the gate reports `false` in the same way.
 -- RE-BASELINED (guard): was `"OPEN |T|=7 gen=true check=false U[dich=false wit=true gw=true rdG=true nStr=true nCo=true rP=true rN=true] S[dich=false wit=true gw=true ruG=true nStr=true nCo=true rP=false rN=true]"`;
 -- now `"OPEN |T|=5 gen=true check=false U[dich=false wit=true gw=true rdG=true nStr=true nCo=true rP=true rN=true] S[dich=false wit=true gw=true ruG=true nStr=true nCo=true rP=false rN=true]"`. Owner: `trivialEventWitnessed` — see the Re-baseline record above.
 /-- info: "OPEN |T|=5 gen=true check=false U[dich=false wit=true gw=true rdG=true nStr=true nCo=true rP=true rN=true] S[dich=false wit=true gw=true ruG=true nStr=true nCo=true rP=false rN=true]" -/
 #guard_msgs in
-#eval probe (.imp (.snce p q) q)
+#eval probe (.imp (.snceQ q p) q)
 
 -- K. `p → S(p,q)`, the mirror of I. **Was `check=true` with every candidate row holding**; the
 -- retirement flipped `check` and the S-side quadruple, exactly mirroring I.
 /-- info: "OPEN |T|=4 gen=true check=false U[dich=true wit=true gw=true rdG=true nStr=true nCo=true rP=true rN=true] S[dich=false wit=true gw=true ruG=true nStr=false nCo=false rP=false rN=false]" -/
 #guard_msgs in
-#eval probe (.imp p (.snce p q))
+#eval probe (.imp p (.snceQ q p))
 
 -- L. `U(p,q) → U(q,p)`: a genuine until on **both** signs. **This row has moved, and it moved
 -- for the reason it was pinned.** It previously read `STALLED`, with the note that it was pinned
@@ -568,21 +568,21 @@ contain.
 -- now `"OPEN |T|=5 gen=true check=false U[dich=false wit=true gw=true rdG=true nStr=false nCo=false rP=false rN=false] S[dich=false wit=true gw=true ruG=true nStr=true nCo=true rP=true rN=true]"`. Owner: `trivialEventWitnessed` — see the Re-baseline record above.
 /-- info: "OPEN |T|=5 gen=true check=false U[dich=false wit=true gw=true rdG=true nStr=false nCo=false rP=false rN=false] S[dich=false wit=true gw=true ruG=true nStr=true nCo=true rP=true rN=true]" -/
 #guard_msgs in
-#eval probe (.imp (.untl p q) (.untl q p))
+#eval probe (.imp (.untlQ q p) (.untlQ p q))
 
 -- M. Row H under `.Dense`: the frame class does not move any of the twelve verdicts.
 -- RE-BASELINED (guard): was `"OPEN |T|=6 gen=true check=false U[dich=false wit=true gw=false rdG=true nStr=true nCo=true rP=false rN=true] S[dich=false wit=true gw=true ruG=true nStr=true nCo=true rP=true rN=true]"`;
 -- now `"OPEN |T|=5 gen=true check=false U[dich=false wit=true gw=true rdG=true nStr=true nCo=true rP=false rN=true] S[dich=false wit=true gw=true ruG=true nStr=true nCo=true rP=true rN=true]"`. Owner: `trivialEventWitnessed` — see the Re-baseline record above.
 /-- info: "OPEN |T|=5 gen=true check=false U[dich=false wit=true gw=true rdG=true nStr=true nCo=true rP=false rN=true] S[dich=false wit=true gw=true ruG=true nStr=true nCo=true rP=true rN=true]" -/
 #guard_msgs in
-#eval probe (.imp (.untl p q) q) 200 .Dense
+#eval probe (.imp (.untlQ q p) q) 200 .Dense
 
 -- N. Row I under `.Discrete`. `regionLabelCheck` reports `false` here where it reported `true`
 -- at `.Base`, and four candidate rows go with it — the frame class changes the branch, not the
 -- relationship between the gate and the bundle.
 /-- info: "OPEN |T|=4 gen=true check=false U[dich=true wit=true gw=true rdG=false nStr=false nCo=false rP=false rN=false] S[dich=false wit=true gw=false ruG=false nStr=true nCo=true rP=false rN=true]" -/
 #guard_msgs in
-#eval probe (.imp p (.untl p q)) 200 .Discrete
+#eval probe (.imp p (.untlQ q p)) 200 .Discrete
 
 /-! ## A candidate that is refuted: the region labels are not uniformly negative
 
@@ -600,7 +600,7 @@ row overreaches by dropping the "strictly below" side condition, and the corpus 
 private def untlNegAllRegions (b : Branch) (ord : TimeOrdering) : Bool :=
   b.all fun sf =>
     match sf.sign, sf.formula with
-    | .neg, .untl φ _ =>
+    | .neg, .untlQ _ φ =>
         (List.range (b.knownTimes.length + 1)).all fun j =>
           b.hasNegAt φ ⟨sf.label.world, regionLabel b ord sf.label.world j⟩
     | _, _ => true
@@ -608,7 +608,7 @@ private def untlNegAllRegions (b : Branch) (ord : TimeOrdering) : Bool :=
 private def snceNegAllRegions (b : Branch) (ord : TimeOrdering) : Bool :=
   b.all fun sf =>
     match sf.sign, sf.formula with
-    | .neg, .snce φ _ =>
+    | .neg, .snceQ _ φ =>
         (List.range (b.knownTimes.length + 1)).all fun j =>
           b.hasNegAt φ ⟨sf.label.world, regionLabel b ord sf.label.world j⟩
     | _, _ => true
@@ -649,7 +649,7 @@ def probe2 (φ : Formula) (fuel : Nat := 200) (fc : FrameClass := .Base) : Strin
 
 /-- info: "H check=false uNAR=true sNAR=true" -/
 #guard_msgs in
-#eval "H " ++ probe2 (.imp (.untl p q) q)
+#eval "H " ++ probe2 (.imp (.untlQ q p) q)
 
 -- I. **The second refuting row**, and the one that matters: a genuine negative until on a branch
 -- the gate accepted before the PASSIVE-arm retirement (`check` is now `false`; see the banner at
@@ -657,15 +657,15 @@ def probe2 (φ : Formula) (fuel : Nat := 200) (fc : FrameClass := .Base) : Strin
 -- is unaffected.
 /-- info: "I check=false uNAR=false sNAR=true" -/
 #guard_msgs in
-#eval "I " ++ probe2 (.imp p (.untl p q))
+#eval "I " ++ probe2 (.imp p (.untlQ q p))
 
 /-- info: "J check=false uNAR=true sNAR=true" -/
 #guard_msgs in
-#eval "J " ++ probe2 (.imp (.snce p q) q)
+#eval "J " ++ probe2 (.imp (.snceQ q p) q)
 
 /-- info: "K check=false uNAR=true sNAR=false" -/
 #guard_msgs in
-#eval "K " ++ probe2 (.imp p (.snce p q))
+#eval "K " ++ probe2 (.imp p (.snceQ q p))
 
 /-! ## The lower-ray negative demand — Correction 12's residual, measured
 
@@ -687,7 +687,7 @@ that a `false` on the strong row says *which* part failed rather than merely tha
 private def untlNegRayLow (b : Branch) (ord : TimeOrdering) : Bool :=
   b.all fun sf =>
     match sf.sign, sf.formula with
-    | .neg, .untl φ _ =>
+    | .neg, .untlQ _ φ =>
         if sf.label.time == regionLabel b ord sf.label.world 0 then
           b.knownTimes.all fun v => b.hasNegAt φ ⟨sf.label.world, v⟩
         else true
@@ -697,7 +697,7 @@ private def untlNegRayLow (b : Branch) (ord : TimeOrdering) : Bool :=
 private def snceNegRayUp (b : Branch) (ord : TimeOrdering) : Bool :=
   b.all fun sf =>
     match sf.sign, sf.formula with
-    | .neg, .snce φ _ =>
+    | .neg, .snceQ _ φ =>
         if sf.label.time == regionLabel b ord sf.label.world b.knownTimes.length then
           b.knownTimes.all fun v => b.hasNegAt φ ⟨sf.label.world, v⟩
         else true
@@ -707,7 +707,7 @@ private def snceNegRayUp (b : Branch) (ord : TimeOrdering) : Bool :=
 private def untlNegRayLowSelf (b : Branch) (ord : TimeOrdering) : Bool :=
   b.all fun sf =>
     match sf.sign, sf.formula with
-    | .neg, .untl φ _ =>
+    | .neg, .untlQ _ φ =>
         if sf.label.time == regionLabel b ord sf.label.world 0 then
           b.hasNegAt φ sf.label
         else true
@@ -717,7 +717,7 @@ private def untlNegRayLowSelf (b : Branch) (ord : TimeOrdering) : Bool :=
 private def snceNegRayUpSelf (b : Branch) (ord : TimeOrdering) : Bool :=
   b.all fun sf =>
     match sf.sign, sf.formula with
-    | .neg, .snce φ _ =>
+    | .neg, .snceQ _ φ =>
         if sf.label.time == regionLabel b ord sf.label.world b.knownTimes.length then
           b.hasNegAt φ sf.label
         else true
@@ -759,25 +759,25 @@ def probe3 (φ : Formula) (fuel : Nat := 200) (fc : FrameClass := .Base) : Strin
 
 /-- info: "H gen=true check=false uRL=true uRLs=true sRU=true sRUs=true" -/
 #guard_msgs in
-#eval "H " ++ probe3 (.imp (.untl p q) q)
+#eval "H " ++ probe3 (.imp (.untlQ q p) q)
 
 -- I. The row that matters: a genuine **negative** until on a branch the gate accepted before the
 -- PASSIVE-arm retirement (`check` is now `false`; see the banner at the head of this file).
 /-- info: "I gen=true check=false uRL=true uRLs=true sRU=true sRUs=true" -/
 #guard_msgs in
-#eval "I " ++ probe3 (.imp p (.untl p q))
+#eval "I " ++ probe3 (.imp p (.untlQ q p))
 
 /-- info: "J gen=true check=false uRL=true uRLs=true sRU=true sRUs=true" -/
 #guard_msgs in
-#eval "J " ++ probe3 (.imp (.snce p q) q)
+#eval "J " ++ probe3 (.imp (.snceQ q p) q)
 
 /-- info: "K gen=true check=false uRL=true uRLs=true sRU=true sRUs=true" -/
 #guard_msgs in
-#eval "K " ++ probe3 (.imp p (.snce p q))
+#eval "K " ++ probe3 (.imp p (.snceQ q p))
 
 /-- info: "M gen=true check=false uRL=true uRLs=true sRU=true sRUs=true" -/
 #guard_msgs in
-#eval "M " ++ probe3 (.imp (.untl p q) q) 200 .Dense
+#eval "M " ++ probe3 (.imp (.untlQ q p) q) 200 .Dense
 
 -- N. The single `false`, and it sits where every other `false` in this file sits: on a row
 -- `regionLabelCheck` already rejects. `uRLs` fails with `uRL`, so what fails is the *self*-denial
@@ -785,7 +785,7 @@ def probe3 (φ : Formula) (fuel : Nat := 200) (fc : FrameClass := .Base) : Strin
 -- weak one anywhere in the corpus.
 /-- info: "N gen=true check=false uRL=false uRLs=false sRU=true sRUs=true" -/
 #guard_msgs in
-#eval "N " ++ probe3 (.imp p (.untl p q)) 200 .Discrete
+#eval "N " ++ probe3 (.imp p (.untlQ q p)) 200 .Discrete
 
 /-! ## The positive rows, in the exact form the proof consumes them
 
@@ -816,7 +816,7 @@ every known time strictly between carries the guard. -/
 private def untlPosWitGuard (b : Branch) (ord : TimeOrdering) : Bool :=
   b.all fun sf =>
     match sf.sign, sf.formula with
-    | .pos, .untl φ ψ =>
+    | .pos, .untlQ ψ φ =>
         (futTimes b ord sf.label.time).any fun t =>
           b.hasPosAt φ ⟨sf.label.world, t⟩ &&
             (ψ == Formula.top ||
@@ -828,7 +828,7 @@ private def untlPosWitGuard (b : Branch) (ord : TimeOrdering) : Bool :=
 private def sncePosWitGuard (b : Branch) (ord : TimeOrdering) : Bool :=
   b.all fun sf =>
     match sf.sign, sf.formula with
-    | .pos, .snce φ ψ =>
+    | .pos, .snceQ ψ φ =>
         (pastTimes b ord sf.label.time).any fun t =>
           b.hasPosAt φ ⟨sf.label.world, t⟩ &&
             (ψ == Formula.top ||
@@ -842,7 +842,7 @@ below the witness. Branch-major, as rows 5 and 6 are. -/
 private def untlRayDnWit (b : Branch) (ord : TimeOrdering) : Bool :=
   b.all fun sf =>
     match sf.sign, sf.formula with
-    | .pos, .untl φ ψ =>
+    | .pos, .untlQ ψ φ =>
         if sf.label.time == regionLabel b ord sf.label.world 0 then
           b.knownTimes.any fun t =>
             b.hasPosAt φ ⟨sf.label.world, t⟩ &&
@@ -857,7 +857,7 @@ private def untlRayDnWit (b : Branch) (ord : TimeOrdering) : Bool :=
 private def snceRayUpWit (b : Branch) (ord : TimeOrdering) : Bool :=
   b.all fun sf =>
     match sf.sign, sf.formula with
-    | .pos, .snce φ ψ =>
+    | .pos, .snceQ ψ φ =>
         if sf.label.time == regionLabel b ord sf.label.world b.knownTimes.length then
           b.knownTimes.any fun t =>
             b.hasPosAt φ ⟨sf.label.world, t⟩ &&
@@ -910,27 +910,27 @@ def probe4 (φ : Formula) (fuel : Nat := 200) (fc : FrameClass := .Base) : Strin
 -- now `"H gen=true check=false uGW=true [gw=true wit=true] sGW=true [gw=true wit=true] uRD=true [rdG=true] sRU=true [ruG=true]"`. Owner: `trivialEventWitnessed` — see the Re-baseline record above.
 /-- info: "H gen=true check=false uGW=true [gw=true wit=true] sGW=true [gw=true wit=true] uRD=true [rdG=true] sRU=true [ruG=true]" -/
 #guard_msgs in
-#eval "H " ++ probe4 (.imp (.untl p q) q)
+#eval "H " ++ probe4 (.imp (.untlQ q p) q)
 
 -- I. The row that matters for the positive `untl` case: a genuine until on a branch the gate
 -- accepts.
 /-- info: "I gen=true check=false uGW=true [gw=true wit=true] sGW=true [gw=true wit=true] uRD=true [rdG=true] sRU=true [ruG=true]" -/
 #guard_msgs in
-#eval "I " ++ probe4 (.imp p (.untl p q))
+#eval "I " ++ probe4 (.imp p (.untlQ q p))
 
 /-- info: "J gen=true check=false uGW=true [gw=true wit=true] sGW=true [gw=true wit=true] uRD=true [rdG=true] sRU=true [ruG=true]" -/
 #guard_msgs in
-#eval "J " ++ probe4 (.imp (.snce p q) q)
+#eval "J " ++ probe4 (.imp (.snceQ q p) q)
 
 /-- info: "K gen=true check=false uGW=true [gw=true wit=true] sGW=true [gw=true wit=true] uRD=true [rdG=true] sRU=true [ruG=true]" -/
 #guard_msgs in
-#eval "K " ++ probe4 (.imp p (.snce p q))
+#eval "K " ++ probe4 (.imp p (.snceQ q p))
 
 -- RE-BASELINED (guard): was `"M gen=true check=false uGW=false [gw=false wit=true] sGW=true [gw=true wit=true] uRD=true [rdG=true] sRU=true [ruG=true]"`;
 -- now `"M gen=true check=false uGW=true [gw=true wit=true] sGW=true [gw=true wit=true] uRD=true [rdG=true] sRU=true [ruG=true]"`. Owner: `trivialEventWitnessed` — see the Re-baseline record above.
 /-- info: "M gen=true check=false uGW=true [gw=true wit=true] sGW=true [gw=true wit=true] uRD=true [rdG=true] sRU=true [ruG=true]" -/
 #guard_msgs in
-#eval "M " ++ probe4 (.imp (.untl p q) q) 200 .Dense
+#eval "M " ++ probe4 (.imp (.untlQ q p) q) 200 .Dense
 
 -- N. Every `false` in this block sits on this row and on H, J and M — all four of them rows
 -- `regionLabelCheck` already rejects. On all eight rows the gate accepts, the four adopted forms
@@ -940,7 +940,7 @@ def probe4 (φ : Formula) (fuel : Nat := 200) (fc : FrameClass := .Base) : Strin
 -- from `gw` either, since `wit` is `true` on all twelve rows.
 /-- info: "N gen=true check=false uGW=true [gw=true wit=true] sGW=false [gw=false wit=true] uRD=false [rdG=false] sRU=false [ruG=false]" -/
 #guard_msgs in
-#eval "N " ++ probe4 (.imp p (.untl p q)) 200 .Discrete
+#eval "N " ++ probe4 (.imp p (.untlQ q p)) 200 .Discrete
 
 /-! ## The interior-region negative demand — the dense carrier's residual, measured
 
@@ -970,7 +970,7 @@ reported separately, so that a `false` says *which* reach failed.
 private def untlNegRegionUpK (b : Branch) (ord : TimeOrdering) : Bool :=
   b.all fun sf =>
     match sf.sign, sf.formula with
-    | .neg, .untl φ _ =>
+    | .neg, .untlQ _ φ =>
         (List.range (b.knownTimes.length + 1)).all fun j =>
           if sf.label.time == regionLabel b ord sf.label.world j then
             b.knownTimes.all fun v =>
@@ -982,7 +982,7 @@ private def untlNegRegionUpK (b : Branch) (ord : TimeOrdering) : Bool :=
 private def untlNegRegionUpR (b : Branch) (ord : TimeOrdering) : Bool :=
   b.all fun sf =>
     match sf.sign, sf.formula with
-    | .neg, .untl φ _ =>
+    | .neg, .untlQ _ φ =>
         (List.range (b.knownTimes.length + 1)).all fun j =>
           if sf.label.time == regionLabel b ord sf.label.world j then
             (List.range (b.knownTimes.length + 1)).all fun j' =>
@@ -1000,7 +1000,7 @@ private def untlNegRegionUp (b : Branch) (ord : TimeOrdering) : Bool :=
 private def snceNegRegionDnK (b : Branch) (ord : TimeOrdering) : Bool :=
   b.all fun sf =>
     match sf.sign, sf.formula with
-    | .neg, .snce φ _ =>
+    | .neg, .snceQ _ φ =>
         (List.range (b.knownTimes.length + 1)).all fun j =>
           if sf.label.time == regionLabel b ord sf.label.world j then
             b.knownTimes.all fun v =>
@@ -1012,7 +1012,7 @@ private def snceNegRegionDnK (b : Branch) (ord : TimeOrdering) : Bool :=
 private def snceNegRegionDnR (b : Branch) (ord : TimeOrdering) : Bool :=
   b.all fun sf =>
     match sf.sign, sf.formula with
-    | .neg, .snce φ _ =>
+    | .neg, .snceQ _ φ =>
         (List.range (b.knownTimes.length + 1)).all fun j =>
           if sf.label.time == regionLabel b ord sf.label.world j then
             (List.range (b.knownTimes.length + 1)).all fun j' =>
@@ -1064,25 +1064,25 @@ def probe5 (φ : Formula) (fuel : Nat := 200) (fc : FrameClass := .Base) : Strin
 
 /-- info: "H gen=true check=false uNRU=true [k=true r=true uRL=true] sNRD=true [k=true r=true sRU=true]" -/
 #guard_msgs in
-#eval "H " ++ probe5 (.imp (.untl p q) q)
+#eval "H " ++ probe5 (.imp (.untlQ q p) q)
 
 -- I. The row that matters: a genuine **negative** until on a branch the gate accepted before the
 -- PASSIVE-arm retirement (`check` is now `false`; see the banner at the head of this file).
 /-- info: "I gen=true check=false uNRU=false [k=false r=false uRL=true] sNRD=true [k=true r=true sRU=true]" -/
 #guard_msgs in
-#eval "I " ++ probe5 (.imp p (.untl p q))
+#eval "I " ++ probe5 (.imp p (.untlQ q p))
 
 /-- info: "J gen=true check=false uNRU=true [k=true r=true uRL=true] sNRD=true [k=true r=true sRU=true]" -/
 #guard_msgs in
-#eval "J " ++ probe5 (.imp (.snce p q) q)
+#eval "J " ++ probe5 (.imp (.snceQ q p) q)
 
 /-- info: "K gen=true check=false uNRU=true [k=true r=true uRL=true] sNRD=false [k=false r=false sRU=true]" -/
 #guard_msgs in
-#eval "K " ++ probe5 (.imp p (.snce p q))
+#eval "K " ++ probe5 (.imp p (.snceQ q p))
 
 /-- info: "M gen=true check=false uNRU=true [k=true r=true uRL=true] sNRD=true [k=true r=true sRU=true]" -/
 #guard_msgs in
-#eval "M " ++ probe5 (.imp (.untl p q) q) 200 .Dense
+#eval "M " ++ probe5 (.imp (.untlQ q p) q) 200 .Dense
 
 -- N. The single `false`, and it sits exactly where `uRL` already fails — a row
 -- `regionLabelCheck` already rejects, and the same row on which rows 5 and 9-10 already report
@@ -1090,7 +1090,7 @@ def probe5 (φ : Formula) (fuel : Nat := 200) (fc : FrameClass := .Base) : Strin
 -- `j = 0` to an arbitrary `j` costs **nothing** over row 5 anywhere in the corpus.
 /-- info: "N gen=true check=false uNRU=false [k=false r=false uRL=false] sNRD=true [k=true r=true sRU=true]" -/
 #guard_msgs in
-#eval "N " ++ probe5 (.imp p (.untl p q)) 200 .Discrete
+#eval "N " ++ probe5 (.imp p (.untlQ q p)) 200 .Discrete
 
 /-! ## The interior-region positive demand — the dense carrier's other residual, measured
 
@@ -1125,7 +1125,7 @@ beside them rather than as a replacement for them.
 private def untlPosRegion (b : Branch) (ord : TimeOrdering) : Bool :=
   b.all fun sf =>
     match sf.sign, sf.formula with
-    | .pos, .untl φ ψ =>
+    | .pos, .untlQ ψ φ =>
         (List.range (b.knownTimes.length + 1)).all fun j =>
           if sf.label.time == regionLabel b ord sf.label.world j then
             (b.hasPosAt φ sf.label && (ψ == Formula.top || b.hasPosAt ψ sf.label)) ||
@@ -1147,7 +1147,7 @@ private def untlPosRegion (b : Branch) (ord : TimeOrdering) : Bool :=
 private def sncePosRegion (b : Branch) (ord : TimeOrdering) : Bool :=
   b.all fun sf =>
     match sf.sign, sf.formula with
-    | .pos, .snce φ ψ =>
+    | .pos, .snceQ ψ φ =>
         (List.range (b.knownTimes.length + 1)).all fun j =>
           if sf.label.time == regionLabel b ord sf.label.world j then
             (b.hasPosAt φ sf.label && (ψ == Formula.top || b.hasPosAt ψ sf.label)) ||
@@ -1169,7 +1169,7 @@ private def sncePosRegion (b : Branch) (ord : TimeOrdering) : Bool :=
 private def untlPosRegionSelf (b : Branch) (ord : TimeOrdering) : Bool :=
   b.all fun sf =>
     match sf.sign, sf.formula with
-    | .pos, .untl φ ψ =>
+    | .pos, .untlQ ψ φ =>
         (List.range (b.knownTimes.length + 1)).all fun j =>
           if sf.label.time == regionLabel b ord sf.label.world j then
             b.hasPosAt φ sf.label && (ψ == Formula.top || b.hasPosAt ψ sf.label)
@@ -1180,7 +1180,7 @@ private def untlPosRegionSelf (b : Branch) (ord : TimeOrdering) : Bool :=
 private def sncePosRegionSelf (b : Branch) (ord : TimeOrdering) : Bool :=
   b.all fun sf =>
     match sf.sign, sf.formula with
-    | .pos, .snce φ ψ =>
+    | .pos, .snceQ ψ φ =>
         (List.range (b.knownTimes.length + 1)).all fun j =>
           if sf.label.time == regionLabel b ord sf.label.world j then
             b.hasPosAt φ sf.label && (ψ == Formula.top || b.hasPosAt ψ sf.label)
@@ -1223,35 +1223,35 @@ def probe6 (φ : Formula) (fuel : Nat := 200) (fc : FrameClass := .Base) : Strin
 
 /-- info: "H gen=true check=false uPR=false [self=false uRD=true] sPR=true [self=false sRU=true]" -/
 #guard_msgs in
-#eval "H " ++ probe6 (.imp (.untl p q) q)
+#eval "H " ++ probe6 (.imp (.untlQ q p) q)
 
 -- I. The row that matters: a genuine until on a branch the gate accepted before the PASSIVE-arm
 -- retirement (`check` is now `false`, and both `self` diagnostics with it). Both candidates and
 -- both `self` diagnostics hold.
 /-- info: "I gen=true check=false uPR=false [self=false uRD=true] sPR=true [self=false sRU=true]" -/
 #guard_msgs in
-#eval "I " ++ probe6 (.imp p (.untl p q))
+#eval "I " ++ probe6 (.imp p (.untlQ q p))
 
 -- J. The disjunction earns its place here: `self` is `false` and `uPR` is `true` anyway, carried
 -- by the `known` disjunct. Neither disjunct alone would do — `self` fails on the genuine-until
 -- rows and `known` is unsatisfiable at the top region, where no known time has rank `n`.
 /-- info: "J gen=true check=false uPR=true [self=false uRD=true] sPR=false [self=false sRU=true]" -/
 #guard_msgs in
-#eval "J " ++ probe6 (.imp (.snce p q) q)
+#eval "J " ++ probe6 (.imp (.snceQ q p) q)
 
 /-- info: "K gen=true check=false uPR=true [self=false uRD=true] sPR=false [self=false sRU=true]" -/
 #guard_msgs in
-#eval "K " ++ probe6 (.imp p (.snce p q))
+#eval "K " ++ probe6 (.imp p (.snceQ q p))
 
 /-- info: "M gen=true check=false uPR=false [self=false uRD=true] sPR=true [self=false sRU=true]" -/
 #guard_msgs in
-#eval "M " ++ probe6 (.imp (.untl p q) q) 200 .Dense
+#eval "M " ++ probe6 (.imp (.untlQ q p) q) 200 .Dense
 
 -- N. Every `false` in this block sits on H, J, M or N — the four rows `regionLabelCheck`
 -- already rejects. On all eight rows the gate accepts, both adopted forms report `true`, which is
 -- the acceptance standard rows 1-10 met.
 /-- info: "N gen=true check=false uPR=false [self=false uRD=false] sPR=false [self=false sRU=false]" -/
 #guard_msgs in
-#eval "N " ++ probe6 (.imp p (.untl p q)) 200 .Discrete
+#eval "N " ++ probe6 (.imp p (.untlQ q p)) 200 .Discrete
 
 end BimodalTest.TemporalWitnessProbe

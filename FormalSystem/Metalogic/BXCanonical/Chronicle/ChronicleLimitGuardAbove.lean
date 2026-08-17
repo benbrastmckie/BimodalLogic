@@ -107,11 +107,11 @@ module docstring. `Axiom.prior_U_gap` is consumed at `ψ`, whence the hypothesis
 -/
 theorem limitGuardAbove_of_priorU {fc : FrameClass} (hfc : FrameClass.Dedekind ≤ fc)
     (m : Rat → Set Formula) (hm : ∀ q : Rat, SetMaximalConsistent (fc := fc) (m q))
-    (hUf : ∀ (t : Rat) (α β : Formula), Formula.untl α β ∈ m t →
+    (hUf : ∀ (t : Rat) (α β : Formula), Formula.untlQ β α ∈ m t →
       ∃ s : Rat, t < s ∧ α ∈ m s ∧ ∀ p : Rat, t < p → p < s → β ∈ m p)
     (hUb : ∀ (t : Rat) (α β : Formula),
       (∃ s : Rat, t < s ∧ α ∈ m s ∧ ∀ p : Rat, t < p → p < s → β ∈ m p) →
-      Formula.untl α β ∈ m t)
+      Formula.untlQ β α ∈ m t)
     (r : ℝ) (hr : ¬ ∃ q : Rat, (q : ℝ) = r) (ψ : Formula)
     (hev : ψ ∈ limitSetBelow m r) :
     ∃ c : Rat, r < (c : ℝ) ∧ ∀ q : Rat, r < (q : ℝ) → (q : ℝ) < (c : ℝ) → ψ ∈ m q := by
@@ -133,17 +133,17 @@ theorem limitGuardAbove_of_priorU {fc : FrameClass} (hfc : FrameClass.Dedekind �
   · -- **Case 2 — `F(¬ψ) ∈ m x`.** The Prior-U antecedent is available; the axiom applies.
     -- `U(⊤, ψ) ∈ m x`: witness any rational in `(x, r)`, guard supplied by `hguard`.
     obtain ⟨s₀, hxs₀, hs₀r⟩ := exists_rat_btwn hxr
-    have hA1 : Formula.untl Formula.top ψ ∈ m x := by
+    have hA1 : Formula.untlQ ψ Formula.top ∈ m x := by
       refine hUb x Formula.top ψ ⟨s₀, by exact_mod_cast hxs₀, htop s₀, ?_⟩
       intro p hxp hps₀
       have hzp : z < (p : ℝ) := lt_trans hzx (by exact_mod_cast hxp)
       have hpr : (p : ℝ) < r := lt_trans (by exact_mod_cast hps₀) hs₀r
       exact hguard p hzp hpr
-    have hand : Formula.and (Formula.untl Formula.top ψ) ψ.neg.someFuture ∈ m x :=
+    have hand : Formula.and (Formula.untlQ ψ Formula.top) ψ.neg.someFuture ∈ m x :=
       conj_mcs fc (hm x) _ _ hA1 hcase
     have himp := theorem_in_mcs (hm x)
       (DerivationTree.axiom [] _ (Axiom.prior_U_gap ψ) hfc)
-    have hcons : Formula.untl (Formula.or ψ.neg (Formula.kPlus ψ.neg)) ψ ∈ m x :=
+    have hcons : Formula.untlQ ψ (Formula.or ψ.neg (Formula.kPlus ψ.neg)) ∈ m x :=
       SetMaximalConsistent.implication_property (hm x) himp hand
     -- Prior-U's consequent, read forwards: a rational `e > x` carrying `¬ψ ∨ K⁺(¬ψ)`, with `ψ`
     -- uninterrupted on `(x, e)`.
@@ -160,7 +160,7 @@ theorem limitGuardAbove_of_priorU {fc : FrameClass} (hfc : FrameClass.Dedekind �
         -- `Formula.or a b = a.neg.imp b`, so the disjunction at `e` is an implication.
         have hor' : (ψ.neg).neg.imp (Formula.kPlus ψ.neg) ∈ m e := hor
         -- `Formula.kPlus a = (U(⊤, ¬a)).neg`, so `K⁺(¬ψ)` at `e` excludes `U(⊤, ¬¬ψ)` at `e`.
-        have hkplus : (Formula.untl Formula.top ψ.neg.neg).neg ∈ m e :=
+        have hkplus : (Formula.untlQ ψ.neg.neg Formula.top).neg ∈ m e :=
           SetMaximalConsistent.implication_property (hm e) hor' hnn
         refine SetMaximalConsistent.neg_excludes (hm e) _ hkplus ?_
         -- But `¬¬ψ` does hold throughout `(e, r) ⊆ (z, r)`, by `hguard`.
@@ -208,17 +208,17 @@ theorem cantor_bfmcs_dense_limit_guard_above (fc : FrameClass)
       (¬ ∃ q : Rat, (q : ℝ) = r) → ∀ ψ : Formula, ψ ∈ limitSetBelow fam.mcs r →
       ∃ c : Rat, r < (c : ℝ) ∧ ∀ q : Rat, r < (q : ℝ) → (q : ℝ) < (c : ℝ) → ψ ∈ fam.mcs q := by
   intro fam hfam r hr ψ hev
-  have hUf : ∀ (t : Rat) (α β : Formula), Formula.untl α β ∈ fam.mcs t →
+  have hUf : ∀ (t : Rat) (α β : Formula), Formula.untlQ β α ∈ fam.mcs t →
       ∃ s : Rat, t < s ∧ α ∈ fam.mcs s ∧ ∀ p : Rat, t < p → p < s → β ∈ fam.mcs p :=
     fun t α β h =>
       (cantor_bfmcs_dense_restricted_fuc fc A h_mcs h_box_dense
-        (Formula.untl α β) fam hfam).1 t α β (self_mem_subformulaClosure _) h
+        (Formula.untlQ β α) fam hfam).1 t α β (self_mem_subformulaClosure _) h
   have hUb : ∀ (t : Rat) (α β : Formula),
       (∃ s : Rat, t < s ∧ α ∈ fam.mcs s ∧ ∀ p : Rat, t < p → p < s → β ∈ fam.mcs p) →
-      Formula.untl α β ∈ fam.mcs t :=
+      Formula.untlQ β α ∈ fam.mcs t :=
     fun t α β h =>
       (cantor_bfmcs_dense_restricted_buc fc A h_mcs h_box_dense
-        (Formula.untl α β) fam hfam).1 t α β (self_mem_subformulaClosure _) h
+        (Formula.untlQ β α) fam hfam).1 t α β (self_mem_subformulaClosure _) h
   exact limitGuardAbove_of_priorU hfc fam.mcs fam.is_mcs hUf hUb r hr ψ hev
 
 end FormalSystem.Metalogic.BXCanonical.Chronicle

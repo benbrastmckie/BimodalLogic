@@ -43,8 +43,8 @@ def isPropositional : Formula → Bool
   | .bot => true
   | .imp φ ψ => isPropositional φ && isPropositional ψ
   | .box _ => false
-  | .untl _ _ => false
-  | .snce _ _ => false
+  | .untlQ _ _ => false
+  | .snceQ _ _ => false
 
 /-- Locate `a` in `atomList`, returning `0` if absent (junk value; only used when
 membership is already established by the caller). -/
@@ -78,8 +78,8 @@ def reifyWith (atomList : List Atom) : Formula → PropForm
   | .bot => PropForm.fls
   | .imp φ ψ => PropForm.imp (reifyWith atomList φ) (reifyWith atomList ψ)
   | .box _ => PropForm.fls
-  | .untl _ _ => PropForm.fls
-  | .snce _ _ => PropForm.fls
+  | .untlQ _ _ => PropForm.fls
+  | .snceQ _ _ => PropForm.fls
 
 /-- The schematic environment built from a fixed atom list: index `n` denotes the `n`-th
 atom's `Formula.atom` reflection, defaulting to `⊥` beyond the list. -/
@@ -95,8 +95,8 @@ def formulaAtomsList : Formula → List Atom
   | .bot => []
   | .imp φ ψ => (formulaAtomsList φ ++ formulaAtomsList ψ).dedup
   | .box φ => formulaAtomsList φ
-  | .untl φ ψ => (formulaAtomsList φ ++ formulaAtomsList ψ).dedup
-  | .snce φ ψ => (formulaAtomsList φ ++ formulaAtomsList ψ).dedup
+  | .untlQ ψ φ => (formulaAtomsList φ ++ formulaAtomsList ψ).dedup
+  | .snceQ ψ φ => (formulaAtomsList φ ++ formulaAtomsList ψ).dedup
 
 theorem mem_formulaAtomsList_imp {φ ψ : Formula} {a : Atom} :
     a ∈ formulaAtomsList (φ.imp ψ) ↔ a ∈ formulaAtomsList φ ∨ a ∈ formulaAtomsList ψ := by
@@ -134,8 +134,8 @@ theorem reifyWith_correct (atomList : List Atom) :
         (fun a ha => hsub a (mem_formulaAtomsList_imp.mpr (Or.inr ha)))
       simp [reifyWith, hφeq, hψeq]
   | box φ _ => intro hprop _; simp [isPropositional] at hprop
-  | untl φ ψ _ _ => intro hprop _; simp [isPropositional] at hprop
-  | snce φ ψ _ _ => intro hprop _; simp [isPropositional] at hprop
+  | untlQ ψ φ _ _ => intro hprop _; simp [isPropositional] at hprop
+  | snceQ ψ φ _ _ => intro hprop _; simp [isPropositional] at hprop
 
 /-- Round-trip lemma for `reify`: denoting the reification of a purely propositional `p`
 recovers `p`. -/
@@ -178,8 +178,8 @@ theorem trivial_truth_iff (v : Nat → Bool) (atomList : List Atom) (t : Int) :
       rw [hφ, hψ]
       cases (reifyWith atomList φ).eval v <;> cases (reifyWith atomList ψ).eval v <;> simp
   | box φ _ => intro hprop; simp [isPropositional] at hprop
-  | untl φ ψ _ _ => intro hprop; simp [isPropositional] at hprop
-  | snce φ ψ _ _ => intro hprop; simp [isPropositional] at hprop
+  | untlQ ψ φ _ _ => intro hprop; simp [isPropositional] at hprop
+  | snceQ ψ φ _ _ => intro hprop; simp [isPropositional] at hprop
 
 /-- Completeness direction (contrapositive): if `p` is `|-!`-derivable and purely
 propositional, its reification is a tautology. Proved by contradiction using the EXISTING

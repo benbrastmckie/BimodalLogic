@@ -669,7 +669,7 @@ theorem kvE_pastSliceId_of_end_zero {sig : MonadicSignature} [Fintype sig.preds]
       have hmem : s ∈ kvEFiberZoneList σ kvEPastRayZone :=
         (kvE_fiberZoneList_mem σ kvEPastRayZone s).mpr ⟨hσbit, hzs⟩
       have hitem := hrayC
-        (Formula.snce (P.existF 4 (renameNF rot5Fwd rot5Bwd s)) Formula.top)
+        (Formula.snceQ Formula.top (P.existF 4 (renameNF rot5Fwd rot5Bwd s)))
         (List.mem_cons_of_mem _ (List.mem_map.mpr ⟨s, hmem, rfl⟩))
       obtain ⟨v, hvx1, hsh, -⟩ := hitem
       rw [P.correct 4 (renameNF rot5Fwd rot5Bwd s) M h_UZ h_SZ v] at hsh
@@ -690,7 +690,7 @@ theorem kvE_pastSliceId_of_end_zero {sig : MonadicSignature} [Fintype sig.preds]
           (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) z s hz
         rw [hzs] at hzone
         have hzx1 : z < x1 := (hzone 0).1.mpr rfl
-        have hnf := hrayC (Formula.snce (kvEPastRayD P σ).neg Formula.top).neg (by simp)
+        have hnf := hrayC (Formula.snceQ Formula.top (kvEPastRayD P σ).neg).neg (by simp)
         rw [temporal_truth_neg] at hnf
         have hDz : TemporalTruth M atomMap z (kvEPastRayD P σ) := by
           by_contra hnD

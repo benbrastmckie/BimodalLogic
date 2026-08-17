@@ -481,22 +481,49 @@ twelve derived operators present and swapped. Confirmed.
 
 ---
 
-### Phase 4: Mechanical Rewrite of the Live Tree [NOT STARTED]
+### Phase 4: Mechanical Rewrite of the Live Tree [COMPLETED]
 
 **Goal**: Apply the hardened rewriter to everything downstream of `Semantics/`, and prove by grep
 that no unmigrated reference survives. The build is expected red throughout — that is the point of
 the rename.
 
 **Tasks**:
-- [ ] Run `scripts/swap_untl_snce.py --rename-to untlQ,snceQ --exclude-glob '*Boneyard*'` over
-      `FormalSystem/` and `Tests/`, excluding the already-migrated `Syntax/` and `Semantics/`.
-- [ ] Save the per-site log to `specs/448_migrate_snce_untl_to_guard_first_order/rewrite-log.txt`.
-- [ ] Review the per-site log as a table: confirm the form breakdown (bare-token, receiver-dot,
-      `Formula.`-qualified, `.`-qualified) is plausible and that no site is classified skipped or
+- [x] Run `scripts/swap_untl_snce.py --rename-to untlQ,snceQ --exclude-glob '*Boneyard*'` over
+      `FormalSystem/` and `Tests/`. *(deviation: altered — run over the whole tree rather than
+      "excluding the already-migrated `Syntax/` and `Semantics/`". Those directories carry zero
+      `untl`/`snce` tokens after Phase 3, so the rewriter is a provable no-op there; re-scanning
+      them costs nothing and closes the possibility of a Phase 3 straggler surviving unseen.)*
+- [x] Save the per-site log to `specs/448_migrate_snce_untl_to_guard_first_order/rewrite-log.txt`.
+- [x] Review the per-site log as a table: form breakdown plausible, no site skipped or
       unrecognised.
-- [ ] **Zero-residue gate**: identifier-boundary grep for `untl`/`snce` over live scope must
-      return 0. Any hit is an unmigrated site and must be resolved before the phase closes.
-- [ ] Do NOT attempt any build repair in this phase — that is Phases 5-8.
+- [x] **Zero-residue gate**: `RESIDUE_MIGRATABLE=0`.
+- [x] Do NOT attempt any build repair in this phase.
+
+**Form breakdown, and its exact reconciliation against Phase 2** (Phase 3 + Phase 4 together):
+
+| form | Phase 3 | Phase 4 | sum | Phase 2 measurement |
+|---|---|---|---|---|
+| qualified | 28 | 1,599 | 1,627 | 1,627 |
+| anon-dot | 8 | 424 | 432 | 432 |
+| arm-2 | 48 | 227 | 275 | 275 |
+| arm-4 | 14 | 95 | 109 | 109 |
+| receiver-dot | 0 | 57 | 57 | 57 |
+| bare-app | 26 | 0 | 26 | 26 |
+| lemma-ref | 0 | 7 | 7 | 7 |
+| ctor-decl | 2 | 2 | 4 | 4 |
+| no-arg | 0 | 2 | 2 | 2 |
+| bare-ref | 0 | 2 | 2 | 2 |
+| **constructor references** | **126** | **2,415** | **2,541** | **2,541** |
+
+Every one of the 2,541 constructor references established in Phase 2 is accounted for, form for
+form, with no residual and no surplus. `embedded` (406, of which 6 are counted in both logs) and
+`foreign` (32) are non-constructor skips and are excluded from the total by construction.
+
+**Zero-residue gate**: `RESIDUE_MIGRATABLE=0  RESIDUE_ALLOWED=2  over 424 files`. The two allowed
+hits are `simp only [untl, ...]` / `simp only [snce, ...]` at
+`Metalogic/WeakCanonical/Kamp/EANegationFix/BoundedFix.lean:59,68`, unqualified references to
+`TemporalPred.untl`/`TemporalPred.snce` -- a different function in a different namespace, correctly
+untouched.
 
 **Timing**: 1.5 hours
 
@@ -507,18 +534,22 @@ the rename.
 **Commit Mode**: atomic-batch
 
 **Scope Hypothesis**: this phase rewrites approximately 3,711 minus the Phase 3 Syntax/Semantics
-subtotal (~197) = ~3,514 sites across ~146 files. Confirm from the per-site log's total against
-the Phase 1 ledger minus the Phase 3 rows; a shortfall means the matcher missed a syntactic form
-and the zero-residue grep will name the survivors.
+subtotal (~197) = ~3,514 sites across ~146 files.
+
+**Scope Hypothesis outcome**: 2,415 constructor references across 134 files. The hypothesis was
+stated in *ledger occurrences* (which count comment and string mentions) rather than *constructor
+references*; the two differ by the 1,178 comment/string occurrences the rewriter deliberately
+leaves alone (D4). Against the like-for-like Phase 2 figure the count is exact. File count 134 vs
+~146 estimated: 152 ledger files minus the 6 migrated in Phase 3 minus 12 whose only occurrences
+are in comments or are `embedded`/`foreign` skips.
 
 **Files to modify**:
-- ~146 files under `FormalSystem/` (ProofSystem, Theorems, Automation, FrameConditions,
-  Metalogic, Examples) and `Tests/BimodalTest/` - mechanical rename-and-swap
+- 134 files under `FormalSystem/` and `Tests/BimodalTest/` - mechanical rename-and-swap
 
 **Verification**:
-- Identifier-boundary grep for `untl`/`snce` over live scope returns 0.
-- The per-site log exists and reconciles against the ledger.
-- Every Boneyard file is untouched (`git diff --stat` shows no Boneyard path).
+- [x] Code-region residue scan returns `RESIDUE_MIGRATABLE=0`.
+- [x] The per-site log exists and reconciles against Phase 2 exactly (table above).
+- [x] Every Boneyard file untouched (`git diff --name-only` shows no Boneyard path).
 
 ---
 

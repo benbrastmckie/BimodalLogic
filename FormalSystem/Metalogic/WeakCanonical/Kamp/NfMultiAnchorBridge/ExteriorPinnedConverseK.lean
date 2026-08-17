@@ -1034,7 +1034,7 @@ theorem kvE_futSliceId_of_end_zero {sig : MonadicSignature} [Fintype sig.preds]
       -- σ ⊆ σ★: hend's per-item ray conjunct places s above x1; the C8(c) upgrade pins it
       have hmem : s ∈ kvEFiberZoneList σ kvEFutRayZone :=
         (kvE_fiberZoneList_mem σ kvEFutRayZone s).mpr ⟨hσbit, hzs⟩
-      have hitem := hrayC (Formula.untl (kvEFutItemShift P s) Formula.top)
+      have hitem := hrayC (Formula.untlQ Formula.top (kvEFutItemShift P s))
         (List.mem_cons_of_mem _ (List.mem_map.mpr ⟨s, hmem, rfl⟩))
       obtain ⟨v, hx1v, hsh, -⟩ := hitem
       rw [kvE_futItemShift_correct P s M h_UZ h_SZ v] at hsh
@@ -1054,7 +1054,7 @@ theorem kvE_futSliceId_of_end_zero {sig : MonadicSignature} [Fintype sig.preds]
           (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) z s hz
         rw [hzs] at hzone
         have hx1z : x1 < z := (hzone 0).2.mpr rfl
-        have hnf := hrayC (Formula.untl (kvEFutRayD P σ).neg Formula.top).neg (by simp)
+        have hnf := hrayC (Formula.untlQ Formula.top (kvEFutRayD P σ).neg).neg (by simp)
         rw [temporal_truth_neg] at hnf
         have hDz : TemporalTruth M atomMap z (kvEFutRayD P σ) := by
           by_contra hnD

@@ -184,8 +184,8 @@ def swapUS : Formula → Formula
   | .bot => .bot
   | .imp φ ψ => .imp (swapUS φ) (swapUS ψ)
   | .box φ => .box φ
-  | .untl φ ψ => .snce (swapUS φ) (swapUS ψ)
-  | .snce φ ψ => .untl (swapUS φ) (swapUS ψ)
+  | .untlQ ψ φ => .snceQ (swapUS ψ) (swapUS φ)
+  | .snceQ ψ φ => .untlQ (swapUS ψ) (swapUS φ)
 
 /-- `swapUS` is an involution. -/
 theorem swapUS_involutive : ∀ A : Formula, swapUS (swapUS A) = A
@@ -193,8 +193,8 @@ theorem swapUS_involutive : ∀ A : Formula, swapUS (swapUS A) = A
   | .bot => rfl
   | .imp φ ψ => by rw [swapUS, swapUS, swapUS_involutive φ, swapUS_involutive ψ]
   | .box _ => rfl
-  | .untl φ ψ => by rw [swapUS, swapUS, swapUS_involutive φ, swapUS_involutive ψ]
-  | .snce φ ψ => by rw [swapUS, swapUS, swapUS_involutive φ, swapUS_involutive ψ]
+  | .untlQ ψ φ => by rw [swapUS, swapUS, swapUS_involutive φ, swapUS_involutive ψ]
+  | .snceQ ψ φ => by rw [swapUS, swapUS, swapUS_involutive φ, swapUS_involutive ψ]
 
 /-- **The `TemporalTruth` transport.** Truth of `A` in the dual is truth of `swapUS A` in the
 original, at the same point. -/
@@ -206,13 +206,13 @@ theorem temporalTruth_dual {M : OrderedMonadicStructure sig} (atomMap : Formula 
   | bot => exact Iff.rfl
   | box _ => exact Iff.rfl
   | imp φ ψ ihφ ihψ => exact imp_congr (ihφ t) (ihψ t)
-  | untl φ ψ ihφ ihψ =>
+  | untlQ ψ φ ihψ ihφ =>
       constructor
       · rintro ⟨s, hts, hφ, hψ⟩
         exact ⟨s, hts, (ihφ s).mp hφ, fun r h₁ h₂ => (ihψ r).mp (hψ r h₂ h₁)⟩
       · rintro ⟨s, hst, hφ, hψ⟩
         exact ⟨d s, hst, (ihφ s).mpr hφ, fun r h₁ h₂ => (ihψ r).mpr (hψ r h₂ h₁)⟩
-  | snce φ ψ ihφ ihψ =>
+  | snceQ ψ φ ihψ ihφ =>
       constructor
       · rintro ⟨s, hst, hφ, hψ⟩
         exact ⟨s, hst, (ihφ s).mp hφ, fun r h₁ h₂ => (ihψ r).mp (hψ r h₂ h₁)⟩

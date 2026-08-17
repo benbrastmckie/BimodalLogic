@@ -121,7 +121,7 @@ theorem truthAt_add_period {F : TaskFrame D} (M : TaskModel F) {π : D}
       simp only [TruthAt]
       exact ⟨fun hb σ hσ => (ih σ hσ t).mp (hb σ hσ),
              fun hb σ hσ => (ih σ hσ t).mpr (hb σ hσ)⟩
-  | untl ψ χ ihψ ihχ =>
+  | untlQ χ ψ ihχ ihψ =>
       intro τ hτ t
       simp only [TruthAt]
       constructor
@@ -142,7 +142,7 @@ theorem truthAt_add_period {F : TaskFrame D} (M : TaskModel F) {π : D}
             have := (add_lt_add_iff_right π).mpr hr2
             rwa [sub_add_cancel] at this
           exact (ihχ τ hτ r).mpr (hg (r + π) hrl hrr)
-  | snce ψ χ ihψ ihχ =>
+  | snceQ χ ψ ihχ ihψ =>
       intro τ hτ t
       simp only [TruthAt]
       constructor

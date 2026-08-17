@@ -157,11 +157,11 @@ The branch of the `ℤ` counterexample: `T(U(p,q))` and `F(U(r,s))` at one label
 
 /-- The satisfiable source branch. -/
 def bA : Branch :=
-  [ SignedFormula.pos (Formula.untl p q) { world := 0, time := 0 }
-  , SignedFormula.neg (Formula.untl r s) { world := 0, time := 0 } ]
+  [ SignedFormula.pos (Formula.untlQ q p) { world := 0, time := 0 }
+  , SignedFormula.neg (Formula.untlQ s r) { world := 0, time := 0 } ]
 
 /-- The `T(U(p,q))` the rule fires on. -/
-def srcA : SignedFormula := SignedFormula.pos (Formula.untl p q) { world := 0, time := 0 }
+def srcA : SignedFormula := SignedFormula.pos (Formula.untlQ q p) { world := 0, time := 0 }
 
 /-- The two successor branches `untlPos` produces. -/
 def armsA : List (List SignedFormula) :=
@@ -171,7 +171,7 @@ def armsA : List (List SignedFormula) :=
 
 /-- The copied formula the defect is about: `F(U(r,s))` at the *minted* time. -/
 def copiedA : SignedFormula :=
-  SignedFormula.neg (Formula.untl r s) { world := 0, time := bA.nextTime }
+  SignedFormula.neg (Formula.untlQ s r) { world := 0, time := bA.nextTime }
 
 /-! ### Row A1 — the rule is applicable and branches in two -/
 /-- info: 2 -/
@@ -230,11 +230,11 @@ def x : Formula := .atom (Atom.mkBase "x")
 
 /-- The branch of the PASSIVE-arm refutation. -/
 def bB : Branch :=
-  [ SignedFormula.neg (Formula.untl e g) { world := 0, time := 0 }
+  [ SignedFormula.neg (Formula.untlQ g e) { world := 0, time := 0 }
   , SignedFormula.pos x { world := 0, time := 1 } ]
 
 /-- The `F(U(e,g))` the rule fires on. -/
-def srcB : SignedFormula := SignedFormula.neg (Formula.untl e g) { world := 0, time := 0 }
+def srcB : SignedFormula := SignedFormula.neg (Formula.untlQ g e) { world := 0, time := 0 }
 
 /-- The recorded ordering `0 < 1`. -/
 def ordB : TimeOrdering := { constraints := [(0, 1)] }
@@ -319,7 +319,7 @@ one. -/
 #guard_msgs in
 #eval armsB.any fun arm =>
   arm.contains (SignedFormula.neg g { world := 0, time := 1 })
-    && arm.contains (SignedFormula.neg (Formula.untl e g) { world := 0, time := 1 })
+    && arm.contains (SignedFormula.neg (Formula.untlQ g e) { world := 0, time := 1 })
 
 /-! ### Row B5 — **the re-fire counter**, as a *differential* gate
 
@@ -437,7 +437,7 @@ As it turned out, the fuel was ample: after the copy deletion this search termin
 countermodel rather than exhausting its budget. -/
 
 /-- The invalid implication. -/
-def invalidUntil : Formula := (Formula.untl p q).imp (Formula.untl r s)
+def invalidUntil : Formula := (Formula.untlQ q p).imp (Formula.untlQ s r)
 
 /-- The verdict, at a bounded fuel. -/
 def verdictC : DecisionResult invalidUntil := decide invalidUntil 4 200
@@ -515,12 +515,12 @@ def y : Formula := .atom (Atom.mkBase "y")
 
 /-- The ℚ-refutation branch. `maxTime = 2`, so `nextTime = 3`. -/
 def bD : Branch :=
-  [ SignedFormula.neg (Formula.untl e g) { world := 0, time := 0 }
+  [ SignedFormula.neg (Formula.untlQ g e) { world := 0, time := 0 }
   , SignedFormula.pos x { world := 0, time := 0 }
   , SignedFormula.pos y { world := 0, time := 2 } ]
 
 /-- The `F(U(e,g))` the rule fires on. -/
-def srcD : SignedFormula := SignedFormula.neg (Formula.untl e g) { world := 0, time := 0 }
+def srcD : SignedFormula := SignedFormula.neg (Formula.untlQ g e) { world := 0, time := 0 }
 
 /-- The recorded ordering. A constraint `(a,b)` means `a < b`, so `(2,0)` says `2 < 0`: time `0`
 has **no** future, which is exactly the ACTIVE arm's precondition, while `timeCount = 2` keeps it
@@ -540,7 +540,7 @@ def armsD : List (List SignedFormula) :=
 
 /-- The sub-term under audit: the arm's **own** `¬U(e,g)`, at the time it just minted. -/
 def selfCopyD : SignedFormula :=
-  SignedFormula.neg (Formula.untl e g) { world := 0, time := bD.nextTime }
+  SignedFormula.neg (Formula.untlQ g e) { world := 0, time := bD.nextTime }
 
 /-! #### Row D1a — the ACTIVE arm fires, and branches in two -/
 /-- info: 2 -/
@@ -593,12 +593,12 @@ measured before these rows existed. -/
 
 /-- The mirror branch. -/
 def bD' : Branch :=
-  [ SignedFormula.neg (Formula.snce e g) { world := 0, time := 0 }
+  [ SignedFormula.neg (Formula.snceQ g e) { world := 0, time := 0 }
   , SignedFormula.pos x { world := 0, time := 0 }
   , SignedFormula.pos y { world := 0, time := 2 } ]
 
 /-- The `F(S(e,g))` the rule fires on. -/
-def srcD' : SignedFormula := SignedFormula.neg (Formula.snce e g) { world := 0, time := 0 }
+def srcD' : SignedFormula := SignedFormula.neg (Formula.snceQ g e) { world := 0, time := 0 }
 
 /-- `0 < 2`: time `0` has no past. -/
 def ordD' : TimeOrdering := { constraints := [(0, 2)] }
@@ -615,7 +615,7 @@ def armsD' : List (List SignedFormula) :=
 
 /-- The mirror sub-term under audit. -/
 def selfCopyD' : SignedFormula :=
-  SignedFormula.neg (Formula.snce e g) { world := 0, time := bD'.nextTime }
+  SignedFormula.neg (Formula.snceQ g e) { world := 0, time := bD'.nextTime }
 
 /-! #### Row D2a — the ACTIVE arm fires, and branches in two -/
 /-- info: 2 -/
@@ -735,7 +735,7 @@ count *is* the channel. -/
 
 /-- The branch carrying `T(G ¬U(e,g))@0` plus one future time. -/
 def bE : Branch :=
-  [ SignedFormula.pos (Formula.allFuture (Formula.untl e g).neg) { world := 0, time := 0 }
+  [ SignedFormula.pos (Formula.allFuture (Formula.untlQ g e).neg) { world := 0, time := 0 }
   , SignedFormula.pos x { world := 0, time := 1 } ]
 
 /-- Follow `expandOnce` for `k` steps, first arm at every split, returning the branch reached. -/
@@ -751,7 +751,7 @@ def stepFull : Nat → Branch → TimeOrdering → Branch
 /-- The distinct times at which a negative `U(e,g)` stands on `b`. -/
 def negUntlTimes (b : Branch) : List TimeIndex :=
   (b.filterMap fun sf =>
-    if sf.sign matches .neg && sf.formula == Formula.untl e g then some sf.label.time
+    if sf.sign matches .neg && sf.formula == Formula.untlQ g e then some sf.label.time
     else none).eraseDups
 
 /-! #### Row E2a — **the measurement.** Distinct negative-`U(e,g)` times after `k` steps

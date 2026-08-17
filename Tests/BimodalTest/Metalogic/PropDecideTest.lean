@@ -50,7 +50,7 @@ noncomputable example (A : Formula) : ⊢ A.box.imp A.box := by propDecide
 
 /-- Temporal `Until`/`Since` subterms as opaque reified variables. -/
 noncomputable example (A B C D : Formula) :
-    ⊢ (Formula.untl A B).imp ((Formula.snce C D).imp (Formula.untl A B)) := by propDecide
+    ⊢ (Formula.untlQ B A).imp ((Formula.snceQ D C).imp (Formula.untlQ B A)) := by propDecide
 
 /-! ## Frame-Class-Indexed Goals (`⊢[fc] φ`) -/
 

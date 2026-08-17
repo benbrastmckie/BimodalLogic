@@ -620,13 +620,13 @@ theorem branchTruthAt_untl_neg (hf : Function.Injective f) (hOR : OrderReflectin
     (hCheck : regionLabelCheck b ord = true) (hTW : temporalWitnessCheck b ord = true)
     (hne : b.knownWorlds ≠ []) {φ ψ : Formula} (hφ : BranchTruthAt b ord f φ)
     (w : WorldIndex) (r : D) :
-    b.hasNegAt (Formula.untl φ ψ) (stateLabel b ord f w r) = true →
+    b.hasNegAt (Formula.untlQ ψ φ) (stateLabel b ord f w r) = true →
       ¬ TruthAt (normModel b ord f) (regionHistory f w (0 : D)) r
-        (Formula.untl φ ψ) := by
+        (Formula.untlQ ψ φ) := by
   intro hn hT
   obtain ⟨s, hrs, hsφ, -⟩ := hT
   have hw' : normWorld b w ∈ b.knownWorlds := normWorld_mem hne w
-  have hmem : (⟨.neg, .untl φ ψ, stateLabel b ord f w r⟩ : SignedFormula) ∈ b :=
+  have hmem : (⟨.neg, .untlQ ψ φ, stateLabel b ord f w r⟩ : SignedFormula) ∈ b :=
     (hasNegAt_iff_mem b _ _).mp hn
   refine (hφ w s).2 ?_ hsφ
   by_cases hr : IsPlacedCode f (regionCode f r)
@@ -668,13 +668,13 @@ theorem branchTruthAt_snce_neg (hf : Function.Injective f) (hOR : OrderReflectin
     (hCheck : regionLabelCheck b ord = true) (hTW : temporalWitnessCheck b ord = true)
     (hne : b.knownWorlds ≠ []) {φ ψ : Formula} (hφ : BranchTruthAt b ord f φ)
     (w : WorldIndex) (r : D) :
-    b.hasNegAt (Formula.snce φ ψ) (stateLabel b ord f w r) = true →
+    b.hasNegAt (Formula.snceQ ψ φ) (stateLabel b ord f w r) = true →
       ¬ TruthAt (normModel b ord f) (regionHistory f w (0 : D)) r
-        (Formula.snce φ ψ) := by
+        (Formula.snceQ ψ φ) := by
   intro hn hT
   obtain ⟨s, hsr, hsφ, -⟩ := hT
   have hw' : normWorld b w ∈ b.knownWorlds := normWorld_mem hne w
-  have hmem : (⟨.neg, .snce φ ψ, stateLabel b ord f w r⟩ : SignedFormula) ∈ b :=
+  have hmem : (⟨.neg, .snceQ ψ φ, stateLabel b ord f w r⟩ : SignedFormula) ∈ b :=
     (hasNegAt_iff_mem b _ _).mp hn
   refine (hφ w s).2 ?_ hsφ
   by_cases hr : IsPlacedCode f (regionCode f r)
@@ -735,11 +735,11 @@ theorem branchTruthAt_untl_pos (hf : Function.Injective f) (hOF : OrderFaithful 
     (hOR : OrderReflecting b ord f) (hRO : RayOnly b f) (hRS : RaySplit b f) (hSt : Stepped D)
     (hTW : temporalWitnessCheck b ord = true) {φ ψ : Formula} (hφ : BranchTruthAt b ord f φ)
     (hψ : BranchTruthAt b ord f ψ) (w : WorldIndex) (r : D) :
-    b.hasPosAt (Formula.untl φ ψ) (stateLabel b ord f w r) = true →
+    b.hasPosAt (Formula.untlQ ψ φ) (stateLabel b ord f w r) = true →
       TruthAt (normModel b ord f) (regionHistory f w (0 : D)) r
-        (Formula.untl φ ψ) := by
+        (Formula.untlQ ψ φ) := by
   intro hp
-  have hmem : (⟨.pos, .untl φ ψ, stateLabel b ord f w r⟩ : SignedFormula) ∈ b :=
+  have hmem : (⟨.pos, .untlQ ψ φ, stateLabel b ord f w r⟩ : SignedFormula) ∈ b :=
     (hasPosAt_iff_mem b _ _).mp hp
   by_cases hr : IsPlacedCode f (regionCode f r)
   · obtain ⟨i, hi⟩ := exists_eq_of_isPlacedCode hr
@@ -801,11 +801,11 @@ theorem branchTruthAt_snce_pos (hf : Function.Injective f) (hOF : OrderFaithful 
     (hOR : OrderReflecting b ord f) (hRO : RayOnly b f) (hRS : RaySplit b f) (hSt : Stepped D)
     (hTW : temporalWitnessCheck b ord = true) {φ ψ : Formula} (hφ : BranchTruthAt b ord f φ)
     (hψ : BranchTruthAt b ord f ψ) (w : WorldIndex) (r : D) :
-    b.hasPosAt (Formula.snce φ ψ) (stateLabel b ord f w r) = true →
+    b.hasPosAt (Formula.snceQ ψ φ) (stateLabel b ord f w r) = true →
       TruthAt (normModel b ord f) (regionHistory f w (0 : D)) r
-        (Formula.snce φ ψ) := by
+        (Formula.snceQ ψ φ) := by
   intro hp
-  have hmem : (⟨.pos, .snce φ ψ, stateLabel b ord f w r⟩ : SignedFormula) ∈ b :=
+  have hmem : (⟨.pos, .snceQ ψ φ, stateLabel b ord f w r⟩ : SignedFormula) ∈ b :=
     (hasPosAt_iff_mem b _ _).mp hp
   by_cases hr : IsPlacedCode f (regionCode f r)
   · obtain ⟨i, hi⟩ := exists_eq_of_isPlacedCode hr
@@ -862,7 +862,7 @@ theorem branchTruthAt_untl (hf : Function.Injective f) (hOF : OrderFaithful b or
     (hCheck : regionLabelCheck b ord = true) (hTW : temporalWitnessCheck b ord = true)
     (hne : b.knownWorlds ≠ [])
     {φ ψ : Formula} (hφ : BranchTruthAt b ord f φ) (hψ : BranchTruthAt b ord f ψ) :
-    BranchTruthAt b ord f (Formula.untl φ ψ) := fun w r =>
+    BranchTruthAt b ord f (Formula.untlQ ψ φ) := fun w r =>
   ⟨branchTruthAt_untl_pos hf hOF hOR hRO hRS hSt hTW hφ hψ w r,
     branchTruthAt_untl_neg hf hOR hRO hRS hV hCheck hTW hne hφ w r⟩
 
@@ -875,7 +875,7 @@ theorem branchTruthAt_snce (hf : Function.Injective f) (hOF : OrderFaithful b or
     (hCheck : regionLabelCheck b ord = true) (hTW : temporalWitnessCheck b ord = true)
     (hne : b.knownWorlds ≠ [])
     {φ ψ : Formula} (hφ : BranchTruthAt b ord f φ) (hψ : BranchTruthAt b ord f ψ) :
-    BranchTruthAt b ord f (Formula.snce φ ψ) := fun w r =>
+    BranchTruthAt b ord f (Formula.snceQ ψ φ) := fun w r =>
   ⟨branchTruthAt_snce_pos hf hOF hOR hRO hRS hSt hTW hφ hψ w r,
     branchTruthAt_snce_neg hf hOR hRO hRS hV hCheck hTW hne hφ w r⟩
 
@@ -900,9 +900,9 @@ theorem branchTruthAt (hf : Function.Injective f) (hOF : OrderFaithful b ord f)
   | bot => exact branchTruthAt_bot fc hOpen
   | imp φ ψ hφ hψ => exact branchTruthAt_imp hSat hφ hψ
   | box φ hφ => exact branchTruthAt_box hf hSat hTot hBA hCheck hne hφ
-  | untl φ ψ hφ hψ =>
+  | untlQ ψ φ hψ hφ =>
       exact branchTruthAt_untl hf hOF hOR hRO hRS hSt hV fc hSat hOpen hTot hBA hCheck hTW hne hφ hψ
-  | snce φ ψ hφ hψ =>
+  | snceQ ψ φ hψ hφ =>
       exact branchTruthAt_snce hf hOF hOR hRO hRS hSt hV fc hSat hOpen hTot hBA hCheck hTW hne hφ hψ
 
 end Model

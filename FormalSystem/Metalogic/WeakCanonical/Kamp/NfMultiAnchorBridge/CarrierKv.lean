@@ -188,13 +188,13 @@ private noncomputable def kv_body {sig : MonadicSignature} [Fintype sig.preds]
     let epL : TemporalPred :=
       ⟨formulaConjList
         (xType.formula
-          :: (allTypes.map fun χ => lit (b zPastX χ) (Formula.snce (charK χ) Formula.top))
+          :: (allTypes.map fun χ => lit (b zPastX χ) (Formula.snceQ Formula.top (charK χ)))
           ++ (allTypes.map fun χ => lit (b zAtX χ) (charK χ)))⟩
     let epR : TemporalPred :=
       ⟨formulaConjList
         (tType.formula
           :: (allTypes.map fun χ => lit (b zAtT χ) (charK χ))
-          ++ (allTypes.map fun χ => lit (b zFutT χ) (Formula.untl (charK χ) Formula.top)))⟩
+          ++ (allTypes.map fun χ => lit (b zFutT χ) (Formula.untlQ Formula.top (charK χ))))⟩
     -- Segment types: universal exclusion of the interior-zone NEGATIVE bits.
     let segL : TemporalPred :=
       ⟨formulaConjList (allTypes.map fun χ =>

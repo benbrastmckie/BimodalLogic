@@ -38,8 +38,8 @@ def subformulas : Formula → Finset Formula
   | f@Formula.bot => {f}
   | f@(Formula.imp φ ψ) => insert f (subformulas φ ∪ subformulas ψ)
   | f@(Formula.box φ) => insert f (subformulas φ)
-  | f@(Formula.untl φ ψ) => insert f (subformulas φ ∪ subformulas ψ)
-  | f@(Formula.snce φ ψ) => insert f (subformulas φ ∪ subformulas ψ)
+  | f@(Formula.untlQ ψ φ) => insert f (subformulas φ ∪ subformulas ψ)
+  | f@(Formula.snceQ ψ φ) => insert f (subformulas φ ∪ subformulas ψ)
 
 /-- A formula is in its own subformula set. -/
 theorem self_mem_subformulas (f : Formula) : f ∈ subformulas f := by

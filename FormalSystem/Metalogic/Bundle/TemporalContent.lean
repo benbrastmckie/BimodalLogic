@@ -102,7 +102,7 @@ construction (Phase 6). The U-step ensures that for each `(phi U psi) ∈ u`, th
 successor v either contains psi (resolved) or contains both phi and `phi U psi` (deferred).
 -/
 def UContent (M : Set Formula) : Set (Formula × Formula) :=
-  { p | Formula.untl p.1 p.2 ∈ M }
+  { p | Formula.untlQ p.2 p.1 ∈ M }
 
 /--
 SContent of an MCS: the set of all formula pairs (phi, psi) where `phi S psi` appears in the MCS.
@@ -111,7 +111,7 @@ SContent of an MCS: the set of all formula pairs (phi, psi) where `phi S psi` ap
 chain construction (Phase 6). Symmetric to UContent.
 -/
 def SContent (M : Set Formula) : Set (Formula × Formula) :=
-  { p | Formula.snce p.1 p.2 ∈ M }
+  { p | Formula.snceQ p.2 p.1 ∈ M }
 
 /-! ## Membership Lemmas -/
 
@@ -133,11 +133,11 @@ lemma mem_p_content_iff {M : Set Formula} {phi : Formula} :
 
 @[simp]
 lemma mem_u_content_iff {M : Set Formula} {p : Formula × Formula} :
-    p ∈ UContent M ↔ Formula.untl p.1 p.2 ∈ M := Iff.rfl
+    p ∈ UContent M ↔ Formula.untlQ p.2 p.1 ∈ M := Iff.rfl
 
 @[simp]
 lemma mem_s_content_iff {M : Set Formula} {p : Formula × Formula} :
-    p ∈ SContent M ↔ Formula.snce p.1 p.2 ∈ M := Iff.rfl
+    p ∈ SContent M ↔ Formula.snceQ p.2 p.1 ∈ M := Iff.rfl
 
 /-! ## Duality Lemmas -/
 
@@ -172,7 +172,7 @@ theorem f_content_iff_not_neg_in_g_content {M : Set Formula}
     have h_G_dni : [] ⊢ (phi.imp phi.neg.neg).allFuture :=
       DerivationTree.temporal_necessitation _ h_dni
     have h_bx3 : [] ⊢ (phi.imp phi.neg.neg).allFuture.imp
-        ((Formula.untl phi Formula.top).imp (Formula.untl phi.neg.neg Formula.top)) :=
+        ((Formula.untlQ Formula.top phi).imp (Formula.untlQ Formula.top phi.neg.neg)) :=
       DerivationTree.axiom [] _ (Axiom.right_mono_until phi phi.neg.neg Formula.top) trivial
     have h_sf_impl : [] ⊢ (Formula.someFuture phi).imp (Formula.someFuture phi.neg.neg) :=
       DerivationTree.modus_ponens [] _ _ h_bx3 h_G_dni
@@ -191,7 +191,7 @@ theorem f_content_iff_not_neg_in_g_content {M : Set Formula}
       have h_G_dne : [] ⊢ (phi.neg.neg.imp phi).allFuture :=
         DerivationTree.temporal_necessitation _ h_dne
       have h_bx3 : [] ⊢ (phi.neg.neg.imp phi).allFuture.imp
-          ((Formula.untl phi.neg.neg Formula.top).imp (Formula.untl phi Formula.top)) :=
+          ((Formula.untlQ Formula.top phi.neg.neg).imp (Formula.untlQ Formula.top phi)) :=
         DerivationTree.axiom [] _ (Axiom.right_mono_until phi.neg.neg phi Formula.top) trivial
       have h_sf_impl : [] ⊢ (Formula.someFuture phi.neg.neg).imp (Formula.someFuture phi) :=
         DerivationTree.modus_ponens [] _ _ h_bx3 h_G_dne
@@ -225,7 +225,7 @@ theorem p_content_iff_not_neg_in_h_content {M : Set Formula}
     have h_H_dni : [] ⊢ (phi.imp phi.neg.neg).allPast :=
       FormalSystem.Theorems.pastNecessitation _ h_dni
     have h_bx3p : [] ⊢ (phi.imp phi.neg.neg).allPast.imp
-        ((Formula.snce phi Formula.top).imp (Formula.snce phi.neg.neg Formula.top)) :=
+        ((Formula.snceQ Formula.top phi).imp (Formula.snceQ Formula.top phi.neg.neg)) :=
       DerivationTree.axiom [] _ (Axiom.right_mono_since phi phi.neg.neg Formula.top) trivial
     have h_sp_impl : [] ⊢ (Formula.somePast phi).imp (Formula.somePast phi.neg.neg) :=
       DerivationTree.modus_ponens [] _ _ h_bx3p h_H_dni
@@ -242,7 +242,7 @@ theorem p_content_iff_not_neg_in_h_content {M : Set Formula}
       have h_H_dne : [] ⊢ (phi.neg.neg.imp phi).allPast :=
         FormalSystem.Theorems.pastNecessitation _ h_dne
       have h_bx3p : [] ⊢ (phi.neg.neg.imp phi).allPast.imp
-          ((Formula.snce phi.neg.neg Formula.top).imp (Formula.snce phi Formula.top)) :=
+          ((Formula.snceQ Formula.top phi.neg.neg).imp (Formula.snceQ Formula.top phi)) :=
         DerivationTree.axiom [] _ (Axiom.right_mono_since phi.neg.neg phi Formula.top) trivial
       have h_sp_impl : [] ⊢ (Formula.somePast phi.neg.neg).imp (Formula.somePast phi) :=
         DerivationTree.modus_ponens [] _ _ h_bx3p h_H_dne

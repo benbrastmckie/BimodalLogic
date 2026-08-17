@@ -157,23 +157,23 @@ private noncomputable def notSomePastBot {fc : FrameClass} :
 
 /-- `⊢[fc] U(⊥, ψ) → ⊥`. -/
 private noncomputable def notUntlBot {fc : FrameClass} (ψ : Formula) :
-    ⊢[fc] (Formula.untl Formula.bot ψ).imp Formula.bot :=
-  let weaken : ⊢[fc] (Formula.untl Formula.bot ψ).imp (Formula.untl Formula.bot Formula.top) :=
+    ⊢[fc] (Formula.untlQ ψ Formula.bot).imp Formula.bot :=
+  let weaken : ⊢[fc] (Formula.untlQ ψ Formula.bot).imp (Formula.untlQ Formula.top Formula.bot) :=
     mp (DerivationTree.temporal_necessitation _ (impTop (fc := fc) ψ))
       (baseThm (untilMonoGuard ψ Formula.top Formula.bot))
   impTrans weaken notSomeFutureBot
 
 /-- `⊢[fc] S(⊥, ψ) → ⊥`. -/
 private noncomputable def notSnceBot {fc : FrameClass} (ψ : Formula) :
-    ⊢[fc] (Formula.snce Formula.bot ψ).imp Formula.bot :=
-  let weaken : ⊢[fc] (Formula.snce Formula.bot ψ).imp (Formula.snce Formula.bot Formula.top) :=
+    ⊢[fc] (Formula.snceQ ψ Formula.bot).imp Formula.bot :=
+  let weaken : ⊢[fc] (Formula.snceQ ψ Formula.bot).imp (Formula.snceQ Formula.top Formula.bot) :=
     mp (FormalSystem.Theorems.pastNecessitation _ (impTop (fc := fc) ψ))
       (baseThm (sinceMonoGuard ψ Formula.top Formula.bot))
   impTrans weaken notSomePastBot
 
 /-- If the event of an `Until` is refutable, the `Until` is refutable. -/
 private noncomputable def untlEventBot {fc : FrameClass} {E : Formula} (ψ : Formula)
-    (h : ⊢[fc] E.imp Formula.bot) : ⊢[fc] (Formula.untl E ψ).imp Formula.bot :=
+    (h : ⊢[fc] E.imp Formula.bot) : ⊢[fc] (Formula.untlQ ψ E).imp Formula.bot :=
   impTrans
     (mp (DerivationTree.temporal_necessitation _ h)
       (baseThm (untilMonoEvent E Formula.bot ψ)))
@@ -181,7 +181,7 @@ private noncomputable def untlEventBot {fc : FrameClass} {E : Formula} (ψ : For
 
 /-- If the event of a `Since` is refutable, the `Since` is refutable. -/
 private noncomputable def snceEventBot {fc : FrameClass} {E : Formula} (ψ : Formula)
-    (h : ⊢[fc] E.imp Formula.bot) : ⊢[fc] (Formula.snce E ψ).imp Formula.bot :=
+    (h : ⊢[fc] E.imp Formula.bot) : ⊢[fc] (Formula.snceQ ψ E).imp Formula.bot :=
   impTrans
     (mp (FormalSystem.Theorems.pastNecessitation _ h)
       (baseThm (sinceMonoEvent E Formula.bot ψ)))
@@ -215,23 +215,23 @@ interval; L2 converts that deposit into `ψ` pointwise via BX2G; BX3 then weaken
 `Hψ` to `⊤`.
 -/
 noncomputable def someFutureAllPastUntlTop {fc : FrameClass} (ψ : Formula) :
-    ⊢[fc] ψ.allPast.someFuture.imp (Formula.untl Formula.top ψ) :=
+    ⊢[fc] ψ.allPast.someFuture.imp (Formula.untlQ ψ Formula.top) :=
   let χ := ψ.allPast
-  let accum : ⊢[fc] (Formula.untl χ Formula.top).imp
-      (Formula.untl χ (Formula.and Formula.top (Formula.untl χ Formula.top))) :=
+  let accum : ⊢[fc] (Formula.untlQ Formula.top χ).imp
+      (Formula.untlQ (Formula.and Formula.top (Formula.untlQ Formula.top χ)) χ) :=
     DerivationTree.axiom [] _ (Axiom.self_accum_until Formula.top χ) (FrameClass.base_le fc)
-  let guardImp : ⊢[fc] (Formula.and Formula.top (Formula.untl χ Formula.top)).imp ψ :=
-    impTrans (rceImp Formula.top (Formula.untl χ Formula.top))
-      (show ⊢[fc] (Formula.untl χ Formula.top).imp ψ from someFutureAllPastImp ψ)
+  let guardImp : ⊢[fc] (Formula.and Formula.top (Formula.untlQ Formula.top χ)).imp ψ :=
+    impTrans (rceImp Formula.top (Formula.untlQ Formula.top χ))
+      (show ⊢[fc] (Formula.untlQ Formula.top χ).imp ψ from someFutureAllPastImp ψ)
   let strengthen : ⊢[fc]
-      (Formula.untl χ (Formula.and Formula.top (Formula.untl χ Formula.top))).imp
-        (Formula.untl χ ψ) :=
+      (Formula.untlQ (Formula.and Formula.top (Formula.untlQ Formula.top χ)) χ).imp
+        (Formula.untlQ ψ χ) :=
     mp (DerivationTree.temporal_necessitation _ guardImp)
-      (baseThm (untilMonoGuard (Formula.and Formula.top (Formula.untl χ Formula.top)) ψ χ))
-  let weakenEvent : ⊢[fc] (Formula.untl χ ψ).imp (Formula.untl Formula.top ψ) :=
+      (baseThm (untilMonoGuard (Formula.and Formula.top (Formula.untlQ Formula.top χ)) ψ χ))
+  let weakenEvent : ⊢[fc] (Formula.untlQ ψ χ).imp (Formula.untlQ ψ Formula.top) :=
     mp (DerivationTree.temporal_necessitation _ (impTop (fc := fc) χ))
       (baseThm (untilMonoEvent χ Formula.top ψ))
-  show ⊢[fc] (Formula.untl χ Formula.top).imp (Formula.untl Formula.top ψ) from
+  show ⊢[fc] (Formula.untlQ Formula.top χ).imp (Formula.untlQ ψ Formula.top) from
     impTrans accum (impTrans strengthen weakenEvent)
 
 /--
@@ -251,11 +251,11 @@ The third bullet is exactly the information a bare `P(¬ψ)` would have lost, an
 self-accumulation step is needed.
 -/
 noncomputable def snceAllPastAndImp {fc : FrameClass} (ψ : Formula) :
-    ⊢[fc] (Formula.snce (Formula.and ψ.allPast ψ) ψ).imp ψ.allPast :=
+    ⊢[fc] (Formula.snceQ ψ (Formula.and ψ.allPast ψ)).imp ψ.allPast :=
   let P : Formula := ψ.neg.somePast
   let G1 : Formula := Formula.and Formula.top P
   let E : Formula := Formula.and ψ.allPast ψ
-  let Γ : Context := [P, Formula.snce E ψ]
+  let Γ : Context := [P, Formula.snceQ ψ E]
   -- Event refutation for the first disjunct: `¬ψ ∧ (Hψ ∧ ψ)`.
   let ev1 : ⊢[fc] (Formula.and ψ.neg E).imp Formula.bot :=
     let Δ : Context := [Formula.and ψ.neg E]
@@ -281,18 +281,18 @@ noncomputable def snceAllPastAndImp {fc : FrameClass} (ψ : Formula) :
     let hH : Δ ⊢[fc] ψ.allPast := andFst (andSnd hA)
     deductionTheorem [] (Formula.and G1 E) Formula.bot
       (ctxMp (show Δ ⊢[fc] P.imp Formula.bot from hH) hP)
-  let hSnce : Γ ⊢[fc] Formula.snce E ψ :=
+  let hSnce : Γ ⊢[fc] Formula.snceQ ψ E :=
     DerivationTree.assumption _ _ (List.Mem.tail _ (List.Mem.head _))
   let hPast : Γ ⊢[fc] P := DerivationTree.assumption _ _ (List.Mem.head _)
-  let hAccum : Γ ⊢[fc] Formula.snce ψ.neg G1 :=
+  let hAccum : Γ ⊢[fc] Formula.snceQ G1 ψ.neg :=
     ctxMp (thmIn (DerivationTree.axiom [] _ (Axiom.self_accum_since Formula.top ψ.neg)
       (FrameClass.base_le fc))) hPast
   let hSplit : Γ ⊢[fc]
       Formula.or
         (Formula.or
-          (Formula.snce (Formula.and ψ.neg E) (Formula.and G1 ψ))
-          (Formula.snce (Formula.and ψ.neg ψ) (Formula.and G1 ψ)))
-        (Formula.snce (Formula.and G1 E) (Formula.and G1 ψ)) :=
+          (Formula.snceQ (Formula.and G1 ψ) (Formula.and ψ.neg E))
+          (Formula.snceQ (Formula.and G1 ψ) (Formula.and ψ.neg ψ)))
+        (Formula.snceQ (Formula.and G1 ψ) (Formula.and G1 E)) :=
     ctxMp (thmIn (DerivationTree.axiom [] _ (Axiom.linear_since G1 ψ.neg ψ E)
       (FrameClass.base_le fc))) (andIntro hAccum hSnce)
   let hBot : Γ ⊢[fc] Formula.bot :=
@@ -300,14 +300,14 @@ noncomputable def snceAllPastAndImp {fc : FrameClass} (ψ : Formula) :
       (thmIn (deductionTheorem [] _ Formula.bot
         (orElimBot
           (DerivationTree.assumption
-            [Formula.or (Formula.snce (Formula.and ψ.neg E) (Formula.and G1 ψ))
-              (Formula.snce (Formula.and ψ.neg ψ) (Formula.and G1 ψ))] _ (List.Mem.head _))
+            [Formula.or (Formula.snceQ (Formula.and G1 ψ) (Formula.and ψ.neg E))
+              (Formula.snceQ (Formula.and G1 ψ) (Formula.and ψ.neg ψ))] _ (List.Mem.head _))
           (thmIn (snceEventBot (Formula.and G1 ψ) ev1))
           (thmIn (snceEventBot (Formula.and G1 ψ) ev2)))))
       (thmIn (snceEventBot (Formula.and G1 ψ) ev3))
-  deductionTheorem [] (Formula.snce E ψ) ψ.allPast
-    (show [Formula.snce E ψ] ⊢[fc] P.imp Formula.bot from
-      deductionTheorem [Formula.snce E ψ] P Formula.bot hBot)
+  deductionTheorem [] (Formula.snceQ ψ E) ψ.allPast
+    (show [Formula.snceQ ψ E] ⊢[fc] P.imp Formula.bot from
+      deductionTheorem [Formula.snceQ ψ E] P Formula.bot hBot)
 
 /-! ## The CO derivation -/
 
@@ -331,10 +331,10 @@ yields `Hφ` at `s` by **L3**. The `△`-antecedent's `G`-component, evaluated a
 private noncomputable def coEventBot {fc : FrameClass} (φ : Formula) :
     ⊢[fc] (φ.allPast.imp φ.allPast.someFuture).imp
       ((Formula.and (Formula.or φ.neg (Formula.kPlus φ.neg))
-        (Formula.snce (Formula.and φ.allPast φ) φ)).imp Formula.bot) :=
+        (Formula.snceQ φ (Formula.and φ.allPast φ))).imp Formula.bot) :=
   let χ := φ.allPast
   let ev := Formula.or φ.neg (Formula.kPlus φ.neg)
-  let sinceWit := Formula.snce (Formula.and χ φ) φ
+  let sinceWit := Formula.snceQ φ (Formula.and χ φ)
   let Δ : Context := [Formula.and ev sinceWit, χ.imp χ.someFuture]
   let hAnd : Δ ⊢[fc] Formula.and ev sinceWit :=
     DerivationTree.assumption _ _ (List.Mem.head _)
@@ -343,15 +343,15 @@ private noncomputable def coEventBot {fc : FrameClass} (φ : Formula) :
   let hχ : Δ ⊢[fc] χ := ctxMp (thmIn (snceAllPastAndImp φ)) (andSnd hAnd)
   let hFχ : Δ ⊢[fc] χ.someFuture := ctxMp hImp hχ
   let hφ : Δ ⊢[fc] φ := ctxMp (thmIn (someFutureAllPastImp φ)) hFχ
-  let hU : Δ ⊢[fc] Formula.untl Formula.top φ :=
+  let hU : Δ ⊢[fc] Formula.untlQ φ Formula.top :=
     ctxMp (thmIn (someFutureAllPastUntlTop φ)) hFχ
-  let hUnn : Δ ⊢[fc] Formula.untl Formula.top φ.neg.neg :=
+  let hUnn : Δ ⊢[fc] Formula.untlQ φ.neg.neg Formula.top :=
     ctxMp (thmIn (mp (DerivationTree.temporal_necessitation _ (notNotIntro (fc := fc) φ))
       (baseThm (untilMonoGuard φ φ.neg.neg Formula.top)))) hU
   let refuteNeg : Δ ⊢[fc] φ.neg.imp Formula.bot :=
     ctxMp (thmIn (theoremApp1 (fc := fc) (A := φ) (B := Formula.bot))) hφ
   let refuteKPlus : Δ ⊢[fc] (Formula.kPlus φ.neg).imp Formula.bot :=
-    ctxMp (thmIn (theoremApp1 (fc := fc) (A := Formula.untl Formula.top φ.neg.neg)
+    ctxMp (thmIn (theoremApp1 (fc := fc) (A := Formula.untlQ φ.neg.neg Formula.top)
       (B := Formula.bot))) hUnn
   deductionTheorem [] (χ.imp χ.someFuture) _
     (deductionTheorem [χ.imp χ.someFuture] (Formula.and ev sinceWit) Formula.bot
@@ -408,7 +408,7 @@ noncomputable def co_derived {fc : FrameClass} (h_fc : FrameClass.Dedekind ≤ f
   let χ := φ.allPast
   let tri := Formula.always (χ.imp χ.someFuture)
   let ev := Formula.or φ.neg (Formula.kPlus φ.neg)
-  let sinceWit := Formula.snce (Formula.and χ φ) φ
+  let sinceWit := Formula.snceQ φ (Formula.and χ φ)
   let enriched := Formula.and ev sinceWit
   let Γ : Context := [φ.neg.someFuture, χ, tri]
   let hTri : Γ ⊢[fc] tri :=
@@ -419,13 +419,13 @@ noncomputable def co_derived {fc : FrameClass} (h_fc : FrameClass.Dedekind ≤ f
   let hFχ : Γ ⊢[fc] χ.someFuture :=
     ctxMp (ctxMp (thmIn (alwaysElimHere (χ.imp χ.someFuture))) hTri) hH
   let hφ : Γ ⊢[fc] φ := ctxMp (thmIn (someFutureAllPastImp φ)) hFχ
-  let hU : Γ ⊢[fc] Formula.untl Formula.top φ :=
+  let hU : Γ ⊢[fc] Formula.untlQ φ Formula.top :=
     ctxMp (thmIn (someFutureAllPastUntlTop φ)) hFχ
   -- Prior-U at `φ` — the only non-base axiom in the whole derivation.
-  let hGap : Γ ⊢[fc] Formula.untl ev φ :=
+  let hGap : Γ ⊢[fc] Formula.untlQ φ ev :=
     ctxMp (thmIn (DerivationTree.axiom [] _ (Axiom.prior_U_gap φ) h_fc)) (andIntro hU hFneg)
   -- BX13: record `Hφ ∧ φ` at the witness as a `Since`.
-  let hEnriched : Γ ⊢[fc] Formula.untl enriched φ :=
+  let hEnriched : Γ ⊢[fc] Formula.untlQ φ enriched :=
     ctxMp (thmIn (DerivationTree.axiom [] _
       (Axiom.enrichment_until φ ev (Formula.and χ φ)) (FrameClass.base_le fc)))
       (andIntro (andIntro hH hφ) hGap)
@@ -436,7 +436,7 @@ noncomputable def co_derived {fc : FrameClass} (h_fc : FrameClass.Dedekind ≤ f
     ctxMp (ctxMp (thmIn (baseThm (gDistribution (χ.imp χ.someFuture)
       (enriched.imp Formula.bot))))
       (thmIn (DerivationTree.temporal_necessitation _ (coEventBot (fc := fc) φ)))) hG
-  let hUBot : Γ ⊢[fc] Formula.untl Formula.bot φ :=
+  let hUBot : Γ ⊢[fc] Formula.untlQ φ Formula.bot :=
     ctxMp (ctxMp (thmIn (baseThm (untilMonoEvent enriched Formula.bot φ))) hGEvent) hEnriched
   let hBot : Γ ⊢[fc] Formula.bot := ctxMp (thmIn (notUntlBot φ)) hUBot
   deductionTheorem [] tri _

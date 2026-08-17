@@ -179,7 +179,7 @@ theorem limitdom_temporal_truth_effective {fc : FrameClass} (A : Set Formula)
     change (mkAtomMap φ (mkAtomMapFwd φ (.box _))) ∈ LimitF fc A h_mcs t.val ↔
       (mkAtomMap φ (mkAtomMapFwd φ (.box _))) ∈ LimitF fc A h_mcs t.val
     exact Iff.rfl
-  | untl f₁ f₂ ih₁ ih₂ =>
+  | untlQ f₂ f₁ ih₂ ih₁ =>
     intro t
     simp only [TemporalTruth, limitdomEffectiveFormula, effectiveFormula]
     constructor
@@ -192,9 +192,9 @@ theorem limitdom_temporal_truth_effective {fc : FrameClass} (A : Set Formula)
           LimitF fc A h_mcs r.val :=
         fun r htr hrs => (ih₂ r).mp (h_guard r htr hrs)
       by_contra h_neg
-      have h_neg_until : (Formula.untl
-          (effectiveFormula (mkAtomMap φ) (mkAtomMapFwd φ) f₁)
-          (effectiveFormula (mkAtomMap φ) (mkAtomMapFwd φ) f₂)).neg ∈
+      have h_neg_until : (Formula.untlQ
+          (effectiveFormula (mkAtomMap φ) (mkAtomMapFwd φ) f₂)
+          (effectiveFormula (mkAtomMap φ) (mkAtomMapFwd φ) f₁)).neg ∈
           LimitF fc A h_mcs t.val :=
         (SetMaximalConsistent.negation_complete
           (limit_c0 fc A h_mcs t.val t.property) _).resolve_left h_neg
@@ -214,7 +214,7 @@ theorem limitdom_temporal_truth_effective {fc : FrameClass} (A : Set Formula)
           h_until
       exact ⟨⟨y, hy⟩, hty, (ih₁ ⟨y, hy⟩).mpr hf₁y,
         fun r htr hrs => (ih₂ r).mpr (h_guard r.val r.property htr hrs)⟩
-  | snce f₁ f₂ ih₁ ih₂ =>
+  | snceQ f₂ f₁ ih₂ ih₁ =>
     intro t
     simp only [TemporalTruth, limitdomEffectiveFormula, effectiveFormula]
     constructor
@@ -227,9 +227,9 @@ theorem limitdom_temporal_truth_effective {fc : FrameClass} (A : Set Formula)
           LimitF fc A h_mcs r.val :=
         fun r hsr hrt => (ih₂ r).mp (h_guard r hsr hrt)
       by_contra h_neg
-      have h_neg_since : (Formula.snce
-          (effectiveFormula (mkAtomMap φ) (mkAtomMapFwd φ) f₁)
-          (effectiveFormula (mkAtomMap φ) (mkAtomMapFwd φ) f₂)).neg ∈
+      have h_neg_since : (Formula.snceQ
+          (effectiveFormula (mkAtomMap φ) (mkAtomMapFwd φ) f₂)
+          (effectiveFormula (mkAtomMap φ) (mkAtomMapFwd φ) f₁)).neg ∈
           LimitF fc A h_mcs t.val :=
         (SetMaximalConsistent.negation_complete
           (limit_c0 fc A h_mcs t.val t.property) _).resolve_left h_neg
@@ -285,7 +285,7 @@ theorem limitdom_semantic_prior_UZ {fc : FrameClass} (A : Set Formula)
   -- Step 3: Apply MCS-level Prior-UZ axiom
   have h_prior := theorem_in_mcs (limit_c0 fc A h_mcs t.val t.property)
     (DerivationTree.axiom [] _ (Axiom.prior_UZ eff_ψ) h_fc)
-  have h_until : Formula.untl eff_ψ eff_ψ.neg ∈ LimitF fc A h_mcs t.val :=
+  have h_until : Formula.untlQ eff_ψ.neg eff_ψ ∈ LimitF fc A h_mcs t.val :=
     (BXCanonical.imp_iff_mcs (limit_c0 fc A h_mcs t.val t.property) _ _).mp h_prior h_F_eff
   -- Step 4: C5 forward
   obtain ⟨s', hs', hts', h_eff_s', h_guard⟩ :=
@@ -328,7 +328,7 @@ theorem limitdom_semantic_prior_SZ {fc : FrameClass} (A : Set Formula)
     exact absurd h_bot (BXCanonical.bot_not_in_mcs (limit_c0 fc A h_mcs z hz))
   have h_prior := theorem_in_mcs (limit_c0 fc A h_mcs t.val t.property)
     (DerivationTree.axiom [] _ (Axiom.prior_SZ eff_ψ) h_fc)
-  have h_since : Formula.snce eff_ψ eff_ψ.neg ∈ LimitF fc A h_mcs t.val :=
+  have h_since : Formula.snceQ eff_ψ.neg eff_ψ ∈ LimitF fc A h_mcs t.val :=
     (BXCanonical.imp_iff_mcs (limit_c0 fc A h_mcs t.val t.property) _ _).mp h_prior h_P_eff
   obtain ⟨s', hs', hst', h_eff_s', h_guard⟩ :=
     limit_satisfies_c5'_strong fc A h_mcs t.val t.property eff_ψ.neg eff_ψ h_since
@@ -411,11 +411,11 @@ theorem effectiveFormula_id_of_sub {φ ψ : Formula}
     simp only [effectiveFormula, mkAtomMap]
     exact mkAtomMapFwd_section φ (.box f)
       (h_sub (Finset.mem_union.mpr (Or.inl (Finset.mem_singleton.mpr rfl))))
-  | untl f₁ f₂ ih₁ ih₂ =>
+  | untlQ f₂ f₁ ih₂ ih₁ =>
     simp only [effectiveFormula]
     rw [ih₁ (Finset.Subset.trans (Finset.subset_union_left) h_sub),
         ih₂ (Finset.Subset.trans (Finset.subset_union_right) h_sub)]
-  | snce f₁ f₂ ih₁ ih₂ =>
+  | snceQ f₂ f₁ ih₂ ih₁ =>
     simp only [effectiveFormula]
     rw [ih₁ (Finset.Subset.trans (Finset.subset_union_left) h_sub),
         ih₂ (Finset.Subset.trans (Finset.subset_union_right) h_sub)]
@@ -728,13 +728,13 @@ theorem predFormulas_operator_depth_le (φ : Formula) :
     rcases hf with rfl | hf
     · exact le_rfl
     · exact Nat.le_succ_of_le (ih f hf)
-  | untl ψ₁ ψ₂ ih₁ ih₂ =>
+  | untlQ ψ₂ ψ₁ ih₂ ih₁ =>
     intro f hf
     simp only [Formula.predFormulas, Finset.mem_union] at hf
     rcases hf with hf₁ | hf₂
     · have := ih₁ f hf₁; simp only [operatorDepth]; omega
     · have := ih₂ f hf₂; simp only [operatorDepth]; omega
-  | snce ψ₁ ψ₂ ih₁ ih₂ =>
+  | snceQ ψ₂ ψ₁ ih₂ ih₁ =>
     intro f hf
     simp only [Formula.predFormulas, Finset.mem_union] at hf
     rcases hf with hf₁ | hf₂
@@ -1275,7 +1275,7 @@ theorem countermodel_discrete_reynolds_v2
       -- Same `Fin.cons` motive mismatch as the `box` case above.
       replace h_eval := h_env ▸ h_eval
       exact (table_correctness ((getZ f').toOrdered sig) (mkAtomMapFwd φ) _ ψ).mp h_eval
-  | untl ψ₁ ψ₂ ih₁ ih₂ =>
+  | untlQ ψ₂ ψ₁ ih₂ ih₁ =>
     have h_sub₁ : ψ₁.predFormulas ⊆ φ.predFormulas :=
       Finset.Subset.trans Finset.subset_union_left h_sub
     have h_sub₂ : ψ₂.predFormulas ⊆ φ.predFormulas :=
@@ -1310,7 +1310,7 @@ theorem countermodel_discrete_reynolds_v2
         have h_lt2 : (toCarrier (h_lo f) (h_hi f) (w₀ + r) : (getZ f).intervalCarrier) < sc := by
           change (w₀ + r : ℤ) < sc.val; omega
         exact hguard _ h_lt h_lt2
-  | snce ψ₁ ψ₂ ih₁ ih₂ =>
+  | snceQ ψ₂ ψ₁ ih₂ ih₁ =>
     -- Symmetric to Until case
     have h_sub₁ : ψ₁.predFormulas ⊆ φ.predFormulas :=
       Finset.Subset.trans Finset.subset_union_left h_sub

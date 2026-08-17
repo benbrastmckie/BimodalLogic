@@ -115,14 +115,14 @@ there and is not asserted.
 theorem sat_untl_pos_future (b : Branch) (timeOrd : TimeOrdering)
     (hSat : findUnexpanded b (timeOrd := timeOrd) = none)
     (event guard : Formula) (w : WorldIndex) (t : TimeIndex)
-    (hmem : ⟨.pos, .untl event guard, ⟨w, t⟩⟩ ∈ b) :
+    (hmem : ⟨.pos, .untlQ guard event, ⟨w, t⟩⟩ ∈ b) :
     ∃ t', strictBefore timeOrd t t' = true ∧
       ((t' ∈ b.knownTimes ∧
           ((⟨.pos, event, ⟨w, t'⟩⟩ ∈ b) ∨
-            (⟨.pos, guard, ⟨w, t'⟩⟩ ∈ b ∧ ⟨.pos, .untl event guard, ⟨w, t'⟩⟩ ∈ b)))
+            (⟨.pos, guard, ⟨w, t'⟩⟩ ∈ b ∧ ⟨.pos, .untlQ guard event, ⟨w, t'⟩⟩ ∈ b)))
         ∨ (event = Formula.top ∧ guard = Formula.top)) := by
   have hExp :=
-    all_expanded_of_saturated b timeOrd hSat ⟨.pos, .untl event guard, ⟨w, t⟩⟩ hmem
+    all_expanded_of_saturated b timeOrd hSat ⟨.pos, .untlQ guard event, ⟨w, t⟩⟩ hmem
   simp only [isExpanded, Option.isNone_iff_eq_none] at hExp
   unfold findApplicableRule at hExp
   rw [List.findSome?_eq_none_iff] at hExp
@@ -130,8 +130,8 @@ theorem sat_untl_pos_future (b : Branch) (timeOrd : TimeOrdering)
   · subst hg
     have h := hExp .someFuturePos (by simp [allRulesForFC, allRules, denseRules, discreteRules])
     have hwit :
-        witnessPresent .someFuturePos ⟨.pos, .untl event Formula.top, ⟨w, t⟩⟩ b timeOrd = true
-        ∨ trivialEventWitnessed .someFuturePos ⟨.pos, .untl event Formula.top, ⟨w, t⟩⟩ b timeOrd
+        witnessPresent .someFuturePos ⟨.pos, .untlQ Formula.top event, ⟨w, t⟩⟩ b timeOrd = true
+        ∨ trivialEventWitnessed .someFuturePos ⟨.pos, .untlQ Formula.top event, ⟨w, t⟩⟩ b timeOrd
             = true := by
       by_contra hc
       rw [not_or] at hc
@@ -160,10 +160,10 @@ theorem sat_untl_pos_future (b : Branch) (timeOrd : TimeOrdering)
     have h := hExp .untlPos (by simp [allRulesForFC, allRules, denseRules, discreteRules])
     -- The genuine-Until branch: `trivialEventWitnessed` needs `guard == ⊤`, which `hg'` refutes,
     -- so the suppression test collapses back to `witnessPresent` alone.
-    have htriv : trivialEventWitnessed .untlPos ⟨.pos, .untl event guard, ⟨w, t⟩⟩ b timeOrd
+    have htriv : trivialEventWitnessed .untlPos ⟨.pos, .untlQ guard event, ⟨w, t⟩⟩ b timeOrd
         = false := by simp [trivialEventWitnessed, hg']
     have hwit :
-        witnessPresent .untlPos ⟨.pos, .untl event guard, ⟨w, t⟩⟩ b timeOrd = true := by
+        witnessPresent .untlPos ⟨.pos, .untlQ guard event, ⟨w, t⟩⟩ b timeOrd = true := by
       by_contra hc
       rw [Bool.not_eq_true] at hc
       simp only [isApplicable, asUntil?, hg', applyRule, ruleMintsFreshLabel,
@@ -177,7 +177,7 @@ theorem sat_untl_pos_future (b : Branch) (timeOrd : TimeOrdering)
       exact ⟨t', strictBefore_of_mem_futureOf hfut,
         Or.inl ⟨mem_knownTimes_of_mem hmem', Or.inl hmem'⟩⟩
     · have hmemG : (⟨.pos, guard, ⟨w, t'⟩⟩ : SignedFormula) ∈ b := mem_of_branch_contains hgd
-      have hmemU : (⟨.pos, .untl event guard, ⟨w, t'⟩⟩ : SignedFormula) ∈ b :=
+      have hmemU : (⟨.pos, .untlQ guard event, ⟨w, t'⟩⟩ : SignedFormula) ∈ b :=
         mem_of_branch_contains hu
       exact ⟨t', strictBefore_of_mem_futureOf hfut,
         Or.inl ⟨mem_knownTimes_of_mem hmemG, Or.inr ⟨hmemG, hmemU⟩⟩⟩
@@ -188,14 +188,14 @@ fact comes from `timeOrd.pastOf t`. -/
 theorem sat_snce_pos_past (b : Branch) (timeOrd : TimeOrdering)
     (hSat : findUnexpanded b (timeOrd := timeOrd) = none)
     (event guard : Formula) (w : WorldIndex) (t : TimeIndex)
-    (hmem : ⟨.pos, .snce event guard, ⟨w, t⟩⟩ ∈ b) :
+    (hmem : ⟨.pos, .snceQ guard event, ⟨w, t⟩⟩ ∈ b) :
     ∃ t', strictBefore timeOrd t' t = true ∧
       ((t' ∈ b.knownTimes ∧
           ((⟨.pos, event, ⟨w, t'⟩⟩ ∈ b) ∨
-            (⟨.pos, guard, ⟨w, t'⟩⟩ ∈ b ∧ ⟨.pos, .snce event guard, ⟨w, t'⟩⟩ ∈ b)))
+            (⟨.pos, guard, ⟨w, t'⟩⟩ ∈ b ∧ ⟨.pos, .snceQ guard event, ⟨w, t'⟩⟩ ∈ b)))
         ∨ (event = Formula.top ∧ guard = Formula.top)) := by
   have hExp :=
-    all_expanded_of_saturated b timeOrd hSat ⟨.pos, .snce event guard, ⟨w, t⟩⟩ hmem
+    all_expanded_of_saturated b timeOrd hSat ⟨.pos, .snceQ guard event, ⟨w, t⟩⟩ hmem
   simp only [isExpanded, Option.isNone_iff_eq_none] at hExp
   unfold findApplicableRule at hExp
   rw [List.findSome?_eq_none_iff] at hExp
@@ -203,8 +203,8 @@ theorem sat_snce_pos_past (b : Branch) (timeOrd : TimeOrdering)
   · subst hg
     have h := hExp .somePastPos (by simp [allRulesForFC, allRules, denseRules, discreteRules])
     have hwit :
-        witnessPresent .somePastPos ⟨.pos, .snce event Formula.top, ⟨w, t⟩⟩ b timeOrd = true
-        ∨ trivialEventWitnessed .somePastPos ⟨.pos, .snce event Formula.top, ⟨w, t⟩⟩ b timeOrd
+        witnessPresent .somePastPos ⟨.pos, .snceQ Formula.top event, ⟨w, t⟩⟩ b timeOrd = true
+        ∨ trivialEventWitnessed .somePastPos ⟨.pos, .snceQ Formula.top event, ⟨w, t⟩⟩ b timeOrd
             = true := by
       by_contra hc
       rw [not_or] at hc
@@ -232,10 +232,10 @@ theorem sat_snce_pos_past (b : Branch) (timeOrd : TimeOrdering)
   · have hg' : (guard == Formula.top) = false := by simp [hg]
     have h := hExp .sncePos (by simp [allRulesForFC, allRules, denseRules, discreteRules])
     -- Mirror of the `untlPos` branch: `hg'` refutes the `trivialEventWitnessed` disjunct.
-    have htriv : trivialEventWitnessed .sncePos ⟨.pos, .snce event guard, ⟨w, t⟩⟩ b timeOrd
+    have htriv : trivialEventWitnessed .sncePos ⟨.pos, .snceQ guard event, ⟨w, t⟩⟩ b timeOrd
         = false := by simp [trivialEventWitnessed, hg']
     have hwit :
-        witnessPresent .sncePos ⟨.pos, .snce event guard, ⟨w, t⟩⟩ b timeOrd = true := by
+        witnessPresent .sncePos ⟨.pos, .snceQ guard event, ⟨w, t⟩⟩ b timeOrd = true := by
       by_contra hc
       rw [Bool.not_eq_true] at hc
       simp only [isApplicable, asSince?, hg', applyRule, ruleMintsFreshLabel,
@@ -249,7 +249,7 @@ theorem sat_snce_pos_past (b : Branch) (timeOrd : TimeOrdering)
       exact ⟨t', strictBefore_of_mem_pastOf hpast,
         Or.inl ⟨mem_knownTimes_of_mem hmem', Or.inl hmem'⟩⟩
     · have hmemG : (⟨.pos, guard, ⟨w, t'⟩⟩ : SignedFormula) ∈ b := mem_of_branch_contains hgd
-      have hmemU : (⟨.pos, .snce event guard, ⟨w, t'⟩⟩ : SignedFormula) ∈ b :=
+      have hmemU : (⟨.pos, .snceQ guard event, ⟨w, t'⟩⟩ : SignedFormula) ∈ b :=
         mem_of_branch_contains hu
       exact ⟨t', strictBefore_of_mem_pastOf hpast,
         Or.inl ⟨mem_knownTimes_of_mem hmemG, Or.inr ⟨hmemG, hmemU⟩⟩⟩

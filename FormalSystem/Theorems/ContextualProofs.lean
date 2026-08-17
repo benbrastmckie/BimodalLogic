@@ -272,17 +272,17 @@ def box_past_ctx (A : Formula) : [Formula.box A] ⊢ A.someFuture.allPast :=
 
 /-- Until implies F in context:
   `[U(psi, phi)] |- F(psi)`. 1 assumption + 1 weakening + 1 axiom + 1 MP. -/
-def until_F_ctx (phi psi : Formula) : [Formula.untl psi phi] ⊢ psi.someFuture :=
-  .modus_ponens [Formula.untl psi phi] (Formula.untl psi phi) psi.someFuture
+def until_F_ctx (phi psi : Formula) : [Formula.untlQ phi psi] ⊢ psi.someFuture :=
+  .modus_ponens [Formula.untlQ phi psi] (Formula.untlQ phi psi) psi.someFuture
     (weakenEmpty (.axiom [] _ (Axiom.until_F phi psi) trivial))
-    (.assumption _ (Formula.untl psi phi) mem0)
+    (.assumption _ (Formula.untlQ phi psi) mem0)
 
 /-- Since implies P in context:
   `[S(psi, phi)] |- P(psi)`. 1 assumption + 1 weakening + 1 axiom + 1 MP. -/
-def since_P_ctx (phi psi : Formula) : [Formula.snce psi phi] ⊢ psi.somePast :=
-  .modus_ponens [Formula.snce psi phi] (Formula.snce psi phi) psi.somePast
+def since_P_ctx (phi psi : Formula) : [Formula.snceQ phi psi] ⊢ psi.somePast :=
+  .modus_ponens [Formula.snceQ phi psi] (Formula.snceQ phi psi) psi.somePast
     (weakenEmpty (.axiom [] _ (Axiom.since_P phi psi) trivial))
-    (.assumption _ (Formula.snce psi phi) mem0)
+    (.assumption _ (Formula.snceQ phi psi) mem0)
 
 /-- Serial future in context: `[A] |- F(top)`. 2 weakening + 1 axiom + identity steps + 1 MP. -/
 def serial_future_ctx (A : Formula) : [A] ⊢ Formula.top.someFuture :=
@@ -336,11 +336,11 @@ def connect_past_ctx_weak (A B : Formula) : [B, A] ⊢ A.someFuture.allPast :=
   weakenCons B (connect_past_ctx A)
 
 /-- `[C, U(psi, phi)] |- F(psi)` -/
-def until_F_ctx_weak (phi psi C : Formula) : [C, Formula.untl psi phi] ⊢ psi.someFuture :=
+def until_F_ctx_weak (phi psi C : Formula) : [C, Formula.untlQ phi psi] ⊢ psi.someFuture :=
   weakenCons C (until_F_ctx phi psi)
 
 /-- `[C, S(psi, phi)] |- P(psi)` -/
-def since_P_ctx_weak (phi psi C : Formula) : [C, Formula.snce psi phi] ⊢ psi.somePast :=
+def since_P_ctx_weak (phi psi C : Formula) : [C, Formula.snceQ phi psi] ⊢ psi.somePast :=
   weakenCons C (since_P_ctx phi psi)
 
 /-- `[B, A] |- A` -/
@@ -441,11 +441,11 @@ def prop_s_weakened (A B psi : Formula) : [psi] ⊢ A.imp (B.imp A) :=
   weakenEmpty (.axiom [] _ (Axiom.prop_s A B) trivial)
 
 /-- `[psi] |- U(B, A) -> F(B)` -/
-def until_F_weakened (A B psi : Formula) : [psi] ⊢ (Formula.untl B A).imp B.someFuture :=
+def until_F_weakened (A B psi : Formula) : [psi] ⊢ (Formula.untlQ A B).imp B.someFuture :=
   weakenEmpty (.axiom [] _ (Axiom.until_F A B) trivial)
 
 /-- `[psi] |- S(B, A) -> P(B)` -/
-def since_P_weakened (A B psi : Formula) : [psi] ⊢ (Formula.snce B A).imp B.somePast :=
+def since_P_weakened (A B psi : Formula) : [psi] ⊢ (Formula.snceQ A B).imp B.somePast :=
   weakenEmpty (.axiom [] _ (Axiom.since_P A B) trivial)
 
 /-- `[psi] |- top -> F(top)` -/

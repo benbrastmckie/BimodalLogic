@@ -189,13 +189,13 @@ theorem atom_mem_predFormulas_of_mem_subformulas (a : Atom) (root : Formula)
     rcases h with h | h
     · exact absurd h (by simp)
     · simp only [Formula.predFormulas, Finset.mem_union]; exact Or.inr (ihχ h)
-  | untl ψ χ ihψ ihχ =>
+  | untlQ χ ψ ihχ ihψ =>
     simp only [Formula.subformulas, List.mem_cons, List.mem_append] at h
     rcases h with h | h | h
     · exact absurd h (by simp)
     · simp only [Formula.predFormulas, Finset.mem_union]; exact Or.inl (ihψ h)
     · simp only [Formula.predFormulas, Finset.mem_union]; exact Or.inr (ihχ h)
-  | snce ψ χ ihψ ihχ =>
+  | snceQ χ ψ ihχ ihψ =>
     simp only [Formula.subformulas, List.mem_cons, List.mem_append] at h
     rcases h with h | h | h
     · exact absurd h (by simp)
@@ -221,13 +221,13 @@ theorem box_mem_predFormulas_of_mem_subformulas (ψ root : Formula)
     rcases h with h | h
     · subst h; simp [Formula.predFormulas]
     · simp only [Formula.predFormulas, Finset.mem_union]; exact Or.inr (ihχ h)
-  | untl α β ihα ihβ =>
+  | untlQ β α ihβ ihα =>
     simp only [Formula.subformulas, List.mem_cons, List.mem_append] at h
     rcases h with h | h | h
     · exact absurd h (by simp)
     · simp only [Formula.predFormulas, Finset.mem_union]; exact Or.inl (ihα h)
     · simp only [Formula.predFormulas, Finset.mem_union]; exact Or.inr (ihβ h)
-  | snce α β ihα ihβ =>
+  | snceQ β α ihβ ihα =>
     simp only [Formula.subformulas, List.mem_cons, List.mem_append] at h
     rcases h with h | h | h
     · exact absurd h (by simp)
@@ -469,7 +469,7 @@ theorem chronicleMonadic_truth_correspondence {fc : FrameClass}
       box_mem_predFormulas_of_mem_closure ψ root h_sub
     simp only [TemporalTruth, mkAtomMapFwd_on_predFormulas root (Formula.box ψ) h_pred]
     exact Iff.rfl
-  | untl α β ihα ihβ =>
+  | untlQ β α ihβ ihα =>
     have h_α_sub : α ∈ subformulaClosure root := closure_untl_left root α β h_sub
     have h_β_sub : β ∈ subformulaClosure root := closure_untl_right root α β h_sub
     simp only [TemporalTruth]
@@ -483,7 +483,7 @@ theorem chronicleMonadic_truth_correspondence {fc : FrameClass}
       obtain ⟨s, h_qs, h_α_s, h_β_guard⟩ := h_fwd_U q α β h_sub h_U
       exact ⟨s, h_qs, (ihα h_α_sub s).mpr h_α_s,
         fun r h_qr h_rs => (ihβ h_β_sub r).mpr (h_β_guard r h_qr h_rs)⟩
-  | snce α β ihα ihβ =>
+  | snceQ β α ihβ ihα =>
     have h_α_sub : α ∈ subformulaClosure root := closure_snce_left root α β h_sub
     have h_β_sub : β ∈ subformulaClosure root := closure_snce_right root α β h_sub
     simp only [TemporalTruth]
@@ -547,9 +547,9 @@ theorem cantor_bfmcs_dense_fuc (fc : FrameClass) (A : Set Formula)
   intro fam hfam
   refine ⟨fun t α β h => ?_, fun t α β h => ?_⟩
   · exact (cantor_bfmcs_dense_restricted_fuc fc A h_mcs h_box_dense
-      (Formula.untl α β) fam hfam).1 t α β (self_mem_subformulaClosure _) h
+      (Formula.untlQ β α) fam hfam).1 t α β (self_mem_subformulaClosure _) h
   · exact (cantor_bfmcs_dense_restricted_fuc fc A h_mcs h_box_dense
-      (Formula.snce α β) fam hfam).2 t α β (self_mem_subformulaClosure _) h
+      (Formula.snceQ β α) fam hfam).2 t α β (self_mem_subformulaClosure _) h
 
 /-- Unrestricted backward Until/Since coherence for `cantorBfmcsDense`, by self-root
 instantiation of `cantor_bfmcs_dense_restricted_buc`. -/
@@ -560,9 +560,9 @@ theorem cantor_bfmcs_dense_buc (fc : FrameClass) (A : Set Formula)
   intro fam hfam
   refine ⟨fun t α β h => ?_, fun t α β h => ?_⟩
   · exact (cantor_bfmcs_dense_restricted_buc fc A h_mcs h_box_dense
-      (Formula.untl α β) fam hfam).1 t α β (self_mem_subformulaClosure _) h
+      (Formula.untlQ β α) fam hfam).1 t α β (self_mem_subformulaClosure _) h
   · exact (cantor_bfmcs_dense_restricted_buc fc A h_mcs h_box_dense
-      (Formula.snce α β) fam hfam).2 t α β (self_mem_subformulaClosure _) h
+      (Formula.snceQ β α) fam hfam).2 t α β (self_mem_subformulaClosure _) h
 
 /-! ## Part 6: The unrestricted (effective) truth correspondence
 
@@ -606,12 +606,12 @@ variable (root a b : Formula)
     chronicleEff root (a.imp b) = (chronicleEff root a).imp (chronicleEff root b) := rfl
 
 @[simp] theorem chronicleEff_untl :
-    chronicleEff root (Formula.untl a b)
-      = Formula.untl (chronicleEff root a) (chronicleEff root b) := rfl
+    chronicleEff root (Formula.untlQ b a)
+      = Formula.untlQ (chronicleEff root b) (chronicleEff root a) := rfl
 
 @[simp] theorem chronicleEff_snce :
-    chronicleEff root (Formula.snce a b)
-      = Formula.snce (chronicleEff root a) (chronicleEff root b) := rfl
+    chronicleEff root (Formula.snceQ b a)
+      = Formula.snceQ (chronicleEff root b) (chronicleEff root a) := rfl
 
 /-- `chronicleEff` fixes `⊤`, since `Formula.top` is `⊥ → ⊥`. -/
 @[simp] theorem chronicleEff_top : chronicleEff root Formula.top = Formula.top := rfl
@@ -717,7 +717,7 @@ theorem chronicleMonadic_truth_effective {fc : FrameClass}
       exact (ihχ q).mpr
         (SetMaximalConsistent.implication_property h_mcs h_imp ((ihψ q).mp h_ψ_true))
   | box ψ _ih => exact Iff.rfl
-  | untl α β ihα ihβ =>
+  | untlQ β α ihβ ihα =>
     simp only [TemporalTruth, chronicleEff_untl]
     obtain ⟨h_fwd_U, _⟩ := h_fuc fam hfam
     obtain ⟨h_bwd_U, _⟩ := h_buc fam hfam
@@ -729,7 +729,7 @@ theorem chronicleMonadic_truth_effective {fc : FrameClass}
       obtain ⟨s, h_qs, h_α_s, h_β_guard⟩ := h_fwd_U q _ _ h_U
       exact ⟨s, h_qs, (ihα s).mpr h_α_s,
         fun r h_qr h_rs => (ihβ r).mpr (h_β_guard r h_qr h_rs)⟩
-  | snce α β ihα ihβ =>
+  | snceQ β α ihβ ihα =>
     simp only [TemporalTruth, chronicleEff_snce]
     obtain ⟨_, h_fwd_S⟩ := h_fuc fam hfam
     obtain ⟨_, h_bwd_S⟩ := h_buc fam hfam
@@ -803,7 +803,7 @@ def SemanticSep {sig : MonadicSignature}
     (atomMap : Formula → sig.preds) : Prop :=
   ∀ (t : M.carrier) (p : Formula),
     Kamp.kplusOpen M atomMap p t →
-    ¬ Kamp.kplusOpen M atomMap (Formula.and p (Formula.untl p p.neg)) t →
+    ¬ Kamp.kplusOpen M atomMap (Formula.and p (Formula.untlQ p.neg p)) t →
     Kamp.kplusOpen M atomMap (Formula.and (Formula.kPlus p) (Formula.kMinus p)) t
 
 /-- **The bridge structure satisfies Prior-U** — Reynolds §4 Corollary 1 clause 3, first
@@ -825,26 +825,26 @@ theorem chronicleMonadic_semanticPriorU {fc : FrameClass} (hfc : FrameClass.Dede
   obtain ⟨u₀, htu₀, h_np_u₀⟩ := h_future
   -- The antecedent `U(⊤,p) ∧ F¬p`, semantically.
   have h_ant : TemporalTruth (chronicleMonadicStructureOf root fam) (mkAtomMapFwd root) t
-      (Formula.and (Formula.untl Formula.top p) p.neg.someFuture) := by
+      (Formula.and (Formula.untlQ p Formula.top) p.neg.someFuture) := by
     rw [Kamp.temporal_truth_and]
     refine ⟨⟨s₀, hts₀, Kamp.temporal_truth_top _ _ _, h_p_on⟩,
       ⟨u₀, htu₀, (Kamp.temporal_truth_neg _ _ _ _).mpr h_np_u₀,
         fun r _ _ => Kamp.temporal_truth_top _ _ _⟩⟩
   -- ... transported to the MCS at `t`.
-  have h_ant_mcs : Formula.and (Formula.untl Formula.top (chronicleEff root p))
+  have h_ant_mcs : Formula.and (Formula.untlQ (chronicleEff root p) Formula.top)
       (chronicleEff root p).neg.someFuture ∈ fam.mcs t := by
     have h := (corr _ t).mp h_ant
     simpa using h
   -- The axiom instance, at the effective formula.
-  have h_thm : Formula.untl (Formula.or (chronicleEff root p).neg
-      (Formula.kPlus (chronicleEff root p).neg)) (chronicleEff root p) ∈ fam.mcs t :=
+  have h_thm : Formula.untlQ (chronicleEff root p) (Formula.or (chronicleEff root p).neg
+      (Formula.kPlus (chronicleEff root p).neg)) ∈ fam.mcs t :=
     SetMaximalConsistent.implication_property (fam.is_mcs t)
       (theorem_in_mcs (fam.is_mcs t)
         (DerivationTree.axiom [] _ (Axiom.prior_U_gap (chronicleEff root p)) hfc))
       h_ant_mcs
   -- ... read back semantically.
   have h_truth : TemporalTruth (chronicleMonadicStructureOf root fam) (mkAtomMapFwd root) t
-      (Formula.untl (Formula.or p.neg (Formula.kPlus p.neg)) p) := by
+      (Formula.untlQ p (Formula.or p.neg (Formula.kPlus p.neg))) := by
     refine (corr _ t).mpr ?_
     simpa using h_thm
   obtain ⟨s, hts, h_disj, h_guard⟩ := h_truth
@@ -874,23 +874,23 @@ theorem chronicleMonadic_semanticPriorS {fc : FrameClass} (hfc : FrameClass.Dede
   obtain ⟨s₀, hs₀t, h_p_on⟩ := h_stretch
   obtain ⟨u₀, hu₀t, h_np_u₀⟩ := h_past
   have h_ant : TemporalTruth (chronicleMonadicStructureOf root fam) (mkAtomMapFwd root) t
-      (Formula.and (Formula.snce Formula.top p) p.neg.somePast) := by
+      (Formula.and (Formula.snceQ p Formula.top) p.neg.somePast) := by
     rw [Kamp.temporal_truth_and]
     refine ⟨⟨s₀, hs₀t, Kamp.temporal_truth_top _ _ _, h_p_on⟩,
       ⟨u₀, hu₀t, (Kamp.temporal_truth_neg _ _ _ _).mpr h_np_u₀,
         fun r _ _ => Kamp.temporal_truth_top _ _ _⟩⟩
-  have h_ant_mcs : Formula.and (Formula.snce Formula.top (chronicleEff root p))
+  have h_ant_mcs : Formula.and (Formula.snceQ (chronicleEff root p) Formula.top)
       (chronicleEff root p).neg.somePast ∈ fam.mcs t := by
     have h := (corr _ t).mp h_ant
     simpa using h
-  have h_thm : Formula.snce (Formula.or (chronicleEff root p).neg
-      (Formula.kMinus (chronicleEff root p).neg)) (chronicleEff root p) ∈ fam.mcs t :=
+  have h_thm : Formula.snceQ (chronicleEff root p) (Formula.or (chronicleEff root p).neg
+      (Formula.kMinus (chronicleEff root p).neg)) ∈ fam.mcs t :=
     SetMaximalConsistent.implication_property (fam.is_mcs t)
       (theorem_in_mcs (fam.is_mcs t)
         (DerivationTree.axiom [] _ (Axiom.prior_S_gap (chronicleEff root p)) hfc))
       h_ant_mcs
   have h_truth : TemporalTruth (chronicleMonadicStructureOf root fam) (mkAtomMapFwd root) t
-      (Formula.snce (Formula.or p.neg (Formula.kMinus p.neg)) p) := by
+      (Formula.snceQ p (Formula.or p.neg (Formula.kMinus p.neg))) := by
     refine (corr _ t).mpr ?_
     simpa using h_thm
   obtain ⟨s, hst, h_disj, h_guard⟩ := h_truth
@@ -923,14 +923,14 @@ theorem chronicleMonadic_semanticSep {fc : FrameClass} (hfc : FrameClass.Dedekin
   -- The antecedent `K⁺p ∧ ¬K⁺(p ∧ U(p,¬p))`, semantically.
   have h_ant : TemporalTruth (chronicleMonadicStructureOf root fam) (mkAtomMapFwd root) t
       (Formula.and (Formula.kPlus p)
-        (Formula.kPlus (Formula.and p (Formula.untl p p.neg))).neg) := by
+        (Formula.kPlus (Formula.and p (Formula.untlQ p.neg p))).neg) := by
     rw [Kamp.temporal_truth_and]
     refine ⟨(Kamp.kPlus_formula_correct _ _ _ _).mpr h_kp, ?_⟩
     rw [Kamp.temporal_truth_neg]
     exact fun h => h_not_kp ((Kamp.kPlus_formula_correct _ _ _ _).mp h)
   have h_ant_mcs : Formula.and (Formula.kPlus (chronicleEff root p))
       (Formula.kPlus (Formula.and (chronicleEff root p)
-        (Formula.untl (chronicleEff root p) (chronicleEff root p).neg))).neg ∈ fam.mcs t := by
+        (Formula.untlQ (chronicleEff root p).neg (chronicleEff root p)))).neg ∈ fam.mcs t := by
     have h := (corr _ t).mp h_ant
     simpa using h
   have h_thm : Formula.kPlus (Formula.and (Formula.kPlus (chronicleEff root p))

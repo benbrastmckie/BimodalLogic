@@ -85,8 +85,8 @@ def goalCategory (φ : Formula) : GoalCategory :=
   | .bot => .Bottom
   | .imp _ _ => .Implication
   | .box _ => .Box
-  | .untl _ _ => .Until
-  | .snce _ _ => .Since
+  | .untlQ _ _ => .Until
+  | .snceQ _ _ => .Since
 
 /-!
 ## Pattern Key Types

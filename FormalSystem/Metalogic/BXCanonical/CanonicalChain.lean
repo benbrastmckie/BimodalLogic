@@ -49,9 +49,9 @@ open FormalSystem.Metalogic.BXCanonical.Filtration
     Here ⊤ is encoded as ⊥ → ⊥ (i.e., Formula.bot.imp Formula.bot). -/
 theorem F_imp_top_until_mcs {w : BXPoint} {ψ : Formula}
     (h : Formula.someFuture ψ ∈ w.formulas) :
-    Formula.untl ψ (Formula.bot.imp Formula.bot) ∈ w.formulas := by
+    Formula.untlQ (Formula.bot.imp Formula.bot) ψ ∈ w.formulas := by
   have h_ax : DerivationTree FrameClass.Base [] ((Formula.someFuture ψ).imp
-    (Formula.untl ψ (Formula.bot.imp Formula.bot))) :=
+    (Formula.untlQ (Formula.bot.imp Formula.bot) ψ)) :=
     DerivationTree.axiom [] _ (Axiom.F_until_equiv ψ) trivial
   exact SetMaximalConsistent.implication_property w.is_mcs
     (theorem_in_mcs w.is_mcs h_ax) h
@@ -59,9 +59,9 @@ theorem F_imp_top_until_mcs {w : BXPoint} {ψ : Formula}
 /-- BX12' at MCS level: if P(ψ) ∈ w then (⊤ S ψ) ∈ w. -/
 theorem P_imp_top_since_mcs {w : BXPoint} {ψ : Formula}
     (h : Formula.somePast ψ ∈ w.formulas) :
-    Formula.snce ψ (Formula.bot.imp Formula.bot) ∈ w.formulas := by
+    Formula.snceQ (Formula.bot.imp Formula.bot) ψ ∈ w.formulas := by
   have h_ax : DerivationTree FrameClass.Base [] ((Formula.somePast ψ).imp
-    (Formula.snce ψ (Formula.bot.imp Formula.bot))) :=
+    (Formula.snceQ (Formula.bot.imp Formula.bot) ψ)) :=
     DerivationTree.axiom [] _ (Axiom.P_since_equiv ψ) trivial
   exact SetMaximalConsistent.implication_property w.is_mcs
     (theorem_in_mcs w.is_mcs h_ax) h
@@ -71,22 +71,22 @@ theorem P_imp_top_since_mcs {w : BXPoint} {ψ : Formula}
 /-- BX6 at MCS level: absorption of Until.
     If φ U (φ ∧ (φ U ψ)) ∈ w then φ U ψ ∈ w. -/
 theorem absorb_until_mcs {w : BXPoint} {φ ψ : Formula}
-    (h : Formula.untl (Formula.and φ (Formula.untl ψ φ)) φ ∈ w.formulas) :
-    Formula.untl ψ φ ∈ w.formulas := by
+    (h : Formula.untlQ φ (Formula.and φ (Formula.untlQ φ ψ)) ∈ w.formulas) :
+    Formula.untlQ φ ψ ∈ w.formulas := by
   have h_ax : DerivationTree FrameClass.Base []
-      ((Formula.untl (Formula.and φ (Formula.untl ψ φ)) φ).imp
-    (Formula.untl ψ φ)) :=
+      ((Formula.untlQ φ (Formula.and φ (Formula.untlQ φ ψ))).imp
+    (Formula.untlQ φ ψ)) :=
     DerivationTree.axiom [] _ (Axiom.absorb_until φ ψ) trivial
   exact SetMaximalConsistent.implication_property w.is_mcs
     (theorem_in_mcs w.is_mcs h_ax) h
 
 /-- BX6' at MCS level: absorption of Since. -/
 theorem absorb_since_mcs {w : BXPoint} {φ ψ : Formula}
-    (h : Formula.snce (Formula.and φ (Formula.snce ψ φ)) φ ∈ w.formulas) :
-    Formula.snce ψ φ ∈ w.formulas := by
+    (h : Formula.snceQ φ (Formula.and φ (Formula.snceQ φ ψ)) ∈ w.formulas) :
+    Formula.snceQ φ ψ ∈ w.formulas := by
   have h_ax : DerivationTree FrameClass.Base []
-      ((Formula.snce (Formula.and φ (Formula.snce ψ φ)) φ).imp
-    (Formula.snce ψ φ)) :=
+      ((Formula.snceQ φ (Formula.and φ (Formula.snceQ φ ψ))).imp
+    (Formula.snceQ φ ψ)) :=
     DerivationTree.axiom [] _ (Axiom.absorb_since φ ψ) trivial
   exact SetMaximalConsistent.implication_property w.is_mcs
     (theorem_in_mcs w.is_mcs h_ax) h
@@ -102,7 +102,7 @@ resolution functions. These bridges match the weakened signatures
     Under open guard, return type no longer claims φ ∈ w. -/
 theorem delegation_until_eventuality
     (w : BXPoint) (φ ψ : Formula)
-    (h_until : Formula.untl ψ φ ∈ w.formulas)
+    (h_until : Formula.untlQ φ ψ ∈ w.formulas)
     (h_not_psi : ψ ∉ w.formulas) :
     ∃ v : BXPoint, BxLe w v ∧ ψ ∈ v.formulas :=
   bx_until_eventuality_resolution w φ ψ h_until h_not_psi
@@ -111,7 +111,7 @@ theorem delegation_until_eventuality
     Under open guard, return type no longer claims φ ∈ w. -/
 theorem delegation_since_eventuality
     (w : BXPoint) (φ ψ : Formula)
-    (h_since : Formula.snce ψ φ ∈ w.formulas)
+    (h_since : Formula.snceQ φ ψ ∈ w.formulas)
     (h_not_psi : ψ ∉ w.formulas) :
     ∃ v : BXPoint, BxLe v w ∧ ψ ∈ v.formulas :=
   bx_since_eventuality_resolution w φ ψ h_since h_not_psi

@@ -723,7 +723,7 @@ The nearest future witness where φ holds satisfies Until with ¬φ as guard.
 Uses Nat.find for well-founded descent on the succ chain. -/
 theorem prior_UZ_is_valid
     [SuccOrder D] [PredOrder D] [IsSuccArchimedean D] [IsPredArchimedean D] [Nontrivial D]
-    (φ : Formula) : IsValid D (φ.someFuture.imp (Formula.untl φ φ.neg)) := by
+    (φ : Formula) : IsValid D (φ.someFuture.imp (Formula.untlQ φ.neg φ)) := by
   intro F M τ _hτ t
   simp only [Formula.neg, TruthAt, Truth.some_future_iff]
   intro ⟨s, hts, hs⟩
@@ -763,7 +763,7 @@ theorem prior_UZ_is_valid
 Mirror of prior_UZ_is_valid using pred chain and IsPredArchimedean. -/
 theorem prior_SZ_is_valid
     [SuccOrder D] [PredOrder D] [IsSuccArchimedean D] [IsPredArchimedean D] [Nontrivial D]
-    (φ : Formula) : IsValid D (φ.somePast.imp (Formula.snce φ φ.neg)) := by
+    (φ : Formula) : IsValid D (φ.somePast.imp (Formula.snceQ φ.neg φ)) := by
   intro F M τ _hτ t
   simp only [Formula.neg, TruthAt, Truth.some_past_iff]
   intro ⟨s, hst, hs⟩
@@ -921,10 +921,10 @@ private theorem axiom_swap_valid_discrete
   · exact axiom_swap_valid_general _ h hbase
   · cases h with
     | prior_UZ φ =>
-      change IsValid D (φ.swapTemporal.somePast.imp (φ.swapTemporal.snce φ.swapTemporal.neg))
+      change IsValid D (φ.swapTemporal.somePast.imp (φ.swapTemporal.neg.snceQ φ.swapTemporal))
       exact prior_SZ_is_valid φ.swapTemporal
     | prior_SZ φ =>
-      change IsValid D (φ.swapTemporal.someFuture.imp (φ.swapTemporal.untl φ.swapTemporal.neg))
+      change IsValid D (φ.swapTemporal.someFuture.imp (φ.swapTemporal.neg.untlQ φ.swapTemporal))
       exact prior_UZ_is_valid φ.swapTemporal
     | z1 φ =>
       change IsValid D ((φ.swapTemporal.allPast.imp φ.swapTemporal).allPast.imp

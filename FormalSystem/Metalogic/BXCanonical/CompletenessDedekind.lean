@@ -501,7 +501,7 @@ theorem countermodel_dedekind_dense {fc : FrameClass} (hfc : FrameClass.Dedekind
           h_box_pred_mem q).mp h_pred_q
       have h_box_A : Formula.box ψ ∈ A := (f.property.2.2 ψ).mpr h_box_N
       exact h_psi_all f' ((f'.property.2.2 ψ).mp h_box_A) _
-  | untl ψ₁ ψ₂ ih₁ ih₂ =>
+  | untlQ ψ₂ ψ₁ ih₂ ih₁ =>
     have h_sub₁ : ψ₁ ∈ subformulaClosure φ := closure_untl_left φ ψ₁ ψ₂ h_sub
     have h_sub₂ : ψ₂ ∈ subformulaClosure φ := closure_untl_right φ ψ₁ ψ₂ h_sub
     simp only [TruthAt, TemporalTruth]
@@ -529,7 +529,7 @@ theorem countermodel_dedekind_dense {fc : FrameClass} (hfc : FrameClass.Dedekind
         refine hguard _ (show (w₀ + t : ℝ) < w₀ + r by linarith) ?_
         show (w₀ + r : ℝ) < sc.val
         linarith
-  | snce ψ₁ ψ₂ ih₁ ih₂ =>
+  | snceQ ψ₂ ψ₁ ih₂ ih₁ =>
     have h_sub₁ : ψ₁ ∈ subformulaClosure φ := closure_snce_left φ ψ₁ ψ₂ h_sub
     have h_sub₂ : ψ₂ ∈ subformulaClosure φ := closure_snce_right φ ψ₁ ψ₂ h_sub
     simp only [TruthAt, TemporalTruth]

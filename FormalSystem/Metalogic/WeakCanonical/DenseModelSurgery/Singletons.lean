@@ -223,7 +223,7 @@ def SemanticSepOpen (M : OrderedMonadicStructure sig)
     (atomMap : Formula → sig.preds) : Prop :=
   ∀ (t : M.carrier) (p : Formula),
     Kamp.kplusOpen M atomMap p t →
-    ¬ Kamp.kplusOpen M atomMap (Formula.and p (Formula.untl p p.neg)) t →
+    ¬ Kamp.kplusOpen M atomMap (Formula.and p (Formula.untlQ p.neg p)) t →
     Kamp.kplusOpen M atomMap (Formula.and (Formula.kPlus p) (Formula.kMinus p)) t
 
 /-! ## *"In fact the classes must be closed intervals"*
@@ -398,7 +398,7 @@ theorem not_leftEnd_and_untl (hε : IsContempEquivDenseOn ε C) [InStructureClas
     (hgapL : ∀ t : M.carrier, ¬ EndsInGapOnLeft M ε t)
     {C : Formula} (hC : ∀ s : M.carrier, TemporalTruth M atomMap s C ↔ IsLeftEndPoint M ε s)
     (x : M.carrier) :
-    ¬ TemporalTruth M atomMap x (Formula.and C (Formula.untl C C.neg)) := by
+    ¬ TemporalTruth M atomMap x (Formula.and C (Formula.untlQ C.neg C)) := by
   rw [Kamp.temporal_truth_and]
   rintro ⟨hCx, y, hxy, hCy, hmid⟩
   have hxend : IsLeftEndPoint M ε x := (hC x).mp hCx
@@ -548,8 +548,8 @@ theorem reynolds_theorem5 (atomMap : Formula → sig.preds)
   -- *"Now `C ∧ U(C, ¬C)` never holds in `M`, … so `¬K⁺(C ∧ U(C, ¬C))` holds at `c`."*
   have h2 : ¬ Kamp.kplusOpen M atomMap
       (Formula.and (classLeftEndFormula atomMap h_surj ε)
-        (Formula.untl (classLeftEndFormula atomMap h_surj ε)
-          (classLeftEndFormula atomMap h_surj ε).neg)) c' :=
+        (Formula.untlQ (classLeftEndFormula atomMap h_surj ε).neg
+          (classLeftEndFormula atomMap h_surj ε))) c' :=
     not_kplusOpen_of_never (not_leftEnd_and_untl hε hdense hgapL hC) hc'd
   -- *"Also `K⁺(C)` holds at `c` …"*
   have h1 : Kamp.kplusOpen M atomMap (classLeftEndFormula atomMap h_surj ε) c' :=

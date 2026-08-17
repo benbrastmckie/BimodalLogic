@@ -929,10 +929,10 @@ private theorem kvE2_extGate_anyBit_iff {sig : MonadicSignature} [Fintype sig.pr
         simp only [kvE2SepEpL, TemporalPred.EvalAt] at h1
         have hlit := (formula_conjList_iff M atomMap x _).mp h1
           (kvE2SepLit (kvE2SepHasPos qnf kvE2SepZPastX3 χ1)
-            (Formula.snce (P.existF 0 χ1) Formula.top))
+            (Formula.snceQ Formula.top (P.existF 0 χ1)))
           (List.mem_cons_of_mem _ (List.mem_append_left _ (List.mem_append_left _
             (List.mem_map.mpr ⟨χ1, Finset.mem_toList.mpr (Finset.mem_univ χ1), rfl⟩))))
-        have hsnce : TemporalTruth M atomMap x (Formula.snce (P.existF 0 χ1) Formula.top) :=
+        have hsnce : TemporalTruth M atomMap x (Formula.snceQ Formula.top (P.existF 0 χ1)) :=
           ⟨v, hvx, (bracketEndChar_kvE2_hck atomMap P M h_UZ h_SZ χ1 v).mpr (hχ1 ▸ hχ1sat),
             fun r _ _ hf => hf⟩
         cases hb : kvE2SepHasPos qnf kvE2SepZPastX3 χ1 with
@@ -999,10 +999,10 @@ private theorem kvE2_extGate_anyBit_iff {sig : MonadicSignature} [Fintype sig.pr
         simp only [kvE2SepEpR, TemporalPred.EvalAt] at h1
         have hlit := (formula_conjList_iff M atomMap t _).mp h1
           (kvE2SepLit (kvE2SepHasPos qnf kvE2SepZFutT3 χ1)
-            (Formula.untl (P.existF 0 χ1) Formula.top))
+            (Formula.untlQ Formula.top (P.existF 0 χ1)))
           (List.mem_cons_of_mem _ (List.mem_append_left _ (List.mem_append_right _
             (List.mem_map.mpr ⟨χ1, Finset.mem_toList.mpr (Finset.mem_univ χ1), rfl⟩))))
-        have huntl : TemporalTruth M atomMap t (Formula.untl (P.existF 0 χ1) Formula.top) :=
+        have huntl : TemporalTruth M atomMap t (Formula.untlQ Formula.top (P.existF 0 χ1)) :=
           ⟨v, hvt, (bracketEndChar_kvE2_hck atomMap P M h_UZ h_SZ χ1 v).mpr (hχ1 ▸ hχ1sat),
             fun r _ _ hf => hf⟩
         cases hb : kvE2SepHasPos qnf kvE2SepZFutT3 χ1 with

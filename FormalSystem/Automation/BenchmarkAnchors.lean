@@ -80,7 +80,7 @@ def substitutionVocab : List Formula :=
   , Formula.neg p              -- ¬p
   , Formula.someFuture p      -- F(p)
   , Formula.allFuture p       -- G(p)
-  , Formula.untl p q           -- U(p,q)
+  , Formula.untlQ q p           -- U(p,q)
   ]
 
 /-- Smaller vocabulary for higher-arity schemas to control combinatorial explosion. -/
@@ -124,23 +124,23 @@ def groundAxiomInstances : List TaggedFormula :=
   , { formula := (top'.imp (Formula.somePast top'))
     , axiomName := "serial_past" }
   -- Layer 5: Uniformity ground axioms
-  , { formula := (Formula.untl top' Formula.bot).imp
-        (Formula.snce top' Formula.bot)
+  , { formula := (Formula.untlQ Formula.bot top').imp
+        (Formula.snceQ Formula.bot top')
     , axiomName := "discrete_symm_fwd" }
-  , { formula := (Formula.snce top' Formula.bot).imp
-        (Formula.untl top' Formula.bot)
+  , { formula := (Formula.snceQ Formula.bot top').imp
+        (Formula.untlQ Formula.bot top')
     , axiomName := "discrete_symm_bwd" }
-  , { formula := (Formula.untl top' Formula.bot).imp
-        (Formula.allFuture (Formula.untl top' Formula.bot))
+  , { formula := (Formula.untlQ Formula.bot top').imp
+        (Formula.allFuture (Formula.untlQ Formula.bot top'))
     , axiomName := "discrete_propagate_fwd" }
-  , { formula := (Formula.untl top' Formula.bot).imp
-        (Formula.allPast (Formula.untl top' Formula.bot))
+  , { formula := (Formula.untlQ Formula.bot top').imp
+        (Formula.allPast (Formula.untlQ Formula.bot top'))
     , axiomName := "discrete_propagate_bwd" }
-  , { formula := (Formula.untl top' Formula.bot).imp
-        (Formula.box (Formula.untl top' Formula.bot))
+  , { formula := (Formula.untlQ Formula.bot top').imp
+        (Formula.box (Formula.untlQ Formula.bot top'))
     , axiomName := "discrete_box_necessity" }
   -- Layer 8: Density ground axiom
-  , { formula := (Formula.untl top' Formula.bot).neg
+  , { formula := (Formula.untlQ Formula.bot top').neg
     , axiomName := "dense_indicator" }
   ]
 
@@ -160,17 +160,17 @@ def oneParamInstances : List TaggedFormula :=
       -- Layer 3: BX Temporal (1-param)
     , { formula := φ.imp (φ.somePast.allFuture), axiomName := "connect_future" }
     , { formula := φ.imp (φ.someFuture.allPast), axiomName := "connect_past" }
-    , { formula := (φ.someFuture).imp (Formula.untl φ top')
+    , { formula := (φ.someFuture).imp (Formula.untlQ top' φ)
       , axiomName := "F_until_equiv" }
-    , { formula := (φ.somePast).imp (Formula.snce φ top')
+    , { formula := (φ.somePast).imp (Formula.snceQ top' φ)
       , axiomName := "P_since_equiv" }
       -- Layer 4: Modal-Temporal Interaction
     , { formula := (Formula.box φ).imp (Formula.box (Formula.allFuture φ))
       , axiomName := "modal_future" }
       -- Layer 6: Prior (discrete-only, but still valid instances)
-    , { formula := φ.someFuture.imp (Formula.untl φ φ.neg)
+    , { formula := φ.someFuture.imp (Formula.untlQ φ.neg φ)
       , axiomName := "prior_UZ" }
-    , { formula := φ.somePast.imp (Formula.snce φ φ.neg)
+    , { formula := φ.somePast.imp (Formula.snceQ φ.neg φ)
       , axiomName := "prior_SZ" }
       -- Layer 7: Z1 (discrete-only)
     , { formula := (φ.allFuture.imp φ).allFuture.imp
@@ -180,14 +180,14 @@ def oneParamInstances : List TaggedFormula :=
     , { formula := φ.allFuture.allFuture.imp φ.allFuture
       , axiomName := "density" }
       -- Layer 9: Reynolds Dedekind (dense Dedekind-complete only)
-    , { formula := (Formula.and (Formula.untl top' φ) φ.neg.someFuture).imp
-          (Formula.untl (Formula.or φ.neg (Formula.kPlus φ.neg)) φ)
+    , { formula := (Formula.and (Formula.untlQ φ top') φ.neg.someFuture).imp
+          (Formula.untlQ φ (Formula.or φ.neg (Formula.kPlus φ.neg)))
       , axiomName := "prior_U_gap" }
-    , { formula := (Formula.and (Formula.snce top' φ) φ.neg.somePast).imp
-          (Formula.snce (Formula.or φ.neg (Formula.kMinus φ.neg)) φ)
+    , { formula := (Formula.and (Formula.snceQ φ top') φ.neg.somePast).imp
+          (Formula.snceQ φ (Formula.or φ.neg (Formula.kMinus φ.neg)))
       , axiomName := "prior_S_gap" }
     , { formula := (Formula.and (Formula.kPlus φ)
-          (Formula.kPlus (Formula.and φ (Formula.untl φ φ.neg))).neg).imp
+          (Formula.kPlus (Formula.and φ (Formula.untlQ φ.neg φ))).neg).imp
           (Formula.kPlus (Formula.and (Formula.kPlus φ) (Formula.kMinus φ)))
       , axiomName := "sep" }
     ]
@@ -202,21 +202,21 @@ def twoParamInstances : List TaggedFormula :=
         { formula := φ.imp (ψ.imp φ), axiomName := "prop_s" }
       , { formula := ((φ.imp ψ).imp φ).imp φ, axiomName := "peirce" }
         -- Layer 3: BX Temporal (2-param)
-      , { formula := (Formula.untl ψ φ).imp
-            (Formula.untl ψ (Formula.and φ (Formula.untl ψ φ)))
+      , { formula := (Formula.untlQ φ ψ).imp
+            (Formula.untlQ (Formula.and φ (Formula.untlQ φ ψ)) ψ)
         , axiomName := "self_accum_until" }
-      , { formula := (Formula.snce ψ φ).imp
-            (Formula.snce ψ (Formula.and φ (Formula.snce ψ φ)))
+      , { formula := (Formula.snceQ φ ψ).imp
+            (Formula.snceQ (Formula.and φ (Formula.snceQ φ ψ)) ψ)
         , axiomName := "self_accum_since" }
-      , { formula := (Formula.untl (Formula.and φ (Formula.untl ψ φ)) φ).imp
-            (Formula.untl ψ φ)
+      , { formula := (Formula.untlQ φ (Formula.and φ (Formula.untlQ φ ψ))).imp
+            (Formula.untlQ φ ψ)
         , axiomName := "absorb_until" }
-      , { formula := (Formula.snce (Formula.and φ (Formula.snce ψ φ)) φ).imp
-            (Formula.snce ψ φ)
+      , { formula := (Formula.snceQ φ (Formula.and φ (Formula.snceQ φ ψ))).imp
+            (Formula.snceQ φ ψ)
         , axiomName := "absorb_since" }
-      , { formula := (Formula.untl ψ φ).imp (Formula.someFuture ψ)
+      , { formula := (Formula.untlQ φ ψ).imp (Formula.someFuture ψ)
         , axiomName := "until_F" }
-      , { formula := (Formula.snce ψ φ).imp (Formula.somePast ψ)
+      , { formula := (Formula.snceQ φ ψ).imp (Formula.somePast ψ)
         , axiomName := "since_P" }
       , { formula := Formula.and (Formula.someFuture φ) (Formula.someFuture ψ) |>.imp
             (Formula.or (Formula.someFuture (Formula.and φ ψ))
@@ -246,22 +246,22 @@ def threeParamInstances : List TaggedFormula :=
           , axiomName := "modal_k_dist" }
           -- Layer 3: BX Temporal (3-param)
         , { formula := (φ.imp χ).allFuture.imp
-              ((Formula.untl ψ φ).imp (Formula.untl ψ χ))
+              ((Formula.untlQ φ ψ).imp (Formula.untlQ χ ψ))
           , axiomName := "left_mono_until_G" }
         , { formula := (φ.imp χ).allPast.imp
-              ((Formula.snce ψ φ).imp (Formula.snce ψ χ))
+              ((Formula.snceQ φ ψ).imp (Formula.snceQ χ ψ))
           , axiomName := "left_mono_since_H" }
         , { formula := (φ.imp ψ).allFuture.imp
-              ((Formula.untl φ χ).imp (Formula.untl ψ χ))
+              ((Formula.untlQ χ φ).imp (Formula.untlQ χ ψ))
           , axiomName := "right_mono_until" }
         , { formula := (φ.imp ψ).allPast.imp
-              ((Formula.snce φ χ).imp (Formula.snce ψ χ))
+              ((Formula.snceQ χ φ).imp (Formula.snceQ χ ψ))
           , axiomName := "right_mono_since" }
-        , { formula := Formula.and χ (Formula.untl ψ φ) |>.imp
-              (Formula.untl (Formula.and ψ (Formula.snce χ φ)) φ)
+        , { formula := Formula.and χ (Formula.untlQ φ ψ) |>.imp
+              (Formula.untlQ φ (Formula.and ψ (Formula.snceQ φ χ)))
           , axiomName := "enrichment_until" }
-        , { formula := Formula.and χ (Formula.snce ψ φ) |>.imp
-              (Formula.snce (Formula.and ψ (Formula.untl χ φ)) φ)
+        , { formula := Formula.and χ (Formula.snceQ φ ψ) |>.imp
+              (Formula.snceQ φ (Formula.and ψ (Formula.untlQ φ χ)))
           , axiomName := "enrichment_since" }
         ]
 
@@ -274,19 +274,19 @@ def fourParamInstances : List TaggedFormula :=
     tinyVocab.flatMap fun ψ =>
       tinyVocab.flatMap fun χ =>
         tinyVocab.flatMap fun θ =>
-          [ { formula := Formula.and (Formula.untl ψ φ) (Formula.untl θ χ)
+          [ { formula := Formula.and (Formula.untlQ φ ψ) (Formula.untlQ χ θ)
                 |>.imp (Formula.or
                   (Formula.or
-                    (Formula.untl (Formula.and ψ θ) (Formula.and φ χ))
-                    (Formula.untl (Formula.and ψ χ) (Formula.and φ χ)))
-                  (Formula.untl (Formula.and φ θ) (Formula.and φ χ)))
+                    (Formula.untlQ (Formula.and φ χ) (Formula.and ψ θ))
+                    (Formula.untlQ (Formula.and φ χ) (Formula.and ψ χ)))
+                  (Formula.untlQ (Formula.and φ χ) (Formula.and φ θ)))
             , axiomName := "linear_until" }
-          , { formula := Formula.and (Formula.snce ψ φ) (Formula.snce θ χ)
+          , { formula := Formula.and (Formula.snceQ φ ψ) (Formula.snceQ χ θ)
                 |>.imp (Formula.or
                   (Formula.or
-                    (Formula.snce (Formula.and ψ θ) (Formula.and φ χ))
-                    (Formula.snce (Formula.and ψ χ) (Formula.and φ χ)))
-                  (Formula.snce (Formula.and φ θ) (Formula.and φ χ)))
+                    (Formula.snceQ (Formula.and φ χ) (Formula.and ψ θ))
+                    (Formula.snceQ (Formula.and φ χ) (Formula.and ψ χ)))
+                  (Formula.snceQ (Formula.and φ χ) (Formula.and φ θ)))
             , axiomName := "linear_since" }
           ]
 

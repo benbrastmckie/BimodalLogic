@@ -329,7 +329,7 @@ the basic Until/Since eventuality lemmas.
 Direct from BX10 axiom.
 -/
 def untilImpliesSomeFuture (φ ψ : Formula) :
-    ⊢ (Formula.untl ψ φ).imp (Formula.someFuture ψ) :=
+    ⊢ (Formula.untlQ φ ψ).imp (Formula.someFuture ψ) :=
   DerivationTree.axiom [] _ (Axiom.until_F φ ψ) trivial
 
 /--
@@ -337,7 +337,7 @@ def untilImpliesSomeFuture (φ ψ : Formula) :
 Direct from BX10' axiom.
 -/
 def sinceImpliesSomePast (φ ψ : Formula) :
-    ⊢ (Formula.snce ψ φ).imp (Formula.somePast ψ) :=
+    ⊢ (Formula.snceQ φ ψ).imp (Formula.somePast ψ) :=
   DerivationTree.axiom [] _ (Axiom.since_P φ ψ) trivial
 
 /--
@@ -346,7 +346,7 @@ The witness s ≥ t with ψ(s) certifies F(ψ) at t.
 Direct from BX10 axiom.
 -/
 def untilImpF (φ ψ : Formula) :
-    ⊢ (Formula.untl ψ φ).imp (Formula.someFuture ψ) :=
+    ⊢ (Formula.untlQ φ ψ).imp (Formula.someFuture ψ) :=
   DerivationTree.axiom [] _ (Axiom.until_F φ ψ) trivial
 
 /--
@@ -354,7 +354,7 @@ def untilImpF (φ ψ : Formula) :
 Mirror of untilImpF.
 -/
 def sinceImpP (φ ψ : Formula) :
-    ⊢ (Formula.snce ψ φ).imp (Formula.somePast ψ) :=
+    ⊢ (Formula.snceQ φ ψ).imp (Formula.somePast ψ) :=
   DerivationTree.axiom [] _ (Axiom.since_P φ ψ) trivial
 
 /-!
@@ -455,7 +455,7 @@ section UntilSinceStructural
 Direct from BX2G (left_mono_until_G).
 -/
 def untilMonoGuard (φ χ ψ : Formula) :
-    ⊢ (φ.imp χ).allFuture.imp ((Formula.untl ψ φ).imp (Formula.untl ψ χ)) :=
+    ⊢ (φ.imp χ).allFuture.imp ((Formula.untlQ φ ψ).imp (Formula.untlQ χ ψ)) :=
   DerivationTree.axiom [] _ (Axiom.left_mono_until_G φ χ ψ) trivial
 
 /--
@@ -464,7 +464,7 @@ def untilMonoGuard (φ χ ψ : Formula) :
 Direct from BX2H (left_mono_since_H).
 -/
 def sinceMonoGuard (φ χ ψ : Formula) :
-    ⊢ (φ.imp χ).allPast.imp ((Formula.snce ψ φ).imp (Formula.snce ψ χ)) :=
+    ⊢ (φ.imp χ).allPast.imp ((Formula.snceQ φ ψ).imp (Formula.snceQ χ ψ)) :=
   DerivationTree.axiom [] _ (Axiom.left_mono_since_H φ χ ψ) trivial
 
 /--
@@ -473,7 +473,7 @@ def sinceMonoGuard (φ χ ψ : Formula) :
 Direct from BX3 (right_mono_until).
 -/
 def untilMonoEvent (φ ψ χ : Formula) :
-    ⊢ (φ.imp ψ).allFuture.imp ((Formula.untl φ χ).imp (Formula.untl ψ χ)) :=
+    ⊢ (φ.imp ψ).allFuture.imp ((Formula.untlQ χ φ).imp (Formula.untlQ χ ψ)) :=
   DerivationTree.axiom [] _ (Axiom.right_mono_until φ ψ χ) trivial
 
 /--
@@ -482,7 +482,7 @@ def untilMonoEvent (φ ψ χ : Formula) :
 Direct from BX3' (right_mono_since).
 -/
 def sinceMonoEvent (φ ψ χ : Formula) :
-    ⊢ (φ.imp ψ).allPast.imp ((Formula.snce φ χ).imp (Formula.snce ψ χ)) :=
+    ⊢ (φ.imp ψ).allPast.imp ((Formula.snceQ χ φ).imp (Formula.snceQ χ ψ)) :=
   DerivationTree.axiom [] _ (Axiom.right_mono_since φ ψ χ) trivial
 
 end UntilSinceStructural

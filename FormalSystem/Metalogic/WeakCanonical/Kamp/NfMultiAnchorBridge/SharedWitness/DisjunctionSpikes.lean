@@ -591,17 +591,17 @@ private theorem kvE2_sepHasPosLit_zPastX3 {sig : MonadicSignature} [Fintype sig.
     (χ : NormalForm sig 1 1) :
     TemporalTruth M atomMap x
       (kvE2SepLit (kvE2SepHasPos qnf kvE2SepZPastX3 χ)
-        (Formula.snce (charK χ) Formula.top)) := by
+        (Formula.snceQ Formula.top (charK χ))) := by
   cases hb : kvE2SepHasPos qnf kvE2SepZPastX3 χ with
   | true =>
-    change TemporalTruth M atomMap x (Formula.snce (charK χ) Formula.top)
+    change TemporalTruth M atomMap x (Formula.snceQ Formula.top (charK χ))
     obtain ⟨σ, s, hzone, hs, hχs⟩ := kvE2_sepHasPos_witness qnf M w x t h _ χ hb
     obtain ⟨hσ_atom, -, -⟩ := (nf_eval_depth1_fold_iff M _ σ).mp hs
     have hsx := kvE2_sepZoneFact_lt M s w x t σ hσ_atom ⟨1, by omega⟩
       (by rw [congrFun hzone ⟨1, by omega⟩]; decide)
     exact ⟨s, hsx, (hck χ s).mpr hχs, fun r _ _ hf => hf⟩
   | false =>
-    change TemporalTruth M atomMap x (Formula.snce (charK χ) Formula.top).neg
+    change TemporalTruth M atomMap x (Formula.snceQ Formula.top (charK χ)).neg
     rintro ⟨s, hsx, hsχ, -⟩
     have hz := kvE2_sepCharZone3 M s w x t (true, false) (true, false) (true, false)
       (iff_of_true (hsx.trans hxw) rfl)
@@ -737,17 +737,17 @@ private theorem kvE2_sepHasPosLit_zFutT3 {sig : MonadicSignature} [Fintype sig.p
     (χ : NormalForm sig 1 1) :
     TemporalTruth M atomMap t
       (kvE2SepLit (kvE2SepHasPos qnf kvE2SepZFutT3 χ)
-        (Formula.untl (charK χ) Formula.top)) := by
+        (Formula.untlQ Formula.top (charK χ))) := by
   cases hb : kvE2SepHasPos qnf kvE2SepZFutT3 χ with
   | true =>
-    change TemporalTruth M atomMap t (Formula.untl (charK χ) Formula.top)
+    change TemporalTruth M atomMap t (Formula.untlQ Formula.top (charK χ))
     obtain ⟨σ, s, hzone, hs, hχs⟩ := kvE2_sepHasPos_witness qnf M w x t h _ χ hb
     obtain ⟨hσ_atom, -, -⟩ := (nf_eval_depth1_fold_iff M _ σ).mp hs
     have hts := kvE2_sepZoneFact_gt M s w x t σ hσ_atom ⟨2, by omega⟩
       (by rw [congrFun hzone ⟨2, by omega⟩]; decide)
     exact ⟨s, hts, (hck χ s).mpr hχs, fun r _ _ hf => hf⟩
   | false =>
-    change TemporalTruth M atomMap t (Formula.untl (charK χ) Formula.top).neg
+    change TemporalTruth M atomMap t (Formula.untlQ Formula.top (charK χ)).neg
     rintro ⟨s, hts, hsχ, -⟩
     have hz := kvE2_sepCharZone3 M s w x t (false, true) (false, true) (false, true)
       (iff_of_false (lt_asymm (hwt.trans hts)) (by decide))
@@ -813,17 +813,17 @@ private theorem kvE2_sepOwnerLit_zPastX4 {sig : MonadicSignature} [Fintype sig.p
     (χ : NormalForm sig 0 1) :
     TemporalTruth M atomMap x
       (kvE2SepLit (kvE2SepBits σ kvE2SepZPastX4 χ)
-        (Formula.snce (charBase χ) Formula.top)) := by
+        (Formula.snceQ Formula.top (charBase χ))) := by
   obtain ⟨-, h_zone, -⟩ := (nf_eval_depth1_fold_iff M _ σ).mp hs
   cases hb : kvE2SepBits σ kvE2SepZPastX4 χ with
   | true =>
-    change TemporalTruth M atomMap x (Formula.snce (charBase χ) Formula.top)
+    change TemporalTruth M atomMap x (Formula.snceQ Formula.top (charBase χ))
     obtain ⟨v, hz, hv⟩ := (h_zone kvE2SepZPastX4 χ).mpr hb
     obtain ⟨h0, h1, h2, h3⟩ := (kvE2_sepZone4_iff M a w x t v
       (true, false) (true, false) (true, false) (true, false)).mp hz
     exact ⟨v, h2.1.mpr rfl, (hcb χ v).mpr hv, fun r _ _ hf => hf⟩
   | false =>
-    change TemporalTruth M atomMap x (Formula.snce (charBase χ) Formula.top).neg
+    change TemporalTruth M atomMap x (Formula.snceQ Formula.top (charBase χ)).neg
     rintro ⟨s, hsx, hsχ, -⟩
     have hz : zoneHolds M (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t))))
         kvE2SepZPastX4 s := by
@@ -934,17 +934,17 @@ private theorem kvE2_sepOwnerLit_zFutT4 {sig : MonadicSignature} [Fintype sig.pr
     (χ : NormalForm sig 0 1) :
     TemporalTruth M atomMap t
       (kvE2SepLit (kvE2SepBits σ kvE2SepZFutT4 χ)
-        (Formula.untl (charBase χ) Formula.top)) := by
+        (Formula.untlQ Formula.top (charBase χ))) := by
   obtain ⟨-, h_zone, -⟩ := (nf_eval_depth1_fold_iff M _ σ).mp hs
   cases hb : kvE2SepBits σ kvE2SepZFutT4 χ with
   | true =>
-    change TemporalTruth M atomMap t (Formula.untl (charBase χ) Formula.top)
+    change TemporalTruth M atomMap t (Formula.untlQ Formula.top (charBase χ))
     obtain ⟨v, hz, hv⟩ := (h_zone kvE2SepZFutT4 χ).mpr hb
     obtain ⟨h0, h1, h2, h3⟩ := (kvE2_sepZone4_iff M a w x t v
       (false, true) (false, true) (false, true) (false, true)).mp hz
     exact ⟨v, h3.2.mpr rfl, (hcb χ v).mpr hv, fun r _ _ hf => hf⟩
   | false =>
-    change TemporalTruth M atomMap t (Formula.untl (charBase χ) Formula.top).neg
+    change TemporalTruth M atomMap t (Formula.untlQ Formula.top (charBase χ)).neg
     rintro ⟨s, hts, hsχ, -⟩
     have hz : zoneHolds M (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t))))
         kvE2SepZFutT4 s := by

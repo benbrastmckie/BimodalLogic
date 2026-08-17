@@ -115,9 +115,9 @@ def _root_.FormalSystem.Syntax.Formula.toJson : Formula → String
     "{\"tag\": \"imp\", \"left\": " ++ φ.toJson ++ ", \"right\": " ++ ψ.toJson ++ "}"
   | .box φ    =>
     "{\"tag\": \"box\", \"child\": " ++ φ.toJson ++ "}"
-  | .untl φ ψ =>
+  | .untlQ ψ φ =>
     "{\"tag\": \"untl\", \"event\": " ++ φ.toJson ++ ", \"guard\": " ++ ψ.toJson ++ "}"
-  | .snce φ ψ =>
+  | .snceQ ψ φ =>
     "{\"tag\": \"snce\", \"event\": " ++ φ.toJson ++ ", \"guard\": " ++ ψ.toJson ++ "}"
 
 /--
@@ -135,8 +135,8 @@ def _root_.FormalSystem.Syntax.Formula.prettyPrint : Formula → String
   | .bot      => "⊥"
   | .imp φ ψ  => "(" ++ φ.prettyPrint ++ " → " ++ ψ.prettyPrint ++ ")"
   | .box φ    => "□" ++ φ.prettyPrint
-  | .untl φ ψ => "U(" ++ φ.prettyPrint ++ ", " ++ ψ.prettyPrint ++ ")"
-  | .snce φ ψ => "S(" ++ φ.prettyPrint ++ ", " ++ ψ.prettyPrint ++ ")"
+  | .untlQ ψ φ => "U(" ++ φ.prettyPrint ++ ", " ++ ψ.prettyPrint ++ ")"
+  | .snceQ ψ φ => "S(" ++ φ.prettyPrint ++ ", " ++ ψ.prettyPrint ++ ")"
 
 /--
 Serialize a `Formula` to an S-expression string.
@@ -158,8 +158,8 @@ def _root_.FormalSystem.Syntax.Formula.toSExpr : Formula → String
   | .bot      => "bot"
   | .imp φ ψ  => "(imp " ++ φ.toSExpr ++ " " ++ ψ.toSExpr ++ ")"
   | .box φ    => "(box " ++ φ.toSExpr ++ ")"
-  | .untl φ ψ => "(untl " ++ φ.toSExpr ++ " " ++ ψ.toSExpr ++ ")"
-  | .snce φ ψ => "(snce " ++ φ.toSExpr ++ " " ++ ψ.toSExpr ++ ")"
+  | .untlQ ψ φ => "(untl " ++ φ.toSExpr ++ " " ++ ψ.toSExpr ++ ")"
+  | .snceQ ψ φ => "(snce " ++ φ.toSExpr ++ " " ++ ψ.toSExpr ++ ")"
 
 /--
 Tokenize a `Formula` into a prefix-notation (Polish notation) token list.
@@ -177,8 +177,8 @@ def _root_.FormalSystem.Syntax.Formula.tokenize : Formula → List String
   | .bot      => ["BOT"]
   | .imp φ ψ  => "IMP" :: (φ.tokenize ++ ψ.tokenize)
   | .box φ    => "BOX" :: φ.tokenize
-  | .untl φ ψ => "UNTL" :: (φ.tokenize ++ ψ.tokenize)
-  | .snce φ ψ => "SNCE" :: (φ.tokenize ++ ψ.tokenize)
+  | .untlQ ψ φ => "UNTL" :: (φ.tokenize ++ ψ.tokenize)
+  | .snceQ ψ φ => "SNCE" :: (φ.tokenize ++ ψ.tokenize)
 
 /--
 Serialize a list of string tokens as a JSON array of quoted strings.

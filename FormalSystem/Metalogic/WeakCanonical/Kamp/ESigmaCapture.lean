@@ -77,14 +77,14 @@ theorem temporal_truth_canonExpand {sig : MonadicSignature} {F : Finset Formula}
   | bot => simp only [TemporalTruth]
   | imp φ ψ ihφ ihψ => simp only [TemporalTruth, ihφ, ihψ]
   | box φ _ => simp only [TemporalTruth, hMap, oldPred, canonExpand]
-  | untl φ ψ ihφ ihψ =>
+  | untlQ ψ φ ihψ ihφ =>
     simp only [TemporalTruth]
     constructor
     · rintro ⟨s, hs, hsφ, hr⟩
       exact ⟨s, hs, (ihφ s).mp hsφ, fun r h1 h2 => (ihψ r).mp (hr r h1 h2)⟩
     · rintro ⟨s, hs, hsφ, hr⟩
       exact ⟨s, hs, (ihφ s).mpr hsφ, fun r h1 h2 => (ihψ r).mpr (hr r h1 h2)⟩
-  | snce φ ψ ihφ ihψ =>
+  | snceQ ψ φ ihψ ihφ =>
     simp only [TemporalTruth]
     constructor
     · rintro ⟨s, hs, hsφ, hr⟩
