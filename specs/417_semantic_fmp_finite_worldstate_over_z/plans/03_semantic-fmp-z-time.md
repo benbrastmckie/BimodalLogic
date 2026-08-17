@@ -238,7 +238,7 @@ three, record what the paper actually says — never restate or "improve" it.
 
 ---
 
-### Phase 2: Land `TaskFrame.spherical_of_finite` and its axiom-free core [NOT STARTED]
+### Phase 2: Land `TaskFrame.spherical_of_finite` and its axiom-free core [COMPLETED]
 
 **Goal**: Transcribe `cor:spherical-finite` into `FormalSystem/Semantics/TaskFrame.lean` as a
 general library lemma, decomposed into an **axiom-free constructive core** plus the **one classical
@@ -362,8 +362,8 @@ recorded rather than papered over.
 Do not restore the `Classical.choice`-absence assertion in any form.
 
 **Tasks**:
-- [ ] Add the two imports named in Correction Record 1 to `FormalSystem/Semantics/TaskFrame.lean`.
-- [ ] Land the axiom-free core `sInter_nonempty_of_directed_of_minimal` beside the existing
+- [x] Add the two imports named in Correction Record 1 to `FormalSystem/Semantics/TaskFrame.lean`.
+- [x] Land the axiom-free core `sInter_nonempty_of_directed_of_minimal` beside the existing
       `sInter_nonempty_of_directed_of_univ_or_singleton`:
       ```lean
       theorem sInter_nonempty_of_directed_of_minimal {W : Type} {S : Set (Set W)}
@@ -373,28 +373,40 @@ Do not restore the `Classical.choice`-absence assertion in any form.
           (hStarMin : ∀ ⦃T⦄, T ∈ S → T ⊆ Sstar → Sstar ⊆ T) :
           (⋂₀ S).Nonempty
       ```
-- [ ] Land `theorem TaskFrame.spherical_of_finite {W : Type} [Finite W] (R : W → D → W → Prop) :
+- [x] Land `theorem TaskFrame.spherical_of_finite {W : Type} [Finite W] (R : W → D → W → Prop) :
       TaskFrame.Spherical R` with the verified proof body quoted in Correction Record 1, composing
       the classical minimal-element step with the core lemma.
-- [ ] Place both beside the existing family (`spherical_of_subsingleton`, `spherical_of_permissive`,
+- [x] Place both beside the existing family (`spherical_of_subsingleton`, `spherical_of_permissive`,
       `spherical_of_eq`) — **additively**. Do not touch their proof bodies (Correction Record 2).
-- [ ] Docstring on `spherical_of_finite` must cite `cor:spherical-finite` via
+- [x] Docstring on `spherical_of_finite` must cite `cor:spherical-finite` via
       `specs/paper-definitions-of-record.md`, not by paper line number, and must record that the
       argument is indifferent to the kind of member (matching the paper's own
       `%% CHANGE (sigma-elim)` note).
-- [ ] Docstring must carry the **obstruction note** from Correction Record 3, in the lemma's own
+- [x] Docstring must carry the **obstruction note** from Correction Record 3, in the lemma's own
       words: the paper's "choice-free" is ZF-vs-ZFC; Lean's `Classical.choice` supplies LEM as well
       as AC; the corollary is not intuitionistically provable (weak excluded middle follows from
       `Spherical` at a finite carrier); what *is* preserved, and what the corollary is actually
       for, is the absence of Zorn.
-- [ ] Docstring must carry one line stating that the existing class helpers must **not** be
+- [x] Docstring must carry one line stating that the existing class helpers must **not** be
       re-derived from this lemma, with the `spherical_of_subsingleton = [propext]` measurement as
       the reason (Correction Record 2). A future reader who reaches for the consolidation should
       find this line before writing the edit.
-- [ ] **Coordination check before writing**: task 440 targets these same two declarations in this
+- [x] **Coordination check before writing**: task 440 targets these same two declarations in this
       same file. Re-read `TaskFrame.lean` first; if either is already present, do not duplicate it —
       verify its proof and docstring meet this phase's criteria and record that the declaration was
-      pre-landed.
+      pre-landed. **Result**: neither was present; both were landed fresh by this phase. (Task 440
+      had landed only the `cor:spherical-finite` record entry, not the Lean declarations.)
+
+**Measured results**:
+- `sInter_nonempty_of_directed_of_minimal` — `lean_verify` reports `axioms: []`. Axiom-free, not
+  even `propext`, exactly as Correction Record 3's replacement criterion 1 requires.
+- `spherical_of_finite` — `lean_verify` reports `axioms: [propext, Classical.choice, Quot.sound]`
+  and no other axiom. Criterion 2 (no Zorn) holds structurally as well as measurably:
+  `PartialHistory.exists_maximal_extension` lives in `Semantics/Extension/Extension.lean`, which
+  *imports* `TaskFrame.lean`, so it is not even in scope at this declaration.
+- Regression tripwire — `spherical_of_subsingleton` still reports exactly `[propext]`.
+- `git diff --stat` on `TaskFrame.lean`: **93 insertions, 0 deletions**. The additive-only Scope
+  Hypothesis holds; no existing declaration's signature or proof body changed.
 
 **Explicitly not in this phase** (each removed for a recorded reason, not an oversight):
 - Re-deriving `spherical_of_subsingleton`'s proof body through `spherical_of_finite`

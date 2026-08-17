@@ -10,6 +10,8 @@ import Mathlib.Algebra.Order.Group.Abs
 import Mathlib.Data.Finset.Lattice.Fold
 import Mathlib.Order.SuccPred.Basic
 import Mathlib.Data.Set.Lattice
+import Mathlib.Order.Minimal
+import Mathlib.Data.Fintype.Powerset
 
 /-!
 # TaskFrame - Task Frame Structure for TM Semantics
@@ -851,6 +853,88 @@ theorem sInter_nonempty_of_directed_of_univ_or_singleton {W : Type} {S : Set (Se
     · rw [hu]; exact Set.mem_univ a
     · exact absurd ⟨t, ht, b, hb⟩ hsing
 
+/--
+The *Spherical* core argument for a directed family that has a `⊆`-minimal member: **the paper's
+actual mathematical content, in fully constructive form**.
+
+Recorded source (`cor:spherical-finite`, via `specs/paper-definitions-of-record.md`, verbatim:
+"Every frame $\F = \tuple{W, \D, \Rightarrow}$ with finite $W$ satisfies \textit{Spherical},
+choice-free."), whose argument is: directedness upgrades a `⊆`-minimal member to a `⊆`-*least*
+member, and a least member is both nonempty and equal to the intersection.
+
+Given a minimal `Sstar` and any other member `T`, directedness supplies `S' ∈ S` with
+`S' ⊆ Sstar ∩ T`. Then `S' ⊆ Sstar`, so minimality forces `Sstar ⊆ S'`, and composing gives
+`Sstar ⊆ T`. So `Sstar` is contained in every member, and any of its points — it is nonempty by
+hypothesis — lies in `⋂₀ S`.
+
+**This lemma depends on no axioms at all** (not even `propext`), which is the sense in which the
+paper's choice-free claim survives transcription. The classical content of `cor:spherical-finite`
+lives entirely in *producing* the minimal member from finiteness, which is what
+`spherical_of_finite` below adds on top. Separating the two is deliberate: it puts the
+constructive core on the record independently of the classical step, and it makes the lemma
+reusable at any carrier where a minimal member is available by other means.
+
+The companion `sInter_nonempty_of_directed_of_univ_or_singleton` above serves the disjoint case
+where every member is the whole carrier or a singleton; neither subsumes the other.
+-/
+theorem sInter_nonempty_of_directed_of_minimal {W : Type} {S : Set (Set W)}
+    (hd : ∀ S₁ ∈ S, ∀ S₂ ∈ S, ∃ S' ∈ S, S' ⊆ S₁ ∩ S₂)
+    (hne : ∀ s ∈ S, s.Nonempty)
+    {Sstar : Set W} (hStarMem : Sstar ∈ S)
+    (hStarMin : ∀ ⦃T⦄, T ∈ S → T ⊆ Sstar → Sstar ⊆ T) :
+    (⋂₀ S).Nonempty := by
+  have hsub : ∀ T ∈ S, Sstar ⊆ T := by
+    intro T hT
+    obtain ⟨S', hS'mem, hS'sub⟩ := hd Sstar hStarMem T hT
+    have h1 : S' ⊆ Sstar := fun x hx => (hS'sub hx).1
+    have h2 : Sstar ⊆ S' := hStarMin hS'mem h1
+    exact fun x hx => (hS'sub (h2 hx)).2
+  obtain ⟨x, hx⟩ := hne Sstar hStarMem
+  exact ⟨x, fun T hT => hsub T hT hx⟩
+
+omit [IsOrderedAddMonoid D] in
+/--
+**Every relation on a finite carrier satisfies *Spherical***.
+
+Recorded source (`cor:spherical-finite`, via `specs/paper-definitions-of-record.md`, verbatim:
+"Every frame $\F = \tuple{W, \D, \Rightarrow}$ with finite $W$ satisfies \textit{Spherical},
+choice-free."). Since `Set W` is well-founded under `<` when `W` is finite, a directed family has
+a `⊆`-minimal member; `sInter_nonempty_of_directed_of_minimal` above then closes the goal.
+
+**Indifferent to the kind of member.** The proof consumes only *finiteness*, *directedness*, and
+*member nonemptiness*; the `IsFiber R s ∨ IsSegment R s` disjunct is never used. That matches the
+paper's own `%% CHANGE (sigma-elim)` remark that the finite-`W` argument does not care whether a
+member is a fiber or a segment.
+
+**Obstruction note — why this lemma is not, and cannot be, `Classical.choice`-free.**
+The paper's "choice-free" is a claim about **ZF vs ZFC**: the argument does not need the axiom of
+choice, *given classical logic*. Lean's `Classical.choice` is a different object — the single
+axiom from which Lean derives **both** excluded middle (via Diaconescu) and AC — so
+`#print axioms` has no vocabulary in which to state the paper's distinction. Worse, the
+`Classical.choice`-free version is not merely hard but **impossible**: weak excluded middle
+(`¬¬P ∨ ¬P`) is derivable from `Spherical R` at the finite carrier `Bool` over `D = Int`, using
+`R w d u := (d = 0 ∧ w = u) ∨ (d = 3)`, from `[propext, Quot.sound]` alone. A choice-free proof of
+this lemma would therefore prove WLEM in Lean's intuitionistic core, where it is not derivable.
+This is a mismatch between the paper's metatheory and Lean's axiom accounting, not a defect in
+either. What *is* preserved, and what the corollary is actually for, is the absence of **Zorn**:
+this proof does not route through `PartialHistory.exists_maximal_extension`, in deliberate
+contrast with `thm:extension`, which does.
+
+**Do not re-derive the existing class helpers from this lemma.** `spherical_of_subsingleton`
+depends on exactly `[propext]`; routing it (or `spherical_of_permissive`, or `spherical_of_eq`)
+through this lemma would regress it to `Classical.choice` and propagate that regression to the
+three `Unit`-carriered universal frames that consume it. This lemma is an **additional** route for
+relations of arbitrary shape — the case no existing helper covers, since each of those constrains
+the relation's shape — never a consolidation of them.
+-/
+theorem spherical_of_finite {W : Type} [Finite W] (R : W → D → W → Prop) :
+    Spherical R := by
+  intro S hdir hmem
+  obtain ⟨hne, hd⟩ := hdir
+  obtain ⟨Sstar, hStarMem, hStarMin⟩ :=
+    exists_minimal_of_wellFoundedLT (α := Set W) (fun s => s ∈ S) hne
+  exact sInter_nonempty_of_directed_of_minimal hd (fun s hs => (hmem s hs).2) hStarMem hStarMin
+
 /-! ### Helper A — the total class on a subsingleton carrier -/
 
 omit [IsOrderedAddMonoid D] in
@@ -1369,6 +1453,15 @@ example (F : TaskFrame D) : TaskFrame.Interpolates F.TaskRel := F.interpolates
 
 example (F : TaskFrame D) :
     ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ F.TaskRel w y u) → u = w := F.limit
+
+/--
+`TaskFrame.spherical_of_finite` applies to a bundled `FiniteTaskFrame` — the shape every finite
+construction actually has. `finite_world` is a plain *field*, not an instance, so the `haveI` is
+required at every such use site; that is what this check pins.
+-/
+example (F : FiniteTaskFrame D) : TaskFrame.Spherical F.TaskRel := by
+  haveI := F.finite_world
+  exact TaskFrame.spherical_of_finite F.TaskRel
 
 end DefinitionalContent
 
