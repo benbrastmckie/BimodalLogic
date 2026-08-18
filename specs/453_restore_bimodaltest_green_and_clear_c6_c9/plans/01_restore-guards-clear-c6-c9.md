@@ -1,7 +1,7 @@
 # Implementation Plan: Task #453
 
 - **Task**: 453 - restore `BimodalTest` green and clear C6 / C9
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 4 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/453_restore_bimodaltest_green_and_clear_c6_c9/reports/01_guard-rebaseline-and-c6-c9.md
@@ -424,24 +424,24 @@ exits 0.
 
 ---
 
-### Phase 7: Full verification gate [NOT STARTED]
+### Phase 7: Full verification gate [COMPLETED]
 
 **Goal**: every verification clause in the task brief is measured green in one clean run, in the
 cheap-to-expensive order the research report recommends.
 
 **Tasks**:
-- [ ] `bash scripts/check-module-invariants.sh --no-build` — expect C6 and C9 flipped to PASS, and
+- [x] `bash scripts/check-module-invariants.sh --no-build` — expect C6 and C9 flipped to PASS, and
       B0, C3, C4, C5, C8, C10 unchanged (all PASS). C1 and C2 are skipped by the flag.
-- [ ] `lake build` — expect exit 0.
-- [ ] `lake build BimodalTest` — expect exit 0. If a guard mismatches here, iterate per module
+- [x] `lake build` — expect exit 0.
+- [x] `lake build BimodalTest` — expect exit 0. If a guard mismatches here, iterate per module
       (`lake build BimodalTest.<Module>`) rather than rebuilding the whole target.
-- [ ] `bash scripts/check-module-invariants.sh` (full, with build) — expect C1 both lines PASS; C2
+- [x] `bash scripts/check-module-invariants.sh` (full, with build) — expect C1 both lines PASS; C2
       matching the four-line baseline recorded in report §2 (`completeness` with `sorryAx`;
       `completeness_dense`, `completeness_discrete`, `Chronicle.countermodel_dense` without); C3
       PASS with the sole structural sorry still `countermodel_discrete` in
       `FormalSystem/Metalogic/WeakCanonical/Transfer.lean`; C6 PASS on all four sub-assertions; C9
       PASS.
-- [ ] Final diff audit: confirm every changed line across all `.lean` files is inside a docstring
+- [x] Final diff audit: confirm every changed line across all `.lean` files is inside a docstring
       or a comment, and that the only non-`.lean` change is
       `scripts/module-invariants-manifest.txt`. No `def`, `theorem`, `#eval`, fuel value, or import
       line changed anywhere.
@@ -460,16 +460,16 @@ cheap-to-expensive order the research report recommends.
 
 ## Testing & Validation
 
-- [ ] `lake build` exits 0.
-- [ ] `lake build BimodalTest` exits 0 (was: exit 1 with seven `#guard_msgs` mismatches).
-- [ ] `bash scripts/check-module-invariants.sh` reports C1 PASS, C6 PASS, C9 PASS.
-- [ ] C2 matches the four-line axiom baseline measured in report §2, byte-for-byte.
-- [ ] C3 unchanged: sole structural sorry is still `countermodel_discrete` in
+- [x] `lake build` exits 0.
+- [x] `lake build BimodalTest` exits 0 (was: exit 1 with seven `#guard_msgs` mismatches).
+- [x] `bash scripts/check-module-invariants.sh` reports C1 PASS, C6 PASS, C9 PASS.
+- [x] C2 matches the four-line axiom baseline measured in report §2, byte-for-byte.
+- [x] C3 unchanged: sole structural sorry is still `countermodel_discrete` in
       `FormalSystem/Metalogic/WeakCanonical/Transfer.lean`.
-- [ ] B0, C4, C5, C8, C10 unchanged (all PASS).
-- [ ] Diff audit: every `.lean` change is a docstring or comment; the sole non-`.lean` change is
+- [x] B0, C4, C5, C8, C10 unchanged (all PASS).
+- [x] Diff audit: every `.lean` change is a docstring or comment; the sole non-`.lean` change is
       the manifest.
-- [ ] No narrative comment in the three probe files contradicts a landed value — specifically, no
+- [x] No narrative comment in the three probe files contradicts a landed value — specifically, no
       surviving "All nine rows report `gate=true`", no surviving `|T|=8` / `|T|=10` / `3 -> 1`
       claims for the re-recorded rows, and no surviving "W1-W4 order eight to ten times each".
 
