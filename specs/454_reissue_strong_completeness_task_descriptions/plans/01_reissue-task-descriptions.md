@@ -359,13 +359,13 @@ confirmed by grep before the disambiguating wording is written.
 
 ---
 
-### Phase 6: Re-issue task 362 and wire the 424 dependency edge [NOT STARTED]
+### Phase 6: Re-issue task 362 and wire the 424 dependency edge [COMPLETED]
 
 **Goal**: Re-anchor 362's large citation block (the widest surface of the six) and add `424` to its
 `dependencies`, with prose recording that the edge exists for leg B specifically.
 
 **Tasks**:
-- [ ] Re-anchor the "REFERENCE MAP" bullets by symbol: `completeness` / `completeness_dense`
+- [x] Re-anchor the "REFERENCE MAP" bullets by symbol: `completeness` / `completeness_dense`
       (cited `:255`, actual `:250`) / `completeness_discrete` (cited `:296`, actual `:291`) in
       `BXCanonical/Completeness.lean`; `valid` / `ValidDense` / `ValidDiscrete` in `Validity.lean`;
       `Derivable` (`ProofSystem/Derivable.lean:69`); `Derivable.deduction`, `deductionTheorem`,
@@ -373,17 +373,17 @@ confirmed by grep before the disambiguating wording is written.
       `SetMaximalConsistent` / `set_lindenbaum` in `Metalogic/Core/MaximalConsistent.lean`;
       `SemanticConsequence` (cited `Validity.lean:103`, actual `:125`) and its `Γ ⊨ φ` notation
       (cited `:114`, actual `:135`).
-- [ ] Re-anchor the leg (D) LaTeX citations (`latex/subfiles/04-Metalogic.tex`,
+- [x] Re-anchor the leg (D) LaTeX citations (`latex/subfiles/04-Metalogic.tex`,
       `main_strong_completeness` at `:266`, identifier also at `:211`, `:490`) by identifier per the
       ledger.
-- [ ] Add one sentence to leg (B) recording the new dependency and its narrow scope: leg B — and
+- [x] Add one sentence to leg (B) recording the new dependency and its narrow scope: leg B — and
       only leg B — is gated on task 424's shift-set Representation Theorem; legs A, C, and D do not
       depend on it, and the declared edge cannot express that partiality, which is why it is stated
       here in prose. Do not otherwise re-scope any leg.
-- [ ] Apply the description with `state-write.sh` (no `--regen-todo`), then round-trip diff.
-- [ ] Apply the dependency edge as a **separate** `state-write.sh` call:
+- [x] Apply the description with `state-write.sh` (no `--regen-todo`), then round-trip diff.
+- [x] Apply the dependency edge as a **separate** `state-write.sh` call:
       `.claude/scripts/state-write.sh '(.active_projects[] | select(.project_number == 362) | .dependencies) = $deps' --session-id sess_1787033965_d6c07f_454 --argjson deps '[361,375,169,170,424]'`
-- [ ] Confirm `423`'s dependencies were **not** touched (they must remain `[361,454]`) — the
+- [x] Confirm `423`'s dependencies were **not** touched (they must remain `[361,454]`) — the
       research is explicit that 423 is self-contained and must not gain a `424` edge.
 
 **Timing**: 1.0 hour
