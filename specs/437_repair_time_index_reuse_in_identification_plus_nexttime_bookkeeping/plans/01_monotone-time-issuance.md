@@ -503,30 +503,32 @@ signal that the orientation is doing more than re-labelling and must be reported
 
 ---
 
-### Phase 4: Consumer census and edit-list construction [NOT STARTED]
+### Phase 4: Consumer census and edit-list construction [COMPLETED]
 
 **Goal**: Produce the classified edit list for the live-engine change, and settle the file-scope
 question, **before** any consumer is edited. No proof work in this phase.
 
 **Tasks**:
-- [ ] Enumerate all `identifyTime t₂ t₁` occurrences (plan-time count: 82 across five files) and
+- [x] Enumerate all `identifyTime t₂ t₁` occurrences (plan-time count: 82 across five files) and
       classify each as **arm-bound** (the site is about the ordered split's arm and must be
       reoriented) or **generically quantified** (the site quantifies over `src`/`tgt` and needs no
       change).
-- [ ] Enumerate the `decide`-evaluated and `#eval`-evaluated sites whose values depend on the
+- [x] Enumerate the `decide`-evaluated and `#eval`-evaluated sites whose values depend on the
       engine's arm-3 behavior: `reuse_driven_through_engine` (`MintBound.lean:7363`),
       `gate_step_fires` (`MintBound.lean:7596`), `BranchOrder.lean:459, 465`,
       `Fuel.lean:1371`, and the `Tests/BimodalTest/UntlSnceCopyProbe.lean` probe rows. These are the
       expected-red sites of a *successful* change (R5).
-- [ ] Confirm `Decidable.lean`'s exposure. Plan-time reading says its three `identifyTime`
+- [x] Confirm `Decidable.lean`'s exposure. Plan-time reading says its three `identifyTime`
       references are all docstring prose (`Decidable.lean:277, 278, 284`) and its 102 `nextTime`
       references all consume `nextTime = maxTime + 1`, which is unchanged. **Verify this; if a proof
       site there requires edits, escalate the file-scope expansion explicitly and stop.**
-- [ ] Confirm `Saturation.lean` remains untouched (grep, recorded).
-- [ ] Write the edit list into the phase's progress record, grouped by owning phase (6 = `Fuel.lean`,
+- [x] Confirm `Saturation.lean` remains untouched (grep, recorded).
+- [x] Write the edit list into the phase's progress record, grouped by owning phase (6 = `Fuel.lean`,
       7 = `MintBound.lean`, 8 = `SubformulaProperty.lean` + `BranchOrder.lean` + probes +
       `Decidable.lean` docstring). This grouping is the territory contract Wave 6's parallel
-      dispatch depends on.
+      dispatch depends on. *(deviation: altered — the census was written to
+      `handoffs/phase-4-census.md` rather than to a progress file, since this agent keeps no
+      progress file; the plan checklist carries the annotations)*
 
 **Timing**: 1.5 hours
 
