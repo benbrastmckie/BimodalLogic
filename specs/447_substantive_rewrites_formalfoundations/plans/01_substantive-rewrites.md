@@ -1,7 +1,7 @@
 # Implementation Plan: Task #447
 
 - **Task**: 447 - Substantive rewrites in FormalFoundations.typ: proof repair, axiom presentation, section restructure
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 8.5 hours
 - **Dependencies**: 446 (complete)
 - **Research Inputs**: `specs/447_substantive_rewrites_formalfoundations/reports/01_substantive-rewrites-research.md`

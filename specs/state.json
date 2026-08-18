@@ -457,7 +457,6 @@
         428,
         429,
         430,
-        431,
         432,
         433,
         434,
@@ -512,7 +511,6 @@
         428,
         429,
         430,
-        431,
         432,
         433,
         434,
@@ -774,7 +772,6 @@
       "status": "blocked",
       "task_type": "lean4",
       "dependencies": [
-        431,
         432,
         433,
         434
@@ -905,21 +902,20 @@
     {
       "project_number": 432,
       "project_name": "discharge_universeclosed_residual",
-      "status": "implementing",
+      "status": "partial",
       "task_type": "lean4",
       "description": "Discharge `UniverseClosed fc U`, defined at FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean:3901, one of the four residual hypotheses on the totality terminus `buildTableauAt_isSome_of_budget` (MintBound.lean:4416). The definition has two conjuncts: (1) closure of `U` under the engine's unblocked-expansion step `expandOnceUnblocked` -- a familiar shape already required by the unsplit totality theorem's `hU` obligation -- and (2) closure of `U` under an ordered split's identification arm `Branch.identifyTime`, which relabels the branch; this second clause is genuinely new. For `U = signedUniverse C L` (Fuel.lean:382, DO NOT edit Fuel.lean -- it is md5-pinned frozen), clause (2) reduces to a statement about the label set `L` being closed under time-merging. Done means: a theorem proving `UniverseClosed fc U` for a concrete, useful instantiation `U = signedUniverse C L` under an explicit closure condition on `L` (state and prove that condition too, if it is not already available), landed sorry-free and axiom-free in MintBound.lean, with `lake build` green. Do not re-attempt anything in the do-not-re-attempt register at MintBound.lean:4455-4510 (eight entries; read before starting), and in particular do not attempt route (a), entry 6 (a lower bound on `(b.identifyTime t2 t1).toFinset.card` from below -- dead by definition).",
       "effort": "4-6 hours",
       "parent_task": 428,
       "topic": "decidability",
       "dependencies": [
-        431,
         434
       ],
       "file_scope": [
         "FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean"
       ],
       "created": "2026-08-06T16:01:52Z",
-      "last_updated": "2026-08-06T18:00:57Z",
+      "last_updated": "2026-08-18T15:52:17Z",
       "artifacts": [
         {
           "type": "research",
@@ -942,7 +938,7 @@
           "summary": "spawn inherited research (backfilled by --sync)"
         }
       ],
-      "session_id": "sess_1786032616_1f0e93_432"
+      "session_id": "sess_1787068337_2c7029"
     },
     {
       "project_number": 433,
@@ -954,7 +950,6 @@
       "parent_task": 428,
       "topic": "decidability",
       "dependencies": [
-        431,
         432,
         434
       ],
@@ -986,8 +981,6 @@
       "parent_task": 428,
       "topic": "decidability",
       "dependencies": [
-        431,
-        435,
         436
       ],
       "file_scope": [
@@ -1030,7 +1023,6 @@
       "parent_task": 434,
       "topic": "decidability",
       "dependencies": [
-        435,
         437
       ],
       "file_scope": [
@@ -1163,7 +1155,7 @@
     {
       "project_number": 447,
       "project_name": "substantive_rewrites_formalfoundations",
-      "status": "planned",
+      "status": "completed",
       "task_type": "logic",
       "title": "Substantive rewrites in FormalFoundations.typ: proof repair, axiom presentation, section restructure",
       "description": "Address 6 substantive FIX: directives in `typst/FormalFoundations.typ`. Unlike the footnote and commented-block restorations, these call for new mathematical exposition, grounded in the source paper at `/home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex`.\n\n- `:244` — The Extension proof is inadequate. Repair it by including the lemmas it needs to cite, drawing on `possible_worlds.tex` where these results are established.\n- `:267` — The Task Topology definition needs expansion for readability, including indented definitions in the same style as the definitions above it.\n- `:353` — Indent the axioms and formalize all of them to improve readability.\n- `:362` — The S5 / BX axiom presentation is unreadable and must be expanded so the document is self-contained rather than requiring the reader to look the axioms up elsewhere.\n- `:369` — Everything in the remainder of the proof-systems section is inadequate. Present what is carefully developed in `possible_worlds.tex`, giving a systematic account of the various proof systems with each clearly defined.\n- `:393` — Replace the section introduction. Avoid platitudes; give a brief, concrete overview of what the section covers.\n\n**Reference grounding**: `/home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex` is the authoritative source for the proof-system definitions and the lemmas the Extension proof depends on. Transcribe faithfully rather than reconstructing from memory.\n\n**Verification**: `typst compile typst/FormalFoundations.typ` must succeed; every axiom named must be stated in full; the Extension proof must cite lemmas that are actually present in the document or in the cited source.\n\n**Important**: When making changes, remove the FIX: tags from the source file.",
@@ -1172,7 +1164,7 @@
         446,
         456
       ],
-      "last_updated": "2026-08-18T15:41:06Z",
+      "last_updated": "2026-08-18T15:52:43Z",
       "session_id": "sess_1787066139_9d5ac4_447",
       "next_artifact_number": 2,
       "artifacts": [
@@ -1185,8 +1177,14 @@
           "path": "specs/447_substantive_rewrites_formalfoundations/plans/01_substantive-rewrites.md",
           "type": "plan",
           "summary": "9-phase plan repairing 6 substantive FIX directives in typst/FormalFoundations.typ, transcribed from possible_worlds.tex, each phase ending at a green typst compile."
+        },
+        {
+          "path": "specs/447_substantive_rewrites_formalfoundations/summaries/01_substantive-rewrites-summary.md",
+          "type": "summary",
+          "summary": "Repaired all 6 substantive FIX directives in typst/FormalFoundations.typ, transcribed from possible_worlds.tex; compile green, zero FIX tags remain."
         }
-      ]
+      ],
+      "completion_summary": "Resolved all six substantive FIX directives in typst/FormalFoundations.typ by transcribing proof-system definitions and the Extension proof's lemma ladder from possible_worlds.tex; typst compile is green with zero FIX tags remaining and the warning set unchanged from baseline."
     },
     {
       "project_number": 450,

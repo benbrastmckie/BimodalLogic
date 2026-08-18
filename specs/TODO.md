@@ -11,7 +11,7 @@ next_project_number: 457
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,193,231,257,298,413,421,423,424,437,447,451,455 | -- | completeness, decidability, frame-extensions, ... |
+| 1 | 125,127,128,193,231,257,298,413,421,423,424,437,451,455 | -- | completeness, decidability, frame-extensions, ... |
 | 2 | 178,219,282,296,422,425,436 | 193,231,298,421,423,437 | decidability, formula-refactor, dataset-enhancement, ... |
 | 3 | 169,434 | 422,436 | decidability, strong_completeness |
 | 4 | 362,432 | 169,424,434 | decidability, strong_completeness |
@@ -39,7 +39,7 @@ next_project_number: 457
 437 [RESEARCHED] — Attack the missing fourth termination-measure component from the 
   └─ 436 [BLOCKED] — Resume task 434's implementation plan (specs/434_discharge_mintpa
     └─ 434 [BLOCKED] — Discharge `MintPaysForTime fc U Tmax`, defined at FormalSystem/Me
-      └─ 432 [IMPLEMENTING] — Discharge `UniverseClosed fc U`, defined at FormalSystem/Metalogi
+      └─ 432 [PARTIAL] — Discharge `UniverseClosed fc U`, defined at FormalSystem/Metalogi
         └─ 433 [RESEARCHED] — Discharge `PostBlockingSettles fc`, defined at FormalSystem/Metal
           └─ 428 [BLOCKED] — Engine totality at a quantified branch budget. Owns obstruction O
             └─ 429 [NOT STARTED] — Repair the truth-lemma side conditions. Owns obstructions O2 and 
@@ -61,10 +61,6 @@ next_project_number: 457
 ### Algebraic Representation
 
 125 [NOT STARTED] — Implement a Jonsson-Tarski representation theorem for TM logic: e
-
-### Publication Quality
-
-447 [PLANNED] — Address 6 substantive FIX: directives in `typst/FormalFoundations
 
 ### Automation
 
@@ -715,12 +711,13 @@ Task 417's recommended Task B (the filtered step relation) cannot start before (
 ---
 
 ### 447. Substantive rewrites in FormalFoundations.typ: proof repair, axiom presentation, section restructure
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: logic
 - **Topic**: publication-quality
 - **Dependencies**: Task 446, Task 456
 - **Research**: [447_substantive_rewrites_formalfoundations/reports/01_substantive-rewrites-research.md]
 - **Plan**: [447_substantive_rewrites_formalfoundations/plans/01_substantive-rewrites.md]
+- **Summary**: [447_substantive_rewrites_formalfoundations/summaries/01_substantive-rewrites-summary.md]
 
 **Description**: Address 6 substantive FIX: directives in `typst/FormalFoundations.typ`. Unlike the footnote and commented-block restorations, these call for new mathematical exposition, grounded in the source paper at `/home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex`.
 
@@ -806,7 +803,7 @@ Tag locations (line numbers as of scan): 149, 178, 191, 196, 211, 213, 238, 242,
 - **Status**: [BLOCKED]
 - **Task Type**: lean4
 - **Topic**: decidability
-- **Dependencies**: Task 435, Task 437
+- **Dependencies**: Task 437
 - **Research**:
   - [434_discharge_mintpaysfortime_residual/reports/02_spawn-analysis.md]
   - [436_fourth_termination_measure_component/reports/01_fourth-measure-component.md]
@@ -823,7 +820,7 @@ Tag locations (line numbers as of scan): 149, 178, 191, 196, 211, 213, 238, 242,
 - **Status**: [BLOCKED]
 - **Task Type**: lean4
 - **Topic**: decidability
-- **Dependencies**: Task 431, Task 435, Task 436
+- **Dependencies**: Task 436
 - **Research**:
   - [428_engine_totality_at_a_quantified_branch_budget/reports/05_spawn-analysis.md]
   - [434_discharge_mintpaysfortime_residual/reports/01_spawn-inherited-research.md]
@@ -839,7 +836,7 @@ Tag locations (line numbers as of scan): 149, 178, 191, 196, 211, 213, 238, 242,
 - **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: decidability
-- **Dependencies**: Task 431, Task 432, Task 434
+- **Dependencies**: Task 432, Task 434
 - **Research**:
   - [428_engine_totality_at_a_quantified_branch_budget/reports/05_spawn-analysis.md]
   - [433_discharge_postblockingsettles_residual/reports/01_spawn-inherited-research.md]
@@ -850,10 +847,10 @@ Tag locations (line numbers as of scan): 149, 178, 191, 196, 211, 213, 238, 242,
 
 ### 432. Discharge universeclosed residual
 - **Effort**: 4-6 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [PARTIAL]
 - **Task Type**: lean4
 - **Topic**: decidability
-- **Dependencies**: Task 431, Task 434
+- **Dependencies**: Task 434
 - **Research**:
   - [428_engine_totality_at_a_quantified_branch_budget/reports/05_spawn-analysis.md]
   - [432_discharge_universeclosed_residual/reports/01_spawn-inherited-research.md]
@@ -919,7 +916,7 @@ DONE WHEN: `boxAnchoredCheck` and `temporalWitnessCheck` are dischargeable on re
 - **Status**: [BLOCKED]
 - **Task Type**: lean4
 - **Topic**: decidability
-- **Dependencies**: Task 431, Task 432, Task 433, Task 434
+- **Dependencies**: Task 432, Task 433, Task 434
 - **Plan**:
   - [428_engine_totality_at_a_quantified_branch_budget/plans/02_lexicographic-splitordered-measure.md]
   - [428_engine_totality_at_a_quantified_branch_budget/plans/03_mint-bound-irreflexivity-totality.md]
@@ -1334,7 +1331,7 @@ Inventory groups drawn on: survey report section 4.2 groups 2 (intros_validity, 
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: formula-refactor
-- **Dependencies**: Task 131, Task 193, Task 402, Task 426, Task 428, Task 429, Task 430, Task 431, Task 432, Task 433, Task 434, Task 440, Task 441, Task 448
+- **Dependencies**: Task 131, Task 193, Task 402, Task 426, Task 428, Task 429, Task 430, Task 432, Task 433, Task 434, Task 440, Task 441, Task 448
 
 **Description**: Update all documentation to match final codebase state after refactoring. README.md axiom counts, architecture diagram, sorry obligations. Module-level docstrings for every file in the final structure. ROADMAP.md updates. Axiom Reference doc verification. This is the final documentation pass after all structural refactoring is complete.
 
@@ -1400,7 +1397,7 @@ FOUR-AXIOM EXPOSURE NOTE (added 2026-08-10): Phase 2's obligation 'Prove Uf(A) s
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: completeness
-- **Dependencies**: Task 165, Task 408, Task 412, Task 426, Task 428, Task 429, Task 430, Task 431, Task 432, Task 433, Task 434, Task 448
+- **Dependencies**: Task 165, Task 408, Task 412, Task 426, Task 428, Task 429, Task 430, Task 432, Task 433, Task 434, Task 448
 
 **Description**: Verify and record the final axiom/sorry status of the headline metalogical results, then close.
 
