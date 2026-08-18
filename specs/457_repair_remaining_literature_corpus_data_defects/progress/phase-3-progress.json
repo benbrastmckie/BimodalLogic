@@ -1,0 +1,45 @@
+{
+  "phase": 3,
+  "phase_name": "SCOPE 3 -- bulk token_count re-baseline",
+  "started_at": "2026-08-18T20:35:00Z",
+  "last_updated": "2026-08-18T20:50:00Z",
+  "objectives": [
+    {"id": 1, "description": "Regenerate scope3-drift.tsv against post-Phase-2 index", "status": "done", "files_touched": ["specs/457_repair_remaining_literature_corpus_data_defects/data/scope3-drift.tsv"]},
+    {"id": 2, "description": "Falsifier check: spot-read 2-3 drifted files for sane prose", "status": "done", "files_touched": []},
+    {"id": 3, "description": "Confirm baier_katoen uniform-placeholder finding, record per-part spread", "status": "done", "files_touched": []},
+    {"id": 4, "description": "Backup pre-scope3", "status": "done", "files_touched": []},
+    {"id": 5, "description": "Apply bulk token_count rewrite to regenerated worklist", "status": "done", "files_touched": ["specs/457_repair_remaining_literature_corpus_data_defects/data/phase3_mutate.py", "specs/457_repair_remaining_literature_corpus_data_defects/data/phase3_dup_fix.py"]},
+    {"id": 6, "description": "Run post-mutation gate", "status": "done", "files_touched": []}
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": [
+    {
+      "task_id": "3.5",
+      "description": "Apply the bulk token_count rewrite to every entry on the regenerated worklist",
+      "type": "altered",
+      "reason": "The regenerated 84-entry worklist plus the full 12-entry baier_katoen set (union, 88 target ids) was applied via phase3_mutate.py. Post-mutation re-scan still found 8 residual stored-0 entries. Root cause: the corpus has 8 duplicate-id entries (id appears twice in the entries list) -- for each of the 8, one instance is a stale placeholder carrying provenance='migrated from ingest schema (doc_id/source_path/chunks_dir)', token_count=0, empty summary, thinner metadata, and the other instance (same id, same path) is the already-correct, fully-populated v2 entry. The id-keyed by_id dict used for the main mutation pass silently resolves duplicate keys to the last entry, so the stale duplicate is invisible to a by-id lookup. phase3_dup_fix.py iterates the raw entries LIST (not a by-id dict) to find and correct all 8 stale duplicates' token_count from disk, closing the SCOPE 3 defect-class-empty gate honestly. The underlying duplicate-id structural defect (two records per document) is NOT one of the plan's SCOPE 1-8 and is NOT resolved here -- it is recorded for a follow-up task at Phase 7 closeout.",
+      "annotation": "*(deviation: altered — regenerated worklist mutation supplemented by phase3_dup_fix.py to close 8 duplicate-id stale-placeholder entries invisible to id-keyed lookup; duplicate-id defect itself deferred to a new Phase 7 follow-up task)*"
+    }
+  ],
+  "verification_notes": {
+    "backup": "~/Projects/Literature/index.json.bak-<ts>-pre-scope3",
+    "entry_count": "369 (unchanged)",
+    "total_token_count_changes": 96,
+    "regenerated_worklist_count": 84,
+    "baier_katoen_supplement_count": 4,
+    "duplicate_id_supplement_count": 8,
+    "non_token_count_field_changes": 0,
+    "defect_class_empty_after": true,
+    "baier_katoen_12_distinct_values": true,
+    "falsifier_spot_checks": [
+      {"file": "sources/baier_katoen_2008/Baier_Katoen_2008_part08.md", "verdict": "sane academic prose (partial order reduction / model checking discussion), not mojibake, not duplicated"},
+      {"file": "sources/burgess_1982_ii/Burgess_1982b_Axioms_for_tense_logic_II_Time_periods.md", "verdict": "sane academic prose (tense logic paper header + intro), not corrupted"},
+      {"file": "sources/blackburn_2002/app_algebraic-computational.md (+ app_guide-bibliography.md, app_logical-toolkit.md)", "verdict": "sane academic prose (Appendix B/D/A of Blackburn-de Rijke-Venema Modal Logic), not corrupted -- confirms the 0-stored/canonical-directory zero-token-count sub-population is a metadata defect, not content corruption"}
+    ],
+    "fts_row_count_post": 17736,
+    "fts_row_count_baseline": 17736,
+    "new_finding_for_phase7": "8 duplicate-id entries (calcagno_2007, docherty_pym_2019, jung_2018_iris, ohearn_2007, ohearn_2019, reynolds_2002_separation-logic, brookes_2007, jipsen_litak_2017) each carry a stale 'migrated from ingest schema' placeholder record alongside an already-correct v2 entry sharing the same id. Not one of SCOPE 1-8; token_count was corrected on the stale duplicates (bringing them into SCOPE 3 compliance at the field level) but the duplicate-record structural defect itself is unresolved and needs a dedicated deduplication follow-up task."
+  }
+}

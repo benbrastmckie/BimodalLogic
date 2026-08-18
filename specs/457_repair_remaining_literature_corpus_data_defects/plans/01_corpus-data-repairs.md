@@ -228,19 +228,19 @@ before proceeding.
 
 ---
 
-### Phase 3: SCOPE 3 — bulk token_count re-baseline [NOT STARTED]
+### Phase 3: SCOPE 3 — bulk token_count re-baseline [COMPLETED]
 
 **Goal**: Overwrite the stored `token_count` with a freshly recomputed `chars/4+20` value for
 every `path`-carrying entry whose stored value diverges by more than 20%, including the 12
 `baier_katoen_2008_partNN` entries sharing one placeholder value.
 
 **Tasks**:
-- [ ] Regenerate `data/scope3-drift.tsv` against the current (post-Phase-2) index — the Phase 1 copy is now one mutation stale
-- [ ] **Falsifier check before writing**: open 2-3 of the drifted `.md` files and read a page of each, confirming sane expected prose (not mojibake, not duplicated content). If any file reads as corrupted, stop: the defect is content corruption, not metadata drift, and this phase's premise is wrong
-- [ ] Confirm the `baier_katoen_2008` uniform-placeholder finding still holds (all 12 sharing one stored value) and record the recomputed per-part spread
-- [ ] Back up: `cp ~/Projects/Literature/index.json ~/Projects/Literature/index.json.bak-$(date +%Y%m%d-%H%M%S)-pre-scope3`
-- [ ] Apply the bulk `token_count` rewrite to every entry on the regenerated worklist
-- [ ] Run the post-mutation gate (below)
+- [x] Regenerate `data/scope3-drift.tsv` against the current (post-Phase-2) index — the Phase 1 copy is now one mutation stale *(completed)*
+- [x] **Falsifier check before writing**: open 2-3 of the drifted `.md` files and read a page of each, confirming sane expected prose (not mojibake, not duplicated content). If any file reads as corrupted, stop: the defect is content corruption, not metadata drift, and this phase's premise is wrong *(completed)*
+- [x] Confirm the `baier_katoen_2008` uniform-placeholder finding still holds (all 12 sharing one stored value) and record the recomputed per-part spread *(completed)*
+- [x] Back up: `cp ~/Projects/Literature/index.json ~/Projects/Literature/index.json.bak-$(date +%Y%m%d-%H%M%S)-pre-scope3` *(completed)*
+- [x] Apply the bulk `token_count` rewrite to every entry on the regenerated worklist *(completed: regenerated worklist (84) + full baier_katoen 12-set + 8 duplicate-id stale placeholders found invisible to id-keyed lookup (96 total field changes))*
+- [x] Run the post-mutation gate (below) *(completed)*
 
 **Timing**: 1.5 hours
 
