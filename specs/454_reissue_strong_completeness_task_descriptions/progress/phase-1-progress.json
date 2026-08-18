@@ -1,0 +1,13 @@
+{
+  "phase": 1,
+  "phase_name": "Build the verified citation ledger",
+  "started_at": "2026-08-18T00:00:00Z",
+  "last_updated": "2026-08-18T00:10:00Z",
+  "objectives": [
+    {"id": 1, "description": "Snapshot the six task records", "status": "done", "files_touched": ["specs/454_reissue_strong_completeness_task_descriptions/.pre-reissue-snapshot.json"]},
+    {"id": 2, "description": "Dump each description to scratch and extract/verify citations, write ledger", "status": "done", "files_touched": ["specs/454_reissue_strong_completeness_task_descriptions/reports/02_citation-ledger.md"]}
+  ],
+  "current_objective": 2,
+  "approaches_tried": [],
+  "handoff_count": 0
+}

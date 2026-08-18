@@ -1,7 +1,7 @@
 # Implementation Plan: Task #454
 
 - **Task**: 454 - reissue_strong_completeness_task_descriptions
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 6.5 hours
 - **Dependencies**: 452
 - **Research Inputs**: specs/454_reissue_strong_completeness_task_descriptions/reports/01_strong-completeness-reissue-research.md
@@ -120,7 +120,7 @@ contract for parallel execution.
 
 ---
 
-### Phase 1: Build the verified citation ledger [NOT STARTED]
+### Phase 1: Build the verified citation ledger [COMPLETED]
 
 **Goal**: Enumerate every file:line and symbol citation appearing in all six descriptions, verify
 each against the live tree, and record the verified symbol-primary replacement for each. This is
@@ -128,25 +128,25 @@ the single source of truth every later phase copies from, so no later phase re-d
 number.
 
 **Tasks**:
-- [ ] Snapshot the six task records for later diffing:
+- [x] Snapshot the six task records for later diffing:
       `jq '[.active_projects[] | select(.project_number | IN(169,362,421,422,423,424))]' specs/state.json > specs/454_reissue_strong_completeness_task_descriptions/.pre-reissue-snapshot.json`
-- [ ] Dump each description to a scratch file: for `N` in 169 362 421 422 423 424,
+- [x] Dump each description to a scratch file: for `N` in 169 362 421 422 423 424,
       `jq -r --argjson n $N '.active_projects[]|select(.project_number==$n)|.description' specs/state.json > SCRATCH/$N-desc.orig.txt`
-- [ ] Extract every citation from each dump (`grep -nE '\.(lean|tex)[:0-9-]*|:[0-9]{2,}'`) and
+- [x] Extract every citation from each dump (`grep -nE '\.(lean|tex)[:0-9-]*|:[0-9]{2,}'`) and
       enumerate them into a table with columns: task, cited file, cited line(s), symbol, verified
       actual location, status (`ACCURATE` / `DRIFTED` / `DELETED` / `NO-LINE`).
-- [ ] Verify each row against the live tree by symbol, using `grep -n` on the declaration keyword
+- [x] Verify each row against the live tree by symbol, using `grep -n` on the declaration keyword
       (`^theorem`, `^def`, `^lemma`, `^section`) rather than trusting the cited line. Confirm the
       eleven already-known rows and resolve every row the research did not examine.
-- [ ] Confirm the CarrierProbe anchor in 421 (`CompletenessDedekind.lean`, `section CarrierProbe`,
+- [x] Confirm the CarrierProbe anchor in 421 (`CompletenessDedekind.lean`, `section CarrierProbe`,
       actual `:69-105`) is marked `ACCURATE — DO NOT CHANGE THE CLAIM`, with the re-anchor being a
       switch to symbol-primary form only.
-- [ ] For every `DRIFTED` or `ACCURATE` row, write the exact replacement citation string in
+- [x] For every `DRIFTED` or `ACCURATE` row, write the exact replacement citation string in
       symbol-primary form, e.g.
       `` `box_dense_gives_density` (`FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodelBasic.lean`; currently near :430, hint only — re-verify by symbol before use) ``
-- [ ] For any `DELETED` row, add an ESCALATION note (what was cited, what is gone, which clause
+- [x] For any `DELETED` row, add an ESCALATION note (what was cited, what is gone, which clause
       depends on it) instead of inventing a replacement.
-- [ ] Write the ledger to
+- [x] Write the ledger to
       `specs/454_reissue_strong_completeness_task_descriptions/reports/02_citation-ledger.md`.
 
 **Timing**: 1.0 hour
