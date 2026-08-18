@@ -179,32 +179,32 @@ count mismatch invalidates Phases 2-4's site enumeration and must be reported, n
 
 ---
 
-### Phase 2: Restore Sites 1-3 (Nullity Proof, Step Lemma Prose, Cones/Basis Prose) [NOT STARTED]
+### Phase 2: Restore Sites 1-3 (Nullity Proof, Step Lemma Prose, Cones/Basis Prose) [COMPLETED]
 
 **Goal**: Restore the three blocks in the Frame/Histories region — the Nullity lemma proof and the
 two short prose paragraphs following the Occurrence corollary.
 
 **Tasks**:
-- [ ] **Site 1** (anchor: the bare `// FIX:` immediately after
+- [x] **Site 1** (anchor: the bare `// FIX:` immediately after
       `#leansrc("Semantics.TaskFrame", "nullity")`, pre-change line 228). Delete the `// FIX:`
       line. Uncomment the `#proof[...]` block and the following "Nullity is derived, not
       postulated..." paragraph. The lone `//` line between them must become a **genuine blank
       line**, not a stray `//` and not nothing — it is the paragraph break separating the proof
-      from the prose.
-- [ ] **Site 2** (anchor: the bare `// FIX:` immediately after
+      from the prose. *(completed)*
+- [x] **Site 2** (anchor: the bare `// FIX:` immediately after
       `#leansrc("Semantics.PartialHistory", "occurrence")`, pre-change line 275). Delete the tag
       line and uncomment the "The Step Lemma is the sole application site of *Spherical*..."
       paragraph, including its inline `#footnote[...]`. Preserve the footnote's single-line form —
       it is one long line in the source and must not be reflowed in a way that breaks the
-      `#footnote[` bracket balance.
-- [ ] **Site 3** (anchor: the bare `// FIX:` above
+      `#footnote[` bracket balance. *(completed)*
+- [x] **Site 3** (anchor: the bare `// FIX:` above
       `// The cones are a basis for a topology on world states`, pre-change line 281). Delete the
       tag line and uncomment the single sentence. Keep the blank line separating it from Site 2's
-      paragraph above and from the `#definition("Task Topology")` below.
-- [ ] Read back all three restored blocks against the report's Appendix Sites 1, 2a, 2b and
+      paragraph above and from the `#definition("Task Topology")` below. *(completed)*
+- [x] Read back all three restored blocks against the report's Appendix Sites 1, 2a, 2b and
       confirm character-level fidelity of the mathematics (`arrow.r.double.long_(0)`,
-      `inter.big_(x>0)`, `subset.eq`).
-- [ ] Compile and commit.
+      `inter.big_(x>0)`, `subset.eq`). *(completed: verified verbatim match)*
+- [x] Compile and commit. *(completed: exit 0, baseline warnings only)*
 
 **Timing**: 0.6 hours
 

@@ -225,15 +225,14 @@ its absence from $#BL$ is what produces the split validity of @sec:dichotomy.
 
 #lemma("Nullity")[$w arrow.r.double.long_(0) w$ for every world state $w$ of every frame.]
 #leansrc("Semantics.TaskFrame", "nullity")
-// FIX:
-// #proof[
-//   *Seriality* at $x = 0$ gives $u$ with $w arrow.r.double.long_(0) u$. Since $|0| < x$ for every
-//   $x > 0$, $u in (w)_x$ for every such $x$, so $u in inter.big_(x>0)(w)_x = {w}$ by *Limit*, whence
-//   $u = w$.
-// ]
-//
-// Nullity is derived, not postulated, and its derivation uses no choice. The distinction matters
-// below: two of the three results in @sec:histories are theorems of ZFC.
+#proof[
+  *Seriality* at $x = 0$ gives $u$ with $w arrow.r.double.long_(0) u$. Since $|0| < x$ for every
+  $x > 0$, $u in (w)_x$ for every such $x$, so $u in inter.big_(x>0)(w)_x = {w}$ by *Limit*, whence
+  $u = w$.
+]
+
+Nullity is derived, not postulated, and its derivation uses no choice. The distinction matters
+below: two of the three results in @sec:histories are theorems of ZFC.
 
 == Histories and the Task Topology <sec:histories>
 
@@ -272,14 +271,12 @@ its absence from $#BL$ is what produces the split validity of @sec:dichotomy.
 ]
 #leansrc("Semantics.PartialHistory", "occurrence")
 
-// FIX:
-// The Step Lemma is the sole application site of *Spherical* in the paper, and Extension is the sole
-// consumer of the Step Lemma; every appeal to *Spherical* in the semantics passes through this one
-// point.#footnote[`lem:step`. @brastmckie2026possibleworlds *Spherical* is not needed when the directed family has a $subset.eq$-least member, and on a finite carrier it holds outright and choice-free (`cor:spherical-finite`).] Extension and Occurrence are theorems of ZFC, in contrast with Nullity. That
-// localization is what makes *Spherical* the identified obstruction of @sec:representation.
+The Step Lemma is the sole application site of *Spherical* in the paper, and Extension is the sole
+consumer of the Step Lemma; every appeal to *Spherical* in the semantics passes through this one
+point.#footnote[`lem:step`. @brastmckie2026possibleworlds *Spherical* is not needed when the directed family has a $subset.eq$-least member, and on a finite carrier it holds outright and choice-free (`cor:spherical-finite`).] Extension and Occurrence are theorems of ZFC, in contrast with Nullity. That
+localization is what makes *Spherical* the identified obstruction of @sec:representation.
 
-// FIX:
-// The cones are a basis for a topology on world states, and that topology is separated.
+The cones are a basis for a topology on world states, and that topology is separated.
 
 #definition("Task Topology")[
   // FIX: this needs to be expanded to be easier to read, including indented definitions here as in the definitions above
