@@ -795,29 +795,73 @@ it exhibits, exactly as D-6's citation mechanics require.
 
 ---
 
-### Phase 7: Tier B — the literal `FiniteTaskFrame ℤ` statement [NOT STARTED]
+### Phase 7: Tier B — the literal `FiniteTaskFrame ℤ` statement [COMPLETED]
 
 **Goal**: The task description's literal wording, over a general finite frame, proved directly with
 no presentation anywhere in the proof.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Semantics/Extension/PeriodicExtension.lean`.
-- [ ] State `TaskFrame.extend_periodic` over `{F : TaskFrame ℤ} [Finite F.WorldState]` exactly as
+- [x] Create `FormalSystem/Semantics/Extension/PeriodicExtension.lean`.
+- [x] State `TaskFrame.extend_periodic` over `{F : TaskFrame ℤ} [Finite F.WorldState]` exactly as
       written in D-1's Tier B row. Use the `[Finite F.WorldState]` **instance**, not
       `FiniteTaskFrame.finite_world`.
-- [ ] Prove it directly: `exists_iter_fwd` / `exists_iter_bwd` for orbit existence,
+- [x] Prove it directly: `exists_iter_fwd` / `exists_iter_bwd` for orbit existence,
       `exists_repeat_of_card_lt` for the revisit, `TaskFrame.HFofStepPath` to land in `F.HF`.
-      **MUST NOT** route through Tier A or through any presentation.
-- [ ] **No seriality hypothesis** (D-3). Docstring states the absence is deliberate, names
+      **MUST NOT** route through Tier A or through any presentation. *(all three MUST NOTs of D-1
+      hold: no Tier-A route, no presentation anywhere in the proof term, `[Finite F.WorldState]`
+      used as an instance. `exists_iter_fwd` / `exists_iter_bwd` are used, at `n = 1`, to obtain
+      the successor and predecessor selections. The revisit uses a **sharper sibling** of
+      `exists_repeat_of_card_lt` — see the deviation recorded below.)*
+- [x] **No seriality hypothesis** (D-3). Docstring states the absence is deliberate, names
       `TaskFrame.serial` instantiated at `x = 1` as the source, and points at the frame-intrinsic
       discipline `Extension.lean`'s docstring sets out.
-- [ ] Docstring states the relation to `thm:extension` explicitly: this **strengthens** the finite
+- [x] Docstring states the relation to `thm:extension` explicitly: this **strengthens** the finite
       discrete case and does not replace the general theorem, which remains as it is for arbitrary
       `W` and `D`.
-- [ ] Docstring cross-references Tier A by name as the effective, certificate-bearing counterpart,
+- [x] Docstring cross-references Tier A by name as the effective, certificate-bearing counterpart,
       and states why the two are different theorems rather than one (D-1: `Finite` is
       non-constructive, `IntPresentation` is data).
 - [ ] Optional and cheap: the Tier-A-to-Tier-B corollary for presented frames specifically.
+      *(deviation: skipped — it turned out not to be a corollary that needs writing.
+      `Finite (Fin P.card)` is an instance, so `TaskFrame.extend_periodic` **already applies
+      verbatim** at `P.toTaskFrame`, with no bridging lemma at all. Writing one would either
+      import `Metalogic/` into `Semantics/`, inverting the layering, or restate the conclusion for
+      no added content. The plan marked this item optional; it is recorded as unneeded rather than
+      as undone.)*
+
+#### Phase 7 Note — one deviation, flagged for review
+
+**The plan's named revisit helper cannot deliver the plan's own stated bound.** D-1's Tier B row
+requires `p₀ ≤ Nat.card F.WorldState` and `p₁ ≤ Nat.card F.WorldState`. The named helper
+`FormalSystem.Semantics.exists_repeat_of_card_lt` takes `hn : Nat.card W < n` and concludes
+`j ≤ a + n`, so its tightest usable instantiation is `n = Nat.card W + 1`, which yields a repeat
+span of up to `Nat.card W + 1` — **one more than D-1's statement permits**. The two plan clauses
+are not jointly satisfiable as written.
+
+This was resolved in favour of the **statement**, which is the binding artifact: D-1's Tier B row
+is presented as "the existential the task description states". A sibling lemma
+`FormalSystem.Semantics.exists_repeat_of_card_le` is proved beside the theorem, taking a window of
+`Nat.card W` steps and concluding `j ≤ c + Nat.card W`. It routes through the *same* Mathlib
+pigeonhole (`Fintype.exists_ne_map_eq_of_card_lt`) that `exists_repeat_of_card_lt` routes through,
+and is a strict strengthening of it — that lemma's `<` hypothesis is simply stronger than its own
+proof needs.
+
+A sharper form had to be proved locally in any case, for a second and independent reason:
+`exists_repeat_of_card_lt` lives in `Metalogic/Decidability/FMP/Periodicity.lean`, and importing
+it into `Semantics/Extension/` would invert the layering, making `Semantics/` depend on
+`Metalogic/`.
+
+**Flagged for review** rather than silently annotated. Two follow-ups are worth considering and
+neither is done here: relaxing `exists_repeat_of_card_lt`'s hypothesis from `<` to `≤` in place
+(which would subsume the new lemma and allow deleting it), and moving the sharper form into
+`Periodicity.lean` once the concurrent work in that area has landed.
+
+**Manifest**: `FormalSystem.Semantics.Extension.PeriodicExtension` added to
+`scripts/module-invariants-manifest.txt` rather than registered in `FormalSystem/Semantics.lean`,
+so that no aggregator is edited while the concurrent work is in flight. Registration is a recorded
+follow-up. `scripts/check-module-invariants.sh` reports all 22 manifested modules compiling in
+isolation, C1's full `lake build` green, and C2's four flagship axiom sets unchanged from
+baseline.
 
 **Timing**: 1.5 hours
 
