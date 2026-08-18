@@ -724,28 +724,44 @@ re-labelling the plan assumes, and it should be reported before continuing.
 
 ---
 
-### Phase 8: Re-verify the out-of-declared-scope consumers [NOT STARTED]
+### Phase 8: Re-verify the out-of-declared-scope consumers [COMPLETED]
 
 **Goal**: Bring the three source files and one test file outside the task's declared `file_scope`
 back to green, with the scope expansion recorded rather than silent.
 
 **Tasks**:
-- [ ] `SubformulaProperty.lean`: re-verify `applyRule_timeLinearity_closed` (line 674) and the two
+- [x] `SubformulaProperty.lean`: re-verify `applyRule_timeLinearity_closed` (line 674) and the two
       arm-shape sites at 666-689, consuming `identifyTime_formula_mem` (line 438) which is
-      generically quantified and should need no edit. Update the arm-3 prose at line 57.
-- [ ] `Decidable.lean`: update the docstring paragraph at lines 271-284 so its account of the
+      generically quantified and should need no edit. Update the arm-3 prose at line 57. *(confirmed: `applyRule_timeLinearity_closed`'s PROOF needed no edit at all — it routes through
+      the generically-quantified `identifyTime_formula_mem`, exactly as Phase 4's census predicted.
+      Prose updated at lines 57 and 666.)*
+- [x] `Decidable.lean`: update the docstring paragraph at lines 271-284 so its account of the
       identification arm matches the oriented arm — specifically, its counterexample
       (`b = [f₀, f₇]`, `ord = ⟨[(5,7)]⟩`, identify `7` with `0`, `b'.nextTime = 1`) is exactly the
       configuration the repair closes, and the paragraph should now say so and cite `OrdWithin` as
       the invariant that survives either way. **Proof edits in this file are out of scope**; if any
-      are required, stop and escalate.
-- [ ] `BranchOrder.lean`: update the two `#eval` rows at lines 459, 465 if their values changed, and
-      the arm-3 prose at lines 39, 74, 406.
-- [ ] `Tests/BimodalTest/UntlSnceCopyProbe.lean`: re-verify the ten `nextTime` probe rows. These read
+      are required, stop and escalate. *(done, docstring only. **No proof edits were required** — R3 did not materialise and no
+      file-scope escalation was needed. The paragraph now records that its own counterexample is the
+      configuration the orientation closes (`b = [f₀, f₇]` oriented identifies `0` into `7` and
+      `nextTime` stays `8`), and cites `nextTime_monotone_along_run`, while keeping the paragraph's
+      original point: `OrdWithin` was chosen as a membership condition and survives either way, so
+      the two repairs are independent rather than one propping up the other.)*
+- [x] `BranchOrder.lean`: update the two `#eval` rows at lines 459, 465 if their values changed, and
+      the arm-3 prose at lines 39, 74, 406. *(deviation: altered — neither `#eval` row changed value, so neither was edited; both call
+      `identifyTime` directly rather than through the engine. A comment was added recording that
+      they are orientation-independent and are about the loop-blocking repair, not the ordered
+      split. The prose at 39, 74 and 406 is likewise about loop-blocking, not about arm 3, so it
+      needed no edit — recorded rather than edited gratuitously.)*
+- [x] `Tests/BimodalTest/UntlSnceCopyProbe.lean`: re-verify the ten `nextTime` probe rows. These read
       `nextTime` on hand-built branches with no identification step, so they are expected to be
-      unaffected; confirm rather than assume.
-- [ ] Record the file-scope expansion (which files, why, what was edited) in the phase's progress
-      record, for the task summary to carry.
+      unaffected; confirm rather than assume. *(confirmed by building: `lake build BimodalTest` green, 2508 jobs, no `#guard_msgs` failure.
+      File unedited.)*
+- [x] Record the file-scope expansion (which files, why, what was edited) in the phase's progress
+      record, for the task summary to carry. *(recorded here: the expansion is **smaller than the plan's worst case**. Files touched beyond
+      the declared four-file scope: `SubformulaProperty.lean` (prose only), `Decidable.lean`
+      (docstring only), `BranchOrder.lean` (one comment only). `Tests/BimodalTest/UntlSnceCopyProbe.lean`
+      was NOT touched. `Saturation.lean` and `SignedFormula.lean` are absent from the task's
+      cumulative `git diff --stat`. No proof edit was needed in any out-of-scope file.)*
 
 **Timing**: 1.5 hours
 

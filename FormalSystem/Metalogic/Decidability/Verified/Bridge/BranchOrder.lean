@@ -454,6 +454,11 @@ private def cycleOrd : TimeOrdering := ⟨[(0, 1), (1, 2), (2, 0)]⟩
 
 -- Identification is the sanctioned repair (never edge-addition): identifying `2` into `1`
 -- collapses the fork to a two-element chain, and the gate passes on the identified branch.
+--
+-- These two rows call `Branch.identifyTime` / `TimeOrdering.identifyTime` **directly**, not through
+-- `timeLinearity`'s arm 3, so they are unaffected by that arm's orientation (which retires
+-- `min t₁ t₂` rather than `t₂`). They are about the loop-blocking repair, whose choice of which
+-- numeral survives is its own; nothing here is a claim about the ordered split.
 /-- info: true -/
 #guard_msgs in
 #eval branchOrderValid (chainBranch.identifyTime 2 1) (forkOrd.identifyTime 2 1)

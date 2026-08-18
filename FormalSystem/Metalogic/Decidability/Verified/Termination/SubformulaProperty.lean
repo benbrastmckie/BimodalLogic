@@ -54,8 +54,8 @@ Three rules initially suspected of needing their own field turn out not to:
 * **`densityRule`** emits `T(ψ)` from `T(Gψ)` plus relabelled `T(inner)` for branch formulas
   `T(G inner)`; both are subformulas.
 * **`timeLinearity`** emits no formulas at all. Its three arms carry `branch` twice and
-  `branch.identifyTime t₂ t₁` once, and identification is label-only (`identifyTime_formula_mem`
-  below), so nothing leaves `C`.
+  `branch.identifyTime (min t₁ t₂) (max t₁ t₂)` once, and identification is label-only
+  (`identifyTime_formula_mem` below), so nothing leaves `C`.
 
 ## Why the fields are keyed on the rules' *whole* triggers (the finiteness repair)
 
@@ -663,8 +663,10 @@ theorem applyRule_serialityRule_closed (hC : TableauClosed C) :
 /--
 `timeLinearity` is the only `.branchingOrdered` rule, so its conclusion is about the whole
 post-rule branch rather than about additions; the hypothesis is correspondingly `hb`, not `hsf`.
-Arms 1 and 2 carry `b` verbatim and arm 3 carries `b.identifyTime t₂ t₁`, which
-`identifyTime_formula_mem` shows is formula-preserving.
+Arms 1 and 2 carry `b` verbatim and arm 3 carries `b.identifyTime (min t₁ t₂) (max t₁ t₂)`, which
+`identifyTime_formula_mem` shows is formula-preserving. `identifyTime_formula_mem` is quantified
+over both of its times, so the arm's orientation is invisible to it and this proof needed no edit
+when arm 3 was reoriented.
 
 The three-way `rcases hg with hg | hg | hg` is deliberately *not* `repeat' rcases hg with hg | hg`
 as in the propositional cases. Here the disjuncts are themselves `List.Mem` proofs, and `repeat'`

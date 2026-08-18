@@ -272,13 +272,23 @@ it, and the successor's `ordResp` obligation then demands a cycle. That is prove
 * the membership condition below.
 
 The numeric bound is **not an inductive invariant of the construction**. It is preserved by 35 of
-the 36 `TableauRule` constructors and refuted by the identification arm of `timeLinearity`
+the 36 `TableauRule` constructors and was refuted by the identification arm of `timeLinearity`
 (`Tableau.lean`, the `.branchingOrdered` arm), the engine's single non-additive step:
-`Branch.identifyTime` *removes* a time from `knownTimes` and so can **lower** `nextTime`, while
+`Branch.identifyTime` *removes* a time from `knownTimes` and so could **lower** `nextTime`, while
 `TimeOrdering.identifyTime` carries a constraint mentioning an unrelated larger time through the
 substitution unchanged. Concretely, `b = [f₀, f₇]` with `ord = ⟨[(5, 7)]⟩` satisfies the numeric
-bound (`nextTime = 8`); the arm identifies `7` with `0`, giving `b'.nextTime = 1` with the
-constraint `(5, 0)` surviving.
+bound (`nextTime = 8`); the arm, as it then stood, identified `7` with `0`, giving `b'.nextTime = 1`
+with the constraint `(5, 0)` surviving.
+
+**That counterexample is exactly the configuration the arm's orientation now closes.** Arm 3 merges
+`min t₁ t₂` into `max t₁ t₂` rather than `t₂` into `t₁`, so it retires the *smaller* numeral and
+`Branch.maxTime` — hence `Branch.nextTime`, which is `maxTime + 1` by a definition nothing here
+disturbs — is non-decreasing along a run (`MintBound.lean`'s `nextTime_monotone_along_run`). At
+`b = [f₀, f₇]` the oriented arm identifies `0` into `7` and `nextTime` stays `8`. The paragraph is
+kept rather than deleted because it records *why* the membership formulation was chosen, and the
+choice remains the right one: `OrdWithin` is the invariant that survives either way, and it does so
+without depending on the orientation — which is what makes the two repairs independent rather than
+one propping up the other.
 
 The membership condition is stable under exactly that operation — every time of
 `ord.identifyTime t₂ t₁` is either an unchanged time of `ord` other than `t₂`, or `t₁`, which
