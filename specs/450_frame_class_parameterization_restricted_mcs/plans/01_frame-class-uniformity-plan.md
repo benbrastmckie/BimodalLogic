@@ -471,7 +471,7 @@ done at roughly half the surface.
 
 ---
 
-### Phase 7: Generalise ModalS5 and ModalS4 [NOT STARTED]
+### Phase 7: Generalise ModalS5 and ModalS4 [COMPLETED]
 
 **Goal**: Deliverable (e) for the modal layer.
 
