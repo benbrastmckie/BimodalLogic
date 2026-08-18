@@ -11,7 +11,7 @@ next_project_number: 462
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,193,231,257,298,413,421,423,424,436,451,455,457,458,459,460,461 | -- | completeness, decidability, frame-extensions, ... |
+| 1 | 125,127,128,193,231,257,298,413,421,423,424,436,451,455,458,459,460,461 | -- | completeness, decidability, frame-extensions, ... |
 | 2 | 178,219,282,296,422,425,434 | 193,231,298,421,423,436 | decidability, formula-refactor, dataset-enhancement, ... |
 | 3 | 169,432 | 422,434 | decidability, strong_completeness |
 | 4 | 362,433 | 169,424,432 | decidability, strong_completeness |
@@ -79,7 +79,6 @@ next_project_number: 462
 
 ### Literature
 
-457 [IMPLEMENTING] — Repair the remaining Literature corpus data defects surfaced by a
 458 [NOT STARTED] — Follow-up to task 457's SCOPE 7 (provenance adjudication for 3 na
 459 [NOT STARTED] — Discovered during task 457 Phase 3 (SCOPE 3 bulk token_count re-b
 460 [NOT STARTED] — SCOPE 8 acquisition gap identified by task 457's research and re-
@@ -143,12 +142,13 @@ next_project_number: 462
 ---
 
 ### 457. Repair remaining literature corpus data defects
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: general
 - **Topic**: literature
 - **Dependencies**: None
 - **Research**: [457_repair_remaining_literature_corpus_data_defects/reports/01_literature-corpus-data-repairs.md]
 - **Plan**: [457_repair_remaining_literature_corpus_data_defects/plans/01_corpus-data-repairs.md]
+- **Summary**: [457_repair_remaining_literature_corpus_data_defects/summaries/01_corpus-data-repairs-summary.md]
 
 **Description**: Repair the remaining Literature corpus data defects surfaced by a /literature discovery and validation session. These are DATA repairs to the global corpus at ~/Projects/Literature and to this repo's specs/literature-index.json, NOT agent-system code changes -- the five corresponding code defects are already tracked separately in the global agent-system repo and must not be duplicated here. All counts below were verified empirically against a 369-entry global index; re-confirm before mutating, since the corpus changes.
 
