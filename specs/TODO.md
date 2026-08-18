@@ -64,7 +64,7 @@ next_project_number: 456
 
 ### Publication Quality
 
-445 [RESEARCHED] — Address 39 FIX: tags in `typst/FormalFoundations.typ`, each of th
+445 [PLANNED] — Address 39 FIX: tags in `typst/FormalFoundations.typ`, each of th
   └─ 446 [NOT STARTED] — Address 6 bare `// FIX:` tags in `typst/FormalFoundations.typ`, e
     └─ 447 [RESEARCHED] — Address 6 substantive FIX: directives in `typst/FormalFoundations
 
@@ -739,11 +739,12 @@ For each, decide restore / rewrite / delete, apply, and remove the FIX: tag.
 ---
 
 ### 445. Restore or retire 39 commented-out footnotes in FormalFoundations.typ
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: logic
 - **Topic**: publication-quality
 - **Dependencies**: None
 - **Research**: [445_restore_commented_footnotes_formalfoundations/reports/01_restore-commented-footnotes.md]
+- **Plan**: [445_restore_commented_footnotes_formalfoundations/plans/01_restore-commented-footnotes.md]
 
 **Description**: Address 39 FIX: tags in `typst/FormalFoundations.typ`, each of the form `] // FIX: #footnote[...]` trailing a definition, lemma, theorem, or corollary block. Each commented-out footnote carries either a paper anchor (`def:BLplus-language`, `def:temporal-order`, `def:task-relation`, `def:directed`, `def:frame`, `lem:nullity`, `def:world-history`, `thm:extension`, `cor:occurrence`, `def:task-topology`, `app:topology-t1`/`app:topology-r0`, `def:BL-model`, `def:BL-semantics`/`def:BLplus-semantics`, `def:frame-properties`, `def:frame-validity`/`def:logical-consequence`, `def:S5`, `def:BX`, `thm:TM-soundness`, `app:discrete`/`app:dense`/`app:complete`, `cor:tm-completeness`, `def:TMplus`, `cor:tm-decidability`, `def:strongest`, `thm:exist`, `lem:uniq`/`thm:s4`/`thm:sym`, `sub:Extension`) with an `@brastmckie2026possibleworlds` citation, or a Lean source reference (`Metalogic/Core/MaximalConsistent.lean`, `Metalogic/Bundle/BFMCS.lean`, `Metalogic/BXCanonical/Chronicle/ChronicleConstruction.lean`, `WeakCanonical/Transfer.lean`, `IntegerModel/GoodStructures.lean`, `RealModel/DoetsTheorem.lean`, `Metalogic/Algebraic/*`).
 
