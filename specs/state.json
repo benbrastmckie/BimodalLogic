@@ -950,7 +950,7 @@
     {
       "project_number": 436,
       "project_name": "fourth_termination_measure_component",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Resume task 434's implementation plan (specs/434_discharge_mintpaysfortime_residual/plans/01_mintpaysfortime-time-analogue.md) at Phase 7. Before starting, read the full do-not-re-attempt register (MintBound.lean section C9, 16 entries) and in particular entry 14, which records both refuted repair routes for MintPaysForTime: (1) re-indexing mintPotential on freshTimeRules instead of freshLabelRules -- refuted by witnessPresent_eq_false_of_not_freshLabel, whose match has exactly eight arms so the three added columns are permanently false; (2) dropping disjunct 1's cardinality conjunct and relying only on the ordering-rank conjunct -- refuted by splitOrderedRank_lt_of_knownTimes_lt plus mintPaysForTime_rank_repair_false, since splitOrderedRank's base Tmax^2+1 is by construction one more than incompPairs' range so any new known time raises the rank regardless of the pair count. Neither route may be re-attempted. Design a fourth measure component that pays for the three self-guarded minting rules -- untlNeg/snceNeg (guarded by futureOf/pastOf emptiness plus ord.timeCount < 4) and densityRule (guarded by the maximal-unfilled-gap set) -- and that is also preserved across TimeOrdering.identifyTime, which can lower ord.timeCount (the same maxTime-lowering mechanism Phase 6's verdict in the existing plan turns on; see nextTime_reissues_retired_time and reuse_driven_through_engine). Run this task with --lit against the sub-index populated by the literature-curation task, drawing specifically on: caleiro_2013's mosaic-method decidability treatment for combined tense-and-modal logics (sections 6-7, mosaic-based tableau systems and complexity bounds) as a structural analogue for a combined-logic termination measure; venema_2001 section 5's interval-based temporal logic treatment for the density/gap-guarded densityRule component; gerth_1995 and baier_katoen_2008's closure-set LTL tableau termination argument as a model for a measure over an evolving, non-monotonically-changing time set; and massacci_2000's rule-bounding technique. Once a candidate measure is validated, land it in MintBound.lean following the plan's existing Phase 7-8 task lists: define the repaired predicate (e.g. MintPaysForTimeAt, mirroring UniverseClosedAt's naming), prove its direction lemma relative to MintPaysForTime (weakening or strengthening, stated explicitly), confirm it leaks no new hypothesis into the terminus, restate the two seed-level termini at the repaired shape, and discharge the repaired predicate at a concrete instantiation (U = signedUniverse C L). All work must be sorry-free, axiom-free, and additive only (Saturation.lean, Fuel.lean, Tableau.lean remain untouched, and no previously-landed declaration in MintBound.lean is altered). Full lake build must be green at completion, and the new do-not-re-attempt register entries (if any further route is refuted along the way) must be recorded in section C9 following the existing convention.",
       "effort": "10-14 hours",
@@ -963,7 +963,7 @@
         "FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean"
       ],
       "created": "2026-08-07T15:22:56Z",
-      "last_updated": "2026-08-18T19:35:17Z",
+      "last_updated": "2026-08-18T21:31:36Z",
       "artifacts": [
         {
           "type": "research",
@@ -981,14 +981,19 @@
           "summary": "10-phase hard-mode plan; Phase 1 is a refute-first gate on the inherited sigma-hit obligation with three-way routing"
         },
         {
-          "type": "summary",
-          "path": "specs/436_fourth_termination_measure_component/summaries/01_self-guard-potential-summary.md",
-          "summary": "Machine-checked negative result: selfGuardPotential refuted by mintPaysForTimeAt_reuse_false; register entry 17 landed; gapPotential density residual left unattempted"
-        },
-        {
           "path": "specs/436_fourth_termination_measure_component/reports/02_spawn-analysis.md",
           "type": "report",
           "summary": "spawn analysis (backfilled by --sync)"
+        },
+        {
+          "path": "specs/436_fourth_termination_measure_component/summaries/02_self-guard-potential-resumption-summary.md",
+          "type": "summary",
+          "summary": "The re-gate at the oriented arm, the repaired predicate MintPaysForTimeStable, the four-component measure, and the two seed-level termini restated."
+        },
+        {
+          "path": "FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean",
+          "type": "implementation",
+          "summary": "+1821/-3: 81 new declarations, the three deletions being the sanctioned narrative and register-count edits."
         }
       ],
       "session_id": "sess_1787081671_9332d7_436",
@@ -1097,12 +1102,12 @@
     {
       "project_number": 460,
       "project_name": "acquire_gabbay_2003_many_dimensional_modal_logics",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "general",
       "topic": "literature",
       "priority": "medium",
       "created": "2026-08-18T20:25:41Z",
-      "last_updated": "2026-08-18T20:25:41Z",
+      "last_updated": "2026-08-18T21:28:40Z",
       "title": "Acquire a usable copy of Gabbay, Kurucz, Wolter and Zakharyaschev 2003 (Many-Dimensional Modal Logics)",
       "description": "SCOPE 8 acquisition gap identified by task 457's research and re-confirmed at implementation time: the source is present in the user's Zotero library under item key Kurucz2003, but the stored PDF has a broken/custom font encoding with no usable ToUnicode CMap and is not text-extractable by any available tool (pdftotext yields ~69.5% printable characters, scrambled letters). This is an acquisition/OCR problem, not an index-schema defect -- do NOT attempt to fix by re-running the standard ingest pipeline with LITERATURE_CONVERTER=pymupdf; that path previously produced 2260 chunks of control-character mojibake that passed the quality gate and had to be manually purged from the corpus and FTS index (see task 457's research report for this precedent). Needed: either a cleaner PDF copy (different scan/source) or an OCR pass (e.g. ocrmypdf) that produces usable, non-garbled text, followed by a normal /literature ingest.",
       "artifacts": [],
@@ -1113,7 +1118,8 @@
       "file_scope": [
         "~/Projects/Literature/index.json",
         "specs/literature-index.json"
-      ]
+      ],
+      "session_id": "sess_1787085411_5744ac_460"
     },
     {
       "project_number": 461,

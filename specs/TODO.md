@@ -11,18 +11,17 @@ next_project_number: 462
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,193,231,257,298,413,421,423,424,436,451,455,460 | -- | completeness, decidability, frame-extensions, ... |
-| 2 | 178,219,282,296,422,425,434,461 | 193,231,298,421,423,436,460 | decidability, formula-refactor, dataset-enhancement, ... |
-| 3 | 169,432 | 422,434 | decidability, strong_completeness |
-| 4 | 362,433 | 169,424,432 | decidability, strong_completeness |
-| 5 | 428 | 433 | decidability |
-| 6 | 429 | 428 | decidability |
-| 7 | 410 | 429 | decidability |
-| 8 | 411 | 410 | decidability |
-| 9 | 430 | 411 | decidability |
-| 10 | 412 | 430 | decidability |
-| 11 | 426 | 412 | completeness |
-| 12 | 95,177 | 193,426 | completeness, formula-refactor |
+| 1 | 125,127,128,193,231,257,298,413,421,423,424,434,451,455,460 | -- | completeness, decidability, frame-extensions, ... |
+| 2 | 178,219,282,296,422,425,432,461 | 193,231,298,421,423,434,460 | decidability, formula-refactor, dataset-enhancement, ... |
+| 3 | 169,433 | 422,432 | decidability, strong_completeness |
+| 4 | 362,428 | 169,424,433 | decidability, strong_completeness |
+| 5 | 429 | 428 | decidability |
+| 6 | 410 | 429 | decidability |
+| 7 | 411 | 410 | decidability |
+| 8 | 430 | 411 | decidability |
+| 9 | 412 | 430 | decidability |
+| 10 | 426 | 412 | completeness |
+| 11 | 95,177 | 193,426 | completeness, formula-refactor |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -35,16 +34,15 @@ next_project_number: 462
 
 ### Decidability
 
-436 [IMPLEMENTING] — Resume task 434's implementation plan (specs/434_discharge_mintpa
-  └─ 434 [PARTIAL] — Discharge `MintPaysForTime fc U Tmax`, defined at FormalSystem/Me
-    └─ 432 [PARTIAL] — Discharge `UniverseClosed fc U`, defined at FormalSystem/Metalogi
-      └─ 433 [RESEARCHED] — Discharge `PostBlockingSettles fc`, defined at FormalSystem/Metal
-        └─ 428 [BLOCKED] — Engine totality at a quantified branch budget. Owns obstruction O
-          └─ 429 [NOT STARTED] — Repair the truth-lemma side conditions. Owns obstructions O2 and 
-            └─ 410 [PLANNED] — Track B part 1 for the TM tableau decidability program (parent: t
-              └─ 411 [NOT STARTED] — Track B part 2 for the TM tableau decidability program (parent: t
-                └─ 430 [NOT STARTED] — The semantic lift and the Track A assembly. Owns obstruction O4 o
-                  └─ 412 [NOT STARTED] — Track B finish for the TM tableau decidability program (parent: t
+434 [PARTIAL] — Discharge `MintPaysForTime fc U Tmax`, defined at FormalSystem/Me
+  └─ 432 [PARTIAL] — Discharge `UniverseClosed fc U`, defined at FormalSystem/Metalogi
+    └─ 433 [RESEARCHED] — Discharge `PostBlockingSettles fc`, defined at FormalSystem/Metal
+      └─ 428 [BLOCKED] — Engine totality at a quantified branch budget. Owns obstruction O
+        └─ 429 [NOT STARTED] — Repair the truth-lemma side conditions. Owns obstructions O2 and 
+          └─ 410 [PLANNED] — Track B part 1 for the TM tableau decidability program (parent: t
+            └─ 411 [NOT STARTED] — Track B part 2 for the TM tableau decidability program (parent: t
+              └─ 430 [NOT STARTED] — The semantic lift and the Track A assembly. Owns obstruction O4 o
+                └─ 412 [NOT STARTED] — Track B finish for the TM tableau decidability program (parent: t
 
 ### Formula Refactor
 
@@ -79,7 +77,7 @@ next_project_number: 462
 
 ### Literature
 
-460 [NOT STARTED] — SCOPE 8 acquisition gap identified by task 457's research and re-
+460 [RESEARCHING] — SCOPE 8 acquisition gap identified by task 457's research and re-
   └─ 461 [NOT STARTED] — SCOPE 8 acquisition gap identified by task 457's research and re-
 
 ### Strong Completeness
@@ -110,7 +108,7 @@ next_project_number: 462
 ---
 
 ### 460. Acquire a usable copy of Gabbay, Kurucz, Wolter and Zakharyaschev 2003 (Many-Dimensional Modal Logics)
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: general
 - **Topic**: literature
 - **Dependencies**: Task 459
@@ -376,7 +374,7 @@ Because archived files are never compiled, a broken import here is SILENT -- no 
 
 ### 436. Fourth termination measure component
 - **Effort**: 10-14 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 437
@@ -385,7 +383,9 @@ Because archived files are never compiled, a broken import here is SILENT -- no 
   - [436_fourth_termination_measure_component/reports/01_fourth-measure-component.md]
   - [436_fourth_termination_measure_component/reports/02_spawn-analysis.md]
 - **Plan**: [436_fourth_termination_measure_component/plans/01_self-guard-potential.md]
-- **Summary**: [436_fourth_termination_measure_component/summaries/01_self-guard-potential-summary.md]
+- **Summary**:
+  - [436_fourth_termination_measure_component/summaries/02_self-guard-potential-resumption-summary.md]
+  - [FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean]
 
 **Description**: Resume task 434's implementation plan (specs/434_discharge_mintpaysfortime_residual/plans/01_mintpaysfortime-time-analogue.md) at Phase 7. Before starting, read the full do-not-re-attempt register (MintBound.lean section C9, 16 entries) and in particular entry 14, which records both refuted repair routes for MintPaysForTime: (1) re-indexing mintPotential on freshTimeRules instead of freshLabelRules -- refuted by witnessPresent_eq_false_of_not_freshLabel, whose match has exactly eight arms so the three added columns are permanently false; (2) dropping disjunct 1's cardinality conjunct and relying only on the ordering-rank conjunct -- refuted by splitOrderedRank_lt_of_knownTimes_lt plus mintPaysForTime_rank_repair_false, since splitOrderedRank's base Tmax^2+1 is by construction one more than incompPairs' range so any new known time raises the rank regardless of the pair count. Neither route may be re-attempted. Design a fourth measure component that pays for the three self-guarded minting rules -- untlNeg/snceNeg (guarded by futureOf/pastOf emptiness plus ord.timeCount < 4) and densityRule (guarded by the maximal-unfilled-gap set) -- and that is also preserved across TimeOrdering.identifyTime, which can lower ord.timeCount (the same maxTime-lowering mechanism Phase 6's verdict in the existing plan turns on; see nextTime_reissues_retired_time and reuse_driven_through_engine). Run this task with --lit against the sub-index populated by the literature-curation task, drawing specifically on: caleiro_2013's mosaic-method decidability treatment for combined tense-and-modal logics (sections 6-7, mosaic-based tableau systems and complexity bounds) as a structural analogue for a combined-logic termination measure; venema_2001 section 5's interval-based temporal logic treatment for the density/gap-guarded densityRule component; gerth_1995 and baier_katoen_2008's closure-set LTL tableau termination argument as a model for a measure over an evolving, non-monotonically-changing time set; and massacci_2000's rule-bounding technique. Once a candidate measure is validated, land it in MintBound.lean following the plan's existing Phase 7-8 task lists: define the repaired predicate (e.g. MintPaysForTimeAt, mirroring UniverseClosedAt's naming), prove its direction lemma relative to MintPaysForTime (weakening or strengthening, stated explicitly), confirm it leaks no new hypothesis into the terminus, restate the two seed-level termini at the repaired shape, and discharge the repaired predicate at a concrete instantiation (U = signedUniverse C L). All work must be sorry-free, axiom-free, and additive only (Saturation.lean, Fuel.lean, Tableau.lean remain untouched, and no previously-landed declaration in MintBound.lean is altered). Full lake build must be green at completion, and the new do-not-re-attempt register entries (if any further route is refuted along the way) must be recorded in section C9 following the existing convention.
 

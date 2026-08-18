@@ -1,7 +1,7 @@
 # Implementation Plan: The fourth termination-measure component (`selfGuardPotential`)
 
 - **Task**: 436 - fourth_termination_measure_component
-- **Status**: [IMPLEMENTING] (resumed; Phases 1R-10R closed)
+- **Status**: [COMPLETED]
 - **Effort**: 12 hours
 - **Dependencies**: 435 (literature sub-index curation, [COMPLETED])
 - **Research Inputs**: `specs/436_fourth_termination_measure_component/reports/01_fourth-measure-component.md`
