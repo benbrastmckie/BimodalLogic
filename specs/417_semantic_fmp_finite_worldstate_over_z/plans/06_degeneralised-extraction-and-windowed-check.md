@@ -750,7 +750,7 @@ stratified one. Nothing landed was weakened, and no `Classical.dec` reaches `box
 
 ---
 
-### Phase 12: `check`, `check_correct`, `Decidable`, and regression wiring [NOT STARTED]
+### Phase 12: `check`, `check_correct`, `Decidable`, and regression wiring [IN PROGRESS]
 
 **Goal**: the shipped decision procedure in the windowed shape, plus the module re-export, README
 updates, and the evidence probes wired in as permanent regression guards.
