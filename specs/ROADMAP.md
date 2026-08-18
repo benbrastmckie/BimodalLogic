@@ -18,10 +18,22 @@ inequality), and Until/Since require strictly future/past witnesses.
 **Convention**: `untl(event, guard)` matches Burgess 1982 `U(α, β)` where α=event
 (at witness), β=guard (at intermediates). Migrated by task 107 Phase 9.
 
-**Completeness architecture**: The **Chronicle** path
-(`FormalSystem/Metalogic/BXCanonical/Chronicle/`) is the primary and only
-active path. The BXCanonical path (task 109) is dead code — its ~17 sorries are
-mathematically false under irreflexive semantics and cannot be proved.
+**Completeness architecture (2026-08-17, current; supersedes the "Chronicle is primary, BXCanonical
+is dead code" claim below)**: `FormalSystem/Metalogic/BXCanonical/` is the wired entry point —
+`FormalSystem/Metalogic.lean`'s own module docstring names it so, and
+`FormalSystem/Metalogic/StrongCompleteness.lean` imports
+`FormalSystem.Metalogic.BXCanonical.CompletenessDedekind` directly. Three routes live under it:
+**Chronicle** (`BXCanonical/Chronicle/`, Burgess 1982 chronicle construction) serves the dense
+branch; **WeakCanonical/** (Kamp/Reynolds pipeline) serves the discrete branch; and
+**`BXCanonical/CompletenessDedekind.lean`** (Reynolds 1992 §9 Theorem 7) serves the Dedekind/
+real-line route with no case split. Per `scripts/check-module-invariants.sh` check C2, all four
+flagship theorems are baselined: `BXCanonical.completeness_dense`, `.completeness_discrete`, and
+`.Chronicle.countermodel_dense` are `[propext, Classical.choice, Quot.sound]`-clean (no
+`sorryAx`); `BXCanonical.completeness`'s lone `sorryAx` traces to the single live structural
+sorry check C3 finds, `WeakCanonical.countermodel_discrete` (see `## Sorry Inventory`) — not to
+anything inside BXCanonical itself. The "BXCanonical is dead code" verdict below was the
+2026-05-10 task-109 assessment; it did not anticipate `CompletenessDedekind.lean` and
+`Completeness.lean`, added afterward, which are what make BXCanonical the flagship path today.
 
 **Completeness programme: strong vs weak terminology and per-class targets** (2026-07-27,
 settled; the in-tree authority is the module docstring of
@@ -293,9 +305,18 @@ and GoodStructuresModelSurgery are sorry-free as of 2026-07-07)*:
 - **Phase 4 — Algebraic representation**: Jónsson-Tarski representation theorem for the BAO with binary S/U and unary □ (task 125). Builds on Venema 1993 (Anti-Axioms), leveraging orthodox axiomatizability for ultraproduct closure.
 - **Phase 5 — Publication quality**: Verification audit (task 95), genuine truth_at completeness (task 8).
 
-**Sorry summary (dead code)**: ~17 sorries in the BXCanonical/Bundle/Quasimodel/Filtration pipeline are mathematically false under irreflexive semantics (they assume reflexive G/H). These are bypassed by the Chronicle approach and should be archived.
+**Sorry summary (HISTORICAL, 2026-05/06 — superseded 2026-08-17; see `## Sorry Inventory` below
+for the live, C3-verified count)**: this block and the two tables under it recorded the task-109
+BXCanonical assessment as it stood mid-2026: ~17 sorries in the BXCanonical/Bundle/Quasimodel/
+Filtration pipeline believed mathematically false under irreflexive semantics and bypassed by the
+Chronicle approach. Per `scripts/check-module-invariants.sh` check C3, the live (non-Boneyard)
+tree now has exactly **one** structural sorry — `countermodel_discrete` in
+`FormalSystem/Metalogic/WeakCanonical/Transfer.lean` — and none of it is inside BXCanonical; check
+C2 shows `BXCanonical.completeness_dense`, `.completeness_discrete`, and
+`.Chronicle.countermodel_dense` are all `sorryAx`-free. The tables below are retained as a
+historical record of the 2026-05/06 assessment, not as current state.
 
-BXCanonical sorries (task 109 Phase 1 removed 4 dead-code sorries from CanonicalModel):
+BXCanonical sorries (HISTORICAL, task 109 Phase 1 removed 4 dead-code sorries from CanonicalModel):
 
 | Category | Count | Files | Status |
 |----------|-------|-------|--------|
@@ -305,9 +326,13 @@ BXCanonical sorries (task 109 Phase 1 removed 4 dead-code sorries from Canonical
 | Oracle replacement (qm_bfmcs) | 6 | archived to Boneyard/OracleCoherence.lean | **ARCHIVED** (2026-04-18) |
 | Legacy strict-semantics files | 107 | archived to Boneyard/StrictSemanticsLegacy/ | **DONE** (task 94, 2026-04-12) *(Completed: Task 94)* |
 
-The 5 critical-path sorries in `RootScopedChain.lean` (lines 1065, 1092, 1099, 1107, 1114)
-block `dd_countermodel`, which `Completeness.lean` delegates to for the completeness proof.
-The 18 irreflexive-consequence sorries are artifacts of the BX1 removal (e.g., `bx_le_refl`,
+(HISTORICAL, 2026-05/06) The 5 critical-path sorries were in `RootScopedChain.lean`, which at
+that time `Completeness.lean` delegated to via `dd_countermodel`. That file is no longer imported
+by any live module — both surviving copies are archived, at
+`FormalSystem/Boneyard/DefectDirectedChain/RootScopedChain.lean` and
+`FormalSystem/Boneyard/ScheduleBasedBFMCS/RootScopedChain.lean` — and `Completeness.lean`'s
+current delegation is described in `### Completeness Theorem` below.
+The 18 irreflexive-consequence sorries were artifacts of the BX1 removal (e.g., `bx_le_refl`,
 `g_content_subset_self`, `refl_intro_until_mcs`, `sigma_le_refl`) that need redesign under
 irreflexive semantics.
 
@@ -594,9 +619,15 @@ former reflexive semantics.
 
 ## Active Metalogic Paths
 
-The **Chronicle** path (`Metalogic/BXCanonical/Chronicle/`) is the sole active
-completeness path. The BXCanonical path (task 109, abandoned) is dead code — its
-~17 sorries are mathematically false under irreflexive semantics.
+**(2026-08-17, current; supersedes the "Chronicle is sole active, BXCanonical is dead code" claim
+below)** `FormalSystem/Metalogic/BXCanonical/` is the wired entry point (per
+`FormalSystem/Metalogic.lean`'s module docstring and the direct import in
+`FormalSystem/Metalogic/StrongCompleteness.lean`), with three routes underneath it: the
+**Chronicle** path (`Metalogic/BXCanonical/Chronicle/`) for the dense branch, **WeakCanonical/**
+(Kamp/Reynolds) for the discrete branch, and `BXCanonical/CompletenessDedekind.lean` for the
+Dedekind/real-line route. Check C2 baselines all four flagship theorems as `sorryAx`-free except
+`BXCanonical.completeness`, whose lone `sorryAx` traces to check C3's single live sorry,
+`WeakCanonical.countermodel_discrete` — not to anything the task-109 assessment below flagged.
 
 ### Chronicle Construction (Tasks 107→117→119→121→122)
 
@@ -621,7 +652,13 @@ PointInsertion. The construction lives in `Metalogic/BXCanonical/Chronicle/`
 dead (dead ends #7, #13, #23, #31). The chronicle construction is NOT a dead end -- all
 gaps are engineering problems, not mathematical impossibilities (report 16).
 
-### BXCanonical Path (DEAD CODE — Task 109 Abandoned)
+### Historical: the task-109 BXCanonical abandonment (2026-05-10, superseded)
+
+**Current status (2026-08-17)**: `BXCanonical/` is the live, wired entry point — see the
+"Active Metalogic Paths" note above and `## Sorry Inventory` below. The assessment recorded
+below did not anticipate `BXCanonical/CompletenessDedekind.lean` and `BXCanonical/Completeness.lean`,
+added afterward, which are what make `BXCanonical/` the flagship path today. Retained as a
+historical record, not as current status.
 
 The BXCanonical path flows through `Metalogic/BXCanonical/`. Its ~17 sorries
 assume reflexive G/H semantics (`Gφ → φ`) which is mathematically false under

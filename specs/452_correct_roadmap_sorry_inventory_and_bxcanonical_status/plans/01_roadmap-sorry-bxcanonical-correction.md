@@ -244,7 +244,7 @@ the discrepancy and re-scope that phase rather than writing the plan's number.
 
 ---
 
-### Phase 2: Correct all four BXCanonical dead-code claims [NOT STARTED]
+### Phase 2: Correct all four BXCanonical dead-code claims [COMPLETED]
 
 **Goal**: Remove the false "BXCanonical is dead code with ~17 sorries" verdict from every place it
 appears, so that no reader of any part of the document is told the flagship module is abandoned.
@@ -253,28 +253,28 @@ occurrence set the research found.
 
 **Tasks**:
 
-- [ ] **Occurrence 1 — `## Overview` "Completeness architecture" paragraph** (anchor: `is the primary and only`, ~19-23). Replace with the current three-route architecture stated by
+- [x] **Occurrence 1 — `## Overview` "Completeness architecture" paragraph** (anchor: `is the primary and only`, ~19-23). Replace with the current three-route architecture stated by
       `FormalSystem/Metalogic.lean`'s docstring: `BXCanonical/` is the wired entry point;
       `Chronicle/` is a subdirectory of it serving the dense branch; `WeakCanonical/` (Kamp-Reynolds)
       serves the discrete branch; `BXCanonical/CompletenessDedekind.lean` serves the Dedekind/real-line
       route with no case split. Cite C2's four-theorem baseline.
-- [ ] **Occurrence 2 — `## Overview` "Sorry summary (dead code)" block** (anchor:
+- [x] **Occurrence 2 — `## Overview` "Sorry summary (dead code)" block** (anchor:
       `**Sorry summary (dead code)**`, ~296). This block and the 19-sorry table immediately under it
       (`| **Total BXCanonical** | **19** | 7 files | |`) are **not** covered by the `HISTORICAL`
       label at ~271, which governs the earlier discrete-branch bullet lists. Either relabel this
       block explicitly historical in the same style as the ~271 label, or replace it with the C3
       one-sorry statement. Also correct the trailing paragraph asserting the 5 critical-path
       `RootScopedChain.lean` sorries at lines 1065/1092/1099/1107/1114 "block `dd_countermodel`".
-- [ ] **Occurrence 3 — `## Active Metalogic Paths` intro** (anchor: `is the sole active`, ~597-599).
+- [x] **Occurrence 3 — `## Active Metalogic Paths` intro** (anchor: `is the sole active`, ~597-599).
       Same correction as occurrence 1, stated for the section it introduces.
-- [ ] **Occurrence 4 — `### BXCanonical Path (DEAD CODE — Task 109 Abandoned)`** (anchor:
+- [x] **Occurrence 4 — `### BXCanonical Path (DEAD CODE — Task 109 Abandoned)`** (anchor:
       `BXCanonical Path (DEAD CODE`, ~624-630). Rewrite the heading so it cannot read as current
       status. Retain the task-109 abandonment record only under an unmistakably historical heading
       (e.g. `### Historical: the task-109 BXCanonical abandonment (2026-05-10, superseded)`), and
       state the current status alongside it: BXCanonical is the live, wired entry point; the
       subsequently-added `CompletenessDedekind.lean` and `Completeness.lean` routes are what the
       2026-05-10 assessment did not anticipate.
-- [ ] Verify no fifth occurrence was introduced or missed: re-run the occurrence grep from Phase 1
+- [x] Verify no fifth occurrence was introduced or missed: re-run the occurrence grep from Phase 1
       and confirm every remaining hit is inside an explicitly historical block.
 
 **Timing**: 60 minutes
