@@ -101,12 +101,12 @@ next_project_number: 457
 
 ### Typst Documentation, Lean Source Cross Referencing
 
-456 [PLANNED] — Replace the paper-citation footnote apparatus in `typst/FormalFou
+456 [IMPLEMENTING] — Replace the paper-citation footnote apparatus in `typst/FormalFou
 
 ## Tasks
 
 ### 456. Replace paper-citation footnotes with #leansrc Lean references
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: typst
 - **Topic**: typst documentation, Lean source cross-referencing
 - **Dependencies**: None

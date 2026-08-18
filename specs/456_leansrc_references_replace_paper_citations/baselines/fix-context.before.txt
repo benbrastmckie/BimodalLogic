@@ -1,0 +1,69 @@
+
+#lemma("Nullity")[$w arrow.r.double.long_(0) w$ for every world state $w$ of every frame.]#footnote[`lem:nullity`. @brastmckie2026possibleworlds]
+// FIX:
+// #proof[
+//   *Seriality* at $x = 0$ gives $u$ with $w arrow.r.double.long_(0) u$. Since $|0| < x$ for every
+-
+]#footnote[`thm:extension`. @brastmckie2026possibleworlds]
+// #proof[
+//   // FIX: this proof is inadequate and should be fixed by including the lemmas it needs to cite, drawing on /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex where these results are established
+//   The partial histories extending $tau$ are ordered by extension, and every chain is bounded above
+//   by its union, which is again a partial history since any two of its times already lie in a common
+-
+]#footnote[`cor:occurrence`. @brastmckie2026possibleworlds]
+
+// FIX:
+// The Step Lemma is the sole application site of *Spherical* in the paper, and Extension is the sole
+// consumer of the Step Lemma; every appeal to *Spherical* in the semantics passes through this one
+-
+// localization is what makes *Spherical* the identified obstruction of @sec:representation.
+
+// FIX:
+// The cones are a basis for a topology on world states, and that topology is separated.
+
+#definition("Task Topology")[
+  // FIX: this needs to be expanded to be easier to read, including indented definitions here as in the definitions above
+  For a frame $#taskframe$, let $B_(#taskframe) := {(w)_x : w in #worldstate, x in D, x > 0}$ and
+  let $cal(O)_(#taskframe)$ be the closure of $B_(#taskframe)$ under arbitrary union and finite
+-
+
+#theorem("Separation")[$cal(T)_(#taskframe)$ is T1, and hence R0, for every frame $#taskframe$.]#footnote[`app:topology-t1`, `app:topology-r0`. @brastmckie2026possibleworlds]
+// FIX: 
+// #proof[
+//   ${u} subset.eq overline({u})$ is immediate. Conversely let $w in overline({u})$. By Nullity
+-
+]#footnote[`def:BL-semantics`, `def:BLplus-semantics`. @brastmckie2026possibleworlds Evaluating at a possible world paired with a time, with truth at that time mediated by the world state occupied there, is an instance of Scott's proposal @scott1970advice that the index of evaluation be a structured point of reference and not a bare world.]
+
+// FIX:
+// The semantic clause for $square.stroked$ quantifies over all possible worlds of the frame.
+// It is not a relational modality with an accessibility relation to be tuned: the frame fixes $H_(#taskframe)$, and $square.stroked$ ranges over that set entire.
+-
+]#footnote[`def:frame-validity`, `def:logical-consequence`. @brastmckie2026possibleworlds]
+
+// FIX:
+// By Occurrence $H_(#taskframe)$ is never empty, so frame validity is never vacuous and
+// $#taskframe #notsatisfies bot$ for every frame. Fixing $H_(#taskframe)$ with the frame does not
+-
+
+#definition("S5")[
+  // FIX: indent the axioms and formalize all of them to improve readability
+  *S5* is the smallest extension of classical propositional logic closed under MK
+  ($square.stroked(phi.alt arrow.r psi) arrow.r (square.stroked phi.alt arrow.r square.stroked psi)$),
+-
+
+#definition("BX")[
+  // FIX: this is unreadable and needs to be expanded so this document is self-contained rather than requiring the reader to look these up elsewhere
+  The *Base Burgess--Xu Tense Logic*: the rules TN (temporal necessitation) and TD (the rule
+  swapping $#since$ and $#until$ throughout a theorem); the seriality, linearity, and connectedness
+-
+]#footnote[`def:BX`. @brastmckie2026possibleworlds Seventeen named keys. The past direction of each axiom is derived from the future direction by TD, not postulated.]
+
+// FIX: everything in the remainder of this section is inadequate and needs to do a much better job of presenting what is carefully presented in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex to provide a systematic account of the various proof systems, clearly defining each.
+$op("TM")^+$, the base logic for $#BLplus$, is $"S5" + "BX" + "MF"$, where MF is
+$square.stroked phi.alt arrow.r square.stroked #allfuture phi.alt$, the sole bimodal-interaction
+-
+= Completeness and Decidability <sec:key-theorems>
+
+// FIX: some introduction would be good but this is not it. Avoid platitudes, providing a brief overview of what the section covers.
+// #remark[
+//   Soundness fixes the direction from proof to truth and is settled for every system named above.

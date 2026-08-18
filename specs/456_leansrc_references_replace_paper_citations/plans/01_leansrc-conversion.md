@@ -1,7 +1,7 @@
 # Implementation Plan: Task #456
 
 - **Task**: 456 - Replace paper-citation footnotes with `#leansrc` Lean references
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 7 hours
 - **Dependencies**: None (sibling tasks 446, 447, 452, 453 touch the same file but own disjoint territory)
 - **Research Inputs**: `specs/456_leansrc_references_replace_paper_citations/reports/01_leansrc-references.md`
@@ -254,7 +254,7 @@ keeps the incremental snapshot chain (`baselines/step-N.typ`) linear and reviewa
 
 ---
 
-### Phase 1: Baseline capture and territory snapshot [NOT STARTED]
+### Phase 1: Baseline capture and territory snapshot [COMPLETED]
 
 **Goal**: Establish every "before" artifact the later phases and the final gates compare against.
 No edit to `typst/FormalFoundations.typ` in this phase.

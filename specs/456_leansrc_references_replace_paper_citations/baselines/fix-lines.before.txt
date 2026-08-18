@@ -1,0 +1,12 @@
+214:// FIX:
+244://   // FIX: this proof is inadequate and should be fixed by including the lemmas it needs to cite, drawing on /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex where these results are established
+257:// FIX:
+263:// FIX:
+267:  // FIX: this needs to be expanded to be easier to read, including indented definitions here as in the definitions above
+277:// FIX: 
+323:// FIX:
+342:// FIX:
+353:  // FIX: indent the axioms and formalize all of them to improve readability
+362:  // FIX: this is unreadable and needs to be expanded so this document is self-contained rather than requiring the reader to look these up elsewhere
+369:// FIX: everything in the remainder of this section is inadequate and needs to do a much better job of presenting what is carefully presented in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex to provide a systematic account of the various proof systems, clearly defining each.
+393:// FIX: some introduction would be good but this is not it. Avoid platitudes, providing a brief overview of what the section covers.
