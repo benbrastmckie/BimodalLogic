@@ -1,7 +1,7 @@
 # Implementation Plan: Restore 39 commented-out footnotes in FormalFoundations.typ
 
 - **Task**: 445 - Restore or retire 39 commented-out footnotes in FormalFoundations.typ
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 1.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/445_restore_commented_footnotes_formalfoundations/reports/01_restore-commented-footnotes.md

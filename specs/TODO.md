@@ -11,9 +11,9 @@ next_project_number: 456
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,193,231,257,298,413,421,423,424,437,445,451,455 | -- | completeness, decidability, frame-extensions, ... |
-| 2 | 178,219,282,296,422,425,436,446 | 193,231,298,421,423,437,445 | decidability, formula-refactor, publication-quality, ... |
-| 3 | 169,434,447 | 422,436,446 | decidability, publication-quality, strong_completeness |
+| 1 | 125,127,128,193,231,257,298,413,421,423,424,437,446,451,455 | -- | completeness, decidability, frame-extensions, ... |
+| 2 | 178,219,282,296,422,425,436,447 | 193,231,298,421,423,437,446 | decidability, formula-refactor, publication-quality, ... |
+| 3 | 169,434 | 422,436 | decidability, strong_completeness |
 | 4 | 362,432 | 169,424,434 | decidability, strong_completeness |
 | 5 | 433 | 432 | decidability |
 | 6 | 428 | 433 | decidability |
@@ -64,9 +64,8 @@ next_project_number: 456
 
 ### Publication Quality
 
-445 [IMPLEMENTING] — Address 39 FIX: tags in `typst/FormalFoundations.typ`, each of th
-  └─ 446 [NOT STARTED] — Address 6 bare `// FIX:` tags in `typst/FormalFoundations.typ`, e
-    └─ 447 [RESEARCHED] — Address 6 substantive FIX: directives in `typst/FormalFoundations
+446 [NOT STARTED] — Address 6 bare `// FIX:` tags in `typst/FormalFoundations.typ`, e
+  └─ 447 [RESEARCHED] — Address 6 substantive FIX: directives in `typst/FormalFoundations
 
 ### Automation
 
@@ -739,7 +738,7 @@ For each, decide restore / rewrite / delete, apply, and remove the FIX: tag.
 ---
 
 ### 445. Restore or retire 39 commented-out footnotes in FormalFoundations.typ
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: logic
 - **Topic**: publication-quality
 - **Dependencies**: None
