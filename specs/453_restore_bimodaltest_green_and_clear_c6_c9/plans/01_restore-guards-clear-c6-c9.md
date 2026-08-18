@@ -220,21 +220,21 @@ exclusion.
 
 ---
 
-### Phase 3: RegionGateProbe documentation settlement and row-C gate confirmation [NOT STARTED]
+### Phase 3: RegionGateProbe documentation settlement and row-C gate confirmation [COMPLETED]
 
 **Goal**: `Tests/BimodalTest/RegionGateProbe.lean` states the correct measured verdict, and the
 record carries the one-sentence confirmation that row C's gate loss is expected behaviour, not a
 defect.
 
 **Tasks**:
-- [ ] Rewrite the module docstring's measured-verdict paragraph at 63-66. "**All nine rows report
+- [x] Rewrite the module docstring's measured-verdict paragraph at 63-66. "**All nine rows report
       `gate=true`**" is false: rows A, B, H already reported `gate=false` and row C now joins them.
       The accurate replacement, per report §5.3.3, is the uniform rule: **every two-world row
       (A `:279`, B `:290`, C `:298`, H `:329`) reports `gate=false` with world 1's candidate vector
       all-zero; every single-world row (D, E, F, G, I) reports `gate=true`.** Also correct the
       stale per-row sizes in the same paragraph (65-66): row A is now `|T|=4` with world 1
       all-zero, and row B likewise.
-- [ ] Add the row-C confirmation sentence (task deliverable (c)) to the record. It must say that
+- [x] Add the row-C confirmation sentence (task deliverable (c)) to the record. It must say that
       row C joined rows A/B/H in pinning `gate=false` for the documented over-approximation reason:
       the module's own "Two deliberate over-approximations" section (53-59) states the gate is
       **harder** to pass than the induction needs, so "failing it would not by itself refute
@@ -242,18 +242,18 @@ defect.
       `T(Gφ)`/`T(Hφ)` reached a freshly minted world, and with them gone a minted world receives
       none. Note also that the probe's designed cross-check still holds — `gate` (probe-computed)
       and `check` (library-computed) moved to `false` together.
-- [ ] Rewrite the row C narrative at 292-294 ("The one moved two-world row that keeps its gate ...
+- [x] Rewrite the row C narrative at 292-294 ("The one moved two-world row that keeps its gate ...
       `|T|` shrinks `10 -> 8` ... world 1's per-region count falls `3 -> 1` rather than to `0`") —
       every clause is now contradicted: `|T|=6`, world 1's vector is all-zero, gate lost.
-- [ ] Rewrite the row H narrative at 325-327 ("Unlike row C, `|T|` is unmoved at `10` here — the
+- [x] Rewrite the row H narrative at 325-327 ("Unlike row C, `|T|` is unmoved at `10` here — the
       `◇(G q)` shape still forces the same density mints"): H is now `|T|=6` and C and H generate
       identical strings.
-- [ ] Rewrite the `**EXCLUDED — left pinned and unedited**` subsection (block 75-125, exclusion
+- [x] Rewrite the `**EXCLUDED — left pinned and unedited**` subsection (block 75-125, exclusion
       list 110-124) into a settlement record carrying the same attribution as Phase 2 (2026-08-10/11
       engine window; not `trivialEventWitnessed`; values stable since 2026-08-11), plus the row-C
       confirmation above.
-- [ ] Fix the duplicated-sentence copy-paste defect at line 108.
-- [ ] Replace line-number citations in the rewritten block with row letters.
+- [x] Fix the duplicated-sentence copy-paste defect at line 108.
+- [x] Replace line-number citations in the rewritten block with row letters.
 
 **Timing**: 0.75 hours
 

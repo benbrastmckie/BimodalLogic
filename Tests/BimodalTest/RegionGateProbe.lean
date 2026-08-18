@@ -60,11 +60,18 @@ informative and failing it would not by itself refute anything:
 
 ## The measured verdict
 
-All nine rows report `gate=true`, and the gate is not vacuously true: `regionGate_refutable`
-exhibits a two-label branch on which it is `false`, and even on the passing rows most labels
-are excluded (row A has `|T| = 7` and three eligible labels per region; row B's second world
-falls to one). Row E (`Gp → p`) is the shape that discriminated report 07's stationarity
-probe and it discriminates here too — its interior regions admit two labels, not three.
+The nine rows split cleanly by world count. **Every two-world row (A, B, C, H) reports
+`gate=false`**, with world 1's candidate vector all-zero — A and B at `|T|=4`, C and H at `|T|=6`,
+the latter two generating byte-identical strings. **Every single-world row (D, E, F, G, I) reports
+`gate=true`.** That split is the finding: the gate turns on whether a freshly minted world receives
+a temporal universal, and since the unsound cross-world temporal copies were removed, no minted
+world does. See the Re-baseline record below for why row C joining the `gate=false` group is
+expected rather than a defect.
+
+On the single-world rows the gate is not vacuously true: `regionGate_refutable` exhibits a
+two-label branch on which it is `false`, and even on the passing rows most labels are excluded.
+Row E (`Gp → p`) is the shape that discriminated report 07's stationarity probe and it
+discriminates here too — its interior regions admit two labels, not three.
 
 ## Cost
 
@@ -105,23 +112,63 @@ three files (`CountermodelExtraction.lean`, `Verified/Bridge/TemporalSaturation.
 corroborated directly in `TableauConformance.lean`, whose P1 and P2 values are identical on every
 row.
 
-**Re-baselined in this file** (guard-attributed): 2 row(s) at line(s) 280, 291 — each carrying its own `RE-BASELINED (guard)` note with the old and new value.— each carrying its own `RE-BASELINED (guard)` note with the old and new value.
+**Re-baselined in this file** (guard-attributed): rows A and B — each carrying its own
+`RE-BASELINED (guard)` note with the old and new value.
 
-**EXCLUDED — left pinned and unedited**: 2 row(s) at line(s) 299, 330.
-These are members of the ten pre-existing, separately-declined mismatches, identified at
-row level for the first time by the P0 measurement above. For each, the pinned value, the
-pre-guard (P0) value, and the current (P2) value are three *different* values: the row was already
-stale before the guard **and** the guard moved it again. Correcting it here would silently fold a
-separately-owned engine change into this refactor's re-baseline. It stays pinned:
+**SETTLED — re-recorded from the generated values**: 2 rows, C and H (both `.Dense`).
 
-* line 299
-  - pinned: `info: "OPEN |W|=2 |T|=8 total=true gate=true check=true cands=[[3, 3, 3, 3, 3, 3, 3, 3, 3], [1, 1, 1, 1, 1, 1, 1, 1, 1]]"`
+Rows C and H were members of the ten pre-existing, separately-declined mismatches, identified at
+row level for the first time by the P0 measurement above: for each, the pinned value, the pre-guard
+(P0) value and the current (P2) value were three *different* values, so the row was already stale
+before the guard **and** the guard moved it again. Both were left pinned for as long as
+re-recording them would have folded a separately-owned engine change into this refactor's
+re-baseline. That is no longer a risk, because the attribution below is stated rather than
+absorbed, so both are now re-recorded:
+
+* row C — `probe (.imp (andF (.box p) (dia q)) r) 200 .Dense`
+  - pinned, before this settlement: `info: "OPEN |W|=2 |T|=8 total=true gate=true check=true cands=[[3, 3, 3, 3, 3, 3, 3, 3, 3], [1, 1, 1, 1, 1, 1, 1, 1, 1]]"`
   - P0 pre-guard: `info: "OPEN |W|=2 |T|=10 total=true gate=false check=false cands=[[3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]"`
-  - P2 current: `info: "OPEN |W|=2 |T|=6 total=true gate=false check=false cands=[[3, 3, 3, 3, 3, 3, 3], [0, 0, 0, 0, 0, 0, 0]]"`
-* line 330
-  - pinned: `info: "OPEN |W|=2 |T|=10 total=true gate=false check=false cands=[[3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]"`
+  - recorded now: `info: "OPEN |W|=2 |T|=6 total=true gate=false check=false cands=[[3, 3, 3, 3, 3, 3, 3], [0, 0, 0, 0, 0, 0, 0]]"`
+* row H — `probe (.imp (andF (.box p) (dia (.allFuture q))) r) 200 .Dense`
+  - pinned, before this settlement: `info: "OPEN |W|=2 |T|=10 total=true gate=false check=false cands=[[3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]"`
   - P0 pre-guard: `info: "OPEN |W|=2 |T|=9 total=true gate=false check=false cands=[[3, 3, 3, 3, 3, 3, 3, 3, 3, 3], [1, 1, 1, 0, 0, 0, 0, 0, 0, 0]]"`
-  - P2 current: `info: "OPEN |W|=2 |T|=6 total=true gate=false check=false cands=[[3, 3, 3, 3, 3, 3, 3], [0, 0, 0, 0, 0, 0, 0]]"`
+  - recorded now: `info: "OPEN |W|=2 |T|=6 total=true gate=false check=false cands=[[3, 3, 3, 3, 3, 3, 3], [0, 0, 0, 0, 0, 0, 0]]"`
+
+Rows C and H now generate the *same* string. That is a measurement, not a copy-paste error: under
+`.Dense` the `◇(G q)` shape no longer forces mints that `◇q` does not.
+
+**Attribution.** Both moves belong to the 2026-08-10/11 engine window — the semantics refactor
+together with the tableau-engine work that rewrote `Decidability/Tableau.lean` and
+`Decidability/Saturation.lean` and added `Verified/Termination/MintBound.lean`. They are **not**
+owned by `trivialEventWitnessed`, which is the separately-owned change the original exclusion
+existed to protect: the guard's contribution to these rows is the P0 → pinned step, not the
+pinned → current one. Re-recording here therefore does not absorb the guard's move into a later
+attribution.
+
+**Stability.** The two `P2 current` values measured on 2026-08-11 and recorded above are
+byte-identical to what Lean generates today. Zero drift across that window, so this settles
+recorded debt against a stable measurement rather than baselining against a moving one.
+
+**Row C's gate loss is expected behaviour, not a defect.** Four things establish that, and none of
+them is new:
+
+1. The gate is a *declared* over-approximation. "Two deliberate over-approximations" above states
+   it is made **harder** to pass than the induction will need, "so passing it is informative and
+   failing it would not by itself refute anything". Row C failing sits inside the module's own
+   declared tolerance.
+2. The cause is already documented and already pinned by three sibling rows. The unsound
+   cross-world temporal copies were the only route by which a `T(Gφ)`/`T(Hφ)` reached a freshly
+   minted world; with them gone a minted world receives none. Rows A, B and H — every other
+   two-world row here — already pinned `gate=false` with world 1 all-zero for exactly that reason.
+   Row C was the last two-world holdout and has simply joined the group its siblings occupy.
+3. The resulting rule is uniform and checkable: every two-world row (A, B, C, H) now reports
+   `gate=false` with world 1 all-zero, and every single-world row (D, E, F, G, I) reports
+   `gate=true`. That uniformity is a better statement of the finding than "one row keeps its gate"
+   ever was.
+4. The probe's designed cross-check still holds. `gate` is probe-computed and `check` is
+   library-computed; agreement between them is the invariant, and the shared value is only the
+   measurement. On row C both moved to `false` together, so the self-consistency this module exists
+   to measure is unbroken.
 -/
 
 namespace BimodalTest.RegionGateProbe
@@ -291,10 +338,11 @@ consequence. -/
 #guard_msgs in
 #eval probe (.imp (andF (.box p) (dia (.allFuture q))) r)
 
--- C. The same shape under `.Dense`, where the density rules mint further times. The one moved
--- two-world row that keeps its gate: `|T|` shrinks `10 → 8` (two times the removed copies used
--- to force are no longer minted), and world 1's per-region count falls `3 → 1` rather than to
--- `0`, so an eligible label survives everywhere. Was `|T|=10` with both vectors all-`3`.
+-- C. The same shape under `.Dense`, where the density rules mint further times. `|T|` is now `6`
+-- and world 1's per-region count falls all the way to `0`, so the gate goes with it: this row has
+-- joined A, B and H, and every two-world row in the file now reports `gate=false`. C and H
+-- generate identical strings. Was `|T|=10` with both vectors all-`3`, then `|T|=8` with world 1
+-- all-`1` and the gate still passing. See the Re-baseline record above for why this is expected.
 /-- info: "OPEN |W|=2 |T|=6 total=true gate=false check=false cands=[[3, 3, 3, 3, 3, 3, 3], [0, 0, 0, 0, 0, 0, 0]]" -/
 #guard_msgs in
 #eval probe (.imp (andF (.box p) (dia q)) r) 200 .Dense
@@ -323,8 +371,9 @@ consequence. -/
 #eval probe (.imp (.allFuture p) p) 200 .Dense
 
 -- H. Row B under `.Dense`. The single-candidate stretch was the deleted copy's `T(G q)` biting;
--- with the copy gone world 1 has no eligible label at any rank. Unlike row C, `|T|` is unmoved
--- at `10` here — the `◇(G q)` shape still forces the same density mints.
+-- with the copy gone world 1 has no eligible label at any rank. `|T|` is now `6`, the same as row
+-- C, and the two rows generate identical strings — the `◇(G q)` shape no longer forces density
+-- mints that `◇q` does not.
 -- Was `gate=true check=true` with world 1's vector `[3, 3, 3, 3, 1, 1, 1, 1, 1, 1, 1]`.
 /-- info: "OPEN |W|=2 |T|=6 total=true gate=false check=false cands=[[3, 3, 3, 3, 3, 3, 3], [0, 0, 0, 0, 0, 0, 0]]" -/
 #guard_msgs in
