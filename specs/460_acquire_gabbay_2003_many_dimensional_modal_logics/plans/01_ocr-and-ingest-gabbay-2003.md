@@ -1,7 +1,7 @@
 # Implementation Plan: Task #460
 
 - **Task**: 460 - Acquire a usable copy of Gabbay, Kurucz, Wolter and Zakharyaschev 2003 (Many-Dimensional Modal Logics)
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 6 hours
 - **Dependencies**: Task 459 (COMPLETED)
 - **Research Inputs**: specs/460_acquire_gabbay_2003_many_dimensional_modal_logics/reports/01_acquire-gabbay-2003-copy.md
@@ -141,34 +141,40 @@ a gate on the next, and Phase 4 in particular is a hard blocker on Phase 5.
 
 ---
 
-### Phase 1: Baseline capture and immutability preconditions [NOT STARTED]
+### Phase 1: Baseline capture and immutability preconditions [COMPLETED]
 
 **Goal**: Record every pre-task value that later phases assert against, and establish the
 witnesses that prove the Zotero original and the two pre-existing dirty trees were untouched.
 
 **Tasks**:
-- [ ] Create the working directory `~/Documents/literature-staging/gabbay_2003/` (outside Zotero
-      storage and outside `~/Projects/Literature`, so neither tree is perturbed).
-- [ ] Record `sha256sum` and `pdfinfo` page count of the Zotero original into
+- [x] Create the working directory `~/Documents/literature-staging/gabbay_2003/` (outside Zotero
+      storage and outside `~/Projects/Literature`, so neither tree is perturbed). *(completed)*
+- [x] Record `sha256sum` and `pdfinfo` page count of the Zotero original into
       `~/Documents/literature-staging/gabbay_2003/baseline.txt`. This sha256 is the immutability
-      witness re-checked in Phases 3 and 7.
-- [ ] Record corpus baselines into the same file: `jq '.entries | length'
+      witness re-checked in Phases 3 and 7. *(completed: sha256=6b03d3f9...557794b, 742 pages confirmed)*
+- [x] Record corpus baselines into the same file: `jq '.entries | length'
       ~/Projects/Literature/index.json` (expected 361), and row counts for `chunks_data` and
-      `chunks_fts` from `~/Projects/Literature/.literature.db`.
-- [ ] Confirm no colliding doc_id: `jq -r '.entries[].doc_id' ~/Projects/Literature/index.json |
+      `chunks_fts` from `~/Projects/Literature/.literature.db`. *(completed: 361 entries, 17736/17736 rows, matches expectation)*
+- [x] Confirm no colliding doc_id: `jq -r '.entries[].doc_id' ~/Projects/Literature/index.json |
       grep -i 'many.\?dimensional\|kurucz'` returns only `caleiro_2013*` (a different work). If it
       returns anything else, STOP and re-plan — ingest would `rm -rf` an existing doc directory.
-- [ ] Snapshot `git -C ~/Projects/Literature status --porcelain` to
+      *(completed: grep returned zero matches, not even caleiro_2013 -- stronger than the plan's
+      expectation but confirms the same safety property: no colliding doc_id)*
+- [x] Snapshot `git -C ~/Projects/Literature status --porcelain` to
       `baseline-literature-porcelain.txt` (expected 34 lines at plan time) — the reference for
-      Phase 7's "only expected additions" check.
-- [ ] Snapshot this repo's pre-existing uncommitted diff: `git diff specs/literature-index.json >
+      Phase 7's "only expected additions" check. *(completed: 34 lines, matches exactly)*
+- [x] Snapshot this repo's pre-existing uncommitted diff: `git diff specs/literature-index.json >
       baseline-subindex.diff` (expected 41 insertions). Do NOT commit, stash, or revert it.
-- [ ] Re-verify tooling with `ocrmypdf --version`, `tesseract --version`, `tesseract --list-langs |
+      *(completed: 41 insertions confirmed via git diff --stat)*
+- [x] Re-verify tooling with `ocrmypdf --version`, `tesseract --version`, `tesseract --list-langs |
       grep -x eng`, `python3 -c 'import fitz; print(fitz.__doc__)'`. Record versions.
-- [ ] Compute and record the doc_id the chosen output filename will produce, by running the same
+      *(completed: ocrmypdf 17.4.2, tesseract 5.5.2 with eng, PyMuPDF 1.27.2.3, all present)*
+- [x] Compute and record the doc_id the chosen output filename will produce, by running the same
       derivation ingest uses: `echo "<basename-without-extension>" | tr '[:upper:]' '[:lower:]' |
       tr ' ' '_' | tr -cs '[:alnum:]_.-' '_'`. Target filename:
       `gabbay_kurucz_wolter_zakharyaschev_2003_many_dimensional_modal_logics.pdf`.
+      *(completed: derived doc_id gabbay_kurucz_wolter_zakharyaschev_2003_many_dimensional_modal_logics,
+      confirmed against literature-ingest.sh's actual derivation logic including trailing-underscore strip)*
 
 **Timing**: 0.5 hours
 
