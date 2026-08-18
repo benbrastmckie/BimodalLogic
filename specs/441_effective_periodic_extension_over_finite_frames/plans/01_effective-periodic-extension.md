@@ -1,7 +1,7 @@
 # Implementation Plan: Effective Periodic Extension over Finite ℤ-Frames
 
 - **Task**: 441 - effective_periodic_extension_over_finite_frames
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 16 hours
 - **Dependencies**: None blocking. Coordinates with task 417 (concurrently `[IMPLEMENTING]`) — see "Concurrency Contract with Task 417" below.
 - **Research Inputs**: `specs/441_effective_periodic_extension_over_finite_frames/reports/01_effective-periodic-extension.md`
@@ -344,30 +344,59 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: `Extend.lean` — origin offset and placement [NOT STARTED]
+### Phase 1: `Extend.lean` — origin offset and placement [COMPLETED]
 
 **Goal**: A new module giving a `BiLasso` an origin, so a window at arbitrary absolute times on ℤ
 is representable, with the decoding proved to be a step path and to land in `H_F`.
 
 **Tasks**:
-- [ ] Run the reuse-if-landed check from the concurrency contract (`ls` on the `BiLasso/`
+- [x] Run the reuse-if-landed check from the concurrency contract (`ls` on the `BiLasso/`
       directory plus the `grep` for existing lasso/periodic declarations). Record the outcome and
       the resulting decision (reuse `Periodic.lean` vs. proceed without it) in the phase notes.
-- [ ] Read `FormalSystem/Metalogic/Decidability/BiLasso/Basic.lean` in full before writing anything.
-- [ ] Create `FormalSystem/Metalogic/Decidability/BiLasso/Extend.lean` with a module docstring
+      *(outcome: `Periodic.lean` HAS landed; decision recorded in the Phase 1 note below — not
+      importable for this phase's purpose, no duplication introduced)*
+- [x] Read `FormalSystem/Metalogic/Decidability/BiLasso/Basic.lean` in full before writing anything.
+- [x] Create `FormalSystem/Metalogic/Decidability/BiLasso/Extend.lean` with a module docstring
       stating that it is additive over the frozen `Basic.lean` and why the origin field exists
       (`unrollOf` pins `mid` to `[0, |mid|)`; a window at negative times is otherwise
       unrepresentable).
-- [ ] `structure PlacedBiLasso (P : IntPresentation) where lasso : BiLasso P; origin : ℤ`.
-- [ ] `def PlacedBiLasso.unroll (L : PlacedBiLasso P) (t : ℤ) : Fin P.card := L.lasso.unroll (t - L.origin)`.
-- [ ] `theorem isStepPath_shift` — transcribe the spike verbatim (D-4).
-- [ ] `theorem PlacedBiLasso.unroll_isStepPath` via `isStepPath_shift` and
+- [x] `structure PlacedBiLasso (P : IntPresentation) where lasso : BiLasso P; origin : ℤ`.
+- [x] `def PlacedBiLasso.unroll (L : PlacedBiLasso P) (t : ℤ) : Fin P.card := L.lasso.unroll (t - L.origin)`.
+- [x] `theorem isStepPath_shift` — transcribe the spike verbatim (D-4).
+- [x] `theorem PlacedBiLasso.unroll_isStepPath` via `isStepPath_shift` and
       `BiLasso.unroll_isStepPath`.
-- [ ] `def PlacedBiLasso.toHF` via `TaskFrame.HFofStepPath`.
-- [ ] Restate both periodicity lemmas at the offset: `PlacedBiLasso.unroll_sub_back_length`
+- [x] `def PlacedBiLasso.toHF` via `TaskFrame.HFofStepPath`.
+- [x] Restate both periodicity lemmas at the offset: `PlacedBiLasso.unroll_sub_back_length`
       (thresholded at `t < L.origin`) and `PlacedBiLasso.unroll_add_fwd_length` (thresholded at
       `L.origin + |mid| ≤ t`).
-- [ ] `#print axioms` on `isStepPath_shift`; confirm it is `[propext, Quot.sound]` and record it.
+- [x] `#print axioms` on `isStepPath_shift`; confirm it is `[propext, Quot.sound]` and record it.
+      *(measured: `[propext, Quot.sound]`. `PlacedBiLasso.unroll_isStepPath` measures
+      `[propext, Classical.choice, Quot.sound]`, inherited from `BiLasso.unroll_isStepPath` —
+      D-5 source 2, expected.)*
+
+#### Phase 1 Note — reuse-if-landed outcome
+
+`ls FormalSystem/Metalogic/Decidability/BiLasso/` shows eight modules landed by task 417 since
+this plan was written, `Periodic.lean` among them. **Decision: do not import it here, and no
+duplication is thereby incurred.** `Periodic.lean` supplies `cyc` / `unrollOf` and the two
+periodicity lemmas at an arbitrary `[Inhabited α]`, but `BiLasso`'s `coherent` field and
+`BiLasso.unroll` are stated against `Basic.lean`'s own `Fin P.card`-specialised copies, not
+against the generic ones. Everything this phase needs — `unroll_sub_back_length`,
+`unroll_add_fwd_length`, `unroll_isStepPath` — is therefore consumed **from `Basic.lean`
+directly**, and no arithmetic is restated here at all: `Extend.lean` adds only the shift, and
+routes every periodicity claim through `Basic.lean`'s. `Periodic.lean`'s own docstring records the
+Basic/Periodic unification as a follow-up owned by whichever task introduces a shared abstraction;
+this task does not introduce one, so that follow-up is unaffected.
+
+**Scope Hypothesis check**: asserted "exactly one new file, no more than seven declarations".
+Actual: one new file, **nine** declarations — the seven planned plus `PlacedBiLasso.unroll_def`
+and `PlacedBiLasso.unroll_mid`. Both are rewriting conveniences consumed by later phases
+(`unroll_mid` is what Phase 6's agreement lemma reads the window through); recorded here rather
+than spilled forward, as the Scope Hypothesis directs.
+
+**Manifest**: `FormalSystem.Metalogic.Decidability.BiLasso.Extend` added to
+`scripts/module-invariants-manifest.txt`, holding invariant C6 at its baseline count — the new
+module is unreachable from every Lake target root, exactly as 417's eight are.
 
 **Timing**: 1.5 hours
 
