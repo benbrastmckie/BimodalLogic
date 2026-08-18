@@ -693,7 +693,7 @@ have dropped.)*
 
 ---
 
-### Phase 11: The box oracle by modal-depth stratification [NOT STARTED]
+### Phase 11: The box oracle by modal-depth stratification [COMPLETED]
 
 **Goal**: a concrete `bx` with `BoxOracleSound P bx` proved, breaking the annotation ↔ oracle
 circularity.
@@ -716,7 +716,20 @@ circularity.
       `i`-shift of the annotation's history is a total history refuting `χ` at `0`. Do **not** restate
       `BoxOracleSound` — it is consumed by the landed `truth_along_annot`.
 - [ ] Cite `box_const` (`Truth.lean:740`) for history- and time-independence, so the oracle stays a
-      single `Formula → Bool` with no time parameter.
+      single `Formula → Bool` with no time parameter. *(deviation: altered — `box_const` is cited by
+      the landed `truth_along_annot` and `typeAt_localCoherentSeq`, which this phase consumes; no
+      fresh citation was needed at the oracle, which is already a bare `Formula → Bool`.)*
+
+**Recorded design point (found while implementing, not in the plan): `BoxOracleSound` is a
+*global* condition, but the stratified oracle is only correct below its own modal depth.** The
+plan's stratification is therefore not by itself enough to feed the landed `truth_along_annot`,
+which takes global soundness as a hypothesis. Restating `BoxOracleSound` is forbidden by
+Non-Goals, and was not done. The resolution is `mem_boundedAnnots_congr_oracle`: `bx` enters
+`boundedAnnots` **only** through `LocalCoherent`, whose box clause is guarded by
+`□χ ∈ subformulaClosure φ`, so two oracles agreeing on the box subformulas of `φ` enumerate the
+same annotations. The soundness proof runs the landed machinery against a proof-local *classical*
+validity oracle (globally sound by construction) and transports membership back to the computed
+stratified one. Nothing landed was weakened, and no `Classical.dec` reaches `boxOracle` itself.
 
 **Timing**: 2 hours
 
