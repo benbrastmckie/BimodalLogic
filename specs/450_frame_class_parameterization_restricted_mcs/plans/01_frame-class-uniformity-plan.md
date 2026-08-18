@@ -502,7 +502,7 @@ headers, not grep hits, to determine completion.
 
 ---
 
-### Phase 8: Generalise TemporalDerived [NOT STARTED]
+### Phase 8: Generalise TemporalDerived [COMPLETED]
 
 **Goal**: Deliverable (e) for the temporal layer — the single widest-consumed module in
 `Theorems/` (imported by 11 live modules across `Metalogic/`, `Automation/`, and

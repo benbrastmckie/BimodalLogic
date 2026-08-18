@@ -52,8 +52,8 @@ G-distribution `G(φ→ψ) → (Gφ → Gψ)` derived from BX3 (right_mono_until
 and propositional contraposition. Defined here to avoid circular imports with
 TemporalDerived.lean. -/
 
-private noncomputable def temp_k_dist_local (φ ψ : Formula) :
-    ⊢ (φ.imp ψ).allFuture.imp (φ.allFuture.imp ψ.allFuture) :=
+private noncomputable def temp_k_dist_local {fc : FrameClass} (φ ψ : Formula) :
+    ⊢[fc] (φ.imp ψ).allFuture.imp (φ.allFuture.imp ψ.allFuture) :=
   -- Step 1: ⊢ ¬(¬ψ→¬φ) → ¬(φ→ψ) (negated contrapositive)
   let neg_contra := mp (contraposeImp φ ψ) (contraposeImp (φ.imp ψ) (ψ.neg.imp φ.neg))
   -- Step 2: F(¬(¬ψ→¬φ)) → F(¬(φ→ψ)) via BX3
@@ -64,7 +64,7 @@ private noncomputable def temp_k_dist_local (φ ψ : Formula) :
   let G_contra := contraposition F_step
   -- Step 4: G(¬ψ→¬φ) → (Gφ → Gψ) via BX3 + contraposition
   let G_to_GK := impTrans
-    (DerivationTree.axiom [] _ (Axiom.right_mono_until ψ.neg φ.neg Formula.top) trivial)
+    (DerivationTree.axiom [] _ (Axiom.right_mono_until ψ.neg φ.neg Formula.top) (FrameClass.base_le fc))
     (contraposeImp (Formula.someFuture ψ.neg) (Formula.someFuture φ.neg))
   -- Compose
   impTrans G_contra G_to_GK
@@ -113,11 +113,10 @@ to the future K distribution axiom.
 -/
 noncomputable def pastKDist {fc : FrameClass} (A B : Formula) :
     DerivationTree fc [] ((A.imp B).allPast.imp (A.allPast.imp B.allPast)) := by
-  -- Apply derived temp_k_dist to swapped formulas (at Base, then lift)
-  have fk : ⊢ (A.swapTemporal.imp B.swapTemporal).allFuture.imp
+  -- Apply derived temp_k_dist to swapped formulas, already at `fc`
+  have fk_fc : ⊢[fc] (A.swapTemporal.imp B.swapTemporal).allFuture.imp
                (A.swapTemporal.allFuture.imp B.swapTemporal.allFuture) :=
     temp_k_dist_local A.swapTemporal B.swapTemporal
-  have fk_fc := DerivationTree.lift (fc₁ := .Base) (fc₂ := fc) trivial fk
   -- Apply temporal duality
   have td : DerivationTree fc [] ((A.swapTemporal.imp B.swapTemporal).allFuture.imp
                 (A.swapTemporal.allFuture.imp B.swapTemporal.allFuture)).swapTemporal :=
@@ -156,7 +155,7 @@ noncomputable def generalizedModalK {fc : FrameClass} : (Γ : Context) → (φ :
       generalizedModalK Γ' (A.imp φ) h_deduction
     -- use modal_k_dist axiom
     let k_dist : ⊢[fc] (Formula.box (A.imp φ)).imp ((Formula.box A).imp (Formula.box φ)) :=
-      DerivationTree.axiom [] _ (Axiom.modal_k_dist A φ) trivial
+      DerivationTree.axiom [] _ (Axiom.modal_k_dist A φ) (FrameClass.base_le fc)
     let k_dist_weak :
       (Context.map Formula.box Γ') ⊢[fc]
       (Formula.box (A.imp φ)).imp ((Formula.box A).imp (Formula.box φ)) :=
@@ -188,13 +187,9 @@ noncomputable def generalizedTemporalK {fc : FrameClass} : (Γ : Context) → (�
     let ih_res :
       (Context.map Formula.allFuture Γ') ⊢[fc] Formula.allFuture (A.imp φ) :=
       generalizedTemporalK Γ' (A.imp φ) h_deduction
-    let k_dist_base :
-      ⊢ (Formula.allFuture (A.imp φ)).imp
-        ((Formula.allFuture A).imp (Formula.allFuture φ)) :=
-      temp_k_dist_local A φ
     let k_dist : ⊢[fc] (Formula.allFuture (A.imp φ)).imp
         ((Formula.allFuture A).imp (Formula.allFuture φ)) :=
-      DerivationTree.lift (FrameClass.base_le fc) k_dist_base
+      temp_k_dist_local A φ
     let k_dist_weak :
       (Context.map Formula.allFuture Γ') ⊢[fc]
       (Formula.allFuture (A.imp φ)).imp

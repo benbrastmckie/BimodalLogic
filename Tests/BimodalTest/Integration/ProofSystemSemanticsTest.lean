@@ -144,7 +144,8 @@ Test 10: Temporal K Distribution axiom is valid.
 Verifies that `F(φ → ψ) → (Fφ → Fψ)` is valid via soundness.
 -/
 example (φ ψ : Formula) : [] ⊨ ((φ.imp ψ).allFuture.imp (φ.allFuture.imp ψ.allFuture)) := by
-  let deriv := FormalSystem.Theorems.TemporalDerived.temporalKDistDerived φ ψ
+  let deriv := FormalSystem.Theorems.TemporalDerived.temporalKDistDerived
+    (fc := FormalSystem.ProofSystem.FrameClass.Base) φ ψ
   exact soundness [] _ deriv
 
 /--
@@ -153,7 +154,8 @@ Test 11: Temporal 4 axiom is valid.
 Verifies that `Fφ → FFφ` is valid via soundness.
 -/
 example (φ : Formula) : [] ⊨ ((φ.allFuture).imp (φ.allFuture.allFuture)) := by
-  let deriv := FormalSystem.Theorems.TemporalDerived.temporal4Derived φ
+  let deriv := FormalSystem.Theorems.TemporalDerived.temporal4Derived
+    (fc := FormalSystem.ProofSystem.FrameClass.Base) φ
   exact soundness [] _ deriv
 
 /--
@@ -549,7 +551,7 @@ Verify F(p → q) → (Fp → Fq) is sound.
 example : [] ⊨ (((Formula.atomS "p").imp (Formula.atomS "q")).allFuture.imp 
              ((Formula.atomS "p").allFuture.imp (Formula.atomS "q").allFuture)) := by
   let deriv := FormalSystem.Theorems.TemporalDerived.temporalKDistDerived
-    (Formula.atomS "p") (Formula.atomS "q")
+    (fc := FormalSystem.ProofSystem.FrameClass.Base) (Formula.atomS "p") (Formula.atomS "q")
   exact soundness [] _ deriv
 
 /--
