@@ -365,7 +365,7 @@ where `lceImp`/`rceImp`/`pairing`/`identity` live, not from compiling each one.
 
 ---
 
-### Phase 5: Promote the Discrete Unfolding Schema [NOT STARTED]
+### Phase 5: Promote the Discrete Unfolding Schema [COMPLETED]
 
 **Goal**: Deliverable (d), second half — the Discrete-specific schema, in a new library module.
 

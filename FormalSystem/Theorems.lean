@@ -13,6 +13,7 @@ import FormalSystem.Theorems.ModalS4
 import FormalSystem.Theorems.Perpetuity
 import FormalSystem.Theorems.GeneralizedNecessitation
 import FormalSystem.Theorems.DedekindDerived
+import FormalSystem.Theorems.DiscreteUnfolding
 /-!
 # FormalSystem.Theorems - Key Theorems
 
@@ -31,6 +32,9 @@ pairing, notNotIntro)
 - `GeneralizedNecessitation`: Generalized modal and temporal K rules (derived theorems)
 - `DedekindDerived`: Dedekind-class derived theorems -- the point-shifting scaffolding and
 `co_derived`, which derives the paper's CO principle from the Reynolds gap basis
+- `DiscreteUnfolding`: the Z-exact one-step unfolding of `untl` at `FrameClass.Discrete`
+(`succIndicator`, `unfoldForward`/`unfoldBackward`, `nextConj`, the table-shaped variants, and
+`noBlockingTriple`)
 ## Status
 
 ### Propositional & Combinators
