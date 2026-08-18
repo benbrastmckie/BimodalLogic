@@ -161,7 +161,7 @@ Each row's `anchor` and `grid` moved `true → false` with the deletion, and row
 -- C. The same shape under `.Dense`, where the density rules mint further times.
 -- Was `anchor=true grid=true |T|=10`. `|T|` shrinks to `8` because the two times that the
 -- removed temporal copies used to force into existence at the minted world are no longer minted.
-/-- info: "OPEN spread=false anchor=false grid=false |W|=2 |T|=8" -/
+/-- info: "OPEN spread=false anchor=false grid=false |W|=2 |T|=6" -/
 #guard_msgs in
 #eval probe (.imp (andF (.box p) (dia q)) r) 200 .Dense
 
