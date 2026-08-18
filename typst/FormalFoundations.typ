@@ -414,16 +414,16 @@ class exactly $RR$.
 
 = Completeness and Decidability <sec:key-theorems>
 
-// FIX: some introduction would be good but this is not it. Avoid platitudes, providing a brief overview of what the section covers.
-// #remark[
-//   Soundness fixes the direction from proof to truth and is settled for every system named above.
-//   Completeness is the converse direction, and what it would buy is the licence to reason about
-//   task frames --- objects with a group-valued duration parameter, a topology, and a Zorn-backed
-//   existence theorem --- by manipulating finite derivations instead. The results below say that
-//   this licence is available at the $#BLplus$ level for three frame classes and is not yet
-//   available at the $#BL$ level for any, and @sec:construction says why the extra sentence
-//   $#Nxt top$ is what makes the difference.
-// ]
+This section covers five results. Soundness holds for TM and its four frame-class extensions, and
+three axioms correspond exactly to frame conditions: DF to Discrete, DN to Dense, and CO to
+Complete. The perpetuity principles then show that a modality prefixed by a tense operator, or a
+tense operator prefixed by $square.stroked$, collapses to the modality alone, which bounds what the
+bimodal language expresses beyond its two fragments. Completeness itself is asymmetric: nothing
+positive is known at the $#BL$ level, while three weak completeness results are machine-checked at
+the $#BLplus$ level, with the base frame class left as an outstanding proof obligation. Decidability
+is open throughout; the uniform finite model property over $D = ZZ$ that would settle it fails, and
+the live strategy is the reduction $op("Log")("all task frames") = op("Log")("Discrete") inter
+op("Log")("Dense")$, which is a target rather than a result.
 
 == Soundness and Correspondence
 

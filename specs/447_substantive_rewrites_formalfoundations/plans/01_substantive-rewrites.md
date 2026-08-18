@@ -241,25 +241,25 @@ this phase, and records any divergence in the transcription record before Phase 
 
 ---
 
-### Phase 2: Replace the Section Introduction (`:393`) [NOT STARTED]
+### Phase 2: Replace the Section Introduction (`:393`) [COMPLETED]
 
 **Goal**: Replace the FIX tag and the commented-out "platitude" remark under
 `= Completeness and Decidability` with a concrete 3-5 sentence overview of what the section
 actually covers.
 
 **Tasks**:
-- [ ] Re-grep `FIX: some introduction would be good` to locate the target.
-- [ ] Read the whole section end to end, from `= Completeness and Decidability` to the next `= `
+- [x] Re-grep `FIX: some introduction would be good` to locate the target.
+- [x] Read the whole section end to end, from `= Completeness and Decidability` to the next `= `
       heading, to confirm the five topics it covers.
-- [ ] Write a replacement paragraph that walks, concretely and without platitude: soundness for TM
+- [x] Write a replacement paragraph that walks, concretely and without platitude: soundness for TM
       and its four frame-class extensions; the three correspondences (DF↔Discrete, DN↔Dense,
       CO↔Complete); the perpetuity collapse of mixed modal-tense prefixes; the completeness picture
       with its BL/BL+ asymmetry (nothing positive at the BL level, three machine-checked weak
       results at the BL+ level, base case outstanding); and decidability open, with the failed
       uniform-FMP premise and the `Log(all) = Log(Discrete) ∩ Log(Dense)` reduction as the live
       strategy rather than a result.
-- [ ] Delete the FIX tag and the commented-out `#remark[...]` block entirely.
-- [ ] Make no claim the section does not itself substantiate; do not cite `cor:tm-decidability`.
+- [x] Delete the FIX tag and the commented-out `#remark[...]` block entirely.
+- [x] Make no claim the section does not itself substantiate; do not cite `cor:tm-decidability`.
 
 **Timing**: 0.5 hours
 
