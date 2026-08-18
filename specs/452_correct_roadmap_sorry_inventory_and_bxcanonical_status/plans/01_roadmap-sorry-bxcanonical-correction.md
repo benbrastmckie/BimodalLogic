@@ -1,7 +1,7 @@
 # Implementation Plan: Task #452
 
 - **Task**: 452 - correct_roadmap_sorry_inventory_and_bxcanonical_status
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 4.25 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/452_correct_roadmap_sorry_inventory_and_bxcanonical_status/reports/01_roadmap-sorry-bxcanonical-correction.md
@@ -185,36 +185,36 @@ line numbering of everything below it. Do not parallelize these phases across ag
 
 ---
 
-### Phase 1: Capture live ground truth and stand up the ROADMAP reference check [NOT STARTED]
+### Phase 1: Capture live ground truth and stand up the ROADMAP reference check [COMPLETED]
 
 **Goal**: Produce the verified factual basis every later phase writes from, and replace the
 task's inapplicable C5 verification with one that actually covers `specs/ROADMAP.md`.
 
 **Tasks**:
 
-- [ ] Run `bash scripts/check-module-invariants.sh` (full, with build) and capture verbatim: the
+- [x] Run `bash scripts/check-module-invariants.sh` (full, with build) and capture verbatim: the
       C2 four-theorem axiom lines, the C3 PASS line **and** its `enclosing declaration:` note, the
       C5 line, and the C6/C7 lines. Record the `git rev-parse --short HEAD` these were taken at.
-- [ ] If C3 does not report exactly one sorry in `countermodel_discrete`, **stop and re-scope**:
+- [x] If C3 does not report exactly one sorry in `countermodel_discrete`, **stop and re-scope**:
       the ground truth this whole plan writes from has changed. Record the actual output and mark
       the phase `[BLOCKED]` rather than proceeding on a stale premise.
-- [ ] Record the live BXCanonical inventory:
+- [x] Record the live BXCanonical inventory:
       `find FormalSystem/Metalogic/BXCanonical -maxdepth 1 -name '*.lean' | sort` and
       `find FormalSystem/Metalogic/BXCanonical -mindepth 1 -maxdepth 1 -type d | sort`.
-- [ ] Record `grep -n "BXCanonical" FormalSystem/Metalogic/StrongCompleteness.lean` and the
+- [x] Record `grep -n "BXCanonical" FormalSystem/Metalogic/StrongCompleteness.lean` and the
       `BXCanonical`/`WeakCanonical` lines of `FormalSystem/Metalogic.lean`'s module docstring — the
       in-tree evidence that BXCanonical is the wired entry point.
-- [ ] Confirm the four BXCanonical-dead-code occurrences and their current line numbers:
+- [x] Confirm the four BXCanonical-dead-code occurrences and their current line numbers:
       `grep -n "17 sorries\|dead code\|DEAD CODE" specs/ROADMAP.md`.
-- [ ] Confirm the Sorry Inventory anchors: `grep -n "23 sorry\|Sorry Inventory\|RootScopedChain\|19 sorries" specs/ROADMAP.md`.
-- [ ] Define and record the **ROADMAP reference check** used by every later phase (ad-hoc, not a
+- [x] Confirm the Sorry Inventory anchors: `grep -n "23 sorry\|Sorry Inventory\|RootScopedChain\|19 sorries" specs/ROADMAP.md`.
+- [x] Define and record the **ROADMAP reference check** used by every later phase (ad-hoc, not a
       checked-in script) — extract every `FormalSystem/...` slash path and every dotted
       `FormalSystem.X.Y` module name from the changed hunks and assert each resolves to a real file
       or directory, e.g.:
       `git diff -U0 -- specs/ROADMAP.md | grep '^+' | grep -oE '(FormalSystem|Tests)(/[A-Za-z0-9_]+)+\.lean' | sort -u | while read -r p; do [ -e "$p" ] || echo "UNRESOLVED: $p"; done`
       plus the dotted-name equivalent. Record the exact command text in the phase notes so later
       phases and the summary run the identical check.
-- [ ] Confirm both defects found at planning time still hold:
+- [x] Confirm both defects found at planning time still hold:
       `grep -rc 'sorry' FormalSystem/Examples` (expect zero matches) and the C3 sorry-shape grep
       against `FormalSystem/Boneyard` (expect ~104, not ~14).
 
