@@ -8362,7 +8362,7 @@ theorem timeMergeClosed_identifyTime_oriented {C : Finset Formula} {L : Finset L
 
 /-! ## C9. The do-not-re-attempt register
 
-Seventeen statements that look like the natural next lemma and are **not** available. Each is cited
+Eighteen statements that look like the natural next lemma and are **not** available. Each is cited
 by declaration name and, where one exists, by refuting witness — never by an issue number or a
 tracker entry, both of which outlive their meaning. A reader who finds one of these attractive has
 already been here.
@@ -8610,6 +8610,87 @@ already been here.
     construction, its termination argument is about the *gap set* rather than about any self-guard,
     and nothing above touches it. The intended second component `gapPotential` — indexed by
     `U ×ˢ U`, `denseRules`-gated, quadratic in `|U|` — is a named residual recorded in the
-    subsection "The density residual" above the register, unattempted rather than refuted. -/
+    subsection "The density residual" above the register, unattempted rather than refuted.
+
+18. **A `nextTime` redefinition, a `TimeOrdering` highwater field, or any other bookkeeping-side
+    cure for entry 15's time reuse.** Not refuted — *closed by being unnecessary*, which is why this
+    entry reads differently from the seventeen above it. It is here so that a reader who arrives
+    holding one of those designs stops before paying for it.
+
+    *What was actually wrong.* Entry 15 is a statement about `Branch.identifyTime` retiring the
+    branch's **largest** time. The ordered split's arm 3 called `branch.identifyTime t₂ t₁`, and
+    `firstIncomparablePair_spec` guarantees only `t₂ ≠ t₁` — never `t₁ < t₂` — so the arm retired
+    `t₂` whatever its magnitude, `Branch.maxTime` fell with it, and `Branch.nextTime`, being
+    `maxTime + 1`, handed back the value just retired. The defect was in *which numeral the arm
+    chose to keep*, not in `nextTime`'s definition and not in the measure.
+
+    *The repair, in one line.* Arm 3 now merges `min t₁ t₂` into `max t₁ t₂`. Which numeral survives
+    is semantically arbitrary — identification asserts the two instants are the same, and nothing in
+    the semantics reads a time index's magnitude — so the orientation is free, and it makes
+    `Branch.maxTime` non-decreasing at the only branch step that could lower it.
+    `maxTime_le_identifyTime_of_le` is the whole content: identifying a time into a time at least as
+    large never lowers the maximum, on an arbitrary branch, with no membership hypothesis.
+    `retired_lt_nextTime_oriented` is the form that replaces the obstruction — the retired index is
+    strictly below the post-arm `nextTime`, so it can never be re-issued — and
+    `maxTime_monotone_along_run` / `nextTime_monotone_along_run` lift it off the arm to every
+    successor of every shape the engine reports, over the checked shape census
+    `expandOnce_branch_shape_census` rather than over the prose claim that arm 3 is the engine's
+    only non-additive step.
+
+    *Read entry 15 with this correction.* Entry 15 says `reuse_driven_through_engine` shows the
+    reuse "is a run and not a hand-assembled `Branch`". That is half right, and the half that is
+    wrong matters here. `reuse_driven_through_engine` is driven from `reuseWitnessState`, which is
+    assembled by a **direct** `Branch.identifyTime reuseWitnessBranch 2 0` call rather than by the
+    engine's arm; what it decides is the *conditional* "if a run reaches a branch whose `maxTime`
+    has fallen below an index it once carried, the engine re-mints that index." That conditional is
+    as true now as it ever was, and it is deliberately left at its original decided value.
+    `oriented_engine_does_not_produce_reuse` supplies the measurement it cannot make: at the same
+    witness, the arm now hands back `maxTime = 2` and `nextTime = 3` where it used to hand back `1`
+    and `2`, and one further engine step does not recover the retired value. The implication stands;
+    its antecedent is unreachable.
+
+    *Why not the bookkeeping-side designs, measured rather than asserted.* Two were costed before
+    the arm was touched. A `horizon : TimeIndex` field on `TimeOrdering`, raised at every mint and
+    never lowered: `TimeOrdering` is referenced in 29 files, with 35 `{ constraints := }` sites and
+    47 `: TimeOrdering :=` bindings, and Lean's anonymous constructor does not fill default field
+    values, so every literal breaks — including the closed terms the `decide`-based witnesses in
+    this file evaluate. A run-level mint counter threaded through `applyRule` /
+    `expandOnceUnblocked`: changes the signature of the engine's two central functions, which this
+    file alone references hundreds of times, and pulls `Saturation.lean` into scope. Neither was
+    prototyped, because the arm orientation decided the question at zero new state, zero signature
+    changes and one edited call site.
+
+    *The scope fact a future reader needs before reaching for a `nextTime` redefinition.*
+    `Verified/Decidable.lean` carries **102** `Branch.nextTime` references —
+    `lt_nextTime_of_mem_knownTimes`, `OrdWithin.bound` and `OrdWithin.nextTime_not_mem` among them —
+    which consume `nextTime = maxTime + 1` *definitionally*. That file independently rediscovered
+    this same obstruction from the `OrdWithin` side and recorded it in prose, with its own
+    counterexample (`b = [f₀, f₇]`, `ord = ⟨[(5, 7)]⟩`). The repair therefore holds
+    `Branch.nextTime`, `Branch.maxTime`, `Branch.identifyTime` and `TimeOrdering.identifyTime`
+    **byte-unchanged** and goes to the call site instead; under that constraint `Decidable.lean`'s
+    exposure collapses from 102 references to one docstring paragraph, and the nine `branch.nextTime`
+    mint sites in `Tableau.lean` need no edit at all, since a monotone `maxTime` makes `nextTime`
+    monotone for free at every one of them.
+
+    *What survived, checked and not assumed.* `OrdTimesKnown` (entries 7 and 16) by
+    `ordTimesKnown_identifyTime_oriented`; the run invariant by `runInvariant_identifyTime_oriented`;
+    `UniverseClosedAt`'s clause 2 (entries 10-12) by `universeClosedAt_identify_at_trigger_oriented`
+    and `timeMergeClosed_identifyTime_oriented`, discharging the clause **as it stands** — no
+    both-times constraint was added, so entry 12's finding is untouched; the `.splitOrdered`
+    measure's first component by `knownTimes_card_lt_at_arm3_oriented`. The one lemma that needed
+    genuinely new content is `incomparableB_symm`, whose proof needed the backward half of the
+    reachability duality (`orderDual_backward`) because `orderDual_holds` states it forwards only.
+    `ordTimes_identifyTime_arm3_false` was re-checked and is still **true**: the orientation does not
+    accidentally rescue the refuted `OrdTimesLeMaxTime`, and entry 7 stands as written.
+
+    *And what this does **not** do — read this before treating entry 14 as reopened.* It does not
+    supply the missing fourth measure component, and it does not make `MintPaysForTime` true. Entry
+    14's refutation is about the predicate as literally stated and is untouched. Entry 17's
+    refutation of the `selfGuardRules ×ˢ U` ledger stands as a statement **about the unoriented
+    arm**: its σ-hit obligation was inherited from entry 15's reuse configuration, and that
+    configuration no longer occurs on the engine path — so whether a measure-side component is now
+    *provable* is a genuinely open follow-on question, not something this entry answers and not
+    something entry 17 forecloses any more. Nobody should read "the reuse is closed" as "the measure
+    is closed". They are different claims, and only the first is established here. -/
 
 end FormalSystem.Metalogic.Decidability

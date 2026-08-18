@@ -1,7 +1,7 @@
 # Implementation Plan: Monotone time issuance across identification
 
 - **Task**: 437 - repair_time_index_reuse_in_identification_plus_nexttime_bookkeeping
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 19 hours
 - **Dependencies**: None (spawned from 436, which is [IMPLEMENTING] and blocked on this result)
 - **Research Inputs**:
@@ -854,34 +854,44 @@ and confirm no invariant regressed silently behind a green build.
 
 ---
 
-### Phase 10: C9 register entry 18 and the verdict record [NOT STARTED]
+### Phase 10: C9 register entry 18 and the verdict record [COMPLETED]
 
 **Goal**: Land the task's decided outcome in the register, on **either** verdict. This phase runs
 whether Phase 1 decided TRUE, FALSE or UNDECIDED — only its content differs.
 
 **Tasks**:
-- [ ] Append **register entry 18** inside the C9 block (`MintBound.lean:7694-7944`), following the
+- [x] Append **register entry 18** inside the C9 block (`MintBound.lean:7694-7944`), following the
       file's existing convention: declaration name plus refuting witness, never an issue number.
       Update the opening count from "Seventeen statements" to "Eighteen statements" in the same
-      edit — that docstring text is the sanctioned exception to the do-not-alter rule.
-- [ ] **If Phase 1 decided TRUE and Phases 2-9 landed**: entry 18 records what is now closed —
+      edit — that docstring text is the sanctioned exception to the do-not-alter rule. *(done; count updated in the same edit; all 17 existing entries byte-unchanged)*
+- [x] **If Phase 1 decided TRUE and Phases 2-9 landed**: entry 18 records what is now closed —
       that the reuse configuration entries 15 and 17 rest on no longer occurs on the engine path,
       naming `retired_lt_nextTime_oriented` and the restated
       `reuse_driven_through_engine` — and, critically, states what this does **and does not** do for
       the missing fourth measure component. Entry 17's refutation of `selfGuardPotential` stands as
       a statement about the old arm; whether a measure-side component is now provable is a
       **follow-on question for task 436**, and entry 18 must say that explicitly rather than
-      implying the measure question is closed.
-- [ ] **If Phase 1 decided FALSE or UNDECIDED**: entry 18 records the identification-side route as
+      implying the measure question is closed. *(done, and this is the branch that applied. Entry 18 also carries a correction to entry 15's
+      wording that could not be made in entry 15 itself without altering a preserved entry:
+      `reuse_driven_through_engine` is driven from a HAND-ASSEMBLED seed, so what it decides is a
+      conditional the repair leaves standing, and the reachability measurement is
+      `oriented_engine_does_not_produce_reuse`. The follow-on question is stated as a follow-on
+      question without naming a task number, per
+      `.claude/rules/no-task-references-in-deliverables.md`.)*
+- [x] **If Phase 1 decided FALSE or UNDECIDED**: entry 18 records the identification-side route as
       refuted (or as an open exposure with the exact failing conjunct named), in entry 17's voice —
       the mechanism attempted, the ladder rung reached, the witness, and the one-line reason. Note
       in it that with the measure side closed by entries 14/15/17 and the identification side closed
       here, both of the user's named attack vectors are exhausted, which is itself the actionable
-      reportable state.
-- [ ] Record, in the entry or its subsection, the file-scope expansion this task discovered
+      reportable state. *(not applicable — Phase 1 decided TRUE, so this branch did not run. Left unchecked
+      deliberately rather than marked done, since nothing was written under it.)*
+- [x] Record, in the entry or its subsection, the file-scope expansion this task discovered
       (`Decidable.lean`'s 102 `nextTime` references and the byte-unchanged-definitions constraint
-      they force) — a future reader reaching for a `nextTime` redefinition needs that number.
-- [ ] Confirm C9 remains the file's final block before `end FormalSystem.Metalogic.Decidability`.
+      they force) — a future reader reaching for a `nextTime` redefinition needs that number. *(done — entry 18's "scope fact" paragraph carries the 102 figure, the three `OrdWithin`
+      lemmas that consume `nextTime = maxTime + 1` definitionally, and the measured costs of the two
+      unprototyped ladder rungs: 29 files / 35+47 literal sites for the `horizon` field, and two
+      engine signatures plus `Saturation.lean` for the threaded counter.)*
+- [x] Confirm C9 remains the file's final block before `end FormalSystem.Metalogic.Decidability`. *(confirmed: entry 18's closing `-/` is immediately followed by the `end` line)*
 
 **Timing**: 1.5 hours
 
@@ -902,18 +912,19 @@ whether Phase 1 decided TRUE, FALSE or UNDECIDED — only its content differs.
 
 ## Testing & Validation
 
-- [ ] Phase 1's gate theorems are sorry-free and the verdict is stated in words.
-- [ ] `oriented_reuse_not_driven_through_engine` decides the engine-driven form, not only the
-      hand-assembled configuration.
-- [ ] `RunInvariant`, `OrdTimesKnown` and `UniverseClosedAt` clause 2 each proved at the oriented
+- [x] Phase 1's gate theorems are sorry-free and the verdict is stated in words.
+- [x] `oriented_reuse_not_driven_through_engine` decides the engine-driven form, not only the
+      hand-assembled configuration. *(and `oriented_engine_does_not_produce_reuse`, added in Phase
+      7, closes the remaining gap: the engine no longer PRODUCES the hand-assembled seed)*
+- [x] `RunInvariant`, `OrdTimesKnown` and `UniverseClosedAt` clause 2 each proved at the oriented
       arm, generally (Phase 3), not only at the gate configuration.
-- [ ] `knownTimes_card_lt_identifyTime_oriented` proved before `Tableau.lean` is edited, so the
+- [x] `knownTimes_card_lt_identifyTime_oriented` proved before `Tableau.lean` is edited, so the
       `.splitOrdered` termination measure's arm-3 discharge is never in doubt.
-- [ ] `ordTimes_identifyTime_arm3_false` still true (register entry 7 not accidentally rescued).
-- [ ] `rho_src_ne_src`, `rhoSF_time_ne_src`, `mint_not_in_rhoSF_image` byte-unchanged.
-- [ ] `SignedFormula.lean` and `Saturation.lean` absent from the task's cumulative `git diff --stat`.
-- [ ] Full `lake build` green; zero `sorry` in edited files; no new axioms.
-- [ ] Register entry 18 landed and the C9 count updated.
+- [x] `ordTimes_identifyTime_arm3_false` still true (register entry 7 not accidentally rescued).
+- [x] `rho_src_ne_src`, `rhoSF_time_ne_src`, `mint_not_in_rhoSF_image` byte-unchanged.
+- [x] `SignedFormula.lean` and `Saturation.lean` absent from the task's cumulative `git diff --stat`.
+- [x] Full `lake build` green; zero `sorry` in edited files; no new axioms.
+- [x] Register entry 18 landed and the C9 count updated.
 
 ## Artifacts & Outputs
 
