@@ -527,23 +527,23 @@ Every mutation phase (2-6) runs this same gate before it may be marked complete.
 **per-batch** gate, not an end-of-task gate — a single scope's mistake must not be buried under
 five other scopes' changes before it is caught.
 
-- [ ] A timestamped backup of the index being edited exists, taken immediately before the write
-- [ ] `python3 -c "import json; json.load(open(<index>))"` exits 0
-- [ ] Entry count matches the Phase 1 baseline (369 unless Phase 1 recorded otherwise)
-- [ ] The diff against the phase's own backup touches only the fields and only the entries the
+- [x] A timestamped backup of the index being edited exists, taken immediately before the write
+- [x] `python3 -c "import json; json.load(open(<index>))"` exits 0
+- [x] Entry count matches the Phase 1 baseline (369 unless Phase 1 recorded otherwise)
+- [x] The diff against the phase's own backup touches only the fields and only the entries the
       phase declared — no collateral edits
-- [ ] The phase's defect class verifies empty afterward (e.g. after Phase 4, zero string-valued
+- [x] The phase's defect class verifies empty afterward (e.g. after Phase 4, zero string-valued
       `authors` remain corpus-wide)
-- [ ] `bash .claude/scripts/literature-build-index.sh --global` exits 0
-- [ ] Post-rebuild FTS row count is greater than or equal to the Phase 1 baseline; a sample
+- [x] `bash .claude/scripts/literature-build-index.sh --global` exits 0
+- [x] Post-rebuild FTS row count is greater than or equal to the Phase 1 baseline; a sample
       `literature-search.sh` query still returns hits
-- [ ] No file under `.claude/**` or `agent-system/**` was modified
+- [x] No file under `.claude/**` or `agent-system/**` was modified
 
 Additional whole-task validation, run in Phase 7:
 
-- [ ] All six defect classes verify empty or repaired simultaneously against one final index read
-- [ ] `literature-normalize-authors.sh` bare invocation reports zero proposed changes
-- [ ] Every `provenance_fidelity` value written in Phase 6 is backed by a named chunk file and a
+- [x] All six defect classes verify empty or repaired simultaneously against one final index read
+- [x] `literature-normalize-authors.sh` bare invocation reports zero proposed changes
+- [x] Every `provenance_fidelity` value written in Phase 6 is backed by a named chunk file and a
       recorded manual verdict
 
 ## Artifacts & Outputs
