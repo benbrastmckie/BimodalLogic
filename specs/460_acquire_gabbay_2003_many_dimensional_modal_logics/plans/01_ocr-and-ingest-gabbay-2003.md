@@ -382,15 +382,15 @@ sampled stratum beyond the 8.
 
 ---
 
-### Phase 5: Ingest the OCR'd copy through the normal pipeline [BLOCKED]
+### Phase 5: Ingest the OCR'd copy through the normal pipeline [COMPLETED]
 
 **Goal**: Run `literature-ingest.sh` against the OCR'd path so the book enters the corpus through
 the standard route, with a pre-ingest backup that makes the operation reversible.
 
-**BLOCKED**: Ingest ran and was rejected by `literature-convert.sh`'s conversion quality gate:
-`sentence-boundary-glue: 19 zero-space word/sentence-fusion transition(s) found (threshold 3)`.
-Full site-by-site analysis, sidecar cross-check, physical page locations, and a good-faith
-retry-OCR-settings attempt are recorded in
+**Initial run BLOCKED, then RESOLVED via user-authorized exception**: Ingest ran and was rejected
+by `literature-convert.sh`'s conversion quality gate: `sentence-boundary-glue: 19 zero-space
+word/sentence-fusion transition(s) found (threshold 3)`. Full site-by-site analysis, sidecar
+cross-check, physical page locations, and a good-faith retry-OCR-settings attempt are recorded in
 `reports/03_phase5-fusion-site-analysis.md`. Summary of that analysis: all 19 sites are confined
 to description-logic ∃-role-restriction notation (13, one ~10-page passage), a recurring
 bibliography citation (2), and irreducible proof/formula noise (4) — zero prose corruption. Both
@@ -399,9 +399,20 @@ Phase 4) agree on every checked site, ruling out a `pymupdf4llm`-specific extrac
 OCR with `--oversample 400` and `--tesseract-pagesegmode 6` did not change the result; `eng+equ`
 is not a selectable tesseract language. No honest, non-fabricating correction of this text gets
 the fusion count below the gate's threshold of 3. Per the explicit constraint against weakening,
-disabling, bypassing, or working around the quality gate, this phase is left `[BLOCKED]` rather
-than forced through. See `.orchestrator-handoff.json` for escalation options requiring user
-decision.
+disabling, bypassing, or working around the quality gate, the phase was left `[BLOCKED]` and
+escalated to the user rather than forced through — see `.orchestrator-handoff.json` for the
+three escalation options recorded at that point.
+
+The user explicitly authorized escalation option 1: a corrected markdown restoring the 13
+well-evidenced `∃`-glyph sites and the 2 Medvedev citation-spacing sites (leaving the 4
+irreducible sites untouched, unfabricated) was fed directly to `literature-chunk.sh`, then
+`index.json` was updated atomically and `literature-build-index.sh --global` was run — bypassing
+only `literature-convert.sh`'s automated re-extraction for this one document.
+`literature_quality_gate.py`, `literature-convert.sh`, and `run_quality_gate()` were never
+modified and remain byte-identical for every other corpus document. Full before/after audit
+trail for all 15 corrections is recorded in `reports/03_phase5-fusion-site-analysis.md`'s
+addendum. doc_id `gabbay_kurucz_wolter_zakharyaschev_2003_many_dimensional_modal_logics`, 758
+chunks, `index.json` 361 -> 362 entries.
 
 **Tasks**:
 - [x] Confirm Phase 4's recorded gate decision is PASS. If it is not, this phase must not run. *(completed: PASS confirmed)*
@@ -463,34 +474,43 @@ is deliberately not predicted.
 
 ---
 
-### Phase 6: Post-ingest semantic verification of chunks [NOT STARTED]
+### Phase 6: Post-ingest semantic verification of chunks [COMPLETED]
 
 **Goal**: Confirm by hand-reading that what actually landed in the corpus is readable — the ingest
 succeeding is not evidence that the chunks are good, since the pipeline gate cannot see
 printable-but-wrong text.
 
 **Tasks**:
-- [ ] Sample at least 8 chunks spread across the full chunk range: the first chunk, the last
+- [x] Sample at least 8 chunks spread across the full chunk range: the first chunk, the last
       chunk, chunks at roughly the 25%/50%/75% positions, at least two chunks whose content is
-      math-heavy, and at least one bibliography or index chunk.
-- [ ] For EACH sampled chunk, read it and record in the evidence artifact: the chunk filename, a
+      math-heavy, and at least one bibliography or index chunk. *(completed: chunk_0001 (first),
+      chunk_0758 (last/index), chunk_0190 (~25%), chunk_0379 (~50%), chunk_0569 (~75%), chunk_0068
+      and chunk_0092 (math-heavy), chunk_0742 (bibliography) — 8 chunks total)*
+- [x] For EACH sampled chunk, read it and record in the evidence artifact: the chunk filename, a
       verbatim excerpt of at least 200 characters, and a PASS/FAIL judgement against the same four
       criteria as Phase 4. Again, no automated metric may serve as the PASS justification.
-- [ ] Run a mojibake sweep across all chunks as a supporting signal (not as the gate): grep for the
+      *(completed: all 8 chunks PASS, recorded in reports/02_ocr-semantic-gate-evidence.md's
+      "Phase 6" section)*
+- [x] Run a mojibake sweep across all chunks as a supporting signal (not as the gate): grep for the
       corruption signatures characteristic of the original broken encoding (long runs of
       consonant-only uppercase tokens, `\[\[`/`\\\\` clusters, the `¨«`-style leading sequences
       seen in the research report's page 20-25 sample). Record hit counts by chunk; investigate any
-      chunk with a high density.
-- [ ] Confirm retrievability end-to-end: run
+      chunk with a high density. *(completed: 0 bracket-cluster hits, 0 leading-diacritic hits, 349
+      consonant-run hits across 115/758 chunks, all confirmed legitimate book-internal acronyms
+      (CPDL, TSPF, NTPP, BRCC, CQDL, etc.), zero genuine corruption)*
+- [x] Confirm retrievability end-to-end: run
       `bash .claude/scripts/literature-search.sh "many-dimensional modal logic"` (and one more
       query using a distinctive phrase read verbatim from a sampled chunk) and confirm the new
-      doc_id appears in the ranked results.
-- [ ] Sanity-check chunk count against 742 pages — record the ratio and note whether it is
+      doc_id appears in the ranked results. *(completed: both queries return the new doc_id;
+      `--include-unverified` required since this entry has no `provenance_fidelity` field)*
+- [x] Sanity-check chunk count against 742 pages — record the ratio and note whether it is
       plausible relative to comparable full-book entries in the corpus; a wildly low count implies
-      dropped content.
-- [ ] If any prose chunk FAILS, or retrieval does not return the doc: mark this phase `[BLOCKED]`,
+      dropped content. *(completed: 758 chunks / 742 pages = 1.02 chunks/page, ~471.5 tokens/page,
+      judged plausible against chagrovzakharyaschev_1997_modallogic's ~343 tokens/chunk)*
+- [x] If any prose chunk FAILS, or retrieval does not return the doc: mark this phase `[BLOCKED]`,
       execute the Rollback/Contingency procedure below in full, and record the outcome. Do not
-      leave a failed ingest in the corpus.
+      leave a failed ingest in the corpus. *(not triggered: all chunks PASSED, retrieval
+      confirmed)*
 
 **Timing**: 0.75 hours
 
@@ -515,7 +535,7 @@ treat a zero hit count as weak evidence only, never as a substitute for the hand
 
 ---
 
-### Phase 7: Closeout — immutability audit, limitation record, scoped commit [NOT STARTED]
+### Phase 7: Closeout — immutability audit, limitation record, scoped commit [IN PROGRESS]
 
 **Goal**: Prove nothing forbidden was touched, record the standing limitations and the deferred
 sub-index registration, and commit only this task's own artifacts.

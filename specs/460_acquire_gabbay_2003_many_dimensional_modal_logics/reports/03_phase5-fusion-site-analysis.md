@@ -171,3 +171,133 @@ Given the explicit constraint against weakening, disabling, raising the threshol
 or working around the conversion quality gate to force this ingest through, **Phase 5 is recorded
 as `[BLOCKED]`**, not force-completed. See the plan's Phase 5 section and this task's
 `.orchestrator-handoff.json` for the blocker record and escalation options.
+
+---
+
+## Addendum: User-Authorized Documented Exception Applied (Phase 5b)
+
+The user explicitly authorized escalation option 1 above. This addendum records every action
+taken under that authorization and the complete, auditable before/after text for all 15
+corrections actually applied, per the authorization's own requirement.
+
+### Baseline File Provenance
+
+`literature-convert.sh`'s own temp directory is deleted on quality-gate rejection (see "Method"
+above), so the exact rejected markdown from the original Phase 5 ingest attempt no longer existed
+on disk. Rather than wait on a redundant standalone reconversion this session had independently
+started, the orchestrator identified an existing reproduction already on disk from an earlier
+conversion test in this same session:
+`.../scratchpad/gabbay-convert-test/gabbay_kurucz_wolter_zakharyaschev_2003_many_dimensional_modal_logics.md.rejected`
+(1,398,438 bytes, produced by an unmodified `literature-convert.sh` run against the same OCR'd
+PDF). Before using it, this file was independently sanity-checked against report 03's own
+site catalogue above:
+
+- Size: 1,398,438 bytes (orchestrator-reported) — confirmed via `stat`.
+- First/last lines: title page ("Many-Dimensional Modal Logics: Theory and Applications", "D.
+  Gabbay, A. Kurucz, F. Wolter and M. Zakharyaschev") and back-of-book index tail ("weakly
+  connected relation, 13 ... world, 9") — both consistent with a full, untruncated 742-page
+  conversion.
+- All 19 flagged sites re-located at their expected line numbers and exact quoted text, verbatim
+  matching the table in this report's "All 19 Flagged Sites, Quoted" section above (`dhas.Mother`,
+  `dparent.Child` ×2, `3_sparent.Child`, `9_;has.Mother`, `3drives.Car`, `dhas.Car`,
+  `Jhas.Computer`, `dbuys.Car`, `J[always|buys.Car`, `Jbuys.Modern_car`, `3lives_in.Place`,
+  `Yu.T. Medvedev` ×2, `YUx.YUx` ×2, `@n.T`, `Opl—OOp.L`).
+
+The file was judged authentic and usable without falling back to the in-flight reconversion,
+which was then killed (redundant duplicate work) and its scratch output directory removed. The
+pristine file was copied — never edited in place — to
+`~/Documents/literature-staging/gabbay_2003/phase5b-rejected-baseline.md` (chmod 444, sha256
+`5a6a73d5fd79e1a3e98460820852c54cd98eea4d9cccedae3532c3eded172e27`) as the permanent audit
+baseline, and a working copy `phase5b-corrected.md` (identical sha256 before editing) was created
+for the corrections below.
+
+### All 15 Corrections Applied, Before/After
+
+Each correction was applied as an exact, uniqueness-verified substring replacement on its exact
+source line (verified programmatically: the expected substring occurred exactly the expected
+number of times on that line before any edit was made), so no correction could silently touch an
+unintended occurrence elsewhere in the 19,412-line file.
+
+| # | Site (per table above) | Line | Before | After |
+|---|---|---|---|---|
+| 1 | 3 | 1879 | `Child € dhas.Mother I dhas.Father` | `Child € ∃has.Mother I dhas.Father` |
+| 2 | 4 | 1879 | `Child € ∃has.Mother I dhas.Father` | `Child € ∃has.Mother I ∃has.Father` |
+| 3 | 5 | 1881 | `...ABox FEve : dparent.Child Adam : dparent.Child /` | `...ABox FEve : ∃parent.Child Adam : ∃parent.Child /` |
+| 4 | 6 | 1881 | *(same line as #3 — second `dparent.Child` occurrence, corrected in the same replacement)* | |
+| 5 | 7 | 2171 | `Eve : 3_sparent.Child` | `Eve : ∃parent.Child` |
+| 6 | 8 | 2175 | `Child C 9_;has.Mother` | `Child C ∃has.Mother` |
+| 7 | 9 | 2183 | `First_Parent C J(parent o parentTM).3drives.Car` | `First_Parent C J(parent o parentTM).∃drives.Car` |
+| 8 | 10 | 4579 | `John : dhas.Car` | `John : ∃has.Car` |
+| 9 | 11 | 4585 | `Modern_car = Car M Jhas.Computer` | `Modern_car = Car M ∃has.Computer` |
+| 10 | 12 | 4589 | `Customer = Homo_sapiens N (sometime in the past) dbuys.Car Potential_customer = (eventually) Customer` | `Customer = Homo_sapiens N (sometime in the past) ∃buys.Car Potential_customer = (eventually) Customer` |
+| 11 | 13 | 4591 | `Faithful_customer = Customer I J[always\|buys.Car` | `Faithful_customer = Customer I ∃[always\|buys.Car` |
+| 12 | 14 | 4593 | `(John believes) (next year) (Male_customer C Jbuys.Modern_car)` | `(John believes) (next year) (Male_customer C ∃buys.Modern_car)` |
+| 13 | 15 | 4693 | `Mortal = Living_being N (3lives_in.Place) I` | `Mortal = Living_being N (∃lives_in.Place) I` |
+| 14 | 18 | 18801 | `- Medvedev 1962. Yu.T. Medvedev. Finite problems. Soviet Mathematics Doklady, 3:227-230, 1962.` | `- Medvedev 1962. Yu. T. Medvedev. Finite problems. Soviet Mathematics Doklady, 3:227-230, 1962.` |
+| 15 | 19 | 19027 | `...concept of Yu.T. Medvedev's types of information. Semiotics...` | `...concept of Yu. T. Medvedev's types of information. Semiotics...` |
+
+Notes on scope discipline applied during correction:
+
+- Site 9 (`3drives.Car` -> `∃drives.Car`): only the `3` immediately prefixing `drives.Car` was
+  corrected. The adjacent `J(parent o parentTM)` on the same line — a different, unflagged,
+  unanalyzed OCR corruption (role-composition notation with an inverse superscript misread as
+  "TM") — was left untouched; it was never one of the 19 gate-flagged sites and is out of scope.
+- Site 13 (`J[always|buys.Car` -> `∃[always|buys.Car`): the corrupted-prefix character consistent
+  with this report's Root Cause list (`d, 3, 3_, 9_, J`) is the `J` directly preceding the
+  bracketed temporal sub-formula. Only that `J` was replaced; the `I` earlier on the same line
+  (a separate, unrelated intersection-symbol OCR corruption) was left untouched.
+- Every other symbol in every touched line — `€`, `I`, `C`, `»`, `¥`, etc. (mis-OCR'd
+  ⊑/⊓/∀-family and other DL/modal symbols) — was deliberately left as-is. None of these were
+  among the 19 gate-flagged sites or part of this authorization's scope.
+
+A full-file `diff` between `phase5b-rejected-baseline.md` and `phase5b-corrected.md` confirms
+**exactly these 13 changed lines** (26 diff lines: 13 `<` + 13 `>`) and nothing else — no
+collateral edits anywhere in the remaining 19,399 lines.
+
+### The 4 Irreducible Sites — Confirmed Untouched
+
+Re-verified byte-identical to the pristine baseline after all corrections were applied:
+
+- `YUx.YUx` (site 1, line 1357) — unchanged.
+- `YUx.YUx` (site 2, line 1361) — unchanged.
+- `@n.T` (site 16, line 9267, in `(MM, (w0, Y0)) & @n.T-`) — unchanged.
+- `Opl—OOp.L` (site 17, line 15287, in `Opl — OOp.L is valid in all synchronous systems...`) —
+  unchanged.
+
+These remain a documented, standing math-OCR-fidelity limitation on this corpus document, per
+this report's original Verdict above and the plan's own pre-declared, accepted risk. No
+replacement symbol was fabricated or guessed at any of these 4 sites.
+
+### Pipeline Steps Executed (bypassing only `literature-convert.sh`'s re-extraction)
+
+1. `literature-chunk.sh phase5b-corrected.md ~/Projects/Literature/{doc_id} --doc-id {doc_id}` —
+   758 chunks generated (0 atomic, 245 over the 512-token target), `chunks.json` manifest written.
+2. `metadata.json` written into the doc directory, mirroring the exact schema
+   `literature-ingest.sh` itself writes on a normal run (`doc_id`, `title`, `authors: []`,
+   `year: null`, `source_path`, `chunks_dir`, `chunk_count`, `ingested_at`).
+3. `index.json` updated with the same entry schema `literature-ingest.sh` itself writes, via a
+   Python script replicating its update logic — but writing atomically (temp file in the same
+   directory + `os.replace`) rather than in place, since `literature-ingest.sh`'s own update is
+   not atomic and the concurrency note for this dispatch required it. 361 -> 362 entries,
+   verified before and after.
+4. `literature-build-index.sh --global` — rebuilt `.literature.db` (already atomic: builds
+   `.literature.db.tmp` then renames). `chunks_data`/`chunks_fts` row counts: 17,736 (Phase 1
+   baseline) -> 18,494, an increase of exactly 758 — matching the new document's chunk count with
+   no drift or loss elsewhere in the corpus.
+
+`literature_quality_gate.py`, `literature-convert.sh`, and `run_quality_gate()` were not read,
+edited, or invoked with any modified behavior at any point in this addendum — `git diff` against
+both files is empty. The gate remains byte-identical for every other document in the corpus; this
+exception routes around `literature-convert.sh`'s automated re-extraction for this one document
+only, exactly as authorized.
+
+### Immutability Re-Confirmed
+
+Zotero original sha256 re-verified unchanged after all Phase 5b work:
+`6b03d3f967e1bff33dad1a2b6f770039011b93410d789fb4e36031fc6557794b`
+(`/home/benjamin/Documents/Zotero/storage/8YXTY5UA/Gabbay et al. - 2003 - Many-Dimensional Modal
+Logics Theory and Applications.pdf`).
+
+See `reports/02_ocr-semantic-gate-evidence.md`'s "Phase 6 — Post-Ingest Chunk Verification"
+section for the post-ingest hand-read verification, mojibake sweep, and retrieval check that
+followed this exception.
