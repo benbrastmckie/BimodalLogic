@@ -11,7 +11,7 @@ next_project_number: 456
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,193,231,257,298,413,421,423,424,437,445,450,451,455 | -- | completeness, decidability, frame-extensions, ... |
+| 1 | 125,127,128,193,231,257,298,413,421,423,424,437,445,451,455 | -- | completeness, decidability, frame-extensions, ... |
 | 2 | 178,219,282,296,422,425,436,446 | 193,231,298,421,423,437,445 | decidability, formula-refactor, publication-quality, ... |
 | 3 | 169,434,447 | 422,436,446 | decidability, publication-quality, strong_completeness |
 | 4 | 362,432 | 169,424,434 | decidability, strong_completeness |
@@ -95,10 +95,6 @@ next_project_number: 456
   └─ 425 [NOT STARTED] — Convert the informal argument at FormalSystem/Metalogic/StrongCom
 424 [NOT STARTED] — RE-ISSUED 2026-08-18 (description rewrite only; status remains `n
   └─ 362 [NOT STARTED] — Implement the completeness capstone under the SETTLED TERMINOLOGY (see above)
-
-### Proof System Infrastructure
-
-450 [IMPLEMENTING] — FRAME-CLASS UNIFORMITY: parameterise the restricted-MCS layer (an
 
 ### Repo Hygiene
 
@@ -640,12 +636,12 @@ Because archived files are never compiled, a broken import here is SILENT -- no 
 
 ### 450. Frame class parameterization restricted mcs
 - **Effort**: high
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: proof-system-infrastructure
 - **Dependencies**: Task 453
-- **Research**: [450_frame_class_parameterization_restricted_mcs/reports/01_frame-class-parameterization-research.md]
 - **Plan**: [450_frame_class_parameterization_restricted_mcs/plans/01_frame-class-uniformity-plan.md]
+- **Research**: [450_frame_class_parameterization_restricted_mcs/reports/02_frame-class-base-audit.md]
 
 **Description**: FRAME-CLASS UNIFORMITY: parameterise the restricted-MCS layer (and the derived-theorem libraries beneath it) by FrameClass, removing ad hoc FrameClass.Base pins repo-wide.
 
