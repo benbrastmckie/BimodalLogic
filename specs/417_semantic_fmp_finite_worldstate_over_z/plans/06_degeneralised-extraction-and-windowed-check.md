@@ -463,7 +463,7 @@ declaration listed is consumed by Phases 10.1–10.3.
 
 ---
 
-### Phase 10.1: The realised-datum graph and the splice lemma [NOT STARTED]
+### Phase 10.1: The realised-datum graph and the splice lemma [COMPLETED]
 
 **Goal**: a finite type of pigeonhole data with a computed cardinality, the realised-step relation
 over it, and the lemma that any walk of realised edges induces a `LocalCoherentSeq` label sequence.
