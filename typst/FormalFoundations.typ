@@ -415,10 +415,60 @@ constrains is the points of evaluation, not the propositions.
   though $square.stroked$ is only interpreted once S5 is fused with BX below.
 ]#footnote[Seventeen named keys: two rules (TN, TD), three seriality/linearity/connectedness axioms (TB, TL, CN), eight primary Since/Until axioms (TA, UE, UT, UI, UC, UF, UG, SU), and four uniformity axioms (NP, NF, NA, NB).]
 
-// FIX: everything in the remainder of this section is inadequate and needs to do a much better job of presenting what is carefully presented in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex to provide a systematic account of the various proof systems, clearly defining each.
-$op("TM")^+$, the base logic for $#BLplus$, is $"S5" + "BX" + "MF"$, where MF is
-$square.stroked phi.alt arrow.r square.stroked #allfuture phi.alt$, the sole bimodal-interaction
-axiom. Its three frame-class extensions add the axioms below.
+#definition($op("TM")^+$)[
+  $op("TM")^+$, the base logic for $#BLplus$, is the smallest extension of S5 and BX to include
+  all instances of the sole bimodal-interaction axiom:
+  #items[
+    + *MF*: $square.stroked phi.alt arrow.r square.stroked #allfuture phi.alt$.
+  ]
+]
+
+#definition($"BX"_f$)[
+  The *Discrete Burgess--Xu Tense Logic* $"BX"_f$ is the smallest extension of BX to include all
+  instances of:
+  #items[
+    + *UZ*: $#somefuture phi.alt arrow.r (not phi.alt #until phi.alt)$.
+    + *Z1*: $#allfuture (#allfuture phi.alt arrow.r phi.alt) arrow.r (#somefuture #allfuture phi.alt arrow.r #allfuture phi.alt)$.
+  ]
+  UZ asserts that if $phi.alt$ holds at some future time, there is a *nearest* future
+  $phi.alt$-time with $not phi.alt$ throughout the intervening interval. Z1 is a backward
+  induction principle characteristic of successor-Archimedean frames: by Hölder's theorem a
+  nontrivial discrete Archimedean totally ordered abelian group is isomorphic to $ZZ$, so the
+  successor-Archimedean discrete class to which $"BX"_f$ and $op("TM")^+_f$ are sound and
+  complete is exactly $ZZ$-time.
+]
+
+#definition($"BX"_d$)[
+  The *Dense Burgess--Xu Tense Logic* $"BX"_d$ is the smallest extension of BX to include all
+  instances of:
+  #items[
+    + *DN*: $#allfuture #allfuture phi.alt arrow.r #allfuture phi.alt$.
+    + *NN*: $not #Nxt top$.
+  ]
+  DN coincides with TM's DN below; NN is specific to the $#BLplus$ level and asserts that no time
+  has an immediate successor.
+]
+
+#definition($"BX"_c$)[
+  Let $K^+ phi.alt := not (not phi.alt #until top)$ and $K^- phi.alt := not (not phi.alt #since top)$,
+  read *"$phi.alt$ recurs arbitrarily soon in the future"* and *"$phi.alt$ recurred arbitrarily
+  recently in the past"* respectively. The *Complete Burgess--Xu Tense Logic* $"BX"_c$ is the
+  smallest extension of BX to include all instances of:
+  #items[
+    + *Prior-U*: $(phi.alt #until top) and #somefuture not phi.alt arrow.r phi.alt #until (not phi.alt or K^+ not phi.alt)$.
+    + *Sep*: $K^+ phi.alt and not K^+ (phi.alt and (not phi.alt #until phi.alt)) arrow.r K^+ (K^+ phi.alt and K^- phi.alt)$.
+  ]
+  Only the future/until direction of Prior-U is stated; its past/since direction follows by TD.
+  The following restates CO from TM below, and is a *derived theorem* of $"BX"_c$ from Prior-U
+  and the base BX axioms, not a further axiom, so it may be omitted from the extension:
+  #items[
+    + *CO*: $#always (#somepast phi.alt arrow.r #somefuture #somepast phi.alt) arrow.r (#somepast phi.alt arrow.r #allfuture phi.alt)$.
+  ]
+]
+
+Similarly, $op("TM")^+_f$, $op("TM")^+_d$, and $op("TM")^+_c$ extend $op("TM")^+$ with the
+additional axioms that distinguish $"BX"_f$, $"BX"_d$, and $"BX"_c$ respectively: $op("TM")^+_f$
+adds UZ and Z1, $op("TM")^+_d$ adds DN and NN, and $op("TM")^+_c$ adds Prior-U and Sep.
 
 #figure(
   table(
@@ -426,13 +476,13 @@ axiom. Its three frame-class extensions add the axioms below.
     table.hline(), table.header([*System*],[*Additional axioms*]), table.hline(),
     [$op("TM")^+_f$], [UZ, Z1 (backward induction; successor-Archimedean, hence $ZZ$-time by Hölder's theorem)],
     [$op("TM")^+_d$], [DN ($#allfuture#allfuture phi.alt arrow.r #allfuture phi.alt$), NN ($not #Nxt top$)],
-    [$op("TM")^+_c$], [the *Reynolds triple* Prior-U, Prior-S, Sep; CO is a derived theorem, not a further axiom],
+    [$op("TM")^+_c$], [Prior-U, Sep; CO is a derived theorem, not a further axiom],
     table.hline(),
   ),
   caption: [The three frame-class extensions of $op("TM")^+$.],
 )
 #leansrc("ProofSystem", "FrameClass")
-#footnote[Whether CO alone axiomatizes the same $#BLplus$-logic as the full Reynolds triple is open.]
+#footnote[Whether CO alone axiomatizes the same $#BLplus$-logic as Prior-U and Sep together is open.]
 
 By Hölder's theorem a nontrivial discrete Archimedean totally ordered abelian group is isomorphic
 to $ZZ$, and a nontrivial Dedekind-complete one is Archimedean and so isomorphic to $ZZ$ or $RR$.
@@ -815,7 +865,7 @@ not arise.
 #leansrc("Metalogic.WeakCanonical", "kEquiv_shuffle_shuffleReal")
 #leansrc("Metalogic.WeakCanonical", "epsDense_isContempEquiv")
 #leansrc("Metalogic.WeakCanonical", "orderIsoRealOfDedekindDenseSeparable")
-#footnote[The basis is the Reynolds triple Prior-U, Prior-S, and Sep, with CO derived.]
+#footnote[The basis is Prior-U and Sep, with CO derived.]
 
 The engine is `completeness_dedekind_engine`. Its consequence form,
 `consequence_completeness_dedekind`, is what the development calls *consequence completeness*

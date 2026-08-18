@@ -360,37 +360,37 @@ Phase 1 record before writing.
 
 ---
 
-### Phase 5: Systematic Account of the BL+ Proof Systems (`:369`, part 1) [NOT STARTED]
+### Phase 5: Systematic Account of the BL+ Proof Systems (`:369`, part 1) [COMPLETED]
 
 **Goal**: Replace the compressed remainder of the Proof Systems section with system-by-system
 definitions of TM+, BX_f, BX_d, BX_c, and TM+_f/d/c, every additional axiom stated in full.
 
 **Tasks**:
-- [ ] Re-grep `FIX: everything in the remainder of this section` to locate the target region; its
+- [x] Re-grep `FIX: everything in the remainder of this section` to locate the target region; its
       lower bound is the Hölder paragraph, its upper bound the FIX tag.
-- [ ] Add `#definition("TM+")`: the smallest extension of S5 and BX including all instances of MF
+- [x] Add `#definition("TM+")`: the smallest extension of S5 and BX including all instances of MF
       (`□φ → □Gφ`), displayed, named as the sole bimodal-interaction axiom. Keep the existing
       framing that it is the base logic for `#BLplus`.
-- [ ] Add `#definition("BX_f")` (*Discrete Burgess--Xu Tense Logic*) = BX + UZ, Z1, both stated in
+- [x] Add `#definition("BX_f")` (*Discrete Burgess--Xu Tense Logic*) = BX + UZ, Z1, both stated in
       full, with the paper's glosses (UZ: nearest future witness with ¬φ throughout the intervening
       interval; Z1: backward induction, characteristic of successor-Archimedean frames).
-- [ ] Add `#definition("BX_d")` (*Dense Burgess--Xu Tense Logic*) = BX + DN, NN, both stated in
+- [x] Add `#definition("BX_d")` (*Dense Burgess--Xu Tense Logic*) = BX + DN, NN, both stated in
       full, noting DN coincides with TM's DN and NN is specific to the BL+ level.
-- [ ] Add `#definition("BX_c")` (*Complete Burgess--Xu Tense Logic*) = BX + Prior-U, Sep, both
+- [x] Add `#definition("BX_c")` (*Complete Burgess--Xu Tense Logic*) = BX + Prior-U, Sep, both
       stated in full, with the K⁺/K⁻ abbreviations defined first
       (`K⁺φ := ¬(¬φ ▷ ⊤)`, `K⁻φ := ¬(¬φ ◁ ⊤)`) and their readings given. State that CO is a
       **derived theorem** of BX_c from Prior-U and the BX base, not a further axiom.
-- [ ] State TM+_f, TM+_d, TM+_c as TM+ plus the axioms that distinguish BX_f, BX_d, BX_c
+- [x] State TM+_f, TM+_d, TM+_c as TM+ plus the axioms that distinguish BX_f, BX_d, BX_c
       respectively.
-- [ ] Retain the summary `#figure(table(...))` but correct the TM+_c row: replace "the *Reynolds
+- [x] Retain the summary `#figure(table(...))` but correct the TM+_c row: replace "the *Reynolds
       triple* Prior-U, Prior-S, Sep" — the paper postulates Prior-U and Sep only, the since
       direction following by TD. Adjust the trailing footnote about CO accordingly if it presupposes
       the triple.
-- [ ] Retain the Hölder paragraph unchanged; it is accurate against tex:3877 and tex:3916-3918.
-- [ ] Keep the existing `#leansrc("ProofSystem", "FrameClass")` reference in place.
-- [ ] **Constraint (research Decision 2)**: transcribe definitions only. Do not import any
+- [x] Retain the Hölder paragraph unchanged; it is accurate against tex:3877 and tex:3916-3918.
+- [x] Keep the existing `#leansrc("ProofSystem", "FrameClass")` reference in place.
+- [x] **Constraint (research Decision 2)**: transcribe definitions only. Do not import any
       completeness claim from `cor:tm-completeness`; do not cite `cor:tm-decidability`.
-- [ ] Delete the FIX tag.
+- [x] Delete the FIX tag.
 
 **Timing**: 1.5 hours
 
