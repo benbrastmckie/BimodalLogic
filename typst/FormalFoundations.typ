@@ -338,10 +338,9 @@ The cones are a basis for a topology on world states, and that topology is separ
 #leansrc("Semantics", "TruthAt")
 #footnote[Evaluating at a possible world paired with a time, with truth at that time mediated by the world state occupied there, is an instance of Scott's proposal @scott1970advice that the index of evaluation be a structured point of reference and not a bare world.]
 
-// FIX:
-// The semantic clause for $square.stroked$ quantifies over all possible worlds of the frame.
-// It is not a relational modality with an accessibility relation to be tuned: the frame fixes $H_(#taskframe)$, and $square.stroked$ ranges over that set entire.
-// Its logic is correspondingly S5, and @sec:objective-modality takes up what else, beyond being S5, is needed to single it out.
+The semantic clause for $square.stroked$ quantifies over all possible worlds of the frame.
+It is not a relational modality with an accessibility relation to be tuned: the frame fixes $H_(#taskframe)$, and $square.stroked$ ranges over that set entire.
+Its logic is correspondingly S5, and @sec:objective-modality takes up what else, beyond being S5, is needed to single it out.
 
 #definition("Frame Properties")[
   A frame is *Discrete* if every $x in D$ having some $y > x$ has a least such; *Dense* if
@@ -355,21 +354,20 @@ The cones are a basis for a topology on world states, and that topology is separ
 #footnote[The first three constrain $#Dur$; the fourth constrains $arrow.r.double.long$.]
 
 #definition("Validity and Consequence")[
-  // $#taskframe #satisfies phi.alt$ just in case $#model, tau, x #satisfies phi.alt$ for every model
-  // $#model$ on $#taskframe$, every $tau in H_(#taskframe)$, and every $x in D$. And
+  $#taskframe #satisfies phi.alt$ just in case $#model, tau, x #satisfies phi.alt$ for every model
+  $#model$ on $#taskframe$, every $tau in H_(#taskframe)$, and every $x in D$. And
   $Gamma #satisfies phi.alt$ just in case $phi.alt$ is true in every model, at every possible world, and time at which every
   member of $Gamma$ is true; $phi.alt$ is *valid* when $#satisfies phi.alt$.
 ]
 #leansrc("Semantics", "valid")
 #leansrc("Semantics", "SemanticConsequence")
 
-// FIX:
-// By Occurrence $H_(#taskframe)$ is never empty, so frame validity is never vacuous and
-// $#taskframe #notsatisfies bot$ for every frame. Fixing $H_(#taskframe)$ with the frame does not
-// make $#taskframe$ a *general frame* in the sense of Blackburn, de Rijke, and Venema
-// @blackburnderijkevenema2001: a general frame restricts the admissible valuations to a designated
-// subalgebra, whereas here every $|p_i| subset.eq #worldstate$ is admissible. What the frame
-// constrains is the points of evaluation, not the propositions.
+By Occurrence $H_(#taskframe)$ is never empty, so frame validity is never vacuous and
+$#taskframe #notsatisfies bot$ for every frame. Fixing $H_(#taskframe)$ with the frame does not
+make $#taskframe$ a *general frame* in the sense of Blackburn, de Rijke, and Venema
+@blackburnderijkevenema2001: a general frame restricts the admissible valuations to a designated
+subalgebra, whereas here every $|p_i| subset.eq #worldstate$ is admissible. What the frame
+constrains is the points of evaluation, not the propositions.
 
 == Proof Systems
 

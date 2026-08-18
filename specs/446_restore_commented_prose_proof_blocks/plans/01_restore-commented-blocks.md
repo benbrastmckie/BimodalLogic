@@ -272,31 +272,35 @@ abstract makes.
 
 ---
 
-### Phase 4: Restore Sites 5-6 and the Frame-Validity Clause [NOT STARTED]
+### Phase 4: Restore Sites 5-6 and the Frame-Validity Clause [COMPLETED]
 
 **Goal**: Restore the box-modality/S5 paragraph and the general-frame contrast paragraph, together
 with the frame-validity clause that Scope Decision 2 established the latter depends on.
 
 **Tasks**:
-- [ ] **Site 5** (anchor: the bare `// FIX:` above
+- [x] **Site 5** (anchor: the bare `// FIX:` above
       `// The semantic clause for $square.stroked$ quantifies over all possible worlds`,
       pre-change line 345). Delete the tag line and uncomment the three-sentence paragraph.
-- [ ] **Frame-validity clause** (anchor: the two commented lines beginning
+      *(completed)*
+- [x] **Frame-validity clause** (anchor: the two commented lines beginning
       `// $#taskframe #satisfies phi.alt$ just in case` inside the live
       `#definition("Validity and Consequence")[`, pre-change lines 362-363). Uncomment both lines.
       They form the definition's first clause and end in a trailing "And" that must chain into the
       existing live `$Gamma #satisfies phi.alt$ just in case ...` sentence. After uncommenting,
       **read the assembled definition end-to-end as one sentence** and confirm it is grammatical
       and non-duplicative. If the join reads badly, prefer the smallest repair that keeps both
-      clauses (e.g. adjusting capitalization at the seam) over dropping either.
-- [ ] **Site 6** (anchor: the bare `// FIX:` above
+      clauses (e.g. adjusting capitalization at the seam) over dropping either. *(completed: read
+      end-to-end, grammatical and non-duplicative, no repair needed; Scope Hypothesis re-confirmed
+      before editing — lines 862/877 are uses, not a competing definition)*
+- [x] **Site 6** (anchor: the bare `// FIX:` above
       `// By Occurrence $H_(#taskframe)$ is never empty`, pre-change line 370). Delete the tag line
       and uncomment the full paragraph including the `@blackburnderijkevenema2001` citation.
-- [ ] Confirm the coherence this phase exists to secure: the phrase "frame validity" and the
+      *(completed)*
+- [x] Confirm the coherence this phase exists to secure: the phrase "frame validity" and the
       notation `$#taskframe #notsatisfies bot$` in Site 6 must now both be backed by the
       frame-validity clause restored above. Verify by reading, not by compiling — the compile
-      cannot detect this class of defect.
-- [ ] Compile and commit.
+      cannot detect this class of defect. *(completed)*
+- [x] Compile and commit. *(completed: exit 0, baseline warnings only; bare-tag count now 0)*
 
 **Timing**: 0.6 hours
 

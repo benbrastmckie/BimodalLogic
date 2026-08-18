@@ -1,0 +1,17 @@
+{
+  "phase": 4,
+  "phase_name": "Restore Sites 5-6 and the Frame-Validity Clause",
+  "started_at": "2026-08-18T00:40:00Z",
+  "last_updated": "2026-08-18T00:50:00Z",
+  "objectives": [
+    {"id": 1, "description": "Restore Site 5 (box-modality/S5 paragraph)", "status": "done", "files_touched": ["typst/FormalFoundations.typ"]},
+    {"id": 2, "description": "Restore the frame-validity clause (Scope Decision 2)", "status": "done", "files_touched": ["typst/FormalFoundations.typ"]},
+    {"id": 3, "description": "Restore Site 6 (general-frame contrast paragraph)", "status": "done", "files_touched": ["typst/FormalFoundations.typ"]},
+    {"id": 4, "description": "Confirm coherence: frame validity notion backed by definition, read not compiled", "status": "done", "files_touched": []},
+    {"id": 5, "description": "Compile and commit", "status": "done", "files_touched": []}
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "notes": "Scope Hypothesis confirmed before editing: grep 'taskframe #satisfies|frame validity|frame-valid' showed only pre-existing USES of the notion at lines 862/877 (a proposition and remark presupposing frame validity is defined), never a live definition -- confirming the commented 362-363 fragment was the sole definitional home. Restored it inside the live 'Validity and Consequence' definition. Read the assembled definition end-to-end: 'frame validity ... just in case ... And Gamma-satisfies-phi just in case ...' -- grammatical, non-duplicative two-clause definition, no repair needed. typst compile exit 0, baseline warnings only. Bare-tag count now 0; grep FIX: shows exactly the 6 explanatory tags at lines 260, 282, 375, 384, 391, 417 (line numbers shifted from Phase 1's 261/285/381/390/397/423 due to added lines from restorations, but content is byte-identical -- confirmed matches Phase 1 recorded explanatory set)."
+}
