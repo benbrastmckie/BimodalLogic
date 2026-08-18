@@ -237,7 +237,7 @@ chunk counts, is a signal to stop and re-read the corpus, not to proceed silentl
 
 ---
 
-### Phase 2: Manual fidelity adjudication — the ten entries that sampled clean [NOT STARTED]
+### Phase 2: Manual fidelity adjudication — the ten entries that sampled clean [COMPLETED]
 
 **Goal**: Reach and record a hand-read `provenance_fidelity` verdict for the ten entries the research
 sampled as clean, and capture `doc_type` evidence from the same reads. Evidence-gathering only; no
@@ -249,25 +249,25 @@ The ten: `brics-rs-96-35`, `brics-rs-94-7`, `cattani-winskel-2005-profunctors`,
 `jacobs-coalgebra-intro-draft`, `danos-krivine-rccs`, `rumberg-zanardo-2019-transition-structures`.
 
 **Tasks**:
-- [ ] **Manual read gate (hard precondition)**: for each of the ten, open and read by hand at least
+- [x] **Manual read gate (hard precondition)**: for each of the ten, open and read by hand at least
       two `chunk_*.md` files — one early content chunk (`chunk_0001.md` or `chunk_0002.md`;
       `chunk_0000.md` is 0 bytes for all twelve, an expected title-page artifact, and does not count)
       and one from the middle of the document. **If any document cannot be read and judged, this
       phase BLOCKS for that document — it does not stamp.**
-- [ ] For each, record in `data/adjudication.tsv`: `id`, the chunk filenames read, a one-line prose
+- [x] For each, record in `data/adjudication.tsv`: `id`, the chunk filenames read, a one-line prose
       verdict in the implementer's own words, and the proposed `provenance_fidelity` value drawn from
       the existing corpus enum (Decision 3)
-- [ ] While reading, capture `doc_type` evidence from the document itself — a series line ("BRICS
+- [x] While reading, capture `doc_type` evidence from the document itself — a series line ("BRICS
       Report Series RS-96-35"), a running header, a preface, a journal masthead — and record it in a
       `doc_type_evidence` column. This is the cheapest place to get it, since the chunks are already
       open
-- [ ] Note explicitly where the implementer's verdict **disagrees** with the research report's
+- [x] Note explicitly where the implementer's verdict **disagrees** with the research report's
       sampling; the implementer's read wins, and the disagreement is recorded rather than smoothed
       over
-- [ ] Record for `jacobs-coalgebra-intro-draft` whether the repeated "FT" token the research observed
+- [x] Record for `jacobs-coalgebra-intro-draft` whether the repeated "FT" token the research observed
       is a watermark/footer artifact or genuine content corruption, since it is the one clean-sampled
       entry with a named anomaly
-- [ ] Write `progress/phase-2-progress.json` capturing the ten verdicts
+- [x] Write `progress/phase-2-progress.json` capturing the ten verdicts
 
 **Timing**: 1.5 hours
 
@@ -297,7 +297,7 @@ rather than being forced into a clean stamp to preserve the phase's framing.
 
 ---
 
-### Phase 3: Manual fidelity adjudication — the two OCR-degraded entries [NOT STARTED]
+### Phase 3: Manual fidelity adjudication — the two OCR-degraded entries [COMPLETED]
 
 **Goal**: Reach a defensible, recorded `provenance_fidelity` verdict for
 `rutten-2000-universal-coalgebra` and `reynolds-2003-ockhamist`, the two entries the research found
@@ -305,26 +305,26 @@ to carry real OCR degradation, and decide explicitly whether the existing enum c
 `reynolds` symptom. Evidence-gathering only; no index mutation.
 
 **Tasks**:
-- [ ] **Manual read gate (hard precondition)**: read by hand at least four `chunk_*.md` files per
+- [x] **Manual read gate (hard precondition)**: read by hand at least four `chunk_*.md` files per
       document, spread across the document (for `rutten`, the research found symptoms at 0005, 0020,
       0040, 0060; choose an at-least-partly different spread so the finding is independently tested).
       **If either document cannot be read and judged, this phase BLOCKS for it — it does not stamp.**
-- [ ] For `rutten-2000-universal-coalgebra`: assess whether prose meaning is recoverable despite the
+- [x] For `rutten-2000-universal-coalgebra`: assess whether prose meaning is recoverable despite the
       running-header bleed and corrupted words ("mnning", "detenninistic"), and whether notation
       degradation is confined to formulas or pervades prose. Record the verdict with quoted excerpts
-- [ ] For `reynolds-2003-ockhamist`: assess the systematic dropped-letter pattern that affects
+- [x] For `reynolds-2003-ockhamist`: assess the systematic dropped-letter pattern that affects
       ordinary prose and the paper's own title ("Logi of Histori al Ne essity"), not only formulas.
       Record with quoted excerpts
-- [ ] **Enum-adequacy decision (recorded deliverable)**: state whether the six-value corpus enum can
+- [x] **Enum-adequacy decision (recorded deliverable)**: state whether the six-value corpus enum can
       express the `reynolds` symptom. The Phase 6 precedent used `unverified_conversion` for "prose
       coherent, formulas degraded"; `reynolds` is worse than that. Per Decision 3, do not invent a
       value — select the nearest existing value, record why the fit is imperfect, and flag the gap
       for the implementation summary
-- [ ] Record explicitly that `rutten`'s Zotero-stored PDF must **not** be used to assess conversion
+- [x] Record explicitly that `rutten`'s Zotero-stored PDF must **not** be used to assess conversion
       fidelity (Decision 2): it is a different copy from the one chunked, so a favourable comparison
       against it would prove nothing about these chunks
-- [ ] Capture `doc_type` evidence for both from the same reads
-- [ ] Append both rows to `data/adjudication.tsv`; write `progress/phase-3-progress.json`
+- [x] Capture `doc_type` evidence for both from the same reads
+- [x] Append both rows to `data/adjudication.tsv`; write `progress/phase-3-progress.json`
 
 **Timing**: 1.0 hours
 

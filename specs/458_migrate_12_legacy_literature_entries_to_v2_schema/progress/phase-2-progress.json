@@ -1,0 +1,27 @@
+{
+  "phase": 2,
+  "phase_name": "Manual fidelity adjudication -- the ten entries that sampled clean",
+  "started_at": "2026-08-18T13:56:00Z",
+  "last_updated": "2026-08-18T14:10:00Z",
+  "objectives": [
+    {"id": 1, "description": "Manual read gate: open and hand-read at least 2 chunk_*.md files per document (10 entries)", "status": "done", "files_touched": []},
+    {"id": 2, "description": "Record id, chunk filenames read, one-line verdict, proposed provenance_fidelity in data/adjudication.tsv", "status": "done", "files_touched": ["specs/458_migrate_12_legacy_literature_entries_to_v2_schema/data/adjudication.tsv"]},
+    {"id": 3, "description": "Capture doc_type evidence from the reads", "status": "done", "files_touched": ["specs/458_migrate_12_legacy_literature_entries_to_v2_schema/data/adjudication.tsv"]},
+    {"id": 4, "description": "Note disagreements with research report sampling", "status": "done", "files_touched": ["specs/458_migrate_12_legacy_literature_entries_to_v2_schema/data/adjudication.tsv"]},
+    {"id": 5, "description": "Record whether jacobs-coalgebra-intro-draft's repeated FT token is watermark or corruption", "status": "done", "files_touched": ["specs/458_migrate_12_legacy_literature_entries_to_v2_schema/data/adjudication.tsv"]},
+    {"id": 6, "description": "Write progress/phase-2-progress.json", "status": "done", "files_touched": ["specs/458_migrate_12_legacy_literature_entries_to_v2_schema/progress/phase-2-progress.json"]}
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": [
+    {
+      "task_id": "2.reclassification",
+      "description": "thomason-1970-indeterminist-time was expected by the research report to sample clean, along with the other nine.",
+      "type": "altered",
+      "reason": "Hand read across 10 chunks (0001, 0002, 0005, 0010, 0020, 0030, 0038, 0050, 0060, 0070) found genuine OCR letter-substitution errors (\"unadomed\" for \"unadorned\", an rn-to-m misread matching the same artifact family documented for rutten-2000-universal-coalgebra's \"mnning\"/\"detenninistic\"), a proper-name misread (\"Prier\" for \"Prior\"), heavy semantic-value-function notation corruption throughout, and two-column layout interleaving. Per the plan's Phase 2 Scope Hypothesis (\"an entry that reads as degraded moves to a degraded verdict here rather than being forced into a clean stamp to preserve the phase's framing\") and the contingency table (\"that entry's verdict stays in Phase 2's file and this phase's count is recorded as having grown\"), this entry is recorded here with a degraded verdict (proposed provenance_fidelity: unverified_conversion) rather than moved to Phase 3.",
+      "annotation": "*(deviation: altered -- reclassified from expected-clean to degraded on hand read; see data/adjudication.tsv)*"
+    }
+  ],
+  "notes": "Nine of the ten entries confirmed clean on hand read (verified_conversion) matching the research's sampling: brics-rs-96-35, brics-rs-94-7, cattani-winskel-2005-profunctors, schultz-spivak-temporal-type-theory, fong-speranzon-spivak-temporal-landscapes, schultz-spivak-vasilakopoulou-dynamical-systems-sheaves, jacobs-coalgebra-intro-draft, danos-krivine-rccs. rumberg-zanardo-2019-transition-structures reads clean in prose but has isolated dropped relation-symbol glyphs consistent with a born-digital PDF's custom math-font extraction gap (not OCR letter-misreading), so it is stamped unverified_conversion rather than verified_conversion -- a finer distinction than 'clean' vs 'degraded', recorded explicitly in adjudication.tsv. thomason-1970-indeterminist-time is reclassified from the research's expected-clean bucket to degraded (unverified_conversion) after a 10-chunk hand read found genuine rn/m OCR misreads and heavy formula corruption; this is now effectively a third degraded entry alongside Phase 3's two, per the plan's own contingency for this exact situation. jacobs-coalgebra-intro-draft's repeated 'FT'/'RA' tokens confirmed as a diagonal DRAFT-watermark extraction artifact confined to front-matter chunks, not content corruption -- Phase 2's specific task item on this point is resolved."
+}
