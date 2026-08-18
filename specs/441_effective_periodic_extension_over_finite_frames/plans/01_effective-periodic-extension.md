@@ -545,28 +545,73 @@ carrying `Classical.choice` identically) before escalating.
 
 ---
 
-### Phase 4: Backward mirror and window assembly into a `PlacedBiLasso` [NOT STARTED]
+### Phase 4: Backward mirror and window assembly into a `PlacedBiLasso` [COMPLETED]
 
 **Goal**: The backward mirror of Phase 3, and the assembly function that turns a contiguous window
 plus both orbit decompositions into a `PlacedBiLasso P` with `coherent` discharged.
 
 **Tasks**:
-- [ ] `orbit_repeat_pred`, `bwdTail`, `bwdCycle`, `bwdCycle_ne_nil`, and the mirrored adjacency and
-      length lemmas — the exact mirror of Phase 3 via `predOf` / `iterPred`.
-- [ ] Fix the segment layout explicitly and document it in a comment, since `BiLasso`'s field
+- [x] `orbit_repeat_pred`, `bwdTail`, `bwdCycle`, `bwdCycle_ne_nil`, and the mirrored adjacency and
+      length lemmas — the exact mirror of Phase 3 via `predOf` / `iterPred`. *(landed in the
+      Phase 3 pass; see the Phase 3 Note)*
+- [x] Fix the segment layout explicitly and document it in a comment, since `BiLasso`'s field
       conventions are positional: `back := bwdCycle` (indexed left-to-right in time,
       `back[|back|-1]` at `t = -1` relative to the lasso origin), `mid := reverse bwdTail ++ window
-      ++ fwdTail`, `fwd := fwdCycle` (`fwd[0]` at `t = |mid|`).
-- [ ] `def lassoOfWindow (P) (w : List (Fin P.card)) (hw : pairwise adjacency along w)
+      ++ fwdTail`, `fwd := fwdCycle` (`fwd[0]` at `t = |mid|`). *(landed as `windowBack` /
+      `windowMid` / `windowFwd` with the layout drawn in an `/-! -/` comment above them. The
+      `reverse` in `mid`'s spec is discharged inside `bwdTail`'s own definition, which is written
+      in increasing time order from the start — `bwdTail v i` maps list position `k` to orbit index
+      `i - 1 - k` — rather than by applying `List.reverse` to a decreasing-order list. Same list,
+      one fewer `List.reverse` to reason through.)*
+- [x] `def lassoOfWindow (P) (w : List (Fin P.card)) (hw : pairwise adjacency along w)
       (hne : w ≠ []) : BiLasso P` — assembling the three lists and discharging `back_ne`, `fwd_ne`,
       and `coherent`. Discharge `coherent` from the per-segment adjacency lemmas plus the seam
       lemmas (tail-to-window, window-to-tail, cycle wraparound), reusing
       `BiLasso.step_of_mem_window`'s shape as the model for index arithmetic.
-- [ ] `def placedOfWindow (P) (w) (hw) (hne) (origin : ℤ) : PlacedBiLasso P` — `lassoOfWindow`
+- [x] `def placedOfWindow (P) (w) (hw) (hne) (origin : ℤ) : PlacedBiLasso P` — `lassoOfWindow`
       paired with the origin adjusted for the backward tail's length, so that the window's first
       entry sits at the caller's absolute time.
-- [ ] `theorem placedOfWindow_unroll_window`: for every index `k` into `w`, the placed decoding at
+- [x] `theorem placedOfWindow_unroll_window`: for every index `k` into `w`, the placed decoding at
       the corresponding absolute time equals `w[k]`. This is the fidelity lemma Phase 6 consumes.
+
+#### Phase 4 Note — the seam count, recorded rather than absorbed
+
+**Scope Hypothesis check**: asserted that the backward half mirrors Phase 3 declaration-for-
+declaration (it does — see the Phase 3 Note) and that `coherent` is dischargeable "from per-segment
+adjacency plus three seam lemmas", with the instruction to *record the actual seam lemmas added
+rather than silently absorbing them*. Recorded:
+
+The five adjacency obligations are not landed as five separate lemmas. They are the five cases of
+one lemma, `windowPath_step`, over a named intended path `windowPath` — the window on its own
+times, the backward orbit strictly left of it, the forward orbit at or past its right end. The
+cases are, in order: within the backward orbit (`iterPred_step`), the **backward-to-window seam**
+(`predOf_step`), within the window (the caller's `hadj`), the **window-to-forward seam**
+(`succOf_step`), and within the forward orbit (`iterSucc_step`). So the plan's three seams are
+present and each is discharged by exactly the lemma the plan anticipated; what differs is that
+they are branches of one case analysis rather than three standalone statements, because all five
+share the same `if`-structure and splitting them would have meant repeating that structure five
+times.
+
+The **two wrap-arounds** are separate from those five and are handled where they actually belong,
+in `unrollOf_windowSegments` — the lemma identifying the three-segment decoding with `windowPath`
+across one full coherence window `[-|back| - 1, |mid| + |fwd|]`. The range is closed at the top
+precisely because `coherent`'s last index asks about one further time, and the two endpoints are
+exactly where the two repeat hypotheses `hbeq` and `hfeq` are spent. This is the plan's
+"cycle wraparound" seam, at both ends.
+
+`BiLasso.step_of_mem_window` is **not** consumed, and deliberately so: routing through
+`windowPath` means the decoding is identified with a step path first and adjacency read off
+second, so no index arithmetic against `coherent`'s `Fin` window is performed by hand at all. Its
+"shape as the model for index arithmetic" was therefore not needed.
+
+**Two API additions on the constructor, both recorded**: `lassoOfWindow` takes the two orbit
+repeats **as data** — the index pairs `(bi, bj)` and `(fi, fj)` plus their repeat proofs — rather
+than extracting them from `orbit_repeat`'s `Prop`-level existential. Extracting them would have
+made the constructor `noncomputable`, destroying the property Phase 2 exists to establish; the
+existentials are discharged once, in Phase 5's `extend_periodic`, which is where a `Prop`-level
+conclusion is wanted anyway. `Extend.lean` needed **no** API adjustment (the plan's conditional
+second file to modify): `PlacedBiLasso` as landed in Phase 1 was sufficient, so `Orbit.lean` is
+the only file this phase touched.
 
 **Timing**: 2 hours
 

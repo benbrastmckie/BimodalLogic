@@ -261,6 +261,394 @@ theorem bwdCycle_wrap {w : Fin P.card} {i j : ℕ} (hij : i < j)
   rw [h, show j = (j - 1) + 1 by omega]
   exact P.iterPred_step w (j - 1)
 
+
+/-! ## The intended path of a window
+
+Assembling a `BiLasso` from a window means writing down three lists whose decoding is a
+particular bi-infinite path: the window on its own times, the backward orbit strictly before it,
+the forward orbit strictly after it. That path is worth naming, because every adjacency obligation
+the assembly incurs — the two within-segment chains, the two seams, and both wrap-arounds —
+reduces to a statement about it.
+-/
+
+/-- The first entry of the window. -/
+def winHead (P : IntPresentation) (win : List (Fin P.card)) : Fin P.card := win.getD 0 default
+
+/-- The last entry of the window. -/
+def winLast (P : IntPresentation) (win : List (Fin P.card)) : Fin P.card :=
+  win.getD (win.length - 1) default
+
+/-- The state immediately **before** the window: the chosen predecessor of its first entry. This
+is the backward orbit's basepoint, sitting at absolute time `origin - 1`. -/
+def winPred (P : IntPresentation) (win : List (Fin P.card)) : Fin P.card :=
+  P.predOf (P.winHead win)
+
+/-- The state immediately **after** the window: the chosen successor of its last entry. This is the
+forward orbit's basepoint, sitting at absolute time `origin + |win|`. -/
+def winSucc (P : IntPresentation) (win : List (Fin P.card)) : Fin P.card :=
+  P.succOf (P.winLast win)
+
+/--
+**The intended path.** The window `win` occupies the absolute times
+`[origin, origin + |win|)`; strictly to its left the path runs the backward orbit out of
+`winPred`, and at or past `origin + |win|` the forward orbit out of `winSucc`.
+-/
+def windowPath (P : IntPresentation) (win : List (Fin P.card)) (origin : ℤ) (t : ℤ) :
+    Fin P.card :=
+  if t < origin then P.iterPred (P.winPred win) (origin - 1 - t).toNat
+  else if t < origin + (win.length : ℤ) then win.getD (t - origin).toNat default
+  else P.iterSucc (P.winSucc win) (t - origin - (win.length : ℤ)).toNat
+
+/--
+**The intended path is a walk in the adjacency matrix**, at every integer time.
+
+The five cases are the whole adjacency story of the assembly: within the backward orbit, across
+the backward-to-window seam, within the window, across the window-to-forward seam, and within the
+forward orbit. The two seams are exactly where `predOf_step` and `succOf_step` are spent; the
+three within-segment cases are `iterPred_step`, the window's own hypothesis, and `iterSucc_step`.
+-/
+theorem windowPath_step (P : IntPresentation) {win : List (Fin P.card)} (hne : win ≠ [])
+    (hadj : ∀ k : ℕ, k + 1 < win.length →
+      P.step (win.getD k default) (win.getD (k + 1) default) = true)
+    (origin t : ℤ) :
+    P.step (P.windowPath win origin t) (P.windowPath win origin (t + 1)) = true := by
+  have hm : 0 < win.length := Nat.pos_of_ne_zero fun h => hne (List.eq_nil_of_length_eq_zero h)
+  have hmz : (0 : ℤ) < (win.length : ℤ) := by exact_mod_cast hm
+  rcases lt_or_ge t (origin - 1) with h1 | h1
+  · -- Within the backward orbit.
+    have ht : t < origin := by omega
+    have ht1 : t + 1 < origin := by omega
+    simp only [windowPath, if_pos ht, if_pos ht1]
+    rw [show (origin - 1 - t).toNat = (origin - 1 - (t + 1)).toNat + 1 by omega]
+    exact P.iterPred_step _ _
+  rcases eq_or_lt_of_le h1 with h2 | h2
+  · -- The backward-to-window seam.
+    have ht : t < origin := by omega
+    have ht1 : ¬ (t + 1 < origin) := by omega
+    have ht1' : t + 1 < origin + (win.length : ℤ) := by omega
+    simp only [windowPath, if_pos ht, if_neg ht1, if_pos ht1']
+    rw [show (origin - 1 - t).toNat = 0 by omega, show (t + 1 - origin).toNat = 0 by omega]
+    exact P.predOf_step _
+  -- From here on `origin ≤ t`.
+  have hge : origin ≤ t := by omega
+  have hnlt : ¬ (t < origin) := by omega
+  rcases lt_or_ge t (origin + (win.length : ℤ) - 1) with h3 | h3
+  · -- Within the window.
+    have ht : t < origin + (win.length : ℤ) := by omega
+    have ht1 : ¬ (t + 1 < origin) := by omega
+    have ht1' : t + 1 < origin + (win.length : ℤ) := by omega
+    simp only [windowPath, if_neg hnlt, if_pos ht, if_neg ht1, if_pos ht1']
+    rw [show (t + 1 - origin).toNat = (t - origin).toNat + 1 by omega]
+    exact hadj _ (by omega)
+  rcases eq_or_lt_of_le h3 with h4 | h4
+  · -- The window-to-forward seam.
+    have ht : t < origin + (win.length : ℤ) := by omega
+    have ht1 : ¬ (t + 1 < origin) := by omega
+    have ht1' : ¬ (t + 1 < origin + (win.length : ℤ)) := by omega
+    simp only [windowPath, if_neg hnlt, if_pos ht, if_neg ht1, if_neg ht1']
+    rw [show (t + 1 - origin - (win.length : ℤ)).toNat = 0 by omega,
+      show (t - origin).toNat = win.length - 1 by omega]
+    exact P.succOf_step _
+  · -- Within the forward orbit.
+    have ht : ¬ (t < origin + (win.length : ℤ)) := by omega
+    have ht1 : ¬ (t + 1 < origin) := by omega
+    have ht1' : ¬ (t + 1 < origin + (win.length : ℤ)) := by omega
+    simp only [windowPath, if_neg hnlt, if_neg ht, if_neg ht1, if_neg ht1']
+    rw [show (t + 1 - origin - (win.length : ℤ)).toNat
+        = (t - origin - (win.length : ℤ)).toNat + 1 by omega]
+    exact P.iterSucc_step _ _
+
+/-- The intended path reads the window directly on the window's own times. -/
+theorem windowPath_window (P : IntPresentation) (win : List (Fin P.card)) (origin : ℤ) {k : ℕ}
+    (hk : k < win.length) :
+    P.windowPath win origin (origin + (k : ℤ)) = win.getD k default := by
+  have h1 : ¬ (origin + (k : ℤ) < origin) := by omega
+  have h2 : origin + (k : ℤ) < origin + (win.length : ℤ) := by
+    have : (k : ℤ) < (win.length : ℤ) := by exact_mod_cast hk
+    omega
+  simp only [windowPath, if_neg h1, if_pos h2]
+  rw [show (origin + (k : ℤ) - origin).toNat = k by omega]
+
+/-! ## Assembly: the three segments
+
+The segment layout is fixed here, once, because `BiLasso`'s fields are positional and getting the
+convention wrong is silent:
+
+```
+   back = bwdCycle          mid = bwdTail ++ win ++ fwdTail          fwd = fwdCycle
+   (period, leftward)       (lasso times [0, |mid|))                 (period, rightward)
+```
+
+with the lasso's own time `0` sitting at absolute time `origin - |bwdTail|` — that is, at the
+earliest time the backward pre-period reaches, since everything strictly left of it is already
+covered by the periodic `back` segment.
+-/
+
+/-- The lasso's leftward cycle: the backward orbit's cycle, in increasing time order. -/
+def windowBack (P : IntPresentation) (win : List (Fin P.card)) (bi bj : ℕ) :
+    List (Fin P.card) := P.bwdCycle (P.winPred win) bi bj
+
+/-- The lasso's finite window: the backward pre-period, then the caller's window, then the forward
+pre-period. -/
+def windowMid (P : IntPresentation) (win : List (Fin P.card)) (bi fi : ℕ) :
+    List (Fin P.card) :=
+  P.bwdTail (P.winPred win) bi ++ (win ++ P.fwdTail (P.winSucc win) fi)
+
+/-- The lasso's rightward cycle: the forward orbit's cycle. -/
+def windowFwd (P : IntPresentation) (win : List (Fin P.card)) (fi fj : ℕ) :
+    List (Fin P.card) := P.fwdCycle (P.winSucc win) fi fj
+
+@[simp]
+theorem windowBack_length (P : IntPresentation) (win : List (Fin P.card)) (bi bj : ℕ) :
+    (P.windowBack win bi bj).length = bj - bi := by simp [windowBack]
+
+@[simp]
+theorem windowFwd_length (P : IntPresentation) (win : List (Fin P.card)) (fi fj : ℕ) :
+    (P.windowFwd win fi fj).length = fj - fi := by simp [windowFwd]
+
+@[simp]
+theorem windowMid_length (P : IntPresentation) (win : List (Fin P.card)) (bi fi : ℕ) :
+    (P.windowMid win bi fi).length = bi + win.length + fi := by
+  simp [windowMid, Nat.add_assoc]
+
+/-- The intended path is invariant under shifting the origin and the time together. -/
+theorem windowPath_shift (P : IntPresentation) (win : List (Fin P.card)) (o k t : ℤ) :
+    P.windowPath win (o + k) (t + k) = P.windowPath win o t := by
+  unfold windowPath
+  rw [show o + k - 1 - (t + k) = o - 1 - t by omega,
+    show t + k - (o + k) = t - o by omega]
+  by_cases h1 : t < o
+  · rw [if_pos (show t + k < o + k by omega), if_pos h1]
+  · rw [if_neg (show ¬ (t + k < o + k) by omega), if_neg h1]
+    by_cases h2 : t < o + (win.length : ℤ)
+    · rw [if_pos (show t + k < o + k + (win.length : ℤ) by omega), if_pos h2]
+    · rw [if_neg (show ¬ (t + k < o + k + (win.length : ℤ)) by omega), if_neg h2]
+
+/--
+**The three segments decode to the intended path**, throughout one full `coherent` window.
+
+This is the single lemma that discharges `BiLasso.coherent` for the assembly: once the decoding is
+known to agree with `windowPath` on `[-|back| - 1, |mid| + |fwd|]`, adjacency across that window is
+`windowPath_step` and nothing else.
+
+The range is closed at the top rather than half-open because `coherent`'s last index still asks
+about the time one step further, and it is exactly at the two endpoints that the two repeat
+hypotheses are spent — `hbeq` at `t = -|back| - 1`, where the leftward cycle wraps, and `hfeq` at
+`t = |mid| + |fwd|`, where the rightward cycle does.
+-/
+theorem unrollOf_windowSegments (P : IntPresentation) {win : List (Fin P.card)}
+    {bi bj fi fj : ℕ} (hbij : bi < bj)
+    (hbeq : P.iterPred (P.winPred win) bi = P.iterPred (P.winPred win) bj)
+    (hfij : fi < fj)
+    (hfeq : P.iterSucc (P.winSucc win) fi = P.iterSucc (P.winSucc win) fj)
+    {t : ℤ} (hlo : (bi : ℤ) - (bj : ℤ) - 1 ≤ t)
+    (hhi : t ≤ (bi : ℤ) + (win.length : ℤ) + (fj : ℤ)) :
+    BiLasso.unrollOf P (P.windowBack win bi bj) (P.windowMid win bi fi) (P.windowFwd win fi fj) t
+      = P.windowPath win (bi : ℤ) t := by
+  have hbl : ((P.windowBack win bi bj).length : ℤ) = (bj : ℤ) - (bi : ℤ) := by
+    rw [P.windowBack_length]; omega
+  have hml : ((P.windowMid win bi fi).length : ℤ)
+      = (bi : ℤ) + (win.length : ℤ) + (fi : ℤ) := by
+    rw [P.windowMid_length]; omega
+  have hfl : ((P.windowFwd win fi fj).length : ℤ) = (fj : ℤ) - (fi : ℤ) := by
+    rw [P.windowFwd_length]; omega
+  rcases lt_or_ge t 0 with hneg | hpos
+  · -- Left of the lasso origin: the leftward cycle.
+    simp only [BiLasso.unrollOf, if_pos hneg, BiLasso.cyc, hbl]
+    rw [windowPath, if_pos (show t < (bi : ℤ) by omega)]
+    rcases eq_or_lt_of_le hlo with hwrap | hin
+    · -- `t = -|back| - 1`: the leftward cycle wraps, and `hbeq` is what closes it.
+      have hr : t % ((bj : ℤ) - (bi : ℤ)) = (bj : ℤ) - (bi : ℤ) - 1 := by
+        have h1 : (t + ((bj : ℤ) - (bi : ℤ)) * 2) % ((bj : ℤ) - (bi : ℤ))
+            = t % ((bj : ℤ) - (bi : ℤ)) :=
+          Int.add_mul_emod_self_left _ _ _
+        rw [← h1, Int.emod_eq_of_lt (by omega) (by omega)]
+        omega
+      rw [hr, windowBack, P.bwdCycle_getD _ (by omega)]
+      rw [show bj - 1 - ((bj : ℤ) - (bi : ℤ) - 1).toNat = bi by omega, hbeq]
+      congr 1
+      omega
+    · -- `-|back| ≤ t < 0`: a direct read of the leftward cycle.
+      have hr : t % ((bj : ℤ) - (bi : ℤ)) = t + ((bj : ℤ) - (bi : ℤ)) := by
+        have h1 : (t + ((bj : ℤ) - (bi : ℤ)) * 1) % ((bj : ℤ) - (bi : ℤ))
+            = t % ((bj : ℤ) - (bi : ℤ)) :=
+          Int.add_mul_emod_self_left _ _ _
+        rw [← h1, Int.emod_eq_of_lt (by omega) (by omega)]
+        omega
+      rw [hr, windowBack, P.bwdCycle_getD _ (by omega)]
+      congr 1
+      omega
+  rcases lt_or_ge t ((bi : ℤ) + (win.length : ℤ) + (fi : ℤ)) with hmid | hfwd
+  · -- Inside the lasso's finite window.
+    simp only [BiLasso.unrollOf, if_neg (show ¬ (t < 0) by omega), hml, if_pos hmid]
+    rcases lt_or_ge t (bi : ℤ) with hb | hb
+    · -- The backward pre-period.
+      rw [windowMid, List.getD_append _ _ _ _ (by rw [P.bwdTail_length]; omega),
+        P.bwdTail_getD _ (by omega)]
+      rw [windowPath, if_pos hb]
+      congr 1
+      omega
+    rcases lt_or_ge t ((bi : ℤ) + (win.length : ℤ)) with hw | hw
+    · -- The caller's window.
+      rw [windowMid, List.getD_append_right _ _ _ _ (by rw [P.bwdTail_length]; omega),
+        List.getD_append _ _ _ _ (by rw [P.bwdTail_length]; omega)]
+      rw [windowPath, if_neg (show ¬ (t < (bi : ℤ)) by omega), if_pos hw]
+      rw [P.bwdTail_length]
+      congr 1
+      omega
+    · -- The forward pre-period.
+      rw [windowMid, List.getD_append_right _ _ _ _ (by rw [P.bwdTail_length]; omega),
+        List.getD_append_right _ _ _ _ (by rw [P.bwdTail_length]; omega),
+        P.bwdTail_length, P.fwdTail_getD _ (by omega)]
+      rw [windowPath, if_neg (show ¬ (t < (bi : ℤ)) by omega),
+        if_neg (show ¬ (t < (bi : ℤ) + (win.length : ℤ)) by omega)]
+      congr 1
+      omega
+  · -- Right of the lasso's window: the rightward cycle.
+    simp only [BiLasso.unrollOf, if_neg (show ¬ (t < 0) by omega), hml,
+      if_neg (show ¬ (t < (bi : ℤ) + (win.length : ℤ) + (fi : ℤ)) by omega), BiLasso.cyc, hfl]
+    rw [windowPath, if_neg (show ¬ (t < (bi : ℤ)) by omega),
+      if_neg (show ¬ (t < (bi : ℤ) + (win.length : ℤ)) by omega)]
+    rcases eq_or_lt_of_le hhi with hwrap | hin
+    · -- `t = |mid| + |fwd|`: the rightward cycle wraps, and `hfeq` closes it.
+      have hr : (t - ((bi : ℤ) + (win.length : ℤ) + (fi : ℤ))) % ((fj : ℤ) - (fi : ℤ)) = 0 := by
+        rw [show t - ((bi : ℤ) + (win.length : ℤ) + (fi : ℤ)) = ((fj : ℤ) - (fi : ℤ)) * 1 by omega]
+        simp
+      rw [hr, windowFwd, P.fwdCycle_getD _ (by omega)]
+      simp only [Int.toNat_zero, Nat.add_zero]
+      rw [hfeq]
+      congr 1
+      omega
+    · -- A direct read of the rightward cycle.
+      have hr : (t - ((bi : ℤ) + (win.length : ℤ) + (fi : ℤ))) % ((fj : ℤ) - (fi : ℤ))
+          = t - ((bi : ℤ) + (win.length : ℤ) + (fi : ℤ)) :=
+        Int.emod_eq_of_lt (by omega) (by omega)
+      rw [hr, windowFwd, P.fwdCycle_getD _ (by omega)]
+      congr 1
+      omega
+
+/-! ## The constructor
+
+`lassoOfWindow` takes the window **and the two repeats as data** — the pair of orbit indices in
+each direction, together with the proofs that they really are repeats. That is deliberate: a model
+checker's search is what finds those indices, and handing them in keeps the constructor a genuine
+computable `def` rather than something that must extract data from a `Prop`-level existential.
+`IntPresentation.extend_periodic` is where the existentials are discharged, once, by pigeonhole.
+-/
+
+/--
+**The bi-lasso of a contiguous window.** Three lists, assembled at the layout fixed above, with
+`back_ne` and `fwd_ne` from the two cycles' non-emptiness and `coherent` from
+`unrollOf_windowSegments` composed with `windowPath_step`.
+-/
+def lassoOfWindow (P : IntPresentation) (win : List (Fin P.card)) (hne : win ≠ [])
+    (hadj : ∀ k : ℕ, k + 1 < win.length →
+      P.step (win.getD k default) (win.getD (k + 1) default) = true)
+    {bi bj fi fj : ℕ} (hbij : bi < bj)
+    (hbeq : P.iterPred (P.winPred win) bi = P.iterPred (P.winPred win) bj)
+    (hfij : fi < fj)
+    (hfeq : P.iterSucc (P.winSucc win) fi = P.iterSucc (P.winSucc win) fj) :
+    BiLasso P where
+  back := P.windowBack win bi bj
+  mid := P.windowMid win bi fi
+  fwd := P.windowFwd win fi fj
+  back_ne := P.bwdCycle_ne_nil _ hbij
+  fwd_ne := P.fwdCycle_ne_nil _ hfij
+  coherent := by
+    have hbl : (P.windowBack win bi bj).length = bj - bi := P.windowBack_length win bi bj
+    have hml : (P.windowMid win bi fi).length = bi + win.length + fi :=
+      P.windowMid_length win bi fi
+    have hfl : (P.windowFwd win fi fj).length = fj - fi := P.windowFwd_length win fi fj
+    intro idx
+    have hidx : (idx : ℕ) < (bj - bi) + 1 + (bi + win.length + fi) + (fj - fi) := by
+      have h := idx.isLt
+      omega
+    have htv : BiLasso.windowTime P (P.windowBack win bi bj) (idx : ℕ)
+        = ((idx : ℕ) : ℤ) - ((bj : ℤ) - (bi : ℤ)) - 1 := by
+      unfold BiLasso.windowTime
+      omega
+    rw [htv,
+      P.unrollOf_windowSegments hbij hbeq hfij hfeq (by omega) (by omega),
+      P.unrollOf_windowSegments hbij hbeq hfij hfeq (by omega) (by omega)]
+    exact P.windowPath_step hne hadj _ _
+
+@[simp]
+theorem lassoOfWindow_back (P : IntPresentation) (win : List (Fin P.card)) (hne) (hadj)
+    {bi bj fi fj : ℕ} (hbij) (hbeq) (hfij) (hfeq) :
+    (P.lassoOfWindow win hne hadj (bi := bi) (bj := bj) (fi := fi) (fj := fj)
+      hbij hbeq hfij hfeq).back = P.windowBack win bi bj := rfl
+
+@[simp]
+theorem lassoOfWindow_mid (P : IntPresentation) (win : List (Fin P.card)) (hne) (hadj)
+    {bi bj fi fj : ℕ} (hbij) (hbeq) (hfij) (hfeq) :
+    (P.lassoOfWindow win hne hadj (bi := bi) (bj := bj) (fi := fi) (fj := fj)
+      hbij hbeq hfij hfeq).mid = P.windowMid win bi fi := rfl
+
+@[simp]
+theorem lassoOfWindow_fwd (P : IntPresentation) (win : List (Fin P.card)) (hne) (hadj)
+    {bi bj fi fj : ℕ} (hbij) (hbeq) (hfij) (hfeq) :
+    (P.lassoOfWindow win hne hadj (bi := bi) (bj := bj) (fi := fi) (fj := fj)
+      hbij hbeq hfij hfeq).fwd = P.windowFwd win fi fj := rfl
+
+/--
+**The placed bi-lasso of a window at an arbitrary absolute time.** The origin is set to
+`origin - |bwdTail|`, so that the window's first entry lands at exactly the caller's `origin`.
+-/
+def placedOfWindow (P : IntPresentation) (win : List (Fin P.card)) (hne : win ≠ [])
+    (hadj : ∀ k : ℕ, k + 1 < win.length →
+      P.step (win.getD k default) (win.getD (k + 1) default) = true)
+    (origin : ℤ) {bi bj fi fj : ℕ} (hbij : bi < bj)
+    (hbeq : P.iterPred (P.winPred win) bi = P.iterPred (P.winPred win) bj)
+    (hfij : fi < fj)
+    (hfeq : P.iterSucc (P.winSucc win) fi = P.iterSucc (P.winSucc win) fj) :
+    PlacedBiLasso P :=
+  ⟨P.lassoOfWindow win hne hadj hbij hbeq hfij hfeq, origin - (bi : ℤ)⟩
+
+/-- The placed decoding is the intended path, throughout one full coherence window measured from
+the caller's own origin. -/
+theorem placedOfWindow_unroll (P : IntPresentation) (win : List (Fin P.card)) (hne : win ≠ [])
+    (hadj : ∀ k : ℕ, k + 1 < win.length →
+      P.step (win.getD k default) (win.getD (k + 1) default) = true)
+    (origin : ℤ) {bi bj fi fj : ℕ} (hbij : bi < bj)
+    (hbeq : P.iterPred (P.winPred win) bi = P.iterPred (P.winPred win) bj)
+    (hfij : fi < fj)
+    (hfeq : P.iterSucc (P.winSucc win) fi = P.iterSucc (P.winSucc win) fj)
+    {t : ℤ} (hlo : origin - (bj : ℤ) - 1 ≤ t)
+    (hhi : t ≤ origin + (win.length : ℤ) + (fj : ℤ)) :
+    (P.placedOfWindow win hne hadj origin hbij hbeq hfij hfeq).unroll t
+      = P.windowPath win origin t := by
+  have hshift : P.windowPath win (bi : ℤ) (t - (origin - (bi : ℤ)))
+      = P.windowPath win origin t := by
+    have h := P.windowPath_shift win origin ((bi : ℤ) - origin) t
+    rwa [show origin + ((bi : ℤ) - origin) = (bi : ℤ) by omega,
+      show t + ((bi : ℤ) - origin) = t - (origin - (bi : ℤ)) by omega] at h
+  show BiLasso.unroll (P.lassoOfWindow win hne hadj hbij hbeq hfij hfeq)
+      (t - (origin - (bi : ℤ))) = _
+  rw [BiLasso.unroll_def]
+  simp only [lassoOfWindow_back, lassoOfWindow_mid, lassoOfWindow_fwd]
+  rw [P.unrollOf_windowSegments hbij hbeq hfij hfeq (by omega) (by omega)]
+  exact hshift
+
+/--
+**Fidelity: the certificate really does carry the window.** At every one of the window's own
+absolute times, the placed decoding reproduces the window entry. This is what makes the object a
+*certificate* about the given bounded history rather than about some other path.
+-/
+theorem placedOfWindow_unroll_window (P : IntPresentation) (win : List (Fin P.card))
+    (hne : win ≠ [])
+    (hadj : ∀ k : ℕ, k + 1 < win.length →
+      P.step (win.getD k default) (win.getD (k + 1) default) = true)
+    (origin : ℤ) {bi bj fi fj : ℕ} (hbij : bi < bj)
+    (hbeq : P.iterPred (P.winPred win) bi = P.iterPred (P.winPred win) bj)
+    (hfij : fi < fj)
+    (hfeq : P.iterSucc (P.winSucc win) fi = P.iterSucc (P.winSucc win) fj)
+    {k : ℕ} (hk : k < win.length) :
+    (P.placedOfWindow win hne hadj origin hbij hbeq hfij hfeq).unroll (origin + (k : ℤ))
+      = win.getD k default := by
+  have hkz : (k : ℤ) < (win.length : ℤ) := by exact_mod_cast hk
+  rw [P.placedOfWindow_unroll win hne hadj origin hbij hbeq hfij hfeq (by omega) (by omega),
+    P.windowPath_window win origin hk]
+
 end IntPresentation
 
 end FormalSystem.Metalogic.Decidability
