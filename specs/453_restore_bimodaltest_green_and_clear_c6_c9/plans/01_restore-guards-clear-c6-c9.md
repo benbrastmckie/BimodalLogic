@@ -175,14 +175,14 @@ STOP condition below rather than widening the edit.
 
 ---
 
-### Phase 2: BoxSpreadProbe documentation settlement [NOT STARTED]
+### Phase 2: BoxSpreadProbe documentation settlement [COMPLETED]
 
 **Goal**: `Tests/BimodalTest/BoxSpreadProbe.lean`'s prose is consistent with the row-C value landed
 in Phase 1, and its "Re-baseline record" header records the settlement instead of asserting an
 exclusion.
 
 **Tasks**:
-- [ ] Rewrite the `**EXCLUDED — left pinned and unedited**` subsection (block at 59-105, exclusion
+- [x] Rewrite the `**EXCLUDED — left pinned and unedited**` subsection (block at 59-105, exclusion
       list at 94-104) so it records row C as **settled**, not excluded. It must state: the row is
       attributed to the 2026-08-10/11 engine window (the semantics refactor plus the tableau-engine
       work that rewrote `Tableau.lean` and `Saturation.lean` and added
@@ -190,14 +190,17 @@ exclusion.
       separately-owned change the original exclusion was protecting; and that the P2 value recorded
       on 2026-08-11 is byte-identical to what Lean generates today, so this settles recorded debt
       rather than establishing a fresh baseline.
-- [ ] Fix the row narrative at 161-163: "`|T|` shrinks to `8`" is now `|T|=6`.
-- [ ] Fix the module docstring at line 29: "**The anchor and the grid are now false as well**
+- [x] Fix the row narrative at 161-163: "`|T|` shrinks to `8`" is now `|T|=6`.
+- [x] Fix the module docstring at line 29: "**The anchor and the grid are now false as well**
       (rows A, B, C)" — rows A and B now report `grid=true` (both at `|T|=4`). This staleness
       predates the task; it is in the paragraph a reader consults and is cheap to correct here.
-- [ ] Fix the duplicated-sentence copy-paste defect in the "Re-baselined in this file" line
+      *(deviation: altered — the same staleness recurs in the "The rows" summary paragraph at
+      133-141 ("all three conditions are false", "row C's `|T|` moved `10 → 8`"), which the plan
+      does not name; corrected in the same pass since it contradicts a landed value.)*
+- [x] Fix the duplicated-sentence copy-paste defect in the "Re-baselined in this file" line
       (line 92): the fragment "— each carrying its own `RE-BASELINED (guard)` note with the old and
       new value." appears twice.
-- [ ] Replace line-number citations in the rewritten block with row letters, which do not drift.
+- [x] Replace line-number citations in the rewritten block with row letters, which do not drift.
 
 **Timing**: 0.5 hours
 

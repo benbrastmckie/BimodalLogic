@@ -26,7 +26,8 @@ They were originally the evidence for a correction: the spread was **false** on 
 engine actually builds, while the anchor and the grid were both **true** on those same branches,
 so `BoxAnchored` was the invariant to carry and `BoxTemporalSpread` was not.
 
-**The anchor and the grid are now false as well** (rows A, B, C). This is not a new defect. The
+**The anchor is now false on every two-world row** (A, B, C), and on row C the grid is false
+too. This is not a new defect. The
 six group-3 temporal-copy blocks in `.boxNeg`/`.diamondPos` were the *only* route by which a
 `T(Gφ)`/`T(Hφ)` could reach a freshly minted world, and they were deleted as unsound — they
 copied temporal formulas verbatim across worlds, conflating "true along the history being built"
@@ -89,19 +90,36 @@ three files (`CountermodelExtraction.lean`, `Verified/Bridge/TemporalSaturation.
 corroborated directly in `TableauConformance.lean`, whose P1 and P2 values are identical on every
 row.
 
-**Re-baselined in this file** (guard-attributed): 2 row(s) at line(s) 149, 158 — each carrying its own `RE-BASELINED (guard)` note with the old and new value.— each carrying its own `RE-BASELINED (guard)` note with the old and new value.
+**Re-baselined in this file** (guard-attributed): rows A and B — each carrying its own
+`RE-BASELINED (guard)` note with the old and new value.
 
-**EXCLUDED — left pinned and unedited**: 1 row(s) at line(s) 165.
-These are members of the ten pre-existing, separately-declined mismatches, identified at
-row level for the first time by the P0 measurement above. For each, the pinned value, the
-pre-guard (P0) value, and the current (P2) value are three *different* values: the row was already
-stale before the guard **and** the guard moved it again. Correcting it here would silently fold a
-separately-owned engine change into this refactor's re-baseline. It stays pinned:
+**SETTLED — re-recorded from the generated value**: 1 row, row C (the `.Dense` row).
 
-* line 165
-  - pinned: `info: "OPEN spread=false anchor=false grid=false |W|=2 |T|=8"`
+Row C was one of the ten pre-existing, separately-declined mismatches, identified at row level for
+the first time by the P0 measurement above: its pinned value, its pre-guard (P0) value and its
+current (P2) value were three *different* values, so the row was already stale before the guard
+**and** the guard moved it again. It was left pinned for as long as re-recording it would have
+folded a separately-owned engine change into this refactor's re-baseline. That is no longer a risk,
+because the attribution below is stated rather than absorbed, so the row is now re-recorded:
+
+* row C — `probe (.imp (andF (.box p) (dia q)) r) 200 .Dense`
+  - pinned, before this settlement: `info: "OPEN spread=false anchor=false grid=false |W|=2 |T|=8"`
   - P0 pre-guard: `info: "OPEN spread=false anchor=false grid=false |W|=2 |T|=10"`
-  - P2 current: `info: "OPEN spread=false anchor=false grid=false |W|=2 |T|=6"`
+  - recorded now: `info: "OPEN spread=false anchor=false grid=false |W|=2 |T|=6"`
+
+**Attribution.** The `|T|` move `8 → 6` belongs to the 2026-08-10/11 engine window — the semantics
+refactor together with the tableau-engine work that rewrote `Decidability/Tableau.lean` and
+`Decidability/Saturation.lean` and added `Verified/Termination/MintBound.lean`. It is **not** owned
+by `trivialEventWitnessed`, which is the separately-owned change the original exclusion existed to
+protect: the guard's contribution to this row is the P0 → pinned step, not the pinned → current
+one. Re-recording here therefore does not absorb the guard's move into a later attribution.
+
+**Stability.** The `P2 current` value measured on 2026-08-11 and recorded above is byte-identical
+to what Lean generates today. Zero drift across that window, so this settles recorded debt against
+a stable measurement rather than baselining against a moving one.
+
+**What the row asserts is unchanged.** `spread=false anchor=false grid=false` is verbatim what it
+was — those three conditions are the row's whole content. Only the size `|T|` moved.
 -/
 
 namespace BimodalTest.BoxSpreadProbe
@@ -132,13 +150,14 @@ def probe (φ : Formula) (fuel : Nat := 200) (fc : FrameClass := .Base) : String
 
 /-! ## The rows
 
-Read each as: on a two-world branch all three conditions are false. `|W|=2` is what makes them
-so — the minted world receives the box formula's `T(φ)` from `boxProps` but no `T(Gφ)`/`T(Hφ)`
-from anywhere, because the rules that used to copy them were unsound and were removed. Rows D
-and E below are single-world and unaffected.
+Read each as: on a two-world branch the spread and the anchor are both false. `|W|=2` is what
+makes them so — the minted world receives the box formula's `T(φ)` from `boxProps` but no
+`T(Gφ)`/`T(Hφ)` from anywhere, because the rules that used to copy them were unsound and were
+removed. Rows D and E below are single-world and unaffected.
 
-Each row's `anchor` and `grid` moved `true → false` with the deletion, and row C's `|T|` moved
-`10 → 8`; `spread` and `|W|` are unmoved. -/
+Each row's `anchor` moved `true → false` with the deletion. The grid moved with it and stays
+`false` on row C (`.Dense`); on rows A and B it reads `true` again at `|T|=4`, where the shorter
+time domain leaves nothing for the grid to fail on. `spread` and `|W|` are unmoved. -/
 
 -- A. The minimal witness: one box, one diamond, an unrelated consequent. The world is minted at
 -- the same time the box sits at, so the failure is purely the later time-minting.
@@ -159,8 +178,9 @@ Each row's `anchor` and `grid` moved `true → false` with the deletion, and row
 #eval probe (.imp (andF (.box p) (dia (.allFuture q))) r)
 
 -- C. The same shape under `.Dense`, where the density rules mint further times.
--- Was `anchor=true grid=true |T|=10`. `|T|` shrinks to `8` because the two times that the
--- removed temporal copies used to force into existence at the minted world are no longer minted.
+-- Was `anchor=true grid=true |T|=10`. `|T|` is now `6`: the times the removed temporal copies
+-- used to force into existence at the minted world are no longer minted, and the 2026-08-10/11
+-- engine window mints fewer still. See the Re-baseline record above.
 /-- info: "OPEN spread=false anchor=false grid=false |W|=2 |T|=6" -/
 #guard_msgs in
 #eval probe (.imp (andF (.box p) (dia q)) r) 200 .Dense
