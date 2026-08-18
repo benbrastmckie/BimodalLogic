@@ -225,32 +225,32 @@ two short prose paragraphs following the Occurrence corollary.
 
 ---
 
-### Phase 3: Restore Site 4 (Separation Proof) and the Adjacent Remark [NOT STARTED]
+### Phase 3: Restore Site 4 (Separation Proof) and the Adjacent Remark [COMPLETED]
 
 **Goal**: Restore the Separation theorem's T1/R0 proof, and — per Scope Decision 1 — the untagged
 `#remark[...]` immediately following it, which is the document's only coverage of a claim the
 abstract makes.
 
 **Tasks**:
-- [ ] **Site 4** (anchor: the bare `// FIX: ` — note the trailing space — immediately after
+- [x] **Site 4** (anchor: the bare `// FIX: ` — note the trailing space — immediately after
       `#theorem("Separation")[...]`, pre-change line 295). Delete the tag line and uncomment the
       `#proof[...]` block. Transcribe the math exactly:
       `${u} subset.eq overline({u})$`, `$w arrow.r.double.long_(y) u$`,
-      `$u arrow.r.double.long_(-y) w$`, `$inter.big_(x>0)(u)_x = {u}$`.
-- [ ] Optional, implementer's discretion (research flagged it as cosmetic, not a defect): the
+      `$u arrow.r.double.long_(-y) w$`, `$inter.big_(x>0)(u)_x = {u}$`. *(completed)*
+- [x] Optional, implementer's discretion (research flagged it as cosmetic, not a defect): the
       proof references "the converse convention" in plain text, whereas the term was introduced as
       "the *converse convention*" earlier in the document and this same proof bold-emphasizes
       `*Limit*`. Emphasizing it here would match house style. Either choice is acceptable; do not
-      spend time deliberating.
-- [ ] **Remark block** (anchor: the commented `// #remark[` beginning
+      spend time deliberating. *(completed: left as plain text per discretion clause)*
+- [x] **Remark block** (anchor: the commented `// #remark[` beginning
       `Extension makes every partial history a restriction of a possible world`, pre-change lines
       304-315). Uncomment the whole block. There is no FIX tag to delete here. Preserve the
       internal line breaks and the two-space body indentation that the other `#remark`/`#proof`
-      blocks in this file use.
-- [ ] Confirm the restored remark now delivers the abstract's line-120 promise: grep for
+      blocks in this file use. *(completed)*
+- [x] Confirm the restored remark now delivers the abstract's line-120 promise: grep for
       `restriction of a possible world` and verify it appears live (not behind `//`) in the body,
-      not only in the abstract.
-- [ ] Compile and commit.
+      not only in the abstract. *(completed: live matches at restored lines 301, 304)*
+- [x] Compile and commit. *(completed: exit 0, baseline warnings only)*
 
 **Timing**: 0.5 hours
 

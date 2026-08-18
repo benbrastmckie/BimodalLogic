@@ -289,27 +289,26 @@ The cones are a basis for a topology on world states, and that topology is separ
 ]#footnote[The topology is carried by the world states, not by $H_(#taskframe)$ or by $D$.]
 
 #theorem("Separation")[$cal(T)_(#taskframe)$ is T1, and hence R0, for every frame $#taskframe$.]
-// FIX: 
-// #proof[
-//   ${u} subset.eq overline({u})$ is immediate. Conversely let $w in overline({u})$. By Nullity
-//   every basic open $(w)_x$ contains $w$, so $u in (w)_x$ for every $x > 0$.
-//   Hence for each such $x$ there is $y$ with $|y| < x$ and $w arrow.r.double.long_(y) u$, so $u arrow.r.double.long_(-y) w$
-//   by the converse convention and $w in (u)_x$.
-//   Thus $w in inter.big_(x>0)(u)_x = {u}$ by *Limit*, and so R0 follows.
-// ]
+#proof[
+  ${u} subset.eq overline({u})$ is immediate. Conversely let $w in overline({u})$. By Nullity
+  every basic open $(w)_x$ contains $w$, so $u in (w)_x$ for every $x > 0$.
+  Hence for each such $x$ there is $y$ with $|y| < x$ and $w arrow.r.double.long_(y) u$, so $u arrow.r.double.long_(-y) w$
+  by the converse convention and $w in (u)_x$.
+  Thus $w in inter.big_(x>0)(u)_x = {u}$ by *Limit*, and so R0 follows.
+]
 
-// #remark[
-//   Extension makes every partial history a restriction of a possible world, and Separation shows the
-//   cone topology distinguishes world states.
-//   Whether these results license *defining* a partial
-//   history as a restriction of a possible world, instead of defining it independently and proving
-//   Extension, is a question about the order of the theory and not about its content: the two
-//   definitions agree extensionally, by Extension.
-//   They differ in what must be assumed at the outset.
-//   The restriction definition makes $H_(#taskframe)$ prior and hides the appeal to *Spherical*
-//   inside the existence of the objects it quantifies over; the order taken here keeps *Spherical*
-//   visible at the single site where it is used.
-// ]
+#remark[
+  Extension makes every partial history a restriction of a possible world, and Separation shows the
+  cone topology distinguishes world states.
+  Whether these results license *defining* a partial
+  history as a restriction of a possible world, instead of defining it independently and proving
+  Extension, is a question about the order of the theory and not about its content: the two
+  definitions agree extensionally, by Extension.
+  They differ in what must be assumed at the outset.
+  The restriction definition makes $H_(#taskframe)$ prior and hides the appeal to *Spherical*
+  inside the existence of the objects it quantifies over; the order taken here keeps *Spherical*
+  visible at the single site where it is used.
+]
 
 == Models and Truth
 
