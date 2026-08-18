@@ -3,6 +3,10 @@
 - **Task**: 437 - repair_time_index_reuse_in_identification_plus_nexttime_bookkeeping
 - **Plan**: `specs/437_repair_time_index_reuse_in_identification_plus_nexttime_bookkeeping/plans/01_monotone-time-issuance.md`
 - **Status**: COMPLETED — all 10 phases
+- **Started**: TBD
+- **Completed**: TBD
+- **Artifacts**: TBD
+- **Standards**: TBD
 - **Verification**: `lake build` exit 0 (2458 jobs); `lake build BimodalTest` exit 0 (2508 jobs); sorry-free; axiom-free
 
 ## What was done
