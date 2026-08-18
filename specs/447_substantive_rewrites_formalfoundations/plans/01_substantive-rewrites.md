@@ -417,30 +417,30 @@ against `def:TMplus-f/d/c` and `def:TMplus`, tex:3866-3940, via the Phase 1 reco
 
 ---
 
-### Phase 6: BL-Level TM, Its Extensions, and the Derivability Relation (`:369`, part 2) [NOT STARTED]
+### Phase 6: BL-Level TM, Its Extensions, and the Derivability Relation (`:369`, part 2) [COMPLETED]
 
 **Goal**: Close the two remaining self-containedness gaps in the proof-systems section: the
 document names TM and TM_f/TM_d/TM_c/TM_dc throughout §2 without ever defining them, and it defines
 `⊨` (live since task 446) without defining `⊢`.
 
 **Tasks**:
-- [ ] Append, after the Hölder paragraph and before `= Completeness and Decidability`, a
+- [x] Append, after the Hölder paragraph and before `= Completeness and Decidability`, a
       `#definition("TM")`: the *Logic of Tense and Modality* for `#BL`, the smallest extension of
       CPL closed under all instances of — rules MP, MN, TD (here TD swaps `#allpast` and
       `#allfuture`); modal axioms MK, MT, M5; the interaction axiom MF; temporal axioms TK, T4, TB,
       TA, TL. All stated in full in an `#items` block.
-- [ ] Add the BL-level extensions: TM_f := TM + DF (`(Hφ ∧ φ ∧ F⊤) → F Hφ`), TM_d := TM + DN,
+- [x] Add the BL-level extensions: TM_f := TM + DF (`(Hφ ∧ φ ∧ F⊤) → F Hφ`), TM_d := TM + DN,
       TM_c := TM + CO, TM_dc := the minimal extension of TM_d and TM_c. State DF, DN, CO in full —
       the document currently uses these three names in the Correspondence subsection without ever
       stating them as axioms.
-- [ ] Note the paper's point that TM cannot include both DF and DN consistently, since no temporal
+- [x] Note the paper's point that TM cannot include both DF and DN consistently, since no temporal
       order is both discrete and dense. Do not overstate this as a claim about the systems' mutual
       inconsistency beyond what the paper says.
-- [ ] Add `#definition("Derivability")` transcribing `def:derivability` (tex:3602-3604): `⊢` is the
+- [x] Add `#definition("Derivability")` transcribing `def:derivability` (tex:3602-3604): `⊢` is the
       smallest relation closed under the axioms and rules for TM. Place it so the Soundness theorem
       in the next section ("If ⊢ φ then ⊨ φ") has a live referent, and so it reads as the
       proof-theoretic counterpart to the now-live `#definition("Validity and Consequence")`.
-- [ ] Note that TM's TL and BX's TL list the same three disjuncts in different orders; this is the
+- [x] Note that TM's TL and BX's TL list the same three disjuncts in different orders; this is the
       paper's own presentation and is **not** a discrepancy to normalize.
 
 **Timing**: 1.0 hours

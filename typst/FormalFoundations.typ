@@ -489,6 +489,49 @@ to $ZZ$, and a nontrivial Dedekind-complete one is Archimedean and so isomorphic
 The complete class is therefore exactly ${ZZ, RR}$ up to isomorphism, and the dense-and-complete
 class exactly $RR$.
 
+#definition("TM")[
+  *TM*, the *Logic of Tense and Modality* for $#BL$, is the smallest extension of CPL closed
+  under all instances of the following rules and axiom schemata:
+  #items[
+    + *MP*: $phi.alt, phi.alt arrow.r psi tack.r psi$.
+    + *MN*: if $tack.r phi.alt$ then $tack.r square.stroked phi.alt$.
+    + *MK*: $square.stroked(phi.alt arrow.r psi) arrow.r (square.stroked phi.alt arrow.r square.stroked psi)$.
+    + *MT*: $square.stroked phi.alt arrow.r phi.alt$.
+    + *M5*: $diamond.stroked square.stroked phi.alt arrow.r square.stroked phi.alt$.
+    + *MF*: $square.stroked phi.alt arrow.r square.stroked #allfuture phi.alt$.
+    + *TD*: if $tack.r phi.alt$ then $tack.r phi.alt_(chevron.l "P"|"F" chevron.r)$, where
+      $phi.alt_(chevron.l "P"|"F" chevron.r)$ swaps all occurrences of $#allpast$ and $#allfuture$
+      in $phi.alt$.
+    + *TK*: $#allfuture (phi.alt arrow.r psi) arrow.r (#allfuture phi.alt arrow.r #allfuture psi)$.
+    + *T4*: $#allfuture phi.alt arrow.r #allfuture #allfuture phi.alt$.
+    + *TB*: $#somefuture top$.
+    + *TA*: $phi.alt arrow.r #allfuture #somepast phi.alt$.
+    + *TL*: $(#somefuture phi.alt and #somefuture psi) arrow.r [#somefuture (#somefuture phi.alt and psi) or #somefuture (phi.alt and psi) or #somefuture (phi.alt and #somefuture psi)]$.
+  ]
+  MP and MN are rules; MK, MT, M5, MF, TK, T4, TB, TA, and TL are axiom schemata; TD is a rule
+  making the logic symmetric with respect to past and future at each time. TM's TL lists the same
+  three disjuncts as BX's TL above but in a different order; this is the paper's own presentation
+  and not a discrepancy to normalize.
+]
+
+TM is strengthened by constraining the temporal order $#Dur$ to be Discrete, Dense, or Complete
+per the Frame Properties above, each characterized by a single axiom:
+#items[
+  + *DF*: $(#allpast phi.alt and phi.alt and #somefuture top) arrow.r #somefuture #allpast phi.alt$.
+  + *DN*: $#allfuture #allfuture phi.alt arrow.r #allfuture phi.alt$.
+  + *CO*: $#always (#somepast phi.alt arrow.r #somefuture #somepast phi.alt) arrow.r (#somepast phi.alt arrow.r #allfuture phi.alt)$.
+]
+Letting $op("TM")_f$ extend TM to include all instances of DF, $op("TM")_d$ to include all
+instances of DN, and $op("TM")_c$ to include all instances of CO, $op("TM")_(d c)$ is the minimal
+extension of $op("TM")_d$ and $op("TM")_c$, corresponding to the continuous temporal orders that
+are both dense and Dedekind complete. Since no temporal order is both Discrete and Dense, TM
+cannot be extended to include both DF and DN while remaining consistent.
+
+#definition("Derivability")[
+  The *derivation relation* $tack.r$ for TM is the smallest relation closed under the axioms and
+  rules for TM given above.
+]
+
 = Completeness and Decidability <sec:key-theorems>
 
 This section covers five results. Soundness holds for TM and its four frame-class extensions, and
