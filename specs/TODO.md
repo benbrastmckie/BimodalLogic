@@ -34,7 +34,7 @@ next_project_number: 462
 ### Decidability
 
 434 [IMPLEMENTING] — Discharge `MintPaysForTime fc U Tmax`, defined at FormalSystem/Me
-  └─ 433 [PLANNED] — Discharge `PostBlockingSettles fc`, defined at FormalSystem/Metal
+  └─ 433 [IMPLEMENTING] — Discharge `PostBlockingSettles fc`, defined at FormalSystem/Metal
     └─ 428 [BLOCKED] — Engine totality at a quantified branch budget. Owns obstruction O
       └─ 429 [NOT STARTED] — Repair the truth-lemma side conditions. Owns obstructions O2 and 
         └─ 410 [PLANNED] — Track B part 1 for the TM tableau decidability program (parent: t
@@ -76,7 +76,7 @@ next_project_number: 462
 ### Literature
 
 460 [IMPLEMENTING] — SCOPE 8 acquisition gap identified by task 457's research and re-
-  └─ 461 [NOT STARTED] — SCOPE 8 acquisition gap identified by task 457's research and re-
+  └─ 461 [RESEARCHED] — SCOPE 8 acquisition gap identified by task 457's research and re-
 
 ### Strong Completeness
 
@@ -96,10 +96,11 @@ next_project_number: 462
 ## Tasks
 
 ### 461. Acquire Goldblatt 1989 'Varieties of complex algebras' (Annals of Pure and Applied Logic)
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: general
 - **Topic**: literature
 - **Dependencies**: Task 460
+- **Research**: [461_acquire_goldblatt_1989_varieties_of_complex_algebras/reports/01_acquisition-feasibility.md]
 
 **Description**: SCOPE 8 acquisition gap identified by task 457's research and re-confirmed at implementation time: this paper is absent from both the ~/Projects/Literature corpus and the Zotero library, and is named as a prerequisite by other tasks in this repo working on the Jonsson-Tarski representation theorem. Note: goldblatt_2003 already present in the corpus is a DIFFERENT paper (Erdos Graphs Resolve Fine's Canonicity Problem) -- do not conflate the two. Needed: locate and acquire a copy of Goldblatt 1989 (Annals of Pure and Applied Logic 44, pp. 173-242), add it to Zotero, then run a normal /literature ingest.
 
@@ -410,7 +411,7 @@ Because archived files are never compiled, a broken import here is SILENT -- no 
 
 ### 433. Discharge postblockingsettles residual
 - **Effort**: 6-10 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 432, Task 434

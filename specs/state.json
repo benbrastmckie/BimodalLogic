@@ -882,7 +882,7 @@
     {
       "project_number": 433,
       "project_name": "discharge_postblockingsettles_residual",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "description": "Discharge `PostBlockingSettles fc`, defined at FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean:4344, one of the four residual hypotheses on the totality terminus `buildTableauAt_isSome_of_budget` (MintBound.lean:4416). It states that the post-blocking pass leaves a branch the blocking-aware saturation test certifies -- i.e. `findUnexpandedUnblockedWith satBr satOrd fc (blockedTimes satBr satOrd fc (armTracker satBr)) = none` whenever `saturateBlocked ob fuel oOrd fc = some (.inr (satBr, satOrd))`. It subsumes `resolveOpenArm`'s own `none` arm via `armSettlement_of_postBlockingSettles` (MintBound.lean:4354) -- `ArmSettlement` alone is proved strictly too weak (`resolveOpenArm` tests `findClosure satBr` before its saturation test; `buildTableauAt` does not), so do not attempt to discharge via `ArmSettlement` instead. The relevant definitions are frozen (md5-pinned) in Saturation.lean (`saturateBlocked`, :431) and Tableau.lean (`blockedTimes`, :2104; `findUnexpandedUnblockedWith`, :2115) -- do not edit either file; the residual's own docstring states the gap ('whether the fuel-vs-condition gap can be closed by fuel alone') is exactly what Saturation.lean leaves open using only its existing public interface. Done means: either (a) a proof of `PostBlockingSettles fc` for the frame classes the terminus is meant to be used at, using only the public interface of the frozen files, landed sorry-free and axiom-free with `lake build` green; or (b), if (a) turns out to be genuinely impossible without touching the frozen files, a return to [BLOCKED] with the specific counterexample or obstruction found, analogous to the parent task's own refutation-driven repairs (e.g. `ordTimes_identifyTime_arm3_false`, MintBound.lean:1217) -- do not paper over with a vacuous definition (`lean4.md`'s Vacuous Definitions prohibition applies).",
       "effort": "6-10 hours",
@@ -896,7 +896,7 @@
         "FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean"
       ],
       "created": "2026-08-06T16:01:52Z",
-      "last_updated": "2026-08-18T22:46:22Z",
+      "last_updated": "2026-08-18T22:46:39Z",
       "artifacts": [
         {
           "type": "research",
@@ -1151,15 +1151,21 @@
     {
       "project_number": 461,
       "project_name": "acquire_goldblatt_1989_varieties_of_complex_algebras",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "general",
       "topic": "literature",
       "priority": "medium",
       "created": "2026-08-18T20:25:41Z",
-      "last_updated": "2026-08-18T20:25:41Z",
+      "last_updated": "2026-08-18T23:32:10Z",
       "title": "Acquire Goldblatt 1989 'Varieties of complex algebras' (Annals of Pure and Applied Logic)",
       "description": "SCOPE 8 acquisition gap identified by task 457's research and re-confirmed at implementation time: this paper is absent from both the ~/Projects/Literature corpus and the Zotero library, and is named as a prerequisite by other tasks in this repo working on the Jonsson-Tarski representation theorem. Note: goldblatt_2003 already present in the corpus is a DIFFERENT paper (Erdos Graphs Resolve Fine's Canonicity Problem) -- do not conflate the two. Needed: locate and acquire a copy of Goldblatt 1989 (Annals of Pure and Applied Logic 44, pp. 173-242), add it to Zotero, then run a normal /literature ingest.",
-      "artifacts": [],
+      "artifacts": [
+        {
+          "path": "specs/461_acquire_goldblatt_1989_varieties_of_complex_algebras/reports/01_acquisition-feasibility.md",
+          "type": "report",
+          "summary": "Acquisition feasibility: confirmed absent from corpus and Zotero; no legitimately obtainable copy; blocked on user action"
+        }
+      ],
       "dependencies": [
         460
       ],
@@ -1167,7 +1173,8 @@
       "file_scope": [
         "~/Projects/Literature/index.json",
         "specs/literature-index.json"
-      ]
+      ],
+      "session_id": "sess_1787085411_5744ac_461"
     }
   ],
   "artifacts": [
