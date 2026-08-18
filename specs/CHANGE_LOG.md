@@ -1,6 +1,17 @@
 # Change Log
 
 
+## 2026-08-18: Archive 3 completed tasks
+
+**Archived**:
+- **441** (completed, lean4): Effective periodic extension over finite frames -- all ten phases sorry-free with no new axiom; Tier A `IntPresentation.extend_periodic` yields a decidable-coherence `PlacedBiLasso` certificate, Tier B `TaskFrame.extend_periodic` proves the literal existential over an arbitrary `TaskFrame Z` with `[Finite WorldState]` and extends to gapped finite domains; a hand-rolled choice-free pigeonhole on `Fin` removed finiteness from the `Classical.choice` sources
+- **440** (completed, lean4): Finite-frame discharge of Spherical and Limit -- `wlem_of_spherical` derives weak excluded middle from Spherical at carrier `Bool` over `D = Int` from exactly `[propext, Quot.sound]`, proving the original "make `spherical_of_finite` choice-free" acceptance test unsatisfiable; four axiom profiles converted into build-breaking `#guard_msgs` guards and verified to gate, five stale `Extension.lean` docstring passages repaired
+- **417** (completed, lean4): Semantic FMP over finite `WorldState` on Z -- closed Phase 12 of the bi-lasso decision layer with `check`, `check_correct` and the `Decidable` instance for `SatAtState` sorry-free and off the `Classical.dec` path, added the subdirectory re-export and six C6 manifest entries, and wired four evidence probes in as permanent regression guards via a new `check-evidence-probes.sh`
+
+**Directories moved**: 3 (specs/ -> specs/archive/)
+**Roadmap updates**: 0 (no eligible matches against the 111-row status table)
+**Memory harvest**: none (no candidates recorded on any archived task)
+
 ## 2026-08-17: Archive 4 completed tasks
 
 **Archived**:
