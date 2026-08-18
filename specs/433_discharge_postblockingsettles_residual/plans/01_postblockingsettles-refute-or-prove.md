@@ -224,7 +224,7 @@ and closes Phase 3 the same way. Exactly one of them executes.
   `{propext, Classical.choice, Quot.sound}`. Proceed to Phase 2 to decide whether the refutation is
   *only* about `fuel = 0`.
 
-### Phase 2: Gate 2 — does fuel alone close the gap? [IN PROGRESS]
+### Phase 2: Gate 2 — does fuel alone close the gap? [COMPLETED]
 
 - **Goal:** Answer the residual docstring's own open question — "whether the fuel-vs-condition
   gap can be closed by fuel alone" — machine-checked and universally quantified in `fuel`. This
@@ -247,26 +247,37 @@ and closes Phase 3 the same way. Exactly one of them executes.
     do not proceed to Phase 3 as written.
 
 - **Tasks:**
-  - [ ] Read `Tableau.lean:2335-2355` (`expandOnceNoFresh`'s `pick`, both rejection tests) and
+  - [x] Read `Tableau.lean:2335-2355` (`expandOnceNoFresh`'s `pick`, both rejection tests) and
         `Tableau.lean:2189` / `2023` (`findUnexpandedUnblockedWith`, `isExpanded`) side by side.
         The gap this phase probes is the difference between "no label-free rule applies anywhere"
         and "no rule applies at an unblocked time".
-  - [ ] Construct a witness branch whose only applicable rule at the (unblocked) root **mints a
+  - [x] Construct a witness branch whose only applicable rule at the (unblocked) root **mints a
         fresh label** — a temporal existential such as `T(F p)@Label.initial` is the intended
         shape, since its rule is witness-guarded and lengthens the ordering constraints, so
         `expandOnceNoFresh`'s second rejection test fires and `pick` is `none`.
-  - [ ] `decide` the three separable facts: `expandOnceNoFresh ob oOrd fc = (.saturated, oOrd)`;
+        *(deviation: altered — used the landed `freshWorldBranch = [F(□p)@⟨0,0⟩]` instead, whose
+        `.boxNeg` rule mints a fresh **world** and so trips `expandOnceNoFresh`'s **first**
+        rejection test (`ruleMintsFreshLabel`) rather than the second. The refutation is the same
+        statement about the same disagreement — register entry 13 records that the two rejection
+        tests exist precisely because neither rule list subsumes the other — and the vehicle comes
+        with `findApplicableRule_freshWorldWitness`, a landed `∀ fc` reduction. Recorded in
+        `postBlockingSettles_fuel_gap_false`'s own docstring.)*
+  - [x] `decide` the three separable facts: `expandOnceNoFresh ob oOrd fc = (.saturated, oOrd)`;
         `findApplicableRule sf ob oOrd fc = some _` (so `isExpanded` is false);
         `blockedTimes ob oOrd fc (armTracker ob)` does not contain the root's time.
-  - [ ] Prove the **fuel-universal** step: from `expandOnceNoFresh ob oOrd fc = (.saturated, _)`
+        *(deviation: altered — landed as three named lemmas proved by unfolding
+        (`expandOnceNoFresh_freshWorldBranch`, `findUnexpandedUnblockedWith_freshWorldBranch`, and
+        `blockedTimes_empty` reused for the third) rather than by `decide`, which is unavailable on
+        statements universally quantified in `fc`. Separability is preserved.)*
+  - [x] Prove the **fuel-universal** step: from `expandOnceNoFresh ob oOrd fc = (.saturated, _)`
         and `findClosure ob fc = none`, conclude `saturateBlocked ob fuel oOrd fc = some (.inr (ob, oOrd))`
         for every `fuel` — by `cases fuel` and one unfolding of `saturateBlocked`, with no
         induction needed: the `fuel + 1` arm reaches its `.saturated` case in one step. Name it
         `saturateBlocked_eq_self_of_noFresh_saturated`.
-  - [ ] State and prove `postBlockingSettles_fuel_gap_false (fc : FrameClass) : ¬ PostBlockingSettles fc`,
+  - [x] State and prove `postBlockingSettles_fuel_gap_false (fc : FrameClass) : ¬ PostBlockingSettles fc`,
         instantiated at a **nonzero** fuel so that the statement is visibly not a restatement of
         Phase 1, and note in its docstring that the witness works at every fuel.
-  - [ ] Write the docstring as a verdict on the docstring question, in one line: fuel does not
+  - [x] Write the docstring as a verdict on the docstring question, in one line: fuel does not
         close it, because the two tests disagree about label-minting candidates and no fuel
         figure appears in that disagreement.
 
@@ -291,6 +302,16 @@ and closes Phase 3 the same way. Exactly one of them executes.
     FALSE with the obstruction named and Phase 8 selected.
 
 ---
+
+- **Verdict: TRUE — fuel does NOT close the gap.** `postBlockingSettles_fuel_gap_false` compiles at
+  a nonzero fuel, and `postBlockingSettles_gap_at_every_fuel` records both halves simultaneously,
+  universally quantified in `fuel` and in `fc`. The missing content is a *label-minting* side
+  condition on the branch, not a fuel figure. **Phase 8 is therefore not executed**; Phases 3-6
+  proceed as the repair branch.
+- **Scope Hypothesis confirmed.** The two `constraints.length` rejection guards are not on this
+  witness's path at all: the pass reaches the `(.saturated, _)` arm in one step from `fuel + 1`, and
+  that arm precedes every guard. `saturateBlocked_eq_self_of_noFresh_saturated`'s proof is two
+  cases and no induction, so the guards never have to be folded in.
 
 ### Phase 3: The repaired predicate and its direction-lemma gate [NOT STARTED]
 
