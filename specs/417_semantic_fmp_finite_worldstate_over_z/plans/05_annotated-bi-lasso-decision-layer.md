@@ -526,21 +526,26 @@ implementation time. If 441 has landed, the correct action is reuse, and this ph
 
 ---
 
-### Phase 6: `LocalCoherent`, `Fulfilling`, `BoxOracleSound`, and the non-vacuity witnesses [NOT STARTED]
+### Phase 6: `LocalCoherent`, `Fulfilling`, `BoxOracleSound`, and the non-vacuity witnesses [COMPLETED]
 
 **Goal**: the three predicates the truth lemma consumes, each exhibited non-vacuously.
 
 **Argument order used in this phase**: guard first, `Formula.untl g e` / `Formula.snce g e`.
 
 **Tasks**:
-- [ ] Read `FormalSystem/Metalogic/BXCanonical/Quasimodel/HintikkaPoint.lean` and
+- [x] Read `FormalSystem/Metalogic/BXCanonical/Quasimodel/HintikkaPoint.lean` and
       `Construction.lean` before defining anything, and record in the module docstring why the
       existing `HintikkaPoint` / `HintikkaStep` are not reused: they carry no atom, `imp`, or box
       clause; their step relation is `allFuture`/`allPast` propagation for the Burgess–Xu
       completeness proof rather than the exact ℤ one-step unfolding; and they sit on the
       MCS/`noncomputable` side. Do **not** modify them, and do **not** "fix" their argument roles
-      even if they read as stale — report that separately if so.
-- [ ] Define `LocalCoherent (P) (φ) (bx : Formula → Bool) (A : Annot P φ) : Prop` as the
+      even if they read as stale — report that separately if so. *(Read and recorded in
+      `Annotation.lean`'s module docstring. The argument roles ARE stale and were left untouched:
+      `Construction.lean:57` reads `Formula.untl ψ φ ∈ h1 → ψ ∉ h1 → φ ∈ h1 ∧ ...`, i.e. "guard
+      absent → event present", where guard-first semantics require "event absent → guard present";
+      `UntilDefect`/`SinceDefect` at `:64`/`:68` have the same transposition. Reported for a
+      separate task, not fixed here.)*
+- [x] Define `LocalCoherent (P) (φ) (bx : Formula → Bool) (A : Annot P φ) : Prop` as the
       conjunction, over every `ψ ∈ subformulaClosure φ` and every `t : ℤ`, of the clauses:
       - `Formula.atom p ∈ A.label t ↔ P.val p (A.lasso.unroll t) = true`
       - `Formula.bot ∉ A.label t`
@@ -552,18 +557,18 @@ implementation time. If 441 has landed, the correct action is reuse, and this ph
       - `Formula.snce g e ∈ A.label t ↔ (e ∈ A.label (t-1) ∨ (g ∈ A.label (t-1) ∧ Formula.snce g e ∈ A.label (t-1)))`
       These are **biconditionals**. They are what make the label negation-complete over the closure
       without any MCS machinery, and the `→` direction of the truth lemma depends on that.
-- [ ] Define `Fulfilling (P) (φ) (A : Annot P φ) : Prop` — for every `t` and every
+- [x] Define `Fulfilling (P) (φ) (A : Annot P φ) : Prop` — for every `t` and every
       `Formula.untl g e ∈ A.label t`, there is `s > t` with `e ∈ A.label s` and
       `g ∈ A.label r` for all `t < r < s`; and the `snce` mirror leftward.
-- [ ] Define `BoxOracleSound P bx : Prop` — `∀ χ, bx χ = true ↔ ∀ σ : WorldHistory P.toTaskFrame,
+- [x] Define `BoxOracleSound P bx : Prop` — `∀ χ, bx χ = true ↔ ∀ σ : WorldHistory P.toTaskFrame,
       σ.IsTotal → TruthAt P.toModel σ 0 χ`. Fix the time at `0` and cite `box_const` for why no
       time index is needed. State it in exactly the shape Phase 7 consumes and Phase 11
       establishes.
-- [ ] **Non-vacuity, positive**: exhibit a concrete `A : Annot P φ` over a small presentation
+- [x] **Non-vacuity, positive**: exhibit a concrete `A : Annot P φ` over a small presentation
       (`flipPresentation` or the refutation file's `chainPresentation`) and a two- or
       three-formula closure, with `LocalCoherent` and `Fulfilling` discharged — by `decide` where
       the phase-8 instances allow, otherwise by hand.
-- [ ] **Non-vacuity, negative**: exhibit an annotated lasso that is `LocalCoherent` but **not**
+- [x] **Non-vacuity, negative**: exhibit an annotated lasso that is `LocalCoherent` but **not**
       `Fulfilling` — an `untl` postponed forever around the forward loop. This is the greatest-vs-
       least-fixpoint gap of handoff §4.1 made concrete, and it is the proof that `Fulfilling`
       carries real content. Docstring it as such.

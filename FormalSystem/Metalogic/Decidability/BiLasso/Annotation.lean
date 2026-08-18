@@ -6,6 +6,7 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.Metalogic.Decidability.BiLasso.Basic
 import FormalSystem.Metalogic.Decidability.BiLasso.Periodic
+import FormalSystem.Metalogic.Decidability.BiLasso.Unfold
 import FormalSystem.Syntax.SubformulaClosure.Closure
 
 /-!
@@ -35,12 +36,38 @@ consult the *same segment at the same offset*. That alignment is proved rather t
 because a one-position slip between labels and states would make every clause relating a label
 to its state silently wrong while remaining perfectly type-correct.
 
+## Why the existing Hintikka machinery is not reused
+
+`Metalogic/BXCanonical/Quasimodel/` already supplies `HintikkaPoint`, `HintikkaStep`,
+`UntilDefect`, `SinceDefect` and `QuasimodelChain`. None of it is imported here, and the reason
+is structural rather than stylistic:
+
+- **`HintikkaPoint` is too weak.** Its only fields are `formulas`, `subset_sigma`,
+  `locally_consistent` (no formula together with its negation) and `bot_free`. There is no atom
+  clause, no `imp` clause and no box clause, so a `HintikkaPoint` does not determine truth of a
+  compound formula from its parts. `LocalCoherent` below states all six clauses, and states them
+  as **biconditionals**, which is exactly what lets the truth lemma run without any
+  negation-completeness or maximal-consistent-set argument.
+- **`HintikkaStep` is the wrong step relation.** It propagates `allFuture` / `allPast` — the
+  Burgess–Xu completeness proof's requirement — rather than the exact ℤ one-step unfolding of
+  `untl` / `snce` proved in `Unfold.lean`. Only the latter is an equivalence, and only an
+  equivalence supports a local read-off of truth.
+- **It sits on the proof-theoretic side.** `HintikkaPoint`s are produced from `BXPoint`s through
+  the `noncomputable` `sigmaSignatureFormulas`. Importing that here would point the dependency
+  from a computable decision layer into the maximal-consistent-set construction and drag
+  `noncomputable` into `check`.
+
+The `Quasimodel/` files are read-only from here and are not modified.
+
 ## Main Definitions
 
 - `Annot` — the structure: a `BiLasso`, three label lists, three length agreements, and the
   closure-subset field
 - `Annot.label` — the decoded label sequence `ℤ → Finset Formula`
 - `Annot.readIndex` — the common segment offset that both decodings read at
+- `LocalCoherent` — the six local Hintikka clauses, as biconditionals, at every position
+- `Fulfilling` — the global eventuality-discharge condition, in both temporal directions
+- `BoxOracleSound` — the correctness specification of a box oracle
 
 ## Main Results
 
@@ -48,6 +75,10 @@ to its state silently wrong while remaining perfectly type-correct.
 - `Annot.label_sub_back_length` / `Annot.label_add_fwd_length` — the two label periodicities,
   at the same thresholds as `BiLasso.unroll_sub_back_length` / `BiLasso.unroll_add_fwd_length`
 - `Annot.label_subset_closure` — every label is a subset of `subformulaClosure φ`
+
+`LocalCoherent` and `Fulfilling` are not vacuous, and `Fulfilling` is strictly stronger than
+`LocalCoherent`: `BiLasso/Examples.lean` exhibits an annotated lasso satisfying both, and a
+second one satisfying `LocalCoherent` while **failing** `Fulfilling`.
 -/
 
 namespace FormalSystem.Metalogic.Decidability
@@ -230,5 +261,100 @@ theorem label_subset_closure (A : Annot P φ) (t : ℤ) : A.label t ⊆ subformu
   · rw [(hfwdr ht2).1]; exact hmem _ _ hfwd
 
 end Annot
+
+/-!
+## The three predicates the truth lemma consumes
+
+`LocalCoherent` is what a label must satisfy *at and around each position*; `Fulfilling` is the
+one condition that is irreducibly *global*; `BoxOracleSound` specifies the box oracle both are
+stated relative to.
+
+The split is the whole design. Fulfilment cannot be established inside the truth lemma's
+induction, because it is not a local property — that is precisely what the abandoned
+`RoundRobinChain` / `OracleStep` / `OracleCoherence` / `ScheduleBasedBFMCS` attempts foundered
+on. Here it is a **hypothesis carried by the structure**, which the induction only ever consumes.
+-/
+
+/--
+**Local coherence**: the Hintikka conditions, as biconditionals, at every position.
+
+Each clause is guarded by membership in `subformulaClosure φ`, so a label is constrained only on
+the formulas the decision problem is actually about. The `bot` clause is unconditional, since
+`⊥` may not appear in any label whether or not it is in the closure.
+
+**Biconditionals, not implications.** A one-directional Hintikka condition would leave a label
+free to omit a formula that ought to be there, and the `→` direction of the truth lemma would
+then be unprovable. Stating all six as `↔` is what makes a label negation-complete over the
+closure with no maximal-consistent-set machinery anywhere in sight.
+
+**Argument order is guard first**: `Formula.untl g e` has guard `g` and event `e`, matching
+`Semantics/Truth.lean`. The two temporal clauses are literally the label-level transcription of
+`truth_untl_succ` and `truth_snce_pred` from `Unfold.lean`, and that correspondence is what the
+truth lemma's temporal cases exploit.
+
+**The box clause is position-independent.** `Semantics.Truth.box_const` gives independence of
+both the history *and* the time, so the truth of a boxed formula is a single fact about the
+model, not a fact about a position. The oracle is therefore one `Formula → Bool` rather than a
+per-position field of the annotation — a genuine simplification of the datatype, not a
+convenience.
+-/
+def LocalCoherent (P : IntPresentation) (φ : Formula) (bx : Formula → Bool)
+    (A : Annot P φ) : Prop :=
+  ∀ t : ℤ,
+    (∀ p : Atom, Formula.atom p ∈ subformulaClosure φ →
+        (Formula.atom p ∈ A.label t ↔ P.val p (A.lasso.unroll t) = true)) ∧
+    (Formula.bot ∉ A.label t) ∧
+    (∀ a b : Formula, Formula.imp a b ∈ subformulaClosure φ →
+        (Formula.imp a b ∈ A.label t ↔ (a ∈ A.label t → b ∈ A.label t))) ∧
+    (∀ χ : Formula, Formula.box χ ∈ subformulaClosure φ →
+        (Formula.box χ ∈ A.label t ↔ bx χ = true)) ∧
+    (∀ g e : Formula, Formula.untl g e ∈ subformulaClosure φ →
+        (Formula.untl g e ∈ A.label t ↔
+          (e ∈ A.label (t + 1) ∨
+            (g ∈ A.label (t + 1) ∧ Formula.untl g e ∈ A.label (t + 1))))) ∧
+    (∀ g e : Formula, Formula.snce g e ∈ subformulaClosure φ →
+        (Formula.snce g e ∈ A.label t ↔
+          (e ∈ A.label (t - 1) ∨
+            (g ∈ A.label (t - 1) ∧ Formula.snce g e ∈ A.label (t - 1)))))
+
+/--
+**Fulfilment**: every eventuality carried by a label is actually discharged.
+
+`LocalCoherent`'s temporal clauses are satisfied by the *greatest* fixpoint — they permit an
+`untl g e` to be passed forward forever, guard intact, event never delivered. `Fulfilling`
+selects the *least* fixpoint by demanding a real witness. The gap between the two is exactly the
+gap between "the label is locally consistent" and "the label describes a genuine model", and it
+is not a technicality: `BiLasso/Examples.lean` exhibits a locally coherent annotation that fails
+this condition.
+
+Note that fulfilment is stated over **all** `g` and `e`, not only over closure members. Labels
+are subsets of the closure anyway (`Annot.label_subset_closure`), so the extra generality costs
+nothing and saves a closure side condition at every use site.
+
+Argument order is guard first, matching `LocalCoherent` and `Semantics/Truth.lean`.
+-/
+def Fulfilling (P : IntPresentation) (φ : Formula) (A : Annot P φ) : Prop :=
+  (∀ (t : ℤ) (g e : Formula), Formula.untl g e ∈ A.label t →
+      ∃ s : ℤ, t < s ∧ e ∈ A.label s ∧ ∀ r : ℤ, t < r → r < s → g ∈ A.label r) ∧
+  (∀ (t : ℤ) (g e : Formula), Formula.snce g e ∈ A.label t →
+      ∃ s : ℤ, s < t ∧ e ∈ A.label s ∧ ∀ r : ℤ, s < r → r < t → g ∈ A.label r)
+
+/--
+**Soundness of a box oracle**: `bx χ` is `true` exactly when `χ` holds along every total world
+history of the presented frame.
+
+The time is fixed at `0` with no loss: `Semantics.Truth.box_const` makes the truth of a boxed
+formula independent of both the history it is evaluated on and the time it is evaluated at, so
+one `Bool` per formula is the whole content.
+
+This is a *specification*, not a construction. It is stated here so the truth lemma can be
+proved relative to any oracle meeting it, before any concrete oracle exists — which is what
+breaks the circularity between the truth lemma and the oracle. `TruthAt`'s box clause quantifies
+over all total histories of the frame, not over any enumerated family, so constructing an oracle
+that meets this specification requires the small-model theorem and is deliberately deferred.
+-/
+def BoxOracleSound (P : IntPresentation) (bx : Formula → Bool) : Prop :=
+  ∀ χ : Formula,
+    bx χ = true ↔ ∀ σ : WorldHistory P.toTaskFrame, σ.IsTotal → TruthAt P.toModel σ 0 χ
 
 end FormalSystem.Metalogic.Decidability
