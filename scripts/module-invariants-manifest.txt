@@ -29,6 +29,48 @@ FormalSystem.Metalogic.Bundle
 FormalSystem.Metalogic.Algebraic
 FormalSystem.Metalogic.SoundnessLemmas
 
+# Children of the sibling aggregators just above. Each is reached ONLY through an
+# aggregator that is itself listed above as deliberately importer-less, so it inherits
+# that unreachability rather than having any of its own: nothing in the build graph
+# imports it, and nothing in the build graph imports the only thing that does.
+#
+# The contrast case that proves the pattern is `Algebraic/FlowFrame.lean`, the fifth file
+# in that same directory: it IS imported directly, by `BXCanonical/Completeness.lean` and
+# by `BXCanonical/Chronicle/ChronicleMonadicBridge.lean`, so it is reachable and is
+# correctly absent from this file. The four `Algebraic/` modules below have no such
+# direct consumer.
+#
+# DELETE a line here when the module it names acquires a direct importer outside its own
+# aggregator -- that is exactly what wiring one of these in means.
+#
+# Coverage note, so the record is not read as claiming more than it delivers: these six
+# are ALREADY compile-checked today, indirectly. C6 runs `lake build` on the manifested
+# aggregators above, and that compiles their transitive dependencies, which includes every
+# module in this block. Listing them here is rot-guard bookkeeping -- C6 fails on absence
+# from this file independently of compile coverage -- not a new compile guarantee.
+FormalSystem.Metalogic.Algebraic.BooleanStructure
+FormalSystem.Metalogic.Algebraic.InteriorOperators
+FormalSystem.Metalogic.Algebraic.LindenbaumQuotient
+FormalSystem.Metalogic.Algebraic.UltrafilterMCS
+FormalSystem.Metalogic.Bundle.Construction
+FormalSystem.Metalogic.SoundnessLemmas.CoValidity
+
+# A genuine orphan: no importer anywhere in the live tree, aggregator or otherwise. Its
+# sibling aggregator `Kamp/NfMultiAnchorBridge.lean` IS reachable (imported by
+# `Kamp/KampPrior.lean`) and does import `NfMultiAnchorBridge.OuterGate` -- but not this
+# module. The only other mention of it in the tree is prose, in
+# `WeakCanonical/PriorExpressivenessDense.lean`.
+#
+# Unlike the block above, this line is a real coverage gain rather than bookkeeping:
+# nothing else causes this module to be built, so until it was listed here it was compiled
+# by nothing at all.
+#
+# The eventual fix is to wire it in with one `import` line in
+# `Kamp/NfMultiAnchorBridge.lean`, beside the `OuterGate` import already there -- every
+# other module in that directory is already reachable that way. That is a build-graph
+# change, deliberately deferred; when it lands, DELETE this line in the same commit.
+FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.OuterGateFaithful
+
 # The bi-lasso decision layer is additive and deliberately unwired. Its re-export
 # `FormalSystem.Metalogic.Decidability.BiLasso` has now landed beside `Decidability/BiLasso/`,
 # but that aggregator is itself unimported, so the layer is still outside the build graph:

@@ -321,16 +321,16 @@ lists.
 
 ---
 
-### Phase 5: Clear C6 — manifest the seven unreachable live modules [NOT STARTED]
+### Phase 5: Clear C6 — manifest the seven unreachable live modules [COMPLETED]
 
 **Goal**: `scripts/check-module-invariants.sh` C6 PASSes on all four of its sub-assertions
 (manifested / no phantom / no stale-reachable / all compile).
 
 **Tasks**:
-- [ ] Add seven **plain** (unprefixed) entries to `scripts/module-invariants-manifest.txt`. No
+- [x] Add seven **plain** (unprefixed) entries to `scripts/module-invariants-manifest.txt`. No
       `broken:` prefix: report §6.2 measured `lake build <module>` exit 0 with zero `error:` lines
       for every one of the seven.
-- [ ] Group them under two commented blocks, following the existing BiLasso block's precedent
+- [x] Group them under two commented blocks, following the existing BiLasso block's precedent
       (which already lists every child alongside its aggregator, so listing children is the
       established convention here, not a new one):
       - **Block A — six children of already-manifested unreachable aggregators**:
@@ -350,11 +350,11 @@ lists.
         The comment must record that wiring it in with one `import` line in
         `Kamp/NfMultiAnchorBridge.lean` is the eventual fix, deliberately deferred here because it
         is a build-graph change, and that deleting this line is what wiring it in means.
-- [ ] Do **not** claim in the comment that `UltrafilterMCS` is compile-unchecked. Per report §6.4,
+- [x] Do **not** claim in the comment that `UltrafilterMCS` is compile-unchecked. Per report §6.4,
       six of the seven are already compile-checked transitively (C6 runs `lake build` on the
       manifested aggregators, which compiles transitive dependencies). `OuterGateFaithful` is the
       only genuine coverage gain — say that, and only that.
-- [ ] Add no task-number citation of any form to the manifest comments (this file is outside
+- [x] Add no task-number citation of any form to the manifest comments (this file is outside
       `specs/**`; `validate-no-task-references.sh` will block the write and C9 would re-fail).
 
 **Timing**: 0.5 hours
