@@ -1,0 +1,17 @@
+{
+  "phase": 3,
+  "phase_name": "Merge batches and structural verification",
+  "started_at": "2026-08-18T22:00:00Z",
+  "last_updated": "2026-08-18T22:10:00Z",
+  "objectives": [
+    {"id": 1, "description": "Merge ocr_01..08.pdf in order with PyMuPDF into final filename; assert page count == 742", "status": "done", "files_touched": []},
+    {"id": 2, "description": "Run pdffonts on merged output, confirm font picture changed from original", "status": "done", "files_touched": []},
+    {"id": 3, "description": "Run pdftotext on merged output, compute and record printable ratio (structural signal only)", "status": "done", "files_touched": []},
+    {"id": 4, "description": "Concatenate 8 sidecars into ocr-full.txt", "status": "done", "files_touched": []},
+    {"id": 5, "description": "Re-assert Zotero original sha256 against baseline.txt", "status": "done", "files_touched": []}
+  ],
+  "current_objective": 5,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "notes": "Merged PDF: 742 pages confirmed. pdffonts: original showed 41x Type3/Custom + 1x Type1C/Custom (uni=no); merged shows 8x CID TrueType Identity-H (uni=yes) -- structurally distinct as required. Printable ratio 99.9461% recorded as structural context only, not cited as acceptance evidence. Zotero original sha256 re-verified unchanged."
+}

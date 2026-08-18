@@ -203,31 +203,36 @@ state before proceeding rather than forcing the plan's numbers.
 
 ---
 
-### Phase 2: Batched full-book OCR with per-batch checkpoints [IN PROGRESS]
+### Phase 2: Batched full-book OCR with per-batch checkpoints [COMPLETED]
 
 **Goal**: Produce OCR'd text-layer PDFs covering all 742 pages, in resumable batches, without
 ever writing to the Zotero original.
 
 **Tasks**:
-- [ ] Slice the original into 8 page-range batches with PyMuPDF (`fitz`), read-only on the input:
+- [x] Slice the original into 8 page-range batches with PyMuPDF (`fitz`), read-only on the input:
       batches of ~93 pages (1-93, 94-186, ..., 652-742). Write slices to
       `~/Documents/literature-staging/gabbay_2003/batches/src_NN.pdf`. Do NOT use `qpdf` or `gs` —
-      neither is installed.
-- [ ] For each batch NN, run:
+      neither is installed. *(completed: 8 slices present, src_01..src_07=93 pages each, src_08=91 pages)*
+- [x] For each batch NN, run:
       `ocrmypdf --force-ocr -l eng --output-type pdf --sidecar batches/ocr_NN.txt
       batches/src_NN.pdf batches/ocr_NN.pdf`
       The `--sidecar` text file is the input to the Phase 4 semantic gate and costs nothing extra.
-- [ ] Make the loop idempotent/resumable: skip any batch whose `ocr_NN.pdf` already exists AND
+      *(completed: all 8 ocr_NN.pdf + ocr_NN.txt present)*
+- [x] Make the loop idempotent/resumable: skip any batch whose `ocr_NN.pdf` already exists AND
       whose page count equals its `src_NN.pdf` page count. A completed batch is a durable
-      checkpoint; an interrupted run resumes by re-invoking the same loop.
-- [ ] Run the loop in the background (it is long-running: the 8-page trial took 3.9s with 5
+      checkpoint; an interrupted run resumes by re-invoking the same loop. *(completed: driver used)*
+- [x] Run the loop in the background (it is long-running: the 8-page trial took 3.9s with 5
       workers, extrapolating to roughly 10–20 minutes for 742 pages, but this is not a tight
       bound and image-heavy pages cost more). Poll for completion rather than blocking.
-- [ ] Record per-batch: exit code, wall time, output page count, and sidecar character count into
+      *(completed: actual wall time ~29-32s per batch, ~4 minutes total, well under the 10-20 min
+      extrapolation)*
+- [x] Record per-batch: exit code, wall time, output page count, and sidecar character count into
       `ocr-batches.log`. Flag any batch whose sidecar is anomalously short relative to its page
-      count for inspection in Phase 4.
-- [ ] Expect and ignore the per-page `"page already has text! - rasterizing text and running OCR
+      count for inspection in Phase 4. *(completed: all 8 batches logged exit=0; sidecar_chars range
+      158995-190392, no batch anomalously short relative to its ~93-page size)*
+- [x] Expect and ignore the per-page `"page already has text! - rasterizing text and running OCR
       anyway"` notice — that is `--force-ocr` correctly discarding the broken text layer.
+      *(completed: notice observed throughout log as expected, correctly ignored)*
 
 **Timing**: 1.5 hours (mostly unattended wall time)
 
@@ -257,24 +262,30 @@ assuming the estimate holds.
 
 ---
 
-### Phase 3: Merge batches and structural verification [NOT STARTED]
+### Phase 3: Merge batches and structural verification [COMPLETED]
 
 **Goal**: Assemble one OCR'd 742-page PDF at the final ingest-input path, and confirm structurally
 that its text layer is genuinely different from the broken original's.
 
 **Tasks**:
-- [ ] Merge `ocr_01.pdf` .. `ocr_08.pdf` in order with PyMuPDF (`Document.insert_pdf`) into
+- [x] Merge `ocr_01.pdf` .. `ocr_08.pdf` in order with PyMuPDF (`Document.insert_pdf`) into
       `~/Documents/literature-staging/gabbay_2003/gabbay_kurucz_wolter_zakharyaschev_2003_many_dimensional_modal_logics.pdf`.
-      The filename is load-bearing: it determines the corpus `doc_id`.
-- [ ] Assert merged page count == 742.
-- [ ] Run `pdffonts` on the merged output and confirm the font picture changed — the OCR text
+      The filename is load-bearing: it determines the corpus `doc_id`. *(completed)*
+- [x] Assert merged page count == 742. *(completed: 742 confirmed via PyMuPDF)*
+- [x] Run `pdffonts` on the merged output and confirm the font picture changed — the OCR text
       layer must present a normal, Unicode-mappable font rather than the original's uniform
-      `Type 3 / Custom / uni=no`. Record the observed output.
-- [ ] Run `pdftotext` on the merged output; compute the whole-document printable ratio and record
+      `Type 3 / Custom / uni=no`. Record the observed output. *(completed: original = 41x Type 3
+      Custom + 1x Type 1C Custom (uni=no); merged = 8x CID TrueType Identity-H, emb=yes sub=yes
+      uni=yes -- structurally distinct as required)*
+- [x] Run `pdftotext` on the merged output; compute the whole-document printable ratio and record
       it (expected >= 99%, versus the original's 78.5%). **Record this as a structural signal
       only** — it is explicitly NOT the acceptance criterion, and Phase 4's gate may not cite it.
-- [ ] Concatenate the 8 sidecars into `ocr-full.txt` for convenient Phase 4 sampling.
-- [ ] Re-assert the Zotero original's sha256 against `baseline.txt`.
+      *(completed: 99.9461% (1376321/1377063 chars), recorded in baseline.txt as structural
+      context only)*
+- [x] Concatenate the 8 sidecars into `ocr-full.txt` for convenient Phase 4 sampling.
+      *(completed: 1389152 bytes)*
+- [x] Re-assert the Zotero original's sha256 against `baseline.txt`. *(completed: MATCH,
+      6b03d3f9...557794b)*
 
 **Timing**: 0.5 hours
 
