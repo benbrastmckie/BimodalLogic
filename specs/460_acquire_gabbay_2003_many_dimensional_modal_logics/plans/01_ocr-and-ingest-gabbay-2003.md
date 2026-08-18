@@ -312,35 +312,38 @@ to pass Phase 4.
 
 ---
 
-### Phase 4: SEMANTIC quality gate — hand-read sampled pages [NOT STARTED]
+### Phase 4: SEMANTIC quality gate — hand-read sampled pages [COMPLETED]
 
 **Goal**: Decide, on hand-read evidence rather than any automated ratio, whether the OCR output is
 genuinely coherent text. This is the crux of the task: it is the mechanism that makes it
 impossible to ingest a bad OCR result on a passing ratio alone.
 
 **Tasks**:
-- [ ] Sample at least 8 pages spanning distinct strata of the book, chosen so no single failure
+- [x] Sample at least 8 pages spanning distinct strata of the book, chosen so no single failure
       mode can hide: (1) front matter — title/TOC/preface; (2) Chapter 1 running prose;
       (3) a mid-body page around p.300; (4) a math-heavy section page (the research used the Ch.3
       region around p.150); (5) a proof-dense page (theorem + proof body); (6) a bibliography
       page; (7) an index / back-matter page from the final batch; (8) one page chosen at random
-      from the whole range.
-- [ ] For EACH sampled page, extract its text (`pdftotext -f N -l N` on the merged PDF, or the
+      from the whole range. *(completed: pages 5, 20, 300, 150, 412, 699, 733, 449 -- the random
+      page was chosen via a seeded `random.choice` over the unsampled range to avoid cherry-picking)*
+- [x] For EACH sampled page, extract its text (`pdftotext -f N -l N` on the merged PDF, or the
       corresponding region of `ocr-full.txt`), **read it**, and record in the evidence artifact:
       the page number, a verbatim excerpt of at least 200 characters, and an explicit PASS/FAIL
-      judgement with a one-to-three sentence justification.
-- [ ] Judge each page against these stated criteria — all four, in prose, per page:
+      judgement with a one-to-three sentence justification. *(completed: see
+      reports/02_ocr-semantic-gate-evidence.md, all 8 excerpts 249-555 chars)*
+- [x] Judge each page against these stated criteria — all four, in prose, per page:
       (a) the tokens are real English and real technical vocabulary, not plausible-looking
       non-words; (b) sentences are grammatical and topically consistent with many-dimensional
       modal logic; (c) proper nouns and citations resolve to plausible real names (e.g.
       Zakharyaschev, Chagrov, Fagin) rather than letter salad; (d) the page's content is
       consistent with its position in the book (front matter reads as front matter, an index page
-      reads as an index).
-- [ ] **Forbidden**: citing the printable-character ratio, the pipeline quality gate, or any
+      reads as an index). *(completed: all four criteria applied per page in the evidence artifact)*
+- [x] **Forbidden**: citing the printable-character ratio, the pipeline quality gate, or any
       automated metric as the reason a page or the gate PASSES. Metrics may be recorded as
       context; they may not be the justification. This prohibition exists because the ratio gate
-      demonstrably passed 2260 mojibake chunks.
-- [ ] Apply the gate decision rule and record it explicitly:
+      demonstrably passed 2260 mojibake chunks. *(completed: no PASS justification in the evidence
+      artifact cites any automated metric)*
+- [x] Apply the gate decision rule and record it explicitly:
       - Every **prose** stratum (1, 2, 3, 5, 6, 7, 8) must PASS. A single prose FAIL blocks ingest.
       - The **math-heavy** stratum (4) passes if its surrounding prose is coherent and the
         observed errors are confined to formula symbols; record the specific formula noise seen.
@@ -350,8 +353,10 @@ impossible to ingest a bad OCR result on a passing ratio alone.
         `--optimize` level) on the failing strata; or escalate to the user that a genuinely
         different scan is required (the research established one is not obtainable from this
         environment, so this is a user-action escalation, not an agent retry).
-- [ ] Commit the evidence artifact before Phase 5 runs, so the gate record exists independently of
-      whether ingest later succeeds.
+      *(completed: gate decision PASS -- all 8 strata PASS, decision recorded in the evidence
+      artifact's "Phase 4 Gate Decision" section)*
+- [x] Commit the evidence artifact before Phase 5 runs, so the gate record exists independently of
+      whether ingest later succeeds. *(completed: committed in this dispatch prior to Phase 5)*
 
 **Timing**: 1 hour
 
