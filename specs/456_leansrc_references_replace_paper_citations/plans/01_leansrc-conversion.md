@@ -548,7 +548,7 @@ undershoot means an out-of-scope footnote was edited.
 
 ---
 
-### Phase 6: LEAN-PATH — convert 7 footnotes to `#leansrc` blocks [NOT STARTED]
+### Phase 6: LEAN-PATH — convert 7 footnotes to `#leansrc` blocks [COMPLETED]
 
 **Goal**: Convert the 7 footnotes that already read as Lean-source notes into `#leansrc` blocks,
 preserving their genuinely substantive commentary as trimmed footnotes placed *after* the blocks.
