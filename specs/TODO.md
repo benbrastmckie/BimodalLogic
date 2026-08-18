@@ -34,7 +34,7 @@ next_project_number: 462
 ### Decidability
 
 434 [IMPLEMENTING] — Discharge `MintPaysForTime fc U Tmax`, defined at FormalSystem/Me
-  └─ 433 [RESEARCHED] — Discharge `PostBlockingSettles fc`, defined at FormalSystem/Metal
+  └─ 433 [PLANNED] — Discharge `PostBlockingSettles fc`, defined at FormalSystem/Metal
     └─ 428 [BLOCKED] — Engine totality at a quantified branch budget. Owns obstruction O
       └─ 429 [NOT STARTED] — Repair the truth-lemma side conditions. Owns obstructions O2 and 
         └─ 410 [PLANNED] — Track B part 1 for the TM tableau decidability program (parent: t
@@ -410,13 +410,14 @@ Because archived files are never compiled, a broken import here is SILENT -- no 
 
 ### 433. Discharge postblockingsettles residual
 - **Effort**: 6-10 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 432, Task 434
 - **Research**:
   - [428_engine_totality_at_a_quantified_branch_budget/reports/05_spawn-analysis.md]
   - [433_discharge_postblockingsettles_residual/reports/01_spawn-inherited-research.md]
+- **Plan**: [433_discharge_postblockingsettles_residual/plans/01_postblockingsettles-refute-or-prove.md]
 
 **Description**: Discharge `PostBlockingSettles fc`, defined at FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean:4344, one of the four residual hypotheses on the totality terminus `buildTableauAt_isSome_of_budget` (MintBound.lean:4416). It states that the post-blocking pass leaves a branch the blocking-aware saturation test certifies -- i.e. `findUnexpandedUnblockedWith satBr satOrd fc (blockedTimes satBr satOrd fc (armTracker satBr)) = none` whenever `saturateBlocked ob fuel oOrd fc = some (.inr (satBr, satOrd))`. It subsumes `resolveOpenArm`'s own `none` arm via `armSettlement_of_postBlockingSettles` (MintBound.lean:4354) -- `ArmSettlement` alone is proved strictly too weak (`resolveOpenArm` tests `findClosure satBr` before its saturation test; `buildTableauAt` does not), so do not attempt to discharge via `ArmSettlement` instead. The relevant definitions are frozen (md5-pinned) in Saturation.lean (`saturateBlocked`, :431) and Tableau.lean (`blockedTimes`, :2104; `findUnexpandedUnblockedWith`, :2115) -- do not edit either file; the residual's own docstring states the gap ('whether the fuel-vs-condition gap can be closed by fuel alone') is exactly what Saturation.lean leaves open using only its existing public interface. Done means: either (a) a proof of `PostBlockingSettles fc` for the frame classes the terminus is meant to be used at, using only the public interface of the frozen files, landed sorry-free and axiom-free with `lake build` green; or (b), if (a) turns out to be genuinely impossible without touching the frozen files, a return to [BLOCKED] with the specific counterexample or obstruction found, analogous to the parent task's own refutation-driven repairs (e.g. `ordTimes_identifyTime_arm3_false`, MintBound.lean:1217) -- do not paper over with a vacuous definition (`lean4.md`'s Vacuous Definitions prohibition applies).
 

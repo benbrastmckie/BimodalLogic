@@ -882,7 +882,7 @@
     {
       "project_number": 433,
       "project_name": "discharge_postblockingsettles_residual",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "description": "Discharge `PostBlockingSettles fc`, defined at FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean:4344, one of the four residual hypotheses on the totality terminus `buildTableauAt_isSome_of_budget` (MintBound.lean:4416). It states that the post-blocking pass leaves a branch the blocking-aware saturation test certifies -- i.e. `findUnexpandedUnblockedWith satBr satOrd fc (blockedTimes satBr satOrd fc (armTracker satBr)) = none` whenever `saturateBlocked ob fuel oOrd fc = some (.inr (satBr, satOrd))`. It subsumes `resolveOpenArm`'s own `none` arm via `armSettlement_of_postBlockingSettles` (MintBound.lean:4354) -- `ArmSettlement` alone is proved strictly too weak (`resolveOpenArm` tests `findClosure satBr` before its saturation test; `buildTableauAt` does not), so do not attempt to discharge via `ArmSettlement` instead. The relevant definitions are frozen (md5-pinned) in Saturation.lean (`saturateBlocked`, :431) and Tableau.lean (`blockedTimes`, :2104; `findUnexpandedUnblockedWith`, :2115) -- do not edit either file; the residual's own docstring states the gap ('whether the fuel-vs-condition gap can be closed by fuel alone') is exactly what Saturation.lean leaves open using only its existing public interface. Done means: either (a) a proof of `PostBlockingSettles fc` for the frame classes the terminus is meant to be used at, using only the public interface of the frozen files, landed sorry-free and axiom-free with `lake build` green; or (b), if (a) turns out to be genuinely impossible without touching the frozen files, a return to [BLOCKED] with the specific counterexample or obstruction found, analogous to the parent task's own refutation-driven repairs (e.g. `ordTimes_identifyTime_arm3_false`, MintBound.lean:1217) -- do not paper over with a vacuous definition (`lean4.md`'s Vacuous Definitions prohibition applies).",
       "effort": "6-10 hours",
@@ -896,7 +896,7 @@
         "FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean"
       ],
       "created": "2026-08-06T16:01:52Z",
-      "last_updated": "2026-08-06T16:01:52Z",
+      "last_updated": "2026-08-18T22:46:22Z",
       "artifacts": [
         {
           "type": "research",
@@ -907,8 +907,14 @@
           "path": "specs/433_discharge_postblockingsettles_residual/reports/01_spawn-inherited-research.md",
           "type": "report",
           "summary": "spawn inherited research (backfilled by --sync)"
+        },
+        {
+          "path": "specs/433_discharge_postblockingsettles_residual/plans/01_postblockingsettles-refute-or-prove.md",
+          "type": "plan",
+          "summary": "8-phase refute-or-prove plan; two binary gates (fuel-zero verdict, fuel-alone gap), repaired-predicate direction lemma, proof branch on FALSE"
         }
-      ]
+      ],
+      "session_id": "sess_1787081671_9332d7_433"
     },
     {
       "project_number": 434,
