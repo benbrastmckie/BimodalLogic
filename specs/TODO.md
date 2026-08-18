@@ -98,7 +98,7 @@ next_project_number: 456
 
 ### Proof System Infrastructure
 
-450 [PLANNING] — FRAME-CLASS UNIFORMITY: parameterise the restricted-MCS layer (an
+450 [PLANNED] — FRAME-CLASS UNIFORMITY: parameterise the restricted-MCS layer (an
 
 ### Repo Hygiene
 
@@ -639,11 +639,12 @@ Because archived files are never compiled, a broken import here is SILENT -- no 
 
 ### 450. Frame class parameterization restricted mcs
 - **Effort**: high
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: proof-system-infrastructure
 - **Dependencies**: Task 453
 - **Research**: [450_frame_class_parameterization_restricted_mcs/reports/01_frame-class-parameterization-research.md]
+- **Plan**: [450_frame_class_parameterization_restricted_mcs/plans/01_frame-class-uniformity-plan.md]
 
 **Description**: FRAME-CLASS UNIFORMITY: parameterise the restricted-MCS layer (and the derived-theorem libraries beneath it) by FrameClass, removing ad hoc FrameClass.Base pins repo-wide.
 
