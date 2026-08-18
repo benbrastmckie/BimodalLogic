@@ -1,7 +1,7 @@
 # Implementation Plan: Deduplicate 8 stale placeholder entries in the global literature index
 
 - **Task**: 459 - Deduplicate 8 stale placeholder entries in the global literature index
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 2 hours
 - **Dependencies**: 458 (satisfied; its mutations do not touch the 8-pair cluster)
 - **Research Inputs**: `specs/459_deduplicate_8_stale_literature_entries/reports/01_dedup-stale-literature-entries.md`

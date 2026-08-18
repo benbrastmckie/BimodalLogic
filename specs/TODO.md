@@ -11,9 +11,9 @@ next_project_number: 462
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,193,231,257,298,413,421,423,424,436,451,455,459 | -- | completeness, decidability, frame-extensions, ... |
-| 2 | 178,219,282,296,422,425,434,460 | 193,231,298,421,423,436,459 | decidability, formula-refactor, dataset-enhancement, ... |
-| 3 | 169,432,461 | 422,434,460 | decidability, literature, strong_completeness |
+| 1 | 125,127,128,193,231,257,298,413,421,423,424,436,451,455,460 | -- | completeness, decidability, frame-extensions, ... |
+| 2 | 178,219,282,296,422,425,434,461 | 193,231,298,421,423,436,460 | decidability, formula-refactor, dataset-enhancement, ... |
+| 3 | 169,432 | 422,434 | decidability, strong_completeness |
 | 4 | 362,433 | 169,424,432 | decidability, strong_completeness |
 | 5 | 428 | 433 | decidability |
 | 6 | 429 | 428 | decidability |
@@ -79,9 +79,8 @@ next_project_number: 462
 
 ### Literature
 
-459 [IMPLEMENTING] — Discovered during task 457 Phase 3 (SCOPE 3 bulk token_count re-b
-  └─ 460 [NOT STARTED] — SCOPE 8 acquisition gap identified by task 457's research and re-
-    └─ 461 [NOT STARTED] — SCOPE 8 acquisition gap identified by task 457's research and re-
+460 [NOT STARTED] — SCOPE 8 acquisition gap identified by task 457's research and re-
+  └─ 461 [NOT STARTED] — SCOPE 8 acquisition gap identified by task 457's research and re-
 
 ### Strong Completeness
 
@@ -121,12 +120,13 @@ next_project_number: 462
 ---
 
 ### 459. Deduplicate 8 stale placeholder entries in the global literature index
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: general
 - **Topic**: literature
 - **Dependencies**: Task 458
 - **Research**: [459_deduplicate_8_stale_literature_entries/reports/01_dedup-stale-literature-entries.md]
 - **Plan**: [459_deduplicate_8_stale_literature_entries/plans/01_dedup-stale-literature-entries.md]
+- **Summary**: [459_deduplicate_8_stale_literature_entries/summaries/01_dedup-stale-literature-entries-summary.md]
 
 **Description**: Discovered during task 457 Phase 3 (SCOPE 3 bulk token_count re-baseline). ~/Projects/Literature/index.json has 369 total entries but only 361 distinct ids: 8 ids each appear TWICE. In every one of the 8 cases, one instance carries provenance="migrated from ingest schema (doc_id/source_path/chunks_dir)", token_count=0, empty summary, and thinner metadata (a stale placeholder from an incomplete earlier migration), while the other instance (same id, same path) is the already-correct, fully-populated v2 entry with real authors/summary/keywords/token_count. Affected ids: calcagno_2007_local-action-abstract-separation-logic, docherty_pym_2019_stone-dualities-separation-logics, jung_2018_iris-from-the-ground-up, ohearn_2007_resources-concurrency-local-reasoning, ohearn_2019_separation-logic-cacm, reynolds_2002_separation-logic, brookes_2007_semantics-concurrent-separation-logic, jipsen_litak_2017_algebraic-glimpse-bunched-implications. Task 457 corrected the stale duplicates' token_count only (to unblock its own SCOPE 3 defect-class-empty verification gate) but did NOT remove the duplicate records -- that structural fix (delete the stale placeholder, keeping the fully-populated entry) is this task's scope. After removal, confirm entry count drops from 369 to 361, JSON still parses, and literature-build-index.sh --global still exits 0 with FTS row count >= the pre-dedup baseline (removing a duplicate doc removes duplicate chunks too, so the row count is expected to change compared to the pre-457 baseline -- record the new baseline rather than expecting equality).
 
