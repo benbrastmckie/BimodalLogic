@@ -64,7 +64,7 @@ next_project_number: 457
 
 ### Publication Quality
 
-446 [PLANNED] — Address 6 bare `// FIX:` tags in `typst/FormalFoundations.typ`, e
+446 [IMPLEMENTING] — Address 6 bare `// FIX:` tags in `typst/FormalFoundations.typ`, e
   └─ 447 [RESEARCHED] — Address 6 substantive FIX: directives in `typst/FormalFoundations
 
 ### Automation
@@ -740,7 +740,7 @@ Task 417's recommended Task B (the filtered step relation) cannot start before (
 ---
 
 ### 446. Restore or retire 6 commented-out prose/proof blocks in FormalFoundations.typ
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: logic
 - **Topic**: publication-quality
 - **Dependencies**: Task 445, Task 456

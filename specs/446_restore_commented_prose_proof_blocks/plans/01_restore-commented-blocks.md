@@ -328,32 +328,37 @@ duplicate) and restore Site 6 alone, recording the finding.
 
 ---
 
-### Phase 5: Final Verification and Deliverable Accounting [NOT STARTED]
+### Phase 5: Final Verification and Deliverable Accounting [COMPLETED]
 
 **Goal**: Prove the task's stated verification criteria are met and that no out-of-scope territory
 was disturbed.
 
 **Tasks**:
-- [ ] Run `typst compile typst/FormalFoundations.typ /tmp/ff-final-446.pdf` and confirm exit 0.
+- [x] Run `typst compile typst/FormalFoundations.typ /tmp/ff-final-446.pdf` and confirm exit 0.
       Compare stderr against the Phase 1 baseline: the only warnings permitted are the same two
       `thmbox` "unknown font family" warnings. Any new warning is a regression to investigate.
-- [ ] Run `grep -n "FIX:" typst/FormalFoundations.typ`. Assert **exactly 6 matches remain**, and
+      *(completed: exit 0, identical two thmbox warnings)*
+- [x] Run `grep -n "FIX:" typst/FormalFoundations.typ`. Assert **exactly 6 matches remain**, and
       diff their text against the explanatory set recorded in Phase 1. All 6 must be
       explanatory-with-text; **zero** bare tags may remain. Any deviation in either direction is a
-      failure.
-- [ ] Run `grep -c "^// \|^//$" typst/FormalFoundations.typ` over the edited regions and confirm no
+      failure. *(completed: exactly 6 remain, byte-identical to Phase 1 record via diff; 0 bare)*
+- [x] Run `grep -c "^// \|^//$" typst/FormalFoundations.typ` over the edited regions and confirm no
       orphaned comment markers or stray `//` lines were left behind inside the restored blocks.
-- [ ] Open the produced PDF (or inspect page count and the relevant pages) and sanity-check that
+      *(completed: no stray markers in restored regions; remaining `//` lines belong to header
+      comments and the sibling task's explanatory-tagged blocks)*
+- [x] Open the produced PDF (or inspect page count and the relevant pages) and sanity-check that
       the two restored proofs render inside proof environments and the restored remark renders
-      inside a remark environment, rather than leaking as raw body text.
-- [ ] Confirm no file outside `typst/FormalFoundations.typ` and `specs/446_*/` was modified
-      (`git status --short`).
-- [ ] Write the implementation summary to
+      inside a remark environment, rather than leaking as raw body text. *(completed: verified via
+      pdftotext extraction — both Proof: environments and the Remark environment render correctly)*
+- [x] Confirm no file outside `typst/FormalFoundations.typ` and `specs/446_*/` was modified
+      (`git status --short`). *(completed: only the standard machine-state files
+      specs/TODO.md/specs/state.json touched, as an expected side effect of phase tracking)*
+- [x] Write the implementation summary to
       `specs/446_restore_commented_prose_proof_blocks/summaries/01_restore-commented-blocks-summary.md`,
       recording: the 6 restored sites, the two Scope Decisions and how each was resolved, the
       final compile result, and a note that this task's additions shift downstream line numbers for
-      task 447 (expected, non-blocking, no renumbering attempted).
-- [ ] Final commit.
+      task 447 (expected, non-blocking, no renumbering attempted). *(completed)*
+- [x] Final commit. *(completed)*
 
 **Timing**: 0.4 hours
 
