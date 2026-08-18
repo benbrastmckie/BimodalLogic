@@ -299,7 +299,7 @@ per-site inventory in Phases 4-6 would be built on a stale map.
 
 ---
 
-### Phase 2: Verify every `#leansrc` binding against `FormalSystem/` [NOT STARTED]
+### Phase 2: Verify every `#leansrc` binding against `FormalSystem/` [COMPLETED]
 
 **Goal**: Turn the research report's mixed-confidence mapping into a binary
 confirmed/dropped table. Read-only over `FormalSystem/`. Produces the single input Phases 4-6
