@@ -1,7 +1,7 @@
 # Implementation Plan: Task #434
 
 - **Task**: 434 - Discharge `MintPaysForTime fc U Tmax` (the open mathematical core on the totality terminus)
-- **Status**: PARTIAL
+- **Status**: [IMPLEMENTING]
 - **Effort**: 15 hours
 - **Dependencies**: None (unblocks task 432 Phase 7)
 - **Research Inputs**: `specs/434_discharge_mintpaysfortime_residual/reports/01_spawn-inherited-research.md`
@@ -541,13 +541,28 @@ three rows is reachable within the phase; if none is, mark the phase `[BLOCKED]`
 
 ---
 
-### Phase 7: The repaired predicate and its direction lemma [BLOCKED]
+### Phase 7: The repaired predicate and its direction lemma [COMPLETED]
 
 **Goal**: Land the satisfiable form of the residual, with a machine-checked implication fixing its
 direction relative to `MintPaysForTime`. The direction lemma is a **gate**, not a nicety: register
 entry 7 exists because a "simplification" that was secretly a weakening was mistaken for a repair.
 
-**BLOCKER** (Phase 7):
+**BLOCKER (Phase 7) — RESOLVED.** The original blocker text is retained verbatim below as the
+record of what was true at the time. It was discharged in two steps, neither of which re-attempts
+either refuted route (register entry 14):
+
+1. Task 436 supplied the missing fourth measure component and the oriented-arm re-gate, landing
+   `SigmaTimeStable`, `MintPaysForTimeStable` and its direction lemma
+   `mintPaysForTimeStable_of_mintPaysForTime`.
+2. That repair was then found **refuted at every nonempty universe** —
+   `mintPaysForTimeStable_signedUniverse_false`, decided at a concrete `signedUniverse C L`, at
+   every frame class and every `Tmax`, with no `densityRule` in the vehicle. The cause is a
+   coordinate mismatch: `SigmaTimeStable` constrains σ's *times*, and disjunct 2 needs it to
+   constrain σ's *formulas*. The repair that answers it is `SigmaFixed` / `MintPaysForTimeFixed`,
+   landed here with its direction lemma `mintPaysForTimeFixed_of_mintPaysForTimeStable` and its
+   no-leak confirmation. It costs no figure at all. See register entry 20.
+
+**BLOCKER** (Phase 7, original text, superseded):
 - **What failed**: No satisfiable repair of `MintPaysForTime` could be constructed. Both repair
   routes the plan and the Phase 4 verdict identify are refuted by machine-checked statements.
 - **What was tried**:
@@ -585,25 +600,48 @@ entry 7 exists because a "simplification" that was secretly a weakening was mist
   do-not-re-attempt register entry 14.
 
 **Tasks**:
-- [ ] Define the repaired predicate, following Phase 4's verdict. Under the expected refutable
+- [x] Define the repaired predicate, following Phase 4's verdict. Under the expected refutable
       verdict, the narrowing is on the **rule coordinate**: the second disjunct's index set must
       cover `freshTimeRules`, not merely `freshLabelRules`. Name it `MintPaysForTimeAt`, mirroring
       `UniverseClosedAt`'s naming. State disjunct 1 against Phase 5's
       `knownTimes_card_le_succ_of_unorderedSuccessor` rather than against a bare inequality.
-- [ ] Prove the direction lemma. Under a **weakening** repair (the `UniverseClosedAt` case), it is
+      *(deviation: altered — the rule-coordinate narrowing this item specifies is refuted (register
+      entry 14) and was not attempted. The narrowing that landed is on the **renaming** coordinate,
+      in two successive steps: `MintPaysForTimeStable` (task 436, `SigmaTimeStable`), then
+      `MintPaysForTimeFixed` (`SigmaFixed`) after the first was refuted at nonempty `U`. Disjunct 1
+      is stated as in `MintPaysForTime`; the cardinality conjunct is retained rather than dropped,
+      the drop being the other route entry 14 closes.)*
+- [x] Prove the direction lemma. Under a **weakening** repair (the `UniverseClosedAt` case), it is
       `mintPaysForTimeAt_of_mintPaysForTime` and every theorem restated against the new predicate is
       a strengthening. Under a **strengthening** repair (the `OrdTimesKnown` case), it is
       `mintPaysForTime_of_mintPaysForTimeAt` and the docstring must say so explicitly. Establish
       which case applies and prove that lemma — do not land the predicate without it.
-- [ ] Confirm the repair **leaks no new hypothesis into the terminus**: every quantity the repaired
+      *(completed — the **weakening** case applies at both links.
+      `mintPaysForTimeFixed_of_mintPaysForTimeStable` and the composite
+      `mintPaysForTimeFixed_of_mintPaysForTime` are machine-checked, and the docstring states the
+      direction in words: the hypothesis is stronger, so the predicate is weaker, so every
+      restatement is a strengthening.)*
+- [x] Confirm the repair **leaks no new hypothesis into the terminus**: every quantity the repaired
       predicate newly constrains must already be reachable at the consuming site. Mirror
       `universeClosedAt_identify_at_trigger`'s role and land the analogous bridge lemma if one is
       needed. If a genuinely new terminus hypothesis is unavoidable, that is a blocker to escalate,
       not a cost to absorb silently.
-- [ ] Docstring `MintPaysForTimeAt` with its obligation map, per coordinate, in the voice
+      *(completed — `mintPaysForTimeFixed_no_leak`, five conjuncts: both direction links, the seed
+      discharge `sigmaFormulaFixed_id`, the arm's own renaming `sigmaFixed_identifyOriented` (no
+      membership side condition at all), and arm preservation `sigmaFormulaFixed_identifyOriented`
+      under exactly the side condition `universeClosedAt_identify_at_trigger_oriented` already
+      carries. Unlike the fourth measure component, this repair costs no figure:
+      `budgetPotentialAt`, `mintPathBoundAt`, `mintAwareFuelAt` and `derivedTmaxAt` are reused
+      unaltered.)*
+- [x] Docstring `MintPaysForTimeAt` with its obligation map, per coordinate, in the voice
       `UnorderedSuccessorLabelClosed`'s docstring uses: what is discharged (the time accounting, from
       Phases 3 and 5), what is carried (the σ-hit, per Phase 6's verdict), and what is assumed by
-      nothing else.
+      nothing else. *(deviation: altered — the obligation map is on `MintPaysForTimeFixed` rather
+      than on `MintPaysForTimeAt`. What is discharged: the time-level σ-hit (task 436) and now the
+      formula-level one (`sigma_formula_hit_of_sigmaFixed`). What is carried: nothing — the σ-hit is
+      discharged at both coordinates. What remains open: the engine-level assembly of the per-rule
+      payments, and the density coordinate, both named on the predicate's docstring and in register
+      entry 20.)*
 
 **Timing**: 2 hours
 
@@ -624,36 +662,83 @@ entry 7 exists because a "simplification" that was secretly a weakening was mist
 
 ---
 
-### Phase 8: Terminus restatement and the concrete instantiation [BLOCKED]
+### Phase 8: Terminus restatement and the concrete instantiation [PARTIAL]
 
 **Goal**: Deliver the task's "done" condition: a sorry-free, axiom-free theorem establishing the
 residual (repaired if Phase 4 refuted it) at a **concrete, useful instantiation**, plus the seed-level
 terminus restated at the repaired shape.
 
-**BLOCKER** (Phase 8): Depends on Phase 7, which is `[BLOCKED]`. There is no repaired predicate to
-restate the termini against or to discharge at a concrete universe. Per the plan's own
-Rollback/Contingency section, "a repair that trades one named residual for another is not a
-discharge" — so nothing is landed here rather than landing a weaker substitute under the
-deliverable's name. `MintPaysForTime` is retained verbatim and every theorem stated against it is
-unchanged.
+**BLOCKER (Phase 8) — PARTIALLY RESOLVED.** The original blocker (no repaired predicate existed) is
+gone: Phase 7 is `[COMPLETED]` and `MintPaysForTimeFixed` is landed with its direction lemma. Task 1
+of this phase is therefore complete — the terminus chain is restated at the repaired predicate,
+including both seed-level termini at a concrete `signedUniverse C L`, with **no figure change**
+(`buildTableauAt_isSome_at_seed_lengthBudget_signedUniverse_fixed` and its five predecessors reuse
+`mintAwareFuelAt` and `derivedTmaxAt` unaltered).
+
+**RESIDUAL BLOCKER** (Phase 8, task 2): the discharge at a **nonempty** universe.
+- **What failed**: `MintPaysForTimeFixed fc (signedUniverse C L) Tmax` is discharged only at
+  `L = ∅` (`mintPaysForTimeFixed_signedUniverse_empty`), the same boundary `mintPaysForTime_empty`
+  and `mintPaysForTimeStable_signedUniverse_empty` record. A nonempty discharge is not landed.
+- **What was tried, and what it produced**: the per-rule payments were driven to completion. All
+  eight non-density fresh-time rules now have their payment available —
+  `mintPotential_lt_of_pick_linear_sigmaFixed` / `mintPotential_lt_of_pick_branching_sigmaFixed`
+  for the six in `freshLabelRules ∩ freshTimeRules` (disjunct 2, discharged from confinement plus
+  `SigmaFixed` by `sigma_formula_hit_of_sigmaFixed`), and `selfGuardPotential_lt_of_untlNeg` /
+  `selfGuardPotential_lt_of_snceNeg` for the two in `selfGuardRules` (disjunct 3). The
+  twenty-seven rules outside `freshTimeRules` are covered by `applyRule_emitted_time_dichotomy`
+  plus `expandOnceUnblocked_ord_mono` (disjunct 1).
+- **Why it is stuck**: two things, and they are independent.
+  **(a) The engine-level assembly.** The payments above are stated at the *pick*; the predicate
+  quantifies over `unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1`. Threading the
+  picked rule through `expandOnceUnblocked`'s three stages so that the per-rule case split is
+  available at the successor — for all thirty-six constructors at once — is a distinct block of
+  engine plumbing that this phase's two-hour budget does not contain. It is proof engineering, not
+  open mathematics.
+  **(b) The density coordinate.** `densityRule` mints a fresh time while lying outside **both**
+  `freshLabelRules` and `selfGuardRules`, so no disjunct moves at a `densityRule` step for any σ
+  whatsoever. This is unchanged since register entry 17 named it and is open mathematics, not
+  plumbing. `densityRule` is `denseRules`-gated, so (a) alone would deliver a discharge at frame
+  classes outside `.Dense` / `.Dedekind`; every frame class needs `gapPotential`, which remains
+  implemented nowhere and assumed by nothing.
+- **What is needed**: (a) the engine-level assembly, spawnable on its own; (b) `gapPotential`,
+  indexed by `U ×ˢ U` and `denseRules`-gated — a research task in its own right.
+- **Prohibited workarounds**: do NOT land a third predicate that is itself false, and do NOT use
+  `sorry` or a vacuous placeholder. Both refuted repairs are landed in-source with their witnesses
+  so a future reader does not re-attempt them; see register entries 14, 17 and 20.
 
 **Tasks**:
-- [ ] Restate the two seed-level termini at the repaired predicate, mirroring how the 432 repair
+- [x] Restate the two seed-level termini at the repaired predicate, mirroring how the 432 repair
       landed `buildTableauAt_isSome_of_budget_at`: `buildTableauAt_isSome_of_budget_at_mint` and
       `buildTableauAt_isSome_at_seed_at_mint` (or the naming the file's existing `_at` convention
       dictates). Restate **only** these two — the originals and the other consuming sites stay as
-      they are.
+      they are. *(deviation: altered — the naming follows the file's `_fixed` suffix rather than
+      `_at_mint`, and the two seed-level termini are the pair task 436's classification identified
+      (`..._of_lengthBudget_signedUniverse` and `..._at_seed_lengthBudget_signedUniverse`), not the
+      pair this plan's Scope Hypothesis named. Their four intermediate ancestors are restated too,
+      because the two seed-level statements are proved through them; every original is untouched.)*
 - [ ] Discharge the repaired predicate at the concrete instantiation `U = signedUniverse C L`,
       `σ = id`, `Tmax = derivedTmax ((seedBranch phi).knownTimes.toFinset.card) U.card`, at an
       arbitrary frame class. Model the discharge on
       `timeMergeClosed_identifyTime_signedUniverse`, which is the analogous "repaired clause
       discharged at a concrete useful universe" theorem the 432 repair landed.
-- [ ] If the discharge needs a closure condition on `L` (the `TimeMergeClosed` pattern), state it,
+      *(deviation: partial — discharged at `L = ∅` only
+      (`mintPaysForTimeFixed_signedUniverse_empty`). "At an arbitrary frame class" is refuted for
+      any such discharge by the density coordinate; see the residual blocker above. The per-rule
+      payments a nonempty discharge needs are all landed, the engine-level assembly is not.)*
+- [x] If the discharge needs a closure condition on `L` (the `TimeMergeClosed` pattern), state it,
       name it, and prove that it is satisfiable at a concrete finite `L` — do **not** leave it as a
       third unproved residual. Note that the world-side analogue of such a condition is refuted
       (`freshWorldHeadroom_not_universal`, register entry 11), so verify satisfiability rather than
       assuming the time side behaves like `TimeMergeClosed`.
-- [ ] Verify axiom-freedom of the delivered theorem with `lean_verify` on the fully qualified name.
+      *(deviation: altered — no closure condition on `L` is what the discharge needs, and none was
+      invented. The condition the discharge needs is on the **renaming** (`SigmaFixed`, discharged
+      rather than assumed — `sigmaFormulaFixed_id` at the seed, `sigmaFixed_identifyOriented` at
+      the arm) and on the **frame class** (density-free), which is a restriction rather than a new
+      hypothesis. No third unproved residual was added.)*
+- [x] Verify axiom-freedom of the delivered theorem with `lean_verify` on the fully qualified name.
+      *(deviation: altered — verified with `#print axioms` under `lake env lean` rather than
+      `lean_verify`; same check, and it runs against the built module. Every delivered declaration
+      reports exactly `[propext, Classical.choice, Quot.sound]`.)*
 
 **Timing**: 2 hours
 
