@@ -869,7 +869,7 @@ constraints={ord.constraints} incomparable={incomparableTimePairs b ord}"
   | none => "STALLED"
 
 -- W1. The named witness: siblings `1` and `2` carry `T(G p)` and `F(p)`.
-/-- info: total=true knownTimes=[9, 5, 3, 4, 8, 1, 6, 2, 0] constraints=[(6, 1), (9, 3), (9, 5), (8, 9), (1, 8), (6, 8), (2, 6), (3, 5), (4, 0), (0, 3), (0, 2), (0, 1)] incomparable=[] -/
+/-- info: total=true knownTimes=[4, 7, 5, 6, 1, 2, 3, 0] constraints=[(2, 1), (2, 6), (2, 7), (7, 5), (6, 7), (1, 6), (2, 5), (4, 3), (3, 0), (0, 2), (0, 1)] incomparable=[] -/
 #guard_msgs in
 #eval IO.print (orderProbe (nt (an (F (G p)) (F (nt p)))) FrameClass.Base linearityFuel)
 
@@ -881,7 +881,7 @@ constraints={ord.constraints} incomparable={incomparableTimePairs b ord}"
 #eval IO.print (orderProbe (nt (an (F p) (F q))) FrameClass.Base linearityFuel)
 
 -- W3. Two universals: incomparability is not caused by the negative conjunct.
-/-- info: total=true knownTimes=[10, 3, 4, 7, 9, 8, 1, 0] constraints=[(7, 3), (7, 10), (9, 7), (8, 9), (1, 8), (3, 10), (4, 0), (0, 3), (0, 8), (0, 1)] incomparable=[] -/
+/-- info: total=true knownTimes=[4, 8, 9, 2, 5, 6, 7, 1, 3, 0] constraints=[(8, 2), (8, 5), (6, 9), (8, 6), (7, 8), (1, 7), (5, 6), (2, 5), (4, 3), (3, 0), (0, 2), (0, 1)] incomparable=[] -/
 #guard_msgs in
 #eval IO.print (orderProbe (nt (an (F (G p)) (F (G q)))) FrameClass.Base linearityFuel)
 
@@ -906,13 +906,13 @@ constraints={ord.constraints} incomparable={incomparableTimePairs b ord}"
 -- `knownTimes=[1, 0]`). Seriality adds four more times, which regressed the row to `false`;
 -- `timeLinearity` orders them and restores it. Still on `conformanceFuel`. This is also the
 -- row that read CLOSED — unsoundly — while the split fold's open-arm contract was broken.
-/-- info: total=true knownTimes=[3, 4, 5, 0, 2, 1] constraints=[(3, 0), (5, 3), (5, 0), (2, 4), (3, 1), (1, 2), (0, 1)] incomparable=[] -/
+/-- info: total=true knownTimes=[3, 4, 0, 2, 1] constraints=[(4, 0), (2, 3), (1, 2), (0, 1)] incomparable=[] -/
 #guard_msgs in
 #eval IO.print (orderProbe (im (F p) (F (F p))) FrameClass.Base)
 
 -- W7. W1 at fuel 2000, five times W1's own `linearityFuel`. Identical, so the flip to
 -- `total=true` is `timeLinearity` firing and not a budget artifact.
-/-- info: total=true knownTimes=[9, 7, 5, 3, 4, 8, 1, 6, 2, 0] constraints=[(6, 1), (6, 8), (6, 9), (7, 3), (7, 5), (9, 7), (8, 9), (1, 8), (6, 7), (2, 6), (3, 5), (4, 0), (0, 3), (0, 2), (0, 1)] incomparable=[] -/
+/-- info: total=true knownTimes=[4, 7, 5, 6, 1, 2, 3, 0] constraints=[(2, 1), (2, 6), (2, 7), (7, 5), (6, 7), (1, 6), (2, 5), (4, 3), (3, 0), (0, 2), (0, 1)] incomparable=[] -/
 #guard_msgs in
 #eval IO.print (orderProbe (nt (an (F (G p)) (F (nt p)))) FrameClass.Base 2000)
 

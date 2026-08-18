@@ -1,7 +1,7 @@
 # Implementation Plan: Task #453
 
 - **Task**: 453 - restore `BimodalTest` green and clear C6 / C9
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 4 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/453_restore_bimodaltest_green_and_clear_c6_c9/reports/01_guard-rebaseline-and-c6-c9.md
@@ -120,29 +120,29 @@ exactly one probe file and are file-disjoint from one another.
 
 ---
 
-### Phase 1: Re-record the seven guard docstrings [NOT STARTED]
+### Phase 1: Re-record the seven guard docstrings [COMPLETED]
 
 **Goal**: `lake build BimodalTest` exits 0, with all seven `#guard_msgs` expectations replaced by
 Lean's generated strings and nothing else changed.
 
 **Tasks**:
-- [ ] Re-read report §3 in full. The seven replacement strings there are authoritative; do not
+- [x] Re-read report §3 in full. The seven replacement strings there are authoritative; do not
       re-measure them, only verify by building.
-- [ ] `Tests/BimodalTest/BoxSpreadProbe.lean` — replace the row C (`.Dense`) expectation at
+- [x] `Tests/BimodalTest/BoxSpreadProbe.lean` — replace the row C (`.Dense`) expectation at
       docstring line 164 (error reported at 165). Only `|T|` moves, `8 -> 6`; `spread`, `anchor`,
       `grid` and `|W|` are unchanged. Verify: `lake build BimodalTest.BoxSpreadProbe` (~1.9 s).
       Commit on green.
-- [ ] `Tests/BimodalTest/RegionGateProbe.lean` — replace the row C expectation at docstring 298
+- [x] `Tests/BimodalTest/RegionGateProbe.lean` — replace the row C expectation at docstring 298
       (error 299) and the row H expectation at docstring 329 (error 330). Rows C and H now generate
       the **same** string; that is expected, not a copy-paste error. Verify:
       `lake build BimodalTest.RegionGateProbe` (~2.3 s). Commit on green.
-- [ ] `Tests/BimodalTest/TableauConformance.lean` — replace the four expectations at docstrings
+- [x] `Tests/BimodalTest/TableauConformance.lean` — replace the four expectations at docstrings
       872 (W1), 884 (W3), 909 (W6), 915 (W7). W3 **grows** (`|knownTimes|` 8 -> 10) against the
       general shrinking trend; this is expected per report §3.5. W7's new value is byte-identical
       to W1's new value; that is the point, not a mistake. Verify:
       `lake build BimodalTest.TableauConformance` (~28 s incremental). Commit on green.
-- [ ] Whole-target confirmation: `lake build BimodalTest` exits 0.
-- [ ] Do **not** touch the rows at `TableauConformance.lean:483`, `:513`, `:578` — the exclusion
+- [x] Whole-target confirmation: `lake build BimodalTest` exits 0.
+- [x] Do **not** touch the rows at `TableauConformance.lean:483`, `:513`, `:578` — the exclusion
       block lists them as already self-repaired and they are green today.
 
 **Timing**: 0.75 hours
