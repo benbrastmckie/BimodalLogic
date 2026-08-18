@@ -1883,9 +1883,12 @@ theorem expandOnceUnblocked_split_card_lt {b nb : Branch} {bs : List Branch} {or
 This is the negative half of this subsection, and it is load-bearing. `timeLinearity` is the only
 rule producing `.branchingOrdered`, and its three arms are
 `(branch, ord.addFuture t₁ t₂)`, `(branch, ord.addFuture t₂ t₁)` and
-`(branch.identifyTime t₂ t₁, ord.identifyTime t₂ t₁)` — the first two carry the branch
-**unchanged**, and the third *identifies two times*, which can only merge signed formulas and so
-cannot increase `toFinset.card` either. `findApplicableRule` adds no output-presence guard on
+`(branch.identifyTime (min t₁ t₂) (max t₁ t₂), ord.identifyTime (min t₁ t₂) (max t₁ t₂))` — the
+first two carry the branch **unchanged**, and the third *identifies two times*, which can only
+merge signed formulas and so cannot increase `toFinset.card` either. (Arm 3 is oriented: it retires
+the smaller numeral, which is what keeps `Branch.maxTime` from falling. The orientation is
+invisible to this lemma's content — a merge cannot grow the branch whichever way round it runs —
+but it is why the arm reads `min`/`max` rather than `t₂`/`t₁`.) `findApplicableRule` adds no output-presence guard on
 this constructor and says in its own comment why one is impossible: "the arms of an ordered split
 are replacement branches, so 'the branch already contains this arm's output' is trivially true of
 every arm that adds no formula, which is every arm of the only rule that produces this
@@ -1904,7 +1907,8 @@ theorem applyRule_timeLinearity_arms (sf : SignedFormula) (b : Branch) (ord : Ti
     (h : (applyRule .timeLinearity sf b ord).1 = RuleResult.branchingOrdered bs) :
     ∃ t₁ t₂, bs = [ (b, ord.addFuture t₁ t₂)
                   , (b, ord.addFuture t₂ t₁)
-                  , (b.identifyTime t₂ t₁, ord.identifyTime t₂ t₁) ] := by
+                  , (b.identifyTime (min t₁ t₂) (max t₁ t₂),
+                     ord.identifyTime (min t₁ t₂) (max t₁ t₂)) ] := by
   cases sf with
   | mk sign formula label =>
     simp only [applyRule] at h
@@ -1934,7 +1938,8 @@ theorem applyRule_timeLinearity_arms_trigger (sf : SignedFormula) (b : Branch)
     ∃ t₁ t₂, firstIncomparablePair b ord = some (t₁, t₂) ∧
       bs = [ (b, ord.addFuture t₁ t₂)
            , (b, ord.addFuture t₂ t₁)
-           , (b.identifyTime t₂ t₁, ord.identifyTime t₂ t₁) ] := by
+           , (b.identifyTime (min t₁ t₂) (max t₁ t₂),
+              ord.identifyTime (min t₁ t₂) (max t₁ t₂)) ] := by
   cases sf with
   | mk sign formula label =>
     simp only [applyRule] at h
@@ -1978,6 +1983,22 @@ theorem knownTimes_card_lt_identifyTime {b : Branch} {t₁ t₂ : TimeIndex}
   · exact src_not_mem_knownTimes_identifyTime b t₂ t₁ hne
       (List.mem_toFinset.mp (hcon (List.mem_toFinset.mpr h2)))
 
+/-- **What the trigger guarantees, read at the arm's own pair.** The ordered split's third arm
+retires `min t₁ t₂` and keeps `max t₁ t₂`, so this is the form every arm-3 discharge below
+consumes: surviving time known, retired time known, and the two distinct.
+
+Membership and distinctness are symmetric in the pair, so the orientation costs exactly one case
+split on `Nat.le_total` and no new content. That is the whole reason the plan rated the
+termination measure's exposure to the reorientation low: `firstIncomparablePair_spec` supplies all
+three facts in either orientation. -/
+theorem firstIncomparablePair_spec_oriented {b : Branch} {ord : TimeOrdering} {t₁ t₂ : TimeIndex}
+    (h : firstIncomparablePair b ord = some (t₁, t₂)) :
+    max t₁ t₂ ∈ b.knownTimes ∧ min t₁ t₂ ∈ b.knownTimes ∧ min t₁ t₂ ≠ max t₁ t₂ := by
+  obtain ⟨hm1, hm2, hne, -, -⟩ := firstIncomparablePair_spec h
+  rcases Nat.le_total t₁ t₂ with hle | hle
+  · rw [Nat.min_eq_left hle, Nat.max_eq_right hle]; exact ⟨hm2, hm1, Ne.symm hne⟩
+  · rw [Nat.min_eq_right hle, Nat.max_eq_left hle]; exact ⟨hm1, hm2, hne⟩
+
 /--
 **The `.splitOrdered` progress measure**, lexicographic in `(|knownTimes|, |incomparable pairs|)`.
 
@@ -2006,8 +2027,13 @@ def splitOrderedMeasure (b : Branch) (ord : TimeOrdering) : Nat × Nat :=
 
 Arms 1 and 2 (`addFuture`) keep the branch literally unchanged, so the first component is equal
 and the second strictly drops (`incompPairs_lt_addFuture`); arm 3 (`identifyTime`) drops the
-first component outright (`knownTimes_card_lt_identifyTime`). Since `timeLinearity` is the only
-producer of `.branchingOrdered`, this covers every ordered split the engine takes.
+first component outright (`knownTimes_card_lt_identifyTime`, instantiated at the oriented pair via
+`firstIncomparablePair_spec_oriented`). Since `timeLinearity` is the only producer of
+`.branchingOrdered`, this covers every ordered split the engine takes.
+
+The orientation does not reach this proof: `knownTimes_card_lt_identifyTime` is quantified over
+both of its times and asks only for membership and distinctness, so retiring the smaller numeral
+drops the time count exactly as retiring `t₂` did.
 -/
 theorem splitOrderedMeasure_lt_of_timeLinearity (sf : SignedFormula) (b : Branch)
     (ord : TimeOrdering) (bs : List (Branch × TimeOrdering))
@@ -2015,14 +2041,14 @@ theorem splitOrderedMeasure_lt_of_timeLinearity (sf : SignedFormula) (b : Branch
     ∀ p ∈ bs, Prod.Lex (· < ·) (· < ·)
       (splitOrderedMeasure p.1 p.2) (splitOrderedMeasure b ord) := by
   obtain ⟨t₁, t₂, htrig, rfl⟩ := applyRule_timeLinearity_arms_trigger sf b ord bs h
-  obtain ⟨hm1, hm2, hne, -, -⟩ := firstIncomparablePair_spec htrig
+  obtain ⟨hmu, hms, hsu⟩ := firstIncomparablePair_spec_oriented htrig
   obtain ⟨hlt1, hlt2⟩ := incompPairs_lt_addFuture htrig
   intro p hp
   simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
   rcases hp with rfl | rfl | rfl
   · exact Prod.Lex.right _ hlt1
   · exact Prod.Lex.right _ hlt2
-  · exact Prod.Lex.left _ _ (knownTimes_card_lt_identifyTime hm1 hm2 hne)
+  · exact Prod.Lex.left _ _ (knownTimes_card_lt_identifyTime hmu hms hsu)
 
 set_option maxHeartbeats 1600000 in
 /-- **Split arity, attempted.** Every `.branching` result of every rule has at most three arms. -/
@@ -2424,6 +2450,36 @@ theorem splitOrderedRank_le (Tmax : Nat) (b : Branch) (ord : TimeOrdering)
   simp only [splitOrderedRank, orderedRunBound]
   omega
 
+/-- **The identification arm's rank drop, generically in the merged pair.** Factored out of
+`splitOrderedRank_lt_of_timeLinearity` below so the arm-3 case is a single application rather than
+a block of arithmetic stated at one particular orientation.
+
+This is the shape the arm reorientation wants: the statement is quantified over `src` and `tgt` and
+asks only for membership and distinctness, so it applies at `(min t₁ t₂, max t₁ t₂)` exactly as it
+did at `(t₂, t₁)`. The rank has to be re-bounded from the *post*-merge time set, which is smaller,
+hence the `Tmax` hypothesis. -/
+theorem splitOrderedRank_lt_identifyTime (Tmax : Nat) {b : Branch} (ord : TimeOrdering)
+    {src tgt : TimeIndex} (hT : b.knownTimes.toFinset.card ≤ Tmax)
+    (h1 : tgt ∈ b.knownTimes) (h2 : src ∈ b.knownTimes) (hne : src ≠ tgt) :
+    splitOrderedRank Tmax (b.identifyTime src tgt) (ord.identifyTime src tgt)
+      < splitOrderedRank Tmax b ord := by
+  have hk := knownTimes_card_lt_identifyTime h1 h2 hne
+  have harm : ((b.identifyTime src tgt).knownTimes).toFinset.card ≤ Tmax := by omega
+  have hc := incompPairs_card_le (b.identifyTime src tgt) (ord.identifyTime src tgt)
+  have h2' : ((b.identifyTime src tgt).knownTimes).toFinset.card
+      * ((b.identifyTime src tgt).knownTimes).toFinset.card ≤ Tmax * Tmax :=
+    Nat.mul_le_mul harm harm
+  simp only [splitOrderedRank]
+  have hstep : ((b.identifyTime src tgt).knownTimes).toFinset.card * (Tmax * Tmax + 1)
+      + (Tmax * Tmax + 1) ≤ b.knownTimes.toFinset.card * (Tmax * Tmax + 1) := by
+    have hle : ((b.identifyTime src tgt).knownTimes).toFinset.card + 1
+        ≤ b.knownTimes.toFinset.card := hk
+    calc ((b.identifyTime src tgt).knownTimes).toFinset.card * (Tmax * Tmax + 1)
+          + (Tmax * Tmax + 1)
+        = (((b.identifyTime src tgt).knownTimes).toFinset.card + 1) * (Tmax * Tmax + 1) := by ring
+      _ ≤ b.knownTimes.toFinset.card * (Tmax * Tmax + 1) := Nat.mul_le_mul_right _ hle
+  omega
+
 /-- **The `Nat`-valued form of the ordered-split decrease.** Same content as
 `splitOrderedMeasure_lt_of_timeLinearity`, transported through `splitOrderedRank`, and carrying
 the time bound because the identification arm's rank has to be re-bounded from its own (smaller)
@@ -2434,29 +2490,14 @@ theorem splitOrderedRank_lt_of_timeLinearity (Tmax : Nat) (sf : SignedFormula) (
     (h : (applyRule .timeLinearity sf b ord).1 = RuleResult.branchingOrdered bs) :
     ∀ p ∈ bs, splitOrderedRank Tmax p.1 p.2 < splitOrderedRank Tmax b ord := by
   obtain ⟨t₁, t₂, htrig, rfl⟩ := applyRule_timeLinearity_arms_trigger sf b ord bs h
-  obtain ⟨hm1, hm2, hne, -, -⟩ := firstIncomparablePair_spec htrig
+  obtain ⟨hmu, hms, hsu⟩ := firstIncomparablePair_spec_oriented htrig
   obtain ⟨hlt1, hlt2⟩ := incompPairs_lt_addFuture htrig
   intro p hp
   simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
   rcases hp with rfl | rfl | rfl
   · simp only [splitOrderedRank]; omega
   · simp only [splitOrderedRank]; omega
-  · have hk := knownTimes_card_lt_identifyTime hm1 hm2 hne
-    have harm : ((b.identifyTime t₂ t₁).knownTimes).toFinset.card ≤ Tmax := by omega
-    have hc := incompPairs_card_le (b.identifyTime t₂ t₁) (ord.identifyTime t₂ t₁)
-    have h2 : ((b.identifyTime t₂ t₁).knownTimes).toFinset.card
-        * ((b.identifyTime t₂ t₁).knownTimes).toFinset.card ≤ Tmax * Tmax :=
-      Nat.mul_le_mul harm harm
-    simp only [splitOrderedRank]
-    have hstep : ((b.identifyTime t₂ t₁).knownTimes).toFinset.card * (Tmax * Tmax + 1)
-        + (Tmax * Tmax + 1) ≤ b.knownTimes.toFinset.card * (Tmax * Tmax + 1) := by
-      have hle : ((b.identifyTime t₂ t₁).knownTimes).toFinset.card + 1
-          ≤ b.knownTimes.toFinset.card := hk
-      calc ((b.identifyTime t₂ t₁).knownTimes).toFinset.card * (Tmax * Tmax + 1)
-            + (Tmax * Tmax + 1)
-          = (((b.identifyTime t₂ t₁).knownTimes).toFinset.card + 1) * (Tmax * Tmax + 1) := by ring
-        _ ≤ b.knownTimes.toFinset.card * (Tmax * Tmax + 1) := Nat.mul_le_mul_right _ hle
-    omega
+  · exact splitOrderedRank_lt_identifyTime Tmax ord hT hmu hms hsu
 
 /-- The longest path the two measures jointly admit: at most `|U|` branch-growing steps
 (`expandOnceUnblocked_card_lt` for `.extended`, `expandOnceUnblocked_split_card_lt` for

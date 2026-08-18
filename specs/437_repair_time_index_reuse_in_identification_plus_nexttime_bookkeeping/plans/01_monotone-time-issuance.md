@@ -595,26 +595,39 @@ file here means the design constraint was violated.
 
 ---
 
-### Phase 6: Re-verify `Fuel.lean` consumers [NOT STARTED]
+### Phase 6: Re-verify `Fuel.lean` consumers [COMPLETED]
 
 **Goal**: Bring `Fuel.lean`'s twelve arm-bound sites and the `.splitOrdered` measure back to green
 at the oriented arm.
 
 **Tasks**:
-- [ ] Reorient `applyRule_timeLinearity_arms` (`Fuel.lean:1902`) and
+- [x] Reorient `applyRule_timeLinearity_arms` (`Fuel.lean:1902`) and
       `applyRule_timeLinearity_arms_trigger` (`Fuel.lean:1931`) — the two shape lemmas every other
       site routes through.
-- [ ] Re-verify the arm-3 discharge in `splitOrderedMeasure_lt_of_timeLinearity` (`Fuel.lean:2017`
+- [x] Re-verify the arm-3 discharge in `splitOrderedMeasure_lt_of_timeLinearity` (`Fuel.lean:2017`
       region) and the fuel-figure arithmetic at `Fuel.lean:2444-2457`, consuming
-      `knownTimes_card_lt_identifyTime_oriented` from Phase 3.
-- [ ] Re-verify `src_not_mem_knownTimes_identifyTime` / `knownTimes_identifyTime_subset` /
+      `knownTimes_card_lt_identifyTime_oriented` from Phase 3. *(deviation: altered — Phase 3's
+      `knownTimes_card_lt_identifyTime_oriented` lives in `MintBound.lean`, which is DOWNSTREAM of
+      `Fuel.lean` and so unavailable here. Landed the Fuel-local `firstIncomparablePair_spec_oriented`
+      instead — the trigger's membership/distinctness guarantees read at the oriented pair — and fed
+      it to the unchanged generic `knownTimes_card_lt_identifyTime`. The fuel-figure arithmetic was
+      extracted into a new generic helper `splitOrderedRank_lt_identifyTime`, quantified over
+      `src`/`tgt`, rather than restated at the oriented arguments in place; that collapses the arm-3
+      case to one line and is reused by `MintBound.lean`'s twin block.)*
+- [x] Re-verify `src_not_mem_knownTimes_identifyTime` / `knownTimes_identifyTime_subset` /
       `knownTimes_card_lt_identifyTime` (`Fuel.lean:1947-1980`) are **unchanged** — they are
       generically quantified and should need no edit. If one needs an edit, that contradicts Phase
-      4's classification and must be reported.
-- [ ] Update the `#eval` dual-check row at `Fuel.lean:1371` if its value changed, with a docstring
-      note saying what changed.
-- [ ] Update the arm-3 prose at `Fuel.lean:1886, 1990-1995, 2008-2009, 2364, 2510-2523` so the
-      narrative matches the oriented arm.
+      4's classification and must be reported. *(confirmed: all three byte-unchanged, as Phase 4's
+      census classified them)*
+- [x] Update the `#eval` dual-check row at `Fuel.lean:1371` if its value changed, with a docstring
+      note saying what changed. *(no change needed: the row calls `TimeOrdering.identifyTime 2 1`
+      directly rather than through the engine, so the arm's orientation is invisible to it — Phase
+      4's prediction, confirmed by the `#guard_msgs` row passing unedited)*
+- [x] Update the arm-3 prose at `Fuel.lean:1886, 1990-1995, 2008-2009, 2364, 2510-2523` so the
+      narrative matches the oriented arm. *(deviation: altered — 1886 and the
+      `splitOrderedMeasure_lt_of_timeLinearity` docstring were updated; 2364 and 2510-2523 turned
+      out to be about `hT` and `splitAwareFuel`, saying nothing about which numeral arm 3 retires,
+      so they needed no edit. Recorded rather than edited gratuitously.)*
 
 **Timing**: 2 hours
 
