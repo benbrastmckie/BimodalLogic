@@ -552,24 +552,24 @@ more than ~10% in any row is a finding to report before Phase 5 starts.
 
 ---
 
-### Phase 5: Thread the repair into the live engine [NOT STARTED]
+### Phase 5: Thread the repair into the live engine [COMPLETED]
 
 **Goal**: Change the ordered split's identification arm to the oriented form. The single smallest
 edit in the plan, and the one that turns everything downstream red until Phases 6-8 land.
 
 **Tasks**:
-- [ ] Edit `Tableau.lean`'s `.timeLinearity` arm (line 1526) so arm 3 is the oriented merge. Keep
+- [x] Edit `Tableau.lean`'s `.timeLinearity` arm (line 1526) so arm 3 is the oriented merge. Keep
       arms 1 and 2 byte-unchanged.
-- [ ] Extend the arm's existing comment block (`Tableau.lean:1499-1518`) with a paragraph stating
+- [x] Extend the arm's existing comment block (`Tableau.lean:1499-1518`) with a paragraph stating
       why the orientation matters: which numeral survives is semantically arbitrary, but retiring
       the smaller keeps `Branch.maxTime` non-decreasing, which is what makes fresh-time issuance
       monotone across the run. Cite `nextTime_reissues_retired_time` by name as the configuration
       being closed.
-- [ ] Confirm by grep that the nine `branch.nextTime` mint sites (761, 801, 834, 878, 924, 971,
+- [x] Confirm by grep that the nine `branch.nextTime` mint sites (761, 801, 834, 878, 924, 971,
       1069, 1168, 1370) need **no** edit — they inherit monotonicity from the unchanged
       `nextTime = maxTime + 1` over a now-monotone `maxTime`. Record the confirmation; do not edit
       them.
-- [ ] Confirm the four protected definitions in `SignedFormula.lean` are untouched
+- [x] Confirm the four protected definitions in `SignedFormula.lean` are untouched
       (`git diff --stat` shows `SignedFormula.lean` absent).
 
 **Timing**: 1 hour

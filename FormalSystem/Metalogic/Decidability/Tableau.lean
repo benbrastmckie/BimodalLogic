@@ -1511,11 +1511,32 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
   -- instants stand in exactly one of the three relations, so the three arms are jointly
   -- exhaustive and adding the disjunction preserves satisfiability. Arms 1 and 2 add one
   -- constraint and leave the branch alone; arm 3 identifies the two instants in both the branch
-  -- and the ordering.
+  -- and the ordering, retiring the smaller numeral (see the orientation note below).
   --
   -- Self-suppressing: once every pair of known times is comparable there is no candidate and
   -- the rule reports `.notApplicable`, so it cannot re-fire on a pair it has already settled.
   -- That is also why `findApplicableRule` adds no guard for `.branchingOrdered`.
+  --
+  -- **Arm 3 is oriented: it retires `min t₁ t₂` and keeps `max t₁ t₂`**, rather than retiring
+  -- `t₂` whatever its magnitude. Which numeral survives is semantically arbitrary — identification
+  -- asserts the two instants are the *same*, and nothing in the semantics reads a time index's
+  -- magnitude — so the orientation costs nothing. What it buys is that `Branch.maxTime` cannot
+  -- *fall* here: the surviving numeral is the larger of a pair both of whose members are known
+  -- times, so the branch loses only a time that was not its maximum. Since this is the engine's
+  -- single non-additive branch step (checked, not cited: `expandOnce_branch_shape_census`), that
+  -- makes `Branch.maxTime` — and hence `Branch.nextTime`, which is `maxTime + 1` by a definition
+  -- this repair leaves byte-unchanged — non-decreasing across a whole run, so no mint can ever
+  -- re-issue an index an earlier identification retired.
+  --
+  -- The configuration this closes is `nextTime_reissues_retired_time`, whose branch
+  -- `[p@⟨0,0⟩, q@⟨0,1⟩, r@⟨0,2⟩]` under `⟨[(0, 1)]⟩` triggers at `(0, 2)`: the unoriented arm
+  -- retired the branch maximum `2`, dropped `maxTime` from `2` to `1`, and re-minted `2` two
+  -- engine steps later (`reuse_driven_through_engine`). Oriented, it retires `0` and `maxTime`
+  -- runs `2 → 2 → 3`. See `MintBound.lean`'s "Monotone time issuance" subsection for the decided
+  -- contrast and `nextTime_monotone_along_run` for the general statement.
+  --
+  -- Arms 1 and 2 are untouched: they add one constraint each and leave the branch alone, and the
+  -- pair they are stated at is the trigger's own, not the oriented one.
   | .timeLinearity, _, _ =>
       match firstIncomparablePair branch timeOrd with
       | none => (.notApplicable, timeOrd)
@@ -1523,7 +1544,8 @@ def applyRule (rule : TableauRule) (sf : SignedFormula) (branch : Branch := [])
           (.branchingOrdered
             [ (branch, timeOrd.addFuture t₁ t₂)
             , (branch, timeOrd.addFuture t₂ t₁)
-            , (branch.identifyTime t₂ t₁, timeOrd.identifyTime t₂ t₁) ],
+            , (branch.identifyTime (min t₁ t₂) (max t₁ t₂),
+               timeOrd.identifyTime (min t₁ t₂) (max t₁ t₂)) ],
            timeOrd)
   | _, _, _ => (.notApplicable, timeOrd)
 
