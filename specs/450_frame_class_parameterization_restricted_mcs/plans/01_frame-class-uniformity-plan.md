@@ -196,7 +196,7 @@ to repair — it is caused by this work, not inherited.
 
 ---
 
-### Phase 2: Parameterise the Restricted-MCS Core [NOT STARTED]
+### Phase 2: Parameterise the Restricted-MCS Core [COMPLETED]
 
 **Goal**: Deliverable (a) at its root — `Core/RestrictedMCS/Basic.lean` — and fix the reference
 spelling that every later phase copies.
