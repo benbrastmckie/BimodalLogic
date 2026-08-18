@@ -314,30 +314,30 @@ nine-row table missed, and the `Transfer.lean:1242` occurrence in its acceptance
 
 ---
 
-### Phase 5: Re-issue task 169 [NOT STARTED]
+### Phase 5: Re-issue task 169 [COMPLETED]
 
 **Goal**: Re-anchor 169's `Transfer.lean`, `Completeness.lean`, `Validity.lean`, and
 `ChronicleToCountermodelBasic.lean` citations, keeping the CORRECTED SCOPE narrative and the
 route (i)/(ii)/(iii) verdicts textually intact.
 
 **Tasks**:
-- [ ] Re-anchor `theorem completeness` (cited `Completeness.lean:196`, actual `:191`) by symbol,
+- [x] Re-anchor `theorem completeness` (cited `Completeness.lean:196`, actual `:191`) by symbol,
       noting explicitly that the file has **two** declarations named `completeness` (a second at
       `:26`), so the symbol anchor must say which — the one at the file's Base-class terminus,
       `valid φ → Derivable FrameClass.Base [] φ`.
-- [ ] Re-anchor both occurrences of `Transfer.lean:1242` to
+- [x] Re-anchor both occurrences of `Transfer.lean:1242` to
       `` `WeakCanonical.countermodel_discrete` `` (declaration currently `:1068`, sorry token
       currently `:1084` — hints only). Preserve the machine-verified claim ("`#print axioms
       completeness` = [propext, sorryAx, Classical.choice, Quot.sound], sole `sorryAx` source")
       unchanged in substance; only its anchor moves.
-- [ ] Re-anchor `countermodel_dense_enriched` (`Completeness.lean:133`, called at `:221`) and
+- [x] Re-anchor `countermodel_dense_enriched` (`Completeness.lean:133`, called at `:221`) and
       `Chronicle.mcs_mixed_case_absurd` (`MCSMixedCase.lean`, called from `Completeness.lean:231`)
       per the ledger.
-- [ ] Re-anchor `box_dense_gives_density` (`ChronicleToCountermodelBasic.lean:435`) and `valid`
+- [x] Re-anchor `box_dense_gives_density` (`ChronicleToCountermodelBasic.lean:435`) and `valid`
       (`Validity.lean:79`) by symbol.
-- [ ] Leave the route (i)/(ii)/(iii) verdicts, the `ℤ ×ₗ ℤ` witness, and the DEPENDENCIES paragraph
+- [x] Leave the route (i)/(ii)/(iii) verdicts, the `ℤ ×ₗ ℤ` witness, and the DEPENDENCIES paragraph
       untouched in substance.
-- [ ] Apply via `state-write.sh` (no `--regen-todo`), then round-trip diff.
+- [x] Apply via `state-write.sh` (no `--regen-todo`), then round-trip diff.
 
 **Timing**: 0.75 hours
 
