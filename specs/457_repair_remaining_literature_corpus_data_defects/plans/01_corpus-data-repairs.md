@@ -380,7 +380,7 @@ exclusion rather than guessed.
 
 ---
 
-### Phase 6: SCOPE 7 — provenance adjudication for the three newly ingested documents [NOT STARTED]
+### Phase 6: SCOPE 7 — provenance adjudication for the three newly ingested documents [COMPLETED]
 
 **Goal**: Stamp `provenance_fidelity` on the Jönsson-Tarski 1951/1952 pair and Goldblatt 2006,
 populate their `path` and `token_count` following the SCOPE 1 directory-path convention, and keep
@@ -388,23 +388,26 @@ the sub-index's degraded-formula warning intact and consistent with the stamp. T
 written only after a fresh manual read, never from an automated ratio.
 
 **Tasks**:
-- [ ] **Manual spot-check gate (hard precondition)**: open at least one chunk from each of the
+- [x] **Manual spot-check gate (hard precondition)**: open at least one chunk from each of the
       three documents and read it. For the Jönsson-Tarski pair, confirm the degraded-formula
       symptoms the sub-index describes are actually present. For Goldblatt 2006, confirm prose and
       symbols read cleanly. Record the chunk filename and a one-line verdict for each of the three.
       **If any of the three cannot be read and judged, this phase BLOCKS — it does not stamp.**
-- [ ] Run `bash .claude/scripts/literature-fidelity-audit.sh --dry-run` and record its
+      *(completed: J-T 1951 chunk_0020.md — prose coherent, formulas degraded, confirmed. J-T
+      1952 chunk_0040.md — same symptom confirmed. Goldblatt chunk_0050.md + chunk_0100.md —
+      prose and symbols both clean, confirmed. Full verdicts in progress/phase-6-progress.json)*
+- [x] Run `bash .claude/scripts/literature-fidelity-audit.sh --dry-run` and record its
       classification for the three documents as **corroboration only**. A disagreement between the
       audit and the manual read is resolved in favour of the manual read, and the disagreement is
-      recorded in the phase notes
-- [ ] Confirm the on-disk chunk counts still match the index (research: 85 / 82 / 199)
-- [ ] Back up **both** indices: `index.json.bak-$(date +%Y%m%d-%H%M%S)-pre-scope7` and the matching backup of `specs/literature-index.json`
-- [ ] Set `provenance_fidelity` to `unverified_conversion` on Jönsson-Tarski I and II — deliberately **not** `verified_conversion`, which would read as a blanket green light covering formulas
-- [ ] Set `provenance_fidelity` to `verified_conversion` on Goldblatt 2006
-- [ ] Populate `path` for all three, pointing at the source directory per the SCOPE 1 convention
-- [ ] Populate `token_count` for all three using `chars/4+20` over the canonical `.md` if one exists, else over the chunk files
-- [ ] Verify the sub-index `fidelity` narrative for all three is intact and not paraphrased away or weakened by the stamp; in particular the "Do NOT transcribe any equation, axiom, or symbolic statement into Lean from the markdown alone" warning must survive verbatim
-- [ ] Run the post-mutation gate (below)
+      recorded in the phase notes *(completed: audit does not cover these 3 (online-ingest-bridge entries fall outside its sources/-only scan scope) -- no corroboration available, manual read is sole evidence, per plan design)*
+- [x] Confirm the on-disk chunk counts still match the index (research: 85 / 82 / 199) *(completed)*
+- [x] Back up **both** indices: `index.json.bak-$(date +%Y%m%d-%H%M%S)-pre-scope7` and the matching backup of `specs/literature-index.json` *(completed)*
+- [x] Set `provenance_fidelity` to `unverified_conversion` on Jönsson-Tarski I and II — deliberately **not** `verified_conversion`, which would read as a blanket green light covering formulas *(completed)*
+- [x] Set `provenance_fidelity` to `verified_conversion` on Goldblatt 2006 *(completed)*
+- [x] Populate `path` for all three, pointing at the source directory per the SCOPE 1 convention *(completed)*
+- [x] Populate `token_count` for all three using `chars/4+20` over the canonical `.md` if one exists, else over the chunk files *(completed)*
+- [x] Verify the sub-index `fidelity` narrative for all three is intact and not paraphrased away or weakened by the stamp; in particular the "Do NOT transcribe any equation, axiom, or symbolic statement into Lean from the markdown alone" warning must survive verbatim *(completed)*
+- [x] Run the post-mutation gate (below) *(completed)*
 
 **Timing**: 1.5 hours
 
@@ -440,6 +443,22 @@ commit an intermediate state where only one of the two has been updated.
 - The other 12 legacy `chunks_dir`-only entries are untouched
 - `bash .claude/scripts/literature-build-index.sh --global` exits 0; FTS row count >= baseline
 - A `literature-search.sh` query targeting one of the three documents returns hits
+
+**Phase notes — new code-level finding (not fixed here, out of scope)**: `literature-search.sh`'s
+`load_fidelity_map()` hard-codes an assumption that any `provenance_fidelity`-bearing entry has a
+`path` starting with the literal prefix `sources/`. The three SCOPE 7 entries' real `chunks_dir`
+lives directly under `LITERATURE_DIR` (the legacy online-ingest bridge location, not `sources/`),
+so their honestly-populated `path` does not start with `sources/` and `load_fidelity_map()`
+silently skips them, fail-opening `get_fidelity()` to `unverified_summary` for all three —
+including Goldblatt 2006, which is genuinely `verified_conversion` and should not be quarantined
+from default search ranking. `literature-search.sh --include-unverified` does return hits for all
+three (satisfying the verification bullet above), but a default-mode query does not surface them
+and misreports their fidelity. This is a CODE defect matching the pattern of the five already-
+known code defects the plan's Overview places out of scope in the global agent-system repo — it
+is recorded here, not fixed, since a fix would require either moving physical source directories
+under `sources/` (a filesystem reorganization beyond this plan's "edits index metadata only"
+Non-Goal) or editing `literature-search.sh` (agent-system code, explicitly out of scope). See
+`progress/phase-6-progress.json`'s `new_code_level_finding` for the full writeup.
 
 ---
 

@@ -1,0 +1,57 @@
+{
+  "phase": 6,
+  "phase_name": "SCOPE 7 -- provenance adjudication for the three newly ingested documents",
+  "started_at": "2026-08-18T21:15:00Z",
+  "last_updated": "2026-08-18T21:35:00Z",
+  "objectives": [
+    {"id": 1, "description": "Manual spot-check gate: open and read a chunk from each of the three documents", "status": "done", "files_touched": []},
+    {"id": 2, "description": "Run literature-fidelity-audit.sh --dry-run as corroboration", "status": "done", "files_touched": []},
+    {"id": 3, "description": "Confirm chunk counts still match index (85/82/199)", "status": "done", "files_touched": []},
+    {"id": 4, "description": "Backup both indices pre-scope7", "status": "done", "files_touched": []},
+    {"id": 5, "description": "Set provenance_fidelity, path, token_count on all three entries", "status": "done", "files_touched": ["specs/457_repair_remaining_literature_corpus_data_defects/data/phase6_mutate.py"]},
+    {"id": 6, "description": "Verify sub-index fidelity narrative intact and consistent", "status": "done", "files_touched": []},
+    {"id": 7, "description": "Run post-mutation gate", "status": "done", "files_touched": []}
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": [],
+  "manual_spot_check_records": [
+    {
+      "doc_id": "j_nsson_and_tarski_-_1951_-_boolean_algebras_with_operators._part_i",
+      "chunk_file": "j_nsson_and_tarski_-_1951_-_boolean_algebras_with_operators._part_i/chunk_0020.md",
+      "verdict": "Prose narrative coherent and readable (definitions, Boolean-algebra discussion follow logically); mathematical formulas visibly degraded by OCR (garbled tuple notation 'W <A, +P 0, 1,,-', mangled symbols 'REP', 'Ame1', 'IH', truncated Definition 1.1) -- confirms the sub-index's PROSE-high/FORMULAS-DEGRADED narrative independently."
+    },
+    {
+      "doc_id": "j_nsson_and_tarski_-_1952_-_boolean_algebras_with_operators._part_ii",
+      "chunk_file": "j_nsson_and_tarski_-_1952_-_boolean_algebras_with_operators._part_ii/chunk_0040.md",
+      "verdict": "Same symptom independently confirmed on Part II: prose narrative (proof about relation algebras) reads coherently, but formula notation is garbled ('<A, u, A, n, V, 1, I, -\\'>' for a tuple, 'F(x) ==E [for some u U...]', misrendered equals signs and subscripts)."
+    },
+    {
+      "doc_id": "goldblatt_-_mathematical_modal_logic_a_view_of_its_evolution",
+      "chunk_file": "goldblatt_-_mathematical_modal_logic_a_view_of_its_evolution/chunk_0050.md and chunk_0100.md",
+      "verdict": "Both prose and mathematical symbols render cleanly (proper Unicode: Mp∨Fp∨Pp, M¬Mp→¬Mp, Γ|=α, {δ}∪{ψ(γ):γ∈Γ}|=ψ(α)); no degradation observed across two independently sampled chunks -- confirms the sub-index's PROSE-and-SYMBOLS-good narrative."
+    }
+  ],
+  "audit_corroboration": {
+    "command": "bash .claude/scripts/literature-fidelity-audit.sh --dry-run",
+    "result": "The audit's output does NOT cover any of the three documents. Root cause confirmed by the script's own header comment: literature-fidelity-audit.sh only scans directories under sources/<dir>/; these three documents were ingested via the online-ingest bridge with chunks_dir directly under LITERATURE_DIR (not sources/), so the script never matches or writes them. No automated corroboration was available for any of the three -- the manual read is the sole evidence, consistent with the plan's design (manual read is primary, audit is corroboration-only when available)."
+  },
+  "verification_notes": {
+    "global_backup": "~/Projects/Literature/index.json.bak-<ts>-pre-scope7",
+    "sub_index_backup": "specs/literature-index.json.bak-<ts>-pre-scope7",
+    "entry_count": "369 (unchanged)",
+    "changed_entries": 3,
+    "changed_fields_per_entry": ["provenance_fidelity", "path", "token_count"],
+    "enum_values_written": {"j_nsson_and_tarski_1951": "unverified_conversion", "j_nsson_and_tarski_1952": "unverified_conversion", "goldblatt_2006": "verified_conversion"},
+    "chunk_counts_confirmed": {"j_nsson_and_tarski_1951": 85, "j_nsson_and_tarski_1952": 82, "goldblatt_2006": 199},
+    "fresh_token_counts_written": {"j_nsson_and_tarski_1951": 26528, "j_nsson_and_tarski_1952": 20979, "goldblatt_2006": 75619},
+    "sub_index_unchanged": true,
+    "sub_index_narrative_verbatim_confirmed": true,
+    "other_12_legacy_entries_untouched": true,
+    "fts_row_count_post": 17736,
+    "fts_row_count_baseline": 17736,
+    "search_verification": "literature-search.sh --include-unverified returns hits for all three documents (confirmed for both Jonsson-Tarski and Goldblatt queries). Default (non---include-unverified) search does NOT return them, and reports their provenance_fidelity as 'unverified_summary' rather than the true stamped value -- see new_code_level_finding below."
+  },
+  "new_code_level_finding": "literature-search.sh's load_fidelity_map() (search script, not the fidelity-audit script) hard-codes an assumption that any provenance_fidelity-bearing entry has a path starting with the literal prefix 'sources/' (see its own docstring: keyed by directory name extracted via path[len('sources/'):].split('/',1)[0]). The three SCOPE 7 entries' real chunks_dir/path is directly under LITERATURE_DIR (a legacy online-ingest bridge location, not sources/), so their path (correctly set to the real, honest location per SCOPE 1's directory-path convention) does not start with 'sources/' and load_fidelity_map() silently skips them, fail-opening get_fidelity() to 'unverified_summary' for all three -- including the Goldblatt entry, which is genuinely verified_conversion and should NOT be quarantined from default search ranking. This is a CODE-level defect (matching the pattern of the five already-known code defects the plan's Overview places out of scope in the global agent-system repo), not a DATA defect -- fixing it would require either moving the physical source directories under sources/ (a filesystem reorganization beyond this plan's Non-Goals 'edits index metadata only') or changing literature-search.sh's lookup logic (agent-system code, explicitly out of scope per the plan's Non-Goals). Recorded here rather than fixed; recommend a follow-up meta/code task to widen load_fidelity_map()'s dirname-extraction to also recognize online-ingest-bridge (non-sources/) paths, mirroring whatever fix is eventually applied to literature-fidelity-audit.sh's equivalent sources/-only restriction."
+}
