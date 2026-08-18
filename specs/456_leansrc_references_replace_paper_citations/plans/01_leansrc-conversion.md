@@ -432,7 +432,7 @@ The full intended chain across phases is 35 → 35 → 19 → 1 → 1 (Phases 1/
 
 ---
 
-### Phase 4: PURE BOOKKEEPING — delete 16 footnotes, insert confirmed blocks [NOT STARTED]
+### Phase 4: PURE BOOKKEEPING — delete 16 footnotes, insert confirmed blocks [COMPLETED]
 
 **Goal**: Delete outright the 16 footnotes that contain nothing but anchors and a citation, and
 place a verified `#leansrc` block after each item whose Phase 2 row reads CONFIRMED.
