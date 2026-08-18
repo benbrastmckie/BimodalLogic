@@ -8056,6 +8056,173 @@ theorem nextTime_monotone_along_run {b : Branch} {ord : TimeOrdering}
    fun t₁ t₂ p hp => Nat.succ_le_succ (maxTime_le_orientedSplitArms b ord t₁ t₂ p hp)⟩
 
 
+/-! #### Invariant survival at the oriented arm, generally
+
+The three settled repairs the register protects — `OrdTimesKnown` (entries 7 and 16), the
+`UniverseClosedAt` confinement (entries 10-12), and the `.splitOrdered` measure's first component —
+re-proved at the oriented arm for arbitrary branches and times, not only at the gate.
+
+*R1 is closed, and the answer is the favourable one.* `incomparableB_symm` was the plan's single
+most likely point of failure: `identifyTime_no_collapse` is stated from an `incomparableB
+ord (t₁, t₂)` hypothesis written asymmetrically in `t₁` / `t₂`, and the oriented arm applies it at
+the flipped pair whenever `t₁ < t₂`. The symmetry **holds**, and it reduces to the reachability
+duality this development already owns — with one gap, recorded below.
+
+*The one thing that was genuinely missing.* `orderDual_holds` (`Fuel.lean`) states the duality in
+the forward direction only: `t₂ ∈ futureOf t₁ → t₁ ∈ pastOf t₂`. `incomparableB_symm` needs the
+mirror as well, and the mirror was not landed anywhere. `orderDual_backward` supplies it, by the
+same three-step argument at the converse step relation. That is the only declaration in this
+subsection that is not an instantiation of something already proved, and recording it is the point
+of the plan's "a lemma that needed an independent proof is a signal" instruction: the signal here
+is small and localised — a missing mirror in a reachability calculus, not a defect in the
+orientation. -/
+
+/-- **The reachability duality, backwards.** `orderDual_holds` gives
+`t₂ ∈ futureOf t₁ → t₁ ∈ pastOf t₂`; this is the converse direction, which was not landed.
+
+Same three steps at the converse step relation: `bfsClosure_sound` extracts a backward path of
+between one and `100` edges, `PathN.reverse` turns it into a forward path of the same length
+against `mem_directFutureOf_iff` read right-to-left, and `bfsClosure_complete` re-finds it at the
+same default fuel. Both closures run at fuel `100`, so the length soundness bounds is exactly the
+length completeness may spend — the argument `orderDual_holds`'s own docstring sets out. -/
+theorem orderDual_backward (ord : TimeOrdering) {t₁ t₂ : TimeIndex} (h : t₂ ∈ ord.pastOf t₁) :
+    t₁ ∈ ord.futureOf t₂ := by
+  rw [TimeOrdering.pastOf, TimeOrdering.reachableBackward_eq] at h
+  rcases TimeOrdering.bfsClosure_sound _ 100 [t₁] [] h with hv | ⟨s, hs, n, hn1, hn2, hp⟩
+  · simp at hv
+  · rw [List.mem_singleton] at hs
+    subst hs
+    rw [TimeOrdering.futureOf, TimeOrdering.reachableForward_eq]
+    exact TimeOrdering.bfsClosure_complete _
+      (TimeOrdering.PathN.reverse
+        (fun x y => (TimeOrdering.mem_directFutureOf_iff ord y x).symm) hp) hn1 hn2
+
+/-- **R1, decided: `incomparableB` is symmetric.** Incomparability is a symmetric relation even
+though `firstIncomparablePair`'s test — which `incomparableB` transcribes verbatim — is written
+asymmetrically, as three conditions on the *ordered* pair.
+
+The two closure conjuncts trade places under the duality rather than being preserved: `t₁ ∈
+futureOf t₂` would give `t₂ ∈ pastOf t₁` by `orderDual_holds`, contradicting the *past* conjunct,
+and `t₁ ∈ pastOf t₂` would give `t₂ ∈ futureOf t₁` by `orderDual_backward`, contradicting the
+*future* one. That crossing is why both directions of the duality are needed and why only having
+one of them is what made this look like a risk.
+
+Landed **before** any lemma that consumes it, per the plan's ordering requirement. Had it been
+false, Candidate A would have died here and the ladder would have resumed at Candidate B. -/
+theorem incomparableB_symm {ord : TimeOrdering} {t₁ t₂ : TimeIndex}
+    (h : incomparableB ord (t₁, t₂) = true) : incomparableB ord (t₂, t₁) = true := by
+  simp only [incomparableB, Bool.and_eq_true, bne_iff_ne, Bool.not_eq_true',
+    List.contains_eq_mem, decide_eq_false_iff_not] at h ⊢
+  obtain ⟨⟨hne, hf⟩, hp⟩ := h
+  refine ⟨⟨Ne.symm hne, fun hcon => hp ?_⟩, fun hcon => hf ?_⟩
+  · exact orderDual_holds ord t₂ t₁ hcon
+  · exact orderDual_backward ord hcon
+
+/-- **Collapse-freedom at the oriented arm.** `identifyTime_no_collapse` restated at
+`(min t₁ t₂, max t₁ t₂)`, by a case split on which of the two times is the smaller.
+
+When `t₂ ≤ t₁` the oriented arm *is* the current arm and the lemma applies verbatim. When
+`t₁ ≤ t₂` the arguments are flipped and `incomparableB_symm` supplies the hypothesis at the flipped
+pair. Both branches are direct instantiations; the case split is the whole of the new content. -/
+theorem identifyTime_no_collapse_oriented (ord : TimeOrdering) (t₁ t₂ : TimeIndex)
+    (hinc : incomparableB ord (t₁, t₂) = true) (hnsl : IrreflOrd ord)
+    (a b : TimeIndex) (h : (a, b) ∈ ord.constraints) :
+    rho (identifyOrient t₁ t₂).1 (identifyOrient t₁ t₂).2 a
+      ≠ rho (identifyOrient t₁ t₂).1 (identifyOrient t₁ t₂).2 b := by
+  simp only [identifyOrient]
+  rcases Nat.le_total t₁ t₂ with hle | hle
+  · rw [Nat.min_eq_left hle, Nat.max_eq_right hle]
+    exact identifyTime_no_collapse ord t₂ t₁ (incomparableB_symm hinc) hnsl a b h
+  · rw [Nat.min_eq_right hle, Nat.max_eq_left hle]
+    exact identifyTime_no_collapse ord t₁ t₂ hinc hnsl a b h
+
+/-- Irreflexivity at the oriented arm. A direct instantiation:
+`irreflOrd_identifyTime` is already quantified over both of its times and takes no hypotheses at
+all, so the orientation is invisible to it. -/
+theorem irreflOrd_identifyTime_oriented (b : Branch) (ord : TimeOrdering) (t₁ t₂ : TimeIndex) :
+    IrreflOrd (identifyOriented b ord t₁ t₂).2 :=
+  irreflOrd_identifyTime ord _ _
+
+/-- **Register entries 7 and 16's settled repair, at the oriented arm.** A direct instantiation, as
+the plan predicted: `ordTimesKnown_identifyTime`'s docstring records that it needs *no trigger
+hypotheses at all* — not `firstIncomparablePair`, not `IrreflOrd` — because it is a structural fact
+about branch and ordering being relabelled by the same `rho`. A fact of that shape cannot notice
+which way round its two times are.
+
+This is the lemma whose failure would have been the quiet regression the plan warns about, so it is
+stated separately rather than only inside the bundle below. -/
+theorem ordTimesKnown_identifyTime_oriented {b : Branch} {ord : TimeOrdering} {t₁ t₂ : TimeIndex}
+    (h : OrdTimesKnown b ord) :
+    OrdTimesKnown (identifyOriented b ord t₁ t₂).1 (identifyOriented b ord t₁ t₂).2 :=
+  ordTimesKnown_identifyTime h
+
+/-- The run invariant survives the oriented arm, bundled. Both components are unconditional in the
+orientation, so the bundle is too. -/
+theorem runInvariant_identifyTime_oriented {b : Branch} {ord : TimeOrdering} {t₁ t₂ : TimeIndex}
+    (h : RunInvariant b ord) :
+    RunInvariant (identifyOriented b ord t₁ t₂).1 (identifyOriented b ord t₁ t₂).2 :=
+  ⟨irreflOrd_identifyTime_oriented b ord t₁ t₂, ordTimesKnown_identifyTime_oriented h.2⟩
+
+/-- **R2, discharged: the termination measure's first component still strictly drops.**
+`knownTimes_card_lt_identifyTime` at the oriented arguments.
+
+Its hypotheses are membership of both times plus distinctness, and `firstIncomparablePair_spec`
+supplies all three in either orientation — which is exactly why the risk register rated this low
+and why it is proved **here**, in `MintBound.lean`, before `Tableau.lean` is touched. The
+`.splitOrdered` lexicographic measure's arm-3 discharge is therefore never in doubt at any point in
+the remaining phases. -/
+theorem knownTimes_card_lt_identifyTime_oriented {b : Branch} {ord : TimeOrdering}
+    {t₁ t₂ : TimeIndex} (h1 : t₁ ∈ b.knownTimes) (h2 : t₂ ∈ b.knownTimes) (hne : t₂ ≠ t₁) :
+    ((identifyOriented b ord t₁ t₂).1.knownTimes).toFinset.card
+      < (b.knownTimes).toFinset.card := by
+  simp only [identifyOriented, identifyOrient]
+  rcases Nat.le_total t₁ t₂ with hle | hle
+  · rw [Nat.min_eq_left hle, Nat.max_eq_right hle]
+    exact knownTimes_card_lt_identifyTime h2 h1 (Ne.symm hne)
+  · rw [Nat.min_eq_right hle, Nat.max_eq_left hle]
+    exact knownTimes_card_lt_identifyTime h1 h2 hne
+
+/-- **Register entries 10-12's confinement bridge, at the oriented arm.**
+`universeClosedAt_identify_at_trigger` restated at the oriented merge.
+
+The existing clause 2 is discharged, not a new one: `UniverseClosedAt`'s second conjunct already
+quantifies its *source* time freely and restricts only its *target*, so swapping which of the pair
+is which costs exactly one fact — that `max t₁ t₂` is a known time — and
+`firstIncomparablePair_spec` returns membership for both times, not only for `t₁`.
+
+That is entry 12's finding paying off in the direction it predicted: the predicate was deliberately
+*not* repaired by constraining `t₂` as well, and had it been, this lemma would have needed a
+hypothesis that no trigger supplies. Nothing here weakens clause 2 or constrains the source. -/
+theorem universeClosedAt_identify_at_trigger_oriented
+    {fc : FormalSystem.ProofSystem.FrameClass} {U : Finset SignedFormula}
+    {b : Branch} {ord : TimeOrdering} {t₁ t₂ : TimeIndex}
+    (h : UniverseClosedAt fc U) (hbU : ∀ x ∈ b, x ∈ U)
+    (htrig : firstIncomparablePair b ord = some (t₁, t₂)) :
+    ∀ x ∈ (identifyOriented b ord t₁ t₂).1, x ∈ U := by
+  obtain ⟨hk1, hk2, -, -, -⟩ := firstIncomparablePair_spec htrig
+  refine h.2 b (identifyOrient t₁ t₂).2 (identifyOrient t₁ t₂).1 hbU ?_
+  simp only [identifyOrient]
+  rcases Nat.le_total t₁ t₂ with hle | hle
+  · rw [Nat.max_eq_right hle]; exact hk2
+  · rw [Nat.max_eq_left hle]; exact hk1
+
+/-- **…and clause 2 discharged at the concrete universe, at the oriented arm.**
+`timeMergeClosed_identifyTime_signedUniverse` at the oriented merge, so the whole confinement chain
+— predicate, bridge, and concrete discharge — is available in the oriented form rather than only
+the first two links of it. Same one fact, same source: the surviving numeral is a known time. -/
+theorem timeMergeClosed_identifyTime_oriented {C : Finset Formula} {L : Finset Label}
+    (hL : TimeMergeClosed L) {b : Branch} {ord : TimeOrdering}
+    (hb : ∀ x ∈ b, x ∈ signedUniverse C L) {t₁ t₂ : TimeIndex}
+    (h1 : t₁ ∈ b.knownTimes) (h2 : t₂ ∈ b.knownTimes) :
+    ∀ x ∈ (identifyOriented b ord t₁ t₂).1, x ∈ signedUniverse C L := by
+  refine timeMergeClosed_identifyTime_signedUniverse hL hb (t₁ := (identifyOrient t₁ t₂).2)
+    (t₂ := (identifyOrient t₁ t₂).1) ?_
+  simp only [identifyOrient]
+  rcases Nat.le_total t₁ t₂ with hle | hle
+  · rw [Nat.max_eq_right hle]; exact h2
+  · rw [Nat.max_eq_left hle]; exact h1
+
+
 /-! ## C9. The do-not-re-attempt register
 
 Seventeen statements that look like the natural next lemma and are **not** available. Each is cited

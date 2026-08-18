@@ -443,37 +443,43 @@ the enumeration actually performed and the constructor count it covered.
 
 ---
 
-### Phase 3: Invariant survival at the oriented arm, generally [NOT STARTED]
+### Phase 3: Invariant survival at the oriented arm, generally [COMPLETED]
 
 **Goal**: Re-prove the three settled invariants at the oriented arm for arbitrary branches and
 times, not just at the gate configuration. This is where register entries 7, 10-12 and 16 are
 protected.
 
 **Tasks**:
-- [ ] `incomparableB_symm {ord : TimeOrdering} {t₁ t₂ : TimeIndex} :
+- [x] `incomparableB_symm {ord : TimeOrdering} {t₁ t₂ : TimeIndex} :
       incomparableB ord (t₁, t₂) = true → incomparableB ord (t₂, t₁) = true`. **Land this first** —
       it is R1, the single most likely point of failure, and `identifyTime_no_collapse`
       (`MintBound.lean:231`) cannot be applied at the flipped orientation without it. If it is
       false, mark the phase `[BLOCKED]` and return to Phase 1's ladder at Candidate B rather than
-      routing around it.
-- [ ] `identifyTime_no_collapse_oriented` — `identifyTime_no_collapse` restated at the oriented
+      routing around it. *(deviation: altered — VERDICT TRUE, but the proof needed one new
+      independent lemma, `orderDual_backward`, since `orderDual_holds` (`Fuel.lean`) states the
+      reachability duality in the forward direction only; recorded per the phase's Scope
+      Hypothesis)*
+- [x] `identifyTime_no_collapse_oriented` — `identifyTime_no_collapse` restated at the oriented
       arguments, via `incomparableB_symm`.
-- [ ] `ordTimesKnown_identifyTime_oriented` — register entries 7/16's invariant at the oriented arm.
+- [x] `ordTimesKnown_identifyTime_oriented` — register entries 7/16's invariant at the oriented arm.
       Note `ordTimesKnown_identifyTime` (`MintBound.lean:1331`) is documented as needing *no trigger
       hypotheses at all*, so this should be a direct instantiation; if it is not, that is a finding
       to record, not to route around.
-- [ ] `irreflOrd_identifyTime_oriented` — likewise from `irreflOrd_identifyTime`
+- [x] `irreflOrd_identifyTime_oriented` — likewise from `irreflOrd_identifyTime`
       (`MintBound.lean:74`), which is already general in `src`/`tgt`.
-- [ ] `runInvariant_identifyTime_oriented` — the bundle.
-- [ ] `knownTimes_card_lt_identifyTime_oriented` — **R2**: the `.splitOrdered` measure's first
+- [x] `runInvariant_identifyTime_oriented` — the bundle.
+- [x] `knownTimes_card_lt_identifyTime_oriented` — **R2**: the `.splitOrdered` measure's first
       component must still strictly drop. `knownTimes_card_lt_identifyTime` (`Fuel.lean:1971`) needs
       only membership of the target and distinctness, both supplied by `firstIncomparablePair_spec`
       in either orientation. Prove it here, in `MintBound.lean`, **before** `Tableau.lean` is
       touched.
-- [ ] `universeClosedAt_identify_at_trigger_oriented` — entries 10-12's confinement bridge. The
+- [x] `universeClosedAt_identify_at_trigger_oriented` — entries 10-12's confinement bridge. The
       oriented merge target is `max t₁ t₂`, which `firstIncomparablePair_spec` puts in
       `b.knownTimes` just as it does `t₁`. Confirm `timeMergeClosed_identifyTime_signedUniverse`
-      (`MintBound.lean:5613`) still discharges clause 2 at the oriented target.
+      (`MintBound.lean:5613`) still discharges clause 2 at the oriented target. *(deviation:
+      altered — landed as two declarations, `universeClosedAt_identify_at_trigger_oriented` for the
+      predicate-level bridge and `timeMergeClosed_identifyTime_oriented` for the concrete
+      `signedUniverse` discharge, so the whole confinement chain is available in oriented form)*
 
 **Timing**: 2.5 hours
 
