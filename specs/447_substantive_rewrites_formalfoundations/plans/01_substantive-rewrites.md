@@ -467,31 +467,31 @@ T4, TB, TA, TL), with four extensions via DF, DN, CO. The implementer confirms a
 
 ---
 
-### Phase 7: Expand the Task Topology Definition (`:267`) [NOT STARTED]
+### Phase 7: Expand the Task Topology Definition (`:267`) [COMPLETED]
 
 **Goal**: Break the compressed three-sentence Task Topology definition into indented sub-items in
 the same style as the definitions above it.
 
 **Tasks**:
-- [ ] Re-grep `FIX: this needs to be expanded to be easier to read` to locate the target.
-- [ ] Rewrite the body of `#definition("Task Topology")` as an `#items[...]` block with five
+- [x] Re-grep `FIX: this needs to be expanded to be easier to read` to locate the target.
+- [x] Rewrite the body of `#definition("Task Topology")` as an `#items[...]` block with five
       `+ *Name*: ...` entries: **Basic Opens** (`B_F := {(w)_x : w ∈ W, x ∈ D, x > 0}`),
       **Topology** (`T_F := (W, O_F)` with `O_F` the closure of `B_F` under arbitrary union and
       finite intersection), **Closure** (`S̄`), **T1**, **R0**.
-- [ ] Follow the style of `#definition("Task Relation")` (Fiber/Cone/Segment items) and
+- [x] Follow the style of `#definition("Task Relation")` (Fiber/Cone/Segment items) and
       `#definition("Frame")` (Compositionality/Seriality/Limit/Spherical items).
-- [ ] Omit the paper's sixth sub-item **Discrete** — nothing live in this document or in the live
+- [x] Omit the paper's sixth sub-item **Discrete** — nothing live in this document or in the live
       paper consumes it (its sole consumer `app:topology-nondiscrete` is commented out in the
       paper), and the typ document elsewhere prunes paper content it does not use. Record this
       omission decision in the Phase 9 sweep notes.
-- [ ] Do not restate the cone notation `(w)_x`; it is already defined in `#definition("Task
+- [x] Do not restate the cone notation `(w)_x`; it is already defined in `#definition("Task
       Relation")`.
-- [ ] Preserve the existing trailing footnote ("The topology is carried by the world states, not by
+- [x] Preserve the existing trailing footnote ("The topology is carried by the world states, not by
       H_F or by D") unchanged.
-- [ ] Confirm the newly-live lead-in sentence above ("The cones are a basis for a topology on world
+- [x] Confirm the newly-live lead-in sentence above ("The cones are a basis for a topology on world
       states, and that topology is separated.") still reads correctly against the expanded
       definition.
-- [ ] Delete the FIX tag.
+- [x] Delete the FIX tag.
 
 **Timing**: 0.75 hours
 

@@ -279,13 +279,19 @@ localization is what makes *Spherical* the identified obstruction of @sec:repres
 The cones are a basis for a topology on world states, and that topology is separated.
 
 #definition("Task Topology")[
-  // FIX: this needs to be expanded to be easier to read, including indented definitions here as in the definitions above
-  For a frame $#taskframe$, let $B_(#taskframe) := {(w)_x : w in #worldstate, x in D, x > 0}$ and
-  let $cal(O)_(#taskframe)$ be the closure of $B_(#taskframe)$ under arbitrary union and finite
-  intersection, writing $cal(T)_(#taskframe) := (#worldstate, cal(O)_(#taskframe))$. For
-  $S subset.eq #worldstate$, $overline(S) := {w : O inter S eq.not emptyset$ for every open $O in.rev w}$.
-  The topology is *T1* just in case $overline({w}) = {w}$ for all $w$, and *R0* just in case
-  $w in overline({u})$ iff $u in overline({w})$ for all $w, u$.
+  Given a frame $#taskframe$:
+  #items[
+    + *Basic Opens*: $B_(#taskframe) := {(w)_x : w in #worldstate "and" x in D "with" x > 0}$.
+    + *Topology*: $cal(T)_(#taskframe) := (#worldstate, cal(O)_(#taskframe))$ where
+      $cal(O)_(#taskframe)$ is the closure of $B_(#taskframe)$ under arbitrary union and finite
+      intersection.
+    + *Closure*: $overline(S) := {w in #worldstate : O inter S eq.not emptyset "for every open"
+      O in cal(T)_(#taskframe) "where" w in O}$ for $S subset.eq #worldstate$.
+    + *T1*: $cal(T)_(#taskframe)$ is *T1* just in case $overline({w}) = {w}$ for all
+      $w in #worldstate$.
+    + *R0*: $cal(T)_(#taskframe)$ is *R0* just in case $w in overline({u})$ iff
+      $u in overline({w})$ for all $w, u in #worldstate$.
+  ]
 ]#footnote[The topology is carried by the world states, not by $H_(#taskframe)$ or by $D$.]
 
 #theorem("Separation")[$cal(T)_(#taskframe)$ is T1, and hence R0, for every frame $#taskframe$.]
