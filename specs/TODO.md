@@ -79,7 +79,7 @@ next_project_number: 462
 
 ### Literature
 
-458 [RESEARCHED] — Follow-up to task 457's SCOPE 7 (provenance adjudication for 3 na
+458 [PLANNED] — Follow-up to task 457's SCOPE 7 (provenance adjudication for 3 na
   └─ 459 [NOT STARTED] — Discovered during task 457 Phase 3 (SCOPE 3 bulk token_count re-b
     └─ 460 [NOT STARTED] — SCOPE 8 acquisition gap identified by task 457's research and re-
       └─ 461 [NOT STARTED] — SCOPE 8 acquisition gap identified by task 457's research and re-
@@ -132,11 +132,12 @@ next_project_number: 462
 ---
 
 ### 458. Migrate the 12 remaining legacy chunks_dir-only literature entries to the v2 schema
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: general
 - **Topic**: literature
 - **Dependencies**: None
 - **Research**: [458_migrate_12_legacy_literature_entries_to_v2_schema/reports/01_legacy-entries-v2-migration.md]
+- **Plan**: [458_migrate_12_legacy_literature_entries_to_v2_schema/plans/01_migrate-12-legacy-entries.md]
 
 **Description**: Follow-up to task 457's SCOPE 7 (provenance adjudication for 3 named legacy entries). 12 further legacy chunks_dir-only entries remain in ~/Projects/Literature/index.json beyond the 3 SCOPE 7 named and migrated (Jonsson-Tarski 1951/1952, Goldblatt 2006): brics-rs-96-35, cattani-winskel-2005-profunctors, brics-rs-94-7, schultz-spivak-temporal-type-theory, fong-speranzon-spivak-temporal-landscapes, schultz-spivak-vasilakopoulou-dynamical-systems-sheaves, thomason-1970-indeterminist-time, rutten-2000-universal-coalgebra, jacobs-coalgebra-intro-draft, danos-krivine-rccs, reynolds-2003-ockhamist, rumberg-zanardo-2019-transition-structures. Each needs: a manual chunk-read fidelity adjudication (grounded, not from an automated ratio alone -- literature-fidelity-audit.sh does not cover these since they sit outside sources/, so its output cannot corroborate; see task 457 Phase 6 phase notes for the code-level reason), path/token_count population per the SCOPE 1 directory-path convention (chars/4+20 over concatenated chunk_*.md text), and doc_type/source_format population per the SCOPE 5 evidence-grounded approach (inspect the actual source file if present; record as a reasoned exclusion if not). Use task 457's Phase 6 adjudication process as the template: take a backup before mutating, open at least one chunk per document and read it by hand, stamp provenance_fidelity only after that read, then run literature-build-index.sh --global and confirm the FTS row count did not drop.
 
