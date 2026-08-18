@@ -11,8 +11,8 @@ next_project_number: 457
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,193,231,257,298,413,421,423,424,437,446,451,455 | -- | completeness, decidability, frame-extensions, ... |
-| 2 | 178,219,282,296,422,425,436,447 | 193,231,298,421,423,437,446 | decidability, formula-refactor, publication-quality, ... |
+| 1 | 125,127,128,193,231,257,298,413,421,423,424,437,447,451,455 | -- | completeness, decidability, frame-extensions, ... |
+| 2 | 178,219,282,296,422,425,436 | 193,231,298,421,423,437 | decidability, formula-refactor, dataset-enhancement, ... |
 | 3 | 169,434 | 422,436 | decidability, strong_completeness |
 | 4 | 362,432 | 169,424,434 | decidability, strong_completeness |
 | 5 | 433 | 432 | decidability |
@@ -64,8 +64,7 @@ next_project_number: 457
 
 ### Publication Quality
 
-446 [IMPLEMENTING] — Address 6 bare `// FIX:` tags in `typst/FormalFoundations.typ`, e
-  └─ 447 [RESEARCHED] — Address 6 substantive FIX: directives in `typst/FormalFoundations
+447 [RESEARCHED] — Address 6 substantive FIX: directives in `typst/FormalFoundations
 
 ### Automation
 
@@ -740,12 +739,13 @@ Task 417's recommended Task B (the filtered step relation) cannot start before (
 ---
 
 ### 446. Restore or retire 6 commented-out prose/proof blocks in FormalFoundations.typ
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: logic
 - **Topic**: publication-quality
 - **Dependencies**: Task 445, Task 456
 - **Research**: [446_restore_commented_prose_proof_blocks/reports/01_restore-fix-tagged-blocks.md]
 - **Plan**: [446_restore_commented_prose_proof_blocks/plans/01_restore-commented-blocks.md]
+- **Summary**: [446_restore_commented_prose_proof_blocks/summaries/01_restore-commented-blocks-summary.md]
 
 **Description**: Address 6 bare `// FIX:` tags in `typst/FormalFoundations.typ`, each marking a block of commented-out prose or proof text that must be restored as live document text, rewritten, or deleted.
 

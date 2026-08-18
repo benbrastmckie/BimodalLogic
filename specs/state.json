@@ -1130,7 +1130,7 @@
     {
       "project_number": 446,
       "project_name": "restore_commented_prose_proof_blocks",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "logic",
       "title": "Restore or retire 6 commented-out prose/proof blocks in FormalFoundations.typ",
       "description": "Address 6 bare `// FIX:` tags in `typst/FormalFoundations.typ`, each marking a block of commented-out prose or proof text that must be restored as live document text, rewritten, or deleted.\n\nTag locations (line numbers as of scan) and their commented-out content:\n\n- `:214` — the proof of the Nullity lemma ($w arrow.r.double.long_(0) w$), which argues from *Seriality* at $x = 0$.\n- `:257` — prose on the Step Lemma being the sole application site of *Spherical*, with Extension its sole consumer, plus the footnote at `lem:step` and the observation that Extension and Occurrence are ZFC theorems while Nullity is not; this localization is what makes *Spherical* the identified obstruction of the representation section.\n- `:263` — prose stating the cones form a basis for a topology on world states and that the topology is separated.\n- `:277` — block following the Separation theorem (T1, hence R0).\n- `:323` — block following the BL/BL+ semantics definition.\n- `:342` — block following the frame-validity and logical-consequence definitions.\n\nFor each, decide restore / rewrite / delete, apply, and remove the FIX: tag.\n\n**Verification**: `typst compile typst/FormalFoundations.typ` must succeed; restored proofs must be mathematically correct and consistent with the surrounding definitions.\n\n**Important**: When making changes, remove the FIX: tags from the source file.",
@@ -1139,7 +1139,7 @@
         445,
         456
       ],
-      "last_updated": "2026-08-18T15:28:09Z",
+      "last_updated": "2026-08-18T15:34:09Z",
       "session_id": "sess_1787066139_9d5ac4_446",
       "artifacts": [
         {
@@ -1151,8 +1151,14 @@
           "path": "specs/446_restore_commented_prose_proof_blocks/plans/01_restore-commented-blocks.md",
           "type": "plan",
           "summary": "5-phase sequential plan restoring 6 bare-FIX-tagged commented blocks in typst/FormalFoundations.typ, with explicit in-scope decisions on two adjacent untagged blocks."
+        },
+        {
+          "path": "specs/446_restore_commented_prose_proof_blocks/summaries/01_restore-commented-blocks-summary.md",
+          "type": "summary",
+          "summary": "Restored all 6 bare FIX-tagged blocks plus the 2 in-scope untagged blocks in typst/FormalFoundations.typ as live document text; compile stays exit 0 throughout."
         }
-      ]
+      ],
+      "completion_summary": "Restored all 6 bare `// FIX:`-tagged commented blocks in typst/FormalFoundations.typ as live text (Nullity proof, Step Lemma prose, cones/basis sentence, Separation proof, box-modality paragraph, general-frame contrast paragraph), plus the 2 adjacent untagged blocks (a remark delivering the abstract's separation-result promise, and the frame-validity clause needed for Site 6 coherence). typst compile exits 0 with no new warnings, and the 6 explanatory FIX tags owned by a sibling task remain byte-identical."
     },
     {
       "project_number": 447,

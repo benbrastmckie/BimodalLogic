@@ -1,7 +1,7 @@
 # Implementation Plan: Task #446
 
 - **Task**: 446 - Restore or retire 6 commented-out prose/proof blocks in FormalFoundations.typ
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 2.5 hours
 - **Dependencies**: 445, 456 (both already landed; no blocking work remains)
 - **Research Inputs**: specs/446_restore_commented_prose_proof_blocks/reports/01_restore-fix-tagged-blocks.md
