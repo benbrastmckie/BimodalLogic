@@ -272,17 +272,17 @@ before treating it as a placeholder bug.
 
 ---
 
-### Phase 4: SCOPE 4 — authors field normalization [NOT STARTED]
+### Phase 4: SCOPE 4 — authors field normalization [COMPLETED]
 
 **Goal**: Convert the comma-joined `authors` strings to arrays using the existing script, and
 confirm the malformed-array regression the script also guards against has not reappeared.
 
 **Tasks**:
-- [ ] Re-run the dry run against the current index and confirm the proposed change count and that sampled before/after pairs are correct splits
-- [ ] Back up: `cp ~/Projects/Literature/index.json ~/Projects/Literature/index.json.bak-$(date +%Y%m%d-%H%M%S)-pre-scope4`
-- [ ] Run `bash .claude/scripts/literature-normalize-authors.sh ~/Projects/Literature/index.json --apply`
-- [ ] Run the script bare again to confirm idempotence (zero proposed changes on the second pass)
-- [ ] Run the post-mutation gate (below)
+- [x] Re-run the dry run against the current index and confirm the proposed change count and that sampled before/after pairs are correct splits *(completed)*
+- [x] Back up: `cp ~/Projects/Literature/index.json ~/Projects/Literature/index.json.bak-$(date +%Y%m%d-%H%M%S)-pre-scope4` *(completed)*
+- [x] Run `bash .claude/scripts/literature-normalize-authors.sh ~/Projects/Literature/index.json --apply` *(completed: 60 converted; 5 (hughes_1996 group) manually corrected for a two-author single-element mis-split)*
+- [x] Run the script bare again to confirm idempotence (zero proposed changes on the second pass) *(completed)*
+- [x] Run the post-mutation gate (below) *(completed)*
 
 **Timing**: 0.75 hours
 
