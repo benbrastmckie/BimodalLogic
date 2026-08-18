@@ -8479,8 +8479,10 @@ theorem gateSigma_not_sigmaTimeStable :
 tied to the state it is read at by one added hypothesis and nothing removed.
 
 Two hypotheses were added to `MintPaysForTime` on the way here and both weaken the predicate, so
-the implications run `MintPaysForTime → MintPaysForTimeAt → MintPaysForTimeStable` and never the
-other way. This is the `universeClosedAt_of_universeClosed` idiom applied twice.
+the implication runs `MintPaysForTime → MintPaysForTimeStable` and never the other way. This is the
+`universeClosedAt_of_universeClosed` idiom. It does **not** factor through `MintPaysForTimeAt`: that
+predicate's third disjunct is the bare `selfGuardPotential` drop, this one's pairs the drop with a
+combined-budget conjunct, and the pairing is forced — see below.
 
 **What the added hypothesis is for.** `MintPaysForTimeAt` is refuted as stated by
 `mintPaysForTimeAt_reuse_false`, and that refutation is permanent: `σ` is quantified there with no
@@ -9431,7 +9433,7 @@ theorem budgetPotentialAt_step_splitOrdered {U : Finset SignedFormula} {Tmax : N
     {σ : SignedFormula → SignedFormula} {b : Branch} {ord : TimeOrdering}
     {bs : List (Branch × TimeOrdering)}
     {fc : FormalSystem.ProofSystem.FrameClass} {tr : EventualityTracker}
-    (hUcl : UniverseClosed fc U) (hst : BudgetStateAt U Tmax σ b ord)
+    (hUcl : UniverseClosedAt fc U) (hst : BudgetStateAt U Tmax σ b ord)
     (hres : (expandOnceUnblocked b ord fc tr).1 = ExpansionResult.splitOrdered bs) :
     ∀ p ∈ bs, ∃ σ' : SignedFormula → SignedFormula, BudgetStateAt U Tmax σ' p.1 p.2 ∧
       budgetPotentialAt U Tmax σ' p.1 p.2 < budgetPotentialAt U Tmax σ b ord := by
@@ -9494,7 +9496,8 @@ theorem budgetPotentialAt_step_splitOrdered {U : Finset SignedFormula} {Tmax : N
           (ord.identifyTime s u)
         ≤ (2 * (Tmax * Tmax + 1) + U.card) * selfGuardPotential U σ ord :=
       Nat.mul_le_mul_left _ hS3
-    have hIU : ∀ x ∈ b.identifyTime s u, x ∈ U := hUcl.2 b u s hbU
+    have hIU : ∀ x ∈ b.identifyTime s u, x ∈ U :=
+      universeClosedAt_identify_at_trigger_oriented hUcl hbU htrig
     have hc'U : (b.identifyTime s u).toFinset.card ≤ U.card :=
       card_le_of_subset_universe hIU
     have hIsucc : mintTimeBudget U (fun x => rhoSF s u (σ x)) (b.identifyTime s u)
@@ -9544,7 +9547,7 @@ discharged at the seed by `sigmaTimeFixed_id` and at the identification arm by
 theorem budgetPotentialAt_step_unordered {U : Finset SignedFormula} {Tmax : Nat}
     {σ : SignedFormula → SignedFormula} {b nb : Branch} {ord : TimeOrdering}
     {fc : FormalSystem.ProofSystem.FrameClass} {tr : EventualityTracker}
-    (hUcl : UniverseClosed fc U) (hmint : MintPaysForTimeStable fc U Tmax)
+    (hUcl : UniverseClosedAt fc U) (hmint : MintPaysForTimeStable fc U Tmax)
     (hst : BudgetStateAt U Tmax σ b ord)
     (hmem : nb ∈ unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1)
     (hgrow : b.toFinset.card < nb.toFinset.card) :
@@ -9720,7 +9723,7 @@ arity facts and the difficulty facts are all reached through `hst.2.1`, which is
 clause both state predicates share in the same position. -/
 theorem stepDecreases_budgetPotentialAt {fc : FormalSystem.ProofSystem.FrameClass}
     {U : Finset SignedFormula} {Tmax D β : Nat} (hβ : 3 ≤ β)
-    (hUcl : UniverseClosed fc U) (hD : DifficultyBounded fc U D)
+    (hUcl : UniverseClosedAt fc U) (hD : DifficultyBounded fc U D)
     (hmint : MintPaysForTimeStable fc U Tmax) :
     StepDecreases fc (BudgetStateAt U Tmax) (budgetPotentialAt U Tmax) D β := by
   intro σ b ord tr hst
@@ -9805,6 +9808,290 @@ theorem budgetPotentialAt_lt_mintPathBoundAt {U : Finset SignedFormula} {Tmax mi
   simp only [budgetPotentialAt, budgetPotential, extensionAllowance, mintPathBoundAt,
     mintPathBound]
   omega
+
+/-! #### The terminus chain, restated at the repaired predicate
+
+The six theorems below are the `_at` chain with `MintPaysForTime` exchanged for
+`MintPaysForTimeStable`, `BudgetState` for `BudgetStateAt`, `budgetPotential` for
+`budgetPotentialAt`, and `mintAwareFuel` for `mintAwareFuelAt`. **The originals are untouched** and
+nothing stated at them is withdrawn — `mintAwareFuel_le_mintAwareFuelAt` is the statement that the
+figures compose rather than compete.
+
+*The classification, run before anything was restated.* `grep MintPaysForTime` reports eleven
+hypothesis sites in this file. Nine are intermediate — the step lemmas, `stepDecreases`,
+`expandBranchWithFuel_isSome_of_budget`, `buildTableauAt_isSome_of_budget` and their `_at` siblings
+— and pass the residual on without inspecting it. Exactly **two** are seed-level, in the sense that
+they quantify no `U` and read every number off a concrete `signedUniverse C L`:
+`buildTableauAt_isSome_of_lengthBudget_signedUniverse` and
+`buildTableauAt_isSome_at_seed_lengthBudget_signedUniverse`. Both are restated below; the parent
+plan's Scope Hypothesis named a different pair (`buildTableauAt_isSome_at_seed` and
+`..._at_seed_lengthBudget`), and the correction is that those two still quantify `U` — they are
+seed-level in the *fuel* coordinate only.
+
+*The only new number.* The mint budget floor rises from `8·|U|` to `10·|U|`, because the carried
+state's budget clause is now the combined one and `selfGuardPotential ≤ 2·|U|`. `derivedTmaxAt`
+carries the same enlargement into the caller-facing form. That is a figure, not a hypothesis: no
+caller's hypothesis *list* changes, and `derivedTmax_le_derivedTmaxAt` records that the time bound
+grows rather than moves. -/
+
+/-- **The derived time bound at the four-component measure.** The initial known-time count plus the
+enlarged mint budget: `8·|U|` for the mint dimension and `2·|U|` for the self-guard dimension, the
+two ceilings `mintPotential_le_eight_mul` and `selfGuardPotential_le_two_mul` supply. -/
+def derivedTmaxAt (kt0 Ucard : Nat) : Nat := kt0 + 10 * Ucard
+
+/-- The enlarged time hypothesis is satisfied at `derivedTmaxAt`, definitionally — the same sense in
+which `derivedTmax_spec` makes the mint budget a discharged parameter rather than a caller
+obligation. -/
+theorem derivedTmaxAt_spec (b : Branch) (U : Finset SignedFormula) :
+    b.knownTimes.toFinset.card + 10 * U.card
+      ≤ derivedTmaxAt (b.knownTimes.toFinset.card) U.card := Nat.le_refl _
+
+/-- The enlarged bound is an **enlargement**, never a replacement. -/
+theorem derivedTmax_le_derivedTmaxAt (kt0 Ucard : Nat) :
+    derivedTmax kt0 Ucard ≤ derivedTmaxAt kt0 Ucard := by
+  simp only [derivedTmax, derivedTmaxAt]; omega
+
+/-- `BudgetedTotalityAt` at the four-component measure: the enlarged fuel figure and the enlarged
+mint-budget floor, everything else unchanged. -/
+def BudgetedTotalitySelfGuarded (fc : FormalSystem.ProofSystem.FrameClass)
+    (U : Finset SignedFormula) (mintBudget Tmax D β : Nat) : Prop :=
+  ∀ (b : Branch) (ord : TimeOrdering) (tr : EventualityTracker) (applied : AppliedSet)
+    (maxBranches branchesUsed : Nat),
+    (∀ x ∈ b, x ∈ U) →
+    RunInvariant b ord →
+    10 * U.card ≤ mintBudget →
+    b.knownTimes.toFinset.card + mintBudget ≤ Tmax →
+    branchesUsed + β * mintAwareFuelAt U.card Tmax mintBudget D β ≤ maxBranches →
+    (expandBranchWithFuel b (mintAwareFuelAt U.card Tmax mintBudget D β) ord fc tr applied
+      maxBranches branchesUsed).isSome = true
+
+/-- `expandBranchWithFuel_isSome_of_budget_at` at the repaired predicate.
+
+The seed state is built at `σ = id`, where both σ clauses are free — `sigmaTimeFixed_id` and
+`sigmaFixesFrom_id` — so the repaired predicate's added hypothesis costs the caller nothing here.
+The combined budget clause is where the enlarged floor is consumed. -/
+theorem expandBranchWithFuel_isSome_of_budget_selfGuarded
+    {fc : FormalSystem.ProofSystem.FrameClass} {U : Finset SignedFormula}
+    {mintBudget Tmax D β : Nat}
+    (hβ : 3 ≤ β) (hUcl : UniverseClosedAt fc U) (hD : DifficultyBounded fc U D)
+    (hmint : MintPaysForTimeStable fc U Tmax) (harm : ArmSettlement fc) :
+    BudgetedTotalitySelfGuarded fc U mintBudget Tmax D β := by
+  intro b ord tr applied maxBranches branchesUsed hbU hinv hmb hT hbud
+  have hst : BudgetStateAt U Tmax id b ord := by
+    refine ⟨hinv, hbU, ?_, sigmaTimeFixed_id b, sigmaFixesFrom_id _⟩
+    have h8 := mintPotential_le_eight_mul U id b ord
+    have h2 := selfGuardPotential_le_two_mul U id ord
+    simp only [mintTimeBudget]
+    omega
+  exact expandBranchWithFuel_isSome_of_measure (by omega)
+    (stepDecreases_budgetPotentialAt hβ hUcl hD hmint)
+    harm (mintPathBoundAt U.card Tmax mintBudget) id _ b ord tr applied maxBranches branchesUsed
+    hst (budgetPotentialAt_lt_mintPathBoundAt hst (by omega)) (Nat.le_refl _) hbud
+
+/-- **THE TERMINUS, at the repaired predicate.** `buildTableauAt_isSome_of_budget_at` with
+`MintPaysForTime` exchanged for `MintPaysForTimeStable`.
+
+The exchange is a **strengthening**: the hypothesis is weaker
+(`mintPaysForTimeStable_of_mintPaysForTime`), for the same reason and in the same sense that
+`UniverseClosedAt` strengthened its predecessor. The other three residuals are carried across
+unaltered and are still named — `DifficultyBounded`, `PostBlockingSettles`, and `UniverseClosedAt`.
+Nothing above is withdrawn. -/
+theorem buildTableauAt_isSome_of_budget_selfGuarded
+    {fc : FormalSystem.ProofSystem.FrameClass} {U : Finset SignedFormula}
+    {mintBudget Tmax D β : Nat} (phi : Formula) (maxBranches : Nat)
+    (hβ : 3 ≤ β) (hUcl : UniverseClosedAt fc U) (hD : DifficultyBounded fc U D)
+    (hmint : MintPaysForTimeStable fc U Tmax) (hpb : PostBlockingSettles fc)
+    (hseed : ∀ x ∈ seedBranch phi, x ∈ U)
+    (hmb : 10 * U.card ≤ mintBudget)
+    (hT : (seedBranch phi).knownTimes.toFinset.card + mintBudget ≤ Tmax)
+    (hbud : β * mintAwareFuelAt U.card Tmax mintBudget D β ≤ maxBranches) :
+    (buildTableauAt phi (mintAwareFuelAt U.card Tmax mintBudget D β) fc maxBranches).isSome
+      = true := by
+  refine buildTableauAt_isSome_of_settles hpb ?_
+  exact expandBranchWithFuel_isSome_of_budget_selfGuarded hβ hUcl hD hmint
+    (armSettlement_of_postBlockingSettles hpb)
+    (seedBranch phi) TimeOrdering.empty EventualityTracker.empty {} maxBranches 0
+    hseed (runInvariant_initial _) hmb hT (by omega)
+
+/-- `buildTableauAt_isSome_at_seed_at` at the repaired predicate, with every number read off. -/
+theorem buildTableauAt_isSome_at_seed_selfGuarded
+    {fc : FormalSystem.ProofSystem.FrameClass} {U : Finset SignedFormula} {D β : Nat}
+    (phi : Formula) (hβ : 3 ≤ β) (hUcl : UniverseClosedAt fc U)
+    (hD : DifficultyBounded fc U D)
+    (hmint : MintPaysForTimeStable fc U
+      (derivedTmaxAt ((seedBranch phi).knownTimes.toFinset.card) U.card))
+    (hpb : PostBlockingSettles fc)
+    (hseed : ∀ x ∈ seedBranch phi, x ∈ U) :
+    (buildTableauAt phi
+        (mintAwareFuelAt U.card (derivedTmaxAt ((seedBranch phi).knownTimes.toFinset.card) U.card)
+          (10 * U.card) D β)
+        fc
+        (β * mintAwareFuelAt U.card
+          (derivedTmaxAt ((seedBranch phi).knownTimes.toFinset.card) U.card) (10 * U.card) D β)
+      ).isSome = true :=
+  buildTableauAt_isSome_of_budget_selfGuarded phi _ hβ hUcl hD hmint hpb hseed (Nat.le_refl _)
+    (derivedTmaxAt_spec (seedBranch phi) U) (Nat.le_refl _)
+
+/-- `buildTableauAt_isSome_of_lengthBudget_at` at the repaired predicate — **three** refutable
+residuals exchanged for satisfiable or weaker ones at once. -/
+theorem buildTableauAt_isSome_of_lengthBudget_selfGuarded
+    {fc : FormalSystem.ProofSystem.FrameClass} {U : Finset SignedFormula}
+    {mintBudget Tmax L β : Nat} (phi : Formula) (maxBranches : Nat)
+    (hβ : 3 ≤ β) (hUcl : UniverseClosedAt fc U) (hL : StepLengthBounded fc U L)
+    (hmint : MintPaysForTimeStable fc U Tmax) (hpb : PostBlockingSettles fc)
+    (hseed : ∀ x ∈ seedBranch phi, x ∈ U)
+    (hmb : 10 * U.card ≤ mintBudget)
+    (hT : (seedBranch phi).knownTimes.toFinset.card + mintBudget ≤ Tmax)
+    (hbud : β * mintAwareFuelAt U.card Tmax mintBudget (difficultyCeiling U L) β
+      ≤ maxBranches) :
+    (buildTableauAt phi (mintAwareFuelAt U.card Tmax mintBudget (difficultyCeiling U L) β) fc
+        maxBranches).isSome = true :=
+  buildTableauAt_isSome_of_budget_selfGuarded phi maxBranches hβ hUcl
+    (difficultyBounded_of_stepLengthBounded_at hL hUcl) hmint hpb hseed hmb hT hbud
+
+/-- `buildTableauAt_isSome_at_seed_lengthBudget_at` at the repaired predicate. -/
+theorem buildTableauAt_isSome_at_seed_lengthBudget_selfGuarded
+    {fc : FormalSystem.ProofSystem.FrameClass} {U : Finset SignedFormula} {L β : Nat}
+    (phi : Formula) (hβ : 3 ≤ β) (hUcl : UniverseClosedAt fc U)
+    (hL : StepLengthBounded fc U L)
+    (hmint : MintPaysForTimeStable fc U
+      (derivedTmaxAt ((seedBranch phi).knownTimes.toFinset.card) U.card))
+    (hpb : PostBlockingSettles fc)
+    (hseed : ∀ x ∈ seedBranch phi, x ∈ U) :
+    (buildTableauAt phi
+        (mintAwareFuelAt U.card
+          (derivedTmaxAt ((seedBranch phi).knownTimes.toFinset.card) U.card)
+          (10 * U.card) (difficultyCeiling U L) β)
+        fc
+        (β * mintAwareFuelAt U.card
+          (derivedTmaxAt ((seedBranch phi).knownTimes.toFinset.card) U.card) (10 * U.card)
+          (difficultyCeiling U L) β)
+      ).isSome = true :=
+  buildTableauAt_isSome_at_seed_selfGuarded phi hβ hUcl
+    (difficultyBounded_of_stepLengthBounded_at hL hUcl) hmint hpb hseed
+
+/-- **Seed-level terminus 1, restated at the repaired predicate**, at the concrete universe
+`signedUniverse C L`.
+
+`grep`-and-classify identified exactly two seed-level sites; this is the first. Every hypothesis is
+the one the landed `buildTableauAt_isSome_of_lengthBudget_signedUniverse` carries, with
+`MintPaysForTime` exchanged for `MintPaysForTimeStable` and the mint-budget floor read at `10·|U|`.
+`UniverseClosedAt` is discharged here, not assumed: `universeClosedAt_signedUniverse_of_headroom`
+pays it from a `TableauClosed`, `TrichStock` formula stock and a `TimeMergeClosed` label set. -/
+theorem buildTableauAt_isSome_of_lengthBudget_signedUniverse_selfGuarded
+    {fc : FormalSystem.ProofSystem.FrameClass}
+    {C : Finset Formula} {L : Finset Label} {mintBudget Tmax L' β : Nat}
+    (phi : Formula) (maxBranches : Nat) (hβ : 3 ≤ β)
+    (hC : TableauClosed C) (hT : TrichStock C) (hL : TimeMergeClosed L)
+    (hlab : UnorderedSuccessorLabelClosed fc L)
+    (hSL : StepLengthBounded fc (signedUniverse C L) L')
+    (hmint : MintPaysForTimeStable fc (signedUniverse C L) Tmax) (hpb : PostBlockingSettles fc)
+    (hseed : ∀ x ∈ seedBranch phi, x ∈ signedUniverse C L)
+    (hmb : 10 * (signedUniverse C L).card ≤ mintBudget)
+    (hT' : (seedBranch phi).knownTimes.toFinset.card + mintBudget ≤ Tmax)
+    (hbud : β * mintAwareFuelAt (signedUniverse C L).card Tmax mintBudget
+      (difficultyCeiling (signedUniverse C L) L') β ≤ maxBranches) :
+    (buildTableauAt phi (mintAwareFuelAt (signedUniverse C L).card Tmax mintBudget
+        (difficultyCeiling (signedUniverse C L) L') β) fc maxBranches).isSome = true :=
+  buildTableauAt_isSome_of_lengthBudget_selfGuarded phi maxBranches hβ
+    (universeClosedAt_signedUniverse_of_headroom hC hT hL hlab) hSL hmint hpb hseed hmb hT' hbud
+
+/-- **Seed-level terminus 2, restated at the repaired predicate** — the caller-facing form, every
+number read off, at the concrete universe `signedUniverse C L`.
+
+This is the deliverable's terminus. A caller supplies a `TableauClosed`, `TrichStock` formula
+stock, a `TimeMergeClosed` label set (any rectangle), a length bound, and the three unchanged
+residuals — `MintPaysForTimeStable`, `PostBlockingSettles`, `UnorderedSuccessorLabelClosed` — and
+reads the fuel and the branch budget off the statement.
+
+*What changed relative to `buildTableauAt_isSome_at_seed_lengthBudget_signedUniverse`.* One
+residual is weaker (`MintPaysForTimeStable` in place of `MintPaysForTime`,
+`mintPaysForTimeStable_of_mintPaysForTime`), and two figures are larger (`mintAwareFuelAt`,
+`derivedTmaxAt`, both recorded as enlargements). The hypothesis **list** is identical, name for
+name. That is the whole cost of the fourth measure component at the caller's boundary. -/
+theorem buildTableauAt_isSome_at_seed_lengthBudget_signedUniverse_selfGuarded
+    {fc : FormalSystem.ProofSystem.FrameClass}
+    {C : Finset Formula} {L : Finset Label} {L' β : Nat} (phi : Formula) (hβ : 3 ≤ β)
+    (hC : TableauClosed C) (hT : TrichStock C) (hL : TimeMergeClosed L)
+    (hlab : UnorderedSuccessorLabelClosed fc L)
+    (hSL : StepLengthBounded fc (signedUniverse C L) L')
+    (hmint : MintPaysForTimeStable fc (signedUniverse C L)
+      (derivedTmaxAt ((seedBranch phi).knownTimes.toFinset.card) (signedUniverse C L).card))
+    (hpb : PostBlockingSettles fc)
+    (hseed : ∀ x ∈ seedBranch phi, x ∈ signedUniverse C L) :
+    (buildTableauAt phi
+        (mintAwareFuelAt (signedUniverse C L).card
+          (derivedTmaxAt ((seedBranch phi).knownTimes.toFinset.card)
+            (signedUniverse C L).card)
+          (10 * (signedUniverse C L).card)
+          (difficultyCeiling (signedUniverse C L) L') β)
+        fc
+        (β * mintAwareFuelAt (signedUniverse C L).card
+          (derivedTmaxAt ((seedBranch phi).knownTimes.toFinset.card)
+            (signedUniverse C L).card)
+          (10 * (signedUniverse C L).card)
+          (difficultyCeiling (signedUniverse C L) L') β)
+      ).isSome = true :=
+  buildTableauAt_isSome_at_seed_lengthBudget_selfGuarded phi hβ
+    (universeClosedAt_signedUniverse_of_headroom hC hT hL hlab) hSL hmint hpb hseed
+
+/-! #### The repaired predicate discharged, and the boundary at which it stops
+
+`mintPaysForTime_empty` records the satisfiability boundary for the landed predicate: the residual
+is satisfiable exactly where the terminus it guards has nothing to say, since `signedUniverse C L`
+is empty only when `C` or `L` is. The repaired predicate inherits that boundary verbatim, and the
+discharge below is stated at a **concrete** `signedUniverse C L` rather than at the bare `∅`, so it
+instantiates the seed-level termini above rather than only their `U`-quantified ancestors.
+
+**What blocks a discharge at a nonempty universe, precisely.** It is the density coordinate, and
+not the σ-hit obligation any more. `densityRule` mints a fresh time and lies outside **both**
+`freshLabelRules` and `selfGuardRules`, so at a `densityRule` step disjunct 1 fails (the mint raises
+`knownTimes`), disjunct 2 cannot move (`mintPotential` does not read the rule) and disjunct 3 cannot
+move (`selfGuardDischarged` reports the catch-all `true` for it). That is the residual
+`MintPaysForTimeAt`'s obligation map already names, carried here unchanged: the intended second
+component is `gapPotential`, indexed by `U ×ˢ U` and gated on `denseRules`, and it is implemented
+nowhere and assumed by nothing.
+
+`densityRule` is `denseRules`-gated, so it cannot fire at a frame class outside `.Dense` /
+`.Dedekind`; a discharge restricted to the other classes is therefore not refuted. What it needs is
+a rule-by-rule census showing that every remaining rule either mints no time (disjunct 1), is
+witness-guarded (disjunct 2) or is self-guarded (disjunct 3). That census is the parent plan's
+time-minting-census work read in the other direction, and it is **not attempted here** — stated as
+a named next step rather than gestured at. See register entry 19. -/
+
+/-- **The satisfiability boundary, at the repaired predicate.** The exact mirror of
+`mintPaysForTime_empty`, and for the same reason: confinement forces the branch empty, the engine
+reports `.saturated`, and `unorderedSuccessorBranches` of a `.saturated` result is `[]`.
+
+The added `SigmaTimeStable` hypothesis is discarded rather than used, which is the honest reading —
+this discharge is about the universe being empty, not about the renaming. -/
+theorem mintPaysForTimeStable_empty (fc : FormalSystem.ProofSystem.FrameClass) (Tmax : Nat) :
+    MintPaysForTimeStable fc ∅ Tmax := by
+  intro _ b ord tr _ hconf _ nb hnb
+  have hb : b = [] := List.eq_nil_iff_forall_not_mem.mpr fun x hx => by simpa using hconf x hx
+  subst hb
+  simp [expandOnceUnblocked, findUnexpandedUnblockedWith, unorderedSuccessorBranches] at hnb
+
+/-- `signedUniverse C L` is empty when `L` is — the fact that turns the boundary above into a
+statement about a concrete `signedUniverse`. -/
+theorem signedUniverse_empty_labels (C : Finset Formula) :
+    signedUniverse C (∅ : Finset Label) = ∅ := by
+  simp [signedUniverse]
+
+/-- **The repaired predicate, discharged at a concrete `signedUniverse C L`**, at every frame class
+and every `Tmax`.
+
+This is the instantiation the seed-level termini above consume: `hmint` is supplied rather than
+assumed, so
+`buildTableauAt_isSome_at_seed_lengthBudget_signedUniverse_selfGuarded` reads with one residual
+fewer at `L = ∅`. It is also, by `mintPaysForTime_empty`'s own argument, exactly as far as the
+predicate can be discharged without the density coordinate: see the subsection preamble for what a
+nonempty discharge needs, and register entry 19 for the record. -/
+theorem mintPaysForTimeStable_signedUniverse_empty
+    (fc : FormalSystem.ProofSystem.FrameClass) (C : Finset Formula) (Tmax : Nat) :
+    MintPaysForTimeStable fc (signedUniverse C (∅ : Finset Label)) Tmax := by
+  rw [signedUniverse_empty_labels]
+  exact mintPaysForTimeStable_empty fc Tmax
 
 /-! ## C9. The do-not-re-attempt register
 

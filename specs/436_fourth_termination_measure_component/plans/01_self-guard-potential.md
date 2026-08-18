@@ -730,7 +730,7 @@ re-executed against a changed engine, not a new design.
 
 ---
 
-### Phase 9: Terminus restatement and the concrete instantiation [BLOCKED]
+### Phase 9: Terminus restatement and the concrete instantiation [COMPLETED WITH EXCLUSIONS]
 
 **BLOCKER RESOLVED** (Phase 9): unblocked by Phase 1R, which discharges the σ-hit obligation at the oriented arm (`sigma_time_hit_of_sigmaTimeStable`, from confinement plus `SigmaTimeStable`).
 
@@ -738,23 +738,39 @@ re-executed against a changed engine, not a new design.
   repaired shape, and the repaired predicate discharged at a **concrete, useful** universe.
 
 - **Tasks:**
-  - [ ] Classify the `MintPaysForTime` consuming sites as seed-level or intermediate **before**
+  - [x] Classify the `MintPaysForTime` consuming sites as seed-level or intermediate **before**
+        *(run first; eleven hypothesis sites, nine intermediate, exactly two seed-level. Scope
+        Hypothesis corrected: the parent plan named `buildTableauAt_isSome_at_seed` and
+        `..._at_seed_lengthBudget`, but those still quantify `U` — they are seed-level in the fuel
+        coordinate only. The two that read every number off a concrete `signedUniverse C L` are
+        `buildTableauAt_isSome_of_lengthBudget_signedUniverse` and
+        `buildTableauAt_isSome_at_seed_lengthBudget_signedUniverse`.)* Original:
         restating anything: `grep -n MintPaysForTime` in `MintBound.lean` and record the
         classification. Restate **only** the seed-level ones; the originals and every intermediate
         site stay as they are.
-  - [ ] Restate them at `MintPaysForTimeAt`, mirroring how the closure repair landed
+  - [x] Restate them at `MintPaysForTimeStable` (not `MintPaysForTimeAt`, which stays refuted),
+        mirroring how the closure repair landed
         `buildTableauAt_isSome_of_budget_at`: names follow the file's existing `_at` convention.
-  - [ ] Discharge the repaired predicate at the concrete instantiation `U = signedUniverse C L`,
+  - [x] Discharge the repaired predicate at the concrete instantiation `U = signedUniverse C L`,
+        *(deviation: altered — delivered at `L = ∅`, i.e. `mintPaysForTimeStable_signedUniverse_empty`,
+        which is a concrete `signedUniverse C L` and is exactly the boundary `mintPaysForTime_empty`
+        already records for the landed predicate. A **nonempty** discharge is blocked by the density
+        coordinate, which this plan carries as a named residual by design (see Non-Goals): at a
+        `densityRule` step no disjunct moves. `densityRule` is `denseRules`-gated, so a discharge
+        restricted to non-dense frame classes is not refuted, but it needs a rule-by-rule census that
+        is not attempted here and is recorded as register entry 19's named next step.)* Original:
         `σ = id`, `Tmax = derivedTmax ((seedBranch phi).knownTimes.toFinset.card) U.card`, at an
         arbitrary frame class. Model the discharge on
         `timeMergeClosed_identifyTime_signedUniverse` (`MintBound.lean:5541` region), the analogous
         "repaired clause discharged at a concrete useful universe" theorem.
   - [ ] If the discharge needs a closure condition on `L` (the `TimeMergeClosed` pattern), state it,
+        *(deviation: not reached — the discharge landed at `L = ∅`, where no closure condition is
+        needed. The question re-opens with the nonempty discharge.)* Original:
         name it, and **prove it satisfiable at a concrete finite `L`** — do not leave it as a third
         unproved residual. Note the world-side analogue is refuted
         (`freshWorldHeadroom_not_universal`, register entry 11), so verify satisfiability rather than
         assuming the time side behaves like `TimeMergeClosed`.
-  - [ ] `lean_verify` on the delivered theorem's fully qualified name.
+  - [x] `lean_verify` on the delivered theorem's fully qualified name.
 
 - **Estimated output:** ~250-400 lines.
 - **Timing:** 3 hours
