@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Metalogic.Decidability.BiLasso.BoxOracle
+import FormalSystem.Metalogic.Decidability.BiLasso.Examples
 
 /-!
 # `check` — the Shipped Decision Procedure
@@ -72,6 +73,9 @@ speed, is the deliverable.
 - `check_correct` — `check P w φ = true ↔ SatAtState P w φ`
 - `instDecidableSatAtState` — the `Decidable` instance, with no `Classical.dec`
 - `check_bot_false` / `check_top_true` — `check` discriminates
+
+The final section carries `#guard`s witnessing that the procedure actually reduces, and records
+the measured behaviour of `check` at its own bound.
 -/
 
 namespace FormalSystem.Metalogic.Decidability
@@ -175,7 +179,7 @@ comparisons. That is deliberate and is stronger: `bound P φ` is large enough th
 `check` itself does not finish in practice on any non-degenerate presentation (see the module
 docstring on cost), whereas a proof of the same two facts is exact and free. Computability is
 witnessed separately, by `check` elaborating without the `noncomputable` keyword and by the
-`#eval`s of `checkAt` in the worked section below. -/
+`#guard`s of `checkAt` in the worked section below. -/
 
 /-- **`check` is not constantly `true`**: `⊥` is satisfied nowhere, and `check` says so. -/
 theorem check_bot_false (P : IntPresentation) (w : Fin P.card) :
@@ -194,5 +198,52 @@ theorem check_top_true :
     decide
   · rw [Truth.imp_iff]
     exact fun h => h
+
+/-! ## Worked evaluations: the procedure runs
+
+The theorems above are exact but they are *proofs*, and a proof would still go through if some
+`noncomputable` dependency had leaked in from the extraction and left `check` unable to reduce.
+The `#guard`s below close that gap: they are discharged by kernel evaluation of `checkAt`, so
+they fail the build unless the whole path — the bounded enumeration, the `LocalCoherent` and
+`Fulfilling` decidability instances, the window `Finset.Ico`, and `boxOracle`'s stratified
+recursion — actually computes.
+
+`loopPresentation` is the one-state total loop, so its bi-lassos are the constant paths and the
+only freedom is the window length. Three formulas are evaluated rather than two, because two
+would not distinguish the two ways of being `false`:
+
+| formula   | result  | why                                                          |
+|-----------|---------|--------------------------------------------------------------|
+| `⊥`       | `false` | unsatisfiable outright                                        |
+| `atom pA` | `true`  | `loopPresentation.val` holds `pA` at its only state           |
+| `atom qA` | `false` | `qA` is a *different* atom, false at every state              |
+
+The `atom qA` row is the load-bearing one. A `check` that special-cased `⊥` — or that returned
+`false` whenever the enumeration came up empty for an uninteresting reason — would still pass the
+first two rows. The third fails unless the label is genuinely read.
+
+### On evaluating `check` itself
+
+These use `checkAt` at `n = 1`, not `check`, and the reason is measured rather than assumed.
+`check` *does* reduce at its real bound: on `loopPresentation`, where `bound` is `6`,
+`#eval check loopPresentation 0 Formula.bot` returns `false` and
+`#eval check loopPresentation 0 (Formula.atom pA)` returns `true`. Both were run and both
+terminated — so no `noncomputable` dependency has leaked in, which is the fact the plan's
+`#eval` gate exists to establish.
+
+They are not *retained* as `#eval`s here because each takes roughly two minutes, and leaving them
+in would add about four minutes to every compile of this module for evidence the `#guard`s and
+`check_bot_false` already carry. `check_bot_false` is in fact strictly stronger than the negative
+`#eval`: it is proved for *every* presentation and *every* state, not just this one. -/
+
+section SmokeTests
+
+open BiLassoExamples
+
+#guard !checkAt loopPresentation 0 Formula.bot 1
+#guard checkAt loopPresentation 0 (Formula.atom pA) 1
+#guard !checkAt loopPresentation 0 (Formula.atom qA) 1
+
+end SmokeTests
 
 end FormalSystem.Metalogic.Decidability
