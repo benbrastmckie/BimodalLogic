@@ -1,7 +1,7 @@
 # Implementation Plan: Deduplicate 8 stale placeholder entries in the global literature index
 
 - **Task**: 459 - Deduplicate 8 stale placeholder entries in the global literature index
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 2 hours
 - **Dependencies**: 458 (satisfied; its mutations do not touch the 8-pair cluster)
 - **Research Inputs**: `specs/459_deduplicate_8_stale_literature_entries/reports/01_dedup-stale-literature-entries.md`
@@ -105,19 +105,19 @@ consumes an artifact the previous phase produced.
 
 ---
 
-### Phase 1: Re-derive live baselines, capture pre-image, back up [NOT STARTED]
+### Phase 1: Re-derive live baselines, capture pre-image, back up [COMPLETED]
 
 **Goal**: Establish every number this plan gates on from the live file, prove the rewrite is
 formatting-neutral, and make the operation reversible — all before any mutation.
 
 **Tasks**:
-- [ ] Back up the index: `cp -p ~/Projects/Literature/index.json ~/Projects/Literature/index.json.bak-$(date +%Y%m%d-%H%M%S)-pre-dedup`; record the exact backup path in the phase notes.
-- [ ] Re-derive and record live: total `entries` length; count of entries carrying an `id` key; distinct-`id` count; the list of ids appearing more than once, with their multiplicities.
-- [ ] Assert the duplicated-id set is exactly the 8 named ids. If it differs in any direction (an id added or dropped), STOP and report — do not proceed on a changed set.
-- [ ] Prove round-trip fidelity: read the raw file text, `json.loads` it, re-serialize with `json.dumps(obj, indent=2, ensure_ascii=False) + "\n"`, and assert the result is byte-identical to the raw text. If it is not, STOP — the write strategy in Phase 3 must be revised before proceeding, since any diff would then be uninterpretable.
-- [ ] Capture the pre-image: write, to a scratch file, the canonical JSON of each of the 8 *populated* entries (the ones lacking the `provenance` key), keyed by id. This is Phase 4's comparison basis.
-- [ ] Record whether each of the 8 ids' two entries share a byte-identical `path` string (expected yes, per the report) and that neither carries a `chunks_dir` key.
-- [ ] Record the pre-existing `git -C ~/Projects/Literature status --porcelain index.json` state.
+- [x] Back up the index: `cp -p ~/Projects/Literature/index.json ~/Projects/Literature/index.json.bak-$(date +%Y%m%d-%H%M%S)-pre-dedup`; record the exact backup path in the phase notes. *(completed: backup at ~/Projects/Literature/index.json.bak-20260818-142007-pre-dedup, parses OK)*
+- [x] Re-derive and record live: total `entries` length; count of entries carrying an `id` key; distinct-`id` count; the list of ids appearing more than once, with their multiplicities. *(completed: total=369, id-carrying=366, distinct-id=358 (report's '361' is an arithmetic slip -- 358 is used as the gate), 8 duplicated ids each x2)*
+- [x] Assert the duplicated-id set is exactly the 8 named ids. If it differs in any direction (an id added or dropped), STOP and report — do not proceed on a changed set. *(completed: live set matches report's 8 named ids exactly, both directions -- not a stop condition)*
+- [x] Prove round-trip fidelity: read the raw file text, `json.loads` it, re-serialize with `json.dumps(obj, indent=2, ensure_ascii=False) + "\n"`, and assert the result is byte-identical to the raw text. If it is not, STOP — the write strategy in Phase 3 must be revised before proceeding, since any diff would then be uninterpretable. *(completed: byte-identical, confirmed True)*
+- [x] Capture the pre-image: write, to a scratch file, the canonical JSON of each of the 8 *populated* entries (the ones lacking the `provenance` key), keyed by id. This is Phase 4's comparison basis. *(completed: 8 canonical json.dumps(sort_keys=True) strings written to scratch preimage_canonical.json)*
+- [x] Record whether each of the 8 ids' two entries share a byte-identical `path` string (expected yes, per the report) and that neither carries a `chunks_dir` key. *(completed: all 8 pairs share identical path, neither row carries chunks_dir)*
+- [x] Record the pre-existing `git -C ~/Projects/Literature status --porcelain index.json` state. *(completed: ' M index.json', pre-existing dirty state from unrelated ingest work)*
 
 **Timing**: 30 minutes
 

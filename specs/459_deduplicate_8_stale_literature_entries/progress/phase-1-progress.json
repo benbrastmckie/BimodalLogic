@@ -1,0 +1,18 @@
+{
+  "phase": 1,
+  "phase_name": "Re-derive live baselines, capture pre-image, back up",
+  "started_at": "2026-08-18T21:19:47Z",
+  "last_updated": "2026-08-18T21:21:00Z",
+  "objectives": [
+    {"id": 1, "description": "Back up the index with timestamped filename", "status": "done", "files_touched": [], "note": "Backup at ~/Projects/Literature/index.json.bak-20260818-142007-pre-dedup, 399447 bytes, parses OK (369 entries)."},
+    {"id": 2, "description": "Re-derive live: total entries, id-carrying count, distinct-id count, duplicated ids with multiplicities", "status": "done", "files_touched": [], "note": "total=369, id-carrying=366, distinct-id(among id-carrying)=358, duplicated ids=8 (each x2). Note: plan/report literal '361 distinct ids' is an arithmetic slip (369-8 formula applied without excluding the 3 doc_id-only rows); live re-derived value is 358 and is used as the Phase 4 gate per plan's own instruction to use re-derived values, not report/plan literals."},
+    {"id": 3, "description": "Assert duplicated-id set is exactly the 8 named ids; STOP if not", "status": "done", "files_touched": [], "note": "Live set == {brookes_2007_semantics-concurrent-separation-logic, calcagno_2007_local-action-abstract-separation-logic, docherty_pym_2019_stone-dualities-separation-logics, jipsen_litak_2017_algebraic-glimpse-bunched-implications, jung_2018_iris-from-the-ground-up, ohearn_2007_resources-concurrency-local-reasoning, ohearn_2019_separation-logic-cacm, reynolds_2002_separation-logic} -- matches report's list exactly (set equality both directions). NOT a stop condition."},
+    {"id": 4, "description": "Prove round-trip serialization byte-identity", "status": "done", "files_touched": [], "note": "json.dumps(obj, indent=2, ensure_ascii=False) + '\\n' == raw file text: True (byte-identical)."},
+    {"id": 5, "description": "Capture pre-image of the 8 populated entries to scratch file", "status": "done", "files_touched": [], "note": "Canonical (sort_keys=True) JSON string per id written to /tmp/claude-1000/-home-benjamin-Projects-BimodalLogic/0c1324e4-d26b-4041-8ebb-d0df8c1bde68/scratchpad/459-dedup/preimage_canonical.json, 8 keys."},
+    {"id": 6, "description": "Record path-identity and chunks_dir absence for each pair", "status": "done", "files_touched": [], "note": "All 8 pairs: exactly 2 rows, identical path string within pair, neither row carries chunks_dir key."},
+    {"id": 7, "description": "Record pre-existing git status of index.json in Literature repo", "status": "done", "files_touched": [], "note": "git -C ~/Projects/Literature status --porcelain index.json => ' M index.json' (pre-existing dirty state from unrelated ingest work, unrelated to this task)."}
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "handoff_count": 0
+}

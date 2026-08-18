@@ -79,7 +79,7 @@ next_project_number: 462
 
 ### Literature
 
-459 [PLANNED] — Discovered during task 457 Phase 3 (SCOPE 3 bulk token_count re-b
+459 [IMPLEMENTING] — Discovered during task 457 Phase 3 (SCOPE 3 bulk token_count re-b
   └─ 460 [NOT STARTED] — SCOPE 8 acquisition gap identified by task 457's research and re-
     └─ 461 [NOT STARTED] — SCOPE 8 acquisition gap identified by task 457's research and re-
 
@@ -121,7 +121,7 @@ next_project_number: 462
 ---
 
 ### 459. Deduplicate 8 stale placeholder entries in the global literature index
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: general
 - **Topic**: literature
 - **Dependencies**: Task 458
