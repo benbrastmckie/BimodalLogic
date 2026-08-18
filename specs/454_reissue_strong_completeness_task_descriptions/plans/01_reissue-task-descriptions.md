@@ -178,25 +178,25 @@ DRIFTED, DELETED) in the ledger; do not carry these numbers forward as facts.
 
 ---
 
-### Phase 2: Re-issue task 423 [NOT STARTED]
+### Phase 2: Re-issue task 423 [COMPLETED]
 
 **Goal**: Re-anchor 423's `Validity.lean` citations by symbol. 423's substance (vocabulary-only,
 self-contained, proves no compactness result) is unchanged, and 423 does **not** gain a `424`
 dependency.
 
 **Tasks**:
-- [ ] Copy `SCRATCH/423-desc.orig.txt` to `SCRATCH/423-desc.new.txt` and edit only the citation
+- [x] Copy `SCRATCH/423-desc.orig.txt` to `SCRATCH/423-desc.new.txt` and edit only the citation
       strings, using the Phase 1 ledger rows for 423.
-- [ ] Rewrite the acceptance clause "each `SetSemanticConsequence*` binder list is byte-comparable
+- [x] Rewrite the acceptance clause "each `SetSemanticConsequence*` binder list is byte-comparable
       to its `Validity.lean` source (`valid :79`, `ValidDense :169`, `ValidDiscrete :187`,
       `ValidDedekindDense :276`)" so the four sources are named by symbol, with line numbers either
       dropped or demoted to hints. The byte-comparability criterion itself stays.
-- [ ] Re-anchor the `Validity.lean:77` reference (the "uses `Type` not `Type*`, deliberate" note) to
+- [x] Re-anchor the `Validity.lean:77` reference (the "uses `Type` not `Type*`, deliberate" note) to
       its verified location by symbol/quoted-note, per the ledger.
-- [ ] Apply with:
+- [x] Apply with:
       `.claude/scripts/state-write.sh '(.active_projects[] | select(.project_number == 423) | .description) = $desc' --session-id sess_1787033965_d6c07f_454 --arg desc "$(cat SCRATCH/423-desc.new.txt)"`
       (no `--regen-todo`).
-- [ ] Confirm round-trip:
+- [x] Confirm round-trip:
       `jq -r '.active_projects[]|select(.project_number==423)|.description' specs/state.json | diff - SCRATCH/423-desc.new.txt`
 
 **Timing**: 0.5 hours
@@ -222,33 +222,33 @@ phase.
 
 ---
 
-### Phase 3: Re-issue task 421 [NOT STARTED]
+### Phase 3: Re-issue task 421 [COMPLETED]
 
 **Goal**: Re-anchor 421's `Transfer.lean` citations (including the two `:1239-1241` occurrences and
 the `:1242` sorry reference), switch the CarrierProbe anchor to symbol-primary form without
 changing its claim, and re-verify the Mathlib citation.
 
 **Tasks**:
-- [ ] Re-anchor deliverable (a)'s `Transfer.lean:1239-1241` (refuted route-(i) guidance; actual
+- [x] Re-anchor deliverable (a)'s `Transfer.lean:1239-1241` (refuted route-(i) guidance; actual
       `:1081-1083`) by quoting the comment's opening text as the anchor — "the `(i) a Base-MCS ...
       (ii) a Henkin-style ...` comment block in `FormalSystem/Metalogic/WeakCanonical/Transfer.lean`"
       — with the line range as a hint only.
-- [ ] Re-anchor the same range where it recurs in the Acceptance clause ("the refuted-route comment
+- [x] Re-anchor the same range where it recurs in the Acceptance clause ("the refuted-route comment
       no longer appears at `Transfer.lean:1239-1241`") to the same symbol-primary form.
-- [ ] Re-anchor "do not touch the sorry at `:1242`" to `` the `sorry` inside
+- [x] Re-anchor "do not touch the sorry at `:1242`" to `` the `sorry` inside
       `WeakCanonical.countermodel_discrete` `` (declaration start currently `:1068`, sorry token
       currently `:1084` — hints only). Note this occurrence is **not** in the original nine-row
       table.
-- [ ] Convert the CarrierProbe reference to `` the `section CarrierProbe` block in
+- [x] Convert the CarrierProbe reference to `` the `section CarrierProbe` block in
       `FormalSystem/Metalogic/BXCanonical/CompletenessDedekind.lean` `` (currently `:69-105`, hint
       only). Do not restate `:61-100` as if load-bearing and do not change what the clause claims —
       it was verified still accurate.
-- [ ] Re-verify the `Mathlib/Algebra/Order/Monoid/Prod.lean:52-59` citation per the ledger and
+- [x] Re-verify the `Mathlib/Algebra/Order/Monoid/Prod.lean:52-59` citation per the ledger and
       re-anchor by declaration name (`Lex.isOrderedMonoid`).
-- [ ] Leave the sorry-count acceptance clause ("live non-Boneyard sorry count is unchanged at 2")
+- [x] Leave the sorry-count acceptance clause ("live non-Boneyard sorry count is unchanged at 2")
       intact — it is a scope claim, not an anchor, and re-scoping 421 is a non-goal. If the ledger
       shows the count is now different, flag it in the summary rather than editing the claim.
-- [ ] Apply via `state-write.sh` with `--arg desc "$(cat SCRATCH/421-desc.new.txt)"` (no
+- [x] Apply via `state-write.sh` with `--arg desc "$(cat SCRATCH/421-desc.new.txt)"` (no
       `--regen-todo`), then round-trip diff.
 
 **Timing**: 0.5 hours
