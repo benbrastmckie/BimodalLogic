@@ -1107,11 +1107,20 @@
     {
       "project_number": 445,
       "project_name": "restore_commented_footnotes_formalfoundations",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "logic",
       "title": "Restore or retire 39 commented-out footnotes in FormalFoundations.typ",
       "description": "Address 39 FIX: tags in `typst/FormalFoundations.typ`, each of the form `] // FIX: #footnote[...]` trailing a definition, lemma, theorem, or corollary block. Each commented-out footnote carries either a paper anchor (`def:BLplus-language`, `def:temporal-order`, `def:task-relation`, `def:directed`, `def:frame`, `lem:nullity`, `def:world-history`, `thm:extension`, `cor:occurrence`, `def:task-topology`, `app:topology-t1`/`app:topology-r0`, `def:BL-model`, `def:BL-semantics`/`def:BLplus-semantics`, `def:frame-properties`, `def:frame-validity`/`def:logical-consequence`, `def:S5`, `def:BX`, `thm:TM-soundness`, `app:discrete`/`app:dense`/`app:complete`, `cor:tm-completeness`, `def:TMplus`, `cor:tm-decidability`, `def:strongest`, `thm:exist`, `lem:uniq`/`thm:s4`/`thm:sym`, `sub:Extension`) with an `@brastmckie2026possibleworlds` citation, or a Lean source reference (`Metalogic/Core/MaximalConsistent.lean`, `Metalogic/Bundle/BFMCS.lean`, `Metalogic/BXCanonical/Chronicle/ChronicleConstruction.lean`, `WeakCanonical/Transfer.lean`, `IntegerModel/GoodStructures.lean`, `RealModel/DoetsTheorem.lean`, `Metalogic/Algebraic/*`).\n\nFor each, decide whether the footnote should be restored as live document text, folded into the surrounding prose, or deleted, then apply that decision and remove the FIX: tag.\n\nTag locations (line numbers as of scan): 149, 178, 191, 196, 211, 213, 238, 242, 255, 274, 276, 305, 321, 333, 340, 359, 367, 409, 418, 434, 448, 488, 505, 511, 523, 554, 575, 663, 691, 714, 739, 832, 841, 855, 883, 885, 891, 902, 944.\n\n**Verification**: `typst compile typst/FormalFoundations.typ` must succeed and all `@`-references and bibliography keys must resolve.\n\n**Important**: When making changes, remove the FIX: tags from the source file.",
-      "topic": "publication-quality"
+      "topic": "publication-quality",
+      "last_updated": "2026-08-18T08:54:54Z",
+      "session_id": "sess_1787042796_0b6b2c_445",
+      "artifacts": [
+        {
+          "path": "specs/445_restore_commented_footnotes_formalfoundations/reports/01_restore-commented-footnotes.md",
+          "type": "report",
+          "summary": "Per-site disposition table for all 39 FIX-tagged footnotes (37 restore-as-is, 2 restore-with-correction), with verified paper anchors, bib keys, and Lean file/symbol attributions."
+        }
+      ]
     },
     {
       "project_number": 446,
