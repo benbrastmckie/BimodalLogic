@@ -125,9 +125,22 @@ theorem natCard_pigeonState (P : IntPresentation) (φ : Formula) :
     Nat.card (PigeonState P φ) = P.card * 2 ^ subformulaClosureCard φ := by
   rw [Nat.card_eq_fintype_card, card_pigeonState]
 
-/-- The datum type is inhabited: `P.card_pos` gives a state and `∅` is a closure subset. -/
+/--
+The datum type is inhabited.
+
+The state component is deliberately spelled `default` rather than `⟨0, P.card_pos⟩`, so that it is
+*the same term* the state decoding (`BiLasso.unrollOf`) uses as its out-of-range fallback. That
+makes `stateOf default = default` hold by `rfl`, which is what lets the extraction read a decoded
+datum's state component off the decoded state sequence without a side condition.
+-/
 instance instInhabitedPigeonState : Inhabited (PigeonState P φ) :=
-  ⟨⟨⟨0, P.card_pos⟩, ⟨∅, Finset.mem_powerset.mpr (Finset.empty_subset _)⟩⟩⟩
+  ⟨(default, ⟨∅, Finset.mem_powerset.mpr (Finset.empty_subset _)⟩)⟩
+
+/-- The datum default projects to the state decoding's own fallback. -/
+@[simp] theorem stateOf_default : stateOf (default : PigeonState P φ) = default := rfl
+
+/-- The datum default projects to the label decoding's own fallback. -/
+@[simp] theorem typeOf_default : typeOf (default : PigeonState P φ) = default := rfl
 
 /-! ## The datum of a position -/
 
