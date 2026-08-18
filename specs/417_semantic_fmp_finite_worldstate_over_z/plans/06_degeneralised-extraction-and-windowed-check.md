@@ -609,7 +609,7 @@ derived quantity and the consumer drift apart.
 
 ---
 
-### Phase 10.3: Assembly and `exists_annot_of_truth` in the windowed shape [NOT STARTED]
+### Phase 10.3: Assembly and `exists_annot_of_truth` in the windowed shape [COMPLETED]
 
 **Goal**: `bound P φ` and the small-model theorem, delivering the witness at a position inside the
 landed coherence window. This phase discharges obstruction 1.
@@ -667,7 +667,16 @@ landed coherence window. This phase discharges obstruction 1.
 plus one (`2 * Nat.card (PigeonState P φ) + 1`), and hence that `bound P φ` is dominated by the
 forward/backward cycle bound whenever `subformulaClosureCard φ ≥ 1` — which always holds, since a
 formula is in its own closure. Confirm both by proof. If the mid bound dominates instead, `bound`
-still takes the max and Phase 12 is unaffected; say which term dominated.
+still takes the max and Phase 12 is unaffected; say which term dominated. *(Outcome: **confirmed,
+slightly tighter** — the mid segment is `a + b` with `a < Nat.card (PigeonState P φ)` and
+`b < Nat.card (PigeonState P φ)`, so `midBound P φ = 2 * (P.card * 2 ^ k)` suffices without the
+`+ 1`. `bound P φ` is defined as `max (cycleBound P φ) (midBound P φ)`; the **cycle term
+dominates**, since `cycleBound = (2k+1) * N ≥ 3N > 2N = midBound` for `k ≥ 1`. The `max` is kept
+anyway, so no closure-cardinality lemma is needed and the definition is correct unconditionally.
+Two further recorded facts: the first leg of the mid walk takes one real step before any
+shortening, which is what keeps the recorded witness position non-negative; and the witness lands
+at position `a ∈ [0, nm]`, including the `a = nm` corner that a naive `Finset.Ico 0 A.nm` would
+have dropped.)*
 
 **Files to modify**:
 - `FormalSystem/Metalogic/Decidability/BiLasso/Extraction.lean` — new

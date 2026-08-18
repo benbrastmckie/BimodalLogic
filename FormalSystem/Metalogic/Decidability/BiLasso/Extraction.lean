@@ -328,4 +328,237 @@ theorem witness_pos_mem_cohWindow (A : Annot P φ) {i : ℤ} (h0 : 0 ≤ i) (h1 
   simp only [Finset.mem_Ico, cohWindowLo, cohWindowHi]
   omega
 
+/-! ## The small-model theorem -/
+
+/--
+**The small-model theorem, in the windowed shape.**
+
+If a closure formula holds at *some* time of *some* total history, then one of the finitely many
+annotated bi-lassos with segments bounded by `bound P φ` carries it, at a position inside that
+lasso's own coherence window, over the same state.
+
+The witness position is quantified rather than fixed at `0`, and that is forced rather than
+convenient — see the module docstring and
+`specs/417_semantic_fmp_finite_worldstate_over_z/evidence/phase10-origin-anchoring-obstruction.lean`.
+Nothing is weakened at the specification level: the predicate being decided is existential in the
+time in either shape, since the hypothesis here is truth at an arbitrary `t`.
+
+The proof compresses `τ` into three walks in the realised-datum graph and reassembles them:
+
+- **`fwd`** is a good forward cycle through a datum recurring at arbitrarily large times;
+- **`back`** is a good backward cycle through a datum recurring at arbitrarily small times;
+- **`mid`** is the walk between the two, shortened in two legs so that the position of `t` survives
+  as a marked interior point — and whose first leg takes one real step before shortening, so that
+  the marked position is never negative.
+
+Local coherence comes from `localCoherentSeq_of_edges` (the splice lemma) fed by
+`coherentEdge_of_realizedStep`; fulfilment from `fulfilling_of_good_cycles`; the lasso's
+`coherent` field from `coherent_of_window_step` fed by `realizedStep_step`.
+-/
+theorem exists_annot_of_truth (hbx : BoxOracleSound P bx)
+    (τ : WorldHistory P.toTaskFrame) (hτ : τ.IsTotal) (t : ℤ)
+    (hφ : TruthAt P.toModel τ t φ) :
+    ∃ A ∈ boundedAnnots P φ bx (bound P φ),
+      ∃ i ∈ Finset.Ico (cohWindowLo A) (cohWindowHi A),
+        A.lasso.unroll i = τ.states t (hτ t) ∧ φ ∈ A.label i := by
+  classical
+  -- ### The two good cycles
+  obtain ⟨xf, hrecf⟩ := exists_recurring_datum (datum P φ τ hτ)
+  obtain ⟨Lf, pf, hLf1, hLfB, hpf0, hpfL, hpfst, hpfgood⟩ := exists_good_fwd_cycle hτ xf hrecf
+  obtain ⟨xb, hrecb⟩ := exists_recurring_datum (fun u => datum P φ τ hτ (-u))
+  obtain ⟨Lb, qb, hLb1, hLbB, hqb0, hqbL, hqbst, hqbgood⟩ := exists_good_bwd_cycle hτ xb hrecb
+  -- ### The mid walk, shortened in two legs around the point of interest
+  obtain ⟨ub, hubge, hubd⟩ := hrecb (1 - t)
+  have hitA : iter (SeqStep (datum P φ τ hτ)) (t - (-ub + 1)).toNat
+      (datum P φ τ hτ (-ub + 1)) (datum P φ τ hτ t) := by
+    have h := iter_seqStep (datum P φ τ hτ) (-ub + 1) (t - (-ub + 1)).toNat
+    rwa [show -ub + 1 + (((t - (-ub + 1)).toNat : ℕ) : ℤ) = t by omega] at h
+  obtain ⟨a, ha, haiter⟩ := exists_iter_lt_card (SeqStep (datum P φ τ hτ)) hitA
+  obtain ⟨pa, hpa0, hpaa, hpast⟩ := exists_path_of_iter (SeqStep (datum P φ τ hτ)) a _ _ haiter
+  obtain ⟨uf, hufge, hufd⟩ := hrecf (t + 1)
+  have hitB : iter (SeqStep (datum P φ τ hτ)) (uf - t).toNat (datum P φ τ hτ t) xf := by
+    have h := iter_seqStep (datum P φ τ hτ) t (uf - t).toNat
+    rwa [show t + (((uf - t).toNat : ℕ) : ℤ) = uf by omega, hufd] at h
+  obtain ⟨b, hb, hbiter⟩ := exists_iter_lt_card (SeqStep (datum P φ τ hτ)) hitB
+  obtain ⟨pb, hpb0, hpbb, hpbst⟩ := exists_path_of_iter (SeqStep (datum P φ τ hτ)) b _ _ hbiter
+  -- the first leg, with one real step prepended so that its length is at least one
+  obtain ⟨wA, hwA⟩ : ∃ f : ℕ → PigeonState P φ,
+      f = fun j => if j = 0 then xb else pa (j - 1) := ⟨_, rfl⟩
+  have hwA0 : wA 0 = xb := by rw [hwA]; simp
+  have hwAa : wA (a + 1) = datum P φ τ hτ t := by
+    rw [hwA]; simpa using hpaa
+  have hwAst : ∀ j, j < a + 1 → SeqStep (datum P φ τ hτ) (wA j) (wA (j + 1)) := by
+    intro j hj
+    rcases Nat.eq_zero_or_pos j with rfl | hjpos
+    · rw [hwA]
+      simp only [hpa0]
+      exact ⟨-ub, hubd, rfl⟩
+    · rw [hwA]
+      simp only [if_neg (by omega : ¬ j = 0), if_neg (by omega : ¬ j + 1 = 0)]
+      have := hpast (j - 1) (by omega)
+      rwa [show j - 1 + 1 = j + 1 - 1 by omega] at this
+  -- the whole mid walk
+  obtain ⟨w, hw⟩ : ∃ f : ℕ → PigeonState P φ, f = joinPath wA pb (a + 1) := ⟨_, rfl⟩
+  have hseam : wA (a + 1) = pb 0 := by rw [hwAa, hpb0]
+  have hw0 : w 0 = xb := by rw [hw, joinPath_left wA pb (Nat.zero_le _), hwA0]
+  have hwmark : w (a + 1) = datum P φ τ hτ t := by
+    rw [hw, joinPath_left wA pb (le_refl _), hwAa]
+  have hwend : w (a + 1 + b) = xf := by rw [hw, joinPath_right wA pb (a + 1) hseam b, hpbb]
+  have hwst : ∀ j, j < a + 1 + b → SeqStep (datum P φ τ hτ) (w j) (w (j + 1)) := by
+    rw [hw]; exact joinPath_steps wA pb (a + 1) b hseam hwAst hpbst
+  -- ### The three segments
+  obtain ⟨nm, hnm⟩ : ∃ n : ℕ, n = a + b := ⟨_, rfl⟩
+  have hnmw : w (nm + 1) = xf := by rw [hnm, show a + b + 1 = a + 1 + b by omega, hwend]
+  have hnmst : ∀ j, j < nm + 1 → SeqStep (datum P φ τ hτ) (w j) (w (j + 1)) := by
+    rw [hnm, show a + b + 1 = a + 1 + b by omega]; exact hwst
+  obtain ⟨bD, hbD⟩ : ∃ l : List (PigeonState P φ),
+      l = (List.range Lb).map (fun i => qb (Lb - 1 - i)) := ⟨_, rfl⟩
+  obtain ⟨mD, hmD⟩ : ∃ l : List (PigeonState P φ),
+      l = (List.range nm).map (fun i => w (i + 1)) := ⟨_, rfl⟩
+  obtain ⟨fD, hfD⟩ : ∃ l : List (PigeonState P φ),
+      l = (List.range Lf).map (fun i => pf i) := ⟨_, rfl⟩
+  have hbDlen : bD.length = Lb := by rw [hbD, length_range_map]
+  have hmDlen : mD.length = nm := by rw [hmD, length_range_map]
+  have hfDlen : fD.length = Lf := by rw [hfD, length_range_map]
+  -- ### Reading the decoding back off the three walks
+  have hback : ∀ T : ℤ, -(Lb : ℤ) - 1 ≤ T → T ≤ -1 →
+      Periodic.unrollOf bD mD fD T = qb (-1 - T).toNat := by
+    intro T h1 h2
+    rw [hbD]
+    exact readout_back Lb hLb1 qb (by rw [hqbL, hqb0]) mD fD h1 h2
+  have hfwd : ∀ T : ℤ, (nm : ℤ) ≤ T → T ≤ (nm : ℤ) + (Lf : ℤ) →
+      Periodic.unrollOf bD mD fD T = pf (T - (nm : ℤ)).toNat := by
+    intro T h1 h2
+    rw [hfD]
+    have hr := readout_fwd Lf hLf1 pf (by rw [hpfL, hpf0]) bD mD (T := T)
+      (by rw [hmDlen]; exact h1) (by rw [hmDlen]; exact h2)
+    rwa [hmDlen] at hr
+  have hmidall : ∀ T : ℤ, -1 ≤ T → T ≤ (nm : ℤ) →
+      Periodic.unrollOf bD mD fD T = w (T + 1).toNat := by
+    intro T h1 h2
+    rcases (by omega : T = -1 ∨ (0 ≤ T ∧ T < (nm : ℤ)) ∨ T = (nm : ℤ)) with rfl | ⟨h3, h4⟩ | rfl
+    · rw [hback (-1) (by omega) (by omega),
+        show (-1 - (-1 : ℤ)).toNat = 0 by omega, show ((-1 : ℤ) + 1).toNat = 0 by omega,
+        hqb0, hw0]
+    · rw [hmD, readout_mid bD fD nm w h3 h4]
+      congr 1
+      omega
+    · rw [hfwd (nm : ℤ) (by omega) (by omega), show ((nm : ℤ) - (nm : ℤ)).toNat = 0 by omega,
+        hpf0, show (((nm : ℤ)) + 1).toNat = nm + 1 by omega, hnmw]
+  -- ### Every consecutive pair of decoded data is a realised edge
+  have hbDne : bD ≠ [] := by
+    intro hnil; rw [hnil] at hbDlen; simp at hbDlen; omega
+  have hfDne : fD ≠ [] := by
+    intro hnil; rw [hnil] at hfDlen; simp at hfDlen; omega
+  have hEstep : ∀ T : ℤ,
+      RealizedStep P φ τ hτ (Periodic.unrollOf bD mD fD T)
+        (Periodic.unrollOf bD mD fD (T + 1)) := by
+    refine periodic_rel_of_window bD mD fD hbDne hfDne ?_
+    intro T h1 h2
+    rw [hbDlen] at h1
+    rw [hmDlen, hfDlen] at h2
+    rcases (by omega : T ≤ -2 ∨ (-1 ≤ T ∧ T ≤ (nm : ℤ) - 1) ∨ (nm : ℤ) ≤ T) with h3 | ⟨h3, h4⟩ | h3
+    · rw [hback T (by omega) (by omega), hback (T + 1) (by omega) (by omega),
+        show (-1 - T).toNat = (-1 - (T + 1)).toNat + 1 by omega]
+      exact hqbst (-1 - (T + 1)).toNat (by omega)
+    · rw [hmidall T (by omega) (by omega), hmidall (T + 1) (by omega) (by omega),
+        show (T + 1 + 1).toNat = (T + 1).toNat + 1 by omega]
+      exact hnmst (T + 1).toNat (by omega)
+    · rw [hfwd T (by omega) (by omega), hfwd (T + 1) (by omega) (by omega),
+        show (T + 1 - (nm : ℤ)).toNat = (T - (nm : ℤ)).toNat + 1 by omega]
+      exact hpfst (T - (nm : ℤ)).toNat (by omega)
+  -- ### Assemble the annotated bi-lasso
+  have hbackne : bD.map stateOf ≠ [] := by
+    intro hnil
+    have hl : (bD.map stateOf).length = Lb := by rw [List.length_map, hbDlen]
+    rw [hnil] at hl; simp at hl; omega
+  have hfwdne : fD.map stateOf ≠ [] := by
+    intro hnil
+    have hl : (fD.map stateOf).length = Lf := by rw [List.length_map, hfDlen]
+    rw [hnil] at hl; simp at hl; omega
+  have hcoh : ∀ i : Fin ((bD.map stateOf).length + 1 + (mD.map stateOf).length +
+        (fD.map stateOf).length),
+      P.step (BiLasso.unrollOf P (bD.map stateOf) (mD.map stateOf) (fD.map stateOf)
+          (BiLasso.windowTime P (bD.map stateOf) i))
+        (BiLasso.unrollOf P (bD.map stateOf) (mD.map stateOf) (fD.map stateOf)
+          (BiLasso.windowTime P (bD.map stateOf) i + 1)) = true := by
+    refine coherent_of_window_step _ _ _ (fun T _ _ => ?_)
+    have hs := realizedStep_step (hEstep T)
+    rwa [stateOf_unrollOf, stateOf_unrollOf] at hs
+  obtain ⟨A, hA⟩ : ∃ A : Annot P φ, A =
+      { lasso := ⟨bD.map stateOf, mD.map stateOf, fD.map stateOf, hbackne, hfwdne, hcoh⟩
+        backLab := bD.map typeOf
+        midLab := mD.map typeOf
+        fwdLab := fD.map typeOf
+        backLab_length := by rw [List.length_map, List.length_map]
+        midLab_length := by rw [List.length_map, List.length_map]
+        fwdLab_length := by rw [List.length_map, List.length_map]
+        label_sub := by
+          intro S hS
+          simp only [List.mem_append, List.mem_map] at hS
+          rcases hS with (⟨x, -, rfl⟩ | ⟨x, -, rfl⟩) | ⟨x, -, rfl⟩ <;> exact typeOf_subset x } :=
+    ⟨_, rfl⟩
+  -- the two decodings, read off the datum decoding
+  have hAst : ∀ T : ℤ, A.lasso.unroll T = stateOf (Periodic.unrollOf bD mD fD T) := by
+    intro T; rw [hA, stateOf_unrollOf]; rfl
+  have hAlab : ∀ T : ℤ, A.label T = typeOf (Periodic.unrollOf bD mD fD T) := by
+    intro T; rw [hA, typeOf_unrollOf]; rfl
+  have hAnb : A.lasso.back.length = Lb := by rw [hA, List.length_map, hbDlen]
+  have hAnm : A.lasso.mid.length = nm := by rw [hA, List.length_map, hmDlen]
+  have hAnf : A.lasso.fwd.length = Lf := by rw [hA, List.length_map, hfDlen]
+  -- ### Local coherence, from the splice lemma
+  have hloc : LocalCoherent P φ bx A := by
+    rw [localCoherent_iff_seq]
+    exact localCoherentSeq_of_edges (Periodic.unrollOf bD mD fD)
+      (fun T => (hAst T).symm) (fun T => (hAlab T).symm)
+      (fun T => coherentEdge_of_realizedStep hbx (hEstep T))
+  -- ### Fulfilment, from the two good cycles
+  have hful : Fulfilling P φ A := by
+    rw [fulfilling_iff_seq]
+    refine fulfilling_of_good_cycles (st := A.lasso.unroll) (bx := bx)
+      ((localCoherent_iff_seq A).mp hloc) A.label_subset_closure
+      (nb := A.nb) (nf := A.nf) (nm := A.nm) A.nb_pos A.nf_pos
+      (fun T hT => A.label_sub_back_length hT) (fun T hT => A.label_add_fwd_length hT)
+      ?_ ?_
+    · intro g e hge
+      have hlabnm : A.label A.nm = typeOf (pf 0) := by
+        rw [hAlab, show A.nm = (nm : ℤ) by rw [Annot.nm, hAnm], hfwd (nm : ℤ) (by omega) (by omega),
+          show ((nm : ℤ) - (nm : ℤ)).toNat = 0 by omega]
+      rw [hlabnm, hpf0] at hge
+      obtain ⟨j, hj, hjmem⟩ := hpfgood g e hge
+      refine ⟨(nm : ℤ) + (j : ℤ) + 1, ?_, ?_, ?_⟩
+      · rw [Annot.nm, hAnm]; omega
+      · rw [Annot.nm, hAnm, Annot.nf, hAnf]; omega
+      · rw [hAlab, hfwd _ (by omega) (by omega),
+          show ((nm : ℤ) + (j : ℤ) + 1 - (nm : ℤ)).toNat = j + 1 by omega]
+        exact hjmem
+    · intro g e hge
+      have hlabm1 : A.label (-1) = typeOf (qb 0) := by
+        rw [hAlab, hback (-1) (by omega) (by omega), show (-1 - (-1 : ℤ)).toNat = 0 by omega]
+      rw [hlabm1, hqb0] at hge
+      obtain ⟨j, hj, hjmem⟩ := hqbgood g e hge
+      refine ⟨-2 - (j : ℤ), ?_, by omega, ?_⟩
+      · rw [Annot.nb, hAnb]; omega
+      · rw [hAlab, hback _ (by omega) (by omega),
+          show (-1 - (-2 - (j : ℤ))).toNat = j + 1 by omega]
+        exact hjmem
+  -- ### Membership in the bounded enumeration
+  have hmem : A ∈ boundedAnnots P φ bx (bound P φ) := by
+    refine mem_boundedAnnots A ?_ ?_ ?_ hloc hful
+    · rw [hAnb]; exact le_trans hLbB (cycleBound_le_bound P φ)
+    · rw [hAnm]
+      refine le_trans ?_ (midBound_le_bound P φ)
+      rw [midBound_eq]
+      omega
+    · rw [hAnf]; exact le_trans hLfB (cycleBound_le_bound P φ)
+  -- ### The witness position
+  refine ⟨A, hmem, (a : ℤ), witness_pos_mem_cohWindow A (by omega) ?_, ?_, ?_⟩
+  · rw [Annot.nm, hAnm]; omega
+  · rw [hAst, hmidall (a : ℤ) (by omega) (by rw [hnm]; omega),
+      show ((a : ℤ) + 1).toNat = a + 1 by omega, hwmark]
+    rfl
+  · rw [hAlab, hmidall (a : ℤ) (by omega) (by rw [hnm]; omega),
+      show ((a : ℤ) + 1).toNat = a + 1 by omega, hwmark, datum_type]
+    exact mem_typeAt.mpr ⟨self_mem_subformulaClosure φ, hφ⟩
+
 end FormalSystem.Metalogic.Decidability
