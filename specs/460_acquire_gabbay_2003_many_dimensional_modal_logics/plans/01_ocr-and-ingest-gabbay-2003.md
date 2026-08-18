@@ -1,7 +1,7 @@
 # Implementation Plan: Task #460
 
 - **Task**: 460 - Acquire a usable copy of Gabbay, Kurucz, Wolter and Zakharyaschev 2003 (Many-Dimensional Modal Logics)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 6 hours
 - **Dependencies**: Task 459 (COMPLETED)
 - **Research Inputs**: specs/460_acquire_gabbay_2003_many_dimensional_modal_logics/reports/01_acquire-gabbay-2003-copy.md
