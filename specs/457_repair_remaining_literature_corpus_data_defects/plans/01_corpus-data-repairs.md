@@ -311,21 +311,21 @@ the sampled before/after pairs must be re-inspected.
 
 ---
 
-### Phase 5: SCOPE 5 — fill doc_type and source_format on the 35 v2-schema entries [NOT STARTED]
+### Phase 5: SCOPE 5 — fill doc_type and source_format on the 35 v2-schema entries [COMPLETED]
 
 **Goal**: Populate the two missing required v2 fields on every v2-schema entry that lacks them,
 with `source_format` grounded in the actual source file on disk rather than a blanket assumption,
 and with the 15 legacy `chunks_dir`-only entries deliberately excluded from the population.
 
 **Tasks**:
-- [ ] Regenerate `data/scope5-missing-fields.tsv` against the current index, keeping the legacy-entry marker column
-- [ ] Confirm the legacy entries are excluded from the working set and that every remaining entry is missing **both** fields (not just one) — a single-field-missing entry is outside the pattern research described and needs individual inspection
-- [ ] For each entry, determine `source_format` by inspecting its source directory for the actual source file extension (`.pdf`, `.djvu`, etc.). Where no source file exists on disk, record the entry as an exclusion with evidence rather than guessing
-- [ ] For each entry, infer `doc_type` (book / paper / article) from title and venue context, using the values already in use elsewhere in the corpus rather than inventing new ones
-- [ ] Back up: `cp ~/Projects/Literature/index.json ~/Projects/Literature/index.json.bak-$(date +%Y%m%d-%H%M%S)-pre-scope5`
-- [ ] Write both fields for every non-excluded entry
-- [ ] Record any exclusions in a `#### Reasoned Exclusions` subsection under this phase, per plan-format.md
-- [ ] Run the post-mutation gate (below)
+- [x] Regenerate `data/scope5-missing-fields.tsv` against the current index, keeping the legacy-entry marker column *(completed)*
+- [x] Confirm the legacy entries are excluded from the working set and that every remaining entry is missing **both** fields (not just one) — a single-field-missing entry is outside the pattern research described and needs individual inspection *(completed)*
+- [x] For each entry, determine `source_format` by inspecting its source directory for the actual source file extension (`.pdf`, `.djvu`, etc.). Where no source file exists on disk, record the entry as an exclusion with evidence rather than guessing *(completed)*
+- [x] For each entry, infer `doc_type` (book / paper / article) from title and venue context, using the values already in use elsewhere in the corpus rather than inventing new ones *(completed)*
+- [x] Back up: `cp ~/Projects/Literature/index.json ~/Projects/Literature/index.json.bak-$(date +%Y%m%d-%H%M%S)-pre-scope5` *(completed)*
+- [x] Write both fields for every non-excluded entry *(completed)*
+- [x] Record any exclusions in a `#### Reasoned Exclusions` subsection under this phase, per plan-format.md *(completed)*
+- [x] Run the post-mutation gate (below) *(completed)*
 
 **Timing**: 1.5 hours
 
@@ -355,6 +355,28 @@ hypothesis to test per entry against the source directory, not a value to apply 
 - The 15 legacy `chunks_dir`-only entries are untouched by this phase's diff
 - Diff against `pre-scope5` backup touches only `doc_type` and `source_format` fields
 - `bash .claude/scripts/literature-build-index.sh --global` exits 0; FTS row count >= baseline
+
+#### Reasoned Exclusions
+
+29 of the 35 entries were filled with both `doc_type` and `source_format`: 26 by inheriting from
+an already-populated `parent_doc` entry (7 `church_1956_ch*`, 5 `gentzen_1935_sec*`, 4
+`hughes_1996_p*`, 6 `mendelson_2016_ch*`, 4 `zakharyaschev_2001_sec*`), plus `gabbay_1994_ch10`
+(source evidenced in its sibling `gabbay_1994/` directory), `proofs_and_types`, and
+`van_doorn_2015_propositional_calculus_coq` (both found a `.pdf` directly in their own source
+directory). The remaining 6 entries below have `doc_type` filled (inferred from title/summary,
+using the corpus's existing `paper` category) but `source_format` deliberately left absent —
+no source file was found on disk, no `parent_doc` field to inherit from, and no
+`zotero_key`/`zotero_path` to cross-reference, so `source_format` is recorded here as an
+exclusion rather than guessed.
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| `bentzen_2023` | No source file, no parent, no Zotero link | `sources/bentzen_2023/` contains only `bentzen_2023.md` + `chunk_*.md`/`chunks.json`; `zotero_key`/`zotero_path` both null |
+| `from_2022` | No source file, no parent, no Zotero link | `sources/from_2022/` contains only `from_2022.md` + `chunk_*.md`/`chunks.json`; `zotero_key`/`zotero_path` both null |
+| `henkin_1949` | No source file, no parent, no Zotero link | `sources/henkin_1949/` contains only `henkin_1949.md` + `chunk_*.md`/`chunks.json`; `zotero_key`/`zotero_path` both null |
+| `johansson_1937` | No source file, no parent, no Zotero link | `sources/johansson_1937/` contains only `johansson_1937.md` + `chunk_*.md`/`chunks.json`; `zotero_key`/`zotero_path` both null |
+| `post_1921` | No source file, no parent, no Zotero link | `sources/post_1921/` contains only `post_1921.md` + `chunk_*.md`/`chunks.json`; `zotero_key`/`zotero_path` both null |
+| `trufas_2024` | No source file, no parent, no Zotero link | `sources/trufas_2024/` contains only `trufas_2024.md` + `chunk_*.md`/`chunks.json`; `zotero_key`/`zotero_path` both null |
 
 ---
 
