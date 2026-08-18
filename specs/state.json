@@ -38,7 +38,7 @@
     {
       "project_number": 453,
       "project_name": "restore_bimodaltest_green_and_clear_c6_c9",
-      "status": "researched",
+      "status": "planning",
       "task_type": "lean4",
       "topic": "decidability",
       "priority": "high",
@@ -52,13 +52,13 @@
           "summary": "Confirms the 7 stale #guard_msgs rows with verbatim generated replacement strings, re-verifies the stale-expectation verdict (W1 and W7 now byte-identical), identifies three unnamed stale-prose sites, and resolves C6 (all 7 modules compile; plain manifest entries suffice) and C9 (one-line durable-anchor edit)."
         }
       ],
-      "last_updated": "2026-08-18T06:29:51Z",
+      "last_updated": "2026-08-18T06:30:42Z",
       "session_id": "sess_1787033965_d6c07f_453"
     },
     {
       "project_number": 452,
       "project_name": "correct_roadmap_sorry_inventory_and_bxcanonical_status",
-      "status": "researched",
+      "status": "planned",
       "task_type": "markdown",
       "topic": "code-quality",
       "priority": "critical",
@@ -70,9 +70,14 @@
           "path": "specs/452_correct_roadmap_sorry_inventory_and_bxcanonical_status/reports/01_roadmap-sorry-bxcanonical-correction.md",
           "type": "report",
           "summary": "Confirms via check-module-invariants.sh C2/C3/C5 that the live tree has exactly one structural sorry (countermodel_discrete, WeakCanonical/Transfer.lean) and that BXCanonical is the live flagship (Chronicle is its subdirectory), not dead code; catalogs 4 duplicate occurrences of the false 'BXCanonical dead code, ~17 sorries' claim (lines ~19-23, ~296, ~598-599, ~624-630) including two inside the Overview section the file itself marks current, plus a broader deliverable-(c) sweep of ~1175 stale lines (595-1770) with a table of further checkable claims (Legacy Code Inventory wrongly listing 4 live files as archived, a third independently-stale 'sole sorry' narrative in Recommended Priority Order, an inverted Task 176 recommendation) and explicit no-edit-needed sections (Dead Ends Archived, Overview's self-superseding blocks, Paper Alignment Programme)."
+        },
+        {
+          "path": "specs/452_correct_roadmap_sorry_inventory_and_bxcanonical_status/plans/01_roadmap-sorry-bxcanonical-correction.md",
+          "type": "plan",
+          "summary": "8-phase, fully sequential markdown plan correcting every check-contradicted sorry-count, dead-code, and module-status claim in specs/ROADMAP.md, with a bespoke reference check standing in for C5 (which excludes specs/)."
         }
       ],
-      "last_updated": "2026-08-18T06:29:39Z",
+      "last_updated": "2026-08-18T06:38:13Z",
       "session_id": "sess_1787033965_d6c07f_452"
     },
     {

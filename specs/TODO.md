@@ -47,7 +47,7 @@ next_project_number: 456
                 └─ 411 [NOT STARTED] — Track B part 2 for the TM tableau decidability program (parent: t
                   └─ 430 [NOT STARTED] — The semantic lift and the Track A assembly. Owns obstruction O4 o
                     └─ 412 [NOT STARTED] — Track B finish for the TM tableau decidability program (parent: t
-453 [RESEARCHED] — Return `lake build BimodalTest` to green by re-recording 7 stale 
+453 [PLANNING] — Return `lake build BimodalTest` to green by re-recording 7 stale 
 
 ### Formula Refactor
 
@@ -75,7 +75,7 @@ next_project_number: 456
 
 ### Code Quality
 
-452 [RESEARCHED] — Correct two factually inverted sections of specs/ROADMAP.md again
+452 [PLANNED] — Correct two factually inverted sections of specs/ROADMAP.md again
 455 [NOT STARTED] — BACKLOG REALIGNMENT: bring specs/ROADMAP.md and every remaining a
 
 ### Dataset Enhancement
@@ -385,7 +385,7 @@ the "gate" language so the prose and the graph agree. Do not leave both readings
 ---
 
 ### 453. Restore bimodaltest green and clear c6 c9
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
@@ -505,11 +505,12 @@ anchor.
 ---
 
 ### 452. Correct roadmap sorry inventory and bxcanonical status
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: markdown
 - **Topic**: code-quality
 - **Dependencies**: None
 - **Research**: [452_correct_roadmap_sorry_inventory_and_bxcanonical_status/reports/01_roadmap-sorry-bxcanonical-correction.md]
+- **Plan**: [452_correct_roadmap_sorry_inventory_and_bxcanonical_status/plans/01_roadmap-sorry-bxcanonical-correction.md]
 
 **Description**: Correct two factually inverted sections of specs/ROADMAP.md against machine-checked reality.
 
