@@ -75,7 +75,7 @@ next_project_number: 462
 
 ### Literature
 
-461 [RESEARCHED] — SCOPE 8 acquisition gap identified by task 457's research and re-
+461 [BLOCKED] — SCOPE 8 acquisition gap identified by task 457's research and re-
 
 ### Strong Completeness
 
@@ -95,7 +95,7 @@ next_project_number: 462
 ## Tasks
 
 ### 461. Acquire Goldblatt 1989 'Varieties of complex algebras' (Annals of Pure and Applied Logic)
-- **Status**: [RESEARCHED]
+- **Status**: [BLOCKED]
 - **Task Type**: general
 - **Topic**: literature
 - **Dependencies**: Task 460
