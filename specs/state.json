@@ -736,14 +736,14 @@
           "summary": "582-line sorry-free Lean evidence: succIndicator, unfoldForward/Backward, unfoldTableForward/Backward, nextConj, noBlockingTriple, filteredStep_fwd_fails, filteredStep_not_universal; all nine audited via #print axioms, no sorryAx."
         },
         {
-          "path": "specs/417_semantic_fmp_finite_worldstate_over_z/summaries/04_bi-lasso-decision-layer-summary.md",
-          "type": "summary",
-          "summary": "Phases 1-2 complete and sorry-free; Phase 3 blocked with a machine-checked refutation of its scan-bound deliverable."
-        },
-        {
           "path": "specs/417_semantic_fmp_finite_worldstate_over_z/plans/05_annotated-bi-lasso-decision-layer.md",
           "type": "plan",
           "summary": "Route-2 revision: annotated bi-lassos (Hintikka structure over the lasso); Phases 1-2 preserved, Phase 3 closed with reasoned exclusions."
+        },
+        {
+          "path": "specs/417_semantic_fmp_finite_worldstate_over_z/summaries/05_annotated-bi-lasso-decision-layer-summary.md",
+          "type": "summary",
+          "summary": "Phases 4-9 complete and sorry-free; Phase 10 blocked with a machine-checked origin-anchoring obstruction."
         }
       ],
       "created": "2026-07-28T22:51:10Z",
