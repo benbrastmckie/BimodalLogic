@@ -207,21 +207,21 @@ provenance present)` triples; the count is not accepted from this plan.
 
 ---
 
-### Phase 4: Field-level correctness verification [NOT STARTED]
+### Phase 4: Field-level correctness verification [COMPLETED]
 
 **Goal**: Prove the operation removed rows and changed nothing else.
 
 **Tasks**:
-- [ ] Re-derive total `entries` length and assert it equals the Phase 1 total minus 8.
-- [ ] Re-derive the **distinct-`id`** count independently and assert it is unchanged from Phase 1 (361). A drop here would mean an id was eliminated entirely, not deduplicated.
-- [ ] Assert no id in the file now appears more than once among the 8 targets — each resolves to exactly one entry.
-- [ ] Assert each of the 8 survivors is the populated one: no `provenance` key, non-empty `summary`, full (non-surname-only) `authors`.
-- [ ] Byte-identity check: for each of the 8 ids, canonicalize the surviving entry
+- [x] Re-derive total `entries` length and assert it equals the Phase 1 total minus 8. *(completed: 361 == 369-8)*
+- [x] Re-derive the **distinct-`id`** count independently and assert it is unchanged from Phase 1 (361). A drop here would mean an id was eliminated entirely, not deduplicated. *(completed: 358 == Phase 1's re-derived 358; plan's literal '361' is superseded by Phase 1's live re-derivation per the plan's own instruction -- see Phase 1 notes)*
+- [x] Assert no id in the file now appears more than once among the 8 targets — each resolves to exactly one entry. *(completed)*
+- [x] Assert each of the 8 survivors is the populated one: no `provenance` key, non-empty `summary`, full (non-surname-only) `authors`. *(completed)*
+- [x] Byte-identity check: for each of the 8 ids, canonicalize the surviving entry *(completed: 8/8 byte-identical)*
       (`json.dumps(entry, sort_keys=True, ensure_ascii=False)`) and assert it is byte-identical to
       the Phase 1 pre-image for that id. Any mismatch is a failure requiring rollback, regardless
       of how cosmetic it looks.
-- [ ] Assert the out-of-scope neighbours are untouched and still present: the 3 `doc_id`-only entries (Jónsson-Tarski I/II, Goldblatt) and the 2 unpaired populated entries (`pym_ohearn_yang_2004_possible-worlds-resources-bi`, `ishtiaq_ohearn_2001_bi-assertion-language`).
-- [ ] Assert no entry anywhere in the file still carries the migration `provenance` marker *and* one of the 8 target ids.
+- [x] Assert the out-of-scope neighbours are untouched and still present: the 3 `doc_id`-only entries (Jónsson-Tarski I/II, Goldblatt) and the 2 unpaired populated entries (`pym_ohearn_yang_2004_possible-worlds-resources-bi`, `ishtiaq_ohearn_2001_bi-assertion-language`). *(completed)*
+- [x] Assert no entry anywhere in the file still carries the migration `provenance` marker *and* one of the 8 target ids. *(completed: 0 found)*
 
 **Timing**: 25 minutes
 
