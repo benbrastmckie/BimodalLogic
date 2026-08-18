@@ -36,9 +36,9 @@ next_project_number: 457
 
 ### Decidability
 
-437 [RESEARCHED] — Attack the missing fourth termination-measure component from the 
-  └─ 436 [BLOCKED] — Resume task 434's implementation plan (specs/434_discharge_mintpa
-    └─ 434 [BLOCKED] — Discharge `MintPaysForTime fc U Tmax`, defined at FormalSystem/Me
+437 [PLANNED] — Attack the missing fourth termination-measure component from the 
+  └─ 436 [PARTIAL] — Resume task 434's implementation plan (specs/434_discharge_mintpa
+    └─ 434 [PARTIAL] — Discharge `MintPaysForTime fc U Tmax`, defined at FormalSystem/Me
       └─ 432 [PARTIAL] — Discharge `UniverseClosed fc U`, defined at FormalSystem/Metalogi
         └─ 433 [RESEARCHED] — Discharge `PostBlockingSettles fc`, defined at FormalSystem/Metal
           └─ 428 [BLOCKED] — Engine totality at a quantified branch budget. Owns obstruction O
@@ -786,13 +786,14 @@ Tag locations (line numbers as of scan): 149, 178, 191, 196, 211, 213, 238, 242,
 
 ### 437. Repair time index reuse in identification plus nexttime bookkeeping
 - **Effort**: 16-22 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
 - **Research**:
   - [436_fourth_termination_measure_component/reports/02_spawn-analysis.md]
   - [437_repair_time_index_reuse_in_identification_plus_nexttime_bookkeeping/reports/01_spawn-analysis-pointer.md]
+- **Specs/437_repair_time_index_reuse_in_identification_plus_nexttime_bookkeeping/plans/01_monotone-time-issuance.md**: [plan]
 
 **Description**: Attack the missing fourth termination-measure component from the identification-plus-maxTime side rather than the measure side, per task 436's roadmap item 2. Root cause: Branch.identifyTime (FormalSystem/Metalogic/Decidability/SignedFormula.lean:364-367) relabels every formula at time src to tgt and erases duplicates, so src disappears from Branch.knownTimes (SignedFormula.lean:349-350) whenever no other formula independently sits at tgt. Branch.maxTime (SignedFormula.lean:373-374, foldl max 0 over the live branch) and Branch.nextTime (SignedFormula.lean:380-381, maxTime + 1) are both recomputed from the current branch on every call, with no memory of a previously-larger retired value. TimeOrdering.identifyTime (SignedFormula.lean:705-710) does the analogous constraint substitution. The decided consequence is nextTime_reissues_retired_time (MintBound.lean:7321): firstIncomparablePair merges away the branch's current maximum time, maxTime drops, and post-identification nextTime re-issues the retired value; reuse_driven_through_engine (MintBound.lean:7363) confirms the live engine actually drives through this path. The accumulated renaming sigma (composed from rhoSF src tgt at each identification) is constructed so it can never land on a retired source time -- rhoSF_time_ne_src (MintBound.lean:7299) proves (rhoSF src tgt sf).label.time != src for every sf -- so mint_not_in_rhoSF_image (MintBound.lean:7307) and, by extension, register entries 15 and 17 (MintBound.lean:7866-7938) refute every measure-side candidate whose decrease is witnessed anywhere on the trigger's label, formula or time. This task's goal is to make Branch/TimeOrdering time issuance monotone across a run -- nextTime must never again hand out an index a prior identification retired -- so the reuse configuration nextTime_reissues_retired_time decides today stops occurring at all, rather than continuing to search for a measure component robust to it. REQUIRED SHAPE: refute-first gate as phase 1, in the same spirit as this task's own predecessor plan (specs/436_fourth_termination_measure_component/plans/01_self-guard-potential.md) -- prototype the monotone-time-issuance mechanism (e.g. a highwater-mark tracked on TimeOrdering, which is already threaded alongside Branch at every rule call site, or an equivalent run-level counter) against the SAME witness configuration used by nextTime_reissues_retired_time and gate_is_reissue_hazard, and decide, before touching any live engine file, both (a) whether reissue is actually prevented, and (b) whether RunInvariant, OrdTimesKnown (the settled repair for the adjacent register entry 7 refutation of OrdTimesLeMaxTime across identification, MintBound.lean entry 7), and UniverseClosedAt-style confinement to U survive the change. Only if the gate passes should later phases thread the repair through the live engine. WIDENED BLAST RADIUS (do not assume additive-only-in-MintBound.lean; explicitly confirmed by grep): Branch.nextTime is called at 9 sites in FormalSystem/Metalogic/Decidability/Tableau.lean (lines 761, 801, 834, 878, 924, 971, 1069, 1168, 1370 -- one per freshTimeRules member, not only the two self-guarded rules the predecessor task touched); Branch.identifyTime/TimeOrdering.identifyTime are called together at Tableau.lean:1520 and consumed in proofs at FormalSystem/Metalogic/Decidability/Verified/Termination/Fuel.lean lines 1948, 1959, 1973, 1991, 2445-2457 that already reason about identifyTime's effect on knownTimes cardinality and must be re-verified (not necessarily rewritten) against any redefinition; FormalSystem/Metalogic/Decidability/Saturation.lean does NOT reference nextTime or identifyTime (confirmed by grep) and should stay untouched; the definitions themselves live in SignedFormula.lean:349-381 and 671-710. DO NOT RE-ATTEMPT (per C9 register, MintBound.lean:7694-7944, all 17 entries read): entry 14's two measure-side repairs (re-indexing mintPotential on freshTimeRules; dropping disjunct 1's cardinality conjunct); entry 17's whole family (any fourth measure component whose decrease is witnessed anywhere on the trigger's label, time or formula). This task is not a measure-side route at all, so none of entries 14/15/17's refutations apply directly to it, but entries 7 and 16 name OrdTimesKnown as a settled repair this task's bookkeeping change must not silently re-break. Must be sorry-free and axiom-free; lake build must be green at completion. Land any newly-refuted route as a fresh C9 register entry (18) following the file's existing convention if the gate or a later phase decides a sub-route false.
 
@@ -800,7 +801,7 @@ Tag locations (line numbers as of scan): 149, 178, 191, 196, 211, 213, 238, 242,
 
 ### 436. Fourth termination measure component
 - **Effort**: 10-14 hours
-- **Status**: [BLOCKED]
+- **Status**: [PARTIAL]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 437
@@ -817,7 +818,7 @@ Tag locations (line numbers as of scan): 149, 178, 191, 196, 211, 213, 238, 242,
 
 ### 434. Discharge mintpaysfortime residual
 - **Effort**: 10-15 hours
-- **Status**: [BLOCKED]
+- **Status**: [PARTIAL]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 436
