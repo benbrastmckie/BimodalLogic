@@ -1,5 +1,5 @@
 ---
-next_project_number: 455
+next_project_number: 456
 ---
 
 # TODO
@@ -11,12 +11,12 @@ next_project_number: 455
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,193,231,257,298,413,421,423,424,437,445,450,451,452,453,454 | -- | completeness, decidability, frame-extensions, ... |
-| 2 | 178,219,282,296,422,425,436,446 | 193,231,298,421,423,437,445 | decidability, formula-refactor, publication-quality, ... |
-| 3 | 169,434,447 | 422,436,446 | decidability, publication-quality, strong_completeness |
-| 4 | 362,432 | 169,434 | decidability, strong_completeness |
-| 5 | 433 | 432 | decidability |
-| 6 | 428 | 433 | decidability |
+| 1 | 125,127,128,193,231,257,298,413,437,445,451,452,453 | -- | completeness, decidability, frame-extensions, ... |
+| 2 | 178,219,282,296,436,446,450,454 | 193,231,298,437,445,452,453 | decidability, formula-refactor, publication-quality, ... |
+| 3 | 421,423,424,434,447,455 | 436,446,454 | decidability, publication-quality, code-quality, ... |
+| 4 | 422,425,432 | 421,423,434 | decidability, strong_completeness |
+| 5 | 169,433 | 422,432 | decidability, strong_completeness |
+| 6 | 362,428 | 169,433 | decidability, strong_completeness |
 | 7 | 429 | 428 | decidability |
 | 8 | 410 | 429 | decidability |
 | 9 | 411 | 410 | decidability |
@@ -76,6 +76,7 @@ next_project_number: 455
 ### Code Quality
 
 452 [NOT STARTED] — Correct two factually inverted sections of specs/ROADMAP.md again
+455 [NOT STARTED] — BACKLOG REALIGNMENT: bring specs/ROADMAP.md and every remaining a
 
 ### Dataset Enhancement
 
@@ -88,14 +89,18 @@ next_project_number: 455
 
 ### Strong Completeness
 
+169 [NOT STARTED] — Base (FrameClass.Base / general) WEAK completeness green: make th
+  └─ 362 [NOT STARTED] — Implement the completeness capstone under the SETTLED TERMINOLOGY
 421 [NOT STARTED] — Two deliverables on the Base weak terminus, both small.
   └─ 422 [NOT STARTED] — Construct the discrete-case analogue of the existing dense chroni
-    └─ 169 [NOT STARTED] — Base (FrameClass.Base / general) WEAK completeness green: make th
-      └─ 362 [NOT STARTED] — Implement the completeness capstone under the SETTLED TERMINOLOGY
+    └─ 169 [NOT STARTED] — Base (FrameClass.Base / general) WEAK completeness green: make th (see above)
 423 [NOT STARTED] — Create FormalSystem/Metalogic/SetConsequence.lean containing the 
   └─ 425 [NOT STARTED] — Convert the informal argument at FormalSystem/Metalogic/StrongCom
 424 [NOT STARTED] — RE-ISSUED 2026-08-10 (description rewrite only; status remains `n
 454 [NOT STARTED] — RE-ISSUE THE SIX STRONG-COMPLETENESS TASK DESCRIPTIONS: re-anchor
+  └─ 421 [NOT STARTED] — Two deliverables on the Base weak terminus, both small. (see above)
+  └─ 423 [NOT STARTED] — Create FormalSystem/Metalogic/SetConsequence.lean containing the  (see above)
+  └─ 424 [NOT STARTED] — RE-ISSUED 2026-08-10 (description rewrite only; status remains `n (see above)
 
 ### Proof System Infrastructure
 
@@ -107,11 +112,153 @@ next_project_number: 455
 
 ## Tasks
 
+### 455. Survey and realign remaining tasks and roadmap
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: code-quality
+- **Dependencies**: Task 452, Task 454
+
+**Description**: BACKLOG REALIGNMENT: bring specs/ROADMAP.md and every remaining active task into agreement with
+the progress actually made and the goals actually remaining.
+
+Ordering is not optional. Stage 1 (ROADMAP) produces the reference frame that Stages 2-4 judge
+every task against. Do not begin surveying tasks before the roadmap states what remains.
+
+=== 0. WHY THIS TASK EXISTS ===
+
+A prioritization review (specs/reviews/review-2026-08-18.md) sampled a handful of tasks and found
+description rot in most of what it touched: file:line anchors past end-of-file, an acceptance
+criterion pinned to four line numbers that had all moved, a governing design built on a Lean
+parameter deleted by a completed refactor, and a "gate" that gates nothing in the dependency
+graph. That review corrected the six strong-completeness tasks on the critical path (its
+predecessor task) and the two worst ROADMAP sections (its dependency). It did NOT sweep the
+remaining backlog, and there is no reason to think the rot stopped at the sample.
+
+The tree has moved a long way underneath these descriptions: the total-history-validity refactor,
+the untl/snce guard-first argument-order migration (3,711 occurrences across 152 files), the
+paper-refactor cluster, the bi-lasso decision layer, and the arrival of a sorry count of ONE. Many
+task descriptions predate several of those.
+
+=== 1. STAGE 1 -- REFINE specs/ROADMAP.md (do this FIRST) ===
+
+The dependency task corrects two specific inverted sections (the Sorry Inventory's false 23-vs-1
+count, and the "BXCanonical Path (DEAD CODE)" mislabel). That is triage, not completeness. This
+stage finishes the job: make ROADMAP.md an accurate statement of WHAT REMAINS.
+
+(a) Audit the whole file, not the two sections already fixed. It is ~1,770 lines and is
+selectively maintained -- some sections were current as of 2026-08-10 while others had not been
+touched since April. For every section, establish whether it describes (i) current reality,
+(ii) settled history that should be explicitly marked historical, or (iii) a stale claim that must
+be corrected or deleted. The 111 status-table rows are the roadmap-integration matching surface
+and parse cleanly; treat them with care but do not assume they are current.
+
+(b) Ground every status claim in a machine-checkable source. scripts/check-module-invariants.sh is
+the generator of record: C2 for the flagship axiom sets, C3 for the live sorry inventory, C4/C5 for
+reference resolution, C7 for file counts. A claim in ROADMAP.md that no check can reproduce is
+either rewritten to be reproducible or removed.
+
+(c) Add the missing forward-looking content. The file is heavy on how things were built and light
+on what is left. It should state, per active front (strong completeness, decidability, FMP,
+paper/publication, dataset, hygiene), what remains, what the terminus looks like, and what is
+known to be blocked or refuted. Refuted routes deserve explicit tombstones -- the strong-
+completeness cluster already carries at least one hard-won refutation (the Base-MCS to
+Discrete-MCS transfer lemma, killed by a lex-order countermodel) whose whole value is that nobody
+re-attempts it.
+
+(d) Make the sections that rotted structurally harder to rot. Where a section restates a fact a
+script can compute, say which script computes it and when it was last reconciled.
+
+=== 2. STAGE 2 -- SURVEY EVERY REMAINING TASK ===
+
+Cover every task in specs/state.json active_projects EXCEPT the six already re-issued by the
+predecessor task (169, 362, 421, 422, 423, 424) and this task's own dependencies. At the time of
+writing that is roughly 35 tasks across the topics: decidability, completeness, dataset-enhancement,
+formula-refactor, frame-extensions, publication-quality, algebraic-representation, automation,
+proof-system-infrastructure, repo-hygiene, code-quality.
+
+For each task, produce a verdict in one of these categories, with evidence:
+
+  CURRENT     -- description matches the tree; no change needed. Say what you checked.
+  RE-ANCHOR   -- substance intact, citations drifted. List the drifted anchors and fix them.
+  RE-SCOPE    -- the work is still wanted but the description's premise has moved (a vocabulary it
+                 names is gone, a lemma it targets has been proved, a route it proposes is
+                 refuted). State the new scope.
+  SUPERSEDED  -- the work has been done, or subsumed by another task. Name what did it. Propose
+                 completion or abandonment; do NOT change status unilaterally (see section 5).
+  OBSOLETE    -- the goal itself no longer serves the project. Argue it and propose abandonment.
+
+Specific checks each task must survive:
+  - Every file:line and symbol it cites resolves in the live tree. Prefer symbol names over line
+    numbers when rewriting; line-number anchors are the observed failure mode.
+  - No dependency on a task that is archived-but-unsatisfying, and no dangling dependency. (All 41
+    edges resolved as of 2026-08-18 -- confirm this still holds and keep it true.)
+  - Acceptance criteria are still satisfiable. The observed failure was an acceptance criterion
+    demanding byte-comparability against four specific line numbers, none of which still held the
+    definitions.
+  - Any "PRE-EXISTING RED" or baseline note it records still describes the current build. At least
+    one task was found carrying a stale baseline naming a compile failure that no longer exists
+    while the real failure had moved elsewhere.
+  - Stated priority still reflects reality given what has since landed.
+
+=== 3. STAGE 3 -- RECONCILE THE DEPENDENCY GRAPH ===
+
+Descriptions and edges must agree. The observed failure mode was a task describing itself as a
+"feasibility gate" while no task listed it as a dependency, so Kahn's algorithm in
+generate-task-order.sh placed it in wave 1 alongside the work it claimed to gate.
+
+  (a) For every task whose prose asserts it blocks, gates, or must precede other work, verify a
+      corresponding edge exists. Add it, or downgrade the prose. Do not leave both readings.
+  (b) Look for the converse: declared edges with no justification in either description.
+  (c) Re-derive the wave structure afterwards and sanity-check it against the stated goals. If the
+      capstone of a front is not downstream of that front's open work, something is miswired.
+  (d) Confirm active_topics in state.json still matches the topics tasks actually carry
+      (generate-task-order.sh warns on undeclared topics rather than failing).
+
+=== 4. STAGE 4 -- REPORT ===
+
+Deliver a survey artifact under this task's reports/ directory containing:
+  - the per-task verdict table (task, topic, verdict, evidence, action taken)
+  - every anchor corrected, with old -> new
+  - every dependency edge added or removed, with justification
+  - the ROADMAP.md changes and what machine-checked source grounds each
+  - an explicit list of tasks proposed for completion or abandonment, for user decision
+  - a short statement of the resulting critical path per front
+
+=== 5. CONSTRAINTS ===
+
+- Descriptions, ROADMAP.md, and dependency edges are in scope. TASK STATUS IS NOT. Propose
+  completions and abandonments in the report; do not transition any task to completed, abandoned,
+  or expanded. That decision stays with the user.
+- No .lean edits. This task proves nothing and closes no sorry.
+- All specs/state.json writes go through .claude/scripts/state-write.sh; TODO.md is regenerated via
+  generate-todo.sh, never hand-edited.
+- Do not re-touch the six tasks handled by the predecessor task. If the survey finds a defect in
+  one of them, record it in the report rather than editing it, so the two passes cannot conflict.
+- Every claim about build state, sorry counts, or axiom sets must cite the check that produced it.
+  Do not restate a status from another description as if it were verified -- the stale-baseline
+  finding above is exactly that failure.
+
+=== 6. VERIFICATION ===
+
+- scripts/check-module-invariants.sh C5 passes (module-shaped paths in markdown resolve), which
+  covers the rewritten ROADMAP.md.
+- Zero dangling dependency edges across active_projects.
+- Every task in the survey has a verdict; no task is silently skipped. A task judged CURRENT still
+  gets a row saying what was checked.
+- generate-todo.sh regenerates cleanly with no undeclared-topic warnings.
+
+=== 7. NON-GOALS ===
+- Does not implement, research, or plan any surveyed task.
+- Does not archive anything (that is /todo's job, after the user acts on the report).
+- Does not restructure the topic taxonomy; it only reports desync.
+
+---
+
 ### 454. Reissue strong completeness task descriptions
 - **Status**: [NOT STARTED]
 - **Task Type**: meta
 - **Topic**: strong_completeness
-- **Dependencies**: None
+- **Dependencies**: Task 452
 
 **Description**: RE-ISSUE THE SIX STRONG-COMPLETENESS TASK DESCRIPTIONS: re-anchor every drifted file:line citation
 by symbol name, re-scope the shift-set representation gate against total-history semantics, and
@@ -493,7 +640,7 @@ Because archived files are never compiled, a broken import here is SILENT -- no 
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: proof-system-infrastructure
-- **Dependencies**: None
+- **Dependencies**: Task 453
 
 **Description**: FRAME-CLASS UNIFORMITY: parameterise the restricted-MCS layer (and the derived-theorem libraries beneath it) by FrameClass, removing ad hoc FrameClass.Base pins repo-wide.
 
@@ -840,7 +987,7 @@ Acceptance: archWitness_finitely_satisfiable, archWitness_not_satisfiable, and d
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: strong_completeness
-- **Dependencies**: Task 361, Task 414, Task 439
+- **Dependencies**: Task 361, Task 414, Task 439, Task 454
 
 **Description**: RE-ISSUED 2026-08-10 (description rewrite only; status remains `not_started` -- no work on the gate itself has been touched by this re-issue). AUDITED FOR EXPOSURE TO THE TruthAt / TOTAL-HISTORY REFACTOR under the paper-definition drift guard infrastructure (definitions-of-record: specs/paper-definitions-of-record.md; lint: scripts/check-paper-definitions.sh).
 
@@ -891,7 +1038,7 @@ Acceptance: both directions sorry-free; #print axioms clean on each; lake build 
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: strong_completeness
-- **Dependencies**: Task 361
+- **Dependencies**: Task 361, Task 454
 
 **Description**: Create FormalSystem/Metalogic/SetConsequence.lean containing the finitary set-derivability relation SetDerivable, the four per-class SetSemanticConsequence* predicates, the basic lemmas, and the strong-completeness / compactness / model-existence statements. Then import it from FormalSystem/Metalogic/StrongCompleteness.lean.
 
@@ -933,7 +1080,7 @@ FOUR-AXIOM / TOTALITY EXPOSURE NOTE (added 2026-08-10): this task constructs a c
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: strong_completeness
-- **Dependencies**: Task 361, Task 448
+- **Dependencies**: Task 361, Task 448, Task 454
 
 **Description**: Two deliverables on the Base weak terminus, both small.
 
