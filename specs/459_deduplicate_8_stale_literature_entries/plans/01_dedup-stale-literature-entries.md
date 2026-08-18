@@ -181,15 +181,15 @@ provenance present)` triples; the count is not accepted from this plan.
 
 ---
 
-### Phase 3: Execute the deletion [NOT STARTED]
+### Phase 3: Execute the deletion [COMPLETED]
 
 **Goal**: Apply the verified selection to the live index, atomically.
 
 **Tasks**:
-- [ ] Confirm the Phase 1 backup still exists and parses.
-- [ ] Run the script without `--dry-run`.
-- [ ] Confirm exit status 0 and that the script reports 8 rows removed.
-- [ ] Confirm the file still parses immediately after the write.
+- [x] Confirm the Phase 1 backup still exists and parses. *(completed)*
+- [x] Run the script without `--dry-run`. *(completed)*
+- [x] Confirm exit status 0 and that the script reports 8 rows removed. *(completed: exit 0, 8 rows removed, 369 -> 361)*
+- [x] Confirm the file still parses immediately after the write. *(completed: json.load succeeds, 361 entries)*
 
 **Timing**: 10 minutes
 
