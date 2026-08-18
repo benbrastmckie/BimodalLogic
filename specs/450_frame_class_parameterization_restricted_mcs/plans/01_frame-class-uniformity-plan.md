@@ -539,7 +539,7 @@ added importers.
 
 ---
 
-### Phase 9: Generalise ContextualProofs [NOT STARTED]
+### Phase 9: Generalise ContextualProofs [COMPLETED]
 
 **Goal**: Deliverable (e) for the contextual-derivation layer.
 
