@@ -143,21 +143,21 @@ cluster indices alone is recorded and the re-derived value used.
 
 ---
 
-### Phase 2: Author the guarded deletion script and dry-run it [NOT STARTED]
+### Phase 2: Author the guarded deletion script and dry-run it [COMPLETED]
 
 **Goal**: Produce a script that can only ever delete the correct 8 rows, and demonstrate on a
 dry run that it selects exactly those rows — without writing to the index.
 
 **Tasks**:
-- [ ] Write the script to a scratch path (not into this repo's tree; it is a one-off, not a maintained tool).
-- [ ] Hardcode the 8 target ids and the exact discriminator string `migrated from ingest schema (doc_id/source_path/chunks_dir)`.
-- [ ] For each of the 8 ids, assert all of the following before any deletion is staged: exactly 2 entries carry that id; exactly 1 of them has `provenance` equal to the marker string; the other has no `provenance` key at all (key absence, not a null value); both carry a byte-identical `path`. Accumulate failures across all 8 ids rather than stopping at the first, so one run reports the full picture.
-- [ ] If any assertion fails for any pair: print every failure, exit non-zero, and write nothing — no partial deletion, no output file.
-- [ ] Selection rule is `(entry id in the 8-id list) AND (entry provenance == marker)` and nothing else. Do not select by array index, by `token_count`, by position within the pair, or by any ingest-schema shape heuristic.
-- [ ] Assert the staged deletion set has size exactly 8 and that the resulting entries length equals the input length minus 8.
-- [ ] Write via tmp file + `os.replace` for atomicity, serializing with `json.dumps(obj, indent=2, ensure_ascii=False) + "\n"` (the formatting proven byte-exact in Phase 1). Preserve entry order otherwise.
-- [ ] Support a `--dry-run` mode that performs all assertions and prints the selection but writes nothing.
-- [ ] Execute `--dry-run` and confirm it reports exactly 8 selected rows, one per id, each carrying the marker.
+- [x] Write the script to a scratch path (not into this repo's tree; it is a one-off, not a maintained tool). *(completed: scratchpad/459-dedup/dedup_delete.py)*
+- [x] Hardcode the 8 target ids and the exact discriminator string `migrated from ingest schema (doc_id/source_path/chunks_dir)`. *(completed)*
+- [x] For each of the 8 ids, assert all of the following before any deletion is staged: exactly 2 entries carry that id; exactly 1 of them has `provenance` equal to the marker string; the other has no `provenance` key at all (key absence, not a null value); both carry a byte-identical `path`. Accumulate failures across all 8 ids rather than stopping at the first, so one run reports the full picture. *(completed)*
+- [x] If any assertion fails for any pair: print every failure, exit non-zero, and write nothing — no partial deletion, no output file. *(completed: demonstrated in negative check)*
+- [x] Selection rule is `(entry id in the 8-id list) AND (entry provenance == marker)` and nothing else. Do not select by array index, by `token_count`, by position within the pair, or by any ingest-schema shape heuristic. *(completed)*
+- [x] Assert the staged deletion set has size exactly 8 and that the resulting entries length equals the input length minus 8. *(completed)*
+- [x] Write via tmp file + `os.replace` for atomicity, serializing with `json.dumps(obj, indent=2, ensure_ascii=False) + "\n"` (the formatting proven byte-exact in Phase 1). Preserve entry order otherwise. *(completed)*
+- [x] Support a `--dry-run` mode that performs all assertions and prints the selection but writes nothing. *(completed)*
+- [x] Execute `--dry-run` and confirm it reports exactly 8 selected rows, one per id, each carrying the marker. *(completed: 8 rows at idx 344-349,356-357, matches report's index table)*
 
 **Timing**: 30 minutes
 

@@ -1,0 +1,16 @@
+{
+  "phase": 2,
+  "phase_name": "Author the guarded deletion script and dry-run it",
+  "started_at": "2026-08-18T21:24:00Z",
+  "last_updated": "2026-08-18T21:27:00Z",
+  "objectives": [
+    {"id": 1, "description": "Write the script to a scratch path with hardcoded 8 ids and discriminator", "status": "done", "files_touched": [], "note": "Written to /tmp/claude-1000/-home-benjamin-Projects-BimodalLogic/0c1324e4-d26b-4041-8ebb-d0df8c1bde68/scratchpad/459-dedup/dedup_delete.py (scratch, outside repo tree)."},
+    {"id": 2, "description": "Per-pair assertions accumulated across all 8, refuse (non-zero exit, no write) on any failure", "status": "done", "files_touched": [], "note": "Implemented: exactly-2-rows, exactly-1-marker, exactly-1-no-provenance-key, byte-identical path, all failures accumulated and printed together before exit 1."},
+    {"id": 3, "description": "Selection rule strictly (id in 8) AND (provenance == marker); atomic write via tmp+os.replace; --dry-run support", "status": "done", "files_touched": [], "note": "No index/token_count used. Atomic write via tempfile.mkstemp + os.replace in same directory. --dry-run flag implemented."},
+    {"id": 4, "description": "Execute --dry-run and confirm exactly 8 selected rows", "status": "done", "files_touched": [], "note": "Dry-run against live ~/Projects/Literature/index.json: exactly 8 rows selected (idx 344-349,356-357), matches report's index table. Live file byte-size and mtime unchanged after dry-run (verified)."},
+    {"id": 5, "description": "Negative check: strip one marker on throwaway copy, confirm script refuses and writes nothing", "status": "done", "files_touched": [], "note": "Throwaway copy at scratch path, stripped provenance marker from reynolds_2002_separation-logic's marker row, ran script in real (non-dry-run) mode: exit 1, printed assertion failure, file size unchanged (no write). Throwaway copy discarded afterward. Refusal path proven live, not merely coded."}
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "handoff_count": 0
+}
