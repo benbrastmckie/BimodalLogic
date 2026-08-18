@@ -1,5 +1,0 @@
-// FIX:
-// The Step Lemma is the sole application site of *Spherical* in the paper, and Extension is the sole
-// consumer of the Step Lemma; every appeal to *Spherical* in the semantics passes through this one
-// point.#footnote[`lem:step`. @brastmckie2026possibleworlds *Spherical* is not needed when the directed family has a $subset.eq$-least member, and on a finite carrier it holds outright and choice-free (`cor:spherical-finite`).] Extension and Occurrence are theorems of ZFC, in contrast with Nullity. That
-// localization is what makes *Spherical* the identified obstruction of @sec:representation.
