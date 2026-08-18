@@ -43,6 +43,7 @@ FormalSystem.Metalogic.Decidability.BiLasso.Decide
 FormalSystem.Metalogic.Decidability.BiLasso.Enumerate
 FormalSystem.Metalogic.Decidability.BiLasso.SmallModel
 FormalSystem.Metalogic.Decidability.BiLasso.Extend
+FormalSystem.Metalogic.Decidability.BiLasso.Successor
 
 # --- Tests -----------------------------------------------------------------
 # Test modules present under Tests/ but not imported by Tests/BimodalTest.lean,

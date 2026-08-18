@@ -420,25 +420,44 @@ spilling into a later phase, and record the count difference.
 
 ---
 
-### Phase 2: `Successor.lean` — choice-free computable successor selection [NOT STARTED]
+### Phase 2: `Successor.lean` — choice-free computable successor selection [COMPLETED]
 
 **Goal**: Deterministic, computable, choice-free `succOf` / `predOf` on an `IntPresentation`, with
 correctness lemmas — the honest residue of the task's "visibly cheaper than the general one".
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/Decidability/BiLasso/Successor.lean`.
-- [ ] `def IntPresentation.succOf (P : IntPresentation) (w : Fin P.card) : Fin P.card` via
+- [x] Create `FormalSystem/Metalogic/Decidability/BiLasso/Successor.lean`.
+- [x] `def IntPresentation.succOf (P : IntPresentation) (w : Fin P.card) : Fin P.card` via
       `(List.finRange P.card).find? (fun u => P.step w u)`, with the `none` branch discharged from
       `P.fwd` using `List.find?_eq_none.mp` and `List.mem_finRange`. Transcribe the research spike.
-- [ ] `theorem IntPresentation.succOf_step : P.step w (P.succOf w) = true`.
-- [ ] `def IntPresentation.predOf` and `theorem IntPresentation.predOf_step`, the mirror via
+- [x] `theorem IntPresentation.succOf_step : P.step w (P.succOf w) = true`.
+- [x] `def IntPresentation.predOf` and `theorem IntPresentation.predOf_step`, the mirror via
       `P.bwd` (search over `fun v => P.step v w`).
-- [ ] `def IntPresentation.iterSucc (P) (w : Fin P.card) : ℕ → Fin P.card` and `iterPred`, plus
-      their one-step unfolding lemmas.
-- [ ] `#print axioms` on all four of `succOf`, `succOf_step`, `predOf`, `predOf_step`; each must be
+- [x] `def IntPresentation.iterSucc (P) (w : Fin P.card) : ℕ → Fin P.card` and `iterPred`, plus
+      their one-step unfolding lemmas. *(the one-step lemmas are `iterSucc_zero`/`iterSucc_succ`/
+      `iterPred_zero`/`iterPred_succ`, plus the adjacency forms `iterSucc_step`/`iterPred_step`
+      that Phases 3-4 consume)*
+- [x] `#print axioms` on all four of `succOf`, `succOf_step`, `predOf`, `predOf_step`; each must be
       `[propext, Quot.sound]`. Record the literal output.
-- [ ] `#eval` `succOf` on a small concrete presentation to demonstrate computability (no
-      `Classical.dec`, no `Finset.min'` in the term).
+- [x] `#eval` `succOf` on a small concrete presentation to demonstrate computability (no
+      `Classical.dec`, no `Finset.min'` in the term). *(landed as four `#guard_msgs`-gated `#eval`
+      blocks, so computability is build-breaking evidence rather than a one-off observation)*
+
+#### Phase 2 Note — measured axiom profiles
+
+Literal output, all six choice-free as required:
+
+```
+'FormalSystem.Metalogic.Decidability.IntPresentation.succOf' depends on axioms: [propext, Quot.sound]
+'FormalSystem.Metalogic.Decidability.IntPresentation.succOf_step' depends on axioms: [propext, Quot.sound]
+'FormalSystem.Metalogic.Decidability.IntPresentation.predOf' depends on axioms: [propext, Quot.sound]
+'FormalSystem.Metalogic.Decidability.IntPresentation.predOf_step' depends on axioms: [propext, Quot.sound]
+'FormalSystem.Metalogic.Decidability.IntPresentation.iterSucc' depends on axioms: [propext, Quot.sound]
+'FormalSystem.Metalogic.Decidability.IntPresentation.iterPred' depends on axioms: [propext, Quot.sound]
+```
+
+**Manifest**: `FormalSystem.Metalogic.Decidability.BiLasso.Successor` added to
+`scripts/module-invariants-manifest.txt`.
 
 **Timing**: 1 hour
 
