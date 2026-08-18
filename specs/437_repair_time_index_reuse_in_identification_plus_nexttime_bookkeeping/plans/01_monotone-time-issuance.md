@@ -787,23 +787,54 @@ is an escalation, not a task.
 
 ---
 
-### Phase 9: Whole-repository green, sorry and axiom audit [NOT STARTED]
+### Phase 9: Whole-repository green, sorry and axiom audit [COMPLETED]
 
 **Goal**: Establish the task's stated completion bar — sorry-free, axiom-free, `lake build` green —
 and confirm no invariant regressed silently behind a green build.
 
 **Tasks**:
-- [ ] Full `lake build` green from a clean state.
-- [ ] Sorry sweep across the six edited files; the count must be zero, and must match the
-      pre-change baseline everywhere else.
-- [ ] Axiom audit: `lean_verify` (or `#print axioms`) on the phase-2/3 monotonicity and invariant
+- [x] Full `lake build` green from a clean state. *(`lake build` exit 0, 2458 jobs; `lake build BimodalTest` exit 0, 2508 jobs)*
+- [x] Sorry sweep across the six edited files; the count must be zero, and must match the
+      pre-change baseline everywhere else. *(zero real occurrences in all six. `Fuel.lean` shows two grep hits, both the English word
+      "admit" in prose ("the two measures jointly admit"), present identically at the pre-task
+      baseline. The repo-wide census's only hits are the pre-existing
+      `Boneyard/StrictSemanticsLegacy/Bundle/SuccChainFMCS.lean` legacy sorries, untouched.)*
+- [x] Axiom audit: `lean_verify` (or `#print axioms`) on the phase-2/3 monotonicity and invariant
       theorems, on `nextTime_reissues_retired_time`'s restated successor, and on the flagship
-      termination results downstream of `splitOrderedMeasure`.
-- [ ] Re-state by name, in the phase record, that `OrdTimesKnown`, `RunInvariant` and
+      termination results downstream of `splitOrderedMeasure`. *(done via `#print axioms`. Every one of the sixteen audited declarations depends only on
+      `propext`, `Classical.choice` and `Quot.sound` — no `sorryAx`, no custom axiom. Audited:
+      `maxTime_monotone_along_run`, `nextTime_monotone_along_run`, `retired_lt_nextTime_oriented`,
+      `expandOnce_branch_shape_census`, `incomparableB_symm`, `runInvariant_identifyTime_oriented`,
+      `ordTimesKnown_identifyTime_oriented`, `universeClosedAt_identify_at_trigger_oriented`,
+      `knownTimes_card_lt_identifyTime_oriented`, `oriented_engine_does_not_produce_reuse`,
+      `reuse_driven_through_engine`, `ordTimes_identifyTime_arm3_false`,
+      `splitOrderedMeasure_lt_of_timeLinearity`, `splitOrderedRank_lt_of_timeLinearity`,
+      `expandOnceUnblocked_splitOrdered_rank_lt`, `mintPotential_expandOnceUnblocked_splitOrdered`,
+      plus the two flagship termini `buildTableauAt_isSome_of_budget` and
+      `expandBranchWithFuel_isSome_of_budget_at`. Repo-wide `^axiom ` declaration count is 7 at the
+      task's baseline commit and 7 now — unchanged.)*
+- [x] Re-state by name, in the phase record, that `OrdTimesKnown`, `RunInvariant` and
       `UniverseClosedAt` clause 2 each hold at the oriented arm, citing the Phase 3 theorem that
-      proves it. A green build alone does not establish this (R8).
-- [ ] `git diff --stat` for the whole task: confirm `SignedFormula.lean` and `Saturation.lean` are
-      absent, and that the four protected definitions are byte-unchanged.
+      proves it. A green build alone does not establish this (R8). *(stated by name, as R8 requires:*
+  - *`OrdTimesKnown` at the oriented arm — `ordTimesKnown_identifyTime_oriented`, a direct
+    instantiation of `ordTimesKnown_identifyTime`, which takes no trigger hypotheses. Register
+    entries 7 and 16's settled repair is not weakened, and `ordTimes_identifyTime_arm3_false` was
+    separately re-checked and is still true, so the refuted weak form `OrdTimesLeMaxTime` was not
+    accidentally rescued.*
+  - *`RunInvariant` at the oriented arm — `runInvariant_identifyTime_oriented`, bundling
+    `irreflOrd_identifyTime_oriented` with the above. Both components are unconditional in the
+    orientation.*
+  - *`UniverseClosedAt` clause 2 at the oriented arm — `universeClosedAt_identify_at_trigger_oriented`
+    (engine-facing, section C) and `timeMergeClosed_identifyTime_oriented` (concrete discharge, D2).
+    The EXISTING clause is discharged: no both-times constraint was added, so entry 12's finding
+    stands.)*
+- [x] `git diff --stat` for the whole task: confirm `SignedFormula.lean` and `Saturation.lean` are
+      absent, and that the four protected definitions are byte-unchanged. *(confirmed. Cumulative source diff from the task's baseline commit touches exactly six files:
+      `Tableau.lean` (+26/-6), `Fuel.lean`, `MintBound.lean`, `SubformulaProperty.lean`,
+      `Decidable.lean`, `BranchOrder.lean`. `SignedFormula.lean` and `Saturation.lean` are both
+      ABSENT, so `Branch.nextTime`, `Branch.maxTime`, `Branch.identifyTime` and
+      `TimeOrdering.identifyTime` are byte-unchanged — the design constraint the whole plan rests
+      on held end to end.)*
 
 **Timing**: 1.5 hours
 
