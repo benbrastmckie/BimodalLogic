@@ -1,7 +1,7 @@
 # Implementation Plan: Task #458
 
 - **Task**: 458 - Migrate the 12 remaining legacy `chunks_dir`-only literature entries to the v2 schema
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 5.75 hours
 - **Dependencies**: Task 457 (SCOPE 7 precedent, completed)
 - **Research Inputs**: `specs/458_migrate_12_legacy_literature_entries_to_v2_schema/reports/01_legacy-entries-v2-migration.md`
@@ -355,7 +355,7 @@ to be confirmed or overturned by the implementer's own reads.
 
 ---
 
-### Phase 4: `doc_type` and `source_format` evidence, including Zotero source-file inspection [IN PROGRESS]
+### Phase 4: `doc_type` and `source_format` evidence, including Zotero source-file inspection [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: Produce a per-entry, evidence-backed `doc_type` and `source_format` proposal for all twelve,
 inspecting the two locatable Zotero PDFs directly and writing a reasoned exclusion for every entry
@@ -412,6 +412,27 @@ or deleted since research, or a fresh search may locate one of the nine).
 - Every row has a non-empty `evidence` cell; every `EXCLUDE` row names what was searched and not found
 - Each non-`EXCLUDE` row names an absolute source path that exists on disk
 - `~/Projects/Literature/index.json` unchanged
+
+#### Reasoned Exclusions
+
+Ten of the twelve target entries had no locatable source file and their `source_format` field
+was left unwritten (excluded) rather than stamped with a guessed value, per Decision 3's
+prohibition on inventing enum values and the plan's Non-Goal against fabricating source
+provenance. Each exclusion below names what was searched and not found; near-misses are named
+explicitly so a future search does not hopefully re-run the same query.
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| `thomason-1970-indeterminist-time` | Bibliographic record located, but no attached PDF exists — a citation is not a source file | Zotero record `Thomason1970` (zotero-library.json): type article-journal, container-title *Theoria*, volume 36, issue 3, pages 264-281, title "Indeterminist Time and Truth-Value Gaps", author Richmond H. Thomason, issued 1970 — title/author/venue match the chunked entry exactly, but the record is Wiley-paywalled with no local PDF attachment. A different-year namesake PDF exists (`Thomason - 1984 - Combinations of Tense and Modality.pdf`) and is confirmed to be a different work, not this one. `/tmp/task54-lit/thomason-1970-indeterminist-time.pdf` confirmed absent (Phase 1). |
+| `brics-rs-96-35` | No PDF and no Zotero record of any kind found | `/tmp/task54-lit/brics-rs-96-35.pdf` confirmed absent (Phase 1). Filesystem search of `~/Documents/Zotero/storage` for author "Winskel" found zero matches; no entry in `zotero-library.json`. |
+| `brics-rs-94-7` | No PDF and no Zotero record of any kind found | `/tmp/task54-lit/brics-rs-94-7.pdf` confirmed absent (Phase 1). Filesystem search for authors "Joyal" and "Winskel" found zero matches in Zotero storage or `zotero-library.json`. |
+| `cattani-winskel-2005-profunctors` | No PDF and no Zotero record of any kind found | `/tmp/task54-lit/cattani-winskel-2005-profunctors.pdf` confirmed absent (Phase 1). Filesystem search for authors "Cattani" and "Winskel" found zero matches in Zotero storage or `zotero-library.json`. |
+| `schultz-spivak-temporal-type-theory` | No PDF; only a different, unrelated book by an overlapping author was found | `/tmp/task54-lit/schultz-spivak-temporal-type-theory.pdf` confirmed absent (Phase 1). Zotero search for author "Spivak" found only `Fong and Spivak - 2019 - An Invitation to Applied Category Theory Seven Sketches in Compositionality.pdf` — a different book on a different subject, missing this entry's actual co-author (Schultz). No "Schultz" entry found anywhere in Zotero. Named explicitly as the near-miss. |
+| `fong-speranzon-spivak-temporal-landscapes` | No PDF; only the same different, unrelated book was found | `/tmp/task54-lit/fong-speranzon-spivak-temporal-landscapes.pdf` confirmed absent (Phase 1). Zotero search for authors "Fong" and "Spivak" found only the same "Fong and Spivak - 2019" near-miss noted above (co-authored without Speranzon). No "Speranzon" entry found anywhere in Zotero. |
+| `schultz-spivak-vasilakopoulou-dynamical-systems-sheaves` | No PDF; only the same different, unrelated book was found | `/tmp/task54-lit/schultz-spivak-vasilakopoulou-dynamical-systems-sheaves.pdf` confirmed absent (Phase 1). Zotero search for authors "Schultz", "Spivak", "Vasilakopoulou" found only the same "Fong and Spivak - 2019" near-miss (matched on "Spivak" only). No "Vasilakopoulou" entry found anywhere in Zotero. |
+| `danos-krivine-rccs` | No PDF and no Zotero record of any kind found | `/tmp/task54-lit/danos-krivine-rccs.pdf` confirmed absent (Phase 1). Filesystem search for authors "Danos" and "Krivine" found zero matches in Zotero storage or `zotero-library.json`. |
+| `reynolds-2003-ockhamist` | No PDF; only a different paper by the same author was found | `/tmp/task54-lit/reynolds-2003-ockhamist.pdf` confirmed absent (Phase 1). Zotero search for author "Reynolds" found `Reynolds - 1992 - An axiomatization for until and since over the reals without the IRR rule.pdf` — a different paper, 11 years earlier, on a different topic (until/since over the reals, not Ockhamist branching-time necessity). Named explicitly as the near-miss. |
+| `jacobs-coalgebra-intro-draft` | No PDF; only a different, published book by the same author was found | `/tmp/task54-lit/jacobs-coalgebra-intro-draft.pdf` confirmed absent (Phase 1). Zotero search for author "Jacobs" found `Jacobs - 2001 - Categorical Logic and Type Theory Volume 141.pdf` — a different, published book (Studies in Logic series) on a broader subject, not this entry's unpublished coalgebra-focused draft. Named explicitly as the near-miss. |
 
 ---
 
@@ -528,29 +549,29 @@ the phase closes rather than waved through by the `>=` comparison.
 
 ---
 
-### Phase 7: Closeout — exclusions record, carried-forward defects, deferrals [NOT STARTED]
+### Phase 7: Closeout — exclusions record, carried-forward defects, deferrals [COMPLETED]
 
 **Goal**: Write the durable records so nothing found here has to be rediscovered: the reasoned
 exclusions, the two known code defects carried forward by reference, and the deferred follow-ups.
 
 **Tasks**:
-- [ ] Write the `#### Reasoned Exclusions` subsection into Phase 4's body of this plan file, one row
+- [x] Write the `#### Reasoned Exclusions` subsection into Phase 4's body of this plan file, one row
       per `source_format` exclusion, with `Item` / `Reason` / `Evidence` columns, and set Phase 4's
       heading to `[COMPLETED WITH EXCLUSIONS]`
-- [ ] Record the two carried-forward code defects **by reference** to task 457's Phase 6 phase notes
+- [x] Record the two carried-forward code defects **by reference** to task 457's Phase 6 phase notes
       and `progress/phase-6-progress.json` — the `sources/`-only scope of
       `literature-fidelity-audit.sh` and the `sources/` prefix hard-coded in `literature-search.sh`'s
       `load_fidelity_map()`. Do not re-diagnose and do not fix (Decision 5)
-- [ ] Record the deferred `title`/`authors`/`year` backfill (Decision 4), naming the three entries
+- [x] Record the deferred `title`/`authors`/`year` backfill (Decision 4), naming the three entries
       with real Zotero bibliographic data available (`thomason-1970-indeterminist-time`,
       `rutten-2000-universal-coalgebra`, `rumberg-zanardo-2019-transition-structures`) as the
       tractable subset, so a follow-up starts with evidence rather than a blank search
-- [ ] Record the deferred context-documentation subsection (Decision 6), naming the source-store
+- [x] Record the deferred context-documentation subsection (Decision 6), naming the source-store
       ambiguity: this repository has no `agent-system/` tree, so the correct edit target for
       `.claude/context/project/literature/domain/literature-index.md` must be resolved before writing
-- [ ] Confirm the `[COMPLETED]` markers on phases 1-6 match their actual outcomes and that the
+- [x] Confirm the `[COMPLETED]` markers on phases 1-6 match their actual outcomes and that the
       plan-level `- **Status**:` field is updated
-- [ ] Write `progress/phase-7-progress.json`
+- [x] Write `progress/phase-7-progress.json`
 
 **Timing**: 0.5 hours
 
@@ -570,29 +591,100 @@ exclusions, the two known code defects carried forward by reference, and the def
 - Every deferral names what was deferred, why, and what a follow-up would start from
 - No code file outside `specs/**` was modified by this task
 
+#### Closeout Record
+
+**Carried-forward code defects (referenced, not fixed, per Decision 5).** Two pre-existing
+`agent-system` code defects prevent these twelve entries (and every entry outside `sources/`)
+from being visible to the automated fidelity tooling or from surfacing in default-mode search
+ranking, even after this task's stamping:
+- `literature-fidelity-audit.sh` classifies only `sources/<dir>/` directories and cannot see any
+  entry whose `chunks_dir` lives directly under `~/Projects/Literature/<id>/` — documented
+  originally in task 457's Phase 6 phase notes and `progress/phase-6-progress.json`, and
+  independently re-confirmed in this task's Phase 1 baseline (`data/baseline.md`).
+- `literature-search.sh`'s `load_fidelity_map()` hard-codes a `sources/` path prefix when
+  building its fidelity lookup, so all twelve of this task's freshly-stamped entries read as
+  `unverified_summary` in default search ranking rather than their true stamped value —
+  confirmed directly in this task's Phase 6 (`progress/phase-6-progress.json`, the
+  `literature-search.sh --include-unverified` assertion), also first documented in task 457's
+  Phase 6 phase notes. Neither defect is re-diagnosed or repaired here; both are cited by
+  reference only, per Decision 5.
+
+**Deferred `title`/`authors`/`year` backfill (Decision 4), tractable subset.** All twelve entries
+still carry a placeholder `title` (equal to the id string), empty `authors`, and a null `year` —
+genuinely out of this task's stated 5-field scope. Three of the twelve have real, directly
+usable bibliographic data already located during this task's Phase 4 and available for a
+follow-up to start from immediately rather than searching cold:
+- `thomason-1970-indeterminist-time`: Zotero record `Thomason1970` — title "Indeterminist Time
+  and Truth-Value Gaps", author Richmond H. Thomason, *Theoria* 36(3):264-281, 1970.
+- `rutten-2000-universal-coalgebra`: PDF-confirmed — title "Universal coalgebra: a theory of
+  systems", author J.J.M.M. Rutten, *Theoretical Computer Science* 249 (2000) 3-80.
+- `rumberg-zanardo-2019-transition-structures`: PDF-confirmed — title "First-Order Definability
+  of Transition Structures", authors Antje Rumberg and Alberto Zanardo, *Journal of Logic,
+  Language and Information* (2019) 28:459-488.
+
+The remaining nine have no bibliographic data located during this task and would need a fresh
+search if backfill is ever undertaken for them.
+
+**Deferred context-documentation addition (Decision 6).** The research recommended a "Partial v2
+Migration for `chunks_dir`-only Entries" subsection in
+`.claude/context/project/literature/domain/literature-index.md`. This repository has no
+`agent-system/` source-store tree (confirmed: `.claude/rules/source-store-deploy-boundary.md`'s
+edit-target convention presumes one exists), so the correct edit target for this documentation
+addition is ambiguous, and a hand-authored `.claude/**` file risks being silently wiped by the
+next deploy/reload. This addition is deferred rather than performed; a follow-up should first
+resolve where `agent-system/`-sourced context documentation is meant to live in this repository
+before writing the subsection.
+
+**Enum-vocabulary gap (Decision 3, surfaced in Phase 3).** The corpus's six-value
+`provenance_fidelity` enum has no way to distinguish "formulas degraded, prose coherent" from
+"prose itself substantially degraded but still human-decodable" — both `rutten-2000-universal-
+coalgebra` and `reynolds-2003-ockhamist` collapsed onto `unverified_conversion` despite the
+latter's degradation (a systematic dropped-letter-`c` pattern affecting the paper's own title)
+being categorically worse than the former's degradation and worse than the label's originating
+precedent (task 457's Jonsson-Tarski entries, "formulas degraded, prose coherent"). This is a
+genuine vocabulary gap, not a data error, and is left unresolved here per Decision 3's mandate
+not to widen the enum inside a data-only migration task; see `progress/phase-3-progress.json`'s
+`enum_adequacy_decision` for the full reasoning.
+
+**Third-entry reclassification (Phase 2 contingency, exercised).** `thomason-1970-indeterminist-
+time` was expected by the research report to sample clean alongside the other nine, but this
+task's hand read reclassified it as OCR-degraded (`unverified_conversion`) after finding genuine
+letter-substitution errors and heavy formula corruption — see `progress/phase-2-progress.json`'s
+`deviations` entry and `data/adjudication.tsv` for the full evidence. This is recorded as a
+deviation from the plan's ten-clean/two-degraded framing, not a defect in the migration itself.
+
+**Observation: pre-existing uncommitted foreign work on `specs/literature-index.json`.** This
+task's own mutations left `specs/literature-index.json` byte-identical to its pre-task state
+throughout (Phase 1 and Phase 6 both recorded md5 `bc66820d6ac166d4cf9810a51c6b7e5e`). Separately,
+and unrelated to this task, the working tree already carried an uncommitted 41-line addition to
+this same file (Jonsson-Tarski/Blackburn/Goldblatt sub-index entries, apparently from a
+concurrent task's sub-index registration work) at the start of this task's dispatch, visible in
+the session's initial `git status`. This task did not touch, stage, or commit that foreign
+addition; it is reported here per Observation Duty rather than silently passed over.
+
 ---
 
 ## Testing & Validation
 
-- [ ] `~/Projects/Literature/index.json` parses as valid JSON after every mutating step
-- [ ] Live index entry count after the migration equals the Phase 1 live baseline
-- [ ] All twelve target entries carry `provenance_fidelity`, `path`, `token_count`, and `doc_type`
-- [ ] `source_format` is present on exactly the non-`EXCLUDE` subset, and every exclusion has a
+- [x] `~/Projects/Literature/index.json` parses as valid JSON after every mutating step
+- [x] Live index entry count after the migration equals the Phase 1 live baseline
+- [x] All twelve target entries carry `provenance_fidelity`, `path`, `token_count`, and `doc_type`
+- [x] `source_format` is present on exactly the non-`EXCLUDE` subset, and every exclusion has a
       reasoned-exclusion row with evidence
-- [ ] Every `provenance_fidelity` value is one of the six already present in the corpus; no new enum
+- [x] Every `provenance_fidelity` value is one of the six already present in the corpus; no new enum
       value was introduced
-- [ ] Every `doc_type` is one of `chapter`/`paper`/`book`/`section`/`manuscript`/`survey`/`thesis`
-- [ ] Every `path` ends in `/`, has no `sources/` prefix, and resolves to a real directory
-- [ ] `token_count` for all twelve, recomputed independently of the mutation script, matches the stored
+- [x] Every `doc_type` is one of `chapter`/`paper`/`book`/`section`/`manuscript`/`survey`/`thesis`
+- [x] Every `path` ends in `/`, has no `sources/` prefix, and resolves to a real directory
+- [x] `token_count` for all twelve, recomputed independently of the mutation script, matches the stored
       value exactly
-- [ ] `title`, `authors`, `year`, `doc_id`, `id`, `chunks_dir`, `source_path`, `chunk_count` unchanged
+- [x] `title`, `authors`, `year`, `doc_id`, `id`, `chunks_dir`, `source_path`, `chunk_count` unchanged
       on all twelve
-- [ ] No entry outside the twelve changed in any field
-- [ ] `bash .claude/scripts/literature-build-index.sh --global` exits 0 and the `chunks_fts` row count
+- [x] No entry outside the twelve changed in any field
+- [x] `bash .claude/scripts/literature-build-index.sh --global` exits 0 and the `chunks_fts` row count
       is >= the Phase 1 live baseline (and any deviation from equality is investigated)
-- [ ] `literature-search.sh --include-unverified` returns hits for at least two of the twelve
-- [ ] `specs/literature-index.json` is byte-identical to its pre-task state
-- [ ] Every one of the twelve has a recorded chunk filename and a hand-written verdict in
+- [x] `literature-search.sh --include-unverified` returns hits for at least two of the twelve
+- [x] `specs/literature-index.json` is byte-identical to its pre-task state
+- [x] Every one of the twelve has a recorded chunk filename and a hand-written verdict in
       `data/adjudication.tsv`; a stamp without one is a task failure regardless of the other checks
 
 ## Artifacts & Outputs
