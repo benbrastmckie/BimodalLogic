@@ -29,10 +29,18 @@ FormalSystem.Metalogic.Bundle
 FormalSystem.Metalogic.Algebraic
 FormalSystem.Metalogic.SoundnessLemmas
 
-# The bi-lasso decision layer is additive and deliberately unwired: nothing in the
-# build graph imports it until its own re-export lands beside `Decidability/BiLasso/`.
-# Listed here so each module is still compile-checked in isolation in the meantime.
-# DELETE these lines when that re-export is added.
+# The bi-lasso decision layer is additive and deliberately unwired. Its re-export
+# `FormalSystem.Metalogic.Decidability.BiLasso` has now landed beside `Decidability/BiLasso/`,
+# but that aggregator is itself unimported, so the layer is still outside the build graph:
+# reachability runs from the Lake target roots, and an aggregator nobody imports makes
+# nothing reachable. Listed here so each module is compile-checked in isolation meanwhile.
+#
+# Registering the layer means adding one import of the re-export to `Decidability.lean`
+# AND deleting every line of this block in the same commit -- C6 fails if a manifest entry
+# names a module that has become reachable. Do not do one without the other. (The
+# `Extend`/`Successor`/`Orbit`/`Agreement` lines below belong to the effective-periodic-
+# extension work, which the re-export deliberately does not carry; they stay until that
+# work wires itself in.)
 FormalSystem.Metalogic.Decidability.BiLasso.Basic
 FormalSystem.Metalogic.Decidability.BiLasso.Unfold
 FormalSystem.Metalogic.Decidability.BiLasso.Periodic
@@ -46,6 +54,12 @@ FormalSystem.Metalogic.Decidability.BiLasso.Extend
 FormalSystem.Metalogic.Decidability.BiLasso.Successor
 FormalSystem.Metalogic.Decidability.BiLasso.Orbit
 FormalSystem.Metalogic.Decidability.BiLasso.Agreement
+FormalSystem.Metalogic.Decidability.BiLasso.Realized
+FormalSystem.Metalogic.Decidability.BiLasso.GoodCycle
+FormalSystem.Metalogic.Decidability.BiLasso.Extraction
+FormalSystem.Metalogic.Decidability.BiLasso.BoxOracle
+FormalSystem.Metalogic.Decidability.BiLasso.Check
+FormalSystem.Metalogic.Decidability.BiLasso
 
 # The finite-carrier periodic extension theorem, additive over Semantics/Extension/.
 # Deliberately not registered in FormalSystem/Semantics.lean while the bi-lasso decision
