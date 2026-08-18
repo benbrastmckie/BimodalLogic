@@ -672,6 +672,95 @@ def rceImp {fc : FrameClass} (A B : Formula) : ⊢[fc] (A.and B).imp B := by
     (FormalSystem.Metalogic.Core.deductionTheorem [] (A.and B) B h)
 
 
+/-! ## Context plumbing that needs the propositional axioms
+
+These combinators are `{fc}`-polymorphic but depend on `efqAxiom` / `peirceAxiom` /
+`lceImp` / `rceImp` and on `deductionTheorem`, so they cannot live in `Theorems/Combinators.lean`
+(which sits below `Propositional` in the import graph). They were previously duplicated as
+`private` helpers in `Theorems/DedekindDerived.lean` and again in the Discrete-unfolding spike.
+-/
+
+/-- Left conjunction elimination in context. -/
+def andFst {fc : FrameClass} {Γ : Context} {A B : Formula}
+    (h : Γ ⊢[fc] A.and B) : Γ ⊢[fc] A :=
+  ctxMp (thmIn (lceImp A B)) h
+
+/-- Right conjunction elimination in context. -/
+def andSnd {fc : FrameClass} {Γ : Context} {A B : Formula}
+    (h : Γ ⊢[fc] A.and B) : Γ ⊢[fc] B :=
+  ctxMp (thmIn (rceImp A B)) h
+
+/-- Disjunction introduction (left). -/
+def orIntroL {fc : FrameClass} (Γ : Context) (A B : Formula) (hA : Γ ⊢[fc] A) :
+    Γ ⊢[fc] A.or B := by
+  have step : (A.neg :: Γ) ⊢[fc] B := by
+    have h1 : (A.neg :: Γ) ⊢[fc] A.neg := DerivationTree.assumption _ _ (by simp)
+    have h2 : (A.neg :: Γ) ⊢[fc] A :=
+      DerivationTree.weakening Γ _ A hA (by intro x hx; simp [hx])
+    exact DerivationTree.modus_ponens _ Formula.bot B (wk _ _ (efqAxiom B))
+      (DerivationTree.modus_ponens _ A Formula.bot h1 h2)
+  exact FormalSystem.Metalogic.Core.deductionTheorem Γ A.neg B step
+
+/-- Disjunction introduction (right). -/
+def orIntroR {fc : FrameClass} (Γ : Context) (A B : Formula) (hB : Γ ⊢[fc] B) :
+    Γ ⊢[fc] A.or B :=
+  FormalSystem.Metalogic.Core.deductionTheorem Γ A.neg B
+    (DerivationTree.weakening Γ _ B hB (by intro x hx; simp [hx]))
+
+/-- Classical disjunction elimination, via Peirce. -/
+def orElim {fc : FrameClass} (Γ : Context) (A B C : Formula)
+    (hor : Γ ⊢[fc] A.or B) (hA : Γ ⊢[fc] A.imp C) (hB : Γ ⊢[fc] B.imp C) :
+    Γ ⊢[fc] C := by
+  have step : (C.neg :: Γ) ⊢[fc] C := by
+    have hnc : (C.neg :: Γ) ⊢[fc] C.neg := DerivationTree.assumption _ _ (by simp)
+    have hA' : (C.neg :: Γ) ⊢[fc] A.imp C :=
+      DerivationTree.weakening Γ _ _ hA (by intro x hx; simp [hx])
+    have hB' : (C.neg :: Γ) ⊢[fc] B.imp C :=
+      DerivationTree.weakening Γ _ _ hB (by intro x hx; simp [hx])
+    have hor' : (C.neg :: Γ) ⊢[fc] A.neg.imp B :=
+      DerivationTree.weakening Γ _ _ hor (by intro x hx; simp [hx])
+    -- `A.neg` : from `A` we would get `C`, contradicting `C.neg`
+    have hna : (C.neg :: Γ) ⊢[fc] A.neg := by
+      refine FormalSystem.Metalogic.Core.deductionTheorem _ A Formula.bot ?_
+      have hnc2 : (A :: C.neg :: Γ) ⊢[fc] C.neg :=
+        DerivationTree.assumption _ _ (by simp)
+      have ha2 : (A :: C.neg :: Γ) ⊢[fc] A := DerivationTree.assumption _ _ (by simp)
+      have hA2 : (A :: C.neg :: Γ) ⊢[fc] A.imp C :=
+        DerivationTree.weakening _ _ _ hA' (by intro x hx; simp [hx])
+      exact DerivationTree.modus_ponens _ C Formula.bot hnc2
+        (DerivationTree.modus_ponens _ A C hA2 ha2)
+    exact DerivationTree.modus_ponens _ B C hB'
+      (DerivationTree.modus_ponens _ A.neg B hor' hna)
+  exact DerivationTree.modus_ponens Γ (C.neg.imp C) C
+    (wk Γ _ (peirceAxiom C Formula.bot))
+    (FormalSystem.Metalogic.Core.deductionTheorem Γ C.neg C step)
+
+/-- `⊢[fc] ¬⊤ → ⊥`. -/
+def topNegImpBot {fc : FrameClass} : ⊢[fc] Formula.top.neg.imp Formula.bot := by
+  refine FormalSystem.Metalogic.Core.deductionTheorem [] Formula.top.neg Formula.bot ?_
+  exact DerivationTree.modus_ponens _ Formula.top Formula.bot
+    (DerivationTree.assumption _ _ (by simp [Formula.neg])) (wk _ _ topThm)
+
+/-- `⊢[fc] U(X, ⊥) → ⊥`: an `untl` whose *event* is refutable is itself refutable.
+
+Route: `Axiom.until_F` to `F ⊥`, event monotonicity to `F ¬¬⊥`, and temporal necessitation of
+`¬⊥`, whose `allFuture` unfolds to exactly `¬F ¬¬⊥`. Arguments are guard-first
+(`Formula.untl X Formula.bot` has guard `X`, event `⊥`). -/
+def untlBotFalse {fc : FrameClass} (X : Formula) :
+    ⊢[fc] (Formula.untl X Formula.bot).imp Formula.bot := by
+  refine FormalSystem.Metalogic.Core.deductionTheorem []
+    (Formula.untl X Formula.bot) Formula.bot ?_
+  have h1 : [Formula.untl X Formula.bot] ⊢[fc] Formula.untl X Formula.bot :=
+    DerivationTree.assumption _ _ (by simp)
+  have h2 : [Formula.untl X Formula.bot] ⊢[fc] Formula.someFuture Formula.bot :=
+    DerivationTree.modus_ponens _ _ _
+      (DerivationTree.axiom _ _ (Axiom.until_F X Formula.bot) (FrameClass.base_le fc)) h1
+  have h3 : [Formula.untl X Formula.bot] ⊢[fc] Formula.someFuture Formula.bot.neg.neg :=
+    eventMono _ Formula.bot Formula.bot.neg.neg Formula.top (efqAxiom _) h2
+  have h4 : [Formula.untl X Formula.bot] ⊢[fc] Formula.allFuture Formula.bot.neg :=
+    wk _ _ (DerivationTree.temporal_necessitation _ (efqAxiom Formula.bot))
+  exact DerivationTree.modus_ponens _ _ _ h4 h3
+
 end -- noncomputable section
 
 end FormalSystem.Theorems.Propositional

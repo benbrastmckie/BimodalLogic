@@ -309,7 +309,7 @@ audit categories; a pin that resists generalisation is category (i) or (iii), no
 
 ---
 
-### Phase 4: Promote the Polymorphic Plumbing [NOT STARTED]
+### Phase 4: Promote the Polymorphic Plumbing [COMPLETED]
 
 **Goal**: Deliverable (d), first half. Consolidate the currently-triplicated combinators into the
 library so downstream work reuses them instead of rebuilding them a fourth time.

@@ -666,4 +666,82 @@ def temporalFutureDerived {fc : FrameClass} (φ : Formula) :
   impTrans m4 chain1
     -- □φ → G(□φ)
 
+/-! ## Context and frame-class plumbing
+
+The combinators below were previously duplicated as `private` helpers in
+`Theorems/DedekindDerived.lean` and again, in a third copy, in the Discrete-unfolding spike.
+They are `{fc}`-polymorphic and depend on nothing beyond `ProofSystem.Derivation`, so they live
+here at the root of the `Theorems/` import graph and every consumer shares one copy.
+-/
+
+/-- Modus ponens inside a context. -/
+def ctxMp {fc : FrameClass} {Γ : Context} {A B : Formula}
+    (h1 : Γ ⊢[fc] A.imp B) (h2 : Γ ⊢[fc] A) : Γ ⊢[fc] B :=
+  DerivationTree.modus_ponens Γ A B h1 h2
+
+/-- Import an `fc`-theorem into any context. -/
+def thmIn {fc : FrameClass} {Γ : Context} {A : Formula}
+    (d : DerivationTree fc [] A) : DerivationTree fc Γ A :=
+  DerivationTree.weakening [] Γ A d (List.nil_subset Γ)
+
+/-- Weaken a theorem into any context, with the context and formula given explicitly.
+
+This is `thmIn` with `Γ` and `A` explicit; it exists because the derivations promoted from the
+Discrete-unfolding spike are written in the explicit-argument style and reading `wk Γ A h` at
+those call sites is clearer than an underscore-heavy `thmIn`. -/
+def wk {fc : FrameClass} (Γ : Context) (A : Formula) (h : ⊢[fc] A) : Γ ⊢[fc] A :=
+  thmIn h
+
+/-- Lift a `FrameClass.Base` theorem to any frame class.
+
+This is the canonical `Base`-to-any-`fc` lift: at a `DerivationTree.axiom` site the `le` proof
+is `FrameClass.base_le fc`, and for a whole derivation it is `d.lift (FrameClass.base_le fc)`. -/
+def baseThm {fc : FrameClass} {A : Formula}
+    (d : DerivationTree FrameClass.Base [] A) : DerivationTree fc [] A :=
+  d.lift (FrameClass.base_le fc)
+
+/-- `⊢[fc] ⊤`. -/
+def topThm {fc : FrameClass} : ⊢[fc] Formula.top := identity Formula.bot
+
+/-- Conjunction introduction in context. -/
+def andIntro {fc : FrameClass} {Γ : Context} {A B : Formula}
+    (ha : Γ ⊢[fc] A) (hb : Γ ⊢[fc] B) : Γ ⊢[fc] A.and B :=
+  ctxMp (ctxMp (thmIn (pairing A B)) ha) hb
+
+/-- Disjunction elimination into `⊥`: `Formula.or A B` unfolds to `¬A → B`, so refuting both
+disjuncts is a pair of modus ponens steps. -/
+def orElimBot {fc : FrameClass} {Γ : Context} {A B : Formula}
+    (h : Γ ⊢[fc] Formula.or A B) (ha : Γ ⊢[fc] A.imp Formula.bot)
+    (hb : Γ ⊢[fc] B.imp Formula.bot) : Γ ⊢[fc] Formula.bot :=
+  ctxMp hb (ctxMp (show Γ ⊢[fc] (A.imp Formula.bot).imp B from h) ha)
+
+/-- Temporal necessitation, usable under a context. -/
+def necG {fc : FrameClass} (Γ : Context) (A : Formula) (h : ⊢[fc] A) :
+    Γ ⊢[fc] A.allFuture :=
+  DerivationTree.weakening [] Γ _ (DerivationTree.temporal_necessitation A h) (by simp)
+
+/-- Guard monotonicity (BX2G, `Axiom.left_mono_until_G`) in usable form.
+
+The *helper's* parameter order is `(event, guard, guard')`, while the *terms* it builds are
+guard-first (`Formula.untl g e`, per `specs/decisions/untl-snce-argument-order.md`). Do not
+conflate the two. -/
+def guardMono {fc : FrameClass} (Γ : Context) (e g g' : Formula)
+    (hg : ⊢[fc] g.imp g') (h : Γ ⊢[fc] Formula.untl g e) : Γ ⊢[fc] Formula.untl g' e :=
+  DerivationTree.modus_ponens Γ (Formula.untl g e) (Formula.untl g' e)
+    (DerivationTree.modus_ponens Γ (g.imp g').allFuture _
+      (DerivationTree.axiom Γ _ (Axiom.left_mono_until_G g g' e) (FrameClass.base_le fc))
+      (necG Γ _ hg))
+    h
+
+/-- Event monotonicity (BX3, `Axiom.right_mono_until`) in usable form.
+
+Parameter order `(event, event', guard)`; terms guard-first, as in `guardMono`. -/
+def eventMono {fc : FrameClass} (Γ : Context) (e e' g : Formula)
+    (he : ⊢[fc] e.imp e') (h : Γ ⊢[fc] Formula.untl g e) : Γ ⊢[fc] Formula.untl g e' :=
+  DerivationTree.modus_ponens Γ (Formula.untl g e) (Formula.untl g e')
+    (DerivationTree.modus_ponens Γ (e.imp e').allFuture _
+      (DerivationTree.axiom Γ _ (Axiom.right_mono_until e e' g) (FrameClass.base_le fc))
+      (necG Γ _ he))
+    h
+
 end FormalSystem.Theorems.Combinators

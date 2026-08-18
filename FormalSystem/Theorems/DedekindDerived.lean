@@ -66,25 +66,13 @@ open FormalSystem.Theorems.Propositional
 open FormalSystem.Theorems.TemporalDerived
 open FormalSystem.Metalogic.Core
 
-/-! ## Local plumbing -/
+/-! ## Local plumbing
 
-/-- Modus ponens inside a context. -/
-private def ctxMp {fc : FrameClass} {Γ : Context} {A B : Formula}
-    (h1 : Γ ⊢[fc] A.imp B) (h2 : Γ ⊢[fc] A) : Γ ⊢[fc] B :=
-  DerivationTree.modus_ponens Γ A B h1 h2
-
-/-- Import an `fc`-theorem into any context. -/
-private def thmIn {fc : FrameClass} {Γ : Context} {A : Formula}
-    (d : DerivationTree fc [] A) : DerivationTree fc Γ A :=
-  DerivationTree.weakening [] Γ A d (List.nil_subset Γ)
-
-/-- Lift a `FrameClass.Base` theorem to any frame class. -/
-private def baseThm {fc : FrameClass} {A : Formula}
-    (d : DerivationTree FrameClass.Base [] A) : DerivationTree fc [] A :=
-  d.lift (FrameClass.base_le fc)
-
-/-- `⊢ ⊤`. -/
-private def topThm {fc : FrameClass} : ⊢[fc] Formula.top := identity Formula.bot
+`ctxMp`, `thmIn`, `baseThm`, `topThm`, `andIntro` and `orElimBot` were `private` helpers here
+until they were promoted to `Theorems/Combinators.lean`; `andFst` and `andSnd` went to
+`Theorems/Propositional/Core.lean`. Both namespaces are opened above, so the call sites below
+are unchanged. Only the two helpers that are genuinely specific to this module remain local.
+-/
 
 /-- `⊢ A → ⊤`. -/
 private def impTop {fc : FrameClass} (A : Formula) : ⊢[fc] A.imp Formula.top :=
@@ -95,28 +83,6 @@ private def impBotOfImpNeg {fc : FrameClass} {A B : Formula}
     (h1 : ⊢[fc] A.imp B.neg) (h2 : ⊢[fc] B) : ⊢[fc] A.imp Formula.bot :=
   mp h2 (mp (show ⊢[fc] A.imp (B.imp Formula.bot) from h1)
     (theoremFlip (fc := fc) (A := A) (B := B) (C := Formula.bot)))
-
-/-- Conjunction introduction in context. -/
-private def andIntro {fc : FrameClass} {Γ : Context} {A B : Formula}
-    (ha : Γ ⊢[fc] A) (hb : Γ ⊢[fc] B) : Γ ⊢[fc] A.and B :=
-  ctxMp (ctxMp (thmIn (pairing A B)) ha) hb
-
-/-- Left conjunction elimination in context. -/
-private noncomputable def andFst {fc : FrameClass} {Γ : Context} {A B : Formula}
-    (h : Γ ⊢[fc] A.and B) : Γ ⊢[fc] A :=
-  ctxMp (thmIn (lceImp A B)) h
-
-/-- Right conjunction elimination in context. -/
-private noncomputable def andSnd {fc : FrameClass} {Γ : Context} {A B : Formula}
-    (h : Γ ⊢[fc] A.and B) : Γ ⊢[fc] B :=
-  ctxMp (thmIn (rceImp A B)) h
-
-/-- Disjunction elimination into `⊥`: `Formula.or A B` unfolds to `¬A → B`, so refuting both
-disjuncts is a pair of modus ponens steps. -/
-private def orElimBot {fc : FrameClass} {Γ : Context} {A B : Formula}
-    (h : Γ ⊢[fc] Formula.or A B) (ha : Γ ⊢[fc] A.imp Formula.bot)
-    (hb : Γ ⊢[fc] B.imp Formula.bot) : Γ ⊢[fc] Formula.bot :=
-  ctxMp hb (ctxMp (show Γ ⊢[fc] (A.imp Formula.bot).imp B from h) ha)
 
 /-! ## `△`-elimination at an arbitrary frame class -/
 
