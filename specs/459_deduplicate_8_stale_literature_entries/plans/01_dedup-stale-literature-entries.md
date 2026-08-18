@@ -242,17 +242,17 @@ derived live from the mutated file and cross-checked against Phase 1's re-derive
 
 ---
 
-### Phase 5: Side-effect sanity, diff isolation, and closeout [NOT STARTED]
+### Phase 5: Side-effect sanity, diff isolation, and closeout [COMPLETED]
 
 **Goal**: Confirm nothing outside `index.json` moved, and that the change set is exactly 8 deletions.
 
 **Tasks**:
-- [ ] Run `bash ~/Projects/Literature/.claude/scripts/literature-build-index.sh --global`; confirm exit 0.
-- [ ] Query `sqlite3 ~/Projects/Literature/.literature.db "SELECT count(*) FROM chunks_fts;"` and confirm the count has not *decreased* from the 17,736 baseline (re-derive the baseline value from the report's figure and treat equality as the expected result). Record the value. Interpretation: an unchanged count is the expected pass; a decrease indicates accidental filesystem-level damage to chunk files or manifests, not a dedup problem. This check does not validate the dedup itself.
-- [ ] Review `git -C ~/Projects/Literature diff -- index.json` and confirm the change relative to the pre-existing dirty state consists solely of 8 removed entry blocks — no additions, no reindentation, no reordering, no whitespace-only hunks elsewhere.
-- [ ] Confirm `specs/literature-index.json` in this repo is byte-identical to its pre-task state: compare its `git diff` against the Phase 1 record and confirm no new hunk. It must retain its pre-existing uncommitted modification untouched.
-- [ ] Do not commit or stash `~/Projects/Literature`'s unrelated dirty files. Leave the index change uncommitted there unless the user directs otherwise; note the backup path and the deletion script path in the implementation summary.
-- [ ] Record final numbers (pre/post totals, distinct ids, FTS row count, backup path) in the summary.
+- [x] Run `bash ~/Projects/Literature/.claude/scripts/literature-build-index.sh --global`; confirm exit 0. *(completed: exit 0, 170 manifests, 18432 chunks)*
+- [x] Query `sqlite3 ~/Projects/Literature/.literature.db "SELECT count(*) FROM chunks_fts;"` and confirm the count has not *decreased* from the 17,736 baseline (re-derive the baseline value from the report's figure and treat equality as the expected result). Record the value. Interpretation: an unchanged count is the expected pass; a decrease indicates accidental filesystem-level damage to chunk files or manifests, not a dedup problem. This check does not validate the dedup itself. *(completed: count = 17736, unchanged)*
+- [x] Review `git -C ~/Projects/Literature diff -- index.json` and confirm the change relative to the pre-existing dirty state consists solely of 8 removed entry blocks — no additions, no reindentation, no reordering, no whitespace-only hunks elsewhere. *(completed: isolated the task's change via diff against the Phase 1 backup, not git diff vs HEAD which includes unrelated pre-existing dirty-tree changes -- 206 removed lines, 0 added, 2 contiguous hunks covering exactly the 8 target ids, nothing else changed)*
+- [x] Confirm `specs/literature-index.json` in this repo is byte-identical to its pre-task state: compare its `git diff` against the Phase 1 record and confirm no new hunk. It must retain its pre-existing uncommitted modification untouched. *(completed: no task-459 commit touched this file; working-tree diff vs HEAD unchanged, same 41-insertion pre-existing modification as recorded at task start)*
+- [x] Do not commit or stash `~/Projects/Literature`'s unrelated dirty files. Leave the index change uncommitted there unless the user directs otherwise; note the backup path and the deletion script path in the implementation summary. *(completed: no commit/stash performed in ~/Projects/Literature)*
+- [x] Record final numbers (pre/post totals, distinct ids, FTS row count, backup path) in the summary. *(completed)*
 
 **Timing**: 25 minutes
 
@@ -273,21 +273,21 @@ derived live from the mutated file and cross-checked against Phase 1's re-derive
 
 ## Testing & Validation
 
-- [ ] Pre-deletion backup of `~/Projects/Literature/index.json` exists, is non-empty, and parses.
-- [ ] Round-trip serialization fidelity proven byte-exact before any mutation.
-- [ ] Duplicated-id set live-re-derived and confirmed equal to the 8 named ids (set equality, both directions).
-- [ ] Deletion script refuses (non-zero exit, no write) when a pair's discriminator assertion fails — demonstrated, not assumed.
-- [ ] Deletion selected exactly 8 rows, one per target id, each carrying the migration `provenance` marker.
-- [ ] Post-deletion `entries` length is 361 (pre-total minus 8).
-- [ ] Post-deletion distinct-`id` count is 361 — re-derived independently, not inferred from the total.
-- [ ] `json.load` on the mutated index succeeds.
-- [ ] Each of the 8 ids resolves to exactly one surviving entry, and that entry lacks `provenance`, has a non-empty `summary`, and has full author names.
-- [ ] All 8 survivors are byte-identical (canonical JSON) to their Phase 1 pre-images.
-- [ ] The 3 `doc_id`-only entries and the 2 unpaired populated entries are still present and unmodified.
-- [ ] `literature-build-index.sh --global` exits 0.
-- [ ] `chunks_fts` row count has not decreased from 17,736.
-- [ ] `git diff -- index.json` in `~/Projects/Literature` shows only the 8 deletions.
-- [ ] `specs/literature-index.json` in this repo is byte-identical to its pre-task state.
+- [x] Pre-deletion backup of `~/Projects/Literature/index.json` exists, is non-empty, and parses. *(verified)*
+- [x] Round-trip serialization fidelity proven byte-exact before any mutation. *(verified)*
+- [x] Duplicated-id set live-re-derived and confirmed equal to the 8 named ids (set equality, both directions). *(verified)*
+- [x] Deletion script refuses (non-zero exit, no write) when a pair's discriminator assertion fails — demonstrated, not assumed. *(verified)*
+- [x] Deletion selected exactly 8 rows, one per target id, each carrying the migration `provenance` marker. *(verified)*
+- [x] Post-deletion `entries` length is 361 (pre-total minus 8). *(verified)*
+- [x] Post-deletion distinct-`id` count is 361 — re-derived independently, not inferred from the total. *(verified: live re-derived value is 358, unchanged pre/post -- the plan's parenthetical '361' was a report-inherited arithmetic slip; the plan's own instruction is to gate on the Phase 1 re-derived value, not the literal)*
+- [x] `json.load` on the mutated index succeeds. *(verified)*
+- [x] Each of the 8 ids resolves to exactly one surviving entry, and that entry lacks `provenance`, has a non-empty `summary`, and has full author names. *(verified)*
+- [x] All 8 survivors are byte-identical (canonical JSON) to their Phase 1 pre-images. *(verified: 8/8)*
+- [x] The 3 `doc_id`-only entries and the 2 unpaired populated entries are still present and unmodified. *(verified)*
+- [x] `literature-build-index.sh --global` exits 0. *(verified)*
+- [x] `chunks_fts` row count has not decreased from 17,736. *(verified: 17736)*
+- [x] `git diff -- index.json` in `~/Projects/Literature` shows only the 8 deletions. *(verified via isolation against Phase 1 backup, not raw git diff vs HEAD which includes pre-existing unrelated dirty state)*
+- [x] `specs/literature-index.json` in this repo is byte-identical to its pre-task state. *(verified)*
 
 ## Artifacts & Outputs
 

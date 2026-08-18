@@ -1,0 +1,17 @@
+{
+  "phase": 5,
+  "phase_name": "Side-effect sanity, diff isolation, and closeout",
+  "started_at": "2026-08-18T21:34:00Z",
+  "last_updated": "2026-08-18T21:38:00Z",
+  "objectives": [
+    {"id": 1, "description": "Run literature-build-index.sh --global, confirm exit 0", "status": "done", "files_touched": [], "note": "Exit 0. 170 manifests found, 18432 chunks indexed, database rebuilt."},
+    {"id": 2, "description": "Query chunks_fts row count, confirm not decreased from 17736 baseline", "status": "done", "files_touched": [], "note": "chunks_fts count = 17736, unchanged from the report's baseline. Expected pass per plan -- this is a side-effect sanity check only, not evidence of dedup success."},
+    {"id": 3, "description": "Review git diff -- index.json in Literature repo, confirm only 8 deletion blocks", "status": "done", "files_touched": [], "note": "git diff against HEAD shows 709 insertions/435 deletions -- this includes the pre-existing unrelated dirty-tree changes recorded in Phase 1, NOT the isolated task change. Isolated the task's own change instead by diffing the Phase 1 backup (post-pre-existing-changes, pre-dedup) against the current file: 206 removed lines, 0 added lines, exactly 2 contiguous hunks (the 6-entry cluster at idx 344-349 and the 2-entry cluster at idx 356-357), all 8 removed blocks carry the provenance marker and one of the 8 target ids, no additions/reordering/reformatting elsewhere."},
+    {"id": 4, "description": "Confirm specs/literature-index.json byte-identical to pre-task state", "status": "done", "files_touched": [], "note": "git log confirms no task-459 commit touched this file (last touching commit was an earlier, unrelated task). Working-tree diff vs HEAD unchanged (41 insertions, same pre-existing unrelated modification as recorded at task start). File untouched by this task."},
+    {"id": 5, "description": "Do not commit/stash Literature's unrelated dirty files; note backup/script paths", "status": "done", "files_touched": [], "note": "No commit or stash performed in ~/Projects/Literature. Backup: ~/Projects/Literature/index.json.bak-20260818-142007-pre-dedup. Deletion script: scratchpad/459-dedup/dedup_delete.py. Pre-image: scratchpad/459-dedup/preimage_canonical.json."},
+    {"id": 6, "description": "Record final numbers in summary", "status": "done", "files_touched": ["specs/459_deduplicate_8_stale_literature_entries/summaries/01_dedup-stale-literature-entries-summary.md"], "note": "Summary written with pre/post totals, distinct-id counts, FTS row count, backup path."}
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "handoff_count": 0
+}
