@@ -11389,6 +11389,103 @@ theorem postBlockingSettles_fuel_zero_false (fc : FormalSystem.ProofSystem.Frame
   rw [findUnexpandedUnblockedWith_multBranch_one fc] at hfind
   exact absurd hfind (by simp)
 
+
+/-- **The fuel-universal step.** If the branch is not closed and `expandOnceNoFresh` reports
+`.saturated` on it, then `saturateBlocked` hands the branch straight back at **every** fuel figure.
+
+No induction is needed and none is used: at `fuel = 0` the pass returns its input by definition, and
+at `fuel + 1` it reaches the `(.saturated, _)` arm in one step, whose result is again the input. The
+two `constraints.length` rejection guards and the three recursive arms are therefore not on this
+branch's path at all, which is what makes the statement universal in `fuel` rather than a ladder of
+checked figures. -/
+theorem saturateBlocked_eq_self_of_noFresh_saturated
+    {b : Branch} {ord ord' : TimeOrdering} {fc : FormalSystem.ProofSystem.FrameClass}
+    (hcl : findClosure b fc = none)
+    (hsat : expandOnceNoFresh b ord fc = (ExpansionResult.saturated, ord')) (fuel : Nat) :
+    saturateBlocked b fuel ord fc = some (.inr (b, ord)) := by
+  cases fuel with
+  | zero => exact saturateBlocked_fuel_zero b ord fc
+  | succ n => rw [saturateBlocked, hcl, hsat]
+
+/-- The witness branch is open: one `.neg`-signed box between atoms closes nothing, at every frame
+class. `checkBotPos` and `checkContradiction` do not read the frame class at all, and
+`checkAxiomNeg`'s `matchAxiom` does not recognise `□p` as an axiom instance, so the
+`witness.minFrameClass ≤ fc` test is never reached. -/
+theorem findClosure_freshWorldBranch (fc : FormalSystem.ProofSystem.FrameClass) :
+    findClosure freshWorldBranch fc = none := rfl
+
+/-- **`expandOnceNoFresh` reports `.saturated` on the witness branch, at every frame class.**
+
+Its `pick` runs `findApplicableRule` at the branch's one formula, gets `.boxNeg`
+(`findApplicableRule_freshWorldWitness`), and `ruleMintsFreshLabel .boxNeg = true`, so the **first**
+rejection test fires and `pick` returns `none` — the candidate is skipped rather than reported. The
+branch has nothing else, so the search ends with no pick and the verdict is `.saturated`.
+
+This is the exact disagreement the residual's docstring names, exhibited: there is outstanding work
+on the branch, and this pass is by construction unable to see it. -/
+theorem expandOnceNoFresh_freshWorldBranch (fc : FormalSystem.ProofSystem.FrameClass) :
+    expandOnceNoFresh freshWorldBranch TimeOrdering.empty fc
+      = (ExpansionResult.saturated, TimeOrdering.empty) := by
+  have hrule := findApplicableRule_freshWorldWitness fc
+  simp only [freshWorldBranch] at hrule
+  have hmint : ruleMintsFreshLabel TableauRule.boxNeg = true := rfl
+  simp only [expandOnceNoFresh, freshWorldBranch, List.findSome?_cons, List.findSome?_nil, hrule,
+    hmint, if_true]
+
+/-- **The blocking-aware finder does see it**, at every frame class: nothing is blocked at the empty
+ordering, and `.boxNeg` applies, so `isExpanded` is `false` at the branch's one formula. -/
+theorem findUnexpandedUnblockedWith_freshWorldBranch
+    (fc : FormalSystem.ProofSystem.FrameClass) :
+    findUnexpandedUnblockedWith freshWorldBranch TimeOrdering.empty fc
+        (blockedTimes freshWorldBranch TimeOrdering.empty fc (armTracker freshWorldBranch))
+      = some freshWorldWitness := by
+  have hrule := findApplicableRule_freshWorldWitness fc
+  simp only [freshWorldBranch] at hrule
+  rw [blockedTimes_empty]
+  simp only [findUnexpandedUnblockedWith, isExpanded, freshWorldBranch, List.find?_cons, hrule,
+    Option.isNone_some, List.contains_nil, Bool.not_false, Bool.and_true]
+
+/-- **The gap is exhibited at every fuel figure, simultaneously.**
+
+Both halves at once, universally quantified in `fuel` and in the frame class: the post-blocking pass
+returns the witness branch unchanged, and the saturation test it is measured against reports
+outstanding work on that same branch. No fuel figure appears anywhere in either half, which is the
+whole content of the verdict below. -/
+theorem postBlockingSettles_gap_at_every_fuel
+    (fc : FormalSystem.ProofSystem.FrameClass) (fuel : Nat) :
+    saturateBlocked freshWorldBranch fuel TimeOrdering.empty fc
+        = some (.inr (freshWorldBranch, TimeOrdering.empty)) ∧
+      findUnexpandedUnblockedWith freshWorldBranch TimeOrdering.empty fc
+          (blockedTimes freshWorldBranch TimeOrdering.empty fc (armTracker freshWorldBranch))
+        = some freshWorldWitness :=
+  ⟨saturateBlocked_eq_self_of_noFresh_saturated (findClosure_freshWorldBranch fc)
+      (expandOnceNoFresh_freshWorldBranch fc) fuel,
+    findUnexpandedUnblockedWith_freshWorldBranch fc⟩
+
+/-- **Gate 2: fuel does not close the gap.** The verdict on the open question
+`PostBlockingSettles`'s own docstring poses.
+
+`PostBlockingSettles fc` is refuted at a **nonzero** fuel — so this is not a restatement of
+`postBlockingSettles_fuel_zero_false` — and `postBlockingSettles_gap_at_every_fuel` records that the
+same witness works at every fuel whatsoever, not at the figure chosen here.
+
+**The verdict, in one line.** Fuel does not close it, because `expandOnceNoFresh` *skips*
+label-minting candidates while `findUnexpandedUnblockedWith` counts them, and no fuel figure appears
+anywhere in that disagreement.
+
+**What the witness is.** The landed `freshWorldBranch = [F(□p)@⟨0,0⟩]`, reused rather than rebuilt.
+Its only applicable rule is `.boxNeg`, which mints a fresh **world**, so it trips
+`expandOnceNoFresh`'s *first* rejection test (`ruleMintsFreshLabel`). Register entry 13 records that
+the label-minting and time-minting rule lists are incomparable and that this is exactly why
+`expandOnceNoFresh` runs two rejection tests in sequence; a time-minting witness would trip the
+second test and refute the predicate the same way. -/
+theorem postBlockingSettles_fuel_gap_false (fc : FormalSystem.ProofSystem.FrameClass) :
+    ¬ PostBlockingSettles fc := by
+  intro h
+  obtain ⟨hsb, hfind⟩ := postBlockingSettles_gap_at_every_fuel fc 1
+  rw [h freshWorldBranch TimeOrdering.empty 1 freshWorldBranch TimeOrdering.empty hsb] at hfind
+  exact absurd hfind (by simp)
+
 end PostBlockingSettlesRefutation
 
 /-! ## C9. The do-not-re-attempt register

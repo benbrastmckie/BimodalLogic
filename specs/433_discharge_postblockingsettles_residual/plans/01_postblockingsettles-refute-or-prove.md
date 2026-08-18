@@ -224,7 +224,7 @@ and closes Phase 3 the same way. Exactly one of them executes.
   `{propext, Classical.choice, Quot.sound}`. Proceed to Phase 2 to decide whether the refutation is
   *only* about `fuel = 0`.
 
-### Phase 2: Gate 2 — does fuel alone close the gap? [NOT STARTED]
+### Phase 2: Gate 2 — does fuel alone close the gap? [IN PROGRESS]
 
 - **Goal:** Answer the residual docstring's own open question — "whether the fuel-vs-condition
   gap can be closed by fuel alone" — machine-checked and universally quantified in `fuel`. This
