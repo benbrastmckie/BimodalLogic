@@ -316,26 +316,26 @@ against `def:S5`, tex:3799-3812, via the Phase 1 record before writing.
 
 ---
 
-### Phase 4: Formalize the Seventeen BX Keys (`:362`) [NOT STARTED]
+### Phase 4: Formalize the Seventeen BX Keys (`:362`) [COMPLETED]
 
 **Goal**: Expand `#definition("BX")` from a bare name-list into a self-contained definition stating
 all seventeen keys in full, grouped as the paper groups them.
 
 **Tasks**:
-- [ ] Re-grep `FIX: this is unreadable and needs to be expanded` to locate the target.
-- [ ] Open with the paper's preamble, defining the ⟨S|U⟩-swap notation ("φ_⟨S|U⟩ denotes the result
+- [x] Re-grep `FIX: this is unreadable and needs to be expanded` to locate the target.
+- [x] Open with the paper's preamble, defining the ⟨S|U⟩-swap notation ("φ_⟨S|U⟩ denotes the result
       of swapping occurrences of `#since` and `#until` in φ") **before** TD uses it.
-- [ ] State all seventeen keys in `#items` blocks, in the paper's four groups: rules (TN, TD);
+- [x] State all seventeen keys in `#items` blocks, in the paper's four groups: rules (TN, TD);
       seriality/linearity/connectedness (TB, TL, CN); primary Since/Until (TA, UE, UT, UI, UC, UF,
       UG, SU); uniformity (NP, NF, NA, NB).
-- [ ] Retain the paper's closing framing ("the smallest extension of CPL closed under all instances
+- [x] Retain the paper's closing framing ("the smallest extension of CPL closed under all instances
       of the above") and the sentence that the past/since direction of each axiom is derived by TD,
       not postulated. The existing trailing footnote already says this — reconcile so the point is
       made once, not twice.
-- [ ] Transcribe NB (`Next⊤ → □Next⊤`) as stated even though `□` is only interpreted once S5 is
+- [x] Transcribe NB (`Next⊤ → □Next⊤`) as stated even though `□` is only interpreted once S5 is
       fused in; it belongs to BX in the paper.
-- [ ] Note in the uniformity group that these hold vacuously unless the order is discrete.
-- [ ] Delete the FIX tag.
+- [x] Note in the uniformity group that these hold vacuously unless the order is discrete.
+- [x] Delete the FIX tag.
 
 **Timing**: 1.0 hours
 

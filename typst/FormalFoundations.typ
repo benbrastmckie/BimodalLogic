@@ -385,12 +385,35 @@ constrains is the points of evaluation, not the propositions.
 ]
 
 #definition("BX")[
-  // FIX: this is unreadable and needs to be expanded so this document is self-contained rather than requiring the reader to look these up elsewhere
-  The *Base Burgess--Xu Tense Logic*: the rules TN (temporal necessitation) and TD (the rule
-  swapping $#since$ and $#until$ throughout a theorem); the seriality, linearity, and connectedness
-  axioms TB, TL, CN; the primary Since/Until axioms TA, UE, UT, UI, UC, UF, UG, SU; and the
-  uniformity axioms NP, NF, NA, NB, which are vacuous unless the order is discrete.
-]#footnote[Seventeen named keys. The past direction of each axiom is derived from the future direction by TD, not postulated.]
+  Let $phi.alt_(chevron.l "S"|"U" chevron.r)$ denote the result of swapping all occurrences of
+  $#since$ and $#until$ in $phi.alt$. The *Base Burgess--Xu Tense Logic* is the smallest
+  extension of CPL closed under all instances of the following rules and axiom schemata:
+  #items[
+    + *TN*: if $tack.r phi.alt$ then $tack.r #allfuture phi.alt$.
+    + *TD*: if $tack.r phi.alt$ then $tack.r phi.alt_(chevron.l "S"|"U" chevron.r)$.
+    + *TB*: $#somefuture top$.
+    + *TL*: $(#somefuture phi.alt and #somefuture psi) arrow.r [#somefuture (phi.alt and psi) or #somefuture (phi.alt and #somefuture psi) or #somefuture (#somefuture phi.alt and psi)]$.
+    + *CN*: $[(phi.alt #until psi) and (chi #until theta)] arrow.r [(phi.alt and chi) #until (psi and theta) or (phi.alt and chi) #until (psi and chi) or (phi.alt and chi) #until (phi.alt and theta)]$.
+    + *TA*: $phi.alt arrow.r #allfuture #somepast phi.alt$.
+    + *UE*: $(phi.alt #until psi) arrow.r #somefuture psi$.
+    + *UT*: $#somefuture phi.alt arrow.r (top #until phi.alt)$.
+    + *UI*: $phi.alt #until (phi.alt and (phi.alt #until psi)) arrow.r phi.alt #until psi$.
+    + *UC*: $#allfuture (phi.alt arrow.r psi) arrow.r ((chi #until phi.alt) arrow.r (chi #until psi))$.
+    + *UF*: $(phi.alt #until psi) arrow.r (phi.alt and (phi.alt #until psi)) #until psi$.
+    + *UG*: $#allfuture (phi.alt arrow.r chi) arrow.r ((phi.alt #until psi) arrow.r (chi #until psi))$.
+    + *SU*: $theta and (phi.alt #until psi) arrow.r phi.alt #until (psi and (phi.alt #since theta))$.
+    + *NP*: $#Nxt top arrow.r #Prev top$.
+    + *NF*: $#Nxt top arrow.r #somefuture #Nxt top$.
+    + *NA*: $#Nxt top arrow.r #somepast #Nxt top$.
+    + *NB*: $#Nxt top arrow.r square.stroked #Nxt top$.
+  ]
+  TB, TL, and CN state seriality, linearity, and connectedness respectively; TA, UE, UT, UI, UC,
+  UF, UG, and SU are the primary Since/Until axioms; NP, NF, NA, and NB are the uniformity axioms,
+  holding vacuously unless the order is discrete. In every case the past/since direction is
+  derived from the future/until direction by TD, not separately postulated -- only the
+  future/until direction is stated above. NB is stated here as it belongs to BX in the paper, even
+  though $square.stroked$ is only interpreted once S5 is fused with BX below.
+]#footnote[Seventeen named keys: two rules (TN, TD), three seriality/linearity/connectedness axioms (TB, TL, CN), eight primary Since/Until axioms (TA, UE, UT, UI, UC, UF, UG, SU), and four uniformity axioms (NP, NF, NA, NB).]
 
 // FIX: everything in the remainder of this section is inadequate and needs to do a much better job of presenting what is carefully presented in /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex to provide a systematic account of the various proof systems, clearly defining each.
 $op("TM")^+$, the base logic for $#BLplus$, is $"S5" + "BX" + "MF"$, where MF is
