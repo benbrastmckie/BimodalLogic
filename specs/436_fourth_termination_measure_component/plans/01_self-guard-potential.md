@@ -508,29 +508,34 @@ re-executed against a changed engine, not a new design.
 
 ---
 
-### Phase 4: The `untlNeg` discharge lemma [BLOCKED]
+### Phase 4: The `untlNeg` discharge lemma [COMPLETED]
 
-**BLOCKER** (Phase 4): blocked by Phase 1's FALSE verdict. `mintPaysForTimeAt_reuse_false` decides `MintPaysForTimeAt` false at the σ-hit hazard, at every frame class and every `Tmax`, with the most favorable run-realizable σ. `selfGuard_no_column_at_retired_time` gives the general reason, so no other configuration escapes it. Building plumbing for a refuted design is forbidden by the plan's own Rollback/Contingency section. **What is needed to unblock**: a fourth measure component whose index set is not carried through σ at all, or a discharge of the σ-hit obligation itself — which the time-reuse verdict decides is false, not open.
+**BLOCKER RESOLVED** (Phase 4): unblocked by Phase 1R, which discharges the σ-hit obligation at the oriented arm (`sigma_time_hit_of_sigmaTimeStable`, from confinement plus `SigmaTimeStable`).
 
 - **Goal:** Prove that the `untlNeg` ACTIVE arm strictly drops `selfGuardPotential`. This phase
   establishes the proof skeleton that Phase 5 mirrors.
 
 - **Tasks:**
   - [ ] First land the R2 lemma the research flagged as argued-but-unverified, as its own named
-        declaration: the freshly minted time `b.nextTime` is absent from the ordering's endpoints
+        declaration: *(deviation: skipped — R2 is dissolved, not discharged. `selfGuardPotential`
+        does not take a `Branch` and a mint step changes neither `U` nor `σ`, so the index set and
+        every column's index are unchanged and the freshly minted time contributes no column. The
+        reason is recorded in the discharge subsection's own docstring; reaching for the
+        `OrdTimesKnown` argument would have been reaching for a fact about a quantity the component
+        deliberately does not read.)* the freshly minted time `b.nextTime` is absent from the ordering's endpoints
         before the step, hence its own column is already uncured and no column flips on its account.
         Consumes `OrdTimesKnown` (`MintBound.lean:1260-1261`) plus `nextTime = maxTime + 1 >` every
         known time (`SignedFormula.lean:349-381`). Do **not** inline this into the discharge proof.
-  - [ ] `selfGuardPotential_lt_of_untlNeg`: at an `untlNeg` ACTIVE step, given the trigger is
+  - [x] `selfGuardPotential_lt_of_untlNeg`: at an `untlNeg` ACTIVE step, given the trigger is
         σ-hit on its time (the hypothesis Phase 1 decided is satisfiable), the potential strictly
         drops. Mechanism, from the source's own statement (`Tableau.lean:1057-1058`): the arm fires
         only when `(ord.futureOf l.time).isEmpty` (`Tableau.lean:1016, 1063`), and its own
         `newOrd = ord.addFuture l.time freshTime` (`Tableau.lean:1071`) puts `freshTime` into
         `futureOf l.time` via `mem_futureOf_of_mem_constraints` — so the trigger's column flips
         uncured → cured.
-  - [ ] Combine with `selfGuardPotential_le_of_grow` (Phase 2) to show no other column un-cures, so
+  - [x] Combine with `selfGuardPotential_le_of_grow` (Phase 2) to show no other column un-cures, so
         the flip is a net strict decrease rather than an exchange.
-  - [ ] Docstring: name the σ-hit hypothesis explicitly and cite Phase 1's gate theorem as the
+  - [x] Docstring: name the σ-hit hypothesis explicitly and cite Phase 1's gate theorem as the
         evidence that it is not vacuous. Per register entry 14's instruction
         (`MintBound.lean:7271`), it is **carried structurally**, not discharged.
 
@@ -547,26 +552,27 @@ re-executed against a changed engine, not a new design.
 
 ---
 
-### Phase 5: The `snceNeg` discharge lemma [BLOCKED]
+### Phase 5: The `snceNeg` discharge lemma [COMPLETED]
 
-**BLOCKER** (Phase 5): blocked by Phase 1's FALSE verdict. `mintPaysForTimeAt_reuse_false` decides `MintPaysForTimeAt` false at the σ-hit hazard, at every frame class and every `Tmax`, with the most favorable run-realizable σ. `selfGuard_no_column_at_retired_time` gives the general reason, so no other configuration escapes it. Building plumbing for a refuted design is forbidden by the plan's own Rollback/Contingency section. **What is needed to unblock**: a fourth measure component whose index set is not carried through σ at all, or a discharge of the σ-hit obligation itself — which the time-reuse verdict decides is false, not open.
+**BLOCKER RESOLVED** (Phase 5): unblocked by Phase 1R, which discharges the σ-hit obligation at the oriented arm (`sigma_time_hit_of_sigmaTimeStable`, from confinement plus `SigmaTimeStable`).
 
 - **Goal:** The exact past mirror of Phase 4. Research risk R3 was resolved during
   adversarial verification: the mirror is exact, so this phase is a transcription, not a
   re-derivation.
 
 - **Tasks:**
-  - [ ] `selfGuardPotential_lt_of_snceNeg`, transcribing Phase 4's proof with
+  - [x] `selfGuardPotential_lt_of_snceNeg`, transcribing Phase 4's proof with
         `futureOf → pastOf`, `addFuture → addPast`, `mem_futureOf_of_mem_constraints →
         mem_pastOf_of_mem_constraints`.
-  - [ ] Verify the mirror rather than assuming it: the `snceNeg` ACTIVE guard is
+  - [x] Verify the mirror rather than assuming it: the `snceNeg` ACTIVE guard is
         `pastTimes.isEmpty && timeOrd.timeCount > 0 && timeOrd.timeCount < 4` at
         `Tableau.lean:1163` (read the arm's own `if`, **not** the comment at `Tableau.lean:1167`),
         with `newOrd = timeOrd.addPast l.time freshTime` at `Tableau.lean:1170`, and
         `addPast ord t t_new = (t_new, t) :: ord.constraints` (`SignedFormula.lean:689-690`) — so the
         new edge is `(freshTime, l.time)` and the column is cured via `mem_pastOf_of_mem_constraints`
         (`MintBound.lean:223`).
-  - [ ] If the mirror turns out **not** to be exact, that is a finding: stop, do not force it, and
+  - [x] If the mirror turns out **not** to be exact, that is a finding: *(the mirror is exact;
+        nothing to record)*  — original text: stop, do not force it, and
         record it as a further C9 register entry in Phase 10.
 
 - **Estimated output:** ~120-200 lines.
@@ -580,7 +586,7 @@ re-executed against a changed engine, not a new design.
 
 ### Phase 6: `MintPaysForTimeAt`'s direction lemma and the no-leak confirmation [BLOCKED]
 
-**BLOCKER** (Phase 6): blocked by Phase 1's FALSE verdict. `mintPaysForTimeAt_reuse_false` decides `MintPaysForTimeAt` false at the σ-hit hazard, at every frame class and every `Tmax`, with the most favorable run-realizable σ. `selfGuard_no_column_at_retired_time` gives the general reason, so no other configuration escapes it. Building plumbing for a refuted design is forbidden by the plan's own Rollback/Contingency section. **What is needed to unblock**: a fourth measure component whose index set is not carried through σ at all, or a discharge of the σ-hit obligation itself — which the time-reuse verdict decides is false, not open.
+**BLOCKER RESOLVED** (Phase 6): unblocked by Phase 1R, which discharges the σ-hit obligation at the oriented arm (`sigma_time_hit_of_sigmaTimeStable`, from confinement plus `SigmaTimeStable`).
 
 - **Goal:** Complete the parent plan's Phase 7 deliverable. The direction lemma is a **gate, not a
   nicety**: register entry 7 exists because a "simplification" that was secretly a weakening was
@@ -624,7 +630,7 @@ re-executed against a changed engine, not a new design.
 
 ### Phase 7: The four-component measure and its identification arm [BLOCKED]
 
-**BLOCKER** (Phase 7): blocked by Phase 1's FALSE verdict. `mintPaysForTimeAt_reuse_false` decides `MintPaysForTimeAt` false at the σ-hit hazard, at every frame class and every `Tmax`, with the most favorable run-realizable σ. `selfGuard_no_column_at_retired_time` gives the general reason, so no other configuration escapes it. Building plumbing for a refuted design is forbidden by the plan's own Rollback/Contingency section. **What is needed to unblock**: a fourth measure component whose index set is not carried through σ at all, or a discharge of the σ-hit obligation itself — which the time-reuse verdict decides is false, not open.
+**BLOCKER RESOLVED** (Phase 7): unblocked by Phase 1R, which discharges the σ-hit obligation at the oriented arm (`sigma_time_hit_of_sigmaTimeStable`, from confinement plus `SigmaTimeStable`).
 
 - **Goal:** Land `budgetPotentialAt`, the additive four-component sibling of `budgetPotential`, and
   re-prove the identification-arm step lemma at it. This phase is where Constraint (F) is tested for
@@ -665,7 +671,7 @@ re-executed against a changed engine, not a new design.
 
 ### Phase 8: The unordered step lemma and the fuel-figure re-derivation [BLOCKED]
 
-**BLOCKER** (Phase 8): blocked by Phase 1's FALSE verdict. `mintPaysForTimeAt_reuse_false` decides `MintPaysForTimeAt` false at the σ-hit hazard, at every frame class and every `Tmax`, with the most favorable run-realizable σ. `selfGuard_no_column_at_retired_time` gives the general reason, so no other configuration escapes it. Building plumbing for a refuted design is forbidden by the plan's own Rollback/Contingency section. **What is needed to unblock**: a fourth measure component whose index set is not carried through σ at all, or a discharge of the σ-hit obligation itself — which the time-reuse verdict decides is false, not open.
+**BLOCKER RESOLVED** (Phase 8): unblocked by Phase 1R, which discharges the σ-hit obligation at the oriented arm (`sigma_time_hit_of_sigmaTimeStable`, from confinement plus `SigmaTimeStable`).
 
 - **Goal:** Re-prove the unordered step lemma at the four-component measure, consuming
   `MintPaysForTimeAt`'s third disjunct, and re-derive the fuel figures that carry it.
@@ -702,7 +708,7 @@ re-executed against a changed engine, not a new design.
 
 ### Phase 9: Terminus restatement and the concrete instantiation [BLOCKED]
 
-**BLOCKER** (Phase 9): blocked by Phase 1's FALSE verdict. `mintPaysForTimeAt_reuse_false` decides `MintPaysForTimeAt` false at the σ-hit hazard, at every frame class and every `Tmax`, with the most favorable run-realizable σ. `selfGuard_no_column_at_retired_time` gives the general reason, so no other configuration escapes it. Building plumbing for a refuted design is forbidden by the plan's own Rollback/Contingency section. **What is needed to unblock**: a fourth measure component whose index set is not carried through σ at all, or a discharge of the σ-hit obligation itself — which the time-reuse verdict decides is false, not open.
+**BLOCKER RESOLVED** (Phase 9): unblocked by Phase 1R, which discharges the σ-hit obligation at the oriented arm (`sigma_time_hit_of_sigmaTimeStable`, from confinement plus `SigmaTimeStable`).
 
 - **Goal:** Deliver the task's "done" condition — the two seed-level termini restated at the
   repaired shape, and the repaired predicate discharged at a **concrete, useful** universe.

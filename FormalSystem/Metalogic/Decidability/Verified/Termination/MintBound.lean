@@ -8909,6 +8909,226 @@ theorem selfGuardPotential_identifyOriented {U : Finset SignedFormula}
       ≤ selfGuardPotential U σ ord :=
   selfGuardPotential_identifyTime (incomparableB_of_firstIncomparablePair_oriented htrig) hirr
 
+/-! #### The σ-hit obligation, discharged rather than carried
+
+Register entry 14 instructed that the σ-hit residual be *carried structurally* rather than
+discharged, and Phase 1's gate is why: at the unoriented arm it is false, so carrying it was the
+only honest option. `SigmaTimeStable` changes that. The obligation asks for some `sf ∈ U` whose
+σ-image sits at the trigger's time; the trigger is a branch formula; confinement puts it in `U`; and
+σ-time-stability says σ does not move it off its own time. Three facts, one line, no search.
+
+This is the single place where the reorientation pays off in the measure's own terms, and it is
+worth being precise about what it costs. Nothing is assumed here that a consumer does not already
+have: `∀ x ∈ b, x ∈ U` is `MintPaysForTime`'s own second hypothesis, unchanged since the predicate
+was written, and `SigmaTimeStable σ b` is discharged at the identification arm by
+`sigmaTimeStable_identifyOriented`. -/
+
+/-- **The σ-hit obligation, discharged from confinement and σ-time-stability.**
+
+The trigger witnesses its own hit. `mintPotential_lt_of_mint`'s formula-level obligation is *not*
+available this way — it needs `σ sf = g` on the nose, and `rhoSF`'s image genuinely omits formulas —
+but the time-level obligation `selfGuardPotential` reads is, and that difference is the whole reason
+the fourth component is indexed by time rather than by formula. -/
+theorem sigma_time_hit_of_sigmaTimeStable {U : Finset SignedFormula}
+    {σ : SignedFormula → SignedFormula} {b : Branch} (hconf : ∀ x ∈ b, x ∈ U)
+    (hst : SigmaTimeStable σ b) {sf : SignedFormula} (hsf : sf ∈ b) :
+    ∃ x ∈ U, (σ x).label.time = sf.label.time :=
+  ⟨sf, hconf sf hsf, hst sf hsf⟩
+
+/-- **`SigmaTimeStable` at a single renaming is exactly "the branch has lost the retired index".**
+
+An `iff`, so it can be used in both directions: to *discharge* stability from a branch fact, and to
+*read off* a branch fact from stability. `sigmaTimeStable_identifyOriented` is the forward direction
+instantiated at the arm's own post-state; this is the general statement behind it. -/
+theorem sigmaTimeStable_rhoSF_iff {src tgt : TimeIndex} {b : Branch} (h : tgt ≠ src) :
+    SigmaTimeStable (rhoSF src tgt) b ↔ ∀ x ∈ b, x.label.time ≠ src := by
+  constructor
+  · intro hst x hx hc
+    exact rhoSF_time_ne_src h x ((hst x hx).trans hc)
+  · intro hne x hx
+    exact rhoSF_time_eq_of_ne_src (hne x hx)
+
+/-- **…and a branch every one of whose times is above the retired index is stable.**
+
+The form the run-level argument consumes. Under the oriented arm the retired index is strictly below
+the post-arm `nextTime` (`retired_lt_nextTime_oriented`) and `nextTime` is non-decreasing along the
+run (`nextTime_monotone_along_run`), so every time the run mints after the arm is strictly above
+every index the arm retired — which is exactly this hypothesis, and is why growth cannot break
+stability. -/
+theorem sigmaTimeStable_rhoSF_of_lt {src tgt : TimeIndex} {b : Branch} (h : tgt ≠ src)
+    (hlt : ∀ x ∈ b, src < x.label.time) : SigmaTimeStable (rhoSF src tgt) b :=
+  (sigmaTimeStable_rhoSF_iff h).mpr (fun x hx => Ne.symm (Nat.ne_of_lt (hlt x hx)))
+
+/-! #### The discharge lemmas: `untlNeg` and `snceNeg` pay for their own mints
+
+Each self-guarded rule fires only when its own reach is empty and returns an ordering that makes
+that reach non-empty. So its trigger's column flips uncured → cured at exactly the step it mints,
+and by `selfGuardPotential_le_of_grow` no other column flips the other way — the edge is *added*,
+never removed. One column strictly lost from a set that only shrinks is a strict decrease.
+
+**Research risk R2 is dissolved rather than discharged, and that is a finding worth recording.**
+The plan asked for a prior lemma placing the freshly minted time outside the ordering's endpoints,
+on the worry that the mint might create a new *uncured* column and cancel the flip. It cannot:
+`selfGuardPotential` does not take a `Branch`, the index set `selfGuardRules ×ˢ U` is fixed, and a
+mint step changes neither `U` nor `σ`. So the freshly minted formula has no column at all unless it
+already had one, and the column indices do not move. The `OrdTimesKnown`-plus-`nextTime > maxTime`
+argument the plan reserved for this is not needed, and reaching for it would have been reaching for
+a fact about a quantity the component deliberately does not read.
+
+**Research risk R3 is resolved by measurement, not by assumption.** The `snceNeg` mirror below is
+exact: same guard shape read off the arm's own `if` rather than off its comment
+(`pastTimes.isEmpty && timeCount > 0 && timeCount < 4`), same one-edge `newOrd`
+(`timeOrd.addPast l.time freshTime`), and `addPast ord t tf = (tf, t) :: ord.constraints`, so the
+curing edge runs *into* the trigger's time and `mem_pastOf_of_mem_constraints` closes it. The proof
+is a transcription with `futureOf → pastOf` and nothing else changed. -/
+
+/-- **Adding a forward edge out of an uncured time strictly drops the potential.**
+
+Stated at the ordering operation rather than at the rule, because that is where the content is: the
+rule's contribution is `newOrd = ord.addFuture l.time freshTime` and its guard
+`(ord.futureOf l.time).isEmpty`, both of which appear here as hypotheses and are supplied at the
+engine level by `applyRule_untlNeg_active_ord`.
+
+The σ-hit hypothesis is `hhit`, and it is **not** vacuous: `sigma_time_hit_of_sigmaTimeStable`
+discharges it from confinement plus σ-time-stability, and `selfGuardPotential_lt_at_orientedGate`
+decides the whole conclusion at a concrete configuration. At the unoriented arm it is false, which
+is what `mintPaysForTimeAt_reuse_false` records. -/
+theorem selfGuardPotential_lt_of_addFuture {U : Finset SignedFormula}
+    {σ : SignedFormula → SignedFormula} {ord : TimeOrdering} {t tf : TimeIndex}
+    (hempty : (ord.futureOf t).isEmpty = true)
+    {sf : SignedFormula} (hsf : sf ∈ U) (hhit : (σ sf).label.time = t) :
+    selfGuardPotential U σ (ord.addFuture t tf) < selfGuardPotential U σ ord := by
+  have hgrow : ∀ q ∈ ord.constraints, q ∈ (ord.addFuture t tf).constraints := by
+    intro q hq; simp only [TimeOrdering.addFuture, List.mem_cons]; exact Or.inr hq
+  refine Finset.card_lt_card ⟨?_, ?_⟩
+  · intro p hp
+    simp only [Finset.mem_filter] at hp ⊢
+    refine ⟨hp.1, ?_⟩
+    rcases hd : selfGuardDischarged p.1 (σ p.2) ord with _ | _
+    · rfl
+    · rw [selfGuardDischarged_le_of_grow hgrow p.1 (σ p.2) hd] at hp
+      exact absurd hp.2 (by simp)
+  · intro hsub
+    have hmemR : TableauRule.untlNeg ∈ selfGuardRules := by decide
+    have hcol : ((TableauRule.untlNeg, sf) : TableauRule × SignedFormula)
+        ∈ (selfGuardRules ×ˢ U).filter
+          (fun p => selfGuardDischarged p.1 (σ p.2) ord = false) := by
+      simp only [Finset.mem_filter]
+      refine ⟨Finset.mem_product.mpr ⟨hmemR, hsf⟩, ?_⟩
+      simp only [selfGuardDischarged, hhit, hempty]
+      rfl
+    have hnil : ((ord.addFuture t tf).futureOf t) ≠ [] :=
+      List.ne_nil_of_mem
+        (mem_futureOf_of_mem_constraints _ t tf (by simp [TimeOrdering.addFuture]))
+    have hcured : selfGuardDischarged TableauRule.untlNeg (σ sf) (ord.addFuture t tf) = true := by
+      simp only [selfGuardDischarged, hhit, Bool.not_eq_true', List.isEmpty_eq_false_iff]
+      exact hnil
+    have hfalse := (Finset.mem_filter.mp (hsub hcol)).2
+    rw [hcured] at hfalse
+    exact absurd hfalse (by simp)
+
+/-- **The exact past mirror.** `addPast ord t tf` is `(tf, t) :: ord.constraints`, so the new edge
+runs *into* `t` and `mem_pastOf_of_mem_constraints` puts `tf` in `t`'s past. Transcription of the
+lemma above with `futureOf → pastOf`, `addFuture → addPast`, `untlNeg → snceNeg`; nothing else
+differs, which is the measurement research risk R3 asked for. -/
+theorem selfGuardPotential_lt_of_addPast {U : Finset SignedFormula}
+    {σ : SignedFormula → SignedFormula} {ord : TimeOrdering} {t tf : TimeIndex}
+    (hempty : (ord.pastOf t).isEmpty = true)
+    {sf : SignedFormula} (hsf : sf ∈ U) (hhit : (σ sf).label.time = t) :
+    selfGuardPotential U σ (ord.addPast t tf) < selfGuardPotential U σ ord := by
+  have hgrow : ∀ q ∈ ord.constraints, q ∈ (ord.addPast t tf).constraints := by
+    intro q hq; simp only [TimeOrdering.addPast, List.mem_cons]; exact Or.inr hq
+  refine Finset.card_lt_card ⟨?_, ?_⟩
+  · intro p hp
+    simp only [Finset.mem_filter] at hp ⊢
+    refine ⟨hp.1, ?_⟩
+    rcases hd : selfGuardDischarged p.1 (σ p.2) ord with _ | _
+    · rfl
+    · rw [selfGuardDischarged_le_of_grow hgrow p.1 (σ p.2) hd] at hp
+      exact absurd hp.2 (by simp)
+  · intro hsub
+    have hmemR : TableauRule.snceNeg ∈ selfGuardRules := by decide
+    have hcol : ((TableauRule.snceNeg, sf) : TableauRule × SignedFormula)
+        ∈ (selfGuardRules ×ˢ U).filter
+          (fun p => selfGuardDischarged p.1 (σ p.2) ord = false) := by
+      simp only [Finset.mem_filter]
+      refine ⟨Finset.mem_product.mpr ⟨hmemR, hsf⟩, ?_⟩
+      simp only [selfGuardDischarged, hhit, hempty]
+      rfl
+    have hnil : ((ord.addPast t tf).pastOf t) ≠ [] :=
+      List.ne_nil_of_mem
+        (mem_pastOf_of_mem_constraints _ tf t (by simp [TimeOrdering.addPast]))
+    have hcured : selfGuardDischarged TableauRule.snceNeg (σ sf) (ord.addPast t tf) = true := by
+      simp only [selfGuardDischarged, hhit, Bool.not_eq_true', List.isEmpty_eq_false_iff]
+      exact hnil
+    have hfalse := (Finset.mem_filter.mp (hsub hcol)).2
+    rw [hcured] at hfalse
+    exact absurd hfalse (by simp)
+
+/-- **The `untlNeg` ACTIVE arm's ordering, read off the engine.** The arm returns
+`timeOrd.addFuture l.time branch.nextTime` and nothing else touches the ordering component, so the
+discharge lemma's `addFuture` hypothesis is the engine's own output rather than a modelling choice.
+
+The guard is transcribed exactly as the arm's `if` writes it — `futureTimes.isEmpty &&
+timeOrd.timeCount > 0 && timeOrd.timeCount < 4` — because the arm's *comment* and the arm's `if`
+disagreed historically and the `if` is what fires. -/
+theorem applyRule_untlNeg_active_ord {sign : Sign} {φ : Formula} {l : Label}
+    {b : Branch} {ord : TimeOrdering} {e g : Formula}
+    (hsign : sign = Sign.neg) (hform : asUntil? φ = some (e, g))
+    (hguard : ((ord.futureOf l.time).isEmpty && decide (0 < ord.timeCount)
+      && decide (ord.timeCount < 4)) = true) :
+    (applyRule TableauRule.untlNeg ⟨sign, φ, l⟩ b ord).2 = ord.addFuture l.time b.nextTime := by
+  subst hsign
+  simp only [applyRule, hform, hguard, if_true]
+
+/-- **The `snceNeg` ACTIVE arm's ordering, read off the engine.** The past mirror, same shape,
+`addPast` in place of `addFuture`. -/
+theorem applyRule_snceNeg_active_ord {sign : Sign} {φ : Formula} {l : Label}
+    {b : Branch} {ord : TimeOrdering} {e g : Formula}
+    (hsign : sign = Sign.neg) (hform : asSince? φ = some (e, g))
+    (hguard : ((ord.pastOf l.time).isEmpty && decide (0 < ord.timeCount)
+      && decide (ord.timeCount < 4)) = true) :
+    (applyRule TableauRule.snceNeg ⟨sign, φ, l⟩ b ord).2 = ord.addPast l.time b.nextTime := by
+  subst hsign
+  simp only [applyRule, hform, hguard, if_true]
+
+/-- **The `untlNeg` discharge lemma, assembled.** At an ACTIVE `untlNeg` firing on a branch formula,
+under confinement and σ-time-stability, the self-guard potential strictly drops.
+
+Every hypothesis here is one a consumer already has. `hconf` is `MintPaysForTime`'s own second
+hypothesis; `hst` is `MintPaysForTimeStable`'s added one, discharged at the identification arm by
+`sigmaTimeStable_identifyOriented`; `hguard` is the arm's own firing condition, so it is available
+wherever the arm fired; and `hsf` says the trigger is on the branch, which every `pick` stage
+supplies. Nothing is assumed about the frame class, `Tmax`, or the shape of `U`. -/
+theorem selfGuardPotential_lt_of_untlNeg {U : Finset SignedFormula}
+    {σ : SignedFormula → SignedFormula} {b : Branch} {ord : TimeOrdering}
+    {φ : Formula} {l : Label} {e g : Formula}
+    (hconf : ∀ x ∈ b, x ∈ U) (hst : SigmaTimeStable σ b)
+    (hsf : (⟨Sign.neg, φ, l⟩ : SignedFormula) ∈ b) (hform : asUntil? φ = some (e, g))
+    (hguard : ((ord.futureOf l.time).isEmpty && decide (0 < ord.timeCount)
+      && decide (ord.timeCount < 4)) = true) :
+    selfGuardPotential U σ (applyRule TableauRule.untlNeg ⟨Sign.neg, φ, l⟩ b ord).2
+      < selfGuardPotential U σ ord := by
+  obtain ⟨x, hxU, hxt⟩ := sigma_time_hit_of_sigmaTimeStable hconf hst hsf
+  rw [applyRule_untlNeg_active_ord rfl hform hguard]
+  refine selfGuardPotential_lt_of_addFuture ?_ hxU hxt
+  simpa using (Bool.and_eq_true _ _ |>.mp (Bool.and_eq_true _ _ |>.mp hguard).1).1
+
+/-- **The `snceNeg` discharge lemma, assembled.** The exact past mirror of the lemma above. -/
+theorem selfGuardPotential_lt_of_snceNeg {U : Finset SignedFormula}
+    {σ : SignedFormula → SignedFormula} {b : Branch} {ord : TimeOrdering}
+    {φ : Formula} {l : Label} {e g : Formula}
+    (hconf : ∀ x ∈ b, x ∈ U) (hst : SigmaTimeStable σ b)
+    (hsf : (⟨Sign.neg, φ, l⟩ : SignedFormula) ∈ b) (hform : asSince? φ = some (e, g))
+    (hguard : ((ord.pastOf l.time).isEmpty && decide (0 < ord.timeCount)
+      && decide (ord.timeCount < 4)) = true) :
+    selfGuardPotential U σ (applyRule TableauRule.snceNeg ⟨Sign.neg, φ, l⟩ b ord).2
+      < selfGuardPotential U σ ord := by
+  obtain ⟨x, hxU, hxt⟩ := sigma_time_hit_of_sigmaTimeStable hconf hst hsf
+  rw [applyRule_snceNeg_active_ord rfl hform hguard]
+  refine selfGuardPotential_lt_of_addPast ?_ hxU hxt
+  simpa using (Bool.and_eq_true _ _ |>.mp (Bool.and_eq_true _ _ |>.mp hguard).1).1
+
 /-! ## C9. The do-not-re-attempt register
 
 Eighteen statements that look like the natural next lemma and are **not** available. Each is cited
