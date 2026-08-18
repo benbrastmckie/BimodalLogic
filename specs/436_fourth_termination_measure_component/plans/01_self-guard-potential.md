@@ -384,6 +384,48 @@ the phase's own instruction rather than silently absorbed.
 
 ---
 
+### Phase 1R: Re-gate at the oriented identification arm [IN PROGRESS]
+
+**RESUMPTION.** Phase 1's FALSE verdict was decided against `gateSigma = rhoSF 2 0`, the renaming
+the identification arm produced *at the time the gate was built*. The spawned blocker task has
+since reoriented arm 3 to merge `min t₁ t₂` into `max t₁ t₂` (C9 register entry 18), so at the
+reuse witness's own trigger `(0, 2)` the arm now produces `rhoSF 0 2` and **no run produces
+`rhoSF 2 0` there any more**. Entry 18 says so in its own closing paragraph: entry 17's refutation
+"stands as a statement **about the unoriented arm**", and whether a measure-side component is now
+provable "is a genuinely open follow-on question".
+
+This phase re-runs Phase 1's gate at the renaming the oriented arm actually hands back, with the
+same refute-first discipline and the same binary verdict criteria. It is Phase 1's own methodology
+re-executed against a changed engine, not a new design.
+
+- **Goal:** Decide whether Phase 1's FALSE verdict survives the oriented arm, and if it does not,
+  identify the minimal hypothesis that excludes the Phase-1 gate configuration without excluding
+  any state the engine can reach.
+
+- **Tasks:**
+  - [ ] Land the converse of `selfGuard_no_column_at_retired_time`: at any time *other* than the
+        retired one a column of `selfGuardRules ×ˢ U` **is** indexed, because `rhoSF src tgt` fixes
+        every time but `src`.
+  - [ ] Land the general reason the oriented arm escapes the σ-hit obligation: the post-arm branch
+        carries no formula at the retired index (`src_not_mem_knownTimes_identifyTime`), so the
+        arm's own renaming fixes the time of **every formula the branch still carries**.
+  - [ ] Name that property (`SigmaTimeStable`) and land the repaired predicate carrying it.
+  - [ ] Build the oriented gate: the post-oriented-arm state at the reuse witness, with an
+        `untlNeg` trigger whose ACTIVE arm fires, in the `gate*` shape.
+  - [ ] Measure all three disjuncts there, and measure `SigmaTimeStable` at both gates so the
+        exclusion is decided rather than asserted.
+  - [ ] State the verdict in words in a docstring.
+
+- **Verdict criteria (binary):** TRUE — disjunct 3 holds at the oriented gate and the Phase-1 gate
+  is excluded by a hypothesis the engine discharges: unblock Phases 2-9. FALSE — the FALSE verdict
+  survives: leave Phases 2-9 blocked and record a new register entry.
+
+- **Verification Tier:** local
+- **Done when:** the verdict theorems are sorry-free, `lake build` of the module is green, and the
+  verdict is stated in words.
+
+---
+
 ### Phase 2: Index-set agreement, the ceiling, and growth monotonicity [BLOCKED]
 
 **BLOCKER** (Phase 2): blocked by Phase 1's FALSE verdict. `mintPaysForTimeAt_reuse_false` decides `MintPaysForTimeAt` false at the σ-hit hazard, at every frame class and every `Tmax`, with the most favorable run-realizable σ. `selfGuard_no_column_at_retired_time` gives the general reason, so no other configuration escapes it. Building plumbing for a refuted design is forbidden by the plan's own Rollback/Contingency section. **What is needed to unblock**: a fourth measure component whose index set is not carried through σ at all, or a discharge of the σ-hit obligation itself — which the time-reuse verdict decides is false, not open.

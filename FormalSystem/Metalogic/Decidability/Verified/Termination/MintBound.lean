@@ -8360,6 +8360,398 @@ theorem timeMergeClosed_identifyTime_oriented {C : Finset Formula} {L : Finset L
   · rw [Nat.max_eq_left hle]; exact h1
 
 
+/-! ### The self-guard component re-gated at the oriented arm
+
+Phase 1's gate above is a statement about the renaming the identification arm produced **at the
+time that gate was built**. Arm 3 merged `t₂` into `t₁` whatever their magnitudes, so at the reuse
+witness's own trigger `(0, 2)` it produced `rhoSF 2 0` — retiring the *larger* numeral — and
+`gateSigma` is exactly that renaming. `identifyOrient` retires the smaller numeral instead, so at
+the same trigger the arm now produces `rhoSF 0 2`, and no run produces `rhoSF 2 0` there any more.
+
+That distinction is the whole of the σ-hit obligation, and it cuts the other way from Phase 1.
+`rhoSF src tgt`'s image omits exactly `src` (`rhoSF_time_ne_src`) and fixes every other time on the
+nose (`rhoSF_time_eq_of_ne_src` below), while `src_not_mem_knownTimes_identifyTime` says the
+post-arm branch carries no formula at `src` at all. Under the oriented arm the renaming therefore
+fixes the time of **every formula the branch still carries**, so the *time* hit `selfGuardPotential`
+needs is available at every trigger the engine can select: the trigger is a branch formula, and the
+branch's times are precisely the ones the renaming fixes.
+
+**`mintPaysForTimeAt_reuse_false` is untouched by this and stays true exactly as stated.**
+`MintPaysForTimeAt` quantifies `σ` with no tie to the state it is read at, so a renaming no run
+produces still refutes it, and register entry 17 stands as a statement about that predicate. What
+changes is that the refuting renaming is now identifiable *by a property of the state it is applied
+at* rather than only by provenance: `gateSigma` moves the gate's own trigger off its own time, and
+no renaming the oriented arm produces does that to a formula the branch still carries.
+`SigmaTimeStable` names that property; `MintPaysForTimeStable` is `MintPaysForTimeAt` carrying it.
+-/
+
+/-- **The converse of `rhoSF_time_ne_src`: every time but the retired one is fixed on the nose.**
+
+One line, and it is the positive half of the σ-hit story that Phase 1 had no use for. `rho src tgt`
+is an `if` on `t = src`, so away from `src` it is the identity — which is why the *only* time a
+single identification's renaming can fail to hit is the one it retires. -/
+theorem rhoSF_time_eq_of_ne_src {src tgt : TimeIndex} {sf : SignedFormula}
+    (h : sf.label.time ≠ src) : (rhoSF src tgt sf).label.time = sf.label.time := by
+  simp [rhoSF, rho, h]
+
+/-- **The converse of `selfGuard_no_column_at_retired_time`: at a live time a column *is* indexed.**
+
+`selfGuard_no_column_at_retired_time` says no column of `selfGuardRules ×ˢ U` sits at the retired
+index. This says the retired index is the *only* one missing: for any `sf ∈ U` whose time is not
+`src`, the pair `(untlNeg, sf)` is a column of the index set and its σ-image sits at exactly
+`sf.label.time`.
+
+Together the two lemmas locate the obstruction precisely. It was never that the ledger is indexed
+too narrowly; it was that the one time the renaming omits happened, under the unoriented arm, to be
+a time the engine could re-issue and put a trigger at. -/
+theorem selfGuard_column_at_live_time {src tgt : TimeIndex} {U : Finset SignedFormula}
+    {sf : SignedFormula} (hsf : sf ∈ U) (hlive : sf.label.time ≠ src) :
+    ((TableauRule.untlNeg, sf) : TableauRule × SignedFormula) ∈ selfGuardRules ×ˢ U ∧
+      (rhoSF src tgt sf).label.time = sf.label.time := by
+  have hr : TableauRule.untlNeg ∈ selfGuardRules := by decide
+  exact ⟨Finset.mem_product.mpr ⟨hr, hsf⟩, rhoSF_time_eq_of_ne_src hlive⟩
+
+/-- The orientation's two numerals are distinct exactly when the trigger's are. -/
+theorem identifyOrient_ne {t₁ t₂ : TimeIndex} (hne : t₁ ≠ t₂) :
+    (identifyOrient t₁ t₂).1 ≠ (identifyOrient t₁ t₂).2 := by
+  simp only [identifyOrient]
+  rcases Nat.le_total t₁ t₂ with hle | hle
+  · rw [Nat.min_eq_left hle, Nat.max_eq_right hle]; exact hne
+  · rw [Nat.min_eq_right hle, Nat.max_eq_left hle]; exact hne.symm
+
+/-- **σ-time-stability**: the accumulated renaming moves no formula the branch still carries off
+its own time.
+
+This is the property that separates the renamings a run can produce from the ones it cannot, and it
+is stated *at the state* rather than by provenance so that it can be assumed, discharged and
+decided. It is deliberately weaker than "σ fixes the branch pointwise" — only times are constrained,
+because only times are what `selfGuardDischarged` reads.
+
+Note what it does **not** say. It puts no condition on `σ` away from `b`, so it does not exclude a
+renaming that moves times the branch has already lost; that is exactly right, since a column at a
+lost time can no longer be flipped by any rule the engine fires. -/
+def SigmaTimeStable (σ : SignedFormula → SignedFormula) (b : Branch) : Prop :=
+  ∀ x ∈ b, (σ x).label.time = x.label.time
+
+/-- **The oriented arm's own renaming is σ-time-stable at the state the arm produces.**
+
+The general reason the re-gate below comes out the other way, and it needs nothing but the two
+facts either side of it: the post-arm branch carries no formula at the retired index
+(`src_not_mem_knownTimes_identifyTime`), and away from that index the renaming is the identity on
+times (`rhoSF_time_eq_of_ne_src`).
+
+No membership hypothesis on `t₁` or `t₂` is used, and none is available to be used — the statement
+holds on an arbitrary branch at any two distinct times. Under the unoriented arm the same proof
+gives the same conclusion about `rhoSF t₂ t₁`; what the orientation buys is not this lemma but
+`retired_lt_nextTime_oriented`, which is what stops the engine from ever putting a trigger back at
+the retired index. -/
+theorem sigmaTimeStable_identifyOriented {b : Branch} {ord : TimeOrdering} {t₁ t₂ : TimeIndex}
+    (hne : t₁ ≠ t₂) :
+    SigmaTimeStable (rhoSF (identifyOrient t₁ t₂).1 (identifyOrient t₁ t₂).2)
+      (identifyOriented b ord t₁ t₂).1 := by
+  intro x hx
+  simp only [identifyOriented] at hx
+  refine rhoSF_time_eq_of_ne_src ?_
+  intro hEq
+  have hmem : x.label.time
+      ∈ (b.identifyTime (identifyOrient t₁ t₂).1 (identifyOrient t₁ t₂).2).knownTimes :=
+    mem_knownTimes_of_mem hx
+  rw [hEq] at hmem
+  exact src_not_mem_knownTimes_identifyTime b _ _ (identifyOrient_ne hne) hmem
+
+/-- **`SigmaTimeStable` is exactly what excludes Phase 1's gate, and it excludes nothing else
+there.** Decided at both configurations, side by side, so the exclusion is measured rather than
+asserted.
+
+Conjunct 1 is the whole content: `gateSigma = rhoSF 2 0` moves the gate's own trigger off time `2`,
+which is why no column of the ledger sat at the trigger's time and why disjunct 3 could not fall.
+Conjunct 2 records that the oriented renaming is no better *at that branch* — `gateBranch` carries
+a formula at time `0`, the index the oriented arm retires — which is the honest statement: the
+Phase-1 gate is not a state the oriented arm produces at all, under either renaming. Conjunct 3 is
+the oriented gate below, where the arm's own renaming is stable. -/
+theorem gateSigma_not_sigmaTimeStable :
+    (¬ SigmaTimeStable gateSigma gateBranch) ∧ ¬ SigmaTimeStable (rhoSF 0 2) gateBranch := by
+  refine ⟨fun h => ?_, fun h => ?_⟩
+  · exact absurd (h gateTrigger (by decide)) (by decide)
+  · exact absurd (h (SignedFormula.pos mwP ⟨0, 0⟩) (by decide)) (by decide)
+
+/-- **The repaired time-minting residual**: `MintPaysForTimeAt`'s body verbatim, with the renaming
+tied to the state it is read at by one added hypothesis and nothing removed.
+
+Two hypotheses were added to `MintPaysForTime` on the way here and both weaken the predicate, so
+the implications run `MintPaysForTime → MintPaysForTimeAt → MintPaysForTimeStable` and never the
+other way. This is the `universeClosedAt_of_universeClosed` idiom applied twice.
+
+**What the added hypothesis is for.** `MintPaysForTimeAt` is refuted as stated by
+`mintPaysForTimeAt_reuse_false`, and that refutation is permanent: `σ` is quantified there with no
+tie to `b`, so a renaming that moves the trigger off its own time defeats any σ-mediated ledger.
+`SigmaTimeStable σ b` is the minimal statement excluding exactly that, and it is not a wish —
+`sigmaTimeStable_identifyOriented` discharges it at the state the identification arm produces, with
+no membership hypothesis at all.
+
+**What it is not.** It is not a constraint on the frame class, on `U`, on `Tmax`, or on the branch;
+it is a constraint on the renaming, which is the one argument of `MintPaysForTime` that no consumer
+of the terminus supplies from outside. See `mintPaysForTimeStable_no_leak` below.
+
+**The density residual is unchanged.** Everything `MintPaysForTimeAt`'s obligation map records
+about `densityRule` applies here verbatim: `densityRule` mints a fresh time while lying outside
+both `freshLabelRules` and `selfGuardRules`, so no disjunct moves, and the intended component
+`gapPotential` remains a named residual. See the subsection "The density residual" and register
+entry 17. -/
+def MintPaysForTimeStable (fc : FormalSystem.ProofSystem.FrameClass) (U : Finset SignedFormula)
+    (Tmax : Nat) : Prop :=
+  ∀ (σ : SignedFormula → SignedFormula) (b : Branch) (ord : TimeOrdering)
+    (tr : EventualityTracker), RunInvariant b ord → (∀ x ∈ b, x ∈ U) → SigmaTimeStable σ b →
+    ∀ nb ∈ unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1,
+      (nb.knownTimes.toFinset.card ≤ b.knownTimes.toFinset.card ∧
+        splitOrderedRank Tmax nb (expandOnceUnblocked b ord fc tr).2
+          ≤ splitOrderedRank Tmax b ord)
+      ∨ (mintTimeBudget U σ nb (expandOnceUnblocked b ord fc tr).2
+            ≤ mintTimeBudget U σ b ord ∧
+          mintPotential U σ nb (expandOnceUnblocked b ord fc tr).2
+            < mintPotential U σ b ord)
+      ∨ selfGuardPotential U σ (expandOnceUnblocked b ord fc tr).2
+          < selfGuardPotential U σ ord
+
+/-- **Direction lemma, first link.** `MintPaysForTimeAt` adds a disjunct and removes nothing, so
+every consumer of `MintPaysForTime` can be restated against it. -/
+theorem mintPaysForTimeAt_of_mintPaysForTime {fc : FormalSystem.ProofSystem.FrameClass}
+    {U : Finset SignedFormula} {Tmax : Nat} (h : MintPaysForTime fc U Tmax) :
+    MintPaysForTimeAt fc U Tmax := by
+  intro σ b ord tr hri hconf nb hnb
+  rcases h σ b ord tr hri hconf nb hnb with h1 | h2
+  · exact Or.inl h1
+  · exact Or.inr (Or.inl h2)
+
+/-- **Direction lemma, second link.** `MintPaysForTimeStable` adds a hypothesis and removes
+nothing. -/
+theorem mintPaysForTimeStable_of_mintPaysForTimeAt {fc : FormalSystem.ProofSystem.FrameClass}
+    {U : Finset SignedFormula} {Tmax : Nat} (h : MintPaysForTimeAt fc U Tmax) :
+    MintPaysForTimeStable fc U Tmax :=
+  fun σ b ord tr hri hconf _ nb hnb => h σ b ord tr hri hconf nb hnb
+
+/-- **Direction lemma, composed.** The statement a reader restating an existing terminus needs. -/
+theorem mintPaysForTimeStable_of_mintPaysForTime {fc : FormalSystem.ProofSystem.FrameClass}
+    {U : Finset SignedFormula} {Tmax : Nat} (h : MintPaysForTime fc U Tmax) :
+    MintPaysForTimeStable fc U Tmax :=
+  mintPaysForTimeStable_of_mintPaysForTimeAt (mintPaysForTimeAt_of_mintPaysForTime h)
+
+/-! #### The oriented gate: the same measurement at the renaming the oriented arm produces
+
+Phase 1's gate is rebuilt here at the state the *oriented* arm hands back from the same reuse
+witness at the same trigger `(0, 2)`. Everything is a faithful mirror: the ordering is
+`TimeOrdering.identifyTime reuseWitnessOrd 0 2` on the nose, the branch is that arm's branch with an
+`untlNeg` trigger placed at the one time whose forward reach the ordering leaves empty, and the
+renaming is the `rhoSF` the arm itself produces. Only the orientation differs.
+
+The discipline is Phase 1's, unchanged. All three disjuncts are measured, not just the favourable
+one; the hazard conjuncts are decided separately so a verdict cannot be attributed to a violated
+precondition; and the unfavourable renaming is measured at the same step so the verdict is located
+at σ rather than at the ledger's shape. -/
+
+/-- The oriented gate's trigger. `untl` again, so the vehicle is `mintWitnessTrigger`'s and the
+comparison with Phase 1 is at one moving part. It sits at time `1`, the time whose forward reach
+the post-arm ordering leaves empty — `untlNeg`'s ACTIVE guard. -/
+def orientedGateTrigger : SignedFormula := SignedFormula.neg (Formula.untl mwG mwE) ⟨0, 1⟩
+
+/-- The oriented gate branch: the trigger, then the two atoms the oriented arm leaves at times `2`
+and `1`. Under the orientation the retired numeral is `0`, so — unlike `gateBranch` — no formula
+here sits at a retired index, which is exactly what `orientedGate_sigmaTimeStable` decides. -/
+def orientedGateBranch : Branch :=
+  [orientedGateTrigger, SignedFormula.pos mwP ⟨0, 2⟩, SignedFormula.pos mwQ ⟨0, 1⟩]
+
+/-- The oriented gate ordering. It is `TimeOrdering.identifyTime reuseWitnessOrd 0 2` on the nose:
+the arm substitutes `0 ↦ 2` in the single constraint `(0, 1)`, leaving `(2, 1)`. `futureOf 1` is
+empty and `timeCount` is `2`, which is `untlNeg`'s ACTIVE guard. -/
+def orientedGateOrd : TimeOrdering := ⟨[(2, 1)]⟩
+
+/-- The oriented gate universe: the branch itself, so confinement is immediate — the same choice
+`gateUniverse` makes. -/
+def orientedGateUniverse : Finset SignedFormula :=
+  {orientedGateTrigger, SignedFormula.pos mwP ⟨0, 2⟩, SignedFormula.pos mwQ ⟨0, 1⟩}
+
+/-- The first arm of the split the ACTIVE `untlNeg` reports: `F(e)` at the freshly minted time `3`,
+the re-included trigger, and the original branch. -/
+def orientedGateSucc : Branch :=
+  [SignedFormula.neg mwE ⟨0, 3⟩, orientedGateTrigger, orientedGateTrigger,
+   SignedFormula.pos mwP ⟨0, 2⟩, SignedFormula.pos mwQ ⟨0, 1⟩]
+
+/-- The ordering after the ACTIVE arm: `addFuture 1 3` prepended. This is the edge that cures the
+trigger's column — and, under the oriented renaming, the column is actually there to be cured. -/
+def orientedGateNewOrd : TimeOrdering := ⟨[(1, 3), (2, 1)]⟩
+
+/-- **The renaming the oriented arm produces.** `rhoSF 0 2`, not `rhoSF 2 0`: `identifyOrient 0 2`
+is `(0, 2)`, so the numeral the arm retires is `0` and the numeral that survives is `2`.
+
+`gateSigma` is the *same arm at the same trigger* under the old orientation, which is the entire
+difference between this subsection's verdict and Phase 1's. -/
+def orientedGateSigma : SignedFormula → SignedFormula := rhoSF 0 2
+
+/-- The oriented gate state satisfies the run invariant. -/
+theorem orientedGate_runInvariant : RunInvariant orientedGateBranch orientedGateOrd := by
+  constructor
+  · unfold IrreflOrd orientedGateOrd; decide
+  · unfold OrdTimesKnown; decide
+
+/-- …and it is confined to the oriented gate universe. -/
+theorem orientedGate_confined : ∀ x ∈ orientedGateBranch, x ∈ orientedGateUniverse := by decide
+
+/-- **The oriented gate really is the oriented arm's state at the reuse witness's own trigger.**
+Seven conjuncts, all decided, in the discipline `gate_is_reissue_hazard` uses — and deliberately
+the *same seven questions*, so the two gates can be read side by side.
+
+1-2. the standing hypotheses hold at the oriented gate state;
+3. `firstIncomparablePair` selects `(0, 2)` on the predecessor state, so the identification that
+   produces `orientedGateSigma` is the one the engine itself takes;
+4. the numeral the oriented arm retires is `0`, and it really is retired;
+5. …and, unlike under the old orientation, it is **not** re-issued: the post-arm `nextTime` is `3`,
+   strictly above the retired index. This is conjunct 5 of `gate_is_reissue_hazard` with its verdict
+   reversed, and it is the whole mechanism;
+6. the oriented gate ordering is exactly what that identification leaves behind;
+7. the trigger sits at a live time and `untlNeg`'s ACTIVE guard is met there — empty forward reach,
+   with `timeCount` inside the `(0, 4)` window. -/
+theorem orientedGate_is_oriented_arm_state :
+    IrreflOrd orientedGateOrd ∧ OrdTimesKnown orientedGateBranch orientedGateOrd ∧
+      firstIncomparablePair reuseWitnessBranch reuseWitnessOrd = some (0, 2) ∧
+      ((identifyOrient 0 2).1 = 0 ∧
+        0 ∉ (identifyOriented reuseWitnessBranch reuseWitnessOrd 0 2).1.knownTimes) ∧
+      (identifyOriented reuseWitnessBranch reuseWitnessOrd 0 2).1.nextTime = 3 ∧
+      orientedGateOrd.constraints
+        = (identifyOriented reuseWitnessBranch reuseWitnessOrd 0 2).2.constraints ∧
+      (orientedGateTrigger.label.time = 1 ∧ (orientedGateOrd.futureOf 1).isEmpty = true ∧
+        0 < orientedGateOrd.timeCount ∧ orientedGateOrd.timeCount < 4) := by
+  refine ⟨?_, ?_, by decide, ⟨by decide, by decide⟩, by decide, by decide,
+    by decide, by decide, by decide, by decide⟩
+  · unfold IrreflOrd orientedGateOrd; decide
+  · unfold OrdTimesKnown; decide
+
+/-- **The oriented gate's renaming is σ-time-stable at it, and Phase 1's is not at Phase 1's.**
+
+The discriminating hypothesis, decided at both configurations. This is the conjunct that makes
+`mintPaysForTimeAt_reuse_false` and the verdict below consistent rather than contradictory: the two
+gates are distinguished by a property of the *state*, not by an appeal to provenance.
+
+Conjunct 2 also records `sigmaTimeStable_identifyOriented`'s content at the concrete configuration,
+so the general lemma can be checked against a number. -/
+theorem orientedGate_sigmaTimeStable :
+    SigmaTimeStable orientedGateSigma orientedGateBranch ∧
+      SigmaTimeStable (rhoSF (identifyOrient 0 2).1 (identifyOrient 0 2).2)
+        (identifyOriented reuseWitnessBranch reuseWitnessOrd 0 2).1 := by
+  refine ⟨?_, sigmaTimeStable_identifyOriented (by decide)⟩
+  show ∀ x ∈ orientedGateBranch, (orientedGateSigma x).label.time = x.label.time
+  decide
+
+/-- **The engine fires the ACTIVE arm here**, at every frame class: the reported ordering is
+`orientedGateNewOrd` and `orientedGateSucc` is one of the two unordered successors. `untlNeg` is a
+`carrierBase` rule, so this is not a frame-class accident. The mirror of `gate_step_fires`. -/
+theorem orientedGate_step_fires (fc : FormalSystem.ProofSystem.FrameClass) :
+    (expandOnceUnblocked orientedGateBranch orientedGateOrd fc EventualityTracker.empty).2.constraints
+        = orientedGateNewOrd.constraints ∧
+      orientedGateSucc ∈ unorderedSuccessorBranches
+        (expandOnceUnblocked orientedGateBranch orientedGateOrd fc EventualityTracker.empty).1 := by
+  cases fc <;> exact ⟨by decide, by decide⟩
+
+/-- **The self-guard potential falls at the oriented gate, under the arm's own renaming.** `3` to
+`1`. The trigger's column at time `1` flips uncured → cured, and so does the column of the atom
+sitting there — which is the mechanism `selfGuardPotential` was designed around, working.
+
+This is the exact measurement `selfGuardPotential_eq_at_gate_with_sigma` reports as `3 → 3`. The
+only difference is which numeral the identification arm retired. -/
+theorem selfGuardPotential_lt_at_orientedGate :
+    selfGuardPotential orientedGateUniverse orientedGateSigma orientedGateNewOrd
+      < selfGuardPotential orientedGateUniverse orientedGateSigma orientedGateOrd := by decide
+
+/-- **All three disjuncts measured, not just the favourable one.** The mirror of the numbers in
+`mintPaysForTimeAt_reuse_false`'s docstring, at the oriented gate.
+
+Disjuncts 1 and 2 fail here exactly as they failed at Phase 1's gate, and for the same reasons: the
+step mints time `3`, so `knownTimes` rises `2 → 3`; `mintTimeBudget` rises `26 → 27` and
+`mintPotential` is `24` before and after, because `untlNeg` is not in `freshLabelRules`. Disjunct 3
+is the one that moves, `3 → 1`, and it is the only one that does. The fourth component is carrying
+the step on its own — which is what it was for. -/
+theorem orientedGate_disjuncts_measured :
+    orientedGateBranch.knownTimes.toFinset.card = 2 ∧
+      orientedGateSucc.knownTimes.toFinset.card = 3 ∧
+      mintTimeBudget orientedGateUniverse orientedGateSigma orientedGateBranch orientedGateOrd
+        = 26 ∧
+      mintTimeBudget orientedGateUniverse orientedGateSigma orientedGateSucc orientedGateNewOrd
+        = 27 ∧
+      mintPotential orientedGateUniverse orientedGateSigma orientedGateBranch orientedGateOrd
+        = 24 ∧
+      mintPotential orientedGateUniverse orientedGateSigma orientedGateSucc orientedGateNewOrd
+        = 24 ∧
+      selfGuardPotential orientedGateUniverse orientedGateSigma orientedGateOrd = 3 ∧
+      selfGuardPotential orientedGateUniverse orientedGateSigma orientedGateNewOrd = 1 := by
+  decide
+
+/-- **The verdict, side by side, in one statement.** The same component, the same rule, the same
+witness, the same trigger — and opposite outcomes, separated only by which numeral the
+identification arm retires.
+
+Conjunct 1 restates `selfGuardPotential_eq_at_gate_with_sigma`: under the old orientation the
+potential does not move. Conjunct 2 is the oriented measurement. Conjunct 3 records that the
+unoriented renaming is not inert *here* either — it also falls, `4 → 2` — so the verdict is not an
+artifact of the oriented gate being an easier configuration; every renaming pays at a state whose
+trigger sits at a live time.
+
+This is the pairing `oriented_arm_is_not_inert` sets the precedent for. -/
+theorem orientedGate_verdict_side_by_side :
+    selfGuardPotential gateUniverse gateSigma gateNewOrd
+        = selfGuardPotential gateUniverse gateSigma gateOrd ∧
+      selfGuardPotential orientedGateUniverse orientedGateSigma orientedGateNewOrd
+        < selfGuardPotential orientedGateUniverse orientedGateSigma orientedGateOrd ∧
+      selfGuardPotential orientedGateUniverse gateSigma orientedGateNewOrd
+        < selfGuardPotential orientedGateUniverse gateSigma orientedGateOrd := by
+  decide
+
+/-- **VERDICT: the re-gate decides TRUE.** `MintPaysForTimeStable`'s body holds at the oriented
+gate, at every frame class, every `Tmax` and every reported successor.
+
+*The verdict in words.* Phase 1's FALSE verdict does **not** survive the reorientation of the
+identification arm. It was a statement about `rhoSF 2 0` — the renaming the arm produced when it
+merged the larger numeral away — and the arm no longer produces it at that trigger, or at any
+other. At the renaming the arm now produces, the self-guard discharge potential pays for the
+self-guarded minting step on its own, which is what the component was designed to do.
+
+*What is decided here and what is not.* This is a gate, and it decides exactly what Phase 1's gate
+decided, with the sign reversed: the design is not refuted at the configuration that refuted it, so
+the plumbing may be built. It is **not** a proof of `MintPaysForTimeStable` at any `U` — that is the
+work the plan's later phases carry, and the density residual (`gapPotential`) is untouched by it.
+A reader who takes this theorem for the discharge has taken a decided instance for a quantified
+statement.
+
+*Why this does not contradict `mintPaysForTimeAt_reuse_false`.* That theorem is about
+`MintPaysForTimeAt`, which quantifies `σ` with no tie to the state it is read at, and it stays true.
+`MintPaysForTimeStable` carries `SigmaTimeStable σ b`, which `gateSigma_not_sigmaTimeStable` decides
+false at Phase 1's gate and `orientedGate_sigmaTimeStable` decides true here, and which
+`sigmaTimeStable_identifyOriented` discharges at every state the identification arm produces. The
+two verdicts are about two predicates and both stand. See register entry 19. -/
+theorem mintPaysForTimeStable_body_at_orientedGate
+    (fc : FormalSystem.ProofSystem.FrameClass) (Tmax : Nat) :
+    ∀ nb ∈ unorderedSuccessorBranches
+        (expandOnceUnblocked orientedGateBranch orientedGateOrd fc EventualityTracker.empty).1,
+      (nb.knownTimes.toFinset.card ≤ orientedGateBranch.knownTimes.toFinset.card ∧
+        splitOrderedRank Tmax nb
+            (expandOnceUnblocked orientedGateBranch orientedGateOrd fc
+              EventualityTracker.empty).2
+          ≤ splitOrderedRank Tmax orientedGateBranch orientedGateOrd)
+      ∨ (mintTimeBudget orientedGateUniverse orientedGateSigma nb
+            (expandOnceUnblocked orientedGateBranch orientedGateOrd fc
+              EventualityTracker.empty).2
+            ≤ mintTimeBudget orientedGateUniverse orientedGateSigma orientedGateBranch
+              orientedGateOrd ∧
+          mintPotential orientedGateUniverse orientedGateSigma nb
+            (expandOnceUnblocked orientedGateBranch orientedGateOrd fc
+              EventualityTracker.empty).2
+            < mintPotential orientedGateUniverse orientedGateSigma orientedGateBranch
+              orientedGateOrd)
+      ∨ selfGuardPotential orientedGateUniverse orientedGateSigma
+          (expandOnceUnblocked orientedGateBranch orientedGateOrd fc EventualityTracker.empty).2
+        < selfGuardPotential orientedGateUniverse orientedGateSigma orientedGateOrd := by
+  intro nb _
+  refine Or.inr (Or.inr ?_)
+  cases fc <;> decide
+
 /-! ## C9. The do-not-re-attempt register
 
 Eighteen statements that look like the natural next lemma and are **not** available. Each is cited
