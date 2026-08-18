@@ -1,7 +1,7 @@
 # Implementation Plan: The fourth termination-measure component (`selfGuardPotential`)
 
 - **Task**: 436 - fourth_termination_measure_component
-- **Status**: [IMPLEMENTING]
+- **Status**: [IMPLEMENTING] (resumed; Phases 1R-10R closed)
 - **Effort**: 12 hours
 - **Dependencies**: 435 (literature sub-index curation, [COMPLETED])
 - **Research Inputs**: `specs/436_fourth_termination_measure_component/reports/01_fourth-measure-component.md`
@@ -861,19 +861,54 @@ re-executed against a changed engine, not a new design.
 
 ---
 
+### Phase 10R: Register entry 19, narrative reconciliation, and the closing gate [COMPLETED]
+
+- **Goal:** Bring the file's own narrative into agreement with the resumption's outcome, record the
+  routes refuted along the way, and run the closing gates.
+
+- **Tasks:**
+  - [x] Append register entry 19 and update the opening count ("Eighteen" -> "Nineteen"). Entry 19
+        records: entry 17's verdict scoped to the unoriented arm and then overturned; and the four
+        routes a reader who has just read entry 17 will try — route 1
+        (`MintPaysForTimeAt → MintPaysForTimeStable`) closed, route 2 (a bare `selfGuardPotential`
+        drop as the third disjunct, at any weight) closed, route 3 (keeping `BudgetState` as the
+        carried state) closed, route 4 (the discharge at a nonempty universe) open and named.
+  - [x] Reconcile the "The repair, attempted and BLOCKED" narrative once more: a paragraph recording
+        that the FALSE verdict was scoped to the unoriented arm and has since been overturned, and
+        that what remains open is the density coordinate alone. Entry 17's body is **not** edited —
+        it is true as a statement about `MintPaysForTimeAt`, and entries 18 and 19 scope it in both
+        directions.
+  - [x] Correct the `MintPaysForTimeStable` docstring's implication chain: it does not factor
+        through `MintPaysForTimeAt`.
+  - [x] Closing gate: full `lake build` green (2458 jobs); every one of the 81 new declarations
+        reports axioms within `{propext, Classical.choice, Quot.sound}` — no `sorryAx`, no project
+        axiom; `git diff --stat` against the pre-resumption base shows `MintBound.lean` as the only
+        changed source file (+1821 / -3), with `Saturation.lean`, `Fuel.lean` and `Tableau.lean`
+        untouched; the three deletions are exactly the sanctioned narrative edits (the two closing
+        `-/` markers and the register's count line) — **no previously-landed declaration is
+        altered**; `grep -c sorry` on the changed file returns 1, unchanged, the word `sorryAx`
+        inside pre-existing prose at line 6740; the repo-wide `^axiom ` count is 7, unchanged from
+        base; the one vacuous-pattern hit is pre-existing in `Examples/TemporalStructures.lean` and
+        untouched; C9 remains the file's final block before `end FormalSystem.Metalogic.Decidability`.
+
+- **Verification Tier:** full
+- **Done when:** all of the above pass. They do.
+
+---
+
 ## Testing & Validation
 
-- [ ] `lake build FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound` green at the
+- [x] `lake build FormalSystem.Metalogic.Decidability.Verified.Termination.MintBound` green at the
       end of every phase.
-- [ ] Full `lake build` green at the end of Phase 9 and Phase 10.
-- [ ] `lean_verify` on every new theorem's fully qualified name reports sorry-free and axiom-free.
-- [ ] `git diff --stat` shows `FormalSystem/ProofSystem/.../Saturation.lean`,
+- [x] Full `lake build` green at the end of Phase 9 and Phase 10.
+- [x] `lean_verify` on every new theorem's fully qualified name reports sorry-free and axiom-free.
+- [x] `git diff --stat` shows `FormalSystem/ProofSystem/.../Saturation.lean`,
       `.../Fuel.lean`, and `.../Tableau.lean` untouched at every phase boundary.
-- [ ] `git diff` shows no modification to `MintPaysForTime`, `mintPotential`, `budgetPotential`,
+- [x] `git diff` shows no modification to `MintPaysForTime`, `mintPotential`, `budgetPotential`,
       `budgetPotential_step_unordered`, `budgetPotential_step_splitOrdered`, `mintPathBound`,
       `mintAwareFuel`, or any of the 16 original C9 entries' bodies.
-- [ ] C9 remains the file's final block before `end FormalSystem.Metalogic.Decidability`.
-- [ ] No `sorry`, no `def X := True`, no `theorem X := trivial` anywhere in the diff.
+- [x] C9 remains the file's final block before `end FormalSystem.Metalogic.Decidability`.
+- [x] No `sorry`, no `def X := True`, no `theorem X := trivial` anywhere in the diff.
 
 ## Artifacts & Outputs
 

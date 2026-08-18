@@ -7326,7 +7326,22 @@ the obstruction to composing a measure in general, it defeats this composition s
 the σ-hit route of the time-reuse verdict in a weakened *time-hit* form that escapes nothing.
 Register entry 17 is the standing record, and the subsection "The density residual" below records
 the one coordinate the verdict leaves untouched. `MintPaysForTime` is still a named, open
-hypothesis, and is still assumed by nothing. -/
+hypothesis, and is still assumed by nothing.
+
+**And since *that* note was written, the verdict has been scoped and then overturned.** The
+reorientation of the ordered split's identification arm (register entry 18) removed the σ-hit
+configuration from the engine path, and the subsection "The self-guard component re-gated at the
+oriented arm" below re-runs the gate at the renaming the oriented arm actually produces: the
+component's potential falls where it previously did not, and the repaired predicate
+`MintPaysForTimeStable` — the self-guard disjunct paired with a combined-budget conjunct, under a
+σ-time-stability hypothesis the engine discharges — carries the four-component measure
+`budgetPotentialAt` through both step lemmas and up to the two seed-level termini. So the paragraph
+above is now sharper again, in the other direction: the identification arm is no longer the
+obstruction, the σ-hit obligation is discharged rather than carried, and what remains open is the
+**density** coordinate alone. `mintPaysForTimeAt_reuse_false` is untouched and stays true; it is a
+statement about `MintPaysForTimeAt`, whose σ is tied to nothing. Register entry 19 is the standing
+record, and `MintPaysForTime` — as literally stated — is still refuted, still named, and still
+assumed by nothing. -/
 
 /-- **One extra known time strictly raises the ordered rank**, whenever the smaller time count is
 within the carried bound.
@@ -10095,7 +10110,7 @@ theorem mintPaysForTimeStable_signedUniverse_empty
 
 /-! ## C9. The do-not-re-attempt register
 
-Eighteen statements that look like the natural next lemma and are **not** available. Each is cited
+Nineteen statements that look like the natural next lemma and are **not** available. Each is cited
 by declaration name and, where one exists, by refuting witness — never by an issue number or a
 tracker entry, both of which outlive their meaning. A reader who finds one of these attractive has
 already been here.
@@ -10424,6 +10439,76 @@ already been here.
     configuration no longer occurs on the engine path — so whether a measure-side component is now
     *provable* is a genuinely open follow-on question, not something this entry answers and not
     something entry 17 forecloses any more. Nobody should read "the reuse is closed" as "the measure
-    is closed". They are different claims, and only the first is established here. -/
+    is closed". They are different claims, and only the first is established here.
+
+19. **Re-reading entry 17's refutation as closing the fourth-component question, and the four
+    routes that closing suggests.** The last of these entries and, like entry 18, not a refutation:
+    it records a verdict that has been **overturned**, and the four things a reader who has just
+    read entry 17 will try next, three of which are closed and one of which is done.
+
+    *What was withdrawn, and what was not.* `mintPaysForTimeAt_reuse_false` is untouched, still
+    true, and still the correct statement about `MintPaysForTimeAt`: that predicate quantifies `σ`
+    with no tie to the state it is read at, so a renaming no run produces refutes it. What entry 17
+    could not say — because the arm had not been reoriented when it was written — is that its own
+    refuting renaming, `gateSigma = rhoSF 2 0`, is the *unoriented* arm's output at the reuse
+    witness's trigger `(0, 2)`. `identifyOrient` retires the smaller numeral, so the arm now
+    produces `rhoSF 0 2` there, and `gateSigma_not_sigmaTimeStable` decides that the old renaming
+    moves the gate's own trigger off its own time while no renaming the oriented arm produces does
+    that to a formula the branch still carries. At the oriented gate the component's potential falls
+    `3 → 1` where entry 17 measured `3 → 3` (`orientedGate_verdict_side_by_side`), and the design
+    entry 17 refuted is the design that now carries the measure. Entry 18 anticipated exactly this
+    and said so; this entry is its resolution.
+
+    *Route 1, closed: `MintPaysForTimeAt → MintPaysForTimeStable`.* Not available, and the reason is
+    not fixable by proof effort. The two predicates' third disjuncts differ: `MintPaysForTimeAt`'s is
+    the bare `selfGuardPotential` drop, `MintPaysForTimeStable`'s pairs that drop with a
+    **combined-budget** non-increase, `mintTimeBudget + selfGuardPotential`. The pairing is forced —
+    see route 2 — so the implication does not hold and is not claimed.
+    `mintPaysForTimeStable_of_mintPaysForTime` is proved directly from disjuncts 1 and 2 instead.
+
+    *Route 2, closed: a bare `selfGuardPotential` drop as the third disjunct, at any weight.*
+    `extensionAllowance` is `|U| + mintTimeBudget·|U| − |b|`, so it rises by a full `|U|` for every
+    unit of mint budget a step spends, and a self-guarded mint spends one — it adds a time to
+    `knownTimes` and leaves `mintPotential` alone, `untlNeg` and `snceNeg` not being in
+    `freshLabelRules`. A disjunct that constrains only `selfGuardPotential` therefore leaves the
+    measure's second component unbounded above at the very step it is meant to pay for, and no
+    weight on the fourth component is a function of `|U|` in a way that fixes it while `Tmax` is
+    free. The repair is the combined conjunct, and the weight that goes with it is
+    `2·(Tmax² + 1) + |U|` — the `|U|` is exactly the allowance's per-budget-unit factor.
+
+    *Route 3, closed: keeping `BudgetState` as the carried state.* Its budget clause is
+    `mintTimeBudget ≤ Tmax`, and a self-guarded mint raises `mintTimeBudget` by one, so the state
+    cannot survive the step however the measure is weighted — the failure is in the state predicate,
+    not in the measure. `BudgetStateAt` carries `mintTimeBudget + selfGuardPotential ≤ Tmax`
+    instead, which is non-increasing at that step because the mint spends exactly one unit of the
+    fourth component to buy the one unit of mint budget it consumes. The cost is a figure:
+    the mint-budget floor rises `8·|U| → 10·|U|` and `derivedTmax → derivedTmaxAt`, both recorded as
+    enlargements (`derivedTmax_le_derivedTmaxAt`, `mintAwareFuel_le_mintAwareFuelAt`), and no
+    caller's hypothesis list changes.
+
+    *Route 4, open and named: the discharge at a nonempty universe.* This is the one thing left, and
+    it is **not** the σ-hit obligation any more — that is discharged, by
+    `sigma_time_hit_of_sigmaTimeStable`, from confinement plus a σ-time-stability hypothesis that
+    `BudgetStateAt` carries and both step lemmas preserve (`sigmaTimeFixed_identifyOriented` at the
+    arm, `sigmaTimeFixed_grow_of_fixesFrom` with `unorderedSuccessor_time_dichotomy` and
+    `nextTime_monotone_along_run` at every additive step). What blocks it is the **density**
+    coordinate, unchanged since entry 17 named it: `densityRule` mints a fresh time and lies outside
+    both `freshLabelRules` and `selfGuardRules`, so at a `densityRule` step disjunct 1 fails and
+    neither of the other two can move. `densityRule` is `denseRules`-gated, so a discharge
+    restricted to frame classes outside `.Dense` / `.Dedekind` is not refuted; what it needs is a
+    rule-by-rule census showing every remaining rule either mints no time, is witness-guarded, or is
+    self-guarded. That census is not attempted here, and `gapPotential` — indexed by `U ×ˢ U`,
+    `denseRules`-gated — remains implemented nowhere and assumed by nothing.
+    `mintPaysForTimeStable_signedUniverse_empty` is how far the discharge goes today: the same
+    boundary `mintPaysForTime_empty` records, at a concrete `signedUniverse C L`.
+
+    *What is delivered, so the record is not only negative.* `MintPaysForTimeStable` with its
+    direction lemma and no-leak confirmation; `selfGuardPotential`'s ceiling, growth and
+    identification-arm preservation (Constraint (F), discharged with equality-or-better); the
+    `untlNeg` and `snceNeg` discharge lemmas with their engine-level ordering shapes; the
+    four-component measure `budgetPotentialAt` with both step lemmas and the C6 instantiation; and
+    the two seed-level termini restated with an identical hypothesis list, one weaker residual and
+    two larger figures. Entry 14's "what is missing" is now missing only at the density coordinate.
+    -/
 
 end FormalSystem.Metalogic.Decidability
