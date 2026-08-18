@@ -599,40 +599,40 @@ silently expanding a rewrite.
 
 ---
 
-### Phase 8: Final verification, summary, and follow-up recommendation [NOT STARTED]
+### Phase 8: Final verification, summary, and follow-up recommendation [COMPLETED]
 
 **Goal**: Prove the whole change set satisfies the task's verification contract, write the summary
 carrying the deliverable-(c) sweep, and hand off the deliberately-excluded scope.
 
 **Tasks**:
 
-- [ ] Run the full `bash scripts/check-module-invariants.sh` and diff every check's result against
+- [x] Run the full `bash scripts/check-module-invariants.sh` and diff every check's result against
       the Phase 1 baseline. C1-C10 must be no worse than baseline. Note in the summary that C5's
       PASS is **not** evidence about ROADMAP.md, since C5 excludes `specs/`.
-- [ ] Run the ROADMAP reference check over the **entire** cumulative diff
+- [x] Run the ROADMAP reference check over the **entire** cumulative diff
       (`git diff -- specs/ROADMAP.md`), not just the last phase's hunks. Every `FormalSystem/...`
       path and every dotted `FormalSystem.X.Y` name introduced must resolve. Zero unresolved.
-- [ ] Audit for unsourced claims: grep the diff's added lines for sorry counts, axiom claims, and
+- [x] Audit for unsourced claims: grep the diff's added lines for sorry counts, axiom claims, and
       dead/live verdicts, and confirm each names its check (C2/C3/C6/C7) or a reproduced command.
-- [ ] Audit for bare dead-file references:
+- [x] Audit for bare dead-file references:
       `grep -n "RootScopedChain" specs/ROADMAP.md` — every hit must carry a `Boneyard/` path
       segment or unmistakably past-tense framing.
-- [ ] Audit the no-edit list: confirm `git diff -- specs/ROADMAP.md` contains **no** hunk touching
+- [x] Audit the no-edit list: confirm `git diff -- specs/ROADMAP.md` contains **no** hunk touching
       `## Paper Alignment Programme`, the 111-row status tables, `## Dead Ends (Archived)` (beyond
       the Phase 7 confirmation, which should be a no-op), or the line-271 HISTORICAL block.
-- [ ] Confirm the non-goals held: `git status --short` shows no `.lean` file modified, nothing
+- [x] Confirm the non-goals held: `git status --short` shows no `.lean` file modified, nothing
       moved into or out of `Boneyard/`, and no change to `specs/state.json` task statuses.
-- [ ] Write `summaries/01_roadmap-sorry-bxcanonical-correction-summary.md` carrying: the C2/C3
+- [x] Write `summaries/01_roadmap-sorry-bxcanonical-correction-summary.md` carrying: the C2/C3
       baseline verbatim, the per-section sweep table from Phase 7 (corrected / banner-only / no
       edit needed, with evidence), the two research-report corrections recorded in this plan's
       Research Integration section, the two planning-time-discovered defects (Examples, Boneyard),
       and the C5-does-not-cover-specs finding.
-- [ ] Record the follow-up recommendation: a separate task covering `## Recommended Priority Order`
+- [x] Record the follow-up recommendation: a separate task covering `## Recommended Priority Order`
       and `## Task Cross-Reference` (which cross into `specs/state.json` task-status territory —
       notably whether task 109's recorded status is still correct), plus the C6 manifest finding for
       `Algebraic.LindenbaumQuotient` / `Algebraic.InteriorOperators`. Recommend it in the summary
       and in the return metadata's `next_steps`; **do not create the task from this phase**.
-- [ ] Optional, recommended in the summary rather than executed here: a short context note
+- [x] Optional, recommended in the summary rather than executed here: a short context note
       recording ROADMAP.md's `self-superseding Current-state block` convention so future
       large-section rewrites follow it from the start. This is a `.claude/` change and belongs in
       `agent-system/extensions/**`, outside this task's charter.

@@ -525,8 +525,10 @@ were replaced by seriality axioms (`T → F(T)` / `T → P(T)`). This means:
 
 The critical architectural consequence: under irreflexive semantics, the
 active defect count strictly decreases at each chain step, because resolved
-formulas φ in M' do NOT generate F(φ) in M'. This unblocks the 5 remaining
-sorry sites in RootScopedChain.lean.
+formulas φ in M' do NOT generate F(φ) in M'. This was the argument that
+unblocked the (now-archived) `RootScopedChain.lean` sorry sites at the time
+(task-93/109 era); see `## Sorry Inventory` for the current, C3-verified sorry
+count.
 
 ---
 
@@ -697,8 +699,8 @@ Metalogic/BXCanonical/BXCanonical.lean (28 lines, aggregator)
   │     ├── Semantics/Truth
   │     └── Semantics/Validity
   │
-  ├── Completeness.lean (152 lines, sorry-free -- delegates to RootScopedChain)
-  │     ├── RootScopedChain
+  ├── Completeness.lean (152 lines, sorry-free -- delegates to RootScopedChain, archived, see below)
+  │     ├── RootScopedChain (archived, see below)
   │     └── Semantics/Validity
   │
   ├── CanonicalChain.lean (160 lines, sorry-free)
