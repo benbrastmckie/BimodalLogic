@@ -279,22 +279,22 @@ actually covers.
 
 ---
 
-### Phase 3: Formalize the S5 Axioms (`:353`) [NOT STARTED]
+### Phase 3: Formalize the S5 Axioms (`:353`) [COMPLETED]
 
 **Goal**: Rewrite `#definition("S5")` so all five keys are stated in full inside an indented
 `#items` block, in the house style.
 
 **Tasks**:
-- [ ] Re-grep `FIX: indent the axioms and formalize all of them` to locate the target.
-- [ ] Replace the run-on prose body of `#definition("S5")` with the paper's framing sentence
+- [x] Re-grep `FIX: indent the axioms and formalize all of them` to locate the target.
+- [x] Replace the run-on prose body of `#definition("S5")` with the paper's framing sentence
       ("the smallest extension of classical propositional logic CPL closed under the following
       schemata, rule, and metarule") followed by an `#items[...]` block with one
       `+ *KEY*: $...$` entry per key: MK, MT, M5, MP, MN.
-- [ ] Render each from the Phase 1 transcription record; keep the paper's own distinction that
+- [x] Render each from the Phase 1 transcription record; keep the paper's own distinction that
       MK/MT/M5 are axiom schemata, MP a rule, MN a metarule.
-- [ ] Match the style of `#definition("Defined Operators")` and `#definition("Frame")` for
+- [x] Match the style of `#definition("Defined Operators")` and `#definition("Frame")` for
       indentation and item phrasing.
-- [ ] Delete the FIX tag.
+- [x] Delete the FIX tag.
 
 **Timing**: 0.5 hours
 

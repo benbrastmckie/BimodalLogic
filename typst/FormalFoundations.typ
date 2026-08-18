@@ -372,12 +372,16 @@ constrains is the points of evaluation, not the propositions.
 == Proof Systems
 
 #definition("S5")[
-  // FIX: indent the axioms and formalize all of them to improve readability
-  *S5* is the smallest extension of classical propositional logic closed under MK
-  ($square.stroked(phi.alt arrow.r psi) arrow.r (square.stroked phi.alt arrow.r square.stroked psi)$),
-  MT ($square.stroked phi.alt arrow.r phi.alt$), M5
-  ($diamond.stroked square.stroked phi.alt arrow.r square.stroked phi.alt$), modus ponens, and
-  necessitation.
+  *S5* is the smallest extension of classical propositional logic CPL closed under the following
+  schemata, rule, and metarule:
+  #items[
+    + *MK*: $square.stroked(phi.alt arrow.r psi) arrow.r (square.stroked phi.alt arrow.r square.stroked psi)$.
+    + *MT*: $square.stroked phi.alt arrow.r phi.alt$.
+    + *M5*: $diamond.stroked square.stroked phi.alt arrow.r square.stroked phi.alt$.
+    + *MP*: $phi.alt, phi.alt arrow.r psi tack.r psi$.
+    + *MN*: if $tack.r phi.alt$ then $tack.r square.stroked phi.alt$.
+  ]
+  MK, MT, and M5 are axiom schemata, MP is a rule, and MN is a metarule.
 ]
 
 #definition("BX")[
