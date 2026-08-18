@@ -275,33 +275,33 @@ defect.
 
 ---
 
-### Phase 4: TableauConformance documentation settlement [NOT STARTED]
+### Phase 4: TableauConformance documentation settlement [COMPLETED]
 
 **Goal**: `Tests/BimodalTest/TableauConformance.lean`'s Re-baseline record settles W1, W3, W6, W7
 and records the W1 ≡ W7 agreement, without disturbing the three already-green rows the same block
 lists.
 
 **Tasks**:
-- [ ] Rewrite the `**EXCLUDED — left pinned and unedited**` subsection (block 69-139, exclusion
+- [x] Rewrite the `**EXCLUDED — left pinned and unedited**` subsection (block 69-139, exclusion
       list 104-138) so W1, W3, W6, W7 read as settled. Carry the same attribution as Phases 2-3
       (2026-08-10/11 engine window; not `trivialEventWitnessed`; P2 values byte-identical to
       today's output, so zero drift since 2026-08-11).
-- [ ] Record the W1 ≡ W7 agreement explicitly — this is the strongest single item of evidence and
+- [x] Record the W1 ≡ W7 agreement explicitly — this is the strongest single item of evidence and
       the task brief names it as required. W7 is by construction "W1 at fuel 2000, five times W1's
       own `linearityFuel`. Identical, so the flip to `total=true` is `timeLinearity` firing and not
       a budget artifact" (comment at 913-914). The **pinned** pair was not identical; the
       **generated** pair is byte-identical. Current engine behaviour satisfies the invariant the
       row was written to test, and the recorded expectation did not.
-- [ ] Note that W3 grew (`|knownTimes|` 8 -> 10) against the shrinking trend, and why that is
+- [x] Note that W3 grew (`|knownTimes|` 8 -> 10) against the shrinking trend, and why that is
       consistent rather than anomalous: renumbering can leave a row with more surviving times, and
       W3 still reports `total=true incomparable=[]`.
-- [ ] Preserve, without re-recording or restructuring away, the block's entries for rows `483`,
+- [x] Preserve, without re-recording or restructuring away, the block's entries for rows `483`,
       `513`, `578`, each recorded as `P2 current: (now matches the pinned value — the guard
       repaired this row)`. They are green and out of scope.
-- [ ] Fix the narrative at 806-807: "W1-W4 order eight to ten times each" — W2 now orders 7. A
+- [x] Fix the narrative at 806-807: "W1-W4 order eight to ten times each" — W2 now orders 7. A
       one-word fix.
-- [ ] Fix the duplicated-sentence copy-paste defect at line 102.
-- [ ] Replace line-number citations in the rewritten block with row labels (W1, W3, W6, W7), which
+- [x] Fix the duplicated-sentence copy-paste defect at line 102.
+- [x] Replace line-number citations in the rewritten block with row labels (W1, W3, W6, W7), which
       do not drift.
 
 **Timing**: 0.75 hours

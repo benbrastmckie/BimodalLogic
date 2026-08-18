@@ -99,43 +99,80 @@ three files (`CountermodelExtraction.lean`, `Verified/Bridge/TemporalSaturation.
 corroborated directly in `TableauConformance.lean`, whose P1 and P2 values are identical on every
 row.
 
-**Re-baselined in this file** (guard-attributed): 3 row(s) at line(s) 880, 892, 902 — each carrying its own `RE-BASELINED (guard)` note with the old and new value.— each carrying its own `RE-BASELINED (guard)` note with the old and new value.
+**Re-baselined in this file** (guard-attributed): rows W2, W4 and W5 — each carrying its own
+`RE-BASELINED (guard)` note with the old and new value.
 
-**EXCLUDED — left pinned and unedited**: 7 row(s) at line(s) 483, 513, 578, 873, 885, 910, 916.
-These are members of the ten pre-existing, separately-declined mismatches, identified at
-row level for the first time by the P0 measurement above. For each, the pinned value, the
-pre-guard (P0) value, and the current (P2) value are three *different* values: the row was already
-stale before the guard **and** the guard moved it again. Correcting it here would silently fold a
-separately-owned engine change into this refactor's re-baseline. It stays pinned:
+**SETTLED, and three rows the guard repaired on their own**: 7 row(s) — the three C4 rows in the
+conformance table, plus the four W rows W1, W3, W6, W7.
 
-* line 483
+All seven were members of the ten pre-existing, separately-declined mismatches, identified at row
+level for the first time by the P0 measurement above: for each, the pinned value, the pre-guard
+(P0) value and the current (P2) value were three *different* values, so the row was already stale
+before the guard **and** the guard moved it again. They were left pinned for as long as
+re-recording them would have folded a separately-owned engine change into this refactor's
+re-baseline.
+
+The three C4 rows never needed re-recording: the guard moved them back onto their pinned values,
+and they are green as recorded. They are listed below unchanged, and are **not** re-recorded.
+
+The four W rows are now re-recorded, with the attribution stated below rather than absorbed.
+
+* C4 row 1
   - pinned: `C4 Fp->FFp         OPEN     target=OPEN            no density over an arbitrary linear order`
   - P0 pre-guard: `C4 Fp->FFp         CLOSED   target=OPEN    [DEFECT] no density over an arbitrary linear order`
-  - P2 current: `(now matches the pinned value — the guard repaired this row)`
-* line 513
+  - current: `(matches the pinned value — the guard repaired this row; left as recorded)`
+* C4 row 2
   - pinned: `C4 Fp->FFp         OPEN     target=CLOSED  [DEFECT] density: a time strictly between t and the witness`
   - P0 pre-guard: `C4 Fp->FFp         CLOSED   target=CLOSED          density: a time strictly between t and the witness`
-  - P2 current: `(now matches the pinned value — the guard repaired this row)`
-* line 578
+  - current: `(matches the pinned value — the guard repaired this row; left as recorded)`
+* C4 row 3
   - pinned: `C4 Fp->FFp         OPEN     target=CLOSED  [DEFECT] ValidDedekindDense includes density`
   - P0 pre-guard: `C4 Fp->FFp         CLOSED   target=CLOSED          ValidDedekindDense includes density`
-  - P2 current: `(now matches the pinned value — the guard repaired this row)`
-* line 873
+  - current: `(matches the pinned value — the guard repaired this row; left as recorded)`
+* W1 — `orderProbe (nt (an (F (G p)) (F (nt p)))) FrameClass.Base linearityFuel`
   - pinned: `info: total=true knownTimes=[9, 5, 3, 4, 8, 1, 6, 2, 0] constraints=[(6, 1), (9, 3), (9, 5), (8, 9), (1, 8), (6, 8), (2, 6), (3, 5), (4, 0), (0, 3)...`
   - P0 pre-guard: `info: total=true knownTimes=[7, 9, 5, 3, 4, 8, 1, 6, 2, 0] constraints=[(7, 1), (7, 8), (9, 3), (9, 5), (7, 9), (8, 9), (1, 8), (6, 7), (2, 6), (3,...`
-  - P2 current: `info: total=true knownTimes=[4, 7, 5, 6, 1, 2, 3, 0] constraints=[(2, 1), (2, 6), (2, 7), (7, 5), (6, 7), (1, 6), (2, 5), (4, 3), (3, 0), (0, 2), (...`
-* line 885
+  - recorded now: `info: total=true knownTimes=[4, 7, 5, 6, 1, 2, 3, 0] constraints=[(2, 1), (2, 6), (2, 7), (7, 5), (6, 7), (1, 6), (2, 5), (4, 3), (3, 0), (0, 2), (...`
+* W3 — `orderProbe (nt (an (F (G p)) (F (G q)))) FrameClass.Base linearityFuel`
   - pinned: `info: total=true knownTimes=[10, 3, 4, 7, 9, 8, 1, 0] constraints=[(7, 3), (7, 10), (9, 7), (8, 9), (1, 8), (3, 10), (4, 0), (0, 3), (0, 8), (0, 1)...`
   - P0 pre-guard: `info: total=true knownTimes=[5, 11, 4, 10, 7, 9, 8, 1, 0] constraints=[(11, 4), (10, 5), (7, 10), (9, 7), (8, 9), (1, 8), (4, 0), (0, 10), (0, 8), ...`
-  - P2 current: `info: total=true knownTimes=[4, 8, 9, 2, 5, 6, 7, 1, 3, 0] constraints=[(8, 2), (8, 5), (6, 9), (8, 6), (7, 8), (1, 7), (5, 6), (2, 5), (4, 3), (3,...`
-* line 910
+  - recorded now: `info: total=true knownTimes=[4, 8, 9, 2, 5, 6, 7, 1, 3, 0] constraints=[(8, 2), (8, 5), (6, 9), (8, 6), (7, 8), (1, 7), (5, 6), (2, 5), (4, 3), (3,...`
+* W6 — `orderProbe (im (F p) (F (F p))) FrameClass.Base`
   - pinned: `info: total=true knownTimes=[3, 4, 5, 0, 2, 1] constraints=[(3, 0), (5, 3), (5, 0), (2, 4), (3, 1), (1, 2), (0, 1)] incomparable=[]`
   - P0 pre-guard: `info: CLOSED`
-  - P2 current: `info: total=true knownTimes=[3, 4, 0, 2, 1] constraints=[(4, 0), (2, 3), (1, 2), (0, 1)] incomparable=[]`
-* line 916
+  - recorded now: `info: total=true knownTimes=[3, 4, 0, 2, 1] constraints=[(4, 0), (2, 3), (1, 2), (0, 1)] incomparable=[]`
+* W7 — `orderProbe (nt (an (F (G p)) (F (nt p)))) FrameClass.Base 2000`
   - pinned: `info: total=true knownTimes=[9, 7, 5, 3, 4, 8, 1, 6, 2, 0] constraints=[(6, 1), (6, 8), (6, 9), (7, 3), (7, 5), (9, 7), (8, 9), (1, 8), (6, 7), (2,...`
   - P0 pre-guard: `info: total=true knownTimes=[9, 7, 5, 6, 3, 4, 8, 1, 2, 0] constraints=[(2, 1), (2, 8), (2, 9), (9, 6), (7, 3), (7, 5), (9, 7), (8, 9), (1, 8), (6,...`
-  - P2 current: `info: total=true knownTimes=[4, 7, 5, 6, 1, 2, 3, 0] constraints=[(2, 1), (2, 6), (2, 7), (7, 5), (6, 7), (1, 6), (2, 5), (4, 3), (3, 0), (0, 2), (...`
+  - recorded now: `info: total=true knownTimes=[4, 7, 5, 6, 1, 2, 3, 0] constraints=[(2, 1), (2, 6), (2, 7), (7, 5), (6, 7), (1, 6), (2, 5), (4, 3), (3, 0), (0, 2), (...`
+
+**Attribution.** The four W-row moves belong to the 2026-08-10/11 engine window — the semantics
+refactor together with the tableau-engine work that rewrote `Decidability/Tableau.lean` and
+`Decidability/Saturation.lean` and added `Verified/Termination/MintBound.lean`. They are **not**
+owned by `trivialEventWitnessed`, which is the separately-owned change the original exclusion
+existed to protect: the guard's contribution to these rows is the P0 → pinned step, not the
+pinned → current one. Re-recording here therefore does not absorb the guard's move into a later
+attribution.
+
+**Stability.** Every `P2 current` value recorded here on 2026-08-11 is byte-identical to what Lean
+generates today (the three truncated entries match on every recorded character of their prefix).
+Zero drift across that window, so this settles recorded debt against a stable measurement rather
+than baselining against a moving one.
+
+**W1 ≡ W7 — the invariant W7 exists to test, now actually satisfied.** W7 is by construction W1 at
+fuel 2000, five times W1's own `linearityFuel`, and its comment states the point: *identical*, so
+the flip to `total=true` is `timeLinearity` firing and not a budget artifact. The **pinned** pair
+was not identical — W1 pinned nine known times, W7 pinned ten, and their constraint lists differed.
+The **generated** pair is byte-identical, character for character. Current engine behaviour
+satisfies the invariant the row was written to test; the recorded expectation did not. This is the
+single strongest item of evidence that the seven mismatches were stale expectations rather than a
+regression, and it is why re-recording is the correct settlement rather than an investigation.
+
+**W3 grew, and that is consistent.** W3's `|knownTimes|` moves `8 → 10`, against the shrinking
+trend the other rows follow. Renumbering can leave a row with more surviving times, not fewer —
+which times get minted and which get identified away are both affected — and the row still reports
+`total=true incomparable=[]`, which is the only property it asserts. It is not evidence against the
+verdict.
 -/
 
 namespace BimodalTest.TableauConformance
@@ -849,7 +886,7 @@ open FormalSystem.Metalogic.Decidability
 
 `timeLinearity` fires as a **three-way** split and `expandBranchWithFuel` allocates fuel
 proportionally across a split's arms, so each firing divides the budget available below it.
-W1-W4 order eight to ten times each and exhaust `conformanceFuel = 200` before they finish.
+W1-W4 order seven to ten times each and exhaust `conformanceFuel = 200` before they finish.
 
 `400` is measured, not guessed, and is the smallest round bound that clears all four: at 200,
 250 and 280 all four read `STALLED`; at 280-350 only W2 (and, from 350, W4) reaches
