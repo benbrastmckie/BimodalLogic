@@ -64,7 +64,7 @@ next_project_number: 457
 
 ### Publication Quality
 
-446 [RESEARCHED] — Address 6 bare `// FIX:` tags in `typst/FormalFoundations.typ`, e
+446 [PLANNED] — Address 6 bare `// FIX:` tags in `typst/FormalFoundations.typ`, e
   └─ 447 [RESEARCHED] — Address 6 substantive FIX: directives in `typst/FormalFoundations
 
 ### Automation
@@ -740,11 +740,12 @@ Task 417's recommended Task B (the filtered step relation) cannot start before (
 ---
 
 ### 446. Restore or retire 6 commented-out prose/proof blocks in FormalFoundations.typ
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: logic
 - **Topic**: publication-quality
 - **Dependencies**: Task 445, Task 456
 - **Research**: [446_restore_commented_prose_proof_blocks/reports/01_restore-fix-tagged-blocks.md]
+- **Plan**: [446_restore_commented_prose_proof_blocks/plans/01_restore-commented-blocks.md]
 
 **Description**: Address 6 bare `// FIX:` tags in `typst/FormalFoundations.typ`, each marking a block of commented-out prose or proof text that must be restored as live document text, rewritten, or deleted.
 
