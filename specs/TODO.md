@@ -64,7 +64,7 @@ next_project_number: 457
 
 ### Publication Quality
 
-447 [RESEARCHED] — Address 6 substantive FIX: directives in `typst/FormalFoundations
+447 [PLANNED] — Address 6 substantive FIX: directives in `typst/FormalFoundations
 
 ### Automation
 
@@ -715,11 +715,12 @@ Task 417's recommended Task B (the filtered step relation) cannot start before (
 ---
 
 ### 447. Substantive rewrites in FormalFoundations.typ: proof repair, axiom presentation, section restructure
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: logic
 - **Topic**: publication-quality
 - **Dependencies**: Task 446, Task 456
 - **Research**: [447_substantive_rewrites_formalfoundations/reports/01_substantive-rewrites-research.md]
+- **Plan**: [447_substantive_rewrites_formalfoundations/plans/01_substantive-rewrites.md]
 
 **Description**: Address 6 substantive FIX: directives in `typst/FormalFoundations.typ`. Unlike the footnote and commented-block restorations, these call for new mathematical exposition, grounded in the source paper at `/home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex`.
 
