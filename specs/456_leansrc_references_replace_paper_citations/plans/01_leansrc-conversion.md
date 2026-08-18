@@ -591,7 +591,13 @@ citation). The call count is not — confirm against the Phase 2 table, not agai
 
 ---
 
-### Phase 7: Final gates, minimal cached-patch staging, summary [NOT STARTED]
+### Phase 7: Final gates, minimal cached-patch staging, summary [COMPLETED WITH EXCLUSIONS]
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|---|---|---|
+| Staging `typst/FormalFoundations.typ` via the minimal cached-patch mechanism | `git apply --cached --3way` used a coincidentally-real blob hash (the committed Phase-1 baseline file) as its per-hunk merge base; because this task's edit sites are frequently interleaved with sibling `// FIX:`/commented-proof restructuring throughout the file, the 3-way reconciliation silently pulled in the sibling's entire uncommitted delta alongside this task's own. A corrected retry with a neutralized index hash (no `--3way` blob available) failed cleanly instead, confirming genuine hunk/region overlap with sibling-modified territory — the plan's own documented failure mode, whose explicit instruction is "do not force it." | First attempt: `diff /tmp/cached-diff.txt /tmp/full-wt-diff.txt` was empty, proving the staged patch equalled the *entire* working-tree delta against HEAD (190 ins / 117 del) rather than this task's isolated delta; caught by the plan's own mandated REVIEW step before any commit, then unstaged via `git restore --staged` (safe on a dirty tree, no destructive op). Corrected retry: `git apply --cached --check` (plain, no `--3way`) → `error: patch failed: typst/FormalFoundations.typ:208` / `patch does not apply`, confirming real context-level overlap, not a tooling artifact. |
 
 **Goal**: Run the full gate set on the finished file, prove sibling territory survived, stage this
 task's hunks only, and write the summary.
