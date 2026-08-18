@@ -711,7 +711,14 @@ the two is what makes that precise.
 **Goal**: Land the honest maximum on the label dimension, on whichever of two pre-declared branches
 Phase 5 selected. Do not choose a third route.
 
-**Branch (a) — Phase 5 found clause 1 provable under conditions**:
+**Branch (a) — Phase 5 found clause 1 provable under conditions** — **THIS BRANCH DID NOT RUN**.
+Phase 5's written verdict refuted clause 1 at every fixed finite `signedUniverse C L`, which selects
+branch (b). The four items below are recorded unticked as the not-taken branch, not as outstanding
+work. *(For the record: branch (a)'s world and time components both exist now —
+`unorderedSuccessor_world_dichotomy` and task 434's `unorderedSuccessor_time_dichotomy` — and
+section C11 combines them with Phase 6 exactly as bullet 4 describes. What branch (a) presupposed
+and Phase 5 refuted is that the conditions could be stated on `C` and `L`; they are branch-side, per
+`freshWorldHeadroom_not_universal` and `freshLabelHeadroom_not_universal`.)*
 - [ ] State the conditions on `C` and `L` explicitly as a named predicate.
 - [ ] Prove the world component from `applyRule_emitted_world_mem` plus the two `nextWorld` lemmas.
 - [ ] Prove the time component. If it requires the time-dimension analogue of
