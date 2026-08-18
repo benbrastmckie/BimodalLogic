@@ -301,3 +301,100 @@ Logics Theory and Applications.pdf`).
 See `reports/02_ocr-semantic-gate-evidence.md`'s "Phase 6 — Post-Ingest Chunk Verification"
 section for the post-ingest hand-read verification, mojibake sweep, and retrieval check that
 followed this exception.
+
+---
+
+## Addendum 2: v2 Schema Defect Found and Corrected (Phase 7 Reopened, dispatch_seq 15)
+
+Orchestrator verification after the initial Phase 7 closeout found a real defect: the corpus
+entry created in Addendum 1 above was written in the **legacy `chunks_dir`-only schema**
+(`doc_id`, `title`, `authors`, `year`, `source_path`, `chunks_dir`, `chunk_count`,
+`ingested_at`) — the exact shape task 458 spent 7 phases migrating 12 other entries away from
+(`specs/458_migrate_12_legacy_literature_entries_to_v2_schema/`). This batch had therefore
+un-migrated the corpus from "12 legacy stragglers" back to "13" (this entry becoming the 4th
+`id: null` entry, alongside the 3 pre-existing known stragglers task 459 still owns).
+
+Root cause: `literature-ingest.sh` (used by `literature-ingest.sh`-shaped index-append logic,
+which this task's Phase 5b addendum deliberately replicated field-for-field so the entry would
+be indistinguishable from a normal ingest) always writes the legacy 8-field shape — it has never
+been updated to write the v2 fields. This is a genuine, generic pipeline defect affecting every
+future ingest, not specific to this task's exception path. Per the coordinator's instruction this
+is **not fixed here** (out of this task's scope, and `.claude/scripts/literature-ingest.sh` is a
+disposable deploy artifact of the `agent-system/**` source store) — it has been recorded as
+`INGEST_WRITES_LEGACY_SCHEMA` against
+`agent-system/extensions/literature/scripts/literature-ingest.sh` for a future task to address.
+
+### Correction Applied
+
+Following task 458's `data/migrate12_mutate.py` convention exactly (read but not modified —
+`agent-system/**`/`specs/458_*` conventions are precedent, not code to alter):
+
+**7 v2-schema fields added** (`id`, `path`, `token_count`, `doc_type`, `source_format`,
+`provenance_fidelity`, `schema_normalized_at`), plus a **bibliographic correction** to
+`title`/`authors`/`year` (explicitly authorized for this single entry — unlike task 458's own
+Decision 4, which left title/authors/year as an explicit Non-Goal for its 12 targets).
+
+| Field | Before | After | Basis |
+|---|---|---|---|
+| `id` | *(absent)* | `gabbay_kurucz_wolter_zakharyaschev_2003_many_dimensional_modal_logics` | `id == doc_id`, matching the 2026-08-05 `schema_normalized_at` precedent documented in task 458's report (e.g. `brics-rs-96-35`'s `id` is a literal copy of its `doc_id`) |
+| `path` | *(absent)* | `gabbay_kurucz_wolter_zakharyaschev_2003_many_dimensional_modal_logics/` | SCOPE 1 convention: `chunks_dir` relative to `$LITERATURE_DIR`, trailing slash, no `sources/` prefix — identical logic to `migrate12_mutate.py`'s `path` computation |
+| `token_count` | *(absent)* | `350158` | `int(chars/4 + 20)` over the concatenation of all 758 `chunk_*.md` files (1,400,552 total chars), same formula as `migrate12_mutate.py`/`phase6_mutate.py` |
+| `doc_type` | *(absent)* | `book` | SCOPE 5 evidence-grounded: the actual source PDF is on disk and was already sha256-verified (Phase 1); `pdfinfo` confirms 742 pages; the Zotero bibliographic record (`zotero-library.json` id `Kurucz2003`) independently confirms `"type": "book"`, publisher North-Holland, ISBN 978-0-444-55183-2 |
+| `source_format` | *(absent)* | `pdf` | Directly evidenced — this is the strongest possible case in the corpus for this field: the exact source PDF was OCR'd, hand-verified, and sha256-tracked throughout this task, unlike task 458's 10/12 entries which had no locatable source file at all |
+| `provenance_fidelity` | *(absent)* | `unverified_conversion` | Evidence-calibrated against task 458's adjudications (per coordinator instruction). This document's 16 hand-read samples (Phase 4's 8 strata + Phase 6's 8 chunks) found **zero prose corruption anywhere** — stronger evidence than either `rutten-2000-universal-coalgebra` or `reynolds-2003-ockhamist` (both stamped `unverified_conversion` in task 458 despite pervasive *prose*-level degradation, not just formula noise). But this document is NOT `verified_conversion` either: `verified_conversion` in the corpus's own working definition means "prose AND symbols both clean" (task 457 Phase 6's Goldblatt precedent); this document has 4 confirmed-irreducible formula-noise sites plus a 13-site DL-notation passage that was garbled prior to this task's hand-correction. The nearest, honest, evidence-grounded fit is therefore the same value task 457 Phase 6 gave Jönsson & Tarski Parts I/II: "prose coherent, formulas degraded" -> `unverified_conversion`. No new enum value was invented (Decision 3 of task 458, followed here); the 6-value set consulted is `migrate12_mutate.py`'s `VALID_FIDELITY` (`verified_conversion`, `no_source_pdf`, `unverified_no_baseline`, `unadjudicated`, `not_yet_converted`, `unverified_conversion`) |
+| `schema_normalized_at` | *(absent)* | `2026-08-18T23:51:41Z` | Timestamp of this correction, matching the semantics of the 2026-08-05 stamp on the other 12 (originally: "when this entry's schema was last normalized") |
+| `title` | `gabbay_kurucz_wolter_zakharyaschev_2003_many_dimensional_modal_logics` (bare doc_id slug) | `Many-Dimensional Modal Logics: Theory and Applications` | `zotero-library.json` entry `Kurucz2003` — title, all 4 authors, and year match exactly against the sha256-verified Zotero PDF already tracked throughout this task |
+| `authors` | `[]` | `["Dov M. Gabbay", "Agi Kurucz", "Frank Wolter", "Michael Zakharyaschev"]` | Same `Kurucz2003` Zotero record; array-of-full-name-string format matches the corpus's existing convention (e.g. `chagrovzakharyaschev_1997_modallogic`'s `authors` field) |
+| `year` | `null` | `2003` | Same `Kurucz2003` Zotero record; also matches this task's own Phase 1/3 baseline records (book copyright "©2003", front-matter date "January 19, 2003") |
+
+`chunks_dir`, `source_path`, `chunk_count`, `ingested_at`, `doc_id` were left untouched (additive
+migration only, matching task 458's own contract).
+
+### Mutation Method
+
+`index.json` was backed up first
+(`~/Projects/Literature/index.json.bak-20260818-165129-pre-460b`), then mutated by a
+single-purpose Python script (not committed — task-local, ad hoc, mirroring
+`migrate12_mutate.py`'s structure) that reads the current entry, computes `token_count` fresh
+from disk, writes the 10 fields above, and writes the whole file atomically (temp file in
+`$LITERATURE_DIR` + `os.replace`) rather than in place, consistent with this task's Addendum 1
+atomicity requirement. `literature-build-index.sh --global` was re-run afterward.
+
+### Post-Correction Verification
+
+- `jq '.entries | length' index.json`: **362** (unchanged — a metadata-only edit on an existing
+  entry, no entry added or removed).
+- `jq '[.entries[] | select(.id == null)] | length' index.json`: **3** (down from 4 — this
+  entry is no longer one of the null-id stragglers; the 3 remaining are task 459's pre-existing,
+  unrelated scope).
+- `chunks_data`/`chunks_fts` row counts: **18,494 / 18,494** (unchanged from before the
+  correction — confirms the edit did not touch chunk files, matching task 458's own observation
+  that `literature-build-index.sh` reads `chunks.json` from disk and never reads `index.json`).
+- `index.json` re-parses as valid JSON.
+- `git diff specs/literature-index.json` in this repo: still byte-identical to the Phase 1
+  baseline (52/52 lines).
+- Gate files `literature-convert.sh` / `literature_quality_gate.py`: mtime `2026-08-18 12:45:59`,
+  predating this entire batch — genuinely untouched (this is the correct evidence for
+  `.claude/**` paths, which are gitignored at `.gitignore:81` and so are NOT provable via
+  `git diff`, unlike `specs/**` paths).
+- Zotero original sha256 re-verified unchanged:
+  `6b03d3f967e1bff33dad1a2b6f770039011b93410d789fb4e36031fc6557794b`.
+- `literature-search.sh` still returns the doc_id for both required queries after the rebuild.
+  Its displayed `provenance_fidelity` shows `unverified_summary` rather than the true
+  `unverified_conversion` value now in `index.json` — confirmed to be the exact same pre-existing
+  `sources/`-prefix code defect documented as task 458's Decision 5 (`load_fidelity_map()` looks
+  for a `sources/<dir>/`-prefixed `path`, which this entry's correctly-formed `path` — matching
+  the SCOPE 1 convention, no `sources/` prefix — does not have). Confirmed identical behavior on
+  `rutten-2000-universal-coalgebra` (also `unverified_conversion` in `index.json`, also displayed
+  as `unverified_summary` by `literature-search.sh`), proving this is inherited, pre-existing,
+  and not a new defect introduced here.
+
+### Carried-Forward Defect (recorded, not fixed)
+
+**`INGEST_WRITES_LEGACY_SCHEMA`**: `literature-ingest.sh` (and this task's Phase 5b addendum,
+which deliberately replicated its exact index-append behavior so the manually-chunked document
+would be indistinguishable from a normal ingest) always writes the 8-field legacy schema, never
+the 7 additional v2 fields. Every future ingest reintroduces exactly the defect corrected here.
+Recorded against `agent-system/extensions/literature/scripts/literature-ingest.sh` for a future
+task; not fixed in this dispatch per explicit instruction (out of scope; `.claude/` is a
+disposable deploy artifact of that source store).

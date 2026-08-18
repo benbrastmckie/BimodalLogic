@@ -540,6 +540,20 @@ treat a zero hit count as weak evidence only, never as a substitute for the hand
 **Goal**: Prove nothing forbidden was touched, record the standing limitations and the deferred
 sub-index registration, and commit only this task's own artifacts.
 
+**Reopened once (dispatch_seq 15)**: orchestrator verification after the first closeout found the
+Phase 5b addendum's `index.json` entry was written in the legacy `chunks_dir`-only schema (the
+same shape task 458 spent 7 phases migrating 12 other entries away from), making this the corpus's
+4th `id: null` straggler. Corrected in place by following task 458's `migrate12_mutate.py`
+convention exactly: 7 v2 fields added (`id`, `path`, `token_count`, `doc_type`, `source_format`,
+`provenance_fidelity` = `unverified_conversion`, `schema_normalized_at`) plus a `title`/`authors`/
+`year` bibliographic correction from `zotero-library.json`'s `Kurucz2003` record. Entry count held
+at 362 throughout; FTS row count held at 18,494 throughout (metadata-only edit). Full before/after
+audit trail in `reports/03_phase5-fusion-site-analysis.md`'s Addendum 2. The underlying pipeline
+defect (`literature-ingest.sh` always writes the legacy schema) was recorded as
+`INGEST_WRITES_LEGACY_SCHEMA` for a future task, not fixed here (out of scope; `.claude/**` is a
+disposable deploy artifact of the `agent-system/**` source store). Phase 7 is re-closed below with
+this correction folded in.
+
 **Tasks**:
 - [x] Re-assert the Zotero original's sha256 against `baseline.txt`. Any mismatch is a task
       failure requiring immediate escalation, not a repair. *(completed: sha256
