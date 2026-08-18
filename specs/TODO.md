@@ -35,7 +35,7 @@ next_project_number: 458
 
 ### Decidability
 
-436 [PARTIAL] — Resume task 434's implementation plan (specs/434_discharge_mintpa
+436 [IMPLEMENTING] — Resume task 434's implementation plan (specs/434_discharge_mintpa
   └─ 434 [PARTIAL] — Discharge `MintPaysForTime fc U Tmax`, defined at FormalSystem/Me
     └─ 432 [PARTIAL] — Discharge `UniverseClosed fc U`, defined at FormalSystem/Metalogi
       └─ 433 [RESEARCHED] — Discharge `PostBlockingSettles fc`, defined at FormalSystem/Metal
@@ -79,7 +79,7 @@ next_project_number: 458
 
 ### Literature
 
-457 [NOT STARTED] — Repair the remaining Literature corpus data defects surfaced by a
+457 [IMPLEMENTING] — Repair the remaining Literature corpus data defects surfaced by a
 
 ### Strong Completeness
 
@@ -99,10 +99,12 @@ next_project_number: 458
 ## Tasks
 
 ### 457. Repair remaining literature corpus data defects
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: general
 - **Topic**: literature
 - **Dependencies**: None
+- **Research**: [457_repair_remaining_literature_corpus_data_defects/reports/01_literature-corpus-data-repairs.md]
+- **Plan**: [457_repair_remaining_literature_corpus_data_defects/plans/01_corpus-data-repairs.md]
 
 **Description**: Repair the remaining Literature corpus data defects surfaced by a /literature discovery and validation session. These are DATA repairs to the global corpus at ~/Projects/Literature and to this repo's specs/literature-index.json, NOT agent-system code changes -- the five corresponding code defects are already tracked separately in the global agent-system repo and must not be duplicated here. All counts below were verified empirically against a 369-entry global index; re-confirm before mutating, since the corpus changes.
 
@@ -326,7 +328,7 @@ Because archived files are never compiled, a broken import here is SILENT -- no 
 
 ### 436. Fourth termination measure component
 - **Effort**: 10-14 hours
-- **Status**: [PARTIAL]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 437

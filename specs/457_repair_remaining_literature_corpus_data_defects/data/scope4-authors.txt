@@ -1,0 +1,187 @@
+## Literature authors normalization (DRY RUN)
+
+Index: /home/benjamin/Projects/Literature/index.json
+Entries that would change: 60
+
+- chagrovzakharyaschev_1997_modallogic_p00:
+    before: "Alexander Chagrov, Michael Zakharyaschev"
+    after:  ["Alexander Chagrov","Michael Zakharyaschev"]
+- chagrovzakharyaschev_1997_modallogic_p01:
+    before: "Alexander Chagrov, Michael Zakharyaschev"
+    after:  ["Alexander Chagrov","Michael Zakharyaschev"]
+- chagrovzakharyaschev_1997_modallogic_p02:
+    before: "Alexander Chagrov, Michael Zakharyaschev"
+    after:  ["Alexander Chagrov","Michael Zakharyaschev"]
+- chagrovzakharyaschev_1997_modallogic_p03:
+    before: "Alexander Chagrov, Michael Zakharyaschev"
+    after:  ["Alexander Chagrov","Michael Zakharyaschev"]
+- chagrovzakharyaschev_1997_modallogic_p04:
+    before: "Alexander Chagrov, Michael Zakharyaschev"
+    after:  ["Alexander Chagrov","Michael Zakharyaschev"]
+- chagrovzakharyaschev_1997_modallogic_p05:
+    before: "Alexander Chagrov, Michael Zakharyaschev"
+    after:  ["Alexander Chagrov","Michael Zakharyaschev"]
+- bentzen_2023:
+    before: "Huayu Guo, Dongheng Chen, Bruno Bentzen"
+    after:  ["Huayu Guo","Dongheng Chen","Bruno Bentzen"]
+- church_1956:
+    before: "Alonzo Church"
+    after:  ["Alonzo Church"]
+- church_1956_ch00:
+    before: "Alonzo Church"
+    after:  ["Alonzo Church"]
+- church_1956_ch00b:
+    before: "Alonzo Church"
+    after:  ["Alonzo Church"]
+- church_1956_ch01:
+    before: "Alonzo Church"
+    after:  ["Alonzo Church"]
+- church_1956_ch02:
+    before: "Alonzo Church"
+    after:  ["Alonzo Church"]
+- church_1956_ch03:
+    before: "Alonzo Church"
+    after:  ["Alonzo Church"]
+- church_1956_ch04:
+    before: "Alonzo Church"
+    after:  ["Alonzo Church"]
+- church_1956_ch05:
+    before: "Alonzo Church"
+    after:  ["Alonzo Church"]
+- from_2022:
+    before: "Asta Halkjær From, Frederik Krogsdal Jacobsen, Jørgen Villadsen"
+    after:  ["Asta Halkjær From","Frederik Krogsdal Jacobsen","Jørgen Villadsen"]
+- gabbay_1994_ch10:
+    before: "Dov Gabbay, Ian Hodkinson, Mark Reynolds"
+    after:  ["Dov Gabbay","Ian Hodkinson","Mark Reynolds"]
+- gentzen_1935:
+    before: "Gerhard Gentzen"
+    after:  ["Gerhard Gentzen"]
+- gentzen_1935_sec00:
+    before: "Gerhard Gentzen"
+    after:  ["Gerhard Gentzen"]
+- gentzen_1935_sec02:
+    before: "Gerhard Gentzen"
+    after:  ["Gerhard Gentzen"]
+- gentzen_1935_sec03:
+    before: "Gerhard Gentzen"
+    after:  ["Gerhard Gentzen"]
+- gentzen_1935_sec04:
+    before: "Gerhard Gentzen"
+    after:  ["Gerhard Gentzen"]
+- gentzen_1935_sec05:
+    before: "Gerhard Gentzen"
+    after:  ["Gerhard Gentzen"]
+- henkin_1949:
+    before: "Leon Henkin"
+    after:  ["Leon Henkin"]
+- hughes_1996:
+    before: "G. E. Hughes, M. J. Cresswell"
+    after:  ["G. E. Hughes, M. J. Cresswell"]
+- hughes_1996_p00:
+    before: "G. E. Hughes, M. J. Cresswell"
+    after:  ["G. E. Hughes, M. J. Cresswell"]
+- hughes_1996_p01:
+    before: "G. E. Hughes, M. J. Cresswell"
+    after:  ["G. E. Hughes, M. J. Cresswell"]
+- hughes_1996_p02:
+    before: "G. E. Hughes, M. J. Cresswell"
+    after:  ["G. E. Hughes, M. J. Cresswell"]
+- hughes_1996_p03:
+    before: "G. E. Hughes, M. J. Cresswell"
+    after:  ["G. E. Hughes, M. J. Cresswell"]
+- johansson_1937:
+    before: "Ingebrigt Johansson"
+    after:  ["Ingebrigt Johansson"]
+- mendelson_2016:
+    before: "Elliott Mendelson"
+    after:  ["Elliott Mendelson"]
+- mendelson_2016_ch00:
+    before: "Elliott Mendelson"
+    after:  ["Elliott Mendelson"]
+- mendelson_2016_ch01:
+    before: "Elliott Mendelson"
+    after:  ["Elliott Mendelson"]
+- mendelson_2016_ch02:
+    before: "Elliott Mendelson"
+    after:  ["Elliott Mendelson"]
+- mendelson_2016_ch03:
+    before: "Elliott Mendelson"
+    after:  ["Elliott Mendelson"]
+- mendelson_2016_ch04:
+    before: "Elliott Mendelson"
+    after:  ["Elliott Mendelson"]
+- mendelson_2016_ch05:
+    before: "Elliott Mendelson"
+    after:  ["Elliott Mendelson"]
+- post_1921:
+    before: "Emil L. Post"
+    after:  ["Emil L. Post"]
+- trufas_2024:
+    before: "Dafina Trufas"
+    after:  ["Dafina Trufas"]
+- zakharyaschev_2001:
+    before: "Michael Zakharyaschev, Frank Wolter, Alexander Chagrov"
+    after:  ["Michael Zakharyaschev","Frank Wolter","Alexander Chagrov"]
+- zakharyaschev_2001_sec00:
+    before: "Michael Zakharyaschev, Frank Wolter, Alexander Chagrov"
+    after:  ["Michael Zakharyaschev","Frank Wolter","Alexander Chagrov"]
+- zakharyaschev_2001_sec01:
+    before: "Michael Zakharyaschev, Frank Wolter, Alexander Chagrov"
+    after:  ["Michael Zakharyaschev","Frank Wolter","Alexander Chagrov"]
+- zakharyaschev_2001_sec02:
+    before: "Michael Zakharyaschev, Frank Wolter, Alexander Chagrov"
+    after:  ["Michael Zakharyaschev","Frank Wolter","Alexander Chagrov"]
+- zakharyaschev_2001_sec03:
+    before: "Michael Zakharyaschev, Frank Wolter, Alexander Chagrov"
+    after:  ["Michael Zakharyaschev","Frank Wolter","Alexander Chagrov"]
+- negri_von_plato_2001:
+    before: "Sara Negri, Jan von Plato"
+    after:  ["Sara Negri","Jan von Plato"]
+- negri_von_plato_2001_section01_front-matter:
+    before: "Sara Negri, Jan von Plato"
+    after:  ["Sara Negri","Jan von Plato"]
+- negri_von_plato_2001_section02_ch1-general-introduction:
+    before: "Sara Negri, Jan von Plato"
+    after:  ["Sara Negri","Jan von Plato"]
+- negri_von_plato_2001_section03_ch2-intuitionistic-cut-elimination:
+    before: "Sara Negri, Jan von Plato"
+    after:  ["Sara Negri","Jan von Plato"]
+- negri_von_plato_2001_section04_ch3-classical-sequent-calculus:
+    before: "Sara Negri, Jan von Plato"
+    after:  ["Sara Negri","Jan von Plato"]
+- negri_von_plato_2001_section05_ch4-quantifier-rules:
+    before: "Sara Negri, Jan von Plato"
+    after:  ["Sara Negri","Jan von Plato"]
+- negri_von_plato_2001_section06_ch5-variant-sequent-calculi:
+    before: "Sara Negri, Jan von Plato"
+    after:  ["Sara Negri","Jan von Plato"]
+- negri_von_plato_2001_section07_ch6-8-extensions-translations:
+    before: "Sara Negri, Jan von Plato"
+    after:  ["Sara Negri","Jan von Plato"]
+- troelstra_schwichtenberg_2000:
+    before: "Anne Sjerp Troelstra, Helmut Schwichtenberg"
+    after:  ["Anne Sjerp Troelstra","Helmut Schwichtenberg"]
+- troelstra_schwichtenberg_2000_section01_front-matter:
+    before: "Anne Sjerp Troelstra, Helmut Schwichtenberg"
+    after:  ["Anne Sjerp Troelstra","Helmut Schwichtenberg"]
+- troelstra_schwichtenberg_2000_section02_ch1-introduction:
+    before: "Anne Sjerp Troelstra, Helmut Schwichtenberg"
+    after:  ["Anne Sjerp Troelstra","Helmut Schwichtenberg"]
+- troelstra_schwichtenberg_2000_section03_ch2-n-h-systems:
+    before: "Anne Sjerp Troelstra, Helmut Schwichtenberg"
+    after:  ["Anne Sjerp Troelstra","Helmut Schwichtenberg"]
+- troelstra_schwichtenberg_2000_section04_ch3-gentzen-systems:
+    before: "Anne Sjerp Troelstra, Helmut Schwichtenberg"
+    after:  ["Anne Sjerp Troelstra","Helmut Schwichtenberg"]
+- troelstra_schwichtenberg_2000_section05_ch4-cut-elimination:
+    before: "Anne Sjerp Troelstra, Helmut Schwichtenberg"
+    after:  ["Anne Sjerp Troelstra","Helmut Schwichtenberg"]
+- troelstra_schwichtenberg_2000_section06_ch5-bounds-permutations:
+    before: "Anne Sjerp Troelstra, Helmut Schwichtenberg"
+    after:  ["Anne Sjerp Troelstra","Helmut Schwichtenberg"]
+- troelstra_schwichtenberg_2000_section07_ch6-11-advanced-topics:
+    before: "Anne Sjerp Troelstra, Helmut Schwichtenberg"
+    after:  ["Anne Sjerp Troelstra","Helmut Schwichtenberg"]
+
+Dry run only -- no changes written. Re-run with --apply (or --write) to persist.
