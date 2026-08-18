@@ -22,7 +22,7 @@ checkable is checked here.
 | The successor selection is choice-free | `succOf`, `succOf_step`, `predOf`, `predOf_step` |
 | The time-shift that places a lasso is choice-free | `isStepPath_shift` |
 | The certificate's **data** is choice-free | `windowBack`, `windowMid`, `windowFwd`, `windowPath` |
-| The pigeonhole is where choice enters | `orbit_repeat` |
+| The pigeonhole is choice-free too | `exists_dup_lt`, `orbit_repeat`, `orbit_repeat_pred` |
 | The theorem as a whole is choice-carrying | `extend_periodic`, `extend_periodic_of_icc` |
 
 The last row is deliberately *not* a defect being recorded as acceptable. It is the measurement
@@ -42,7 +42,10 @@ as the change that moved it**, with the move justified in that commit — never 
 a red build green. In particular, a guard in the first three rows that has grown
 `Classical.choice` is a regression to investigate, not an expectation to rewrite: it would mean
 the computable half of this construction has been contaminated by the classical half, and the
-`extend_periodic` docstring's central distinction would no longer hold.
+`extend_periodic` docstring's central distinction would no longer hold. Conversely, a profile in
+the last row that *shrinks* is a welcome improvement — update the block and the docstring's ON
+CHOICE section in the same commit, and do not turn the shrinkage into a constructivity claim the
+measurement does not support.
 -/
 
 namespace BimodalTest.Metalogic
@@ -110,32 +113,49 @@ rather than asserted.
 #guard_msgs in
 #print axioms FormalSystem.Metalogic.Decidability.IntPresentation.windowPath
 
-/-! ## Where choice actually enters
+/-! ## The pigeonhole, which is choice-free by construction
 
-`orbit_repeat` is the pigeonhole. Every route to pigeonhole in Mathlib carries
-`Classical.choice`, `Finset.card_le_card` included, so this profile is expected and is the first
-of the two sources the `extend_periodic` docstring names.
+Every route to pigeonhole in Mathlib carries `Classical.choice`, `Finset.card_le_card` included,
+because `Finset.card` sits on `Multiset` / `Quot` machinery that pulls it in at the base. That is
+an **API fact, not a proved logical obstruction** — pigeonhole over a carrier with decidable
+equality is constructively valid — so it is avoidable, and `exists_dup_lt` avoids it, by deleting
+a value from the codomain and inducting. `orbit_repeat` and `orbit_repeat_pred` inherit the
+result.
 
-This is an **API fact, not a proved logical obstruction**. Pigeonhole over a carrier with
-decidable equality is constructively valid; Mathlib simply provides no choice-free route, because
-`Finset.card` sits on `Multiset` / `Quot` machinery that pulls `Classical.choice` in at the base.
-That is a genuinely different situation from `TaskFrame.spherical_of_finite`, where
-`BimodalTest.Semantics.wlem_of_spherical` proves a choice-free version cannot exist. Nothing of
-that kind is known here, and this module asserts nothing of that kind. If a future toolchain or
-a hand-rolled pigeonhole makes this profile shrink, that is a welcome improvement, not a broken
-expectation — update the block and the docstring together.
+These three guards are the load-bearing ones for that claim. A profile here that has grown
+`Classical.choice` means the direct construction has been replaced by a library call, or that a
+`==` comparison has crept back in: at `Fin`, `==` resolves through a `LawfulBEq` route whose
+`beq_iff_eq` and `eq_of_beq` are *themselves* choice-carrying with the full library in scope,
+which is why `exists_dup_lt` spells its comparison as `Nat.beq` on the underlying values.
+
+Note what this does **not** do: it does not make `extend_periodic` choice-free, because that
+theorem's conclusion routes through decoding lemmas in a module held byte-stable. See the two
+blocks below.
 -/
 
-/-- info: 'FormalSystem.Metalogic.Decidability.IntPresentation.orbit_repeat' depends on axioms: [propext,
- Classical.choice,
- Quot.sound] -/
+/-- info: 'FormalSystem.Metalogic.Decidability.exists_dup_lt' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.exists_dup_lt
+
+/-- info: 'FormalSystem.Metalogic.Decidability.IntPresentation.orbit_repeat' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in
 #print axioms FormalSystem.Metalogic.Decidability.IntPresentation.orbit_repeat
+
+/-- info: 'FormalSystem.Metalogic.Decidability.IntPresentation.orbit_repeat_pred' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in
+#print axioms FormalSystem.Metalogic.Decidability.IntPresentation.orbit_repeat_pred
 
 /-! ## The theorem as measured
 
 These two blocks are the literal strings quoted in the `extend_periodic` docstring. They exist so
 that the quotation is checked rather than trusted.
+
+Two sources remain, both incidental library facts rather than anything about frames, finiteness,
+or time: `BiLasso.length_pos_int`'s numeric-coercion step, which reaches this theorem through the
+decoding lemmas and lives in a module held byte-stable, and Mathlib's `List.getD` indexing
+lemmas, which every segment-readout lemma is stated in terms of. Both look as scrubbable in
+principle as the pigeonhole turned out to be; neither is scrubbable from here, and no claim
+either way is made.
 -/
 
 /-- info: 'FormalSystem.Metalogic.Decidability.IntPresentation.extend_periodic' depends on axioms: [propext,

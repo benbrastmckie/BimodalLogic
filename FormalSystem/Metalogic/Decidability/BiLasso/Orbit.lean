@@ -20,15 +20,19 @@ plus the window are exactly the three segments a `BiLasso` carries.
 
 ## Where `Classical.choice` enters, and where it does not
 
-The revisit is forced by pigeonhole, and every route to pigeonhole in Mathlib carries
-`Classical.choice` — `Finset.card_le_card`, the most primitive counting statement in the library,
-already does, so every counting lemma downstream of it does too. `orbit_repeat` below therefore
-measures `[propext, Classical.choice, Quot.sound]`, and that is expected rather than a defect.
+Not in the pigeonhole. Every route to pigeonhole in Mathlib carries `Classical.choice` —
+`Finset.card_le_card`, the most primitive counting statement in the library, already does — so a
+revisit proved through the library would be choice-carrying. `exists_dup_lt` below avoids that by
+proving pigeonhole on `Fin` directly, by deleting a value and inducting on the codomain, and
+`orbit_repeat` / `orbit_repeat_pred` are consequently `[propext, Quot.sound]`.
 
-What does **not** carry it is the successor selection: `IntPresentation.succOf` is
-`[propext, Quot.sound]` and `#eval`-able (`BiLasso/Successor.lean`). The orbit whose repeat is
-being detected is a computable object; only the *proof that it repeats* reaches for the library's
-counting API.
+Nor in the successor selection: `IntPresentation.succOf` is `[propext, Quot.sound]` and
+`#eval`-able (`BiLasso/Successor.lean`).
+
+Where it does enter is the assembly, through two incidental library facts: `BiLasso`'s decoding
+lemmas (via `BiLasso.length_pos_int`, in a module held byte-stable and so not scrubbable here) and
+Mathlib's `List.getD` indexing lemmas. `IntPresentation.extend_periodic`'s docstring carries the
+full accounting.
 
 ## Main Definitions
 
@@ -49,6 +53,91 @@ counting API.
 namespace FormalSystem.Metalogic.Decidability
 
 open FormalSystem.Semantics
+
+/-!
+## A choice-free pigeonhole on `Fin`
+
+Every pigeonhole in Mathlib carries `Classical.choice`, `Finset.card_le_card` included, because
+`Finset.card` sits on `Multiset` / `Quot` machinery that pulls it in at the base. That is an API
+fact rather than a logical obstruction: pigeonhole over a carrier with decidable equality is
+constructively valid, and the proof below is a direct construction, measured at
+`[propext, Quot.sound]`.
+
+The induction deletes a value. Given a map `ℕ → Fin (N + 1)` on a window longer than `N + 1`,
+either some earlier index already collides with the last one — found by `List.find?`, so the
+search is a computation and not an appeal to excluded middle — or none does, in which case the
+last value is missed by all the others and can be deleted from the codomain, shrinking `N + 1` to
+`N` and invoking the inductive hypothesis.
+
+**What this does and does not buy.** `orbit_repeat` and `orbit_repeat_pred` below become
+choice-free. `IntPresentation.extend_periodic` does **not**: its conclusion asserts
+`IsStepPath`, which routes through `BiLasso.unroll_isStepPath`, and that lemma is choice-carrying
+for reasons entirely internal to the decoding module — which is held byte-stable and so is not
+scrubbable from here. See `extend_periodic`'s own docstring for the resulting accounting.
+-/
+
+/-- Delete the value `v` from `Fin (N + 1)`, landing in `Fin N`. Injective away from `v`, which is
+all that is asked of it. -/
+private def deleteVal {N : ℕ} (hN : 0 < N) (v x : Fin (N + 1)) : Fin N :=
+  if hx : x.val < v.val then ⟨x.val, by have := v.isLt; omega⟩
+  else ⟨x.val - 1, by have := x.isLt; omega⟩
+
+/-- `deleteVal v` is injective on the complement of `v`. -/
+private theorem deleteVal_inj {N : ℕ} (hN : 0 < N) (v x y : Fin (N + 1))
+    (hx : x ≠ v) (hy : y ≠ v) (h : deleteVal hN v x = deleteVal hN v y) : x = y := by
+  have hxl := x.isLt
+  have hyl := y.isLt
+  have hvl := v.isLt
+  have hx' : x.val ≠ v.val := fun he => hx (Fin.ext he)
+  have hy' : y.val ≠ v.val := fun he => hy (Fin.ext he)
+  apply Fin.ext
+  unfold deleteVal at h
+  split at h <;> split at h <;> simp only [Fin.mk.injEq] at h <;> omega
+
+/--
+**Pigeonhole on `Fin`, choice-free.** Any `n > N` consecutive values of a map into `Fin N` repeat,
+and the repeat is exhibited by indices.
+
+Measured at `[propext, Quot.sound]` — see this section's docstring for why that is worth the
+duplication against Mathlib's own pigeonhole.
+-/
+theorem exists_dup_lt : ∀ (N n : ℕ), N < n → ∀ g : ℕ → Fin N,
+    ∃ i j : ℕ, i < j ∧ j < n ∧ g i = g j := by
+  intro N
+  induction N with
+  | zero => intro n hn g; exact absurd (g 0).isLt (by omega)
+  | succ N ih =>
+    intro n hn g
+    -- The comparison is spelled `Nat.beq` on the underlying values rather than `==` on `Fin`.
+    -- That is not cosmetic: with the full library in scope, `==` at `Fin` resolves through a
+    -- `LawfulBEq` route whose `beq_iff_eq` and `eq_of_beq` are themselves choice-carrying, which
+    -- would silently reintroduce `Classical.choice` into this proof. `Nat.beq` does not.
+    cases hfind : (List.range (n - 1)).find?
+        (fun i => Nat.beq (g i).val (g (n - 1)).val) with
+    | some i =>
+        have hmem : i ∈ List.range (n - 1) := List.mem_of_find?_eq_some hfind
+        have heq : Nat.beq (g i).val (g (n - 1)).val = true :=
+          List.find?_some (p := fun k => Nat.beq (g k).val (g (n - 1)).val) hfind
+        exact ⟨i, n - 1, by have := List.mem_range.mp hmem; omega, by omega,
+          Fin.ext (Nat.eq_of_beq_eq_true heq)⟩
+    | none =>
+        have hbeq : ∀ a b : ℕ, a = b → Nat.beq a b = true := by
+          intro a b hab
+          cases hab
+          exact Nat.beq_refl a
+        have hall : ∀ i, i < n - 1 → g i ≠ g (n - 1) := by
+          intro i hi he
+          exact List.find?_eq_none.mp hfind i (List.mem_range.mpr hi)
+            (hbeq _ _ (congrArg Fin.val he))
+        rcases Nat.eq_zero_or_pos N with hN0 | hNpos
+        · subst hN0
+          have hone : g 0 = g (n - 1) :=
+            Fin.ext (by have := (g 0).isLt; have := (g (n - 1)).isLt; omega)
+          exact absurd hone (hall 0 (by omega))
+        · obtain ⟨i, j, hij, hjn, heq⟩ :=
+            ih (n - 1) (by omega) (fun k => deleteVal hNpos (g (n - 1)) (g k))
+          exact ⟨i, j, hij, by omega,
+            deleteVal_inj hNpos _ _ _ (hall i (by omega)) (hall j (by omega)) heq⟩
 
 namespace IntPresentation
 
@@ -82,36 +171,16 @@ map `Fin (P.card + 1) → Fin P.card` sending `k` to `iterSucc w k` would be inj
 -/
 theorem orbit_repeat (w : Fin P.card) :
     ∃ i j : ℕ, i < j ∧ j ≤ P.card ∧ P.iterSucc w i = P.iterSucc w j := by
-  by_contra hcon
-  push_neg at hcon
-  have hinj : Function.Injective (fun k : Fin (P.card + 1) => P.iterSucc w (k : ℕ)) := by
-    intro a b hab
-    by_contra hne
-    have hne' : (a : ℕ) ≠ (b : ℕ) := fun h => hne (Fin.ext h)
-    rcases Nat.lt_or_ge (a : ℕ) (b : ℕ) with hlt | hge
-    · exact absurd hab (hcon a b hlt (by have := b.isLt; omega))
-    · have hlt : (b : ℕ) < (a : ℕ) := by omega
-      exact absurd hab.symm (hcon b a hlt (by have := a.isLt; omega))
-  have hcard := Fintype.card_le_of_injective _ hinj
-  simp only [Fintype.card_fin] at hcard
-  omega
+  obtain ⟨i, j, hij, hjn, heq⟩ :=
+    exists_dup_lt P.card (P.card + 1) (by omega) (fun k => P.iterSucc w k)
+  exact ⟨i, j, hij, by omega, heq⟩
 
 /-- **The backward orbit revisits a state**, by the identical argument through `iterPred`. -/
 theorem orbit_repeat_pred (w : Fin P.card) :
     ∃ i j : ℕ, i < j ∧ j ≤ P.card ∧ P.iterPred w i = P.iterPred w j := by
-  by_contra hcon
-  push_neg at hcon
-  have hinj : Function.Injective (fun k : Fin (P.card + 1) => P.iterPred w (k : ℕ)) := by
-    intro a b hab
-    by_contra hne
-    have hne' : (a : ℕ) ≠ (b : ℕ) := fun h => hne (Fin.ext h)
-    rcases Nat.lt_or_ge (a : ℕ) (b : ℕ) with hlt | hge
-    · exact absurd hab (hcon a b hlt (by have := b.isLt; omega))
-    · have hlt : (b : ℕ) < (a : ℕ) := by omega
-      exact absurd hab.symm (hcon b a hlt (by have := a.isLt; omega))
-  have hcard := Fintype.card_le_of_injective _ hinj
-  simp only [Fintype.card_fin] at hcard
-  omega
+  obtain ⟨i, j, hij, hjn, heq⟩ :=
+    exists_dup_lt P.card (P.card + 1) (by omega) (fun k => P.iterPred w k)
+  exact ⟨i, j, hij, by omega, heq⟩
 
 /-! ## A repeat makes the orbit periodic -/
 
@@ -687,34 +756,44 @@ Measured, not asserted:
  Quot.sound]
 ```
 
-`Classical.choice` is present, from exactly two sources, **neither of which is the successor
-selection**:
+`Classical.choice` is present, from two sources, **neither of which is the successor selection**,
+and **neither of which is finiteness**:
 
-1. **Mathlib's finiteness API.** The revisit is forced by pigeonhole
-   (`IntPresentation.orbit_repeat`), and every route to pigeonhole in the library carries
-   `Classical.choice` — including `Finset.card_le_card`, the most primitive counting statement
-   there is — so every counting lemma downstream of it does too.
-2. **The reused decoding lemmas.** `BiLasso.unroll_isStepPath` and both `BiLasso.unroll_*`
-   periodicity lemmas already measure `[propext, Classical.choice, Quot.sound]`. It enters there
+1. **The reused decoding lemmas.** `BiLasso.unroll_isStepPath` and both `BiLasso.unroll_*`
+   periodicity lemmas measure `[propext, Classical.choice, Quot.sound]`. It enters there
    incidentally, through `BiLasso.length_pos_int`'s `exact_mod_cast` step, and has nothing to do
-   with `ℤ` or with the frame.
+   with `ℤ` or with the frame. That module is held byte-stable, so this source is not scrubbable
+   from here.
+2. **Mathlib's list-indexing API.** `List.getD_eq_getElem` and `List.getD_append` both measure
+   `[propext, Classical.choice, Quot.sound]`, and every segment-readout lemma here is stated in
+   terms of `List.getD`, so `unrollOf_windowSegments` inherits it. The `Nat`-to-`ℤ` coercion step
+   in `windowPath_step` carries it by the same mechanism as source 1.
 
-The successor selection is emphatically **not** a third source. `IntPresentation.succOf` and
+**Pigeonhole is *not* a source, and its absence was work.** The obvious third source — the
+finiteness API that forces the orbit to revisit a state — has been removed. Every route to
+pigeonhole in Mathlib carries `Classical.choice`, `Finset.card_le_card` included, because
+`Finset.card` sits on `Multiset` / `Quot` machinery that pulls it in at the base. That is an API
+fact and not a logical obstruction: pigeonhole over a carrier with decidable equality is
+constructively valid, and `exists_dup_lt` above proves it directly, by deleting a value and
+inducting, at `[propext, Quot.sound]`. `IntPresentation.orbit_repeat` and
+`IntPresentation.orbit_repeat_pred` are therefore choice-free.
+
+The successor selection is not a source either. `IntPresentation.succOf` and
 `IntPresentation.predOf` measure `[propext, Quot.sound]`, are built from `List.find?` over
 `List.finRange`, and are `#eval`-able; so are the three segment lists `windowBack` / `windowMid` /
-`windowFwd` this theorem's witness is assembled from. The *data* of the certificate is computable
-throughout; it is the *proofs about* it that reach for the library's counting and list-indexing
-API.
+`windowFwd` this theorem's witness is assembled from, and the intended path `windowPath` they
+decode to. The *data* of the certificate is computable throughout; what remains classical is the
+*proofs about* it, and both remaining sources are incidental library facts about lists and
+numeric coercions rather than anything about frames, finiteness, or time.
 
-**This is an API fact, not a proved logical one.** Pigeonhole over a carrier with decidable
-equality is constructively valid. Mathlib simply offers no choice-free route to it, because
-`Finset.card` is built on `Multiset` / `Quot` machinery that pulls `Classical.choice` in at the
-base. Contrast `TaskFrame.spherical_of_finite`, where the obstruction **is** logical and proved:
+Contrast `TaskFrame.spherical_of_finite`, where the obstruction **is** logical and proved:
 `wlem_of_spherical` derives weak excluded middle from *Spherical* at the carrier `Bool` over
 `D = ℤ` from `[propext, Quot.sound]` alone, so a choice-free proof there would prove WLEM in
 Lean's intuitionistic core and cannot exist. Nothing of that kind is known here, and nothing of
 that kind is claimed. **No constructivity claim and no impossibility claim is made for
-`extend_periodic`.**
+`extend_periodic`** — the two remaining sources look as scrubbable in principle as the pigeonhole
+turned out to be, but neither is scrubbable from this module, and no more is asserted than has
+been measured.
 
 What *is* preserved, and is a real, non-vacuous difference from the general Extension Theorem:
 **no Zorn.** This proof does not route through `PartialHistory.exists_maximal_extension`, and no

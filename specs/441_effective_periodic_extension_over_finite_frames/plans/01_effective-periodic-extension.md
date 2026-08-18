@@ -944,7 +944,7 @@ concatenation needs its own list-adjacency lemmas, record them.
 
 ---
 
-### Phase 9: OPTIONAL — hand-rolled choice-free pigeonhole [NOT STARTED]
+### Phase 9: OPTIONAL — hand-rolled choice-free pigeonhole [COMPLETED]
 
 **Goal**: Attempt to remove D-5's source 1 by proving pigeonhole on `Fin N` directly from
 `DecidableEq (Fin N)` by induction on the bound, and measure the effect on the Tier A axiom profile.
@@ -956,15 +956,51 @@ a `#### Reasoned Exclusions` table. **MUST NOT** leave a `sorry` behind, and **M
 failure here change the status of any other phase.
 
 **Tasks**:
-- [ ] Prove a choice-free pigeonhole on `Fin N` (~40 lines expected: induction on the bound using
-      `DecidableEq (Fin N)`), in this task's own file — **not** in `Basic.lean`.
-- [ ] Re-route `orbit_repeat` through it and re-measure `#print axioms`.
-- [ ] Record the result honestly either way. Note that D-5 source 2 (`BiLasso.length_pos_int`'s
+- [x] Prove a choice-free pigeonhole on `Fin N` (~40 lines expected: induction on the bound using
+      `DecidableEq (Fin N)`), in this task's own file — **not** in `Basic.lean`. *(landed as
+      `exists_dup_lt` in `Orbit.lean`, with `deleteVal` / `deleteVal_inj` as private helpers.
+      **It succeeded**, measured `[propext, Quot.sound]`.)*
+- [x] Re-route `orbit_repeat` through it and re-measure `#print axioms`. *(`orbit_repeat` and
+      `orbit_repeat_pred` both moved from `[propext, Classical.choice, Quot.sound]` to
+      `[propext, Quot.sound]`.)*
+- [x] Record the result honestly either way. Note that D-5 source 2 (`BiLasso.length_pos_int`'s
       `exact_mod_cast`) is **not** removable by this task, since `Basic.lean` is frozen — so even a
       fully successful pigeonhole may leave `Classical.choice` on any conclusion routed through
-      `unroll_isStepPath` or the `unroll_*` periodicity lemmas.
-- [ ] Update the D-5 docstring paragraph with whatever was actually measured. Under no
+      `unroll_isStepPath` or the `unroll_*` periodicity lemmas. *(exactly as predicted:
+      `extend_periodic` still measures `[propext, Classical.choice, Quot.sound]`.)*
+- [x] Update the D-5 docstring paragraph with whatever was actually measured. Under no
       circumstances weaken the "no claim either way" constraint into a constructivity claim.
+      *(rewritten; the "no constructivity claim and no impossibility claim" sentence is retained
+      verbatim in force, and the new sentence about the remaining sources says only that they
+      "look as scrubbable in principle" and that "no more is asserted than has been measured".)*
+
+#### Phase 9 Note — the optional phase succeeded, and found a third choice source
+
+**Scope Hypothesis check**: asserted ~40 lines and "a real chance of failure". Actual: ~45 lines
+across three declarations (`deleteVal`, `deleteVal_inj`, `exists_dup_lt`), and it did not fail.
+The induction deletes a value from the codomain: either `List.find?` locates an earlier index
+colliding with the last one — a computation, not an appeal to excluded middle — or none does, in
+which case the last value is missed by everything before it and can be deleted, shrinking
+`Fin (N+1)` to `Fin N`.
+
+**One non-obvious hazard, recorded because it will recur.** The proof was choice-free in a
+minimal-import scratch file and choice-**carrying** when moved into `Orbit.lean` verbatim. The
+cause is `==`: with the full library in scope, `==` at `Fin` resolves through a `LawfulBEq` route
+whose `beq_iff_eq` and `eq_of_beq` are themselves `[propext, Classical.choice, Quot.sound]`.
+Spelling the comparison as `Nat.beq` on the underlying values restores choice-freedom. A comment
+in `Orbit.lean` and a paragraph in the test module both record this, because the failure mode is
+silent — the proof still compiles, it just quietly acquires an axiom.
+
+**A third choice source, discovered by removing the first.** With pigeonhole eliminated, the
+remaining two sources for `extend_periodic` are D-5's source 2 (`BiLasso.length_pos_int`, frozen)
+and one D-5 did not anticipate: **Mathlib's `List.getD` indexing API**. `List.getD_eq_getElem` and
+`List.getD_append` both measure `[propext, Classical.choice, Quot.sound]`, and every
+segment-readout lemma here is stated in terms of `List.getD`, so `unrollOf_windowSegments`
+inherits it. The `extend_periodic` docstring and the test module now name both.
+
+**Net effect on the headline theorem: none**, exactly as the plan predicted. What changed is the
+*accounting*, and it changed in the task's favour: finiteness — the source that sounded most like
+an essential obstruction — is no longer among the reasons this result is classical.
 
 **Timing**: 2 hours
 
