@@ -846,10 +846,13 @@ pigeonhole (`Fintype.exists_ne_map_eq_of_card_lt`) that `exists_repeat_of_card_l
 and is a strict strengthening of it — that lemma's `<` hypothesis is simply stronger than its own
 proof needs.
 
-A sharper form had to be proved locally in any case, for a second and independent reason:
-`exists_repeat_of_card_lt` lives in `Metalogic/Decidability/FMP/Periodicity.lean`, and importing
-it into `Semantics/Extension/` would invert the layering, making `Semantics/` depend on
-`Metalogic/`.
+**Correction entered during Phase 8**: an earlier draft of this note gave a second reason — that
+importing `Periodicity.lean` into `Semantics/Extension/` would invert the layering. That reason is
+**wrong and is withdrawn**. `Metalogic/Decidability/FMP/Periodicity.lean` is filed under
+`Metalogic/` but its namespace is `FormalSystem.Semantics` and its only local import is
+`FormalSystem.Semantics.IntNormalForm`, so importing it introduces no cycle and no inversion. It is
+in fact imported by this module as of Phase 8, for `exists_path_of_iter`. The bound argument above
+stands on its own and is the whole of the justification.
 
 **Flagged for review** rather than silently annotated. Two follow-ups are worth considering and
 neither is done here: relaxing `exists_repeat_of_card_lt`'s hypothesis from `<` to `≤` in place
@@ -880,24 +883,46 @@ baseline.
 
 ---
 
-### Phase 8: The gapped finite domain (Tier B) [NOT STARTED]
+### Phase 8: The gapped finite domain (Tier B) [COMPLETED]
 
 **Goal**: The task's literal "partial history on a FINITE domain" wording, permitting holes, derived
 from the contiguous result.
 
 **Tasks**:
-- [ ] State `TaskFrame.extend_periodic_of_finite_domain` over a `PartialHistory` whose domain is
+- [x] State `TaskFrame.extend_periodic_of_finite_domain` over a `PartialHistory` whose domain is
       finite but not necessarily convex.
-- [ ] Order the finite domain and iterate over consecutive pairs. For each pair `a < b`:
+- [x] Order the finite domain and iterate over consecutive pairs. For each pair `a < b`:
       `respects_task` gives `F.TaskRel (τ a) (b - a) (τ b)`, `taskRel_eq_iter` turns that into
       `iter F.step (b - a) (τ a) (τ b)`, and `exists_path_of_iter` produces an explicit filler with
-      adjacency at every index.
-- [ ] Concatenate the fillers into a contiguous window over `[min dom, max dom]`, then apply
-      Phase 7's contiguous result.
-- [ ] Docstring records that this is **Tier B only**: a gapped Tier A certificate is not delivered
+      adjacency at every index. *(landed as `TaskFrame.exists_filler`, by strong induction on the
+      domain finset's cardinality: each step peels off the largest remaining domain point and joins
+      it to the previous frontier by exactly that three-lemma chain)*
+- [x] Concatenate the fillers into a contiguous window over `[min dom, max dom]`, then apply
+      Phase 7's contiguous result. *(the concatenation is the induction's accumulator rather than a
+      `List` append — each step returns one function on ℤ that already carries every earlier
+      filler, so there is no separate concatenation pass and no list-adjacency lemma to prove.
+      Phase 7's `TaskFrame.extend_periodic` is then applied literally, to a `PartialHistory` built
+      by `PartialHistory.ofLe` over the interval.)*
+- [x] Docstring records that this is **Tier B only**: a gapped Tier A certificate is not delivered
       because `exists_path_of_iter` yields a `Prop`-level existential filler, so the result would
       not be data. Name the computable-gap-filler bounded search as the follow-up that would be
       needed.
+
+#### Phase 8 Note
+
+**Scope Hypothesis check**: asserted "one extra theorem plus the ordering/concatenation
+bookkeeping, not a redesign", with the instruction to record any list-adjacency lemmas the
+concatenation needed. Actual: **three** new declarations, and **no** list-adjacency lemmas, because
+the construction never builds a list. They are `iter_of_adjacent` (ℤ-indexed adjacency implies an
+iterate between any two window times), `taskRel_of_adjacent` (its `TaskRel` form, which is what
+`PartialHistory.ofLe` consumes), and `exists_filler` (the induction). Both of the first two were
+needed to build the contiguous `PartialHistory` that Phase 7's theorem takes as input — the plan
+said "apply Phase 7's contiguous result", and applying it literally requires manufacturing that
+input, which adjacency alone does not give you. No redesign was needed; the phase is one theorem
+plus two short supporting lemmas.
+
+Sorry-free; measured `[propext, Classical.choice, Quot.sound]`, as expected for anything routed
+through the pigeonhole.
 
 **Timing**: 1.5 hours
 

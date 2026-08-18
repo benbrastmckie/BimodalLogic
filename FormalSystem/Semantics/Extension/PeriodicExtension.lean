@@ -4,9 +4,11 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
+import Mathlib.Data.Finset.Max
 import Mathlib.Data.Fintype.Pigeonhole
 import Mathlib.SetTheory.Cardinal.Finite
 import FormalSystem.Semantics.IntNormalForm
+import FormalSystem.Metalogic.Decidability.FMP.Periodicity
 
 /-!
 # Periodic Extension over a Finite Carrier
@@ -231,6 +233,182 @@ theorem extend_periodic {F : TaskFrame ℤ} [Finite F.WorldState]
     rw [hflt _ (by omega), hflt _ (by omega),
       show (a - (x - (j₀ - i₀))).toNat = (a - x).toNat + (j₀.toNat - i₀.toNat) by omega]
     exact iterate_periodic pr (g a) heq₀ (by omega) (by omega)
+
+end TaskFrame
+
+/-!
+## The gapped case
+
+`PartialHistory.domain` is an arbitrary predicate, so `{0, 5}` is a legal domain with a four-time
+hole. The paper's own hypothesis is a *bounded world history*, which carries a `convex` field and
+so has no holes; the statement below drops convexity and asks only that the domain be finite.
+
+The extra work is entirely bookkeeping: order the domain, and between each consecutive pair fill
+the gap with an explicit path of exactly the right length, which `respects_task` plus
+`taskRel_eq_iter` plus `exists_path_of_iter` supply. Once the holes are filled the domain is an
+interval and `TaskFrame.extend_periodic` finishes the job.
+
+**This is delivered at the frame level only.** There is no gapped counterpart on the effective,
+certificate-bearing side, and there cannot be one built this way: `exists_path_of_iter` yields a
+`Prop`-level existential filler, so a gapped certificate assembled from it would not be *data*,
+which is the entire point of that tier. Producing a computable filler would need a bounded path
+search over a presentation's adjacency matrix — real work, deliberately out of scope here, and
+recorded as follow-up rather than quietly omitted.
+-/
+
+namespace TaskFrame
+
+/-- Adjacency along a window is an iterate between any two of its times. -/
+theorem iter_of_adjacent {F : TaskFrame ℤ} (w : ℤ → F.WorldState) (a b : ℤ)
+    (hw : ∀ t : ℤ, a ≤ t → t < b → F.step (w t) (w (t + 1))) :
+    ∀ (n : ℕ) (s : ℤ), a ≤ s → s + (n : ℤ) ≤ b → iter F.step n (w s) (w (s + (n : ℤ))) := by
+  intro n
+  induction n with
+  | zero => intro s _ _; simp
+  | succ n ih =>
+    intro s hs hsb
+    have hcast : ((n + 1 : ℕ) : ℤ) = (n : ℤ) + 1 := by push_cast; omega
+    rw [hcast, show s + ((n : ℤ) + 1) = (s + (n : ℤ)) + 1 by omega]
+    exact ⟨w (s + (n : ℤ)), ih s hs (by omega), hw (s + (n : ℤ)) (by omega) (by omega)⟩
+
+/-- Adjacency along a window discharges the guarded task-respect obligation on that window. -/
+theorem taskRel_of_adjacent {F : TaskFrame ℤ} (w : ℤ → F.WorldState) (a b : ℤ)
+    (hw : ∀ t : ℤ, a ≤ t → t < b → F.step (w t) (w (t + 1)))
+    (s t : ℤ) (hs : a ≤ s) (hst : s ≤ t) (htb : t ≤ b) :
+    F.TaskRel (w s) (t - s) (w t) := by
+  have hiter := iter_of_adjacent w a b hw (t - s).toNat s hs (by omega)
+  rw [show s + (((t - s).toNat : ℕ) : ℤ) = t by omega] at hiter
+  rw [show t - s = (((t - s).toNat : ℕ) : ℤ) by omega]
+  exact (F.taskRel_natCast_iff_iter _ _ _).mpr hiter
+
+/--
+**Gap filling.** Given a partial history and a finite set `S` of its domain points all lying
+strictly after a domain point `a`, there is a single function on ℤ adjacent at every step from `a`
+up to some `M` bounding `S`, agreeing with the history at `a` and at every member of `S`.
+
+The induction is on `S.card`, peeling off the largest member and joining it to the previous
+frontier with an explicit path of exactly the right length.
+-/
+theorem exists_filler {F : TaskFrame ℤ} (τ : PartialHistory F) (a : ℤ) (ha : τ.domain a) :
+    ∀ (n : ℕ) (S : Finset ℤ), S.card = n → (∀ t ∈ S, a < t) → (∀ t ∈ S, τ.domain t) →
+      ∃ (M : ℤ) (w : ℤ → F.WorldState),
+        (∀ t ∈ S, t ≤ M) ∧ a ≤ M ∧ (M = a ∨ M ∈ S) ∧
+        w a = τ.states a ha ∧
+        (∀ t : ℤ, a ≤ t → t < M → F.step (w t) (w (t + 1))) ∧
+        (∀ (t : ℤ) (ht : τ.domain t), t ∈ S → w t = τ.states t ht) := by
+  intro n
+  induction n using Nat.strong_induction_on with
+  | _ n ih =>
+    intro S hcard hgt hdom
+    rcases S.eq_empty_or_nonempty with rfl | hne
+    · exact ⟨a, fun _ => τ.states a ha, by simp, le_refl a, Or.inl rfl, rfl,
+        fun t h1 h2 => absurd h2 (by omega), by simp⟩
+    obtain ⟨M, hMS, hMmax⟩ : ∃ M, M ∈ S ∧ ∀ t ∈ S, t ≤ M :=
+      ⟨S.max' hne, S.max'_mem hne, fun t ht => S.le_max' t ht⟩
+    have haM : a < M := hgt M hMS
+    have hMdom : τ.domain M := hdom M hMS
+    obtain ⟨M', w', hM'max, haM', hM'or, hw'a, hw'adj, hw'ag⟩ :=
+      ih (S.erase M).card (by rw [← hcard]; exact Finset.card_erase_lt_of_mem hMS)
+        (S.erase M) rfl (fun t ht => hgt t (Finset.mem_of_mem_erase ht))
+        (fun t ht => hdom t (Finset.mem_of_mem_erase ht))
+    have hM'lt : M' < M := by
+      rcases hM'or with h | h
+      · omega
+      · have h1 : M' ≠ M := Finset.ne_of_mem_erase h
+        have h2 : M' ≤ M := hMmax M' (Finset.mem_of_mem_erase h)
+        omega
+    have hM'dom : τ.domain M' := by
+      rcases hM'or with h | h
+      · rw [h]; exact ha
+      · exact hdom M' (Finset.mem_of_mem_erase h)
+    have hw'M' : w' M' = τ.states M' hM'dom := by
+      rcases hM'or with h | h
+      · subst h; exact hw'a
+      · exact hw'ag M' hM'dom h
+    have hrel := τ.respects_task M' M hM'dom hMdom
+    have hiter : iter F.step (M - M').toNat (τ.states M' hM'dom) (τ.states M hMdom) := by
+      have hh := ((F.taskRel_eq_iter _ _ (M - M')).mp hrel).1 (by omega)
+      rwa [show (M - M').natAbs = (M - M').toNat by omega] at hh
+    obtain ⟨p, hp0, hpn, hpadj⟩ :=
+      exists_path_of_iter F.step (M - M').toNat _ _ hiter
+    refine ⟨M, fun t => if t ≤ M' then w' t else p (t - M').toNat,
+      hMmax, by omega, Or.inr hMS, ?_, ?_, ?_⟩
+    · show (if a ≤ M' then w' a else p (a - M').toNat) = τ.states a ha
+      rw [if_pos (by omega)]
+      exact hw'a
+    · intro t h1 h2
+      show F.step (if t ≤ M' then w' t else p (t - M').toNat)
+        (if t + 1 ≤ M' then w' (t + 1) else p (t + 1 - M').toNat)
+      rcases lt_or_ge t M' with h3 | h3
+      · rw [if_pos (by omega), if_pos (by omega)]
+        exact hw'adj t h1 h3
+      rcases eq_or_lt_of_le h3 with h4 | h4
+      · rw [if_pos (by omega), if_neg (by omega), show (t + 1 - M').toNat = 1 by omega,
+          show t = M' by omega, hw'M', ← hp0]
+        simpa using hpadj 0 (by omega)
+      · rw [if_neg (by omega), if_neg (by omega),
+          show (t + 1 - M').toNat = (t - M').toNat + 1 by omega]
+        exact hpadj _ (by omega)
+    · intro t ht htS
+      show (if t ≤ M' then w' t else p (t - M').toNat) = τ.states t ht
+      by_cases htM : t = M
+      · subst htM
+        rw [if_neg (by omega), hpn]
+      · have htS' : t ∈ S.erase M := Finset.mem_erase.mpr ⟨htM, htS⟩
+        rw [if_pos (hM'max t htS')]
+        exact hw'ag t ht htS'
+
+/--
+**Periodic extension from a finite, possibly gapped domain.**
+
+The `convex` hypothesis of the contiguous case is dropped: the domain need only be finite. The
+conclusion is unchanged — a possible world extending the given history, ultimately periodic in
+both directions with both periods bounded by the number of world states.
+-/
+theorem extend_periodic_of_finite_domain {F : TaskFrame ℤ} [Finite F.WorldState]
+    (τ : PartialHistory F) (hfin : {t : ℤ | τ.domain t}.Finite) :
+    ∃ σ : F.HF, PartialHistory.Extends σ.val.toPartialHistory τ ∧
+      ∃ n₀ p₀ n₁ p₁ : ℤ, 0 < p₀ ∧ 0 < p₁ ∧
+        p₀ ≤ (Nat.card F.WorldState : ℤ) ∧ p₁ ≤ (Nat.card F.WorldState : ℤ) ∧
+        (∀ x : ℤ, n₁ ≤ x → σ.path (x + p₁) = σ.path x) ∧
+        (∀ x : ℤ, x ≤ n₀ → σ.path (x - p₀) = σ.path x) := by
+  classical
+  obtain ⟨t₀, ht₀⟩ := τ.nonempty_domain
+  have hDne : (hfin.toFinset).Nonempty := ⟨t₀, by simpa using ht₀⟩
+  obtain ⟨a, haS, hamin⟩ : ∃ a, a ∈ hfin.toFinset ∧ ∀ t ∈ hfin.toFinset, a ≤ t :=
+    ⟨hfin.toFinset.min' hDne, hfin.toFinset.min'_mem hDne,
+      fun t ht => hfin.toFinset.min'_le t ht⟩
+  have ha : τ.domain a := by simpa using haS
+  obtain ⟨b, w, hbmax, hab, _hbor, hwa, hwadj, hwag⟩ :=
+    exists_filler τ a ha (hfin.toFinset.erase a).card (hfin.toFinset.erase a) rfl
+      (fun t ht => by
+        have h1 : t ≠ a := Finset.ne_of_mem_erase ht
+        have h2 : a ≤ t := hamin t (Finset.mem_of_mem_erase ht)
+        omega)
+      (fun t ht => by simpa using Finset.mem_of_mem_erase ht)
+  -- The window, as a contiguous partial history.
+  set τ' : PartialHistory F :=
+    PartialHistory.ofLe (fun t => a ≤ t ∧ t ≤ b) ⟨a, ⟨le_refl a, hab⟩⟩
+      (fun t _ => w t)
+      (fun s t hs ht hst => taskRel_of_adjacent w a b hwadj s t hs.1 hst ht.2) with hτ'
+  have hτ'dom : ∀ t : ℤ, τ'.domain t ↔ a ≤ t ∧ t ≤ b := fun _ => Iff.rfl
+  obtain ⟨σ, hext, hper⟩ := extend_periodic τ' a b hab hτ'dom
+  refine ⟨σ, ⟨fun t _ => σ.property t, ?_⟩, hper⟩
+  intro t ht
+  have htD : t ∈ hfin.toFinset := by simpa using ht
+  have hat : a ≤ t := hamin t htD
+  have htb : t ≤ b := by
+    by_cases htA : t = a
+    · omega
+    · exact hbmax t (Finset.mem_erase.mpr ⟨htA, htD⟩)
+  have hdom' : τ'.domain t := ⟨hat, htb⟩
+  have h1 := hext.agree t hdom'
+  have h2 : τ'.states t hdom' = w t := rfl
+  have h3 : w t = τ.states t ht := by
+    by_cases htA : t = a
+    · subst htA; exact hwa
+    · exact hwag t ht (Finset.mem_erase.mpr ⟨htA, htD⟩)
+  rw [h1, h2, h3]
 
 end TaskFrame
 
