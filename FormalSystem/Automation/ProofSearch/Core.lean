@@ -1116,6 +1116,13 @@ proof term when successful.
 since caching would require storing proofs indexed by (Γ, φ) and proof
 terms can be large. For performance-critical applications, use `boundedSearch`
 to first check provability, then use this function to construct the proof.
+
+**Why `FrameClass.Base` is essential here**: the search returns a `Γ ⊢ φ` — a `Base` derivation
+tree — because the whole `ProofSearch` engine decides and certifies the base system. The
+`witness.minFrameClass ≤ FrameClass.Base` guard in the axiom branch is the corresponding
+admissibility side condition: a `Dense`- or `Discrete`-only axiom deliberately falls through to
+the other strategies rather than being admitted. Retargeting the engine at another frame class
+is a change to the search procedure, not to this declaration.
 -/
 
 def boundedSearchWithProof (Γ : Context) (φ : Formula) (depth : Nat)

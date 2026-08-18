@@ -1,7 +1,7 @@
 # Implementation Plan: Frame-Class Uniformity
 
 - **Task**: 450 - frame_class_parameterization_restricted_mcs
-- **Status**: [IMPLEMENTING]
+- **Status**: COMPLETED
 - **Effort**: 18 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/450_frame_class_parameterization_restricted_mcs/reports/01_frame-class-parameterization-research.md`
@@ -661,7 +661,7 @@ only, not the closing gate.
 
 ---
 
-### Phase 12: Repo-Wide Audit Table [NOT STARTED]
+### Phase 12: Repo-Wide Audit Table [COMPLETED]
 
 **Goal**: Deliverable (f) — the audit table as a deliverable artifact, not scratch work.
 

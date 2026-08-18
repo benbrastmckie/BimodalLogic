@@ -982,6 +982,14 @@ Given a goal `□Γ ⊢ □φ` (where Γ = [□ψ₁, □ψ₂, ...] and formula
 applies `generalizedModalK` to reduce to `[ψ₁, ψ₂, ...] ⊢ χ`.
 
 **Note**: Uses `observing?` to avoid corrupting metavariable state on failure.
+
+**Why `FrameClass.Base` is hard-coded here** (and a known capability gap): the subgoal type is
+built with `mkConst ``FrameClass.Base` rather than from the `_fc` argument, so this tactic
+cannot fire at a non-`Base` frame class even though `Theorems.generalizedModalK` is itself
+`{fc}`-polymorphic. This is a metaprogramming limitation, not a mathematical one; the fix is to
+elaborate `_fc` into the subgoal type instead of the constant. `tryTemporalK` below has the same
+gap. Deliberately deferred: it is elaborator work orthogonal to the frame-class parameterisation
+of the theorem libraries.
 -/
 def tryModalK (goal : MVarId) (_fc ctx formula : Expr) (searchFn : MVarId → Nat → TacticM Bool)
     (depth : Nat) : TacticM Bool := do
@@ -1036,6 +1044,10 @@ Given a goal `FΓ ⊢ Fφ` (where Γ = [Fψ₁, Fψ₂, ...] and formula = Fχ),
 applies `generalizedTemporalK` to reduce to `[ψ₁, ψ₂, ...] ⊢ χ`.
 
 **Note**: Uses `observing?` to avoid corrupting metavariable state on failure.
+
+**Why `FrameClass.Base` is hard-coded here**: the same capability gap documented on
+`tryModalK` — the subgoal type is built from `mkConst ``FrameClass.Base` rather than from the
+`_fc` argument, so this tactic cannot fire at a non-`Base` frame class. Deliberately deferred.
 -/
 def tryTemporalK (goal : MVarId) (_fc ctx formula : Expr) (searchFn : MVarId → Nat → TacticM Bool)
     (depth : Nat) : TacticM Bool := do
