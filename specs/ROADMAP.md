@@ -1821,6 +1821,15 @@ SHA as a baseline to check, never as a guarantee.
 
 ## Recommended Priority Order
 
+> **STALE (2026-08-17)**: this section predates the current architecture and is not maintained
+> against it. Specifically, `### Critical Path: Single Sorry Chain` below asserts
+> `nf_nvar_exist_all_depths` in `KampPrior.lean` as the sole blocking sorry — but that file's own
+> comments now record `nf_nvar_exist_all_depths` as "fully landed, sorry-free". Per check C3, the
+> live answer is a different, single sorry: `countermodel_discrete` in
+> `WeakCanonical/Transfer.lean`. See the `## Overview` current-state block and `## Sorry Inventory`
+> (as rewritten 2026-08-17) for the current picture. This section's per-item task recommendations
+> below are left as-is — banner only, not rewritten.
+
 ### Critical Path: Single Sorry Chain
 
 Only ONE sorry blocks `completeness_discrete` (as of task 301 cleanup):
@@ -1848,6 +1857,8 @@ and 268 abandoned (task 301 phase 4).
 4. **Move dead Chronicle/BXCanonical/Bundle code to Boneyard/**: ~17 sorries eliminated by archival (succ_cofinal, Bundle/SuccRelation, Bundle/SuccExistence, Bundle/UntilSinceCoherence, BXCanonical/Frame, BXCanonical/Chronicle dead sorries). These are superseded by the Reynolds bypass.
 5. **Close remaining WeakCanonical sorries**: TruthLemma (6), StaviCompleteness (3), OrderedSum (1), GoodStructures (1) — assess which are on the Reynolds pipeline path vs. dead code.
 6. **Task 176**: Relocate Chronicle/ out of BXCanonical/, archive dead BXCanonical subtree.
+   *(inverted by outcome, 2026-08-17: Chronicle stayed inside `BXCanonical/` and `BXCanonical`
+   became the flagship path — see `## Overview`.)*
 
 ### Post-Completeness: Structural Refactor → Publication
 
@@ -1879,6 +1890,12 @@ and 268 abandoned (task 301 phase 4).
 ---
 
 ## Task Cross-Reference
+
+> **STALE (2026-08-17)**: this table's status column is not maintained against the live tree and
+> is not touched by this pass — in particular, the task-109 row's description ("Close 23
+> BXCanonical sorries") is the same inverted-count defect corrected elsewhere in this document
+> (see `## Sorry Inventory`); its status field in `specs/state.json` is not altered here, as that
+> crosses out of this task's ROADMAP.md-only charter. See `## Overview` for current state.
 
 > **Updated 2026-05-05 (task 107: Phases 1-3 complete, Burgess alignment migration, ROADMAP update)**
 

@@ -1,0 +1,57 @@
+{
+  "phase": 7,
+  "phase_name": "Stale-mark remaining sections and assemble the sweep record",
+  "started_at": "2026-08-17T02:25:00Z",
+  "last_updated": "2026-08-17T02:45:00Z",
+  "objectives": [
+    {"id": 1, "description": "Add dated staleness banner to Recommended Priority Order / Critical Path: Single Sorry Chain", "status": "done", "files_touched": ["specs/ROADMAP.md"]},
+    {"id": 2, "description": "Add one-line inline note to Sorry Cleanup item 6 (Relocate Chronicle, inverted by outcome)", "status": "done", "files_touched": ["specs/ROADMAP.md"]},
+    {"id": 3, "description": "Add dated staleness banner above Task Cross-Reference table", "status": "done", "files_touched": ["specs/ROADMAP.md"]},
+    {"id": 4, "description": "Confirm Current Strategy: Chronicle Construction (inside Dead Ends Archived) needs no edit -- parent label intact", "status": "done", "files_touched": []},
+    {"id": 5, "description": "Assemble the sweep record for the Phase 8 summary", "status": "done", "files_touched": []}
+  ],
+  "current_objective": 5,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "notes": {
+    "nf_nvar_exist_all_depths_verification": "grep confirms KampPrior.lean line 974 comment: '(now fully landed, sorry-free) nf_nvar_exist_all_depths' -- matches the plan's claimed defect exactly, banner content verified accurate.",
+    "diff_isolation_check": "git diff hunks for this phase land only at lines ~1821-1891 (Recommended Priority Order / Task Cross-Reference regions); no hunk touches ## Paper Alignment Programme (line 1740) or any earlier section.",
+    "state_json_todo_md_diff_explained": "specs/state.json and specs/TODO.md show diffs from this task's own phase-status transitions ([PLANNED] -> [IMPLEMENTING] for task 452 itself) plus a concurrent, unrelated session's task 453 status transition. Neither touches task 109's recorded status -- confirmed by inspecting the diff content. Non-goal satisfied.",
+    "dead_ends_archived_confirmation": "## Dead Ends (Archived) heading (line 1198) confirmed intact and unedited; ### Current Strategy: Chronicle Construction (Task 107) subsection inside it left untouched per plan instruction -- parent label already self-identifies as historical.",
+    "sweep_record_for_phase_8_summary": {
+      "corrected": [
+        "## Overview -- Completeness architecture paragraph (Phase 2, occurrence 1)",
+        "## Overview -- Sorry summary (dead code) block, relabeled HISTORICAL (Phase 2, occurrence 2)",
+        "## Overview -- dd_countermodel trailing paragraph (Phase 2)",
+        "## Active Metalogic Paths intro (Phase 2, occurrence 3)",
+        "### BXCanonical Path (DEAD CODE) heading, renamed Historical (Phase 2, occurrence 4)",
+        "## Sorry Inventory -- full rewrite against C3, four subsections relabeled Historical (Phase 3)",
+        "### Module Import Graph -- retired with dated pointer (Phase 4)",
+        "### Completeness Theorem -- Step 4 delegation corrected via Completeness.lean docstring (Phase 4)",
+        "## Canonical Model Construction (BXCanonical) -- dated line-citation staleness note added (Phase 4)",
+        "## Legacy Code Inventory -- table split archived/still-live, 4 wrong rows corrected (Phase 5)",
+        "## Legacy Code Inventory -- adjacent Metalogic.lean 4-vs-6-import claim corrected (Phase 5, found beyond declared scope)",
+        "### Dense Completeness -- corrected against C2, dense_completeness_fc found archived (Phase 6)",
+        "### Soundness (sorry-free) -- file-existence claim corrected, contradiction found beyond plan's expectation (Phase 6)",
+        "### Examples / Pedagogical -- count and file list corrected (Phase 6)",
+        "### Boneyard -- count corrected 14 -> 104, reproducible command cited (Phase 6)"
+      ],
+      "banner_only": [
+        "## Recommended Priority Order / ### Critical Path: Single Sorry Chain -- dated staleness banner, content untouched (Phase 7)",
+        "### Sorry Cleanup: Zero Sorries for Publication item 6 (Relocate Chronicle) -- one-line inline note, item list untouched (Phase 7)",
+        "## Task Cross-Reference -- dated staleness banner above table, table rows and specs/state.json task-109 status untouched (Phase 7)"
+      ],
+      "no_edit_needed": [
+        "## Dead Ends (Archived) -- already self-labeled historical, confirmed intact (Phase 7)",
+        "## Overview line-271-era HISTORICAL block (Sorry summary HISTORICAL...) -- already correctly labeled, confirmed by Phase 1 occurrence grep, not touched",
+        "## Paper Alignment Programme -- explicit non-goal, confirmed no diff hunk touches it (all phases)",
+        "The 111-row status tables -- explicit non-goal, confirmed no diff hunk touches them (all phases)",
+        "### FMP Truth Preservation -- re-verified in Phase 6, zero-sorry claim held, not contradicted",
+        "### Current Strategy: Chronicle Construction (Task 107) inside Dead Ends (Archived) -- parent section already historical (Phase 7)"
+      ]
+    },
+    "roadmap_reference_check": "clean over cumulative diff.",
+    "check_module_invariants_no_build": "PASS across the board, no regression."
+  },
+  "deviations": []
+}

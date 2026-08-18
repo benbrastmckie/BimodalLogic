@@ -540,7 +540,7 @@ figure (~104 vs ~14) in particular must be re-derived, not copied from this plan
 
 ---
 
-### Phase 7: Stale-mark remaining sections and assemble the sweep record [NOT STARTED]
+### Phase 7: Stale-mark remaining sections and assemble the sweep record [COMPLETED]
 
 **Goal**: Close out the sweep: mark the sections this task deliberately does not rewrite so they
 cannot be read as current, and assemble the full sweep finding — including the sections that
@@ -548,7 +548,7 @@ needed no edit — for the summary.
 
 **Tasks**:
 
-- [ ] `## Recommended Priority Order` (anchor, ~1681) and its `### Critical Path: Single Sorry
+- [x] `## Recommended Priority Order` (anchor, ~1681) and its `### Critical Path: Single Sorry
       Chain` subsection: add a dated staleness banner at the section head stating that the section
       predates the current architecture, naming the specific defect (it asserts
       `nf_nvar_exist_all_depths` in `KampPrior.lean` as the sole blocking sorry, which
@@ -556,19 +556,19 @@ needed no edit — for the summary.
       `countermodel_discrete`), and pointing to the `## Overview` current-state block and to
       `## Sorry Inventory` as rewritten by Phase 3. **Banner only — do not rewrite the section's
       content**, and do not touch its per-task recommendations.
-- [ ] `### Sorry Cleanup: Zero Sorries for Publication` item 6 (anchor: `Relocate Chronicle`):
+- [x] `### Sorry Cleanup: Zero Sorries for Publication` item 6 (anchor: `Relocate Chronicle`):
       flag inline that this recommendation was inverted by what actually happened — Chronicle
       stayed inside `BXCanonical/` and `BXCanonical` became the flagship. A one-line inline note is
       in scope; rewriting the item list is not.
-- [ ] `## Task Cross-Reference` (anchor, ~1740): add the same dated staleness banner above the
+- [x] `## Task Cross-Reference` (anchor, ~1740): add the same dated staleness banner above the
       table, noting specifically that the task-109 row's `Close 23 BXCanonical sorries` description
       is the same defect corrected elsewhere in this pass. **Do not edit the table rows** and do not
       touch task 109's recorded status in `specs/state.json` — that crosses out of this task's
       ROADMAP.md-only charter and belongs to the follow-up task.
-- [ ] `### Current Strategy: Chronicle Construction (Task 107)` inside `## Dead Ends (Archived)`
+- [x] `### Current Strategy: Chronicle Construction (Task 107)` inside `## Dead Ends (Archived)`
       (anchor, ~1380): the parent section is already self-labeled historical, so this needs no
       edit; confirm the parent label is intact and record the finding as no-edit-needed.
-- [ ] Assemble the sweep record for the summary: every section examined, its verdict
+- [x] Assemble the sweep record for the summary: every section examined, its verdict
       (corrected / banner-only / no edit needed), and the evidence. Explicitly include the no-edit
       findings the task asks for — `## Dead Ends (Archived)`, the `## Overview` line-271 HISTORICAL
       block, `## Paper Alignment Programme`, `### FMP Truth Preservation`, `### Soundness`, and the
