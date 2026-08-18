@@ -942,6 +942,11 @@
           "path": "specs/434_discharge_mintpaysfortime_residual/reports/02_spawn-analysis.md",
           "type": "report",
           "summary": "spawn analysis (backfilled by --sync)"
+        },
+        {
+          "path": "specs/434_discharge_mintpaysfortime_residual/summaries/01_mintpaysfortime-time-analogue-summary.md",
+          "type": "summary",
+          "summary": "MintPaysForTimeFixed, its direction lemma, the restated termini; nonempty discharge residual"
         }
       ],
       "session_id": "sess_1787081671_9332d7_434",
