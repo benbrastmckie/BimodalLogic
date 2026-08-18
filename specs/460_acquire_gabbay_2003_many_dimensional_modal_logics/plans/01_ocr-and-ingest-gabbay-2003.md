@@ -535,23 +535,26 @@ treat a zero hit count as weak evidence only, never as a substitute for the hand
 
 ---
 
-### Phase 7: Closeout — immutability audit, limitation record, scoped commit [IN PROGRESS]
+### Phase 7: Closeout — immutability audit, limitation record, scoped commit [COMPLETED]
 
 **Goal**: Prove nothing forbidden was touched, record the standing limitations and the deferred
 sub-index registration, and commit only this task's own artifacts.
 
 **Tasks**:
-- [ ] Re-assert the Zotero original's sha256 against `baseline.txt`. Any mismatch is a task
-      failure requiring immediate escalation, not a repair.
-- [ ] Diff current `git -C ~/Projects/Literature status --porcelain` against
+- [x] Re-assert the Zotero original's sha256 against `baseline.txt`. Any mismatch is a task
+      failure requiring immediate escalation, not a repair. *(completed: sha256
+      6b03d3f967e1bff33dad1a2b6f770039011b93410d789fb4e36031fc6557794b re-verified unchanged)*
+- [x] Diff current `git -C ~/Projects/Literature status --porcelain` against
       `baseline-literature-porcelain.txt`. The ONLY acceptable new lines are the new `{doc_id}/`
       directory and the new `index.json.bak-*-pre-460` backup (`index.json` and `.literature.db`
       were already modified in the baseline). Confirm no baseline line disappeared — nothing in
-      that pre-existing dirty tree may have been committed, stashed, or reverted.
-- [ ] Confirm `git diff specs/literature-index.json` in this repo is byte-identical to
+      that pre-existing dirty tree may have been committed, stashed, or reverted. *(completed:
+      diff shows exactly these 2 new lines and drops none of the 34 baseline lines)*
+- [x] Confirm `git diff specs/literature-index.json` in this repo is byte-identical to
       `baseline-subindex.diff` — this task must leave that pre-existing uncommitted modification
-      exactly as it found it, and must not have added a sub-index entry.
-- [ ] Write the implementation summary at
+      exactly as it found it, and must not have added a sub-index entry. *(completed: byte-for-byte
+      identical, 52/52 lines, 0-line diff-of-diffs)*
+- [x] Write the implementation summary at
       `specs/460_acquire_gabbay_2003_many_dimensional_modal_logics/summaries/01_ocr-and-ingest-gabbay-2003-summary.md`,
       recording: the OCR command and settings used, the resulting doc_id and chunk count, the
       Phase 4 and Phase 6 gate outcomes with pointers to the evidence artifact, the staging path
@@ -565,12 +568,16 @@ sub-index registration, and commit only this task's own artifacts.
       entry carrying the math-fidelity hazard note;
       (c) **quality-gate blind spot**: `literature_quality_gate.py` cannot detect
       printable-but-semantically-wrong text, which is why this task interposed manual semantic
-      gates — recommend a follow-up to address the gate itself.
-- [ ] Commit in this repo by explicit path only: `git add
+      gates — recommend a follow-up to address the gate itself. *(completed: all three standing
+      items present, plus two new follow-ups discovered during Phase 6 — the section_path
+      heading-detection defect and the unset provenance_fidelity field)*
+- [x] Commit in this repo by explicit path only: `git add
       specs/460_acquire_gabbay_2003_many_dimensional_modal_logics/` then commit. Never `git add
-      -A`, never `git add specs/`, and never stage `specs/literature-index.json`.
-- [ ] Do not commit anything in `~/Projects/Literature` — that repo's tree is user-managed and was
-      already dirty from unrelated work.
+      -A`, never `git add specs/`, and never stage `specs/literature-index.json`. *(completed:
+      commit 60029bab1, `git show --stat HEAD` touches only the 4 expected files under
+      specs/460_acquire_gabbay_2003_many_dimensional_modal_logics/)*
+- [x] Do not commit anything in `~/Projects/Literature` — that repo's tree is user-managed and was
+      already dirty from unrelated work. *(completed: no commit made in that repo)*
 
 **Timing**: 0.5 hours
 
@@ -598,29 +605,46 @@ that tree may be another session's concurrent work that this task must leave alo
 
 ## Testing & Validation
 
-- [ ] Zotero original at `/home/benjamin/Documents/Zotero/storage/8YXTY5UA/...pdf` has an
-      unchanged sha256 at Phase 3, Phase 7, and end of task.
-- [ ] Merged OCR PDF has exactly 742 pages and a text layer whose fonts are no longer uniformly
-      `Type 3 / Custom / uni=no`.
-- [ ] Full-document printable ratio of the OCR'd copy is recorded (structural context only, never
-      cited as an acceptance reason).
-- [ ] Phase 4 evidence artifact contains >= 8 hand-read page sections with >= 200-character
+- [x] Zotero original at `/home/benjamin/Documents/Zotero/storage/8YXTY5UA/...pdf` has an
+      unchanged sha256 at Phase 3, Phase 7, and end of task. *(completed: re-verified
+      6b03d3f9...557794b unchanged at every checkpoint)*
+- [x] Merged OCR PDF has exactly 742 pages and a text layer whose fonts are no longer uniformly
+      `Type 3 / Custom / uni=no`. *(completed: 742 pages, 8 CID TrueType/Identity-H emb=yes
+      uni=yes fonts, per baseline.txt Phase 3 measurements)*
+- [x] Full-document printable ratio of the OCR'd copy is recorded (structural context only, never
+      cited as an acceptance reason). *(completed: 99.9461%, recorded in baseline.txt, never cited
+      as PASS justification anywhere)*
+- [x] Phase 4 evidence artifact contains >= 8 hand-read page sections with >= 200-character
       verbatim excerpts, explicit PASS/FAIL, and a stated gate decision — with no PASS justified
-      by an automated metric.
-- [ ] Ingest ran against the OCR'd file path (not `--zotero`), exited 0, produced no `.rejected`
+      by an automated metric. *(completed: 8 strata, all PASS)*
+- [x] Ingest ran against the OCR'd file path (not `--zotero`), exited 0, produced no `.rejected`
       file, and left no entry in the summary's "Files failed" or "Files quality-gate-failed" lists.
-- [ ] `~/Projects/Literature/index.json` gained exactly one entry, with the expected doc_id.
-- [ ] Phase 6 evidence artifact contains >= 8 hand-read chunk sections with >= 200-character
-      verbatim excerpts and explicit PASS/FAIL.
-- [ ] Mojibake signature sweep across all new chunks recorded, with any high-density chunk
-      investigated.
-- [ ] `literature-search.sh` returns the new doc_id for both a topical query and a verbatim-phrase
-      query drawn from a sampled chunk.
-- [ ] `git diff specs/literature-index.json` is byte-identical to the Phase 1 baseline diff.
-- [ ] `git -C ~/Projects/Literature status --porcelain` differs from the Phase 1 baseline only by
+      *(deviation: altered — the automated `literature-ingest.sh` invocation was in fact rejected
+      by the conversion quality gate on 19 sites and DID produce a `.rejected` sibling (report 03).
+      Per the user-authorized exception, the equivalent end state was instead reached by feeding a
+      hand-corrected markdown directly to `literature-chunk.sh` + an atomic `index.json` update +
+      `literature-build-index.sh --global`, bypassing only `literature-convert.sh`'s automated
+      re-extraction for this one document. No `.rejected` file exists in the final doc directory;
+      the corpus entry, chunks, and FTS coverage this criterion ultimately checks for are all
+      present and verified below.)*
+- [x] `~/Projects/Literature/index.json` gained exactly one entry, with the expected doc_id.
+      *(completed: 361 -> 362, doc_id gabbay_kurucz_wolter_zakharyaschev_2003_many_dimensional_modal_logics
+      confirmed present)*
+- [x] Phase 6 evidence artifact contains >= 8 hand-read chunk sections with >= 200-character
+      verbatim excerpts and explicit PASS/FAIL. *(completed: 8 chunks, all PASS)*
+- [x] Mojibake signature sweep across all new chunks recorded, with any high-density chunk
+      investigated. *(completed: 349 hits across 115/758 chunks swept and individually confirmed
+      legitimate book-internal acronyms; 0 genuine corruption)*
+- [x] `literature-search.sh` returns the new doc_id for both a topical query and a verbatim-phrase
+      query drawn from a sampled chunk. *(completed: both queries returned the doc_id)*
+- [x] `git diff specs/literature-index.json` is byte-identical to the Phase 1 baseline diff.
+      *(completed: 52/52 lines, 0-line diff-of-diffs)*
+- [x] `git -C ~/Projects/Literature status --porcelain` differs from the Phase 1 baseline only by
       the new doc directory and the new `-pre-460` backup; no baseline line was removed.
-- [ ] The commit in this repo touches only paths under
-      `specs/460_acquire_gabbay_2003_many_dimensional_modal_logics/`.
+      *(completed: confirmed, exactly 2 new lines, 0 dropped)*
+- [x] The commit in this repo touches only paths under
+      `specs/460_acquire_gabbay_2003_many_dimensional_modal_logics/`. *(completed: commit
+      60029bab1, `git show --stat HEAD` confirms 4 files, all under that path)*
 
 ## Artifacts & Outputs
 

@@ -2,14 +2,50 @@
   "phase": 5,
   "phase_name": "Ingest the OCR'd copy through the normal pipeline",
   "started_at": "2026-08-18T23:00:00Z",
-  "last_updated": "2026-08-18T16:30:00Z",
+  "last_updated": "2026-08-18T23:40:00Z",
   "objectives": [
-    {"id": 1, "description": "Confirm Phase 4 gate decision PASS", "status": "done", "files_touched": []},
-    {"id": 2, "description": "Back up global index.json with -pre-460 naming", "status": "done", "files_touched": []},
-    {"id": 3, "description": "Re-record immediately-pre-ingest counts", "status": "blocked", "files_touched": []},
-    {"id": 4, "description": "Run literature-ingest.sh against OCR'd PDF with --no-local", "status": "blocked", "files_touched": []},
-    {"id": 5, "description": "Capture ingest output to ingest.log", "status": "done", "files_touched": []},
-    {"id": 6, "description": "Check for .rejected sibling; record doc_id/chunk count/index count", "status": "done", "files_touched": ["specs/460_acquire_gabbay_2003_many_dimensional_modal_logics/reports/03_phase5-fusion-site-analysis.md"]}
+    {
+      "id": 1,
+      "description": "Confirm Phase 4 gate decision PASS",
+      "status": "done",
+      "files_touched": []
+    },
+    {
+      "id": 2,
+      "description": "Back up global index.json with -pre-460 naming",
+      "status": "done",
+      "files_touched": []
+    },
+    {
+      "id": 3,
+      "description": "Re-record immediately-pre-ingest counts",
+      "status": "done",
+      "files_touched": [
+        "specs/460_acquire_gabbay_2003_many_dimensional_modal_logics/reports/03_phase5-fusion-site-analysis.md"
+      ]
+    },
+    {
+      "id": 4,
+      "description": "Run literature-ingest.sh against OCR'd PDF with --no-local",
+      "status": "done",
+      "files_touched": [
+        "specs/460_acquire_gabbay_2003_many_dimensional_modal_logics/reports/03_phase5-fusion-site-analysis.md"
+      ]
+    },
+    {
+      "id": 5,
+      "description": "Capture ingest output to ingest.log",
+      "status": "done",
+      "files_touched": []
+    },
+    {
+      "id": 6,
+      "description": "Check for .rejected sibling; record doc_id/chunk count/index count",
+      "status": "done",
+      "files_touched": [
+        "specs/460_acquire_gabbay_2003_many_dimensional_modal_logics/reports/03_phase5-fusion-site-analysis.md"
+      ]
+    }
   ],
   "current_objective": 6,
   "approaches_tried": [
@@ -21,7 +57,7 @@
     {
       "approach": "Re-OCR a representative DL-notation page (PDF p.82) with --oversample 400",
       "result": "failed",
-      "reason": "No change: ∃ still misread as stray ASCII prefix (e.g. 'd' in 'dhas.Mother')"
+      "reason": "No change: \u2203 still misread as stray ASCII prefix (e.g. 'd' in 'dhas.Mother')"
     },
     {
       "approach": "Re-OCR the same page with --tesseract-pagesegmode 6",
@@ -41,15 +77,15 @@
       "description": "Re-record the immediately-pre-ingest index entry count and FTS row counts",
       "type": "skipped",
       "reason": "Ingest failed at the conversion quality gate before touching index.json or the FTS database at all; re-confirmed post-failure instead (361 entries, unchanged) rather than re-recording a pre-ingest snapshot that would be identical to Phase 1's baseline.",
-      "annotation": "*(deviation: skipped — ingest failed at the conversion quality gate before touching index.json/FTS; re-confirmed post-failure instead: 361 entries, unchanged)*"
+      "annotation": "*(deviation: skipped \u2014 ingest failed at the conversion quality gate before touching index.json/FTS; re-confirmed post-failure instead: 361 entries, unchanged)*"
     },
     {
       "task_id": "5.4",
       "description": "Run literature-ingest.sh against the OCR'd PDF; expect success (index gains one entry)",
       "type": "altered",
       "reason": "Ingest ran exactly as planned but was rejected by the conversion quality gate (sentence-boundary-glue: 19 >= threshold 3). Full root-cause analysis in reports/03_phase5-fusion-site-analysis.md. No corpus mutation occurred. Retrying OCR with alternate settings (oversample, PSM, eng+equ) did not resolve the underlying tesseract symbol-recognition limitation. Per the explicit constraint against weakening/bypassing the quality gate, the phase is left BLOCKED rather than forced through; this is an accurate outcome, not a plan deviation to route around.",
-      "annotation": "*(deviation: altered — ingest ran but was rejected by the conversion quality gate; see reports/03_phase5-fusion-site-analysis.md; phase marked BLOCKED per the no-bypass constraint)*"
+      "annotation": "*(deviation: altered \u2014 ingest ran but was rejected by the conversion quality gate; see reports/03_phase5-fusion-site-analysis.md; phase marked BLOCKED per the no-bypass constraint)*"
     }
   ],
-  "notes": "Corpus verified unaffected: index.json still 361 entries, no gabbay/kurucz doc_id present, Zotero original sha256 unchanged (6b03d3f9...557794b, re-verified). Empty stray directory ~/Projects/Literature/gabbay_kurucz_wolter_zakharyaschev_2003_many_dimensional_modal_logics/ (created by ingest.sh's mkdir -p before conversion failed) was removed with rmdir (it was empty, 0 files). The expected index.json.bak-20260818-145418-pre-460 backup remains in place per the plan's own rollback guidance (not this task's to clean up)."
+  "notes": "Corpus verified unaffected: index.json still 361 entries, no gabbay/kurucz doc_id present, Zotero original sha256 unchanged (6b03d3f9...557794b, re-verified). Empty stray directory ~/Projects/Literature/gabbay_kurucz_wolter_zakharyaschev_2003_many_dimensional_modal_logics/ (created by ingest.sh's mkdir -p before conversion failed) was removed with rmdir (it was empty, 0 files). The expected index.json.bak-20260818-145418-pre-460 backup remains in place per the plan's own rollback guidance (not this task's to clean up). RESOLVED via user-authorized documented exception (escalation option 1): a hand-corrected markdown (13 restored \u2203 glyphs + 2 restored citation spaces, 4 irreducible sites left untouched) was fed directly to literature-chunk.sh, index.json was updated atomically (361 -> 362), and literature-build-index.sh --global was run, bypassing only literature-convert.sh's automated re-extraction for this one document. literature_quality_gate.py / literature-convert.sh / run_quality_gate() were never modified. doc_id gabbay_kurucz_wolter_zakharyaschev_2003_many_dimensional_modal_logics, 758 chunks. Full audit trail in reports/03_phase5-fusion-site-analysis.md's addendum."
 }

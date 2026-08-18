@@ -1,0 +1,18 @@
+{
+  "phase": 6,
+  "phase_name": "Post-ingest semantic verification of chunks",
+  "started_at": "2026-08-18T23:40:00Z",
+  "last_updated": "2026-08-18T23:45:00Z",
+  "objectives": [
+    {"id": 1, "description": "Sample >=8 chunks across full range plus math-heavy/bibliography categories", "status": "done", "files_touched": []},
+    {"id": 2, "description": "Hand-read each sampled chunk, record PASS/FAIL against 4 criteria", "status": "done", "files_touched": ["specs/460_acquire_gabbay_2003_many_dimensional_modal_logics/reports/02_ocr-semantic-gate-evidence.md"]},
+    {"id": 3, "description": "Run mojibake sweep across all chunks", "status": "done", "files_touched": ["specs/460_acquire_gabbay_2003_many_dimensional_modal_logics/reports/02_ocr-semantic-gate-evidence.md"]},
+    {"id": 4, "description": "Confirm retrievability end-to-end via literature-search.sh (2 queries)", "status": "done", "files_touched": ["specs/460_acquire_gabbay_2003_many_dimensional_modal_logics/reports/02_ocr-semantic-gate-evidence.md"]},
+    {"id": 5, "description": "Sanity-check chunk count against 742 pages", "status": "done", "files_touched": ["specs/460_acquire_gabbay_2003_many_dimensional_modal_logics/reports/02_ocr-semantic-gate-evidence.md"]}
+  ],
+  "current_objective": 5,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": [],
+  "notes": "All 8 sampled chunks PASS. Mojibake sweep found 0 genuine corruption (349 consonant-run hits, all confirmed legitimate book-internal acronyms: CPDL, TSPF, NTPP, BRCC, CQDL). Both retrieval queries returned the new doc_id. Chunk-count ratio (758/742 pages) judged plausible. Discovered and documented (out of scope, follow-up recorded) an unrelated pre-existing section_path heading-detection defect affecting 629/758 chunks' navigation metadata only, not content or retrievability."
+}
