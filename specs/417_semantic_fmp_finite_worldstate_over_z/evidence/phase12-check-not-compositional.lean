@@ -39,8 +39,16 @@ theorem truth_atom (f : ℤ → Fin univ2.card) (t : ℤ) (p : Atom) :
 /-- `⊤`, as this `Formula` type spells it. -/
 def top : Formula := Formula.imp Formula.bot Formula.bot
 
-/-- "`p` holds at some strictly future time". -/
-def someFutureP (p : Atom) : Formula := Formula.untl (Formula.atom p) top
+/-- "`p` holds at some strictly future time".
+
+Spelled **guard-first**: `untl` takes the guard first and the event second, so the event `atom p`
+sits in argument 2. This file was written before that convention landed and read
+`untl (Formula.atom p) top`, which under the current order says something else entirely — `⊤` at
+some future time, guarded by `p` throughout — and left the two `untl` obligations arriving in the
+opposite order from the proofs below. The swap here is exactly the one
+`scripts/swap_untl_snce.py` performs; it restores the reading the name claims, and the five facts
+below then go through unchanged. -/
+def someFutureP (p : Atom) : Formula := Formula.untl top (Formula.atom p)
 
 section
 variable (p : Atom)
