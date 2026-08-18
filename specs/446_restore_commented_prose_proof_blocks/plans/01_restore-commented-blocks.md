@@ -1,7 +1,7 @@
 # Implementation Plan: Task #446
 
 - **Task**: 446 - Restore or retire 6 commented-out prose/proof blocks in FormalFoundations.typ
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 2.5 hours
 - **Dependencies**: 445, 456 (both already landed; no blocking work remains)
 - **Research Inputs**: specs/446_restore_commented_prose_proof_blocks/reports/01_restore-fix-tagged-blocks.md
@@ -133,25 +133,31 @@ phase mutates the same single file, so parallel execution would conflict.
 
 ---
 
-### Phase 1: Baseline and Content-Anchored Site Confirmation [NOT STARTED]
+### Phase 1: Baseline and Content-Anchored Site Confirmation [COMPLETED]
 
 **Goal**: Establish the pre-change compile baseline and confirm all 8 edit sites (6 tagged + 2
 untagged from the Scope Decisions) by content anchor, so later phases never rely on a stale line
 number.
 
 **Tasks**:
-- [ ] Run `typst compile typst/FormalFoundations.typ /tmp/ff-baseline-446.pdf`; record exit code
-      and full stderr. Expect exit 0 with two `thmbox` font warnings.
-- [ ] Run `grep -n "FIX:" typst/FormalFoundations.typ` and record the full output verbatim in the
+- [x] Run `typst compile typst/FormalFoundations.typ /tmp/ff-baseline-446.pdf`; record exit code
+      and full stderr. Expect exit 0 with two `thmbox` font warnings. *(completed: exit 0, two
+      thmbox unknown-font-family warnings)*
+- [x] Run `grep -n "FIX:" typst/FormalFoundations.typ` and record the full output verbatim in the
       progress notes. Classify each of the 12 matches as bare (in scope) or explanatory (out of
       scope), producing the pre-change explanatory-tag set that Phase 5 will diff against.
-- [ ] Confirm the 6 bare tags number exactly 6, and that their commented content matches the
+      *(completed: bare at 228, 275, 281, 295, 345, 370; explanatory at 261, 285, 381, 390, 397,
+      423)*
+- [x] Confirm the 6 bare tags number exactly 6, and that their commented content matches the
       report's Appendix ("Full raw content of the 6 bare-tagged blocks") block for block.
-- [ ] Confirm the two untagged blocks from the Scope Decisions are present and still commented:
+      *(completed)*
+- [x] Confirm the two untagged blocks from the Scope Decisions are present and still commented:
       the `#remark[` block following the Separation proof, and the two-line
       `$#taskframe #satisfies phi.alt$` fragment inside the "Validity and Consequence" definition.
-- [ ] If the bare-tag count is anything other than 6, or any block's content differs from the
-      report's Appendix, STOP and report rather than proceeding on a stale premise.
+      *(completed)*
+- [x] If the bare-tag count is anything other than 6, or any block's content differs from the
+      report's Appendix, STOP and report rather than proceeding on a stale premise. *(completed:
+      count matched, no stop needed)*
 
 **Timing**: 0.25 hours
 
