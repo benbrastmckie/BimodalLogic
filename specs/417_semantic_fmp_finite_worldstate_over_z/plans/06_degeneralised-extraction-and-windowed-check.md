@@ -525,7 +525,7 @@ bound uses.
 
 ---
 
-### Phase 10.2: Good cycles with an explicit bound [NOT STARTED]
+### Phase 10.2: Good cycles with an explicit bound [COMPLETED]
 
 **Goal**: forward and backward cycles that discharge every eventuality they carry, **with a length
 bound derived from `card_pigeonState`**, plus the lemma that two good cycles and local coherence
@@ -567,6 +567,9 @@ Phase 10.3.
       beyond the first copy. **Sanctioned alternative** (record which was taken, either is compliant):
       reduce first with `Decide.lean`'s landed window collapse (`fulWindowLo`/`fulWindowHi`, `:842`,
       `:845`) and apply the good-cycle property pointwise over the finite window.
+      *(Route taken: the **prescribed** sequence-level propagation argument. The window-collapse
+      fallback was not needed and is not usable here anyway — it is stated for an `Annot`, whereas
+      the assembly needs the conclusion at bare sequences, before any `Annot` exists.)*
 
 **Timing**: 3 hours
 
@@ -578,7 +581,15 @@ Phase 10.3.
 
 **Scope Hypothesis**: this phase asserts the forward cycle length is bounded by
 `(k + 1) * (P.card * 2 ^ k)` with `k = subformulaClosureCard φ`, and the backward cycle by the same
-quantity. The hypothesis has two halves and both must be *derived*, not asserted: that `m + 1`
+quantity. *(Outcome: **derived as `(2k + 1) * (P.card * 2 ^ k)`**, exported as `cycleBound P φ` in
+`GoodCycle.lean`. The plan's own contingency for this case is followed — Phase 10.3's `bound` reads
+`cycleBound` rather than restating the arithmetic, so consumer and derivation cannot drift. The
+factor of two arises because laying the `m` marks along a single increasing traversal requires
+sorting the witness times; the construction instead reaches each mark by an out-and-back excursion
+`x ⟶ mark ⟶ x`, which costs two shortened segments per mark rather than one. Both halves of the
+hypothesis are derived, not asserted: the mark count is capped at `m ≤ k` by
+`untl_propagates_to_end` before any loop is chosen, and each segment shortens to fewer than
+`Nat.card (PigeonState P φ)` steps by `exists_lt_iter_of_card_le`.)* The hypothesis has two halves and both must be *derived*, not asserted: that `m + 1`
 segments suffice (from the interior-eventuality reduction, which caps marks at the untl-formulas of
 the **base** type), and that each segment shortens to at most one full residue system (from
 `exists_lt_iter_of_card_le`). If the derived bound differs — e.g. if the mark ordering forces
