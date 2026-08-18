@@ -1,7 +1,7 @@
 # Implementation Plan: Task #447
 
 - **Task**: 447 - Substantive rewrites in FormalFoundations.typ: proof repair, axiom presentation, section restructure
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 8.5 hours
 - **Dependencies**: 446 (complete)
 - **Research Inputs**: `specs/447_substantive_rewrites_formalfoundations/reports/01_substantive-rewrites-research.md`
@@ -189,34 +189,34 @@ write conflicts and compounding line drift. No phase may be run concurrently wit
 
 ---
 
-### Phase 1: Re-anchor and Build Source Transcription Record [NOT STARTED]
+### Phase 1: Re-anchor and Build Source Transcription Record [COMPLETED]
 
 **Goal**: Establish the authoritative anchor map against the current working tree and produce the
 per-key transcription record that every later phase edits from, so that no editing phase reads
 `possible_worlds.tex` under time pressure or renders notation from memory.
 
 **Tasks**:
-- [ ] Run `grep -n "FIX:" typst/FormalFoundations.typ` and confirm exactly six tags remain; record
+- [x] Run `grep -n "FIX:" typst/FormalFoundations.typ` and confirm exactly six tags remain; record
       the current line number and full anchor text of each.
-- [ ] Record the current line number of each landmark the later phases key off:
+- [x] Record the current line number of each landmark the later phases key off:
       `#theorem("Extension")`, the commented Extension proof block, `#corollary("Occurrence")`,
       the Step-Lemma prose paragraph, `#definition("Task Topology")`, `#theorem("Separation")`,
       the `#remark[` following it, `#definition("Validity and Consequence")`,
       `== Proof Systems`, `#definition("S5")`, `#definition("BX")`, the `#figure(table(...))`
       of frame-class extensions, the Hölder paragraph, and `= Completeness and Decidability`.
-- [ ] Read `possible_worlds.tex` at 2633-2643, 2749-2867, 3799-3861, 3866-3940, 1148-1172,
+- [x] Read `possible_worlds.tex` at 2633-2643, 2749-2867, 3799-3861, 3866-3940, 1148-1172,
       1244-1255, 3602-3604.
-- [ ] Write `reports/02_source-transcription.md` with one row per named key: `key | tex line |
+- [x] Write `reports/02_source-transcription.md` with one row per named key: `key | tex line |
       LaTeX source verbatim | Typst rendering`. Cover all of: the six Task-Topology sub-items;
       Constraints / Nesting / Nonempty / Constraint / Fibers / Admissible / Step /
       spherical-finite statements and the Extension proof's four steps; S5's 5 keys; BX's 17 keys;
       UZ, Z1, DN, NN, Prior-U, Sep, CO, and the K⁺/K⁻ abbreviations; MF; BL-level TM's 3 rules and
       9 axioms; DF, DN, CO for TM_f/d/c; the derivability relation.
-- [ ] Confirm the macro inventory is sufficient for every rendering (`#allpast`, `#allfuture`,
+- [x] Confirm the macro inventory is sufficient for every rendering (`#allpast`, `#allfuture`,
       `#somepast`, `#somefuture`, `#since`, `#until`, `#Nxt`, `#Prev`, `#always`, `#sometimes`,
       `#BL`, `#BLplus`, `#items`); note any key whose rendering needs a construct not yet present.
-- [ ] Run `typst compile typst/FormalFoundations.typ` to record the pre-edit baseline (expected:
-      exit 0 with two pre-existing "new computer modern sans" font warnings from thmbox).
+- [x] Run `typst compile typst/FormalFoundations.typ` to record the pre-edit baseline (expected:
+      exit 0 with two pre-existing "new computer modern sans" font warnings from thmbox). *(completed)*
 
 **Timing**: 0.75 hours
 
