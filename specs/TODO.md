@@ -11,9 +11,9 @@ next_project_number: 457
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,193,231,257,298,413,421,423,424,437,451,455,456 | -- | completeness, decidability, frame-extensions, ... |
-| 2 | 178,219,282,296,422,425,436,446 | 193,231,298,421,423,437,456 | decidability, formula-refactor, publication-quality, ... |
-| 3 | 169,434,447 | 422,436,446 | decidability, publication-quality, strong_completeness |
+| 1 | 125,127,128,193,231,257,298,413,421,423,424,437,446,451,455 | -- | completeness, decidability, frame-extensions, ... |
+| 2 | 178,219,282,296,422,425,436,447 | 193,231,298,421,423,437,446 | decidability, formula-refactor, publication-quality, ... |
+| 3 | 169,434 | 422,436 | decidability, strong_completeness |
 | 4 | 362,432 | 169,424,434 | decidability, strong_completeness |
 | 5 | 433 | 432 | decidability |
 | 6 | 428 | 433 | decidability |
@@ -99,14 +99,10 @@ next_project_number: 457
 
 451 [NOT STARTED] — CONSOLIDATE THE TWO BONEYARDS into a single archive tree under Fo
 
-### Typst Documentation, Lean Source Cross Referencing
-
-456 [IMPLEMENTING] — Replace the paper-citation footnote apparatus in `typst/FormalFou
-
 ## Tasks
 
 ### 456. Replace paper-citation footnotes with #leansrc Lean references
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: typst
 - **Topic**: typst documentation, Lean source cross-referencing
 - **Dependencies**: None

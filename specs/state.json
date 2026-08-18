@@ -1226,13 +1226,13 @@
     {
       "project_number": 456,
       "project_name": "leansrc_references_replace_paper_citations",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "typst",
       "title": "Replace paper-citation footnotes with #leansrc Lean references",
       "description": "Replace the paper-citation footnote apparatus in `typst/FormalFoundations.typ` with Lean source references via the `#leansrc` macro, following the convention already used in this repo (`typst/template.typ:98`, live at `FormalFoundations.typ` lines 465, 472, 479, 560, 616, 675) and in `/home/benjamin/Projects/Logos/Theory/typst/manual/chapters/02-constitutive.typ`.\n\nCurrent state: 39 restored footnotes trail definition/lemma/theorem blocks. 36 cite `@brastmckie2026possibleworlds`; 27 open with an inert backticked paper anchor (`def:frame`, `lem:nullity`, ...); 7 carry Lean file paths as prose. The paper is cited 36 times and never in the introduction.\n\nTarget state:\n1. The paper is cited exactly ONCE, on the first page or in the introduction. No `@brastmckie2026possibleworlds` anywhere else.\n2. Footnotes that consist only of an anchor plus citation (e.g. line 162, `` `def:BLplus-defined`. @brastmckie2026possibleworlds ``) are deleted outright.\n3. Footnotes carrying substantive commentary keep that commentary, with the `anchor. @citation` bookkeeping prefix stripped.\n4. The 7 footnotes carrying Lean file paths become `#leansrc(module, name)` blocks; their substantive commentary (e.g. the `sorryAx` dependency analysis at line 488) is preserved as a trimmed footnote.\n5. Where a definition, lemma, theorem, or corollary has a counterpart declaration in `FormalSystem/`, a `#leansrc(module, name)` block is placed after it, matching the existing placement convention (standalone block after the item or item group).\n\nThe research phase must map document items to their `FormalSystem/` declarations and report which items have no Lean counterpart (those simply get no block).\n\n**Verification**: `typst compile typst/FormalFoundations.typ` exits 0 against the existing baseline of two pre-existing `thmbox` font warnings; `grep -c brastmckie2026possibleworlds typst/FormalFoundations.typ` returns 1; every `#leansrc` module/name pair resolves to a real declaration in `FormalSystem/`.\n\n**Convention note**: this establishes the referencing convention for the document. Sibling tasks that restore or rewrite content in this file must follow it and must not reintroduce paper citations.",
       "topic": "typst documentation, Lean source cross-referencing",
       "dependencies": [],
-      "last_updated": "2026-08-18T09:47:41Z",
+      "last_updated": "2026-08-18T14:27:23Z",
       "session_id": "sess_1787042796_0b6b2c_456",
       "next_artifact_number": 1,
       "artifacts": [

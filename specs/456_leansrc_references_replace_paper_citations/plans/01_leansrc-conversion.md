@@ -1,7 +1,7 @@
 # Implementation Plan: Task #456
 
 - **Task**: 456 - Replace paper-citation footnotes with `#leansrc` Lean references
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 7 hours
 - **Dependencies**: None (sibling tasks 446, 447, 452, 453 touch the same file but own disjoint territory)
 - **Research Inputs**: `specs/456_leansrc_references_replace_paper_citations/reports/01_leansrc-references.md`
