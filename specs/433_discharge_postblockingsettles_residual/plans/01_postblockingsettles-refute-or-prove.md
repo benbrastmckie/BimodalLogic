@@ -1,7 +1,7 @@
 # Implementation Plan: Discharge the `PostBlockingSettles` residual
 
 - **Task**: 433 - Discharge `PostBlockingSettles fc`, one of the four residual hypotheses on the totality terminus `buildTableauAt_isSome_of_budget`
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 13 hours
 - **Dependencies**: None blocking. Consumes (does not re-author) what tasks 432, 434 and 436 landed in `MintBound.lean`.
 - **Research Inputs**: `specs/433_discharge_postblockingsettles_residual/reports/01_spawn-inherited-research.md` (inherited stub); `specs/428_engine_totality_at_a_quantified_branch_budget/reports/05_spawn-analysis.md` (source blocker analysis)
@@ -153,7 +153,7 @@ and closes Phase 3 the same way. Exactly one of them executes.
 
 ---
 
-### Phase 1: Gate 1 — the fuel-zero verdict on the literal predicate [NOT STARTED]
+### Phase 1: Gate 1 — the fuel-zero verdict on the literal predicate [COMPLETED]
 
 - **Goal:** Decide, machine-checked and universally quantified in the frame class, whether
   `PostBlockingSettles fc` as literally stated survives the `fuel = 0` arm of `saturateBlocked`.
@@ -172,23 +172,29 @@ and closes Phase 3 the same way. Exactly one of them executes.
     Do **not** weaken the statement to rescue a TRUE verdict.
 
 - **Tasks:**
-  - [ ] Read `MintBound.lean:5130-5200` (the residual, its docstring, and
+  - [x] Read `MintBound.lean:5130-5200` (the residual, its docstring, and
         `armSettlement_of_postBlockingSettles`) and `Saturation.lean:431-470` (`saturateBlocked`'s
         five arms) before writing anything.
-  - [ ] Pick a one-formula witness branch `ob` carrying a signed formula with an applicable
+  - [x] Pick a one-formula witness branch `ob` carrying a signed formula with an applicable
         **label-free** rule at the initial label — a conjunction is the canonical choice — so that
         `findApplicableRule` is `some` and the root time is unblocked (`blockedTimes` filters
         `knownTimes` by `isTemporallyBlockedSaturated`, and the root has no ancestors).
-  - [ ] `decide` the two halves separately, so a failure is attributable:
+  - [x] `decide` the two halves separately, so a failure is attributable:
         `saturateBlocked ob 0 oOrd fc = some (.inr (ob, oOrd))` and
         `findUnexpandedUnblockedWith ob oOrd fc (blockedTimes ob oOrd fc (armTracker ob)) = some _`.
-  - [ ] State and prove `postBlockingSettles_fuel_zero_false (fc : FrameClass) : ¬ PostBlockingSettles fc`,
+        *(deviation: altered — the two halves are landed as the separate named lemmas
+        `saturateBlocked_fuel_zero` and `findUnexpandedUnblockedWith_multBranch_one`, proved by
+        definitional unfolding rather than by `decide`. `decide` is unavailable here because both
+        statements are universally quantified in `fc`, which is not a finite type this file
+        enumerates; separability — the plan's actual requirement, so a failure is attributable — is
+        preserved by the two-lemma split.)*
+  - [x] State and prove `postBlockingSettles_fuel_zero_false (fc : FrameClass) : ¬ PostBlockingSettles fc`,
         universally quantified in `fc`, following the shape of
         `difficultyBounded_multiplicity_false` (`MintBound.lean:4755`).
-  - [ ] Write a docstring saying what the witness shows and — in one sentence — what it does
+  - [x] Write a docstring saying what the witness shows and — in one sentence — what it does
         **not** show: that it is a statement about the `fuel = 0` arm and settles nothing about
         larger fuel, which is Phase 2's question.
-  - [ ] Confirm sorry-free and axiom-clean for the new declaration (`lean_verify`, axioms within
+  - [x] Confirm sorry-free and axiom-clean for the new declaration (`lean_verify`, axioms within
         `{propext, Classical.choice, Quot.sound}`).
 
 - **Timing:** 1.5 hours
@@ -212,6 +218,11 @@ and closes Phase 3 the same way. Exactly one of them executes.
     theorem compiling (TRUE) or the failing step named in the phase notes (FALSE).
 
 ---
+
+- **Verdict: TRUE.** The literal predicate is refuted at `fuel = 0`, at every frame class.
+  `postBlockingSettles_fuel_zero_false` compiles, sorry-free, with axioms
+  `{propext, Classical.choice, Quot.sound}`. Proceed to Phase 2 to decide whether the refutation is
+  *only* about `fuel = 0`.
 
 ### Phase 2: Gate 2 — does fuel alone close the gap? [NOT STARTED]
 

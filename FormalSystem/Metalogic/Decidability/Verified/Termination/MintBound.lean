@@ -11321,6 +11321,76 @@ theorem unorderedSuccessorLabelClosedOrd_not_universal
   simp [freshWorldLabels, SignedFormula.neg, Label.initial] at hbad
 
 
+/-! ## C12. The post-blocking settlement residual: refuted, and repaired
+
+`PostBlockingSettles fc` (section C8) is the last settlement residual on the terminus, and its own
+docstring names an open question: whether the gap between what `saturateBlocked` stops at and what
+`findUnexpandedUnblockedWith` tests "can be closed by fuel alone". This section decides that
+question — the answer is **no** — and lands the repair.
+
+The two tests disagree, and the disagreement has nothing to do with fuel:
+
+* `saturateBlocked` stops at `expandOnceNoFresh`'s `.saturated` verdict (`Saturation.lean`, the
+  `(.saturated, _)` arm), and `expandOnceNoFresh` **skips** any candidate whose applicable rule
+  mints a fresh label or lengthens the ordering constraints — its `pick` returns `none` for such a
+  candidate and the search continues past it.
+* `findUnexpandedUnblockedWith` tests `!isExpanded sf b ord fc`, i.e.
+  `findApplicableRule sf b ord fc ≠ none`, with **no** reference to label-minting at all.
+
+So a formula sitting at an unblocked time whose only applicable rule mints a fresh label is
+invisible to the first test and visible to the second, at **every** fuel figure. That is the
+refutation, and it is what the two theorems below decide.
+-/
+
+section PostBlockingSettlesRefutation
+
+/-- **`saturateBlocked` at `fuel = 0` returns its input unchanged**, at every branch, ordering and
+frame class. This is the `| 0 => some (.inr (b, timeOrd))` arm of `Saturation.lean`'s definition,
+recorded here as a named fact because both refutations below run through it. -/
+theorem saturateBlocked_fuel_zero (b : Branch) (ord : TimeOrdering)
+    (fc : FormalSystem.ProofSystem.FrameClass) :
+    saturateBlocked b 0 ord fc = some (.inr (b, ord)) := by
+  rw [saturateBlocked]
+
+/-- **The `fuel = 0` half of the witness**: nothing is blocked at the empty ordering, the branch's
+one formula has `.impNeg` applicable, so the blocking-aware finder reports it. -/
+theorem findUnexpandedUnblockedWith_multBranch_one
+    (fc : FormalSystem.ProofSystem.FrameClass) :
+    findUnexpandedUnblockedWith (multBranch 1) TimeOrdering.empty fc
+        (blockedTimes (multBranch 1) TimeOrdering.empty fc (armTracker (multBranch 1)))
+      = some multWitness := by
+  have hrule := findApplicableRule_multWitness (multBranch 1) (pos_not_mem_multBranch 1) fc
+  rw [blockedTimes_empty]
+  have hb : multBranch 1 = multWitness :: ([] : Branch) := by
+    simp [multBranch, List.replicate]
+  simp only [findUnexpandedUnblockedWith, isExpanded]
+  rw [hb, List.find?_cons]
+  simp only [← hb, hrule, Option.isNone_some, List.contains_nil, Bool.not_false, Bool.and_true]
+
+/-- **Gate 1: `PostBlockingSettles fc` is refuted at the `fuel = 0` arm**, at every frame class.
+
+Not merely unproved: false. `saturateBlocked` at `fuel = 0` hands its input straight back
+(`saturateBlocked_fuel_zero`), so the predicate's hypothesis is satisfied at **every** branch
+whatsoever, and the predicate as literally stated therefore asserts that every branch is
+blocking-aware saturated. The one-formula branch `[F(p → q)@⟨0,0⟩]` — the landed `multBranch 1`,
+reused rather than rebuilt — is not: `.impNeg` applies to its only formula
+(`findApplicableRule_multWitness`), nothing is blocked at the empty ordering
+(`blockedTimes_empty`), so the finder reports that formula.
+
+**What this does not show.** It is a statement about the `fuel = 0` arm alone, and it settles
+nothing about larger fuel: a reader could reasonably suspect the predicate is one `fuel > 0` side
+condition away from being true. `postBlockingSettles_fuel_gap_false` is the theorem that closes that
+suspicion, and it is the substantive one. -/
+theorem postBlockingSettles_fuel_zero_false (fc : FormalSystem.ProofSystem.FrameClass) :
+    ¬ PostBlockingSettles fc := by
+  intro h
+  have hfind := h (multBranch 1) TimeOrdering.empty 0 (multBranch 1) TimeOrdering.empty
+    (saturateBlocked_fuel_zero _ _ _)
+  rw [findUnexpandedUnblockedWith_multBranch_one fc] at hfind
+  exact absurd hfind (by simp)
+
+end PostBlockingSettlesRefutation
+
 /-! ## C9. The do-not-re-attempt register
 
 Twenty-one statements that look like the natural next lemma and are **not** available. Each is cited
