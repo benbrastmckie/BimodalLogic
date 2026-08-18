@@ -101,16 +101,17 @@ next_project_number: 457
 
 ### Typst Documentation, Lean Source Cross Referencing
 
-456 [RESEARCHED] — Replace the paper-citation footnote apparatus in `typst/FormalFou
+456 [PLANNED] — Replace the paper-citation footnote apparatus in `typst/FormalFou
 
 ## Tasks
 
 ### 456. Replace paper-citation footnotes with #leansrc Lean references
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: typst
 - **Topic**: typst documentation, Lean source cross-referencing
 - **Dependencies**: None
 - **Research**: [456_leansrc_references_replace_paper_citations/reports/01_leansrc-references.md]
+- **Plan**: [456_leansrc_references_replace_paper_citations/plans/01_leansrc-conversion.md]
 
 **Description**: Replace the paper-citation footnote apparatus in `typst/FormalFoundations.typ` with Lean source references via the `#leansrc` macro, following the convention already used in this repo (`typst/template.typ:98`, live at `FormalFoundations.typ` lines 465, 472, 479, 560, 616, 675) and in `/home/benjamin/Projects/Logos/Theory/typst/manual/chapters/02-constitutive.typ`.
 
