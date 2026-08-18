@@ -1,0 +1,39 @@
+{
+  "phase": 6,
+  "phase_name": "Post-mutation verification gate",
+  "started_at": "2026-08-18T14:46:00Z",
+  "last_updated": "2026-08-18T15:05:00Z",
+  "objectives": [
+    {"id": 1, "description": "Field-level diff: assert changed entries are exactly the twelve, changed keys subset of five", "status": "done", "files_touched": []},
+    {"id": 2, "description": "Assert every provenance_fidelity in the six-value enum, not all identical without defense", "status": "done", "files_touched": []},
+    {"id": 3, "description": "Assert every path ends in /, no sources/ prefix, resolves to existing directory", "status": "done", "files_touched": []},
+    {"id": 4, "description": "Independently recompute token_count for all twelve (fresh snippet, not migrate12_mutate.py)", "status": "done", "files_touched": []},
+    {"id": 5, "description": "Assert doc_type/source_format enum membership", "status": "done", "files_touched": []},
+    {"id": 6, "description": "Assert Non-Goal fields byte-identical to backup", "status": "done", "files_touched": []},
+    {"id": 7, "description": "Run literature-build-index.sh --global, confirm exit 0 and FTS row count >= Phase 1 baseline", "status": "done", "files_touched": []},
+    {"id": 8, "description": "Run literature-search.sh --include-unverified for at least two of the twelve, confirm hits", "status": "done", "files_touched": []},
+    {"id": 9, "description": "Confirm specs/literature-index.json byte-identical to pre-task state", "status": "done", "files_touched": []},
+    {"id": 10, "description": "Write progress/phase-6-progress.json with every assertion outcome", "status": "done", "files_touched": ["specs/458_migrate_12_legacy_literature_entries_to_v2_schema/progress/phase-6-progress.json"]}
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": [],
+  "assertions": [
+    {"assertion": "Field-level diff: changed entries == exactly the twelve target ids", "result": "PASS", "observed": "12 entries changed; changed_ids == TARGETS set exactly; extra_changed=set(), missing_changed=set()"},
+    {"assertion": "Field-level diff: changed keys per entry subset of {provenance_fidelity, path, token_count, doc_type, source_format}", "result": "PASS", "observed": "10 entries changed exactly {doc_type, path, provenance_fidelity, token_count}; 2 entries (rutten, rumberg) additionally changed source_format; zero out-of-allowlist keys found; 357 non-target entries unchanged"},
+    {"assertion": "index.json entry count unchanged", "result": "PASS", "observed": "before=369, after=369"},
+    {"assertion": "Every provenance_fidelity in the six-value corpus enum", "result": "PASS", "observed": "8x verified_conversion, 4x unverified_conversion, all within {verified_conversion, no_source_pdf, unverified_no_baseline, unadjudicated, not_yet_converted, unverified_conversion}"},
+    {"assertion": "The twelve are not all identical unless affirmatively defended", "result": "PASS (not uniform, no defense needed)", "observed": "2 distinct values present: verified_conversion (8), unverified_conversion (4) -- matches the clean/degraded split documented in Phases 2-3"},
+    {"assertion": "Every path ends in '/', has no 'sources/' prefix, resolves to an existing directory", "result": "PASS", "observed": "all twelve: ends_slash=True, no_sources_prefix=True, resolves=True"},
+    {"assertion": "token_count independently recomputed matches stored value exactly", "result": "PASS", "observed": "fresh one-off snippet (not migrate12_mutate.py) recomputed floor(chars/4)+20 over chunk_*.md concatenation for all twelve; all 12 matched stored value exactly (11159, 46274, 28356, 93365, 13648, 18271, 12281, 44135, 487668, 11844, 9438, 17260)"},
+    {"assertion": "Every doc_type in {chapter, paper, book, section, manuscript, survey, thesis}", "result": "PASS", "observed": "10x paper, 1x book, 1x manuscript, all valid"},
+    {"assertion": "Every present source_format in {pdf, djvu, latex, html}", "result": "PASS", "observed": "2x pdf (rutten, rumberg), 10x None (the EXCLUDE subset, field correctly absent rather than null-written)"},
+    {"assertion": "title/authors/year/doc_id/id/chunks_dir/source_path/chunk_count byte-identical to backup for all twelve", "result": "PASS", "observed": "zero diffs across all 8 Non-Goal fields for all 12 target ids"},
+    {"assertion": "literature-build-index.sh --global exits 0", "result": "PASS", "observed": "exit 0; log: 'Indexed: 18432 chunks, 0 cross-refs resolved, 11700 total relations, 55984KB database'; 170 manifests found"},
+    {"assertion": "chunks_fts row count >= Phase 1 live baseline (17736)", "result": "PASS (exact equality, stronger than the >= floor)", "observed": "sqlite3 SELECT count(*) FROM chunks_fts; = 17736, exactly equal to the Phase 1 baseline. NOTE: the build log's 'Indexed: 18432 chunks' figure is a distinct metric (total chunk_*.md files scanned across all 170 manifests, prior to FTS-row insertion) and is NOT the chunks_fts row count; the two numbers differing (18432 vs 17736, delta 696) is expected and unrelated to the gate -- the actual chunks_fts SELECT count(*) is what the gate checks, and it equals baseline exactly, so no investigation was triggered under the plan's Scope Hypothesis ('any change at all means something on disk moved, and must be investigated'). Recorded per the plan's instruction: this gate's real function is detecting an accidental directory move or deletion, not validating the mutation -- the build reads chunks.json manifests from disk and never reads index.json, so these five field edits could not have changed this number regardless."},
+    {"assertion": "literature-search.sh --include-unverified returns hits for at least two of the twelve", "result": "PASS", "observed": "query 'universal coalgebra bisimulation' returned multiple hits for doc_id=rutten-2000-universal-coalgebra; query 'reversible communicating systems memory' returned multiple hits for doc_id=danos-krivine-rccs. Both queries' hits carry provenance_fidelity: 'unverified_summary' in the search output (NOT the freshly-stamped verified_conversion/unverified_conversion index.json values) -- this is expected behaviour per Decision 5's known sources/-prefix defect in load_fidelity_map(), not a regression introduced by this task; a default-mode (non---include-unverified) query will not surface these documents at all."},
+    {"assertion": "specs/literature-index.json byte-identical to its pre-task state", "result": "PASS", "observed": "md5 bc66820d6ac166d4cf9810a51c6b7e5e both before Phase 1 and now, after all of Phases 1-6 -- the working-tree file content is unchanged by this task. OBSERVATION (not a task defect): `git diff` against HEAD shows this file already carried an uncommitted 41-line addition (Jonsson-Tarski/Blackburn/Goldblatt sub-index entries) BEFORE this task began -- this is pre-existing foreign uncommitted work from task 435's sub-index registration, visible in the session's initial git status ('M specs/literature-index.json') and untouched by this task. Per Observation Duty (context/patterns/dispatch-report-not-termination.md), this is reported here and in the implementation summary rather than modified or committed by this task."}
+  ],
+  "overall_verdict": "ALL 14 ASSERTIONS PASS. No FAIL triggered; no rollback needed. The mutation changed exactly what it should have and nothing else."
+}

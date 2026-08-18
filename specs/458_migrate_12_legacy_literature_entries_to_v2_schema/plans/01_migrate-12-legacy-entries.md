@@ -474,36 +474,36 @@ plus the progress record. Do not widen it retroactively.
 
 ---
 
-### Phase 6: Post-mutation verification gate [NOT STARTED]
+### Phase 6: Post-mutation verification gate [COMPLETED]
 
 **Goal**: Prove the mutation changed exactly what it should have, that the twelve values are
 well-formed, and that neither the FTS index nor any other entry was harmed.
 
 **Tasks**:
-- [ ] Field-level diff: compare the post-mutation `index.json` against the Phase 5 pre-mutation backup
+- [x] Field-level diff: compare the post-mutation `index.json` against the Phase 5 pre-mutation backup
       and assert that the set of changed entries is exactly the twelve target ids, and that the set of
       changed keys within each is a subset of the five
-- [ ] Assert every `provenance_fidelity` is one of the six existing corpus values, and that the twelve
+- [x] Assert every `provenance_fidelity` is one of the six existing corpus values, and that the twelve
       are **not** all identical unless the evidence file affirmatively defends per-entry uniformity
-- [ ] Assert every `path` ends in `/`, does not begin with `sources/`, and resolves to an existing
+- [x] Assert every `path` ends in `/`, does not begin with `sources/`, and resolves to an existing
       directory under `~/Projects/Literature/`
-- [ ] **Independently** recompute `token_count` for all twelve with a separate one-off snippet — not
+- [x] **Independently** recompute `token_count` for all twelve with a separate one-off snippet — not
       by re-running `migrate12_mutate.py` — and confirm each matches the stored value exactly
-- [ ] Assert every `doc_type` is in the corpus vocabulary and every present `source_format` is in
+- [x] Assert every `doc_type` is in the corpus vocabulary and every present `source_format` is in
       `{pdf, djvu, latex, html}`
-- [ ] Assert `title`, `authors`, `year`, `doc_id`, `id`, `chunks_dir`, `source_path`, `chunk_count`
+- [x] Assert `title`, `authors`, `year`, `doc_id`, `id`, `chunks_dir`, `source_path`, `chunk_count`
       are byte-identical to the backup for all twelve (the Non-Goal, mechanically checked)
-- [ ] Run `bash .claude/scripts/literature-build-index.sh --global`; confirm exit 0 and that the
+- [x] Run `bash .claude/scripts/literature-build-index.sh --global`; confirm exit 0 and that the
       resulting `chunks_fts` row count is **>= the Phase 1 live baseline**. Record inline that this
       gate cannot fail from these field edits — the build reads `chunks.json` from disk and never
       reads `index.json` — so its real function here is detecting an accidental directory move or
       deletion, not validating the mutation
-- [ ] Run `literature-search.sh --include-unverified` for at least two of the twelve and confirm hits;
+- [x] Run `literature-search.sh --include-unverified` for at least two of the twelve and confirm hits;
       record that a default-mode query will **not** surface them, per the known `sources/`-prefix
       defect in `load_fidelity_map()` (Decision 5) — expected behaviour, not a regression introduced here
-- [ ] Confirm `specs/literature-index.json` is byte-identical to its pre-task state (none of the
+- [x] Confirm `specs/literature-index.json` is byte-identical to its pre-task state (none of the
       twelve appear in the sub-index)
-- [ ] Write `progress/phase-6-progress.json` with every assertion's outcome
+- [x] Write `progress/phase-6-progress.json` with every assertion's outcome
 
 **Timing**: 0.5 hours
 
