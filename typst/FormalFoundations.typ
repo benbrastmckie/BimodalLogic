@@ -294,7 +294,7 @@ The cones are a basis for a topology on world states, and that topology is separ
   A *model* is a structure $#model = (#worldstate, #Dur, arrow.r.double.long, |dot.c|)$ where
   $(#worldstate, #Dur, arrow.r.double.long)$ is a frame and $|p_i| subset.eq #worldstate$ for every
   sentence letter $p_i$.
-]#footnote[`def:BL-model`. @brastmckie2026possibleworlds An interpretation assigns each sentence letter a set of *world states*. Truth at a time is mediated entirely by the world state the history occupies there; this is the content of the atomic clause below, and it is what makes a possible world a trajectory through a fixed state space and not an independent index.]
+]#footnote[`def:BL-semantics`. @brastmckie2026possibleworlds An interpretation assigns each sentence letter a set of *world states*. Truth at a time is mediated entirely by the world state the history occupies there; this is the content of the atomic clause below, and it is what makes a possible world a trajectory through a fixed state space and not an independent index.]
 
 #definition("Truth")[
   Truth in a model $#model$ at a possible world $tau in H_(#taskframe)$ and a time $x in D$ is
@@ -700,7 +700,7 @@ unavailable and the argument runs the other way: build a structure first, then s
   *very good* when that decomposition is uniform. The pipeline shows the chronicle's limit domain
   is good, extracts a $k$-equivalent interval of $ZZ$, and transfers satisfiability across the
   $k$-equivalence.
-]#footnote[`one_class` (`WeakCanonical/IntegerModel/NoGapsDiscreteProof.lean`), `VeryGood` (`IntegerModel/GoodStructures.lean`), `good` (`RealModel/DoetsTheorem.lean`), `limitdom_is_good` and `truth_transfer` (`WeakCanonical/Transfer.lean`). The decomposition technique is Doets's @doets1987; the step-by-step k-equivalence argument for Until/Since is Reynolds's @reynolds1992, as developed in Gabbay, Hodkinson, and Reynolds @gabbayhodkinsonreynolds1994.]
+]#footnote[`one_class` (`WeakCanonical/IntegerModel/NoGapsDiscreteProof.lean`), `VeryGood` and `good` (`IntegerModel/GoodStructures.lean`), `limitdom_is_good` (`IntegerModel/ReynoldsBridge.lean`), and `truth_transfer` (`WeakCanonical/Transfer.lean`). The decomposition technique is Doets's @doets1987; the step-by-step k-equivalence argument for Until/Since is Reynolds's @reynolds1992, as developed in Gabbay, Hodkinson, and Reynolds @gabbayhodkinsonreynolds1994.]
 
 Transfer is sound because $k$-equivalence preserves the truth of every formula of quantifier depth
 at most $k$, and the refuted sentence has a fixed depth. The resulting countermodel over $ZZ$ is
