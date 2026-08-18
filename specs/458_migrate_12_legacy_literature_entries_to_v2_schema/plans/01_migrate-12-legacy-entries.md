@@ -355,36 +355,36 @@ to be confirmed or overturned by the implementer's own reads.
 
 ---
 
-### Phase 4: `doc_type` and `source_format` evidence, including Zotero source-file inspection [NOT STARTED]
+### Phase 4: `doc_type` and `source_format` evidence, including Zotero source-file inspection [IN PROGRESS]
 
 **Goal**: Produce a per-entry, evidence-backed `doc_type` and `source_format` proposal for all twelve,
 inspecting the two locatable Zotero PDFs directly and writing a reasoned exclusion for every entry
 whose source file genuinely cannot be located. Evidence-gathering only; no index mutation.
 
 **Tasks**:
-- [ ] Re-confirm both Zotero PDFs still exist on disk:
+- [x] Re-confirm both Zotero PDFs still exist on disk:
       `~/Documents/Zotero/storage/2T5LMRXA/Rutten - 2000 - Universal coalgebra a theory of systems.pdf`
       and
       `~/Documents/Zotero/storage/N96JSRYT/Rumberg and Zanardo - 2019 - First-Order Definability of Transition Structures.pdf`
-- [ ] Open each of the two and confirm author + title + year match the corresponding entry
+- [x] Open each of the two and confirm author + title + year match the corresponding entry
       (Decision 1's same-work requirement). A mismatch demotes that entry to a reasoned exclusion
-- [ ] Set `source_format: pdf` for those two, with the inspected absolute path as the recorded evidence
-- [ ] For `thomason-1970-indeterminist-time`: record the Zotero bibliographic match (`Thomason1970`,
+- [x] Set `source_format: pdf` for those two, with the inspected absolute path as the recorded evidence
+- [x] For `thomason-1970-indeterminist-time`: record the Zotero bibliographic match (`Thomason1970`,
       *Theoria* 36(3), 1970) as `doc_type` evidence, but record `source_format` as `EXCLUDE` — a
       bibliographic record is not a source file
-- [ ] For the remaining nine: record `source_format` as `EXCLUDE` with per-entry evidence naming both
+- [x] For the remaining nine: record `source_format` as `EXCLUDE` with per-entry evidence naming both
       the missing `/tmp/task54-lit/<id>.pdf` and the negative Zotero search result. Where the research
       found a *near-miss* (a different Fong & Spivak book, a different Jacobs book, an unrelated
       Reynolds 1992 paper), name the near-miss explicitly so a future reader does not re-run the same
       search hopefully
-- [ ] Assign `doc_type` for all twelve from the corpus vocabulary only (Decision 3), grounded in the
+- [x] Assign `doc_type` for all twelve from the corpus vocabulary only (Decision 3), grounded in the
       Phase 2/3 chunk evidence plus any Zotero record. Give the two BRICS technical reports particular
       attention: there is no `report` value in the corpus vocabulary, so the choice must be justified
       in the evidence column rather than defaulted
-- [ ] Write `data/scope5-12.tsv` with columns `id`, `proposed_doc_type`, `proposed_source_format`
+- [x] Write `data/scope5-12.tsv` with columns `id`, `proposed_doc_type`, `proposed_source_format`
       (a real value or the literal `EXCLUDE`), `evidence`, mirroring task 457's
       `data/scope5-missing-fields.tsv` schema so the mutation script can reuse its reader
-- [ ] Draft the `#### Reasoned Exclusions` table rows for every `EXCLUDE`; they are written into this
+- [x] Draft the `#### Reasoned Exclusions` table rows for every `EXCLUDE`; they are written into this
       plan in Phase 7
 
 **Timing**: 0.75 hours

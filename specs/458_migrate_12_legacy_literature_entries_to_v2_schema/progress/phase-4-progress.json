@@ -1,0 +1,43 @@
+{
+  "phase": 4,
+  "phase_name": "doc_type and source_format evidence, including Zotero source-file inspection",
+  "started_at": "2026-08-18T14:26:00Z",
+  "last_updated": "2026-08-18T14:40:00Z",
+  "objectives": [
+    {"id": 1, "description": "Re-confirm both Zotero PDFs still exist on disk", "status": "done", "files_touched": []},
+    {"id": 2, "description": "Open each and confirm author+title+year match (Decision 1 same-work requirement)", "status": "done", "files_touched": []},
+    {"id": 3, "description": "Set source_format: pdf for rutten and rumberg with inspected absolute path as evidence", "status": "done", "files_touched": ["specs/458_migrate_12_legacy_literature_entries_to_v2_schema/data/scope5-12.tsv"]},
+    {"id": 4, "description": "thomason: record Zotero bibliographic match as doc_type evidence, source_format EXCLUDE", "status": "done", "files_touched": ["specs/458_migrate_12_legacy_literature_entries_to_v2_schema/data/scope5-12.tsv"]},
+    {"id": 5, "description": "Remaining nine: record source_format EXCLUDE with per-entry evidence naming missing /tmp file and negative Zotero search, naming near-misses explicitly", "status": "done", "files_touched": ["specs/458_migrate_12_legacy_literature_entries_to_v2_schema/data/scope5-12.tsv"]},
+    {"id": 6, "description": "Assign doc_type for all twelve from corpus vocabulary, with particular justification for the two BRICS reports", "status": "done", "files_touched": ["specs/458_migrate_12_legacy_literature_entries_to_v2_schema/data/scope5-12.tsv"]},
+    {"id": 7, "description": "Write data/scope5-12.tsv", "status": "done", "files_touched": ["specs/458_migrate_12_legacy_literature_entries_to_v2_schema/data/scope5-12.tsv"]},
+    {"id": 8, "description": "Draft #### Reasoned Exclusions table rows for Phase 7", "status": "done", "files_touched": []}
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": [],
+  "zotero_inspection_evidence": {
+    "rutten-2000-universal-coalgebra": {
+      "pdf_path": "/home/benjamin/Documents/Zotero/storage/2T5LMRXA/Rutten - 2000 - Universal coalgebra a theory of systems.pdf",
+      "confirmed_matching": true,
+      "detail": "pdftotext of page 1 reads 'Theoretical Computer Science 249 (2000) 3-80 ... Universal coalgebra: a theory of systems / J.J.M.M. Rutten / CWI, P.O. Box 94079, 1090 GB Amsterdam, Netherlands' -- exact author/title/venue/year match to the chunked entry."
+    },
+    "rumberg-zanardo-2019-transition-structures": {
+      "pdf_path": "/home/benjamin/Documents/Zotero/storage/N96JSRYT/Rumberg and Zanardo - 2019 - First-Order Definability of Transition Structures.pdf",
+      "confirmed_matching": true,
+      "detail": "pdftotext of page 1 reads 'Journal of Logic, Language and Information (2019) 28:459-488 ... First-Order Definability of Transition Structures / Antje Rumberg / Alberto Zanardo' -- exact author/title/venue/year match to the chunked entry."
+    },
+    "thomason-1970-indeterminist-time": {
+      "bibliographic_only": true,
+      "zotero_id": "Thomason1970",
+      "detail": "zotero-library.json record: type article-journal, container-title Theoria, volume 36, issue 3, pages 264-281, title 'Indeterminist Time and Truth-Value Gaps', author Richmond H. Thomason, issued 1970 -- matches chunked entry title/venue exactly, but no attached PDF file exists for this record (Wiley-paywalled). A different-year namesake PDF was found (Thomason 1984, Combinations of Tense and Modality) and is not this work."
+    }
+  },
+  "near_misses_confirmed": {
+    "fong-speranzon-spivak-temporal-landscapes / schultz-spivak-temporal-type-theory / schultz-spivak-vasilakopoulou-dynamical-systems-sheaves": "Fong and Spivak - 2019 - An Invitation to Applied Category Theory Seven Sketches in Compositionality.pdf (different book, overlapping author Spivak only)",
+    "jacobs-coalgebra-intro-draft": "Jacobs - 2001 - Categorical Logic and Type Theory Volume 141.pdf (different, published book)",
+    "reynolds-2003-ockhamist": "Reynolds - 1992 - An axiomatization for until and since over the reals without the IRR rule.pdf (different paper, same author, 11 years earlier)"
+  },
+  "notes": "All twelve rows written to data/scope5-12.tsv: 2 pdf (rutten, rumberg -- both same-work-confirmed via pdftotext page-1 inspection), 10 EXCLUDE (thomason has a bibliographic-only Zotero record; the remaining nine have neither a /tmp/task54-lit source PDF nor any Zotero match), matching the plan's Scope Hypothesis of 2 pdf / 10 EXCLUDE exactly. doc_type assigned from the corpus's 7-value vocabulary for all twelve: 10 paper, 1 book (schultz-spivak-temporal-type-theory, explicit book self-reference), 1 manuscript (jacobs-coalgebra-intro-draft, explicit work-in-progress draft). The two BRICS technical reports (brics-rs-96-35, brics-rs-94-7) and the third BRICS-series entry (cattani-winskel-2005-profunctors) received particular justification for choosing 'paper' over the absent 'report' value, per the plan's specific instruction."
+}
