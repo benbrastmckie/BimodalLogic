@@ -377,7 +377,7 @@ final tally. Confirm by checking the table has no row lacking an evidence cell.
 
 ---
 
-### Phase 3: Relocate the single paper citation to the abstract block [NOT STARTED]
+### Phase 3: Relocate the single paper citation to the abstract block [COMPLETED]
 
 **Goal**: Execute D1 — put the one surviving citation, with the paper's URL, in the abstract block,
 and reduce the `#definition("Language")` footnote to its substantive remainder.
