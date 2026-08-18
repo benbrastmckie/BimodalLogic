@@ -384,7 +384,7 @@ the phase's own instruction rather than silently absorbed.
 
 ---
 
-### Phase 1R: Re-gate at the oriented identification arm [IN PROGRESS]
+### Phase 1R: Re-gate at the oriented identification arm [COMPLETED WITH EXCLUSIONS]
 
 **RESUMPTION.** Phase 1's FALSE verdict was decided against `gateSigma = rhoSF 2 0`, the renaming
 the identification arm produced *at the time the gate was built*. The spawned blocker task has
@@ -403,18 +403,25 @@ re-executed against a changed engine, not a new design.
   any state the engine can reach.
 
 - **Tasks:**
-  - [ ] Land the converse of `selfGuard_no_column_at_retired_time`: at any time *other* than the
+  - [x] Land the converse of `selfGuard_no_column_at_retired_time`: at any time *other* than the
         retired one a column of `selfGuardRules ×ˢ U` **is** indexed, because `rhoSF src tgt` fixes
         every time but `src`.
-  - [ ] Land the general reason the oriented arm escapes the σ-hit obligation: the post-arm branch
+  - [x] Land the general reason the oriented arm escapes the σ-hit obligation: the post-arm branch
         carries no formula at the retired index (`src_not_mem_knownTimes_identifyTime`), so the
         arm's own renaming fixes the time of **every formula the branch still carries**.
-  - [ ] Name that property (`SigmaTimeStable`) and land the repaired predicate carrying it.
-  - [ ] Build the oriented gate: the post-oriented-arm state at the reuse witness, with an
+  - [x] Name that property (`SigmaTimeStable`) and land the repaired predicate carrying it.
+        *(deviation: altered — `MintPaysForTimeStable` landed here carrying `SigmaTimeStable`, as
+        specified, and still does; but its **third disjunct** was subsequently revised in Phase 7
+        from the bare `selfGuardPotential` drop to a pair, adding a combined-budget non-increase
+        conjunct, and the `mintPaysForTimeStable_of_mintPaysForTimeAt` link landed here was
+        withdrawn with it. See Phase 7's deviation note for why the pairing is forced. This task's
+        own requirement — name the property, land the predicate carrying it — is met; the exclusion
+        is that the predicate as it now stands is not byte-identical to what this phase landed.)*
+  - [x] Build the oriented gate: the post-oriented-arm state at the reuse witness, with an
         `untlNeg` trigger whose ACTIVE arm fires, in the `gate*` shape.
-  - [ ] Measure all three disjuncts there, and measure `SigmaTimeStable` at both gates so the
+  - [x] Measure all three disjuncts there, and measure `SigmaTimeStable` at both gates so the
         exclusion is decided rather than asserted.
-  - [ ] State the verdict in words in a docstring.
+  - [x] State the verdict in words in a docstring.
 
 - **Verdict criteria (binary):** TRUE — disjunct 3 holds at the oriented gate and the Phase-1 gate
   is excluded by a hypothesis the engine discharges: unblock Phases 2-9. FALSE — the FALSE verdict
@@ -422,7 +429,27 @@ re-executed against a changed engine, not a new design.
 
 - **Verification Tier:** local
 - **Done when:** the verdict theorems are sorry-free, `lake build` of the module is green, and the
-  verdict is stated in words.
+  verdict is stated in words. *(All three verified at close: full `lake build` green, 2458 jobs;
+  all 15 of this phase's declarations report axioms within `{propext, Classical.choice, Quot.sound}`
+  — no `sorryAx`, no project axiom; the verdict is stated in words in
+  `mintPaysForTimeStable_body_at_orientedGate`'s docstring, "**VERDICT: the re-gate decides TRUE.**")*
+
+- **Task-by-task confirmation at close** (each checked against the source, not against the
+  dispatch's own report):
+  1. `rhoSF_time_eq_of_ne_src` + `selfGuard_column_at_live_time` — the converse, landed.
+  2. `sigmaTimeStable_identifyOriented`, and it consumes **`src_not_mem_knownTimes_identifyTime`**
+     (`Fuel.lean:1952`, "Identification retires `src`: nothing is left carrying it") — the lemma
+     this task names, verbatim and unrenamed. The pre-existing `mem_knownTimes_identifyTime`
+     (`MintBound.lean:1393`) is a *different*, positive transport statement and is **not** used
+     anywhere in this phase's block; nothing stands in for anything.
+  3. `SigmaTimeStable` + `MintPaysForTimeStable` — landed, with the exclusion noted above.
+  4. `orientedGateTrigger` / `Branch` / `Ord` / `Universe` / `Succ` / `NewOrd` / `Sigma`, with
+     `orientedGate_runInvariant`, `orientedGate_confined`, `orientedGate_is_oriented_arm_state`
+     (seven decided conjuncts) and `orientedGate_step_fires`.
+  5. `orientedGate_disjuncts_measured` (all three disjuncts, eight decided numbers),
+     `gateSigma_not_sigmaTimeStable` (Phase 1's gate) and `orientedGate_sigmaTimeStable` (this
+     gate) — both gates measured.
+  6. `mintPaysForTimeStable_body_at_orientedGate`, verdict in words.
 
 ---
 
