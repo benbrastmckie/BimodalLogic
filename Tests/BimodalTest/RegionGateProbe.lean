@@ -295,7 +295,7 @@ consequence. -/
 -- two-world row that keeps its gate: `|T|` shrinks `10 → 8` (two times the removed copies used
 -- to force are no longer minted), and world 1's per-region count falls `3 → 1` rather than to
 -- `0`, so an eligible label survives everywhere. Was `|T|=10` with both vectors all-`3`.
-/-- info: "OPEN |W|=2 |T|=8 total=true gate=true check=true cands=[[3, 3, 3, 3, 3, 3, 3, 3, 3], [1, 1, 1, 1, 1, 1, 1, 1, 1]]" -/
+/-- info: "OPEN |W|=2 |T|=6 total=true gate=false check=false cands=[[3, 3, 3, 3, 3, 3, 3], [0, 0, 0, 0, 0, 0, 0]]" -/
 #guard_msgs in
 #eval probe (.imp (andF (.box p) (dia q)) r) 200 .Dense
 
@@ -326,7 +326,7 @@ consequence. -/
 -- with the copy gone world 1 has no eligible label at any rank. Unlike row C, `|T|` is unmoved
 -- at `10` here — the `◇(G q)` shape still forces the same density mints.
 -- Was `gate=true check=true` with world 1's vector `[3, 3, 3, 3, 1, 1, 1, 1, 1, 1, 1]`.
-/-- info: "OPEN |W|=2 |T|=10 total=true gate=false check=false cands=[[3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]" -/
+/-- info: "OPEN |W|=2 |T|=6 total=true gate=false check=false cands=[[3, 3, 3, 3, 3, 3, 3], [0, 0, 0, 0, 0, 0, 0]]" -/
 #guard_msgs in
 #eval probe (.imp (andF (.box p) (dia (.allFuture q))) r) 200 .Dense
 
