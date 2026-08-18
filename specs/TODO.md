@@ -11,11 +11,11 @@ next_project_number: 456
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,193,231,257,298,413,437,445,450,451,454 | -- | completeness, decidability, frame-extensions, ... |
-| 2 | 178,219,282,296,421,423,424,436,446,455 | 193,231,298,437,445,454 | decidability, formula-refactor, publication-quality, ... |
-| 3 | 422,425,434,447 | 421,423,436,446 | decidability, publication-quality, strong_completeness |
-| 4 | 169,432 | 422,434 | decidability, strong_completeness |
-| 5 | 362,433 | 169,424,432 | decidability, strong_completeness |
+| 1 | 125,127,128,193,231,257,298,413,421,423,424,437,445,450,451,455 | -- | completeness, decidability, frame-extensions, ... |
+| 2 | 178,219,282,296,422,425,436,446 | 193,231,298,421,423,437,445 | decidability, formula-refactor, publication-quality, ... |
+| 3 | 169,434,447 | 422,436,446 | decidability, publication-quality, strong_completeness |
+| 4 | 362,432 | 169,424,434 | decidability, strong_completeness |
+| 5 | 433 | 432 | decidability |
 | 6 | 428 | 433 | decidability |
 | 7 | 429 | 428 | decidability |
 | 8 | 410 | 429 | decidability |
@@ -87,15 +87,14 @@ next_project_number: 456
 
 ### Strong Completeness
 
-454 [IMPLEMENTING] — RE-ISSUE THE SIX STRONG-COMPLETENESS TASK DESCRIPTIONS: re-anchor
-  └─ 421 [NOT STARTED] — Two deliverables on the Base weak terminus, both small.
-    └─ 422 [NOT STARTED] — Construct the discrete-case analogue of the existing dense chroni
-      └─ 169 [NOT STARTED] — Base (FrameClass.Base / general) WEAK completeness green: make th
-        └─ 362 [NOT STARTED] — Implement the completeness capstone under the SETTLED TERMINOLOGY
-  └─ 423 [NOT STARTED] — Create FormalSystem/Metalogic/SetConsequence.lean containing the 
-    └─ 425 [NOT STARTED] — Convert the informal argument at FormalSystem/Metalogic/StrongCom
-  └─ 424 [NOT STARTED] — RE-ISSUED 2026-08-18 (description rewrite only; status remains `n
-    └─ 362 [NOT STARTED] — Implement the completeness capstone under the SETTLED TERMINOLOGY (see above)
+421 [NOT STARTED] — Two deliverables on the Base weak terminus, both small.
+  └─ 422 [NOT STARTED] — Construct the discrete-case analogue of the existing dense chroni
+    └─ 169 [NOT STARTED] — Base (FrameClass.Base / general) WEAK completeness green: make th
+      └─ 362 [NOT STARTED] — Implement the completeness capstone under the SETTLED TERMINOLOGY
+423 [NOT STARTED] — Create FormalSystem/Metalogic/SetConsequence.lean containing the 
+  └─ 425 [NOT STARTED] — Convert the informal argument at FormalSystem/Metalogic/StrongCom
+424 [NOT STARTED] — RE-ISSUED 2026-08-18 (description rewrite only; status remains `n
+  └─ 362 [NOT STARTED] — Implement the completeness capstone under the SETTLED TERMINOLOGY (see above)
 
 ### Proof System Infrastructure
 
@@ -250,12 +249,13 @@ Deliver a survey artifact under this task's reports/ directory containing:
 ---
 
 ### 454. Reissue strong completeness task descriptions
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: strong_completeness
 - **Dependencies**: Task 452
 - **Research**: [454_reissue_strong_completeness_task_descriptions/reports/01_strong-completeness-reissue-research.md]
 - **Plan**: [454_reissue_strong_completeness_task_descriptions/plans/01_reissue-task-descriptions.md]
+- **Summary**: [454_reissue_strong_completeness_task_descriptions/summaries/01_reissue-task-descriptions-summary.md]
 
 **Description**: RE-ISSUE THE SIX STRONG-COMPLETENESS TASK DESCRIPTIONS: re-anchor every drifted file:line citation
 by symbol name, re-scope the shift-set representation gate against total-history semantics, and

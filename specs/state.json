@@ -24,7 +24,7 @@
     {
       "project_number": 454,
       "project_name": "reissue_strong_completeness_task_descriptions",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "meta",
       "topic": "strong_completeness",
       "priority": "high",
@@ -43,10 +43,16 @@
           "path": "specs/454_reissue_strong_completeness_task_descriptions/plans/01_reissue-task-descriptions.md",
           "type": "plan",
           "summary": "8-phase description-only re-issue of the six strong-completeness tasks: verified citation ledger, per-task symbol-primary re-anchoring, 424 re-scope against total-history semantics, and the 424->362 dependency edge."
+        },
+        {
+          "path": "specs/454_reissue_strong_completeness_task_descriptions/summaries/01_reissue-task-descriptions-summary.md",
+          "type": "summary",
+          "summary": "Re-issue of the six strong-completeness task descriptions (169, 362, 421, 422, 423, 424): symbol-primary re-anchoring of 34 citations, 424's Representation Theorem restated against total-history semantics, 424's gate language narrowed, and the 424 -> 362 dependency edge wired with leg-B-only prose."
         }
       ],
-      "last_updated": "2026-08-18T07:28:45Z",
-      "session_id": "sess_1787033965_d6c07f_454"
+      "last_updated": "2026-08-18T07:43:07Z",
+      "session_id": "sess_1787033965_d6c07f_454",
+      "completion_summary": "Re-issued state.json descriptions for tasks 169, 362, 421, 422, 423, and 424: re-anchored 34 citations to symbol-primary form (14 drifted, 19 accurate, 1 stale LaTeX-occurrence count), restated task 424's Representation Theorem against post-refactor total-history semantics with ShiftClosed retired and gate language narrowed, and added a leg-B-only 424 dependency edge to task 362. All six tasks remain not_started; no Lean was touched."
     },
     {
       "project_number": 453,
