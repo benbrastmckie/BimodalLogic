@@ -38,7 +38,7 @@
     {
       "project_number": 453,
       "project_name": "restore_bimodaltest_green_and_clear_c6_c9",
-      "status": "planning",
+      "status": "planned",
       "task_type": "lean4",
       "topic": "decidability",
       "priority": "high",
@@ -50,9 +50,14 @@
           "path": "specs/453_restore_bimodaltest_green_and_clear_c6_c9/reports/01_guard-rebaseline-and-c6-c9.md",
           "type": "report",
           "summary": "Confirms the 7 stale #guard_msgs rows with verbatim generated replacement strings, re-verifies the stale-expectation verdict (W1 and W7 now byte-identical), identifies three unnamed stale-prose sites, and resolves C6 (all 7 modules compile; plain manifest entries suffice) and C9 (one-line durable-anchor edit)."
+        },
+        {
+          "path": "specs/453_restore_bimodaltest_green_and_clear_c6_c9/plans/01_restore-guards-clear-c6-c9.md",
+          "type": "plan",
+          "summary": "7-phase, 4-hour plan re-recording the 7 stale #guard_msgs docstrings, settling the three Re-baseline record blocks and stale narratives, clearing C6 via 7 manifest entries and C9 via a durable-anchor prose edit, closing on a full verification gate."
         }
       ],
-      "last_updated": "2026-08-18T06:30:42Z",
+      "last_updated": "2026-08-18T06:38:25Z",
       "session_id": "sess_1787033965_d6c07f_453"
     },
     {

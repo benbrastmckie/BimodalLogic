@@ -47,7 +47,7 @@ next_project_number: 456
                 └─ 411 [NOT STARTED] — Track B part 2 for the TM tableau decidability program (parent: t
                   └─ 430 [NOT STARTED] — The semantic lift and the Track A assembly. Owns obstruction O4 o
                     └─ 412 [NOT STARTED] — Track B finish for the TM tableau decidability program (parent: t
-453 [PLANNING] — Return `lake build BimodalTest` to green by re-recording 7 stale 
+453 [PLANNED] — Return `lake build BimodalTest` to green by re-recording 7 stale 
 
 ### Formula Refactor
 
@@ -385,11 +385,12 @@ the "gate" language so the prose and the graph agree. Do not leave both readings
 ---
 
 ### 453. Restore bimodaltest green and clear c6 c9
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
 - **Research**: [453_restore_bimodaltest_green_and_clear_c6_c9/reports/01_guard-rebaseline-and-c6-c9.md]
+- **Plan**: [453_restore_bimodaltest_green_and_clear_c6_c9/plans/01_restore-guards-clear-c6-c9.md]
 
 **Description**: Return `lake build BimodalTest` to green by re-recording 7 stale #guard_msgs expectations, and
 clear the two remaining check-module-invariants.sh failures (C6, C9).
