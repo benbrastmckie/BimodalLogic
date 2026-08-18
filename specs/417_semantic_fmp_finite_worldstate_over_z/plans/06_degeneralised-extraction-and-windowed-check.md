@@ -1,7 +1,7 @@
 # Implementation Plan: Task #417 — degeneralised extraction and the windowed `check` (handoff Task A, final leg)
 
 - **Task**: 417 - Semantic FMP, finite WorldState over ℤ
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 12.5 hours remaining (Phases 10.1–10.3, 11, 12); ~19 hours already landed across Phases 1–10
 - **Dependencies**: Task 414, Task 420, Task 438, Task 439 (semantics/frame prerequisites, all landed upstream); Task 450 gates the DEFERRED half only (see Non-Goals) and does **not** gate any phase here; Task 441 is a *coordination* dependency — it owns `BiLasso/Extend.lean` and shares `scripts/module-invariants-manifest.txt`, and it is implementing concurrently (see Risks). **Task 441 does not gate any phase of this plan**, because repair 1b — the only route that would have needed it — is rejected below on the evidence.
 - **Research Inputs**:

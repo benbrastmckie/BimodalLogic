@@ -12,7 +12,7 @@ next_project_number: 452
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
 | 1 | 125,127,128,193,231,257,298,413,421,423,424,437,445,450,451 | -- | completeness, decidability, frame-extensions, ... |
-| 2 | 178,219,282,296,417,422,425,436,446 | 193,231,298,421,423,437,445,450 | decidability, formula-refactor, publication-quality, ... |
+| 2 | 178,219,282,296,422,425,436,446 | 193,231,298,421,423,437,445 | decidability, formula-refactor, publication-quality, ... |
 | 3 | 169,434,447 | 422,436,446 | decidability, publication-quality, strong_completeness |
 | 4 | 362,432 | 169,434 | decidability, strong_completeness |
 | 5 | 433 | 432 | decidability |
@@ -80,10 +80,6 @@ next_project_number: 452
 298 [PARTIAL] — Fix c7 labeling bug at formula ~13750 that causes unbounded memor
   └─ 282 [PARTIAL] — exhaustive_enumeration_by_default
   └─ 296 [PARTIAL] — Re-add the 6 derived binary temporal operators (release, weak_unt
-
-### Paper Refactor
-
-417 [IMPLEMENTING] — RE-ISSUED 2026-08-10 (supersedes the prior maximal-history framin
 
 ### Strong Completeness
 
@@ -735,7 +731,7 @@ Acceptance: the refuted-route comment no longer appears at Transfer.lean:1239-12
 
 ### 417. Semantic fmp finite worldstate over z
 - **Effort**: medium
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: paper-refactor
 - **Dependencies**: Task 414, Task 420, Task 438, Task 439, Task 450
@@ -745,8 +741,8 @@ Acceptance: the refuted-route comment no longer appears at Transfer.lean:1239-12
   - [417_semantic_fmp_finite_worldstate_over_z/reports/04_filteredstep-fwd-gating-spike.md]
 - **Handoff**: [417_semantic_fmp_finite_worldstate_over_z/handoffs/01_phase-7-12-revision-handoff.md]
 - **Evidence**: [417_semantic_fmp_finite_worldstate_over_z/evidence/spike-untl-unfolding-and-fwd-obstruction.lean]
-- **Summary**: [417_semantic_fmp_finite_worldstate_over_z/summaries/05_annotated-bi-lasso-decision-layer-summary.md]
 - **Plan**: [417_semantic_fmp_finite_worldstate_over_z/plans/06_degeneralised-extraction-and-windowed-check.md]
+- **Summary**: [417_semantic_fmp_finite_worldstate_over_z/summaries/06_degeneralised-extraction-and-windowed-check-summary.md]
 
 **Description**: RE-ISSUED 2026-08-10 (supersedes the prior maximal-history framing). SEMANTIC FMP OVER A FIXED CARRIER, stated against the TOTAL-history semantics of task 414: prove the TruthAt-connected finite model property the paper's decidability corollary proof text cites -- any formula satisfiable over the Discrete class is satisfiable in a model with FINITE WorldState over D = Z -- replacing reliance on the syntactic closure-MCS FMP theorems (FormalSystem/Metalogic/Decidability/FMP/FMP.lean) that never connect to TruthAt. Add decidable model checking for the finite-W-over-Z presentation to back the paper's enumeration argument (restated paper-side as finite W over Z, since every model has infinite D). This is the semantic-FMP follow-on explicitly descoped by the task-165 redirect; the tableau programme remains the decision-procedure route and also rebases onto the new semantics. Related: 165, 410, 411, 412.
 
