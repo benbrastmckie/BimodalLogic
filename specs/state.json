@@ -9,7 +9,7 @@
     {
       "project_number": 441,
       "project_name": "effective_periodic_extension_over_finite_frames",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "topic": "paper-refactor",
       "priority": "high",
@@ -36,7 +36,7 @@
       ],
       "blockers": null,
       "created": "2026-08-11T23:10:56Z",
-      "last_updated": "2026-08-18T00:01:27Z",
+      "last_updated": "2026-08-18T00:46:22Z",
       "next_artifact_number": 1,
       "session_id": "sess_1787007762_7d00d6_441"
     },
@@ -736,14 +736,14 @@
           "summary": "582-line sorry-free Lean evidence: succIndicator, unfoldForward/Backward, unfoldTableForward/Backward, nextConj, noBlockingTriple, filteredStep_fwd_fails, filteredStep_not_universal; all nine audited via #print axioms, no sorryAx."
         },
         {
-          "path": "specs/417_semantic_fmp_finite_worldstate_over_z/plans/05_annotated-bi-lasso-decision-layer.md",
-          "type": "plan",
-          "summary": "Route-2 revision: annotated bi-lassos (Hintikka structure over the lasso); Phases 1-2 preserved, Phase 3 closed with reasoned exclusions."
-        },
-        {
           "path": "specs/417_semantic_fmp_finite_worldstate_over_z/summaries/05_annotated-bi-lasso-decision-layer-summary.md",
           "type": "summary",
           "summary": "Phases 4-9 complete and sorry-free; Phase 10 blocked with a machine-checked origin-anchoring obstruction."
+        },
+        {
+          "path": "specs/417_semantic_fmp_finite_worldstate_over_z/plans/06_degeneralised-extraction-and-windowed-check.md",
+          "type": "plan",
+          "summary": "Windowed check plus forced Buchi degeneralisation as marks on a walk; Phases 1-10 carried as completed, new work sub-phased 10.1-10.3."
         }
       ],
       "created": "2026-07-28T22:51:10Z",
