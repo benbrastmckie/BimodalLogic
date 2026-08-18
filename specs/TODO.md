@@ -1,5 +1,5 @@
 ---
-next_project_number: 452
+next_project_number: 455
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 452
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,193,231,257,298,413,421,423,424,437,445,450,451 | -- | completeness, decidability, frame-extensions, ... |
+| 1 | 125,127,128,193,231,257,298,413,421,423,424,437,445,450,451,452,453,454 | -- | completeness, decidability, frame-extensions, ... |
 | 2 | 178,219,282,296,422,425,436,446 | 193,231,298,421,423,437,445 | decidability, formula-refactor, publication-quality, ... |
 | 3 | 169,434,447 | 422,436,446 | decidability, publication-quality, strong_completeness |
 | 4 | 362,432 | 169,434 | decidability, strong_completeness |
@@ -47,6 +47,7 @@ next_project_number: 452
                 └─ 411 [NOT STARTED] — Track B part 2 for the TM tableau decidability program (parent: t
                   └─ 430 [NOT STARTED] — The semantic lift and the Track A assembly. Owns obstruction O4 o
                     └─ 412 [NOT STARTED] — Track B finish for the TM tableau decidability program (parent: t
+453 [NOT STARTED] — Return `lake build BimodalTest` to green by re-recording 7 stale 
 
 ### Formula Refactor
 
@@ -72,6 +73,10 @@ next_project_number: 452
 
 193 [NOT STARTED] — Apply validity-intro and truth-simp macros to the soundness layer
 
+### Code Quality
+
+452 [NOT STARTED] — Correct two factually inverted sections of specs/ROADMAP.md again
+
 ### Dataset Enhancement
 
 231 [NOT STARTED] — Build comprehensive automation so that every dataset regeneration
@@ -90,6 +95,7 @@ next_project_number: 452
 423 [NOT STARTED] — Create FormalSystem/Metalogic/SetConsequence.lean containing the 
   └─ 425 [NOT STARTED] — Convert the informal argument at FormalSystem/Metalogic/StrongCom
 424 [NOT STARTED] — RE-ISSUED 2026-08-10 (description rewrite only; status remains `n
+454 [NOT STARTED] — RE-ISSUE THE SIX STRONG-COMPLETENESS TASK DESCRIPTIONS: re-anchor
 
 ### Proof System Infrastructure
 
@@ -100,6 +106,331 @@ next_project_number: 452
 451 [NOT STARTED] — CONSOLIDATE THE TWO BONEYARDS into a single archive tree under Fo
 
 ## Tasks
+
+### 454. Reissue strong completeness task descriptions
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: strong_completeness
+- **Dependencies**: None
+
+**Description**: RE-ISSUE THE SIX STRONG-COMPLETENESS TASK DESCRIPTIONS: re-anchor every drifted file:line citation
+by symbol name, re-scope the shift-set representation gate against total-history semantics, and
+reconcile its "gate" language with the dependency graph.
+
+Targets: the six `strong_completeness`-topic tasks and their immediate terminus -- 169, 362, 421,
+422, 423, 424. NONE of them has a task directory or any research/plan artifact, so each task's
+state.json description is the ENTIRE input its first dispatch will receive. Every defect below is
+therefore live and will be hit on first contact.
+
+=== 1. ANCHOR DRIFT (verified 2026-08-18 against the live tree) ===
+
+  task | cited anchor                                            | actual        | drift
+  -----|---------------------------------------------------------|---------------|-------
+  423  | Validity.lean:79   (valid)                              | :94           | +15
+  423  | Validity.lean:169  (ValidDense)                         | :206          | +37
+  423  | Validity.lean:187  (ValidDiscrete)                      | :222          | +35
+  423  | Validity.lean:276  (ValidDedekindDense)                 | :310          | +34
+  421  | Transfer.lean:1239-1241 (refuted route-(i) guidance)     | :1081-1083    | -158
+  169  | Transfer.lean:1242 (the sorry)                          | :1068         | -174
+  169  | Completeness.lean:196 (theorem completeness)            | :191          | -5
+  422  | ChronicleToCountermodelBasic.lean:435                    | :430          | -5
+       |   (box_dense_gives_density)                              |               |
+  422  | ChronicleToCountermodelBasic.lean:629                    | :624          | -5
+       |   (cantor_bfmcs_dense_restricted_tc)                     |               |
+
+FormalSystem/Metalogic/WeakCanonical/Transfer.lean is now 1086 lines, so tasks 421 and 169 both
+cite line numbers PAST THE END OF THE FILE.
+
+The substance survives in every case -- this is drift, not deletion. Verified present and live:
+the text at Transfer.lean:1081-1082 is verbatim the refuted route-(i) guidance that 421(a) is
+chartered to replace; countermodel_discrete is at Transfer.lean:1068 and is still the tree's sole
+live sorry (check C3); theorem completeness is at Completeness.lean:191; and all four lemmas 422
+must mirror exist and are live and already frame-class polymorphic
+(box_dense_gives_density (fc : FrameClass) ... at :430, cantor_bfmcs_dense_restricted_tc at :624,
+_buc and _fuc likewise, plus cantorIsoDense (fc : FrameClass) ... at :231).
+
+Task 423's acceptance criterion is the one that actually bites: it requires each
+SetSemanticConsequence* binder list to be "byte-comparable to its Validity.lean source" at four
+named lines, none of which are the definitions any more.
+
+Task 421's other anchor -- CompletenessDedekind.lean:61-100, the CarrierProbe pattern -- is still
+ACCURATE. Do not "fix" it.
+
+Deliverable (a): re-anchor all nine citations above BY SYMBOL NAME rather than by line number, so
+the descriptions stop rotting on every unrelated edit. Where a line number genuinely aids
+navigation, keep it as a secondary hint alongside the symbol, never as the primary reference.
+
+=== 2. TASK 424 IS SCOPED AGAINST A DELETED PARAMETER ===
+
+Task 424 (prove_shift_set_representation_theorem_compactness_feasibility_gate) states its entire
+Representation Theorem -- both directions, the whole content of the gate -- in terms of
+`TruthAt (M : TaskModel F) (Omega : Set (WorldHistory F)) ...`, and notes that the reverse
+direction "literally sets Omega := Omega -- identifying the shift-set carrier with that Lean
+parameter directly."
+
+That parameter no longer exists. FormalSystem/Semantics/Truth.lean:159 now reads
+`def TruthAt (M : TaskModel F)` with the box clause at :164:
+
+    | Formula.box phi => forall (sigma : WorldHistory F), sigma.IsTotal -> TruthAt M sigma t phi
+
+and the file's own docstring is categorical: "There is no admissible-history parameter. ... The
+designated-carrier argument that earlier revisions threaded through every clause has been deleted
+outright: the box clause reads its quantifier range off WorldHistory.IsTotal, so no set-valued
+parameter can narrow, widen, or otherwise influence the meaning of any connective." The quantifier
+now ranges over H_F, the total histories.
+
+Task 424's description already contains a self-audit flagging this exposure -- but its verdict was
+recorded as a warning about a SIBLING TASK THAT PLANNED to eliminate the vocabulary. That
+elimination has since landed and been archived (the total-history-validity refactor), so the
+warning is now a fact, and 424 was never re-issued against it.
+
+Deliverable (b): re-scope 424 against total-history semantics. This is genuine design work, not
+clerical: decide what the shift-set Representation Theorem becomes when there is no Omega to
+identify the carrier with, and whether the compactness feasibility question it was posed to settle
+survives the reframing intact, changes shape, or dissolves. Record the verdict in the description.
+If the reframing turns out to be substantial enough to need its own research cycle, say so and
+scope that cycle rather than papering over it -- but do not leave 424 dispatchable as written.
+
+=== 3. TASK 424 GATES NOTHING IN THE DEPENDENCY GRAPH ===
+
+424 is described as the "compactness feasibility gate", but no task in specs/state.json lists 424
+as a dependency. 362 depends on [361, 375, 169, 170]; 423 on [361]; 425 on [361, 423].
+
+generate-task-order.sh computes waves by Kahn's algorithm over the declared edges, so 424 lands in
+wave 1 alongside everything else unblocked and will never be ordered BEFORE the work it supposedly
+gates.
+
+Deliverable (c): resolve the contradiction in one direction or the other. Either add 424 to the
+dependencies of the tasks whose feasibility it actually gates (the Dense strong-completeness arm,
+via 423's strongCompletenessDense_of_compact / CompactDense statements, and/or 362), or downgrade
+the "gate" language so the prose and the graph agree. Do not leave both readings standing.
+
+=== 4. CONTEXT THE RE-ISSUE SHOULD PRESERVE (verified, do not re-derive) ===
+
+- All 41 declared dependency edges across the active set resolve; there are zero dangling
+  references. Task 361, which every strong-completeness task depends on, is archived complete, as
+  are 375, 414, 420, 439, 448 and 170.
+- The spine is 421 -> 422 -> 169 -> 362, four deep and strictly sequential. 423 -> 425 is a second
+  branch. 421, 423 and 424 are all unblocked right now.
+- No strong-completeness task depends on any decidability task, and none depends on task 450
+  (frame-class parameterization of the restricted-MCS layer). That was checked directly:
+  Core.RestrictedMCS is imported by only Metalogic/Core.lean and Decidability/FMP/ClosureMCS.lean;
+  StrongCompleteness.lean imports Validity, Core.DeductionTheorem, Soundness and
+  BXCanonical.CompletenessDedekind and touches RestrictedMCS nowhere; and the chronicle layer 422
+  extends builds on SetConsistent, which is already frame-class polymorphic. Record this so the
+  question is not re-opened.
+
+=== 5. VERIFICATION ===
+- Every file:line or symbol reference in all six re-issued descriptions resolves in the live tree
+  at the time of the re-issue.
+- No task's SCOPE changes except 424's, and 424's change is stated explicitly with its rationale.
+- Status of all six tasks is unchanged by this work (they stay not_started; this is a description
+  re-issue, not progress).
+- specs/state.json edits go through .claude/scripts/state-write.sh; TODO.md is regenerated, never
+  hand-edited.
+
+=== 6. NON-GOALS ===
+- Proves nothing, closes no sorry, writes no Lean.
+- Does not start 421, 422, 423 or any other strong-completeness task.
+- Does not re-scope 169, 362, 421, 422 or 423 -- their substance was verified intact; only their
+  anchors move.
+
+---
+
+### 453. Restore bimodaltest green and clear c6 c9
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: None
+
+**Description**: Return `lake build BimodalTest` to green by re-recording 7 stale #guard_msgs expectations, and
+clear the two remaining check-module-invariants.sh failures (C6, C9).
+
+=== 1. THE SEVEN GUARDS (verified 2026-08-18) ===
+
+`lake build` of FormalSystem exits 0. `lake build BimodalTest` fails with exactly 7 #guard_msgs
+docstring mismatches and no other errors (lint warnings elsewhere are unrelated):
+
+  Tests/BimodalTest/TableauConformance.lean : 4 errors at :873, :885, :910, :916  (rows W1,W3,W6,W7)
+  Tests/BimodalTest/RegionGateProbe.lean    : 2 errors at :299, :330              (rows C, H .Dense)
+  Tests/BimodalTest/BoxSpreadProbe.lean     : 1 error  at :165                    (row C, .Dense)
+
+The drift is a genuine change in computed values, not a reordering. Generated time domains are
+mostly smaller than recorded (|T| 8->6 and 10->6; knownTimes 9->8, 10->8, 6->5; one row grew
+8->10), with constraint lists shrinking correspondingly. RegionGateProbe:299 additionally flips
+gate=true check=true -> gate=false check=false, world 1's candidate vector collapsing [1,1,...] ->
+[0,0,...].
+
+=== 2. VERDICT: STALE EXPECTATIONS, NOT A REGRESSION (high confidence) ===
+
+Do not open a regression investigation. Four independent lines of evidence:
+
+(a) The value changes match the documented, intended effect of `trivialEventWitnessed` -- the
+guard that stops the engine minting trivial seriality witnesses, so time domains stop growing.
+That is exactly the "fewer known times" signature.
+
+(b) Every property these probes ASSERT still holds. All four TableauConformance rows still report
+total=true and incomparable=[] (time-order totality is what the probe exists to measure).
+BoxSpreadProbe:165 still reports spread=false anchor=false grid=false; only |T| moved.
+RegionGateProbe's own designed cross-check (its `gate` against the library's `check`) still AGREES
+on both failing rows.
+
+(c) Rows W1 (:873) and W7 (:916) now produce identical output. W7 exists by construction as "W1 at
+fuel 2000, five times W1's own fuel -- identical, so the flip to total=true is timeLinearity firing
+and not a budget artifact." The pinned pair is NOT identical; the generated pair IS. Current
+behaviour satisfies the invariant the row was written to test; the recorded expectation does not.
+
+(d) The pinned values were never build-verified when authored: commit d67059938 records "Phase 7
+edits applied to all 8 probe modules ... NOT YET BUILD-VERIFIED."
+
+=== 3. PROVENANCE (do not re-derive; recorded here so the attribution note can cite it) ===
+
+Last known-green whole-target build: 1b7636703 (2026-07-29), recording CORPUS_RC=0 and
+mismatches=0 across 143 #guard_msgs directives. It went red in the window 1b7636703..d49b977c0
+(2026-08-10/11), the semantics-refactor plus tableau-engine work that rewrote Tableau.lean (+517
+lines) and Saturation.lean (+634) and added Verified/Termination/MintBound.lean. Commit 59faf7304
+marks where the project stopped claiming the target ("record BimodalTest as unmeasured, not
+green"). Commit 86eb8963c then did a measured three-point re-baseline taking 40 mismatches -> 7,
+re-recording 29 rows attributable to trivialEventWitnessed and DELIBERATELY EXCLUDING these same 7
+to avoid folding a separately-owned engine change into that attribution.
+
+Those 7 exclusions are enumerated in-source with their then-current values in the "Re-baseline
+record" headers at TableauConformance.lean:104, RegionGateProbe.lean:110, BoxSpreadProbe.lean:94.
+All 7 recorded "P2 current" values are byte-identical to what Lean generates today: zero drift
+since 2026-08-11.
+
+The untl/snce guard-first argument-order migration is EXONERATED -- it touched Tableau.lean and
+Saturation.lean, but these 7 rows use only F/G/P/H/box/diamond/-> /and, and their outputs are
+unchanged from the pre-migration record. The BiLasso/FMP work is likewise exonerated: it added new
+modules rather than changing the engine these probes exercise.
+
+=== 4. DELIVERABLES ===
+
+(a) Re-record all 7 guard docstrings from Lean's generated `info:` output. There is NO
+regeneration script -- scripts/check-evidence-probes.sh is unrelated (it lake-env-lean-compiles the
+sorry-free evidence probes) and scripts/check-module-invariants.sh guards axiom baselines, not
+#guard_msgs. The established process is manual: run the module, copy the generated line into the
+docstring. Incremental elaboration is BoxSpreadProbe ~2.0s, RegionGateProbe ~3.8s,
+TableauConformance ~49s.
+
+(b) Rewrite the three "Re-baseline record" header blocks, which currently enumerate these 7 as
+deliberately excluded, plus the per-row narrative comments that describe the old values. The repo
+convention is that an expected block is updated in the same commit as the calculus change with the
+flip justified; this task is the deferred settlement of that debt, so the attribution note is the
+deliverable, not an afterthought. It must: attribute the 7 to the 2026-08-10/11 engine window,
+record that W1 and W7 now agree as the row was designed to require, and confirm RegionGateProbe
+row C's gate loss (below).
+
+(c) RegionGateProbe:299 (row C) needs one sentence of confirmation, not an investigation. It was
+"the one moved two-world row that keeps its gate", and it no longer does. The module docstring is
+explicit that the gate is a deliberate over-approximation, "harder to pass than the induction will
+need, so ... failing it would not by itself refute anything", and rows A/B/H already pin
+gate=false for the same documented reason (the unsound cross-world temporal copies removed by the
+earlier probe work mean the minted world receives no T(G.)/T(H.)). Row C simply joined them.
+Confirm that reading holds and say so in the record.
+
+(d) C6: add the 7 unreachable live modules absent from scripts/module-invariants-manifest.txt, or
+justify each exclusion in the manifest. They are Metalogic/Algebraic/{BooleanStructure,
+InteriorOperators, LindenbaumQuotient, UltrafilterMCS}, Metalogic/Bundle/Construction,
+Metalogic/SoundnessLemmas/CoValidity, and
+Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/OuterGateFaithful. UltrafilterMCS matters most:
+at 81 occurrences it is the single largest FrameClass.Base consumer in the tree and is currently
+compile-unchecked.
+
+(e) C9: FormalSystem/Metalogic/WeakCanonical/PriorExpressivenessDense.lean:185 carries a
+task-number citation ("This is the plan's task 3, discharged in full"). Replace with a durable
+anchor.
+
+=== 5. VERIFICATION ===
+- `lake build BimodalTest` exits 0.
+- scripts/check-module-invariants.sh: C1, C6 and C9 all PASS; C2 and C3 unchanged (four flagship
+  axiom sets at baseline; sole live sorry still countermodel_discrete).
+- No .lean semantics change: every edit is a docstring, a comment, or a manifest line. If any
+  guard cannot be made to pass by re-recording alone, STOP and report rather than adjusting the
+  engine -- that would falsify the verdict in section 2 and is a different task.
+
+=== 6. NON-GOALS ===
+- Does not change the tableau engine, Saturation, or MintBound.
+- Does not re-open the 29 rows re-recorded by 86eb8963c.
+- Does not add a guard-regeneration script (worth considering, but scope it separately).
+
+---
+
+### 452. Correct roadmap sorry inventory and bxcanonical status
+- **Status**: [NOT STARTED]
+- **Task Type**: markdown
+- **Topic**: code-quality
+- **Dependencies**: None
+
+**Description**: Correct two factually inverted sections of specs/ROADMAP.md against machine-checked reality.
+
+=== 1. THE DEFECT (verified 2026-08-18 via scripts/check-module-invariants.sh) ===
+
+(a) "Sorry Inventory" (specs/ROADMAP.md:881) opens: "The BXCanonical module has 23 sorry proofs in
+three categories." Check C3 verifies the entire live tree has EXACTLY ONE structural sorry:
+countermodel_discrete, at FormalSystem/Metalogic/WeakCanonical/Transfer.lean:1068. The section's
+"Critical Path (5 sorries in RootScopedChain.lean)" table lists five file:line rows, but
+RootScopedChain.lean exists only under FormalSystem/Boneyard/ (two archived copies:
+Boneyard/ScheduleBasedBFMCS/ and Boneyard/DefectDirectedChain/), neither of which is compiled or
+in the import closure. All five rows are dead references. The "Irreflexive-Consequence (18 sorries
+across 6 files)" subsection is likewise unreconciled.
+
+(b) "BXCanonical Path (DEAD CODE -- Task 109 Abandoned)" (specs/ROADMAP.md:624) states that
+BXCanonical "has ~17 sorries", is "mathematically false under the current irreflexive semantics",
+and is a "Candidate for archival to Boneyard/."
+
+BXCanonical is the flagship, not dead code. Check C2 baselines four theorems, all of them in that
+namespace: BXCanonical.completeness, .completeness_dense, .completeness_discrete, and
+.Chronicle.countermodel_dense -- three with clean [propext, Classical.choice, Quot.sound] axiom
+sets. FormalSystem/Metalogic/StrongCompleteness.lean imports BXCanonical.CompletenessDedekind
+directly. FormalSystem/Metalogic/BXCanonical/ holds 7 live .lean files at the top level plus the
+Chronicle/ subtree.
+
+=== 2. WHY THIS MATTERS ===
+
+git log -L 881,900:specs/ROADMAP.md shows the Sorry Inventory section last modified 2026-04-20.
+ROADMAP.md as a whole was updated 2026-08-10, so the file is selectively maintained -- the Paper
+Alignment Programme section is current while these two are ~4 months stale. Anyone planning work
+on the completeness path is told by the repository's own roadmap that the module their work rests
+on is abandoned dead code carrying 17 sorries, and that 23 sorries stand between them and a clean
+tree, when the true count is one.
+
+The 111 status-table rows in this file parse cleanly and participate in roadmap-integration.sh
+matching; these prose sections do not, so they are never corrected automatically by /todo or
+/review.
+
+=== 3. DELIVERABLES ===
+
+(a) Rewrite the "Sorry Inventory" section against C3 output: a single live entry
+(countermodel_discrete, Transfer.lean, owned by the Base weak-completeness terminus), with a
+pointer naming scripts/check-module-invariants.sh check C3 as the generator of record so the
+section cannot silently rot again. Delete or clearly mark-as-historical the RootScopedChain and
+Irreflexive-Consequence tables rather than leaving live-looking file:line rows pointing into
+Boneyard/.
+
+(b) Delete or invert the "BXCanonical Path (DEAD CODE -- Task 109 Abandoned)" section. If the
+historical record of the abandonment is worth keeping, retain it under an explicitly historical
+heading that cannot be mistaken for current status, and state the current status alongside it.
+
+(c) Sweep the rest of the file for the same class of defect: any prose section asserting a sorry
+count, a dead-code verdict, or a module status that C2/C3/C4 can contradict. Report what was found
+even where no edit was needed.
+
+=== 4. VERIFICATION ===
+
+- Every file:line and module reference introduced or retained must resolve in the live tree
+  (check C5 covers module-shaped paths in markdown; run it).
+- No claim about sorry counts or axiom sets that is not reproducible from a named
+  check-module-invariants.sh check.
+- Do not touch the Paper Alignment Programme section or the 111-row status tables; they are
+  current and are the roadmap-integration matching surface.
+
+=== 5. NON-GOALS ===
+- Does not close, move, or reclassify any actual sorry.
+- Does not archive BXCanonical or any other module.
+- No .lean edits.
+
+---
 
 ### 451. Consolidate boneyard archives
 - **Effort**: medium
