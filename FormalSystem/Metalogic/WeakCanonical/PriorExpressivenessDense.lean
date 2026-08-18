@@ -182,9 +182,10 @@ def KampFaithfulExpressiveCompleteness {sig : MonadicSignature} [Fintype sig.pre
 
 /-! ## The composition — sorry-free
 
-This is the plan's task 3, discharged in full. Every step of the chartered composition that the
-tree supports is taken here; the only thing standing between this and an unconditional
-`uSExpressivelyCompleteOverDensePrior` is the obligation above. -/
+This is the chartered composition piece — the `uSExpressivelyCompleteOverDensePrior_of_faithful`
+bullet of "What this module lands" above — discharged in full. Every step of the chartered
+composition that the tree supports is taken here; the only thing standing between this and an
+unconditional `uSExpressivelyCompleteOverDensePrior` is the obligation above. -/
 
 /-- **`{U,S}` expressive completeness over dense Prior structures, from the faithful obligation**
 — Reynolds 1992, §5 Theorem 3 (printed p.176), conditional on

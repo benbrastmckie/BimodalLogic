@@ -380,22 +380,29 @@ absence-assertion clear. The compile sub-assertion is confirmed in Phase 7's ful
 
 ---
 
-### Phase 6: Clear C9 — replace the task-number citation with a durable anchor [NOT STARTED]
+### Phase 6: Clear C9 — replace the task-number citation with a durable anchor [COMPLETED]
 
 **Goal**: `scripts/check-module-invariants.sh` C9 PASSes with zero hits, and `lake build` still
 exits 0.
 
 **Tasks**:
-- [ ] Edit `FormalSystem/Metalogic/WeakCanonical/PriorExpressivenessDense.lean:185`. The current
+- [x] Edit `FormalSystem/Metalogic/WeakCanonical/PriorExpressivenessDense.lean:185`. The current
       sentence reads "This is the plan's task 3, discharged in full." The "3" refers to item 3 of a
       numbered list in the **same docstring** (the `**Source status**` region enumerates the four
       pieces of the faithful re-base, item 3 being "the bridge interface and the six trichotomy
       arms") — it is not a task-management reference. Replace with a durable anchor such as: "This
       is item 3 of the composition enumerated above, discharged in full."
-- [ ] Leave the remainder of the sentence intact ("Every step of the chartered composition that the
+      *(deviation: altered — the report's identification of the referent does not hold. That
+      numbered list sits ~50 lines BELOW the citation, not above it, and enumerates the four rungs
+      of the faithful re-base, whereas the flagged sentence heads `## The composition — sorry-free`
+      and introduces `uSExpressivelyCompleteOverDensePrior_of_faithful`. "item 3 ... enumerated
+      above" would therefore have been a wrong anchor. Used a referent-neutral in-file anchor
+      instead: the `uSExpressivelyCompleteOverDensePrior_of_faithful` bullet of "What this module
+      lands", which is the same charter piece and is verifiable in the file.)*
+- [x] Leave the remainder of the sentence intact ("Every step of the chartered composition that the
       tree supports is taken here; the only thing standing between this and an unconditional
       `uSExpressivelyCompleteOverDensePrior` is the obligation above.").
-- [ ] **Implementation warning**: `validate-no-task-references.sh` is a write-time hook that
+- [x] **Implementation warning**: `validate-no-task-references.sh` is a write-time hook that
       **blocks** writes to non-`specs/**` paths matching the task-number pattern — a replacement
       still containing `task 3` will fail at the tool boundary, not merely be flagged by C9. The
       C9 regex is case-insensitive `\b(tasks?[[:space:]]+#?[0-9]+|task-[0-9]+)\b`. Safe substitutes:
