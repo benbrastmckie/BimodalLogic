@@ -77,7 +77,7 @@ next_project_number: 462
 
 ### Literature
 
-460 [PLANNED] — SCOPE 8 acquisition gap identified by task 457's research and re-
+460 [IMPLEMENTING] — SCOPE 8 acquisition gap identified by task 457's research and re-
   └─ 461 [NOT STARTED] — SCOPE 8 acquisition gap identified by task 457's research and re-
 
 ### Strong Completeness
@@ -108,7 +108,7 @@ next_project_number: 462
 ---
 
 ### 460. Acquire a usable copy of Gabbay, Kurucz, Wolter and Zakharyaschev 2003 (Many-Dimensional Modal Logics)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: general
 - **Topic**: literature
 - **Dependencies**: Task 459

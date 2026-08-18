@@ -203,7 +203,7 @@ state before proceeding rather than forcing the plan's numbers.
 
 ---
 
-### Phase 2: Batched full-book OCR with per-batch checkpoints [NOT STARTED]
+### Phase 2: Batched full-book OCR with per-batch checkpoints [IN PROGRESS]
 
 **Goal**: Produce OCR'd text-layer PDFs covering all 742 pages, in resumable batches, without
 ever writing to the Zotero original.
