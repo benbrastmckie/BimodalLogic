@@ -74,7 +74,7 @@ def derivationExchange {fc : FrameClass} {Γ Γ' : Context} {φ : Formula}
 /--
 For set-based MCS, derivable formulas are in the set.
 
-If S is SetMaximalConsistent (fc := FrameClass.Base) and L ⊆ S derives φ, then φ ∈ S.
+If S is SetMaximalConsistent (fc := fc) and L ⊆ S derives φ, then φ ∈ S.
 -/
 lemma SetMaximalConsistent.closed_under_derivation {fc : FrameClass} {S : Set Formula} {φ : Formula}
     (h_mcs : SetMaximalConsistent (fc := fc) S)
@@ -82,7 +82,7 @@ lemma SetMaximalConsistent.closed_under_derivation {fc : FrameClass} {S : Set Fo
     (h_deriv : DerivationTree fc L φ) : φ ∈ S := by
   -- By contradiction: assume φ ∉ S
   by_contra h_not_mem
-  -- By SetMaximalConsistent (fc := FrameClass.Base) definition, insert φ S is inconsistent
+  -- By SetMaximalConsistent (fc := fc) definition, insert φ S is inconsistent
   have h_incons : ¬SetConsistent (fc := fc) (insert φ S) := h_mcs.2 φ h_not_mem
   -- SetConsistent means all finite subsets are consistent
   -- We have L ⊆ S and L ⊢ φ
@@ -152,7 +152,7 @@ lemma SetMaximalConsistent.closed_under_derivation {fc : FrameClass} {S : Set Fo
 /--
 Set-based MCS implication property: modus ponens is reflected in membership.
 
-If (φ → ψ) ∈ S and φ ∈ S for a SetMaximalConsistent (fc := FrameClass.Base) S, then ψ ∈ S.
+If (φ → ψ) ∈ S and φ ∈ S for a SetMaximalConsistent (fc := fc) S, then ψ ∈ S.
 -/
 theorem SetMaximalConsistent.implication_property {fc : FrameClass} {S : Set Formula} {φ ψ :
       Formula}
@@ -177,7 +177,7 @@ theorem SetMaximalConsistent.implication_property {fc : FrameClass} {S : Set For
 /--
 Set-based MCS: negation completeness.
 
-For SetMaximalConsistent (fc := FrameClass.Base) S, either φ ∈ S or (¬φ) ∈ S.
+For SetMaximalConsistent (fc := fc) S, either φ ∈ S or (¬φ) ∈ S.
 -/
 theorem SetMaximalConsistent.negation_complete {fc : FrameClass} {S : Set Formula}
     (h_mcs : SetMaximalConsistent (fc := fc) S) (φ : Formula) :
@@ -239,7 +239,7 @@ theorem SetMaximalConsistent.negation_complete {fc : FrameClass} {S : Set Formul
 /--
 Set-based MCS: temporal 4 axiom property for allFuture.
 
-If Gφ ∈ S for a SetMaximalConsistent (fc := FrameClass.Base) S, then GGφ ∈ S.
+If Gφ ∈ S for a SetMaximalConsistent (fc := fc) S, then GGφ ∈ S.
 
 **Proof Strategy**:
 1. Temporal 4 axiom: Gφ → GGφ
@@ -301,7 +301,7 @@ noncomputable def temporal4Past (φ : Formula) : ⊢ (φ.allPast.imp φ.allPast.
 /--
 Set-based MCS: temporal 4 axiom property for allPast.
 
-If Hφ ∈ S for a SetMaximalConsistent (fc := FrameClass.Base) S, then HHφ ∈ S.
+If Hφ ∈ S for a SetMaximalConsistent (fc := fc) S, then HHφ ∈ S.
 
 **Proof Strategy**:
 1. Use derived temporal4Past: Hφ → HHφ

@@ -60,6 +60,13 @@ def proofFromBot (phi : Formula) : DerivationTree .Base [] (Formula.bot.imp phi)
 
 /--
 Build a proof of phi from an axiom witness.
+
+**Why `FrameClass.Base` is essential here**: the extraction pipeline emits `Base` derivation
+trees throughout, because the decision procedure it certifies decides the base system. The
+`h_fc` guard is the corresponding axiom-admissibility side condition, and the three other
+`ax.minFrameClass <= FrameClass.Base` guards in this module are instances of the same choice.
+Extending the pipeline to another frame class is a change to the decision procedure, not to
+this declaration.
 -/
 def proofFromAxiom (phi : Formula) (ax : Axiom phi) (h_fc : ax.minFrameClass <= FrameClass.Base) :
     DerivationTree .Base [] phi :=

@@ -841,7 +841,13 @@ theorem z1_valid (φ : Formula) : ValidDiscrete
 
 /-- All base TM axioms (excluding density, discreteness, and seriality) are universally valid.
 With strict semantics, density requires DenselyOrdered, discreteness requires SuccOrder,
-and seriality requires NoMaxOrder/NoMinOrder, so they are handled separately. -/
+and seriality requires NoMaxOrder/NoMinOrder, so they are handled separately.
+
+**Why `FrameClass.Base` is essential here**: the conclusion is unconditional validity `⊨ φ`,
+which is exactly the class of axioms admissible at `Base`. Generalising `h_fc` to
+`h.minFrameClass ≤ fc` would be false — a `Dense` or `Discrete` axiom is valid only on frames
+satisfying that class's condition, which is what `axiom_dense_valid` /
+`axiom_discrete_valid` state instead. -/
 theorem axiom_valid {φ : Formula} (h : Axiom φ) (h_fc : h.minFrameClass ≤ FrameClass.Base) : ⊨
     φ := by
   cases h with
@@ -1965,6 +1971,11 @@ derivation of `⊥` from `[]` into `trivialFrame.ValidOn ⊥`, which
 
 `Int` is chosen only because it is the smallest temporal type in the tree supplying
 `[Nontrivial D]`, which `soundness` binds; nothing about the argument depends on the choice.
+
+**Why `FrameClass.Base` is essential here**: consistency is a per-frame-class fact, read off a
+soundness theorem for that class. This is the `Base` instance; `not_derivable_nil_bot_discrete`
+below is the `FrameClass.Discrete` one. There is no `{fc}`-uniform statement, because `Dense`
+and `Dedekind` have no corresponding consistency lemma in the tree yet.
 -/
 theorem not_derivable_nil_bot : ¬ Derivable FrameClass.Base ([] : Context) Formula.bot := by
   rintro ⟨d⟩

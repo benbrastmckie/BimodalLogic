@@ -228,6 +228,13 @@ MCS-based Finite Model Property: If φ is not provable, then there exists
 a closure MCS (a world in a finite model) where φ is false (not a member).
 
 This is the key building block for the full FMP theorem.
+
+**Why `FrameClass.Base` is essential here**: this is a theorem *about the base system* and its
+statement is deliberately preserved verbatim. The machinery beneath it is now
+`fc`-parameterised — `filtered_model_falsifies` is `{fc}`-polymorphic, and `ClosureMCSBundle` /
+`FilteredWorld` carry a trailing `(fc : FrameClass := FrameClass.Base)` — so the `Base` reading
+here is the default instance of a general construction rather than a hard-coded limit. Read the
+general statement off `filtered_model_falsifies` plus `FilteredWorld.finite`.
 -/
 theorem mcs_finite_model_property (phi : Formula)
     (h_not_provable : ¬Derivable FrameClass.Base [] phi) :
@@ -241,6 +248,10 @@ Contrapositive of FMP: If φ is true in all closure MCS for the finite
 filtered model, then φ is provable.
 
 This establishes completeness via finite model reasoning.
+
+**Why `FrameClass.Base` is essential here**: as with `mcs_finite_model_property`, this is a
+preserved statement about the base system, resting on the `Base` default of the now
+`fc`-parameterised `ClosureMCSBundle`.
 -/
 theorem fmp_contrapositive (phi : Formula)
     (h_all_mcs : ∀ (S : ClosureMCSBundle phi), phi ∈ S.carrier) :
@@ -267,6 +278,10 @@ computable function of `φ`, so that only finitely many candidates need be searc
 Each world (an equivalence class of closure MCSs) is determined by which closure formulas it
 satisfies, and there are `2 ^ |closure|` such assignments; `filtered_world_bound` is where that
 argument is discharged, through the injectivity of `filteredCharacteristicSet`.
+
+**Why `FrameClass.Base` is essential here**: it inherits the frame class of
+`mcs_finite_model_property`, whose statement it carries the size bound alongside; like that
+theorem it is a preserved result about the base system.
 -/
 theorem fmp_size_bound (phi : Formula)
     (h_not_provable : ¬Derivable FrameClass.Base [] phi) :

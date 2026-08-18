@@ -613,7 +613,7 @@ in place — re-check rather than assuming.
 
 ---
 
-### Phase 11: Docstring Sweep [NOT STARTED]
+### Phase 11: Docstring Sweep [COMPLETED]
 
 **Goal**: Eliminate the actively-misleading Base prose on already-generic declarations, and ensure
 every surviving pin carries its "why this class is essential" line.

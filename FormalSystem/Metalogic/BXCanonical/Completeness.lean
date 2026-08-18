@@ -187,6 +187,12 @@ terminal sorry. Discharging this branch is a genuine open construction
 (e.g., a Base-to-Discrete MCS transfer or a Henkin-style discrete model), not a
 re-wiring task. The dense and mixed branches are sorryAx-free. For the sorry-free
 frame-class-specific results, see `completeness_dense` and `completeness_discrete`.
+
+**Why `FrameClass.Base` is essential here**: completeness is a per-frame-class fact — it pairs a
+validity notion with the axiom set that captures it. `valid φ` (validity over *all* linear
+temporal frames) is matched by the `Base` axiom set specifically; the dense and discrete
+notions have their own statements (`completeness_dense`, `completeness_discrete`) against
+`ValidDense` / `ValidDiscrete`. There is no `{fc}`-uniform statement to generalise to.
 -/
 theorem completeness (φ : Formula) :
     valid φ → Derivable FrameClass.Base [] φ := by

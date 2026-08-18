@@ -172,6 +172,11 @@ then φ is provable from the empty context.
 
 This is the key completeness theorem connecting semantic validity
 (via MCS membership) to syntactic provability.
+
+**Why `FrameClass.Base` is essential here**: this is a restatement of `FMP.fmp_contrapositive`,
+one of the three FMP results that are theorems *about the base system*; its statement is
+preserved verbatim. `ClosureMCSBundle` and `FilteredWorld` are now `fc`-parameterised with
+`FrameClass.Base` as the default, so the `Base` reading of this statement is unchanged.
 -/
 theorem fmp_completeness (φ : Formula) :
     (∀ (S : FMP.ClosureMCSBundle φ), φ ∈ S.carrier) →
@@ -183,6 +188,11 @@ FMP-based incompleteness witness: If φ is not provable,
 then there exists a finite model (closure MCS) where φ fails.
 
 This is the contrapositive of completeness.
+
+**Why `FrameClass.Base` is essential here**: as with `fmp_completeness`, this restates
+`FMP.mcs_finite_model_property`, a preserved theorem about the base system. The finiteness of
+`FilteredWorld φ` it reports is likewise the `Base` instance of the now-parameterised
+world type.
 -/
 theorem fmp_incompleteness_witness (φ : Formula) :
     ¬Derivable FrameClass.Base [] φ →

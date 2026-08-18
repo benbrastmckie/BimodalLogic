@@ -172,6 +172,10 @@ Under BX, discrete axioms are separate extension points (not in base system).
 /--
 If an axiom is base, then it is linear-compatible.
 Under BX, all axioms are base.
+
+**Why `FrameClass.Base` is essential here**: linear-compatibility means validity over every
+linear temporal frame, which is precisely the `Base` admissibility condition. The hypothesis is
+the definition of the class being characterised, not an incidental pin.
 -/
 theorem axiom_base_implies_linear_compatible {φ : Formula} (ax : Axiom φ)
     (h : ax.minFrameClass ≤ FrameClass.Base) :

@@ -54,6 +54,11 @@ Soundness over a specific temporal domain D.
 
 If `Γ ⊢ φ` (φ is derivable from Γ at FrameClass.Base), then for any model over D,
 if all formulas in Γ are true, then φ is true.
+
+**Why `FrameClass.Base` is essential here**: this is a thin `D`-parameterised wrapper around
+`Metalogic.soundness`, which is a `Base` theorem — the conclusion holds on *every* `TaskFrame D`
+with no order-theoretic side conditions, and that is exactly the class of derivations `Base`
+admits. The wider classes have their own wrappers (`soundness_dense`, `soundness_discrete`).
 -/
 theorem soundness_over (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     [Nontrivial D] (Γ : Context) (φ : Formula) (d : DerivationTree FrameClass.Base Γ φ) :
@@ -70,6 +75,10 @@ Soundness for linear temporal frames.
 
 All base axioms (17 axioms) are sound on any linear temporal frame.
 This is the strongest soundness theorem, applying to the widest class of frames.
+
+**Why `FrameClass.Base` is essential here**: "widest class of frames" is the point — a
+derivation admitted at a wider `fc` may use an axiom that is unsound on a general linear frame,
+so widening the derivation's frame class would falsify the statement.
 -/
 theorem soundness_linear {Γ : Context} {φ : Formula} (d : DerivationTree FrameClass.Base Γ φ)
     (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
@@ -114,6 +123,10 @@ theorem soundness_discrete {Γ : Context} {φ : Formula} (d : DerivationTree Fra
 
 /--
 Base axioms are valid on all linear temporal frames.
+
+**Why `FrameClass.Base` is essential here**: `h_fc : ax.minFrameClass ≤ FrameClass.Base` is the
+admissibility bound that makes "valid on *all* linear temporal frames" true. A `Dense` or
+`Discrete` axiom is not.
 -/
 theorem axiom_base_valid_linear {φ : Formula} (ax : Axiom φ)
     (h_fc : ax.minFrameClass ≤ FrameClass.Base)

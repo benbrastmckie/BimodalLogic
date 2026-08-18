@@ -596,7 +596,13 @@ def Axiom.minFrameClass {φ : Formula} : Axiom φ → FrameClass
   | sep _ => .Dedekind
   | _ => .Base
 
-/-- Base is the minimum frame class: `FrameClass.Base ≤ fc` for all `fc`. -/
+/-- Base is the minimum frame class: `FrameClass.Base ≤ fc` for all `fc`.
+
+**Why `FrameClass.Base` is essential here**: `Base` is the *subject* of this statement, not a
+pin on it — the theorem says precisely that `Base` is the order's bottom element. It is the
+canonical `Base`-to-any-`fc` lift used throughout `Theorems/`: at a `DerivationTree.axiom` site
+the `le` argument is `FrameClass.base_le fc`, and for a whole derivation it is
+`d.lift (FrameClass.base_le fc)` (packaged as `Theorems.Combinators.baseThm`). -/
 theorem FrameClass.base_le (fc : FrameClass) : FrameClass.Base ≤ fc := by
   cases fc <;> trivial
 
