@@ -87,7 +87,7 @@ next_project_number: 456
 
 ### Strong Completeness
 
-454 [RESEARCHED] — RE-ISSUE THE SIX STRONG-COMPLETENESS TASK DESCRIPTIONS: re-anchor
+454 [PLANNED] — RE-ISSUE THE SIX STRONG-COMPLETENESS TASK DESCRIPTIONS: re-anchor
   └─ 421 [NOT STARTED] — Two deliverables on the Base weak terminus, both small.
     └─ 422 [NOT STARTED] — Construct the discrete-case analogue of the existing dense chroni
       └─ 169 [NOT STARTED] — Base (FrameClass.Base / general) WEAK completeness green: make th
@@ -98,7 +98,7 @@ next_project_number: 456
 
 ### Proof System Infrastructure
 
-450 [RESEARCHED] — FRAME-CLASS UNIFORMITY: parameterise the restricted-MCS layer (an
+450 [PLANNING] — FRAME-CLASS UNIFORMITY: parameterise the restricted-MCS layer (an
 
 ### Repo Hygiene
 
@@ -249,11 +249,12 @@ Deliver a survey artifact under this task's reports/ directory containing:
 ---
 
 ### 454. Reissue strong completeness task descriptions
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: meta
 - **Topic**: strong_completeness
 - **Dependencies**: Task 452
 - **Research**: [454_reissue_strong_completeness_task_descriptions/reports/01_strong-completeness-reissue-research.md]
+- **Plan**: [454_reissue_strong_completeness_task_descriptions/plans/01_reissue-task-descriptions.md]
 
 **Description**: RE-ISSUE THE SIX STRONG-COMPLETENESS TASK DESCRIPTIONS: re-anchor every drifted file:line citation
 by symbol name, re-scope the shift-set representation gate against total-history semantics, and
@@ -638,7 +639,7 @@ Because archived files are never compiled, a broken import here is SILENT -- no 
 
 ### 450. Frame class parameterization restricted mcs
 - **Effort**: high
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Topic**: proof-system-infrastructure
 - **Dependencies**: Task 453
