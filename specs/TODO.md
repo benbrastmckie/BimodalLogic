@@ -77,7 +77,7 @@ next_project_number: 462
 
 ### Literature
 
-460 [RESEARCHED] — SCOPE 8 acquisition gap identified by task 457's research and re-
+460 [PLANNED] — SCOPE 8 acquisition gap identified by task 457's research and re-
   └─ 461 [NOT STARTED] — SCOPE 8 acquisition gap identified by task 457's research and re-
 
 ### Strong Completeness
@@ -108,11 +108,12 @@ next_project_number: 462
 ---
 
 ### 460. Acquire a usable copy of Gabbay, Kurucz, Wolter and Zakharyaschev 2003 (Many-Dimensional Modal Logics)
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: general
 - **Topic**: literature
 - **Dependencies**: Task 459
 - **Research**: [460_acquire_gabbay_2003_many_dimensional_modal_logics/reports/01_acquire-gabbay-2003-copy.md]
+- **Plan**: [460_acquire_gabbay_2003_many_dimensional_modal_logics/plans/01_ocr-and-ingest-gabbay-2003.md]
 
 **Description**: SCOPE 8 acquisition gap identified by task 457's research and re-confirmed at implementation time: the source is present in the user's Zotero library under item key Kurucz2003, but the stored PDF has a broken/custom font encoding with no usable ToUnicode CMap and is not text-extractable by any available tool (pdftotext yields ~69.5% printable characters, scrambled letters). This is an acquisition/OCR problem, not an index-schema defect -- do NOT attempt to fix by re-running the standard ingest pipeline with LITERATURE_CONVERTER=pymupdf; that path previously produced 2260 chunks of control-character mojibake that passed the quality gate and had to be manually purged from the corpus and FTS index (see task 457's research report for this precedent). Needed: either a cleaner PDF copy (different scan/source) or an OCR pass (e.g. ocrmypdf) that produces usable, non-garbled text, followed by a normal /literature ingest.
 
