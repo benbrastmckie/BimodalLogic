@@ -186,20 +186,20 @@ live number silently.
 
 ---
 
-### Phase 2: SCOPE 1 + SCOPE 2 — diamondsareforever path/token fix and three stub token counts [NOT STARTED]
+### Phase 2: SCOPE 1 + SCOPE 2 — diamondsareforever path/token fix and three stub token counts [COMPLETED]
 
 **Goal**: Repair the four entries with a single unambiguous target value each: point
 `diamondsareforever`'s `path` at its directory (matching the 3-sibling convention) and correct
 its token_count, and replace the three stub-extract token_counts with values recomputed from disk.
 
 **Tasks**:
-- [ ] Back up: `cp ~/Projects/Literature/index.json ~/Projects/Literature/index.json.bak-$(date +%Y%m%d-%H%M%S)-pre-scope12`
-- [ ] Re-confirm from disk that `sources/diamondsareforever/` contains only `chunk_NNNN.md` files and no canonical whole-document `.md` (if a canonical file has appeared since research, use it as the token_count source instead and record the deviation)
-- [ ] Set `diamondsareforever.path` to `"sources/diamondsareforever/"`, matching the trailing-slash form used by the sibling directory-path entries
-- [ ] Set `diamondsareforever.token_count` to the `chars/4+20` value over the concatenated chunk text (research computed 21,755; recompute fresh — do not paste the figure)
-- [ ] Recompute and write `token_count` for `fine_2012_guide-to-ground`, `vardi_wolper_1986_automata_verification`, and `fine_2012_counterfactuals-without-possible-worlds` from the canonical `.md` in each directory, excluding `chunk_*.md` re-splits per `chunk-file-conventions.md`
-- [ ] Run the post-mutation gate (below)
-- [ ] Commit the `specs/` side of this batch (worklists, notes); the global index lives outside this repo and is protected by its backup, not by a commit
+- [x] Back up: `cp ~/Projects/Literature/index.json ~/Projects/Literature/index.json.bak-$(date +%Y%m%d-%H%M%S)-pre-scope12` *(completed)*
+- [x] Re-confirm from disk that `sources/diamondsareforever/` contains only `chunk_NNNN.md` files and no canonical whole-document `.md` (if a canonical file has appeared since research, use it as the token_count source instead and record the deviation) *(completed)*
+- [x] Set `diamondsareforever.path` to `"sources/diamondsareforever/"`, matching the trailing-slash form used by the sibling directory-path entries *(completed)*
+- [x] Set `diamondsareforever.token_count` to the `chars/4+20` value over the concatenated chunk text (research computed 21,755; recompute fresh — do not paste the figure) *(completed)*
+- [x] Recompute and write `token_count` for `fine_2012_guide-to-ground`, `vardi_wolper_1986_automata_verification`, and `fine_2012_counterfactuals-without-possible-worlds` from the canonical `.md` in each directory, excluding `chunk_*.md` re-splits per `chunk-file-conventions.md` *(completed)*
+- [x] Run the post-mutation gate (below) *(completed)*
+- [x] Commit the `specs/` side of this batch (worklists, notes); the global index lives outside this repo and is protected by its backup, not by a commit *(completed)*
 
 **Timing**: 1 hour
 
