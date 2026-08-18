@@ -1,7 +1,7 @@
 # Implementation Plan: Discharge the `UniverseClosed` residual
 
 - **Task**: 432 - Discharge `UniverseClosed fc U` on the totality terminus `buildTableauAt_isSome_of_budget`
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 15 hours
 - **Dependencies**: None (parent task 428's terminus is landed and is read-only input here)
 - **Research Inputs**: `specs/432_discharge_universeclosed_residual/reports/01_spawn-inherited-research.md`

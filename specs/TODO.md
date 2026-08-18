@@ -12,16 +12,15 @@ next_project_number: 462
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
 | 1 | 125,127,128,193,231,257,298,413,421,423,424,434,451,455,460 | -- | completeness, decidability, frame-extensions, ... |
-| 2 | 178,219,282,296,422,425,432,461 | 193,231,298,421,423,434,460 | decidability, formula-refactor, dataset-enhancement, ... |
-| 3 | 169,433 | 422,432 | decidability, strong_completeness |
-| 4 | 362,428 | 169,424,433 | decidability, strong_completeness |
-| 5 | 429 | 428 | decidability |
-| 6 | 410 | 429 | decidability |
-| 7 | 411 | 410 | decidability |
-| 8 | 430 | 411 | decidability |
-| 9 | 412 | 430 | decidability |
-| 10 | 426 | 412 | completeness |
-| 11 | 95,177 | 193,426 | completeness, formula-refactor |
+| 2 | 178,219,282,296,422,425,433,461 | 193,231,298,421,423,434,460 | decidability, formula-refactor, dataset-enhancement, ... |
+| 3 | 169,428 | 422,433 | decidability, strong_completeness |
+| 4 | 362,429 | 169,424,428 | decidability, strong_completeness |
+| 5 | 410 | 429 | decidability |
+| 6 | 411 | 410 | decidability |
+| 7 | 430 | 411 | decidability |
+| 8 | 412 | 430 | decidability |
+| 9 | 426 | 412 | completeness |
+| 10 | 95,177 | 193,426 | completeness, formula-refactor |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -35,14 +34,13 @@ next_project_number: 462
 ### Decidability
 
 434 [IMPLEMENTING] — Discharge `MintPaysForTime fc U Tmax`, defined at FormalSystem/Me
-  └─ 432 [PARTIAL] — Discharge `UniverseClosed fc U`, defined at FormalSystem/Metalogi
-    └─ 433 [RESEARCHED] — Discharge `PostBlockingSettles fc`, defined at FormalSystem/Metal
-      └─ 428 [BLOCKED] — Engine totality at a quantified branch budget. Owns obstruction O
-        └─ 429 [NOT STARTED] — Repair the truth-lemma side conditions. Owns obstructions O2 and 
-          └─ 410 [PLANNED] — Track B part 1 for the TM tableau decidability program (parent: t
-            └─ 411 [NOT STARTED] — Track B part 2 for the TM tableau decidability program (parent: t
-              └─ 430 [NOT STARTED] — The semantic lift and the Track A assembly. Owns obstruction O4 o
-                └─ 412 [NOT STARTED] — Track B finish for the TM tableau decidability program (parent: t
+  └─ 433 [RESEARCHED] — Discharge `PostBlockingSettles fc`, defined at FormalSystem/Metal
+    └─ 428 [BLOCKED] — Engine totality at a quantified branch budget. Owns obstruction O
+      └─ 429 [NOT STARTED] — Repair the truth-lemma side conditions. Owns obstructions O2 and 
+        └─ 410 [PLANNED] — Track B part 1 for the TM tableau decidability program (parent: t
+          └─ 411 [NOT STARTED] — Track B part 2 for the TM tableau decidability program (parent: t
+            └─ 430 [NOT STARTED] — The semantic lift and the Track A assembly. Owns obstruction O4 o
+              └─ 412 [NOT STARTED] — Track B finish for the TM tableau decidability program (parent: t
 
 ### Formula Refactor
 
@@ -426,7 +424,7 @@ Because archived files are never compiled, a broken import here is SILENT -- no 
 
 ### 432. Discharge universeclosed residual
 - **Effort**: 4-6 hours
-- **Status**: [PARTIAL]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 434
@@ -435,6 +433,7 @@ Because archived files are never compiled, a broken import here is SILENT -- no 
   - [432_discharge_universeclosed_residual/reports/01_spawn-inherited-research.md]
 - **Plan**: [432_discharge_universeclosed_residual/plans/01_universeclosed-clause2-verdict-instantiation.md]
 - **Summary**: [432_discharge_universeclosed_residual/summaries/01_universeclosed-clause2-verdict-instantiation-summary.md]
+- **Handoff**: [432_discharge_universeclosed_residual/handoffs/phase-7-handoff-20260818.md]
 
 **Description**: Discharge `UniverseClosed fc U`, defined at FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean:3901, one of the four residual hypotheses on the totality terminus `buildTableauAt_isSome_of_budget` (MintBound.lean:4416). The definition has two conjuncts: (1) closure of `U` under the engine's unblocked-expansion step `expandOnceUnblocked` -- a familiar shape already required by the unsplit totality theorem's `hU` obligation -- and (2) closure of `U` under an ordered split's identification arm `Branch.identifyTime`, which relabels the branch; this second clause is genuinely new. For `U = signedUniverse C L` (Fuel.lean:382, DO NOT edit Fuel.lean -- it is md5-pinned frozen), clause (2) reduces to a statement about the label set `L` being closed under time-merging. Done means: a theorem proving `UniverseClosed fc U` for a concrete, useful instantiation `U = signedUniverse C L` under an explicit closure condition on `L` (state and prove that condition too, if it is not already available), landed sorry-free and axiom-free in MintBound.lean, with `lake build` green. Do not re-attempt anything in the do-not-re-attempt register at MintBound.lean:4455-4510 (eight entries; read before starting), and in particular do not attempt route (a), entry 6 (a lower bound on `(b.identifyTime t2 t1).toFinset.card` from below -- dead by definition).
 

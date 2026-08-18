@@ -836,7 +836,7 @@
     {
       "project_number": 432,
       "project_name": "discharge_universeclosed_residual",
-      "status": "partial",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Discharge `UniverseClosed fc U`, defined at FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean:3901, one of the four residual hypotheses on the totality terminus `buildTableauAt_isSome_of_budget` (MintBound.lean:4416). The definition has two conjuncts: (1) closure of `U` under the engine's unblocked-expansion step `expandOnceUnblocked` -- a familiar shape already required by the unsplit totality theorem's `hU` obligation -- and (2) closure of `U` under an ordered split's identification arm `Branch.identifyTime`, which relabels the branch; this second clause is genuinely new. For `U = signedUniverse C L` (Fuel.lean:382, DO NOT edit Fuel.lean -- it is md5-pinned frozen), clause (2) reduces to a statement about the label set `L` being closed under time-merging. Done means: a theorem proving `UniverseClosed fc U` for a concrete, useful instantiation `U = signedUniverse C L` under an explicit closure condition on `L` (state and prove that condition too, if it is not already available), landed sorry-free and axiom-free in MintBound.lean, with `lake build` green. Do not re-attempt anything in the do-not-re-attempt register at MintBound.lean:4455-4510 (eight entries; read before starting), and in particular do not attempt route (a), entry 6 (a lower bound on `(b.identifyTime t2 t1).toFinset.card` from below -- dead by definition).",
       "effort": "4-6 hours",
@@ -849,7 +849,7 @@
         "FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean"
       ],
       "created": "2026-08-06T16:01:52Z",
-      "last_updated": "2026-08-18T15:52:17Z",
+      "last_updated": "2026-08-18T22:36:50Z",
       "artifacts": [
         {
           "type": "research",
@@ -862,17 +862,22 @@
           "summary": "9 phases; two verdict gates on UniverseClosed clauses"
         },
         {
-          "path": "specs/432_discharge_universeclosed_residual/summaries/01_universeclosed-clause2-verdict-instantiation-summary.md",
-          "type": "summary",
-          "summary": "8/9 phases; both verdict gates refutable; Phase 7 blocked on time analogue"
-        },
-        {
           "path": "specs/432_discharge_universeclosed_residual/reports/01_spawn-inherited-research.md",
           "type": "report",
           "summary": "spawn inherited research (backfilled by --sync)"
+        },
+        {
+          "path": "specs/432_discharge_universeclosed_residual/summaries/01_universeclosed-clause2-verdict-instantiation-summary.md",
+          "type": "summary",
+          "summary": "Phase 7 closed: clause 1's label dimension proved from a branch-side headroom rectangle, and the residual's survival proved rather than pending."
+        },
+        {
+          "path": "specs/432_discharge_universeclosed_residual/handoffs/phase-7-handoff-20260818.md",
+          "type": "handoff",
+          "summary": "Phase 7 resolution record for dispatch 3."
         }
       ],
-      "session_id": "sess_1787068337_2c7029"
+      "session_id": "sess_1787081671_9332d7_432"
     },
     {
       "project_number": 433,
