@@ -11486,6 +11486,283 @@ theorem postBlockingSettles_fuel_gap_false (fc : FormalSystem.ProofSystem.FrameC
   rw [h freshWorldBranch TimeOrdering.empty 1 freshWorldBranch TimeOrdering.empty hsb] at hfind
   exact absurd hfind (by simp)
 
+
+/-! ### The repaired predicate
+
+Phase 2's witness locates the missing content at the **branch**, not at the fuel, so the repair
+relocates exactly two hypotheses and changes the conclusion not at all. Both are stated about the
+pass's **output** branch, which is where the settlement test is run.
+-/
+
+/-- **The pass ran to label-free saturation** rather than being truncated by fuel.
+
+Stated as `(expandOnceNoFresh b ord fc).1 = .saturated` rather than as the pair equation
+`expandOnceNoFresh b ord fc = (.saturated, ord)` the plan pre-declared. The narrowing is forced by
+the frozen definition and is a *weakening* of the hypothesis, hence a strengthening of every
+statement that assumes it: `expandOnceNoFresh`'s `.notApplicable` arm returns `(.saturated, newOrd)`
+with the **picked** ordering rather than the incoming one, so the pair equation is strictly stronger
+than the fact the settlement argument consumes, and `saturateBlocked`'s own `(.saturated, _)` arm
+discards the second component too. -/
+def LabelFreeSaturatedExit (b : Branch) (ord : TimeOrdering)
+    (fc : FormalSystem.ProofSystem.FrameClass) : Prop :=
+  (expandOnceNoFresh b ord fc).1 = ExpansionResult.saturated
+
+/-- **No label-minting work is left sitting at an unblocked time.**
+
+This is the disagreement Phase 2 exhibits, stated as a condition on the branch: every formula at an
+unblocked time whose rule the engine finds applicable is one `expandOnceNoFresh` would have been
+willing to fire — it neither mints a fresh label nor lengthens the ordering constraints. The witness
+`freshWorldBranch` fails it at its one formula, which is exactly why it refutes the residual. -/
+def NoUnblockedFreshWork (b : Branch) (ord : TimeOrdering)
+    (fc : FormalSystem.ProofSystem.FrameClass) : Prop :=
+  ∀ sf ∈ b, ¬ (blockedTimes b ord fc (armTracker b)).contains sf.label.time →
+    ∀ rule result newOrd, findApplicableRule sf b ord fc = some (rule, result, newOrd) →
+      ruleMintsFreshLabel rule = false ∧
+        newOrd.constraints.length ≤ ord.constraints.length
+
+/-- **The repaired residual**: `PostBlockingSettles`'s statement with the two conditions above added
+as antecedents on the **output** branch. The conclusion is carried over verbatim — no test is
+weakened, no finder is replaced, and the frame class stays universally quantified. -/
+def PostBlockingSettlesAt (fc : FormalSystem.ProofSystem.FrameClass) : Prop :=
+  ∀ (ob : Branch) (oOrd : TimeOrdering) (fuel : Nat) (satBr : Branch) (satOrd : TimeOrdering),
+    saturateBlocked ob fuel oOrd fc = some (.inr (satBr, satOrd)) →
+    LabelFreeSaturatedExit satBr satOrd fc →
+    NoUnblockedFreshWork satBr satOrd fc →
+    findUnexpandedUnblockedWith satBr satOrd fc
+      (blockedTimes satBr satOrd fc (armTracker satBr)) = none
+
+/-- **The direction, fixed.** The hypothesis list is longer, so `PostBlockingSettlesAt` is the
+**weaker** predicate, so every theorem restated against it is a **strengthening** — the same
+direction `universeClosedAt_of_universeClosed` and `mintPaysForTimeFixed_of_mintPaysForTimeStable`
+record for their own repairs, and the reason register entry 7 exists. -/
+theorem postBlockingSettlesAt_of_postBlockingSettles
+    {fc : FormalSystem.ProofSystem.FrameClass} (h : PostBlockingSettles fc) :
+    PostBlockingSettlesAt fc :=
+  fun ob oOrd fuel satBr satOrd hsb _ _ => h ob oOrd fuel satBr satOrd hsb
+
+/-! ### The gate: can the consuming sites supply the two antecedents?
+
+The repair is admissible only if `armSettlement_of_postBlockingSettles`'s and
+`buildTableauAt_isSome_of_settles`'s proofs can supply the relocated hypotheses where they consume
+the residual. Both sites reach the residual holding exactly one fact about the output pair — the
+equation `saturateBlocked ob fuel oOrd fc = some (.inr (satBr, satOrd))` — so the question is
+whether `LabelFreeSaturatedExit satBr satOrd fc` follows from that equation.
+
+It does not, and the obstruction is decided rather than described.
+-/
+
+/-- **`.impNeg` fires on the one-formula branch under the label-free filter too.** Its rule mints no
+label and adds no ordering constraint, so `expandOnceNoFresh`'s `pick` accepts it and the verdict is
+`.extended`, not `.saturated`. -/
+theorem expandOnceNoFresh_multBranch_one (fc : FormalSystem.ProofSystem.FrameClass) :
+    expandOnceNoFresh (multBranch 1) TimeOrdering.empty fc
+      = (ExpansionResult.extended (multEmitted ++ multBranch 1), TimeOrdering.empty) := by
+  have hrule := findApplicableRule_multWitness (multBranch 1) (pos_not_mem_multBranch 1) fc
+  have hb : multBranch 1 = multWitness :: ([] : Branch) := by
+    simp [multBranch, List.replicate]
+  have hmint : ruleMintsFreshLabel TableauRule.impNeg = false := rfl
+  conv_lhs => rw [expandOnceNoFresh]
+  rw [hb, List.findSome?_cons]
+  rw [← hb, hrule]
+  simp only [hmint, if_false, TimeOrdering.empty, gt_iff_lt, lt_self_iff_false, if_false, hb]
+  simp
+
+/-- **The obstruction, decided.** `saturateBlocked`'s `.inr` exit does **not** carry
+`LabelFreeSaturatedExit` on its output: at `fuel = 0` the pass hands back its input untested, and
+that input can have label-free work outstanding. So the relocated hypothesis is not derivable from
+what either consuming site holds, and it is a genuine residual rather than a side condition a bridge
+proof could discharge.
+
+Stated at every frame class, on the landed `multBranch 1` vehicle. -/
+theorem labelFreeSaturatedExit_not_of_saturateBlocked_inr
+    (fc : FormalSystem.ProofSystem.FrameClass) :
+    saturateBlocked (multBranch 1) 0 TimeOrdering.empty fc
+        = some (.inr (multBranch 1, TimeOrdering.empty)) ∧
+      ¬ LabelFreeSaturatedExit (multBranch 1) TimeOrdering.empty fc := by
+  refine ⟨saturateBlocked_fuel_zero _ _ _, ?_⟩
+  intro h
+  rw [LabelFreeSaturatedExit, expandOnceNoFresh_multBranch_one fc] at h
+  exact absurd h (by simp)
+
+
+/-! ### The settlement lemma
+
+The mathematical content of the repair: the two relocated antecedents really do force the
+conclusion. Everything below is proved from the frozen files' **public** interface — `saturateBlocked`,
+`expandOnceNoFresh`, `findApplicableRule`, `isExpanded`, `findUnexpandedUnblockedWith`,
+`blockedTimes` and `ruleMintsFreshLabel` are all public `def`s, and `private` blocks name resolution
+rather than unfolding (register entry 9's observation, used here in the direction where it helps).
+-/
+
+/-- **`findApplicableRule` never reports `.notApplicable`.** Its own body maps that constructor to
+`none` before the `some` is built, so a reported triple always carries a result the engine can act
+on. Needed because `expandOnceNoFresh` has a *second* route to `.saturated` — its `.notApplicable`
+arm — and the inversion below has to rule that route out rather than assume it dead. -/
+theorem findApplicableRule_result_ne_notApplicable
+    {sf : SignedFormula} {b : Branch} {ord : TimeOrdering}
+    {fc : FormalSystem.ProofSystem.FrameClass}
+    {rule : TableauRule} {result : RuleResult} {newOrd : TimeOrdering}
+    (h : findApplicableRule sf b ord fc = some (rule, result, newOrd)) :
+    result ≠ RuleResult.notApplicable := by
+  rw [findApplicableRule, List.findSome?_eq_some_iff] at h
+  obtain ⟨_, r, _, _, hr, _⟩ := h
+  intro hna
+  subst hna
+  repeat' split at hr
+  all_goals simp_all
+
+/-- **The `.saturated` verdict inverts to "the label-free filter rejected everything".**
+
+`expandOnceNoFresh` reports `.saturated` in two ways: its `pick` found nothing, or the pick's result
+was `.notApplicable`. The second is unreachable
+(`findApplicableRule_result_ne_notApplicable`), so `.saturated` means exactly that every formula on
+the branch was either not applicable at all, or applicable only through a rule the label-free filter
+rejects. -/
+theorem expandOnceNoFresh_saturated_imp
+    {b : Branch} {ord : TimeOrdering} {fc : FormalSystem.ProofSystem.FrameClass}
+    (hsat : (expandOnceNoFresh b ord fc).1 = ExpansionResult.saturated)
+    {sf : SignedFormula} (hsf : sf ∈ b)
+    {rule : TableauRule} {result : RuleResult} {newOrd : TimeOrdering}
+    (hr : findApplicableRule sf b ord fc = some (rule, result, newOrd)) :
+    ruleMintsFreshLabel rule = true ∨
+      newOrd.constraints.length > ord.constraints.length := by
+  by_contra hcon
+  rw [not_or] at hcon
+  obtain ⟨hmint', hlen'⟩ := hcon
+  have hmint : ruleMintsFreshLabel rule = false := by simpa using hmint'
+  have hlen : newOrd.constraints.length ≤ ord.constraints.length := Nat.not_lt.mp hlen'
+  rw [expandOnceNoFresh] at hsat
+  split at hsat
+  · rename_i hp
+    rw [List.findSome?_eq_none_iff] at hp
+    have hx := hp sf hsf
+    rw [hr] at hx
+    simp only [hmint, Bool.false_eq_true, if_false, Nat.not_lt.mpr hlen, if_false] at hx
+    exact absurd hx (by simp)
+  · rename_i res nO hp
+    have hne : res ≠ RuleResult.notApplicable := by
+      rw [List.findSome?_eq_some_iff] at hp
+      obtain ⟨_, x, _, _, hx, _⟩ := hp
+      cases hfa : findApplicableRule x b ord fc with
+      | none => rw [hfa] at hx; simp at hx
+      | some tr =>
+          obtain ⟨r', res', nO'⟩ := tr
+          rw [hfa] at hx
+          simp only at hx
+          split at hx
+          · simp at hx
+          · split at hx
+            · simp at hx
+            · simp only [Option.some.injEq, Prod.mk.injEq] at hx
+              obtain ⟨rfl, _⟩ := hx
+              exact findApplicableRule_result_ne_notApplicable hfa
+    cases res <;> simp_all
+
+/-- **The finder closes when every unblocked formula is expanded.** Pure `List.find?` reasoning. -/
+theorem findUnexpandedUnblockedWith_eq_none_of_isExpanded
+    {b : Branch} {ord : TimeOrdering} {fc : FormalSystem.ProofSystem.FrameClass}
+    {blocked : List TimeIndex}
+    (h : ∀ sf ∈ b, ¬ blocked.contains sf.label.time → isExpanded sf b ord fc = true) :
+    findUnexpandedUnblockedWith b ord fc blocked = none := by
+  rw [findUnexpandedUnblockedWith, List.find?_eq_none]
+  intro x hx hp
+  simp only [Bool.and_eq_true, Bool.not_eq_true'] at hp
+  exact absurd (h x hx (by simp only [hp.1, Bool.false_eq_true, not_false_eq_true]))
+    (by simp [hp.2])
+
+/-- **The core lemma.** `.saturated` plus no unblocked fresh work **is** settlement.
+
+If `expandOnceNoFresh` reports `.saturated` then every formula on the branch is either not
+applicable at all or applicable only through a label-minting or constraint-lengthening rule
+(`expandOnceNoFresh_saturated_imp`). `NoUnblockedFreshWork` rules out the second and third
+possibilities at every unblocked time. So every unblocked formula has `findApplicableRule = none`,
+i.e. is `isExpanded`, and the blocking-aware finder closes.
+
+Each hypothesis pays for exactly one of the two disagreements Phase 2 exhibits:
+`LabelFreeSaturatedExit` pays for the fuel-truncation gap (`saturateBlocked` may hand a branch back
+untested), and `NoUnblockedFreshWork` pays for the label-minting gap (`expandOnceNoFresh` skips what
+`findUnexpandedUnblockedWith` counts). -/
+theorem postBlockingSettlesAt_settlement
+    {b : Branch} {ord : TimeOrdering} {fc : FormalSystem.ProofSystem.FrameClass}
+    (hlf : LabelFreeSaturatedExit b ord fc) (hnf : NoUnblockedFreshWork b ord fc) :
+    findUnexpandedUnblockedWith b ord fc (blockedTimes b ord fc (armTracker b)) = none := by
+  refine findUnexpandedUnblockedWith_eq_none_of_isExpanded ?_
+  intro sf hsf hub
+  rw [isExpanded, Option.isNone_iff_eq_none]
+  by_contra hne
+  obtain ⟨tr, htr⟩ := Option.ne_none_iff_exists'.mp hne
+  obtain ⟨rule, result, newOrd⟩ := tr
+  obtain ⟨hm, hl⟩ := hnf sf hsf hub rule result newOrd htr
+  rcases expandOnceNoFresh_saturated_imp hlf hsf htr with h | h
+  · rw [hm] at h; exact absurd h (by simp)
+  · exact absurd hl (Nat.not_le.mpr h)
+
+/-- **The repaired residual is not a residual at all: it is a theorem.**
+
+`PostBlockingSettlesAt fc` holds outright, for every frame class, with no hypothesis and no witness
+class. This is the honest resolution of `PostBlockingSettles`'s open question: the settlement test is
+decided by the **branch** — whether the label-free pass ran to completion on it, and whether any
+label-minting work is left at an unblocked time — and not by the fuel. Neither fact follows from
+`saturateBlocked`'s exit equation, which is why the literal predicate is false and why this one is
+true. -/
+theorem postBlockingSettlesAt_holds (fc : FormalSystem.ProofSystem.FrameClass) :
+    PostBlockingSettlesAt fc :=
+  fun _ _ _ _ _ _ hlf hnf => postBlockingSettlesAt_settlement hlf hnf
+
+
+/-! ### The gate's verdict, decided
+
+The two bridges are the anti-weakening gate: the repair is admissible only if
+`armSettlement_of_postBlockingSettles` and `buildTableauAt_isSome_of_settles` can supply the
+relocated hypotheses where they consume the residual. They cannot, and the failure is now decidable
+rather than merely observed.
+
+Both sites hold exactly one fact about the output pair — the exit equation — and
+`labelFreeSaturatedExit_not_of_saturateBlocked_inr` shows that equation does not carry
+`LabelFreeSaturatedExit`. The remaining question is whether a bridge could carry the two antecedents
+as an *extra hypothesis* instead. It can, syntactically, and the hypothesis it would carry is
+`PostBlockingExitSettled` below — which is **refuted**. So the only bridge shape that typechecks is a
+weakening dressed as a repair, and the gate rejects it. That is the finding, stated as a theorem
+rather than as a judgement call.
+-/
+
+/-- **The hypothesis a bridge at the repaired predicate would have to carry**: that
+`saturateBlocked`'s open exit always lands on a branch satisfying both relocated antecedents. -/
+def PostBlockingExitSettled (fc : FormalSystem.ProofSystem.FrameClass) : Prop :=
+  ∀ (ob : Branch) (oOrd : TimeOrdering) (fuel : Nat) (satBr : Branch) (satOrd : TimeOrdering),
+    saturateBlocked ob fuel oOrd fc = some (.inr (satBr, satOrd)) →
+    LabelFreeSaturatedExit satBr satOrd fc ∧ NoUnblockedFreshWork satBr satOrd fc
+
+/-- Supplying the antecedents at every exit recovers the literal residual, through the settlement
+lemma. This is the implication that makes the refutation below possible. -/
+theorem postBlockingSettles_of_postBlockingExitSettled
+    {fc : FormalSystem.ProofSystem.FrameClass} (h : PostBlockingExitSettled fc) :
+    PostBlockingSettles fc := fun ob oOrd fuel satBr satOrd hsb =>
+  postBlockingSettlesAt_settlement (h ob oOrd fuel satBr satOrd hsb).1
+    (h ob oOrd fuel satBr satOrd hsb).2
+
+/-- **Gate verdict: FALSE, and provably so.** The bridge hypothesis is refuted at every frame class,
+because it implies the literal residual that `postBlockingSettles_fuel_zero_false` refutes.
+
+So the pre-declared repair is not admissible: relocating the two conditions to the output branch
+leaves the terminus needing them at a site that cannot produce them, and the one way to hand them to
+it carries an antecedent no caller can discharge — the `mintPaysForTime_empty` /
+`universeClosed_identify_empty` failure mode in its sharpest form, caught before anything was
+restated against it.
+
+The repair is not thereby worthless: `postBlockingSettlesAt_holds` says the relocated statement is
+**true outright**, which is what identifies where the real residual lives. It is not a settlement
+question at all. It is the conjunction of a *fuel-adequacy* fact — that the pass ran to label-free
+saturation rather than being truncated — and a *label-minting* fact about the branch the run reaches,
+and neither is available from `saturateBlocked`'s exit equation because both are false at the
+`fuel = 0` exit. Any admissible repair must therefore restrict the residual's quantification from
+"every `(ob, oOrd, fuel)`" to the pair the terminus's own run produces; that is named here and
+deliberately left unattempted. -/
+theorem postBlockingExitSettled_false (fc : FormalSystem.ProofSystem.FrameClass) :
+    ¬ PostBlockingExitSettled fc :=
+  fun h => postBlockingSettles_fuel_zero_false fc
+    (postBlockingSettles_of_postBlockingExitSettled h)
+
 end PostBlockingSettlesRefutation
 
 /-! ## C9. The do-not-re-attempt register

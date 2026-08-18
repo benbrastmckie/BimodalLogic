@@ -313,7 +313,7 @@ and closes Phase 3 the same way. Exactly one of them executes.
   that arm precedes every guard. `saturateBlocked_eq_self_of_noFresh_saturated`'s proof is two
   cases and no induction, so the guards never have to be folded in.
 
-### Phase 3: The repaired predicate and its direction-lemma gate [NOT STARTED]
+### Phase 3: The repaired predicate and its direction-lemma gate [COMPLETED WITH EXCLUSIONS]
 
 - **Goal:** Land the **minimal** repaired predicate and prove, machine-checked, that it is a
   repair and not a weakening — i.e. that it still discharges **both** settlement points.
@@ -323,6 +323,12 @@ and closes Phase 3 the same way. Exactly one of them executes.
   hypotheses and changes the conclusion **not at all**:
   - `LabelFreeSaturatedExit satBr satOrd fc` := `expandOnceNoFresh satBr satOrd fc = (.saturated, satOrd)`
     — the pass ran to label-free saturation rather than being truncated by fuel.
+    *(deviation: altered — landed as `(expandOnceNoFresh satBr satOrd fc).1 = .saturated`, not the
+    pair equation. `expandOnceNoFresh`'s `.notApplicable` arm returns `(.saturated, newOrd)` with the
+    **picked** ordering, so the pair equation is strictly stronger than what the settlement argument
+    consumes and than what `saturateBlocked`'s own `(.saturated, _)` arm reads. Phase 4's task list
+    pre-sanctions exactly this narrowing. It weakens the hypothesis, hence strengthens every
+    statement assuming it, so it cannot rescue a gate verdict.)*
   - `NoUnblockedFreshWork satBr satOrd fc` := every `sf ∈ satBr` at a time outside
     `blockedTimes satBr satOrd fc (armTracker satBr)` whose `findApplicableRule` is `some (rule, _, newOrd)`
     satisfies `¬ ruleMintsFreshLabel rule ∧ newOrd.constraints.length ≤ satOrd.constraints.length`
@@ -346,21 +352,21 @@ and closes Phase 3 the same way. Exactly one of them executes.
     follow-on.
 
 - **Tasks:**
-  - [ ] Read the two consuming sites in full before defining anything:
+  - [x] Read the two consuming sites in full before defining anything:
         `armSettlement_of_postBlockingSettles` (`MintBound.lean:5178-5194`) and
         `buildTableauAt_isSome_of_settles` (`MintBound.lean:5196` onward). The repaired predicate
         is admissible only if the added antecedents are available where those proofs consume it.
-  - [ ] Define `LabelFreeSaturatedExit`, `NoUnblockedFreshWork` and `PostBlockingSettlesAt`,
+  - [x] Define `LabelFreeSaturatedExit`, `NoUnblockedFreshWork` and `PostBlockingSettlesAt`,
         each with a docstring saying which of Phase 2's two disagreements it closes.
-  - [ ] Prove the **direction lemma** `postBlockingSettlesAt_of_postBlockingSettles :
+  - [x] Prove the **direction lemma** `postBlockingSettlesAt_of_postBlockingSettles :
         PostBlockingSettles fc → PostBlockingSettlesAt fc`. Direction matters and must be stated
         in the docstring in the register's own idiom: the hypothesis list is longer, so the
         predicate is **weaker**, so every theorem restated against it is a **strengthening**.
         Follow `mintPaysForTimeFixed_of_mintPaysForTimeStable` (`MintBound.lean` :10461 region)
         and `universeClosedAt_of_universeClosed` as the pattern.
-  - [ ] Prove bridge (i): `armSettlement_of_postBlockingSettlesAt`.
-  - [ ] Prove bridge (ii): `buildTableauAt_isSome_of_settlesAt`.
-  - [ ] Add a "no-leak confirmation" note: state whether the two added antecedents introduce any
+  - [ ] Prove bridge (i): `armSettlement_of_postBlockingSettlesAt`. *(deviation: skipped — gate returned FALSE; see the verdict record below. Not landed.)*
+  - [ ] Prove bridge (ii): `buildTableauAt_isSome_of_settlesAt`. *(deviation: skipped — gate returned FALSE; see the verdict record below. Not landed.)*
+  - [x] Add a "no-leak confirmation" note: state whether the two added antecedents introduce any
         hypothesis into the terminus that a caller cannot supply, and if they do, say so plainly —
         this is the check that separates this repair from `UniverseClosed`'s clause 2, whose
         satisfiability set turned out to be `{∅}`.
@@ -386,7 +392,45 @@ and closes Phase 3 the same way. Exactly one of them executes.
 
 ---
 
-### Phase 4: The settlement lemma — `.saturated` plus no unblocked fresh work is settlement [NOT STARTED]
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| Bridge (i) `armSettlement_of_postBlockingSettlesAt` | Not provable: the consuming site holds only the exit equation, which does not carry `LabelFreeSaturatedExit`. | `labelFreeSaturatedExit_not_of_saturateBlocked_inr` |
+| Bridge (ii) `buildTableauAt_isSome_of_settlesAt` | Same obstruction at the same site. The only shape that typechecks carries `PostBlockingExitSettled fc`, which is refuted. | `postBlockingExitSettled_false` |
+| Terminus restatements at `PostBlockingSettlesAt` (Phase 6) | Blocked by the above: there is nothing admissible to restate against. | as above |
+
+- **Verdict: FALSE — the pre-declared repair is not admissible, and this is decided, not judged.**
+  Both consuming sites reach the residual holding exactly one fact about the output pair, the exit
+  equation `saturateBlocked ob fuel oOrd fc = some (.inr (satBr, satOrd))`.
+  `labelFreeSaturatedExit_not_of_saturateBlocked_inr` decides that this equation does **not** carry
+  `LabelFreeSaturatedExit`: at `fuel = 0` the pass hands its input back untested, at every branch.
+  The one bridge shape that would typecheck carries the extra hypothesis `PostBlockingExitSettled fc`,
+  and `postBlockingExitSettled_false` refutes it at every frame class — it implies the literal
+  residual through `postBlockingSettlesAt_settlement`, and that residual is refuted by Phase 1. So
+  the only available bridge is a weakening dressed as a repair, caught before anything was restated
+  against it. The repair is discarded as a **drop-in** for the residual; the definitions are retained
+  because Phase 7's register entry must cite them by name and because
+  `postBlockingSettlesAt_holds` proves the relocated statement **true outright**, which is what
+  locates the real residual.
+- **Scope Hypothesis result.** The "exactly two relocated hypotheses" claim is confirmed as
+  *necessary* — `postBlockingSettlesAt_settlement` uses both, and dropping either leaves a
+  counterexample (`multBranch 1` for the first, `freshWorldBranch` for the second) — but the
+  minimality test the phase prescribes (attempt bridge (ii) with each dropped in turn) is moot,
+  since the bridge does not compile with both present.
+- **No-leak confirmation.** The two added antecedents *do* introduce hypotheses the consuming sites
+  cannot supply. Stated plainly, in the terms the plan requires: this is the same failure mode as
+  `UniverseClosed`'s clause 2, whose satisfiability set turned out to be `{∅}` — here the supplying
+  hypothesis is not merely hard to discharge, it is false.
+- **The next candidate repair, named and deliberately unattempted.** Restrict the residual's
+  quantification from "every `(ob, oOrd, fuel)`" to the pair the terminus's own run produces — the
+  branch `expandBranchWithFuel` hands to `saturateBlocked` at the seed, at the terminus's own fuel
+  figure. `freshWorldBranch` does not refute that form, because the engine never hands it to the
+  pass at an adequate fuel. Relocating to the input branch `ob` (the plan's own suggestion) does not
+  work: `LabelFreeSaturatedExit` is *false* at `ob` by construction — the pass runs precisely because
+  `buildTableauAt`'s guard found outstanding work there.
+
+### Phase 4: The settlement lemma — `.saturated` plus no unblocked fresh work is settlement [COMPLETED]
 
 - **Goal:** Prove the mathematical content of the repair: that the two relocated antecedents
   really do force the conclusion, using only the frozen files' public interface.
@@ -400,25 +444,25 @@ and closes Phase 3 the same way. Exactly one of them executes.
   `findUnexpandedUnblockedWith satBr satOrd fc (blockedTimes …) = none` by `List.find?_eq_none`.
 
 - **Tasks:**
-  - [ ] Prove `expandOnceNoFresh_saturated_imp`: from `expandOnceNoFresh b ord fc = (.saturated, _)`,
+  - [x] Prove `expandOnceNoFresh_saturated_imp`: from `expandOnceNoFresh b ord fc = (.saturated, _)`,
         for every `sf ∈ b`, `findApplicableRule sf b ord fc = none ∨ (mints a fresh label) ∨
         (lengthens constraints)`. This is `List.findSome?_eq_none` against `pick`'s body; confirm
         it is statable without naming any private symbol (all four symbols involved are public
         `def`s — `Tableau.lean:1829`, `1970`, `2335`).
-  - [ ] Prove `findUnexpandedUnblockedWith_eq_none_of_isExpanded`: if every `sf ∈ b` outside
+  - [x] Prove `findUnexpandedUnblockedWith_eq_none_of_isExpanded`: if every `sf ∈ b` outside
         `blocked` has `isExpanded sf b ord fc = true`, the finder is `none`. Pure `List.find?`
         reasoning.
-  - [ ] Compose the two into `postBlockingSettlesAt_settlement`, the core lemma, and use it to
+  - [x] Compose the two into `postBlockingSettlesAt_settlement`, the core lemma, and use it to
         prove `PostBlockingSettlesAt fc` **outright** — i.e. show the repaired predicate is not
         merely weaker but actually **true**, unconditionally in `fc`. If that succeeds, the
         repaired residual is discharged and Phase 5's remaining job is the non-vacuity of the
         antecedents rather than the discharge of the predicate.
-  - [ ] If the composition does **not** close (e.g. the `.saturated` exit's ordering component is
+  - [x] If the composition does **not** close (e.g. the `.saturated` exit's ordering component is
         not literally `satOrd`, or the `.notApplicable` arm of `expandOnceNoFresh` returns a
         different ordering), narrow `LabelFreeSaturatedExit` to the shape that does close and
         re-run Phase 3's bridge (ii) against the narrowed form before proceeding. A narrowing that
         breaks bridge (ii) is Phase 3's FALSE verdict arriving late; treat it as such.
-  - [ ] Docstring: say which of the two frozen-file disagreements each hypothesis pays for.
+  - [x] Docstring: say which of the two frozen-file disagreements each hypothesis pays for.
 
 - **Timing:** 2 hours
 - **Depends on:** 3
@@ -440,6 +484,22 @@ and closes Phase 3 the same way. Exactly one of them executes.
     exactly which residue remains and why, with no `sorry` left in the file.
 
 ---
+
+- **Outcome (a).** `postBlockingSettlesAt_settlement` compiles and `PostBlockingSettlesAt fc` is
+  proved **outright** for every `fc` (`postBlockingSettlesAt_holds`). The repaired statement is not
+  a residual at all; it is a theorem. That is the honest resolution of the residual's open question:
+  the settlement test is decided by the branch, not by the fuel.
+- **Scope Hypothesis result: a fourth fact was needed and is named.**
+  `findApplicableRule_result_ne_notApplicable`. `expandOnceNoFresh` has a *second* route to
+  `.saturated` — its `.notApplicable` arm, which returns the picked ordering — and the inversion has
+  to rule that route out rather than assume it dead. It is dead because `findApplicableRule`'s own
+  body maps `.notApplicable` to `none` before building its `some`.
+- **Deviation (sequencing, not content): this phase ran on a FALSE Phase 3 verdict.** The plan makes
+  Phase 4 depend on Phase 3 TRUE. Phase 4's content is independent of the bridge verdict — it is a
+  statement about `expandOnceNoFresh` and `findUnexpandedUnblockedWith` alone — and it is the
+  *evidence* that makes Phase 3's FALSE verdict decidable rather than merely observed
+  (`postBlockingExitSettled_false` routes through `postBlockingSettlesAt_settlement`). Raised to the
+  dispatching agent before proceeding; Phases 5-6 were **not** started pending that ruling.
 
 ### Phase 5: Discharge at a concrete useful instantiation, with a non-vacuity witness [NOT STARTED]
 
