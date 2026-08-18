@@ -271,28 +271,28 @@ changing its claim, and re-verify the Mathlib citation.
 
 ---
 
-### Phase 4: Re-issue task 422 [NOT STARTED]
+### Phase 4: Re-issue task 422 [COMPLETED]
 
 **Goal**: Re-anchor 422's six citations, including the two `_buc`/`_fuc` anchors the original
 nine-row table missed, and the `Transfer.lean:1242` occurrence in its acceptance clause.
 
 **Tasks**:
-- [ ] Re-anchor `box_dense_gives_density` (cited `ChronicleToCountermodelBasic.lean:435`, actual
+- [x] Re-anchor `box_dense_gives_density` (cited `ChronicleToCountermodelBasic.lean:435`, actual
       `:430`) by symbol.
-- [ ] Re-anchor `cantor_bfmcs_dense_restricted_tc` (cited `:629`, actual `:624`) by symbol.
-- [ ] Re-anchor `cantor_bfmcs_dense_restricted_buc` (cited `:680`, actual `:675`) and `_fuc` (cited
+- [x] Re-anchor `cantor_bfmcs_dense_restricted_tc` (cited `:629`, actual `:624`) by symbol.
+- [x] Re-anchor `cantor_bfmcs_dense_restricted_buc` (cited `:680`, actual `:675`) and `_fuc` (cited
       `:755`, actual `:750`) by symbol — these two are the research's "beyond the nine" finding.
-- [ ] Re-anchor the `valid` / `Validity.lean:79` reference in the "why this carrier and not Z"
+- [x] Re-anchor the `valid` / `Validity.lean:79` reference in the "why this carrier and not Z"
       paragraph by symbol (actual `:94`); the "no `IsSuccArchimedean` binder" observation is
       re-verified by the ledger, not re-derived here.
-- [ ] Re-anchor the acceptance clause's `Transfer.lean:1242` to
+- [x] Re-anchor the acceptance clause's `Transfer.lean:1242` to
       `` `WeakCanonical.countermodel_discrete`'s sorry `` (hints only).
-- [ ] Update the "FOUR-AXIOM / TOTALITY EXPOSURE NOTE (added 2026-08-10)" only to the extent that it
+- [x] Update the "FOUR-AXIOM / TOTALITY EXPOSURE NOTE (added 2026-08-10)" only to the extent that it
       states a now-settled fact: tasks 414/420 have landed and are archived, so the note's
       instruction to "re-verify against the refactored signatures" has been discharged for the
       `Validity.lean` citation by this re-issue. Record that discharge in one sentence. Do **not**
       re-scope the note's four-axiom obligations — 422's substance is out of scope.
-- [ ] Apply via `state-write.sh` (no `--regen-todo`), then round-trip diff.
+- [x] Apply via `state-write.sh` (no `--regen-todo`), then round-trip diff.
 
 **Timing**: 0.5 hours
 
