@@ -591,34 +591,34 @@ before inserting.
 
 ---
 
-### Phase 9: Verification Sweep and Faithfulness Audit [NOT STARTED]
+### Phase 9: Verification Sweep and Faithfulness Audit [COMPLETED]
 
 **Goal**: Confirm every acceptance criterion from the task description holds against the finished
 file, and that no transcription drifted from the Phase 1 record.
 
 **Tasks**:
-- [ ] `grep -n "FIX:" typst/FormalFoundations.typ` returns nothing.
-- [ ] `typst compile typst/FormalFoundations.typ` exits 0; diff the warning set against the Phase 1
+- [x] `grep -n "FIX:" typst/FormalFoundations.typ` returns nothing.
+- [x] `typst compile typst/FormalFoundations.typ` exits 0; diff the warning set against the Phase 1
       baseline and confirm only the two pre-existing thmbox font warnings remain.
-- [ ] **Axiom completeness audit**: for every axiom name appearing anywhere in the document
+- [x] **Axiom completeness audit**: for every axiom name appearing anywhere in the document
       (MK, MT, M5, MP, MN, TN, TD, TB, TL, CN, TA, UE, UT, UI, UC, UF, UG, SU, NP, NF, NA, NB, MF,
       UZ, Z1, DN, NN, Prior-U, Sep, CO, DF, TK, T4), confirm a full formal statement exists at its
       point of definition. Grep each name and check.
-- [ ] **Faithfulness re-diff**: for every key, compare the rendered Typst against the Phase 1
+- [x] **Faithfulness re-diff**: for every key, compare the rendered Typst against the Phase 1
       transcription record's LaTeX column. Spot-check the universal/existential tense distinction
       on at least TB, UE, TA, UC, UG, Z1, DF.
-- [ ] **Citation-integrity audit**: grep every lemma/theorem name cited inside a `#proof[` block and
+- [x] **Citation-integrity audit**: grep every lemma/theorem name cited inside a `#proof[` block and
       confirm it resolves to a live block in the document or to a paper anchor named in a footnote.
-- [ ] **Dead-anchor check**: `grep "cor:tm-decidability" typst/FormalFoundations.typ` — confirm no
+- [x] **Dead-anchor check**: `grep "cor:tm-decidability" typst/FormalFoundations.typ` — confirm no
       *new* citation was introduced by phases 2-8.
-- [ ] **Scope-guard check**: confirm the Completeness subsection's claims are unchanged from before
+- [x] **Scope-guard check**: confirm the Completeness subsection's claims are unchanged from before
       this task, i.e. no completeness claim migrated from `cor:tm-completeness` into the
       proof-systems section.
-- [ ] **Count invariants**: S5 = 5 keys; BX = 17 keys; BX_f = 2; BX_d = 2; BX_c = 2 + 1 derived;
+- [x] **Count invariants**: S5 = 5 keys; BX = 17 keys; BX_f = 2; BX_d = 2; BX_c = 2 + 1 derived;
       TM = 3 rules + 9 axioms; Task Topology = 5 sub-items.
-- [ ] Read the Histories section and the Proof Systems section end to end for flow, confirming
+- [x] Read the Histories section and the Proof Systems section end to end for flow, confirming
       task 446's restored prose and the new material read as one text.
-- [ ] `git diff --stat typst/FormalFoundations.typ` to record the blast radius; confirm no file
+- [x] `git diff --stat typst/FormalFoundations.typ` to record the blast radius; confirm no file
       other than `typst/FormalFoundations.typ` and the two task artifacts changed.
 
 **Timing**: 0.75 hours
@@ -638,16 +638,16 @@ file, and that no transcription drifted from the Phase 1 record.
 
 ## Testing & Validation
 
-- [ ] `typst compile typst/FormalFoundations.typ` exits 0 at the end of every phase.
-- [ ] Zero `FIX:` tags remain in `typst/FormalFoundations.typ`.
-- [ ] Every axiom named anywhere in the document is stated in full at its point of definition.
-- [ ] Every lemma cited in the Extension proof is a live block earlier in the document.
-- [ ] The derivability relation `⊢` is defined before the Soundness theorem that uses it.
-- [ ] The frame-class extensions table names no "Prior-S" axiom.
-- [ ] No completeness claim was imported from `cor:tm-completeness`; no citation to
+- [x] `typst compile typst/FormalFoundations.typ` exits 0 at the end of every phase.
+- [x] Zero `FIX:` tags remain in `typst/FormalFoundations.typ`.
+- [x] Every axiom named anywhere in the document is stated in full at its point of definition.
+- [x] Every lemma cited in the Extension proof is a live block earlier in the document.
+- [x] The derivability relation `⊢` is defined before the Soundness theorem that uses it.
+- [x] The frame-class extensions table names no "Prior-S" axiom.
+- [x] No completeness claim was imported from `cor:tm-completeness`; no citation to
       `cor:tm-decidability` was added.
-- [ ] Warning set after the final compile equals the Phase 1 baseline warning set.
-- [ ] Only `typst/FormalFoundations.typ` and this task's own artifacts appear in `git diff --stat`.
+- [x] Warning set after the final compile equals the Phase 1 baseline warning set.
+- [x] Only `typst/FormalFoundations.typ` and this task's own artifacts appear in `git diff --stat`.
 
 ## Artifacts & Outputs
 
