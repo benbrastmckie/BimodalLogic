@@ -1,7 +1,7 @@
 # Implementation Plan: Task #458
 
 - **Task**: 458 - Migrate the 12 remaining legacy `chunks_dir`-only literature entries to the v2 schema
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 5.75 hours
 - **Dependencies**: Task 457 (SCOPE 7 precedent, completed)
 - **Research Inputs**: `specs/458_migrate_12_legacy_literature_entries_to_v2_schema/reports/01_legacy-entries-v2-migration.md`
@@ -171,39 +171,39 @@ all — unlike task 457's plan, which had to forbid parallelism across five muta
 
 ---
 
-### Phase 1: Baseline, safety harness, and live re-derivation of the twelve [NOT STARTED]
+### Phase 1: Baseline, safety harness, and live re-derivation of the twelve [COMPLETED]
 
 **Goal**: Establish a fresh, live pre-migration baseline (index entry count, FTS row count, per-entry
 chunk counts, current field state), confirm every tool this plan depends on behaves as the research
 described, and take the task-level rollback point. No mutation of any index.
 
 **Tasks**:
-- [ ] Confirm prerequisites present and executable: `python3`, `jq`, `sqlite3`,
+- [x] Confirm prerequisites present and executable: `python3`, `jq`, `sqlite3`,
       `.claude/scripts/literature-build-index.sh`, `.claude/scripts/literature-search.sh`
-- [ ] Create the working directory `specs/458_migrate_12_legacy_literature_entries_to_v2_schema/data/`
-- [ ] Record the live entry count and distinct-id count of `~/Projects/Literature/index.json`, and
+- [x] Create the working directory `specs/458_migrate_12_legacy_literature_entries_to_v2_schema/data/`
+- [x] Record the live entry count and distinct-id count of `~/Projects/Literature/index.json`, and
       confirm it parses clean with top-level keys `version`/`description`/`token_budget`/
       `max_chunks`/`entries`. Use Python's `json` module, not `jq` regex matching over `.id` (the
       research hit a `null`-indexing error doing the latter)
-- [ ] Record the live FTS row count: `sqlite3 ~/Projects/Literature/.literature.db
+- [x] Record the live FTS row count: `sqlite3 ~/Projects/Literature/.literature.db
       'SELECT count(*) FROM chunks_fts;'`. **This number, not 17,788 and not 17,736, is the Phase 6
       gate floor**
-- [ ] Confirm all twelve target ids are present exactly once each, and that each is missing exactly
+- [x] Confirm all twelve target ids are present exactly once each, and that each is missing exactly
       the five fields `provenance_fidelity`, `path`, `token_count`, `doc_type`, `source_format`
-- [ ] Confirm, for each of the twelve, that `chunks_dir` resolves to an existing directory directly
+- [x] Confirm, for each of the twelve, that `chunks_dir` resolves to an existing directory directly
       under `~/Projects/Literature/<id>/` (not under `sources/`) and that its `chunk_*.md` count
       equals the stored `chunk_count`
-- [ ] Confirm no canonical whole-document `.md` exists in any of the twelve directories, which is
+- [x] Confirm no canonical whole-document `.md` exists in any of the twelve directories, which is
       what makes summing `chunk_*.md` the correct (not double-counting) `token_count` basis here
-- [ ] Confirm the twelve `/tmp/task54-lit/*.pdf` source files are still absent
-- [ ] Confirm `literature-fidelity-audit.sh` is `sources/`-scoped and produces no output for any of
+- [x] Confirm the twelve `/tmp/task54-lit/*.pdf` source files are still absent
+- [x] Confirm `literature-fidelity-audit.sh` is `sources/`-scoped and produces no output for any of
       the twelve — record this as the reason the manual read is the sole evidence, matching the task
       description's premise
-- [ ] Take the master pre-task backup:
+- [x] Take the master pre-task backup:
       `cp ~/Projects/Literature/index.json ~/Projects/Literature/index.json.bak-$(date +%Y%m%d-%H%M%S)-pre-458`
-- [ ] Write `data/baseline.md` recording every live number above alongside the research report's
+- [x] Write `data/baseline.md` recording every live number above alongside the research report's
       stated number, with a PASS/DRIFTED verdict per item
-- [ ] Write `data/targets12.tsv` — one row per target id with `id`, `chunk_count`, `chunks_dir`,
+- [x] Write `data/targets12.tsv` — one row per target id with `id`, `chunk_count`, `chunks_dir`,
       and empty columns for the adjudication values later phases fill in
 
 **Timing**: 0.75 hours
