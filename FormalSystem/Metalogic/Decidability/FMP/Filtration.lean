@@ -50,6 +50,7 @@ namespace FormalSystem.Metalogic.Decidability.FMP
 open FormalSystem.Syntax
 open FormalSystem.Semantics
 open FormalSystem.Metalogic.Core
+open FormalSystem.ProofSystem
 
 /-!
 ## MCS-Based Filtration Equivalence
@@ -118,23 +119,25 @@ A closure MCS bundled with its proof of maximality.
 /--
 A closure MCS bundled with its proof.
 -/
-structure ClosureMCSBundle (phi : Formula) where
+structure ClosureMCSBundle (phi : Formula) (fc : FrameClass := FrameClass.Base) where
   /-- The underlying set of formulas -/
   carrier : Set Formula
-  /-- Proof that the carrier is a closure MCS -/
-  is_mcs : ClosureMCS phi carrier
+  /-- Proof that the carrier is a closure MCS at frame class `fc` -/
+  is_mcs : ClosureMCS phi carrier fc
+
+variable {fc : FrameClass}
 
 /--
 Filtration equivalence on bundled closure MCS.
 -/
-def ClosureMCSEquiv (phi : Formula) (S T : ClosureMCSBundle phi) : Prop :=
+def ClosureMCSEquiv (phi : Formula) (S T : ClosureMCSBundle phi fc) : Prop :=
   MCSFiltrationEquiv phi S.carrier T.carrier
 
 /--
 ClosureMCS equivalence is an equivalence relation.
 -/
 theorem closure_mcs_equiv_equivalence (phi : Formula) :
-    Equivalence (ClosureMCSEquiv phi) :=
+    Equivalence (ClosureMCSEquiv (fc := fc) phi) :=
   ⟨fun S => mcs_filtration_equiv_refl phi S.carrier,
    fun h => mcs_filtration_equiv_symm phi h,
    fun h1 h2 => mcs_filtration_equiv_trans phi h1 h2⟩
@@ -142,7 +145,8 @@ theorem closure_mcs_equiv_equivalence (phi : Formula) :
 /--
 Setoid for closure MCS.
 -/
-def ClosureMCSSetoid (phi : Formula) : Setoid (ClosureMCSBundle phi) where
+def ClosureMCSSetoid (phi : Formula)
+    (fc : FrameClass := FrameClass.Base) : Setoid (ClosureMCSBundle phi fc) where
   r := ClosureMCSEquiv phi
   iseqv := closure_mcs_equiv_equivalence phi
 
@@ -156,14 +160,14 @@ Filtered world type: quotient of closure MCS bundles by equivalence.
 Each equivalence class represents a "world" in the filtered model.
 The number of equivalence classes is bounded by 2^|subformulaClosure phi|.
 -/
-def FilteredWorld (phi : Formula) : Type :=
-  Quotient (ClosureMCSSetoid phi)
+def FilteredWorld (phi : Formula) (fc : FrameClass := FrameClass.Base) : Type :=
+  Quotient (ClosureMCSSetoid phi fc)
 
 /--
 Quotient map: lift a closure MCS bundle to its equivalence class.
 -/
-def toFilteredWorld (phi : Formula) (S : ClosureMCSBundle phi) : FilteredWorld phi :=
-  Quotient.mk (ClosureMCSSetoid phi) S
+def toFilteredWorld (phi : Formula) (S : ClosureMCSBundle phi fc) : FilteredWorld phi fc :=
+  Quotient.mk (ClosureMCSSetoid phi fc) S
 
 /-!
 ### Nonemptiness of the filtered world type
@@ -175,21 +179,38 @@ which needs only that the logic itself is consistent. `Finite (FilteredWorld phi
 -/
 
 /--
-The empty set of formulas is consistent.
+The empty set of formulas is consistent at any frame class whose system is consistent.
 
 The only list all of whose members lie in `∅` is `[]`, so the obligation collapses to
-`Consistent []`, which is `Metalogic/Soundness.lean`'s `not_derivable_nil_bot` — the
-consistency of the base system, read off soundness.
+`¬ Derivable fc [] ⊥` — the consistency of the system at `fc`, which is exactly the hypothesis.
+
+Consistency of the system is genuinely a per-frame-class fact and cannot be discharged
+uniformly in `fc`: it is read off a soundness theorem for `fc`, and the tree currently proves
+one for `FrameClass.Base` (`not_derivable_nil_bot`) and for `FrameClass.Discrete`
+(`not_derivable_nil_bot_discrete`). Hence the hypothesis rather than a `{fc}`-uniform statement.
 -/
-theorem setConsistent_empty :
-    SetConsistent (fc := ProofSystem.FrameClass.Base) (∅ : Set Formula) := by
+theorem setConsistent_empty_of {fc : FrameClass}
+    (h : ¬ Derivable fc ([] : Context) Formula.bot) :
+    SetConsistent (fc := fc) (∅ : Set Formula) := by
   intro L hL
   have hnil : L = [] := by
     cases L with
     | nil => rfl
     | cons a _ => exact absurd (hL a (by simp)) (by simp)
   subst hnil
-  exact FormalSystem.Metalogic.not_derivable_nil_bot
+  exact h
+
+/--
+The empty set of formulas is consistent at `FrameClass.Base`.
+
+**Why `Base` is essential here**: this is the `fc := FrameClass.Base` instance of
+`setConsistent_empty_of`, and the consistency witness it consumes
+(`Metalogic/Soundness.lean`'s `not_derivable_nil_bot`) is a theorem about the base system
+specifically. The `{fc}`-uniform statement is `setConsistent_empty_of`.
+-/
+theorem setConsistent_empty :
+    SetConsistent (fc := ProofSystem.FrameClass.Base) (∅ : Set Formula) :=
+  setConsistent_empty_of FormalSystem.Metalogic.not_derivable_nil_bot
 
 /--
 Every formula has at least one closure MCS: Lindenbaum-extend `∅` within `closureWithNeg phi`.
@@ -197,16 +218,34 @@ Every formula has at least one closure MCS: Lindenbaum-extend `∅` within `clos
 The extension lemma is `closure_mcs_extension` (`ClosureMCS.lean`), whose two hypotheses are
 `ClosureRestricted phi ∅` (immediate) and `SetConsistent ∅` (`setConsistent_empty` above).
 -/
-theorem closureMCSBundle_nonempty (phi : Formula) : Nonempty (ClosureMCSBundle phi) := by
+theorem closureMCSBundle_nonempty_of {fc : FrameClass}
+    (h : ¬ Derivable fc ([] : Context) Formula.bot) (phi : Formula) :
+    Nonempty (ClosureMCSBundle phi fc) := by
   obtain ⟨M, _, hM⟩ :=
-    closure_mcs_extension phi ∅ (Set.empty_subset _) setConsistent_empty
+    closure_mcs_extension phi ∅ (Set.empty_subset _) (setConsistent_empty_of h)
   exact ⟨⟨M, hM⟩⟩
+
+/--
+Every formula has at least one `FrameClass.Base` closure MCS.
+
+**Why `Base` is essential here**: this is the `fc := FrameClass.Base` instance of
+`closureMCSBundle_nonempty_of`; it inherits the base-system consistency witness from
+`setConsistent_empty`. The `{fc}`-uniform statement is `closureMCSBundle_nonempty_of`, which
+also applies at `FrameClass.Discrete` via `not_derivable_nil_bot_discrete`.
+-/
+theorem closureMCSBundle_nonempty (phi : Formula) : Nonempty (ClosureMCSBundle phi) :=
+  closureMCSBundle_nonempty_of FormalSystem.Metalogic.not_derivable_nil_bot phi
 
 /--
 The filtered world type is nonempty: push `closureMCSBundle_nonempty` through the quotient map.
 
 This is what lets the filtration frames satisfy a world-state nonemptiness requirement without
 assuming anything about `phi`.
+
+**Why `Base` is essential here**: an `instance` cannot carry the per-frame-class consistency
+hypothesis that `closureMCSBundle_nonempty_of` needs, so the instance is registered at the one
+frame class whose consistency is available unconditionally at this point in the import graph.
+At another `fc`, apply `(closureMCSBundle_nonempty_of h phi).map (toFilteredWorld phi)` directly.
 -/
 instance filteredWorld_nonempty (phi : Formula) : Nonempty (FilteredWorld phi) :=
   (closureMCSBundle_nonempty phi).map (toFilteredWorld phi)
@@ -376,19 +415,19 @@ For working with filtered worlds, we often need to extract representatives.
 /--
 Every filtered world has a representative closure MCS.
 -/
-theorem filtered_world_has_rep (phi : Formula) (w : FilteredWorld phi) :
-    ∃ S : ClosureMCSBundle phi, toFilteredWorld phi S = w := by
+theorem filtered_world_has_rep (phi : Formula) (w : FilteredWorld phi fc) :
+    ∃ S : ClosureMCSBundle phi fc, toFilteredWorld phi S = w := by
   exact Quotient.exists_rep w
 
 /--
 Lift a property from representatives to the quotient (if it respects equivalence).
 -/
 theorem filtered_world_lift_prop (phi : Formula)
-    (P : ClosureMCSBundle phi → Prop)
-    (h_resp : ∀ S T : ClosureMCSBundle phi, ClosureMCSEquiv phi S T → (P S ↔ P T))
-    (w : FilteredWorld phi) :
-    (∀ S : ClosureMCSBundle phi, toFilteredWorld phi S = w → P S) ↔
-    (∃ S : ClosureMCSBundle phi, toFilteredWorld phi S = w ∧ P S) := by
+    (P : ClosureMCSBundle phi fc → Prop)
+    (h_resp : ∀ S T : ClosureMCSBundle phi fc, ClosureMCSEquiv phi S T → (P S ↔ P T))
+    (w : FilteredWorld phi fc) :
+    (∀ S : ClosureMCSBundle phi fc, toFilteredWorld phi S = w → P S) ↔
+    (∃ S : ClosureMCSBundle phi fc, toFilteredWorld phi S = w ∧ P S) := by
   constructor
   · intro h_all
     obtain ⟨S, hS⟩ := filtered_world_has_rep phi w
@@ -409,7 +448,7 @@ Formula membership in a closure MCS respects filtration equivalence
 (for formulas in the closure).
 -/
 theorem formula_mem_respects_equiv (phi ψ : Formula) (hψ : ψ ∈ subformulaClosure phi)
-    {S T : ClosureMCSBundle phi} (h : ClosureMCSEquiv phi S T) :
+    {S T : ClosureMCSBundle phi fc} (h : ClosureMCSEquiv phi S T) :
     ψ ∈ S.carrier ↔ ψ ∈ T.carrier :=
   h ψ hψ
 
@@ -417,7 +456,7 @@ theorem formula_mem_respects_equiv (phi ψ : Formula) (hψ : ψ ∈ subformulaCl
 Lift formula membership to filtered worlds (for closure formulas).
 -/
 def filteredWorldMem (phi ψ : Formula) (hψ : ψ ∈ subformulaClosure phi)
-    (w : FilteredWorld phi) : Prop :=
+    (w : FilteredWorld phi fc) : Prop :=
   Quotient.lift (fun S => ψ ∈ S.carrier)
     (fun _S _T h => propext (formula_mem_respects_equiv phi ψ hψ h)) w
 
@@ -425,7 +464,7 @@ def filteredWorldMem (phi ψ : Formula) (hψ : ψ ∈ subformulaClosure phi)
 Filtered world membership agrees with representative membership.
 -/
 theorem filteredWorldMem_iff (phi ψ : Formula) (hψ : ψ ∈ subformulaClosure phi)
-    (S : ClosureMCSBundle phi) :
+    (S : ClosureMCSBundle phi fc) :
     filteredWorldMem phi ψ hψ (toFilteredWorld phi S) ↔ ψ ∈ S.carrier := by
   simp only [filteredWorldMem, toFilteredWorld]
   rfl

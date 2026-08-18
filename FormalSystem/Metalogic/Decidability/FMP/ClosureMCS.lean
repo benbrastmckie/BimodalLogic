@@ -66,15 +66,19 @@ This is an alias for RestrictedMCS with explicit documentation for FMP context.
 - Negation complete for closure formulas
 - Finite (bounded by 2 * |subformulaClosure phi|)
 -/
-abbrev ClosureMCS (phi : Formula) (S : Set Formula) : Prop :=
-  RestrictedMCS phi S
+abbrev ClosureMCS (phi : Formula) (S : Set Formula)
+    (fc : FrameClass := FrameClass.Base) : Prop :=
+  RestrictedMCS phi S fc
 
 /--
 Closure consistency: a set is closure-consistent if it's a subset of
 closureWithNeg and is set-consistent.
 -/
-abbrev ClosureConsistent (phi : Formula) (S : Set Formula) : Prop :=
-  RestrictedConsistent phi S
+abbrev ClosureConsistent (phi : Formula) (S : Set Formula)
+    (fc : FrameClass := FrameClass.Base) : Prop :=
+  RestrictedConsistent phi S fc
+
+variable {fc : FrameClass}
 
 /-!
 ## Projection from Full MCS to Closure MCS
@@ -100,8 +104,8 @@ theorem projectToClosure_restricted (phi : Formula) (S : Set Formula) :
 Projection preserves consistency.
 -/
 theorem projectToClosure_preserves_consistency (phi : Formula) (S : Set Formula)
-    (h_cons : SetConsistent (fc := FrameClass.Base) S) :
-    SetConsistent (fc := FrameClass.Base) (projectToClosure phi S) := by
+    (h_cons : SetConsistent (fc := fc) S) :
+    SetConsistent (fc := fc) (projectToClosure phi S) := by
   intro L hL
   apply h_cons L
   intro psi hpsi
@@ -109,12 +113,12 @@ theorem projectToClosure_preserves_consistency (phi : Formula) (S : Set Formula)
   exact Set.mem_of_mem_inter_left this
 
 /--
-If S is a full SetMaximalConsistent (fc := FrameClass.Base) set, then its projection to closure
-is closure-consistent.
+If S is a full `SetMaximalConsistent (fc := fc)` set, then its projection to closure
+is closure-consistent at the same frame class.
 -/
 theorem full_mcs_projection_consistent (phi : Formula) (S : Set Formula)
-    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) S) :
-    ClosureConsistent phi (projectToClosure phi S) :=
+    (h_mcs : SetMaximalConsistent (fc := fc) S) :
+    ClosureConsistent phi (projectToClosure phi S) fc :=
   ⟨projectToClosure_restricted phi S, projectToClosure_preserves_consistency phi S h_mcs.1⟩
 
 /-!
@@ -130,7 +134,7 @@ either psi or neg psi is in the MCS.
 This is the negation completeness property essential for filtration.
 -/
 theorem closure_mcs_negation_complete {phi : Formula} {S : Set Formula}
-    (h_mcs : ClosureMCS phi S) (psi : Formula)
+    (h_mcs : ClosureMCS phi S fc) (psi : Formula)
     (h_psi : psi ∈ subformulaClosure phi) :
     psi ∈ S ∨ psi.neg ∈ S :=
   restricted_mcs_negation_complete h_mcs psi h_psi
@@ -139,7 +143,7 @@ theorem closure_mcs_negation_complete {phi : Formula} {S : Set Formula}
 A closure MCS contains either phi or neg phi.
 -/
 theorem closure_mcs_formula_decided {phi : Formula} {S : Set Formula}
-    (h_mcs : ClosureMCS phi S) :
+    (h_mcs : ClosureMCS phi S fc) :
     phi ∈ S ∨ phi.neg ∈ S :=
   closure_mcs_negation_complete h_mcs phi (self_mem_subformulaClosure phi)
 
@@ -147,15 +151,15 @@ theorem closure_mcs_formula_decided {phi : Formula} {S : Set Formula}
 A closure MCS is set-consistent.
 -/
 theorem closure_mcs_consistent {phi : Formula} {S : Set Formula}
-    (h_mcs : ClosureMCS phi S) :
-    SetConsistent (fc := FrameClass.Base) S :=
+    (h_mcs : ClosureMCS phi S fc) :
+    SetConsistent (fc := fc) S :=
   restricted_mcs_is_consistent h_mcs
 
 /--
 A closure MCS is bounded by the closure.
 -/
 theorem closure_mcs_bounded {phi : Formula} {S : Set Formula}
-    (h_mcs : ClosureMCS phi S) :
+    (h_mcs : ClosureMCS phi S fc) :
     S ⊆ (closureWithNeg phi : Set Formula) :=
   restricted_mcs_is_closure_restricted h_mcs
 
@@ -169,10 +173,10 @@ Closure MCS is deductively closed for closure formulas.
 If Γ ⊆ S and Γ ⊢ chi and chi ∈ closureWithNeg phi, then chi ∈ S.
 -/
 theorem closure_mcs_deductively_closed {phi : Formula} {S : Set Formula}
-    (h_mcs : ClosureMCS phi S)
+    (h_mcs : ClosureMCS phi S fc)
     {Γ : List Formula} {chi : Formula}
     (h_Γ_sub : ∀ ψ ∈ Γ, ψ ∈ S)
-    (h_deriv : DerivationTree FrameClass.Base Γ chi)
+    (h_deriv : DerivationTree fc Γ chi)
     (h_chi_clos : chi ∈ closureWithNeg phi) :
     chi ∈ S := by
   by_contra h_chi_not
@@ -181,7 +185,7 @@ theorem closure_mcs_deductively_closed {phi : Formula} {S : Set Formula}
   -- Show insert chi S is consistent, contradiction
   apply h_incons
   intro L hL ⟨d⟩
-  -- d : DerivationTree FrameClass.Base L Formula.bot
+  -- d : DerivationTree fc L Formula.bot
   -- L ⊆ insert chi S
   let L' := L.filter (· ≠ chi)
   have hL'_in_S : ∀ ψ ∈ L', ψ ∈ S := by
@@ -198,17 +202,17 @@ theorem closure_mcs_deductively_closed {phi : Formula} {S : Set Formula}
     · simp [h]
     · simp only [List.mem_cons]; right
       exact List.mem_filter.mpr ⟨hψ, by simpa⟩
-  have d' : DerivationTree FrameClass.Base (chi :: L') Formula.bot :=
+  have d' : DerivationTree fc (chi :: L') Formula.bot :=
     DerivationTree.weakening L (chi :: L') Formula.bot d hL_sub
-  have d_neg : DerivationTree FrameClass.Base L' chi.neg := deductionTheorem L' chi Formula.bot d'
+  have d_neg : DerivationTree fc L' chi.neg := deductionTheorem L' chi Formula.bot d'
   -- Weaken Γ ⊢ chi to L' ++ Γ ⊢ chi
-  have h_deriv' : DerivationTree FrameClass.Base (L' ++ Γ) chi :=
+  have h_deriv' : DerivationTree fc (L' ++ Γ) chi :=
     DerivationTree.weakening Γ (L' ++ Γ) chi h_deriv (List.subset_append_right L' Γ)
   -- Weaken d_neg to L' ++ Γ
-  have d_neg' : DerivationTree FrameClass.Base (L' ++ Γ) chi.neg :=
+  have d_neg' : DerivationTree fc (L' ++ Γ) chi.neg :=
     DerivationTree.weakening L' (L' ++ Γ) chi.neg d_neg (List.subset_append_left L' Γ)
   -- Combine to get ⊥
-  have d_bot : DerivationTree FrameClass.Base (L' ++ Γ) Formula.bot :=
+  have d_bot : DerivationTree fc (L' ++ Γ) Formula.bot :=
     derivesBotFromPhiNegPhi h_deriv' d_neg'
   -- But L' ++ Γ ⊆ S, contradicting consistency
   have h_LΓ_in_S : ∀ ψ ∈ L' ++ Γ, ψ ∈ S := by
@@ -230,8 +234,8 @@ If phi is satisfiable (not a theorem that neg phi), then there exists a
 closure MCS containing phi.
 -/
 theorem closure_mcs_exists_from_consistent_formula (phi : Formula)
-    (h_cons : ¬Derivable FrameClass.Base [] phi.neg) :
-    ∃ S : Set Formula, phi ∈ S ∧ ClosureMCS phi S :=
+    (h_cons : ¬Derivable fc [] phi.neg) :
+    ∃ S : Set Formula, phi ∈ S ∧ ClosureMCS phi S fc :=
   restricted_mcs_from_formula phi h_cons
 
 /--
@@ -240,16 +244,16 @@ there exists a closure MCS containing it.
 -/
 theorem closure_mcs_exists_containing (phi psi : Formula)
     (h_psi_clos : psi ∈ closureWithNeg phi)
-    (h_cons : SetConsistent (fc := FrameClass.Base) {psi}) :
-    ∃ S : Set Formula, psi ∈ S ∧ ClosureMCS phi S :=
+    (h_cons : SetConsistent (fc := fc) {psi}) :
+    ∃ S : Set Formula, psi ∈ S ∧ ClosureMCS phi S fc :=
   restricted_mcs_exists_containing phi psi h_psi_clos h_cons
 
 /--
 Extend any closure-consistent set to a closure MCS.
 -/
 theorem closure_mcs_extension (phi : Formula) (S : Set Formula)
-    (h_restricted : ClosureRestricted phi S) (h_cons : SetConsistent (fc := FrameClass.Base) S) :
-    ∃ M : Set Formula, S ⊆ M ∧ ClosureMCS phi M :=
+    (h_restricted : ClosureRestricted phi S) (h_cons : SetConsistent (fc := fc) S) :
+    ∃ M : Set Formula, S ⊆ M ∧ ClosureMCS phi M fc :=
   restricted_lindenbaum phi S h_restricted h_cons
 
 /-!
@@ -262,7 +266,7 @@ The closure MCS has bounded cardinality.
 Any closure MCS is bounded by closureWithNeg, which is finite.
 -/
 theorem closure_mcs_finite_bound {phi : Formula} {S : Set Formula}
-    (h_mcs : ClosureMCS phi S) :
+    (h_mcs : ClosureMCS phi S fc) :
     S ⊆ (closureWithNeg phi : Set Formula) :=
   closure_mcs_bounded h_mcs
 

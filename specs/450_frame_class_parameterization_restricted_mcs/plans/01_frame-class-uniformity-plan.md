@@ -259,7 +259,7 @@ edit, which must be called out.
 
 ---
 
-### Phase 3: Parameterise the Decidability/FMP Layer [NOT STARTED]
+### Phase 3: Parameterise the Decidability/FMP Layer [COMPLETED]
 
 **Goal**: Deliverable (a) downstream, with deliverable (b) preserved by construction.
 

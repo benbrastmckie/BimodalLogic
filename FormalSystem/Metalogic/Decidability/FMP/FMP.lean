@@ -53,6 +53,8 @@ open FormalSystem.Metalogic.Core
 open FormalSystem.ProofSystem
 open FormalSystem.Theorems.Propositional
 
+variable {fc : FrameClass}
+
 /-!
 ## Finite Model Construction
 
@@ -64,20 +66,20 @@ If ¬φ is consistent (no proof of φ from empty context), then there exists
 a closure MCS containing ¬φ.
 -/
 theorem exists_mcs_with_negation (phi : Formula)
-    (h_not_provable : ¬Derivable FrameClass.Base [] phi) :
-    ∃ S : ClosureMCSBundle phi, phi.neg ∈ S.carrier := by
+    (h_not_provable : ¬Derivable fc [] phi) :
+    ∃ S : ClosureMCSBundle phi fc, phi.neg ∈ S.carrier := by
   -- First, show that neg (phi.neg) = phi.neg.neg is not derivable
   -- from the fact that phi is not derivable
   -- Actually, we need to show ¬φ is consistent (singleton {¬φ} is consistent)
-  have h_neg_cons : ¬Derivable FrameClass.Base [] phi.neg.neg := by
+  have h_neg_cons : ¬Derivable fc [] phi.neg.neg := by
     intro ⟨d_neg_neg⟩
     -- From phi.neg.neg (= ¬¬φ = φ → ⊥ → ⊥), derive phi using DNE
-    have h_dne : [] ⊢ phi.neg.neg.imp phi := doubleNegation phi
-    have h_phi : [] ⊢ phi := DerivationTree.modus_ponens [] _ _ h_dne d_neg_neg
+    have h_dne : ⊢[fc] phi.neg.neg.imp phi := doubleNegation phi
+    have h_phi : ⊢[fc] phi := DerivationTree.modus_ponens [] _ _ h_dne d_neg_neg
     exact h_not_provable ⟨h_phi⟩
   -- Now phi.neg is consistent (its negation is not derivable from [])
   -- So {phi.neg} is set-consistent
-  have h_singleton_cons : SetConsistent (fc := FrameClass.Base) {phi.neg} := by
+  have h_singleton_cons : SetConsistent (fc := fc) {phi.neg} := by
     intro L hL
     intro ⟨d_bot⟩
     -- L ⊆ {phi.neg} means L is either [] or [phi.neg]
@@ -115,9 +117,9 @@ theorem exists_mcs_with_negation (phi : Formula)
         have := h_L_perm hx
         simp only [List.mem_cons, h_L'_empty, List.not_mem_nil, or_false] at this
         simp [this]
-      have d_bot' : DerivationTree FrameClass.Base [phi.neg] Formula.bot :=
+      have d_bot' : DerivationTree fc [phi.neg] Formula.bot :=
         DerivationTree.weakening L [phi.neg] _ d_bot h_L_sub_singleton
-      have d_neg_neg : DerivationTree FrameClass.Base [] phi.neg.neg :=
+      have d_neg_neg : DerivationTree fc [] phi.neg.neg :=
         deductionTheorem [] phi.neg Formula.bot d_bot'
       exact h_neg_cons ⟨d_neg_neg⟩
     · -- phi.neg ∉ L. Then L ⊆ {phi.neg} \ {phi.neg} = ∅, so L = []
@@ -132,9 +134,9 @@ theorem exists_mcs_with_negation (phi : Formula)
       -- [] ⊢ ⊥ implies ⊢ phi.neg.neg via EFQ and weakening
       rw [h_L_empty] at d_bot
       -- From [] ⊢ ⊥, derive [] ⊢ phi
-      have h_efq : [] ⊢ Formula.bot.imp phi :=
-        DerivationTree.axiom [] _ (Axiom.ex_falso phi) trivial
-      have d_phi : [] ⊢ phi := DerivationTree.modus_ponens [] _ _ h_efq d_bot
+      have h_efq : ⊢[fc] Formula.bot.imp phi :=
+        DerivationTree.axiom (fc := fc) [] _ (Axiom.ex_falso phi) (FrameClass.base_le fc)
+      have d_phi : ⊢[fc] phi := DerivationTree.modus_ponens [] _ _ h_efq d_bot
       exact h_not_provable ⟨d_phi⟩
   -- phi.neg is in closureWithNeg phi
   have h_neg_clos : phi.neg ∈ closureWithNeg phi := neg_self_mem_closureWithNeg phi
@@ -147,8 +149,8 @@ theorem exists_mcs_with_negation (phi : Formula)
 The filtered model for a non-provable formula provides a finite witness.
 -/
 theorem filtered_model_falsifies (phi : Formula)
-    (h_not_provable : ¬Derivable FrameClass.Base [] phi) :
-    ∃ (S : ClosureMCSBundle phi), phi ∉ S.carrier := by
+    (h_not_provable : ¬Derivable fc [] phi) :
+    ∃ (S : ClosureMCSBundle phi fc), phi ∉ S.carrier := by
   obtain ⟨S, h_neg⟩ := exists_mcs_with_negation phi h_not_provable
   use S
   -- phi ∉ S because phi.neg ∈ S and MCS is consistent
