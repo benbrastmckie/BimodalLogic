@@ -409,7 +409,7 @@ the ledger marks `DELETED` as an escalation rather than a rewrite.
 
 ---
 
-### Phase 7: Re-issue task 424 (re-scope against total-history semantics) [NOT STARTED]
+### Phase 7: Re-issue task 424 (re-scope against total-history semantics) [COMPLETED]
 
 **Goal**: Replace 424's forward-looking `Omega`-exposure audit with the settled post-refactor
 verdict, state the re-scoped Representation Theorem, retire `ShiftClosed` explicitly, and narrow
@@ -417,16 +417,16 @@ the "gate" language to what 424 concretely gates. This is the only phase that ch
 scope, and it does so explicitly with its rationale, as the task description requires.
 
 **Tasks**:
-- [ ] **Re-verify before applying**: confirm against the live tree that `TruthAt` still takes no
+- [x] **Re-verify before applying**: confirm against the live tree that `TruthAt` still takes no
       `Omega` parameter and that its box clause quantifies over `σ.IsTotal`; that `ShiftClosed` has
       zero occurrences in `FormalSystem/Semantics/Truth.lean`; that
       `time_shift_preserves_truth` has signature `(M) (σ) (x y : D) (φ)` with no `h_sc`; and that
       `WorldHistory.isTotal_timeShift` exists with no side condition. Treat the report's
       Recommended Text as a draft to confirm, not a fact to paste.
-- [ ] Rewrite sections 1-3 (the 2026-08-10 exposure audit): the predicted refactor **has landed and
+- [x] Rewrite sections 1-3 (the 2026-08-10 exposure audit): the predicted refactor **has landed and
       is archived**, so the forward-looking risk language becomes a settled statement of what
       changed. Keep the audit's own conclusion that the model-theoretic argument survives.
-- [ ] Replace the section 6 Representation Theorem statement with the re-scoped, `Omega`-free
+- [x] Replace the section 6 Representation Theorem statement with the re-scoped, `Omega`-free
       version (the report's "Recommended Text" for 424, verified against the live tree in the first
       step): forward direction builds `WorldState := Ω`, `TaskRel w d u := (u = sh w d)`,
       `states σ t := sh σ t`, `domain := Set.univ`, and now carries one small new obligation —
@@ -434,28 +434,28 @@ scope, and it does so explicitly with its rationale, as the task description req
       of `TaskRel`'s functionality; reverse direction takes `Ω := {τ : WorldHistory F // τ.IsTotal}`
       from `(F, M)` alone, `sh σ Δ := σ.val.timeShift Δ` landing in `Ω` unconditionally via
       `WorldHistory.isTotal_timeShift`, and `A p σ := TruthAt M σ.val 0 (atom p)`.
-- [ ] Record the verdict explicitly: the theorem **survives and simplifies** — it loses the `Omega`
+- [x] Record the verdict explicitly: the theorem **survives and simplifies** — it loses the `Omega`
       parameter and the `ShiftClosed` hypothesis on both directions, gains no new hypothesis, and
       does **not** require its own research cycle. State that this is the totality-fixed special
       case the 2026-08-10 audit already predicted.
-- [ ] State that `ShiftClosed` is **retired, not renamed** — the definition no longer exists and no
+- [x] State that `ShiftClosed` is **retired, not renamed** — the definition no longer exists and no
       future implementer should go looking for it. Delete the `Truth.lean:333` `ShiftClosed`
       citation outright.
-- [ ] Re-anchor the surviving Lean citations by symbol: `TruthAt` (cited `Truth.lean:128-137`,
+- [x] Re-anchor the surviving Lean citations by symbol: `TruthAt` (cited `Truth.lean:128-137`,
       currently `:159-167`) and `time_shift_preserves_truth` (cited `Truth.lean:446`, currently
       `:457`). Re-anchor or drop the `Validity.lean:77-139` citation per the ledger.
-- [ ] Replace "THIS TASK IS THE GATE FOR THE ENTIRE ULTRAPRODUCT BRANCH" with precise language: it
+- [x] Replace "THIS TASK IS THE GATE FOR THE ENTIRE ULTRAPRODUCT BRANCH" with precise language: it
       gates (i) authorization to create tasks S2-S5, which deliberately do not exist yet and so
       cannot carry a declared edge, and (ii) leg B of task 362 specifically — which is
       edge-representable and is wired in Phase 6. It does **not** gate 423, which is self-contained
       and proves no compactness result. Keep the "NOT AUTHORIZED / do not spawn S2-S5" instruction.
-- [ ] Confirm the untouched remainder still holds: Q1's structural evidence, Route B's S1-S4 plan,
+- [x] Confirm the untouched remainder still holds: Q1's structural evidence, Route B's S1-S4 plan,
       risks R1-R3, the GATING RULE, the gate-passed evidence standard, the cancel condition, and the
       corrected `specs/archive/361_.../design/02_compactness-route.md` path. R4's shift-closure
       concern is recorded as having no remaining attachment point.
-- [ ] Do not repeat the stale "41 declared dependency edges" figure anywhere; if an edge count is
+- [x] Do not repeat the stale "41 declared dependency edges" figure anywhere; if an edge count is
       wanted at all, either omit it or state the freshly measured value with its measurement date.
-- [ ] Apply via `state-write.sh` (no `--regen-todo`), then round-trip diff.
+- [x] Apply via `state-write.sh` (no `--regen-todo`), then round-trip diff.
 
 **Timing**: 1.5 hours
 
