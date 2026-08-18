@@ -75,21 +75,21 @@ Strategy:
 2. Contrapose to get: `¬□¬¬φ → ¬□φ`
 3. The goal `φ.neg.neg.box.neg → φ.box.neg` matches step 2
 -/
-def modalDualityNeg (φ : Formula) : ⊢ φ.neg.diamond.imp φ.box.neg := by
+def modalDualityNeg {fc : FrameClass} (φ : Formula) : ⊢[fc] φ.neg.diamond.imp φ.box.neg := by
   -- Goal: φ.neg.diamond → ¬□φ
   -- Expand diamond: φ.neg.neg.box.neg → φ.box.neg
 
   -- Step 1: DNI gives us φ → ¬¬φ
-  have dni_phi : ⊢ φ.imp φ.neg.neg :=
+  have dni_phi : ⊢[fc] φ.imp φ.neg.neg :=
     notNotIntro φ
   -- Step 2: Necessitate using modal_k
-  have box_dni : ⊢ (φ.imp φ.neg.neg).box :=
+  have box_dni : ⊢[fc] (φ.imp φ.neg.neg).box :=
     DerivationTree.necessitation _ dni_phi
   -- Step 3: Modal K distribution: □(φ → ¬¬φ) → (□φ → □¬¬φ)
-  have mk : ⊢ (φ.imp φ.neg.neg).box.imp (φ.box.imp φ.neg.neg.box) :=
-    DerivationTree.axiom [] _ (Axiom.modal_k_dist φ φ.neg.neg) trivial
+  have mk : ⊢[fc] (φ.imp φ.neg.neg).box.imp (φ.box.imp φ.neg.neg.box) :=
+    DerivationTree.axiom [] _ (Axiom.modal_k_dist φ φ.neg.neg) (FrameClass.base_le fc)
   -- Step 4: Apply to get □φ → □¬¬φ
-  have forward : ⊢ φ.box.imp φ.neg.neg.box :=
+  have forward : ⊢[fc] φ.box.imp φ.neg.neg.box :=
     DerivationTree.modus_ponens [] _ _ mk box_dni
   -- Step 5: Contrapose to get ¬□¬¬φ → ¬□φ
   exact contraposition forward
@@ -105,21 +105,21 @@ Strategy:
 2. Contrapose to get: `¬□φ → ¬□¬¬φ`
 3. The goal `φ.box.neg → φ.neg.neg.box.neg` matches step 2
 -/
-def modalDualityNegRev (φ : Formula) : ⊢ φ.box.neg.imp φ.neg.diamond := by
+def modalDualityNegRev {fc : FrameClass} (φ : Formula) : ⊢[fc] φ.box.neg.imp φ.neg.diamond := by
   -- Goal: ¬□φ → ◇¬φ
   -- Expand diamond: φ.box.neg → φ.neg.neg.box.neg
 
   -- Step 1: DNE gives us ¬¬φ → φ
-  have dne_phi : ⊢ φ.neg.neg.imp φ :=
+  have dne_phi : ⊢[fc] φ.neg.neg.imp φ :=
     Propositional.doubleNegation φ
   -- Step 2: Necessitate using modal_k
-  have box_dne : ⊢ (φ.neg.neg.imp φ).box :=
+  have box_dne : ⊢[fc] (φ.neg.neg.imp φ).box :=
     DerivationTree.necessitation _ dne_phi
   -- Step 3: Modal K distribution: □(¬¬φ → φ) → (□¬¬φ → □φ)
-  have mk : ⊢ (φ.neg.neg.imp φ).box.imp (φ.neg.neg.box.imp φ.box) :=
-    DerivationTree.axiom [] _ (Axiom.modal_k_dist φ.neg.neg φ) trivial
+  have mk : ⊢[fc] (φ.neg.neg.imp φ).box.imp (φ.neg.neg.box.imp φ.box) :=
+    DerivationTree.axiom [] _ (Axiom.modal_k_dist φ.neg.neg φ) (FrameClass.base_le fc)
   -- Step 4: Apply to get □¬¬φ → □φ
-  have forward : ⊢ φ.neg.neg.box.imp φ.box :=
+  have forward : ⊢[fc] φ.neg.neg.box.imp φ.box :=
     DerivationTree.modus_ponens [] _ _ mk box_dne
   -- Step 5: Contrapose to get ¬□φ → ¬□¬¬φ
   exact contraposition forward
@@ -136,10 +136,10 @@ Box monotonicity: from `⊢ A → B`, derive `⊢ □A → □B`.
 
 Uses necessitation (modal_k) and K distribution axiom.
 -/
-def boxMono {A B : Formula} (h : ⊢ A.imp B) : ⊢ A.box.imp B.box := by
-  have box_h : ⊢ (A.imp B).box := DerivationTree.necessitation _ h
-  have mk : ⊢ (A.imp B).box.imp (A.box.imp B.box) :=
-    DerivationTree.axiom [] _ (Axiom.modal_k_dist A B) trivial
+def boxMono {fc : FrameClass} {A B : Formula} (h : ⊢[fc] A.imp B) : ⊢[fc] A.box.imp B.box := by
+  have box_h : ⊢[fc] (A.imp B).box := DerivationTree.necessitation _ h
+  have mk : ⊢[fc] (A.imp B).box.imp (A.box.imp B.box) :=
+    DerivationTree.axiom [] _ (Axiom.modal_k_dist A B) (FrameClass.base_le fc)
   exact DerivationTree.modus_ponens [] _ _ mk box_h
 
 /--
@@ -147,9 +147,9 @@ Diamond monotonicity: from `⊢ A → B`, derive `⊢ ◇A → ◇B`.
 
 Derived via contraposition of boxMono applied to the negated implication.
 -/
-def diamondMono {A B : Formula} (h : ⊢ A.imp B) : ⊢ A.diamond.imp B.diamond := by
-  have contra : ⊢ B.neg.imp A.neg := contraposition h
-  have box_contra : ⊢ B.neg.box.imp A.neg.box := boxMono contra
+def diamondMono {fc : FrameClass} {A B : Formula} (h : ⊢[fc] A.imp B) : ⊢[fc] A.diamond.imp B.diamond := by
+  have contra : ⊢[fc] B.neg.imp A.neg := contraposition h
+  have box_contra : ⊢[fc] B.neg.box.imp A.neg.box := boxMono contra
   exact contraposition box_contra
 
 /--
@@ -157,9 +157,9 @@ Future monotonicity: from `⊢ A → B`, derive `⊢ GA → GB`.
 
 Uses temporal K rule and future K distribution axiom.
 -/
-def futureMono {A B : Formula} (h : ⊢ A.imp B) : ⊢ A.allFuture.imp B.allFuture := by
-  have g_h : ⊢ (A.imp B).allFuture := DerivationTree.temporal_necessitation _ h
-  have fk : ⊢ (A.imp B).allFuture.imp (A.allFuture.imp B.allFuture) := futureKDist A B
+def futureMono {fc : FrameClass} {A B : Formula} (h : ⊢[fc] A.imp B) : ⊢[fc] A.allFuture.imp B.allFuture := by
+  have g_h : ⊢[fc] (A.imp B).allFuture := DerivationTree.temporal_necessitation _ h
+  have fk : ⊢[fc] (A.imp B).allFuture.imp (A.allFuture.imp B.allFuture) := futureKDist A B
   exact DerivationTree.modus_ponens [] _ _ fk g_h
 
 /--
@@ -167,19 +167,19 @@ Past monotonicity: from `⊢ A → B`, derive `⊢ HA → HB`.
 
 Derived via temporal duality from future monotonicity.
 -/
-def pastMono {A B : Formula} (h : ⊢ A.imp B) : ⊢ A.allPast.imp B.allPast := by
-  have h_swap : ⊢ A.swapTemporal.imp B.swapTemporal := by
-    have td : ⊢ (A.imp B).swapTemporal := DerivationTree.temporal_duality (A.imp B) h
+def pastMono {fc : FrameClass} {A B : Formula} (h : ⊢[fc] A.imp B) : ⊢[fc] A.allPast.imp B.allPast := by
+  have h_swap : ⊢[fc] A.swapTemporal.imp B.swapTemporal := by
+    have td : ⊢[fc] (A.imp B).swapTemporal := DerivationTree.temporal_duality (A.imp B) h
     exact td
-  have g_swap : ⊢ (A.swapTemporal.imp B.swapTemporal).allFuture :=
+  have g_swap : ⊢[fc] (A.swapTemporal.imp B.swapTemporal).allFuture :=
     DerivationTree.temporal_necessitation _ h_swap
-  have past_raw : ⊢ ((A.swapTemporal.imp B.swapTemporal).allFuture).swapTemporal :=
+  have past_raw : ⊢[fc] ((A.swapTemporal.imp B.swapTemporal).allFuture).swapTemporal :=
     DerivationTree.temporal_duality _ g_swap
-  have h_past : ⊢ (A.imp B).allPast := by
+  have h_past : ⊢[fc] (A.imp B).allPast := by
     simp only [Formula.swapTemporal, Formula.swap_temporal_all_future,
       Formula.swap_temporal_involution] at past_raw
     exact past_raw
-  have pk : ⊢ (A.imp B).allPast.imp (A.allPast.imp B.allPast) := pastKDist A B
+  have pk : ⊢[fc] (A.imp B).allPast.imp (A.allPast.imp B.allPast) := pastKDist A B
   exact DerivationTree.modus_ponens [] _ _ pk h_past
 
 /-!
@@ -206,7 +206,7 @@ Decomposition: `⊢ △φ → Hφ` (always implies past component).
 
 Extract the past component from the always operator using left conjunction elimination.
 -/
-def alwaysToPast (φ : Formula) : ⊢ φ.always.imp φ.allPast := by
+def alwaysToPast {fc : FrameClass} (φ : Formula) : ⊢[fc] φ.always.imp φ.allPast := by
   -- always φ = Hφ ∧ (φ ∧ Gφ)
   -- Use lceImp to extract first conjunct
   exact Propositional.lceImp φ.allPast (φ.and φ.allFuture)
@@ -216,13 +216,13 @@ Decomposition: `⊢ △φ → φ` (always implies present component).
 
 Extract the present component from the always operator.
 -/
-def alwaysToPresent (φ : Formula) : ⊢ φ.always.imp φ := by
+def alwaysToPresent {fc : FrameClass} (φ : Formula) : ⊢[fc] φ.always.imp φ := by
   -- always φ = Hφ ∧ (φ ∧ Gφ)
   -- Step 1: Extract (φ ∧ Gφ) using rceImp
-  have step1 : ⊢ φ.always.imp (φ.and φ.allFuture) :=
+  have step1 : ⊢[fc] φ.always.imp (φ.and φ.allFuture) :=
     Propositional.rceImp φ.allPast (φ.and φ.allFuture)
   -- Step 2: Extract φ from (φ ∧ Gφ) using lceImp
-  have step2 : ⊢ (φ.and φ.allFuture).imp φ :=
+  have step2 : ⊢[fc] (φ.and φ.allFuture).imp φ :=
     Propositional.lceImp φ φ.allFuture
   -- Step 3: Compose
   exact impTrans step1 step2
@@ -232,13 +232,13 @@ Decomposition: `⊢ △φ → Gφ` (always implies future component).
 
 Extract the future component from the always operator.
 -/
-def alwaysToFuture (φ : Formula) : ⊢ φ.always.imp φ.allFuture := by
+def alwaysToFuture {fc : FrameClass} (φ : Formula) : ⊢[fc] φ.always.imp φ.allFuture := by
   -- always φ = Hφ ∧ (φ ∧ Gφ)
   -- Step 1: Extract (φ ∧ Gφ) using rceImp
-  have step1 : ⊢ φ.always.imp (φ.and φ.allFuture) :=
+  have step1 : ⊢[fc] φ.always.imp (φ.and φ.allFuture) :=
     Propositional.rceImp φ.allPast (φ.and φ.allFuture)
   -- Step 2: Extract Gφ from (φ ∧ Gφ) using rceImp
-  have step2 : ⊢ (φ.and φ.allFuture).imp φ.allFuture :=
+  have step2 : ⊢[fc] (φ.and φ.allFuture).imp φ.allFuture :=
     Propositional.rceImp φ φ.allFuture
   -- Step 3: Compose
   exact impTrans step1 step2
@@ -248,8 +248,8 @@ Composition: `⊢ (Hφ ∧ (φ ∧ Gφ)) → △φ` (components imply always).
 
 This is trivial by definitional equality since `always φ = Hφ ∧ (φ ∧ Gφ)`.
 -/
-def pastPresentFutureToAlways (φ : Formula) :
-    ⊢ (φ.allPast.and (φ.and φ.allFuture)).imp φ.always := by
+def pastPresentFutureToAlways {fc : FrameClass} (φ : Formula) :
+    ⊢[fc] (φ.allPast.and (φ.and φ.allFuture)).imp φ.always := by
   -- Definitional equality: always φ = Hφ ∧ (φ ∧ Gφ)
   exact identity (φ.allPast.and (φ.and φ.allFuture))
 
@@ -264,18 +264,18 @@ From `always φ → always (¬¬φ)`, we can derive the temporal analog of doubl
 3. Apply `pastKDist` and `futureKDist` to get `Hφ → H(¬¬φ)` and `Gφ → G(¬¬φ)`
 4. Recombine: `H(¬¬φ) ∧ ¬¬φ ∧ G(¬¬φ) = △(¬¬φ)`
 -/
-def alwaysDni (φ : Formula) : ⊢ φ.always.imp φ.neg.neg.always := by
+def alwaysDni {fc : FrameClass} (φ : Formula) : ⊢[fc] φ.always.imp φ.neg.neg.always := by
   -- Step 1: Get DNI for φ
-  have dni_phi : ⊢ φ.imp φ.neg.neg := notNotIntro φ
+  have dni_phi : ⊢[fc] φ.imp φ.neg.neg := notNotIntro φ
   -- Step 2: Lift through past operator
-  have past_lift : ⊢ φ.allPast.imp φ.neg.neg.allPast := by
-    have pk : ⊢ (φ.imp φ.neg.neg).allPast.imp (φ.allPast.imp φ.neg.neg.allPast) :=
+  have past_lift : ⊢[fc] φ.allPast.imp φ.neg.neg.allPast := by
+    have pk : ⊢[fc] (φ.imp φ.neg.neg).allPast.imp (φ.allPast.imp φ.neg.neg.allPast) :=
       pastKDist φ φ.neg.neg
-    have past_dni : ⊢ (φ.imp φ.neg.neg).allPast := by
-      have h_swap : ⊢ (φ.imp φ.neg.neg).swapTemporal := DerivationTree.temporal_duality _ dni_phi
-      have g_swap : ⊢ (φ.imp φ.neg.neg).swapTemporal.allFuture :=
+    have past_dni : ⊢[fc] (φ.imp φ.neg.neg).allPast := by
+      have h_swap : ⊢[fc] (φ.imp φ.neg.neg).swapTemporal := DerivationTree.temporal_duality _ dni_phi
+      have g_swap : ⊢[fc] (φ.imp φ.neg.neg).swapTemporal.allFuture :=
         DerivationTree.temporal_necessitation _ h_swap
-      have past_raw : ⊢ ((φ.imp φ.neg.neg).swapTemporal.allFuture).swapTemporal :=
+      have past_raw : ⊢[fc] ((φ.imp φ.neg.neg).swapTemporal.allFuture).swapTemporal :=
         DerivationTree.temporal_duality _ g_swap
       simp only [Formula.swapTemporal, Formula.swap_temporal_all_future,
       Formula.swap_temporal_involution] at past_raw
@@ -284,23 +284,23 @@ def alwaysDni (φ : Formula) : ⊢ φ.always.imp φ.neg.neg.always := by
   -- Step 3: Present is just dni_phi
 
   -- Step 4: Lift through future operator
-  have future_lift : ⊢ φ.allFuture.imp φ.neg.neg.allFuture := by
-    have fk : ⊢ (φ.imp φ.neg.neg).allFuture.imp (φ.allFuture.imp φ.neg.neg.allFuture) :=
+  have future_lift : ⊢[fc] φ.allFuture.imp φ.neg.neg.allFuture := by
+    have fk : ⊢[fc] (φ.imp φ.neg.neg).allFuture.imp (φ.allFuture.imp φ.neg.neg.allFuture) :=
       futureKDist φ φ.neg.neg
-    have future_dni : ⊢ (φ.imp φ.neg.neg).allFuture :=
+    have future_dni : ⊢[fc] (φ.imp φ.neg.neg).allFuture :=
       DerivationTree.temporal_necessitation _ dni_phi
     exact DerivationTree.modus_ponens [] _ _ fk future_dni
   -- Step 5: Decompose always φ and apply lifts
-  have to_past : ⊢ φ.always.imp φ.allPast := alwaysToPast φ
-  have to_present : ⊢ φ.always.imp φ := alwaysToPresent φ
-  have to_future : ⊢ φ.always.imp φ.allFuture := alwaysToFuture φ
-  have past_comp : ⊢ φ.always.imp φ.neg.neg.allPast := impTrans to_past past_lift
-  have present_comp : ⊢ φ.always.imp φ.neg.neg := impTrans to_present dni_phi
-  have future_comp : ⊢ φ.always.imp φ.neg.neg.allFuture := impTrans to_future future_lift
+  have to_past : ⊢[fc] φ.always.imp φ.allPast := alwaysToPast φ
+  have to_present : ⊢[fc] φ.always.imp φ := alwaysToPresent φ
+  have to_future : ⊢[fc] φ.always.imp φ.allFuture := alwaysToFuture φ
+  have past_comp : ⊢[fc] φ.always.imp φ.neg.neg.allPast := impTrans to_past past_lift
+  have present_comp : ⊢[fc] φ.always.imp φ.neg.neg := impTrans to_present dni_phi
+  have future_comp : ⊢[fc] φ.always.imp φ.neg.neg.allFuture := impTrans to_future future_lift
   -- Step 6: Combine into nested conjunction
-  have present_future : ⊢ φ.always.imp (φ.neg.neg.and φ.neg.neg.allFuture) :=
+  have present_future : ⊢[fc] φ.always.imp (φ.neg.neg.and φ.neg.neg.allFuture) :=
     combineImpConj present_comp future_comp
-  have all_three : ⊢ φ.always.imp (φ.neg.neg.allPast.and (φ.neg.neg.and φ.neg.neg.allFuture)) :=
+  have all_three : ⊢[fc] φ.always.imp (φ.neg.neg.allPast.and (φ.neg.neg.and φ.neg.neg.allFuture)) :=
     combineImpConj past_comp present_future
   -- Step 7: Result is definitionally equal to always (¬¬φ)
   exact all_three
@@ -344,12 +344,12 @@ So this is asking: `(always ((φ → ⊥) → ⊥)).neg → (always φ).neg`
 
 Use DNI on φ: `φ.always → φ.neg.neg.always` and contrapose.
 -/
-def temporalDualityNeg (φ : Formula) : ⊢ φ.neg.sometimes.imp φ.always.neg := by
+def temporalDualityNeg {fc : FrameClass} (φ : Formula) : ⊢[fc] φ.neg.sometimes.imp φ.always.neg := by
   -- Goal: φ.neg.sometimes → φ.always.neg
   -- Expand: (φ.neg).neg.always.neg → φ.always.neg
 
   -- Step 1: Get alwaysDni for φ
-  have adni : ⊢ φ.always.imp φ.neg.neg.always :=
+  have adni : ⊢[fc] φ.always.imp φ.neg.neg.always :=
     alwaysDni φ
   -- Step 2: Contrapose to get φ.neg.neg.always.neg → φ.always.neg
   exact contraposition adni
@@ -362,18 +362,18 @@ From `always (¬¬φ) → always φ`, we can derive the temporal analog of doubl
 **Derivation Strategy**: Mirror of alwaysDni but using `Propositional.doubleNegation`
 instead of `notNotIntro`.
 -/
-def alwaysDne (φ : Formula) : ⊢ φ.neg.neg.always.imp φ.always := by
+def alwaysDne {fc : FrameClass} (φ : Formula) : ⊢[fc] φ.neg.neg.always.imp φ.always := by
   -- Step 1: Get DNE for φ
-  have dne_phi : ⊢ φ.neg.neg.imp φ := Propositional.doubleNegation φ
+  have dne_phi : ⊢[fc] φ.neg.neg.imp φ := Propositional.doubleNegation φ
   -- Step 2: Lift through past operator
-  have past_lift : ⊢ φ.neg.neg.allPast.imp φ.allPast := by
-    have pk : ⊢ (φ.neg.neg.imp φ).allPast.imp (φ.neg.neg.allPast.imp φ.allPast) :=
+  have past_lift : ⊢[fc] φ.neg.neg.allPast.imp φ.allPast := by
+    have pk : ⊢[fc] (φ.neg.neg.imp φ).allPast.imp (φ.neg.neg.allPast.imp φ.allPast) :=
       pastKDist φ.neg.neg φ
-    have past_dne : ⊢ (φ.neg.neg.imp φ).allPast := by
-      have h_swap : ⊢ (φ.neg.neg.imp φ).swapTemporal := DerivationTree.temporal_duality _ dne_phi
-      have g_swap : ⊢ (φ.neg.neg.imp φ).swapTemporal.allFuture :=
+    have past_dne : ⊢[fc] (φ.neg.neg.imp φ).allPast := by
+      have h_swap : ⊢[fc] (φ.neg.neg.imp φ).swapTemporal := DerivationTree.temporal_duality _ dne_phi
+      have g_swap : ⊢[fc] (φ.neg.neg.imp φ).swapTemporal.allFuture :=
         DerivationTree.temporal_necessitation _ h_swap
-      have past_raw : ⊢ ((φ.neg.neg.imp φ).swapTemporal.allFuture).swapTemporal :=
+      have past_raw : ⊢[fc] ((φ.neg.neg.imp φ).swapTemporal.allFuture).swapTemporal :=
         DerivationTree.temporal_duality _ g_swap
       simp only [Formula.swapTemporal, Formula.swap_temporal_all_future,
       Formula.swap_temporal_involution] at past_raw
@@ -382,23 +382,23 @@ def alwaysDne (φ : Formula) : ⊢ φ.neg.neg.always.imp φ.always := by
   -- Step 3: Present is just dne_phi
 
   -- Step 4: Lift through future operator
-  have future_lift : ⊢ φ.neg.neg.allFuture.imp φ.allFuture := by
-    have fk : ⊢ (φ.neg.neg.imp φ).allFuture.imp (φ.neg.neg.allFuture.imp φ.allFuture) :=
+  have future_lift : ⊢[fc] φ.neg.neg.allFuture.imp φ.allFuture := by
+    have fk : ⊢[fc] (φ.neg.neg.imp φ).allFuture.imp (φ.neg.neg.allFuture.imp φ.allFuture) :=
       futureKDist φ.neg.neg φ
-    have future_dne : ⊢ (φ.neg.neg.imp φ).allFuture :=
+    have future_dne : ⊢[fc] (φ.neg.neg.imp φ).allFuture :=
       DerivationTree.temporal_necessitation _ dne_phi
     exact DerivationTree.modus_ponens [] _ _ fk future_dne
   -- Step 5: Decompose always (¬¬φ) and apply lifts
-  have to_past : ⊢ φ.neg.neg.always.imp φ.neg.neg.allPast := alwaysToPast φ.neg.neg
-  have to_present : ⊢ φ.neg.neg.always.imp φ.neg.neg := alwaysToPresent φ.neg.neg
-  have to_future : ⊢ φ.neg.neg.always.imp φ.neg.neg.allFuture := alwaysToFuture φ.neg.neg
-  have past_comp : ⊢ φ.neg.neg.always.imp φ.allPast := impTrans to_past past_lift
-  have present_comp : ⊢ φ.neg.neg.always.imp φ := impTrans to_present dne_phi
-  have future_comp : ⊢ φ.neg.neg.always.imp φ.allFuture := impTrans to_future future_lift
+  have to_past : ⊢[fc] φ.neg.neg.always.imp φ.neg.neg.allPast := alwaysToPast φ.neg.neg
+  have to_present : ⊢[fc] φ.neg.neg.always.imp φ.neg.neg := alwaysToPresent φ.neg.neg
+  have to_future : ⊢[fc] φ.neg.neg.always.imp φ.neg.neg.allFuture := alwaysToFuture φ.neg.neg
+  have past_comp : ⊢[fc] φ.neg.neg.always.imp φ.allPast := impTrans to_past past_lift
+  have present_comp : ⊢[fc] φ.neg.neg.always.imp φ := impTrans to_present dne_phi
+  have future_comp : ⊢[fc] φ.neg.neg.always.imp φ.allFuture := impTrans to_future future_lift
   -- Step 6: Combine into nested conjunction
-  have present_future : ⊢ φ.neg.neg.always.imp (φ.and φ.allFuture) :=
+  have present_future : ⊢[fc] φ.neg.neg.always.imp (φ.and φ.allFuture) :=
     combineImpConj present_comp future_comp
-  have all_three : ⊢ φ.neg.neg.always.imp (φ.allPast.and (φ.and φ.allFuture)) :=
+  have all_three : ⊢[fc] φ.neg.neg.always.imp (φ.allPast.and (φ.and φ.allFuture)) :=
     combineImpConj past_comp present_future
   -- Step 7: Result is definitionally equal to always φ
   exact all_three
@@ -419,12 +419,12 @@ Strategy:
    Which is: `φ.always.neg → φ.neg.neg.always.neg`
 3. This matches our goal
 -/
-def temporalDualityNegRev (φ : Formula) : ⊢ φ.always.neg.imp φ.neg.sometimes := by
+def temporalDualityNegRev {fc : FrameClass} (φ : Formula) : ⊢[fc] φ.always.neg.imp φ.neg.sometimes := by
   -- Goal: φ.always.neg → φ.neg.sometimes
   -- Expand: φ.always.neg → (φ.neg).neg.always.neg
 
   -- Step 1: Get alwaysDne for φ
-  have adne : ⊢ φ.neg.neg.always.imp φ.always :=
+  have adne : ⊢[fc] φ.neg.neg.always.imp φ.always :=
     alwaysDne φ
   -- Step 2: Contrapose to get φ.always.neg → φ.neg.neg.always.neg
   exact contraposition adne
@@ -442,25 +442,25 @@ Always monotonicity: from `⊢ A → B`, derive `⊢ △A → △B`.
 
 **Usage**: Essential for P6 derivation to lift modalDualityNeg through always.
 -/
-def alwaysMono {A B : Formula} (h : ⊢ A.imp B) : ⊢ A.always.imp B.always := by
+def alwaysMono {fc : FrameClass} {A B : Formula} (h : ⊢[fc] A.imp B) : ⊢[fc] A.always.imp B.always := by
   -- Step 1: Get monotonicity for each component
-  have past_h : ⊢ A.allPast.imp B.allPast := pastMono h
-  have future_h : ⊢ A.allFuture.imp B.allFuture := futureMono h
+  have past_h : ⊢[fc] A.allPast.imp B.allPast := pastMono h
+  have future_h : ⊢[fc] A.allFuture.imp B.allFuture := futureMono h
   
   -- Step 2: Decompose △A into components
-  have to_past : ⊢ A.always.imp A.allPast := alwaysToPast A
-  have to_present : ⊢ A.always.imp A := alwaysToPresent A
-  have to_future : ⊢ A.always.imp A.allFuture := alwaysToFuture A
+  have to_past : ⊢[fc] A.always.imp A.allPast := alwaysToPast A
+  have to_present : ⊢[fc] A.always.imp A := alwaysToPresent A
+  have to_future : ⊢[fc] A.always.imp A.allFuture := alwaysToFuture A
   
   -- Step 3: Compose to get △A → HB, △A → B, △A → GB
-  have comp_past : ⊢ A.always.imp B.allPast := impTrans to_past past_h
-  have comp_present : ⊢ A.always.imp B := impTrans to_present h
-  have comp_future : ⊢ A.always.imp B.allFuture := impTrans to_future future_h
+  have comp_past : ⊢[fc] A.always.imp B.allPast := impTrans to_past past_h
+  have comp_present : ⊢[fc] A.always.imp B := impTrans to_present h
+  have comp_future : ⊢[fc] A.always.imp B.allFuture := impTrans to_future future_h
   
   -- Step 4: Combine into △A → (HB ∧ (B ∧ GB))
-  have present_future : ⊢ A.always.imp (B.and B.allFuture) :=
+  have present_future : ⊢[fc] A.always.imp (B.and B.allFuture) :=
     combineImpConj comp_present comp_future
-  have all_three : ⊢ A.always.imp (B.allPast.and (B.and B.allFuture)) :=
+  have all_three : ⊢[fc] A.always.imp (B.allPast.and (B.and B.allFuture)) :=
     combineImpConj comp_past present_future
   
   -- Step 5: Result is definitionally equal to △B
@@ -477,11 +477,11 @@ Proof:
 2. Chain with DNE: `¬¬B → ¬¬A → A`
 3. Prepend DNI: `B → ¬¬B → A`
 -/
-def doubleContrapose {A B : Formula} (h : ⊢ A.neg.imp B.neg) : ⊢ B.imp A := by
-  have contra : ⊢ B.neg.neg.imp A.neg.neg := contraposition h
-  have dne_a : ⊢ A.neg.neg.imp A := Propositional.doubleNegation A
-  have chain : ⊢ B.neg.neg.imp A := impTrans contra dne_a
-  have dni_b : ⊢ B.imp B.neg.neg := notNotIntro B
+def doubleContrapose {fc : FrameClass} {A B : Formula} (h : ⊢[fc] A.neg.imp B.neg) : ⊢[fc] B.imp A := by
+  have contra : ⊢[fc] B.neg.neg.imp A.neg.neg := contraposition h
+  have dne_a : ⊢[fc] A.neg.neg.imp A := Propositional.doubleNegation A
+  have chain : ⊢[fc] B.neg.neg.imp A := impTrans contra dne_a
+  have dni_b : ⊢[fc] B.imp B.neg.neg := notNotIntro B
   exact impTrans dni_b chain
 
 /-!
@@ -501,12 +501,12 @@ Proof:
 3. `diamondMono` lifts step 2: `◇¬△φ → ◇▽¬φ`
 4. Compose steps 1 and 3
 -/
-def bridge1 (φ : Formula) : ⊢ φ.always.box.neg.imp φ.neg.sometimes.diamond := by
-  have md_rev : ⊢ φ.always.box.neg.imp (φ.always).neg.diamond :=
+def bridge1 {fc : FrameClass} (φ : Formula) : ⊢[fc] φ.always.box.neg.imp φ.neg.sometimes.diamond := by
+  have md_rev : ⊢[fc] φ.always.box.neg.imp (φ.always).neg.diamond :=
     modalDualityNegRev φ.always
-  have td_rev : ⊢ φ.always.neg.imp φ.neg.sometimes :=
+  have td_rev : ⊢[fc] φ.always.neg.imp φ.neg.sometimes :=
     temporalDualityNegRev φ
-  have dm : ⊢ (φ.always).neg.diamond.imp φ.neg.sometimes.diamond :=
+  have dm : ⊢[fc] (φ.always).neg.diamond.imp φ.neg.sometimes.diamond :=
     diamondMono td_rev
   exact impTrans md_rev dm
 
@@ -522,10 +522,10 @@ Proof:
 4. Observe: `¬¬△¬□φ = (¬▽□φ)` since `▽ψ = ¬△¬ψ`
 5. Compose steps 2 and 3
 -/
-def bridge2 (φ : Formula) : ⊢ φ.neg.diamond.always.imp φ.box.sometimes.neg := by
-  have md : ⊢ φ.neg.diamond.imp φ.box.neg := modalDualityNeg φ
-  have am : ⊢ φ.neg.diamond.always.imp φ.box.neg.always := alwaysMono md
-  have dni_step : ⊢ φ.box.neg.always.imp φ.box.neg.always.neg.neg :=
+def bridge2 {fc : FrameClass} (φ : Formula) : ⊢[fc] φ.neg.diamond.always.imp φ.box.sometimes.neg := by
+  have md : ⊢[fc] φ.neg.diamond.imp φ.box.neg := modalDualityNeg φ
+  have am : ⊢[fc] φ.neg.diamond.always.imp φ.box.neg.always := alwaysMono md
+  have dni_step : ⊢[fc] φ.box.neg.always.imp φ.box.neg.always.neg.neg :=
     notNotIntro φ.box.neg.always
   exact impTrans am dni_step
 
@@ -557,14 +557,14 @@ The derivation uses:
 
 **Implementation Status**: FULLY PROVEN (zero sorry)
 -/
-def perpetuity6 (φ : Formula) : ⊢ φ.box.sometimes.imp φ.always.box := by
-  have p5_neg : ⊢ φ.neg.sometimes.diamond.imp φ.neg.diamond.always :=
+def perpetuity6 {fc : FrameClass} (φ : Formula) : ⊢[fc] φ.box.sometimes.imp φ.always.box := by
+  have p5_neg : ⊢[fc] φ.neg.sometimes.diamond.imp φ.neg.diamond.always :=
     perpetuity5 φ.neg
-  have b1 : ⊢ φ.always.box.neg.imp φ.neg.sometimes.diamond := bridge1 φ
-  have b2 : ⊢ φ.neg.diamond.always.imp φ.box.sometimes.neg := bridge2 φ
+  have b1 : ⊢[fc] φ.always.box.neg.imp φ.neg.sometimes.diamond := bridge1 φ
+  have b2 : ⊢[fc] φ.neg.diamond.always.imp φ.box.sometimes.neg := bridge2 φ
   -- Chain: ¬□△φ → ¬▽□φ
-  have chain : ⊢ φ.always.box.neg.imp φ.box.sometimes.neg := by
-    have step1 : ⊢ φ.always.box.neg.imp φ.neg.diamond.always := impTrans b1 p5_neg
+  have chain : ⊢[fc] φ.always.box.neg.imp φ.box.sometimes.neg := by
+    have step1 : ⊢[fc] φ.always.box.neg.imp φ.neg.diamond.always := impTrans b1 p5_neg
     exact impTrans step1 b2
   -- Double contrapose: from ¬A → ¬B, get B → A
   exact doubleContrapose chain

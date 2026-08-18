@@ -572,7 +572,7 @@ declarations are short. Confirm by header enumeration before starting; if the re
 
 ---
 
-### Phase 10: Generalise Perpetuity [NOT STARTED]
+### Phase 10: Generalise Perpetuity [COMPLETED]
 
 **Goal**: Deliverable (e) for the perpetuity principles — the last code phase.
 
@@ -581,9 +581,10 @@ declarations are short. Confirm by header enumeration before starting; if the re
 - [ ] `Perpetuity/MonotonicityDuality.lean`: generalise 19 declarations.
 - [ ] `Perpetuity/Helpers.lean`: generalise the 3 remaining Base-pinned declarations (3 of 6 are
       already `{fc}`).
-- [ ] `Perpetuity.lean` is a pure aggregator (0 declarations, confirmed at plan time) — no
+- [x] `Perpetuity.lean` is a pure aggregator (0 declarations, confirmed at plan time) — no
       generalisation needed there, but update its submodule docstring if it describes the
-      submodules as Base-only.
+      submodules as Base-only. *(deviation: altered — the aggregator docstring contains no
+      `Base`/`FrameClass` mention at all, so no docstring edit was needed and none was made.)*
 - [ ] Order within the phase: `Helpers` first (`Principles` and `MonotonicityDuality` both import
       it), then `Principles`, then `MonotonicityDuality` (which imports `Principles`).
 - [ ] Docstring any declaration that must stay pinned with the reason.

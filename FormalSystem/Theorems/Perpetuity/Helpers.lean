@@ -59,11 +59,11 @@ Proof:
 3. Transitivity: `□φ → Gφ`
 -/
 @[tmLemma]
-def boxToFuture (φ : Formula) : ⊢ φ.box.imp φ.allFuture := by
-  have mf : ⊢ φ.box.imp (φ.allFuture.box) :=
-    DerivationTree.axiom [] _ (Axiom.modal_future φ) trivial
-  have mt : ⊢ φ.allFuture.box.imp φ.allFuture :=
-    DerivationTree.axiom [] _ (Axiom.modal_t φ.allFuture) trivial
+def boxToFuture {fc : FrameClass} (φ : Formula) : ⊢[fc] φ.box.imp φ.allFuture := by
+  have mf : ⊢[fc] φ.box.imp (φ.allFuture.box) :=
+    DerivationTree.axiom [] _ (Axiom.modal_future φ) (FrameClass.base_le fc)
+  have mt : ⊢[fc] φ.allFuture.box.imp φ.allFuture :=
+    DerivationTree.axiom [] _ (Axiom.modal_t φ.allFuture) (FrameClass.base_le fc)
   exact impTrans mf mt
 
 /--
@@ -78,9 +78,9 @@ Proof via temporal duality:
 This clever use of temporal duality avoids needing a separate "modal-past" axiom.
 -/
 @[tmLemma]
-def boxToPast (φ : Formula) : ⊢ φ.box.imp φ.allPast := by
-  have h1 : ⊢ φ.swapTemporal.box.imp φ.swapTemporal.allFuture := boxToFuture φ.swapTemporal
-  have h2 : ⊢ (φ.swapTemporal.box.imp φ.swapTemporal.allFuture).swapTemporal :=
+def boxToPast {fc : FrameClass} (φ : Formula) : ⊢[fc] φ.box.imp φ.allPast := by
+  have h1 : ⊢[fc] φ.swapTemporal.box.imp φ.swapTemporal.allFuture := boxToFuture φ.swapTemporal
+  have h2 : ⊢[fc] (φ.swapTemporal.box.imp φ.swapTemporal.allFuture).swapTemporal :=
     DerivationTree.temporal_duality (φ.swapTemporal.box.imp φ.swapTemporal.allFuture) h1
   simp only [Formula.swap_temporal_all_future,
     Formula.swapTemporal, Formula.swap_temporal_involution] at h2
@@ -90,8 +90,8 @@ def boxToPast (φ : Formula) : ⊢ φ.box.imp φ.allPast := by
 Box implies present: `⊢ □φ → φ` (MT axiom).
 -/
 @[tmLemma]
-def boxToPresent (φ : Formula) : ⊢ φ.box.imp φ :=
-  DerivationTree.axiom [] _ (Axiom.modal_t φ) trivial
+def boxToPresent {fc : FrameClass} (φ : Formula) : ⊢[fc] φ.box.imp φ :=
+  DerivationTree.axiom [] _ (Axiom.modal_t φ) (FrameClass.base_le fc)
 
 /-!
 ## Helper Lemmas: Boilerplate Reduction
