@@ -412,7 +412,7 @@ so any drift between the evidence file and the current tree surfaces before, not
 
 ---
 
-### Phase 6: Generalise Theorems/Propositional [NOT STARTED]
+### Phase 6: Generalise Theorems/Propositional [COMPLETED]
 
 **Goal**: Deliverable (e) at the base of the `Theorems/` import graph. This is the largest
 behavioural win — it is the layer whose Base pin forced the spike to rebuild combinators from

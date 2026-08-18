@@ -45,10 +45,10 @@ contradiction (both B and ¬B), then ¬A holds.
 
 **Dependencies**: `DerivationTree.modus_ponens`, `deductionTheorem`
 -/
-def ni (Γ : Context) (A B : Formula) (h1 : (A :: Γ) ⊢ B.neg) (h2 : (A :: Γ) ⊢ B) : Γ ⊢ A.neg := by
+def ni {fc : FrameClass} (Γ : Context) (A B : Formula) (h1 : (A :: Γ) ⊢[fc] B.neg) (h2 : (A :: Γ) ⊢[fc] B) : Γ ⊢[fc] A.neg := by
   -- From h1 and h2, derive (A :: Γ) ⊢ ⊥
   -- ¬B = B → ⊥, so modus ponens gives ⊥
-  have h_bot : (A :: Γ) ⊢ Formula.bot :=
+  have h_bot : (A :: Γ) ⊢[fc] Formula.bot :=
     DerivationTree.modus_ponens (A :: Γ) B Formula.bot h1 h2
   -- Apply deduction theorem: Γ ⊢ A → ⊥ = Γ ⊢ ¬A
   exact FormalSystem.Metalogic.Core.deductionTheorem Γ A Formula.bot h_bot
@@ -72,31 +72,31 @@ The context-based `iffIntro` already exists; this provides the pure implication 
 `DerivationTree.weakening`
 -/
 @[tmLemma]
-def biImp (A B : Formula) :
-    ⊢ (A.imp B).imp ((B.imp A).imp ((A.imp B).and (B.imp A))) := by
+def biImp {fc : FrameClass} (A B : Formula) :
+    ⊢[fc] (A.imp B).imp ((B.imp A).imp ((A.imp B).and (B.imp A))) := by
   -- First, derive [(A → B), (B → A)] ⊢ (A → B) ∧ (B → A)
-  have h_in_ctx : [(B.imp A), (A.imp B)] ⊢ (A.imp B).and (B.imp A) := by
+  have h_in_ctx : [(B.imp A), (A.imp B)] ⊢[fc] (A.imp B).and (B.imp A) := by
     -- Get (A → B) from context
-    have h_ab : [(B.imp A), (A.imp B)] ⊢ A.imp B := by
+    have h_ab : [(B.imp A), (A.imp B)] ⊢[fc] A.imp B := by
       apply DerivationTree.assumption
       simp
     -- Get (B → A) from context
-    have h_ba : [(B.imp A), (A.imp B)] ⊢ B.imp A := by
+    have h_ba : [(B.imp A), (A.imp B)] ⊢[fc] B.imp A := by
       apply DerivationTree.assumption
       simp
     -- Use pairing: X → Y → (X ∧ Y)
-    have pair_inst : ⊢ (A.imp B).imp ((B.imp A).imp ((A.imp B).and (B.imp A))) :=
+    have pair_inst : ⊢[fc] (A.imp B).imp ((B.imp A).imp ((A.imp B).and (B.imp A))) :=
       pairing (A.imp B) (B.imp A)
     -- Weaken to context
-    have pair_ctx : [(B.imp A), (A.imp B)] ⊢
+    have pair_ctx : [(B.imp A), (A.imp B)] ⊢[fc]
         (A.imp B).imp ((B.imp A).imp ((A.imp B).and (B.imp A))) :=
       DerivationTree.weakening [] _ _ pair_inst (List.nil_subset _)
     -- Apply modus ponens twice
-    have step1 : [(B.imp A), (A.imp B)] ⊢ (B.imp A).imp ((A.imp B).and (B.imp A)) :=
+    have step1 : [(B.imp A), (A.imp B)] ⊢[fc] (B.imp A).imp ((A.imp B).and (B.imp A)) :=
       DerivationTree.modus_ponens _ _ _ pair_ctx h_ab
     exact DerivationTree.modus_ponens _ _ _ step1 h_ba
   -- Apply deduction theorem: [(A → B)] ⊢ (B → A) → ((A → B) ∧ (B → A))
-  have step1 : [(A.imp B)] ⊢ (B.imp A).imp ((A.imp B).and (B.imp A)) :=
+  have step1 : [(A.imp B)] ⊢[fc] (B.imp A).imp ((A.imp B).and (B.imp A)) :=
     FormalSystem.Metalogic.Core.deductionTheorem [(A.imp B)] (B.imp A) _ h_in_ctx
   -- Apply deduction theorem: [] ⊢ (A → B) → ((B → A) → ((A → B) ∧ (B → A)))
   exact FormalSystem.Metalogic.Core.deductionTheorem [] (A.imp B) _ step1
@@ -122,50 +122,50 @@ then from A ∨ B we can derive C.
 **Dependencies**: `deductionTheorem`, `DerivationTree.weakening`, `classicalMerge`,
                `bCombinator`, `DerivationTree.assumption`
 -/
-noncomputable def de (Γ : Context) (A B C : Formula) (h1 : (A :: Γ) ⊢ C) (h2 : (B :: Γ) ⊢ C) :
-    ((A.or B) :: Γ) ⊢ C := by
+noncomputable def de {fc : FrameClass} (Γ : Context) (A B C : Formula) (h1 : (A :: Γ) ⊢[fc] C) (h2 : (B :: Γ) ⊢[fc] C) :
+    ((A.or B) :: Γ) ⊢[fc] C := by
   -- Apply deduction theorem to get Γ ⊢ A → C
-  have ac : Γ ⊢ A.imp C :=
+  have ac : Γ ⊢[fc] A.imp C :=
     FormalSystem.Metalogic.Core.deductionTheorem Γ A C h1
   -- Apply deduction theorem to get Γ ⊢ B → C
-  have bc : Γ ⊢ B.imp C :=
+  have bc : Γ ⊢[fc] B.imp C :=
     FormalSystem.Metalogic.Core.deductionTheorem Γ B C h2
   -- Weaken A → C to context ((A.or B) :: Γ)
-  have ac_ctx : ((A.or B) :: Γ) ⊢ A.imp C :=
+  have ac_ctx : ((A.or B) :: Γ) ⊢[fc] A.imp C :=
     DerivationTree.weakening Γ _ _ ac
       (by intro x hx; simp only [List.mem_cons]; right; exact hx)
   -- Weaken B → C to context ((A.or B) :: Γ)
-  have bc_ctx : ((A.or B) :: Γ) ⊢ B.imp C :=
+  have bc_ctx : ((A.or B) :: Γ) ⊢[fc] B.imp C :=
     DerivationTree.weakening Γ _ _ bc
       (by intro x hx; simp only [List.mem_cons]; right; exact hx)
   -- Get A ∨ B from context
-  have h_disj : ((A.or B) :: Γ) ⊢ A.or B := by
+  have h_disj : ((A.or B) :: Γ) ⊢[fc] A.or B := by
     apply DerivationTree.assumption
     simp
   -- A ∨ B = ¬A → B (by definition)
   -- We need ¬A → C from (¬A → B) and (B → C) via bCombinator
 
   -- bCombinator: (B → C) → (¬A → B) → (¬A → C)
-  have b_inst : ⊢ (B.imp C).imp ((A.neg.imp B).imp (A.neg.imp C)) :=
+  have b_inst : ⊢[fc] (B.imp C).imp ((A.neg.imp B).imp (A.neg.imp C)) :=
     bCombinator
-  have b_ctx : ((A.or B) :: Γ) ⊢ (B.imp C).imp ((A.neg.imp B).imp (A.neg.imp C)) :=
+  have b_ctx : ((A.or B) :: Γ) ⊢[fc] (B.imp C).imp ((A.neg.imp B).imp (A.neg.imp C)) :=
     DerivationTree.weakening [] _ _ b_inst (List.nil_subset _)
-  have step1 : ((A.or B) :: Γ) ⊢ (A.neg.imp B).imp (A.neg.imp C) :=
+  have step1 : ((A.or B) :: Γ) ⊢[fc] (A.neg.imp B).imp (A.neg.imp C) :=
     DerivationTree.modus_ponens _ _ _ b_ctx bc_ctx
   -- h_disj : ((A.or B) :: Γ) ⊢ A.or B
   -- A.or B unfolds to ¬A → B
-  have h_disj_unf : ((A.or B) :: Γ) ⊢ A.neg.imp B := by
+  have h_disj_unf : ((A.or B) :: Γ) ⊢[fc] A.neg.imp B := by
     unfold Formula.or at h_disj
     exact h_disj
   -- Get ¬A → C
-  have nac : ((A.or B) :: Γ) ⊢ A.neg.imp C :=
+  have nac : ((A.or B) :: Γ) ⊢[fc] A.neg.imp C :=
     DerivationTree.modus_ponens _ _ _ step1 h_disj_unf
   -- Now use classicalMerge: (A → C) → ((¬A → C) → C)
-  have cm : ⊢ (A.imp C).imp ((A.neg.imp C).imp C) :=
+  have cm : ⊢[fc] (A.imp C).imp ((A.neg.imp C).imp C) :=
     classicalMerge A C
-  have cm_ctx : ((A.or B) :: Γ) ⊢ (A.imp C).imp ((A.neg.imp C).imp C) :=
+  have cm_ctx : ((A.or B) :: Γ) ⊢[fc] (A.imp C).imp ((A.neg.imp C).imp C) :=
     DerivationTree.weakening [] _ _ cm (List.nil_subset _)
-  have step2 : ((A.or B) :: Γ) ⊢ (A.neg.imp C).imp C :=
+  have step2 : ((A.or B) :: Γ) ⊢[fc] (A.neg.imp C).imp C :=
     DerivationTree.modus_ponens _ _ _ cm_ctx ac_ctx
   exact DerivationTree.modus_ponens _ _ _ step2 nac
 
@@ -183,31 +183,31 @@ if we have A ∨ B and both A and B lead to contradiction, then we can derive �
 3. Apply disjunction elimination `de` to get (A ∨ B) :: Γ ⊢ ⊥
 4. Apply cut with h_or to eliminate A ∨ B from context
 -/
-noncomputable def orElimNegNeg (Γ : Context) (A B : Formula)
-    (h_or : Γ ⊢ A.or B)
-    (h_neg_A : Γ ⊢ A.neg)
-    (h_neg_B : Γ ⊢ B.neg) :
-    Γ ⊢ Formula.bot := by
+noncomputable def orElimNegNeg {fc : FrameClass} (Γ : Context) (A B : Formula)
+    (h_or : Γ ⊢[fc] A.or B)
+    (h_neg_A : Γ ⊢[fc] A.neg)
+    (h_neg_B : Γ ⊢[fc] B.neg) :
+    Γ ⊢[fc] Formula.bot := by
   -- From A :: Γ, derive ⊥
-  have h_A_bot : (A :: Γ) ⊢ Formula.bot := by
-    have h_A : (A :: Γ) ⊢ A := DerivationTree.assumption (A :: Γ) A (@List.mem_cons_self _ A Γ)
-    have h_neg_A' : (A :: Γ) ⊢ A.neg :=
+  have h_A_bot : (A :: Γ) ⊢[fc] Formula.bot := by
+    have h_A : (A :: Γ) ⊢[fc] A := DerivationTree.assumption (A :: Γ) A (@List.mem_cons_self _ A Γ)
+    have h_neg_A' : (A :: Γ) ⊢[fc] A.neg :=
       DerivationTree.weakening Γ (A :: Γ)
         A.neg h_neg_A (List.subset_cons_of_subset A (List.Subset.refl Γ))
     -- neg φ = φ.imp bot, so modus ponens gives us bot
     exact DerivationTree.modus_ponens (A :: Γ) A Formula.bot h_neg_A' h_A
   -- From B :: Γ, derive ⊥
-  have h_B_bot : (B :: Γ) ⊢ Formula.bot := by
-    have h_B : (B :: Γ) ⊢ B := DerivationTree.assumption (B :: Γ) B (@List.mem_cons_self _ B Γ)
-    have h_neg_B' : (B :: Γ) ⊢ B.neg :=
+  have h_B_bot : (B :: Γ) ⊢[fc] Formula.bot := by
+    have h_B : (B :: Γ) ⊢[fc] B := DerivationTree.assumption (B :: Γ) B (@List.mem_cons_self _ B Γ)
+    have h_neg_B' : (B :: Γ) ⊢[fc] B.neg :=
       DerivationTree.weakening Γ (B :: Γ)
         B.neg h_neg_B (List.subset_cons_of_subset B (List.Subset.refl Γ))
     -- neg φ = φ.imp bot, so modus ponens gives us bot
     exact DerivationTree.modus_ponens (B :: Γ) B Formula.bot h_neg_B' h_B
   -- Apply disjunction elimination: de Γ A B ⊥ h_A_bot h_B_bot : (A.or B) :: Γ ⊢ ⊥
-  have h_disj_bot : ((A.or B) :: Γ) ⊢ Formula.bot := de Γ A B Formula.bot h_A_bot h_B_bot
+  have h_disj_bot : ((A.or B) :: Γ) ⊢[fc] Formula.bot := de Γ A B Formula.bot h_A_bot h_B_bot
   -- Apply cut with h_or: deductionTheorem gives Γ ⊢ (A.or B) → ⊥, then modus_ponens with h_or
-  have h_impl : Γ ⊢ (A.or B).imp Formula.bot :=
+  have h_impl : Γ ⊢[fc] (A.or B).imp Formula.bot :=
     FormalSystem.Metalogic.Core.deductionTheorem Γ (A.or B) Formula.bot h_disj_bot
   exact DerivationTree.modus_ponens Γ (A.or B) Formula.bot h_impl h_or
 
