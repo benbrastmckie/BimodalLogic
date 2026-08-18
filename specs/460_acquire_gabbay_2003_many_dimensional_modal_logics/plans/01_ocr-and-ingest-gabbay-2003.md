@@ -382,7 +382,7 @@ sampled stratum beyond the 8.
 
 ---
 
-### Phase 5: Ingest the OCR'd copy through the normal pipeline [NOT STARTED]
+### Phase 5: Ingest the OCR'd copy through the normal pipeline [IN PROGRESS]
 
 **Goal**: Run `literature-ingest.sh` against the OCR'd path so the book enters the corpus through
 the standard route, with a pre-ingest backup that makes the operation reversible.
