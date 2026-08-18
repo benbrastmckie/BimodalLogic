@@ -1,5 +1,5 @@
 ---
-next_project_number: 456
+next_project_number: 457
 ---
 
 # TODO
@@ -11,9 +11,9 @@ next_project_number: 456
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,193,231,257,298,413,421,423,424,437,446,451,455 | -- | completeness, decidability, frame-extensions, ... |
-| 2 | 178,219,282,296,422,425,436,447 | 193,231,298,421,423,437,446 | decidability, formula-refactor, publication-quality, ... |
-| 3 | 169,434 | 422,436 | decidability, strong_completeness |
+| 1 | 125,127,128,193,231,257,298,413,421,423,424,437,451,455,456 | -- | completeness, decidability, frame-extensions, ... |
+| 2 | 178,219,282,296,422,425,436,446 | 193,231,298,421,423,437,456 | decidability, formula-refactor, publication-quality, ... |
+| 3 | 169,434,447 | 422,436,446 | decidability, publication-quality, strong_completeness |
 | 4 | 362,432 | 169,424,434 | decidability, strong_completeness |
 | 5 | 433 | 432 | decidability |
 | 6 | 428 | 433 | decidability |
@@ -99,7 +99,37 @@ next_project_number: 456
 
 451 [NOT STARTED] — CONSOLIDATE THE TWO BONEYARDS into a single archive tree under Fo
 
+### Typst Documentation, Lean Source Cross Referencing
+
+456 [RESEARCHED] — Replace the paper-citation footnote apparatus in `typst/FormalFou
+
 ## Tasks
+
+### 456. Replace paper-citation footnotes with #leansrc Lean references
+- **Status**: [RESEARCHED]
+- **Task Type**: typst
+- **Topic**: typst documentation, Lean source cross-referencing
+- **Dependencies**: None
+- **Research**: [456_leansrc_references_replace_paper_citations/reports/01_leansrc-references.md]
+
+**Description**: Replace the paper-citation footnote apparatus in `typst/FormalFoundations.typ` with Lean source references via the `#leansrc` macro, following the convention already used in this repo (`typst/template.typ:98`, live at `FormalFoundations.typ` lines 465, 472, 479, 560, 616, 675) and in `/home/benjamin/Projects/Logos/Theory/typst/manual/chapters/02-constitutive.typ`.
+
+Current state: 39 restored footnotes trail definition/lemma/theorem blocks. 36 cite `@brastmckie2026possibleworlds`; 27 open with an inert backticked paper anchor (`def:frame`, `lem:nullity`, ...); 7 carry Lean file paths as prose. The paper is cited 36 times and never in the introduction.
+
+Target state:
+1. The paper is cited exactly ONCE, on the first page or in the introduction. No `@brastmckie2026possibleworlds` anywhere else.
+2. Footnotes that consist only of an anchor plus citation (e.g. line 162, `` `def:BLplus-defined`. @brastmckie2026possibleworlds ``) are deleted outright.
+3. Footnotes carrying substantive commentary keep that commentary, with the `anchor. @citation` bookkeeping prefix stripped.
+4. The 7 footnotes carrying Lean file paths become `#leansrc(module, name)` blocks; their substantive commentary (e.g. the `sorryAx` dependency analysis at line 488) is preserved as a trimmed footnote.
+5. Where a definition, lemma, theorem, or corollary has a counterpart declaration in `FormalSystem/`, a `#leansrc(module, name)` block is placed after it, matching the existing placement convention (standalone block after the item or item group).
+
+The research phase must map document items to their `FormalSystem/` declarations and report which items have no Lean counterpart (those simply get no block).
+
+**Verification**: `typst compile typst/FormalFoundations.typ` exits 0 against the existing baseline of two pre-existing `thmbox` font warnings; `grep -c brastmckie2026possibleworlds typst/FormalFoundations.typ` returns 1; every `#leansrc` module/name pair resolves to a real declaration in `FormalSystem/`.
+
+**Convention note**: this establishes the referencing convention for the document. Sibling tasks that restore or rewrite content in this file must follow it and must not reintroduce paper citations.
+
+---
 
 ### 455. Survey and realign remaining tasks and roadmap
 - **Status**: [NOT STARTED]
@@ -692,7 +722,7 @@ Task 417's recommended Task B (the filtered step relation) cannot start before (
 - **Status**: [RESEARCHED]
 - **Task Type**: logic
 - **Topic**: publication-quality
-- **Dependencies**: Task 446
+- **Dependencies**: Task 446, Task 456
 - **Research**: [447_substantive_rewrites_formalfoundations/reports/01_substantive-rewrites-research.md]
 
 **Description**: Address 6 substantive FIX: directives in `typst/FormalFoundations.typ`. Unlike the footnote and commented-block restorations, these call for new mathematical exposition, grounded in the source paper at `/home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex`.
@@ -716,7 +746,7 @@ Task 417's recommended Task B (the filtered step relation) cannot start before (
 - **Status**: [NOT STARTED]
 - **Task Type**: logic
 - **Topic**: publication-quality
-- **Dependencies**: Task 445
+- **Dependencies**: Task 445, Task 456
 
 **Description**: Address 6 bare `// FIX:` tags in `typst/FormalFoundations.typ`, each marking a block of commented-out prose or proof text that must be restored as live document text, rewritten, or deleted.
 

@@ -4,7 +4,7 @@
     "total_tasks": 29,
     "last_sync": "2026-06-08T03:09:30Z"
   },
-  "next_project_number": 456,
+  "next_project_number": 457,
   "active_projects": [
     {
       "project_number": 455,
@@ -1136,7 +1136,8 @@
       "description": "Address 6 bare `// FIX:` tags in `typst/FormalFoundations.typ`, each marking a block of commented-out prose or proof text that must be restored as live document text, rewritten, or deleted.\n\nTag locations (line numbers as of scan) and their commented-out content:\n\n- `:214` — the proof of the Nullity lemma ($w arrow.r.double.long_(0) w$), which argues from *Seriality* at $x = 0$.\n- `:257` — prose on the Step Lemma being the sole application site of *Spherical*, with Extension its sole consumer, plus the footnote at `lem:step` and the observation that Extension and Occurrence are ZFC theorems while Nullity is not; this localization is what makes *Spherical* the identified obstruction of the representation section.\n- `:263` — prose stating the cones form a basis for a topology on world states and that the topology is separated.\n- `:277` — block following the Separation theorem (T1, hence R0).\n- `:323` — block following the BL/BL+ semantics definition.\n- `:342` — block following the frame-validity and logical-consequence definitions.\n\nFor each, decide restore / rewrite / delete, apply, and remove the FIX: tag.\n\n**Verification**: `typst compile typst/FormalFoundations.typ` must succeed; restored proofs must be mathematically correct and consistent with the surrounding definitions.\n\n**Important**: When making changes, remove the FIX: tags from the source file.",
       "topic": "publication-quality",
       "dependencies": [
-        445
+        445,
+        456
       ]
     },
     {
@@ -1148,7 +1149,8 @@
       "description": "Address 6 substantive FIX: directives in `typst/FormalFoundations.typ`. Unlike the footnote and commented-block restorations, these call for new mathematical exposition, grounded in the source paper at `/home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex`.\n\n- `:244` — The Extension proof is inadequate. Repair it by including the lemmas it needs to cite, drawing on `possible_worlds.tex` where these results are established.\n- `:267` — The Task Topology definition needs expansion for readability, including indented definitions in the same style as the definitions above it.\n- `:353` — Indent the axioms and formalize all of them to improve readability.\n- `:362` — The S5 / BX axiom presentation is unreadable and must be expanded so the document is self-contained rather than requiring the reader to look the axioms up elsewhere.\n- `:369` — Everything in the remainder of the proof-systems section is inadequate. Present what is carefully developed in `possible_worlds.tex`, giving a systematic account of the various proof systems with each clearly defined.\n- `:393` — Replace the section introduction. Avoid platitudes; give a brief, concrete overview of what the section covers.\n\n**Reference grounding**: `/home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex` is the authoritative source for the proof-system definitions and the lemmas the Extension proof depends on. Transcribe faithfully rather than reconstructing from memory.\n\n**Verification**: `typst compile typst/FormalFoundations.typ` must succeed; every axiom named must be stated in full; the Extension proof must cite lemmas that are actually present in the document or in the cited source.\n\n**Important**: When making changes, remove the FIX: tags from the source file.",
       "topic": "publication-quality",
       "dependencies": [
-        446
+        446,
+        456
       ],
       "last_updated": "2026-08-17T15:31:09Z",
       "session_id": "sess_1786980065_121157",
@@ -1219,6 +1221,26 @@
         "FormalSystem/Metalogic/WeakCanonical/Kamp/Boneyard/",
         "scripts/check-module-invariants.sh",
         "scripts/readme-lint.sh"
+      ]
+    },
+    {
+      "project_number": 456,
+      "project_name": "leansrc_references_replace_paper_citations",
+      "status": "researched",
+      "task_type": "typst",
+      "title": "Replace paper-citation footnotes with #leansrc Lean references",
+      "description": "Replace the paper-citation footnote apparatus in `typst/FormalFoundations.typ` with Lean source references via the `#leansrc` macro, following the convention already used in this repo (`typst/template.typ:98`, live at `FormalFoundations.typ` lines 465, 472, 479, 560, 616, 675) and in `/home/benjamin/Projects/Logos/Theory/typst/manual/chapters/02-constitutive.typ`.\n\nCurrent state: 39 restored footnotes trail definition/lemma/theorem blocks. 36 cite `@brastmckie2026possibleworlds`; 27 open with an inert backticked paper anchor (`def:frame`, `lem:nullity`, ...); 7 carry Lean file paths as prose. The paper is cited 36 times and never in the introduction.\n\nTarget state:\n1. The paper is cited exactly ONCE, on the first page or in the introduction. No `@brastmckie2026possibleworlds` anywhere else.\n2. Footnotes that consist only of an anchor plus citation (e.g. line 162, `` `def:BLplus-defined`. @brastmckie2026possibleworlds ``) are deleted outright.\n3. Footnotes carrying substantive commentary keep that commentary, with the `anchor. @citation` bookkeeping prefix stripped.\n4. The 7 footnotes carrying Lean file paths become `#leansrc(module, name)` blocks; their substantive commentary (e.g. the `sorryAx` dependency analysis at line 488) is preserved as a trimmed footnote.\n5. Where a definition, lemma, theorem, or corollary has a counterpart declaration in `FormalSystem/`, a `#leansrc(module, name)` block is placed after it, matching the existing placement convention (standalone block after the item or item group).\n\nThe research phase must map document items to their `FormalSystem/` declarations and report which items have no Lean counterpart (those simply get no block).\n\n**Verification**: `typst compile typst/FormalFoundations.typ` exits 0 against the existing baseline of two pre-existing `thmbox` font warnings; `grep -c brastmckie2026possibleworlds typst/FormalFoundations.typ` returns 1; every `#leansrc` module/name pair resolves to a real declaration in `FormalSystem/`.\n\n**Convention note**: this establishes the referencing convention for the document. Sibling tasks that restore or rewrite content in this file must follow it and must not reintroduce paper citations.",
+      "topic": "typst documentation, Lean source cross-referencing",
+      "dependencies": [],
+      "last_updated": "2026-08-18T09:36:55Z",
+      "session_id": "sess_1787042796_0b6b2c_456",
+      "next_artifact_number": 1,
+      "artifacts": [
+        {
+          "path": "specs/456_leansrc_references_replace_paper_citations/reports/01_leansrc-references.md",
+          "type": "report",
+          "summary": "Inventory of 41 block-trailing footnotes (16 delete / 18 strip / 7 leansrc), document-item to FormalSystem declaration mapping, placement rules, and citation-location options."
+        }
       ]
     }
   ],
