@@ -593,7 +593,7 @@ implementation time. If 441 has landed, the correct action is reuse, and this ph
 
 ---
 
-### Phase 7: `truth_along_annot` — the truth lemma [NOT STARTED]
+### Phase 7: `truth_along_annot` — the truth lemma [COMPLETED]
 
 **Goal**: along a locally coherent, fulfilling annotated bi-lasso, and relative to a sound box
 oracle, truth equals label membership.
@@ -613,29 +613,29 @@ temporal-nesting-free fragment, and do not start Phases 10–12, which consume i
 **Argument order used in this phase**: guard first.
 
 **Tasks**:
-- [ ] Induct on `ψ`, threading closure membership of subformulas through `closure_imp_left`,
+- [x] Induct on `ψ`, threading closure membership of subformulas through `closure_imp_left`,
       `closure_imp_right`, `closure_box`, `closure_untl_left`, `closure_untl_right`,
       `closure_snce_left`, `closure_snce_right`
       (`Syntax/SubformulaClosure/Closure.lean:241-331`).
-- [ ] `atom`: from `P.toModel_valuation` (`IntPresentation.lean:141`) and `LocalCoherent`'s atom
+- [x] `atom`: from `P.toModel_valuation` (`IntPresentation.lean:141`) and `LocalCoherent`'s atom
       clause; note the `τ.domain` obligation is discharged because `toHF` is total.
-- [ ] `bot`: from `Truth.bot_false` and the `bot_free` clause.
-- [ ] `imp`: from `Truth.imp_iff` and the `imp` clause. This is where the biconditional form of the
+- [x] `bot`: from `Truth.bot_false` and the `bot_free` clause.
+- [x] `imp`: from `Truth.imp_iff` and the `imp` clause. This is where the biconditional form of the
       clauses pays: no negation-completeness lemma is needed.
-- [ ] `box`: from `hbx` plus `box_const` (`Truth.lean:740`) to move from time `t` to time `0`.
+- [x] `box`: from `hbx` plus `box_const` (`Truth.lean:740`) to move from time `t` to time `0`.
       This is the entire reason the oracle is a hypothesis here rather than a construction.
-- [ ] `untl g e`, direction `←`: `Fulfilling` gives `s`, `e ∈ label s`, and the guard on `(t,s)`;
+- [x] `untl g e`, direction `←`: `Fulfilling` gives `s`, `e ∈ label s`, and the guard on `(t,s)`;
       the induction hypotheses on `e` and `g` convert membership to truth. Immediate.
-- [ ] `untl g e`, direction `→`: the substantive case. From a semantic witness `s > t`, show
+- [x] `untl g e`, direction `→`: the substantive case. From a semantic witness `s > t`, show
       `untl g e ∈ label t` by induction on the distance `(s - t).toNat` using Phase 4's ℤ-distance
       principle: at distance 1 the unfolding clause's left disjunct applies; at distance `n+1` the
       guard gives `g` at `t+1` (hence `g ∈ label (t+1)` by IH on `g`), the same `s` witnesses at
       `t+1` at distance `n`, and the unfolding clause's right disjunct applies. **Note the two
       nested inductions** — outer on the formula, inner on the witness distance — and keep them
       textually separate; conflating them is the standard way this proof goes wrong.
-- [ ] `snce g e`: the leftward mirror of both directions, using Phase 4's `snce` unfolding and the
+- [x] `snce g e`: the leftward mirror of both directions, using Phase 4's `snce` unfolding and the
       downward ℤ-distance principle.
-- [ ] Docstring: state explicitly that this is the **lasso instance** of handoff §4.5's
+- [x] Docstring: state explicitly that this is the **lasso instance** of handoff §4.5's
       `truth_along_fulfilling`, that `Fulfilling` is a hypothesis carried by the structure and is
       never established inside the induction, and that the latter is precisely what the Boneyard
       attempts (`RoundRobinChain`, `OracleStep`, `OracleCoherence`, `ScheduleBasedBFMCS`) tried and
