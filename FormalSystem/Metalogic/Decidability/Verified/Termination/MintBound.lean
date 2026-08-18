@@ -116,6 +116,62 @@ theorem incomparableB_of_firstIncomparablePair {b : Branch} {ord : TimeOrdering}
     List.contains_eq_mem, decide_eq_false_iff_not]
   exact ⟨⟨hne, hf⟩, hp⟩
 
+/-- **The reachability duality, backwards.** `orderDual_holds` gives
+`t₂ ∈ futureOf t₁ → t₁ ∈ pastOf t₂`; this is the converse direction, which was not landed.
+
+Same three steps at the converse step relation: `bfsClosure_sound` extracts a backward path of
+between one and `100` edges, `PathN.reverse` turns it into a forward path of the same length
+against `mem_directFutureOf_iff` read right-to-left, and `bfsClosure_complete` re-finds it at the
+same default fuel. Both closures run at fuel `100`, so the length soundness bounds is exactly the
+length completeness may spend — the argument `orderDual_holds`'s own docstring sets out. -/
+theorem orderDual_backward (ord : TimeOrdering) {t₁ t₂ : TimeIndex} (h : t₂ ∈ ord.pastOf t₁) :
+    t₁ ∈ ord.futureOf t₂ := by
+  rw [TimeOrdering.pastOf, TimeOrdering.reachableBackward_eq] at h
+  rcases TimeOrdering.bfsClosure_sound _ 100 [t₁] [] h with hv | ⟨s, hs, n, hn1, hn2, hp⟩
+  · simp at hv
+  · rw [List.mem_singleton] at hs
+    subst hs
+    rw [TimeOrdering.futureOf, TimeOrdering.reachableForward_eq]
+    exact TimeOrdering.bfsClosure_complete _
+      (TimeOrdering.PathN.reverse
+        (fun x y => (TimeOrdering.mem_directFutureOf_iff ord y x).symm) hp) hn1 hn2
+
+/-- **R1, decided: `incomparableB` is symmetric.** Incomparability is a symmetric relation even
+though `firstIncomparablePair`'s test — which `incomparableB` transcribes verbatim — is written
+asymmetrically, as three conditions on the *ordered* pair.
+
+The two closure conjuncts trade places under the duality rather than being preserved: `t₁ ∈
+futureOf t₂` would give `t₂ ∈ pastOf t₁` by `orderDual_holds`, contradicting the *past* conjunct,
+and `t₁ ∈ pastOf t₂` would give `t₂ ∈ futureOf t₁` by `orderDual_backward`, contradicting the
+*future* one. That crossing is why both directions of the duality are needed and why only having
+one of them is what made this look like a risk.
+
+Landed **before** any lemma that consumes it, per the plan's ordering requirement. Had it been
+false, Candidate A would have died here and the ladder would have resumed at Candidate B. -/
+theorem incomparableB_symm {ord : TimeOrdering} {t₁ t₂ : TimeIndex}
+    (h : incomparableB ord (t₁, t₂) = true) : incomparableB ord (t₂, t₁) = true := by
+  simp only [incomparableB, Bool.and_eq_true, bne_iff_ne, Bool.not_eq_true',
+    List.contains_eq_mem, decide_eq_false_iff_not] at h ⊢
+  obtain ⟨⟨hne, hf⟩, hp⟩ := h
+  refine ⟨⟨Ne.symm hne, fun hcon => hp ?_⟩, fun hcon => hf ?_⟩
+  · exact orderDual_holds ord t₂ t₁ hcon
+  · exact orderDual_backward ord hcon
+
+/-- **`incomparableB` at the oriented pair.** The ordered split's arm 3 merges `min t₁ t₂` into
+`max t₁ t₂`, so the incomparability side condition every arm-3 transport lemma carries has to be
+available at `(max t₁ t₂, min t₁ t₂)` rather than at the trigger's own `(t₁, t₂)`.
+`incomparableB_symm` is exactly what supplies it; this is the packaged form the arm-3 lemmas
+consume. -/
+theorem incomparableB_of_firstIncomparablePair_oriented {b : Branch} {ord : TimeOrdering}
+    {t₁ t₂ : TimeIndex} (h : firstIncomparablePair b ord = some (t₁, t₂)) :
+    incomparableB ord (max t₁ t₂, min t₁ t₂) = true := by
+  rcases Nat.le_total t₁ t₂ with hle | hle
+  · rw [Nat.min_eq_left hle, Nat.max_eq_right hle]
+    exact incomparableB_symm (incomparableB_of_firstIncomparablePair h)
+  · rw [Nat.min_eq_right hle, Nat.max_eq_left hle]
+    exact incomparableB_of_firstIncomparablePair h
+
+
 /-! ### `IrreflOrd` is NECESSARY, not merely convenient
 
 `TimeOrdering.identifyTime` drops **every** constraint that collapses, including a pre-existing
@@ -727,6 +783,27 @@ theorem arm3_preserves_witness {b : Branch} {ord : TimeOrdering} {t₁ t₂ : Ti
       exact witnessPresent_identifyTime rule b ord t₁ t₂ s φ w tm
         (incomparableB_of_firstIncomparablePair htrig) hnsl h
 
+/-- **The arm-3 preservation package at the engine's own orientation.** Arm 3 merges `min t₁ t₂`
+into `max t₁ t₂`, so this — not `arm3_preserves_witness` — is the form every engine-level consumer
+below takes. The only new content over the unoriented statement is
+`incomparableB_of_firstIncomparablePair_oriented`; the transport itself is
+`witnessPresent_identifyTime`, which is quantified over both of its times and so does not notice
+the orientation. -/
+theorem arm3_preserves_witness_oriented {b : Branch} {ord : TimeOrdering} {t₁ t₂ : TimeIndex}
+    (htrig : firstIncomparablePair b ord = some (t₁, t₂))
+    (hnsl : IrreflOrd ord)
+    (rule : TableauRule) (sf : SignedFormula)
+    (h : witnessPresent rule sf b ord = true) :
+    witnessPresent rule (rhoSF (min t₁ t₂) (max t₁ t₂) sf)
+        (b.identifyTime (min t₁ t₂) (max t₁ t₂)) (ord.identifyTime (min t₁ t₂) (max t₁ t₂))
+      = true := by
+  cases sf with
+  | mk s φ l =>
+    cases l with
+    | mk w tm =>
+      exact witnessPresent_identifyTime rule b ord (max t₁ t₂) (min t₁ t₂) s φ w tm
+        (incomparableB_of_firstIncomparablePair_oriented htrig) hnsl h
+
 /-! ## B3. Non-deletion at engine level
 
 Claim (ii): no expansion step deletes a formula. Stated as a **membership** fact
@@ -790,7 +867,8 @@ theorem expandOnceUnblocked_splitOrdered_shape {b : Branch} {bs : List (Branch �
     (h : (expandOnceUnblocked b ord fc tr).1 = ExpansionResult.splitOrdered bs) :
     ∃ t₁ t₂, firstIncomparablePair b ord = some (t₁, t₂) ∧
       bs = [ (b, ord.addFuture t₁ t₂), (b, ord.addFuture t₂ t₁),
-             (b.identifyTime t₂ t₁, ord.identifyTime t₂ t₁) ] := by
+             (b.identifyTime (min t₁ t₂) (max t₁ t₂),
+              ord.identifyTime (min t₁ t₂) (max t₁ t₂)) ] := by
   unfold expandOnceUnblocked at h
   obtain ⟨r, o, hpick⟩ := pick_splitOrdered' h
   have key : ∃ sf : SignedFormula, (applyRule r sf b ord).1 = RuleResult.branchingOrdered bs := by
@@ -814,13 +892,13 @@ theorem expandOnceUnblocked_splitOrdered_no_deletion
     ∃ t₁ t₂, ∀ p ∈ bs, ∀ x ∈ b,
       x ∈ p.1 ∨ rhoSF t₂ t₁ x ∈ p.1 := by
   obtain ⟨t₁, t₂, -, rfl⟩ := expandOnceUnblocked_splitOrdered_shape h
-  refine ⟨t₁, t₂, ?_⟩
+  refine ⟨max t₁ t₂, min t₁ t₂, ?_⟩
   intro p hp x hx
   simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
   rcases hp with rfl | rfl | rfl
   · exact Or.inl hx
   · exact Or.inl hx
-  · exact Or.inr (mem_identifyTime b t₂ t₁ x hx)
+  · exact Or.inr (mem_identifyTime b (min t₁ t₂) (max t₁ t₂) x hx)
 
 /-! ## A4. The pick bridges, carrying the ordering
 
@@ -1941,7 +2019,7 @@ theorem expandOnceUnblocked_preserves_witness {b : Branch} {ord : TimeOrdering}
     (∀ bs t₁ t₂, (expandOnceUnblocked b ord fc tr).1 = ExpansionResult.splitOrdered bs →
         firstIncomparablePair b ord = some (t₁, t₂) →
         ∀ p ∈ bs, witnessPresent rule sf p.1 p.2 = true ∨
-          witnessPresent rule (rhoSF t₂ t₁ sf) p.1 p.2 = true) := by
+          witnessPresent rule (rhoSF (min t₁ t₂) (max t₁ t₂) sf) p.1 p.2 = true) := by
   constructor
   · intro nb hnb
     exact witnessPresent_branch_mono (expandOnceUnblocked_branch_mono nb hnb)
@@ -1955,7 +2033,7 @@ theorem expandOnceUnblocked_preserves_witness {b : Branch} {ord : TimeOrdering}
     rcases hp with rfl | rfl | rfl
     · exact Or.inl (witnessPresent_ord_mono (addFuture_constraints_mono ord t₁ t₂) h)
     · exact Or.inl (witnessPresent_ord_mono (addFuture_constraints_mono ord t₂ t₁) h)
-    · exact Or.inr (arm3_preserves_witness htrig hinv.irreflOrd rule sf h)
+    · exact Or.inr (arm3_preserves_witness_oriented htrig hinv.irreflOrd rule sf h)
 
 /-- **`witnessPresent` never flips `true → false` along a run**, up to the arm-3 renaming — the
 corollary in the form the mint counting consumes.
@@ -1976,7 +2054,7 @@ theorem witnessPresent_no_flip {b : Branch} {ord : TimeOrdering}
     (∀ bs t₁ t₂, (expandOnceUnblocked b ord fc tr).1 = ExpansionResult.splitOrdered bs →
         firstIncomparablePair b ord = some (t₁, t₂) →
         ∀ p ∈ bs, witnessPresent rule sf p.1 p.2 = false →
-          witnessPresent rule (rhoSF t₂ t₁ sf) p.1 p.2 = false →
+          witnessPresent rule (rhoSF (min t₁ t₂) (max t₁ t₂) sf) p.1 p.2 = false →
             witnessPresent rule sf b ord = false) := by
   constructor
   · intro nb hnb hfalse
@@ -3022,6 +3100,24 @@ theorem mintPotential_identifyTime {U : Finset SignedFormula} {σ : SignedFormul
   · rw [arm3_preserves_witness htrig hirr p.1 (σ p.2) hw] at hp
     exact absurd hp.2 (by simp)
 
+/-- **The identification arm does not increase the potential, at the engine's own orientation.**
+`mintPotential_identifyTime` read at `(min t₁ t₂, max t₁ t₂)`, which is the merge arm 3 actually
+performs. Same proof, one lemma deeper: the contrapositive of `arm3_preserves_witness_oriented`. -/
+theorem mintPotential_identifyTime_oriented {U : Finset SignedFormula}
+    {σ : SignedFormula → SignedFormula} {b : Branch} {ord : TimeOrdering} {t₁ t₂ : TimeIndex}
+    (htrig : firstIncomparablePair b ord = some (t₁, t₂)) (hirr : IrreflOrd ord) :
+    mintPotential U (fun x => rhoSF (min t₁ t₂) (max t₁ t₂) (σ x))
+        (b.identifyTime (min t₁ t₂) (max t₁ t₂)) (ord.identifyTime (min t₁ t₂) (max t₁ t₂))
+      ≤ mintPotential U σ b ord := by
+  refine Finset.card_le_card ?_
+  intro p hp
+  simp only [Finset.mem_filter] at hp ⊢
+  refine ⟨hp.1, ?_⟩
+  rcases hw : witnessPresent p.1 (σ p.2) b ord with _ | _
+  · rfl
+  · rw [arm3_preserves_witness_oriented htrig hirr p.1 (σ p.2) hw] at hp
+    exact absurd hp.2 (by simp)
+
 /-- **A mint strictly decreases the potential.**
 
 The minting pair is in the before-false set (that is the guard `findApplicableRule` tests) and out
@@ -3078,7 +3174,7 @@ theorem mintPotential_expandOnceUnblocked_splitOrdered {U : Finset SignedFormula
     (hbs : (expandOnceUnblocked b ord fc tr).1 = ExpansionResult.splitOrdered bs)
     (htrig : firstIncomparablePair b ord = some (t₁, t₂)) :
     ∀ p ∈ bs, ∃ σ' : SignedFormula → SignedFormula,
-      (σ' = σ ∨ σ' = fun x => rhoSF t₂ t₁ (σ x)) ∧
+      (σ' = σ ∨ σ' = fun x => rhoSF (min t₁ t₂) (max t₁ t₂) (σ x)) ∧
         mintPotential U σ' p.1 p.2 ≤ mintPotential U σ b ord := by
   obtain ⟨u₁, u₂, htrig', rfl⟩ := expandOnceUnblocked_splitOrdered_shape hbs
   rw [htrig] at htrig'
@@ -3090,7 +3186,7 @@ theorem mintPotential_expandOnceUnblocked_splitOrdered {U : Finset SignedFormula
       mintPotential_le_of_grow (fun _ hx => hx) (addFuture_constraints_mono ord t₁ t₂)⟩
   · exact ⟨σ, Or.inl rfl,
       mintPotential_le_of_grow (fun _ hx => hx) (addFuture_constraints_mono ord t₂ t₁)⟩
-  · exact ⟨_, Or.inr rfl, mintPotential_identifyTime htrig hinv.irreflOrd⟩
+  · exact ⟨_, Or.inr rfl, mintPotential_identifyTime_oriented htrig hinv.irreflOrd⟩
 
 /-- **The mint budget's arithmetic, non-minting step.** The invariant is "mints used plus potential
 remaining does not exceed the budget"; a step that does not mint leaves the first summand alone and
@@ -3445,6 +3541,17 @@ theorem knownTimes_card_lt_at_arm3 {b : Branch} {ord : TimeOrdering} {t₁ t₂ 
     ((b.identifyTime t₂ t₁).knownTimes).toFinset.card < (b.knownTimes).toFinset.card := by
   obtain ⟨h1, h2, hne, -, -⟩ := firstIncomparablePair_spec htrig
   exact knownTimes_card_lt_identifyTime h1 h2 hne
+
+/-- **The same drop at the engine's own orientation.** Arm 3 retires `min t₁ t₂`, and the trigger
+supplies membership of both times and their distinctness in either orientation
+(`firstIncomparablePair_spec_oriented`) — which is why the reorientation costs the termination
+measure's first component nothing. -/
+theorem knownTimes_card_lt_at_arm3_oriented {b : Branch} {ord : TimeOrdering} {t₁ t₂ : TimeIndex}
+    (htrig : firstIncomparablePair b ord = some (t₁, t₂)) :
+    ((b.identifyTime (min t₁ t₂) (max t₁ t₂)).knownTimes).toFinset.card
+      < (b.knownTimes).toFinset.card := by
+  obtain ⟨hmu, hms, hsu⟩ := firstIncomparablePair_spec_oriented htrig
+  exact knownTimes_card_lt_identifyTime hmu hms hsu
 
 /-- **Link 1**: `#identifications ≤ |knownTimes|₀ + #mints`. -/
 theorem idents_le_knownTimes_add_mints (kt ident mints : Nat → Nat) (n : Nat)
@@ -3844,22 +3951,8 @@ theorem expandOnceUnblocked_splitOrdered_rank_lt {b : Branch} {bs : List (Branch
   rcases hp with rfl | rfl | rfl
   · simp only [splitOrderedRank]; omega
   · simp only [splitOrderedRank]; omega
-  · have hk := knownTimes_card_lt_at_arm3 htrig
-    have harm : ((b.identifyTime t₂ t₁).knownTimes).toFinset.card ≤ Tmax := by omega
-    have hc := incompPairs_card_le (b.identifyTime t₂ t₁) (ord.identifyTime t₂ t₁)
-    have h2 : ((b.identifyTime t₂ t₁).knownTimes).toFinset.card
-        * ((b.identifyTime t₂ t₁).knownTimes).toFinset.card ≤ Tmax * Tmax :=
-      Nat.mul_le_mul harm harm
-    have hstep : ((b.identifyTime t₂ t₁).knownTimes).toFinset.card * (Tmax * Tmax + 1)
-        + (Tmax * Tmax + 1) ≤ b.knownTimes.toFinset.card * (Tmax * Tmax + 1) := by
-      have hle : ((b.identifyTime t₂ t₁).knownTimes).toFinset.card + 1
-          ≤ b.knownTimes.toFinset.card := hk
-      calc ((b.identifyTime t₂ t₁).knownTimes).toFinset.card * (Tmax * Tmax + 1)
-            + (Tmax * Tmax + 1)
-          = (((b.identifyTime t₂ t₁).knownTimes).toFinset.card + 1) * (Tmax * Tmax + 1) := by ring
-        _ ≤ b.knownTimes.toFinset.card * (Tmax * Tmax + 1) := Nat.mul_le_mul_right _ hle
-    simp only [splitOrderedRank]
-    omega
+  · obtain ⟨hmu, hms, hsu⟩ := firstIncomparablePair_spec_oriented htrig
+    exact splitOrderedRank_lt_identifyTime Tmax ord hT hmu hms hsu
 
 /-- **The identification allowance.** Known times plus remaining mints: an upper bound on how many
 identifications the run can still perform, because each identification retires a known time and
@@ -4360,7 +4453,7 @@ theorem difficultyBounded_of_stepLengthBounded {fc : FormalSystem.ProofSystem.Fr
       rcases hp with rfl | rfl | rfl
       · exact hbU
       · exact hbU
-      · exact hUcl.2 b t₁ t₂ hbU
+      · exact hUcl.2 b (max t₁ t₂) (min t₁ t₂) hbU
     exact estimateBranchDifficulty_le_ceiling hconf hlen
 
 /-- **The converse, with no side conditions at all.** A difficulty bound forces a length bound, by
@@ -4495,7 +4588,7 @@ theorem difficultyBoundedAt_ceiling {fc : FormalSystem.ProofSystem.FrameClass}
       rcases hp with rfl | rfl | rfl
       · exact hbU
       · exact hbU
-      · exact hUcl.2 b t₁ t₂ hbU
+      · exact hUcl.2 b (max t₁ t₂) (min t₁ t₂) hbU
     exact estimateBranchDifficulty_le_ceiling hconf hlen'
 
 /-! #### The residual as literally stated is refutable, at every `D`
@@ -4810,27 +4903,29 @@ theorem budgetPotential_step_splitOrdered {U : Finset SignedFormula} {Tmax : Nat
     simp only [budgetPotential, extensionAllowance]
     omega
   · dsimp only at hrk hinvp ⊢
-    have hm' : mintPotential U (fun x => rhoSF t₂ t₁ (σ x)) (b.identifyTime t₂ t₁)
-        (ord.identifyTime t₂ t₁) ≤ mintPotential U σ b ord :=
-      mintPotential_identifyTime htrig hinv.irreflOrd
-    have hk := knownTimes_card_lt_at_arm3 (b := b) (ord := ord) htrig
-    have hIU : ∀ x ∈ b.identifyTime t₂ t₁, x ∈ U := hUcl.2 b t₁ t₂ hbU
-    have hc'U : (b.identifyTime t₂ t₁).toFinset.card ≤ U.card :=
+    have hk := knownTimes_card_lt_at_arm3_oriented (b := b) (ord := ord) htrig
+    set s := min t₁ t₂ with hsdef
+    set u := max t₁ t₂ with hudef
+    have hm' : mintPotential U (fun x => rhoSF s u (σ x)) (b.identifyTime s u)
+        (ord.identifyTime s u) ≤ mintPotential U σ b ord :=
+      mintPotential_identifyTime_oriented htrig hinv.irreflOrd
+    have hIU : ∀ x ∈ b.identifyTime s u, x ∈ U := hUcl.2 b u s hbU
+    have hc'U : (b.identifyTime s u).toFinset.card ≤ U.card :=
       card_le_of_subset_universe hIU
-    have hIsucc : mintTimeBudget U (fun x => rhoSF t₂ t₁ (σ x)) (b.identifyTime t₂ t₁)
-        (ord.identifyTime t₂ t₁) + 1 ≤ mintTimeBudget U σ b ord := by
+    have hIsucc : mintTimeBudget U (fun x => rhoSF s u (σ x)) (b.identifyTime s u)
+        (ord.identifyTime s u) + 1 ≤ mintTimeBudget U σ b ord := by
       simp only [mintTimeBudget]; omega
-    have hEmul : (mintTimeBudget U (fun x => rhoSF t₂ t₁ (σ x)) (b.identifyTime t₂ t₁)
-          (ord.identifyTime t₂ t₁) + 1) * U.card
+    have hEmul : (mintTimeBudget U (fun x => rhoSF s u (σ x)) (b.identifyTime s u)
+          (ord.identifyTime s u) + 1) * U.card
         ≤ mintTimeBudget U σ b ord * U.card := Nat.mul_le_mul_right _ hIsucc
-    have hEexp : (mintTimeBudget U (fun x => rhoSF t₂ t₁ (σ x)) (b.identifyTime t₂ t₁)
-          (ord.identifyTime t₂ t₁) + 1) * U.card
-        = mintTimeBudget U (fun x => rhoSF t₂ t₁ (σ x)) (b.identifyTime t₂ t₁)
-          (ord.identifyTime t₂ t₁) * U.card + U.card := by ring
-    have hAmul : 2 * (Tmax * Tmax + 1) * mintPotential U (fun x => rhoSF t₂ t₁ (σ x))
-          (b.identifyTime t₂ t₁) (ord.identifyTime t₂ t₁)
+    have hEexp : (mintTimeBudget U (fun x => rhoSF s u (σ x)) (b.identifyTime s u)
+          (ord.identifyTime s u) + 1) * U.card
+        = mintTimeBudget U (fun x => rhoSF s u (σ x)) (b.identifyTime s u)
+          (ord.identifyTime s u) * U.card + U.card := by ring
+    have hAmul : 2 * (Tmax * Tmax + 1) * mintPotential U (fun x => rhoSF s u (σ x))
+          (b.identifyTime s u) (ord.identifyTime s u)
         ≤ 2 * (Tmax * Tmax + 1) * mintPotential U σ b ord := Nat.mul_le_mul_left _ hm'
-    refine ⟨fun x => rhoSF t₂ t₁ (σ x), ⟨hinvp, hIU, by omega⟩, ?_⟩
+    refine ⟨fun x => rhoSF s u (σ x), ⟨hinvp, hIU, by omega⟩, ?_⟩
     simp only [budgetPotential, extensionAllowance]
     omega
 
@@ -5346,6 +5441,21 @@ theorem universeClosedAt_identify_at_trigger {fc : FormalSystem.ProofSystem.Fram
     ∀ x ∈ b.identifyTime t₂ t₁, x ∈ U :=
   h.2 b t₁ t₂ hbU (firstIncomparablePair_spec htrig).1
 
+/-- **Clause 2 at the engine's own orientation.** The oriented merge target is `max t₁ t₂`, and
+`firstIncomparablePair_spec_oriented` puts it in `b.knownTimes` exactly as the unoriented spec puts
+`t₁` there. Clause 2 is discharged *as it stands*: it already quantifies its source time freely and
+restricts only its target, so swapping which member of the pair is which costs one fact the trigger
+already supplies and adds no hypothesis. That is register entry 12's finding paying off — had
+clause 2 been "repaired" by constraining both times, this bridge would have needed a fact no
+trigger supplies. -/
+theorem universeClosedAt_identify_at_trigger_oriented
+    {fc : FormalSystem.ProofSystem.FrameClass} {U : Finset SignedFormula}
+    {b : Branch} {ord : TimeOrdering} {t₁ t₂ : TimeIndex}
+    (h : UniverseClosedAt fc U) (hbU : ∀ x ∈ b, x ∈ U)
+    (htrig : firstIncomparablePair b ord = some (t₁, t₂)) :
+    ∀ x ∈ b.identifyTime (min t₁ t₂) (max t₁ t₂), x ∈ U :=
+  h.2 b (max t₁ t₂) (min t₁ t₂) hbU (firstIncomparablePair_spec_oriented htrig).1
+
 /-! ### The four consuming theorems, at the repaired predicate -/
 
 /-- `difficultyBounded_of_stepLengthBounded` at the repaired closure residual. Statement and proof
@@ -5368,7 +5478,7 @@ theorem difficultyBounded_of_stepLengthBounded_at {fc : FormalSystem.ProofSystem
       rcases hp with rfl | rfl | rfl
       · exact hbU
       · exact hbU
-      · exact universeClosedAt_identify_at_trigger hUcl hbU htrig
+      · exact universeClosedAt_identify_at_trigger_oriented hUcl hbU htrig
     exact estimateBranchDifficulty_le_ceiling hconf hlen
 
 /-- `difficultyBoundedAt_ceiling` at the repaired closure residual. -/
@@ -5391,7 +5501,7 @@ theorem difficultyBoundedAt_ceiling_at {fc : FormalSystem.ProofSystem.FrameClass
       rcases hp with rfl | rfl | rfl
       · exact hbU
       · exact hbU
-      · exact universeClosedAt_identify_at_trigger hUcl hbU htrig
+      · exact universeClosedAt_identify_at_trigger_oriented hUcl hbU htrig
     exact estimateBranchDifficulty_le_ceiling hconf hlen'
 
 /-- `budgetPotential_step_unordered` at the repaired closure residual. This lemma never touches
@@ -5513,28 +5623,30 @@ theorem budgetPotential_step_splitOrdered_at {U : Finset SignedFormula} {Tmax : 
     simp only [budgetPotential, extensionAllowance]
     omega
   · dsimp only at hrk hinvp ⊢
-    have hm' : mintPotential U (fun x => rhoSF t₂ t₁ (σ x)) (b.identifyTime t₂ t₁)
-        (ord.identifyTime t₂ t₁) ≤ mintPotential U σ b ord :=
-      mintPotential_identifyTime htrig hinv.irreflOrd
-    have hk := knownTimes_card_lt_at_arm3 (b := b) (ord := ord) htrig
-    have hIU : ∀ x ∈ b.identifyTime t₂ t₁, x ∈ U :=
-      universeClosedAt_identify_at_trigger hUcl hbU htrig
-    have hc'U : (b.identifyTime t₂ t₁).toFinset.card ≤ U.card :=
+    have hk := knownTimes_card_lt_at_arm3_oriented (b := b) (ord := ord) htrig
+    set s := min t₁ t₂ with hsdef
+    set u := max t₁ t₂ with hudef
+    have hm' : mintPotential U (fun x => rhoSF s u (σ x)) (b.identifyTime s u)
+        (ord.identifyTime s u) ≤ mintPotential U σ b ord :=
+      mintPotential_identifyTime_oriented htrig hinv.irreflOrd
+    have hIU : ∀ x ∈ b.identifyTime s u, x ∈ U :=
+      universeClosedAt_identify_at_trigger_oriented hUcl hbU htrig
+    have hc'U : (b.identifyTime s u).toFinset.card ≤ U.card :=
       card_le_of_subset_universe hIU
-    have hIsucc : mintTimeBudget U (fun x => rhoSF t₂ t₁ (σ x)) (b.identifyTime t₂ t₁)
-        (ord.identifyTime t₂ t₁) + 1 ≤ mintTimeBudget U σ b ord := by
+    have hIsucc : mintTimeBudget U (fun x => rhoSF s u (σ x)) (b.identifyTime s u)
+        (ord.identifyTime s u) + 1 ≤ mintTimeBudget U σ b ord := by
       simp only [mintTimeBudget]; omega
-    have hEmul : (mintTimeBudget U (fun x => rhoSF t₂ t₁ (σ x)) (b.identifyTime t₂ t₁)
-          (ord.identifyTime t₂ t₁) + 1) * U.card
+    have hEmul : (mintTimeBudget U (fun x => rhoSF s u (σ x)) (b.identifyTime s u)
+          (ord.identifyTime s u) + 1) * U.card
         ≤ mintTimeBudget U σ b ord * U.card := Nat.mul_le_mul_right _ hIsucc
-    have hEexp : (mintTimeBudget U (fun x => rhoSF t₂ t₁ (σ x)) (b.identifyTime t₂ t₁)
-          (ord.identifyTime t₂ t₁) + 1) * U.card
-        = mintTimeBudget U (fun x => rhoSF t₂ t₁ (σ x)) (b.identifyTime t₂ t₁)
-          (ord.identifyTime t₂ t₁) * U.card + U.card := by ring
-    have hAmul : 2 * (Tmax * Tmax + 1) * mintPotential U (fun x => rhoSF t₂ t₁ (σ x))
-          (b.identifyTime t₂ t₁) (ord.identifyTime t₂ t₁)
+    have hEexp : (mintTimeBudget U (fun x => rhoSF s u (σ x)) (b.identifyTime s u)
+          (ord.identifyTime s u) + 1) * U.card
+        = mintTimeBudget U (fun x => rhoSF s u (σ x)) (b.identifyTime s u)
+          (ord.identifyTime s u) * U.card + U.card := by ring
+    have hAmul : 2 * (Tmax * Tmax + 1) * mintPotential U (fun x => rhoSF s u (σ x))
+          (b.identifyTime s u) (ord.identifyTime s u)
         ≤ 2 * (Tmax * Tmax + 1) * mintPotential U σ b ord := Nat.mul_le_mul_left _ hm'
-    refine ⟨fun x => rhoSF t₂ t₁ (σ x), ⟨hinvp, hIU, by omega⟩, ?_⟩
+    refine ⟨fun x => rhoSF s u (σ x), ⟨hinvp, hIU, by omega⟩, ?_⟩
     simp only [budgetPotential, extensionAllowance]
     omega
 
@@ -6573,6 +6685,19 @@ theorem mem_identifyTime_time_at_trigger {b : Branch} {ord : TimeOrdering} {t₁
   · exact hg ▸ (firstIncomparablePair_spec htrig).1
   · exact hg
 
+/-- **The same bridge at the engine's own orientation.** Arm 3 merges `min t₁ t₂` into
+`max t₁ t₂`, so a formula of the post-arm branch sits either at the surviving numeral or at an
+untouched time; `firstIncomparablePair_spec_oriented` puts the surviving numeral in
+`b.knownTimes`. This is the form `applyRule_emitted_time_mem` consumes at the `timeLinearity`
+arm. -/
+theorem mem_identifyTime_time_at_trigger_oriented {b : Branch} {ord : TimeOrdering}
+    {t₁ t₂ : TimeIndex} {g : SignedFormula}
+    (htrig : firstIncomparablePair b ord = some (t₁, t₂))
+    (h : g ∈ b.identifyTime (min t₁ t₂) (max t₁ t₂)) : g.label.time ∈ b.knownTimes := by
+  rcases mem_identifyTime_time h with hg | hg
+  · exact hg ▸ (firstIncomparablePair_spec_oriented htrig).1
+  · exact hg
+
 /-! ### `applyRule_emitted_time_mem`: the time analogue of the world sweep
 
 Three docstrings in this file say the same thing — `MintPaysForTime`'s own, the section note
@@ -6698,6 +6823,8 @@ theorem applyRule_emitted_time_mem {rule : TableauRule} {sf : SignedFormula}
             | exact ht
             | exact mem_knownTimes_of_mem hg
             | (refine mem_identifyTime_time_at_trigger (ord := ord) ?_ hg
+               assumption)
+            | (refine mem_identifyTime_time_at_trigger_oriented (ord := ord) ?_ hg
                assumption)
             | (refine mem_filterMap_const_time_mem (t := label.time) ht ?_ hg
                clear hg
@@ -7366,10 +7493,46 @@ def reuseWitnessState : Branch × TimeOrdering :=
 identification, time `2` is back on the branch. Decided.
 
 This is what turns the coincidence above into a statement about *runs* rather than about
-hand-assembled branches, and it is why the verdict is "reuse possible" rather than "open". -/
+hand-assembled branches, and it is why the verdict is "reuse possible" rather than "open".
+
+**This statement is UNCHANGED by the arm's reorientation, and that is not an oversight.** The plan
+that reoriented arm 3 anticipated this `decide` flipping value and required an honest restatement
+if it did. It did not flip, for a reason worth stating precisely rather than absorbing: `reuseStep`
+is driven from `reuseWitnessState`, which is *hand-assembled* by a direct
+`Branch.identifyTime reuseWitnessBranch 2 0` call and not by the engine's arm. What this theorem
+decides is therefore conditional — *if* a run ever reaches a branch whose `maxTime` has fallen
+below an index it once carried, the engine re-mints that index — and that conditional is as true
+now as it was before. What the repair changes is whether the engine can *reach* such a branch:
+`oriented_engine_does_not_produce_reuse` below decides that it no longer produces this one, and
+`maxTime_monotone_along_run` proves it produces no other. Keeping this theorem at its original
+value and adding the reachability statement beside it is the accurate record; re-tuning the witness
+until the number moved would have destroyed exactly the conditional worth keeping. -/
 theorem reuse_driven_through_engine :
     ((reuseStep reuseWitnessState).bind reuseStep).map
       (fun s => s.1.knownTimes.contains 2) = some true := by decide
+
+/-- **…and the engine no longer produces the state it is conditional on.** The measurement
+`reuse_driven_through_engine` cannot make, decided at the same witness.
+
+`reuseWitnessState` is what arm 3 *used to* hand back here. Conjuncts 4 and 5 record that state's
+numbers — `maxTime` fallen to `1`, `nextTime` back down to `2`, the retired index — and conjuncts 2
+and 3 record what the arm now hands back instead: `maxTime` still `2`, `nextTime` `3`. Conjunct 1
+pins the trigger, so the comparison is at the pair the engine itself selects rather than at a pair
+chosen to make it come out right; the arm's `min 0 2` / `max 0 2` are written unevaluated for the
+same reason, so the statement is read at the arm's own form. Conjunct 6 drives one further engine
+step and finds `nextTime` still at `3`: nothing along the continuation recovers the retired value.
+
+Together with `reuse_driven_through_engine` this is the whole of the repair at this witness: the
+implication is untouched, and its antecedent is now unreachable. -/
+theorem oriented_engine_does_not_produce_reuse :
+    firstIncomparablePair reuseWitnessBranch reuseWitnessOrd = some (0, 2) ∧
+      (Branch.identifyTime reuseWitnessBranch (min 0 2) (max 0 2)).maxTime = 2 ∧
+      (Branch.identifyTime reuseWitnessBranch (min 0 2) (max 0 2)).nextTime = 3 ∧
+      reuseWitnessState.1.maxTime = 1 ∧
+      reuseWitnessState.1.nextTime = 2 ∧
+      (reuseStep (Branch.identifyTime reuseWitnessBranch (min 0 2) (max 0 2),
+          TimeOrdering.identifyTime reuseWitnessOrd (min 0 2) (max 0 2))).map
+        (fun s => s.1.nextTime) = some 3 := by decide
 
 /-! ### The fourth measure component: the self-guard discharge potential
 
@@ -7590,7 +7753,14 @@ theorem gate_is_reissue_hazard :
 
 /-- **The engine fires the ACTIVE arm here**, at every frame class: the reported ordering is
 `gateNewOrd` and `gateSucc` is one of the two unordered successors. `untlNeg` is a `carrierBase`
-rule, so this is not a frame-class accident. -/
+rule, so this is not a frame-class accident.
+
+**Unchanged by the arm's reorientation**, for the reason `oriented_gate_invariants` conjunct 7
+already decides: the gate's trigger is `some (2, 0)`, so `min 2 0 = 0` and `max 2 0 = 2`, and the
+oriented arm and the unoriented one are *literally the same list* at this configuration. Nothing at
+the gate is evidence for the mechanism, and nothing at the gate regresses under it — which is why
+the reuse witness, where the two orientations genuinely differ, is the configuration that carries
+the verdict. -/
 theorem gate_step_fires (fc : FormalSystem.ProofSystem.FrameClass) :
     (expandOnceUnblocked gateBranch gateOrd fc EventualityTracker.empty).2.constraints
         = gateNewOrd.constraints ∧
@@ -8002,14 +8172,18 @@ the generality the check needs; conjunct 2 is `expandOnceUnblocked_splitOrdered_
 them is the check: **every** successor of **every** shape either contains `b` verbatim or is one of
 the three ordered-split arms, of which only the third moves a time. No second branch-shrinking arm
 exists, so Phase 1's verdict about arm 3 does establish run-level monotonicity rather than a
-statement about one arm. -/
+statement about one arm.
+
+Conjunct 2 now reads `bs = orientedSplitArms b ord t₁ t₂` on the nose. That is not a restatement
+for tidiness: since the engine's arm is itself oriented, `orientedSplitArms` has stopped being a
+prototype standing in for the arm and *is* the arm, so everything proved about it below is a
+statement about runs the engine actually takes. -/
 theorem expandOnce_branch_shape_census {b : Branch} {ord : TimeOrdering}
     {fc : FormalSystem.ProofSystem.FrameClass} {tr : EventualityTracker} :
     (∀ nb ∈ unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1, ∀ x ∈ b, x ∈ nb) ∧
     (∀ bs, (expandOnceUnblocked b ord fc tr).1 = ExpansionResult.splitOrdered bs →
       ∃ t₁ t₂, firstIncomparablePair b ord = some (t₁, t₂) ∧
-        bs = [ (b, ord.addFuture t₁ t₂), (b, ord.addFuture t₂ t₁),
-               (b.identifyTime t₂ t₁, ord.identifyTime t₂ t₁) ]) :=
+        bs = orientedSplitArms b ord t₁ t₂) :=
   ⟨expandOnceUnblocked_branch_mono, fun _ h => expandOnceUnblocked_splitOrdered_shape h⟩
 
 /-- `Branch.maxTime` does not fall at any of the three oriented arms. Arms 1 and 2 leave the branch
@@ -8028,32 +8202,47 @@ theorem maxTime_le_orientedSplitArms (b : Branch) (ord : TimeOrdering) (t₁ t�
 across every successor of every shape the engine can report, the branch maximum is non-decreasing.
 
 Conjunct 1 covers `.extended` and `.split` — the additive shapes — through
-`expandOnceUnblocked_branch_mono` and `maxTime_mono`. Conjunct 2 covers the ordered split at the
-oriented arms. `.saturated` reports no successor and is covered by conjunct 1 vacuously, which is
-absence of a successor rather than a weakening of the claim.
+`expandOnceUnblocked_branch_mono` and `maxTime_mono`. Conjunct 2 covers the ordered split, stated
+at the engine's **own** `.splitOrdered` result rather than at a hypothetical arm list: since the
+live arm is the oriented one, the shape census turns any reported `bs` into `orientedSplitArms` and
+`maxTime_le_orientedSplitArms` finishes. `.saturated` reports no successor and is covered by
+conjunct 1 vacuously, which is absence of a successor rather than a weakening of the claim.
 
-Together with `expandOnce_branch_shape_census`, this is the run-level statement Phase 1's gate
+Together the two conjuncts exhaust the engine's step: **no successor of any shape has a smaller
+`Branch.maxTime` than the branch it came from.** This is the run-level statement Phase 1's gate
 decided at one configuration. -/
 theorem maxTime_monotone_along_run {b : Branch} {ord : TimeOrdering}
     {fc : FormalSystem.ProofSystem.FrameClass} {tr : EventualityTracker} :
     (∀ nb ∈ unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1,
         b.maxTime ≤ nb.maxTime) ∧
-      (∀ t₁ t₂, ∀ p ∈ orientedSplitArms b ord t₁ t₂, b.maxTime ≤ p.1.maxTime) :=
+      (∀ bs, (expandOnceUnblocked b ord fc tr).1 = ExpansionResult.splitOrdered bs →
+        ∀ p ∈ bs, b.maxTime ≤ p.1.maxTime) :=
   ⟨fun nb hnb => maxTime_mono (expandOnceUnblocked_branch_mono nb hnb),
-   maxTime_le_orientedSplitArms b ord⟩
+   fun _ h => by
+     obtain ⟨t₁, t₂, -, rfl⟩ := (expandOnce_branch_shape_census (fc := fc) (tr := tr)).2 _ h
+     exact maxTime_le_orientedSplitArms b ord t₁ t₂⟩
 
 /-- **…and hence of fresh-time issuance itself.** `Branch.nextTime` is `Branch.maxTime + 1` by a
 definition this task leaves byte-unchanged, so monotonicity of the one is monotonicity of the
-other. This is the run-level form of the property register entry 15 says is unavailable — and it is
-unavailable at the *current* arm, which is why the repair is at the arm and not at the measure. -/
+other. This is the run-level form of the property register entry 15 says is unavailable — and it
+*was* unavailable at the unoriented arm, which is why the repair went to the arm and not to the
+measure.
+
+**Read as a statement about reuse**: every fresh time the engine mints is `nb.maxTime + 1` for the
+branch it mints on, and no branch along a run has a smaller `maxTime` than its predecessor, so
+every mint is strictly above every time index the run has ever carried — including every index an
+earlier identification retired. `nextTime_reissues_retired_time`'s configuration cannot recur on
+the engine path; see `reuse_driven_through_engine` for the same fact decided at that witness. -/
 theorem nextTime_monotone_along_run {b : Branch} {ord : TimeOrdering}
     {fc : FormalSystem.ProofSystem.FrameClass} {tr : EventualityTracker} :
     (∀ nb ∈ unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1,
         b.nextTime ≤ nb.nextTime) ∧
-      (∀ t₁ t₂, ∀ p ∈ orientedSplitArms b ord t₁ t₂, b.nextTime ≤ p.1.nextTime) :=
+      (∀ bs, (expandOnceUnblocked b ord fc tr).1 = ExpansionResult.splitOrdered bs →
+        ∀ p ∈ bs, b.nextTime ≤ p.1.nextTime) :=
   ⟨fun nb hnb => Nat.succ_le_succ
       (maxTime_monotone_along_run (fc := fc) (tr := tr) |>.1 nb hnb),
-   fun t₁ t₂ p hp => Nat.succ_le_succ (maxTime_le_orientedSplitArms b ord t₁ t₂ p hp)⟩
+   fun bs h p hp => Nat.succ_le_succ
+     (maxTime_monotone_along_run (fc := fc) (tr := tr) |>.2 bs h p hp)⟩
 
 
 /-! #### Invariant survival at the oriented arm, generally
@@ -8075,48 +8264,12 @@ same three-step argument at the converse step relation. That is the only declara
 subsection that is not an instantiation of something already proved, and recording it is the point
 of the plan's "a lemma that needed an independent proof is a signal" instruction: the signal here
 is small and localised — a missing mirror in a reachability calculus, not a defect in the
-orientation. -/
+orientation.
 
-/-- **The reachability duality, backwards.** `orderDual_holds` gives
-`t₂ ∈ futureOf t₁ → t₁ ∈ pastOf t₂`; this is the converse direction, which was not landed.
-
-Same three steps at the converse step relation: `bfsClosure_sound` extracts a backward path of
-between one and `100` edges, `PathN.reverse` turns it into a forward path of the same length
-against `mem_directFutureOf_iff` read right-to-left, and `bfsClosure_complete` re-finds it at the
-same default fuel. Both closures run at fuel `100`, so the length soundness bounds is exactly the
-length completeness may spend — the argument `orderDual_holds`'s own docstring sets out. -/
-theorem orderDual_backward (ord : TimeOrdering) {t₁ t₂ : TimeIndex} (h : t₂ ∈ ord.pastOf t₁) :
-    t₁ ∈ ord.futureOf t₂ := by
-  rw [TimeOrdering.pastOf, TimeOrdering.reachableBackward_eq] at h
-  rcases TimeOrdering.bfsClosure_sound _ 100 [t₁] [] h with hv | ⟨s, hs, n, hn1, hn2, hp⟩
-  · simp at hv
-  · rw [List.mem_singleton] at hs
-    subst hs
-    rw [TimeOrdering.futureOf, TimeOrdering.reachableForward_eq]
-    exact TimeOrdering.bfsClosure_complete _
-      (TimeOrdering.PathN.reverse
-        (fun x y => (TimeOrdering.mem_directFutureOf_iff ord y x).symm) hp) hn1 hn2
-
-/-- **R1, decided: `incomparableB` is symmetric.** Incomparability is a symmetric relation even
-though `firstIncomparablePair`'s test — which `incomparableB` transcribes verbatim — is written
-asymmetrically, as three conditions on the *ordered* pair.
-
-The two closure conjuncts trade places under the duality rather than being preserved: `t₁ ∈
-futureOf t₂` would give `t₂ ∈ pastOf t₁` by `orderDual_holds`, contradicting the *past* conjunct,
-and `t₁ ∈ pastOf t₂` would give `t₂ ∈ futureOf t₁` by `orderDual_backward`, contradicting the
-*future* one. That crossing is why both directions of the duality are needed and why only having
-one of them is what made this look like a risk.
-
-Landed **before** any lemma that consumes it, per the plan's ordering requirement. Had it been
-false, Candidate A would have died here and the ladder would have resumed at Candidate B. -/
-theorem incomparableB_symm {ord : TimeOrdering} {t₁ t₂ : TimeIndex}
-    (h : incomparableB ord (t₁, t₂) = true) : incomparableB ord (t₂, t₁) = true := by
-  simp only [incomparableB, Bool.and_eq_true, bne_iff_ne, Bool.not_eq_true',
-    List.contains_eq_mem, decide_eq_false_iff_not] at h ⊢
-  obtain ⟨⟨hne, hf⟩, hp⟩ := h
-  refine ⟨⟨Ne.symm hne, fun hcon => hp ?_⟩, fun hcon => hf ?_⟩
-  · exact orderDual_holds ord t₂ t₁ hcon
-  · exact orderDual_backward ord hcon
+*Where those two live.* `orderDual_backward` and `incomparableB_symm` are landed in section A,
+alongside `incomparableB_of_firstIncomparablePair`, rather than here: the engine-facing arm-3
+lemmas consume them far above this subsection, and Lean's dependency order decides the position.
+Their content is this subsection's; only their location is not. -/
 
 /-- **Collapse-freedom at the oriented arm.** `identifyTime_no_collapse` restated at
 `(min t₁ t₂, max t₁ t₂)`, by a case split on which of the two times is the smaller.
@@ -8182,29 +8335,13 @@ theorem knownTimes_card_lt_identifyTime_oriented {b : Branch} {ord : TimeOrderin
   · rw [Nat.min_eq_right hle, Nat.max_eq_left hle]
     exact knownTimes_card_lt_identifyTime h1 h2 hne
 
-/-- **Register entries 10-12's confinement bridge, at the oriented arm.**
-`universeClosedAt_identify_at_trigger` restated at the oriented merge.
-
-The existing clause 2 is discharged, not a new one: `UniverseClosedAt`'s second conjunct already
-quantifies its *source* time freely and restricts only its *target*, so swapping which of the pair
-is which costs exactly one fact — that `max t₁ t₂` is a known time — and
-`firstIncomparablePair_spec` returns membership for both times, not only for `t₁`.
-
-That is entry 12's finding paying off in the direction it predicted: the predicate was deliberately
-*not* repaired by constraining `t₂` as well, and had it been, this lemma would have needed a
-hypothesis that no trigger supplies. Nothing here weakens clause 2 or constrains the source. -/
-theorem universeClosedAt_identify_at_trigger_oriented
-    {fc : FormalSystem.ProofSystem.FrameClass} {U : Finset SignedFormula}
-    {b : Branch} {ord : TimeOrdering} {t₁ t₂ : TimeIndex}
-    (h : UniverseClosedAt fc U) (hbU : ∀ x ∈ b, x ∈ U)
-    (htrig : firstIncomparablePair b ord = some (t₁, t₂)) :
-    ∀ x ∈ (identifyOriented b ord t₁ t₂).1, x ∈ U := by
-  obtain ⟨hk1, hk2, -, -, -⟩ := firstIncomparablePair_spec htrig
-  refine h.2 b (identifyOrient t₁ t₂).2 (identifyOrient t₁ t₂).1 hbU ?_
-  simp only [identifyOrient]
-  rcases Nat.le_total t₁ t₂ with hle | hle
-  · rw [Nat.max_eq_right hle]; exact hk2
-  · rw [Nat.max_eq_left hle]; exact hk1
+/-! Register entries 10-12's confinement bridge at the oriented arm is
+`universeClosedAt_identify_at_trigger_oriented`, landed beside its unoriented original where the
+engine-level consumers reach it. It discharges the *existing* clause 2: the predicate already
+quantifies its source time freely and restricts only its target, so swapping which member of the
+pair is which costs exactly the one fact `firstIncomparablePair_spec_oriented` supplies, and adds
+no hypothesis. Nothing here constrains `t₂` as well as `t₁` — entry 12 decides that both-times
+form is the weaker one, not the repair. -/
 
 /-- **…and clause 2 discharged at the concrete universe, at the oriented arm.**
 `timeMergeClosed_identifyTime_signedUniverse` at the oriented merge, so the whole confinement chain

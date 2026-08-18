@@ -648,39 +648,58 @@ edit" comes from Phase 4's census. Confirm by recording actual edited-declaratio
 
 ---
 
-### Phase 7: Re-verify `MintBound.lean` consumers and restate the stale witnesses [NOT STARTED]
+### Phase 7: Re-verify `MintBound.lean` consumers and restate the stale witnesses [COMPLETED]
 
 **Goal**: The largest re-verification surface (plan-time count: 66 arm-shape occurrences), plus the
 honest restatement of the engine-driven `decide` witnesses whose values a *successful* repair
 changes.
 
 **Tasks**:
-- [ ] Work the Phase 4 edit list's `MintBound.lean` group in census order, arm-bound sites only.
-- [ ] **Restate `reuse_driven_through_engine` (`MintBound.lean:7363`).** Under a successful repair
+- [x] Work the Phase 4 edit list's `MintBound.lean` group in census order, arm-bound sites only. *(done: 2 shape sites + 15 destructuring sites; 7 new bridge declarations landed)*
+- [x] **Restate `reuse_driven_through_engine` (`MintBound.lean:7363`).** Under a successful repair
       the engine no longer re-carries the retired index, so this `decide` changes value. Restate it
       with its new decided value and a docstring paragraph saying: what it decided before, what it
       decides now, and that the change is the repair working — not a regression. Do **not** re-tune
-      the witness branch to recover the old number.
-- [ ] Re-verify `gate_is_reissue_hazard` (`MintBound.lean:7578`). Conjuncts 3-6 are stated about a
+      the witness branch to recover the old number. *(deviation: altered — the `decide` did NOT change value, and the plan's prediction that it
+      would was wrong for a reportable reason: `reuseStep` is driven from `reuseWitnessState`, a
+      HAND-ASSEMBLED `Branch.identifyTime reuseWitnessBranch 2 0` call, not from the engine's arm.
+      What it decides is the conditional "if a run reaches a branch whose maxTime has fallen, the
+      engine re-mints the retired index", which the repair does not touch. The theorem is therefore
+      kept at its original value with a docstring paragraph saying exactly this, and the missing
+      measurement — that the engine no longer PRODUCES that state — is landed beside it as the new
+      `oriented_engine_does_not_produce_reuse`. Re-tuning the witness to move the number would have
+      destroyed the conditional worth keeping.)*
+- [x] Re-verify `gate_is_reissue_hazard` (`MintBound.lean:7578`). Conjuncts 3-6 are stated about a
       direct `Branch.identifyTime reuseWitnessBranch 2 0` call rather than about the arm, so they
       should survive verbatim; conjunct 7 and `gate_step_fires` (`MintBound.lean:7596`) run the
-      engine and may not. Restate what changed, with the same discipline.
-- [ ] Re-verify `ordTimes_identifyTime_arm3_false` (`MintBound.lean:1217`) — register entry 7's
+      engine and may not. Restate what changed, with the same discipline. *(confirmed: BOTH survive verbatim, including the engine-running conjunct 7 and
+      `gate_step_fires`. Sharper reason than the plan anticipated: the gate's trigger is
+      `some (2, 0)`, so `min 2 0 = 0` and `max 2 0 = 2` and the two arms are literally the same
+      list there — already decided as `oriented_gate_invariants` conjunct 7. Docstring paragraph
+      added to `gate_step_fires` recording this.)*
+- [x] Re-verify `ordTimes_identifyTime_arm3_false` (`MintBound.lean:1217`) — register entry 7's
       refutation of the weak form. It must remain **true**; if the orientation accidentally rescues
-      `OrdTimesLeMaxTime`, that is a significant finding to report, not to quietly absorb.
-- [ ] Re-verify `universeClosedAt_identify_at_trigger` (`MintBound.lean:5340` region),
+      `OrdTimesLeMaxTime`, that is a significant finding to report, not to quietly absorb. *(confirmed still true and unedited: it decides a direct `identifyTime` configuration, not the
+      arm, so `OrdTimesLeMaxTime` is NOT accidentally rescued — entry 7 stands)*
+- [x] Re-verify `universeClosedAt_identify_at_trigger` (`MintBound.lean:5340` region),
       `mem_identifyTime_time_at_trigger` (`MintBound.lean:6569`), and
       `timeMergeClosed_identifyTime_signedUniverse` (`MintBound.lean:5613`) — the three
-      trigger-bridge lemmas, all of which name `t₁` as the merge target.
-- [ ] Re-verify `mintPotential_identifyTime` (`MintBound.lean:3011`) and
-      `witnessPresent_identifyTime` (`MintBound.lean:644`).
-- [ ] Confirm `rho_src_ne_src`, `rhoSF_time_ne_src`, `mint_not_in_rhoSF_image`
+      trigger-bridge lemmas, all of which name `t₁` as the merge target. *(all three unedited; two oriented companions landed beside them —
+      `universeClosedAt_identify_at_trigger_oriented` and
+      `mem_identifyTime_time_at_trigger_oriented`. `timeMergeClosed_identifyTime_signedUniverse`
+      needed no oriented companion at engine level; Phase 3's `timeMergeClosed_identifyTime_oriented`
+      already covers it.)*
+- [x] Re-verify `mintPotential_identifyTime` (`MintBound.lean:3011`) and
+      `witnessPresent_identifyTime` (`MintBound.lean:644`). *(both unedited and both generically quantified; oriented companions
+      `mintPotential_identifyTime_oriented` and `arm3_preserves_witness_oriented` landed beside
+      them)*
+- [x] Confirm `rho_src_ne_src`, `rhoSF_time_ne_src`, `mint_not_in_rhoSF_image`
       (`MintBound.lean:7296-7307`) are **byte-unchanged**. They are statements about the renaming's
-      construction and must not be disturbed; entry 15's wording depends on them.
-- [ ] Confirm the entry-17 gate declarations (`selfGuardRules` … `mintPaysForTimeAt_reuse_false`)
+      construction and must not be disturbed; entry 15's wording depends on them. *(confirmed byte-unchanged)*
+- [x] Confirm the entry-17 gate declarations (`selfGuardRules` … `mintPaysForTimeAt_reuse_false`)
       still elaborate. Entry 17's *refutation* stands as a historical statement about the old arm;
       whether it still applies to the new arm is a **Phase 10 documentation question**, not a
-      licence to delete it.
+      licence to delete it. *(confirmed: all elaborate, module build green; entry 17 untouched)*
 
 **Timing**: 3 hours
 
