@@ -6,6 +6,7 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.Metalogic.Decidability.BiLasso.Annotation
 import FormalSystem.Metalogic.Decidability.BiLasso.Decide
+import FormalSystem.Metalogic.Decidability.BiLasso.Enumerate
 
 /-!
 # Non-Vacuity Witnesses for `LocalCoherent` and `Fulfilling`
@@ -405,6 +406,34 @@ section SmokeTests
 -- would fail if the fulfilment window were ever weakened into a purely local check.
 #guard decide (LocalCoherent loopPresentation φNeg (fun _ => false) negAnnot)
 #guard !decide (Fulfilling loopPresentation φNeg negAnnot)
+
+/-! ### The bounded enumeration
+
+`boundedBiLassos flipPresentation 2` returns **6**, and the count is checkable by hand: over the
+two-state flip presentation every step must alternate, so the whole path is fixed by its value at
+the origin (2 choices), each cycle is forced to the alternating two-element list, and the only
+remaining freedom is the window length `|mid| ∈ {0, 1, 2}` (3 choices). `2 · 3 = 6`.
+
+The `n = 2` annotated count is included because the plan asks for it; note that it takes on the
+order of ten seconds to evaluate, which is itself the honest measurement of how impractical the
+enumeration is at even the smallest interesting size.
+-/
+
+#eval (boundedBiLassos flipPresentation 2).length
+#eval (boundedBiLassos loopPresentation 1).length
+#eval (boundedAnnots loopPresentation φPos (fun _ => false) 1).length
+#eval (boundedAnnots loopPresentation φPos (fun _ => false) 2).length
+
+/--
+**The positive witness is in the enumeration.**
+
+Proved from completeness rather than by `decide`: the enumeration is complete for every
+annotated bi-lasso whose segments are bounded by `n`, and `posAnnot`'s are `1`, `0`, `1`.
+-/
+theorem posAnnot_mem_boundedAnnots :
+    posAnnot ∈ boundedAnnots loopPresentation φPos (fun _ => false) 1 :=
+  mem_boundedAnnots posAnnot (by simp [posAnnot, loopLasso]) (by simp [posAnnot, loopLasso])
+    (by simp [posAnnot, loopLasso]) posAnnot_localCoherent posAnnot_fulfilling
 
 end SmokeTests
 

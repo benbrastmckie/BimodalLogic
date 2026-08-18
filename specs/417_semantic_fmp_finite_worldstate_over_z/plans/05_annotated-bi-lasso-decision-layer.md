@@ -724,24 +724,30 @@ because each of the two hard shifts requires a full residue system of headroom.)
 
 ---
 
-### Phase 9: Bounded enumeration of annotated bi-lassos [NOT STARTED]
+### Phase 9: Bounded enumeration of annotated bi-lassos [COMPLETED]
 
 **Goal**: `boundedAnnots P φ n : List (Annot P φ)` containing every annotated bi-lasso whose three
 segments are bounded by `n`, with completeness and soundness proved.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/Decidability/BiLasso/Enumerate.lean`.
-- [ ] Define `boundedBiLassos P n : List (BiLasso P)` first — enumerate segment lists over
+- [x] Create `FormalSystem/Metalogic/Decidability/BiLasso/Enumerate.lean`.
+- [x] Define `boundedBiLassos P n : List (BiLasso P)` first — enumerate segment lists over
       `Fin P.card` up to length `n`, filter on the decidable `coherent` field. This is plan 04's
       Phase 6, surviving unchanged, and it is the base of the annotated enumeration.
-- [ ] Prove completeness and soundness for `boundedBiLassos`: every `L` with all three segments of
+- [x] Prove completeness and soundness for `boundedBiLassos`: every `L` with all three segments of
       length `≤ n` appears, and every element is a genuine `BiLasso P` (immediate, since the filter
       is on the structure's own field).
-- [ ] Define `boundedAnnots P φ n` by pairing each enumerated lasso with every assignment of
+- [x] Define `boundedAnnots P φ n` by pairing each enumerated lasso with every assignment of
       subsets of `subformulaClosure φ` to its positions, filtered on `LocalCoherent` and
-      `Fulfilling` via Phase 8's instances.
-- [ ] Prove completeness and soundness for `boundedAnnots`.
-- [ ] Docstring the size honestly: `(P.card · 2^k)` per position with
+      `Fulfilling` via Phase 8's instances. *(deviation: altered — `boundedAnnots` takes the
+      box oracle `bx` as an explicit parameter, since `LocalCoherent` is stated relative to one
+      and the filter cannot be applied without it. Also, the subset universe is built from
+      `List.sublists` of the closure's underlying list rather than `Finset.powerset`, because
+      `Finset.toList` is **noncomputable** and would have made the whole enumeration
+      noncomputable — `closureSubsets` with `mem_closureSubsets` / `closureSubsets_sub` proves
+      the two agree.)*
+- [x] Prove completeness and soundness for `boundedAnnots`.
+- [x] Docstring the size honestly: `(P.card · 2^k)` per position with
       `k = subformulaClosureCard φ` (`Closure.lean:56`). State that this is a decidability
       construction and not a practical algorithm, and keep every `#eval` smoke test to a closure of
       two or three formulas.
