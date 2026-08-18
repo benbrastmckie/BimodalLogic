@@ -474,25 +474,53 @@ Literal output, all six choice-free as required:
 
 ---
 
-### Phase 3: `Orbit.lean` — forward orbit repeat and rho decomposition [NOT STARTED]
+### Phase 3: `Orbit.lean` — forward orbit repeat and rho decomposition [COMPLETED]
 
 **Goal**: The substantive construction, forward half: iterate `succOf` from the window's right
 endpoint, apply pigeonhole to force a revisit, and extract a forward tail plus a non-empty forward
 cycle as `List (Fin P.card)` with adjacency along each.
 
 **Tasks**:
-- [ ] Re-run the reuse-if-landed check (417 may have landed `Periodic.lean` since Phase 1).
-- [ ] Create `FormalSystem/Metalogic/Decidability/BiLasso/Orbit.lean`.
-- [ ] `theorem orbit_repeat`: the forward orbit `fun n => P.iterSucc w n` restricted to
+- [x] Re-run the reuse-if-landed check (417 may have landed `Periodic.lean` since Phase 1).
+      *(re-run: `Periodic.lean` is present but carries no orbit, pigeonhole, or successor
+      machinery whatsoever — it is `cyc`/`unrollOf` only. Nothing in this phase duplicates it.)*
+- [x] Create `FormalSystem/Metalogic/Decidability/BiLasso/Orbit.lean`.
+- [x] `theorem orbit_repeat`: the forward orbit `fun n => P.iterSucc w n` restricted to
       `[0, P.card]` has a repeat — `∃ i j, i < j ∧ j ≤ P.card ∧ iterSucc w i = iterSucc w j`. Route
       via `by_contra` + `Fintype.card_le_of_injective` (research-surveyed as succeeding). Expect
       `[propext, Classical.choice, Quot.sound]`; this is D-5 source 1 and is expected, not a defect.
-- [ ] Extract the rho decomposition: `fwdTail` (the pre-period list, `iterSucc w 0 .. i-1`) and
+      *(the `Fintype.card_le_of_injective` route succeeded on the first attempt; measured profile is
+      exactly the expected `[propext, Classical.choice, Quot.sound]`)*
+- [x] Extract the rho decomposition: `fwdTail` (the pre-period list, `iterSucc w 0 .. i-1`) and
       `fwdCycle` (`iterSucc w i .. j-1`), both as `List (Fin P.card)`.
-- [ ] `theorem fwdCycle_ne_nil` from `i < j`.
-- [ ] Adjacency lemmas: `P.step` holds between consecutive entries of `fwdTail ++ fwdCycle`, and
-      wraps from the last entry of `fwdCycle` back to its first.
-- [ ] Length bound: `fwdCycle.length ≤ P.card`.
+- [x] `theorem fwdCycle_ne_nil` from `i < j`.
+- [x] Adjacency lemmas: `P.step` holds between consecutive entries of `fwdTail ++ fwdCycle`, and
+      wraps from the last entry of `fwdCycle` back to its first. *(landed as `fwdTail_getD` /
+      `fwdCycle_getD`, which identify every segment position with its orbit index, plus
+      `fwdCycle_wrap` for the closing step; within-segment adjacency is then literally
+      `iterSucc_step` and needs no separate statement)*
+- [x] Length bound: `fwdCycle.length ≤ P.card`.
+
+#### Phase 3 Note
+
+**Scope Hypothesis check**: asserted "~5-7 declarations in one new file" and that
+`Fintype.card_le_of_injective` closes the pigeonhole. The pigeonhole route held on the first
+attempt, with no fallback needed. The declaration count is higher than asserted because the
+**backward mirror was landed in the same pass**: `orbit_repeat_pred`, `iterPred_add`,
+`iterPred_periodic`, `bwdTail`, `bwdCycle`, `bwdCycle_ne_nil`, `bwdCycle_length`,
+`bwdCycle_length_le`, `bwdTail_getD`, `bwdCycle_getD`, and `bwdCycle_wrap` are all present. These
+are Phase 4's first task item, written early because they are a line-for-line mirror of the
+forward half and splitting them across two passes over the same file would have meant re-deriving
+the same index conventions twice. Phase 4's checklist marks them accordingly rather than
+re-doing them.
+
+Also added beyond the plan's list, because the assembly consumes them: `iterSucc_add` /
+`iterPred_add` (orbit composition) and `iterSucc_periodic` / `iterPred_periodic` (a repeat makes
+the orbit periodic from the repeat's first index onward). The periodicity lemmas are the ones that
+actually license `BiLasso`'s two cyclic segments; the plan implied them without naming them.
+
+**Manifest**: `FormalSystem.Metalogic.Decidability.BiLasso.Orbit` added to
+`scripts/module-invariants-manifest.txt`.
 
 **Timing**: 2 hours
 
