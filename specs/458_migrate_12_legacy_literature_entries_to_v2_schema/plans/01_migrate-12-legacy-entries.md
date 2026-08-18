@@ -415,29 +415,29 @@ or deleted since research, or a fresh search may locate one of the nine).
 
 ---
 
-### Phase 5: The mutation — write the five v2 fields on all twelve entries [NOT STARTED]
+### Phase 5: The mutation — write the five v2 fields on all twelve entries [COMPLETED]
 
 **Goal**: Apply the adjudicated values to `~/Projects/Literature/index.json` in a single wholesale
 write, adding exactly five fields to exactly twelve entries and touching nothing else.
 
 **Tasks**:
-- [ ] Take the pre-mutation backup:
+- [x] Take the pre-mutation backup:
       `cp ~/Projects/Literature/index.json ~/Projects/Literature/index.json.bak-$(date +%Y%m%d-%H%M%S)-pre-458-mutate`
-- [ ] Write `data/migrate12_mutate.py`, adapted from task 457's `data/phase6_mutate.py`. It must:
+- [x] Write `data/migrate12_mutate.py`, adapted from task 457's `data/phase6_mutate.py`. It must:
       read `data/adjudication.tsv` and `data/scope5-12.tsv`; look each entry up by `id`; set
       `provenance_fidelity` **only** from the adjudication TSV (never computed, never inferred);
       compute `token_count = int(chars/4 + 20)` over the concatenation of all `chunk_*.md` in the
       entry's `chunks_dir`; set `path` to the directory relative to `$LITERATURE_DIR` with a trailing
       slash and **no `sources/` prefix**; set `doc_type`; set `source_format` only when the TSV value
       is not `EXCLUDE`
-- [ ] Give the script a hard precondition: it **refuses to run** (non-zero exit, no write) if any of
+- [x] Give the script a hard precondition: it **refuses to run** (non-zero exit, no write) if any of
       the twelve rows is missing a `provenance_fidelity`, a `doc_type`, or a chunk-filename record —
       the mechanical enforcement of the manual-read gate
-- [ ] Give the script an explicit allow-list of the twelve ids and of the five mutable keys; it must
+- [x] Give the script an explicit allow-list of the twelve ids and of the five mutable keys; it must
       not write any other key on any entry, and must not touch `doc_id`, `id`, `title`, `authors`,
       `year`, `source_path`, `chunks_dir`, `chunk_count`, `ingested_at`, or `schema_normalized_at`
-- [ ] Run the script; capture its per-entry before/after output into `progress/phase-5-progress.json`
-- [ ] Immediately re-parse `index.json` and confirm the entry count is unchanged against the Phase 1
+- [x] Run the script; capture its per-entry before/after output into `progress/phase-5-progress.json`
+- [x] Immediately re-parse `index.json` and confirm the entry count is unchanged against the Phase 1
       live baseline; on any failure, restore from the pre-mutation backup and stop
 
 **Timing**: 0.75 hours

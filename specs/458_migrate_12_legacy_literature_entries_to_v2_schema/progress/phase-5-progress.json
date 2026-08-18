@@ -1,0 +1,48 @@
+{
+  "phase": 5,
+  "phase_name": "The mutation -- write the five v2 fields on all twelve entries",
+  "started_at": "2026-08-18T14:41:00Z",
+  "last_updated": "2026-08-18T14:45:00Z",
+  "objectives": [
+    {"id": 1, "description": "Take pre-mutation backup of index.json", "status": "done", "files_touched": []},
+    {"id": 2, "description": "Write data/migrate12_mutate.py adapted from task 457's phase6_mutate.py", "status": "done", "files_touched": ["specs/458_migrate_12_legacy_literature_entries_to_v2_schema/data/migrate12_mutate.py"]},
+    {"id": 3, "description": "Give the script a hard refusal precondition", "status": "done", "files_touched": ["specs/458_migrate_12_legacy_literature_entries_to_v2_schema/data/migrate12_mutate.py"]},
+    {"id": 4, "description": "Give the script an explicit allow-list of the twelve ids and five mutable keys", "status": "done", "files_touched": ["specs/458_migrate_12_legacy_literature_entries_to_v2_schema/data/migrate12_mutate.py"]},
+    {"id": 5, "description": "Run the script; capture per-entry before/after output into progress file", "status": "done", "files_touched": ["specs/458_migrate_12_legacy_literature_entries_to_v2_schema/data/mutation_output.txt"]},
+    {"id": 6, "description": "Immediately re-parse index.json and confirm entry count unchanged against Phase 1 live baseline", "status": "done", "files_touched": []}
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": [],
+  "refusal_path_exercise": {
+    "performed": true,
+    "method": "Ran migrate12_mutate.py against a scratch copy of index.json (md5 8149f3fc568c199cb814e3d3ccca65d4, identical to the live file at that point) with a deliberately blanked adjudication.tsv row (brics-rs-94-7's proposed_provenance_fidelity column cleared).",
+    "result": "Script exited 1, printed 'REFUSING TO RUN -- manual-read precondition not satisfied for all twelve entries: - brics-rs-94-7: missing provenance_fidelity in adjudication.tsv' to stderr, and the scratch copy's md5 was unchanged after the run -- confirming no write occurred on refusal.",
+    "then_confirmed_happy_path": "Immediately re-ran the unmodified script against the same scratch copy with the real (unblanked) adjudication.tsv and scope5-12.tsv; it succeeded (exit 0), wrote all twelve entries correctly, and the scratch copy's entry count remained 369 -- confirming the precondition gate is enforced (fails closed) without being decorative (succeeds open when satisfied)."
+  },
+  "real_mutation": {
+    "backup_taken": "~/Projects/Literature/index.json.bak-20260818-140334-pre-458-mutate (md5 8149f3fc568c199cb814e3d3ccca65d4, matches pre-mutation live index.json)",
+    "script_run": "python3 specs/458_migrate_12_legacy_literature_entries_to_v2_schema/data/migrate12_mutate.py (no override args -- ran against the live ~/Projects/Literature/index.json)",
+    "exit_code": 0,
+    "total_changed": 12,
+    "full_before_after_output": "specs/458_migrate_12_legacy_literature_entries_to_v2_schema/data/mutation_output.txt",
+    "post_mutation_entry_count": 369,
+    "post_mutation_entry_count_matches_phase1_baseline": true,
+    "token_counts_written": {
+      "brics-rs-96-35": 11159,
+      "cattani-winskel-2005-profunctors": 46274,
+      "brics-rs-94-7": 28356,
+      "schultz-spivak-temporal-type-theory": 93365,
+      "fong-speranzon-spivak-temporal-landscapes": 13648,
+      "schultz-spivak-vasilakopoulou-dynamical-systems-sheaves": 18271,
+      "thomason-1970-indeterminist-time": 12281,
+      "rutten-2000-universal-coalgebra": 44135,
+      "jacobs-coalgebra-intro-draft": 487668,
+      "danos-krivine-rccs": 11844,
+      "reynolds-2003-ockhamist": 9438,
+      "rumberg-zanardo-2019-transition-structures": 17260
+    }
+  },
+  "notes": "The dry refusal-path exercise and the real mutation both ran cleanly. All twelve entries now carry provenance_fidelity, path, token_count, doc_type; source_format is present only on rutten-2000-universal-coalgebra and rumberg-zanardo-2019-transition-structures (both 'pdf'), matching the ten-EXCLUDE / two-pdf split from Phase 4. Phase 6 performs the independent verification (field-level diff, independent token_count recomputation, FTS gate)."
+}
