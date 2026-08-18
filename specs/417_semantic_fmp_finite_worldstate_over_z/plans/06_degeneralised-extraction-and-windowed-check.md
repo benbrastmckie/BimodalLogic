@@ -750,21 +750,21 @@ stratified one. Nothing landed was weakened, and no `Classical.dec` reaches `box
 
 ---
 
-### Phase 12: `check`, `check_correct`, `Decidable`, and regression wiring [IN PROGRESS]
+### Phase 12: `check`, `check_correct`, `Decidable`, and regression wiring [COMPLETED]
 
 **Goal**: the shipped decision procedure in the windowed shape, plus the module re-export, README
 updates, and the evidence probes wired in as permanent regression guards.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/Decidability/BiLasso/Check.lean`.
-- [ ] Define the specification being decided, explicitly, as its own `def` — do not leave it implicit
+- [x] Create `FormalSystem/Metalogic/Decidability/BiLasso/Check.lean`.
+- [x] Define the specification being decided, explicitly, as its own `def` — do not leave it implicit
       in `check_correct`'s statement:
       ```lean
       def SatAtState (P : IntPresentation) (w : Fin P.card) (φ : Formula) : Prop :=
         ∃ (τ : WorldHistory P.toTaskFrame) (hτ : τ.IsTotal) (t : ℤ),
           τ.states t (hτ t) = w ∧ TruthAt P.toModel τ t φ
       ```
-- [ ] Define `check P w φ : Bool` in the **windowed** shape:
+- [x] Define `check P w φ : Bool` in the **windowed** shape:
       ```lean
       decide (∃ A ∈ boundedAnnots P φ (boxOracle P) (bound P φ),
                 ∃ i ∈ Finset.Ico (cohWindowLo A) (cohWindowHi A),
@@ -773,37 +773,55 @@ updates, and the evidence probes wired in as permanent regression guards.
       Read `bound` from Phase 10.3 and the window bounds from `Decide.lean`; restate neither. The `∃`
       sits **outside** any recursion on `φ`, which is why `no_compositional_imp`
       (`evidence/phase12-check-not-compositional.lean`) does not touch it — say so in the docstring.
-- [ ] Docstring the position quantifier where a reader will ask about it: `check` ranges over a
+- [x] Docstring the position quantifier where a reader will ask about it: `check` ranges over a
       position because a `BiLasso`'s origin is pinned to its backward repeat and the satisfied formula
       cannot in general be normalised to position `0`; cite
       `evidence/phase10-origin-anchoring-obstruction.lean` by path. State that this decides the same
       predicate an anchored `check` would have — `SatAtState` is existential in the time either way.
-- [ ] Prove `check_correct : check P w φ = true ↔ SatAtState P w φ`. The `←` direction is Phase 10.3;
+- [x] Prove `check_correct : check P w φ = true ↔ SatAtState P w φ`. The `←` direction is Phase 10.3;
       the `→` direction is `truth_along_annot_at` (`TruthLemma.lean:224`) at the found position `i`,
       with `boundedAnnots_sound` (`Enumerate.lean:315`) supplying `LocalCoherent` and `Fulfilling`.
-- [ ] Provide the `Decidable (SatAtState P w φ)` instance via `check_correct`. **No `Classical.dec`.**
-- [ ] Add `FormalSystem/Metalogic/Decidability/BiLasso.lean` as the subdirectory re-export, matching
+- [x] Provide the `Decidable (SatAtState P w φ)` instance via `check_correct`. **No `Classical.dec`.**
+- [x] Add `FormalSystem/Metalogic/Decidability/BiLasso.lean` as the subdirectory re-export, matching
       the existing `FMP.lean` convention. Include `Extraction.lean`, `GoodCycle.lean`, `Realized.lean`,
       `BoxOracle.lean`, `Check.lean`. **Do not add `Extend.lean` to this re-export** — it belongs to
       the effective-periodic-extension work; if that work has already re-exported it, leave its wiring
-      alone.
-- [ ] Update `FormalSystem/Metalogic/Decidability/README.md`'s module table and finalise
+      alone. *(Recorded design point: the re-export exists but is **not itself imported** by
+      `Decidability.lean`, so the layer stays outside the Lake build graph. This is forced by the
+      next task rather than chosen: reachability runs from the Lake target roots, so importing the
+      aggregator would make all thirteen submodules reachable, and C6 **fails** on a manifest entry
+      naming a reachable module — which would require deleting the very lines this plan's Testing &
+      Validation forbids removing. The two edits must happen together in a later commit; the
+      manifest comment and both READMEs now say so explicitly. The re-export also includes the
+      landed Phases 2–9 modules, not only the five new ones, since a subdirectory aggregator that
+      omitted them would not aggregate the subdirectory.)*
+- [x] Update `FormalSystem/Metalogic/Decidability/README.md`'s module table and finalise
       `BiLasso/README.md`. The latter must record: that `eval` was designed, refuted and retired; the
       route-1/route-2 decision and why route 2 was taken; that `Basic.lean` is held stable for the
       effective-periodic-extension work; and **that `check` reads a position rather than the origin,
       and why**.
-- [ ] Append this plan's new modules to `scripts/module-invariants-manifest.txt` for the C6 invariant,
+- [x] Append this plan's new modules to `scripts/module-invariants-manifest.txt` for the C6 invariant,
       using the same mechanism the earlier dispatches used. **Re-read the file immediately before
       editing** (the effective-periodic-extension work shares it), append only, never reorder, and
       re-read and retry if the edit fails.
-- [ ] Wire the evidence probes in as regression guards, per handoff §7. **Wire four**:
+- [x] Wire the evidence probes in as regression guards, per handoff §7. **Wire four**: *(deviation:
+      altered — `phase12-check-not-compositional.lean` was found **RED** at wiring time and was
+      repaired before being wired, rather than reported and left out. The Scope Hypothesis's
+      "a probe already red for an unrelated reason must be reported, not wired in red" was
+      honoured in spirit: the cause was diagnosed first, and it turned out to be a **missed
+      mechanical migration**, not a semantic gap. The probe predated the guard-first `untl`/`snce`
+      order, so `someFutureP p = untl (atom p) top` read as guard=`p`/event=`⊤` — not "p at some
+      future time" — and its two `untl` obligations arrived in the opposite order from its proofs.
+      Swapping the two arguments is exactly what `scripts/swap_untl_snce.py` performs; the file's
+      five facts then compile unchanged. All four probes are green. Reported here rather than
+      silently fixed.)*
       `phase3-scan-bound-is-false.lean`, `phase7-filtered-frame-is-universal.lean`,
       `phase12-check-not-compositional.lean`, and — newly —
       `phase10-origin-anchoring-obstruction.lean`, which is what stops a future dispatch re-anchoring
       `check` at position `0`. `spike-untl-unfolding-and-fwd-obstruction.lean` stays **out** of the
       build until the frame-class uniformity work lands, per report 04 recommendation 5; record the
       reason in `BiLasso/README.md`.
-- [ ] Run `bash scripts/readme-lint.sh` and `bash scripts/check-task-references.sh` — no task-number
+- [x] Run `bash scripts/readme-lint.sh` and `bash scripts/check-task-references.sh` — no task-number
       citations in any `.lean` file or `README.md`
       (`.claude/rules/no-task-references-in-deliverables.md`). Refer to the concurrent tasks by *what
       they are* ("the effective-periodic-extension work", "the frame-class uniformity work"), never by
@@ -825,6 +843,21 @@ a `lake env lean` invocation in `check-module-invariants.sh`, or a lakefile entr
 choose the one consistent with how the repository already runs non-library checks, and record the
 choice.
 
+**Scope Hypothesis outcome — confirmed with one correction.** Five probes exist, as asserted. Four
+are wired and one (`spike-untl-unfolding-and-fwd-obstruction`) is deferred, as asserted. The
+correction: one of the four was red at wiring time (see the deviation note on the wiring task) and
+was repaired first.
+
+**Wiring mechanism chosen: a dedicated script, `scripts/check-evidence-probes.sh`.** Rationale: the
+probes live under `specs/`, so a lakefile entry or a `Tests/` module would require relocating them
+out of the evidence directory that `Check.lean` and both READMEs cite by path. A new check group
+inside `check-module-invariants.sh` was rejected because that script is scoped to modules under
+`FormalSystem/` — C5 and C10 deliberately exclude `specs/` — so probe checking does not belong to
+it. A standalone script matches the repository's existing one-script-per-concern pattern
+(`check-copyright-headers.sh`, `check-paper-definitions.sh`, `check-module-invariants.sh`) and uses
+the same underlying mechanism as the C6 rot guard: `lake env lean` on a file outside the build
+graph. It runs in ~10s and carries, per probe, the design decision that probe holds in place.
+
 **Files to modify**:
 - `FormalSystem/Metalogic/Decidability/BiLasso/Check.lean` — new
 - `FormalSystem/Metalogic/Decidability/BiLasso.lean` — new re-export
@@ -841,6 +874,18 @@ choice.
 - **`check` computes**: an `#eval` of `check` on a two-state presentation with a two-formula closure
   returns a `Bool` and terminates. If it does not reduce, a `noncomputable` dependency has leaked in
   from the extraction — that is a blocker, not a `noncomputable def` to be added.
+  *(deviation: altered — the underlying fact is **established**, at a smaller size than specified,
+  and no `noncomputable` dependency leaked. `#eval check loopPresentation 0 Formula.bot` returns
+  `false` and `#eval check loopPresentation 0 (Formula.atom pA)` returns `true`: real `check`, at
+  its real `bound` of 6, both terminating (~2 min each, measured). That is a **one**-state
+  presentation with a **one**-formula closure. The specified two-state/two-formula case does not
+  terminate: `bound flipPresentation (⊥→⊥) = 40`, and `boundedAnnots` enumerates every labelling of
+  a window of that length, which is astronomically large — this is the cost the module docstring
+  already records, not a computability defect. The retained in-module evidence is therefore
+  `#guard`s on `checkAt` at `n = 1` (2s, same code path and same instances) plus the two
+  discrimination **theorems**; `check_bot_false` is strictly stronger than the negative `#eval`,
+  holding for every presentation and every state. The slow `#eval`s were run and are not retained,
+  because they would add ~4 min to every compile for evidence already carried.)*
 - `bash scripts/check-task-references.sh` and `bash scripts/readme-lint.sh` pass.
 - All four wired probes are green.
 - `lake build BimodalTest` fails at exactly the three known modules and no others.
