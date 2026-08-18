@@ -9129,6 +9129,168 @@ theorem selfGuardPotential_lt_of_snceNeg {U : Finset SignedFormula}
   refine selfGuardPotential_lt_of_addPast ?_ hxU hxt
   simpa using (Bool.and_eq_true _ _ |>.mp (Bool.and_eq_true _ _ |>.mp hguard).1).1
 
+/-! #### The run-level form of the σ hypothesis, and the no-leak confirmation
+
+`SigmaTimeStable σ b` is stated per *formula*, which is the weakest form the discharge lemmas need
+and therefore the right one to put in the predicate. It is **not** the right form to carry along a
+run, and the reason is worth stating rather than discovering later: the identification arm replaces
+branch formulas by their renamed images, and a renamed image need not have been on the branch
+before, so a per-formula hypothesis about the old branch says nothing about it.
+
+The time-level strengthening `SigmaTimeFixed` closes that gap. It quantifies over *every* formula
+sitting at a branch time rather than over branch formulas, which is exactly the extra reach the
+arm's relabelling needs, and it implies the per-formula form immediately. Everything else about it
+is the same: `id` satisfies it, the arm preserves it, and it is discharged rather than assumed.
+
+**What is confirmed here, and what is left named.** The arm — the only step that changes σ — is
+handled in full. Additive steps do not change σ at all, so the only way one can break the invariant
+is by minting a time σ retires; `SigmaFixesFrom` plus `sigmaTimeFixed_grow_of_fixesFrom` is the
+supply for that, and the fact that closes it is the reorientation's own
+(`retired_lt_nextTime_oriented`: every index the arm retires is strictly below the `nextTime` at
+which the run afterwards mints, and `nextTime_monotone_along_run` keeps it there). Assembling those
+into a single run-level invariant is measure-level work and belongs with the step lemmas, not here;
+it is named as an obligation rather than assumed. -/
+
+/-- **The time-level form of the σ hypothesis.** Every formula sitting at a time the branch knows
+keeps its time under `σ`.
+
+Stronger than `SigmaTimeStable` in exactly one respect — it reaches formulas that are not on the
+branch but sit at a time that is — and that is the respect the identification arm needs, since the
+arm puts renamed formulas on the branch that were not there before. -/
+def SigmaTimeFixed (σ : SignedFormula → SignedFormula) (b : Branch) : Prop :=
+  ∀ x : SignedFormula, x.label.time ∈ b.knownTimes → (σ x).label.time = x.label.time
+
+/-- The time-level form implies the per-formula form the predicate carries. One line: a branch
+formula's time is a branch time. -/
+theorem sigmaTimeStable_of_sigmaTimeFixed {σ : SignedFormula → SignedFormula} {b : Branch}
+    (h : SigmaTimeFixed σ b) : SigmaTimeStable σ b :=
+  fun x hx => h x (mem_knownTimes_of_mem hx)
+
+/-- **The seed satisfies it for free.** `σ` is `id` before the first ordered split, so the run
+starts inside the invariant and no caller supplies anything. -/
+theorem sigmaTimeFixed_id (b : Branch) : SigmaTimeFixed id b := fun _ _ => rfl
+
+/-- **The identification arm preserves it.** The one step that changes `σ`, handled in full.
+
+Two facts and nothing else. The post-arm branch's times are a subset of the pre-arm branch's
+(`knownTimes_identifyTime_subset`, which is why the surviving numeral has to be a known time — the
+same side condition `universeClosedAt_identify_at_trigger_oriented` carries, and no more), so the
+old invariant applies to every time the new branch knows; and the post-arm branch has lost the
+retired index, so the arm's own `rhoSF` is the identity on every time still present.
+
+Under the *unoriented* arm this lemma is equally true — it is not what the reorientation buys. What
+the reorientation buys is that the retired index stays retired, which is
+`retired_lt_nextTime_oriented`'s business, not this one's. -/
+theorem sigmaTimeFixed_identifyOriented {σ : SignedFormula → SignedFormula} {b : Branch}
+    {ord : TimeOrdering} {t₁ t₂ : TimeIndex} (hne : t₁ ≠ t₂)
+    (hmax : (identifyOrient t₁ t₂).2 ∈ b.knownTimes) (h : SigmaTimeFixed σ b) :
+    SigmaTimeFixed
+      (fun x => rhoSF (identifyOrient t₁ t₂).1 (identifyOrient t₁ t₂).2 (σ x))
+      (identifyOriented b ord t₁ t₂).1 := by
+  intro x hx
+  simp only [identifyOriented] at hx
+  have hb : x.label.time ∈ b.knownTimes := knownTimes_identifyTime_subset hmax _ hx
+  have hnesrc : x.label.time ≠ (identifyOrient t₁ t₂).1 := by
+    intro hc
+    exact src_not_mem_knownTimes_identifyTime b _ _ (identifyOrient_ne hne) (hc ▸ hx)
+  have hfix := h x hb
+  exact (rhoSF_time_eq_of_ne_src (by rw [hfix]; exact hnesrc)).trans hfix
+
+/-- **σ retires nothing at or above `n`.** The provenance fact about the accumulated renaming that
+additive steps need: a freshly minted time is safe as soon as it is at least `n`.
+
+Stated as a property of `σ` rather than as a claim about how `σ` was built, so that it composes
+(`sigmaFixesFrom_comp`) and weakens (`sigmaFixesFrom_mono`) without a provenance predicate. -/
+def SigmaFixesFrom (σ : SignedFormula → SignedFormula) (n : TimeIndex) : Prop :=
+  ∀ x : SignedFormula, n ≤ x.label.time → (σ x).label.time = x.label.time
+
+/-- `id` retires nothing, at any watermark. -/
+theorem sigmaFixesFrom_id (n : TimeIndex) : SigmaFixesFrom id n := fun _ _ => rfl
+
+/-- A single renaming retires nothing above the index it retires. -/
+theorem sigmaFixesFrom_rhoSF {src tgt n : TimeIndex} (h : src < n) :
+    SigmaFixesFrom (rhoSF src tgt) n :=
+  fun x hx => rhoSF_time_eq_of_ne_src (Nat.ne_of_gt (Nat.lt_of_lt_of_le h hx))
+
+/-- …and post-composing another one keeps the watermark, provided the new retired index is below
+it. This is the induction step of the run-level provenance argument, and it is where
+`retired_lt_nextTime_oriented` is consumed. -/
+theorem sigmaFixesFrom_comp {σ : SignedFormula → SignedFormula} {src tgt n : TimeIndex}
+    (hσ : SigmaFixesFrom σ n) (h : src < n) :
+    SigmaFixesFrom (fun x => rhoSF src tgt (σ x)) n := by
+  intro x hx
+  have hfix := hσ x hx
+  exact (rhoSF_time_eq_of_ne_src
+    (by rw [hfix]; exact Nat.ne_of_gt (Nat.lt_of_lt_of_le h hx))).trans hfix
+
+/-- The watermark may be raised freely. `nextTime_monotone_along_run` is what raises it. -/
+theorem sigmaFixesFrom_mono {σ : SignedFormula → SignedFormula} {n m : TimeIndex}
+    (h : SigmaFixesFrom σ n) (hle : n ≤ m) : SigmaFixesFrom σ m :=
+  fun x hx => h x (le_trans hle hx)
+
+/-- **Growth preserves the invariant, given the obligation on the new times.** The obligation is
+stated rather than assumed away: every time the successor knows is either one the predecessor knew,
+or one `σ` fixes. -/
+theorem sigmaTimeFixed_grow {σ : SignedFormula → SignedFormula} {b b' : Branch}
+    (h : SigmaTimeFixed σ b)
+    (hnew : ∀ t ∈ b'.knownTimes, t ∈ b.knownTimes ∨ ∀ x : SignedFormula, x.label.time = t →
+      (σ x).label.time = x.label.time) :
+    SigmaTimeFixed σ b' := by
+  intro x hx
+  rcases hnew x.label.time hx with hb | hfix
+  · exact h x hb
+  · exact hfix x rfl
+
+/-- **…and the form the run-level argument actually uses.** The new-time obligation is discharged by
+a watermark: a successor's times are the predecessor's plus fresh ones, and the fresh ones are at
+least `b.nextTime`, which is strictly above every index the run has retired. -/
+theorem sigmaTimeFixed_grow_of_fixesFrom {σ : SignedFormula → SignedFormula} {b b' : Branch}
+    {n : TimeIndex} (h : SigmaTimeFixed σ b) (hfix : SigmaFixesFrom σ n)
+    (hnew : ∀ t ∈ b'.knownTimes, t ∈ b.knownTimes ∨ n ≤ t) : SigmaTimeFixed σ b' := by
+  refine sigmaTimeFixed_grow h (fun t ht => ?_)
+  rcases hnew t ht with hb | hle
+  · exact Or.inl hb
+  · exact Or.inr (fun x hxt => hfix x (hxt ▸ hle))
+
+/-- **The no-leak confirmation.** Three conjuncts, and together they are the whole claim that the
+repair costs no consumer a hypothesis.
+
+*The direction.* Conjunct 1: `MintPaysForTimeStable` is **weaker** than `MintPaysForTime` — a
+disjunct was added and a hypothesis was added, and nothing was removed — so every terminus currently
+carrying `MintPaysForTime` as a residual hypothesis can be restated against the repaired predicate
+and the restatement is a **strengthening**. This is the `universeClosedAt_of_universeClosed` idiom
+(`MintBound.lean` section D1) and the `ordTimesLeMaxTime_of_ordTimesKnown` idiom (section A3), used
+here for the third time in this file. Saying this in words is not a formality: register entry 7
+exists because a "simplification" that was secretly a weakening was once mistaken for a repair.
+
+*The added hypothesis is discharged, not assumed.* Conjunct 2: the run starts inside it, since `σ`
+is `id` before the first ordered split. Conjunct 3: the identification arm — the only step that
+changes `σ` — preserves it, needing exactly the side condition
+`universeClosedAt_identify_at_trigger_oriented` already carries and nothing more.
+
+*What is named rather than closed.* Additive steps leave `σ` alone, so the only remaining way to
+leave the invariant is to mint a time `σ` retires. `sigmaTimeFixed_grow_of_fixesFrom` reduces that
+to a watermark, and `retired_lt_nextTime_oriented` plus `nextTime_monotone_along_run` supply the
+watermark; assembling them into a single quantified run invariant is measure-level work and is
+carried as a named obligation of the step lemmas, not discharged here.
+
+*The only other cost is a coefficient.* A fourth component forces `mintPathBound` / `mintAwareFuel`
+to absorb `2·(Tmax²+1)·2·|U|`. That is an arithmetic enlargement of exactly the kind register entry
+8 already records for `splitAwareFuel_le_mintAwareFuel` — not a new assumption on any caller, and
+not a change to any consuming terminus's hypothesis list. -/
+theorem mintPaysForTimeStable_no_leak {fc : FormalSystem.ProofSystem.FrameClass}
+    {U : Finset SignedFormula} {Tmax : Nat} :
+    (MintPaysForTime fc U Tmax → MintPaysForTimeStable fc U Tmax) ∧
+      (∀ b : Branch, SigmaTimeFixed id b) ∧
+      (∀ (σ : SignedFormula → SignedFormula) (b : Branch) (ord : TimeOrdering)
+          (t₁ t₂ : TimeIndex), t₁ ≠ t₂ → (identifyOrient t₁ t₂).2 ∈ b.knownTimes →
+        SigmaTimeFixed σ b →
+        SigmaTimeFixed
+          (fun x => rhoSF (identifyOrient t₁ t₂).1 (identifyOrient t₁ t₂).2 (σ x))
+          (identifyOriented b ord t₁ t₂).1) :=
+  ⟨mintPaysForTimeStable_of_mintPaysForTime, sigmaTimeFixed_id,
+   fun _ _ _ _ _ hne hmax h => sigmaTimeFixed_identifyOriented hne hmax h⟩
+
 /-! ## C9. The do-not-re-attempt register
 
 Eighteen statements that look like the natural next lemma and are **not** available. Each is cited

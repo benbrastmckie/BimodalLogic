@@ -584,7 +584,7 @@ re-executed against a changed engine, not a new design.
 
 ---
 
-### Phase 6: `MintPaysForTimeAt`'s direction lemma and the no-leak confirmation [BLOCKED]
+### Phase 6: `MintPaysForTimeAt`'s direction lemma and the no-leak confirmation [COMPLETED]
 
 **BLOCKER RESOLVED** (Phase 6): unblocked by Phase 1R, which discharges the σ-hit obligation at the oriented arm (`sigma_time_hit_of_sigmaTimeStable`, from confinement plus `SigmaTimeStable`).
 
@@ -593,27 +593,33 @@ re-executed against a changed engine, not a new design.
   mistaken for a repair.
 
 - **Tasks:**
-  - [ ] `mintPaysForTimeAt_of_mintPaysForTime : MintPaysForTime fc U Tmax → MintPaysForTimeAt fc U
+  - [x] `mintPaysForTimeAt_of_mintPaysForTime : MintPaysForTime fc U Tmax → MintPaysForTimeAt fc U
         Tmax`. A third disjunct was added and nothing was removed, so this is the available
         implication and the converse is false — `mintPaysForTime_untlNeg_false`
         (`MintBound.lean:7110`) refutes the stronger one at a `U` where the weaker one is intended to
         hold.
-  - [ ] The docstring must state the **direction in words**: "the new predicate is weaker, so every
+  - [x] The docstring must state the **direction in words**: "the new predicate is weaker, so every
         theorem restated against it is a strengthening", naming
         `universeClosedAt_of_universeClosed` (`MintBound.lean:5332`) and
         `ordTimesLeMaxTime_of_ordTimesKnown` as the two prior uses of this idiom in this file. A
         repaired predicate without this sentence is not accepted.
-  - [ ] Confirm the repair **leaks no new hypothesis into the terminus**. Every quantity the third
+  - [x] Confirm the repair **leaks no new hypothesis into the terminus**. *(deviation: altered —
+        landed as `mintPaysForTimeStable_no_leak`, a three-conjunct theorem, because the repaired
+        predicate turned out to need one added hypothesis (`SigmaTimeStable σ b`) rather than none:
+        `MintPaysForTimeAt` as stated stays refuted by `mintPaysForTimeAt_reuse_false`. The added
+        hypothesis weakens the predicate, so no consuming terminus gains anything; it holds at the
+        seed and is preserved at the identification arm, both machine-checked. The growth case is a
+        named obligation of the step lemmas, supplied by `sigmaTimeFixed_grow_of_fixesFrom`.)* Every quantity the third
         disjunct newly constrains must already be reachable at the consuming site. Mirror
         `universeClosedAt_identify_at_trigger`'s role and land the analogous bridge lemma if one is
         needed. If a genuinely new terminus hypothesis is unavoidable, that is a **blocker to
         escalate**, not a cost to absorb silently.
-  - [ ] Docstring `MintPaysForTimeAt` with its full obligation map, per coordinate, in the voice
+  - [x] Docstring `MintPaysForTimeAt` with its full obligation map, per coordinate, in the voice
         `UnorderedSuccessorLabelClosed`'s docstring uses: what is **discharged** (the `untlNeg` /
         `snceNeg` coordinate, Phases 4-5), what is **carried** (the σ-hit, per the time-reuse
         verdict and Phase 1's gate), what remains **open** (the `densityRule` coordinate — see
         Phase 10's residual), and what is assumed by nothing else.
-  - [ ] Record explicitly that the only cost is a **coefficient**, not a hypothesis: the fuel figure
+  - [x] Record explicitly that the only cost is a **coefficient**, not a hypothesis: the fuel figure
         must absorb `2·(Tmax²+1)·2·|U|`, of the kind `splitAwareFuel_le_mintAwareFuel` already
         records (register entry 8). All consuming termini keep their hypothesis lists unchanged.
 
