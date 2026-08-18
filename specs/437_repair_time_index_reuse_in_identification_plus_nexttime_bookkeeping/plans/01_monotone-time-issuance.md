@@ -1,7 +1,7 @@
 # Implementation Plan: Monotone time issuance across identification
 
 - **Task**: 437 - repair_time_index_reuse_in_identification_plus_nexttime_bookkeeping
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 19 hours
 - **Dependencies**: None (spawned from 436, which is [IMPLEMENTING] and blocked on this result)
 - **Research Inputs**:
@@ -313,7 +313,7 @@ either verdict.
 
 ---
 
-### Phase 1: Refute-first gate on monotone time issuance [NOT STARTED]
+### Phase 1: Refute-first gate on monotone time issuance [COMPLETED]
 
 **Goal**: Decide, additively inside `MintBound.lean` and **before any live engine file is touched**,
 (a) whether the monotone-issuance mechanism actually prevents the decided reuse, and (b) whether
@@ -321,42 +321,42 @@ either verdict.
 produces a binary verdict that governs whether Phases 2-9 execute at all.
 
 **Tasks**:
-- [ ] Read C9 (`MintBound.lean:7694-7944`) in full, all 18 paragraphs of entry 17 included, before
+- [x] Read C9 (`MintBound.lean:7694-7944`) in full, all 18 paragraphs of entry 17 included, before
       writing anything. The task record requires this and the gate's own framing depends on it.
-- [ ] Open a new subsection `/-! ### Monotone time issuance: the identification-side gate`
+- [x] Open a new subsection `/-! ### Monotone time issuance: the identification-side gate`
       immediately **before** the `/-! ## C9` line.
-- [ ] Define the prototype orientation without touching the engine:
+- [x] Define the prototype orientation without touching the engine:
       `def identifyOrient (t₁ t₂ : TimeIndex) : TimeIndex × TimeIndex := (min t₁ t₂, max t₁ t₂)`
       (retired, surviving), with a docstring stating that the surviving numeral is the larger and
       why that is the whole mechanism.
-- [ ] Define the prototype arm-3 successor
+- [x] Define the prototype arm-3 successor
       `def identifyOriented (b : Branch) (ord : TimeOrdering) (t₁ t₂ : TimeIndex) :
       Branch × TimeOrdering` as `(b.identifyTime (identifyOrient t₁ t₂).1 (identifyOrient t₁ t₂).2,
       ord.identifyTime (identifyOrient t₁ t₂).1 (identifyOrient t₁ t₂).2)`. It calls the **existing,
       unmodified** `Branch.identifyTime` / `TimeOrdering.identifyTime` — this is the constraint the
       whole plan rests on and the gate must demonstrate it holds.
-- [ ] **Question (a), at the SAME witness**: decide, at `reuseWitnessBranch` / `reuseWitnessOrd`
+- [x] **Question (a), at the SAME witness**: decide, at `reuseWitnessBranch` / `reuseWitnessOrd`
       with the pair `(0, 2)` that `firstIncomparablePair` actually selects there
       (`gate_is_reissue_hazard` conjunct 3), the conjunction:
       `2 ∈ reuseWitnessBranch.knownTimes ∧ (identifyOriented ... ).1.nextTime > 2 ∧
       reuseWitnessBranch.maxTime ≤ (identifyOriented ...).1.maxTime`.
       Land as `oriented_arm_does_not_reissue`.
-- [ ] **Question (a), driven through the engine**: define the oriented analogue of `reuseStep` and
+- [x] **Question (a), driven through the engine**: define the oriented analogue of `reuseStep` and
       decide that after two steps the branch does **not** re-carry a retired index — the direct
       counterpart of `reuse_driven_through_engine` (`MintBound.lean:7363`). Land as
       `oriented_reuse_not_driven_through_engine`. A gate that only checks the hand-assembled
       configuration is not sufficient; this is the conjunct that makes the verdict about *runs*.
-- [ ] **Question (b), invariants at the gate**: decide, at both `reuseWitness*` and `gate*`
+- [x] **Question (b), invariants at the gate**: decide, at both `reuseWitness*` and `gate*`
       configurations, that `RunInvariant`, `OrdTimesKnown` and confinement to the respective
       universe all hold **after** the oriented arm. Land as `oriented_gate_invariants`, in the
       seven-conjunct discipline `gate_is_reissue_hazard` uses, so that a negative verdict is
       attributable to the mechanism and not to a violated precondition.
-- [ ] **Non-inertness check** (the discriminating measurement, mirroring
+- [x] **Non-inertness check** (the discriminating measurement, mirroring
       `selfGuardPotential_lt_at_gate_with_id`): decide that at the same configuration the *current*
       orientation **does** re-issue (`(Branch.identifyTime reuseWitnessBranch 2 0).nextTime = 2`,
       already decided at `MintBound.lean:7321`) while the oriented one does not. Without this pair
       the gate cannot distinguish "prevented" from "the configuration stopped applying".
-- [ ] State the verdict in words in the subsection docstring and in the phase's progress record.
+- [x] State the verdict in words in the subsection docstring and in the phase's progress record. *(VERDICT: TRUE — landed in the subsection docstring)*
 
 **Verdict criteria (binary, with an explicit undecided branch)**:
 - **TRUE** — reissue is prevented at both the witness and the engine-driven form, and all three

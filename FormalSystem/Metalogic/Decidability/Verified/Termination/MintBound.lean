@@ -7698,6 +7698,202 @@ It is named so that a reader arriving at the verdict above can tell which coordi
 and which is merely *untried*; see register entry 17. Refuting the self-guard coordinate says
 nothing about this one in either direction. -/
 
+/-! ### Monotone time issuance: the identification-side gate
+
+**VERDICT: TRUE.** The mechanism prevents the reuse, at the witness and along the engine-driven
+run, and all three settled invariants survive it. Phases 2-9 of the repair are unlocked by this
+subsection; nothing below it is assumed anywhere above.
+
+*What the gate is deciding.* Entry 15 records that the ordered split's identification arm can
+retire the branch's **largest** time, dropping `Branch.maxTime` and making `Branch.nextTime`
+re-issue the value just retired. The arm calls `branch.identifyTime t₂ t₁`, retiring `t₂` whatever
+its magnitude, and `firstIncomparablePair_spec` guarantees only `t₂ ≠ t₁` — never `t₁ < t₂`. The
+mechanism prototyped here **orients the merge by numeric order** instead: retire `min t₁ t₂`, keep
+`max t₁ t₂`. Which numeral survives is semantically arbitrary — identification asserts the two
+instants are the *same*, and nothing in the semantics reads the numeral's magnitude — so the
+orientation is free, and it is exactly what makes `maxTime` non-decreasing at the arm.
+
+*Why this is a gate and not the repair.* Everything here is **additive** and calls the existing,
+byte-unchanged `Branch.identifyTime` / `TimeOrdering.identifyTime`. No engine file is touched by
+this subsection. That constraint is not stylistic: `Verified/Decidable.lean` carries 102
+`Branch.nextTime` references — `lt_nextTime_of_mem_knownTimes`, `OrdWithin.bound` and
+`OrdWithin.nextTime_not_mem` among them — which consume `nextTime = maxTime + 1` *definitionally*.
+Redefining the bookkeeping would break all of them; reorienting the call site breaks none.
+
+*The measured contrast, which is what makes the verdict attributable to the mechanism.* Along the
+same two engine steps from the same witness:
+
+| | `maxTime` trajectory | retired index | re-issued? |
+|---|---|---|---|
+| current arm (`identifyTime t₂ t₁`) | `2 → 1 → 1 → 2` | `2` | **yes** (`reuse_driven_through_engine`) |
+| oriented arm (`identifyTime (min) (max)`) | `2 → 2 → 2 → 3` | `0` | **no** |
+
+`oriented_arm_is_not_inert` decides both rows side by side. Without that pairing the gate could not
+distinguish "the mechanism prevents the reuse" from "the configuration stopped applying" — the same
+discriminating discipline `selfGuardPotential_lt_at_gate_with_id` sets for the refuted
+fourth-component route.
+
+*Ladder rung used.* Candidate A (merge orientation) only. The two fallback rungs — a `horizon`
+field on `TimeOrdering`, and a run-level mint counter threaded through `applyRule` — were not
+prototyped, because the first rung decided the gate. Their measured costs (29 files and 82 literal
+sites; two engine signatures plus `Saturation.lean`) are recorded here so a reader who needs them
+does not have to re-measure. -/
+
+/-- **The orientation, as a pure function on the trigger's pair.** `(retired, surviving)`: the
+numeral that disappears is the smaller, the numeral that survives is the larger.
+
+That single choice is the whole mechanism. `Branch.identifyTime src tgt` relabels everything at
+`src` to sit at `tgt` and leaves every other time alone, so the post-arm branch's times are the
+pre-arm branch's times minus `src`. If `src` is the smaller of a pair both of whose members are
+known times, it cannot have been the branch's maximum — the larger member is a known time too, and
+they are distinct — so nothing the branch loses can lower `Branch.maxTime`, and `Branch.nextTime`,
+being `maxTime + 1` by definition, cannot fall either. -/
+def identifyOrient (t₁ t₂ : TimeIndex) : TimeIndex × TimeIndex := (min t₁ t₂, max t₁ t₂)
+
+/-- **The prototype arm-3 successor.** The ordered split's identification arm as it would read
+under the orientation, assembled here without touching `Tableau.lean`.
+
+It calls the **existing, unmodified** `Branch.identifyTime` and `TimeOrdering.identifyTime` — no
+new field, no new signature, no threaded counter. Demonstrating that the mechanism needs nothing
+but a swap of two arguments at one call site is the point of stating it this way, and it is the
+constraint the whole repair rests on. -/
+def identifyOriented (b : Branch) (ord : TimeOrdering) (t₁ t₂ : TimeIndex) :
+    Branch × TimeOrdering :=
+  (b.identifyTime (identifyOrient t₁ t₂).1 (identifyOrient t₁ t₂).2,
+   ord.identifyTime (identifyOrient t₁ t₂).1 (identifyOrient t₁ t₂).2)
+
+/-- **Question (a) at the witness: the oriented arm does not re-issue.** Decided at
+`reuseWitnessBranch` / `reuseWitnessOrd` with the pair `(0, 2)` that `firstIncomparablePair`
+actually selects there (`gate_is_reissue_hazard` conjunct 3), so the measurement is at the
+configuration entry 15 is about and not at a configuration chosen to make it come out right.
+
+Three conjuncts. Time `2` is a known time; the post-arm `nextTime` is strictly above it, so `2`
+cannot be minted next; and `Branch.maxTime` did not fall across the arm — which is the property
+that generalises, and the one Phase 2 lifts off this configuration. -/
+theorem oriented_arm_does_not_reissue :
+    2 ∈ reuseWitnessBranch.knownTimes ∧
+      (identifyOriented reuseWitnessBranch reuseWitnessOrd 0 2).1.nextTime > 2 ∧
+      reuseWitnessBranch.maxTime
+        ≤ (identifyOriented reuseWitnessBranch reuseWitnessOrd 0 2).1.maxTime := by
+  decide
+
+/-- The state `reuseWitnessState` would have been under the oriented arm. The counterpart of
+`reuseWitnessState`, and the seed of the engine-driven measurement below. -/
+def orientedReuseWitnessState : Branch × TimeOrdering :=
+  identifyOriented reuseWitnessBranch reuseWitnessOrd 0 2
+
+/-- **Question (a) driven through the engine: the retired index does not come back.** The direct
+counterpart of `reuse_driven_through_engine`, and the conjunct that makes the verdict a statement
+about *runs* rather than about a hand-assembled `Branch`.
+
+Under the orientation the index the arm retires is `0`, not `2`. Two `expandOnceUnblocked` steps
+later it is still absent from `knownTimes`, and `Branch.maxTime` has gone `2 → 2 → 3` rather than
+`2 → 1 → 2`. Reuse is not merely unobserved here: `Branch.nextTime` is `maxTime + 1` and `maxTime`
+never fell, so every mint along this run is at a value strictly above every index the run has ever
+retired.
+
+A gate that checked only `oriented_arm_does_not_reissue` would be checking the arm in isolation.
+This is the conjunct that checks the mechanism where entry 15 does its damage. -/
+theorem oriented_reuse_not_driven_through_engine :
+    ((reuseStep orientedReuseWitnessState).bind reuseStep).map
+        (fun s => s.1.knownTimes.contains 0) = some false ∧
+      (reuseStep orientedReuseWitnessState).map (fun s => s.1.maxTime) = some 2 ∧
+      ((reuseStep orientedReuseWitnessState).bind reuseStep).map
+        (fun s => s.1.maxTime) = some 3 := by
+  decide
+
+/-- **The discriminating measurement.** At the *same* witness, the *current* orientation re-issues
+and the oriented one does not — decided side by side, in one statement, so the verdict cannot be an
+artifact of the configuration having stopped applying.
+
+Conjuncts 1 and 3 restate what `nextTime_reissues_retired_time` and `reuse_driven_through_engine`
+already decide, at the same numbers; conjuncts 2 and 4 are their oriented counterparts. Conjuncts 5
+and 6 exhibit the `maxTime` drop that causes the re-issue and its absence under the orientation, so
+the mechanism is visible and not merely its consequence.
+
+This is the pairing `selfGuardPotential_lt_at_gate_with_id` sets the precedent for: a gate that
+reports only the favourable half of a comparison has measured nothing. -/
+theorem oriented_arm_is_not_inert :
+    (Branch.identifyTime reuseWitnessBranch 2 0).nextTime = 2 ∧
+      (identifyOriented reuseWitnessBranch reuseWitnessOrd 0 2).1.nextTime = 3 ∧
+      ((reuseStep reuseWitnessState).bind reuseStep).map
+        (fun s => s.1.knownTimes.contains 2) = some true ∧
+      ((reuseStep orientedReuseWitnessState).bind reuseStep).map
+        (fun s => s.1.knownTimes.contains 0) = some false ∧
+      (Branch.identifyTime reuseWitnessBranch 2 0).maxTime < reuseWitnessBranch.maxTime ∧
+      reuseWitnessBranch.maxTime
+        ≤ (identifyOriented reuseWitnessBranch reuseWitnessOrd 0 2).1.maxTime := by
+  decide
+
+/-- The reuse witness's universe, **closed under retiming within its own known times**: its three
+atoms against world `0` and times `0`-`2`.
+
+Stated in the `signedUniverse` shape rather than as the three-formula literal, because the bare
+literal is not retiming-closed and confinement across *any* identification arm would fail against
+it — under the current orientation exactly as much as under this one. That is register entry 10's
+finding, not a cost of the mechanism, and `UniverseClosedAt` is the settled repair for it. -/
+def orientedReuseUniverse : Finset SignedFormula :=
+  signedUniverse
+    ({.atom ⟨"p", none⟩, .atom ⟨"q", none⟩, .atom ⟨"r", none⟩} : Finset Formula)
+    ((({0} : Finset WorldIndex) ×ˢ ({0, 1, 2} : Finset TimeIndex)).image
+      (fun p => (⟨p.1, p.2⟩ : Label)))
+
+/-- **Question (b): the settled invariants survive the oriented arm.** Seven conjuncts, decided at
+**both** landed witness configurations, in the discipline `gate_is_reissue_hazard` uses — without
+the trigger conjuncts a negative verdict would be attributable to a violated precondition rather
+than to the mechanism.
+
+1-2. the pair each configuration's trigger actually reports, so the oriented arm below is applied
+   at the pair the engine itself would hand it;
+3. `RunInvariant` — hence `IrreflOrd` **and** `OrdTimesKnown`, register entries 7 and 16's settled
+   repair — holds after the oriented arm at the reuse witness;
+4. …and at the gate configuration;
+5. the oriented merge **target** is a known time at both configurations. This is precisely
+   `UniverseClosedAt` clause 2's restriction (entries 10-12), so the confinement bridge
+   `universeClosedAt_identify_at_trigger` applies at the oriented arm with nothing extra assumed —
+   note clause 2 already quantifies its *source* time freely, which is why the swap costs nothing
+   there;
+6. confinement itself, decided: the post-arm branch stays inside the retiming-closed universe;
+7. **at the gate configuration the oriented arm and the current arm are the same list.** The gate's
+   trigger reports `(2, 0)`, so `min = 0 = t₂` and `max = 2 = t₁`, and the orientation is already
+   what the current arm does there. Nothing at the gate regresses, and nothing at the gate is
+   evidence *for* the mechanism either — which is why the reuse witness, where the two orientations
+   genuinely differ, carries the verdict. -/
+theorem oriented_gate_invariants :
+    firstIncomparablePair reuseWitnessBranch reuseWitnessOrd = some (0, 2) ∧
+    firstIncomparablePair gateBranch gateOrd = some (2, 0) ∧
+    RunInvariant (identifyOriented reuseWitnessBranch reuseWitnessOrd 0 2).1
+      (identifyOriented reuseWitnessBranch reuseWitnessOrd 0 2).2 ∧
+    RunInvariant (identifyOriented gateBranch gateOrd 2 0).1
+      (identifyOriented gateBranch gateOrd 2 0).2 ∧
+    ((identifyOrient 0 2).2 ∈ reuseWitnessBranch.knownTimes ∧
+      (identifyOrient 2 0).2 ∈ gateBranch.knownTimes) ∧
+    ((∀ x ∈ reuseWitnessBranch, x ∈ orientedReuseUniverse) ∧
+      ∀ x ∈ (identifyOriented reuseWitnessBranch reuseWitnessOrd 0 2).1,
+        x ∈ orientedReuseUniverse) ∧
+    (identifyOriented gateBranch gateOrd 2 0).1 = Branch.identifyTime gateBranch 0 2 := by
+  refine ⟨by decide, by decide, ⟨?_, ?_⟩, ⟨?_, ?_⟩, by decide, by decide, by decide⟩
+  · unfold IrreflOrd; decide
+  · unfold OrdTimesKnown; decide
+  · unfold IrreflOrd; decide
+  · unfold OrdTimesKnown; decide
+
+/-- **The one exposure the orientation inherits, measured at the gate before it is proved in
+general.** `identifyTime_no_collapse` is stated from an `incomparableB ord (t₁, t₂)` hypothesis
+whose three conjuncts are written asymmetrically in `t₁` / `t₂`, so applying it at the flipped
+orientation needs `incomparableB` to be symmetric in its pair.
+
+Decided here at both witness orderings, in both directions. That is evidence, not proof: the
+general `incomparableB_symm` is a named obligation of the next phase, and if it turns out to be
+false in general the mechanism dies there rather than here. Recording the decided instances now
+means a reader can see the obligation was identified before it was needed. -/
+theorem oriented_arm_symmetric_trigger :
+    incomparableB reuseWitnessOrd (0, 2) = true ∧
+      incomparableB reuseWitnessOrd (2, 0) = true ∧
+      incomparableB gateOrd (2, 0) = true ∧
+      incomparableB gateOrd (0, 2) = true := by decide
+
+
 /-! ## C9. The do-not-re-attempt register
 
 Seventeen statements that look like the natural next lemma and are **not** available. Each is cited
