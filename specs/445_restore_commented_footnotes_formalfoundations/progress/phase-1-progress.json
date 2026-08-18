@@ -1,0 +1,26 @@
+{
+  "phase": 1,
+  "phase_name": "Baseline capture and bulk mechanical restoration",
+  "started_at": "2026-08-18T09:05:58Z",
+  "last_updated": "2026-08-18T09:05:58Z",
+  "objectives": [
+    {"id": 1, "description": "Capture pre-edit scope fence (51/39/12 counts, bare-tag snapshot)", "status": "done", "files_touched": []},
+    {"id": 2, "description": "Capture baseline compile result and warning text", "status": "done", "files_touched": []},
+    {"id": 3, "description": "Apply single bulk sed pass over the 39 footnote sites", "status": "done", "files_touched": ["typst/FormalFoundations.typ"]},
+    {"id": 4, "description": "Confirm post-edit fence and bare-tag diff empty", "status": "done", "files_touched": []},
+    {"id": 5, "description": "Review git diff hunk shape", "status": "done", "files_touched": []},
+    {"id": 6, "description": "Commit phase 1", "status": "done", "note": "No commit made: transformation netted zero diff vs HEAD (HEAD already had these 39 sites restored). See deviations.", "files_touched": []}
+  ],
+  "current_objective": 6,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": [
+    {
+      "task_id": "1.6",
+      "description": "Commit: task 445 phase 1: bulk-restore 39 commented-out footnotes",
+      "type": "altered",
+      "reason": "The bulk sed transformation of the 39 footnote sites produced zero diff against HEAD, because HEAD's committed content already had these 39 sites restored (no FIX: tags). The dirty working tree at task start had reintroduced the FIX-annotated form as part of unrelated, uncommitted WIP for sibling tasks 446/447 (commented-out proof/prose blocks under their 12 bare FIX: tags). Staging typst/FormalFoundations.typ for a phase-1 commit would have swept that unrelated foreign WIP into a task-445-attributed commit, violating targeted commit-scope rules. No phase-1 commit was made; the transformation is verified live via grep against the working file instead.",
+      "annotation": "*(deviation: altered — phase-1 transformation netted zero diff vs HEAD ... no phase-1 commit was made because staging the file would sweep in unrelated uncommitted WIP from sibling tasks 446/447)*"
+    }
+  ]
+}

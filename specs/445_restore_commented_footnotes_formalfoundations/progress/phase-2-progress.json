@@ -1,0 +1,17 @@
+{
+  "phase": 2,
+  "phase_name": "Apply the two content corrections",
+  "started_at": "2026-08-18T09:05:58Z",
+  "last_updated": "2026-08-18T09:05:58Z",
+  "objectives": [
+    {"id": 1, "description": "Correction A: def:BL-model -> def:BL-semantics anchor", "status": "done", "files_touched": ["typst/FormalFoundations.typ"]},
+    {"id": 2, "description": "Correction B: Lean file attributions for good/limitdom_is_good", "status": "done", "files_touched": ["typst/FormalFoundations.typ"]},
+    {"id": 3, "description": "Confirm corrections landed and nothing else moved", "status": "done", "files_touched": []},
+    {"id": 4, "description": "Confirm git diff touches exactly two lines", "status": "done", "files_touched": []},
+    {"id": 5, "description": "Commit phase 2", "status": "done", "files_touched": ["typst/FormalFoundations.typ"]}
+  ],
+  "current_objective": 5,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": []
+}

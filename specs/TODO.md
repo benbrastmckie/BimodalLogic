@@ -64,7 +64,7 @@ next_project_number: 456
 
 ### Publication Quality
 
-445 [PLANNED] — Address 39 FIX: tags in `typst/FormalFoundations.typ`, each of th
+445 [IMPLEMENTING] — Address 39 FIX: tags in `typst/FormalFoundations.typ`, each of th
   └─ 446 [NOT STARTED] — Address 6 bare `// FIX:` tags in `typst/FormalFoundations.typ`, e
     └─ 447 [RESEARCHED] — Address 6 substantive FIX: directives in `typst/FormalFoundations
 
@@ -739,7 +739,7 @@ For each, decide restore / rewrite / delete, apply, and remove the FIX: tag.
 ---
 
 ### 445. Restore or retire 39 commented-out footnotes in FormalFoundations.typ
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: logic
 - **Topic**: publication-quality
 - **Dependencies**: None
