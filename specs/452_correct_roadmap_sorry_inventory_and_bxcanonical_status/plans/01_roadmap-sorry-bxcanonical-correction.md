@@ -431,7 +431,7 @@ use the live count and record the correction.
 
 ---
 
-### Phase 5: Correct the Legacy Code Inventory [NOT STARTED]
+### Phase 5: Correct the Legacy Code Inventory [COMPLETED]
 
 **Goal**: Four of the eight rows list files as archived to `Boneyard/StrictSemanticsLegacy/` that
 are live in the tree today. This is a direct, cheap, checkable module-status defect of exactly the
@@ -439,8 +439,8 @@ class deliverable (c) asks to sweep for.
 
 **Tasks**:
 
-- [ ] Locate the section (anchor: `## Legacy Code Inventory`, ~963) and its 8-row table.
-- [ ] Re-verify each row's file at implementation time with `find`/`test -f` against both the live
+- [x] Locate the section (anchor: `## Legacy Code Inventory`, ~963) and its 8-row table.
+- [x] Re-verify each row's file at implementation time with `find`/`test -f` against both the live
       path and the `FormalSystem/Boneyard/StrictSemanticsLegacy/` path. Planning-time result:
       genuinely archived — `Algebraic/UltrafilterChain.lean`, `Algebraic/DovetailedChain.lean`,
       `Bundle/SuccChainFMCS.lean` (all three present under `Boneyard/StrictSemanticsLegacy/`),
@@ -449,16 +449,16 @@ class deliverable (c) asks to sweep for.
       `FormalSystem/Metalogic/Algebraic/InteriorOperators.lean`,
       `FormalSystem/Metalogic/Bundle/SuccRelation.lean`,
       `FormalSystem/Metalogic/Bundle/CanonicalFrame.lean`.
-- [ ] Correct the four wrong rows: split the table, or add a status column distinguishing archived
+- [x] Correct the four wrong rows: split the table, or add a status column distinguishing archived
       from live-but-unreachable. Do not delete the live files' rows outright — their
       "not imported by BXCanonical" status is separately informative.
-- [ ] Cross-reference C6 for the two live-but-unreachable `Algebraic` modules. Note in the summary
+- [x] Cross-reference C6 for the two live-but-unreachable `Algebraic` modules. Note in the summary
       (not necessarily in ROADMAP.md) that C6 flags `Algebraic.LindenbaumQuotient` and
       `Algebraic.InteriorOperators` as unreachable-but-live modules absent from
       `scripts/module-invariants-manifest.txt`. **Do not fix the C6 finding** — it is a manifest
       change outside this task's ROADMAP.md-only charter; surface it for the follow-up task
       instead.
-- [ ] Leave the section's `**Verification**:` grep block intact if it still returns nothing; re-run
+- [x] Leave the section's `**Verification**:` grep block intact if it still returns nothing; re-run
       it to confirm.
 
 **Timing**: 30 minutes

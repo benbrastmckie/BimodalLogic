@@ -1065,27 +1065,44 @@ eventuality sorries.
 
 ## Legacy Code Inventory
 
-The following files were written under earlier architectural iterations and are
-**not imported by `BXCanonical`** and are not on the active completeness path.
-**Task 94** archived them to `Boneyard/StrictSemanticsLegacy/` (completed 2026-04-12).
-This dropped approximately **~20 sorries** from the active (non-Boneyard,
-non-Example) tree.
+**Corrected 2026-08-17**: this section previously claimed all 8 rows below were archived by task
+94. Re-checked directly against the live tree and `FormalSystem/Boneyard/StrictSemanticsLegacy/`:
+only 4 of the 8 are actually archived. The other 4 are live files in `FormalSystem/Metalogic/`
+today — not moved, not deleted. All 8 share the "not imported by `BXCanonical`" status the
+original table recorded, which remains accurate and is separately informative (see the C6
+cross-reference note below the table).
 
-| File | Approx sorries | Category | Imported by BXCanonical? |
+**Archived** (confirmed present under `Boneyard/StrictSemanticsLegacy/`, absent from the live
+tree) — **Task 94** archived these (completed 2026-04-12):
+
+| File | Approx sorries | Category | Archived to |
+|------|---------------|----------|-------------|
+| `Metalogic/Algebraic/UltrafilterChain.lean` | 4 | Legacy strict-semantics | `Boneyard/StrictSemanticsLegacy/Algebraic/UltrafilterChain.lean` |
+| `Metalogic/Algebraic/DovetailedChain.lean` | 6 | Deprecated (X-vs-G mismatch) | `Boneyard/StrictSemanticsLegacy/Algebraic/DovetailedChain.lean` |
+| `Metalogic/Bundle/SuccChainFMCS.lean` | 3 | Legacy strict-semantics | `Boneyard/StrictSemanticsLegacy/Bundle/SuccChainFMCS.lean` |
+| `FrameConditions/Completeness.lean` | 2 | Wiring (temporal coherence + dense) | `Boneyard/StrictSemanticsLegacy/FrameConditions/Completeness.lean` |
+
+**Still live** (present in `FormalSystem/Metalogic/` today; not imported by `BXCanonical`, but
+not archived either — the original table was wrong to list these as task-94 archival targets):
+
+| File | Approx sorries (2026-04 estimate, not re-verified) | Category | Imported by BXCanonical? |
 |------|---------------|----------|---------------------------|
-| `Metalogic/Algebraic/UltrafilterChain.lean` | 4 | Legacy strict-semantics | No |
-| `Metalogic/Algebraic/DovetailedChain.lean` | 6 | Deprecated (X-vs-G mismatch) | No |
-| `Metalogic/Algebraic/LindenbaumQuotient.lean` | 2 | temp_k_dist derivable from BX | No |
-| `Metalogic/Algebraic/InteriorOperators.lean` | 1 | temp_k_dist derivable from BX | No |
-| `Metalogic/Bundle/SuccChainFMCS.lean` | 3 | Legacy strict-semantics | No |
-| `Metalogic/Bundle/SuccRelation.lean` | 1 | Legacy | No |
-| `Metalogic/Bundle/CanonicalFrame.lean` | 1 | BX derivability | No |
-| `FrameConditions/Completeness.lean` | 2 | Wiring (temporal coherence + dense) | No |
+| `FormalSystem/Metalogic/Algebraic/LindenbaumQuotient.lean` | 2 | temp_k_dist derivable from BX | No |
+| `FormalSystem/Metalogic/Algebraic/InteriorOperators.lean` | 1 | temp_k_dist derivable from BX | No |
+| `FormalSystem/Metalogic/Bundle/SuccRelation.lean` | 1 | Legacy | No |
+| `FormalSystem/Metalogic/Bundle/CanonicalFrame.lean` | 1 | BX derivability | No |
+
+Per `scripts/check-module-invariants.sh` check C6, `Algebraic.LindenbaumQuotient` and
+`Algebraic.InteriorOperators` are flagged as unreachable-but-live modules absent from
+`scripts/module-invariants-manifest.txt`. This task does not fix the C6 finding — updating the
+manifest is outside this task's ROADMAP.md-only charter; see the implementation summary for the
+follow-up recommendation.
 
 Additional legacy code, formerly imported by `Metalogic.lean` at top-level for aggregation but
 never required for BX completeness. **Both have since been archived out of the live tree** and
-are no longer imported anywhere — `FormalSystem/Metalogic.lean` now aggregates only
-`Soundness`, `Decidability`, `BXCanonical`, and `WeakCanonical`:
+are no longer imported anywhere — `FormalSystem/Metalogic.lean` now imports six top-level modules
+(`Soundness`, `StrongCompleteness`, `Decidability`, `Independence`, `BXCanonical`,
+`WeakCanonical`; corrected 2026-08-17, read directly off the file's `import` lines):
 
 - `Metalogic/Completeness.lean` → moved verbatim to
   `FormalSystem/Boneyard/SupersededCompleteness/Completeness.lean`

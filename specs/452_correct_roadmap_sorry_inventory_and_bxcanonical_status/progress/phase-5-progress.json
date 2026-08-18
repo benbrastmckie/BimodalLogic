@@ -1,0 +1,26 @@
+{
+  "phase": 5,
+  "phase_name": "Correct the Legacy Code Inventory",
+  "started_at": "2026-08-17T01:35:00Z",
+  "last_updated": "2026-08-17T01:50:00Z",
+  "objectives": [
+    {"id": 1, "description": "Locate section and its 8-row table", "status": "done", "files_touched": []},
+    {"id": 2, "description": "Re-verify each row's file against live path and Boneyard/StrictSemanticsLegacy/ path", "status": "done", "files_touched": []},
+    {"id": 3, "description": "Split table into archived / still-live, correct the four wrong rows", "status": "done", "files_touched": ["specs/ROADMAP.md"]},
+    {"id": 4, "description": "Cross-reference C6 for the two live-but-unreachable Algebraic modules, note in progress file for summary (not fixed in ROADMAP.md)", "status": "done", "files_touched": []},
+    {"id": 5, "description": "Re-run the section's Verification grep block, confirm still returns nothing", "status": "done", "files_touched": []}
+  ],
+  "current_objective": 5,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "notes": {
+    "row_reverification_result": "Exactly matches plan's planning-time hypothesis: 4/8 archived (UltrafilterChain.lean, DovetailedChain.lean, SuccChainFMCS.lean, FrameConditions/Completeness.lean -- all confirmed present under FormalSystem/Boneyard/StrictSemanticsLegacy/ and absent from live tree), 4/8 still live (Algebraic/LindenbaumQuotient.lean, Algebraic/InteriorOperators.lean, Bundle/SuccRelation.lean, Bundle/CanonicalFrame.lean -- confirmed present at their FormalSystem/Metalogic/ live paths).",
+    "table_split": "Table split into 'Archived' (4 rows, with explicit Boneyard/StrictSemanticsLegacy/ destination column) and 'Still live' (4 rows, full FormalSystem/Metalogic/ paths, sorries-not-reverified caveat added since only the archived/live status was in Phase 5 scope, not the sorry counts).",
+    "c6_cross_reference": "check-module-invariants.sh C6 flags Algebraic.LindenbaumQuotient and Algebraic.InteriorOperators (2 of the 7 C6-flagged unreachable-live modules) as absent from scripts/module-invariants-manifest.txt. Noted inline in ROADMAP.md (both the manifest-gap fact and the explicit non-fix statement) and recorded here for the Phase 8 summary's follow-up recommendation. Not fixed -- outside this task's ROADMAP.md-only charter, per plan instruction.",
+    "verification_grep_rerun": "grep -r \"import.*(UltrafilterChain|SuccChainFMCS|FrameConditions\\.Completeness)\" FormalSystem/Metalogic/BXCanonical/ -- still returns nothing (exit 1). Section's own Verification block left intact.",
+    "additional_fix_beyond_declared_scope": "Also corrected a second, adjacent occurrence of the same stale 4-import Metalogic.lean claim (already fixed once in Phase 4's Module Import Graph section) found immediately below the main table, in the 'Additional legacy code... formerly imported by Metalogic.lean' paragraph -- same defect class, same file, directly adjacent to Phase 5's declared edit region; corrected for consistency rather than leaving a duplicate of an already-corrected false claim standing.",
+    "roadmap_reference_check": "clean over cumulative diff.",
+    "check_module_invariants_no_build": "PASS across the board, no regression."
+  },
+  "deviations": []
+}
