@@ -637,32 +637,74 @@ than silently absorbing them.
 
 ---
 
-### Phase 5: Tier A `extend_periodic` and machine-checked axiom evidence [NOT STARTED]
+### Phase 5: Tier A `extend_periodic` and machine-checked axiom evidence [COMPLETED]
 
 **Goal**: The Deliverable-1 effective statement over an `IntPresentation` for a contiguous window,
 with the ON CHOICE result measured, pasted literally, and machine-checked in a test module.
 
 **Tasks**:
-- [ ] In `Extend.lean` (or `Orbit.lean`, whichever holds `placedOfWindow`), state and prove
+- [x] In `Extend.lean` (or `Orbit.lean`, whichever holds `placedOfWindow`), state and prove
       `IntPresentation.extend_periodic`: given a non-empty window `w : List (Fin P.card)` with
       pairwise adjacency and an `origin : ℤ`, produce `L : PlacedBiLasso P` such that
       `IsStepPath P.toTaskFrame L.unroll`, `L` agrees with `w` at every window time, and both
-      periodicity conclusions hold with periods bounded by `P.card`.
-- [ ] **No seriality hypothesis** (D-3). Docstring states the absence is deliberate and names
+      periodicity conclusions hold with periods bounded by `P.card`. *(landed in `Orbit.lean`, the
+      file holding `placedOfWindow`, as the plan's parenthetical permits)*
+- [x] **No seriality hypothesis** (D-3). Docstring states the absence is deliberate and names
       `P.fwd` / `P.bwd` as where seriality actually comes from.
-- [ ] Add the contiguous-window wrapper: a `PartialHistory` on `Set.Icc a b` converted into the
+- [x] Add the contiguous-window wrapper: a `PartialHistory` on `Set.Icc a b` converted into the
       list-plus-origin form, so the statement is reachable from the `PartialHistory` vocabulary.
-      Docstring states Tier A is contiguous-window-only and why (D-2).
-- [ ] Run `#print axioms FormalSystem.Metalogic.Decidability.IntPresentation.extend_periodic` and
-      paste the **literal** output into the docstring.
-- [ ] Write the ON CHOICE docstring paragraph to the exact constraints in D-5 — both sources named,
+      Docstring states Tier A is contiguous-window-only and why (D-2). *(landed as
+      `extend_periodic_of_icc`, taking the domain hypothesis as `∀ t, τ.domain t ↔ a ≤ t ∧ t ≤ b`
+      — the pointwise form of `Set.Icc a b` membership, since `PartialHistory.domain` is a
+      `D → Prop` and not a `Set D`, so a literal `Set.Icc` would need a coercion at every use)*
+- [x] Run `#print axioms FormalSystem.Metalogic.Decidability.IntPresentation.extend_periodic` and
+      paste the **literal** output into the docstring. *(pasted in its literal wrapped form, which
+      is what `#guard_msgs` in the test module matches character for character)*
+- [x] Write the ON CHOICE docstring paragraph to the exact constraints in D-5 — both sources named,
       successor selection excluded, API-fact-not-theorem stated, `spherical_of_finite` /
       `wlem_of_spherical` contrast drawn, no claim either way, "no Zorn" recorded.
-- [ ] Create `Tests/BimodalTest/Metalogic/PeriodicExtensionAxiomTest.lean`, mirroring
-      `Tests/BimodalTest/Semantics/SphericalFiniteAxiomTest.lean`'s role for the 440 result: assert
+- [x] Create `Tests/BimodalTest/Metalogic/PeriodicExtensionAxiomTest.lean`, mirroring
+      `Tests/BimodalTest/Semantics/SphericalFiniteAxiomTest.lean`'s role for the earlier
+      finite-carrier *Spherical* result: assert
       the axiom profiles of `succOf`, `succOf_step`, `isStepPath_shift` (choice-free) and of
       `extend_periodic` (choice-carrying), so the ON CHOICE claim is machine-checked rather than
       prose-only.
+
+#### Phase 5 Note
+
+**Scope Hypothesis check**: asserted one theorem plus one wrapper plus one new test module.
+Actual: exactly that. The `Set.Icc` wrapper needed **no** supporting lemmas about
+`PartialHistory.domain` — the domain hypothesis is consumed directly as a biconditional, and the
+only extra step inside the proof is extending `τ.states` off its domain by a `dite` so that the
+window can be written as a `List.map` over `List.range`. Nothing was deferred to Phase 8.
+
+**Beyond the plan's list, and worth recording**: the choice accounting turned out to be sharper
+than D-5 anticipated, in the task's favour. Not only is `succOf` choice-free — so are the three
+*segment lists themselves*: `windowBack`, `windowMid`, `windowFwd`, and `windowPath` all measure
+`[propext, Quot.sound]` and all `#eval`. So the certificate's **data** is choice-free end to end,
+and `Classical.choice` appears only in the *proofs about* that data. The test module pins this as
+its own row, because it is the strongest true form of the task's "visibly cheaper" hope and would
+otherwise be lost.
+
+**"No Zorn" mechanical criterion — result, and one honest qualification.** The structural half
+holds outright: walking the transitive import graph of `BiLasso.Orbit` and the test module reaches
+13 `FormalSystem` modules, `FormalSystem.Semantics.PartialHistory` **among** them and
+`FormalSystem.Semantics.Extension.Extension` **not** among them. The plan's literal
+`grep -c "exists_maximal_extension\|PartialHistory.extension"` returns 1 in `Orbit.lean` and 1 in
+the test module rather than 0 — both hits are **prose inside the no-Zorn record itself**, which
+names the declaration it is asserting the absence of. Rewording to satisfy the grep would have
+made the record vaguer to satisfy a proxy for the thing the record already establishes directly,
+so the naming was kept and the import-graph check is what was actually run. There is no code
+occurrence of either name in any file this task created.
+
+**Manifest**: `BimodalTest.Metalogic.PeriodicExtensionAxiomTest` added to
+`scripts/module-invariants-manifest.txt` rather than imported into `Tests/BimodalTest.lean`.
+Importing it would have pulled the whole bi-lasso layer into the test build graph, which would
+have forced deletion of the concurrent work's manifest lines — a cross-task edit the concurrency
+contract forbids. `scripts/check-module-invariants.sh` confirms C6 holds at its baseline: all 20
+manifested modules compile in isolation, and the 7 modules C6 reports as missing are pre-existing
+(`Metalogic/Algebraic/*`, `Metalogic/Bundle/Construction`, `SoundnessLemmas/CoValidity`,
+`WeakCanonical/Kamp/.../OuterGateFaithful`), none of them created here.
 
 **Timing**: 2 hours
 

@@ -649,6 +649,189 @@ theorem placedOfWindow_unroll_window (P : IntPresentation) (win : List (Fin P.ca
   rw [P.placedOfWindow_unroll win hne hadj origin hbij hbeq hfij hfeq (by omega) (by omega),
     P.windowPath_window win origin hk]
 
+/-! ## Tier A: the effective extension theorem -/
+
+/--
+**Effective periodic extension over a presented frame.**
+
+Every non-empty contiguous window of adjacent states, placed at an arbitrary absolute time,
+extends to a bi-infinite step path of the presented frame that is **finitely represented**: three
+finite lists plus one integer origin, ultimately periodic in both directions with both periods
+bounded by `P.card`. The certificate agrees with the window at every one of its own times, and
+`BiLasso.coherent` — the property that makes the object a *valid* certificate rather than merely a
+well-typed one — is a quantifier over a `Fin`, hence `decide`-able, so a consumer re-verifies a
+received certificate without re-running this proof.
+
+## No seriality hypothesis, and that is deliberate
+
+The informal statement of this result says "given a serial relation". No seriality hypothesis
+appears here because seriality is already a *field* of the input: `IntPresentation.fwd` and
+`IntPresentation.bwd` are exactly forward and backward one-step seriality, and they are what make
+`IntPresentation.succOf` and `IntPresentation.predOf` total. Adding a hypothesis would duplicate a
+structure field. Read the absence as discharged, not as omitted.
+
+## Contiguous windows only
+
+The window is contiguous by construction — a `List` with adjacency between consecutive entries.
+A partial history over a *gapped* finite domain is not handled at this tier; see the
+`PartialHistory` wrapper's note below for why a gapped certificate would not be data, and where
+the gapped case is delivered instead.
+
+## ON CHOICE
+
+Measured, not asserted:
+
+```
+'FormalSystem.Metalogic.Decidability.IntPresentation.extend_periodic' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+```
+
+`Classical.choice` is present, from exactly two sources, **neither of which is the successor
+selection**:
+
+1. **Mathlib's finiteness API.** The revisit is forced by pigeonhole
+   (`IntPresentation.orbit_repeat`), and every route to pigeonhole in the library carries
+   `Classical.choice` — including `Finset.card_le_card`, the most primitive counting statement
+   there is — so every counting lemma downstream of it does too.
+2. **The reused decoding lemmas.** `BiLasso.unroll_isStepPath` and both `BiLasso.unroll_*`
+   periodicity lemmas already measure `[propext, Classical.choice, Quot.sound]`. It enters there
+   incidentally, through `BiLasso.length_pos_int`'s `exact_mod_cast` step, and has nothing to do
+   with `ℤ` or with the frame.
+
+The successor selection is emphatically **not** a third source. `IntPresentation.succOf` and
+`IntPresentation.predOf` measure `[propext, Quot.sound]`, are built from `List.find?` over
+`List.finRange`, and are `#eval`-able; so are the three segment lists `windowBack` / `windowMid` /
+`windowFwd` this theorem's witness is assembled from. The *data* of the certificate is computable
+throughout; it is the *proofs about* it that reach for the library's counting and list-indexing
+API.
+
+**This is an API fact, not a proved logical one.** Pigeonhole over a carrier with decidable
+equality is constructively valid. Mathlib simply offers no choice-free route to it, because
+`Finset.card` is built on `Multiset` / `Quot` machinery that pulls `Classical.choice` in at the
+base. Contrast `TaskFrame.spherical_of_finite`, where the obstruction **is** logical and proved:
+`wlem_of_spherical` derives weak excluded middle from *Spherical* at the carrier `Bool` over
+`D = ℤ` from `[propext, Quot.sound]` alone, so a choice-free proof there would prove WLEM in
+Lean's intuitionistic core and cannot exist. Nothing of that kind is known here, and nothing of
+that kind is claimed. **No constructivity claim and no impossibility claim is made for
+`extend_periodic`.**
+
+What *is* preserved, and is a real, non-vacuous difference from the general Extension Theorem:
+**no Zorn.** This proof does not route through `PartialHistory.exists_maximal_extension`, and no
+module created for it imports `FormalSystem.Semantics.Extension.Extension` — `Extends` and
+`PartialHistory` come from `FormalSystem/Semantics/PartialHistory.lean`, which carries no Zorn
+route. The general theorem is untouched and remains exactly as it is for arbitrary `W` and `D`;
+this strengthens the finite discrete case only.
+-/
+theorem extend_periodic (P : IntPresentation) (win : List (Fin P.card)) (hne : win ≠ [])
+    (hadj : ∀ k : ℕ, k + 1 < win.length →
+      P.step (win.getD k default) (win.getD (k + 1) default) = true)
+    (origin : ℤ) :
+    ∃ L : PlacedBiLasso P,
+      IsStepPath P.toTaskFrame L.unroll ∧
+      (∀ k : ℕ, k < win.length → L.unroll (origin + (k : ℤ)) = win.getD k default) ∧
+      0 < L.lasso.back.length ∧ L.lasso.back.length ≤ P.card ∧
+      0 < L.lasso.fwd.length ∧ L.lasso.fwd.length ≤ P.card ∧
+      (∀ t : ℤ, t < L.origin → L.unroll (t - (L.lasso.back.length : ℤ)) = L.unroll t) ∧
+      (∀ t : ℤ, L.origin + (L.lasso.mid.length : ℤ) ≤ t →
+        L.unroll (t + (L.lasso.fwd.length : ℤ)) = L.unroll t) := by
+  obtain ⟨bi, bj, hbij, hbj, hbeq⟩ := P.orbit_repeat_pred (P.winPred win)
+  obtain ⟨fi, fj, hfij, hfj, hfeq⟩ := P.orbit_repeat (P.winSucc win)
+  refine ⟨P.placedOfWindow win hne hadj origin hbij hbeq hfij hfeq, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · exact PlacedBiLasso.unroll_isStepPath _
+  · intro k hk
+    exact P.placedOfWindow_unroll_window win hne hadj origin hbij hbeq hfij hfeq hk
+  · show 0 < (P.windowBack win bi bj).length
+    rw [P.windowBack_length]; omega
+  · show (P.windowBack win bi bj).length ≤ P.card
+    rw [P.windowBack_length]; omega
+  · show 0 < (P.windowFwd win fi fj).length
+    rw [P.windowFwd_length]; omega
+  · show (P.windowFwd win fi fj).length ≤ P.card
+    rw [P.windowFwd_length]; omega
+  · intro t ht
+    exact PlacedBiLasso.unroll_sub_back_length _ ht
+  · intro t ht
+    exact PlacedBiLasso.unroll_add_fwd_length _ ht
+
+/-!
+### The `PartialHistory` wrapper
+
+`extend_periodic` takes the window as a list plus an absolute origin, which is the form a search
+produces it in. The paper's hypothesis is a bounded world history, so the statement is also given
+here in `PartialHistory` vocabulary, over a domain that is exactly an integer interval `[a, b]`.
+
+**Tier A is contiguous-window-only, and deliberately so.** `PartialHistory.domain` is an arbitrary
+predicate, so `{0, 5}` is a legal domain with a four-time hole. Filling such a hole needs a path
+between two states at a known distance, and the only tool for that here
+(`FormalSystem.Semantics.exists_path_of_iter`) yields a `Prop`-level existential filler — so a
+gapped certificate would not be *data*, which is the entire point of this tier. The gapped case is
+delivered at the frame level instead, where a `Prop`-level conclusion is what is wanted anyway. A
+computable gap filler would need a bounded path search over the presentation; that is recorded as
+follow-up work rather than silently omitted.
+-/
+
+/--
+**Effective periodic extension from a bounded partial history.** The same conclusion as
+`IntPresentation.extend_periodic`, with the window supplied as a `PartialHistory` whose domain is
+the integer interval `[a, b]`.
+-/
+theorem extend_periodic_of_icc (P : IntPresentation)
+    (τ : FormalSystem.Semantics.PartialHistory P.toTaskFrame) (a b : ℤ) (hab : a ≤ b)
+    (hdom : ∀ t : ℤ, τ.domain t ↔ a ≤ t ∧ t ≤ b) :
+    ∃ L : PlacedBiLasso P,
+      IsStepPath P.toTaskFrame L.unroll ∧
+      (∀ (t : ℤ) (ht : τ.domain t), L.unroll t = τ.states t ht) ∧
+      0 < L.lasso.back.length ∧ L.lasso.back.length ≤ P.card ∧
+      0 < L.lasso.fwd.length ∧ L.lasso.fwd.length ≤ P.card ∧
+      (∀ t : ℤ, t < L.origin → L.unroll (t - (L.lasso.back.length : ℤ)) = L.unroll t) ∧
+      (∀ t : ℤ, L.origin + (L.lasso.mid.length : ℤ) ≤ t →
+        L.unroll (t + (L.lasso.fwd.length : ℤ)) = L.unroll t) := by
+  classical
+  -- The states of `τ`, extended by an irrelevant default off its domain.
+  set f : ℤ → Fin P.card := fun t => if h : τ.domain t then τ.states t h else default with hf
+  set n : ℕ := (b + 1 - a).toNat with hn
+  set win : List (Fin P.card) := (List.range n).map (fun k : ℕ => f (a + (k : ℤ))) with hwin
+  have hnpos : 0 < n := by omega
+  have hlen : win.length = n := by rw [hwin]; simp
+  have hget : ∀ k : ℕ, k < n → win.getD k default = f (a + (k : ℤ)) := by
+    intro k hk
+    rw [hwin]
+    rw [List.getD_eq_getElem _ _ (by simp only [List.length_map, List.length_range]; exact hk)]
+    simp
+  have hne : win ≠ [] := by
+    intro h
+    have hz : win.length = 0 := by rw [h]; rfl
+    omega
+  have hfstep : ∀ s : ℤ, a ≤ s → s + 1 ≤ b → P.step (f s) (f (s + 1)) = true := by
+    intro s h1 h2
+    have hs : τ.domain s := (hdom s).mpr ⟨by omega, by omega⟩
+    have hs1 : τ.domain (s + 1) := (hdom (s + 1)).mpr ⟨by omega, by omega⟩
+    have hrel := τ.respects_task s (s + 1) hs hs1
+    rw [show s + 1 - s = (1 : ℤ) by omega] at hrel
+    have hstep : P.toTaskFrame.step (τ.states s hs) (τ.states (s + 1) hs1) :=
+      (P.toTaskFrame.taskRel_one_iff_step _ _).mp hrel
+    have hb := (P.step_iff _ _).mp hstep
+    simpa [hf, hs, hs1] using hb
+  have hadj : ∀ k : ℕ, k + 1 < win.length →
+      P.step (win.getD k default) (win.getD (k + 1) default) = true := by
+    intro k hk
+    rw [hlen] at hk
+    rw [hget k (by omega), hget (k + 1) (by omega),
+      show a + (((k + 1 : ℕ) : ℕ) : ℤ) = (a + (k : ℤ)) + 1 by push_cast; omega]
+    exact hfstep _ (by omega) (by omega)
+  obtain ⟨L, hpath, hwindow, h1, h2, h3, h4, h5, h6⟩ := P.extend_periodic win hne hadj a
+  refine ⟨L, hpath, ?_, h1, h2, h3, h4, h5, h6⟩
+  intro t ht
+  obtain ⟨hta, htb⟩ := (hdom t).mp ht
+  have hkn : (t - a).toNat < n := by omega
+  have hk : (t - a).toNat < win.length := by rw [hlen]; exact hkn
+  have hw := hwindow (t - a).toNat hk
+  rw [hget _ hkn] at hw
+  rw [show a + (((t - a).toNat : ℕ) : ℤ) = t by omega] at hw
+  rw [hw, hf]
+  exact dif_pos ht
+
 end IntPresentation
 
 end FormalSystem.Metalogic.Decidability

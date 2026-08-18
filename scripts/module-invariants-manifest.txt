@@ -61,3 +61,10 @@ broken: BimodalTest.Semantics.SemanticBenchmark
 # unwired and compile-checked here.
 BimodalTest.Automation.FormulaMutatorTest
 BimodalTest.Automation.ProofFirstTests
+
+# Axiom-profile evidence for the effective periodic extension result. Not imported
+# by Tests/BimodalTest.lean, because doing so would pull the bi-lasso decision layer
+# into the test build graph and thereby contradict the deliberate unwiring recorded
+# above. Compile-checked here in isolation instead. DELETE this line when the
+# bi-lasso re-export lands and the modules above are wired in.
+BimodalTest.Metalogic.PeriodicExtensionAxiomTest
