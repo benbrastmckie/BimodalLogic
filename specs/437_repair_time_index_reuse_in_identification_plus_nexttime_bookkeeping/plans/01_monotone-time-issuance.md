@@ -400,27 +400,27 @@ prototyping the other two.
 
 ---
 
-### Phase 2: Generalize the gate — run-level monotonicity [NOT STARTED]
+### Phase 2: Generalize the gate — run-level monotonicity [COMPLETED]
 
 **Goal**: Lift the gate's decided configuration to a general theorem, and check — rather than cite —
 that arm 3 is the engine's only non-additive branch step.
 
 **Tasks**:
-- [ ] `maxTime_le_identifyTime_oriented {b : Branch} {t₁ t₂ : TimeIndex} (h₁ : t₁ ∈ b.knownTimes)
+- [x] `maxTime_le_identifyTime_oriented {b : Branch} {t₁ t₂ : TimeIndex} (h₁ : t₁ ∈ b.knownTimes)
       (h₂ : t₂ ∈ b.knownTimes) : b.maxTime ≤ (identifyOriented b ord t₁ t₂).1.maxTime` — the general
-      form of the gate's third conjunct, quantified over all branches and both times.
-- [ ] `nextTime_le_identifyTime_oriented` — the immediate corollary at `nextTime`, stated separately
+      form of the gate's third conjunct, quantified over all branches and both times. *(deviation: altered — landed with NO membership hypotheses, via the stronger `maxTime_le_identifyTime_of_le` which asks only `src ≤ tgt`; a strengthening, not a shortcut)*
+- [x] `nextTime_le_identifyTime_oriented` — the immediate corollary at `nextTime`, stated separately
       because that is the form the nine mint sites consume.
-- [ ] `retired_lt_nextTime_oriented`: the retired index is strictly below the post-arm `nextTime`,
+- [x] `retired_lt_nextTime_oriented`: the retired index is strictly below the post-arm `nextTime`,
       so it can never be re-issued. This is the statement that *replaces* the obstruction, and it is
       the one register entry 18 will cite if a later phase fails.
-- [ ] **Check the "single non-additive step" claim.** `Decidable.lean:274` asserts arm 3 is the
+- [x] **Check the "single non-additive step" claim.** `Decidable.lean:274` asserts arm 3 is the
       engine's only non-additive branch step. Turn this into a checked statement: enumerate
       `applyRule`'s result constructors and confirm every non-`.branchingOrdered` arm extends the
       branch (or leaves it alone) rather than replacing it. If the sweep finds a second
       branch-shrinking arm, **stop and mark the phase `[BLOCKED]`** — Phase 1's verdict would then
       be about arm 3 only and would not establish run-level monotonicity.
-- [ ] `maxTime_monotone_along_run`: the run-level statement, composing the arm-3 result with the
+- [x] `maxTime_monotone_along_run`: the run-level statement, composing the arm-3 result with the
       additive-step sweep.
 
 **Timing**: 2 hours

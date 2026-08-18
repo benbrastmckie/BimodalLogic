@@ -7894,6 +7894,168 @@ theorem oriented_arm_symmetric_trigger :
       incomparableB gateOrd (0, 2) = true := by decide
 
 
+/-! #### Run-level monotonicity, off the gate configuration
+
+Phase 1 decided the mechanism at two witnesses. This subsection lifts it: the same statements
+quantified over every branch, every ordering and both times, plus the one citation the design rests
+on turned into a checked statement.
+
+*The one finding worth recording up front.* The general form needs **no membership hypotheses at
+all**. `maxTime_le_identifyTime_of_le` asks only `src ≤ tgt`, and `min t₁ t₂ ≤ max t₁ t₂` is
+unconditional, so `maxTime_le_identifyTime_oriented` holds for arbitrary times on an arbitrary
+branch. The plan-time shape carried `t₁ ∈ b.knownTimes` and `t₂ ∈ b.knownTimes`; both turned out to
+be unnecessary, which is a strengthening rather than a shortcut — the hypotheses reappear only in
+`retired_lt_nextTime_oriented`, where the *retired* index has to be located below `b.maxTime` and
+membership is genuinely what does it. -/
+
+/-- **The mechanism in one lemma, with the orientation abstracted away.** Identifying a time into a
+time at least as large never lowers `Branch.maxTime`.
+
+Every branch formula survives the relabelling (`mem_identifyTime`), so it is enough to place each
+pre-arm time under the post-arm maximum. A formula not sitting at `src` keeps its time outright; a
+formula sitting at `src` moves to `tgt`, and `src ≤ tgt` is exactly what carries the bound across
+that move. No membership hypothesis is used, and none is available to be used — the statement is
+true on an arbitrary branch at arbitrary times.
+
+This is the whole of Candidate A's content. Everything below is instantiation. -/
+theorem maxTime_le_identifyTime_of_le {b : Branch} {src tgt : TimeIndex} (h : src ≤ tgt) :
+    b.maxTime ≤ (b.identifyTime src tgt).maxTime := by
+  refine maxTime_le_of_forall ?_
+  intro sf hsf
+  have hle : (rhoSF src tgt sf).label.time ≤ (b.identifyTime src tgt).maxTime :=
+    le_maxTime (mem_identifyTime b src tgt sf hsf)
+  by_cases hc : sf.label.time = src
+  · have hr : (rhoSF src tgt sf).label.time = tgt := by simp [rhoSF, rho, hc]
+    rw [hr] at hle
+    exact le_trans (hc ▸ h) hle
+  · have hr : (rhoSF src tgt sf).label.time = sf.label.time := by simp [rhoSF, rho, hc]
+    rw [hr] at hle
+    exact hle
+
+/-- **`Branch.maxTime` is non-decreasing across the oriented arm**, on every branch and at every
+pair. The general form of `oriented_arm_does_not_reissue`'s third conjunct, and the reason the
+orientation is the mechanism rather than a coincidence of the witness.
+
+Contrast `ordTimes_identifyTime_arm3_false` and `oriented_arm_is_not_inert` conjunct 5: at the
+*current* orientation `Branch.maxTime` demonstrably falls. There is no hypothesis that could be
+added to rescue the current arm, because the drop is what the arm does. -/
+theorem maxTime_le_identifyTime_oriented (b : Branch) (ord : TimeOrdering) (t₁ t₂ : TimeIndex) :
+    b.maxTime ≤ (identifyOriented b ord t₁ t₂).1.maxTime :=
+  maxTime_le_identifyTime_of_le min_le_max
+
+/-- **…and so is `Branch.nextTime`.** The immediate corollary, stated separately because this is
+the form the nine mint sites in `Tableau.lean` consume: each of them reads `branch.nextTime`, and
+none of them needs an edit once this holds, since `Branch.nextTime = Branch.maxTime + 1` is
+unchanged and `Nat.succ` is monotone.
+
+That is the payoff of the byte-unchanged-definitions constraint, stated as a theorem rather than
+argued: the repair reaches all nine mint sites without touching any of them. -/
+theorem nextTime_le_identifyTime_oriented (b : Branch) (ord : TimeOrdering) (t₁ t₂ : TimeIndex) :
+    b.nextTime ≤ (identifyOriented b ord t₁ t₂).1.nextTime :=
+  Nat.succ_le_succ (maxTime_le_identifyTime_oriented b ord t₁ t₂)
+
+/-- **The statement that replaces the obstruction.** The index the oriented arm retires is strictly
+below the branch's next fresh time *after* the arm — so it cannot be the value the next mint
+issues, and register entry 15's configuration cannot arise.
+
+Membership of both times is used here and is genuinely needed: the retired index has to be placed
+under `b.maxTime` before monotonicity can carry it under the post-arm `nextTime`, and only
+membership does that. `firstIncomparablePair_spec` supplies both at the engine's own trigger, so
+the hypotheses cost nothing at the one call site there is.
+
+This is the theorem C9 entry 18 cites. If a later phase fails, it fails downstream of this. -/
+theorem retired_lt_nextTime_oriented {b : Branch} (ord : TimeOrdering) {t₁ t₂ : TimeIndex}
+    (h₁ : t₁ ∈ b.knownTimes) (h₂ : t₂ ∈ b.knownTimes) :
+    (identifyOrient t₁ t₂).1 < (identifyOriented b ord t₁ t₂).1.nextTime := by
+  have hmax : max t₁ t₂ ≤ b.maxTime := by
+    rcases Nat.le_total t₁ t₂ with hle | hle
+    · rw [Nat.max_eq_right hle]; exact le_maxTime_of_mem_knownTimes h₂
+    · rw [Nat.max_eq_left hle]; exact le_maxTime_of_mem_knownTimes h₁
+  calc (identifyOrient t₁ t₂).1 ≤ b.maxTime := le_trans min_le_max hmax
+    _ < b.nextTime := Nat.lt_succ_self _
+    _ ≤ _ := nextTime_le_identifyTime_oriented b ord t₁ t₂
+
+/-- The ordered split's three arms as they read under the orientation. Arms 1 and 2 are byte-for-byte
+what `applyRule .timeLinearity` already produces; only the third differs.
+
+Stated here so run-level monotonicity is provable **before** `Tableau.lean` is edited, and so the
+edit that lands in the engine has a named referent to be checked against rather than being its own
+specification. -/
+def orientedSplitArms (b : Branch) (ord : TimeOrdering) (t₁ t₂ : TimeIndex) :
+    List (Branch × TimeOrdering) :=
+  [ (b, ord.addFuture t₁ t₂), (b, ord.addFuture t₂ t₁), identifyOriented b ord t₁ t₂ ]
+
+/-- **The "single non-additive step" claim, checked rather than cited.**
+`Verified/Decidable.lean:274` asserts in prose that the ordered split's identification arm is the
+engine's only non-additive branch step. This is that assertion as a theorem, and the enumeration
+behind it is complete: `ExpansionResult` has exactly **four** constructors, and every one is
+accounted for.
+
+* `.saturated` — no successor branch at all, so `unorderedSuccessorBranches` is `[]`.
+* `.extended` — one successor, of shape `fs ++ b` (`expandOnceUnblocked_extended_shape`).
+* `.split` — its arms, each containing `b` (`expandOnceUnblocked_split_subset`).
+* `.splitOrdered` — contributes nothing to `unorderedSuccessorBranches` by construction, and is
+  covered by the second conjunct, which returns the exact three-arm list.
+
+Conjunct 1 is `expandOnceUnblocked_branch_mono`, which was already landed and is stated at exactly
+the generality the check needs; conjunct 2 is `expandOnceUnblocked_splitOrdered_shape`. Composing
+them is the check: **every** successor of **every** shape either contains `b` verbatim or is one of
+the three ordered-split arms, of which only the third moves a time. No second branch-shrinking arm
+exists, so Phase 1's verdict about arm 3 does establish run-level monotonicity rather than a
+statement about one arm. -/
+theorem expandOnce_branch_shape_census {b : Branch} {ord : TimeOrdering}
+    {fc : FormalSystem.ProofSystem.FrameClass} {tr : EventualityTracker} :
+    (∀ nb ∈ unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1, ∀ x ∈ b, x ∈ nb) ∧
+    (∀ bs, (expandOnceUnblocked b ord fc tr).1 = ExpansionResult.splitOrdered bs →
+      ∃ t₁ t₂, firstIncomparablePair b ord = some (t₁, t₂) ∧
+        bs = [ (b, ord.addFuture t₁ t₂), (b, ord.addFuture t₂ t₁),
+               (b.identifyTime t₂ t₁, ord.identifyTime t₂ t₁) ]) :=
+  ⟨expandOnceUnblocked_branch_mono, fun _ h => expandOnceUnblocked_splitOrdered_shape h⟩
+
+/-- `Branch.maxTime` does not fall at any of the three oriented arms. Arms 1 and 2 leave the branch
+literally unchanged — they move only the ordering — so they are `Nat.le_refl`; arm 3 is
+`maxTime_le_identifyTime_oriented`. -/
+theorem maxTime_le_orientedSplitArms (b : Branch) (ord : TimeOrdering) (t₁ t₂ : TimeIndex) :
+    ∀ p ∈ orientedSplitArms b ord t₁ t₂, b.maxTime ≤ p.1.maxTime := by
+  intro p hp
+  simp only [orientedSplitArms, List.mem_cons, List.not_mem_nil, or_false] at hp
+  rcases hp with rfl | rfl | rfl
+  · exact Nat.le_refl _
+  · exact Nat.le_refl _
+  · exact maxTime_le_identifyTime_oriented b ord t₁ t₂
+
+/-- **Run-level monotonicity of `Branch.maxTime`**, composing the shape census with the arm result:
+across every successor of every shape the engine can report, the branch maximum is non-decreasing.
+
+Conjunct 1 covers `.extended` and `.split` — the additive shapes — through
+`expandOnceUnblocked_branch_mono` and `maxTime_mono`. Conjunct 2 covers the ordered split at the
+oriented arms. `.saturated` reports no successor and is covered by conjunct 1 vacuously, which is
+absence of a successor rather than a weakening of the claim.
+
+Together with `expandOnce_branch_shape_census`, this is the run-level statement Phase 1's gate
+decided at one configuration. -/
+theorem maxTime_monotone_along_run {b : Branch} {ord : TimeOrdering}
+    {fc : FormalSystem.ProofSystem.FrameClass} {tr : EventualityTracker} :
+    (∀ nb ∈ unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1,
+        b.maxTime ≤ nb.maxTime) ∧
+      (∀ t₁ t₂, ∀ p ∈ orientedSplitArms b ord t₁ t₂, b.maxTime ≤ p.1.maxTime) :=
+  ⟨fun nb hnb => maxTime_mono (expandOnceUnblocked_branch_mono nb hnb),
+   maxTime_le_orientedSplitArms b ord⟩
+
+/-- **…and hence of fresh-time issuance itself.** `Branch.nextTime` is `Branch.maxTime + 1` by a
+definition this task leaves byte-unchanged, so monotonicity of the one is monotonicity of the
+other. This is the run-level form of the property register entry 15 says is unavailable — and it is
+unavailable at the *current* arm, which is why the repair is at the arm and not at the measure. -/
+theorem nextTime_monotone_along_run {b : Branch} {ord : TimeOrdering}
+    {fc : FormalSystem.ProofSystem.FrameClass} {tr : EventualityTracker} :
+    (∀ nb ∈ unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1,
+        b.nextTime ≤ nb.nextTime) ∧
+      (∀ t₁ t₂, ∀ p ∈ orientedSplitArms b ord t₁ t₂, b.nextTime ≤ p.1.nextTime) :=
+  ⟨fun nb hnb => Nat.succ_le_succ
+      (maxTime_monotone_along_run (fc := fc) (tr := tr) |>.1 nb hnb),
+   fun t₁ t₂ p hp => Nat.succ_le_succ (maxTime_le_orientedSplitArms b ord t₁ t₂ p hp)⟩
+
+
 /-! ## C9. The do-not-re-attempt register
 
 Seventeen statements that look like the natural next lemma and are **not** available. Each is cited
