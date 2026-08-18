@@ -1558,12 +1558,18 @@ MCS via PointInsertion with explicit control over the seed content.
 
 ## Other Open Items
 
-### Dense Completeness (task 68, 1 sorry)
+### Dense Completeness (task 68 — resolved; corrected 2026-08-17)
 
-- `dense_completeness_fc` needs a separate proof using a dense canonical model
-  (e.g., over `ℚ`).
-- Cannot reduce to `completeness_over_Int` since `Int` is not densely ordered.
-- Independent of the BX canonical construction.
+**Superseded.** The `dense_completeness_fc` declaration this entry describes no longer exists in
+the live tree — it survives only in
+`FormalSystem/Boneyard/StrictSemanticsLegacy/FrameConditions/Completeness.lean` (archived). Per
+check C2, the live dense-completeness theorem is
+`BXCanonical.completeness_dense`, which carries exactly `[propext, Classical.choice, Quot.sound]`
+— no `sorryAx`. If a distinct, still-open dense-completeness obligation exists under a different
+name today, it is not `dense_completeness_fc` and is not evidenced by any check this pass ran; do
+not equate the two. Original text, retained for history: `dense_completeness_fc` needs a separate
+proof using a dense canonical model (e.g., over `ℚ`); cannot reduce to `completeness_over_Int`
+since `Int` is not densely ordered; independent of the BX canonical construction.
 
 ### FMP Truth Preservation (task 82, 0 sorries in active tree)
 
@@ -1578,18 +1584,33 @@ MCS via PointInsertion with explicit control over the seed content.
 
 ### Soundness (sorry-free)
 
-- `Soundness.lean`, `DenseSoundness.lean`, and `DiscreteSoundness.lean` are
-  all **entirely sorry-free**. Confirmed 2026-04-13.
+- **Corrected 2026-08-17**: `FormalSystem/Metalogic/Soundness.lean` is confirmed sorry-free (no
+  `sorry` tactic occurrences; its own module comment records `soundness`, `soundness_dense`, and
+  `soundness_discrete` — all as theorems inside this one file, not separate files). The
+  `DenseSoundness.lean` / `DiscreteSoundness.lean` files this entry originally named are archived,
+  at `FormalSystem/Boneyard/SoundnessVariants/DenseSoundness.lean` and
+  `FormalSystem/Boneyard/SoundnessVariants/DiscreteSoundness.lean` — not live siblings of
+  `Soundness.lean` as the original wording implied.
 
-### Examples / Pedagogical (~57 sorries)
+### Examples / Pedagogical (corrected 2026-08-17)
 
-- `Demo.lean`, `ModalProofs.lean`, `ModalProofStrategies.lean`,
-  `TemporalProofs.lean`, and others.
-- Expected and intentional (exercises, demonstrations).
+**Superseded.** `FormalSystem/Examples/` contains **zero** occurrences of `sorry` in any form
+today (`grep -rn sorry FormalSystem/Examples` returns nothing outside a `(sorry-free)` label in
+`README.md`), and none of the four files this entry names — `Demo.lean`, `ModalProofs.lean`,
+`ModalProofStrategies.lean`, `TemporalProofs.lean` — exists. The directory currently holds
+`BimodalProofs.lean`, `TemporalStructures.lean`, and `README.md`, both `.lean` files documented
+sorry-free by that README. Original text, retained for history: `Demo.lean`, `ModalProofs.lean`,
+`ModalProofStrategies.lean`, `TemporalProofs.lean`, and others; expected and intentional
+(exercises, demonstrations).
 
-### Boneyard (~14 sorries)
+### Boneyard (corrected 2026-08-17)
 
-- Archived dead code across `Boneyard/` subdirectories. Expected.
+**Superseded.** The C3 structural-sorry-shape grep
+(`grep -rnE --include='*.lean' '(^[[:space:]]*sorry[[:space:]]*$)|(:=[[:space:]]*sorry[[:space:]]*$)|(\bexact sorry\b)|(<;> sorry)' FormalSystem/Boneyard`)
+returns **104**, not ~14. C3 deliberately excludes both Boneyard directories from its own
+assertion (see `## Sorry Inventory`), so this figure is informational, not a check-asserted
+invariant, and is not re-verified automatically by any check. Archived dead code across
+`Boneyard/` subdirectories remains expected and out of scope for closure.
 
 ---
 

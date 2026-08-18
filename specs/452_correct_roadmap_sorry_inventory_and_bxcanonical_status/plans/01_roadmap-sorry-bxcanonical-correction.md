@@ -485,32 +485,36 @@ not 4/4, use the live result.
 
 ---
 
-### Phase 6: Correct the Other Open Items sorry counts [NOT STARTED]
+### Phase 6: Correct the Other Open Items sorry counts [COMPLETED]
 
 **Goal**: Three claims in this section assert sorry counts that C2 and C3 contradict. Two of the
 three were found during planning and are not in the research catalog.
 
 **Tasks**:
 
-- [ ] `### Dense Completeness (task 68, 1 sorry)` (anchor, ~1441): C2 shows
+- [x] `### Dense Completeness (task 68, 1 sorry)` (anchor, ~1441): C2 shows
       `BXCanonical.completeness_dense` carries `[propext, Classical.choice, Quot.sound]` — no
       `sorryAx`. Correct the heading's `1 sorry` and the `dense_completeness_fc needs a separate
       proof` body, or mark the entry resolved with its date. If `dense_completeness_fc` still
       exists as a distinct unproved statement, say so explicitly and cite what shows it; do not
       silently equate it with `completeness_dense`.
-- [ ] `### Examples / Pedagogical (~57 sorries)` (anchor, ~1464): `FormalSystem/Examples/` contains
+- [x] `### Examples / Pedagogical (~57 sorries)` (anchor, ~1464): `FormalSystem/Examples/` contains
       zero occurrences of `sorry` in any form, and none of the four named files (`Demo.lean`,
       `ModalProofs.lean`, `ModalProofStrategies.lean`, `TemporalProofs.lean`) exists — the
       directory holds `BimodalProofs.lean`, `TemporalStructures.lean`, `README.md`. Correct both
       the count and the file list, or retire the entry. Re-verify with
       `grep -rn 'sorry' FormalSystem/Examples` and `ls FormalSystem/Examples` before writing.
-- [ ] `### Boneyard (~14 sorries)` (anchor, ~1470): the C3 sorry-shape grep against
+- [x] `### Boneyard (~14 sorries)` (anchor, ~1470): the C3 sorry-shape grep against
       `FormalSystem/Boneyard` returns ~104. Correct the figure, and state the command that produces
       it so it is reproducible; note that C3 deliberately excludes both Boneyards from its
       assertion, so this number is informational and is not a check-asserted invariant.
-- [ ] Leave `### FMP Truth Preservation` and `### Soundness (sorry-free)` alone unless the
+- [x] Leave `### FMP Truth Preservation` and `### Soundness (sorry-free)` alone unless the
       re-verification above shows them contradicted — both were consistent with C3 at planning time
-      (zero live sorries in either).
+      (zero live sorries in either). *(deviation: altered — FMP Truth Preservation's zero-sorry
+      claim held and was left untouched, but Soundness's file-existence claim was contradicted:
+      `DenseSoundness.lean`/`DiscreteSoundness.lean` are archived to
+      `Boneyard/SoundnessVariants/`, not live siblings of `Soundness.lean` as the section implied;
+      corrected)*
 
 **Timing**: 30 minutes
 
