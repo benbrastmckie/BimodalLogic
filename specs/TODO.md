@@ -11,7 +11,7 @@ next_project_number: 452
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,193,231,257,298,413,421,423,424,437,441,445,450,451 | -- | completeness, decidability, frame-extensions, ... |
+| 1 | 125,127,128,193,231,257,298,413,421,423,424,437,445,450,451 | -- | completeness, decidability, frame-extensions, ... |
 | 2 | 178,219,282,296,417,422,425,436,446 | 193,231,298,421,423,437,445,450 | decidability, formula-refactor, publication-quality, ... |
 | 3 | 169,434,447 | 422,436,446 | decidability, publication-quality, strong_completeness |
 | 4 | 362,432 | 169,434 | decidability, strong_completeness |
@@ -23,7 +23,7 @@ next_project_number: 452
 | 10 | 430 | 411 | decidability |
 | 11 | 412 | 430 | decidability |
 | 12 | 426 | 412 | completeness |
-| 13 | 95,177 | 193,426,441 | completeness, formula-refactor |
+| 13 | 95,177 | 193,426 | completeness, formula-refactor |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -83,7 +83,6 @@ next_project_number: 452
 
 ### Paper Refactor
 
-441 [IMPLEMENTING] — Strengthen `thm:extension` for the finite discrete case into an E
 417 [IMPLEMENTING] — RE-ISSUED 2026-08-10 (supersedes the prior maximal-history framin
 
 ### Strong Completeness
@@ -283,12 +282,13 @@ Tag locations (line numbers as of scan): 149, 178, 191, 196, 211, 213, 238, 242,
 ---
 
 ### 441. Effective periodic extension over finite frames
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: paper-refactor
 - **Dependencies**: Task 440
 - **Research**: [441_effective_periodic_extension_over_finite_frames/reports/01_effective-periodic-extension.md]
 - **Plan**: [441_effective_periodic_extension_over_finite_frames/plans/01_effective-periodic-extension.md]
+- **Summary**: [441_effective_periodic_extension_over_finite_frames/summaries/01_effective-periodic-extension-summary.md]
 
 **Description**: Strengthen `thm:extension` for the finite discrete case into an EFFECTIVE result: construct a finitely representable total world history, rather than merely proving one exists. A model checker cannot ship a Zorn appeal as a certificate, and this is the theorem that lets it ship something checkable instead.
 

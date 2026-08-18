@@ -9,7 +9,7 @@
     {
       "project_number": 441,
       "project_name": "effective_periodic_extension_over_finite_frames",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "topic": "paper-refactor",
       "priority": "high",
@@ -32,13 +32,19 @@
           "path": "specs/441_effective_periodic_extension_over_finite_frames/plans/01_effective-periodic-extension.md",
           "type": "plan",
           "summary": "10-phase effective periodic extension plan; two-tier IntPresentation/Finite statement, task-417 concurrency contract, ON CHOICE wording bound to measured axiom output."
+        },
+        {
+          "path": "specs/441_effective_periodic_extension_over_finite_frames/summaries/01_effective-periodic-extension-summary.md",
+          "type": "summary",
+          "summary": "Ten phases complete: two-tier effective periodic extension over finite Z-frames, agreement lemma with three limits, machine-checked axiom evidence."
         }
       ],
       "blockers": null,
       "created": "2026-08-11T23:10:56Z",
-      "last_updated": "2026-08-18T00:46:22Z",
+      "last_updated": "2026-08-18T02:18:04Z",
       "next_artifact_number": 1,
-      "session_id": "sess_1787007762_7d00d6_441"
+      "session_id": "sess_1787007762_7d00d6_441",
+      "completion_summary": "All ten plan phases completed sorry-free with no new axiom and no vacuous definition. Tier A (IntPresentation.extend_periodic) produces a PlacedBiLasso certificate -- three finite lists plus an integer origin, coherence decidable -- from any contiguous window; Tier B (TaskFrame.extend_periodic) proves the literal existential over an arbitrary TaskFrame Z with [Finite WorldState], directly and with no presentation, and extends to gapped finite domains. Deliverable 3 lands the agreement lemma against the existing Extends relation under a docstring whose three limits precede every theorem. The optional Phase 9 succeeded: a hand-rolled choice-free pigeonhole on Fin removes finiteness from the list of Classical.choice sources."
     },
     {
       "project_number": 440,

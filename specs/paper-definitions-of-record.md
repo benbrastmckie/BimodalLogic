@@ -1192,6 +1192,41 @@ thm:sym|env|-|-|64e88f37ad07f9dcd339ebd0789e5a84cc6a0098f597cbcef2513a801332e582
 ```
 <!-- MANIFEST:END -->
 
+## Untracked sources
+
+Not every passage of the paper this repository relies on is anchorable. `resolve_text` in
+`scripts/check-paper-definitions.sh` supports exactly two anchor kinds — `env`, resolved by
+grepping for `\label{...}`, and `aitem`, resolved by `\aitem{...}` — and errors on anything else.
+A passage carrying neither marker therefore cannot be given a manifest row: the row would be a
+dangling anchor and the check would fail on it. The paper is read-only input to this repository,
+edited elsewhere, so adding a `\label` is not an option either.
+
+Such passages are recorded here in prose instead, so that the reliance is visible even though it
+is unverifiable by the lint. **Do not promote any entry in this section to a manifest row** unless
+the passage has acquired a resolvable anchor upstream first.
+
+### The finite-case effectiveness footnote
+
+- **Location**: `JPL/possible_worlds.tex`, in the footnote attached to the discussion of the
+  finite case (at the time of recording, line 1648). No `\label`, no `\aitem`.
+- **Relied on by**: `FormalSystem/Metalogic/Decidability/BiLasso/Agreement.lean`, which quotes it
+  verbatim in its module docstring, and the two `extend_periodic` theorems it introduces —
+  `FormalSystem.Metalogic.Decidability.IntPresentation.extend_periodic` (effective, presented
+  frames) and `FormalSystem.Semantics.TaskFrame.extend_periodic` (general finite carrier).
+- **Text**:
+
+  > In this case the conclusion of \textbf{\ref{thm:extension}} becomes effective without appeal
+  > to Zorn's lemma: since $W$ is finite, the forward and backward orbits extending a bounded
+  > world history must each revisit a world state, so every bounded world history extends to a
+  > possible world that is eventually periodic in both directions--- a finite prefix plus a finite
+  > cycle each way--- and is therefore finitely representable, licensing a finite certificate that
+  > a given bounded history is a fragment of a possible world.
+
+- **What the formalisation preserves**: the doubly ultimately-periodic extension and the finite
+  certificate, both in full. "Without appeal to Zorn's lemma" is preserved as *no Zorn* — an
+  import-graph fact — and **not** as choice-freedom in Lean's sense, which is a claim about a
+  different axiom. The measured accounting lives in `extend_periodic`'s own docstring.
+
 ## Invocation from skills or hooks — decision (recorded, not implemented)
 
 CI cannot enforce this lint: `.github/workflows/ci.yml` has no visibility into

@@ -1,7 +1,7 @@
 # Implementation Plan: Effective Periodic Extension over Finite ℤ-Frames
 
 - **Task**: 441 - effective_periodic_extension_over_finite_frames
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 16 hours
 - **Dependencies**: None blocking. Coordinates with task 417 (concurrently `[IMPLEMENTING]`) — see "Concurrency Contract with Task 417" below.
 - **Research Inputs**: `specs/441_effective_periodic_extension_over_finite_frames/reports/01_effective-periodic-extension.md`
@@ -1024,28 +1024,59 @@ the finding rather than continue.
 
 ---
 
-### Phase 10: Citation record, follow-ups, and final verification [NOT STARTED]
+### Phase 10: Citation record, follow-ups, and final verification [COMPLETED]
 
 **Goal**: Discharge the citation-of-record gap per D-7, record the deliberate follow-ups, and run
 the full gate set.
 
 **Tasks**:
-- [ ] Add the verbatim footnote quotation to the Deliverable-3 module docstring in
+- [x] Add the verbatim footnote quotation to the Deliverable-3 module docstring in
       `Agreement.lean`, labelled explicitly as an **unanchored** footnote in `possible_worlds.tex`
       §discussion — never as if it were a resolvable anchor.
-- [ ] Add a short "Untracked sources" prose note to `specs/paper-definitions-of-record.md`
+- [x] Add a short "Untracked sources" prose note to `specs/paper-definitions-of-record.md`
       recording the quotation, its location, and the fact that it carries no `\label`/`\aitem` and
       is therefore untracked by design. **MUST NOT** add a manifest row the checker cannot resolve.
-- [ ] Run `bash scripts/check-paper-definitions.sh` and confirm no dangling anchor was introduced.
-- [ ] Record the deliberate follow-ups in the implementation summary: (a) registering the new
+      *(prose only, inserted after `MANIFEST:END`; the manifest block is byte-untouched)*
+- [x] Run `bash scripts/check-paper-definitions.sh` and confirm no dangling anchor was introduced.
+      *(see the Phase 10 Note — the script fails, but on inherited drift, not on anything added
+      here)*
+- [x] Record the deliberate follow-ups in the implementation summary: (a) registering the new
       modules in `FormalSystem/Metalogic/Decidability.lean` once 417 lands; (b) unifying any
       arithmetic duplicated against 417's `Periodic.lean`; (c) the computable gap filler for a
       gapped Tier A certificate; (d) scrubbing `Classical.choice` from `BiLasso.length_pos_int`,
       which requires unfreezing `Basic.lean`.
-- [ ] Conditionally append a section to `FormalSystem/Metalogic/Decidability/BiLasso/README.md`
+- [x] Conditionally append a section to `FormalSystem/Metalogic/Decidability/BiLasso/README.md`
       describing the new modules — **only** if `git diff --exit-code` on that file is clean at that
-      moment. Otherwise defer it to the summary as a follow-up.
-- [ ] Final verification sweep (below).
+      moment. Otherwise defer it to the summary as a follow-up. *(the condition held: the README
+      was byte-identical to HEAD, so four table rows and one "Effective periodic extension"
+      section were appended)*
+- [x] Final verification sweep (below).
+
+#### Phase 10 Note
+
+**The paper's location moved since the plan was written.** The plan cites
+`possible_worlds.tex:1648`. The file at `/home/benjamin/Philosophy/Papers/possible_worlds.tex`
+contains no `thm:extension` and no occurrence of "Zorn" at all; the live source is
+`/home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex`, which is what
+`specs/paper-definitions-of-record.md`'s own `PAPER_PATH` sentinel names. The footnote is there,
+at line 1648, and matches the plan's quotation **word for word** — including the `---` em-dashes
+and the `\textbf{\ref{thm:extension}}` markup. Confirmed unanchored: no `\label`, no `\aitem`,
+so D-7's fallback was the only available route and the plan's reasoning was correct.
+
+**`check-paper-definitions.sh` exits 1, on inherited drift.** Four recorded definitions
+(`def:TMplus` among them) have drifted because the paper was edited upstream after the manifest
+was pinned. Verified inherited rather than caused: running the script with `--record` pointed at
+`git show HEAD:specs/paper-definitions-of-record.md` produces the **identical four-anchor drift
+set**. No dangling anchor was introduced — the plan's actual criterion — because no manifest row
+was added at all.
+
+**Scope Hypothesis check**: asserted "four follow-up items and one conditional README edit", with
+the instruction to confirm the list against what actually happened. The README edit did happen.
+The follow-up list grew from four to five: the plan's four are all still live and are recorded in
+the summary, and Phase 7 added a fifth — relaxing `exists_repeat_of_card_lt`'s hypothesis from `<`
+to `≤`, which would subsume the sibling lemma that phase had to prove. Item (b), unifying
+arithmetic duplicated against the concurrent `Periodic.lean`, is recorded but is **vacuous for
+this task**: nothing here duplicates it (see the Phase 1 and Phase 3 reuse-check notes).
 
 **Timing**: 1 hour
 
@@ -1068,29 +1099,35 @@ plan-time hypothesis, not a fact.
 
 ## Testing & Validation
 
-- [ ] `lake build FormalSystem.Metalogic.Decidability.BiLasso.Extend` succeeds.
-- [ ] `lake build FormalSystem.Metalogic.Decidability.BiLasso.Successor` succeeds.
-- [ ] `lake build FormalSystem.Metalogic.Decidability.BiLasso.Orbit` succeeds.
-- [ ] `lake build FormalSystem.Metalogic.Decidability.BiLasso.Agreement` succeeds.
-- [ ] `lake build FormalSystem.Semantics.Extension.PeriodicExtension` succeeds.
-- [ ] `lake build BimodalTest.Metalogic.PeriodicExtensionAxiomTest` succeeds.
-- [ ] `lake build` (full project) succeeds. The three pre-existing red `BimodalTest` modules
+- [x] `lake build FormalSystem.Metalogic.Decidability.BiLasso.Extend` succeeds.
+- [x] `lake build FormalSystem.Metalogic.Decidability.BiLasso.Successor` succeeds.
+- [x] `lake build FormalSystem.Metalogic.Decidability.BiLasso.Orbit` succeeds.
+- [x] `lake build FormalSystem.Metalogic.Decidability.BiLasso.Agreement` succeeds.
+- [x] `lake build FormalSystem.Semantics.Extension.PeriodicExtension` succeeds.
+- [x] `lake build BimodalTest.Metalogic.PeriodicExtensionAxiomTest` succeeds.
+- [x] `lake build` (full project) succeeds. The three pre-existing red `BimodalTest` modules
       (`BoxSpreadProbe`, `RegionGateProbe`, `TableauConformance`) are **inherited** `#guard_msgs`
       mismatches failing identically against HEAD — confirm they fail identically and do **not**
-      re-baseline them.
-- [ ] `grep -rn "sorry" ` across all files created by this task returns nothing.
-- [ ] No vacuous definitions (`:= True`, `:= trivial`, `:= Unit`) in any file created by this task.
-- [ ] `git diff --exit-code FormalSystem/Metalogic/Decidability/BiLasso/Basic.lean` exits 0.
-- [ ] `FormalSystem/Metalogic/Decidability/BiLasso/Periodic.lean` was not created by this task.
-- [ ] `FormalSystem/Metalogic/Decidability.lean` is unmodified.
-- [ ] `FormalSystem/Semantics/Extension/Extension.lean` is unmodified.
-- [ ] "No Zorn" criterion holds: no file created by this task imports
+      re-baseline them. *(`lake build` green at 2457 jobs; `lake build BimodalTest` fails at
+      exactly those three modules and no others, and none was re-baselined)*
+- [x] `grep -rn "sorry" ` across all files created by this task returns nothing.
+- [x] No vacuous definitions (`:= True`, `:= trivial`, `:= Unit`) in any file created by this task.
+- [x] `git diff --exit-code FormalSystem/Metalogic/Decidability/BiLasso/Basic.lean` exits 0.
+- [x] `FormalSystem/Metalogic/Decidability/BiLasso/Periodic.lean` was not created by this task.
+- [x] `FormalSystem/Metalogic/Decidability.lean` is unmodified.
+- [x] `FormalSystem/Semantics/Extension/Extension.lean` is unmodified.
+- [x] "No Zorn" criterion holds: no file created by this task imports
       `FormalSystem.Semantics.Extension.Extension`, and none mentions `exists_maximal_extension`.
-- [ ] No `.lean` file created by this task contains a task-number reference (the blocking
+      *(import half verified structurally — the transitive graph reaches
+      `Semantics.PartialHistory` and not `Semantics.Extension.Extension`. The mention half has two
+      hits, both prose inside the no-Zorn record itself; see the Phase 5 Note.)*
+- [x] No `.lean` file created by this task contains a task-number reference (the blocking
       no-task-references hook must have nothing to reject).
-- [ ] The Tier A docstring contains the literal `#print axioms` output.
-- [ ] The Deliverable-3 docstring's three limits precede the theorem statement.
-- [ ] `bash scripts/check-paper-definitions.sh` reports no dangling anchor.
+- [x] The Tier A docstring contains the literal `#print axioms` output.
+- [x] The Deliverable-3 docstring's three limits precede the theorem statement.
+- [x] `bash scripts/check-paper-definitions.sh` reports no dangling anchor. *(it reports
+      inherited drift on four pre-existing anchors, identical against HEAD's record file; no
+      dangling anchor, because no manifest row was added)*
 
 ## Artifacts & Outputs
 

@@ -59,6 +59,32 @@ which is what validity quantifies over. In particular, a design that drops abund
 cites the Extension Theorem as cover is wrong, and citing the effective version here instead does
 not make it less wrong; the effective version is strictly weaker in scope, not stronger.
 
+## The source
+
+The result this module and its companions formalise is stated in the paper only in passing, in a
+footnote attached to the discussion of the finite case. That footnote carries **no `\label`**, so
+it is not an anchor any tooling can resolve and it is deliberately **not** tracked in the
+definitions-of-record manifest; inventing a synthetic key for it would create a dangling anchor
+and a failing check. It is quoted here verbatim instead, and recorded as an untracked source in
+`specs/paper-definitions-of-record.md`.
+
+Verbatim, from the unanchored footnote in `JPL/possible_worlds.tex`, in the discussion of the
+finite case:
+
+> In this case the conclusion of \textbf{\ref{thm:extension}} becomes effective without appeal to
+> Zorn's lemma: since $W$ is finite, the forward and backward orbits extending a bounded world
+> history must each revisit a world state, so every bounded world history extends to a possible
+> world that is eventually periodic in both directions--- a finite prefix plus a finite cycle each
+> way--- and is therefore finitely representable, licensing a finite certificate that a given
+> bounded history is a fragment of a possible world.
+
+Two things in that sentence are delivered and one is qualified. Delivered: the doubly
+ultimately-periodic extension, and the finite certificate. Qualified: "without appeal to Zorn's
+lemma" is preserved exactly and only as *no Zorn* — no module here imports the extension theorem
+or mentions `exists_maximal_extension`. It is **not** preserved as "choice-free" in Lean's sense,
+which is a different and stronger claim about a different axiom; see
+`IntPresentation.extend_periodic`'s own ON CHOICE section for the measured accounting.
+
 ## Main Results
 
 - `PlacedBiLasso.extends_of_agrees` — pointwise agreement on `dom τ` is exactly `Extends`

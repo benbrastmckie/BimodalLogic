@@ -21,11 +21,51 @@ procedure searches the finitely presented paths of that specific frame.
 | `Decide.lean` | 905 | The corrected scan bounds and the window collapses that make `LocalCoherent` and `Fulfilling` decidable |
 | `Enumerate.lean` | 325 | `boundedBiLassos` and `boundedAnnots`, with completeness and soundness |
 | `SmallModel.lean` | 236 | The type sequence of a genuine history, shown locally coherent and fulfilling — the groundwork the extraction consumes |
+| `Extend.lean` | 120 | `PlacedBiLasso` — a bi-lasso plus an `origin : ℤ`, so a window at arbitrary absolute times is representable — with shift-invariance of step paths |
+| `Successor.lean` | 157 | Choice-free, `#eval`-able `succOf` / `predOf` on a presentation, via `List.find?` over `List.finRange`, and their orbits |
+| `Orbit.lean` | 916 | A choice-free pigeonhole on `Fin`, the forward and backward rho decompositions, the window assembly, and `IntPresentation.extend_periodic` |
+| `Agreement.lean` | 175 | Window agreement as `Extends`, with the three limits on what a lasso certificate licenses |
 
 The extraction itself (`exists_annot_of_truth`), the box oracle, and `check` are **not yet
 present**: see `specs/417_semantic_fmp_finite_worldstate_over_z/evidence/phase10-origin-anchoring-obstruction.lean`
 for the machine-checked obstruction that halted the extraction, and the plan's Phase 10 blocker
 record for the two available repairs.
+
+## Effective periodic extension
+
+`Extend.lean`, `Successor.lean`, `Orbit.lean`, and `Agreement.lean` deliver a second, independent
+result over the same datatype: **every bounded history over a presented frame is a fragment of a
+finitely representable possible world**, with the representation produced rather than merely
+asserted to exist.
+
+The construction is the classical rho, twice. Follow the chosen successor out of the window's
+right end and the chosen predecessor out of its left end; finiteness forces each orbit to revisit
+a state; each revisit splits its orbit into a finite tail and a finite cycle; and tail, window,
+tail become `mid` while the two cycles become `back` and `fwd`. `coherent` then follows from a
+single adjacency lemma about the intended path, and `decide` re-verifies it on any candidate.
+
+Two properties are worth knowing before reading the modules:
+
+- **The certificate's data is choice-free and runs.** `succOf`, `predOf`, the three segment lists,
+  and the intended path all measure `[propext, Quot.sound]` and are `#eval`-able. So is the
+  pigeonhole: `Orbit.lean` proves it directly on `Fin` rather than through the library, because
+  every Mathlib route to pigeonhole carries `Classical.choice`. What remains classical on
+  `extend_periodic` is two incidental library facts — `Basic.lean`'s `length_pos_int` and
+  Mathlib's `List.getD` indexing lemmas — and neither is about finiteness, frames, or the
+  successor selection. `IntPresentation.extend_periodic`'s docstring carries the measured
+  accounting; `Tests/BimodalTest/Metalogic/PeriodicExtensionAxiomTest.lean` pins it with
+  `#guard_msgs`.
+- **The agreement lemma is narrower than it looks.** It licenses existential claims about the
+  window that was found and nothing about universal obligations. `Agreement.lean`'s module
+  docstring states three limits before its first theorem — on `box`, on `Past` / `Future`, and on
+  the non-existence of a formula-independent scan bound — and each cites a named declaration.
+  Read them before citing the lemma.
+
+The frame-level counterpart, over an arbitrary `TaskFrame ℤ` with `[Finite WorldState]` and with
+no presentation in its proof, lives outside this directory at
+`FormalSystem/Semantics/Extension/PeriodicExtension.lean`, which also handles the gapped
+finite-domain case. The two are separate theorems by design: `Finite` is a non-constructive
+`Prop`, `IntPresentation` is data, and no bridge between them is written anywhere.
 
 ## The two design constraints
 
