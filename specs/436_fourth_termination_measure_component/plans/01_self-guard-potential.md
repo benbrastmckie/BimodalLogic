@@ -426,27 +426,27 @@ re-executed against a changed engine, not a new design.
 
 ---
 
-### Phase 2: Index-set agreement, the ceiling, and growth monotonicity [BLOCKED]
+### Phase 2: Index-set agreement, the ceiling, and growth monotonicity [COMPLETED]
 
-**BLOCKER** (Phase 2): blocked by Phase 1's FALSE verdict. `mintPaysForTimeAt_reuse_false` decides `MintPaysForTimeAt` false at the σ-hit hazard, at every frame class and every `Tmax`, with the most favorable run-realizable σ. `selfGuard_no_column_at_retired_time` gives the general reason, so no other configuration escapes it. Building plumbing for a refuted design is forbidden by the plan's own Rollback/Contingency section. **What is needed to unblock**: a fourth measure component whose index set is not carried through σ at all, or a discharge of the σ-hit obligation itself — which the time-reuse verdict decides is false, not open.
+**BLOCKER RESOLVED** (Phase 2): the Phase 1 blocker named "a discharge of the σ-hit obligation itself" as the unblock condition. Phase 1R supplies it: at the renaming the *oriented* identification arm produces, the obligation is met at every trigger the engine can select (`sigmaTimeStable_identifyOriented`), and the self-guard potential falls at the very configuration that refuted it. Phase 1's verdict was a statement about the unoriented arm and does not survive the reorientation.
 
 - **Goal:** Give `selfGuardPotential` the two structural facts every consumer needs — a linear
   ceiling and non-increase under growth — by transcribing the already-landed `mintPotential`
   siblings.
 
 - **Tasks:**
-  - [ ] `mem_selfGuardRules {r : TableauRule} : r ∈ selfGuardRules ↔ (r = .untlNeg ∨ r = .snceNeg)`,
+  - [x] `mem_selfGuardRules {r : TableauRule} : r ∈ selfGuardRules ↔ (r = .untlNeg ∨ r = .snceNeg)`,
         the anti-drift guarantee mirroring `mem_freshLabelRules` (`MintBound.lean:2960`) and
         `mem_freshTimeRules` (`MintBound.lean:6387`).
-  - [ ] `selfGuardPotential_le_two_mul (U) (σ) (ord) : selfGuardPotential U σ ord ≤ 2 * U.card`.
+  - [x] `selfGuardPotential_le_two_mul (U) (σ) (ord) : selfGuardPotential U σ ord ≤ 2 * U.card`.
         Transcribe `mintPotential_le_eight_mul` (`MintBound.lean:2978-2987`); the coefficient is the
         index set's width.
-  - [ ] `selfGuardDischarged_le_of_grow`: if `ord.constraints ⊆ ord'.constraints` then
+  - [x] `selfGuardDischarged_le_of_grow`: if `ord.constraints ⊆ ord'.constraints` then
         `selfGuardDischarged r sf ord = true → selfGuardDischarged r sf ord' = true`. Consumes
         `futureOf_mono` (`Fuel.lean:914`) and `pastOf_mono` (`Fuel.lean:926`). Note `addFuture` /
         `addPast` only cons onto `ord.constraints` (`SignedFormula.lean:685-690`), which is what
         supplies the hypothesis at every call site.
-  - [ ] `selfGuardPotential_le_of_grow`: under the same ordering-growth hypothesis,
+  - [x] `selfGuardPotential_le_of_grow`: under the same ordering-growth hypothesis,
         `selfGuardPotential U σ ord' ≤ selfGuardPotential U σ ord`. Transcribe
         `mintPotential_le_of_grow` (`MintBound.lean:2988-2999`) — same `Finset.card_le_card` +
         filter-subset skeleton. Note this sibling needs **only** the ord-grow half, not the
@@ -462,21 +462,21 @@ re-executed against a changed engine, not a new design.
 
 ---
 
-### Phase 3: Preservation across the identification arm [BLOCKED]
+### Phase 3: Preservation across the identification arm [COMPLETED]
 
-**BLOCKER** (Phase 3): blocked by Phase 1's FALSE verdict. `mintPaysForTimeAt_reuse_false` decides `MintPaysForTimeAt` false at the σ-hit hazard, at every frame class and every `Tmax`, with the most favorable run-realizable σ. `selfGuard_no_column_at_retired_time` gives the general reason, so no other configuration escapes it. Building plumbing for a refuted design is forbidden by the plan's own Rollback/Contingency section. **What is needed to unblock**: a fourth measure component whose index set is not carried through σ at all, or a discharge of the σ-hit obligation itself — which the time-reuse verdict decides is false, not open.
+**BLOCKER RESOLVED** (Phase 3): the Phase 1 blocker named "a discharge of the σ-hit obligation itself" as the unblock condition. Phase 1R supplies it: at the renaming the *oriented* identification arm produces, the obligation is met at every trigger the engine can select (`sigmaTimeStable_identifyOriented`), and the self-guard potential falls at the very configuration that refuted it. Phase 1's verdict was a statement about the unoriented arm and does not survive the reorientation.
 
 - **Goal:** The discriminating property, and the one Constraint (F) turns on: `selfGuardPotential`
   does not rise across `TimeOrdering.identifyTime` at an incomparable trigger. This is the crux
   phase; its argument is repo-internal (no literature support — see the named gap above).
 
 - **Tasks:**
-  - [ ] `selfGuardDischarged_identifyTime`: given `IrreflOrd ord` and
+  - [x] `selfGuardDischarged_identifyTime`: given `IrreflOrd ord` and
         `incomparableB ord (t₁, t₂)`, if `selfGuardDischarged r sf ord = true` then
         `selfGuardDischarged r (rhoSF t₂ t₁ sf) (ord.identifyTime t₂ t₁) = true`. Follow the proof
         template of `witnessPresent_identifyTime` (`MintBound.lean:644`), which is the same statement
         for the sibling predicate and needs the same `IrreflOrd`.
-  - [ ] The argument, in the three steps the research fixed — do not substitute another:
+  - [x] The argument, in the three steps the research fixed — do not substitute another:
         (1) **no constraint is dropped**: `identifyTime_no_collapse` (`MintBound.lean:231-251`) gives
         `rho t₂ t₁ a ≠ rho t₂ t₁ b` for every `(a,b) ∈ ord.constraints`, and
         `TimeOrdering.identifyTime`'s `filterMap` discards only when `a' == b'`
@@ -488,12 +488,12 @@ re-executed against a changed engine, not a new design.
         not consumed;
         (3) `rhoSF` acts on the label's time by `rho` (`MintBound.lean:67`), so the column index
         lines up.
-  - [ ] `selfGuardPotential_identifyTime`: under the same hypotheses,
+  - [x] `selfGuardPotential_identifyTime`: under the same hypotheses,
         `selfGuardPotential U (rhoSF t₂ t₁ ∘ σ) (ord.identifyTime t₂ t₁) ≤ selfGuardPotential U σ ord`.
         The filter's true-set only grows, so this is `Finset.card_le_card` over the previous lemma.
-  - [ ] Docstring must state that this is **Constraint (F) discharged with equality-or-better** and
+  - [x] Docstring must state that this is **Constraint (F) discharged with equality-or-better** and
         that it is what separates Candidate 2 from every `knownTimes.card`-affine component.
-  - [ ] Note in the docstring that `incomparableB ord (t₁,t₂)` is available at the consuming site
+  - [x] Note in the docstring that `incomparableB ord (t₁,t₂)` is available at the consuming site
         from `firstIncomparablePair_spec` (`Fuel.lean:1023-1026`), whose last two conjuncts are
         literally `incomparableB`'s two clauses (`Fuel.lean:1044-1045`). Do not add a new hypothesis
         for it.

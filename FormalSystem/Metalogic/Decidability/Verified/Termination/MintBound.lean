@@ -8752,6 +8752,163 @@ theorem mintPaysForTimeStable_body_at_orientedGate
   refine Or.inr (Or.inr ?_)
   cases fc <;> decide
 
+/-! #### The component's structural facts: index-set agreement, the ceiling, growth
+
+With the gate decided the plumbing every consumer needs can be built. All four statements below are
+transcriptions of the already-landed `mintPotential` siblings, and the transcription is exact except
+in one place: `selfGuardPotential` does not take a `Branch`, so the growth lemma needs only the
+ordering half of `mintPotential_le_of_grow`'s hypothesis and no branch-monotonicity fact at all. -/
+
+/-- **Index-set agreement**, the anti-drift guarantee. Mirrors `mem_freshLabelRules` and
+`mem_freshTimeRules`: if the list is ever widened, every consumer that reads this lemma breaks
+loudly rather than silently counting extra columns. -/
+theorem mem_selfGuardRules {r : TableauRule} :
+    r ∈ selfGuardRules ↔ (r = TableauRule.untlNeg ∨ r = TableauRule.snceNeg) := by
+  cases r <;> simp [selfGuardRules]
+
+/-- **`selfGuardPotential ≤ 2 · |U|`**, immediately, for every ordering and every renaming: the
+filter cannot exceed its index set, and the index set is a product with a two-element left factor.
+
+The coefficient is the index set's width and nothing else, which is the point of choosing a second
+ledger over a widening: `mintPotential`'s ceiling is `8 · |U|` and stays `8 · |U|`. Transcribed from
+`mintPotential_le_eight_mul`. -/
+theorem selfGuardPotential_le_two_mul (U : Finset SignedFormula)
+    (σ : SignedFormula → SignedFormula) (ord : TimeOrdering) :
+    selfGuardPotential U σ ord ≤ 2 * U.card := by
+  refine le_trans (Finset.card_filter_le _ _) ?_
+  rw [Finset.card_product, selfGuardRules_card]
+
+/-- A non-empty reach transports along any map that carries its members into the target reach.
+
+The one shared shape behind both growth and both transport arguments below: `selfGuardDischarged`
+reads `!(reach).isEmpty`, so every preservation statement about it is "some member survives", and
+the member's identity is never used. Stating it once keeps the four rule cases below to a single
+line each. -/
+theorem not_isEmpty_transport (φ : TimeIndex → TimeIndex) {l l' : List TimeIndex}
+    (h : ∀ x ∈ l, φ x ∈ l') (hl : (!l.isEmpty) = true) : (!l'.isEmpty) = true := by
+  simp only [Bool.not_eq_true', List.isEmpty_eq_false_iff] at hl ⊢
+  obtain ⟨x, hx⟩ := List.exists_mem_of_ne_nil _ hl
+  exact List.ne_nil_of_mem (h x hx)
+
+/-- **A discharged self-guard stays discharged as the ordering grows.** Consumes
+`TimeOrdering.futureOf_mono` / `TimeOrdering.pastOf_mono`.
+
+The hypothesis is supplied at every call site by the mint arms themselves: `addFuture` and `addPast`
+only cons onto `ord.constraints`, so the pre-step constraint list is literally a sublist of the
+post-step one. The catch-all rules close by `rfl`, since their column is `true` at every ordering —
+the polarity choice `selfGuardDischarged`'s docstring explains. -/
+theorem selfGuardDischarged_le_of_grow {ord ord' : TimeOrdering}
+    (hord : ∀ q ∈ ord.constraints, q ∈ ord'.constraints) (r : TableauRule) (sf : SignedFormula)
+    (h : selfGuardDischarged r sf ord = true) : selfGuardDischarged r sf ord' = true := by
+  cases r <;> simp only [selfGuardDischarged] at h ⊢ <;>
+    first
+      | rfl
+      | exact not_isEmpty_transport id (fun x hx => TimeOrdering.futureOf_mono hord _ x hx) h
+      | exact not_isEmpty_transport id (fun x hx => TimeOrdering.pastOf_mono hord _ x hx) h
+
+/-- **An ordinary step does not increase the self-guard potential.** The ordering grows, so
+`selfGuardDischarged` can only turn on; contrapositively the after-`false` set is a *subset* of the
+before-`false` set inside the same index set, and no injection is needed.
+
+Transcribed from `mintPotential_le_of_grow`, minus its branch-growth hypothesis: the component does
+not take a `Branch`, so the branch half has no analogue and no call site has to supply one. This
+covers `.extended`, `.split`, and the ordered split's first two arms — every step that keeps `σ`. -/
+theorem selfGuardPotential_le_of_grow {U : Finset SignedFormula}
+    {σ : SignedFormula → SignedFormula} {ord ord' : TimeOrdering}
+    (hord : ∀ q ∈ ord.constraints, q ∈ ord'.constraints) :
+    selfGuardPotential U σ ord' ≤ selfGuardPotential U σ ord := by
+  refine Finset.card_le_card ?_
+  intro p hp
+  simp only [Finset.mem_filter] at hp ⊢
+  refine ⟨hp.1, ?_⟩
+  rcases hd : selfGuardDischarged p.1 (σ p.2) ord with _ | _
+  · rfl
+  · rw [selfGuardDischarged_le_of_grow hord p.1 (σ p.2) hd] at hp
+    exact absurd hp.2 (by simp)
+
+/-! #### Preservation across the identification arm — Constraint (F), discharged
+
+The crux. The ordered split's arm 3 is the one step at which the whole design has to be checked
+rather than argued, because it is the step every `knownTimes.card`-affine candidate dies at: a
+self-guarded mint raises the known-time count and the identification arm lowers it, so no sign of
+coefficient satisfies both. `selfGuardPotential` is not affine in that count — it is not a function
+of the branch at all — and what has to be shown instead is that the arm does not *raise* it.
+
+It does not, and with room to spare: the arm's renaming is post-composed onto σ, no constraint is
+dropped at an incomparable trigger (`identifyTime_no_collapse`), and reachability transports edge by
+edge (`futureOf_transport` / `pastOf_transport`). So the discharged set only grows and the uncured
+count only falls. **This is Constraint (F) discharged with equality-or-better**, and it is what
+separates Candidate 2 from every candidate the constraint kills.
+
+The `incomparableB ord (t₁, t₂)` side condition is not a new hypothesis. It is available at the
+consuming site from `firstIncomparablePair_spec`, whose last two conjuncts are literally
+`incomparableB`'s two clauses, and at the engine's own orientation from
+`incomparableB_of_firstIncomparablePair_oriented`. `IrreflOrd` is likewise the run invariant's own
+first conjunct — and it is *necessary*, not convenient: `witnessPresent_identifyTime_unconditional_false`
+(register entry 5) refutes the `IrreflOrd`-free form for the sibling predicate, and the reason
+carries over verbatim, since `TimeOrdering.identifyTime` drops a pre-existing self-loop whose two
+endpoints rename together. -/
+
+/-- **A discharged self-guard survives the identification arm, renamed.**
+
+Three steps, exactly the ones the design was fixed on. (1) No constraint is dropped:
+`identifyTime_no_collapse` gives `rho t₂ t₁ a ≠ rho t₂ t₁ b` for every constraint, and
+`TimeOrdering.identifyTime`'s `filterMap` discards only when the two components collapse. (2)
+Non-emptiness transports: `futureOf_transport` / `pastOf_transport` carry a witnessing member of the
+reach to a member of the renamed reach, length-preservingly, so the `100`-step fuel bound is
+re-met at the same length. (3) The column index lines up, because `rhoSF` acts on the label's time
+by exactly the `rho` the reach transport is stated at. -/
+theorem selfGuardDischarged_identifyTime {ord : TimeOrdering} {t₁ t₂ : TimeIndex}
+    (hinc : incomparableB ord (t₁, t₂) = true) (hnsl : IrreflOrd ord)
+    (r : TableauRule) (sf : SignedFormula) (h : selfGuardDischarged r sf ord = true) :
+    selfGuardDischarged r (rhoSF t₂ t₁ sf) (ord.identifyTime t₂ t₁) = true := by
+  cases r <;> simp only [selfGuardDischarged, rhoSF] at h ⊢ <;>
+    first
+      | rfl
+      | exact not_isEmpty_transport (rho t₂ t₁)
+          (fun x hx => futureOf_transport ord t₁ t₂ hinc hnsl _ x hx) h
+      | exact not_isEmpty_transport (rho t₂ t₁)
+          (fun x hx => pastOf_transport ord t₁ t₂ hinc hnsl _ x hx) h
+
+/-- **The identification arm does not increase the self-guard potential.**
+
+`Finset.card_le_card` over the previous lemma: the filter's `true`-set only grows, so the
+`false`-set only shrinks, inside an index set that does not move. No injection from the after-set
+into the before-set is required, and none is available — `rhoSF t₂ t₁` is not injective on `U`.
+This is the same skeleton as `mintPotential_identifyTime`, one lemma deeper.
+
+Because the renaming is *post-composed* onto the parameter, the statement applies unchanged at a
+second, third or `n`-th identification along the same run. -/
+theorem selfGuardPotential_identifyTime {U : Finset SignedFormula}
+    {σ : SignedFormula → SignedFormula} {ord : TimeOrdering} {t₁ t₂ : TimeIndex}
+    (hinc : incomparableB ord (t₁, t₂) = true) (hnsl : IrreflOrd ord) :
+    selfGuardPotential U (fun x => rhoSF t₂ t₁ (σ x)) (ord.identifyTime t₂ t₁)
+      ≤ selfGuardPotential U σ ord := by
+  refine Finset.card_le_card ?_
+  intro p hp
+  simp only [Finset.mem_filter] at hp ⊢
+  refine ⟨hp.1, ?_⟩
+  rcases hd : selfGuardDischarged p.1 (σ p.2) ord with _ | _
+  · rfl
+  · rw [selfGuardDischarged_identifyTime hinc hnsl p.1 (σ p.2) hd] at hp
+    exact absurd hp.2 (by simp)
+
+/-- **…at the engine's own orientation.** `selfGuardPotential_identifyTime` read at
+`(min t₁ t₂, max t₁ t₂)`, which is the merge arm 3 actually performs.
+
+One fact deeper and nothing else: `incomparableB_of_firstIncomparablePair_oriented` supplies the
+side condition at the flipped pair, via `incomparableB_symm`. The two statements are otherwise
+definitionally the same, which is the concrete payoff of having stated the transport stack in
+`src` / `tgt` rather than in the trigger's own coordinates. -/
+theorem selfGuardPotential_identifyOriented {U : Finset SignedFormula}
+    {σ : SignedFormula → SignedFormula} {b : Branch} {ord : TimeOrdering} {t₁ t₂ : TimeIndex}
+    (htrig : firstIncomparablePair b ord = some (t₁, t₂)) (hirr : IrreflOrd ord) :
+    selfGuardPotential U
+        (fun x => rhoSF (identifyOrient t₁ t₂).1 (identifyOrient t₁ t₂).2 (σ x))
+        (identifyOriented b ord t₁ t₂).2
+      ≤ selfGuardPotential U σ ord :=
+  selfGuardPotential_identifyTime (incomparableB_of_firstIncomparablePair_oriented htrig) hirr
+
 /-! ## C9. The do-not-re-attempt register
 
 Eighteen statements that look like the natural next lemma and are **not** available. Each is cited
