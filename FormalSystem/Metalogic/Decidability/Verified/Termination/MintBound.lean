@@ -8493,6 +8493,18 @@ no membership hypothesis at all.
 it is a constraint on the renaming, which is the one argument of `MintPaysForTime` that no consumer
 of the terminus supplies from outside. See `mintPaysForTimeStable_no_leak` below.
 
+**Why the third disjunct is a pair.** It mirrors disjunct 2 exactly: disjunct 2 pairs a
+`mintPotential` drop with a `mintTimeBudget` non-increase, and this one pairs a `selfGuardPotential`
+drop with a **combined**-budget non-increase — the mint budget plus the self-guard potential. The
+pairing is forced, not decorative. A self-guarded mint raises `mintTimeBudget` by one, and
+`extensionAllowance` carries a factor of `|U|` per unit of mint budget, so without a cap on the
+combined quantity the measure does not fall however the fourth component is weighted. The combined
+form is the right one because the mint spends exactly one unit of the fourth component to buy the
+one unit of mint budget it consumes: the component funds the budget rather than sitting beside it.
+Measured at the oriented gate, `26 + 3 = 29` before and `27 + 1 = 28` after
+(`orientedGate_disjunct3_holds`). The consequence is that `MintPaysForTimeAt`, whose third disjunct
+is the bare drop, does **not** imply this predicate; see `mintPaysForTimeStable_of_mintPaysForTime`.
+
 **The density residual is unchanged.** Everything `MintPaysForTimeAt`'s obligation map records
 about `densityRule` applies here verbatim: `densityRule` mints a fresh time while lying outside
 both `freshLabelRules` and `selfGuardRules`, so no disjunct moves, and the intended component
@@ -8510,8 +8522,11 @@ def MintPaysForTimeStable (fc : FormalSystem.ProofSystem.FrameClass) (U : Finset
             ≤ mintTimeBudget U σ b ord ∧
           mintPotential U σ nb (expandOnceUnblocked b ord fc tr).2
             < mintPotential U σ b ord)
-      ∨ selfGuardPotential U σ (expandOnceUnblocked b ord fc tr).2
-          < selfGuardPotential U σ ord
+      ∨ (mintTimeBudget U σ nb (expandOnceUnblocked b ord fc tr).2
+            + selfGuardPotential U σ (expandOnceUnblocked b ord fc tr).2
+            ≤ mintTimeBudget U σ b ord + selfGuardPotential U σ ord ∧
+          selfGuardPotential U σ (expandOnceUnblocked b ord fc tr).2
+            < selfGuardPotential U σ ord)
 
 /-- **Direction lemma, first link.** `MintPaysForTimeAt` adds a disjunct and removes nothing, so
 every consumer of `MintPaysForTime` can be restated against it. -/
@@ -8523,18 +8538,23 @@ theorem mintPaysForTimeAt_of_mintPaysForTime {fc : FormalSystem.ProofSystem.Fram
   · exact Or.inl h1
   · exact Or.inr (Or.inl h2)
 
-/-- **Direction lemma, second link.** `MintPaysForTimeStable` adds a hypothesis and removes
-nothing. -/
-theorem mintPaysForTimeStable_of_mintPaysForTimeAt {fc : FormalSystem.ProofSystem.FrameClass}
-    {U : Finset SignedFormula} {Tmax : Nat} (h : MintPaysForTimeAt fc U Tmax) :
-    MintPaysForTimeStable fc U Tmax :=
-  fun σ b ord tr hri hconf _ nb hnb => h σ b ord tr hri hconf nb hnb
+/-- **Direction lemma, second link.** The statement a reader restating an existing terminus needs:
+`MintPaysForTimeStable` adds a hypothesis and a disjunct and removes nothing, so it is weaker than
+`MintPaysForTime` and every theorem restated against it is a strengthening.
 
-/-- **Direction lemma, composed.** The statement a reader restating an existing terminus needs. -/
+**It does *not* factor through `MintPaysForTimeAt`, and that is deliberate.** The two predicates'
+third disjuncts differ: `MintPaysForTimeAt`'s is the bare `selfGuardPotential` drop, while this
+one's pairs that drop with a **combined-budget** conjunct, exactly as disjunct 2 pairs its
+`mintPotential` drop with a plain budget conjunct. The pairing is not decoration — see
+`budgetStateAt_of_disjunct3` — so `MintPaysForTimeAt → MintPaysForTimeStable` is unavailable and is
+not claimed. Both disjuncts 1 and 2 survive verbatim, which is all this lemma needs. -/
 theorem mintPaysForTimeStable_of_mintPaysForTime {fc : FormalSystem.ProofSystem.FrameClass}
     {U : Finset SignedFormula} {Tmax : Nat} (h : MintPaysForTime fc U Tmax) :
-    MintPaysForTimeStable fc U Tmax :=
-  mintPaysForTimeStable_of_mintPaysForTimeAt (mintPaysForTimeAt_of_mintPaysForTime h)
+    MintPaysForTimeStable fc U Tmax := by
+  intro σ b ord tr hri hconf _ nb hnb
+  rcases h σ b ord tr hri hconf nb hnb with h1 | h2
+  · exact Or.inl h1
+  · exact Or.inr (Or.inl h2)
 
 /-! #### The oriented gate: the same measurement at the renaming the oriented arm produces
 
@@ -8704,6 +8724,28 @@ theorem orientedGate_verdict_side_by_side :
         < selfGuardPotential orientedGateUniverse gateSigma orientedGateOrd := by
   decide
 
+/-- **The repaired predicate's third disjunct, decided at the oriented gate.** Both conjuncts, at
+both reported successors, at every frame class.
+
+Split out from the verdict below because it is the half that `decide` can evaluate: the combined
+budget mentions the successor branch, so the statement has to be read with the `∀ nb` still inside
+it rather than after an `intro`. The numbers are `27 + 1 ≤ 26 + 3` and `1 < 3`. -/
+theorem orientedGate_disjunct3_holds (fc : FormalSystem.ProofSystem.FrameClass) :
+    ∀ nb ∈ unorderedSuccessorBranches
+        (expandOnceUnblocked orientedGateBranch orientedGateOrd fc EventualityTracker.empty).1,
+      (mintTimeBudget orientedGateUniverse orientedGateSigma nb
+          (expandOnceUnblocked orientedGateBranch orientedGateOrd fc EventualityTracker.empty).2
+          + selfGuardPotential orientedGateUniverse orientedGateSigma
+            (expandOnceUnblocked orientedGateBranch orientedGateOrd fc
+              EventualityTracker.empty).2
+          ≤ mintTimeBudget orientedGateUniverse orientedGateSigma orientedGateBranch
+            orientedGateOrd
+            + selfGuardPotential orientedGateUniverse orientedGateSigma orientedGateOrd) ∧
+      selfGuardPotential orientedGateUniverse orientedGateSigma
+          (expandOnceUnblocked orientedGateBranch orientedGateOrd fc EventualityTracker.empty).2
+        < selfGuardPotential orientedGateUniverse orientedGateSigma orientedGateOrd := by
+  cases fc <;> decide
+
 /-- **VERDICT: the re-gate decides TRUE.** `MintPaysForTimeStable`'s body holds at the oriented
 gate, at every frame class, every `Tmax` and every reported successor.
 
@@ -8745,12 +8787,21 @@ theorem mintPaysForTimeStable_body_at_orientedGate
               EventualityTracker.empty).2
             < mintPotential orientedGateUniverse orientedGateSigma orientedGateBranch
               orientedGateOrd)
-      ∨ selfGuardPotential orientedGateUniverse orientedGateSigma
-          (expandOnceUnblocked orientedGateBranch orientedGateOrd fc EventualityTracker.empty).2
-        < selfGuardPotential orientedGateUniverse orientedGateSigma orientedGateOrd := by
-  intro nb _
-  refine Or.inr (Or.inr ?_)
-  cases fc <;> decide
+      ∨ (mintTimeBudget orientedGateUniverse orientedGateSigma nb
+            (expandOnceUnblocked orientedGateBranch orientedGateOrd fc
+              EventualityTracker.empty).2
+            + selfGuardPotential orientedGateUniverse orientedGateSigma
+              (expandOnceUnblocked orientedGateBranch orientedGateOrd fc
+                EventualityTracker.empty).2
+            ≤ mintTimeBudget orientedGateUniverse orientedGateSigma orientedGateBranch
+              orientedGateOrd
+              + selfGuardPotential orientedGateUniverse orientedGateSigma orientedGateOrd ∧
+          selfGuardPotential orientedGateUniverse orientedGateSigma
+            (expandOnceUnblocked orientedGateBranch orientedGateOrd fc
+              EventualityTracker.empty).2
+            < selfGuardPotential orientedGateUniverse orientedGateSigma orientedGateOrd) := by
+  intro nb hnb
+  exact Or.inr (Or.inr (orientedGate_disjunct3_holds fc nb hnb))
 
 /-! #### The component's structural facts: index-set agreement, the ceiling, growth
 
@@ -9290,6 +9341,346 @@ theorem mintPaysForTimeStable_no_leak {fc : FormalSystem.ProofSystem.FrameClass}
           (identifyOriented b ord t₁ t₂).1) :=
   ⟨mintPaysForTimeStable_of_mintPaysForTime, sigmaTimeFixed_id,
    fun _ _ _ _ _ hne hmax h => sigmaTimeFixed_identifyOriented hne hmax h⟩
+
+/-! #### The four-component measure
+
+`budgetPotential` is byte-unchanged; this is a new declaration alongside it, additive in the literal
+sense — the original plus one weighted summand.
+
+**Two things had to change from the plan-time design, and both are findings rather than choices.**
+
+*The state's budget clause is the mint budget **plus** the fourth component.* A self-guarded mint
+necessarily raises `mintTimeBudget`: it adds a time to `knownTimes` and leaves `mintPotential` alone,
+because `untlNeg` and `snceNeg` are not in `freshLabelRules`. So `BudgetState` cannot survive the very
+step the fourth component exists to pay for, and no weight fixes that — the failure is in the state
+predicate, not in the measure. `BudgetStateAt` carries `mintTimeBudget + selfGuardPotential ≤ Tmax`
+instead, and the arithmetic works because the mint spends exactly one unit of the fourth component
+to buy the one unit of mint budget it consumes. That is the component *funding* the budget rather
+than sitting beside it, and it is why the repaired predicate's third disjunct has to be a **pair**.
+
+*The third disjunct is a pair, mirroring disjunct 2.* Disjunct 2 pairs a `mintPotential` drop with a
+`mintTimeBudget` non-increase; disjunct 3 pairs a `selfGuardPotential` drop with a **combined**-budget
+non-increase. Without the second conjunct `extensionAllowance` is unbounded above at the step — it
+carries a factor of `|U|` per unit of mint budget — and the measure does not fall. This is why
+`MintPaysForTimeAt → MintPaysForTimeStable` is unavailable and is not claimed.
+
+*The weight is `2·(Tmax² + 1) + |U|`, not `2·(Tmax² + 1)`.* The extra `|U|` is exactly what pays for
+`extensionAllowance`'s rise across a step that spends combined budget. The plan-time figure was read
+off `splitOrderedRank`'s rise alone and did not account for the allowance; the correction is recorded
+here rather than absorbed.
+
+Neither change touches a landed declaration, and neither is a new hypothesis on any caller:
+`BudgetStateAt`'s clause is a *strengthening* of `BudgetState`'s, discharged at the seed by choosing
+`Tmax` with the slack `selfGuardPotential_le_two_mul` bounds at `2·|U|` — a figure enlargement of
+exactly the kind register entry 8 records. -/
+
+/-- **The carried state, at the four-component measure.** `BudgetState`'s three clauses with the
+third replaced by the *combined* budget: the mint budget plus the self-guard potential.
+
+The combination is load-bearing, not cosmetic. A self-guarded mint raises `mintTimeBudget` by one
+and lowers `selfGuardPotential` by at least one, so the sum is non-increasing at exactly the step
+the plain clause fails at. Measured at the oriented gate: `26 + 3 = 29` before, `27 + 1 = 28` after
+(`orientedGate_disjunct3_holds`). -/
+def BudgetStateAt (U : Finset SignedFormula) (Tmax : Nat)
+    (σ : SignedFormula → SignedFormula) (b : Branch) (ord : TimeOrdering) : Prop :=
+  RunInvariant b ord ∧ (∀ x ∈ b, x ∈ U) ∧
+    mintTimeBudget U σ b ord + selfGuardPotential U σ ord ≤ Tmax
+/-- **The four-component measure.** `budgetPotential` plus the self-guard coordinate at weight
+`2·(Tmax² + 1) + |U|`.
+
+The weight has to dominate everything a step that spends one unit of combined budget can add:
+`(Tmax² + 1)` for the extra known time in `splitOrderedRank`, `Tmax²` for a full incomparable-pair
+range (`incompPairs_card_le` at `knownTimes.card ≤ Tmax`), and `|U|` for `extensionAllowance`'s
+per-budget-unit factor. `2·(Tmax² + 1) + |U|` clears all three with a unit to spare, which is why
+the drop is by at least one however much the step mints. -/
+def budgetPotentialAt (U : Finset SignedFormula) (Tmax : Nat)
+    (σ : SignedFormula → SignedFormula) (b : Branch) (ord : TimeOrdering) : Nat :=
+  budgetPotential U Tmax σ b ord
+    + (2 * (Tmax * Tmax + 1) + U.card) * selfGuardPotential U σ ord
+
+
+/-- **Constraint (F), tested at the arm before the inequality is attempted.** The fourth component
+does not rise at the ordered split's identification arm.
+
+This is the plan's own gate on Phase 7 and it passes with equality-or-better:
+`selfGuardPotential_identifyOriented` is exactly the statement, read at the arm's own
+`(min t₁ t₂, max t₁ t₂)`. Had it failed, the phase would have been blocked rather than rescued by
+re-weighting — the research shows re-weighting is unsatisfiable, since the mint-side rise scales
+identically. -/
+theorem selfGuardPotential_le_at_arm3 {U : Finset SignedFormula}
+    {σ : SignedFormula → SignedFormula} {b : Branch} {ord : TimeOrdering} {t₁ t₂ : TimeIndex}
+    (htrig : firstIncomparablePair b ord = some (t₁, t₂)) (hirr : IrreflOrd ord) :
+    selfGuardPotential U (fun x => rhoSF (min t₁ t₂) (max t₁ t₂) (σ x))
+        (ord.identifyTime (min t₁ t₂) (max t₁ t₂))
+      ≤ selfGuardPotential U σ ord :=
+  selfGuardPotential_identifyOriented (b := b) htrig hirr
+
+
+/-- **The measure drops at every arm of an ordered split, at the four-component measure.**
+
+`budgetPotential_step_splitOrdered` re-proved, with exactly one additional input per arm — the
+fourth component's non-increase, multiplied by the weight — and the state clause discharged from the
+same inputs. Arms 1 and 2 get it from `selfGuardPotential_le_of_grow` (the arms only add an edge);
+arm 3 gets it from `selfGuardPotential_le_at_arm3`. `hrk`, `hEmul` and `hEexp` are unchanged, which
+is the plan's Scope Hypothesis for this phase confirmed rather than assumed.
+
+No residual is consumed here: an ordered split does not mint, so the repaired predicate is not used
+at all. -/
+theorem budgetPotentialAt_step_splitOrdered {U : Finset SignedFormula} {Tmax : Nat}
+    {σ : SignedFormula → SignedFormula} {b : Branch} {ord : TimeOrdering}
+    {bs : List (Branch × TimeOrdering)}
+    {fc : FormalSystem.ProofSystem.FrameClass} {tr : EventualityTracker}
+    (hUcl : UniverseClosed fc U) (hst : BudgetStateAt U Tmax σ b ord)
+    (hres : (expandOnceUnblocked b ord fc tr).1 = ExpansionResult.splitOrdered bs) :
+    ∀ p ∈ bs, ∃ σ' : SignedFormula → SignedFormula, BudgetStateAt U Tmax σ' p.1 p.2 ∧
+      budgetPotentialAt U Tmax σ' p.1 p.2 < budgetPotentialAt U Tmax σ b ord := by
+  obtain ⟨hinv, hbU, hbud⟩ := hst
+  have hkT : b.knownTimes.toFinset.card ≤ Tmax := by
+    simp only [mintTimeBudget] at hbud; omega
+  have hcU : b.toFinset.card ≤ U.card := card_le_of_subset_universe hbU
+  have hrank := expandOnceUnblocked_splitOrdered_rank_lt hkT hres
+  have hinvs := (expandOnceUnblocked_runInvariant hinv).2 bs hres
+  obtain ⟨t₁, t₂, htrig, rfl⟩ := expandOnceUnblocked_splitOrdered_shape hres
+  intro p hp
+  have hrk := hrank p hp
+  have hinvp := hinvs p hp
+  simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
+  rcases hp with rfl | rfl | rfl
+  · dsimp only at hrk hinvp ⊢
+    have hm' : mintPotential U σ b (ord.addFuture t₁ t₂) ≤ mintPotential U σ b ord :=
+      mintPotential_le_of_grow (fun _ hx => hx) (addFuture_constraints_mono ord t₁ t₂)
+    have hI : mintTimeBudget U σ b (ord.addFuture t₁ t₂) ≤ mintTimeBudget U σ b ord := by
+      simp only [mintTimeBudget]; omega
+    have hEmul : mintTimeBudget U σ b (ord.addFuture t₁ t₂) * U.card
+        ≤ mintTimeBudget U σ b ord * U.card := Nat.mul_le_mul_right _ hI
+    have hAmul : 2 * (Tmax * Tmax + 1) * mintPotential U σ b (ord.addFuture t₁ t₂)
+        ≤ 2 * (Tmax * Tmax + 1) * mintPotential U σ b ord := Nat.mul_le_mul_left _ hm'
+    have hS1 : selfGuardPotential U σ (ord.addFuture t₁ t₂) ≤ selfGuardPotential U σ ord :=
+      selfGuardPotential_le_of_grow (addFuture_constraints_mono ord t₁ t₂)
+    have hSmul : (2 * (Tmax * Tmax + 1) + U.card) * selfGuardPotential U σ (ord.addFuture t₁ t₂)
+        ≤ (2 * (Tmax * Tmax + 1) + U.card) * selfGuardPotential U σ ord :=
+      Nat.mul_le_mul_left _ hS1
+    refine ⟨σ, ⟨hinvp, hbU, by omega⟩, ?_⟩
+    simp only [budgetPotentialAt, budgetPotential, extensionAllowance]
+    omega
+  · dsimp only at hrk hinvp ⊢
+    have hm' : mintPotential U σ b (ord.addFuture t₂ t₁) ≤ mintPotential U σ b ord :=
+      mintPotential_le_of_grow (fun _ hx => hx) (addFuture_constraints_mono ord t₂ t₁)
+    have hI : mintTimeBudget U σ b (ord.addFuture t₂ t₁) ≤ mintTimeBudget U σ b ord := by
+      simp only [mintTimeBudget]; omega
+    have hEmul : mintTimeBudget U σ b (ord.addFuture t₂ t₁) * U.card
+        ≤ mintTimeBudget U σ b ord * U.card := Nat.mul_le_mul_right _ hI
+    have hAmul : 2 * (Tmax * Tmax + 1) * mintPotential U σ b (ord.addFuture t₂ t₁)
+        ≤ 2 * (Tmax * Tmax + 1) * mintPotential U σ b ord := Nat.mul_le_mul_left _ hm'
+    have hS2 : selfGuardPotential U σ (ord.addFuture t₂ t₁) ≤ selfGuardPotential U σ ord :=
+      selfGuardPotential_le_of_grow (addFuture_constraints_mono ord t₂ t₁)
+    have hSmul : (2 * (Tmax * Tmax + 1) + U.card) * selfGuardPotential U σ (ord.addFuture t₂ t₁)
+        ≤ (2 * (Tmax * Tmax + 1) + U.card) * selfGuardPotential U σ ord :=
+      Nat.mul_le_mul_left _ hS2
+    refine ⟨σ, ⟨hinvp, hbU, by omega⟩, ?_⟩
+    simp only [budgetPotentialAt, budgetPotential, extensionAllowance]
+    omega
+  · dsimp only at hrk hinvp ⊢
+    have hk := knownTimes_card_lt_at_arm3_oriented (b := b) (ord := ord) htrig
+    set s := min t₁ t₂ with hsdef
+    set u := max t₁ t₂ with hudef
+    have hm' : mintPotential U (fun x => rhoSF s u (σ x)) (b.identifyTime s u)
+        (ord.identifyTime s u) ≤ mintPotential U σ b ord :=
+      mintPotential_identifyTime_oriented htrig hinv.irreflOrd
+    have hS3 : selfGuardPotential U (fun x => rhoSF s u (σ x)) (ord.identifyTime s u)
+        ≤ selfGuardPotential U σ ord := selfGuardPotential_le_at_arm3 htrig hinv.irreflOrd
+    have hSmul : (2 * (Tmax * Tmax + 1) + U.card) * selfGuardPotential U (fun x => rhoSF s u (σ x))
+          (ord.identifyTime s u)
+        ≤ (2 * (Tmax * Tmax + 1) + U.card) * selfGuardPotential U σ ord :=
+      Nat.mul_le_mul_left _ hS3
+    have hIU : ∀ x ∈ b.identifyTime s u, x ∈ U := hUcl.2 b u s hbU
+    have hc'U : (b.identifyTime s u).toFinset.card ≤ U.card :=
+      card_le_of_subset_universe hIU
+    have hIsucc : mintTimeBudget U (fun x => rhoSF s u (σ x)) (b.identifyTime s u)
+        (ord.identifyTime s u) + 1 ≤ mintTimeBudget U σ b ord := by
+      simp only [mintTimeBudget]; omega
+    have hEmul : (mintTimeBudget U (fun x => rhoSF s u (σ x)) (b.identifyTime s u)
+          (ord.identifyTime s u) + 1) * U.card
+        ≤ mintTimeBudget U σ b ord * U.card := Nat.mul_le_mul_right _ hIsucc
+    have hEexp : (mintTimeBudget U (fun x => rhoSF s u (σ x)) (b.identifyTime s u)
+          (ord.identifyTime s u) + 1) * U.card
+        = mintTimeBudget U (fun x => rhoSF s u (σ x)) (b.identifyTime s u)
+          (ord.identifyTime s u) * U.card + U.card := by ring
+    have hAmul : 2 * (Tmax * Tmax + 1) * mintPotential U (fun x => rhoSF s u (σ x))
+          (b.identifyTime s u) (ord.identifyTime s u)
+        ≤ 2 * (Tmax * Tmax + 1) * mintPotential U σ b ord := Nat.mul_le_mul_left _ hm'
+    refine ⟨fun x => rhoSF s u (σ x), ⟨hinvp, hIU, by omega⟩, ?_⟩
+    simp only [budgetPotentialAt, budgetPotential, extensionAllowance]
+    omega
+
+
+/-- **The measure drops at `.extended` and at every arm of a `.split`, at the four-component
+measure.**
+
+`budgetPotential_step_unordered` re-proved against `MintPaysForTimeStable`. Disjuncts 1 and 2 are the
+landed cases with the fourth component along for the ride — it cannot rise, since an unordered step
+only grows the ordering (`expandOnceUnblocked_ord_mono`). Disjunct 3 is the new case and the one the
+whole task is about: the self-guarded mint pays for itself.
+
+*The disjunct-3 arithmetic, in one line.* The combined-budget conjunct caps the rise in
+`extensionAllowance` at `|U|` per unit of self-guard drop and the rise in `splitOrderedRank` at
+`(Tmax² + 1)` per unit plus one incomparable-pair range; the weight `2·(Tmax² + 1) + |U|` pays for
+all of it and leaves `(Tmax² + 1) − Tmax² = 1` over, and `hgrow` supplies one more. So the drop is by
+at least two.
+
+`hstab` is the repaired predicate's own added hypothesis, threaded through unchanged; it is
+discharged at the seed by `sigmaTimeFixed_id` and at the identification arm by
+`sigmaTimeFixed_identifyOriented`. -/
+theorem budgetPotentialAt_step_unordered {U : Finset SignedFormula} {Tmax : Nat}
+    {σ : SignedFormula → SignedFormula} {b nb : Branch} {ord : TimeOrdering}
+    {fc : FormalSystem.ProofSystem.FrameClass} {tr : EventualityTracker}
+    (hUcl : UniverseClosed fc U) (hmint : MintPaysForTimeStable fc U Tmax)
+    (hst : BudgetStateAt U Tmax σ b ord) (hstab : SigmaTimeStable σ b)
+    (hmem : nb ∈ unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1)
+    (hgrow : b.toFinset.card < nb.toFinset.card) :
+    BudgetStateAt U Tmax σ nb (expandOnceUnblocked b ord fc tr).2 ∧
+      budgetPotentialAt U Tmax σ nb (expandOnceUnblocked b ord fc tr).2
+        < budgetPotentialAt U Tmax σ b ord := by
+  obtain ⟨hinv, hbU, hbud⟩ := hst
+  have hnbU : ∀ x ∈ nb, x ∈ U := hUcl.1 b ord tr hbU nb hmem
+  have hinv' : RunInvariant nb (expandOnceUnblocked b ord fc tr).2 :=
+    (expandOnceUnblocked_runInvariant hinv).1 nb hmem
+  have hm' : mintPotential U σ nb (expandOnceUnblocked b ord fc tr).2
+      ≤ mintPotential U σ b ord := mintPotential_expandOnceUnblocked nb hmem
+  have hs' : selfGuardPotential U σ (expandOnceUnblocked b ord fc tr).2
+      ≤ selfGuardPotential U σ ord := selfGuardPotential_le_of_grow expandOnceUnblocked_ord_mono
+  have hcU : b.toFinset.card ≤ U.card := card_le_of_subset_universe hbU
+  have hc'U : nb.toFinset.card ≤ U.card := card_le_of_subset_universe hnbU
+  rcases hmint σ b ord tr hinv hbU hstab nb hmem with ⟨hk, hR⟩ | ⟨hI, hmlt⟩ | ⟨hbud3, hslt⟩
+  · -- disjunct 1
+    have hI : mintTimeBudget U σ nb (expandOnceUnblocked b ord fc tr).2
+        ≤ mintTimeBudget U σ b ord := by simp only [mintTimeBudget]; omega
+    have hEmul : mintTimeBudget U σ nb (expandOnceUnblocked b ord fc tr).2 * U.card
+        ≤ mintTimeBudget U σ b ord * U.card := Nat.mul_le_mul_right _ hI
+    have hAmul : 2 * (Tmax * Tmax + 1) * mintPotential U σ nb (expandOnceUnblocked b ord fc tr).2
+        ≤ 2 * (Tmax * Tmax + 1) * mintPotential U σ b ord := Nat.mul_le_mul_left _ hm'
+    have hSmul : (2 * (Tmax * Tmax + 1) + U.card)
+          * selfGuardPotential U σ (expandOnceUnblocked b ord fc tr).2
+        ≤ (2 * (Tmax * Tmax + 1) + U.card) * selfGuardPotential U σ ord :=
+      Nat.mul_le_mul_left _ hs'
+    refine ⟨⟨hinv', hnbU, by omega⟩, ?_⟩
+    simp only [budgetPotentialAt, budgetPotential, extensionAllowance]
+    omega
+  · -- disjunct 2: the landed case, with the fourth component along for the ride
+    have hkT : nb.knownTimes.toFinset.card ≤ Tmax := by
+      simp only [mintTimeBudget] at hI hbud; omega
+    have hp' : (incompPairs nb (expandOnceUnblocked b ord fc tr).2).card ≤ Tmax * Tmax :=
+      le_trans (incompPairs_card_le _ _) (Nat.mul_le_mul hkT hkT)
+    have hEmul : mintTimeBudget U σ nb (expandOnceUnblocked b ord fc tr).2 * U.card
+        ≤ mintTimeBudget U σ b ord * U.card := Nat.mul_le_mul_right _ hI
+    have hSmul : (2 * (Tmax * Tmax + 1) + U.card)
+          * selfGuardPotential U σ (expandOnceUnblocked b ord fc tr).2
+        ≤ (2 * (Tmax * Tmax + 1) + U.card) * selfGuardPotential U σ ord :=
+      Nat.mul_le_mul_left _ hs'
+    have hg1 : (nb.knownTimes.toFinset.card + mintPotential U σ nb
+          (expandOnceUnblocked b ord fc tr).2) * (Tmax * Tmax + 1)
+        ≤ (b.knownTimes.toFinset.card + mintPotential U σ b ord) * (Tmax * Tmax + 1) := by
+      refine Nat.mul_le_mul_right _ ?_
+      simpa only [mintTimeBudget] using hI
+    have hg3 : (mintPotential U σ nb (expandOnceUnblocked b ord fc tr).2 + 1)
+          * (Tmax * Tmax + 1)
+        ≤ mintPotential U σ b ord * (Tmax * Tmax + 1) := Nat.mul_le_mul_right _ hmlt
+    have he1 : (nb.knownTimes.toFinset.card + mintPotential U σ nb
+          (expandOnceUnblocked b ord fc tr).2) * (Tmax * Tmax + 1)
+        = nb.knownTimes.toFinset.card * (Tmax * Tmax + 1)
+          + mintPotential U σ nb (expandOnceUnblocked b ord fc tr).2 * (Tmax * Tmax + 1) := by
+      ring
+    have he2 : (b.knownTimes.toFinset.card + mintPotential U σ b ord) * (Tmax * Tmax + 1)
+        = b.knownTimes.toFinset.card * (Tmax * Tmax + 1)
+          + mintPotential U σ b ord * (Tmax * Tmax + 1) := by ring
+    have he3 : (mintPotential U σ nb (expandOnceUnblocked b ord fc tr).2 + 1)
+          * (Tmax * Tmax + 1)
+        = mintPotential U σ nb (expandOnceUnblocked b ord fc tr).2 * (Tmax * Tmax + 1)
+          + (Tmax * Tmax + 1) := by ring
+    have he4 : 2 * (Tmax * Tmax + 1) * mintPotential U σ nb (expandOnceUnblocked b ord fc tr).2
+        = mintPotential U σ nb (expandOnceUnblocked b ord fc tr).2 * (Tmax * Tmax + 1)
+          + mintPotential U σ nb (expandOnceUnblocked b ord fc tr).2 * (Tmax * Tmax + 1) := by
+      ring
+    have he5 : 2 * (Tmax * Tmax + 1) * mintPotential U σ b ord
+        = mintPotential U σ b ord * (Tmax * Tmax + 1)
+          + mintPotential U σ b ord * (Tmax * Tmax + 1) := by ring
+    refine ⟨⟨hinv', hnbU, by omega⟩, ?_⟩
+    simp only [budgetPotentialAt, budgetPotential, extensionAllowance, splitOrderedRank]
+    omega
+  · -- disjunct 3: the fourth component carries the step on its own
+    have hbud3' : (nb.knownTimes.toFinset.card
+          + mintPotential U σ nb (expandOnceUnblocked b ord fc tr).2)
+        + selfGuardPotential U σ (expandOnceUnblocked b ord fc tr).2
+        ≤ (b.knownTimes.toFinset.card + mintPotential U σ b ord)
+          + selfGuardPotential U σ ord := by
+      simpa only [mintTimeBudget] using hbud3
+    have hkT : nb.knownTimes.toFinset.card ≤ Tmax := by
+      simp only [mintTimeBudget] at hbud; omega
+    have hp' : (incompPairs nb (expandOnceUnblocked b ord fc tr).2).card ≤ Tmax * Tmax :=
+      le_trans (incompPairs_card_le _ _) (Nat.mul_le_mul hkT hkT)
+    have h1 : (nb.knownTimes.toFinset.card
+          + mintPotential U σ nb (expandOnceUnblocked b ord fc tr).2
+          + selfGuardPotential U σ (expandOnceUnblocked b ord fc tr).2) * (Tmax * Tmax + 1)
+        ≤ (b.knownTimes.toFinset.card + mintPotential U σ b ord
+          + selfGuardPotential U σ ord) * (Tmax * Tmax + 1) :=
+      Nat.mul_le_mul_right _ hbud3'
+    have h3 : (nb.knownTimes.toFinset.card
+          + mintPotential U σ nb (expandOnceUnblocked b ord fc tr).2
+          + selfGuardPotential U σ (expandOnceUnblocked b ord fc tr).2) * U.card
+        ≤ (b.knownTimes.toFinset.card + mintPotential U σ b ord
+          + selfGuardPotential U σ ord) * U.card :=
+      Nat.mul_le_mul_right _ hbud3'
+    have h2 : mintPotential U σ nb (expandOnceUnblocked b ord fc tr).2 * (Tmax * Tmax + 1)
+        ≤ mintPotential U σ b ord * (Tmax * Tmax + 1) := Nat.mul_le_mul_right _ hm'
+    have h4 : (selfGuardPotential U σ (expandOnceUnblocked b ord fc tr).2 + 1)
+          * (Tmax * Tmax + 1)
+        ≤ selfGuardPotential U σ ord * (Tmax * Tmax + 1) := Nat.mul_le_mul_right _ hslt
+    have e1 : (nb.knownTimes.toFinset.card
+          + mintPotential U σ nb (expandOnceUnblocked b ord fc tr).2
+          + selfGuardPotential U σ (expandOnceUnblocked b ord fc tr).2) * (Tmax * Tmax + 1)
+        = nb.knownTimes.toFinset.card * (Tmax * Tmax + 1)
+          + mintPotential U σ nb (expandOnceUnblocked b ord fc tr).2 * (Tmax * Tmax + 1)
+          + selfGuardPotential U σ (expandOnceUnblocked b ord fc tr).2
+            * (Tmax * Tmax + 1) := by ring
+    have e2 : (b.knownTimes.toFinset.card + mintPotential U σ b ord
+          + selfGuardPotential U σ ord) * (Tmax * Tmax + 1)
+        = b.knownTimes.toFinset.card * (Tmax * Tmax + 1)
+          + mintPotential U σ b ord * (Tmax * Tmax + 1)
+          + selfGuardPotential U σ ord * (Tmax * Tmax + 1) := by ring
+    have e3 : (nb.knownTimes.toFinset.card
+          + mintPotential U σ nb (expandOnceUnblocked b ord fc tr).2
+          + selfGuardPotential U σ (expandOnceUnblocked b ord fc tr).2) * U.card
+        = mintTimeBudget U σ nb (expandOnceUnblocked b ord fc tr).2 * U.card
+          + selfGuardPotential U σ (expandOnceUnblocked b ord fc tr).2 * U.card := by
+      simp only [mintTimeBudget]; ring
+    have e4 : (b.knownTimes.toFinset.card + mintPotential U σ b ord
+          + selfGuardPotential U σ ord) * U.card
+        = mintTimeBudget U σ b ord * U.card + selfGuardPotential U σ ord * U.card := by
+      simp only [mintTimeBudget]; ring
+    have e5 : (selfGuardPotential U σ (expandOnceUnblocked b ord fc tr).2 + 1)
+          * (Tmax * Tmax + 1)
+        = selfGuardPotential U σ (expandOnceUnblocked b ord fc tr).2 * (Tmax * Tmax + 1)
+          + (Tmax * Tmax + 1) := by ring
+    have e6 : 2 * (Tmax * Tmax + 1) * mintPotential U σ nb (expandOnceUnblocked b ord fc tr).2
+        = mintPotential U σ nb (expandOnceUnblocked b ord fc tr).2 * (Tmax * Tmax + 1)
+          + mintPotential U σ nb (expandOnceUnblocked b ord fc tr).2 * (Tmax * Tmax + 1) := by
+      ring
+    have e7 : 2 * (Tmax * Tmax + 1) * mintPotential U σ b ord
+        = mintPotential U σ b ord * (Tmax * Tmax + 1)
+          + mintPotential U σ b ord * (Tmax * Tmax + 1) := by ring
+    have e8 : (2 * (Tmax * Tmax + 1) + U.card)
+          * selfGuardPotential U σ (expandOnceUnblocked b ord fc tr).2
+        = selfGuardPotential U σ (expandOnceUnblocked b ord fc tr).2 * (Tmax * Tmax + 1)
+          + selfGuardPotential U σ (expandOnceUnblocked b ord fc tr).2 * (Tmax * Tmax + 1)
+          + selfGuardPotential U σ (expandOnceUnblocked b ord fc tr).2 * U.card := by ring
+    have e9 : (2 * (Tmax * Tmax + 1) + U.card) * selfGuardPotential U σ ord
+        = selfGuardPotential U σ ord * (Tmax * Tmax + 1)
+          + selfGuardPotential U σ ord * (Tmax * Tmax + 1)
+          + selfGuardPotential U σ ord * U.card := by ring
+    refine ⟨⟨hinv', hnbU, by omega⟩, ?_⟩
+    simp only [budgetPotentialAt, budgetPotential, extensionAllowance, splitOrderedRank]
+    omega
+
 
 /-! ## C9. The do-not-re-attempt register
 

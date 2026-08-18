@@ -634,7 +634,7 @@ re-executed against a changed engine, not a new design.
 
 ---
 
-### Phase 7: The four-component measure and its identification arm [BLOCKED]
+### Phase 7: The four-component measure and its identification arm [COMPLETED]
 
 **BLOCKER RESOLVED** (Phase 7): unblocked by Phase 1R, which discharges the σ-hit obligation at the oriented arm (`sigma_time_hit_of_sigmaTimeStable`, from confinement plus `SigmaTimeStable`).
 
@@ -643,21 +643,28 @@ re-executed against a changed engine, not a new design.
   real.
 
 - **Tasks:**
-  - [ ] Define `budgetPotentialAt` as `budgetPotential`'s body
+  - [x] Define `budgetPotentialAt` as `budgetPotential`'s body *(deviation: altered — the weight is
+        `2·(Tmax²+1) + |U|`, not `2·(Tmax²+1)`. The plan-time figure was read off `splitOrderedRank`'s
+        rise alone; `extensionAllowance` carries a further `|U|` per unit of mint budget spent, and
+        the extra `|U|` is exactly what pays for it. `budgetPotential` is byte-unchanged.)* Original:
         (`MintBound.lean:3883-3887`) plus a fourth summand
         `(2 * (Tmax*Tmax + 1)) * selfGuardPotential U σ ord`. **`budgetPotential` itself is
         byte-unchanged**; this is a new declaration alongside it.
-  - [ ] **Test Constraint (F) before attempting the inequality.** Establish
+  - [x] **Test Constraint (F) before attempting the inequality.** *(passes with
+        equality-or-better; landed as `selfGuardPotential_le_at_arm3`.)* Establish
         `selfGuardPotential`'s non-increase at arm 3 directly from `selfGuardPotential_identifyTime`
         (Phase 3), with `incomparableB` supplied by `firstIncomparablePair_spec` through
         `expandOnceUnblocked_splitOrdered_shape`. If the non-increase does not go through, the phase
         is `[BLOCKED]` — do **not** work around it by re-weighting the components, which the
         research shows is unsatisfiable (the mint-side rise scales identically).
-  - [ ] `budgetPotentialAt_step_splitOrdered_at`, re-proving
+  - [x] `budgetPotentialAt_step_splitOrdered`, re-proving *(Scope Hypothesis confirmed: exactly one
+        additional input per arm, `hrk`/`hEmul`/`hEexp` unchanged.)*
         `budgetPotential_step_splitOrdered` (`MintBound.lean:4768-4835`) at the four-component
         measure. The arm-3 case's `omega` gets one additional non-increase input; `hrk` and
         `hEmul`/`hEexp` are unchanged.
-  - [ ] Carry the existing `_at` variant (`budgetPotential_step_splitOrdered_at`,
+  - [ ] Carry the existing `_at` variant (`budgetPotential_step_splitOrdered_at`, *(deviation:
+        deferred — the terminus chain's routing is Phase 9's classify-first task and has not been
+        run; nothing is restated against the new measure yet.)* Original:
         `MintBound.lean:5471`) forward in the same shape if the terminus chain routes through it —
         confirm which one the seed-level termini actually consume before writing either.
 
