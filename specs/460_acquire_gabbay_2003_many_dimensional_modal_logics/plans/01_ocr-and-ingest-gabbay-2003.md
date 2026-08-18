@@ -382,30 +382,56 @@ sampled stratum beyond the 8.
 
 ---
 
-### Phase 5: Ingest the OCR'd copy through the normal pipeline [IN PROGRESS]
+### Phase 5: Ingest the OCR'd copy through the normal pipeline [BLOCKED]
 
 **Goal**: Run `literature-ingest.sh` against the OCR'd path so the book enters the corpus through
 the standard route, with a pre-ingest backup that makes the operation reversible.
 
+**BLOCKED**: Ingest ran and was rejected by `literature-convert.sh`'s conversion quality gate:
+`sentence-boundary-glue: 19 zero-space word/sentence-fusion transition(s) found (threshold 3)`.
+Full site-by-site analysis, sidecar cross-check, physical page locations, and a good-faith
+retry-OCR-settings attempt are recorded in
+`reports/03_phase5-fusion-site-analysis.md`. Summary of that analysis: all 19 sites are confined
+to description-logic ∃-role-restriction notation (13, one ~10-page passage), a recurring
+bibliography citation (2), and irreducible proof/formula noise (4) — zero prose corruption. Both
+the `pymupdf4llm` extraction and the independent `ocrmypdf` sidecar (already hand-verified by
+Phase 4) agree on every checked site, ruling out a `pymupdf4llm`-specific extraction bug. Retrying
+OCR with `--oversample 400` and `--tesseract-pagesegmode 6` did not change the result; `eng+equ`
+is not a selectable tesseract language. No honest, non-fabricating correction of this text gets
+the fusion count below the gate's threshold of 3. Per the explicit constraint against weakening,
+disabling, bypassing, or working around the quality gate, this phase is left `[BLOCKED]` rather
+than forced through. See `.orchestrator-handoff.json` for escalation options requiring user
+decision.
+
 **Tasks**:
-- [ ] Confirm Phase 4's recorded gate decision is PASS. If it is not, this phase must not run.
-- [ ] Back up the global index following the corpus's own naming precedent:
+- [x] Confirm Phase 4's recorded gate decision is PASS. If it is not, this phase must not run. *(completed: PASS confirmed)*
+- [x] Back up the global index following the corpus's own naming precedent:
       `cp ~/Projects/Literature/index.json ~/Projects/Literature/index.json.bak-$(date +%Y%m%d-%H%M%S)-pre-460`.
-      Record the exact backup filename — the Rollback procedure needs it.
+      Record the exact backup filename — the Rollback procedure needs it. *(completed: index.json.bak-20260818-145418-pre-460)*
 - [ ] Re-record the immediately-pre-ingest index entry count and FTS row counts (they may have
-      moved since Phase 1 if another session ran).
-- [ ] Run: `bash .claude/scripts/literature-ingest.sh
+      moved since Phase 1 if another session ran). *(deviation: skipped — ingest failed at the
+      conversion quality gate before touching index.json/FTS; re-confirmed post-failure instead:
+      361 entries, unchanged)*
+- [x] Run: `bash .claude/scripts/literature-ingest.sh
       ~/Documents/literature-staging/gabbay_2003/gabbay_kurucz_wolter_zakharyaschev_2003_many_dimensional_modal_logics.pdf --no-local`
       - Plain file argument, NOT `--zotero XYYBJH2N` (that key resolves to the broken original).
       - `--no-local` because `specs/literature/` is superseded per its own `DEPRECATED.md`.
       - Leave `LITERATURE_CONVERTER` unset (the default `auto` primary `pymupdf4llm` tier is
         correct now that the text layer is sound). Do not force `pymupdf`.
-- [ ] Capture the full ingest output, including the `=== Ingestion Summary ===` block, to
-      `ingest.log` in the staging directory.
-- [ ] Check for a `.rejected` sibling in the new doc directory. `literature-convert.sh` writes
+      *(completed: ran; REJECTED by the conversion quality gate — see below)*
+- [x] Capture the full ingest output, including the `=== Ingestion Summary ===` block, to
+      `ingest.log` in the staging directory. *(completed)*
+- [x] Check for a `.rejected` sibling in the new doc directory. `literature-convert.sh` writes
       `{doc_id}.md.rejected` INSTEAD of `{doc_id}.md` on quality-gate failure (exit 3) — a
       `.rejected` file means conversion did not succeed, regardless of the ingest exit code.
-- [ ] Record the resulting doc_id, chunk count, and new index entry count.
+      *(completed: ingest.sh's own temp dir was deleted on rejection per its cleanup path, so the
+      live `.rejected` sibling did not persist; `literature-convert.sh` was re-run standalone
+      against the identical PDF into a scratch directory to reproduce it byte-for-byte for
+      inspection — see reports/03_phase5-fusion-site-analysis.md)*
+- [x] Record the resulting doc_id, chunk count, and new index entry count. *(completed: doc_id
+      would have been `gabbay_kurucz_wolter_zakharyaschev_2003_many_dimensional_modal_logics`;
+      chunk count N/A (conversion never reached chunking); index entry count unchanged at 361 —
+      ingest did not modify the corpus)*
 
 **Timing**: 0.75 hours
 
