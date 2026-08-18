@@ -9,6 +9,7 @@ import FormalSystem.ProofSystem.Derivable
 import FormalSystem.Semantics.Validity
 import FormalSystem.Metalogic.SoundnessLemmas.FrameClassVariants
 import FormalSystem.Metalogic.SoundnessLemmas.Separability
+import Mathlib.Data.Int.SuccPred
 
 /-!
 # Soundness - Soundness Theorem for TM Logic
@@ -1971,5 +1972,33 @@ theorem not_derivable_nil_bot : ¬ Derivable FrameClass.Base ([] : Context) Form
   intro M τ x
   exact soundness [] Formula.bot d Int TaskFrame.trivialFrame M τ.val τ.property x
     (by simp)
+
+/--
+**The Discrete system is consistent**: `⊥` is not derivable from the empty context in the
+system extended by the discreteness axioms DF/DP.
+
+Stated as `¬ Derivable FrameClass.Discrete [] ⊥` rather than
+`Consistent (fc := FrameClass.Discrete) []` for the same import-graph reason as
+`not_derivable_nil_bot`: `Consistent` lives in `Metalogic/Core/`, which `Soundness.lean` does
+not import, so phrasing the statement in terms of `Derivable` keeps the result available at
+this layer.
+
+The witness is again `trivialFrame` over `Int`, which is what this module's
+`Mathlib.Data.Int.SuccPred` import is for: `ValidDiscrete` binds `SuccOrder D`, `PredOrder D`,
+`IsSuccArchimedean D` and `IsPredArchimedean D`, and `Semantics/Validity.lean` imports those
+*classes* without importing the `ℤ` *instances*. `soundness_discrete_valid` turns a
+`FrameClass.Discrete` derivation of `⊥` from `[]` into `ValidDiscrete ⊥`; instantiating it at the
+single total history supplied by `hF_nonempty_of_frameAxioms` contradicts `Truth.bot_false`.
+
+Without this lemma every restricted-MCS result instantiated at `FrameClass.Discrete` would be
+vacuous, since a `Discrete`-inconsistent system has no consistent sets at all.
+-/
+theorem not_derivable_nil_bot_discrete :
+    ¬ Derivable FrameClass.Discrete ([] : Context) Formula.bot := by
+  rintro ⟨d⟩
+  obtain ⟨τ⟩ := TaskFrame.hF_nonempty_of_frameAxioms (D := ℤ) TaskFrame.trivialFrame
+  exact Truth.bot_false
+    (FormalSystem.Metalogic.soundness_discrete_valid d ℤ TaskFrame.trivialFrame
+      TaskModel.allFalse τ.val τ.property 0)
 
 end FormalSystem.Metalogic

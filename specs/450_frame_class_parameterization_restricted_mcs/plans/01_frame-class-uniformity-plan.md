@@ -1,7 +1,7 @@
 # Implementation Plan: Frame-Class Uniformity
 
 - **Task**: 450 - frame_class_parameterization_restricted_mcs
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 18 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/450_frame_class_parameterization_restricted_mcs/reports/01_frame-class-parameterization-research.md`
@@ -147,7 +147,7 @@ gate.
 
 ---
 
-### Phase 1: Discrete-System Consistency Lemma [NOT STARTED]
+### Phase 1: Discrete-System Consistency Lemma [COMPLETED]
 
 **Goal**: Land deliverable (c). Everything downstream is vacuous without it.
 
