@@ -1,0 +1,68 @@
+{
+  "phase": 7,
+  "phase_name": "Closeout -- SCOPE 6 deferral record, SCOPE 8 and coverage-gap follow-ups, final corpus validation",
+  "started_at": "2026-08-18T21:40:00Z",
+  "last_updated": "2026-08-18T22:00:00Z",
+  "objectives": [
+    {"id": 1, "description": "Write SCOPE 6 deferral record into task summary", "status": "done", "files_touched": []},
+    {"id": 2, "description": "Spawn follow-up task for 12 legacy chunks_dir-only entries", "status": "done", "files_touched": ["specs/state.json", "specs/TODO.md"]},
+    {"id": 3, "description": "Spawn follow-up task for Gabbay 2003 acquisition gap", "status": "done", "files_touched": ["specs/state.json", "specs/TODO.md"]},
+    {"id": 4, "description": "Spawn follow-up task for Goldblatt 1989 acquisition gap", "status": "done", "files_touched": ["specs/state.json", "specs/TODO.md"]},
+    {"id": 5, "description": "Run final whole-corpus validation", "status": "done", "files_touched": []},
+    {"id": 6, "description": "Run literature-build-index.sh --global final time, confirm FTS row count", "status": "done", "files_touched": []},
+    {"id": 7, "description": "Confirm all 6 backup files present and readable", "status": "done", "files_touched": []},
+    {"id": 8, "description": "Confirm no .claude/** or agent-system/** modified", "status": "done", "files_touched": []}
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": [
+    {
+      "task_id": "7.2b",
+      "description": "Spawn a follow-up task for the 12 legacy chunks_dir-only entries, Gabbay 2003, and Goldblatt 1989 acquisition gaps (three named follow-ups)",
+      "type": "altered",
+      "reason": "Spawned a 4th, unplanned follow-up task (459, deduplicate_8_stale_literature_entries) alongside the three the plan named, for the duplicate-id defect discovered during Phase 3 (8 stale 'migrated from ingest schema' placeholder entries sharing an id with an already-correct v2 entry). This is a genuine corpus data-integrity finding of the same character as the three planned follow-ups, discovered mid-implementation and not part of any of the plan's 8 named SCOPEs; spawning a task for it (rather than silently fixing it beyond Phase 3's narrow token_count-only correction, or silently dropping it) follows the same discipline the plan itself uses for SCOPE 6/8.",
+      "annotation": "*(deviation: altered — spawned a 4th follow-up task, 459, for the duplicate-id defect found in Phase 3, in addition to the plan's three named follow-ups)*"
+    },
+    {
+      "task_id": "7.supplementary",
+      "description": "N/A -- supplementary field completion not in the original task list",
+      "type": "altered",
+      "reason": "Phase 6 added `path` to the three SCOPE 7 entries (moving them from legacy-only to both-schema), which made them newly match SCOPE 5's missing-doc_type/source_format pattern -- a population born from Phase 6's own mutation, not part of the original 35-entry SCOPE 5 target set frozen at Phase 1. Rather than leave these 3 entries half-migrated (path populated, doc_type/source_format still absent), Phase 7 filled doc_type (paper for Jonsson-Tarski I/II, chapter for Goldblatt 2006, matching the known Handbook of the History of Logic vol. 7 chapter) and source_format=pdf (evidenced by each entry's own zotero_path/source_path pointing at a real, existing PDF file) for all three, using the same evidence-grounded methodology as Phase 5.",
+      "annotation": "*(deviation: altered — filled doc_type/source_format on the 3 SCOPE 7 entries during Phase 7 closeout, since Phase 6's path addition newly exposed them to the same missing-fields pattern SCOPE 5 addressed)*"
+    }
+  ],
+  "scope6_deferral_record": {
+    "live_post_repair_both_schema_count": 25,
+    "live_post_repair_absolute_chunks_dir_count": 37,
+    "pre_repair_both_schema_count": 22,
+    "note_on_the_delta": "The both-schema count rose from 22 to 25 as a direct, expected side effect of Phase 6: the three SCOPE 7 entries gained a `path` field while retaining their existing `chunks_dir` field, moving them from the legacy-only bucket (15 -> 12) into the both-schema bucket (22 -> 25). The absolute-chunks_dir count (37) is unchanged since none of Phase 6's edits touched a chunks_dir value.",
+    "consumer_scan": "grep -l chunks_dir .claude/scripts/literature-*.sh finds three scripts referencing the string: literature-ingest.sh (writes chunks_dir for new legacy ingests, does not read it preferentially), literature-chunk.sh (a code comment only), and literature-fidelity-audit.sh (documents the legacy schema in its header but explicitly limits its own scan to sources/<dir>/, i.e. does not act on chunks_dir preferentially over path). No consumer reads chunks_dir in preference to path.",
+    "conclusion": "This is legacy residue from two historical ingestion pipelines (the original chunks_dir-only schema and its v2 path-based successor), not active breakage. Absolute-path normalization of the 37 chunks_dir values would be a portability nice-to-have (relevant only if LITERATURE_DIR ever moves), not a correctness fix. Deferred, not silently dropped -- recorded here per Planning Decision 3."
+  },
+  "spawned_follow_up_tasks": [
+    {"project_number": 458, "title": "Migrate the 12 remaining legacy chunks_dir-only literature entries to the v2 schema"},
+    {"project_number": 459, "title": "Deduplicate 8 stale placeholder entries in the global literature index"},
+    {"project_number": 460, "title": "Acquire a usable copy of Gabbay, Kurucz, Wolter and Zakharyaschev 2003 (Many-Dimensional Modal Logics)"},
+    {"project_number": 461, "title": "Acquire Goldblatt 1989 'Varieties of complex algebras' (Annals of Pure and Applied Logic)"}
+  ],
+  "final_validation": {
+    "json_parses": true,
+    "entry_count": 369,
+    "chunk_path_defect_class_empty": true,
+    "string_authors_defect_class_empty": true,
+    "missing_doc_type_source_format_count": "6, all reasoned exclusions",
+    "token_count_drift_defect_class_empty": true,
+    "fts_row_count_final": 17736,
+    "fts_row_count_baseline": 17736,
+    "backups_present": [
+      "index.json.bak-20260818-130156-pre-457",
+      "index.json.bak-20260818-131012-pre-scope12",
+      "index.json.bak-20260818-131214-pre-scope3",
+      "index.json.bak-20260818-131501-pre-scope4",
+      "index.json.bak-20260818-131709-pre-scope5",
+      "index.json.bak-20260818-132011-pre-scope7"
+    ],
+    "claude_or_agent_system_modified": false
+  }
+}

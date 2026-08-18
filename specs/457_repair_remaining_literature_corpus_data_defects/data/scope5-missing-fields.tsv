@@ -1,36 +1,7 @@
 id	missing_doc_type	missing_source_format	found_source_exts	proposed_doc_type	proposed_source_format	evidence
-proofs_and_types	True	True	.pdf	book	pdf	source file found in own directory (.pdf)
-van_doorn_2015_propositional_calculus_coq	True	True	.pdf	paper	pdf	source file found in own directory (.pdf)
-bentzen_2023	True	True	NONE_FOUND	paper	EXCLUDE	no source file on disk, no parent_doc, no zotero cross-reference
-church_1956_ch00	True	True	NONE_FOUND	chapter	pdf	inherited from parent_doc=church_1956
-church_1956_ch00b	True	True	NONE_FOUND	chapter	pdf	inherited from parent_doc=church_1956
-church_1956_ch01	True	True	NONE_FOUND	chapter	pdf	inherited from parent_doc=church_1956
-church_1956_ch02	True	True	NONE_FOUND	chapter	pdf	inherited from parent_doc=church_1956
-church_1956_ch03	True	True	NONE_FOUND	chapter	pdf	inherited from parent_doc=church_1956
-church_1956_ch04	True	True	NONE_FOUND	chapter	pdf	inherited from parent_doc=church_1956
-church_1956_ch05	True	True	NONE_FOUND	chapter	pdf	inherited from parent_doc=church_1956
-from_2022	True	True	NONE_FOUND	paper	EXCLUDE	no source file on disk, no parent_doc, no zotero cross-reference
-gabbay_1994_ch10	True	True	NONE_FOUND	chapter	pdf	source file found in sibling parent-work directory (see script comment)
-gentzen_1935_sec00	True	True	NONE_FOUND	chapter	pdf	inherited from parent_doc=gentzen_1935
-gentzen_1935_sec02	True	True	NONE_FOUND	chapter	pdf	inherited from parent_doc=gentzen_1935
-gentzen_1935_sec03	True	True	NONE_FOUND	chapter	pdf	inherited from parent_doc=gentzen_1935
-gentzen_1935_sec04	True	True	NONE_FOUND	chapter	pdf	inherited from parent_doc=gentzen_1935
-gentzen_1935_sec05	True	True	NONE_FOUND	chapter	pdf	inherited from parent_doc=gentzen_1935
-henkin_1949	True	True	NONE_FOUND	paper	EXCLUDE	no source file on disk, no parent_doc, no zotero cross-reference
-hughes_1996_p00	True	True	NONE_FOUND	chapter	pdf	inherited from parent_doc=hughes_1996
-hughes_1996_p01	True	True	NONE_FOUND	chapter	pdf	inherited from parent_doc=hughes_1996
-hughes_1996_p02	True	True	NONE_FOUND	chapter	pdf	inherited from parent_doc=hughes_1996
-hughes_1996_p03	True	True	NONE_FOUND	chapter	pdf	inherited from parent_doc=hughes_1996
-johansson_1937	True	True	NONE_FOUND	paper	EXCLUDE	no source file on disk, no parent_doc, no zotero cross-reference
-mendelson_2016_ch00	True	True	NONE_FOUND	chapter	pdf	inherited from parent_doc=mendelson_2016
-mendelson_2016_ch01	True	True	NONE_FOUND	chapter	pdf	inherited from parent_doc=mendelson_2016
-mendelson_2016_ch02	True	True	NONE_FOUND	chapter	pdf	inherited from parent_doc=mendelson_2016
-mendelson_2016_ch03	True	True	NONE_FOUND	chapter	pdf	inherited from parent_doc=mendelson_2016
-mendelson_2016_ch04	True	True	NONE_FOUND	chapter	pdf	inherited from parent_doc=mendelson_2016
-mendelson_2016_ch05	True	True	NONE_FOUND	chapter	pdf	inherited from parent_doc=mendelson_2016
-post_1921	True	True	NONE_FOUND	paper	EXCLUDE	no source file on disk, no parent_doc, no zotero cross-reference
-trufas_2024	True	True	NONE_FOUND	paper	EXCLUDE	no source file on disk, no parent_doc, no zotero cross-reference
-zakharyaschev_2001_sec00	True	True	NONE_FOUND	chapter	pdf	inherited from parent_doc=zakharyaschev_2001
-zakharyaschev_2001_sec01	True	True	NONE_FOUND	chapter	pdf	inherited from parent_doc=zakharyaschev_2001
-zakharyaschev_2001_sec02	True	True	NONE_FOUND	chapter	pdf	inherited from parent_doc=zakharyaschev_2001
-zakharyaschev_2001_sec03	True	True	NONE_FOUND	chapter	pdf	inherited from parent_doc=zakharyaschev_2001
+bentzen_2023	False	True	NONE_FOUND	paper	EXCLUDE	no source file on disk, no parent_doc, no zotero cross-reference
+from_2022	False	True	NONE_FOUND	paper	EXCLUDE	no source file on disk, no parent_doc, no zotero cross-reference
+henkin_1949	False	True	NONE_FOUND	paper	EXCLUDE	no source file on disk, no parent_doc, no zotero cross-reference
+johansson_1937	False	True	NONE_FOUND	paper	EXCLUDE	no source file on disk, no parent_doc, no zotero cross-reference
+post_1921	False	True	NONE_FOUND	paper	EXCLUDE	no source file on disk, no parent_doc, no zotero cross-reference
+trufas_2024	False	True	NONE_FOUND	paper	EXCLUDE	no source file on disk, no parent_doc, no zotero cross-reference

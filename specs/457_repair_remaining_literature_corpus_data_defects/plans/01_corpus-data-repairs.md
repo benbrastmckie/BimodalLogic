@@ -1,7 +1,7 @@
 # Implementation Plan: Repair the remaining Literature corpus data defects
 
 - **Task**: 457 - Repair the remaining Literature corpus data defects
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 8.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/457_repair_remaining_literature_corpus_data_defects/reports/01_literature-corpus-data-repairs.md
@@ -462,34 +462,36 @@ Non-Goal) or editing `literature-search.sh` (agent-system code, explicitly out o
 
 ---
 
-### Phase 7: Closeout — SCOPE 6 deferral record, SCOPE 8 and coverage-gap follow-ups, final corpus validation [NOT STARTED]
+### Phase 7: Closeout — SCOPE 6 deferral record, SCOPE 8 and coverage-gap follow-ups, final corpus validation [COMPLETED]
 
 **Goal**: Record the deferral decisions with enough evidence that the investigation need not be
 redone, open the follow-up tasks for the three items that are not data repairs, and run the final
 whole-corpus validation and FTS rebuild.
 
 **Tasks**:
-- [ ] Write the SCOPE 6 deferral record into the task summary: the live both-schema and
+- [x] Write the SCOPE 6 deferral record into the task summary: the live both-schema and
       absolute-`chunks_dir` counts, the finding that no consumer in `.claude/scripts/literature-*.sh`
       reads `chunks_dir` in preference to `path`, and the conclusion that this is legacy residue
       rather than active breakage. Note that absolute-path normalization is a portability
-      nice-to-have, not a correctness fix
-- [ ] Spawn a follow-up task for the 12 legacy `chunks_dir`-only entries beyond SCOPE 7's named 3,
-      naming them explicitly and pointing at Phase 6's adjudication process as the template
-- [ ] Spawn a follow-up task for the Gabbay/Kurucz/Wolter/Zakharyaschev 2003 acquisition gap,
+      nice-to-have, not a correctness fix *(completed: live post-repair counts: 25 both-schema (up from 22 pre-repair, +3 from Phase 6's SCOPE7 path additions), 37 absolute chunks_dir (unchanged). Full record in the summary.)*
+- [x] Spawn a follow-up task for the 12 legacy `chunks_dir`-only entries beyond SCOPE 7's named 3,
+      naming them explicitly and pointing at Phase 6's adjudication process as the template *(completed: task 458 (migrate_12_legacy_literature_entries_to_v2_schema))*
+- [x] Spawn a follow-up task for the Gabbay/Kurucz/Wolter/Zakharyaschev 2003 acquisition gap,
       recording that the source is present in Zotero as `Kurucz2003` and that the blocker is broken
-      PDF font encoding — an OCR/acquisition problem, not an index-schema one
-- [ ] Spawn a follow-up task for the Goldblatt 1989 "Varieties of complex algebras" acquisition
+      PDF font encoding — an OCR/acquisition problem, not an index-schema one *(completed: task 460 (acquire_gabbay_2003_many_dimensional_modal_logics))*
+- [x] Spawn a follow-up task for the Goldblatt 1989 "Varieties of complex algebras" acquisition
       gap, recording that it is absent from both the corpus and the 200-item Zotero library, and
-      that `goldblatt_2003` in the corpus is the distinct Erdős-graphs paper
-- [ ] Run the final whole-corpus validation: JSON parse, entry count against the Phase 1 baseline,
+      that `goldblatt_2003` in the corpus is the distinct Erdős-graphs paper *(completed: task 461 (acquire_goldblatt_1989_varieties_of_complex_algebras). Also spawned an unplanned 4th follow-up, task 459 (deduplicate_8_stale_literature_entries), for the duplicate-id defect discovered during Phase 3 -- see Phase 3 phase notes.)*
+- [x] Run the final whole-corpus validation: JSON parse, entry count against the Phase 1 baseline,
       zero `chunk_\d+\.md$` paths, zero string-valued `authors`, zero non-legacy entries missing
       `doc_type`/`source_format`, zero `path`-carrying entries drifting past 20% on `chars/4+20`
-- [ ] Run `bash .claude/scripts/literature-build-index.sh --global` one final time and confirm the
-      FTS row count against the Phase 1 baseline
-- [ ] Confirm every per-batch backup file is present and readable (`pre-457`, `pre-scope12`,
-      `pre-scope3`, `pre-scope4`, `pre-scope5`, `pre-scope7`)
-- [ ] Confirm no file under `.claude/**` or `agent-system/**` was modified by this task
+      *(completed: all six checks pass — 369 entries, 0 chunk-paths, 0 string-authors, 6/6
+      doc_type+source_format gaps are reasoned exclusions, 0 entries drifting past 20%)*
+- [x] Run `bash .claude/scripts/literature-build-index.sh --global` one final time and confirm the
+      FTS row count against the Phase 1 baseline *(completed)*
+- [x] Confirm every per-batch backup file is present and readable (`pre-457`, `pre-scope12`,
+      `pre-scope3`, `pre-scope4`, `pre-scope5`, `pre-scope7`) *(completed)*
+- [x] Confirm no file under `.claude/**` or `agent-system/**` was modified by this task *(completed)*
 
 **Timing**: 1.25 hours
 

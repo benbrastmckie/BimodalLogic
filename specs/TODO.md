@@ -1,5 +1,5 @@
 ---
-next_project_number: 458
+next_project_number: 462
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 458
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,193,231,257,298,413,421,423,424,436,451,455,457 | -- | completeness, decidability, frame-extensions, ... |
+| 1 | 125,127,128,193,231,257,298,413,421,423,424,436,451,455,457,458,459,460,461 | -- | completeness, decidability, frame-extensions, ... |
 | 2 | 178,219,282,296,422,425,434 | 193,231,298,421,423,436 | decidability, formula-refactor, dataset-enhancement, ... |
 | 3 | 169,432 | 422,434 | decidability, strong_completeness |
 | 4 | 362,433 | 169,424,432 | decidability, strong_completeness |
@@ -80,6 +80,10 @@ next_project_number: 458
 ### Literature
 
 457 [IMPLEMENTING] — Repair the remaining Literature corpus data defects surfaced by a
+458 [NOT STARTED] — Follow-up to task 457's SCOPE 7 (provenance adjudication for 3 na
+459 [NOT STARTED] — Discovered during task 457 Phase 3 (SCOPE 3 bulk token_count re-b
+460 [NOT STARTED] — SCOPE 8 acquisition gap identified by task 457's research and re-
+461 [NOT STARTED] — SCOPE 8 acquisition gap identified by task 457's research and re-
 
 ### Strong Completeness
 
@@ -97,6 +101,46 @@ next_project_number: 458
 451 [NOT STARTED] — CONSOLIDATE THE TWO BONEYARDS into a single archive tree under Fo
 
 ## Tasks
+
+### 461. Acquire Goldblatt 1989 'Varieties of complex algebras' (Annals of Pure and Applied Logic)
+- **Status**: [NOT STARTED]
+- **Task Type**: general
+- **Topic**: literature
+- **Dependencies**: None
+
+**Description**: SCOPE 8 acquisition gap identified by task 457's research and re-confirmed at implementation time: this paper is absent from both the ~/Projects/Literature corpus and the Zotero library, and is named as a prerequisite by other tasks in this repo working on the Jonsson-Tarski representation theorem. Note: goldblatt_2003 already present in the corpus is a DIFFERENT paper (Erdos Graphs Resolve Fine's Canonicity Problem) -- do not conflate the two. Needed: locate and acquire a copy of Goldblatt 1989 (Annals of Pure and Applied Logic 44, pp. 173-242), add it to Zotero, then run a normal /literature ingest.
+
+---
+
+### 460. Acquire a usable copy of Gabbay, Kurucz, Wolter and Zakharyaschev 2003 (Many-Dimensional Modal Logics)
+- **Status**: [NOT STARTED]
+- **Task Type**: general
+- **Topic**: literature
+- **Dependencies**: None
+
+**Description**: SCOPE 8 acquisition gap identified by task 457's research and re-confirmed at implementation time: the source is present in the user's Zotero library under item key Kurucz2003, but the stored PDF has a broken/custom font encoding with no usable ToUnicode CMap and is not text-extractable by any available tool (pdftotext yields ~69.5% printable characters, scrambled letters). This is an acquisition/OCR problem, not an index-schema defect -- do NOT attempt to fix by re-running the standard ingest pipeline with LITERATURE_CONVERTER=pymupdf; that path previously produced 2260 chunks of control-character mojibake that passed the quality gate and had to be manually purged from the corpus and FTS index (see task 457's research report for this precedent). Needed: either a cleaner PDF copy (different scan/source) or an OCR pass (e.g. ocrmypdf) that produces usable, non-garbled text, followed by a normal /literature ingest.
+
+---
+
+### 459. Deduplicate 8 stale placeholder entries in the global literature index
+- **Status**: [NOT STARTED]
+- **Task Type**: general
+- **Topic**: literature
+- **Dependencies**: None
+
+**Description**: Discovered during task 457 Phase 3 (SCOPE 3 bulk token_count re-baseline). ~/Projects/Literature/index.json has 369 total entries but only 361 distinct ids: 8 ids each appear TWICE. In every one of the 8 cases, one instance carries provenance="migrated from ingest schema (doc_id/source_path/chunks_dir)", token_count=0, empty summary, and thinner metadata (a stale placeholder from an incomplete earlier migration), while the other instance (same id, same path) is the already-correct, fully-populated v2 entry with real authors/summary/keywords/token_count. Affected ids: calcagno_2007_local-action-abstract-separation-logic, docherty_pym_2019_stone-dualities-separation-logics, jung_2018_iris-from-the-ground-up, ohearn_2007_resources-concurrency-local-reasoning, ohearn_2019_separation-logic-cacm, reynolds_2002_separation-logic, brookes_2007_semantics-concurrent-separation-logic, jipsen_litak_2017_algebraic-glimpse-bunched-implications. Task 457 corrected the stale duplicates' token_count only (to unblock its own SCOPE 3 defect-class-empty verification gate) but did NOT remove the duplicate records -- that structural fix (delete the stale placeholder, keeping the fully-populated entry) is this task's scope. After removal, confirm entry count drops from 369 to 361, JSON still parses, and literature-build-index.sh --global still exits 0 with FTS row count >= the pre-dedup baseline (removing a duplicate doc removes duplicate chunks too, so the row count is expected to change compared to the pre-457 baseline -- record the new baseline rather than expecting equality).
+
+---
+
+### 458. Migrate the 12 remaining legacy chunks_dir-only literature entries to the v2 schema
+- **Status**: [NOT STARTED]
+- **Task Type**: general
+- **Topic**: literature
+- **Dependencies**: None
+
+**Description**: Follow-up to task 457's SCOPE 7 (provenance adjudication for 3 named legacy entries). 12 further legacy chunks_dir-only entries remain in ~/Projects/Literature/index.json beyond the 3 SCOPE 7 named and migrated (Jonsson-Tarski 1951/1952, Goldblatt 2006): brics-rs-96-35, cattani-winskel-2005-profunctors, brics-rs-94-7, schultz-spivak-temporal-type-theory, fong-speranzon-spivak-temporal-landscapes, schultz-spivak-vasilakopoulou-dynamical-systems-sheaves, thomason-1970-indeterminist-time, rutten-2000-universal-coalgebra, jacobs-coalgebra-intro-draft, danos-krivine-rccs, reynolds-2003-ockhamist, rumberg-zanardo-2019-transition-structures. Each needs: a manual chunk-read fidelity adjudication (grounded, not from an automated ratio alone -- literature-fidelity-audit.sh does not cover these since they sit outside sources/, so its output cannot corroborate; see task 457 Phase 6 phase notes for the code-level reason), path/token_count population per the SCOPE 1 directory-path convention (chars/4+20 over concatenated chunk_*.md text), and doc_type/source_format population per the SCOPE 5 evidence-grounded approach (inspect the actual source file if present; record as a reasoned exclusion if not). Use task 457's Phase 6 adjudication process as the template: take a backup before mutating, open at least one chunk per document and read it by hand, stamp provenance_fidelity only after that read, then run literature-build-index.sh --global and confirm the FTS row count did not drop.
+
+---
 
 ### 457. Repair remaining literature corpus data defects
 - **Status**: [IMPLEMENTING]
