@@ -516,16 +516,16 @@ record, and confirms the **Discrete** item is genuinely unconsumed before omitti
 
 ---
 
-### Phase 8: Repair the Extension Proof (`:244`) [NOT STARTED]
+### Phase 8: Repair the Extension Proof (`:244`) [COMPLETED]
 
 **Goal**: Give the Extension proof the lemmas it cites, as live blocks in the document, then restore
 the proof so every citation resolves — and knit the result with the two passages task 446 restored
 that already presuppose a live Step Lemma.
 
 **Tasks**:
-- [ ] Re-grep `FIX: this proof is inadequate` to locate the target; note the commented `// #proof[`
+- [x] Re-grep `FIX: this proof is inadequate` to locate the target; note the commented `// #proof[`
       block it sits inside.
-- [ ] Insert, between `#definition("History")` and `#theorem("Extension")`, four new blocks in this
+- [x] Insert, between `#definition("History")` and `#theorem("Extension")`, four new blocks in this
       order (research Findings 1, condensed option (b)):
       1. `#definition("Constraints")` — for a partial history τ : X → W and z ∈ D \ X, the
          constraints on z: the segments `[τ(t), τ(s)]_(z−t)^(s−z)` for t, s ∈ X with t < z < s when
@@ -545,24 +545,24 @@ that already presuppose a live Step Lemma.
          Admissibility, retaining the paper's closing remark that *Spherical* is not needed when the
          family has a ⊆-least member, as nesting provides whenever X contains a nearest assignment
          to z on each occupied side.
-- [ ] Uncomment and repair the Extension proof, following tex:2862-2867 in four steps: partial
+- [x] Uncomment and repair the Extension proof, following tex:2862-2867 in four steps: partial
       histories extending τ are partially ordered by extension; every chain is bounded above by its
       union, which restricts on any pair of times to a single member of the chain and so is itself a
       partial history; Zorn's lemma yields a maximal σ : T → W extending τ; if T ≠ D then the Step
       Lemma extends σ to T ∪ {z} for z ∈ D \ T, contradicting maximality; so T = D and σ ∈ H_F.
-- [ ] Handle `cor:spherical-finite` (tex:2843-2852: every frame with finite W satisfies *Spherical*,
+- [x] Handle `cor:spherical-finite` (tex:2843-2852: every frame with finite W satisfies *Spherical*,
       choice-free): it is already the subject of the live footnote in the Step-Lemma prose
       paragraph below. Either add it as a short corollary or leave it at footnote level; do not
       duplicate the claim in both places.
-- [ ] Preserve the Extension theorem statement and its `#leansrc` reference unchanged; preserve
+- [x] Preserve the Extension theorem statement and its `#leansrc` reference unchanged; preserve
       `#corollary("Occurrence")` and its `#leansrc` unchanged.
-- [ ] **Knit with task 446's restored text**: re-read the prose paragraph beginning "The Step Lemma
+- [x] **Knit with task 446's restored text**: re-read the prose paragraph beginning "The Step Lemma
       is the sole application site of *Spherical*..." and the `#remark[` following the Separation
       proof ("...keeps *Spherical* visible at the single site where it is used"). Both now have a
       live referent; adjust their wording only as needed so they read as pointing at the newly
       stated `#lemma("Step")` rather than at an external paper result. Do not restate what the new
       lemma already says.
-- [ ] Delete the FIX tag.
+- [x] Delete the FIX tag.
 
 **Timing**: 1.75 hours
 

@@ -252,18 +252,81 @@ below: two of the three results in @sec:histories are theorems of ZFC.
 #leansrc("Semantics", "PartialHistory")
 #leansrc("Semantics", "WorldHistory")
 
+#definition("Constraints")[
+  For a partial history $tau : X arrow.r #worldstate$ over a frame
+  $#taskframe = (#worldstate, #Dur, arrow.r.double.long)$ and duration $z in D without X$, the
+  *constraints on $z$* are the segments $[tau(t), tau(s)]_(z-t)^(s-z)$ for times $t, s in X$ where
+  $t < z < s$ when both $t, s in X$, and the fibers $"Fib"(tau(t), z-t)$ for $t in X$ otherwise.
+]
+
+#lemma("Directedness")[
+  For any partial history $tau : X arrow.r #worldstate$ over a frame $#taskframe$ and duration
+  $z in D without X$, the constraints imposed on $z$ form a directed family of nonempty sets.
+]
+#proof[
+  Every constraint imposed on $z$ is nonempty: a fiber $"Fib"(tau(t), z-t)$ is nonempty by
+  *Seriality*, and a segment $[tau(t), tau(s)]_(z-t)^(s-z)$ for $t < z < s$ is nonempty by
+  *Compositionality* applied to $tau(t) arrow.r.double.long_(s-t) tau(s)$, which holds since $tau$
+  is a partial history and $s - t = (z-t) + (s-z)$.
+
+  For directedness, split $X$ into $A := {t in X : t < z}$ and $C := {s in X : s > z}$, so the
+  constraints imposed on $z$ are the segments $S_(t,s) := [tau(t), tau(s)]_(z-t)^(s-z)$ for
+  $(t,s) in A times C$ when both are nonempty, and the fibers $F_t := "Fib"(tau(t), z-t)$ for
+  $t in X$ otherwise. First, the fibers nest: for $t lt.eq t' < z$ in $X$, any
+  $u in "Fib"(tau(t'), z-t')$ satisfies $tau(t) arrow.r.double.long_(z-t) u$ by *Compositionality*
+  applied to $tau(t) arrow.r.double.long_(t'-t) tau(t')$, so
+  $"Fib"(tau(t'), z-t') subset.eq "Fib"(tau(t), z-t)$, and symmetrically for $z < t' lt.eq t$ in
+  $X$ using the converse convention. Segments nest factorwise from the same inclusion. Given two
+  segments $S_(t,s)$ and $S_(t',s')$, the times $t'' := max(t,t')$ and $s'' := min(s,s')$ lie in
+  $A$ and $C$ respectively, and $S_(t'',s'') subset.eq S_(t,s) inter S_(t',s')$ by nesting. Given
+  two fibers $F_t$ and $F_(t')$, the times $t$ and $t'$ lie on the same side of $z$, so the fiber
+  nearer $z$ is included in the other by nesting, hence in $F_t inter F_(t')$.
+]
+
+#lemma("Admissibility")[
+  For any partial history $tau : X arrow.r #worldstate$ over a frame $#taskframe$ and duration
+  $z in D without X$, the function $tau union {(z,u)}$ is a partial history on $X union {z}$ just
+  in case $u$ belongs to every member of the constraints imposed on $z$.
+]
+#proof[
+  The constraints among the times in $X$ are inherited from $tau$, and the instance at $z$ itself
+  is the zero loop $u arrow.r.double.long_0 u$ given by *Nullity*, so $tau union {(z,u)}$ is a
+  partial history on $X union {z}$ just in case $u in "Fib"(tau(t), z-t)$ for every $t in X$. When
+  the assignments in $X$ lie on one side of $z$, the constraints imposed on $z$ are exactly these
+  fibers, and the two conditions coincide. When assignments flank $z$, the constraints are instead
+  the segments $[tau(t), tau(s)]_(z-t)^(s-z) = "Fib"(tau(t), z-t) inter "Fib"(tau(s), z-s)$ for
+  $t < z < s$ in $X$: if $u$ lies in every fiber then it lies in every segment, and conversely if
+  $u$ lies in every segment then, fixing any $t < z$ and any $s > z$ in $X$, the segment
+  $S_(t,s) subset.eq "Fib"(tau(t), z-t)$ places $u$ in that fiber, symmetrically for $t > z$.
+]
+
+#lemma("Step")[
+  Every partial history $tau : X arrow.r #worldstate$ over a frame $#taskframe$ extends to a
+  partial history on $X union {z}$ for any duration $z in D$.
+]
+#proof[
+  If $z in X$, then $tau$ extends itself. Otherwise the constraints imposed on $z$ form a directed
+  family of nonempty fibers and segments by *Directedness*, so *Spherical* provides some
+  $u in #worldstate$ belonging to every member, whence $tau union {(z,u)}$ is a partial history on
+  $X union {z}$ extending $tau$ by *Admissibility*. When the family has a $subset.eq$-least
+  member --- as the nesting argument inside *Directedness* provides whenever $X$ contains an
+  assignment nearest to $z$ on each side it occupies --- that member already supplies a candidate
+  and *Spherical* is not needed.
+]
+
 #theorem("Extension")[
   Every partial history over a frame is extended by a possible world.
 ]
 #leansrc("Semantics.PartialHistory", "extension")
-// #proof[
-//   // FIX: this proof is inadequate and should be fixed by including the lemmas it needs to cite, drawing on /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex where these results are established
-//   The partial histories extending $tau$ are ordered by extension, and every chain is bounded above
-//   by its union, which is again a partial history since any two of its times already lie in a common
-//   member of the chain. Zorn's lemma yields a maximal $sigma : T arrow.r #worldstate$ extending
-//   $tau$. Were $T eq.not D$, the Step Lemma would extend $sigma$ to $T union {z}$ for
-//   $z in D without T$, against maximality; so $T = D$.
-// ]
+#proof[
+  The partial histories extending $tau$ are partially ordered by extension, and every chain among
+  them is bounded above by its union, which restricts on any pair of times to a single member of
+  the chain and so is itself a partial history. By Zorn's lemma, there is a maximal partial
+  history $sigma : T arrow.r #worldstate$ extending $tau$. If $T eq.not D$, then $sigma$ extends
+  to a partial history on $T union {z}$ for any $z in D without T$ by the *Step* Lemma,
+  contradicting maximality. Thus $T = D$, whence $sigma in H_(#taskframe)$ is a total world
+  history extending $tau$.
+]
 
 #corollary("Occurrence")[
   For every frame $#taskframe$, world state $w in W$, and time $x in D$, there is some possible world $tau in H_(#taskframe)$ which has
@@ -271,9 +334,9 @@ below: two of the three results in @sec:histories are theorems of ZFC.
 ]
 #leansrc("Semantics.PartialHistory", "occurrence")
 
-The Step Lemma is the sole application site of *Spherical* in the paper, and Extension is the sole
+The Step Lemma above is the sole application site of *Spherical*, and Extension is the sole
 consumer of the Step Lemma; every appeal to *Spherical* in the semantics passes through this one
-point.#footnote[`lem:step`. @brastmckie2026possibleworlds *Spherical* is not needed when the directed family has a $subset.eq$-least member, and on a finite carrier it holds outright and choice-free (`cor:spherical-finite`).] Extension and Occurrence are theorems of ZFC, in contrast with Nullity. That
+point.#footnote[*Spherical* is not needed when the directed family has a $subset.eq$-least member, and on a finite carrier it holds outright and choice-free.] Extension and Occurrence are theorems of ZFC, in contrast with Nullity. That
 localization is what makes *Spherical* the identified obstruction of @sec:representation.
 
 The cones are a basis for a topology on world states, and that topology is separated.
