@@ -25,8 +25,9 @@ This directory implements a verified decision procedure that:
 | `FMP.lean` | Re-export for FMP subdirectory | Sorry-free |
 | `DecisionProcedure.lean` | Main `decide` function with proof search | Sorry-free |
 | `IntPresentation.lean` | Computational presentation of a finite ℤ-time frame (`Fin card` adjacency matrix + valuation) | Sorry-free |
+| `BiLasso.lean` | Re-export for BiLasso subdirectory | Sorry-free; not itself imported |
 | `FMP/` | Finite model property proofs (7 files) | Sorry-free |
-| `BiLasso/` | Finitely presented bi-infinite ultimately-periodic step paths over an `IntPresentation` — the decision layer for *presented* ℤ-frames (1 file) | Sorry-free; unwired (no re-export yet) |
+| `BiLasso/` | Finitely presented bi-infinite ultimately-periodic step paths over an `IntPresentation` — the decision layer for *presented* ℤ-frames. Entry point `check` decides satisfiability at a state of one presented frame; it does **not** decide the logic (18 files) | Sorry-free; outside the build graph (the re-export is unimported), compile-checked by the C6 rot guard |
 
 ## Quick Reference
 

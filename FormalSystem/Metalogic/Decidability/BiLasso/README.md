@@ -12,7 +12,7 @@ procedure searches the finitely presented paths of that specific frame.
 
 | File | Lines | Description |
 |------|-------|-------------|
-| `Basic.lean` | 316 | The `BiLasso` structure, its decoding `unroll`, the two periodicities, and `unroll_isStepPath` |
+| `Basic.lean` | 316 | The `BiLasso` structure, its decoding `unroll`, the two periodicities, and `unroll_isStepPath`. **Held stable** — see below |
 | `Unfold.lean` | 166 | The exact ℤ one-step unfolding of `TruthAt` for `untl` and `snce`, plus the two ℤ-distance induction principles |
 | `Periodic.lean` | 130 | The three-segment periodic decoding at an arbitrary `[Inhabited α]`, shared in scheme with `Basic.lean`'s |
 | `Annotation.lean` | 360 | The `Annot` datatype, its label decoding and alignment with the state decoding, and the three predicates `LocalCoherent`, `Fulfilling`, `BoxOracleSound` |
@@ -21,15 +21,93 @@ procedure searches the finitely presented paths of that specific frame.
 | `Decide.lean` | 905 | The corrected scan bounds and the window collapses that make `LocalCoherent` and `Fulfilling` decidable |
 | `Enumerate.lean` | 325 | `boundedBiLassos` and `boundedAnnots`, with completeness and soundness |
 | `SmallModel.lean` | 236 | The type sequence of a genuine history, shown locally coherent and fulfilling — the groundwork the extraction consumes |
+| `Realized.lean` | 297 | The realised-datum graph: `PigeonState` with its exact cardinality `P.card · 2^k`, `RealizedStep`, `CoherentEdge`, and the splice lemma `localCoherentSeq_of_edges` |
+| `GoodCycle.lean` | 653 | The eventuality-propagation lemmas, `exists_recurring_datum`, and bounded good forward and backward cycles with the explicit closed bound `cycleBound` |
+| `Extraction.lean` | 564 | `bound`, and `exists_annot_of_truth` — the small-model theorem in its windowed shape, delivering a position inside the coherence window |
+| `BoxOracle.lean` | 269 | `boxOracle`, a concrete `Formula → Bool` by strong recursion on `modalDepth`, and `boxOracle_sound` — what breaks the annotation ↔ oracle circularity |
+| `Check.lean` | 249 | `SatAtState`, `checkAt`, `check`, `check_correct`, the `Decidable` instance, and the discrimination theorems |
 | `Extend.lean` | 120 | `PlacedBiLasso` — a bi-lasso plus an `origin : ℤ`, so a window at arbitrary absolute times is representable — with shift-invariance of step paths |
 | `Successor.lean` | 157 | Choice-free, `#eval`-able `succOf` / `predOf` on a presentation, via `List.find?` over `List.finRange`, and their orbits |
 | `Orbit.lean` | 916 | A choice-free pigeonhole on `Fin`, the forward and backward rho decompositions, the window assembly, and `IntPresentation.extend_periodic` |
 | `Agreement.lean` | 175 | Window agreement as `Extends`, with the three limits on what a lasso certificate licenses |
 
-The extraction itself (`exists_annot_of_truth`), the box oracle, and `check` are **not yet
-present**: see `specs/417_semantic_fmp_finite_worldstate_over_z/evidence/phase10-origin-anchoring-obstruction.lean`
-for the machine-checked obstruction that halted the extraction, and the plan's Phase 10 blocker
-record for the two available repairs.
+The entry point is `check` (`Check.lean`). `BiLasso.lean`, beside this directory, is the
+subdirectory re-export; it deliberately omits `Extend`, `Successor`, `Orbit` and `Agreement`,
+which belong to the effective-periodic-extension work rather than to this layer.
+
+## How the procedure got its shape
+
+Three decisions below are recorded because each cost a design cycle, and each is the kind a later
+reader would otherwise "clean up" back into the refuted form.
+
+### `eval` was designed, refuted, and retired
+
+The first design was an evaluator `eval : ℤ → Formula → Bool` that recursed on the formula against
+a lasso-computed scan range. It is **retired and must not be reintroduced.** The refutation is
+`evidence/phase3-scan-bound-is-false.lean`: no bound computed from the lasso's segment lengths
+alone can drive the temporal cases, because the witness `eval`'s `untl` case must find is a time
+at which a *formula* holds, not one at which a state predicate holds — and no formula-independent
+scan bound exists at all. The layer enumerates annotated structures instead of evaluating, which
+is why the bound lives in the *enumeration* and never inside a recursion.
+
+### Route 2 was taken; route 1 remains the documented fallback
+
+Two routes to the decision procedure were evaluated.
+
+- **Route 1** — prove eventual periodicity of `TruthAt` directly, with a formula-indexed threshold
+  function, and decide by evaluating past the threshold.
+- **Route 2** — annotate a bi-lasso with a subformula set at each position, constrain the
+  annotation locally (`LocalCoherent`) and globally on eventualities (`Fulfilling`), and enumerate.
+
+Route 2 was taken, and the reason is empirical rather than aesthetic: it *worked*. Its phases
+landed sorry-free, including the declared crux `truth_along_annot`, which compiled without any
+weakening of its statement. Route 1 was never refuted — it stays the documented fallback — but it
+requires a formula-indexed threshold that route 2 never needs to name. No route-1 machinery is
+present in this directory, deliberately.
+
+### `check` reads a position, not the origin
+
+`check` asks whether *some* position `i` of *some* enumerated annotation carries `φ` over the
+state, rather than asking about position `0`. This is forced.
+
+A `BiLasso`'s origin is pinned — `back` repeats strictly left of `0`, `mid` occupies `[0, |mid|)`,
+`fwd` repeats at or past `|mid|`, and there is no left prefix — so the two-sided pigeonhole that
+compresses a satisfying history puts the point of interest wherever the compressed window lands
+it. Anchoring at `0` would demand a recurrence of the *type* at the point of interest, and
+`evidence/phase10-origin-anchoring-obstruction.lean` exhibits a total history for which no such
+recurrence exists.
+
+Nothing is weakened by this. `SatAtState` is existential in the time either way — the hypothesis
+the small-model theorem starts from is truth at an arbitrary time — so anchoring at `0` was only
+ever a normalisation, and the pinned origin is exactly what makes that normalisation unavailable.
+Shifting the *history* does not rescue it either: the enumeration ranges over lassos, not
+histories, and the shift of an annotation's history is not the decoding of any enumerated lasso.
+
+## `Basic.lean` is held stable
+
+`Basic.lean` is not edited by work on this layer. The effective-periodic-extension work
+(`Extend`, `Successor`, `Orbit`, `Agreement`, and `Semantics/Extension/PeriodicExtension.lean`)
+consumes its datatype and its lemmas directly, so a change there is a change under that work's
+feet. Extensions to the layer go in the modules above it. The same holds in the other direction:
+`Extend.lean` belongs to that work and is neither edited nor imported from here.
+
+## Evidence probes
+
+The machine-checked refutations in `specs/417_semantic_fmp_finite_worldstate_over_z/evidence/`
+are not tests of behaviour — they are the reasons the layer has the shape it has. Because they
+live under `specs/`, no Lake target root reaches them and `lake build` never compiles them, so
+they are guarded by `scripts/check-evidence-probes.sh`, which compile-checks each one with
+`lake env lean` — the same mechanism the C6 rot guard uses for unreachable modules.
+
+Four are wired: `phase3-scan-bound-is-false`, `phase7-filtered-frame-is-universal`,
+`phase12-check-not-compositional`, and `phase10-origin-anchoring-obstruction`. The last is the
+load-bearing one, since re-anchoring `check` at position `0` looks like a tidy-up rather than a
+regression.
+
+`spike-untl-unfolding-and-fwd-obstruction` is **deliberately not wired**, although it compiles.
+Its subject is the frame-class mismatch between `FrameClass.Base` and `FrameClass.Discrete`, and
+it asserts results about a `filteredStep_fwd` that the frame-class uniformity work is expected to
+change; wiring it now would freeze a question that is still open. Wire it in when that work lands.
 
 ## Effective periodic extension
 
@@ -94,7 +172,11 @@ prefix rendering `U(e, g)` is event-first and is a *display* convention only.
 ## Dependencies
 
 - **Imports from**: `FormalSystem.Metalogic.Decidability.IntPresentation`
-- **Imported by**: (nothing yet — the subtree is additive until its re-export lands)
+- **Imported by**: nothing. The re-export `FormalSystem.Metalogic.Decidability.BiLasso` exists but
+  is not itself imported, so the layer is still outside the Lake build graph and is compile-checked
+  by the C6 rot guard instead. Registering it means adding one import to `Decidability.lean` and
+  deleting the corresponding lines from `scripts/module-invariants-manifest.txt` in the same
+  commit — C6 fails if a manifest entry names a module that has become reachable.
 
 ## Related Documentation
 
