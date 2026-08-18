@@ -1179,7 +1179,8 @@
         "~/Projects/Literature/index.json",
         "specs/literature-index.json"
       ],
-      "session_id": "sess_1787085411_5744ac_461"
+      "session_id": "sess_1787085411_5744ac_461",
+      "blockers": "Acquisition blocked on user action -- no legitimately obtainable copy exists in this environment. VERIFIED 2026-08-18: absent from the Literature corpus (362 entries) and from Zotero (4044 items, queried read-only). Identity confirmed against Goldblatt's own VUW paperlist.pdf item 22 (Annals of Pure and Applied Logic 44, 1989, pp. 173-242). NOT the same paper as goldblatt_2003 already in the corpus (Erdos Graphs Resolve Fine's Canonicity Problem); the corpus sub-index already flags Goldblatt's 2003/2006 evolution survey as a partial substitute for this missing item. Semantic Scholar reports the ScienceDirect copy as Bronze OA, but every derived URL (curl with browser headers, WebFetch, DOI resolver chain) returns HTTP 403 behind a Cloudflare bot challenge; not self-archived (author's online-papers page starts ~2000); VUW repository search inconclusive (302, no positive evidence). No PDF obtained, so the pdffonts/pdftotext extractability check was recorded as not-applicable rather than fabricated. UNBLOCK BY: institutional ScienceDirect access, interlibrary loan, or a direct request to Robert Goldblatt (active VUW emeritus). Then re-run the extractability check before ingest -- if the copy is a scan, expect the same sentence-boundary-glue quality-gate failure documented in specs/460_acquire_gabbay_2003_many_dimensional_modal_logics/reports/03_phase5-fusion-site-analysis.md. Full acquisition path in reports/01_acquisition-feasibility.md."
     }
   ],
   "artifacts": [
