@@ -1,7 +1,7 @@
 # Implementation Plan: Task #452
 
 - **Task**: 452 - correct_roadmap_sorry_inventory_and_bxcanonical_status
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 4.25 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/452_correct_roadmap_sorry_inventory_and_bxcanonical_status/reports/01_roadmap-sorry-bxcanonical-correction.md

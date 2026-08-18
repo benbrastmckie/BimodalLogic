@@ -38,7 +38,7 @@
     {
       "project_number": 453,
       "project_name": "restore_bimodaltest_green_and_clear_c6_c9",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "topic": "decidability",
       "priority": "high",
@@ -55,15 +55,21 @@
           "path": "specs/453_restore_bimodaltest_green_and_clear_c6_c9/plans/01_restore-guards-clear-c6-c9.md",
           "type": "plan",
           "summary": "7-phase, 4-hour plan re-recording the 7 stale #guard_msgs docstrings, settling the three Re-baseline record blocks and stale narratives, clearing C6 via 7 manifest entries and C9 via a durable-anchor prose edit, closing on a full verification gate."
+        },
+        {
+          "path": "specs/453_restore_bimodaltest_green_and_clear_c6_c9/summaries/01_restore-guards-clear-c6-c9-summary.md",
+          "type": "summary",
+          "summary": "Re-recorded seven stale #guard_msgs expectations, settled the three in-source re-baseline records, and cleared C6 and C9."
         }
       ],
-      "last_updated": "2026-08-18T06:38:25Z",
-      "session_id": "sess_1787033965_d6c07f_453"
+      "last_updated": "2026-08-18T07:00:19Z",
+      "session_id": "sess_1787033965_d6c07f_453",
+      "completion_summary": "lake build BimodalTest returns to exit 0 with all seven stale #guard_msgs expectations re-recorded from Lean's own generated output, verified rather than transcribed; W1 and W7 now generate byte-identical strings, satisfying the invariant W7 exists to test. The three in-source re-baseline records were rewritten from exclusions into settlements with the 2026-08-10/11 engine-window attribution, and every narrative claim the re-record contradicted was repaired. C6 cleared by manifesting the seven unreachable live modules; C9 cleared by replacing the sole task-number citation with a durable in-file anchor. check-module-invariants.sh reports ALL CHECKS PASSED, with no .lean semantics change anywhere."
     },
     {
       "project_number": 452,
       "project_name": "correct_roadmap_sorry_inventory_and_bxcanonical_status",
-      "status": "planned",
+      "status": "completed",
       "task_type": "markdown",
       "topic": "code-quality",
       "priority": "critical",
@@ -80,10 +86,16 @@
           "path": "specs/452_correct_roadmap_sorry_inventory_and_bxcanonical_status/plans/01_roadmap-sorry-bxcanonical-correction.md",
           "type": "plan",
           "summary": "8-phase, fully sequential markdown plan correcting every check-contradicted sorry-count, dead-code, and module-status claim in specs/ROADMAP.md, with a bespoke reference check standing in for C5 (which excludes specs/)."
+        },
+        {
+          "path": "specs/452_correct_roadmap_sorry_inventory_and_bxcanonical_status/summaries/01_roadmap-sorry-bxcanonical-correction-summary.md",
+          "type": "summary",
+          "summary": "All 8 phases completed: specs/ROADMAP.md corrected against scripts/check-module-invariants.sh's live output (C2/C3/C6) for every sorry-count, dead-code, and module-status claim, with Paper Alignment Programme and the status tables left untouched; full check harness at or above baseline with zero unresolved references over the cumulative diff."
         }
       ],
-      "last_updated": "2026-08-18T06:38:13Z",
-      "session_id": "sess_1787033965_d6c07f_452"
+      "last_updated": "2026-08-18T07:00:08Z",
+      "session_id": "sess_1787033965_d6c07f_452",
+      "completion_summary": "Corrected all four occurrences of the false 'BXCanonical is dead code' claim, rewrote the Sorry Inventory section against check C3's live one-sorry count, retired the stale Module Import Graph, corrected the Legacy Code Inventory and Other Open Items sorry counts, and staleness-bannered the remaining out-of-scope sections in specs/ROADMAP.md -- all eight plan phases completed with a clean final check-module-invariants.sh run (all ten groups PASS) and zero unresolved references over the full cumulative diff. Paper Alignment Programme and the 111-row status tables were left untouched as required."
     },
     {
       "project_number": 425,

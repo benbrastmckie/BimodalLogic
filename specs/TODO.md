@@ -11,12 +11,12 @@ next_project_number: 456
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,193,231,257,298,413,437,445,451,452,453 | -- | completeness, decidability, frame-extensions, ... |
-| 2 | 178,219,282,296,436,446,450,454 | 193,231,298,437,445,452,453 | decidability, formula-refactor, publication-quality, ... |
-| 3 | 421,423,424,434,447,455 | 436,446,454 | decidability, publication-quality, code-quality, ... |
-| 4 | 422,425,432 | 421,423,434 | decidability, strong_completeness |
-| 5 | 169,433 | 422,432 | decidability, strong_completeness |
-| 6 | 362,428 | 169,433 | decidability, strong_completeness |
+| 1 | 125,127,128,193,231,257,298,413,437,445,450,451,454 | -- | completeness, decidability, frame-extensions, ... |
+| 2 | 178,219,282,296,421,423,424,436,446,455 | 193,231,298,437,445,454 | decidability, formula-refactor, publication-quality, ... |
+| 3 | 422,425,434,447 | 421,423,436,446 | decidability, publication-quality, strong_completeness |
+| 4 | 169,432 | 422,434 | decidability, strong_completeness |
+| 5 | 362,433 | 169,432 | decidability, strong_completeness |
+| 6 | 428 | 433 | decidability |
 | 7 | 429 | 428 | decidability |
 | 8 | 410 | 429 | decidability |
 | 9 | 411 | 410 | decidability |
@@ -47,7 +47,6 @@ next_project_number: 456
                 └─ 411 [NOT STARTED] — Track B part 2 for the TM tableau decidability program (parent: t
                   └─ 430 [NOT STARTED] — The semantic lift and the Track A assembly. Owns obstruction O4 o
                     └─ 412 [NOT STARTED] — Track B finish for the TM tableau decidability program (parent: t
-453 [PLANNED] — Return `lake build BimodalTest` to green by re-recording 7 stale 
 
 ### Formula Refactor
 
@@ -75,7 +74,6 @@ next_project_number: 456
 
 ### Code Quality
 
-452 [PLANNED] — Correct two factually inverted sections of specs/ROADMAP.md again
 455 [NOT STARTED] — BACKLOG REALIGNMENT: bring specs/ROADMAP.md and every remaining a
 
 ### Dataset Enhancement
@@ -89,18 +87,14 @@ next_project_number: 456
 
 ### Strong Completeness
 
-169 [NOT STARTED] — Base (FrameClass.Base / general) WEAK completeness green: make th
-  └─ 362 [NOT STARTED] — Implement the completeness capstone under the SETTLED TERMINOLOGY
-421 [NOT STARTED] — Two deliverables on the Base weak terminus, both small.
-  └─ 422 [NOT STARTED] — Construct the discrete-case analogue of the existing dense chroni
-    └─ 169 [NOT STARTED] — Base (FrameClass.Base / general) WEAK completeness green: make th (see above)
-423 [NOT STARTED] — Create FormalSystem/Metalogic/SetConsequence.lean containing the 
-  └─ 425 [NOT STARTED] — Convert the informal argument at FormalSystem/Metalogic/StrongCom
-424 [NOT STARTED] — RE-ISSUED 2026-08-10 (description rewrite only; status remains `n
 454 [NOT STARTED] — RE-ISSUE THE SIX STRONG-COMPLETENESS TASK DESCRIPTIONS: re-anchor
-  └─ 421 [NOT STARTED] — Two deliverables on the Base weak terminus, both small. (see above)
-  └─ 423 [NOT STARTED] — Create FormalSystem/Metalogic/SetConsequence.lean containing the  (see above)
-  └─ 424 [NOT STARTED] — RE-ISSUED 2026-08-10 (description rewrite only; status remains `n (see above)
+  └─ 421 [NOT STARTED] — Two deliverables on the Base weak terminus, both small.
+    └─ 422 [NOT STARTED] — Construct the discrete-case analogue of the existing dense chroni
+      └─ 169 [NOT STARTED] — Base (FrameClass.Base / general) WEAK completeness green: make th
+        └─ 362 [NOT STARTED] — Implement the completeness capstone under the SETTLED TERMINOLOGY
+  └─ 423 [NOT STARTED] — Create FormalSystem/Metalogic/SetConsequence.lean containing the 
+    └─ 425 [NOT STARTED] — Convert the informal argument at FormalSystem/Metalogic/StrongCom
+  └─ 424 [NOT STARTED] — RE-ISSUED 2026-08-10 (description rewrite only; status remains `n
 
 ### Proof System Infrastructure
 
@@ -385,12 +379,13 @@ the "gate" language so the prose and the graph agree. Do not leave both readings
 ---
 
 ### 453. Restore bimodaltest green and clear c6 c9
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
 - **Research**: [453_restore_bimodaltest_green_and_clear_c6_c9/reports/01_guard-rebaseline-and-c6-c9.md]
 - **Plan**: [453_restore_bimodaltest_green_and_clear_c6_c9/plans/01_restore-guards-clear-c6-c9.md]
+- **Summary**: [453_restore_bimodaltest_green_and_clear_c6_c9/summaries/01_restore-guards-clear-c6-c9-summary.md]
 
 **Description**: Return `lake build BimodalTest` to green by re-recording 7 stale #guard_msgs expectations, and
 clear the two remaining check-module-invariants.sh failures (C6, C9).
@@ -506,12 +501,13 @@ anchor.
 ---
 
 ### 452. Correct roadmap sorry inventory and bxcanonical status
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: markdown
 - **Topic**: code-quality
 - **Dependencies**: None
 - **Research**: [452_correct_roadmap_sorry_inventory_and_bxcanonical_status/reports/01_roadmap-sorry-bxcanonical-correction.md]
 - **Plan**: [452_correct_roadmap_sorry_inventory_and_bxcanonical_status/plans/01_roadmap-sorry-bxcanonical-correction.md]
+- **Summary**: [452_correct_roadmap_sorry_inventory_and_bxcanonical_status/summaries/01_roadmap-sorry-bxcanonical-correction-summary.md]
 
 **Description**: Correct two factually inverted sections of specs/ROADMAP.md against machine-checked reality.
 
