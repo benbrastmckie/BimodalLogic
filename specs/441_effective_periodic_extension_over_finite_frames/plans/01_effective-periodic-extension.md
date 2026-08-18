@@ -733,28 +733,48 @@ Confirm at implementation time; if the `Set.Icc` wrapper needs its own supportin
 
 ---
 
-### Phase 6: Deliverable 3 — the agreement lemma and its three limits [NOT STARTED]
+### Phase 6: Deliverable 3 — the agreement lemma and its three limits [COMPLETED]
 
 **Goal**: The theorem ModelChecker consumes, plus the module docstring that makes misusing it hard.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/Decidability/BiLasso/Agreement.lean`.
-- [ ] State agreement at the level of **states**, against the existing `Extends` relation so it
+- [x] Create `FormalSystem/Metalogic/Decidability/BiLasso/Agreement.lean`.
+- [x] State agreement at the level of **states**, against the existing `Extends` relation so it
       composes with `thm:extension`'s own vocabulary:
       `Extends (placedToHF L origin).val.toPartialHistory τ` — i.e. `dom τ ⊆ ℤ` (free; the
       constructed history is total) plus `∀ t ∈ dom τ, decoded t = τ t`. Prove it from
-      `placedOfWindow_unroll_window`.
-- [ ] Add a `decide`-ability note/lemma: on a presentation, pointwise agreement over the finite
+      `placedOfWindow_unroll_window`. *(landed as `PlacedBiLasso.extends_of_agrees`, plus the
+      Deliverable-3 statement `IntPresentation.extend_periodic_extends` composing it with Phase 5's
+      `extend_periodic_of_icc`; the chain back to `placedOfWindow_unroll_window` runs through that
+      wrapper rather than being re-derived here)*
+- [x] Add a `decide`-ability note/lemma: on a presentation, pointwise agreement over the finite
       window is decidable, which is what makes this a *certificate* rather than an assurance.
-- [ ] Write the module docstring with the three limits of D-6 **before** the theorem statement, in
+- [x] Write the module docstring with the three limits of D-6 **before** the theorem statement, in
       this order: (1) box — window agreement is the wrong instrument, citing `TruthAt.box_const`
       and `TruthAt.box_time_const` by name; (2) `Past`/`Future` — `untl`/`snce` quantify over all
       `s : D`; (3) no formula-independent scan bound, citing `no_formula_independent_scan_bound` by
       **declaration name only** (D-6 citation mechanics — never the `specs/417_...` path), with the
       required corollary sentence that path periodicity does not induce truth periodicity.
-- [ ] Add the misuse-foreclosure paragraph: the lemma licenses existential claims about the found
+      *(naming correction: the two box lemmas are `FormalSystem.Semantics.Truth.box_const` and
+      `FormalSystem.Semantics.Truth.box_time_const` — namespace `Truth`, not `TruthAt`, which is
+      the name of the truth *predicate* they are about. Cited under their real names, verified at
+      `Semantics/Truth.lean:740` and `:753`.)*
+- [x] Add the misuse-foreclosure paragraph: the lemma licenses existential claims about the found
       window and licenses nothing about universal obligations; dropping abundance wholesale and
       citing `thm:extension` as cover is wrong.
+
+#### Phase 6 Note
+
+All four verification criteria hold: the module builds; the limits section precedes every theorem
+in the file (it is the module docstring, and there is no declaration above it); each of the three
+limits cites a named declaration rather than asserting in prose; and
+`grep -n "417\|task [0-9]" .../Agreement.lean` returns nothing, so the blocking
+no-task-references hook had nothing to reject. Limit 3 cites
+`no_formula_independent_scan_bound` by declaration name only, with a one-line restatement of what
+it exhibits, exactly as D-6's citation mechanics require.
+
+**Manifest**: `FormalSystem.Metalogic.Decidability.BiLasso.Agreement` added to
+`scripts/module-invariants-manifest.txt`.
 
 **Timing**: 1.5 hours
 
