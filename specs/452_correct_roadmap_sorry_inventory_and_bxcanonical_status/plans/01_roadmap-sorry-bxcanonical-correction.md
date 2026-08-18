@@ -304,7 +304,7 @@ correction.
 
 ---
 
-### Phase 3: Rewrite the Sorry Inventory section against C3 [NOT STARTED]
+### Phase 3: Rewrite the Sorry Inventory section against C3 [COMPLETED]
 
 **Goal**: Replace the 23-sorry inventory and its two tables of dead file:line rows with the single
 live entry C3 verifies, plus a pointer naming C3 as the generator of record. This is deliverable
@@ -312,33 +312,33 @@ live entry C3 verifies, plus a pointer naming C3 as the generator of record. Thi
 
 **Tasks**:
 
-- [ ] Locate the section (anchor: `## Sorry Inventory`, ~881) and its four subsections:
+- [x] Locate the section (anchor: `## Sorry Inventory`, ~881) and its four subsections:
       `### Critical Path (5 sorries in RootScopedChain.lean)`,
       `### Irreflexive-Consequence (18 sorries across 6 files)`,
       `### Irreflexive Semantics Strategy (Plan v48, 2026-04-19)`,
       `### Closed Sorries (Tasks 90+92+98+102)`.
-- [ ] Replace the opening claim `The BXCanonical module has **23 sorry proofs** in three
+- [x] Replace the opening claim `The BXCanonical module has **23 sorry proofs** in three
       categories.` with the C3-verified state: exactly one structural sorry in the live
       (non-Boneyard) tree, `countermodel_discrete` in
       `FormalSystem/Metalogic/WeakCanonical/Transfer.lean`, owned by the Base weak-completeness
       terminus. State the enclosing declaration, **not** a line number, and say why (C3 asserts by
       content because the line drifts).
-- [ ] Add the generator-of-record pointer: `scripts/check-module-invariants.sh` check C3 is what
+- [x] Add the generator-of-record pointer: `scripts/check-module-invariants.sh` check C3 is what
       produces this inventory; regenerate rather than hand-edit. Note C3's scope precisely — the
       four structural sorry shapes it greps for, across `FormalSystem/` with both Boneyards
       excluded — so a future reader knows what the count does and does not include.
-- [ ] Delete the `### Critical Path (5 sorries in RootScopedChain.lean)` table, or convert it to an
+- [x] Delete the `### Critical Path (5 sorries in RootScopedChain.lean)` table, or convert it to an
       explicitly historical record. Its five rows point at
       `FormalSystem/Boneyard/DefectDirectedChain/RootScopedChain.lean` and
       `FormalSystem/Boneyard/ScheduleBasedBFMCS/RootScopedChain.lean`; if any row is retained, its
       path must be written in full including the `Boneyard/` segment so it cannot read as live.
-- [ ] Apply the same treatment to `### Irreflexive-Consequence (18 sorries across 6 files)`. Note
+- [x] Apply the same treatment to `### Irreflexive-Consequence (18 sorries across 6 files)`. Note
       the section's own internal inconsistency as part of the record if retaining it: the table
       sums to 14 while both the heading and the `## Overview` table say 18.
-- [ ] Leave `### Irreflexive Semantics Strategy` and `### Closed Sorries` in place as historical
+- [x] Leave `### Irreflexive Semantics Strategy` and `### Closed Sorries` in place as historical
       technical exposition, but check their closing claims (e.g. `Frame.lean has **1 sorry**`)
       against C3 and relabel any that assert current state.
-- [ ] Add the C2 axiom-baseline statement for the four flagship theorems, so the section answers
+- [x] Add the C2 axiom-baseline statement for the four flagship theorems, so the section answers
       "what is provably clean" as well as "what is open".
 
 **Timing**: 60 minutes

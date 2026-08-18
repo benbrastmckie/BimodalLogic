@@ -1,0 +1,26 @@
+{
+  "phase": 3,
+  "phase_name": "Rewrite the Sorry Inventory section against C3",
+  "started_at": "2026-08-17T00:40:00Z",
+  "last_updated": "2026-08-17T01:00:00Z",
+  "objectives": [
+    {"id": 1, "description": "Locate section and its four subsections", "status": "done", "files_touched": []},
+    {"id": 2, "description": "Replace 23-sorry opening claim with C3-verified one-sorry state, enclosing declaration cited not line number", "status": "done", "files_touched": ["specs/ROADMAP.md"]},
+    {"id": 3, "description": "Add C3 generator-of-record pointer with scope note", "status": "done", "files_touched": ["specs/ROADMAP.md"]},
+    {"id": 4, "description": "Convert Critical Path table to Historical, all RootScopedChain refs carry Boneyard/ path or explicit archived framing", "status": "done", "files_touched": ["specs/ROADMAP.md"]},
+    {"id": 5, "description": "Convert Irreflexive-Consequence table to Historical, note 14-vs-18 internal inconsistency", "status": "done", "files_touched": ["specs/ROADMAP.md"]},
+    {"id": 6, "description": "Relabel Irreflexive Semantics Strategy and Closed Sorries as Historical, fix Frame.lean has 1 sorry stale closing claim", "status": "done", "files_touched": ["specs/ROADMAP.md"]},
+    {"id": 7, "description": "Add C2 axiom-baseline statement", "status": "done", "files_touched": ["specs/ROADMAP.md"]}
+  ],
+  "current_objective": 7,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "notes": {
+    "23_sorry_check": "grep -n \"23 sorry\" specs/ROADMAP.md returns nothing -- claim fully removed.",
+    "frame_lean_verification": "grep sorry FormalSystem/Metalogic/BXCanonical/Frame.lean returns zero hits -- file is sorry-free today, confirming the stale 'Frame.lean has 1 sorry (bx_le_refl)' claim needed correction.",
+    "root_scoped_chain_table_fix": "Initial edit used a 'Boneyard/.../RootScopedChain.lean' pseudo-path in table rows; revised to a column-header note ('archived -- see the two Boneyard paths above') plus bare RootScopedChain.lean filenames in rows, avoiding both a fake unresolvable path and a bare-looking-live reference. Full canonical paths (FormalSystem/Boneyard/DefectDirectedChain/RootScopedChain.lean and FormalSystem/Boneyard/ScheduleBasedBFMCS/RootScopedChain.lean) are stated in the prose immediately above the table.",
+    "roadmap_reference_check": "clean, zero unresolved paths/module names over the full cumulative diff after the table-row revision.",
+    "check_module_invariants_no_build": "no new failures vs Phase 1 baseline."
+  },
+  "deviations": []
+}

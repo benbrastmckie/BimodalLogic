@@ -917,14 +917,40 @@ closed `bx_until_eventuality_resolution` and `bx_since_eventuality_resolution`.
 
 ## Sorry Inventory
 
-The BXCanonical module has **23 sorry proofs** in three categories.
+**(2026-08-17, current, generator of record: `scripts/check-module-invariants.sh` check C3 —
+regenerate this section from C3's live output rather than hand-editing it.)** The live
+(non-Boneyard) tree has exactly **one** structural sorry: it is in `theorem countermodel_discrete`
+in `FormalSystem/Metalogic/WeakCanonical/Transfer.lean`, owned by the Base weak-completeness
+terminus (see the "Completeness programme" table in `## Overview`). C3 asserts this **by
+enclosing declaration name, never by line number** — the sole sorry's line has already drifted
+across prior edits to this file while the declaration stayed constant, so any `Transfer.lean:NNN`
+citation elsewhere in this document should be read as informational, not load-bearing. C3's scope:
+it greps all of `FormalSystem/` (both Boneyard directories excluded) for four structural sorry
+shapes — a bare `sorry` on its own line, `:= sorry` at end of line, `exact sorry`, and `<;> sorry`
+— so it counts unresolved goals, not `sorryAx`-tainted declarations reachable through a lemma
+dependency; see the C2 baseline immediately below for the axiom-level view. The **23-sorry** and
+**19-sorry** figures below are superseded task-109-era counts, retained as historical record, not
+current state.
 
-### Critical Path (5 sorries in RootScopedChain.lean)
+**C2 axiom baseline (what is provably clean)**: `BXCanonical.completeness_dense`,
+`.completeness_discrete`, and `.Chronicle.countermodel_dense` all depend on exactly
+`[propext, Classical.choice, Quot.sound]` — no `sorryAx`. `BXCanonical.completeness`'s only
+`sorryAx` traces to the single C3 sorry above via `WeakCanonical.countermodel_discrete`, not to
+anything inside BXCanonical.
 
-`Completeness.lean` is sorry-free but delegates to `dd_countermodel` in
-`RootScopedChain.lean`, which depends on these 5 sorry sites:
+### Historical: Critical Path (5 sorries in RootScopedChain.lean, task-109 era)
 
-| # | File:Line | Definition | Goal Summary | Owning Task |
+**Superseded 2026-08-17** — `RootScopedChain.lean` is no longer imported by any live module; both
+surviving copies are archived, at
+`FormalSystem/Boneyard/DefectDirectedChain/RootScopedChain.lean` and
+`FormalSystem/Boneyard/ScheduleBasedBFMCS/RootScopedChain.lean`. `Completeness.lean`'s current
+delegation is described in `### Completeness Theorem` below. Retained as a historical record of
+the task-109 assessment, not current state:
+
+`Completeness.lean` was sorry-free but delegated to `dd_countermodel` in
+`RootScopedChain.lean`, which depended on these 5 sorry sites:
+
+| # | File:Line (archived — see the two Boneyard paths above) | Definition | Goal Summary | Owning Task |
 |---|-----------|------------|--------------|-------------|
 | 1 | RootScopedChain.lean:1065 | `fwd_chain_forward_F` | F-resolution for preserving chain | **Task 109** |
 | 2 | RootScopedChain.lean:1092 | `dd_bfmcs_restricted_tc` (fwd, backward chain case) | Restricted temporal coherence (backward chain F-case) | **Task 109** |
@@ -932,11 +958,15 @@ The BXCanonical module has **23 sorry proofs** in three categories.
 | 4 | RootScopedChain.lean:1107 | `dd_bfmcs_restricted_buc` | Backward Until/Since coherence | **Task 109** |
 | 5 | RootScopedChain.lean:1114 | `dd_bfmcs_restricted_fuc` | Forward Until/Since coherence | **Task 109** |
 
-### Irreflexive-Consequence (18 sorries across 6 files)
+### Historical: Irreflexive-Consequence (14 sorries across 6 files, task-109 era)
 
-These are artifacts of the BX1/BX1' removal (task 93). Under the former reflexive
-semantics, `G(φ) → φ` (BX1) made these provable; under irreflexive semantics,
-they are either mathematically false (e.g., `bx_le_refl`) or require redesign.
+**Superseded 2026-08-17.** The heading and the `## Overview` table above both said "18"; the
+table's own rows sum to **14** — an internal inconsistency in the original record, noted here
+rather than silently corrected. None of the files below carries a live sorry today (confirmed
+against `FormalSystem/Metalogic/BXCanonical/Frame.lean`, which is now sorry-free — the `bx_le_refl`
+row below is stale). These were artifacts of the BX1/BX1' removal (task 93). Under the former
+reflexive semantics, `G(φ) → φ` (BX1) made these provable; under irreflexive semantics, they were
+either mathematically false (e.g., `bx_le_refl`) or required redesign:
 
 | File | Sorries | Key Definitions |
 |------|---------|-----------------|
@@ -947,7 +977,7 @@ they are either mathematically false (e.g., `bx_le_refl`) or require redesign.
 | Realization.lean | 4 | `F_of_mem`, `P_of_mem`, g/h_content subset in seed proofs |
 | SigmaOrdering.lean | 3 | `sigma_le_refl`, `sigma_strict_irrefl`, `not_sigma_equiv_of_sigma_strict` |
 
-### Irreflexive Semantics Strategy (Plan v48, 2026-04-19)
+### Historical: Irreflexive Semantics Strategy (Plan v48, 2026-04-19)
 
 The irreflexive semantics switch (task 93, plan v48) resolves the fundamental
 obstruction that blocked all previous approaches: under reflexive semantics,
@@ -977,7 +1007,7 @@ to close the 5 sorry sites. The defect step infrastructure is in place; the
 proof requires showing that |active_defects(chain(n+1))| < |active_defects(chain(n))|
 when defects are present.
 
-### Closed Sorries (Tasks 90+92+98+102)
+### Historical: Closed Sorries (Tasks 90+92+98+102)
 
 The following 5 sorries in `Frame.lean` were closed between 2026-04-10 and
 2026-04-12 via the quasimodel/filtration infrastructure:
@@ -990,10 +1020,13 @@ The following 5 sorries in `Frame.lean` were closed between 2026-04-10 and
 | Frame.lean (formerly :690) | `bx_since_eventuality_resolution` | Task 98 |
 | Frame.lean (formerly :704) | `bx_since_backward` | Task 102 |
 
-Frame.lean has **1 sorry** (`bx_le_refl`, intentionally invalid under irreflexive semantics).
-The key consistency proofs (`g_content_set_consistent`, `h_content_set_consistent`,
-`bx_H_backward`) are all sorry-free using seriality. See "How Until/Since Were Closed"
-below for the approach that resolved the eventuality sorries.
+**Superseded 2026-08-17**: the "Frame.lean has 1 sorry (`bx_le_refl`)" claim that stood here is no
+longer current — `FormalSystem/Metalogic/BXCanonical/Frame.lean` has **zero** sorries today
+(`grep sorry` on the live file returns nothing), consistent with C3's whole-tree count of exactly
+one live sorry, elsewhere (`WeakCanonical/Transfer.lean`). The key consistency proofs
+(`g_content_set_consistent`, `h_content_set_consistent`, `bx_H_backward`) were sorry-free using
+seriality. See "How Until/Since Were Closed" below for the approach that resolved the
+eventuality sorries.
 
 ---
 
