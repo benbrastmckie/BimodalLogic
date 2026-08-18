@@ -665,7 +665,21 @@ assume reflexive G/H semantics (`Gφ → φ`) which is mathematically false unde
 the current irreflexive semantics. The Chronicle path bypasses it entirely.
 Task 109 was abandoned 2026-05-10. Candidate for archival to Boneyard/.
 
-### Module Import Graph
+### Module Import Graph (retired 2026-08-17)
+
+**Retired, not rebuilt.** The hand-maintained tree below is from the task-109 era and is wrong on
+its own terms — its root node, `Metalogic/BXCanonical/BXCanonical.lean`, does not exist; the real
+sibling aggregator is `FormalSystem/Metalogic/BXCanonical.lean` (outside the `BXCanonical/`
+directory, per the one-aggregator-per-subdirectory convention documented in
+`FormalSystem/Metalogic.lean`'s own docstring), and its own import list already differs from the
+tree below: it imports `CompletenessDedekind.lean` and five `Chronicle/*.lean` files the old tree
+never mentions, and does not import `RootScopedChain.lean` at all. Rebuilding an equally detailed
+tree by hand here would introduce the same class of silently-drifting claim this task exists to
+correct. The current in-tree source of truth is `FormalSystem/Metalogic/BXCanonical.lean` itself
+(read its import list directly) and `FormalSystem/Metalogic.lean`'s module docstring, which gives
+the live file counts: `BXCanonical/` 20 files total (7 top-level + `Chronicle/` 8 + `Quasimodel/`
+5 + `Filtration/` 1), regenerable via `scripts/check-module-invariants.sh` check C7. The tree
+below is retained only as a historical record of the task-109-era structure:
 
 ```
 Metalogic/BXCanonical/BXCanonical.lean (28 lines, aggregator)
@@ -701,7 +715,7 @@ Metalogic/BXCanonical/BXCanonical.lean (28 lines, aggregator)
   │     ├── TruthLemma
   │     └── Bundle/FMCSDef
   │
-  ├── RootScopedChain.lean (1,487 lines, 5 sorries -- task 109)
+  ├── RootScopedChain.lean (1,487 lines, 5 sorries -- task 109; archived, see `## Sorry Inventory`)
   │     ├── OrderedSeedConsistency
   │     ├── CanonicalModel
   │     ├── Bundle/UntilSinceCoherence
@@ -738,15 +752,27 @@ Metalogic/BXCanonical/BXCanonical.lean (28 lines, aggregator)
               └── Quasimodel/Construction
 ```
 
-**Total BXCanonical module: ~5,795 lines across 16 files, 19 sorries (5 critical-path + 14 irreflexive-consequence). Task 109 Phase 1 removed 4 dead-code sorries from CanonicalModel.lean.**
+**Superseded 2026-08-17**: the closing line `Total BXCanonical module: ~5,795 lines across 16
+files, 19 sorries (5 critical-path + 14 irreflexive-consequence)` duplicated the numbers corrected
+in `## Sorry Inventory` above and is no longer current — see that section for the live count (one
+sorry, tree-wide) and check C7 for a live line/file count, reproduced by
+`find FormalSystem/Metalogic/BXCanonical -name '*.lean' | xargs wc -l`.
 
-Legacy files (`UltrafilterChain`, `SuccChainFMCS`, `FrameConditions/Completeness`)
-are still built via top-level aggregation in `Metalogic.lean` but are **not
-imported** by `BXCanonical`.
+**Corrected 2026-08-17**: `FormalSystem/Metalogic.lean` currently imports six top-level modules —
+`Soundness`, `StrongCompleteness`, `Decidability`, `Independence`, `BXCanonical`, and
+`WeakCanonical` — read directly off the file's own `import` lines, not the four the old prose
+below claims. The `UltrafilterChain`/`SuccChainFMCS`/`FrameConditions/Completeness` files named
+below are addressed in `## Legacy Code Inventory`, not repeated here to avoid a second copy of the
+same claim.
 
 ---
 
 ## Canonical Model Construction (BXCanonical)
+
+**Note (2026-08-17)**: the `File.lean:NNN-MMM`-style line citations throughout this section (in
+the subsection headings and prose below) are as of 2026-04 and have not been re-verified against
+the live tree by this pass — out of scope here. Treat them as approximate pointers into the named
+file, not as exact current line ranges.
 
 ### BXPoint (Frame.lean:46-53)
 
@@ -817,10 +843,17 @@ Contrapositive proof flow:
 5. By the truth lemma: `φ` is false at `M` in the model.
 6. Contradiction with `valid φ`.
 
-Step 4 is handled by `dd_countermodel` (in `RootScopedChain.lean`), which
-`Completeness.lean` calls directly. `Completeness.lean` itself is sorry-free;
-the remaining sorries are in the chain construction that `dd_countermodel`
-depends on (see Sorry Inventory above).
+**Corrected 2026-08-17** (historical: step 4 previously routed through `dd_countermodel` in
+`RootScopedChain.lean`, now archived — see `## Sorry Inventory`). Per
+`FormalSystem/Metalogic/BXCanonical/Completeness.lean`'s own module docstring (`## Status`), the
+current picture is: `completeness_dense` and `completeness_discrete` are `sorryAx`-free (axioms
+exactly `propext, Classical.choice, Quot.sound`). The general Base-frame `completeness` still
+carries a `sorryAx`, with a single source: `WeakCanonical.countermodel_discrete`
+(`WeakCanonical/Transfer.lean`), used in its discrete branch — the sole remaining completeness
+debt. Its dense branch (`countermodel_dense_enriched`) and mixed branch (`mcs_mixed_case_absurd`)
+are `sorryAx`-free. The file imports
+`FormalSystem.Metalogic.BXCanonical.Chronicle.ChronicleToCountermodel` and
+`FormalSystem.Metalogic.BXCanonical.Chronicle.MCSMixedCase` directly for the dense/mixed routes.
 
 ---
 

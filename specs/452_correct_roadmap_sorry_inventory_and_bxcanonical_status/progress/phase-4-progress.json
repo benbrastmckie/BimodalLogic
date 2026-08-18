@@ -1,0 +1,32 @@
+{
+  "phase": 4,
+  "phase_name": "Correct the Module Import Graph and Completeness Theorem delegation",
+  "started_at": "2026-08-17T01:05:00Z",
+  "last_updated": "2026-08-17T01:30:00Z",
+  "objectives": [
+    {"id": 1, "description": "Locate and retire Module Import Graph (root aggregator does not exist; real aggregator FormalSystem/Metalogic/BXCanonical.lean differs from claimed tree)", "status": "done", "files_touched": ["specs/ROADMAP.md"]},
+    {"id": 2, "description": "Correct/mark superseded the ~5,795 lines/16 files/19 sorries closing line", "status": "done", "files_touched": ["specs/ROADMAP.md"]},
+    {"id": 3, "description": "Correct trailing legacy-files-aggregation paragraph against live Metalogic.lean import lines (6 imports, not 4 as plan hypothesized)", "status": "done", "files_touched": ["specs/ROADMAP.md"]},
+    {"id": 4, "description": "Correct Completeness Theorem Step-4 delegation claim using Completeness.lean's own module docstring", "status": "done", "files_touched": ["specs/ROADMAP.md"]},
+    {"id": 5, "description": "Add dated staleness note on Frame.lean:NNN-style line citations in Canonical Model Construction subsections", "status": "done", "files_touched": ["specs/ROADMAP.md"]}
+  ],
+  "current_objective": 5,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "notes": {
+    "aggregator_discrepancy_found": "The old Module Import Graph's root node 'Metalogic/BXCanonical/BXCanonical.lean' does not exist as a file. The real sibling aggregator is FormalSystem/Metalogic/BXCanonical.lean (outside the BXCanonical/ directory per the documented one-aggregator-per-subdirectory convention), whose actual import list (verified by Read) already differs materially from the old tree: it imports CompletenessDedekind.lean and five Chronicle/*.lean files never mentioned in the old tree, and does NOT import RootScopedChain.lean. This justified retiring rather than rebuilding the graph, per the plan's explicit alternative.",
+    "metalogic_lean_import_correction": "Plan Phase 4 task text hypothesized 'Soundness, Decidability, BXCanonical, and WeakCanonical' (4 imports). Verified via grep '^import' FormalSystem/Metalogic.lean: actual is 6 imports -- Soundness, StrongCompleteness, Decidability, Independence, BXCanonical, WeakCanonical. Wrote the corrected count (6, all six named) rather than the plan's 4-item hypothesis -- deviation recorded below.",
+    "completeness_theorem_source": "FormalSystem/Metalogic/BXCanonical/Completeness.lean's own module docstring ## Status section (read directly, not guessed) gives the current picture: completeness_dense/completeness_discrete sorryAx-free; general completeness's sole sorryAx source is WeakCanonical.countermodel_discrete; dense/mixed branches sorryAx-free via ChronicleToCountermodel/MCSMixedCase imports.",
+    "roadmap_reference_check": "clean over cumulative diff.",
+    "check_module_invariants_no_build": "PASS across the board including C6 and C9, which were FAIL at the Phase 1 baseline -- improved by a concurrent, unrelated session (task 453) working on FormalSystem/ in parallel. Not this task's doing; noted for the summary's baseline-comparison record. No regression introduced by this task's edits either way."
+  },
+  "deviations": [
+    {
+      "task_id": "4.3",
+      "description": "Correct the trailing legacy-files-aggregation paragraph, verifying against the live file before writing the replacement",
+      "type": "altered",
+      "reason": "Plan text's own hypothesis ('Soundness, Decidability, BXCanonical, and WeakCanonical') was itself wrong -- the live file has 6 top-level imports, not 4. Wrote the verified 6-import list instead of the plan's 4-item text, per the plan's own instruction to verify against the live file before writing.",
+      "annotation": "*(deviation: altered -- plan's own 4-import hypothesis was wrong; wrote verified 6-import list: Soundness, StrongCompleteness, Decidability, Independence, BXCanonical, WeakCanonical)*"
+    }
+  ]
+}

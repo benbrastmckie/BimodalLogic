@@ -367,7 +367,7 @@ headings and its table rows before editing, and by grepping the rewritten sectio
 
 ---
 
-### Phase 4: Correct the Module Import Graph and Completeness Theorem delegation [NOT STARTED]
+### Phase 4: Correct the Module Import Graph and Completeness Theorem delegation [COMPLETED]
 
 **Goal**: Remove the second, technically-detailed justification for the numbers Phase 3 deleted.
 The import graph shows `RootScopedChain.lean (1,487 lines, 5 sorries)` as a live import of
@@ -377,27 +377,29 @@ that same Boneyard-only file.
 
 **Tasks**:
 
-- [ ] Locate the graph (anchor: `### Module Import Graph`, ~631-711). Rebuild or retire it against
+- [x] Locate the graph (anchor: `### Module Import Graph`, ~631-711). Rebuild or retire it against
       the live inventory captured in Phase 1. If rebuilding, derive the file list from
       `find FormalSystem/Metalogic/BXCanonical` rather than editing the existing tree in place; if
       retiring, replace with a short pointer to `FormalSystem/Metalogic.lean`'s docstring and
       `FormalSystem/Metalogic/BXCanonical/BXCanonical.lean` as the in-tree source of truth, marked
       with the reason the hand-maintained graph was retired.
-- [ ] Remove or correct the closing line
+- [x] Remove or correct the closing line
       `**Total BXCanonical module: ~5,795 lines across 16 files, 19 sorries ...**`. Any replacement
       count must come from a command reproduced in the summary (C7's live inventory line, or an
       explicit `find`/`wc -l`), not from arithmetic on the old tree.
-- [ ] Correct the trailing `Legacy files (...) are still built via top-level aggregation in
+- [x] Correct the trailing `Legacy files (...) are still built via top-level aggregation in
       Metalogic.lean` paragraph — `FormalSystem/Metalogic.lean` now aggregates only `Soundness`,
       `Decidability`, `BXCanonical`, and `WeakCanonical`; verify against the live file before
-      writing the replacement.
-- [ ] Locate `### Completeness Theorem` (anchor: `Step 4 is handled by`, ~784-788) and correct the
+      writing the replacement. *(deviation: altered — the live file actually has 6 top-level
+      imports (Soundness, StrongCompleteness, Decidability, Independence, BXCanonical,
+      WeakCanonical), not the 4 hypothesized here; wrote the verified 6-import list)*
+- [x] Locate `### Completeness Theorem` (anchor: `Step 4 is handled by`, ~784-788) and correct the
       claim that `Completeness.lean` calls `dd_countermodel` in `RootScopedChain.lean`. Replace
       with the current route per `Completeness.lean`'s own docstring, or, if establishing that
       requires reading beyond a docstring, mark the step explicitly as a historical description of
       the 2026-04 pipeline and point at `Metalogic.lean`'s docstring for the current one. Do not
       guess the current call chain.
-- [ ] Sanity-check the remaining subsections of `## Canonical Model Construction (BXCanonical)`
+- [x] Sanity-check the remaining subsections of `## Canonical Model Construction (BXCanonical)`
       (`### BXPoint`, `### Canonical Temporal Ordering`, `### Canonical Modal Equivalence`,
       `### Key Infrastructure Lemmas`, `### Truth Lemma`) — these carry `Frame.lean:46-53`-style
       line citations. Do not re-verify each line range (out of scope); do add a dated note that the
