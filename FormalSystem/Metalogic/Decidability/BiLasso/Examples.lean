@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Metalogic.Decidability.BiLasso.Annotation
+import FormalSystem.Metalogic.Decidability.BiLasso.Decide
 
 /-!
 # Non-Vacuity Witnesses for `LocalCoherent` and `Fulfilling`
@@ -385,6 +386,27 @@ theorem boxOracle_false_not_sound : ¬ BoxOracleSound loopPresentation (fun _ =>
   intro h
   have htaut := (h (Formula.imp Formula.bot Formula.bot)).mpr (fun _ _ hb => hb)
   simp at htaut
+
+/-! ## The decision instances compute, and they discriminate
+
+The hand proofs above establish what is true. These `#eval`s establish something the hand proofs
+cannot: that the `Decidable` instances of `BiLasso/Decide.lean` actually **run** — that nothing
+in the window collapse smuggled in a classical instance that typechecks and does not compute —
+and that they return *different* answers on the two witnesses.
+-/
+
+section SmokeTests
+
+-- The positive witness: both checks return `true`.
+#guard decide (LocalCoherent loopPresentation φPos (fun _ => false) posAnnot)
+#guard decide (Fulfilling loopPresentation φPos posAnnot)
+
+-- The negative witness: locally coherent, **not** fulfilling. The second line is the one that
+-- would fail if the fulfilment window were ever weakened into a purely local check.
+#guard decide (LocalCoherent loopPresentation φNeg (fun _ => false) negAnnot)
+#guard !decide (Fulfilling loopPresentation φNeg negAnnot)
+
+end SmokeTests
 
 end BiLassoExamples
 

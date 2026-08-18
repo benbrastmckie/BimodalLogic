@@ -661,7 +661,7 @@ temporal-nesting-free fragment, and do not start Phases 10–12, which consume i
 
 ---
 
-### Phase 8: Decidability of `LocalCoherent` and `Fulfilling` — the corrected scan bound [NOT STARTED]
+### Phase 8: Decidability of `LocalCoherent` and `Fulfilling` — the corrected scan bound [COMPLETED]
 
 **Goal**: `DecidablePred` instances for both predicates, via the *corrected* form of the bound
 Phase 3 could not deliver.
@@ -672,24 +672,24 @@ periodic **by construction**. Say so in the docstring, and cite
 `evidence/phase3-scan-bound-is-false.lean` for what the corrected statement is *not*.
 
 **Tasks**:
-- [ ] State and prove the corrected forward scan bound: for a decidable predicate `Q` on
+- [x] State and prove the corrected forward scan bound: for a decidable predicate `Q` on
       `Finset Formula`, if `Q (A.label s)` holds for some `s > t`, then it holds for some `s` in an
       explicit finite range determined by `t`, `|back|`, `|mid|`, `|fwd|`. Derive it by pulling a
       witness back one period at a time using Phase 5's label periodicity. State the bound
       **explicitly**, not existentially — an unbounded existential does not discharge decidability.
-- [ ] State and prove the leftward mirror.
-- [ ] Reduce `LocalCoherent`'s `∀ t : ℤ` to a finite check. The clauses relate `label t` to
+- [x] State and prove the leftward mirror.
+- [x] Reduce `LocalCoherent`'s `∀ t : ℤ` to a finite check. The clauses relate `label t` to
       `label (t±1)` and `unroll t`, and both sequences are periodic, so the whole family collapses
       to one window — reuse `BiLasso.step_of_mem_window`'s shape (`Basic.lean:204`) as the model,
       since `coherent` solved the identical problem for adjacency.
-- [ ] Reduce `Fulfilling`'s `∀ t : ℤ` to a finite check. This is the harder half and the place to
+- [x] Reduce `Fulfilling`'s `∀ t : ℤ` to a finite check. This is the harder half and the place to
       slow down. The obligation at a far-left position `t ≪ 0` is not literally the obligation at
       `t + |back|`, because the *distance to the window* differs; what makes it finite is that
       discharge from a far-left position is determined by whether the guard survives one whole
       backward period — if it does, the eventuality is discharged within `|back|`; if it does not,
       no far-left position discharges it at all. Prove that dichotomy, then check a window of
       roughly `2|back| + |mid| + 2|fwd|`. Derive the window size, do not guess it.
-- [ ] Supply the `DecidablePred` instances, mirroring `IntPresentation`'s existing `DecidablePred`
+- [x] Supply the `DecidablePred` instances, mirroring `IntPresentation`'s existing `DecidablePred`
       on `stepRel` (`IntPresentation.lean:96`). **No `Classical.dec`, no `open Classical`** — these
       instances must compute, or `check` is not a decision procedure.
 
@@ -703,6 +703,13 @@ periodic **by construction**. Say so in the docstring, and cite
 order `2|back| + |mid| + 2|fwd|`. Derive that constant from the dichotomy proof rather than
 asserting it, and make Phase 9's enumeration and Phase 12's `bound` consume the derived quantity.
 If the derived window is larger, update the consumers and say so — do not leave them out of step.
+
+*(Outcome: **confirmed exactly.** The derived window is `[-2|back|, |mid| + 2|fwd|)`, of size
+`2|back| + |mid| + 2|fwd|`, exposed as `fulWindowLo` / `fulWindowHi` in `Decide.lean` for
+downstream consumers to read off rather than restate. `LocalCoherent`'s window came out
+identical — `cohWindowLo` / `cohWindowHi` — for an unrelated reason: there the second period is
+needed because the per-position check reads `t-1` and `t+1`, whereas for fulfilment it is needed
+because each of the two hard shifts requires a full residue system of headroom.)*
 
 **Files to modify**:
 - `FormalSystem/Metalogic/Decidability/BiLasso/Decide.lean` — new

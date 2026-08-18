@@ -443,4 +443,463 @@ instance instDecidableLocalCoherent (A : Annot P φ) :
         obtain ⟨hlo, hhi⟩ := Finset.mem_Ico.mp ht
         exact h t hlo hhi)
 
+/-! ## `Fulfilling`, position by position
+
+This is the harder reduction, and it is not a matter of shifting a window. The forward obligation
+at a far-left position `t` searches rightward across an interval whose length grows without bound
+as `t` decreases, so no fixed scan range works uniformly and no naive periodicity argument
+applies. The same problem appears mirrored for the backward obligation at far-right positions.
+
+Two things make the family finite, and they are different from each other:
+
+1. **A bounded witness.** If the obligation is met at all, it is met by a witness within one
+   forward period of the window (`untlObl_iff_bounded`). This is the corrected scan bound doing
+   its work, and it makes the check *at a fixed position* finite.
+2. **A position shift.** The obligation at `t` and at `t + |back|` coincide once `t` is at least
+   two backward periods left of the origin (`untlObl_shift_back`). The extra period is exactly
+   what the argument needs: in the one subcase where the witness lies at or beyond the origin,
+   the guard is known to hold throughout an interval containing a **complete residue system** of
+   the backward cycle, hence — by `mem_all_neg_of_period` — throughout the entire negative
+   region. That is the precise content of "the guard survives a full period", and it is why one
+   period is not enough and two are.
+-/
+
+namespace Annot
+
+variable {P : IntPresentation} {φ : Formula}
+
+/-- The forward eventuality obligation: a witness for the event, with the guard throughout. -/
+def UntlObl (A : Annot P φ) (t : ℤ) (g e : Formula) : Prop :=
+  ∃ s : ℤ, t < s ∧ e ∈ A.label s ∧ ∀ r : ℤ, t < r → r < s → g ∈ A.label r
+
+/-- The backward eventuality obligation. -/
+def SnceObl (A : Annot P φ) (t : ℤ) (g e : Formula) : Prop :=
+  ∃ s : ℤ, s < t ∧ e ∈ A.label s ∧ ∀ r : ℤ, s < r → r < t → g ∈ A.label r
+
+/-- The forward obligation with the witness confined to an explicit finite range. -/
+def UntlOblB (A : Annot P φ) (t : ℤ) (g e : Formula) : Prop :=
+  ∃ s ∈ Finset.Ioc t (max t A.nm + A.nf),
+    e ∈ A.label s ∧ ∀ r ∈ Finset.Ioo t s, g ∈ A.label r
+
+/-- The backward obligation with the witness confined to an explicit finite range. -/
+def SnceOblB (A : Annot P φ) (t : ℤ) (g e : Formula) : Prop :=
+  ∃ s ∈ Finset.Ico (min t 0 - A.nb) t,
+    e ∈ A.label s ∧ ∀ r ∈ Finset.Ioo s t, g ∈ A.label r
+
+instance instDecidableUntlOblB (A : Annot P φ) (t : ℤ) (g e : Formula) :
+    Decidable (UntlOblB A t g e) := by
+  dsimp only [UntlOblB]; infer_instance
+
+instance instDecidableSnceOblB (A : Annot P φ) (t : ℤ) (g e : Formula) :
+    Decidable (SnceOblB A t g e) := by
+  dsimp only [SnceOblB]; infer_instance
+
+/-- Descent for the forward obligation: a witness beyond one forward period past the window can
+be pulled back one period, because the labels there repeat and the guard interval only shrinks. -/
+theorem untlObl_descend (A : Annot P φ) (g e : Formula) :
+    ∀ (d : ℕ) (t s : ℤ), (s - t).toNat = d → t < s → e ∈ A.label s →
+      (∀ r : ℤ, t < r → r < s → g ∈ A.label r) → UntlOblB A t g e := by
+  intro d
+  induction d using Nat.strong_induction_on with
+  | _ d ih =>
+    intro t s hd hts hes hgs
+    have hnf := A.nf_pos
+    have hmr : A.nm ≤ max t A.nm := le_max_right _ _
+    have hml : t ≤ max t A.nm := le_max_left _ _
+    by_cases hle : s ≤ max t A.nm + A.nf
+    · exact ⟨s, Finset.mem_Ioc.mpr ⟨hts, hle⟩, hes,
+        fun r hr => hgs r (Finset.mem_Ioo.mp hr).1 (Finset.mem_Ioo.mp hr).2⟩
+    · push Not at hle
+      have hlab : A.label (s - A.nf) = A.label s := A.label_sub_nf (by omega)
+      refine ih ((s - A.nf - t).toNat) (by omega) t (s - A.nf) rfl (by omega) (hlab ▸ hes) ?_
+      exact fun r hr1 hr2 => hgs r hr1 (by omega)
+
+/-- Descent for the backward obligation — the leftward mirror. -/
+theorem snceObl_descend (A : Annot P φ) (g e : Formula) :
+    ∀ (d : ℕ) (t s : ℤ), (t - s).toNat = d → s < t → e ∈ A.label s →
+      (∀ r : ℤ, s < r → r < t → g ∈ A.label r) → SnceOblB A t g e := by
+  intro d
+  induction d using Nat.strong_induction_on with
+  | _ d ih =>
+    intro t s hd hst hes hgs
+    have hnb := A.nb_pos
+    have hmr : min t 0 ≤ 0 := min_le_right _ _
+    have hml : min t 0 ≤ t := min_le_left _ _
+    by_cases hge : min t 0 - A.nb ≤ s
+    · exact ⟨s, Finset.mem_Ico.mpr ⟨hge, hst⟩, hes,
+        fun r hr => hgs r (Finset.mem_Ioo.mp hr).1 (Finset.mem_Ioo.mp hr).2⟩
+    · push Not at hge
+      have hlab : A.label (s + A.nb) = A.label s := A.label_add_nb (by omega)
+      refine ih ((t - (s + A.nb)).toNat) (by omega) t (s + A.nb) rfl (by omega) (hlab ▸ hes) ?_
+      exact fun r hr1 hr2 => hgs r (by omega) hr2
+
+/-- **The forward obligation has a bounded witness.** -/
+theorem untlObl_iff_bounded (A : Annot P φ) (t : ℤ) (g e : Formula) :
+    UntlObl A t g e ↔ UntlOblB A t g e := by
+  constructor
+  · rintro ⟨s, hts, hes, hgs⟩
+    exact A.untlObl_descend g e (s - t).toNat t s rfl hts hes hgs
+  · rintro ⟨s, hs, hes, hgs⟩
+    obtain ⟨hlo, _⟩ := Finset.mem_Ioc.mp hs
+    exact ⟨s, hlo, hes, fun r hr1 hr2 => hgs r (Finset.mem_Ioo.mpr ⟨hr1, hr2⟩)⟩
+
+/-- **The backward obligation has a bounded witness.** -/
+theorem snceObl_iff_bounded (A : Annot P φ) (t : ℤ) (g e : Formula) :
+    SnceObl A t g e ↔ SnceOblB A t g e := by
+  constructor
+  · rintro ⟨s, hst, hes, hgs⟩
+    exact A.snceObl_descend g e (t - s).toNat t s rfl hst hes hgs
+  · rintro ⟨s, hs, hes, hgs⟩
+    obtain ⟨_, hhi⟩ := Finset.mem_Ico.mp hs
+    exact ⟨s, hhi, hes, fun r hr1 hr2 => hgs r (Finset.mem_Ioo.mpr ⟨hr1, hr2⟩)⟩
+
+/-! ### The four position shifts
+
+Two are pure shifts: the forward obligation seen from far right, and the backward obligation seen
+from far left, both search *into* the periodic region they already sit in, so translating the
+witness by one period is all that is required.
+
+The other two are the hard ones, and each needs one extra period of headroom together with
+`mem_all_neg_of_period` / `mem_all_fwd_of_period`. In those, the search runs *out of* the
+periodic region the position sits in and crosses the window, so in one subcase the witness
+cannot be translated at all; what saves it is that the guard is then known across a complete
+residue system and therefore across the whole region.
+-/
+
+/-- Rightward label periodicity, at the abbreviated period. -/
+theorem label_add_nf (A : Annot P φ) {t : ℤ} (ht : A.nm ≤ t) :
+    A.label (t + A.nf) = A.label t := A.label_add_fwd_length ht
+
+/-- Leftward label periodicity, at the abbreviated period. -/
+theorem label_sub_nb (A : Annot P φ) {t : ℤ} (ht : t < 0) :
+    A.label (t - A.nb) = A.label t := A.label_sub_back_length ht
+
+/--
+**Pure shift: the forward obligation at far-right positions.**
+
+At or beyond the window the whole rightward future is `|fwd|`-periodic, so a witness translates
+in either direction.
+-/
+theorem untlObl_shift_fwd (A : Annot P φ) {t : ℤ} (ht : A.nm ≤ t) (g e : Formula) :
+    UntlObl A t g e ↔ UntlObl A (t + A.nf) g e := by
+  have hnf := A.nf_pos
+  constructor
+  · rintro ⟨s, hts, hes, hgs⟩
+    refine ⟨s + A.nf, by omega, ?_, fun r hr1 hr2 => ?_⟩
+    · rw [A.label_add_nf (by omega)]; exact hes
+    · have := hgs (r - A.nf) (by omega) (by omega)
+      rwa [← A.label_sub_nf (t := r) (by omega)]
+  · rintro ⟨s, hts, hes, hgs⟩
+    refine ⟨s - A.nf, by omega, ?_, fun r hr1 hr2 => ?_⟩
+    · rw [A.label_sub_nf (by omega)]; exact hes
+    · have := hgs (r + A.nf) (by omega) (by omega)
+      rwa [A.label_add_nf (by omega)] at this
+
+/--
+**Pure shift: the backward obligation at far-left positions.**
+
+Strictly left of the origin the whole leftward past is `|back|`-periodic.
+-/
+theorem snceObl_shift_back (A : Annot P φ) {t : ℤ} (ht : t + A.nb ≤ -1) (g e : Formula) :
+    SnceObl A t g e ↔ SnceObl A (t + A.nb) g e := by
+  have hnb := A.nb_pos
+  constructor
+  · rintro ⟨s, hst, hes, hgs⟩
+    refine ⟨s + A.nb, by omega, ?_, fun r hr1 hr2 => ?_⟩
+    · rw [A.label_add_nb (by omega)]; exact hes
+    · have := hgs (r - A.nb) (by omega) (by omega)
+      rwa [A.label_sub_nb (t := r) (by omega)] at this
+  · rintro ⟨s, hst, hes, hgs⟩
+    refine ⟨s - A.nb, by omega, ?_, fun r hr1 hr2 => ?_⟩
+    · rw [A.label_sub_nb (by omega)]; exact hes
+    · have := hgs (r + A.nb) (by omega) (by omega)
+      rwa [A.label_add_nb (by omega)] at this
+
+/--
+**The forward obligation at far-left positions**, with two backward periods of headroom.
+
+The `←` direction is where the work is. Given a witness `s` for the position `t + |back|`, if
+`s` is still negative the witness translates. If `s` has reached the origin or beyond it cannot
+translate — but then the guard is known throughout `(t + |back|, 0)`, an interval containing a
+complete residue system of the backward cycle, so `mem_all_neg_of_period` gives the guard at
+**every** negative position and the same `s` serves at `t`. The second period of headroom is
+exactly what makes that interval long enough.
+-/
+theorem untlObl_shift_back (A : Annot P φ) {t : ℤ} (ht : t + 2 * A.nb ≤ -1) (g e : Formula) :
+    UntlObl A t g e ↔ UntlObl A (t + A.nb) g e := by
+  have hnb := A.nb_pos
+  constructor
+  · rintro ⟨s, hts, hes, hgs⟩
+    rcases lt_or_ge (t + A.nb) s with hgt | hle
+    · exact ⟨s, hgt, hes, fun r hr1 hr2 => hgs r (by omega) hr2⟩
+    · refine ⟨s + A.nb, by omega, ?_, fun r hr1 hr2 => ?_⟩
+      · rw [A.label_add_nb (by omega)]; exact hes
+      · have := hgs (r - A.nb) (by omega) (by omega)
+        rwa [A.label_sub_nb (t := r) (by omega)] at this
+  · rintro ⟨s, hts, hes, hgs⟩
+    rcases lt_or_ge s 0 with hneg | hnn
+    · refine ⟨s - A.nb, by omega, ?_, fun r hr1 hr2 => ?_⟩
+      · rw [A.label_sub_nb (by omega)]; exact hes
+      · have := hgs (r + A.nb) (by omega) (by omega)
+        rwa [A.label_add_nb (by omega)] at this
+    · -- the witness has reached the origin: the guard survives a whole backward period
+      have hall : ∀ r : ℤ, r < 0 → g ∈ A.label r := by
+        refine A.mem_all_neg_of_period (a := t + A.nb) (by omega) ?_
+        intro r hr1 hr2
+        exact hgs r hr1 (by omega)
+      exact ⟨s, by omega, hes, fun r hr1 hr2 => by
+        rcases lt_or_ge (t + A.nb) r with h | h
+        · exact hgs r h hr2
+        · exact hall r (by omega)⟩
+
+/--
+**The backward obligation at far-right positions**, with two forward periods of headroom — the
+mirror of `untlObl_shift_back`, using `mem_all_fwd_of_period`.
+-/
+theorem snceObl_shift_fwd (A : Annot P φ) {t : ℤ} (ht : A.nm + 2 * A.nf ≤ t) (g e : Formula) :
+    SnceObl A t g e ↔ SnceObl A (t - A.nf) g e := by
+  have hnf := A.nf_pos
+  have hnm := A.nm_nonneg
+  constructor
+  · rintro ⟨s, hst, hes, hgs⟩
+    rcases lt_or_ge s (t - A.nf) with hlt | hge
+    · exact ⟨s, hlt, hes, fun r hr1 hr2 => hgs r hr1 (by omega)⟩
+    · refine ⟨s - A.nf, by omega, ?_, fun r hr1 hr2 => ?_⟩
+      · rw [A.label_sub_nf (by omega)]; exact hes
+      · have := hgs (r + A.nf) (by omega) (by omega)
+        rwa [A.label_add_nf (by omega)] at this
+  · rintro ⟨s, hst, hes, hgs⟩
+    rcases le_or_gt A.nm s with hin | hout
+    · refine ⟨s + A.nf, by omega, ?_, fun r hr1 hr2 => ?_⟩
+      · rw [A.label_add_nf (by omega)]; exact hes
+      · have := hgs (r - A.nf) (by omega) (by omega)
+        rwa [← A.label_sub_nf (t := r) (by omega)]
+    · -- the witness lies left of the window: the guard survives a whole forward period
+      have hall : ∀ r : ℤ, A.nm ≤ r → g ∈ A.label r := by
+        refine A.mem_all_fwd_of_period (b := A.nm) le_rfl ?_
+        intro r hr1 hr2
+        exact hgs r (by omega) (by omega)
+      exact ⟨s, by omega, hes, fun r hr1 hr2 => by
+        rcases lt_or_ge r (t - A.nf) with h | h
+        · exact hgs r hr1 h
+        · exact hall r (by omega)⟩
+
+/-! ### Assembling the fulfilment check
+
+`Fulfilling` quantifies over all `g` and `e`, but a label is always a subset of the closure
+(`Annot.label_subset_closure`), so only closure members can ever trigger an obligation. That is
+what turns the two unbounded formula quantifiers into one `Finset` quantifier.
+-/
+
+/-- The fulfilment clause a single closure member imposes at a position. Non-temporal formulas
+impose nothing. -/
+def eventClauseAt (A : Annot P φ) (t : ℤ) : Formula → Prop
+  | Formula.untl g e => Formula.untl g e ∈ A.label t → UntlOblB A t g e
+  | Formula.snce g e => Formula.snce g e ∈ A.label t → SnceOblB A t g e
+  | _ => True
+
+instance instDecidableEventClauseAt (A : Annot P φ) (t : ℤ) :
+    DecidablePred (eventClauseAt A t) := by
+  intro ψ
+  cases ψ <;> (dsimp only [eventClauseAt]; infer_instance)
+
+/-- `Fulfilling`'s content at a single position, quantified over the closure as a `Finset`. -/
+def FulfilAt (A : Annot P φ) (t : ℤ) : Prop :=
+  ∀ ψ ∈ subformulaClosure φ, eventClauseAt A t ψ
+
+instance instDecidableFulfilAt (A : Annot P φ) : DecidablePred (FulfilAt A) := by
+  intro t
+  dsimp only [FulfilAt]
+  infer_instance
+
+/-- `Fulfilling` is exactly `FulfilAt` at every position. -/
+theorem fulfilling_iff_forall (A : Annot P φ) :
+    Fulfilling P φ A ↔ ∀ t : ℤ, FulfilAt A t := by
+  constructor
+  · intro h t ψ hψ
+    cases ψ with
+    | atom p => trivial
+    | bot => trivial
+    | imp a b => trivial
+    | box χ => trivial
+    | untl g e =>
+      intro hmem
+      exact (A.untlObl_iff_bounded t g e).mp (h.1 t g e hmem)
+    | snce g e =>
+      intro hmem
+      exact (A.snceObl_iff_bounded t g e).mp (h.2 t g e hmem)
+  · intro h
+    constructor
+    · intro t g e hmem
+      have hψ : Formula.untl g e ∈ subformulaClosure φ := A.label_subset_closure t hmem
+      exact (A.untlObl_iff_bounded t g e).mpr (h t (Formula.untl g e) hψ hmem)
+    · intro t g e hmem
+      have hψ : Formula.snce g e ∈ subformulaClosure φ := A.label_subset_closure t hmem
+      exact (A.snceObl_iff_bounded t g e).mpr (h t (Formula.snce g e) hψ hmem)
+
+/-- **Far-left shift of the whole fulfilment check.** -/
+theorem fulfilAt_shift_back (A : Annot P φ) {t : ℤ} (ht : t + 2 * A.nb ≤ -1) :
+    FulfilAt A t ↔ FulfilAt A (t + A.nb) := by
+  have hnb := A.nb_pos
+  have hlab : A.label (t + A.nb) = A.label t := A.label_add_nb (by omega)
+  constructor
+  · intro h ψ hψ
+    cases ψ with
+    | atom p => trivial
+    | bot => trivial
+    | imp a b => trivial
+    | box χ => trivial
+    | untl g e =>
+      intro hmem
+      rw [hlab] at hmem
+      rw [← A.untlObl_iff_bounded]
+      exact (A.untlObl_shift_back (by omega) g e).mp
+        ((A.untlObl_iff_bounded t g e).mpr (h (Formula.untl g e) hψ hmem))
+    | snce g e =>
+      intro hmem
+      rw [hlab] at hmem
+      rw [← A.snceObl_iff_bounded]
+      exact (A.snceObl_shift_back (by omega) g e).mp
+        ((A.snceObl_iff_bounded t g e).mpr (h (Formula.snce g e) hψ hmem))
+  · intro h ψ hψ
+    cases ψ with
+    | atom p => trivial
+    | bot => trivial
+    | imp a b => trivial
+    | box χ => trivial
+    | untl g e =>
+      intro hmem
+      rw [← hlab] at hmem
+      rw [← A.untlObl_iff_bounded]
+      exact (A.untlObl_shift_back (by omega) g e).mpr
+        ((A.untlObl_iff_bounded (t + A.nb) g e).mpr (h (Formula.untl g e) hψ hmem))
+    | snce g e =>
+      intro hmem
+      rw [← hlab] at hmem
+      rw [← A.snceObl_iff_bounded]
+      exact (A.snceObl_shift_back (by omega) g e).mpr
+        ((A.snceObl_iff_bounded (t + A.nb) g e).mpr (h (Formula.snce g e) hψ hmem))
+
+/-- **Far-right shift of the whole fulfilment check.** -/
+theorem fulfilAt_shift_fwd (A : Annot P φ) {t : ℤ} (ht : A.nm + 2 * A.nf ≤ t) :
+    FulfilAt A t ↔ FulfilAt A (t - A.nf) := by
+  have hnf := A.nf_pos
+  have hnm := A.nm_nonneg
+  have hlab : A.label (t - A.nf) = A.label t := A.label_sub_nf (by omega)
+  have hshift : ∀ g e : Formula, UntlObl A (t - A.nf) g e ↔ UntlObl A t g e := by
+    intro g e
+    have := A.untlObl_shift_fwd (t := t - A.nf) (by omega) g e
+    rwa [show t - A.nf + A.nf = t by omega] at this
+  constructor
+  · intro h ψ hψ
+    cases ψ with
+    | atom p => trivial
+    | bot => trivial
+    | imp a b => trivial
+    | box χ => trivial
+    | untl g e =>
+      intro hmem
+      rw [hlab] at hmem
+      rw [← A.untlObl_iff_bounded]
+      exact (hshift g e).mpr ((A.untlObl_iff_bounded t g e).mpr (h (Formula.untl g e) hψ hmem))
+    | snce g e =>
+      intro hmem
+      rw [hlab] at hmem
+      rw [← A.snceObl_iff_bounded]
+      exact (A.snceObl_shift_fwd (by omega) g e).mp
+        ((A.snceObl_iff_bounded t g e).mpr (h (Formula.snce g e) hψ hmem))
+  · intro h ψ hψ
+    cases ψ with
+    | atom p => trivial
+    | bot => trivial
+    | imp a b => trivial
+    | box χ => trivial
+    | untl g e =>
+      intro hmem
+      rw [← hlab] at hmem
+      rw [← A.untlObl_iff_bounded]
+      exact (hshift g e).mp
+        ((A.untlObl_iff_bounded (t - A.nf) g e).mpr (h (Formula.untl g e) hψ hmem))
+    | snce g e =>
+      intro hmem
+      rw [← hlab] at hmem
+      rw [← A.snceObl_iff_bounded]
+      exact (A.snceObl_shift_fwd (by omega) g e).mpr
+        ((A.snceObl_iff_bounded (t - A.nf) g e).mpr (h (Formula.snce g e) hψ hmem))
+
+end Annot
+
+/-! ## The `Fulfilling` window
+
+The derived window is `[-2|back|, |mid| + 2|fwd|)`, of size `2|back| + |mid| + 2|fwd|`. It is
+the *same* window as `LocalCoherent`'s, for a different reason: there it is because the local
+check reads its immediate neighbours, here it is because the two hard shifts each need a second
+period of headroom. Downstream consumers must read the bound off `fulWindowLo` / `fulWindowHi`
+rather than restating the arithmetic.
+-/
+
+/-- Lower end of the fulfilment window. -/
+def fulWindowLo (A : Annot P φ) : ℤ := -2 * A.nb
+
+/-- Upper end (exclusive) of the fulfilment window. -/
+def fulWindowHi (A : Annot P φ) : ℤ := A.nm + 2 * A.nf
+
+/-- **`Fulfilling` collapses to one finite window.** -/
+theorem fulfilling_iff_window (A : Annot P φ) :
+    Fulfilling P φ A ↔
+      ∀ t : ℤ, fulWindowLo A ≤ t → t < fulWindowHi A → Annot.FulfilAt A t := by
+  rw [Annot.fulfilling_iff_forall]
+  have hnb := A.nb_pos
+  have hnf := A.nf_pos
+  have hnm := A.nm_nonneg
+  constructor
+  · intro h t _ _; exact h t
+  · intro h
+    have left : ∀ (d : ℕ) (t : ℤ), (-t).toNat = d → t < fulWindowLo A → Annot.FulfilAt A t := by
+      intro d
+      induction d using Nat.strong_induction_on with
+      | _ d ih =>
+        intro t hd hlt
+        simp only [fulWindowLo] at hlt
+        refine (A.fulfilAt_shift_back (by omega)).mpr ?_
+        by_cases hin : t + A.nb < fulWindowLo A
+        · exact ih ((-(t + A.nb)).toNat) (by simp only [fulWindowLo] at hin; omega)
+            (t + A.nb) rfl hin
+        · push Not at hin
+          refine h (t + A.nb) hin ?_
+          simp only [fulWindowHi]
+          omega
+    have right : ∀ (d : ℕ) (t : ℤ), t.toNat = d → fulWindowHi A ≤ t → Annot.FulfilAt A t := by
+      intro d
+      induction d using Nat.strong_induction_on with
+      | _ d ih =>
+        intro t hd hge
+        simp only [fulWindowHi] at hge
+        refine (A.fulfilAt_shift_fwd (by omega)).mpr ?_
+        by_cases hin : fulWindowHi A ≤ t - A.nf
+        · exact ih ((t - A.nf).toNat) (by simp only [fulWindowHi] at hin; omega)
+            (t - A.nf) rfl hin
+        · push Not at hin
+          refine h (t - A.nf) ?_ hin
+          simp only [fulWindowLo]
+          omega
+    intro t
+    rcases lt_or_ge t (fulWindowLo A) with hl | hl
+    · exact left ((-t).toNat) t rfl hl
+    rcases lt_or_ge t (fulWindowHi A) with hr | hr
+    · exact h t hl hr
+    · exact right t.toNat t rfl hr
+
+/-- `Fulfilling` is decidable, with no appeal to classical choice for the instance data. -/
+instance instDecidableFulfilling (A : Annot P φ) : Decidable (Fulfilling P φ A) :=
+  decidable_of_iff
+    (∀ t ∈ Finset.Ico (fulWindowLo A) (fulWindowHi A), Annot.FulfilAt A t)
+    (by
+      rw [fulfilling_iff_window]
+      constructor
+      · intro h t hlo hhi; exact h t (Finset.mem_Ico.mpr ⟨hlo, hhi⟩)
+      · intro h t ht
+        obtain ⟨hlo, hhi⟩ := Finset.mem_Ico.mp ht
+        exact h t hlo hhi)
+
 end FormalSystem.Metalogic.Decidability
