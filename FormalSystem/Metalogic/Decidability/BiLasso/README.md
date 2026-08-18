@@ -12,7 +12,20 @@ procedure searches the finitely presented paths of that specific frame.
 
 | File | Lines | Description |
 |------|-------|-------------|
-| `Basic.lean` | 300 | The `BiLasso` structure, its decoding `unroll`, the two periodicities, and `unroll_isStepPath` |
+| `Basic.lean` | 316 | The `BiLasso` structure, its decoding `unroll`, the two periodicities, and `unroll_isStepPath` |
+| `Unfold.lean` | 166 | The exact ℤ one-step unfolding of `TruthAt` for `untl` and `snce`, plus the two ℤ-distance induction principles |
+| `Periodic.lean` | 130 | The three-segment periodic decoding at an arbitrary `[Inhabited α]`, shared in scheme with `Basic.lean`'s |
+| `Annotation.lean` | 360 | The `Annot` datatype, its label decoding and alignment with the state decoding, and the three predicates `LocalCoherent`, `Fulfilling`, `BoxOracleSound` |
+| `Examples.lean` | 442 | The non-vacuity witnesses: one annotated lasso satisfying both predicates, one satisfying `LocalCoherent` but not `Fulfilling` |
+| `TruthLemma.lean` | 230 | `truth_along_annot` — truth equals label membership on the closure |
+| `Decide.lean` | 905 | The corrected scan bounds and the window collapses that make `LocalCoherent` and `Fulfilling` decidable |
+| `Enumerate.lean` | 325 | `boundedBiLassos` and `boundedAnnots`, with completeness and soundness |
+| `SmallModel.lean` | 236 | The type sequence of a genuine history, shown locally coherent and fulfilling — the groundwork the extraction consumes |
+
+The extraction itself (`exists_annot_of_truth`), the box oracle, and `check` are **not yet
+present**: see `specs/417_semantic_fmp_finite_worldstate_over_z/evidence/phase10-origin-anchoring-obstruction.lean`
+for the machine-checked obstruction that halted the extraction, and the plan's Phase 10 blocker
+record for the two available repairs.
 
 ## The two design constraints
 

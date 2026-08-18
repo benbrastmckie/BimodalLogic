@@ -770,7 +770,7 @@ segments are bounded by `n`, with completeness and soundness proved.
 
 ---
 
-### Phase 10: The small-model theorem [NOT STARTED]
+### Phase 10: The small-model theorem [BLOCKED]
 
 **Goal**: `exists_annot_of_truth` — if a formula is true at `(τ, t)` for some total history of the
 presentation, a bounded annotated bi-lasso witnessing it exists.
@@ -779,18 +779,80 @@ presentation, a bounded annotated bi-lasso witnessing it exists.
 `[BLOCKED]`, write the precise resisting goal state to `evidence/`, and stop. Do not weaken the
 statement to a provable but useless form, and do not start Phases 11–12, which consume it.
 
+**BLOCKER** (Phase 10):
+
+- **What failed**: two independent obstructions, both to the *extraction*, neither to the
+  type-sequence groundwork (which landed sorry-free — see below).
+
+  1. **Origin anchoring.** The planned construction pigeonholes a backward repeat `c₁ < c₂ ≤ 0`
+     and assembles `back := path[c₁, c₂)`, `mid := path[c₂, a₁)`, `fwd := path[a₁, a₂)`. A
+     `BiLasso` has **no left prefix** — it is `back` repeated, then `mid` on `[0, |mid|)`, then
+     `fwd` repeated — so the lasso's origin is forced to source time `c₂`, and the point of
+     interest (source time `0`) lands at lasso position `-c₂`, which is `0` only when `c₂ = 0`.
+     Phase 12's specified `check` reads `A.lasso.unroll 0` and `A.label 0` **only**, so it cannot
+     consume a witness at `-c₂`.
+     Demanding `c₂ = 0` demands a recurrence of the type at the point of interest, and that can
+     fail: `evidence/phase10-origin-anchoring-obstruction.lean` exhibits a total history of a
+     two-state presentation and a closure formula whose truth set along it is exactly `{0}`, so
+     the type at `0` occurs at no earlier time.
+  2. **No explicit bound.** Even with anchoring repaired, the good-cycle condition the extraction
+     needs (every eventuality carried anywhere in the extracted cycle is discharged inside it)
+     follows from a recurrence argument that gives existence with **no** bound on `a₂ - a₁`. The
+     plan's asserted `P.card · 2^k · 2^k` needs the Büchi degeneralisation with a genuine
+     `pending` component; the landed pigeonhole datum is `(state, type)` only.
+
+- **What was tried**: the plan's construction, in the order given. Tasks 2 and 3 (the type
+  sequence of a genuine history is locally coherent and fulfilling) were completed and landed
+  sorry-free in `BiLasso/SmallModel.lean`, consuming Phase 4's unfolding lemmas exactly as the
+  plan anticipated. The obstruction appears at the assembly step (task 6), and was then isolated
+  and machine-checked rather than worked around.
+
+- **Why it's stuck**: obstruction 1 is a *shape* mismatch between what the planned extraction can
+  produce and what the planned `check` can read; it is not a missing lemma. Obstruction 2 is a
+  genuinely missing construction. Neither can be repaired inside this phase without changing a
+  deliverable — Phase 12's `check` in the first case, Phase 10's pigeonhole datum in the second —
+  and `.claude/rules/plan-compliance.md` requires a `.lean` deviation of that kind to be raised
+  as a blocker rather than silently substituted.
+
+- **What is needed**: a plan revision choosing between two repairs for obstruction 1, and
+  supplying the degeneralisation for obstruction 2.
+
+  - *Repair 1a (cheap, recommended)*: re-shape `check` to range over a position in the already
+    derived finite window —
+    `∃ A ∈ boundedAnnots …, ∃ i ∈ Finset.Ico (cohWindowLo A) (cohWindowHi A), A.lasso.unroll i = w ∧ φ ∈ A.label i`.
+    Decidable with the instances already landed; `truth_along_annot` discharges soundness at `i`
+    exactly as at `0`. Phase 10 then delivers the witness at `-c₂` and nothing is weakened.
+  - *Repair 1b*: prove that a satisfiable formula has a satisfying history whose type at the
+    point of interest recurs in its past, and keep `check` anchored at `0`. This is the
+    effective-periodic-extension problem the concurrent frame-periodicity work is chartered for;
+    plan 05 records that work as a coordination dependency gating nothing, and on this evidence
+    it gates Phase 10.
+  - *For obstruction 2*: extend the pigeonhole datum to a real `pending`/counter component and
+    derive the bound from it, or state Phase 10 with an existential bound and have Phase 12
+    consume that instead of a closed form.
+
+- **Prohibited workarounds**: no `sorry`, no `def X := True`, no weakening of
+  `exists_annot_of_truth` to a temporal-nesting-free or modal-depth-bounded fragment, and no
+  `Classical.dec` anywhere that `check` can reach.
+
+**Landed in this phase despite the block** (sorry-free, committed):
+`FormalSystem/Metalogic/Decidability/BiLasso/SmallModel.lean` — `LocalCoherentSeq`,
+`FulfillingSeq`, `localCoherent_iff_seq`, `fulfilling_iff_seq`, `typeAt`, `typeAt_subset`,
+`typeAt_localCoherentSeq`, `typeAt_fulfillingSeq`, `pigeonDatum`, `pigeonDatum_mem`. All of it is
+consumed by either repair, so none of it is wasted.
+
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/Decidability/BiLasso/SmallModel.lean`.
-- [ ] Define the *type* at a position: `typeAt τ u := (subformulaClosure φ).filter (TruthAt P.toModel τ u ·)`.
+- [x] Create `FormalSystem/Metalogic/Decidability/BiLasso/SmallModel.lean`.
+- [x] Define the *type* at a position: `typeAt τ u := (subformulaClosure φ).filter (TruthAt P.toModel τ u ·)`.
       Prove that the type sequence of a genuine history satisfies every `LocalCoherent` clause —
       the atom, `bot` and `imp` clauses from `TruthAt`'s definition, the box clause from `box_const`
       and `BoxOracleSound`, and the two temporal clauses from **Phase 4's unfolding lemmas**. This
       is where Phase 4 is consumed and why it is a separate phase.
-- [ ] Prove that the type sequence of a genuine history is `Fulfilling`: immediate, because the
+- [x] Prove that the type sequence of a genuine history is `Fulfilling`: immediate, because the
       model's own eventualities are genuinely witnessed. State this as its own lemma — it is
       handoff §4.5's "fulfilment is supplied from outside, and cheaply", and it is the only place
       the least-fixpoint reading enters.
-- [ ] Define the pigeonhole datum as the **triple** `(state, type, pending)`: `τ.path u`, the type
+- [ ] Define the pigeonhole datum as the **triple** `(state, type, pending)`: *(deviation: BLOCKED — only the pair `(state, type)` landed, as `pigeonDatum`; the `pending` component is obstruction 2 above)*: `τ.path u`, the type
       above, and *pending*, the set of eventuality obligations in the type not yet discharged.
       Prove the triple space finite:
       `Fin P.card × Finset (subformulaClosure φ) × Finset (subformulaClosure φ)`.
