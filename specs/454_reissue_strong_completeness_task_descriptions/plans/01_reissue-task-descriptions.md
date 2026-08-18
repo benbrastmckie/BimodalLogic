@@ -482,29 +482,29 @@ Confirm against the ledger's 424 rows before editing.
 
 ---
 
-### Phase 8: Verify, regenerate, and record [NOT STARTED]
+### Phase 8: Verify, regenerate, and record [COMPLETED]
 
 **Goal**: Prove the whole re-issue satisfies the task's five verification criteria, regenerate the
 derived views once, and write the summary.
 
 **Tasks**:
-- [ ] `jq empty specs/state.json` and a full re-read of all six descriptions.
-- [ ] Diff the post-flight six task records against `.pre-reissue-snapshot.json`. Assert that the
+- [x] `jq empty specs/state.json` and a full re-read of all six descriptions.
+- [x] Diff the post-flight six task records against `.pre-reissue-snapshot.json`. Assert that the
       only differing fields are the six `description` strings and `362.dependencies`. Any other
       differing field is a defect to fix before proceeding.
-- [ ] Assert all six statuses are `not_started`.
-- [ ] Re-run the citation sweep over the **re-issued** descriptions and confirm every remaining
+- [x] Assert all six statuses are `not_started`.
+- [x] Re-run the citation sweep over the **re-issued** descriptions and confirm every remaining
       file:line/symbol reference resolves in the live tree (task verification criterion 5). Record
       the pass in the summary.
-- [ ] Confirm the string `41 declared dependency edges` (and a bare "41" used as an edge count) does
+- [x] Confirm the string `41 declared dependency edges` (and a bare "41" used as an edge count) does
       not appear in any re-issued description.
-- [ ] Re-confirm the already-wired half of deliverable (c): `454` is still in the dependencies of
+- [x] Re-confirm the already-wired half of deliverable (c): `454` is still in the dependencies of
       421, 423, and 424.
-- [ ] Regenerate `TODO.md` once: `.claude/scripts/generate-todo.sh` (or a final `state-write.sh`
+- [x] Regenerate `TODO.md` once: `.claude/scripts/generate-todo.sh` (or a final `state-write.sh`
       no-op-style call with `--regen-todo`). Do not hand-edit `TODO.md`.
-- [ ] Run `.claude/scripts/generate-task-order.sh` and confirm 424 now orders in a strictly earlier
+- [x] Run `.claude/scripts/generate-task-order.sh` and confirm 424 now orders in a strictly earlier
       wave than 362, and that no dependency reference dangles.
-- [ ] Write `specs/454_reissue_strong_completeness_task_descriptions/summaries/01_reissue-task-descriptions-summary.md`
+- [x] Write `specs/454_reissue_strong_completeness_task_descriptions/summaries/01_reissue-task-descriptions-summary.md`
       recording: per-task anchor changes applied, the 424 verdict, the edge added, the actual
       citation counts measured in Phase 1 (confirming or correcting each phase's Scope Hypothesis),
       and any ESCALATION rows left unresolved.
