@@ -1,11 +1,11 @@
 # Implementation Summary: Discharge the `UniverseClosed` residual
 
 - **Plan**: `specs/432_discharge_universeclosed_residual/plans/01_universeclosed-clause2-verdict-instantiation.md`
-- **Phases**: 8 of 9 completed; **Phase 7 `[BLOCKED]`** (partially delivered)
-- **Files modified**: `FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean` (5191 -> 6443 lines, entirely additive except three plan-sanctioned docstring extensions)
-- **Build**: full `lake build` green (2333 jobs)
+- **Phases**: 9 of 9 completed (Phase 7 was `[BLOCKED]` after dispatch 1 and was closed in dispatch 3, once task 434's time-coordinate lemma landed)
+- **Files modified**: `FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean` (5191 -> 6443 lines in dispatch 1; dispatch 3 added section C11 and register entry 21, +322/-18, every deleted line a stale prose line and zero statement or proof-term lines touched)
+- **Build**: full `lake build` green (2458 jobs at dispatch 3)
 - **Zero-debt gate**: 0 sorries, 0 `native_decide`, 0 vacuous definitions, 0 new axioms; every new declaration's axiom set is exactly `{propext, Classical.choice, Quot.sound}`
-- **Frozen files**: `Fuel.lean`, `Saturation.lean`, `Tableau.lean` md5-identical to the Phase 1 baseline
+- **Frozen files**: `Fuel.lean`, `Saturation.lean`, `Tableau.lean` md5-identical to this dispatch's baseline commit `88299bfb7` (their md5s differ from dispatch 1's record because tasks 433/434 landed in between; this dispatch changed none of them)
 
 ## Headline result
 
@@ -18,7 +18,7 @@ one conjunct and an honest reduction for the other.
 |----------|---------|--------|--------|
 | clause 2 (`identifyTime` closure) | **false at every nonempty `U`**; satisfiability set exactly `{∅}` | `UniverseClosedAt` — constrain the merge target `t₁` to `b.knownTimes` | **paid**: dischargeable at `signedUniverse C L` from `TimeMergeClosed L` |
 | clause 1, formula coordinate | true | none needed | **paid**: proved outright, both unordered shapes |
-| clause 1, label coordinate | **false at a fixed finite `signedUniverse C L`** | branch-side headroom; provably *not* expressible as a condition on `L` | **residue**: named residual, blocked on a lemma owned elsewhere |
+| clause 1, label coordinate | **false at a fixed finite `signedUniverse C L`** | branch-side headroom rectangle `FreshLabelHeadroom`; provably *not* expressible as a condition on `L` | **residue, fully analysed**: reduced to the rectangle with both coordinates proved (`unorderedSuccessorLabelClosedOrd_of_headroom`), and the rectangle refuted at every nonempty finite `L` (`freshLabelHeadroom_not_universal`) |
 
 ## Landed
 
@@ -146,13 +146,91 @@ one conjunct and an honest reduction for the other.
    restated as `freshWorldHeadroom_not_universal`, quantifying headroom over `t ∈ b.knownTimes` rather
    than all `t : TimeIndex` — a stronger theorem, and it makes the named `FreshWorldHeadroom`
    condition load-bearing rather than decorative.
-5. **Phase 7, bullet 4 (PARTIAL — see the blocker).** Clause 1 is stated and proved at
-   `signedUniverse C L` reduced to the label coordinate alone, but **not** proved from
-   `FreshWorldHeadroom`, because that needs the missing time-coordinate lemma. The plan's branch (b)
-   instruction was followed literally: stop, record the dependency, mark `[BLOCKED]`, do not author the
-   analogue here.
+5. **Phase 7, bullet 4 (altered — delivered in two forms across two dispatches).** Dispatch 1
+   delivered the partial form only: clause 1 at `signedUniverse C L` reduced to the label coordinate
+   alone (`unorderedSuccessor_confined_signedUniverse_of_headroom`), **not** proved from
+   `FreshWorldHeadroom`, because the time-coordinate lemma did not exist; the plan's branch (b)
+   instruction was followed literally (stop, record the dependency, mark `[BLOCKED]`, do not author
+   the analogue). Dispatch 3 delivered the complete form
+   (`unorderedSuccessor_confined_signedUniverse_of_freshLabelHeadroom`) with no residual, once task
+   434's `applyRule_emitted_time_dichotomy` landed. Two further alterations inside this bullet: the
+   headroom hypothesis is the rectangle `FreshLabelHeadroom`, not `FreshWorldHeadroom` (a label is a
+   pair, so the two per-coordinate dichotomies leave four quadrants and `FreshWorldHeadroom` is one
+   of them); and both forms are retained side by side, since the landed terminus chain consumes the
+   original.
 6. **Phase 8, statement shape (altered, pre-declared).** The plan named the composite
    `universeClosedAt_signedUniverse` (unconditional). It landed as
    `universeClosedAt_signedUniverse_of_headroom`, carrying the named residual, because Phase 7 is
    blocked. The plan pre-declared this outcome in its Risks table and in branch (b); the `_of_headroom`
    suffix makes the conditionality visible at the call site rather than buried in a hypothesis list.
+
+
+---
+
+## Dispatch 3 addendum: Phase 7 closed
+
+Phase 7's blocker named one missing dependency — *a time-coordinate analogue of
+`applyRule_emitted_world_mem`: a 36-arm accounting over `applyRule` bounding the times a rule emits
+at by `b.knownTimes`, with the time-minting rules separated out* — and assigned it to another task.
+Task 434 landed it as `applyRule_emitted_time_dichotomy` (`MintBound.lean` section D1), together with
+the engine-level lift `unorderedSuccessor_time_dichotomy` that the blocker had not asked for. It fits
+the specification: the proof is a `by_cases` on the two `Bool` census predicates resolving every
+emission of every rule to `g.label.time ∈ b.knownTimes ∨ g.label.time = b.nextTime`. The blocker's
+own caution — that `ruleMintsFreshLabel` is the wrong census for time-minting — is now decided by
+434's `freshTimeRules_incomparable_freshLabelRules`.
+
+### Landed in section C11
+
+| Declaration | Role |
+|-------------|------|
+| `unorderedSuccessor_world_dichotomy` | the world coordinate's engine-level lift, which did not exist; mirrors 434's construction through `pick_branches_eq` / `pick_stage_source` / `resultBranch_sub`, and carries no auxiliary hypothesis where its time twin carries `OrdTimesKnown b ord` |
+| `FreshLabelHeadroom` | the branch-side **rectangle** the two dichotomies actually license: four quadrants, not one |
+| `freshWorldHeadroom_of_freshLabelHeadroom` | the rectangle is the strictly stronger of the two headroom conditions |
+| `unorderedSuccessor_label_mem_of_headroom` | **clause 1's label dimension, proved** — both coordinates, no residual, from the rectangle alone |
+| `unorderedSuccessor_confined_signedUniverse_of_freshLabelHeadroom` | clause 1 at `signedUniverse C L`, both dimensions, nothing residual left standing |
+| `UnorderedSuccessorLabelClosedOrd` + `..._of_unorderedSuccessorLabelClosed` | the residual with the ordering hypothesis the time dichotomy needs, and the direction lemma |
+| `unorderedSuccessorLabelClosedOrd_of_headroom` | **the reduction**: the residual follows from the rectangle holding at every `L`-confined branch |
+| `freshLabelHeadroom_not_universal` | **and the reduction is not a discharge**: the rectangle is refutable at every nonempty finite `L` |
+| `unorderedSuccessorLabelClosedOrd_not_universal` | adding `OrdTimesKnown` does not weaken the residual into vacuity |
+
+### The finding
+
+**The reduction is complete and the residual survives it.** The obstruction to clause 1's label
+dimension was always the world coordinate's refutation (`universeClosed_fresh_world_escapes`,
+`freshWorldHeadroom_not_universal`) and never the absent time lemma. Supplying the time lemma
+completed the *accounting*, which is what made the reduction statable; it could not and did not
+discharge anything, because `freshLabelHeadroom_not_universal` refutes the reduced antecedent at
+every nonempty finite `L` by transporting Phase 5's `maxWorld` argument through the quadrant
+implication in one line.
+
+A second, structural finding the blocker did not anticipate: **a label is a pair, and confinement of
+`b` is not a rectangle**. `∀ x ∈ b, x.label ∈ L` constrains the pairs `b` carries, not their cross
+product, so `⟨w, t⟩` for a `w` and a `t` that `b` carries on *different* formulas need not be in `L`.
+The two per-coordinate dichotomies therefore leave four quadrants and confinement covers none of
+them. `FreshWorldHeadroom` — the condition the blocker named — is one quadrant of the four, so the
+blocker's phrasing "prove clause 1's label dimension from `FreshWorldHeadroom`" was in that one
+respect asking for something false. This is the same rectangle shape `timeMergeClosed_iff_product`
+found on the clause-2 side, reached from the opposite direction.
+
+### Prose corrections (no statement or proof term altered)
+
+Four places in `MintBound.lean` said the label coordinate was waiting on a lemma, which stopped being
+true when 434's section D1 landed. All four were corrected: the C10 section heading and note,
+`UnorderedSuccessorLabelClosed`'s obligation map, `universeClosedAt_signedUniverse_of_headroom`'s
+docstring, and the terminus corollary's residual list. Register entry 11 gained a pointer to the new
+material and **entry 21** was added as the verdict; the register preamble now reads twenty-one.
+
+### Phases 8 and 9 checked, and correctly left as they are
+
+`universeClosedAt_signedUniverse_of_headroom` and
+`buildTableauAt_isSome_at_seed_lengthBudget_signedUniverse` still carry
+`UnorderedSuccessorLabelClosed fc L`, and that is correct rather than stale: the residual is not
+discharged, so removing it would be unsound. What was stale was only their prose account of *why*,
+and that is what the corrections above fix.
+
+### One item left for task 434
+
+`MintBound.lean` section D1's own heading note (at `applyRule_emitted_time_mem`) opens *"Three
+docstrings in this file say the same thing … there is no `applyRule_emitted_time_mem`"*. One of those
+three — `UnorderedSuccessorLabelClosed`'s obligation map — no longer says it, having been corrected
+here. That sentence is inside 434's territory and was deliberately not edited from this dispatch.

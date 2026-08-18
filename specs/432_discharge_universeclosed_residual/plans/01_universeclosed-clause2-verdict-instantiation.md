@@ -1,7 +1,7 @@
 # Implementation Plan: Discharge the `UniverseClosed` residual
 
 - **Task**: 432 - Discharge `UniverseClosed fc U` on the totality terminus `buildTableauAt_isSome_of_budget`
-- **Status**: PARTIAL
+- **Status**: [IMPLEMENTING]
 - **Effort**: 15 hours
 - **Dependencies**: None (parent task 428's terminus is landed and is read-only input here)
 - **Research Inputs**: `specs/432_discharge_universeclosed_residual/reports/01_spawn-inherited-research.md`
@@ -706,7 +706,7 @@ the two is what makes that precise.
 
 ---
 
-### Phase 7: Clause (1), label dimension, per Phase 5's verdict [BLOCKED]
+### Phase 7: Clause (1), label dimension, per Phase 5's verdict [COMPLETED]
 
 **Goal**: Land the honest maximum on the label dimension, on whichever of two pre-declared branches
 Phase 5 selected. Do not choose a third route.
@@ -735,13 +735,18 @@ BRANCH THAT RAN**, per Phase 5's written verdict:
       it, and which piece is missing (the time-dimension analogue, owned elsewhere).
       *(On `UnorderedSuccessorLabelClosed`'s docstring, per coordinate. The world coordinate is
       backed by a new lemma, `applyRule_emitted_world_dichotomy`, rather than by prose.)*
-- [ ] State clause 1 at `signedUniverse C L` **with** the headroom hypothesis, so Phase 8 has a
+- [x] State clause 1 at `signedUniverse C L` **with** the headroom hypothesis, so Phase 8 has a
       concrete composite to assemble. The hypothesis stays explicit and named; it is not absorbed.
-      *(deviation: PARTIAL — clause 1 is stated and proved at `signedUniverse C L` reduced to the
-      **label coordinate alone** (`unorderedSuccessor_confined_signedUniverse_of_headroom`), with the
-      formula coordinate discharged outright. It is **not** proved from `FreshWorldHeadroom`, because
-      doing so requires the missing time-coordinate lemma — see the blocker below. The label
-      coordinate is instead carried as the named residual `UnorderedSuccessorLabelClosed`.)*
+      *(deviation: altered — delivered in two forms rather than one, and the headroom condition
+      needed strengthening. Dispatch 1 landed the partial form
+      `unorderedSuccessor_confined_signedUniverse_of_headroom`, reduced to the label coordinate alone
+      and carrying `UnorderedSuccessorLabelClosed` as a named residual, because the time-coordinate
+      lemma did not exist. Dispatch 3 landed the complete form
+      `unorderedSuccessor_confined_signedUniverse_of_freshLabelHeadroom`, with **no** residual: both
+      coordinates are proved from the explicit branch-side hypothesis. The hypothesis is
+      `FreshLabelHeadroom`, not `FreshWorldHeadroom` — the latter is one quadrant of four, since a
+      label is a pair and the two dichotomies are per-coordinate. Both forms are retained; the
+      original is what the landed terminus chain consumes.)*
 
 **Timing**: 2 hours
 
@@ -761,7 +766,7 @@ instead of forcing a branch-local form.
 - Module build green; every new declaration sorry-free.
 - The chosen branch matches Phase 5's written verdict, and the phase note says which branch ran.
 
-**BLOCKER** (Phase 7):
+**BLOCKER** (Phase 7) — **RESOLVED in dispatch 3**; the record is kept verbatim below, with the resolution stated after it:
 - **What failed**: proving clause 1's label dimension at `signedUniverse C L` from the branch-side
   headroom condition `FreshWorldHeadroom`. Specifically, discharging `∀ x ∈ nb, x.label ∈ L` for
   every unordered successor `nb` requires bounding **both** label coordinates of every emitted
@@ -793,7 +798,55 @@ instead of forcing a branch-local form.
   concrete `L`, so it is a genuine condition and the composite that assumes it is genuinely
   conditional rather than vacuous.
 
-#### Phase 7 completion note — branch (b), partially delivered
+**RESOLUTION** (dispatch 3, section C11 of `MintBound.lean`):
+
+- **The dependency landed, and it fits the specification exactly.** Task 434's
+  `applyRule_emitted_time_dichotomy` (`MintBound.lean`, section D1) is the 36-arm accounting the
+  blocker asked for: a `by_cases` on the two `Bool` census predicates `ruleMintsFreshTime` /
+  `ruleMintsFreshLabel` resolving to `g.label.time ∈ b.knownTimes ∨ g.label.time = b.nextTime` for
+  every emission of every rule, with the time-minting rules separated out. 434 also supplied the
+  engine-level lift `unorderedSuccessor_time_dichotomy`, which the blocker had not asked for and
+  which removed the lift work from this dispatch. The blocker's own caution — that
+  `ruleMintsFreshLabel` is the wrong census — is confirmed by 434's
+  `freshTimeRules_incomparable_freshLabelRules`, which decides the incomparability in both
+  directions.
+- **What was needed beyond it, and was authored here.** The world coordinate had no engine-level
+  lift: `applyRule_emitted_world_dichotomy` was `applyRule`-level only. `unorderedSuccessor_world_dichotomy`
+  is that lift, mirroring 434's construction through the same `pick_branches_eq` /
+  `pick_stage_source` / `resultBranch_sub` machinery. It carries **no** auxiliary hypothesis where
+  its time twin carries `OrdTimesKnown b ord`, and that asymmetry is 434's own
+  `applyRule_emitted_time_mem_ordTimesKnown_needed` rather than an artifact.
+- **The finding the blocker did not anticipate: `FreshWorldHeadroom` is one quadrant of four.** A
+  label is a **pair**, and the two dichotomies are per-coordinate with nothing correlating them, so
+  four combinations have to be covered. Confinement of `b` covers **none** of them, because
+  `∀ x ∈ b, x.label ∈ L` constrains the pairs `b` carries and not their cross product. The correct
+  branch-side hypothesis is therefore the rectangle `FreshLabelHeadroom`, of which
+  `FreshWorldHeadroom` is the third quadrant alone (`freshWorldHeadroom_of_freshLabelHeadroom`). The
+  blocker's phrasing "from the branch-side headroom condition `FreshWorldHeadroom`" was, in that one
+  respect, asking for something false.
+- **Delivered.** `unorderedSuccessor_label_mem_of_headroom` proves clause 1's label dimension
+  outright from `FreshLabelHeadroom` with both coordinates accounted for and no residual;
+  `unorderedSuccessor_confined_signedUniverse_of_freshLabelHeadroom` is clause 1 at
+  `signedUniverse C L` in the same form; `unorderedSuccessorLabelClosedOrd_of_headroom` is the
+  reduction at the residual's own shape.
+- **What this does NOT do, stated because it is the load-bearing half.** It does **not** discharge
+  `UnorderedSuccessorLabelClosed`, and no lemma could have. `freshLabelHeadroom_not_universal`
+  proves the rectangle is refutable at every nonempty finite `L` — immediately from Phase 5's
+  `freshWorldHeadroom_not_universal` through the quadrant implication. So Phase 5's verdict stands
+  untouched: clause 1 is refuted at a fixed finite `signedUniverse C L` and no `L`-side repair
+  exists. What changed is that the residual now survives for a **proved** reason rather than for a
+  missing lemma, and the file said the opposite in four places until this dispatch corrected them.
+- **Phases 8 and 9 were checked and do not need tightening beyond docstrings.**
+  `universeClosedAt_signedUniverse_of_headroom` and the terminus corollary still need
+  `UnorderedSuccessorLabelClosed`, because it is still not discharged. Four stale prose claims that
+  the label coordinate was *waiting on a lemma* were corrected: the section heading and note at
+  `MintBound.lean` section C10, `UnorderedSuccessorLabelClosed`'s own obligation map, the composite's
+  docstring, and the terminus corollary's residual list. Register entry 11 gained a pointer and new
+  entry 21 is the verdict. No statement and no proof term was altered.
+
+---
+
+#### Phase 7 completion note — branch (b), delivered across two dispatches
 
 **Branch (b) ran**, matching Phase 5's written verdict. Module build **green**; every new declaration
 sorry-free and axiom-free.

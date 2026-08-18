@@ -6069,14 +6069,16 @@ theorem unorderedSuccessor_formula_mem {C : Finset Formula} {b : Branch} {ord : 
     exact expandOnceUnblocked_split_mem hC hb htrich hres nb hnb
   · intro nb hnb; simp [unorderedSuccessorBranches] at hnb
 
-/-! ### Clause 1's label dimension: the honest maximum, and the one piece that is missing
+/-! ### Clause 1's label dimension: the honest maximum, and where the obstruction actually sits
 
 Phase order in this section: the formula dimension is **proved** above; the label dimension is
 **refuted** as a property of a fixed finite `L` (`universeClosed_fresh_world_escapes`) and cannot be
 repaired by any condition on `L` (`freshWorldHeadroom_not_universal`). What remains is to say exactly
 how much of the label dimension is available and what the residue costs. That is done here, in the
 style `StepLengthGrowth`'s docstring uses for its own obligation map: per rule shape, which lemma
-supplies it, and which piece is absent.
+supplies it, and which piece is absent. Read this together with section C11, which spends the time
+analogue once it lands and settles that the obstruction is the world coordinate's refutation rather
+than any absent lemma.
 
 **The world coordinate is fully accounted for.** `applyRule_emitted_world_dichotomy` below is the
 complete statement: every emitted formula sits either at a world the branch already has or at
@@ -6144,15 +6146,30 @@ headroom must be branch-side: `freshWorldHeadroom_not_universal` proves that no 
 supplies it for all `L`-confined branches, so this cannot be turned into a closure condition on `L`
 the way `TimeMergeClosed` was for clause 2.
 
-*The time coordinate — the missing piece.* There is **no** `applyRule_emitted_time_mem`: no statement
-bounding the times a rule emits at by `b.knownTimes`, with the time-minting rules separated out. Nor
-is the rule *list* settled — `ruleMintsFreshLabel` is the wrong list for this purpose, because
-`densityRule` interpolates a fresh time while being absent from it, and the active arms of
-`untlNeg`/`snceNeg` introduce times while being classified `ruleSelfGuarded`.
-`MintPaysForTime`'s docstring records the same absence for the same reason, and
-`expandOnceNoFresh`'s use of `newOrd.constraints.length` rather than the rule list is the in-repo
-evidence that the rule-list reading is the wrong one. Supplying the analogue is a 36-arm accounting
-in the time coordinate; it belongs with the mint/time story and is not authored here.
+*The time coordinate — available, since section D1.* An earlier version of this paragraph said there
+was **no** `applyRule_emitted_time_mem`, that the rule *list* was unsettled, and that supplying the
+analogue was a 36-arm accounting owned elsewhere. That is no longer the state of the file:
+`applyRule_emitted_time_mem`, `applyRule_emitted_time_dichotomy` and the engine-level
+`unorderedSuccessor_time_dichotomy` have landed, and `freshTimeRules` is the census the old paragraph
+said no statement supplied. `freshTimeRules_incomparable_freshLabelRules` decides that the census is
+incomparable with `ruleMintsFreshLabel` in **both** directions, which is the precise content the old
+paragraph gestured at when it observed that `densityRule` and the `untlNeg` / `snceNeg` active arms
+mint times while sitting outside the witness-guarded list. One hypothesis comes with the analogue,
+`OrdTimesKnown b ord`, and `applyRule_emitted_time_mem_ordTimesKnown_needed` decides that it is not
+removable; `ordTimesKnown_empty` and `expandOnceUnblocked_ordTimesKnown` supply it at every consuming
+site, so it is not new currency.
+
+*Both coordinates together are still not this residual, and that is now proved rather than pending.*
+Section C11 spends the completed accounting: `unorderedSuccessor_label_mem_of_headroom` proves the
+label dimension outright from the branch-side rectangle `FreshLabelHeadroom`, and
+`unorderedSuccessorLabelClosedOrd_of_headroom` reduces the residual to that rectangle holding at every
+`L`-confined branch. The reduction is complete and the residual nevertheless survives, because
+`freshLabelHeadroom_not_universal` refutes the rectangle at every nonempty finite `L`. The obstruction
+was always the *world* coordinate's refutation (`universeClosed_fresh_world_escapes`,
+`freshWorldHeadroom_not_universal`), never the missing time lemma. Two structural facts are worth
+carrying away: a label is a **pair**, so per-coordinate dichotomies leave four quadrants rather than
+two; and confinement of `b` covers none of the four, because it constrains the pairs `b` carries and
+not their cross product.
 
 *The `.splitOrdered` shape does not arise*, because `unorderedSuccessorBranches` is `[]` on it —
 that shape's confinement is clause 2's business and is discharged by
@@ -6371,10 +6388,15 @@ genuinely discharged — `TimeMergeClosed L` is a condition on the label set tha
 (every rectangle satisfies it, `timeMergeClosed_product`), not a residual.
 
 What is **not** discharged is clause 1's label coordinate. It is carried as
-`UnorderedSuccessorLabelClosed fc L`, it is refutable at some `L`
-(`unorderedSuccessorLabelClosed_not_universal`), and the one lemma that would let it be reduced
-further — a time-coordinate analogue of `applyRule_emitted_world_mem` — does not exist in the
-development. Its obligation map is on `UnorderedSuccessorLabelClosed`'s docstring. -/
+`UnorderedSuccessorLabelClosed fc L` and it is refutable at some `L`
+(`unorderedSuccessorLabelClosed_not_universal`). An earlier version of this paragraph added that the
+one lemma which would let it be reduced further — a time-coordinate analogue of
+`applyRule_emitted_world_mem` — did not exist in the development. It exists now
+(`applyRule_emitted_time_dichotomy`, section D1), and section C11 spends it: the reduction to the
+branch-side rectangle `FreshLabelHeadroom` is complete, and the residual survives it anyway because
+`freshLabelHeadroom_not_universal` refutes that rectangle at every nonempty finite `L`. So this
+hypothesis is not waiting on a lemma. Its obligation map is on
+`UnorderedSuccessorLabelClosed`'s docstring; register entry 21 is the verdict. -/
 theorem universeClosedAt_signedUniverse_of_headroom {C : Finset Formula} {L : Finset Label}
     {fc : FormalSystem.ProofSystem.FrameClass}
     (hC : TableauClosed C) (hT : TrichStock C) (hL : TimeMergeClosed L)
@@ -6401,8 +6423,11 @@ closure residual is not among them:
 * `PostBlockingSettles` — unchanged.
 * `β ≥ 3` — the measured split arity.
 * `UnorderedSuccessorLabelClosed fc L` — **the residue of this task**: clause 1's label coordinate,
-  and only that coordinate. Its obligation map is on its own docstring; the missing piece is a
-  time-coordinate analogue of `applyRule_emitted_world_mem`, which is not authored here.
+  and only that coordinate. Its obligation map is on its own docstring. It is not waiting on a
+  lemma: section C11 reduces it, with both coordinates fully accounted for, to the branch-side
+  rectangle `FreshLabelHeadroom`, and `freshLabelHeadroom_not_universal` refutes that rectangle at
+  every nonempty finite `L`. Register entry 21 records why the reduction is complete without being a
+  discharge.
 
 What is **gone** relative to `buildTableauAt_isSome_of_lengthBudget`: the whole of clause 2, and
 clause 1's formula coordinate. Clause 2's payment is the substantive one — as stated it was
@@ -11061,9 +11086,244 @@ theorem mintPaysForTimeFixed_signedUniverse_empty
   mintPaysForTimeFixed_of_mintPaysForTimeStable
     (mintPaysForTimeStable_signedUniverse_empty fc C Tmax)
 
+/-! ## C11. Clause 1's label dimension, discharged from branch-side headroom
+
+**What this section spends.** Section C10 left clause 1's label dimension as the named residual
+`UnorderedSuccessorLabelClosed`, and its obligation map recorded one coordinate as available and one
+as absent: the world coordinate had `applyRule_emitted_world_dichotomy`, and the time coordinate had
+no statement at all bounding the times a rule emits at. Section D1 has since landed exactly that
+statement — `applyRule_emitted_time_dichotomy`, together with the engine-level
+`unorderedSuccessor_time_dichotomy`. This section spends it, and the accounting is now complete in
+both coordinates.
+
+**What completing the accounting does and does not buy.** It buys the *reduction*: the label
+dimension of every unordered successor follows from a branch-side headroom condition, as a theorem
+(`unorderedSuccessor_label_mem_of_headroom`), with nothing left unaccounted. It does **not** buy the
+residual's discharge, and no lemma could have: clause 1 is *refuted* at a fixed finite
+`signedUniverse C L` (`universeClosed_fresh_world_escapes`), and no condition on `L` repairs it
+(`freshWorldHeadroom_not_universal`). So the residual survives — but it survives for a proved reason
+rather than for a missing lemma, and that is the difference this section makes. The honest bracket is
+stated as `freshLabelHeadroom_not_universal`.
+
+**The rectangle, and why the world condition alone was never enough.** A label is a *pair*. The two
+dichotomies are per-coordinate: a successor's worlds lie in `b.worldFinset ∪ {b.nextWorld}` and its
+times lie in `b.knownTimes ∪ {b.nextTime}`, but nothing correlates the two, so four quadrants have to
+be covered rather than two. `FreshWorldHeadroom` covers one of them. Confinement of `b` covers *not
+even one*: `∀ x ∈ b, x.label ∈ L` says the pairs `b` actually carries are in `L`, which does not put
+`⟨w, t⟩` in `L` for a `w` and a `t` that `b` carries on different formulas. `FreshLabelHeadroom` is
+the rectangle the two dichotomies actually license, and `freshWorldHeadroom_of_freshLabelHeadroom`
+records that it is the strictly stronger of the two. This is the same rectangle shape
+`timeMergeClosed_iff_product` found on the clause-2 side, arrived at from the opposite direction. -/
+
+/-- **The world dichotomy at engine level.** Every world an unordered successor mentions is a world
+`b` mentioned, or `b.nextWorld`. One step adds at most the one fresh world, and never more.
+
+The exact counterpart of `unorderedSuccessor_time_dichotomy`, assembled the same way and through the
+same invariant-agnostic machinery — `pick_branches_eq`, `pick_stage_source`, `resultBranch_sub` — so
+the three-stage pick is not destructured a second time. It carries **no** auxiliary hypothesis where
+its time twin carries `OrdTimesKnown b ord`: `applyRule_emitted_world_dichotomy` needs nothing, since
+no rule propagates a world through the `TimeOrdering` the way four of them propagate times through
+`futureOf` / `pastOf`. See `applyRule_emitted_time_mem_ordTimesKnown_needed` for why the asymmetry is
+real rather than an artifact of the proof. -/
+private theorem pickBranches_world_dichotomy {b : Branch} {ord : TimeOrdering}
+    {p : Option (TableauRule × RuleResult × TimeOrdering)}
+    (hp : ∀ r res o, p = some (r, res, o) → ∃ sf, sf ∈ b ∧ applyRule r sf b ord = (res, o)) :
+    ∀ nb ∈ pickBranches b p, ∀ w ∈ nb.worldFinset, w ∈ b.worldFinset ∨ w = b.nextWorld := by
+  rcases p with _ | ⟨r, res, o⟩
+  · simp [pickBranches]
+  · obtain ⟨sf, hsf, hA⟩ := hp r res o rfl
+    intro nb hnb w hwm
+    obtain ⟨-, hsub⟩ := resultBranch_sub (b := b) (nb := nb) (res := res) hnb
+    obtain ⟨x, hx, rfl⟩ := exists_mem_of_mem_worldFinset hwm
+    rcases hsub x hx with hxe | hxb
+    · refine applyRule_emitted_world_dichotomy (rule := r) (sf := sf) (ord := ord) hsf x ?_
+      rw [hA]
+      exact hxe
+    · exact Or.inl (Branch.mem_worldFinset hxb)
+
+/-- **The world dichotomy, at the shape clause 1 quantifies at.** Every world an unordered successor
+mentions is one `b` mentioned or `b.nextWorld`.
+
+This is the world-coordinate half of the label accounting, at engine level. Its time twin is
+`unorderedSuccessor_time_dichotomy`; together they are what
+`unorderedSuccessor_label_mem_of_headroom` consumes. -/
+theorem unorderedSuccessor_world_dichotomy {b : Branch} {ord : TimeOrdering}
+    {fc : FormalSystem.ProofSystem.FrameClass} {tr : EventualityTracker} :
+    ∀ nb ∈ unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1,
+      ∀ w ∈ nb.worldFinset, w ∈ b.worldFinset ∨ w = b.nextWorld := by
+  have keyB : unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1
+      = pickBranches b
+          (match findUnexpandedUnblockedWith b ord fc (blockedTimes b ord fc tr) with
+           | some sf => findApplicableRule sf b ord fc
+           | none =>
+             match b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
+                 && (findApplicableSerialRule sf b ord).isSome) with
+             | some sf => findApplicableSerialRule sf b ord
+             | none =>
+               match b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
+                   && (findApplicableLinearityRule sf b ord).isSome) with
+               | some sf => findApplicableLinearityRule sf b ord
+               | none => none) := pick_branches_eq
+  rw [keyB]
+  exact pickBranches_world_dichotomy (pick_stage_source b ord fc tr)
+
+/-- **The branch-side headroom condition the label dimension actually needs**: the rectangle spanned
+by the branch's worlds-plus-one against its times-plus-one lies in `L`.
+
+Stated in exactly the shape the two dichotomies deliver — a disjunction per coordinate — so that no
+step of `unorderedSuccessor_label_mem_of_headroom` has to reconcile a `Finset` form with a `List`
+form. Four quadrants, not two, because the dichotomies are per-coordinate and nothing correlates
+them; and the quadrant `⟨w, t⟩` with `w` and `t` both already on `b` is **not** free, because
+confinement of `b` constrains the pairs `b` carries and not their cross product.
+
+`FreshWorldHeadroom` is the third quadrant alone (`freshWorldHeadroom_of_freshLabelHeadroom`). Like
+it, this is a condition on the **branch**: `freshLabelHeadroom_not_universal` proves it cannot be
+moved into `L`. -/
+def FreshLabelHeadroom (L : Finset Label) (b : Branch) : Prop :=
+  ∀ w, (w ∈ b.worldFinset ∨ w = b.nextWorld) →
+    ∀ t, (t ∈ b.knownTimes ∨ t = b.nextTime) → (⟨w, t⟩ : Label) ∈ L
+
+/-- The rectangle condition is the strictly stronger of the two headroom conditions: it is
+`FreshWorldHeadroom` plus the three quadrants that one omits. -/
+theorem freshWorldHeadroom_of_freshLabelHeadroom {L : Finset Label} {b : Branch}
+    (h : FreshLabelHeadroom L b) : FreshWorldHeadroom L b :=
+  fun t ht => h b.nextWorld (Or.inr rfl) t (Or.inl ht)
+
+/-- **Clause 1's label dimension, discharged.** Every formula on every unordered successor of an
+`L`-confined branch with headroom sits at a label of `L`.
+
+This is the statement the Phase 7 blocker named, and it is now a theorem rather than a hypothesis.
+Both coordinates are accounted for and neither is assumed: `unorderedSuccessor_world_dichotomy` for
+the world, `unorderedSuccessor_time_dichotomy` for the time, `FreshLabelHeadroom` for the four
+quadrants they leave. Nothing else is used — in particular, confinement of `b` is **not** among the
+hypotheses, because the headroom rectangle already subsumes what confinement would have supplied.
+
+`OrdTimesKnown b ord` is inherited from the time dichotomy and is not new currency:
+`ordTimesKnown_empty` supplies it at a run's seed and `expandOnceUnblocked_ordTimesKnown` propagates
+it across every step, so nothing reaches the terminus that was not already there. -/
+theorem unorderedSuccessor_label_mem_of_headroom {L : Finset Label} {b : Branch}
+    {ord : TimeOrdering} {fc : FormalSystem.ProofSystem.FrameClass} {tr : EventualityTracker}
+    (haux : OrdTimesKnown b ord) (hh : FreshLabelHeadroom L b) :
+    ∀ nb ∈ unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1,
+      ∀ x ∈ nb, x.label ∈ L := by
+  intro nb hnb x hx
+  exact hh x.label.world
+    (unorderedSuccessor_world_dichotomy nb hnb x.label.world (Branch.mem_worldFinset hx))
+    x.label.time
+    (unorderedSuccessor_time_dichotomy haux nb hnb x.label.time (mem_knownTimes_of_mem hx))
+
+/-- **Clause 1 at `signedUniverse C L`, both dimensions, with no residual left standing.**
+
+The composite the Phase 7 blocker was blocking. `TableauClosed C` and `TrichStock C` discharge the
+formula coordinate via `unorderedSuccessor_formula_mem`; `FreshLabelHeadroom L b` discharges the
+label coordinate via `unorderedSuccessor_label_mem_of_headroom`. Contrast
+`unorderedSuccessor_confined_signedUniverse_of_headroom`, which is the same statement carrying
+`UnorderedSuccessorLabelClosed fc L` as an unanalyzed hypothesis: that one is retained verbatim and
+is what the landed terminus chain consumes; this one is the analysis of it.
+
+The two are not interchangeable, and the difference is exactly the quantifier. This form is
+**per-branch**: the headroom is a hypothesis about the `b` in front of it. The residual form
+quantifies over every `L`-confined branch at once, and in that position the headroom is *refutable*
+(`freshLabelHeadroom_not_universal`). So this theorem does not discharge the residual — see the
+section note. -/
+theorem unorderedSuccessor_confined_signedUniverse_of_freshLabelHeadroom {C : Finset Formula}
+    {L : Finset Label} {fc : FormalSystem.ProofSystem.FrameClass}
+    (hC : TableauClosed C) (hT : TrichStock C) :
+    ∀ (b : Branch) (ord : TimeOrdering) (tr : EventualityTracker),
+      OrdTimesKnown b ord → FreshLabelHeadroom L b →
+      (∀ x ∈ b, x ∈ signedUniverse C L) →
+      ∀ nb ∈ unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1, ∀ x ∈ nb,
+        x ∈ signedUniverse C L := by
+  intro b ord tr haux hh hb nb hnb x hx
+  have hbf : ∀ y ∈ b, y.formula ∈ C :=
+    fun y hy => (formula_label_of_mem_signedUniverse (hb y hy)).1
+  exact mem_signedUniverse
+    (unorderedSuccessor_formula_mem hC hT hbf nb hnb x hx)
+    (unorderedSuccessor_label_mem_of_headroom haux hh nb hnb x hx)
+
+/-- **The residual, restated with the ordering hypothesis the time coordinate needs.**
+
+`UnorderedSuccessorLabelClosed` quantifies over an arbitrary `TimeOrdering` with nothing tying it to
+the branch, which is one hypothesis short of what `unorderedSuccessor_time_dichotomy` asks. This is
+the same predicate with `OrdTimesKnown b ord` added, and it is therefore the *weaker* of the two —
+`unorderedSuccessorLabelClosedOrd_of_unorderedSuccessorLabelClosed` records the implication. The
+original is retained verbatim and is what the landed chain consumes; this one exists so that the
+reduction below can be stated at all.
+
+The added hypothesis is not a new cost at any consuming site:
+`applyRule_emitted_time_mem_ordTimesKnown_needed` shows it is not removable, `ordTimesKnown_empty`
+supplies it at a seed, and `expandOnceUnblocked_ordTimesKnown` propagates it. -/
+def UnorderedSuccessorLabelClosedOrd (fc : FormalSystem.ProofSystem.FrameClass)
+    (L : Finset Label) : Prop :=
+  ∀ (b : Branch) (ord : TimeOrdering) (tr : EventualityTracker), OrdTimesKnown b ord →
+    (∀ x ∈ b, x.label ∈ L) →
+    ∀ nb ∈ unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1, ∀ x ∈ nb, x.label ∈ L
+
+/-- The ordering-hypothesis form is implied by the original, as adding a hypothesis always does. -/
+theorem unorderedSuccessorLabelClosedOrd_of_unorderedSuccessorLabelClosed
+    {fc : FormalSystem.ProofSystem.FrameClass} {L : Finset Label}
+    (h : UnorderedSuccessorLabelClosed fc L) : UnorderedSuccessorLabelClosedOrd fc L :=
+  fun b ord tr _ hbl => h b ord tr hbl
+
+/-- **The reduction, complete.** The residual follows from branch-side headroom on every `L`-confined
+branch. No coordinate is left unaccounted, and no hypothesis, placeholder or unfinished step stands
+the two.
+
+This is what section D1's arrival makes provable. Read together with
+`freshLabelHeadroom_not_universal` it is also the *end* of the line: the antecedent is refutable at
+every nonempty `L`, so the reduction is complete without being a discharge. -/
+theorem unorderedSuccessorLabelClosedOrd_of_headroom
+    {fc : FormalSystem.ProofSystem.FrameClass} {L : Finset Label}
+    (h : ∀ b : Branch, (∀ x ∈ b, x.label ∈ L) → FreshLabelHeadroom L b) :
+    UnorderedSuccessorLabelClosedOrd fc L :=
+  fun b _ _ haux hbl => unorderedSuccessor_label_mem_of_headroom haux (h b hbl)
+
+/-- **The rectangle cannot be moved into `L` either**, at every nonempty finite `L`.
+
+Immediate from `freshWorldHeadroom_not_universal` through
+`freshWorldHeadroom_of_freshLabelHeadroom`: the rectangle is the stronger condition, so refuting the
+weaker one refutes it too. Stated separately because it is the load-bearing half of this section's
+verdict — `unorderedSuccessorLabelClosedOrd_of_headroom` reduces the residual to exactly this
+antecedent, and this says the antecedent is unavailable wherever the terminus is not vacuous.
+
+So `UnorderedSuccessorLabelClosed` remains a residual, and now for a *proved* reason rather than for
+a missing lemma. Register entry 11 records the finding; entry 21 records this refinement of it. -/
+theorem freshLabelHeadroom_not_universal (L : Finset Label) (hne : L.Nonempty) :
+    ¬ (∀ b : Branch, (∀ x ∈ b, x.label ∈ L) → FreshLabelHeadroom L b) :=
+  fun h => freshWorldHeadroom_not_universal L hne
+    fun b hb => freshWorldHeadroom_of_freshLabelHeadroom (h b hb)
+
+/-- **The weakened residual is still refutable**, so the reduction above is not a reduction to
+something already true.
+
+The same witness `unorderedSuccessorLabelClosed_not_universal` uses, with the added ordering
+hypothesis supplied by `ordTimesKnown_empty` — the witness runs at `TimeOrdering.empty`, so nothing
+had to be rebuilt. Adding `OrdTimesKnown` to the residual therefore does not weaken it into
+vacuity. -/
+theorem unorderedSuccessorLabelClosedOrd_not_universal
+    (fc : FormalSystem.ProofSystem.FrameClass) :
+    ¬ UnorderedSuccessorLabelClosedOrd fc freshWorldLabels := by
+  intro h
+  have hstep := expandOnceUnblocked_freshWorldBranch fc EventualityTracker.empty
+  have hmem : (freshWorldEmitted ++ freshWorldBranch)
+      ∈ unorderedSuccessorBranches
+        (expandOnceUnblocked freshWorldBranch TimeOrdering.empty fc
+          EventualityTracker.empty).1 := by
+    rw [hstep]; simp [unorderedSuccessorBranches]
+  have hbl : ∀ y ∈ freshWorldBranch, y.label ∈ freshWorldLabels := by
+    intro y hy
+    simp only [freshWorldBranch, List.mem_cons, List.not_mem_nil, or_false] at hy
+    subst hy
+    simp [freshWorldLabels, freshWorldWitness, SignedFormula.neg]
+  have hbad := h freshWorldBranch TimeOrdering.empty EventualityTracker.empty
+    (ordTimesKnown_empty freshWorldBranch) hbl _ hmem
+    (SignedFormula.neg fwp ⟨1, 0⟩) (by simp [freshWorldEmitted])
+  simp [freshWorldLabels, SignedFormula.neg, Label.initial] at hbad
+
+
 /-! ## C9. The do-not-re-attempt register
 
-Twenty statements that look like the natural next lemma and are **not** available. Each is cited
+Twenty-one statements that look like the natural next lemma and are **not** available. Each is cited
 by declaration name and, where one exists, by refuting witness — never by an issue number or a
 tracker entry, both of which outlive their meaning. A reader who finds one of these attractive has
 already been here.
@@ -11185,6 +11445,12 @@ already been here.
     per-coordinate obligation map is on its own docstring. What is **not** refuted, and is proved
     outright, is clause 1's *formula* coordinate: `unorderedSuccessor_formula_mem`, for both unordered
     successor shapes.
+
+    *And the label coordinate is not open either*, now that section D1's time analogue has landed:
+    section C11 reduces the residual to the branch-side rectangle `FreshLabelHeadroom`
+    (`unorderedSuccessorLabelClosedOrd_of_headroom`) with both coordinates fully accounted for, and
+    `freshLabelHeadroom_not_universal` refutes that rectangle at every nonempty finite `L` by the same
+    argument. See entry 21.
 
 12. **Repairing clause 2 by constraining `t₂`, or by constraining both `t₁` and `t₂`.** Neither is
     wrong in the sense of being false — they are weaker predicates than necessary, which makes every
@@ -11523,6 +11789,44 @@ already been here.
     **(b)** The density coordinate, exactly as entry 19 describes it and untouched by any of this.
     A discharge at frame classes outside `.Dense` / `.Dedekind` needs only (a); a discharge at every
     frame class needs `gapPotential`, which remains implemented nowhere and assumed by nothing.
+
+21. **Discharging `UnorderedSuccessorLabelClosed` now that the time coordinate has landed.** The
+    accounting is complete and the residual still does not fall, and this entry exists because the
+    file itself once said otherwise: `UnorderedSuccessorLabelClosed`'s docstring recorded the time
+    coordinate as *the missing piece*, which invites the reading that supplying it would finish the
+    job. It does not, and the corrected paragraph on that docstring says so.
+
+    *What the time analogue does buy.* The **reduction**, in full. Section C11's
+    `unorderedSuccessor_label_mem_of_headroom` proves clause 1's label dimension outright — no
+    hypothesis about the successor, no residual, both coordinates accounted for — from
+    `unorderedSuccessor_world_dichotomy`, `unorderedSuccessor_time_dichotomy` and the branch-side
+    rectangle `FreshLabelHeadroom`. `unorderedSuccessorLabelClosedOrd_of_headroom` is that reduction
+    at the residual's own shape, and
+    `unorderedSuccessor_confined_signedUniverse_of_freshLabelHeadroom` is clause 1 at
+    `signedUniverse C L` with nothing residual left standing.
+
+    *Why the residual survives it.* Because the reduced antecedent is refutable:
+    `freshLabelHeadroom_not_universal` proves that for **no** nonempty finite `L` does every
+    `L`-confined branch carry the rectangle, by the same `maxWorld` argument as entry 11 —
+    `freshWorldHeadroom_of_freshLabelHeadroom` is the one line that transports it. The obstruction is
+    the world coordinate's refutation, and it was never the missing time lemma. A reader who reaches
+    for the time analogue expecting the residual to close has already been here.
+
+    *The rectangle is not an over-approximation that a sharper proof would shrink.* A label is a
+    **pair** and the two dichotomies are per-coordinate, so four quadrants have to be covered.
+    Confinement of `b` covers none of them: `∀ x ∈ b, x.label ∈ L` constrains the pairs `b` carries,
+    not their cross product, so `⟨w, t⟩` for a `w` and a `t` that `b` carries on *different* formulas
+    is not thereby in `L`. `FreshWorldHeadroom` covers one quadrant, which is why it alone was never
+    going to be enough even with both dichotomies in hand. The same rectangle shape appears on the
+    clause-2 side as `timeMergeClosed_iff_product`, arrived at from the opposite direction.
+
+    *What is not withdrawn.* Nothing. `UnorderedSuccessorLabelClosed`,
+    `unorderedSuccessor_confined_signedUniverse_of_headroom` and the terminus chain that consumes
+    them stand exactly as written; `UnorderedSuccessorLabelClosedOrd` is an additional, weaker
+    predicate stated beside the original, with
+    `unorderedSuccessorLabelClosedOrd_of_unorderedSuccessorLabelClosed` fixing the direction and
+    `unorderedSuccessorLabelClosedOrd_not_universal` confirming that adding `OrdTimesKnown` does not
+    weaken it into vacuity.
     -/
 
 end FormalSystem.Metalogic.Decidability
