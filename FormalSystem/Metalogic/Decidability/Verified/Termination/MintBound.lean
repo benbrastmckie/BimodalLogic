@@ -9384,7 +9384,8 @@ the plain clause fails at. Measured at the oriented gate: `26 + 3 = 29` before, 
 def BudgetStateAt (U : Finset SignedFormula) (Tmax : Nat)
     (σ : SignedFormula → SignedFormula) (b : Branch) (ord : TimeOrdering) : Prop :=
   RunInvariant b ord ∧ (∀ x ∈ b, x ∈ U) ∧
-    mintTimeBudget U σ b ord + selfGuardPotential U σ ord ≤ Tmax
+    mintTimeBudget U σ b ord + selfGuardPotential U σ ord ≤ Tmax ∧
+    SigmaTimeFixed σ b ∧ SigmaFixesFrom σ b.nextTime
 /-- **The four-component measure.** `budgetPotential` plus the self-guard coordinate at weight
 `2·(Tmax² + 1) + |U|`.
 
@@ -9434,7 +9435,7 @@ theorem budgetPotentialAt_step_splitOrdered {U : Finset SignedFormula} {Tmax : N
     (hres : (expandOnceUnblocked b ord fc tr).1 = ExpansionResult.splitOrdered bs) :
     ∀ p ∈ bs, ∃ σ' : SignedFormula → SignedFormula, BudgetStateAt U Tmax σ' p.1 p.2 ∧
       budgetPotentialAt U Tmax σ' p.1 p.2 < budgetPotentialAt U Tmax σ b ord := by
-  obtain ⟨hinv, hbU, hbud⟩ := hst
+  obtain ⟨hinv, hbU, hbud, hfix, hfrom⟩ := hst
   have hkT : b.knownTimes.toFinset.card ≤ Tmax := by
     simp only [mintTimeBudget] at hbud; omega
   have hcU : b.toFinset.card ≤ U.card := card_le_of_subset_universe hbU
@@ -9460,7 +9461,7 @@ theorem budgetPotentialAt_step_splitOrdered {U : Finset SignedFormula} {Tmax : N
     have hSmul : (2 * (Tmax * Tmax + 1) + U.card) * selfGuardPotential U σ (ord.addFuture t₁ t₂)
         ≤ (2 * (Tmax * Tmax + 1) + U.card) * selfGuardPotential U σ ord :=
       Nat.mul_le_mul_left _ hS1
-    refine ⟨σ, ⟨hinvp, hbU, by omega⟩, ?_⟩
+    refine ⟨σ, ⟨hinvp, hbU, by omega, hfix, hfrom⟩, ?_⟩
     simp only [budgetPotentialAt, budgetPotential, extensionAllowance]
     omega
   · dsimp only at hrk hinvp ⊢
@@ -9477,7 +9478,7 @@ theorem budgetPotentialAt_step_splitOrdered {U : Finset SignedFormula} {Tmax : N
     have hSmul : (2 * (Tmax * Tmax + 1) + U.card) * selfGuardPotential U σ (ord.addFuture t₂ t₁)
         ≤ (2 * (Tmax * Tmax + 1) + U.card) * selfGuardPotential U σ ord :=
       Nat.mul_le_mul_left _ hS2
-    refine ⟨σ, ⟨hinvp, hbU, by omega⟩, ?_⟩
+    refine ⟨σ, ⟨hinvp, hbU, by omega, hfix, hfrom⟩, ?_⟩
     simp only [budgetPotentialAt, budgetPotential, extensionAllowance]
     omega
   · dsimp only at hrk hinvp ⊢
@@ -9509,7 +9510,16 @@ theorem budgetPotentialAt_step_splitOrdered {U : Finset SignedFormula} {Tmax : N
     have hAmul : 2 * (Tmax * Tmax + 1) * mintPotential U (fun x => rhoSF s u (σ x))
           (b.identifyTime s u) (ord.identifyTime s u)
         ≤ 2 * (Tmax * Tmax + 1) * mintPotential U σ b ord := Nat.mul_le_mul_left _ hm'
-    refine ⟨fun x => rhoSF s u (σ x), ⟨hinvp, hIU, by omega⟩, ?_⟩
+    obtain ⟨hmaxk, hmink, hminmax⟩ := firstIncomparablePair_spec_oriented htrig
+    obtain ⟨hk1, hk2, hne21, -, -⟩ := firstIncomparablePair_spec htrig
+    have hfix' : SigmaTimeFixed (fun x => rhoSF s u (σ x)) (b.identifyTime s u) :=
+      sigmaTimeFixed_identifyOriented (ord := ord) (Ne.symm hne21) hmaxk hfix
+    have hnextle : b.nextTime ≤ (b.identifyTime s u).nextTime :=
+      nextTime_le_identifyTime_oriented b ord t₁ t₂
+    have hfrom' : SigmaFixesFrom (fun x => rhoSF s u (σ x)) (b.identifyTime s u).nextTime :=
+      sigmaFixesFrom_comp (sigmaFixesFrom_mono hfrom hnextle)
+        (retired_lt_nextTime_oriented (b := b) ord hk1 hk2)
+    refine ⟨fun x => rhoSF s u (σ x), ⟨hinvp, hIU, by omega, hfix', hfrom'⟩, ?_⟩
     simp only [budgetPotentialAt, budgetPotential, extensionAllowance]
     omega
 
@@ -9535,13 +9545,20 @@ theorem budgetPotentialAt_step_unordered {U : Finset SignedFormula} {Tmax : Nat}
     {σ : SignedFormula → SignedFormula} {b nb : Branch} {ord : TimeOrdering}
     {fc : FormalSystem.ProofSystem.FrameClass} {tr : EventualityTracker}
     (hUcl : UniverseClosed fc U) (hmint : MintPaysForTimeStable fc U Tmax)
-    (hst : BudgetStateAt U Tmax σ b ord) (hstab : SigmaTimeStable σ b)
+    (hst : BudgetStateAt U Tmax σ b ord)
     (hmem : nb ∈ unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1)
     (hgrow : b.toFinset.card < nb.toFinset.card) :
     BudgetStateAt U Tmax σ nb (expandOnceUnblocked b ord fc tr).2 ∧
       budgetPotentialAt U Tmax σ nb (expandOnceUnblocked b ord fc tr).2
         < budgetPotentialAt U Tmax σ b ord := by
-  obtain ⟨hinv, hbU, hbud⟩ := hst
+  obtain ⟨hinv, hbU, hbud, hfix, hfrom⟩ := hst
+  have hstab : SigmaTimeStable σ b := sigmaTimeStable_of_sigmaTimeFixed hfix
+  have hfix' : SigmaTimeFixed σ nb :=
+    sigmaTimeFixed_grow_of_fixesFrom hfix hfrom (fun t ht =>
+      (unorderedSuccessor_time_dichotomy hinv.ordTimesKnown nb hmem t ht).imp id
+        (fun h => le_of_eq h.symm))
+  have hfrom' : SigmaFixesFrom σ nb.nextTime :=
+    sigmaFixesFrom_mono hfrom (nextTime_monotone_along_run.1 nb hmem)
   have hnbU : ∀ x ∈ nb, x ∈ U := hUcl.1 b ord tr hbU nb hmem
   have hinv' : RunInvariant nb (expandOnceUnblocked b ord fc tr).2 :=
     (expandOnceUnblocked_runInvariant hinv).1 nb hmem
@@ -9563,7 +9580,7 @@ theorem budgetPotentialAt_step_unordered {U : Finset SignedFormula} {Tmax : Nat}
           * selfGuardPotential U σ (expandOnceUnblocked b ord fc tr).2
         ≤ (2 * (Tmax * Tmax + 1) + U.card) * selfGuardPotential U σ ord :=
       Nat.mul_le_mul_left _ hs'
-    refine ⟨⟨hinv', hnbU, by omega⟩, ?_⟩
+    refine ⟨⟨hinv', hnbU, by omega, hfix', hfrom'⟩, ?_⟩
     simp only [budgetPotentialAt, budgetPotential, extensionAllowance]
     omega
   · -- disjunct 2: the landed case, with the fourth component along for the ride
@@ -9604,7 +9621,7 @@ theorem budgetPotentialAt_step_unordered {U : Finset SignedFormula} {Tmax : Nat}
     have he5 : 2 * (Tmax * Tmax + 1) * mintPotential U σ b ord
         = mintPotential U σ b ord * (Tmax * Tmax + 1)
           + mintPotential U σ b ord * (Tmax * Tmax + 1) := by ring
-    refine ⟨⟨hinv', hnbU, by omega⟩, ?_⟩
+    refine ⟨⟨hinv', hnbU, by omega, hfix', hfrom'⟩, ?_⟩
     simp only [budgetPotentialAt, budgetPotential, extensionAllowance, splitOrderedRank]
     omega
   · -- disjunct 3: the fourth component carries the step on its own
@@ -9677,10 +9694,117 @@ theorem budgetPotentialAt_step_unordered {U : Finset SignedFormula} {Tmax : Nat}
         = selfGuardPotential U σ ord * (Tmax * Tmax + 1)
           + selfGuardPotential U σ ord * (Tmax * Tmax + 1)
           + selfGuardPotential U σ ord * U.card := by ring
-    refine ⟨⟨hinv', hnbU, by omega⟩, ?_⟩
+    refine ⟨⟨hinv', hnbU, by omega, hfix', hfrom'⟩, ?_⟩
     simp only [budgetPotentialAt, budgetPotential, extensionAllowance, splitOrderedRank]
     omega
 
+
+/-! #### The per-step bundle and the fuel figure at the four-component measure
+
+Section C6's induction is genuinely abstract over the carried state, the measure and the invariant —
+`StepDecreases` mentions no branch cardinality, no known-time count, no mint potential and no
+ordering rank — so this is an **instantiation**, not a re-proof. The plan's Scope Hypothesis for
+this phase asked that that be confirmed before anything was written rather than assumed; it is
+confirmed: `stepDecreases_budgetPotentialAt` below is `stepDecreases_budgetPotential`'s proof with
+the two step lemmas swapped and nothing else changed.
+
+The figure enlarges by the fourth component's ceiling times its weight,
+`(2·(Tmax² + 1) + |U|)·2·|U|` — `selfGuardPotential_le_two_mul` is the ceiling — in exactly the
+shape `splitAwareFuel_le_mintAwareFuel` records for the previous enlargement. Nothing stated at the
+landed figure is withdrawn. -/
+
+/-- **The per-step bundle, discharged at the four-component measure.** Byte-for-byte
+`stepDecreases_budgetPotential` with `budgetPotentialAt_step_unordered` and
+`budgetPotentialAt_step_splitOrdered` in place of their three-component originals: `hβ`, `hD`, the
+arity facts and the difficulty facts are all reached through `hst.2.1`, which is the confinement
+clause both state predicates share in the same position. -/
+theorem stepDecreases_budgetPotentialAt {fc : FormalSystem.ProofSystem.FrameClass}
+    {U : Finset SignedFormula} {Tmax D β : Nat} (hβ : 3 ≤ β)
+    (hUcl : UniverseClosed fc U) (hD : DifficultyBounded fc U D)
+    (hmint : MintPaysForTimeStable fc U Tmax) :
+    StepDecreases fc (BudgetStateAt U Tmax) (budgetPotentialAt U Tmax) D β := by
+  intro σ b ord tr hst
+  refine ⟨?_, ?_, ?_⟩
+  · intro nb hres
+    have hmem : nb ∈ unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1 := by
+      rw [hres]; simp [unorderedSuccessorBranches]
+    exact ⟨σ, budgetPotentialAt_step_unordered hUcl hmint hst hmem
+      (expandOnceUnblocked_card_lt hres)⟩
+  · intro bs hres
+    have hmem : ∀ nb ∈ bs,
+        nb ∈ unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1 := by
+      intro nb hnb; rw [hres]; simpa [unorderedSuccessorBranches] using hnb
+    refine ⟨le_trans (expandOnceUnblocked_split_arity_le hres) hβ, ?_, ?_⟩
+    · intro nb hnb
+      exact (hD b ord tr hst.2.1).1 nb (hmem nb hnb)
+    · intro nb hnb
+      exact ⟨σ, budgetPotentialAt_step_unordered hUcl hmint hst (hmem nb hnb)
+        (expandOnceUnblocked_split_card_lt hres hnb)⟩
+  · intro bs hres
+    have harity : bs.length ≤ β := by
+      obtain ⟨t₁, t₂, -, rfl⟩ := expandOnceUnblocked_splitOrdered_shape hres
+      simpa using hβ
+    exact ⟨harity, (hD b ord tr hst.2.1).2 bs hres,
+      budgetPotentialAt_step_splitOrdered hUcl hst hres⟩
+
+/-- **The derived path bound at the four-component measure.** `mintPathBound` plus the fourth
+component's ceiling times its weight. `selfGuardPotential ≤ 2·|U|` is the ceiling
+(`selfGuardPotential_le_two_mul`), and the weight is `2·(Tmax² + 1) + |U|`. -/
+def mintPathBoundAt (Ucard Tmax mintBudget : Nat) : Nat :=
+  mintPathBound Ucard Tmax mintBudget
+  + (2 * (Tmax * Tmax + 1) + Ucard) * (2 * Ucard)
+
+/-- **The derived fuel figure at the four-component measure**, the landed one evaluated at the
+enlarged path bound. -/
+def mintAwareFuelAt (Ucard Tmax mintBudget D β : Nat) : Nat :=
+  fuelFigure D β (mintPathBoundAt Ucard Tmax mintBudget)
+
+/-- The enlarged path bound is an **enlargement** of the landed one, never a replacement. -/
+theorem mintPathBound_le_mintPathBoundAt (Ucard Tmax mintBudget : Nat) :
+    mintPathBound Ucard Tmax mintBudget ≤ mintPathBoundAt Ucard Tmax mintBudget := by
+  simp only [mintPathBoundAt]; omega
+
+/-- …and so is the fuel figure, so nothing stated at `mintAwareFuel` — or, through
+`splitAwareFuel_le_mintAwareFuel`, at `splitAwareFuel` — is withdrawn. This is the sense in which
+the fourth component's only cost is a **coefficient**: the whole chain of figures still reads
+`splitAwareFuel ≤ mintAwareFuel ≤ mintAwareFuelAt`, and no caller's hypothesis list changes. -/
+theorem mintAwareFuel_le_mintAwareFuelAt (Ucard Tmax mintBudget D β : Nat) :
+    mintAwareFuel Ucard Tmax mintBudget D β ≤ mintAwareFuelAt Ucard Tmax mintBudget D β :=
+  fuelFigure_mono (mintPathBound_le_mintPathBoundAt _ _ _)
+
+/-- …and the whole chain, in one statement, so a reader does not have to compose it. -/
+theorem splitAwareFuel_le_mintAwareFuelAt (Ucard Tmax mintBudget D β : Nat) :
+    splitAwareFuel Ucard Tmax D β ≤ mintAwareFuelAt Ucard Tmax mintBudget D β :=
+  le_trans (splitAwareFuel_le_mintAwareFuel _ _ _ _ _)
+    (mintAwareFuel_le_mintAwareFuelAt _ _ _ _ _)
+
+/-- **The four-component measure sits under the enlarged path bound.** The one arithmetic fact
+connecting the induction to a concrete figure, at the repaired measure.
+
+Three of the four components are capped exactly as `budgetPotential_lt_mintPathBound` caps them;
+the fourth is capped by `selfGuardPotential_le_two_mul`, whose coefficient is the index set's width
+and not `|U|`-dependent in any other way. Note the state's budget clause is the *combined* one, so
+`hbud` gives the mint budget a bound with room for the self-guard potential rather than on the
+nose — which is why the mint-side inputs are re-derived here rather than reused. -/
+theorem budgetPotentialAt_lt_mintPathBoundAt {U : Finset SignedFormula} {Tmax mintBudget : Nat}
+    {σ : SignedFormula → SignedFormula} {b : Branch} {ord : TimeOrdering}
+    (hst : BudgetStateAt U Tmax σ b ord) (hmb : 8 * U.card ≤ mintBudget) :
+    budgetPotentialAt U Tmax σ b ord < mintPathBoundAt U.card Tmax mintBudget := by
+  obtain ⟨hinv, hbU, hbud, -, -⟩ := hst
+  have hkT : b.knownTimes.toFinset.card ≤ Tmax := by
+    simp only [mintTimeBudget] at hbud; omega
+  have hm8 := mintPotential_le_eight_mul U σ b ord
+  have hs2 := selfGuardPotential_le_two_mul U σ ord
+  have hR := splitOrderedRank_le Tmax b ord hkT
+  have hAmul : 2 * (Tmax * Tmax + 1) * mintPotential U σ b ord
+      ≤ 2 * (Tmax * Tmax + 1) * mintBudget := Nat.mul_le_mul_left _ (by omega)
+  have hEmul : mintTimeBudget U σ b ord * U.card ≤ Tmax * U.card :=
+    Nat.mul_le_mul_right _ (by simp only [mintTimeBudget] at hbud ⊢; omega)
+  have hSmul : (2 * (Tmax * Tmax + 1) + U.card) * selfGuardPotential U σ ord
+      ≤ (2 * (Tmax * Tmax + 1) + U.card) * (2 * U.card) := Nat.mul_le_mul_left _ hs2
+  simp only [budgetPotentialAt, budgetPotential, extensionAllowance, mintPathBoundAt,
+    mintPathBound]
+  omega
 
 /-! ## C9. The do-not-re-attempt register
 

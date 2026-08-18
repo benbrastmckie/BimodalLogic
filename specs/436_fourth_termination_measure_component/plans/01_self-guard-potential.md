@@ -682,7 +682,7 @@ re-executed against a changed engine, not a new design.
 
 ---
 
-### Phase 8: The unordered step lemma and the fuel-figure re-derivation [BLOCKED]
+### Phase 8: The unordered step lemma and the fuel-figure re-derivation [COMPLETED]
 
 **BLOCKER RESOLVED** (Phase 8): unblocked by Phase 1R, which discharges the σ-hit obligation at the oriented arm (`sigma_time_hit_of_sigmaTimeStable`, from confinement plus `SigmaTimeStable`).
 
@@ -690,18 +690,29 @@ re-executed against a changed engine, not a new design.
   `MintPaysForTimeAt`'s third disjunct, and re-derive the fuel figures that carry it.
 
 - **Tasks:**
-  - [ ] `budgetPotentialAt_step_unordered_at`, re-proving
+  - [x] `budgetPotentialAt_step_unordered`, re-proving *(deviation: altered — the third disjunct's
+        strict drop is worth `2·(Tmax²+1) + |U|`, not `2·(Tmax²+1)`. The plan-time figure accounted
+        for `splitOrderedRank`'s rise but not `extensionAllowance`'s, which carries a further `|U|`
+        per unit of mint budget spent. The disjunct also had to be paired with a combined-budget
+        conjunct; see Phase 7's deviation note.)* Original:
         `budgetPotential_step_unordered` (`MintBound.lean:4693-4758`) at the four-component measure
         with `MintPaysForTimeAt` in place of `MintPaysForTime`. The new third disjunct's strict drop
         is worth `2·(Tmax²+1)` — exactly the weight needed to dominate a mint's rise in
         `splitOrderedRank` (`(Tmax²+1) + Tmax²`, the second summand bounded by
         `incompPairs_card_le`, `Fuel.lean:2382`).
-  - [ ] Re-derive `mintPathBoundAt` / `mintAwareFuelAt` (or the naming the file's `_at` convention
+  - [x] Re-derive `mintPathBoundAt` / `mintAwareFuelAt` *(landed, absorbing
+        `(2·(Tmax²+1) + |U|)·2·|U|`, with `mintPathBound_le_mintPathBoundAt`,
+        `mintAwareFuel_le_mintAwareFuelAt` and the composed
+        `splitAwareFuel_le_mintAwareFuelAt`.)* Original: (or the naming the file's `_at` convention
         dictates) absorbing the extra `2·(Tmax²+1)·2·|U|`, alongside the byte-unchanged
         `mintPathBound` (`MintBound.lean:4872`) and `mintAwareFuel` (`MintBound.lean:4879`). Land the
         comparison lemma recording that the new figure **enlarges** rather than replaces the landed
         one, in the shape `splitAwareFuel_le_mintAwareFuel` uses.
-  - [ ] Re-instantiate section C6's fuel induction (`MintBound.lean:3524-3779`) at the new measure.
+  - [x] Re-instantiate section C6's fuel induction at the new measure. *(Scope Hypothesis
+        confirmed by reading the section's actual parameterization first: `StepDecreases` is
+        abstract over the carried state, the measure and the invariant, so
+        `stepDecreases_budgetPotentialAt` is `stepDecreases_budgetPotential`'s proof with the two
+        step lemmas swapped and nothing else changed.)* Original:
         That section is parameterized over an abstract measure, so this should be an instantiation
         rather than a re-proof — **confirm that before writing anything**, and if it is not, say so
         and treat the gap as a blocker rather than expanding the phase.
