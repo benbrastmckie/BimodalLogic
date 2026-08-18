@@ -489,7 +489,7 @@ Phase 3 (**35 → 19**). A different delta means a site was missed or a footnote
 
 ---
 
-### Phase 5: SUBSTANTIVE — strip prefixes from 18 footnotes, insert confirmed blocks [NOT STARTED]
+### Phase 5: SUBSTANTIVE — strip prefixes from 18 footnotes, insert confirmed blocks [COMPLETED]
 
 **Goal**: Strip the `` anchor. @citation `` bookkeeping prefix from the 18 block-trailing
 substantive footnotes plus the one mid-paragraph site brought in scope by D6, keeping their
