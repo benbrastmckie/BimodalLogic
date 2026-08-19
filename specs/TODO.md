@@ -1,5 +1,5 @@
 ---
-next_project_number: 462
+next_project_number: 467
 ---
 
 # TODO
@@ -11,10 +11,10 @@ next_project_number: 462
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,193,231,257,298,413,421,423,424,434,451,455,461 | -- | completeness, decidability, frame-extensions, ... |
-| 2 | 178,219,282,296,422,425,433 | 193,231,298,421,423,434 | decidability, formula-refactor, dataset-enhancement, ... |
-| 3 | 169,428 | 422,433 | decidability, strong_completeness |
-| 4 | 362,429 | 169,424,428 | decidability, strong_completeness |
+| 1 | 125,127,128,193,231,257,298,413,421,423,424,434,451,455,461,462,466 | -- | completeness, decidability, frame-extensions, ... |
+| 2 | 178,219,282,296,422,425,433,463 | 193,231,298,421,423,434,462 | decidability, formula-refactor, dataset-enhancement, ... |
+| 3 | 169,428,464 | 422,433,463 | decidability, strong_completeness |
+| 4 | 362,429,465 | 169,424,428,464 | decidability, strong_completeness |
 | 5 | 410 | 429 | decidability |
 | 6 | 411 | 410 | decidability |
 | 7 | 430 | 411 | decidability |
@@ -33,14 +33,18 @@ next_project_number: 462
 
 ### Decidability
 
-434 [IMPLEMENTING] — Discharge `MintPaysForTime fc U Tmax`, defined at FormalSystem/Me
-  └─ 433 [IMPLEMENTING] — Discharge `PostBlockingSettles fc`, defined at FormalSystem/Metal
+434 [PARTIAL] — Discharge `MintPaysForTime fc U Tmax`, defined at FormalSystem/Me
+  └─ 433 [PARTIAL] — Discharge `PostBlockingSettles fc`, defined at FormalSystem/Metal
     └─ 428 [BLOCKED] — Engine totality at a quantified branch budget. Owns obstruction O
       └─ 429 [NOT STARTED] — Repair the truth-lemma side conditions. Owns obstructions O2 and 
         └─ 410 [PLANNED] — Track B part 1 for the TM tableau decidability program (parent: t
           └─ 411 [NOT STARTED] — Track B part 2 for the TM tableau decidability program (parent: t
             └─ 430 [NOT STARTED] — The semantic lift and the Track A assembly. Owns obstruction O4 o
               └─ 412 [NOT STARTED] — Track B finish for the TM tableau decidability program (parent: t
+462 [NOT STARTED] — Land the engine-level assembly that lets `MintPaysForTimeFixed` b
+  └─ 463 [NOT STARTED] — Decide `PostBlockingSettlesRun fc (mintAwareFuelAt U.card Tmax mi
+    └─ 464 [NOT STARTED] — Design and land `gapPotential`, the density coordinate of the ter
+      └─ 465 [NOT STARTED] — Complete the terminus restatement family at the repaired residual
 
 ### Formula Refactor
 
@@ -55,6 +59,10 @@ next_project_number: 462
 ### Algebraic Representation
 
 125 [NOT STARTED] — Implement a Jonsson-Tarski representation theorem for TM logic: e
+
+### Agent System
+
+466 [NOT STARTED] — Make `update-plan-status.sh` fail loudly instead of silently no-o
 
 ### Automation
 
@@ -93,6 +101,130 @@ next_project_number: 462
 451 [NOT STARTED] — CONSOLIDATE THE TWO BONEYARDS into a single archive tree under Fo
 
 ## Tasks
+
+### 466. Update plan status fail loudly
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+
+**Description**: Make `update-plan-status.sh` fail loudly instead of silently no-opping on a non-conforming Status line. This is an agent-system defect that caused real, observed damage during a four-task /orchestrate batch.
+
+THE DEFECT. `update-plan-status.sh` matches the plan header's status line with the anchored pattern `^- \*\*Status\*\*: \[.*\]$`. The trailing `$` requires the line to END at the closing bracket. Any deviation makes the `sed` a NO-OP, and the script's only signal is the generic message "Failed to update status in <file>" -- it never names the offending line or says why it did not match.
+
+OBSERVED IMPACT, both cases from the same batch:
+1. One plan carried `- **Status**: [IMPLEMENTING] (resumed; Phases 1R-10R closed)` -- trailing text after the bracket. Every stamp silently no-opped.
+2. Another carried `- **Status**: PARTIAL` -- no brackets at all. Same silent no-op.
+Case 2 is the more dangerous shape: on PREFLIGHT the failure is deliberately non-fatal and prints only "Warning: plan file update failed (non-fatal)", so a malformed Status line can sit undetected through an entire task and only bite at POSTFLIGHT, where the same failure IS fatal. At that point state.json has already been written to `completed` while the plan file still reads `[IMPLEMENTING]`, and `generate-todo.sh` reads only state.json, so no other surface reveals the divergence. The caller's own error text in `update-task-status.sh` already acknowledges this asymmetry deliberately.
+
+REQUIRED FIX (decide the exact form during implementation, both halves are required):
+(a) Diagnose loudly: when the pattern does not match, print the offending line verbatim with its line number and state which part failed -- missing `- **Status**:` prefix, missing brackets, or trailing text after the closing bracket -- so the operator sees the cause rather than a bare "Failed".
+(b) Decide and implement a tolerance policy: either accept trailing text after `]` (rewriting only the bracketed token and preserving the remainder), or reject it explicitly as malformed. Whichever is chosen, apply it consistently and document it where plan format is specified.
+
+ALSO CONSIDER (evaluate, do not assume): whether the preflight non-fatal path should additionally emit a one-line WARNING that survives to the operator, given that a preflight no-op is the leading indicator of the fatal postflight failure; and whether a plan-format lint should validate the Status line at plan-creation time, so a malformed line never reaches a dispatch at all.
+
+SOURCE-STORE BOUNDARY -- IMPORTANT. `.claude/` in this repository is a gitignored, disposable deploy artifact regenerated from the source store. Edit `agent-system/extensions/core/scripts/update-plan-status.sh` (and any related merge-source or context file under `agent-system/extensions/core/**`), NOT `.claude/scripts/update-plan-status.sh` -- a hand-authored edit under `.claude/` appears to succeed and is wiped by the next regeneration. Redeploy and verify after the change.
+
+Dependencies: none. Different file_scope from the Lean tasks entirely, so it can run in parallel with any of them.
+
+---
+
+### 465. Complete terminus restatement family
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: Task 462, Task 463, Task 464
+
+**Description**: Complete the terminus restatement family at the repaired residuals. Task 433's Phase 6 landed EIGHT of the twenty-two restatements -- the four family roots and their four caller-facing seed forms -- and recorded the remaining FOURTEEN as a Reasoned Exclusion with the recipe written down: each is a `_lengthBudget` / `signedUniverse` substitution, "a one-line application of its family root".
+
+This is deliberately MECHANICAL work with the recipe already recorded. Its value is uniformity: a caller reaching for a `_lengthBudget` or `signedUniverse` form of a repaired terminus should find it landed rather than having to re-derive it, and a half-populated family is a trap for a future reader who assumes an absent member is absent for a reason.
+
+SCOPE: read Phase 6's Reasoned Exclusions section in specs/433_discharge_postblockingsettles_residual/plans/01_postblockingsettles-refute-or-prove.md for the enumerated list and the recipe. The family roots and existing members are the `buildTableauAt_isSome_*` declarations in MintBound.lean (the `_at`, `_selfGuarded`, `_fixed` and `_run` families, roughly :6308-:12240). Land the fourteen missing members following the naming convention the file already uses; do not invent a new convention.
+
+WHY THIS RUNS LAST: it restates termini at the repaired residuals, so it must run after the residuals themselves are settled. If 462, 463 or 464 changes a predicate's shape or sheds a hypothesis, the restatements must reflect the settled form -- doing this work earlier would mean doing it twice. Before starting, RE-DERIVE the list of missing members from the file as it then stands rather than trusting the count of fourteen recorded here: earlier tasks may have landed some, or added new family roots.
+
+PROHIBITED: no `sorry`; additive only; do not alter any previously-landed declaration; do not edit Fuel.lean, Saturation.lean or Tableau.lean; axioms within {propext, Classical.choice, Quot.sound}; full `lake build` green. If any of the fourteen turns out NOT to be a one-line application -- i.e. the recipe does not actually apply -- STOP on that member, record why, and do not force it; a member that needs real mathematics belongs in its own task, not smuggled in here.
+
+Dependencies: 462, 463, 464 -- all three, so that the restatements are made against a settled set of residuals rather than a moving one.
+
+---
+
+### 464. Gappotential density measure component
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: Task 462, Task 463
+
+**Description**: Design and land `gapPotential`, the density coordinate of the termination measure. This is the one genuinely OPEN MATHEMATICAL question remaining on the totality terminus; it is research, not plumbing, and should be run with --lit.
+
+THE PROBLEM, stated exactly. `densityRule` mints a fresh time while lying OUTSIDE BOTH `freshLabelRules` AND `selfGuardRules`. Consequently no disjunct of the current measure moves at a `densityRule` step, FOR ANY sigma WHATSOEVER. This has been open since C9 register entry 17 named it, and task 434's Phase 8 records the current state bluntly: `gapPotential` "remains implemented nowhere and assumed by nothing". Because `densityRule` is `denseRules`-gated, this blocks a nonempty `MintPaysForTimeFixed` discharge at `.Dense` and `.Dedekind` frame classes specifically; every frame class needs `gapPotential` for a fully general result.
+
+SHAPE SUGGESTED BY PRIOR WORK (a starting point, NOT a specification to follow blindly): task 434 records the expectation that `gapPotential` is indexed by `U x U` and `denseRules`-gated. Validate or refute that shape as part of the research; if a different indexing is correct, say so and justify it.
+
+HARD REQUIREMENT -- PRESERVATION ACROSS THE IDENTIFICATION ARM. Any candidate component must be preserved across `TimeOrdering.identifyTime`, which can LOWER `ord.timeCount`. This is the same maxTime-lowering mechanism that refuted earlier candidates; see `nextTime_reissues_retired_time` and `reuse_driven_through_engine`, and task 436's oriented-arm re-gate (`orientedGate*` family, :8592-8788) for how the analogous obstacle was handled for the self-guard component. A component that pays at `densityRule` steps but is destroyed by the identification arm is not a solution.
+
+REFUTED ROUTES -- C9 register entries 14, 17, 18, 19, 20, 24. Read them ALL in full before designing anything. In particular entry 14 forbids BOTH (1) re-indexing `mintPotential` on `freshTimeRules` instead of `freshLabelRules` -- refuted by `witnessPresent_eq_false_of_not_freshLabel`, whose match has exactly eight arms so the three added columns are permanently false -- and (2) dropping disjunct 1's cardinality conjunct in favour of the ordering-rank conjunct alone -- refuted by `splitOrderedRank_lt_of_knownTimes_lt` plus `mintPaysForTime_rank_repair_false`. Neither may be re-attempted.
+
+LITERATURE. Run with --lit against the sub-index curated for this line of work, drawing specifically on: venema_2001 section 5 (interval-based temporal logic) for the density/gap-guarded component itself; caleiro_2013 sections 6-7 (mosaic-method decidability for combined tense-and-modal logics) as a structural analogue for a combined-logic termination measure; gerth_1995 and baier_katoen_2008 (closure-set LTL tableau termination) as a model for a measure over an evolving, non-monotonically-changing time set; and massacci_2000 for rule-bounding technique.
+
+DONE MEANS EITHER: (a) `gapPotential` defined, its payment at `densityRule` steps proved, its preservation across `identifyTime` proved, integrated into the measure, and a nonempty `MintPaysForTimeFixed` discharge extended to `.Dense` and `.Dedekind`; OR (b) a machine-checked impossibility result showing no such component exists at the current measure's shape, with the obstruction identified precisely and a C9 entry recording it. Outcome (b) is a genuine and valuable result, NOT a failure -- this repo's practice is that a proved refutation ranks with a proof, and several of this measure's real advances came from refutations.
+
+PROHIBITED: no `sorry`, no vacuous or false predicate, no weakening presented as a repair (a direction lemma is a GATE, not a nicety -- C9 entry 7 exists because that mistake was made once); do not edit Fuel.lean, Saturation.lean or Tableau.lean (md5-pinned frozen); additive only in MintBound.lean; axioms within {propext, Classical.choice, Quot.sound}; full `lake build` green.
+
+Dependencies: 462 is a REAL SEMANTIC dependency -- the engine-level assembly is what makes a per-rule payment usable at the successor, and `gapPotential`'s payment needs the same threading. 463 is a file_scope SERIALIZATION edge only (both edit MintBound.lean), with no mathematical content.
+
+---
+
+### 463. Postblockingsettlesrun verdict at terminus fuel
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: Task 462
+
+**Description**: Decide `PostBlockingSettlesRun fc (mintAwareFuelAt U.card Tmax mintBudget D beta)` -- the narrowed settlement residual task 433 landed -- at the terminus's OWN fuel figure. Nothing currently decides it in either direction, and task 433's C9 register entry 24 exists precisely so the narrowing is not mistaken for a proof.
+
+WHY THIS MATTERS. `PostBlockingSettlesRun` (MintBound.lean:11961) is CARRIED as a hypothesis by the fully-repaired terminus `buildTableauAt_isSome_of_budget_fixed_run` (:12199), exactly as `ArmSettlement` is. Until it is decided, the repaired terminus rests on an unknown. Task 433 established the surrounding facts but deliberately stopped short of this verdict.
+
+WHAT IS ALREADY DECIDED -- consume, do not repeat:
+- `PostBlockingSettles fc` (the unnarrowed form, :5181) is REFUTED: `postBlockingSettles_fuel_zero_false` (false at the `fuel = 0` arm at every frame class) and `postBlockingSettles_fuel_gap_false` / `postBlockingSettles_gap_at_every_fuel` (fuel does not close the gap, at ANY fuel). The witness is `freshWorldBranch = [F(box p)@<0,0>]`: `.boxNeg` mints a fresh world, so `expandOnceNoFresh` skips it and reports `.saturated` while `findUnexpandedUnblockedWith` reports it.
+- `PostBlockingSettlesAt fc` (:11539) holds OUTRIGHT for every `fc` (`postBlockingSettlesAt_holds`, :11721) -- but the bridge from `saturateBlocked ... = some (.inr (satBr, satOrd))` to its antecedents does NOT go through, because at `fuel = 0` that equation holds at every branch while carrying no saturation information (`labelFreeSaturatedExit_not_of_saturateBlocked_inr`).
+- Task 433 PROVED that the only bridge shape that typechecks carries a hypothesis that is itself refutable (it composes with the settlement lemma to give the refuted `PostBlockingSettles fc`). Do NOT re-attempt that bridge; it is a weakening dressed as a repair.
+
+STRUCTURE THIS AS A REFUTE-FIRST GATE with a BINARY verdict, in the style tasks 432, 433 and 436 used successfully. Both outcomes are first-class deliverables:
+- TRUE: `PostBlockingSettlesRun` holds at the terminus's own fuel figure -- discharge it, and the repaired terminus sheds a hypothesis.
+- FALSE: it is refutable at that figure -- land the machine-checked refutation with its witness, record a C9 entry, and name the minimal further narrowing as the next step. A proved refutation here is as valuable as a proof and MUST NOT be treated as failure.
+
+EMPIRICAL WARNING FROM TASK 433. Across fourteen formula shapes, four frame classes and three fuel figures, `buildTableauAt`'s own guard NEVER fired -- the threaded tracker and the recomputed `armTracker` agreed everywhere -- so no probed run exercised the post-blocking arm at all. That is a fact about the probe's reach, not about the residual, but it means this path is essentially untested empirically. Do not treat "no counterexample found by probing" as evidence of truth; the verdict must be proved either way, and if the honest answer is "undecided by the means available", say so explicitly with evidence rather than guessing.
+
+PROHIBITED: do not discharge via `ArmSettlement` (proved strictly too weak: `resolveOpenArm` tests `findClosure satBr` before its saturation test, `buildTableauAt` does not); do not edit Saturation.lean, Tableau.lean or Fuel.lean (md5-pinned frozen) -- use only their existing public interface; do not re-attempt anything in the C9 register; no `sorry`, no vacuous discharge. Sorry-free, axiom-free, additive only, full `lake build` green.
+
+Dependencies: 462, as a file_scope SERIALIZATION edge only (both tasks edit MintBound.lean). There is no mathematical dependency on 462 -- this task's content is independent of the minting measure and may be reasoned about immediately.
+
+---
+
+### 462. Mintpaysfortime engine level assembly
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: None
+
+**Description**: Land the engine-level assembly that lets `MintPaysForTimeFixed` be discharged at a NONEMPTY universe. This is the plumbing half of the residual task 434 left open at its Phase 8; it is explicitly proof engineering, not open mathematics, and task 434's own handoff records it as "spawnable on its own".
+
+THE GAP. Every per-rule payment `MintPaysForTimeFixed` needs is already landed in MintBound.lean, but each is stated AT THE PICK, while the predicate quantifies over `unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1`. The missing work is threading the picked rule through `expandOnceUnblocked`'s three stages so the per-rule case split is available at the successor, for all thirty-six constructors at once.
+
+WHAT ALREADY EXISTS -- consume, do not re-author:
+- disjunct 2, the six rules in `freshLabelRules INTER freshTimeRules`: `mintPotential_lt_of_pick_linear_sigmaFixed` and `mintPotential_lt_of_pick_branching_sigmaFixed`, discharged from confinement plus `SigmaFixed` by `sigma_formula_hit_of_sigmaFixed`.
+- disjunct 3, the two rules in `selfGuardRules`: `selfGuardPotential_lt_of_untlNeg` and `selfGuardPotential_lt_of_snceNeg`.
+- disjunct 1, the twenty-seven rules outside `freshTimeRules`: `applyRule_emitted_time_dichotomy` (MintBound.lean:7048) plus `expandOnceUnblocked_ord_mono` (:1945).
+- `MintPaysForTimeFixed` (:10499) and its direction lemma; `mintPaysForTimeFixed_signedUniverse_empty` (:11096) is the current boundary-only discharge this task is meant to supersede.
+
+DONE MEANS: `MintPaysForTimeFixed fc (signedUniverse C L) Tmax` discharged at NONEMPTY `L`, at every frame class OUTSIDE `.Dense` and `.Dedekind`, landed sorry-free and axiom-free with `lake build` green. The `.Dense`/`.Dedekind` classes are deliberately EXCLUDED from this task's scope: they additionally require `gapPotential` for the density coordinate, which is a separate research task and must NOT be attempted here. State the frame-class restriction explicitly in the theorem, do not hide it.
+
+PROHIBITED: do not re-attempt anything in the C9 do-not-re-attempt register (read entries in full first, especially 14, 17, 18, 19, 20); do not edit Fuel.lean, Saturation.lean or Tableau.lean (md5-pinned frozen); do not alter any previously-landed declaration; no `sorry`, no vacuous discharge, no predicate that is itself false. If the assembly turns out to need genuinely open mathematics rather than plumbing, STOP and record that finding with evidence rather than forcing it -- that outcome is a legitimate deliverable and should be recorded as a new C9 entry.
+
+Dependencies: none. This task is unblocked today.
+
+---
 
 ### 461. Acquire Goldblatt 1989 'Varieties of complex algebras' (Annals of Pure and Applied Logic)
 - **Status**: [BLOCKED]
@@ -394,7 +526,7 @@ Because archived files are never compiled, a broken import here is SILENT -- no 
 
 ### 434. Discharge mintpaysfortime residual
 - **Effort**: 10-15 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [PARTIAL]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 436
@@ -411,7 +543,7 @@ Because archived files are never compiled, a broken import here is SILENT -- no 
 
 ### 433. Discharge postblockingsettles residual
 - **Effort**: 6-10 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [PARTIAL]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 432, Task 434
