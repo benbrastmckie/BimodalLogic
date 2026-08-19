@@ -912,6 +912,11 @@
           "path": "specs/433_discharge_postblockingsettles_residual/plans/01_postblockingsettles-refute-or-prove.md",
           "type": "plan",
           "summary": "8-phase refute-or-prove plan; two binary gates (fuel-zero verdict, fuel-alone gap), repaired-predicate direction lemma, proof branch on FALSE"
+        },
+        {
+          "path": "specs/433_discharge_postblockingsettles_residual/summaries/01_postblockingsettles-summary.md",
+          "type": "summary",
+          "summary": "PostBlockingSettles refuted at every fuel; PostBlockingSettlesAt holds outright; PostBlockingSettlesRun narrowed repair carried with termini restated"
         }
       ],
       "session_id": "sess_1787081671_9332d7_433"
