@@ -501,7 +501,7 @@ and closes Phase 3 the same way. Exactly one of them executes.
   (`postBlockingExitSettled_false` routes through `postBlockingSettlesAt_settlement`). Raised to the
   dispatching agent before proceeding; Phases 5-6 were **not** started pending that ruling.
 
-### Phase 5: Discharge at a concrete useful instantiation, with a non-vacuity witness [NOT STARTED]
+### Phase 5: Discharge at a concrete useful instantiation, with a non-vacuity witness [COMPLETED]
 
 - **Goal:** Show the repaired residual is usable, not just weaker: discharge its antecedents at a
   concrete instantiation the terminus is meant to be used at, and prove that instantiation is
@@ -528,18 +528,31 @@ and closes Phase 3 the same way. Exactly one of them executes.
   boundary case.
 
 - **Tasks:**
-  - [ ] Define the fragment predicate (e.g. `LabelFreeUniverse C`, or reuse an existing
+  - [x] Define the fragment predicate (e.g. `LabelFreeUniverse C`, or reuse an existing
         closure-side predicate if one is already landed — search `MintBound.lean` for an existing
         propositional-fragment or `freshTimeRules`-free notion before defining a new one).
-  - [ ] Prove `noUnblockedFreshWork_of_labelFreeUniverse`: confinement to such a `C` gives the
+        *(deviation: altered — landed as `LabelFreeUniverseAt fc U ord`, parameterised by the
+        **ordering** as well as the universe. Forced by the frozen engine: `orderTrichotomy` is in
+        `allRulesForFC` and is applicable to *every* signed formula, and it lengthens the ordering
+        exactly when the ordering has an incomparable pair, so no condition on the formula stock
+        alone can be sufficient. At `TimeOrdering.empty` it reports `.notApplicable`, which is where
+        the witness runs. No existing propositional-fragment predicate was found by grep.)*
+  - [x] Prove `noUnblockedFreshWork_of_labelFreeUniverse`: confinement to such a `C` gives the
         second antecedent for every branch and ordering.
-  - [ ] Discharge `LabelFreeSaturatedExit` on that fragment, or — if it needs a fuel figure —
+  - [x] Discharge `LabelFreeSaturatedExit` on that fragment, or — if it needs a fuel figure —
         state the figure explicitly and prove the exit at it, rather than assuming "enough fuel".
-  - [ ] Prove the **non-vacuity witness**: `decide` that a concrete propositional `φ` seeds a run
+        *(no fuel figure needed: `labelFreeSaturatedExit_multSettledBranch` is decided outright at
+        all four frame classes, and `saturateBlocked_multBranch_one_run` holds at every `fuel + 1`.)*
+  - [x] Prove the **non-vacuity witness**: `decide` that a concrete propositional `φ` seeds a run
         reaching a branch in the class, so the discharge is not about an empty class. Follow
         `mintPaysForTimeStable_signedUniverse_empty`'s placement as the *contrast* case — that one
         records how far a discharge goes; this one must go further, and if it does not, say so.
-  - [ ] Compose into `postBlockingSettlesAt_labelFree`, the concrete discharge.
+        *(deviation: altered — the non-vacuity witness is the **pass's own run**
+        (`saturateBlocked_multBranch_one_run`, at every frame class and every `fuel + 1`) rather
+        than a seed run through `buildTableauAt`. It is the stronger statement for this purpose: the
+        branch the antecedents are discharged at is the one `saturateBlocked` itself returns, which
+        is exactly the branch the residual quantifies over.)*
+  - [x] Compose into `postBlockingSettlesAt_labelFree`, the concrete discharge.
 
 - **Timing:** 2 hours
 - **Depends on:** 4
@@ -560,6 +573,31 @@ and closes Phase 3 the same way. Exactly one of them executes.
     non-vacuity witness, or FALSE with the vacuity stated in the terms above.
 
 ---
+
+- **Verdict: TRUE on the letter of the criterion, with a caveat that changes how it reads — stated
+  here rather than buried.** Both antecedents are discharged at a named branch
+  (`labelFreeSaturatedExit_multSettledBranch`, `noUnblockedFreshWork_multSettledBranch`), the branch
+  is nonempty and three formulas wide, and `saturateBlocked_multBranch_one_run` decides that the
+  post-blocking pass **itself produces it**, at every frame class and every positive fuel. So this
+  is not the `mintPaysForTime_empty` / `universeClosed_identify_empty` boundary: the discharge is not
+  available only at the empty universe.
+- **The caveat, in the plan's own required words.** `noUnblockedFreshWork_iff_of_labelFreeSaturatedExit`
+  proves that *given* the first antecedent, the second is **equivalent** to the conclusion — the
+  unconditional converse `noUnblockedFreshWork_of_settled` is the half that was not anticipated. So
+  the class at which the pair is dischargeable is exactly the class at which the settlement test
+  already closes, and the discharge therefore does not extend that class. This is why
+  `PostBlockingSettlesAt` is a theorem rather than a repair, and it is the sharpest available
+  statement of Phase 3's FALSE verdict. It is recorded as such and is not presented as a discharge
+  of the residual.
+- **What is left open, and is genuinely useful**: `LabelFreeUniverseAt` +
+  `noUnblockedFreshWork_of_labelFreeUniverseAt` give the one direction the equivalence does not
+  collapse — a **branch-independent** sufficient condition, checkable from the universe and the
+  ordering without looking at the branch. Discharging `LabelFreeUniverseAt` at a concrete
+  `signedUniverse C L` is not attempted here and is named as a follow-on.
+- **Scope Hypothesis result.** The propositional fragment is the right instantiation, and it is
+  inhabited by a pass-produced branch — confirmed by `decide` on the concrete run before the general
+  lemmas were written, as the phase prescribes. The narrowing that was required is the ordering
+  parameter on the fragment predicate, recorded inline above.
 
 ### Phase 6: Restate the termini at the repaired residual [NOT STARTED]
 

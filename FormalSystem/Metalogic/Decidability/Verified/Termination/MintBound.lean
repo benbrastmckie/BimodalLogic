@@ -11763,6 +11763,142 @@ theorem postBlockingExitSettled_false (fc : FormalSystem.ProofSystem.FrameClass)
   fun h => postBlockingSettles_fuel_zero_false fc
     (postBlockingSettles_of_postBlockingExitSettled h)
 
+
+/-! ### How far the discharge goes
+
+Two questions, kept apart because conflating them is how a weakening gets mistaken for a repair.
+**Is the settlement lemma's antecedent pair dischargeable at a class the engine reaches?** Yes, and
+the witness below is a branch the post-blocking pass itself produces. **Is that class larger than
+the class where the conclusion already holds?** No — and that is the sharp statement of why
+`PostBlockingSettlesAt` is a theorem rather than a repair.
+-/
+
+/-- **The converse, unconditional.** A branch on which the settlement test already closes satisfies
+`NoUnblockedFreshWork` for free, because the antecedent of that condition is then unsatisfiable: no
+unblocked formula has an applicable rule at all. No hypothesis about `expandOnceNoFresh` is used. -/
+theorem noUnblockedFreshWork_of_settled
+    {b : Branch} {ord : TimeOrdering} {fc : FormalSystem.ProofSystem.FrameClass}
+    (h : findUnexpandedUnblockedWith b ord fc (blockedTimes b ord fc (armTracker b)) = none) :
+    NoUnblockedFreshWork b ord fc := by
+  intro sf hsf hub rule result newOrd hr
+  exfalso
+  rw [findUnexpandedUnblockedWith, List.find?_eq_none] at h
+  refine h sf hsf ?_
+  simp only [Bool.and_eq_true, Bool.not_eq_true', isExpanded, hr, Option.isNone_some]
+  exact ⟨by simpa using hub, trivial⟩
+
+/-- **The equivalence, and the verdict it carries.** Given that the pass ran to label-free
+saturation, `NoUnblockedFreshWork` is not a weaker condition than the settlement test — it is that
+test, restated. Forward is `postBlockingSettlesAt_settlement`; backward is the unconditional
+converse above.
+
+So `PostBlockingSettlesAt` is a theorem for a reason a reader should not mistake for progress: its
+second antecedent already says what its conclusion says, once its first antecedent holds. What the
+pair *does* buy is a **branch-independent** sufficient condition — `LabelFreeUniverseAt` below is
+checkable from the universe alone, without looking at the branch — and that is the only useful
+direction the equivalence leaves open. -/
+theorem noUnblockedFreshWork_iff_of_labelFreeSaturatedExit
+    {b : Branch} {ord : TimeOrdering} {fc : FormalSystem.ProofSystem.FrameClass}
+    (hlf : LabelFreeSaturatedExit b ord fc) :
+    NoUnblockedFreshWork b ord fc ↔
+      findUnexpandedUnblockedWith b ord fc (blockedTimes b ord fc (armTracker b)) = none :=
+  ⟨fun hnf => postBlockingSettlesAt_settlement hlf hnf, noUnblockedFreshWork_of_settled⟩
+
+/-- **The label-minting-free fragment**, stated at a fixed ordering because the ordering is part of
+what decides it: `orderTrichotomy` is applicable to *every* signed formula and is
+constraint-lengthening exactly when the ordering has an incomparable pair, so no condition on the
+formula stock alone can be sufficient. At `TimeOrdering.empty` it reports `.notApplicable`, which is
+why the concrete witness below runs there. -/
+def LabelFreeUniverseAt (fc : FormalSystem.ProofSystem.FrameClass)
+    (U : Finset SignedFormula) (ord : TimeOrdering) : Prop :=
+  ∀ sf ∈ U, ∀ (b : Branch) (rule : TableauRule) (result : RuleResult) (newOrd : TimeOrdering),
+    findApplicableRule sf b ord fc = some (rule, result, newOrd) →
+      ruleMintsFreshLabel rule = false ∧
+        newOrd.constraints.length ≤ ord.constraints.length
+
+/-- **Confinement to a label-free universe discharges the second antecedent**, for every branch and
+every blocked set, without looking at the branch. This is the branch-independent direction the
+equivalence above leaves open. -/
+theorem noUnblockedFreshWork_of_labelFreeUniverseAt
+    {fc : FormalSystem.ProofSystem.FrameClass} {U : Finset SignedFormula} {ord : TimeOrdering}
+    (hU : LabelFreeUniverseAt fc U ord) {b : Branch} (hconf : ∀ x ∈ b, x ∈ U) :
+    NoUnblockedFreshWork b ord fc :=
+  fun sf hsf _ rule result newOrd hr => hU sf (hconf sf hsf) b rule result newOrd hr
+
+/-! #### The concrete instantiation, and its non-vacuity
+
+The witness is the landed `multBranch 1 = [F(p → q)@⟨0,0⟩]` and its one-step successor. It is
+propositional, at `TimeOrdering.empty`, and the branch the discharge is stated at is one the
+**post-blocking pass itself produces** — not a hand-assembled `Branch` and not the empty universe.
+-/
+
+/-- The pass's output at the witness: `T p, F q, F(p → q)`. -/
+def multSettledBranch : Branch := multEmitted ++ multBranch 1
+
+/-- One `.extended` step of the post-blocking pass, in closed form. -/
+theorem saturateBlocked_step_extended {b nb : Branch} {ord : TimeOrdering}
+    {fc : FormalSystem.ProofSystem.FrameClass} (fuel : Nat)
+    (hcl : findClosure b fc = none)
+    (hext : expandOnceNoFresh b ord fc = (ExpansionResult.extended nb, ord)) :
+    saturateBlocked b (fuel + 1) ord fc = saturateBlocked nb fuel ord fc := by
+  rw [saturateBlocked, hcl, hext]
+  simp
+
+theorem findClosure_multBranch_one (fc : FormalSystem.ProofSystem.FrameClass) :
+    findClosure (multBranch 1) fc = none := by
+  cases fc <;> rfl
+
+theorem findClosure_multSettledBranch (fc : FormalSystem.ProofSystem.FrameClass) :
+    findClosure multSettledBranch fc = none := by
+  cases fc <;> rfl
+
+/-- **The first antecedent, decided at every frame class**: the pass's output is label-free
+saturated. Both atoms are expanded, and `F(p → q)`'s `.impNeg` is guarded off because the branch now
+carries both of its conclusions. -/
+theorem labelFreeSaturatedExit_multSettledBranch
+    (fc : FormalSystem.ProofSystem.FrameClass) :
+    LabelFreeSaturatedExit multSettledBranch TimeOrdering.empty fc := by
+  show (expandOnceNoFresh multSettledBranch TimeOrdering.empty fc).1 = _
+  cases fc <;> rfl
+
+/-- **The second antecedent, at the same branch.** Discharged through the equivalence, from the
+decided settlement test — which is exactly the caveat this section exists to state plainly. -/
+theorem noUnblockedFreshWork_multSettledBranch
+    (fc : FormalSystem.ProofSystem.FrameClass) :
+    NoUnblockedFreshWork multSettledBranch TimeOrdering.empty fc :=
+  noUnblockedFreshWork_of_settled (by cases fc <;> rfl)
+
+/-- **The engine actually gets there**, at every frame class and every positive fuel figure: the
+post-blocking pass started at `[F(p → q)@⟨0,0⟩]` fires `.impNeg` once and then reports the extended
+branch as label-free saturated. So the class the discharge is stated at is inhabited by a branch the
+pass produces, not by a hand-assembled one. -/
+theorem saturateBlocked_multBranch_one_run
+    (fc : FormalSystem.ProofSystem.FrameClass) (fuel : Nat) :
+    saturateBlocked (multBranch 1) (fuel + 1) TimeOrdering.empty fc
+      = some (.inr (multSettledBranch, TimeOrdering.empty)) := by
+  rw [saturateBlocked_step_extended fuel (findClosure_multBranch_one fc)
+    (expandOnceNoFresh_multBranch_one fc)]
+  exact saturateBlocked_eq_self_of_noFresh_saturated (findClosure_multSettledBranch fc)
+    (by
+      have h := labelFreeSaturatedExit_multSettledBranch fc
+      rw [LabelFreeSaturatedExit] at h
+      exact Prod.ext h rfl) fuel
+
+/-- **The concrete discharge.** At every frame class and every positive fuel, the post-blocking pass
+run from `[F(p → q)@⟨0,0⟩]` returns a branch at which both antecedents hold and the blocking-aware
+saturation test therefore closes. Nothing here is at a vacuous boundary: the branch is nonempty,
+three formulas wide, and produced by the pass. -/
+theorem postBlockingSettlesAt_labelFree
+    (fc : FormalSystem.ProofSystem.FrameClass) (fuel : Nat) :
+    ∃ satBr satOrd,
+      saturateBlocked (multBranch 1) (fuel + 1) TimeOrdering.empty fc
+          = some (.inr (satBr, satOrd)) ∧
+        findUnexpandedUnblockedWith satBr satOrd fc
+          (blockedTimes satBr satOrd fc (armTracker satBr)) = none :=
+  ⟨multSettledBranch, TimeOrdering.empty, saturateBlocked_multBranch_one_run fc fuel,
+    postBlockingSettlesAt_settlement (labelFreeSaturatedExit_multSettledBranch fc)
+      (noUnblockedFreshWork_multSettledBranch fc)⟩
+
 end PostBlockingSettlesRefutation
 
 /-! ## C9. The do-not-re-attempt register
