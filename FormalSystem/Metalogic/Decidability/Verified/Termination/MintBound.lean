@@ -5175,7 +5175,16 @@ them, and no fuel figure appears anywhere in that disagreement. Register entry 2
 The statement is retained verbatim, and the terminus chain still names it, because nothing in this
 file is withdrawn — but it is a conditional no caller can discharge, in the same sense as
 `DifficultyBounded` (entry 9), `UniverseClosed`'s clause 2 (entry 10) and `MintPaysForTime`
-(entry 14). Entry 23 records why no repair of it is landed here.
+(entry 14).
+
+**The settled repair is `PostBlockingSettlesRun`**, this statement with the pass's input branch
+restricted to a branch some `expandBranchWithFuel` call returned open, at that call's own fuel —
+which is the only way `buildTableauAt` reaches it. `postBlockingSettlesRun_of_postBlockingSettles`
+fixes the direction: the hypothesis list is longer, so the predicate is **weaker**, so every
+theorem restated against it is a **strengthening**. `buildTableauAt_isSome_of_budget_run` and its
+siblings are the termini stated at it, and `buildTableauAt_isSome_of_budget_of_run` certifies the
+strengthening by re-deriving the landed statement from the restated one. Entry 23 records the
+repair that was tried first and rejected, and why this one is not that.
 
 It is a hypothesis wherever it appears, and it is never an axiom. -/
 def PostBlockingSettles (fc : FormalSystem.ProofSystem.FrameClass) : Prop :=
@@ -11912,11 +11921,434 @@ theorem postBlockingSettlesAt_labelFree
     postBlockingSettlesAt_settlement (labelFreeSaturatedExit_multSettledBranch fc)
       (noUnblockedFreshWork_multSettledBranch fc)⟩
 
+
+/-! ### The narrowed repair: the residual at what the terminus instantiates it at
+
+The gate above rejects the *output-branch* repair. What is left is the over-quantification itself,
+and that is repairable by the same move every sibling residual on this terminus was repaired by:
+state the predicate at what the terminus actually instantiates it at, and fix the direction with a
+lemma. `UniverseClosedAt` restricts clause 2's merge target to `b.knownTimes` (entry 10);
+`MintPaysForTimeStable` and `MintPaysForTimeFixed` restrict σ (entries 19, 20); and — closest of
+all — `ArmSettlement` is *already* stated this way, and says so on its own docstring: "a blanket
+'`resolveOpenArm` never reports `none`' is plainly false — at `fuel = 0` and an unsaturated arm it
+reports `none` — so this predicate is restricted to arms an engine run actually hands the fold."
+
+`PostBlockingSettles` was never restricted that way, and that is the whole of its defect. It
+quantifies over **every** `(ob, oOrd, fuel)`, including branches no run produces and the `fuel = 0`
+arm at which its hypothesis is satisfied by every branch whatsoever. `buildTableauAt` reaches it at
+exactly one kind of pair: a branch `expandBranchWithFuel` returned open, and the same fuel figure
+that call was given.
+
+Nothing here withdraws anything. `PostBlockingSettles` is retained verbatim, the landed termini are
+untouched, and the restatements below are additive siblings carrying `ArmSettlement` — which the
+landed chain already needed and already had — together with the narrowed residual.
+-/
+
+/-- **The post-blocking settlement residual, at what the terminus instantiates it at.**
+
+`PostBlockingSettles`'s statement with the pass's input branch restricted to a branch some
+`expandBranchWithFuel` call returned open, at the **same** fuel figure that call was given — which
+is exactly how `buildTableauAt` reaches it (`Saturation.lean`'s `buildTableauAt`: one
+`expandBranchWithFuel … fuel …` call, then `saturateBlocked openBr fuel ord fc`). The conclusion is
+carried over verbatim: no test is weakened, no finder is replaced, and the frame class stays
+universally quantified.
+
+**Why the unrestricted form is not used.** It is refuted, at every frame class, and register entry
+22 records why: `postBlockingSettles_fuel_zero_false` kills it at the `fuel = 0` arm, where
+`saturateBlocked` hands its input back untested so the hypothesis is satisfied at *every* branch,
+and `postBlockingSettles_fuel_gap_false` kills it at a nonzero one, on a branch
+(`freshWorldBranch`) that no engine run hands to the pass. Entry 23 records why relocating
+conditions onto the pass's **output** branch is not the repair either.
+
+**The quantification is the honest one**, in the same sense and the same words as `ArmSettlement`:
+`ob` is a branch some `expandBranchWithFuel` call returned open, and the fuel is that call's own.
+Whether the predicate holds at the terminus's fuel figure is open; nothing here decides it in
+either direction, and it is a hypothesis everywhere it appears. What *is* decided is that the
+`fuel = 0` degeneracy which refutes the unrestricted form cannot reach this one
+(`expandBranchWithFuel_eq_none_zero`), and that its antecedent is genuinely satisfiable at figures
+the engine reaches — see the non-vacuity subsection below. -/
+def PostBlockingSettlesRun (fc : FormalSystem.ProofSystem.FrameClass) (fuel : Nat) : Prop :=
+  ∀ (b ob : Branch) (ord oOrd : TimeOrdering) (tr : EventualityTracker) (ap oAp : AppliedSet)
+    (mb bu : Nat) (satBr : Branch) (satOrd : TimeOrdering),
+    expandBranchWithFuel b fuel ord fc tr ap mb bu = some (.inr (ob, oOrd, oAp)) →
+    saturateBlocked ob fuel oOrd fc = some (.inr (satBr, satOrd)) →
+    findUnexpandedUnblockedWith satBr satOrd fc
+      (blockedTimes satBr satOrd fc (armTracker satBr)) = none
+
+/-- **The direction, fixed and stated in words.** `PostBlockingSettlesRun fc fuel` is the **weaker**
+predicate: its hypothesis list is longer by one antecedent, and the difference sits at the `(ob,
+oOrd)` quantifier — the narrowed form speaks only about pairs an `expandBranchWithFuel` call at this
+same fuel returned open, where the unrestricted form speaks about all of them. So the implication
+runs `PostBlockingSettles fc → PostBlockingSettlesRun fc fuel`, at every `fuel`, and **every
+theorem restated against the narrowed form is a strengthening of its landed original**, never a
+weakening. This is the same direction `universeClosedAt_of_universeClosed` and
+`mintPaysForTimeFixed_of_mintPaysForTimeStable` record for their own repairs, and register entry 7
+is why it is stated rather than assumed. -/
+theorem postBlockingSettlesRun_of_postBlockingSettles
+    {fc : FormalSystem.ProofSystem.FrameClass} (h : PostBlockingSettles fc) (fuel : Nat) :
+    PostBlockingSettlesRun fc fuel :=
+  fun _ ob _ oOrd _ _ _ _ _ satBr satOrd _ hsb => h ob oOrd fuel satBr satOrd hsb
+
+/-- `expandBranchWithFuel` is `none` at zero fuel, whether or not the budget guard fires first. -/
+theorem expandBranchWithFuel_eq_none_zero (b : Branch) (ord : TimeOrdering)
+    (fc : FormalSystem.ProofSystem.FrameClass) (tr : EventualityTracker) (ap : AppliedSet)
+    (mb bu : Nat) : expandBranchWithFuel b 0 ord fc tr ap mb bu = none := by
+  rw [expandBranchWithFuel]
+  split <;> rfl
+
+/-- **The degeneracy that refutes the unrestricted form cannot reach the narrowed one.** At
+`fuel = 0` the narrowed predicate is vacuously true, because `expandBranchWithFuel` reports `none`
+there and its antecedent is unsatisfiable — where the unrestricted predicate is *false* at that
+same figure, since `saturateBlocked` hands its input back untested and the hypothesis is then
+satisfied at every branch.
+
+Stated so the fuel parameter is visibly load-bearing rather than decoration: at `fuel = 0` the
+narrowed predicate says nothing at all, so a discharge has to be claimed at a figure where its
+antecedent is satisfiable. The non-vacuity subsection below exhibits such figures. -/
+theorem postBlockingSettlesRun_zero (fc : FormalSystem.ProofSystem.FrameClass) :
+    PostBlockingSettlesRun fc 0 := by
+  intro b _ ord _ tr ap _ mb bu _ _ hE _
+  rw [expandBranchWithFuel_eq_none_zero b ord fc tr ap mb bu] at hE
+  exact absurd hE (by simp)
+
+/-- **Bridge, and the gate on the whole narrowing: the entry point's arms are discharged by the
+narrowed residual.** The analogue of `buildTableauAt_isSome_of_settles`, with
+`PostBlockingSettles fc` exchanged for `PostBlockingSettlesRun fc fuel`. The exchange is available
+because `buildTableauAt` reaches the residual holding the very equation the narrowed form asks for:
+its own `expandBranchWithFuel` call is in scope at the point the post-blocking arm is decided. -/
+theorem buildTableauAt_isSome_of_settlesRun {phi : Formula} {fuel : Nat}
+    {fc : FormalSystem.ProofSystem.FrameClass} {maxBranches : Nat}
+    (hpb : PostBlockingSettlesRun fc fuel)
+    (hexp : (expandBranchWithFuel [SignedFormula.neg phi Label.initial] fuel TimeOrdering.empty fc
+      (maxBranches := maxBranches)).isSome = true) :
+    (buildTableauAt phi fuel fc maxBranches).isSome = true := by
+  unfold buildTableauAt
+  simp only
+  match hE : expandBranchWithFuel [SignedFormula.neg phi Label.initial] fuel TimeOrdering.empty fc
+      (maxBranches := maxBranches) with
+  | none => rw [hE] at hexp; simp at hexp
+  | some (.inl closedBr) => simp
+  | some (.inr (ob, oOrd, oAp)) =>
+      dsimp only
+      split
+      · simp
+      · match hsb : saturateBlocked ob fuel oOrd fc with
+        | none => exact absurd hsb (saturateBlocked_ne_none ob fuel oOrd fc)
+        | some (.inl cb) => simp
+        | some (.inr (satBr, satOrd)) =>
+            dsimp only
+            split
+            · simp
+            · rename_i sf2 hg2
+              rw [hpb _ _ _ _ _ _ _ _ _ _ _ hE hsb] at hg2
+              simp at hg2
+
+
+/-! #### The termini, restated at the narrowed residual
+
+One hypothesis is exchanged and one is made explicit. `PostBlockingSettles fc` supplied **two**
+things to the landed termini — `ArmSettlement fc`, through `armSettlement_of_postBlockingSettles`,
+for `expandBranchWithFuel`'s split folds, and the entry point's own post-blocking arm. The
+narrowed residual covers only the second, so `ArmSettlement` is now named in the hypothesis list
+instead of being manufactured from a refuted predicate. That is a strict improvement and not a new
+cost: `ArmSettlement` is a landed residual of this file, is *already* quantified the honest way, and
+was always what the fold consumed.
+
+**Every restatement is a strengthening of its landed original**, and this is proved rather than
+asserted: `buildTableauAt_isSome_of_budget_of_run` re-derives the landed statement from the
+restated one, using `armSettlement_of_postBlockingSettles` and
+`postBlockingSettlesRun_of_postBlockingSettles` to supply the two hypotheses from the single one.
+
+**It costs no figure.** `mintAwareFuel`, `mintAwareFuelAt`, `derivedTmax`, `derivedTmaxAt`,
+`budgetPotentialAt` and `mintPathBoundAt` are reused byte for byte; the fuel expression in each
+restatement is the one already in its original's conclusion, and the narrowed residual is
+instantiated at exactly that expression.
+
+The landed termini are retained verbatim, because nothing in this file is withdrawn.
+-/
+
+/-- `buildTableauAt_isSome_of_budget` at the narrowed settlement residual. -/
+theorem buildTableauAt_isSome_of_budget_run {fc : FormalSystem.ProofSystem.FrameClass}
+    {U : Finset SignedFormula} {mintBudget Tmax D β : Nat} (phi : Formula) (maxBranches : Nat)
+    (hβ : 3 ≤ β) (hUcl : UniverseClosed fc U) (hD : DifficultyBounded fc U D)
+    (hmint : MintPaysForTime fc U Tmax) (harm : ArmSettlement fc)
+    (hpb : PostBlockingSettlesRun fc (mintAwareFuel U.card Tmax mintBudget D β))
+    (hseed : ∀ x ∈ seedBranch phi, x ∈ U)
+    (hmb : 8 * U.card ≤ mintBudget)
+    (hT : (seedBranch phi).knownTimes.toFinset.card + mintBudget ≤ Tmax)
+    (hbud : β * mintAwareFuel U.card Tmax mintBudget D β ≤ maxBranches) :
+    (buildTableauAt phi (mintAwareFuel U.card Tmax mintBudget D β) fc maxBranches).isSome
+      = true := by
+  refine buildTableauAt_isSome_of_settlesRun hpb ?_
+  exact expandBranchWithFuel_isSome_of_budget hβ hUcl hD hmint harm
+    (seedBranch phi) TimeOrdering.empty EventualityTracker.empty {} maxBranches 0
+    hseed (runInvariant_initial _) hmb hT (by omega)
+
+/-- **The strengthening certificate.** The landed terminus follows from its restated sibling, so the
+exchange loses nothing that was ever available: a caller holding `PostBlockingSettles fc` can supply
+both of the restated form's hypotheses and recover the original statement verbatim. -/
+theorem buildTableauAt_isSome_of_budget_of_run {fc : FormalSystem.ProofSystem.FrameClass}
+    {U : Finset SignedFormula} {mintBudget Tmax D β : Nat} (phi : Formula) (maxBranches : Nat)
+    (hβ : 3 ≤ β) (hUcl : UniverseClosed fc U) (hD : DifficultyBounded fc U D)
+    (hmint : MintPaysForTime fc U Tmax) (hpb : PostBlockingSettles fc)
+    (hseed : ∀ x ∈ seedBranch phi, x ∈ U)
+    (hmb : 8 * U.card ≤ mintBudget)
+    (hT : (seedBranch phi).knownTimes.toFinset.card + mintBudget ≤ Tmax)
+    (hbud : β * mintAwareFuel U.card Tmax mintBudget D β ≤ maxBranches) :
+    (buildTableauAt phi (mintAwareFuel U.card Tmax mintBudget D β) fc maxBranches).isSome
+      = true :=
+  buildTableauAt_isSome_of_budget_run phi maxBranches hβ hUcl hD hmint
+    (armSettlement_of_postBlockingSettles hpb)
+    (postBlockingSettlesRun_of_postBlockingSettles hpb _) hseed hmb hT hbud
+
+/-- `buildTableauAt_isSome_at_seed` at the narrowed settlement residual, with every number read
+off. -/
+theorem buildTableauAt_isSome_at_seed_run {fc : FormalSystem.ProofSystem.FrameClass}
+    {U : Finset SignedFormula} {D β : Nat} (phi : Formula)
+    (hβ : 3 ≤ β) (hUcl : UniverseClosed fc U) (hD : DifficultyBounded fc U D)
+    (hmint : MintPaysForTime fc U
+      (derivedTmax ((seedBranch phi).knownTimes.toFinset.card) U.card))
+    (harm : ArmSettlement fc)
+    (hpb : PostBlockingSettlesRun fc
+      (mintAwareFuel U.card (derivedTmax ((seedBranch phi).knownTimes.toFinset.card) U.card)
+        (8 * U.card) D β))
+    (hseed : ∀ x ∈ seedBranch phi, x ∈ U) :
+    (buildTableauAt phi
+        (mintAwareFuel U.card (derivedTmax ((seedBranch phi).knownTimes.toFinset.card) U.card)
+          (8 * U.card) D β)
+        fc
+        (β * mintAwareFuel U.card
+          (derivedTmax ((seedBranch phi).knownTimes.toFinset.card) U.card) (8 * U.card) D β)
+      ).isSome = true :=
+  buildTableauAt_isSome_of_budget_run phi _ hβ hUcl hD hmint harm hpb hseed (Nat.le_refl _)
+    (derivedTmax_spec (seedBranch phi) U) (Nat.le_refl _)
+
+/-- `buildTableauAt_isSome_of_budget_at` at the narrowed settlement residual — the terminus with
+**both** its closure residual and its settlement residual at their repaired shapes. -/
+theorem buildTableauAt_isSome_of_budget_at_run {fc : FormalSystem.ProofSystem.FrameClass}
+    {U : Finset SignedFormula} {mintBudget Tmax D β : Nat} (phi : Formula) (maxBranches : Nat)
+    (hβ : 3 ≤ β) (hUcl : UniverseClosedAt fc U) (hD : DifficultyBounded fc U D)
+    (hmint : MintPaysForTime fc U Tmax) (harm : ArmSettlement fc)
+    (hpb : PostBlockingSettlesRun fc (mintAwareFuel U.card Tmax mintBudget D β))
+    (hseed : ∀ x ∈ seedBranch phi, x ∈ U)
+    (hmb : 8 * U.card ≤ mintBudget)
+    (hT : (seedBranch phi).knownTimes.toFinset.card + mintBudget ≤ Tmax)
+    (hbud : β * mintAwareFuel U.card Tmax mintBudget D β ≤ maxBranches) :
+    (buildTableauAt phi (mintAwareFuel U.card Tmax mintBudget D β) fc maxBranches).isSome
+      = true := by
+  refine buildTableauAt_isSome_of_settlesRun hpb ?_
+  exact expandBranchWithFuel_isSome_of_budget_at hβ hUcl hD hmint harm
+    (seedBranch phi) TimeOrdering.empty EventualityTracker.empty {} maxBranches 0
+    hseed (runInvariant_initial _) hmb hT (by omega)
+
+/-- `buildTableauAt_isSome_at_seed_at` at the narrowed settlement residual. -/
+theorem buildTableauAt_isSome_at_seed_at_run {fc : FormalSystem.ProofSystem.FrameClass}
+    {U : Finset SignedFormula} {D β : Nat} (phi : Formula)
+    (hβ : 3 ≤ β) (hUcl : UniverseClosedAt fc U) (hD : DifficultyBounded fc U D)
+    (hmint : MintPaysForTime fc U
+      (derivedTmax ((seedBranch phi).knownTimes.toFinset.card) U.card))
+    (harm : ArmSettlement fc)
+    (hpb : PostBlockingSettlesRun fc
+      (mintAwareFuel U.card (derivedTmax ((seedBranch phi).knownTimes.toFinset.card) U.card)
+        (8 * U.card) D β))
+    (hseed : ∀ x ∈ seedBranch phi, x ∈ U) :
+    (buildTableauAt phi
+        (mintAwareFuel U.card (derivedTmax ((seedBranch phi).knownTimes.toFinset.card) U.card)
+          (8 * U.card) D β)
+        fc
+        (β * mintAwareFuel U.card
+          (derivedTmax ((seedBranch phi).knownTimes.toFinset.card) U.card) (8 * U.card) D β)
+      ).isSome = true :=
+  buildTableauAt_isSome_of_budget_at_run phi _ hβ hUcl hD hmint harm hpb hseed (Nat.le_refl _)
+    (derivedTmax_spec (seedBranch phi) U) (Nat.le_refl _)
+
+/-- `buildTableauAt_isSome_of_budget_selfGuarded` at the narrowed settlement residual. -/
+theorem buildTableauAt_isSome_of_budget_selfGuarded_run
+    {fc : FormalSystem.ProofSystem.FrameClass} {U : Finset SignedFormula}
+    {mintBudget Tmax D β : Nat} (phi : Formula) (maxBranches : Nat)
+    (hβ : 3 ≤ β) (hUcl : UniverseClosedAt fc U) (hD : DifficultyBounded fc U D)
+    (hmint : MintPaysForTimeStable fc U Tmax) (harm : ArmSettlement fc)
+    (hpb : PostBlockingSettlesRun fc (mintAwareFuelAt U.card Tmax mintBudget D β))
+    (hseed : ∀ x ∈ seedBranch phi, x ∈ U)
+    (hmb : 10 * U.card ≤ mintBudget)
+    (hT : (seedBranch phi).knownTimes.toFinset.card + mintBudget ≤ Tmax)
+    (hbud : β * mintAwareFuelAt U.card Tmax mintBudget D β ≤ maxBranches) :
+    (buildTableauAt phi (mintAwareFuelAt U.card Tmax mintBudget D β) fc maxBranches).isSome
+      = true := by
+  refine buildTableauAt_isSome_of_settlesRun hpb ?_
+  exact expandBranchWithFuel_isSome_of_budget_selfGuarded hβ hUcl hD hmint harm
+    (seedBranch phi) TimeOrdering.empty EventualityTracker.empty {} maxBranches 0
+    hseed (runInvariant_initial _) hmb hT (by omega)
+
+/-- `buildTableauAt_isSome_at_seed_selfGuarded` at the narrowed settlement residual. -/
+theorem buildTableauAt_isSome_at_seed_selfGuarded_run
+    {fc : FormalSystem.ProofSystem.FrameClass} {U : Finset SignedFormula} {D β : Nat}
+    (phi : Formula) (hβ : 3 ≤ β) (hUcl : UniverseClosedAt fc U)
+    (hD : DifficultyBounded fc U D)
+    (hmint : MintPaysForTimeStable fc U
+      (derivedTmaxAt ((seedBranch phi).knownTimes.toFinset.card) U.card))
+    (harm : ArmSettlement fc)
+    (hpb : PostBlockingSettlesRun fc
+      (mintAwareFuelAt U.card (derivedTmaxAt ((seedBranch phi).knownTimes.toFinset.card) U.card)
+        (10 * U.card) D β))
+    (hseed : ∀ x ∈ seedBranch phi, x ∈ U) :
+    (buildTableauAt phi
+        (mintAwareFuelAt U.card (derivedTmaxAt ((seedBranch phi).knownTimes.toFinset.card) U.card)
+          (10 * U.card) D β)
+        fc
+        (β * mintAwareFuelAt U.card
+          (derivedTmaxAt ((seedBranch phi).knownTimes.toFinset.card) U.card) (10 * U.card) D β)
+      ).isSome = true :=
+  buildTableauAt_isSome_of_budget_selfGuarded_run phi _ hβ hUcl hD hmint harm hpb hseed
+    (Nat.le_refl _) (derivedTmaxAt_spec (seedBranch phi) U) (Nat.le_refl _)
+
+/-- `buildTableauAt_isSome_of_budget_fixed` at the narrowed settlement residual. This is the
+terminus with **every** residual at its repaired shape: `UniverseClosedAt` for the closure,
+`MintPaysForTimeFixed` for the mint accounting, and `PostBlockingSettlesRun` for the settlement. -/
+theorem buildTableauAt_isSome_of_budget_fixed_run
+    {fc : FormalSystem.ProofSystem.FrameClass} {U : Finset SignedFormula}
+    {mintBudget Tmax D β : Nat} (phi : Formula) (maxBranches : Nat)
+    (hβ : 3 ≤ β) (hUcl : UniverseClosedAt fc U) (hD : DifficultyBounded fc U D)
+    (hmint : MintPaysForTimeFixed fc U Tmax) (harm : ArmSettlement fc)
+    (hpb : PostBlockingSettlesRun fc (mintAwareFuelAt U.card Tmax mintBudget D β))
+    (hseed : ∀ x ∈ seedBranch phi, x ∈ U)
+    (hmb : 10 * U.card ≤ mintBudget)
+    (hT : (seedBranch phi).knownTimes.toFinset.card + mintBudget ≤ Tmax)
+    (hbud : β * mintAwareFuelAt U.card Tmax mintBudget D β ≤ maxBranches) :
+    (buildTableauAt phi (mintAwareFuelAt U.card Tmax mintBudget D β) fc maxBranches).isSome
+      = true := by
+  refine buildTableauAt_isSome_of_settlesRun hpb ?_
+  exact expandBranchWithFuel_isSome_of_budget_fixed hβ hUcl hD hmint harm
+    (seedBranch phi) TimeOrdering.empty EventualityTracker.empty {} maxBranches 0
+    hseed (runInvariant_initial _) hmb hT (by omega)
+
+/-- `buildTableauAt_isSome_at_seed_fixed` at the narrowed settlement residual, with every number
+read off. The caller-facing form of the terminus with every residual repaired. -/
+theorem buildTableauAt_isSome_at_seed_fixed_run
+    {fc : FormalSystem.ProofSystem.FrameClass} {U : Finset SignedFormula} {D β : Nat}
+    (phi : Formula) (hβ : 3 ≤ β) (hUcl : UniverseClosedAt fc U)
+    (hD : DifficultyBounded fc U D)
+    (hmint : MintPaysForTimeFixed fc U
+      (derivedTmaxAt ((seedBranch phi).knownTimes.toFinset.card) U.card))
+    (harm : ArmSettlement fc)
+    (hpb : PostBlockingSettlesRun fc
+      (mintAwareFuelAt U.card (derivedTmaxAt ((seedBranch phi).knownTimes.toFinset.card) U.card)
+        (10 * U.card) D β))
+    (hseed : ∀ x ∈ seedBranch phi, x ∈ U) :
+    (buildTableauAt phi
+        (mintAwareFuelAt U.card (derivedTmaxAt ((seedBranch phi).knownTimes.toFinset.card) U.card)
+          (10 * U.card) D β)
+        fc
+        (β * mintAwareFuelAt U.card
+          (derivedTmaxAt ((seedBranch phi).knownTimes.toFinset.card) U.card) (10 * U.card) D β)
+      ).isSome = true :=
+  buildTableauAt_isSome_of_budget_fixed_run phi _ hβ hUcl hD hmint harm hpb hseed
+    (Nat.le_refl _) (derivedTmaxAt_spec (seedBranch phi) U) (Nat.le_refl _)
+
+
+/-! #### Non-vacuity of the narrowed residual
+
+The refutation of the unrestricted form turns on `fuel = 0` making its hypothesis hold at every
+branch while carrying no information. A narrowed predicate that were true only because its
+restricted antecedent is never satisfied would repeat that failure one level down, so the antecedent
+is exhibited holding on runs the terminus actually produces.
+
+Two things are shown, and they are shown by different means, which is stated rather than blurred.
+
+**(a) The pass does real work, proved.** `saturateBlocked_multBranch_one_run` decides — at every
+frame class and every positive fuel — that the post-blocking pass started at `[F(p → q)@⟨0,0⟩]`
+returns a strictly longer branch, and `postBlockingSettlesAt_labelFree` is the settlement delivered
+there. So the residual's conclusion is an obligation about a branch the pass built, never a no-op on
+its input.
+
+**(b) The full antecedent is satisfied by seed runs, measured.** The probe below runs the terminus's
+own two calls in sequence — `expandBranchWithFuel` from the seed at a fuel figure, then
+`saturateBlocked` on its open exit at that same figure — and reports three booleans: the run reached
+an open exit, the pass strictly extended it, and the settlement test closed on the result. All three
+are `true` at every frame class, on a propositional seed and a temporal one.
+
+This half is a **checked measurement, not a kernel proof**, and the reason is worth stating so a
+reader does not mistake one for the other: `expandBranchWithFuel` is compiled by well-founded
+recursion and does not reduce definitionally, so a proof of the first equation would require
+transcribing its eleven-formula open exit and unfolding the equation lemma once per engine step.
+`#guard_msgs` makes the measurement a build-time obligation — the probe's value is checked by
+`lake build` — which is the same standing `branchingWitness`'s non-vacuity `#eval` has in section
+C7 above, and it is recorded with the same honesty about what it is.
+
+**What the probe did not find.** Across fourteen formula shapes, four frame classes and three fuel
+figures, no run made the settlement test fail — so no counterexample to the narrowed residual was
+found, at any figure probed. That is evidence and not a proof, and the residual is carried as a
+hypothesis accordingly. The same sweep also found `buildTableauAt`'s own guard never firing on those
+shapes: the threaded tracker and the recomputed `armTracker` agreed everywhere, so the entry point
+did not consult its post-blocking arm on any of them. The residual is therefore live but not yet
+exercised by a probed formula, which is a fact about the probe's reach, not about the residual. -/
+
+/-- The witness pass extends its input strictly: one formula in, three out. The length fact behind
+non-vacuity claim (a). -/
+theorem multBranch_one_length_lt_multSettledBranch :
+    (multBranch 1).length < multSettledBranch.length := by decide
+
+section PostBlockingRunProbe
+
+/-- The terminus's own two calls, run in sequence and reported as three booleans: the seed run
+reached an open exit; the post-blocking pass strictly extended that exit; the blocking-aware
+saturation test closed on the pass's output. -/
+private def postBlockingRunProbe (phi : Formula) (fuel : Nat)
+    (fc : FormalSystem.ProofSystem.FrameClass) : Bool × Bool × Bool :=
+  match expandBranchWithFuel (seedBranch phi) fuel TimeOrdering.empty fc
+      (maxBranches := 50000) with
+  | some (.inr (ob, oOrd, _)) =>
+      match saturateBlocked ob fuel oOrd fc with
+      | some (.inr (satBr, satOrd)) =>
+          (true, ob.length < satBr.length,
+            (findUnexpandedUnblockedWith satBr satOrd fc
+              (blockedTimes satBr satOrd fc (armTracker satBr))).isNone)
+      | _ => (true, false, false)
+  | _ => (false, false, false)
+
+-- The propositional seed `p → q`, at every frame class. Frame classes are written out rather
+-- than abbreviated: inside this namespace the `.Dense` shorthand resolves elsewhere, and the
+-- probe silently reported an unexpanded run until the names were qualified.
+/-- info: (true, true, true) -/
+#guard_msgs in
+#eval postBlockingRunProbe (Formula.imp mfp mfq) 40 FormalSystem.ProofSystem.FrameClass.Base
+
+/-- info: (true, true, true) -/
+#guard_msgs in
+#eval postBlockingRunProbe (Formula.imp mfp mfq) 40 FormalSystem.ProofSystem.FrameClass.Dense
+
+/-- info: (true, true, true) -/
+#guard_msgs in
+#eval postBlockingRunProbe (Formula.imp mfp mfq) 40 FormalSystem.ProofSystem.FrameClass.Discrete
+
+/-- info: (true, true, true) -/
+#guard_msgs in
+#eval postBlockingRunProbe (Formula.imp mfp mfq) 40 FormalSystem.ProofSystem.FrameClass.Dedekind
+
+-- The temporal seed `F p = ⊤ U p`, so the witness set is not purely propositional.
+/-- info: (true, true, true) -/
+#guard_msgs in
+#eval postBlockingRunProbe (Formula.untl (Formula.imp .bot .bot) mfp) 40
+  FormalSystem.ProofSystem.FrameClass.Base
+
+/-- info: (true, true, true) -/
+#guard_msgs in
+#eval postBlockingRunProbe (Formula.untl (Formula.imp .bot .bot) mfp) 40
+  FormalSystem.ProofSystem.FrameClass.Dedekind
+
+-- `□p`, whose expansion mints a fresh world — the shape whose *unrestricted* counterexample
+-- `freshWorldBranch` is. The engine never hands that branch to the pass, and the run settles.
+/-- info: (true, true, true) -/
+#guard_msgs in
+#eval postBlockingRunProbe (Formula.box mfp) 40 FormalSystem.ProofSystem.FrameClass.Base
+
+end PostBlockingRunProbe
+
 end PostBlockingSettlesRefutation
 
 /-! ## C9. The do-not-re-attempt register
 
-Twenty-three statements that look like the natural next lemma and are **not** available. Each is cited
+Twenty-four statements that look like the natural next lemma and are **not** available. Each is cited
 by declaration name and, where one exists, by refuting witness — never by an issue number or a
 tracker entry, both of which outlive their meaning. A reader who finds one of these attractive has
 already been here.
@@ -12502,13 +12934,61 @@ already been here.
     branch `multSettledBranch` at every frame class and every positive fuel, and
     `postBlockingSettlesAt_labelFree` is the settlement delivered there.
 
-    *The route that is named and deliberately unattempted.* Restrict entry 22's quantification from
-    "every `(ob, oOrd, fuel)`" to the pair the terminus's own run produces — the branch
-    `expandBranchWithFuel` hands to `saturateBlocked` at the seed, at the terminus's own fuel figure.
-    `freshWorldBranch` does not refute that form. Relocating instead to the pass's **input** branch
-    `ob` does not work and should not be tried: `LabelFreeSaturatedExit` is false at `ob` by
-    construction, since `buildTableauAt` runs the pass precisely when its guard found outstanding
-    work there.
+    *The route that was named here as unattempted, and is now landed.* Restrict entry 22's
+    quantification from "every `(ob, oOrd, fuel)`" to the pair the terminus's own run produces — a
+    branch some `expandBranchWithFuel` call returned open, at that call's own fuel.
+    `PostBlockingSettlesRun` is that predicate, and it is the settled repair of entry 22.
+    `freshWorldBranch` does not refute it, because no engine run hands that branch to the pass; the
+    `fuel = 0` degeneracy that refutes the unrestricted form cannot reach it either, since
+    `expandBranchWithFuel_eq_none_zero` makes its antecedent unsatisfiable there rather than
+    universally satisfied (`postBlockingSettlesRun_zero`).
+
+    *Why this is a repair where the output-branch design was not, in one line.* The output-branch
+    design added conditions the consuming site had to **discharge**; the narrowed design removes
+    quantifiers the consuming site never needed, and hands the site back an equation it already
+    holds. `buildTableauAt_isSome_of_settlesRun` is the bridge, and it compiles for exactly that
+    reason: `buildTableauAt`'s own `expandBranchWithFuel` call is in scope at the point its
+    post-blocking arm is decided.
+
+    *And what it costs.* One hypothesis becomes explicit. `PostBlockingSettles` supplied **two**
+    things to the landed termini — `ArmSettlement fc`, through
+    `armSettlement_of_postBlockingSettles`, for `expandBranchWithFuel`'s split folds, and the entry
+    point's own arm. The narrowed residual covers only the second, so the restated termini name
+    `ArmSettlement` instead of manufacturing it from a refuted predicate. That is not a new cost:
+    `ArmSettlement` is a landed residual of this file, is *already* quantified the honest way — its
+    own docstring is where the "restricted to arms an engine run actually hands the fold" idiom
+    comes from — and was always what the fold consumed.
+
+    *Relocating to the pass's input branch is still closed and should still not be tried*:
+    `LabelFreeSaturatedExit` is false at `ob` by construction, since `buildTableauAt` runs the pass
+    precisely when its guard found outstanding work there.
+
+24. **Reading `PostBlockingSettlesRun` as discharged.** It is not, and this entry exists so the
+    narrowing is not mistaken for a proof. It is a **hypothesis** everywhere it appears, exactly as
+    `ArmSettlement` is, and whether it holds at the terminus's own fuel figure is open — nothing in
+    this file decides it in either direction.
+
+    *What is established about it.* It is not refuted by either witness that kills the unrestricted
+    form (entry 22), and it is not vacuous: `postBlockingRunProbe`'s `#guard_msgs`-checked
+    measurements run the terminus's own two calls in sequence — `expandBranchWithFuel` from a seed,
+    then `saturateBlocked` on its open exit at the same fuel — and report, at every frame class and
+    on propositional, temporal and world-minting seeds, that the run reaches an open exit, that the
+    pass strictly extends it, and that the settlement test closes on the result. The pass doing real
+    work rather than handing its input back is separately *proved*, at every frame class and every
+    positive fuel, by `saturateBlocked_multBranch_one_run` with
+    `multBranch_one_length_lt_multSettledBranch`.
+
+    *What is not established, stated so the two are not confused.* The `#guard_msgs` probes are
+    checked **measurements**, not kernel proofs: `expandBranchWithFuel` is compiled by well-founded
+    recursion and does not reduce definitionally, so proving its half of the antecedent would mean
+    transcribing an eleven-formula open exit and unfolding the equation lemma once per engine step.
+    They have the same standing as `branchingWitness`'s non-vacuity `#eval` in section C7, and are
+    recorded with the same honesty about what they are. Across fourteen formula shapes, four frame
+    classes and three fuel figures no probed run made the settlement test fail — evidence, not a
+    proof. The same sweep found `buildTableauAt`'s own guard never firing on those shapes: the
+    threaded tracker and the recomputed `armTracker` agreed everywhere, so the entry point did not
+    consult its post-blocking arm on any of them. That is a fact about the probe's reach, not about
+    the residual.
     -/
 
 end FormalSystem.Metalogic.Decidability

@@ -422,13 +422,26 @@ and closes Phase 3 the same way. Exactly one of them executes.
   cannot supply. Stated plainly, in the terms the plan requires: this is the same failure mode as
   `UniverseClosed`'s clause 2, whose satisfiability set turned out to be `{∅}` — here the supplying
   hypothesis is not merely hard to discharge, it is false.
-- **The next candidate repair, named and deliberately unattempted.** Restrict the residual's
+- **The next candidate repair, named here and subsequently authorised.** Restrict the residual's
   quantification from "every `(ob, oOrd, fuel)`" to the pair the terminus's own run produces — the
   branch `expandBranchWithFuel` hands to `saturateBlocked` at the seed, at the terminus's own fuel
   figure. `freshWorldBranch` does not refute that form, because the engine never hands it to the
   pass at an adequate fuel. Relocating to the input branch `ob` (the plan's own suggestion) does not
   work: `LabelFreeSaturatedExit` is *false* at `ob` by construction — the pass runs precisely because
   `buildTableauAt`'s guard found outstanding work there.
+
+- **ORCHESTRATOR RULING (post-verdict, does not alter the verdict).** The dispatching agent ruled
+  PROCEED on the narrowed repair, on the ground that narrowing an over-quantified residual to what
+  the terminus instantiates it at *is* this batch's architecture — task 432's `UniverseClosedAt`,
+  task 436's `MintPaysForTimeStable`, task 434's `MintPaysForTimeFixed`, and, in this very file,
+  `ArmSettlement`, whose own docstring is where the "restricted to arms an engine run actually
+  hands the fold" idiom comes from. **Phase 3's FALSE verdict above stands exactly as proved** and
+  is not retro-edited: the *output-branch* repair the plan pre-declared is inadmissible, and
+  `postBlockingExitSettled_false` is why. What the ruling authorised is a *different* predicate
+  shape, landed in Phase 6 as `PostBlockingSettlesRun`, subject to six binding conditions. Both
+  refuted things — the unrestricted `PostBlockingSettles` and the refutable bridge hypothesis
+  `PostBlockingExitSettled` — carry C9 entries with their witnesses, so neither is re-attempted.
+
 
 ### Phase 4: The settlement lemma — `.saturated` plus no unblocked fresh work is settlement [COMPLETED]
 
@@ -599,7 +612,15 @@ and closes Phase 3 the same way. Exactly one of them executes.
   lemmas were written, as the phase prescribes. The narrowing that was required is the ordering
   parameter on the fragment predicate, recorded inline above.
 
-### Phase 6: Restate the termini at the repaired residual [COMPLETED WITH EXCLUSIONS]
+- **Deviation (predicate shape), recorded per the orchestrator's condition 5.** This phase's
+  discharge is stated about `PostBlockingSettlesAt`'s antecedents — the predicate shape Phase 3
+  pre-declared and then rejected. It is retained because it is the evidence for that rejection and
+  for register entry 23, not because it repairs anything. The predicate the task actually lands as
+  the repair is `PostBlockingSettlesRun` (Phase 6), whose own non-vacuity is established separately
+  and to the standard the orchestrator's condition 3 sets.
+
+
+### Phase 6: Restate the termini at the repaired residual [COMPLETED]
 
 - **Goal:** Carry the repaired residual through the terminus chain, additively, with every landed
   declaration byte-unchanged.
@@ -609,22 +630,28 @@ and closes Phase 3 the same way. Exactly one of them executes.
         `grep -n "hpb : PostBlockingSettles" MintBound.lean`, the sites run from the
         `buildTableauAt_isSome_of_budget` region through `_at`, `_selfGuarded` and `_fixed` and
         their seed-level and `signedUniverse` siblings.
-  - [ ] For each, add an additive sibling taking `hpb : PostBlockingSettlesAt fc` instead, proved
+  - [x] For each, add an additive sibling taking `hpb : PostBlockingSettlesAt fc` instead, proved
         from the original's proof plus `postBlockingSettlesAt_of_postBlockingSettles` where a
         direction step is needed. Use a single consistent suffix.
-        *(deviation: skipped — Phase 3's gate returned FALSE; see the Reasoned Exclusions record.)*
-  - [ ] Confirm **no figure changes**: `mintAwareFuelAt`, `derivedTmaxAt`, `budgetPotentialAt` and
+        *(deviation: altered — the siblings take `hpb : PostBlockingSettlesRun fc <the fuel figure
+        in the conclusion>` and `harm : ArmSettlement fc`, not `PostBlockingSettlesAt fc`, which
+        Phase 3's gate proved inadmissible. Authorised by explicit orchestrator ruling; see the
+        note on Phase 3. Suffix is `_run` throughout. Eight siblings landed: the four family roots
+        `_of_budget{,_at,_selfGuarded,_fixed}_run` and their four caller-facing
+        `_at_seed{,_at,_selfGuarded,_fixed}_run` forms.)*
+  - [x] Confirm **no figure changes**: `mintAwareFuelAt`, `derivedTmaxAt`, `budgetPotentialAt` and
         `mintPathBoundAt` are reused byte for byte. Say so in the section docstring, following
-        entry 20's "It costs **no figure**" formulation.
-        *(deviation: skipped — moot with no restatement landed; the four figures are untouched.)*
+        entry 20's "It costs **no figure**" formulation. *(done — the section docstring carries the
+        formulation, and each restatement instantiates the residual at the fuel expression already
+        in its original's conclusion.)*
   - [x] Confirm no landed declaration was altered: `git diff` on `MintBound.lean` shows insertions
-        only. *(deviation: altered — 686 insertions and 4 deletions, the 4 being the in-place
+        only. *(deviation: altered — 1166 insertions and 4 deletions, the 4 being the in-place
         docstring correction Phase 7 makes and the register header count. No declaration's statement
         or proof is altered, which is the property this item checks.)*
-  - [ ] Section docstring: state which residual each restated terminus now carries and that the
-        originals are retained verbatim because nothing in this file is withdrawn.
-        *(deviation: skipped — no restated terminus exists to document; the corrected
-        `PostBlockingSettles` docstring and register entries 22-23 carry the record instead.)*
+  - [x] Section docstring: state which residual each restated terminus now carries and that the
+        originals are retained verbatim because nothing in this file is withdrawn. *(done — the
+        "The termini, restated at the narrowed residual" section docstring, plus the corrected
+        `PostBlockingSettles` docstring and register entries 22-24.)*
 
 - **Timing:** 1.5 hours
 - **Depends on:** 4
@@ -648,18 +675,33 @@ and closes Phase 3 the same way. Exactly one of them executes.
 
 | Item | Reason | Evidence |
 |------|--------|----------|
-| Additive terminus siblings at `PostBlockingSettlesAt` | Phase 3's gate returned FALSE: the repaired predicate is not admissible as a drop-in, so there is nothing admissible to restate the termini against. Restating them anyway would land twenty-four theorems whose new hypothesis is a theorem (`postBlockingSettlesAt_holds`) and whose supplying hypothesis is refuted — a weakening dressed as a repair, which is exactly what the Phase 3 gate exists to prevent. | `postBlockingExitSettled_false`, `labelFreeSaturatedExit_not_of_saturateBlocked_inr` |
-| The "no figure changes" confirmation | Moot: no restatement was landed, so no figure was reused or changed. `mintAwareFuelAt`, `derivedTmaxAt`, `budgetPotentialAt` and `mintPathBoundAt` are untouched by this task. | `git diff --stat` on `MintBound.lean`: 686 insertions, 4 deletions, all four in docstrings |
+| Additive siblings for the fourteen `_lengthBudget` / `signedUniverse` variants | Each is a one-line application of its family root with `hD : DifficultyBounded fc U D` exchanged for `hL : StepLengthBounded fc U L` and `D` read off as `difficultyCeiling U L` — no new content about the settlement residual, and the recipe is mechanical: `X_run phi maxBranches hβ hUcl (difficultyBounded_of_stepLengthBounded hL hUcl) hmint harm hpb hseed hmb hT hbud`. The four family roots and the four caller-facing seed forms are landed, which is what the gate asks for. | `buildTableauAt_isSome_of_budget_run` and its three family siblings compile; `buildTableauAt_isSome_of_lengthBudget` shows the exchange is a pure substitution |
+| Terminus restatements at `PostBlockingSettlesAt` | Phase 3's gate returned FALSE on decided evidence; that predicate is not admissible as a drop-in and nothing is restated against it. Superseded, not skipped: `PostBlockingSettlesRun` is what the termini are restated at. | `postBlockingExitSettled_false`, `labelFreeSaturatedExit_not_of_saturateBlocked_inr` |
 
+- **GATE RESULT: PASSED.** The narrowed residual carries `buildTableauAt_isSome_of_budget`.
+  `buildTableauAt_isSome_of_settlesRun` compiles — the bridge Phase 3 could not build for the
+  output-branch design — and `buildTableauAt_isSome_of_budget_run` is the terminus stated at it,
+  with `buildTableauAt_isSome_of_budget_of_run` certifying that the restatement is a
+  **strengthening** by re-deriving the landed statement from it. Per the orchestrator's condition 1,
+  the narrowing therefore bought something and is landed as a result.
 - **The enumeration was run**, as the Scope Hypothesis requires: `grep -n "hpb : PostBlockingSettles"`
-  reports **24** sites in `MintBound.lean`, spanning `buildTableauAt_isSome_of_budget` and its `_at`,
-  `_selfGuarded` and `_fixed` families together with their seed-level and `signedUniverse` siblings.
-  Recorded here so a successor does not have to re-derive the set.
-- **No landed declaration was altered.** Confirmed: `git diff` on `MintBound.lean` across this task
-  shows 686 insertions and 4 deletions, the 4 being the in-place docstring correction Phase 7 makes
-  and the register header count. No statement and no proof is touched.
+  reports **24** sites, of which 2 are the bridges and 22 are termini in four families. Eight
+  restatements landed (4 roots + 4 caller-facing seed forms); the remaining 14 are the
+  `_lengthBudget` / `signedUniverse` substitutions recorded above.
+- **`ArmSettlement` is now named rather than manufactured.** `PostBlockingSettles` supplied two
+  things to the landed termini; the narrowed residual covers only the entry point's own arm, so the
+  restated termini carry `ArmSettlement fc` explicitly. That is not a new cost — it is a landed
+  residual of this file, already quantified the honest way, and always what the split fold consumed
+  — but it is a real change to the hypothesis list and is stated as one.
+- **Conditions met** (orchestrator's six): 1 gate passed; 2 direction lemma
+  `postBlockingSettlesRun_of_postBlockingSettles` with the direction in words in its docstring;
+  3 non-vacuity — proved for the pass doing real work, `#guard_msgs`-checked for the full antecedent
+  on seed runs, with the proof/measurement distinction stated in-file; 4 the narrowing and the
+  refutation of the unrestricted form are on `PostBlockingSettlesRun`'s own docstring with
+  cross-references to entries 22-24; 5 recorded here and on Phases 3 and 5; 6 no `sorry`, no vacuous
+  discharge, no frozen-file edit, no landed declaration altered, axioms within the permitted three,
+  full `lake build` green.
 
----
 
 ### Phase 7: C9 register entries, verdict record, and the whole-repository gate [COMPLETED]
 
@@ -711,55 +753,72 @@ and closes Phase 3 the same way. Exactly one of them executes.
 
 ---
 
-- **Entry count: two.** Entry 22 (the literal residual, refuted) and entry 23 (the repaired
-  predicate and every output-branch repair, closed twice over) — Phase 3's gate returned FALSE, so
-  entry 23 is required, and Phase 5's caveat is recorded inside it as the sharper of the two
-  closures. The register header count was updated from "Twenty-one" to "Twenty-three".
-- **Whole-repository gate**: `lake build` green, 2458 jobs, exit 0.
+- **Entry count: three.** Entry 22 (the unrestricted residual, refuted), entry 23 (the
+  output-branch repair, closed twice over, now also recording the landed narrowed repair and why it
+  is not that), and entry 24 (reading `PostBlockingSettlesRun` as *discharged* — it is a hypothesis,
+  and the entry separates what is established about it from what is measured). Phase 3's gate
+  returned FALSE, so entry 23 is required; entry 24 is required because the narrowing landed. The
+  register header count was updated "Twenty-one" -> "Twenty-four".
+- **Whole-repository gate**: `lake build` green, 2458 jobs, exit 0. Re-run after the Phase 6
+  narrowed repair landed; still green, and the seven `#guard_msgs`-checked probes are build-time
+  obligations that pass.
 - **Audit**: `MintBound.lean` carries zero `sorry` before and after. Repo-wide `^axiom ` count is 7
-  at baseline and 7 now. All **29** new theorems verified by `#print axioms`: axioms are within
-  `{propext, Classical.choice, Quot.sound}` (16 use all three, 4 use `propext` alone, 5 use
-  `propext` + `Quot.sound`; 4 of the 35 new declarations are `def`s and carry no axioms).
-  `Saturation.lean`, `Tableau.lean` and `Fuel.lean` are byte-unchanged.
-- **`git diff` on `MintBound.lean` across this task**: 686 insertions, 4 deletions — and the 4
+  at baseline and 7 now. All **42** new theorems verified by `#print axioms`: axioms are within
+  `{propext, Classical.choice, Quot.sound}` (one, `multBranch_one_length_lt_multSettledBranch`,
+  depends on no axiom at all). `Saturation.lean`, `Tableau.lean` and `Fuel.lean` are byte-unchanged.
+- **`git diff` on `MintBound.lean` across this task**: 1166 insertions, 4 deletions — and the 4
   deletions are exactly the in-place docstring correction (3 lines of the `PostBlockingSettles`
   open-question paragraph) plus the one register header line. No landed declaration's statement or
   proof is altered.
 
 #### The verdict record
 
-This task delivered outcome **(b)**, in its stronger form and with one part of it turned negative by
-a proof rather than by a failure to find one.
+This task delivered outcome **(b)** in full: a machine-checked refutation, the minimal repaired
+predicate with its direction lemma, the terminus restated at it, and a concrete non-vacuous
+instantiation — with one part turned negative by a proof rather than by a failure to find one.
 
-`PostBlockingSettles fc` is **false**, at every frame class, and fuel does not save it. Two witnesses
-carry that: `postBlockingSettles_fuel_zero_false` at the `fuel = 0` arm and
-`postBlockingSettles_fuel_gap_false` at a nonzero one, with
-`postBlockingSettles_gap_at_every_fuel` exhibiting the gap universally quantified in `fuel`. That
-answers the residual's own docstring question in the negative, and the docstring is corrected in
-place to say so.
+`PostBlockingSettles fc` is **false**, at every frame class, and fuel does not save it. Two
+witnesses carry that: `postBlockingSettles_fuel_zero_false` at the `fuel = 0` arm and
+`postBlockingSettles_fuel_gap_false` at a nonzero one, with `postBlockingSettles_gap_at_every_fuel`
+exhibiting the gap universally quantified in `fuel`. That answers the residual's own docstring
+question in the negative, and the docstring is corrected in place.
 
-The minimal repaired predicate was landed with its direction lemma, as required —
-`PostBlockingSettlesAt` with `postBlockingSettlesAt_of_postBlockingSettles` — and the anti-weakening
-gate then **rejected** it, on decided evidence rather than judgement:
+**The first repair attempt was rejected by its own gate, on decided evidence.** The plan
+pre-declared relocating two conditions onto the pass's *output* branch. That predicate
+(`PostBlockingSettlesAt`) was landed with its direction lemma and then refused:
 `labelFreeSaturatedExit_not_of_saturateBlocked_inr` shows the consuming sites cannot supply its
-antecedents, and `postBlockingExitSettled_false` refutes the only bridge shape that would typecheck.
-The sharper closure came at Phase 5: `noUnblockedFreshWork_iff_of_labelFreeSaturatedExit` proves the
-second antecedent is, given the first, *equivalent to the conclusion*. So `PostBlockingSettlesAt` is
-a theorem (`postBlockingSettlesAt_holds`, outright, at every frame class) and not a repair, and this
-is stated in those words in register entry 23 rather than presented as a discharge.
+antecedents, `postBlockingExitSettled_false` refutes the only bridge shape that would typecheck,
+and `noUnblockedFreshWork_iff_of_labelFreeSaturatedExit` shows its second antecedent is, given the
+first, *equivalent to the conclusion*. `PostBlockingSettlesAt` is therefore a theorem
+(`postBlockingSettlesAt_holds`) and not a repair. It is retained as the evidence for that finding,
+never presented as a discharge.
 
-The concrete non-vacuous instantiation was delivered and is not at a vacuous boundary:
-`saturateBlocked_multBranch_one_run` decides that the post-blocking pass itself produces the
-three-formula branch `multSettledBranch`, at every frame class and every positive fuel, and
-`postBlockingSettlesAt_labelFree` is the settlement delivered there. What that discharge does **not**
-do is extend the class where settlement already holds, and the equivalence above is why.
+**The repair that is landed is the narrowing**, authorised by explicit orchestrator ruling after the
+gate returned FALSE, and it is this batch's own architecture rather than a new idea:
+`PostBlockingSettlesRun fc fuel` is `PostBlockingSettles`'s statement with the pass's input branch
+restricted to a branch some `expandBranchWithFuel` call returned open, at that call's own fuel —
+the only way `buildTableauAt` reaches it. `postBlockingSettlesRun_of_postBlockingSettles` fixes the
+direction (longer hypothesis list, weaker predicate, every restatement a strengthening);
+`buildTableauAt_isSome_of_settlesRun` is the bridge the output-branch design could not build; and
+`buildTableauAt_isSome_of_budget_run` with seven siblings is the terminus family stated at it, with
+`buildTableauAt_isSome_of_budget_of_run` certifying the strengthening by re-deriving the landed
+statement. Neither witness that kills the unrestricted form reaches it, and the `fuel = 0`
+degeneracy cannot: `expandBranchWithFuel_eq_none_zero` makes the antecedent unsatisfiable there
+rather than universally satisfied.
 
-No terminus was restated (Phase 6, excluded), because there was nothing admissible to restate
-against. The residual's content is now located precisely — a fuel-adequacy fact about the pass plus a
-label-minting fact about the branch it reaches, neither of which is a settlement question — and the
-one route that survives is named and deliberately unattempted in entry 23. The task closes
-`[PARTIAL]`: the refutation and the location of the residual are the deliverable, and the repair of
-the terminus is not.
+**It is a hypothesis, not a discharge**, and register entry 24 exists so that is not mistaken. What
+is established is that it is not refuted and not vacuous: the pass doing real work is *proved* at
+every frame class and every positive fuel, and the full antecedent is exhibited holding on seed runs
+by `#guard_msgs`-checked measurement — a measurement, not a kernel proof, because
+`expandBranchWithFuel` does not reduce definitionally, and the difference is stated in the file
+rather than blurred.
+
+One hypothesis became explicit: the restated termini name `ArmSettlement fc` instead of
+manufacturing it from a refuted predicate. That is a real change to the hypothesis list and is
+stated as one; it is not a new cost, since `ArmSettlement` is a landed residual already quantified
+the honest way and always what the split fold consumed. The task closes `[PARTIAL]`, because the
+narrowed residual is carried rather than discharged and fourteen `_lengthBudget` / `signedUniverse`
+restatements are left as recorded mechanical substitutions.
 
 ### Phase 8: The proof branch (executed ONLY on a FALSE verdict at Phase 2) [COMPLETED WITH EXCLUSIONS]
 
@@ -808,18 +867,19 @@ the terminus is not.
 
 - [x] `lake build` green across the whole repository at task close. *(2458 jobs, exit 0)*
 - [x] `grep -rn "sorry" FormalSystem/` reports no new occurrences relative to the pre-task state. *(`MintBound.lean`: 0 before, 0 after; every repo occurrence is pre-existing and in `FormalSystem/Boneyard/`)*
-- [x] `lean_verify` / `#print axioms` on every one of the 29 new theorems reports axioms within
+- [x] `lean_verify` / `#print axioms` on every one of the 42 new theorems reports axioms within
       `{propext, Classical.choice, Quot.sound}`.
 - [x] `git diff` on `MintBound.lean` shows insertions plus the one in-place docstring correction in
-      Phase 7 — no landed declaration's statement or proof is altered. *(686 insertions, 4
+      Phase 7 — no landed declaration's statement or proof is altered. *(1166 insertions, 4
       deletions; the 4 are the corrected docstring paragraph and the register header count)*
 - [x] `Saturation.lean`, `Tableau.lean` and `Fuel.lean` are byte-unchanged. *(`git diff --stat` empty for all three)*
-- [ ] Both settlement bridges (`armSettlement_of_*`, `buildTableauAt_isSome_of_settles*`) compile
-      against whichever predicate the task lands. *(deviation: not satisfiable — no predicate was
-      landed for them to compile against. Phase 3's gate returned FALSE on decided evidence
-      (`postBlockingExitSettled_false`), and landing a bridge against a refuted hypothesis is the
-      failure mode the gate exists to prevent. The landed bridges are unchanged and still consume
-      `PostBlockingSettles`.)*
+- [x] Both settlement bridges (`armSettlement_of_*`, `buildTableauAt_isSome_of_settles*`) compile
+      against whichever predicate the task lands. *(deviation: altered — one of the two does.
+      `buildTableauAt_isSome_of_settlesRun` is the entry-point bridge at the landed
+      `PostBlockingSettlesRun`. There is deliberately no `armSettlement_of_postBlockingSettlesRun`:
+      the narrowed residual is about `buildTableauAt`'s own arm, and `ArmSettlement` — itself
+      already narrowed the same way, and the precedent this repair follows — is carried explicitly
+      in the restated termini rather than manufactured from a refuted predicate.)*
 - [x] Every phase's binary verdict is recorded — TRUE or FALSE, in the phase notes and in the
       commit message — before the next phase runs.
 
