@@ -5159,10 +5159,23 @@ therefore strictly too weak for the terminus, and `PostBlockingSettles` is what 
 
 The post-blocking pass leaves a branch that the blocking-aware saturation test certifies. This is
 the one statement that closes both `resolveOpenArm`'s `none` arm and `buildTableauAt`'s, and it is
-**open**: `saturateBlocked` at `fuel = 0` returns its input unchanged, and above zero it stops when
+**false**: `saturateBlocked` at `fuel = 0` returns its input unchanged, and above zero it stops when
 no *label-free* work remains, which is a weaker condition than the saturation test it is measured
-against. Whether the gap can be closed by fuel alone is exactly the question `Saturation.lean`
-leaves open, and nothing here decides it.
+against.
+
+**The open question this docstring used to pose is decided, and the answer is no.** It read
+"whether the gap can be closed by fuel alone is exactly the question `Saturation.lean` leaves open,
+and nothing here decides it"; section C12 decides it. `postBlockingSettles_fuel_zero_false` refutes
+the predicate at the `fuel = 0` arm and `postBlockingSettles_fuel_gap_false` refutes it at a nonzero
+one, both at every frame class, and `postBlockingSettles_gap_at_every_fuel` exhibits both halves of
+the disagreement simultaneously at **every** fuel figure. Fuel does not close it, because
+`expandOnceNoFresh` *skips* label-minting candidates while `findUnexpandedUnblockedWith` counts
+them, and no fuel figure appears anywhere in that disagreement. Register entry 22 records it.
+
+The statement is retained verbatim, and the terminus chain still names it, because nothing in this
+file is withdrawn — but it is a conditional no caller can discharge, in the same sense as
+`DifficultyBounded` (entry 9), `UniverseClosed`'s clause 2 (entry 10) and `MintPaysForTime`
+(entry 14). Entry 23 records why no repair of it is landed here.
 
 It is a hypothesis wherever it appears, and it is never an axiom. -/
 def PostBlockingSettles (fc : FormalSystem.ProofSystem.FrameClass) : Prop :=
@@ -11903,7 +11916,7 @@ end PostBlockingSettlesRefutation
 
 /-! ## C9. The do-not-re-attempt register
 
-Twenty-one statements that look like the natural next lemma and are **not** available. Each is cited
+Twenty-three statements that look like the natural next lemma and are **not** available. Each is cited
 by declaration name and, where one exists, by refuting witness — never by an issue number or a
 tracker entry, both of which outlive their meaning. A reader who finds one of these attractive has
 already been here.
@@ -12407,6 +12420,95 @@ already been here.
     `unorderedSuccessorLabelClosedOrd_of_unorderedSuccessorLabelClosed` fixing the direction and
     `unorderedSuccessorLabelClosedOrd_not_universal` confirming that adding `OrdTimesKnown` does not
     weaken it into vacuity.
+
+22. **`PostBlockingSettles fc` as literally stated.** Refuted, not merely unproved, by two witnesses,
+    both universally quantified in the frame class: `postBlockingSettles_fuel_zero_false` at the
+    `fuel = 0` arm, and `postBlockingSettles_fuel_gap_false` at a nonzero one.
+
+    *The cause in one line.* `expandOnceNoFresh` **skips** any candidate whose applicable rule mints
+    a fresh label or lengthens the ordering constraints — its `pick` returns `none` and the search
+    continues past it — while `findUnexpandedUnblockedWith` tests only `!isExpanded`, which is
+    `findApplicableRule ≠ none` with no reference to minting at all. So a formula at an unblocked
+    time whose only rule mints is invisible to the first test and visible to the second, and the two
+    tests disagree at **every** fuel.
+
+    ***Fuel does not close it***, which answers the open question the residual's own docstring used
+    to pose. `postBlockingSettles_gap_at_every_fuel` exhibits both halves at once, universally
+    quantified in `fuel`: `saturateBlocked freshWorldBranch fuel TimeOrdering.empty fc` returns the
+    branch unchanged while the saturation test reports outstanding work on it. The fuel-universal
+    step is `saturateBlocked_eq_self_of_noFresh_saturated`, two cases and no induction — from
+    `fuel + 1` the pass reaches its `(.saturated, _)` arm before any guard. The witness is the landed
+    `freshWorldBranch = [F(□p)@⟨0,0⟩]` reused from entry 11's refutation; `.boxNeg` mints a fresh
+    **world**, so it trips `expandOnceNoFresh`'s *first* rejection test. Entry 13 records why there
+    are two rejection tests and why a time-minting witness would refute the predicate the same way
+    through the second.
+
+    *The `fuel = 0` arm is not a technicality, and the reader who wants to "just require `fuel > 0`"
+    should read this sentence.* At `fuel = 0` the pass hands its input back untested, so the
+    predicate's hypothesis is satisfied at **every** branch whatsoever and the predicate then asserts
+    that every branch is blocking-aware saturated. That arm is reachable at every top-level fuel
+    figure, because the pass recurses with the fuel decremented.
+
+    *What the settlement question actually reduces to*, proved rather than asserted:
+    `postBlockingSettlesAt_settlement` shows that `expandOnceNoFresh` reporting `.saturated`, plus no
+    label-minting work at an unblocked time (`NoUnblockedFreshWork`), forces the conclusion. The
+    inversion it runs on is `expandOnceNoFresh_saturated_imp`, which needs
+    `findApplicableRule_result_ne_notApplicable` to kill `expandOnceNoFresh`'s *second* route to
+    `.saturated` — its `.notApplicable` arm, which returns the picked ordering rather than the
+    incoming one. Entry 23 says why that is not a repair.
+
+23. **`PostBlockingSettlesAt`, and every repair of entry 22 that relocates conditions onto the
+    post-blocking pass's output branch.** Not open: closed, and closed twice over.
+
+    *The design, so a reader does not re-attempt it by fixing the wrong part.* Add the two conditions
+    the settlement argument actually uses as antecedents on the output branch —
+    `LabelFreeSaturatedExit` (the pass ran to label-free saturation rather than being truncated) and
+    `NoUnblockedFreshWork` (no label-minting work at an unblocked time) — leaving the conclusion
+    verbatim. `postBlockingSettlesAt_of_postBlockingSettles` fixes the direction in the register's
+    own idiom: the hypothesis list is longer, so the predicate is weaker, so every restatement would
+    be a strengthening. All of it is landed, and none of it is offered as a repair.
+
+    *First closure: the consuming sites cannot supply the antecedents.* Both
+    `armSettlement_of_postBlockingSettles` and `buildTableauAt_isSome_of_settles` reach the residual
+    holding exactly one fact about the output pair, the exit equation.
+    `labelFreeSaturatedExit_not_of_saturateBlocked_inr` decides that this equation does not carry
+    `LabelFreeSaturatedExit`: at `fuel = 0`, `saturateBlocked (multBranch 1) 0 ord fc` returns its
+    input while `expandOnceNoFresh` fires `.impNeg` on it. The one bridge shape that would typecheck
+    carries the extra hypothesis `PostBlockingExitSettled fc`, and `postBlockingExitSettled_false`
+    refutes that at every frame class — it implies entry 22's refuted predicate through
+    `postBlockingSettles_of_postBlockingExitSettled`. So the only available bridge is a weakening
+    dressed as a repair. No terminus is restated against it; that is deliberate, and it is the same
+    judgement entry 7 records having once got wrong.
+
+    *Second closure, and the sharper one: the second antecedent is the conclusion in disguise.*
+    `noUnblockedFreshWork_of_settled` proves, unconditionally, that a branch whose settlement test
+    already closes satisfies `NoUnblockedFreshWork` — its antecedent is then unsatisfiable. Together
+    with the settlement lemma this gives
+    `noUnblockedFreshWork_iff_of_labelFreeSaturatedExit`: *given* `LabelFreeSaturatedExit`, the two
+    are **equivalent**. So `PostBlockingSettlesAt fc` is a theorem — `postBlockingSettlesAt_holds`,
+    outright, at every frame class — for a reason that is not progress, and a reader who reads
+    "the repaired predicate is proved" as "the residual is discharged" has the situation backwards.
+
+    *What the design does buy, so the record is not only negative.* The residual's content is now
+    located exactly: it is a **fuel-adequacy** fact about the pass plus a **label-minting** fact about
+    the branch it reaches, and neither is a settlement question. `LabelFreeUniverseAt` with
+    `noUnblockedFreshWork_of_labelFreeUniverseAt` is the one direction the equivalence does not
+    collapse — a branch-independent sufficient condition, checkable from the universe and the
+    ordering without looking at the branch. It has to be stated at a fixed ordering rather than at a
+    universe alone, and that is forced rather than conservative: `orderTrichotomy` is in
+    `allRulesForFC`, is applicable to *every* signed formula, and lengthens the ordering exactly when
+    the ordering carries an incomparable pair. And the discharge is not at a vacuous boundary —
+    `saturateBlocked_multBranch_one_run` decides that the pass itself produces the three-formula
+    branch `multSettledBranch` at every frame class and every positive fuel, and
+    `postBlockingSettlesAt_labelFree` is the settlement delivered there.
+
+    *The route that is named and deliberately unattempted.* Restrict entry 22's quantification from
+    "every `(ob, oOrd, fuel)`" to the pair the terminus's own run produces — the branch
+    `expandBranchWithFuel` hands to `saturateBlocked` at the seed, at the terminus's own fuel figure.
+    `freshWorldBranch` does not refute that form. Relocating instead to the pass's **input** branch
+    `ob` does not work and should not be tried: `LabelFreeSaturatedExit` is false at `ob` by
+    construction, since `buildTableauAt` runs the pass precisely when its guard found outstanding
+    work there.
     -/
 
 end FormalSystem.Metalogic.Decidability
