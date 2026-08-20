@@ -267,31 +267,41 @@ top-level entry point.
 
 ---
 
-### Phase 4: Fix the dependency flowchart [NOT STARTED]
+### Phase 4: Fix the dependency flowchart [COMPLETED]
 
 **Goal**: The flowchart's edges match the real import graph, the load-bearing
 `TraceCertificate.lean` node is present, and the diagram's scope is captioned.
 
 **Tasks**:
-- [ ] Re-derive the real edges from the files themselves:
+- [x] Re-derive the real edges from the files themselves:
       `grep -n '^import FormalSystem.Metalogic.Decidability' FormalSystem/Metalogic/Decidability/*.lean`.
-- [ ] Reverse the `Correctness.lean` edge. `Correctness.lean` *imports* `DecisionProcedure.lean`,
+      *(completed: confirmed the full chain SignedFormula<-Tableau<-Closure<-Saturation<-{ProofExtraction,
+      CountermodelExtraction}<-DecisionProcedure<-Correctness, TraceCertificate imported by both
+      Saturation and DecisionProcedure, Correctness also imports FMP/FMP.lean)*
+- [x] Reverse the `Correctness.lean` edge. `Correctness.lean` *imports* `DecisionProcedure.lean`,
       so it is a downstream consumer, not an intermediate layer between `DecisionProcedure` and
       the two extraction modules. Redraw it below/after `DecisionProcedure.lean` rather than
-      between it and `ProofExtraction`/`CountermodelExtraction`.
-- [ ] Add `TraceCertificate.lean` as a node feeding both `Saturation.lean` and
-      `DecisionProcedure.lean` — it is a direct import at both points.
-- [ ] Add the `Correctness.lean -> FMP/FMP.lean` edge.
-- [ ] Add a one-line caption directly under the diagram stating that it shows the core chain only,
+      between it and `ProofExtraction`/`CountermodelExtraction`. *(completed: Correctness.lean is
+      now a separate block placed after the whole core chain, with its own arrow into
+      DecisionProcedure.lean explicitly labeled "downstream consumer")*
+- [x] Add `TraceCertificate.lean` as a node feeding both `Saturation.lean` and
+      `DecisionProcedure.lean` — it is a direct import at both points. *(completed: drawn as a
+      third child of DecisionProcedure.lean; the second edge from Saturation.lean is documented
+      in an adjacent prose note rather than a crossing ASCII line)*
+- [x] Add the `Correctness.lean -> FMP/FMP.lean` edge. *(completed)*
+- [x] Add a one-line caption directly under the diagram stating that it shows the core chain only,
       and naming what is deliberately omitted (`IntPresentation.lean`, `CancellableExpansion.lean`,
       `TraceExport.lean`, `BiLasso.lean`, and the `Verified/` and `Propositional/` subtrees).
-- [ ] Re-render the affected region of the ASCII art as a block rather than patching individual
+      *(completed)*
+- [x] Re-render the affected region of the ASCII art as a block rather than patching individual
       box-drawing characters, and confirm box borders and connector columns still line up.
-- [ ] Optionally add the one-word caveat to the `BiLasso.lean` row's "not itself imported" note:
+      *(completed: box widths and connector columns verified programmatically for character-exact
+      alignment before writing)*
+- [x] Optionally add the one-word caveat to the `BiLasso.lean` row's "not itself imported" note:
       it is imported by one test file,
       `Tests/BimodalTest/Metalogic/PeriodicExtensionAxiomTest.lean`. The report classes the
       existing claim as accurate for the main library build graph, so this is a nuance, not a
-      correction.
+      correction. *(completed)*
 
 **Timing**: 25 minutes
 

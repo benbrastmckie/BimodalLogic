@@ -1,0 +1,16 @@
+{
+  "phase": 4,
+  "phase_name": "Fix the dependency flowchart",
+  "started_at": "2026-08-20T02:09:00Z",
+  "last_updated": "2026-08-20T02:35:00Z",
+  "objectives": [
+    {"id": 1, "description": "Re-derive real import edges from working tree", "status": "done", "files_touched": []},
+    {"id": 2, "description": "Redraw the diagram: fix Correctness placement, add TraceCertificate node, add Correctness->FMP edge, add caption, add optional BiLasso caveat", "status": "done", "files_touched": ["FormalSystem/Metalogic/Decidability/README.md"]}
+  ],
+  "current_objective": 2,
+  "approaches_tried": [
+    {"approach": "Hand-typed multi-branch ASCII box diagram with crossing arrows for dual-import nodes", "result": "failed", "reason": "Manual box alignment across variable-width boxes with crossing lines produced column misalignment; switched to a Python compositor to guarantee character-exact box/connector alignment, and resolved dual-import edges (TraceCertificate<-Saturation, Correctness->DecisionProcedure) via adjacent prose notes instead of crossing ASCII lines"}
+  ],
+  "deviations": [],
+  "handoff_count": 0
+}

@@ -33,7 +33,7 @@ This directory implements a tableau search procedure that:
 | `CancellableExpansion.lean` | Runtime-only `IO` abort-aware mirror of the pure tableau core; imports `Saturation.lean` and `DecisionProcedure.lean`; not imported by the aggregator | Sorry-free |
 | `TraceExport.lean` | JSON serialization for trace certificates; consumed by `Automation/TraceExporter.lean` rather than by the aggregator | Sorry-free |
 | `IntPresentation.lean` | Computational presentation of a finite ℤ-time frame (`Fin card` adjacency matrix + valuation) | Sorry-free |
-| `BiLasso.lean` | Re-export for BiLasso subdirectory | Sorry-free; not itself imported |
+| `BiLasso.lean` | Re-export for BiLasso subdirectory | Sorry-free; not itself imported by the main library build graph (one test file, `Tests/BimodalTest/Metalogic/PeriodicExtensionAxiomTest.lean`, does import it) |
 | `FMP/` | Finite model property proofs (6 files) | Sorry-free |
 | `BiLasso/` | Finitely presented bi-infinite ultimately-periodic step paths over an `IntPresentation` — the decision layer for *presented* ℤ-frames. Entry point `check` decides satisfiability at a state of one presented frame; it does **not** decide the logic (18 files) | Sorry-free; outside the build graph (the re-export is unimported), compile-checked by the C6 rot guard |
 | `Verified/` | Correctness theory for the tableau engine — termination bounds and the model-construction bridge; all files imported by the aggregator. See [Verified README](Verified/README.md) (21 files) | Sorry-free |
@@ -72,40 +72,63 @@ open FormalSystem.Metalogic.Decidability
 
 ## Dependency Flowchart
 
+This diagram shows the core chain only. Deliberately omitted: `IntPresentation.lean`,
+`CancellableExpansion.lean`, `TraceExport.lean`, `BiLasso.lean` (imported by one test file,
+`Tests/BimodalTest/Metalogic/PeriodicExtensionAxiomTest.lean`, but not by the main library build
+graph), and the `Verified/` and `Propositional/` subtrees.
+
 ```
-┌─────────────────────────────────────────────────┐
-│          DecisionProcedure.lean                 │
-│       (decide, isValid, isSatisfiable)          │
-└─────────────────────────────────────────────────┘
-                       │
-       ┌───────────────┴───────────────┐
-       v                               v
-┌─────────────────┐           ┌─────────────────┐
-│ ProofExtraction │           │ Countermodel    │
-│   .lean         │           │ Extraction.lean │
-└─────────────────┘           └─────────────────┘
-       │                               │
-       └───────────────┬───────────────┘
-                       v
-              ┌─────────────────┐
-              │ Correctness.lean│
-              └─────────────────┘
-                       │
-              ┌─────────────────┐
-              │ Saturation.lean │
-              └─────────────────┘
-                       │
-              ┌─────────────────┐
-              │  Closure.lean   │
-              └─────────────────┘
-                       │
-              ┌─────────────────┐
-              │  Tableau.lean   │
-              └─────────────────┘
-                       │
-              ┌─────────────────┐
-              │SignedFormula.lean│
-              └─────────────────┘
+      ┌─────────────────────────────────────────────────┐
+      │          DecisionProcedure.lean                 │
+      │       (decide, isValid, isSatisfiable)          │
+      └─────────────────────────────────────────────────┘
+                               │
+         ┌─────────────────────┴──────────────────────┐
+         v                     v                      v
+┌─────────────────┐   ┌─────────────────┐   ┌───────────────────┐
+│ ProofExtraction │   │ Countermodel    │   │ TraceCertificate  │
+│   .lean         │   │ Extraction.lean │   │      .lean        │
+└─────────────────┘   └─────────────────┘   └───────────────────┘
+         │                     │
+         └──────────┬──────────┘
+                    v
+           ┌─────────────────┐
+           │ Saturation.lean │
+           └─────────────────┘
+                    │
+            ┌──────────────┐
+            │ Closure.lean │
+            └──────────────┘
+                    │
+            ┌──────────────┐
+            │ Tableau.lean │
+            └──────────────┘
+                    │
+         ┌────────────────────┐
+         │ SignedFormula.lean │
+         └────────────────────┘
+```
+
+`TraceCertificate.lean` is also imported directly by `Saturation.lean` (a second edge into the
+same node, not drawn above to avoid a crossing line).
+
+`Correctness.lean` is a downstream consumer of `DecisionProcedure.lean` — it imports
+`DecisionProcedure.lean`, not the reverse — and it also imports `FMP/FMP.lean`:
+
+```
+                            ┌──────────────────┐
+                            │ Correctness.lean │
+                            │  (decide_sound)  │
+                            └──────────────────┘
+                                      │
+                     ┌────────────────┴────────────────┐
+                     v                                 v
+┌─────────────────────────────────────────┐    ┌──────────────┐
+│          DecisionProcedure.lean         │    │ FMP/FMP.lean │
+│      (above — downstream consumer,      │    └──────────────┘
+│            not between it and           │
+│ ProofExtraction/CountermodelExtraction) │
+└─────────────────────────────────────────┘
 ```
 
 ## Complexity
