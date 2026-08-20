@@ -5,8 +5,14 @@ terms or countermodels.
 
 ## Overview
 
-This directory implements a verified decision procedure that:
-- Decides validity of TM bimodal logic formulas
+This directory implements a tableau search procedure that:
+- Searches, via tableau expansion, for a proof of `φ` or a countermodel to `φ` — this does not by
+  itself establish decidability of TM validity
+- `decide_sound` (`Correctness.lean`) is the one direction that is machine-checked: a proof
+  `decide` returns (its `.valid` constructor) yields `⊨ φ`
+- The full decidability biconditional — `isValid φ fc = true ↔ ⊨ φ`, plus `Decidable (⊨ φ)`
+  instances for the four frame classes — is not established; see `Correctness.lean`'s
+  "`validity_decidable` / `validity_has_decision_procedure` — Retired as vacuous" section
 - Returns proof terms (`DerivationTree`) when valid
 - Returns countermodel descriptions when invalid
 - Uses fuel-based termination for practical execution
