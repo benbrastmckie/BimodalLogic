@@ -371,24 +371,29 @@ corrections landed.
 
 ---
 
-### Phase 6: Whole-file consistency read-through [NOT STARTED]
+### Phase 6: Whole-file consistency read-through [COMPLETED]
 
 **Goal**: The finished README is internally consistent and every remaining claim is verified
 against the directory, with no contradiction introduced by the section-by-section edits.
 
 **Tasks**:
-- [ ] Read the complete edited README top to bottom in one pass.
-- [ ] Confirm the Overview, the Modules table, the Quick Reference, the Algorithm Overview, and
+- [x] Read the complete edited README top to bottom in one pass. *(completed)*
+- [x] Confirm the Overview, the Modules table, the Quick Reference, the Algorithm Overview, and
       the flowchart caption do not contradict one another — in particular that nothing outside the
-      Overview still asserts that the directory decides validity.
-- [ ] Confirm the file-count convention is applied identically in all four subdirectory rows.
-- [ ] Confirm the preserved sections the report verified as accurate are in fact unchanged: the
+      Overview still asserts that the directory decides validity. *(completed: no contradiction
+      found)*
+- [x] Confirm the file-count convention is applied identically in all four subdirectory rows.
+      *(completed: FMP/=6, BiLasso/=18, Verified/=21, Propositional/=3, all `.lean`-only counts)*
+- [x] Confirm the preserved sections the report verified as accurate are in fact unchanged: the
       Usage code block, the Algorithm Overview, the Complexity section, the
-      `IntPresentation.lean` row description, and the References.
-- [ ] Re-run the sorry check (`grep -rn '\bsorry\b' FormalSystem/Metalogic/Decidability
+      `IntPresentation.lean` row description, and the References. *(completed: all five confirmed
+      byte-identical to the pre-edit file)*
+- [x] Re-run the sorry check (`grep -rn '\bsorry\b' FormalSystem/Metalogic/Decidability
       --include='*.lean'`) and confirm every hit is doc-comment prose, so the table's Sorry-free
-      column is still true as written.
-- [ ] Review the full diff and confirm exactly one file changed.
+      column is still true as written. *(completed: 8 hits, all doc-comment prose)*
+- [x] Review the full diff and confirm exactly one file changed. *(completed:
+      FormalSystem/Metalogic/Decidability/README.md is the only non-specs/** file touched across
+      all five phase commits)*
 
 **Timing**: 15 minutes
 
