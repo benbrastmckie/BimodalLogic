@@ -330,26 +330,29 @@ importer-depends-on-imported.
 
 ---
 
-### Phase 5: Update Related Documentation and the footer stamp [NOT STARTED]
+### Phase 5: Update Related Documentation and the footer stamp [COMPLETED]
 
 **Goal**: All four sibling sub-READMEs are linked, and the footer records the date these
 corrections landed.
 
 **Tasks**:
-- [ ] Add `- [Verified README](Verified/README.md) - Correctness theory for the tableau engine`
-      to Related Documentation, matching the existing FMP/BiLasso link style.
-- [ ] Add `- [Propositional README](Propositional/README.md) - Kalmár-style propositional decision
-      procedure` likewise.
-- [ ] Verify each of the five existing links and the two new ones resolves to a file that exists,
+- [x] Add `- [Verified README](Verified/README.md) - Correctness theory for the tableau engine`
+      to Related Documentation, matching the existing FMP/BiLasso link style. *(completed)*
+- [x] Add `- [Propositional README](Propositional/README.md) - Kalmár-style propositional decision
+      procedure` likewise. *(completed)*
+- [x] Verify each of the five existing links and the two new ones resolves to a file that exists,
       by testing each relative path from
-      `FormalSystem/Metalogic/Decidability/`.
-- [ ] Update the footer `*Last verified: 2026-05-29*` to the date these corrections land.
-- [ ] Grep the repository (excluding `specs/**`) for the removed Overview phrasing to detect other
+      `FormalSystem/Metalogic/Decidability/`. *(completed: all seven targets confirmed present)*
+- [x] Update the footer `*Last verified: 2026-05-29*` to the date these corrections land.
+      *(completed: set to 2026-08-19)*
+- [x] Grep the repository (excluding `specs/**`) for the removed Overview phrasing to detect other
       docs that repeat the overclaim. Record any hits in the implementation summary as follow-up
-      candidates; do not edit them — they are out of scope.
-- [ ] Record in the summary that `Verified/README.md` is itself substantially stale (per the
+      candidates; do not edit them — they are out of scope. *(completed: zero hits outside
+      specs/**, so no follow-up candidate)*
+- [x] Record in the summary that `Verified/README.md` is itself substantially stale (per the
       report's Finding 9 caveat: 8+ existing, compiling files marked "planned"; 11 files absent
-      from its table) and that it warrants its own task. Do not edit that file.
+      from its table) and that it warrants its own task. Do not edit that file. *(completed;
+      Verified/README.md confirmed unmodified in git status)*
 
 **Timing**: 15 minutes
 

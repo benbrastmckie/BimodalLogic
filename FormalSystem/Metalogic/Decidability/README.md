@@ -144,6 +144,8 @@ same node, not drawn above to avoid a crossing line).
 - [Core README](../Core/README.md) - MCS foundations
 - [FMP README](FMP/README.md) - Finite model property
 - [BiLasso README](BiLasso/README.md) - Bi-lasso decision layer for presented ℤ-frames
+- [Verified README](Verified/README.md) - Correctness theory for the tableau engine
+- [Propositional README](Propositional/README.md) - Kalmár-style propositional decision procedure
 
 ## References
 
@@ -152,4 +154,4 @@ same node, not drawn above to avoid a crossing line).
 
 ---
 
-*Last verified: 2026-05-29*
+*Last verified: 2026-08-19*
