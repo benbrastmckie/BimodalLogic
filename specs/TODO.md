@@ -1,5 +1,5 @@
 ---
-next_project_number: 468
+next_project_number: 469
 ---
 
 # TODO
@@ -11,8 +11,8 @@ next_project_number: 468
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,193,231,257,298,413,421,423,424,434,451,455,461,462,466 | -- | completeness, decidability, frame-extensions, ... |
-| 2 | 178,219,282,296,422,425,433,463 | 193,231,298,421,423,434,462 | decidability, formula-refactor, dataset-enhancement, ... |
+| 1 | 125,127,128,193,231,257,298,413,421,423,424,434,451,461,462,466,468 | -- | completeness, decidability, frame-extensions, ... |
+| 2 | 178,219,282,296,422,425,433,455,463 | 193,231,298,421,423,434,462,468 | decidability, formula-refactor, code-quality, ... |
 | 3 | 169,428,464 | 422,433,463 | decidability, strong_completeness |
 | 4 | 362,429,465 | 169,424,428,464 | decidability, strong_completeness |
 | 5 | 410 | 429 | decidability |
@@ -45,6 +45,7 @@ next_project_number: 468
   └─ 463 [NOT STARTED] — Decide `PostBlockingSettlesRun fc (mintAwareFuelAt U.card Tmax mi
     └─ 464 [NOT STARTED] — Design and land `gapPotential`, the density coordinate of the ter
       └─ 465 [NOT STARTED] — Complete the terminus restatement family at the repaired residual
+468 [NOT STARTED] — PROGRAMME REALIGNMENT FROM A VERIFIED PROOF-STATE AUDIT: restruct
 
 ### Formula Refactor
 
@@ -101,6 +102,248 @@ next_project_number: 468
 451 [NOT STARTED] — CONSOLIDATE THE TWO BONEYARDS into a single archive tree under Fo
 
 ## Tasks
+
+### 468. Realign task programme from proof state audit
+- **Effort**: high
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: decidability
+- **Dependencies**: None
+- **Research**: [468_realign_task_programme_from_proof_state_audit/reports/01_proof-state-audit-and-realignment-charter.md]
+
+**Description**: PROGRAMME REALIGNMENT FROM A VERIFIED PROOF-STATE AUDIT: restructure the active task set, its
+dependency graph, and specs/ROADMAP.md so that they describe the work actually remaining to close
+decidability of TM with a sound and complete tableau system, plus the adjacent metatheory
+milestones.
+
+The governing input is this task's own report artifact, reports/01_proof-state-audit-and-realignment-charter.md,
+which records a four-front audit (decidability internals, tableau calculus, soundness/completeness
+metatheory, backlog/roadmap state) verified against the Lean sources rather than against
+documentation. Read it before acting. Its findings are the reference frame for every verdict this
+task issues.
+
+=== 0. WHY THIS TASK EXISTS ===
+
+The audit established that the project's own tracking understates what remains, in ways that would
+misdirect planning:
+
+  - Decidability of TM is OPEN. No theorem anywhere takes `isValid` as its subject. The tableau
+    calculus is real and sorry-free but is neither proven sound nor proven complete AS A THEOREM.
+  - The gaps are invisible to every metric the project currently uses. The decidability tree has
+    zero live `sorry` and zero `axiom` declarations. What is missing is (i) theorems never stated,
+    (ii) conditional theorems whose hypotheses nobody can supply, and (iii) one subtree that does
+    not exist on disk. A sorry-count of ONE is true and is not evidence of near-completion.
+  - Several tasks are archived or marked `completed` over work that is demonstrably still open
+    (see section 2c).
+
+This task does not prove anything. It decides what the remaining tasks should BE.
+
+=== 1. STAGE 0 -- ADJUDICATE TASK 455 FIRST ===
+
+Task 455 (BACKLOG REALIGNMENT) predates the audit and overlaps this task. It was written as a
+backward-looking description-rot sweep with four stages; this task is forward-looking programme
+design. Both write specs/ROADMAP.md, so they must not run concurrently: 455 now carries
+dependencies:[468] for that reason.
+
+Before any other stage, decide 455's disposition and record the reasoning in the report:
+  ABSORB   -- fold its four stages into this task's execution and propose 455 for abandonment.
+  NARROW   -- keep 455 for the per-task anchor-rot sweep it specifies, and strip from it whatever
+              this task supersedes. State the new boundary precisely.
+  RETAIN   -- keep both as written, and justify why the duplicated ROADMAP work is worth it.
+Do not transition 455's status; propose only (see section 6).
+
+=== 2. STAGE 1 -- VERIFY AND EXTEND THE AUDIT ===
+
+The report's findings were produced by parallel read-only agents. Before restructuring the backlog
+on top of them, confirm the load-bearing ones directly, and extend where the audit was explicitly
+uncertain:
+
+(a) Confirm each of these against the live tree, citing symbol names (not line numbers):
+    - No declaration takes `isValid` as its subject.
+    - `ruleSound_of_mem_allRulesForFC` is not lifted through `expandOnceUnblocked` /
+      `expandBranchWithFuel` / `buildTableau`; no `allClosed -> valid` exists.
+    - `serialityRule` and `timeLinearity` fire from `expandOnce` stages 2/3 outside
+      `allRulesForFC`, with no `RuleSound` obligation discharged at the firing site.
+    - `FormalSystem/Metalogic/Decidability/Verified/Refutation/` does not exist.
+    - `ProofExtraction.lean` contains zero theorems and `verifyProof` is constantly `true`.
+    - `countermodel_discrete` (WeakCanonical/Transfer.lean) is the only live structural sorry.
+
+(b) SETTLE THE HIGHEST-INFORMATION OPEN QUESTION. The audit could not determine whether the
+    tableau completeness half is vacuous or merely unassembled. The four `not_valid*_of_hasOpen*`
+    results each carry five decidable branch gates, and `boxAnchoredCheck` is documented as
+    computing `false` on every multi-world branch the engine builds -- because the repair that
+    fixed a genuine unsoundness (cross-world temporal copying, which closed the invalid
+    `(G p) -> box (G p)`) removed the only route by which the anchor could be satisfied.
+    Determine by execution (`#eval` / `#guard`, no proof required) whether all five gates can hold
+    simultaneously on an engine-produced saturated open branch. This is cheap and it decides
+    whether task 429 is a repair or a redesign. Record the verdict either way; a negative result is
+    as valuable as a positive one and must not be left unstated.
+
+(c) Re-derive the status of every task the audit flagged as claiming more than it delivered, and
+    record a verdict for each:
+    - 165 (archived completed) over obstructions O1-O4 still live as 428/429/430.
+    - 432 (completed) whose summary states its reduction "is not a discharge".
+    - 436 (completed) which left the density coordinate open, now 464.
+    - 170 (archived completed) whose only remaining action was a clean-build re-verification that
+      its own summary says was never run -- on which the "Dense weak completeness substantively
+      closed" claim depends.
+    - 177's file_scope entry `ROADMAP.md`, which does not resolve (the file is specs/ROADMAP.md),
+      and its duplicated `FormalSystem/` entry.
+
+=== 3. STAGE 2 -- RESTRUCTURE THE TASK SET ===
+
+For every active task, and for the archived tasks named in 2c, issue one verdict with evidence.
+Categories extend 455's vocabulary with the two it lacks:
+
+  CURRENT    -- matches the tree and the audit. Say what was checked.
+  REVISE     -- substance intact, description or anchors wrong. Give the corrected text.
+  DIVIDE     -- the task bundles work at incompatible difficulty or readiness. Give the split.
+  ADD        -- work the audit identified that no task covers. Give the new task's full spec.
+  REMOVE     -- goal no longer serves the project, or is refuted. Argue it, propose abandonment.
+  REOPEN     -- marked complete over work still open. Argue it, propose the correction.
+
+Known candidates, non-exhaustive -- the survey must cover the whole active set, not just these:
+
+  ADD, decidability -- no active task covers any of:
+    - Lifting rule soundness through the engine to `allClosed -> valid` (real tableau soundness).
+      Note 430 covers the semantic lift and Track A assembly; establish whether this is inside 430
+      or a distinct predecessor, and wire accordingly.
+    - Discharging `RuleSound` for `serialityRule` and `timeLinearity` at their firing site.
+      Mechanical relative to the 34 already done; likely a predecessor of the soundness lift.
+    - The `isValid = true -> valid` direction. Pure plumbing, hours, currently unstated.
+    - A genuine SEMANTIC finite model property. `fmp_completeness` is syntactic (MCS-membership
+      to derivability). A truth lemma is FALSE on `RefinedFilteredTaskFrame` because its task
+      relation is permissive; `someFuture` separates the sides. This needs a non-permissive
+      filtered relation with all four `def:frame` axioms re-discharged -- and the permissive route
+      is exactly what currently delivers Spherical/Limit. Multi-month.
+    - Proof-extraction completeness (eliminating `.extractionFailed`). May require redesigning the
+      extractor to be provably total on closed tableaux.
+    - A non-trivial `NoSplit` witness, or a `NoSplit`-free termination result. The only existing
+      witness is the EMPTY BRANCH (`noSplit_nil`), which makes the conditional termination theorem
+      near-contentless. Decide whether this is a task or a recorded limitation.
+  ADD, metatheory -- repair or retire the live vacuous lemma `neg_2var_vec_ea`
+    (Kamp/EANegationClosure.lean), whose conclusion is provable from no hypotheses and which is
+    re-exported verbatim by `reflatten_neg_step`. The contentful biconditional shape is already
+    written down in Prop42Vacuity.lean. It cannot corrupt the flagship theorems, but it is cited
+    in prose as a landed Kamp deliverable.
+  DIVIDE, documentation -- see section 4.
+  REVISE -- 428's description still frames an unconditional `buildTableau_isSome` in places; the
+    unconditional form is FALSE at the engine's `maxBranches := 50000` guard, at any fuel.
+  ASSESS -- whether the split-arm fuel adequacy obligation is closable at all without an engine
+    change. Fuel scales like `beta ^ depth` and `depth` is bounded by nothing proved. If it is not
+    closable as specified, it needs a C9 register entry and a re-scoped task, not another attempt.
+
+Every ADD must arrive with: full description, task_type, topic, effort, file_scope, dependencies,
+and an explicit statement of whether it is routine engineering or open mathematics. The audit's
+three-tier estimate (days / weeks / months-and-genuinely-hard) is the reference; do not create a
+task that hides a research problem behind an engineering description.
+
+=== 4. STAGE 3 -- THE DOCUMENTATION TASK ===
+
+A documentation task IS already open: 177 ("Update all documentation to match final codebase
+state"), covering README.md, module-level docstrings, ROADMAP.md, and the Axiom Reference. Do NOT
+create a duplicate.
+
+177 is, however, gated behind thirteen dependencies including the entire decidability chain
+(426, 428, 429, 430, 432, 433, 434), which defers every documentation correction until after
+multi-year work. The audit found doc drift that is actively misleading NOW:
+  - `Decidability.lean`'s "## Status: Soundness: Proven / Completeness: Proven" block reads as
+    tableau soundness and completeness. It is neither; it refers to the Hilbert-system results.
+  - `Verified/README.md` marks eight files as "planned" that exist, compile, and are imported;
+    omits eleven files; and lists the genuinely-absent Refutation subtree in the same register,
+    so a reader cannot tell which "planned" means what.
+  - `FMP/README.md` lists two "Key Results" (`filtration_is_finite`,
+    `truth_preserved_under_filtration`) that do not exist as declarations.
+  - `DecisionProcedure.lean`'s `decideAuto` docstring claims blocking "ensures termination for all
+    formulas". No theorem supports this.
+  - `Verified/Decidable.lean`'s Status docstring still describes the fresh-time producers as
+    blocked; they are proved.
+  - `WeakCanonical.lean` lists five open sorries that no longer exist; `ShuffleReal.lean` calls a
+    proved lemma a "documented strategic sorry"; `Soundness.lean` cites an IRR rule and an
+    `IRRSoundness.lean` that do not exist.
+
+Therefore: DIVIDE 177. Propose an immediate, ungated correction pass covering the false and
+stale claims above (task 467 has already done this for one file, Decidability/README.md, and is
+the model), and retain the remainder of 177 as the final post-refactor polish with its existing
+gating. Give both halves full specs and correct file_scope. Fix 177's unresolvable `ROADMAP.md`
+anchor and its duplicated `FormalSystem/` entry as part of this.
+
+=== 5. STAGE 4 -- DEPENDENCIES AND ROADMAP ===
+
+(a) Wire every edge implied by the restructured set. The audit found the decidability critical
+    path running ten waves deep (434 -> 433 -> 428 -> 429 -> 410 -> 411 -> 430 -> 412 -> 426 -> 95).
+    Re-derive it after restructuring and state it explicitly. Where prose asserts one task gates
+    another, ensure the edge exists, or downgrade the prose -- never leave both readings.
+(b) Confirm zero dangling edges, and that active_topics matches the topics tasks carry.
+(c) Rewrite specs/ROADMAP.md so it states, per front (decidability/tableau, weak completeness,
+    strong completeness, Kamp, FMP, publication, dataset, hygiene): what is PROVEN, what is OPEN,
+    what is REFUTED, and what the terminus looks like. Requirements:
+    - Distinguish PROVEN from SORRY-FREE. They are not the same thing in this repo and conflating
+      them is the specific failure this whole task exists to correct.
+    - Give refuted routes explicit tombstones. The C9 register (a section inside
+      Verified/Termination/MintBound.lean, 24 entries) is the model and should be cross-referenced,
+      not duplicated.
+    - Mark superseded historical blocks as historical, or delete them. The file currently layers
+      four dated "current state" blocks and carries two self-labelled STALE sections.
+    - Correct the Paper Alignment section, which lists six tasks as not-started/blocked that were
+      all archived completed between 2026-08-13 and 2026-08-18, and carries no stale banner.
+    - Ground every status claim in something `scripts/check-module-invariants.sh` can reproduce
+      (C2 axiom sets, C3 sorry inventory, C4/C5 reference resolution, C7 file counts), and say
+      which check grounds it.
+(d) Repair specs/state.json's internal counter inconsistency (metadata.total_tasks 29 vs
+    task_counts.total 44 vs 45 actual entries; metadata.last_sync two months stale), or record why
+    it must be left to /task --sync.
+
+=== 6. STAGE 5 -- REPORT ===
+
+Extend this task's report artifact, or add a second one, containing:
+  - the 455 disposition and its reasoning
+  - the Stage 1 verification results, including the box-anchor execution verdict
+  - the per-task verdict table (task, topic, verdict, evidence, action)
+  - every new task's full spec, and every proposed removal with its argument
+  - every dependency edge added or removed, with justification
+  - the ROADMAP.md changes and the machine-checked source grounding each
+  - the resulting critical path per front, with the routine/hard split made explicit
+  - an explicit list of proposed status corrections (completions, abandonments, reopenings) for
+    user decision
+
+=== 7. CONSTRAINTS ===
+
+- TASK STATUS IS NOT IN SCOPE. Descriptions, dependencies, file_scope, ROADMAP.md, and NEW task
+  creation are in scope. Propose completions, abandonments, and reopenings in the report; do not
+  transition any existing task to completed, abandoned, or expanded. That decision stays with the
+  user. Creating new tasks IS permitted and expected.
+- NO .lean PROOF EDITS. This task proves nothing and closes no sorry. The one execution permitted
+  is the read-only `#eval`/`#guard` probe in Stage 1b; if it requires a scratch file, place it
+  outside FormalSystem/ or delete it before completion.
+- All specs/state.json writes go through .claude/scripts/state-write.sh; TODO.md is regenerated via
+  generate-todo.sh, never hand-edited.
+- Every claim about build state, sorry counts, or axiom sets must cite the check that produced it.
+  Do not restate a status from another description as if it were verified -- that is the exact
+  failure mode this task corrects.
+- Prefer symbol names to line numbers in every anchor written. Line-number rot is the observed
+  failure mode across this backlog.
+
+=== 8. VERIFICATION ===
+
+- Every active task has a verdict; none silently skipped. CURRENT still gets a row saying what was
+  checked.
+- Zero dangling dependency edges across active_projects.
+- generate-todo.sh regenerates cleanly with no undeclared-topic warnings.
+- scripts/check-module-invariants.sh C5 passes over the rewritten specs/ROADMAP.md.
+- The Stage 1b box-anchor verdict is recorded, whichever way it went.
+- ROADMAP.md contains no status claim that no check can reproduce.
+- 177 is divided, or a written argument for leaving it whole is in the report.
+
+=== 9. NON-GOALS ===
+
+- Does not implement, research, or plan any surveyed or newly created task.
+- Does not archive anything (that is /todo's job, after the user acts on the report).
+- Does not attempt any of the mathematics it schedules.
+- Does not edit Verified/README.md or the other drifted docs itself; it SCHEDULES that work as the
+  divided half of 177.
+
+---
 
 ### 467. Update decidability readme
 - **Status**: [COMPLETED]
@@ -324,7 +567,7 @@ VERIFICATION REQUIREMENT -- Every mutation must be preceded by a backup of the i
 - **Status**: [NOT STARTED]
 - **Task Type**: meta
 - **Topic**: code-quality
-- **Dependencies**: Task 452, Task 454
+- **Dependencies**: Task 452, Task 454, Task 468
 
 **Description**: BACKLOG REALIGNMENT: bring specs/ROADMAP.md and every remaining active task into agreement with
 the progress actually made and the goals actually remaining.
