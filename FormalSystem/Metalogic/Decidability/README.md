@@ -23,17 +23,21 @@ This directory implements a tableau search procedure that:
 |--------|---------|--------|
 | `SignedFormula.lean` | Sign, SignedFormula, Branch types | Sorry-free |
 | `Tableau.lean` | Tableau expansion rules (propositional, modal, temporal) | Sorry-free |
+| `TraceCertificate.lean` | Defines `TraceEntry`/`ProofCertificate`/`TraceResult`; imported directly by both `Saturation.lean` and `DecisionProcedure.lean` — a core dependency, not peripheral | Sorry-free |
 | `Saturation.lean` | Saturation and fuel-based termination | Sorry-free |
 | `Closure.lean` | Branch closure detection | Sorry-free |
 | `Correctness.lean` | Soundness proof | Sorry-free |
 | `ProofExtraction.lean` | Extract DerivationTree from closed tableau | Sorry-free |
 | `CountermodelExtraction.lean` | Extract countermodel from open branch | Sorry-free |
-| `FMP.lean` | Re-export for FMP subdirectory | Sorry-free |
 | `DecisionProcedure.lean` | Main `decide` function with proof search | Sorry-free |
+| `CancellableExpansion.lean` | Runtime-only `IO` abort-aware mirror of the pure tableau core; imports `Saturation.lean` and `DecisionProcedure.lean`; not imported by the aggregator | Sorry-free |
+| `TraceExport.lean` | JSON serialization for trace certificates; consumed by `Automation/TraceExporter.lean` rather than by the aggregator | Sorry-free |
 | `IntPresentation.lean` | Computational presentation of a finite ℤ-time frame (`Fin card` adjacency matrix + valuation) | Sorry-free |
 | `BiLasso.lean` | Re-export for BiLasso subdirectory | Sorry-free; not itself imported |
-| `FMP/` | Finite model property proofs (7 files) | Sorry-free |
+| `FMP/` | Finite model property proofs (6 files) | Sorry-free |
 | `BiLasso/` | Finitely presented bi-infinite ultimately-periodic step paths over an `IntPresentation` — the decision layer for *presented* ℤ-frames. Entry point `check` decides satisfiability at a state of one presented frame; it does **not** decide the logic (18 files) | Sorry-free; outside the build graph (the re-export is unimported), compile-checked by the C6 rot guard |
+| `Verified/` | Correctness theory for the tableau engine — termination bounds and the model-construction bridge; all files imported by the aggregator. See [Verified README](Verified/README.md) (21 files) | Sorry-free |
+| `Propositional/` | Self-contained Kalmár-style propositional decision procedure, independent of the modal/temporal/completeness machinery; all files imported by the aggregator. See [Propositional README](Propositional/README.md) (3 files) | Sorry-free |
 
 ## Quick Reference
 

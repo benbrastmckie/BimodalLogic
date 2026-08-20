@@ -1,0 +1,22 @@
+{
+  "phase": 2,
+  "phase_name": "Rebuild the Modules table",
+  "started_at": "2026-08-20T01:56:00Z",
+  "last_updated": "2026-08-20T02:02:00Z",
+  "objectives": [
+    {"id": 1, "description": "Re-derive ground-truth file/dir counts and import graph", "status": "done", "files_touched": []},
+    {"id": 2, "description": "Rebuild Modules table: delete FMP.lean row, add 3 top-level rows, add Verified/ and Propositional/ summary rows, normalize file-count convention", "status": "done", "files_touched": ["FormalSystem/Metalogic/Decidability/README.md"]}
+  ],
+  "current_objective": 2,
+  "approaches_tried": [],
+  "deviations": [
+    {
+      "task_id": "2.5",
+      "description": "TraceExport.lean row should note it is consumed by Automation/TraceExporter.lean and DatasetGenerator.lean",
+      "type": "altered",
+      "reason": "Re-derivation (grep for actual import lines) showed DatasetGenerator.lean does not import TraceExport.lean; the only reference is an unrelated doc-comment mention inside TraceCertificate.lean. Only Automation/TraceExporter.lean actually imports it, so the row cites only that consumer.",
+      "annotation": "*(deviation: altered — DatasetGenerator.lean omitted, not an actual importer)*"
+    }
+  ],
+  "handoff_count": 0
+}

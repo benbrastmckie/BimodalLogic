@@ -154,38 +154,43 @@ and names the full biconditional as open, citing the module that records its ret
 
 ---
 
-### Phase 2: Rebuild the Modules table [NOT STARTED]
+### Phase 2: Rebuild the Modules table [COMPLETED]
 
 **Goal**: The Modules table is a complete and accurate inventory: no missing files or
 subdirectories, no nonexistent entries, one uniform file-count convention.
 
 **Tasks**:
-- [ ] Re-derive the ground truth before editing:
+- [x] Re-derive the ground truth before editing:
       `ls FormalSystem/Metalogic/Decidability/*.lean` and, for each of `FMP BiLasso Verified
-      Propositional`, `find <dir> -name '*.lean' | wc -l`.
-- [ ] Delete the `FMP.lean` row. No such top-level file exists; the re-export is `FMP/FMP.lean`,
+      Propositional`, `find <dir> -name '*.lean' | wc -l`. *(completed: confirmed 13 top-level
+      files; FMP=6, BiLasso=18, Verified=21, Propositional=3; aggregator has 34 imports)*
+- [x] Delete the `FMP.lean` row. No such top-level file exists; the re-export is `FMP/FMP.lean`,
       inside the subdirectory the table already lists. Optionally fold that detail into the
       `FMP/` row's description, matching how the `BiLasso/` row explains its own entry point.
-- [ ] Add a row for `CancellableExpansion.lean` — runtime-only `IO` abort-aware mirror of the pure
+      *(completed; optional fold-in skipped)*
+- [x] Add a row for `CancellableExpansion.lean` — runtime-only `IO` abort-aware mirror of the pure
       tableau core; imports `Saturation.lean` and `DecisionProcedure.lean`; not imported by the
-      aggregator; Sorry-free.
-- [ ] Add a row for `TraceCertificate.lean` — defines `TraceEntry`/`ProofCertificate`/
+      aggregator; Sorry-free. *(completed)*
+- [x] Add a row for `TraceCertificate.lean` — defines `TraceEntry`/`ProofCertificate`/
       `TraceResult`; imported directly by both `Saturation.lean` and `DecisionProcedure.lean`
-      (a core dependency, not peripheral); Sorry-free.
-- [ ] Add a row for `TraceExport.lean` — JSON serialization for trace certificates; consumed by
+      (a core dependency, not peripheral); Sorry-free. *(completed)*
+- [x] Add a row for `TraceExport.lean` — JSON serialization for trace certificates; consumed by
       `Automation/TraceExporter.lean` and `DatasetGenerator.lean` rather than by the aggregator;
-      Sorry-free.
-- [ ] Add a summary row for `Verified/` — the correctness theory for the engine (termination
+      Sorry-free. *(completed: deviation — re-derivation showed only `Automation/TraceExporter.lean`
+      imports it; `DatasetGenerator.lean` only appears via an unrelated doc-comment mention in
+      `TraceCertificate.lean`, not an actual import, so it was omitted from the row)*
+- [x] Add a summary row for `Verified/` — the correctness theory for the engine (termination
       bounds and the model-construction bridge), all files imported by the aggregator; link to
-      `Verified/README.md`; Sorry-free.
-- [ ] Add a summary row for `Propositional/` — a self-contained Kalmár-style propositional
+      `Verified/README.md`; Sorry-free. *(completed)*
+- [x] Add a summary row for `Propositional/` — a self-contained Kalmár-style propositional
       decision procedure, independent of the modal/temporal/completeness machinery, all files
-      imported by the aggregator; link to `Propositional/README.md`; Sorry-free.
-- [ ] Apply the "`.lean` files only" counting convention uniformly across all four subdirectory
+      imported by the aggregator; link to `Propositional/README.md`; Sorry-free. *(completed)*
+- [x] Apply the "`.lean` files only" counting convention uniformly across all four subdirectory
       rows, using the re-derived counts. Change `FMP/ (7 files)` to the `.lean`-only count; leave
-      `BiLasso/ (18 files)` if the re-derived count confirms it.
-- [ ] Preserve every existing "Sorry-free" status value and give the five new rows "Sorry-free"
-      as well — the report re-confirmed zero live `sorry` uses tree-wide.
+      `BiLasso/ (18 files)` if the re-derived count confirms it. *(completed: FMP/ changed to 6
+      files; BiLasso/ confirmed at 18)*
+- [x] Preserve every existing "Sorry-free" status value and give the five new rows "Sorry-free"
+      as well — the report re-confirmed zero live `sorry` uses tree-wide. *(completed)*
 
 **Timing**: 40 minutes
 
