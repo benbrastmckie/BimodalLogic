@@ -42,8 +42,13 @@ This directory implements a tableau search procedure that:
 ## Quick Reference
 
 - **Main entry point**: `decide` in `DecisionProcedure.lean`
+- **Blocking entry point**: `decideBlocking` in `DecisionProcedure.lean` — a documented complement
+  to `decide` for the blocking-aware engine, not a substitute for it
 - **Boolean helpers**: `isValid`, `isSatisfiable`
-- **Result type**: `DecisionResult` (valid/invalid/timeout)
+- **Result type**: `DecisionResult` (valid/invalid/fuelExhausted/extractionFailed). Post-R7, the
+  single prior inconclusive-verdict constructor was split into `fuelExhausted` (validity genuinely
+  undetermined) and `extractionFailed` (the tableau closed, so the formula is valid, but no proof
+  term was reconstructed) — see `decide_result_exclusive` in `Correctness.lean`
 
 ## Algorithm Overview
 

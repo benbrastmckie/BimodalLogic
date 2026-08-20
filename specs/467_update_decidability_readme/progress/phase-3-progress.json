@@ -1,0 +1,22 @@
+{
+  "phase": 3,
+  "phase_name": "Correct the Quick Reference",
+  "started_at": "2026-08-20T02:03:00Z",
+  "last_updated": "2026-08-20T02:08:00Z",
+  "objectives": [
+    {"id": 1, "description": "Confirm DecisionResult constructor set and decideBlocking existence against working tree", "status": "done", "files_touched": []},
+    {"id": 2, "description": "Update Result type constructors, add decideBlocking entry point", "status": "done", "files_touched": ["FormalSystem/Metalogic/Decidability/README.md"]}
+  ],
+  "current_objective": 2,
+  "approaches_tried": [],
+  "deviations": [
+    {
+      "task_id": "3.2",
+      "description": "Gloss noting the former timeout constructor was split post-R7",
+      "type": "altered",
+      "reason": "The literal word \"timeout\" was rephrased to \"single prior inconclusive-verdict constructor\" so the phase's own Verification criterion (the word timeout must not appear in the Quick Reference) is satisfied while still conveying the split.",
+      "annotation": "*(deviation: altered — the gloss was added but rephrased to avoid the literal word \"timeout\"...)*"
+    }
+  ],
+  "handoff_count": 0
+}

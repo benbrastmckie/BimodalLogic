@@ -219,30 +219,34 @@ discrepancy is recorded in the summary.
 
 ---
 
-### Phase 3: Correct the Quick Reference [NOT STARTED]
+### Phase 3: Correct the Quick Reference [COMPLETED]
 
 **Goal**: The Quick Reference names the current `DecisionResult` constructors and the second
 top-level entry point.
 
 **Tasks**:
-- [ ] Confirm the constructor set against the working tree:
+- [x] Confirm the constructor set against the working tree:
       `grep -A12 'inductive DecisionResult' FormalSystem/Metalogic/Decidability/DecisionProcedure.lean`.
-- [ ] Change "**Result type**: `DecisionResult` (valid/invalid/timeout)" to
+      *(completed)*
+- [x] Change "**Result type**: `DecisionResult` (valid/invalid/timeout)" to
       "(valid/invalid/fuelExhausted/extractionFailed)". Optionally add a one-clause gloss noting
       that the former `timeout` constructor was split post-R7 into `fuelExhausted` (validity
       genuinely undetermined) and `extractionFailed` (the tableau closed, so the formula is valid,
       but no proof term was reconstructed) — as documented by `decide_result_exclusive` in
-      `Correctness.lean`.
-- [ ] Add `decideBlocking` to the entry-point list as a documented complement to `decide` for the
-      blocking-aware engine, noting it is a complement rather than a substitute.
-- [ ] Leave `isValid` and `isSatisfiable` unchanged; the report verified both against their
-      actual signatures.
-- [ ] Do not add `decideAuto`, `decideAutoAdaptive`, `decideBatch`, `decideOptimized`,
+      `Correctness.lean`. *(deviation: altered — the gloss was added but rephrased to avoid the
+      literal word "timeout" (using "single prior inconclusive-verdict constructor" instead),
+      since this phase's own Verification requires the word not appear anywhere in the Quick
+      Reference)*
+- [x] Add `decideBlocking` to the entry-point list as a documented complement to `decide` for the
+      blocking-aware engine, noting it is a complement rather than a substitute. *(completed)*
+- [x] Leave `isValid` and `isSatisfiable` unchanged; the report verified both against their
+      actual signatures. *(completed)*
+- [x] Do not add `decideAuto`, `decideAutoAdaptive`, `decideBatch`, `decideOptimized`,
       `decideWithTrace`, or `decideAutoWithTrace`; the report classes these as optional and
-      lower-priority for a terse Quick Reference.
-- [ ] Leave the Usage code block and the Algorithm Overview unchanged — the report verified both
+      lower-priority for a terse Quick Reference. *(completed)*
+- [x] Leave the Usage code block and the Algorithm Overview unchanged — the report verified both
       as accurate, including that `decideBlocking`'s existence does not invalidate the Algorithm
-      Overview's description of `decide` itself.
+      Overview's description of `decide` itself. *(completed)*
 
 **Timing**: 15 minutes
 
