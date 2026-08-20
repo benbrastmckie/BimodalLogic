@@ -1,7 +1,7 @@
 # Implementation Plan: Task #467
 
 - **Task**: 467 - Systematically update FormalSystem/Metalogic/Decidability/README.md to be aligned with the current state of the Decidability/ directory
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 2 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/467_update_decidability_readme/reports/01_decidability-readme-alignment.md
@@ -415,20 +415,20 @@ against the directory, with no contradiction introduced by the section-by-sectio
 
 ## Testing & Validation
 
-- [ ] `git diff --name-only` names exactly one file: `FormalSystem/Metalogic/Decidability/README.md`.
-- [ ] No `.lean` file is modified; `lake build` is therefore not required and is not run as a gate
+- [x] `git diff --name-only` names exactly one file: `FormalSystem/Metalogic/Decidability/README.md`.
+- [x] No `.lean` file is modified; `lake build` is therefore not required and is not run as a gate
       for this documentation-only task.
-- [ ] Every top-level `.lean` file in the directory appears exactly once in the Modules table, and
+- [x] Every top-level `.lean` file in the directory appears exactly once in the Modules table, and
       every top-level-file row names an existing file.
-- [ ] Every subdirectory file count in the table equals the freshly re-derived `.lean` count for
+- [x] Every subdirectory file count in the table equals the freshly re-derived `.lean` count for
       that subdirectory.
-- [ ] Every relative link in Related Documentation resolves to an existing file.
-- [ ] Every `DecisionResult` constructor named in the README matches the `inductive DecisionResult`
+- [x] Every relative link in Related Documentation resolves to an existing file.
+- [x] Every `DecisionResult` constructor named in the README matches the `inductive DecisionResult`
       block in `DecisionProcedure.lean`.
-- [ ] Every edge in the dependency flowchart corresponds to a real `import` line, in the correct
+- [x] Every edge in the dependency flowchart corresponds to a real `import` line, in the correct
       direction.
-- [ ] `FormalSystem/Metalogic/Decidability/Verified/README.md` is unmodified.
-- [ ] The README contains no claim that TM validity is decided, other than as an explicitly open
+- [x] `FormalSystem/Metalogic/Decidability/Verified/README.md` is unmodified.
+- [x] The README contains no claim that TM validity is decided, other than as an explicitly open
       question.
 
 ## Artifacts & Outputs
