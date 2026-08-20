@@ -4,18 +4,8 @@
     "total_tasks": 29,
     "last_sync": "2026-06-08T03:09:30Z"
   },
-  "next_project_number": 468,
+  "next_project_number": 462,
   "active_projects": [
-    {
-      "project_number": 467,
-      "project_name": "update_decidability_readme",
-      "status": "not_started",
-      "task_type": "markdown",
-      "description": "Systematically update FormalSystem/Metalogic/Decidability/README.md to be aligned with the current state of the Decidability/ directory",
-      "topic": "decidability",
-      "created": "2026-08-20T01:37:18Z",
-      "last_updated": "2026-08-20T01:37:18Z"
-    },
     {
       "project_number": 457,
       "project_name": "repair_remaining_literature_corpus_data_defects",
@@ -846,7 +836,7 @@
     {
       "project_number": 432,
       "project_name": "discharge_universeclosed_residual",
-      "status": "completed",
+      "status": "partial",
       "task_type": "lean4",
       "description": "Discharge `UniverseClosed fc U`, defined at FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean:3901, one of the four residual hypotheses on the totality terminus `buildTableauAt_isSome_of_budget` (MintBound.lean:4416). The definition has two conjuncts: (1) closure of `U` under the engine's unblocked-expansion step `expandOnceUnblocked` -- a familiar shape already required by the unsplit totality theorem's `hU` obligation -- and (2) closure of `U` under an ordered split's identification arm `Branch.identifyTime`, which relabels the branch; this second clause is genuinely new. For `U = signedUniverse C L` (Fuel.lean:382, DO NOT edit Fuel.lean -- it is md5-pinned frozen), clause (2) reduces to a statement about the label set `L` being closed under time-merging. Done means: a theorem proving `UniverseClosed fc U` for a concrete, useful instantiation `U = signedUniverse C L` under an explicit closure condition on `L` (state and prove that condition too, if it is not already available), landed sorry-free and axiom-free in MintBound.lean, with `lake build` green. Do not re-attempt anything in the do-not-re-attempt register at MintBound.lean:4455-4510 (eight entries; read before starting), and in particular do not attempt route (a), entry 6 (a lower bound on `(b.identifyTime t2 t1).toFinset.card` from below -- dead by definition).",
       "effort": "4-6 hours",
@@ -859,7 +849,7 @@
         "FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean"
       ],
       "created": "2026-08-06T16:01:52Z",
-      "last_updated": "2026-08-18T22:36:50Z",
+      "last_updated": "2026-08-18T15:52:17Z",
       "artifacts": [
         {
           "type": "research",
@@ -872,27 +862,22 @@
           "summary": "9 phases; two verdict gates on UniverseClosed clauses"
         },
         {
+          "path": "specs/432_discharge_universeclosed_residual/summaries/01_universeclosed-clause2-verdict-instantiation-summary.md",
+          "type": "summary",
+          "summary": "8/9 phases; both verdict gates refutable; Phase 7 blocked on time analogue"
+        },
+        {
           "path": "specs/432_discharge_universeclosed_residual/reports/01_spawn-inherited-research.md",
           "type": "report",
           "summary": "spawn inherited research (backfilled by --sync)"
-        },
-        {
-          "path": "specs/432_discharge_universeclosed_residual/summaries/01_universeclosed-clause2-verdict-instantiation-summary.md",
-          "type": "summary",
-          "summary": "Phase 7 closed: clause 1's label dimension proved from a branch-side headroom rectangle, and the residual's survival proved rather than pending."
-        },
-        {
-          "path": "specs/432_discharge_universeclosed_residual/handoffs/phase-7-handoff-20260818.md",
-          "type": "handoff",
-          "summary": "Phase 7 resolution record for dispatch 3."
         }
       ],
-      "session_id": "sess_1787081671_9332d7_432"
+      "session_id": "sess_1787068337_2c7029"
     },
     {
       "project_number": 433,
       "project_name": "discharge_postblockingsettles_residual",
-      "status": "partial",
+      "status": "researched",
       "task_type": "lean4",
       "description": "Discharge `PostBlockingSettles fc`, defined at FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean:4344, one of the four residual hypotheses on the totality terminus `buildTableauAt_isSome_of_budget` (MintBound.lean:4416). It states that the post-blocking pass leaves a branch the blocking-aware saturation test certifies -- i.e. `findUnexpandedUnblockedWith satBr satOrd fc (blockedTimes satBr satOrd fc (armTracker satBr)) = none` whenever `saturateBlocked ob fuel oOrd fc = some (.inr (satBr, satOrd))`. It subsumes `resolveOpenArm`'s own `none` arm via `armSettlement_of_postBlockingSettles` (MintBound.lean:4354) -- `ArmSettlement` alone is proved strictly too weak (`resolveOpenArm` tests `findClosure satBr` before its saturation test; `buildTableauAt` does not), so do not attempt to discharge via `ArmSettlement` instead. The relevant definitions are frozen (md5-pinned) in Saturation.lean (`saturateBlocked`, :431) and Tableau.lean (`blockedTimes`, :2104; `findUnexpandedUnblockedWith`, :2115) -- do not edit either file; the residual's own docstring states the gap ('whether the fuel-vs-condition gap can be closed by fuel alone') is exactly what Saturation.lean leaves open using only its existing public interface. Done means: either (a) a proof of `PostBlockingSettles fc` for the frame classes the terminus is meant to be used at, using only the public interface of the frozen files, landed sorry-free and axiom-free with `lake build` green; or (b), if (a) turns out to be genuinely impossible without touching the frozen files, a return to [BLOCKED] with the specific counterexample or obstruction found, analogous to the parent task's own refutation-driven repairs (e.g. `ordTimes_identifyTime_arm3_false`, MintBound.lean:1217) -- do not paper over with a vacuous definition (`lean4.md`'s Vacuous Definitions prohibition applies).",
       "effort": "6-10 hours",
@@ -906,7 +891,7 @@
         "FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean"
       ],
       "created": "2026-08-06T16:01:52Z",
-      "last_updated": "2026-08-19T01:35:06Z",
+      "last_updated": "2026-08-06T16:01:52Z",
       "artifacts": [
         {
           "type": "research",
@@ -917,19 +902,8 @@
           "path": "specs/433_discharge_postblockingsettles_residual/reports/01_spawn-inherited-research.md",
           "type": "report",
           "summary": "spawn inherited research (backfilled by --sync)"
-        },
-        {
-          "path": "specs/433_discharge_postblockingsettles_residual/plans/01_postblockingsettles-refute-or-prove.md",
-          "type": "plan",
-          "summary": "8-phase refute-or-prove plan; two binary gates (fuel-zero verdict, fuel-alone gap), repaired-predicate direction lemma, proof branch on FALSE"
-        },
-        {
-          "path": "specs/433_discharge_postblockingsettles_residual/summaries/01_postblockingsettles-summary.md",
-          "type": "summary",
-          "summary": "PostBlockingSettles refuted at every fuel; PostBlockingSettlesAt holds outright; PostBlockingSettlesRun narrowed repair carried with termini restated"
         }
-      ],
-      "session_id": "sess_1787103184_075b59_433"
+      ]
     },
     {
       "project_number": 434,
@@ -947,7 +921,7 @@
         "FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean"
       ],
       "created": "2026-08-06T16:01:52Z",
-      "last_updated": "2026-08-19T01:35:01Z",
+      "last_updated": "2026-08-18T16:05:15Z",
       "artifacts": [
         {
           "type": "research",
@@ -968,20 +942,15 @@
           "path": "specs/434_discharge_mintpaysfortime_residual/reports/02_spawn-analysis.md",
           "type": "report",
           "summary": "spawn analysis (backfilled by --sync)"
-        },
-        {
-          "path": "specs/434_discharge_mintpaysfortime_residual/summaries/01_mintpaysfortime-time-analogue-summary.md",
-          "type": "summary",
-          "summary": "MintPaysForTimeFixed, its direction lemma, the restated termini; nonempty discharge residual"
         }
       ],
-      "session_id": "sess_1787103184_075b59_434",
+      "session_id": "sess_1786115845_d6a7bd",
       "previous_status": "implementing"
     },
     {
       "project_number": 436,
       "project_name": "fourth_termination_measure_component",
-      "status": "completed",
+      "status": "implementing",
       "task_type": "lean4",
       "description": "Resume task 434's implementation plan (specs/434_discharge_mintpaysfortime_residual/plans/01_mintpaysfortime-time-analogue.md) at Phase 7. Before starting, read the full do-not-re-attempt register (MintBound.lean section C9, 16 entries) and in particular entry 14, which records both refuted repair routes for MintPaysForTime: (1) re-indexing mintPotential on freshTimeRules instead of freshLabelRules -- refuted by witnessPresent_eq_false_of_not_freshLabel, whose match has exactly eight arms so the three added columns are permanently false; (2) dropping disjunct 1's cardinality conjunct and relying only on the ordering-rank conjunct -- refuted by splitOrderedRank_lt_of_knownTimes_lt plus mintPaysForTime_rank_repair_false, since splitOrderedRank's base Tmax^2+1 is by construction one more than incompPairs' range so any new known time raises the rank regardless of the pair count. Neither route may be re-attempted. Design a fourth measure component that pays for the three self-guarded minting rules -- untlNeg/snceNeg (guarded by futureOf/pastOf emptiness plus ord.timeCount < 4) and densityRule (guarded by the maximal-unfilled-gap set) -- and that is also preserved across TimeOrdering.identifyTime, which can lower ord.timeCount (the same maxTime-lowering mechanism Phase 6's verdict in the existing plan turns on; see nextTime_reissues_retired_time and reuse_driven_through_engine). Run this task with --lit against the sub-index populated by the literature-curation task, drawing specifically on: caleiro_2013's mosaic-method decidability treatment for combined tense-and-modal logics (sections 6-7, mosaic-based tableau systems and complexity bounds) as a structural analogue for a combined-logic termination measure; venema_2001 section 5's interval-based temporal logic treatment for the density/gap-guarded densityRule component; gerth_1995 and baier_katoen_2008's closure-set LTL tableau termination argument as a model for a measure over an evolving, non-monotonically-changing time set; and massacci_2000's rule-bounding technique. Once a candidate measure is validated, land it in MintBound.lean following the plan's existing Phase 7-8 task lists: define the repaired predicate (e.g. MintPaysForTimeAt, mirroring UniverseClosedAt's naming), prove its direction lemma relative to MintPaysForTime (weakening or strengthening, stated explicitly), confirm it leaks no new hypothesis into the terminus, restate the two seed-level termini at the repaired shape, and discharge the repaired predicate at a concrete instantiation (U = signedUniverse C L). All work must be sorry-free, axiom-free, and additive only (Saturation.lean, Fuel.lean, Tableau.lean remain untouched, and no previously-landed declaration in MintBound.lean is altered). Full lake build must be green at completion, and the new do-not-re-attempt register entries (if any further route is refuted along the way) must be recorded in section C9 following the existing convention.",
       "effort": "10-14 hours",
@@ -994,7 +963,7 @@
         "FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean"
       ],
       "created": "2026-08-07T15:22:56Z",
-      "last_updated": "2026-08-18T21:31:36Z",
+      "last_updated": "2026-08-18T19:35:17Z",
       "artifacts": [
         {
           "type": "research",
@@ -1012,19 +981,14 @@
           "summary": "10-phase hard-mode plan; Phase 1 is a refute-first gate on the inherited sigma-hit obligation with three-way routing"
         },
         {
+          "type": "summary",
+          "path": "specs/436_fourth_termination_measure_component/summaries/01_self-guard-potential-summary.md",
+          "summary": "Machine-checked negative result: selfGuardPotential refuted by mintPaysForTimeAt_reuse_false; register entry 17 landed; gapPotential density residual left unattempted"
+        },
+        {
           "path": "specs/436_fourth_termination_measure_component/reports/02_spawn-analysis.md",
           "type": "report",
           "summary": "spawn analysis (backfilled by --sync)"
-        },
-        {
-          "path": "specs/436_fourth_termination_measure_component/summaries/02_self-guard-potential-resumption-summary.md",
-          "type": "summary",
-          "summary": "The re-gate at the oriented arm, the repaired predicate MintPaysForTimeStable, the four-component measure, and the two seed-level termini restated."
-        },
-        {
-          "path": "FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean",
-          "type": "implementation",
-          "summary": "+1821/-3: 81 new declarations, the three deletions being the sanctioned narrative and register-count edits."
         }
       ],
       "session_id": "sess_1787081671_9332d7_436",
@@ -1059,232 +1023,62 @@
     {
       "project_number": 458,
       "project_name": "migrate_12_legacy_literature_entries_to_v2_schema",
-      "status": "completed",
+      "status": "not_started",
       "task_type": "general",
       "topic": "literature",
       "priority": "medium",
       "created": "2026-08-18T20:25:41Z",
-      "last_updated": "2026-08-18T21:10:52Z",
+      "last_updated": "2026-08-18T20:25:41Z",
       "title": "Migrate the 12 remaining legacy chunks_dir-only literature entries to the v2 schema",
       "description": "Follow-up to task 457's SCOPE 7 (provenance adjudication for 3 named legacy entries). 12 further legacy chunks_dir-only entries remain in ~/Projects/Literature/index.json beyond the 3 SCOPE 7 named and migrated (Jonsson-Tarski 1951/1952, Goldblatt 2006): brics-rs-96-35, cattani-winskel-2005-profunctors, brics-rs-94-7, schultz-spivak-temporal-type-theory, fong-speranzon-spivak-temporal-landscapes, schultz-spivak-vasilakopoulou-dynamical-systems-sheaves, thomason-1970-indeterminist-time, rutten-2000-universal-coalgebra, jacobs-coalgebra-intro-draft, danos-krivine-rccs, reynolds-2003-ockhamist, rumberg-zanardo-2019-transition-structures. Each needs: a manual chunk-read fidelity adjudication (grounded, not from an automated ratio alone -- literature-fidelity-audit.sh does not cover these since they sit outside sources/, so its output cannot corroborate; see task 457 Phase 6 phase notes for the code-level reason), path/token_count population per the SCOPE 1 directory-path convention (chars/4+20 over concatenated chunk_*.md text), and doc_type/source_format population per the SCOPE 5 evidence-grounded approach (inspect the actual source file if present; record as a reasoned exclusion if not). Use task 457's Phase 6 adjudication process as the template: take a backup before mutating, open at least one chunk per document and read it by hand, stamp provenance_fidelity only after that read, then run literature-build-index.sh --global and confirm the FTS row count did not drop.",
-      "artifacts": [
-        {
-          "path": "specs/458_migrate_12_legacy_literature_entries_to_v2_schema/reports/01_legacy-entries-v2-migration.md",
-          "type": "report",
-          "summary": "Live-state investigation of the 12 legacy chunks_dir-only literature entries"
-        },
-        {
-          "path": "specs/458_migrate_12_legacy_literature_entries_to_v2_schema/plans/01_migrate-12-legacy-entries.md",
-          "type": "plan",
-          "summary": "7-phase plan migrating the 12 legacy chunks_dir-only literature entries to the v2 schema"
-        },
-        {
-          "path": "specs/458_migrate_12_legacy_literature_entries_to_v2_schema/summaries/01_migrate-12-legacy-entries-summary.md",
-          "type": "summary",
-          "summary": "Implementation summary for the 12-entry v2 schema migration"
-        }
-      ],
+      "artifacts": [],
       "dependencies": [],
-      "next_artifact_number": 1,
-      "file_scope": [
-        "~/Projects/Literature/index.json"
-      ],
-      "session_id": "sess_1787085411_5744ac_458",
-      "completion_summary": "Migrated all twelve legacy chunks_dir-only literature entries to the v2 schema by adding provenance_fidelity, path, token_count, doc_type, and source_format to each, grounded entirely in hand chunk reads (never automated ratios). The post-mutation gate independently confirmed all 12 token_counts, a field-level diff showing exactly the 12 target ids with keys limited to the 5-field allow-list, and specs/literature-index.json byte-identical throughout."
+      "next_artifact_number": 1
     },
     {
       "project_number": 459,
       "project_name": "deduplicate_8_stale_literature_entries",
-      "status": "completed",
+      "status": "not_started",
       "task_type": "general",
       "topic": "literature",
       "priority": "medium",
       "created": "2026-08-18T20:25:41Z",
-      "last_updated": "2026-08-18T21:28:21Z",
+      "last_updated": "2026-08-18T20:25:41Z",
       "title": "Deduplicate 8 stale placeholder entries in the global literature index",
       "description": "Discovered during task 457 Phase 3 (SCOPE 3 bulk token_count re-baseline). ~/Projects/Literature/index.json has 369 total entries but only 361 distinct ids: 8 ids each appear TWICE. In every one of the 8 cases, one instance carries provenance=\"migrated from ingest schema (doc_id/source_path/chunks_dir)\", token_count=0, empty summary, and thinner metadata (a stale placeholder from an incomplete earlier migration), while the other instance (same id, same path) is the already-correct, fully-populated v2 entry with real authors/summary/keywords/token_count. Affected ids: calcagno_2007_local-action-abstract-separation-logic, docherty_pym_2019_stone-dualities-separation-logics, jung_2018_iris-from-the-ground-up, ohearn_2007_resources-concurrency-local-reasoning, ohearn_2019_separation-logic-cacm, reynolds_2002_separation-logic, brookes_2007_semantics-concurrent-separation-logic, jipsen_litak_2017_algebraic-glimpse-bunched-implications. Task 457 corrected the stale duplicates' token_count only (to unblock its own SCOPE 3 defect-class-empty verification gate) but did NOT remove the duplicate records -- that structural fix (delete the stale placeholder, keeping the fully-populated entry) is this task's scope. After removal, confirm entry count drops from 369 to 361, JSON still parses, and literature-build-index.sh --global still exits 0 with FTS row count >= the pre-dedup baseline (removing a duplicate doc removes duplicate chunks too, so the row count is expected to change compared to the pre-457 baseline -- record the new baseline rather than expecting equality).",
-      "artifacts": [
-        {
-          "path": "specs/459_deduplicate_8_stale_literature_entries/reports/01_dedup-stale-literature-entries.md",
-          "type": "report",
-          "summary": "Live re-derivation of the 8 duplicate-id pairs, discriminator analysis, and FTS gate assessment"
-        },
-        {
-          "path": "specs/459_deduplicate_8_stale_literature_entries/plans/01_dedup-stale-literature-entries.md",
-          "type": "plan",
-          "summary": "5-phase guarded deletion of the 8 stale duplicate literature entries"
-        },
-        {
-          "path": "specs/459_deduplicate_8_stale_literature_entries/summaries/01_dedup-stale-literature-entries-summary.md",
-          "type": "summary",
-          "summary": "Guarded deletion of the 8 stale duplicate literature entries; 369 to 361"
-        }
-      ],
-      "dependencies": [
-        458
-      ],
-      "next_artifact_number": 1,
-      "file_scope": [
-        "~/Projects/Literature/index.json"
-      ],
-      "session_id": "sess_1787085411_5744ac_459",
-      "completion_summary": "Removed the 8 stale, provenance-marked placeholder duplicate entries from ~/Projects/Literature/index.json using a guarded, assertion-first deletion script; verified all 8 surviving entries are byte-identical to their pre-deletion form, confirmed out-of-scope neighbours untouched, and confirmed specs/literature-index.json remained byte-identical to its pre-task state."
+      "artifacts": [],
+      "dependencies": [],
+      "next_artifact_number": 1
     },
     {
       "project_number": 460,
       "project_name": "acquire_gabbay_2003_many_dimensional_modal_logics",
-      "status": "completed",
+      "status": "not_started",
       "task_type": "general",
       "topic": "literature",
       "priority": "medium",
       "created": "2026-08-18T20:25:41Z",
-      "last_updated": "2026-08-18T23:55:24Z",
+      "last_updated": "2026-08-18T20:25:41Z",
       "title": "Acquire a usable copy of Gabbay, Kurucz, Wolter and Zakharyaschev 2003 (Many-Dimensional Modal Logics)",
       "description": "SCOPE 8 acquisition gap identified by task 457's research and re-confirmed at implementation time: the source is present in the user's Zotero library under item key Kurucz2003, but the stored PDF has a broken/custom font encoding with no usable ToUnicode CMap and is not text-extractable by any available tool (pdftotext yields ~69.5% printable characters, scrambled letters). This is an acquisition/OCR problem, not an index-schema defect -- do NOT attempt to fix by re-running the standard ingest pipeline with LITERATURE_CONVERTER=pymupdf; that path previously produced 2260 chunks of control-character mojibake that passed the quality gate and had to be manually purged from the corpus and FTS index (see task 457's research report for this precedent). Needed: either a cleaner PDF copy (different scan/source) or an OCR pass (e.g. ocrmypdf) that produces usable, non-garbled text, followed by a normal /literature ingest.",
-      "artifacts": [
-        {
-          "path": "specs/460_acquire_gabbay_2003_many_dimensional_modal_logics/reports/01_acquire-gabbay-2003-copy.md",
-          "type": "report",
-          "summary": "Failure characterization (Type 3 fonts, no ToUnicode CMap) and verified OCR remediation path"
-        },
-        {
-          "path": "specs/460_acquire_gabbay_2003_many_dimensional_modal_logics/plans/01_ocr-and-ingest-gabbay-2003.md",
-          "type": "plan",
-          "summary": "7-phase batched OCR, semantic gate, and ingest for Gabbay 2003"
-        },
-        {
-          "path": "specs/460_acquire_gabbay_2003_many_dimensional_modal_logics/summaries/01_ocr-and-ingest-gabbay-2003-summary.md",
-          "type": "summary",
-          "summary": "OCR, semantic gate, authorized-exception ingest, and v2 schema normalization for Gabbay 2003"
-        }
-      ],
-      "dependencies": [
-        459
-      ],
-      "next_artifact_number": 1,
-      "file_scope": [
-        "~/Projects/Literature/index.json",
-        "specs/literature-index.json"
-      ],
-      "session_id": "sess_1787085411_5744ac_460"
+      "artifacts": [],
+      "dependencies": [],
+      "next_artifact_number": 1
     },
     {
       "project_number": 461,
       "project_name": "acquire_goldblatt_1989_varieties_of_complex_algebras",
-      "status": "blocked",
+      "status": "not_started",
       "task_type": "general",
       "topic": "literature",
       "priority": "medium",
       "created": "2026-08-18T20:25:41Z",
-      "last_updated": "2026-08-18T23:56:17Z",
+      "last_updated": "2026-08-18T20:25:41Z",
       "title": "Acquire Goldblatt 1989 'Varieties of complex algebras' (Annals of Pure and Applied Logic)",
       "description": "SCOPE 8 acquisition gap identified by task 457's research and re-confirmed at implementation time: this paper is absent from both the ~/Projects/Literature corpus and the Zotero library, and is named as a prerequisite by other tasks in this repo working on the Jonsson-Tarski representation theorem. Note: goldblatt_2003 already present in the corpus is a DIFFERENT paper (Erdos Graphs Resolve Fine's Canonicity Problem) -- do not conflate the two. Needed: locate and acquire a copy of Goldblatt 1989 (Annals of Pure and Applied Logic 44, pp. 173-242), add it to Zotero, then run a normal /literature ingest.",
-      "artifacts": [
-        {
-          "path": "specs/461_acquire_goldblatt_1989_varieties_of_complex_algebras/reports/01_acquisition-feasibility.md",
-          "type": "report",
-          "summary": "Acquisition feasibility: confirmed absent from corpus and Zotero; no legitimately obtainable copy; blocked on user action"
-        }
-      ],
-      "dependencies": [
-        460
-      ],
-      "next_artifact_number": 1,
-      "file_scope": [
-        "~/Projects/Literature/index.json",
-        "specs/literature-index.json"
-      ],
-      "session_id": "sess_1787085411_5744ac_461",
-      "blockers": "Acquisition blocked on user action -- no legitimately obtainable copy exists in this environment. VERIFIED 2026-08-18: absent from the Literature corpus (362 entries) and from Zotero (4044 items, queried read-only). Identity confirmed against Goldblatt's own VUW paperlist.pdf item 22 (Annals of Pure and Applied Logic 44, 1989, pp. 173-242). NOT the same paper as goldblatt_2003 already in the corpus (Erdos Graphs Resolve Fine's Canonicity Problem); the corpus sub-index already flags Goldblatt's 2003/2006 evolution survey as a partial substitute for this missing item. Semantic Scholar reports the ScienceDirect copy as Bronze OA, but every derived URL (curl with browser headers, WebFetch, DOI resolver chain) returns HTTP 403 behind a Cloudflare bot challenge; not self-archived (author's online-papers page starts ~2000); VUW repository search inconclusive (302, no positive evidence). No PDF obtained, so the pdffonts/pdftotext extractability check was recorded as not-applicable rather than fabricated. UNBLOCK BY: institutional ScienceDirect access, interlibrary loan, or a direct request to Robert Goldblatt (active VUW emeritus). Then re-run the extractability check before ingest -- if the copy is a scan, expect the same sentence-boundary-glue quality-gate failure documented in specs/460_acquire_gabbay_2003_many_dimensional_modal_logics/reports/03_phase5-fusion-site-analysis.md. Full acquisition path in reports/01_acquisition-feasibility.md."
-    },
-    {
-      "project_number": 462,
-      "project_name": "mintpaysfortime_engine_level_assembly",
-      "status": "not_started",
-      "task_type": "lean4",
-      "topic": "decidability",
-      "description": "Land the engine-level assembly that lets `MintPaysForTimeFixed` be discharged at a NONEMPTY universe. This is the plumbing half of the residual task 434 left open at its Phase 8; it is explicitly proof engineering, not open mathematics, and task 434's own handoff records it as \"spawnable on its own\".\n\nTHE GAP. Every per-rule payment `MintPaysForTimeFixed` needs is already landed in MintBound.lean, but each is stated AT THE PICK, while the predicate quantifies over `unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1`. The missing work is threading the picked rule through `expandOnceUnblocked`'s three stages so the per-rule case split is available at the successor, for all thirty-six constructors at once.\n\nWHAT ALREADY EXISTS -- consume, do not re-author:\n- disjunct 2, the six rules in `freshLabelRules INTER freshTimeRules`: `mintPotential_lt_of_pick_linear_sigmaFixed` and `mintPotential_lt_of_pick_branching_sigmaFixed`, discharged from confinement plus `SigmaFixed` by `sigma_formula_hit_of_sigmaFixed`.\n- disjunct 3, the two rules in `selfGuardRules`: `selfGuardPotential_lt_of_untlNeg` and `selfGuardPotential_lt_of_snceNeg`.\n- disjunct 1, the twenty-seven rules outside `freshTimeRules`: `applyRule_emitted_time_dichotomy` (MintBound.lean:7048) plus `expandOnceUnblocked_ord_mono` (:1945).\n- `MintPaysForTimeFixed` (:10499) and its direction lemma; `mintPaysForTimeFixed_signedUniverse_empty` (:11096) is the current boundary-only discharge this task is meant to supersede.\n\nDONE MEANS: `MintPaysForTimeFixed fc (signedUniverse C L) Tmax` discharged at NONEMPTY `L`, at every frame class OUTSIDE `.Dense` and `.Dedekind`, landed sorry-free and axiom-free with `lake build` green. The `.Dense`/`.Dedekind` classes are deliberately EXCLUDED from this task's scope: they additionally require `gapPotential` for the density coordinate, which is a separate research task and must NOT be attempted here. State the frame-class restriction explicitly in the theorem, do not hide it.\n\nPROHIBITED: do not re-attempt anything in the C9 do-not-re-attempt register (read entries in full first, especially 14, 17, 18, 19, 20); do not edit Fuel.lean, Saturation.lean or Tableau.lean (md5-pinned frozen); do not alter any previously-landed declaration; no `sorry`, no vacuous discharge, no predicate that is itself false. If the assembly turns out to need genuinely open mathematics rather than plumbing, STOP and record that finding with evidence rather than forcing it -- that outcome is a legitimate deliverable and should be recorded as a new C9 entry.\n\nDependencies: none. This task is unblocked today.",
-      "created": "2026-08-19T01:33:04Z",
-      "last_updated": "2026-08-19T01:33:04Z",
-      "session_id": "sess_1787103184_075b59",
-      "file_scope": [
-        "FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean"
-      ],
+      "artifacts": [],
       "dependencies": [],
-      "artifacts": []
-    },
-    {
-      "project_number": 463,
-      "project_name": "postblockingsettlesrun_verdict_at_terminus_fuel",
-      "status": "not_started",
-      "task_type": "lean4",
-      "topic": "decidability",
-      "description": "Decide `PostBlockingSettlesRun fc (mintAwareFuelAt U.card Tmax mintBudget D beta)` -- the narrowed settlement residual task 433 landed -- at the terminus's OWN fuel figure. Nothing currently decides it in either direction, and task 433's C9 register entry 24 exists precisely so the narrowing is not mistaken for a proof.\n\nWHY THIS MATTERS. `PostBlockingSettlesRun` (MintBound.lean:11961) is CARRIED as a hypothesis by the fully-repaired terminus `buildTableauAt_isSome_of_budget_fixed_run` (:12199), exactly as `ArmSettlement` is. Until it is decided, the repaired terminus rests on an unknown. Task 433 established the surrounding facts but deliberately stopped short of this verdict.\n\nWHAT IS ALREADY DECIDED -- consume, do not repeat:\n- `PostBlockingSettles fc` (the unnarrowed form, :5181) is REFUTED: `postBlockingSettles_fuel_zero_false` (false at the `fuel = 0` arm at every frame class) and `postBlockingSettles_fuel_gap_false` / `postBlockingSettles_gap_at_every_fuel` (fuel does not close the gap, at ANY fuel). The witness is `freshWorldBranch = [F(box p)@<0,0>]`: `.boxNeg` mints a fresh world, so `expandOnceNoFresh` skips it and reports `.saturated` while `findUnexpandedUnblockedWith` reports it.\n- `PostBlockingSettlesAt fc` (:11539) holds OUTRIGHT for every `fc` (`postBlockingSettlesAt_holds`, :11721) -- but the bridge from `saturateBlocked ... = some (.inr (satBr, satOrd))` to its antecedents does NOT go through, because at `fuel = 0` that equation holds at every branch while carrying no saturation information (`labelFreeSaturatedExit_not_of_saturateBlocked_inr`).\n- Task 433 PROVED that the only bridge shape that typechecks carries a hypothesis that is itself refutable (it composes with the settlement lemma to give the refuted `PostBlockingSettles fc`). Do NOT re-attempt that bridge; it is a weakening dressed as a repair.\n\nSTRUCTURE THIS AS A REFUTE-FIRST GATE with a BINARY verdict, in the style tasks 432, 433 and 436 used successfully. Both outcomes are first-class deliverables:\n- TRUE: `PostBlockingSettlesRun` holds at the terminus's own fuel figure -- discharge it, and the repaired terminus sheds a hypothesis.\n- FALSE: it is refutable at that figure -- land the machine-checked refutation with its witness, record a C9 entry, and name the minimal further narrowing as the next step. A proved refutation here is as valuable as a proof and MUST NOT be treated as failure.\n\nEMPIRICAL WARNING FROM TASK 433. Across fourteen formula shapes, four frame classes and three fuel figures, `buildTableauAt`'s own guard NEVER fired -- the threaded tracker and the recomputed `armTracker` agreed everywhere -- so no probed run exercised the post-blocking arm at all. That is a fact about the probe's reach, not about the residual, but it means this path is essentially untested empirically. Do not treat \"no counterexample found by probing\" as evidence of truth; the verdict must be proved either way, and if the honest answer is \"undecided by the means available\", say so explicitly with evidence rather than guessing.\n\nPROHIBITED: do not discharge via `ArmSettlement` (proved strictly too weak: `resolveOpenArm` tests `findClosure satBr` before its saturation test, `buildTableauAt` does not); do not edit Saturation.lean, Tableau.lean or Fuel.lean (md5-pinned frozen) -- use only their existing public interface; do not re-attempt anything in the C9 register; no `sorry`, no vacuous discharge. Sorry-free, axiom-free, additive only, full `lake build` green.\n\nDependencies: 462, as a file_scope SERIALIZATION edge only (both tasks edit MintBound.lean). There is no mathematical dependency on 462 -- this task's content is independent of the minting measure and may be reasoned about immediately.",
-      "created": "2026-08-19T01:33:30Z",
-      "last_updated": "2026-08-19T01:33:30Z",
-      "session_id": "sess_1787103184_075b59",
-      "file_scope": [
-        "FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean"
-      ],
-      "dependencies": [
-        462
-      ],
-      "artifacts": []
-    },
-    {
-      "project_number": 464,
-      "project_name": "gappotential_density_measure_component",
-      "status": "not_started",
-      "task_type": "lean4",
-      "topic": "decidability",
-      "description": "Design and land `gapPotential`, the density coordinate of the termination measure. This is the one genuinely OPEN MATHEMATICAL question remaining on the totality terminus; it is research, not plumbing, and should be run with --lit.\n\nTHE PROBLEM, stated exactly. `densityRule` mints a fresh time while lying OUTSIDE BOTH `freshLabelRules` AND `selfGuardRules`. Consequently no disjunct of the current measure moves at a `densityRule` step, FOR ANY sigma WHATSOEVER. This has been open since C9 register entry 17 named it, and task 434's Phase 8 records the current state bluntly: `gapPotential` \"remains implemented nowhere and assumed by nothing\". Because `densityRule` is `denseRules`-gated, this blocks a nonempty `MintPaysForTimeFixed` discharge at `.Dense` and `.Dedekind` frame classes specifically; every frame class needs `gapPotential` for a fully general result.\n\nSHAPE SUGGESTED BY PRIOR WORK (a starting point, NOT a specification to follow blindly): task 434 records the expectation that `gapPotential` is indexed by `U x U` and `denseRules`-gated. Validate or refute that shape as part of the research; if a different indexing is correct, say so and justify it.\n\nHARD REQUIREMENT -- PRESERVATION ACROSS THE IDENTIFICATION ARM. Any candidate component must be preserved across `TimeOrdering.identifyTime`, which can LOWER `ord.timeCount`. This is the same maxTime-lowering mechanism that refuted earlier candidates; see `nextTime_reissues_retired_time` and `reuse_driven_through_engine`, and task 436's oriented-arm re-gate (`orientedGate*` family, :8592-8788) for how the analogous obstacle was handled for the self-guard component. A component that pays at `densityRule` steps but is destroyed by the identification arm is not a solution.\n\nREFUTED ROUTES -- C9 register entries 14, 17, 18, 19, 20, 24. Read them ALL in full before designing anything. In particular entry 14 forbids BOTH (1) re-indexing `mintPotential` on `freshTimeRules` instead of `freshLabelRules` -- refuted by `witnessPresent_eq_false_of_not_freshLabel`, whose match has exactly eight arms so the three added columns are permanently false -- and (2) dropping disjunct 1's cardinality conjunct in favour of the ordering-rank conjunct alone -- refuted by `splitOrderedRank_lt_of_knownTimes_lt` plus `mintPaysForTime_rank_repair_false`. Neither may be re-attempted.\n\nLITERATURE. Run with --lit against the sub-index curated for this line of work, drawing specifically on: venema_2001 section 5 (interval-based temporal logic) for the density/gap-guarded component itself; caleiro_2013 sections 6-7 (mosaic-method decidability for combined tense-and-modal logics) as a structural analogue for a combined-logic termination measure; gerth_1995 and baier_katoen_2008 (closure-set LTL tableau termination) as a model for a measure over an evolving, non-monotonically-changing time set; and massacci_2000 for rule-bounding technique.\n\nDONE MEANS EITHER: (a) `gapPotential` defined, its payment at `densityRule` steps proved, its preservation across `identifyTime` proved, integrated into the measure, and a nonempty `MintPaysForTimeFixed` discharge extended to `.Dense` and `.Dedekind`; OR (b) a machine-checked impossibility result showing no such component exists at the current measure's shape, with the obstruction identified precisely and a C9 entry recording it. Outcome (b) is a genuine and valuable result, NOT a failure -- this repo's practice is that a proved refutation ranks with a proof, and several of this measure's real advances came from refutations.\n\nPROHIBITED: no `sorry`, no vacuous or false predicate, no weakening presented as a repair (a direction lemma is a GATE, not a nicety -- C9 entry 7 exists because that mistake was made once); do not edit Fuel.lean, Saturation.lean or Tableau.lean (md5-pinned frozen); additive only in MintBound.lean; axioms within {propext, Classical.choice, Quot.sound}; full `lake build` green.\n\nDependencies: 462 is a REAL SEMANTIC dependency -- the engine-level assembly is what makes a per-rule payment usable at the successor, and `gapPotential`'s payment needs the same threading. 463 is a file_scope SERIALIZATION edge only (both edit MintBound.lean), with no mathematical content.",
-      "created": "2026-08-19T01:33:59Z",
-      "last_updated": "2026-08-19T01:33:59Z",
-      "session_id": "sess_1787103184_075b59",
-      "file_scope": [
-        "FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean"
-      ],
-      "dependencies": [
-        462,
-        463
-      ],
-      "artifacts": []
-    },
-    {
-      "project_number": 465,
-      "project_name": "complete_terminus_restatement_family",
-      "status": "not_started",
-      "task_type": "lean4",
-      "topic": "decidability",
-      "description": "Complete the terminus restatement family at the repaired residuals. Task 433's Phase 6 landed EIGHT of the twenty-two restatements -- the four family roots and their four caller-facing seed forms -- and recorded the remaining FOURTEEN as a Reasoned Exclusion with the recipe written down: each is a `_lengthBudget` / `signedUniverse` substitution, \"a one-line application of its family root\".\n\nThis is deliberately MECHANICAL work with the recipe already recorded. Its value is uniformity: a caller reaching for a `_lengthBudget` or `signedUniverse` form of a repaired terminus should find it landed rather than having to re-derive it, and a half-populated family is a trap for a future reader who assumes an absent member is absent for a reason.\n\nSCOPE: read Phase 6's Reasoned Exclusions section in specs/433_discharge_postblockingsettles_residual/plans/01_postblockingsettles-refute-or-prove.md for the enumerated list and the recipe. The family roots and existing members are the `buildTableauAt_isSome_*` declarations in MintBound.lean (the `_at`, `_selfGuarded`, `_fixed` and `_run` families, roughly :6308-:12240). Land the fourteen missing members following the naming convention the file already uses; do not invent a new convention.\n\nWHY THIS RUNS LAST: it restates termini at the repaired residuals, so it must run after the residuals themselves are settled. If 462, 463 or 464 changes a predicate's shape or sheds a hypothesis, the restatements must reflect the settled form -- doing this work earlier would mean doing it twice. Before starting, RE-DERIVE the list of missing members from the file as it then stands rather than trusting the count of fourteen recorded here: earlier tasks may have landed some, or added new family roots.\n\nPROHIBITED: no `sorry`; additive only; do not alter any previously-landed declaration; do not edit Fuel.lean, Saturation.lean or Tableau.lean; axioms within {propext, Classical.choice, Quot.sound}; full `lake build` green. If any of the fourteen turns out NOT to be a one-line application -- i.e. the recipe does not actually apply -- STOP on that member, record why, and do not force it; a member that needs real mathematics belongs in its own task, not smuggled in here.\n\nDependencies: 462, 463, 464 -- all three, so that the restatements are made against a settled set of residuals rather than a moving one.",
-      "created": "2026-08-19T01:34:36Z",
-      "last_updated": "2026-08-19T01:34:36Z",
-      "session_id": "sess_1787103184_075b59",
-      "file_scope": [
-        "FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean"
-      ],
-      "dependencies": [
-        462,
-        463,
-        464
-      ],
-      "artifacts": []
-    },
-    {
-      "project_number": 466,
-      "project_name": "update_plan_status_fail_loudly",
-      "status": "not_started",
-      "task_type": "meta",
-      "topic": "agent-system",
-      "description": "Make `update-plan-status.sh` fail loudly instead of silently no-opping on a non-conforming Status line. This is an agent-system defect that caused real, observed damage during a four-task /orchestrate batch.\n\nTHE DEFECT. `update-plan-status.sh` matches the plan header's status line with the anchored pattern `^- \\*\\*Status\\*\\*: \\[.*\\]$`. The trailing `$` requires the line to END at the closing bracket. Any deviation makes the `sed` a NO-OP, and the script's only signal is the generic message \"Failed to update status in <file>\" -- it never names the offending line or says why it did not match.\n\nOBSERVED IMPACT, both cases from the same batch:\n1. One plan carried `- **Status**: [IMPLEMENTING] (resumed; Phases 1R-10R closed)` -- trailing text after the bracket. Every stamp silently no-opped.\n2. Another carried `- **Status**: PARTIAL` -- no brackets at all. Same silent no-op.\nCase 2 is the more dangerous shape: on PREFLIGHT the failure is deliberately non-fatal and prints only \"Warning: plan file update failed (non-fatal)\", so a malformed Status line can sit undetected through an entire task and only bite at POSTFLIGHT, where the same failure IS fatal. At that point state.json has already been written to `completed` while the plan file still reads `[IMPLEMENTING]`, and `generate-todo.sh` reads only state.json, so no other surface reveals the divergence. The caller's own error text in `update-task-status.sh` already acknowledges this asymmetry deliberately.\n\nREQUIRED FIX (decide the exact form during implementation, both halves are required):\n(a) Diagnose loudly: when the pattern does not match, print the offending line verbatim with its line number and state which part failed -- missing `- **Status**:` prefix, missing brackets, or trailing text after the closing bracket -- so the operator sees the cause rather than a bare \"Failed\".\n(b) Decide and implement a tolerance policy: either accept trailing text after `]` (rewriting only the bracketed token and preserving the remainder), or reject it explicitly as malformed. Whichever is chosen, apply it consistently and document it where plan format is specified.\n\nALSO CONSIDER (evaluate, do not assume): whether the preflight non-fatal path should additionally emit a one-line WARNING that survives to the operator, given that a preflight no-op is the leading indicator of the fatal postflight failure; and whether a plan-format lint should validate the Status line at plan-creation time, so a malformed line never reaches a dispatch at all.\n\nSOURCE-STORE BOUNDARY -- IMPORTANT. `.claude/` in this repository is a gitignored, disposable deploy artifact regenerated from the source store. Edit `agent-system/extensions/core/scripts/update-plan-status.sh` (and any related merge-source or context file under `agent-system/extensions/core/**`), NOT `.claude/scripts/update-plan-status.sh` -- a hand-authored edit under `.claude/` appears to succeed and is wiped by the next regeneration. Redeploy and verify after the change.\n\nDependencies: none. Different file_scope from the Lean tasks entirely, so it can run in parallel with any of them.",
-      "created": "2026-08-19T01:34:36Z",
-      "last_updated": "2026-08-19T01:34:36Z",
-      "session_id": "sess_1787103184_075b59",
-      "file_scope": [
-        "agent-system/extensions/core/scripts/update-plan-status.sh"
-      ],
-      "dependencies": [],
-      "artifacts": []
+      "next_artifact_number": 1
     }
   ],
   "artifacts": [
