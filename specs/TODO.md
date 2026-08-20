@@ -11,7 +11,7 @@ next_project_number: 468
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,193,231,257,298,413,421,423,424,434,451,455,461,462,466,467 | -- | completeness, decidability, frame-extensions, ... |
+| 1 | 125,127,128,193,231,257,298,413,421,423,424,434,451,455,461,462,466 | -- | completeness, decidability, frame-extensions, ... |
 | 2 | 178,219,282,296,422,425,433,463 | 193,231,298,421,423,434,462 | decidability, formula-refactor, dataset-enhancement, ... |
 | 3 | 169,428,464 | 422,433,463 | decidability, strong_completeness |
 | 4 | 362,429,465 | 169,424,428,464 | decidability, strong_completeness |
@@ -45,7 +45,6 @@ next_project_number: 468
   └─ 463 [NOT STARTED] — Decide `PostBlockingSettlesRun fc (mintAwareFuelAt U.card Tmax mi
     └─ 464 [NOT STARTED] — Design and land `gapPotential`, the density coordinate of the ter
       └─ 465 [NOT STARTED] — Complete the terminus restatement family at the repaired residual
-467 [NOT STARTED] — Systematically update FormalSystem/Metalogic/Decidability/README.
 
 ### Formula Refactor
 
@@ -104,10 +103,13 @@ next_project_number: 468
 ## Tasks
 
 ### 467. Update decidability readme
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: markdown
 - **Topic**: decidability
 - **Dependencies**: None
+- **Research**: [467_update_decidability_readme/reports/01_decidability-readme-alignment.md]
+- **Plan**: [467_update_decidability_readme/plans/01_decidability-readme-alignment.md]
+- **Summary**: [467_update_decidability_readme/summaries/01_decidability-readme-alignment-summary.md]
 
 **Description**: Systematically update FormalSystem/Metalogic/Decidability/README.md to be aligned with the current state of the Decidability/ directory
 

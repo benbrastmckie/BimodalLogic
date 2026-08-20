@@ -9,12 +9,31 @@
     {
       "project_number": 467,
       "project_name": "update_decidability_readme",
-      "status": "not_started",
+      "status": "completed",
       "task_type": "markdown",
       "description": "Systematically update FormalSystem/Metalogic/Decidability/README.md to be aligned with the current state of the Decidability/ directory",
       "topic": "decidability",
       "created": "2026-08-20T01:37:18Z",
-      "last_updated": "2026-08-20T01:37:18Z"
+      "last_updated": "2026-08-20T02:05:23Z",
+      "session_id": "sess_1787189917_bf81a0",
+      "artifacts": [
+        {
+          "path": "specs/467_update_decidability_readme/reports/01_decidability-readme-alignment.md",
+          "type": "report",
+          "summary": "Full comparison of Decidability/README.md against current directory contents; 11 findings."
+        },
+        {
+          "path": "specs/467_update_decidability_readme/plans/01_decidability-readme-alignment.md",
+          "type": "plan",
+          "summary": "Six-phase sequential plan closing all 11 README misalignments."
+        },
+        {
+          "path": "specs/467_update_decidability_readme/summaries/01_decidability-readme-alignment-summary.md",
+          "type": "summary",
+          "summary": "Full 6-phase execution summary with per-phase changes, two plan deviations, and the Verified/README.md staleness follow-up."
+        }
+      ],
+      "completion_summary": "Corrected all 11 misalignments between FormalSystem/Metalogic/Decidability/README.md and the directory it documents: removed the unproved decidability overclaim, rebuilt the Modules table (5 rows added, 1 removed, file-count convention normalized), fixed the stale DecisionResult constructor set and added decideBlocking, redrew the dependency flowchart with correct edge directions and the missing TraceCertificate.lean node, added two missing sibling README links, and refreshed the footer date. Verified/README.md was left untouched per the plan's Non-Goals."
     },
     {
       "project_number": 457,
