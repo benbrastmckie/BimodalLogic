@@ -319,8 +319,8 @@
       "report_path": "specs/reviews/review-2026-08-24.md",
       "summary": {
         "files_reviewed": 448,
-        "critical_issues": 2,
-        "high_issues": 6,
+        "critical_issues": 3,
+        "high_issues": 7,
         "medium_issues": 7,
         "low_issues": 4
       },
@@ -335,7 +335,7 @@
   "statistics": {
     "total_reviews": 18,
     "last_review": "2026-08-24T00:00:00Z",
-    "total_issues_found": 153,
+    "total_issues_found": 155,
     "total_tasks_created": 30
   }
 }

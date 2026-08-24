@@ -11,9 +11,9 @@ next_project_number: 472
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,193,231,257,298,413,421,423,424,434,451,461,462,466,468,469,470,471 | -- | agent-system, algebraic-representation, automation, ... |
-| 2 | 178,219,282,296,422,425,433,455,463 | 193,231,298,421,423,434,462,468 | code-quality, dataset-enhancement, decidability, ... |
-| 3 | 169,428,464 | 422,433,463 | decidability, strong_completeness |
+| 1 | 125,127,128,193,257,298,413,421,423,424,434,451,461,462,466,468,469,470,471 | -- | agent-system, algebraic-representation, automation, ... |
+| 2 | 178,231,282,296,422,425,433,455,463 | 193,298,421,423,434,462,468 | code-quality, dataset-enhancement, decidability, ... |
+| 3 | 169,219,428,464 | 231,422,433,463 | dataset-enhancement, decidability, strong_completeness |
 | 4 | 362,429,465 | 169,424,428,464 | decidability, strong_completeness |
 | 5 | 410 | 429 | decidability |
 | 6 | 411 | 410 | decidability |
@@ -51,10 +51,10 @@ next_project_number: 472
 
 ### Dataset Enhancement
 
-231 [NOT STARTED] — Build comprehensive automation so that every dataset regeneration
-  └─ 219 [RESEARCHED] — Run bmlogic-bench through multiple LLMs to establish baseline dif
 257 [BLOCKED] — large_data_storage_huggingface
 298 [PARTIAL] — Fix c7 labeling bug at formula ~13750 that causes unbounded memor
+  └─ 231 [NOT STARTED] — Build comprehensive automation so that every dataset regeneration
+    └─ 219 [RESEARCHED] — Run bmlogic-bench through multiple LLMs to establish baseline dif
   └─ 282 [PARTIAL] — exhaustive_enumeration_by_default
   └─ 296 [PARTIAL] — Re-add the 6 derived binary temporal operators (release, weak_unt
 
@@ -796,6 +796,32 @@ requires that PLUS the PROVEN-vs-SORRY-FREE distinction, refuted-route tombstone
 register cross-reference), and 455's Stages 2-4 are contained in this task's Stage 2, which extends
 the verdict vocabulary with ADD and REOPEN. On that evidence the review recommends **ABSORB**.
 Stage 0 must still reach and record its own verdict.
+
+--- 10e. A FIFTH TERMINATION RESIDUAL EXISTS AND HAS NO OWNER (added 2026-08-24) ---
+
+Section 3 above, and the standing account of the totality terminus throughout this backlog, treat
+the residual set as FOUR: `UniverseClosed`, `DifficultyBounded`/`StepLengthBounded`,
+`MintPaysForTime`, `PostBlockingSettles`. There are FIVE.
+
+`UnorderedSuccessorLabelClosed` is defined at `Verified/Termination/MintBound.lean:6199`, is carried
+as a live hypothesis by `buildTableauAt_isSome_at_seed_lengthBudget_signedUniverse` at `:6215`, and
+`:6127` records it as "still a named residual". It additionally has an IN-TREE REFUTATION at `:6238`:
+`¬ UnorderedSuccessorLabelClosed fc freshWorldLabels`.
+
+Task 432 is marked `completed` over it; 432s own summary states "the residual is not discharged, so
+removing it would be unsound" and that "freshLabelHeadroom_not_universal refutes the reduced
+antecedent at every nonempty finite L".
+
+VERIFIED 2026-08-24: NONE of tasks 462, 463, 464, 465 mentions `UnorderedSuccessorLabelClosed`.
+It is unowned.
+
+This bears directly on task 462, whose stated target is discharge at a NONEMPTY universe -- the same
+setting in which `:6238` refutes this predicate. Sequence the two deliberately.
+
+REQUIRED OF STAGE 2: either ADD a task owning the fifth residual, or fold it into 465 with an
+explicit statement of which theorem still carries it and at which frame classes. Do not let the
+four-residual framing persist unqualified in the rewritten ROADMAP.md -- correcting exactly this
+class of understatement is why this task exists. Grounding: specs/reviews/review-2026-08-24.md, A-2.
 
 ---
 
@@ -1685,7 +1711,7 @@ DEPENDENCY STATUS (re-verified 2026-08-18; dependencies array now includes 424, 
 - **Status**: [NOT STARTED]
 - **Task Type**: general
 - **Topic**: dataset-enhancement
-- **Dependencies**: Task 230
+- **Dependencies**: Task 230, Task 298
 
 **Description**: Build comprehensive automation so that every dataset regeneration automatically updates all downstream artifacts and documentation fields. Supersedes task 227 scope. (1) Create data/scripts/sync-all.py master sync script that: (a) Scans all JSONL files and recomputes metadata JSON files (record counts, rule distributions, schema field lists, valid/invalid ratios, tier distributions, step statistics). (b) Updates specific fields in data/README.md: file inventory table (Records, Size columns), training record schema table (field count), proof steps statistics (records, theorems, rule distribution, steps per theorem), cross-logic split table (records, valid rates), NL paraphrase statistics. (c) Updates specific fields in data/dataset-card.md: overview table, all record counts, proof steps section, competitive position 'primary gaps' paragraph. (d) Recomputes SHA-256 hashes and contentSize for all distributions in croissant.json. (e) Regenerates bmlogic-bench-splits.json. (f) Validates all JSONL records against declared schemas (checks field presence, types, null patterns). (g) Checks train/benchmark formula overlap and reports contamination percentage. (h) Validates metadata key consistency (total_records not total_count). (2) Idempotent and safe to run after any regeneration command (lake exe dataset_generator, lake exe proof_extractor, lake exe benchmark_oracle, finalize_benchmark.py). (3) --dry-run mode that reports what would change. (4) --commit mode that creates structured git commit. (5) CI-friendly exit codes (0=clean, 1=staleness detected, 2=validation error). (6) Update data/README.md with pipeline documentation. (7) Integrate into agent context (.claude/context/project/dataset/) so /implement for dataset tasks runs sync-all as post-implementation step. Note: supersedes task 227 (dataset_pipeline_automation_croissant_sync) with broader scope covering README/dataset-card field updates and schema validation.
 
