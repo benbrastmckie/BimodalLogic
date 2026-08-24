@@ -196,3 +196,26 @@ jq -r '.active_projects[] | "\(.project_number) \(.status) deps=\((.dependencies
 Dependency targets that resolve in **neither** `state.json` nor `archive/state.json` are the only
 real dangling edges. Roughly 21 targets resolve only in the archive — those are satisfied, not
 broken. Any lint must union both files.
+
+---
+
+## Cross-repository hazard: tasks whose work lands outside this repo
+
+Verified 2026-08-24. `.claude/` here is **gitignored** (`.gitignore:81`, zero tracked files) and is
+regenerated wholesale on an agent-system reload. `agent-system/` **does not exist** in this
+repository — the source store is `/home/benjamin/.config/nvim/agent-system/`, a separate git repo
+with its own task tracker (48 active tasks).
+
+Anything written to `.claude/` here is destroyed on the next reload.
+
+| Task | Status | Disposition |
+|---|---|---|
+| **466** | Paths corrected to absolute; warning added | Work lands in the nvim repo. **Consider migrating to the nvim tracker** rather than executing cross-repo. |
+| **471** | Same | Same. |
+| **231** item (7) | Warning added | Cannot be completed from this repo. Recommended: drop item (7), keep the other seven sub-targets here. |
+
+Checked for duplicates: nvim task 50 is adjacent (stale-roadmap no-op, verify-deploy) but covers
+neither the `update-plan-status.sh` silent no-op nor the `roadmap-integration.sh` stdout contract.
+
+**Not at risk**: 470 (writes `specs/state.json`, tracked), 468 and 455 (invoke `.claude/scripts/*`
+but do not edit them), 472 and 473 (`FormalSystem/` only).

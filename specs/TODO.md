@@ -353,6 +353,35 @@ VERIFICATION.
 - Redeploy `.claude/` and confirm the fix survives regeneration.
 
 Grounding: specs/reviews/review-2026-08-24.md, issue L-1.
+=== !! CROSS-REPOSITORY TARGET -- READ BEFORE EDITING ANYTHING !! (added 2026-08-24) ===
+
+THE SOURCE STORE IS NOT IN THIS REPOSITORY. Verified 2026-08-24:
+
+  - `agent-system/` DOES NOT EXIST under /home/benjamin/Projects/BimodalLogic.
+  - `.claude/` here is fully gitignored (`.gitignore:81` = `/.claude`), with ZERO tracked files.
+    It is a deploy artifact, regenerated wholesale when the user reloads the agent system.
+  - The real source store is:
+        /home/benjamin/.config/nvim/agent-system/extensions/core/scripts/
+    a SEPARATE git repository (1150 tracked files under `agent-system/`).
+  - The deployed copy in this repo is currently byte-identical to that source.
+
+CONSEQUENCE: editing `.claude/scripts/<this script>` in THIS repository will appear to succeed and
+will then be SILENTLY DESTROYED on the user's next agent-system reload. Any relative path beginning
+`agent-system/` will also fail to resolve here. Do not "helpfully" fall back to the `.claude/` copy.
+
+THE EDIT MUST BE MADE AT THE ABSOLUTE SOURCE PATH, in the nvim repository, and COMMITTED THERE.
+The change does not take effect in this repository until the user reloads the agent system
+themselves. Do not attempt to trigger a reload, and do not copy the edited file into `.claude/` to
+"apply" it -- both bypass the user's deploy step.
+
+BEFORE STARTING, RAISE THIS WITH THE USER. This task is filed in the BimodalLogic tracker but its
+entire work product lands in a different repository, which splits its commit from its change. The
+nvim repository has its OWN task tracker (`/home/benjamin/.config/nvim/specs/state.json`, 48 active
+tasks), and that is the more appropriate home for this work. Checked 2026-08-24: no existing nvim
+task duplicates this one -- nvim task 50 is adjacent (it touches roadmap-integration only in the
+context of a stale roadmap making the annotation step a no-op, and it owns verify-deploy) but
+covers neither defect named here. Prefer migrating this task over executing it cross-repo, unless
+the user says otherwise.
 
 ---
 
@@ -1166,6 +1195,35 @@ ALSO CONSIDER (evaluate, do not assume): whether the preflight non-fatal path sh
 SOURCE-STORE BOUNDARY -- IMPORTANT. `.claude/` in this repository is a gitignored, disposable deploy artifact regenerated from the source store. Edit `agent-system/extensions/core/scripts/update-plan-status.sh` (and any related merge-source or context file under `agent-system/extensions/core/**`), NOT `.claude/scripts/update-plan-status.sh` -- a hand-authored edit under `.claude/` appears to succeed and is wiped by the next regeneration. Redeploy and verify after the change.
 
 Dependencies: none. Different file_scope from the Lean tasks entirely, so it can run in parallel with any of them.
+=== !! CROSS-REPOSITORY TARGET -- READ BEFORE EDITING ANYTHING !! (added 2026-08-24) ===
+
+THE SOURCE STORE IS NOT IN THIS REPOSITORY. Verified 2026-08-24:
+
+  - `agent-system/` DOES NOT EXIST under /home/benjamin/Projects/BimodalLogic.
+  - `.claude/` here is fully gitignored (`.gitignore:81` = `/.claude`), with ZERO tracked files.
+    It is a deploy artifact, regenerated wholesale when the user reloads the agent system.
+  - The real source store is:
+        /home/benjamin/.config/nvim/agent-system/extensions/core/scripts/
+    a SEPARATE git repository (1150 tracked files under `agent-system/`).
+  - The deployed copy in this repo is currently byte-identical to that source.
+
+CONSEQUENCE: editing `.claude/scripts/<this script>` in THIS repository will appear to succeed and
+will then be SILENTLY DESTROYED on the user's next agent-system reload. Any relative path beginning
+`agent-system/` will also fail to resolve here. Do not "helpfully" fall back to the `.claude/` copy.
+
+THE EDIT MUST BE MADE AT THE ABSOLUTE SOURCE PATH, in the nvim repository, and COMMITTED THERE.
+The change does not take effect in this repository until the user reloads the agent system
+themselves. Do not attempt to trigger a reload, and do not copy the edited file into `.claude/` to
+"apply" it -- both bypass the user's deploy step.
+
+BEFORE STARTING, RAISE THIS WITH THE USER. This task is filed in the BimodalLogic tracker but its
+entire work product lands in a different repository, which splits its commit from its change. The
+nvim repository has its OWN task tracker (`/home/benjamin/.config/nvim/specs/state.json`, 48 active
+tasks), and that is the more appropriate home for this work. Checked 2026-08-24: no existing nvim
+task duplicates this one -- nvim task 50 is adjacent (it touches roadmap-integration only in the
+context of a stale roadmap making the annotation step a no-op, and it owns verify-deploy) but
+covers neither defect named here. Prefer migrating this task over executing it cross-repo, unless
+the user says otherwise.
 
 ---
 
@@ -2018,6 +2076,27 @@ DEPENDENCY STATUS (re-verified 2026-08-18; dependencies array now includes 424, 
 - **Dependencies**: Task 230, Task 298
 
 **Description**: Build comprehensive automation so that every dataset regeneration automatically updates all downstream artifacts and documentation fields. Supersedes task 227 scope. (1) Create data/scripts/sync-all.py master sync script that: (a) Scans all JSONL files and recomputes metadata JSON files (record counts, rule distributions, schema field lists, valid/invalid ratios, tier distributions, step statistics). (b) Updates specific fields in data/README.md: file inventory table (Records, Size columns), training record schema table (field count), proof steps statistics (records, theorems, rule distribution, steps per theorem), cross-logic split table (records, valid rates), NL paraphrase statistics. (c) Updates specific fields in data/dataset-card.md: overview table, all record counts, proof steps section, competitive position 'primary gaps' paragraph. (d) Recomputes SHA-256 hashes and contentSize for all distributions in croissant.json. (e) Regenerates bmlogic-bench-splits.json. (f) Validates all JSONL records against declared schemas (checks field presence, types, null patterns). (g) Checks train/benchmark formula overlap and reports contamination percentage. (h) Validates metadata key consistency (total_records not total_count). (2) Idempotent and safe to run after any regeneration command (lake exe dataset_generator, lake exe proof_extractor, lake exe benchmark_oracle, finalize_benchmark.py). (3) --dry-run mode that reports what would change. (4) --commit mode that creates structured git commit. (5) CI-friendly exit codes (0=clean, 1=staleness detected, 2=validation error). (6) Update data/README.md with pipeline documentation. (7) Integrate into agent context (.claude/context/project/dataset/) so /implement for dataset tasks runs sync-all as post-implementation step. Note: supersedes task 227 (dataset_pipeline_automation_croissant_sync) with broader scope covering README/dataset-card field updates and schema validation.
+=== ITEM (7) TARGETS A DISPOSABLE DEPLOY ARTIFACT -- CORRECTED 2026-08-24 ===
+
+Item (7) above says "Integrate into agent context (.claude/context/project/dataset/)". DO NOT WRITE
+THERE. Verified 2026-08-24: `.claude/` in this repository is fully gitignored (`.gitignore:81`) with
+zero tracked files, and is regenerated wholesale from a source store that is NOT in this repository
+-- it lives at /home/benjamin/.config/nvim/agent-system/, a separate git repo. A file written to
+`.claude/context/project/dataset/` will be silently destroyed on the user's next agent-system
+reload.
+
+Item (7) therefore CANNOT be completed from inside this repository. Two acceptable dispositions,
+both of which require asking the user first:
+
+  (a) DROP item (7) from this task's scope and record why. The other seven sub-targets of this task
+      are ordinary repository work (`data/scripts/sync-all.py`, `data/README.md`,
+      `data/dataset-card.md`, `croissant.json`, the splits file, schema validation, contamination
+      check) and are unaffected. This is the recommended default -- it keeps the task in one repo.
+  (b) Split item (7) into a task filed in the nvim repository's own tracker
+      (/home/benjamin/.config/nvim/specs/state.json), targeting
+      agent-system/extensions/<appropriate-extension>/context/, and committed there.
+
+Do not silently satisfy item (7) by writing into `.claude/`.
 
 ---
 
