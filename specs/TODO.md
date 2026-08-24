@@ -1,5 +1,5 @@
 ---
-next_project_number: 474
+next_project_number: 477
 ---
 
 # TODO
@@ -11,8 +11,8 @@ next_project_number: 474
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,193,257,298,413,421,423,424,426,434,451,461,469,472,473 | -- | automation, code-quality, completeness, ... |
-| 2 | 125,178,231,282,296,422,425,433,462,468 | 193,298,421,423,426,434,451,461,469 | algebraic-representation, dataset-enhancement, decidability, ... |
+| 1 | 127,128,193,257,298,413,421,423,424,426,434,451,461,469,472,473,474,475 | -- | automation, code-quality, completeness, ... |
+| 2 | 125,178,231,282,296,422,425,433,462,468,476 | 193,298,421,423,426,434,451,461,469,475 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 169,219,455,463 | 231,422,462,468 | code-quality, dataset-enhancement, decidability, ... |
 | 4 | 95,362,464 | 169,424,463 | completeness, decidability, strong_completeness |
 | 5 | 465 | 464 | decidability |
@@ -71,6 +71,8 @@ next_project_number: 474
         └─ 465 [NOT STARTED] — Complete the terminus restatement family at the repaired residual
           └─ 428 [BLOCKED] — Engine totality at a quantified branch budget. Owns obstruction O (see above)
   └─ 468 [NOT STARTED] — PROGRAMME REALIGNMENT FROM A VERIFIED PROOF-STATE AUDIT: restruct
+474 [NOT STARTED] — WIRE THE BILASSO DECISION LAYER INTO THE LIVE TREE.
+476 [NOT STARTED] — THE BOX-FAITHFUL SMALL-MODEL THEOREM.
 
 ### Formula Refactor
 
@@ -90,6 +92,10 @@ next_project_number: 474
 
 451 [IMPLEMENTING] — CONSOLIDATE THE TWO BONEYARDS into a single archive tree under Fo
 
+### Semantics
+
+475 [NOT STARTED] — CARRIER NORMALIZATION: THE SUCCESSOR-ARCHIMEDEAN TRANSFER.
+
 ### Strong Completeness
 
 421 [IMPLEMENTING] — Two deliverables on the Base weak terminus, both small.
@@ -102,6 +108,294 @@ next_project_number: 474
   └─ 362 [NOT STARTED] — Implement the completeness capstone under the SETTLED TERMINOLOGY (see above)
 
 ## Tasks
+
+### 476. Box faithful small model theorem
+- **Effort**: large
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: Task 475
+
+**Description**: THE BOX-FAITHFUL SMALL-MODEL THEOREM.
+
+CLASSIFICATION: OPEN MATHEMATICS. MULTI-MONTH. This is a genuine research problem in the same
+category as the audit's R4 "semantic FMP" entry. IT MAY NOT BE RE-DESCRIBED AS ENGINEERING, AND IT
+MAY NOT BE MERGED INTO THE BILASSO WIRING TASK OR THE CARRIER-NORMALIZATION TASK. Merging is
+precisely how a research problem gets hidden behind an engineering description, and this task
+exists partly to prevent that.
+
+DO NOT BEGIN before the BiLasso wiring task and the carrier-normalization task (task 475) are
+landed. Those two have standalone value; this one does not, and its cost is dominated by a problem
+a two-day literature check might refute outright.
+
+=== LITERATURE GATE -- RUN FIRST, AND IT IS EMPOWERED TO STOP THE TASK ===
+
+Acquire Gabbay, Kurucz, Wolter, Zakharyaschev, *Many-Dimensional Modal Logics* (2003) and read its
+temporal-products chapter. IF the two-dimensional `Until`/`Since` case is recorded there as
+undecidable or as lacking the finite model property, THIS TASK IS REFUTED and must be REPORTED AS
+SUCH rather than attempted. A negative result here is as valuable as a positive one and would
+redirect the whole decidability front.
+
+What is already firm from a prior search: products of THREE OR MORE modal logics are undecidable,
+with no logic between K x K x K and S5 x S5 x S5 decidable, and S5 x S5 x S5 lacks the finite model
+property. What is NOT settled: the two-dimensional case with `Until`/`Since`, which is what this
+logic is closest to. Note that TM is in any case NOT a full product -- its second dimension is the
+path space of a graph, not an arbitrary set of runs -- so a product-logic result would be evidence,
+not a decision.
+
+=== THE TARGET ===
+
+Build `cands : Formula -> List IntPresentation` and prove
+
+    not (ValidDiscrete phi) -> exists P in cands phi, exists w, SatAtState P w phi.neg
+
+This is the SINGLE remaining obligation for decidability of `ValidDiscrete`. Everything else is
+already compiled: given this hypothesis, `check`-over-`cands` is equivalent to `ValidDiscrete phi`
+and `decidable_of_iff` reads the `Decidable` instance off it. There is no bridge theorem, no
+transfer lemma, no enumeration over `Atom`, and no `Fin n`-from-`Finite` extraction anywhere in the
+assembly; `check_correct` is the FINAL step.
+
+=== THE CONSTRUCTION (the tractable part) ===
+
+Build `cands phi` from the CLOSURE-TYPE SPACE: subsets of `subformulaClosure phi` satisfying the
+local Hintikka conditions, with `step` given by `LocalCoherent`'s `untl`/`snce` unfolding clauses
+(`BiLasso/Annotation.lean` already states them, and they relate the label at `t` to the label at
+`t` plus-or-minus one only -- i.e. they ARE an adjacency relation), and the valuation read off the
+state by deciding atom membership. Every ingredient is `Finset`/`Bool` data with `DecidableEq`.
+Two real obligations, neither research-grade:
+
+  1. `fwd`/`bwd` SERIALITY OF THE TYPE GRAPH. Not free: a Hintikka type may have no locally
+     coherent successor, forcing an ITERATED PRUNING to a maximal serial subgraph. Standard,
+     bounded, fiddly.
+  2. INDEXING. `IntPresentation` demands `Fin card` specifically, so the type `Finset` must be
+     listed and indexed. Mechanical.
+
+Estimate for this part alone: two to four weeks.
+
+DO NOT instead try "bound `card` by some `presentationBound phi`, then enumerate the presentations
+up to that bound". That does not typecheck as stated: `IntPresentation.val : Atom -> Fin card ->
+Bool` is a function on the `Infinite` type `Atom`, so presentations of a given `card` are not a
+finite collection. Closing that would need a valuation-restriction lemma that is not in the tree.
+The formula-indexed candidate list sidesteps the problem rather than solving it.
+
+=== THE CRUX: BOX-FAITHFULNESS (the research part) ===
+
+The `box` clause of `TruthAt` quantifies universally over ALL total histories. Two landed facts
+make this a GLOBAL modality rather than a local one:
+
+  - `Truth.box_const` (`Semantics/Truth.lean`): box truth is independent of both the history and
+    the time. Its own docstring: "a model has one finite set of box facts, computed once."
+  - `Extension.occurrence` (`cor:occurrence`): every state occurs at every time in some total
+    history.
+
+That collapse is why `BoxOracleSound P bx` types `bx` as `Formula -> Bool` -- one `Bool` per
+formula, per model. It is also the obstruction:
+
+  The box facts of the SOURCE model M and of the TARGET presentation P are each global constants
+  of their own model, and they need not agree. P admits every path of its graph. The subgraph of
+  types realized in M still generates paths that M does not realize, and along such a path a
+  `box chi` true in M can fail. When it fails, the type-map image is no longer a `LocalCoherent`
+  annotation, and the transfer breaks.
+
+Restricting `cands phi` to realized-type subgraphs does NOT by itself close this: the subshift
+generated by the realized edges properly contains the realized paths. So the residue is a genuine
+BOX-FAITHFUL small-model theorem -- in effect a bounded-model property for LTL(Until, Since) over
+bi-infinite paths of a graph, PLUS a universal path quantifier over the whole structure.
+
+Is it true? Almost certainly -- the shape is the classical automata-theoretic bounded-model
+setting, and the analogous results (CTL*-style satisfiability, LTL with a universal modality) are
+decidable with finite/bounded model properties. Is it in reach? Not routinely. Neither Mathlib nor
+this tree carries omega-automata, Buchi complementation, or any language-inclusion machinery, so a
+Lean proof must be hand-rolled.
+
+=== WHAT TO REUSE ===
+
+`BiLasso/GoodCycle.lean`'s good-cycle argument, `cycleBound`, and `exists_annot_of_truth` are
+exactly the fulfilment machinery a hand-rolled proof would reuse. Be clear-eyed that they operate
+INSIDE a presentation, not across the model boundary, which is the whole difficulty.
+
+=== DO NOT PROMISE A CHOICE-FREE RESULT ===
+
+`wlem_of_spherical` (`Tests/BimodalTest/Semantics/SphericalFiniteAxiomTest.lean`) derives weak
+excluded middle from `Spherical R` at the finite carrier `Bool` over `D = ZZ`, from
+`[propext, Quot.sound]` alone. So NO finite-carrier frame with an arbitrarily shaped relation can
+be choice-free, on any route. The cost is already paid by `IntPresentation.toTaskFrame`. Any spec
+promising choice-freedom here is promising something proved impossible. Note the separate
+distinction: `instDecidableSatAtState` COMPUTES (kernel-evaluated `#guard`s prove it) while
+measuring `[propext, Classical.choice, Quot.sound]`. Computability and choice-freedom are different
+properties.
+
+---
+
+### 475. Carrier normalization successor archimedean transfer
+- **Effort**: medium
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: semantics
+- **Dependencies**: None
+
+**Description**: CARRIER NORMALIZATION: THE SUCCESSOR-ARCHIMEDEAN TRANSFER.
+
+CLASSIFICATION: ROUTINE ENGINEERING WITH ONE GENUINE LEMMA. The lemma is small and its route is
+already written down in the tree; the transport is mechanical but wide. Estimate: days to two
+weeks. This is NOT open mathematics.
+
+=== THE TARGET ===
+
+Prove that `ValidDiscrete phi` holds iff `phi` holds in every model over a ZZ-frame. That is, close
+the gap between `Semantics/Validity.lean`'s `ValidDiscrete`, which quantifies over an arbitrary
+duration type `D` carrying
+
+    [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [SuccOrder D] [PredOrder D]
+    [IsSuccArchimedean D] [IsPredArchimedean D] [Nontrivial D]
+
+and the ZZ-specific machinery the rest of the tree is built on.
+
+=== ONLY ONE DIRECTION NEEDS THIS ===
+
+Record this before starting, because it changes what is worth doing first. In the SOUNDNESS
+direction -- a countermodel presented over ZZ refutes `ValidDiscrete` -- ZZ instantiates that
+entire binder bundle with ZERO instance work, so no carrier lemma is needed at all. That direction
+is already compiled (5 lines; see the `evidence/` directory of the task that scoped this work). It
+is the COMPLETENESS direction, where the `forall D` binder must be discharged for an ARBITRARY `D`,
+that needs everything below.
+
+=== STEP 1: THE LEMMA ===
+
+Prove the successor-based analogue of `archimedean_of_lub`
+(`FormalSystem/Semantics/DurationClassification.lean`). Verified 2026-08-24: that file's ENTIRE
+theorem inventory is `archimedean_of_lub`, `complete_duration_discrete_or_dense`, and
+`complete_not_dense_iso_int` -- all Dedekind-branch, all taking a least-upper-bound hypothesis.
+There is no successor-based analogue in the tree.
+
+The consumer fixes what the lemma must produce.
+`LinearOrderedAddCommGroup.int_orderAddMonoidIso_of_isLeast_pos : D =+o ZZ` needs exactly two
+inputs the `ValidDiscrete` bundle does not supply:
+
+  (a) `Archimedean D` -- which does NOT synthesize from `[IsSuccArchimedean D]` plus
+      `[IsPredArchimedean D]`; those are order-successor conditions, not the additive Archimedean
+      property; and
+  (b) an `IsLeast` witness for the set of strictly positive elements of `D` -- which is what the
+      successor structure produces.
+
+=== STEP 2: THE TRANSPORT ===
+
+Transport `TaskFrame`, `TaskModel`, `WorldHistory`, and `TruthAt` along `D =+o ZZ`. Mechanical, but
+it touches every semantic definition, so it is not a one-sitting job.
+
+=== THE RECORDED WRONG TURN ===
+
+`orderIsoIntOfLinearSuccPredArch` fits the `ValidDiscrete` bundle VERBATIM -- `NoMaxOrder D`,
+`NoMinOrder D`, and `Nonempty D` all synthesize from it, and neither (a) nor (b) is needed. It is
+therefore the tempting reach, and it is wrong: it yields only `D =o ZZ`, an ORDER isomorphism.
+Durations ADD -- `TaskRel`'s Compositionality is stated at `x + y` -- so an order-only isomorphism
+cannot carry a frame across. `Semantics/IntNormalForm.lean`'s module docstring carries the full
+binder-fit finding for both Mathlib results; read it before starting.
+
+=== WHY IT IS WORTH DOING ON ITS OWN ===
+
+Independently valuable: it is a prerequisite for anything reasoning about the discrete class, and
+it is also what buys the right to work over ZZ -- where `TaskFrame.ofStep` discharges all seven
+`TaskFrame` fields from a bare bi-serial relation, leaving bi-seriality as the SOLE frame
+obligation. A frame left polymorphic in `D` has neither `limit_of_succOrder` nor `ofStep` and pays
+each axiom by hand. Estimates that price re-discharging the frame axioms as multi-month are
+measuring the `D`-polymorphic case.
+
+=== ACCEPTANCE ===
+
+- `lake build` green; no new sorry; no new axiom.
+- The successor-based lemma is stated and proved, and `int_orderAddMonoidIso_of_isLeast_pos`
+  applies to it.
+- `ValidDiscrete phi` iff `phi` holds in every ZZ-frame model, as a landed theorem.
+
+---
+
+### 474. Wire bilasso decision layer into live tree
+- **Effort**: small
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: None
+
+**Description**: WIRE THE BILASSO DECISION LAYER INTO THE LIVE TREE.
+
+CLASSIFICATION: ROUTINE ENGINEERING. Hours, not days. No mathematics is attempted or required.
+
+=== WHY ===
+
+`FormalSystem/Metalogic/Decidability/BiLasso/` is 19 files, sorry-free, with its oleans built --
+and it is UNREACHABLE from the Lake target roots, so `lake build` does not see it. The consequences
+have already been paid once: the layer was omitted from a prior proof-state audit, and
+`specs/ROADMAP.md` mentions BiLasso ZERO times (measured), so the project has been pricing
+decidability without accounting for a landed asset. Wiring costs hours and removes the recurrence
+of exactly that failure mode. Do not gate this on any research result.
+
+=== WHAT TO DO ===
+
+(1) Add ONE import of the re-export `FormalSystem.Metalogic.Decidability.BiLasso` to
+    `FormalSystem/Metalogic/Decidability.lean`.
+
+(2) In `scripts/module-invariants-manifest.txt`, DELETE EXACTLY 15 LINES, IN THE SAME COMMIT as
+    (1). C6 fails if a manifest entry names a module that has become reachable, and the manifest's
+    own block comment states the rule verbatim: "Registering the layer means adding one import of
+    the re-export to `Decidability.lean` AND deleting every line of this block in the same commit
+    -- C6 fails if a manifest entry names a module that has become reachable. Do not do one
+    without the other."
+
+    The 15 are the 14 modules `BiLasso.lean` imports -- Basic, Unfold, Periodic, Annotation,
+    TruthLemma, Decide, Enumerate, Examples, SmallModel, Realized, GoodCycle, Extraction,
+    BoxOracle, Check -- plus the aggregator's own line
+    `FormalSystem.Metalogic.Decidability.BiLasso`, which becomes reachable from the new import.
+
+    KEEP 4 LINES: `Extend`, `Successor`, `Orbit`, `Agreement`. That cluster is closed and stays
+    unreachable -- `Agreement` has no importer anywhere in the tree, `Orbit` is imported only by
+    `Agreement`, and `Extend`/`Successor` only by `Orbit`. It belongs to the
+    effective-periodic-extension work, which the re-export deliberately does not carry.
+
+    KEEP the `FormalSystem.Semantics.Extension.PeriodicExtension` line. It is a SEPARATE manifest
+    block with its own rationale (deliberately unregistered in `FormalSystem/Semantics.lean`
+    "while the bi-lasso decision layer above is in flight, so that no aggregator is edited by two
+    concurrent lines of work at once"). Retiring it is a second, independent edit and is NOT part
+    of this task.
+
+    The 15/4/1 split was re-measured on 2026-08-24 by `grep '^import'
+    FormalSystem/Metalogic/Decidability/BiLasso.lean` (14 imports) against `grep -v '^#'
+    scripts/module-invariants-manifest.txt` (18 `BiLasso.*` submodule entries + the aggregator =
+    19, plus `PeriodicExtension` = 20 across the two blocks). RE-MEASURE before editing; do not
+    trust these counts if the tree has moved.
+
+(3) LAND THE THREE COMPILED PROBES as live theorems. They are in
+    `specs/469_eliminate_the_bridge_filtration_into_intpresentation/evidence/`:
+      - `soundness-half-probe.lean` -- `not_validDiscrete_of_satAtState`, 5 lines
+      - `decidability-assembly-family-probe.lean` -- `validDiscrete_iff_checkFamily`,
+        `decidableValidDiscreteFamily`
+      - `decidability-assembly-probe.lean` -- `validDiscrete_iff_check`, `decidableValidDiscrete`
+        (the single-presentation variant)
+    All three were recompiled with `lake env lean` on 2026-08-24: sorry-free, each measuring
+    `#print axioms` = `[propext, Classical.choice, Quot.sound]`. They are drop-in. Landing them
+    means a NEW MODULE under `BiLasso/` plus its own aggregator wiring, so budget that.
+
+(4) Add BiLasso to `specs/ROADMAP.md` under the decidability front, stating its status honestly:
+    landed sorry-free, model-checks a GIVEN presentation, and performs NO part of the
+    finite-model step. Do not describe it as covering the semantic finite model property.
+
+=== ACCEPTANCE ===
+
+- `lake build` green.
+- `scripts/check-module-invariants.sh` passes C1/C2/C3/C6, with no manifest entry naming a
+  reachable module and no unreachable live module unmanifested.
+- The sole structural sorry remains `countermodel_discrete` (`WeakCanonical/Transfer.lean`);
+  the count does not increase.
+- The three landed theorems measure `[propext, Classical.choice, Quot.sound]` -- do NOT expect or
+  promise choice-freedom.
+
+=== NON-GOALS ===
+
+- Do not touch the `Extend`/`Successor`/`Orbit`/`Agreement` cluster or its manifest lines.
+- Do not touch the `PeriodicExtension` manifest line.
+- Do not attempt any part of the finite-model theorem.
+
+---
 
 ### 473. Delete quarantined vacuous kamp pair
 - **Effort**: low

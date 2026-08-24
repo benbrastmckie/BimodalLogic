@@ -372,15 +372,15 @@ still reports 37 unreachable modules.
 
 ---
 
-### Phase 5: Create the three follow-up tasks [NOT STARTED]
+### Phase 5: Create the three follow-up tasks [COMPLETED]
 
 **Goal**: The three pieces of remaining work exist as tasks with their classification stated
 honestly and their dependency edges wired, so nothing depends on this report being re-read.
 
 **Tasks**:
-- [ ] Read `next_project_number` from `specs/state.json`; allocate three consecutive numbers from
+- [x] Read `next_project_number` from `specs/state.json`; allocate three consecutive numbers from
       it. Do not hardcode.
-- [ ] **Task A — wire the BiLasso layer into the live tree.** `task_type: lean4`,
+- [x] **Task A — wire the BiLasso layer into the live tree.** `task_type: lean4`,
       `topic: decidability`, `effort: small`, `dependencies: []`,
       `file_scope: [FormalSystem/Metalogic/Decidability.lean,
       FormalSystem/Metalogic/Decidability/BiLasso.lean,
@@ -394,7 +394,7 @@ honestly and their dependency edges wired, so nothing depends on this report bei
       a separate edit. Also: land the two compiled probes from this task's `evidence/` directory as
       live theorems, and add BiLasso to `ROADMAP.md`, which currently mentions it zero times.
       Acceptance: `scripts/check-module-invariants.sh` passes C1/C2/C3/C6.
-- [ ] **Task B — carrier normalization: the successor-Archimedean transfer.** `task_type: lean4`,
+- [x] **Task B — carrier normalization: the successor-Archimedean transfer.** `task_type: lean4`,
       `topic: semantics`, `effort: medium`, `dependencies: []`,
       `file_scope: [FormalSystem/Semantics/DurationClassification.lean,
       FormalSystem/Semantics/IntNormalForm.lean, FormalSystem/Semantics/Validity.lean]`.
@@ -406,7 +406,7 @@ honestly and their dependency edges wired, so nothing depends on this report bei
       `ValidDiscrete φ` iff `φ` holds in every ℤ-frame model. Record the wrong turn:
       `orderIsoIntOfLinearSuccPredArch` is order-only. Independently valuable — a prerequisite for
       anything reasoning about the discrete class.
-- [ ] **Task C — the box-faithful small-model theorem.** `task_type: lean4`,
+- [x] **Task C — the box-faithful small-model theorem.** `task_type: lean4`,
       `topic: decidability`, `effort: large`, `dependencies: [<Task B's number>]`,
       `file_scope: [FormalSystem/Metalogic/Decidability/TypeModel/,
       FormalSystem/Metalogic/Decidability/IntPresentation.lean]`. Classification: **OPEN
@@ -426,9 +426,9 @@ honestly and their dependency edges wired, so nothing depends on this report bei
       *Many-Dimensional Modal Logics* (2003) and read its temporal-products chapter; if the
       two-dimensional `Until`/`Since` case is recorded as undecidable or FMP-free, report the task
       as refuted rather than attempting it. Do not begin before A and B are landed.
-- [ ] Write all three through `.claude/scripts/state-write.sh --session-id
+- [x] Write all three through `.claude/scripts/state-write.sh --session-id
       sess_1787608533_153fad_469 --regen-todo`; create their task directories under `specs/`.
-- [ ] `.claude/scripts/validate-state.sh` and confirm `TODO.md` regenerated with all three and with
+- [x] `.claude/scripts/validate-state.sh` and confirm `TODO.md` regenerated with all three and with
       `next_project_number` advanced.
 
 **Timing**: 1.0 hours
@@ -446,6 +446,43 @@ this plan's assertion; carry into A's description whatever Phase 1 actually meas
 - `specs/state.json` — via `state-write.sh` only, never by hand
 - `specs/TODO.md` — regenerated, never hand-edited
 - `specs/{NNN}_{SLUG}/` — three new task directories
+
+**Phase 5 record**: `next_project_number` read live as **474** (matching the plan's hypothesis,
+which the plan correctly instructed be verified rather than assumed). Allocated 474/475/476:
+
+| # | name | type | topic | effort | deps |
+|---|---|---|---|---|---|
+| 474 | `wire_bilasso_decision_layer_into_live_tree` | lean4 | decidability | small | [] |
+| 475 | `carrier_normalization_successor_archimedean_transfer` | lean4 | semantics | medium | [] |
+| 476 | `box_faithful_small_model_theorem` | lean4 | decidability | large | [475] |
+
+Written through `.claude/scripts/state-write.sh --regen-todo`, under a jq guard asserting
+`next_project_number == 474` at write time so a concurrent creation would have failed loudly rather
+than colliding silently. `next_project_number` advanced to 477. All three directories created with
+`reports/`, `plans/`, `summaries/`. `TODO.md` regenerated: all three present, 476 rendering
+`Dependencies: Task 475`, and the wave table placing 474/475 in wave 1 and 476 in wave 2.
+
+476's description carries "OPEN MATHEMATICS", "MULTI-MONTH", the explicit may-not-be-merged
+prohibition, and the GKWZ 2003 literature gate stated as empowered to stop the task.
+
+**Deviations**:
+- *(altered)* `active_topics` gained `"semantics"`. The plan specifies `topic: semantics` for 475,
+  but that topic was not in the declared list, and `generate-todo.sh` warns on undeclared topics.
+  Added in the same guarded write.
+- *(altered)* 474's `file_scope` also lists `FormalSystem/Metalogic/Decidability/BiLasso/`, since
+  Phase 1 established that landing the three probes needs a new module inside that directory —
+  the report's own task-A spec omitted it while requiring the work.
+- *(altered)* 474's description says **three** probe files, not two: Phase 1 measured three under
+  `evidence/`, all compiling sorry-free at the same axiom set.
+
+**Pre-existing condition, not introduced here**: `validate-state.sh` reports 13 FAILs, all of them
+schema-drift on fields absent from `state-schema.json` (`active_goal`, `artifacts`, `last_updated`,
+`metadata`, `task_counts` at top level; `blockers`, `language`, `parent_task`, `previous_status`,
+`priority`, `related_tasks`, `researched`, `resume_phase` on entries). Verified identical at
+`HEAD:specs/state.json` before this phase's write — the same 13 conditions, the same field sets.
+The only one the new entries participate in is `priority`, which 12 pre-existing tasks already
+carry (468, 469, 470, 472, 473 among them); dropping it would not clear the failure. No new
+validation condition was created.
 
 **Verification**:
 - `validate-state.sh` passes.
