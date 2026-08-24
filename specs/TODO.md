@@ -1,18 +1,18 @@
 ---
-next_project_number: 469
+next_project_number: 472
 ---
 
 # TODO
 
 ## Task Order
 
-*Updated 2026-08-20. Generated from state.json dependency graph.*
+*Updated 2026-08-24. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,193,231,257,298,413,421,423,424,434,451,461,462,466,468 | -- | completeness, decidability, frame-extensions, ... |
-| 2 | 178,219,282,296,422,425,433,455,463 | 193,231,298,421,423,434,462,468 | decidability, formula-refactor, code-quality, ... |
+| 1 | 125,127,128,193,231,257,298,413,421,423,424,434,451,461,462,466,468,469,470,471 | -- | agent-system, algebraic-representation, automation, ... |
+| 2 | 178,219,282,296,422,425,433,455,463 | 193,231,298,421,423,434,462,468 | code-quality, dataset-enhancement, decidability, ... |
 | 3 | 169,428,464 | 422,433,463 | decidability, strong_completeness |
 | 4 | 362,429,465 | 169,424,428,464 | decidability, strong_completeness |
 | 5 | 410 | 429 | decidability |
@@ -24,12 +24,39 @@ next_project_number: 469
 
 **Grouped by Topic** (indented = depends on parent):
 
+### Agent System
+
+466 [NOT STARTED] — Make `update-plan-status.sh` fail loudly instead of silently no-o
+470 [NOT STARTED] — TASK-GRAPH AND TASK-METADATA REPAIR. Nine defects found by the 20
+471 [NOT STARTED] — Make `roadmap-integration.sh` emit only JSON on stdout, so `/revi
+
+### Algebraic Representation
+
+125 [NOT STARTED] — Implement a Jonsson-Tarski representation theorem for TM logic: e
+
+### Automation
+
+193 [NOT STARTED] — Apply validity-intro and truth-simp macros to the soundness layer
+
+### Code Quality
+
+455 [NOT STARTED] — BACKLOG REALIGNMENT: bring specs/ROADMAP.md and every remaining a
+
 ### Completeness
 
 413 [NOT STARTED] — Formalize the TM+ over TM conservativity bridge in Lean 4 (paper 
 95 [NOT STARTED] — Verify and record the final axiom/sorry status of the headline me
 426 [NOT STARTED] — Settle whether the tableau engine can positively refute (G p) -> 
   └─ 95 [NOT STARTED] — Verify and record the final axiom/sorry status of the headline me (see above)
+
+### Dataset Enhancement
+
+231 [NOT STARTED] — Build comprehensive automation so that every dataset regeneration
+  └─ 219 [RESEARCHED] — Run bmlogic-bench through multiple LLMs to establish baseline dif
+257 [BLOCKED] — large_data_storage_huggingface
+298 [PARTIAL] — Fix c7 labeling bug at formula ~13750 that causes unbounded memor
+  └─ 282 [PARTIAL] — exhaustive_enumeration_by_default
+  └─ 296 [PARTIAL] — Re-add the 6 derived binary temporal operators (release, weak_unt
 
 ### Decidability
 
@@ -46,6 +73,7 @@ next_project_number: 469
     └─ 464 [NOT STARTED] — Design and land `gapPotential`, the density coordinate of the ter
       └─ 465 [NOT STARTED] — Complete the terminus restatement family at the repaired residual
 468 [NOT STARTED] — PROGRAMME REALIGNMENT FROM A VERIFIED PROOF-STATE AUDIT: restruct
+469 [NOT STARTED] — SCOPE AND PRICE THE BI-LASSO ROUTE TO DECIDABILITY OF `FrameClass
 
 ### Formula Refactor
 
@@ -57,34 +85,13 @@ next_project_number: 469
 127 [NOT STARTED] — Add time addition operator (+) to the bimodal logic TM. φ + ψ is 
 128 [NOT STARTED] — Add topological open set (interior) operator for dense and contin
 
-### Algebraic Representation
-
-125 [NOT STARTED] — Implement a Jonsson-Tarski representation theorem for TM logic: e
-
-### Agent System
-
-466 [NOT STARTED] — Make `update-plan-status.sh` fail loudly instead of silently no-o
-
-### Automation
-
-193 [NOT STARTED] — Apply validity-intro and truth-simp macros to the soundness layer
-
-### Code Quality
-
-455 [NOT STARTED] — BACKLOG REALIGNMENT: bring specs/ROADMAP.md and every remaining a
-
-### Dataset Enhancement
-
-231 [NOT STARTED] — Build comprehensive automation so that every dataset regeneration
-  └─ 219 [RESEARCHED] — Run bmlogic-bench through multiple LLMs to establish baseline dif
-257 [BLOCKED] — large_data_storage_huggingface
-298 [PARTIAL] — Fix c7 labeling bug at formula ~13750 that causes unbounded memor
-  └─ 282 [PARTIAL] — exhaustive_enumeration_by_default
-  └─ 296 [PARTIAL] — Re-add the 6 derived binary temporal operators (release, weak_unt
-
 ### Literature
 
 461 [BLOCKED] — SCOPE 8 acquisition gap identified by task 457's research and re-
+
+### Repo Hygiene
+
+451 [NOT STARTED] — CONSOLIDATE THE TWO BONEYARDS into a single archive tree under Fo
 
 ### Strong Completeness
 
@@ -97,11 +104,348 @@ next_project_number: 469
 424 [NOT STARTED] — RE-ISSUED 2026-08-18 (description rewrite only; status remains `n
   └─ 362 [NOT STARTED] — Implement the completeness capstone under the SETTLED TERMINOLOGY (see above)
 
-### Repo Hygiene
-
-451 [NOT STARTED] — CONSOLIDATE THE TWO BONEYARDS into a single archive tree under Fo
-
 ## Tasks
+
+### 471. Fix roadmap integration stdout contract
+- **Effort**: low
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+
+**Description**: Make `roadmap-integration.sh` emit only JSON on stdout, so `/review`'s own documented pipeline stops
+failing.
+
+THE DEFECT. `roadmap-integration.sh` prints a structure comment as its FIRST stdout line:
+
+  <!-- roadmap-structure phases=0 checkboxes=0 table_rows=111 parseable=true -->
+  { ... the actual JSON payload ... }
+
+`/review` Section 2.5 specifies exactly this consumption pattern:
+
+  roadmap_output=$(bash .claude/scripts/roadmap-integration.sh --roadmap specs/ROADMAP.md \
+    --state specs/state.json --annotate) || roadmap_exit=$?
+  roadmap_state=$(echo "$roadmap_output" | jq '.roadmap_state')
+
+With the comment line present, every one of those `jq` calls fails:
+
+  jq: parse error: Invalid numeric literal at line 1, column 5
+
+OBSERVED IMPACT. The 2026-08-24 programme review hit this and had to work around it with
+`sed -n '/^{/,$p'`. Worse than the failure itself is the failure MODE: the script exits 0 and
+produces non-empty output, so `/review`'s own error handling -- which branches on
+`[[ "$roadmap_exit" -ne 0 ]] || [[ -z "$roadmap_output" ]]` -- does NOT fire. The command falls
+through to per-variable `jq` failures whose stderr is discarded by the surrounding `2>/dev/null`,
+leaving `roadmap_state`, `roadmap_matches`, `annotations_made`, `roadmap_structure`,
+`roadmap_warnings`, `items_skipped`, `skipped_reasons`, and `high_confidence_matches` all empty or
+unset. Under `set -u` semantics that is an unbound-variable error; without it, the review's Roadmap
+Progress section renders blank while every guard reports success.
+
+This is precisely the "silent no-op that cannot be distinguished from nothing-to-do" class of defect
+that the `silent_noop` / `warnings` fields inside this same script's payload were ADDED to close --
+so the bug defeats its own mitigation.
+
+THE FIX. Two acceptable shapes; pick one and say which:
+  (1) Emit the structure comment on STDERR. It is diagnostic, and `/review` already echoes
+      diagnostics to stderr elsewhere. Lowest-risk.
+  (2) Fold the structure line into the JSON payload only. The payload ALREADY carries a
+      `roadmap_structure` object with the same four fields (`phases`, `checkboxes`, `table_rows`,
+      `parseable`), so the comment is pure duplication -- verify this before deleting it.
+
+Do NOT fix this by making `/review` strip the line. The contract that a JSON-emitting script emits
+JSON on stdout is the right one, and other consumers may exist.
+
+SOURCE-STORE TARGET. `.claude/` in this repository is a GITIGNORED, DISPOSABLE DEPLOY ARTIFACT
+regenerated from `agent-system/extensions/**`. Editing `.claude/scripts/roadmap-integration.sh`
+directly will appear to succeed and then be silently wiped by the next regeneration. The correct
+target is:
+
+  agent-system/extensions/core/scripts/roadmap-integration.sh
+
+and, if the consumption pattern is also adjusted, the `/review` command's own source at
+`agent-system/extensions/core/commands/review.md`. Confirm both paths exist before editing; if the
+layout differs, locate the source-store copy and edit THAT, never the deploy copy.
+
+VERIFICATION.
+- `bash <script> --roadmap specs/ROADMAP.md --state specs/state.json --annotate | jq '.warnings'`
+  succeeds with no `sed` preprocessing.
+- The four structure fields remain retrievable by a consumer (via the payload, and via stderr if
+  shape (1) is chosen).
+- `/review`'s Section 2.5 fallback still fires correctly when the script is genuinely missing or
+  genuinely exits non-zero -- do not regress the real error paths while fixing the false-success one.
+- Redeploy `.claude/` and confirm the fix survives regeneration.
+
+Grounding: specs/reviews/review-2026-08-24.md, issue L-1.
+
+---
+
+### 470. Task graph and metadata repair
+- **Effort**: low
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+
+**Description**: TASK-GRAPH AND TASK-METADATA REPAIR. Nine defects found by the 2026-08-24 programme review
+(specs/reviews/review-2026-08-24.md), all mechanical, none requiring mathematics. Every one is a
+correction to `specs/state.json` or to a task description; none changes any task's substance.
+
+CONSTRAINTS THAT APPLY THROUGHOUT:
+- All `specs/state.json` writes go through `.claude/scripts/state-write.sh`. TODO.md is regenerated
+  via `generate-todo.sh` and is NEVER hand-edited.
+- Do NOT transition any task to `completed`, `abandoned`, or `expanded`. Status changes are the
+  user's decision. This task edits descriptions, dependencies, file_scope, topics, and counters
+  only. Items (H) and (I) below are the sanctioned exception -- they invoke `/task --sync` and
+  `/todo`, which own those transitions.
+- Prefer symbol names to line numbers in every anchor written.
+
+=== (A) task 421's acceptance criterion is FACTUALLY WRONG -- fix first, it blocks the front ===
+
+421's acceptance reads: "the live non-Boneyard sorry count is unchanged at 2 (verify with:
+`grep -rn --include='*.lean' -E '^\s*sorry\s*$' FormalSystem/ | grep -vc Boneyard`)".
+
+The live count is ONE, not two. `scripts/check-module-invariants.sh` check C3 reports the sole
+structural sorry as `countermodel_discrete` in `FormalSystem/Metalogic/WeakCanonical/Transfer.lean`
+(re-confirmed 2026-08-24, full green run at commit 874f694a1). An agent running 421 to its stated
+acceptance criterion will read a CORRECT tree as failing.
+
+This matters more than its size: 421 is the FIRST task on the completeness critical path
+(421 -> 422 -> 169), so it is the first thing a dispatch on that front hits.
+
+FIX: change 2 to 1, and replace the inline `grep` with the C3 check. The inline grep is also
+methodologically weaker -- C3 strips Lean block and line comments before counting, which matters
+here because this repo's prose mentions the word `sorry` roughly ninety times.
+
+=== (B) 465 -> 428: the two decidability chains must be joined ===
+
+`434 -> 433 -> 428 -> 429 -> 410 -> 411 -> 430 -> 412` and `462 -> 463 -> 464 -> 465` are currently
+two DISCONNECTED components of the dependency graph. They are not parallel tracks. Task 462's own
+description says it is "the plumbing half of the residual task 434 left open at its Phase 8", and
+463/464/465 continue over `PostBlockingSettlesRun`, `gapPotential`, and the terminus restatement
+family -- i.e. over exactly the obligations 433 and 434 left open.
+
+Because no edge joins them, `generate-todo.sh` places 462 in wave 1 and 428 in wave 3 with no
+relation, so any scheduler reads them as independently startable.
+
+FIX: add dependency edge `465 -> 428` (i.e. 428 gains 465 as a dependency). Then REVISE 433's and
+434's descriptions to state that their residuals are owned downstream by 462-465, so a reader of
+either does not re-attempt work that moved.
+
+VERIFY the direction before writing: confirm from 462-465's descriptions that they are
+predecessors of 428 and not successors. If the evidence says otherwise, record that and wire it the
+way the evidence supports -- do not force the edge to match this description.
+
+=== (C) un-gate task 426 -- a 4-8 hour probe sitting at wave 9 ===
+
+426's recorded effort is 4-8 hours and its deliverable is an EXECUTABLE discrimination between two
+hypotheses about `(G p) -> box (G p)`: (a) the branch saturates but needs more fuel, or (b) it never
+saturates. Its dependencies `[165, 408-era chain..., 412, 428]` place it at WAVE 9, behind the
+entire tableau chain -- i.e. behind the multi-year work its result is supposed to INFORM.
+
+It probes the CURRENT engine. It needs none of that chain.
+
+FIX: reduce 426's dependencies to `[]`. Do not change its scope.
+
+=== (D) un-gate task 95 -- a confirmation pass at wave 10 ===
+
+95 describes itself as "a narrow confirmation pass, not an investigation": re-run `#print axioms`
+on the headline results once `countermodel_discrete` is closed, and record the outcome. Its
+dependencies are `[165, 408, 412, 426, 428, 429, 430, 432, 433, 434, 448]`, placing it at WAVE 10.
+
+Its ACTUAL prerequisite is task 169 alone -- 169 is what closes `countermodel_discrete`.
+
+FIX: reduce 95's dependencies to `[169]`.
+
+=== (E) undeclared topic ===
+
+Task 451 carries `topic: "repo-hygiene"`, which is absent from the top-level `active_topics` array.
+`generate-task-order.sh` renders it through its append-extras path and emits a one-time stderr
+warning. It is the ONLY undeclared topic in the active set (verified 2026-08-24).
+
+FIX: either add `repo-hygiene` to `active_topics`, or retopic 451 to the existing `code-quality`.
+Pick one and say which, in the summary.
+
+=== (F) two active tasks have NULL descriptions ===
+
+Task 257 (`large_data_storage_huggingface`, status `blocked`) and task 282
+(`exhaustive_enumeration_by_default`, status `partial`) have `description: null`. They carry only a
+`project_name`.
+
+This is a guaranteed first-contact failure: for a task with no artifacts, the `state.json`
+description is the ENTIRE input its first dispatch receives.
+
+FIX: reconstruct a real description for each from its task directory
+(`specs/257_large_data_storage_huggingface/`, `specs/282_exhaustive_enumeration_by_default/`) and
+from `specs/CHANGE_LOG.md`. If no recoverable intent exists for one of them, propose it for
+abandonment in the summary WITH the argument -- do not transition it yourself.
+
+=== (G) task 177's file_scope has an unresolvable entry and a duplicate ===
+
+177's `file_scope` is `["README.md", "ROADMAP.md", "FormalSystem/", "FormalSystem/", "docs/"]`.
+`ROADMAP.md` does not exist at the repository root -- the file is `specs/ROADMAP.md`.
+`FormalSystem/` appears twice. `README.md` and `docs/` both resolve.
+
+FIX: `["README.md", "specs/ROADMAP.md", "FormalSystem/", "docs/"]`.
+
+NOTE: task 468 Stage 3 also names this repair as part of DIVIDING 177. Whichever task runs second
+must find it already done and say so rather than re-applying it. Coordinate rather than duplicate.
+
+=== (H) specs/state.json counters disagree with themselves ===
+
+`metadata.total_tasks: 29` vs `task_counts.total: 44` vs 46 ACTUAL entries in `active_projects`.
+`metadata.last_sync: 2026-06-08` (eleven weeks stale); `metadata.generated_at: 2026-01-20`.
+Per-status counts are also wrong: `task_counts` claims `implementing: 2, partial: 1`; the actual
+distribution is `not_started: 29, completed: 7, partial: 5, blocked: 3, planned: 1, researched: 1,
+implementing: 0`. `task_counts` has no representation at all for `completed` or `blocked`.
+
+FIX: run `/task --sync`. If it does not reconcile all three figures, record precisely which
+survive and why.
+
+=== (I) seven completed tasks remain in active_projects ===
+
+432, 436, 457, 458, 459, 460, 467 have status `completed` but are still in `active_projects`. They
+inflate every active-set count and participate in the wave computation.
+
+FIX: run `/todo`. Note that item (B) above revises 433/434 and item (H) re-syncs counters -- run
+`/todo` LAST so it archives against a corrected tree.
+
+=== VERIFICATION ===
+
+- `generate-todo.sh` regenerates cleanly with NO undeclared-topic warnings.
+- Zero dependency edges that resolve in NEITHER `specs/state.json` NOR `specs/archive/state.json`.
+  Note the union requirement: 21 edges (361, 414, 439, 448, 454, 452, 420, 165, 402, 131, 440, 441,
+  375, 170, 408, 297, 343, 295, 274, 230, 437) resolve only in the archive. A scan of
+  `active_projects` alone reports these as false dangling edges -- do not "fix" them.
+- 421's acceptance criterion names C3 and the figure 1.
+- 426 and 95 appear in wave 1 and wave 2 respectively after regeneration.
+- No task transitioned to a terminal status except by `/task --sync` and `/todo`.
+
+Grounding: specs/reviews/review-2026-08-24.md, issues H-1, H-2, H-6, M-1, M-2, M-3, M-4, M-6, L-4.
+
+---
+
+### 469. Scope bilasso route to discrete decidability
+- **Effort**: medium
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: None
+
+**Description**: SCOPE AND PRICE THE BI-LASSO ROUTE TO DECIDABILITY OF `FrameClass.Discrete`, AND COMPARE IT
+AGAINST THE TABLEAU ROUTE BEFORE FURTHER TABLEAU INVESTMENT.
+
+This task does NOT prove the bridge. It establishes whether the bridge is provable, at what cost,
+and on which side of the constructive line each half falls -- then states the comparison. It may
+land the cheap half if that half turns out to be routine; it must not silently expand into the
+research half.
+
+=== 0. WHY THIS TASK EXISTS ===
+
+`FormalSystem/Metalogic/Decidability/BiLasso/` (19 files, ~6,593 lines) is landed, sorry-free, and
+UNREACHABLE -- imported only by its own aggregator `BiLasso.lean`, and carried in
+`scripts/module-invariants-manifest.txt` as 20 known-unreachable modules. It was delivered by
+archived task 417. Its main results, by symbol:
+
+  - `SatAtState P w phi` (BiLasso/Check.lean) -- the specification:
+      exists tau (htau : tau.IsTotal) t, tau.states t (htau t) = w AND TruthAt P.toModel tau t phi
+  - `check_correct` -- `check P w phi = true <-> SatAtState P w phi`
+  - `instDecidableSatAtState` -- the `Decidable` instance, recorded as carrying no `Classical.dec`
+  - `truth_along_annot` / `truth_along_annot_at` (BiLasso/TruthLemma.lean) -- a genuine truth lemma
+  - `exists_annot_of_truth` (BiLasso/Extraction.lean) -- the small-model theorem, windowed shape
+  - `cycleBound` (BiLasso/GoodCycle.lean) -- an explicit closed bound
+  - `BiLasso/Examples.lean` -- hand-proved and `#guard`-evaluated non-vacuity witnesses
+
+`Check.lean`'s own docstring is precise about the limit: "`check P w phi` decides satisfiability of
+`phi` AT THE STATE `w` OF THE PRESENTED Z-FRAME `P`. It does NOT decide the logic: nothing here
+quantifies over frames."
+
+Task 468's proof-state audit (reports/01_proof-state-audit-and-realignment-charter.md, finding F6)
+concludes "FMP is syntactic, not semantic" on the basis of `Decidability/FMP/`. That conclusion did
+not account for `Decidability/BiLasso/`, which is semantic AND computable. `specs/ROADMAP.md` does
+not mention BiLasso anywhere. The consequence is that the project prices decidability at "several
+person-years" via the tableau route while this asset sits unwired.
+
+=== 1. THE TARGET SHAPE ===
+
+The missing theorem is a bounded finite-presentation model property. Target shape (adjust the
+bound's form as the work dictates; do not weaken the quantifier structure):
+
+  theorem exists_bounded_presentation_of_not_validDiscrete (phi : Formula)
+      (h : NOT ValidDiscrete phi) :
+      exists (P : IntPresentation) (w : Fin P.card),
+        P.card <= presentationBound phi AND SatAtState P w phi.neg
+
+Together with `check_correct` and an enumeration of presentations up to that bound, this yields
+decidability of `ValidDiscrete`.
+
+=== 2. TWO FACTS THAT MAKE THIS CHEAPER THAN IT LOOKS (verified 2026-08-24, re-confirm) ===
+
+(a) THE CARRIER HALF IS NOT OPEN WORK. `ValidDiscrete` (`FormalSystem/Semantics/Validity.lean`,
+    symbol `ValidDiscrete`) quantifies over `D` with `AddCommGroup`, `LinearOrder`,
+    `IsOrderedAddMonoid`, `SuccOrder`, `PredOrder`, `IsSuccArchimedean`, `IsPredArchimedean`,
+    `Nontrivial`. Such a carrier is order-isomorphic to Z. Mathlib's
+    `orderIsoIntOfLinearSuccPredArch` is ALREADY consumed in this tree for exactly that step --
+    see the prose at `FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodelBasic.lean`
+    (search the file for the symbol name) and
+    `FormalSystem/Metalogic/WeakCanonical/IntegerModel/ShiftAndGlue.lean`.
+    CONFIRM this by symbol before relying on it.
+
+(b) WHAT REMAINS IS A FINITE-`WorldState` MODEL PROPERTY OVER Z, plus extraction of an adjacency-
+    matrix presentation. `IntPresentation` (`Decidability/IntPresentation.lean`) is a finite
+    adjacency matrix plus a valuation, with `toTaskFrame`, `toFiniteFrame`, `toModel`,
+    `card_worldState`. `FiniteTaskFrame` (`FormalSystem/Semantics/TaskFrame.lean`) already exists
+    with a `finite_world : Finite WorldState` field.
+
+=== 3. THE LOAD-BEARING OBJECTION -- ADJUDICATE IT, DO NOT ASSUME PAST IT ===
+
+`FormalSystem/Semantics/Extension/PeriodicExtension.lean`'s module docstring states outright:
+
+  "No bridge from the first to the second is written anywhere, because extracting an equivalence to
+   `Fin n` out of a `Prop`-level existential -- together with decidability of a `Prop`-valued
+   relation -- is `Classical.choice` in its most literal role, and would produce a non-computable
+   presentation, destroying precisely the property the effective version exists to obtain."
+
+That passage is about a DIFFERENT theorem: extending a GIVEN history (`TaskFrame.extend_periodic`
+vs `IntPresentation.extend_periodic`). For DECIDING VALIDITY the existential over bounded
+presentations may be classical while the DECISION PROCEDURE enumerates data -- the procedure
+enumerates presentations up to a bound and runs `check`, and never needs to extract a presentation
+from a `Prop`. THIS TASK MUST CONFIRM THAT DISTINCTION RATHER THAN ASSUME IT, and must state
+explicitly, per half, which side of the constructive line it falls on and what axioms it costs.
+If the distinction does NOT hold, say so plainly and record it as a refutation -- a negative result
+here is fully as valuable as a positive one and MUST NOT be left unstated.
+
+=== 4. DELIVERABLES ===
+
+(a) A verdict on the bridge: PROVABLE-ROUTINE / PROVABLE-HARD / REFUTED, with the argument.
+(b) The constructive-line accounting of section 3, per half, with the expected axiom set of each.
+(c) A cost comparison against the tableau route, in the same units the 468 audit used
+    (days / weeks / months-and-genuinely-hard). The tableau route's own price is recorded in
+    468's report R7 and in the C9 register inside
+    `FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean`. Do not restate those
+    figures as verified -- re-derive or cite the check that produced them.
+(d) If (a) is PROVABLE-ROUTINE: a follow-up task spec with full description, task_type, topic,
+    effort, file_scope, dependencies, and an explicit routine-engineering vs open-mathematics
+    classification. Do NOT hide a research problem behind an engineering description.
+(e) An explicit statement of what wiring BiLasso into the live tree would cost, and whether the
+    20 C6 manifest entries should be retired as part of it.
+
+=== 5. NON-GOALS ===
+
+- Does not prove the bridge (unless it turns out routine, in which case landing it is permitted --
+  say so explicitly in the summary if that happens).
+- Does not edit the tableau tree, and does not abandon the tableau route. This task informs a
+  choice; it does not make it.
+- Does not touch `PeriodicExtension.lean`'s existing theorems.
+
+=== 6. CONSTRAINTS ===
+
+- Prefer symbol names to line numbers in every anchor written. Line-number rot is the observed
+  failure mode across this backlog.
+- Every claim about build state, sorry counts, or axiom sets must cite the check that produced it
+  (`scripts/check-module-invariants.sh` C2/C3, or `lean_verify` / `#print axioms`).
+- Grounding: specs/reviews/review-2026-08-24.md, issue C-2.
+
+---
 
 ### 468. Realign task programme from proof state audit
 - **Effort**: high
@@ -342,6 +686,116 @@ Extend this task's report artifact, or add a second one, containing:
 - Does not attempt any of the mathematics it schedules.
 - Does not edit Verified/README.md or the other drifted docs itself; it SCHEDULES that work as the
   divided half of 177.
+=== 10. AMENDMENTS FROM THE 2026-08-24 PROGRAMME REVIEW (specs/reviews/review-2026-08-24.md) ===
+
+Three corrections to the charter above, all established by direct verification against the live
+tree at commit 874f694a1. Apply them; do NOT execute the superseded instructions they replace.
+
+--- 10a. STAGE 1b IS ALREADY ANSWERED. Consume the measurement; do not re-run the probe. ---
+
+Section 2(b) above designates the box-anchor question "the highest-information open question" and
+directs settling it by `#eval`/`#guard`. THAT MEASUREMENT ALREADY EXISTS AND IS COMMITTED:
+
+  specs/archive/418_fix_tableau_engine_crossworld_temporalcopy_unsoundness_in_boxnegdiamondpos/
+    artifacts/boxanchored-finding.md
+
+Task 418 Phase 5 ran it against the post-fix engine (its section 1.2, explicitly labelled
+"measured, this phase -- not predicted"), and Phase 6 extended it corpus-wide (its section 6).
+
+THE VERDICT IS NEGATIVE, AND BROADER THAN SECTION 2(b) ANTICIPATED. It is not `boxAnchoredCheck`
+alone: the WHOLE decidable-branch-gate family collapses to `false` on any branch that mints a
+world -- `boxAnchoredCheck`, `boxGridCheck`, `regionGate`, `regionLabelCheck`, and
+`rayUpOk`/`rayDnOk`, each measured `true` before the fix and `false` after, on the same formulas.
+The artifact's diagnosis: "a freshly minted box/diamond-witness world now carries only the witness
+plus modal-universal content, and every branch-level gate that expected temporal content there
+fails."
+
+CONSEQUENCES FOR THIS TASK:
+  - REPLACE Stage 1b's directive. Do not re-run the probe. Instead RE-VERIFY the artifact's
+    headline rows still hold against the current engine (cheap -- the probes named in it are
+    `BoxSpreadProbe`, `RegionGateProbe`, `RayRegionProbe`, `TemporalWitnessProbe`, all live in
+    `Tests/BimodalTest/`), then RECORD the verdict and cite the artifact.
+  - The question section 2(b) says the probe would settle -- "whether task 429 is a repair or a
+    redesign" -- IS ALREADY DETERMINED: **redesign**. Any plan that budgets 429 as a repair is
+    mis-priced. Wire that into the Stage 2 verdict for 429.
+  - The artifact also carries information the charter does not, and it is GOOD news that must not
+    be lost: repair options (a) "propagate T(box phi) itself to the fresh world" and (b) "copy
+    T(G phi)/T(H phi) only when box-derived" "would restore the temporal content and so would
+    likely restore this whole family at once". Option (a)'s proof obligation -- that `T(box phi)`
+    at `(w,t)` entails `T(box phi)` at the minted `w'` -- is an S5 axiom-4/5 pattern the artifact
+    judges "very likely sound", carrying named termination and fuel consequences that
+    `Fuel.lean`'s bounds and the subformula property must absorb. Option (c) is recorded as
+    **closed as formulated**, because `boxGridCheck` -- the check `truthAt_box_iff_base` actually
+    consumes -- fails for the same reason the anchor does.
+  - REVISE 429's description (Stage 2) to name option (a) as the recommended route with its
+    `RuleSound` obligation and its fuel/termination consequences stated UP FRONT, so the redesign
+    is scoped rather than rediscovered.
+
+--- 10b. STRIKE THREE STAGE-2 CANDIDATES THAT EXISTING TASKS ALREADY OWN ---
+
+Section 3's "Known candidates" list names three items as uncovered. Verified against the live
+descriptions, all three are already owned. Creating tasks for them would duplicate; rewriting 428
+would damage a correct description.
+
+  - "Lifting rule soundness through the engine to `allClosed -> valid`" -- OWNED BY 430, whose
+    description calls it "(b) THE SEMANTIC LIFT ... the LARGER of the two and is comparable in
+    weight to a landed sub-phase, not to a wrapper."
+  - "Discharging `RuleSound` for `serialityRule` and `timeLinearity` at their firing site" --
+    OWNED BY 430, item (a), which quotes `Verified/Decidable.lean`'s own note that
+    `ruleSound_of_mem_allRulesForFC` does not cover them.
+  - "REVISE -- 428's description still frames an unconditional `buildTableau_isSome` in places" --
+    STALE. 428's description opens: "THE REFUTED THEOREM, SETTLED: `buildTableau_isSome` in
+    unconditional form is FALSE, not merely unproved, and is on a do-not-re-attempt register."
+    It is already correct. Issue a CURRENT verdict for 428 on this point, not a REVISE.
+
+The genuinely uncovered items from Recommendation R2 REMAIN in scope and must still be specced:
+the `isValid phi fc = true -> models phi` plumbing bridge; proof-extraction completeness
+(eliminating `.extractionFailed`); and the ungated documentation-correction pass of Stage 3.
+
+--- 10c. STAGE 4(c) MUST SPLIT ROADMAP.md, NOT RE-BANNER IT ---
+
+Stage 4(c) directs marking superseded blocks historical "or delete them". Re-bannering is not
+sufficient, and the file's condition shows why. Verified 2026-08-24:
+
+  - 1,930 lines; roughly THIRTY sections already carry `HISTORICAL` / `SUPERSEDED` / `STALE`
+    banners. Adding a thirty-first does not make the file readable.
+  - `## Overview` -- the section the file's own header declares current -- stacks at least FOUR
+    dated "Current state" blocks. The one at the `**Current state** (2026-07-07 ...)` marker
+    asserts `completeness_discrete` "is blocked by exactly TWO live sorries". Checks C2 and C3
+    confirm it is AXIOM-CLEAN AND SORRY-FREE. The adjacent "Critical path" paragraph budgets
+    "~11-18 focused dispatches to a sorry-free `completeness_discrete`" -- work already finished.
+  - The same block calls the Stavi/EFGames chain "superseded ... and parked off the live path".
+    It is LIVE: `FormalSystem/Metalogic/WeakCanonical.lean` imports
+    `WeakCanonical.EFGames.StaviCompleteness`, and four further live modules import from
+    `EFGames/`.
+  - The trailing `## Task Cross-Reference` table (111 rows) carries statuses for tasks 60-117; the
+    file footer reads "Last updated: 2026-06-16" while sections above it were edited 2026-08-17.
+  - `roadmap-integration.sh` reports `phases=0 checkboxes=0 table_rows=111`: the file has NO
+    machine-annotatable structure, so automated roadmap annotation is a structural no-op (this
+    review's pass: 0 annotations, 1 skipped, `low_confidence`).
+
+REQUIREMENTS ADDED TO STAGE 4(c):
+  - Move the historical sediment to a SEPARATE `specs/ROADMAP-ARCHIVE.md`. `specs/ROADMAP.md` must
+    contain exactly ONE current-state statement per front, with no dated block stack.
+  - Retitle the file. It is "Roadmap: BX Completeness and Publication"; decidability is now the
+    largest front and does not appear in the title.
+  - `FormalSystem/Metalogic/Decidability/BiLasso/` appears NOWHERE in the roadmap. It is 19 files
+    and ~6,593 lines, landed sorry-free by archived task 417, carrying `check_correct` and
+    `instDecidableSatAtState` (no `Classical.dec`), and currently UNREACHABLE. Task 469 scopes the
+    bridge from it to `ValidDiscrete`. The rewritten roadmap must state its status honestly under
+    the decidability front. NOTE that this qualifies the audit's own finding F6 ("FMP is syntactic,
+    not semantic"), which was reached from `Decidability/FMP/` and did not account for BiLasso.
+  - Give the file a checkbox or phase structure so `roadmap-integration.sh` can annotate it, or
+    record explicitly that it is intentionally unannotatable and why.
+
+--- 10d. TASK 455 DISPOSITION -- INPUT TO STAGE 0, NOT A SUBSTITUTE FOR IT ---
+
+Stage 0 owns this decision. The review's finding, offered as evidence only: 455's Stage 1 is
+STRICTLY CONTAINED in Stage 4(c) above (455 requires grounding claims in C2/C3/C4/C5/C7; 4(c)
+requires that PLUS the PROVEN-vs-SORRY-FREE distinction, refuted-route tombstones, and the C9
+register cross-reference), and 455's Stages 2-4 are contained in this task's Stage 2, which extends
+the verdict vocabulary with ADD and REOPEN. On that evidence the review recommends **ABSORB**.
+Stage 0 must still reach and record its own verdict.
 
 ---
 
