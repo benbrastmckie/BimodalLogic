@@ -11,10 +11,10 @@ next_project_number: 477
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,193,257,298,413,421,424,425,434,461,462,468,472,474,475 | -- | automation, code-quality, completeness, ... |
-| 2 | 125,178,231,282,296,422,433,455,463,476 | 193,298,421,434,461,462,468,475 | algebraic-representation, code-quality, dataset-enhancement, ... |
-| 3 | 169,219,464 | 231,422,463 | dataset-enhancement, decidability, strong_completeness |
-| 4 | 95,362,465 | 169,424,464 | completeness, decidability, strong_completeness |
+| 1 | 127,128,193,257,298,413,422,424,425,434,461,462,468,472,474,475 | -- | automation, code-quality, completeness, ... |
+| 2 | 125,169,178,231,282,296,433,455,463,476 | 193,298,422,434,461,462,468,475 | algebraic-representation, code-quality, dataset-enhancement, ... |
+| 3 | 95,219,362,464 | 169,231,424,463 | completeness, dataset-enhancement, decidability, ... |
+| 4 | 465 | 464 | decidability |
 | 5 | 428 | 433,465 | decidability |
 | 6 | 429 | 428 | decidability |
 | 7 | 410 | 429 | decidability |
@@ -90,10 +90,9 @@ next_project_number: 477
 
 ### Strong Completeness
 
-421 [IMPLEMENTING] — Two deliverables on the Base weak terminus, both small.
-  └─ 422 [NOT STARTED] — Construct the discrete-case analogue of the existing dense chroni
-    └─ 169 [NOT STARTED] — Base (FrameClass.Base / general) WEAK completeness green: make th
-      └─ 362 [NOT STARTED] — Implement the completeness capstone under the SETTLED TERMINOLOGY
+422 [NOT STARTED] — Construct the discrete-case analogue of the existing dense chroni
+  └─ 169 [NOT STARTED] — Base (FrameClass.Base / general) WEAK completeness green: make th
+    └─ 362 [NOT STARTED] — Implement the completeness capstone under the SETTLED TERMINOLOGY
 424 [IMPLEMENTING] — RE-ISSUED 2026-08-18 (description rewrite only; status remains `n
   └─ 362 [NOT STARTED] — Implement the completeness capstone under the SETTLED TERMINOLOGY (see above)
 425 [NOT STARTED] — Convert the informal argument at FormalSystem/Metalogic/StrongCom
@@ -1940,7 +1939,7 @@ FOUR-AXIOM / TOTALITY EXPOSURE NOTE (added 2026-08-10; discharge recorded 2026-0
 
 ### 421. Correct transfer route guidance and probe non archimedean discrete carrier
 - **Effort**: medium
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: strong_completeness
 - **Dependencies**: Task 470
