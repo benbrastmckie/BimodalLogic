@@ -1,7 +1,7 @@
 # Implementation Plan: Shift-Set Representation Theorem (Compactness Feasibility Gate)
 
 - **Task**: 424 - Prove shift-set representation theorem (compactness feasibility gate)
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 5.5 hours (core Phases 1-6) + 1.5 hours (optional Phase 7)
 - **Dependencies**: 470 (state.json); historically [361, 414, 439, 454] — 361 and 414 archived, gate-relevant vocabulary discharged
 - **Research Inputs**: `specs/424_prove_shift_set_representation_theorem_compactness_feasibility_gate/reports/01_shift-set-representation-feasibility.md`; compiled prototype `specs/424_prove_shift_set_representation_theorem_compactness_feasibility_gate/prototype/ShiftSet-prototype.lean` (225 lines, `lake env lean`-verified)
@@ -151,33 +151,33 @@ optional and is the only phase that may be dropped without failing the gate.
 
 ---
 
-### Phase 1: Module header, `ShiftSet` structure, action lemmas, local extensionality [NOT STARTED]
+### Phase 1: Module header, `ShiftSet` structure, action lemmas, local extensionality [COMPLETED]
 
 **Goal**: Create `FormalSystem/Semantics/ShiftSet.lean` with the structure declaration, R3
 asserted at the binder, the two action-inverse lemmas, and the local history-extensionality copy.
 
 **Tasks**:
-- [ ] Create the file with the repo's standard copyright header (copy the shape from
+- [x] Create the file with the repo's standard copyright header (copy the shape from
       `FormalSystem/Semantics/Truth.lean:1-5`) and `namespace FormalSystem.Semantics`.
-- [ ] Imports: `FormalSystem.Semantics.TaskModel`, `FormalSystem.Semantics.Truth`,
+- [x] Imports: `FormalSystem.Semantics.TaskModel`, `FormalSystem.Semantics.Truth`,
       `FormalSystem.Semantics.Extension.Extension`.
-- [ ] Module docstring stating: (a) what the representation theorem says; (b) that the four
+- [x] Module docstring stating: (a) what the representation theorem says; (b) that the four
       shift-set axioms replace seven frame axioms, three of which are consequences of
       functionality plus the group action; (c) that `Classical.choice` on the reverse direction
       comes only from `PartialHistory.hF_nonempty` (`Semantics/Extension/Extension.lean:266`)
       and is not a defect.
-- [ ] Declare `structure ShiftSet (D : Type) [AddCommGroup D] [LinearOrder D]
+- [x] Declare `structure ShiftSet (D : Type) [AddCommGroup D] [LinearOrder D]
       [IsOrderedAddMonoid D] [Nontrivial D]` with fields `Carrier : Type`, `carrier_nonempty`,
       `sh`, `sh_zero`, `sh_add`, `sep`, `A`. **`D : Type`, not `Type*`; `Carrier : Type`.**
-- [ ] Docstring the `sep` field as the paper's *Limit* axiom transcribed over the shift action,
+- [x] Docstring the `sep` field as the paper's *Limit* axiom transcribed over the shift action,
       recording (i) that it is first-order over `⟨Ω, D; <, +, 0, sh, (A_p)⟩` and hence
       ultraproduct-preserved, and (ii) that the stronger free-action axiom is **rejected**
       because constant total histories have full stabiliser.
-- [ ] Prove `sh_neg`, `sh_neg'`.
-- [ ] Add `wh_ext` with a docstring marking it a local copy of `worldHistory_ext`
+- [x] Prove `sh_neg`, `sh_neg'`.
+- [x] Add `wh_ext` with a docstring marking it a local copy of `worldHistory_ext`
       (`FormalSystem/Metalogic/Decidability/Verified/Bridge/RegionFrame.lean:132`) and naming the
       layering reason.
-- [ ] Verify the file elaborates: `lake env lean FormalSystem/Semantics/ShiftSet.lean`.
+- [x] Verify the file elaborates: `lake env lean FormalSystem/Semantics/ShiftSet.lean`.
 
 **Timing**: 0.75 hours
 
@@ -202,7 +202,7 @@ missing or extra, record the delta rather than assuming the prototype's list.
 
 ---
 
-### Phase 2: `ShiftSet.frame` — all seven `TaskFrame` fields [NOT STARTED]
+### Phase 2: `ShiftSet.frame` — all seven `TaskFrame` fields [IN PROGRESS]
 
 **Goal**: Construct the induced task frame under `TaskRel w d u := (u = sh w d)` and discharge
 every live `TaskFrame` field.
