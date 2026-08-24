@@ -72,6 +72,12 @@ stationary 40-formula certified branch for every `n ≥ 25` out to 1000. The cei
 recorded, with its headroom against the proved bounds, on `soundFuel'` in
 `FormalSystem/Metalogic/Decidability/Verified/Termination/Fuel.lean`.
 
+**Rows G and H do for rows A and C what row F did for row B.** Rows A-E are all `isValid` rows,
+so each of them reads `false` under `.invalid`, `.fuelExhausted` and `.extractionFailed` alike —
+precisely the indistinguishability that let this formula family go a whole cycle misread. Rows G
+and H pin the constructor tuple for rows A's and C's formulas as well, closing that blindness for
+the whole A-C family. They are pure additions: not one value pinned by rows A-F moves.
+
 `BoxNegReachabilityProbe.lean` rows 9-12 pin the same distinction from the other side, on the
 same formula.
 -/
@@ -150,5 +156,45 @@ The tuple is `(isValid, isInvalid, isFuelExhausted, isExtractionFailed, isUndeci
 #guard_msgs in
 #eval let d := decide ((Formula.allFuture p).imp ((Formula.allFuture p).box))
       (d.isValid, d.isInvalid, d.isFuelExhausted, d.isExtractionFailed, d.isUndecided)
+
+/-! ### Row G — the `decide` constructor on row A's formula, which row A cannot see
+
+Row A pins `isValid ((¬F p) → □(¬F p)) = false`, and `isValid` is `true` only for `.valid`. That
+`false` is therefore compatible with `.invalid`, `.fuelExhausted` **and** `.extractionFailed` —
+including the last, which under this codebase's R7 semantics (`isKnownValid` holds of
+`extractionFailed`) is an assertion that this invalid formula is valid. Row A cannot tell a
+correct refutation from a wrong closure; this row can.
+
+Pinned here: `((isValid, isInvalid, isFuelExhausted, isExtractionFailed, isUndecided),
+getCountermodel?.isSome)`. The first component is the same tuple shape as row F; the second is
+pinned rather than merely asserted in prose, so a regression that keeps the constructor while
+losing the countermodel also fails loudly.
+
+Measured `((false, true, false, false, false), true)` — `.invalid` with a countermodel, the same
+verdict row F pins for `(G p) → □(G p)`. Note that the Layer-0 `SimpleCountermodel` behind that
+`true` flattens the `(world, time)` label away, so `isSome` here certifies that a refutation was
+extracted, not that the extracted valuation is usable; `BoxNegReachabilityProbe.lean` row 11 owns
+that separate defect. -/
+/-- info: ((false, true, false, false, false), true) -/
+#guard_msgs in
+#eval let d := decide ((Formula.someFuture p).neg.imp ((Formula.someFuture p).neg.box))
+      ((d.isValid, d.isInvalid, d.isFuelExhausted, d.isExtractionFailed, d.isUndecided),
+       d.getCountermodel?.isSome)
+
+/-! ### Row H — the `decide` constructor on row C's formula, which row C cannot see
+
+The past mirror of row G, and the same argument applies verbatim: row C's `isValid` `false` on
+`(¬P p) → □(¬P p)` collapses `.invalid`, `.fuelExhausted` and `.extractionFailed` into one
+indistinguishable value, so a move between them could pass unnoticed. This row pins the
+constructor and the countermodel flag, in the shape row G uses.
+
+Measured `((false, true, false, false, false), true)`. With rows F, G and H in place, every one of
+rows A-C now has a constructor-pinning sibling, and no member of the family can change verdict
+silently. -/
+/-- info: ((false, true, false, false, false), true) -/
+#guard_msgs in
+#eval let d := decide ((Formula.somePast p).neg.imp ((Formula.somePast p).neg.box))
+      ((d.isValid, d.isInvalid, d.isFuelExhausted, d.isExtractionFailed, d.isUndecided),
+       d.getCountermodel?.isSome)
 
 end BimodalTest.CrossWorldPropagationProbe

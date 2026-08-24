@@ -237,7 +237,7 @@ this phase and say so, rather than treating the enumerated single defect as clos
 
 ---
 
-### Phase 3: Add constructor-pinning rows for A and C [IN PROGRESS]
+### Phase 3: Add constructor-pinning rows for A and C [COMPLETED]
 
 **Goal**: Close for rows A and C the same `isValid`-blindness row F closed for row B. Rows A and C
 are currently `isValid`-only, so they read `false` identically under `.invalid`,
@@ -246,15 +246,15 @@ family go a full cycle misread.
 
 **Tasks**:
 
-- [ ] Add a row G pinning the `decide` constructor tuple for row A's formula
+- [x] Add a row G pinning the `decide` constructor tuple for row A's formula
       `(¬F p) → □(¬F p)`, using the same
       `(isValid, isInvalid, isFuelExhausted, isExtractionFailed, isUndecided)` shape as row F, with
       the value measured in Phase 1.
-- [ ] Add a row H pinning the same tuple for row C's formula `(¬P p) → □(¬P p)`.
-- [ ] Give each new row a docstring stating why it exists (row A/C's `isValid` collapses three
+- [x] Add a row H pinning the same tuple for row C's formula `(¬P p) → □(¬P p)`.
+- [x] Give each new row a docstring stating why it exists (row A/C's `isValid` collapses three
       constructors into one `false`) and what it pins. Optionally pin
       `getCountermodel?.isSome` alongside if Phase 1 measured it stably.
-- [ ] Confirm this is a pure **addition**: no existing pinned value in the file changes.
+- [x] Confirm this is a pure **addition**: no existing pinned value in the file changes.
 
 **Timing**: 0.5 hours
 
