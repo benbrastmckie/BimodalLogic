@@ -400,7 +400,7 @@ and above all any `sorryAx` — is a gate-relevant finding to be recorded, not n
 
 ---
 
-### Phase 7: (OPTIONAL) Dyadic counterexample witnessing that `sep` is not derivable [NOT STARTED]
+### Phase 7: (OPTIONAL) Dyadic counterexample witnessing that `sep` is not derivable [IN PROGRESS]
 
 **Goal**: Convert "the `sep` field is an unjustified strengthening of the shift-set notion" from
 an open reviewer objection into a theorem, by exhibiting a `D`-action satisfying `sh_zero` and
