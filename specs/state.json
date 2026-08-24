@@ -1074,7 +1074,7 @@
     {
       "project_number": 470,
       "project_name": "task_graph_and_metadata_repair",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "meta",
       "topic": "agent-system",
       "priority": "high",
@@ -1085,7 +1085,7 @@
       ],
       "dependencies": [],
       "created": "2026-08-24T00:00:00Z",
-      "last_updated": "2026-08-24T21:17:54Z",
+      "last_updated": "2026-08-24T21:39:35Z",
       "session_id": "sess_1787605228_cf9f52",
       "artifacts": [
         {
@@ -1097,8 +1097,14 @@
           "path": "specs/470_task_graph_and_metadata_repair/plans/01_task-graph-metadata-repair.md",
           "type": "plan",
           "summary": "8-phase mechanical repair plan for the nine review-2026-08-24 task-graph/metadata defects, with (A) first, /todo before the counter recomputation, and verify-only handling of the already-applied (C)/(D)/(E)."
+        },
+        {
+          "path": "specs/470_task_graph_and_metadata_repair/summaries/01_task-graph-metadata-repair-summary.md",
+          "type": "summary",
+          "summary": ""
         }
-      ]
+      ],
+      "completion_summary": "Repaired all nine mechanical task-graph/task-metadata defects from the 2026-08-24 programme review: corrected task 421's acceptance criterion, pointed 433/434 at their downstream owners, restored null descriptions on 257/282, fixed 177's file_scope, archived seven completed tasks via /todo, and reconciled state.json's top-level metadata/task_counts counters live against the post-archival tree."
     },
     {
       "project_number": 472,

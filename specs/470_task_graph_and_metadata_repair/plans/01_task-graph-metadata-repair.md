@@ -1,7 +1,7 @@
 # Implementation Plan: Task #470
 
 - **Task**: 470 - TASK-GRAPH AND TASK-METADATA REPAIR
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 2.75 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/470_task_graph_and_metadata_repair/reports/01_task-graph-metadata-repair.md`

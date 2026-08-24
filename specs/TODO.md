@@ -11,24 +11,19 @@ next_project_number: 474
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,257,298,434,461,470 | -- | agent-system, dataset-enhancement, decidability, ... |
-| 2 | 125,193,231,282,296,413,421,423,424,426,433,451,469,472,473 | 298,434,461,470 | algebraic-representation, automation, code-quality, ... |
-| 3 | 178,219,422,425,462,468 | 193,231,421,423,426,451,469 | dataset-enhancement, decidability, formula-refactor, ... |
-| 4 | 169,455,463 | 422,462,468 | code-quality, decidability, strong_completeness |
-| 5 | 95,362,464 | 169,424,463 | completeness, decidability, strong_completeness |
-| 6 | 465 | 464 | decidability |
-| 7 | 428 | 433,465 | decidability |
-| 8 | 429 | 428 | decidability |
-| 9 | 410 | 429 | decidability |
-| 10 | 411 | 410 | decidability |
-| 11 | 430 | 411 | decidability |
-| 12 | 177,412 | 193,426,430 | decidability, formula-refactor |
+| 1 | 127,128,193,257,298,413,421,423,424,426,434,451,461,469,472,473 | -- | automation, code-quality, completeness, ... |
+| 2 | 125,178,231,282,296,422,425,433,462,468 | 193,298,421,423,426,434,451,461,469 | algebraic-representation, dataset-enhancement, decidability, ... |
+| 3 | 169,219,455,463 | 231,422,462,468 | code-quality, dataset-enhancement, decidability, ... |
+| 4 | 95,362,464 | 169,424,463 | completeness, decidability, strong_completeness |
+| 5 | 465 | 464 | decidability |
+| 6 | 428 | 433,465 | decidability |
+| 7 | 429 | 428 | decidability |
+| 8 | 410 | 429 | decidability |
+| 9 | 411 | 410 | decidability |
+| 10 | 430 | 411 | decidability |
+| 11 | 177,412 | 193,426,430 | decidability, formula-refactor |
 
 **Grouped by Topic** (indented = depends on parent):
-
-### Agent System
-
-470 [IMPLEMENTING] — TASK-GRAPH AND TASK-METADATA REPAIR. Nine defects found by the 20
 
 ### Algebraic Representation
 
@@ -40,15 +35,15 @@ next_project_number: 474
 
 ### Code Quality
 
-455 [NOT STARTED] — BACKLOG REALIGNMENT: bring specs/ROADMAP.md and every remaining a
 472 [NOT STARTED] — THE IMMEDIATE, UNGATED DOCUMENTATION-CORRECTION PASS. This is the
 473 [NOT STARTED] — DELETE THE QUARANTINED VACUOUS KAMP PAIR, and keep the record tha
+455 [NOT STARTED] — BACKLOG REALIGNMENT: bring specs/ROADMAP.md and every remaining a
 
 ### Completeness
 
-95 [NOT STARTED] — Verify and record the final axiom/sorry status of the headline me
 413 [NOT STARTED] — Formalize the TM+ over TM conservativity bridge in Lean 4 (paper 
 426 [NOT STARTED] — Settle whether the tableau engine can positively refute (G p) -> 
+95 [NOT STARTED] — Verify and record the final axiom/sorry status of the headline me
 
 ### Dataset Enhancement
 
@@ -69,15 +64,13 @@ next_project_number: 474
           └─ 411 [NOT STARTED] — Track B part 2 for the TM tableau decidability program (parent: t
             └─ 430 [NOT STARTED] — The semantic lift and the Track A assembly. Owns obstruction O4 o
               └─ 412 [NOT STARTED] — Track B finish for the TM tableau decidability program (parent: t
-462 [NOT STARTED] — Land the engine-level assembly that lets `MintPaysForTimeFixed` b
-  └─ 463 [NOT STARTED] — Decide `PostBlockingSettlesRun fc (mintAwareFuelAt U.card Tmax mi
-    └─ 464 [NOT STARTED] — Design and land `gapPotential`, the density coordinate of the ter
-      └─ 465 [NOT STARTED] — Complete the terminus restatement family at the repaired residual
-        └─ 428 [BLOCKED] — Engine totality at a quantified branch budget. Owns obstruction O (see above)
-468 [NOT STARTED] — PROGRAMME REALIGNMENT FROM A VERIFIED PROOF-STATE AUDIT: restruct
 469 [NOT STARTED] — SCOPE AND PRICE THE BI-LASSO ROUTE TO DECIDABILITY OF `FrameClass
-  └─ 462 [NOT STARTED] — Land the engine-level assembly that lets `MintPaysForTimeFixed` b (see above)
-  └─ 468 [NOT STARTED] — PROGRAMME REALIGNMENT FROM A VERIFIED PROOF-STATE AUDIT: restruct (see above)
+  └─ 462 [NOT STARTED] — Land the engine-level assembly that lets `MintPaysForTimeFixed` b
+    └─ 463 [NOT STARTED] — Decide `PostBlockingSettlesRun fc (mintAwareFuelAt U.card Tmax mi
+      └─ 464 [NOT STARTED] — Design and land `gapPotential`, the density coordinate of the ter
+        └─ 465 [NOT STARTED] — Complete the terminus restatement family at the repaired residual
+          └─ 428 [BLOCKED] — Engine totality at a quantified branch budget. Owns obstruction O (see above)
+  └─ 468 [NOT STARTED] — PROGRAMME REALIGNMENT FROM A VERIFIED PROOF-STATE AUDIT: restruct
 
 ### Formula Refactor
 
@@ -99,11 +92,10 @@ next_project_number: 474
 
 ### Strong Completeness
 
-169 [NOT STARTED] — Base (FrameClass.Base / general) WEAK completeness green: make th
-  └─ 362 [NOT STARTED] — Implement the completeness capstone under the SETTLED TERMINOLOGY
 421 [NOT STARTED] — Two deliverables on the Base weak terminus, both small.
   └─ 422 [NOT STARTED] — Construct the discrete-case analogue of the existing dense chroni
-    └─ 169 [NOT STARTED] — Base (FrameClass.Base / general) WEAK completeness green: make th (see above)
+    └─ 169 [NOT STARTED] — Base (FrameClass.Base / general) WEAK completeness green: make th
+      └─ 362 [NOT STARTED] — Implement the completeness capstone under the SETTLED TERMINOLOGY
 423 [NOT STARTED] — Create FormalSystem/Metalogic/SetConsequence.lean containing the 
   └─ 425 [NOT STARTED] — Convert the informal argument at FormalSystem/Metalogic/StrongCom
 424 [NOT STARTED] — RE-ISSUED 2026-08-18 (description rewrite only; status remains `n
@@ -283,12 +275,13 @@ Grounding: specs/reviews/review-2026-08-24.md (issues C-1, H-3, L-2, A-4) and ta
 
 ### 470. Task graph and metadata repair
 - **Effort**: low
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
 - **Research**: [470_task_graph_and_metadata_repair/reports/01_task-graph-metadata-repair.md]
 - **Plan**: [470_task_graph_and_metadata_repair/plans/01_task-graph-metadata-repair.md]
+- **Summary**: [470_task_graph_and_metadata_repair/summaries/01_task-graph-metadata-repair-summary.md]
 
 **Description**: TASK-GRAPH AND TASK-METADATA REPAIR. Nine defects found by the 2026-08-24 programme review
 (specs/reviews/review-2026-08-24.md), all mechanical, none requiring mathematics. Every one is a
