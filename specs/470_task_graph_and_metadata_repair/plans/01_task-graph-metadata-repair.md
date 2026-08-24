@@ -364,25 +364,25 @@ jq empty specs/state.json && bash .claude/scripts/generate-todo.sh
 
 ---
 
-### Phase 5: Verify-only closure of items C, D, and E [NOT STARTED]
+### Phase 5: Verify-only closure of items C, D, and E [COMPLETED]
 
 **Goal**: Positively confirm — not assume — that the three already-applied/already-resolved items
 are in fact applied. A silent assumption that they are applied is exactly the failure mode this
 task exists to prevent. **This phase makes zero writes.**
 
 **Tasks**:
-- [ ] **(C)** Confirm task 426 carries `dependencies: [470]` and nothing else. **No write.**
-- [ ] **(D)** Confirm task 95 carries `dependencies: [169]` and nothing else. **No write.**
-- [ ] **(E)** Confirm `repo-hygiene` is present in the top-level `active_topics` array, that task
+- [x] **(C)** Confirm task 426 carries `dependencies: [470]` and nothing else. **No write.** *(completed: confirmed [470])*
+- [x] **(D)** Confirm task 95 carries `dependencies: [169]` and nothing else. **No write.** *(completed: confirmed [169])*
+- [x] **(E)** Confirm `repo-hygiene` is present in the top-level `active_topics` array, that task
       451's `topic` is `repo-hygiene`, and that `manage-topics.sh validate repo-hygiene` exits 0.
       **No write.** Do NOT re-add the topic (`manage-topics.sh add` is idempotent, so a re-add is
-      harmless but produces a misleading commit) and do NOT re-topic 451.
-- [ ] **(E) primary evidence**: run `bash .claude/scripts/generate-task-order.sh --print` and
-      confirm **stderr is empty** — no undeclared-topic warning of any kind.
-- [ ] If any of the three is found NOT applied, stop and report it as a finding. Do not silently
+      harmless but produces a misleading commit) and do NOT re-topic 451. *(completed: index 16, 451.topic=repo-hygiene, validate exit=0)*
+- [x] **(E) primary evidence**: run `bash .claude/scripts/generate-task-order.sh --print` and
+      confirm **stderr is empty** — no undeclared-topic warning of any kind. *(completed: stderr 0 bytes)*
+- [x] If any of the three is found NOT applied, stop and report it as a finding. Do not silently
       apply it: it would mean the tree changed since research, and the rest of the plan's premises
-      need re-checking.
-- [ ] Record all three confirmations, with their command output, in the implementation summary.
+      need re-checking. *(completed: not triggered, all three confirmed applied)*
+- [x] Record all three confirmations, with their command output, in the implementation summary. *(completed)*
 
 **Timing**: 20 minutes
 
