@@ -1063,7 +1063,8 @@ unavailable: it terminates in `succ_cofinal`, refuted by the ℤ+ℤ counterexam
 requires a different construction — the obligation is to build a discrete countermodel from a
 **Base**-MCS `A` with `□(U(⊤,⊥)) ∈ A` and `¬φ ∈ A`. `countermodel_discrete_reynolds_v2` cannot
 be reused directly, since its signature demands `SetMaximalConsistent (fc := FrameClass.Discrete)`
-and a Base-MCS is not automatically Discrete-consistent.
+and a Base-MCS provably need not be Discrete-consistent — see the refutation of route (i) in
+the body of `countermodel_discrete` below.
 -/
 theorem countermodel_discrete (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)

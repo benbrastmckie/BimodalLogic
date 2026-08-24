@@ -171,7 +171,7 @@ file contains exactly one `sorry`. Confirm at implementation time by
 
 ---
 
-### Phase 2: Strengthen the section docstring's now-understated claim [NOT STARTED]
+### Phase 2: Strengthen the section docstring's now-understated claim [COMPLETED]
 
 **Goal**: The enclosing section docstring no longer says a Base-MCS is merely "not automatically"
 Discrete-consistent, when the refutation now recorded in Phase 1 establishes it provably need not
@@ -184,13 +184,13 @@ it is one sentence, it is in the same file, and leaving the weaker claim standin
 stronger comment is a live inconsistency for the next reader.
 
 **Tasks**:
-- [ ] Locate the sentence in the section docstring (research: `Transfer.lean:1064-1066`, inside the
+- [x] Locate the sentence in the section docstring (research: `Transfer.lean:1064-1066`, inside the
       docstring at `:1049-1067`) reading "…and a Base-MCS is not automatically Discrete-consistent."
       Anchor on the text `not automatically Discrete-consistent`.
-- [ ] Replace "is not automatically Discrete-consistent" with a claim matching the refutation, e.g.
+- [x] Replace "is not automatically Discrete-consistent" with a claim matching the refutation, e.g.
       "provably need not be Discrete-consistent — see the refutation of route (i) in the body of
       `countermodel_discrete` below".
-- [ ] Make no other change to the docstring.
+- [x] Make no other change to the docstring.
 
 **Timing**: 0.25 hours
 
