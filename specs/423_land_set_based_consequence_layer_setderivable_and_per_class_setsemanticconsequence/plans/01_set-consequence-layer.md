@@ -1,7 +1,7 @@
 # Implementation Plan: Task #423
 
 - **Task**: 423 - Land the set-based consequence layer (SetDerivable and per-class SetSemanticConsequence*)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 3 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/423_land_set_based_consequence_layer_setderivable_and_per_class_setsemanticconsequence/reports/01_set-consequence-layer-research.md`

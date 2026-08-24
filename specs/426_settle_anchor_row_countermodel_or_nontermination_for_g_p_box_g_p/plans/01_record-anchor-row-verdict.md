@@ -1,7 +1,7 @@
 # Implementation Plan: Task #426
 
 - **Task**: 426 - Settle anchor row: countermodel or non-termination for `(G p) → □(G p)`
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 3 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/426_settle_anchor_row_countermodel_or_nontermination_for_g_p_box_g_p/reports/01_settle-anchor-row-verdict.md`
