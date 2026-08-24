@@ -8,6 +8,7 @@ import FormalSystem.Semantics.Validity
 import FormalSystem.Metalogic.Core.DeductionTheorem
 import FormalSystem.Metalogic.Soundness
 import FormalSystem.Metalogic.BXCanonical.CompletenessDedekind
+import FormalSystem.Metalogic.SetConsequence
 
 /-!
 # Consequence Completeness, and the Strong Completeness Programme
@@ -226,6 +227,34 @@ theorem derivable_foldr_imp_iff {fc : FrameClass} (Γ : Context) (φ : Formula) 
     exact derivable_foldr_imp_of_derivable Γ [] φ (by simpa using h)
   · intro h
     simpa using derivable_of_derivable_foldr_imp Γ [] φ h
+
+/-! ## Strong completeness for `FrameClass.Dense`, modulo compactness -/
+
+/--
+**Strong completeness = compactness + weak completeness.** No new proof-theoretic machinery, no
+`Γ`-relative Lindenbaum, no widened subformula root: the countermodel engine is used unchanged,
+as a single-formula engine, exactly as the engine contract above specifies. Compactness supplies
+a finite premise list; `derivable_foldr_imp_iff` — already proved, and already generic in `fc` —
+turns the engine's empty-context derivation of the `foldr`-implication back into a derivation
+from that list.
+
+This theorem lives here rather than in `FormalSystem/Metalogic/SetConsequence.lean`, which
+supplies the `CompactDense` and `StrongCompletenessDense` vocabulary it is stated against,
+because `derivable_foldr_imp_iff` is owned by this module and this module imports that one.
+Stating it there would be an import cycle.
+
+**The `engine` hypothesis is live.** `BXCanonical.completeness_dense`
+(`BXCanonical/Completeness.lean:256`) has exactly this shape,
+`ValidDense φ → Derivable FrameClass.Dense [] φ`. It is deliberately *not* consumed here: this
+statement is kept engine-generic, so `CompactDense` is the whole of the remaining obligation for
+Dense strong completeness.
+-/
+theorem strongCompletenessDense_of_compact (hc : CompactDense)
+    (engine : ∀ ψ : Formula, ValidDense ψ → Derivable FrameClass.Dense [] ψ) :
+    StrongCompletenessDense := by
+  intro Γ φ h
+  obtain ⟨L, hL, hvalid⟩ := hc Γ φ h
+  exact ⟨L, hL, (derivable_foldr_imp_iff L φ).mpr (engine _ hvalid)⟩
 
 /-! ## Consequence completeness for `FrameClass.Dedekind` -/
 

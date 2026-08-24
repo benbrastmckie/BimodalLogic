@@ -280,7 +280,7 @@ in the new file.
 
 ---
 
-### Phase 4: Wire StrongCompleteness.lean — import plus strongCompletenessDense_of_compact [NOT STARTED]
+### Phase 4: Wire StrongCompleteness.lean — import plus strongCompletenessDense_of_compact [COMPLETED]
 
 **Goal**: `StrongCompleteness.lean` imports the new module and hosts the one §5 theorem, per
 Option C.
