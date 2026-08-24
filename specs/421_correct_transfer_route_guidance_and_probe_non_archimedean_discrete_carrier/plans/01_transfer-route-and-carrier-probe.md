@@ -309,17 +309,17 @@ by checking that any warnings emitted originate in `FlowFrame.lean` (pre-existin
 
 ---
 
-### Phase 4: Wire the new module into the aggregator [NOT STARTED]
+### Phase 4: Wire the new module into the aggregator [COMPLETED]
 
 **Goal**: `DiscreteCarrierProbe.lean` is reachable from the module graph, so invariant C6
 ("all unreachable live modules are manifested") and C8 (one aggregator per subdirectory) continue
 to pass.
 
 **Tasks**:
-- [ ] Add `import FormalSystem.Metalogic.BXCanonical.DiscreteCarrierProbe` to
+- [x] Add `import FormalSystem.Metalogic.BXCanonical.DiscreteCarrierProbe` to
       `FormalSystem/Metalogic/BXCanonical.lean`, alongside the existing sibling imports (place it
       adjacent to the `CompletenessDedekind` import, which it conceptually extends).
-- [ ] Add a corresponding line to that file's `## Architecture` list describing the module as the
+- [x] Add a corresponding line to that file's `## Architecture` list describing the module as the
       `ℚ ×ₗ ℤ` compile-time carrier probe. (Note: the existing list does not currently enumerate
       every import — `CompletenessDedekind` itself is absent — so match the list's actual
       granularity rather than forcing a full enumeration.)

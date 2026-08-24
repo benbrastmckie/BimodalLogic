@@ -8,6 +8,7 @@ import FormalSystem.Metalogic.BXCanonical.Frame
 import FormalSystem.Metalogic.BXCanonical.TruthLemma
 import FormalSystem.Metalogic.BXCanonical.Completeness
 import FormalSystem.Metalogic.BXCanonical.CompletenessDedekind
+import FormalSystem.Metalogic.BXCanonical.DiscreteCarrierProbe
 import FormalSystem.Metalogic.BXCanonical.Quasimodel.SubformulaClosure
 import FormalSystem.Metalogic.BXCanonical.Quasimodel.HintikkaPoint
 import FormalSystem.Metalogic.BXCanonical.Quasimodel.Construction
@@ -37,4 +38,6 @@ This module collects the BX canonical model completeness proof.
    - `Construction.lean` — BX axiom lemmas at MCS level
    - `Realization.lean` — Realization lifting (delegates to Frame.lean)
    - `LocusControl.lean` — Locus-control delegation interface for chain construction
+6. `DiscreteCarrierProbe.lean` — Compile-time carrier probe: the `D`-generic bundle flow
+   machinery at the non-Archimedean discrete carrier `ℚ ×ₗ ℤ`
 -/
