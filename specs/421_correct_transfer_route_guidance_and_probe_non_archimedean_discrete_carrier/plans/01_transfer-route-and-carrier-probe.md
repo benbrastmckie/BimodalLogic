@@ -213,21 +213,21 @@ stronger comment is a live inconsistency for the next reader.
 
 ---
 
-### Phase 3: Create DiscreteCarrierProbe.lean [NOT STARTED]
+### Phase 3: Create DiscreteCarrierProbe.lean [COMPLETED]
 
 **Goal**: A new module exists whose anonymous `example`s confirm, at elaboration time, that the
 four `FrameClass.Base` binders and the bundle-flow API all resolve at `ℚ ×ₗ ℤ`.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/BXCanonical/DiscreteCarrierProbe.lean`.
-- [ ] Prepend the standard copyright header used by sibling modules (copy the exact block from
+- [x] Create `FormalSystem/Metalogic/BXCanonical/DiscreteCarrierProbe.lean`.
+- [x] Prepend the standard copyright header used by sibling modules (copy the exact block from
       `FormalSystem/Metalogic/BXCanonical/CompletenessDedekind.lean`).
-- [ ] Add a module docstring in the voice of the `ℝ` `CarrierProbe` docstring
+- [x] Add a module docstring in the voice of the `ℝ` `CarrierProbe` docstring
       (`CompletenessDedekind.lean:69-105`), stating that these `example`s exist to fail loudly if
       the bundle-flow machinery ever acquires a binder `ℚ ×ₗ ℤ` cannot discharge, and that this
       carrier is the route-(ii) recommendation the refuted-route comment in `Transfer.lean` points
       at.
-- [ ] Write the verified body below (report §5.1) — this text compiled during research; land it
+- [x] Write the verified body below (report §5.1) — this text compiled during research; land it
       as-is rather than re-deriving it.
 
 ```lean
@@ -277,10 +277,10 @@ end DiscreteCarrierProbe
 end FormalSystem.Metalogic.BXCanonical
 ```
 
-- [ ] Do NOT add `Mathlib.Algebra.Order.Group.Int` or `Mathlib.Algebra.Order.Ring.Rat` — both are
+- [x] Do NOT add `Mathlib.Algebra.Order.Group.Int` or `Mathlib.Algebra.Order.Ring.Rat` — both are
       already in `FlowFrame`'s closure and were drop-one tested as unnecessary.
-- [ ] Do NOT add `open scoped Prod` — the `×ₗ` notation is already in scope through `FlowFrame`.
-- [ ] Use `example` only. Do not introduce named declarations.
+- [x] Do NOT add `open scoped Prod` — the `×ₗ` notation is already in scope through `FlowFrame`.
+- [x] Use `example` only. Do not introduce named declarations.
 
 **Timing**: 0.5 hours
 
