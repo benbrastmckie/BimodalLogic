@@ -80,7 +80,7 @@ def SetSemanticConsequenceDense (Γ : Set Formula) (φ : Formula) : Prop :=
     (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ
 
 /-- Set-based semantic consequence over `FrameClass.Discrete`. Binder list: `ValidDiscrete`
-    (`Validity.lean:222`). Stated for completeness of the layer; strong completeness at this
+    (`Validity.lean:243`). Stated for completeness of the layer; strong completeness at this
     class is refuted by non-compactness. -/
 def SetSemanticConsequenceDiscrete (Γ : Set Formula) (φ : Formula) : Prop :=
   ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [SuccOrder D] [PredOrder D]
@@ -90,7 +90,7 @@ def SetSemanticConsequenceDiscrete (Γ : Set Formula) (φ : Formula) : Prop :=
     (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ
 
 /-- Set-based semantic consequence over dense Dedekind-complete carriers. Binder list:
-    `ValidDedekindDense` (`Validity.lean:310`) — the `soundness_dedekind` target. Non-compact. -/
+    `ValidDedekindDense` (`Validity.lean:331`) — the `soundness_dedekind` target. Non-compact. -/
 def SetSemanticConsequenceDedekindDense (Γ : Set Formula) (φ : Formula) : Prop :=
   ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [DenselyOrdered D]
     [Nontrivial D]

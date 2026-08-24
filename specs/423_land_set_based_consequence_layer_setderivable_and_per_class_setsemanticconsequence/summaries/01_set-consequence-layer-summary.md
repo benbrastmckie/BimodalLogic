@@ -32,8 +32,12 @@ This is a vocabulary layer. It proves no compactness result and closes no existi
 
 **D1 — `Validity.lean` wins over design/01.** design/01 §3/§5's `Omega`/`ShiftClosed` binder
 blocks are stale: `ShiftClosed` exists only under `Boneyard/` and `TruthAt` is four-ary. Every
-binder block was sliced mechanically from the live `Validity.lean` (`valid` :94, `ValidDense`
-:206, `ValidDiscrete` :222, `ValidDedekindDense` :310, all re-verified by symbol). Recorded diff
+binder block was sliced mechanically from the live `Validity.lean`, each source located by
+symbol rather than by the plan's line hints. (Concurrent work by a sibling agent shifted
+`Validity.lean` during this task; the in-module citations were refreshed at the end to the
+then-current `valid` :94, `ValidDense` :206, `ValidDiscrete` :243, `ValidDedekindDense` :331, and
+the binder blocks were re-diffed against the shifted file with no change in the result.)
+Recorded diff
 output shows each of the four definitions differs from its source in exactly one line — the
 conclusion, carrying the inserted premise hypothesis `(∀ ψ ∈ Γ, TruthAt M τ t ψ) →`. Bare `Type`
 throughout; zero `Type*`; zero `Omega`/`ShiftClosed` occurrences.
