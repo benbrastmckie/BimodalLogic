@@ -41,9 +41,9 @@ anywhere in the tree is closed by this module. `CompactDense` and `ModelExistenc
 ## Downstream
 
 `FormalSystem/Metalogic/StrongCompleteness.lean` imports this module. Because that module owns
-`derivable_foldr_imp_iff`, the one *theorem* of the strong-completeness group —
-`strongCompletenessDense_of_compact` — lives there rather than here; placing it in this module
-would be an import cycle.
+the `foldr`-implication bridge between finite-context and empty-context derivability, the one
+*theorem* of the strong-completeness group — `strongCompletenessDense_of_compact` — lives there
+rather than here; placing it in this module would be an import cycle.
 -/
 
 namespace FormalSystem.Metalogic
@@ -176,5 +176,49 @@ theorem not_setConsistent_of_setDerivable_bot {fc : FrameClass} {Γ : Set Formul
     (h : SetDerivable fc Γ Formula.bot) : ¬ Core.SetConsistent (fc := fc) Γ := by
   obtain ⟨L, hL, hd⟩ := h
   exact fun hcons => hcons L hL hd
+
+/-! ## Strong completeness, compactness and model existence for `FrameClass.Dense`
+
+These four definitions are **statements, not results**. None of them is discharged in this
+module, and `CompactDense` in particular is the entire remaining obligation for Dense strong
+completeness (the single-formula engine hypothesis is already dischargeable — see the note on
+`strongCompletenessDense_of_compact` in `StrongCompleteness.lean`).
+-/
+
+/-- **Strong completeness for `FrameClass.Dense`** — the reserved statement. Note that
+    `FrameClass` (`ProofSystem/Axioms.lean:519`) has constructors `Base | Dense | Discrete |
+    Dedekind`; there is no `.DedekindDense` constructor, and `FrameClass.Dense` is the correct
+    target for the `SetSemanticConsequenceDense` relation. -/
+def StrongCompletenessDense : Prop :=
+  ∀ (Γ : Set Formula) (φ : Formula),
+    SetSemanticConsequenceDense Γ φ → SetDerivable FrameClass.Dense Γ φ
+
+/-- Semantic compactness of the Dense consequence relation, stated in the form the
+    completeness derivation actually consumes: a set-consequence yields a *finite* premise list
+    whose `foldr`-implication into the conclusion is Dense-valid. -/
+def CompactDense : Prop :=
+  ∀ (Γ : Set Formula) (φ : Formula), SetSemanticConsequenceDense Γ φ →
+    ∃ L : List Formula, (∀ ψ ∈ L, ψ ∈ Γ) ∧ ValidDense (L.foldr Formula.imp φ)
+
+/-- Satisfiability of a possibly-infinite set over dense carriers. This is
+    `FormulaSatisfiable` (`Validity.lean:190`) with `(_ : DenselyOrdered D)` inserted in
+    `ValidDense`'s binder position and the conclusion generalised from a single formula to
+    `∀ ψ ∈ Γ`. -/
+def SatisfiableDenseSet (Γ : Set Formula) : Prop :=
+  ∃ (D : Type) (_ : AddCommGroup D) (_ : LinearOrder D) (_ : IsOrderedAddMonoid D)
+    (_ : DenselyOrdered D) (_ : Nontrivial D)
+    (F : TaskFrame D) (M : TaskModel F)
+    (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
+    ∀ ψ ∈ Γ, TruthAt M τ t ψ
+
+/-- The model-existence form, which is what an ultraproduct construction proves directly:
+    finite satisfiability of every finite sublist lifts to satisfiability of the whole set.
+    `ModelExistenceDense → CompactDense` is a contraposition through the `Formula.neg` clause of
+    `TruthAt` together with `truthAt_foldr_imp` (`StrongCompleteness.lean:147`); that
+    implication is future work and is not proved here. -/
+def ModelExistenceDense : Prop :=
+  ∀ Γ : Set Formula,
+    (∀ L : List Formula, (∀ ψ ∈ L, ψ ∈ Γ) → SatisfiableDenseSet {ψ | ψ ∈ L}) →
+    SatisfiableDenseSet Γ
 
 end FormalSystem.Metalogic

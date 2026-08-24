@@ -234,7 +234,7 @@ wrong the error is a binder-arity mismatch at that lemma, fix it there rather th
 
 ---
 
-### Phase 3: Add the four §5 vocabulary definitions [NOT STARTED]
+### Phase 3: Add the four §5 vocabulary definitions [COMPLETED]
 
 **Goal**: `StrongCompletenessDense`, `CompactDense`, `SatisfiableDenseSet`, and
 `ModelExistenceDense` land in `SetConsequence.lean` as pure vocabulary.
