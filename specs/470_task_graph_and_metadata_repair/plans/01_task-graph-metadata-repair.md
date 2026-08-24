@@ -573,25 +573,31 @@ jq empty specs/state.json && bash .claude/scripts/generate-todo.sh
 
 ---
 
-### Phase 8: Final verification gate [NOT STARTED]
+### Phase 8: Final verification gate [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: Every acceptance condition in the task's VERIFICATION section holds against the final
 tree, with the two known-stale predictions in that section handled correctly rather than chased.
 
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| `bash .claude/scripts/validate-state.sh` passes | The script's 13 FAIL lines are pre-existing schema drift, not caused by any of this task's nine defect fixes. All 13 concern fields this task never wrote: unknown top-level fields `active_goal`/`artifacts`/`last_updated`/`metadata`/`task_counts`, and unknown entry fields `blockers`/`language`/`parent_task`/`previous_status`/`priority`/`related_tasks`/`researched`/`resume_phase`. Fixing this repo-wide schema drift is explicitly out of this task's scope per its own Non-Goals ("Wiring or deprecating the vestigial `metadata`/`task_counts` schema fields... this task only corrects their current values"). | Ran `bash .claude/scripts/validate-state.sh` against `git show 71ee76cf9:specs/state.json` (the commit at the start of this task, before any Phase 1-7 edit) and confirmed the identical 13 FAILs were already present, with `Failed: 13`. The post-task run also reports `Failed: 13` (same set). The only change is `Warnings: 12 -> 10`: Phase 4's removal of task 177's duplicate `FormalSystem/` `file_scope` entry eliminated 2 of the 12 original WARN lines (a coarse-declaration WARN and a duplicate-entry WARN for that exact entry), so this task's edits strictly improved the script's output rather than regressing it. |
+
 **Tasks**:
-- [ ] **Clean regeneration.** `generate-todo.sh` completes with no undeclared-topic warnings and no
-      stderr output.
-- [ ] **Dangling-edge check — UNION scan, mandatory.** Every dependency edge in every live
+- [x] **Clean regeneration.** `generate-todo.sh` completes with no undeclared-topic warnings and no
+      stderr output. *(completed: 0 bytes stderr)*
+- [x] **Dangling-edge check — UNION scan, mandatory.** Every dependency edge in every live
       `active_projects` task must resolve in `active_projects` **∪** `specs/archive/state.json`'s
       `archived_projects` **∪** its `completed_projects`. Research confirmed 21 edges (361, 414,
       439, 448, 454, 452, 420, 165, 402, 131, 440, 441, 375, 170, 408, 297, 343, 295, 274, 230,
       437) resolve **only** in the archive. **A scan of `active_projects` alone reports these 21 as
       false dangling edges. Do NOT "fix" them.** After Phase 6 the seven newly-archived tasks join
       this archive-only set, so the archive-only list will have grown — that is expected and
-      correct, not a regression.
-- [ ] **421's criterion** names check C3 and the figure 1 (re-assert Phase 1's result against the
-      final file).
-- [ ] **Wave ordering for 426 and 95.** The task's own VERIFICATION section predicts "426 and 95
+      correct, not a regression. *(completed: union-dangling = 0. The live archive-only set grew to 22 -- 408 and 437 dropped out (their only referencing tasks were themselves among the 7 archived), and 432/436/460 joined (now-archived tasks still referenced by live tasks). Both changes are exactly the expected mechanism, not new defects.)*
+- [x] **421's criterion** names check C3 and the figure 1 (re-assert Phase 1's result against the
+      final file). *(completed: re-confirmed "unchanged at 1" and "C3" both present)*
+- [x] **Wave ordering for 426 and 95.** The task's own VERIFICATION section predicts "426 and 95
       appear in wave 1 and wave 2 respectively". **That prediction is stale** — it was written
       before the addendum's "ADDITIONAL EDGES APPLIED AT THE SAME TIME" block added the `426 <- 470`
       edge, which pushes 426 one wave later, and 95's position follows transitively from 169's own
@@ -599,17 +605,17 @@ tree, with the two known-stale predictions in that section handled correctly rat
       will shift absolute wave numbers again. **Assert the ordering relation, not the literal wave
       numbers**: 426's wave is strictly greater than 470's, and 95's wave is strictly greater than
       169's. Record the actual absolute numbers observed, and note in the summary that the task's
-      literal prediction was superseded by its own addendum.
-- [ ] **No unsanctioned terminal transitions.** Diff the status of every task against the
+      literal prediction was superseded by its own addendum. *(completed: final absolute waves observed are 470=wave 1, 426=wave 2 (2>1 holds); 169=wave 4, 95=wave 5 (5>4 holds). Both ordering relations verified; stderr from generate-task-order.sh --print was 0 bytes)*
+- [x] **No unsanctioned terminal transitions.** Diff the status of every task against the
       pre-Phase-6 snapshot; the only tasks whose status changed to a terminal value must be those
-      `/todo` archived, and they must have been `completed` before `/todo` ran.
-- [ ] **Counters still agree** (re-assert Phase 7's checks — nothing after Phase 7 should have
-      changed the array, so a mismatch here means something did).
-- [ ] `bash .claude/scripts/validate-state.sh` passes.
-- [ ] Write the implementation summary, recording: which items required writes, which were
+      `/todo` archived, and they must have been `completed` before `/todo` ran. *(completed: diffed the original pre-task active_projects[].project_number set against the final live set -- exactly the 7 expected numbers (432,436,457,458,459,460,467) were removed, zero added, zero unexpected removals)*
+- [x] **Counters still agree** (re-assert Phase 7's checks — nothing after Phase 7 should have
+      changed the array, so a mismatch here means something did). *(completed: metadata.total_tasks == task_counts.total == active_projects length == 42, re-confirmed)*
+- [x] `bash .claude/scripts/validate-state.sh` passes. *(deviation: FAILS with the same 13 FAIL lines that were already present in the pre-task baseline commit (71ee76cf9), verified by running validate-state.sh directly against that commit's state.json blob. None of the 13 FAILs involve a field this task wrote (they concern pre-existing schema drift: unknown top-level fields active_goal/artifacts/last_updated/metadata/task_counts, and unknown entry fields blockers/language/parent_task/previous_status/priority/related_tasks/researched/resume_phase on tasks this task never touched). This task's edits strictly IMPROVED the WARN count (12 -> 10: Phase 4 removed 177's duplicate FormalSystem/ file_scope entry, which had produced 2 of the 12 pre-task WARN lines). Fixing the 13 pre-existing FAILs is explicitly out of scope per this plan's own Non-Goals ("Wiring or deprecating the vestigial metadata/task_counts schema fields... this task only corrects their current values"). Recorded here rather than silently claimed as passing, per the task's Scope Hypothesis Discipline.)*
+- [x] Write the implementation summary, recording: which items required writes, which were
       verify-only, the `UnorderedSuccessorLabelClosed` skip and its reason, the 468-will-find-177-
       already-fixed note, the stale-wave-prediction finding, and the vestigial-counter-fields
-      follow-up recommendation.
+      follow-up recommendation. *(completed)*
 
 **Timing**: 30 minutes
 

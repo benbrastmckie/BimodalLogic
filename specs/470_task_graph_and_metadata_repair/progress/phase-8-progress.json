@@ -1,0 +1,21 @@
+{
+  "phase": 8,
+  "phase_name": "Final verification gate",
+  "started_at": "2026-08-24T01:40:00Z",
+  "last_updated": "2026-08-24T02:00:00Z",
+  "objectives": [
+    {"id": 1, "description": "Run the full Phase 8 verification block: clean regen, union dangling-edge scan, 421 criterion, wave ordering relation, terminal-transition diff, counters, validate-state.sh", "status": "done", "files_touched": []}
+  ],
+  "current_objective": 1,
+  "approaches_tried": [],
+  "deviations": [
+    {
+      "task_id": "8.7",
+      "description": "bash .claude/scripts/validate-state.sh passes",
+      "type": "excluded",
+      "reason": "Script's 13 FAIL lines are pre-existing schema drift verified present in the pre-task baseline commit (71ee76cf9), unrelated to any of the nine defects this task fixes, and explicitly out of scope per the plan's own Non-Goals.",
+      "annotation": "closed via #### Reasoned Exclusions record on the phase heading"
+    }
+  ],
+  "handoff_count": 0
+}
