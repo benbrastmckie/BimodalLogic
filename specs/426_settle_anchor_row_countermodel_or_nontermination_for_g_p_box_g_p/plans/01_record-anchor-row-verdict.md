@@ -1,7 +1,7 @@
 # Implementation Plan: Task #426
 
 - **Task**: 426 - Settle anchor row: countermodel or non-termination for `(G p) → □(G p)`
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/426_settle_anchor_row_countermodel_or_nontermination_for_g_p_box_g_p/reports/01_settle-anchor-row-verdict.md`
@@ -118,34 +118,34 @@ concurrently; Phase 3 edits the same file as Phase 2 and is therefore serialized
 
 ---
 
-### Phase 1: Reproduce the verdict and bracket the ceiling [NOT STARTED]
+### Phase 1: Reproduce the verdict and bracket the ceiling [COMPLETED]
 
 **Goal**: Independently re-derive every number that Phases 2-4 will write into source, so no
 committed assertion rests on a docstring or a prior report. Produce a measurement record.
 
 **Tasks**:
 
-- [ ] Write a scratch `lake env lean` file (see the research report's §7 shape; no `lake build`
+- [x] Write a scratch `lake env lean` file (see the research report's §7 shape; no `lake build`
       required if the `.olean` tree is current) importing `FormalSystem.Metalogic.Decidability`
       and defining `p`, `gp := Formula.allFuture p`, `φ := gp.imp gp.box`.
-- [ ] Measure `decide φ` and record the tuple
+- [x] Measure `decide φ` and record the tuple
       `(isValid, isInvalid, isFuelExhausted, isExtractionFailed, isUndecided)`.
-- [ ] Measure `(decide φ).getCountermodel?.isSome`.
-- [ ] Bracket the ceiling from **both** sides: evaluate `buildTableau φ n .Base` across
+- [x] Measure `(decide φ).getCountermodel?.isSome`.
+- [x] Bracket the ceiling from **both** sides: evaluate `buildTableau φ n .Base` across
       `n ∈ [0, 40]` plus `45, 50, 60, 80, 100, 200, 400, 1000`; record the largest `n` returning
       `none` and the smallest returning `.hasOpen`, together with the open-branch length at each
       tested `n ≥` the ceiling (confirm it is stationary).
-- [ ] Split the two stages at and just below the ceiling: call
+- [x] Split the two stages at and just below the ceiling: call
       `expandBranchWithFuel ib fuel TimeOrdering.empty .Base` directly, then `findUnexpanded` on
       its `.inr` payload, to confirm the sub-ceiling `none` is genuine exhaustion inside
       `expandBranchWithFuel` and **not** the "still not saturated" arm.
-- [ ] Run the same two-stage diagnostic on `ψ := F (G p)`: record `buildTableau ψ n .Base` across
+- [x] Run the same two-stage diagnostic on `ψ := F (G p)`: record `buildTableau ψ n .Base` across
       `n ∈ {10, 25, 50, 100, 200, 500, 1000, 2048, 4096}`, the `expandBranchWithFuel` branch
       length at each (confirm stationary), that `findUnexpanded` is `some _` at every fuel, and
       the identity of the residual formula before and after `saturateBlocked`.
-- [ ] Measure `decide` constructor tuples and `getCountermodel?.isSome` for row A
+- [x] Measure `decide` constructor tuples and `getCountermodel?.isSome` for row A
       (`(¬F p) → □(¬F p)`) and row C (`(¬P p) → □(¬P p)`) — the inputs Phase 3 needs.
-- [ ] Write the measurement table to
+- [x] Write the measurement table to
       `specs/426_settle_anchor_row_countermodel_or_nontermination_for_g_p_box_g_p/reports/02_measured-constants.md`,
       including the exact scratch-file source so the numbers are reproducible.
 
