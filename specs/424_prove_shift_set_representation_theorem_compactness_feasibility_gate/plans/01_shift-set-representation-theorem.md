@@ -279,21 +279,21 @@ exactly the shift orbits.
 
 ---
 
-### Phase 4: `ShiftTruth` and the forward direction [IN PROGRESS]
+### Phase 4: `ShiftTruth` and the forward direction [COMPLETED]
 
 **Goal**: Define shift-set truth with `box` ranging over the whole carrier, and prove
 `forward_repr` by induction on the formula.
 
 **Tasks**:
-- [ ] Define `ShiftTruth (S : ShiftSet D) : S.Carrier → D → Formula → Prop` with all six clauses
+- [x] Define `ShiftTruth (S : ShiftSet D) : S.Carrier → D → Formula → Prop` with all six clauses
       (`atom`, `bot`, `imp`, `box`, `untl`, `snce`), matching `TruthAt`'s clause structure
       (`FormalSystem/Semantics/Truth.lean:159-167`). `box` quantifies over the whole carrier —
       there is no `Omega` parameter anywhere in the current semantics.
-- [ ] Prove `forward_repr` in the verbatim statement shape fixed above, by
+- [x] Prove `forward_repr` in the verbatim statement shape fixed above, by
       `induction φ generalizing w t`. The `box` case is where `hist_isTotal` (forward) and
       `total_eq_orbit` (backward) are consumed.
-- [ ] Docstring `forward_repr` as the FORWARD DIRECTION of the representation theorem.
-- [ ] Verify: `lake env lean FormalSystem/Semantics/ShiftSet.lean`.
+- [x] Docstring `forward_repr` as the FORWARD DIRECTION of the representation theorem.
+- [x] Verify: `lake env lean FormalSystem/Semantics/ShiftSet.lean`.
 
 **Timing**: 1 hour
 
@@ -311,7 +311,7 @@ exactly the shift orbits.
 
 ---
 
-### Phase 5: `ts_zero`, `ts_add`, `rev_sep`, `ofModel`, and the reverse direction [NOT STARTED]
+### Phase 5: `ts_zero`, `ts_add`, `rev_sep`, `ofModel`, and the reverse direction [IN PROGRESS]
 
 **Goal**: Build the shift set induced by an arbitrary task model and prove `reverse_repr`.
 

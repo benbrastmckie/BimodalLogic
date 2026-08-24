@@ -229,6 +229,59 @@ theorem total_eq_orbit (S : ShiftSet D) (σ : WorldHistory S.frame) (hσ : σ.Is
   rw [sub_zero] at this
   exact this
 
+/--
+Truth on a shift set, clause for clause parallel to `TruthAt`
+(`FormalSystem/Semantics/Truth.lean`).
+
+The `box` clause quantifies over the **whole carrier**: there is no `Omega` parameter anywhere in
+the current semantics, and `TruthAt`'s own `box` clause quantifies over all total histories of
+the frame, which under `ShiftSet.frame` are exactly the orbits (`total_eq_orbit`).
+-/
+def ShiftTruth (S : ShiftSet D) : S.Carrier → D → Formula → Prop
+  | w, t, Formula.atom p => S.A p (S.sh w t)
+  | _, _, Formula.bot => False
+  | w, t, Formula.imp φ ψ => ShiftTruth S w t φ → ShiftTruth S w t ψ
+  | _, t, Formula.box φ => ∀ v : S.Carrier, ShiftTruth S v t φ
+  | w, t, Formula.untl ψ φ => ∃ s : D, t < s ∧ ShiftTruth S w s φ ∧
+      ∀ r : D, t < r → r < s → ShiftTruth S w r ψ
+  | w, t, Formula.snce ψ φ => ∃ s : D, s < t ∧ ShiftTruth S w s φ ∧
+      ∀ r : D, s < r → r < t → ShiftTruth S w r ψ
+
+/--
+**FORWARD DIRECTION of the representation theorem.**
+
+Truth in the task model induced by a shift set, evaluated along the orbit history through `w`,
+is shift-set truth at `w`. The `box` case is where `hist_isTotal` (left to right) and
+`total_eq_orbit` (right to left) are consumed; every other case is a structural transport.
+-/
+theorem forward_repr (S : ShiftSet D) (w : S.Carrier) (t : D) (φ : Formula) :
+    TruthAt S.model (S.hist w) t φ ↔ ShiftTruth S w t φ := by
+  induction φ generalizing w t with
+  | atom p => exact ⟨fun ⟨_, h⟩ => h, fun h => ⟨trivial, h⟩⟩
+  | bot => exact Iff.rfl
+  | imp ψ χ ihψ ihχ =>
+    exact ⟨fun h hψ => (ihχ w t).mp (h ((ihψ w t).mpr hψ)),
+           fun h hψ => (ihχ w t).mpr (h ((ihψ w t).mp hψ))⟩
+  | box ψ ih =>
+    constructor
+    · intro h v
+      exact (ih v t).mp (h (S.hist v) (S.hist_isTotal v))
+    · intro h σ hσ
+      rw [total_eq_orbit S σ hσ]
+      exact (ih _ t).mpr (h _)
+  | untl ψ χ ihψ ihχ =>
+    constructor
+    · rintro ⟨s, hs, he, hg⟩
+      exact ⟨s, hs, (ihχ w s).mp he, fun r h1 h2 => (ihψ w r).mp (hg r h1 h2)⟩
+    · rintro ⟨s, hs, he, hg⟩
+      exact ⟨s, hs, (ihχ w s).mpr he, fun r h1 h2 => (ihψ w r).mpr (hg r h1 h2)⟩
+  | snce ψ χ ihψ ihχ =>
+    constructor
+    · rintro ⟨s, hs, he, hg⟩
+      exact ⟨s, hs, (ihχ w s).mp he, fun r h1 h2 => (ihψ w r).mp (hg r h1 h2)⟩
+    · rintro ⟨s, hs, he, hg⟩
+      exact ⟨s, hs, (ihχ w s).mpr he, fun r h1 h2 => (ihψ w r).mpr (hg r h1 h2)⟩
+
 end ShiftSet
 
 end FormalSystem.Semantics
