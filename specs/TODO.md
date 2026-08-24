@@ -1937,6 +1937,39 @@ both of which require asking the user first:
       agent-system/extensions/<appropriate-extension>/context/, and committed there.
 
 Do not silently satisfy item (7) by writing into `.claude/`.
+=== ITEM (7) DROPPED FROM SCOPE -- 2026-08-24, user decision ===
+
+Item (7) ("Integrate into agent context (.claude/context/project/dataset/) so /implement for
+dataset tasks runs sync-all as post-implementation step") is REMOVED from this task's scope. It is
+not a defect and not deferred -- it is out of scope here, permanently, and no successor task owns
+it in this repository.
+
+WHY. The disposition options recorded above were put to the user on 2026-08-24 and option (a) was
+chosen. Three considerations decided it:
+
+  1. `.claude/` here is gitignored (`.gitignore:81`, zero tracked files) and regenerated wholesale
+     from /home/benjamin/.config/nvim/agent-system/, a separate git repo. A file written to
+     `.claude/context/project/dataset/` is destroyed on the next agent-system reload.
+  2. Filing it in the nvim tracker instead was considered and declined. There is no `dataset`
+     extension in that source store (verified 2026-08-24: core, cslib, email, epidemiology,
+     filetypes, formal, founder, latex, lean, literature, memory, nix, nvim, present, python,
+     slidev, typst, web, z3), and a BimodalLogic-specific post-implementation hook placed in the
+     shared global agent-system would deploy to every repository that loads it. It would have to be
+     generalized into a repo-local hook mechanism first -- a different and larger piece of work
+     than this task.
+  3. The `.syncprotect` escape hatch (project root; honored by deploy-headless.sh and the picker's
+     sync path) would survive a reload, but leaves the file untracked and unbacked-up in a repo
+     where everything else is version-controlled.
+
+WHAT REMAINS IN SCOPE. Items (1) through (6) and (8), unchanged and unaffected -- they are ordinary
+repository work under `data/`: `data/scripts/sync-all.py`, `data/README.md`,
+`data/dataset-card.md`, `croissant.json`, `bmlogic-bench-splits.json`, schema validation, the
+train/benchmark contamination check, and the metadata-key consistency check. Do not treat the
+removal of item (7) as reducing any of them.
+
+IF THE HOOK IS WANTED LATER. `sync-all.py` is a plain script with CI-friendly exit codes (item 5).
+Wire it from repository CI or run it manually after a regeneration. That reaches the same outcome
+without depending on agent-system context at all.
 
 ---
 

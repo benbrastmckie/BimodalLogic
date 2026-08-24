@@ -213,7 +213,7 @@ Anything written to `.claude/` here is destroyed on the next reload.
 |---|---|---|
 | **466** | **ABANDONED here** 2026-08-24 | `update-plan-status.sh` silently no-ops on a non-conforming Status line. Handed to the nvim session for filing via `/meta`. Full description retained in `specs/archive/state.json` as the record. |
 | **471** | **ABANDONED — the finding was WRONG** | The claimed `roadmap-integration.sh` stdout defect does not exist: the comment is written to stderr (`:319`, `>&2`), and `/review`'s documented `$( )` capture works. The reviewer caused the parse error by invoking with `2>&1`. Retracted; see issue L-1. |
-| **231** item (7) | Annotated, task stays | Cannot be completed from this repo. Recommended: drop item (7), keep the other seven sub-targets here. |
+| **231** item (7) | **DROPPED from scope** 2026-08-24 | Cannot be completed from this repo. The user chose disposition (a): item (7) is removed permanently and no successor owns it here. Filing it in the nvim tracker was considered and declined — that source store has no `dataset` extension, and a BimodalLogic-specific post-implementation hook placed in the shared global system would deploy to every repo that loads it. The `.syncprotect` route was also declined (survives reload, but leaves the file untracked). Items (1)-(6) and (8) are unaffected `data/` work and the task stays here. If the hook is wanted later, wire `sync-all.py` from CI — it already has CI-friendly exit codes. |
 
 Both abandonments were verified safe: nothing depended on either task, and the graph has zero
 dangling edges afterward.
