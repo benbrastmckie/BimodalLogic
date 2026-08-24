@@ -324,7 +324,7 @@ Option C.
 
 ---
 
-### Phase 5: Acceptance gate — all five design/01 §6 criteria [NOT STARTED]
+### Phase 5: Acceptance gate — all five design/01 §6 criteria [COMPLETED]
 
 **Goal**: Every acceptance criterion in the task description is demonstrated by a command whose
 output is recorded, not by assertion.

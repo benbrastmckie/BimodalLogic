@@ -1,0 +1,3 @@
+### Criterion 5 — full lake build from repository root
+Build completed successfully (2462 jobs).
+EXIT=0
