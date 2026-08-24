@@ -48,6 +48,35 @@ to the second is written anywhere, because extracting an equivalence to `Fin n` 
 destroying precisely the property the effective version exists to obtain. The theorem below is
 proved **directly**, with no presentation appearing anywhere in it.
 
+### The scope of that objection
+
+Read the paragraph above as what it is: a claim about **emitting an evaluable certificate**. In
+that setting a `Classical.choice`-produced `IntPresentation` really is worthless, because the whole
+point of the object is that it compute, and one obtained by extraction does not.
+
+The objection does **not** transfer to a setting where the classically produced presentation is
+only *quantified over* and never evaluated — as in a statement of the form
+`¬ ValidDiscrete φ → ∃ P ∈ cands φ, ∃ w, SatAtState P w φ.neg`, where the decision procedure ranges
+over its own independently constructed `cands φ` and never sees the `P` the existence proof
+produced. There, `Classical.choice` sits in the proof *about* the data and computability survives
+it; `Decidability/BiLasso/Check.lean`'s `instDecidableSatAtState` is the worked instance —
+kernel-evaluable, yet measuring `[propext, Classical.choice, Quot.sound]`.
+
+There is a second and sharper reason it cannot bite there. `Fin n → Fin n → Bool` is a `Fintype`
+with `DecidableEq`, so a `step` function defined via `Classical.dec` is nonetheless **equal** to
+one of the finitely many enumerable functions of that type. A classically constructed presentation
+is thereby automatically captured by a computable enumeration of the presentations of the same
+`card`: the existential and the enumeration meet, and no extraction ever happens. What genuinely
+does not work is enumerating at a **cardinality bound**, because `IntPresentation.val` is a
+function on the `Infinite` type `Atom` — see `IntPresentation.lean`.
+
+Both points are compiled rather than argued:
+`specs/469_eliminate_the_bridge_filtration_into_intpresentation/evidence/decidability-assembly-family-probe.lean`
+elaborates the assembly sorry-free at `[propext, Classical.choice, Quot.sound]`, alongside
+`soundness-half-probe.lean` and the single-presentation variant
+`decidability-assembly-probe.lean`. None of this weakens the objection where it applies; it fixes
+where that is.
+
 ## Main Results
 
 - `FormalSystem.Semantics.exists_repeat_of_card_le` — pigeonhole on a window of `Nat.card W`

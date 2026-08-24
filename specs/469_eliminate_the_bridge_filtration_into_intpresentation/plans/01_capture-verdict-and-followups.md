@@ -324,7 +324,7 @@ both were written, since the two carry different audiences.
 
 ---
 
-### Phase 4: Scope the `Classical.choice` objection in `PeriodicExtension.lean` [NOT STARTED]
+### Phase 4: Scope the `Classical.choice` objection in `PeriodicExtension.lean` [COMPLETED]
 
 **Goal**: The module docstring's objection is correct for what it is about and misleading when read
 as a general claim. Record the scope boundary — and nothing else. This phase is isolated so its
@@ -332,9 +332,9 @@ diff can be read on its own against the task's explicit "does not touch `Periodi
 existing theorems" non-goal.
 
 **Tasks**:
-- [ ] Read the module docstring block containing the "no bridge from the first to the second"
+- [x] Read the module docstring block containing the "no bridge from the first to the second"
       paragraph.
-- [ ] Append a scoping note, in that block only: the objection is about *emitting an evaluable
+- [x] Append a scoping note, in that block only: the objection is about *emitting an evaluable
       certificate*, where a `Classical.choice`-produced presentation is worthless because the
       object must compute. It does not bite where the classically produced presentation is only
       quantified over and never evaluated. Record the second, sharper reason: `Fin n → Fin n →
@@ -342,7 +342,7 @@ existing theorems" non-goal.
       to one of the finitely many enumerable functions — the existential and a computable
       enumeration meet without any extraction happening. Cite the compiled probe under this task's
       `evidence/` directory by filename.
-- [ ] `lake build` the module.
+- [x] `lake build` the module.
 
 **Timing**: 0.5 hours
 
@@ -352,6 +352,17 @@ existing theorems" non-goal.
 
 **Files to modify**:
 - `FormalSystem/Semantics/Extension/PeriodicExtension.lean` — module docstring block only
+
+**Phase 4 record**: one hunk, `@@ -48,6 +48,35 @@` — 29 added lines, zero removed. The module
+docstring block runs lines 13–86; the first `theorem` is at line 104, so the diff is confined to
+the docstring by measurement, not by inspection. Added subsection "The scope of that objection":
+the objection is about emitting an evaluable certificate; it does not bite where the classically
+produced presentation is only quantified over (with `instDecidableSatAtState` as the worked
+instance — kernel-evaluable yet measuring `[propext, Classical.choice, Quot.sound]`); and the
+sharper `Fintype`/`DecidableEq` reason, with the caveat that what genuinely fails is enumeration at
+a *cardinality* bound, because of `val`'s `Infinite` domain. All three `evidence/` probe files
+cited by filename. Module built green; the manifest line for it is present and untouched, and C6
+still reports 37 unreachable modules.
 
 **Verification**:
 - `git diff` for this file is confined to lines inside the `/-! … -/` module docstring; zero
