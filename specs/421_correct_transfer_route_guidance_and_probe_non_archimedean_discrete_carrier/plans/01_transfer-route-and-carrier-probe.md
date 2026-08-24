@@ -1,7 +1,7 @@
 # Implementation Plan: Task #421
 
 - **Task**: 421 - Correct transfer route guidance and probe non-Archimedean discrete carrier
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 2 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/421_correct_transfer_route_guidance_and_probe_non_archimedean_discrete_carrier/reports/01_transfer-route-and-discrete-carrier.md`
@@ -350,28 +350,28 @@ expected counts in Phase 5.
 
 ---
 
-### Phase 5: Full acceptance gate [IN PROGRESS]
+### Phase 5: Full acceptance gate [COMPLETED]
 
 **Goal**: Every acceptance criterion in the task description is checked and recorded, including
 the whole-tree build that the single-module builds of Phases 3-4 do not cover.
 
 **Tasks**:
-- [ ] Run the full `lake build` (not a single-module build) and confirm it is green.
-- [ ] Run `bash scripts/check-module-invariants.sh` and confirm ALL CHECKS PASSED, with C3
+- [x] Run the full `lake build` (not a single-module build) and confirm it is green.
+- [x] Run `bash scripts/check-module-invariants.sh` and confirm ALL CHECKS PASSED, with C3
       reporting the sole structural sorry as `countermodel_discrete` in
       `FormalSystem/Metalogic/WeakCanonical/Transfer.lean`.
-- [ ] Compare C7 counts against the research baseline and confirm the expected deltas (see Scope
-      Hypothesis below).
-- [ ] Confirm C2 axiom sets are unchanged from the research baseline:
+- [x] Compare C7 counts against the research baseline and confirm the expected deltas (see Scope
+      Hypothesis below). *(deviation: altered — actual 451/397/414/37 vs predicted 449/395/412/37; the +2 is baseline drift from tasks 423 and 424 landing `SetConsequence.lean` and `ShiftSet.lean` concurrently, verified via `git log --diff-filter=A`. Unreachable held at 37, confirming the wiring.)*
+- [x] Confirm C2 axiom sets are unchanged from the research baseline:
       `completeness = [propext, sorryAx, Classical.choice, Quot.sound]`;
       `completeness_dense` / `completeness_discrete` / `countermodel_dense` each
       `[propext, Classical.choice, Quot.sound]`.
-- [ ] Re-run the Phase 1 and Phase 2 greps as a final check.
-- [ ] Record the `#print axioms` acceptance criterion as **vacuously satisfied**: the probe uses
+- [x] Re-run the Phase 1 and Phase 2 greps as a final check.
+- [x] Record the `#print axioms` acceptance criterion as **vacuously satisfied**: the probe uses
       `example` exclusively and therefore creates no named constants to inspect. Do NOT add a
       named theorem to make the criterion non-vacuous — that would diverge from the mirrored
       CarrierProbe pattern the task asked for.
-- [ ] Watch the build for any new elaboration slowdown or instance diamond attributable to the
+- [x] Watch the build for any new elaboration slowdown or instance diamond attributable to the
       `Prod` / `Prod.Lex` ordered-monoid instances now entering the main closure. If one appears,
       report it rather than silently working around it.
 
@@ -404,16 +404,16 @@ the wiring is wrong, before treating it as a pass.
 
 ## Testing & Validation
 
-- [ ] `lake build FormalSystem.Metalogic.BXCanonical.DiscreteCarrierProbe` succeeds with no
+- [x] `lake build FormalSystem.Metalogic.BXCanonical.DiscreteCarrierProbe` succeeds with no
       file-attributable errors or warnings.
-- [ ] Full `lake build` is green.
-- [ ] `scripts/check-module-invariants.sh` reports ALL CHECKS PASSED.
-- [ ] C3's sole structural sorry remains `countermodel_discrete` in `Transfer.lean`; the live
+- [x] Full `lake build` is green.
+- [x] `scripts/check-module-invariants.sh` reports ALL CHECKS PASSED.
+- [x] C3's sole structural sorry remains `countermodel_discrete` in `Transfer.lean`; the live
       non-Boneyard sorry count is 1.
-- [ ] C2 axiom sets match the research baseline exactly (no new `sorryAx` anywhere).
-- [ ] The `"Two candidate routes: (i) a Base-MCS"` block is absent from `Transfer.lean`.
-- [ ] The `sorry` at `Transfer.lean` is byte-identical to its pre-task state.
-- [ ] `#print axioms` criterion recorded as vacuously satisfied, with the reason stated.
+- [x] C2 axiom sets match the research baseline exactly (no new `sorryAx` anywhere).
+- [x] The `"Two candidate routes: (i) a Base-MCS"` block is absent from `Transfer.lean`.
+- [x] The `sorry` at `Transfer.lean` is byte-identical to its pre-task state.
+- [x] `#print axioms` criterion recorded as vacuously satisfied, with the reason stated.
 
 ## Artifacts & Outputs
 

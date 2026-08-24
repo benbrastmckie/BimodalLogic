@@ -51,9 +51,63 @@ and `Mathlib.Algebra.Order.Monoid.Prod`. The latter is the non-obvious one — w
 `CompletenessDedekind` import) and carries a matching `## Architecture` entry, so the module is
 reachable from the graph and invariant C6 is unaffected.
 
-## Verification
+## Verification (Phase 5 gate, recorded)
 
-See the "Gate Results" section below for the recorded Phase 5 output.
+**Full `lake build`**: green — `Build completed successfully (2462 jobs)`, exit 0. This is a real
+whole-tree build, not a single-module build, so it covers the residual risk of the
+`Prod` / `Prod.Lex` ordered-monoid instances entering the main closure via the aggregator.
+
+**`bash scripts/check-module-invariants.sh`**: `ALL CHECKS PASSED`, exit 0.
+
+| Check | Result |
+|---|---|
+| C1 | `lake build` exits 0; `lake build BimodalTest` exits 0 |
+| C2 | all four flagship axiom sets match baseline (see below) |
+| C3 | sole structural sorry is in `theorem countermodel_discrete` (`Transfer.lean`) |
+| C4 | all 1388 import lines resolve |
+| C5 | all module-shaped paths in 1659 markdown files resolve |
+| C6 | all 37 unreachable live modules manifested; all 35 still compile in isolation |
+| C7 | 451 live .lean (397 FormalSystem / 53 Tests); 414 reachable, 37 unreachable |
+| C8 | every subdirectory has exactly one sibling aggregator |
+| C9/C10/C11 | pass |
+
+**C2 axiom sets** — unchanged from the research baseline:
+- `completeness` -> `[propext, sorryAx, Classical.choice, Quot.sound]`
+- `completeness_dense` / `completeness_discrete` / `countermodel_dense` -> each
+  `[propext, Classical.choice, Quot.sound]`
+
+No new `sorryAx` anywhere. Zero `axiom` declarations in any touched file.
+
+**Live non-Boneyard sorry count = 1**, at `Transfer.lean:1102` (the line moved from `:1084`
+purely because the replacement comment is longer; the `sorry` token itself is byte-identical —
+the cumulative diff contains no `+`/`-` line matching `sorry`).
+
+**Greps**: `Two candidate routes: (i) a Base-MCS` -> 0 hits;
+`not automatically Discrete-consistent` -> 0 hits; `U(⊥,⊤)` -> 0 hits in both touched files.
+
+### C7 delta vs the plan's Scope Hypothesis — reconciled, not waved through
+
+The plan predicted 449 live / 395 FormalSystem / 412 reachable / 37 unreachable. Actual is
+**451 / 397 / 414 / 37** — two higher than predicted on the first three counts.
+
+This is baseline drift from concurrent work, not a wiring fault. `git log --diff-filter=A`
+shows exactly three `.lean` files added under `FormalSystem/` since the research baseline:
+
+- `FormalSystem/Metalogic/BXCanonical/DiscreteCarrierProbe.lean` (this task)
+- `FormalSystem/Semantics/ShiftSet.lean` (task 424, landed concurrently)
+- `FormalSystem/Metalogic/SetConsequence.lean` (task 423, landed concurrently)
+
+So 394 -> 397 and 411 -> 414 are each +1 from this task and +2 from the other two tasks, exactly
+accounting for the discrepancy. The load-bearing number is **unreachable, which held at 37**:
+had the aggregator wiring failed, the probe would have been unreachable (38) and C6 would have
+failed it as unmanifested. The module is also absent from
+`scripts/module-invariants-manifest.txt`, confirming it is reached from the graph.
+
+### Instance-diamond / slowdown watch
+
+No new elaboration slowdown or instance diamond attributable to the `Prod` / `Prod.Lex`
+ordered-monoid instances was observed. The full build completed normally at 2462 jobs and every
+warning in the log originates in pre-existing files.
 
 ## Plan Deviations
 
