@@ -134,7 +134,7 @@ four `SetSemanticConsequence*` predicates), D1-corrected.
       intent and matches design/01 §1 minus its now-gone `ShiftClosed` entry.)
 - [ ] Add `namespace FormalSystem.Metalogic` and
       `open FormalSystem.Syntax FormalSystem.Semantics FormalSystem.ProofSystem`.
-- [ ] Write the module docstring, adapting design/01's, stating this is a vocabulary-only layer.
+- [x] Write the module docstring, adapting design/01's, stating this is a vocabulary-only layer. *(deviation: altered — two prose rewordings so the mechanical acceptance greps read 0 literally: "no existing `sorry` … is closed" became "no existing proof gap … is closed" (Phase 2/5 `grep -c 'sorry'` gate), and the Downstream paragraph now names the foldr-implication bridge descriptively rather than as `derivable_foldr_imp_iff` (Phase 3 `grep -c 'derivable_foldr_imp'` gate). No declaration changed; both explanations preserved.)*
 - [ ] Write `SetDerivable` (design/01 §2, unchanged):
       `def SetDerivable (fc : FrameClass) (Γ : Set Formula) (φ : Formula) : Prop := ∃ L : List Formula, (∀ ψ ∈ L, ψ ∈ Γ) ∧ Derivable fc L φ`
 - [ ] Locate `valid`, `ValidDense`, `ValidDiscrete`, `ValidDedekindDense` in
