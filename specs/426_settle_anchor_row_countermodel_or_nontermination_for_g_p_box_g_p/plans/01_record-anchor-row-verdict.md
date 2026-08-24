@@ -282,7 +282,7 @@ value and document it — the row's purpose is discrimination, not a particular 
 
 ---
 
-### Phase 4: Record the ceiling and diagnose the `F(G p)` witness in Fuel.lean [IN PROGRESS]
+### Phase 4: Record the ceiling and diagnose the `F(G p)` witness in Fuel.lean [COMPLETED]
 
 **Goal**: Discharge the task's (a)-branch obligation ("find and record the ceiling") in the file
 the task scoped it to, and upgrade the `F(G p)` note from a named counterexample to a diagnosed
@@ -290,13 +290,13 @@ one. Documentation only — no theorem, definition, or bound changes.
 
 **Tasks**:
 
-- [ ] In `soundFuel'`'s docstring (research anchor `:135-153`; confirm by content), add a measured
+- [x] In `soundFuel'`'s docstring (research anchor `:135-153`; confirm by content), add a measured
       anchor: `(G p) → □(G p)` saturates at the Phase-1 ceiling, against `soundFuel' = 1 048 576`
       and `worldFuel' … 1 ≈ 1.1×10¹²` for this φ (`|subformulaClosure φ| = 8`). State the ratios.
-- [ ] Word the addition so the measured figure is unmistakably **empirical** and adjacent to — not
+- [x] Word the addition so the measured figure is unmistakably **empirical** and adjacent to — not
       conflated with — the proved bounds. Nothing here weakens, strengthens, or reinterprets
       `soundFuel'`; it supplies a witness that the bound has large headroom in practice.
-- [ ] At the `resolveOpenArm = none` note (research anchor `:2256`; confirm by content), keep the
+- [x] At the `resolveOpenArm = none` note (research anchor `:2256`; confirm by content), keep the
       existing claims (both still hold) and add *why* the `F(G p)` outcome is live and why no fuel
       figure can rescue it: `expandBranchWithFuel` reaches a stationary branch at every fuel above
       the ceiling and returns the same branch, `findUnexpanded` is `some _` at every fuel, and the
@@ -305,7 +305,7 @@ one. Documentation only — no theorem, definition, or bound changes.
       the `findUnexpanded … = none` certificate can never be produced. Note that
       `trivialEventWitnessed` correctly does not suppress it, since that guard keys on the
       syntactic `event == Formula.top` and this event is `¬p`.
-- [ ] Cite durable anchors only (declaration names, file paths, measured values). No task-number
+- [x] Cite durable anchors only (declaration names, file paths, measured values). No task-number
       references — this file is outside `specs/**`.
 
 **Timing**: 0.75 hours

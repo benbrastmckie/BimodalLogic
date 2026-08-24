@@ -151,6 +151,30 @@ worlds, the figure is `worldFuel'` (this file, §4.3e), which is `soundFuel' φ 
 — to a `+1` at the engine's singleton seed, the *square* of this one. `soundFuel'` is kept because
 it remains the true and quadratically-exponentially better bound whenever the world count is one,
 which for a modal-operator-free `φ` it always is.
+
+**Measured headroom — an empirical witness, not a second bound.** Nothing in this paragraph
+weakens, strengthens, or reinterprets the figure above; it records what one concrete formula
+actually costs, so a reader can see the order of magnitude the bound leaves unused. For
+`φ = (G p) → □(G p)` (`|subformulaClosure φ| = 8`), `buildTableau φ n .Base` was evaluated at
+every `n ∈ [0, 40]` and at `45, 50, 60, 80, 100, 200, 400, 1000`: it is `none` for every
+`n ≤ 24` and `hasOpen`, with a stationary 40-formula certified open branch, for every `n ≥ 25`.
+The sub-ceiling `none` is genuine exhaustion inside `expandBranchWithFuel` — it survives raising
+`maxBranches` from its `50000` default to `10^9`, so it is the fuel arm and not the branch-budget
+arm — which makes **25 a true measured fuel ceiling for this φ**, bracketed from both sides.
+Against it:
+
+| figure | value at this `φ` | ratio to the measured 25 |
+|---|---|---|
+| measured ceiling | 25 | 1× |
+| `soundFuel φ` (`Saturation.lean`, capped runtime default) | 2 048 | ~82× |
+| `soundFuel' φ` (this definition) | 1 048 576 | ~4.2×10⁴ |
+| `worldFuel' φ 1` (§4.3e) | 1 099 512 676 352 | ~4.4×10¹⁰ |
+
+The 25 is *measured*; the other three are *computed from their definitions* at this `φ`. They are
+adjacent facts, not commensurable ones: a measurement on one formula neither confirms nor
+threatens a bound quantified over all of them. What it does show is that the T3 obligation
+`buildTableau_isSome` is not gated on the figure being tight — for this `φ` the engine finishes
+four orders of magnitude below it.
 -/
 def soundFuel' (φ : Formula) : Nat :=
   let n := (FormalSystem.Syntax.subformulaClosure φ).card
@@ -2255,7 +2279,32 @@ saturated" arm: `saturateBlocked` returned an open branch that `findClosure` doe
 that is still not saturated in the blocking-aware sense. That is precisely the configuration the
 refuted unconditional `buildTableau_isSome` died on (`φ = F(G p)`), so it is a live outcome, not a
 dead one. It therefore appears as the named per-arm hypothesis `hres` below rather than being
-proved away. Any caller of these lemmas must discharge it, and cannot do so by accident. -/
+proved away. Any caller of these lemmas must discharge it, and cannot do so by accident.
+
+**And no fuel figure can rescue that witness — the obstruction is stationary, not budgetary.**
+This was measured directly on `φ = F(G p)` at `.Base`, and it forecloses the obvious wrong move
+of raising a figure until the counterexample goes away:
+
+* `expandBranchWithFuel [F φ @ initial] n TimeOrdering.empty .Base` *succeeds* at every
+  `n ≥ 25` tested (`25, 50, 100, 200, 500, 1000, 2048, 4096`) and returns the **same**
+  21-formula open branch each time. The branch is stationary in the fuel; more fuel provably
+  buys nothing.
+* `findUnexpanded` on that branch is `some _` at every one of those fuels, so the branch never
+  becomes saturated and `buildTableau` falls into its final "still not saturated" arm and
+  returns `none` — the very arm `resolveOpenArm_eq_none_imp` isolates.
+* The residue is identifiable, and identical at fuel 25, 100 and 4096. Before
+  `saturateBlocked` the unexpanded formula is `F(G p) @ (0,4)`; after it (branch grown 21 → 25)
+  it is `T(F ¬p) @ (0,4)`, i.e. `T(untl ⊤ (p → ⊥))`. That is an **unfulfilled eventuality at a
+  blocked time**: blocking has stopped the engine minting new times, while `untlPos` remains
+  applicable at that label, so the `findUnexpanded … = none` certificate can never be produced
+  at any budget whatsoever.
+* `Decidability/Tableau.lean`'s `trivialEventWitnessed` does not suppress this eventuality, and
+  correctly so — that guard keys on the *syntactic* `event == Formula.top`, and here the event
+  is `¬p`. It is the guard that lets `(G p) → □(G p)` saturate (see `soundFuel'`); it does not
+  and should not reach this one.
+
+So `hres` is not a hypothesis awaiting a large enough constant. Discharging it requires an
+argument about eventuality fulfilment under blocking, not an arithmetic one. -/
 
 /-- **The `.split` fold preserves `isSome`**, given that each arm's own call does and that each
 arm's `resolveOpenArm` settlement does. Stated over abstract per-arm hypotheses: no `worldFuel'`,
