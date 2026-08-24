@@ -93,8 +93,8 @@ def path_exists_excl_boneyard(rel_path, base):
 def suffix_search(name, base, allow_boneyard):
     # Search the whole tree under `base` for any directory/file whose
     # path (relative to base) ends with the given suffix -- handles
-    # chapter prose that drops a shared prefix (e.g. "WeakCanonical/Kamp/
-    # Boneyard/" instead of "Metalogic/WeakCanonical/Kamp/Boneyard/").
+    # chapter prose that drops a shared prefix (e.g. "Kamp/KampWeakCanonical/"
+    # instead of "Boneyard/Kamp/KampWeakCanonical/").
     # When allow_boneyard is False, Boneyard/ subtrees are excluded from
     # the walk (mirrors --exclude-dir=Boneyard elsewhere); when True
     # (the candidate itself names a Boneyard path -- a deliberate

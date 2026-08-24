@@ -5,15 +5,22 @@ largest single subtree in the repository — larger than every other directory u
 `Metalogic/` combined. Any description of this repository's shape that omits `Kamp/`
 is wrong about the repository.
 
-## This Directory Has Its Own Boneyard
+## This Directory's Archived Work Lives in the Archive
 
-`Kamp/Boneyard/` holds 62 archived files / 27,394 lines. It is the **second** archive
-directory in the tree; the other is `FormalSystem/Boneyard/`. A `find` filter
-naming only the top-level `Boneyard` counts these 27k lines as live, which is how
-several past counts of this repository came out wrong. Re-derive counts with:
+`Kamp/` used to carry its own nested `Boneyard/`, the **second** archive directory in the
+repository. It no longer does: that archive was moved whole into
+[`FormalSystem/Boneyard/Kamp/KampWeakCanonical/`](../../../Boneyard/Kamp/KampWeakCanonical/README.md),
+and the four Kamp-facing approach directories that sat at the top-level archive's root joined it
+under [`FormalSystem/Boneyard/Kamp/`](../../../Boneyard/Kamp/README.md). A `find` filter naming
+only the top-level `Boneyard` used to count the nested archive's lines as live, which is how
+several past counts of this repository came out wrong; B0 now asserts the archive directory count
+is exactly 1, so that cannot recur silently.
+
+Archive counts are stated in exactly one place,
+[`FormalSystem/Boneyard/README.md`](../../../Boneyard/README.md). Re-derive live counts with:
 
 ```bash
-bash scripts/check-module-invariants.sh   # excludes BOTH Boneyards, by construction
+bash scripts/check-module-invariants.sh   # B0 self-test + C7 live inventory
 ```
 
 ## Structure
@@ -23,7 +30,6 @@ bash scripts/check-module-invariants.sh   # excludes BOTH Boneyards, by construc
 | loose modules | 49 | 26,160 |
 | [`NfMultiAnchorBridge/`](NfMultiAnchorBridge/README.md) | 43 | 41,859 |
 | [`EANegationFix/`](EANegationFix/README.md) | 7 | 3,227 |
-| `Boneyard/` (archived, excluded above) | 62 | 27,394 |
 
 The 49 loose modules group by what they transcribe:
 
@@ -53,9 +59,10 @@ a real hazard rather than a theoretical one.
 ## A Note on Reachability
 
 Several modules here exist specifically to hold an import edge so that a transcription
-or a refutation stays inside the build graph. Files parked in a `Boneyard/` fall under
-no glob and no CI build, so both the content and the record of what remains undone rot
-invisibly. Import edges into apparently unused transcription modules are therefore
+or a refutation stays inside the build graph. Files parked in a `Boneyard/` fall under no CI
+build, so their *content* still rots unseen -- C11 checks that an archived file's imports resolve,
+which stops the archive drifting out of sync with the tree, but nothing typechecks the proofs
+inside it. Import edges into apparently unused transcription modules are therefore
 deliberate; see the extensive import notes at the top of `NfMultiAnchorBridge.lean`.
 
 ## Related Documentation

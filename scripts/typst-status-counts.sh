@@ -105,10 +105,18 @@ SORRY_ALGEBRAIC=$(strip_and_count_sorries "${METALOGIC_DIR}/Algebraic")
 SORRY_BXCANONICAL=$(strip_and_count_sorries "${METALOGIC_DIR}/BXCanonical")
 SORRY_BUNDLE=$(strip_and_count_sorries "${METALOGIC_DIR}/Bundle")
 
-# WeakCanonical/: split out the nested Kamp/Boneyard/ archive.
-SORRY_WEAKCANONICAL_ALL=$(strip_and_count_sorries "${METALOGIC_DIR}/WeakCanonical")
-SORRY_KAMP_BONEYARD=$(strip_and_count_sorries "${METALOGIC_DIR}/WeakCanonical/Kamp/Boneyard")
-SORRY_WEAKCANONICAL_EXCL=$((SORRY_WEAKCANONICAL_ALL - SORRY_KAMP_BONEYARD))
+# WeakCanonical/: the Kamp archive used to be nested at
+# `Metalogic/WeakCanonical/Kamp/Boneyard/`, so scanning `WeakCanonical/` swept its
+# sorries up and the "excluding boneyard" figure was ALL minus the nested count. The
+# archives have since been consolidated and that subtree now lives at
+# `Boneyard/Kamp/KampWeakCanonical/`, OUTSIDE `WeakCanonical/`. Subtracting a
+# now-always-zero nested count would silently drop those archived sorries out of the
+# "including boneyard" total; they are added back explicitly instead, so both published
+# figures mean exactly what they meant before the move.
+SORRY_WEAKCANONICAL_LIVE=$(strip_and_count_sorries "${METALOGIC_DIR}/WeakCanonical")
+SORRY_KAMP_BONEYARD=$(strip_and_count_sorries "Boneyard/Kamp/KampWeakCanonical")
+SORRY_WEAKCANONICAL_ALL=$((SORRY_WEAKCANONICAL_LIVE + SORRY_KAMP_BONEYARD))
+SORRY_WEAKCANONICAL_EXCL=${SORRY_WEAKCANONICAL_LIVE}
 
 # Everything else in Metalogic/ (Core, ConservativeExtension, Decidability,
 # Relational, SoundnessLemmas, plus top-level .lean files).

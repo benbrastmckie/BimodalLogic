@@ -8,23 +8,19 @@ For the complete formal specification, see **BimodalReference** ([tex](../latex/
 
 This README provides an overview; BimodalReference contains the detailed specification of syntax, semantics, proof theory, and metalogic.
 
-## Counting Live Files: There Are TWO Boneyards
+## Counting Live Files: Exclude the Archive
 
-Before running any `find` or `grep` over this tree, note that archived code lives in
-**two** places, not one:
+Archived code lives in exactly one place, [`Boneyard/`](Boneyard/README.md), and must be excluded
+from any count of this tree. It used to live in two places -- there was a second archive nested at
+`Metalogic/WeakCanonical/Kamp/Boneyard/`, and a filter naming only the top-level directory counted
+it as live. That is not hypothetical: repeated past descriptions of this repository's size were
+wrong for exactly that reason. The archives are now consolidated, and B0 in the invariant script
+asserts the directory count is exactly **1**, so a second one reappearing fails the gate.
 
-| Boneyard | Files | Lines |
-|----------|------:|------:|
-| [`Boneyard/`](Boneyard/README.md) | 93 | 59,010 |
-| [`Metalogic/WeakCanonical/Kamp/Boneyard/`](Boneyard/Kamp/KampWeakCanonical/README.md) | 62 | 27,394 |
-
-A filter naming only the top-level `Boneyard/` counts the 27,394 lines under
-`Kamp/Boneyard/` as live. That is not hypothetical: repeated past descriptions of this
-repository's size were wrong for exactly that reason.
-
-**Do not hand-roll the count.** Use the invariant script, which hardcodes
-`-not -path '*/Boneyard/*'` for every traversal and self-tests that the pattern matches
-exactly two directories:
+**Do not hand-roll the count, and do not restate it here.** The archive's own counts are stated in
+exactly one place -- [`Boneyard/README.md`](Boneyard/README.md) -- and the live source for both
+archived and live figures is the invariant script, which filters on the `*/Boneyard/*` **name
+glob** rather than a path prefix for every traversal:
 
 ```bash
 bash scripts/check-module-invariants.sh              # B0 self-test, C7 live inventory

@@ -13,12 +13,13 @@
 # to 2026 when git has no add-record for the path.
 #
 # SKIP PREDICATES (a file is a target only if it passes BOTH):
-#   1. Its path does not match `*/Boneyard/*`. There are TWO Boneyard trees --
-#      FormalSystem/Boneyard/ (89 files) and
-#      FormalSystem/Metalogic/WeakCanonical/Kamp/Boneyard/ (62 files) -- so a
-#      predicate keyed on the top-level path alone would wrongly header 62 files.
-#   2. It does not contain a line-initial `#exit`. All 151 archived files carry one and
-#      no file outside the two Boneyard trees does, so this is an independent check on (1).
+#   1. Its path does not match `*/Boneyard/*`. The archive is one tree,
+#      FormalSystem/Boneyard/ (156 .lean files). It used to be two, and a predicate
+#      keyed on the top-level path alone wrongly headered the nested one -- which is
+#      why this stays a NAME glob rather than a path prefix.
+#   2. It does not contain a line-initial `#exit`. 155 of the 156 archived files carry
+#      one and no file outside the archive does, so this is a partial independent check
+#      on (1); the two predicates are deliberately not equivalent.
 #
 # SAFETY PREDICATE (both required before any write, else the file is reported and skipped):
 #   - no `copyright` (case-insensitive) in the first 10 lines, AND

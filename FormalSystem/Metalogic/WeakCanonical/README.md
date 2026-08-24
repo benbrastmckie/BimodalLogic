@@ -28,15 +28,15 @@ characterize expressive power and establishing completeness via normal-form redu
 | `EFGames/` | 11,872 | Ehrenfeucht-Fraisse bisimulation game engine (8 files) |
 | `Expressiveness/` | 9,503 | Expressiveness separation results (5 files) |
 | `IntegerModel/` | 5,503 | Integer model construction (6 files) |
-| `Kamp/` | 71,246 | Kamp/Reynolds separation machinery (99 files) -- by far the largest subtree in the repository, and the reason `WeakCanonical` is the riskiest thing in the tree to relocate. Carries its own local `Boneyard/`. |
+| `Kamp/` | 71,246 | Kamp/Reynolds separation machinery (99 files) -- by far the largest subtree in the repository, and the reason `WeakCanonical` is the riskiest thing in the tree to relocate. |
 | `Separation/` | 926 | Separation theorem and supporting lemmas (3 files) |
 
-The aggregator for this directory is the sibling `Metalogic/WeakCanonical.lean`,
-not a self-named file inside it. Counts above are measured, and both this
-directory's `Boneyard/` and the one under `Kamp/` are excluded from them; run
-`scripts/check-module-invariants.sh` rather than an ad-hoc `find` to re-derive
-live counts, since a filter naming only the top-level `Boneyard` silently counts
-the Kamp-local archive as live.
+The aggregator for this directory is the sibling `Metalogic/WeakCanonical.lean`, not a self-named
+file inside it. Counts above are measured and exclude the archive. `Kamp/` used to carry its own
+local `Boneyard/`, which meant a filter naming only the top-level archive counted it as live;
+the two archives are now consolidated at [`FormalSystem/Boneyard/`](../../Boneyard/README.md) and
+B0 asserts the directory count is exactly 1. Run `scripts/check-module-invariants.sh` rather than
+an ad-hoc `find` to re-derive live counts.
 
 ## Key Results
 

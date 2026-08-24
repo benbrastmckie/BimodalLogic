@@ -4,18 +4,17 @@ Soundness, completeness, and decidability for the bimodal logic TM, combining S5
 modality with linear temporal logic.
 
 This directory is the largest thing in the repository: **210 live `.lean` files**,
-of which 135 sit under `WeakCanonical/` alone. Every count below excludes **both**
-Boneyards — see [Counting Live Files](#counting-live-files).
+of which 135 sit under `WeakCanonical/` alone. Every count below excludes the archive — see
+[Counting Live Files](#counting-live-files).
 
 ## Counting Live Files
 
-There are two archive directories, not one:
-
-- `FormalSystem/Boneyard/` — 93 files / 59,010 lines
-- `FormalSystem/Metalogic/WeakCanonical/Kamp/Boneyard/` — 62 files / 27,394 lines
-
-A `find` filter naming only the top-level `Boneyard` silently counts the 27k-line
-Kamp-local archive as live. Use the invariant script rather than an ad-hoc `find`:
+Archived code lives in exactly one place, [`FormalSystem/Boneyard/`](../Boneyard/README.md),
+which is also the single place its counts are stated — this page does not restate them. There
+used to be a second archive nested at `WeakCanonical/Kamp/Boneyard/`, and a `find` filter naming
+only the top-level directory silently counted it as live. The two were consolidated, and B0 now
+asserts the archive-directory count is exactly 1. Use the invariant script rather than an ad-hoc
+`find`:
 
 ```bash
 bash scripts/check-module-invariants.sh              # C7 prints the live inventory
@@ -182,13 +181,13 @@ dominates everything else in the repository:
 | `Separation/` | 3 | 926 |
 
 `Kamp/` is the Kamp/Reynolds separation machinery: 49 loose modules plus two large
-sub-subtrees, and it carries its own local `Boneyard/`.
+sub-subtrees. It no longer carries a local `Boneyard/`; its archived work is in
+[`FormalSystem/Boneyard/Kamp/`](../Boneyard/Kamp/README.md).
 
 | Under `Kamp/` | Files | Lines |
 |---------------|------:|------:|
 | `NfMultiAnchorBridge/` | 43 | 41,859 |
 | `EANegationFix/` | 7 | 3,227 |
-| `Boneyard/` (archived, excluded from live counts) | 62 | 27,394 |
 
 `Kamp/` alone is larger than every other directory in `Metalogic/` combined. Any
 description of this repository's shape that omits it is wrong about the repository.
@@ -246,7 +245,7 @@ Locate this sorry **by content** — the enclosing theorem name — never by lin
 number. The invariant check does exactly that, so the assertion survives edits above
 it in the file.
 
-Sorries inside either `Boneyard/` are archived dead ends, not open obligations.
+Sorries inside the archive are archived dead ends, not open obligations.
 
 ## Position of `FrameConditions/`
 
@@ -290,7 +289,7 @@ correct way to re-derive any count in this document.
 
 ## Related Documentation
 
-- [Parent README](../README.md) — library overview and the two-Boneyard notice
+- [Parent README](../README.md) — library overview and the archive-exclusion notice
 - [Core](Core/README.md) · [Bundle](Bundle/README.md) · [BXCanonical](BXCanonical/README.md)
 - [WeakCanonical](WeakCanonical/README.md) · [Algebraic](Algebraic/README.md)
 - [Decidability](Decidability/README.md) · [SoundnessLemmas](SoundnessLemmas/README.md)
