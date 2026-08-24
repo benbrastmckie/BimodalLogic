@@ -11,16 +11,18 @@ next_project_number: 472
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,193,257,298,413,421,423,424,434,451,461,462,466,468,469,470,471 | -- | agent-system, algebraic-representation, automation, ... |
-| 2 | 178,231,282,296,422,425,433,455,463 | 193,298,421,423,434,462,468 | code-quality, dataset-enhancement, decidability, ... |
-| 3 | 169,219,428,464 | 231,422,433,463 | dataset-enhancement, decidability, strong_completeness |
-| 4 | 362,429,465 | 169,424,428,464 | decidability, strong_completeness |
-| 5 | 410 | 429 | decidability |
-| 6 | 411 | 410 | decidability |
-| 7 | 430 | 411 | decidability |
-| 8 | 412 | 430 | decidability |
-| 9 | 426 | 412 | completeness |
-| 10 | 95,177 | 193,426 | completeness, formula-refactor |
+| 1 | 127,128,257,298,434,461,466,470,471 | -- | agent-system, dataset-enhancement, decidability, ... |
+| 2 | 125,193,231,282,296,413,421,423,424,426,433,451,469 | 298,434,461,470 | algebraic-representation, automation, completeness, ... |
+| 3 | 178,219,422,425,462,468 | 193,231,421,423,426,451,469 | dataset-enhancement, decidability, formula-refactor, ... |
+| 4 | 169,455,463 | 422,462,468 | code-quality, decidability, strong_completeness |
+| 5 | 95,362,464 | 169,424,463 | completeness, decidability, strong_completeness |
+| 6 | 465 | 464 | decidability |
+| 7 | 428 | 433,465 | decidability |
+| 8 | 429 | 428 | decidability |
+| 9 | 410 | 429 | decidability |
+| 10 | 411 | 410 | decidability |
+| 11 | 430 | 411 | decidability |
+| 12 | 177,412 | 193,426,430 | decidability, formula-refactor |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -44,10 +46,9 @@ next_project_number: 472
 
 ### Completeness
 
-413 [NOT STARTED] — Formalize the TM+ over TM conservativity bridge in Lean 4 (paper 
 95 [NOT STARTED] — Verify and record the final axiom/sorry status of the headline me
+413 [NOT STARTED] — Formalize the TM+ over TM conservativity bridge in Lean 4 (paper 
 426 [NOT STARTED] — Settle whether the tableau engine can positively refute (G p) -> 
-  └─ 95 [NOT STARTED] — Verify and record the final axiom/sorry status of the headline me (see above)
 
 ### Dataset Enhancement
 
@@ -72,8 +73,11 @@ next_project_number: 472
   └─ 463 [NOT STARTED] — Decide `PostBlockingSettlesRun fc (mintAwareFuelAt U.card Tmax mi
     └─ 464 [NOT STARTED] — Design and land `gapPotential`, the density coordinate of the ter
       └─ 465 [NOT STARTED] — Complete the terminus restatement family at the repaired residual
+        └─ 428 [BLOCKED] — Engine totality at a quantified branch budget. Owns obstruction O (see above)
 468 [NOT STARTED] — PROGRAMME REALIGNMENT FROM A VERIFIED PROOF-STATE AUDIT: restruct
 469 [NOT STARTED] — SCOPE AND PRICE THE BI-LASSO ROUTE TO DECIDABILITY OF `FrameClass
+  └─ 462 [NOT STARTED] — Land the engine-level assembly that lets `MintPaysForTimeFixed` b (see above)
+  └─ 468 [NOT STARTED] — PROGRAMME REALIGNMENT FROM A VERIFIED PROOF-STATE AUDIT: restruct (see above)
 
 ### Formula Refactor
 
@@ -95,10 +99,11 @@ next_project_number: 472
 
 ### Strong Completeness
 
+169 [NOT STARTED] — Base (FrameClass.Base / general) WEAK completeness green: make th
+  └─ 362 [NOT STARTED] — Implement the completeness capstone under the SETTLED TERMINOLOGY
 421 [NOT STARTED] — Two deliverables on the Base weak terminus, both small.
   └─ 422 [NOT STARTED] — Construct the discrete-case analogue of the existing dense chroni
-    └─ 169 [NOT STARTED] — Base (FrameClass.Base / general) WEAK completeness green: make th
-      └─ 362 [NOT STARTED] — Implement the completeness capstone under the SETTLED TERMINOLOGY
+    └─ 169 [NOT STARTED] — Base (FrameClass.Base / general) WEAK completeness green: make th (see above)
 423 [NOT STARTED] — Create FormalSystem/Metalogic/SetConsequence.lean containing the 
   └─ 425 [NOT STARTED] — Convert the informal argument at FormalSystem/Metalogic/StrongCom
 424 [NOT STARTED] — RE-ISSUED 2026-08-18 (description rewrite only; status remains `n
@@ -329,7 +334,7 @@ Grounding: specs/reviews/review-2026-08-24.md, issues H-1, H-2, H-6, M-1, M-2, M
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: decidability
-- **Dependencies**: None
+- **Dependencies**: Task 470
 
 **Description**: SCOPE AND PRICE THE BI-LASSO ROUTE TO DECIDABILITY OF `FrameClass.Discrete`, AND COMPARE IT
 AGAINST THE TABLEAU ROUTE BEFORE FURTHER TABLEAU INVESTMENT.
@@ -506,7 +511,7 @@ result and decidability only. Grounding: specs/reviews/review-2026-08-24.md, Add
 - **Status**: [NOT STARTED]
 - **Task Type**: meta
 - **Topic**: decidability
-- **Dependencies**: None
+- **Dependencies**: Task 469, Task 426, Task 451
 - **Research**: [468_realign_task_programme_from_proof_state_audit/reports/01_proof-state-audit-and-realignment-charter.md]
 
 **Description**: PROGRAMME REALIGNMENT FROM A VERIFIED PROOF-STATE AUDIT: restructure the active task set, its
@@ -996,7 +1001,7 @@ Dependencies: 462, as a file_scope SERIALIZATION edge only (both tasks edit Mint
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: decidability
-- **Dependencies**: None
+- **Dependencies**: Task 469, Task 470
 
 **Description**: Land the engine-level assembly that lets `MintPaysForTimeFixed` be discharged at a NONEMPTY universe. This is the plumbing half of the residual task 434 left open at its Phase 8; it is explicitly proof engineering, not open mathematics, and task 434's own handoff records it as "spawnable on its own".
 
@@ -1244,7 +1249,7 @@ Deliver a survey artifact under this task's reports/ directory containing:
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: repo-hygiene
-- **Dependencies**: None
+- **Dependencies**: Task 470
 
 **Description**: CONSOLIDATE THE TWO BONEYARDS into a single archive tree under FormalSystem/Boneyard/, preserving git history via git mv, and add the missing infrastructure that keeps an UNCOMPILED archive honest.
 
@@ -1419,7 +1424,7 @@ DONE WHEN: `boxAnchoredCheck` and `temporalWitnessCheck` are dischargeable on re
 - **Status**: [BLOCKED]
 - **Task Type**: lean4
 - **Topic**: decidability
-- **Dependencies**: Task 432, Task 433, Task 434
+- **Dependencies**: Task 432, Task 433, Task 434, Task 465
 - **Plan**:
   - [428_engine_totality_at_a_quantified_branch_budget/plans/02_lexicographic-splitordered-measure.md]
   - [428_engine_totality_at_a_quantified_branch_budget/plans/03_mint-bound-irreflexivity-totality.md]
@@ -1484,7 +1489,7 @@ RESUME SEQUENCE: `/research 428` first (discharge the two uncertain claims above
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: completeness
-- **Dependencies**: Task 165, Task 412, Task 428
+- **Dependencies**: Task 470
 - **Research**: [archive/418_fix_tableau_engine_crossworld_temporalcopy_unsoundness_in_boxnegdiamondpos/artifacts/after-verdicts.md]
 
 **Description**: Settle whether the tableau engine can positively refute (G p) -> square (G p), or whether that branch provably never saturates. Context: the cross-world temporal-copy unsoundness in boxNeg/diamondPos is fixed and the engine is sound, but the fix moved this formula from a WRONG answer to NO answer rather than to the intended positive refutation. Measured post-fix: decide returns .fuelExhausted (not .invalid), getCountermodel?.isSome = false, and buildTableau returns none at fuel 30, 60, 400 and 1000 -- so the fuel ceiling is not bracketed from above and there is no evidence a larger budget helps. Pre-fix the same formula returned .extractionFailed, which under this codebase R7 semantics asserts VALIDITY of an invalid formula; the current .fuelExhausted is the only constructor isUndecided recognises, so the present state is honest-but-incomplete rather than wrong. Two hypotheses to discriminate: (a) budget -- the branch does saturate but needs more fuel, in which case find and record the ceiling; (b) non-termination -- the branch never saturates, in which case this is a termination question for FormalSystem/Metalogic/Decidability/Verified/Termination/Fuel.lean, not a budget one, and the honest deliverable is a proof or argument that no finite fuel suffices. Discriminating between (a) and (b) is the primary deliverable; producing the countermodel is the secondary one and only applies under (a). The corpus already pins this outcome directly: CrossWorldPropagationProbe row F asserts the decide constructor and builds green at (false, false, true, false, true) -- update that row if the verdict moves. Do NOT reintroduce any temporal-copy propagation block into boxNeg/diamondPos to make the branch close; that is the exact unsoundness that was removed, and reverting it would restore a false claim of validity. Note the related but SEPARATE inheritance also recorded for the parent task: the decidable-branch-gate family (boxAnchoredCheck, boxGridCheck, regionGate, regionLabelCheck, rayUpOk/rayDnOk) now computes false on every multi-world branch; that is the truth-lemma side-condition problem and is not this task.
@@ -1519,7 +1524,7 @@ Acceptance: archWitness_finitely_satisfiable, archWitness_not_satisfiable, and d
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: strong_completeness
-- **Dependencies**: Task 361, Task 414, Task 439, Task 454
+- **Dependencies**: Task 361, Task 414, Task 439, Task 454, Task 470
 
 **Description**: RE-ISSUED 2026-08-18 (description rewrite only; status remains `not_started` -- no work on the gate itself has been touched by this re-issue). Supersedes the 2026-08-10 exposure audit below: the predicted refactor has now LANDED and is ARCHIVED, so this task's governing design is re-stated against the settled, post-refactor Lean vocabulary.
 
@@ -1574,7 +1579,7 @@ Acceptance: both directions sorry-free; #print axioms clean on each; lake build 
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: strong_completeness
-- **Dependencies**: Task 361, Task 454
+- **Dependencies**: Task 361, Task 454, Task 470
 
 **Description**: Create FormalSystem/Metalogic/SetConsequence.lean containing the finitary set-derivability relation SetDerivable, the four per-class SetSemanticConsequence* predicates, the basic lemmas, and the strong-completeness / compactness / model-existence statements. Then import it from FormalSystem/Metalogic/StrongCompleteness.lean.
 
@@ -1616,7 +1621,7 @@ FOUR-AXIOM / TOTALITY EXPOSURE NOTE (added 2026-08-10; discharge recorded 2026-0
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: strong_completeness
-- **Dependencies**: Task 361, Task 448, Task 454
+- **Dependencies**: Task 361, Task 448, Task 454, Task 470
 
 **Description**: Two deliverables on the Base weak terminus, both small.
 
@@ -1634,7 +1639,7 @@ Acceptance: the refuted-route comment (the "(i) a Base-MCS ... (ii) a Henkin-sty
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: completeness
-- **Dependencies**: Task 439
+- **Dependencies**: Task 439, Task 470
 
 **Description**: Formalize the TM+ over TM conservativity bridge in Lean 4 (paper thm:ConservativeExtension, CEB/CEF/CED/CEC): add a BL base-language Formula type with primitive box/G/H, its TM axiom set and derivation trees, a translation into the existing BL+ Formula type, and prove that TM+ derivability of a translated BL-formula yields TM derivability, supplying the missing step in the paper's cor:tm-completeness route
 
@@ -1786,7 +1791,7 @@ DEPENDENCY STATUS (re-verified 2026-08-18; dependencies array now includes 424, 
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: automation
-- **Dependencies**: Task 165, Task 402, Task 448
+- **Dependencies**: Task 165, Task 402, Task 448, Task 470
 - **Research**: [193_codebase_tactic_refactor/reports/01_codebase-refactor-seed.md]
 
 **Description**: Apply validity-intro and truth-simp macros to the soundness layer.
@@ -1888,7 +1893,7 @@ Governing design document: specs/archive/361_strong_completeness_architecture_an
 - **Status**: [NOT STARTED]
 - **Task Type**: formal
 - **Topic**: algebraic-representation
-- **Dependencies**: Task 420, Task 439
+- **Dependencies**: Task 420, Task 439, Task 461
 
 **Description**: Implement a Jonsson-Tarski representation theorem for TM logic: every STSA embeds into the complex algebra of a concrete frame. Phased approach: Phase 1 — Complex algebra Cm(F): define powerset STSA for TaskFrames with box/G/H/sigma operators derived from frame relations. Prove Cm(F) satisfies all STSA axioms. Phase 2 — Ultrafilter frame Uf(A): given abstract STSA A, construct frame whose worlds are ultrafilters with canonical relations R_G, R_H, R_Box (seed infrastructure from task 163 recovery of UltrafilterChain.lean). Prove Uf(A) satisfies TaskFrame axioms. Phase 3 — Embedding theorem: prove eta(a) = {U | a in U} is an injective STSA homomorphism A into Cm(Uf(A)). Phase 4 — Since/Until extension: extend STSA typeclass with binary untl/sinc operators and prove representation for the full operator signature. Start with basic {box, G, H} fragment (Phases 1-3) before tackling S/U (Phase 4). Prerequisites: resolve 6 algebraic sorries (temp_k_dist, temp_a, temp_l in TenseS5Algebra/InteriorOperators/LindenbaumQuotient); obtain 3 missing papers (Jonsson-Tarski 1951/52, BRV 2001 Ch.5, Goldblatt 1989). Task 992 research report (01_stsa-algebraic-analysis.md) maps ~80% of needed infrastructure. Architecture: restructure Algebraic/ into Core/ (shared STSA/Boolean/ultrafilter), Completeness/ (renamed existing), Representation/ (new J-T work).
 
@@ -1900,7 +1905,7 @@ FOUR-AXIOM EXPOSURE NOTE (added 2026-08-10): Phase 2's obligation 'Prove Uf(A) s
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: completeness
-- **Dependencies**: Task 165, Task 408, Task 412, Task 426, Task 428, Task 429, Task 430, Task 432, Task 433, Task 434, Task 448
+- **Dependencies**: Task 169
 
 **Description**: Verify and record the final axiom/sorry status of the headline metalogical results, then close.
 
