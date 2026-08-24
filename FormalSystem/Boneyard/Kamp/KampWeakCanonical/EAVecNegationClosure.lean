@@ -1,4 +1,4 @@
-import FormalSystem.Metalogic.WeakCanonical.Kamp.Boneyard.VecEAArityFirewall
+import FormalSystem.Boneyard.Kamp.KampWeakCanonical.VecEAArityFirewall
 import FormalSystem.Metalogic.WeakCanonical.Kamp.EANegationClosure
 
 /-!

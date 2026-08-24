@@ -3,7 +3,7 @@
 -- Archived: 2026-06-16
 
 import FormalSystem.Metalogic.WeakCanonical.Kamp.NfCharFormula
-import FormalSystem.Metalogic.WeakCanonical.Kamp.Boneyard.RabinovichTranslation
+import FormalSystem.Boneyard.Kamp.KampWeakCanonical.RabinovichTranslation
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.

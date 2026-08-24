@@ -3,7 +3,7 @@
 -- Archived: 2026-06-16
 
 import FormalSystem.Metalogic.WeakCanonical.Kamp.NfCharFormula
-import FormalSystem.Metalogic.WeakCanonical.Kamp.Boneyard.RabinovichTranslation
+import FormalSystem.Boneyard.Kamp.KampWeakCanonical.RabinovichTranslation
 import FormalSystem.Metalogic.WeakCanonical.Kamp.RabinovichNegation
 import FormalSystem.Metalogic.WeakCanonical.Kamp.NfComposition
 import FormalSystem.Metalogic.WeakCanonical.Kamp.SeparationBridge

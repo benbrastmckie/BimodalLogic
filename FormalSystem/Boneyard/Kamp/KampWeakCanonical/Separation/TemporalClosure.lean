@@ -14,7 +14,7 @@ the k>=2 E[Sigma] re-architecture.
 Key declarations: (bit-rotted GHR separation support: TemporalClosure)
 -/
 import FormalSystem.Metalogic.WeakCanonical.Separation.Defs
-import FormalSystem.Metalogic.WeakCanonical.Kamp.Boneyard.Separation.Duality
+import FormalSystem.Boneyard.Kamp.KampWeakCanonical.Separation.Duality
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.

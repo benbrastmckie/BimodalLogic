@@ -1,5 +1,5 @@
 import FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorGateAssembleK
-import FormalSystem.Metalogic.WeakCanonical.Kamp.Boneyard.NfMultiAnchorBridgeRetired.ExteriorDeepSliceSupplyK
+import FormalSystem.Boneyard.Kamp.KampWeakCanonical.NfMultiAnchorBridgeRetired.ExteriorDeepSliceSupplyK
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.

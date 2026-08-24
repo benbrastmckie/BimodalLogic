@@ -14,18 +14,18 @@ the k>=2 E[Sigma] re-architecture.
 Key declarations: (directory aggregator for the bit-rotted GHR separation cluster)
 -/
 import FormalSystem.Metalogic.WeakCanonical.Separation.Defs
-import FormalSystem.Metalogic.WeakCanonical.Kamp.Boneyard.Separation.FormulaOps
-import FormalSystem.Metalogic.WeakCanonical.Kamp.Boneyard.Separation.IntHelpers
-import FormalSystem.Metalogic.WeakCanonical.Kamp.Boneyard.Separation.Duality
-import FormalSystem.Metalogic.WeakCanonical.Kamp.Boneyard.Separation.Distributivity
-import FormalSystem.Metalogic.WeakCanonical.Kamp.Boneyard.Separation.NegationEquiv
-import FormalSystem.Metalogic.WeakCanonical.Kamp.Boneyard.Separation.Eliminations
-import FormalSystem.Metalogic.WeakCanonical.Kamp.Boneyard.Separation.NormalForm
-import FormalSystem.Metalogic.WeakCanonical.Kamp.Boneyard.Separation.DualEliminations
-import FormalSystem.Metalogic.WeakCanonical.Kamp.Boneyard.Separation.Hierarchy.HierarchyDefs
-import FormalSystem.Metalogic.WeakCanonical.Kamp.Boneyard.Separation.Hierarchy.HierarchyInduction
-import FormalSystem.Metalogic.WeakCanonical.Kamp.Boneyard.Separation.Hierarchy.HierarchyCompletion
-import FormalSystem.Metalogic.WeakCanonical.Kamp.Boneyard.Separation.SeparationThm
+import FormalSystem.Boneyard.Kamp.KampWeakCanonical.Separation.FormulaOps
+import FormalSystem.Boneyard.Kamp.KampWeakCanonical.Separation.IntHelpers
+import FormalSystem.Boneyard.Kamp.KampWeakCanonical.Separation.Duality
+import FormalSystem.Boneyard.Kamp.KampWeakCanonical.Separation.Distributivity
+import FormalSystem.Boneyard.Kamp.KampWeakCanonical.Separation.NegationEquiv
+import FormalSystem.Boneyard.Kamp.KampWeakCanonical.Separation.Eliminations
+import FormalSystem.Boneyard.Kamp.KampWeakCanonical.Separation.NormalForm
+import FormalSystem.Boneyard.Kamp.KampWeakCanonical.Separation.DualEliminations
+import FormalSystem.Boneyard.Kamp.KampWeakCanonical.Separation.Hierarchy.HierarchyDefs
+import FormalSystem.Boneyard.Kamp.KampWeakCanonical.Separation.Hierarchy.HierarchyInduction
+import FormalSystem.Boneyard.Kamp.KampWeakCanonical.Separation.Hierarchy.HierarchyCompletion
+import FormalSystem.Boneyard.Kamp.KampWeakCanonical.Separation.SeparationThm
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.

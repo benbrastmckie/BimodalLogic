@@ -13,7 +13,7 @@ the k>=2 E[Sigma] re-architecture.
 
 Key declarations: (bit-rotted GHR DedekindZ cases)
 -/
-import FormalSystem.Metalogic.WeakCanonical.Kamp.Boneyard.Separation.DedekindZ.QLemma
+import FormalSystem.Boneyard.Kamp.KampWeakCanonical.Separation.DedekindZ.QLemma
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.

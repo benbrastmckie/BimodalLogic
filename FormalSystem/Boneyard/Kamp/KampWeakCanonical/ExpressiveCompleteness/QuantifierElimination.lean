@@ -13,7 +13,7 @@ the k>=2 E[Sigma] re-architecture.
 
 Key declarations: q_exists, q_exists_correct, int_to_ordered, past_only_is_pure_past
 -/
-import FormalSystem.Metalogic.WeakCanonical.Kamp.Boneyard.Separation.SeparationThm
+import FormalSystem.Boneyard.Kamp.KampWeakCanonical.Separation.SeparationThm
 import FormalSystem.Metalogic.WeakCanonical.MonadicFO
 
 /-!

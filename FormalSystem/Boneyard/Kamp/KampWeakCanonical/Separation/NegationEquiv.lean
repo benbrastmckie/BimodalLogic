@@ -14,8 +14,8 @@ the k>=2 E[Sigma] re-architecture.
 Key declarations: (bit-rotted GHR separation support: NegationEquiv)
 -/
 import FormalSystem.Metalogic.WeakCanonical.Separation.Defs
-import FormalSystem.Metalogic.WeakCanonical.Kamp.Boneyard.Separation.Duality
-import FormalSystem.Metalogic.WeakCanonical.Kamp.Boneyard.Separation.IntHelpers
+import FormalSystem.Boneyard.Kamp.KampWeakCanonical.Separation.Duality
+import FormalSystem.Boneyard.Kamp.KampWeakCanonical.Separation.IntHelpers
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.

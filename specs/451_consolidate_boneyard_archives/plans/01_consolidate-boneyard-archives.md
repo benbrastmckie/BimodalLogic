@@ -281,22 +281,41 @@ means content was touched and must be reverted.
 
 ---
 
-### Phase 3: Rewrite the move-broken import lines [IN PROGRESS]
+### Phase 3: Rewrite the move-broken import lines [COMPLETED]
 
 **Goal**: Restore every import that resolved before Phase 2 and broke because its target's module
 path changed. The dangling-import census must return to exactly its Phase 1 value.
 
 **Tasks**:
 
-- [ ] Rewrite the 52 intra-Kamp import lines under
+- [x] Rewrite the 52 intra-Kamp import lines under
       `FormalSystem/Boneyard/Kamp/KampWeakCanonical/**` from
       `FormalSystem.Metalogic.WeakCanonical.Kamp.Boneyard.*` to
       `FormalSystem.Boneyard.Kamp.KampWeakCanonical.*`.
-- [ ] Rewrite the 3 lines in `FormalSystem/Boneyard/Kamp/RabinovichPath/` that import
+- [x] Rewrite the 3 lines in `FormalSystem/Boneyard/Kamp/RabinovichPath/` that import
       `...Kamp.Boneyard.RabinovichTranslation`
       (`RabinovichGeneralized.lean`, `RabinovichNegation.lean`, `RabinovichWiring.lean`).
-- [ ] Re-run the census; confirm the count is back to the Phase 1 baseline (expected 65), i.e. all
+- [x] Re-run the census; confirm the count is back to the Phase 1 baseline (expected 65), i.e. all
       move-induced breakage is gone and only the pre-existing rot remains.
+
+**MEASURED** (Phase 3): pre-rewrite census **120** = baseline 65 + 55 move-broken, exactly as
+hypothesised. All 55 lines share one prefix, so a single rule
+(`FormalSystem.Metalogic.WeakCanonical.Kamp.Boneyard.` -> `FormalSystem.Boneyard.Kamp.KampWeakCanonical.`)
+restored all of them, across 26 files. Post-rewrite census is **65** and its file/module set is
+identical to the Phase 1 baseline set under the phase-2 path mapping -- no import outside the
+enumerated 55 broke. `grep -rn 'Metalogic\.WeakCanonical\.Kamp\.Boneyard' --include=*.lean` is empty.
+The slash-form `Kamp/Boneyard` survives in exactly **7 comment-only mentions across 3 live `.lean`
+files** (`Kamp/DedekindINF.lean` x1, `Kamp/NfMultiAnchorBridge/InteriorGateGeneralK.lean` x1,
+`Kamp/NfMultiAnchorBridge.lean` x5) -- the plan's predicted 7/3, deliberately untouched -- plus 3
+comment mentions inside archived files, which Phase 8 updates.
+
+**DEVIATION** (Phase 2 commit attribution): the 90 staged renames were swept into a concurrently
+running agent's commit `94da79d88` ("task 424 phase 6-7"), which staged the whole working tree.
+All 90 are recorded there as **R100**, and `git log --follow` resolves through the move for a
+sampled file in every moved subdirectory (6-77 commits of prior history each). The move is intact;
+only the commit that carries it is misattributed. History was not rewritten -- five agents were
+committing to this branch concurrently, and rewriting shared history under them would be worse
+than a wrong commit message.
 
 **Timing**: 1 hour
 

@@ -14,8 +14,8 @@ the k>=2 E[Sigma] re-architecture.
 Key declarations: (bit-rotted GHR DedekindZ Q-lemma)
 -/
 import FormalSystem.Metalogic.WeakCanonical.Separation.Defs
-import FormalSystem.Metalogic.WeakCanonical.Kamp.Boneyard.Separation.Eliminations
-import FormalSystem.Metalogic.WeakCanonical.Kamp.Boneyard.Separation.NegationEquiv
+import FormalSystem.Boneyard.Kamp.KampWeakCanonical.Separation.Eliminations
+import FormalSystem.Boneyard.Kamp.KampWeakCanonical.Separation.NegationEquiv
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.

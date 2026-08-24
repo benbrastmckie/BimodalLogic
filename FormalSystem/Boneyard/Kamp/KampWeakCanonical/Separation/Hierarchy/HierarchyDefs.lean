@@ -13,10 +13,10 @@ the k>=2 E[Sigma] re-architecture.
 
 Key declarations: (bit-rotted GHR hierarchy: HierarchyDefs)
 -/
-import FormalSystem.Metalogic.WeakCanonical.Kamp.Boneyard.Separation.NormalForm
-import FormalSystem.Metalogic.WeakCanonical.Kamp.Boneyard.Separation.TemporalClosure
-import FormalSystem.Metalogic.WeakCanonical.Kamp.Boneyard.Separation.DedekindZ.Cases
-import FormalSystem.Metalogic.WeakCanonical.Kamp.Boneyard.Separation.FormulaOps
+import FormalSystem.Boneyard.Kamp.KampWeakCanonical.Separation.NormalForm
+import FormalSystem.Boneyard.Kamp.KampWeakCanonical.Separation.TemporalClosure
+import FormalSystem.Boneyard.Kamp.KampWeakCanonical.Separation.DedekindZ.Cases
+import FormalSystem.Boneyard.Kamp.KampWeakCanonical.Separation.FormulaOps
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.

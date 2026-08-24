@@ -1,5 +1,5 @@
-import FormalSystem.Metalogic.WeakCanonical.Kamp.Boneyard.VecEA_m
-import FormalSystem.Metalogic.WeakCanonical.Kamp.Boneyard.EAVecNegationClosure
+import FormalSystem.Boneyard.Kamp.KampWeakCanonical.VecEA_m
+import FormalSystem.Boneyard.Kamp.KampWeakCanonical.EAVecNegationClosure
 import FormalSystem.Metalogic.WeakCanonical.Separation.KampTranslation
 
 /-!

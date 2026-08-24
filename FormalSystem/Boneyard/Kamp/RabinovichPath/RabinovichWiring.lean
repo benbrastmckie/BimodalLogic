@@ -2,7 +2,7 @@
 -- Reason: Dead code — Rabinovich approach path with no live downstream consumers
 -- Archived: 2026-06-16
 
-import FormalSystem.Metalogic.WeakCanonical.Kamp.Boneyard.RabinovichTranslation
+import FormalSystem.Boneyard.Kamp.KampWeakCanonical.RabinovichTranslation
 import FormalSystem.Metalogic.WeakCanonical.Kamp.NfCharFormula
 import FormalSystem.Metalogic.WeakCanonical.NormalForm
 import FormalSystem.Metalogic.WeakCanonical.PriorDefs

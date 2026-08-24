@@ -13,7 +13,7 @@ the k>=2 E[Sigma] re-architecture.
 
 Key declarations: (bit-rotted GHR hierarchy: HierarchyCompletion)
 -/
-import FormalSystem.Metalogic.WeakCanonical.Kamp.Boneyard.Separation.Hierarchy.HierarchyInduction
+import FormalSystem.Boneyard.Kamp.KampWeakCanonical.Separation.Hierarchy.HierarchyInduction
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.

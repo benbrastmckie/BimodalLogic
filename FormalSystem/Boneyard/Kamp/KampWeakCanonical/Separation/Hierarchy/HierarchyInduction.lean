@@ -13,8 +13,8 @@ the k>=2 E[Sigma] re-architecture.
 
 Key declarations: (bit-rotted GHR hierarchy: HierarchyInduction)
 -/
-import FormalSystem.Metalogic.WeakCanonical.Kamp.Boneyard.Separation.Hierarchy.HierarchyDefs
-import FormalSystem.Metalogic.WeakCanonical.Kamp.Boneyard.Separation.Hierarchy.HierarchyCaseSep
+import FormalSystem.Boneyard.Kamp.KampWeakCanonical.Separation.Hierarchy.HierarchyDefs
+import FormalSystem.Boneyard.Kamp.KampWeakCanonical.Separation.Hierarchy.HierarchyCaseSep
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.

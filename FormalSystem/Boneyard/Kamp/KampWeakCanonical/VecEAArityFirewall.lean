@@ -1,4 +1,4 @@
-import FormalSystem.Metalogic.WeakCanonical.Kamp.Boneyard.VecEA_m
+import FormalSystem.Boneyard.Kamp.KampWeakCanonical.VecEA_m
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.

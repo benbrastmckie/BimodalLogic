@@ -1,5 +1,5 @@
 import FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.Base
-import FormalSystem.Metalogic.WeakCanonical.Kamp.Boneyard.NfMultiAnchorBridgeRetired.Lemma32Reduction
+import FormalSystem.Boneyard.Kamp.KampWeakCanonical.NfMultiAnchorBridgeRetired.Lemma32Reduction
 import FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.CarrierKv
 
 /-!

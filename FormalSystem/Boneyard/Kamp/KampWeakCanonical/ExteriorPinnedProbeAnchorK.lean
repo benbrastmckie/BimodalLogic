@@ -10,7 +10,7 @@ Def 4.1, PDF p.5). Filename de-numbered on archival (durable-anchor discipline).
 
 Key declarations: kvE_probe358_eP_atomMate_present
 -/
-import FormalSystem.Metalogic.WeakCanonical.Kamp.Boneyard.ExteriorFiberConsistencyProbeK
+import FormalSystem.Boneyard.Kamp.KampWeakCanonical.ExteriorFiberConsistencyProbeK
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.

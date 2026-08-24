@@ -14,11 +14,11 @@ the k>=2 E[Sigma] re-architecture.
 Key declarations: all_separable, all_past_separable, all_future_separable, untl_separable, snce_separable
 -/
 import FormalSystem.Metalogic.WeakCanonical.Separation.Defs
-import FormalSystem.Metalogic.WeakCanonical.Kamp.Boneyard.Separation.Eliminations
-import FormalSystem.Metalogic.WeakCanonical.Kamp.Boneyard.Separation.FormulaOps
-import FormalSystem.Metalogic.WeakCanonical.Kamp.Boneyard.Separation.Distributivity
-import FormalSystem.Metalogic.WeakCanonical.Kamp.Boneyard.Separation.Duality
-import FormalSystem.Metalogic.WeakCanonical.Kamp.Boneyard.Separation.Hierarchy.HierarchyCompletion
+import FormalSystem.Boneyard.Kamp.KampWeakCanonical.Separation.Eliminations
+import FormalSystem.Boneyard.Kamp.KampWeakCanonical.Separation.FormulaOps
+import FormalSystem.Boneyard.Kamp.KampWeakCanonical.Separation.Distributivity
+import FormalSystem.Boneyard.Kamp.KampWeakCanonical.Separation.Duality
+import FormalSystem.Boneyard.Kamp.KampWeakCanonical.Separation.Hierarchy.HierarchyCompletion
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.

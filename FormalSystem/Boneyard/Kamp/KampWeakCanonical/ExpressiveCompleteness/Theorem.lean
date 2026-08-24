@@ -19,7 +19,7 @@ are the bit-rotted GHR route, superseded by the faithful path.
 
 Key declarations: separation_implies_expressiveness, US_expressively_complete_over_Z
 -/
-import FormalSystem.Metalogic.WeakCanonical.Kamp.Boneyard.ExpressiveCompleteness.QuantifierElimination
+import FormalSystem.Boneyard.Kamp.KampWeakCanonical.ExpressiveCompleteness.QuantifierElimination
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
