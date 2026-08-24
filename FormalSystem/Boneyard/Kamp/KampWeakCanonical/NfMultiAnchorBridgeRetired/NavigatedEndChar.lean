@@ -1,7 +1,7 @@
 import FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.Base
 import FormalSystem.Boneyard.Kamp.KampWeakCanonical.NfMultiAnchorBridgeRetired.Lemma32Reduction
 import FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.CarrierKv
-import FormalSystem.Boneyard.Kamp.KampWeakCanonical.NavigatedEndCharSinglePoint
+import FormalSystem.Boneyard.Kamp.KampWeakCanonical.DocumentedSingles.NavigatedEndCharSinglePoint
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.

@@ -1,5 +1,5 @@
 import FormalSystem.Metalogic.WeakCanonical.Kamp.VecEADecomp
-import FormalSystem.Boneyard.Kamp.KampWeakCanonical.ZoneBridge
+import FormalSystem.Boneyard.Kamp.KampWeakCanonical.TranslationEra.ZoneBridge
 import FormalSystem.Metalogic.WeakCanonical.Kamp.NfToVecEA
 import FormalSystem.Boneyard.Kamp.KampBypassArchive.KampBypass
 

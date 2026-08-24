@@ -1,4 +1,4 @@
-import FormalSystem.Boneyard.Kamp.KampWeakCanonical.KampComposition
+import FormalSystem.Boneyard.Kamp.KampWeakCanonical.TranslationEra.KampComposition
 import FormalSystem.Metalogic.WeakCanonical.Kamp.PriorINF
 import FormalSystem.Metalogic.WeakCanonical.Separation.KampTranslation
 

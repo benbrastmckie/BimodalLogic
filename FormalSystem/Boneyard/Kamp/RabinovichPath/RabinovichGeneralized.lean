@@ -3,10 +3,10 @@
 -- Archived: 2026-06-16
 
 import FormalSystem.Boneyard.Kamp.KampBypassArchive.NfCharFormula
-import FormalSystem.Boneyard.Kamp.KampWeakCanonical.RabinovichTranslation
+import FormalSystem.Boneyard.Kamp.KampWeakCanonical.TranslationEra.RabinovichTranslation
 import FormalSystem.Boneyard.Kamp.RabinovichPath.RabinovichNegation
-import FormalSystem.Boneyard.Kamp.KampWeakCanonical.NfComposition
-import FormalSystem.Boneyard.Kamp.KampWeakCanonical.SeparationBridge
+import FormalSystem.Boneyard.Kamp.KampWeakCanonical.VecEANormalForm.NfComposition
+import FormalSystem.Boneyard.Kamp.KampWeakCanonical.TranslationEra.SeparationBridge
 import FormalSystem.Boneyard.Kamp.KampBypassArchive.KampBypass
 
 /-!

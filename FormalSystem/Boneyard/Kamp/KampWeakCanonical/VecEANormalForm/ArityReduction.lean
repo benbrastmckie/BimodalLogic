@@ -1,4 +1,4 @@
-import FormalSystem.Boneyard.Kamp.KampWeakCanonical.NegationIndep
+import FormalSystem.Boneyard.Kamp.KampWeakCanonical.VecEANormalForm.NegationIndep
 import FormalSystem.Metalogic.WeakCanonical.Kamp.VecEAClosure
 import FormalSystem.Metalogic.WeakCanonical.Kamp.VecEATranslation
 import FormalSystem.Metalogic.WeakCanonical.Kamp.PriorINF

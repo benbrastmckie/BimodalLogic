@@ -3,7 +3,7 @@
 -- Archived: 2026-06-16
 
 import FormalSystem.Boneyard.Kamp.KampBypassArchive.NfCharFormula
-import FormalSystem.Boneyard.Kamp.KampWeakCanonical.RabinovichTranslation
+import FormalSystem.Boneyard.Kamp.KampWeakCanonical.TranslationEra.RabinovichTranslation
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.

@@ -464,14 +464,14 @@ census.
 
 ---
 
-### Phase 6: Regroup the flat Kamp files into per-approach subdirectories [NOT STARTED]
+### Phase 6: Regroup the flat Kamp files into per-approach subdirectories [COMPLETED]
 
 **Goal**: Give the Kamp region the top-level archive's one-subdirectory-per-abandoned-approach
 shape, so deliverable (g)'s READMEs have something to attach to.
 
 **Tasks**:
 
-- [ ] `git mv` the 35 flat files at `FormalSystem/Boneyard/Kamp/KampWeakCanonical/` root into
+- [x] `git mv` the 35 flat files at `FormalSystem/Boneyard/Kamp/KampWeakCanonical/` root into
       per-approach subdirectories following the taxonomy the existing 215-line archive README
       already names (do not invent a new one):
       - probe iterations: the `Exterior*ProbeK` family, `InteriorHrealSupplyK`, `NfZone*Probe`,
@@ -483,9 +483,24 @@ shape, so deliverable (g)'s READMEs have something to attach to.
         `ZoneBridge`, `SeparationBridge`, `Separation`
       - individually-documented singles: `Prop43`, `Prop43DepthCharInfra`, `Arity4CharStackK`,
         `EANegationVBracketBackward`, `NavigatedEndCharSinglePoint`
-- [ ] Rewrite every import line broken by the regroup (research predicts at most 7: only 7 of the
+- [x] Rewrite every import line broken by the regroup *(deviation: altered — **22** lines across 19 files, not the predicted 7; the prediction counted only intra-`KampWeakCanonical` edges targeting flat root files, but `KampBypassArchive/` (8 files) and `RabinovichPath/` (3 files) also import them. C11 was already enforcing, so a missed rewrite would have failed the gate)* (research predicts at most 7: only 7 of the
       52 intra-archive edges target flat root files).
-- [ ] Confirm every move is a rename, not a delete+add.
+- [x] Confirm every move is a rename, not a delete+add.
+
+**MEASURED** (Phase 6): all 35 flat root files regrouped into four subdirectories named from the
+archive README's own taxonomy -- `ProbeIterations/` (14), `VecEANormalForm/` (10),
+`TranslationEra/` (6), `DocumentedSingles/` (5). 0 flat `.lean` files remain at the
+`KampWeakCanonical/` root. All 35 are detected as renames, none as delete+add.
+
+**DEVIATION** from "`R100` for the `.lean` files": 28 are `R100`; **7 are `R098`/`R099`** --
+`Prop43`, `ExteriorPinnedProbeAnchorK`, `KampComposition`, `ArityReduction`,
+`EAVecNegationClosure`, `NfExistTL`, `VecEAArityFirewall`. Those are exactly the moved files that
+*also* import another moved file, so the same phase both relocates them and rewrites an import line
+inside them. The plan asks for both in one phase, so a similarity below 100 on precisely this set
+is the correct outcome, not content drift: a phase cannot simultaneously rewrite a file's imports
+and leave it byte-identical. Git still records them as renames, so `git log --follow` resolves.
+
+C11 green throughout at 497 lines / 0 unwaived; `readme-lint.sh` unchanged from baseline.
 
 **Timing**: 1.5 hours
 

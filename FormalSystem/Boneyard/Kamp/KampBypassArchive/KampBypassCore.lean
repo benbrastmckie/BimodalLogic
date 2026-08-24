@@ -1,6 +1,6 @@
 import FormalSystem.Metalogic.WeakCanonical.Kamp.NfToVecEA
 import FormalSystem.Metalogic.WeakCanonical.Kamp.VecEADecomp
-import FormalSystem.Boneyard.Kamp.KampWeakCanonical.ZoneBridge
+import FormalSystem.Boneyard.Kamp.KampWeakCanonical.TranslationEra.ZoneBridge
 import FormalSystem.Metalogic.WeakCanonical.NormalForm
 import FormalSystem.Metalogic.WeakCanonical.PriorDefs
 import Mathlib.Data.Finset.Sort

@@ -1,5 +1,5 @@
 import FormalSystem.Metalogic.WeakCanonical.Kamp.NfToVecEA
-import FormalSystem.Boneyard.Kamp.KampWeakCanonical.FOToVEA
+import FormalSystem.Boneyard.Kamp.KampWeakCanonical.VecEANormalForm.FOToVEA
 import FormalSystem.Metalogic.WeakCanonical.NormalForm
 import FormalSystem.Metalogic.WeakCanonical.PriorDefs
 import FormalSystem.Metalogic.WeakCanonical.Separation.KampTranslation

@@ -1,5 +1,5 @@
 import FormalSystem.Boneyard.Kamp.KampBypassArchive.KampBypassCore
-import FormalSystem.Boneyard.Kamp.KampWeakCanonical.WitnessCount
+import FormalSystem.Boneyard.Kamp.KampWeakCanonical.VecEANormalForm.WitnessCount
 import FormalSystem.Boneyard.Kamp.KampBypassArchive.PriorComposition
 
 /-!

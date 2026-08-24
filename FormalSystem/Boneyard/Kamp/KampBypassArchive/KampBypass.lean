@@ -1,7 +1,7 @@
 import FormalSystem.Boneyard.Kamp.KampBypassArchive.KampBypassEqCase
 import FormalSystem.Boneyard.Kamp.KampBypassArchive.KampBypassUntil
 import FormalSystem.Boneyard.Kamp.KampBypassArchive.KampBypassSince
-import FormalSystem.Boneyard.Kamp.KampWeakCanonical.KampComposition
+import FormalSystem.Boneyard.Kamp.KampWeakCanonical.TranslationEra.KampComposition
 import FormalSystem.Metalogic.WeakCanonical.Kamp.VecEATranslation
 import FormalSystem.Boneyard.Kamp.KampBypassArchive.PriorComposition
 

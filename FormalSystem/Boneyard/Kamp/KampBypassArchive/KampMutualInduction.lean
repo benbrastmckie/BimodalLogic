@@ -1,6 +1,6 @@
 import FormalSystem.Boneyard.Kamp.KampBypassArchive.NfCharFormula
 import FormalSystem.Boneyard.Kamp.KampBypassArchive.KampBypass
-import FormalSystem.Boneyard.Kamp.KampWeakCanonical.NfComposition
+import FormalSystem.Boneyard.Kamp.KampWeakCanonical.VecEANormalForm.NfComposition
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.

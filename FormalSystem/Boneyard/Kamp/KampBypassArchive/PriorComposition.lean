@@ -1,4 +1,4 @@
-import FormalSystem.Boneyard.Kamp.KampWeakCanonical.KampComposition
+import FormalSystem.Boneyard.Kamp.KampWeakCanonical.TranslationEra.KampComposition
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
