@@ -336,27 +336,27 @@ numbers in a 2600+-line file drift), and confirm the sorry count with a grep bef
 
 ---
 
-### Phase 5: Final gate — full build, prohibition compliance, scope compliance [NOT STARTED]
+### Phase 5: Final gate — full build, prohibition compliance, scope compliance [COMPLETED]
 
 **Goal**: Run the complete gate set and mechanically confirm that the two prohibitions the task
 description makes binding were respected.
 
 **Tasks**:
 
-- [ ] `lake build` clean across the repository.
-- [ ] Run both `file_scope` files under `lake env lean` and confirm every `#guard_msgs` passes.
-- [ ] Assert scope: `git diff --name-only` against the task's base commit lists exactly
+- [x] `lake build` clean across the repository.
+- [x] Run both `file_scope` files under `lake env lean` and confirm every `#guard_msgs` passes.
+- [x] Assert scope: `git diff --name-only` against the task's base commit lists exactly
       `FormalSystem/Metalogic/Decidability/Verified/Termination/Fuel.lean` and
       `Tests/BimodalTest/CrossWorldPropagationProbe.lean` (plus `specs/**` artifacts). Any other
       source path in the diff is a scope violation to be reverted, in particular
       `Tests/BimodalTest/BoxNegReachabilityProbe.lean` and `CountermodelExtraction.lean`.
-- [ ] Assert prohibition compliance: `FormalSystem/Metalogic/Decidability/Tableau.lean` is absent
+- [x] Assert prohibition compliance: `FormalSystem/Metalogic/Decidability/Tableau.lean` is absent
       from the diff, and no temporal-copy propagation block was added to `boxNeg` or
       `diamondPos`. Both rules must still emit `.linear (witness :: boxProps ++ diaProps)`.
-- [ ] Assert zero new `sorry`s and zero new axioms across the diff.
-- [ ] Run the task-reference lint (`scripts/check-task-references.sh` or equivalent) over both
+- [x] Assert zero new `sorry`s and zero new axioms across the diff.
+- [x] Run the task-reference lint (`scripts/check-task-references.sh` or equivalent) over both
       edited source files; both are outside `specs/**` and must carry no task-number citation.
-- [ ] Confirm the primary deliverable is on the record: the (a)-vs-(b) discrimination is stated in
+- [x] Confirm the primary deliverable is on the record: the (a)-vs-(b) discrimination is stated in
       the research report and `02_measured-constants.md`, and the ceiling it turns on is now in
       `Fuel.lean`.
 
@@ -384,16 +384,16 @@ description makes binding were respected.
 
 ## Testing & Validation
 
-- [ ] `lake build` clean.
-- [ ] `Tests/BimodalTest/CrossWorldPropagationProbe.lean` elaborates with all rows (A-F plus the
+- [x] `lake build` clean.
+- [x] `Tests/BimodalTest/CrossWorldPropagationProbe.lean` elaborates with all rows (A-F plus the
       two new constructor rows) passing `#guard_msgs`.
-- [ ] Rows A-F's pre-existing pinned values are byte-identical after the change — this task
+- [x] Rows A-F's pre-existing pinned values are byte-identical after the change — this task
       re-baselines nothing.
-- [ ] `Fuel.lean` builds with zero `sorry`s and no non-docstring hunks in its diff.
-- [ ] The measured ceiling asserted in `Fuel.lean` matches the value in
+- [x] `Fuel.lean` builds with zero `sorry`s and no non-docstring hunks in its diff.
+- [x] The measured ceiling asserted in `Fuel.lean` matches the value in
       `reports/02_measured-constants.md`, which in turn carries the command that produced it.
-- [ ] `Tests/BimodalTest/BoxNegReachabilityProbe.lean` is untouched.
-- [ ] No temporal-copy block exists in `boxNeg`/`diamondPos`.
+- [x] `Tests/BimodalTest/BoxNegReachabilityProbe.lean` is untouched.
+- [x] No temporal-copy block exists in `boxNeg`/`diamondPos`.
 
 ## Artifacts & Outputs
 
