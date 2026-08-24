@@ -183,7 +183,7 @@ formula has already been re-narrated twice on unreproduced numbers.
 
 ---
 
-### Phase 2: Realign the CrossWorldPropagationProbe module docstring [NOT STARTED]
+### Phase 2: Realign the CrossWorldPropagationProbe module docstring [COMPLETED]
 
 **Goal**: Replace the module docstring's superseded claim that the engine "no longer wrongly
 closes, but neither does it positively refute — it exhausts its fuel" with the current, measured
@@ -191,19 +191,19 @@ state, so the file stops contradicting its own row F eleven lines below.
 
 **Tasks**:
 
-- [ ] Locate the `**Row F is the discrimination rows A-C cannot make**` paragraph in the module
+- [x] Locate the `**Row F is the discrimination rows A-C cannot make**` paragraph in the module
       docstring (research reports it at lines 51-56; confirm the anchor by content, not by line
       number).
-- [ ] Rewrite the paragraph to state the three-step history explicitly: `extractionFailed` (a
+- [x] Rewrite the paragraph to state the three-step history explicitly: `extractionFailed` (a
       wrong answer — under this codebase's R7 semantics an assertion of validity on an invalid
       formula) → `fuelExhausted` (no answer, honest ignorance) → `.invalid` with a countermodel
       (the right answer), and name the Phase-1-measured fuel ceiling as the budget at which the
       branch saturates.
-- [ ] Delete the dangling `see the plan's Phase 6 triage` pointer; it names no durable anchor.
+- [x] Delete the dangling `see the plan's Phase 6 triage` pointer; it names no durable anchor.
       Do not replace it with any task-number reference — this file is outside `specs/**` and the
       no-task-references rule applies. Cite `Tableau.lean`'s `trivialEventWitnessed` and row F
       itself instead.
-- [ ] Re-read the surrounding module docstring (in particular the "This file's original thesis was
+- [x] Re-read the surrounding module docstring (in particular the "This file's original thesis was
       superseded" section) for any other sentence the new verdict falsifies, and correct only
       those that are actually false — the deletion narrative in the opening sections remains
       accurate and must not be disturbed.
@@ -237,7 +237,7 @@ this phase and say so, rather than treating the enumerated single defect as clos
 
 ---
 
-### Phase 3: Add constructor-pinning rows for A and C [NOT STARTED]
+### Phase 3: Add constructor-pinning rows for A and C [IN PROGRESS]
 
 **Goal**: Close for rows A and C the same `isValid`-blindness row F closed for row B. Rows A and C
 are currently `isValid`-only, so they read `false` identically under `.invalid`,
@@ -282,7 +282,7 @@ value and document it — the row's purpose is discrimination, not a particular 
 
 ---
 
-### Phase 4: Record the ceiling and diagnose the `F(G p)` witness in Fuel.lean [NOT STARTED]
+### Phase 4: Record the ceiling and diagnose the `F(G p)` witness in Fuel.lean [IN PROGRESS]
 
 **Goal**: Discharge the task's (a)-branch obligation ("find and record the ceiling") in the file
 the task scoped it to, and upgrade the `F(G p)` note from a named counterexample to a diagnosed

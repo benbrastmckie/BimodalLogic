@@ -49,11 +49,31 @@ should, so a row reading `false` is not merely the procedure failing to close an
 that `false` is reachable on a formula with no temporal content at all.
 
 **Row F is the discrimination rows A-C cannot make**, pinning the `decide` *constructor* rather
-than `isValid`'s collapse of it. It records the post-deletion state honestly: on `(G p) → □(G p)`
-the engine no longer wrongly closes, but neither does it positively refute — it exhausts its
-fuel. A wrong answer became no answer. That is a strict improvement in soundness and an
-unfinished job on completeness; see the plan's Phase 6 triage. `BoxNegReachabilityProbe.lean`
-rows 9-12 pin the same distinction from the other side, on the same formula.
+than `isValid`'s collapse of it. Its subject formula `(G p) → □(G p)` has been through three
+distinct states, and only the constructor tells them apart:
+
+1. **A wrong answer.** `extractionFailed`: `buildTableau` *closed* the tableau on this invalid
+   formula, which under this codebase's R7 semantics (`isKnownValid` holds of
+   `extractionFailed`) asserts the formula **valid**. The cross-modal-temporal copy deleted
+   above is what built that closing branch.
+2. **No answer.** `fuelExhausted`, which `isUndecided` recognises as honest ignorance. A strict
+   improvement in soundness, and an unfinished job on completeness.
+3. **The right answer**, and this is what row F pins today:
+   `(false, true, false, false, false)` — `.invalid`, with `getCountermodel?.isSome = true`. The
+   branch reaches `.invalid` by *saturating an open branch*, the opposite of closing, so nothing
+   here invites the deleted copy back: reinstating it would re-close the branch and restore the
+   false claim of validity.
+
+The move from state 2 to state 3 is owned by `FormalSystem/Metalogic/Decidability/Tableau.lean`'s
+`trivialEventWitnessed` guard, which suppresses an eventuality whose event is syntactically
+`Formula.top` and so lets this branch saturate. The budget it needs is small and was measured:
+`buildTableau ((G p).imp (G p).box) n .Base` is `none` for every `n ≤ 24` and `hasOpen` with a
+stationary 40-formula certified branch for every `n ≥ 25` out to 1000. The ceiling of 25 is
+recorded, with its headroom against the proved bounds, on `soundFuel'` in
+`FormalSystem/Metalogic/Decidability/Verified/Termination/Fuel.lean`.
+
+`BoxNegReachabilityProbe.lean` rows 9-12 pin the same distinction from the other side, on the
+same formula.
 -/
 
 namespace BimodalTest.CrossWorldPropagationProbe
