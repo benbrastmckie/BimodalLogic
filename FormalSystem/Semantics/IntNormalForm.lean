@@ -75,6 +75,25 @@ least-positive-element witness supplied (the successor structure is what produce
 the companion `archimedean_of_lub` for the Dedekind-complete branch; the discrete branch needs the
 successor-based analogue, which is not in the tree.
 
+## What buying the right to work over ℤ is worth
+
+The transfer above is not bookkeeping for its own sake: it is what makes the frame axioms cheap.
+`TaskFrame.ofStep` below discharges **all seven** `TaskFrame` fields from a bare bi-serial relation
+on a finite nonempty carrier, leaving exactly **one** genuine obligation — bi-seriality (`fwd` and
+`bwd`). Its docstring tabulates the source of every field. So for *any* relation over `ℤ` on a
+finite carrier, however non-permissive its shape, the four `def:frame` axioms cost one obligation
+and nothing else. `Decidability/IntPresentation.lean`'s `toTaskFrame` is literally
+`TaskFrame.ofStep P.stepRel P.fwd P.bwd`, and pays exactly that.
+
+This pricing is available **only over ℤ**, and the asymmetry is the whole reason the transfer is
+worth doing first. Two of the seven discharges are ℤ-specific: `limit` comes from
+`TaskFrame.limit_of_succOrder`, which needs the successor structure, and `ofStep` itself is stated
+at `TaskFrame ℤ`. A frame left polymorphic in `D` — such as `RefinedFilteredTaskFrame D` under
+`Metalogic/Decidability/FMP/` — has neither, so each axiom must be re-discharged by hand for the
+particular relation at hand. Estimates that price re-discharging the frame axioms as a large,
+open-ended piece of work are measuring the `D`-polymorphic case; they do not transfer to the
+ℤ case, and quoting them at a ℤ-frame overstates its cost by a wide margin.
+
 ## References
 
 * `Semantics/TaskFrame.lean` — the `TaskFrame` structure and its four axiom fields

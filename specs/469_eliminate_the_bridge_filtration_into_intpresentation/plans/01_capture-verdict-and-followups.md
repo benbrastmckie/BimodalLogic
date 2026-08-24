@@ -191,23 +191,23 @@ adjusted as a result, except that follow-up task A is told to land **three** pro
 
 ---
 
-### Phase 2: Capture the carrier findings in `Semantics/` [NOT STARTED]
+### Phase 2: Capture the carrier findings in `Semantics/` [COMPLETED]
 
 **Goal**: A reader arriving at `ValidDiscrete`, at the ℤ-normal-form machinery, or at the duration
 classification learns — without leaving the file — which direction is free, which is open, and
 what the named next lemma is.
 
 **Tasks**:
-- [ ] `FormalSystem/Semantics/Validity.lean`, at the `ValidDiscrete` docstring: record that ℤ
+- [x] `FormalSystem/Semantics/Validity.lean`, at the `ValidDiscrete` docstring: record that ℤ
       instantiates this entire binder bundle with no instance work, so the *soundness* direction
       (a countermodel presented over ℤ refutes `ValidDiscrete`) needs no carrier lemma at all;
       and that only the *completeness* direction needs normalization of an arbitrary `D`.
-- [ ] `FormalSystem/Semantics/IntNormalForm.lean`: first grep for the existing binder-fit finding —
+- [x] `FormalSystem/Semantics/IntNormalForm.lean`: first grep for the existing binder-fit finding —
       it is already present and confirmed correct, so **extend, do not restate**. Add: that
       `TaskFrame.ofStep` is what makes the four `def:frame` axioms cost exactly bi-seriality over
       ℤ, and that this pricing is available only over ℤ — a `D`-polymorphic frame has neither
       `limit_of_succOrder` nor `ofStep`, which is where the much larger figure comes from.
-- [ ] `FormalSystem/Semantics/DurationClassification.lean`, near `archimedean_of_lub`: record that
+- [x] `FormalSystem/Semantics/DurationClassification.lean`, near `archimedean_of_lub`: record that
       this is the **Dedekind branch only**, that the successor-based analogue is absent from the
       tree, and that the missing piece is precisely `Archimedean D` plus an `IsLeast {y | 0 < y}`
       witness derived from `[SuccOrder D] [PredOrder D] [IsSuccArchimedean D] [IsPredArchimedean D]
@@ -215,7 +215,7 @@ what the named next lemma is.
       `LinearOrderedAddCommGroup.int_orderAddMonoidIso_of_isLeast_pos` needs. Record the wrong
       turn explicitly: `orderIsoIntOfLinearSuccPredArch` fits the bundle but yields only `≃o`, and
       durations add.
-- [ ] `lake build` each of the three modules individually, immediately after its own edit.
+- [x] `lake build` each of the three modules individually, immediately after its own edit.
 
 **Timing**: 1.0 hours
 
@@ -229,6 +229,14 @@ what the named next lemma is.
   binder-fit note
 - `FormalSystem/Semantics/DurationClassification.lean` — docstring at `archimedean_of_lub` and/or
   the module doc
+
+**Phase 2 record**: `Validity.lean` gained a two-directions subsection at `ValidDiscrete`'s
+docstring; `IntNormalForm.lean` gained a "What buying the right to work over ℤ is worth" subsection
+*after* the existing binder-fit finding (extended, not restated); `DurationClassification.lean`
+gained a Dedekind-branch-only scoping subsection at `archimedean_of_lub`, naming the two missing
+inputs and the `orderIsoIntOfLinearSuccPredArch` wrong turn. Measured: +21 / +19 / +25 lines, all
+additions, zero deletions, zero declaration or import lines touched. Each module built green
+individually (`lake build FormalSystem.Semantics.{Validity,IntNormalForm,DurationClassification}`).
 
 **Verification**:
 - `git diff` for these three files shows comment/docstring hunks only — no `theorem`, `def`,

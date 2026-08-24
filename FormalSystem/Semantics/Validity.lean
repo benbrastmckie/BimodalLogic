@@ -218,6 +218,27 @@ This restricts `valid` to temporal types with `SuccOrder D` and `PredOrder D`,
 capturing the frame condition for the discreteness axioms DF/DP.
 
 **Notation**: `⊨_discrete φ`
+
+## The two directions cost differently, and only one needs a carrier lemma
+
+The binder bundle below is instantiated by `ℤ` with **no instance work whatsoever** — no
+`Archimedean`, no least-positive-element witness, nothing beyond what Mathlib already provides for
+`ℤ`. Two consequences, which are easy to conflate and should not be:
+
+- **Refuting** `ValidDiscrete φ` is free of any carrier lemma. A countermodel presented over `ℤ`
+  — e.g. one built by `IntPresentation.toTaskFrame`, whose duration type *is* `ℤ` — discharges
+  the `∀ D` binder by instantiating it at `ℤ` and applying the resulting truth to the
+  countermodel's own history and time. Measured: that argument is five lines and elaborates at
+  `[propext, Classical.choice, Quot.sound]`.
+- **Establishing** `ValidDiscrete φ` from a statement about `ℤ`-frames alone is the direction that
+  needs work, because there the `∀ D` binder must be *discharged for an arbitrary* `D`, which
+  requires normalizing `D` to `ℤ` and transporting `TaskFrame`, `TaskModel`, `WorldHistory`, and
+  `TruthAt` across the resulting isomorphism.
+
+`Semantics/IntNormalForm.lean`'s module docstring names the exact Mathlib route for that
+normalization, and records why the order-only isomorphism is the wrong turn. The successor-based
+analogue of `DurationClassification.lean`'s `archimedean_of_lub` — the missing input to that route
+— is not in this tree.
 -/
 def ValidDiscrete (φ : Formula) : Prop :=
   ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [SuccOrder D] [PredOrder D]

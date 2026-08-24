@@ -81,6 +81,31 @@ contradicting that `s` bounds the set.
 **Mathlib has no group-level version of this.** The only completeness-to-Archimedean route it
 provides is `ConditionallyCompleteLinearOrderedField.to_archimedean`, which requires a field —
 useless for a duration *group*. So this is a genuine new lemma, not a re-export.
+
+## This is the Dedekind branch only; the discrete branch has no analogue in this tree
+
+The hypothesis here is the least-upper-bound property, so this lemma serves
+`Semantics/Validity.lean`'s `ValidDense`/Dedekind-complete side. The **successor**-based analogue
+— the one that would serve `ValidDiscrete`, whose binder bundle offers `[SuccOrder D] [PredOrder D]
+[IsSuccArchimedean D] [IsPredArchimedean D] [Nontrivial D]` and *not* a lub hypothesis — **is
+absent**: this file's entire theorem inventory is `archimedean_of_lub`,
+`complete_duration_discrete_or_dense`, and `complete_not_dense_iso_int`, and none of them takes a
+successor-structured `D`.
+
+What that missing lemma must produce is fixed by its consumer. The transfer
+`LinearOrderedAddCommGroup.int_orderAddMonoidIso_of_isLeast_pos : D ≃+o ℤ` needs exactly two
+inputs the `ValidDiscrete` bundle does not already supply:
+
+1. `Archimedean D` — which does **not** synthesize from `[IsSuccArchimedean D] [IsPredArchimedean D]`;
+   those are order-successor conditions, not the additive Archimedean property; and
+2. an `IsLeast {y : D | 0 < y}` witness — which is what the successor structure is there to produce.
+
+**The recorded wrong turn**: `orderIsoIntOfLinearSuccPredArch` fits the `ValidDiscrete` bundle
+verbatim, needs neither of the two inputs above, and is therefore the tempting reach. It yields
+only `D ≃o ℤ` — an *order* isomorphism. Durations **add**: `TaskRel`'s *Compositionality* is stated
+at `x + y`, so an order-only isomorphism cannot carry a frame across. The additive iso is the one
+actually needed. `Semantics/IntNormalForm.lean`'s module docstring carries the full binder-fit
+finding for both Mathlib results.
 -/
 theorem archimedean_of_lub {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     (h_lub : ∀ s : Set D, s.Nonempty → BddAbove s → ∃ x, IsLUB s x) : Archimedean D := by
