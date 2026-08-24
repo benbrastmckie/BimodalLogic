@@ -1,9 +1,20 @@
-# Kamp Boneyard -- Archived Kamp-Pipeline Dead Code
+# Boneyard / Kamp / KampWeakCanonical
 
 Archived Lean files from the Kamp/Rabinovich expressive-completeness pipeline
-(`FormalSystem/Metalogic/WeakCanonical/Kamp/`). Files here are probes,
-retired escalation paths, and superseded infrastructure that are no longer on
-any live proof path.
+(`FormalSystem/Metalogic/WeakCanonical/Kamp/`). Files here are probes, retired escalation paths,
+and superseded infrastructure that are no longer on any live proof path.
+
+**This directory is the former `FormalSystem/Metalogic/WeakCanonical/Kamp/Boneyard/`**, moved here
+whole when the repository's two archives were consolidated into one. Every file's path before that
+move was `FormalSystem/Metalogic/WeakCanonical/Kamp/Boneyard/<same relative path>`, except for the
+35 files that sat flat at that directory's root and were subsequently regrouped into
+[`ProbeIterations/`](ProbeIterations/README.md), [`VecEANormalForm/`](VecEANormalForm/README.md),
+[`TranslationEra/`](TranslationEra/README.md) and
+[`DocumentedSingles/`](DocumentedSingles/README.md) -- each of which records its own files'
+original paths.
+
+See [`../README.md`](../README.md) for the Kamp region index and
+[`../../README.md`](../../README.md) for the archive-wide counts and policy.
 
 ## CONVENTION WARNING: this tree is EVENT-FIRST and predates the guard-first migration
 
@@ -27,31 +38,23 @@ is not a stale event-first expression.
 
 See `specs/decisions/untl-snce-argument-order.md` for the full record.
 
-## There Are TWO Boneyards
+## There Is One Archive (this section retired the claim that there were two)
 
-This directory is the **second**, easily-missed archive in the repository:
+**This section used to be titled "There Are TWO Boneyards" and described this directory as the
+second, easily-missed archive in the repository. That is no longer true, and the counts it carried
+(93 / 59,010 and 63 / 29,256) are retired with it.** There is exactly one archive,
+`FormalSystem/Boneyard/`, and this directory is inside it.
 
-| Boneyard | Files | Lines |
-|----------|------:|------:|
-| `FormalSystem/Boneyard/` | 93 | 59,010 |
-| `FormalSystem/Metalogic/WeakCanonical/Kamp/Boneyard/` (this one) | 63 | 29,256 |
+Archive counts are stated in exactly one place -- [`../../README.md`](../../README.md) -- which
+cites `scripts/check-module-invariants.sh` B0/C7 as the live source. This page does not restate
+them.
 
-Because this one is nested five levels deep, a filter written as
-`-not -path 'FormalSystem/Boneyard/*'` — naming only the top-level archive —
-counts these 29,256 lines as live code. Use a pattern that matches both:
-
-```bash
-find FormalSystem -name '*.lean' -not -path '*/Boneyard/*'
-```
-
-Or, preferably, the invariant script, which hardcodes the exclusion and asserts that
-it matches exactly two directories:
+B0 now asserts that the number of `Boneyard` directories under `FormalSystem/` is exactly **1**,
+so the trap this section used to warn about is a gate failure rather than a warning:
 
 ```bash
 bash scripts/check-module-invariants.sh   # B0 self-test + C7 live inventory
 ```
-
-See [`../../README.md`](../../README.md).
 
 ## Archival Criterion
 
@@ -70,18 +73,26 @@ directory; liveness equals reachability: a module is live if and only if it is
 reachable from `FormalSystem.lean` or another lakefile root. Nothing under
 a `Boneyard/` directory is reachable from any root.
 
-The only build invariant is that the default target stays green after any
-Boneyard change:
+**This section used to end by saying that stale imports in never-built code "are cosmetic and
+need not be repaired". That policy is retired.** Under it the archive rotted: 65 archived import
+lines named modules that did not exist on disk by the time the two archives were consolidated.
+
+Check **C11** in `scripts/check-module-invariants.sh` now enforces the opposite. Every
+`import FormalSystem.*` / `import BimodalTest.*` line under `FormalSystem/Boneyard/` must resolve
+to a file on disk or be named in `scripts/boneyard-import-waivers.txt` with a recorded reason. It
+ships enforced, with no opt-out flag. A README must not carry a rule its own gate contradicts, so
+the sentence is retired here in writing rather than quietly deleted.
+
+Imports among co-archived files are no longer rewritten "where cheap" -- they are rewritten,
+because C11 requires it. The `Kamp.Boneyard.*` module paths this section used to name are now
+`FormalSystem.Boneyard.Kamp.KampWeakCanonical.*`.
+
+The build invariants after any Boneyard change:
 
 ```bash
-# Must stay green after any Boneyard change
-lake build
+lake build                                    # default target stays green
+bash scripts/check-module-invariants.sh       # ALL CHECKS PASSED, including C11
 ```
-
-Import lines inside archived files are historical text, not build edges. They
-are kept coherent with file locations where cheap (imports among co-archived
-files are rewritten to their `Kamp.Boneyard.*` paths), but stale imports in
-never-built code are cosmetic and need not be repaired.
 
 ## Inventory
 
@@ -206,10 +217,30 @@ archived by earlier Kamp cleanup passes:
   expressive-completeness and separation-theorem developments (see their own
   contents; `ExpressiveCompleteness/README.md` documents that subtree).
 
-## Relationship to the Top-Level Boneyard
+## Relationship to the Rest of the Archive
 
-The maintenance standard (archival steps, retrieval via `git log --follow`,
-archival-reason taxonomy) is documented in `FormalSystem/Boneyard/README.md`.
-This directory follows the same never-built policy; it is nested here rather
-than under the top-level Boneyard to keep the Kamp pipeline's history next to
-the live `Kamp/` code it descended from.
+The maintenance standard (archival steps, retrieval via `git log --follow`, archival-reason
+taxonomy) is documented in [`../../README.md`](../../README.md), which is also the single source
+for the archive's counts. This directory follows the same never-built policy.
+
+**Retired justification.** This section used to close by explaining that the directory was "nested
+here rather than under the top-level Boneyard to keep the Kamp pipeline's history next to the live
+`Kamp/` code it descended from." **That reasoning is overruled and the nesting is gone.** It
+bought adjacency to the live `Kamp/` tree at the cost of a second archive that no path-prefix
+filter caught, two competing inventories, and two sets of counts that drifted apart. `git log
+--follow` preserves the descent from `Metalogic/WeakCanonical/Kamp/` regardless of where the files
+sit, so the adjacency was never what made the history retrievable.
+
+## Live-Tree References Left Untouched
+
+Seven comment-only mentions of the old `Kamp/Boneyard/` path survive in three **live** `.lean`
+files: `Metalogic/WeakCanonical/Kamp/DedekindINF.lean` (1),
+`Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge.lean` (5), and
+`Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/InteriorGateGeneralK.lean` (1).
+
+They are prose inside comments, not imports, so nothing resolves through them and no gate sees
+them. The consolidation was carried out under a constraint of not modifying any live module, and
+these were left in place deliberately rather than overlooked. The path they name is now
+`FormalSystem/Boneyard/Kamp/KampWeakCanonical/`; correcting the comments is separate work.
+
+Last verified: 2026-08-24

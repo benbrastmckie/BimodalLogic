@@ -610,28 +610,48 @@ must have a `README.md`.
 
 ---
 
-### Phase 8: Single-source the archive counts and retire the obsolete policies [NOT STARTED]
+### Phase 8: Single-source the archive counts and retire the obsolete policies [COMPLETED]
 
 **Goal**: Deliverable (f) — one accurate statement of the archive's shape, in one place, with the
 contradictory and now-false prose retired explicitly.
 
 **Tasks**:
 
-- [ ] In `FormalSystem/Boneyard/README.md`: replace the "There Are TWO Boneyards" section with one
+- [x] In `FormalSystem/Boneyard/README.md`: replace the "There Are TWO Boneyards" section with one
       accurate statement of the single consolidated tree.
-- [ ] State the archive counts in **exactly this one place**, citing
+- [x] State the archive counts in **exactly this one place**, citing
       `scripts/check-module-invariants.sh` B0/C7 output as the live source. Use the Phase 1
       measured values, not the stale `59,010` / `62 / 27,394` figures.
-- [ ] Fold the former `Kamp/Boneyard/README.md` content into
+- [x] Fold the former `Kamp/Boneyard/README.md` content into
       `Kamp/KampWeakCanonical/README.md`, and explicitly retire, in writing:
       - its closing paragraph justifying the nesting ("nested here rather than under the top-level
         Boneyard to keep the Kamp pipeline's history next to the live `Kamp/` code") — this task
         overrules it; say so.
       - its sentence "stale imports in never-built code are cosmetic and need not be repaired" —
         C11 reverses this policy; the README must not carry a rule its own gate violates.
-- [ ] Record the decision to leave the 7 comment-only `Kamp/Boneyard/` mentions in the 3 live
+- [x] Record the decision to leave the 7 comment-only `Kamp/Boneyard/` mentions in the 3 live
       `.lean` files untouched, noting that the correct path is now `FormalSystem/Boneyard/`, and
       that updating them is a separate task under the no-live-module non-goal.
+
+**MEASURED** (Phase 8): the single-source count block in `FormalSystem/Boneyard/README.md` now
+reads **156 archived `.lean` files / 88,275 archived lines / 35 top-level subdirectories /
+1 archive directory**, measured at write time, with `check-module-invariants.sh` B0/C7 named as
+the live source that recomputes them. 156 and 88,275 = 59,019 + 29,256 both reconcile with the
+Phase 1 baseline. The stale `59,010` and `27,394` figures appear nowhere under `FormalSystem/`
+outside `specs/**` except in the two explicit retirement notes that quote them in order to retire
+them, and the Phase 9 live-side files.
+
+Both obsolete policies are retired **in writing**, not silently deleted, in both READMEs: the
+"TWO Boneyards" framing, and the sentence "stale imports in never-built code are cosmetic and
+need not be repaired" -- the latter with the reason it was wrong (65 lines had already rotted
+under it) and the check that reverses it. The nesting justification ("nested here rather than
+under the top-level Boneyard to keep the Kamp pipeline's history next to the live `Kamp/` code")
+is quoted and overruled, with the argument stated: adjacency was never what made the history
+retrievable, `git log --follow` is.
+
+The 7 comment-only mentions were re-measured before the decision was recorded -- **7 across 3
+files**, matching the plan -- and are documented in both the region index and
+`KampWeakCanonical/README.md`. Archive-wide broken-link sweep: **0**.
 
 **Timing**: 1.5 hours
 

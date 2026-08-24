@@ -26,33 +26,43 @@ emitted by `Formula.prettyPrint` is still event-first and is *not* the construct
 
 See `specs/decisions/untl-snce-argument-order.md` for the full record.
 
-## There Are TWO Boneyards
+## One Archive, and the Counts That Describe It
 
-This is **not** the only archive directory in the repository:
+There is exactly **one** archive directory in this repository, and this is it. There used to be
+two -- a second one nested inside the live tree at
+`FormalSystem/Metalogic/WeakCanonical/Kamp/Boneyard/` -- and the split was a standing trap: any
+`find` or `grep` filter naming only this directory silently counted ~29,000 archived lines as
+live code. Several past descriptions of this repository's size were wrong for exactly that
+reason. That archive has been merged into [`Kamp/KampWeakCanonical/`](Kamp/KampWeakCanonical/README.md),
+and the four Kamp-facing approach directories that used to sit at this level joined it under
+[`Kamp/`](Kamp/README.md).
 
-| Boneyard | Files | Lines |
-|----------|------:|------:|
-| `FormalSystem/Boneyard/` (this one) | 93 | 59,010 |
-| `FormalSystem/Metalogic/WeakCanonical/Kamp/Boneyard/` | 62 | 27,394 |
+**This section is the single source for the archive's counts. Every other file that needs them
+links here rather than restating them.**
 
-Any `find` or `grep` filter that names only this directory silently counts the
-27,394 archived lines under `Kamp/Boneyard/` as **live code**. Several past counts of
-this repository were wrong for exactly that reason. The correct filter excludes both
-by pattern:
+| Quantity | Value |
+|----------|------:|
+| Archived `.lean` files | 156 |
+| Archived lines | 88,275 |
+| Top-level subdirectories | 35 |
+| Archive directories in the repository | 1 |
 
-```bash
-find FormalSystem -name '*.lean' -not -path '*/Boneyard/*'
-```
-
-Better, do not hand-roll it — the invariant script hardcodes the two-Boneyard
-exclusion and self-tests that the pattern really matches two distinct directories:
+Those figures are a snapshot; the **live** source is the invariant script, which recomputes them
+on every run and is what any claim about them should cite:
 
 ```bash
 bash scripts/check-module-invariants.sh              # B0 self-test + C7 live inventory
 bash scripts/check-module-invariants.sh --no-build   # structural checks only
 ```
 
-See [`../Metalogic/WeakCanonical/Kamp/Boneyard/README.md`](../Metalogic/WeakCanonical/Kamp/Boneyard/README.md).
+B0 asserts that the count of `Boneyard` directories is exactly **1** and reports how many `.lean`
+files the exclusion removes; C7 reports the live inventory. Do not hand-roll a count. If you must,
+the filter is a name glob, never a path prefix -- that is what makes a second archive reappearing
+anywhere under `FormalSystem/` a gate failure rather than a silent miscount:
+
+```bash
+find FormalSystem -name '*.lean' -not -path '*/Boneyard/*'
+```
 
 ## Identifiers Here Predate the Mathlib Naming Migration
 
@@ -462,17 +472,25 @@ liveness equals reachability: a module is live if and only if it is reachable fr
 `FormalSystem.lean` or another lakefile root. Nothing under a `Boneyard/`
 directory is reachable from any root.
 
-The only build invariant is that the default target stays green after any Boneyard
-change:
+Import lines inside archived files are historical text, not build edges -- but they are **not**
+optional. **This README used to say that stale imports in never-built code "are cosmetic and need
+not be repaired". That policy is retired.** It was written before the archive had a gate, and
+under it the archive rotted: 65 archived import lines named modules that no longer existed on
+disk by the time the two archives were consolidated.
+
+Check **C11** in `scripts/check-module-invariants.sh` now enforces the opposite rule. Every
+`import FormalSystem.*` / `import BimodalTest.*` line under `FormalSystem/Boneyard/` must resolve
+to a file on disk, or be named in `scripts/boneyard-import-waivers.txt` with a recorded reason.
+C11 ships enforced, with no opt-out flag, and reports waiver entries that no longer occur so the
+waiver file cannot become a backlog. A README must not carry a rule its own gate contradicts, so
+the old sentence is retired here rather than quietly deleted.
+
+The build invariants after any Boneyard change are therefore:
 
 ```bash
-# Must stay green after any Boneyard change
-lake build
+lake build                                    # default target stays green
+bash scripts/check-module-invariants.sh       # ALL CHECKS PASSED, including C11
 ```
-
-Import lines inside archived files are historical text, not build edges. They are
-kept coherent with file locations where cheap, but stale imports in never-built
-code are cosmetic and need not be repaired.
 
 ### Expected File Structure
 
