@@ -211,23 +211,40 @@ Anything written to `.claude/` here is destroyed on the next reload.
 
 | Task | Status | Disposition |
 |---|---|---|
-| **466** | **ABANDONED here** 2026-08-24 | `update-plan-status.sh` silently no-ops on a non-conforming Status line. Handed to the nvim session for filing via `/meta`. Full description retained in `specs/archive/state.json` as the record. |
+| **466** | **ABANDONED here** 2026-08-24; **handoff CLOSED** | `update-plan-status.sh` reports every non-conforming Status line with one undiagnosable message, and its `$`-anchored `sed` can never stamp a plan carrying trailing text after the bracket. Now owned by **nvim task 91** (`fail_loudly_on_nonconforming_plan_status_line`, `not_started`, priority high, topic `status-marker-lifecycle`), which the nvim repo had already filed independently; the `/meta` dispatch found it and corrected it in place rather than filing a duplicate. Nothing further is pending here. Full original description retained in `specs/archive/state.json` as the record. |
 | **471** | **ABANDONED — the finding was WRONG** | The claimed `roadmap-integration.sh` stdout defect does not exist: the comment is written to stderr (`:319`, `>&2`), and `/review`'s documented `$( )` capture works. The reviewer caused the parse error by invoking with `2>&1`. Retracted; see issue L-1. |
 | **231** item (7) | **DROPPED from scope** 2026-08-24 | Cannot be completed from this repo. The user chose disposition (a): item (7) is removed permanently and no successor owns it here. Filing it in the nvim tracker was considered and declined — that source store has no `dataset` extension, and a BimodalLogic-specific post-implementation hook placed in the shared global system would deploy to every repo that loads it. The `.syncprotect` route was also declined (survives reload, but leaves the file untracked). Items (1)-(6) and (8) are unaffected `data/` work and the task stays here. If the hook is wanted later, wire `sync-all.py` from CI — it already has CI-friendly exit codes. |
 
 Both abandonments were verified safe: nothing depended on either task, and the graph has zero
 dangling edges afterward.
 
-**466's defect is real and independently confirmed** by the source-store maintainer, who found it
-worse than reported: the status *read* at `update-plan-status.sh:62,72` is unanchored and falls
-through to `|| echo ""` on a bracket-less line, so `current_status` and `updated_status` are both
-empty and compare equal — the verification cannot distinguish "updated" from "matched nothing". It
-is awaiting the nvim user's approval for filing there; if declined it comes back here.
+**466's defect is real, but one half of what was recorded here was WRONG — corrected 2026-08-24.**
+The retracted claim: that the status *read* at `update-plan-status.sh:62,72` falls through to
+`|| echo ""` on a bracket-less line, leaving `current_status` and `updated_status` both empty and
+compare-equal, so a no-op reads as success. **That path does not exist.** `grep -m1
+"^- \*\*Status\*\*:"` MATCHES a bracket-less line, so `|| echo ""` never fires; the non-matching
+`sed` passes the line through verbatim, leaving `current_status` non-empty and never equal to a bare
+status token. Verified by executing the script against fixtures for all three malformed shapes —
+every one exits rc=1. No input produces a false success. Related and also retracted: postflight does
+not diverge silently; `update-task-status.sh:515` branches on rc and `exit 3`s loudly. The
+"state.json says completed while the plan reads [IMPLEMENTING]" sentence was the code comment's own
+*rationale* for making postflight fatal (`update-task-status.sh:509-514`), read back as if it
+described an undetected bug.
+
+What survives, all confirmed by execution: (1) diagnostic opacity — all three malformed shapes emit
+a byte-identical `Failed to update status in <file>`, naming no line, content, or reason; (2) the
+`$`-anchor at line 69 means a plan carrying `[IMPLEMENTING] (resumed; ...)` can NEVER be stamped,
+which is what hard-failed `/orchestrate` postflight; (3) preflight's non-fatal warning masks the
+leading indicator of the fatal postflight exit; (4) newly found — the idempotency early-exit at
+lines 62-66 returns rc=0 with EMPTY stdout while the header promises "path on success, empty on
+failure/no-op", an ambiguity `commands/implement.md:353` documents a call site against.
 
 **471's defect was not real** and the task was invalid. Nothing is pending for it.
 
-Checked for duplicates: nvim task 50 is adjacent (stale-roadmap no-op, verify-deploy) but covers
-neither the `update-plan-status.sh` silent no-op nor the `roadmap-integration.sh` stdout contract.
+Duplicate history: nvim task 50 is adjacent (stale-roadmap no-op, verify-deploy) and covers neither
+defect. A check of the nvim tracker on 2026-08-24 found no owner for the `update-plan-status.sh`
+defect; the tracker then advanced ten task numbers in the interval before the `/meta` dispatch ran,
+and task 91 had appeared. It was updated in place — no duplicate was filed.
 
 **Not at risk**: 470 (writes `specs/state.json`, tracked), 468 and 455 (invoke `.claude/scripts/*`
 but do not edit them), 472 and 473 (`FormalSystem/` only).
