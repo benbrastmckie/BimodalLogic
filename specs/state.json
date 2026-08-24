@@ -1345,7 +1345,7 @@
     {
       "project_number": 470,
       "project_name": "task_graph_and_metadata_repair",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "meta",
       "topic": "agent-system",
       "priority": "high",
@@ -1355,7 +1355,16 @@
         "specs/state.json"
       ],
       "dependencies": [],
-      "created": "2026-08-24T00:00:00Z"
+      "created": "2026-08-24T00:00:00Z",
+      "last_updated": "2026-08-24T21:08:49Z",
+      "session_id": "sess_1787605228_cf9f52",
+      "artifacts": [
+        {
+          "path": "specs/470_task_graph_and_metadata_repair/reports/01_task-graph-metadata-repair.md",
+          "type": "report",
+          "summary": "Live-state verification of all nine review-2026-08-24 defects: (A) 421's acceptance criterion still wrong (live sorry count confirmed 1 via C3, not the stated 2) and is the highest-priority open item; (B) 465->428 edge applied and topologically confirmed joined, but 433/434 description revisions are still open and a fifth residual (UnorderedSuccessorLabelClosed) is unassigned and gated on 468's not-yet-run status; (C)/(D) confirmed applied; (E) already resolved live (repo-hygiene already in active_topics, zero stderr warnings on generate-task-order.sh --print) -- no action needed; (F) reconstructed descriptions provided for 257 and 282 from their artifacts, neither should be abandoned; (G) still open (177 file_scope still has the ROADMAP.md/duplicate defect, 468 has not run); (H) still open, with the key finding that /task --sync does NOT reconcile the metadata/task_counts fields (verified via repo-wide grep, zero consuming scripts) so a direct state-write.sh edit is required as a separate step; (I) still open, confirmed 7 completed tasks in active_projects; archive-union dangling-edge check clean for all 21 named edges plus a full-graph scan."
+        }
+      ]
     },
     {
       "project_number": 472,

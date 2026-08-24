@@ -28,7 +28,7 @@ next_project_number: 474
 
 ### Agent System
 
-470 [NOT STARTED] — TASK-GRAPH AND TASK-METADATA REPAIR. Nine defects found by the 20
+470 [RESEARCHED] — TASK-GRAPH AND TASK-METADATA REPAIR. Nine defects found by the 20
 
 ### Algebraic Representation
 
@@ -283,10 +283,11 @@ Grounding: specs/reviews/review-2026-08-24.md (issues C-1, H-3, L-2, A-4) and ta
 
 ### 470. Task graph and metadata repair
 - **Effort**: low
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
+- **Research**: [470_task_graph_and_metadata_repair/reports/01_task-graph-metadata-repair.md]
 
 **Description**: TASK-GRAPH AND TASK-METADATA REPAIR. Nine defects found by the 2026-08-24 programme review
 (specs/reviews/review-2026-08-24.md), all mechanical, none requiring mathematics. Every one is a
