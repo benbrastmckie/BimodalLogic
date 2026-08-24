@@ -71,7 +71,7 @@
     {
       "project_number": 424,
       "project_name": "prove_shift_set_representation_theorem_compactness_feasibility_gate",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "description": "RE-ISSUED 2026-08-18 (description rewrite only; status remains `not_started` -- no work on the gate itself has been touched by this re-issue). Supersedes the 2026-08-10 exposure audit below: the predicted refactor has now LANDED and is ARCHIVED, so this task's governing design is re-stated against the settled, post-refactor Lean vocabulary.\n\n=== 1. EXPOSURE VERDICT (2026-08-10, now SETTLED): YES -- this task's governing design was built on Lean vocabulary a sibling task has since eliminated ===\n\nThis task carries topic `strong_completeness`, not `paper-refactor`, so it sat outside the six-task paper-refactor cluster re-issue and was never checked against that cluster's findings at the time. That check found: task 424's governing design document stated its whole Representation Theorem (both directions -- the entire content of this gate) in terms of `TruthAt (M : TaskModel F) (Omega : Set (WorldHistory F)) ...`, i.e. the then-current Lean signature where `Box` quantified over an explicitly-supplied `Omega : Set (WorldHistory F)` parameter, and the reverse direction of the representation theorem literally set `Ω := Omega` -- identifying the shift-set carrier with that Lean parameter directly. `valid`, `SemanticConsequence`, and `satisfiable` were quantified/witnessed the same way, over an arbitrary shift-closed `Omega`, not fixed to the full total-history set.\n\nTask 414 (`refactor_semantics_to_total_history_validity`) has now landed and is archived. Its charter was: \"make totality-based validity THE validity of the repo, eliminating the Omega parameter from the semantics core,\" matching the paper's current `def:BL-semantics` box clause exactly -- `Box` now ranges over `H_F` (the full set of total world histories), with no externally-supplied `Omega`.\n\n=== 2. WHAT IS CURRENTLY TRUE OF THE TREE (re-verified 2026-08-18) ===\n\nTask 414 HAS landed (confirmed: `specs/archive/414_refactor_semantics_to_total_history_validity/` exists; task no longer in `active_projects`). `TruthAt` (`FormalSystem/Semantics/Truth.lean`, symbol `TruthAt`, currently near :159-167, hints only) now takes NO `Omega` parameter; its `box` clause is `∀ (σ : WorldHistory F), σ.IsTotal → TruthAt M σ t φ` (confirmed against the live definition). The old shift-closure hypothesis (see section 6 below for its retirement) has zero occurrences anywhere in `Truth.lean` (confirmed by grep). `valid`/`SemanticConsequence`/`satisfiable` (`FormalSystem/Semantics/Validity.lean`) are correspondingly Omega-free and totality-based.\n\n=== 3. WHAT SURVIVES vs WHAT WAS RESTATED ===\n\n**Survives unchanged**: the underlying MODEL-THEORETIC ARGUMENT -- that the task-model class is first-order axiomatizable over the two-sorted signature `<Ω, D; <, +, 0, sh, (A_p)>` because the frame's algebraic content reaches `TruthAt` only through the atom clause -- did not depend on whether `Box`'s quantifier domain was an explicit parameter or a fixed total-history set. Fixing `Omega := H_F` (all total histories) was always a special case of the general argument, not a different argument; Q1's structural evidence (design doc section \"Q1 -- the compactness argument\") and the four-step Route B plan (S1-S4) both survive intact, exactly as the 2026-08-10 audit predicted.\n\n**Restated** (section 6 below, re-verified against the live tree 2026-08-18): the LITERAL Lean statement of both directions of the representation theorem -- this task's actual, sole acceptance criterion. The theorem SURVIVES AND SIMPLIFIES: it loses the `Omega` parameter and the old shift-closure hypothesis (section 6 below records its retirement) on both directions, gains no new hypothesis, and does NOT require its own research cycle -- this is exactly the totality-fixed special case the 2026-08-10 audit already predicted. The forward direction now carries one small new proof obligation that used to be free: showing the constructed frame's total-history set equals the shift-orbit range, a direct consequence of `TaskRel`'s functionality (not a new risk). Q1's verdict (\"likely, not proved\") and Route B's four-step plan are expected to survive under totality-fixed semantics unchanged, since `Omega = H_F` is the totality-fixed case already covered by the general argument above.\n\n=== 4. DEPENDENCY: task 414 (discharged) ===\n\nThe 2026-08-10 audit added `414` to this task's `dependencies` (previously `[361]`, then `[361, 414]`) because this task's SOLE deliverable was stated directly against vocabulary task 414 was actively eliminating. Task 414 has now landed and archived, and this re-issue (section 6) restates the theorem against the post-refactor signature, so the wasted-work risk that motivated the `414` edge has been discharged by this re-issue. The edge itself is left in place as an accurate historical/ordering record (dependencies array unchanged by this re-issue: `[361, 414, 439, 454]`).\n\n=== 5. GOVERNING DESIGN DOCUMENT -- PATH CORRECTED ===\n\nTask 361 has completed and archived. The governing design document has moved from `specs/361_strong_completeness_architecture_and_weak_terminus_gap_analysis/design/02_compactness-route.md` to `specs/archive/361_strong_completeness_architecture_and_weak_terminus_gap_analysis/design/02_compactness-route.md` -- the same content, corrected path. Section references below (Representation theorem, Risks R3, GATING RULE) are unchanged in content except where section 6 below explicitly restates the theorem.\n\n=== 6. THE RE-SCOPED REPRESENTATION THEOREM (re-verified against the live tree, 2026-08-18; supersedes the Omega-based statement of 2026-08-10 and earlier) ===\n\nProve, in both directions, that the task-model class is representable by shift sets `⟨Ω, D, sh, A⟩` (`D` an ordered abelian group, `Ω` a nonempty type with a `D`-action `sh : Ω → D → Ω`, `A : Atom → Ω → Prop`), against the current totality-based `TruthAt` (`FormalSystem/Semantics/Truth.lean`, symbol `TruthAt`, currently near :159-167; box clause quantifies over `∀ (σ : WorldHistory F), σ.IsTotal → TruthAt M σ t φ` -- no `Omega` parameter exists). Note: the shift-set carrier `Ω` in this paragraph is the paper-facing mathematical object, distinct from the old Lean parameter of the same name discussed in sections 1-3 above, which is exactly the coincidence-of-naming the 2026-08-10 audit had to disentangle and which no longer exists in the Lean signature at all.\n\nForward direction: build `WorldState := Ω`, `TaskRel w d u := (u = sh w d)`, `states σ t := sh σ t`, `domain := Set.univ`. This direction now carries one small new obligation that used to be free: prove the constructed frame's total-history set equals the shift-orbit range -- a direct consequence of `TaskRel`'s functionality, not a new risk.\n\nReverse direction: from `(F, M)` alone -- no `Omega`, no shift-closure hypothesis (`ShiftClosed` no longer exists as a Lean definition; it is RETIRED, NOT RENAMED -- no future implementer should go looking for it, and its former citation into `Truth.lean` is deleted outright by this re-issue) -- take `Ω := {τ : WorldHistory F // τ.IsTotal}`, `sh σ Δ := σ.val.timeShift Δ` (lands in `Ω` unconditionally via `WorldHistory.isTotal_timeShift`, currently near `FormalSystem/Semantics/WorldHistory.lean:486`, no side condition beyond `σ.IsTotal` itself), `A p σ := TruthAt M σ.val 0 (atom p)`. Compatibility is supplied by `FormalSystem.Semantics.TimeShift.time_shift_preserves_truth` (symbol `time_shift_preserves_truth`, currently near `Truth.lean:457`, signature `(M) (σ) (x y : D) (φ)`), now unconditional -- no `h_sc` argument.\n\nEverything else in the governing design document (Q1's structural evidence, Route B's S1-S4 plan, risks R1-R4, the GATING RULE) survives unchanged -- none of it is stated in terms of `Omega`.\n\nTHIS TASK GATES: (i) authorization to create tasks S2-S5 (the ultraproduct carrier, the Łoś lemma for `TruthAt`, compactness of the Base/Dense consequence relations, and strong completeness for Dense and Base), which deliberately do NOT exist yet as tasks and so cannot carry a declared dependency edge; and (ii) leg B of task 362 specifically -- the genuine strong-completeness legs for Base/Dense -- which IS edge-representable and is wired as a `dependencies` edge from 362 to 424 (see task 362's own description). It does NOT gate legs A, C, or D of task 362, and it does NOT gate task 423, which is self-contained and proves no compactness result. Do not spawn, plan, or dispatch S2-S5 from within this task; that authorization activates only when this task lands sorry-free, per the GATING RULE below.\n\nGate-passed evidence standard, and nothing weaker: a sorry-free Lean statement of both directions, with #print axioms on each direction reporting no sorryAx. A statement that type-checks with a sorry body does not pass. Proving only the forward direction does not pass. A prose argument does not pass.\n\nCancel condition: if either direction is refuted, or the construction cannot be stated without an additional non-elementary hypothesis, then Route B (semantic compactness via ultraproduct) is REFUTED and the whole branch is cancelled, not retried. Record the refutation and re-open the compactness question; do not proceed to S2 hoping the gap can be patched downstream.\n\nGoverning design document: specs/archive/361_strong_completeness_architecture_and_weak_terminus_gap_analysis/design/02_compactness-route.md -- section \"Representation theorem\" for both directions (the reverse direction uses WorldHistory.timeShift and FormalSystem.Semantics.TimeShift.time_shift_preserves_truth, currently near `Truth.lean:457`), section \"Risks\" R3 for the Type vs Type* constraint (assert it EARLY, not at assembly time), and section \"GATING RULE\" for the full gate contract.\n\nAcceptance: both directions sorry-free; #print axioms clean on each; lake build green; the task's summary states explicitly whether the gate PASSED or FAILED.",
       "topic": "strong_completeness",
@@ -83,9 +83,14 @@
         "FormalSystem/Semantics/ShiftSet.lean"
       ],
       "created": "2026-07-29T06:38:08Z",
-      "last_updated": "2026-08-24T22:14:27Z",
+      "last_updated": "2026-08-24T22:25:36Z",
       "session_id": "sess_1787608533_153fad_424",
       "artifacts": [
+        {
+          "type": "plan",
+          "path": "specs/424_prove_shift_set_representation_theorem_compactness_feasibility_gate/plans/01_shift-set-representation-theorem.md",
+          "summary": "7-phase (6 core + 1 optional) implementation plan for the shift-set representation theorem gate, with per-phase verification tiers, a declared scope change, and the gate PASS/FAIL contract."
+        },
         {
           "type": "report",
           "path": "specs/424_prove_shift_set_representation_theorem_compactness_feasibility_gate/reports/01_shift-set-representation-feasibility.md",
@@ -96,7 +101,7 @@
     {
       "project_number": 423,
       "project_name": "land_set_based_consequence_layer_setderivable_and_per_class_setsemanticconsequence",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "description": "Create FormalSystem/Metalogic/SetConsequence.lean containing the finitary set-derivability relation SetDerivable, the four per-class SetSemanticConsequence* predicates, the basic lemmas, and the strong-completeness / compactness / model-existence statements. Then import it from FormalSystem/Metalogic/StrongCompleteness.lean.\n\nThis is vocabulary only. It proves no compactness result and closes no existing sorry. It is self-contained and unblocks two downstream branches (the Discrete non-compactness witness, and Dense strong completeness).\n\nGoverning design document: specs/archive/361_strong_completeness_architecture_and_weak_terminus_gap_analysis/design/01_set-consequence-layer.md — transcribe section 2 (SetDerivable), section 3 (the four per-class definitions), section 4 (basic lemmas), section 5 (StrongCompletenessDense, CompactDense, strongCompletenessDense_of_compact, SatisfiableDenseSet, ModelExistenceDense). Section 4's \"Implementer notes\" name three elaboration risks; section 7 records what is deliberately out of scope.\n\nAcceptance (from design/01 section 6, all five required): zero sorries and zero vacuous placeholders; grep -c 'import FormalSystem.Metalogic.BXCanonical' on the new module returns 0; each SetSemanticConsequence* binder list is byte-comparable to its `FormalSystem/Semantics/Validity.lean` source (`valid`, `ValidDense`, `ValidDiscrete`, `ValidDedekindDense` — currently near :94, :206, :222, :310 respectively, hints only, re-verify by symbol before use) with only the premise hypothesis inserted, and uses `Type` not `Type*` (the \"deliberate\" doc-comment in the same file, currently near :92, records this); #print axioms on every new declaration reports no sorryAx; StrongCompleteness.lean imports the module and still builds.",
       "topic": "strong_completeness",
@@ -109,9 +114,14 @@
         "FormalSystem/Metalogic/StrongCompleteness.lean"
       ],
       "created": "2026-07-29T06:38:08Z",
-      "last_updated": "2026-08-24T22:14:18Z",
+      "last_updated": "2026-08-24T22:25:29Z",
       "session_id": "sess_1787608533_153fad_423",
       "artifacts": [
+        {
+          "type": "plan",
+          "path": "specs/423_land_set_based_consequence_layer_setderivable_and_per_class_setsemanticconsequence/plans/01_set-consequence-layer.md",
+          "summary": "5-phase, 3-hour plan to land FormalSystem/Metalogic/SetConsequence.lean (19 declarations: SetDerivable, four per-class SetSemanticConsequence* predicates, ten basic lemmas, four strong-completeness vocabulary defs) and wire it into StrongCompleteness.lean with strongCompletenessDense_of_compact (Option C, avoiding the import cycle)."
+        },
         {
           "type": "report",
           "path": "specs/423_land_set_based_consequence_layer_setderivable_and_per_class_setsemanticconsequence/reports/01_set-consequence-layer-research.md",
@@ -143,7 +153,7 @@
     {
       "project_number": 421,
       "project_name": "correct_transfer_route_guidance_and_probe_non_archimedean_discrete_carrier",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "description": "Two deliverables on the Base weak terminus, both small.\n\n(a) Correct the refuted route guidance. The comment block opening \"(i) a Base-MCS -> Discrete-MCS transfer lemma that lets countermodel_discrete_reynolds_v2 apply\" in `FormalSystem/Metalogic/WeakCanonical/Transfer.lean` (currently near :1081-1083, hint only, re-verify by the comment's opening text before use) currently proposes that route. Route (i) is REFUTED and MUST NOT be re-attempted. The witness: over D := Z x_lex Z (lex, first coordinate dominant) with p true exactly at points >= (1,0), every point has an immediate successor so box U(T,F) holds; G(Gp -> p) holds at (0,0); FGp holds at (0,0) (witness (1,0)) but Gp fails there (witness (0,1)); hence Axiom.z1 p is false. So a Base-MCS containing box U(T,F) need not be Discrete-consistent and no Base-to-Discrete MCS transfer lemma can exist. Replace those comment lines with the refutation and point at route (ii). Docstring/comment-only — do not touch the `sorry` inside `WeakCanonical.countermodel_discrete` (declaration currently near :1068, `sorry` token currently near :1084, hints only) in this task.\n\n(b) Probe the recommended carrier. Confirm AddCommGroup, LinearOrder, IsOrderedAddMonoid, Nontrivial all resolve for Q x_lex Z, and add a CarrierProbe-style example block (mirroring the pattern in the `section CarrierProbe ... end CarrierProbe` block of `FormalSystem/Metalogic/BXCanonical/CompletenessDedekind.lean`, currently near :69-105, hint only) showing the parametric canonical machinery elaborates at that carrier. This is a confirmation step, not a supply step: `Lex.isOrderedMonoid` (`@[to_additive]`) in `Mathlib/Algebra/Order/Monoid/Prod.lean` (currently near :52-59, hint only) declares `instance isOrderedMonoid ... : IsOrderedMonoid (a x_lex b)` in the `Lex` namespace, whose additive form supplies IsOrderedAddMonoid (a x_lex b). Confirm the instance actually fires for Q x_lex Z (in particular that AddLeftStrictMono Q is found) — the generated instance name was inferred from the attribute and not resolved by lookup.\n\nGoverning design document: specs/archive/361_strong_completeness_architecture_and_weak_terminus_gap_analysis/design/03_weak-terminus-status.md, section 5.3 (the refutation), 5.5 (the carrier), 5.6 (the Mathlib instance).\n\nAcceptance: the refuted-route comment (the \"(i) a Base-MCS ... (ii) a Henkin-style ...\" block) no longer appears in `Transfer.lean`; the probe block elaborates; lake build is green; #print axioms on any new declaration shows no sorryAx; the live non-Boneyard sorry count is unchanged at 1 (verify with scripts/check-module-invariants.sh check C3, which reports the sole structural sorry as countermodel_discrete in FormalSystem/Metalogic/WeakCanonical/Transfer.lean).",
       "topic": "strong_completeness",
@@ -156,9 +166,14 @@
         "FormalSystem/Metalogic/BXCanonical/DiscreteCarrierProbe.lean"
       ],
       "created": "2026-07-29T06:38:08Z",
-      "last_updated": "2026-08-24T22:14:10Z",
+      "last_updated": "2026-08-24T22:25:09Z",
       "session_id": "sess_1787608533_153fad_421",
       "artifacts": [
+        {
+          "type": "plan",
+          "path": "specs/421_correct_transfer_route_guidance_and_probe_non_archimedean_discrete_carrier/plans/01_transfer-route-and-carrier-probe.md",
+          "summary": "5-phase, 2-hour plan: replace the refuted route-(i) comment in Transfer.lean, land the research-verified DiscreteCarrierProbe.lean at Q x_lex Z, wire it into the BXCanonical aggregator, and run the full build + module-invariant gate."
+        },
         {
           "type": "report",
           "path": "specs/421_correct_transfer_route_guidance_and_probe_non_archimedean_discrete_carrier/reports/01_transfer-route-and-discrete-carrier.md",
@@ -688,7 +703,7 @@
     {
       "project_number": 426,
       "project_name": "settle_anchor_row_countermodel_or_nontermination_for_g_p_box_g_p",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "description": "Settle whether the tableau engine can positively refute (G p) -> square (G p), or whether that branch provably never saturates. Context: the cross-world temporal-copy unsoundness in boxNeg/diamondPos is fixed and the engine is sound, but the fix moved this formula from a WRONG answer to NO answer rather than to the intended positive refutation. Measured post-fix: decide returns .fuelExhausted (not .invalid), getCountermodel?.isSome = false, and buildTableau returns none at fuel 30, 60, 400 and 1000 -- so the fuel ceiling is not bracketed from above and there is no evidence a larger budget helps. Pre-fix the same formula returned .extractionFailed, which under this codebase R7 semantics asserts VALIDITY of an invalid formula; the current .fuelExhausted is the only constructor isUndecided recognises, so the present state is honest-but-incomplete rather than wrong. Two hypotheses to discriminate: (a) budget -- the branch does saturate but needs more fuel, in which case find and record the ceiling; (b) non-termination -- the branch never saturates, in which case this is a termination question for FormalSystem/Metalogic/Decidability/Verified/Termination/Fuel.lean, not a budget one, and the honest deliverable is a proof or argument that no finite fuel suffices. Discriminating between (a) and (b) is the primary deliverable; producing the countermodel is the secondary one and only applies under (a). The corpus already pins this outcome directly: CrossWorldPropagationProbe row F asserts the decide constructor and builds green at (false, false, true, false, true) -- update that row if the verdict moves. Do NOT reintroduce any temporal-copy propagation block into boxNeg/diamondPos to make the branch close; that is the exact unsoundness that was removed, and reverting it would restore a false claim of validity. Note the related but SEPARATE inheritance also recorded for the parent task: the decidable-branch-gate family (boxAnchoredCheck, boxGridCheck, regionGate, regionLabelCheck, rayUpOk/rayDnOk) now computes false on every multi-world branch; that is the truth-lemma side-condition problem and is not this task.",
       "effort": "4-8 hours",
@@ -702,8 +717,13 @@
         "Tests/BimodalTest/CrossWorldPropagationProbe.lean"
       ],
       "created": "2026-07-29T09:20:00Z",
-      "last_updated": "2026-08-24T22:13:47Z",
+      "last_updated": "2026-08-24T22:24:44Z",
       "artifacts": [
+        {
+          "type": "plan",
+          "path": "specs/426_settle_anchor_row_countermodel_or_nontermination_for_g_p_box_g_p/plans/01_record-anchor-row-verdict.md",
+          "summary": "5-phase plan recording the settled (a)-budget verdict for (G p) -> box (G p): reproduce the fuel ceiling, realign the CrossWorldPropagationProbe module docstring, add constructor-pinning rows for A and C, record the measured ceiling and diagnose the F(G p) non-termination witness in Fuel.lean, then a full prohibition-compliance gate."
+        },
         {
           "type": "report",
           "path": "specs/426_settle_anchor_row_countermodel_or_nontermination_for_g_p_box_g_p/reports/01_settle-anchor-row-verdict.md",
@@ -943,7 +963,7 @@
     {
       "project_number": 451,
       "project_name": "consolidate_boneyard_archives",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "description": "CONSOLIDATE THE TWO BONEYARDS into a single archive tree under FormalSystem/Boneyard/, preserving git history via git mv, and add the missing infrastructure that keeps an UNCOMPILED archive honest.\n\n=== 1. THE SITUATION (verified 2026-08-17) ===\nThe repository has two archive trees:\n  FormalSystem/Boneyard/                                  93 .lean, 59,019 lines\n  FormalSystem/Metalogic/WeakCanonical/Kamp/Boneyard/     63 .lean, 29,256 lines\nTotal archived: 156 files; live tree is 373 of 529.\n\nThe second is nested five levels deep and is easy to miss. Both READMEs already carry a \"There Are TWO Boneyards\" warning because past repository counts were wrong for exactly that reason -- a find/grep filter naming only the top-level archive silently counts ~29k archived lines as live code.\n\nNeither archive is excluded in lakefile.lean. Exclusion works two ways: (i) nothing live imports either tree, so they are outside the import closure and never compiled; (ii) tooling filters on the NAME glob `-not -path '*/Boneyard/*'` (scripts/check-module-invariants.sh:63, scripts/readme-lint.sh at :50,:70,:102,:133,:154,:161,:165). Because the filter is by name, it already covers both trees -- so consolidation does NOT change the build. The case for it is navigability, documentation discipline, and eliminating a class of counting bug, not build correctness.\n\n=== 2. PRE-VERIFIED SAFETY FACTS (do not re-litigate; re-confirm cheaply) ===\n- ZERO live importers: `grep -rn \"^import .*Boneyard\" FormalSystem/ Tests/ --include=*.lean | grep -v \"/Boneyard/\"` is EMPTY. Also empty for any non-import textual reference to Kamp.Boneyard or Kamp/Boneyard from a live file. The top-level Boneyard likewise has no live importers.\n- OUTBOUND imports are unaffected by the move. Kamp Boneyard files import three LIVE modules (FormalSystem.Metalogic.WeakCanonical.Kamp.EANegation, .EANegationClosure, .ESigmaCapture). Import statements name the IMPORTED module, which is not moving, so these keep resolving.\n- NAMESPACES are not path-derived. The moved files declare `namespace FormalSystem.Metalogic.WeakCanonical`, `...Kamp`, `...Separation`, `RenderGate` -- none tied to the Boneyard path segment. No namespace edits are required.\n\n=== 3. THE ONE REAL HAZARD ===\n52 INTRA-ARCHIVE import lines inside the Kamp Boneyard name modules under `FormalSystem.Metalogic.WeakCanonical.Kamp.Boneyard.*` (e.g. Separation/DualEliminations.lean:16-18, Separation/Hierarchy/HierarchyDefs.lean:16-17, ArityReduction.lean:1). Every one of these breaks when the files move, because the MOVED files' module names change.\n\nBecause archived files are never compiled, a broken import here is SILENT -- no build, no test, and no existing check catches it. That is the defect this task must not introduce, and the reason deliverable 4 exists. (The top-level Boneyard has 47 analogous self-imports; those files are not moving and are unaffected, but the new checker must cover them too.)\n\n=== 4. DELIVERABLES ===\n(a) MOVE, with git mv exclusively -- never delete-and-re-add, never cp. History preservation is a hard requirement, not a preference: the whole point of a scrapyard is that `git log --follow` still explains why each file died. Target: FormalSystem/Boneyard/KampWeakCanonical/. PRESERVE the existing internal structure rather than flattening: ZetaProbes/, NfMultiAnchorBridgeRetired/, Separation/ (with Separation/DedekindZ/ and Separation/Hierarchy/), ExpressiveCompleteness/.\n(b) RECONCILE with the existing FormalSystem/Boneyard/KampBypassArchive/ (13 files: KampBypass*.lean, KampForward, KampMutualInduction, NfCharFormula, PriorComposition{,_old}, GeneralExistPart). Kamp material has been migrated to the top-level archive before, so the result must be ONE coherent Kamp region, not two sibling directories that each look authoritative. Either nest both under a Kamp umbrella or state in writing why they stay separate.\n(c) REWRITE the 52 intra-archive import lines to the new module paths. Mechanical, but every one must be verified to resolve -- see (d).\n(d) NEW CHECKER: a script (or a new check group in scripts/check-module-invariants.sh) asserting that EVERY import line in every Boneyard file names a module that exists on disk -- whether it points at live code or at another archived file. This is the missing infrastructure. Uncompiled code has no compiler to catch rot, so the archive needs its own resolution check or it silently decays into unrevivable rubble. Wire it into the invariant script so it runs with everything else.\n(e) UPDATE the B0 self-test (scripts/check-module-invariants.sh:70-74) from \"exactly 2 directories\" to 1. B0 is a PASS-asserting self-test and WILL fail loudly the moment anything moves -- that is correct behavior, not breakage. Also re-check the :20-22 comment block, whose two-Boneyard warning becomes obsolete.\n(f) READMEs. Merge the two contradictory \"There Are TWO Boneyards\" sections into one accurate statement. NOTE THE DRIFT: FormalSystem/Boneyard/README.md records the Kamp archive as 62 files / 27,394 lines while the Kamp README records 63 / 29,256 and the filesystem agrees with the latter; the top-level README also states 59,010 lines for itself against an actual 59,019. Stale hand-maintained counts are part of what this task retires -- prefer counts the invariant script emits (C7) over numbers re-typed into prose.\n(g) PER-APPROACH DOCUMENTATION, which is the user-facing point of the exercise. The top-level archive already has the right convention: one subdirectory per abandoned approach, each with a README explaining what it was, why it died, and what would have to change for it to be worth reviving (see ClosedGuardLegacy/, DenseChronicle/, UltrafilterFrame/, RoundRobinChain/, NonBurgessSeed/, StageInductionGapAnalysis/). The Kamp archive is largely flat under a single README. Bring it up to that convention. Every README must record the file's ORIGINAL PATH so provenance survives the move even for a reader who never runs git log.\n\n=== 5. NON-GOALS ===\n- Do NOT revive, repair, or compile any archived code. Archived files stay uncompiled and outside the import closure.\n- Do NOT modify any live module. If a live module turns out to need a change, that is a separate task -- stop and report.\n- Do NOT delete anything. This is a consolidation, not a purge. Deciding what deserves deletion is a different judgment call and is explicitly out of scope.\n- Do NOT add the archive to lakefile.lean in any form.\n\n=== 6. VERIFICATION CONTRACT ===\n- `git log --follow` resolves through the move for a sampled file from each moved subdirectory. If it does not, the move was done wrong -- redo it with git mv.\n- `git status` shows renames (R), not delete+add pairs, for all 63 files.\n- lake build exits 0 and its output is UNCHANGED from before the move -- nothing live imports either archive, so a build difference means something was moved that should not have been.\n- Repository live-sorry count stays at exactly 1 (countermodel_discrete, WeakCanonical/Transfer.lean), via scripts/check-module-invariants.sh, never naive grep.\n- check-module-invariants.sh: B0 green at 1 directory; C7's live inventory unchanged (373 live .lean) since only archived files move.\n- The new checker (d) is green, including the 47 pre-existing top-level self-imports.\n- scripts/readme-lint.sh still skips the consolidated tree correctly (its six *Boneyard* guards match by name, so they should, but verify rather than assume).\n- PRE-EXISTING RED, inherited not caused: C6 (SoundnessLemmas/CoValidity.lean:104 `simp` made no progress), C9 (task-number citation in WeakCanonical/PriorExpressivenessDense.lean:185), and `lake build BimodalTest` (#guard_msgs drift in RegionGateProbe, TableauConformance, BoxSpreadProbe). None are in scope here; do not attempt to fix them, but confirm they are no WORSE afterward.",
       "effort": "medium",
@@ -953,13 +973,18 @@
       "parent_task": null,
       "artifacts": [
         {
+          "type": "plan",
+          "path": "specs/451_consolidate_boneyard_archives/plans/01_consolidate-boneyard-archives.md",
+          "summary": "10-phase, ~13-hour sequential plan consolidating both Boneyard archives into FormalSystem/Boneyard/Kamp/ via git mv, repairing 103 import lines, and shipping an enforced C11 archive import-resolution gate."
+        },
+        {
           "type": "report",
           "path": "specs/451_consolidate_boneyard_archives/reports/01_consolidate-boneyard-archives.md",
           "summary": ""
         }
       ],
       "created": "2026-08-17T19:42:46Z",
-      "last_updated": "2026-08-24T22:13:55Z",
+      "last_updated": "2026-08-24T22:24:51Z",
       "topic": "repo-hygiene",
       "session_id": "sess_1787608533_153fad_451",
       "next_artifact_number": 1,
@@ -1078,7 +1103,7 @@
     {
       "project_number": 469,
       "project_name": "eliminate_the_bridge_filtration_into_intpresentation",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "topic": "decidability",
       "priority": "high",
@@ -1097,9 +1122,14 @@
         470
       ],
       "created": "2026-08-24T00:00:00Z",
-      "last_updated": "2026-08-24T22:13:38Z",
+      "last_updated": "2026-08-24T22:24:37Z",
       "session_id": "sess_1787608533_153fad_469",
       "artifacts": [
+        {
+          "type": "plan",
+          "path": "specs/469_eliminate_the_bridge_filtration_into_intpresentation/plans/01_capture-verdict-and-followups.md",
+          "summary": "Six-phase, three-wave plan capturing the bridge-elimination verdict into the declared file_scope as comment-only docstring edits and creating the three separated follow-up tasks; explicitly excludes the research residue, the BiLasso wiring, and the ROADMAP edit."
+        },
         {
           "type": "report",
           "path": "specs/469_eliminate_the_bridge_filtration_into_intpresentation/reports/01_eliminate-the-bridge-verdict.md",
@@ -1170,7 +1200,7 @@
     {
       "project_number": 473,
       "project_name": "delete_quarantined_vacuous_kamp_pair",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "topic": "code-quality",
       "priority": "medium",
@@ -1189,9 +1219,14 @@
         470
       ],
       "created": "2026-08-24T00:00:00Z",
-      "last_updated": "2026-08-24T22:14:02Z",
+      "last_updated": "2026-08-24T22:24:57Z",
       "session_id": "sess_1787608533_153fad_473",
       "artifacts": [
+        {
+          "type": "plan",
+          "path": "specs/473_delete_quarantined_vacuous_kamp_pair/plans/02_delete-vacuous-kamp-pair.md",
+          "summary": "Four-phase linear plan: re-verify-then-delete the two quarantined theorems as one atomic commit, sweep 10 prose sites across 5 consumer files, update the 9 cross-reference sites in the two retained record files, then run the full gate (lake build, BimodalTest, C2/C3/C9)."
+        },
         {
           "type": "report",
           "path": "specs/473_delete_quarantined_vacuous_kamp_pair/reports/01_delete-quarantined-vacuous-kamp-pair.md",
