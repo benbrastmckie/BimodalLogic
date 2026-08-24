@@ -265,26 +265,26 @@ jq empty specs/state.json && bash .claude/scripts/generate-todo.sh
 
 ---
 
-### Phase 3: Restore descriptions for tasks 257 and 282 (item F) [NOT STARTED]
+### Phase 3: Restore descriptions for tasks 257 and 282 (item F) [COMPLETED]
 
 **Goal**: Tasks 257 and 282 have non-null `description` fields carrying enough intent for a first
 dispatch to act on. For a task with no artifacts, the `state.json` description is the entire input
 its first dispatch receives. **Neither task's status changes.**
 
 **Tasks**:
-- [ ] Confirm both are still `null`:
-      `jq -c '.active_projects[] | select(.project_number==257 or .project_number==282) | {project_number, status, description}' specs/state.json`
-- [ ] Set 257's `description` (task is `blocked`; the blocker is user HF authentication, and that
+- [x] Confirm both are still `null`:
+      `jq -c '.active_projects[] | select(.project_number==257 or .project_number==282) | {project_number, status, description}' specs/state.json` *(completed)*
+- [x] Set 257's `description` (task is `blocked`; the blocker is user HF authentication, and that
       must survive into the text). Base text from the research report:
-      > Complete the Hugging Face Hub migration for large dataset storage. Prior work (see `plans/01_implementation-plan.md`, `summaries/01_execution-summary.md`) removed Git LFS tracking from `.gitattributes` and rewrote `data/README.md` to point at HF Hub (`logos-labs/bmlogic-bench`) as the canonical source, but Phase 1 -- the actual upload to HF Hub via the existing `data/hf-dataset/upload.py` pipeline -- was never executed because it requires user HF authentication. This task is blocked on that credential; once supplied, run the upload, validate, and confirm `data/hf-dataset/PUBLISHING.md`'s 'Migration Status' header reflects completion.
-- [ ] Set 282's `description` (task is `partial`; the next action is the deferred c9 feasibility
+      > Complete the Hugging Face Hub migration for large dataset storage. Prior work (see `plans/01_implementation-plan.md`, `summaries/01_execution-summary.md`) removed Git LFS tracking from `.gitattributes` and rewrote `data/README.md` to point at HF Hub (`logos-labs/bmlogic-bench`) as the canonical source, but Phase 1 -- the actual upload to HF Hub via the existing `data/hf-dataset/upload.py` pipeline -- was never executed because it requires user HF authentication. This task is blocked on that credential; once supplied, run the upload, validate, and confirm `data/hf-dataset/PUBLISHING.md`'s 'Migration Status' header reflects completion. *(completed)*
+- [x] Set 282's `description` (task is `partial`; the next action is the deferred c9 feasibility
       probe). Base text from the research report:
-      > Flip complexity-9 dataset generation from stratified to exhaustive-by-default once feasibility is confirmed. Prior work (see `plans/01_exhaustive-enumeration-plan.md`, `handoffs/phase-1-6-handoff-20260714.md`) verified the 0-sentinel/`.take`-guard machinery is already correct and unlimited-capable, and corrected stale infeasibility claims in `data/README.md` and `scripts/run_dataset_generation.sh`. The next action is the deferred c9 feasibility probe (Plan Phase 2), followed -- pending a GO verdict and explicit user approval for the multi-hour compute -- by c8/c9 exhaustive regeneration and HF Hub republication (Phases 3, 4(rest), 5, 6(rest), 7).
-- [ ] A light wording pass is permitted; the substance and every named anchor (file paths, the HF
-      repo id, the blocker, the next action) must survive.
-- [ ] **Do NOT change either task's `status`.** 257 stays `blocked`; 282 stays `partial`. Research
-      concluded neither warrants abandonment.
-- [ ] Two separate `state-write.sh` calls.
+      > Flip complexity-9 dataset generation from stratified to exhaustive-by-default once feasibility is confirmed. Prior work (see `plans/01_exhaustive-enumeration-plan.md`, `handoffs/phase-1-6-handoff-20260714.md`) verified the 0-sentinel/`.take`-guard machinery is already correct and unlimited-capable, and corrected stale infeasibility claims in `data/README.md` and `scripts/run_dataset_generation.sh`. The next action is the deferred c9 feasibility probe (Plan Phase 2), followed -- pending a GO verdict and explicit user approval for the multi-hour compute -- by c8/c9 exhaustive regeneration and HF Hub republication (Phases 3, 4(rest), 5, 6(rest), 7). *(completed)*
+- [x] A light wording pass is permitted; the substance and every named anchor (file paths, the HF
+      repo id, the blocker, the next action) must survive. *(completed: base text used verbatim)*
+- [x] **Do NOT change either task's `status`.** 257 stays `blocked`; 282 stays `partial`. Research
+      concluded neither warrants abandonment. *(completed: statuses verified unchanged)*
+- [x] Two separate `state-write.sh` calls. *(completed)*
 
 **Timing**: 30 minutes
 

@@ -331,7 +331,8 @@
         "data/bmlogic-c9.json",
         "data/README.md",
         "data/hf-dataset/README.md"
-      ]
+      ],
+      "description": "Flip complexity-9 dataset generation from stratified to exhaustive-by-default once feasibility is confirmed. Prior work (see plans/01_exhaustive-enumeration-plan.md, handoffs/phase-1-6-handoff-20260714.md) verified the 0-sentinel/.take-guard machinery is already correct and unlimited-capable, and corrected stale infeasibility claims in data/README.md and scripts/run_dataset_generation.sh. The next action is the deferred c9 feasibility probe (Plan Phase 2), followed -- pending a GO verdict and explicit user approval for the multi-hour compute -- by c8/c9 exhaustive regeneration and HF Hub republication (Phases 3, 4(rest), 5, 6(rest), 7)."
     },
     {
       "project_number": 257,
@@ -395,7 +396,8 @@
         "data/README.md",
         "data/hf-dataset/"
       ],
-      "blockers": "Phase 1 (publish dataset to Hugging Face Hub) requires a Hugging Face write token for the logos-labs organization. Cannot be completed autonomously. Local migration work is done and committed: .gitattributes cleared of all 4 LFS entries, data/*.jsonl gitignored, data/README.md rewritten to name HF Hub as canonical source. VERIFIED 2026-07-25: https://huggingface.co/api/datasets/logos-labs/bmlogic-bench returns HTTP 401 — the dataset is not publicly available, so data/README.md currently documents a download URL that does not resolve for external consumers. Unblock by authenticating (huggingface-cli login) and following data/hf-dataset/PUBLISHING.md steps 1-5."
+      "blockers": "Phase 1 (publish dataset to Hugging Face Hub) requires a Hugging Face write token for the logos-labs organization. Cannot be completed autonomously. Local migration work is done and committed: .gitattributes cleared of all 4 LFS entries, data/*.jsonl gitignored, data/README.md rewritten to name HF Hub as canonical source. VERIFIED 2026-07-25: https://huggingface.co/api/datasets/logos-labs/bmlogic-bench returns HTTP 401 — the dataset is not publicly available, so data/README.md currently documents a download URL that does not resolve for external consumers. Unblock by authenticating (huggingface-cli login) and following data/hf-dataset/PUBLISHING.md steps 1-5.",
+      "description": "Complete the Hugging Face Hub migration for large dataset storage. Prior work (see plans/01_implementation-plan.md, summaries/01_execution-summary.md) removed Git LFS tracking from .gitattributes and rewrote data/README.md to point at HF Hub (logos-labs/bmlogic-bench) as the canonical source, but Phase 1 -- the actual upload to HF Hub via the existing data/hf-dataset/upload.py pipeline -- was never executed because it requires user HF authentication. This task is blocked on that credential; once supplied, run the upload, validate, and confirm data/hf-dataset/PUBLISHING.md's 'Migration Status' header reflects completion."
     },
     {
       "project_number": 169,

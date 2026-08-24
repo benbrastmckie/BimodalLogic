@@ -52,11 +52,11 @@ next_project_number: 474
 
 ### Dataset Enhancement
 
-257 [BLOCKED] — large_data_storage_huggingface
+257 [BLOCKED] — Complete the Hugging Face Hub migration for large dataset storage
 298 [PARTIAL] — Fix c7 labeling bug at formula ~13750 that causes unbounded memor
   └─ 231 [NOT STARTED] — Build comprehensive automation so that every dataset regeneration
     └─ 219 [RESEARCHED] — Run bmlogic-bench through multiple LLMs to establish baseline dif
-  └─ 282 [PARTIAL] — exhaustive_enumeration_by_default
+  └─ 282 [PARTIAL] — Flip complexity-9 dataset generation from stratified to exhaustiv
   └─ 296 [PARTIAL] — Re-add the 6 derived binary temporal operators (release, weak_unt
 
 ### Decidability
@@ -1898,6 +1898,8 @@ DEPENDENCY STATUS (re-verified 2026-08-18; dependencies array now includes 424, 
 - **Research**: [282_exhaustive_enumeration_by_default/reports/01_exhaustive-enumeration-default.md]
 - **Summary**: [282_exhaustive_enumeration_by_default/summaries/01_exhaustive-enumeration-summary.md]
 
+**Description**: Flip complexity-9 dataset generation from stratified to exhaustive-by-default once feasibility is confirmed. Prior work (see plans/01_exhaustive-enumeration-plan.md, handoffs/phase-1-6-handoff-20260714.md) verified the 0-sentinel/.take-guard machinery is already correct and unlimited-capable, and corrected stale infeasibility claims in data/README.md and scripts/run_dataset_generation.sh. The next action is the deferred c9 feasibility probe (Plan Phase 2), followed -- pending a GO verdict and explicit user approval for the multi-hour compute -- by c8/c9 exhaustive regeneration and HF Hub republication (Phases 3, 4(rest), 5, 6(rest), 7).
+
 ---
 
 ### 257. Large data storage huggingface
@@ -1908,6 +1910,8 @@ DEPENDENCY STATUS (re-verified 2026-08-18; dependencies array now includes 424, 
 - **Research**: [257_large_data_storage_huggingface/reports/01_large-data-storage.md]
 - **Plan**: [257_large_data_storage_huggingface/plans/01_implementation-plan.md]
 - **Summary**: [257_large_data_storage_huggingface/summaries/01_execution-summary.md]
+
+**Description**: Complete the Hugging Face Hub migration for large dataset storage. Prior work (see plans/01_implementation-plan.md, summaries/01_execution-summary.md) removed Git LFS tracking from .gitattributes and rewrote data/README.md to point at HF Hub (logos-labs/bmlogic-bench) as the canonical source, but Phase 1 -- the actual upload to HF Hub via the existing data/hf-dataset/upload.py pipeline -- was never executed because it requires user HF authentication. This task is blocked on that credential; once supplied, run the upload, validate, and confirm data/hf-dataset/PUBLISHING.md's 'Migration Status' header reflects completion.
 
 ---
 
