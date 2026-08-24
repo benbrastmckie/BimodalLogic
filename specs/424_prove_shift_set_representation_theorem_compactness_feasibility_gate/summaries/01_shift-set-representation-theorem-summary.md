@@ -4,6 +4,7 @@
 - **Plan**: `specs/424_prove_shift_set_representation_theorem_compactness_feasibility_gate/plans/01_shift-set-representation-theorem.md`
 - **Research**: `specs/424_prove_shift_set_representation_theorem_compactness_feasibility_gate/reports/01_shift-set-representation-feasibility.md`
 - **Phases**: 7 of 7 completed (Phase 7 was optional and was executed)
+- **Axioms introduced**: 0 (repo-wide `^axiom ` count in `FormalSystem/` unchanged at 7)
 
 ## GATE VERDICT: **PASSED**
 
@@ -41,6 +42,11 @@ Other checks:
 - `grep -n "Type\*" FormalSystem/Semantics/ShiftSet.lean` — no matches (design-doc risk R3;
   `D : Type` and `Carrier : Type` at the structure binder).
 - `lake build FormalSystem.Semantics.ShiftSet` — green (1082 jobs).
+- **Full `lake build` — green: `Build completed successfully (2462 jobs).`, exit 0, zero
+  `error:` lines.** This is the acceptance criterion proper, run against the registered
+  module at the terminal tree state; the four `#print axioms` lines above were then
+  reproduced against that same real build (`lake env lean`, exit 0), not against a scratch
+  elaboration.
 - `ShiftSet.ofModel` carries **no** freeness field.
 
 ## Both theorem statements, as landed

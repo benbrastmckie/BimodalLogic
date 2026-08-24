@@ -1,7 +1,7 @@
 # Implementation Plan: Shift-Set Representation Theorem (Compactness Feasibility Gate)
 
 - **Task**: 424 - Prove shift-set representation theorem (compactness feasibility gate)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 5.5 hours (core Phases 1-6) + 1.5 hours (optional Phase 7)
 - **Dependencies**: 470 (state.json); historically [361, 414, 439, 454] — 361 and 414 archived, gate-relevant vocabulary discharged
 - **Research Inputs**: `specs/424_prove_shift_set_representation_theorem_compactness_feasibility_gate/reports/01_shift-set-representation-feasibility.md`; compiled prototype `specs/424_prove_shift_set_representation_theorem_compactness_feasibility_gate/prototype/ShiftSet-prototype.lean` (225 lines, `lake env lean`-verified)
@@ -353,26 +353,26 @@ exactly the shift orbits.
 
 ---
 
-### Phase 6: Register the module, run the gate evidence, close the gate [IN PROGRESS]
+### Phase 6: Register the module, run the gate evidence, close the gate [COMPLETED]
 
 **Goal**: Make `lake build` actually build the file, and reproduce the two clean `#print axioms`
 lines inside the real build rather than in a scratch elaboration. This is the phase at which the
 gate verdict is determined.
 
 **Tasks**:
-- [ ] Add `import FormalSystem.Semantics.ShiftSet` to `FormalSystem/Semantics.lean` (import block
+- [x] Add `import FormalSystem.Semantics.ShiftSet` to `FormalSystem/Semantics.lean` (import block
       at :7-20), placed to keep the existing ordering convention.
-- [ ] Add a row for `ShiftSet.lean` to the module table in `FormalSystem/Semantics/README.md`
+- [x] Add a row for `ShiftSet.lean` to the module table in `FormalSystem/Semantics/README.md`
       (table at :14) — discretionary; do not skip silently.
-- [ ] Try `lake exe cache get` before building, given the partial Mathlib build in this checkout.
-- [ ] Run `lake build FormalSystem.Semantics.ShiftSet` first (fast path), then the full
+- [x] Try `lake exe cache get` before building, given the partial Mathlib build in this checkout.
+- [x] Run `lake build FormalSystem.Semantics.ShiftSet` first (fast path), then the full
       `lake build` for the acceptance criterion. Budget for a long wall-clock build.
-- [ ] Run `#print axioms FormalSystem.Semantics.ShiftSet.forward_repr`,
+- [x] Run `#print axioms FormalSystem.Semantics.ShiftSet.forward_repr`,
       `#print axioms FormalSystem.Semantics.ShiftSet.reverse_repr`, and
       `#print axioms FormalSystem.Semantics.ShiftSet.total_eq_orbit` (or `lean_verify` on the
       fully qualified names) and record the exact output.
-- [ ] Confirm `grep -rn "sorry" FormalSystem/Semantics/ShiftSet.lean` returns nothing.
-- [ ] Record the gate verdict — **PASSED** if both directions are sorry-free with no `sorryAx` on
+- [x] Confirm `grep -rn "sorry" FormalSystem/Semantics/ShiftSet.lean` returns nothing.
+- [x] Record the gate verdict — **PASSED** if both directions are sorry-free with no `sorryAx` on
       either and `lake build` is green; **FAILED** otherwise — for the task summary.
 
 **Timing**: 1.25 hours (dominated by build wall-clock, not by edits)
@@ -400,21 +400,21 @@ and above all any `sorryAx` — is a gate-relevant finding to be recorded, not n
 
 ---
 
-### Phase 7: (OPTIONAL) Dyadic counterexample witnessing that `sep` is not derivable [IN PROGRESS]
+### Phase 7: (OPTIONAL) Dyadic counterexample witnessing that `sep` is not derivable [COMPLETED]
 
 **Goal**: Convert "the `sep` field is an unjustified strengthening of the shift-set notion" from
 an open reviewer objection into a theorem, by exhibiting a `D`-action satisfying `sh_zero` and
 `sh_add` for which the separation condition fails.
 
 **Tasks**:
-- [ ] Construct `D := ℚ`, `Ω := ℚ ⧸ H` with `H := {q : ℚ | ∃ (a : ℤ) (n : ℕ), q = a / 2^n}` (the
+- [x] Construct `D := ℚ`, `Ω := ℚ ⧸ H` with `H := {q : ℚ | ∃ (a : ℤ) (n : ℕ), q = a / 2^n}` (the
       dyadics — a dense proper subgroup of `ℚ`), `sh [a] d := [a + d]`.
-- [ ] Prove `1/3 ∉ H` (`2^n = 3a` would force `3 ∣ 2^n`).
-- [ ] Prove that both action laws hold but the separation condition fails at `w := [0]`,
+- [x] Prove `1/3 ∉ H` (`2^n = 3a` would force `3 ∣ 2^n`).
+- [x] Prove that both action laws hold but the separation condition fails at `w := [0]`,
       `u := [1/3]`.
-- [ ] Docstring the result as the justification for `sep` being a structure field rather than a
+- [x] Docstring the result as the justification for `sep` being a structure field rather than a
       derived lemma.
-- [ ] Rebuild and confirm no regression to the Phase 6 evidence.
+- [x] Rebuild and confirm no regression to the Phase 6 evidence.
 
 **Timing**: 1.5 hours
 
@@ -439,19 +439,19 @@ report rather than expanding — this phase is explicitly optional and must not 
 
 ## Testing & Validation
 
-- [ ] `lake build` exits 0 (full build, after registration in Phase 6).
-- [ ] `#print axioms FormalSystem.Semantics.ShiftSet.forward_repr` — no `sorryAx`
+- [x] `lake build` exits 0 (full build, after registration in Phase 6).
+- [x] `#print axioms FormalSystem.Semantics.ShiftSet.forward_repr` — no `sorryAx`
       (expected `[propext, Quot.sound]`).
-- [ ] `#print axioms FormalSystem.Semantics.ShiftSet.reverse_repr` — no `sorryAx`
+- [x] `#print axioms FormalSystem.Semantics.ShiftSet.reverse_repr` — no `sorryAx`
       (expected `[propext, Classical.choice, Quot.sound]`; choice traced to
       `PartialHistory.hF_nonempty` only).
-- [ ] `#print axioms FormalSystem.Semantics.ShiftSet.total_eq_orbit` — no `sorryAx`.
-- [ ] `grep -rn "sorry" FormalSystem/Semantics/ShiftSet.lean` returns nothing.
-- [ ] `grep -n "Type\*" FormalSystem/Semantics/ShiftSet.lean` returns nothing (R3).
-- [ ] Both verbatim theorem statements present; neither direction reduced to a bare construction.
-- [ ] `ofModel` carries no freeness field.
-- [ ] `FormalSystem/Semantics.lean` imports `FormalSystem.Semantics.ShiftSet`.
-- [ ] Task summary states the gate verdict explicitly as PASSED or FAILED.
+- [x] `#print axioms FormalSystem.Semantics.ShiftSet.total_eq_orbit` — no `sorryAx`.
+- [x] `grep -rn "sorry" FormalSystem/Semantics/ShiftSet.lean` returns nothing.
+- [x] `grep -n "Type\*" FormalSystem/Semantics/ShiftSet.lean` returns nothing (R3).
+- [x] Both verbatim theorem statements present; neither direction reduced to a bare construction.
+- [x] `ofModel` carries no freeness field.
+- [x] `FormalSystem/Semantics.lean` imports `FormalSystem.Semantics.ShiftSet`.
+- [x] Task summary states the gate verdict explicitly as PASSED or FAILED.
 
 ## Artifacts & Outputs
 
