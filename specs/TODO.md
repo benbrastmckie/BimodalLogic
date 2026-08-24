@@ -324,7 +324,7 @@ Grounding: specs/reviews/review-2026-08-24.md, issues H-1, H-2, H-6, M-1, M-2, M
 
 ---
 
-### 469. Scope bilasso route to discrete decidability
+### 469. Eliminate the bridge filtration into intpresentation
 - **Effort**: medium
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
@@ -444,6 +444,60 @@ here is fully as valuable as a positive one and MUST NOT be left unstated.
 - Every claim about build state, sorry counts, or axiom sets must cite the check that produced it
   (`scripts/check-module-invariants.sh` C2/C3, or `lean_verify` / `#print axioms`).
 - Grounding: specs/reviews/review-2026-08-24.md, issue C-2.
+=== 7. RE-SCOPE (2026-08-24, supersedes the framing of sections 1-3 above) ===
+
+The target is NOT "prove a bridge theorem". It is: ELIMINATE THE NEED FOR ONE.
+
+WHY. What sections 1-3 call "the bridge" is three separate gaps, and only one is a bridge:
+
+  Gap 1, CARRIER (arbitrary discrete Archimedean D -> Z). NOT a bridge -- a missing semantic fact
+    needed by anything reasoning about the discrete class. NOTE: section 2(a) above is WRONG and is
+    corrected here. `orderIsoIntOfLinearSuccPredArch` is NOT sufficient: it delivers only an ORDER
+    iso, and durations ADD -- Compositionality is stated at `x + y`. Per
+    `FormalSystem/Semantics/IntNormalForm.lean`, the needed lemma is
+    `LinearOrderedAddCommGroup.int_orderAddMonoidIso_of_isLeast_pos` (D orderadd-iso Z), which does
+    not fit the ValidDiscrete binder bundle: `Archimedean D` does NOT synthesize from
+    `[IsSuccArchimedean D] [IsPredArchimedean D]`, and an `IsLeast {y | 0 < y}` witness is also
+    required. `Semantics/DurationClassification.lean` carries `archimedean_of_lub` for the Dedekind
+    branch; the SUCCESSOR-BASED ANALOGUE IS NOT IN THE TREE. That lemma is real, bounded work.
+
+  Gap 2, FINITE MODEL PROPERTY. NOT a bridge -- this IS the content of decidability. Unavoidable.
+
+  Gap 3, REPRESENTATION (`FiniteTaskFrame` Prop-level vs `IntPresentation` data). THE ONLY GENUINE
+    BRIDGE, and it is AVOIDABLE. `PeriodicExtension.lean` states the duplication outright:
+    `TaskFrame.extend_periodic` and `IntPresentation.extend_periodic` are "two theorems, not one".
+
+THE ROUTE. Two verified facts make elimination plausible:
+
+  (i) The existing filtration world-space is ALREADY data-shaped.
+      `filteredCharacteristicSet_injective` (FMP/FiniteModel.lean) injects `FilteredWorld phi` into
+      `Finset (subformulaClosure phi)`; `filtered_world_bound` (FMP/FMP.lean) bounds it by
+      2 ^ (subformulaClosure phi).card. The quotient is by agreement on a FINITE DECIDABLE set,
+      hence computably enumerable.
+  (ii) The `Classical.choice` objection in `PeriodicExtension.lean` concerns extracting `Fin n`
+      from an ARBITRARY Prop-level `Finite`. A filtration quotient by agreement-on-a-finite-set is
+      not that. CONFIRM this distinction holds before relying on it; if it does not, say so plainly.
+
+AND THE FILTRATION MUST BE REBUILT ANYWAY, independent of representation: `FMP/README.md` records
+refinedFilteredTaskRel as "fun w d u => if d = 0 then w = u else True" -- UNIVERSAL at nonzero
+duration. Spherical and Limit hold BECAUSE the relation is universal, and a truth lemma is FALSE on
+it (someFuture chi separates the sides). Verified: ZERO occurrences of `TruthAt` in all of `FMP/`.
+
+THE RE-SCOPED QUESTION: can the rebuilt, NON-PERMISSIVE filtration be constructed to land in
+`IntPresentation` DIRECTLY -- world-space as a `Finset` of closure-assignments, relation as the
+adjacency matrix -- so that the filtration output IS the `check` input definitionally,
+`check_correct` is the final step rather than the far side of a transfer, and NO BRIDGE THEOREM
+EXISTS TO PROVE?
+
+DELIVERABLES REPLACING SECTION 4(a)-(d): a verdict on that question with the argument; the
+constructive-line accounting per half; the cost of the non-permissive relation (re-discharging all
+four def:frame axioms is the multi-month piece and is unavoidable on ANY route -- do not price it
+as if the refactor caused it); and a follow-up task spec if the answer is yes. Section 4(e) stands.
+
+SCOPE CORRECTION: this does NOT unblock `countermodel_discrete`. Task 169's terminus is a BASE-class
+countermodel over the NON-ARCHIMEDEAN carrier Q x_lex Z -- different class, different carrier,
+reached by 421->422. Any claim that this work "serves both fronts" is too broad; it serves the FMP
+result and decidability only. Grounding: specs/reviews/review-2026-08-24.md, Addendum 2.
 
 ---
 
