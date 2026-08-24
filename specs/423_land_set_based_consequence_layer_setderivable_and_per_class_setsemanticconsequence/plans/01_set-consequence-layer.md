@@ -180,7 +180,7 @@ each by symbol before slicing, and if a line has drifted, trust the symbol.
 
 ---
 
-### Phase 2: Add the ten basic lemmas (design/01 §4) [NOT STARTED]
+### Phase 2: Add the ten basic lemmas (design/01 §4) [COMPLETED]
 
 **Goal**: All ten §4 lemmas are present, proved, and building — with the three design/01
 elaboration risks resolved as the research determined.
