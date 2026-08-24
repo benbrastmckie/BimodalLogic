@@ -1,7 +1,7 @@
 # Implementation Plan: Consolidate the Two Boneyard Archives
 
 - **Task**: 451 - Consolidate the two Boneyard archives into a single tree
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 13 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/451_consolidate_boneyard_archives/reports/01_consolidate-boneyard-archives.md
@@ -772,19 +772,34 @@ except the 7 deliberate live `.lean` comments.
 
 ---
 
-### Phase 10: Final verification sweep [NOT STARTED]
+### Phase 10: Final verification sweep [COMPLETED]
 
 **Goal**: Prove, against the Phase 1 baselines, that the consolidation changed nothing it should
 not have changed and everything it should have.
 
 **Tasks**:
 
-- [ ] Run the full corrected verification contract and record each result against its baseline.
-- [ ] Grep audit: zero remaining references to `Metalogic/WeakCanonical/Kamp/Boneyard` outside
+- [x] Run the full corrected verification contract and record each result against its baseline.
+- [x] Grep audit: zero remaining references to `Metalogic/WeakCanonical/Kamp/Boneyard` outside
       `specs/**` and `.git/**`, except the 7 deliberate comment-only mentions in the 3 live `.lean`
       files.
-- [ ] Report at completion: the 6 missing non-Kamp top-level READMEs left out of scope, and any
+- [x] Report at completion: the 6 missing non-Kamp top-level READMEs left out of scope, and any
       Scope Hypothesis whose measured value diverged from the plan.
+
+**MEASURED** (Phase 10): the full contract was run at the end, not inferred. `lake build` **exit
+0** (2462 jobs), `lake build BimodalTest` **exit 0** (2512 jobs), `check-module-invariants.sh`
+**ALL CHECKS PASSED, exit 0** with C1/C2/C6's compile-check included -- C2 all four flagship
+axiom sets match baseline, C3 exactly 1 sorry (`countermodel_discrete`), C4 1388 lines, C5 4
+allowlisted, C6 35 manifested modules still compile, C11 497 archived lines / 0 unwaived / 6
+waived / 0 stale. `typst-sync-check.sh` **PASS (all 3 checks green)**. Grep audit: exactly the
+**7** deliberate live comments. README coverage: 14 directories, 85 files, 0 problems. Raw gate
+output is recorded under `baselines/phase10-*.txt`.
+
+Where a Phase 10 figure differs from Phase 1, the cause was identified rather than reconciled by
+editing the expectation: build-job counts (2462/2512 vs 2458/2508), C4 (1388 vs 1376) and C7
+(451 vs 448) all rose because several other tasks added live modules to this branch while this
+one ran. Every archive-side figure -- 156 archived files, 59,019 + 29,256 lines -- reconciles
+exactly with the Phase 1 baseline.
 
 **Timing**: 1 hour
 
@@ -826,15 +841,15 @@ not reconciled by editing the expectation.
 
 ## Testing & Validation
 
-- [ ] `lake build` exits 0 with output byte-identical to the Phase 1 baseline (the archive is
+- [x] `lake build` exits 0 *(deviation: altered — exit 0 confirmed, but the output is **not** byte-identical: 2462 jobs against the baseline's 2458. The extra jobs are live modules added by concurrently running tasks, not by this one; the archive is still outside the import closure)* with output byte-identical to the Phase 1 baseline (the archive is
       outside the import closure, so any difference means something moved that should not have).
-- [ ] `lake build BimodalTest` exits 0.
-- [ ] `bash scripts/check-module-invariants.sh` -> ALL CHECKS PASSED, exit 0, including the new C11.
-- [ ] `bash scripts/readme-lint.sh` -> RESULT: PASS, exit 0.
-- [ ] `bash scripts/typst-status-counts.sh` output unchanged from baseline.
-- [ ] `git status --find-renames` shows renames only, never delete+add, across all move commits.
-- [ ] C11 fails as designed when a dangling import is deliberately injected (tested in Phase 5).
-- [ ] Live sorry count remains exactly 1, verified via C3, never a naive grep.
+- [x] `lake build BimodalTest` exits 0.
+- [x] `bash scripts/check-module-invariants.sh` -> ALL CHECKS PASSED, exit 0, including the new C11.
+- [x] `bash scripts/readme-lint.sh` *(deviation: altered — PASS is unreachable; the gate was RED at baseline on 7 pre-existing missing READMEs and 5 pre-existing broken references. Criterion downgraded to "no worse than baseline", and the final output is **byte-identical** to it. See MEASURED.md D1)* -> RESULT: PASS, exit 0.
+- [x] `bash scripts/typst-status-counts.sh` output unchanged from baseline *(every count identical; required a fix to the script itself — see the Phase 9 deviation)*.
+- [x] `git status --find-renames` shows renames only, never delete+add, across all move commits *(deviation: altered — 0 delete+add confirmed, but 7 of the 125 renames are R098/R099 rather than R100: exactly the Phase 6 files that the same phase both moves and rewrote an import inside)*.
+- [x] C11 fails as designed when a dangling import is deliberately injected (tested in Phase 5).
+- [x] Live sorry count remains exactly 1, verified via C3, never a naive grep.
 
 ## Artifacts & Outputs
 
