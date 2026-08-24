@@ -133,6 +133,63 @@ theorem wh_ext {F : TaskFrame D} {σ τ : WorldHistory F} (hd : σ.domain = τ.d
   subst this
   rfl
 
+/--
+The task frame induced by a shift set, under the **functional** task relation
+`TaskRel w d u := (u = sh w d)`.
+
+All **seven** live `TaskFrame` fields are discharged here. Three come for free from
+functionality plus the group action and require no shift-set axiom of their own — `serial`, the
+*interpolation* half of the biconditional `comp`, and `spherical` — correcting the design
+document's list, which was written against an earlier five-field `TaskFrame` and named only the
+other four. The one field that is genuinely *not* free is `limit`; it is exactly `S.sep`.
+-/
+def frame (S : ShiftSet D) : TaskFrame D where
+  WorldState := S.Carrier
+  nonempty := S.carrier_nonempty
+  TaskRel := fun w d u => u = S.sh w d
+  nullity_identity := by intro w u; rw [S.sh_zero]; exact eq_comm
+  comp := by
+    intro w v x y _ _
+    constructor
+    · -- interpolation: the witness is `sh w x`, and it is the unique one
+      intro h
+      refine ⟨S.sh w x, rfl, ?_⟩
+      show v = S.sh (S.sh w x) y
+      rw [S.sh_add]; exact h
+    · -- composition
+      rintro ⟨u, rfl, rfl⟩
+      show S.sh (S.sh w x) y = S.sh w (x + y)
+      rw [S.sh_add]
+  converse := by
+    intro w d u
+    constructor
+    · rintro rfl; show w = S.sh (S.sh w d) (-d); rw [S.sh_neg]
+    · rintro rfl; show u = S.sh (S.sh u (-d)) d; rw [S.sh_neg']
+  serial := by
+    -- successor `sh w x`, predecessor `sh w (-x)`
+    intro w x _
+    refine ⟨⟨S.sh w x, rfl⟩, ⟨S.sh w (-x), ?_⟩⟩
+    show w = S.sh (S.sh w (-x)) x
+    rw [S.sh_neg']
+  limit := S.sep
+  spherical := by
+    -- Under a functional task relation `Fib R w x` is a singleton and `Seg R w v x y` is a
+    -- singleton or empty. Directedness then forces every member of the family to be that same
+    -- singleton, so `⋂₀ S` is it, and is nonempty. No frame machinery, no Zorn.
+    intro Sfam hdir hmem
+    obtain ⟨s, hs⟩ := hdir.1
+    obtain ⟨a, ha⟩ := (hmem s hs).2
+    have hsingle : ∀ (c : Set S.Carrier), (TaskFrame.IsFiber (fun w d u => u = S.sh w d) c ∨
+        TaskFrame.IsSegment (fun w d u => u = S.sh w d) c) → ∀ p ∈ c, ∀ q ∈ c, p = q := by
+      rintro c (⟨w, x, rfl⟩ | ⟨w, v, x, y, _, _, rfl⟩) p hp q hq
+      · exact hp.trans hq.symm
+      · exact hp.1.trans hq.1.symm
+    refine ⟨a, fun t ht => ?_⟩
+    obtain ⟨S', hS', hsub⟩ := hdir.2 s hs t ht
+    obtain ⟨b, hb⟩ := (hmem S' hS').2
+    rw [hsingle s (hmem s hs).1 a ha b (hsub hb).1]
+    exact (hsub hb).2
+
 end ShiftSet
 
 end FormalSystem.Semantics

@@ -202,28 +202,28 @@ missing or extra, record the delta rather than assuming the prototype's list.
 
 ---
 
-### Phase 2: `ShiftSet.frame` — all seven `TaskFrame` fields [IN PROGRESS]
+### Phase 2: `ShiftSet.frame` — all seven `TaskFrame` fields [COMPLETED]
 
 **Goal**: Construct the induced task frame under `TaskRel w d u := (u = sh w d)` and discharge
 every live `TaskFrame` field.
 
 **Tasks**:
-- [ ] Define `ShiftSet.frame (S : ShiftSet D) : TaskFrame D` with `WorldState := S.Carrier`,
+- [x] Define `ShiftSet.frame (S : ShiftSet D) : TaskFrame D` with `WorldState := S.Carrier`,
       `nonempty := S.carrier_nonempty`, `TaskRel := fun w d u => u = S.sh w d`.
-- [ ] Discharge `nullity_identity` (from `sh_zero`).
-- [ ] Discharge **both halves** of the biconditional `comp` — the interpolation half is witnessed
+- [x] Discharge `nullity_identity` (from `sh_zero`).
+- [x] Discharge **both halves** of the biconditional `comp` — the interpolation half is witnessed
       by `sh w x`, uniquely; the design doc omits this half.
-- [ ] Discharge `converse` (from the two action laws).
-- [ ] Discharge `serial` (witnesses `sh w x` and `sh w (-x)`).
-- [ ] Set `limit := S.sep`.
-- [ ] Discharge `spherical`: under a functional task relation `Fib R w x` is a singleton and
+- [x] Discharge `converse` (from the two action laws).
+- [x] Discharge `serial` (witnesses `sh w x` and `sh w (-x)`).
+- [x] Set `limit := S.sep`.
+- [x] Discharge `spherical`: under a functional task relation `Fib R w x` is a singleton and
       `Seg R w v x y` is a singleton or empty; `DirectedFamily` (`TaskFrame.lean:276`) then forces
       every member of the family to be the same singleton, so `⋂₀ S` is that singleton and is
       nonempty. No frame-theoretic machinery and no Zorn.
-- [ ] Add a short comment recording that `serial`, `spherical`, and `comp`'s interpolation half
+- [x] Add a short comment recording that `serial`, `spherical`, and `comp`'s interpolation half
       are free consequences of functionality plus the group action, correcting the design doc's
       5-field list.
-- [ ] Verify: `lake env lean FormalSystem/Semantics/ShiftSet.lean`.
+- [x] Verify: `lake env lean FormalSystem/Semantics/ShiftSet.lean`.
 
 **Timing**: 1 hour
 
@@ -246,7 +246,7 @@ a new obligation and must be discharged or escalated before Phase 3, not deferre
 
 ---
 
-### Phase 3: `hist`, `hist_isTotal`, `model`, `total_eq_orbit` [NOT STARTED]
+### Phase 3: `hist`, `hist_isTotal`, `model`, `total_eq_orbit` [IN PROGRESS]
 
 **Goal**: Build the induced total history through a carrier point, the induced task model, and
 prove the re-issue's named new forward obligation: the constructed frame's total histories are
