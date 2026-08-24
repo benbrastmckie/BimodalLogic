@@ -221,6 +221,30 @@ theorem filtered_world_bound (phi : Formula) :
 
 We state the FMP in terms of MCS membership, which corresponds to
 satisfiability in the canonical model construction.
+
+### What "FMP" means here, and what it does not
+
+Read the two termini below literally. `mcs_finite_model_property` produces a
+`ClosureMCSBundle phi` with `phi ∉ S.carrier`, plus `Finite (FilteredWorld phi)`;
+`fmp_size_bound` adds `Nat.card (FilteredWorld phi) ≤ 2 ^ (subformulaClosure phi).card`. Both are
+**Lindenbaum-plus-cardinality statements about MCS membership**. Neither mentions a model, a
+history, or a time — and neither does anything else in this directory: `TruthAt` occurs **zero**
+times across all six files under `Decidability/FMP/` (measured by `grep -rc`).
+
+That is a *syntactic* finite model property, and it is what this directory delivers. A **semantic**
+finite model property — of the shape "if `φ` is refutable then it is refuted in some model of
+bounded size" — is a different theorem needing three things this directory does not have:
+
+1. a world space derived from *a given model*, not from a quotient of `ClosureMCSBundle`
+   (i.e. sets of formulas);
+2. a **non-permissive** relation — `refinedFilteredTaskRel` is universal at nonzero duration, as
+   this directory's `README.md` records, so it identifies too much to support a truth lemma; and
+3. a truth lemma, of which there is none here.
+
+Consequence for anyone planning that work: **it is not a refactor of this directory.** The subject
+is different. What `FMP/` genuinely supplies to such an effort is its cardinality bookkeeping —
+`filtered_world_bound` and `fmp_size_bound` — and not the world space, the relation, or any
+transfer of truth.
 -/
 
 /--

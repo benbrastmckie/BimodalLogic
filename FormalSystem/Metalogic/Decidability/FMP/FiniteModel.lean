@@ -84,6 +84,19 @@ theorem characteristicSet_respects_equiv (phi : Formula)
 
 /--
 Lift characteristic set to filtered worlds.
+
+**The codomain is `Set`, not `Finset`, and this matters.** A recurring misreading of this map —
+and of `filteredCharacteristicSet_injective` below — takes it to embed `FilteredWorld phi` into
+`Finset (subformulaClosure phi)`, and concludes that the filtration's world-space is "already
+data-shaped" and so a ready-made starting point for a *computable* presentation of a model. It is
+not. This map lands in `Set (subformulaClosure phi)`; the finiteness that makes that codomain
+useful is supplied by `set_finite` below, which is `noncomputable`, as is `FilteredWorld.finite`
+itself. The whole space is `Prop`-shaped, exactly like every other `Finite`.
+
+So nothing here can be enumerated, indexed, or fed to a decision procedure without first being
+rebuilt as data. Anything wanting a `Fin n`-indexed carrier — `Decidability/IntPresentation.lean`'s
+`IntPresentation`, for instance — must construct its world-space from `Finset`/`Bool` data
+directly rather than extract it from this one.
 -/
 def filteredCharacteristicSet (phi : Formula) (w : FilteredWorld phi) :
     Set (subformulaClosure phi) :=

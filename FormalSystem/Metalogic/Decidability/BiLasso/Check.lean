@@ -20,6 +20,56 @@ that bridge licenses.
 does *not* decide the logic: nothing here quantifies over frames. A presentation is a finite
 adjacency matrix together with a valuation; `check` answers a question about that one structure.
 
+### Stated the other way: this layer performs no part of the finite-model step
+
+Its *input* is already a presentation — see `exists_annot_of_truth`
+(`BiLasso/Extraction.lean`), which takes a `WorldHistory P.toTaskFrame` and compresses it. The
+whole layer is a **model checker for one given finite graph**: it compresses histories *within* a
+presentation. Producing the presentation in the first place, from an arbitrary countermodel, is a
+different theorem that lives nowhere in this directory. Any account of the decidability of
+`ValidDiscrete` that treats this layer as covering the finite-model half is mistaken about what
+`exists_annot_of_truth` quantifies over.
+
+### The single remaining obligation, in the shape that assembles
+
+With this layer in hand, decidability of `ValidDiscrete φ` reduces to exactly one hypothesis:
+
+> `fmp` : `∀ ψ, ¬ ValidDiscrete ψ → ∃ P ∈ cands ψ, ∃ w : Fin P.card, SatAtState P w ψ.neg`,
+> for some computable `cands : Formula → List IntPresentation`.
+
+Given `fmp`, `(∀ P ∈ cands φ, ∀ w, check P w φ.neg = false) ↔ ValidDiscrete φ` follows, and
+`decidable_of_iff` reads a `Decidable (ValidDiscrete φ)` off it — the outer quantifier by
+`List.decidableBAll`, the inner by `Fintype.decidableForallFintype`, the body by `decEq`. Both
+halves have been compiled sorry-free and are retained under
+`specs/469_eliminate_the_bridge_filtration_into_intpresentation/evidence/`. Two things follow that
+are worth recording, because both were assumed otherwise before being measured:
+
+- **`check_correct` is the final step, not the far side of a transfer.** No bridge theorem, no
+  transfer lemma, no enumeration over `Atom`, and no `Fin n`-from-`Finite` extraction appears
+  anywhere in the assembly.
+- **The converse direction is free.** A countermodel presented over ℤ refutes `ValidDiscrete`
+  directly, because ℤ instantiates that definition's whole binder bundle with no instance work;
+  the proof is five lines.
+
+`fmp` itself is not routine — its crux is box-faithfulness, `box` truth being a global constant of
+its own model (`Truth.box_const`), so the source model's and the target presentation's box facts
+need not agree.
+
+### `check` computes, but it is not choice-free
+
+These are two different claims and they are easy to conflate. `instDecidableSatAtState` **reduces**
+— the `#guard`s below are kernel-evaluated proof of it — and it carries no `Classical.dec` in the
+data. Its measured axiom set is nonetheless `[propext, Classical.choice, Quot.sound]`, as is
+`check_correct`'s: `Classical.choice` sits in the proofs *about* the data, never in the data, which
+is exactly why computability survives it.
+
+Nor can that be repaired. `wlem_of_spherical`
+(`Tests/BimodalTest/Semantics/SphericalFiniteAxiomTest.lean`) derives weak excluded middle from
+`Spherical R` at the finite carrier `Bool` over `D = ℤ`, from `[propext, Quot.sound]` alone. So
+**no** finite-carrier frame with an arbitrarily shaped relation can be choice-free, on any route.
+The cost is already paid by `IntPresentation.toTaskFrame` and is not a new one — but it does mean
+no plan should promise a choice-free decidability result.
+
 ## Why `check` ranges over a position
 
 `check` asks whether *some* position `i` of *some* enumerated annotated bi-lasso carries `φ` over

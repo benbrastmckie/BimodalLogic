@@ -246,34 +246,34 @@ individually (`lake build FormalSystem.Semantics.{Validity,IntNormalForm,Duratio
 
 ---
 
-### Phase 3: Capture the representation and FMP findings in `Decidability/` [NOT STARTED]
+### Phase 3: Capture the representation and FMP findings in `Decidability/` [COMPLETED]
 
 **Goal**: The three corrections that reorder the cost model — `Set` not `Finset`, `ofStep` makes
 the axioms free over ℤ, `val` is not enumerable at a bound — live at the symbols they are about,
 and `FMP/`'s actual contribution is stated so it is not mistaken for FMP coverage.
 
 **Tasks**:
-- [ ] `FormalSystem/Metalogic/Decidability/FMP/FiniteModel.lean`, at
+- [x] `FormalSystem/Metalogic/Decidability/FMP/FiniteModel.lean`, at
       `filteredCharacteristicSet` / `filteredCharacteristicSet_injective`: record that the codomain
       is `Set (subformulaClosure phi)`, not `Finset`, and that the surrounding finiteness is
       `noncomputable` — so this space is `Prop`-shaped and is **not** a data-shaped starting point
       for a computable presentation.
-- [ ] `FormalSystem/Metalogic/Decidability/FMP/FMP.lean`, near `mcs_finite_model_property` and
+- [x] `FormalSystem/Metalogic/Decidability/FMP/FMP.lean`, near `mcs_finite_model_property` and
       `fmp_size_bound`: record that both are Lindenbaum-plus-cardinality statements about MCS
       membership, that neither mentions a model, a history, or a time, and that a *semantic* finite
       model property therefore needs a different world space, a non-permissive relation, and a
       truth lemma — none of which is a refactor of this directory. Cite the zero-`TruthAt`
       measurement.
-- [ ] `FormalSystem/Metalogic/Decidability/FMP/README.md`: same point in prose, alongside the
+- [x] `FormalSystem/Metalogic/Decidability/FMP/README.md`: same point in prose, alongside the
       existing record that `refinedFilteredTaskRel` is universal at nonzero duration.
-- [ ] `FormalSystem/Metalogic/Decidability/IntPresentation.lean`: at `structure IntPresentation`,
+- [x] `FormalSystem/Metalogic/Decidability/IntPresentation.lean`: at `structure IntPresentation`,
       record that `val : Atom → Fin card → Bool` is a function on an `Infinite` type, so
       presentations are not finite objects and cannot be enumerated at a cardinality bound without
       a valuation-restriction lemma that does not exist here; the workable shape is a
       formula-indexed candidate list whose valuation is read off a closure type. At `toTaskFrame`,
       record that it is literally `TaskFrame.ofStep P.stepRel P.fwd P.bwd`, hence bi-seriality is
       the sole frame obligation.
-- [ ] `FormalSystem/Metalogic/Decidability/BiLasso/Check.lean` (module doc, alongside the existing
+- [x] `FormalSystem/Metalogic/Decidability/BiLasso/Check.lean` (module doc, alongside the existing
       "does not decide the logic" paragraph) and/or `BiLasso/README.md`: record what the layer does
       **not** do — it compresses histories *within* a given presentation, its input is already a
       presentation, so it performs no part of the finite-model step; and record the single
@@ -282,7 +282,7 @@ and `FMP/`'s actual contribution is stated so it is not mistaken for FMP coverag
       Note that `instDecidableSatAtState` computes but is **not** choice-free — its measured axiom
       set is `[propext, Classical.choice, Quot.sound]` — and that `wlem_of_spherical` proves no
       finite-carrier frame with an arbitrarily shaped relation can be choice-free.
-- [ ] `lake build` each touched Lean module individually, immediately after its own edit.
+- [x] `lake build` each touched Lean module individually, immediately after its own edit.
 
 **Timing**: 1.5 hours
 
@@ -297,6 +297,23 @@ and `FMP/`'s actual contribution is stated so it is not mistaken for FMP coverag
 - `FormalSystem/Metalogic/Decidability/IntPresentation.lean` — docstrings only
 - `FormalSystem/Metalogic/Decidability/BiLasso/Check.lean` and/or `BiLasso/README.md` — docstrings
   and prose only
+
+**Phase 3 record**: six files touched, +189 lines, **zero deletions**, zero declaration or
+import lines changed. `FiniteModel.lean` gained the `Set`-not-`Finset` / `noncomputable` correction
+at `filteredCharacteristicSet`. `FMP.lean` gained a "What 'FMP' means here, and what it does not"
+subsection above `mcs_finite_model_property`, citing the zero-`TruthAt` measurement and naming the
+three things a semantic FMP needs. `FMP/README.md` gained the "not a refactor of this directory"
+statement plus a correction to its own axiom-re-discharge cost paragraph (open in general, cheap
+over ℤ via `ofStep`, and why `RefinedFilteredTaskFrame`'s `D`-polymorphism is what blocks it).
+`IntPresentation.lean` gained the `val`-on-`Infinite`-`Atom` non-enumerability point plus the
+formula-indexed candidate-list shape at `structure IntPresentation`, and the bi-seriality-is-the-
+sole-obligation point at `toTaskFrame`. `Check.lean` and `BiLasso/README.md` gained the
+"performs no part of the finite-model step" statement, the single remaining obligation in the shape
+the compiled probes established (naming `check_correct` as the final step), and the
+computes-but-not-choice-free distinction with `wlem_of_spherical`. Each Lean module built green
+individually. `scripts/check-module-invariants.sh --no-build` re-run: C3/C5/C6/C9 PASS, unchanged
+from the Phase 1 baseline. Deviation: the plan offered `Check.lean` **and/or** `BiLasso/README.md`;
+both were written, since the two carry different audiences.
 
 **Verification**:
 - `git diff` under `Decidability/` shows comment/docstring/markdown hunks only.

@@ -62,6 +62,25 @@ graph, bi-serial, with a decidable valuation.
 `step` and `val` are `Bool`-valued rather than `Prop`-valued precisely so that the presentation is
 data a computation can consume, in contrast with the `Finite`-valued `FiniteTaskFrame.finite_world`
 this exists to replace.
+
+**A presentation is not a finite object, and cannot be enumerated at a cardinality bound.** The
+`step` field is finite data — `Fin card → Fin card → Bool` is a `Fintype` with `DecidableEq`, so
+the step relations of a given `card` *can* be listed. `val` is not: it is a function on `Atom`,
+which carries an `Infinite` instance (`Syntax/Atom.lean`). So there is no finite list of the
+presentations of a given `card`, and any plan of the form "bound `card` by some
+`presentationBound φ`, then enumerate the presentations up to that bound" does not typecheck as
+stated. Closing that gap would need a valuation-restriction lemma — that only the atoms of `φ`
+matter — which is not in this tree.
+
+The shape that works instead, and that avoids the problem rather than solving it, is a
+**formula-indexed candidate list**: `cands : Formula → List IntPresentation`, whose states are
+subsets of `subformulaClosure φ` satisfying the local Hintikka conditions, whose `step` comes from
+the `untl`/`snce` unfolding clauses (which relate a label at `t` to the label at `t ± 1`, i.e. they
+*are* an adjacency relation), and whose valuation is read off the state — `val p X := decide
+(atom p ∈ X)` — rather than quantified over. The list is then finite because the closure is, with
+no bound on `card` and no enumeration over `Atom` anywhere. Note that this list still requires an
+iterated pruning to a maximal serial subgraph, since a Hintikka type need not have a locally
+coherent successor and `fwd`/`bwd` below are not free.
 -/
 structure IntPresentation where
   /-- Number of world states. -/
@@ -102,6 +121,15 @@ The `TaskFrame ℤ` the presentation presents, built through the normal form's `
 All seven `TaskFrame` fields come from `ofStep`; none is re-discharged here. In particular
 *Spherical* goes through `TaskFrame.spherical_of_finite`, the only route applicable to a relation
 of arbitrary shape, and *Limit* through `TaskFrame.limit_of_succOrder`.
+
+**So bi-seriality is the sole frame obligation a presentation ever pays** — `fwd` and `bwd`,
+already fields of the structure. The definition below is literally
+`TaskFrame.ofStep P.stepRel P.fwd P.bwd` and adds nothing: the four `def:frame` axioms cost one
+obligation here, not four, however non-permissive the relation's shape. That pricing is specific to
+ℤ (`ofStep` is stated at `TaskFrame ℤ`, and `limit_of_succOrder` needs the successor structure); a
+frame left polymorphic in its duration type pays each axiom by hand. See
+`Semantics/IntNormalForm.lean` for the seven-field source table and the ℤ-versus-polymorphic
+contrast.
 -/
 def toTaskFrame : TaskFrame ℤ :=
   TaskFrame.ofStep P.stepRel P.fwd P.bwd

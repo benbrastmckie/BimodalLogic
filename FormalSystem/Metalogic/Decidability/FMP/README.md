@@ -50,6 +50,34 @@ permissive route to *Spherical* and *Limit* is exactly what a non-universal rela
 `TaskFrame.spherical_of_finite` (`Semantics/TaskFrame.lean`) is the replacement route for
 *Spherical* at a finite carrier, and is already in place.
 
+### "Rebuild the filtration" is not a refactor of this directory
+
+It is worth stating the negative directly, because the directory's name invites the opposite
+reading. A *semantic* finite model property — "if `φ` is refutable then it is refuted in some model
+of bounded size" — needs a world space derived from a given **model**, a non-permissive relation,
+and a truth lemma. This directory has none of the three: its world space is a quotient of
+`ClosureMCSBundle`, i.e. of sets of formulas; its relation is the permissive one above; and there
+is no truth lemma, by the argument just given. What it does supply to such an effort is the
+**cardinality bookkeeping** — `filtered_world_bound` and `fmp_size_bound` — and nothing else.
+Anyone budgeting that work should budget a construction with a different subject, not a
+modification of these files.
+
+### One correction to the axiom-re-discharge cost, above
+
+The paragraph above says re-discharging the four axioms for a non-universal relation "is open".
+That is right in general and **wrong over ℤ specifically**, and the difference is large enough to
+matter to any cost estimate. `TaskFrame.ofStep` (`Semantics/IntNormalForm.lean`) discharges all
+seven `TaskFrame` fields from a bare bi-serial relation on a finite nonempty carrier, whatever the
+relation's shape, leaving exactly one genuine obligation: bi-seriality. So for a ℤ-frame on a
+finite carrier the four `def:frame` axioms are essentially free.
+
+The reason it does not apply here is that `RefinedFilteredTaskFrame` is **polymorphic in `D`**.
+Two of `ofStep`'s seven discharges are ℤ-specific — `limit` via `TaskFrame.limit_of_succOrder`, and
+`ofStep`'s own statement, which is at `TaskFrame ℤ`. Normalizing the duration type to ℤ first is
+therefore what buys the cheap axioms; without it, each axiom is re-discharged by hand.
+`Semantics/IntNormalForm.lean`'s module docstring carries both the normalization route and this
+pricing.
+
 Archived: the former `DenseFMP.lean`/`DiscreteFMP.lean` variant modules
 (`fmp_dense`, `fmp_discrete`) had no live importers and were moved to
 `FormalSystem/Boneyard/FMPVariants/`.
