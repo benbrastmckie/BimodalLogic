@@ -1,7 +1,7 @@
 # Implementation Plan: Task #469
 
 - **Task**: 469 - eliminate the bridge: filtration into IntPresentation
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 5.5 hours
 - **Dependencies**: 470 (recorded in `state.json`; already terminal)
 - **Research Inputs**: `specs/469_eliminate_the_bridge_filtration_into_intpresentation/reports/01_eliminate-the-bridge-verdict.md`
@@ -122,30 +122,30 @@ Phase 4 owns `Semantics/Extension/PeriodicExtension.lean` alone, Phase 5 owns `s
 
 ---
 
-### Phase 1: Re-verify every fact this plan asks to be quoted [NOT STARTED]
+### Phase 1: Re-verify every fact this plan asks to be quoted [COMPLETED]
 
 **Goal**: No claim reaches a docstring on the strength of the report alone. Re-run the checks and
 record the results; if any check disagrees with the report, stop and report the divergence rather
 than writing the report's version.
 
 **Tasks**:
-- [ ] `scripts/check-module-invariants.sh --no-build` — record C2/C3/C6 pass state and the current
+- [x] `scripts/check-module-invariants.sh --no-build` — record C2/C3/C6 pass state and the current
       structural-sorry inventory (expected: the sole sorry is `countermodel_discrete` in
       `WeakCanonical/Transfer.lean`).
-- [ ] `grep -rc TruthAt FormalSystem/Metalogic/Decidability/FMP/*.lean` — expect 0 in all six.
-- [ ] Read `FMP/FiniteModel.lean` at `filteredCharacteristicSet` and confirm its codomain is
+- [x] `grep -rc TruthAt FormalSystem/Metalogic/Decidability/FMP/*.lean` — expect 0 in all six.
+- [x] Read `FMP/FiniteModel.lean` at `filteredCharacteristicSet` and confirm its codomain is
       `Set (subformulaClosure phi)`, and that `FilteredWorld.finite` / the ambient finiteness
       instance are `noncomputable`.
-- [ ] Read `IntNormalForm.lean` at `TaskFrame.ofStep` and confirm the seven-field source table in
+- [x] Read `IntNormalForm.lean` at `TaskFrame.ofStep` and confirm the seven-field source table in
       its docstring, and that `serial` is the sole genuine obligation.
-- [ ] Read `IntPresentation.lean` at `structure IntPresentation` and confirm `val`'s type is
+- [x] Read `IntPresentation.lean` at `structure IntPresentation` and confirm `val`'s type is
       `Atom → Fin card → Bool`; confirm `Atom` carries an `Infinite` instance.
-- [ ] Read `Validity.lean` at `ValidDiscrete` and record its exact binder bundle.
-- [ ] Enumerate the theorems of `DurationClassification.lean` and confirm no successor-based
+- [x] Read `Validity.lean` at `ValidDiscrete` and record its exact binder bundle.
+- [x] Enumerate the theorems of `DurationClassification.lean` and confirm no successor-based
       analogue of `archimedean_of_lub` exists.
-- [ ] Re-compile both probe files under `evidence/` with `lake env lean` and re-measure
+- [x] Re-compile both probe files under `evidence/` with `lake env lean` and re-measure
       `#print axioms` on `not_validDiscrete_of_satAtState` and `validDiscrete_iff_checkFamily`.
-- [ ] `grep -v '^#' scripts/module-invariants-manifest.txt` and `grep '^import'
+- [x] `grep -v '^#' scripts/module-invariants-manifest.txt` and `grep '^import'
       FormalSystem/Metalogic/Decidability/BiLasso.lean` — confirm the 20 / 14 split the follow-up
       spec in Phase 5 depends on.
 
@@ -163,6 +163,27 @@ re-running the command named beside it. A divergence is a finding to report, not
 quietly adjust in the plan.
 
 **Files to modify**: none (read and verify only).
+
+**Phase 1 record** (measured 2026-08-24, tree at `3ff158bad`):
+
+| Check | Command | Result |
+|---|---|---|
+| Structural sorries | `scripts/check-module-invariants.sh --no-build` | C3 PASS — sole sorry is `countermodel_discrete` (`WeakCanonical/Transfer.lean`). C6 PASS — 37 unreachable live modules, all manifested. C1/C2 skipped under `--no-build`. B0, C4, C5, C7–C10 PASS. |
+| `TruthAt` in `FMP/` | `grep -rc TruthAt FormalSystem/Metalogic/Decidability/FMP/*.lean` | **0 in all six** files (`FiniteModel`, `ClosureMCS`, `Periodicity`, `TruthPreservation`, `Filtration`, `FMP`) |
+| `filteredCharacteristicSet` codomain | read `FMP/FiniteModel.lean` | `Set (subformulaClosure phi)` — **not** `Finset`. `set_finite` and `FilteredWorld.finite` are both declared `noncomputable`. Report §2 Correction A **confirmed**. |
+| `TaskFrame.ofStep` seven-field table | read `Semantics/IntNormalForm.lean` | Table present verbatim in `ofStep`'s docstring; `serial` marked "the one genuine obligation"; `limit` from `limit_of_succOrder`, `spherical` from `spherical_of_finite`. **Confirmed.** |
+| `IntPresentation.val` | read `Decidability/IntPresentation.lean` | `val : Atom → Fin card → Bool`; `toTaskFrame := TaskFrame.ofStep P.stepRel P.fwd P.bwd`. `instance : Infinite Atom` at `Syntax/Atom.lean`. **Confirmed.** |
+| `ValidDiscrete` binder bundle | read `Semantics/Validity.lean` | `[AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [SuccOrder D] [PredOrder D] [IsSuccArchimedean D] [IsPredArchimedean D] [Nontrivial D]`. **Confirmed.** |
+| `DurationClassification.lean` theorems | symbol enumeration | Exactly three: `archimedean_of_lub`, `complete_duration_discrete_or_dense`, `complete_not_dense_iso_int`. No successor-based analogue. **Confirmed.** |
+| Probe recompile | `lake env lean` on each `evidence/*.lean` | All **three** compile sorry-free; `#print axioms` measures `[propext, Classical.choice, Quot.sound]` on `not_validDiscrete_of_satAtState`, `validDiscrete_iff_checkFamily`, `decidableValidDiscreteFamily`, `validDiscrete_iff_check`, `decidableValidDiscrete`. |
+| Manifest arithmetic | `grep -v '^#' scripts/module-invariants-manifest.txt`; `grep '^import' BiLasso.lean` | 37 total manifest entries. BiLasso block = 18 `BiLasso.*` submodules + the `BiLasso` aggregator = 19, plus `FormalSystem.Semantics.Extension.PeriodicExtension` = 20. `BiLasso.lean` has **14** imports. Split **15 delete / 4 keep (`Extend`, `Successor`, `Orbit`, `Agreement`) / 1 separate (`PeriodicExtension`)**. **Confirmed.** |
+
+**Divergences from the research report**: one, immaterial. The report's §4 speaks of "two probe
+files"; `evidence/` in fact holds **three** (`soundness-half-probe.lean`,
+`decidability-assembly-family-probe.lean`, `decidability-assembly-probe.lean` — the last being the
+single-presentation variant the report names in §4.2 without counting it). All three compile
+sorry-free at the same axiom set. No measurement contradicts the report; nothing in this plan is
+adjusted as a result, except that follow-up task A is told to land **three** probe files.
 
 **Verification**:
 - Every bullet above has a recorded command and result.
