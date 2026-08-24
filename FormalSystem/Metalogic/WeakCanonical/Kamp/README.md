@@ -62,7 +62,7 @@ deliberate; see the extensive import notes at the top of `NfMultiAnchorBridge.le
 
 - [WeakCanonical README](../README.md)
 - [Metalogic architecture map](../../README.md)
-- [Kamp Boneyard inventory](Boneyard/README.md)
+- [Kamp Boneyard inventory](../../../Boneyard/Kamp/KampWeakCanonical/README.md)
 
 ## References
 

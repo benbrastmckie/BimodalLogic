@@ -16,7 +16,7 @@ Before running any `find` or `grep` over this tree, note that archived code live
 | Boneyard | Files | Lines |
 |----------|------:|------:|
 | [`Boneyard/`](Boneyard/README.md) | 93 | 59,010 |
-| [`Metalogic/WeakCanonical/Kamp/Boneyard/`](Metalogic/WeakCanonical/Kamp/Boneyard/README.md) | 62 | 27,394 |
+| [`Metalogic/WeakCanonical/Kamp/Boneyard/`](Boneyard/Kamp/KampWeakCanonical/README.md) | 62 | 27,394 |
 
 A filter naming only the top-level `Boneyard/` counts the 27,394 lines under
 `Kamp/Boneyard/` as live. That is not hypothetical: repeated past descriptions of this

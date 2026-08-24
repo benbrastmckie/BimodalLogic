@@ -5,7 +5,7 @@
 # break anything" into a single command with a non-zero exit on any failure.
 #
 # Checks:
-#   B0  Boneyard exclusion self-test (BOTH Boneyards must be found and excluded)
+#   B0  Boneyard exclusion self-test (the single archive must be found and excluded)
 #   C1  `lake build` exits 0
 #   C2  `#print axioms` for the four flagship theorems matches the recorded baseline
 #   C3  Exactly one structural `sorry`, located BY CONTENT (never by line number)
@@ -17,9 +17,14 @@
 #   C9  Zero task-number citations under FormalSystem/
 #   C10 Zero references to the pre-relocation docs/latex/typst paths
 #
-# Every filesystem traversal excludes BOTH Boneyards via `-not -path '*/Boneyard/*'`.
-# A filter naming only the top-level Boneyard silently sweeps ~27k archived lines
-# from the Kamp-local Boneyard into the "live" counts.
+# Every filesystem traversal excludes the archive via `-not -path '*/Boneyard/*'`.
+# The archive was consolidated into a single tree at `FormalSystem/Boneyard/`; the
+# former second archive at `Metalogic/WeakCanonical/Kamp/Boneyard/` (63 files /
+# 29,256 lines) now lives at `Boneyard/Kamp/KampWeakCanonical/`. B0 asserts the
+# directory count is exactly 1, so a second archive reappearing anywhere under
+# `FormalSystem/` fails the gate instead of silently splitting the counts again --
+# which is what happened before, and is why the name glob (not a path prefix) is
+# what the traversals filter on.
 #
 # Usage:
 #   bash scripts/check-module-invariants.sh            # all checks
@@ -57,8 +62,8 @@ note() { printf '            %s\n' "$1"; }
 # Report a not-yet-enforced check: visible, but does not affect the exit code.
 soft() { printf 'TODO  %-4s %s\n' "$1" "$2"; }
 
-# Shared find filter. Both Boneyards are excluded by the single `*/Boneyard/*`
-# pattern; B0 asserts that this pattern really matches two distinct directories.
+# Shared find filter. The archive is excluded by the `*/Boneyard/*` name glob;
+# B0 asserts that this pattern matches exactly one directory.
 live_lean() {
   find "$@" -name '*.lean' -not -path '*/Boneyard/*'
 }
@@ -70,11 +75,11 @@ echo
 # B0: Boneyard exclusion self-test
 # ---------------------------------------------------------------------------
 mapfile -t BONEYARDS < <(find FormalSystem -type d -name Boneyard | sort)
-if [ "${#BONEYARDS[@]}" -eq 2 ]; then
-  pass B0 "Boneyard exclusion covers exactly 2 directories"
+if [ "${#BONEYARDS[@]}" -eq 1 ]; then
+  pass B0 "Boneyard exclusion covers exactly 1 directory"
   for b in "${BONEYARDS[@]}"; do note "$b"; done
 else
-  fail B0 "expected 2 Boneyard directories, found ${#BONEYARDS[@]}"
+  fail B0 "expected 1 Boneyard directory, found ${#BONEYARDS[@]}"
   for b in "${BONEYARDS[@]}"; do note "$b"; done
 fi
 # Prove the exclusion is load-bearing: archived files must not be in the live set.

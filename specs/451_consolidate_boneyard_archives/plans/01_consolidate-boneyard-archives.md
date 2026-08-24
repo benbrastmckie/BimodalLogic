@@ -201,7 +201,7 @@ before Phase 2 begins, and the later phases' gate numbers are adjusted to the me
 
 ---
 
-### Phase 2: Consolidate the archive trees [NOT STARTED]
+### Phase 2: Consolidate the archive trees [COMPLETED]
 
 **Goal**: One archive tree. All 85 files relocated by `git mv` with zero content edits to any
 moved `.lean`, with B0 and the two gating README links updated in the same commit so no gate is
@@ -209,26 +209,36 @@ left red.
 
 **Tasks**:
 
-- [ ] `mkdir -p FormalSystem/Boneyard/Kamp`
-- [ ] `git mv FormalSystem/Metalogic/WeakCanonical/Kamp/Boneyard FormalSystem/Boneyard/Kamp/KampWeakCanonical`
+- [x] `mkdir -p FormalSystem/Boneyard/Kamp`
+- [x] `git mv FormalSystem/Metalogic/WeakCanonical/Kamp/Boneyard FormalSystem/Boneyard/Kamp/KampWeakCanonical`
       (63 files; preserves `ZetaProbes/`, `NfMultiAnchorBridgeRetired/`, `ExpressiveCompleteness/`,
       `Separation/` with `Separation/DedekindZ/` and `Separation/Hierarchy/`, plus 35 flat root
       files and the tree README).
-- [ ] `git mv` each of `FormalSystem/Boneyard/{KampBypassArchive,KampNegationClosure,RabinovichPath,VecEADecomposition}`
+- [x] `git mv` each of `FormalSystem/Boneyard/{KampBypassArchive,KampNegationClosure,RabinovichPath,VecEADecomposition}`
       into `FormalSystem/Boneyard/Kamp/` (22 files).
-- [ ] Confirm `FormalSystem/Metalogic/WeakCanonical/Kamp/Boneyard/` no longer exists.
-- [ ] Write a short stub `FormalSystem/Boneyard/Kamp/README.md` naming the region and pointing at
+- [x] Confirm `FormalSystem/Metalogic/WeakCanonical/Kamp/Boneyard/` no longer exists.
+- [x] Write a short stub `FormalSystem/Boneyard/Kamp/README.md` *(deviation: altered — only `KampWeakCanonical/` and `VecEADecomposition/` are linked; the other three have no README until Phase 7, so they are named in plain text rather than shipped as broken links)* naming the region and pointing at
       the five subdirectories. Full region index is Phase 7.
-- [ ] In `scripts/check-module-invariants.sh`: change `2` to `1` in all three B0 places (the
+- [x] In `scripts/check-module-invariants.sh`: change `2` to `1` in all three B0 places (the
       `-eq 2` test, "covers exactly 2 directories", "expected 2 Boneyard directories"). Do NOT
       touch `live_lean()`'s `-not -path '*/Boneyard/*'` glob — keeping the name glob is what makes
       B0's count assertion a regression detector if a second archive ever reappears.
-- [ ] Rewrite the `:20-22` header comment block: the two-Boneyard warning is obsolete, and its
+- [x] Rewrite the `:20-22` header comment block: the two-Boneyard warning is obsolete, and its
       "~27k archived lines" figure was already wrong (actual 29,256).
-- [ ] Repoint `FormalSystem/README.md:19` and
+- [x] Repoint `FormalSystem/README.md:19` and
       `FormalSystem/Metalogic/WeakCanonical/Kamp/README.md:65` at the new archive location so
       `readme-lint.sh`'s link resolution stays green. Minimal link-target edits only; the prose
       rewrite is Phase 9.
+
+**MEASURED** (Phase 2): 90 renames, every one `R100`, zero delete+add pairs. The plan's "85"
+counts `.lean` only; 5 `README.md` files ride along in the same directories. B0 PASS at 1
+directory, note reads "excluded 156 archived .lean files (553 total -> 397 live)" (553/397 rather
+than the plan's 550/394 -- see MEASURED.md D2). `readme-lint.sh` output is **byte-identical** to
+the Phase 1 baseline (7 missing, 5 broken; both link repoints resolve). `check-module-invariants.sh
+--no-build` -> ALL CHECKS PASSED (C3, C4 at 1388 lines, C5 with 4 allowlisted, C6, C8, C9, C10).
+The authoritative full `lake build` is deferred to Phase 10: several other agents held the Lake
+lock throughout this phase, and this phase's diff (renames of uncompiled files, one bash script,
+two markdown link targets) cannot reach the import closure.
 
 **Timing**: 1.5 hours
 
@@ -271,7 +281,7 @@ means content was touched and must be reverted.
 
 ---
 
-### Phase 3: Rewrite the move-broken import lines [NOT STARTED]
+### Phase 3: Rewrite the move-broken import lines [IN PROGRESS]
 
 **Goal**: Restore every import that resolved before Phase 2 and broke because its target's module
 path changed. The dangling-import census must return to exactly its Phase 1 value.
