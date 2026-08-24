@@ -1,5 +1,5 @@
 ---
-next_project_number: 472
+next_project_number: 474
 ---
 
 # TODO
@@ -12,7 +12,7 @@ next_project_number: 472
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
 | 1 | 127,128,257,298,434,461,466,470,471 | -- | agent-system, dataset-enhancement, decidability, ... |
-| 2 | 125,193,231,282,296,413,421,423,424,426,433,451,469 | 298,434,461,470 | algebraic-representation, automation, completeness, ... |
+| 2 | 125,193,231,282,296,413,421,423,424,426,433,451,469,472,473 | 298,434,461,470 | algebraic-representation, automation, code-quality, ... |
 | 3 | 178,219,422,425,462,468 | 193,231,421,423,426,451,469 | dataset-enhancement, decidability, formula-refactor, ... |
 | 4 | 169,455,463 | 422,462,468 | code-quality, decidability, strong_completeness |
 | 5 | 95,362,464 | 169,424,463 | completeness, decidability, strong_completeness |
@@ -43,6 +43,8 @@ next_project_number: 472
 ### Code Quality
 
 455 [NOT STARTED] — BACKLOG REALIGNMENT: bring specs/ROADMAP.md and every remaining a
+472 [NOT STARTED] — THE IMMEDIATE, UNGATED DOCUMENTATION-CORRECTION PASS. This is the
+473 [NOT STARTED] — DELETE THE QUARANTINED VACUOUS KAMP PAIR, and keep the record tha
 
 ### Completeness
 
@@ -110,6 +112,176 @@ next_project_number: 472
   └─ 362 [NOT STARTED] — Implement the completeness capstone under the SETTLED TERMINOLOGY (see above)
 
 ## Tasks
+
+### 473. Delete quarantined vacuous kamp pair
+- **Effort**: low
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: code-quality
+- **Dependencies**: Task 470
+
+**Description**: DELETE THE QUARANTINED VACUOUS KAMP PAIR, and keep the record that explains why it was vacuous.
+
+=== WHAT AND WHY ===
+
+`neg_2var_vec_ea` (`FormalSystem/Metalogic/WeakCanonical/Kamp/EANegationClosure.lean`) is VACUOUS:
+its conclusion quantifies existentially over a `VVecEA2` that its hypotheses do not constrain, and
+`Prop42Vacuity.prop42_conclusion_is_vacuous` derives that exact conclusion FROM NO HYPOTHESES via an
+all-top witness. It is sorry-free and not unsound -- it simply says nothing. It was mis-adopted as a
+landed asset at least twice, which is why the vacuity record exists.
+
+VERIFIED 2026-08-24 by exhaustive grep over the non-Boneyard tree:
+  - `neg_2var_vec_ea` has EXACTLY ONE code consumer: `reflatten_neg_step`
+    (`Kamp/NfMultiAnchorBridge/NavigatedSpine.lean`), whose body is a bare re-export of it.
+  - `reflatten_neg_step` has ZERO code consumers.
+  - Every other occurrence of either symbol, repository-wide, is PROSE.
+  - The spine's real negation step is `VVecEA2.negFix_iff` / `negFixFaithful_iff`, not this pair.
+
+So the pair is dead weight that cannot reach `kampPriorExpressiveCompleteness` or any flagship
+theorem. Deleting it removes a documented trap; it does not remove any content.
+
+=== DELIVERABLES ===
+
+(a) Delete `neg_2var_vec_ea` and `reflatten_neg_step`.
+
+(b) RE-VERIFY THE ZERO-CONSUMER CLAIM YOURSELF FIRST, by symbol, before deleting anything. If you
+    find a live consumer this description did not anticipate, STOP, do not delete, and report the
+    consumer. A surprise consumer means the analysis above is wrong and the deletion is unsafe.
+
+(c) KEEP `Prop42Vacuity.lean`. It is the machine-checked record of WHY this was vacuous, it is
+    root-reachable so CI compiles it, and it is the guard against the same mistake recurring.
+    Update only those of its cross-references that name the now-deleted declarations, and keep its
+    explanation intact. Do the same for `Prop42Contentful.lean`, which carries the contentful
+    biconditional shape a genuine Prop 4.2 would need -- it is the constructive half of the record.
+
+(d) Sweep the PROSE references. Roughly a dozen sites across `EANegationClosure.lean`,
+    `NavigatedSpine.lean`, `NfMultiAnchorBridge.lean`, `AggregateHookDischarge.lean`,
+    `SubBracket2V.lean` and `Prop42*.lean` describe one or both symbols as landed Prop 4.2
+    deliverables. Every one must now either be removed or rewritten to point at the vacuity record.
+    A dangling prose reference to a deleted declaration is exactly the drift this repository keeps
+    paying for.
+
+(e) INCIDENTAL, FIX WHILE YOU ARE HERE: the anchors in that prose have rotted. Many sites cite
+    `neg_2var_vec_ea` at `EANegationClosure.lean:722`; it is not there. `Prop42Vacuity.lean` cites
+    `reflatten_neg_step` at `NavigatedSpine.lean:178`; it is not there either. Since the
+    declarations are being deleted, replace these with symbol-name references to the vacuity record
+    rather than new line numbers.
+
+=== CONSTRAINTS ===
+
+- `lake build` and `lake build BimodalTest` must both exit 0 after the deletion. If anything fails
+  to compile, that IS the surprise consumer of (b) -- stop and report rather than patching around it.
+- Check C2 must still report all four flagship axiom sets matching baseline, and C3 must still
+  report exactly one live structural sorry (`countermodel_discrete`). Neither should move; if
+  either does, something was load-bearing after all.
+- Do NOT touch any file outside this task's file_scope. In particular the documentation-correction
+  pass task owns `Decidability.lean`, `Verified/README.md`, `FMP/README.md`, `Soundness.lean`,
+  `WeakCanonical.lean`, `RealModel/ShuffleReal.lean` and `PriorExpressivenessDense.lean` -- leave
+  all of them alone.
+- Prove nothing, close no sorry, and do NOT attempt to repair `neg_2var_vec_ea` into a contentful
+  form. That would be a different task with real mathematical content; `Prop42Contentful.lean`
+  already records the shape it would need.
+
+Grounding: specs/reviews/review-2026-08-24.md, Addendum 1 item A-3, and task 468's audit finding F8
+(which this supersedes: F8 records the lemma as "still live-consumed"; it is not, it is quarantined).
+
+---
+
+### 472. Immediate documentation correction pass
+- **Effort**: medium
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: code-quality
+- **Dependencies**: Task 470
+
+**Description**: THE IMMEDIATE, UNGATED DOCUMENTATION-CORRECTION PASS. This is the first half of the DIVIDE of task
+177 that task 468 Stage 3 directs. It is split out and un-gated deliberately: 177 sits behind
+thirteen dependencies including the entire decidability chain, and 468 itself now sits behind two
+probes and the boneyard consolidation. Every correction below misleads a reader TODAY. None of them
+needs any of that work to land first.
+
+MODEL: task 467, which did exactly this for one file (Decidability/README.md) and is archived. Read
+its report, specs/467_update_decidability_readme/reports/01_decidability-readme-alignment.md,
+before starting.
+
+=== SCOPE: FALSE AND STALE CLAIMS, EACH VERIFIED ===
+
+Each item names a file and the defect. Re-verify by symbol or by the named check before editing --
+do not trust the line numbers in this description, and do not trust the prose you find in place.
+
+(a) `Decidability.lean` -- its "## Status: Soundness: Proven / Completeness: Proven" block reads as
+    TABLEAU soundness and completeness. It is neither; it refers to the Hilbert-system results.
+    This is a genuine overclaim, the same class of defect task 467 corrected next door. Rewrite so
+    the subject of each claim is explicit.
+
+(b) `Verified/README.md` -- marks EIGHT files as "planned" that exist, compile, and are imported;
+    OMITS eleven files that exist; and lists the genuinely-absent `Verified/Refutation/` subtree in
+    the SAME register, so a reader cannot tell which sense of "planned" applies. Rebuild the file
+    table against the live tree and give absent-by-design a distinct marker from
+    not-yet-documented.
+
+(c) `FMP/README.md` -- lists two "Key Results", `filtration_is_finite` and
+    `truth_preserved_under_filtration`, that DO NOT EXIST as declarations. Verified 2026-08-24.
+    Replace with what the directory actually proves. While there, note honestly that the directory
+    contains ZERO occurrences of `TruthAt` and that its `refinedFilteredTaskRel` is permissive
+    (universal at nonzero duration) -- the README already says the latter; keep it.
+
+(d) `DecisionProcedure.lean` -- the `decideAuto` docstring claims blocking "ensures termination for
+    all formulas". NO theorem supports this, and `decideAuto` runs at a figure BELOW the already-
+    insufficient `soundFuel'`. State what is actually guaranteed.
+
+(e) `Verified/Decidable.lean` -- its Status docstring still describes the fresh-time producers as
+    blocked. They are proved. Correct it.
+
+(f) `WeakCanonical.lean` -- lists five open sorries that no longer exist. Per check C3 the tree has
+    exactly ONE live structural sorry, `countermodel_discrete` in `WeakCanonical/Transfer.lean`.
+
+(g) `RealModel/ShuffleReal.lean` -- calls a lemma a "documented strategic sorry"; it is proved.
+
+(h) `Soundness.lean` -- cites an IRR rule and an `IRRSoundness.lean` that do not exist.
+
+(i) `PriorExpressivenessDense.lean` -- carries a SELF-CONTRADICTION: one passage states the module
+    "carries this module's **only** `sorry`" and another, about 130 lines later, states "This
+    module is now sorry-free". C3 confirms the second is correct. Also record, while there, that
+    `uSExpressivelyCompleteOverPrior` (`PriorExpressiveness.lean`) is pinned at
+    `SemanticPriorUZ`/`SemanticPriorSZ` and so is NOT Reynolds Theorem 3 -- the real Theorem 3 is
+    `uSExpressivelyCompleteOverDensePrior` in this file. `semanticPriorU_not_implies_semanticPriorUZ`
+    machine-witnesses the gap, so no dense caller can discharge the former's hypotheses.
+
+=== NON-GOALS -- these belong to other tasks, do not do them here ===
+
+- Do NOT touch `specs/ROADMAP.md`. That is task 468 Stage 4c, and it is a rewrite, not a patch.
+- Do NOT touch `FormalSystem/Metalogic/Decidability/README.md`. Task 467 already did it.
+- Do NOT delete `neg_2var_vec_ea` or `reflatten_neg_step`. That is its own task, which owns the
+  Kamp files; touching them here would collide with it.
+- Do NOT fix task 177's `file_scope`, and do NOT alter 177's dependencies or status. Task 468
+  Stage 3 owns the residual scoping of 177, and task 470 item (G) owns the `file_scope` repair.
+- Prove nothing. Close no sorry. This task changes prose and docstrings only.
+
+=== CONSTRAINTS ===
+
+- `lake build` and `lake build BimodalTest` must both still exit 0 at the end -- docstrings are
+  compiled, so a malformed one breaks the build.
+- Every claim you WRITE must be reproducible by `scripts/check-module-invariants.sh` (C2 axiom
+  sets, C3 sorry inventory, C4/C5 reference resolution, C7 file counts). If a claim cannot be
+  grounded in a check, do not write it.
+- Prefer symbol names to line numbers in everything you write. Line-number rot is the observed
+  failure mode across this repository -- roughly twelve sites currently cite `neg_2var_vec_ea` at a
+  line it left long ago.
+- Do not weaken a claim into vagueness to make it safe. "Proven" and "sorry-free" are DIFFERENT
+  properties in this repository and the distinction is the point of the whole exercise; say which
+  one holds.
+
+=== VERIFICATION ===
+
+- Both builds green; C1-C10 all pass.
+- No file outside this task's file_scope modified.
+- No remaining claim in the touched files that names a declaration which does not exist (spot-check
+  each named symbol with grep or lean_local_search).
+
+Grounding: specs/reviews/review-2026-08-24.md (issues C-1, H-3, L-2, A-4) and task 468 Stage 3.
+
+---
 
 ### 471. Fix roadmap integration stdout contract
 - **Effort**: low
@@ -326,6 +498,53 @@ FIX: run `/todo`. Note that item (B) above revises 433/434 and item (H) re-syncs
 - No task transitioned to a terminal status except by `/task --sync` and `/todo`.
 
 Grounding: specs/reviews/review-2026-08-24.md, issues H-1, H-2, H-6, M-1, M-2, M-3, M-4, M-6, L-4.
+=== ITEMS B, C, D ARE ALREADY APPLIED (2026-08-24, after this task was written) ===
+
+The dependency edits specified in items (B), (C) and (D) above were applied directly to
+specs/state.json when the programme ordering was encoded into the graph. DO NOT RE-APPLY THEM, and
+do NOT report them as failures when you find them already done. Verify and move on:
+
+  (B) 465 -> 428 : APPLIED. 428 now carries dependencies [432,433,434,465].
+      STILL OPEN under (B): the descriptions of 433 and 434 have NOT been revised to state that
+      their residuals are owned downstream by 462-465. That revision is still yours to make.
+      ALSO STILL OPEN, and added since: a FIFTH residual, `UnorderedSuccessorLabelClosed`
+      (MintBound.lean:6199, carried live at :6215, refuted at :6238), is owned by NO task -- not by
+      462, 463, 464 or 465. Task 468 amendment 10e directs that it be assigned. If 468 has not yet
+      run when you reach this, leave it to 468; do not create a duplicate owner.
+  (C) 426 un-gated : APPLIED. 426 now carries dependencies [470] only.
+  (D) 95 re-gated : APPLIED. 95 now carries dependencies [169] only.
+
+ITEM (A) IS NOT APPLIED AND REMAINS THE HIGHEST-PRIORITY PART OF THIS TASK. Task 421's acceptance
+criterion still reads "the live non-Boneyard sorry count is unchanged at 2". The live count is ONE.
+Only the dependency graph was touched; no task's acceptance criterion was edited. 421 is now
+dependent on THIS task precisely so that its criterion is corrected before it runs.
+
+Items (E), (F), (G), (H) and (I) are likewise untouched and remain in scope.
+
+=== ADDITIONAL EDGES APPLIED AT THE SAME TIME (context, not work) ===
+
+The following were also written directly and need no action from you; they are listed so you do not
+mistake them for drift when auditing the graph:
+
+  469 <- 470            cleanup precedes the route-decision probe
+  426 <- 470            same
+  451 <- 470            same
+  193 <- 470            same
+  421,423,424,413 <- 470  the completeness-front starters wait on this task (421 genuinely so:
+                          this task fixes its acceptance criterion)
+  468 <- [469,426,451]  the programme realignment must consume both probe verdicts, and must follow
+                        the boneyard consolidation because 468 Stage 4c requires C7-grounded file
+                        counts that 451 changes
+  462 <- [469,470]      do not sink further cost into tableau termination continuation until 469
+                        settles the route. NOTE 433 and 434 were deliberately NOT gated on 469:
+                        they are `partial`, i.e. in flight, and finishing in-flight work is
+                        distinct from starting the new continuation.
+  125 <- 461            461 (Goldblatt acquisition) is a genuine prerequisite of 125 and the edge
+                        was missing.
+  231 <- 298            298 repairs the truncated c7 dataset; 231 automates metadata recomputation
+                        and would otherwise propagate the truncation.
+
+Grounding: specs/reviews/review-2026-08-24.md, Addendum 3.
 
 ---
 
@@ -881,6 +1100,32 @@ REQUIRED OF STAGE 2: either ADD a task owning the fifth residual, or fold it int
 explicit statement of which theorem still carries it and at which frame classes. Do not let the
 four-residual framing persist unqualified in the rewritten ROADMAP.md -- correcting exactly this
 class of understatement is why this task exists. Grounding: specs/reviews/review-2026-08-24.md, A-2.
+--- 10f. STAGE 3 IS ALREADY HALF-EXECUTED (2026-08-24) ---
+
+Stage 3 above directs DIVIDING task 177 into (i) an immediate, ungated correction pass and (ii) the
+retained post-refactor polish. Half (i) HAS BEEN SPLIT OUT ALREADY, as task 472
+(`immediate_documentation_correction_pass`), because this task is now gated behind two probes and
+the boneyard consolidation -- which would have deferred those corrections yet again, the precise
+failure Stage 3 exists to prevent.
+
+DO NOT create a second immediate-correction task. Task 472 owns items (a) through (i) of the F10
+drift list: `Decidability.lean`'s Status block, `Verified/README.md`, `FMP/README.md`,
+`DecisionProcedure.lean`'s `decideAuto` docstring, `Verified/Decidable.lean`'s Status docstring,
+`WeakCanonical.lean`, `RealModel/ShuffleReal.lean`, `Soundness.lean`, and
+`PriorExpressivenessDense.lean`'s self-contradiction.
+
+WHAT REMAINS OF STAGE 3 FOR THIS TASK:
+  - Give the RETAINED half of 177 its corrected spec -- the post-refactor polish, under its
+    existing gating, with 472's territory explicitly excluded so the two cannot collide.
+  - Note that 177's `file_scope` repair (the unresolvable `ROADMAP.md` entry and the duplicated
+    `FormalSystem/`) is owned by task 470 item (G). Verify it was done; do not redo it.
+  - If 472 has already run when you reach this, verify its corrections held rather than re-issuing
+    them.
+
+Also note task 473 (`delete_quarantined_vacuous_kamp_pair`) now owns the `neg_2var_vec_ea` /
+`reflatten_neg_step` deletion. That supersedes audit finding F8, which records the lemma as "still
+live-consumed": verified 2026-08-24, it has one consumer which itself has none, so it is quarantined
+and safely deletable. Do not schedule it again.
 
 ---
 
