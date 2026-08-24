@@ -1,0 +1,24 @@
+### Criterion 3 — binder-list comparison against Validity.lean
+--- valid  vs  SetSemanticConsequenceBase ---
+4c4
+<     TruthAt M τ t φ
+---
+>     (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ
+--- ValidDense  vs  SetSemanticConsequenceDense ---
+5c5
+<     TruthAt M τ t φ
+---
+>     (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ
+--- ValidDiscrete  vs  SetSemanticConsequenceDiscrete ---
+5c5
+<     TruthAt M τ t φ
+---
+>     (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ
+--- ValidDedekindDense  vs  SetSemanticConsequenceDedekindDense ---
+6c6
+<     TruthAt M τ t φ
+---
+>     (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ
+
+Type* occurrences in new module: 0
+bare 'Type' binder lines: 4
