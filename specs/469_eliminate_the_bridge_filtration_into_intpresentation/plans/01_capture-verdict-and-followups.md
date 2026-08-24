@@ -1,7 +1,7 @@
 # Implementation Plan: Task #469
 
 - **Task**: 469 - eliminate the bridge: filtration into IntPresentation
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 5.5 hours
 - **Dependencies**: 470 (recorded in `state.json`; already terminal)
 - **Research Inputs**: `specs/469_eliminate_the_bridge_filtration_into_intpresentation/reports/01_eliminate-the-bridge-verdict.md`
@@ -493,21 +493,21 @@ validation condition was created.
 
 ---
 
-### Phase 6: Final gate [NOT STARTED]
+### Phase 6: Final gate [COMPLETED]
 
 **Goal**: The tree is exactly as found except for comments, prose, and `specs/`.
 
 **Tasks**:
-- [ ] Full `lake build` — green.
-- [ ] `scripts/check-module-invariants.sh` — C1/C2/C3/C6 pass; the structural-sorry inventory and
+- [x] Full `lake build` — green.
+- [x] `scripts/check-module-invariants.sh` — C1/C2/C3/C6 pass; the structural-sorry inventory and
       the unreachable-module count are unchanged from Phase 1's baseline.
-- [ ] `scripts/lean-sorry-census.sh` (or the C3 output) — sorry count unchanged.
-- [ ] `.claude/scripts/check-task-references.sh` — no task-number reference outside `specs/**`.
-- [ ] `git diff --stat` reviewed: every hunk under `FormalSystem/**` is a comment, docstring, or
+- [x] `scripts/lean-sorry-census.sh` (or the C3 output) — sorry count unchanged.
+- [x] `.claude/scripts/check-task-references.sh` — no task-number reference outside `specs/**`.
+- [x] `git diff --stat` reviewed: every hunk under `FormalSystem/**` is a comment, docstring, or
       markdown change. Assert zero changed lines that begin a `theorem`, `def`, `lemma`,
       `instance`, `structure`, `abbrev`, or `import`.
-- [ ] `.claude/scripts/validate-artifact.sh` on this plan.
-- [ ] Confirm the two non-goals held: no edit to `Decidability.lean`, to
+- [x] `.claude/scripts/validate-artifact.sh` on this plan.
+- [x] Confirm the two non-goals held: no edit to `Decidability.lean`, to
       `scripts/module-invariants-manifest.txt`, to `ROADMAP.md`, or to any file under
       `Decidability/Verified/`; and no theorem in `PeriodicExtension.lean` changed.
 
@@ -519,6 +519,29 @@ validation condition was created.
 
 **Files to modify**: none.
 
+**Phase 6 record**:
+
+| Gate | Result |
+|---|---|
+| Full `lake build` | **GREEN** — `Build completed successfully (2462 jobs)`, exit 0, zero `error` lines. |
+| `scripts/check-module-invariants.sh` (full, with build) | **ALL CHECKS PASSED**, exit 0. C1 `lake build exits 0` and `lake build BimodalTest exits 0`; C2 all four flagship axiom sets match baseline; C3 sole structural sorry is `countermodel_discrete`; C6 all 37 unreachable live modules manifested and all 35 compile-checked in isolation; C4/C5/C8/C9/C10/C11 pass. |
+| Sorry inventory | Unchanged from the Phase 1 baseline: exactly one, `countermodel_discrete` (`WeakCanonical/Transfer.lean`). |
+| Unreachable-module count | Unchanged: 37, all manifested. |
+| Axiom count | Unchanged: `git grep -c '^axiom '` over `FormalSystem/**/*.lean` gives 7 at both the base commit and HEAD — and all 7 are prose lines in wrapped comments beginning with the word "axiom", not `axiom` declarations. Zero declarations at either end; zero introduced. |
+| `.claude/scripts/check-task-references.sh` | **PASS** — 0 unexempted occurrences across 4 trees. C9 independently confirms zero task-number citations under `FormalSystem/`. |
+| `git diff` under `FormalSystem/**` | **283 insertions, 0 deletions across 10 files.** Mechanically asserted, not eyeballed: `git diff -U0` filtered for added lines beginning `theorem`/`def`/`lemma`/`instance`/`structure`/`abbrev`/`import`/`noncomputable`/`axiom`/`sorry` returns **none**; filtered for any removed line returns **none**. The three `sorry` matches in added text are the words "sorry-free" in prose. |
+| `.claude/scripts/validate-artifact.sh … plan` | **PASS**, 0 warnings. |
+| Non-goals held | `FormalSystem/Metalogic/Decidability.lean` UNTOUCHED; `scripts/module-invariants-manifest.txt` UNTOUCHED; `specs/ROADMAP.md` UNTOUCHED; `Decidability/Verified/` UNTOUCHED. `PeriodicExtension.lean`'s single diff hunk is `@@ -48,6 +48,35 @@`, inside the module docstring block (lines 13–86); its first `theorem` is at line 104, so no theorem changed. |
+
+**One transient failure, diagnosed and resolved — recorded rather than hidden.** The first full
+`check-module-invariants.sh` run reported `FAIL C1 lake build BimodalTest failed` with
+`failed to open file '.lake/build/lib/lean/FormalSystem/FormalSystem.olean'`, and C2 consequently
+had no axiom output to compare against baseline. Cause: ten commits from concurrent agents landed
+between this task's Phase 5 commit and that run, including a Kamp file-move that invalidated build
+artifacts mid-run; C7's live-file count moved 448 -> 451 (394 -> 397 under `FormalSystem/`) across
+the same window, none of it from this task. The olean was present again immediately afterwards and
+the re-run passed every check. Not caused by, and not maskable by, this task's comment-only edits.
+
 **Verification**:
 - All seven bullets recorded with their command output.
 - Any failure blocks task completion rather than being noted and passed.
@@ -527,14 +550,14 @@ validation condition was created.
 
 ## Testing & Validation
 
-- [ ] `lake build` green, whole tree.
-- [ ] `scripts/check-module-invariants.sh` C1/C2/C3/C6 pass, with the same sorry inventory and the
+- [x] `lake build` green, whole tree.
+- [x] `scripts/check-module-invariants.sh` C1/C2/C3/C6 pass, with the same sorry inventory and the
       same unreachable-module set as the Phase 1 baseline.
-- [ ] `git diff` under `FormalSystem/**` is comment/prose only — mechanically asserted, not
+- [x] `git diff` under `FormalSystem/**` is comment/prose only — mechanically asserted, not
       eyeballed.
-- [ ] `.claude/scripts/check-task-references.sh` clean.
-- [ ] `.claude/scripts/validate-state.sh` clean; three new tasks present with correct dependencies.
-- [ ] Both `evidence/` probes still compile sorry-free at
+- [x] `.claude/scripts/check-task-references.sh` clean.
+- [x] `.claude/scripts/validate-state.sh` clean; three new tasks present with correct dependencies.
+- [x] Both `evidence/` probes still compile sorry-free at
       `[propext, Classical.choice, Quot.sound]`.
 
 ## Artifacts & Outputs
