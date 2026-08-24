@@ -1,6 +1,7 @@
 # PATH — the execution outline
 
 **Generated** 2026-08-24 from `specs/reviews/review-2026-08-24.md`.
+**Last updated** 2026-08-24, after task **470** completed (Step 1 closed).
 **Companion files**: `specs/TODO.md` (generated waves), `specs/state.json` (machine truth),
 `specs/ROADMAP.md` (to be rewritten by task 468 — **do not trust it until then**).
 
@@ -24,26 +25,47 @@ Three things that matter more than that number:
   sorry. It is independent of decidability.
 - **The decidability route is not yet chosen.** Task 469 chooses it. Do not sink further cost into
   the tableau chain before it reports.
+- **The tracker itself is now repaired.** 470 landed 2026-08-24. The counts in `state.json` agree
+  with reality, the seven stale `completed` entries are archived, and 421's acceptance criterion no
+  longer fails against a correct tree. Step 1 below is closed; Steps 2 and 3 are open.
 
 ---
 
-## Step 1 — repair the tracker  *(run alone)*
+## Step 1 — repair the tracker  ✅ **COMPLETE** (2026-08-24)
 
-| Task | Achieves |
+| Task | Status |
 |---|---|
-| **470** | Nine mechanical defects: the wrong sorry-count in 421's acceptance criterion, mis-wired dependency edges, undeclared topic, two null descriptions, 177's unresolvable `file_scope`, and the `state.json` counter rot (`29` vs `44` vs `46` actual). |
+| **470** | **COMPLETED.** 8 phases, one commit each, through `5fcb7667f`. |
 
-**Why alone**: items (H) and (I) run `/task --sync` and `/todo`, which rewrite the tracker
-wholesale. Anything running concurrently is racing a full-file rewrite with its own status
-transitions.
+**What actually landed**, verified against `state.json` after the run:
 
-**Note**: items (B), (C) and (D) are already applied — the description says so. **Item (A), the
-task-421 acceptance-criterion fix, is not**, and it is the reason this step gates the completeness
-front. Left unfixed, 421 fails its own acceptance test against a correct tree.
+| Item | Outcome |
+|---|---|
+| **(A)** 421's acceptance criterion | Fixed. Now reads "unchanged at **1**" and names `scripts/check-module-invariants.sh` check C3 instead of the comment-blind inline `grep`. **This is what unblocks the completeness front.** |
+| **(B)** downstream ownership | 433 and 434 now carry pointers to their downstream owners (→ 463/465, → 462/464). The `465 → 428` edge was already applied and was *not* re-applied. |
+| **(C)**, **(D)**, **(E)** | Verified already applied — **zero writes**. 426's deps are `[470]`, 95's are `[169]`, and `repo-hygiene` was already in `active_topics`. |
+| **(F)** null descriptions | 257 and 282 both carry real descriptions again. Neither was abandoned; neither status was touched. |
+| **(G)** 177's `file_scope` | Now `["README.md","specs/ROADMAP.md","FormalSystem/","docs/"]`. |
+| **(I)** stale `completed` entries | 432, 436, 457, 458, 459, 460, 467 archived, with a `CHANGE_LOG.md` entry. |
+| **(H)** counter rot | Reconciled: `metadata.total_tasks` = `task_counts.total` = actual = **42**, `last_sync` current. |
 
-```
-/implement 470
-```
+**Three things this step discovered that the review did not know:**
+
+1. **The task's own prescription for item (H) was wrong.** It said "run `/task --sync`". A
+   repo-wide grep established that **no script anywhere reads or writes** `metadata.total_tasks`,
+   `task_counts`, `metadata.last_sync`, or `metadata.generated_at`. `/task --sync` cannot
+   reconcile them. A direct `state-write.sh` recomputation did. **These fields are vestigial and
+   have no ongoing maintainer** — they will rot again after any archival, and nothing will notice.
+2. **One counter row is stale again, by construction.** `task_counts` records `implementing:1`
+   where the live distribution is `completed:1`. That row is 470 itself, counted as in-flight by
+   its own Phase 7 moments before its own postflight completed it. Totals are correct. **470 is
+   still in `active_projects` and wants the next `/todo`.**
+3. **Phase 8 closed `[COMPLETED WITH EXCLUSIONS]`, not clean.** `validate-state.sh` fails on 13
+   pre-existing schema-drift issues, confirmed identical in the pre-task baseline commit and
+   unrelated to these edits (which actually reduced its WARN count 12→10). Not papered over.
+
+**Still unowned, deliberately**: `UnorderedSuccessorLabelClosed`. 470 confirmed 468 has not run
+and declined to create a duplicate owner. **468 still assigns it.**
 
 ---
 
@@ -59,6 +81,13 @@ No shared `file_scope` entry between them. Both compile Lean; if builds are slow
 ```
 /implement 472,473
 ```
+
+> **Scheduling note (2026-08-24)**: 472 cannot share a dispatch with **469** (both declare
+> `FormalSystem/Metalogic/Decidability/FMP/`) or with **193** (both declare
+> `FormalSystem/Metalogic/Soundness.lean`). Verified against `orchestrate-batch-admit.sh`. The
+> admission gate *defers* rather than fails, so co-dispatching them is safe but costs extra
+> waves. 473 collides with nothing and batches freely. See "The next batch" at the foot of this
+> file.
 
 **Two tasks left this batch.** 466 (`update-plan-status.sh` silent no-op) and 471
 (`roadmap-integration.sh` stdout contract) were **abandoned here and handed to the nvim repo** —
@@ -97,6 +126,11 @@ each sat behind the multi-year work it exists to inform.
 /implement 451,193
 /implement 421,423,413,424
 ```
+
+> **All of Step 3 is eligible as of 470's completion** — every task above has its dependencies
+> satisfied. The one scheduling constraint inside this step: **193 collides with 298**
+> (`FormalSystem/Automation/Tactics/`) and with **472** (`Soundness.lean`), so it is the one
+> Step-3 task that does not batch freely. Everything else here is mutually disjoint.
 
 ---
 
@@ -166,9 +200,9 @@ Independent of everything above; run it when you want, in this order.
 | Task | Achieves |
 |---|---|
 | **298** | **Do first.** `data/bmlogic-c7.jsonl` holds 13,749 records while its metadata advertises 77,272 — a live integrity defect, invisible to git (`data/` is gitignored). |
-| **296**, **282** | The derived-operator re-add and the exhaustive-enumeration work. 282 needs a real description first (470 item F). |
+| **296**, **282** | The derived-operator re-add and the exhaustive-enumeration work. 282's description was restored by 470 item F — it is now dispatchable, but both still wait on 298. |
 | **231** | The sync automation. **Must follow 298**, or it automates propagation of the truncated dataset. |
-| **257** | Blocked on *you*: an HF account, org, and write token. Not an engineering task. |
+| **257** | Blocked on *you*: an HF account, org, and write token. Not an engineering task. (Description restored by 470; the blocker is unchanged.) |
 
 ---
 
@@ -246,5 +280,53 @@ defect. A check of the nvim tracker on 2026-08-24 found no owner for the `update
 defect; the tracker then advanced ten task numbers in the interval before the `/meta` dispatch ran,
 and task 91 had appeared. It was updated in place — no duplicate was filed.
 
-**Not at risk**: 470 (writes `specs/state.json`, tracked), 468 and 455 (invoke `.claude/scripts/*`
-but do not edit them), 472 and 473 (`FormalSystem/` only).
+**Not at risk**: 470 (wrote `specs/state.json`, tracked — now complete), 468 and 455 (invoke
+`.claude/scripts/*` but do not edit them), 472 and 473 (`FormalSystem/` only).
+
+---
+
+## The next batch — what to orchestrate now
+
+Computed 2026-08-24 against live `state.json`, and **verified with
+`orchestrate-dry-run-report.sh`**: all eight admit into a **single wave**, zero exclusions, zero
+in-batch `file_scope` collisions, zero self-modification findings.
+
+```
+/orchestrate 469,426,451,473,421,423,424,413
+```
+
+| Task | Why it is in this batch |
+|---|---|
+| **469** | The route decision. Everything in Step 6 is contingent on it; nothing downstream should be costed until it reports. Highest leverage item on the board. |
+| **426** | The second probe. 4–8 h, discriminates a budget question from a termination question. |
+| **451** | Boneyard consolidation. **Must precede 468**, whose roadmap claims are C7-grounded on file counts. |
+| **473** | Dead-code sweep, `effort=low`. Collides with nothing — free to carry. |
+| **421** | Head of the completeness front, now that 470 corrected its acceptance criterion. |
+| **423** | `SetConsequence.lean` / `SetDerivable` — first real step on strong completeness. |
+| **424** | Shift-set representation gate, re-issued against landed total-history semantics. |
+| **413** | TM+/TM conservativity. Greenfield, independent of everything else. |
+
+**Why eight and not more.** Fourteen tasks are dependency-eligible. Eight is the `MAX_TASKS` cap,
+and these eight are the largest mutually-disjoint set that also matches this file's own ordering.
+
+**Deliberately held back, with reasons:**
+
+| Task | Why not this batch |
+|---|---|
+| **472** | Collides with **469** at `Decidability/FMP/`. 469 is the higher-leverage of the pair, so 472 waits. It is `priority=high` — run it in the very next batch. |
+| **193** | Collides with **472** (`Soundness.lean`) *and* **298** (`Automation/Tactics/`). The one genuinely awkward task to schedule. |
+| **298** | Eligible and flagged "do first" for the dataset cluster, but it is a side track and it contends with 193. |
+| **434** | Eligible (deps satisfied, `partial`, in-flight). Held one batch on purpose: it is **10–15 h** of tableau-termination work on a route **469 may retire outright**. Finishing in-flight work is legitimate — but not before the verdict that decides whether the route survives. |
+| **127**, **128**, **219** | Recommended for abandonment. Your call, not an agent's. |
+| **257**, **461** | `blocked` on external inputs (HF credentials; an unacquired source). Multi-task dispatch skips `blocked` tasks. |
+
+**Suggested batch after this one**: `/orchestrate 472,298` then `193` — or
+`/orchestrate 472,193,298` and accept that 193 defers to a second wave.
+
+### One caveat when you read the pre-dispatch review
+
+The Class A review scans **`active_projects` only**, so it reports 421's, 423's, 424's and 413's
+edges to **361, 448, 454, 414, 439** as `nonexistent`. **They are not.** All five resolve as
+`completed` in `specs/archive/state.json`. This is exactly the archive-only false-positive this
+file warns about under "Reading the graph yourself" — the full-graph union scan finds **zero**
+genuinely dangling edges. Do not "repair" them.
