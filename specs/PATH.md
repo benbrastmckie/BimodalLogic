@@ -53,15 +53,16 @@ front. Left unfixed, 421 fails its own acceptance test against a correct tree.
 |---|---|
 | **472** | The nine verified false-or-stale documentation claims — `Decidability.lean`'s Status block reading as tableau soundness, `Verified/README.md` marking eight existing files "planned", `FMP/README.md`'s two phantom Key Results, and six more. Ungated on purpose. |
 | **473** | Deletes the vacuous `neg_2var_vec_ea` / `reflatten_neg_step` pair (one consumer, which itself has none), keeps `Prop42Vacuity`/`Prop42Contentful` as the record, sweeps ~12 rotted prose anchors. |
-| **466** | `update-plan-status.sh` fails loudly instead of silently no-opping on a malformed Status line — the defect that let `state.json` say `completed` while the plan still read `[IMPLEMENTING]`. |
-| **471** | `roadmap-integration.sh` emits only JSON on stdout, so `/review`'s own documented `jq` pipeline stops failing silently. |
-
-No two of these share a `file_scope` entry. Only 472 and 473 compile Lean; if builds are slow,
-run 473 first (7 files) then 472 — likely faster than contending for the build.
+No shared `file_scope` entry between them. Both compile Lean; if builds are slow, run 473 first
+(7 files) then 472 — likely faster than contending for the build.
 
 ```
-/implement 472,473,466,471
+/implement 472,473
 ```
+
+**Two tasks left this batch.** 466 (`update-plan-status.sh` silent no-op) and 471
+(`roadmap-integration.sh` stdout contract) were **abandoned here and handed to the nvim repo** —
+see the cross-repository section below. They no longer block anything in this repo.
 
 ---
 
@@ -210,9 +211,14 @@ Anything written to `.claude/` here is destroyed on the next reload.
 
 | Task | Status | Disposition |
 |---|---|---|
-| **466** | Paths corrected to absolute; warning added | Work lands in the nvim repo. **Consider migrating to the nvim tracker** rather than executing cross-repo. |
-| **471** | Same | Same. |
-| **231** item (7) | Warning added | Cannot be completed from this repo. Recommended: drop item (7), keep the other seven sub-targets here. |
+| **466** | **ABANDONED here** 2026-08-24 | `update-plan-status.sh` silently no-ops on a non-conforming Status line. Handed to the nvim session for filing via `/meta`. Full description retained in `specs/archive/state.json` as the record. |
+| **471** | **ABANDONED here** 2026-08-24 | `roadmap-integration.sh` emits a non-JSON line before its payload, breaking `/review`'s own documented `jq` pipeline in a way that reports success. Same handoff. |
+| **231** item (7) | Annotated, task stays | Cannot be completed from this repo. Recommended: drop item (7), keep the other seven sub-targets here. |
+
+Both abandonments were verified safe: nothing depended on either task, and the graph has zero
+dangling edges afterward. **Confirmation of the nvim-side task numbers is still pending** — if they
+never appear, the two defects survive in three places: the abandoned records in the archive, issue
+L-1 of `specs/reviews/review-2026-08-24.md`, and this file.
 
 Checked for duplicates: nvim task 50 is adjacent (stale-roadmap no-op, verify-deploy) but covers
 neither the `update-plan-status.sh` silent no-op nor the `roadmap-integration.sh` stdout contract.

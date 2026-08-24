@@ -11,7 +11,7 @@ next_project_number: 474
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,257,298,434,461,466,470,471 | -- | agent-system, dataset-enhancement, decidability, ... |
+| 1 | 127,128,257,298,434,461,470 | -- | agent-system, dataset-enhancement, decidability, ... |
 | 2 | 125,193,231,282,296,413,421,423,424,426,433,451,469,472,473 | 298,434,461,470 | algebraic-representation, automation, code-quality, ... |
 | 3 | 178,219,422,425,462,468 | 193,231,421,423,426,451,469 | dataset-enhancement, decidability, formula-refactor, ... |
 | 4 | 169,455,463 | 422,462,468 | code-quality, decidability, strong_completeness |
@@ -28,9 +28,7 @@ next_project_number: 474
 
 ### Agent System
 
-466 [NOT STARTED] — Make `update-plan-status.sh` fail loudly instead of silently no-o
 470 [NOT STARTED] — TASK-GRAPH AND TASK-METADATA REPAIR. Nine defects found by the 20
-471 [NOT STARTED] — Make `roadmap-integration.sh` emit only JSON on stdout, so `/revi
 
 ### Algebraic Representation
 
@@ -280,108 +278,6 @@ do not trust the line numbers in this description, and do not trust the prose yo
   each named symbol with grep or lean_local_search).
 
 Grounding: specs/reviews/review-2026-08-24.md (issues C-1, H-3, L-2, A-4) and task 468 Stage 3.
-
----
-
-### 471. Fix roadmap integration stdout contract
-- **Effort**: low
-- **Status**: [NOT STARTED]
-- **Task Type**: meta
-- **Topic**: agent-system
-- **Dependencies**: None
-
-**Description**: Make `roadmap-integration.sh` emit only JSON on stdout, so `/review`'s own documented pipeline stops
-failing.
-
-THE DEFECT. `roadmap-integration.sh` prints a structure comment as its FIRST stdout line:
-
-  <!-- roadmap-structure phases=0 checkboxes=0 table_rows=111 parseable=true -->
-  { ... the actual JSON payload ... }
-
-`/review` Section 2.5 specifies exactly this consumption pattern:
-
-  roadmap_output=$(bash .claude/scripts/roadmap-integration.sh --roadmap specs/ROADMAP.md \
-    --state specs/state.json --annotate) || roadmap_exit=$?
-  roadmap_state=$(echo "$roadmap_output" | jq '.roadmap_state')
-
-With the comment line present, every one of those `jq` calls fails:
-
-  jq: parse error: Invalid numeric literal at line 1, column 5
-
-OBSERVED IMPACT. The 2026-08-24 programme review hit this and had to work around it with
-`sed -n '/^{/,$p'`. Worse than the failure itself is the failure MODE: the script exits 0 and
-produces non-empty output, so `/review`'s own error handling -- which branches on
-`[[ "$roadmap_exit" -ne 0 ]] || [[ -z "$roadmap_output" ]]` -- does NOT fire. The command falls
-through to per-variable `jq` failures whose stderr is discarded by the surrounding `2>/dev/null`,
-leaving `roadmap_state`, `roadmap_matches`, `annotations_made`, `roadmap_structure`,
-`roadmap_warnings`, `items_skipped`, `skipped_reasons`, and `high_confidence_matches` all empty or
-unset. Under `set -u` semantics that is an unbound-variable error; without it, the review's Roadmap
-Progress section renders blank while every guard reports success.
-
-This is precisely the "silent no-op that cannot be distinguished from nothing-to-do" class of defect
-that the `silent_noop` / `warnings` fields inside this same script's payload were ADDED to close --
-so the bug defeats its own mitigation.
-
-THE FIX. Two acceptable shapes; pick one and say which:
-  (1) Emit the structure comment on STDERR. It is diagnostic, and `/review` already echoes
-      diagnostics to stderr elsewhere. Lowest-risk.
-  (2) Fold the structure line into the JSON payload only. The payload ALREADY carries a
-      `roadmap_structure` object with the same four fields (`phases`, `checkboxes`, `table_rows`,
-      `parseable`), so the comment is pure duplication -- verify this before deleting it.
-
-Do NOT fix this by making `/review` strip the line. The contract that a JSON-emitting script emits
-JSON on stdout is the right one, and other consumers may exist.
-
-SOURCE-STORE TARGET. `.claude/` in this repository is a GITIGNORED, DISPOSABLE DEPLOY ARTIFACT
-regenerated from `agent-system/extensions/**`. Editing `.claude/scripts/roadmap-integration.sh`
-directly will appear to succeed and then be silently wiped by the next regeneration. The correct
-target is:
-
-  agent-system/extensions/core/scripts/roadmap-integration.sh
-
-and, if the consumption pattern is also adjusted, the `/review` command's own source at
-`agent-system/extensions/core/commands/review.md`. Confirm both paths exist before editing; if the
-layout differs, locate the source-store copy and edit THAT, never the deploy copy.
-
-VERIFICATION.
-- `bash <script> --roadmap specs/ROADMAP.md --state specs/state.json --annotate | jq '.warnings'`
-  succeeds with no `sed` preprocessing.
-- The four structure fields remain retrievable by a consumer (via the payload, and via stderr if
-  shape (1) is chosen).
-- `/review`'s Section 2.5 fallback still fires correctly when the script is genuinely missing or
-  genuinely exits non-zero -- do not regress the real error paths while fixing the false-success one.
-- Redeploy `.claude/` and confirm the fix survives regeneration.
-
-Grounding: specs/reviews/review-2026-08-24.md, issue L-1.
-=== !! CROSS-REPOSITORY TARGET -- READ BEFORE EDITING ANYTHING !! (added 2026-08-24) ===
-
-THE SOURCE STORE IS NOT IN THIS REPOSITORY. Verified 2026-08-24:
-
-  - `agent-system/` DOES NOT EXIST under /home/benjamin/Projects/BimodalLogic.
-  - `.claude/` here is fully gitignored (`.gitignore:81` = `/.claude`), with ZERO tracked files.
-    It is a deploy artifact, regenerated wholesale when the user reloads the agent system.
-  - The real source store is:
-        /home/benjamin/.config/nvim/agent-system/extensions/core/scripts/
-    a SEPARATE git repository (1150 tracked files under `agent-system/`).
-  - The deployed copy in this repo is currently byte-identical to that source.
-
-CONSEQUENCE: editing `.claude/scripts/<this script>` in THIS repository will appear to succeed and
-will then be SILENTLY DESTROYED on the user's next agent-system reload. Any relative path beginning
-`agent-system/` will also fail to resolve here. Do not "helpfully" fall back to the `.claude/` copy.
-
-THE EDIT MUST BE MADE AT THE ABSOLUTE SOURCE PATH, in the nvim repository, and COMMITTED THERE.
-The change does not take effect in this repository until the user reloads the agent system
-themselves. Do not attempt to trigger a reload, and do not copy the edited file into `.claude/` to
-"apply" it -- both bypass the user's deploy step.
-
-BEFORE STARTING, RAISE THIS WITH THE USER. This task is filed in the BimodalLogic tracker but its
-entire work product lands in a different repository, which splits its commit from its change. The
-nvim repository has its OWN task tracker (`/home/benjamin/.config/nvim/specs/state.json`, 48 active
-tasks), and that is the more appropriate home for this work. Checked 2026-08-24: no existing nvim
-task duplicates this one -- nvim task 50 is adjacent (it touches roadmap-integration only in the
-context of a stale roadmap making the annotation step a no-op, and it owns verify-deploy) but
-covers neither defect named here. Prefer migrating this task over executing it cross-repo, unless
-the user says otherwise.
 
 ---
 
@@ -1168,62 +1064,6 @@ and safely deletable. Do not schedule it again.
 - **Summary**: [467_update_decidability_readme/summaries/01_decidability-readme-alignment-summary.md]
 
 **Description**: Systematically update FormalSystem/Metalogic/Decidability/README.md to be aligned with the current state of the Decidability/ directory
-
----
-
-### 466. Update plan status fail loudly
-- **Status**: [NOT STARTED]
-- **Task Type**: meta
-- **Topic**: agent-system
-- **Dependencies**: None
-
-**Description**: Make `update-plan-status.sh` fail loudly instead of silently no-opping on a non-conforming Status line. This is an agent-system defect that caused real, observed damage during a four-task /orchestrate batch.
-
-THE DEFECT. `update-plan-status.sh` matches the plan header's status line with the anchored pattern `^- \*\*Status\*\*: \[.*\]$`. The trailing `$` requires the line to END at the closing bracket. Any deviation makes the `sed` a NO-OP, and the script's only signal is the generic message "Failed to update status in <file>" -- it never names the offending line or says why it did not match.
-
-OBSERVED IMPACT, both cases from the same batch:
-1. One plan carried `- **Status**: [IMPLEMENTING] (resumed; Phases 1R-10R closed)` -- trailing text after the bracket. Every stamp silently no-opped.
-2. Another carried `- **Status**: PARTIAL` -- no brackets at all. Same silent no-op.
-Case 2 is the more dangerous shape: on PREFLIGHT the failure is deliberately non-fatal and prints only "Warning: plan file update failed (non-fatal)", so a malformed Status line can sit undetected through an entire task and only bite at POSTFLIGHT, where the same failure IS fatal. At that point state.json has already been written to `completed` while the plan file still reads `[IMPLEMENTING]`, and `generate-todo.sh` reads only state.json, so no other surface reveals the divergence. The caller's own error text in `update-task-status.sh` already acknowledges this asymmetry deliberately.
-
-REQUIRED FIX (decide the exact form during implementation, both halves are required):
-(a) Diagnose loudly: when the pattern does not match, print the offending line verbatim with its line number and state which part failed -- missing `- **Status**:` prefix, missing brackets, or trailing text after the closing bracket -- so the operator sees the cause rather than a bare "Failed".
-(b) Decide and implement a tolerance policy: either accept trailing text after `]` (rewriting only the bracketed token and preserving the remainder), or reject it explicitly as malformed. Whichever is chosen, apply it consistently and document it where plan format is specified.
-
-ALSO CONSIDER (evaluate, do not assume): whether the preflight non-fatal path should additionally emit a one-line WARNING that survives to the operator, given that a preflight no-op is the leading indicator of the fatal postflight failure; and whether a plan-format lint should validate the Status line at plan-creation time, so a malformed line never reaches a dispatch at all.
-
-SOURCE-STORE BOUNDARY -- IMPORTANT. `.claude/` in this repository is a gitignored, disposable deploy artifact regenerated from the source store. Edit `agent-system/extensions/core/scripts/update-plan-status.sh` (and any related merge-source or context file under `agent-system/extensions/core/**`), NOT `.claude/scripts/update-plan-status.sh` -- a hand-authored edit under `.claude/` appears to succeed and is wiped by the next regeneration. Redeploy and verify after the change.
-
-Dependencies: none. Different file_scope from the Lean tasks entirely, so it can run in parallel with any of them.
-=== !! CROSS-REPOSITORY TARGET -- READ BEFORE EDITING ANYTHING !! (added 2026-08-24) ===
-
-THE SOURCE STORE IS NOT IN THIS REPOSITORY. Verified 2026-08-24:
-
-  - `agent-system/` DOES NOT EXIST under /home/benjamin/Projects/BimodalLogic.
-  - `.claude/` here is fully gitignored (`.gitignore:81` = `/.claude`), with ZERO tracked files.
-    It is a deploy artifact, regenerated wholesale when the user reloads the agent system.
-  - The real source store is:
-        /home/benjamin/.config/nvim/agent-system/extensions/core/scripts/
-    a SEPARATE git repository (1150 tracked files under `agent-system/`).
-  - The deployed copy in this repo is currently byte-identical to that source.
-
-CONSEQUENCE: editing `.claude/scripts/<this script>` in THIS repository will appear to succeed and
-will then be SILENTLY DESTROYED on the user's next agent-system reload. Any relative path beginning
-`agent-system/` will also fail to resolve here. Do not "helpfully" fall back to the `.claude/` copy.
-
-THE EDIT MUST BE MADE AT THE ABSOLUTE SOURCE PATH, in the nvim repository, and COMMITTED THERE.
-The change does not take effect in this repository until the user reloads the agent system
-themselves. Do not attempt to trigger a reload, and do not copy the edited file into `.claude/` to
-"apply" it -- both bypass the user's deploy step.
-
-BEFORE STARTING, RAISE THIS WITH THE USER. This task is filed in the BimodalLogic tracker but its
-entire work product lands in a different repository, which splits its commit from its change. The
-nvim repository has its OWN task tracker (`/home/benjamin/.config/nvim/specs/state.json`, 48 active
-tasks), and that is the more appropriate home for this work. Checked 2026-08-24: no existing nvim
-task duplicates this one -- nvim task 50 is adjacent (it touches roadmap-integration only in the
-context of a stale roadmap making the annotation step a no-op, and it owns verify-deploy) but
-covers neither defect named here. Prefer migrating this task over executing it cross-repo, unless
-the user says otherwise.
 
 ---
 
