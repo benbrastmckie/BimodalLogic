@@ -1,0 +1,12 @@
+{
+  "phase": 1,
+  "phase_name": "Correct task 421's acceptance criterion (item A)",
+  "started_at": "2026-08-24T00:00:00Z",
+  "last_updated": "2026-08-24T00:05:00Z",
+  "objectives": [
+    {"id": 1, "description": "Confirm defect live, re-confirm C3 figure, apply description edit via state-write.sh", "status": "done", "files_touched": ["specs/state.json"]}
+  ],
+  "current_objective": 1,
+  "approaches_tried": [],
+  "handoff_count": 0
+}

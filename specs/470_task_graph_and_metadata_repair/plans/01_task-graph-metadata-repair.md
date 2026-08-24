@@ -1,7 +1,7 @@
 # Implementation Plan: Task #470
 
 - **Task**: 470 - TASK-GRAPH AND TASK-METADATA REPAIR
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 2.75 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/470_task_graph_and_metadata_repair/reports/01_task-graph-metadata-repair.md`
@@ -152,7 +152,7 @@ parallel execution is safe, but a sequential run is equally acceptable and simpl
 
 ---
 
-### Phase 1: Correct task 421's acceptance criterion (item A) [NOT STARTED]
+### Phase 1: Correct task 421's acceptance criterion (item A) [COMPLETED]
 
 **Goal**: Task 421's acceptance criterion states the live non-Boneyard sorry count as 1 and points
 at check C3 of `scripts/check-module-invariants.sh` instead of an inline grep. This is first
@@ -160,12 +160,12 @@ because 421 is the head of the completeness critical path (421 -> 422 -> 169) an
 criterion is unsatisfiable as written.
 
 **Tasks**:
-- [ ] Confirm the defect is still live: `jq -r '.active_projects[] | select(.project_number==421) | .description' specs/state.json | grep -c 'unchanged at 2'` returns 1.
-- [ ] Re-confirm the live figure by running `bash scripts/check-module-invariants.sh` and reading its C3 line. Do not proceed on the report's snapshot alone.
-- [ ] Apply the description edit via `state-write.sh`, replacing the final clause. Target text (from the research report, verbatim):
-      `the live non-Boneyard sorry count is unchanged at 1 (verify with scripts/check-module-invariants.sh check C3, which reports the sole structural sorry as countermodel_discrete in FormalSystem/Metalogic/WeakCanonical/Transfer.lean)`
-- [ ] Everything before "the live non-Boneyard sorry count" in that sentence is preserved unchanged. The inline `grep -rn --include='*.lean' ... | grep -vc Boneyard` clause is removed entirely — it is methodologically weaker, since it does not strip Lean block/line comments and this repo's prose mentions the word `sorry` roughly 90 times.
-- [ ] Use a `sub`/`gsub`-based jq filter on the single `description` string; do not rewrite the whole field by hand.
+- [x] Confirm the defect is still live: `jq -r '.active_projects[] | select(.project_number==421) | .description' specs/state.json | grep -c 'unchanged at 2'` returns 1. *(completed)*
+- [x] Re-confirm the live figure by running `bash scripts/check-module-invariants.sh` and reading its C3 line. Do not proceed on the report's snapshot alone. *(completed: C3 PASS, sole structural sorry is countermodel_discrete)*
+- [x] Apply the description edit via `state-write.sh`, replacing the final clause. Target text (from the research report, verbatim):
+      `the live non-Boneyard sorry count is unchanged at 1 (verify with scripts/check-module-invariants.sh check C3, which reports the sole structural sorry as countermodel_discrete in FormalSystem/Metalogic/WeakCanonical/Transfer.lean)` *(completed)*
+- [x] Everything before "the live non-Boneyard sorry count" in that sentence is preserved unchanged. The inline `grep -rn --include='*.lean' ... | grep -vc Boneyard` clause is removed entirely — it is methodologically weaker, since it does not strip Lean block/line comments and this repo's prose mentions the word `sorry` roughly 90 times. *(completed)*
+- [x] Use a `sub`/`gsub`-based jq filter on the single `description` string; do not rewrite the whole field by hand. *(completed: used split/join literal-string replace via state-write.sh, equivalent semantics to sub without regex-escaping risk)*
 
 **Timing**: 20 minutes
 

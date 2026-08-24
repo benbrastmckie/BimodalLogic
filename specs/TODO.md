@@ -28,7 +28,7 @@ next_project_number: 474
 
 ### Agent System
 
-470 [PLANNED] — TASK-GRAPH AND TASK-METADATA REPAIR. Nine defects found by the 20
+470 [IMPLEMENTING] — TASK-GRAPH AND TASK-METADATA REPAIR. Nine defects found by the 20
 
 ### Algebraic Representation
 
@@ -283,7 +283,7 @@ Grounding: specs/reviews/review-2026-08-24.md (issues C-1, H-3, L-2, A-4) and ta
 
 ### 470. Task graph and metadata repair
 - **Effort**: low
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
@@ -1776,7 +1776,7 @@ FOUR-AXIOM / TOTALITY EXPOSURE NOTE (added 2026-08-10; discharge recorded 2026-0
 
 Governing design document: specs/archive/361_strong_completeness_architecture_and_weak_terminus_gap_analysis/design/03_weak-terminus-status.md, section 5.3 (the refutation), 5.5 (the carrier), 5.6 (the Mathlib instance).
 
-Acceptance: the refuted-route comment (the "(i) a Base-MCS ... (ii) a Henkin-style ..." block) no longer appears in `Transfer.lean`; the probe block elaborates; lake build is green; #print axioms on any new declaration shows no sorryAx; the live non-Boneyard sorry count is unchanged at 2 (verify with: grep -rn --include='*.lean' -E '^\s*sorry\s*$' FormalSystem/ | grep -vc Boneyard).
+Acceptance: the refuted-route comment (the "(i) a Base-MCS ... (ii) a Henkin-style ..." block) no longer appears in `Transfer.lean`; the probe block elaborates; lake build is green; #print axioms on any new declaration shows no sorryAx; the live non-Boneyard sorry count is unchanged at 1 (verify with scripts/check-module-invariants.sh check C3, which reports the sole structural sorry as countermodel_discrete in FormalSystem/Metalogic/WeakCanonical/Transfer.lean).
 
 ---
 
