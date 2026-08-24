@@ -311,31 +311,31 @@ exactly the shift orbits.
 
 ---
 
-### Phase 5: `ts_zero`, `ts_add`, `rev_sep`, `ofModel`, and the reverse direction [IN PROGRESS]
+### Phase 5: `ts_zero`, `ts_add`, `rev_sep`, `ofModel`, and the reverse direction [COMPLETED]
 
 **Goal**: Build the shift set induced by an arbitrary task model and prove `reverse_repr`.
 
 **Tasks**:
-- [ ] Prove `ts_zero : WorldHistory.timeShift σ 0 = σ` and
+- [x] Prove `ts_zero : WorldHistory.timeShift σ 0 = σ` and
       `ts_add : timeShift (timeShift σ a) b = timeShift σ (a + b)` via `wh_ext` and
       `WorldHistory.states_eq_of_time_eq`.
-- [ ] Prove `rev_sep {F} (σ τ : F.HF) : (∀ x, 0 < x → ∃ y, |y| < x ∧ τ = σ.timeShift y) → τ = σ`,
+- [x] Prove `rev_sep {F} (σ τ : F.HF) : (∀ x, 0 < x → ∃ y, |y| < x ∧ τ = σ.timeShift y) → τ = σ`,
       discharging the separation field straight out of `F.limit`: at each time `t`,
       `σ.respects_task t (t+y)` gives `F.TaskRel (σ.states t) y (τ.states t)`, and `F.limit`
       collapses the two states. **No new frame hypothesis is needed** — record this in a
       docstring, since it is the reason freeness must be rejected.
-- [ ] Define `ofModel (F : TaskFrame D) (M : TaskModel F) : ShiftSet D` with
+- [x] Define `ofModel (F : TaskFrame D) (M : TaskModel F) : ShiftSet D` with
       `Carrier := F.HF`, `carrier_nonempty := PartialHistory.hF_nonempty F F.nonempty.some`,
       `sh := TaskFrame.HF.timeShift`, `sep := rev_sep`,
       `A := fun p τ => TruthAt M τ.val 0 (Formula.atom p)`.
-- [ ] Prove `reverse_repr` in the verbatim statement shape fixed above, by
+- [x] Prove `reverse_repr` in the verbatim statement shape fixed above, by
       `induction φ generalizing τ t`. The `atom` case consumes
       `TimeShift.time_shift_preserves_truth` (`Semantics/Truth.lean:457`, signature
       `(M) (σ) (x y : D) (φ)`, **unconditional** — no `h_sc` argument, since `ShiftClosed` is
       retired, not renamed) together with `TaskFrame.HF.timeShift_val`
       (`Semantics/WorldHistory.lean:525`).
-- [ ] Docstring `ofModel` and `reverse_repr` as the REVERSE DIRECTION.
-- [ ] Verify: `lake env lean FormalSystem/Semantics/ShiftSet.lean`.
+- [x] Docstring `ofModel` and `reverse_repr` as the REVERSE DIRECTION.
+- [x] Verify: `lake env lean FormalSystem/Semantics/ShiftSet.lean`.
 
 **Timing**: 1 hour
 
@@ -353,7 +353,7 @@ exactly the shift orbits.
 
 ---
 
-### Phase 6: Register the module, run the gate evidence, close the gate [NOT STARTED]
+### Phase 6: Register the module, run the gate evidence, close the gate [IN PROGRESS]
 
 **Goal**: Make `lake build` actually build the file, and reproduce the two clean `#print axioms`
 lines inside the real build rather than in a scratch elaboration. This is the phase at which the

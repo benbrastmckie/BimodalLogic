@@ -282,6 +282,110 @@ theorem forward_repr (S : ShiftSet D) (w : S.Carrier) (t : D) (φ : Formula) :
     · rintro ⟨s, hs, he, hg⟩
       exact ⟨s, hs, (ihχ w s).mpr he, fun r h1 h2 => (ihψ w r).mpr (hg r h1 h2)⟩
 
+/-! ## Reverse direction: the shift set induced by a task model -/
+
+/-- Time-shifting a history by `0` is the identity. -/
+theorem ts_zero {F : TaskFrame D} (σ : WorldHistory F) :
+    WorldHistory.timeShift σ 0 = σ := by
+  refine wh_ext (funext fun z => by simp [WorldHistory.timeShift]) ?_
+  intro r h h'
+  exact WorldHistory.states_eq_of_time_eq σ (r + 0) r (add_zero r) h h'
+
+/-- Time-shifting is additive. -/
+theorem ts_add {F : TaskFrame D} (σ : WorldHistory F) (a b : D) :
+    WorldHistory.timeShift (WorldHistory.timeShift σ a) b = WorldHistory.timeShift σ (a + b) := by
+  refine wh_ext (funext fun z => ?_) ?_
+  · show σ.domain ((z + b) + a) = σ.domain (z + (a + b))
+    rw [add_assoc, add_comm b a]
+  · intro r h h'
+    exact WorldHistory.states_eq_of_time_eq σ ((r + b) + a) (r + (a + b))
+      (by rw [add_assoc, add_comm b a]) h h'
+
+/--
+The separation condition, discharged on total histories **straight out of `F.limit`**.
+
+At each time `t`, `σ.respects_task t (t + y)` turns a witnessing shift `τ = σ.timeShift y` into
+`F.TaskRel (σ.states t) y (τ.states t)`, and `F.limit` then collapses the two states; `wh_ext`
+lifts that to equality of histories.
+
+**No new frame hypothesis is needed.** That is precisely why the `sep` field is the right axiom
+and the stronger free-action axiom is not: freeness is not dischargeable here at all — a
+constant total history is fixed by every shift.
+-/
+theorem rev_sep {F : TaskFrame D} (σ τ : F.HF)
+    (h : ∀ x : D, 0 < x → ∃ y : D, |y| < x ∧ τ = σ.timeShift y) : τ = σ := by
+  apply Subtype.ext
+  refine wh_ext (funext fun z => propext ⟨fun _ => σ.property z, fun _ => τ.property z⟩) ?_
+  intro t ht ht'
+  refine F.limit (σ.val.states t ht') (τ.val.states t ht) ?_
+  intro x hx
+  obtain ⟨y, hy, hEq⟩ := h x hx
+  refine ⟨y, hy, ?_⟩
+  subst hEq
+  have h2 := σ.val.respects_task t (t + y) ht' (σ.property (t + y))
+  rw [add_sub_cancel_left] at h2
+  exact h2
+
+/--
+**REVERSE DIRECTION**: every task model induces a shift set.
+
+The carrier is `F.HF`, the total histories of the frame; the action is time shift; the
+separation field is `rev_sep`, and there is deliberately **no** freeness field. The valuation
+reads each atom off at time `0` of the history.
+
+`carrier_nonempty` is where `Classical.choice` enters the reverse direction, and its only
+entry point: `PartialHistory.hF_nonempty` is Zorn-based.
+-/
+def ofModel (F : TaskFrame D) (M : TaskModel F) : ShiftSet D where
+  Carrier := F.HF
+  carrier_nonempty := PartialHistory.hF_nonempty F F.nonempty.some
+  sh := TaskFrame.HF.timeShift
+  sh_zero := by intro w; apply Subtype.ext; exact ts_zero w.val
+  sh_add := by intro w a b; apply Subtype.ext; exact ts_add w.val a b
+  sep := fun w u h => rev_sep w u h
+  A := fun p τ => TruthAt M τ.val 0 (Formula.atom p)
+
+/--
+**REVERSE DIRECTION of the representation theorem, with its truth correspondence.**
+
+Shift-set truth on `ofModel F M` is truth in `M`. The `atom` case is where
+`TimeShift.time_shift_preserves_truth` (`FormalSystem/Semantics/Truth.lean`, which is
+*unconditional* — the shift-closure hypothesis it once carried is retired, not renamed) and
+`TaskFrame.HF.timeShift_val` are consumed; every other case is a structural transport.
+-/
+theorem reverse_repr (F : TaskFrame D) (M : TaskModel F) (τ : F.HF) (t : D)
+    (φ : Formula) :
+    ShiftTruth (ShiftSet.ofModel F M) τ t φ ↔ TruthAt M τ.val t φ := by
+  induction φ generalizing τ t with
+  | atom p =>
+    show TruthAt M ((TaskFrame.HF.timeShift τ t).val) 0 (Formula.atom p) ↔ _
+    rw [TaskFrame.HF.timeShift_val]
+    have := TimeShift.time_shift_preserves_truth M τ.val 0 t (Formula.atom p)
+    rw [sub_zero] at this
+    exact this
+  | bot => exact Iff.rfl
+  | imp ψ χ ihψ ihχ =>
+    exact ⟨fun h hψ => (ihχ τ t).mp (h ((ihψ τ t).mpr hψ)),
+           fun h hψ => (ihχ τ t).mpr (h ((ihψ τ t).mp hψ))⟩
+  | box ψ ih =>
+    constructor
+    · intro h σ hσ
+      exact (ih ⟨σ, hσ⟩ t).mp (h ⟨σ, hσ⟩)
+    · intro h v
+      exact (ih v t).mpr (h v.val v.property)
+  | untl ψ χ ihψ ihχ =>
+    constructor
+    · rintro ⟨s, hs, he, hg⟩
+      exact ⟨s, hs, (ihχ τ s).mp he, fun r h1 h2 => (ihψ τ r).mp (hg r h1 h2)⟩
+    · rintro ⟨s, hs, he, hg⟩
+      exact ⟨s, hs, (ihχ τ s).mpr he, fun r h1 h2 => (ihψ τ r).mpr (hg r h1 h2)⟩
+  | snce ψ χ ihψ ihχ =>
+    constructor
+    · rintro ⟨s, hs, he, hg⟩
+      exact ⟨s, hs, (ihχ τ s).mp he, fun r h1 h2 => (ihψ τ r).mp (hg r h1 h2)⟩
+    · rintro ⟨s, hs, he, hg⟩
+      exact ⟨s, hs, (ihχ τ s).mpr he, fun r h1 h2 => (ihψ τ r).mpr (hg r h1 h2)⟩
+
 end ShiftSet
 
 end FormalSystem.Semantics
