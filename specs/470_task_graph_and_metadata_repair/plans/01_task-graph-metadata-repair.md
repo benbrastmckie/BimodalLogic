@@ -199,26 +199,26 @@ jq empty specs/state.json && bash .claude/scripts/generate-todo.sh
 
 ---
 
-### Phase 2: Point 433 and 434 at their downstream owners (item B, remaining half) [NOT STARTED]
+### Phase 2: Point 433 and 434 at their downstream owners (item B, remaining half) [COMPLETED]
 
 **Goal**: A reader of 433 or 434 sees which of their residuals moved to 462-465 and does not
 re-attempt work that is now owned elsewhere. The `465 -> 428` dependency edge is **already applied
 and must NOT be re-applied**.
 
 **Tasks**:
-- [ ] Confirm the edge is already applied and take no action on it:
+- [x] Confirm the edge is already applied and take no action on it:
       `jq -c '.active_projects[] | select(.project_number==428) | .dependencies' specs/state.json`
-      must return `[432,433,434,465]`. If it does, this half of (B) is closed — record and move on.
-- [ ] Confirm neither 433 nor 434 already mentions 462-465 (guards against a double-append on a
-      resumed run).
-- [ ] **Append** (do not replace) a pointer sentence to 433's `description`, after the existing
+      must return `[432,433,434,465]`. If it does, this half of (B) is closed — record and move on. *(completed: confirmed [432,433,434,465], no action taken)*
+- [x] Confirm neither 433 nor 434 already mentions 462-465 (guards against a double-append on a
+      resumed run). *(completed: neither mentioned)*
+- [x] **Append** (do not replace) a pointer sentence to 433's `description`, after the existing
       "Done means..." sentence:
-      `This task's own residual work -- deciding PostBlockingSettlesRun at the terminus's own fuel figure, and completing the terminus restatement family -- has moved downstream to tasks 463 and 465 respectively; do not re-attempt those here.`
-- [ ] **Append** similarly to 434's `description`:
-      `This task's own residual work -- the engine-level assembly needed to make a per-rule payment usable at the successor (462), and the gapPotential density coordinate for .Dense/.Dedekind frame classes (464) -- has moved downstream to tasks 462 and 464; do not re-attempt those here.`
-- [ ] Both appends are grounded in 462-465's own self-descriptions, which research read directly.
-      Do not restate or reinterpret their mathematical content beyond the pointer.
-- [ ] **OUT-OF-SCOPE GATE — `UnorderedSuccessorLabelClosed`.** A fifth residual
+      `This task's own residual work -- deciding PostBlockingSettlesRun at the terminus's own fuel figure, and completing the terminus restatement family -- has moved downstream to tasks 463 and 465 respectively; do not re-attempt those here.` *(completed)*
+- [x] **Append** similarly to 434's `description`:
+      `This task's own residual work -- the engine-level assembly needed to make a per-rule payment usable at the successor (462), and the gapPotential density coordinate for .Dense/.Dedekind frame classes (464) -- has moved downstream to tasks 462 and 464; do not re-attempt those here.` *(completed)*
+- [x] Both appends are grounded in 462-465's own self-descriptions, which research read directly.
+      Do not restate or reinterpret their mathematical content beyond the pointer. *(completed)*
+- [x] **OUT-OF-SCOPE GATE — `UnorderedSuccessorLabelClosed`.** A fifth residual
       (`UnorderedSuccessorLabelClosed`, defined in `FormalSystem/.../MintBound.lean` and carried as
       a live hypothesis across the `_fixed`/`_run` restatement family) is unassigned. Task 468's
       amendment 10e directs that it be assigned. Re-check 468's status:
@@ -227,8 +227,8 @@ and must NOT be re-applied**.
       in any description.** Record the skip and its reason in the phase notes. Creating an owner
       here would produce a duplicate owner against 468's own plan. Only if 468 has since run and
       left the residual unassigned may this be revisited — and even then it is a finding to report,
-      not an edit to make silently.
-- [ ] Two separate `state-write.sh` calls (one per task) keep the diff reviewable.
+      not an edit to make silently. *(completed: 468 confirmed not_started, no owner assigned, no edit made — verified 0 occurrences of UnorderedSuccessorLabelClosed outside 468/470)*
+- [x] Two separate `state-write.sh` calls (one per task) keep the diff reviewable. *(completed)*
 
 **Timing**: 30 minutes
 
