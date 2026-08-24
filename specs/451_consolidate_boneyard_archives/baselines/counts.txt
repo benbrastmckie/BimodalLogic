@@ -1,0 +1,8 @@
+total FormalSystem .lean:       553
+live FormalSystem .lean:        397
+Tests .lean:                    53
+archived .lean (all Boneyard):  156
+Boneyard dirs:                  2
+top Boneyard files:             123  lean: 93  lines: 59019
+kamp Boneyard files:            67  lean: 63  lines: 29256
+kamp flat root .lean:           35

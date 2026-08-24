@@ -1,7 +1,7 @@
 # Implementation Plan: Consolidate the Two Boneyard Archives
 
 - **Task**: 451 - Consolidate the two Boneyard archives into a single tree
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 13 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/451_consolidate_boneyard_archives/reports/01_consolidate-boneyard-archives.md
@@ -139,33 +139,41 @@ gate that the next phase relies on.
 
 ---
 
-### Phase 1: Baseline capture and scope extension [NOT STARTED]
+### Phase 1: Baseline capture and scope extension [COMPLETED]
 
 **Goal**: Freeze the pre-move ground truth so every later "unchanged" assertion is a real
 comparison, and widen `file_scope` so the implementer does not hit a scope wall mid-task.
 
 **Tasks**:
 
-- [ ] Create `specs/451_consolidate_boneyard_archives/baselines/` and record, verbatim:
+- [x] Create `specs/451_consolidate_boneyard_archives/baselines/` and record, verbatim:
       `lake build`, `lake build BimodalTest`, `bash scripts/check-module-invariants.sh`, and
       `bash scripts/readme-lint.sh` (stdout+stderr and exit code each).
-- [ ] Re-measure and record: total `FormalSystem/**/*.lean` (expect 550), live `FormalSystem`
+- [x] Re-measure and record *(deviation: altered — measured 553/397/53/450, 3 higher than the plan's 550/394/53/448 because concurrent tasks added live files; archive counts 156 / 93+59,019 / 63+29,256 match exactly. See baselines/MEASURED.md D2)*: total `FormalSystem/**/*.lean` (expect 550), live `FormalSystem`
       (394), live `Tests` (53), live total (448), archived (156), `FormalSystem/Boneyard/`
       (93 files / 59,019 lines), `.../Kamp/Boneyard/` (63 / 29,256).
-- [ ] Re-run the dangling-import census with a `FormalSystem|BimodalTest`-prefixed regex and record
+- [x] Re-run the dangling-import census *(deviation: altered — 65 total confirmed, but the A/B split measured 47/18 not 48/17: `FormalSystem.Metalogic.Completeness` is ambiguous across 4 files and belongs in Category B, which the plan already listed in the waiver seed. See MEASURED.md D3)* with a `FormalSystem|BimodalTest`-prefixed regex and record
       the per-archive and per-category counts (expect 65 total; 48 Category A, 17 Category B across
       6 modules).
-- [ ] Re-run the Option B safety grep:
+- [x] Re-run the Option B safety grep *(0 hits, confirmed)*:
       `grep -rhoE "^import FormalSystem\.Boneyard\.(KampBypassArchive|KampNegationClosure|RabinovichPath|VecEADecomposition)(\.[A-Za-z0-9_]+)*" --include=*.lean FormalSystem/ Tests/`
       and confirm it is empty. If it is not, stop and report before moving anything.
-- [ ] Extend `active_projects[].file_scope` for task 451 in `specs/state.json` (append via `+=`,
+- [x] Extend `active_projects[].file_scope` for task 451 in `specs/state.json` (append via `+=`,
       never wholesale assignment) with: `FormalSystem/README.md`,
       `FormalSystem/Metalogic/README.md`, `FormalSystem/Metalogic/WeakCanonical/README.md`,
       `FormalSystem/Metalogic/WeakCanonical/Kamp/README.md`,
       `docs/development/MODULE_INVARIANTS.md`, `scripts/check-copyright-headers.sh`,
       `scripts/add-copyright-headers.sh`, `scripts/typst-sync-check.sh`, `typst/SYNC-MAP.md`,
       `scripts/boneyard-import-waivers.txt`.
-- [ ] Run `bash .claude/scripts/generate-todo.sh`.
+- [x] Run `bash .claude/scripts/generate-todo.sh`.
+
+**MEASURED BASELINE DIVERGENCE** (Phase 1): `readme-lint.sh` is **RED at baseline**, not green as
+the plan's Research Integration item 4 asserts. It exits 1 with `RESULT: FAIL (7 missing READMEs,
+5 broken references)`, none Boneyard-related. It also carried a latent `set -euo pipefail` bug that
+aborted it mid-Check-3 on any link-less README, hiding its own summary; fixed in-scope
+(`scripts/readme-lint.sh` is in `file_scope`) by `{ grep ... || true; }`. **Every later phase's
+`readme-lint.sh PASS` criterion is therefore downgraded to "no worse than baseline": 7 missing,
+<= 5 broken.** Full record: `baselines/MEASURED.md` (divergences D1-D4).
 
 **Timing**: 0.5 hours
 

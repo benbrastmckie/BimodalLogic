@@ -102,7 +102,7 @@ find "$ROOT" -name "README.md" | sort | while read -r readme; do
     *Boneyard*) continue ;;
   esac
   # Find all Markdown links: [text](path) and extract paths
-  grep -oP '\[.*?\]\(\K[^)]+' "$readme" 2>/dev/null | while read -r link; do
+  { grep -oP '\[.*?\]\(\K[^)]+' "$readme" 2>/dev/null || true; } | while read -r link; do
     # Skip external URLs
     case "$link" in
       http://*|https://*) continue ;;
@@ -164,7 +164,7 @@ echo "Total READMEs found:      $README_COUNT"
 # Broken links count
 BROKEN=$(find "$ROOT" -name "README.md" | grep -v Boneyard | while read -r readme; do
   dir=$(dirname "$readme")
-  grep -oP '\[.*?\]\(\K[^)]+' "$readme" 2>/dev/null | while read -r link; do
+  { grep -oP '\[.*?\]\(\K[^)]+' "$readme" 2>/dev/null || true; } | while read -r link; do
     case "$link" in http://*|https://*) continue ;; esac
     path="${link%%#*}"
     if [ -z "$path" ]; then continue; fi

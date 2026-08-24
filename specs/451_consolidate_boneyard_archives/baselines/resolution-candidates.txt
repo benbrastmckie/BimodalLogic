@@ -1,0 +1,29 @@
+0	FormalSystem.Metalogic.Algebraic.ParametricCanonical	
+0	FormalSystem.Metalogic.Algebraic.ParametricCompleteness	
+0	FormalSystem.Metalogic.Algebraic.ParametricHistory	
+0	FormalSystem.Metalogic.Algebraic.ParametricTruthLemma	
+0	FormalSystem.Metalogic.Algebraic.RestrictedParametricTruthLemma	
+1	FormalSystem.Metalogic.Bundle.SuccExistence	FormalSystem/Boneyard/BundleSuccessorSeed/SuccExistence.lean 
+1	FormalSystem.Metalogic.BXCanonical.Quasimodel.EnrichedClosure	FormalSystem/Boneyard/BXCanonicalQuasimodel/EnrichedClosure.lean 
+1	FormalSystem.Metalogic.WeakCanonical.EFGames.DiscreteGameTransfer	FormalSystem/Boneyard/StaviDiscretePath/DiscreteGameTransfer.lean 
+1	FormalSystem.Metalogic.WeakCanonical.EFGames.NFGameBridge	FormalSystem/Boneyard/StaviDiscretePath/NFGameBridge.lean 
+1	FormalSystem.Metalogic.WeakCanonical.Kamp.FOToVEA	FormalSystem/Metalogic/WeakCanonical/Kamp/Boneyard/FOToVEA.lean 
+1	FormalSystem.Metalogic.WeakCanonical.Kamp.KampBypassBridge	FormalSystem/Boneyard/KampBypassArchive/KampBypassBridge.lean 
+1	FormalSystem.Metalogic.WeakCanonical.Kamp.KampBypassCore	FormalSystem/Boneyard/KampBypassArchive/KampBypassCore.lean 
+1	FormalSystem.Metalogic.WeakCanonical.Kamp.KampBypassEqCase	FormalSystem/Boneyard/KampBypassArchive/KampBypassEqCase.lean 
+1	FormalSystem.Metalogic.WeakCanonical.Kamp.KampBypass	FormalSystem/Boneyard/KampBypassArchive/KampBypass.lean 
+1	FormalSystem.Metalogic.WeakCanonical.Kamp.KampBypassSince	FormalSystem/Boneyard/KampBypassArchive/KampBypassSince.lean 
+1	FormalSystem.Metalogic.WeakCanonical.Kamp.KampBypassUntil	FormalSystem/Boneyard/KampBypassArchive/KampBypassUntil.lean 
+1	FormalSystem.Metalogic.WeakCanonical.Kamp.KampComposition	FormalSystem/Metalogic/WeakCanonical/Kamp/Boneyard/KampComposition.lean 
+1	FormalSystem.Metalogic.WeakCanonical.Kamp.KampForward	FormalSystem/Boneyard/KampBypassArchive/KampForward.lean 
+1	FormalSystem.Metalogic.WeakCanonical.Kamp.NegationClosure5	FormalSystem/Boneyard/KampNegationClosure/NegationClosure5.lean 
+1	FormalSystem.Metalogic.WeakCanonical.Kamp.NegationClosure	FormalSystem/Boneyard/KampNegationClosure/NegationClosure.lean 
+1	FormalSystem.Metalogic.WeakCanonical.Kamp.NegationClosureProp42	FormalSystem/Boneyard/KampNegationClosure/NegationClosureProp42.lean 
+1	FormalSystem.Metalogic.WeakCanonical.Kamp.NfCharFormula	FormalSystem/Boneyard/KampBypassArchive/NfCharFormula.lean 
+1	FormalSystem.Metalogic.WeakCanonical.Kamp.NfComposition	FormalSystem/Metalogic/WeakCanonical/Kamp/Boneyard/NfComposition.lean 
+1	FormalSystem.Metalogic.WeakCanonical.Kamp.PriorComposition	FormalSystem/Boneyard/KampBypassArchive/PriorComposition.lean 
+1	FormalSystem.Metalogic.WeakCanonical.Kamp.RabinovichNegation	FormalSystem/Boneyard/RabinovichPath/RabinovichNegation.lean 
+1	FormalSystem.Metalogic.WeakCanonical.Kamp.SeparationBridge	FormalSystem/Metalogic/WeakCanonical/Kamp/Boneyard/SeparationBridge.lean 
+1	FormalSystem.Metalogic.WeakCanonical.Kamp.WitnessCount	FormalSystem/Metalogic/WeakCanonical/Kamp/Boneyard/WitnessCount.lean 
+1	FormalSystem.Metalogic.WeakCanonical.Kamp.ZoneBridge	FormalSystem/Metalogic/WeakCanonical/Kamp/Boneyard/ZoneBridge.lean 
+4	FormalSystem.Metalogic.Completeness	FormalSystem/Boneyard/StrictSemanticsLegacy/FrameConditions/Completeness.lean FormalSystem/Boneyard/SupersededCompleteness/Completeness.lean FormalSystem/Metalogic/BXCanonical/Completeness.lean FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness/Completeness.lean 

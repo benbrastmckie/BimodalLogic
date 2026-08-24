@@ -1,0 +1,20 @@
+{
+  "axiom_count": 45,
+  "rule_count": 7,
+  "base_count": 37,
+  "dense_only_count": 2,
+  "discrete_only_count": 3,
+  "dedekind_only_count": 3,
+  "sorry_total": 5,
+  "sorry_total_excl_boneyard": 1,
+  "sorry_algebraic": 0,
+  "sorry_bxcanonical": 0,
+  "sorry_bundle": 0,
+  "sorry_weakcanonical": 5,
+  "sorry_weakcanonical_excl_boneyard": 1,
+  "sorry_other": 0,
+  "stamp_commit": "b7bbd6e0f",
+  "stamp_date": "2026-08-24"
+}
+Wrote /home/benjamin/Projects/BimodalLogic/typst/generated/status.typ
+exit=0

@@ -36,13 +36,13 @@ next_project_number: 474
 ### Code Quality
 
 472 [NOT STARTED] — THE IMMEDIATE, UNGATED DOCUMENTATION-CORRECTION PASS. This is the
-473 [PLANNED] — DELETE THE QUARANTINED VACUOUS KAMP PAIR, and keep the record tha
+473 [IMPLEMENTING] — DELETE THE QUARANTINED VACUOUS KAMP PAIR, and keep the record tha
 455 [NOT STARTED] — BACKLOG REALIGNMENT: bring specs/ROADMAP.md and every remaining a
 
 ### Completeness
 
 413 [NOT STARTED] — Formalize the TM+ over TM conservativity bridge in Lean 4 (paper 
-426 [PLANNED] — Settle whether the tableau engine can positively refute (G p) -> 
+426 [IMPLEMENTING] — Settle whether the tableau engine can positively refute (G p) -> 
 95 [NOT STARTED] — Verify and record the final axiom/sorry status of the headline me
 
 ### Dataset Enhancement
@@ -64,7 +64,7 @@ next_project_number: 474
           └─ 411 [NOT STARTED] — Track B part 2 for the TM tableau decidability program (parent: t
             └─ 430 [NOT STARTED] — The semantic lift and the Track A assembly. Owns obstruction O4 o
               └─ 412 [NOT STARTED] — Track B finish for the TM tableau decidability program (parent: t
-469 [PLANNED] — SCOPE AND PRICE THE BI-LASSO ROUTE TO DECIDABILITY OF `FrameClass
+469 [IMPLEMENTING] — SCOPE AND PRICE THE BI-LASSO ROUTE TO DECIDABILITY OF `FrameClass
   └─ 462 [NOT STARTED] — Land the engine-level assembly that lets `MintPaysForTimeFixed` b
     └─ 463 [NOT STARTED] — Decide `PostBlockingSettlesRun fc (mintAwareFuelAt U.card Tmax mi
       └─ 464 [NOT STARTED] — Design and land `gapPotential`, the density coordinate of the ter
@@ -88,24 +88,24 @@ next_project_number: 474
 
 ### Repo Hygiene
 
-451 [PLANNED] — CONSOLIDATE THE TWO BONEYARDS into a single archive tree under Fo
+451 [IMPLEMENTING] — CONSOLIDATE THE TWO BONEYARDS into a single archive tree under Fo
 
 ### Strong Completeness
 
-421 [PLANNED] — Two deliverables on the Base weak terminus, both small.
+421 [IMPLEMENTING] — Two deliverables on the Base weak terminus, both small.
   └─ 422 [NOT STARTED] — Construct the discrete-case analogue of the existing dense chroni
     └─ 169 [NOT STARTED] — Base (FrameClass.Base / general) WEAK completeness green: make th
       └─ 362 [NOT STARTED] — Implement the completeness capstone under the SETTLED TERMINOLOGY
-423 [PLANNED] — Create FormalSystem/Metalogic/SetConsequence.lean containing the 
+423 [IMPLEMENTING] — Create FormalSystem/Metalogic/SetConsequence.lean containing the 
   └─ 425 [NOT STARTED] — Convert the informal argument at FormalSystem/Metalogic/StrongCom
-424 [PLANNED] — RE-ISSUED 2026-08-18 (description rewrite only; status remains `n
+424 [IMPLEMENTING] — RE-ISSUED 2026-08-18 (description rewrite only; status remains `n
   └─ 362 [NOT STARTED] — Implement the completeness capstone under the SETTLED TERMINOLOGY (see above)
 
 ## Tasks
 
 ### 473. Delete quarantined vacuous kamp pair
 - **Effort**: low
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: code-quality
 - **Dependencies**: Task 470
@@ -472,7 +472,7 @@ Grounding: specs/reviews/review-2026-08-24.md, Addendum 3.
 
 ### 469. Eliminate the bridge filtration into intpresentation
 - **Effort**: medium
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 470
@@ -1305,7 +1305,7 @@ Deliver a survey artifact under this task's reports/ directory containing:
 
 ### 451. Consolidate boneyard archives
 - **Effort**: medium
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: repo-hygiene
 - **Dependencies**: Task 470
@@ -1511,7 +1511,7 @@ RESUME SEQUENCE: `/research 428` first (discharge the two uncertain claims above
 
 ### 426. Settle anchor row countermodel or nontermination for g p box g p
 - **Effort**: 4-8 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: Task 470
@@ -1549,7 +1549,7 @@ Acceptance: archWitness_finitely_satisfiable, archWitness_not_satisfiable, and d
 
 ### 424. Prove shift set representation theorem compactness feasibility gate
 - **Effort**: high
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: strong_completeness
 - **Dependencies**: Task 470
@@ -1606,7 +1606,7 @@ Acceptance: both directions sorry-free; #print axioms clean on each; lake build 
 
 ### 423. Land set based consequence layer setderivable and per class setsemanticconsequence
 - **Effort**: high
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: strong_completeness
 - **Dependencies**: Task 470
@@ -1650,7 +1650,7 @@ FOUR-AXIOM / TOTALITY EXPOSURE NOTE (added 2026-08-10; discharge recorded 2026-0
 
 ### 421. Correct transfer route guidance and probe non archimedean discrete carrier
 - **Effort**: medium
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: strong_completeness
 - **Dependencies**: Task 470
