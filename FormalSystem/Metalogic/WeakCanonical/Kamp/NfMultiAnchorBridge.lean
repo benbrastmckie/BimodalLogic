@@ -99,9 +99,10 @@ import Mathlib.Data.List.Permutation
 -- guard REACHABLE from `FormalSystem.lean`, so CI compiles it. This edge is the whole
 -- point of that file: a guard sitting in an unreachable directory protects nothing (that is
 -- precisely how the same finding, recorded at `Boneyard/NegationIndep.lean:357-364`, went
--- unread). Prop42Vacuity proves that `neg_2var_vec_ea`'s conclusion — re-exported by this
--- file's neighborhood via `NavigatedSpine.reflatten_neg_step` — follows from NO hypotheses,
--- and so carries no content about negation. Cycle-free: Prop42Vacuity imports only
+-- unread). Prop42Vacuity proves that the conclusion the now-deleted `neg_2var_vec_ea` /
+-- `NavigatedSpine.reflatten_neg_step` pair carried — the latter having re-exported the former
+-- from this file's neighborhood — follows from NO hypotheses, and so carries no content about
+-- negation. Cycle-free: Prop42Vacuity imports only
 -- `...Kamp.VecEAFormula`, already in this file's transitive closure via EANegationClosure;
 -- nothing in VecEAFormula's closure imports this file. It is a leaf: no declaration here or
 -- downstream consumes `prop42_conclusion_is_vacuous`, so the edge is inert to the build
@@ -111,8 +112,8 @@ import Mathlib.Data.List.Permutation
 -- Cycle-free: only KampPrior imports this file, and EANegationClosure's transitive closure
 -- (EANegation, VecEAClosure, VecEAFormula, PriorINF, ExistsForallNF, PriorDefs, MonadicFO,
 -- Table) reaches neither KampPrior nor this file. It transitively supplies PriorINF
--- (`HasAttainedINF`/`prior_hasAttainedINF`, PriorINF:202/:224) and the Lemma 5.1/Cor 5.4/
--- Prop 4.2 negation-stack assets consumed by Phases 13.2-13.4.
+-- (`HasAttainedINF`/`prior_hasAttainedINF`, PriorINF:202/:224) and the Lemma 5.1/Cor 5.4
+-- negation-stack assets consumed by Phases 13.2-13.4.
 -- NOTE: `import ...WeakCanonical.PriorDefs` supplies
 -- `SemanticPriorUZ`/`SemanticPriorSZ` (PriorDefs:22/:33) for the F2 decision-probe verdict
 -- record at the bottom of this file. Cycle-free: PriorDefs imports only `...WeakCanonical.Table`

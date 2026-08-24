@@ -51,10 +51,10 @@ the sense that binds (conclusion, not binder).
 **Aggregation verdict (plan deviation, recorded per R7).** The plan's Phase-2 aggregation
 combinator `VVecEA2.conjStruct` (VecEAClosure.lean:195) is ONE-directional (its `n1+1, n2+1`
 case discards the second bracket's content — `conj_struct_holds` proves only `holds → holds →
-holds` of the conjunction, never the converse), and the Prop 4.2 negation closure
-(`neg_2var_vec_ea`, EANegationClosure.lean:722) is MODEL-DEPENDENT (existential `∃ v'`, not a
-fixed syntactic object) — neither can assemble a fixed formula with a biconditional correctness
-statement. The k=0 aggregate is instead built as a SINGLE global object via the depth-1 fold
+holds` of the conjunction, never the converse), and there is no Prop 4.2 negation closure to
+use: the declaration that once presented itself as one was MODEL-DEPENDENT (existential `∃ v'`,
+not a fixed syntactic object), vacuous, and has since been deleted — see `Prop42Vacuity`.
+Neither could assemble a fixed formula with a biconditional correctness statement. The k=0 aggregate is instead built as a SINGLE global object via the depth-1 fold
 engine (`nf_eval_depth1_fold_iff`, CarrierKv.lean:466): the whole population
 `∀ qnf : NormalForm sig 0 3, ((∃ w, NfEvalNf M 0 3 (zoneEnv3 w x t) qnf) ↔ sub_nf.2 qnf)`
 re-fibers losslessly (depth-0 split-kit bijection, `nf0_split_assemble`, NfEFold:235) into

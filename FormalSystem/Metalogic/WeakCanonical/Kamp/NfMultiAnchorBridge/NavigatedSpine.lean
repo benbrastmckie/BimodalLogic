@@ -18,7 +18,10 @@ Literature chunk `Literature/sources/rabinovich_2014/Rabinovich_2014_Proof_of_Ka
 
 - **Prop 3.5** fold (md:87-94) → `kvE_fold_navigated` + the 5+5 dischargers (:9055-:9176).
 - **Lemma 3.4** V-exists-forall closure (md:84-85) → `VVecEA2.disjList` / `VVecEA2.disjList_holds`.
-- **Prop 4.2** negation step (md:100-101) → `reflatten_neg_step`.
+- **Prop 4.2** negation step (md:100-101) → NOT discharged. No declaration in this file or its
+  neighborhood supplies it. See `Prop42Vacuity.prop42_conclusion_is_vacuous` (machine refutation
+  of the shape formerly presented as this step) and `Prop42Contentful.Prop42Contentful` (the
+  target shape a real negation step must have).
 - **Prop 4.3** reflattening engine (md:103-110) → `reflatten_prop43`.
 
 Also hosts: the v6 audit record :8827-:8858 (incl. the no-nesting rule :8841-:8846),
@@ -56,7 +59,6 @@ evaluation point / structural position of nested `Until`/`Since` operators.
 **Consumed-asset signatures confirmed present (do NOT rebuild):**
 - `BracketEndCharCarrierV` (:1872), `BracketCarrierCorrectV` (:1881) — witness-growing carrier.
 - `BracketCarrierCorrectVPrior` (:5032) — the k=2 gate (do-not-edit).
-- `neg_2var_vec_ea` (EANegationClosure.lean:722, Prop 4.2) — landed negation closure.
 - `kvESubChain2V` (:6955), `kvE_subBracket2V_sound_of_outer` (:7910),
   `kvE_subBracket2V_complete` (:8159) — the witness-growing interior closers.
 - `epL`/`epR`, `bracketBuildLeft`/`bracketBuildRight` (:1676-1739) — navigated fold literals.
@@ -131,10 +133,11 @@ The audit's H3 table marked ONE ingredient MISSING: the Boolean-closure step tha
 structural induction (Rabinovich **Prop 4.3**, md p.6) discharge higher FO quantifier depth by
 RE-FLATTENING a depth-`(k+1)` obligation to a `∨` of FLAT exists-forall blocks over the E[Σ]
 alphabet with QUANTIFIER-FREE point types (**Lemma 5.1**, md:134-135) — never by nesting a depth-k
-characteristic. The codebase already had the two hardest halves landed:
-- **negation** (Prop 4.2): `neg_2var_vec_ea` (EANegationClosure.lean:722);
+characteristic. The Boolean halves the codebase genuinely had landed are the two positive ones:
 - **binary disjunction**: `VVecEA2.disj_holds` (VecEAFormula.lean:286);
 - **conjunction**: `VVecEA2.conj_holds_vvecEA2` (VecEAClosure.lean:238).
+The **negation** half (Prop 4.2) was never landed and is OPEN: the declaration once cited here
+was vacuous and has been deleted. See `Prop42Vacuity`.
 
 What was MISSING is the finite-FAMILY disjunction collapse: an induction over the arrangement list
 `S_L.permutations × S_R.permutations` (Phase 4) produces a LIST of flat blocks, and the re-flatten
@@ -183,7 +186,9 @@ theorem VVecEA2.disjList_holds {sig : MonadicSignature} [Fintype sig.preds] [Dec
     obligation `P` that the structural induction has re-flattened to a finite disjunction `vs` of
     flat exists-forall blocks (Lemma 5.1 quantifier-free point types) is realized by the SINGLE
     `VVecEA2` `VVecEA2.disjList vs` — never by nesting a depth-k characteristic. The `∨`-collapse
-    rides `VVecEA2.disjList_holds`; the negation case rides Prop 4.2 (`reflatten_neg_step`). This is
+    rides `VVecEA2.disjList_holds`. The negation case is **not** supplied: no Prop 4.2 negation
+    step exists in this development (see `Prop42Vacuity.prop42_conclusion_is_vacuous` and
+    `Prop42Contentful.Prop42Contentful`), so this theorem covers the `∨`-collapse only. This is
     the ingredient Phase 4's navigated fold engine composes at each induction step (Prop 4.3, md
     p.6; Prop 3.5 / Cor 5.4, md:87-94, md:154-157). -/
 theorem reflatten_prop43 {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]

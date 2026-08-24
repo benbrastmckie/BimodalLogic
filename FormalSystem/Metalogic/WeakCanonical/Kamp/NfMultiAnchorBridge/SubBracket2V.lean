@@ -26,8 +26,10 @@ This module is the faithful separate-bracket route for the k=2 gate. Source mapp
 - **Correctness kit**: `kvE_subBracket2V_sound` / `_sound_of_parts` / `_sound_of_outer` /
   `_gate_holds_of_honest` / `_nonvacuous` / `_complete`.
 - **Cross-references** (external combinators, not in this file): **Lemma 3.2(2)** 2-var
-  reduction (md:78) → `neg_2var_vec_ea` (`EANegationClosure.lean:722`); **Lemma 3.4**
-  V-exists-forall closure (md:84-85) → `VVecEA2.conjStruct` (`VecEAClosure.lean:195`).
+  reduction (md:78) → UNBUILT; the target shape is `Prop42Contentful.Prop42Contentful` (the
+  declaration formerly cited here was vacuous and has been deleted — see `Prop42Vacuity`).
+  **Lemma 3.4** V-exists-forall closure (md:84-85) → `VVecEA2.conjStruct`
+  (`VecEAClosure.lean:195`).
 - **NOTE (outer-connector boundary)**: the shared-interior-witness conjunction (`∃ w, ⋀_σ ...`) —
   the outer quant-layer connector joining the per-σ halves — is the ONE unbuilt object.
   It is owned by the outer quant-layer connector; this module deliberately provides only the per-σ

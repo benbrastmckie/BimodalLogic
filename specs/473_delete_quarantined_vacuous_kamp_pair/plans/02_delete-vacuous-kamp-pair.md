@@ -163,49 +163,54 @@ changed with roughly 41 and 32 deleted lines and zero added lines.
 
 ---
 
-### Phase 2: Sweep prose in the five consumer files [NOT STARTED]
+### Phase 2: Sweep prose in the five consumer files [COMPLETED]
 
 **Goal**: Remove or rewrite every prose site in the non-record files that presents either
 deleted symbol as a landed Prop 4.2 asset, redirecting each to the vacuity record by symbol
 name.
 
 **Tasks**:
-- [ ] `EANegationClosure.lean` — delete the `neg_2var_vec_ea` bullet in the module header
+- [x] `EANegationClosure.lean` — delete the `neg_2var_vec_ea` bullet in the module header
       (~`:22`, "is model-dependent Prop 4.2 (existential output)") and the `## Key Theorems`
       bullet (~`:34`). If the surrounding 19-26 sentence still implies a live model-dependent
       counterpart to `neg_2var_vec_ea_indep`, re-word it so it does not.
-- [ ] `NavigatedSpine.lean` (~`:21`) — rewrite the `**Prop 4.2** negation step → reflatten_neg_step`
+- [x] `NavigatedSpine.lean` (~`:21`) — rewrite the `**Prop 4.2** negation step → reflatten_neg_step`
       cross-reference to record that the Prop 4.2 negation step is NOT discharged, pointing at
       `Prop42Vacuity.prop42_conclusion_is_vacuous` and `Prop42Contentful.Prop42Contentful` by
       symbol name only.
-- [ ] `NavigatedSpine.lean` (~`:59`) — delete the `neg_2var_vec_ea (EANegationClosure.lean:722, Prop 4.2)`
+- [x] `NavigatedSpine.lean` (~`:59`) — delete the `neg_2var_vec_ea (EANegationClosure.lean:722, Prop 4.2)`
       bullet from the "Consumed-asset signatures confirmed present (do NOT rebuild)" list.
-- [ ] `NavigatedSpine.lean` (~`:132-136`) — rewrite the whole "already had the two hardest
+- [x] `NavigatedSpine.lean` (~`:132-136`) — rewrite the whole "already had the two hardest
       halves landed" claim, not merely its negation bullet: name only what is genuinely landed
       (`VVecEA2.disj_holds`, `VVecEA2.conj_holds_vvecEA2`), state that the negation half is
       open, and point at `Prop42Vacuity`.
-- [ ] `NavigatedSpine.lean` (~`:218`, inside `reflatten_prop43`'s docstring) — rewrite "the
+- [x] `NavigatedSpine.lean` (~`:218`, inside `reflatten_prop43`'s docstring) — rewrite "the
       negation case rides Prop 4.2 (`reflatten_neg_step`)" so it states that `reflatten_prop43`
       covers only the ∨-collapse and the negation case is not supplied, citing `Prop42Vacuity`
       / `Prop42Contentful`. Retain `reflatten_prop43` itself; it is unaffected by the deletion.
-- [ ] `NfMultiAnchorBridge.lean` (~`:102-103`) — put the "re-exported by ...
+- [x] `NfMultiAnchorBridge.lean` (~`:102-103`) — put the "re-exported by ...
       `NavigatedSpine.reflatten_neg_step`" clause into the past tense. The NOTE's purpose
       (making the guard root-reachable) must survive in substance; only the present-tense
-      re-export claim is now false.
-- [ ] `NfMultiAnchorBridge.lean` (~`:111-114`) — drop "`/Prop 4.2`" from the EANegationClosure
+      re-export claim is now false. *(deviation: altered — this site retains both symbol names as
+      explicit historical referents ("the now-deleted `neg_2var_vec_ea` /
+      `NavigatedSpine.reflatten_neg_step` pair"), following the task list and the research
+      report's suggested shape. The phase's "ZERO hits in these five files" grep bullet is
+      therefore satisfied only in the sense that matters — no surviving mention presents either
+      symbol as a landed asset — not as a literal zero-hit count.)*
+- [x] `NfMultiAnchorBridge.lean` (~`:111-114`) — drop "`/Prop 4.2`" from the EANegationClosure
       import NOTE's asset list. Do NOT remove the import: the edge still transitively supplies
       `PriorINF` (`HasAttainedINF` / `prior_hasAttainedINF`).
-- [ ] `AggregateHookDischarge.lean` (~`:55`) — keep the paragraph's verdict and reasoning (it
+- [x] `AggregateHookDischarge.lean` (~`:55`) — keep the paragraph's verdict and reasoning (it
       explains why the k=0 aggregate used the depth-1 fold engine); replace the
       `neg_2var_vec_ea, EANegationClosure.lean:722` reference with a symbol-name pointer to
       `Prop42Vacuity`.
-- [ ] `SubBracket2V.lean` (~`:29`) — in the "Cross-references (external combinators, not in
+- [x] `SubBracket2V.lean` (~`:29`) — in the "Cross-references (external combinators, not in
       this file)" list, either drop the Lemma 3.2(2) row or repoint it at `Prop42Contentful`
       as the *unbuilt* target. Leave the Lemma 3.4 / `VVecEA2.conjStruct` row alone.
-- [ ] Anchor policy: replace every `file.lean:NNN` anchor pointing at the deleted pair with a
+- [x] Anchor policy: replace every `file.lean:NNN` anchor pointing at the deleted pair with a
       symbol-name reference. Compute no new line numbers anywhere.
-- [ ] Write no task number into any `FormalSystem/` file (C9 gate).
-- [ ] Touch only the five files listed below.
+- [x] Write no task number into any `FormalSystem/` file (C9 gate).
+- [x] Touch only the five files listed below.
 
 **Timing**: 1 hour
 
