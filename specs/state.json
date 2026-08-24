@@ -512,8 +512,7 @@
       "topic": "formula-refactor",
       "file_scope": [
         "README.md",
-        "ROADMAP.md",
-        "FormalSystem/",
+        "specs/ROADMAP.md",
         "FormalSystem/",
         "docs/"
       ]

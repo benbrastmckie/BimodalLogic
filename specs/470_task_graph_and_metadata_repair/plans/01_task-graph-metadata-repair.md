@@ -315,26 +315,26 @@ jq empty specs/state.json && bash .claude/scripts/generate-todo.sh
 
 ---
 
-### Phase 4: Fix task 177's file_scope (item G) [NOT STARTED]
+### Phase 4: Fix task 177's file_scope (item G) [COMPLETED]
 
 **Goal**: 177's `file_scope` names only paths that resolve on disk, with no duplicate entry.
 
 **Tasks**:
-- [ ] Confirm the current value:
+- [x] Confirm the current value:
       `jq -c '.active_projects[] | select(.project_number==177) | .file_scope' specs/state.json`
-      expected `["README.md","ROADMAP.md","FormalSystem/","FormalSystem/","docs/"]`.
-- [ ] Confirm the premise on disk: `ROADMAP.md` does not exist at the repo root; `specs/ROADMAP.md`
-      does. Run `ls ROADMAP.md specs/ROADMAP.md` and read both results.
-- [ ] Set `file_scope` to `["README.md", "specs/ROADMAP.md", "FormalSystem/", "docs/"]` — the root
-      `ROADMAP.md` corrected to `specs/ROADMAP.md`, and the duplicate `FormalSystem/` removed.
-- [ ] `file_scope` is a plain array replacement (it is descriptive/anticipated metadata, never
+      expected `["README.md","ROADMAP.md","FormalSystem/","FormalSystem/","docs/"]`. *(completed: confirmed matches expected)*
+- [x] Confirm the premise on disk: `ROADMAP.md` does not exist at the repo root; `specs/ROADMAP.md`
+      does. Run `ls ROADMAP.md specs/ROADMAP.md` and read both results. *(completed: confirmed)*
+- [x] Set `file_scope` to `["README.md", "specs/ROADMAP.md", "FormalSystem/", "docs/"]` — the root
+      `ROADMAP.md` corrected to `specs/ROADMAP.md`, and the duplicate `FormalSystem/` removed. *(completed)*
+- [x] `file_scope` is a plain array replacement (it is descriptive/anticipated metadata, never
       mutated by status-sync), so a whole-array assignment on this one field is correct here. This
       is **not** the `artifacts` array — the append-only rule in `state-management.md` applies to
-      `artifacts`/`memory_candidates`, not to `file_scope`.
-- [ ] **Note for task 468**: 468 Stage 3 also names this repair as part of dividing 177. 468 is
+      `artifacts`/`memory_candidates`, not to `file_scope`. *(completed)*
+- [x] **Note for task 468**: 468 Stage 3 also names this repair as part of dividing 177. 468 is
       `not_started`, so applying it here is correct. When 468 runs it should find this already
       done and say so, rather than re-applying. Record this in the implementation summary so the
-      note is discoverable.
+      note is discoverable. *(completed: recorded for summary)*
 
 **Timing**: 15 minutes
 
