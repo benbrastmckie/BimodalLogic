@@ -101,7 +101,7 @@
     {
       "project_number": 423,
       "project_name": "land_set_based_consequence_layer_setderivable_and_per_class_setsemanticconsequence",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Create FormalSystem/Metalogic/SetConsequence.lean containing the finitary set-derivability relation SetDerivable, the four per-class SetSemanticConsequence* predicates, the basic lemmas, and the strong-completeness / compactness / model-existence statements. Then import it from FormalSystem/Metalogic/StrongCompleteness.lean.\n\nThis is vocabulary only. It proves no compactness result and closes no existing sorry. It is self-contained and unblocks two downstream branches (the Discrete non-compactness witness, and Dense strong completeness).\n\nGoverning design document: specs/archive/361_strong_completeness_architecture_and_weak_terminus_gap_analysis/design/01_set-consequence-layer.md — transcribe section 2 (SetDerivable), section 3 (the four per-class definitions), section 4 (basic lemmas), section 5 (StrongCompletenessDense, CompactDense, strongCompletenessDense_of_compact, SatisfiableDenseSet, ModelExistenceDense). Section 4's \"Implementer notes\" name three elaboration risks; section 7 records what is deliberately out of scope.\n\nAcceptance (from design/01 section 6, all five required): zero sorries and zero vacuous placeholders; grep -c 'import FormalSystem.Metalogic.BXCanonical' on the new module returns 0; each SetSemanticConsequence* binder list is byte-comparable to its `FormalSystem/Semantics/Validity.lean` source (`valid`, `ValidDense`, `ValidDiscrete`, `ValidDedekindDense` — currently near :94, :206, :222, :310 respectively, hints only, re-verify by symbol before use) with only the premise hypothesis inserted, and uses `Type` not `Type*` (the \"deliberate\" doc-comment in the same file, currently near :92, records this); #print axioms on every new declaration reports no sorryAx; StrongCompleteness.lean imports the module and still builds.",
       "topic": "strong_completeness",
@@ -114,9 +114,14 @@
         "FormalSystem/Metalogic/StrongCompleteness.lean"
       ],
       "created": "2026-07-29T06:38:08Z",
-      "last_updated": "2026-08-24T22:26:52Z",
+      "last_updated": "2026-08-24T23:27:09Z",
       "session_id": "sess_1787608533_153fad_423",
       "artifacts": [
+        {
+          "type": "summary",
+          "path": "FormalSystem/Metalogic/SetConsequence.lean",
+          "summary": "New module: SetDerivable, four per-class SetSemanticConsequence* predicates, ten basic lemmas, and four Dense strong-completeness/compactness/model-existence vocabulary definitions (19 declarations, zero sorries)."
+        },
         {
           "type": "plan",
           "path": "specs/423_land_set_based_consequence_layer_setderivable_and_per_class_setsemanticconsequence/plans/01_set-consequence-layer.md",
@@ -703,7 +708,7 @@
     {
       "project_number": 426,
       "project_name": "settle_anchor_row_countermodel_or_nontermination_for_g_p_box_g_p",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Settle whether the tableau engine can positively refute (G p) -> square (G p), or whether that branch provably never saturates. Context: the cross-world temporal-copy unsoundness in boxNeg/diamondPos is fixed and the engine is sound, but the fix moved this formula from a WRONG answer to NO answer rather than to the intended positive refutation. Measured post-fix: decide returns .fuelExhausted (not .invalid), getCountermodel?.isSome = false, and buildTableau returns none at fuel 30, 60, 400 and 1000 -- so the fuel ceiling is not bracketed from above and there is no evidence a larger budget helps. Pre-fix the same formula returned .extractionFailed, which under this codebase R7 semantics asserts VALIDITY of an invalid formula; the current .fuelExhausted is the only constructor isUndecided recognises, so the present state is honest-but-incomplete rather than wrong. Two hypotheses to discriminate: (a) budget -- the branch does saturate but needs more fuel, in which case find and record the ceiling; (b) non-termination -- the branch never saturates, in which case this is a termination question for FormalSystem/Metalogic/Decidability/Verified/Termination/Fuel.lean, not a budget one, and the honest deliverable is a proof or argument that no finite fuel suffices. Discriminating between (a) and (b) is the primary deliverable; producing the countermodel is the secondary one and only applies under (a). The corpus already pins this outcome directly: CrossWorldPropagationProbe row F asserts the decide constructor and builds green at (false, false, true, false, true) -- update that row if the verdict moves. Do NOT reintroduce any temporal-copy propagation block into boxNeg/diamondPos to make the branch close; that is the exact unsoundness that was removed, and reverting it would restore a false claim of validity. Note the related but SEPARATE inheritance also recorded for the parent task: the decidable-branch-gate family (boxAnchoredCheck, boxGridCheck, regionGate, regionLabelCheck, rayUpOk/rayDnOk) now computes false on every multi-world branch; that is the truth-lemma side-condition problem and is not this task.",
       "effort": "4-8 hours",
@@ -717,7 +722,7 @@
         "Tests/BimodalTest/CrossWorldPropagationProbe.lean"
       ],
       "created": "2026-07-29T09:20:00Z",
-      "last_updated": "2026-08-24T22:26:25Z",
+      "last_updated": "2026-08-24T23:26:42Z",
       "artifacts": [
         {
           "type": "plan",
@@ -728,6 +733,11 @@
           "type": "report",
           "path": "specs/426_settle_anchor_row_countermodel_or_nontermination_for_g_p_box_g_p/reports/01_settle-anchor-row-verdict.md",
           "summary": "Discriminates (a) budget from (b) non-termination for the anchor formula: (a) confirmed, ceiling 25; F(G p) is the genuinely non-terminating neighbour and is diagnosed as an unfulfilled eventuality at a blocked time, not a fuel bound."
+        },
+        {
+          "type": "summary",
+          "path": "specs/426_settle_anchor_row_countermodel_or_nontermination_for_g_p_box_g_p/reports/02_measured-constants.md",
+          "summary": "Independently reproduced measurement table for the anchor formula: verdict .invalid with countermodel, fuel ceiling 25 bracketed from both sides, sub-ceiling none attributed to expandBranchWithFuel exhaustion, F(G p) stationarity and residue identity, rows A and C constructor tuples, plus the exact lake env lean sources behind every figure."
         },
         {
           "type": "research",
@@ -963,7 +973,7 @@
     {
       "project_number": 451,
       "project_name": "consolidate_boneyard_archives",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "description": "CONSOLIDATE THE TWO BONEYARDS into a single archive tree under FormalSystem/Boneyard/, preserving git history via git mv, and add the missing infrastructure that keeps an UNCOMPILED archive honest.\n\n=== 1. THE SITUATION (verified 2026-08-17) ===\nThe repository has two archive trees:\n  FormalSystem/Boneyard/                                  93 .lean, 59,019 lines\n  FormalSystem/Metalogic/WeakCanonical/Kamp/Boneyard/     63 .lean, 29,256 lines\nTotal archived: 156 files; live tree is 373 of 529.\n\nThe second is nested five levels deep and is easy to miss. Both READMEs already carry a \"There Are TWO Boneyards\" warning because past repository counts were wrong for exactly that reason -- a find/grep filter naming only the top-level archive silently counts ~29k archived lines as live code.\n\nNeither archive is excluded in lakefile.lean. Exclusion works two ways: (i) nothing live imports either tree, so they are outside the import closure and never compiled; (ii) tooling filters on the NAME glob `-not -path '*/Boneyard/*'` (scripts/check-module-invariants.sh:63, scripts/readme-lint.sh at :50,:70,:102,:133,:154,:161,:165). Because the filter is by name, it already covers both trees -- so consolidation does NOT change the build. The case for it is navigability, documentation discipline, and eliminating a class of counting bug, not build correctness.\n\n=== 2. PRE-VERIFIED SAFETY FACTS (do not re-litigate; re-confirm cheaply) ===\n- ZERO live importers: `grep -rn \"^import .*Boneyard\" FormalSystem/ Tests/ --include=*.lean | grep -v \"/Boneyard/\"` is EMPTY. Also empty for any non-import textual reference to Kamp.Boneyard or Kamp/Boneyard from a live file. The top-level Boneyard likewise has no live importers.\n- OUTBOUND imports are unaffected by the move. Kamp Boneyard files import three LIVE modules (FormalSystem.Metalogic.WeakCanonical.Kamp.EANegation, .EANegationClosure, .ESigmaCapture). Import statements name the IMPORTED module, which is not moving, so these keep resolving.\n- NAMESPACES are not path-derived. The moved files declare `namespace FormalSystem.Metalogic.WeakCanonical`, `...Kamp`, `...Separation`, `RenderGate` -- none tied to the Boneyard path segment. No namespace edits are required.\n\n=== 3. THE ONE REAL HAZARD ===\n52 INTRA-ARCHIVE import lines inside the Kamp Boneyard name modules under `FormalSystem.Metalogic.WeakCanonical.Kamp.Boneyard.*` (e.g. Separation/DualEliminations.lean:16-18, Separation/Hierarchy/HierarchyDefs.lean:16-17, ArityReduction.lean:1). Every one of these breaks when the files move, because the MOVED files' module names change.\n\nBecause archived files are never compiled, a broken import here is SILENT -- no build, no test, and no existing check catches it. That is the defect this task must not introduce, and the reason deliverable 4 exists. (The top-level Boneyard has 47 analogous self-imports; those files are not moving and are unaffected, but the new checker must cover them too.)\n\n=== 4. DELIVERABLES ===\n(a) MOVE, with git mv exclusively -- never delete-and-re-add, never cp. History preservation is a hard requirement, not a preference: the whole point of a scrapyard is that `git log --follow` still explains why each file died. Target: FormalSystem/Boneyard/KampWeakCanonical/. PRESERVE the existing internal structure rather than flattening: ZetaProbes/, NfMultiAnchorBridgeRetired/, Separation/ (with Separation/DedekindZ/ and Separation/Hierarchy/), ExpressiveCompleteness/.\n(b) RECONCILE with the existing FormalSystem/Boneyard/KampBypassArchive/ (13 files: KampBypass*.lean, KampForward, KampMutualInduction, NfCharFormula, PriorComposition{,_old}, GeneralExistPart). Kamp material has been migrated to the top-level archive before, so the result must be ONE coherent Kamp region, not two sibling directories that each look authoritative. Either nest both under a Kamp umbrella or state in writing why they stay separate.\n(c) REWRITE the 52 intra-archive import lines to the new module paths. Mechanical, but every one must be verified to resolve -- see (d).\n(d) NEW CHECKER: a script (or a new check group in scripts/check-module-invariants.sh) asserting that EVERY import line in every Boneyard file names a module that exists on disk -- whether it points at live code or at another archived file. This is the missing infrastructure. Uncompiled code has no compiler to catch rot, so the archive needs its own resolution check or it silently decays into unrevivable rubble. Wire it into the invariant script so it runs with everything else.\n(e) UPDATE the B0 self-test (scripts/check-module-invariants.sh:70-74) from \"exactly 2 directories\" to 1. B0 is a PASS-asserting self-test and WILL fail loudly the moment anything moves -- that is correct behavior, not breakage. Also re-check the :20-22 comment block, whose two-Boneyard warning becomes obsolete.\n(f) READMEs. Merge the two contradictory \"There Are TWO Boneyards\" sections into one accurate statement. NOTE THE DRIFT: FormalSystem/Boneyard/README.md records the Kamp archive as 62 files / 27,394 lines while the Kamp README records 63 / 29,256 and the filesystem agrees with the latter; the top-level README also states 59,010 lines for itself against an actual 59,019. Stale hand-maintained counts are part of what this task retires -- prefer counts the invariant script emits (C7) over numbers re-typed into prose.\n(g) PER-APPROACH DOCUMENTATION, which is the user-facing point of the exercise. The top-level archive already has the right convention: one subdirectory per abandoned approach, each with a README explaining what it was, why it died, and what would have to change for it to be worth reviving (see ClosedGuardLegacy/, DenseChronicle/, UltrafilterFrame/, RoundRobinChain/, NonBurgessSeed/, StageInductionGapAnalysis/). The Kamp archive is largely flat under a single README. Bring it up to that convention. Every README must record the file's ORIGINAL PATH so provenance survives the move even for a reader who never runs git log.\n\n=== 5. NON-GOALS ===\n- Do NOT revive, repair, or compile any archived code. Archived files stay uncompiled and outside the import closure.\n- Do NOT modify any live module. If a live module turns out to need a change, that is a separate task -- stop and report.\n- Do NOT delete anything. This is a consolidation, not a purge. Deciding what deserves deletion is a different judgment call and is explicitly out of scope.\n- Do NOT add the archive to lakefile.lean in any form.\n\n=== 6. VERIFICATION CONTRACT ===\n- `git log --follow` resolves through the move for a sampled file from each moved subdirectory. If it does not, the move was done wrong -- redo it with git mv.\n- `git status` shows renames (R), not delete+add pairs, for all 63 files.\n- lake build exits 0 and its output is UNCHANGED from before the move -- nothing live imports either archive, so a build difference means something was moved that should not have been.\n- Repository live-sorry count stays at exactly 1 (countermodel_discrete, WeakCanonical/Transfer.lean), via scripts/check-module-invariants.sh, never naive grep.\n- check-module-invariants.sh: B0 green at 1 directory; C7's live inventory unchanged (373 live .lean) since only archived files move.\n- The new checker (d) is green, including the 47 pre-existing top-level self-imports.\n- scripts/readme-lint.sh still skips the consolidated tree correctly (its six *Boneyard* guards match by name, so they should, but verify rather than assume).\n- PRE-EXISTING RED, inherited not caused: C6 (SoundnessLemmas/CoValidity.lean:104 `simp` made no progress), C9 (task-number citation in WeakCanonical/PriorExpressivenessDense.lean:185), and `lake build BimodalTest` (#guard_msgs drift in RegionGateProbe, TableauConformance, BoxSpreadProbe). None are in scope here; do not attempt to fix them, but confirm they are no WORSE afterward.",
       "effort": "medium",
@@ -981,10 +991,15 @@
           "type": "report",
           "path": "specs/451_consolidate_boneyard_archives/reports/01_consolidate-boneyard-archives.md",
           "summary": ""
+        },
+        {
+          "type": "summary",
+          "path": "specs/451_consolidate_boneyard_archives/summaries/01_consolidate-boneyard-archives-summary.md",
+          "summary": "Implementation summary: one archive tree, C11 shipped enforced, 11 recorded plan deviations, and the four out-of-scope items reported at completion."
         }
       ],
       "created": "2026-08-17T19:42:46Z",
-      "last_updated": "2026-08-24T22:26:31Z",
+      "last_updated": "2026-08-24T23:26:51Z",
       "topic": "repo-hygiene",
       "session_id": "sess_1787608533_153fad_451",
       "next_artifact_number": 1,
@@ -1113,7 +1128,7 @@
     {
       "project_number": 469,
       "project_name": "eliminate_the_bridge_filtration_into_intpresentation",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "topic": "decidability",
       "priority": "high",
@@ -1132,7 +1147,7 @@
         470
       ],
       "created": "2026-08-24T00:00:00Z",
-      "last_updated": "2026-08-24T22:26:17Z",
+      "last_updated": "2026-08-24T23:26:32Z",
       "session_id": "sess_1787608533_153fad_469",
       "artifacts": [
         {
@@ -1144,6 +1159,11 @@
           "type": "report",
           "path": "specs/469_eliminate_the_bridge_filtration_into_intpresentation/reports/01_eliminate-the-bridge-verdict.md",
           "summary": ""
+        },
+        {
+          "type": "summary",
+          "path": "specs/469_eliminate_the_bridge_filtration_into_intpresentation/summaries/01_capture-verdict-and-followups-summary.md",
+          "summary": "Implementation summary: five findings captured into docstrings across 10 files (283 added lines, zero deletions), plus three separated follow-up tasks."
         }
       ]
     },
@@ -1210,7 +1230,7 @@
     {
       "project_number": 473,
       "project_name": "delete_quarantined_vacuous_kamp_pair",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "topic": "code-quality",
       "priority": "medium",
@@ -1229,7 +1249,7 @@
         470
       ],
       "created": "2026-08-24T00:00:00Z",
-      "last_updated": "2026-08-24T22:26:38Z",
+      "last_updated": "2026-08-24T23:27:00Z",
       "session_id": "sess_1787608533_153fad_473",
       "artifacts": [
         {
@@ -1241,6 +1261,11 @@
           "type": "report",
           "path": "specs/473_delete_quarantined_vacuous_kamp_pair/reports/01_delete-quarantined-vacuous-kamp-pair.md",
           "summary": "Confirms the zero-consumer claim for neg_2var_vec_ea / reflatten_neg_step, gives exact deletion line ranges, a 14-site prose sweep inventory, verification gates, and a 3-phase decomposition."
+        },
+        {
+          "type": "summary",
+          "path": "specs/473_delete_quarantined_vacuous_kamp_pair/summaries/02_delete-vacuous-kamp-pair-summary.md",
+          "summary": "Implementation summary: two quarantined vacuous Kamp Prop 4.2 theorems deleted, nineteen prose sites swept, full gate green with C2/C3 unmoved."
         }
       ]
     },

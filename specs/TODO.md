@@ -11,17 +11,16 @@ next_project_number: 477
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,193,257,298,413,421,423,424,426,434,451,461,469,472,473,474,475 | -- | automation, code-quality, completeness, ... |
-| 2 | 125,178,231,282,296,422,425,433,462,468,476 | 193,298,421,423,426,434,451,461,469,475 | algebraic-representation, dataset-enhancement, decidability, ... |
-| 3 | 169,219,455,463 | 231,422,462,468 | code-quality, dataset-enhancement, decidability, ... |
-| 4 | 95,362,464 | 169,424,463 | completeness, decidability, strong_completeness |
-| 5 | 465 | 464 | decidability |
-| 6 | 428 | 433,465 | decidability |
-| 7 | 429 | 428 | decidability |
-| 8 | 410 | 429 | decidability |
-| 9 | 411 | 410 | decidability |
-| 10 | 430 | 411 | decidability |
-| 11 | 177,412 | 193,426,430 | decidability, formula-refactor |
+| 1 | 127,128,193,257,298,413,421,424,425,434,461,462,468,472,474,475 | -- | automation, code-quality, completeness, ... |
+| 2 | 125,178,231,282,296,422,433,455,463,476 | 193,298,421,434,461,462,468,475 | algebraic-representation, code-quality, dataset-enhancement, ... |
+| 3 | 169,219,464 | 231,422,463 | dataset-enhancement, decidability, strong_completeness |
+| 4 | 95,362,465 | 169,424,464 | completeness, decidability, strong_completeness |
+| 5 | 428 | 433,465 | decidability |
+| 6 | 429 | 428 | decidability |
+| 7 | 410 | 429 | decidability |
+| 8 | 411 | 410 | decidability |
+| 9 | 430 | 411 | decidability |
+| 10 | 177,412 | 193,430 | decidability, formula-refactor |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -36,13 +35,11 @@ next_project_number: 477
 ### Code Quality
 
 472 [NOT STARTED] — THE IMMEDIATE, UNGATED DOCUMENTATION-CORRECTION PASS. This is the
-473 [IMPLEMENTING] — DELETE THE QUARANTINED VACUOUS KAMP PAIR, and keep the record tha
 455 [NOT STARTED] — BACKLOG REALIGNMENT: bring specs/ROADMAP.md and every remaining a
 
 ### Completeness
 
 413 [NOT STARTED] — Formalize the TM+ over TM conservativity bridge in Lean 4 (paper 
-426 [IMPLEMENTING] — Settle whether the tableau engine can positively refute (G p) -> 
 95 [NOT STARTED] — Verify and record the final axiom/sorry status of the headline me
 
 ### Dataset Enhancement
@@ -64,13 +61,12 @@ next_project_number: 477
           └─ 411 [NOT STARTED] — Track B part 2 for the TM tableau decidability program (parent: t
             └─ 430 [NOT STARTED] — The semantic lift and the Track A assembly. Owns obstruction O4 o
               └─ 412 [NOT STARTED] — Track B finish for the TM tableau decidability program (parent: t
-469 [IMPLEMENTING] — SCOPE AND PRICE THE BI-LASSO ROUTE TO DECIDABILITY OF `FrameClass
-  └─ 462 [NOT STARTED] — Land the engine-level assembly that lets `MintPaysForTimeFixed` b
-    └─ 463 [NOT STARTED] — Decide `PostBlockingSettlesRun fc (mintAwareFuelAt U.card Tmax mi
-      └─ 464 [NOT STARTED] — Design and land `gapPotential`, the density coordinate of the ter
-        └─ 465 [NOT STARTED] — Complete the terminus restatement family at the repaired residual
-          └─ 428 [BLOCKED] — Engine totality at a quantified branch budget. Owns obstruction O (see above)
-  └─ 468 [NOT STARTED] — PROGRAMME REALIGNMENT FROM A VERIFIED PROOF-STATE AUDIT: restruct
+462 [NOT STARTED] — Land the engine-level assembly that lets `MintPaysForTimeFixed` b
+  └─ 463 [NOT STARTED] — Decide `PostBlockingSettlesRun fc (mintAwareFuelAt U.card Tmax mi
+    └─ 464 [NOT STARTED] — Design and land `gapPotential`, the density coordinate of the ter
+      └─ 465 [NOT STARTED] — Complete the terminus restatement family at the repaired residual
+        └─ 428 [BLOCKED] — Engine totality at a quantified branch budget. Owns obstruction O (see above)
+468 [NOT STARTED] — PROGRAMME REALIGNMENT FROM A VERIFIED PROOF-STATE AUDIT: restruct
 474 [NOT STARTED] — WIRE THE BILASSO DECISION LAYER INTO THE LIVE TREE.
 476 [NOT STARTED] — THE BOX-FAITHFUL SMALL-MODEL THEOREM.
 
@@ -88,10 +84,6 @@ next_project_number: 477
 
 461 [BLOCKED] — SCOPE 8 acquisition gap identified by task 457's research and re-
 
-### Repo Hygiene
-
-451 [IMPLEMENTING] — CONSOLIDATE THE TWO BONEYARDS into a single archive tree under Fo
-
 ### Semantics
 
 475 [NOT STARTED] — CARRIER NORMALIZATION: THE SUCCESSOR-ARCHIMEDEAN TRANSFER.
@@ -102,10 +94,9 @@ next_project_number: 477
   └─ 422 [NOT STARTED] — Construct the discrete-case analogue of the existing dense chroni
     └─ 169 [NOT STARTED] — Base (FrameClass.Base / general) WEAK completeness green: make th
       └─ 362 [NOT STARTED] — Implement the completeness capstone under the SETTLED TERMINOLOGY
-423 [IMPLEMENTING] — Create FormalSystem/Metalogic/SetConsequence.lean containing the 
-  └─ 425 [NOT STARTED] — Convert the informal argument at FormalSystem/Metalogic/StrongCom
 424 [IMPLEMENTING] — RE-ISSUED 2026-08-18 (description rewrite only; status remains `n
   └─ 362 [NOT STARTED] — Implement the completeness capstone under the SETTLED TERMINOLOGY (see above)
+425 [NOT STARTED] — Convert the informal argument at FormalSystem/Metalogic/StrongCom
 
 ## Tasks
 
@@ -399,12 +390,13 @@ of exactly that failure mode. Do not gate this on any research result.
 
 ### 473. Delete quarantined vacuous kamp pair
 - **Effort**: low
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: code-quality
 - **Dependencies**: Task 470
 - **Plan**: [473_delete_quarantined_vacuous_kamp_pair/plans/02_delete-vacuous-kamp-pair.md]
 - **Research**: [473_delete_quarantined_vacuous_kamp_pair/reports/01_delete-quarantined-vacuous-kamp-pair.md]
+- **Summary**: [473_delete_quarantined_vacuous_kamp_pair/summaries/02_delete-vacuous-kamp-pair-summary.md]
 
 **Description**: DELETE THE QUARANTINED VACUOUS KAMP PAIR, and keep the record that explains why it was vacuous.
 
@@ -766,12 +758,13 @@ Grounding: specs/reviews/review-2026-08-24.md, Addendum 3.
 
 ### 469. Eliminate the bridge filtration into intpresentation
 - **Effort**: medium
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 470
 - **Plan**: [469_eliminate_the_bridge_filtration_into_intpresentation/plans/01_capture-verdict-and-followups.md]
 - **Research**: [469_eliminate_the_bridge_filtration_into_intpresentation/reports/01_eliminate-the-bridge-verdict.md]
+- **Summary**: [469_eliminate_the_bridge_filtration_into_intpresentation/summaries/01_capture-verdict-and-followups-summary.md]
 
 **Description**: SCOPE AND PRICE THE BI-LASSO ROUTE TO DECIDABILITY OF `FrameClass.Discrete`, AND COMPARE IT
 AGAINST THE TABLEAU ROUTE BEFORE FURTHER TABLEAU INVESTMENT.
@@ -1599,12 +1592,13 @@ Deliver a survey artifact under this task's reports/ directory containing:
 
 ### 451. Consolidate boneyard archives
 - **Effort**: medium
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: repo-hygiene
 - **Dependencies**: Task 470
 - **Plan**: [451_consolidate_boneyard_archives/plans/01_consolidate-boneyard-archives.md]
 - **Research**: [451_consolidate_boneyard_archives/reports/01_consolidate-boneyard-archives.md]
+- **Summary**: [451_consolidate_boneyard_archives/summaries/01_consolidate-boneyard-archives-summary.md]
 
 **Description**: CONSOLIDATE THE TWO BONEYARDS into a single archive tree under FormalSystem/Boneyard/, preserving git history via git mv, and add the missing infrastructure that keeps an UNCOMPILED archive honest.
 
@@ -1805,7 +1799,7 @@ RESUME SEQUENCE: `/research 428` first (discharge the two uncertain claims above
 
 ### 426. Settle anchor row countermodel or nontermination for g p box g p
 - **Effort**: 4-8 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: Task 470
@@ -1813,6 +1807,7 @@ RESUME SEQUENCE: `/research 428` first (discharge the two uncertain claims above
 - **Research**:
   - [426_settle_anchor_row_countermodel_or_nontermination_for_g_p_box_g_p/reports/01_settle-anchor-row-verdict.md]
   - [archive/418_fix_tableau_engine_crossworld_temporalcopy_unsoundness_in_boxnegdiamondpos/artifacts/after-verdicts.md]
+- **Summary**: [426_settle_anchor_row_countermodel_or_nontermination_for_g_p_box_g_p/reports/02_measured-constants.md]
 
 **Description**: Settle whether the tableau engine can positively refute (G p) -> square (G p), or whether that branch provably never saturates. Context: the cross-world temporal-copy unsoundness in boxNeg/diamondPos is fixed and the engine is sound, but the fix moved this formula from a WRONG answer to NO answer rather than to the intended positive refutation. Measured post-fix: decide returns .fuelExhausted (not .invalid), getCountermodel?.isSome = false, and buildTableau returns none at fuel 30, 60, 400 and 1000 -- so the fuel ceiling is not bracketed from above and there is no evidence a larger budget helps. Pre-fix the same formula returned .extractionFailed, which under this codebase R7 semantics asserts VALIDITY of an invalid formula; the current .fuelExhausted is the only constructor isUndecided recognises, so the present state is honest-but-incomplete rather than wrong. Two hypotheses to discriminate: (a) budget -- the branch does saturate but needs more fuel, in which case find and record the ceiling; (b) non-termination -- the branch never saturates, in which case this is a termination question for FormalSystem/Metalogic/Decidability/Verified/Termination/Fuel.lean, not a budget one, and the honest deliverable is a proof or argument that no finite fuel suffices. Discriminating between (a) and (b) is the primary deliverable; producing the countermodel is the secondary one and only applies under (a). The corpus already pins this outcome directly: CrossWorldPropagationProbe row F asserts the decide constructor and builds green at (false, false, true, false, true) -- update that row if the verdict moves. Do NOT reintroduce any temporal-copy propagation block into boxNeg/diamondPos to make the branch close; that is the exact unsoundness that was removed, and reverting it would restore a false claim of validity. Note the related but SEPARATE inheritance also recorded for the parent task: the decidable-branch-gate family (boxAnchoredCheck, boxGridCheck, regionGate, regionLabelCheck, rayUpOk/rayDnOk) now computes false on every multi-world branch; that is the truth-lemma side-condition problem and is not this task.
 
@@ -1900,10 +1895,11 @@ Acceptance: both directions sorry-free; #print axioms clean on each; lake build 
 
 ### 423. Land set based consequence layer setderivable and per class setsemanticconsequence
 - **Effort**: high
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: strong_completeness
 - **Dependencies**: Task 470
+- **Summary**: [FormalSystem/Metalogic/SetConsequence.lean]
 - **Plan**: [423_land_set_based_consequence_layer_setderivable_and_per_class_setsemanticconsequence/plans/01_set-consequence-layer.md]
 - **Research**: [423_land_set_based_consequence_layer_setderivable_and_per_class_setsemanticconsequence/reports/01_set-consequence-layer-research.md]
 
