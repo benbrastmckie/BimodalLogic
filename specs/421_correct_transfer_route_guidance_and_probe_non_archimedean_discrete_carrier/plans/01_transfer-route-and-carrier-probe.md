@@ -1,7 +1,7 @@
 # Implementation Plan: Task #421
 
 - **Task**: 421 - Correct transfer route guidance and probe non-Archimedean discrete carrier
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 2 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/421_correct_transfer_route_guidance_and_probe_non_archimedean_discrete_carrier/reports/01_transfer-route-and-discrete-carrier.md`
@@ -106,15 +106,15 @@ Phases within the same wave can execute in parallel. Phases 1/2 (Transfer.lean) 
 
 ---
 
-### Phase 1: Replace the refuted-route comment in Transfer.lean [NOT STARTED]
+### Phase 1: Replace the refuted-route comment in Transfer.lean [COMPLETED]
 
 **Goal**: The three-line route-guidance comment is replaced by the `ℤ ×ₗ ℤ` refutation of route (i)
 plus a pointer to route (ii), with nothing else in the file changed.
 
 **Tasks**:
-- [ ] Locate the block by its opening text `-- Two candidate routes: (i) a Base-MCS` (research
+- [x] Locate the block by its opening text `-- Two candidate routes: (i) a Base-MCS` (research
       found it at `:1081-1083`; treat the number as a hint, the text as the anchor).
-- [ ] Replace exactly those three lines with the verified text below. Do NOT touch the four
+- [x] Replace exactly those three lines with the verified text below. Do NOT touch the four
       `-- SORRY: open obligation …` lines immediately above, and do NOT touch the `sorry`
       immediately below.
 
@@ -141,7 +141,7 @@ plus a pointer to route (ii), with nothing else in the file changed.
   -- parametric bundle-flow machinery elaborates at that carrier.
 ```
 
-- [ ] Confirm the indentation matches the surrounding tactic-block comments (two spaces).
+- [x] Confirm the indentation matches the surrounding tactic-block comments (two spaces).
 
 **Timing**: 0.25 hours
 

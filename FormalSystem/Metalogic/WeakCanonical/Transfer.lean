@@ -1078,9 +1078,26 @@ theorem countermodel_discrete (A : Set Formula)
   -- limitDomSubtype_isSuccArchimedean → succ_cofinal), which was itself sorried
   -- and is now archived to Boneyard/DeadChronicleGapElimination/.
   -- `completeness_discrete` uses countermodel_discrete_reynolds_v2 instead and is clean.
-  -- Two candidate routes: (i) a Base-MCS → Discrete-MCS transfer lemma that lets
-  -- countermodel_discrete_reynolds_v2 apply, or (ii) a Henkin-style discrete canonical
-  -- model built directly from a Base-MCS. See the section docstring above.
+  -- Route (i) is REFUTED and MUST NOT be re-attempted. It proposed a Base-MCS → Discrete-MCS
+  -- transfer lemma so that countermodel_discrete_reynolds_v2 could be applied. The witness that
+  -- kills it: D := ℤ ×ₗ ℤ (lexicographic, first coordinate dominant — an admissible Base carrier,
+  -- since AddCommGroup/LinearOrder/IsOrderedAddMonoid/Nontrivial all resolve there), with `p`
+  -- true exactly at the points ≥ (1,0). Every point (a,b) has the immediate successor (a,b+1), so
+  -- `nextTop` holds everywhere and `□ nextTop` holds. `Gp` holds exactly at points ≥ (1,0), so
+  -- `Gp → p` holds everywhere and `G(Gp → p)` holds at (0,0). `FGp` holds at (0,0), witness
+  -- (1,0). But `Gp` FAILS at (0,0), witness (0,1) — which is > (0,0) yet ≱ (1,0). Antecedent
+  -- true, consequent false: `Axiom.z1 p` is false at (0,0). Since `Axiom.z1` is Discrete-only
+  -- (`Axiom.minFrameClass`, ProofSystem/Axioms.lean), {□ nextTop, G(Gp→p), FGp, ¬Gp} is
+  -- Base-consistent and extends by Lindenbaum (`set_lindenbaum`) to a Base-MCS that contains
+  -- `□ nextTop` and is Discrete-INCONSISTENT. No such transfer lemma can exist.
+  --
+  -- The surviving route is (ii): construct the discrete canonical model directly over a
+  -- non-Archimedean carrier. `FrameClass.Base` imposes no Archimedean-ness — `valid`
+  -- (Semantics/Validity.lean) binds only AddCommGroup/LinearOrder/IsOrderedAddMonoid/Nontrivial,
+  -- with no `IsSuccArchimedean` — so ℚ ×ₗ ℤ is admissible: it is discretely ordered with
+  -- successor (q,n) ↦ (q,n+1), hence validates `nextTop` everywhere. See
+  -- `Metalogic/BXCanonical/DiscreteCarrierProbe.lean` for the compile-time confirmation that the
+  -- parametric bundle-flow machinery elaborates at that carrier.
   sorry
 
 end FormalSystem.Metalogic.WeakCanonical
