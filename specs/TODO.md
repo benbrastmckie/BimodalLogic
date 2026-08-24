@@ -1056,19 +1056,6 @@ and safely deletable. Do not schedule it again.
 
 ---
 
-### 467. Update decidability readme
-- **Status**: [COMPLETED]
-- **Task Type**: markdown
-- **Topic**: decidability
-- **Dependencies**: None
-- **Research**: [467_update_decidability_readme/reports/01_decidability-readme-alignment.md]
-- **Plan**: [467_update_decidability_readme/plans/01_decidability-readme-alignment.md]
-- **Summary**: [467_update_decidability_readme/summaries/01_decidability-readme-alignment-summary.md]
-
-**Description**: Systematically update FormalSystem/Metalogic/Decidability/README.md to be aligned with the current state of the Decidability/ directory
-
----
-
 ### 465. Complete terminus restatement family
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
@@ -1174,76 +1161,6 @@ Dependencies: none. This task is unblocked today.
 - **Research**: [461_acquire_goldblatt_1989_varieties_of_complex_algebras/reports/01_acquisition-feasibility.md]
 
 **Description**: SCOPE 8 acquisition gap identified by task 457's research and re-confirmed at implementation time: this paper is absent from both the ~/Projects/Literature corpus and the Zotero library, and is named as a prerequisite by other tasks in this repo working on the Jonsson-Tarski representation theorem. Note: goldblatt_2003 already present in the corpus is a DIFFERENT paper (Erdos Graphs Resolve Fine's Canonicity Problem) -- do not conflate the two. Needed: locate and acquire a copy of Goldblatt 1989 (Annals of Pure and Applied Logic 44, pp. 173-242), add it to Zotero, then run a normal /literature ingest.
-
----
-
-### 460. Acquire a usable copy of Gabbay, Kurucz, Wolter and Zakharyaschev 2003 (Many-Dimensional Modal Logics)
-- **Status**: [COMPLETED]
-- **Task Type**: general
-- **Topic**: literature
-- **Dependencies**: Task 459
-- **Research**: [460_acquire_gabbay_2003_many_dimensional_modal_logics/reports/01_acquire-gabbay-2003-copy.md]
-- **Plan**: [460_acquire_gabbay_2003_many_dimensional_modal_logics/plans/01_ocr-and-ingest-gabbay-2003.md]
-- **Summary**: [460_acquire_gabbay_2003_many_dimensional_modal_logics/summaries/01_ocr-and-ingest-gabbay-2003-summary.md]
-
-**Description**: SCOPE 8 acquisition gap identified by task 457's research and re-confirmed at implementation time: the source is present in the user's Zotero library under item key Kurucz2003, but the stored PDF has a broken/custom font encoding with no usable ToUnicode CMap and is not text-extractable by any available tool (pdftotext yields ~69.5% printable characters, scrambled letters). This is an acquisition/OCR problem, not an index-schema defect -- do NOT attempt to fix by re-running the standard ingest pipeline with LITERATURE_CONVERTER=pymupdf; that path previously produced 2260 chunks of control-character mojibake that passed the quality gate and had to be manually purged from the corpus and FTS index (see task 457's research report for this precedent). Needed: either a cleaner PDF copy (different scan/source) or an OCR pass (e.g. ocrmypdf) that produces usable, non-garbled text, followed by a normal /literature ingest.
-
----
-
-### 459. Deduplicate 8 stale placeholder entries in the global literature index
-- **Status**: [COMPLETED]
-- **Task Type**: general
-- **Topic**: literature
-- **Dependencies**: Task 458
-- **Research**: [459_deduplicate_8_stale_literature_entries/reports/01_dedup-stale-literature-entries.md]
-- **Plan**: [459_deduplicate_8_stale_literature_entries/plans/01_dedup-stale-literature-entries.md]
-- **Summary**: [459_deduplicate_8_stale_literature_entries/summaries/01_dedup-stale-literature-entries-summary.md]
-
-**Description**: Discovered during task 457 Phase 3 (SCOPE 3 bulk token_count re-baseline). ~/Projects/Literature/index.json has 369 total entries but only 361 distinct ids: 8 ids each appear TWICE. In every one of the 8 cases, one instance carries provenance="migrated from ingest schema (doc_id/source_path/chunks_dir)", token_count=0, empty summary, and thinner metadata (a stale placeholder from an incomplete earlier migration), while the other instance (same id, same path) is the already-correct, fully-populated v2 entry with real authors/summary/keywords/token_count. Affected ids: calcagno_2007_local-action-abstract-separation-logic, docherty_pym_2019_stone-dualities-separation-logics, jung_2018_iris-from-the-ground-up, ohearn_2007_resources-concurrency-local-reasoning, ohearn_2019_separation-logic-cacm, reynolds_2002_separation-logic, brookes_2007_semantics-concurrent-separation-logic, jipsen_litak_2017_algebraic-glimpse-bunched-implications. Task 457 corrected the stale duplicates' token_count only (to unblock its own SCOPE 3 defect-class-empty verification gate) but did NOT remove the duplicate records -- that structural fix (delete the stale placeholder, keeping the fully-populated entry) is this task's scope. After removal, confirm entry count drops from 369 to 361, JSON still parses, and literature-build-index.sh --global still exits 0 with FTS row count >= the pre-dedup baseline (removing a duplicate doc removes duplicate chunks too, so the row count is expected to change compared to the pre-457 baseline -- record the new baseline rather than expecting equality).
-
----
-
-### 458. Migrate the 12 remaining legacy chunks_dir-only literature entries to the v2 schema
-- **Status**: [COMPLETED]
-- **Task Type**: general
-- **Topic**: literature
-- **Dependencies**: None
-- **Research**: [458_migrate_12_legacy_literature_entries_to_v2_schema/reports/01_legacy-entries-v2-migration.md]
-- **Plan**: [458_migrate_12_legacy_literature_entries_to_v2_schema/plans/01_migrate-12-legacy-entries.md]
-- **Summary**: [458_migrate_12_legacy_literature_entries_to_v2_schema/summaries/01_migrate-12-legacy-entries-summary.md]
-
-**Description**: Follow-up to task 457's SCOPE 7 (provenance adjudication for 3 named legacy entries). 12 further legacy chunks_dir-only entries remain in ~/Projects/Literature/index.json beyond the 3 SCOPE 7 named and migrated (Jonsson-Tarski 1951/1952, Goldblatt 2006): brics-rs-96-35, cattani-winskel-2005-profunctors, brics-rs-94-7, schultz-spivak-temporal-type-theory, fong-speranzon-spivak-temporal-landscapes, schultz-spivak-vasilakopoulou-dynamical-systems-sheaves, thomason-1970-indeterminist-time, rutten-2000-universal-coalgebra, jacobs-coalgebra-intro-draft, danos-krivine-rccs, reynolds-2003-ockhamist, rumberg-zanardo-2019-transition-structures. Each needs: a manual chunk-read fidelity adjudication (grounded, not from an automated ratio alone -- literature-fidelity-audit.sh does not cover these since they sit outside sources/, so its output cannot corroborate; see task 457 Phase 6 phase notes for the code-level reason), path/token_count population per the SCOPE 1 directory-path convention (chars/4+20 over concatenated chunk_*.md text), and doc_type/source_format population per the SCOPE 5 evidence-grounded approach (inspect the actual source file if present; record as a reasoned exclusion if not). Use task 457's Phase 6 adjudication process as the template: take a backup before mutating, open at least one chunk per document and read it by hand, stamp provenance_fidelity only after that read, then run literature-build-index.sh --global and confirm the FTS row count did not drop.
-
----
-
-### 457. Repair remaining literature corpus data defects
-- **Status**: [COMPLETED]
-- **Task Type**: general
-- **Topic**: literature
-- **Dependencies**: None
-- **Research**: [457_repair_remaining_literature_corpus_data_defects/reports/01_literature-corpus-data-repairs.md]
-- **Plan**: [457_repair_remaining_literature_corpus_data_defects/plans/01_corpus-data-repairs.md]
-- **Summary**: [457_repair_remaining_literature_corpus_data_defects/summaries/01_corpus-data-repairs-summary.md]
-
-**Description**: Repair the remaining Literature corpus data defects surfaced by a /literature discovery and validation session. These are DATA repairs to the global corpus at ~/Projects/Literature and to this repo's specs/literature-index.json, NOT agent-system code changes -- the five corresponding code defects are already tracked separately in the global agent-system repo and must not be duplicated here. All counts below were verified empirically against a 369-entry global index; re-confirm before mutating, since the corpus changes.
-
-SCOPE 1 -- The diamondsareforever entry is malformed (isolated: 1 of 369). Its `path` is `sources/diamondsareforever/chunk_0001.md`, a single 903-byte chunk containing only the abstract, while `token_count` is 95000, the whole-document figure across all 56 chunks. It is the ONLY entry in the index whose path points at a chunk_NNNN file, which chunk-file-conventions.md says must never be an independently referenceable doc_id. It also mixes the legacy `chunks_dir` schema (absolute path) into the `path` schema, and carries provenance_fidelity "unverified_no_baseline". Consequence: any --lit consumer budgeting on token_count reserves 95k tokens for an abstract fragment, or follows `path` and receives 1/56th of the paper while believing it has the whole thing. Fix: point the entry at the document rather than at chunk_0001, and make token_count consistent with whatever the path denotes.
-
-SCOPE 2 -- Three token_count values were recorded against stub extracts that were later properly converted: sources/fine_2012_guide-to-ground (stored 521, actual 27134), sources/vardi_wolper_1986/Vardi_Wolper_1986_Automata_Theoretic_Verification.md (stored 196, actual 11871), and sources/fine_2012_counterfactuals-without-possible-worlds (stored 2222, actual 15982). Recompute from the files on disk.
-
-SCOPE 3 -- Systematic token_count drift across roughly 52 entries. Validation reported 56 drift warnings over 20%; 55 of the 56 drift in the same direction (actual > stored) and 40+ cluster in a tight 1.21-1.35 ratio band. That uniformity indicates a changed token formula or a bulk re-conversion, not real per-document drift. Re-baseline the stored values (formula: chars/4 + 20) so the drift check becomes a meaningful signal instead of permanent noise. This complements the separately-tracked fix to the validation CHECK; this task fixes the DATA that check reads.
-
-SCOPE 4 -- 60 entries store `authors` as a comma-joined string instead of an array. `.claude/scripts/literature-normalize-authors.sh <index.json>` (bare invocation is the dry run; --apply persists) already proposes correct normalizations for all 60, reviewed and confirmed sane. Zero array-valued entries have comma-joined elements, so the malformed-array regression the authors-shape check guards against has NOT reappeared; this is purely the string-valued variant.
-
-SCOPE 5 -- 35 entries are missing the required v2 schema fields doc_type and/or source_format (Church 1956, Gentzen 1935, Girard 1989 and similar older ingests). Cosmetic, but trips validation on every run.
-
-SCOPE 6 -- Schema-consistency cleanup, lower confidence, investigate before acting: 22 entries carry BOTH `path` and `chunks_dir`, and 37 entries have an ABSOLUTE `chunks_dir`, which is non-portable if LITERATURE_DIR ever moves. Decide whether these are legitimate legacy variants to leave alone or should be normalized to relative paths.
-
-SCOPE 7 -- Provenance adjudication for three newly ingested documents, all currently provenance_fidelity null and token_count null because the online-ingest bridge registers them under the legacy chunks_dir schema: the Jonsson-Tarski 1951 Part I (85 chunk files, 42 FTS rows after benign content-hash dedup of repeated JSTOR footer boilerplate), Jonsson-Tarski 1952 Part II (82 files), and Goldblatt 2006 "Mathematical modal logic: A view of its evolution" (199 files, 199 FTS rows). Fidelity notes are already recorded in specs/literature-index.json for all three: the Jonsson-Tarski pair are JSTOR scans with EXCELLENT prose but DEGRADED formulas ("=-" for "=", "?" standing in for relations, mangled subscripts) whose equations must never be transcribed into Lean from the markdown alone; Goldblatt 2006 verified good at word ratio 0.979 over 98 pages but required the fallback converter. Stamp appropriate provenance_fidelity values rather than leaving them null.
-
-SCOPE 8 -- Two acquisition gaps; may warrant spawning separate tasks rather than solving here. (a) Gabbay, Kurucz, Wolter and Zakharyaschev 2003 "Many-Dimensional Modal Logics" is BLOCKED: the PDF in Zotero (item XYYBJH2N) has a broken/custom font encoding with no usable ToUnicode CMap and is not text-extractable by any available tool -- pdftotext yields 69.5% printable characters and scrambled letters. It needs OCR or a different copy. Do NOT retry with LITERATURE_CONVERTER=pymupdf; that path produced 2260 chunks of control-character mojibake that PASSED the quality gate and had to be manually purged from the corpus and FTS index. (b) Goldblatt 1989 "Varieties of complex algebras" (Annals of Pure and Applied Logic) is still not located in the corpus, in Zotero, or online, and is named as a prerequisite by the Jonsson-Tarski representation task in this repo. Note that goldblatt_2003 in the corpus is the Erdos-graphs/Fine-canonicity paper, a different work.
-
-VERIFICATION REQUIREMENT -- Every mutation must be preceded by a backup of the index being edited, and followed by a re-run of the validation checks plus a literature-build-index.sh rebuild, since token_count and path changes affect FTS coverage. This corpus has a documented history (see the rabinovich_2014 entry's hazard field in specs/literature-index.json) of a falsely-stamped verified_conversion silently invalidating 89 Lean citations, so never stamp a fidelity value on the strength of an automated ratio alone without a manual spot-check.
 
 ---
 
@@ -1445,25 +1362,6 @@ Because archived files are never compiled, a broken import here is SILENT -- no 
 
 ---
 
-### 436. Fourth termination measure component
-- **Effort**: 10-14 hours
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: decidability
-- **Dependencies**: Task 437
-- **Research**:
-  - [434_discharge_mintpaysfortime_residual/reports/02_spawn-analysis.md]
-  - [436_fourth_termination_measure_component/reports/01_fourth-measure-component.md]
-  - [436_fourth_termination_measure_component/reports/02_spawn-analysis.md]
-- **Plan**: [436_fourth_termination_measure_component/plans/01_self-guard-potential.md]
-- **Summary**:
-  - [436_fourth_termination_measure_component/summaries/02_self-guard-potential-resumption-summary.md]
-  - [FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean]
-
-**Description**: Resume task 434's implementation plan (specs/434_discharge_mintpaysfortime_residual/plans/01_mintpaysfortime-time-analogue.md) at Phase 7. Before starting, read the full do-not-re-attempt register (MintBound.lean section C9, 16 entries) and in particular entry 14, which records both refuted repair routes for MintPaysForTime: (1) re-indexing mintPotential on freshTimeRules instead of freshLabelRules -- refuted by witnessPresent_eq_false_of_not_freshLabel, whose match has exactly eight arms so the three added columns are permanently false; (2) dropping disjunct 1's cardinality conjunct and relying only on the ordering-rank conjunct -- refuted by splitOrderedRank_lt_of_knownTimes_lt plus mintPaysForTime_rank_repair_false, since splitOrderedRank's base Tmax^2+1 is by construction one more than incompPairs' range so any new known time raises the rank regardless of the pair count. Neither route may be re-attempted. Design a fourth measure component that pays for the three self-guarded minting rules -- untlNeg/snceNeg (guarded by futureOf/pastOf emptiness plus ord.timeCount < 4) and densityRule (guarded by the maximal-unfilled-gap set) -- and that is also preserved across TimeOrdering.identifyTime, which can lower ord.timeCount (the same maxTime-lowering mechanism Phase 6's verdict in the existing plan turns on; see nextTime_reissues_retired_time and reuse_driven_through_engine). Run this task with --lit against the sub-index populated by the literature-curation task, drawing specifically on: caleiro_2013's mosaic-method decidability treatment for combined tense-and-modal logics (sections 6-7, mosaic-based tableau systems and complexity bounds) as a structural analogue for a combined-logic termination measure; venema_2001 section 5's interval-based temporal logic treatment for the density/gap-guarded densityRule component; gerth_1995 and baier_katoen_2008's closure-set LTL tableau termination argument as a model for a measure over an evolving, non-monotonically-changing time set; and massacci_2000's rule-bounding technique. Once a candidate measure is validated, land it in MintBound.lean following the plan's existing Phase 7-8 task lists: define the repaired predicate (e.g. MintPaysForTimeAt, mirroring UniverseClosedAt's naming), prove its direction lemma relative to MintPaysForTime (weakening or strengthening, stated explicitly), confirm it leaks no new hypothesis into the terminus, restate the two seed-level termini at the repaired shape, and discharge the repaired predicate at a concrete instantiation (U = signedUniverse C L). All work must be sorry-free, axiom-free, and additive only (Saturation.lean, Fuel.lean, Tableau.lean remain untouched, and no previously-landed declaration in MintBound.lean is altered). Full lake build must be green at completion, and the new do-not-re-attempt register entries (if any further route is refuted along the way) must be recorded in section C9 following the existing convention.
-
----
-
 ### 434. Discharge mintpaysfortime residual
 - **Effort**: 10-15 hours
 - **Status**: [PARTIAL]
@@ -1494,23 +1392,6 @@ Because archived files are never compiled, a broken import here is SILENT -- no 
 - **Summary**: [433_discharge_postblockingsettles_residual/summaries/01_postblockingsettles-summary.md]
 
 **Description**: Discharge `PostBlockingSettles fc`, defined at FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean:4344, one of the four residual hypotheses on the totality terminus `buildTableauAt_isSome_of_budget` (MintBound.lean:4416). It states that the post-blocking pass leaves a branch the blocking-aware saturation test certifies -- i.e. `findUnexpandedUnblockedWith satBr satOrd fc (blockedTimes satBr satOrd fc (armTracker satBr)) = none` whenever `saturateBlocked ob fuel oOrd fc = some (.inr (satBr, satOrd))`. It subsumes `resolveOpenArm`'s own `none` arm via `armSettlement_of_postBlockingSettles` (MintBound.lean:4354) -- `ArmSettlement` alone is proved strictly too weak (`resolveOpenArm` tests `findClosure satBr` before its saturation test; `buildTableauAt` does not), so do not attempt to discharge via `ArmSettlement` instead. The relevant definitions are frozen (md5-pinned) in Saturation.lean (`saturateBlocked`, :431) and Tableau.lean (`blockedTimes`, :2104; `findUnexpandedUnblockedWith`, :2115) -- do not edit either file; the residual's own docstring states the gap ('whether the fuel-vs-condition gap can be closed by fuel alone') is exactly what Saturation.lean leaves open using only its existing public interface. Done means: either (a) a proof of `PostBlockingSettles fc` for the frame classes the terminus is meant to be used at, using only the public interface of the frozen files, landed sorry-free and axiom-free with `lake build` green; or (b), if (a) turns out to be genuinely impossible without touching the frozen files, a return to [BLOCKED] with the specific counterexample or obstruction found, analogous to the parent task's own refutation-driven repairs (e.g. `ordTimes_identifyTime_arm3_false`, MintBound.lean:1217) -- do not paper over with a vacuous definition (`lean4.md`'s Vacuous Definitions prohibition applies). This task's own residual work -- deciding PostBlockingSettlesRun at the terminus's own fuel figure, and completing the terminus restatement family -- has moved downstream to tasks 463 and 465 respectively; do not re-attempt those here.
-
----
-
-### 432. Discharge universeclosed residual
-- **Effort**: 4-6 hours
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: decidability
-- **Dependencies**: Task 434
-- **Research**:
-  - [428_engine_totality_at_a_quantified_branch_budget/reports/05_spawn-analysis.md]
-  - [432_discharge_universeclosed_residual/reports/01_spawn-inherited-research.md]
-- **Plan**: [432_discharge_universeclosed_residual/plans/01_universeclosed-clause2-verdict-instantiation.md]
-- **Summary**: [432_discharge_universeclosed_residual/summaries/01_universeclosed-clause2-verdict-instantiation-summary.md]
-- **Handoff**: [432_discharge_universeclosed_residual/handoffs/phase-7-handoff-20260818.md]
-
-**Description**: Discharge `UniverseClosed fc U`, defined at FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean:3901, one of the four residual hypotheses on the totality terminus `buildTableauAt_isSome_of_budget` (MintBound.lean:4416). The definition has two conjuncts: (1) closure of `U` under the engine's unblocked-expansion step `expandOnceUnblocked` -- a familiar shape already required by the unsplit totality theorem's `hU` obligation -- and (2) closure of `U` under an ordered split's identification arm `Branch.identifyTime`, which relabels the branch; this second clause is genuinely new. For `U = signedUniverse C L` (Fuel.lean:382, DO NOT edit Fuel.lean -- it is md5-pinned frozen), clause (2) reduces to a statement about the label set `L` being closed under time-merging. Done means: a theorem proving `UniverseClosed fc U` for a concrete, useful instantiation `U = signedUniverse C L` under an explicit closure condition on `L` (state and prove that condition too, if it is not already available), landed sorry-free and axiom-free in MintBound.lean, with `lake build` green. Do not re-attempt anything in the do-not-re-attempt register at MintBound.lean:4455-4510 (eight entries; read before starting), and in particular do not attempt route (a), entry 6 (a lower bound on `(b.identifyTime t2 t1).toFinset.card` from below -- dead by definition).
 
 ---
 

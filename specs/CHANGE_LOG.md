@@ -1,6 +1,21 @@
 # Change Log
 
 
+## 2026-08-24: Archive 7 completed tasks
+
+**Archived**:
+- **467** (completed, markdown): Corrected all 11 misalignments between `FormalSystem/Metalogic/Decidability/README.md` and the directory it documents -- removed the unproved decidability overclaim, rebuilt the Modules table, fixed the stale DecisionResult constructor set, redrew the dependency flowchart, added missing sibling README links, refreshed the footer date
+- **460** (completed, general): OCR'd and ingested Gabbay 2003 "Many-Dimensional Modal Logics" (742 pages) into the literature corpus via resumable `ocrmypdf` batches, with hand-verified semantic accuracy pre- and post-ingest and a fully-audited scoped exception for 19 non-prose OCR fusion sites
+- **459** (completed, general): Removed 8 stale, provenance-marked placeholder duplicate entries from the global literature index via a guarded, assertion-first deletion script; verified all surviving entries byte-identical and the per-repo sub-index untouched
+- **458** (completed, general): Migrated 12 legacy `chunks_dir`-only literature entries to the v2 schema, grounded entirely in hand chunk reads; post-mutation gate independently confirmed all 12 token counts and a field-level diff limited to the 5-field allow-list
+- **457** (completed, general): Repaired six literature-corpus data defect classes across 369 global index entries over seven sequential, backed-up, gated phases; deferred SCOPE 6 with recorded rationale and spawned four follow-up tasks (458-461)
+- **436** (completed, lean4): Resumed the fourth termination-measure component (self-guard potential) after its spawned blocker task reoriented the identification arm's merge direction; Phase 1's original FALSE verdict did not survive the reorientation, and Phases 2-9 were unblocked and executed sorry-free, axiom-free
+- **432** (completed, lean4): Discharged the `UniverseClosed` residual -- both conjuncts refuted as originally stated; clause 2 repaired via `UniverseClosedAt` (constraining the merge target to known times), clause 1's label coordinate reduced to a fully-analysed and refuted rectangle (`FreshLabelHeadroom`)
+
+**Directories moved**: 7 (specs/ -> specs/archive/)
+**Roadmap updates**: 0 (0 eligible matches against the 111-row status table; ROADMAP.md unchanged)
+**Memory harvest**: none (no candidates recorded on any archived task)
+
 ## 2026-08-18: Archive 3 completed tasks
 
 **Archived**:
