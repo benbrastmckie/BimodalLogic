@@ -179,38 +179,6 @@ theorem VVecEA2.disjList_holds {sig : MonadicSignature} [Fintype sig.preds] [Dec
       · exact Or.inl hw
       · exact Or.inr ⟨w, hmem', hw⟩
 
-/-- **WARNING — THIS RE-EXPORTS A VACUOUS STATEMENT. The negation case of Prop 4.3 is NOT
-    discharged.** Machine refutation: `Prop42Vacuity.prop42_conclusion_is_vacuous`
-    (`Kamp/Prop42Vacuity.lean`).
-
-    **Correction to this docstring's previous claim.** It formerly read that the negation case
-    "is discharged by the LANDED Prop 4.2 closure `neg_2var_vec_ea` (EANegationClosure.lean:722)
-    ... the hardest half, already proven; consumed, not rebuilt". That is wrong, and it is the
-    specific misreading this annotation exists to stop. `neg_2var_vec_ea` is not Rabinovich's
-    Prop 4.2 (2014, **PDF p.6**) and proves nothing about negation: its conclusion
-    `∃ v', v'.holds M atomMap z0 z1` never mentions `v`, and follows from no hypotheses at all.
-    Nothing was landed, and the hardest half is not proven — it is open.
-
-    So the sentence below ("whenever a flat block `v` fails ... there is a `VVecEA2` witnessing
-    its negation") does **not** describe what this theorem proves. The `v'` produced here is
-    unrelated to `v`; it witnesses nothing about `v`'s negation. This theorem is sorry-free and
-    green, which is not evidence to the contrary — a vacuous statement is trivially provable.
-
-    **Retained deliberately, not endorsed**, to keep the call site intact; removal is out of
-    scope. Any future Prop 4.3 induction that needs a real negation case must first obtain a
-    contentful Prop 4.2 (biconditional shape, `v'` a function of `v` alone — see
-    `Prop42Vacuity.lean`). Building on this theorem propagates the vacuity.
-
-    What it actually states: on a `HasAttainedINF` structure, given `h_neg` and `h_lt`, *some*
-    `VVecEA2` — with no asserted connection to `v` — holds at `(z0, z1)`. -/
-theorem reflatten_neg_step {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
-    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
-    (h_INF : HasAttainedINF M atomMap)
-    (v : VVecEA2) (z0 z1 : M.carrier) (h_lt : z0 < z1)
-    (h_neg : ¬v.holds M atomMap z0 z1) :
-    ∃ v' : VVecEA2, v'.holds M atomMap z0 z1 :=
-  neg_2var_vec_ea h_INF v z0 z1 h_lt h_neg
-
 /-- **Prop 4.3 re-flatten induction STEP** (the wired MISSING ingredient). Any higher-FO-depth
     obligation `P` that the structural induction has re-flattened to a finite disjunction `vs` of
     flat exists-forall blocks (Lemma 5.1 quantifier-free point types) is realized by the SINGLE

@@ -1,7 +1,7 @@
 # Implementation Plan: Task #473
 
 - **Task**: 473 - Delete the quarantined vacuous Kamp Prop 4.2 pair
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3.25 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/473_delete_quarantined_vacuous_kamp_pair/reports/01_delete-quarantined-vacuous-kamp-pair.md
@@ -103,7 +103,7 @@ gate must follow all edits.
 
 ---
 
-### Phase 1: Re-verify by symbol, then delete both declarations [NOT STARTED]
+### Phase 1: Re-verify by symbol, then delete both declarations [COMPLETED]
 
 **Goal**: Independently confirm the zero-consumer claim, then remove exactly two theorem
 blocks (declaration plus its docstring plus one trailing blank line each) in a single
