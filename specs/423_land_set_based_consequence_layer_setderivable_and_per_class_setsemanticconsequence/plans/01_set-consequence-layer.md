@@ -1,7 +1,7 @@
 # Implementation Plan: Task #423
 
 - **Task**: 423 - Land the set-based consequence layer (SetDerivable and per-class SetSemanticConsequence*)
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/423_land_set_based_consequence_layer_setderivable_and_per_class_setsemanticconsequence/reports/01_set-consequence-layer-research.md`
@@ -118,7 +118,7 @@ all append to the same new file (same-file serialization), phase 4 consumes the 
 
 ---
 
-### Phase 1: Create SetConsequence.lean — header, imports, SetDerivable, four per-class predicates [NOT STARTED]
+### Phase 1: Create SetConsequence.lean — header, imports, SetDerivable, four per-class predicates [COMPLETED]
 
 **Goal**: The new module exists and builds, containing design/01 §2 (`SetDerivable`) and §3 (the
 four `SetSemanticConsequence*` predicates), D1-corrected.
