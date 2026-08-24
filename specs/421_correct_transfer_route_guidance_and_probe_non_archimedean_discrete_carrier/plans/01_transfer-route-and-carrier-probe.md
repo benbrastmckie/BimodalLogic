@@ -350,7 +350,7 @@ expected counts in Phase 5.
 
 ---
 
-### Phase 5: Full acceptance gate [NOT STARTED]
+### Phase 5: Full acceptance gate [IN PROGRESS]
 
 **Goal**: Every acceptance criterion in the task description is checked and recorded, including
 the whole-tree build that the single-module builds of Phases 3-4 do not cover.
