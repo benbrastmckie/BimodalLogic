@@ -28,9 +28,9 @@ displayed equations and inverts `k ≠ m` to `k = m`.
 
 Both weaker orderings are vacuous and must never be accepted as Proposition 4.2:
 
-* `∀ z0 z1, ∃ v', v'.holds z0 z1` — closed by the all-`⊤` block. This is the shape
-  `neg_2var_vec_ea` (`EANegationClosure.lean:722`) actually has; refuted from no hypotheses at
-  all by `prop42_conclusion_is_vacuous` (`Prop42Vacuity.lean`).
+* `∀ z0 z1, ∃ v', v'.holds z0 z1` — closed by the all-`⊤` block. This is the shape the
+  deleted `neg_2var_vec_ea` had; refuted from no hypotheses at all by
+  `prop42_conclusion_is_vacuous` (`Prop42Vacuity.lean`).
 * `∀ z0 z1, ∃ v', (v'.holds z0 z1 ↔ ¬v.holds z0 z1)` — **also** vacuous. With `z0`, `z1` fixed,
   `¬v.holds z0 z1` is a fixed truth value, so one picks the all-`⊤` block when it is true and
   an unsatisfiable block when it is false. The biconditional alone does not rescue it; the
@@ -158,7 +158,7 @@ def Prop42Contentful {sig : MonadicSignature}
 
 `TemporalPred.eval_at_neg'` and the `⊤` facts already exist in `EANegationClosure.lean`, but
 that module is not importable from here without dragging in the whole model-dependent negation
-development (and its vacuous `neg_2var_vec_ea`). Both facts are one-line unfoldings, so they
+development. Both facts are one-line unfoldings, so they
 are reproved locally under private names rather than imported. -/
 
 /-- `(P.neg).EvalAt` iff `¬(P.EvalAt)`. Local copy of `TemporalPred.eval_at_neg'`

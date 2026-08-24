@@ -250,45 +250,45 @@ handle every hit; report the discrepancy.
 
 ---
 
-### Phase 3: Update the vacuity record files [NOT STARTED]
+### Phase 3: Update the vacuity record files [COMPLETED]
 
 **Goal**: Bring `Prop42Vacuity.lean` and `Prop42Contentful.lean` into truth about the now-deleted
 pair while preserving their explanations verbatim in substance. Both files are KEPT
 (deliverable (c)).
 
 **Tasks**:
-- [ ] `Prop42Vacuity.lean` (~`:12`) — rewrite "Read this before treating `neg_2var_vec_ea`
+- [x] `Prop42Vacuity.lean` (~`:12`) — rewrite "Read this before treating `neg_2var_vec_ea`
       (`EANegationClosure.lean:722`) as a proved asset" so it introduces the file as the record
       of a *deleted* declaration. Drop the file:line anchor.
-- [ ] `Prop42Vacuity.lean` (~`:18`, `:24-32`) — **KEEP the refutation mathematics verbatim.**
+- [x] `Prop42Vacuity.lean` (~`:18`, `:24-32`) — **KEEP the refutation mathematics verbatim.**
       The name `neg_2var_vec_ea` may remain as a historical referent provided the surrounding
       tense makes clear it no longer exists.
-- [ ] `Prop42Vacuity.lean` (~`:36-40`) — **KEEP** the "does not claim `neg_2var_vec_ea` is
+- [x] `Prop42Vacuity.lean` (~`:36-40`) — **KEEP** the "does not claim `neg_2var_vec_ea` is
       broken" paragraph; tense-adjust only. This is the anti-pattern guard and MUST NOT be
       weakened.
-- [ ] `Prop42Vacuity.lean` (~`:81-87`) — **the single most important edit.** The section
+- [x] `Prop42Vacuity.lean` (~`:81-87`) — **the single most important edit.** The section
       `## Live declarations still presenting the vacuous shape` ("Annotated in place;
       deliberately not deleted (they are consumed live)") is now outright false. Replace it
       with a section recording that both declarations were DELETED because they were
       quarantined (one consumer, itself with none), naming them by symbol only. Both anchors
       in it are rotted — remove them, do not correct them.
-- [ ] `Prop42Vacuity.lean` (~`:76-79`) — keep the reachability sentence verbatim (the import
+- [x] `Prop42Vacuity.lean` (~`:76-79`) — keep the reachability sentence verbatim (the import
       edge in `NfMultiAnchorBridge.lean` is still landed and still the point); tense-adjust
       only the "if someone ever repairs `neg_2var_vec_ea`" clause.
-- [ ] `Prop42Vacuity.lean` (~`:95`, `:98`, `:101`) — in `prop42_conclusion_is_vacuous`'s own
+- [x] `Prop42Vacuity.lean` (~`:95`, `:98`, `:101`) — in `prop42_conclusion_is_vacuous`'s own
       docstring, drop the `(EANegationClosure.lean:722)` anchor and tense-adjust. The theorem
       statement and proof (~`:105-117`) are UNTOUCHED.
-- [ ] `Prop42Vacuity.lean` (~`:53-55`, `:65-70`) — secondary rotted anchors into `Boneyard/`
+- [x] `Prop42Vacuity.lean` (~`:53-55`, `:65-70`) — secondary rotted anchors into `Boneyard/`
       (`NegationIndep.lean:315`/`:319`, actual `:319`/`:323`; `Prop43.lean:120-129`, actual
       ~`:126-142`). Convert to symbol/file references. Do NOT compute corrected line numbers.
-- [ ] `Prop42Contentful.lean` (~`:32`) — drop the `(EANegationClosure.lean:722)` anchor and
+- [x] `Prop42Contentful.lean` (~`:32`) — drop the `(EANegationClosure.lean:722)` anchor and
       tense-adjust to "the shape the deleted `neg_2var_vec_ea` had". The two-bullet vacuity
       taxonomy at ~`:30-38` is the constructive core and MUST be preserved exactly.
-- [ ] `Prop42Contentful.lean` (~`:161`) — drop the now-dangling "(and its vacuous
+- [x] `Prop42Contentful.lean` (~`:161`) — drop the now-dangling "(and its vacuous
       `neg_2var_vec_ea`)" parenthetical. The justification for the local `private` re-proofs
       (`tp_neg_iff`, `tp_top_holds`) is import weight and still stands; keep it.
-- [ ] Change no theorem statement, no proof, and no `import` line in either file.
-- [ ] Write no task number into either file (C9 gate).
+- [x] Change no theorem statement, no proof, and no `import` line in either file.
+- [x] Write no task number into either file (C9 gate).
 
 **Timing**: 1 hour
 
