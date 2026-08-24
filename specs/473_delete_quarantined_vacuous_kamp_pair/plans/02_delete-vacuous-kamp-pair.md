@@ -1,7 +1,7 @@
 # Implementation Plan: Task #473
 
 - **Task**: 473 - Delete the quarantined vacuous Kamp Prop 4.2 pair
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 3.25 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/473_delete_quarantined_vacuous_kamp_pair/reports/01_delete-quarantined-vacuous-kamp-pair.md
@@ -323,30 +323,30 @@ report any discrepancy.
 
 ---
 
-### Phase 4: Final verification gate [NOT STARTED]
+### Phase 4: Final verification gate [COMPLETED]
 
 **Goal**: Run the complete gate set and confirm nothing was load-bearing after all. No file
 edits in this phase.
 
 **Tasks**:
-- [ ] `lake build` -> exit 0.
-- [ ] `lake build BimodalTest` -> exit 0.
-- [ ] `bash scripts/check-module-invariants.sh` -> **C2 PASS** (all four flagship axiom sets
+- [x] `lake build` -> exit 0.
+- [x] `lake build BimodalTest` -> exit 0.
+- [x] `bash scripts/check-module-invariants.sh` -> **C2 PASS** (all four flagship axiom sets
       match baseline: `BXCanonical.completeness`, `completeness_dense`, `completeness_discrete`,
       `Chronicle.countermodel_dense`) and **C3 PASS** (exactly one live structural sorry,
       `countermodel_discrete` in `WeakCanonical/Transfer.lean`).
-- [ ] **HARD STOP** if C2 or C3 moves: something was load-bearing. Report; do NOT re-baseline
+- [x] **HARD STOP** if C2 or C3 moves: something was load-bearing. Report; do NOT re-baseline
       (the script itself calls a C2 divergence a hard stop, not a new baseline).
-- [ ] Confirm C9 (zero task-number citations under `FormalSystem/`) is still green.
-- [ ] Residual-symbol grep:
+- [x] Confirm C9 (zero task-number citations under `FormalSystem/`) is still green.
+- [x] Residual-symbol grep:
       `grep -rnw 'neg_2var_vec_ea\|reflatten_neg_step' FormalSystem/ Tests/ --include='*.lean' | grep -v Boneyard`
       -> surviving hits ONLY as intentional historical prose in `Prop42Vacuity.lean` and
       `Prop42Contentful.lean`; zero in the other five files.
-- [ ] File-scope containment: `git diff --name-only` against the merge base lists only the
+- [x] File-scope containment: `git diff --name-only` against the merge base lists only the
       seven declared `file_scope` paths and nothing else — in particular none of
       `Decidability.lean`, `Verified/README.md`, `FMP/README.md`, `Soundness.lean`,
       `WeakCanonical.lean`, `RealModel/ShuffleReal.lean`, `PriorExpressivenessDense.lean`.
-- [ ] Confirm zero new `sorry` and zero new axiom introduced (trivially satisfied: the change
+- [x] Confirm zero new `sorry` and zero new axiom introduced (trivially satisfied: the change
       is deletion plus prose).
 
 **Timing**: 0.75 hours
@@ -371,16 +371,16 @@ base; any eighth path is a scope breach to be reverted and reported, not accepte
 
 ## Testing & Validation
 
-- [ ] `lake build` exits 0.
-- [ ] `lake build BimodalTest` exits 0.
-- [ ] `scripts/check-module-invariants.sh`: C2 PASS (four flagship axiom sets unmoved), C3 PASS
+- [x] `lake build` exits 0.
+- [x] `lake build BimodalTest` exits 0.
+- [x] `scripts/check-module-invariants.sh`: C2 PASS (four flagship axiom sets unmoved), C3 PASS
       (sole structural sorry `countermodel_discrete`), C9 green.
-- [ ] Zero code references to `neg_2var_vec_ea` or `reflatten_neg_step` outside `Boneyard/`.
-- [ ] Zero prose references presenting either symbol as a landed asset; every surviving mention
+- [x] Zero code references to `neg_2var_vec_ea` or `reflatten_neg_step` outside `Boneyard/`.
+- [x] Zero prose references presenting either symbol as a landed asset; every surviving mention
       is historical and points at the vacuity record.
-- [ ] No `file.lean:NNN` anchor to the deleted pair anywhere; no newly computed line numbers.
-- [ ] Diff confined to the seven `file_scope` files.
-- [ ] `Prop42Vacuity.lean` and `Prop42Contentful.lean` still present, still root-reachable, and
+- [x] No `file.lean:NNN` anchor to the deleted pair anywhere; no newly computed line numbers.
+- [x] Diff confined to the seven `file_scope` files.
+- [x] `Prop42Vacuity.lean` and `Prop42Contentful.lean` still present, still root-reachable, and
       their explanations intact.
 
 ## Artifacts & Outputs
