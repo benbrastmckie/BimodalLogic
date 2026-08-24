@@ -212,13 +212,19 @@ Anything written to `.claude/` here is destroyed on the next reload.
 | Task | Status | Disposition |
 |---|---|---|
 | **466** | **ABANDONED here** 2026-08-24 | `update-plan-status.sh` silently no-ops on a non-conforming Status line. Handed to the nvim session for filing via `/meta`. Full description retained in `specs/archive/state.json` as the record. |
-| **471** | **ABANDONED here** 2026-08-24 | `roadmap-integration.sh` emits a non-JSON line before its payload, breaking `/review`'s own documented `jq` pipeline in a way that reports success. Same handoff. |
+| **471** | **ABANDONED — the finding was WRONG** | The claimed `roadmap-integration.sh` stdout defect does not exist: the comment is written to stderr (`:319`, `>&2`), and `/review`'s documented `$( )` capture works. The reviewer caused the parse error by invoking with `2>&1`. Retracted; see issue L-1. |
 | **231** item (7) | Annotated, task stays | Cannot be completed from this repo. Recommended: drop item (7), keep the other seven sub-targets here. |
 
 Both abandonments were verified safe: nothing depended on either task, and the graph has zero
-dangling edges afterward. **Confirmation of the nvim-side task numbers is still pending** — if they
-never appear, the two defects survive in three places: the abandoned records in the archive, issue
-L-1 of `specs/reviews/review-2026-08-24.md`, and this file.
+dangling edges afterward.
+
+**466's defect is real and independently confirmed** by the source-store maintainer, who found it
+worse than reported: the status *read* at `update-plan-status.sh:62,72` is unanchored and falls
+through to `|| echo ""` on a bracket-less line, so `current_status` and `updated_status` are both
+empty and compare equal — the verification cannot distinguish "updated" from "matched nothing". It
+is awaiting the nvim user's approval for filing there; if declined it comes back here.
+
+**471's defect was not real** and the task was invalid. Nothing is pending for it.
 
 Checked for duplicates: nvim task 50 is adjacent (stale-roadmap no-op, verify-deploy) but covers
 neither the `update-plan-status.sh` silent no-op nor the `roadmap-integration.sh` stdout contract.
