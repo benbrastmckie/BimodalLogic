@@ -16,6 +16,7 @@ import FormalSystem.Semantics.Extension.Extension
 import FormalSystem.Semantics.WorldHistory
 import FormalSystem.Semantics.TaskModel
 import FormalSystem.Semantics.Truth
+import FormalSystem.Semantics.ShiftSet
 import FormalSystem.Semantics.Validity
 import FormalSystem.Semantics.DurationClassification
 

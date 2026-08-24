@@ -11,6 +11,7 @@ Task frame semantics for TM bimodal logic.
 | TaskModel.lean | Task models with valuation functions |
 | WorldHistory.lean | World histories for temporal evaluation |
 | Truth.lean | Truth relation for formula evaluation |
+| ShiftSet.lean | Shift-set representation theorem: task models ↔ shift sets, both directions with truth correspondence |
 | Validity.lean | Validity and semantic consequence |
 
 ## Key Definitions

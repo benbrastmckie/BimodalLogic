@@ -7,6 +7,11 @@ Authors: Benjamin Brast-McKie
 import FormalSystem.Semantics.TaskModel
 import FormalSystem.Semantics.Truth
 import FormalSystem.Semantics.Extension.Extension
+import Mathlib.GroupTheory.QuotientGroup.Basic
+import Mathlib.Algebra.Order.Archimedean.Basic
+import Mathlib.Algebra.Order.Floor.Ring
+import Mathlib.Data.Rat.Cast.Order
+import Mathlib.Data.Nat.GCD.Basic
 
 /-!
 # ShiftSet - The shift-set representation of task models
@@ -42,9 +47,10 @@ all seven. Three of them are free consequences of the task relation being *funct
   empty, so a directed family of nonempty ones is a family of copies of one singleton and its
   intersection is that singleton. No frame-theoretic machinery, and no Zorn.
 
-Only `limit` is *not* free: it fails for an arbitrary `D`-action (take `D = ℝ` acting on `ℝ/ℚ`;
-the failure mode is a dense proper stabiliser). That is what the `sep` field is for — see its
-own docstring.
+Only `limit` is *not* free: it fails for an arbitrary `D`-action, and this module *proves* that
+it fails, in `ShiftSet.SepNotDerivable.sep_not_derivable`: `D = ℚ` acting on `ℚ ⧸ (dyadics)`
+satisfies both action laws and refutes the separation condition. The failure mode is a dense
+proper stabiliser. That is what the `sep` field is for — see its own docstring.
 
 ## On `Classical.choice` in the reverse direction
 
@@ -385,6 +391,115 @@ theorem reverse_repr (F : TaskFrame D) (M : TaskModel F) (τ : F.HF) (t : D)
       exact ⟨s, hs, (ihχ τ s).mp he, fun r h1 h2 => (ihψ τ r).mp (hg r h1 h2)⟩
     · rintro ⟨s, hs, he, hg⟩
       exact ⟨s, hs, (ihχ τ s).mpr he, fun r h1 h2 => (ihψ τ r).mpr (hg r h1 h2)⟩
+
+/-!
+## `sep` is not derivable from the action laws
+
+The `sep` field is a genuine axiom of the shift-set notion, not a strengthening that could be
+dropped and recovered. The witness below is a concrete `D`-action satisfying `sh_zero` and
+`sh_add` for which the separation condition is false: `D = ℚ` acting by translation on
+`ℚ ⧸ H`, where `H` is the group of dyadic rationals — a *dense proper* subgroup of `ℚ`.
+Density gives the arbitrarily-small witnesses the separation hypothesis asks for; properness
+(`1/3 ∉ H`) makes its conclusion false.
+
+The `ℝ`/`ℚ` variant named in the design discussion is avoided here only because
+`Mathlib.Data.Real.Irrational` is not part of this checkout's partial Mathlib build; the dyadic
+variant is elementary and self-contained.
+-/
+
+namespace SepNotDerivable
+
+/-- The dyadic rationals `{a / 2 ^ n}`, as a dense proper additive subgroup of `ℚ`. -/
+def DyadicGroup : AddSubgroup ℚ where
+  carrier := {q : ℚ | ∃ (a : ℤ) (n : ℕ), q = (a : ℚ) / 2 ^ n}
+  zero_mem' := ⟨0, 0, by norm_num⟩
+  add_mem' := by
+    rintro p q ⟨a, m, rfl⟩ ⟨b, n, rfl⟩
+    refine ⟨a * 2 ^ n + b * 2 ^ m, m + n, ?_⟩
+    have h1 : ((2:ℚ) ^ m) ≠ 0 := by positivity
+    have h2 : ((2:ℚ) ^ n) ≠ 0 := by positivity
+    field_simp
+    push_cast
+    ring
+  neg_mem' := by
+    rintro p ⟨a, n, rfl⟩
+    exact ⟨-a, n, by push_cast; ring⟩
+
+/-- `1/3` is not dyadic: `2 ^ n = 3 * a` would force `3 ∣ 2 ^ n`. This is *properness*. -/
+theorem third_not_dyadic : (1/3 : ℚ) ∉ DyadicGroup := by
+  rintro ⟨a, n, h⟩
+  have h2 : ((2:ℚ) ^ n) ≠ 0 := by positivity
+  have hq : (2:ℚ) ^ n = 3 * a := by
+    field_simp at h
+    linarith
+  have hz : (2:ℤ) ^ n = 3 * a := by exact_mod_cast hq
+  have hd : (3:ℤ) ∣ 2 ^ n := ⟨a, hz⟩
+  have hd' : (3:ℕ) ∣ 2 ^ n := by
+    have hc : ((3:ℕ):ℤ) ∣ ((2 ^ n : ℕ) : ℤ) := by push_cast; exact hd
+    exact_mod_cast hc
+  have hcop : Nat.Coprime 3 (2 ^ n) := Nat.Coprime.pow_right n (by decide)
+  have h3 : (3:ℕ) = 1 := Nat.Coprime.eq_one_of_dvd hcop hd'
+  exact absurd h3 (by decide)
+
+/-- The dyadics are *dense*: `1/3` has dyadic translates arbitrarily close to it. -/
+theorem dyadic_approx (x : ℚ) (hx : 0 < x) :
+    ∃ y : ℚ, |y| < x ∧ (1/3 : ℚ) - y ∈ DyadicGroup := by
+  obtain ⟨n, hn⟩ := exists_pow_lt_of_lt_one hx (show (1/2:ℚ) < 1 by norm_num)
+  have h2n : (0:ℚ) < 2 ^ n := by positivity
+  set k : ℤ := ⌊(1/3 : ℚ) * 2 ^ n⌋ with hk
+  set d : ℚ := (k : ℚ) / 2 ^ n with hdd
+  have hfl : (k : ℚ) ≤ (1/3 : ℚ) * 2 ^ n := Int.floor_le _
+  have hfl2 : (1/3 : ℚ) * 2 ^ n < (k : ℚ) + 1 := Int.lt_floor_add_one _
+  have hpow : (1/2 : ℚ) ^ n = 1 / 2 ^ n := by rw [div_pow]; norm_num
+  have hd0 : 0 ≤ (1/3 : ℚ) - d := by
+    rw [sub_nonneg, hdd, div_le_iff₀ h2n]
+    linarith
+  have hd1 : (1/3 : ℚ) - d < (1/2 : ℚ) ^ n := by
+    have expand : ((1:ℚ)/3 - (k:ℚ)/2^n) * 2^n = (1/3)*2^n - (k:ℚ) := by field_simp
+    rw [hpow, hdd, lt_div_iff₀ h2n, expand]
+    linarith
+  refine ⟨(1/3 : ℚ) - d, ?_, ?_⟩
+  · rw [abs_of_nonneg hd0]; exact hd1.trans hn
+  · have hsimp : (1/3 : ℚ) - ((1/3 : ℚ) - d) = d := by ring
+    rw [hsimp, hdd]
+    exact ⟨k, n, rfl⟩
+
+/-- Translation of `ℚ ⧸ DyadicGroup` by a rational: the action of the counterexample. -/
+def qsh (w : ℚ ⧸ DyadicGroup) (d : ℚ) : ℚ ⧸ DyadicGroup := w + (QuotientAddGroup.mk d)
+
+theorem qsh_zero (w : ℚ ⧸ DyadicGroup) : qsh w 0 = w := by simp [qsh]
+
+theorem qsh_add (w : ℚ ⧸ DyadicGroup) (a b : ℚ) : qsh (qsh w a) b = qsh w (a + b) := by
+  simp [qsh, add_assoc]
+
+/--
+**The separation condition is not derivable from the two action laws.**
+
+This is what justifies `sep` being a field of `ShiftSet` rather than a lemma about it: there is
+a `ℚ`-action satisfying `sh_zero` and `sh_add` whose separation condition is false. Without the
+field, `ShiftSet.frame` could not discharge `TaskFrame.limit`, so `ShiftSet` without `sep` would
+not induce a task frame at all.
+-/
+theorem sep_not_derivable :
+    ∃ (Ω : Type) (sh : Ω → ℚ → Ω),
+      (∀ w, sh w 0 = w) ∧
+      (∀ w a b, sh (sh w a) b = sh w (a + b)) ∧
+      ¬ (∀ w u : Ω, (∀ x : ℚ, 0 < x → ∃ y : ℚ, |y| < x ∧ u = sh w y) → u = w) := by
+  refine ⟨ℚ ⧸ DyadicGroup, qsh, qsh_zero, qsh_add, ?_⟩
+  intro hsep
+  have hmem : ((1/3 : ℚ) : ℚ ⧸ DyadicGroup) = (0 : ℚ ⧸ DyadicGroup) := by
+    refine hsep 0 (QuotientAddGroup.mk (1/3 : ℚ)) ?_
+    intro x hx
+    obtain ⟨y, hy, hmemy⟩ := dyadic_approx x hx
+    refine ⟨y, hy, ?_⟩
+    show ((1/3 : ℚ) : ℚ ⧸ DyadicGroup) = 0 + (QuotientAddGroup.mk y)
+    rw [zero_add]
+    exact (QuotientAddGroup.eq (s := DyadicGroup)).mpr
+      (by have h := AddSubgroup.neg_mem DyadicGroup hmemy
+          rwa [neg_sub, sub_eq_neg_add] at h)
+  exact third_not_dyadic ((QuotientAddGroup.eq_zero_iff _).mp hmem)
+
+end SepNotDerivable
 
 end ShiftSet
 
