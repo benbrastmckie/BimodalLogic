@@ -246,23 +246,23 @@ a new obligation and must be discharged or escalated before Phase 3, not deferre
 
 ---
 
-### Phase 3: `hist`, `hist_isTotal`, `model`, `total_eq_orbit` [IN PROGRESS]
+### Phase 3: `hist`, `hist_isTotal`, `model`, `total_eq_orbit` [COMPLETED]
 
 **Goal**: Build the induced total history through a carrier point, the induced task model, and
 prove the re-issue's named new forward obligation: the constructed frame's total histories are
 exactly the shift orbits.
 
 **Tasks**:
-- [ ] Define `ShiftSet.hist (S) (w) : WorldHistory S.frame` with `domain := fun _ => True`,
+- [x] Define `ShiftSet.hist (S) (w) : WorldHistory S.frame` with `domain := fun _ => True`,
       `states := fun t _ => S.sh w t`, `respects_task` from `sh_add` + `add_sub_cancel`, `convex`
       trivial.
-- [ ] Prove `hist_isTotal`.
-- [ ] Define `ShiftSet.model (S) : TaskModel S.frame` with `valuation := fun w p => S.A p w`.
-- [ ] Prove `total_eq_orbit (S) (σ : WorldHistory S.frame) (hσ : σ.IsTotal) :
+- [x] Prove `hist_isTotal`.
+- [x] Define `ShiftSet.model (S) : TaskModel S.frame` with `valuation := fun w p => S.A p w`.
+- [x] Prove `total_eq_orbit (S) (σ : WorldHistory S.frame) (hσ : σ.IsTotal) :
       σ = S.hist (σ.states 0 (hσ 0))`, via `wh_ext` and `σ.respects_task 0 r` after `sub_zero`.
-- [ ] Docstring `total_eq_orbit` as the obligation the task re-issue anticipated, noting that it
+- [x] Docstring `total_eq_orbit` as the obligation the task re-issue anticipated, noting that it
       is genuine and easy but was not the only new obligation and not the hard one.
-- [ ] Verify: `lake env lean FormalSystem/Semantics/ShiftSet.lean`.
+- [x] Verify: `lake env lean FormalSystem/Semantics/ShiftSet.lean`.
 
 **Timing**: 0.5 hours
 
@@ -279,7 +279,7 @@ exactly the shift orbits.
 
 ---
 
-### Phase 4: `ShiftTruth` and the forward direction [NOT STARTED]
+### Phase 4: `ShiftTruth` and the forward direction [IN PROGRESS]
 
 **Goal**: Define shift-set truth with `box` ranging over the whole carrier, and prove
 `forward_repr` by induction on the formula.

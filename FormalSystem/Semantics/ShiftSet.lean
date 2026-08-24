@@ -190,6 +190,45 @@ def frame (S : ShiftSet D) : TaskFrame D where
     rw [hsingle s (hmem s hs).1 a ha b (hsub hb).1]
     exact (hsub hb).2
 
+/-- The induced **total** history through `w`: the shift orbit `t ↦ sh w t`. -/
+def hist (S : ShiftSet D) (w : S.Carrier) : WorldHistory S.frame where
+  domain := fun _ => True
+  nonempty_domain := ⟨0, trivial⟩
+  states := fun t _ => S.sh w t
+  respects_task := by
+    intro s t _ _
+    show S.sh w t = S.sh (S.sh w s) (t - s)
+    rw [S.sh_add, add_sub_cancel]
+  convex := by intros; trivial
+
+/-- The orbit history through `w` is total: its domain is all of `D`. -/
+theorem hist_isTotal (S : ShiftSet D) (w : S.Carrier) : (S.hist w).IsTotal := fun _ => trivial
+
+/-- The induced task model: the shift set's valuation, read on the induced frame. -/
+def model (S : ShiftSet D) : TaskModel S.frame where
+  valuation := fun w p => S.A p w
+
+/--
+**The constructed frame's total histories are exactly the shift orbits.**
+
+This is the new forward obligation the task re-issue anticipated. It is genuine — the forward
+direction's `box` case consumes it, since `TruthAt`'s `box` clause quantifies over *all* total
+histories while `ShiftTruth`'s quantifies over carrier points — and it is easy, following from
+`respects_task` at `0` alone. It was, however, neither the only new obligation nor the hard one:
+discharging `limit` (via the `sep` field) and the three "free" frame fields of `ShiftSet.frame`
+was the substantive work.
+
+Note the statement is equality of *histories*, not merely of states at each time; that is what
+`wh_ext` is for.
+-/
+theorem total_eq_orbit (S : ShiftSet D) (σ : WorldHistory S.frame) (hσ : σ.IsTotal) :
+    σ = S.hist (σ.states 0 (hσ 0)) := by
+  refine wh_ext (funext fun z => propext ⟨fun _ => trivial, fun _ => hσ z⟩) ?_
+  intro r h h'
+  have := σ.respects_task 0 r (hσ 0) h
+  rw [sub_zero] at this
+  exact this
+
 end ShiftSet
 
 end FormalSystem.Semantics
