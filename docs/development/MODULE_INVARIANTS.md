@@ -16,7 +16,7 @@ file and line.
 
 | ID | Check | Why it exists |
 |----|-------|---------------|
-| B0 | Both Boneyards are found and excluded | A filter naming only the top-level `Boneyard/` counts 27k archived lines under `Kamp/Boneyard/` as live |
+| B0 | The archive is a single directory, found and excluded | Every traversal filters on the `*/Boneyard/*` name glob. When the archive was split across two directories a filter naming only the top-level one counted 29k archived lines as live; asserting the count is exactly 1 turns a second archive reappearing into a gate failure rather than a silent miscount |
 | C1 | `lake build` and `lake build BimodalTest` exit 0 | Baseline correctness |
 | C2 | `#print axioms` for four flagship theorems matches a recorded baseline | Detects a proof silently rerouted through different dependencies — invisible to a green build and an unchanged sorry count |
 | C3 | Exactly one structural `sorry`, located **by content** | Asserting a line number breaks on any edit above it; the check finds the enclosing declaration instead |
@@ -27,8 +27,9 @@ file and line.
 | C8 | Every Lean-bearing subdirectory has exactly one sibling aggregator `X.lean` beside `X/` | One convention, checkable |
 | C9 | Zero task-number citations under `FormalSystem/` | Task numbers are renumbered by archival and mean nothing to a later reader |
 | C10 | Zero references to the pre-relocation `FormalSystem/{docs,latex,typst}` paths | `docs/`, `latex/` and `typst/` live at the project root |
+| C11 | Every `import` inside `FormalSystem/Boneyard/` resolves, or is waived | The archive is never compiled, so `lake build` cannot see its imports rot. 65 archived import lines were already dangling when the two archives were consolidated |
 
-## The Two Companion Files
+## The Three Companion Files
 
 ### `scripts/module-invariants-manifest.txt` — known-unreachable modules (C6)
 
@@ -56,6 +57,25 @@ declarations are listed here with the file and line that defines them.
 This is a permanent, documented exemption — **not** a place to park a genuinely stale
 module path. Add an entry only after confirming with `grep -rn` that the name is live.
 C5 reports allowlist entries that no longer occur, so stale exemptions get pruned.
+
+### `scripts/boneyard-import-waivers.txt` — unrepairable archived imports (C11)
+
+An archived file is outside the import closure, so nothing compiles it and nothing
+notices when a module it imports is deleted or moved. C11 closes that hole: every
+`import FormalSystem.*` / `import BimodalTest.*` line under `FormalSystem/Boneyard/`
+must resolve to a file on disk, or appear here.
+
+Entries are permanent records of imports that **cannot** be repaired — the target was
+deleted outright, or its name is genuinely ambiguous and choosing a target would
+fabricate provenance. Each carries the reason, and a deletion carries the commit that
+did it.
+
+This is not a backlog. Before adding an entry, prove there is no unique target file on
+disk; if there is one, fix the import instead. C11 reports entries that no longer occur
+as stale, on the C5 model, so the file cannot become a dumping ground.
+
+C11 ships enforced, with no `ENFORCE_C11` flag: unlike C8/C9/C10 below, the invariant was
+already true at the moment the check landed, so there was never a red phase to gate.
 
 ## Adding a Check
 

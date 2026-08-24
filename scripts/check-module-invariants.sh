@@ -16,6 +16,7 @@
 #   C8  Aggregator convention: sibling `X.lean` beside `X/`, no `X/X.lean`
 #   C9  Zero task-number citations under FormalSystem/
 #   C10 Zero references to the pre-relocation docs/latex/typst paths
+#   C11 Every import inside FormalSystem/Boneyard/ resolves, or is waived
 #
 # Every filesystem traversal excludes the archive via `-not -path '*/Boneyard/*'`.
 # The archive was consolidated into a single tree at `FormalSystem/Boneyard/`; the
@@ -33,6 +34,7 @@
 # Companion files:
 #   scripts/module-invariants-manifest.txt   known-unreachable live modules (C6)
 #   scripts/module-invariants-allowlist.txt  pre-existing unresolved md paths (C5)
+#   scripts/boneyard-import-waivers.txt    unrepairable archived imports (C11)
 
 set -uo pipefail
 
@@ -41,6 +43,7 @@ cd "$REPO_ROOT" || exit 1
 
 MANIFEST="scripts/module-invariants-manifest.txt"
 ALLOWLIST="scripts/module-invariants-allowlist.txt"
+WAIVERS="scripts/boneyard-import-waivers.txt"
 
 RUN_BUILD=1
 [ "${1:-}" = "--no-build" ] && RUN_BUILD=0
@@ -197,14 +200,14 @@ fi
 echo
 
 # ---------------------------------------------------------------------------
-# C4/C5/C6/C7/C8: graph, markdown, reachability and structure checks
+# C4/C5/C6/C7/C8/C11: graph, markdown, reachability, archive and structure checks
 # ---------------------------------------------------------------------------
 [ "$RUN_BUILD" -eq 0 ] && export SKIP_BUILD=1
 export ENFORCE_C8
-python3 - "$MANIFEST" "$ALLOWLIST" <<'PYEOF'
+python3 - "$MANIFEST" "$ALLOWLIST" "$WAIVERS" <<'PYEOF'
 import os, re, sys, subprocess
 
-manifest_path, allowlist_path = sys.argv[1], sys.argv[2]
+manifest_path, allowlist_path, waivers_path = sys.argv[1], sys.argv[2], sys.argv[3]
 failures = 0
 def pas(c, m): print(f"PASS  {c:<4} {m}")
 def bad(c, m):
@@ -437,6 +440,78 @@ if c8_problems:
         note(m)
 else:
     pas("C8", "every FormalSystem/ and Metalogic/ subdirectory has exactly one sibling aggregator")
+
+# --- C11: archive import resolution ----------------------------------------
+# The Boneyard is uncompiled, so `lake build` cannot notice when an archived
+# file's import goes stale. Without this check the archive rots silently:
+# 65 archived import lines were already dangling when the two archives were
+# consolidated into one. C11 makes the invariant enforceable -- every archived
+# import must resolve to a file on disk, or be named in the waiver file with a
+# recorded reason. Shipped enforced from day one, deliberately without an
+# ENFORCE_C11 flag: the flags above exist for end-state invariants the tree does
+# not yet satisfy, and this one is satisfied at the moment it lands.
+#
+# The regex is C4's, verbatim. Do NOT widen it to a bare `^import`: archived
+# files carry block-comment continuation lines and fenced code blocks that begin
+# with the word `import`, which inflate a naive count by 31 lines and would
+# produce that many false failures.
+def archive_files(base):
+    out = []
+    for root, dirs, files in os.walk(base):
+        for f in files:
+            if f.endswith(".lean"):
+                out.append(os.path.join(root, f))
+    return sorted(out)
+
+archive_roots = []
+for root, dirs, files in os.walk("FormalSystem"):
+    if os.path.basename(root) == "Boneyard":
+        archive_roots.append(root)
+        dirs[:] = []
+archive_lean = []
+for r in sorted(archive_roots):
+    archive_lean.extend(archive_files(r))
+
+waived, waiver_reasons = set(), {}
+if os.path.isfile(waivers_path):
+    for line in open(waivers_path, encoding="utf-8"):
+        raw = line.rstrip("\n")
+        mod = raw.split("#")[0].strip()
+        if mod:
+            waived.add(mod)
+            waiver_reasons[mod] = raw.split("#", 1)[1].strip() if "#" in raw else ""
+
+arch_dangling, used_waiver, arch_imports = [], set(), 0
+for p in archive_lean:
+    txt = open(p, encoding="utf-8", errors="replace").read()
+    for i, line in enumerate(txt.splitlines(), 1):
+        m = imp_re.match(line + "\n")
+        if not m:
+            continue
+        arch_imports += 1
+        tgt = m.group(1)
+        if os.path.isfile(mod_to_path(tgt)):
+            continue
+        if tgt in waived:
+            used_waiver.add(tgt)
+            continue
+        arch_dangling.append((p, i, tgt))
+
+if arch_dangling:
+    bad("C11", f"{len(arch_dangling)} unwaived dangling import(s) across "
+               f"{arch_imports} archived import lines in {len(archive_lean)} archived file(s)")
+    for p, i, t in arch_dangling:
+        note(f"{p}:{i}: import {t}  ->  {mod_to_path(t)} (missing, not waived)")
+    note(f"repair the import, or add `{arch_dangling[0][2]}` to {waivers_path} with a reason")
+else:
+    pas("C11", f"all {arch_imports} archived import lines in {len(archive_lean)} archived "
+               f"file(s) resolve ({len(used_waiver)} waived)")
+
+stale_waivers = waived - used_waiver
+if stale_waivers:
+    inf("C11", f"{len(stale_waivers)} waiver entr(y/ies) no longer occur; prune them")
+    for m in sorted(stale_waivers):
+        note(m)
 
 sys.exit(1 if failures else 0)
 PYEOF

@@ -402,28 +402,40 @@ requirement.
 
 ---
 
-### Phase 5: Add C11 to check-module-invariants.sh [NOT STARTED]
+### Phase 5: Add C11 to check-module-invariants.sh [COMPLETED]
 
 **Goal**: Make the archive's import-resolution invariant a permanent, enforced gate rather than a
 one-off cleanup, so the archive cannot silently decay again.
 
 **Tasks**:
 
-- [ ] Add C11 to the existing `python3` heredoc block in `scripts/check-module-invariants.sh`,
+- [x] Add C11 to the existing `python3` heredoc block in `scripts/check-module-invariants.sh`,
       modelled on C4 (resolution) and C5 (allowlist idiom with stale-entry reporting).
-- [ ] Walk the consolidated archive tree. Reuse C4's regex
+- [x] Walk the consolidated archive tree. Reuse C4's regex
       `^import\s+((?:FormalSystem|BimodalTest)(?:\.[A-Za-z0-9_]+)*)\s*$` with `re.M` — **do not
       widen it to all imports**; widening reintroduces the 15 block-comment/fenced-code false
       positives. Resolve via C4's `mod_to_path`.
-- [ ] Parse `scripts/boneyard-import-waivers.txt`; suppress waived modules; report any waiver
+- [x] Parse `scripts/boneyard-import-waivers.txt`; suppress waived modules; report any waiver
       entry that no longer occurs as stale (C5 precedent) so the file cannot become a dumping
       ground.
-- [ ] Fail on any unwaived dangling import. Ship enforced from day one — no `ENFORCE_C11` flag;
+- [x] Fail on any unwaived dangling import. Ship enforced from day one — no `ENFORCE_C11` flag;
       the script's own comment forbids ever flipping a flag back to 0.
-- [ ] Add a C11 line to the check list at `:5-16`.
-- [ ] Add the C11 row to `docs/development/MODULE_INVARIANTS.md`.
-- [ ] Adversarial check: temporarily inject a dangling import into one archived file, confirm C11
+- [x] Add a C11 line to the check list at `:5-16`.
+- [x] Add the C11 row to `docs/development/MODULE_INVARIANTS.md`.
+- [x] Adversarial check: temporarily inject a dangling import into one archived file, confirm C11
       fails with a message naming the file and the module, then revert the injection.
+
+**MEASURED** (Phase 5): C11 reports **497** archived import lines across **156** archived files,
+0 unwaived danglers, 6 waived, 0 stale. 497 = 349 + 148, the Phase 1 measured real counts -- **not**
+the plan's 364 + 149 (MEASURED.md D4), and not the naive `^import` counts of 366 + 162, which the
+shared C4 regex correctly declines to see. Adversarial check ran: injecting
+`import FormalSystem.Metalogic.ThisModuleDoesNotExist` at `KampWeakCanonical/Prop43.lean:1` produced
+`FAIL C11 1 unwaived dangling import(s) across 498 archived import lines`, named the file, line,
+module and the missing path, printed the repair-or-waive instruction, and exited 1; after revert,
+green. Stale-waiver reporting was tested the same way (a bogus entry produced
+`INFO C11 1 waiver entr(y/ies) no longer occur; prune them`) and reverted. C11 was placed after C8
+in the Python block so the printed order matches the numeric order in the check list.
+MODULE_INVARIANTS.md gained the C11 row, a rewritten B0 row, and a third companion-file section.
 
 **Timing**: 1.5 hours
 
