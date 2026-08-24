@@ -1,8 +1,8 @@
 {
   "metadata": {
-    "generated_at": "2026-01-20T20:55:08.000000",
-    "total_tasks": 29,
-    "last_sync": "2026-06-08T03:09:30Z"
+    "generated_at": "2026-08-24T21:34:14.522352",
+    "total_tasks": 42,
+    "last_sync": "2026-08-24T21:34:14Z"
   },
   "next_project_number": 474,
   "active_projects": [
@@ -1157,14 +1157,14 @@
     }
   ],
   "task_counts": {
-    "active": 44,
-    "not_started": 33,
-    "implementing": 2,
-    "researched": 5,
-    "planned": 3,
-    "partial": 1,
-    "total": 44,
-    "abandoned": 0
+    "blocked": 3,
+    "implementing": 1,
+    "not_started": 31,
+    "partial": 5,
+    "planned": 1,
+    "researched": 1,
+    "active": 42,
+    "total": 42
   },
   "repository_health": {
     "last_assessed": "2026-08-24T21:29:29Z",

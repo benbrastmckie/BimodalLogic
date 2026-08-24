@@ -475,7 +475,7 @@ bash .claude/scripts/generate-todo.sh
 
 ---
 
-### Phase 7: Reconcile state.json's top-level counters (item H) [NOT STARTED]
+### Phase 7: Reconcile state.json's top-level counters (item H) [COMPLETED]
 
 **Goal**: `metadata.total_tasks`, `metadata.last_sync`, `metadata.generated_at`, and every field
 under `task_counts` agree with the live `active_projects` array, computed against the
@@ -490,28 +490,28 @@ reconciliation, TODO regeneration, topic backfill) do not touch them, and neithe
 required; `/task --sync` alone will leave them stale.
 
 **Tasks**:
-- [ ] **7.1 — `/task --sync`.** Snapshot every task's status first:
-      `jq -c '[.active_projects[] | {n:.project_number, s:.status}] | sort_by(.n)' specs/state.json > /tmp/470-status-before.json`
-- [ ] Run `/task --sync` for its legitimate side effects (JSON validation, TODO.md orphan warnings,
-      artifact backfill, status reconciliation, TODO regeneration, topic backfill).
-- [ ] Re-snapshot and diff. `reconcile-task-status.sh` sweeps tasks stuck in
+- [x] **7.1 — `/task --sync`.** Snapshot every task's status first:
+      `jq -c '[.active_projects[] | {n:.project_number, s:.status}] | sort_by(.n)' specs/state.json > /tmp/470-status-before.json` *(completed: 42 tasks snapshotted)*
+- [x] Run `/task --sync` for its legitimate side effects (JSON validation, TODO.md orphan warnings,
+      artifact backfill, status reconciliation, TODO regeneration, topic backfill). *(completed: invoked the `task` skill with --sync; JSON valid, 0 orphans, reconcile-artifacts found no gaps, status-reconciliation swept 6 in-flight tasks (298,296,282,433,434,470) all as no-ops (no promotions), TODO.md regenerated cleanly, 0 tasks missing a topic)*
+- [x] Re-snapshot and diff. `reconcile-task-status.sh` sweeps tasks stuck in
       `researching`/`planning`/`implementing`, and task 470 is itself mid-flight — if the sweep
       alters 470's own status, or transitions any task to `completed`/`abandoned`/`expanded`,
       revert that specific field via `state-write.sh` and record it. Any other reconciliation the
-      sync performs is legitimate and should be kept.
-- [ ] **7.2 — Direct counter write.** Recompute **live**, at write time, from `active_projects`.
+      sync performs is legitimate and should be kept. *(completed: post-sync diff against the before-snapshot was empty -- 470's own status, and every other task's status, was untouched)*
+- [x] **7.2 — Direct counter write.** Recompute **live**, at write time, from `active_projects`.
       Do NOT write any literal count from this plan, from the research report, or from the review
-      — all three snapshots predate Phase 6's archival and are known stale.
-- [ ] Set `metadata.total_tasks` to `(.active_projects | length)`.
-- [ ] Set `metadata.generated_at` and `metadata.last_sync` to the current UTC timestamp, each in
+      — all three snapshots predate Phase 6's archival and are known stale. *(completed: recomputed live via jq group_by immediately before writing, not copied from any document)*
+- [x] Set `metadata.total_tasks` to `(.active_projects | length)`. *(completed: 42)*
+- [x] Set `metadata.generated_at` and `metadata.last_sync` to the current UTC timestamp, each in
       the format the existing field already uses (`generated_at`: bare ISO local-style
       `YYYY-MM-DDTHH:MM:SS.ffffff`; `last_sync`: `YYYY-MM-DDTHH:MM:SSZ`). Preserve the two
-      distinct formats — do not normalize them in this task.
-- [ ] Rewrite the **entire** `task_counts` object from the live per-status `group_by` distribution.
+      distinct formats — do not normalize them in this task. *(completed: both formats preserved distinctly)*
+- [x] Rewrite the **entire** `task_counts` object from the live per-status `group_by` distribution.
       The current object has no key at all for `completed` or `blocked`; the replacement must carry
       a key for every status actually present, plus `active` and `total` (both equal to
-      `active_projects | length` once terminal tasks are archived).
-- [ ] Suggested single filter (adapt at write time; run `--dry-run` first):
+      `active_projects | length` once terminal tasks are archived). *(completed: live distribution was {blocked:3, implementing:1, not_started:31, partial:5, planned:1, researched:1} -- no "completed" key present since Phase 6 archived all 7; task_counts now carries exactly these 6 status keys plus active:42, total:42)*
+- [x] Suggested single filter (adapt at write time; run `--dry-run` first):
       ```
       .metadata.total_tasks = (.active_projects | length)
       | .metadata.generated_at = $gen
@@ -521,11 +521,11 @@ required; `/task --sync` alone will leave them stale.
             | map({key: .[0].status, value: length}) | from_entries)
           + {active: (.active_projects | length), total: (.active_projects | length)}
         )
-      ```
-- [ ] Pass timestamps via `--arg gen ... --arg sync ...` rather than embedding them in the filter.
-- [ ] Record in the implementation summary that these fields have no maintainer in current
+      ``` *(completed: used verbatim, --dry-run confirmed clean apply first)*
+- [x] Pass timestamps via `--arg gen ... --arg sync ...` rather than embedding them in the filter. *(completed)*
+- [x] Record in the implementation summary that these fields have no maintainer in current
       automation, so they will drift again. Research recommends a follow-up `meta` task to either
-      wire a maintainer or deprecate the schema fields; **do not create that task here.**
+      wire a maintainer or deprecate the schema fields; **do not create that task here.** *(completed: recorded for summary; no follow-up task created)*
 
 **Timing**: 35 minutes
 
