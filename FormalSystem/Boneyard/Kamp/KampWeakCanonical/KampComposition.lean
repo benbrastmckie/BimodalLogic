@@ -1,4 +1,4 @@
-import FormalSystem.Metalogic.WeakCanonical.Kamp.NfComposition
+import FormalSystem.Boneyard.Kamp.KampWeakCanonical.NfComposition
 import FormalSystem.Metalogic.WeakCanonical.PriorDefs
 
 /-!

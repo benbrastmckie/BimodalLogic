@@ -2,12 +2,12 @@
 -- Reason: Dead code — Rabinovich approach path with no live downstream consumers
 -- Archived: 2026-06-16
 
-import FormalSystem.Metalogic.WeakCanonical.Kamp.NfCharFormula
+import FormalSystem.Boneyard.Kamp.KampBypassArchive.NfCharFormula
 import FormalSystem.Boneyard.Kamp.KampWeakCanonical.RabinovichTranslation
-import FormalSystem.Metalogic.WeakCanonical.Kamp.RabinovichNegation
-import FormalSystem.Metalogic.WeakCanonical.Kamp.NfComposition
-import FormalSystem.Metalogic.WeakCanonical.Kamp.SeparationBridge
-import FormalSystem.Metalogic.WeakCanonical.Kamp.KampBypass
+import FormalSystem.Boneyard.Kamp.RabinovichPath.RabinovichNegation
+import FormalSystem.Boneyard.Kamp.KampWeakCanonical.NfComposition
+import FormalSystem.Boneyard.Kamp.KampWeakCanonical.SeparationBridge
+import FormalSystem.Boneyard.Kamp.KampBypassArchive.KampBypass
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.

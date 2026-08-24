@@ -1,5 +1,5 @@
 import FormalSystem.Metalogic.BXCanonical.Frame
-import FormalSystem.Metalogic.BXCanonical.Quasimodel.EnrichedClosure
+import FormalSystem.Boneyard.BXCanonicalQuasimodel.EnrichedClosure
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.

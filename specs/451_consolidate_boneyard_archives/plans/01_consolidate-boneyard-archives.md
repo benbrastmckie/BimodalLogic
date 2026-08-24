@@ -342,29 +342,40 @@ exactly baseline + 55, an import outside the enumerated set broke; find it befor
 
 ---
 
-### Phase 4: Repair Category A danglers and record Category B waivers [NOT STARTED]
+### Phase 4: Repair Category A danglers and record Category B waivers [COMPLETED]
 
 **Goal**: Drive unwaived dangling imports across the consolidated archive to zero — the
 precondition for shipping C11 enforced.
 
 **Tasks**:
 
-- [ ] Repair the 48 Category A lines by rewriting each to its target's current module path.
+- [x] Repair the Category A lines *(deviation: altered — **47**, not 48; `FormalSystem.Metalogic.Completeness` is ambiguous and moved to Category B, which the plan already seeded into the waiver file. See MEASURED.md D3)* by rewriting each to its target's current module path.
       Concentrations: `Kamp/KampBypassArchive/` (22), `Kamp/RabinovichPath/` (8),
       `Kamp/KampNegationClosure/` (4), `BundleSuccessorSeed` consumers (4),
       `StaviDiscretePath/` (2), scattered singles.
-- [ ] For each repair, confirm the resolution finds **exactly one** target file. An import name
+- [x] For each repair, confirm the resolution finds **exactly one** target file. An import name
       matching two files on disk is ambiguous: do not guess. Record it and waive it with the
       ambiguity as the reason.
-- [ ] Create `scripts/boneyard-import-waivers.txt` using the `scripts/module-invariants-allowlist.txt`
+- [x] Create `scripts/boneyard-import-waivers.txt` using the `scripts/module-invariants-allowlist.txt`
       comment/parse idiom (one module per line, `#` reason). Seed with the 6 Category B modules,
       each annotated with commit `6c3419a4f` ("delete superseded canonical model stack") as the
       recorded reason:
       `FormalSystem.Metalogic.Algebraic.ParametricTruthLemma`,
       `...ParametricCompleteness`, `...RestrictedParametricTruthLemma`, `...ParametricHistory`,
       `...ParametricCanonical`, and `FormalSystem.Metalogic.Completeness` (ambiguous; record why).
-- [ ] Add a header comment to the waiver file stating that entries are permanent records of
+- [x] Add a header comment to the waiver file stating that entries are permanent records of
       deleted modules, not a backlog, and that stale entries are reported by C11.
+
+**MEASURED** (Phase 4): 47 Category A lines repaired across **30** archived files; 18 lines across
+**6** modules waived. Every repair was resolved by unique-basename lookup over the whole tree and
+**every one found exactly one candidate** -- no repair was guessed. Concentrations landed close to
+the plan's: `Kamp/KampBypassArchive/` 21 lines (plan said 22 -- one of them, `Kamp.KampBypass`
+at 5 lines, resolves into that directory but is imported from elsewhere in the archive),
+`Kamp/RabinovichPath/` 1, `Kamp/KampNegationClosure/` 5, `BundleSuccessorSeed` 5,
+`StaviDiscretePath/` 2, `Kamp/KampWeakCanonical/` 11, singles elsewhere. Census after: **18**
+unresolved, all waived; **0 unwaived**. The five `Algebraic.Parametric*` deletions were verified
+directly against `git show 6c3419a4f` ("task 415 phase 4: delete superseded canonical model
+stack"), which shows all five as `D`.
 
 **Timing**: 1.5 hours
 

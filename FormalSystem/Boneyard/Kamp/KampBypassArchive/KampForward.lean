@@ -1,7 +1,7 @@
 import FormalSystem.Metalogic.WeakCanonical.Kamp.VecEADecomp
-import FormalSystem.Metalogic.WeakCanonical.Kamp.ZoneBridge
+import FormalSystem.Boneyard.Kamp.KampWeakCanonical.ZoneBridge
 import FormalSystem.Metalogic.WeakCanonical.Kamp.NfToVecEA
-import FormalSystem.Metalogic.WeakCanonical.Kamp.KampBypass
+import FormalSystem.Boneyard.Kamp.KampBypassArchive.KampBypass
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.

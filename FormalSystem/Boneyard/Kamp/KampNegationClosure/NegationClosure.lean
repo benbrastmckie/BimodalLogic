@@ -4,7 +4,7 @@
 
 import FormalSystem.Metalogic.WeakCanonical.Kamp.ExistsForallNF
 import FormalSystem.Metalogic.WeakCanonical.Kamp.KampPrior
-import FormalSystem.Metalogic.WeakCanonical.Kamp.NfCharFormula
+import FormalSystem.Boneyard.Kamp.KampBypassArchive.NfCharFormula
 import FormalSystem.Metalogic.WeakCanonical.Kamp.PriorINF
 import FormalSystem.Metalogic.WeakCanonical.Kamp.Translation
 import FormalSystem.Metalogic.WeakCanonical.NormalForm

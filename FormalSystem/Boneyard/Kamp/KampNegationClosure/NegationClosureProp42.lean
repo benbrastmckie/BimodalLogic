@@ -2,7 +2,7 @@
 -- Reason: Dead code — negation closure chain with no live downstream consumers
 -- Archived: 2026-06-16
 
-import FormalSystem.Metalogic.WeakCanonical.Kamp.NegationClosure5
+import FormalSystem.Boneyard.Kamp.KampNegationClosure.NegationClosure5
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.

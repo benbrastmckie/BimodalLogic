@@ -1,0 +1,39 @@
+# Archived import lines that C11 must not treat as repairable.
+#
+# C11 requires every `import FormalSystem.*` / `import BimodalTest.*` line inside
+# FormalSystem/Boneyard/ to resolve to a file on disk. An archived file is never
+# compiled, so `lake build` cannot notice when its imports go stale; C11 is the
+# only thing standing between the archive and silent rot.
+#
+# Every entry below names a module that CANNOT be repaired -- either it was
+# deleted outright and reviving it is out of scope, or its name is genuinely
+# ambiguous and guessing a target would fabricate provenance.
+#
+# This is a permanent record of what was deleted, NOT a backlog and NOT a debt
+# ledger. Do not add an entry to make a gate pass. Before adding one, prove there
+# is no unique target file on disk; if there is, fix the import instead. C11
+# reports any entry that no longer occurs as stale, so the file cannot quietly
+# accumulate dead lines.
+#
+# One module per line; `#` starts a comment.
+
+# Deleted in commit 6c3419a4f ("delete superseded canonical model stack"),
+# which removed the parametric canonical-model stack from Metalogic/Algebraic/.
+# The archived consumers below predate that deletion and record the approach as
+# it stood; reviving the deleted modules is an explicit non-goal.
+FormalSystem.Metalogic.Algebraic.ParametricCanonical
+FormalSystem.Metalogic.Algebraic.ParametricCompleteness
+FormalSystem.Metalogic.Algebraic.ParametricHistory
+FormalSystem.Metalogic.Algebraic.ParametricTruthLemma
+FormalSystem.Metalogic.Algebraic.RestrictedParametricTruthLemma
+
+# Ambiguous, not missing. `FormalSystem/Metalogic/Completeness.lean` does not
+# exist, but four files named `Completeness.lean` do:
+#   FormalSystem/Metalogic/BXCanonical/Completeness.lean
+#   FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness/Completeness.lean
+#   FormalSystem/Boneyard/SupersededCompleteness/Completeness.lean
+#   FormalSystem/Boneyard/StrictSemanticsLegacy/FrameConditions/Completeness.lean
+# The sole consumer is Boneyard/BundleSuccessorSeed/SuccExistence.lean:13, and
+# nothing in it identifies which of the four the import once named. Picking one
+# would invent history, so the line is waived rather than guessed.
+FormalSystem.Metalogic.Completeness

@@ -1,5 +1,5 @@
 import FormalSystem.Boneyard.RestrictedMCSDeferral.Deferral
-import FormalSystem.Metalogic.Bundle.SuccExistence
+import FormalSystem.Boneyard.BundleSuccessorSeed.SuccExistence
 import FormalSystem.Metalogic.Bundle.SuccRelation
 import FormalSystem.Metalogic.Bundle.CanonicalTaskRelation
 import FormalSystem.Theorems.Propositional.Core

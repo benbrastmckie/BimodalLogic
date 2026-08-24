@@ -1,4 +1,4 @@
-import FormalSystem.Metalogic.Bundle.SuccExistence
+import FormalSystem.Boneyard.BundleSuccessorSeed.SuccExistence
 import FormalSystem.Metalogic.Bundle.CanonicalTaskRelation
 import FormalSystem.Metalogic.Bundle.FMCSDef
 import FormalSystem.Metalogic.Bundle.TemporalCoherence

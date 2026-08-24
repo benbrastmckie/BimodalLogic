@@ -2,8 +2,8 @@ import FormalSystem.Metalogic.WeakCanonical.Kamp.ExistsForallNF
 import FormalSystem.Metalogic.WeakCanonical.Kamp.NfToVecEA
 import FormalSystem.Metalogic.WeakCanonical.Kamp.PriorINF
 import FormalSystem.Metalogic.WeakCanonical.Kamp.Translation
-import FormalSystem.Metalogic.WeakCanonical.Kamp.KampBypass
-import FormalSystem.Metalogic.WeakCanonical.Kamp.KampForward
+import FormalSystem.Boneyard.Kamp.KampBypassArchive.KampBypass
+import FormalSystem.Boneyard.Kamp.KampBypassArchive.KampForward
 import FormalSystem.Metalogic.WeakCanonical.NormalForm
 import FormalSystem.Metalogic.WeakCanonical.Separation.KampTranslation
 

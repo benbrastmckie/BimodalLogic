@@ -1,5 +1,5 @@
 import FormalSystem.Boneyard.StrictSemanticsLegacy.Bundle.SuccChainFMCS
-import FormalSystem.Metalogic.Bundle.SuccExistence
+import FormalSystem.Boneyard.BundleSuccessorSeed.SuccExistence
 import FormalSystem.Boneyard.RestrictedMCSDeferral.Deferral
 import FormalSystem.Metalogic.Bundle.TemporalContent
 

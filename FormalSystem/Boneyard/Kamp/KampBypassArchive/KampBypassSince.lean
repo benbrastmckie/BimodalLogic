@@ -1,4 +1,4 @@
-import FormalSystem.Metalogic.WeakCanonical.Kamp.KampBypassBridge
+import FormalSystem.Boneyard.Kamp.KampBypassArchive.KampBypassBridge
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.

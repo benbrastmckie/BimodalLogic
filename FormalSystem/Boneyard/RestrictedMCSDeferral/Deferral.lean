@@ -1,5 +1,5 @@
 import FormalSystem.Metalogic.Core.RestrictedMCS.Basic
-import FormalSystem.Metalogic.Bundle.SuccExistence
+import FormalSystem.Boneyard.BundleSuccessorSeed.SuccExistence
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.

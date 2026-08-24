@@ -1,4 +1,4 @@
-import FormalSystem.Metalogic.WeakCanonical.Kamp.KampBypassCore
+import FormalSystem.Boneyard.Kamp.KampBypassArchive.KampBypassCore
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.

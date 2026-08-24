@@ -2,8 +2,8 @@
 -- Reason: Dead code — discrete Stavi path with no live downstream consumers
 -- Archived: 2026-06-16
 
-import FormalSystem.Metalogic.WeakCanonical.EFGames.DiscreteGameTransfer
-import FormalSystem.Metalogic.WeakCanonical.EFGames.NFGameBridge
+import FormalSystem.Boneyard.StaviDiscretePath.DiscreteGameTransfer
+import FormalSystem.Boneyard.StaviDiscretePath.NFGameBridge
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.

@@ -1,6 +1,6 @@
-import FormalSystem.Metalogic.WeakCanonical.Kamp.KampBypassCore
-import FormalSystem.Metalogic.WeakCanonical.Kamp.WitnessCount
-import FormalSystem.Metalogic.WeakCanonical.Kamp.PriorComposition
+import FormalSystem.Boneyard.Kamp.KampBypassArchive.KampBypassCore
+import FormalSystem.Boneyard.Kamp.KampWeakCanonical.WitnessCount
+import FormalSystem.Boneyard.Kamp.KampBypassArchive.PriorComposition
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.

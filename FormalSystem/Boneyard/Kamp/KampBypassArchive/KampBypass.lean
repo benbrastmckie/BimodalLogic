@@ -1,9 +1,9 @@
-import FormalSystem.Metalogic.WeakCanonical.Kamp.KampBypassEqCase
-import FormalSystem.Metalogic.WeakCanonical.Kamp.KampBypassUntil
-import FormalSystem.Metalogic.WeakCanonical.Kamp.KampBypassSince
-import FormalSystem.Metalogic.WeakCanonical.Kamp.KampComposition
+import FormalSystem.Boneyard.Kamp.KampBypassArchive.KampBypassEqCase
+import FormalSystem.Boneyard.Kamp.KampBypassArchive.KampBypassUntil
+import FormalSystem.Boneyard.Kamp.KampBypassArchive.KampBypassSince
+import FormalSystem.Boneyard.Kamp.KampWeakCanonical.KampComposition
 import FormalSystem.Metalogic.WeakCanonical.Kamp.VecEATranslation
-import FormalSystem.Metalogic.WeakCanonical.Kamp.PriorComposition
+import FormalSystem.Boneyard.Kamp.KampBypassArchive.PriorComposition
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.
