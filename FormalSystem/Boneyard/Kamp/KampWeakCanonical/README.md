@@ -51,7 +51,7 @@ it matches exactly two directories:
 bash scripts/check-module-invariants.sh   # B0 self-test + C7 live inventory
 ```
 
-See [`../../../../Boneyard/README.md`](../../../../Boneyard/README.md).
+See [`../../README.md`](../../README.md).
 
 ## Archival Criterion
 

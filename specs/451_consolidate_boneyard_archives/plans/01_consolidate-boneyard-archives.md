@@ -530,27 +530,59 @@ are needed, record the actual number — it does not change the work, only the e
 
 ---
 
-### Phase 7: Write the Kamp region documentation [NOT STARTED]
+### Phase 7: Write the Kamp region documentation [COMPLETED]
 
 **Goal**: Deliverable (g) — every Kamp subdirectory carries a README explaining what the approach
 was, why it died, what revival would require, and the original path of every file in it.
 
 **Tasks**:
 
-- [ ] Expand `FormalSystem/Boneyard/Kamp/README.md` from the Phase 2 stub into the region index:
+- [x] Expand `FormalSystem/Boneyard/Kamp/README.md` from the Phase 2 stub into the region index:
       name all five subdirectories, state which is authoritative for what, and state in writing why
       `MergedBracketQuarantine/` was left outside the umbrella.
-- [ ] Write the missing per-approach READMEs on the incoming side: `KampWeakCanonical/ZetaProbes/`
+- [x] Write the missing per-approach READMEs on the incoming side: `KampWeakCanonical/ZetaProbes/`
       (5 files), `KampWeakCanonical/NfMultiAnchorBridgeRetired/` (5),
       `KampWeakCanonical/Separation/` top level (16), and one per subdirectory created in Phase 6.
-- [ ] Write the missing per-approach READMEs on the reconciled side: `Kamp/KampBypassArchive/`
+- [x] Write the missing per-approach READMEs on the reconciled side: `Kamp/KampBypassArchive/`
       (13 files — the largest undocumented subdirectory in the archive),
       `Kamp/KampNegationClosure/` (4), `Kamp/RabinovichPath/` (4).
-- [ ] In every README, record each file's **original path** (pre-move, pre-regroup), so provenance
+- [x] In every README, record each file's **original path** (pre-move, pre-regroup), so provenance
       survives for a reader who never runs `git log`.
-- [ ] Do not contradict provenance already recorded inside the files themselves —
+- [x] Do not contradict provenance already recorded inside the files themselves —
       `Arity4CharStackK.lean` carries a per-block provenance table in its own header, and several
       files record their excision origin in prose. Reconcile against those, do not overwrite them.
+
+**MEASURED** (Phase 7): **10 new READMEs** written -- `KampBypassArchive/` (13 files),
+`KampNegationClosure/` (4), `RabinovichPath/` (4), `KampWeakCanonical/ZetaProbes/` (5),
+`NfMultiAnchorBridgeRetired/` (5), `Separation/` (10 at top level), and one per Phase 6
+subdirectory: `ProbeIterations/` (14), `VecEANormalForm/` (10), `TranslationEra/` (6),
+`DocumentedSingles/` (5) -- plus the expanded region index. **Every one of the 14 directories
+under `Boneyard/Kamp/` holding a `.lean` file now has a README, and all 85 `.lean` files appear
+in an original-path table**, verified mechanically rather than by eye.
+
+Two pre-existing inventory gaps were closed while auditing that: `Separation/Hierarchy/README.md`
+listed 3 of its 4 files (`HierarchyCaseSep.lean` was absent), and `VecEADecomposition/README.md`
+had no file table at all.
+
+Original paths come from three sources, and the tables say which: the file's own
+`-- ARCHIVED from` header where it has one (all of `KampNegationClosure/` and `RabinovichPath/`),
+`git log --follow` otherwise, and an explicit "created in the archive" with the birth commit for
+the 5 files that were born archived. Two git-inferred origins are flagged as unverified rather
+than asserted: git's rename heuristic pairs `KampMutualInduction.lean` with
+`RabinovichGeneralized.lean`, which is almost certainly a content-similarity false match.
+`Arity4CharStackK.lean`'s own per-block provenance table is cited as authoritative and is not
+restated, per the plan's last task.
+
+Three broken markdown links inside the archive were repaired: `KampWeakCanonical/README.md:54`
+(broken *by* the move -- its `../../../../Boneyard/README.md` no longer resolved at the new depth),
+and two pre-existing ones in `Separation/Hierarchy/README.md:39` and
+`ExpressiveCompleteness/README.md:29`, repointed at their live targets. `readme-lint.sh` never saw
+any of the three -- its Check 3 skips `Boneyard`-named directories, confirmed by reading the
+script rather than assumed -- so this was caught by an explicit archive-wide link sweep. One
+broken link remains, in `Boneyard/README.md`, and Phase 8 rewrites that file.
+
+C5 PASS at 4 allowlisted confirms the plan's expectation that archive READMEs stay exempt from
+the markdown module-path check.
 
 **Timing**: 2 hours
 

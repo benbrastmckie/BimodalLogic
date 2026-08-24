@@ -13,6 +13,13 @@ and completing the proof that no variant can simulate the others.
 | `HierarchyCompletion.lean` | 1621 | Main hierarchy completion: assembling all separation results |
 | `HierarchyDefs.lean` | 808 | Hierarchy definitions: expressiveness ordering, variant comparison |
 | `HierarchyInduction.lean` | 1436 | Inductive argument for hierarchy strictness |
+| `HierarchyCaseSep.lean` | 674 | Per-case separation step feeding the induction; was missing from this inventory until the archive consolidation |
+
+## Paths Before Consolidation
+
+Every file above sat at
+`FormalSystem/Metalogic/WeakCanonical/Kamp/Boneyard/Separation/Hierarchy/<name>` before the two
+Boneyard archives were merged into `FormalSystem/Boneyard/`.
 
 ## Key Results
 
@@ -29,7 +36,7 @@ and completing the proof that no variant can simulate the others.
 
 - [Separation README](../README.md)
 - [DedekindZ README](../DedekindZ/README.md)
-- [Expressiveness README](../../Expressiveness/README.md)
+- [Expressiveness README](../../../../../Metalogic/WeakCanonical/Expressiveness/README.md)
 
 ---
 
