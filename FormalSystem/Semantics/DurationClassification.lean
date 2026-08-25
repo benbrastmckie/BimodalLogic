@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import Mathlib.GroupTheory.ArchimedeanDensely
+import Mathlib.Order.SuccPred.Archimedean
 import FormalSystem.Semantics.TaskFrame
 
 /-!
@@ -162,5 +163,91 @@ theorem complete_not_dense_iso_int {D : Type*} [AddCommGroup D] [LinearOrder D]
     Nonempty (D ≃+o ℤ) :=
   letI : Archimedean D := archimedean_of_lub h_lub
   (LinearOrderedAddCommGroup.discrete_iff_not_denselyOrdered D).mpr h_not_dense
+
+section SuccessorBranch
+
+variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+    [SuccOrder D] [Nontrivial D]
+
+/--
+The successor of `0` is the least strictly positive element.
+
+This is the `IsLeast {y : D | 0 < y}` witness that
+`LinearOrderedAddCommGroup.int_orderAddMonoidIso_of_isLeast_pos` demands, and it is the whole
+reason the successor structure is in the `ValidDiscrete` binder bundle: `Order.lt_succ` gives
+membership, `Order.succ_le_of_lt` gives lower-boundedness.
+-/
+theorem isLeast_pos_succ_zero :
+    IsLeast {y : D | 0 < y} (Order.succ (0 : D)) :=
+  ⟨Order.lt_succ (0 : D), fun _ hy => Order.succ_le_of_lt hy⟩
+
+/--
+In an ordered group with a successor structure, `succ` is translation by `succ 0`.
+
+Note the proof avoids `linarith`: the binder bundle here is a bare `AddCommGroup` +
+`LinearOrder` with no ring structure, on which `linarith` does not fire. The `≥` direction goes
+through `le_sub_iff_add_le` and `add_comm` instead.
+-/
+theorem succ_eq_add_succ_zero (z : D) : Order.succ z = z + Order.succ (0 : D) := by
+  have hu : (0 : D) < Order.succ (0 : D) := Order.lt_succ (0 : D)
+  refine le_antisymm ?_ ?_
+  · exact Order.succ_le_of_lt (lt_add_of_pos_right z hu)
+  · have h1 : (0 : D) < Order.succ z - z := sub_pos.mpr (Order.lt_succ z)
+    have h2 : Order.succ (0 : D) ≤ Order.succ z - z :=
+      (isLeast_pos_succ_zero (D := D)).2 h1
+    rw [le_sub_iff_add_le, add_comm] at h2
+    exact h2
+
+/-- Iterating `succ` from `0` is `ℕ`-scalar multiplication by `succ 0`. -/
+theorem succ_iterate_zero (n : ℕ) :
+    (Order.succ)^[n] (0 : D) = n • Order.succ (0 : D) := by
+  induction n with
+  | zero => simp
+  | succ n ih =>
+    rw [Function.iterate_succ_apply', ih, succ_eq_add_succ_zero, succ_nsmul]
+
+/--
+**Successor-Archimedean forces additively Archimedean.**
+
+The successor-branch companion to `archimedean_of_lub` above. Where that lemma reads the
+Archimedean property off the least-upper-bound property (the Dedekind branch, serving
+`ValidDense`), this one reads it off `IsSuccArchimedean` (the discrete branch, serving
+`ValidDiscrete`).
+
+`IsSuccArchimedean D` says every `x ≥ 0` is reached from `0` by finitely many `Order.succ`
+steps; `succ_iterate_zero` turns that iterate into `n • Order.succ 0`; and
+`isLeast_pos_succ_zero` says `Order.succ 0 ≤ y` for every positive `y`, so `n • y ≥ n •
+Order.succ 0 ≥ x`. Note `Archimedean D` does **not** synthesize from `[IsSuccArchimedean D]`
+on its own — those are order-successor conditions, not the additive Archimedean property.
+-/
+theorem archimedean_of_succ [IsSuccArchimedean D] : Archimedean D := by
+  refine ⟨fun x y hy => ?_⟩
+  rcases le_or_gt x 0 with hx | hx
+  · exact ⟨0, by simpa using hx⟩
+  · obtain ⟨n, hn⟩ := exists_succ_iterate_of_le (le_of_lt hx)
+    refine ⟨n, ?_⟩
+    rw [← hn, succ_iterate_zero]
+    exact nsmul_le_nsmul_right ((isLeast_pos_succ_zero (D := D)).2 hy) n
+
+/--
+**The full transfer.** A nontrivial successor-Archimedean ordered abelian group *is* `ℤ`, as an
+ordered group.
+
+This supplies both inputs `LinearOrderedAddCommGroup.int_orderAddMonoidIso_of_isLeast_pos`
+needs — the `Archimedean D` instance from `archimedean_of_succ`, and the `IsLeast {y | 0 < y}`
+witness from `isLeast_pos_succ_zero` — and is the transfer that
+`Semantics/IntTransfer.lean`'s `validDiscrete_iff_validInt` runs on.
+
+Note this is a `≃+o`, not a `≃o`. Durations **add** (`TaskRel`'s Compositionality is stated at
+`x + y`), so an order-only isomorphism such as the one `orderIsoIntOfLinearSuccPredArch`
+produces cannot carry a frame across; see the `archimedean_of_lub` docstring above for the full
+recorded wrong turn.
+-/
+noncomputable def intIso [IsSuccArchimedean D] : D ≃+o ℤ :=
+  letI : Archimedean D := archimedean_of_succ
+  LinearOrderedAddCommGroup.int_orderAddMonoidIso_of_isLeast_pos
+    (isLeast_pos_succ_zero (D := D))
+
+end SuccessorBranch
 
 end FormalSystem.Semantics

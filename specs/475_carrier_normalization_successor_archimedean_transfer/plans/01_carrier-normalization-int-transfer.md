@@ -1,7 +1,7 @@
 # Implementation Plan: Carrier Normalization — the Successor-Archimedean Transfer
 
 - **Task**: 475 - CARRIER NORMALIZATION: THE SUCCESSOR-ARCHIMEDEAN TRANSFER
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 5 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/475_carrier_normalization_successor_archimedean_transfer/reports/01_carrier-normalization-transfer.md`
@@ -132,27 +132,27 @@ genuinely parallel. Phase 5 is the first phase that consumes `intIso` from Phase
 
 ---
 
-### Phase 1: Successor-Archimedean block into DurationClassification.lean [NOT STARTED]
+### Phase 1: Successor-Archimedean block into DurationClassification.lean [COMPLETED]
 
 **Goal**: Land Step 1 — the four declarations that close the successor-Archimedean gap and make
 `int_orderAddMonoidIso_of_isLeast_pos` apply.
 
 **Tasks**:
-- [ ] Add `import Mathlib.Order.SuccPred.Archimedean` to
+- [x] Add `import Mathlib.Order.SuccPred.Archimedean` to
       `FormalSystem/Semantics/DurationClassification.lean`. (Already in the closure via
       `Semantics/Validity.lean`, so it costs no build time.)
-- [ ] Transcribe, inside `namespace FormalSystem.Semantics`, after `complete_not_dense_iso_int`
+- [x] Transcribe, inside `namespace FormalSystem.Semantics`, after `complete_not_dense_iso_int`
       and before `end FormalSystem.Semantics`, from
       `prototype/verified-prototype.lean` lines 10-50:
       `isLeast_pos_succ_zero`, `succ_eq_add_succ_zero`, `succ_iterate_zero`,
       `archimedean_of_succ`, and `noncomputable def intIso`.
-- [ ] State the shared `variable` bundle as
+- [x] State the shared `variable` bundle as
       `{D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [SuccOrder D] [Nontrivial D]`,
       with `[IsSuccArchimedean D]` on `archimedean_of_succ` and `intIso` only. Do **not** add
       `PredOrder D` or `IsPredArchimedean D` — they are unused.
-- [ ] Write a module-level docstring for `archimedean_of_succ` that names it as the successor
+- [x] Write a module-level docstring for `archimedean_of_succ` that names it as the successor
       branch companion to `archimedean_of_lub`, mirroring that lemma's docstring style.
-- [ ] TRAP: in `succ_eq_add_succ_zero`, do not reach for `linarith` — it does not fire on a bare
+- [x] TRAP: in `succ_eq_add_succ_zero`, do not reach for `linarith` — it does not fire on a bare
       `AddCommGroup` + `LinearOrder` (no ring structure). Use `le_sub_iff_add_le` + `add_comm`
       exactly as in the prototype.
 
