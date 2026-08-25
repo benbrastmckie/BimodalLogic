@@ -1056,12 +1056,12 @@
     {
       "project_number": 462,
       "project_name": "mintpaysfortime_engine_level_assembly",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "topic": "decidability",
       "description": "Land the engine-level assembly that lets `MintPaysForTimeFixed` be discharged at a NONEMPTY universe. This is the plumbing half of the residual task 434 left open at its Phase 8; it is explicitly proof engineering, not open mathematics, and task 434's own handoff records it as \"spawnable on its own\".\n\nTHE GAP. Every per-rule payment `MintPaysForTimeFixed` needs is already landed in MintBound.lean, but each is stated AT THE PICK, while the predicate quantifies over `unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1`. The missing work is threading the picked rule through `expandOnceUnblocked`'s three stages so the per-rule case split is available at the successor, for all thirty-six constructors at once.\n\nWHAT ALREADY EXISTS -- consume, do not re-author:\n- disjunct 2, the six rules in `freshLabelRules INTER freshTimeRules`: `mintPotential_lt_of_pick_linear_sigmaFixed` and `mintPotential_lt_of_pick_branching_sigmaFixed`, discharged from confinement plus `SigmaFixed` by `sigma_formula_hit_of_sigmaFixed`.\n- disjunct 3, the two rules in `selfGuardRules`: `selfGuardPotential_lt_of_untlNeg` and `selfGuardPotential_lt_of_snceNeg`.\n- disjunct 1, the twenty-seven rules outside `freshTimeRules`: `applyRule_emitted_time_dichotomy` (MintBound.lean:7048) plus `expandOnceUnblocked_ord_mono` (:1945).\n- `MintPaysForTimeFixed` (:10499) and its direction lemma; `mintPaysForTimeFixed_signedUniverse_empty` (:11096) is the current boundary-only discharge this task is meant to supersede.\n\nDONE MEANS: `MintPaysForTimeFixed fc (signedUniverse C L) Tmax` discharged at NONEMPTY `L`, at every frame class OUTSIDE `.Dense` and `.Dedekind`, landed sorry-free and axiom-free with `lake build` green. The `.Dense`/`.Dedekind` classes are deliberately EXCLUDED from this task's scope: they additionally require `gapPotential` for the density coordinate, which is a separate research task and must NOT be attempted here. State the frame-class restriction explicitly in the theorem, do not hide it.\n\nPROHIBITED: do not re-attempt anything in the C9 do-not-re-attempt register (read entries in full first, especially 14, 17, 18, 19, 20); do not edit Fuel.lean, Saturation.lean or Tableau.lean (md5-pinned frozen); do not alter any previously-landed declaration; no `sorry`, no vacuous discharge, no predicate that is itself false. If the assembly turns out to need genuinely open mathematics rather than plumbing, STOP and record that finding with evidence rather than forcing it -- that outcome is a legitimate deliverable and should be recorded as a new C9 entry.\n\nDependencies: none. This task is unblocked today.\nREALIGNMENT ADDENDUM (task 468, 2026-08-25) -- SEQUENCING WITH THE FIFTH TERMINATION RESIDUAL:\ntask 481 (discharge_or_replace_unorderedsuccessorlabelclosed_residual, dependencies: [434]) targets\n`UnorderedSuccessorLabelClosed` (MintBound.lean:6199), which is refuted in-tree at :6238\n(`¬ UnorderedSuccessorLabelClosed fc freshWorldLabels`) precisely at a NONEMPTY universe -- the\nsame setting this task's `MintPaysForTimeFixed` discharge above targets. If this task and 481 are\nnot sequenced, this task risks either duplicating the discovery of that refutation or, worse,\nbuilding the assembly on an implicit assumption that the residual is harmless. Task 481 should run\nBEFORE OR ALONGSIDE this task; check its disposition (discharge, weaker replacement, or C9 register\nentry) before relying on any assumption about `UnorderedSuccessorLabelClosed` at a nonempty\nuniverse in this task's own work.",
       "created": "2026-08-19T01:33:04Z",
-      "last_updated": "2026-08-25T18:01:37Z",
+      "last_updated": "2026-08-25T19:21:14Z",
       "session_id": "sess_1787672861_1a4999_462",
       "file_scope": [
         "FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean"
@@ -1081,8 +1081,14 @@
           "path": "specs/462_mintpaysfortime_engine_level_assembly/plans/01_engine-level-mint-assembly.md",
           "type": "plan",
           "summary": "5-phase sequential plan: D5 scaffold + strengthened bridge, guard inversions, four-bucket pickBranches split, engine lift, honest-scope prose and entry-20 amendment."
+        },
+        {
+          "path": "specs/462_mintpaysfortime_engine_level_assembly/summaries/01_engine-level-mint-assembly-summary.md",
+          "type": "summary",
+          "summary": "Section D5 landed, the honest scope statement, the Phase 2 route taken, deviations, scope-hypothesis outcomes, and the verification table."
         }
-      ]
+      ],
+      "completion_summary": "Added section D5 to MintBound.lean (674 insertions, 9 deletions -- every deletion inside C9 entry 20's prose paragraph), discharging MintPaysForTimeFixed fc U Tmax at an arbitrary universe under the single visible hypothesis (FormalSystem.ProofSystem.FrameClass.Dense <= fc) -> False, and at signedUniverse C L for every stock C including untl/snce nodes. The missing piece was the picked rule's identity at the successor: pick_stage_source_rule threads stage one's findApplicableRule equation through, pickBranches_mintPays case-splits on a decide-proved four-bucket census, and every bucket closes from an already-landed payment lemma with both budget conjuncts exact. This retires C9 entry 20's item (a) and generalizes D3's discharge off its untl/snce-free fragment, but it makes NO terminus in the file non-vacuous -- the nine hlab carriers stay vacuous and the hlab-free hmint-carrying termini stay conditioned on UniverseClosedAt plus DifficultyBounded/StepLengthBounded plus PostBlockingSettles/PostBlockingSettlesRun, three of which C9 entries 9, 11 and 22 refute."
     },
     {
       "project_number": 463,

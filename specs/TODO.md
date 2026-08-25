@@ -11,18 +11,16 @@ next_project_number: 483
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,193,257,298,433,461,476,481 | -- | automation, dataset-enhancement, decidability, ... |
-| 2 | 125,178,231,282,296,462 | 193,298,461,481 | algebraic-representation, dataset-enhancement, decidability, ... |
-| 3 | 219,463 | 231,462 | dataset-enhancement, decidability |
-| 4 | 464 | 463 | decidability |
-| 5 | 465 | 464 | decidability |
-| 6 | 428 | 433,465 | decidability |
-| 7 | 429 | 428 | decidability |
-| 8 | 410 | 429 | decidability |
-| 9 | 411 | 410 | decidability |
-| 10 | 430 | 411 | decidability |
-| 11 | 177,412 | 193,430 | decidability, formula-refactor |
-| 12 | 482 | 412 | decidability |
+| 1 | 127,128,193,257,298,433,461,463,476,481 | -- | automation, dataset-enhancement, decidability, ... |
+| 2 | 125,178,231,282,296,464 | 193,298,461,463 | algebraic-representation, dataset-enhancement, decidability, ... |
+| 3 | 219,465 | 231,464 | dataset-enhancement, decidability |
+| 4 | 428 | 433,465 | decidability |
+| 5 | 429 | 428 | decidability |
+| 6 | 410 | 429 | decidability |
+| 7 | 411 | 410 | decidability |
+| 8 | 430 | 411 | decidability |
+| 9 | 177,412 | 193,430 | decidability, formula-refactor |
+| 10 | 482 | 412 | decidability |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -53,13 +51,12 @@ next_project_number: 483
           └─ 430 [NOT STARTED] — The semantic lift and the Track A assembly. Owns obstruction O4 o
             └─ 412 [NOT STARTED] — Track B finish for the TM tableau decidability program (parent: t
               └─ 482 [NOT STARTED] — CLASSIFICATION: OPEN MATHEMATICS, multi-month. This MUST NOT be r
+463 [NOT STARTED] — Decide `PostBlockingSettlesRun fc (mintAwareFuelAt U.card Tmax mi
+  └─ 464 [NOT STARTED] — Design and land `gapPotential`, the density coordinate of the ter
+    └─ 465 [NOT STARTED] — Complete the terminus restatement family at the repaired residual
+      └─ 428 [BLOCKED] — Engine totality at a quantified branch budget. Owns obstruction O (see above)
 476 [NOT STARTED] — THE BOX-FAITHFUL SMALL-MODEL THEOREM.
 481 [PARTIAL] — CLASSIFICATION: genuinely open -- the predicate is refuted as sta
-  └─ 462 [PLANNED] — Land the engine-level assembly that lets `MintPaysForTimeFixed` b
-    └─ 463 [NOT STARTED] — Decide `PostBlockingSettlesRun fc (mintAwareFuelAt U.card Tmax mi
-      └─ 464 [NOT STARTED] — Design and land `gapPotential`, the density coordinate of the ter
-        └─ 465 [NOT STARTED] — Complete the terminus restatement family at the repaired residual
-          └─ 428 [BLOCKED] — Engine totality at a quantified branch budget. Owns obstruction O (see above)
 
 ### Formula Refactor
 
@@ -1662,12 +1659,13 @@ Dependencies: 462, as a file_scope SERIALIZATION edge only (both tasks edit Mint
 ---
 
 ### 462. Mintpaysfortime engine level assembly
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 469, Task 470, Task 481
 - **Research**: [462_mintpaysfortime_engine_level_assembly/reports/01_engine-level-mint-assembly.md]
 - **Plan**: [462_mintpaysfortime_engine_level_assembly/plans/01_engine-level-mint-assembly.md]
+- **Summary**: [462_mintpaysfortime_engine_level_assembly/summaries/01_engine-level-mint-assembly-summary.md]
 
 **Description**: Land the engine-level assembly that lets `MintPaysForTimeFixed` be discharged at a NONEMPTY universe. This is the plumbing half of the residual task 434 left open at its Phase 8; it is explicitly proof engineering, not open mathematics, and task 434's own handoff records it as "spawnable on its own".
 
