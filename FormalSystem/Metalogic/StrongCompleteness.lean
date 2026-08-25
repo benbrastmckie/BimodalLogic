@@ -70,14 +70,23 @@ it is easy to get backwards: the engine never sees a context. It is fed the sing
   conclusions are `discrete_consequence_not_compact` (refuting `CompactDiscrete`) and
   `strongCompletenessDiscrete_refuted` (refuting `StrongCompletenessDiscrete`). All are
   sorry-free at exactly `[propext, Classical.choice, Quot.sound]`.
-* **`FrameClass.Dedekind`**: strong completeness is likewise out of reach. Reynolds 1992
-  (Theorem 7, §9, printed p.189) is *weak* completeness for the real-line axiomatisation, and
-  the restriction is genuine: the consequence relation over Dedekind-complete flows is not
-  compact (an infinite premise set can have no model while every finite subset has one, and a
-  derivation can only use finitely many premises). The headline result for this class is
-  therefore weak completeness, `completeness_dedekind`, with the finite-context form
-  `consequence_completeness_dedekind` as its deduction-theorem companion — not a "strong"
-  theorem, and nothing in this module purports otherwise.
+* **`FrameClass.Dedekind`**: strong completeness is **unavailable on the primary source's own
+  terms**, which is a weaker and more accurate claim than the one Discrete supports. Reynolds
+  1992 (Theorem 7, §9, printed p.189) is *weak* completeness for the real-line axiomatisation,
+  and the restriction there is genuine rather than an artefact of presentation. What this tree
+  does **not** contain is a refutation: there is no `CompactDedekind` definition and no theorem
+  refuting compactness for this class, so "the Dedekind consequence relation is not compact"
+  is at present a claim resting on the source's own scope, not a machine-checked fact. The
+  headline result for this class is therefore weak completeness, `completeness_dedekind`, with
+  the finite-context form `consequence_completeness_dedekind` as its deduction-theorem
+  companion — not a "strong" theorem, and nothing in this module purports otherwise.
+
+**Three distinct statuses, which must not be collapsed.** Base and Dense are **open** (neither
+proved nor refuted; `CompactBase`/`CompactDense` name the obligations). Discrete is
+**machine-refuted** (`discrete_consequence_not_compact`, `strongCompletenessDiscrete_refuted`).
+Dedekind is **unavailable on Reynolds's terms** — unproved, with no refutation in the tree.
+`SetConsequence.lean` already models this discipline for Dense versus Discrete; the Dedekind
+case is the third status, and reading it as sharing Discrete's would overstate the evidence.
 
 ## Axiomatisability of the real-line temporal logic
 
@@ -254,7 +263,47 @@ theorem derivable_foldr_imp_iff {fc : FrameClass} (Γ : Context) (φ : Formula) 
   · intro h
     simpa using derivable_of_derivable_foldr_imp Γ [] φ h
 
-/-! ## Strong completeness for `FrameClass.Dense`, modulo compactness -/
+/-! ## Strong completeness for `FrameClass.Base` and `FrameClass.Dense`, modulo compactness -/
+
+/--
+**Strong completeness = compactness + weak completeness, at the base class.** The Base mirror of
+`strongCompletenessDense_of_compact` below, with `CompactBase` / `StrongCompletenessBase` /
+`valid` in place of their Dense counterparts and the `[DenselyOrdered D]` binder dropped. No new
+proof-theoretic machinery: compactness supplies a finite premise list and
+`derivable_foldr_imp_iff` turns the engine's empty-context derivation of the
+`foldr`-implication back into a derivation from that list.
+
+Like its Dense sibling this theorem lives here rather than in
+`FormalSystem/Metalogic/SetConsequence.lean`, which supplies the vocabulary it is stated
+against, because `derivable_foldr_imp_iff` is owned by this module and this module imports that
+one. Stating it there would be an import cycle.
+
+**The `engine` hypothesis is live, deliberately.** `BXCanonical.completeness`
+(`BXCanonical/Completeness.lean:196`) has exactly this shape,
+`valid φ → Derivable FrameClass.Base [] φ`, and is sorry-free — so unlike at the time the Dense
+version was written, this hypothesis is *now* dischargeable. It is nevertheless not discharged:
+keeping the statement engine-generic isolates `CompactBase` as **the entire** remaining
+obligation for Base strong completeness, which is the fact worth recording in the type. The
+unconditional finite-context result is `consequence_completeness_base` below; nothing is lost by
+leaving `engine` open here.
+
+**Status of `CompactBase`.** Open — neither proved nor refuted. The gate on the bespoke
+ultraproduct route that would settle it is passed, but the route itself is a separate,
+multi-phase piece of work that is deliberately not attempted in this file: it needs an
+ultraproduct carrier, a Łoś lemma for `TruthAt`, `ModelExistenceBase` and hence `CompactBase`.
+The existing `BXCanonical` chronicle machinery **structurally cannot** be extended to reach it,
+because every countermodel there routes through
+`fully_restricted_parametric_completeness_from_neg_membership`, whose coherence hypotheses are
+root-relative and quantify over `Finset`-valued subformula and deferral closures; an infinite
+`Γ` would need coherence over `⋃_{ψ ∈ Γ} subformulaClosure ψ`, which is not a `Finset`. That is
+why the route abandons the chronicle rather than extending it.
+-/
+theorem strongCompletenessBase_of_compact (hc : CompactBase)
+    (engine : ∀ ψ : Formula, valid ψ → Derivable FrameClass.Base [] ψ) :
+    StrongCompletenessBase := by
+  intro Γ φ h
+  obtain ⟨L, hL, hvalid⟩ := hc Γ φ h
+  exact ⟨L, hL, (derivable_foldr_imp_iff L φ).mpr (engine _ hvalid)⟩
 
 /--
 **Strong completeness = compactness + weak completeness.** No new proof-theoretic machinery, no
@@ -299,14 +348,22 @@ completeness — `Γ ⊨ φ → Γ ⊢ φ` for an arbitrary, possibly infinite `
    every `Γ` here is finite, and the deduction theorem turns the finite-context form into the
    single-formula form and back. Nothing is gained over `completeness_dedekind` beyond the
    convenience of the arbitrary-`Γ` shape, which is exactly the shape of `soundness_dedekind`.
-2. *The infinitary statement is provably out of reach for any finitary proof system, by
-   non-compactness.* A derivation is a finite object and can cite only finitely many premises,
-   so strong completeness for a finitary derivability relation entails compactness of the
-   class consequence relation. The consequence relation over dense Dedekind-complete flows is
-   not compact — an infinite premise set can be unsatisfiable while every finite subset has a
-   model — so no strengthening of the countermodel construction, and no reformulation of this
-   theorem, can reach it. It is refuted, not merely unproved. (The same obstruction rules the
-   statement out at `FrameClass.Discrete`; see the module docstring for both counterexamples.)
+2. *The infinitary statement is not reachable from this theorem, and is not established for
+   this class.* A derivation is a finite object and can cite only finitely many premises, so
+   strong completeness for a finitary derivability relation entails compactness of the class
+   consequence relation — and no strengthening of the countermodel construction, and no
+   reformulation of this theorem, supplies that compactness. Beyond that structural point the
+   evidence for the two classes differs sharply, and the difference matters:
+
+   * At `FrameClass.Discrete` the infinitary statement is **machine-refuted**:
+     `discrete_consequence_not_compact` refutes `CompactDiscrete` and
+     `strongCompletenessDiscrete_refuted` refutes `StrongCompletenessDiscrete`, both in
+     `Metalogic/DiscreteNonCompactness.lean`, both sorry-free.
+   * At `FrameClass.Dedekind` it is **unavailable on the primary source's own terms** and
+     nothing stronger. Reynolds 1992 Theorem 7 is weak-only, and this tree contains no
+     `CompactDedekind` definition and no refuting theorem for the class. Saying that the
+     Dedekind consequence relation "is not compact" would assert more than has been checked
+     here; the honest statement is that no route to it is known and none is attempted.
 3. *The infinitary statement is not even expressible in this tree.* `Context := List Formula`
    (`Syntax/Context.lean`) is the premise type of `Derivable`, `DerivationTree`, and
    `SemanticConsequenceDedekindDense` alike, so there is no `Γ : Set Formula` to quantify over
@@ -354,8 +411,9 @@ theorem soundness_dedekind_consequence (Γ : Context) (φ : Formula)
 of the consequence form.**
 
 Weak completeness is the strongest completeness statement available for `FrameClass.Dedekind`:
-the class consequence relation is not compact, so the genuine strong (infinite-premise) form
-is out of reach (see the module docstring). Recorded here so that the weak form has exactly
+the genuine strong (infinite-premise) form is unavailable on the primary source's own terms and
+no route to it is known — but note that, unlike at `FrameClass.Discrete`, it is *unproved*
+rather than refuted (see the module docstring). Recorded here so that the weak form has exactly
 one proof in the tree, and that proof is a corollary rather than a parallel construction —
 proving it independently would duplicate the countermodel engine; this declaration makes that
 redundancy visible in the type.
@@ -380,8 +438,9 @@ neither carries a proof of its own beyond naming the engine. -/
 `engine := BXCanonical.completeness_dedekind_engine` — Reynolds 1992, §9 Theorem 7, printed
 p.189. The engine hypothesis is discharged; everything the docstring of the `_of_engine` form
 says about what this statement is and is not carries over verbatim, including the three facts
-held apart there. In particular this is **not** strong completeness: the class consequence
-relation is not compact, the infinitary statement is refuted rather than merely unproved, and
+held apart there. In particular this is **not** strong completeness: the infinitary statement is
+unavailable for this class on the primary source's own terms — *unproved*, with no refutation
+in this tree, in contrast to `FrameClass.Discrete` where it is machine-refuted — and
 `Context := List Formula` cannot express it in any case.
 -/
 theorem consequence_completeness_dedekind (Γ : Context) (φ : Formula)
@@ -722,11 +781,15 @@ theorem completeness_discrete (φ : Formula) (h : ValidDiscrete φ) :
 
 /-! ### Axiom audit for the per-class consequence layer
 
-The twelve declarations of the Base, Dense and Discrete sections above are discharged with no
-`sorryAx` and no new axiom: exactly `propext`, `Classical.choice` and `Quot.sound`, the same set
-carried by the Dedekind terminus audited earlier in this file and by the three
-`BXCanonical` engines they consume. -/
+The fourteen declarations of the Base, Dense and Discrete sections above — four for Base, which
+reuses `SemanticConsequence` rather than introducing a relation of its own, and five each for
+Dense and Discrete — are discharged with no `sorryAx` and no new axiom: exactly `propext`,
+`Classical.choice` and `Quot.sound`, the same set carried by the Dedekind terminus audited
+earlier in this file and by the three `BXCanonical` engines they consume.
+`strongCompletenessBase_of_compact` is audited alongside them; it is a reduction rather than a
+terminus, since its `CompactBase` hypothesis is an open obligation. -/
 
+#print axioms strongCompletenessBase_of_compact
 #print axioms consequence_completeness_base
 #print axioms completeness_base
 #print axioms soundness_base_consequence

@@ -335,11 +335,16 @@ No class picked up an unplanned relation and none lost a soundness guard.)*
 
 ---
 
-### Phase 4: Base set-layer mirror, and the Dedekind prose softening [NOT STARTED]
+### Phase 4: Base set-layer mirror, and the Dedekind prose softening [COMPLETED]
 
 **Goal**: Close the Base/Dense asymmetry in `SetConsequence.lean` by adding the four missing Base
 definitions and `strongCompletenessBase_of_compact`, and soften the Dedekind non-compactness
 claim so it no longer outruns its evidence.
+
+**SCOPE EXTENSION TAKEN.** The delegation context for the implementing dispatch directed this
+phase to land "ONLY the cheap Base set-layer mirror (4 defs in SetConsequence.lean +
+`strongCompletenessBase_of_compact` with the engine hypothesis kept live), and softening the
+Dedekind non-compactness prose", so the extension below was authorised and is taken in full.
 
 **SCOPE EXTENSION — explicit decision, not a silent one.** The task's declared `file_scope` is
 `FormalSystem/Metalogic/StrongCompleteness.lean` and `FormalSystem/Metalogic.lean`. This phase
@@ -352,22 +357,22 @@ extension is declined**, this phase reduces to the Dedekind prose softening in
 `CompactBase` symbol to cite.
 
 **Tasks**:
-- [ ] Add the four missing Base set-layer definitions to `SetConsequence.lean`:
+- [x] Add the four missing Base set-layer definitions to `SetConsequence.lean`:
       `StrongCompletenessBase`, `CompactBase`, `SatisfiableBaseSet`, `ModelExistenceBase`. Each
       is its Dense sibling (near :198–229) with `SetSemanticConsequenceBase` (already present at
       :73) / `valid` in place of `SetSemanticConsequenceDense` / `ValidDense`, and the
       `[DenselyOrdered D]` binder dropped.
-- [ ] Carry each definition's docstring discipline over from its Dense sibling: these are
+- [x] Carry each definition's docstring discipline over from its Dense sibling: these are
       `Prop`-valued names for **open obligations**, and the module docstring already says so for
       Dense — say it for Base too.
-- [ ] Add `strongCompletenessBase_of_compact` to `StrongCompleteness.lean`, next to
+- [x] Add `strongCompletenessBase_of_compact` to `StrongCompleteness.lean`, next to
       `strongCompletenessDense_of_compact` (near :259): destructure `hc Γ φ h` to `⟨L, hL, hvalid⟩`
       and close with `(derivable_foldr_imp_iff L φ).mpr (engine _ hvalid)`.
-- [ ] **Keep the `engine` hypothesis live.** Do not discharge it, even though it is now
+- [x] **Keep the `engine` hypothesis live.** Do not discharge it, even though it is now
       dischargeable at `BXCanonical.completeness`. Say so in the docstring — as the Dense
       docstring already does for `completeness_dense` — and state that keeping it live isolates
       `CompactBase` as the entire remaining obligation for Base strong completeness.
-- [ ] Soften the Dedekind non-compactness prose in the `StrongCompleteness.lean` module docstring
+- [x] Soften the Dedekind non-compactness prose in the `StrongCompleteness.lean` module docstring
       and in the `consequence_completeness_dedekind_of_engine` docstring (fact 2). The current
       text asserts "It is refuted, not merely unproved" for Dedekind, but **no refutation exists
       in the tree**: there is no `CompactDedekind` definition and no refuting theorem; the claim
@@ -376,9 +381,16 @@ extension is declined**, this phase reduces to the Dedekind prose softening in
       asymmetry explicitly rather than letting the two classes read as sharing a status —
       `SetConsequence.lean` already models this discipline for Dense vs. Discrete ("The Dense and
       Discrete statements must not be read as sharing a status").
-- [ ] Record, in prose in the docstring (NOT as a `sorry`), that 424's gate is PASSED and that
+- [x] Record, in prose in the docstring (NOT as a `sorry`), that 424's gate is PASSED and that
       the remaining route is the bespoke ultraproduct decomposed as S2–S5, which **do not exist
       as tasks** and are deliberately not attempted here.
+      *(deviation: altered — recorded in the `strongCompletenessBase_of_compact` docstring
+      without the task numbers. `.claude/rules/no-task-references-in-deliverables.md` forbids
+      task-number citations outside `specs/**`, and `FormalSystem/**` is a deliverable. The
+      substance is carried in full: the gate is recorded as passed, the four-step ultraproduct
+      route is named, the deliberate non-attempt is stated, and the structural reason the
+      chronicle machinery cannot be extended is given. The numbered S2–S5 / 424 references live
+      in the task summary, where they are permitted.)*
 
 **Timing**: 1.0 hours
 
