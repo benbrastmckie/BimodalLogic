@@ -373,34 +373,36 @@ than assumed from this plan.
 
 ---
 
-### Phase 5: Tighten the explicit_task_ref heuristic [NOT STARTED]
+### Phase 5: Tighten the explicit_task_ref heuristic [COMPLETED]
 
 **Goal**: An item is no longer auto-completed on an explicit task reference when the item's own
 text also references a task that is still non-terminal, and all task references in the item are
 inspected rather than only the first.
 
 **Tasks**:
-- [ ] Extend the data flow into the Python matching step: build an `ACTIVE_TASKS` payload from
+- [x] Extend the data flow into the Python matching step: build an `ACTIVE_TASKS` payload from
       `$STATE_PATH` containing every `active_projects[]` entry's `project_number` plus `status`
       (numbers and statuses only — not full records), including non-terminal statuses
       (`not_started`, `researching`, `researched`, `planning`, `planned`, `implementing`,
-      `partial`, `blocked`, `pr_ready`)
-- [ ] Pass it via a **third temp file** argument to the existing `python3 - "$TMP_ROADMAP_STATE"
+      `partial`, `blocked`, `pr_ready`) *(completed: explicit allowlist, not `!= "completed"`, so
+      abandoned/expanded tasks don't wrongly block)*
+- [x] Pass it via a **third temp file** argument to the existing `python3 - "$TMP_ROADMAP_STATE"
       "$TMP_ALL_COMPLETED"` heredoc call (matching the established temp-file convention there,
-      not argv), and extend the existing EXIT trap to clean it up
-- [ ] In `find_match()` Check 1, replace `re.search(r'\(task (\d+)', ...)` with `re.finditer` so
-      **every** `(task N` reference in the item text is collected
-- [ ] Reject the high-confidence `explicit_task_ref` verdict when any collected reference resolves
+      not argv), and extend the existing EXIT trap to clean it up *(completed)*
+- [x] In `find_match()` Check 1, replace `re.search(r'\(task (\d+)', ...)` with `re.finditer` so
+      **every** `(task N` reference in the item text is collected *(completed)*
+- [x] Reject the high-confidence `explicit_task_ref` verdict when any collected reference resolves
       to a task whose status is non-terminal; fall through to the remaining checks instead of
-      returning a match
-- [ ] When at least one reference is completed and none is non-terminal, return the completed task
-      as today (preserve the existing behavior for the clean case)
-- [ ] Treat an unresolvable task number (present in neither the completed set nor the active set —
+      returning a match *(completed)*
+- [x] When at least one reference is completed and none is non-terminal, return the completed task
+      as today (preserve the existing behavior for the clean case) *(completed)*
+- [x] Treat an unresolvable task number (present in neither the completed set nor the active set —
       e.g. abandoned or renumbered) as non-blocking for the reject rule, but do not let it alone
-      produce a high-confidence match
-- [ ] Add an inline comment recording the concrete failure this guards against: an item whose text
+      produce a high-confidence match *(completed)*
+- [x] Add an inline comment recording the concrete failure this guards against: an item whose text
       says "tasks 314-318 in flight/not-started" was wrongly checked off on a `(task 313)` context
-      reference
+      reference *(completed: worded generically in-code per no-task-references-in-deliverables.md,
+      since roadmap-integration.sh is a deliverable outside specs/**)*
 
 **Timing**: 1.5 hours
 

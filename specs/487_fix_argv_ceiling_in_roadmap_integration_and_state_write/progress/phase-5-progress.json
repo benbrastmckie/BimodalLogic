@@ -1,0 +1,27 @@
+{
+  "phase": 5,
+  "phase_name": "Tighten the explicit_task_ref heuristic",
+  "started_at": "2026-08-25T01:15:00Z",
+  "last_updated": "2026-08-25T01:35:00Z",
+  "objectives": [
+    {"id": 1, "description": "Build ACTIVE_TASKS payload from state.json non-terminal statuses", "status": "done", "files_touched": ["agent-system/extensions/core/scripts/roadmap-integration.sh"]},
+    {"id": 2, "description": "Pass via third temp-file argument, extend EXIT trap", "status": "done", "files_touched": ["agent-system/extensions/core/scripts/roadmap-integration.sh"]},
+    {"id": 3, "description": "find_match() Check 1: re.finditer for all (task N) references", "status": "done", "files_touched": ["agent-system/extensions/core/scripts/roadmap-integration.sh"]},
+    {"id": 4, "description": "Reject high-confidence verdict when any reference is non-terminal", "status": "done", "files_touched": []},
+    {"id": 5, "description": "Preserve clean-case behavior (completed refs, no non-terminal)", "status": "done", "files_touched": []},
+    {"id": 6, "description": "Unresolvable reference non-blocking, not alone sufficient", "status": "done", "files_touched": []},
+    {"id": 7, "description": "Inline comment recording the concrete failure guarded against", "status": "done", "files_touched": []}
+  ],
+  "current_objective": 7,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": [
+    {
+      "task_id": "5.verification.live-repo",
+      "description": "Verification bullet 'Against the live repo in parse-only mode: the previously mis-matched item no longer appears as a high-confidence explicit_task_ref match'",
+      "type": "altered",
+      "reason": "Checked the live repo's current specs/state.json: of the roadmap item's six referenced task numbers, four (313, 315, 316, 317) are now status=completed, one (318) is abandoned (a terminal status, correctly non-blocking per the reject rule's design), and one (314) is unresolvable (appears in neither active_projects nor the archive, likely renumbered/purged in a vault operation since the item was written -- also correctly non-blocking). None of the six is currently non-terminal, so the reject rule correctly does NOT fire, and the item legitimately re-appears as a high-confidence match. This is the fix working as designed, not a regression -- the underlying data has simply moved on since the original incident (all the tasks that were in-flight at the time have since completed or been abandoned). The fix's actual defense against the historical failure mode is proven synthetically instead: a fixture recreating the original incident's conditions (one completed reference + one/several still-non-terminal references in the same item) was built and run against both the pre-fix and post-fix scripts -- pre-fix wrongly matched both cases (reproducing the historical bug exactly), post-fix correctly rejected both (see progress file test transcript in the implementation summary).",
+      "annotation": "*(deviation: altered -- the live repo's specific historical item no longer demonstrates the fix, because all six of its referenced tasks have since resolved to terminal states; the fix is instead proven against a synthetic fixture recreating the original incident's conditions, which pre-fix wrongly matches and post-fix correctly rejects)*"
+    }
+  ]
+}
