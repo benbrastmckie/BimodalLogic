@@ -228,24 +228,24 @@ hypothesis was wrong.
 
 ---
 
-### Phase 3: Model/history transport and the Aligned relation [NOT STARTED]
+### Phase 3: Model/history transport and the Aligned relation [COMPLETED]
 
 **Goal**: Land `TaskModel.map`, `WorldHistory.map`, `WorldHistory.comap`, and the `Aligned`
 machinery that lets `TruthAt`'s `box` clause move in both directions without `HEq`.
 
 **Tasks**:
-- [ ] Transcribe from prototype lines 117-151 and 162-190, into `IntTransfer.lean`:
+- [x] Transcribe from prototype lines 117-151 and 162-190, into `IntTransfer.lean`:
       `TaskModel.map`, `WorldHistory.map`, `structure Aligned`, `aligned_map`, `isTotal_map`,
       `WorldHistory.comap`, `aligned_comap`.
-- [ ] MUST: use the `Prop`-valued `Aligned` structure. MUST NOT attempt
+- [x] MUST: use the `Prop`-valued `Aligned` structure. MUST NOT attempt
       `WorldHistory F ≃ WorldHistory (TaskFrame.map F e)` — round-tripping `map`/`comap` forces a
       dependent structure equality on the `states` field and degenerates into `HEq` wrangling.
       `Aligned.st` is a non-dependent equation between two `F.WorldState` terms because
       `(F.map e).WorldState` is definitionally `F.WorldState`.
-- [ ] `aligned_comap`'s single transport is discharged by the tree's **existing**
+- [x] `aligned_comap`'s single transport is discharged by the tree's **existing**
       `WorldHistory.states_eq_of_time_eq` (`FormalSystem/Semantics/WorldHistory.lean:323`) at
       `n = e (e.symm n)`. Do not write a new transport lemma.
-- [ ] Docstring `Aligned` with the design rationale (why a relation, not an `Equiv`).
+- [x] Docstring `Aligned` with the design rationale (why a relation, not an `Equiv`).
 
 **Timing**: 1 hour
 

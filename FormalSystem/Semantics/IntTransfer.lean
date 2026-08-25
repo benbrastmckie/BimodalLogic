@@ -133,4 +133,108 @@ def TaskFrame.map (F : TaskFrame D) (e : D ≃+o E) : TaskFrame E where
       · simpa using (map_le_map_iff e.symm (a := 0) (b := y)).mpr hy
       · simp [TaskFrame.Seg, TaskFrame.Fib, map_neg]
 
+/--
+Transport a task model along `e`. The valuation is carried over verbatim: `TaskFrame.map` leaves
+`WorldState` unchanged, so `M.valuation` already has the right type.
+-/
+def TaskModel.map {F : TaskFrame D} (M : TaskModel F) (e : D ≃+o E) :
+    TaskModel (TaskFrame.map F e) where
+  valuation := M.valuation
+
+/--
+Push a history forward along `e`: the domain and states are reindexed by `e.symm`.
+-/
+def WorldHistory.map {F : TaskFrame D} (τ : WorldHistory F) (e : D ≃+o E) :
+    WorldHistory (TaskFrame.map F e) where
+  domain := fun n => τ.domain (e.symm n)
+  nonempty_domain := by
+    obtain ⟨t, ht⟩ := τ.nonempty_domain
+    exact ⟨e t, by simpa using ht⟩
+  states := fun n h => τ.states (e.symm n) h
+  respects_task := by
+    intro s t hs ht
+    have := τ.respects_task (e.symm s) (e.symm t) hs ht
+    show F.TaskRel _ (e.symm (t - s)) _
+    simpa [map_sub] using this
+  convex := by
+    intro x z hx hz y hxy hyz
+    exact τ.convex (e.symm x) (e.symm z) hx hz (e.symm y)
+      ((map_le_map_iff e.symm).mpr hxy) ((map_le_map_iff e.symm).mpr hyz)
+
+/--
+Two histories over corresponding frames agree pointwise under `e`.
+
+**Why a relation and not an `Equiv`.** The obvious alternative — an equivalence
+`WorldHistory F ≃ WorldHistory (TaskFrame.map F e)` — does not survive contact with the `states`
+field, which is *dependent*: it is indexed by a proof of `domain`. Round-tripping `map` and
+`comap` therefore forces a dependent structure equality and degenerates into `HEq` wrangling.
+
+`Aligned` sidesteps this. Because `(TaskFrame.map F e).WorldState` is **definitionally**
+`F.WorldState`, the field `st` is an ordinary non-dependent equation between two `F.WorldState`
+terms, and its only genuine transport (in `aligned_comap`) is discharged by the tree's existing
+`WorldHistory.states_eq_of_time_eq`. No `HEq` appears anywhere in this module; an `HEq` showing
+up is the signal that the forbidden `Equiv` route was taken.
+-/
+structure Aligned {F : TaskFrame D} (e : D ≃+o E)
+    (σ : WorldHistory F) (σ' : WorldHistory (TaskFrame.map F e)) : Prop where
+  /-- The two domains correspond under `e.symm`. -/
+  dom : ∀ n, σ'.domain n ↔ σ.domain (e.symm n)
+  /-- The two state assignments agree at corresponding times. -/
+  st : ∀ (n : E) (h' : σ'.domain n) (h : σ.domain (e.symm n)),
+        σ'.states n h' = σ.states (e.symm n) h
+
+/-- A history is aligned with its own forward transport, definitionally. -/
+theorem aligned_map {F : TaskFrame D} (e : D ≃+o E) (τ : WorldHistory F) :
+    Aligned e τ (WorldHistory.map τ e) :=
+  ⟨fun _ => Iff.rfl, fun _ _ _ => rfl⟩
+
+/-- Totality transfers across an alignment. -/
+theorem isTotal_map {F : TaskFrame D} (e : D ≃+o E) {σ : WorldHistory F}
+    {σ' : WorldHistory (TaskFrame.map F e)} (ha : Aligned e σ σ') (h : σ.IsTotal) :
+    σ'.IsTotal := fun n => (ha.dom n).mpr (h _)
+
+/--
+Pull a history back along `e` from the transported frame to the original.
+
+This is the direction `truthAt_map`'s `box` case needs: `□` quantifies over histories of the
+*ambient* frame, so the forward direction is handed a `WorldHistory (TaskFrame.map F e)` and must
+produce a `WorldHistory F`.
+-/
+def WorldHistory.comap {F : TaskFrame D} (e : D ≃+o E)
+    (σ' : WorldHistory (TaskFrame.map F e)) : WorldHistory F where
+  domain := fun t => σ'.domain (e t)
+  nonempty_domain := by
+    obtain ⟨n, hn⟩ := σ'.nonempty_domain
+    exact ⟨e.symm n, by simpa using hn⟩
+  states := fun t h => σ'.states (e t) h
+  respects_task := by
+    intro s t hs ht
+    have := σ'.respects_task (e s) (e t) hs ht
+    have h2 : (TaskFrame.map F e).TaskRel (σ'.states (e s) hs) (e t - e s) (σ'.states (e t) ht) :=
+      this
+    show F.TaskRel _ (t - s) _
+    have : e.symm (e t - e s) = t - s := by simp [map_sub]
+    simpa [TaskFrame.map, this] using h2
+  convex := by
+    intro x z hx hz y hxy hyz
+    exact σ'.convex (e x) (e z) hx hz (e y)
+      ((map_le_map_iff e).mpr hxy) ((map_le_map_iff e).mpr hyz)
+
+/--
+A pulled-back history is aligned with the one it came from.
+
+Unlike `aligned_map` this is not definitional: the domain and state equations sit at
+`e (e.symm n)` rather than `n`. The `dom` half is `simp`; the `st` half is exactly what the
+tree's existing `WorldHistory.states_eq_of_time_eq` is for, and no new transport lemma is needed.
+-/
+theorem aligned_comap {F : TaskFrame D} (e : D ≃+o E)
+    (σ' : WorldHistory (TaskFrame.map F e)) : Aligned e (WorldHistory.comap e σ') σ' := by
+  constructor
+  · intro n
+    show σ'.domain n ↔ σ'.domain (e (e.symm n))
+    simp
+  · intro n h' h
+    show σ'.states n h' = σ'.states (e (e.symm n)) h
+    exact WorldHistory.states_eq_of_time_eq σ' n (e (e.symm n)) (by simp) h' h
+
 end FormalSystem.Semantics
