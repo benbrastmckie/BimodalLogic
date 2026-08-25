@@ -219,29 +219,29 @@ report's finding (1) rather than adding a relation.
 
 ---
 
-### Phase 2: Dense consequence block [NOT STARTED]
+### Phase 2: Dense consequence block [COMPLETED]
 
 **Goal**: Land the same four-layer shape for `FrameClass.Dense`, plus the new
 `SemanticConsequenceDense` relation it requires.
 
 **Tasks**:
-- [ ] Replace the "Reserved, same two-layer shape as the Base section above" prose under
+- [x] Replace the "Reserved, same two-layer shape as the Base section above" prose under
       `/-! ## Consequence and strong completeness for \`FrameClass.Dense\`` (currently near :413)
       — replace, do not append.
-- [ ] Add `def SemanticConsequenceDense`: this is `SetSemanticConsequenceDense`
+- [x] Add `def SemanticConsequenceDense`: this is `SetSemanticConsequenceDense`
       (`SetConsequence.lean:70–105` range) with `Γ : Set Formula` changed to `Γ : Context` and
       **nothing else**.
-- [ ] Add `semantic_deduction_dense`, `consequence_completeness_dense`,
+- [x] Add `semantic_deduction_dense`, `consequence_completeness_dense`,
       `soundness_dense_consequence`, `completeness_dense`, mirroring Phase 1 against
       `ValidDense` / `soundness_dense` (`Soundness.lean:1254`) / `BXCanonical.completeness_dense`.
-- [ ] **`intro` takes `D` then 5 placeholders** — Base's four plus `[DenselyOrdered D]`. This is
+- [x] **`intro` takes `D` then 5 placeholders** — Base's four plus `[DenselyOrdered D]`. This is
       the only thing that varies from Phase 1; copy the count from the table, do not re-derive.
-- [ ] Add one sentence to the module docstring noting that re-exposing the weak form as
+- [x] Add one sentence to the module docstring noting that re-exposing the weak form as
       `FormalSystem.Metalogic.completeness_dense` shadows
       `FormalSystem.Metalogic.BXCanonical.completeness_dense` at `open` sites, that the
       enclosing-namespace declaration wins, and that the two have identical types so a
       re-pointing would be semantically inert.
-- [ ] MUST NOT add any `import` line.
+- [x] MUST NOT add any `import` line.
 
 **Timing**: 0.75 hours
 

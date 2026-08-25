@@ -15,11 +15,12 @@ import FormalSystem.Metalogic.SetConsequence
 
 This module hosts the finite-context *consequence completeness* statements of the bimodal
 system — completeness for `Γ : Context` semantic consequence — together with the
-class-specific semantic consequence relations they are stated against. The
-`FrameClass.Dedekind` instance is the one developed here; the Base, Dense and Discrete
-instances have the same shape and drop into the marked sections below without restructuring.
-It is also the intended home of the genuine *strong* completeness statements (arbitrary
-`Set Formula` premise sets) for the classes that can support them; see the programme below.
+class-specific semantic consequence relations they are stated against. All four frame classes
+now carry the layer: `FrameClass.Dedekind` is the instance developed first, and the Base, Dense
+and Discrete instances have the same four-layer shape (semantic deduction theorem, consequence
+terminus, soundness guard, weak corollary) in the sections below. It is also the intended home
+of the genuine *strong* completeness statements (arbitrary `Set Formula` premise sets) for the
+classes that can support them; see the programme below.
 
 ## Terminology: "strong completeness" is reserved for infinite premise sets
 
@@ -94,8 +95,26 @@ however read directly and does corroborate the attribution as paraphrased above.
 here is paraphrase, not quotation. Nothing in this file depends on it: the claim is orientation
 for the reader, and no declaration below cites it.
 
+## A note on the `completeness_dense` / `completeness_discrete` short names
+
+Re-exposing the weak forms as `FormalSystem.Metalogic.completeness_dense` and
+`FormalSystem.Metalogic.completeness_discrete` shadows
+`FormalSystem.Metalogic.BXCanonical.completeness_dense` / `…completeness_discrete` at sites that
+`open FormalSystem.Metalogic.BXCanonical`: the enclosing-namespace declaration wins. This is
+harmless — the shadowing and shadowed forms have identical types, so re-pointing any call site
+from one to the other would be semantically inert — and every out-of-file occurrence of either
+short name in this tree is docstring prose rather than a call site.
+
 ## Contents
 
+* `SemanticConsequence` (`Semantics/Validity.lean`) — reused unchanged as the base-class
+  consequence relation; `SemanticConsequenceDense`, `SemanticConsequenceDiscrete` and
+  `SemanticConsequenceDedekindDense` are its class-restricted siblings.
+* `semantic_deduction_base` / `_dense` / `_discrete` / `_dedekind_dense`,
+  `consequence_completeness_base` / `_dense` / `_discrete` / `_dedekind`,
+  `soundness_base_consequence` / `soundness_dense_consequence` /
+  `soundness_discrete_consequence` / `soundness_dedekind_consequence`, and the weak corollaries
+  `completeness_base` / `_dense` / `_discrete` / `_dedekind` — the per-class layer.
 * `SemanticConsequenceDedekindDense` — semantic consequence over dense Dedekind-complete
   frames; the hypothesis-and-conclusion shape of `soundness_dedekind` packaged as a definition.
 * `truthAt_foldr_imp` — the pointwise currying lemma relating a context to its `imp`-fold.
@@ -483,11 +502,113 @@ theorem completeness_base (φ : Formula) (h : valid φ) : Derivable FrameClass.B
   consequence_completeness_base [] φ
     ((semantic_deduction_base [] φ).mpr (by simpa using h))
 
-/-! ## Consequence and strong completeness for `FrameClass.Dense`
+/-! ## Consequence completeness for `FrameClass.Dense`
 
-Reserved, same two-layer shape as the Base section above, against the `ValidDense` binder
-list. Like Base, the Dense class has no known non-compactness obstruction, so genuine strong
-completeness is the intended terminus. -/
+The finite-context consequence layer for the dense class, in the same four-layer shape as the
+Base section above, against the `ValidDense` binder list. Unlike Base, this class restricts the
+carrier (`[DenselyOrdered D]`), so the general `SemanticConsequence` relation would express a
+different — and for a completeness statement, false — claim; a class-specific relation is
+required, and `SemanticConsequenceDense` supplies it.
+
+Genuine strong completeness over `Set Formula` premise sets remains **open** for this class:
+`StrongCompletenessDense` and `CompactDense` (`FormalSystem/Metalogic/SetConsequence.lean`) name
+open obligations, and `strongCompletenessDense_of_compact` above isolates `CompactDense` as the
+whole of what remains. Nothing in this section is strong completeness: `Context` is
+`List Formula`. -/
+
+/--
+Semantic consequence over densely ordered carriers.
+
+The binder list is that of `ValidDense` (`Semantics/Validity.lean`) verbatim, with the context
+hypothesis `∀ ψ ∈ Γ, TruthAt M τ t ψ` inserted before the conclusion — the same surgery
+`SemanticConsequenceDedekindDense` performs on `ValidDedekindDense`. It is therefore exactly
+the hypothesis-and-conclusion shape of `soundness_dense` (`Metalogic/Soundness.lean:1254`),
+packaged as a definition so that the completeness converse can be stated against the same
+relation.
+
+This is `SetSemanticConsequenceDense` (`SetConsequence.lean`) with `Γ : Set Formula` changed to
+`Γ : Context` and nothing else. The two are deliberately distinct types: the set form is the
+vocabulary of the (open) strong completeness statement, this one is the finite-context relation
+that the theorems below actually discharge.
+
+**Why not `SemanticConsequence`.** The general relation quantifies over *all* carriers with no
+order-theoretic side conditions, so it cannot express consequence restricted to the dense class;
+a completeness theorem stated against it would be a different statement. (For `FrameClass.Base`
+the general relation *is* the right one, because there "all carriers" is the class — see the
+Base section above.)
+-/
+def SemanticConsequenceDense (Γ : Context) (φ : Formula) : Prop :=
+  ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [DenselyOrdered D]
+    [Nontrivial D]
+    (F : TaskFrame D) (M : TaskModel F)
+    (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
+    (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ
+
+/--
+**Semantic deduction theorem for the dense class.** Consequence from a finite context is
+`ValidDense`ity of the corresponding iterated implication.
+
+Both directions are `truthAt_foldr_imp` transported across the shared binder list; no
+frame-condition reasoning is involved. `truthAt_foldr_imp` is stated at the bare `TaskModel`
+binder set, so the extra `[DenselyOrdered D]` binder simply rides along.
+-/
+theorem semantic_deduction_dense (Γ : Context) (φ : Formula) :
+    SemanticConsequenceDense Γ φ ↔ ValidDense (Γ.foldr Formula.imp φ) := by
+  constructor
+  · intro h D _ _ _ _ _ F M τ hτ t
+    exact (truthAt_foldr_imp M τ t Γ φ).mpr (h D F M τ hτ t)
+  · intro h D _ _ _ _ _ F M τ hτ t
+    exact (truthAt_foldr_imp M τ t Γ φ).mp (h D F M τ hτ t)
+
+/--
+**Finite-context consequence completeness for `FrameClass.Dense`, unconditional.**
+
+`BXCanonical.completeness_dense` (`BXCanonical/Completeness.lean:255`) already exists as the
+single-formula engine for `ValidDense`, so there is no `_of_engine` layer here: the engine is
+consumed directly.
+
+**This is not strong completeness.** `Context := List Formula`, so every `Γ` here is finite and
+this statement is inter-derivable with weak completeness through the deduction theorem. The
+infinitary statement over `Γ : Set Formula` is `StrongCompletenessDense`, which is **open** for
+this class — neither proved nor refuted — and is reached only through `CompactDense`, via
+`strongCompletenessDense_of_compact`.
+-/
+theorem consequence_completeness_dense (Γ : Context) (φ : Formula)
+    (h : SemanticConsequenceDense Γ φ) : Derivable FrameClass.Dense Γ φ :=
+  (derivable_foldr_imp_iff Γ φ).mpr
+    (BXCanonical.completeness_dense _ ((semantic_deduction_dense Γ φ).mp h))
+
+/--
+**Soundness, restated against `SemanticConsequenceDense`.**
+
+This is `soundness_dense` (`Metalogic/Soundness.lean:1254`) with its hypothesis-and-conclusion
+block folded into the definition, and it is the guard that keeps the completeness target honest:
+it holds *only* because `SemanticConsequenceDense` reproduces `ValidDense`'s binder list
+verbatim. If a later edit weakens the relation — say by dropping `[DenselyOrdered D]` — this
+theorem breaks and the build fails before a mis-stated completeness terminus can be proved
+against it. In particular it establishes that `consequence_completeness_dense` is not vacuous:
+its hypothesis is inhabited for every derivable pair `(Γ, φ)`.
+-/
+theorem soundness_dense_consequence (Γ : Context) (φ : Formula)
+    (h : Derivable FrameClass.Dense Γ φ) : SemanticConsequenceDense Γ φ := by
+  intro D _ _ _ _ _ F M τ hτ t h_ctx
+  exact h.elim fun d => soundness_dense Γ φ d D F M τ hτ t h_ctx
+
+/--
+**Weak completeness for `FrameClass.Dense`, as the `Γ = []` instance of the consequence form.**
+
+Definitionally `BXCanonical.completeness_dense` routed through the deduction theorem in both
+directions; recorded here so that the dense class carries the same four-layer shape as the
+others, and so that the weak form is visibly a corollary rather than a parallel construction.
+The vacuous `∀ ψ ∈ [], _` premise binder is discharged by `simpa`.
+
+On the short name it shares with `BXCanonical.completeness_dense`, see the note in the module
+docstring: the enclosing-namespace declaration wins at `open` sites and the two have identical
+types, so the shadowing is inert.
+-/
+theorem completeness_dense (φ : Formula) (h : ValidDense φ) : Derivable FrameClass.Dense [] φ :=
+  consequence_completeness_dense [] φ
+    ((semantic_deduction_dense [] φ).mpr (by simpa using h))
 
 /-! ## Consequence completeness for `FrameClass.Discrete`
 
