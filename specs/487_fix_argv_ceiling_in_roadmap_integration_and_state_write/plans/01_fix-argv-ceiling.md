@@ -434,27 +434,32 @@ another route, use it rather than adding a redundant payload.
 
 ---
 
-### Phase 6: roadmap-integration.sh regression tests [NOT STARTED]
+### Phase 6: roadmap-integration.sh regression tests [COMPLETED]
 
 **Goal**: A test suite covering all three roadmap-integration fixes: the >128KB payload, the
 forced-mid-run-failure byte-identity guarantee, and the tightened heuristic.
 
 **Tasks**:
-- [ ] Read `scripts/tests/test-roadmap-items-producer.sh` first and follow its fixture-repo
-      conventions (build a fixture repo, drive the real matching/annotation chain)
-- [ ] Create `scripts/tests/test-roadmap-argv-ceiling.sh`
-- [ ] Case A: generate a fixture `ROADMAP.md` with enough phases/checkboxes/table rows to push
+- [x] Read `scripts/tests/test-roadmap-items-producer.sh` first and follow its fixture-repo
+      conventions (build a fixture repo, drive the real matching/annotation chain) *(completed:
+      altered)* *(deviation: altered — followed the state-write.sh suites' isolated-temp-root
+      convention instead of this suite's "deployed tree first" resolution, to avoid validating
+      against the un-redeployed .claude/scripts/ copy under this task's live-machinery constraint;
+      see progress file for full reasoning)*
+- [x] Create `scripts/tests/test-roadmap-argv-ceiling.sh` *(completed)*
+- [x] Case A: generate a fixture `ROADMAP.md` with enough phases/checkboxes/table rows to push
       `ROADMAP_MATCHES` past 131,072 bytes, and assert parse-only mode exits 0 with valid JSON
       (the live repo reached ~497KB with 24 matches, ~20KB each, so a fixture needs roughly
       10-30 matching rows carrying long `raw_line` text — size the fixture by measuring, not by
-      guessing)
-- [ ] Case B: atomicity — run `--annotate` against the oversized fixture with an injected mid-run
-      failure and assert the fixture ROADMAP.md is `diff`-identical to a pre-run copy
-- [ ] Case C: atomicity, success path — a clean `--annotate` run applies all expected annotations
-      in one final move
-- [ ] Case D: heuristic — the Phase 5 fixture cases A/B/C as assertions in this suite
-- [ ] Case E: no temp-file leakage after each of the above
-- [ ] Register in `scripts/tests/run-all.sh`
+      guessing) *(completed: 263 rows, 190,720-byte roadmap_matches, measured not guessed)*
+- [x] Case B: atomicity — run `--annotate` against the oversized fixture with an injected mid-run
+      failure and assert the fixture ROADMAP.md is `diff`-identical to a pre-run copy *(completed)*
+- [x] Case C: atomicity, success path — a clean `--annotate` run applies all expected annotations
+      in one final move *(completed)*
+- [x] Case D: heuristic — the Phase 5 fixture cases A/B/C as assertions in this suite *(completed)*
+- [x] Case E: no temp-file leakage after each of the above *(completed)*
+- [x] Register in `scripts/tests/run-all.sh` *(completed: no registration needed — same
+      auto-discovery finding as Phase 2)*
 
 **Timing**: 1.5 hours
 
