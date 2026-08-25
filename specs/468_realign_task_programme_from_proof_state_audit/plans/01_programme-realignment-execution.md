@@ -1,7 +1,7 @@
 # Implementation Plan: Task #468
 
 - **Task**: 468 - Programme realignment from a verified proof-state audit
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 11 hours
 - **Dependencies**: 469 (completed), 426 (completed), 451 (completed)
 - **Research Inputs**:
@@ -144,7 +144,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Baseline re-verification and evidence ledger [NOT STARTED]
+### Phase 1: Baseline re-verification and evidence ledger [COMPLETED]
 
 **Goal**: Re-establish, at implementation time, every fact the later phases cite, so that no claim
 in the final report is inherited from report 02 without a fresh check. Produce a durable evidence

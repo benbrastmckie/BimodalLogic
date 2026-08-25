@@ -64,7 +64,7 @@ next_project_number: 480
     └─ 464 [NOT STARTED] — Design and land `gapPotential`, the density coordinate of the ter
       └─ 465 [NOT STARTED] — Complete the terminus restatement family at the repaired residual
         └─ 428 [BLOCKED] — Engine totality at a quantified branch budget. Owns obstruction O (see above)
-468 [PLANNED] — PROGRAMME REALIGNMENT FROM A VERIFIED PROOF-STATE AUDIT: restruct
+468 [IMPLEMENTING] — PROGRAMME REALIGNMENT FROM A VERIFIED PROOF-STATE AUDIT: restruct
 476 [NOT STARTED] — THE BOX-FAITHFUL SMALL-MODEL THEOREM.
 
 ### Formula Refactor
@@ -1109,7 +1109,7 @@ result and decidability only. Grounding: specs/reviews/review-2026-08-24.md, Add
 
 ### 468. Realign task programme from proof state audit
 - **Effort**: high
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: meta
 - **Topic**: decidability
 - **Dependencies**: Task 469, Task 426, Task 451

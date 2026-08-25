@@ -9,7 +9,7 @@
     {
       "project_number": 468,
       "project_name": "realign_task_programme_from_proof_state_audit",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "meta",
       "topic": "decidability",
       "priority": "high",
@@ -24,7 +24,7 @@
         "specs/ROADMAP.md"
       ],
       "created": "2026-08-20T07:11:23Z",
-      "last_updated": "2026-08-25T12:07:13Z",
+      "last_updated": "2026-08-25T12:07:36Z",
       "artifacts": [
         {
           "type": "report",
