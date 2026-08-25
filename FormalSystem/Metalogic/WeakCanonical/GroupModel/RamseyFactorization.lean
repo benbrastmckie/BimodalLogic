@@ -256,6 +256,13 @@ instance Sum.Lex.predOrder {α β : Type} [LinearOrder α] [LinearOrder β]
           toLex (Sum.inr b') < toLex (Sum.inr b)
         rw [Sum.Lex.inr_le_inr_iff, Sum.Lex.inr_lt_inr_iff, Order.le_pred_iff])
 
+/-- Constructor view of a lexicographic sum element, packaged for `rcases`. -/
+private theorem sumLex_cases {α β : Type} (x : α ⊕ₗ β) :
+    (∃ a : α, x = toLex (Sum.inl a)) ∨ (∃ b : β, x = toLex (Sum.inr b)) := by
+  cases h : ofLex x with
+  | inl a => exact Or.inl ⟨a, congrArg toLex h⟩
+  | inr b => exact Or.inr ⟨b, congrArg toLex h⟩
+
 /-! ## The threshold master with an abstract predicate-agreement provider -/
 
 section AnchoredMaster
@@ -397,5 +404,343 @@ theorem kEquiv_colourStructure_anchored {ι : Type} (k : ℕ) {α β γ : ι}
         (colourStructure I cI).carrier × (colourStructure J cJ).carrier).1 m).trans
       (succ_iterate_eq_self_iff ((aI, aJ) :
         (colourStructure I cI).carrier × (colourStructure J cJ).carrier).2 m).symm
+
+
+/-! ## Coloured segments, fibers, and two-summand sums -/
+
+/-- A half-open coloured segment `[a, b)` of `ℤ`. -/
+def segZ (sig : MonadicSignature) (c : sig.preds → ℤ → Prop) (a b : ℤ) :
+    OrderedMonadicStructure sig where
+  carrier := {t : ℤ // a ≤ t ∧ t < b}
+  interp := fun p t => c p t.1
+  carrierOrder := inferInstance
+
+/-- A monadic structure on the full carrier `ℚ ×ₗ ℤ` from a colouring — the tail shape of
+the inflation, and the summand shape `QZStructure` fixes. -/
+def qzFiber (sig : MonadicSignature) (e : sig.preds → ℚ ×ₗ ℤ → Prop) :
+    OrderedMonadicStructure sig where
+  carrier := ℚ ×ₗ ℤ
+  interp := fun p x => e p x
+  carrierOrder := inferInstance
+
+/-! ## The bi-infinite Ramsey factorization of a coloured `ℤ`-block -/
+
+/-- The data of a Ramsey factorization: a monotone bi-infinite cutting sequence `W` covering
+`ℤ`, whose segments `[W z, W (z+1))` have one `k`-type `τneg` below the middle segment
+`[W 0, W 1)` and one `k`-type `τpos` above it, with the extremal segments nonempty. -/
+private structure ZFactorization (sig : MonadicSignature) [Fintype sig.preds]
+    [DecidableEq sig.preds] (k : ℕ) (c : sig.preds → ℤ → Prop) where
+  W : ℤ → ℤ
+  mono : Monotone W
+  cover : ∀ t : ℤ, ∃ z, W z ≤ t ∧ t < W (z + 1)
+  τpos : KType sig k
+  τneg : KType sig k
+  pos_type : ∀ z : ℤ, 0 < z → kTypeOf sig k (segZ sig c (W z) (W (z + 1))) = τpos
+  neg_type : ∀ z : ℤ, z < 0 → kTypeOf sig k (segZ sig c (W z) (W (z + 1))) = τneg
+  strict_pos : W 1 < W 2
+  strict_neg : W (-2) < W (-1)
+
+private theorem exists_zFactorization (sig : MonadicSignature) [Fintype sig.preds]
+    [DecidableEq sig.preds] (k : ℕ) (c : sig.preds → ℤ → Prop) :
+    Nonempty (ZFactorization sig k c) := by
+  haveI : Finite (KType sig k) := by
+    unfold KType
+    infer_instance
+  obtain ⟨gU, hgU, τpos, hτU⟩ :=
+    infinite_ramsey_pairs (fun a b => kTypeOf sig k (segZ sig c (a : ℤ) (b : ℤ)))
+  obtain ⟨gD, hgD, τneg, hτD⟩ :=
+    infinite_ramsey_pairs (fun a b => kTypeOf sig k (segZ sig c (-(b : ℤ)) (-(a : ℤ))))
+  have hgU_ge : ∀ n : ℕ, n ≤ gU n := fun n => hgU.le_apply
+  have hgD_ge : ∀ n : ℕ, n ≤ gD n := fun n => hgD.le_apply
+  set W : ℤ → ℤ := fun z => if 0 < z then ((gU (z - 1).toNat : ℕ) : ℤ)
+    else -((gD (-z).toNat : ℕ) : ℤ) with hW
+  have hWpos : ∀ z : ℤ, 0 < z → W z = ((gU (z - 1).toNat : ℕ) : ℤ) := by
+    intro z hz; simp only [hW, if_pos hz]
+  have hWnonpos : ∀ z : ℤ, ¬ 0 < z → W z = -((gD (-z).toNat : ℕ) : ℤ) := by
+    intro z hz; simp only [hW, if_neg hz]
+  have hmono : Monotone W := by
+    intro z z' hzz'
+    by_cases hz : 0 < z
+    · have hz' : 0 < z' := lt_of_lt_of_le hz hzz'
+      rw [hWpos z hz, hWpos z' hz']
+      exact_mod_cast (hgU.monotone (by omega))
+    · by_cases hz' : 0 < z'
+      · rw [hWnonpos z hz, hWpos z' hz']
+        have h1 : (0 : ℤ) ≤ ((gD (-z).toNat : ℕ) : ℤ) := Int.natCast_nonneg _
+        have h2 : (0 : ℤ) ≤ ((gU (z' - 1).toNat : ℕ) : ℤ) := Int.natCast_nonneg _
+        omega
+      · rw [hWnonpos z hz, hWnonpos z' hz']
+        have := hgD.monotone (show (-z').toNat ≤ (-z).toNat by omega)
+        omega
+  refine ⟨⟨W, hmono, ?_, τpos, τneg, ?_, ?_, ?_, ?_⟩⟩
+  · -- coverage
+    intro t
+    have hlow : W (-(((t.natAbs + 1 : ℕ) : ℤ))) ≤ t := by
+      rw [hWnonpos _ (by omega),
+        show (-(-(((t.natAbs + 1 : ℕ) : ℤ)))).toNat = t.natAbs + 1 by omega]
+      have h1 := hgD_ge (t.natAbs + 1)
+      omega
+    have hhigh : t < W (((t.natAbs + 2 : ℕ) : ℤ)) := by
+      rw [hWpos _ (by omega),
+        show ((((t.natAbs + 2 : ℕ) : ℤ)) - 1).toNat = t.natAbs + 1 by omega]
+      have h1 := hgU_ge (t.natAbs + 1)
+      omega
+    set zL : ℤ := -(((t.natAbs + 1 : ℕ) : ℤ)) with hzL
+    set zH : ℤ := ((t.natAbs + 2 : ℕ) : ℤ) with hzH
+    have hLH : zL ≤ zH := by omega
+    classical
+    set P : ℕ → Prop := fun n => W (zL + n) ≤ t with hP
+    have hP0 : P 0 := by simpa [hP] using hlow
+    set Nn : ℕ := (zH - zL).toNat with hNn
+    set j : ℕ := Nat.findGreatest P Nn with hj
+    have hPj : P j := Nat.findGreatest_spec (Nat.zero_le Nn) hP0
+    have hjN : j ≠ Nn := by
+      intro hje
+      have : W (zL + Nn) ≤ t := hje ▸ hPj
+      have hzHN : zL + (Nn : ℤ) = zH := by omega
+      rw [hzHN] at this
+      omega
+    have hjle : j ≤ Nn := Nat.findGreatest_le Nn
+    have hjlt : j < Nn := lt_of_le_of_ne hjle hjN
+    have hnot : ¬ P (j + 1) :=
+      Nat.findGreatest_is_greatest (n := Nn) (by omega) (by omega)
+    refine ⟨zL + j, hPj, ?_⟩
+    have : ¬ W (zL + j + 1) ≤ t := by
+      have harith : zL + (j : ℤ) + 1 = zL + ((j + 1 : ℕ) : ℤ) := by push_cast; ring
+      rw [harith]
+      exact hnot
+    omega
+  · -- positive segment types
+    intro z hz
+    rw [hWpos z hz, hWpos (z + 1) (by omega)]
+    have h1 : (z - 1).toNat < (z + 1 - 1).toNat := by omega
+    exact hτU _ _ h1
+  · -- negative segment types
+    intro z hz
+    rw [hWnonpos z (by omega), hWnonpos (z + 1) (by omega)]
+    have h1 : (-(z + 1)).toNat < (-z).toNat := by omega
+    have h2 := hτD _ _ h1
+    exact h2
+  · -- W 1 < W 2
+    rw [hWpos 1 (by omega), hWpos 2 (by omega)]
+    exact_mod_cast hgU (show ((1 : ℤ) - 1).toNat < ((2 : ℤ) - 1).toNat by omega)
+  · -- W (-2) < W (-1)
+    rw [hWnonpos (-2) (by omega), hWnonpos (-1) (by omega)]
+    have := hgD (show ((-(-1 : ℤ)).toNat) < ((-(-2 : ℤ)).toNat) by omega)
+    omega
+
+/-! ## The block as a `ζ`-indexed sum of its segments -/
+
+private theorem kEquiv_zFiber_segSum (sig : MonadicSignature) [Fintype sig.preds]
+    [DecidableEq sig.preds] (k : ℕ) (c : sig.preds → ℤ → Prop)
+    (W : ℤ → ℤ) (hmono : Monotone W) (hcover : ∀ t : ℤ, ∃ z, W z ≤ t ∧ t < W (z + 1)) :
+    KEquiv sig k (zFiber sig c)
+      (orderedSum sig ℤ (fun z => segZ sig c (W z) (W (z + 1)))) := by
+  set m : ℤ → OrderedMonadicStructure sig := fun z => segZ sig c (W z) (W (z + 1)) with hm
+  set g : (orderedSum sig ℤ m).carrier → (zFiber sig c).carrier := fun s => s.2.1 with hg
+  have hgmono : StrictMono g := by
+    intro s t hst
+    have h : Sigma.Lex (· < ·) (fun _ => (· < ·)) s t := hst
+    cases h with
+    | left a b hij =>
+      rename_i i j
+      show a.1 < b.1
+      calc a.1 < W (i + 1) := a.2.2
+        _ ≤ W j := hmono (by omega)
+        _ ≤ b.1 := b.2.1
+    | right a b hab =>
+      exact hab
+  have hgsurj : Function.Surjective g := by
+    intro t
+    obtain ⟨z, h1, h2⟩ := hcover t
+    exact ⟨⟨z, ⟨t, h1, h2⟩⟩, rfl⟩
+  refine k_equiv_of_iso sig k _ _
+    (StrictMono.orderIsoOfSurjective g hgmono hgsurj).symm ?_
+  intro p x
+  set s := (StrictMono.orderIsoOfSurjective g hgmono hgsurj).symm x with hs
+  have hx : g s = x :=
+    StrictMono.orderIsoOfSurjective_self_symm_apply g hgmono hgsurj x
+  show c p x ↔ c p s.2.1
+  rw [show s.2.1 = x from hx]
+
+/-! ## Per-block inflation -/
+
+/--
+**Right inflation** (tail absorption above): a coloured `ℤ`-block is `≡ₖ` itself with a
+suitably coloured copy of `ℚ ×ₗ ℤ` appended above, at the same depth `k`. The added copy is
+coloured periodically by the word of one Ramsey segment of the block's upper tail, so the
+mixing lemma reduces the comparison to the coloured index orders `ζ` versus
+`ζ ⊕ₗ (ℚ ×ₗ ζ)`, closed by `kEquiv_colourStructure_anchored`.
+-/
+theorem inflate_right (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+    (k : ℕ) (c : sig.preds → ℤ → Prop) :
+    ∃ e : sig.preds → ℚ ×ₗ ℤ → Prop,
+      KEquiv sig k (zFiber sig c)
+        (orderedSum sig Bool (fun b => if b then qzFiber sig e else zFiber sig c)) := by
+  obtain ⟨F⟩ := exists_zFactorization sig k c
+  obtain ⟨W, hmono, hcover, τpos, τneg, hpos, hneg, hstrict, _⟩ := F
+  set p : ℤ := W 2 - W 1 with hp
+  have hp0 : 0 < p := by omega
+  set e : sig.preds → ℚ ×ₗ ℤ → Prop :=
+    fun p' x => c p' (W 1 + ((ofLex x).2 % p)) with he
+  refine ⟨e, ?_⟩
+  set m : ℤ → OrderedMonadicStructure sig := fun z => segZ sig c (W z) (W (z + 1)) with hm
+  set m' : ℤ ⊕ₗ (ℚ ×ₗ ℤ) → OrderedMonadicStructure sig := fun u =>
+    match u with
+    | Sum.inl z => segZ sig c (W z) (W (z + 1))
+    | Sum.inr _ => segZ sig c (W 1) (W 2) with hm'
+  -- Step 1: the block is its segment sum.
+  have h1 : KEquiv sig k (zFiber sig c) (orderedSum sig ℤ m) :=
+    kEquiv_zFiber_segSum sig k c W hmono hcover
+  -- Step 2: mixing across the two index orders.
+  have h2 : KEquiv sig k (orderedSum sig ℤ m) (orderedSum sig (ℤ ⊕ₗ (ℚ ×ₗ ℤ)) m') := by
+    apply kEquiv_orderedSum_of_kEquiv_colour
+    apply kEquiv_colourStructure_anchored (α := τneg) (β := kTypeOf sig k (m 0))
+      (γ := τpos) k ℤ (ℤ ⊕ₗ (ℚ ×ₗ ℤ)) 0 (toLex (Sum.inl 0))
+    · intro z hz
+      exact hneg z hz
+    · rfl
+    · intro z hz
+      exact hpos z hz
+    · intro u hu
+      rcases sumLex_cases u with ⟨z, rfl⟩ | ⟨x, rfl⟩
+      · exact hneg z (Sum.Lex.inl_lt_inl_iff.mp hu)
+      · exact absurd hu Sum.Lex.not_inr_lt_inl
+    · rfl
+    · intro u hu
+      rcases sumLex_cases u with ⟨z, rfl⟩ | ⟨x, rfl⟩
+      · exact hpos z (Sum.Lex.inl_lt_inl_iff.mp hu)
+      · exact hpos 1 (by omega)
+  -- Step 3: the extended sum is the block-plus-tail.
+  have h3 : KEquiv sig k (orderedSum sig (ℤ ⊕ₗ (ℚ ×ₗ ℤ)) m')
+      (orderedSum sig Bool (fun b => if b then qzFiber sig e else zFiber sig c)) := by
+    set g : (orderedSum sig (ℤ ⊕ₗ (ℚ ×ₗ ℤ)) m').carrier →
+        (orderedSum sig Bool (fun b => if b then qzFiber sig e else zFiber sig c)).carrier :=
+      fun s =>
+        match s with
+        | ⟨Sum.inl _, t⟩ => ⟨false, t.1⟩
+        | ⟨Sum.inr x, t⟩ => ⟨true, toLex ((ofLex x).1, (ofLex x).2 * p + (t.1 - W 1))⟩
+      with hgdef
+    have hoff : ∀ (t : ℤ) (_ : W 1 ≤ t) (_ : t < W 2), 0 ≤ t - W 1 ∧ t - W 1 < p := by
+      intro t h1 h2; omega
+    have hgmono : StrictMono g := by
+      intro s s' hst
+      have h : Sigma.Lex (· < ·) (fun _ => (· < ·)) s s' := hst
+      cases h with
+      | left a b hij =>
+        rename_i i j
+        rcases sumLex_cases i with ⟨z, rfl⟩ | ⟨x, rfl⟩ <;>
+          rcases sumLex_cases j with ⟨z', rfl⟩ | ⟨x', rfl⟩
+        ·
+          have hzz : z < z' := Sum.Lex.inl_lt_inl_iff.mp hij
+          have hab : a.1 < b.1 := by
+            calc a.1 < W (z + 1) := a.2.2
+              _ ≤ W z' := hmono (by omega)
+              _ ≤ b.1 := b.2.1
+          have hgoal : Sigma.Lex (· < ·) (fun _ => (· < ·))
+              (⟨false, a.1⟩ : (orderedSum sig Bool
+                (fun b => if b then qzFiber sig e else zFiber sig c)).carrier)
+              (⟨false, b.1⟩ : (orderedSum sig Bool
+                (fun b => if b then qzFiber sig e else zFiber sig c)).carrier) :=
+            Sigma.Lex.right _ _ hab
+          exact hgoal
+        · have hgoal : Sigma.Lex (· < ·) (fun _ => (· < ·))
+              (⟨false, a.1⟩ : (orderedSum sig Bool
+                (fun b => if b then qzFiber sig e else zFiber sig c)).carrier)
+              (⟨true, toLex ((ofLex x').1, (ofLex x').2 * p + (b.1 - W 1))⟩ :
+                (orderedSum sig Bool
+                  (fun b => if b then qzFiber sig e else zFiber sig c)).carrier) :=
+            Sigma.Lex.left _ _ (by decide)
+          exact hgoal
+        · exact absurd hij Sum.Lex.not_inr_lt_inl
+        · have hxx : x < x' := Sum.Lex.inr_lt_inr_iff.mp hij
+          have hlex : (ofLex x).1 < (ofLex x').1 ∨
+              ((ofLex x).1 = (ofLex x').1 ∧ (ofLex x).2 < (ofLex x').2) :=
+            Prod.Lex.lt_iff.mp hxx
+          have hsecond : toLex ((ofLex x).1, (ofLex x).2 * p + (a.1 - W 1)) <
+              toLex ((ofLex x').1, (ofLex x').2 * p + (b.1 - W 1)) := by
+            rcases hlex with hq | ⟨hq, hw⟩
+            · exact Prod.Lex.toLex_lt_toLex.mpr (Or.inl hq)
+            · refine Prod.Lex.toLex_lt_toLex.mpr (Or.inr ⟨hq, ?_⟩)
+              have ha' := hoff a.1 a.2.1 a.2.2
+              have hb' := hoff b.1 b.2.1 b.2.2
+              have hmul : ((ofLex x).2 + 1) * p ≤ (ofLex x').2 * p :=
+                mul_le_mul_of_nonneg_right (by omega) (by omega)
+              have hexp : ((ofLex x).2 + 1) * p = (ofLex x).2 * p + p := by ring
+              omega
+          have hgoal : Sigma.Lex (· < ·) (fun _ => (· < ·))
+              (⟨true, toLex ((ofLex x).1, (ofLex x).2 * p + (a.1 - W 1))⟩ :
+                (orderedSum sig Bool
+                  (fun b => if b then qzFiber sig e else zFiber sig c)).carrier)
+              (⟨true, toLex ((ofLex x').1, (ofLex x').2 * p + (b.1 - W 1))⟩ :
+                (orderedSum sig Bool
+                  (fun b => if b then qzFiber sig e else zFiber sig c)).carrier) :=
+            Sigma.Lex.right _ _ hsecond
+          exact hgoal
+      | right a b hab =>
+        rename_i i
+        rcases sumLex_cases i with ⟨z, rfl⟩ | ⟨x, rfl⟩
+        · have hab' : a.1 < b.1 := Subtype.coe_lt_coe.mpr hab
+          have hgoal : Sigma.Lex (· < ·) (fun _ => (· < ·))
+              (⟨false, a.1⟩ : (orderedSum sig Bool
+                (fun b => if b then qzFiber sig e else zFiber sig c)).carrier)
+              (⟨false, b.1⟩ : (orderedSum sig Bool
+                (fun b => if b then qzFiber sig e else zFiber sig c)).carrier) :=
+            Sigma.Lex.right _ _ hab'
+          exact hgoal
+        · have hab' : a.1 < b.1 := Subtype.coe_lt_coe.mpr hab
+          have hsecond : toLex ((ofLex x).1, (ofLex x).2 * p + (a.1 - W 1)) <
+              toLex ((ofLex x).1, (ofLex x).2 * p + (b.1 - W 1)) :=
+            Prod.Lex.toLex_lt_toLex.mpr (Or.inr ⟨rfl, by omega⟩)
+          have hgoal : Sigma.Lex (· < ·) (fun _ => (· < ·))
+              (⟨true, toLex ((ofLex x).1, (ofLex x).2 * p + (a.1 - W 1))⟩ :
+                (orderedSum sig Bool
+                  (fun b => if b then qzFiber sig e else zFiber sig c)).carrier)
+              (⟨true, toLex ((ofLex x).1, (ofLex x).2 * p + (b.1 - W 1))⟩ :
+                (orderedSum sig Bool
+                  (fun b => if b then qzFiber sig e else zFiber sig c)).carrier) :=
+            Sigma.Lex.right _ _ hsecond
+          exact hgoal
+    have hgsurj : Function.Surjective g := by
+      rintro ⟨b, v⟩
+      match b, v with
+      | false, v =>
+        obtain ⟨z, hz1, hz2⟩ := hcover v
+        exact ⟨⟨Sum.inl z, ⟨v, hz1, hz2⟩⟩, rfl⟩
+      | true, v =>
+        set q : ℚ := (ofLex v).1 with hq
+        set y : ℤ := (ofLex v).2 with hy
+        have hmod1 : 0 ≤ y % p := Int.emod_nonneg y (by omega)
+        have hmod2 : y % p < p := Int.emod_lt_of_pos y hp0
+        refine ⟨⟨Sum.inr (toLex (q, y / p)),
+          ⟨W 1 + y % p, by omega, by omega⟩⟩, ?_⟩
+        show (⟨true, toLex ((ofLex (toLex (q, y / p))).1,
+          (ofLex (toLex (q, y / p))).2 * p + (W 1 + y % p - W 1))⟩ :
+            (orderedSum sig Bool
+              (fun b => if b then qzFiber sig e else zFiber sig c)).carrier) = ⟨true, v⟩
+        refine congrArg (Sigma.mk true) ?_
+        show toLex (q, y / p * p + (W 1 + y % p - W 1)) = v
+        rw [show y / p * p + (W 1 + y % p - W 1) = y from by
+          have h2 := Int.mul_ediv_add_emod y p
+          have hcomm : y / p * p = p * (y / p) := mul_comm _ _
+          omega]
+        rfl
+    refine k_equiv_of_iso sig k _ _
+      (StrictMono.orderIsoOfSurjective g hgmono hgsurj) ?_
+    intro p' x
+    obtain ⟨u, t⟩ := x
+    rcases sumLex_cases u with ⟨z, rfl⟩ | ⟨v, rfl⟩
+    · exact Iff.rfl
+    · have ht1 : W 1 ≤ t.1 := t.2.1
+      have ht2 : t.1 < W 2 := t.2.2
+      have hmod : ((ofLex v).2 * p + (t.1 - W 1)) % p = t.1 - W 1 := by
+        rw [add_comm, Int.add_mul_emod_self_right]
+        exact Int.emod_eq_of_lt (by omega) (by omega)
+      show c p' t.1 ↔ c p' (W 1 + ((ofLex (toLex ((ofLex v).1,
+        (ofLex v).2 * p + (t.1 - W 1)))).2 % p))
+      have h0 : (ofLex (toLex ((ofLex v).1, (ofLex v).2 * p + (t.1 - W 1)))).2 =
+          (ofLex v).2 * p + (t.1 - W 1) := rfl
+      rw [h0, hmod, show W 1 + (t.1 - W 1) = t.1 by omega]
+  exact (h1.trans h2).trans h3
 
 end FormalSystem.Metalogic.WeakCanonical
