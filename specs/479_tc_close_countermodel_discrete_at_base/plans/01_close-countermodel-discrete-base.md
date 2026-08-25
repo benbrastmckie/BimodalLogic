@@ -250,7 +250,7 @@ to be recorded in the implementation summary, not absorbed silently.
 
 ---
 
-### Phase 3: Cutover — rename to the canonical name and delete the `Transfer.lean` original [NOT STARTED]
+### Phase 3: Cutover — rename to the canonical name and delete the `Transfer.lean` original [COMPLETED]
 
 **Goal**: Make the ported theorem BE `FormalSystem.Metalogic.WeakCanonical.countermodel_discrete`
 and remove the sorried original, so that `Completeness.lean:229` — untouched — now resolves to

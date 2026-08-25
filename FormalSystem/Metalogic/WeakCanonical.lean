@@ -64,10 +64,14 @@ import FormalSystem.Metalogic.WeakCanonical.GroupModel.MonoDiscrete
 -- inflation `inflate_right`/`inflate_left`) is a leaf until the companion assembly
 -- (`GroupModel/GroupableCompanion.lean`) consumes it. Same precedent.
 import FormalSystem.Metalogic.WeakCanonical.GroupModel.RamseyFactorization
--- CI edge only: `GroupModel/GroupableCompanion.lean` (`companionGeneral`/`companionChronicle`,
--- the Base analogue of `limitdom_is_good`) is a leaf until the discrete-branch replacement of
--- `countermodel_discrete` consumes it. Same precedent.
+-- `GroupModel/GroupableCompanion.lean` (`companionGeneral`/`companionChronicle`, the Base
+-- analogue of `limitdom_is_good`) is no longer a leaf: `GroupModel/CountermodelBase.lean`
+-- consumes `companionChronicle` to prove `countermodel_discrete`. Both are ordinary imports.
 import FormalSystem.Metalogic.WeakCanonical.GroupModel.GroupableCompanion
+-- `GroupModel/CountermodelBase.lean` hosts `countermodel_discrete`, the Base-MCS discrete
+-- branch of `BXCanonical.completeness`. It lives beside the companion lemma rather than in
+-- `Transfer.lean` because `Transfer ← ReynoldsBridge ← GroupableCompanion` makes in-place
+-- closure an import cycle; the fully-qualified name is preserved, so no call site moved.
 import FormalSystem.Metalogic.WeakCanonical.GroupModel.CountermodelBase
 
 /-!

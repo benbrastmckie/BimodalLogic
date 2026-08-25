@@ -139,7 +139,7 @@ companion structure comes from `companionChronicle` (no `Discrete ≤ fc` hypoth
 Base MCS suffices), and its carrier is the whole of `ℚ ×ₗ ℤ` rather than a `ℤ`-interval, so
 no bounds bookkeeping is needed.
 -/
-theorem countermodel_discrete_base_port (A : Set Formula)
+theorem countermodel_discrete (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (φ : Formula) (h_neg_in : φ.neg ∈ A)
     (h_box_discrete : Formula.box nextTop ∈ A) :
