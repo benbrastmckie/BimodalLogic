@@ -1553,7 +1553,7 @@
       "project_number": 479,
       "project_name": "tc_close_countermodel_discrete_at_base",
       "description": "T-C: CLOSE `countermodel_discrete` VIA THE v2 BLUEPRINT AT Rat x_lex Int.\n\nCLASSIFICATION: MECHANICAL PORT. ~300-600 lines. No open mathematics -- all the risk lives in the predecessor task. This is the third and final task of the k-equivalence/companion chain, and it closes the SOLE remaining structural sorry in the tree.\n\n=== THE TARGET ===\n\n`WeakCanonical.countermodel_discrete` (`FormalSystem/Metalogic/WeakCanonical/Transfer.lean`, declaration near :1069, sorry token near :1084 -- HINTS ONLY, re-verify by symbol). It is the purely-discrete branch of the BASE-class weak completeness proof `BXCanonical.completeness`, and it is the only `sorryAx` source reaching that theorem.\n\n=== WHAT TO DO ===\n\nReproduce the proof body of `countermodel_discrete_reynolds_v2` (`WeakCanonical/IntegerModel/ReynoldsBridge.lean`) with exactly three substitutions:\n\n1. `fc := FrameClass.Base` (instead of Discrete).\n2. `limitdom_is_good` -> the groupable-companion lemma delivered by the predecessor task. This is the ONLY Discrete-bound link in the v2 chain: `limitdom_is_good` carries `(h_fc : FrameClass.Discrete <= fc)` and discharges through `limitdom_semantic_prior_UZ`/`_SZ`, the Discrete-only Prior axioms a Base MCS does not have. Everything else in the chain is already fc-generic.\n3. `multiFamTaskFrame` -> `multiFamTaskFrameGen (Rat x_lex Int)`, already D-generic in `FormalSystem/Metalogic/Algebraic/FlowFrame.lean`.\n\nVERIFIED THIS SESSION by compiled probe (specs/422_.../verification/qlex_frame_probe.lean): `multiFamTaskFrameGen` and `History` elaborate at `Rat x_lex Int` with clean axioms, and the needed extra import is `Mathlib.Algebra.Order.Monoid.Prod` for the lex `IsOrderedAddMonoid` instance.\n\nThe Base existential is WEAKER than the Discrete one -- there are no Succ/Pred/Archimedean binders to discharge. Confirm this by symbol against the live `valid` before relying on it.\n\nThe box dimension carries over unchanged: box surrogates are rigid across box-equivalent families by S5, exactly as in v2's truth-correspondence induction.\n\n=== CARRIER UNIFORMITY (the obligation formerly known as O2) ===\n\nAll families receive COLORINGS OF THE SAME CARRIER `Rat x_lex Int` -- the valuation is per-family, `TM.valuation (f, d)` -- so carrier-uniformity dissolves provided the predecessor lands at the fixed carrier. If per-family carriers are ever forced, note that `valid` does not require countability of `D`: a single larger discrete ordered abelian group (any `G x_lex Int` with `G` sufficiently saturated) is an admissible common target. Carrier-uniformity therefore cannot resurrect as a hard blocker on this route.\n\n=== GOVERNING DOCUMENT ===\n\nspecs/422_build_discrete_chronicle_over_non_archimedean_block_carrier_with_restricted_coherence/reports/02_o1-verdict-k-equivalence-transfer.md, sections 3 and 6. Report 01 in the same directory records the isomorphism refutations, which are FINAL.\n\n=== NON-GOALS ===\n\n- Do NOT re-attempt the O1 isomorphism or `succ_cofinal`; both are settled negatively and permanently.\n- Do NOT re-derive the companion lemma; consume the predecessor's statement.\n- Do NOT do construction-level work in `ChronicleConstruction.lean` or `PointInsertion.lean`.\n- Do NOT weaken `countermodel_discrete`'s statement to make it close. If the port does not go through, report the specific mismatch and escalate.\n\n=== ACCEPTANCE ===\n\n- `lake build` green; no new sorry; no new axiom.\n- `countermodel_discrete` lands sorry-free; `#print axioms` reports no `sorryAx`.\n- `BXCanonical.completeness` (Base-class weak completeness) is thereby sorry-free end to end -- verify with `#print axioms` on it directly, and update any module docstring that still describes it as carrying a sorry.\n- `scripts/check-module-invariants.sh` C3 shows the structural sorry inventory reduced to ZERO. Update every docstring that names `countermodel_discrete` as the sole live sorry -- the repository has a documented history of stale sorry claims, and this task retires the last one.",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "topic": "metalogic",
       "priority": "high",
@@ -1566,10 +1566,16 @@
         "FormalSystem/Metalogic/WeakCanonical/IntegerModel/ReynoldsBridge.lean",
         "FormalSystem/Metalogic/BXCanonical/Completeness.lean"
       ],
-      "artifacts": [],
+      "artifacts": [
+        {
+          "path": "specs/479_tc_close_countermodel_discrete_at_base/reports/01_countermodel-discrete-base-port.md",
+          "type": "report",
+          "summary": "Research report: countermodel_discrete Base port"
+        }
+      ],
       "created": "2026-08-25T05:29:35Z",
-      "last_updated": "2026-08-25T05:29:35Z",
-      "session_id": "sess_1787618565_717c84_479"
+      "last_updated": "2026-08-25T11:07:47Z",
+      "session_id": "sess_1787655570_fed45b"
     }
   ],
   "artifacts": [

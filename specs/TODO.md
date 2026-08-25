@@ -89,16 +89,17 @@ next_project_number: 480
 
 ### Metalogic
 
-479 [NOT STARTED] — T-C: CLOSE `countermodel_discrete` VIA THE v2 BLUEPRINT AT Rat x_
+479 [RESEARCHED] — T-C: CLOSE `countermodel_discrete` VIA THE v2 BLUEPRINT AT Rat x_
 
 ## Tasks
 
 ### 479. Tc close countermodel discrete at base
 - **Effort**: medium
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: Task 478
+- **Research**: [479_tc_close_countermodel_discrete_at_base/reports/01_countermodel-discrete-base-port.md]
 
 **Description**: T-C: CLOSE `countermodel_discrete` VIA THE v2 BLUEPRINT AT Rat x_lex Int.
 
