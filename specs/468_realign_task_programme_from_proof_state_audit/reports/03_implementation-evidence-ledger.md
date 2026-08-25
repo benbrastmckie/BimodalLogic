@@ -281,3 +281,70 @@ and outside the plan's REVISE list (412/428/429/462/178/177). Not actioned here.
 ### Hard-constraint check for this phase
 
 No task status transitioned. No `.lean` file touched (`git diff --stat` — ledger append only).
+
+## Phase 3 — Extraction of specs/ROADMAP-ARCHIVE.md
+
+### Inventory and classification
+
+Confirmed the plan's Scope Hypothesis by direct measurement: `wc -l specs/ROADMAP.md` = 1,970
+lines (matching report 02); `grep -c "HISTORICAL\|SUPERSEDED\|STALE"` = 10 (matching report 02,
+down from ~30 pre-472).
+
+Classified every `## `-level section (26 total) plus relevant `### `-level subsections. Moved to
+`specs/ROADMAP-ARCHIVE.md`, verbatim, in original relative order, tagged with pre-split line
+ranges:
+
+| Pre-split lines | Content |
+|---|---|
+| 94-419 | Overview's stacked dated "Current state" blocks (2026-07-24, 2026-07-16 superseded, 2026-07-07) plus the older sorry-chain/anti-pattern narrative and 2026-05/06 BXCanonical sorry tables beneath them |
+| 657-769 | `### Historical: the task-109 BXCanonical abandonment (2026-05-10, superseded)` and `### Module Import Graph (retired 2026-08-17)` |
+| 896-950 | `## How Until/Since Were Closed` |
+| 976-1064 | Three `### Historical:` subsections inside `## Sorry Inventory` (Critical Path/RootScopedChain, Irreflexive-Consequence, Irreflexive Semantics Strategy) plus `### Historical: Closed Sorries` |
+| 1068-1123 | `## Legacy Code Inventory` |
+| 1200-1558 | `## Dead Ends (Archived)` (already self-titled archived; includes its `### Task 93` and `### Current Strategy: Chronicle Construction` subsections) |
+| 1659-1663 | `## Investigated Dead Ends: Logic Weakening (Task 77)` |
+| 1864-1930 | `## Recommended Priority Order` (carried its own `> STALE (2026-08-17)` banner) |
+| 1934-1970 | `## Task Cross-Reference` (the trailing 111-row table) |
+
+**Total moved**: 1,107 lines. **Verified no content lost**: `1,107 (moved) + 863 (reduced file) =
+1,970 (original)` — exact arithmetic match, confirmed by script.
+
+**Sections deliberately KEPT in `specs/ROADMAP.md`** despite containing dated or partially-stale
+material, because they are current-state-bearing (Phase 7's job to correct, not Phase 3's job to
+archive) rather than purely historical sediment: `## Overview`'s lead architecture/terminology
+block (lines 1-92, including the per-class completeness table that Phase 7 must correct for
+169/422 per Phase 2's verdict); `## Active Metalogic Paths`/`### Chronicle Construction` (retains
+one small dated 2026-05-10 sub-paragraph Phase 7 will fold in); `## Other Open Items` (carries the
+task 474 BiLasso "Status: landed" block Phase 7 must fold into the decidability front); `##
+Representation Theorem Goal` (architecture rationale, no stale banner); `## Paper Alignment
+Programme` (explicitly flagged by the plan as needing a Phase 7 correction, not extraction — six
+tasks listed not-started/blocked that archived completed 2026-08-13 to 2026-08-18); `##
+Burgess-Xu Until-Induction Technique` (durable mathematical-technique reference, not dated
+narrative).
+
+### Provenance header
+
+`specs/ROADMAP-ARCHIVE.md` opens with a provenance header naming its source file
+(`specs/ROADMAP.md`), the split date (2026-08-25), this task, and stating explicitly that archived
+text is a historical record, not current truth, and that `specs/ROADMAP.md` and a fresh
+`check-module-invariants.sh` run win on any conflict.
+
+### C5-equivalent replication (both files)
+
+C5 proper prunes `specs` from its directory walk (`dirs[:] = [... "specs" ...]`,
+`check-module-invariants.sh` line ~270), so it never reads either file. Replicated C5's own logic
+standalone (`mod_re = re.compile(r"\b(?:FormalSystem|BimodalTest)(?:\.[A-Z][A-Za-z0-9_]*)+")` plus
+its `resolves()` function, checking `.lean` file or directory existence) directly against both
+files:
+
+```
+specs/ROADMAP.md: 0 unresolved module-shaped path(s)
+specs/ROADMAP-ARCHIVE.md: 0 unresolved module-shaped path(s)
+```
+
+Both zero, as the plan's baseline predicted.
+
+### Hard-constraint check for this phase
+
+No `.lean` file touched (`git diff --stat` — only `specs/ROADMAP.md` modified and
+`specs/ROADMAP-ARCHIVE.md` created). No task status transitioned.

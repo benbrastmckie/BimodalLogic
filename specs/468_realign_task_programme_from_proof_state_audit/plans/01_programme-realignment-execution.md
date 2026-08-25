@@ -251,7 +251,7 @@ implicated, adjudicate it in the same phase rather than deferring it.
 
 ---
 
-### Phase 3: Extract specs/ROADMAP-ARCHIVE.md [NOT STARTED]
+### Phase 3: Extract specs/ROADMAP-ARCHIVE.md [COMPLETED]
 
 **Goal**: Move the historical sediment out of `specs/ROADMAP.md` into a separate archive file, so
 Phase 7 can author a clean current-state file rather than editing around 1,970 lines of stacked
