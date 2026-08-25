@@ -87,6 +87,7 @@ next_project_number: 488
 - **Dependencies**: None
 - **Research**: [487_fix_argv_ceiling_in_roadmap_integration_and_state_write/reports/01_fix-argv-ceiling.md]
 - **Plan**: [487_fix_argv_ceiling_in_roadmap_integration_and_state_write/plans/01_fix-argv-ceiling.md]
+- **Summary**: [487_fix_argv_ceiling_in_roadmap_integration_and_state_write/summaries/01_fix-argv-ceiling-summary.md]
 
 **Description**: TOOLING FIX: repair the 128KB argv ceiling that silently disables roadmap integration and can corrupt ROADMAP.md, plus the same defect in the state writer.
 

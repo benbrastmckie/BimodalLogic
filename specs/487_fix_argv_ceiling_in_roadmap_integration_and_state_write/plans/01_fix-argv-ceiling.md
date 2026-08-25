@@ -1,7 +1,7 @@
 # Implementation Plan: Task #487
 
 - **Task**: 487 - Fix 128KB argv ceiling in roadmap-integration.sh and state-write.sh
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 8.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/487_fix_argv_ceiling_in_roadmap_integration_and_state_write/reports/01_fix-argv-ceiling.md

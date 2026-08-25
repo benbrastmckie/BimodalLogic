@@ -932,6 +932,12 @@
           "path": "specs/487_fix_argv_ceiling_in_roadmap_integration_and_state_write/plans/01_fix-argv-ceiling.md",
           "summary": "Created a 7-phase, 8.5-hour implementation plan for task 487 covering the state-write.sh transparent argjson auto-spill, the roadmap-integration.sh final jq -n slurpfile fix, the --annotate staging/atomicity redesign, the explicit_task_ref data-flow tightening, regression tests above the 128KB ceili",
           "created": "2026-08-25T20:32:58Z"
+        },
+        {
+          "type": "summary",
+          "path": "specs/487_fix_argv_ceiling_in_roadmap_integration_and_state_write/summaries/01_fix-argv-ceiling-summary.md",
+          "summary": "Implementation summary",
+          "created": "2026-08-25T21:11:28Z"
         }
       ],
       "blockers": [],
