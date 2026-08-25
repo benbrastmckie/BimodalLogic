@@ -11,9 +11,9 @@ next_project_number: 480
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,193,257,298,422,434,461,462,468,476,477 | -- | automation, dataset-enhancement, decidability, ... |
-| 2 | 125,169,178,231,282,296,433,455,463,478 | 193,298,422,434,461,462,468,477 | algebraic-representation, code-quality, dataset-enhancement, ... |
-| 3 | 95,219,362,464,479 | 169,231,463,478 | completeness, dataset-enhancement, decidability, ... |
+| 1 | 127,128,193,257,298,422,434,461,462,468,476,478 | -- | automation, dataset-enhancement, decidability, ... |
+| 2 | 125,169,178,231,282,296,433,455,463,479 | 193,298,422,434,461,462,468,478 | algebraic-representation, code-quality, dataset-enhancement, ... |
+| 3 | 95,219,362,464 | 169,231,463 | completeness, dataset-enhancement, decidability, ... |
 | 4 | 465 | 464 | decidability |
 | 5 | 428 | 433,465 | decidability |
 | 6 | 429 | 428 | decidability |
@@ -89,9 +89,8 @@ next_project_number: 480
 
 ### Metalogic
 
-477 [PLANNED] — T-A: TARGET-STRUCTURE PLUMBING FOR THE GROUPABLE-COMPANION ROUTE.
-  └─ 478 [NOT STARTED] — T-B: THE GROUPABLE COMPANION LEMMA.
-    └─ 479 [NOT STARTED] — T-C: CLOSE `countermodel_discrete` VIA THE v2 BLUEPRINT AT Rat x_
+478 [NOT STARTED] — T-B: THE GROUPABLE COMPANION LEMMA.
+  └─ 479 [NOT STARTED] — T-C: CLOSE `countermodel_discrete` VIA THE v2 BLUEPRINT AT Rat x_
 
 ## Tasks
 
@@ -214,12 +213,13 @@ The companion lemma is SUFFICIENT, NOT KNOWN NECESSARY. It has not been proved. 
 
 ### 477. Ta qz target structure plumbing
 - **Effort**: small
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: None
 - **Research**: [477_ta_qz_target_structure_plumbing/reports/01_qz-target-structure-plumbing.md]
 - **Plan**: [477_ta_qz_target_structure_plumbing/plans/01_qz-target-structure-plumbing.md]
+- **Summary**: [477_ta_qz_target_structure_plumbing/summaries/01_qz-target-structure-plumbing-summary.md]
 
 **Description**: T-A: TARGET-STRUCTURE PLUMBING FOR THE GROUPABLE-COMPANION ROUTE.
 
