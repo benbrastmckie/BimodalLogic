@@ -9,7 +9,7 @@
     {
       "project_number": 468,
       "project_name": "realign_task_programme_from_proof_state_audit",
-      "status": "researched",
+      "status": "planned",
       "task_type": "meta",
       "topic": "decidability",
       "priority": "high",
@@ -24,7 +24,7 @@
         "specs/ROADMAP.md"
       ],
       "created": "2026-08-20T07:11:23Z",
-      "last_updated": "2026-08-25T11:58:40Z",
+      "last_updated": "2026-08-25T12:07:13Z",
       "artifacts": [
         {
           "type": "report",
@@ -35,6 +35,11 @@
           "path": "specs/468_realign_task_programme_from_proof_state_audit/reports/02_stage1-verification-and-programme-realignment.md",
           "type": "report",
           "summary": "Stage-1 verification and programme realignment research"
+        },
+        {
+          "path": "specs/468_realign_task_programme_from_proof_state_audit/plans/01_programme-realignment-execution.md",
+          "type": "plan",
+          "summary": "Nine-phase plan executing the charter's Stages 0-5 against the re-verified proof state."
         }
       ],
       "session_id": "sess_1787658359_f24b55"
