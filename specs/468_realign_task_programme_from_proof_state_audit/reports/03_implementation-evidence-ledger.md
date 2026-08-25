@@ -393,3 +393,37 @@ warning. `specs/TODO.md` confirmed to carry all three new entries (`### 480.`, `
 No existing task's status/dependencies/file_scope was touched. No `.lean` file touched. All
 writes went through `state-write.sh`; `specs/TODO.md` only ever regenerated via
 `generate-todo.sh`.
+
+## Phase 5 — Description REVISEs applied
+
+All nine REVISEs applied via `.claude/scripts/state-write.sh` (description field only, one
+targeted `jq` write per task):
+
+| Task | Change |
+|---|---|
+| 412 | Struck the stale `countermodel_discrete`/`Transfer.lean:1242` clause from the primary scope sentence; added a correction naming the theorem's actual location (`GroupModel/CountermodelBase.lean`) and naming new task 482 as the `.extractionFailed`-elimination owner gated on 412. |
+| 428 | Added the ASSESS-and-C9-register escape clause for the split-arm fuel scaling problem (`Fuel.lean:1595-1610`); left the opening "THE REFUTED THEOREM, SETTLED" paragraph untouched. |
+| 429 | Added the recommended-route sentence naming option (a) up front, per amendment 10a; kept all three routes' text and option (c)'s closed-as-formulated status unchanged. |
+| 462 | Added the sequencing note naming new task 481 and the shared nonempty-universe setting. |
+| 178 | Rescoped the decidability-example acceptance criterion to the propositional fragment; added the `truthAt_of_isValid`-is-not-decidability-evidence correction, carried from the 2026-08-24 review's M-7 and independently re-confirmed this dispatch. |
+| 177 | Replaced wholesale with the retained-half text from report 02 §6 (472/473's territory explicitly excluded); `file_scope` left untouched (already correct). |
+| 169 | Appended the REMOVE/propose-abandonment finding from Phase 2, with evidence pointer and the 362-dependency-edge flag for the report. |
+| 422 | Appended the REMOVE/propose-abandonment finding from Phase 2, with evidence pointer. |
+| 95 | Appended the REMOVE/propose-abandonment finding from Phase 2, with evidence pointer. |
+
+### Verification
+
+- `jq` confirms each revised description contains its new clause; for 412 and 178 the specific
+  struck sentence no longer appears as a live claim (confirmed by targeted `grep -c` returning 0
+  for the exact original phrasing; the only remaining occurrences are inside the correction text,
+  explicitly quoting what was struck, exactly as the existing convention elsewhere in this file
+  does — e.g. task 428's own "THE REFUTED THEOREM, SETTLED" section).
+- `status`, `dependencies`, and `file_scope` unchanged for all nine tasks (spot-checked via `jq`
+  immediately after all nine writes) — confirmed this phase touched descriptions only.
+- `generate-todo.sh` exits 0, no undeclared-topic warning. `active_projects | length` still 51
+  (48 original + 3 from Phase 4; unchanged by this phase, as expected).
+
+### Hard-constraint check for this phase
+
+No task's status transitioned. No `.lean` file touched. All writes through `state-write.sh`;
+`TODO.md` only regenerated.

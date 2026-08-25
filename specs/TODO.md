@@ -73,7 +73,7 @@ next_project_number: 483
 
 ### Formula Refactor
 
-177 [NOT STARTED] — Update all documentation to match final codebase state after refa
+177 [NOT STARTED] — Update README.md, docs/, and FormalSystem/ module-level docstring
 178 [NOT STARTED] — Expand Examples/ with publication-quality demonstrations of the f
 
 ### Frame Extensions
@@ -1693,6 +1693,16 @@ DONE MEANS: `MintPaysForTimeFixed fc (signedUniverse C L) Tmax` discharged at NO
 PROHIBITED: do not re-attempt anything in the C9 do-not-re-attempt register (read entries in full first, especially 14, 17, 18, 19, 20); do not edit Fuel.lean, Saturation.lean or Tableau.lean (md5-pinned frozen); do not alter any previously-landed declaration; no `sorry`, no vacuous discharge, no predicate that is itself false. If the assembly turns out to need genuinely open mathematics rather than plumbing, STOP and record that finding with evidence rather than forcing it -- that outcome is a legitimate deliverable and should be recorded as a new C9 entry.
 
 Dependencies: none. This task is unblocked today.
+REALIGNMENT ADDENDUM (task 468, 2026-08-25) -- SEQUENCING WITH THE FIFTH TERMINATION RESIDUAL:
+task 481 (discharge_or_replace_unorderedsuccessorlabelclosed_residual, dependencies: [434]) targets
+`UnorderedSuccessorLabelClosed` (MintBound.lean:6199), which is refuted in-tree at :6238
+(`¬ UnorderedSuccessorLabelClosed fc freshWorldLabels`) precisely at a NONEMPTY universe -- the
+same setting this task's `MintPaysForTimeFixed` discharge above targets. If this task and 481 are
+not sequenced, this task risks either duplicating the discovery of that refutation or, worse,
+building the assembly on an implicit assumption that the residual is harmless. Task 481 should run
+BEFORE OR ALONGSIDE this task; check its disposition (discharge, weaker replacement, or C9 register
+entry) before relying on any assumption about `UnorderedSuccessorLabelClosed` at a nonempty
+universe in this task's own work.
 
 ---
 
@@ -1989,6 +1999,18 @@ DO NOT REOPEN (settled by 165): guardWitnessed in any variant; restoring sat_unt
 GOAL: choose among the three documented BoxAnchored repair routes and land it with its soundness obligations discharged; and re-establish a producer for `not event` at existing future times. Both must hold on branches the engine ACTUALLY builds, measured by the probes, not on hand-built branches.
 
 DONE WHEN: `boxAnchoredCheck` and `temporalWitnessCheck` are dischargeable on real engine output for the relevant branch classes, evidenced by probe rows moving back to check=true; no unsound copy block or retired arm is reinstated; lake build green.
+REALIGNMENT ADDENDUM (task 468, 2026-08-25) -- RECOMMENDED ROUTE, NAMED UP FRONT: of the three O2
+repair routes listed above, route (a) -- propagate T(box phi) itself to the fresh world -- is the
+RECOMMENDED route (per specs/reviews/review-2026-08-24.md amendment 10a and the box-anchor
+artifact's own §5), so a dispatch need not re-derive the recommendation from
+boxanchored-finding.md each time. It follows the S5 axiom-4/5 pattern, carries its own RuleSound
+obligation, and has named fuel/termination consequences that Fuel.lean's bounds and the
+subformula property must absorb -- all as already detailed in that artifact. Route (b) remains
+available but reduces to route (a)'s obligation once branch provenance is tracked, per the
+artifact. Route (c) stays recorded as CLOSED AS FORMULATED (boxGridCheck fails for the same
+structural reason the anchor does, so weakening only the anchor buys nothing) -- do not
+re-attempt it. This addendum names a recommendation; it does not narrow the task's own account of
+all three routes and their obligations above, which stands as written.
 
 ---
 
@@ -2053,6 +2075,24 @@ Machine-check BOTH before any plan is written. This task has twice had a plan re
 PRESERVED, DO NOT RE-PROVE: phases 1-10 of plans/02_lexicographic-splitordered-measure.md are landed, sorry-free, axiom-free, and green repo-wide. Consume those declarations. `buildTableau`, its `fuel := 1000` default, and `expandBranchWithFuel`'s `maxBranches := 50000` default stay BYTE-IDENTICAL. No `NoSplit` reintroduction; no admitted `WorldWitness` or `hT`; no `sorry`; no narrowing a statement into vacuity. The refuted unconditional `buildTableau_isSome` and the refuted `.splitOrdered` cardinality twin stay on the do-not-re-attempt register. `resolveOpenArmCancellable` in CancellableExpansion.lean remains a DECLARED, deliberately-unrepaired out-of-scope divergence. Task 412 must not be planned against `buildTableauAt_isSome_of_budget` until it lands; the Phase 3 assets (`BudgetedTableau`, `buildTableauAt`, `BudgetedTableau.upgrade`) are available and sorry-free meanwhile.
 
 RESUME SEQUENCE: `/research 428` first (discharge the two uncertain claims above), then `/orchestrate 428`. The stale loop guard from the prior invocation has been removed so a restart gets a fresh cycle budget.
+REALIGNMENT ADDENDUM (task 468, 2026-08-25) -- ASSESS-AND-C9-REGISTER ESCAPE CLAUSE FOR THE
+SPLIT-ARM FUEL SCALING PROBLEM: the opening "THE REFUTED THEOREM, SETTLED" paragraph above is
+unaffected by this addendum and gets a CURRENT verdict on that point -- do NOT touch it.
+
+`Fuel.lean:1595-1610` documents that fuel adequate for a split run scales like
+`beta ^ depth * worldFuel'`, and depth is not bounded by anything proved in that file -- this is,
+in its own words, "a real property of a deliberate engine policy, not a gap in a proof," of the
+same class as the already-settled `buildTableau_isSome` refutation. If, in the course of this
+task's approved route (b) work, the split-arm fuel-adequacy question proves genuinely unclosable
+as specified -- i.e. no depth bound can be established or supplied without weakening the engine's
+own proportional-fuel policy -- the correct deliverable is an explicit ASSESS-and-C9-register
+outcome: name the specific obstruction, add a C9 register entry (in
+`Verified/Termination/MintBound.lean`, alongside its other entries) stating precisely which
+theorem still carries the split-arm scaling exposure and under what hypothesis, and stop there.
+This is a VALID, COMPLETE outcome for this sub-question -- do not treat "close it" as the only
+acceptable result, and do not force a proof past this obstruction by weakening `NoSplit`,
+reintroducing a hypothesis this task's own do-not-re-attempt register forbids, or narrowing a
+statement into vacuity.
 
 ---
 
@@ -2203,6 +2243,25 @@ Governing design document: specs/archive/361_strong_completeness_architecture_an
 Acceptance: the block-carrier construction and all three restricted-coherence analogues are sorry-free; #print axioms on each reports no sorryAx; lake build green. This task does NOT close the `sorry` inside `WeakCanonical.countermodel_discrete` (`FormalSystem/Metalogic/WeakCanonical/Transfer.lean`; declaration currently near :1068, sorry token currently near :1084, hints only) — that is task 169's job, which consumes this output.
 
 FOUR-AXIOM / TOTALITY EXPOSURE NOTE (added 2026-08-10; discharge recorded 2026-08-18): this task constructs a chronicle-backed frame while the paper-refactor cluster (tasks 420, 414, 415) refactors TaskFrame and validity underneath it. Once task 420 lands, TaskFrame carries the paper's FOUR def:frame axioms (biconditional Compositionality, Seriality, Limit, Spherical -- pinned in specs/paper-definitions-of-record.md) plus a Nonempty WorldState field and a [Nontrivial D] binder; any frame this task builds must discharge ALL of them, not just the current three structure fields. Once task 414 lands, `valid` / `SemanticConsequence` are Omega-free and totality-based, so the Validity.lean line citation above and the 'no IsSuccArchimedean binder' observation must be re-verified against the refactored signatures. Tasks 414 and 420 have both now landed and are archived; the re-verification obligation for the `valid`/Validity.lean citation and the 'no IsSuccArchimedean binder' observation above is discharged by this re-issue (re-confirmed against the live, post-refactor `valid` definition). Sequence this task after 420/414/415 or budget for the rebase.
+REALIGNMENT FINDING (task 468, 2026-08-25) -- PROPOSED FOR ABANDONMENT, NOT TRANSITIONED HERE:
+this task's specified deliverables -- (a) a block-decomposition/densification/isomorphism into the
+carrier `Q x_lex Z`, and (b) three restricted-coherence analogues at that carrier -- are
+permanently REFUTED at the isomorphism level (this task's own report 01,
+`verification/block_order_refutation.lean`, sorry-free, machine-checked: no linearly ordered
+abelian group has order type Z+Z) and, independently, SUPERSEDED: the goal they existed to serve
+(closing `WeakCanonical.countermodel_discrete`) has already been reached by a different,
+already-completed three-task chain (477 -> 478 -> 479) that consumes none of deliverable (a) or
+(b) -- confirmed by grep: no active task references `cantor_bfmcs_dense_restricted_tc`/`_buc`/
+`_fuc`'s discrete-case analogue or a discrete block-carrier isomorphism symbol. This task's own
+report 02 (`o1-verdict-k-equivalence-transfer.md`) is the governing document 477-479 actually
+followed, via a structurally different technique (`KEquiv` at fixed depth, not an isomorphism) --
+so this task's research output was valuable and consumed, but its originally-specified
+deliverables were not, and re-attempting deliverable (a) would violate its own refutation's
+"do not re-attempt" instruction.
+
+Full evidence and adjudication: specs/468_realign_task_programme_from_proof_state_audit/reports/03_implementation-evidence-ledger.md
+(Phase 2 section). RECOMMENDATION: abandon this task once the task-468 realignment report is
+acted on by the user. Not transitioned by task 468 -- status transitions are outside its scope.
 
 ---
 
@@ -2306,12 +2365,29 @@ Reuse `FrameClass`; do not clone it. Phrase all statements so they compose with 
 - **Topic**: decidability
 - **Dependencies**: Task 165, Task 410, Task 411, Task 428, Task 430
 
-**Description**: Track B finish for the TM tableau decidability program (parent: task 165; grounding: reports/02_tableau-decidability-hard-research.md sections 3.1, 8.3, 8.5). Create Verified/Refutation/Core.lean proving allClosed_derivable as ONE induction over allRulesForFC fc, discharging each rule by its admissibility lemma (predecessor tasks) and its ruleFrameClass r <= fc hypothesis via the RuleSpec GATE lemmas — Dense/Discrete/Dedekind instantiate the generic theorem, they do not re-prove it. Then Verified/Provable.lean: Decidable (Derivable fc [] phi) combining allClosed_derivable with Track A's buildTableau_isSome and not_valid_of_hasOpen; the completeness corollaries ValidFor fc phi -> Derivable fc [] phi; discharge the pre-existing sorry countermodel_discrete at FormalSystem/Metalogic/WeakCanonical/Transfer.lean:1242; and supply the Dedekind engine consumed by completeness_dedekind_of_engine (StrongCompleteness.lean:308, target ValidDedekindDense). Acceptance: zero sorries repo-wide outside Boneyard; lake build green; update typst/latex decidability chapters to record headline result 2.
+**Description**: Track B finish for the TM tableau decidability program (parent: task 165; grounding: reports/02_tableau-decidability-hard-research.md sections 3.1, 8.3, 8.5). Create Verified/Refutation/Core.lean proving allClosed_derivable as ONE induction over allRulesForFC fc, discharging each rule by its admissibility lemma (predecessor tasks) and its ruleFrameClass r <= fc hypothesis via the RuleSpec GATE lemmas — Dense/Discrete/Dedekind instantiate the generic theorem, they do not re-prove it. Then Verified/Provable.lean: Decidable (Derivable fc [] phi) combining allClosed_derivable with Track A's buildTableau_isSome and not_valid_of_hasOpen; the completeness corollaries ValidFor fc phi -> Derivable fc [] phi; supply the Dedekind engine consumed by completeness_dedekind_of_engine (StrongCompleteness.lean:308, target ValidDedekindDense). Acceptance: zero sorries repo-wide outside Boneyard; lake build green; update typst/latex decidability chapters to record headline result 2.
 RE-SCOPING ADDENDUM (2026-07-29, supersedes the buildTableau_isSome reference above): the scope text above depends on "Track A's buildTableau_isSome", which task 165 proved FALSE and placed on a do-not-re-attempt register (165's plan 01_tableau-decidability-two-track.md:1405-1420, :1489-1493). The refutation is a property of the engine signature, not a proof difficulty: buildTableau returns none whenever a formula explores more than maxBranches := 50000, at ANY fuel. Consequently this task's acceptance criterion "zero sorries repo-wide outside Boneyard" was UNREACHABLE AS SCOPED, independently of task 165's own status.
 
 CORRECTED DEPENDENCE: consume the budget-parameterised totality theorem from task 428 (engine_totality_at_a_quantified_branch_budget) -- shape `buildTableau_isSome_of_budget phi fc maxBranches (hmb : <bound in phi> <= maxBranches)` -- in place of the unconditional buildTableau_isSome. Task 428 has been added as a predecessor. Do NOT attempt the unconditional form yourself.
 
 ALSO NOTE: this task inherits obstructions O2 and O3 (the boxAnchoredCheck and temporalWitnessCheck truth-lemma side conditions) from Phase 7.3 of task 165 by way of not_valid_of_hasOpen. Those are owned by task 429. If your induction reaches a point where a truth-lemma gate hypothesis must be discharged on real engine output, that is 429's work, not this task's -- record it and coordinate rather than re-deriving it. Grounding for all of this: specs/165_establish_semantic_finite_model_property/reports/09_phase7-deadlock-blocker-research.md.
+
+REALIGNMENT CORRECTION (task 468, 2026-08-25): the struck clause above ("discharge the
+pre-existing sorry countermodel_discrete at Transfer.lean:1242") is STALE. That sorry no longer
+exists -- countermodel_discrete is CLOSED, via tasks 477/478/479's k-equivalence/groupable-
+companion route, and now lives sorry-free in
+FormalSystem/Metalogic/WeakCanonical/GroupModel/CountermodelBase.lean, not Transfer.lean. Verified
+fresh by scripts/check-module-invariants.sh C2/C3 at realignment time: C3 reports zero live
+structural sorries tree-wide; C2 reports BXCanonical.completeness axiom-clean
+([propext, Classical.choice, Quot.sound]). This task's remaining scope (allClosed_derivable, the
+Decidable (Derivable fc [] phi) instance, the completeness corollaries, the Dedekind engine) is
+UNCHANGED and still open.
+
+New task 482 (discharge_proof_extraction_completeness, dependencies: [412]) is the owner of
+eliminating .extractionFailed as a live outcome on a genuinely closed tableau -- it is gated on
+this task's allClosed_derivable induction as a prerequisite and consumes it once landed. This
+task's own acceptance criteria are unchanged by 482's existence; 482 is a downstream consumer,
+not an addition to this task's scope.
 
 ---
 
@@ -2541,7 +2617,21 @@ Inventory groups drawn on: survey report section 4.2 groups 2 (intros_validity, 
 - **Topic**: formula-refactor
 - **Dependencies**: Task 131, Task 193, Task 402
 
-**Description**: Expand Examples/ with publication-quality demonstrations of the full verified pipeline. Complete worked example showing soundness-completeness-decidability on a concrete formula. Examples exercising each frame class with FrameClass-parameterized DerivationTree. Examples of the expressive completeness result. Update BimodalProofs.lean and TemporalStructures.lean. All examples sorry-free.
+**Description**: Expand Examples/ with publication-quality demonstrations of the full verified pipeline. Complete worked example showing soundness and completeness on a concrete formula, plus decidability of the propositional fragment (genuinely complete today, per the soundness/completeness metatheory's axiom-clean status). Examples exercising each frame class with FrameClass-parameterized DerivationTree. Examples of the expressive completeness result. Update BimodalProofs.lean and TemporalStructures.lean. All examples sorry-free.
+
+REALIGNMENT CORRECTION (task 468, 2026-08-25, carried from specs/reviews/review-2026-08-24.md
+amendment M-7, independently re-confirmed at realignment time): the struck original acceptance
+criterion above ("Complete worked example showing soundness-completeness-decidability on a
+concrete formula") is RESCOPED. Decidability of TM (the full bimodal logic) is still open --
+re-confirmed fresh this dispatch: grep -rn "isValid" FormalSystem/Metalogic/Decidability/ shows no
+declaration takes DecisionProcedure.isValid as its subject, and ruleSound_of_mem_allRulesForFC is
+not lifted to any allClosed -> valid theorem. `truthAt_of_isValid`
+(Verified/Decidable.lean:2412) is NOT evidence of decidability -- it concerns a different,
+semantic-side `SoundnessLemmas.IsValid`, not the decision procedure's `DecisionProcedure.isValid`.
+Do not cite it as such. This task's decidability example is therefore rescoped to the
+propositional-fragment case (genuinely decidable today) rather than the full logic; a full-logic
+decidability example remains gated on the decidability/tableau front (410-465,
+480-482) landing.
 
 ---
 
@@ -2551,7 +2641,9 @@ Inventory groups drawn on: survey report section 4.2 groups 2 (intros_validity, 
 - **Topic**: formula-refactor
 - **Dependencies**: Task 131, Task 193, Task 402, Task 426, Task 428, Task 429, Task 430, Task 432, Task 433, Task 434, Task 440, Task 441, Task 448
 
-**Description**: Update all documentation to match final codebase state after refactoring. README.md axiom counts, architecture diagram, sorry obligations. Module-level docstrings for every file in the final structure. ROADMAP.md updates. Axiom Reference doc verification. This is the final documentation pass after all structural refactoring is complete.
+**Description**: Update README.md, docs/, and FormalSystem/ module-level docstrings to their final post-refactor state, once the decidability chain (426, 428, 429, 430, 432, 433, 434) lands. This is the final polish pass, distinct from and run after task 472's already-completed immediate correction pass. Explicitly excludes: every item task 472 already corrected (the Decidability.lean Status block, Verified/README.md, FMP/README.md, DecisionProcedure.lean's decideAuto docstring, Verified/Decidable.lean's Status docstring, WeakCanonical.lean, RealModel/ShuffleReal.lean, Soundness.lean, PriorExpressivenessDense.lean) and the two Kamp files task 473 already swept (Kamp/EANegationClosure.lean, NfMultiAnchorBridge/NavigatedSpine.lean). This task's residual content is: re-auditing all touched documentation for drift accumulated during the decidability chain's landing (472/473 audited a snapshot; the chain's remaining tasks will touch further files after 472/473 ran), and the Axiom Reference update the charter names as part of 177's original scope.
+
+REALIGNMENT NOTE (task 468, 2026-08-25, verdict per specs/468_realign_task_programme_from_proof_state_audit/reports/02_stage1-verification-and-programme-realignment.md §6): DIVIDE, already half-executed exactly as specs/reviews/review-2026-08-24.md amendment 10f states -- tasks 472 (documentation correction pass) and 473 (Kamp vacuity deletion) already ran the ungated half; the description above is the remaining, gated half's text. `file_scope` (README.md, specs/ROADMAP.md, FormalSystem/, docs/) was already repaired by task 470 item (G) and is confirmed resolvable, no duplicate -- left unchanged here.
 
 ---
 
@@ -2576,6 +2668,24 @@ DEPENDENCIES: task 421 corrects the refuted route guidance in Transfer.lean and 
 ROLE IN THE COMPLETENESS PROGRAMME (terminology settled 2026-07-27): this is the headline WEAK terminus for Base, consumed by the consequence-completeness capstone (task 362) as its single-formula engine. The weak engine yields only the finite-context consequence corollary (inter-derivable with weak completeness via the deduction theorem — deliberately NOT called "strong completeness"). Genuine STRONG completeness for Base (Γ : Set Formula) additionally requires semantic compactness, gated on task 424; that obligation is NOT discharged by this task.
 
 Governing design document: specs/archive/361_strong_completeness_architecture_and_weak_terminus_gap_analysis/design/03_weak-terminus-status.md.
+REALIGNMENT FINDING (task 468, 2026-08-25) -- PROPOSED FOR ABANDONMENT, NOT TRANSITIONED HERE:
+this task's sole deliverable -- consume task 422's output to close `WeakCanonical.countermodel_discrete`,
+delete the Transfer.lean sorry, and re-verify `#print axioms completeness` reports no `sorryAx` --
+is ALREADY FULLY ACCOMPLISHED, via a different route than the one this task and 422 were built to
+supply. Tasks 477 (ta_qz_target_structure_plumbing) -> 478 (tb_groupable_companion_lemma) -> 479
+(tc_close_countermodel_discrete_at_base), all completed, closed `countermodel_discrete` via a
+k-equivalence/groupable-companion construction at the carrier `Rat x_lex Int`, landing the theorem
+in `FormalSystem/Metalogic/WeakCanonical/GroupModel/CountermodelBase.lean`. Verified fresh at
+realignment time: check-module-invariants.sh C3 reports zero live structural sorries tree-wide; C2
+reports `BXCanonical.completeness` axiom-clean. `WeakCanonical/Transfer.lean`'s own current header
+confirms the theorem "had to move" to the GroupModel route.
+
+Full evidence and adjudication: specs/468_realign_task_programme_from_proof_state_audit/reports/03_implementation-evidence-ledger.md
+(Phase 2 section). This task's own `BXCanonical/Completeness.lean`/`BXCanonical/Chronicle/`
+`file_scope` names no obligation that remains open. RECOMMENDATION: abandon this task once the
+task-468 realignment report is acted on by the user. Note: task 362 lists this task among its
+dependencies; that edge should be reviewed alongside any abandonment decision (see task 468's
+report 04 for detail). Not transitioned by task 468 -- status transitions are outside its scope.
 
 ---
 
@@ -2658,3 +2768,19 @@ completeness. Use `Lean.collectAxioms` plus textual analysis instead.
 EXPECTED OUTCOME: this task most likely closes as verified-complete. If step (1)
 or (2) diverges from the state above, that divergence IS the finding and should
 be reported prominently rather than silently reconciled.
+REALIGNMENT FINDING (task 468, 2026-08-25) -- PROPOSED FOR ABANDONMENT, NOT TRANSITIONED HERE:
+this task's narrow confirmation-pass content (re-run #print axioms on the headline theorems;
+confirm the live sorry count is exactly 1, located in WeakCanonical/Transfer.lean; record that
+discharging countermodel_discrete is genuine open construction belonging to its own task) is
+FULLY SUBSUMED by task 468's own Phase 1 baseline re-verification, which performed exactly this
+confirmation pass fresh and found: the live sorry count is ZERO, not 1 (step (2) above can no
+longer be satisfied as originally written -- it presupposes exactly one live sorry in
+Transfer.lean, which has been closed by tasks 477 -> 478 -> 479). Step (3)'s prediction has been
+fulfilled in precisely the form it anticipated ("proving it belongs to its own task"), so there is
+nothing left to record as open; it is closed. Step (1) does not need to wait on this task's
+dependency (169) -- confirmed by scripts/check-module-invariants.sh C2/C3, run fresh at
+realignment time, independent of 169's status.
+
+Full evidence: specs/468_realign_task_programme_from_proof_state_audit/reports/03_implementation-evidence-ledger.md
+(Phase 2 section). RECOMMENDATION: abandon this task once the task-468 realignment report is
+acted on by the user. Not transitioned by task 468 -- status transitions are outside its scope.

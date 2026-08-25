@@ -369,7 +369,7 @@ creation and record the finding instead.
 
 ---
 
-### Phase 5: Apply the description REVISEs [NOT STARTED]
+### Phase 5: Apply the description REVISEs [COMPLETED]
 
 **Goal**: Correct every description report 02 and Phase 2 identified as drifted, including the
 retained half of 177 with task 472's territory excluded.
