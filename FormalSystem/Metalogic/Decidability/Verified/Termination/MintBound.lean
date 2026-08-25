@@ -11370,6 +11370,186 @@ theorem unorderedSuccessorLabelClosedOrd_not_universal
     (SignedFormula.neg fwp ⟨1, 0⟩) (by simp [freshWorldEmitted])
   simp [freshWorldLabels, SignedFormula.neg, Label.initial] at hbad
 
+/-! ### The refutation generalizes: **every** nonempty `L`, not merely one witness
+
+`unorderedSuccessorLabelClosed_not_universal` and `unorderedSuccessorLabelClosedOrd_not_universal`
+refute the residual at one particular label set, `freshWorldLabels = {⟨0,0⟩}`. That is enough to
+show it is not a theorem, but it leaves open the reading — which the earlier phrasing of register
+entry 11 invited — that the residual might hold at *other* label sets, so that a consuming site
+could be repaired by choosing `L` more carefully.
+
+It cannot. The generalization is mechanical, and for a structural reason: the engine's shape gates
+match a signed formula's **sign and formula constructor**, never its label. So `F(□p)` fires
+`.boxNeg` at every label, not only at `Label.initial`, and what the rule emits always sits at the
+branch's `Branch.nextWorld`, which at a one-formula branch labelled `l` is `l.world + 1` — this is
+what `arAt_bn` below records, by `rfl`, with `l` a free variable. Running the witness at a label of
+**maximal world** in `L` therefore puts the emission outside `L`'s world projection by maximality,
+at every nonempty finite `L` and every frame class.
+
+The other end is immediate: at `L = ∅` the confinement hypothesis `∀ x ∈ b, x.label ∈ L` forces
+`b = []`, the pick finds nothing, and the conclusion holds vacuously. So the residual's
+satisfiability set is **exactly `{∅}`** — and `∅` is precisely the case in which every theorem
+carrying it as a hypothesis has an empty universe and says nothing.
+
+The family below is stated **beside** the `freshWorld*` family, not in place of it: the
+single-witness form is what the file's earlier sections cite, and it is not withdrawn. -/
+
+section FreshWorldRefutationAtEveryLabel
+
+/-- `F(□p)` at an arbitrary label — the label-generalized form of `freshWorldWitness`, which is
+this at `Label.initial`. -/
+def freshWorldWitnessAt (l : Label) : SignedFormula := SignedFormula.neg (Formula.box fwp) l
+
+/-- The witness branch at `l`. One formula, so its only world is `l.world` and its next world is
+`l.world + 1`. -/
+def freshWorldBranchAt (l : Label) : Branch := [freshWorldWitnessAt l]
+
+/-- What `boxNeg` emits at the witness: `F(p)` at world `l.world + 1`, the fresh world, with the
+time coordinate carried across unchanged. -/
+def freshWorldEmittedAt (l : Label) : List SignedFormula :=
+  [SignedFormula.neg fwp ⟨l.world + 1, l.time⟩]
+
+private theorem iaAt_ug (fc : FormalSystem.ProofSystem.FrameClass) (l : Label) :
+    isApplicable .priorUGap (freshWorldWitnessAt l) fc = false := rfl
+private theorem iaAt_sg (fc : FormalSystem.ProofSystem.FrameClass) (l : Label) :
+    isApplicable .priorSGap (freshWorldWitnessAt l) fc = false := rfl
+private theorem iaAt_sep (fc : FormalSystem.ProofSystem.FrameClass) (l : Label) :
+    isApplicable .sepRule (freshWorldWitnessAt l) fc = false := rfl
+private theorem iaAt_np (fc : FormalSystem.ProofSystem.FrameClass) (l : Label) :
+    isApplicable .negPos (freshWorldWitnessAt l) fc = false := rfl
+private theorem iaAt_nn (fc : FormalSystem.ProofSystem.FrameClass) (l : Label) :
+    isApplicable .negNeg (freshWorldWitnessAt l) fc = false := rfl
+private theorem iaAt_in (fc : FormalSystem.ProofSystem.FrameClass) (l : Label) :
+    isApplicable .impNeg (freshWorldWitnessAt l) fc = false := rfl
+private theorem iaAt_ap (fc : FormalSystem.ProofSystem.FrameClass) (l : Label) :
+    isApplicable .andPos (freshWorldWitnessAt l) fc = false := rfl
+private theorem iaAt_on (fc : FormalSystem.ProofSystem.FrameClass) (l : Label) :
+    isApplicable .orNeg (freshWorldWitnessAt l) fc = false := rfl
+private theorem iaAt_bp (fc : FormalSystem.ProofSystem.FrameClass) (l : Label) :
+    isApplicable .boxPos (freshWorldWitnessAt l) fc = false := rfl
+private theorem iaAt_bn (fc : FormalSystem.ProofSystem.FrameClass) (l : Label) :
+    isApplicable .boxNeg (freshWorldWitnessAt l) fc = true := rfl
+/-- **The label-independence of the emission, stated as a `rfl` fact with `l` free.** This is the
+one line that carries the whole generalization: the rule's output is computed from the branch's
+`Branch.nextWorld`, and at a one-formula branch that is `l.world + 1` for whatever `l` is. -/
+private theorem arAt_bn (l : Label) :
+    applyRule .boxNeg (freshWorldWitnessAt l) (freshWorldBranchAt l) TimeOrdering.empty
+      = (RuleResult.linear (freshWorldEmittedAt l), TimeOrdering.empty) := rfl
+private theorem wpAt_bn (l : Label) :
+    witnessPresent .boxNeg (freshWorldWitnessAt l) (freshWorldBranchAt l) TimeOrdering.empty
+      = false := rfl
+private theorem twAt_bn (l : Label) :
+    trivialEventWitnessed .boxNeg (freshWorldWitnessAt l) (freshWorldBranchAt l) TimeOrdering.empty
+      = false := rfl
+
+-- `rm_bn` (`ruleMintsFreshLabel .boxNeg = true`) is reused rather than restated: it mentions no
+-- witness and no label, so the label-generalized family needs no variant of it.
+attribute [local simp] iaAt_ug iaAt_sg iaAt_sep iaAt_np iaAt_nn iaAt_in iaAt_ap iaAt_on iaAt_bp
+  iaAt_bn arAt_bn rm_bn wpAt_bn twAt_bn
+
+/-- **`.boxNeg` is the rule the engine picks at the witness, at every frame class and every label.**
+Exactly `findApplicableRule_freshWorldWitness`'s argument with `l` free: the nine rules ahead of
+`.boxNeg` are inapplicable to a `.neg`-signed box regardless of where it sits, and the Dense and
+Discrete blocks are *appended* after the base rules by `allRulesForFC`, so neither can pre-empt it. -/
+theorem findApplicableRule_freshWorldWitnessAt
+    (fc : FormalSystem.ProofSystem.FrameClass) (l : Label) :
+    findApplicableRule (freshWorldWitnessAt l) (freshWorldBranchAt l) TimeOrdering.empty fc
+      = some (TableauRule.boxNeg, RuleResult.linear (freshWorldEmittedAt l), TimeOrdering.empty) := by
+  simp only [findApplicableRule, allRulesForFC, allRules, dedekindRules]
+  by_cases hd : FormalSystem.ProofSystem.FrameClass.Dedekind ≤ fc
+  · simp [hd, List.findSome?]
+  · simp [hd, List.findSome?]
+
+/-- **The step fires at the witness, at every frame class, tracker and label.** Blocking is empty
+(`blockedTimes_empty`), the pick short-circuits on the single formula, and the result carries a
+formula at world `l.world + 1`. -/
+theorem expandOnceUnblocked_freshWorldBranchAt
+    (fc : FormalSystem.ProofSystem.FrameClass) (tr : EventualityTracker) (l : Label) :
+    (expandOnceUnblocked (freshWorldBranchAt l) TimeOrdering.empty fc tr).1
+      = ExpansionResult.extended (freshWorldEmittedAt l ++ freshWorldBranchAt l) := by
+  have hrule := findApplicableRule_freshWorldWitnessAt fc l
+  simp only [freshWorldBranchAt] at hrule
+  rw [expandOnceUnblocked]
+  simp only [blockedTimes_empty, findUnexpandedUnblockedWith, isExpanded, freshWorldBranchAt,
+    List.find?_cons, List.contains_nil, Bool.not_false, Bool.and_true, hrule,
+    Option.isNone_some]
+
+/-- **The `Ord` form of the residual is false at every nonempty finite `L`, at every frame class.**
+
+Run the witness at a label `l₀ ∈ L` whose world is maximal in `L.image (·.world)`. The step fires
+(`expandOnceUnblocked_freshWorldBranchAt`), the extended branch is an unordered successor, and the
+emitted formula sits at world `l₀.world + 1`. If the residual held, that label would be in `L`, so
+`l₀.world + 1 ≤ max' (L.image (·.world)) = l₀.world` — impossible.
+
+Stated at the `Ord` form because that is the **weaker** predicate: `OrdTimesKnown` is supplied for
+free at `TimeOrdering.empty` by `ordTimesKnown_empty`, so the added hypothesis costs the refutation
+nothing, and refuting the weaker predicate refutes the stronger one too. -/
+theorem unorderedSuccessorLabelClosedOrd_nonempty_false
+    (fc : FormalSystem.ProofSystem.FrameClass) (L : Finset Label) (hne : L.Nonempty) :
+    ¬ UnorderedSuccessorLabelClosedOrd fc L := by
+  intro h
+  have hine : (L.image (·.world)).Nonempty := hne.image _
+  obtain ⟨l₀, hl₀, hl₀w⟩ := Finset.mem_image.mp ((L.image (·.world)).max'_mem hine)
+  have hstep := expandOnceUnblocked_freshWorldBranchAt fc EventualityTracker.empty l₀
+  have hmem : (freshWorldEmittedAt l₀ ++ freshWorldBranchAt l₀)
+      ∈ unorderedSuccessorBranches
+        (expandOnceUnblocked (freshWorldBranchAt l₀) TimeOrdering.empty fc
+          EventualityTracker.empty).1 := by
+    rw [hstep]; simp [unorderedSuccessorBranches]
+  have hbl : ∀ y ∈ freshWorldBranchAt l₀, y.label ∈ L := by
+    intro y hy
+    simp only [freshWorldBranchAt, List.mem_cons, List.not_mem_nil, or_false] at hy
+    subst hy
+    simpa [freshWorldWitnessAt, SignedFormula.neg] using hl₀
+  have hbad := h (freshWorldBranchAt l₀) TimeOrdering.empty EventualityTracker.empty
+    (ordTimesKnown_empty (freshWorldBranchAt l₀)) hbl _ hmem
+    (SignedFormula.neg fwp ⟨l₀.world + 1, l₀.time⟩) (by simp [freshWorldEmittedAt])
+  simp only [SignedFormula.neg] at hbad
+  have hle : l₀.world + 1 ≤ (L.image (·.world)).max' hine :=
+    Finset.le_max' (L.image (·.world)) (l₀.world + 1)
+      (Finset.mem_image.mpr ⟨⟨l₀.world + 1, l₀.time⟩, hbad, rfl⟩)
+  rw [hl₀w] at hle
+  exact absurd hle (Nat.not_succ_le_self _)
+
+/-- **The residual itself is false at every nonempty finite `L`, at every frame class.**
+
+One line from the `Ord` form through
+`unorderedSuccessorLabelClosedOrd_of_unorderedSuccessorLabelClosed`, so the file carries a single
+refutation argument rather than two copies of it.
+
+This is the statement any downstream artifact should cite. It says that
+`unorderedSuccessorLabelClosed_not_universal`'s single witness was not a peculiarity of
+`freshWorldLabels`: there is no finite nonempty label set at which the residual can be assumed, and
+so every theorem carrying it as a live hypothesis is a vacuously true conditional wherever its
+universe is nonempty. -/
+theorem unorderedSuccessorLabelClosed_nonempty_false
+    (fc : FormalSystem.ProofSystem.FrameClass) (L : Finset Label) (hne : L.Nonempty) :
+    ¬ UnorderedSuccessorLabelClosed fc L :=
+  fun h => unorderedSuccessorLabelClosedOrd_nonempty_false fc L hne
+    (unorderedSuccessorLabelClosedOrd_of_unorderedSuccessorLabelClosed h)
+
+/-- **And it is true at `∅`** — which, with the refutation above, pins the residual's satisfiability
+set to exactly `{∅}`.
+
+Not a discharge in any useful sense: confinement to `∅` forces `b = []`, the pick finds no
+unexpanded formula, and `unorderedSuccessorBranches` of a non-firing step is empty, so the
+conclusion is quantified over nothing. It is recorded because "refuted at every nonempty `L`" and
+"refuted outright" are different statements, and the register should assert the one that is true. -/
+theorem unorderedSuccessorLabelClosed_empty
+    (fc : FormalSystem.ProofSystem.FrameClass) :
+    UnorderedSuccessorLabelClosed fc (∅ : Finset Label) := by
+  intro b ord tr hbl nb hnb x hx
+  have hb : b = [] := by
+    rcases b with _ | ⟨y, ys⟩
+    · rfl
+    · exact absurd (hbl y (by simp)) (by simp)
+  subst hb
+  rw [expandOnceUnblocked] at hnb
+  simp only [findUnexpandedUnblockedWith, List.find?_nil] at hnb
+  simp [unorderedSuccessorBranches] at hnb
+
+end FreshWorldRefutationAtEveryLabel
+
 
 /-! ## C12. The post-blocking settlement residual: refuted, and repaired
 

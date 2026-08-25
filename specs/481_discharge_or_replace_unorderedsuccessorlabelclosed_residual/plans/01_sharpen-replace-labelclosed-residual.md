@@ -1,7 +1,7 @@
 # Implementation Plan: Sharpen and Replace the `UnorderedSuccessorLabelClosed` Residual
 
 - **Task**: 481 - discharge_or_replace_unorderedsuccessorlabelclosed_residual
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 9 hours
 - **Dependencies**: 434 (established the residual set this belongs to; already complete)
 - **Research Inputs**: `specs/481_discharge_or_replace_unorderedsuccessorlabelclosed_residual/reports/01_unorderedsuccessorlabelclosed-verdict.md`
@@ -115,7 +115,7 @@ a single 13,442-line file with no benefit.
 
 ---
 
-### Phase 1: Label-generalized refutation family in section C11 [NOT STARTED]
+### Phase 1: Label-generalized refutation family in section C11 [IN PROGRESS]
 
 **Goal**: `UnorderedSuccessorLabelClosed` and `UnorderedSuccessorLabelClosedOrd` are proved false at
 every nonempty finite `L` at every frame class, and proved true at `∅`, so the residual's
