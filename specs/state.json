@@ -1553,7 +1553,7 @@
       "project_number": 481,
       "project_name": "discharge_or_replace_unorderedsuccessorlabelclosed_residual",
       "description": "CLASSIFICATION: genuinely open -- the predicate is refuted as stated, so this is a repair-or-replace problem, not routine discharge. This is the FIFTH termination residual; the four-residual framing used elsewhere in this programme (`UniverseClosed`, `DifficultyBounded`/`StepLengthBounded`, `MintPaysForTime`, `PostBlockingSettles`) is WRONG and must be corrected wherever it recurs.\n\nTARGET: `UnorderedSuccessorLabelClosed` (`FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean:6199`) is carried as a live hypothesis by `buildTableauAt_isSome_at_seed_lengthBudget_signedUniverse` (`:6215`) and has an in-tree refutation at `:6238` (`¬ UnorderedSuccessorLabelClosed fc freshWorldLabels`) -- the same shape of problem `DifficultyBounded` presented before `StepLengthBounded` replaced it.\n\nWHAT TO DO -- determine which of three outcomes applies:\n(a) the predicate can be discharged at the frame classes/settings the surviving terminus theorems actually need (distinct from the setting `:6238` refutes it in -- check precisely which); or\n(b) it needs a `StepLengthBounded`-style weaker replacement, analogous to the `DifficultyBounded` -> `StepLengthBounded` repair pattern already in this file; or\n(c) it is unclosable as stated and needs a C9 register entry (the file already has 24 such entries; this would be the 25th) plus an explicit statement of which theorem still carries it and at which frame classes.\n\nA C9 REGISTER ENTRY IS A VALID, COMPLETE DELIVERABLE for this task -- do not treat \"prove it\" as the only acceptable outcome.\n\nSEQUENCING NOTE (direct from `specs/reviews/review-2026-08-24.md` amendment 10e, re-affirmed by task 468's realignment): task 462 targets `MintPaysForTimeFixed` discharge at a NONEMPTY UNIVERSE, which is the same setting `:6238`'s refutation applies in. If this task and 462 are not sequenced, 462 risks either duplicating the discovery of the refutation or, worse, building on an implicit assumption that this residual is harmless. This task should run BEFORE OR ALONGSIDE 462.\n\nDEPENDENCIES: `[434]` (established the residual set this belongs to). Do NOT fold into 465 (the mechanical restatement-family task) -- 465 is explicitly scoped as \"a one-line application of its family root\" for SETTLED residuals; this residual is not settled, so folding it in would either force 465 to do research work outside its charter or produce a restatement of an unsettled predicate, which is exactly the kind of premature-closure risk this whole realignment exists to prevent.\n\nVERIFIED at task-468 realignment time (2026-08-25): none of tasks 462, 463, 464, 465 mentions the symbol `UnorderedSuccessorLabelClosed` in its live description.\n\nACCEPTANCE: one of outcomes (a)/(b)/(c) above is reached and recorded; `lake build` green; no regression to any currently-passing check-module-invariants.sh check.\n\nPROVENANCE: specced by task 468's realignment (report `specs/468_realign_task_programme_from_proof_state_audit/reports/02_stage1-verification-and-programme-realignment.md` §5, new-task-spec-3), itself descended from `specs/reviews/review-2026-08-24.md` amendment 10e.",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "topic": "decidability",
       "priority": "medium",
@@ -1565,7 +1565,7 @@
         "FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean"
       ],
       "created": "2026-08-25T12:18:56Z",
-      "last_updated": "2026-08-25T16:08:31Z",
+      "last_updated": "2026-08-25T16:09:01Z",
       "artifacts": [
         {
           "path": "specs/481_discharge_or_replace_unorderedsuccessorlabelclosed_residual/reports/01_unorderedsuccessorlabelclosed-verdict.md",
@@ -1576,6 +1576,11 @@
           "path": "specs/481_discharge_or_replace_unorderedsuccessorlabelclosed_residual/plans/01_sharpen-replace-labelclosed-residual.md",
           "type": "plan",
           "summary": "7-phase plan: Phases 1-2 land outcome (c) via label-generalized witness and C9 entry 11/21 amendment; Phases 3-7 land outcome (b) via a new section D4 boxFree route."
+        },
+        {
+          "path": "specs/481_discharge_or_replace_unorderedsuccessorlabelclosed_residual/summaries/01_sharpen-replace-labelclosed-residual-summary.md",
+          "type": "summary",
+          "summary": "Phases 1-5 landed; Phases 6-7 blocked with an evidenced obstruction, all twelve Scope Hypotheses resolved."
         }
       ],
       "session_id": "sess_1787672861_1a4999_481"

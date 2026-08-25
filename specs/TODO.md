@@ -54,7 +54,7 @@ next_project_number: 483
             └─ 412 [NOT STARTED] — Track B finish for the TM tableau decidability program (parent: t
               └─ 482 [NOT STARTED] — CLASSIFICATION: OPEN MATHEMATICS, multi-month. This MUST NOT be r
 476 [NOT STARTED] — THE BOX-FAITHFUL SMALL-MODEL THEOREM.
-481 [PLANNED] — CLASSIFICATION: genuinely open -- the predicate is refuted as sta
+481 [IMPLEMENTING] — CLASSIFICATION: genuinely open -- the predicate is refuted as sta
   └─ 462 [NOT STARTED] — Land the engine-level assembly that lets `MintPaysForTimeFixed` b
     └─ 463 [NOT STARTED] — Decide `PostBlockingSettlesRun fc (mintAwareFuelAt U.card Tmax mi
       └─ 464 [NOT STARTED] — Design and land `gapPotential`, the density coordinate of the ter
@@ -105,12 +105,13 @@ PROVENANCE: specced by task 468's realignment (report `specs/468_realign_task_pr
 
 ### 481. Discharge or replace unorderedsuccessorlabelclosed residual
 - **Effort**: large
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 434
 - **Research**: [481_discharge_or_replace_unorderedsuccessorlabelclosed_residual/reports/01_unorderedsuccessorlabelclosed-verdict.md]
 - **Plan**: [481_discharge_or_replace_unorderedsuccessorlabelclosed_residual/plans/01_sharpen-replace-labelclosed-residual.md]
+- **Summary**: [481_discharge_or_replace_unorderedsuccessorlabelclosed_residual/summaries/01_sharpen-replace-labelclosed-residual-summary.md]
 
 **Description**: CLASSIFICATION: genuinely open -- the predicate is refuted as stated, so this is a repair-or-replace problem, not routine discharge. This is the FIFTH termination residual; the four-residual framing used elsewhere in this programme (`UniverseClosed`, `DifficultyBounded`/`StepLengthBounded`, `MintPaysForTime`, `PostBlockingSettles`) is WRONG and must be corrected wherever it recurs.
 
