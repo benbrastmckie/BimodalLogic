@@ -25,13 +25,14 @@ binds exactly `AddCommGroup`, `LinearOrder`, `IsOrderedAddMonoid` and `Nontrivia
 discharges all four while being discretely ordered, with successor `(q, n) ↦ (q, n + 1)`, so it
 validates `nextTop` everywhere without being Archimedean.
 
-That combination is what the surviving route out of the open obligation in
-`WeakCanonical/Transfer.lean` (`countermodel_discrete`) needs. The refuted-route comment in
-the body of that theorem points here: route (i), a Base-MCS → Discrete-MCS transfer lemma, is
-refuted by a `ℤ ×ₗ ℤ` witness, and route (ii) — building the discrete canonical model directly
-over a non-Archimedean carrier — is the one that survives. This module confirms only that the
-carrier is admissible and that the parametric machinery elaborates at it; it does not build
-the model.
+That combination is what `countermodel_discrete` needs, and the obligation this module was
+written to scout is now **discharged**: `countermodel_discrete` is proved at this carrier in
+`WeakCanonical/GroupModel/CountermodelBase.lean`, off `companionChronicle`
+(`WeakCanonical/GroupModel/GroupableCompanion.lean`). Of the two candidate routes, route (i) —
+a Base-MCS → Discrete-MCS transfer lemma — is refuted by a `ℤ ×ₗ ℤ` witness, and route (ii),
+building the discrete canonical model directly over a non-Archimedean carrier, is the one that
+was taken. This module confirms only that the carrier is admissible and that the parametric
+machinery elaborates at it; the model itself is built in `CountermodelBase.lean`.
 
 ## Contents
 

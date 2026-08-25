@@ -8,7 +8,7 @@
 #   B0  Boneyard exclusion self-test (the single archive must be found and excluded)
 #   C1  `lake build` exits 0
 #   C2  `#print axioms` for the four flagship theorems matches the recorded baseline
-#   C3  Exactly one structural `sorry`, located BY CONTENT (never by line number)
+#   C3  ZERO structural `sorry`, asserted BY CONTENT (never by line number)
 #   C4  Every `import FormalSystem.*` / `import BimodalTest.*` resolves to a real file
 #   C5  Every module-shaped `FormalSystem.*` path in non-specs markdown resolves
 #   C6  Known-unreachable live modules still compile (rot guard)

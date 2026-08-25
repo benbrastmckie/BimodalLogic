@@ -95,9 +95,9 @@ are 34 per-rule instances, split by the carrier property each is stated at:
 
 The sub-phase 7.2 assembly `ruleSound_of_mem_allRulesForFC` is landed too: one induction over
 `RuleSpec.mem_allRulesForFC_iff`, discharged case by case against that ledger. All of the above
-are sorry-free — the repository's sole structural `sorry` is `countermodel_discrete` in
-`WeakCanonical/Transfer.lean`, which check C3 of `scripts/check-module-invariants.sh` pins by
-content.
+are sorry-free — as is the whole of `FormalSystem/` outside `Boneyard/`, which check C3 of
+`scripts/check-module-invariants.sh` pins by content as a structural-`sorry` inventory of
+zero.
 
 **Not landed**, in the assembly theorem's own words, since it states the boundary correctly at
 the point of use: `ruleSound_of_mem_allRulesForFC` is the `allClosed → valid` direction's rule

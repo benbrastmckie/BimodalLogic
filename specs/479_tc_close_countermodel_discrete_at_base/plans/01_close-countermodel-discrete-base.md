@@ -302,7 +302,7 @@ carries a duplicate declaration. Declared file set: `CountermodelBase.lean`, `Tr
 
 ---
 
-### Phase 4: Retarget the CI invariant checks and correct the nine stale-docstring sites [NOT STARTED]
+### Phase 4: Retarget the CI invariant checks and correct the nine stale-docstring sites [COMPLETED]
 
 **Goal**: Restore `scripts/check-module-invariants.sh` to green against the new reality and make
 every docstring that asserts "the sole/only live sorry" truthful. Acceptance is not met without
@@ -334,8 +334,16 @@ this phase.
         describes as open is now discharged; say so and name the discharging module)
       - `FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodel.lean` — 70-85
         (route narrative)
-- [ ] Re-grep the tree for any remaining "sole sorry" / "only live sorry" / "one structural
-      sorry" phrasing missed by the inventory and fix it.
+- [x] Re-grep the tree for any remaining "sole sorry" / "only live sorry" / "one structural
+      sorry" phrasing missed by the inventory and fix it. *(deviation: altered — the fresh
+      repo-wide grep found five sites the report's nine-file inventory missed, all now fixed:
+      `FormalSystem/README.md:30`, `FormalSystem/Metalogic/README.md:284`,
+      `FormalSystem/Metalogic/WeakCanonical/README.md:26` (plus a stale line count and a
+      missing `GroupModel/` row), `FormalSystem/Metalogic/Decidability/FMP/README.md:26`, and
+      `scripts/check-module-invariants.sh:11` (the C3 header comment). The report's
+      `Decidability.lean 128-133` site also had a companion at
+      `Decidability/Verified/Decidable.lean:98`, likewise fixed. Per the phase's Scope
+      Hypothesis these are additions to the list, not grounds to skip them.)*
 - [ ] Do NOT reference task numbers in any of these files
       (`.claude/rules/no-task-references-in-deliverables.md`).
 

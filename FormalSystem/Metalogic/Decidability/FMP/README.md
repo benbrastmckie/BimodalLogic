@@ -23,9 +23,9 @@ a line count, which rots on every edit and which every row of this table previou
 
 ## Key Results
 
-Every symbol below is a declaration in this directory and is sorry-free (the repository's sole
-structural `sorry` is `countermodel_discrete` in `WeakCanonical/Transfer.lean`, which check C3 of
-`scripts/check-module-invariants.sh` pins by content).
+Every symbol below is a declaration in this directory and is sorry-free — as is all of
+`FormalSystem/` outside `Boneyard/`, which check C3 of `scripts/check-module-invariants.sh`
+pins by content as a structural-`sorry` inventory of zero.
 
 - `fmp_contrapositive` (`FMP.lean`): `(∀ S : ClosureMCSBundle φ, φ ∈ S.carrier) → Derivable .Base [] φ`
   — the FMP-based completeness direction

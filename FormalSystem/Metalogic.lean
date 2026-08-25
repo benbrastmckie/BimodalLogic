@@ -45,9 +45,11 @@ temporal analogs (G phi -> phi, H phi -> phi) are NOT valid under irreflexive se
 - **Soundness** (`soundness`): SORRY-FREE
 - **Soundness (dense)** (`soundness_dense`): SORRY-FREE
 - **Soundness (discrete)** (`soundness_discrete`): SORRY-FREE
-- **Completeness** (`completeness`): SORRY (sole source: the deprecated Base-frame discrete
-  branch `WeakCanonical.countermodel_discrete`; the dense and mixed branches are sorryAx-free
-  — see `completeness_discrete` for the sorry-free discrete result)
+- **Completeness** (`completeness`): SORRY-FREE (sorryAx-free; axioms: exactly `propext`,
+  `Classical.choice`, `Quot.sound`). Its Base-frame discrete branch,
+  `WeakCanonical.countermodel_discrete`, is proved in
+  `WeakCanonical/GroupModel/CountermodelBase.lean` at the non-Archimedean discrete carrier
+  `ℚ ×ₗ ℤ`, off `companionChronicle`
 - **Completeness (dense)** (`completeness_dense`): SORRY-FREE (sorryAx-free; axioms: exactly
   `propext`, `Classical.choice`, `Quot.sound`)
 - **Completeness (discrete)** (`completeness_discrete`): SORRY-FREE (sorryAx-free; axioms:
@@ -114,8 +116,10 @@ Soundness, decidability, and the completeness theorems (`completeness_dense`,
 standard Lean axioms only: `propext`, `Classical.choice`, `Quot.sound`. The former `Lean.ofReduceBool`/`Lean.trustCompiler` dependency was eliminated
 by swapping the Syntax-layer `native_decide` sites to `rfl`/`decide` (see the Axiom Audit
 in `BXCanonical/Completeness.lean`). No `sorryAx` on any of these paths. The general
-Base-frame `completeness` still carries `sorryAx` via the deprecated
-`WeakCanonical.countermodel_discrete` branch.
+Base-frame `completeness` is now on the same footing: its discrete branch
+`WeakCanonical.countermodel_discrete` is proved
+(`WeakCanonical/GroupModel/CountermodelBase.lean`), so `completeness` too depends on exactly
+those three axioms.
 
 ## Module Structure
 

@@ -23,11 +23,12 @@ characterize expressive power and establishing completeness via normal-form redu
 | `ReflexiveCanonical.lean` | 780 | Main reflexive canonical model construction |
 | `StaviConnectives.lean` | 583 | Stavi connectives (Until, Since extensions) and their properties |
 | `Table.lean` | 296 | Tabular representation for N-equivalence classes |
-| `Transfer.lean` | 1244 | Transfer lemma; carries `countermodel_discrete`, the sole live `sorry` |
+| `Transfer.lean` | 1054 | Transfer lemma (`truth_transfer`) and the signature/atom-map layer |
 | `TruthLemma.lean` | 206 | Truth lemma for the weak canonical model |
 | `EFGames/` | 11,872 | Ehrenfeucht-Fraisse bisimulation game engine (8 files) |
 | `Expressiveness/` | 9,503 | Expressiveness separation results (5 files) |
 | `IntegerModel/` | 5,503 | Integer model construction (6 files) |
+| `GroupModel/` | 3,357 | Non-Archimedean `ℚ ×ₗ ℤ` companion chain and `countermodel_discrete` (6 files) |
 | `Kamp/` | 71,246 | Kamp/Reynolds separation machinery (99 files) -- by far the largest subtree in the repository, and the reason `WeakCanonical` is the riskiest thing in the tree to relocate. |
 | `Separation/` | 926 | Separation theorem and supporting lemmas (3 files) |
 

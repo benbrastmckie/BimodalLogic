@@ -38,16 +38,16 @@ theorem completeness (φ : Formula) :
 
 ## Status
 
-`completeness_dense` and `completeness_discrete` are sorryAx-free (see the Axiom Audit
-section at the end of this file; axioms: exactly `propext`, `Classical.choice`,
-`Quot.sound` — the former `native_decide` dependency was eliminated by swapping the
-Syntax-layer sites to `rfl`/`decide`). The general Base-frame
-`completeness` still carries sorryAx, with a single source: the deprecated
-`WeakCanonical.countermodel_discrete` (dead BX pipeline, WeakCanonical/Transfer.lean) used
-in its discrete branch — the sole remaining completeness debt (a Base-MCS is not
-automatically Discrete-consistent, so the sorry-free Reynolds pipeline cannot be reused
-there). Its dense branch (`countermodel_dense_enriched`, on ℚ) and mixed branch
-(`mcs_mixed_case_absurd`) are sorryAx-free.
+`completeness`, `completeness_dense` and `completeness_discrete` are all sorryAx-free (see
+the Axiom Audit section at the end of this file; axioms: exactly `propext`,
+`Classical.choice`, `Quot.sound` — the former `native_decide` dependency was eliminated by
+swapping the Syntax-layer sites to `rfl`/`decide`). The general Base-frame `completeness` was
+the last to close: its discrete branch calls `WeakCanonical.countermodel_discrete`
+(WeakCanonical/GroupModel/CountermodelBase.lean), which builds the countermodel at the
+non-Archimedean discrete carrier `ℚ ×ₗ ℤ` off `companionChronicle` rather than reusing the
+Reynolds pipeline — a Base-MCS is not automatically Discrete-consistent, so the `ℤ` pipeline
+is unavailable there. Its dense branch (`countermodel_dense_enriched`, on ℚ) and mixed branch
+(`mcs_mixed_case_absurd`) are sorryAx-free as well.
 
 ## References
 
@@ -169,24 +169,23 @@ The contrapositive: if φ is not derivable, then φ is not valid.
 3. By Lindenbaum: extend to MCS w₀ with ¬φ ∈ w₀
 4. Three-way case split on w₀'s temporal character:
    - Dense (□(F'T) ∈ w₀): countermodel on ℚ via `countermodel_dense_enriched`
-   - Purely discrete (□(U(⊤,⊥)) ∈ w₀): countermodel via the deprecated
-     `WeakCanonical.countermodel_discrete` — SOLE remaining sorryAx source
+   - Purely discrete (□(U(⊤,⊥)) ∈ w₀): countermodel on `ℚ ×ₗ ℤ` via
+     `WeakCanonical.countermodel_discrete`
    - Mixed (¬□(F'T) ∧ ¬□(U(⊤,⊥))): eliminated by `mcs_mixed_case_absurd`
      using the structural axiom `discrete_box_necessity`
 
-**Sorry Status — sole remaining completeness debt (the Base-MCS discrete branch)**:
-carries `sorryAx` with exactly one source. The case □(U(⊤,⊥)) ∈ w₀ requires a discrete
-countermodel built from a *Base*-MCS. The sorry-free Reynolds pipeline
-(`countermodel_discrete_reynolds_v2`) requires
+**Sorry Status — sorryAx-free.** The Base-MCS discrete branch was the last debt and is
+discharged. The case □(U(⊤,⊥)) ∈ w₀ requires a discrete countermodel built from a *Base*-MCS.
+The Reynolds pipeline (`countermodel_discrete_reynolds_v2`) requires
 `SetMaximalConsistent (fc := FrameClass.Discrete)`, and a Base-MCS is not automatically
-Discrete-consistent, so it cannot be reused here. The branch instead calls the deprecated
-`WeakCanonical.countermodel_discrete` (WeakCanonical/Transfer.lean), whose former BX-pipeline
-proof was irreparably sorried (`succ_cofinal` is provably unfixable — ℤ+ℤ counterexample) and
-is now archived to `Boneyard/DeadChronicleGapElimination/`; the theorem carries a direct
-terminal sorry. Discharging this branch is a genuine open construction
-(e.g., a Base-to-Discrete MCS transfer or a Henkin-style discrete model), not a
-re-wiring task. The dense and mixed branches are sorryAx-free. For the sorry-free
-frame-class-specific results, see `completeness_dense` and `completeness_discrete`.
+Discrete-consistent, so it cannot be reused here; the earlier BX-pipeline route was
+irreparably sorried (`succ_cofinal` is provably unfixable — ℤ+ℤ counterexample) and is
+archived to `Boneyard/DeadChronicleGapElimination/`. The branch now calls
+`WeakCanonical.countermodel_discrete` (WeakCanonical/GroupModel/CountermodelBase.lean), which
+takes the third route: build the countermodel directly over the non-Archimedean discrete
+carrier `ℚ ×ₗ ℤ`, off `companionChronicle` — `FrameClass.Base` imposes no Archimedean
+condition, so that carrier is admissible. The dense and mixed branches are sorryAx-free too.
+For the frame-class-specific results, see `completeness_dense` and `completeness_discrete`.
 
 **Why `FrameClass.Base` is essential here**: completeness is a per-frame-class fact — it pairs a
 validity notion with the axiom set that captures it. `valid φ` (validity over *all* linear
@@ -211,8 +210,8 @@ theorem completeness (φ : Formula) :
   have h_not_in : φ ∉ M := SetMaximalConsistent.neg_excludes hM_mcs φ h_neg_in
   -- Build canonical model and derive contradiction via three-way case split:
   -- 1. Dense case (□(F'T) ∈ M): countermodel on Rat via countermodel_dense_enriched
-  -- 2. Purely discrete case (□(U(T,bot)) ∈ M): deprecated
-  --    WeakCanonical.countermodel_discrete — sole remaining sorryAx source
+  -- 2. Purely discrete case (□(U(T,bot)) ∈ M): WeakCanonical.countermodel_discrete,
+  --    on the non-Archimedean discrete carrier Q x_l Z
   -- 3. Mixed case (¬□(F'T) ∧ ¬□(U(T,bot)) ∈ M): eliminated by the structural
   --    axiom discrete_box_necessity (mcs_mixed_case_absurd)
   rcases SetMaximalConsistent.negation_complete hM_mcs
@@ -366,10 +365,25 @@ theorem completeness_discrete (φ : Formula) :
       exact False.elim (Chronicle.mcs_mixed_case_absurd FrameClass.Discrete M hM_mcs
           h_not_box_dense h_not_box_discrete)
 
+#print axioms FormalSystem.Metalogic.BXCanonical.completeness
 #print axioms FormalSystem.Metalogic.BXCanonical.completeness_dense
 #print axioms FormalSystem.Metalogic.BXCanonical.completeness_discrete
 
 /-! ## Axiom Audit
+
+### completeness
+
+```
+#print axioms completeness
+-- depends on: [propext, Classical.choice, Quot.sound]
+```
+
+**`sorryAx`-free.** Its three branches are the dense one (`countermodel_dense_enriched`, on ℚ),
+the mixed one (`mcs_mixed_case_absurd`, vacuous), and the discrete one
+(`WeakCanonical.countermodel_discrete` → `companionChronicle` → `companionGeneral`, on
+`ℚ ×ₗ ℤ`). The discrete branch was the last debt in the tree; with it discharged,
+`FormalSystem/` outside `Boneyard/` contains no structural `sorry` at all — asserted by check
+C3 of `scripts/check-module-invariants.sh`, and pinned for this theorem by check C2.
 
 ### completeness_discrete
 
@@ -397,8 +411,8 @@ is the only Chronicle symbol used by `completeness_discrete`.
 ### Axiom Classification
 
 - `propext`, `Classical.choice`, `Quot.sound` — standard Lean 4 axioms (acceptable);
-  this is the COMPLETE axiom set of both `completeness_dense` and `completeness_discrete`
-  (kernel-verified via `#print axioms` against fresh oleans)
+  this is the COMPLETE axiom set of `completeness`, `completeness_dense` and
+  `completeness_discrete` alike (kernel-verified via `#print axioms` against fresh oleans)
 - `Lean.ofReduceBool`/`Lean.trustCompiler` — NO LONGER PRESENT. Adjudication outcome: all
   7 in-cone `native_decide` sites were swapped (`Syntax/Formula.lean` `beq_refl` bot arm
   → `rfl`; four `le_max_of_le_right` bounds in

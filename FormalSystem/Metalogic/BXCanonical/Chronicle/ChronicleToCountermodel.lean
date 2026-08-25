@@ -79,10 +79,15 @@ consumer, `countermodel_discrete_enriched`, had itself already been archived (to
 `Boneyard/DeadChronicleGapElimination/TransferDead.lean`), leaving both surviving heads with
 zero consumers, so the entire closure moved as one unit and `lake build` stayed green.
 
-The live discrete path is unaffected: `completeness_discrete` goes through
+The live discrete paths are unaffected. `completeness_discrete` goes through
 `countermodel_discrete_reynolds_v2` (`WeakCanonical/IntegerModel/ReynoldsBridge.lean`), which
-bypasses `succ_embed_surjective` and the `IsSuccArchimedean` requirement entirely. Do not
-confuse it with the archived, `sorryAx`-tainted `countermodel_discrete_reynolds`.
+bypasses `succ_embed_surjective` and the `IsSuccArchimedean` requirement entirely; do not
+confuse it with the archived, `sorryAx`-tainted `countermodel_discrete_reynolds`. The
+Base-frame `completeness` goes through `WeakCanonical.countermodel_discrete`
+(`WeakCanonical/GroupModel/CountermodelBase.lean`), which drops the Archimedean requirement a
+different way — by building over the non-Archimedean discrete carrier `ℚ ×ₗ ℤ`, where
+`succ_cofinal` is not needed and its `ℤ+ℤ` refutation is beside the point. Both are
+`sorryAx`-free.
 
 Several sorry-free declarations (notably `cantor_bfmcs_discrete_restricted_buc`,
 `succ_embed_squeeze`, `succ_embed_squeeze_strict`) were orphaned by the excision and

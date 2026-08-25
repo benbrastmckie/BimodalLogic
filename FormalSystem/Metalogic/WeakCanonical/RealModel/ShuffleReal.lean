@@ -39,9 +39,9 @@ Printed p.188:
 
 `shuffleColourReal` is `σ*`; `shuffleReal` is `Σ_{r∈ℝ} σ*(r)`.
 
-**This module is sorry-free and unconditional.** The repository's sole structural `sorry` is
-`countermodel_discrete` in `WeakCanonical/Transfer.lean`, which check C3 of
-`scripts/check-module-invariants.sh` pins by content; nothing here routes through it.
+**This module is sorry-free and unconditional**, as is the whole of `FormalSystem/` outside
+`Boneyard/` — check C3 of `scripts/check-module-invariants.sh` pins the structural-`sorry`
+inventory at zero by content.
 
 **`doets_lemma_1_5` is proved.** Reynolds' *"another simple game argument"* is one clause long
 and is not a proof. The result it names is **Doets 1987, 3.1.8** — the *mixing* lemma:

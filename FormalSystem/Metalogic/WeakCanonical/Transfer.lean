@@ -15,12 +15,17 @@ import Mathlib.Data.Int.SuccPred
 /-!
 # Z-Model Transfer for the Reflexive Canonical Model
 
-This file contains `countermodel_discrete`, the remaining live proof obligation for the general
-`completeness` theorem — it carries the repository's sole live `sorry`.
+This file provides the truth-transfer layer between the chronicle's ordered monadic structures
+and the models built on top of them. It no longer contains `countermodel_discrete`: that
+theorem is proved in `WeakCanonical/GroupModel/CountermodelBase.lean`, at the non-Archimedean
+discrete carrier `ℚ ×ₗ ℤ`. It had to move because closing it needs `companionChronicle`, and
+`Transfer ← IntegerModel/ReynoldsBridge ← GroupModel/GroupableCompanion` makes importing that
+from here a cycle. Its fully-qualified name is unchanged.
 
 **Which theorem is the live discrete path.** It is `countermodel_discrete_reynolds_v2`, in
 `WeakCanonical/IntegerModel/ReynoldsBridge.lean`. That is the theorem `completeness_discrete`
-calls, and it is `sorryAx`-free.
+calls, and it is `sorryAx`-free. (`countermodel_discrete`, the Base-frame branch of
+`completeness`, is a separate theorem and is likewise `sorryAx`-free.)
 
 Do not confuse it with `countermodel_discrete_reynolds`, which used to live in this file. That
 theorem was `sorryAx`-tainted (via `cantor_bfmcs_discrete_restricted_tc`/`_fuc`, through

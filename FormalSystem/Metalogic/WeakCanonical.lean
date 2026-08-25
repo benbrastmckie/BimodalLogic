@@ -94,39 +94,45 @@ is archived — see `Boneyard/DeadChronicleGapElimination/ChronicleGapChainExcis
    `TemporalTruth` and `table_correctness` are all landed and sorry-free
 8. **IntegerModel**: Good/very good, ContempEquiv, one-class, and the sorry-free bridge
    `countermodel_discrete_reynolds_v2` (`IntegerModel/ReynoldsBridge.lean`)
-9. **Transfer**: `countermodel_discrete` — the main theorem
+9. **Transfer**: `truth_transfer` and the chronicle-side transfer lemmas
+10. **GroupModel**: the `ℚ ×ₗ ℤ` companion chain — `goodGroupable`, block decomposition, Ramsey
+   factorization, `companionGeneral`/`companionChronicle`, and `countermodel_discrete`
+   (`GroupModel/CountermodelBase.lean`)
 
 ## Main Export
 
-`countermodel_discrete` — the Base-MCS discrete branch of `completeness`. It was introduced as a
-drop-in replacement for `dd_countermodel_chronicle_discrete`
-(Chronicle/ChronicleToCountermodel.lean),
-which has since been
-archived to `Boneyard/DeadChronicleGapElimination/ChronicleGapChainExcision.lean`.
-`countermodel_discrete` carries the repository's sole live `sorry`; the sorry-free discrete result
-is `completeness_discrete`, via `countermodel_discrete_reynolds_v2`
-(IntegerModel/ReynoldsBridge.lean).
+`countermodel_discrete` — the Base-MCS discrete branch of `completeness`, hosted in
+`GroupModel/CountermodelBase.lean`. It was introduced as a drop-in replacement for
+`dd_countermodel_chronicle_discrete` (Chronicle/ChronicleToCountermodel.lean), which has since
+been archived to `Boneyard/DeadChronicleGapElimination/ChronicleGapChainExcision.lean`. It is
+proved at the non-Archimedean discrete carrier `ℚ ×ₗ ℤ` off `companionChronicle`
+(`GroupModel/GroupableCompanion.lean`); the separate sorry-free discrete result is
+`completeness_discrete`, via `countermodel_discrete_reynolds_v2`
+(IntegerModel/ReynoldsBridge.lean) at `ℤ`.
+
+It lives in `GroupModel/` rather than in `Transfer.lean` because
+`Transfer ← IntegerModel/ReynoldsBridge ← GroupModel/GroupableCompanion` makes closing it in
+place an import cycle. The fully-qualified name
+`FormalSystem.Metalogic.WeakCanonical.countermodel_discrete` is unchanged by the move.
 
 ## Status
 
-**This subtree carries exactly one structural `sorry`**: `countermodel_discrete`, in
-`WeakCanonical/Transfer.lean`. It is also the repository's only one. Check C3 of
-`scripts/check-module-invariants.sh` asserts this by content — it locates the enclosing
-declaration by scanning backwards from the `sorry`, never by line number — so the claim is
-re-derivable rather than maintained by hand, and no line number for it is recorded here.
+**This subtree is sorry-free**, as is all of `FormalSystem/` outside `Boneyard/`. Check C3 of
+`scripts/check-module-invariants.sh` asserts the structural-`sorry` inventory is ZERO by
+content, over the whole tree — so the claim is re-derivable rather than maintained by hand, and
+no line numbers are recorded here. A new structural `sorry` anywhere is a C3 regression.
 
-Every other declaration in this subtree is sorry-free, which for a live declaration follows from
-its existence given C3. In particular `G_backward_mcs` and `H_backward_mcs` (`TruthLemma.lean`),
+Every declaration in this subtree is sorry-free, which for a live declaration follows from its
+existence given C3. In particular `G_backward_mcs` and `H_backward_mcs` (`TruthLemma.lean`),
 `class KEquivalenceFramework` (`NEquivalence.lean`), and `table_correctness` (`Table.lean`) are
 all proved.
 
-**The consumer-facing discrete result routes around the one `sorry`.**
+**Both consumer-facing completeness results are sorry-free.**
 `BXCanonical.completeness_discrete` reaches its countermodel via
-`countermodel_discrete_reynolds_v2` (`IntegerModel/ReynoldsBridge.lean`) rather than through
-`countermodel_discrete`, and is therefore proved *and* sorry-free — check C2 records it as
-depending on `[propext, Classical.choice, Quot.sound]`, with no `sorryAx`. This is a different
-property from `BXCanonical.completeness` at `.Base`, which is proved but does depend on
-`sorryAx`; C2 pins both, and the distinction is deliberate.
+`countermodel_discrete_reynolds_v2` (`IntegerModel/ReynoldsBridge.lean`); `BXCanonical.completeness`
+at `.Base` reaches its discrete branch via `countermodel_discrete`
+(`GroupModel/CountermodelBase.lean`). Check C2 records both as depending on
+`[propext, Classical.choice, Quot.sound]`, with no `sorryAx`.
 
 All definitions are NON-VACUOUS (no `True`, `trivial`, or `Unit` bodies).
 

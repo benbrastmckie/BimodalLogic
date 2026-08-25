@@ -91,9 +91,9 @@ unavailability as a claim about this module's own target.
   `prior_hasFaithfulDedekindSUP_dense` (Phase 10.1, `Kamp/KPlusFaithful.lean:474`, `:524`) gives
   the dense target. Every step of the intended composition that *can* be taken is taken here.
 * `uSExpressivelyCompleteOverDensePrior` — the plan-shaped target, obtained from the conditional
-  by discharging the obligation. **This module is sorry-free**; the repository's sole structural
-  `sorry` is `countermodel_discrete` in `WeakCanonical/Transfer.lean`, which check C3 of
-  `scripts/check-module-invariants.sh` pins by content, and nothing here routes through it.
+  by discharging the obligation. **This module is sorry-free**, as is the whole of
+  `FormalSystem/` outside `Boneyard/` — check C3 of `scripts/check-module-invariants.sh` pins
+  the structural-`sorry` inventory at zero by content.
   `kampFaithfulExpressiveCompleteness_open` is a retained alias for
   `kampFaithfulExpressiveCompleteness` at the same type with no weakening, contributing no
   `sorryAx` downstream. Because the target is now **unconditional**, it is Reynolds' Theorem 3

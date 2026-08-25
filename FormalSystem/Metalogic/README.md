@@ -281,8 +281,8 @@ lake build BimodalTest                     # test suite
 bash scripts/check-module-invariants.sh    # all structural invariants
 ```
 
-The invariant script checks the build, the four flagship axiom sets, the sole sorry
-(by content), dangling imports across every live `.lean`, dangling module paths in
+The invariant script checks the build, the four flagship axiom sets, the structural-sorry
+inventory (asserted at zero, by content), dangling imports across every live `.lean`, dangling module paths in
 markdown, compile-checks known-unreachable modules, and the aggregator convention.
 It is the correct way to answer "did the reorganization break anything" — and the
 correct way to re-derive any count in this document.

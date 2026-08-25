@@ -27,8 +27,8 @@ bash scripts/check-module-invariants.sh              # B0 self-test, C7 live inv
 bash scripts/check-module-invariants.sh --no-build   # structural checks, no build
 ```
 
-It also verifies the build, the flagship axiom sets, the sole `sorry` (located by
-content, never by line number), dangling imports across every live `.lean`, dangling
+It also verifies the build, the flagship axiom sets, the structural-`sorry` inventory
+(asserted at zero, by content, never by line number), dangling imports across every live `.lean`, dangling
 module paths in markdown, and the aggregator convention. It is the correct answer to
 "is this tree still consistent".
 
