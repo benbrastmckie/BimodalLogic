@@ -336,30 +336,30 @@ conclusion is incomplete and the whole route must be re-scoped, not patched.
 
 ---
 
-### Phase 4: The world-subset machinery — mirror of D3's time machinery [IN PROGRESS]
+### Phase 4: The world-subset machinery — mirror of D3's time machinery [COMPLETED]
 
 **Goal**: `unorderedSuccessor_worldFinset_subset`: no unordered successor of a `boxFree` branch
 carries a new world — the world-coordinate mirror of the landed
 `unorderedSuccessor_knownTimes_subset` (`:12619`).
 
 **Tasks**:
-- [ ] Read the three D3 declarations being mirrored, in order: `pick_stage_source_noMint` (`:12544`),
+- [x] Read the three D3 declarations being mirrored, in order: `pick_stage_source_noMint` (`:12544`),
       `pickBranches_knownTimes_subset` (`:12594`), `unorderedSuccessor_knownTimes_subset` (`:12619`).
       They are a line-for-line template.
-- [ ] Add `pick_stage_source_noWorldMint`, the mirror of `pick_stage_source_noMint`. Stage 1 uses
+- [x] Add `pick_stage_source_noWorldMint`, the mirror of `pick_stage_source_noMint`. Stage 1 uses
       Phase 3's `findApplicableRule_not_worldMinting`. Stages 2 and 3 run exactly one rule each
       (`serialityRule` via `findApplicableSerialRule_rule`, `timeLinearity` via
       `findApplicableLinearityRule_rule`), and neither is `.boxNeg` or `.diamondPos` — both close by
       `rfl` on the rule identity, exactly as the D3 original closes its `ruleMintsFreshTime` obligation.
-- [ ] Add `pickBranches_worldFinset_subset`, the mirror of `pickBranches_knownTimes_subset`, using
+- [x] Add `pickBranches_worldFinset_subset`, the mirror of `pickBranches_knownTimes_subset`, using
       `applyRule_emitted_world_mem` (`:2223`) in place of `applyRule_emitted_time_mem`. Note the
       asymmetry in the implementer's favour: the world lemma carries **no** `OrdTimesKnown`
       hypothesis where its time twin does, so this mirror is strictly simpler than its template.
-- [ ] Add `unorderedSuccessor_worldFinset_subset`, routed through the same `pick_branches_eq` so the
+- [x] Add `unorderedSuccessor_worldFinset_subset`, routed through the same `pick_branches_eq` so the
       three-stage pick is not destructured a second time.
-- [ ] Docstring each in D3's register, and state the `OrdTimesKnown` asymmetry rather than leaving a
+- [x] Docstring each in D3's register, and state the `OrdTimesKnown` asymmetry rather than leaving a
       reader to wonder why the mirror is shorter.
-- [ ] Verify: `lake build` green; no `sorry`; no new axiom.
+- [x] Verify: `lake build` green; no `sorry`; no new axiom.
 
 **Timing**: 1.5 hours
 
@@ -368,6 +368,15 @@ carries a new world — the world-coordinate mirror of the landed
 **Verification Tier**: local
 
 **Commit Mode**: per-substep
+
+**Scope Hypothesis result** (recorded at implementation time): **confirmed**. All three D3
+declarations mirrored without structural change, `pick_branches_eq` transferred unchanged, and the
+whole block built on the first attempt. The only per-line difference from the template is at stages
+two and three, where the D3 original closes its `ruleMintsFreshTime r = false` obligation by `rfl`
+and the mirror closes `r ≠ .boxNeg ∧ r ≠ .diamondPos` by `exact ⟨by simp, by simp⟩` — a difference in
+the obligation's shape, not in the argument. The `OrdTimesKnown` asymmetry the plan predicted holds:
+`applyRule_emitted_world_mem` needs none, so none of the three mirrors takes one, and the elaborated
+signature of `unorderedSuccessor_worldFinset_subset` confirms it.
 
 **Scope Hypothesis**: This phase asserts that all three D3 declarations mirror without structural
 change and that `pick_branches_eq` applies unchanged. Confirm at implementation time per declaration:
@@ -385,7 +394,7 @@ that as a genuine obstruction — do not re-destructure the three-stage pick by 
 
 ---
 
-### Phase 5: The composite label lemma at the propositional fragment [NOT STARTED]
+### Phase 5: The composite label lemma at the propositional fragment [IN PROGRESS]
 
 **Goal**: `unorderedSuccessor_label_mem_of_propositional` and its `signedUniverse` consequences: with
 both coordinates closed and `TimeMergeClosed L` supplying the rectangle, an unordered successor of a

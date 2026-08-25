@@ -13099,6 +13099,124 @@ theorem findApplicableRule_not_worldMinting {sf : SignedFormula} {b : Branch}
     simp [isApplicable_diamondPos_false_of_boxFree (fc := fc) hfree] at happ
 
 
+/-! ### The world-subset machinery, mirroring D3's time machinery
+
+Three declarations, in the same order and the same shapes as `pick_stage_source_noMint`,
+`pickBranches_knownTimes_subset` and `unorderedSuccessor_knownTimes_subset`. The mirror is
+**strictly simpler than its template** in one respect worth naming rather than leaving a reader to
+wonder about: `applyRule_emitted_world_mem` carries no `OrdTimesKnown b ord` hypothesis where
+`applyRule_emitted_time_mem` does, so none of the three below takes one either. The asymmetry is
+real and is recorded at `applyRule_emitted_time_mem_ordTimesKnown_needed`: the time sweep needs the
+ordering's times to be branch-known because `timeLinearity` reads times off `ord`, whereas nothing
+reads *worlds* off the ordering at all. -/
+
+/-- **`pick_stage_source` with the no-world-mint fact attached**, the world-coordinate counterpart
+of `pick_stage_source_noMint`. The three stages differ only in how the fact arrives: stage one has
+it from `findApplicableRule_not_worldMinting`; stages two and three run exactly one rule each
+(`serialityRule` via `findApplicableSerialRule_rule`, `timeLinearity` via
+`findApplicableLinearityRule_rule`), and neither is `.boxNeg` or `.diamondPos`, so both close on the
+rule identity alone. -/
+private theorem pick_stage_source_noWorldMint (b : Branch) (ord : TimeOrdering)
+    (fc : FormalSystem.ProofSystem.FrameClass) (tr : EventualityTracker)
+    (hfree : ∀ x ∈ b, boxFree x.formula = true) :
+    ∀ r res o,
+      (match findUnexpandedUnblockedWith b ord fc (blockedTimes b ord fc tr) with
+       | some sf => findApplicableRule sf b ord fc
+       | none =>
+         match b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
+             && (findApplicableSerialRule sf b ord).isSome) with
+         | some sf => findApplicableSerialRule sf b ord
+         | none =>
+           match b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
+               && (findApplicableLinearityRule sf b ord).isSome) with
+           | some sf => findApplicableLinearityRule sf b ord
+           | none => none) = some (r, res, o) →
+      ∃ sf, sf ∈ b ∧ applyRule r sf b ord = (res, o) ∧ r ≠ .boxNeg ∧ r ≠ .diamondPos := by
+  intro r res o h
+  rcases hpick : findUnexpandedUnblockedWith b ord fc (blockedTimes b ord fc tr) with _ | sf
+  · rw [hpick] at h
+    rcases hser : b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
+                             && (findApplicableSerialRule sf b ord).isSome) with _ | sf2
+    · rw [hser] at h
+      rcases hlin : b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
+                               && (findApplicableLinearityRule sf b ord).isSome) with _ | sf3
+      · rw [hlin] at h
+        simp only at h
+        exact absurd h (by simp)
+      · rw [hlin] at h
+        simp only at h
+        refine ⟨sf3, List.mem_of_find?_eq_some hlin,
+          findApplicableLinearityRule_applyRule_pair h, ?_⟩
+        rw [findApplicableLinearityRule_rule h]
+        exact ⟨by simp, by simp⟩
+    · rw [hser] at h
+      simp only at h
+      refine ⟨sf2, List.mem_of_find?_eq_some hser,
+        findApplicableSerialRule_applyRule_pair h, ?_⟩
+      rw [findApplicableSerialRule_rule h]
+      exact ⟨by simp, by simp⟩
+  · rw [hpick] at h
+    simp only at h
+    have hmem : sf ∈ b := by
+      unfold findUnexpandedUnblockedWith at hpick
+      exact List.mem_of_find?_eq_some hpick
+    exact ⟨sf, hmem, findApplicableRule_applyRule_pair h,
+      findApplicableRule_not_worldMinting (hfree sf hmem) h⟩
+
+/-- One pick stage adds no world, given that its rule is neither of the two that can. The join of
+`applyRule_emitted_world_mem` with the no-world-mint source, in the shape
+`pickBranches_knownTimes_subset` uses for the time coordinate — and with no `OrdTimesKnown`
+argument, which is exactly the hypothesis its time twin needs and this one does not. -/
+private theorem pickBranches_worldFinset_subset {b : Branch} {ord : TimeOrdering}
+    {p : Option (TableauRule × RuleResult × TimeOrdering)}
+    (hp : ∀ r res o, p = some (r, res, o) → ∃ sf, sf ∈ b ∧ applyRule r sf b ord = (res, o) ∧
+      r ≠ .boxNeg ∧ r ≠ .diamondPos) :
+    ∀ nb ∈ pickBranches b p, ∀ w ∈ nb.worldFinset, w ∈ b.worldFinset := by
+  rcases p with _ | ⟨r, res, o⟩
+  · simp [pickBranches]
+  · obtain ⟨sf, hsf, hA, h1, h2⟩ := hp r res o rfl
+    intro nb hnb w hw
+    obtain ⟨-, hsub⟩ := resultBranch_sub (b := b) (nb := nb) (res := res) hnb
+    obtain ⟨x, hx, rfl⟩ := exists_mem_of_mem_worldFinset hw
+    rcases hsub x hx with hxe | hxb
+    · refine applyRule_emitted_world_mem (rule := r) (sf := sf) (ord := ord) hsf h1 h2 x ?_
+      rw [hA]
+      exact hxe
+    · exact Branch.mem_worldFinset hxb
+
+/-- **No unordered successor of a `boxFree` branch carries a new world.**
+
+The engine-level statement, and the world-coordinate half of what the replacement consumes. Compare
+`unorderedSuccessor_world_dichotomy`, which is unconditional and therefore has to admit
+`w = b.nextWorld` as a second case: here the second case is *closed*, at the cost of the syntactic
+hypothesis. That closure is precisely what no condition on `L` could ever buy —
+`freshWorldHeadroom_not_universal` refutes every such attempt — and it is why the replacement route
+has to restrict the stock.
+
+Routed through `pick_branches_eq` and `pick_stage_source_noWorldMint`, so the three-stage pick is not
+destructured a second time. Carries no frame-class restriction and no `OrdTimesKnown`. -/
+theorem unorderedSuccessor_worldFinset_subset {b : Branch} {ord : TimeOrdering}
+    {fc : FormalSystem.ProofSystem.FrameClass} {tr : EventualityTracker}
+    (hfree : ∀ x ∈ b, boxFree x.formula = true) :
+    ∀ nb ∈ unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1,
+      ∀ w ∈ nb.worldFinset, w ∈ b.worldFinset := by
+  have keyB : unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1
+      = pickBranches b
+          (match findUnexpandedUnblockedWith b ord fc (blockedTimes b ord fc tr) with
+           | some sf => findApplicableRule sf b ord fc
+           | none =>
+             match b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
+                 && (findApplicableSerialRule sf b ord).isSome) with
+             | some sf => findApplicableSerialRule sf b ord
+             | none =>
+               match b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
+                   && (findApplicableLinearityRule sf b ord).isSome) with
+               | some sf => findApplicableLinearityRule sf b ord
+               | none => none) := pick_branches_eq
+  rw [keyB]
+  exact pickBranches_worldFinset_subset (pick_stage_source_noWorldMint b ord fc tr hfree)
+
+
 /-! ## C9. The do-not-re-attempt register
 
 Twenty-four statements that look like the natural next lemma and are **not** available. Each is cited
