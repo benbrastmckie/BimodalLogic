@@ -662,7 +662,7 @@ either refuted route (register entry 14):
 
 ---
 
-### Phase 8: Terminus restatement and the concrete instantiation [IN PROGRESS]
+### Phase 8: Terminus restatement and the concrete instantiation [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: Deliver the task's "done" condition: a sorry-free, axiom-free theorem establishing the
 residual (repaired if Phase 4 refuted it) at a **concrete, useful instantiation**, plus the seed-level
@@ -675,7 +675,31 @@ including both seed-level termini at a concrete `signedUniverse C L`, with **no 
 (`buildTableauAt_isSome_at_seed_lengthBudget_signedUniverse_fixed` and its five predecessors reuse
 `mintAwareFuelAt` and `derivedTmaxAt` unaltered).
 
-**RESIDUAL BLOCKER** (Phase 8, task 2): the discharge at a **nonempty** universe.
+**RESIDUAL BLOCKER — RESOLVED for the `untl`/`snce`-free fragment, and only there.** The
+discharge at a nonempty universe is landed: section D3 of `MintBound.lean` proves
+`MintPaysForTime fc U Tmax` — the predicate this plan started from, *not* a repair of it — for
+every `U` whose formulas carry no `untl` and no `snce` node, at every frame class, every `Tmax`
+and every `σ`, and instantiates it at a nonempty `signedUniverse C L`
+(`mintPaysForTime_signedUniverse_untlSnceFree`,
+`mintPaysForTimeFixed_signedUniverse_untlSnceFree`,
+`mintPaysForTime_modalWitness`), together with the seed-level terminus carrying one residual
+hypothesis fewer
+(`buildTableauAt_isSome_at_seed_lengthBudget_signedUniverse_untlSnceFree`). Non-vacuity is
+machine-checked, not asserted: `signedUniverse_nonempty` plus `modalWitnessStock_nonempty` and
+`modalWitnessStock_untlSnceFree`.
+
+Neither of the two blockers recorded below applies on that fragment, and the reason is not a
+weakening of the statement: both are obligations on a **time mint**, and no member of
+`freshTimeRules` is applicable to an `untl`/`snce`-free formula. All nine are gated by
+`isApplicable` on a formula shape carrying an `untl` or `snce` node — `densityRule` among them,
+through `Formula.allFuture φ = ((⊥ → ⊥) untl (φ → ⊥)) → ⊥`, so its shape gate fails before its
+`Dense ≤ fc` gate is consulted and the discharge needs **no** frame-class restriction. The
+engine's other two stages run exactly one rule each (`serialityRule`, `timeLinearity`), neither in
+the census. Every step therefore lands in disjunct 1, which is uniform in the rule, so no per-rule
+payment has to reach the successor.
+
+**RESIDUAL BLOCKER** (Phase 8, task 2, retained): the discharge at a universe containing a
+**temporal** operator.
 - **What failed**: `MintPaysForTimeFixed fc (signedUniverse C L) Tmax` is discharged only at
   `L = ∅` (`mintPaysForTimeFixed_signedUniverse_empty`), the same boundary `mintPaysForTime_empty`
   and `mintPaysForTimeStable_signedUniverse_empty` record. A nonempty discharge is not landed.
@@ -721,10 +745,17 @@ including both seed-level termini at a concrete `signedUniverse C L`, with **no 
       arbitrary frame class. Model the discharge on
       `timeMergeClosed_identifyTime_signedUniverse`, which is the analogous "repaired clause
       discharged at a concrete useful universe" theorem the 432 repair landed.
-      *(deviation: partial — discharged at `L = ∅` only
-      (`mintPaysForTimeFixed_signedUniverse_empty`). "At an arbitrary frame class" is refuted for
-      any such discharge by the density coordinate; see the residual blocker above. The per-rule
-      payments a nonempty discharge needs are all landed, the engine-level assembly is not.)*
+      *(completed with exclusions — discharged at a nonempty concrete `signedUniverse C L` for
+      every `untl`/`snce`-free stock `C`, at an arbitrary frame class, and at the **original**
+      predicate rather than only the repaired one: `mintPaysForTime_signedUniverse_untlSnceFree`,
+      `mintPaysForTimeFixed_signedUniverse_untlSnceFree`, `mintPaysForTime_modalWitness`. `σ = id`
+      is not needed — the discharge is universal in `σ`, since it runs entirely in disjunct 1. The
+      earlier `L = ∅` boundary (`mintPaysForTimeFixed_signedUniverse_empty`) is retained. The claim
+      recorded here previously — that "at an arbitrary frame class" is refuted for any such
+      discharge by the density coordinate — was **wrong**, and the correction is machine-checked:
+      `isApplicable .densityRule sf fc` requires `sf.formula` to match `.allFuture _`, which is an
+      `untl` node, so the shape gate rejects it independently of the frame class. Excluded: a
+      universe containing a temporal operator, which needs both downstream items below.)*
 - [x] If the discharge needs a closure condition on `L` (the `TimeMergeClosed` pattern), state it,
       name it, and prove that it is satisfiable at a concrete finite `L` — do **not** leave it as a
       third unproved residual. Note that the world-side analogue of such a condition is refuted
@@ -739,6 +770,13 @@ including both seed-level termini at a concrete `signedUniverse C L`, with **no 
       *(deviation: altered — verified with `#print axioms` under `lake env lean` rather than
       `lean_verify`; same check, and it runs against the built module. Every delivered declaration
       reports exactly `[propext, Classical.choice, Quot.sound]`.)*
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| The discharge at a universe containing a temporal operator (`untl`/`snce`-headed formulas) | Needs the engine-level assembly that makes a per-rule payment usable at the successor. Moved downstream and declared out of scope for this task by the dispatch. | Register entry 20's "(a)"; the per-rule payments themselves are landed (`mintPotential_lt_of_pick_linear_sigmaFixed`, `..._branching_sigmaFixed`, `selfGuardPotential_lt_of_untlNeg`, `..._snceNeg`) — only the threading is absent. |
+| The `gapPotential` density coordinate for `.Dense` / `.Dedekind` at a temporal universe | `densityRule` mints a fresh time while lying outside both `freshLabelRules` and `selfGuardRules`, so no disjunct moves at such a step for any `σ`. Open mathematics, moved downstream and declared out of scope by the dispatch. | Register entries 17, 19, 20's "(b)". Note this exclusion is confined to *temporal* universes: on the `untl`/`snce`-free fragment `densityRule` is excluded by its own shape gate, so the delivered discharge is universal in the frame class. |
 
 **Timing**: 2 hours
 
@@ -829,21 +867,23 @@ record what was settled, which is independent of the blocked repair.)*
 
 ## Testing & Validation
 
-- [ ] `lake build` green for the whole project at task end.
-- [ ] `applyRule_emitted_time_mem` and `applyRule_emitted_time_dichotomy` present at top level,
+- [x] `lake build` green for the whole project at task end.
+- [x] `applyRule_emitted_time_mem` and `applyRule_emitted_time_dichotomy` present at top level,
       sorry-free, axiom-free, resolvable by name from outside the file (the deliverable task 432
       consumes).
-- [ ] `mem_freshTimeRules` proves the `Finset`/`Bool` agreement over all 36 constructors, so the
+- [x] `mem_freshTimeRules` proves the `Finset`/`Bool` agreement over all 36 constructors, so the
       census cannot silently drift from `applyRule`.
-- [ ] Exactly one verdict recorded for `MintPaysForTime` (Phase 4) and exactly one for the time-reuse
+- [x] Exactly one verdict recorded for `MintPaysForTime` (Phase 4) and exactly one for the time-reuse
       sub-question (Phase 6), each with named evidence present as a declaration.
-- [ ] The delivered residual theorem is at a **concrete** universe, sorry-free and axiom-free per
-      `lean_verify`.
-- [ ] Any repaired predicate carries a direction lemma whose direction is stated in words.
-- [ ] `Saturation.lean`, `Fuel.lean`, `Tableau.lean` byte-unchanged; all previously-landed proof
+- [x] The delivered residual theorem is at a **concrete**, **nonempty** universe, sorry-free and
+      axiom-free (`#print axioms` reports exactly `[propext, Classical.choice, Quot.sound]`).
+- [x] Any repaired predicate carries a direction lemma whose direction is stated in words.
+- [x] `Saturation.lean`, `Fuel.lean`, `Tableau.lean` byte-unchanged; all previously-landed proof
       terms in `MintBound.lean` byte-unchanged.
-- [ ] Zero `sorry`, zero vacuous definitions, zero new unproved hypotheses on any terminus.
-- [ ] No re-attempt of any of the 12 (now 15) do-not-re-attempt register entries.
+- [x] Zero `sorry`, zero vacuous definitions, zero new unproved hypotheses on any terminus.
+- [x] No re-attempt of any of the do-not-re-attempt register entries (now 24). Entry 20's
+      "what is left" paragraph is *corrected* rather than re-attempted: its (a)/(b) reading is
+      shown to gate only the temporal fragment, with the correction machine-checked.
 
 ## Artifacts & Outputs
 

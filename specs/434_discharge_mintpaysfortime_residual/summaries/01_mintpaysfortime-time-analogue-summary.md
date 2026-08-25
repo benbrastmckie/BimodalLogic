@@ -73,27 +73,64 @@ theorems ending at `buildTableauAt_isSome_at_seed_lengthBudget_signedUniverse_fi
 `mintPathBound` and `derivedTmax`, this repair reuses `budgetPotentialAt`, `mintPathBoundAt`,
 `mintAwareFuelAt` and `derivedTmaxAt` byte for byte. No caller's hypothesis list changes.
 
-### 4. What remains open (Phase 8, task 2)
+### 4. The discharge at a nonempty universe (Phase 8, task 2) — section D3
 
-Two independent things, and the distinction matters:
+The task's "done" condition, delivered: **`MintPaysForTime fc U Tmax` proved outright** — the
+predicate this plan started from, not a repair of it, and universal in `σ` — for every universe
+whose formulas carry no `untl` and no `snce` node, at **every** frame class and every `Tmax`.
+
+- `untlSnceFree : Formula → Bool` — the syntactic condition, on the raw constructors. Satisfied by
+  the whole **modal fragment**: atoms, `⊥`, `→`, `□`, and every composite of them, which is `S5`
+  over a single moment sitting inside the bimodal language.
+- `isApplicable_eq_false_of_untlSnceFree` — the nine-arm sweep: **no** member of `freshTimeRules`
+  is applicable to such a formula. `densityRule` included, and *not* by its frame-class gate:
+  its arm requires `.allFuture _`, and `Formula.allFuture φ = ((⊥ → ⊥) untl (φ → ⊥)) → ⊥` is an
+  `untl` node, so the shape half fails before `decide (Dense ≤ fc)` is reached.
+- `pick_stage_source_noMint` — the pick's rule mints no time. Stage 1 from the sweep, stages 2 and
+  3 because they run exactly one rule each (`serialityRule`, `timeLinearity`), neither in the
+  census.
+- `unorderedSuccessor_knownTimes_subset` — the engine-level consequence, closing the second case
+  of `unorderedSuccessor_time_dichotomy`.
+- `splitOrderedRank_le_of_knownTimes_subset` — the rank is monotone in `knownTimes` and antitone in
+  the constraint list, which `expandOnceUnblocked_ord_mono` only extends.
+- `mintPaysForTime_of_untlSnceFree`, `mintPaysForTime_signedUniverse_untlSnceFree`,
+  `mintPaysForTimeFixed_signedUniverse_untlSnceFree`, `mintPaysForTime_modalWitness` — the
+  discharge and its concrete instantiations.
+- `buildTableauAt_isSome_at_seed_lengthBudget_signedUniverse_untlSnceFree` — the seed-level
+  terminus with its `hmint` argument **gone**: on this fragment the terminus carries one named
+  residual fewer.
+- Non-vacuity is machine-checked rather than asserted: `signedUniverse_nonempty`,
+  `modalWitnessStock_nonempty`, `modalWitnessStock_untlSnceFree`.
+
+**A correction this delivers.** The previous dispatch recorded that "at an arbitrary frame class"
+is refuted for any nonempty discharge by the density coordinate. That was wrong, and the
+correction is machine-checked: `densityRule`'s shape gate, not its frame-class gate, is what
+excludes it here. The delivered discharge carries no frame-class restriction at all.
+
+### 5. What remains open
+
+Exactly one thing, and it is now sharply bounded: the discharge at a universe containing a
+**temporal** operator. `mintPaysForTime_untlNeg_false` shows that is where the difficulty lives.
+Two independent obstacles gate it, both moved downstream:
 
 - **(a) The engine-level assembly** — proof engineering, not open mathematics. Every per-rule
-  payment now exists: disjunct 2 for the six witness-guarded minting rules, disjunct 3 for the two
+  payment exists: disjunct 2 for the six witness-guarded minting rules, disjunct 3 for the two
   self-guarded ones, disjunct 1 (via `applyRule_emitted_time_dichotomy` and
   `expandOnceUnblocked_ord_mono`) for the twenty-seven that mint no time. What is missing is
   threading the picked rule through `expandOnceUnblocked`'s three stages so the case split is
   available at the successor.
 - **(b) The density coordinate** — open mathematics, unchanged since register entry 17 named it.
-  `densityRule` mints while lying outside both index sets, so no disjunct moves for any σ. It is
-  `denseRules`-gated, so (a) alone would deliver a discharge at frame classes outside `.Dense` /
-  `.Dedekind`; every frame class needs `gapPotential`.
+  At a *temporal* universe `densityRule` mints while lying outside both index sets, so no disjunct
+  moves for any σ, and every frame class needs `gapPotential`.
 
-The discharge therefore stands at `L = ∅` (`mintPaysForTimeFixed_signedUniverse_empty`), the same
-boundary `mintPaysForTime_empty` records.
+Neither bites on the `untl`/`snce`-free fragment, because both are obligations on a time mint and
+no time is ever minted there. The `L = ∅` boundary statements
+(`mintPaysForTimeFixed_signedUniverse_empty`, `mintPaysForTime_empty`) are retained: they hold for
+every `C` whatsoever, temporal formulas included.
 
 ## Verification
 
-- Full `lake build` green (2458 jobs).
+- Full `lake build` green (2493 jobs).
 - Zero `sorry`, zero vacuous definitions, zero new axioms. Every delivered declaration reports
   exactly `[propext, Classical.choice, Quot.sound]` under `#print axioms`.
 - No new compiler warnings in the added region.
@@ -101,7 +138,12 @@ boundary `mintPaysForTime_empty` records.
   `MintBound.lean` altered — the only edits outside the appended block are three doc-comment
   reconciliations (the boundary preamble's incomplete claim, the residual roster note, and one
   withdrawn line inside register entry 19).
-- C9 register grown from nineteen entries to twenty; header count updated.
+- C9 register grown from nineteen entries to twenty; header count updated. Entry 20's "what is
+  left" paragraph gained a closing note recording that its (a)/(b) reading gates only the temporal
+  fragment — a *correction* of the entry, not a re-attempt of anything it forbids.
+- Four further doc-comment reconciliations for section D3: `MintPaysForTime`'s own docstring, the
+  C7 residual list, the C10 residual roster, and the D2 nonempty-discharge preamble, each of which
+  asserted an openness that is now false on the `untl`/`snce`-free fragment.
 
 ## Plan Deviations
 
@@ -113,8 +155,13 @@ boundary `mintPaysForTime_empty` records.
 - **Phase 8, task 1** *(altered)*: naming follows the file's `_fixed` suffix; the two seed-level
   termini are the pair identified by classification, not the pair the plan's Scope Hypothesis named;
   their four intermediate ancestors are restated too.
-- **Phase 8, task 2** *(partial)*: discharged at `L = ∅` only. "At an arbitrary frame class" is
-  refuted for any such discharge by the density coordinate.
+- **Phase 8, task 2** *(completed with exclusions)*: discharged at a nonempty concrete
+  `signedUniverse C L` for every `untl`/`snce`-free stock, at an arbitrary frame class, and at the
+  **original** predicate rather than only the repaired one — and universal in `σ`, since the
+  argument runs entirely in disjunct 1. Excluded: a universe containing a temporal operator, which
+  needs the two downstream items above. The earlier record that "at an arbitrary frame class" is
+  refuted for any such discharge by the density coordinate is withdrawn as **wrong**; see the
+  correction in section 4.
 - **Phase 8, task 3** *(altered)*: no closure condition on `L` is what the discharge needs, and none
   was invented; the conditions are on the renaming (discharged) and the frame class (a restriction).
 - **Phase 8, task 4** *(altered)*: axiom-freedom verified with `#print axioms` under

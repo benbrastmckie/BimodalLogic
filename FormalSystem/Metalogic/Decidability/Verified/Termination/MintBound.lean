@@ -4120,7 +4120,16 @@ disjunct's rule-list reading got wrong. Section D2 settles the rest, negatively:
 So this remains the development's one open mathematical obligation, but it is now open at a
 *located* obstruction rather than an unexamined one: what is missing is a measure component paying
 for the three self-guarded minting rules that also survives the identification arm. See section
-D2's blocked-repair note for the full statement. -/
+D2's blocked-repair note for the full statement.
+
+**And it is open only on the temporal fragment.** Section D3 proves this predicate — the one stated
+here, at every `σ`, not a repair of it — for every universe whose formulas carry no `untl` and no
+`snce` node (`mintPaysForTime_of_untlSnceFree`), at every frame class and every `Tmax`, and hence at
+the concrete `signedUniverse C L` the seed-level termini consume. Every step there lands in the
+first disjunct, so neither the σ-hit nor the self-guard measure is consulted, and `densityRule` is
+excluded by its own shape gate rather than by a frame-class restriction. What is open is the
+predicate at a universe containing a temporal operator, which `mintPaysForTime_untlNeg_false`
+confirms is where the difficulty actually lives. -/
 def MintPaysForTime (fc : FormalSystem.ProofSystem.FrameClass) (U : Finset SignedFormula)
     (Tmax : Nat) : Prop :=
   ∀ (σ : SignedFormula → SignedFormula) (b : Branch) (ord : TimeOrdering)
@@ -5035,7 +5044,8 @@ introduced by the run's own identification arms, not by the statement.
 is named above with what would discharge it: `UniverseClosed` (closure of `U` under the engine's
 steps *and* under an identification's relabelling), `DifficultyBounded` and `β ≥ 3` (the two
 coefficients `splitAwareFuel` already carries as an interface), `MintPaysForTime` (the time
-dimension — the one genuinely open mathematical obligation, carrying the σ-hit/time-reuse question)
+dimension — the one genuinely open mathematical obligation, carrying the σ-hit/time-reuse question,
+and discharged outright on the `untl`/`snce`-free fragment by section D3)
 and `ArmSettlement` (`resolveOpenArm`'s reachable `none`, which `Fuel.lean` carries in the same
 form). None of them is the unbranching restriction under another name: each is a bound or a
 closure condition, all
@@ -6436,12 +6446,17 @@ closure residual is not among them:
 
 * `StepLengthBounded fc (signedUniverse C L) L'` — satisfiable; `difficultyBoundedAt_ceiling_at`
   reduces it further to the rule-local `StepLengthGrowth`.
-* `MintPaysForTime` — the development's one genuinely open mathematical obligation. Unchanged as a
-  declaration, and now **refuted as stated** (`mintPaysForTime_untlNeg_false`, section D2) with both
-  obvious repairs closed off and the residual obstruction located. Two successive repairs are landed
-  in section D2 — `MintPaysForTimeStable`, itself refuted at nonempty `U` by
+* `MintPaysForTime` — the development's one genuinely open mathematical obligation, and open only
+  on the **temporal** fragment. Unchanged as a declaration, and **refuted as stated at a universe of
+  temporal formulas** (`mintPaysForTime_untlNeg_false`, section D2) with both obvious repairs closed
+  off and the residual obstruction located. Two successive repairs are landed in section D2 —
+  `MintPaysForTimeStable`, itself refuted at nonempty `U` by
   `mintPaysForTimeStable_signedUniverse_false`, and `MintPaysForTimeFixed`, which is not — each with
-  its direction lemma and its own restated terminus chain. See its own docstring.
+  its direction lemma and its own restated terminus chain. Section D3 then **discharges the
+  hypothesis outright** at every `untl`/`snce`-free universe
+  (`mintPaysForTimeFixed_signedUniverse_untlSnceFree`), so on that fragment this bullet names one
+  residual fewer and the terminus is
+  `buildTableauAt_isSome_at_seed_lengthBudget_signedUniverse_untlSnceFree`. See its own docstring.
 * `PostBlockingSettles` — unchanged.
 * `β ≥ 3` — the measured split arity.
 * `UnorderedSuccessorLabelClosed fc L` — **the residue of this task**: clause 1's label coordinate,
@@ -11092,7 +11107,15 @@ both `freshLabelRules` and `selfGuardRules`, so no disjunct moves at a `densityR
 whatsoever — the assembly above therefore delivers a discharge only at frame classes where
 `denseRules` cannot fire, and the intended second component `gapPotential` (indexed by `U ×ˢ U`,
 `denseRules`-gated) remains implemented nowhere and assumed by nothing. Neither the assembly nor
-`gapPotential` is attempted here; both are stated as named next steps. See register entry 20. -/
+`gapPotential` is attempted here; both are stated as named next steps. See register entry 20.
+
+**Where that boundary has since moved.** Section D3 discharges the predicate — and its unrepaired
+original — at every universe of `untl`/`snce`-free formulas, hence at a nonempty
+`signedUniverse C L`, at every frame class. Neither the assembly nor `gapPotential` is needed
+there, because both are obligations on a time mint and no rule of `freshTimeRules` is applicable to
+such a formula: every one of the nine is gated on a shape carrying an `untl` or `snce` node, and
+`densityRule` is excluded by that gate before its `Dense ≤ fc` gate is consulted. So what the two
+named next steps actually gate is the discharge at a universe carrying a **temporal** operator. -/
 
 /-- **The satisfiability boundary, at the formula-level predicate.** -/
 theorem mintPaysForTimeFixed_empty (fc : FormalSystem.ProofSystem.FrameClass) (Tmax : Nat) :
@@ -11101,7 +11124,12 @@ theorem mintPaysForTimeFixed_empty (fc : FormalSystem.ProofSystem.FrameClass) (T
 
 /-- **The formula-level predicate, discharged at a concrete `signedUniverse C L`**, at every frame
 class and every `Tmax`. The instantiation the seed-level termini above consume, at the same
-boundary `mintPaysForTime_empty` and `mintPaysForTimeStable_signedUniverse_empty` record. -/
+boundary `mintPaysForTime_empty` and `mintPaysForTimeStable_signedUniverse_empty` record.
+
+Superseded on the `untl`/`snce`-free fragment by
+`mintPaysForTimeFixed_signedUniverse_untlSnceFree`, which drops the `L = ∅` restriction entirely;
+retained because it is the boundary statement of the empty-universe series and because it holds for
+every `C` whatsoever, temporal formulas included. -/
 theorem mintPaysForTimeFixed_signedUniverse_empty
     (fc : FormalSystem.ProofSystem.FrameClass) (C : Finset Formula) (Tmax : Nat) :
     MintPaysForTimeFixed fc (signedUniverse C (∅ : Finset Label)) Tmax :=
@@ -13224,6 +13252,16 @@ already been here.
     **(b)** The density coordinate, exactly as entry 19 describes it and untouched by any of this.
     A discharge at frame classes outside `.Dense` / `.Dedekind` needs only (a); a discharge at every
     frame class needs `gapPotential`, which remains implemented nowhere and assumed by nothing.
+
+    *And what neither (a) nor (b) is needed for.* Both are obligations on a **time mint**, so both
+    are vacuous on a universe where no rule can mint. Section D3 discharges `MintPaysForTime`
+    itself — not `MintPaysForTimeFixed`, and not a further repair — at every universe of
+    `untl`/`snce`-free formulas, at **every** frame class including `.Dense` and `.Dedekind`:
+    all nine members of `freshTimeRules` are gated by `isApplicable` on a shape containing an
+    `untl` or `snce` node, `densityRule` among them through `Formula.allFuture`'s expansion, and
+    the engine's other two stages run only `serialityRule` and `timeLinearity`. So the reading to
+    avoid is that (a) and (b) gate *every* discharge; they gate the discharge at a universe carrying
+    a temporal operator, which is the case `mintPaysForTime_untlNeg_false` shows is the hard one.
 
 21. **Discharging `UnorderedSuccessorLabelClosed` now that the time coordinate has landed.** The
     accounting is complete and the residual still does not fall, and this entry exists because the
