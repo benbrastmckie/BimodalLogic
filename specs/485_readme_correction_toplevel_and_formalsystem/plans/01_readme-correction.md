@@ -614,33 +614,33 @@ values, not these.
 
 ---
 
-### Phase 6: `Metalogic/WeakCanonical/README.md` [NOT STARTED]
+### Phase 6: `Metalogic/WeakCanonical/README.md` [COMPLETED]
 
 **Goal**: Replace four phantom Key Results with the real termini, add the two missing
 subdirectories and five missing loose modules, and remove the archived
 `ExpressiveCompleteness/` from the live architecture diagram.
 
 **Tasks**:
-- [ ] **B3**: `:44-47` advertises **four** results with zero live occurrences —
+- [x] **B3**: `:44-47` advertises **four** results with zero live occurrences —
       `weak_completeness`, `truth_lemma`, `transfer_theorem`, `normal_form_reduction` (the task
       description lists only three; `truth_lemma` is the fourth). `TruthLemma.lean` contains only
       `bot_not_in_mcs`, `G_forward_mcs`, `G_backward_mcs`, `H_forward_mcs`, `H_backward_mcs`.
       Replace with the real termini: `countermodel_discrete`
       (`GroupModel/CountermodelBase.lean:142`) and `truth_transfer` (`Transfer.lean:359`).
-- [ ] **B3 (cont.)**: rebuild the Modules table (`:12-33`). It lists 14 loose modules; there are
+- [x] **B3 (cont.)**: rebuild the Modules table (`:12-33`). It lists 14 loose modules; there are
       **19**. Add `BackAndForth.lean` (265), `ColourOrders.lean` (328), `MixedSum.lean` (558),
       `PriorDefsDense.lean` (408), `PriorExpressivenessDense.lean` (412). Correct
       `OrderedSum.lean` 52 -> **57**.
-- [ ] **B3 (cont.)**: rebuild the subdirectory table. It lists 6; there are **8**. Add
+- [x] **B3 (cont.)**: rebuild the subdirectory table. It lists 6; there are **8**. Add
       `DenseModelSurgery/` (9 files, 7,568 lines) and `RealModel/` (7 files, 6,643 lines) — the
       Dedekind/real route. Correct `IntegerModel/` 5,503 -> **5,700** lines and `Kamp/` 99 files /
       71,246 lines -> **116** files / **77,619** lines. `EFGames/`, `Expressiveness/`,
       `GroupModel/`, `Separation/` are already correct.
-- [ ] **B3 (cont.)**: remove `ExpressiveCompleteness/` from the Architecture block at `:51-63` —
+- [x] **B3 (cont.)**: remove `ExpressiveCompleteness/` from the Architecture block at `:51-63` —
       it was consolidated into `FormalSystem/Boneyard/Kamp/KampWeakCanonical/ExpressiveCompleteness`
       and does not belong in a live architecture diagram.
-- [ ] **D2**: rewrite `:67-68` from `Bimodal.*` to `FormalSystem.*`.
-- [ ] Re-run `bash scripts/readme-lint.sh` after the inventory edits. Check 2 independently flags
+- [x] **D2**: rewrite `:67-68` from `Bimodal.*` to `FormalSystem.*`.
+- [x] Re-run `bash scripts/readme-lint.sh` after the inventory edits. Check 2 independently flags
       exactly the set above (`BackAndForth.lean`, `ColourOrders.lean`, `MixedSum.lean`,
       `PriorDefsDense.lean`, `PriorExpressivenessDense.lean`, `DenseModelSurgery/`,
       `RealModel/`), so its output is a free mechanical checklist for this phase.
