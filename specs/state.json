@@ -9,7 +9,7 @@
     {
       "project_number": 468,
       "project_name": "realign_task_programme_from_proof_state_audit",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "meta",
       "topic": "decidability",
       "priority": "high",
@@ -24,14 +24,20 @@
         "specs/ROADMAP.md"
       ],
       "created": "2026-08-20T07:11:23Z",
-      "last_updated": "2026-08-20T07:13:54Z",
+      "last_updated": "2026-08-25T11:58:40Z",
       "artifacts": [
         {
           "type": "report",
           "path": "specs/468_realign_task_programme_from_proof_state_audit/reports/01_proof-state-audit-and-realignment-charter.md",
           "summary": "Four-front proof-state audit (decidability, tableau, metatheory, backlog) plus the realignment charter this task executes."
+        },
+        {
+          "path": "specs/468_realign_task_programme_from_proof_state_audit/reports/02_stage1-verification-and-programme-realignment.md",
+          "type": "report",
+          "summary": "Stage-1 verification and programme realignment research"
         }
-      ]
+      ],
+      "session_id": "sess_1787658359_f24b55"
     },
     {
       "project_number": 455,
