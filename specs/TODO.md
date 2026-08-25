@@ -11,7 +11,7 @@ next_project_number: 477
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,193,257,298,413,422,434,461,462,468,476 | -- | automation, completeness, dataset-enhancement, ... |
+| 1 | 127,128,193,257,298,422,434,461,462,468,476 | -- | automation, dataset-enhancement, decidability, ... |
 | 2 | 125,169,178,231,282,296,433,455,463 | 193,298,422,434,461,462,468 | algebraic-representation, code-quality, dataset-enhancement, ... |
 | 3 | 95,219,362,464 | 169,231,463 | completeness, dataset-enhancement, decidability, ... |
 | 4 | 465 | 464 | decidability |
@@ -38,7 +38,6 @@ next_project_number: 477
 
 ### Completeness
 
-413 [PLANNED] — Formalize the TM+ over TM conservativity bridge in Lean 4 -- BACK
 95 [NOT STARTED] — Verify and record the final axiom/sorry status of the headline me
 
 ### Dataset Enhancement
@@ -1966,12 +1965,13 @@ Acceptance: the refuted-route comment (the "(i) a Base-MCS ... (ii) a Henkin-sty
 ---
 
 ### 413. Formalize tm conservativity bridge
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: Task 439, Task 470
 - **Research**: [413_formalize_tm_conservativity_bridge/reports/01_tm-conservativity-bridge.md]
 - **Plan**: [413_formalize_tm_conservativity_bridge/plans/01_tm-conservativity-backward-bridge.md]
+- **Summary**: [413_formalize_tm_conservativity_bridge/summaries/01_tm-conservativity-backward-bridge-summary.md]
 
 **Description**: Formalize the TM+ over TM conservativity bridge in Lean 4 -- BACKWARD DIRECTION ONLY, plus a documented refutation record for the forward direction.
 
