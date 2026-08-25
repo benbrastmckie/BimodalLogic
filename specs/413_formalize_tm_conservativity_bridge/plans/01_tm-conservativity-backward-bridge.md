@@ -2,7 +2,7 @@
 
 - **Task**: 413 - Formalize the TM+/TM conservativity bridge (backward direction only, plus a
   documented refutation record for the forward direction)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 12 hours
 - **Dependencies**: 439, 470 (recorded in state.json; neither gates this plan — see "Dependency
   note" in the Overview)
@@ -650,13 +650,13 @@ are not negotiable.
 
 ---
 
-### Phase 9: Deliverable B — the refutation record, and the acceptance gate [NOT STARTED]
+### Phase 9: Deliverable B — the refutation record, and the acceptance gate [COMPLETED]
 
 **Goal**: Permanently record why the forward direction is not attempted, and run the task's full
 acceptance gate.
 
 **Tasks**:
-- [ ] Write the module docstring at the top of `FormalSystem/Metalogic/Conservativity.lean`
+- [x] Write the module docstring at the top of `FormalSystem/Metalogic/Conservativity.lean`
       recording that the **converse (forward) direction is REFUTED for the Base and Discrete rows
       and OPEN for the other two**, with this repository's own axioms as evidence:
       - **CEF / Discrete**: `Axiom.z1` (`ProofSystem/Axioms.lean:347`, `minFrameClass = .Discrete`)
@@ -664,25 +664,37 @@ acceptance gate.
         obvious BL formula `Z1`. Hence `|-[Discrete] tr(Z1)` holds by a **one-line axiom
         invocation**, while `TM_f |- Z1` is refuted by soundness over Z x_lex Z. The forward
         direction is false by construction of this repository's own axiom set, with **no appeal
-        to completeness**.
+        to completeness**. *(deviation: altered — `z1 phi = tr (Z1 phi')` is NOT a syntactic
+        identity (see the Phase 4 deviation: `Formula.someFuture` is a top-level `untl` and
+        nothing in the range of `tr` is). Rather than write a false claim into the tree, the
+        corrected claim was PROVED: `z1_translate : |-![Discrete] tr (Z1 phi)`, two lines —
+        the axiom plus the standing F-bridge. This strengthens Deliverable B and states nothing
+        about the forward direction.)*
       - **CEB / Base**: `Axiom.discrete_box_necessity` is the paper's TMP-NB (`X top -> box X top`)
         and `Axiom.modal_5_collapse` is M5; both fall to `.Base` via `minFrameClass`'s catch-all,
         so the paper's (Sp) derivation is available verbatim in `|-[FrameClass.Base]`.
       - **CED / CEC**: open in the source; no counterexample is known.
-- [ ] State the **zero-debt consequence** in the docstring: writing
+- [x] State the **zero-debt consequence** in the docstring: writing
       `theorem forward : |-[fc] tr phi -> BaseLanguage.Derivable fc [] phi` and discharging it
       with `sorry` would place a `sorry` on a provably false statement — an unsound placeholder,
       not deferred debt. This paragraph exists to stop a future dispatch re-attempting it.
-- [ ] Cite the **deleted-theorem provenance**, not a live `\label`:
+- [x] Cite the **deleted-theorem provenance**, not a live `\label`:
       `\label{thm:ConservativeExtension}` was deleted from the paper on 2026-08-14 (commit
       `c0116d04`); cite the last revision carrying it, **`58c7c0c0^` (2026-08-12)**, and mark the
-      citation explicitly as historical. Do not cite it as a live anchor.
-- [ ] Note that a machine-checked (rather than documented) refutation would need BL-side
+      citation explicitly as historical. Do not cite it as a live anchor. *(deviation: altered —
+      the `c0116d04` / 2026-08-14 deletion date is wrong and the docstring records the corrected
+      version. The `\label` was removed at `b07ceb31` (2026-08-12); `c0116d04` is where the last
+      prose assertion was rewritten and its only remaining occurrence of the string is a comment
+      describing the label as already deleted. Verified by walking
+      `git log -- JPL/possible_worlds.tex` and counting the label per revision. The instructed
+      `58c7c0c0^` citation is retained and IS accurate: `58c7c0c0^` = `330bb25d` (2026-08-12) is
+      the last revision carrying the theorem with its full seven-site cross-reference set.)*
+- [x] Note that a machine-checked (rather than documented) refutation would need BL-side
       semantics + soundness and the two-fibre / Z x_lex Z countermodels, all out of scope here.
-- [ ] Run `bash scripts/check-paper-definitions.sh` and cite
+- [x] Run `bash scripts/check-paper-definitions.sh` and cite
       `specs/paper-definitions-of-record.md` for any semantic definition the docstring leans on,
       rather than the paper directly.
-- [ ] **Acceptance gate**:
+- [x] **Acceptance gate**:
       - `lake build` green from a clean state.
       - No new `sorry` anywhere: compare the repo-wide live-`sorry` count against its pre-task
         baseline of one (`WeakCanonical.countermodel_discrete`, per `FormalSystem/Metalogic.lean:37`).
@@ -716,21 +728,28 @@ this task, not the absolute count.
 
 ## Testing & Validation
 
-- [ ] `lake build` completes green with no errors and no new warnings.
-- [ ] Repo-wide live `sorry` count outside `Boneyard/` is unchanged from its pre-task baseline.
-- [ ] No new `axiom` declaration introduced (`grep -rn '^axiom ' FormalSystem/` delta is empty).
-- [ ] `#print axioms FormalSystem.Metalogic.Conservativity.ceb_backward` — clean.
-- [ ] `#print axioms FormalSystem.Metalogic.Conservativity.cef_backward` — clean, and in
+- [x] `lake build` completes green with no errors and no new warnings.
+- [x] Repo-wide live `sorry` count outside `Boneyard/` is unchanged from its pre-task baseline.
+- [x] No new `axiom` declaration introduced (`grep -rn '^axiom ' FormalSystem/` delta is empty).
+      *(verified: count is 7, equal to baseline. Note the grep is noisy — all 7 matches are prose
+      lines in pre-existing `Semantics/` docstrings that begin with the word "axiom", not
+      declarations. A `dfSchema` docstring line was reflowed so it would not add an 8th false
+      positive to this gate.)*
+- [x] `#print axioms FormalSystem.Metalogic.Conservativity.ceb_backward` — clean.
+- [x] `#print axioms FormalSystem.Metalogic.Conservativity.cef_backward` — clean, and in
       particular free of any `completeness_*` dependency (which would indicate Route B crept in
       without approval).
-- [ ] `#print axioms FormalSystem.Metalogic.Conservativity.ced_backward` — clean.
-- [ ] `#print axioms FormalSystem.Metalogic.Conservativity.cec_backward` — clean.
-- [ ] `#print axioms FormalSystem.BaseLanguage.tr_swapBL` — clean.
-- [ ] `#print axioms FormalSystem.Theorems.DiscreteUnfolding.dfSchema` — clean.
-- [ ] `grep -rn 'FormalSystem.Semantics' FormalSystem/BaseLanguage/` returns nothing.
-- [ ] No `theorem forward`, no forward-direction statement, and no `sorry` anywhere in
-      `Conservativity.lean`.
-- [ ] The `Conservativity.lean` module docstring contains the literal strings `Axiom.z1` and
+- [x] `#print axioms FormalSystem.Metalogic.Conservativity.ced_backward` — clean.
+- [x] `#print axioms FormalSystem.Metalogic.Conservativity.cec_backward` — clean.
+- [x] `#print axioms FormalSystem.BaseLanguage.tr_swapBL` — clean.
+- [x] `#print axioms FormalSystem.Theorems.DiscreteUnfolding.dfSchema` — clean.
+- [x] `grep -rn 'FormalSystem.Semantics' FormalSystem/BaseLanguage/` returns nothing.
+- [x] No `theorem forward`, no forward-direction statement, and no `sorry` anywhere in
+      `Conservativity.lean`. *(verified: the string `theorem forward` occurs exactly once in the
+      whole tree, inside a fenced code block in the Conservativity module docstring, where the
+      Phase 9 task list required it to be quoted as the thing not to write. No declaration, no
+      `sorry`.)*
+- [x] The `Conservativity.lean` module docstring contains the literal strings `Axiom.z1` and
       `Axiom.discrete_box_necessity`, and cites `58c7c0c0^` marked as historical.
 
 ## Artifacts & Outputs

@@ -426,8 +426,8 @@ theorem swap_next_all_future_eq (φ : Formula) :
 
 The past dual of `nextAllFuture`, and it is *free*: `DerivationTree.temporal_duality` is a
 primitive rule at every frame class, so applying it to `nextAllFuture (swapTemporal φ)` and
-using `Formula.swap_temporal_involution` returns exactly this statement. No past-mirrored
-axiom is introduced. -/
+using `Formula.swap_temporal_involution` returns exactly this statement. No past-mirrored axiom
+is introduced. -/
 def prevAllPast (φ : Formula) :
     ⊢[FrameClass.Discrete]
       (Formula.prev (Formula.and φ.allPast φ)).imp φ.allPast :=

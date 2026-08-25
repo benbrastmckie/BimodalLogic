@@ -12,6 +12,7 @@ import FormalSystem.Metalogic.Decidability
 import FormalSystem.Metalogic.Independence
 import FormalSystem.Metalogic.BXCanonical
 import FormalSystem.Metalogic.WeakCanonical
+import FormalSystem.Metalogic.Conservativity
 
 /-!
 # Bimodal Metalogic
@@ -28,6 +29,16 @@ guard (s, t).
 
 The modal T-axiom (Box phi -> phi) is valid (S5 universal accessibility), but the
 temporal analogs (G phi -> phi, H phi -> phi) are NOT valid under irreflexive semantics.
+
+## Conservativity (proof-theoretic, no semantics)
+
+- **Backward TM/TM⁺ bridge** (`Conservativity.translate`, `derivable_translate`, and the four
+  row corollaries `ceb_backward` / `cef_backward` / `ced_backward` / `cec_backward`):
+  SORRY-FREE (axioms: exactly `propext`, `Classical.choice`, `Quot.sound`). `TM ⊢ φ ⟹
+  TM⁺ ⊢ tr φ` over the tense-primitive base language of `FormalSystem/BaseLanguage/`. The
+  **forward** direction is refuted for the Base and Discrete rows and open for the other two;
+  `Metalogic/Conservativity.lean`'s module docstring is the standing record of why it must not
+  be attempted or `sorry`-ed.
 
 ## Publication-Ready Results
 

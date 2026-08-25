@@ -114,8 +114,11 @@ private def andMono {fc : FrameClass} {A A' B B' : Formula}
   have h := DerivationTree.assumption (fc := fc) [A.and B] (A.and B) (by simp)
   exact andIntro (ctxMp (wk _ _ hA) (andFst h)) (ctxMp (wk _ _ hB) (andSnd h))
 
-/-- Implication is antitone in its antecedent and monotone in its consequent. -/
-private def impMono {fc : FrameClass} {A A' B B' : Formula}
+/-- Implication is antitone in its antecedent and monotone in its consequent.
+
+Public (unlike its neighbours) because `Metalogic/Conservativity.lean`'s `z1_translate` needs
+it to push the `F`-bridge into the antecedent of `Axiom.z1`'s consequent. -/
+def impMono {fc : FrameClass} {A A' B B' : Formula}
     (hA : ⊢[fc] A'.imp A) (hB : ⊢[fc] B.imp B') : ⊢[fc] (A.imp B).imp (A'.imp B') := by
   refine deductionTheorem [] (A.imp B) (A'.imp B') ?_
   refine deductionTheorem [A.imp B] A' B' ?_

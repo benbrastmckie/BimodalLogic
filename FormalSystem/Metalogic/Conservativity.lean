@@ -25,9 +25,108 @@ theorem rather than four developments.
 
 ## Scope
 
-This module proves the **backward** direction only. The converse is refuted for two of the four
-rows and open for the other two; see the "The forward direction" section below, which exists
-specifically so that a future dispatch does not re-attempt it.
+This module proves the **backward** direction only.
+
+# THE FORWARD DIRECTION IS NOT OPEN WORK — DO NOT ATTEMPT IT
+
+The converse, `TM⁺ ⊢ tr φ ⟹ TM ⊢ φ`, is **refuted** for the Base and Discrete rows and
+**open** for the other two. This section exists so that a future dispatch reading only this
+file does not re-attempt it. The evidence below is this repository's own axiom set, not an
+appeal to the source.
+
+## Why it must not be `sorry`-ed
+
+Writing
+
+```
+theorem forward {fc} {φ} : ProofSystem.Derivable fc [] (tr φ) → BaseLanguage.Derivable fc [] φ
+```
+
+and discharging it with `sorry` would place a `sorry` on a statement that is **provably
+false** at `fc := .Base` and `fc := .Discrete`. That is an unsound placeholder, not deferred
+debt, and the repository's zero-debt policy forbids it. Do not state the theorem; do not state
+an approximation of it.
+
+## CEF / `FrameClass.Discrete` — refuted, and the TM⁺ half is machine-checked here
+
+`ProofSystem.Axiom.z1` (`ProofSystem/Axioms.lean`, `minFrameClass = .Discrete`) is
+
+```
+G(Gφ → φ) → (F(Gφ) → Gφ)
+```
+
+built entirely from `allFuture`, `someFuture` and `imp`. Take the BL-side schema `Z1` below —
+the same formula with BL's *derived* `F` — and `z1_translate` proves
+`⊢[Discrete] tr (Z1 φ)` outright, in two lines: the axiom, plus the standing `F`-bridge.
+
+So the TM⁺_f side of the witness is not a conjecture in this repository; it is a theorem
+below. What refutes the forward direction is the other half: `TM_f ⊢ Z1 φ` fails, because
+`TM_f = TM + DF` is sound over *every* discrete frame while `Z1` is unsound over
+non-Archimedean discrete orders such as `ℤ ×_lex ℤ`. That half needs a BL-side semantics and
+soundness theorem, which this repository does not have and which is deliberately out of scope
+here (see "What a machine-checked refutation would need"). The refutation is therefore
+*documented*, with its TM⁺ half proved.
+
+**One correction to the research report.** The report asserted `z1 φ = tr (Z1 φ')` as a
+syntactic identity. It is not, and cannot be: `Formula.someFuture` is a top-level `untl`, and
+by `BaseLanguage.tr_ne_untl` nothing in the range of `tr` is a top-level `untl`. The bridge
+`BaseLanguage.notGNot_imp_F` closes the gap derivably instead — see `z1_translate`.
+
+## CEB / `FrameClass.Base` — refuted in the source, with both witnesses live here
+
+The source's witness is `(Sp) := □φ_DF ∨ □ψ_DN`. Its TM⁺ derivation uses TMP-NB (`X⊤ → □X⊤`)
+and M5, and **both are available at `FrameClass.Base` in this repository**:
+`ProofSystem.Axiom.discrete_box_necessity` is TMP-NB and
+`ProofSystem.Axiom.modal_5_collapse` is M5, and neither is named in
+`ProofSystem.Axiom.minFrameClass`'s non-`Base` list, so both fall through its catch-all to
+`.Base`. The source's `(Sp)` derivation is thus available verbatim in `⊢[FrameClass.Base]`,
+given the repository's own `completeness_*` results for the two BL⁺-valid conditionals.
+
+As with CEF, the failing half — no instance of `(Sp)` is a TM-theorem, by soundness on a
+disjoint two-fibre structure (a `ℤ`-fibre and an `ℝ`-fibre with `□` read globally over both) —
+needs a BL-side semantics this repository does not have.
+
+## CED / CEC — open
+
+No counterexample analogous to the CEB and CEF witnesses is known for CED. CEC inherits that
+openness, plus an independent doubt: whether TMP-CO alone axiomatizes the same BL⁺-logic as
+the full Reynolds triple is itself open, and the converse direction (CO deriving the Reynolds
+gap axioms) is separately **refuted** in
+`FormalSystem.Metalogic.Independence.CoNotPriorU`. "Open" here means open in the source, not
+merely unattempted here.
+
+## What a machine-checked refutation would need
+
+A BL-side semantics, a BL-side soundness theorem, and the two countermodels — the two-fibre
+structure for CEB and `ℤ ×_lex ℤ` for CEF. None of the three exists in this repository, and
+building them is separate task material: they would consume the non-Archimedean discrete
+carrier work, not this proof-theoretic bridge. Deliverable B of this task is documentation,
+by design, not proof.
+
+## Provenance of the source claim — historical, not a live anchor
+
+`\label{thm:ConservativeExtension}` **no longer exists** in the paper. Cite it only as
+history:
+
+- Introduced at paper commit `df2e8ad9` (2026-06-29).
+- Last revision carrying the theorem together with its full seven-site cross-reference set:
+  **`58c7c0c0^` = `330bb25d` (2026-08-12)**. Commit `58c7c0c0` itself
+  ("cor:tm-completeness four-row restructure") cut those seven sites to four.
+- The `\label` itself was removed at **`b07ceb31` (2026-08-12)**, not at `c0116d04`. (The
+  research report and this task's plan both name `c0116d04` (2026-08-14) as the deletion
+  commit; that is off by two commits and two days. `c0116d04` is where the last *prose*
+  assertion of conservativity was rewritten, and its only remaining occurrence of the string
+  is a source comment describing the label as already deleted. Verified by walking
+  `git log -- JPL/possible_worlds.tex` and counting `\label{thm:ConservativeExtension}` per
+  revision.)
+- The live paper contains no occurrence of "conservative" at all, and states that a
+  proof-system conservativity theorem for the tense-primitive subsystem "is that subsystem's
+  own future result rather than part of this book's system".
+
+Do **not** cite `thm:ConservativeExtension` as a live anchor. For any semantic definition this
+module leans on, cite `specs/paper-definitions-of-record.md` rather than the paper directly;
+`bash scripts/check-paper-definitions.sh` was run at implementation time and reports the same
+two drifted and six dangling anchors the research report recorded, none of them consumed here.
 
 ## No semantics
 
@@ -155,5 +254,42 @@ theorem cec_backward {φ : BLFormula}
     (h : BaseLanguage.Derivable FrameClass.Dedekind [] φ) :
     ProofSystem.Derivable FrameClass.Dedekind [] (tr φ) :=
   derivable_translate h
+
+/-! ## The CEF forward-direction witness
+
+Not part of the bridge: this is the machine-checked half of the Deliverable B refutation
+record above. It says nothing about `TM_f ⊢ Z1`, which is the half that fails and which needs
+a BL-side soundness theorem to establish. -/
+
+/--
+The BL-side **Z1** schema, `G(Gφ → φ) → (F(Gφ) → Gφ)`, with BL's *derived* `F`.
+
+This is the paper's TMP-Z1 written in the base language. It is the CEF forward-direction
+witness: its translation is a `TM⁺_f` theorem (`z1_translate`) while it is not a `TM_f`
+theorem, the latter by soundness over `ℤ ×_lex ℤ` — an argument this repository cannot yet
+formalize (see the module docstring).
+-/
+def Z1 (φ : BLFormula) : BLFormula :=
+  (φ.allFuture.imp φ).allFuture.imp (φ.allFuture.someFuture.imp φ.allFuture)
+
+/--
+`⊢[Discrete] tr (Z1 φ)` — the translation of the BL-side Z1 schema is a `TM⁺_f` theorem.
+
+Two steps: `ProofSystem.Axiom.z1` at `FrameClass.Discrete`, then
+`BaseLanguage.notGNot_imp_F` pushed into the antecedent of the consequent by
+`BaseLanguage.impMono`, converting the axiom's `F(Gφ)` into the `¬G¬(Gφ)` shape `tr` produces.
+
+**This is not the forward direction and does not approach it.** It is one half of the CEF
+witness, and it is the half that *succeeds*. See the module docstring for why the other half
+is out of scope, and for why no `sorry`-ed `forward` theorem may be written.
+-/
+theorem z1_translate (φ : BLFormula) :
+    ProofSystem.Derivable FrameClass.Discrete [] (tr (Z1 φ)) :=
+  ⟨FormalSystem.Theorems.Combinators.impTrans
+    (ProofSystem.DerivationTree.axiom [] _ (ProofSystem.Axiom.z1 (tr φ))
+      (show FrameClass.Discrete ≤ FrameClass.Discrete from le_refl _))
+    (BaseLanguage.impMono
+      (BaseLanguage.notGNot_imp_F (tr φ).allFuture)
+      (FormalSystem.Theorems.Combinators.identity (tr φ).allFuture))⟩
 
 end FormalSystem.Metalogic.Conservativity
