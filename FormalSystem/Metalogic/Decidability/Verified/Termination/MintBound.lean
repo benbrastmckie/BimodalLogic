@@ -13217,6 +13217,157 @@ theorem unorderedSuccessor_worldFinset_subset {b : Branch} {ord : TimeOrdering}
   exact pickBranches_worldFinset_subset (pick_stage_source_noWorldMint b ord fc tr hfree)
 
 
+/-! ### The composite: clause 1's label dimension at the propositional fragment
+
+The two per-coordinate subset facts, joined by the rectangle. This is the same assembly as
+`unorderedSuccessor_label_mem_of_headroom`, with one decisive difference: there the four quadrants
+are paid for by `FreshLabelHeadroom L b`, which `freshLabelHeadroom_not_universal` refutes at every
+nonempty finite `L`; here they are paid for by `TimeMergeClosed L`, which `timeMergeClosed_product`
+exhibits at every rectangle. The hypothesis is satisfiable, and that is the entire point of the
+exercise. -/
+
+/-- **Clause 1's label dimension, discharged from satisfiable hypotheses.** Every formula on every
+unordered successor of an `L`-confined `boxFree`, `untl`/`snce`-free branch sits at a label of `L`.
+
+**How the four quadrants are paid for.** A label is a *pair*, and the two coordinate facts arrive
+separately: `unorderedSuccessor_worldFinset_subset` puts the successor's world among `b`'s worlds,
+`unorderedSuccessor_knownTimes_subset` puts its time among `b`'s times. Confinement of `b` then
+supplies a formula `y ∈ b` carrying that world and a formula `z ∈ b` carrying that time, each at a
+label in `L` — but `y` and `z` are in general *different* formulas, so `⟨y.label.world, z.label.time⟩`
+is a quadrant confinement alone does not reach. That cross-product gap is exactly the one register
+entry 21 warns about, and `TimeMergeClosed L` is exactly what closes it:
+`timeMergeClosed_iff_product` characterizes a time-merge-closed label set as precisely a full
+rectangle of worlds against times, which is the cross-product closure a pair-valued label needs. No
+further hypothesis is required, and a reader who expects to have to re-derive the worry can stop
+here.
+
+`TimeMergeClosed L` is not new currency either: it is already a sibling hypothesis at every terminus
+in the chain, where it discharges `UniverseClosedAt`'s clause 2.
+
+`OrdTimesKnown b ord` is inherited from `unorderedSuccessor_knownTimes_subset` and through it from
+`applyRule_emitted_time_mem`, where `applyRule_emitted_time_mem_ordTimesKnown_needed` shows it is not
+removable. It is the one hypothesis here that the world coordinate does not need — see the section
+note on the asymmetry — and it is the reason this composite cannot be stated at
+`UniverseClosedAt`'s clause 1, which carries no such hypothesis. -/
+theorem unorderedSuccessor_label_mem_of_propositional {L : Finset Label} {b : Branch}
+    {ord : TimeOrdering} {fc : FormalSystem.ProofSystem.FrameClass} {tr : EventualityTracker}
+    (haux : OrdTimesKnown b ord) (hL : TimeMergeClosed L)
+    (hbox : ∀ x ∈ b, boxFree x.formula = true)
+    (hfree : ∀ x ∈ b, untlSnceFree x.formula = true)
+    (hbl : ∀ x ∈ b, x.label ∈ L) :
+    ∀ nb ∈ unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1,
+      ∀ x ∈ nb, x.label ∈ L := by
+  intro nb hnb x hx
+  have hw : x.label.world ∈ b.worldFinset :=
+    unorderedSuccessor_worldFinset_subset hbox nb hnb x.label.world (Branch.mem_worldFinset hx)
+  have ht : x.label.time ∈ b.knownTimes :=
+    unorderedSuccessor_knownTimes_subset haux hfree nb hnb x.label.time (mem_knownTimes_of_mem hx)
+  obtain ⟨y, hy, hyw⟩ := exists_mem_of_mem_worldFinset hw
+  obtain ⟨z, hz, hzt⟩ := exists_mem_of_mem_knownTimes ht
+  have hkey := hL y.label (hbl y hy) z.label (hbl z hz)
+  rw [hyw, hzt] at hkey
+  exact hkey
+
+
+/-- **Clause 1 at `signedUniverse C L`, both dimensions, from satisfiable hypotheses.**
+
+The mirror of `unorderedSuccessor_confined_signedUniverse_of_headroom` with its
+`UnorderedSuccessorLabelClosed fc L` argument **gone**: the formula coordinate is discharged as
+before by `unorderedSuccessor_formula_mem` from `hC`/`hT`, and the label coordinate by
+`unorderedSuccessor_label_mem_of_propositional` from the two syntactic conditions and
+`TimeMergeClosed L`. Nothing here is assumed that cannot be exhibited — contrast the `_of_headroom`
+original, whose `hlab` is false at every nonempty `L`, and the C11 sibling
+`unorderedSuccessor_confined_signedUniverse_of_freshLabelHeadroom`, whose `FreshLabelHeadroom L b` is
+refutable as a universally quantified condition.
+
+The `_of_headroom` original is retained byte-identical and is what the landed terminus chain
+consumes; this is an additional declaration stated beside it, exactly as
+`UnorderedSuccessorLabelClosedOrd` is stated beside `UnorderedSuccessorLabelClosed`.
+
+**Note the `OrdTimesKnown b ord` in the quantifier prefix**, which the `_of_headroom` original does
+not have and which the C11 `FreshLabelHeadroom` sibling does. It is not decoration, and it is why
+this theorem stops here rather than continuing into a restated terminus — see the boundary note
+below. -/
+theorem unorderedSuccessor_confined_signedUniverse_of_propositional {C : Finset Formula}
+    {L : Finset Label} {fc : FormalSystem.ProofSystem.FrameClass}
+    (hC : TableauClosed C) (hT : TrichStock C) (hL : TimeMergeClosed L)
+    (hbox : ∀ φ ∈ C, boxFree φ = true) (hfree : ∀ φ ∈ C, untlSnceFree φ = true) :
+    ∀ (b : Branch) (ord : TimeOrdering) (tr : EventualityTracker),
+      OrdTimesKnown b ord →
+      (∀ x ∈ b, x ∈ signedUniverse C L) →
+      ∀ nb ∈ unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1, ∀ x ∈ nb,
+        x ∈ signedUniverse C L := by
+  intro b ord tr haux hb nb hnb x hx
+  have hbf : ∀ y ∈ b, y.formula ∈ C :=
+    fun y hy => (formula_label_of_mem_signedUniverse (hb y hy)).1
+  have hbl : ∀ y ∈ b, y.label ∈ L :=
+    fun y hy => (formula_label_of_mem_signedUniverse (hb y hy)).2
+  exact mem_signedUniverse
+    (unorderedSuccessor_formula_mem hC hT hbf nb hnb x hx)
+    (unorderedSuccessor_label_mem_of_propositional haux hL
+      (fun y hy => hbox _ (hbf y hy)) (fun y hy => hfree _ (hbf y hy)) hbl nb hnb x hx)
+
+/-! ### The boundary: why this section stops here, and what would be needed to go further
+
+**This section does not reach a restated terminus, and the reason is not a missing proof.** It is a
+shape mismatch that is settled rather than open, and it is recorded here so that nobody re-attempts
+the route on the assumption that it merely needs more work.
+
+`UniverseClosedAt fc U`'s **clause 1** is
+
+  `∀ b ord tr, (∀ x ∈ b, x ∈ U) → ∀ nb ∈ unorderedSuccessorBranches …, ∀ x ∈ nb, x ∈ U`
+
+with `ord` **universally quantified and unconstrained**. Every theorem above that closes the time
+coordinate carries `OrdTimesKnown b ord`, inherited through `unorderedSuccessor_knownTimes_subset`
+from `applyRule_emitted_time_mem` — where
+`applyRule_emitted_time_mem_ordTimesKnown_needed` proves the hypothesis is **not removable**, by
+deciding a configuration in which dropping it makes the statement false. So
+`unorderedSuccessor_confined_signedUniverse_of_propositional` cannot be handed to
+`UniverseClosedAt`'s clause 1: it discharges a strictly weaker statement, and the gap is exactly one
+hypothesis that the clause does not offer and that nothing can supply at an arbitrary `ord`.
+
+This is the same mismatch section C11 already ran into and already recorded from the other side:
+`UnorderedSuccessorLabelClosedOrd` exists precisely because `UnorderedSuccessorLabelClosed`
+"quantifies over an arbitrary `TimeOrdering` with nothing tying it to the branch, which is one
+hypothesis short of what `unorderedSuccessor_time_dichotomy` asks". C11's
+`unorderedSuccessor_confined_signedUniverse_of_freshLabelHeadroom` carries `OrdTimesKnown` for the
+same reason and is likewise not wired into `universeClosedAt_signedUniverse_of_headroom`. The
+observation is therefore not new to this section; what is new is that it is now the *only* thing
+standing between a satisfiable hypothesis set and a terminus with `hlab` genuinely absent.
+
+**The two routes past it, and why neither is taken here.**
+
+1. *Remove `OrdTimesKnown` from the time coordinate on this fragment.* On a `boxFree`,
+   `untl`/`snce`-free branch the pick is heavily constrained — the linearity stage yields
+   `.branchingOrdered`, hence `.splitOrdered`, hence no unordered successor at all; the seriality
+   stage emits at the trigger's own label; and `orderTrichotomy`'s `fires` guard demands a
+   `someFuture`-shaped formula already on the branch, which such a branch does not carry. A bespoke
+   sweep over just the reachable rules might therefore avoid the hypothesis. That is a genuine
+   re-derivation of `applyRule_emitted_time_mem` on a restricted rule set, in the **time**
+   coordinate, which is section D3's territory and not this section's. It is *not* attempted here
+   and is *not* claimed to be impossible — it is unattempted, which is a different verdict from
+   refuted and should not be recorded as one.
+
+2. *Thread `OrdTimesKnown` through the closure chain.* This means an `Ord`-flavoured
+   `UniverseClosedAt`, and then the same for `DifficultyBounded`, and then restating every consumer
+   of both down to `buildTableauAt` — roughly twenty theorems across the `_at`, `_selfGuarded` and
+   `_fixed` families. `DifficultyBounded` carries its own refutations and its own register entries,
+   so this is a redesign of the closure interface rather than an addition to it.
+
+**What this section therefore delivers, stated exactly.** The world coordinate of the label
+dimension is closed unconditionally on a `boxFree` branch
+(`unorderedSuccessor_worldFinset_subset`) — the coordinate that
+`freshWorldHeadroom_not_universal` proves no condition on `L` can ever close — and, joined with
+D3's time coordinate and the `TimeMergeClosed` rectangle, it discharges clause 1 at
+`signedUniverse C L` **from hypotheses that are all satisfiable**
+(`unorderedSuccessor_confined_signedUniverse_of_propositional`). That is a strictly stronger
+position than the one section C11 reached, where the reduced antecedent was itself refutable. What
+it is **not** is a terminus: no theorem in this section removes `hlab` from
+`buildTableauAt_isSome_at_seed_lengthBudget_signedUniverse_untlSnceFree` or from any of its eight
+siblings, and every one of those nine remains vacuous at every nonempty `L`. Register entry 21 is
+the verdict and is written to say exactly this. -/
+
+
 /-! ## C9. The do-not-re-attempt register
 
 Twenty-four statements that look like the natural next lemma and are **not** available. Each is cited
@@ -13785,6 +13936,33 @@ already been here.
     `unorderedSuccessorLabelClosedOrd_of_unorderedSuccessorLabelClosed` fixing the direction and
     `unorderedSuccessorLabelClosedOrd_not_universal` confirming that adding `OrdTimesKnown` does not
     weaken it into vacuity.
+
+    *The `L`-side replacement route, how far it reaches, and where it stops.* Section D4 supplies the
+    replacement this entry calls for, and it reaches further than C11 did without reaching a
+    terminus. The world coordinate — the one `freshWorldHeadroom_not_universal` proves no condition
+    on a finite `L` can ever close — is closed outright on a `boxFree` branch
+    (`unorderedSuccessor_worldFinset_subset`), and joined with D3's time coordinate and the
+    `TimeMergeClosed` rectangle it gives
+    `unorderedSuccessor_confined_signedUniverse_of_propositional`: clause 1 at `signedUniverse C L`
+    from hypotheses that are **all satisfiable**. That is strictly better than C11's position, where
+    the reduced antecedent was itself refutable.
+
+    It stops one step short of a restated terminus, and the reason is a **shape mismatch, not a
+    missing proof**. Every route through the time coordinate carries `OrdTimesKnown b ord`, which
+    `applyRule_emitted_time_mem_ordTimesKnown_needed` proves is not removable from
+    `applyRule_emitted_time_mem`; `UniverseClosedAt`'s clause 1 quantifies `ord` freely and offers no
+    such hypothesis. So none of the nine carriers loses its `hlab`, and **all nine remain vacuous at
+    every nonempty `L`**. D4's own boundary note states the two routes past the mismatch and why
+    neither is taken there; note in particular that the first of them — removing `OrdTimesKnown` on
+    this fragment — is *unattempted*, which is not the same verdict as refuted and must not be
+    recorded as one.
+
+    *And the narrowing is forced.* D4's replacement reaches only the purely propositional fragment,
+    because `boxFree` and `untlSnceFree` together exclude `□`, `untl` and `snce`. That is not a proof
+    weakness: `freshWorldHeadroom_not_universal` refutes every `L`-side alternative, so the only
+    available handle is the stock, and both world-minting rules are gated on a `.box` node. A reader
+    who wants the replacement at the modal fragment is asking for something the world coordinate's
+    refutation rules out.
 
 22. **`PostBlockingSettles fc` as literally stated.** Refuted, not merely unproved, by two witnesses,
     both universally quantified in the frame class: `postBlockingSettles_fuel_zero_false` at the

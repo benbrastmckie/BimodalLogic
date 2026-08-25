@@ -1,7 +1,7 @@
 # Implementation Plan: Sharpen and Replace the `UnorderedSuccessorLabelClosed` Residual
 
 - **Task**: 481 - discharge_or_replace_unorderedsuccessorlabelclosed_residual
-- **Status**: [IMPLEMENTING]
+- **Status**: [PARTIAL]
 - **Effort**: 9 hours
 - **Dependencies**: 434 (established the residual set this belongs to; already complete)
 - **Research Inputs**: `specs/481_discharge_or_replace_unorderedsuccessorlabelclosed_residual/reports/01_unorderedsuccessorlabelclosed-verdict.md`
@@ -394,35 +394,44 @@ that as a genuine obstruction — do not re-destructure the three-stage pick by 
 
 ---
 
-### Phase 5: The composite label lemma at the propositional fragment [IN PROGRESS]
+### Phase 5: The composite label lemma at the propositional fragment [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: `unorderedSuccessor_label_mem_of_propositional` and its `signedUniverse` consequences: with
 both coordinates closed and `TimeMergeClosed L` supplying the rectangle, an unordered successor of a
 confined branch has every label in `L` — **with no residual hypothesis**.
 
 **Tasks**:
-- [ ] Read `unorderedSuccessor_label_mem_of_headroom` (`:11254`) and
+- [x] Read `unorderedSuccessor_label_mem_of_headroom` (`:11254`) and
       `unorderedSuccessor_confined_signedUniverse_of_freshLabelHeadroom` (`:11279`) as the shape
       template — this composite is the same assembly with the two subset facts in place of
       `FreshLabelHeadroom`.
-- [ ] Add `unorderedSuccessor_label_mem_of_propositional`: from Phase 4's world subset, the landed
+- [x] Add `unorderedSuccessor_label_mem_of_propositional`: from Phase 4's world subset, the landed
       `unorderedSuccessor_knownTimes_subset` (time subset), `TimeMergeClosed L`, and confinement of
       `b` to `L`, conclude every successor label is in `L`. The four-quadrant problem C9 entry 21
       warns about is paid for by `TimeMergeClosed L` — `timeMergeClosed_iff_product` (`:5727`)
       characterizes it as exactly "`L` is a full rectangle", which is precisely the cross-product
       closure the pair-valued label needs. Cite that in the docstring so a reader does not re-derive
       the worry.
-- [ ] Add `unorderedSuccessor_confined_signedUniverse_of_propositional`: the mirror of
+- [x] Add `unorderedSuccessor_confined_signedUniverse_of_propositional`: *(deviation: altered — the
+      theorem carries `OrdTimesKnown b ord` in its quantifier prefix, which the `_of_headroom`
+      original does not. The hypothesis is inherited through `unorderedSuccessor_knownTimes_subset`
+      from `applyRule_emitted_time_mem`, where `applyRule_emitted_time_mem_ordTimesKnown_needed`
+      proves it is not removable. The in-file precedent for this exact shape is C11's
+      `unorderedSuccessor_confined_signedUniverse_of_freshLabelHeadroom`, which carries it for the
+      same reason.)* the mirror of
       `unorderedSuccessor_confined_signedUniverse_of_headroom` (`:6224`) with `hlab` replaced by the
       syntactic conditions. The formula coordinate is discharged as before by
       `unorderedSuccessor_formula_mem` from `hC`/`hT`.
 - [ ] Add `universeClosedAt_signedUniverse_of_propositional`: the mirror of
-      `universeClosedAt_signedUniverse_of_headroom` (`:6432`) with `hlab` gone.
-- [ ] Leave `unorderedSuccessor_confined_signedUniverse_of_headroom` and
+      `universeClosedAt_signedUniverse_of_headroom` (`:6432`) with `hlab` gone. *(deviation: skipped
+      — NOT STATEABLE. See the Reasoned Exclusions table below. `UniverseClosedAt`'s clause 1
+      quantifies `ord` freely and offers no `OrdTimesKnown b ord`; the propositional route cannot
+      supply clause 1 without it.)*
+- [x] Leave `unorderedSuccessor_confined_signedUniverse_of_headroom` and
       `universeClosedAt_signedUniverse_of_headroom` **byte-identical**. The new theorems are
       additional declarations stated beside them, exactly as
       `UnorderedSuccessorLabelClosedOrd` was stated beside `UnorderedSuccessorLabelClosed`.
-- [ ] Verify: `lake build` green; no `sorry`; no new axiom; the two new `signedUniverse` theorems have
+- [x] Verify: `lake build` green; no `sorry`; no new axiom; the two new `signedUniverse` theorems have
       no `hlab` argument and no frame-class restriction.
 
 **Timing**: 1.75 hours
@@ -433,6 +442,18 @@ confined branch has every label in `L` — **with no residual hypothesis**.
 
 **Commit Mode**: per-substep
 
+**Scope Hypothesis result** (recorded at implementation time): **confirmed**.
+`unorderedSuccessor_label_mem_of_propositional` was proved first and standalone, as instructed, and
+it compiled on the first attempt. `TimeMergeClosed L` alone does close all four label quadrants
+given the two per-coordinate subset facts: confinement supplies a formula `y ∈ b` carrying the
+successor's world and a formula `z ∈ b` carrying its time, and `hL y.label _ z.label _` delivers
+exactly `⟨y.label.world, z.label.time⟩ ∈ L`, which is the successor's label by structure eta. No
+additional hypothesis was needed and none was added. The rectangle worry register entry 21 raises is
+therefore fully paid for, exactly as the plan predicted.
+
+**A different obstruction, not the one this hypothesis guarded against**: see the Reasoned
+Exclusions table below.
+
 **Scope Hypothesis**: This phase asserts that `TimeMergeClosed L` alone closes all four label
 quadrants given the two per-coordinate subset facts. Confirm at implementation time by proving
 `unorderedSuccessor_label_mem_of_propositional` first, standalone, before touching the two
@@ -441,19 +462,58 @@ obstruction to be recorded with evidence — stop the phase at that point rather
 hypothesis to force it through, since a new hypothesis would reintroduce exactly the unsatisfiable-
 residual failure mode this task exists to remove.
 
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| `universeClosedAt_signedUniverse_of_propositional` | Not stateable in the required shape, not merely unproved. `UniverseClosedAt fc U`'s clause 1 is `∀ b ord tr, (∀ x ∈ b, x ∈ U) → …` with `ord` universally quantified and unconstrained. Every route through the time coordinate carries `OrdTimesKnown b ord`, and that hypothesis is *proved non-removable* upstream. The propositional composite therefore discharges a strictly weaker statement than clause 1 demands, and nothing can supply the missing hypothesis at an arbitrary `ord`. | `UniverseClosedAt`'s definition (`MintBound.lean`, section C10) has no `OrdTimesKnown` in clause 1; `applyRule_emitted_time_mem` requires `haux : OrdTimesKnown b ord`; `applyRule_emitted_time_mem_ordTimesKnown_needed` decides a configuration where dropping it makes the statement false. The in-file precedent is C11's `unorderedSuccessor_confined_signedUniverse_of_freshLabelHeadroom`, which carries `OrdTimesKnown` for the same reason and is likewise not wired into `universeClosedAt_signedUniverse_of_headroom`. |
+
+The exclusion is recorded **in the source file**, not only here: section D4 carries a dedicated
+`/-! ### The boundary: why this section stops here, and what would be needed to go further -/`
+block, and C9 entry 21 records the same verdict. Both state that the first route past the mismatch
+(removing `OrdTimesKnown` on this fragment) is **unattempted**, which is deliberately distinguished
+from *refuted*.
+
 **Files to modify**:
 - `FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean` — section D4, after
   Phase 4's block.
 
 **Verification**:
-- `lake build` exits 0.
-- The two new `signedUniverse` theorems take `hC`, `hT`, `hL : TimeMergeClosed L`, and the two
-  syntactic conditions — and take no `UnorderedSuccessorLabelClosed` argument.
-- `git diff` shows the two `_of_headroom` originals untouched.
+- `lake build` exits 0. — MET
+- The new `signedUniverse` theorem takes `hC`, `hT`, `hL : TimeMergeClosed L`, and the two syntactic
+  conditions — and takes no `UnorderedSuccessorLabelClosed` argument and no frame-class restriction.
+  — MET (elaborated signature read back from the built module).
+- `git diff` shows the two `_of_headroom` originals untouched. — MET (all nine carriers verified
+  byte-identical against pre-task baseline `6b798def5`).
 
 ---
 
-### Phase 6: Terminus restatement with `hlab` gone [NOT STARTED]
+### Phase 6: Terminus restatement with `hlab` gone [BLOCKED]
+
+**BLOCKER** (Phase 6):
+- **What failed**: The restated terminus cannot be routed. Phase 6's task list requires routing
+  through `universeClosedAt_signedUniverse_of_propositional`, which Phase 5 established is not
+  stateable (see Phase 5's Reasoned Exclusions).
+- **What was tried**: Phase 5's composite was proved and landed
+  (`unorderedSuccessor_label_mem_of_propositional`,
+  `unorderedSuccessor_confined_signedUniverse_of_propositional`), then the consuming interface was
+  read back. `UniverseClosedAt`'s clause 1 quantifies `ord` freely; the composite needs
+  `OrdTimesKnown b ord`. The census of clause-1 consumers was taken (`hUcl.1` at ten sites in the
+  `_at`, `_selfGuarded` and `_fixed` families) to size the alternative.
+- **Why it is stuck**: A shape mismatch on `OrdTimesKnown`, proved non-removable upstream by
+  `applyRule_emitted_time_mem_ordTimesKnown_needed`. It is a settled fact about the interface, not a
+  missing lemma.
+- **What is needed**: Either (1) a bespoke re-derivation of `applyRule_emitted_time_mem` restricted
+  to the rules reachable on a `boxFree`/`untl`/`snce`-free branch — plausible (the linearity stage
+  yields `.splitOrdered`, hence no unordered successor; the seriality stage emits at the trigger's
+  own label; `orderTrichotomy`'s `fires` guard demands a `someFuture`-shaped formula the branch
+  cannot carry) but genuinely new work in section D3's territory, and **unattempted, not refuted**;
+  or (2) an `Ord`-flavoured `UniverseClosedAt` **and** `DifficultyBounded`, cascading through
+  roughly twenty theorem restatements down to `buildTableauAt` — a redesign of the closure
+  interface. Either is a separate task.
+- **Prohibited workarounds**: Do NOT use `sorry`, a vacuous placeholder, or an added hypothesis to
+  force the terminus through — an added hypothesis would recreate exactly the
+  unsatisfiable-residual failure mode this task exists to remove.
 
 **Goal**: A seed-level terminus whose `hlab` argument is genuinely absent — not discharged from a
 false hypothesis — carrying **two** named residuals fewer than the `_fixed` sibling it mirrors.
@@ -503,7 +563,29 @@ residual.
 
 ---
 
-### Phase 7: Non-vacuity, the boundary docstring, and the register's closing amendment [NOT STARTED]
+### Phase 7: Non-vacuity, the boundary docstring, and the register's closing amendment [BLOCKED]
+
+**BLOCKER** (Phase 7):
+- **What failed**: Phase 7's non-vacuity work is non-vacuity *of the Phase 6 terminus*, and there is
+  no Phase 6 terminus to be non-vacuous about. Blocked transitively, not independently.
+- **What was tried**: Nothing was forced. Per the plan's own anti-vacuity instruction, a terminus
+  that cannot be shown non-vacuous must be reported rather than presented as a discharge; here there
+  is no terminus at all, which is reported instead.
+- **Why it is stuck**: Transitively on Phase 6's blocker.
+- **What is needed**: Phase 6 unblocked first. Note for whoever resumes: the concrete-stock target
+  is a nonempty stock that is both `boxFree` and `untlSnceFree` — i.e. purely propositional
+  (`atom`/`bot`/`imp`). `modalWitnessStock` does **not** qualify; it contains `□p`. Also note, and
+  check before assuming otherwise, that the seriality rule emits `T(someFuture ⊤)` at every branch
+  and `someFuture φ = untl ⊤ φ`, so any interaction with `TableauClosed C` on a nonempty
+  `untlSnceFree` stock deserves inspection. D3 does not discharge `TableauClosed`/`TrichStock` at its
+  concrete stock and Phase 7 was never required to either.
+- **Prohibited workarounds**: Do NOT present a vacuous terminus as a discharge.
+
+**Completed anyway, as part of the blocker record**: the phase's register-amendment task. C9 entry
+21's closing section now records that the `L`-side replacement route landed in section D4, exactly
+how far it reaches, that it stops short of a terminus and why, and that the propositional narrowing
+is forced by `freshWorldHeadroom_not_universal` rather than being a proof weakness. Still **no** 25th
+entry; the register stands at 24.
 
 **Goal**: The Phase 6 terminus is shown to apply at a genuinely nonempty universe, at exactly the
 standard section D3 already meets, and the register records that the replacement landed and how far
@@ -522,10 +604,13 @@ its reach goes.
 - [ ] Do **not** attempt to discharge `TableauClosed`/`TrichStock` at the concrete stock. D3 does not,
       and matching D3's standard is the bar. If it turns out to be cheap, it may be added — but it is
       not a completion condition and must not consume the phase.
-- [ ] Amend C9 entry 21's "*What is not withdrawn*" paragraph one final time: record that the
+- [x] Amend C9 entry 21's "*What is not withdrawn*" paragraph one final time: record that the
       world coordinate now has an `L`-side replacement route in section D4, that it reaches only the
       propositional fragment, and that the narrowing is forced by `freshWorldHeadroom_not_universal`
-      rather than being a proof weakness. Still **no** 25th entry.
+      rather than being a proof weakness. Still **no** 25th entry. *(deviation: altered — the
+      amendment additionally records that the route stops short of a terminus, and why, since that
+      is now the load-bearing half of the verdict. Register confirmed still at 24 entries opening
+      "Twenty-four statements".)*
 - [ ] Final gate: `lake build` green, `lake build BimodalTest` green, and
       `bash scripts/check-module-invariants.sh` passing every check it passed at the pre-task baseline.
 
