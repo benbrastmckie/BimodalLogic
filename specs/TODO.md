@@ -1,5 +1,5 @@
 ---
-next_project_number: 483
+next_project_number: 484
 ---
 
 # TODO
@@ -11,8 +11,8 @@ next_project_number: 483
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,193,257,298,433,461,463,476,481 | -- | automation, dataset-enhancement, decidability, ... |
-| 2 | 125,178,231,282,296,464 | 193,298,461,463 | algebraic-representation, dataset-enhancement, decidability, ... |
+| 1 | 127,128,193,257,298,433,461,463,476,483 | -- | automation, dataset-enhancement, decidability, ... |
+| 2 | 125,178,231,282,296,464,481 | 193,298,461,463,483 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 219,465 | 231,464 | dataset-enhancement, decidability |
 | 4 | 428 | 433,465 | decidability |
 | 5 | 429 | 428 | decidability |
@@ -56,7 +56,8 @@ next_project_number: 483
     └─ 465 [NOT STARTED] — Complete the terminus restatement family at the repaired residual
       └─ 428 [BLOCKED] — Engine totality at a quantified branch budget. Owns obstruction O (see above)
 476 [NOT STARTED] — THE BOX-FAITHFUL SMALL-MODEL THEOREM.
-481 [PARTIAL] — CLASSIFICATION: genuinely open -- the predicate is refuted as sta
+483 [RESEARCHED] — Decide the OrdTimesKnown/UniverseClosedAt shape mismatch blocking
+  └─ 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as sta
 
 ### Formula Refactor
 
@@ -73,6 +74,30 @@ next_project_number: 483
 461 [BLOCKED] — SCOPE 8 acquisition gap identified by task 457's research and re-
 
 ## Tasks
+
+### 483. Route1 restricted applyrule emitted time mem
+- **Effort**: 3-5 hours
+- **Status**: [RESEARCHED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: None
+- **Research**: [481_discharge_or_replace_unorderedsuccessorlabelclosed_residual/reports/02_spawn-analysis.md]
+
+**Description**: Decide the OrdTimesKnown/UniverseClosedAt shape mismatch blocking task 481's Phases 6-7, by attempting Route 1 ONLY: a re-derivation of applyRule_emitted_time_mem (FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean) restricted to the rules reachable on a boxFree + untl/snce-free branch -- the same fragment task 481's section D4 already operates on. Route 1 is the cheaper of the two available options and is currently unattempted.
+
+Starting evidence for why Route 1 is believed cheap (from task 481's Phase 5 'what is needed' analysis, to be verified rather than re-derived from scratch): (1) on this fragment, the linearity stage yields .splitOrdered, and hence there is no unordered successor at all to reason about in that case; (2) the seriality stage emits at the trigger's own label, not a fresh one; (3) orderTrichotomy's fires guard demands a someFuture-shaped formula already on the branch (someFuture phi = untl top phi), which a boxFree/untl/snce-free branch structurally cannot carry. Together these three observations suggest that on this restricted fragment, the case analysis applyRule_emitted_time_mem performs may never reach the branch that actually needs OrdTimesKnown b ord -- but this has not been checked rule-by-rule and must be verified as real proof work, not assumed.
+
+OUT OF SCOPE -- do not start under this task: Route 2, an Ord-flavoured UniverseClosedAt and DifficultyBounded, cascading through roughly twenty theorem restatements down to buildTableauAt (the _at, _selfGuarded, and _fixed families). This is an interface redesign and is explicitly deferred pending the outcome of Route 1. Do not begin any part of it as part of this task, even if Route 1 fails.
+
+A negative result is a valid, complete deliverable. If the restricted re-derivation cannot be made to work -- i.e., if some rule reachable on the boxFree/untl/snce-free fragment genuinely still needs OrdTimesKnown b ord to prove applyRule_emitted_time_mem's conclusion -- record that finding with evidence (the specific rule, the specific configuration that requires the hypothesis, and why the fragment restriction does not exclude it) as a C9 register amendment. The C9 register in MintBound.lean currently stands at exactly 24 entries (task 481 amended entries 11 and 21 for the parent residual without adding a 25th); prefer amending an existing entry -- most likely 11 or 21, or the D4 boundary block's own dedicated boundary note -- over adding a 25th entry. Do not treat 'prove applyRule_emitted_time_mem restricted to this fragment' as the only acceptable outcome; a well-evidenced negative result closes this task exactly as completely as a positive one.
+
+Success condition: if Route 1 succeeds (the restricted re-derivation goes through without needing OrdTimesKnown b ord), continue by checking whether task 481's Phase 6 (universeClosedAt_signedUniverse_of_propositional and the terminus restatement) and Phase 7 (non-vacuity for that terminus) are now reachable as originally written in task 481's plan (specs/481_discharge_or_replace_unorderedsuccessorlabelclosed_residual/plans/01_sharpen-replace-labelclosed-residual.md). State explicitly, in this task's summary, whether Phases 6 and 7 are now reachable and, if so, whether landing them should happen as a resumption of task 481 or as a further follow-up task.
+
+Context on recent file state -- do not re-derive, and beware stale line numbers: MintBound.lean is now approximately 14,100+ lines. Task 481 landed a section C11 refutation family and a section D4 (commit ee0fe12a0); task 462 (now completed) landed a section D5 discharging MintPaysForTimeFixed at a nonempty universe under not (FrameClass.Dense <= fc) (commits 2dac7b35f..dc090921e). Any line numbers cited in task 481's plan, report, or summary predate task 462's D5 insertion and must be re-located by declaration name, not by line number. Read task 481's plan '#### Reasoned Exclusions' table and section D4's boundary block, plus reports/01_unorderedsuccessorlabelclosed-verdict.md and summaries/01_sharpen-replace-labelclosed-residual-summary.md, before starting.
+
+Acceptance criteria: lake build green; no regression to any check-module-invariants.sh check currently passing; either (a) the restricted re-derivation of applyRule_emitted_time_mem is proved and Phase 6/7 reachability is explicitly assessed and stated, or (b) a negative result is recorded as a C9 register amendment naming the precise rule and configuration that still requires OrdTimesKnown b ord on this fragment.
+
+---
 
 ### 482. Discharge proof extraction completeness
 - **Effort**: large
@@ -102,10 +127,10 @@ PROVENANCE: specced by task 468's realignment (report `specs/468_realign_task_pr
 
 ### 481. Discharge or replace unorderedsuccessorlabelclosed residual
 - **Effort**: large
-- **Status**: [PARTIAL]
+- **Status**: [BLOCKED]
 - **Task Type**: lean4
 - **Topic**: decidability
-- **Dependencies**: Task 434
+- **Dependencies**: Task 434, Task 483
 - **Research**: [481_discharge_or_replace_unorderedsuccessorlabelclosed_residual/reports/01_unorderedsuccessorlabelclosed-verdict.md]
 - **Plan**: [481_discharge_or_replace_unorderedsuccessorlabelclosed_residual/plans/01_sharpen-replace-labelclosed-residual.md]
 - **Summary**: [481_discharge_or_replace_unorderedsuccessorlabelclosed_residual/summaries/01_sharpen-replace-labelclosed-residual-summary.md]
