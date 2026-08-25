@@ -9,7 +9,7 @@
     {
       "project_number": 468,
       "project_name": "realign_task_programme_from_proof_state_audit",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "meta",
       "topic": "decidability",
       "priority": "high",
@@ -24,40 +24,26 @@
         "specs/ROADMAP.md"
       ],
       "created": "2026-08-20T07:11:23Z",
-      "last_updated": "2026-08-25T12:07:36Z",
+      "last_updated": "2026-08-25T12:39:45Z",
       "artifacts": [
-        {
-          "type": "report",
-          "path": "specs/468_realign_task_programme_from_proof_state_audit/reports/01_proof-state-audit-and-realignment-charter.md",
-          "summary": "Four-front proof-state audit (decidability, tableau, metatheory, backlog) plus the realignment charter this task executes."
-        },
-        {
-          "path": "specs/468_realign_task_programme_from_proof_state_audit/reports/02_stage1-verification-and-programme-realignment.md",
-          "type": "report",
-          "summary": "Stage-1 verification and programme realignment research"
-        },
         {
           "path": "specs/468_realign_task_programme_from_proof_state_audit/plans/01_programme-realignment-execution.md",
           "type": "plan",
           "summary": "Nine-phase plan executing the charter's Stages 0-5 against the re-verified proof state."
         },
         {
-          "type": "report",
-          "path": "specs/468_realign_task_programme_from_proof_state_audit/reports/03_implementation-evidence-ledger.md",
-          "summary": "Per-phase evidence ledger: fresh C2/C3 re-verification, 169/422/95 adjudication, ROADMAP split accounting, new-task creation record, dependency/counter/critical-path derivation, ROADMAP rewrite grounding."
-        },
-        {
-          "type": "report",
-          "path": "specs/468_realign_task_programme_from_proof_state_audit/reports/04_realignment-decisions-and-verdicts.md",
-          "summary": "Stage 5 decision record: 51-row per-task verdict table, new-task specs, dependency-edge log, ROADMAP grounding, critical path, proposed status corrections, final gate results."
-        },
-        {
           "type": "summary",
           "path": "specs/468_realign_task_programme_from_proof_state_audit/summaries/01_programme-realignment-summary.md",
           "summary": "Implementation summary for the nine-phase programme realignment."
+        },
+        {
+          "path": "specs/468_realign_task_programme_from_proof_state_audit/reports/04_realignment-decisions-and-verdicts.md",
+          "type": "report",
+          "summary": "Stage 5 decision record: per-task verdicts, new task specs, dependency log, ROADMAP grounding, proposed status corrections."
         }
       ],
-      "session_id": "sess_1787658359_f24b55"
+      "session_id": "sess_1787658359_f24b55",
+      "completion_summary": "Re-verified the proof state fresh (C2/C3: zero live structural sorries, all four flagship theorems axiom-clean), adjudicated tasks 169/422/95 as REMOVE against the 477-479 closure, split and rewrote specs/ROADMAP.md (retitled to name decidability, one current-state-per-front section, PROVEN-vs-SORRY-FREE distinction, corrected Stavi/EFGames/BiLasso/Paper-Alignment/five-residual-terminus status), created three new tasks (480-482) the audit specced, applied nine description REVISEs, repaired the dependency graph and active_topics, and produced a full Stage 5 decision-record report covering all 51 active tasks with proposed status corrections for user decision. No task status transitioned; no .lean file touched; all writes via state-write.sh."
     },
     {
       "project_number": 455,

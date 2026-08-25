@@ -11,8 +11,8 @@ next_project_number: 483
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,193,257,298,422,434,461,462,468,476,480 | -- | automation, dataset-enhancement, decidability, ... |
-| 2 | 125,169,178,231,282,296,433,455,463,481 | 193,298,422,434,461,462,468 | algebraic-representation, code-quality, dataset-enhancement, ... |
+| 1 | 127,128,193,257,298,422,434,455,461,462,476,480 | -- | automation, code-quality, dataset-enhancement, ... |
+| 2 | 125,169,178,231,282,296,433,463,481 | 193,298,422,434,461,462 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 95,219,362,464 | 169,231,463 | completeness, dataset-enhancement, decidability, ... |
 | 4 | 465 | 464 | decidability |
 | 5 | 428 | 433,465 | decidability |
@@ -67,7 +67,6 @@ next_project_number: 483
     └─ 464 [NOT STARTED] — Design and land `gapPotential`, the density coordinate of the ter
       └─ 465 [NOT STARTED] — Complete the terminus restatement family at the repaired residual
         └─ 428 [BLOCKED] — Engine totality at a quantified branch budget. Owns obstruction O (see above)
-468 [IMPLEMENTING] — PROGRAMME REALIGNMENT FROM A VERIFIED PROOF-STATE AUDIT: restruct
 476 [NOT STARTED] — THE BOX-FAITHFUL SMALL-MODEL THEOREM.
 480 [NOT STARTED] — CLASSIFICATION: routine engineering, not open mathematics. Starta
 
@@ -1194,17 +1193,13 @@ result and decidability only. Grounding: specs/reviews/review-2026-08-24.md, Add
 
 ### 468. Realign task programme from proof state audit
 - **Effort**: high
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: decidability
 - **Dependencies**: Task 469, Task 426, Task 451
-- **Research**:
-  - [468_realign_task_programme_from_proof_state_audit/reports/01_proof-state-audit-and-realignment-charter.md]
-  - [468_realign_task_programme_from_proof_state_audit/reports/02_stage1-verification-and-programme-realignment.md]
-  - [468_realign_task_programme_from_proof_state_audit/reports/03_implementation-evidence-ledger.md]
-  - [468_realign_task_programme_from_proof_state_audit/reports/04_realignment-decisions-and-verdicts.md]
 - **Plan**: [468_realign_task_programme_from_proof_state_audit/plans/01_programme-realignment-execution.md]
 - **Summary**: [468_realign_task_programme_from_proof_state_audit/summaries/01_programme-realignment-summary.md]
+- **Research**: [468_realign_task_programme_from_proof_state_audit/reports/04_realignment-decisions-and-verdicts.md]
 
 **Description**: PROGRAMME REALIGNMENT FROM A VERIFIED PROOF-STATE AUDIT: restructure the active task set, its
 dependency graph, and specs/ROADMAP.md so that they describe the work actually remaining to close
