@@ -83,7 +83,7 @@ next_project_number: 477
 
 ### Strong Completeness
 
-422 [BLOCKED] — Construct the discrete-case analogue of the existing dense chroni
+422 [RESEARCHED] — Construct the discrete-case analogue of the existing dense chroni
   └─ 169 [NOT STARTED] — Base (FrameClass.Base / general) WEAK completeness green: make th
     └─ 362 [NOT STARTED] — Implement the completeness capstone under the SETTLED TERMINOLOGY
 
@@ -1918,12 +1918,15 @@ Acceptance (from design/01 section 6, all five required): zero sorries and zero 
 
 ### 422. Build discrete chronicle over non archimedean block carrier with restricted coherence
 - **Effort**: high
-- **Status**: [BLOCKED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: strong_completeness
 - **Dependencies**: Task 414, Task 420, Task 421, Task 439, Task 448
-- **Research**: [422_build_discrete_chronicle_over_non_archimedean_block_carrier_with_restricted_coherence/reports/01_discrete-block-carrier-refutation.md]
+- **Research**:
+  - [422_build_discrete_chronicle_over_non_archimedean_block_carrier_with_restricted_coherence/reports/01_discrete-block-carrier-refutation.md]
+  - [422_build_discrete_chronicle_over_non_archimedean_block_carrier_with_restricted_coherence/reports/02_o1-verdict-k-equivalence-transfer.md]
 - **Summary**: [422_build_discrete_chronicle_over_non_archimedean_block_carrier_with_restricted_coherence/verification/block_order_refutation.lean]
+- **Evidence**: [422_build_discrete_chronicle_over_non_archimedean_block_carrier_with_restricted_coherence/verification/qlex_frame_probe.lean]
 
 **Description**: Construct the discrete-case analogue of the existing dense chronicle machinery, over the non-Archimedean carrier Q x_lex Z confirmed by the predecessor task.
 
