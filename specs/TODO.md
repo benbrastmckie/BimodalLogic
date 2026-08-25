@@ -11,8 +11,8 @@ next_project_number: 477
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,193,257,298,413,422,425,434,461,462,468,472,474,475 | -- | automation, code-quality, completeness, ... |
-| 2 | 125,169,178,231,282,296,433,455,463,476 | 193,298,422,434,461,462,468,475 | algebraic-representation, code-quality, dataset-enhancement, ... |
+| 1 | 127,128,193,257,298,413,422,425,434,461,462,468,472,474,476 | -- | automation, code-quality, completeness, ... |
+| 2 | 125,169,178,231,282,296,433,455,463 | 193,298,422,434,461,462,468 | algebraic-representation, code-quality, dataset-enhancement, ... |
 | 3 | 95,219,362,464 | 169,231,463 | completeness, dataset-enhancement, decidability, ... |
 | 4 | 465 | 464 | decidability |
 | 5 | 428 | 433,465 | decidability |
@@ -34,7 +34,7 @@ next_project_number: 477
 
 ### Code Quality
 
-472 [PLANNED] — THE IMMEDIATE, UNGATED DOCUMENTATION-CORRECTION PASS. This is the
+472 [IMPLEMENTING] — THE IMMEDIATE, UNGATED DOCUMENTATION-CORRECTION PASS. This is the
 455 [NOT STARTED] — BACKLOG REALIGNMENT: bring specs/ROADMAP.md and every remaining a
 
 ### Completeness
@@ -84,16 +84,12 @@ next_project_number: 477
 
 461 [BLOCKED] — SCOPE 8 acquisition gap identified by task 457's research and re-
 
-### Semantics
-
-475 [PLANNED] — CARRIER NORMALIZATION: THE SUCCESSOR-ARCHIMEDEAN TRANSFER.
-
 ### Strong Completeness
 
 422 [BLOCKED] — Construct the discrete-case analogue of the existing dense chroni
   └─ 169 [NOT STARTED] — Base (FrameClass.Base / general) WEAK completeness green: make th
     └─ 362 [NOT STARTED] — Implement the completeness capstone under the SETTLED TERMINOLOGY
-425 [PLANNED] — Convert the informal argument at FormalSystem/Metalogic/StrongCom
+425 [IMPLEMENTING] — Convert the informal argument at FormalSystem/Metalogic/StrongCom
 
 ## Tasks
 
@@ -217,12 +213,13 @@ properties.
 
 ### 475. Carrier normalization successor archimedean transfer
 - **Effort**: medium
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: semantics
 - **Dependencies**: None
 - **Research**: [475_carrier_normalization_successor_archimedean_transfer/reports/01_carrier-normalization-transfer.md]
 - **Plan**: [475_carrier_normalization_successor_archimedean_transfer/plans/01_carrier-normalization-int-transfer.md]
+- **Summary**: [475_carrier_normalization_successor_archimedean_transfer/summaries/01_carrier-normalization-int-transfer-summary.md]
 
 **Description**: CARRIER NORMALIZATION: THE SUCCESSOR-ARCHIMEDEAN TRANSFER.
 
@@ -466,7 +463,7 @@ Grounding: specs/reviews/review-2026-08-24.md, Addendum 1 item A-3, and task 468
 
 ### 472. Immediate documentation correction pass
 - **Effort**: medium
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: code-quality
 - **Dependencies**: Task 470
@@ -1816,7 +1813,7 @@ RESUME SEQUENCE: `/research 428` first (discharge the two uncertain claims above
 
 ### 425. Machine check discrete non compactness witness
 - **Effort**: high
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: strong_completeness
 - **Dependencies**: Task 361, Task 423
