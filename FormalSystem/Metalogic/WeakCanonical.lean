@@ -46,6 +46,12 @@ import FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery.TruthTransfer
 import FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery.NoGaps
 import FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery.Singletons
 import FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery.ChronicleInstance
+-- CI edge only: `GroupModel/GoodGroupable.lean` (Reynolds §8 p.185, transposed to the
+-- non-Archimedean discrete carrier `ℚ ×ₗ ℤ`) is a leaf with no consumer yet — the companion
+-- lemma that consumes `goodGroupable` is still to be built on top of it. Listed here on the
+-- `DenseModelSurgery/` precedent above, so it stays inside the `lake build` closure rather than
+-- compiling only when named explicitly.
+import FormalSystem.Metalogic.WeakCanonical.GroupModel.GoodGroupable
 
 /-!
 # WeakCanonical: Reynolds/Doets Discrete Completeness

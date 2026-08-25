@@ -1,7 +1,7 @@
 # Implementation Plan: Task #477
 
 - **Task**: 477 - T-A: Target-structure plumbing for the groupable-companion route
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 2.5 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/477_ta_qz_target_structure_plumbing/reports/01_qz-target-structure-plumbing.md`
@@ -111,7 +111,7 @@ roadmap item to done — the row stays open until the successor chain (T-B, T-C)
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Land the module body and the build edge [NOT STARTED]
+### Phase 1: Land the module body and the build edge [COMPLETED]
 
 **Goal**: `FormalSystem/Metalogic/WeakCanonical/GroupModel/GoodGroupable.lean` exists with the
 probe's full declaration set, is inside the `lake build` closure, and `lake build` is green.
@@ -165,7 +165,7 @@ is needed.
 
 ---
 
-### Phase 2: Write the repo-standard module header [NOT STARTED]
+### Phase 2: Write the repo-standard module header [IN PROGRESS]
 
 **Goal**: The module carries a `/-! … -/` header matching the sibling modules' conventions, so that
 the Reynolds anchor and both design rulings survive independently of the specs/ artifacts.
