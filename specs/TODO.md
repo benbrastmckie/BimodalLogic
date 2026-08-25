@@ -11,7 +11,7 @@ next_project_number: 477
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,193,257,298,413,422,425,434,461,462,468,472,474,476 | -- | automation, code-quality, completeness, ... |
+| 1 | 127,128,193,257,298,413,422,434,461,462,468,472,474,476 | -- | automation, code-quality, completeness, ... |
 | 2 | 125,169,178,231,282,296,433,455,463 | 193,298,422,434,461,462,468 | algebraic-representation, code-quality, dataset-enhancement, ... |
 | 3 | 95,219,362,464 | 169,231,463 | completeness, dataset-enhancement, decidability, ... |
 | 4 | 465 | 464 | decidability |
@@ -89,7 +89,6 @@ next_project_number: 477
 422 [BLOCKED] — Construct the discrete-case analogue of the existing dense chroni
   └─ 169 [NOT STARTED] — Base (FrameClass.Base / general) WEAK completeness green: make th
     └─ 362 [NOT STARTED] — Implement the completeness capstone under the SETTLED TERMINOLOGY
-425 [IMPLEMENTING] — Convert the informal argument at FormalSystem/Metalogic/StrongCom
 
 ## Tasks
 
@@ -1813,12 +1812,13 @@ RESUME SEQUENCE: `/research 428` first (discharge the two uncertain claims above
 
 ### 425. Machine check discrete non compactness witness
 - **Effort**: high
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: strong_completeness
 - **Dependencies**: Task 361, Task 423
 - **Research**: [425_machine_check_discrete_non_compactness_witness/reports/01_discrete-non-compactness-witness.md]
 - **Plan**: [425_machine_check_discrete_non_compactness_witness/plans/01_discrete-non-compactness-witness.md]
+- **Summary**: [425_machine_check_discrete_non_compactness_witness/summaries/01_discrete-non-compactness-witness-summary.md]
 
 **Description**: Convert the informal argument at FormalSystem/Metalogic/StrongCompleteness.lean:56-62 into a machine-checked theorem: the FrameClass.Discrete consequence relation is not compact, hence strong completeness is refuted for that class.
 

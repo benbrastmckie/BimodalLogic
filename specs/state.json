@@ -53,7 +53,7 @@
     {
       "project_number": 425,
       "project_name": "machine_check_discrete_non_compactness_witness",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Convert the informal argument at FormalSystem/Metalogic/StrongCompleteness.lean:56-62 into a machine-checked theorem: the FrameClass.Discrete consequence relation is not compact, hence strong completeness is refuted for that class.\n\nThe witness is the premise set {F p} union {not X^n p : n in N} where X phi = Formula.next phi. Every finite subset is satisfiable over Z (place p beyond the largest n used); the whole set is unsatisfiable over any Archimedean discrete carrier, because the F p witness would lie at some finite successor distance, contradicting the corresponding not X^n p.\n\nThe load-bearing ingredient is already in the tree: Formula.next phi = Formula.untl phi Formula.bot (FormalSystem/Syntax/Formula.lean:490) genuinely is a next-step operator — through the untl clause of TruthAt, \"exists s > t, phi(s) and for all r in (t,s), false\" says exactly that s is the immediate successor. No extra hypothesis is needed for this. The \"not satisfiable\" half is where IsSuccArchimedean does its work, via Order.succ_iterate-style reachability lemmas in Mathlib.\n\nThis is the negative half of the per-class split and is independent of the compactness gate — it is not affected by whether Route B succeeds. It depends only on the set-based layer's vocabulary (SatisfiableDiscreteSet / CompactDiscrete are the Discrete analogues of SatisfiableDenseSet / CompactDense).\n\nExplicitly out of scope: an analogous Dedekind non-compactness witness. That belongs to task 408 and the class's non-compactness is already established; duplicating it here would create scope overlap with an in-flight task for no gain.\n\nGoverning design document: specs/361_strong_completeness_architecture_and_weak_terminus_gap_analysis/design/02_compactness-route.md, section \"Discrete non-compactness witness\".\n\nAcceptance: archWitness_finitely_satisfiable, archWitness_not_satisfiable, and discrete_consequence_not_compact all land sorry-free; #print axioms clean on each; lake build green.",
       "topic": "strong_completeness",
@@ -66,7 +66,7 @@
         "FormalSystem/Metalogic/DiscreteNonCompactness.lean"
       ],
       "created": "2026-07-29T06:38:08Z",
-      "last_updated": "2026-08-25T01:56:49Z",
+      "last_updated": "2026-08-25T02:38:41Z",
       "session_id": "sess_1787618565_717c84_425",
       "artifacts": [
         {
@@ -80,6 +80,12 @@
           "path": "specs/425_machine_check_discrete_non_compactness_witness/plans/01_discrete-non-compactness-witness.md",
           "summary": "Six-phase transcription plan for the Discrete non-compactness witness: archWitness_finitely_satisfiable, archWitness_not_satisfiable, discrete_consequence_not_compact.",
           "created": "2026-08-25T01:55:02Z"
+        },
+        {
+          "type": "summary",
+          "path": "specs/425_machine_check_discrete_non_compactness_witness/summaries/01_discrete-non-compactness-witness-summary.md",
+          "summary": "Implementation summary: three acceptance theorems landed sorry-free with clean axioms.",
+          "created": "2026-08-25T02:38:48Z"
         }
       ]
     },
