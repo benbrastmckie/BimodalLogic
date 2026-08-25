@@ -1350,7 +1350,7 @@
     {
       "project_number": 474,
       "project_name": "wire_bilasso_decision_layer_into_live_tree",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "topic": "decidability",
       "priority": "high",
@@ -1365,8 +1365,22 @@
         "specs/ROADMAP.md"
       ],
       "created": "2026-08-24T00:00:00Z",
-      "last_updated": "2026-08-24T00:00:00Z",
-      "artifacts": []
+      "last_updated": "2026-08-25T02:48:42Z",
+      "artifacts": [
+        {
+          "type": "report",
+          "path": "specs/474_wire_bilasso_decision_layer_into_live_tree/reports/01_wire-bilasso-into-build-graph.md",
+          "summary": "Re-measured the 15/4/1 manifest split via the invariants script's own reachability algorithm (37 -> 22 unreachable), verified the three probes merge into one sorry-free module, closed eight risks by measurement, found a manifest comment whose literal instruction would break C6.",
+          "created": "2026-08-25T02:48:48Z"
+        },
+        {
+          "type": "evidence",
+          "path": "specs/474_wire_bilasso_decision_layer_into_live_tree/evidence/assembly-merged-verified.lean",
+          "summary": "The three probes merged into one module, compiled clean with lake env lean; drop-in source for BiLasso/Assembly.lean.",
+          "created": "2026-08-25T02:48:48Z"
+        }
+      ],
+      "session_id": "sess_1787618565_717c84_474"
     },
     {
       "project_number": 475,
