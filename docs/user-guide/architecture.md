@@ -941,64 +941,69 @@ structure ProofStatistics :=
 The project structure reflects the layered operator architecture following LEAN 4 community standards with PascalCase directories:
 
 ```
-Logos/
-├── Logos.lean                     # Library root (re-exports public API)
-├── Logos/                         # Main source directory
-│   ├── Syntax/
-│   │   ├── Formula.lean                  # Core formula inductive type
-│   │   ├── Context.lean                  # Proof context management
-│   │   └── DSL.lean                      # Domain-specific language
-│   ├── ProofSystem/
-│   │   ├── Axioms.lean                   # TM axiom schemata
-│   │   ├── Rules.lean                    # Inference rules (MP, MK, TK, TD)
-│   │   └── Derivation.lean               # Derivability relation
-│   ├── Semantics/
-│   │   ├── TaskFrame.lean                # Task frame structure
-│   │   ├── WorldHistory.lean             # World history definition
-│   │   ├── TaskModel.lean                # Task model with valuation
-│   │   ├── Truth.lean                    # Truth evaluation
-│   │   └── Validity.lean                 # Validity and consequence
-│   ├── Metalogic/
-│   │   ├── Soundness.lean                # Soundness theorem
-│   │   ├── Completeness.lean             # Completeness theorem
-│   │   └── Decidability.lean             # Decision procedures
-│   ├── Theorems/
-│   │   └── Perpetuity.lean               # P1-P6 perpetuity principles
-│   └── Automation/
-│       ├── Tactics.lean                  # Custom tactics (modal_k, temporal_k, etc.)
-│       └── ProofSearch.lean              # Automated proof search
-├── LogosTest/                     # Test suite
-│   ├── LogosTest.lean             # Test library root
-│   ├── Syntax/                           # Syntax tests
-│   │   └── FormulaTest.lean
-│   ├── ProofSystem/                      # Proof system tests
-│   │   ├── AxiomsTest.lean
-│   │   └── RulesTest.lean
-│   ├── Semantics/                        # Semantic tests
-│   │   ├── TaskFrameTest.lean
-│   │   └── ValidityTest.lean
-│   ├── Integration/                      # Integration tests
-│   │   ├── SoundnessTest.lean
-│   │   └── CompletenessTest.lean
-│   └── Metalogic/                        # Metalogic tests
-│       └── ConsistencyTest.lean
-├── Archive/                              # Pedagogical examples
-│   ├── Archive.lean                      # Archive library root
-│   ├── ModalProofs.lean                  # S5 modal logic examples
-│   ├── TemporalProofs.lean               # Temporal reasoning examples
-│   └── BimodalProofs.lean                # Combined modal-temporal examples
-├── Counterexamples/                      # Invalidity demonstrations
-│   └── Counterexamples.lean              # Counterexamples library root
-├── docs/                        # User documentation
-│   ├── architecture.md                   # System design and TM logic specification
-│   ├── tutorial.md                       # Getting started guide
-│   ├── examples.md                       # Usage examples
-│   ├── CONTRIBUTING.md                   # Contribution guidelines
-│   ├── INTEGRATION.md                    # Model-Checker integration
-│   └── VERSIONING.md                     # Versioning policy
-├── lakefile.toml                         # LEAN 4 build configuration
-└── lean-toolchain                        # LEAN version pinning
+FormalSystem.lean                          # Library root (re-exports public API)
+FormalSystem/                              # Main source directory
+├── Syntax/
+│   ├── Formula.lean                       # Core formula inductive type (untl/snce primitive)
+│   ├── Atom.lean                          # Atomic propositions
+│   ├── Context.lean                       # Proof context management (List Formula)
+│   ├── Subformulas.lean                   # Subformula extraction
+│   └── SubformulaClosure/                 # Closure construction
+├── ProofSystem/
+│   ├── Axioms.lean                        # TM axiom schemata (45 constructors, 4 layers)
+│   ├── Derivable.lean                     # Derivability relation
+│   └── Derivation.lean                    # DerivationTree (7 inference rules)
+├── BaseLanguage/                          # Second object language (tense-primitive)
+│   ├── Formula.lean
+│   ├── Axioms.lean
+│   ├── Derivation.lean
+│   ├── Translation.lean                   # Translation into the primary language
+│   └── AxiomDischarge.lean
+├── Semantics/
+│   ├── TaskFrame.lean                     # Task frame structure
+│   ├── WorldHistory.lean                  # World history definition
+│   ├── TaskModel.lean                     # Task model with valuation
+│   ├── Truth.lean                         # Truth evaluation
+│   ├── Validity.lean                      # Validity and consequence
+│   └── Extension/                         # Semantic extension layer
+├── Metalogic/
+│   ├── Soundness.lean                     # Soundness theorem
+│   ├── SoundnessLemmas.lean               # Bridge lemmas
+│   ├── Core/                              # MCS layer, deduction theorem, Lindenbaum
+│   ├── Bundle/                            # FMCS / BFMCS bundle construction
+│   ├── BXCanonical/                       # Canonical model; the three completeness theorems
+│   ├── WeakCanonical/                     # Countermodel engines
+│   ├── Algebraic/                         # Flow-frame infrastructure
+│   ├── StrongCompleteness.lean            # Dedekind completeness; terminology discipline
+│   ├── SetConsequence.lean                # Set-based consequence; CompactBase/CompactDense
+│   ├── DiscreteNonCompactness.lean        # Refutation of Discrete strong completeness
+│   ├── Conservativity.lean                # TM/TM+ backward bridge
+│   ├── Independence/                      # Independence results
+│   └── Decidability/                      # Tableau decision procedure
+├── Theorems/
+│   ├── Perpetuity/                        # P1-P6 perpetuity principles
+│   ├── ModalS4.lean, ModalS5.lean         # Modal theorem libraries
+│   ├── Propositional/                     # Propositional theorem library
+│   ├── TemporalDerived.lean               # Derived temporal theorems
+│   └── DedekindDerived.lean
+├── Automation/
+│   ├── Tactics/                           # Custom tactics
+│   └── ProofSearch/                       # Automated proof search
+├── FrameConditions/                       # Frame condition definitions
+├── Examples/                              # Pedagogical examples
+└── Boneyard/                              # Archived material (excluded from all invariants)
+
+Tests/BimodalTest/                         # Test suite
+├── Syntax/, ProofSystem/, Semantics/      # Layer-aligned tests
+├── Metalogic/, Theorems/, Automation/
+├── Integration/                           # Integration tests
+└── Property/                              # Property-based tests
+
+docs/                                      # User documentation
+lakefile.lean                              # Lake build configuration
+lean-toolchain                             # Lean version pinning
 ```
+
 
 ### 6.2 Integration Points
 
@@ -1300,10 +1305,12 @@ The layered architecture provides clear development milestones:
 
 **Layer 0 (Current Implementation)**:
 - Complete language: Boolean + Modal + Temporal
-- Complete proof system: TM with 8 axioms, 7 rules
+- Complete proof system: TM with 45 axiom constructors and 7 inference rules
 - Complete semantics: Task frames, world histories, truth evaluation
-- Complete metalogic: full soundness proof (all 21 axiom schemas); completeness proven for the
-  dense and discrete frame classes, with one residual proof debt in the general Base-frame case
+- Complete metalogic: full soundness proof over all 45 axiom constructors; weak completeness
+  proven and sorryAx-free for all four frame classes (Base, Dense, Discrete, Dedekind).
+  *Strong* completeness -- consequence from an arbitrary infinite premise set -- is a separate
+  question with three distinct statuses across those classes
   (see [known-limitations.md](../project-info/known-limitations.md))
 - **Delivers**: Verified reasoning for boolean, modal, and temporal logic
 

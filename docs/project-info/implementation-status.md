@@ -29,7 +29,7 @@ Module-by-module implementation status for the Bimodal TM logic library.
 
 | Module | Status | Notes |
 |--------|--------|-------|
-| `Axioms.lean` | ✅ | 21 axiom schemas (base/dense/discrete) |
+| `Axioms.lean` | ✅ | 45 axiom constructors (Base 37 / Dense 2 / Discrete 3 / Dedekind 3) |
 | `Derivation.lean` | ✅ | DerivationTree type |
 
 **Features**:
@@ -52,26 +52,39 @@ Module-by-module implementation status for the Bimodal TM logic library.
 - Truth evaluation at model-history-time triples
 - Validity and semantic consequence definitions
 
-## Layer 2: Metalogic (🔶 Partial)
+## Layer 2: Metalogic (✅ Complete)
 
 | Module | Status | Notes |
 |--------|--------|-------|
-| `SoundnessLemmas.lean` | ✅ | Bridge lemmas |
-| `Soundness.lean` | ✅ | Soundness theorem |
-| `DeductionTheorem.lean` | ✅ | Deduction theorem |
-| `Completeness.lean` | 🔶 | Dense/discrete frame classes proven sorry-free; general Base-frame case has one residual sorryAx (dead pipeline dependency) |
+| `Metalogic/SoundnessLemmas.lean` | ✅ | Bridge lemmas |
+| `Metalogic/Soundness.lean` | ✅ | Soundness theorem |
+| `Metalogic/Core/DeductionTheorem.lean` | ✅ | Deduction theorem |
+| `Metalogic/BXCanonical/Completeness.lean` | ✅ | `completeness` (`:196`), `completeness_dense` (`:255`), `completeness_discrete` (`:296`) -- all sorryAx-free |
+| `Metalogic/StrongCompleteness.lean` | ✅ | `completeness_dedekind` (`:469`) and the four `consequence_completeness_*` theorems |
+| `Metalogic/Decidability/` | 🔶 | Decision procedure implemented; sound direction proved, completeness direction open |
+| `Metalogic/DiscreteNonCompactness.lean` | ✅ | Machine-refutes Discrete strong completeness |
+| `Metalogic/SetConsequence.lean` | ✅ | Set-based consequence layer; `CompactBase`/`CompactDense` named as open obligations |
+| `Metalogic/Conservativity.lean` | ✅ | TM/TM+ backward bridge |
+| `Metalogic/Independence/` | ✅ | Three independence results |
 
 **Soundness** (✅):
-- Full soundness proof: `derivable Γ φ → SemanticConsequence Γ φ` (all 21 axiom schemas: 17 base + 1 dense + 3 discrete)
+- Full soundness proof: `derivable Γ φ → SemanticConsequence Γ φ`, over all 45 axiom
+  constructors (Base 37 / Dense 2 / Discrete 3 / Dedekind 3, per `Axiom.minFrameClass` in
+  `FormalSystem/ProofSystem/Axioms.lean`)
 
-**Completeness** (🔶 Mostly Complete):
+**Completeness** (✅ Complete for the weak/finite-context forms):
 - Type definitions complete
-- Lindenbaum's lemma statement
-- Canonical model structure
-- Truth lemma statement
-- `completeness_dense` and `completeness_discrete` are fully proven and sorryAx-free. The general
-  Base-frame `completeness` theorem retains one residual `sorryAx` dependency through a deprecated
-  dead-code pipeline (`WeakCanonical.countermodel_discrete`).
+- Lindenbaum's lemma proved (`set_lindenbaum`, `FormalSystem/Metalogic/Core/MaximalConsistent.lean`)
+- Canonical model structure complete
+- Truth lemma proved
+- All four weak completeness theorems -- `completeness`, `completeness_dense`,
+  `completeness_discrete`, `completeness_dedekind` -- are fully proven and sorryAx-free at
+  exactly `[propext, Classical.choice, Quot.sound]` (check C2).
+- `countermodel_discrete` is **proved**, not dead code, at
+  `FormalSystem/Metalogic/WeakCanonical/GroupModel/CountermodelBase.lean:142`.
+- **Strong** completeness (arbitrary infinite `Γ : Set Formula`) is a separate question with
+  three distinct statuses across the frame classes -- see
+  [Known Limitations](known-limitations.md).
 
 ## Layer 3: Theorems (✅ Complete)
 
@@ -126,26 +139,40 @@ Module-by-module implementation status for the Bimodal TM logic library.
 
 | Metric | Value |
 |--------|-------|
-| Total Lean files | ~40 |
-| Lines of code | ~8000 |
-| Proven theorems | 100+ |
-| Known sorries | 12 (all in `Metalogic/`: `Bundle/SuccRelation.lean` ×7, `Bundle/SuccExistence.lean` ×3, `BXCanonical/Chronicle/ChronicleToCountermodel.lean` ×1, `WeakCanonical/Transfer.lean` ×1) |
+| Total Lean files | 539 |
+| Lines of code | 170,898 |
+| Comment lines | 96,290 |
+| Known sorries | 0 |
 | Build status | ✅ Passes |
+
+Do not hardcode these figures elsewhere. Reproduce them:
+
+```bash
+cloc --include-lang=Lean --exclude-dir=.lake,lake-packages,Boneyard .
+```
+
+The sorry count is asserted, not documented: check C3 of
+`scripts/check-module-invariants.sh` requires a hard zero across `FormalSystem/`
+(`Boneyard/` excluded).
 
 ## Verification
 
 ```bash
-# Build Bimodal library
-lake build Bimodal
+# Build the library (default target)
+lake build
 
 # Build tests
 lake build BimodalTest
 
-# Count sorries
-grep -r "sorry" Bimodal/ --include="*.lean" | wc -l
+# Assert the sorry inventory is zero, plus the other structural invariants
+bash scripts/check-module-invariants.sh --no-build
 ```
+
+`FormalSystem` (the default) and `BimodalTest` are the library targets; there is no `Bimodal`
+target.
 
 ## Related
 
 - [Known Limitations](known-limitations.md) - Current limitations
-- [Project Status](../../../docs/project-info/implementation-status.md) - Project-wide
+- [Feature Registry](FEATURE_REGISTRY.md) - Feature tracking and capabilities
+- [API Reference](../reference/API_REFERENCE.md) - Declaration-level reference

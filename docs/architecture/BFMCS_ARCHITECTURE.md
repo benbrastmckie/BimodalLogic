@@ -8,68 +8,67 @@
 
 The TM logic completeness proof uses a **two-level bundling architecture** to model both temporal and modal aspects of formulas:
 
-1. **BFMCS (Bundled Family of MCS)**: A single "world history" - one maximal consistent set (MCS) per time point with temporal coherence conditions ensuring G/H formulas propagate correctly.
+1. **FMCS (Family of MCS)**: A single "world history" - one maximal consistent set (MCS) per time point with temporal coherence conditions ensuring G/H formulas propagate correctly.
 
-2. **BMCS (Bundle of MCS)**: A collection of world histories with modal coherence conditions ensuring Box/Diamond formulas relate correctly across histories.
+2. **BFMCS (Bundle of FMCS)**: A collection of world histories with modal coherence conditions ensuring Box/Diamond formulas relate correctly across histories.
 
 **Key insight**: G-content propagates automatically through seeding (the 4_G axiom ensures G(phi) -> G(G(phi))), while F-obligations require explicit witness tracking because F(phi) -> G(F(phi)) is semantically invalid.
 
-**Current status**: The proof has **4 remaining sorries** in `DovetailingChain.lean`:
-- 2 cross-sign propagation sorries (simpler)
-- 2 witness construction sorries (require dovetailing enumeration)
+**Current status**: Complete and sorry-free. The structural sorry inventory is **zero** across
+all of `FormalSystem/` (`Boneyard/` excluded), asserted by content in check C3 of
+`scripts/check-module-invariants.sh`. The four weak completeness theorems this architecture
+supports -- `completeness`, `completeness_dense`, `completeness_discrete`,
+`completeness_dedekind` -- are sorryAx-free at exactly `[propext, Classical.choice,
+Quot.sound]`, asserted by check C2.
 
 ---
 
 ## Table of Contents
 
 1. [Ontology Overview](#1-ontology-overview)
-   - [BFMCS: Single World History](#11-bfmcs-single-world-history)
-   - [BMCS: Bundle of World Histories](#12-bmcs-bundle-of-world-histories)
+   - [FMCS: Single World History](#11-fmcs-single-world-history)
+   - [BFMCS: Bundle of World Histories](#12-bfmcs-bundle-of-world-histories)
    - [Why Two Levels?](#13-why-two-levels)
 2. [Propagation Mechanics](#2-propagation-mechanics)
    - [G-Content Automatic Propagation](#21-g-content-automatic-propagation)
    - [F-Obligations Require Tracking](#22-f-obligations-require-tracking)
    - [Propagation Summary Table](#23-propagation-summary-table)
 3. [Consistency Theory](#3-consistency-theory)
-   - [The temporal_witness_seed_consistent Theorem](#31-the-temporal_witness_seed_consistent-theorem)
+   - [The witness-seed consistency theorems](#31-the-witness-seed-consistency-theorems)
    - [The Critical Subtlety](#32-the-critical-subtlety)
-4. [Lacunae Inventory](#4-lacunae-inventory)
-   - [Sorry 1: forward_G Cross-Sign (Line 606)](#41-sorry-1-forward_g-cross-sign-line-606)
-   - [Sorry 2: backward_H Cross-Sign (Line 617)](#42-sorry-2-backward_h-cross-sign-line-617)
-   - [Sorry 3: forward_F Witness (Line 633)](#43-sorry-3-forward_f-witness-line-633)
-   - [Sorry 4: backward_P Witness (Line 640)](#44-sorry-4-backward_p-witness-line-640)
-   - [Resolution Priority](#45-resolution-priority)
-5. [Completeness Chain](#5-completeness-chain)
-   - [Proof Architecture](#51-proof-architecture)
-   - [Sorry Propagation](#52-sorry-propagation)
-   - [Key Source Files](#53-key-source-files)
+4. [Completeness Chain](#4-completeness-chain)
+   - [Proof Architecture](#41-proof-architecture)
+   - [Key Source Files](#42-key-source-files)
 
 ---
 
 ## 1. Ontology Overview
 
-### 1.1 BFMCS: Single World History
+### 1.1 FMCS: Single World History
 
-A **BFMCS** (Bundled Family of Maximal Consistent Sets) represents a single complete "world history" - one MCS at each integer time point with temporal coherence.
+An **FMCS** (Family of Maximal Consistent Sets) represents a single complete "world history" --
+one MCS at each time point, with temporal coherence. The carrier `D` is a `Preorder`, not
+fixed to `Int`.
 
-**Definition** (from `BFMCS.lean`, lines 80-98):
+**Definition** (from `FormalSystem/Metalogic/Bundle/FMCSDef.lean`, line 103):
 
 ```lean
-structure BFMCS where
-  mcs : Int -> Set Formula           -- MCS at each time point
-  is_mcs : forall t, SetMaximalConsistent (mcs t)
+structure FMCS (fc : FrameClass := FrameClass.Base) where
+  mcs : D -> Set Formula             -- MCS at each time point
+  is_mcs : forall t, SetMaximalConsistent (fc := fc) (mcs t)
   forward_G : forall t t' phi, t < t' -> Formula.allFuture phi ∈ mcs t -> phi ∈ mcs t'
   backward_H : forall t t' phi, t' < t -> Formula.allPast phi ∈ mcs t -> phi ∈ mcs t'
-  forward_F : forall t phi, Formula.someFuture phi ∈ mcs t -> exists s, t < s /\ phi ∈ mcs s
-  backward_P : forall t phi, Formula.somePast phi ∈ mcs t -> exists s, s < t /\ phi ∈ mcs s
 ```
 
 **Semantic interpretation**:
 - Each time point `t` has a maximal consistent set `mcs t` describing "what is true at time t"
 - `forward_G`: If G(phi) holds at time t, then phi holds at all future times t' > t
 - `backward_H`: If H(phi) holds at time t, then phi holds at all past times t' < t
-- `forward_F`: If F(phi) holds at time t, then phi holds at some future time
-- `backward_P`: If P(phi) holds at time t, then phi holds at some past time
+
+Note that the structure carries **only** the two universal (G/H) coherence fields. Existential
+F/P witness obligations are *not* structure fields; they are discharged by the witness-seed
+infrastructure (`WitnessSeed.lean`) at the point of construction. Earlier `forward_F` and
+`backward_P` fields were removed -- see the design note at `FMCSDef.lean:58`.
 
 **Visual representation**:
 ```
@@ -80,21 +79,22 @@ MCS:        M_{-2} M_{-1} M_0  M_1  M_2  M_3
               Temporal coherence constraints
 ```
 
-### 1.2 BMCS: Bundle of World Histories
+### 1.2 BFMCS: Bundle of World Histories
 
-A **BMCS** (Bundle of MCS) is a collection of BFMCS structures (world histories) with modal coherence.
+A **BFMCS** (Bundle of Families of MCS) is a collection of FMCS structures (world histories)
+with modal coherence.
 
-**Definition** (from `BMCS.lean`, lines 82-113):
+**Definition** (from `FormalSystem/Metalogic/Bundle/BFMCS.lean`, line 91):
 
 ```lean
-structure BMCS where
-  families : Set (BFMCS)             -- Collection of world histories
+structure BFMCS (fc : FrameClass := FrameClass.Base) where
+  families : Set (FMCS (fc := fc) D)   -- Collection of world histories
   nonempty : families.Nonempty
   modal_forward : forall fam in families, forall phi t,
     Formula.box phi ∈ fam.mcs t -> forall fam' in families, phi ∈ fam'.mcs t
   modal_backward : forall fam in families, forall phi t,
     (forall fam' in families, phi ∈ fam'.mcs t) -> Formula.box phi ∈ fam.mcs t
-  evalFamily : BFMCS                -- Distinguished evaluation point
+  evalFamily : FMCS (fc := fc) D       -- Distinguished evaluation point
   eval_family_mem : evalFamily ∈ families
 ```
 
@@ -121,8 +121,8 @@ TM logic has both **modal operators** (Box, Diamond) and **temporal operators** 
 
 | Operator Type | Operators | Constraint Direction | Structure Level |
 |---------------|-----------|---------------------|-----------------|
-| Modal | Box, Diamond | Across histories (at same time) | BMCS |
-| Temporal | G, H, F, P | Within history (across times) | BFMCS |
+| Modal | Box, Diamond | Across histories (at same time) | BFMCS |
+| Temporal | G, H, F, P | Within history (across times) | FMCS |
 
 **The key insight**: Modal operators relate different "possible worlds" at the same time instant, while temporal operators relate the same "possible world" across different time instants. The two-level structure cleanly separates these concerns.
 
@@ -160,11 +160,18 @@ This axiom ensures that if G(phi) is in MCS_t:
 4. Therefore G(phi) is in MCS_{t+1}
 5. The propagation continues inductively to all future times
 
-**Proven lemmas** (from `DovetailingChain.lean`, lines 484-507):
+**Proven anchors**:
 ```lean
-lemma dovetailForwardChain_G_propagates  -- G(phi) in MCS_t implies G(phi) in MCS_{t+1}
-lemma dovetailForwardChain_forward_G     -- G(phi) in MCS_t implies phi in MCS_{t'} for all t' > t
+-- FormalSystem/Metalogic/Bundle/SuccRelation.lean:78
+theorem Succ.g_persistence {u v : Set Formula} (h : Succ u v) : GContent u ⊆ v
+
+-- FormalSystem/Metalogic/Bundle/CanonicalFrame.lean:77
+@[simp] lemma ExistsTask_def {M M' : Set Formula} : ExistsTask M M' = (GContent M ⊆ M')
 ```
+
+Step (5) -- that the propagation continues to all future times, not just the next -- is the
+`forward_G` field of `FMCS` itself (`FormalSystem/Metalogic/Bundle/FMCSDef.lean:103`), which any
+constructed family must discharge.
 
 ### 2.2 F-Obligations Require Tracking
 
@@ -191,27 +198,30 @@ This is the core challenge addressed by the dovetailing construction.
 |----------|------|------|-------------|-----------|--------|
 | G | allFuture | Universal | Automatic | GContent seeding + 4_G axiom | **Proven** |
 | H | allPast | Universal | Automatic | HContent seeding + 4_H axiom | **Proven** |
-| F | someFuture | Existential | Explicit tracking | Dovetailing enumeration | **Sorry** |
-| P | somePast | Existential | Explicit tracking | Dovetailing enumeration | **Sorry** |
+| F | someFuture | Existential | Explicit tracking | Witness-seed construction | **Proven** |
+| P | somePast | Existential | Explicit tracking | Witness-seed construction | **Proven** |
 
 ---
 
 ## 3. Consistency Theory
 
-### 3.1 The temporal_witness_seed_consistent Theorem
+### 3.1 The witness-seed consistency theorems
 
 This is the **key enabling lemma** for F/P witness construction.
 
-**Location**: `TemporalCoherentConstruction.lean`, lines 461-522
+**Location**: `FormalSystem/Metalogic/Bundle/WitnessSeed.lean`, line 181
+(`forward_temporal_witness_seed_consistent`) and line 290
+(`past_temporal_witness_seed_consistent`)
 
 **Statement**:
 ```lean
-theorem temporal_witness_seed_consistent (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+theorem forward_temporal_witness_seed_consistent {fc : FrameClass} (M : Set Formula)
+    (h_mcs : SetMaximalConsistent (fc := fc) M)
     (psi : Formula) (h_F : Formula.someFuture psi ∈ M) :
-    SetConsistent (TemporalWitnessSeed M psi)
+    SetConsistent (fc := fc) (ForwardTemporalWitnessSeed M psi)
 ```
 
-Where `TemporalWitnessSeed M psi = {psi} ∪ GContent(M)`.
+Where `ForwardTemporalWitnessSeed M psi = {psi} ∪ GContent(M)`.
 
 **Proof sketch** (5 steps):
 1. Suppose `{psi} ∪ GContent(M)` is inconsistent
@@ -220,11 +230,12 @@ Where `TemporalWitnessSeed M psi = {psi} ∪ GContent(M)`.
 4. Since each `G(chi) ∈ M` and M is closed under derivation: `G(¬psi) ∈ M`
 5. But `F(psi) = ¬G(¬psi) ∈ M` (by hypothesis), contradicting MCS consistency
 
-**Symmetric lemma** (from `DovetailingChain.lean`, lines 301-353):
+**Symmetric lemma** (from `FormalSystem/Metalogic/Bundle/WitnessSeed.lean:290`):
 ```lean
-theorem past_temporal_witness_seed_consistent (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+theorem past_temporal_witness_seed_consistent {fc : FrameClass} (M : Set Formula)
+    (h_mcs : SetMaximalConsistent (fc := fc) M)
     (psi : Formula) (h_P : Formula.somePast psi ∈ M) :
-    SetConsistent (PastTemporalWitnessSeed M psi)
+    SetConsistent (fc := fc) (PastTemporalWitnessSeed M psi)
 ```
 
 Where `PastTemporalWitnessSeed M psi = {psi} ∪ HContent(M)`.
@@ -244,134 +255,57 @@ The consistency lemma requires `F(psi) ∈ M` for the **same** M whose GContent 
 
 2. **Resolve immediately**: Resolve F(psi) at time s+1 (the very next step), avoiding the persistence issue entirely.
 
-Option (2) is simpler but creates potential conflicts when multiple F-obligations compete for resolution at the same time slot. The full dovetailing construction (Task 916) will need to handle this scheduling carefully.
+Option (1) is what the tree implements: `WitnessSeed.lean` keeps the F-obligation alive in the
+seed until it is discharged, so the persistence gap never has to be bridged by an appeal to
+`F(psi) -> G(F(psi))`. Both witness-seed consistency theorems are sorry-free.
 
 ---
 
-## 4. Lacunae Inventory
+## 4. Completeness Chain
 
-All 4 remaining sorries are in the `buildDovetailingChainFamily` definition in `DovetailingChain.lean`, lines 588-640.
+### 4.1 Proof Architecture
 
-### 4.1 Sorry 1: forward_G Cross-Sign (Line 606)
-
-**Location**: `buildDovetailingChainFamily.forward_G` branch when `t < 0`
-
-**Goal**: When G(phi) is in MCS_t with t < 0 (backward chain), show phi appears in MCS_{t'} for any t' > t.
-
-**Challenge**: The forward and backward chains are constructed separately but share MCS_0 as their common base. The proof needs to "cross" from the backward chain to the forward chain.
-
-**Resolution path**:
-1. Show G(phi) from MCS_{-k} propagates through the backward chain to MCS_0 via HContent preservation
-2. Once G(phi) is in MCS_0, use the proven forward_G lemma to propagate to MCS_{t'}
-
-**Complexity**: Medium - requires careful analysis of MCS_0 sharing semantics
-
-### 4.2 Sorry 2: backward_H Cross-Sign (Line 617)
-
-**Location**: `buildDovetailingChainFamily.backward_H` branch when `t >= 0`
-
-**Goal**: When H(phi) is in MCS_t with t >= 0 (forward chain), show phi appears in MCS_{t'} for any t' < t.
-
-**Challenge**: Symmetric to Sorry 1 - must cross from forward chain to backward chain.
-
-**Resolution path**:
-1. Show H(phi) from MCS_k propagates through the forward chain to MCS_0 via GContent preservation
-2. Once H(phi) is in MCS_0, use the proven backward_H lemma to propagate to MCS_{t'}
-
-**Complexity**: Medium - symmetric to Sorry 1
-
-### 4.3 Sorry 3: forward_F Witness (Line 633)
-
-**Location**: `buildDovetailingChainFamily_forward_F` lemma
-
-**Goal**: When F(psi) is in MCS_t, prove there exists s > t with psi in MCS_s.
-
-**Challenge**: Requires implementing the full dovetailing enumeration scheme:
-1. Enumerate all (time, formula) pairs: (t, psi) where F(psi) ∈ MCS_t
-2. Schedule each pair to a specific future time for resolution
-3. At construction time, include the scheduled witness psi in the seed
-4. Use `temporal_witness_seed_consistent` to prove the seed is consistent
-
-**Resolution path** (see Task 916):
-- Implement dovetailing using Cantor pairing (Nat.unpair)
-- Handle infinitely many obligations from all times
-- Process ONE witness per construction step
-- Ensure ALL obligations eventually processed (completeness)
-
-**Complexity**: High - requires significant new infrastructure
-
-### 4.4 Sorry 4: backward_P Witness (Line 640)
-
-**Location**: `buildDovetailingChainFamily_backward_P` lemma
-
-**Goal**: When P(psi) is in MCS_t, prove there exists s < t with psi in MCS_s.
-
-**Challenge**: Symmetric to Sorry 3 - requires dovetailing for the backward chain.
-
-**Resolution path**: Same approach using `past_temporal_witness_seed_consistent`.
-
-**Complexity**: High - symmetric to Sorry 3
-
-### 4.5 Resolution Priority
-
-| Sorry | Type | Complexity | Recommended Order |
-|-------|------|------------|-------------------|
-| 1-2 | Cross-sign | Medium | **First** - unblocks understanding of chain structure |
-| 3-4 | Witnesses | High | **Second** - requires dovetailing infrastructure |
-
-The cross-sign sorries (1-2) can likely be resolved with careful analysis of the existing code. The witness sorries (3-4) require implementing the full dovetailing enumeration (Task 916).
-
----
-
-## 5. Completeness Chain
-
-### 5.1 Proof Architecture
-
-The completeness proof flows from the top-level theorem down through several layers:
+The bundle infrastructure described above feeds the canonical-model construction in
+`FormalSystem/Metalogic/BXCanonical/`, which terminates in the four weak completeness
+theorems:
 
 ```
-bmcs_strong_completeness (Completeness.lean)
+completeness              (BXCanonical/Completeness.lean:196)
+completeness_dense        (BXCanonical/Completeness.lean:255)
+completeness_discrete     (BXCanonical/Completeness.lean:296)
+completeness_dedekind     (Metalogic/StrongCompleteness.lean:469)
   |
-  +-- bmcs_context_representation
+  +-- canonical model / countermodel engines (BXCanonical/CanonicalModel.lean)
         |
-        +-- construct_saturated_bmcs_int
+        +-- witness-seed consistency (Bundle/WitnessSeed.lean:181, :290)
               |
-              +-- fully_saturated_bmcs_exists_int
-                    |
-                    +-- temporal_coherent_family_exists_Int
-                          |
-                          +-- temporal_coherent_family_exists_theorem (DovetailingChain.lean)
-                                |
-                                +-- buildDovetailingChainFamily [4 SORRIES]
+              +-- FMCS temporal coherence (Bundle/FMCSDef.lean:103)
+              +-- BFMCS modal coherence   (Bundle/BFMCS.lean:91)
 ```
 
-### 5.2 Sorry Propagation
+All four are sorryAx-free at exactly `[propext, Classical.choice, Quot.sound]`, asserted by
+check C2 of `scripts/check-module-invariants.sh`.
 
-| File | Component | Sorry Count |
-|------|-----------|-------------|
-| DovetailingChain.lean | buildDovetailingChainFamily | 4 |
-| TemporalCoherentConstruction.lean | temporal + modal saturation | 1 |
-| **Total** | | **5** |
+### 4.2 Key Source Files
 
-The 4 sorries in DovetailingChain.lean propagate up through the entire chain. Once these are resolved, the completeness proof will be fully verified.
-
-### 5.3 Key Source Files
-
-| File | Lines | Content |
-|------|-------|---------|
-| `FormalSystem/Metalogic/Bundle/BFMCS.lean` | 80-98 | BFMCS structure definition |
-| `FormalSystem/Metalogic/Bundle/BMCS.lean` | 82-113 | BMCS structure definition |
-| `FormalSystem/Metalogic/Bundle/DovetailingChain.lean` | 588-666 | buildDovetailingChainFamily with 4 sorries |
-| `FormalSystem/Metalogic/Bundle/TemporalCoherentConstruction.lean` | 461-522 | temporal_witness_seed_consistent proof |
-| `FormalSystem/Metalogic/Bundle/TemporalContent.lean` | 19-26 | GContent/HContent definitions |
-| `FormalSystem/Metalogic/Bundle/Completeness.lean` | 100-113 | bmcs_representation theorem |
+| File | Anchor | Content |
+|------|--------|---------|
+| `FormalSystem/Metalogic/Bundle/FMCSDef.lean` | 103 | FMCS structure definition |
+| `FormalSystem/Metalogic/Bundle/BFMCS.lean` | 91 | BFMCS structure definition |
+| `FormalSystem/Metalogic/Bundle/WitnessSeed.lean` | 181, 290 | witness-seed consistency theorems |
+| `FormalSystem/Metalogic/Bundle/TemporalContent.lean` | 59, 69 | GContent/HContent definitions |
+| `FormalSystem/Metalogic/Bundle/Construction.lean` | 112, 142 | Lindenbaum MCS construction |
+| `FormalSystem/Metalogic/BXCanonical/Completeness.lean` | 196, 255, 296 | the three Base/Dense/Discrete completeness theorems |
 
 ---
 
 ## Appendix: Historical Context
 
-- **Task 843**: Original modal backward axiom removal
-- **Task 857**: Temporal backward properties addition
-- **Task 912**: Completeness proof review identifying these lacunae
-- **Task 914**: BFMCS rename from IndexedMCSFamily
-- **Task 916**: F/P witness obligation tracking (follow-up task for sorries 3-4)
+The bundle layer reached its present shape through several rounds of simplification:
+
+- The modal backward axiom was removed; `modal_backward` is now a structure field derived from
+  MCS maximality rather than an added axiom.
+- Temporal backward properties were added to the family structure.
+- `FMCS` was renamed from `IndexedMCSFamily`; `BFMCS` names the bundle over it.
+- The existential `forward_F`/`backward_P` structure fields were removed in favour of the
+  witness-seed infrastructure -- see the design note at `FormalSystem/Metalogic/Bundle/FMCSDef.lean:58`.

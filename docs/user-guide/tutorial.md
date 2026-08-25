@@ -376,12 +376,12 @@ The completeness theorem states validity implies derivability:
 -- Weak completeness: ⊨ φ → ⊢ φ
 theorem weak_completeness (φ : Formula) :
   ⊨ φ → ⊢ φ := by
-  sorry -- See Metalogic/Completeness.lean
+  sorry -- See Metalogic/BXCanonical/Completeness.lean
 
--- Strong completeness: Γ ⊨ φ → Γ ⊢ φ
-theorem strong_completeness (Γ : Context) (φ : Formula) :
+-- Consequence completeness (NOT "strong"): Γ ⊨ φ → Γ ⊢ φ, with Γ : Context = List Formula
+theorem consequence_completeness (Γ : Context) (φ : Formula) :
   Γ ⊨ φ → Γ ⊢ φ := by
-  sorry -- See Metalogic/Completeness.lean
+  sorry -- See Metalogic/StrongCompleteness.lean
 ```
 
 ### Perpetuity Principles
@@ -402,11 +402,21 @@ theorem perpetuity_2 (φ : Formula) : ⊢ ((▽φ).imp (diamond φ)) := by
 ```
 
 **Status note**: The `sorry` placeholders in this section are pedagogical stand-ins for a
-from-scratch walkthrough. In the actual library, `soundness` is fully proven,
-`completeness_dense`/`completeness_discrete` are fully proven (only the general Base-frame case
-has a residual debt), and `perpetuity_1`–`perpetuity6` are all fully proven — see
-`Metalogic/Soundness.lean`, `Metalogic/BXCanonical/Completeness.lean`, and
-`Theorems/Perpetuity/{Principles,Bridge}.lean`.
+from-scratch walkthrough; the library itself is sorry-free. In the actual library `soundness`
+is fully proven; all four weak completeness theorems -- `completeness` (`:196`),
+`completeness_dense` (`:255`), `completeness_discrete` (`:296`), and `completeness_dedekind`
+(`FormalSystem/Metalogic/StrongCompleteness.lean:469`) -- are fully proven and sorryAx-free;
+and `perpetuity_1`-`perpetuity6` are all fully proven. See
+`FormalSystem/Metalogic/Soundness.lean`,
+`FormalSystem/Metalogic/BXCanonical/Completeness.lean`, and
+`FormalSystem/Theorems/Perpetuity/`.
+
+**Terminology**: the second theorem above is deliberately *not* called "strong completeness".
+`Context` is `List Formula`, so it is a finite-context result, inter-derivable with weak
+completeness through the deduction theorem. The reserved name "strong completeness" applies
+only to consequence from a possibly-infinite `Γ : Set Formula` -- see
+`FormalSystem/Metalogic/StrongCompleteness.lean:25-41` and
+[known-limitations.md](../project-info/known-limitations.md).
 
 ### Extension Layers
 

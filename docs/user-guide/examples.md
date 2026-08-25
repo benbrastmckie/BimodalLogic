@@ -946,9 +946,10 @@ A canonical model proof for TM completeness follows these steps:
    - Extend to MCS `w`, build canonical model
    - By truth lemma, `¬φ ∈ w` means `M, w ⊨ ¬φ`, so `M, w ⊭ φ`
 
-The general Base-frame `completeness` theorem retains one residual proof debt (a deprecated
-dependency); the dense and discrete frame-class variants (`completeness_dense`,
-`completeness_discrete`) are fully proven.
+All four weak completeness theorems -- `completeness`, `completeness_dense`,
+`completeness_discrete`, and `completeness_dedekind` -- are fully proven and sorryAx-free.
+*Strong* completeness (arbitrary infinite premise sets) is a separate question; see the
+limitations document below.
 
 See also: [known-limitations.md](../project-info/known-limitations.md) for status.
 </details>

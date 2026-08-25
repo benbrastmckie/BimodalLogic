@@ -234,18 +234,20 @@ tree's own words.
 
 ---
 
-### Phase 3: Remaining False-Status Sites [NOT STARTED]
+### Phase 3: Remaining False-Status Sites [COMPLETED]
 
 **Goal**: Clear the false-status defects in the architecture, status, tutorial, and coverage
 documents.
 
 **Tasks**:
-- [ ] `docs/architecture/BFMCS_ARCHITECTURE.md` (2c): remove the whole section 4 "Lacunae Inventory" and its TOC entry (`:36-41`); correct `:17-19`, `:194-195`, `:350-367`. Of the six files in the source table at `:359-367`, only `BFMCS.lean` and `TemporalContent.lean` exist — `BMCS.lean`, `DovetailingChain.lean`, `TemporalCoherentConstruction.lean`, `Bundle/Completeness.lean` do not. Also delete the `Status: Sorry` rows in the operator table at `:193-198`
-- [ ] `docs/project-info/implementation-status.md` (2d): `:132` "Known sorries | 12" -> 0; rewrite `:55` and `:72-74` — `countermodel_discrete` is **proved** at `WeakCanonical/GroupModel/CountermodelBase.lean:142`, not dead code (see `Metalogic.lean:33-38`)
-- [ ] Same file, three defects the task description did not list (report §4, row 2d): `:65` "all 21 axiom schemas: 17 base + 1 dense + 3 discrete"; `:58` a Layer-2 module table row for an archived `Completeness.lean`; `:139` `lake build Bimodal` — a target that does not exist (only `FormalSystem` and `BimodalTest`)
-- [ ] `docs/user-guide/architecture.md` (2e): correct `:1303` ("8 axioms, 7 rules" -> 45 axiom constructors; the 7 rules figure **is** correct per `ProofSystem/Derivation.lean`); delete the false Base-frame debt at `:1305-1307`; remove the `Logos/` tree documentation at `:944-1000` (`LogosTest/`, `Archive/`, `Counterexamples/`, `Syntax/DSL.lean`, `ProofSystem/Rules.lean`, `Metalogic/Completeness.lean` — none exist)
-- [ ] `docs/user-guide/tutorial.md` (2h): correct the `:404-409` status note (false Base-frame debt; add `completeness_dedekind`); rename `:381`'s "Strong completeness" to "consequence completeness" per `StrongCompleteness.lean:25-35`, since the statement is finite-`Context`. Note `:402` already has the P3-P6 perpetuity principles **correct** — use it as an in-repo cross-check for Phase 4, do not change it
-- [ ] `docs/project-info/test-coverage.md` (2j): `:20` "Sorry Placeholders | 5" -> 0. Leave the `:7-11` superseded notice intact
+- [x] `docs/architecture/BFMCS_ARCHITECTURE.md` (2c) *(deviation: altered -- the document's BFMCS/BMCS ontology names were also inverted relative to the tree (real names: `FMCS` for a single history, `BFMCS` for the bundle), and its 5.1 completeness chain cited six nonexistent theorems; both corrected, since leaving them would have shipped a known falsehood and left C12 red)*: remove the whole section 4 "Lacunae Inventory" and its TOC entry (`:36-41`); correct `:17-19`, `:194-195`, `:350-367`. Of the six files in the source table at `:359-367`, only `BFMCS.lean` and `TemporalContent.lean` exist — `BMCS.lean`, `DovetailingChain.lean`, `TemporalCoherentConstruction.lean`, `Bundle/Completeness.lean` do not. Also delete the `Status: Sorry` rows in the operator table at `:193-198`
+- [x] `docs/project-info/implementation-status.md` (2d): `:132` "Known sorries | 12" -> 0; rewrite `:55` and `:72-74` — `countermodel_discrete` is **proved** at `WeakCanonical/GroupModel/CountermodelBase.lean:142`, not dead code (see `Metalogic.lean:33-38`)
+- [x] Same file, three defects the task description did not list (report §4, row 2d): `:65` "all 21 axiom schemas: 17 base + 1 dense + 3 discrete"; `:58` a Layer-2 module table row for an archived `Completeness.lean`; `:139` `lake build Bimodal` — a target that does not exist (only `FormalSystem` and `BimodalTest`)
+- [x] `docs/user-guide/architecture.md` (2e): correct `:1303` ("8 axioms, 7 rules" -> 45 axiom constructors; the 7 rules figure **is** correct per `ProofSystem/Derivation.lean`); delete the false Base-frame debt at `:1305-1307`; remove the `Logos/` tree documentation at `:944-1000` (`LogosTest/`, `Archive/`, `Counterexamples/`, `Syntax/DSL.lean`, `ProofSystem/Rules.lean`, `Metalogic/Completeness.lean` — none exist)
+- [x] `docs/user-guide/tutorial.md` (2h): correct the `:404-409` status note (false Base-frame debt; add `completeness_dedekind`); rename `:381`'s "Strong completeness" to "consequence completeness" per `StrongCompleteness.lean:25-35`, since the statement is finite-`Context`. Note `:402` already has the P3-P6 perpetuity principles **correct** — use it as an in-repo cross-check for Phase 4, do not change it
+- [x] Also fixed `docs/project-info/implementation-status.md:129-130` metric drift (~40 files / ~8000 lines -> 539 / 170,898 with the `cloc` reproduction command) *(deviation: altered -- item 3d of Phase 4, taken here because Phase 3 owns this file exclusively)*
+- [x] Repaired `docs/user-guide/examples.md:949`, which asserted the same false Base-frame proof debt and is named nowhere in the plan *(deviation: altered -- surplus site found by the Phase 2 verification grep)*
+- [x] `docs/project-info/test-coverage.md` (2j): `:20` "Sorry Placeholders | 5" -> 0. Leave the `:7-11` superseded notice intact
 
 **Timing**: 2 hours
 

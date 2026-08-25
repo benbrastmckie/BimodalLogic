@@ -17,11 +17,11 @@
 | Definition Coverage | 42% | 85% | Needs Improvement |
 | Total Definitions | 348 | - | - |
 | Covered Definitions | 148 | - | - |
-| Sorry Placeholders | 5 | 0 | Acceptable (mostly infrastructure-blocked) |
+| Sorry Placeholders | 0 | 0 | Met; asserted by the structural sorry check |
 
 ## Module Breakdown
 
-Coverage is measured by checking whether each public definition in Bimodal/ appears somewhere in BimodalTest/. High-coverage modules have well-tested APIs; low-coverage modules may have internal implementation details that don't need direct tests.
+Coverage is measured by checking whether each public definition in `FormalSystem/` appears somewhere in `Tests/BimodalTest/`. High-coverage modules have well-tested APIs; low-coverage modules may have internal implementation details that don't need direct tests.
 
 ### High Coverage (85%+)
 
