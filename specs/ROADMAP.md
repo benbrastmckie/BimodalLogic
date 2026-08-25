@@ -358,7 +358,16 @@ which carries a sorry today because none of them is a stated theorem yet.
 
 **C2 axiom baseline**: `BXCanonical.completeness`, `.completeness_dense`, `.completeness_discrete`,
 and `.Chronicle.countermodel_dense` all depend on exactly `[propext, Classical.choice,
-Quot.sound]` — no `sorryAx`, tree-wide, across all four flagship theorems.
+Quot.sound]` — no `sorryAx`, tree-wide, across all four flagship theorems. Those four, and only
+those four, are what C2's baseline covers (`scripts/check-module-invariants.sh`, check C2).
+
+**Outside the C2 baseline, and checked separately**: `completeness_dedekind`
+(`FormalSystem/Metalogic/StrongCompleteness.lean:469`) has the same profile — SORRY-FREE
+(sorryAx-free; axioms: exactly `propext`, `Classical.choice`, `Quot.sound`). That is recorded in
+prose at `FormalSystem/Metalogic.lean:57-60` and is reproducible with `#print axioms` on the name.
+It is **not** one of C2's four theorems, so no C2 run attests to it; treat it as a `#print axioms`
+fact about the current tree, not as a checked invariant. Per this document's own rule above, a
+claim no check can reproduce is a defect — hence the separation.
 
 ---
 

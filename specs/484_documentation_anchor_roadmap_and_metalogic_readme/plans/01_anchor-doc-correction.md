@@ -227,22 +227,22 @@ divergence must be recorded in the summary.
 
 ---
 
-### Phase 3: ROADMAP A4 — completeness_dedekind [NOT STARTED]
+### Phase 3: ROADMAP A4 — completeness_dedekind [COMPLETED]
 
 **Goal**: Record `completeness_dedekind`'s axiom profile at `:348-350` without misattributing it
 to the C2 baseline.
 
 **Tasks**:
-- [ ] Run `lean_verify` on `FormalSystem.Metalogic.completeness_dedekind`
+- [x] Run `lean_verify` on `FormalSystem.Metalogic.completeness_dedekind`
       (`FormalSystem/Metalogic/StrongCompleteness.lean:469`) and confirm the axiom set is exactly
       `[propext, Classical.choice, Quot.sound]`.
-- [ ] Confirm C2's baseline list at `scripts/check-module-invariants.sh:127-132` contains exactly
+- [x] Confirm C2's baseline list at `scripts/check-module-invariants.sh:127-132` contains exactly
       four theorems: `completeness`, `completeness_dense`, `completeness_discrete`,
       `Chronicle.countermodel_dense`.
-- [ ] Add `completeness_dedekind` to `:348-350` **typographically separate** from the C2 four,
+- [x] Add `completeness_dedekind` to `:348-350` **typographically separate** from the C2 four,
       attributed to `FormalSystem/Metalogic.lean:57-60` and a `#print axioms` run — never to C2.
       The ROADMAP must not assert that C2 checks something it does not.
-- [ ] Note that the task description's cited range `:349-352` is off by one at the top; the block
+- [x] Note that the task description's cited range `:349-352` is off by one at the top; the block
       is `:348-350`.
 
 **Timing**: 0.5 hours
