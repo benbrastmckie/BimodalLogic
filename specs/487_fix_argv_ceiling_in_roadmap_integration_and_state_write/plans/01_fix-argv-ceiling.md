@@ -1,7 +1,7 @@
 # Implementation Plan: Task #487
 
 - **Task**: 487 - Fix 128KB argv ceiling in roadmap-integration.sh and state-write.sh
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 8.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/487_fix_argv_ceiling_in_roadmap_integration_and_state_write/reports/01_fix-argv-ceiling.md
@@ -134,33 +134,46 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: state-write.sh transparent oversized-payload spill [NOT STARTED]
+### Phase 1: state-write.sh transparent oversized-payload spill [COMPLETED]
 
 **Goal**: `state-write.sh` accepts an arbitrarily large `--argjson NAME VALUE` in a single call by
 transparently spilling oversized values to a temp file and binding them via `jq --slurpfile`, with
 no change required at any existing call site and no change to any documented semantics.
 
 **Tasks**:
-- [ ] Read `/home/benjamin/.config/nvim/agent-system/extensions/core/scripts/state-write.sh` in
+- [x] Read `/home/benjamin/.config/nvim/agent-system/extensions/core/scripts/state-write.sh` in
       full before editing; confirm the four `jq` invocation sites (init/non-init x dry-run/real)
-      and the existing `cleanup`/`trap cleanup EXIT` placement
-- [ ] In the `--argjson` arm of arg parsing, measure `${#3}`; when it exceeds 100000 bytes, write
+      and the existing `cleanup`/`trap cleanup EXIT` placement *(completed: confirmed exactly 4
+      sites via grep, matching Scope Hypothesis)*
+- [x] In the `--argjson` arm of arg parsing, measure `${#3}`; when it exceeds 100000 bytes, write
       the value to a private `mktemp` file, append `--slurpfile "$private_name" "$spill_file"` to
       `JQ_ARGS` instead of `--argjson`, and record the pair `(private_name, NAME)` for filter
-      prefixing. Under the threshold, behavior is byte-for-byte unchanged
-- [ ] Add an additive `--argjson-file NAME PATH` flag mapping to the same `--slurpfile` +
+      prefixing. Under the threshold, behavior is byte-for-byte unchanged *(completed)*
+      *(deviation: altered — see progress file deviation "1.scope": a >131,072-byte value can never
+      reach this code path at all, since state-write.sh's own OS-level invocation with such a value
+      as `$3` fails with exit 126 before any internal script code runs — this is a kernel
+      MAX_ARG_STRLEN constraint on state-write.sh's own execve, not fixable by code inside it.
+      Verified working end-to-end for the reachable (100000, ~131072] byte range at 128,890 bytes)*
+- [x] Add an additive `--argjson-file NAME PATH` flag mapping to the same `--slurpfile` +
       filter-prefix mechanism (validate PATH exists and is readable; error exit 1 otherwise)
-- [ ] Build an `EFFECTIVE_FILTER` by prefixing `($<private>[0]) as $<NAME> | ` for each spilled
+      *(completed: tested with a 223,891-byte file — this is the mechanism that actually handles
+      genuinely unbounded payloads, since PATH is a short argv token regardless of file size)*
+- [x] Build an `EFFECTIVE_FILTER` by prefixing `($<private>[0]) as $<NAME> | ` for each spilled
       binding onto `$JQ_FILTER`, so callers' `$NAME` references resolve exactly as before
-- [ ] Substitute `EFFECTIVE_FILTER` for `$JQ_FILTER` at **all four** jq call sites (the two in the
+      *(completed: verified against scalar-binding, `select()`, and array-construction filter
+      shapes)*
+- [x] Substitute `EFFECTIVE_FILTER` for `$JQ_FILTER` at **all four** jq call sites (the two in the
       dry-run branch, the two in the real-transform branch), so `--dry-run` no longer crashes on an
-      oversized payload either
-- [ ] Extend the existing `cleanup` function to remove spill files, and move `trap cleanup EXIT`
+      oversized payload either *(completed)*
+- [x] Extend the existing `cleanup` function to remove spill files, and move `trap cleanup EXIT`
       to before the dry-run branch so dry-run exits do not leak temp files; confirm `cleanup`
-      is a no-op when `STAGE_FILE` is empty and no mutex is held
-- [ ] Do NOT add a second `trap ... EXIT`; extend the existing one
-- [ ] Verify by inspection that mutex acquisition, staging, `--init`/`--state-file`/`--regen-todo`
-      refusal logic (D3/D4 checks), and the 0/1/2/3/4 exit-code contract are untouched
+      is a no-op when `STAGE_FILE` is empty and no mutex is held *(completed: verified no leftover
+      files in specs/tmp/ after dry-run and after real writes across all test cases)*
+- [x] Do NOT add a second `trap ... EXIT`; extend the existing one *(completed: single `trap cleanup
+      EXIT` confirmed via grep)*
+- [x] Verify by inspection that mutex acquisition, staging, `--init`/`--state-file`/`--regen-todo`
+      refusal logic (D3/D4 checks), and the 0/1/2/3/4 exit-code contract are untouched *(completed:
+      only JQ_FILTER-forwarding call sites and trap timing changed; all other logic byte-identical)*
 
 **Timing**: 1.5 hours
 
