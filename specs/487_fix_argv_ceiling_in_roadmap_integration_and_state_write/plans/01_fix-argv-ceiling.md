@@ -202,29 +202,39 @@ four; report the actual count in the phase commit.
 
 ---
 
-### Phase 2: state-write.sh regression test above the 128KB ceiling [NOT STARTED]
+### Phase 2: state-write.sh regression test above the 128KB ceiling [COMPLETED]
 
 **Goal**: A self-contained test suite proves the >128KB single-call path works and produces output
 byte-identical to the batched workaround.
 
 **Tasks**:
-- [ ] Read `test-state-write-concurrency.sh` first and follow its conventions exactly: copy the
+- [x] Read `test-state-write-concurrency.sh` first and follow its conventions exactly: copy the
       script under test byte-for-byte into a throwaway `$TMPROOT`, never touch the real `specs/`
-      tree, `pass()`/`fail()` counters, exit 0/1 on suite result
-- [ ] Create `test-state-write-large-payload.sh` in the source store `scripts/` directory
-- [ ] Case A: `--argjson` with a >131,072-byte JSON array in one call exits 0 and writes correct
-      state (this is the exact shape that fails today with exit 126)
-- [ ] Case B: byte-identity — the same total payload applied in one oversized call vs. split into
-      4 smaller calls produces `diff`-identical state.json
-- [ ] Case C: filter-semantics — a spilled binding used (i) as a plain scalar/array binding,
+      tree, `pass()`/`fail()` counters, exit 0/1 on suite result *(completed)*
+- [x] Create `test-state-write-large-payload.sh` in the source store `scripts/` directory
+      *(completed)*
+- [x] Case A: `--argjson` with a >131,072-byte JSON array in one call exits 0 and writes correct
+      state (this is the exact shape that fails today with exit 126) *(completed: altered)*
+      *(deviation: altered -- a >131,072-byte value cannot reach `--argjson` at all, per Phase 1's
+      deviation; Case A instead uses `--argjson-file` with a 200,001-byte file, and a new Case A0
+      directly proves the OS-level exec ceiling. Case E covers the plain `--argjson` spill path in
+      its only reachable range. See progress file for full analysis)*
+- [x] Case B: byte-identity — the same total payload applied in one oversized call vs. split into
+      4 smaller calls produces `diff`-identical state.json *(completed)*
+- [x] Case C: filter-semantics — a spilled binding used (i) as a plain scalar/array binding,
       (ii) inside a `select()` predicate, and (iii) inside array construction, each producing the
-      expected result (covers the filter-prefix risk)
-- [ ] Case D: `--argjson-file NAME PATH` with a >128KB file produces the same result as Case A
-- [ ] Case E: under-threshold `--argjson` still takes the plain argv path (assert unchanged
-      behavior, not just success)
-- [ ] Case F: `--dry-run` with an oversized payload exits 0 and leaves no temp files behind
-- [ ] Register the new test in `scripts/tests/run-all.sh` if that runner enumerates top-level
-      `test-state-write-*.sh` files; otherwise leave it standalone and note why
+      expected result (covers the filter-prefix risk) *(completed)*
+- [x] Case D: `--argjson-file NAME PATH` with a >128KB file produces the same result as Case A
+      *(completed: independent 203,890-byte fixture)*
+- [x] Case E: under-threshold `--argjson` still takes the plain argv path (assert unchanged
+      behavior, not just success) *(completed: also exercises the spill path at 125,055 bytes, the
+      only range plain --argjson spill is reachable in)*
+- [x] Case F: `--dry-run` with an oversized payload exits 0 and leaves no temp files behind
+      *(completed)*
+- [x] Register the new test in `scripts/tests/run-all.sh` if that runner enumerates top-level
+      `test-state-write-*.sh` files; otherwise leave it standalone and note why *(completed: no
+      registration needed -- run-all.sh's source-store mode already globs `$ext_scripts/test-*.sh`
+      for every extension, which auto-discovers this file; confirmed by direct execution)*
 
 **Timing**: 1 hour
 
