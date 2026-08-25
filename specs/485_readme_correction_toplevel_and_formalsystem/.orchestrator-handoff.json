@@ -1,45 +1,20 @@
 {
-  "task_number": 485,
-  "dispatch_seq": 7,
-  "phase": "research",
-  "status": "researched",
-  "verification_passed": true,
-  "requires_user_review": true,
-  "review_reason": "Three decisions and one scope correction need a ruling before planning. (1) file_scope is missing four files that defect B14 requires, so the gate 'broken references 5 -> 0' is unsatisfiable as scoped. (2) Adding BaseLanguage/ to FormalSystem/README.md's Submodule Navigation table with a README link would CREATE a new broken reference (FormalSystem/BaseLanguage/README.md does not exist), failing the very gate B14 exists to satisfy. (3) Two import-line numerals in the corrected anchor FormalSystem/Metalogic/README.md:44-45 do not reproduce and must not be transcribed forward.",
-  "gates": {
-    "check_module_invariants": "ALL CHECKS PASSED (exit 0) — baseline for this task",
-    "readme_lint": "FAIL — 9 missing READMEs / 5 broken references — baseline; the task gate is broken-refs 5 -> 0, missing-READMEs out of scope",
-    "cloc_reproduction": "539 files / 170,898 code / 96,290 comment — exact match to the figures already present uncommitted in README.md:19-21",
-    "lean_verify_runs": 4,
-    "lean_files_changed": 0
-  },
-  "artifacts": {
-    "report": "specs/485_readme_correction_toplevel_and_formalsystem/reports/01_readme-correction-verification.md"
-  },
-  "findings_summary": {
-    "scope_a_confirmed": 11,
-    "scope_a_already_applied": 1,
-    "scope_b_confirmed": 14,
-    "scope_b_larger_than_listed": 6,
-    "scope_b_already_fixed_upstream": 1,
-    "unlisted_defects_found": 6,
-    "task_claims_needing_correction": 2
-  },
-  "key_corrections_to_task_description": [
-    "A7 (README.md metrics 301/109,364/50,913 -> 539/170,898/96,290) is ALREADY APPLIED as an uncommitted working-tree edit; only a dropped space at README.md:21 remains. Carry it forward, do not revert.",
-    "B4: the task presents FormalSystem/README.md:97 and ProofSystem/README.md:37 as mutually contradictory without saying which wins. Axioms.lean:589-594 settles it — FormalSystem/README.md:97 ('3 Discrete-only, 2 Dense-only') is ALREADY CORRECT; ProofSystem/README.md:37 is the wrong one. An implementer following the description literally could break the correct site.",
-    "B11: BXCanonical/README.md:13 was already repaired by task 484. Only Algebraic/README.md:26 and Core/README.md:21 remain.",
-    "B3: FOUR phantom declarations at WeakCanonical/README.md:44-47, not three — truth_lemma has zero live occurrences too.",
-    "B7: BXCanonical/README.md:28 advertises truth_lemma, which also does not exist in BXCanonical/.",
-    "B13: ALL NINE root-file line counts at FormalSystem/README.md:183-193 are wrong, not the three listed, and the first row names a nonexistent file (Bimodal.lean)."
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 8,
+  "summary": "Created a 10-phase, 13.5-hour implementation plan for the README correction pass covering 17 files across 9 disjoint territories, with 5 pre-declared decisions (D1-D5) resolving every open question the research report escalated. The plan carries a Shared ground truth table so the phases that edit different files converge on the same source-verified figures.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/485_readme_correction_toplevel_and_formalsystem/plans/01_readme-correction.md",
+      "summary": "10-phase plan repairing README.md (Scope A, under-claims) and the FormalSystem/**/README.md layer (Scope B, over-claims), gated on check-module-invariants.sh ALL CHECKS PASSED and readme-lint.sh broken references 5 -> 0."
+    }
   ],
-  "file_scope_additions_required": [
-    "FormalSystem/Metalogic/WeakCanonical/EFGames/README.md",
-    "FormalSystem/Metalogic/WeakCanonical/Expressiveness/README.md",
-    "FormalSystem/Metalogic/WeakCanonical/Separation/README.md",
-    "FormalSystem/Theorems/Perpetuity/README.md"
-  ],
-  "next_steps": "Proceed to /plan 485. The report supplies every replacement figure measured at research time (axiom partition, all flagship theorem sites with verified axiom profiles, full directory inventories for WeakCanonical/ BXCanonical/ Algebraic/ Core/ FrameConditions/ Semantics/ Theorems/ ProofSystem/, and the five B14 targets with resolved relative paths), so the plan need not re-derive them. An 8-phase decomposition with disjoint territory is given in report section 9; phase groups A (README.md, phases 1-2) and B (FormalSystem/**, phases 3-7) can run in parallel. Resolve the three decisions in report section 6 and the file_scope gap in section 7 before dispatch.",
-  "session_id": "sess_1787688954_7fb0f6_485",
-  "agent_type": "lean-research-agent"
+  "phases_completed": 0,
+  "phases_total": 10,
+  "blockers": [],
+  "sorry_inventory": [],
+  "plan_markers_verified": true,
+  "continuation_path": null,
+  "next_action_hint": "Dispatch /implement 485. Wave 1 is phases 1, 3, 4, 5, 6, 7, 8, 9 (disjoint file territories, parallelizable); wave 2 is phase 2 (depends on 1); wave 3 is phase 10 (verification gate). Before phase 9 runs, extend this task's file_scope in specs/state.json from 13 to 17 entries per decision D4 -- the B14 gate is otherwise unsatisfiable."
 }

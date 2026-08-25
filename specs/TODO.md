@@ -34,7 +34,7 @@ next_project_number: 488
 
 ### Code Quality
 
-485 [RESEARCHED] — README CORRECTION: rewrite the top-level README.md and repair the
+485 [PLANNED] — README CORRECTION: rewrite the top-level README.md and repair the
   └─ 486 [NOT STARTED] — docs/ OVERHAUL: delete the documents that are fiction, rewrite th
 
 ### Dataset Enhancement
@@ -226,11 +226,12 @@ This phase runs LAST because the guard must be authored against already-correcte
 ---
 
 ### 485. Readme correction toplevel and formalsystem
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: code-quality
 - **Dependencies**: Task 484
 - **Research**: [485_readme_correction_toplevel_and_formalsystem/reports/01_readme-correction-verification.md]
+- **Plan**: [485_readme_correction_toplevel_and_formalsystem/plans/01_readme-correction.md]
 
 **Description**: README CORRECTION: rewrite the top-level README.md and repair the FormalSystem/**/README.md layer, which contains the audit's worst overstatements.
 

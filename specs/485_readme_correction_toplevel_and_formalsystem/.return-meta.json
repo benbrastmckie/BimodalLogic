@@ -1,16 +1,31 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/485_readme_correction_toplevel_and_formalsystem/reports/01_readme-correction-verification.md",
-      "summary": "Verification of all 12 Scope A and 14 Scope B README defects against Lean source, #print axioms, and both invariant scripts; supplies ground-truth replacement values, records 6 unlisted defects, 3 decisions, a 4-file file_scope gap, and an 8-phase decomposition."
+      "type": "plan",
+      "path": "specs/485_readme_correction_toplevel_and_formalsystem/plans/01_readme-correction.md",
+      "summary": "10-phase, 13.5-hour implementation plan repairing the top-level README.md and the FormalSystem/**/README.md layer across 17 files in 9 disjoint territories, with 5 pre-declared decisions and a shared source-verified ground-truth table."
     }
   ],
+  "next_steps": "Run /implement 485 to execute the plan",
   "metadata": {
     "session_id": "sess_1787688954_7fb0f6_485",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 10,
+    "estimated_hours": 13.5,
+    "dependency_waves": [[1, 3, 4, 5, 6, 7, 8, 9], [2], [10]]
+  },
+  "memory_candidates": [
+    {
+      "content": "When a plan splits a documentation-correction pass across many files that must converge on the SAME figures (axiom counts, class enumerations, layer tables), put those figures in a 'Shared ground truth' section of the plan itself, with a .lean citation per row, rather than leaving them only in the research report. The observed failure mode in a multi-README layer is two documents disagreeing; disjoint file territories make phases parallelizable but do NOT prevent semantic divergence, because each phase transcribes independently. The plan-level shared table plus a final cross-file grep sweep in the gate phase closes that gap. Pair it with a per-phase 'Scope Hypothesis' naming the source-side command (grep/wc -l/find) that re-confirms that phase's own subset at implementation time, so no figure is ever copied from another markdown document.",
+      "category": "PATTERN",
+      "source_artifact": "specs/485_readme_correction_toplevel_and_formalsystem/plans/01_readme-correction.md",
+      "confidence": 0.8,
+      "suggested_keywords": ["documentation-correction", "shared-ground-truth", "parallel-phases", "territory-contract", "cross-file-consistency"]
+    }
+  ],
+  "modified_files": [],
+  "errors": []
 }
