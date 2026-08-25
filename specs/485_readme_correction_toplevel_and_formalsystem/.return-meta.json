@@ -1,0 +1,16 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/485_readme_correction_toplevel_and_formalsystem/reports/01_readme-correction-verification.md",
+      "summary": "Verification of all 12 Scope A and 14 Scope B README defects against Lean source, #print axioms, and both invariant scripts; supplies ground-truth replacement values, records 6 unlisted defects, 3 decisions, a 4-file file_scope gap, and an 8-phase decomposition."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1787688954_7fb0f6_485",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
