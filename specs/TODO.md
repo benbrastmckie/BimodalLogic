@@ -11,7 +11,7 @@ next_project_number: 488
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,193,257,298,433,461,463,476,483,486 | -- | automation, code-quality, dataset-enhancement, ... |
+| 1 | 127,128,193,257,298,433,461,463,476,483 | -- | automation, dataset-enhancement, decidability, ... |
 | 2 | 125,178,231,282,296,464,481 | 193,298,461,463,483 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 219,465 | 231,464 | dataset-enhancement, decidability |
 | 4 | 428 | 433,465 | decidability |
@@ -31,10 +31,6 @@ next_project_number: 488
 ### Automation
 
 193 [NOT STARTED] — Apply validity-intro and truth-simp macros to the soundness layer
-
-### Code Quality
-
-486 [PLANNED] — docs/ OVERHAUL: delete the documents that are fiction, rewrite th
 
 ### Dataset Enhancement
 
@@ -125,12 +121,13 @@ Required fix: add a file-based passthrough (e.g. `--argjson-file NAME PATH` mapp
 ---
 
 ### 486. Docs overhaul deletions links gaps and drift guard
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: code-quality
 - **Dependencies**: Task 484, Task 485
 - **Research**: [486_docs_overhaul_deletions_links_gaps_and_drift_guard/reports/01_docs-overhaul-verification.md]
 - **Plan**: [486_docs_overhaul_deletions_links_gaps_and_drift_guard/plans/01_docs-overhaul-and-drift-guard.md]
+- **Summary**: [486_docs_overhaul_deletions_links_gaps_and_drift_guard/summaries/01_docs-overhaul-summary.md]
 
 **Description**: docs/ OVERHAUL: delete the documents that are fiction, rewrite the false limitation entries, repair 94 dead links, and close the documentation gaps -- then add a mechanical guard so status drift cannot recur.
 
