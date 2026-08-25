@@ -12,9 +12,11 @@ current-state statement per front, and to ground every status claim in a named
 diagrams, dead-end catalogs, the old 111-row task cross-reference table) was moved verbatim to
 `specs/ROADMAP-ARCHIVE.md` — consult it for provenance, never for current status.
 
-**Architecture**: the proof system has 42 BX axiom constructors in 6 layers: propositional (4),
-S5 modal (5), Burgess-Xu temporal (24), modal-temporal interaction (2, 1 derivable), uniformity
-(5), and Prior-UZ/SZ (2, discrete-only). Temporal semantics is **irreflexive**: G/H quantify over
+**Architecture**: the proof system has 45 BX axiom constructors in nine layers: propositional (4),
+S5 modal (5), Burgess-Xu temporal (18) and additional Burgess-Xu temporal (4), modal-temporal
+interaction (1), uniformity (5), Prior-UZ/SZ (2, discrete-only), Z1 (1, discrete-only), density
+(2, dense-only), and Reynolds Dedekind (3, Dedekind-only). Temporal semantics is **irreflexive**:
+G/H quantify over
 `t < s` / `s < t` (strict inequality), and Until/Since require strictly future/past witnesses. See
 `## BX Axiom System` and `## Irreflexive Truth Semantics` below for the full technical reference.
 
@@ -362,93 +364,158 @@ Quot.sound]` — no `sorryAx`, tree-wide, across all four flagship theorems.
 
 ## BX Axiom System
 
-`FormalSystem/ProofSystem/Axioms.lean` defines 42 axiom constructors in
-six layers (see `Axioms.lean:55-59` for the Burgess 1982/84, Xu 1988, and Venema 1993
-references; Reynolds 1992 is cited inline at `Axioms.lean:309`, not in that block). Under
-irreflexive semantics (strict `<` for G/H,
-strict witness for U/S), the axiom set replaces BX1/BX1' (reflexive T) with
-seriality axioms and removes BX8/BX8' (not sound under irreflexive Until/Since).
+`FormalSystem/ProofSystem/Axioms.lean` defines **45 axiom constructors in nine layers**. The count
+is anchored on the `Axiom.minFrameClass` docstring (`Axioms.lean:571-582`), which gives 45 with the
+split Base 37 / Dense 2 / Discrete 3 / Dedekind 3 and agrees with enumerating `inductive Axiom`
+(`Axioms.lean:99-517`) directly. The Burgess 1982/84, Xu 1988, and Venema 1993 references are at
+`Axioms.lean:72-74`; Reynolds 1992 is cited inline on the Dedekind constructors (`Axioms.lean:426`,
+`:437`, `:449`), not in that block. Under irreflexive semantics (strict `<` for G/H, strict witness
+for U/S), the axiom set replaces BX1/BX1' (reflexive T) with seriality axioms and removes BX8/BX8'
+(not sound under irreflexive Until/Since).
+
+**Do not re-derive the count from the module docstring.** `Axioms.lean:58` still reads
+"42 axiom constructors" and `Axioms.lean:84` "42 constructors organized into eight layers"; both
+predate the three Reynolds Dedekind axioms and are stale. The in-source `-- Layer N` comments are
+not authoritative on counts either: `Axioms.lean:123` says Layer 3 is 20 (it is 18) and
+`Axioms.lean:349` says Layer 8 is 1 (it is 2). Only enumeration is authoritative.
+
+**Three names below are derived theorems, not `Axiom` constructors**, and must not be re-added as
+rows to this table: `temp_k_dist` and `temp_4` (derived as
+`Theorems.TemporalDerived.temporalKDistDerived` and `.temporal4Derived`; see `Axioms.lean:59-60`)
+and `temp_future` (`□φ → G□φ`, derived from MF + T + Modal 4 in `Theorems/Combinators.lean`; see
+`Axioms.lean:281`). A `temp_4` does exist elsewhere, at `FormalSystem/BaseLanguage/Axioms.lean:99`
+on `BLFormula` — a different inductive, not this one.
+
+The nine per-layer counts below are 4 + 5 + 18 + 4 + 1 + 5 + 2 + 1 + 2 + 3 = 45 (Layer 3 is split
+into 3 and 3b in-source, so nine layers carry ten table sections).
 
 ### Layer 1: Propositional (4)
 
 | Axiom | File:Line | Statement | Role |
 |-------|-----------|-----------|------|
-| `prop_k` | Axioms.lean:71 | `(φ → (ψ → χ)) → ((φ → ψ) → (φ → χ))` | Intuitionistic K |
-| `prop_s` | Axioms.lean:75 | `φ → (ψ → φ)` | Weakening |
-| `ex_falso` | Axioms.lean:78 | `⊥ → φ` | Ex falso |
-| `peirce` | Axioms.lean:81 | `((φ → ψ) → φ) → φ` | Classical |
+| `prop_k` | Axioms.lean:103 | `(φ → (ψ → χ)) → ((φ → ψ) → (φ → χ))` | Intuitionistic K |
+| `prop_s` | Axioms.lean:106 | `φ → (ψ → φ)` | Weakening |
+| `ex_falso` | Axioms.lean:108 | `⊥ → φ` | Ex falso |
+| `peirce` | Axioms.lean:110 | `((φ → ψ) → φ) → φ` | Classical |
 
 ### Layer 2: S5 Modal (5)
 
 | Axiom | File:Line | Statement | Role |
 |-------|-----------|-----------|------|
-| `modal_t` | Axioms.lean:86 | `□φ → φ` | Reflexivity |
-| `modal_4` | Axioms.lean:89 | `□φ → □□φ` | Transitivity |
-| `modal_b` | Axioms.lean:92 | `φ → □◇φ` | Symmetry |
-| `modal_5_collapse` | Axioms.lean:95 | `◇□φ → □φ` | S5 characteristic |
-| `modal_k_dist` | Axioms.lean:98 | `□(φ → ψ) → (□φ → □ψ)` | Normal modality |
+| `modal_t` | Axioms.lean:113 | `□φ → φ` | Reflexivity |
+| `modal_4` | Axioms.lean:115 | `□φ → □□φ` | Transitivity |
+| `modal_b` | Axioms.lean:117 | `φ → □◇φ` | Symmetry |
+| `modal_5_collapse` | Axioms.lean:119 | `◇□φ → □φ` | S5 characteristic |
+| `modal_k_dist` | Axioms.lean:121 | `□(φ → ψ) → (□φ → □ψ)` | Normal modality |
 
-### Layer 3: BX Temporal (24)
+### Layer 3: BX Temporal (18)
+
+Ordered by source line. The in-source comment at `Axioms.lean:123` says 20; enumeration says 18,
+and enumeration wins. `temp_k_dist` and `temp_4` are **not** constructors here — see the note
+above the tables.
 
 | Axiom | File:Line | Statement (future direction) | Role |
 |-------|-----------|------------------------------|------|
-| `temp_k_dist` | Axioms.lean:107 | `G(φ → ψ) → (Gφ → Gψ)` | K for G |
-| `temp_4` | Axioms.lean:112 | `Gφ → GGφ` | Transitivity; needed for `bx_le_trans` |
-| BX1 `serial_future` | Axioms.lean:117 | `T → F(T)` | Seriality (replaces reflexive T) |
-| BX1' `serial_past` | Axioms.lean:122 | `T → P(T)` | Mirror seriality |
-| BX3 `right_mono_until` | Axioms.lean:139 | `G(φ→ψ) → ((χUφ)→(χUψ))` | Right monotonicity |
-| BX3' `right_mono_since` | Axioms.lean:143 | mirror for S | |
-| BX4 `connect_future` | Axioms.lean:150 | `φ → G(P(φ))` | Temporal connectedness |
-| BX4' `connect_past` | Axioms.lean:155 | `φ → H(F(φ))` | Mirror |
-| BX5 `self_accum_until` | Axioms.lean:161 | `(φUψ) → ((φ ∧ (φUψ))Uψ)` | **Key eventuality axiom** |
-| BX5' `self_accum_since` | Axioms.lean:166 | mirror for S | |
-| BX6 `absorb_until` | Axioms.lean:173 | `(φU(φ ∧ (φUψ))) → (φUψ)` | Prevents infinite deferral |
-| BX6' `absorb_since` | Axioms.lean:177 | mirror for S | |
-| BX7 `linear_until` | Axioms.lean:184 | four-formula linearity disjunction | Linearity of U witnesses |
-| BX7' `linear_since` | Axioms.lean:194 | mirror for S | |
-| BX10 `until_F` | Axioms.lean:211 | `(φUψ) → F(ψ)` | Eventuality extraction |
-| BX10' `since_P` | Axioms.lean:216 | mirror for S | |
-| BX11 `temp_linearity` | Axioms.lean:225 | F-witness linearity disjunction | Linear order on F witnesses |
-| BX11' `temp_linearity_past` | Axioms.lean:234 | mirror for P | |
-| BX12 `F_until_equiv` | Axioms.lean:243 | `F(φ) → (⊤Uφ)` | Bridges F to U |
-| BX12' `P_since_equiv` | Axioms.lean:248 | `P(φ) → (⊤Sφ)` | Mirror |
-| BX13 `enrichment_until` | Axioms.lean:160 | `p ∧ (φUψ) → (φU(ψ ∧ S(φ,p)))` | Burgess A3a enrichment |
-| BX13' `enrichment_since` | Axioms.lean:165 | mirror for S | Burgess A3b |
-| BX2H `left_mono_until_G` | Axioms.lean:140 | `G(φ→χ) → (φUψ) → (χUψ)` | Guard strengthening under G |
-| BX2H' `left_mono_since_H` | Axioms.lean:146 | `H(φ→χ) → (φSψ) → (χSψ)` | Guard strengthening under H |
+| BX1 `serial_future` | Axioms.lean:128 | `T → F(T)` | Seriality (replaces reflexive T) |
+| BX1' `serial_past` | Axioms.lean:132 | `T → P(T)` | Mirror seriality |
+| BX2H `left_mono_until_G` | Axioms.lean:138 | `G(φ→χ) → (φUψ) → (χUψ)` | Guard strengthening under G |
+| BX2H' `left_mono_since_H` | Axioms.lean:144 | `H(φ→χ) → (φSψ) → (χSψ)` | Guard strengthening under H |
+| BX3 `right_mono_until` | Axioms.lean:149 | `G(φ→ψ) → ((χUφ)→(χUψ))` | Right monotonicity |
+| BX3' `right_mono_since` | Axioms.lean:153 | mirror for S | |
+| BX4 `connect_future` | Axioms.lean:158 | `φ → G(P(φ))` | Temporal connectedness |
+| BX4' `connect_past` | Axioms.lean:162 | `φ → H(F(φ))` | Mirror |
+| BX13 `enrichment_until` | Axioms.lean:171 | `p ∧ U(α, β) → U(α ∧ S(p, β), β)` | Burgess A3a enrichment |
+| BX13' `enrichment_since` | Axioms.lean:179 | mirror for S | Burgess A3b |
+| BX5 `self_accum_until` | Axioms.lean:189 | `(φUψ) → ((φ ∧ (φUψ))Uψ)` | **Key eventuality axiom** |
+| BX5' `self_accum_since` | Axioms.lean:194 | mirror for S | |
+| BX6 `absorb_until` | Axioms.lean:201 | `(φU(φ ∧ (φUψ))) → (φUψ)` | Prevents infinite deferral |
+| BX6' `absorb_since` | Axioms.lean:205 | mirror for S | |
+| BX7 `linear_until` | Axioms.lean:211 | four-formula linearity disjunction | Linearity of U witnesses |
+| BX7' `linear_since` | Axioms.lean:220 | mirror for S | |
+| BX10 `until_F` | Axioms.lean:241 | `(φUψ) → F(ψ)` | Eventuality extraction |
+| BX10' `since_P` | Axioms.lean:246 | mirror for S | |
 
 *Note: BX8/BX8' (until_step/since_step) removed -- not sound under irreflexive semantics.*
 *Note: BX9/BX9' (until_elim/since_elim) and until_guard/since_guard removed -- not sound under open guard `(t,s)` semantics (task 113).*
 *Note: BX14/BX14' (separation_until/separation_since) removed -- redundant under transitive frames. Xu 3.2.1 (BX5 self-accumulation) subsumes BX14's role in chronicle splitting (task 115).*
 *Note: BX2/BX2' (left_mono_until/left_mono_since) removed in task 133. Under open-guard irreflexive semantics the pointwise conjunct in BX2 is redundant; BX2H/BX2H' (left_mono_until_G/left_mono_since_H, added in task 107 Phase 5b) subsume BX2/BX2' and are now the canonical left-monotonicity axioms.*
 
-### Layer 4: Modal-Temporal Interaction (2 → 1 after task 124)
+### Layer 3b: Additional BX Temporal (4)
+
+In-source `-- Layer 3b: Additional BX Temporal (4 = 2 axioms x 2 directions)` (`Axioms.lean:248`).
+
+| Axiom | File:Line | Statement | Role |
+|-------|-----------|-----------|------|
+| BX11 `temp_linearity` | Axioms.lean:253 | F-witness linearity disjunction | Linear order on F witnesses |
+| BX11' `temp_linearity_past` | Axioms.lean:261 | mirror for P | |
+| BX12 `F_until_equiv` | Axioms.lean:270 | `F(φ) → (⊤Uφ)` | Bridges F to U |
+| BX12' `P_since_equiv` | Axioms.lean:275 | `P(φ) → (⊤Sφ)` | Mirror |
+
+### Layer 4: Modal-Temporal Interaction (1)
 
 | Axiom | File:Line | Statement | Status |
 |-------|-----------|-----------|--------|
-| `modal_future` | Axioms.lean:328 | `□φ → □(Gφ)` | Primitive |
-| `temp_future` | Axioms.lean:331 | `□φ → G(□φ)` | **Task 124: derive from MF+T+Modal4, remove as primitive** |
+| `modal_future` | Axioms.lean:283 | `□φ → □(Gφ)` | Primitive |
+
+*`temp_future` (`□φ → G□φ`) was removed as a primitive by task 124 and is now derived from
+MF + T + Modal 4 in `Theorems/Combinators.lean` (`Axioms.lean:281`). It is not a constructor.*
 
 ### Layer 5: Uniformity (5)
 
-| Axiom | Statement | Role |
-|-------|-----------|------|
-| `discrete_symm_fwd` | `U(⊤,⊥) → S(⊤,⊥)` | Forward gap implies backward gap |
-| `discrete_symm_bwd` | `S(⊤,⊥) → U(⊤,⊥)` | Backward gap implies forward gap |
-| `discrete_propagate_fwd` | `U(⊤,⊥) → G(U(⊤,⊥))` | Gap propagates to all future points |
-| `discrete_propagate_bwd` | `U(⊤,⊥) → H(U(⊤,⊥))` | Gap propagates to all past points |
-| `discrete_box_necessity` | `U(⊤,⊥) → □(U(⊤,⊥))` | Discreteness propagates to all box-accessible worlds (task 142) |
+| Axiom | File:Line | Statement | Role |
+|-------|-----------|-----------|------|
+| `discrete_symm_fwd` | Axioms.lean:291 | `U(⊤,⊥) → S(⊤,⊥)` | Forward gap implies backward gap |
+| `discrete_symm_bwd` | Axioms.lean:296 | `S(⊤,⊥) → U(⊤,⊥)` | Backward gap implies forward gap |
+| `discrete_propagate_fwd` | Axioms.lean:302 | `U(⊤,⊥) → G(U(⊤,⊥))` | Gap propagates to all future points |
+| `discrete_propagate_bwd` | Axioms.lean:308 | `U(⊤,⊥) → H(U(⊤,⊥))` | Gap propagates to all past points |
+| `discrete_box_necessity` | Axioms.lean:316 | `U(⊤,⊥) → □(U(⊤,⊥))` | Discreteness propagates to all box-accessible worlds (task 142) |
 
 *These encode the uniformity of discreteness in ordered abelian groups. Valid on all linear orders with AddCommGroup structure. The `discrete_box_necessity` axiom is the key to eliminating the mixed case in `completeness`: it ensures that if any world is discrete, all box-accessible worlds are discrete too.*
 
 ### Layer 6: Prior Axioms for Integers (2) — Task 119
 
-| Axiom | Statement | Role |
-|-------|-----------|------|
-| `prior_UZ` | `F(φ) → U(φ, ¬φ)` | Nearest future φ-point is reachable (Reynolds 1992 §10, Venema 1993 axiom W) |
-| `prior_SZ` | `P(φ) → S(φ, ¬φ)` | Nearest past φ-point is reachable (dual) |
+`minFrameClass = .Discrete`.
+
+| Axiom | File:Line | Statement | Role |
+|-------|-----------|-----------|------|
+| `prior_UZ` | Axioms.lean:330 | `F(φ) → U(φ, ¬φ)` | Nearest future φ-point is reachable (Reynolds 1992 §10, Venema 1993 axiom W) |
+| `prior_SZ` | Axioms.lean:335 | `P(φ) → S(φ, ¬φ)` | Nearest past φ-point is reachable (dual) |
 
 *These are discrete-only axioms (`isBase = False`, `isDenseCompatible = False`, `isDiscreteCompatible = True`, `frameClass = .Discrete`). Valid on all discrete orders with `IsSuccArchimedean`. Soundness proofs are sorry-free (well-founded descent via `Nat.find` on succ/pred chain). Added by task 119.*
+
+### Layer 7: Z1 (1)
+
+`minFrameClass = .Discrete`.
+
+| Axiom | File:Line | Statement | Role |
+|-------|-----------|-----------|------|
+| `z1` | Axioms.lean:347 | `G(Gφ→φ) → (FGφ→Gφ)` | Characteristic axiom of `IsSuccArchimedean` frames; every definable bounded set has a maximum (Doets 1987 Claim 10, Reynolds 1994 §10) |
+
+### Layer 8: Density (2)
+
+`minFrameClass = .Dense`. The in-source comment at `Axioms.lean:349` says 1; enumeration says 2,
+and `Axioms.lean:573` agrees it is 2.
+
+| Axiom | File:Line | Statement | Role |
+|-------|-----------|-----------|------|
+| `density` | Axioms.lean:358 | `GGφ → Gφ` | Density fills the gap; NOT valid on discrete frames |
+| `dense_indicator` | Axioms.lean:369 | `¬U(⊤,⊥)` | No immediate successor exists (Burgess 1982 §1.6). The density schema alone provably cannot derive it |
+
+### Layer 9: Reynolds Dedekind (3)
+
+`minFrameClass = .Dedekind`. Reynolds' definable-gap-freeness axioms for real flow, printed
+p.168 of "An axiomatization for Until and Since over the reals without the IRR rule" (1992).
+`K⁺A = ¬U(⊤,¬A)` and `K⁻A = ¬S(⊤,¬A)` are defined in `Syntax/Formula.lean`.
+
+| Axiom | File:Line | Statement | Role |
+|-------|-----------|-----------|------|
+| `prior_U_gap` | Axioms.lean:431 | `U(⊤,φ) ∧ F(¬φ) → U(¬φ ∨ K⁺(¬φ), φ)` | The φ-region has a definable upper endpoint (supremum) |
+| `prior_S_gap` | Axioms.lean:441 | `S(⊤,φ) ∧ P(¬φ) → S(¬φ ∨ K⁻(¬φ), φ)` | Past dual: definable lower endpoint (infimum) |
+| `sep` | Axioms.lean:452 | `K⁺φ ∧ ¬K⁺(φ ∧ U(φ,¬φ)) → K⁺(K⁺φ ∧ K⁻φ)` | Reynolds' separation axiom; turns on separability of ℝ, though it does not characterize it |
+
+***`prior_U_gap`/`prior_S_gap` are NOT `prior_UZ`/`prior_SZ`.*** The Layer 6 pair is the integer
+well-ordering Prior axiom at `.Discrete`; this pair is the Reynolds gap form at `.Dedekind`.
+Different statements, different frame classes, confusingly similar names (`Axioms.lean:428-430`).
 
 ### Irreflexive semantics and the seriality switch
 

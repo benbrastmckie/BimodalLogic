@@ -174,32 +174,32 @@ before writing any line number into the ROADMAP; use the observed numbers, not t
 
 ---
 
-### Phase 2: ROADMAP A2/A3 — 45 constructors, nine layers [NOT STARTED]
+### Phase 2: ROADMAP A2/A3 — 45 constructors, nine layers [COMPLETED]
 
 **Goal**: Correct the headline count at `:15` and `:354-357` to 45, rebuild the layer table
 (`:363-443`) as nine layers with verified per-constructor line citations, and apply decision D2.
 
 **Tasks**:
-- [ ] Re-enumerate `inductive Axiom` (`FormalSystem/ProofSystem/Axioms.lean:99-517`;
+- [x] Re-enumerate `inductive Axiom` (`FormalSystem/ProofSystem/Axioms.lean:99-517`;
       `inductive FrameClass` begins at `:519`) and confirm the constructor count and each
       constructor's line, using report §3.2's table as the hypothesis to check, not as input.
-- [ ] Update `:15` and the `## BX Axiom System` intro (`:354-357`) to "45 axiom constructors in
+- [x] Update `:15` and the `## BX Axiom System` intro (`:354-357`) to "45 axiom constructors in
       nine layers".
-- [ ] Apply **D2**: re-anchor the count citation at `:357` from `Axioms.lean:55-59` to
+- [x] Apply **D2**: re-anchor the count citation at `:357` from `Axioms.lean:55-59` to *(deviation: altered — source check showed the Burgess/Xu/Venema references are at `Axioms.lean:72-74`, not `:55-59`, and Reynolds 1992 is cited at `:426`/`:437`/`:449`, not `:309`; the observed values were used)*
       `Axioms.lean:571-582` (the `minFrameClass` docstring). Keep `:55-59` cited only for the
       Burgess/Xu/Venema references.
-- [ ] Delete the three phantom rows, which are derived theorems and not `Axiom` constructors:
+- [x] Delete the three phantom rows, which are derived theorems and not `Axiom` constructors:
       `temp_k_dist` (`:386`), `temp_4` (`:387`), `temp_future` (`:421`). Note in the table's
       surrounding prose that these are derived, so a future reader does not re-add them.
-- [ ] Correct the existing layer headings and membership to: Layer 1 Propositional (4),
+- [x] Correct the existing layer headings and membership to: Layer 1 Propositional (4),
       Layer 2 S5 Modal (5), Layer 3 BX Temporal (18), Layer 3b Additional BX Temporal (4),
       Layer 4 Modal-Temporal Interaction (1), Layer 5 Uniformity (5), Layer 6 Prior for
       Integers (2).
-- [ ] Add the three absent layers: Layer 7 Z1 (1: `z1`), Layer 8 Density (2: `density`,
+- [x] Add the three absent layers: Layer 7 Z1 (1: `z1`), Layer 8 Density (2: `density`,
       `dense_indicator`), Layer 9 Reynolds Dedekind (3: `prior_U_gap`, `prior_S_gap`, `sep`),
       with their `minFrameClass` values `.Discrete`, `.Dense`, `.Dedekind`.
-- [ ] Refresh every `Axioms.lean:NN` citation in the table from the confirmed enumeration.
-- [ ] Do NOT trust the in-source `-- Layer N` comments: `:123` says Layer 3 is 20 (it is 18) and
+- [x] Refresh every `Axioms.lean:NN` citation in the table from the confirmed enumeration.
+- [x] Do NOT trust the in-source `-- Layer N` comments: `:123` says Layer 3 is 20 (it is 18) and
       `:349` says Layer 8 is 1 (it is 2). Only enumeration is authoritative.
 
 **Timing**: 1.5 hours
