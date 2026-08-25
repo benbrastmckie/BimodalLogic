@@ -427,3 +427,119 @@ targeted `jq` write per task):
 
 No task's status transitioned. No `.lean` file touched. All writes through `state-write.sh`;
 `TODO.md` only regenerated.
+
+## Phase 6 — Dependency wiring, topics, counters, and critical path
+
+### Edges wired / considered
+
+- **482's `[412]` edge** and **481's `[434]` edge**: both already set correctly at Phase 4
+  creation time; no further write needed.
+- **169/422/95**: Phase 2's verdict was REMOVE (propose abandonment), not REVISE-with-new-edges;
+  no new dependency edge is implied by that verdict. The one edge-shaped consequence Phase 2
+  surfaced — task 362 lists `169` as a dependency, and would need that edge revisited if 169 is
+  ever abandoned — is a **future** consequence of a status transition this task does not perform,
+  so no edge write happens here; it is carried to the Phase 8 report as an explicit flag instead.
+- **462's sequencing prose** (added Phase 5: task 481 "should run before or alongside" 462):
+  **decided NOT to add a hard dependency edge** `462 -> [481]`. Reasoning: "alongside" explicitly
+  permits concurrent execution, which a blocking dependency edge would foreclose (it would force
+  strict serialization, overconstraining a prose statement that deliberately allows parallelism).
+  The prose itself already reads as advisory coordination ("check its disposition before relying
+  on any assumption"), not a hard gate, so there is exactly one coherent reading (advisory,
+  non-blocking) and no dangling ambiguity to resolve with an edge. Recorded here explicitly per
+  the plan's "never leave both readings" instruction — this is a considered decision, not a
+  silent skip.
+- No other REVISE from Phase 5 asserts a gate lacking a corresponding edge.
+
+### active_topics
+
+Added `metalogic` via `state-write.sh` (`.active_topics = ((.active_topics + ["metalogic"]) |
+unique | sort)`). Confirmed present by `jq`.
+
+### Dangling-edge scan (zero-padded, re-run after Phase 4/5's writes)
+
+Union of `active_projects` (51 entries, post Phase 4) and archive's archived+completed sets: 456
+valid zero-padded IDs. All 51 distinct dependency targets across the live `active_projects`
+resolve into that union. **Result: zero dangling edges**, confirmed after the new tasks and all
+description writes.
+
+### state.json counters — REPAIR DEFERRED, with argument (per the plan's explicit permission)
+
+Recomputed fresh: `active_projects | length` = 51. Live status breakdown: `blocked=3,
+completed=16, implementing=1, not_started=23, partial=5, planned=1, researched=2` (sums to 51).
+
+Current `.metadata.total_tasks` = 42, `.task_counts` = `{blocked:3, implementing:1,
+not_started:31, partial:5, planned:1, researched:1, active:42, total:42}`.
+
+**Decision: do not hand-edit these fields; defer the repair to `/task --sync`.** Argument: the
+plan's own Phase 6 task list gives an explicit escape valve for exactly this case — "if the
+`task_counts` key set cannot represent the live status breakdown without a schema change... do
+NOT invent schema — record the precise argument for leaving the repair to `/task --sync`
+instead." That condition is met: the live status set includes `completed` (16 entries) and a
+plural `researched` (2 entries), neither representable in the current `task_counts` key set
+(which has no `completed` key and was apparently designed to key only non-terminal in-flight
+statuses — its own internal invariant, `active == total`, with both equal to the SUM OF ONLY THE
+KEYED STATUSES, never included `completed` at all even at whatever point it was last accurate).
+Two competing repair semantics are equally defensible from the field names alone and neither can
+be confirmed against any schema documentation or consumer code: (a) `total_tasks`/`task_counts`
+means literally every `active_projects` entry (51, including `completed`), or (b) it means only
+non-terminal "still active" work (35, excluding `completed`), continuing whatever convention
+produced the old `42` figure. **Searched exhaustively for a tie-breaker**: `grep -rln
+"task_counts\|\.metadata\.total_tasks" .claude/scripts/ .claude/hooks/` returns **zero files** —
+no script anywhere reads or writes either field, so there is no consumer contract to consult and
+no way to verify either semantics against actual behavior. Inventing a resolution here would be
+exactly the "unargued" schema invention the plan forbids; the honest action is to leave the
+counters as they are (still stale, unchanged by this task) and hand the precise diagnosis above
+to whichever future `/task --sync` (or a dedicated schema-clarification task) is positioned to
+either confirm the intended semantics with the user or extend the schema deliberately.
+`.metadata.last_sync` is likewise left unchanged (not bumped), since bumping it without actually
+reconciling the counts would misrepresent a sync as having occurred.
+
+### Critical path, re-derived against the LIVE dependency graph (not report 02's simplified
+diagram, per the plan's explicit instruction to re-derive rather than carry the figure forward)
+
+Computed by longest-path over the actual `dependencies` fields read via `jq` this dispatch (report
+02's diagram drew `433/434 -> 462`, but 462's real dependencies are `[469, 470]`, both completed
+— report 02's arrow was an aspirational ordering note, not the literal edge set):
+
+```
+462 (unblocked today, deps 469✓/470✓, ROUTINE)
+  -> 463 (deps 462, ROUTINE)
+    -> 464 (deps 462,463, HARD -- "the one genuinely OPEN MATHEMATICAL question", gapPotential)
+      -> 465 (deps 462,463,464, ROUTINE -- mechanical restatement of settled residuals)
+        -> 428 (deps 432✓,433(partial),434(partial),465, HARD -- split-arm fuel scaling,
+                now with the Phase 5 ASSESS/C9-register escape clause)
+          -> 429 (deps 428, HARD -- genuine open mathematics, box-anchor redesign,
+                  now with the Phase 5 recommended-route addendum)
+            -> 410 (deps 165✓,429, planned)
+              -> 411 (deps 165✓,410)
+                -> 430 (deps 428,429,411, HARD -- item (b) "the semantic lift")
+                  -> 412 (deps 165✓,410,411,428,430)
+                    -> 482 (deps 412, HARD -- open mathematics, multi-month)
+                    -> 177 retained half (deps 131,193,402,426✓,428,429,430,432✓,433,434,440,441,448)
+
+481 (deps 434(partial), HARD -- repair-or-replace) -- parallel entry, recommended before/
+    alongside 462 per Phase 5's addendum to 462 (advisory, not a hard edge -- see above)
+480 (deps [], ROUTINE, startable today, independent of the whole chain)
+476 (deps 475✓, HARD -- open mathematics, gated only on 475) -- parallel, does not feed the spine
+```
+
+**This is an 11-wave spine from 462 to 482** (10 waves to reach 412, one further to 482), computed
+by strict longest-path level assignment (462=1, 463=2, 464=3, 465=4, 428=5, 429=6, 410=7, 411=8,
+430=9, 412=10, 482=11; 434/433 sit at levels 1/2 respectively, feeding into 428 at level 5 without
+extending it further since 465's chain is longer). This differs from report 02's stated "9-wave"
+figure because report 02's own hand-drawn diagram compressed the real 462->463->464->465 chain
+into a single arrow and anchored the spine's start at 433/434 rather than at 462's actual
+(already-satisfied) dependencies — an artifact of the diagram, not of the underlying graph, which
+this phase re-derives directly from `dependencies` fields rather than carrying forward.
+
+**Routine vs. hard split, explicit per item**: ROUTINE — 462, 463, 465, 480 (mechanical
+engineering, no open mathematics). HARD — 464 (`gapPotential`, open mathematics), 428 (split-arm
+fuel scaling, now with an explicit ASSESS/C9-register escape), 429 (box-anchor redesign, genuine
+open mathematics), 430 item (b) (the semantic lift), 412's refutation induction, 481 (repair-or-
+replace, not routine discharge), 482 (open mathematics, multi-month), 476 (open mathematics,
+multi-month, parallel to the spine).
+
+### Hard-constraint check for this phase
+
+No `.lean` file touched. No task status transitioned. All writes through `state-write.sh`;
+`TODO.md` regenerated; `generate-task-order.sh --print` exits 0 with no undeclared-topic warning.

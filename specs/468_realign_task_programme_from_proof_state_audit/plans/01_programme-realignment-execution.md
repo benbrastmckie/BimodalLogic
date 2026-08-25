@@ -440,7 +440,7 @@ again. A description already correct gets a CURRENT row in the Phase 8 table, no
 
 ---
 
-### Phase 6: Dependency wiring, topics, counters, and critical path [NOT STARTED]
+### Phase 6: Dependency wiring, topics, counters, and critical path [COMPLETED]
 
 **Goal**: Make the graph consistent with the restructured set, close the `active_topics` gap,
 repair the `state.json` counters, and re-derive the critical path.
