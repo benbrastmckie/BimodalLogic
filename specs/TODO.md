@@ -43,7 +43,7 @@ next_project_number: 477
 ### Dataset Enhancement
 
 257 [BLOCKED] — Complete the Hugging Face Hub migration for large dataset storage
-298 [IMPLEMENTING] — Fix c7 labeling bug at formula ~13750 that causes unbounded memor
+298 [PARTIAL] — Fix c7 labeling bug at formula ~13750 that causes unbounded memor
   └─ 231 [NOT STARTED] — Build comprehensive automation so that every dataset regeneration
     └─ 219 [RESEARCHED] — Run bmlogic-bench through multiple LLMs to establish baseline dif
   └─ 282 [PARTIAL] — Flip complexity-9 dataset generation from stratified to exhaustiv
@@ -2106,7 +2106,7 @@ DEPENDENCY STATUS (re-verified 2026-08-18; dependencies array now includes 424, 
 ---
 
 ### 298. Fix c7 labeling bug and regenerate dataset
-- **Status**: [IMPLEMENTING]
+- **Status**: [PARTIAL]
 - **Task Type**: lean4
 - **Topic**: dataset-enhancement
 - **Dependencies**: Task 297, Task 343
