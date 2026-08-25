@@ -3,9 +3,9 @@
 Soundness, completeness, and decidability for the bimodal logic TM, combining S5
 modality with linear temporal logic.
 
-This directory is the largest thing in the repository: **210 live `.lean` files**,
-of which 135 sit under `WeakCanonical/` alone. Every count below excludes the archive — see
-[Counting Live Files](#counting-live-files).
+This directory is the largest thing in the repository: **314 live `.lean` files**
+(227,081 lines), of which 179 sit under `WeakCanonical/` alone. Every count below excludes the
+archive — see [Counting Live Files](#counting-live-files).
 
 ## Counting Live Files
 
@@ -28,9 +28,10 @@ distinct routes to completeness, and they are siblings rather than layers.
 
 | Route | Directory | Files | Lines | Approach |
 |-------|-----------|------:|------:|----------|
-| Chronicle | `BXCanonical/` | 20 | 18,527 | Chronicle construction over a canonical chain; carries the flagship theorems |
-| Kamp/Reynolds | `WeakCanonical/` | 135 | 106,253 | Reflexive canonical model, separation, and the Kamp/Reynolds machinery |
-| Parametric/algebraic | `Algebraic/` | 9 | 3,748 | Lindenbaum–Tarski quotient algebra and a parametric canonical model |
+| Chronicle | `BXCanonical/` | 28 | 23,256 | Chronicle construction over a canonical chain; carries the flagship theorems |
+| Kamp/Reynolds | `WeakCanonical/` | 179 | 132,177 | Reflexive canonical model, separation, and the Kamp/Reynolds machinery |
+| Parametric/algebraic | `Algebraic/` | 5 | 2,887 | Lindenbaum–Tarski quotient algebra and a parametric canonical model |
+| Independence (support) | `Independence/` | 3 | 1,097 | Axiom-independence models; not a completeness route, listed here so the inventory is exhaustive |
 
 **`BXCanonical` is the wired entry point.** The flagship results — `completeness`,
 `completeness_dense` and `completeness_discrete` (`BXCanonical/Completeness.lean`),
@@ -123,17 +124,28 @@ Every subdirectory has exactly one **sibling** aggregator: `X.lean` sits *beside
 
 | Aggregator | Lines | Aggregates |
 |------------|------:|-----------|
-| `Algebraic.lean` | 41 | `Algebraic/` |
-| `Bundle.lean` | 43 | `Bundle/` |
-| `BXCanonical.lean` | 34 | `BXCanonical/` |
+| `Algebraic.lean` | 40 | `Algebraic/` |
+| `Bundle.lean` | 52 | `Bundle/` |
+| `BXCanonical.lean` | 43 | `BXCanonical/` |
 | `Core.lean` | 37 | `Core/` |
-| `Decidability.lean` | 52 | `Decidability/` |
-| `SoundnessLemmas.lean` | 31 | `SoundnessLemmas/` |
-| `WeakCanonical.lean` | 80 | `WeakCanonical/` |
+| `Decidability.lean` | 168 | `Decidability/` |
+| `Independence.lean` | 46 | `Independence/` |
+| `SoundnessLemmas.lean` | 34 | `SoundnessLemmas/` |
+| `WeakCanonical.lean` | 144 | `WeakCanonical/` |
 
-Two loose files are not aggregators: `Soundness.lean` (1,394 lines — the soundness
-theorem itself) and the directory's own root `Metalogic.lean`, which sits one level
-up, beside `Metalogic/`.
+**Five** loose files in `Metalogic/` are not aggregators — they have no same-named
+sibling directory:
+
+| Loose non-aggregator | Lines | Role |
+|----------------------|------:|------|
+| `Soundness.lean` | 2,022 | The soundness theorem itself |
+| `StrongCompleteness.lean` | 807 | Strong/consequence completeness, including `completeness_dedekind` |
+| `SetConsequence.lean` | 338 | Set-indexed consequence relation |
+| `DiscreteNonCompactness.lean` | 334 | Non-compactness of the discrete frame class |
+| `Conservativity.lean` | 295 | Conservativity of the extension |
+
+Plus the directory's own root `Metalogic.lean` (199 lines), which sits one level up,
+beside `Metalogic/`.
 
 Two rules keep this safe:
 
@@ -156,41 +168,53 @@ invariant check allowlists it by name (check C8; the allowlist entry is the inne
 
 | Directory | Files | Lines | Role |
 |-----------|------:|------:|------|
-| [`Algebraic/`](Algebraic/README.md) | 9 | 3,748 | Parametric/algebraic completeness route |
-| [`Bundle/`](Bundle/README.md) | 12 | 4,650 | Canonical frame from bundled families of MCSs |
-| [`BXCanonical/`](BXCanonical/README.md) | 20 | 18,527 | Chronicle completeness route; the wired entry point |
-| [`Core/`](Core/README.md) | 4 | 2,048 | MCS machinery shared by all three routes |
-| [`Decidability/`](Decidability/README.md) | 19 | 9,263 | Tableau decision procedure and countermodel extraction |
-| [`SoundnessLemmas/`](SoundnessLemmas/README.md) | 3 | 2,461 | Per-axiom validity lemmas feeding `Soundness.lean` |
-| [`WeakCanonical/`](WeakCanonical/README.md) | 135 | 106,253 | Kamp/Reynolds route, including all of `Kamp/` |
+| [`Algebraic/`](Algebraic/README.md) | 5 | 2,887 | Parametric/algebraic completeness route |
+| [`Bundle/`](Bundle/README.md) | 15 | 6,106 | Canonical frame from bundled families of MCSs |
+| [`BXCanonical/`](BXCanonical/README.md) | 28 | 23,256 | Chronicle completeness route; the wired entry point |
+| [`Core/`](Core/README.md) | 4 | 2,050 | MCS machinery shared by all three routes |
+| [`Decidability/`](Decidability/README.md) | 62 | 52,132 | Tableau decision procedure and countermodel extraction |
+| `Independence/` | 3 | 1,097 | Axiom-independence models |
+| [`SoundnessLemmas/`](SoundnessLemmas/README.md) | 5 | 3,016 | Per-axiom validity lemmas feeding `Soundness.lean` |
+| [`WeakCanonical/`](WeakCanonical/README.md) | 179 | 132,177 | Kamp/Reynolds route, including all of `Kamp/` |
+
+The eight directories total 314 files, matching C7's `Metalogic 314` rollup.
 
 ### Inside `BXCanonical/`
 
-Loose modules: `CanonicalChain.lean`, `CanonicalModel.lean`, `Completeness.lean`,
-`Frame.lean`, `OrderedSeedConsistency.lean`, `TruthLemma.lean`.
-Subdirectories: `Chronicle/` (8 files), `Quasimodel/` (5), `Filtration/` (1).
+Eight loose modules: `CanonicalChain.lean`, `CanonicalModel.lean`, `Completeness.lean`,
+`CompletenessDedekind.lean`, `DiscreteCarrierProbe.lean`, `Frame.lean`,
+`OrderedSeedConsistency.lean`, `TruthLemma.lean`.
+Subdirectories: `Chronicle/` (14 files), `Quasimodel/` (5), `Filtration/` (1).
 
 ### Inside `WeakCanonical/`, and the `Kamp/` subtree
 
-`WeakCanonical/` holds 14 loose modules plus five subdirectories. One of them
+`WeakCanonical/` holds 19 loose modules plus **eight** subdirectories. One of them
 dominates everything else in the repository:
 
 | Subdirectory | Files | Lines |
 |--------------|------:|------:|
-| `Kamp/` | 99 | 71,246 |
+| `Kamp/` | 116 | 77,619 |
 | `EFGames/` | 8 | 11,872 |
 | `Expressiveness/` | 5 | 9,503 |
-| `IntegerModel/` | 6 | 5,503 |
+| `DenseModelSurgery/` | 9 | 7,568 |
+| `RealModel/` | 7 | 6,643 |
+| `IntegerModel/` | 6 | 5,700 |
+| `GroupModel/` | 6 | 3,357 |
 | `Separation/` | 3 | 926 |
 
-`Kamp/` is the Kamp/Reynolds separation machinery: 49 loose modules plus two large
+`GroupModel/` is where `theorem countermodel_discrete` — the Base-frame discrete branch of
+`completeness` — is proved, in `WeakCanonical/GroupModel/CountermodelBase.lean`. See
+[Sorry Status](#sorry-status).
+
+`Kamp/` is the Kamp/Reynolds separation machinery: 57 loose modules plus **three** large
 sub-subtrees. It no longer carries a local `Boneyard/`; its archived work is in
 [`FormalSystem/Boneyard/Kamp/`](../Boneyard/Kamp/README.md).
 
 | Under `Kamp/` | Files | Lines |
 |---------------|------:|------:|
-| `NfMultiAnchorBridge/` | 43 | 41,859 |
+| `NfMultiAnchorBridge/` | 47 | 41,345 |
 | `EANegationFix/` | 7 | 3,227 |
+| `EANegationFixFaithful/` | 5 | 2,661 |
 
 `Kamp/` alone is larger than every other directory in `Metalogic/` combined. Any
 description of this repository's shape that omits it is wrong about the repository.
@@ -309,3 +333,7 @@ correct way to re-derive any count in this document.
 - Doets 1989, Section 1 — k-types, ordered sums (Lemmas 1.4, 1.5)
 - Kamp 1968 — separation and expressive completeness
 - Blackburn et al., *Modal Logic*, Chapters 4–5
+
+---
+
+*Last verified: 2026-08-25*

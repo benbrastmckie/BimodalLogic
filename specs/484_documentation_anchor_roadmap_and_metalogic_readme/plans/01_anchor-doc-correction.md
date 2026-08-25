@@ -368,37 +368,37 @@ and use the observed values.
 
 ---
 
-### Phase 6: README B5 — the inventory sweep [NOT STARTED]
+### Phase 6: README B5 — the inventory sweep [COMPLETED]
 
 **Goal**: Refresh every stale file/line count in `FormalSystem/Metalogic/README.md`, add the
 missing directories and subdirectories, and add the "Last verified" line.
 
 **Tasks**:
-- [ ] Recompute all counts with the script's own `live_files` walk
+- [x] Recompute all counts with the script's own `live_files` walk
       (`scripts/check-module-invariants.sh:212-219`, `Boneyard/` pruned). Use report §4.5's table
       as the hypothesis to check, not as input.
-- [ ] Update `:6-7` (live `.lean` file totals and the `WeakCanonical/` share).
-- [ ] Update the Directory Inventory (`:154-162`) and Three Completeness Routes (`:29-33`) tables,
+- [x] Update `:6-7` (live `.lean` file totals and the `WeakCanonical/` share).
+- [x] Update the Directory Inventory (`:154-162`) and Three Completeness Routes (`:29-33`) tables,
       and ADD the missing `Independence/` directory to both.
-- [ ] Update the aggregator table (`:124-132`) — every line count is stale — and add
+- [x] Update the aggregator table (`:124-132`) — every line count is stale — and add
       `Independence.lean`.
-- [ ] Correct `:134-136`: there are five loose non-aggregators, not two —
+- [x] Correct `:134-136`: there are five loose non-aggregators, not two —
       `Soundness.lean`, `StrongCompleteness.lean`, `SetConsequence.lean`,
       `DiscreteNonCompactness.lean`, `Conservativity.lean` — plus `Metalogic.lean` itself.
-- [ ] Correct `:166-168` (Inside `BXCanonical/`): the loose list omits `CompletenessDedekind.lean`
+- [x] Correct `:166-168` (Inside `BXCanonical/`): the loose list omits `CompletenessDedekind.lean`
       and `DiscreteCarrierProbe.lean`; refresh the `Chronicle/`, `Quasimodel/`, `Filtration/`
       counts.
-- [ ] Correct `:172` and the subdirectory table `:175-181` (Inside `WeakCanonical/`): refresh the
+- [x] Correct `:172` and the subdirectory table `:175-181` (Inside `WeakCanonical/`): refresh the
       loose-module and subdirectory counts, and ADD the three omitted subdirectories
       `DenseModelSurgery/`, `GroupModel/`, `RealModel/`. `GroupModel/`'s absence is not cosmetic —
       Phase 4's corrected sorry text names a file in a directory this README currently claims
       does not exist.
-- [ ] Correct `:183-190` (under `Kamp/`): refresh the loose-module count, add the third
+- [x] Correct `:183-190` (under `Kamp/`): refresh the loose-module count, add the third
       sub-subtree `EANegationFixFaithful/`, and refresh `NfMultiAnchorBridge/` and
       `EANegationFix/`.
-- [ ] Add a "Last verified" line in house format, e.g. `FormalSystem/README.md:311`:
+- [x] Add a "Last verified" line in house format, e.g. `FormalSystem/README.md:311`:
       `*Last verified: YYYY-MM-DD*`.
-- [ ] Ensure every new relative file reference resolves from the README's own directory
+- [x] Ensure every new relative file reference resolves from the README's own directory
       (`readme-lint.sh` Check 3) and contains no task-number citation (C9).
 
 **Timing**: 1.5 hours
