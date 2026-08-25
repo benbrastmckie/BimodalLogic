@@ -25,10 +25,11 @@ contains three ways the two come apart, and conflating them is the specific fail
 realignment (task 468) was dispatched to correct:
 
 1. **A theorem can be absent rather than merely unproven.** `DecisionProcedure.isValid`
-   (`FormalSystem/Metalogic/Decidability/DecisionProcedure.lean:317`) has no theorem anywhere
-   relating it to semantic validity — no `isValid φ fc = true → ⊨ φ` biconditional exists, proven
-   or otherwise (see the Decidability front below). C3's sorry count is silent on this: there is
-   no sorry because there is no declaration to carry one.
+   (`FormalSystem/Metalogic/Decidability/DecisionProcedure.lean:317`) has its *sound* direction
+   proved (`isValid_sound`, `Correctness.lean:111`), but no `isValid φ fc = true ↔ ⊨ φ`
+   biconditional exists, proven or otherwise — and the biconditional is the property the name
+   `isValid` invites a reader to assume (see the Decidability front below). C3's sorry count is
+   silent on this: there is no sorry because there is no declaration to carry one.
 2. **A stub can be sorry-free and prove nothing.** `verifyProof`
    (`FormalSystem/Metalogic/Decidability/ProofExtraction.lean:345`) is
    `fun _ _ => true` — a total, sorry-free function that certifies every input. `Verified/
@@ -106,13 +107,21 @@ those two classes.
 - [x] **Soundness of the tableau-derived judgment is proven for the engine as it stands.** No
       unsound rule fires uncontrolled (task 418's cross-world temporal-copy fix removed the one
       known unsoundness).
-- [ ] **`isValid`-to-validity bridge is MISSING, not merely unproven.** No declaration anywhere
-      takes `DecisionProcedure.isValid` (the `Bool`-valued convenience wrapper,
-      `DecisionProcedure.lean:317`) as its subject in a semantic theorem. `decide_sound'`
-      (`Correctness.lean:66`) proves the underlying `decide φ ... = .valid proof → ⊨ φ`, but
-      nothing bridges the `Bool` wrapper back to it. **ADD, task 480**
-      (`bridge_isvalid_bool_to_semantic_validity`, routine engineering, no dependencies, startable
-      today).
+- [ ] **`isValid`-to-validity bridge: the SOUND direction has landed; the completeness direction
+      is open.** `DecisionProcedure.isValid` (the `Bool`-valued convenience wrapper,
+      `DecisionProcedure.lean:317`) is now the subject of semantic theorems: `sound_of_isValid`
+      (`Correctness.lean:100`) and its corollary `isValid_sound` (`Correctness.lean:111`) give
+      `isValid φ fc = true → ⊨ φ`, sorry-free, together with the `isTautology` / `isContradiction`
+      siblings and the frame-class-relativized forms. That direction rides entirely on the `⊢ φ`
+      witness carried by `DecisionResult.valid` (`decide_sound'`, `Correctness.lean:71`) and needs
+      nothing from the tableau side. What is still owed is the *completeness* direction
+      `⊨ φ → isValid φ fc = true` — and hence the biconditional `isValid φ fc = true ↔ ⊨ φ` and the
+      `Decidable (⊨ φ)` instances for the four frame classes. It requires `valid_iff_allClosed`,
+      which needs the fuel/termination side and the truth-lemma gate on top of
+      `ruleSound_of_mem_allRulesForFC` (`Verified/Decidable.lean:3155`), and it must additionally
+      account for `serialityRule` and `timeLinearity`, the two rules scheduled outside
+      `allRulesForFC`. The obligation is stated in-source at `Correctness.lean:209-224`; no
+      `isValid`-shaped `iff` is written until it can be proved.
 - [ ] **`ruleSound_of_mem_allRulesForFC` is not lifted to `allClosed → valid`.** The rule-level
       soundness assembly (`Verified/Decidable.lean:3155`) exists; the engine-level lift
       (`valid_iff_allClosed`) is task 430's target, not yet landed.

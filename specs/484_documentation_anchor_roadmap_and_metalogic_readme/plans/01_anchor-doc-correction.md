@@ -1,7 +1,7 @@
 # Implementation Plan: Documentation Anchor Correction
 
 - **Task**: 484 - Documentation anchor correction: `specs/ROADMAP.md` and `FormalSystem/Metalogic/README.md`
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 6.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/484_documentation_anchor_roadmap_and_metalogic_readme/reports/01_anchor-doc-verification.md
@@ -125,30 +125,30 @@ track phases are sequential because they edit the same file.
 
 ---
 
-### Phase 1: ROADMAP A1 — the isValid bridge [NOT STARTED]
+### Phase 1: ROADMAP A1 — the isValid bridge [COMPLETED]
 
 **Goal**: Replace the superseded "bridge is MISSING" claim at `specs/ROADMAP.md:109-115` with the
 sound-landed / completeness-open formulation, fix the stale sub-citation, and apply decision D1.
 
 **Tasks**:
-- [ ] Read `FormalSystem/Metalogic/Decidability/Correctness.lean:209-224` and transcribe its
+- [x] Read `FormalSystem/Metalogic/Decidability/Correctness.lean:209-224` and transcribe its
       open-obligation formulation rather than re-phrasing it. Its content: the completeness
       direction `⊨ φ → isValid φ fc = true`, hence the biconditional and the four
       `Decidable (⊨ φ)` instances, requires `valid_iff_allClosed`, which needs the
       fuel/termination side and the truth-lemma gate on top of `ruleSound_of_mem_allRulesForFC`
       (`Verified/Decidable.lean:3155`), and must additionally account for `serialityRule` and
       `timeLinearity`, the two rules scheduled outside `allRulesForFC`.
-- [ ] Rewrite `:109-115` to record that the SOUND direction is landed, citing
+- [x] Rewrite `:109-115` to record that the SOUND direction is landed, citing
       `Correctness.lean:100` (`sound_of_isValid`) and `:111` (`isValid_sound`), and that the
       completeness direction remains open.
-- [ ] Fix the stale sub-citation in the same bullet: `decide_sound'` is at `Correctness.lean:71`,
+- [x] Fix the stale sub-citation in the same bullet: `decide_sound'` is at `Correctness.lean:71`,
       not `:66`.
-- [ ] Apply **D1**: narrow the clause at `:28-29` only. Replace "has no theorem anywhere relating
+- [x] Apply **D1**: narrow the clause at `:28-29` only. Replace "has no theorem anywhere relating
       it to semantic validity" with a formulation in which the sound direction is proved
       (`isValid_sound`) while the biconditional — the property the name `isValid` invites a reader
       to assume — is absent, so no declaration states it and C3's sorry count is silent on it.
       Leave the bullet, its headline, the section, and all other lines in `:21-46` untouched.
-- [ ] Record D1 in the phase's commit message body as a pre-declared gated deviation.
+- [x] Record D1 in the phase's commit message body as a pre-declared gated deviation.
 
 **Timing**: 0.75 hours
 
