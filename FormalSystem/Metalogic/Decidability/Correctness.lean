@@ -16,12 +16,15 @@ This module proves properties of the tableau decision procedure.
 ## Main Theorems
 
 - `decide_sound`: A derivation produced by `decide` yields semantic validity
+- `sound_of_isValid`: A `DecisionResult` whose `isValid` is `true` yields semantic validity —
+  the `Bool`-API bridge, covering `decide`, `decideBlocking`, `decideAuto` at once
+- `isValid_sound`: `isValid φ fc = true → ⊨ φ`, the same bridge at the user-facing wrapper
 - `decide_result_exclusive`: Decision results are mutually exclusive
 - `not_undecided_of_extractionFailed`: A closed tableau is never reported as undecided
 
 See "`validity_decidable` / `validity_has_decision_procedure` — Retired as vacuous", below, for
 the two theorems that used to head this list, why their names overclaimed what their proofs
-established, and what is still owed before an `isValid`-shaped decidability statement can stand.
+established, and which half of an `isValid`-shaped decidability statement is still owed.
 
 ## Implementation Notes
 
@@ -71,6 +74,114 @@ theorem decide_sound' (φ : Formula) (searchDepth tableauFuel : Nat)
   decide_sound φ proof
 
 /-!
+## Bridging the `Bool` API to semantic validity
+
+`decide_sound` above takes a derivation. The theorems in this section take the `Bool` that
+`DecisionProcedure.lean`'s user-facing API actually returns, and are the sound direction of the
+obligation recorded in the retirement section below.
+-/
+
+/--
+The sound direction for the `Bool` wrapper, stated once at the level of `DecisionResult` so that
+it covers every entry point that returns one — `decide`, `decideBlocking`, `decideAuto`,
+`decideAutoAdaptive`.
+
+The conclusion is the *unrelativized* `⊨ φ`, and this is forced by the types rather than chosen:
+`DecisionResult.valid` carries `⊢ φ` = `DerivationTree FrameClass.Base [] φ` regardless of which
+`fc` was passed in, so a `true` from any frame class yields validity over all task frames. The
+frame-class-relative corollaries below are therefore weakenings, obtained via the
+`Validity.valid_implies_*` monotonicity lemmas.
+
+**`isKnownValid` is not a substitute hypothesis here.** `DecisionResult.isKnownValid` is also
+`true` on `extractionFailed`, which carries no `⊢ φ` witness; getting `⊨ φ` from a closed tableau
+with no extracted proof is the open `valid_iff_allClosed` obligation described in the retirement
+section below, not a consequence of anything proved in this file.
+-/
+theorem sound_of_isValid {φ : Formula} (r : DecisionResult φ) (h : r.isValid = true) : ⊨ φ := by
+  cases r with
+  | valid proof => exact decide_sound φ proof
+  | invalid c => simp [DecisionResult.isValid] at h
+  | fuelExhausted => simp [DecisionResult.isValid] at h
+  | extractionFailed => simp [DecisionResult.isValid] at h
+
+/--
+The sound direction for `isValid`: a `true` from the Boolean validity check yields semantic
+validity. The converse (completeness) is open — see the retirement section below.
+-/
+theorem isValid_sound (φ : Formula) (fc : FrameClass) (h : isValid φ fc = true) : ⊨ φ :=
+  sound_of_isValid _ h
+
+/--
+`isValid_sound` at an explicitly supplied search depth and tableau fuel.
+-/
+theorem decide_isValid_sound (φ : Formula) (searchDepth tableauFuel : Nat) (fc : FrameClass)
+    (h : (decide φ searchDepth tableauFuel fc).isValid = true) : ⊨ φ :=
+  sound_of_isValid _ h
+
+/--
+`isTautology` is definitionally `isValid`, so its sound direction is the same theorem.
+-/
+theorem isTautology_sound (φ : Formula) (fc : FrameClass)
+    (h : isTautology φ fc = true) : ⊨ φ :=
+  isValid_sound φ fc h
+
+/--
+`isContradiction φ` is `isValid φ.neg`, so a `true` yields validity of the negation.
+-/
+theorem isContradiction_sound (φ : Formula) (fc : FrameClass)
+    (h : isContradiction φ fc = true) : ⊨ φ.neg :=
+  isValid_sound φ.neg fc h
+
+/--
+`isSatisfiable φ` returning `false` means `isValid φ.neg` returned `true`, hence `⊨ φ.neg`.
+
+The `simp only` is deliberately targeted: an unrestricted `simp at h` exceeds `maxRecDepth`,
+because `isSatisfiable` unfolds to `Decidable.decide ¬(isValid φ.neg fc = true)` and `simp`
+attempts to evaluate the enclosed decision-procedure call.
+-/
+theorem not_isSatisfiable_sound (φ : Formula) (fc : FrameClass)
+    (h : isSatisfiable φ fc = false) : ⊨ φ.neg := by
+  simp only [isSatisfiable, decide_eq_false_iff_not, not_not] at h
+  exact isValid_sound φ.neg fc h
+
+/--
+Frame-class-relativized form of `isValid_sound` for dense frames.
+-/
+theorem isValid_validDense (φ : Formula) (fc : FrameClass) (h : isValid φ fc = true) :
+    ValidDense φ :=
+  Validity.valid_implies_valid_dense (isValid_sound φ fc h)
+
+/--
+Frame-class-relativized form of `isValid_sound` for discrete frames.
+-/
+theorem isValid_validDiscrete (φ : Formula) (fc : FrameClass) (h : isValid φ fc = true) :
+    ValidDiscrete φ :=
+  Validity.valid_implies_valid_discrete (isValid_sound φ fc h)
+
+/--
+Frame-class-relativized form of `isValid_sound` for Dedekind-complete dense frames.
+-/
+theorem isValid_validDedekindDense (φ : Formula) (fc : FrameClass) (h : isValid φ fc = true) :
+    ValidDedekindDense φ :=
+  Validity.valid_implies_validDedekindDense (isValid_sound φ fc h)
+
+/--
+`sound_of_isValid` at the `decideBlocking` entry point, which is independently maintained and has
+its own `.valid` arms.
+-/
+theorem decideBlocking_isValid_sound (φ : Formula) (searchDepth tableauFuel : Nat)
+    (fc : FrameClass) (maxBranches : Nat)
+    (h : (decideBlocking φ searchDepth tableauFuel fc maxBranches).isValid = true) : ⊨ φ :=
+  sound_of_isValid _ h
+
+/--
+`sound_of_isValid` at the `decideAuto` entry point, which is what the dataset drivers call.
+-/
+theorem decideAuto_isValid_sound (φ : Formula) (fc : FrameClass)
+    (h : (decideAuto φ fc).isValid = true) : ⊨ φ :=
+  sound_of_isValid _ h
+
+/-!
 ## `validity_decidable` / `validity_has_decision_procedure` — Retired as vacuous
 
 Two theorems used to stand here under the names above, and they are recorded as retired rather
@@ -95,14 +206,22 @@ fact: a `⊢ φ` derivation — the witness `decide` returns in its `.valid` con
 `allRulesForFC` can schedule at a frame class preserves satisfiability under that class's carrier
 property, all 34 of them, sorry-free.
 
-**What is still owed, and is deliberately not stated here.** The replacement these names should
-eventually have — `isValid φ fc = true ↔ ⊨ φ`, and the `Decidable (⊨ φ)` instances for the four
-frame classes — requires `valid_iff_allClosed`, which needs the fuel/termination side and the
-truth-lemma gate on top of the rule half above, and it must also account for the two rules
-scheduled outside `allRulesForFC` (`serialityRule` and `timeLinearity`, stages 2 and 3 of
-`expandOnce`). That obligation is open. Stating an `isValid`-shaped `iff` before it is discharged
-would reproduce exactly the defect this retirement removes: a true-looking name over a proof that
-does not reach it. No such statement is written here until it can be proved.
+**What has since landed.** The *sound* direction of the `isValid`-shaped statement is now proved
+and stated above, in "Bridging the `Bool` API to semantic validity": `sound_of_isValid` and its
+`isValid_sound` corollary give `isValid φ fc = true → ⊨ φ`, sorry-free, together with the
+`isTautology` / `isContradiction` / `isSatisfiable` siblings and the frame-class-relativized
+forms. That direction rides entirely on the `⊢ φ` witness carried by `DecisionResult.valid`; it
+needs nothing from the tableau side.
+
+**What is still owed, and is deliberately not stated here.** The *completeness* direction,
+`⊨ φ → isValid φ fc = true` — and hence the biconditional `isValid φ fc = true ↔ ⊨ φ` and the
+`Decidable (⊨ φ)` instances for the four frame classes — requires `valid_iff_allClosed`, which
+needs the fuel/termination side and the truth-lemma gate on top of the rule half above, and it
+must also account for the two rules scheduled outside `allRulesForFC` (`serialityRule` and
+`timeLinearity`, stages 2 and 3 of `expandOnce`). That obligation is open. Stating an
+`isValid`-shaped `iff` before it is discharged would reproduce exactly the defect this retirement
+removes: a true-looking name over a proof that does not reach it. No such biconditional is
+written here until it can be proved.
 -/
 
 /-!

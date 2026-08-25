@@ -1,7 +1,7 @@
 # Implementation Plan: Bridge `isValid`'s `Bool` to Semantic Validity
 
 - **Task**: 480 - bridge_isvalid_bool_to_semantic_validity
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 1.5 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/480_bridge_isvalid_bool_to_semantic_validity/reports/01_isvalid-bool-semantic-bridge.md`
@@ -111,33 +111,33 @@ prose asserts what Phase 1 lands, and Phase 3 gates both.
 
 ---
 
-### Phase 1: Land the bridge theorems and amend `Correctness.lean` prose [NOT STARTED]
+### Phase 1: Land the bridge theorems and amend `Correctness.lean` prose [COMPLETED]
 
 **Goal**: The ten verified theorems exist in `Correctness.lean`, sorry-free, with docstrings, and
 that file's own prose no longer contradicts them.
 
 **Tasks**:
-- [ ] Insert the theorems into `FormalSystem/Metalogic/Decidability/Correctness.lean` immediately
+- [x] Insert the theorems into `FormalSystem/Metalogic/Decidability/Correctness.lean` immediately
       after `decide_sound'` (after line 71), inside the existing
       `namespace FormalSystem.Metalogic.Decidability` and its existing `open` block. No new
       imports.
-- [ ] Core lemma `sound_of_isValid {φ : Formula} (r : DecisionResult φ) (h : r.isValid = true) :
+- [x] Core lemma `sound_of_isValid {φ : Formula} (r : DecisionResult φ) (h : r.isValid = true) :
       ⊨ φ` — four-way `cases r`; `.valid proof => exact decide_sound φ proof`; the other three
       arms `simp [DecisionResult.isValid] at h`.
-- [ ] Bool-API siblings: `isValid_sound`, `decide_isValid_sound`, `isTautology_sound`,
+- [x] Bool-API siblings: `isValid_sound`, `decide_isValid_sound`, `isTautology_sound`,
       `isContradiction_sound`, `not_isSatisfiable_sound`. Transcribe verbatim from the report,
       including the targeted `simp only [isSatisfiable, decide_eq_false_iff_not, not_not] at h`
       in `not_isSatisfiable_sound`.
-- [ ] Frame-class-relativized corollaries: `isValid_validDense`, `isValid_validDiscrete`,
+- [x] Frame-class-relativized corollaries: `isValid_validDense`, `isValid_validDiscrete`,
       `isValid_validDedekindDense`, each via the corresponding `Validity.valid_implies_*`.
-- [ ] Alternate-entry-point corollaries: `decideBlocking_isValid_sound`,
+- [x] Alternate-entry-point corollaries: `decideBlocking_isValid_sound`,
       `decideAuto_isValid_sound`.
-- [ ] Docstring on `sound_of_isValid` recording the negative finding: `isKnownValid` is **not** a
+- [x] Docstring on `sound_of_isValid` recording the negative finding: `isKnownValid` is **not** a
       sound-direction hypothesis, because `extractionFailed` carries no witness. This is the F1
       conflation guard, stated at the point of use.
-- [ ] Amend `Correctness.lean:16-24` (module "Main Theorems" list): add `sound_of_isValid` /
+- [x] Amend `Correctness.lean:16-24` (module "Main Theorems" list): add `sound_of_isValid` /
       `isValid_sound` as the Bool-API bridge.
-- [ ] Amend `Correctness.lean:98-105` ("What is still owed, and is deliberately not stated
+- [x] Amend `Correctness.lean:98-105` ("What is still owed, and is deliberately not stated
       here"): narrow it so the **sound direction is recorded as landed** and what remains owed is
       the **completeness direction** (`⊨ φ → isValid φ fc = true`), hence the biconditional and
       the four `Decidable` instances. Keep the `validity_decidable` /
