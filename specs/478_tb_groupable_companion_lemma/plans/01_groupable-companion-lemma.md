@@ -196,7 +196,7 @@ blocker — checkpoint and resume.
 
 ---
 
-### Phase 2: Monochromatic discrete completeness at depth k [NOT STARTED]
+### Phase 2: Monochromatic discrete completeness at depth k [COMPLETED]
 
 **Goal**: Land `MonoDiscreteNoEnds`, `MonoDiscreteMinNoMax`, and the max-no-min dual: any two
 monochromatic (single-colour) discrete linear orders with the same endpoint profile from
@@ -204,25 +204,25 @@ monochromatic (single-colour) discrete linear orders with the same endpoint prof
 new proof (classical content: Doets 1.0.2/1.0.3, pp. 1–22; Th(ℤ,<)/Th(ω,<) completeness).
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/WeakCanonical/GroupModel/MonoDiscrete.lean` citing Doets
+- [x] Create `FormalSystem/Metalogic/WeakCanonical/GroupModel/MonoDiscrete.lean` citing Doets
       1987 1.0.2 (back/forth for linear orders) and 1.0.3(i) `m ≡ⁿ ω + ω*` for `m ≥ 2ⁿ − 1`,
       (ii) `ω ≡ⁿ ω + ζ`
-- [ ] Define the truncated succ-distance: the *partial* "reachable in ≤ N succ-steps"
+- [x] Define the truncated succ-distance: the *partial* "reachable in ≤ N succ-steps"
       function on an abstract non-Archimedean discrete order (the threshold invariant only
       ever needs it in truncated form — never define a total distance)
-- [ ] State the Duplicator invariant: with `d` rounds remaining, matched tuples have pairwise
+- [x] State the Duplicator invariant: with `d` rounds remaining, matched tuples have pairwise
       succ-distances equal or both `≥ 2^d`, and likewise distances to the endpoint where one
       exists
-- [ ] Prove the master no-endpoints lemma (`MonoDiscreteNoEnds`) as an explicit `BackForth`
+- [x] Prove the master no-endpoints lemma (`MonoDiscreteNoEnds`) as an explicit `BackForth`
       strategy, converting via `kEquiv_iff_backForth` (use `backForth_symm`/`_pad`/`_mono`
       helpers from `BackAndForth.lean` as needed)
       — **pre-declared split boundary: if the dispatch is running long, this is the
       checkpoint: commit, mark the phase `[PARTIAL]` here, resume for the variants**
-- [ ] Prove the two endpoint variants (`MonoDiscreteMinNoMax` and the max-no-min dual) by
+- [x] Prove the two endpoint variants (`MonoDiscreteMinNoMax` and the max-no-min dual) by
       adapting the invariant with the endpoint-distance clause (the both-ends case is
       deliberately absent: bounded segments are handled by literal isomorphism downstream)
-- [ ] Corollaries at `colourSig` for constant colourings (the form Phase 3 consumes)
-- [ ] Wire the CI-edge import in `WeakCanonical.lean`
+- [x] Corollaries at `colourSig` for constant colourings (the form Phase 3 consumes)
+- [x] Wire the CI-edge import in `WeakCanonical.lean`
 
 **Timing**: 4-6 hours (one dispatch; split boundary pre-declared above)
 

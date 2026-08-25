@@ -56,6 +56,10 @@ import FormalSystem.Metalogic.WeakCanonical.GroupModel.GoodGroupable
 -- unbounded flow: `M ≃o Σ_{i∈I} (ℤ, cᵢ)`) is a leaf until the companion lemma
 -- (`GroupModel/GroupableCompanion.lean`) consumes it. Listed here on the same precedent.
 import FormalSystem.Metalogic.WeakCanonical.GroupModel.BlockDecomposition
+-- CI edge only: `GroupModel/MonoDiscrete.lean` (Doets 1.0.2/1.0.3: monochromatic discrete
+-- completeness at depth k, all three endpoint profiles) is a leaf until the Ramsey
+-- factorization (`GroupModel/RamseyFactorization.lean`) consumes it. Same precedent.
+import FormalSystem.Metalogic.WeakCanonical.GroupModel.MonoDiscrete
 
 /-!
 # WeakCanonical: Reynolds/Doets Discrete Completeness
