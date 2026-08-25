@@ -1,7 +1,7 @@
 # Implementation Plan: Documentation Anchor Correction
 
 - **Task**: 484 - Documentation anchor correction: `specs/ROADMAP.md` and `FormalSystem/Metalogic/README.md`
-- **Status**: [IMPLEMENTING]
+- **Status**: COMPLETED
 - **Effort**: 6.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/484_documentation_anchor_roadmap_and_metalogic_readme/reports/01_anchor-doc-verification.md
@@ -428,21 +428,21 @@ the summary.
 
 ---
 
-### Phase 7: Verification gate [NOT STARTED]
+### Phase 7: Verification gate [COMPLETED]
 
 **Goal**: Confirm both anchors are internally consistent and neither script regressed.
 
 **Tasks**:
-- [ ] Run `bash scripts/check-module-invariants.sh` and confirm **ALL CHECKS PASSED** (exit 0),
+- [x] Run `bash scripts/check-module-invariants.sh` and confirm **ALL CHECKS PASSED** (exit 0),
       with C5, C7, C8, and C9 individually PASS.
-- [ ] Run `bash scripts/readme-lint.sh`, record the full result, and confirm it is no worse than
+- [x] Run `bash scripts/readme-lint.sh`, record the full result, and confirm it is no worse than
       the recorded baseline of 9 missing READMEs / 5 broken references.
-- [ ] Confirm `git diff --stat` touches only `specs/ROADMAP.md`,
+- [x] Confirm `git diff --stat` touches only `specs/ROADMAP.md`,
       `FormalSystem/Metalogic/README.md`, `FormalSystem/Metalogic/BXCanonical/README.md`, and the
       task's own `specs/484_*/` artifacts. No `.lean` file may appear.
-- [ ] Re-read the D1 hunk and confirm the diff inside `ROADMAP.md:21-46` is the single
+- [x] Re-read the D1 hunk and confirm the diff inside `ROADMAP.md:21-46` is the single
       pre-declared clause change and nothing else.
-- [ ] Record in the summary: the D1 gated deviation with before/after text; the D2 handoff of
+- [x] Record in the summary: the D1 gated deviation with before/after text; the D2 handoff of
       `Axioms.lean:58` and `:84` to the downstream sweep, with report §3.2's verified enumeration
       and out-of-scope site list as its input; and any figure where implementation-time
       re-verification diverged from the research report.
@@ -465,15 +465,15 @@ the summary.
 
 ## Testing & Validation
 
-- [ ] `bash scripts/check-module-invariants.sh` prints ALL CHECKS PASSED (exit 0).
-- [ ] `bash scripts/readme-lint.sh` result recorded; no worse than 9 missing READMEs /
+- [x] `bash scripts/check-module-invariants.sh` prints ALL CHECKS PASSED (exit 0).
+- [x] `bash scripts/readme-lint.sh` result recorded; no worse than 9 missing READMEs /
       5 broken references.
-- [ ] `lean_verify FormalSystem.Metalogic.completeness_dedekind` returns
+- [x] `lean_verify FormalSystem.Metalogic.completeness_dedekind` returns
       `[propext, Classical.choice, Quot.sound]`.
-- [ ] No `.lean` file appears in `git diff --name-only`.
-- [ ] `grep -n 'axiom-free' FormalSystem/Metalogic/README.md specs/ROADMAP.md` returns nothing.
-- [ ] The ROADMAP layer table's per-layer counts sum to the enumerated `inductive Axiom` total.
-- [ ] `FormalSystem/Metalogic/README.md` contains no task-number citation (C9).
+- [x] No `.lean` file appears in `git diff --name-only`.
+- [x] `grep -n 'axiom-free' FormalSystem/Metalogic/README.md specs/ROADMAP.md` returns nothing.
+- [x] The ROADMAP layer table's per-layer counts sum to the enumerated `inductive Axiom` total.
+- [x] `FormalSystem/Metalogic/README.md` contains no task-number citation (C9).
 
 ## Artifacts & Outputs
 
