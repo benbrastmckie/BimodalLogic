@@ -1,5 +1,5 @@
 ---
-next_project_number: 484
+next_project_number: 488
 ---
 
 # TODO
@@ -11,9 +11,9 @@ next_project_number: 484
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,193,257,298,433,461,463,476,483 | -- | automation, dataset-enhancement, decidability, ... |
-| 2 | 125,178,231,282,296,464,481 | 193,298,461,463,483 | algebraic-representation, dataset-enhancement, decidability, ... |
-| 3 | 219,465 | 231,464 | dataset-enhancement, decidability |
+| 1 | 127,128,193,257,298,433,461,463,476,483,484,487 | -- | agent-system, automation, code-quality, ... |
+| 2 | 125,178,231,282,296,464,481,485 | 193,298,461,463,483,484 | algebraic-representation, code-quality, dataset-enhancement, ... |
+| 3 | 219,465,486 | 231,464,485 | code-quality, dataset-enhancement, decidability |
 | 4 | 428 | 433,465 | decidability |
 | 5 | 429 | 428 | decidability |
 | 6 | 410 | 429 | decidability |
@@ -24,6 +24,10 @@ next_project_number: 484
 
 **Grouped by Topic** (indented = depends on parent):
 
+### Agent System
+
+487 [NOT STARTED] — TOOLING FIX: repair the 128KB argv ceiling that silently disables
+
 ### Algebraic Representation
 
 125 [NOT STARTED] — Implement a Jonsson-Tarski representation theorem for TM logic: e
@@ -31,6 +35,12 @@ next_project_number: 484
 ### Automation
 
 193 [NOT STARTED] — Apply validity-intro and truth-simp macros to the soundness layer
+
+### Code Quality
+
+484 [NOT STARTED] — DOCUMENTATION ANCHOR CORRECTION: repair specs/ROADMAP.md and Form
+  └─ 485 [NOT STARTED] — README CORRECTION: rewrite the top-level README.md and repair the
+    └─ 486 [NOT STARTED] — docs/ OVERHAUL: delete the documents that are fiction, rewrite th
 
 ### Dataset Enhancement
 
@@ -74,6 +84,289 @@ next_project_number: 484
 461 [BLOCKED] — SCOPE 8 acquisition gap identified by task 457's research and re-
 
 ## Tasks
+
+### 487. Fix argv ceiling in roadmap integration and state write
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+
+**Description**: TOOLING FIX: repair the 128KB argv ceiling that silently disables roadmap integration and can corrupt ROADMAP.md, plus the same defect in the state writer.
+
+Both scripts live under .claude/, which is a GITIGNORED, DISPOSABLE DEPLOY ARTIFACT regenerated from the source store. Per .claude/rules/source-store-deploy-boundary.md, the edits MUST be made in agent-system/extensions/core/scripts/ -- a hand-authored file in .claude/ is wiped by the next regeneration and the fix silently disappears. Redeploy after editing.
+
+Observed during the 2026-08-25 /todo and /review runs; recorded in specs/reviews/review-2026-08-25.md, section "Tooling Defect Found During Review".
+
+=== DEFECT 1: roadmap-integration.sh exits 126 ===
+Symptom: `bash .claude/scripts/roadmap-integration.sh --roadmap specs/ROADMAP.md --state specs/state.json` exits 126 with:
+  /home/benjamin/.nix-profile/bin/jq: Argument list too long
+Root cause: the final `jq -n` at roadmap-integration.sh:788 passes the accumulated payload via `--argjson`. Measured on the live repo: ROADMAP_MATCHES reached 497,323 bytes. Linux caps a SINGLE argv entry at MAX_ARG_STRLEN = 128KB (32 pages), independent of ARG_MAX (2MB here), so the exec fails. ROADMAP_STATE (28,606 bytes) is fine; the matches array is the offender -- 24 matches carrying ~20KB each.
+
+Consequences, both real and both observed:
+ (a) SILENT DEGRADATION. /review's and /todo's documented error contract treats a non-zero exit as "skip roadmap integration" and falls back to empty state. A crash therefore looks identical to "nothing to do".
+ (b) PARTIAL MUTATION. In --annotate mode the annotations are WRITTEN BEFORE the failing report step, so a crashed run still mutates ROADMAP.md and then reports nothing. During the review this checked off "BimodalReference living monograph" on an explicit_task_ref match against "(task 313)" -- a task number appearing in the item text for CONTEXT, not as the item's owner -- while the item's own follow-on task for Part I had been ABANDONED. The annotation was manually reverted.
+
+Required fixes:
+ 1. Stop passing large payloads through argv. Write them to temp files and read with `jq --slurpfile` / `--rawfile`, or pipe the payload on stdin. This is the core fix.
+ 2. Make --annotate atomic with respect to reporting: either write annotations only after the report is successfully constructed, or write to a temp copy and move into place on success. A run that fails must not leave ROADMAP.md half-annotated.
+ 3. Tighten the explicit_task_ref heuristic so a task number appearing in an item's descriptive text does not, by itself, mark the item complete -- at minimum require that no sibling/follow-on task referenced by the same item is still non-terminal. (In the observed case the item text itself said "tasks 314-318 in flight/not-started".)
+ 4. Consider trimming per-match payload: ~20KB per match suggests each match embeds far more context than the consumers read.
+
+=== DEFECT 2: state-write.sh, same root cause ===
+Symptom: archiving 21 tasks in /todo failed with:
+  /run/current-system/sw/bin/bash: Argument list too long
+Root cause: state-write.sh forwards `--argjson NAME VALUE` straight to jq (see its arg-parsing block). The archival payload was 168,180 bytes -- again past the 128KB single-argument ceiling. Worked around at the time by splitting into 4 batches; the underlying limit is unfixed.
+Required fix: add a file-based passthrough (e.g. `--argjson-file NAME PATH` mapping to jq `--slurpfile`, or `--argfile`-style handling), and/or have the existing --argjson spill oversized values to a temp file transparently. Preserve the current mutex/staging/--init/--state-file/--regen-todo semantics exactly.
+
+=== ACCEPTANCE ===
+- roadmap-integration.sh completes with exit 0 in BOTH parse-only and --annotate modes against the live specs/ROADMAP.md and the full specs/state.json (the exact invocation that fails today).
+- A forced mid-run failure leaves ROADMAP.md byte-identical to its pre-run state.
+- state-write.sh accepts a >128KB payload in a single call and produces byte-identical state.json to the batched workaround.
+- Add a regression test with a payload above the 128KB ceiling for both scripts.
+- Edits made in agent-system/extensions/core/scripts/, then redeployed; confirm the deployed .claude/ copies match.
+
+---
+
+### 486. Docs overhaul deletions links gaps and drift guard
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: code-quality
+- **Dependencies**: Task 484, Task 485
+
+**Description**: docs/ OVERHAUL: delete the documents that are fiction, rewrite the false limitation entries, repair 94 dead links, and close the documentation gaps -- then add a mechanical guard so status drift cannot recur.
+
+DEPENDS ON both the ROADMAP/Metalogic anchor task and the README correction task. The guard phase in particular MUST run last: it asserts that documentation matches the verified proof state, so it can only be written once the content is correct.
+
+Source of record: specs/reviews/review-2026-08-25.md (sections "docs/ -- Whole Documents That Are Fiction", "Lint Results", "Documentation Gaps").
+
+=== FRAMING ===
+docs/ is in materially worse shape than either README layer. Several documents describe a repository that no longer exists, and their paths are so stale that their own verification commands silently match nothing -- which is exactly why they never self-corrected. Note the tree contradicts itself: docs/README.md:16 says decidability is verified while docs/project-info/known-limitations.md:123 says no decision procedure exists at all.
+
+=== PHASE 1: DELETIONS ===
+
+1a. DELETE docs/project-info/SORRY_REGISTRY.md. The ENTIRE FILE is false: it claims 9 active placeholders and enumerates 13 across sections 76-196; ZERO exist. Every path it names is nonexistent (Bimodal/, Metalogic/Domain/, Metalogic/Canonical/, Metalogic/Completeness.lean, Automation/ProofSearch.lean which is now a directory). Its own verification commands at :24-31 and :56-69 glob Bimodal/**/*.lean and silently return nothing.
+Repoint the 4 inbound links at check C3 of scripts/check-module-invariants.sh: docs/README.md:97, :171, :222 and docs/project-info/FEATURE_REGISTRY.md:7.
+
+1b. DELETE docs/project-info/IMPLEMENTATION_STATUS.md (uppercase). It duplicates and CONTRADICTS docs/project-info/implementation-status.md, which declares itself authoritative at :7-9. The uppercase file marks Decidability "Implemented" (:15), claims 9 placeholders (:26), and documents a DSL.lean that does not exist (:150-181). Deleting is preferred over fixing. Repoint any inbound links.
+
+=== PHASE 2: FALSE STATUS CLAIMS ===
+
+2a. docs/project-info/known-limitations.md:9-37 "Limitation 1: General Base-Frame Completeness Has Residual Proof Debt", including :21 "The general Base-frame case cannot yet be treated as a fully verified theorem" and a citation to BXCanonical/Completeness.lean:187. FALSE -- `completeness` is at Completeness.lean:196 and is sorryAx-free. DELETE Limitation 1 and replace with the GENUINE open items: strong completeness OPEN for Base and Dense (CompactBase SetConsequence.lean:219, CompactDense :263), REFUTED for Discrete (DiscreteNonCompactness.lean:280), NOT STATED for Dedekind. Prose already written at StrongCompleteness.lean:84-89.
+
+2b. docs/project-info/known-limitations.md:123-127 "Limitation 6: No Decidability Procedures -- No tableau-based or other decision procedures for validity checking." Contradicted by the 62-file FormalSystem/Metalogic/Decidability/ subtree and by sound_of_isValid (Correctness.lean:100). Rewrite as: the decision procedure exists; the sound direction is proved (sound_of_isValid / isValid_sound); the completeness direction `models phi -> isValid phi fc = true` is open. Correctness.lean:107-109 is the model phrasing. IMPORTANT: Correctness.lean:95-98 warns that isKnownValid is true on extractionFailed, which carries NO proof witness -- surface that caveat rather than eliding it.
+
+2c. docs/architecture/BFMCS_ARCHITECTURE.md:17-19, :194-195, :350-367. Claims "4 remaining sorries" in DovetailingChain.lean and a totals row of 5, and at :354 "Once these are resolved, the completeness proof will be fully verified". Neither DovetailingChain.lean nor TemporalCoherentConstruction.lean exists; only FormalSystem/Metalogic/Bundle/BFMCS.lean survives. The whole section 4 "Lacunae Inventory" (TOC :36-41) is dead -- remove it.
+
+2d. docs/project-info/implementation-status.md:132 "Known sorries | 12" -> 0. Lines :55 and :72-74 "Layer 2: Metalogic (Partial)" with "retains one residual sorryAx dependency through a deprecated dead-code pipeline (WeakCanonical.countermodel_discrete)" -- contradicted by Metalogic.lean:33-38; that theorem is PROVED, not dead, at WeakCanonical/GroupModel/CountermodelBase.lean:142.
+
+2e. docs/user-guide/architecture.md:1305-1307 repeats the false Base-frame debt; :1303 "Complete proof system: TM with 8 axioms, 7 rules" (45 axiom constructors; the 7 rules figure IS correct per ProofSystem/Derivation.lean:91-164); :944-1000 documents a Logos/ tree (LogosTest/, Archive/, Counterexamples/, Syntax/DSL.lean, ProofSystem/Rules.lean, Metalogic/Completeness.lean) none of which exists.
+
+2f. Decidability overstated at docs/README.md:16, docs/research/BIMODAL_LOGIC.md:87, docs/research/competitive-landscape.md:74 and :82 ("This combination is decidable and has a complete Hilbert-style axiomatization verified in Lean 4"; "Decision procedure is implemented in Lean 4 using verified algorithms"). Sound direction only.
+
+2g. docs/project-info/FEATURE_REGISTRY.md:29-30 -- perpetuity principles P3-P6 are simply WRONG. Claims P3 `box phi -> G phi`, P4 `P phi -> diamond phi`, P5 `box phi -> H phi`, P6 `F phi -> diamond phi`. Actual per FormalSystem/Theorems.lean:51-54: P3 `box phi -> box always phi`, P4 `diamond sometimes phi -> diamond phi`, P5 `diamond sometimes phi -> always diamond phi`, P6 `sometimes box phi -> box always phi`. Same file cites Metalogic/Completeness.lean (:21, archived), Theorems/Propositional.lean (:43, a directory), Automation/ProofSearch.lean (:59, a directory).
+
+2h. docs/user-guide/tutorial.md:404-409 status note repeats the false Base-frame debt and omits completeness_dedekind; :381 comment "Strong completeness: Gamma models phi -> Gamma proves phi" uses the RESERVED term for a finite-Context statement -- rename to "consequence completeness" per StrongCompleteness.lean:25-35.
+
+2i. docs/reference/API_REFERENCE.md:612 "Currently has build errors (type class instance problems)" about deductionTheorem -- the tree builds green. Lines :600 and :627 give soundness/completeness without the frame-class parameter all four real statements carry.
+
+2j. docs/project-info/test-coverage.md:20 "Sorry Placeholders | 5" -> 0 (low harm; :7-11 correctly marks the file superseded).
+
+=== PHASE 3: COUNTS AND CLASSIFICATION ===
+
+3a. Axiom count sweep to 45: docs/reference/axiom-reference.md:7-13 says "21 axiom schemas ... three layers" (Base 17 / Dense 1 / Discrete 3) and never mentions the DEDEKIND layer (prior_U_gap, prior_S_gap, sep at Axioms.lean:435-455). Its axiom NAMES are also stale -- the temporal layer is Burgess-Xu until/since (left_mono_until_G, enrichment_until, linear_since, F_until_equiv, ...), not T4/TA/TL/TK, and temp_k_dist / temp_4 are DERIVED theorems now per Axioms.lean:96-98. NOTE: README.md:164 links to this file as "complete axiom schemas for all 44 constructors", so the front page's own reference link currently leads to a document claiming 21.
+Also 14/13 counts at docs/research/BIMODAL_LOGIC.md:82; docs/project-info/FEATURE_REGISTRY.md:19, :74; docs/project-info/IMPLEMENTATION_STATUS.md:38, :216, :225, :291 (if not deleted in 1b).
+
+3b. docs/reference/operators.md claims at :7 to cover "all logical operators" but OMITS untl and snce -- the two PRIMITIVE binary temporal constructors (Syntax/Formula.lean:96, :106) -- plus kPlus/kMinus/next used throughout Axioms.lean:435-455. Every H/P/G/F entry it has is a DERIVED form. Line :194 gives `Derivable Gamma phi` without the frame-class index (Derivable.lean:69 is `Derivable (fc : FrameClass) (G : Context) (p : Formula)`). Line :207 "Completeness: If Gamma models phi then Gamma proves phi" states UNQUALIFIED completeness for arbitrary Gamma -- exactly the finite/infinite conflation StrongCompleteness.lean:25-41 exists to forbid.
+
+3c. docs/research/BIMODAL_LOGIC.md:24 "Times (T): Discrete temporal points (implemented as integers)" -- the carrier is an arbitrary ordered abelian group D (StrongCompleteness.lean:166); dense and Dedekind-complete carriers are explicitly supported. Lines :39-43 operator table also omits untl/snce.
+
+3d. Metric drift: docs/project-info/README.md:117 "Layer 2 (Metalogic) | Partial | ~60%", :123 "Total Lean Files: ~40", :127 "Known Sorries: 12"; docs/project-info/implementation-status.md:129-130 "~40 files / ~8000 lines". Actual 539 files / 170,898 lines / 0 sorries -- off by ~13x and ~21x.
+
+=== PHASE 4: DEAD LINKS (94 in docs/) ===
+Dominant classes, all mechanical:
+ - Case-wrong Development/ vs actual development/ -- 11 sites: user-guide/tutorial.md:425,430,431,432; architecture.md:1380,1381,1383; tactic-development.md:182,789,790; reference/operators.md:312,360
+ - ../../../docs/ escapes resolving OUTSIDE the repo into ~/Projects/ -- 24 sites (two-tree merge leftovers): docs/README.md:306,317,400,401,402,407,408; user-guide/README.md:97; user-guide/quickstart.md:103; project-info/README.md:131,133,134; project-info/implementation-status.md:151,152; project-info/known-limitations.md:178; project-info/performance-targets.md:5; project-info/test-coverage.md:156,157,163,164; reference/README.md:101,102; research/README.md:145,204,211
+ - Never-existed targets: METHODOLOGY.md (architecture.md:1221,1373; research/DUAL_VERIFICATION.md:500; research/PROOF_LIBRARY_DESIGN.md:408) and research/layer-extensions.md (architecture.md:1233,1318,1377; DUAL_VERIFICATION.md:503; PROOF_LIBRARY_DESIGN.md:407)
+ - Case-wrong filename: docs/README.md:145 and docs/architecture/README.md:35 link BFMCS_architecture.md; file is BFMCS_ARCHITECTURE.md
+ - Wrong depth from docs/reference/: operators.md:3,359,361,362 use ../../user-guide/, should be ../user-guide/
+ - .claude/CLAUDE.md written relative not repo-root: user-guide/INTEGRATION.md:5,408,416; user-guide/MCP_INTEGRATION.md:57; development/CONTRIBUTING.md:420,421
+ - Root TODO.md moved to specs/TODO.md: project-info/IMPLEMENTATION_STATUS.md:83; development/NONCOMPUTABLE_GUIDE.md:401; development/PHASED_IMPLEMENTATION.md:527
+ - Archived task dirs: architecture/ADR-001-*.md:6,265; development/NONCOMPUTABLE_GUIDE.md:5,190; development/PROPERTY_TESTING_GUIDE.md:713
+ - Stale Logos/Core/ root: project-info/tactic-registry.md:15-36 (all 12 rows) and :173; research/proof-search-automation.md:420-426; user-guide/examples.md:12 -- real path FormalSystem/Automation/Tactics.lean
+LOW/IGNORE: docs/development/DIRECTORY_README_STANDARD.md contributes 15 that are illustrative template snippets inside fences -- harmless, do not "fix" them into real links.
+EXCLUDE 2 false positives at docs/project-info/MAINTENANCE.md:463, :466 (grep patterns inside a bash fence).
+
+=== PHASE 5: DOCUMENTATION GAPS (landed, important, ZERO coverage in all 72 docs/ files) ===
+G1. The decidability soundness bridge -- sound_of_isValid / isValid_sound / isTautology_sound / isContradiction_sound / not_isSatisfiable_sound (Correctness.lean:100-145). The single most user-relevant recent result: it is what licenses trusting a `true` from the decision procedure. Add to docs/reference/API_REFERENCE.md plus the rewritten Limitation 6.
+G2. Discrete non-compactness -- archWitness (DiscreteNonCompactness.lean:102), discrete_consequence_not_compact (:250), strongCompletenessDiscrete_refuted (:280). A negative metatheorem of independent interest. Correct content for a GENUINE known-limitations entry; prose exists at StrongCompleteness.lean:59-72 and Metalogic.lean:102-110.
+G3. Dedekind / real-line completeness -- completeness_dedekind (StrongCompleteness.lean:469), consequence_completeness_dedekind (:450), FrameClass.Dedekind, ValidDedekindDense, Reynolds 1992 section 9 Thm 7 provenance (Axioms.lean:485-513).
+G4. Conservativity -- Metalogic/Conservativity.lean: the TM/TM+ backward bridge (translate, derivable_translate, ceb_backward / cef_backward / ced_backward / cec_backward) AND the negative result that the FORWARD direction is refuted for Base and Discrete.
+G5. Independence results -- Metalogic/Independence/{ClockFrame,CoNotPriorU,LoopingDuration}.lean.
+G6. The tense-primitive base language -- FormalSystem/BaseLanguage/ (Formula, Axioms, Derivation, Translation, AxiomDischarge): a SECOND object language with its own `inductive Axiom` (BaseLanguage/Axioms.lean:73) and a translation into the primary language. Absent from docs/development/MODULE_ORGANIZATION.md too.
+G7. The set-based consequence layer -- SetConsequence.lean: SetConsistent, SetMaximalConsistent, set_lindenbaum, CompactBase (:219), CompactDense (:263), and the two reductions. Note docs/user-guide/architecture.md:747-796 still places set_lindenbaum in an archived Completeness.lean.
+G8. The four-frame-class model itself -- FrameClass, its partial order (Axioms.lean:461-483, including why Dedekind sits ABOVE Dense rather than being a fourth leaf), and the minFrameClass <= fc derivation invariant (Axioms.lean:515-517). The central organizing concept of the proof system, explained nowhere.
+G9. Consequence completeness for all four classes (StrongCompleteness.lean:450,535,639,746) with the three-way strong-completeness status. Stated precisely at Metalogic.lean:83-101. WITHOUT this, a reader will read the four completeness theorems AS strong completeness -- which the tree explicitly refutes for Discrete.
+
+=== PHASE 6: MISSING READMEs AND THE MECHANICAL GUARD (run LAST) ===
+
+6a. scripts/readme-lint.sh reports 9 directories with no README. Priority: WeakCanonical/GroupModel/ (6 files -- the directory now hosting countermodel_discrete, the tree's most consequential recent theorem), FormalSystem/BaseLanguage/ (5), Metalogic/Independence/ (3). Others: Decidability/Verified/Bridge/ (15), Decidability/Verified/Termination/ (4), WeakCanonical/DenseModelSurgery/ (9), WeakCanonical/Kamp/EANegationFixFaithful/ (5), WeakCanonical/RealModel/ (7), Semantics/Extension/ (5).
+Also ~110 files present on disk but absent from their directory's README inventory, concentrated in WeakCanonical/Kamp/README.md (35), Automation/README.md (13), BXCanonical/Chronicle/README.md (7), Semantics/README.md (6).
+
+6b. THE GUARD. The recurring failure mode is documentation drift against a green tree, and the existing lint cannot catch it: scripts/readme-lint.sh checks file inventories, link resolution, and "Last verified" dates ONLY. It has NO status-claim check and does not examine README.md or docs/ at all. It therefore caught ZERO of the 44 defects in this review -- which is precisely why the stale sorryAx baseline at Metalogic/README.md:214 survived a previous documentation-correction pass.
+Implement BOTH:
+ (i) a check in scripts/check-module-invariants.sh that diffs documented status/axiom tables against actual `#print axioms` output and the C3 sorry inventory, failing the build on divergence;
+ (ii) an extension of scripts/readme-lint.sh's scope to cover README.md and docs/.
+This phase runs LAST because the guard must be authored against already-corrected content.
+
+=== VERIFICATION GATE ===
+- Every status claim verified against Lean source or #print axioms (lean_verify), never against another document.
+- `bash scripts/check-module-invariants.sh` -> ALL CHECKS PASSED (including the new check from 6b).
+- `bash scripts/readme-lint.sh` -> missing-README count 9 -> 0.
+- docs/ broken-link count 94 -> 0 (excluding the 2 MAINTENANCE.md false positives and the DIRECTORY_README_STANDARD.md template snippets).
+- Prose, markdown, and the two check scripts only; no .lean declaration, signature, import, or tactic changed.
+
+---
+
+### 485. Readme correction toplevel and formalsystem
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: code-quality
+- **Dependencies**: Task 484
+
+**Description**: README CORRECTION: rewrite the top-level README.md and repair the FormalSystem/**/README.md layer, which contains the audit's worst overstatements.
+
+DEPENDS ON the ROADMAP.md / Metalogic-README anchor task -- that task fixes the axiom count (42 -> 45) and the isValid-bridge claim this task must not re-derive independently.
+
+Source of record: specs/reviews/review-2026-08-25.md.
+
+=== KEY FRAMING ===
+The two documentation layers fail in OPPOSITE directions, and both must be fixed:
+ - Top-level README.md UNDER-claims: it advertises sorries that do not exist and marks two proven frame classes as pending or absent.
+ - The FormalSystem/**/README.md files OVER-claim: they state decidability is "fully proven", mark a NONEXISTENT file's completeness theorem "Sorry-free", and advertise three declarations that exist nowhere.
+
+The accurate replacement prose already exists in-tree at FormalSystem/Metalogic.lean:19-131 and FormalSystem/Metalogic/Decidability.lean:118-160. Both were verified current and precise. This is largely a TRANSCRIPTION job, not a research job.
+
+=== SCOPE A: README.md ===
+
+A1. CRITICAL, lines 154-156. An "Active sorry obligations" section claims "Discrete completeness (WeakCanonical/Transfer.lean, WeakCanonical/Separation/): Multiple sorries in the Reynolds/Doets pipeline -- truth lemma backward cases (G/H/Until/Since), monadic FO Tarski semantics, and gap-elimination lemmas." There are ZERO structural sorries (check C3). DELETE the section.
+
+A2. Lines 129, 136: prose says "continuous and discrete completeness have remaining obligations" and the mermaid Discrete node reads "Complete (pending)". completeness_discrete is proven and axiom-clean (FormalSystem/Metalogic/BXCanonical/Completeness.lean:296).
+
+A3. Lines 135, 150: mermaid Continuous node reads "Sound X . Complete X"; the axiom table gives Continuous soundness/completeness as "--" / "--". Both are PROVEN: soundness_dedekind (FormalSystem/Metalogic/Soundness.lean:1927) and completeness_dedekind (FormalSystem/Metalogic/StrongCompleteness.lean:469, verified [propext, Classical.choice, Quot.sound], documented in-source as "the headline result -- unconditional").
+
+A4. Lines 135-136, 148, 150: the class name "Continuous" is not the source's name. `inductive FrameClass` (Axioms.lean:519-524) is Base | Dense | Discrete | Dedekind. Axioms.lean:485-489 records that FrameClass.Dedekind is the paper's TM+_dc; Axioms.lean:503-513 explains the paper's TM+_c has NO frame class in this tree. Rename to Dedekind AND add a one-line note that TM+_c is a genuine gap, not an omission -- otherwise renaming hides it.
+
+A5. Lines 129-152 conflate completeness with STRONG completeness. Adopt the repo's settled terminology (StrongCompleteness.lean:25-41): "strong completeness" is reserved for a possibly-infinite premise set. State the three-way status: weak + finite-context consequence completeness PROVEN for all four classes; strong completeness OPEN for Base and Dense (gated on CompactBase / CompactDense, SetConsequence.lean:219 and :263), REFUTED for Discrete (strongCompletenessDiscrete_refuted, DiscreteNonCompactness.lean:280), NOT STATED for Dedekind.
+
+A6. Add a Decidability subsection -- currently the README never mentions it, though specs/ROADMAP.md calls it the largest active front. Model on Decidability.lean:141-160: the sound direction is landed (sound_of_isValid / isValid_sound, Correctness.lean:100 and :111); the completeness direction `models phi -> isValid phi fc = true`, valid_iff_allClosed, and the Decidable instances are OPEN.
+
+A7. Lines 19-21 metrics: "301 Lean files / ~109,364 code / ~50,913 comment". The README prints its own reproduction command at lines 23-26; running exactly that command returns 539 files / 170,898 code / 96,290 comment. Use those figures (or drop the table in favour of the command) so the table is consistent with the command shipped beneath it.
+
+A8. Lines 88-105 Project Structure: shows a FormalSystem/Bimodal/ directory that DOES NOT EXIST, and a bare Tests/. Actual top level is FormalSystem/{Automation,BaseLanguage,Boneyard,Examples,FrameConditions,Metalogic,ProofSystem,Semantics,Syntax,Theorems}/; tests are in Tests/BimodalTest/. BaseLanguage/ and Boneyard/ are both missing from the diagram. The tree is also rooted "ProofChecker/" while the repo is BimodalLogic and the Lake lib root is FormalSystem -- no line of the block is currently copy-pasteable. Regenerate from the filesystem.
+
+A9. Lines 92, 164: "44 constructors". Actual 45.
+
+A10. Line 129: "All soundness results are sorry-free and axiom-free (no sorryAx dependency)". "axiom-free" is false as written -- every result depends on [propext, Classical.choice, Quot.sound]. Use the Metalogic.lean:29-46 phrasing verbatim.
+
+A11. Line 98: "WeakCanonical/ # Reynolds/Doets discrete pipeline" undercounts -- the directory also carries the Dedekind route (DenseModelSurgery/ 9 files, RealModel/ 7 files) and GroupModel/ (6 files) hosting the discharged countermodel_discrete.
+
+A12. Line 149/150 per-class axiom counts: Dense says 38, should be 39; Continuous/Dedekind says 39, should be 42. Axiom.minFrameClass (Axioms.lean:588-597) partitions the 45 as 37 Base / 2 Dense / 3 Discrete / 3 Dedekind; since Dense <= Dedekind in the order (Axioms.lean:526-533), Dedekind inherits the two Dense axioms: 37+2+3 = 42. Base 37 and Discrete 40 are already correct.
+
+Note: all 13 relative links in README.md resolve -- verified, no link work needed here.
+
+=== SCOPE B: FormalSystem/**/README.md ===
+
+B1. HIGH, FormalSystem/README.md:285 and :289-290 -- "Metalogic | Complete (Soundness, Completeness, Deduction, Decidability)" and "Soundness theorem, completeness theorem (Dense and Discrete variants), deduction theorem, and decidability are all fully proven." This OVERSTATES the project's headline open problem. Only the sound direction exists. Correctness.lean:185-200 carries a "Retired as vacuous" section recording two declarations that previously papered over exactly this gap -- read it before rewriting. "(Dense and Discrete variants)" also undercounts: Base and Dedekind land too.
+
+B2. HIGH, FormalSystem/Metalogic/Algebraic/README.md:32 lists "AlgebraicCompleteness.lean | Main completeness theorem | Sorry-free". THE FILE DOES NOT EXIST (directory holds only BooleanStructure, FlowFrame, InteriorOperators, LindenbaumQuotient, UltrafilterMCS). Line 53 lists DovetailedChain.lean, also absent. Delete both rows. Also reconcile line 3 ("primary completeness path") with lines 18-19 ("supplementary infrastructure") -- neither is right; BXCanonical is the wired entry point and the deterministic-chain modules are archived per this file's own lines 50-51.
+
+B3. HIGH, FormalSystem/Metalogic/WeakCanonical/README.md:44-47 advertises weak_completeness, transfer_theorem, normal_form_reduction. Grep across every live (non-Boneyard) .lean returns ZERO hits for all three. Replace with the real termini: countermodel_discrete (WeakCanonical/GroupModel/CountermodelBase.lean:142) and truth_transfer (WeakCanonical/Transfer.lean). Also lines 10-33 omit DenseModelSurgery/ and RealModel/ and 5 loose modules; lines 51-63 reference a nonexistent ExpressiveCompleteness/ directory.
+
+B4. HIGH, FormalSystem/README.md:97 vs FormalSystem/ProofSystem/README.md:37 are mutually contradictory ("3 Discrete-only, 2 Dense-only" vs "2 Discrete-only, 3 Dense-only"). Axioms.lean:589-594 settles it: 2 Dense (density, dense_indicator), 3 Discrete (prior_UZ, prior_SZ, z1). BOTH omit the 3 Dedekind axioms, which is why both totals read 42.
+
+B5. HIGH, the count 42 appears at FormalSystem/README.md:79,92,94,200,252,282 and ProofSystem/README.md:12,22,40 -- nine sites. Both layer tables (FormalSystem/README.md:81-90, ProofSystem/README.md:26-35) sum to 42 and have no Dedekind row.
+
+B6. HIGH, FormalSystem/README.md:136-165 "three variants based on frame conditions" and ProofSystem/README.md:5-6 "all three TM logic variants (Base, Dense, Discrete)". There are FOUR. No Dedekind section exists; completeness_dedekind appears nowhere.
+
+B7. HIGH, FormalSystem/Metalogic/BXCanonical/README.md:1-7 scopes the directory to "Dense and Discrete", and :24-28 Key Results omit `completeness` (Base, Completeness.lean:196) -- the theorem that closed LAST and is the entire reason the tree is sorry-free -- plus the whole Dedekind route (BXCanonical/CompletenessDedekind.lean).
+
+B8. HIGH, FormalSystem/Metalogic/Bundle/README.md:70-72 hedges against sorries that do not exist ("0 in core completeness chain", "Any remaining sorries are in optional or experimental files"). Both qualifiers assert live sorries; there are none. Line 171 "Future Work: Eliminate temporal sorries" is a dead item.
+
+B9. MEDIUM, FormalSystem/Metalogic/Decidability/README.md:10-12 "decide_sound ... is the one direction that is machine-checked" -- stale since sound_of_isValid/isValid_sound landed. Mirror Decidability.lean:141-153. (Otherwise the most accurate README of the set.)
+
+B10. MEDIUM, ProofSystem/README.md:15 and :64 document Substitution.lean / Formula.subst, which do not exist; line 12 gives Axioms.lean as 468 lines (actual 625).
+
+B11. MEDIUM, sibling-aggregator convention violated at BXCanonical/README.md:13, Algebraic/README.md:26, Core/README.md:21 -- each lists the directory's SIBLING aggregator as a file inside it, contradicting Metalogic/README.md:119-136.
+
+B12. MEDIUM, FrameConditions/README.md:22 cites Axioms.lean:378 for `inductive FrameClass` (actual 519); lines 3 and 10 say "Base, Dense, and Discrete variants".
+
+B13. LOW: FormalSystem/README.md:183-193 root-file line counts all wrong (Metalogic.lean claimed 55, actual 199; Semantics.lean 86 vs 137; FrameConditions.lean 52 vs 68) and BaseLanguage.lean is missing. Core/README.md:25 says RestrictedMCS/ has 2 files (it has 1). Semantics/README.md:6-15 omits 5 of 12 live modules. Theorems/README.md:10-21 omits ContextualProofs.lean and DiscreteUnfolding.lean. FormalSystem/Theorems.lean:41-46 uses "COMPLETE (..., zero sorry)" as a single status token -- the PROVEN/SORRY-FREE conflation; lines 49-54 get it right. Theorems.lean:84 links Theorems/Propositional.lean, which is a DIRECTORY.
+
+B14. Fix the 5 broken references reported by scripts/readme-lint.sh Check 3, all pointing at directories consolidated into Boneyard/Kamp/: WeakCanonical/EFGames/README.md:39 and WeakCanonical/Expressiveness/README.md:34 -> ../ExpressiveCompleteness/README.md; WeakCanonical/Separation/README.md:42,43 -> DedekindZ/README.md, Hierarchy/README.md; Theorems/Perpetuity/README.md:46 -> Bridge.lean.
+
+=== DO NOT TOUCH (verified accurate and current) ===
+FormalSystem/Metalogic.lean, FormalSystem/Metalogic/Decidability.lean, FormalSystem/Metalogic/WeakCanonical.lean, FormalSystem/Metalogic/StrongCompleteness.lean, FormalSystem/Metalogic/SoundnessLemmas/README.md.
+
+=== VERIFICATION GATE ===
+- Every status claim verified against Lean source or #print axioms (lean_verify), never against another document.
+- `bash scripts/check-module-invariants.sh` -> ALL CHECKS PASSED.
+- `bash scripts/readme-lint.sh` -> broken-reference count must drop from 5 to 0; missing-README count (9) is out of scope here.
+- Prose and markdown only; no .lean declaration, signature, import, or tactic changed.
+
+---
+
+### 484. Documentation anchor roadmap and metalogic readme
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: code-quality
+- **Dependencies**: None
+
+**Description**: DOCUMENTATION ANCHOR CORRECTION: repair specs/ROADMAP.md and FormalSystem/Metalogic/README.md, the two documents every other correction pass is realigned against.
+
+This task MUST land before the README and docs/ correction tasks. Both downstream tasks read these two files as ground truth; a pass that trusts them today will propagate a wrong axiom count and a false "bridge is missing" claim outward across ~30 files.
+
+Source of record: specs/reviews/review-2026-08-25.md (sections "Critical Issues", "specs/ROADMAP.md — Mostly Current, Two Stale Claims", "Suggested Correction Ordering").
+
+=== SCOPE A: specs/ROADMAP.md (3 sites) ===
+
+A1. Lines 109-114 assert: "The isValid-to-validity bridge is MISSING, not merely unproven. No declaration anywhere takes DecisionProcedure.isValid as its subject in a semantic theorem." This is SUPERSEDED. isValid_sound (FormalSystem/Metalogic/Decidability/Correctness.lean:111) takes exactly `isValid phi fc = true` as its hypothesis; sound_of_isValid is at :100. Rewrite to: the SOUND direction is landed; the COMPLETENESS direction, and therefore valid_iff_allClosed and the Decidable (models phi) instances, remains open. Note lines 27-31 survive as written because they say "biconditional", which genuinely still does not exist -- do not change them.
+
+A2. Line 15 and lines 354-356 say "42 BX axiom constructors in 6 layers". Actual count is 45. Verify by enumerating `inductive Axiom` at FormalSystem/ProofSystem/Axioms.lean:99-518 (the constructors run prop_k .. sep; `inductive FrameClass` starts at :519).
+
+A3. The layer breakdown at lines 363-443 sums 4/5/24/2/5/2 = 42 and is missing a 7th layer for the three Dedekind axioms prior_U_gap, prior_S_gap, sep (Axioms.lean:435-455, minFrameClass partition at :595-597). Add it.
+
+A4. (Low) Lines 349-352 name four theorems in the C2 axiom baseline but omit completeness_dedekind (FormalSystem/Metalogic/StrongCompleteness.lean:469), which FormalSystem/Metalogic.lean:60-64 pins at the same axiom set.
+
+DO NOT TOUCH: ROADMAP.md lines 21-46 (the PROVEN-vs-SORRY-FREE section) and 336-352 (Sorry Inventory, correctly ZERO). Both were verified current.
+
+=== SCOPE B: FormalSystem/Metalogic/README.md (highest leverage per line in the whole audit) ===
+
+B1. Lines 211-217 purport to reproduce the invariant script's axiom baseline and record:
+  completeness [propext, sorryAx, Classical.choice, Quot.sound]
+This is FALSE. `completeness` does not depend on sorryAx. The enforced baseline is the clean set at scripts/check-module-invariants.sh:129, and check C2 passes with all four flagship theorems at exactly [propext, Classical.choice, Quot.sound].
+This defect is actively harmful: lines 220-222 call any deviation from the baseline "a hard stop", so a stale baseline suppresses precisely the alarm it exists to raise.
+FIX: either re-derive the block from the script, or (preferred) replace it with a pointer to scripts/check-module-invariants.sh so it cannot drift again.
+
+B2. Lines 235-244 claim "The live tree carries exactly ONE structural sorry", located in WeakCanonical/Transfer.lean inside countermodel_discrete; and line 239 explains "This is why completeness depends on sorryAx while completeness_dense and completeness_discrete do not."
+Both false. Check C3 reports ZERO structural sorries. The theorem moved to FormalSystem/Metalogic/WeakCanonical/GroupModel/CountermodelBase.lean:142 and is axiom-clean.
+FIX: rewrite to record zero sorries and the current location. KEEP the "locate by content, not line number" guidance -- it remains good advice.
+
+B3. Lines 13, and the sibling-aggregator listings, violate the convention this same file asserts at 119-136 (the directory's SIBLING aggregator is listed as a file inside the directory). Fix the BXCanonical/README.md:13 instance here if in scope, or leave for the downstream task.
+
+B4. Lines 147-150 describe the Lake root as FormalSystem/Bimodal.lean with roots := #[`Bimodal]. lakefile.lean:16-18 sets srcDir := "." and roots := #[`FormalSystem]; the real root is FormalSystem/FormalSystem.lean. Bimodal.lean does not exist.
+
+B5. (Low) Lines 6, 29-33, 152-191: every file/line count is stale. Decidability/ 19 -> 62; WeakCanonical/ 135 -> 179; BXCanonical/ 20 -> 28; Chronicle/ 8 -> 14; line 172 "14 loose modules plus five subdirectories" -> 19 and 8. This README also has no "Last verified" date (flagged by scripts/readme-lint.sh Check 4).
+
+=== VERIFICATION GATE ===
+- Every status claim written MUST be verified against the Lean source or #print axioms, never against another document. Use lean_verify (lean-lsp MCP) for axiom profiles.
+- Run `bash scripts/check-module-invariants.sh` and confirm ALL CHECKS PASSED before completing.
+- Run `bash scripts/readme-lint.sh` and record the result (it currently FAILs with 9 missing READMEs / 5 broken refs; this task is not required to fix those, but must not add to them).
+- No .lean declaration, signature, import, or tactic may be changed. Prose and markdown only.
+
+=== HOUSE PHRASING ===
+FormalSystem/Metalogic.lean:29-46 carries the correct formulation and MUST be used verbatim as the model: "SORRY-FREE (sorryAx-free; axioms: exactly propext, Classical.choice, Quot.sound)". Do not write "axiom-free" -- every result depends on those three.
+
+---
 
 ### 483. Route1 restricted applyrule emitted time mem
 - **Effort**: 3-5 hours
