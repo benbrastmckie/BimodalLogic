@@ -12346,6 +12346,416 @@ end PostBlockingRunProbe
 
 end PostBlockingSettlesRefutation
 
+/-! ## D3. The residual, discharged at a **nonempty** universe: the `untl`/`snce`-free fragment
+
+**What this section delivers.** `MintPaysForTime fc U Tmax` — the predicate this file started from,
+not a repair of it — proved outright, at every frame class and every `Tmax`, for every universe
+whose formulas carry no `untl` and no `snce` node. Section D2 left the predicate discharged only at
+`U = ∅` (`mintPaysForTime_empty`); this section moves the boundary off the empty universe and onto a
+syntactic condition that a genuinely nonempty stock satisfies — in particular the whole **modal
+fragment**: atoms, `⊥`, `→`, `□`, and everything built from them, which is `S5` over a single
+moment sitting inside the bimodal language.
+
+**Why the two blockers section D2 records do not bite here.** They are both blockers on a *time
+mint*, and in this fragment no time is ever minted at all:
+
+* *The engine-level assembly.* D2's residual blocker needs the picked rule's identity threaded to
+  the successor so a **per-rule payment** (disjunct 2 or 3) can be cashed there. Here no payment is
+  ever needed: the argument runs entirely in disjunct 1, and disjunct 1 is uniform in the rule. All
+  the pick has to supply is the *negative* fact `ruleMintsFreshTime r = false`, which
+  `pick_stage_source_noMint` reads straight off `isApplicable` without destructuring a single rule
+  arm.
+* *The density coordinate.* `densityRule` is the rule register entries 17 and 20 name as reachable
+  by no disjunct for any `σ` whatsoever. It is nonetheless harmless here, and for a reason that is
+  worth stating because it is not the frame-class gate: `isApplicable .densityRule sf fc` requires
+  `sf.formula` to match `.allFuture _`, and `Formula.allFuture φ` is
+  `((⊥ → ⊥) untl (φ → ⊥)) → ⊥` — an `untl` node. So the shape gate rejects it before the
+  `Dense ≤ fc` gate is ever consulted, and the discharge below carries **no frame-class
+  restriction**. That is strictly better than the "every frame class except `.Dense`/`.Dedekind`"
+  outcome D2's blocker anticipated.
+
+**The shape of the argument, in one line.** Every one of the nine members of `freshTimeRules` is
+gated by `isApplicable` on a formula shape that contains an `untl` or an `snce` node
+(`allFutureNeg`, `allPastNeg`, `densityRule` through the `allFuture`/`allPast` abbreviations;
+`someFuturePos`, `somePastPos`, `untlPos`, `sncePos`, `untlNeg`, `snceNeg` through their `as…?`
+views). The engine's other two stages run exactly one rule each — `serialityRule` and
+`timeLinearity` — and neither is in the census. So on an `untl`/`snce`-free branch the picked rule
+never mints, `applyRule_emitted_time_mem` applies at every emission, and the successor's known
+times are a subset of the predecessor's. Both of disjunct 1's conjuncts follow: the cardinality
+directly, and the rank because `splitOrderedRank` is monotone in `knownTimes` and antitone in the
+constraint list, which `expandOnceUnblocked_ord_mono` only ever extends.
+
+**What this is not.** It is not a discharge at a universe containing a temporal operator, and it
+cannot be turned into one: `mintPaysForTime_untlNeg_false` refutes the predicate at a universe whose
+formulas are `untl`-headed, so the syntactic condition below is not removable. The two named next
+steps of register entry 20 stand unchanged for the temporal fragment. -/
+
+/-- **The syntactic condition**: no `untl` and no `snce` node anywhere in the formula.
+
+Stated on the raw constructors rather than on the `as…?` views, so it is manifestly closed under
+subformulas and manifestly satisfied by the modal fragment. It is *sufficient* rather than
+necessary — `asUntil?` also rejects `untl ⊤ φ`, and `isApplicable` rejects some shapes this
+predicate admits — and sufficiency is all the discharge needs. -/
+def untlSnceFree : Formula → Bool
+  | .atom _ => true
+  | .bot => true
+  | .imp a b => untlSnceFree a && untlSnceFree b
+  | .box a => untlSnceFree a
+  | .untl _ _ => false
+  | .snce _ _ => false
+
+/-- The modal fragment is `untl`/`snce`-free: `□` preserves the condition. -/
+theorem untlSnceFree_box {φ : Formula} (h : untlSnceFree φ = true) :
+    untlSnceFree φ.box = true := by simpa [untlSnceFree] using h
+
+/-- …and so does `→`, hence `¬`, `∧`, `∨` and `◇` as well, all of which are `imp`/`box` composites
+in this language. -/
+theorem untlSnceFree_imp {φ ψ : Formula} (hφ : untlSnceFree φ = true)
+    (hψ : untlSnceFree ψ = true) : untlSnceFree (φ.imp ψ) = true := by
+  simp [untlSnceFree, hφ, hψ]
+
+/-! ### The six shape views, all `none` on an `untl`/`snce`-free formula
+
+One per `as…?` view `isApplicable` consults for a time-minting rule. Each is a two-line `cases`;
+they are listed separately rather than bundled because `isApplicable`'s arms consult them
+individually and the sweep below feeds them in by name. -/
+
+theorem asUntil_eq_none_of_untlSnceFree {φ : Formula} (h : untlSnceFree φ = true) :
+    asUntil? φ = none := by
+  cases φ <;> simp_all [untlSnceFree, asUntil?]
+
+theorem asSince_eq_none_of_untlSnceFree {φ : Formula} (h : untlSnceFree φ = true) :
+    asSince? φ = none := by
+  cases φ <;> simp_all [untlSnceFree, asSince?]
+
+theorem asSomeFuture_eq_none_of_untlSnceFree {φ : Formula} (h : untlSnceFree φ = true) :
+    asSomeFuture? φ = none := by
+  cases φ <;> simp_all [untlSnceFree, asSomeFuture?]
+
+theorem asSomePast_eq_none_of_untlSnceFree {φ : Formula} (h : untlSnceFree φ = true) :
+    asSomePast? φ = none := by
+  cases φ <;> simp_all [untlSnceFree, asSomePast?]
+
+/-- The `allFuture` view needs one extra split: `Formula.allFuture φ` is an `imp` whose *antecedent*
+is the `untl` node, so the condition has to be pushed through the implication before the
+contradiction is visible. -/
+theorem asAllFuture_eq_none_of_untlSnceFree {φ : Formula} (h : untlSnceFree φ = true) :
+    asAllFuture? φ = none := by
+  cases φ with
+  | imp a b => cases a <;> simp_all [untlSnceFree, asAllFuture?]
+  | _ => simp_all [untlSnceFree, asAllFuture?]
+
+/-- The past mirror. -/
+theorem asAllPast_eq_none_of_untlSnceFree {φ : Formula} (h : untlSnceFree φ = true) :
+    asAllPast? φ = none := by
+  cases φ with
+  | imp a b => cases a <;> simp_all [untlSnceFree, asAllPast?]
+  | _ => simp_all [untlSnceFree, asAllPast?]
+
+/-- **No time-minting rule is applicable to an `untl`/`snce`-free formula**, at any frame class.
+
+The nine-arm sweep over `freshTimeRules`, run against `isApplicable`'s own match. Note what does
+*not* appear in the proof: no frame class is inspected. `densityRule`'s arm is
+`| .densityRule, .pos, .allFuture _ => decide (FrameClass.Dense ≤ fc)`, and the shape half of that
+arm already fails, so the `decide` is never reached. This is why the discharge below is universal in
+`fc` where register entry 20 expected a density-free restriction. -/
+theorem isApplicable_eq_false_of_untlSnceFree {r : TableauRule} {sf : SignedFormula}
+    {fc : FormalSystem.ProofSystem.FrameClass}
+    (hmint : ruleMintsFreshTime r = true) (hfree : untlSnceFree sf.formula = true) :
+    isApplicable r sf fc = false := by
+  have h1 := asUntil_eq_none_of_untlSnceFree hfree
+  have h2 := asSince_eq_none_of_untlSnceFree hfree
+  have h3 := asSomeFuture_eq_none_of_untlSnceFree hfree
+  have h4 := asSomePast_eq_none_of_untlSnceFree hfree
+  have h5 := asAllFuture_eq_none_of_untlSnceFree hfree
+  have h6 := asAllPast_eq_none_of_untlSnceFree hfree
+  obtain ⟨sign, φ, l⟩ := sf
+  simp only at h1 h2 h3 h4 h5 h6 hfree
+  cases r <;> try exact Bool.noConfusion hmint
+  all_goals (
+    cases sign <;>
+    (cases φ with
+     | imp a b =>
+        cases a <;>
+          simp_all [isApplicable, asAllFuture?, asAllPast?, asUntil?, asSince?,
+            asSomeFuture?, asSomePast?, untlSnceFree]
+     | _ =>
+        simp_all [isApplicable, asAllFuture?, asAllPast?, asUntil?, asSince?,
+          asSomeFuture?, asSomePast?, untlSnceFree]))
+
+/-- **The first stage reports only applicable rules.** The `isApplicable` companion of
+`findApplicableRule_applyRule_pair`, read off the same `findSome?` structure: every arm of the
+`if isApplicable rule sf fc then … else none` body that can return `some` sits under the `then`. -/
+theorem findApplicableRule_isApplicable {sf : SignedFormula} {b : Branch} {ord : TimeOrdering}
+    {fc : FormalSystem.ProofSystem.FrameClass}
+    {r : TableauRule} {res : RuleResult} {o : TimeOrdering}
+    (h : findApplicableRule sf b ord fc = some (r, res, o)) :
+    isApplicable r sf fc = true := by
+  unfold findApplicableRule at h
+  obtain ⟨rule, -, hr⟩ := List.exists_of_findSome?_eq_some h
+  repeat' split at hr
+  all_goals simp_all
+
+/-- **The first stage cannot pick a minting rule on an `untl`/`snce`-free trigger.** -/
+theorem findApplicableRule_not_mintsFreshTime {sf : SignedFormula} {b : Branch}
+    {ord : TimeOrdering} {fc : FormalSystem.ProofSystem.FrameClass}
+    {r : TableauRule} {res : RuleResult} {o : TimeOrdering}
+    (hfree : untlSnceFree sf.formula = true)
+    (h : findApplicableRule sf b ord fc = some (r, res, o)) :
+    ruleMintsFreshTime r = false := by
+  rcases hm : ruleMintsFreshTime r with _ | _
+  · rfl
+  · exact absurd (findApplicableRule_isApplicable h)
+      (by simp [isApplicable_eq_false_of_untlSnceFree hm hfree])
+
+/-- **`pick_stage_source` with the no-mint fact attached**, the exact counterpart of
+`pick_stage_source_guarded` in the time coordinate. The three stages differ only in how the fact
+arrives: stage one has it from `findApplicableRule_not_mintsFreshTime`, stages two and three from
+running exactly one rule each, neither of which is in the census
+(`findApplicableSerialRule_rule`, `findApplicableLinearityRule_rule`). -/
+private theorem pick_stage_source_noMint (b : Branch) (ord : TimeOrdering)
+    (fc : FormalSystem.ProofSystem.FrameClass) (tr : EventualityTracker)
+    (hfree : ∀ x ∈ b, untlSnceFree x.formula = true) :
+    ∀ r res o,
+      (match findUnexpandedUnblockedWith b ord fc (blockedTimes b ord fc tr) with
+       | some sf => findApplicableRule sf b ord fc
+       | none =>
+         match b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
+             && (findApplicableSerialRule sf b ord).isSome) with
+         | some sf => findApplicableSerialRule sf b ord
+         | none =>
+           match b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
+               && (findApplicableLinearityRule sf b ord).isSome) with
+           | some sf => findApplicableLinearityRule sf b ord
+           | none => none) = some (r, res, o) →
+      ∃ sf, sf ∈ b ∧ applyRule r sf b ord = (res, o) ∧ ruleMintsFreshTime r = false := by
+  intro r res o h
+  rcases hpick : findUnexpandedUnblockedWith b ord fc (blockedTimes b ord fc tr) with _ | sf
+  · rw [hpick] at h
+    rcases hser : b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
+                             && (findApplicableSerialRule sf b ord).isSome) with _ | sf2
+    · rw [hser] at h
+      rcases hlin : b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
+                               && (findApplicableLinearityRule sf b ord).isSome) with _ | sf3
+      · rw [hlin] at h
+        simp only at h
+        exact absurd h (by simp)
+      · rw [hlin] at h
+        simp only at h
+        refine ⟨sf3, List.mem_of_find?_eq_some hlin,
+          findApplicableLinearityRule_applyRule_pair h, ?_⟩
+        rw [findApplicableLinearityRule_rule h]
+        rfl
+    · rw [hser] at h
+      simp only at h
+      refine ⟨sf2, List.mem_of_find?_eq_some hser,
+        findApplicableSerialRule_applyRule_pair h, ?_⟩
+      rw [findApplicableSerialRule_rule h]
+      rfl
+  · rw [hpick] at h
+    simp only at h
+    have hmem : sf ∈ b := by
+      unfold findUnexpandedUnblockedWith at hpick
+      exact List.mem_of_find?_eq_some hpick
+    exact ⟨sf, hmem, findApplicableRule_applyRule_pair h,
+      findApplicableRule_not_mintsFreshTime (hfree sf hmem) h⟩
+
+/-- One pick stage adds no known time, given that its rule mints none. The join of
+`applyRule_emitted_time_mem` with the no-mint source, in the shape `pickBranches_world_dichotomy`
+uses for the world coordinate. -/
+private theorem pickBranches_knownTimes_subset {b : Branch} {ord : TimeOrdering}
+    {p : Option (TableauRule × RuleResult × TimeOrdering)}
+    (haux : OrdTimesKnown b ord)
+    (hp : ∀ r res o, p = some (r, res, o) → ∃ sf, sf ∈ b ∧ applyRule r sf b ord = (res, o) ∧
+      ruleMintsFreshTime r = false) :
+    ∀ nb ∈ pickBranches b p, ∀ t ∈ nb.knownTimes, t ∈ b.knownTimes := by
+  rcases p with _ | ⟨r, res, o⟩
+  · simp [pickBranches]
+  · obtain ⟨sf, hsf, hA, hnm⟩ := hp r res o rfl
+    intro nb hnb t ht
+    obtain ⟨-, hsub⟩ := resultBranch_sub (b := b) (nb := nb) (res := res) hnb
+    obtain ⟨x, hx, rfl⟩ := exists_mem_of_mem_knownTimes ht
+    rcases hsub x hx with hxe | hxb
+    · refine applyRule_emitted_time_mem (rule := r) (sf := sf) (ord := ord) hsf haux hnm x ?_
+      rw [hA]
+      exact hxe
+    · exact mem_knownTimes_of_mem hxb
+
+/-- **No unordered successor of an `untl`/`snce`-free branch carries a new time.**
+
+The engine-level statement, and the one the discharge consumes. Compare
+`unorderedSuccessor_time_dichotomy`, which is unconditional and therefore has to admit
+`t = b.nextTime` as a second case: here the second case is *closed*, at the cost of the syntactic
+hypothesis. Routed through `pick_branches_eq` and `pick_stage_source_noMint`, so the three-stage
+pick is not destructured a second time. -/
+theorem unorderedSuccessor_knownTimes_subset {b : Branch} {ord : TimeOrdering}
+    {fc : FormalSystem.ProofSystem.FrameClass} {tr : EventualityTracker}
+    (haux : OrdTimesKnown b ord) (hfree : ∀ x ∈ b, untlSnceFree x.formula = true) :
+    ∀ nb ∈ unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1,
+      ∀ t ∈ nb.knownTimes, t ∈ b.knownTimes := by
+  have keyB : unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1
+      = pickBranches b
+          (match findUnexpandedUnblockedWith b ord fc (blockedTimes b ord fc tr) with
+           | some sf => findApplicableRule sf b ord fc
+           | none =>
+             match b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
+                 && (findApplicableSerialRule sf b ord).isSome) with
+             | some sf => findApplicableSerialRule sf b ord
+             | none =>
+               match b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
+                   && (findApplicableLinearityRule sf b ord).isSome) with
+               | some sf => findApplicableLinearityRule sf b ord
+               | none => none) := pick_branches_eq
+  rw [keyB]
+  exact pickBranches_knownTimes_subset haux (pick_stage_source_noMint b ord fc tr hfree)
+
+/-- **The rank is monotone in the two things a step can move.** `splitOrderedRank` rises with
+`knownTimes` and falls with the constraint list, so a successor that adds no time and loses no
+constraint cannot raise it. This is disjunct 1's second conjunct in general form; the first
+conjunct is `Finset.card_le_card` on the same subset. -/
+theorem splitOrderedRank_le_of_knownTimes_subset {Tmax : Nat} {b nb : Branch}
+    {ord ord' : TimeOrdering}
+    (hsub : ∀ t ∈ nb.knownTimes, t ∈ b.knownTimes)
+    (hmono : ∀ q ∈ ord.constraints, q ∈ ord'.constraints) :
+    splitOrderedRank Tmax nb ord' ≤ splitOrderedRank Tmax b ord := by
+  have h1 : nb.knownTimes.toFinset ⊆ b.knownTimes.toFinset := by
+    intro t ht
+    simp only [List.mem_toFinset] at ht ⊢
+    exact hsub t ht
+  have h2 : incompPairs nb ord' ⊆ incompPairs b ord := by
+    intro p hp
+    rw [mem_incompPairs] at hp ⊢
+    exact ⟨hsub _ hp.1, hsub _ hp.2.1, incomparableB_mono hmono p hp.2.2⟩
+  simp only [splitOrderedRank]
+  exact Nat.add_le_add (Nat.mul_le_mul_right _ (Finset.card_le_card h1))
+    (Finset.card_le_card h2)
+
+/-- **The discharge.** `MintPaysForTime` — the predicate as this file first stated it, not a repair
+of it — holds at every universe of `untl`/`snce`-free formulas, at every frame class, for every
+`Tmax`, and for every renaming `σ`.
+
+Every step lands in **disjunct 1**, and neither the σ-hit obligation nor the self-guard measure is
+consulted: `σ` does not appear in the proof at all. That is what makes this a discharge rather than
+another repair — the hypothesis list of the predicate is untouched, and the direction lemmas of
+section D2 carry it to `MintPaysForTimeStable` and `MintPaysForTimeFixed` for free. -/
+theorem mintPaysForTime_of_untlSnceFree {fc : FormalSystem.ProofSystem.FrameClass}
+    {U : Finset SignedFormula} {Tmax : Nat}
+    (hU : ∀ x ∈ U, untlSnceFree x.formula = true) :
+    MintPaysForTime fc U Tmax := by
+  intro _σ b ord tr hri hconf nb hnb
+  have hfree : ∀ x ∈ b, untlSnceFree x.formula = true := fun x hx => hU x (hconf x hx)
+  have hsub := unorderedSuccessor_knownTimes_subset (fc := fc) (tr := tr)
+    hri.ordTimesKnown hfree nb hnb
+  refine Or.inl ⟨Finset.card_le_card ?_, splitOrderedRank_le_of_knownTimes_subset hsub
+    expandOnceUnblocked_ord_mono⟩
+  intro t ht
+  simp only [List.mem_toFinset] at ht ⊢
+  exact hsub t ht
+
+/-- …and at the repaired predicate the terminus chain is stated against, by the direction lemma. No
+new hypothesis is introduced: `MintPaysForTimeFixed` is *weaker*. -/
+theorem mintPaysForTimeFixed_of_untlSnceFree {fc : FormalSystem.ProofSystem.FrameClass}
+    {U : Finset SignedFormula} {Tmax : Nat}
+    (hU : ∀ x ∈ U, untlSnceFree x.formula = true) :
+    MintPaysForTimeFixed fc U Tmax :=
+  mintPaysForTimeFixed_of_mintPaysForTime (mintPaysForTime_of_untlSnceFree hU)
+
+/-- A member of `signedUniverse C L` carries a formula from `C`. The projection the concrete
+instantiation below needs; the converse `mem_signedUniverse` is in `Fuel.lean`. -/
+theorem formula_mem_of_mem_signedUniverse {C : Finset Formula} {L : Finset Label}
+    {x : SignedFormula} (h : x ∈ signedUniverse C L) : x.formula ∈ C := by
+  simp only [signedUniverse, Finset.mem_image, Finset.mem_product] at h
+  obtain ⟨p, ⟨-, hf, -⟩, rfl⟩ := h
+  exact hf
+
+/-- **The discharge at the concrete universe the seed-level termini consume**, for every stock of
+`untl`/`snce`-free formulas and every label set. This is the statement
+`mintPaysForTimeFixed_signedUniverse_empty` was the `L = ∅` shadow of: the universe here is
+nonempty as soon as `C` and `L` are (`signedUniverse_nonempty`). -/
+theorem mintPaysForTimeFixed_signedUniverse_untlSnceFree
+    (fc : FormalSystem.ProofSystem.FrameClass) {C : Finset Formula} (L : Finset Label)
+    (Tmax : Nat) (hC : ∀ φ ∈ C, untlSnceFree φ = true) :
+    MintPaysForTimeFixed fc (signedUniverse C L) Tmax :=
+  mintPaysForTimeFixed_of_untlSnceFree
+    (fun _ hx => hC _ (formula_mem_of_mem_signedUniverse hx))
+
+/-- …and at the original predicate too, since the discharge is at the original. -/
+theorem mintPaysForTime_signedUniverse_untlSnceFree
+    (fc : FormalSystem.ProofSystem.FrameClass) {C : Finset Formula} (L : Finset Label)
+    (Tmax : Nat) (hC : ∀ φ ∈ C, untlSnceFree φ = true) :
+    MintPaysForTime fc (signedUniverse C L) Tmax :=
+  mintPaysForTime_of_untlSnceFree (fun _ hx => hC _ (formula_mem_of_mem_signedUniverse hx))
+
+/-! ### Non-vacuity
+
+The discharge is at a universe, not at the empty set, and this is where that is checked rather than
+asserted. Two facts: the universe is nonempty whenever both its dimensions are, and a concrete
+modal stock — an atom, its box, and the `T` axiom's instance over it — satisfies the syntactic
+condition. -/
+
+/-- `signedUniverse` is nonempty as soon as both its dimensions are. -/
+theorem signedUniverse_nonempty {C : Finset Formula} {L : Finset Label}
+    (hC : C.Nonempty) (hL : L.Nonempty) : (signedUniverse C L).Nonempty := by
+  obtain ⟨φ, hφ⟩ := hC
+  obtain ⟨l, hl⟩ := hL
+  exact ⟨⟨Sign.pos, φ, l⟩, mem_signedUniverse hφ hl⟩
+
+/-- A concrete `untl`/`snce`-free stock: `p`, `□p`, and `□p → p`. -/
+def modalWitnessStock : Finset Formula :=
+  {Formula.atomS "p", (Formula.atomS "p").box,
+    ((Formula.atomS "p").box).imp (Formula.atomS "p")}
+
+/-- It satisfies the syntactic condition… -/
+theorem modalWitnessStock_untlSnceFree :
+    ∀ φ ∈ modalWitnessStock, untlSnceFree φ = true := by
+  intro φ hφ
+  simp only [modalWitnessStock, Finset.mem_insert, Finset.mem_singleton] at hφ
+  rcases hφ with rfl | rfl | rfl <;> rfl
+
+/-- …and it is not empty. -/
+theorem modalWitnessStock_nonempty : modalWitnessStock.Nonempty :=
+  ⟨Formula.atomS "p", by simp [modalWitnessStock]⟩
+
+/-- **The residual, discharged at a nonempty concrete universe.** Together with
+`signedUniverse_nonempty` and `modalWitnessStock_nonempty` this is the residual discharged at a
+universe that is not the empty one. -/
+theorem mintPaysForTime_modalWitness (fc : FormalSystem.ProofSystem.FrameClass)
+    (L : Finset Label) (Tmax : Nat) :
+    MintPaysForTime fc (signedUniverse modalWitnessStock L) Tmax :=
+  mintPaysForTime_signedUniverse_untlSnceFree fc L Tmax modalWitnessStock_untlSnceFree
+
+/-- **Seed-level terminus 2, with the mint residual discharged rather than assumed.**
+
+The exact statement of `buildTableauAt_isSome_at_seed_lengthBudget_signedUniverse_fixed` with its
+`hmint` argument gone: on an `untl`/`snce`-free stock the hypothesis is a theorem, so the terminus
+carries one named residual fewer. The other three (`UnorderedSuccessorLabelClosed`,
+`StepLengthBounded`, `PostBlockingSettles`) are untouched — this section says nothing about them. -/
+theorem buildTableauAt_isSome_at_seed_lengthBudget_signedUniverse_untlSnceFree
+    {fc : FormalSystem.ProofSystem.FrameClass}
+    {C : Finset Formula} {L : Finset Label} {L' β : Nat} (phi : Formula) (hβ : 3 ≤ β)
+    (hC : TableauClosed C) (hT : TrichStock C) (hL : TimeMergeClosed L)
+    (hlab : UnorderedSuccessorLabelClosed fc L)
+    (hSL : StepLengthBounded fc (signedUniverse C L) L')
+    (hfree : ∀ φ ∈ C, untlSnceFree φ = true)
+    (hpb : PostBlockingSettles fc)
+    (hseed : ∀ x ∈ seedBranch phi, x ∈ signedUniverse C L) :
+    (buildTableauAt phi
+        (mintAwareFuelAt (signedUniverse C L).card
+          (derivedTmaxAt ((seedBranch phi).knownTimes.toFinset.card)
+            (signedUniverse C L).card)
+          (10 * (signedUniverse C L).card)
+          (difficultyCeiling (signedUniverse C L) L') β)
+        fc
+        (β * mintAwareFuelAt (signedUniverse C L).card
+          (derivedTmaxAt ((seedBranch phi).knownTimes.toFinset.card)
+            (signedUniverse C L).card)
+          (10 * (signedUniverse C L).card)
+          (difficultyCeiling (signedUniverse C L) L') β)
+      ).isSome = true :=
+  buildTableauAt_isSome_at_seed_lengthBudget_signedUniverse_fixed phi hβ hC hT hL hlab hSL
+    (mintPaysForTimeFixed_signedUniverse_untlSnceFree fc L _ hfree) hpb hseed
+
+
 /-! ## C9. The do-not-re-attempt register
 
 Twenty-four statements that look like the natural next lemma and are **not** available. Each is cited

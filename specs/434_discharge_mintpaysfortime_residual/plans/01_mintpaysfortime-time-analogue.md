@@ -662,7 +662,7 @@ either refuted route (register entry 14):
 
 ---
 
-### Phase 8: Terminus restatement and the concrete instantiation [PARTIAL]
+### Phase 8: Terminus restatement and the concrete instantiation [IN PROGRESS]
 
 **Goal**: Deliver the task's "done" condition: a sorry-free, axiom-free theorem establishing the
 residual (repaired if Phase 4 refuted it) at a **concrete, useful instantiation**, plus the seed-level
