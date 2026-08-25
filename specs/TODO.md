@@ -89,7 +89,7 @@ next_project_number: 480
 
 ### Metalogic
 
-477 [RESEARCHED] — T-A: TARGET-STRUCTURE PLUMBING FOR THE GROUPABLE-COMPANION ROUTE.
+477 [PLANNED] — T-A: TARGET-STRUCTURE PLUMBING FOR THE GROUPABLE-COMPANION ROUTE.
   └─ 478 [NOT STARTED] — T-B: THE GROUPABLE COMPANION LEMMA.
     └─ 479 [NOT STARTED] — T-C: CLOSE `countermodel_discrete` VIA THE v2 BLUEPRINT AT Rat x_
 
@@ -214,11 +214,12 @@ The companion lemma is SUFFICIENT, NOT KNOWN NECESSARY. It has not been proved. 
 
 ### 477. Ta qz target structure plumbing
 - **Effort**: small
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: None
-- **Specs/477_ta_qz_target_structure_plumbing/reports/01_qz-target-structure-plumbing.md**: [report]
+- **Research**: [477_ta_qz_target_structure_plumbing/reports/01_qz-target-structure-plumbing.md]
+- **Plan**: [477_ta_qz_target_structure_plumbing/plans/01_qz-target-structure-plumbing.md]
 
 **Description**: T-A: TARGET-STRUCTURE PLUMBING FOR THE GROUPABLE-COMPANION ROUTE.
 

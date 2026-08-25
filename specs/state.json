@@ -1481,7 +1481,7 @@
       "project_number": 477,
       "project_name": "ta_qz_target_structure_plumbing",
       "description": "T-A: TARGET-STRUCTURE PLUMBING FOR THE GROUPABLE-COMPANION ROUTE.\n\nCLASSIFICATION: SMALL, MECHANICAL. ~150-300 lines. No open mathematics. This is the first of three strictly-ordered tasks implementing the k-equivalence/companion route to `WeakCanonical.countermodel_discrete` at FrameClass.Base.\n\n=== BACKGROUND: WHY THIS ROUTE ===\n\nThe sole remaining structural sorry in the tree is `WeakCanonical.countermodel_discrete` (`FormalSystem/Metalogic/WeakCanonical/Transfer.lean`, declaration near :1069 -- HINT ONLY, re-verify by symbol). It sits in the PURELY DISCRETE BRANCH of the BASE-class weak completeness proof `BXCanonical.completeness`, which case-splits dense / purely-discrete / mixed. The Discrete-class theorem `completeness_discrete` does NOT depend on it: at FrameClass.Discrete the dense branch is refuted outright because `U(T,bot)` is a Discrete theorem via `prior_UZ`. Base lacks `prior_UZ`, so at Base the discrete countermodel must actually be constructed.\n\nThe predecessor research established that the ISOMORPHISM formulation of this obligation is permanently refuted (no linearly ordered abelian group has order type Z+Z; machine-checked, clean axioms), but that an isomorphism was never required: the goal is an existential for ONE formula of bounded operator depth on ANY admissible group carrier. The repository already closed that exact shape for Discrete, sorry-free and with no isomorphism, via chronicle -> OrderedMonadicStructure -> k-equivalence -> truth_transfer -> multiFamTaskFrame reassembly.\n\nGoverning document: specs/422_build_discrete_chronicle_over_non_archimedean_block_carrier_with_restricted_coherence/reports/02_o1-verdict-k-equivalence-transfer.md (sections 3, 4, 6). Read it before starting. Report 01 in the same directory records the refutations that are now FINAL -- do not re-attempt the isomorphism, and do not re-attempt `succ_cofinal`.\n\n=== WHAT TO DO ===\n\n(1) Define `QZStructure sig` with carrier `Rat x_lex Int`, mirroring the existing `ZIntervalStructure`, together with its `toOrdered` projection.\n\n(2) Define `goodGroupable sig k M := exists N : QZStructure sig, KEquiv sig k M (N.toOrdered sig)`.\n\nPATTERN SOURCES (mirror their shape; do not clone content blindly):\n- `FormalSystem/Metalogic/WeakCanonical/IntegerModel/GoodStructures.lean`\n- `FormalSystem/Metalogic/WeakCanonical/RealModel/GoodDense.lean`\n\nKNOWN INSTANCE REQUIREMENT, verified by compiled probe this session: the lex `IsOrderedAddMonoid` instance for `Rat x_lex Int` needs `import Mathlib.Algebra.Order.Monoid.Prod`. The probe is at specs/422_.../verification/qlex_frame_probe.lean and confirms `multiFamTaskFrameGen`/`History` elaborate at this carrier with clean axioms.\n\n=== NON-GOALS ===\n\n- Do NOT prove the companion lemma itself. That is the successor task.\n- Do NOT touch `countermodel_discrete` or its sorry.\n- Do NOT re-attempt the O1 isomorphism or `succ_cofinal`; both are settled negatively.\n- Do NOT do the S1 carrier-generic refactor of the dense cantor machinery -- it is retired for this branch.\n\n=== ACCEPTANCE ===\n\n- `lake build` green; no new sorry; no new axiom.\n- `QZStructure`, its `toOrdered`, and `goodGroupable` land sorry-free with `#print axioms` clean.\n- The sole structural sorry remains `countermodel_discrete`; the count does not increase.",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "topic": "metalogic",
       "priority": "high",
@@ -1492,13 +1492,18 @@
       ],
       "artifacts": [
         {
-          "path": "report",
-          "type": "specs/477_ta_qz_target_structure_plumbing/reports/01_qz-target-structure-plumbing.md",
+          "path": "specs/477_ta_qz_target_structure_plumbing/reports/01_qz-target-structure-plumbing.md",
+          "type": "report",
           "summary": "Research for T-A: full-carrier QZStructure design ruling, veryGoodGroupable forbidden as unsatisfiable, C6/C8/C9 build wiring, deliverable pre-compiled sorry-free."
+        },
+        {
+          "path": "specs/477_ta_qz_target_structure_plumbing/plans/01_qz-target-structure-plumbing.md",
+          "type": "plan",
+          "summary": "Three-phase implementation plan, validator-clean under --strict."
         }
       ],
       "created": "2026-08-25T05:29:35Z",
-      "last_updated": "2026-08-25T05:43:26Z",
+      "last_updated": "2026-08-25T05:48:48Z",
       "session_id": "sess_1787636012_6457eb_477"
     },
     {
