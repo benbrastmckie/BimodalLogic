@@ -181,27 +181,27 @@ direction is a signal that the transcription was edited rather than copied.
 
 ---
 
-### Phase 2: New IntTransfer.lean with TaskFrame.map [NOT STARTED]
+### Phase 2: New IntTransfer.lean with TaskFrame.map [COMPLETED]
 
 **Goal**: Create the new module and land the frame transport — all seven `TaskFrame` fields
 carried along an arbitrary `e : D ≃+o E`.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Semantics/IntTransfer.lean` with the standard copyright header
+- [x] Create `FormalSystem/Semantics/IntTransfer.lean` with the standard copyright header
       (copy the four-line form used by `Semantics/DurationClassification.lean`).
-- [ ] Imports: `FormalSystem.Semantics.Validity`, `FormalSystem.Semantics.DurationClassification`,
+- [x] Imports: `FormalSystem.Semantics.Validity`, `FormalSystem.Semantics.DurationClassification`,
       `Mathlib.Algebra.Order.Hom.Monoid`, `Mathlib.Algebra.Order.Group.Int`,
       `Mathlib.Data.Int.SuccPred`. (Verified sufficient — the prototype uses exactly this set.)
-- [ ] Write the module docstring: what the module is for (normalizing an arbitrary discrete
+- [x] Write the module docstring: what the module is for (normalizing an arbitrary discrete
       duration carrier to ℤ), the `Aligned`-not-`Equiv` design decision, and a `## Main results`
       list. Record the two measured tactic traps so a future editor does not re-hit them.
-- [ ] Open `namespace FormalSystem.Semantics` and declare the shared variable bundle from
+- [x] Open `namespace FormalSystem.Semantics` and declare the shared variable bundle from
       prototype lines 59-60: `{D E : Type}` with `[AddCommGroup] [LinearOrder]
       [IsOrderedAddMonoid] [Nontrivial]` on each.
-- [ ] Transcribe `TaskFrame.map` from prototype lines 63-107 (all seven fields:
+- [x] Transcribe `TaskFrame.map` from prototype lines 63-107 (all seven fields:
       `WorldState`/`nonempty`, `nullity_identity`, `comp`, `converse`, `serial`, `limit`,
       `spherical`).
-- [ ] Note in the `spherical` field's comment that it is discharged by handing `F.spherical` the
+- [x] Note in the `spherical` field's comment that it is discharged by handing `F.spherical` the
       *identical* directed family — no directedness argument is reconstructed.
 
 **Timing**: 1 hour
