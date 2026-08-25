@@ -1,7 +1,7 @@
 # Implementation Plan: Close `WeakCanonical.countermodel_discrete` at Base
 
 - **Task**: 479 - tc_close_countermodel_discrete_at_base
-- **Status**: [IMPLEMENTING]
+- **Status**: COMPLETED
 - **Effort**: 5 hours
 - **Dependencies**: Task 478 (delivered `WeakCanonical.companionChronicle`, axiom-clean, landed)
 - **Research Inputs**: `specs/479_tc_close_countermodel_discrete_at_base/reports/01_countermodel-discrete-base-port.md`
@@ -375,7 +375,7 @@ grounds to skip them.
 
 ---
 
-### Phase 5: Final verification and acceptance [NOT STARTED]
+### Phase 5: Final verification and acceptance [COMPLETED]
 
 **Goal**: Produce the evidence that the task's acceptance criteria are met, from a clean build.
 
