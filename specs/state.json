@@ -1213,7 +1213,7 @@
     {
       "project_number": 472,
       "project_name": "immediate_documentation_correction_pass",
-      "status": "researching",
+      "status": "researched",
       "task_type": "lean4",
       "topic": "code-quality",
       "priority": "high",
@@ -1234,8 +1234,16 @@
         470
       ],
       "created": "2026-08-24T00:00:00Z",
-      "last_updated": "2026-08-25T00:44:12Z",
-      "session_id": "sess_1787618565_717c84_472"
+      "last_updated": "2026-08-25T00:56:13Z",
+      "session_id": "sess_1787618565_717c84_472",
+      "artifacts": [
+        {
+          "type": "report",
+          "path": "specs/472_immediate_documentation_correction_pass/reports/01_documentation-correction-verification.md",
+          "summary": "Per-item verification of all nine false/stale documentation claims (a)-(i) against the live tree, with grounded replacement text, six additional in-scope defects found, and a green build/C1-C11 baseline.",
+          "created": "2026-08-25T00:56:20Z"
+        }
+      ]
     },
     {
       "project_number": 473,
@@ -1317,7 +1325,14 @@
       ],
       "created": "2026-08-24T00:00:00Z",
       "last_updated": "2026-08-25T00:55:11Z",
-      "artifacts": [],
+      "artifacts": [
+        {
+          "type": "report",
+          "path": "specs/475_carrier_normalization_successor_archimedean_transfer/reports/01_carrier-normalization-transfer.md",
+          "summary": "Research report: verified declarations, anti-patterns, module placement, aggregator wiring, three stale docstrings, 6-phase decomposition.",
+          "created": "2026-08-25T00:55:40Z"
+        }
+      ],
       "session_id": "sess_1787618565_717c84_475"
     },
     {

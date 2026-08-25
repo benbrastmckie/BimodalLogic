@@ -34,7 +34,7 @@ next_project_number: 477
 
 ### Code Quality
 
-472 [RESEARCHING] — THE IMMEDIATE, UNGATED DOCUMENTATION-CORRECTION PASS. This is the
+472 [RESEARCHED] — THE IMMEDIATE, UNGATED DOCUMENTATION-CORRECTION PASS. This is the
 455 [NOT STARTED] — BACKLOG REALIGNMENT: bring specs/ROADMAP.md and every remaining a
 
 ### Completeness
@@ -221,6 +221,7 @@ properties.
 - **Task Type**: lean4
 - **Topic**: semantics
 - **Dependencies**: None
+- **Research**: [475_carrier_normalization_successor_archimedean_transfer/reports/01_carrier-normalization-transfer.md]
 
 **Description**: CARRIER NORMALIZATION: THE SUCCESSOR-ARCHIMEDEAN TRANSFER.
 
@@ -464,10 +465,11 @@ Grounding: specs/reviews/review-2026-08-24.md, Addendum 1 item A-3, and task 468
 
 ### 472. Immediate documentation correction pass
 - **Effort**: medium
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: code-quality
 - **Dependencies**: Task 470
+- **Research**: [472_immediate_documentation_correction_pass/reports/01_documentation-correction-verification.md]
 
 **Description**: THE IMMEDIATE, UNGATED DOCUMENTATION-CORRECTION PASS. This is the first half of the DIVIDE of task
 177 that task 468 Stage 3 directs. It is split out and un-gated deliberately: 177 sits behind
