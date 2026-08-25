@@ -62,6 +62,13 @@ it is easy to get backwards: the engine never sees a context. It is fed the sing
   (place `p` far enough out) yet unsatisfiable over every Archimedean discrete carrier: the
   `F p` witness would lie at some finite successor distance. Only weak completeness, and its
   finite-context consequence corollary, is available for this class.
+
+  This argument is **no longer informal**. It is machine-checked in
+  `FormalSystem/Metalogic/DiscreteNonCompactness.lean`: the witness set is `archWitness`, its
+  two halves are `archWitness_finitely_satisfiable` and `archWitness_not_satisfiable`, and the
+  conclusions are `discrete_consequence_not_compact` (refuting `CompactDiscrete`) and
+  `strongCompletenessDiscrete_refuted` (refuting `StrongCompletenessDiscrete`). All are
+  sorry-free at exactly `[propext, Classical.choice, Quot.sound]`.
 * **`FrameClass.Dedekind`**: strong completeness is likewise out of reach. Reynolds 1992
   (Theorem 7, §9, printed p.189) is *weak* completeness for the real-line axiomatisation, and
   the restriction is genuine: the consequence relation over Dedekind-complete flows is not
@@ -417,6 +424,11 @@ Genuine strong completeness is provably unavailable for this class: `ValidDiscre
 expressible because `Formula.next φ = Formula.untl Formula.bot φ` is a genuine next-step
 operator on discrete orders — is finitely satisfiable over `ℤ` yet unsatisfiable over every
 Archimedean discrete carrier, so the class consequence relation is not compact. Weak
-completeness (`completeness_discrete`) is the strongest form for this class. -/
+completeness (`completeness_discrete`) is the strongest form for this class.
+
+That unavailability is now a theorem, not a remark: see
+`FormalSystem/Metalogic/DiscreteNonCompactness.lean`, whose `discrete_consequence_not_compact`
+refutes `CompactDiscrete` and whose `strongCompletenessDiscrete_refuted` refutes
+`StrongCompletenessDiscrete` outright. -/
 
 end FormalSystem.Metalogic

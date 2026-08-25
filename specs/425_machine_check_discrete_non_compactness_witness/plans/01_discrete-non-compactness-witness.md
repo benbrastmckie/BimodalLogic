@@ -1,7 +1,7 @@
 # Implementation Plan: Discrete non-compactness witness
 
 - **Task**: 425 - Machine-check the Discrete non-compactness witness
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 4.5 hours
 - **Dependencies**: 361, 423
 - **Research Inputs**: specs/425_machine_check_discrete_non_compactness_witness/reports/01_discrete-non-compactness-witness.md
@@ -353,24 +353,24 @@ at risk here. Do **not** land a `sorry` for this.
 
 ---
 
-### Phase 6: Documentation closure and final gate [NOT STARTED]
+### Phase 6: Documentation closure and final gate [COMPLETED]
 
 **Goal**: The prose that promised these theorems now points at them, and the repository's own
 invariant harness passes.
 
 **Tasks**:
-- [ ] Update the `FrameClass.Discrete` bullet in `StrongCompleteness.lean`'s module docstring
+- [x] Update the `FrameClass.Discrete` bullet in `StrongCompleteness.lean`'s module docstring
       (`:56-62`) so the informal argument cites the now-existing theorems by name. The prose
       itself stays — this task adds the theorems it promised, it does not delete the promise.
       Leave the `Formula.next φ = Formula.untl Formula.bot φ` rendering **as-is**: it is already
       correct.
-- [ ] Update the reserved section comment at `StrongCompleteness.lean:411-421` the same way,
+- [x] Update the reserved section comment at `StrongCompleteness.lean:411-421` the same way,
       pointing at `FormalSystem/Metalogic/DiscreteNonCompactness.lean`.
-- [ ] Add a bullet to `FormalSystem/Metalogic.lean`'s "Publication-Ready Results" list recording
+- [x] Add a bullet to `FormalSystem/Metalogic.lean`'s "Publication-Ready Results" list recording
       `discrete_consequence_not_compact` as SORRY-FREE with its axiom set, and mention
       `DiscreteNonCompactness.lean` in the "Key Components" list beside the
       `StrongCompleteness.lean` entry.
-- [ ] Verify no task-number citation entered any `FormalSystem/**` file.
+- [x] Verify no task-number citation entered any `FormalSystem/**` file.
 
 **Timing**: 0.75 hours
 
@@ -396,18 +396,18 @@ invariant harness passes.
 
 ## Testing & Validation
 
-- [ ] `lake build` exits 0 on the whole tree.
-- [ ] `archWitness_finitely_satisfiable`, `archWitness_not_satisfiable`,
+- [x] `lake build` exits 0 on the whole tree.
+- [x] `archWitness_finitely_satisfiable`, `archWitness_not_satisfiable`,
       `discrete_consequence_not_compact` each `#print axioms` to exactly
       `[propext, Classical.choice, Quot.sound]`.
-- [ ] `truthAt_next_iff`, `truthAt_next_iterate` likewise.
-- [ ] `strongCompletenessDiscrete_refuted` likewise, or an explicit `#### Reasoned Exclusions`
+- [x] `truthAt_next_iff`, `truthAt_next_iterate` likewise.
+- [x] `strongCompletenessDiscrete_refuted` likewise, or an explicit `#### Reasoned Exclusions`
       record under Phase 5.
-- [ ] Zero `sorry` in `FormalSystem/Metalogic/DiscreteNonCompactness.lean`.
-- [ ] Zero new `sorry` anywhere: `check-module-invariants.sh` C3 asserts exactly one structural
+- [x] Zero `sorry` in `FormalSystem/Metalogic/DiscreteNonCompactness.lean`.
+- [x] Zero new `sorry` anywhere: `check-module-invariants.sh` C3 asserts exactly one structural
       `sorry` tree-wide, located by content, and that count must not change.
-- [ ] `bash scripts/check-module-invariants.sh` exits 0.
-- [ ] No Dedekind non-compactness declaration was introduced (out-of-scope guard):
+- [x] `bash scripts/check-module-invariants.sh` exits 0.
+- [x] No Dedekind non-compactness declaration was introduced (out-of-scope guard):
       `grep -rn "Dedekind" FormalSystem/Metalogic/DiscreteNonCompactness.lean` returns nothing.
 
 ## Artifacts & Outputs

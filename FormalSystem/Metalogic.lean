@@ -51,6 +51,13 @@ temporal analogs (G phi -> phi, H phi -> phi) are NOT valid under irreflexive se
   so it is inter-derivable with the weak form through the deduction theorem, and the
   infinitary statement is refuted for this class by non-compactness — see the module docstring
   of `StrongCompleteness.lean`.
+- **Non-compactness (discrete)** (`discrete_consequence_not_compact`): SORRY-FREE (sorryAx-free;
+  axioms: exactly `propext`, `Classical.choice`, `Quot.sound`). The `FrameClass.Discrete`
+  set-based consequence relation is **not** compact: the premise set `{F p} ∪ {¬Xⁿ p : n ∈ ℕ}`
+  is finitely satisfiable over `ℤ` yet has no model on any Archimedean discrete carrier. The
+  companion `strongCompletenessDiscrete_refuted` (same axiom set) converts this into an outright
+  refutation of strong completeness for the class, which is why only the weak form
+  (`completeness_discrete`) appears above.
 - **Decidability** (`decide`): SORRY-FREE
 
 ## Completeness Architecture
@@ -83,6 +90,10 @@ theorem (Reynolds 1992, Section 8 Theorem 6) at the chronicle bridge and reading
 - **StrongCompleteness.lean**: the Dedekind terminus (`consequence_completeness_dedekind`,
   `completeness_dedekind`), plus the per-class strong-completeness programme and the
   non-compactness obstructions that bound it
+- **DiscreteNonCompactness.lean**: the machine-checked discharge of one of those obstructions —
+  the `{F p} ∪ {¬Xⁿ p}` witness, the first semantic characterisation of `Formula.next`
+  (`truthAt_next_iff`), and the two refutations `discrete_consequence_not_compact` and
+  `strongCompletenessDiscrete_refuted`
 - **Bundle/**: BFMCS infrastructure (shared by all paths)
 
 ## Axiom Dependencies
