@@ -207,15 +207,12 @@ rather than restating them.
 - `completeness_discrete` — discrete frame class
 - `countermodel_dense` — in `BXCanonical/Chronicle/ChronicleToCountermodelBasic.lean`
 
-These four are the repository's axiom-set invariant. Their `#print axioms` results
-are asserted by the invariant script:
-
-```
-completeness            [propext, sorryAx, Classical.choice, Quot.sound]
-completeness_dense      [propext, Classical.choice, Quot.sound]
-completeness_discrete   [propext, Classical.choice, Quot.sound]
-countermodel_dense      [propext, Classical.choice, Quot.sound]
-```
+These four are the repository's axiom-set invariant. Their `#print axioms` results are
+asserted by check **C2** of `scripts/check-module-invariants.sh`, which holds the baseline and
+compiles a scratch file against the built library to compare against it. Run that script for the
+current sets rather than reading them here — a set re-typed into this README is a set that will
+drift, and this block previously did drift. C2 is the authority; the script is cited by path and
+check name, deliberately without a line number.
 
 A change to any of these means a proof was silently rerouted through different
 dependencies — detectable even when the build stays green and the sorry count is
@@ -232,17 +229,25 @@ import FormalSystem.Metalogic.Decidability   -- decide, isValid, isSatisfiable
 
 ## Sorry Status
 
-The live tree carries exactly **one** structural `sorry`:
+The live tree carries **zero** structural `sorry`s. Check **C3** of
+`scripts/check-module-invariants.sh` asserts the structural sorry inventory is ZERO across
+`FormalSystem/`, with `Boneyard/` excluded, and it currently passes.
 
-- `WeakCanonical/Transfer.lean`, inside `theorem countermodel_discrete`
+`theorem countermodel_discrete` — the Base-frame discrete branch of `completeness` — is the
+former sole live sorry. It is now proved, at `WeakCanonical/GroupModel/CountermodelBase.lean`,
+on the non-Archimedean discrete carrier `ℚ ×ₗ ℤ` off `companionChronicle`, and it is SORRY-FREE
+(sorryAx-free; axioms: exactly `propext`, `Classical.choice`, `Quot.sound`). It no longer lives
+in `WeakCanonical/Transfer.lean`; that file now documents the move near the top of its module
+docstring. The `sorry` occurrences still greppable in `Transfer.lean` are all inside prose
+describing sorry-*freeness* — they are not structural sorries.
 
-This is why `completeness` depends on `sorryAx` while `completeness_dense` and
-`completeness_discrete` do not: the sorry-free discrete result routes through
-`countermodel_discrete_reynolds_v2` in
-`WeakCanonical/IntegerModel/ReynoldsBridge.lean` instead.
+The separate theorem `completeness_discrete` calls remains
+`countermodel_discrete_reynolds_v2` in `WeakCanonical/IntegerModel/ReynoldsBridge.lean`, which
+is also `sorryAx`-free. Do not conflate the two: `countermodel_discrete` is `completeness`'s
+branch, `countermodel_discrete_reynolds_v2` is `completeness_discrete`'s.
 
-Locate this sorry **by content** — the enclosing theorem name — never by line
-number. The invariant check does exactly that, so the assertion survives edits above
+Should a structural sorry ever reappear, locate it **by content** — the enclosing theorem name —
+never by line number. The invariant check does exactly that, so the assertion survives edits above
 it in the file.
 
 Sorries inside the archive are archived dead ends, not open obligations.

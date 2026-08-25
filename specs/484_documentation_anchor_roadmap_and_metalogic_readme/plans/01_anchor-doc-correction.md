@@ -266,36 +266,36 @@ theorems directly.
 
 ---
 
-### Phase 4: README B1 + B2 — the two actively-harmful defects [NOT STARTED]
+### Phase 4: README B1 + B2 — the two actively-harmful defects [COMPLETED]
 
 **Goal**: Replace the false axiom-baseline block with a C2 pointer, and replace the false
 one-structural-sorry inventory with the verified zero and the current theorem location.
 
 **Tasks**:
-- [ ] Run `bash scripts/check-module-invariants.sh` and capture C2's live output and C3's
+- [x] Run `bash scripts/check-module-invariants.sh` and capture C2's live output and C3's
       structural-sorry count as the transcription source.
-- [ ] Replace `FormalSystem/Metalogic/README.md:213-218` with a pointer to
+- [x] Replace `FormalSystem/Metalogic/README.md:213-218` with a pointer to
       `scripts/check-module-invariants.sh` and the check name **C2** — cite the script path and
       check name, never a line number, so the pointer cannot itself drift. Do not re-type the
       four theorems' axiom sets into the README.
-- [ ] Leave `:220-222` ("a hard stop, not a new baseline") in place; it reads correctly against a
+- [x] Leave `:220-222` ("a hard stop, not a new baseline") in place; it reads correctly against a
       pointer.
-- [ ] Rewrite `:233-248` to record ZERO structural sorries across `FormalSystem/`
+- [x] Rewrite `:233-248` to record ZERO structural sorries across `FormalSystem/`
       (`Boneyard/` excluded), per C3.
-- [ ] Relocate `theorem countermodel_discrete` to
+- [x] Relocate `theorem countermodel_discrete` to
       `WeakCanonical/GroupModel/CountermodelBase.lean:142` (write the path relative to the
       README's own directory) and record it as axiom-clean.
-- [ ] Note that `WeakCanonical/Transfer.lean:25-31` now documents the move, and that its remaining
+- [x] Note that `WeakCanonical/Transfer.lean:25-31` now documents the move, and that its remaining
       `sorry` occurrences (`:542`, `:622`, `:628`, `:718`, `:725`) are all inside prose describing
       sorry-*freeness*, not structural sorries.
-- [ ] Delete `:239-242` entirely ("This is why `completeness` depends on `sorryAx` ...") — it
+- [x] Delete `:239-242` entirely ("This is why `completeness` depends on `sorryAx` ...") — it
       explains a dependency that does not exist.
-- [ ] KEEP the "locate by content, not line number" guidance at `:244-246` and the archived-dead-
+- [x] KEEP the "locate by content, not line number" guidance at `:244-246` and the archived-dead-
       ends sentence at `:248`.
-- [ ] Use the house phrasing verbatim from `FormalSystem/Metalogic.lean:48`:
+- [x] Use the house phrasing verbatim from `FormalSystem/Metalogic.lean:48`:
       `SORRY-FREE (sorryAx-free; axioms: exactly propext, Classical.choice, Quot.sound)`.
       Never write "axiom-free".
-- [ ] Transcribe the corrected discrete-branch statement from `FormalSystem/Metalogic.lean:48-52`
+- [x] Transcribe the corrected discrete-branch statement from `FormalSystem/Metalogic.lean:48-52`
       rather than re-phrasing it.
 
 **Timing**: 1 hour
