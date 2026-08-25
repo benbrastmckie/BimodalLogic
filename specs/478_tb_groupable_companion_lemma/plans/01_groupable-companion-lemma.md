@@ -248,35 +248,47 @@ checkpoint rather than compressing the variants.
 
 ---
 
-### Phase 3: Ramsey factorization, tail absorption, and per-block inflation [IN PROGRESS]
+### Phase 3: Ramsey factorization, tail absorption, and per-block inflation [COMPLETED]
 
 **Goal**: Land `TailAbsorption` (both duals) and per-block inflation `Inflate`: for each block
 `(ℤ, cᵢ)` there is a colouring `e` of `ℚ ×ₗ ℤ` with `(ℤ, cᵢ) ≡ₖ ℤ + (ℚ ×ₗ ℤ, e)`-shaped
 inflations at the SAME depth `k` (the mixing lemma loses no depth).
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/WeakCanonical/GroupModel/RamseyFactorization.lean`;
+- [x] Create `FormalSystem/Metalogic/WeakCanonical/GroupModel/RamseyFactorization.lean`;
       transcribe `infinite_ramsey_pairs` from `verification/tb_ramsey_probe.lean` (117 lines,
       fully proved, axioms clean) — transcription, not re-proof; keep the probe's imports:
       `Mathlib.Logic.Denumerable` (for `Nat.Subtype.ofNat`), `Mathlib.Data.Set.Finite.Lattice`
       (for `Set.finite_iUnion`); use `Set.finite_le_nat`, NOT `Set.finite_Iic`; do NOT use
       `Nat.nth`
-- [ ] Segment factorization of an ω-block: colour pairs `a < b` of ℕ by the k-type of segment
+- [x] Segment factorization of an ω-block: colour pairs `a < b` of ℕ by the k-type of segment
       `[B_a, B_b)`; apply Ramsey to get `n₀ < n₁ < ⋯` with all segments of one type `τ`;
       prove idempotence `τ ⊕ τ = τ` from `[n₀,n₂) = [n₀,n₁)+[n₁,n₂)`; conclude
       `B ≅ prefix + Σ_ω Sⱼ` with every `Sⱼ ≡ₖ S := [n₀,n₁)`
-- [ ] Periodic fiber colouring: define `e` colouring each ℚ-fiber's ℤ periodically by the
+- [x] Periodic fiber colouring: define `e` colouring each ℚ-fiber's ℤ periodically by the
       finite word of `S` (each fiber = `Σ_ζ S`)
-- [ ] Tail absorption: `B ≡ₖ B + (ℚ ×ₗ ℤ, e)` — reduce via the mixing lemma
+- [x] Tail absorption: `B ≡ₖ B + (ℚ ×ₗ ℤ, e)` — reduce via the mixing lemma
       (`kEquiv_orderedSum_of_kEquiv_colour`) to k-equivalence of the k-type-coloured index
       orders `ω` vs `ω + ℚ ×ₗ ζ`, both monochromatic (all summands share type `τ`) and
       discrete with min and no max — closed by Phase 2's `MonoDiscreteMinNoMax`
-- [ ] The ω* dual of tail absorption (consumed by Phase 4's minimum-fiber case) via the
-      max-no-min variant
-- [ ] Per-block inflation: split `(ℤ, cᵢ) = A + B` at 0 (ω*-part + ω-part); shared-index
+- [x] The ω* dual of tail absorption (consumed by Phase 4's minimum-fiber case) via the
+      max-no-min variant *(deviation: altered — landed as `inflate_left`, a direct mirror of the right absorption; no dual-structure transfer needed)*
+- [x] Per-block inflation: split `(ℤ, cᵢ) = A + B` at 0 (ω*-part + ω-part); shared-index
       composition `doets_lemma_1_4` over a 2-element index reduces inflation to the two tail
-      absorptions; land `Inflate`
-- [ ] Wire the CI-edge import in `WeakCanonical.lean`
+      absorptions; land `Inflate` *(deviation: altered — the split-at-0 and separate ω/ω*
+      absorptions were replaced by ONE bi-infinite Ramsey factorization of the whole block
+      (`exists_zFactorization`: ω*-many τ⁻-segments, a pinned middle segment, ω-many
+      τ⁺-segments), with the mixing lemma reducing each inflation to the coloured index
+      orders ζ vs ζ ⊕ₗ (ℚ ×ₗ ζ) (and mirror), closed by a 3-region anchored variant
+      (`kEquiv_colourStructure_anchored` over the predicate-generalized master
+      `backForth_of_monoInv_pred`). Reason: the plan's "both monochromatic" coloured index
+      orders are only monochromatic after peeling the prefix, which costs nested-sum
+      re-association isos; the anchored variant makes the prefix and the split-at-0 seam
+      ride along as pinned anchors instead, eliminating the split, the re-association, and
+      the dual-transfer entirely. Deliverables land as `inflate_right`/`inflate_left`
+      (in place of the single `Inflate`), which is the exact per-fiber shape Phase 4's glue
+      consumes)*
+- [x] Wire the CI-edge import in `WeakCanonical.lean`
 
 **Timing**: 3-5 hours (one dispatch)
 

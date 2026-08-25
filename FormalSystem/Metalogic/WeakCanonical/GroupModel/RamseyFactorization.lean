@@ -743,4 +743,181 @@ theorem inflate_right (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq 
       rw [h0, hmod, show W 1 + (t.1 - W 1) = t.1 by omega]
   exact (h1.trans h2).trans h3
 
+
+/--
+**Left inflation** (tail absorption below): a coloured `ℤ`-block is `≡ₖ` itself with a
+suitably coloured copy of `ℚ ×ₗ ℤ` prepended below, at the same depth `k` — the `ω*`-mirror
+of `inflate_right`, tiled by the word of one Ramsey segment of the block's lower tail.
+-/
+theorem inflate_left (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds]
+    (k : ℕ) (c : sig.preds → ℤ → Prop) :
+    ∃ e : sig.preds → ℚ ×ₗ ℤ → Prop,
+      KEquiv sig k (zFiber sig c)
+        (orderedSum sig Bool (fun b => if b then zFiber sig c else qzFiber sig e)) := by
+  obtain ⟨F⟩ := exists_zFactorization sig k c
+  obtain ⟨W, hmono, hcover, τpos, τneg, hpos, hneg, _, hstrict⟩ := F
+  set p : ℤ := W (-2 + 1) - W (-2) with hp
+  have hp0 : 0 < p := by
+    have h1 : W (-2) < W (-1) := hstrict
+    have h2 : ((-2 : ℤ) + 1) = -1 := by omega
+    rw [hp, h2]
+    omega
+  set e : sig.preds → ℚ ×ₗ ℤ → Prop :=
+    fun p' x => c p' (W (-2) + ((ofLex x).2 % p)) with he
+  refine ⟨e, ?_⟩
+  set m : ℤ → OrderedMonadicStructure sig := fun z => segZ sig c (W z) (W (z + 1)) with hm
+  set m' : (ℚ ×ₗ ℤ) ⊕ₗ ℤ → OrderedMonadicStructure sig := fun u =>
+    match u with
+    | Sum.inl _ => segZ sig c (W (-2)) (W (-2 + 1))
+    | Sum.inr z => segZ sig c (W z) (W (z + 1)) with hm'
+  have h1 : KEquiv sig k (zFiber sig c) (orderedSum sig ℤ m) :=
+    kEquiv_zFiber_segSum sig k c W hmono hcover
+  have h2 : KEquiv sig k (orderedSum sig ℤ m) (orderedSum sig ((ℚ ×ₗ ℤ) ⊕ₗ ℤ) m') := by
+    apply kEquiv_orderedSum_of_kEquiv_colour
+    apply kEquiv_colourStructure_anchored (α := τneg) (β := kTypeOf sig k (m 0))
+      (γ := τpos) k ℤ ((ℚ ×ₗ ℤ) ⊕ₗ ℤ) 0 (toLex (Sum.inr 0))
+    · intro z hz
+      exact hneg z hz
+    · rfl
+    · intro z hz
+      exact hpos z hz
+    · intro u hu
+      rcases sumLex_cases u with ⟨x, rfl⟩ | ⟨z, rfl⟩
+      · exact hneg (-2) (by omega)
+      · exact hneg z (Sum.Lex.inr_lt_inr_iff.mp hu)
+    · rfl
+    · intro u hu
+      rcases sumLex_cases u with ⟨x, rfl⟩ | ⟨z, rfl⟩
+      · exact absurd hu Sum.Lex.not_inr_lt_inl
+      · exact hpos z (Sum.Lex.inr_lt_inr_iff.mp hu)
+  have h3 : KEquiv sig k (orderedSum sig ((ℚ ×ₗ ℤ) ⊕ₗ ℤ) m')
+      (orderedSum sig Bool (fun b => if b then zFiber sig c else qzFiber sig e)) := by
+    set g : (orderedSum sig ((ℚ ×ₗ ℤ) ⊕ₗ ℤ) m').carrier →
+        (orderedSum sig Bool (fun b => if b then zFiber sig c else qzFiber sig e)).carrier :=
+      fun s =>
+        match s with
+        | ⟨Sum.inl x, t⟩ => ⟨false, toLex ((ofLex x).1, (ofLex x).2 * p + (t.1 - W (-2)))⟩
+        | ⟨Sum.inr _, t⟩ => ⟨true, t.1⟩
+      with hgdef
+    have hgmono : StrictMono g := by
+      intro s s' hst
+      have h : Sigma.Lex (· < ·) (fun _ => (· < ·)) s s' := hst
+      cases h with
+      | left a b hij =>
+        rename_i i j
+        rcases sumLex_cases i with ⟨x, rfl⟩ | ⟨z, rfl⟩ <;>
+          rcases sumLex_cases j with ⟨x', rfl⟩ | ⟨z', rfl⟩
+        · have hxx : x < x' := Sum.Lex.inl_lt_inl_iff.mp hij
+          have hlex : (ofLex x).1 < (ofLex x').1 ∨
+              ((ofLex x).1 = (ofLex x').1 ∧ (ofLex x).2 < (ofLex x').2) :=
+            Prod.Lex.lt_iff.mp hxx
+          have hsecond : toLex ((ofLex x).1, (ofLex x).2 * p + (a.1 - W (-2))) <
+              toLex ((ofLex x').1, (ofLex x').2 * p + (b.1 - W (-2))) := by
+            rcases hlex with hq | ⟨hq, hw⟩
+            · exact Prod.Lex.toLex_lt_toLex.mpr (Or.inl hq)
+            · refine Prod.Lex.toLex_lt_toLex.mpr (Or.inr ⟨hq, ?_⟩)
+              have ha1 : W (-2) ≤ a.1 := a.2.1
+              have ha2 : a.1 < W (-2 + 1) := a.2.2
+              have hb1 : W (-2) ≤ b.1 := b.2.1
+              have hb2 : b.1 < W (-2 + 1) := b.2.2
+              have hmul : ((ofLex x).2 + 1) * p ≤ (ofLex x').2 * p :=
+                mul_le_mul_of_nonneg_right (by omega) (by omega)
+              have hexp : ((ofLex x).2 + 1) * p = (ofLex x).2 * p + p := by ring
+              omega
+          have hgoal : Sigma.Lex (· < ·) (fun _ => (· < ·))
+              (⟨false, toLex ((ofLex x).1, (ofLex x).2 * p + (a.1 - W (-2)))⟩ :
+                (orderedSum sig Bool
+                  (fun b => if b then zFiber sig c else qzFiber sig e)).carrier)
+              (⟨false, toLex ((ofLex x').1, (ofLex x').2 * p + (b.1 - W (-2)))⟩ :
+                (orderedSum sig Bool
+                  (fun b => if b then zFiber sig c else qzFiber sig e)).carrier) :=
+            Sigma.Lex.right _ _ hsecond
+          exact hgoal
+        · have hgoal : Sigma.Lex (· < ·) (fun _ => (· < ·))
+              (⟨false, toLex ((ofLex x).1, (ofLex x).2 * p + (a.1 - W (-2)))⟩ :
+                (orderedSum sig Bool
+                  (fun b => if b then zFiber sig c else qzFiber sig e)).carrier)
+              (⟨true, b.1⟩ : (orderedSum sig Bool
+                (fun b => if b then zFiber sig c else qzFiber sig e)).carrier) :=
+            Sigma.Lex.left _ _ (by decide)
+          exact hgoal
+        · exact absurd hij Sum.Lex.not_inr_lt_inl
+        · have hzz : z < z' := Sum.Lex.inr_lt_inr_iff.mp hij
+          have hab : a.1 < b.1 := by
+            calc a.1 < W (z + 1) := a.2.2
+              _ ≤ W z' := hmono (by omega)
+              _ ≤ b.1 := b.2.1
+          have hgoal : Sigma.Lex (· < ·) (fun _ => (· < ·))
+              (⟨true, a.1⟩ : (orderedSum sig Bool
+                (fun b => if b then zFiber sig c else qzFiber sig e)).carrier)
+              (⟨true, b.1⟩ : (orderedSum sig Bool
+                (fun b => if b then zFiber sig c else qzFiber sig e)).carrier) :=
+            Sigma.Lex.right _ _ hab
+          exact hgoal
+      | right a b hab =>
+        rename_i i
+        rcases sumLex_cases i with ⟨x, rfl⟩ | ⟨z, rfl⟩
+        · have hab' : a.1 < b.1 := Subtype.coe_lt_coe.mpr hab
+          have hsecond : toLex ((ofLex x).1, (ofLex x).2 * p + (a.1 - W (-2))) <
+              toLex ((ofLex x).1, (ofLex x).2 * p + (b.1 - W (-2))) :=
+            Prod.Lex.toLex_lt_toLex.mpr (Or.inr ⟨rfl, by omega⟩)
+          have hgoal : Sigma.Lex (· < ·) (fun _ => (· < ·))
+              (⟨false, toLex ((ofLex x).1, (ofLex x).2 * p + (a.1 - W (-2)))⟩ :
+                (orderedSum sig Bool
+                  (fun b => if b then zFiber sig c else qzFiber sig e)).carrier)
+              (⟨false, toLex ((ofLex x).1, (ofLex x).2 * p + (b.1 - W (-2)))⟩ :
+                (orderedSum sig Bool
+                  (fun b => if b then zFiber sig c else qzFiber sig e)).carrier) :=
+            Sigma.Lex.right _ _ hsecond
+          exact hgoal
+        · have hab' : a.1 < b.1 := Subtype.coe_lt_coe.mpr hab
+          have hgoal : Sigma.Lex (· < ·) (fun _ => (· < ·))
+              (⟨true, a.1⟩ : (orderedSum sig Bool
+                (fun b => if b then zFiber sig c else qzFiber sig e)).carrier)
+              (⟨true, b.1⟩ : (orderedSum sig Bool
+                (fun b => if b then zFiber sig c else qzFiber sig e)).carrier) :=
+            Sigma.Lex.right _ _ hab'
+          exact hgoal
+    have hgsurj : Function.Surjective g := by
+      rintro ⟨b, v⟩
+      match b, v with
+      | true, v =>
+        obtain ⟨z, hz1, hz2⟩ := hcover v
+        exact ⟨⟨Sum.inr z, ⟨v, hz1, hz2⟩⟩, rfl⟩
+      | false, v =>
+        set q : ℚ := (ofLex v).1 with hq
+        set y : ℤ := (ofLex v).2 with hy
+        have hmod1 : 0 ≤ y % p := Int.emod_nonneg y (by omega)
+        have hmod2 : y % p < p := Int.emod_lt_of_pos y hp0
+        refine ⟨⟨Sum.inl (toLex (q, y / p)),
+          ⟨W (-2) + y % p, by omega, by omega⟩⟩, ?_⟩
+        show (⟨false, toLex ((ofLex (toLex (q, y / p))).1,
+          (ofLex (toLex (q, y / p))).2 * p + (W (-2) + y % p - W (-2)))⟩ :
+            (orderedSum sig Bool
+              (fun b => if b then zFiber sig c else qzFiber sig e)).carrier) = ⟨false, v⟩
+        refine congrArg (Sigma.mk false) ?_
+        show toLex (q, y / p * p + (W (-2) + y % p - W (-2))) = v
+        rw [show y / p * p + (W (-2) + y % p - W (-2)) = y from by
+          have h2 := Int.mul_ediv_add_emod y p
+          have hcomm : y / p * p = p * (y / p) := mul_comm _ _
+          omega]
+        rfl
+    refine k_equiv_of_iso sig k _ _
+      (StrictMono.orderIsoOfSurjective g hgmono hgsurj) ?_
+    intro p' x
+    obtain ⟨u, t⟩ := x
+    rcases sumLex_cases u with ⟨v, rfl⟩ | ⟨z, rfl⟩
+    · have ht1 : W (-2) ≤ t.1 := t.2.1
+      have ht2 : t.1 < W (-2 + 1) := t.2.2
+      have hmod : ((ofLex v).2 * p + (t.1 - W (-2))) % p = t.1 - W (-2) := by
+        rw [add_comm, Int.add_mul_emod_self_right]
+        exact Int.emod_eq_of_lt (by omega) (by omega)
+      show c p' t.1 ↔ c p' (W (-2) + ((ofLex (toLex ((ofLex v).1,
+        (ofLex v).2 * p + (t.1 - W (-2))))).2 % p))
+      have h0 : (ofLex (toLex ((ofLex v).1, (ofLex v).2 * p + (t.1 - W (-2))))).2 =
+          (ofLex v).2 * p + (t.1 - W (-2)) := rfl
+      rw [h0, hmod, show W (-2) + (t.1 - W (-2)) = t.1 by omega]
+    · exact Iff.rfl
+  exact (h1.trans h2).trans h3
+
 end FormalSystem.Metalogic.WeakCanonical
