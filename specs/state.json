@@ -1056,13 +1056,13 @@
     {
       "project_number": 462,
       "project_name": "mintpaysfortime_engine_level_assembly",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "topic": "decidability",
       "description": "Land the engine-level assembly that lets `MintPaysForTimeFixed` be discharged at a NONEMPTY universe. This is the plumbing half of the residual task 434 left open at its Phase 8; it is explicitly proof engineering, not open mathematics, and task 434's own handoff records it as \"spawnable on its own\".\n\nTHE GAP. Every per-rule payment `MintPaysForTimeFixed` needs is already landed in MintBound.lean, but each is stated AT THE PICK, while the predicate quantifies over `unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1`. The missing work is threading the picked rule through `expandOnceUnblocked`'s three stages so the per-rule case split is available at the successor, for all thirty-six constructors at once.\n\nWHAT ALREADY EXISTS -- consume, do not re-author:\n- disjunct 2, the six rules in `freshLabelRules INTER freshTimeRules`: `mintPotential_lt_of_pick_linear_sigmaFixed` and `mintPotential_lt_of_pick_branching_sigmaFixed`, discharged from confinement plus `SigmaFixed` by `sigma_formula_hit_of_sigmaFixed`.\n- disjunct 3, the two rules in `selfGuardRules`: `selfGuardPotential_lt_of_untlNeg` and `selfGuardPotential_lt_of_snceNeg`.\n- disjunct 1, the twenty-seven rules outside `freshTimeRules`: `applyRule_emitted_time_dichotomy` (MintBound.lean:7048) plus `expandOnceUnblocked_ord_mono` (:1945).\n- `MintPaysForTimeFixed` (:10499) and its direction lemma; `mintPaysForTimeFixed_signedUniverse_empty` (:11096) is the current boundary-only discharge this task is meant to supersede.\n\nDONE MEANS: `MintPaysForTimeFixed fc (signedUniverse C L) Tmax` discharged at NONEMPTY `L`, at every frame class OUTSIDE `.Dense` and `.Dedekind`, landed sorry-free and axiom-free with `lake build` green. The `.Dense`/`.Dedekind` classes are deliberately EXCLUDED from this task's scope: they additionally require `gapPotential` for the density coordinate, which is a separate research task and must NOT be attempted here. State the frame-class restriction explicitly in the theorem, do not hide it.\n\nPROHIBITED: do not re-attempt anything in the C9 do-not-re-attempt register (read entries in full first, especially 14, 17, 18, 19, 20); do not edit Fuel.lean, Saturation.lean or Tableau.lean (md5-pinned frozen); do not alter any previously-landed declaration; no `sorry`, no vacuous discharge, no predicate that is itself false. If the assembly turns out to need genuinely open mathematics rather than plumbing, STOP and record that finding with evidence rather than forcing it -- that outcome is a legitimate deliverable and should be recorded as a new C9 entry.\n\nDependencies: none. This task is unblocked today.\nREALIGNMENT ADDENDUM (task 468, 2026-08-25) -- SEQUENCING WITH THE FIFTH TERMINATION RESIDUAL:\ntask 481 (discharge_or_replace_unorderedsuccessorlabelclosed_residual, dependencies: [434]) targets\n`UnorderedSuccessorLabelClosed` (MintBound.lean:6199), which is refuted in-tree at :6238\n(`¬ UnorderedSuccessorLabelClosed fc freshWorldLabels`) precisely at a NONEMPTY universe -- the\nsame setting this task's `MintPaysForTimeFixed` discharge above targets. If this task and 481 are\nnot sequenced, this task risks either duplicating the discovery of that refutation or, worse,\nbuilding the assembly on an implicit assumption that the residual is harmless. Task 481 should run\nBEFORE OR ALONGSIDE this task; check its disposition (discharge, weaker replacement, or C9 register\nentry) before relying on any assumption about `UnorderedSuccessorLabelClosed` at a nonempty\nuniverse in this task's own work.",
       "created": "2026-08-19T01:33:04Z",
-      "last_updated": "2026-08-19T01:33:04Z",
-      "session_id": "sess_1787103184_075b59",
+      "last_updated": "2026-08-25T17:55:05Z",
+      "session_id": "sess_1787672861_1a4999_462",
       "file_scope": [
         "FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean"
       ],
@@ -1071,7 +1071,13 @@
         470,
         481
       ],
-      "artifacts": []
+      "artifacts": [
+        {
+          "path": "specs/462_mintpaysfortime_engine_level_assembly/reports/01_engine-level-mint-assembly.md",
+          "type": "report",
+          "summary": "Verdict: genuine plumbing, backed by seven compiled Lean probes; frame restriction is one hypothesis; corrects the task's downstream-value claim."
+        }
+      ]
     },
     {
       "project_number": 463,
@@ -1553,7 +1559,7 @@
       "project_number": 481,
       "project_name": "discharge_or_replace_unorderedsuccessorlabelclosed_residual",
       "description": "CLASSIFICATION: genuinely open -- the predicate is refuted as stated, so this is a repair-or-replace problem, not routine discharge. This is the FIFTH termination residual; the four-residual framing used elsewhere in this programme (`UniverseClosed`, `DifficultyBounded`/`StepLengthBounded`, `MintPaysForTime`, `PostBlockingSettles`) is WRONG and must be corrected wherever it recurs.\n\nTARGET: `UnorderedSuccessorLabelClosed` (`FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean:6199`) is carried as a live hypothesis by `buildTableauAt_isSome_at_seed_lengthBudget_signedUniverse` (`:6215`) and has an in-tree refutation at `:6238` (`¬ UnorderedSuccessorLabelClosed fc freshWorldLabels`) -- the same shape of problem `DifficultyBounded` presented before `StepLengthBounded` replaced it.\n\nWHAT TO DO -- determine which of three outcomes applies:\n(a) the predicate can be discharged at the frame classes/settings the surviving terminus theorems actually need (distinct from the setting `:6238` refutes it in -- check precisely which); or\n(b) it needs a `StepLengthBounded`-style weaker replacement, analogous to the `DifficultyBounded` -> `StepLengthBounded` repair pattern already in this file; or\n(c) it is unclosable as stated and needs a C9 register entry (the file already has 24 such entries; this would be the 25th) plus an explicit statement of which theorem still carries it and at which frame classes.\n\nA C9 REGISTER ENTRY IS A VALID, COMPLETE DELIVERABLE for this task -- do not treat \"prove it\" as the only acceptable outcome.\n\nSEQUENCING NOTE (direct from `specs/reviews/review-2026-08-24.md` amendment 10e, re-affirmed by task 468's realignment): task 462 targets `MintPaysForTimeFixed` discharge at a NONEMPTY UNIVERSE, which is the same setting `:6238`'s refutation applies in. If this task and 462 are not sequenced, 462 risks either duplicating the discovery of the refutation or, worse, building on an implicit assumption that this residual is harmless. This task should run BEFORE OR ALONGSIDE 462.\n\nDEPENDENCIES: `[434]` (established the residual set this belongs to). Do NOT fold into 465 (the mechanical restatement-family task) -- 465 is explicitly scoped as \"a one-line application of its family root\" for SETTLED residuals; this residual is not settled, so folding it in would either force 465 to do research work outside its charter or produce a restatement of an unsettled predicate, which is exactly the kind of premature-closure risk this whole realignment exists to prevent.\n\nVERIFIED at task-468 realignment time (2026-08-25): none of tasks 462, 463, 464, 465 mentions the symbol `UnorderedSuccessorLabelClosed` in its live description.\n\nACCEPTANCE: one of outcomes (a)/(b)/(c) above is reached and recorded; `lake build` green; no regression to any currently-passing check-module-invariants.sh check.\n\nPROVENANCE: specced by task 468's realignment (report `specs/468_realign_task_programme_from_proof_state_audit/reports/02_stage1-verification-and-programme-realignment.md` §5, new-task-spec-3), itself descended from `specs/reviews/review-2026-08-24.md` amendment 10e.",
-      "status": "implementing",
+      "status": "partial",
       "task_type": "lean4",
       "topic": "decidability",
       "priority": "medium",
@@ -1583,7 +1589,11 @@
           "summary": "Phases 1-5 landed; Phases 6-7 blocked with an evidenced obstruction, all twelve Scope Hypotheses resolved."
         }
       ],
-      "session_id": "sess_1787672861_1a4999_481"
+      "session_id": "sess_1787672861_1a4999_481",
+      "blockers": [
+        "Phase 6: universeClosedAt_signedUniverse_of_propositional is not stateable. UniverseClosedAt's clause 1 is forall b ord tr, (forall x in b, x in U) -> ... with ord universally quantified and unconstrained; every route through the time coordinate carries OrdTimesKnown b ord, inherited from applyRule_emitted_time_mem, where applyRule_emitted_time_mem_ordTimesKnown_needed proves it non-removable by deciding a configuration in which dropping it makes the statement false.",
+        "Phase 7: blocked transitively -- there is no Phase 6 terminus to establish non-vacuity for."
+      ]
     },
     {
       "project_number": 482,
