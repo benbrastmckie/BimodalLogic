@@ -213,15 +213,15 @@ consumer demands one.
 
 ---
 
-### Phase 2: TM axiom set — `BaseLanguage.Axiom` and `minFrameClass` [NOT STARTED]
+### Phase 2: TM axiom set — `BaseLanguage.Axiom` and `minFrameClass` [COMPLETED]
 
 **Goal**: TM's axiom schemata exist as a Lean inductive, each routed to the frame class it needs
 via the *existing* `ProofSystem.FrameClass`.
 
 **Tasks**:
-- [ ] Create `FormalSystem/BaseLanguage/Axioms.lean`; import `FormalSystem.BaseLanguage.Formula`
+- [x] Create `FormalSystem/BaseLanguage/Axioms.lean`; import `FormalSystem.BaseLanguage.Formula`
       and `FormalSystem.ProofSystem.Axioms` (for `FrameClass` only).
-- [ ] Define `inductive Axiom : BLFormula -> Prop` with, per report §3.2:
+- [x] Define `inductive Axiom : BLFormula -> Prop` with, per report §3.2: *(deviation: altered — declared `Type`-valued, not `Prop`. `Prop` is impossible here on two counts the plan's own task list already presupposes: `Axiom.minFrameClass : Axiom phi -> FrameClass` eliminates into data, and Phase 8's `translate` must pattern-match an `Axiom` node while producing a `DerivationTree` (a `Type`). `ProofSystem.Axiom` is likewise `Type`-valued, so this is the mirror the plan asks for.)*
       - CPL: mirror the propositional schemata the BL+ side uses (`prop_k`, `prop_s`, `ex_falso`,
         `peirce` — match `ProofSystem/Axioms.lean`'s choice exactly so Phase 6's discharge is
         constructor-for-constructor).
@@ -242,11 +242,11 @@ via the *existing* `ProofSystem.FrameClass`.
         (define `always phi := allPast phi AND phi AND allFuture phi` on the BL side, mirroring
         `Formula.always`).
       MP, MN and TD are **rules**, not axioms — they belong to Phase 3.
-- [ ] Define `Axiom.minFrameClass : Axiom phi -> FrameClass` sending `DF |-> .Discrete`,
+- [x] Define `Axiom.minFrameClass : Axiom phi -> FrameClass` sending `DF |-> .Discrete`,
       `DN |-> .Dense`, `CO |-> .Dedekind`, and every other constructor `|-> .Base`. Follow the
       catch-all shape of `ProofSystem/Axioms.lean`'s own `minFrameClass`.
-- [ ] Uncomment the `Axioms` import in `FormalSystem/BaseLanguage.lean`.
-- [ ] Module docstring: name the paper source (`\S sub:Logic` for TM, `\S sub:Extension` for
+- [x] Uncomment the `Axioms` import in `FormalSystem/BaseLanguage.lean`.
+- [x] Module docstring: name the paper source (`\S sub:Logic` for TM, `\S sub:Extension` for
       DF/DN/CO) and note that TM's TD/MP/MN are rules living in `Derivation.lean`.
 
 **Timing**: 1 hour
