@@ -1,7 +1,7 @@
 # Implementation Plan: T-B — The Groupable Companion Lemma
 
 - **Task**: 478 - T-B: The Groupable Companion Lemma
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 16 hours (4 single-dispatch phases, ~2.1-3.3k lines total)
 - **Dependencies**: Task 477 (T-A, COMPLETED — `GroupModel/GoodGroupable.lean` vocabulary)
 - **Research Inputs**: reports/01_groupable-companion-feasibility.md
@@ -142,7 +142,7 @@ phase ends with the unchanged full gate: `lake build` green, `grep`-verified no 
 `#print axioms` clean on the phase's landed theorems (expected axiom set exactly
 `[propext, Classical.choice, Quot.sound]`), and a phase-scoped commit.
 
-### Phase 1: Block decomposition (S2) [NOT STARTED]
+### Phase 1: Block decomposition (S2) [COMPLETED]
 
 **Goal**: For countable discrete (Succ/Pred) unbounded `M`, land `BlockDecomposition`:
 `M ≃o Σ_{i∈I} (ℤ, cᵢ)` for a countable nonempty index order `I`, with predicates transported —
@@ -150,23 +150,23 @@ the finite-distance equivalence has convex classes, each order-isomorphic to a c
 ω/ω*/finite blocks can occur under Succ/Pred + NoMax/NoMin).
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/WeakCanonical/GroupModel/BlockDecomposition.lean` with a
+- [x] Create `FormalSystem/Metalogic/WeakCanonical/GroupModel/BlockDecomposition.lean` with a
       module docstring citing Doets 1987 ch. 3 (pp. 36–57) and ch. 7 step 9 (p. 91)
-- [ ] Define the finite-distance (succ-reachability) equivalence on an abstract countable
+- [x] Define the finite-distance (succ-reachability) equivalence on an abstract countable
       discrete unbounded order; prove its classes convex — template: `succ_orbit_convex` and
       the succ/pred ℤ-action in `ChronicleToCountermodelBasic.lean:876–1170` (sorry-free,
       limitdom-specific; generalize, do not import the limitdom hypotheses)
-- [ ] Build the quotient index order `I` with its `LinearOrder` — direct template:
+- [x] Build the quotient index order `I` with its `LinearOrder` — direct template:
       `IsConvexEquiv.ClassQuot`/`classLt` in `DoetsTheorem.lean:690–843` (dense branch)
-- [ ] Prove each class `≃o ℤ` via the Succ/Pred ℤ-action; define the block colouring `cᵢ`
+- [x] Prove each class `≃o ℤ` via the Succ/Pred ℤ-action; define the block colouring `cᵢ`
       from the transported predicates
-- [ ] Prove `Countable I` and `Nonempty I`; assemble the sigma reassembly order iso and land
+- [x] Prove `Countable I` and `Nonempty I`; assemble the sigma reassembly order iso and land
       `BlockDecomposition` (statement shape from `verification/tb_statement_probe.lean`,
       transcribed — it elaborates against the live tree)
-- [ ] Correct the stale `OrderedSum.lean` header note calling `doets_lemma_1_5` a
+- [x] Correct the stale `OrderedSum.lean` header note calling `doets_lemma_1_5` a
       "documented strategic sorry" (it is proved via `kEquiv_orderedSum_of_kEquiv_colour`;
       comment-only edit, no code change)
-- [ ] Wire the CI-edge import of `BlockDecomposition.lean` in `WeakCanonical.lean`
+- [x] Wire the CI-edge import of `BlockDecomposition.lean` in `WeakCanonical.lean`
 
 **Timing**: 3-4 hours (one dispatch)
 

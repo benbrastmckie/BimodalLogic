@@ -17,10 +17,10 @@ building on definitions from NEquivalence.lean.
 
 ## Status
 - `doets_lemma_1_4`: closed (delegates to KEquivalenceFramework.sum_preservation)
-- `doets_lemma_1_5`: **re-stated in live code** as
-  `RealModel/ShuffleReal.lean`'s `doets_lemma_1_5`, in Doets 1987 3.1.8's *coloured index order*
-  form rather than the archived draft's type-matching form. Still unproved there, but as a
-  documented strategic `sorry` with a named follow-up rather than as an archived draft.
+- `doets_lemma_1_5`: **proved**, as `RealModel/ShuffleReal.lean`'s `doets_lemma_1_5`, in
+  Doets 1987 3.1.8's *coloured index order* form rather than the archived draft's
+  type-matching form. Its proof is `kEquiv_orderedSum_of_kEquiv_colour` (`MixedSum.lean`),
+  the mixing lemma, via the `BackForth` engine of `BackAndForth.lean`; no `sorry` is involved.
   The archived draft in `Boneyard/SorriedDeclExcisions/SingletonSorriedDecls.lean` sits behind
   `#exit`, uses the stale names `k_type_of`/`k_equiv`, and is superseded: its hypothesis
   (matching *sets* of realized k-types) does not in fact imply its conclusion, since it takes no

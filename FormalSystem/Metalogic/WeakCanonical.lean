@@ -52,6 +52,10 @@ import FormalSystem.Metalogic.WeakCanonical.DenseModelSurgery.ChronicleInstance
 -- `DenseModelSurgery/` precedent above, so it stays inside the `lake build` closure rather than
 -- compiling only when named explicitly.
 import FormalSystem.Metalogic.WeakCanonical.GroupModel.GoodGroupable
+-- CI edge only: `GroupModel/BlockDecomposition.lean` (Doets 1987 ch. 7 step 9 at a discrete
+-- unbounded flow: `M ≃o Σ_{i∈I} (ℤ, cᵢ)`) is a leaf until the companion lemma
+-- (`GroupModel/GroupableCompanion.lean`) consumes it. Listed here on the same precedent.
+import FormalSystem.Metalogic.WeakCanonical.GroupModel.BlockDecomposition
 
 /-!
 # WeakCanonical: Reynolds/Doets Discrete Completeness
