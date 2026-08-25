@@ -311,20 +311,20 @@ must be re-checked rather than patched.
 
 ---
 
-### Phase 5: ValidInt, validDiscrete_iff_validInt, and aggregator wiring [IN PROGRESS]
+### Phase 5: ValidInt, validDiscrete_iff_validInt, and aggregator wiring [COMPLETED]
 
 **Goal**: Land the headline theorem and make the new module reachable and manifested.
 
 **Tasks**:
-- [ ] Transcribe `ValidInt` and `validDiscrete_iff_validInt` from prototype lines 278-290 into
+- [x] Transcribe `ValidInt` and `validDiscrete_iff_validInt` from prototype lines 278-290 into
       `IntTransfer.lean` (see "Planner decision: where `ValidInt` lives" — it goes here, **not**
       in `Validity.lean`, and is defined exactly once).
-- [ ] Docstring both: `ValidInt` as the ℤ-frame validity predicate, and
+- [x] Docstring both: `ValidInt` as the ℤ-frame validity predicate, and
       `validDiscrete_iff_validInt` as the carrier-normalization theorem, naming `intIso` as the
       transfer and noting that the forward direction is a single instantiation at ℤ (ℤ discharges
       the whole `ValidDiscrete` binder bundle with zero instance work).
-- [ ] Add `import FormalSystem.Semantics.IntTransfer` to `FormalSystem/Semantics.lean`.
-- [ ] Add a matching `IntTransfer` bullet to that file's `## Submodules` list, in the same style
+- [x] Add `import FormalSystem.Semantics.IntTransfer` to `FormalSystem/Semantics.lean`.
+- [x] Add a matching `IntTransfer` bullet to that file's `## Submodules` list, in the same style
       as the neighbouring `DurationClassification` bullet. Both the import and the bullet are
       required — `check-module-invariants.sh` flags the module as unreachable-and-unmanifested if
       either is missing.
@@ -353,7 +353,7 @@ edits to `FormalSystem/Semantics.lean` (one import line, one Submodules bullet).
 
 ---
 
-### Phase 6: Repair the three stale docstrings [NOT STARTED]
+### Phase 6: Repair the three stale docstrings [IN PROGRESS]
 
 **Goal**: Remove the three recorded findings that assert the successor-based lemma is absent from
 the tree. A build will not catch these; that is why this is a separate gated phase.

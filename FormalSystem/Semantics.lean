@@ -19,6 +19,7 @@ import FormalSystem.Semantics.Truth
 import FormalSystem.Semantics.ShiftSet
 import FormalSystem.Semantics.Validity
 import FormalSystem.Semantics.DurationClassification
+import FormalSystem.Semantics.IntTransfer
 
 /-!
 # FormalSystem.Semantics - Task Frame Semantics
@@ -65,6 +66,11 @@ polymorphic over temporal types.
 - `DurationClassification`: Hölder classification of Dedekind-complete duration groups --
   completeness implies Archimedean, and the discrete-or-dense dichotomy pinning the discrete
   branch to `ℤ`
+- `IntTransfer`: carrier normalization for the discrete branch -- a generic transport of
+  `TaskFrame`, `TaskModel`, `WorldHistory`, and `TruthAt` along any ordered-group isomorphism
+  `e : D ≃+o E` (via the `HEq`-free `Aligned` relation rather than a history `Equiv`), composed
+  with `DurationClassification`'s `intIso` to give `validDiscrete_iff_validInt`: quantifying over
+  every discrete duration carrier is the same as quantifying over `ℤ` alone
 
 ## Semantic Structure
 

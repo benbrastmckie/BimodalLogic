@@ -325,4 +325,42 @@ theorem truthAt_map {F : TaskFrame D} (e : D ≃+o E) (M : TaskModel F) (φ : Fo
         refine (ihψ σ σ' ha r).mpr (hψ (e r) ?_ ((map_lt_map_iff e).mpr hrt))
         simpa using (map_lt_map_iff e).mpr hsr
 
+/--
+A formula is **`ℤ`-valid** if it is true in every model over a `ℤ`-frame, at every total
+history, at every time.
+
+This is `ValidDiscrete` with the carrier quantifier collapsed to the single carrier `ℤ`. All
+eight instance binders of `ValidDiscrete` vanish here: `ℤ` supplies every one of them from
+Mathlib with no instance work.
+-/
+def ValidInt (φ : Formula) : Prop :=
+  ∀ (F : TaskFrame ℤ) (M : TaskModel F) (τ : WorldHistory F) (_ : τ.IsTotal) (t : ℤ),
+    TruthAt M τ t φ
+
+/--
+**Carrier normalization.** Quantifying over every discrete duration carrier is the same as
+quantifying over `ℤ` alone.
+
+The forward direction is a single instantiation: `ℤ` discharges the whole `ValidDiscrete` binder
+bundle, so `h ℤ F M τ hτ t` is the proof.
+
+The reverse direction is where the work is. Given an arbitrary discrete carrier `D`,
+`DurationClassification.lean`'s `intIso : D ≃+o ℤ` normalizes it, `TaskFrame.map` /
+`TaskModel.map` / `WorldHistory.map` carry the model across, `isTotal_map` carries totality, and
+`truthAt_map` carries truth back. Note the transfer must be an *additive* order isomorphism:
+durations add, so the order-only `orderIsoIntOfLinearSuccPredArch` could not be used here.
+
+`ValidDiscrete`'s `PredOrder`/`IsPredArchimedean` binders go unused — `intIso` needs only the
+successor half.
+-/
+theorem validDiscrete_iff_validInt (φ : Formula) : ValidDiscrete φ ↔ ValidInt φ := by
+  constructor
+  · intro h F M τ hτ t
+    exact h ℤ F M τ hτ t
+  · intro h D _ _ _ _ _ _ _ _ F M τ hτ t
+    let e : D ≃+o ℤ := intIso
+    refine (truthAt_map e M φ τ (WorldHistory.map τ e) (aligned_map e τ) t).mpr ?_
+    exact h (TaskFrame.map F e) (TaskModel.map M e) (WorldHistory.map τ e)
+      (isTotal_map e (aligned_map e τ) hτ) (e t)
+
 end FormalSystem.Semantics
