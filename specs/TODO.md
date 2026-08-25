@@ -11,8 +11,8 @@ next_project_number: 488
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,193,257,298,433,461,463,476,483,485 | -- | automation, code-quality, dataset-enhancement, ... |
-| 2 | 125,178,231,282,296,464,481,486 | 193,298,461,463,483,485 | algebraic-representation, code-quality, dataset-enhancement, ... |
+| 1 | 127,128,193,257,298,433,461,463,476,483,486 | -- | automation, code-quality, dataset-enhancement, ... |
+| 2 | 125,178,231,282,296,464,481 | 193,298,461,463,483 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 219,465 | 231,464 | dataset-enhancement, decidability |
 | 4 | 428 | 433,465 | decidability |
 | 5 | 429 | 428 | decidability |
@@ -34,8 +34,7 @@ next_project_number: 488
 
 ### Code Quality
 
-485 [PLANNED] — README CORRECTION: rewrite the top-level README.md and repair the
-  └─ 486 [NOT STARTED] — docs/ OVERHAUL: delete the documents that are fiction, rewrite th
+486 [NOT STARTED] — docs/ OVERHAUL: delete the documents that are fiction, rewrite th
 
 ### Dataset Enhancement
 
@@ -226,12 +225,13 @@ This phase runs LAST because the guard must be authored against already-correcte
 ---
 
 ### 485. Readme correction toplevel and formalsystem
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: code-quality
 - **Dependencies**: Task 484
 - **Research**: [485_readme_correction_toplevel_and_formalsystem/reports/01_readme-correction-verification.md]
 - **Plan**: [485_readme_correction_toplevel_and_formalsystem/plans/01_readme-correction.md]
+- **Summary**: [485_readme_correction_toplevel_and_formalsystem/summaries/01_readme-correction-summary.md]
 
 **Description**: README CORRECTION: rewrite the top-level README.md and repair the FormalSystem/**/README.md layer, which contains the audit's worst overstatements.
 
