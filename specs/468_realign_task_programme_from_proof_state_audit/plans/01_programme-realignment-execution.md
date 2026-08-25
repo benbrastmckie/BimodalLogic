@@ -297,7 +297,7 @@ as a starting inventory to be completed from the live file, not as exhaustive.
 
 ---
 
-### Phase 4: Create the three new tasks [NOT STARTED]
+### Phase 4: Create the three new tasks [COMPLETED]
 
 **Goal**: Bring into existence the three tasks report 02 specced, with the planner's sequencing
 decisions wired in from the start.

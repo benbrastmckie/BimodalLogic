@@ -1,5 +1,5 @@
 ---
-next_project_number: 480
+next_project_number: 483
 ---
 
 # TODO
@@ -11,8 +11,8 @@ next_project_number: 480
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,193,257,298,422,434,461,462,468,476 | -- | automation, dataset-enhancement, decidability, ... |
-| 2 | 125,169,178,231,282,296,433,455,463 | 193,298,422,434,461,462,468 | algebraic-representation, code-quality, dataset-enhancement, ... |
+| 1 | 127,128,193,257,298,422,434,461,462,468,476,480 | -- | automation, dataset-enhancement, decidability, ... |
+| 2 | 125,169,178,231,282,296,433,455,463,481 | 193,298,422,434,461,462,468 | algebraic-representation, code-quality, dataset-enhancement, ... |
 | 3 | 95,219,362,464 | 169,231,463 | completeness, dataset-enhancement, decidability, ... |
 | 4 | 465 | 464 | decidability |
 | 5 | 428 | 433,465 | decidability |
@@ -21,6 +21,7 @@ next_project_number: 480
 | 8 | 411 | 410 | decidability |
 | 9 | 430 | 411 | decidability |
 | 10 | 177,412 | 193,430 | decidability, formula-refactor |
+| 11 | 482 | 412 | decidability |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -59,6 +60,8 @@ next_project_number: 480
           └─ 411 [NOT STARTED] — Track B part 2 for the TM tableau decidability program (parent: t
             └─ 430 [NOT STARTED] — The semantic lift and the Track A assembly. Owns obstruction O4 o
               └─ 412 [NOT STARTED] — Track B finish for the TM tableau decidability program (parent: t
+                └─ 482 [NOT STARTED] — CLASSIFICATION: OPEN MATHEMATICS, multi-month. This MUST NOT be r
+  └─ 481 [NOT STARTED] — CLASSIFICATION: genuinely open -- the predicate is refuted as sta
 462 [NOT STARTED] — Land the engine-level assembly that lets `MintPaysForTimeFixed` b
   └─ 463 [NOT STARTED] — Decide `PostBlockingSettlesRun fc (mintAwareFuelAt U.card Tmax mi
     └─ 464 [NOT STARTED] — Design and land `gapPotential`, the density coordinate of the ter
@@ -66,6 +69,7 @@ next_project_number: 480
         └─ 428 [BLOCKED] — Engine totality at a quantified branch budget. Owns obstruction O (see above)
 468 [IMPLEMENTING] — PROGRAMME REALIGNMENT FROM A VERIFIED PROOF-STATE AUDIT: restruct
 476 [NOT STARTED] — THE BOX-FAITHFUL SMALL-MODEL THEOREM.
+480 [NOT STARTED] — CLASSIFICATION: routine engineering, not open mathematics. Starta
 
 ### Formula Refactor
 
@@ -88,6 +92,87 @@ next_project_number: 480
     └─ 362 [NOT STARTED] — Implement the completeness capstone under the SETTLED TERMINOLOGY
 
 ## Tasks
+
+### 482. Discharge proof extraction completeness
+- **Effort**: large
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: Task 412
+
+**Description**: CLASSIFICATION: OPEN MATHEMATICS, multi-month. This MUST NOT be re-described as engineering, and must not be scheduled or budgeted as a routine task.
+
+TARGET: eliminate `.extractionFailed` as a live outcome of `decide` on a genuinely closed tableau. Currently `verifyProof` is `fun _ _ => true` (`FormalSystem/Metalogic/Decidability/ProofExtraction.lean:345`, honestly commented, misleadingly named) and no theorem establishes that a closed tableau ALWAYS yields an extractable Hilbert-system derivation. `ProofExtraction.lean` has zero theorems today (re-confirmed at task 468 realignment time, 2026-08-25).
+
+WHAT THIS REQUIRES: the missing refutation induction (`allClosed → Derivable`, the content that would live under `FormalSystem/Metalogic/Decidability/Verified/Refutation/` -- this directory does not exist today, zero files, re-confirmed 2026-08-25) is a PREREQUISITE owned by task 412, which already targets exactly this induction (`allClosed_derivable`). This task is sequenced AFTER 412 rather than folded into 412's acceptance criteria as an additional corollary, precisely so the research problem is not hidden behind 412's engineering-shaped description -- see the planner's decision recorded in task 468's implementation plan (`specs/468_realign_task_programme_from_proof_state_audit/plans/01_programme-realignment-execution.md`, "Planner decisions taken here" item 1). Task 412's own description carries a one-line REVISE naming this task as the owner of `.extractionFailed` elimination.
+
+DEPENDENCIES: `[412]`.
+
+FILE SCOPE: `FormalSystem/Metalogic/Decidability/ProofExtraction.lean`,
+`FormalSystem/Metalogic/Decidability/Verified/Refutation/` (does not yet exist -- this task or a predecessor may need to create it).
+
+DO NOT schedule this as an independent parallel effort that would redundantly re-derive the refutation induction 412 already targets -- consume 412's `allClosed_derivable` once it lands.
+
+ACCEPTANCE: `.extractionFailed` is unreachable on a genuinely closed tableau (stated and proved as a corollary of `allClosed_derivable` or equivalent); `lake build` green; no regression to any currently-passing check-module-invariants.sh check; `verifyProof` either proved correct against the new theorem or replaced by an implementation whose correctness the new theorem certifies.
+
+PROVENANCE: specced by task 468's realignment (report `specs/468_realign_task_programme_from_proof_state_audit/reports/02_stage1-verification-and-programme-realignment.md` §5, new-task-spec-2), itself descended from `specs/reviews/review-2026-08-24.md` amendment 10b's surviving ADD-list item, per R4.
+
+---
+
+### 481. Discharge or replace unorderedsuccessorlabelclosed residual
+- **Effort**: large
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: Task 434
+
+**Description**: CLASSIFICATION: genuinely open -- the predicate is refuted as stated, so this is a repair-or-replace problem, not routine discharge. This is the FIFTH termination residual; the four-residual framing used elsewhere in this programme (`UniverseClosed`, `DifficultyBounded`/`StepLengthBounded`, `MintPaysForTime`, `PostBlockingSettles`) is WRONG and must be corrected wherever it recurs.
+
+TARGET: `UnorderedSuccessorLabelClosed` (`FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean:6199`) is carried as a live hypothesis by `buildTableauAt_isSome_at_seed_lengthBudget_signedUniverse` (`:6215`) and has an in-tree refutation at `:6238` (`¬ UnorderedSuccessorLabelClosed fc freshWorldLabels`) -- the same shape of problem `DifficultyBounded` presented before `StepLengthBounded` replaced it.
+
+WHAT TO DO -- determine which of three outcomes applies:
+(a) the predicate can be discharged at the frame classes/settings the surviving terminus theorems actually need (distinct from the setting `:6238` refutes it in -- check precisely which); or
+(b) it needs a `StepLengthBounded`-style weaker replacement, analogous to the `DifficultyBounded` -> `StepLengthBounded` repair pattern already in this file; or
+(c) it is unclosable as stated and needs a C9 register entry (the file already has 24 such entries; this would be the 25th) plus an explicit statement of which theorem still carries it and at which frame classes.
+
+A C9 REGISTER ENTRY IS A VALID, COMPLETE DELIVERABLE for this task -- do not treat "prove it" as the only acceptable outcome.
+
+SEQUENCING NOTE (direct from `specs/reviews/review-2026-08-24.md` amendment 10e, re-affirmed by task 468's realignment): task 462 targets `MintPaysForTimeFixed` discharge at a NONEMPTY UNIVERSE, which is the same setting `:6238`'s refutation applies in. If this task and 462 are not sequenced, 462 risks either duplicating the discovery of the refutation or, worse, building on an implicit assumption that this residual is harmless. This task should run BEFORE OR ALONGSIDE 462.
+
+DEPENDENCIES: `[434]` (established the residual set this belongs to). Do NOT fold into 465 (the mechanical restatement-family task) -- 465 is explicitly scoped as "a one-line application of its family root" for SETTLED residuals; this residual is not settled, so folding it in would either force 465 to do research work outside its charter or produce a restatement of an unsettled predicate, which is exactly the kind of premature-closure risk this whole realignment exists to prevent.
+
+VERIFIED at task-468 realignment time (2026-08-25): none of tasks 462, 463, 464, 465 mentions the symbol `UnorderedSuccessorLabelClosed` in its live description.
+
+ACCEPTANCE: one of outcomes (a)/(b)/(c) above is reached and recorded; `lake build` green; no regression to any currently-passing check-module-invariants.sh check.
+
+PROVENANCE: specced by task 468's realignment (report `specs/468_realign_task_programme_from_proof_state_audit/reports/02_stage1-verification-and-programme-realignment.md` §5, new-task-spec-3), itself descended from `specs/reviews/review-2026-08-24.md` amendment 10e.
+
+---
+
+### 480. Bridge isvalid bool to semantic validity
+- **Effort**: small
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: None
+
+**Description**: CLASSIFICATION: routine engineering, not open mathematics. Startable today, independent of the whole decidability chain (410-465). State this explicitly so the task is never budgeted as anything larger.
+
+TARGET: prove `isValid_sound (φ : Formula) (fc : FrameClass) (h : isValid φ fc = true) : ⊨ φ` (or the frame-class-relativized form actually consumed downstream -- check what task 430's `valid_iff_allClosed` and the four `Decidable` instances will actually need before fixing the exact statement).
+
+WHY THIS IS NEEDED: `decide_sound'` (`FormalSystem/Metalogic/Decidability/Correctness.lean:66`) already proves `decide φ ... = .valid proof → ⊨ φ`, but nothing bridges the *Boolean* wrapper `DecisionProcedure.isValid` (`FormalSystem/Metalogic/Decidability/DecisionProcedure.lean:317-318`, `def isValid (φ) (fc) : Bool := (decide φ (fc := fc)).isValid`, which discards the proof term) back to a semantic conclusion.
+
+PROOF SKETCH: `unfold isValid at h`; case on `decide φ (fc := fc)` via its four constructors (`.valid`, `.invalid`, `.fuelExhausted`, `.extractionFailed`); in the `.valid proof` case, `h` is definitionally `true = true` and `decide_sound' φ … proof rfl` (or equivalent) closes it; the other three cases make `h` a contradiction, since `DecisionResult.isValid` is `false` on `invalid`/`fuelExhausted`/`extractionFailed` -- already proved by the case-exhaustion lemma at `Correctness.lean:122-126`.
+
+DEPENDENCIES: none beyond what already exists (`decide_sound'` is landed).
+
+WHY THIS IS NOT FOLDED INTO TASK 430: 430's target (`valid_iff_allClosed`) is the *engine*-facing direction over `Derivable`/branch closure; this is the *decision-procedure*-facing direction over the `Bool` API a caller of `isValid`/`isTautology`/`isContradiction` actually holds. They are different theorems about different functions and should not be conflated -- the whole audit that produced this task warns against exactly this conflation (F1: "`isValid`'s `false` conflates 'judged invalid' with 'claimed valid'").
+
+ACCEPTANCE: `isValid_sound` (or its frame-class-relativized form) lands sorry-free; `#print axioms` clean; `lake build` green; no new sorry or axiom anywhere else in the tree.
+
+PROVENANCE: specced by task 468's realignment (report `specs/468_realign_task_programme_from_proof_state_audit/reports/02_stage1-verification-and-programme-realignment.md` §5, new-task-spec-1), itself descended from `specs/reviews/review-2026-08-24.md` amendment 10b's surviving ADD-list item.
+
+---
 
 ### 479. Tc close countermodel discrete at base
 - **Effort**: medium

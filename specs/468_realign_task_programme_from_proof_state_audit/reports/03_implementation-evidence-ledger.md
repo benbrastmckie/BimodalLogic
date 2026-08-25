@@ -348,3 +348,48 @@ Both zero, as the plan's baseline predicted.
 
 No `.lean` file touched (`git diff --stat` — only `specs/ROADMAP.md` modified and
 `specs/ROADMAP-ARCHIVE.md` created). No task status transitioned.
+
+## Phase 4 — Creation of the three new tasks
+
+### Scope-hypothesis confirmation
+
+Grepped every active task's description for `isValid_sound`, `UnorderedSuccessorLabelClosed`,
+`extractionFailed` before creating anything. Hits: `468` (self, plan text), `470` (observes the
+fifth-residual gap but does not own fixing it), `426` (unrelated Stage-3 documentation-pass
+mention, not ownership). None of the three symbols is owned as a deliverable by any existing
+active task — confirmed exactly three ADDs, matching the plan's Scope Hypothesis.
+
+### Tasks created (via `.claude/scripts/state-write.sh`, `next_project_number` re-read
+immediately before each write)
+
+| # | Title | Type | Topic | Effort | Deps | file_scope |
+|---|---|---|---|---|---|---|
+| 480 | `bridge_isvalid_bool_to_semantic_validity` | lean4 | decidability | small | [] | `Decidability/Correctness.lean`, `Decidability/DecisionProcedure.lean` |
+| 481 | `discharge_or_replace_unorderedsuccessorlabelclosed_residual` | lean4 | decidability | large | [434] | `Decidability/Verified/Termination/MintBound.lean` |
+| 482 | `discharge_proof_extraction_completeness` | lean4 | decidability | large | [412] | `Decidability/ProofExtraction.lean`, `Decidability/Verified/Refutation/` |
+
+Each description states its routine-vs-open-mathematics classification explicitly in its opening
+line, per the plan's requirement. `next_project_number` advanced from 480 to 483 (exactly three).
+
+**Note on an accidental bump**: an initial `state-write.sh` call for task 480 failed
+(`--rawfile` is not a supported flag on this wrapper) and the immediately-following
+`next_project_number` bump was issued anyway before the failure was noticed, advancing the
+counter from 480 to 481 with no task 480 entry yet existing. This was caught before any further
+writes and corrected by writing `next_project_number` back to 480 (via `state-write.sh`, so the
+mutex/validation path was used for the correction too) before retrying task creation with a
+working `--arg`-based invocation. Confirmed via `jq` immediately after the correction that
+`active_projects | length` was still 48 and `next_project_number` was back to 480 before any task
+was actually created — no task exists at a number this dispatch reserved-then-abandoned.
+
+### `generate-todo.sh` verification
+
+Ran after all three creations and the final `next_project_number` write (with `--regen-todo` on
+the last state-write call, plus a manual re-run for confirmation): exit 0, no undeclared-topic
+warning. `specs/TODO.md` confirmed to carry all three new entries (`### 480.`, `### 481.`,
+`### 482.` headings, titles auto-generated from `project_name`).
+
+### Hard-constraint check for this phase
+
+No existing task's status/dependencies/file_scope was touched. No `.lean` file touched. All
+writes went through `state-write.sh`; `specs/TODO.md` only ever regenerated via
+`generate-todo.sh`.

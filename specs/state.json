@@ -4,7 +4,7 @@
     "total_tasks": 42,
     "last_sync": "2026-08-24T21:34:14Z"
   },
-  "next_project_number": 480,
+  "next_project_number": 483,
   "active_projects": [
     {
       "project_number": 468,
@@ -1598,6 +1598,63 @@
       "last_updated": "2026-08-25T11:35:46Z",
       "session_id": "sess_1787655570_fed45b",
       "completion_summary": "Proved WeakCanonical.countermodel_discrete, the tree's sole live structural sorry and the only sorryAx source reaching BXCanonical.completeness. Because closing it in place would have been an import cycle, the theorem was relocated to a new module FormalSystem/Metalogic/WeakCanonical/GroupModel/CountermodelBase.lean under the same namespace -- preserving its fully-qualified name, so its sole consumer needed zero edits -- and the countermodel_discrete_reynolds_v2 body was ported to the non-Archimedean discrete carrier Q x_l Z off companionChronicle, dropping the interval-bounds bookkeeping and replacing every omega with named ordered-group lemmas. Both countermodel_discrete and BXCanonical.completeness now report [propext, Classical.choice, Quot.sound], the check-module-invariants C2 baseline and C3 sorry check were retargeted to a zero inventory, and all fifteen stale sole-sorry docstring and README claims across the tree were corrected."
+    },
+    {
+      "project_number": 480,
+      "project_name": "bridge_isvalid_bool_to_semantic_validity",
+      "description": "CLASSIFICATION: routine engineering, not open mathematics. Startable today, independent of the whole decidability chain (410-465). State this explicitly so the task is never budgeted as anything larger.\n\nTARGET: prove `isValid_sound (φ : Formula) (fc : FrameClass) (h : isValid φ fc = true) : ⊨ φ` (or the frame-class-relativized form actually consumed downstream -- check what task 430's `valid_iff_allClosed` and the four `Decidable` instances will actually need before fixing the exact statement).\n\nWHY THIS IS NEEDED: `decide_sound'` (`FormalSystem/Metalogic/Decidability/Correctness.lean:66`) already proves `decide φ ... = .valid proof → ⊨ φ`, but nothing bridges the *Boolean* wrapper `DecisionProcedure.isValid` (`FormalSystem/Metalogic/Decidability/DecisionProcedure.lean:317-318`, `def isValid (φ) (fc) : Bool := (decide φ (fc := fc)).isValid`, which discards the proof term) back to a semantic conclusion.\n\nPROOF SKETCH: `unfold isValid at h`; case on `decide φ (fc := fc)` via its four constructors (`.valid`, `.invalid`, `.fuelExhausted`, `.extractionFailed`); in the `.valid proof` case, `h` is definitionally `true = true` and `decide_sound' φ … proof rfl` (or equivalent) closes it; the other three cases make `h` a contradiction, since `DecisionResult.isValid` is `false` on `invalid`/`fuelExhausted`/`extractionFailed` -- already proved by the case-exhaustion lemma at `Correctness.lean:122-126`.\n\nDEPENDENCIES: none beyond what already exists (`decide_sound'` is landed).\n\nWHY THIS IS NOT FOLDED INTO TASK 430: 430's target (`valid_iff_allClosed`) is the *engine*-facing direction over `Derivable`/branch closure; this is the *decision-procedure*-facing direction over the `Bool` API a caller of `isValid`/`isTautology`/`isContradiction` actually holds. They are different theorems about different functions and should not be conflated -- the whole audit that produced this task warns against exactly this conflation (F1: \"`isValid`'s `false` conflates 'judged invalid' with 'claimed valid'\").\n\nACCEPTANCE: `isValid_sound` (or its frame-class-relativized form) lands sorry-free; `#print axioms` clean; `lake build` green; no new sorry or axiom anywhere else in the tree.\n\nPROVENANCE: specced by task 468's realignment (report `specs/468_realign_task_programme_from_proof_state_audit/reports/02_stage1-verification-and-programme-realignment.md` §5, new-task-spec-1), itself descended from `specs/reviews/review-2026-08-24.md` amendment 10b's surviving ADD-list item.",
+      "status": "not_started",
+      "task_type": "lean4",
+      "topic": "decidability",
+      "priority": "medium",
+      "effort": "small",
+      "dependencies": [],
+      "file_scope": [
+        "FormalSystem/Metalogic/Decidability/Correctness.lean",
+        "FormalSystem/Metalogic/Decidability/DecisionProcedure.lean"
+      ],
+      "created": "2026-08-25T12:18:48Z",
+      "last_updated": "2026-08-25T12:18:48Z",
+      "artifacts": []
+    },
+    {
+      "project_number": 481,
+      "project_name": "discharge_or_replace_unorderedsuccessorlabelclosed_residual",
+      "description": "CLASSIFICATION: genuinely open -- the predicate is refuted as stated, so this is a repair-or-replace problem, not routine discharge. This is the FIFTH termination residual; the four-residual framing used elsewhere in this programme (`UniverseClosed`, `DifficultyBounded`/`StepLengthBounded`, `MintPaysForTime`, `PostBlockingSettles`) is WRONG and must be corrected wherever it recurs.\n\nTARGET: `UnorderedSuccessorLabelClosed` (`FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean:6199`) is carried as a live hypothesis by `buildTableauAt_isSome_at_seed_lengthBudget_signedUniverse` (`:6215`) and has an in-tree refutation at `:6238` (`¬ UnorderedSuccessorLabelClosed fc freshWorldLabels`) -- the same shape of problem `DifficultyBounded` presented before `StepLengthBounded` replaced it.\n\nWHAT TO DO -- determine which of three outcomes applies:\n(a) the predicate can be discharged at the frame classes/settings the surviving terminus theorems actually need (distinct from the setting `:6238` refutes it in -- check precisely which); or\n(b) it needs a `StepLengthBounded`-style weaker replacement, analogous to the `DifficultyBounded` -> `StepLengthBounded` repair pattern already in this file; or\n(c) it is unclosable as stated and needs a C9 register entry (the file already has 24 such entries; this would be the 25th) plus an explicit statement of which theorem still carries it and at which frame classes.\n\nA C9 REGISTER ENTRY IS A VALID, COMPLETE DELIVERABLE for this task -- do not treat \"prove it\" as the only acceptable outcome.\n\nSEQUENCING NOTE (direct from `specs/reviews/review-2026-08-24.md` amendment 10e, re-affirmed by task 468's realignment): task 462 targets `MintPaysForTimeFixed` discharge at a NONEMPTY UNIVERSE, which is the same setting `:6238`'s refutation applies in. If this task and 462 are not sequenced, 462 risks either duplicating the discovery of the refutation or, worse, building on an implicit assumption that this residual is harmless. This task should run BEFORE OR ALONGSIDE 462.\n\nDEPENDENCIES: `[434]` (established the residual set this belongs to). Do NOT fold into 465 (the mechanical restatement-family task) -- 465 is explicitly scoped as \"a one-line application of its family root\" for SETTLED residuals; this residual is not settled, so folding it in would either force 465 to do research work outside its charter or produce a restatement of an unsettled predicate, which is exactly the kind of premature-closure risk this whole realignment exists to prevent.\n\nVERIFIED at task-468 realignment time (2026-08-25): none of tasks 462, 463, 464, 465 mentions the symbol `UnorderedSuccessorLabelClosed` in its live description.\n\nACCEPTANCE: one of outcomes (a)/(b)/(c) above is reached and recorded; `lake build` green; no regression to any currently-passing check-module-invariants.sh check.\n\nPROVENANCE: specced by task 468's realignment (report `specs/468_realign_task_programme_from_proof_state_audit/reports/02_stage1-verification-and-programme-realignment.md` §5, new-task-spec-3), itself descended from `specs/reviews/review-2026-08-24.md` amendment 10e.",
+      "status": "not_started",
+      "task_type": "lean4",
+      "topic": "decidability",
+      "priority": "medium",
+      "effort": "large",
+      "dependencies": [
+        434
+      ],
+      "file_scope": [
+        "FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean"
+      ],
+      "created": "2026-08-25T12:18:56Z",
+      "last_updated": "2026-08-25T12:18:56Z",
+      "artifacts": []
+    },
+    {
+      "project_number": 482,
+      "project_name": "discharge_proof_extraction_completeness",
+      "description": "CLASSIFICATION: OPEN MATHEMATICS, multi-month. This MUST NOT be re-described as engineering, and must not be scheduled or budgeted as a routine task.\n\nTARGET: eliminate `.extractionFailed` as a live outcome of `decide` on a genuinely closed tableau. Currently `verifyProof` is `fun _ _ => true` (`FormalSystem/Metalogic/Decidability/ProofExtraction.lean:345`, honestly commented, misleadingly named) and no theorem establishes that a closed tableau ALWAYS yields an extractable Hilbert-system derivation. `ProofExtraction.lean` has zero theorems today (re-confirmed at task 468 realignment time, 2026-08-25).\n\nWHAT THIS REQUIRES: the missing refutation induction (`allClosed → Derivable`, the content that would live under `FormalSystem/Metalogic/Decidability/Verified/Refutation/` -- this directory does not exist today, zero files, re-confirmed 2026-08-25) is a PREREQUISITE owned by task 412, which already targets exactly this induction (`allClosed_derivable`). This task is sequenced AFTER 412 rather than folded into 412's acceptance criteria as an additional corollary, precisely so the research problem is not hidden behind 412's engineering-shaped description -- see the planner's decision recorded in task 468's implementation plan (`specs/468_realign_task_programme_from_proof_state_audit/plans/01_programme-realignment-execution.md`, \"Planner decisions taken here\" item 1). Task 412's own description carries a one-line REVISE naming this task as the owner of `.extractionFailed` elimination.\n\nDEPENDENCIES: `[412]`.\n\nFILE SCOPE: `FormalSystem/Metalogic/Decidability/ProofExtraction.lean`,\n`FormalSystem/Metalogic/Decidability/Verified/Refutation/` (does not yet exist -- this task or a predecessor may need to create it).\n\nDO NOT schedule this as an independent parallel effort that would redundantly re-derive the refutation induction 412 already targets -- consume 412's `allClosed_derivable` once it lands.\n\nACCEPTANCE: `.extractionFailed` is unreachable on a genuinely closed tableau (stated and proved as a corollary of `allClosed_derivable` or equivalent); `lake build` green; no regression to any currently-passing check-module-invariants.sh check; `verifyProof` either proved correct against the new theorem or replaced by an implementation whose correctness the new theorem certifies.\n\nPROVENANCE: specced by task 468's realignment (report `specs/468_realign_task_programme_from_proof_state_audit/reports/02_stage1-verification-and-programme-realignment.md` §5, new-task-spec-2), itself descended from `specs/reviews/review-2026-08-24.md` amendment 10b's surviving ADD-list item, per R4.",
+      "status": "not_started",
+      "task_type": "lean4",
+      "topic": "decidability",
+      "priority": "medium",
+      "effort": "large",
+      "dependencies": [
+        412
+      ],
+      "file_scope": [
+        "FormalSystem/Metalogic/Decidability/ProofExtraction.lean",
+        "FormalSystem/Metalogic/Decidability/Verified/Refutation/"
+      ],
+      "created": "2026-08-25T12:19:03Z",
+      "last_updated": "2026-08-25T12:19:03Z",
+      "artifacts": []
     }
   ],
   "artifacts": [
