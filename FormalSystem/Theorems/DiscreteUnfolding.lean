@@ -35,6 +35,11 @@ are already derivable at `FrameClass.Base`, and `nextConj` is stated `{fc}`-poly
 - `unfoldTableForward` / `unfoldTableBackward` — the `X g ∧ X U(e,g)` shape.
 - `noBlockingTriple` — the schema does real work: at `Discrete` a world holding `U(p,q)` while
   omitting both `U(p,r)` and `U(q,s)` is derivably impossible.
+- `nextAllFuture` / `prevAllPast` — `X (Gφ ∧ φ) → Gφ` and its free past dual
+  `Y (Hφ ∧ φ) → Hφ`, obtained through `DerivationTree.temporal_duality`.
+- `dfSchema` — the paper's **DF** schema `(Hφ ∧ φ ∧ F⊤) → F(Hφ)`, consumed by
+  `FormalSystem.BaseLanguage.AxiomDischarge` for the `Discrete` row of the backward
+  conservativity bridge. Derived syntactically; no completeness dependency.
 
 ## Why `FrameClass.Discrete` is essential here
 
@@ -317,6 +322,155 @@ def noBlockingTriple (p q r s : Formula) :
       (Formula.next G') (by simp)
     have a2 := eventMono (Formula.next G' :: Γ) G' q Formula.bot (lceImp q (Formula.untl q p)) a1
     exact orIntroR _ _ _ (guardMono (Formula.next G' :: Γ) q Formula.bot s (efqAxiom s) a2)
+
+/-! ## Result 4: the paper's **DF** schema at `FrameClass.Discrete`
+
+```
+(Hφ ∧ φ ∧ F⊤)  →  F (Hφ)
+```
+
+`DF` is the axiom distinguishing the paper's `TM_f` from `TM`
+(JPL paper, `\S sub:Extension`). It is the one TM-side schema with no ready-made counterpart in
+this tree, and `FormalSystem.BaseLanguage.AxiomDischarge` consumes `dfSchema` to close the
+`Discrete` row of the backward conservativity bridge.
+
+The derivation is **syntactic** and uses only `succIndicator`, `unfoldForward`, `nextConj`,
+`Axiom.enrichment_until`, `Axiom.until_F` and propositional plumbing. In particular it does
+**not** route through any completeness theorem: a proof-theoretic bridge must not depend on the
+completeness machinery it is meant to feed, so `#print axioms dfSchema` mentioning a
+`completeness_*` result would be a defect, not an optimisation.
+
+Semantically the schema holds because at the immediate successor `s` of `t` every time `< s` is
+`≤ t`; the three syntactic steps below are exactly that argument.
+-/
+
+/-- `⊢[fc] (A ∧ B) → ⊥`, given `A → C` and `B → ¬C`.
+
+A three-line composition of `andFst`/`andSnd`/`ctxMp` from `Theorems/Propositional/Core.lean`,
+not a re-derivation of anything: it is the shape in which `eventMono` wants a refutable event. -/
+private def clashBot {fc : FrameClass} (A B C : Formula)
+    (hA : ⊢[fc] A.imp C) (hB : ⊢[fc] B.imp C.neg) :
+    ⊢[fc] (Formula.and A B).imp Formula.bot := by
+  refine deductionTheorem [] (Formula.and A B) Formula.bot ?_
+  have h := DerivationTree.assumption (fc := fc) [Formula.and A B] (Formula.and A B) (by simp)
+  have hc : [Formula.and A B] ⊢[fc] C := ctxMp (wk _ _ hA) (andFst h)
+  have hnc : [Formula.and A B] ⊢[fc] C.neg := ctxMp (wk _ _ hB) (andSnd h)
+  exact ctxMp hnc hc
+
+/-- **Step 3, future form**: `⊢[Discrete] X (Gφ ∧ φ) → Gφ`.
+
+If the immediate successor carries both `Gφ` and `φ`, then `Gφ` already holds now: every
+`u > t` is either the successor `s` itself (where `φ` holds) or lies beyond it (where `Gφ`
+covers it), and nothing lies strictly between `t` and `s`.
+
+Engine: assume `F¬φ`, unfold it one step with `unfoldForward` at guard `⊤`, and in each
+disjunct pair the resulting `X`-formula with the hypothesis `X (Gφ ∧ φ)` through `nextConj`.
+Both merged events are refutable — `¬φ ∧ φ` in the first, `F¬φ ∧ ¬F¬φ` in the second — so
+`eventMono` drives them to `U(⊥,⊥)` and `untlBotFalse` closes. -/
+def nextAllFuture (φ : Formula) :
+    ⊢[FrameClass.Discrete]
+      (Formula.next (Formula.and φ.allFuture φ)).imp φ.allFuture := by
+  set B0 := Formula.and φ.allFuture φ with hB0
+  set Γ : Context := [Formula.next B0] with hΓ
+  refine deductionTheorem [] (Formula.next B0) φ.allFuture ?_
+  refine deductionTheorem Γ (Formula.someFuture φ.neg) Formula.bot ?_
+  set Γ' : Context := Formula.someFuture φ.neg :: Γ with hΓ'
+  have hF : Γ' ⊢[FrameClass.Discrete] Formula.someFuture φ.neg :=
+    DerivationTree.assumption _ _ (by simp [hΓ'])
+  have hXB : Γ' ⊢[FrameClass.Discrete] Formula.next B0 :=
+    DerivationTree.assumption _ _ (by simp [hΓ', hΓ])
+  have h1 : Γ' ⊢[FrameClass.Discrete]
+      (Formula.next φ.neg).or
+        (Formula.next (Formula.and Formula.top (Formula.untl Formula.top φ.neg))) :=
+    ctxMp (wk _ _ (unfoldForward φ.neg Formula.top)) hF
+  refine orElim Γ' (Formula.next φ.neg)
+    (Formula.next (Formula.and Formula.top (Formula.untl Formula.top φ.neg)))
+    Formula.bot h1 ?_ ?_
+  · -- Disjunct 1: `X ¬φ` merged with `X (Gφ ∧ φ)` gives the event `¬φ ∧ (Gφ ∧ φ)`.
+    refine deductionTheorem Γ' (Formula.next φ.neg) Formula.bot ?_
+    have a1 : (Formula.next φ.neg :: Γ') ⊢[FrameClass.Discrete] Formula.next φ.neg :=
+      DerivationTree.assumption _ _ (by simp)
+    have a2 : (Formula.next φ.neg :: Γ') ⊢[FrameClass.Discrete] Formula.next B0 :=
+      DerivationTree.weakening _ _ _ hXB (by intro x hx; simp [hx])
+    have a3 := ctxMp (wk _ _ (nextConj φ.neg B0)) (andIntro a1 a2)
+    have a4 := eventMono _ (Formula.and φ.neg B0) Formula.bot Formula.bot
+      (clashBot φ.neg B0 φ.neg (identity φ.neg)
+        (impTrans (rceImp φ.allFuture φ) (notNotIntro φ))) a3
+    exact ctxMp (wk _ _ (untlBotFalse Formula.bot)) a4
+  · -- Disjunct 2: `X (⊤ ∧ F¬φ)` merged with `X (Gφ ∧ φ)` gives the event `F¬φ ∧ ¬F¬φ`.
+    refine deductionTheorem Γ'
+      (Formula.next (Formula.and Formula.top (Formula.untl Formula.top φ.neg))) Formula.bot ?_
+    set E := Formula.and Formula.top (Formula.untl Formula.top φ.neg) with hE
+    have a1 : (Formula.next E :: Γ') ⊢[FrameClass.Discrete] Formula.next E :=
+      DerivationTree.assumption _ _ (by simp)
+    have a2 : (Formula.next E :: Γ') ⊢[FrameClass.Discrete] Formula.next B0 :=
+      DerivationTree.weakening _ _ _ hXB (by intro x hx; simp [hx])
+    have a3 := ctxMp (wk _ _ (nextConj E B0)) (andIntro a1 a2)
+    have a4 := eventMono _ (Formula.and E B0) Formula.bot Formula.bot
+      (clashBot E B0 (Formula.someFuture φ.neg)
+        (rceImp Formula.top (Formula.untl Formula.top φ.neg))
+        (lceImp φ.allFuture φ)) a3
+    exact ctxMp (wk _ _ (untlBotFalse Formula.bot)) a4
+
+/-- The `swapTemporal` image of `nextAllFuture`'s statement, computed once so that
+`prevAllPast` is a `▸`-rewrite rather than a `simp` inside a term. -/
+theorem swap_next_all_future_eq (φ : Formula) :
+    Formula.swapTemporal
+      ((Formula.next (Formula.and (φ.swapTemporal).allFuture φ.swapTemporal)).imp
+        (φ.swapTemporal).allFuture)
+      = (Formula.prev (Formula.and φ.allPast φ)).imp φ.allPast := by
+  simp only [Formula.next, Formula.prev, Formula.and, Formula.neg, Formula.swapTemporal,
+    Formula.swap_temporal_all_future, Formula.swap_temporal_involution]
+
+/-- **Step 3, past form**: `⊢[Discrete] Y (Hφ ∧ φ) → Hφ`.
+
+The past dual of `nextAllFuture`, and it is *free*: `DerivationTree.temporal_duality` is a
+primitive rule at every frame class, so applying it to `nextAllFuture (swapTemporal φ)` and
+using `Formula.swap_temporal_involution` returns exactly this statement. No past-mirrored
+axiom is introduced. -/
+def prevAllPast (φ : Formula) :
+    ⊢[FrameClass.Discrete]
+      (Formula.prev (Formula.and φ.allPast φ)).imp φ.allPast :=
+  swap_next_all_future_eq φ ▸ DerivationTree.temporal_duality _ (nextAllFuture φ.swapTemporal)
+
+/-- **`⊢[Discrete] (Hφ ∧ φ ∧ F⊤) → F(Hφ)`** — the paper's **DF** schema.
+
+Three steps, in the order of the module note above:
+
+1. `succIndicator` supplies `X ⊤`, the discreteness witness.
+2. `Axiom.enrichment_until` at guard `⊥`, event `⊤`, and payload `p := Hφ ∧ φ` turns
+   `(Hφ ∧ φ) ∧ X⊤` into `X (⊤ ∧ Y (Hφ ∧ φ))` — the payload is transported to the successor as
+   a `Y`-formula because the successor's `snce`-guard interval is empty.
+3. `prevAllPast` converts `Y (Hφ ∧ φ)` into `Hφ` at the successor, and `Axiom.until_F` at
+   guard `⊥` weakens `X (Hφ)` to `F (Hφ)`.
+
+The `F⊤` conjunct of the antecedent is not consumed: at `FrameClass.Discrete` the stronger
+`X ⊤` is already a theorem. It is retained because the schema, not the derivation, is what the
+translation of `BaseLanguage.Axiom.df` must match.
+
+Association is pinned to `((Hφ ∧ φ) ∧ F⊤) → F(Hφ)` so that
+`FormalSystem.BaseLanguage.AxiomDischarge` can use it without reassociating. -/
+def dfSchema (φ : Formula) :
+    ⊢[FrameClass.Discrete]
+      ((φ.allPast.and φ).and Formula.top.someFuture).imp (φ.allPast.someFuture) := by
+  set A := Formula.and φ.allPast φ with hA
+  set ant := Formula.and A (Formula.someFuture Formula.top) with hant
+  set Γ : Context := [ant] with hΓ
+  refine deductionTheorem [] ant (φ.allPast.someFuture) ?_
+  have h0 : Γ ⊢[FrameClass.Discrete] ant := DerivationTree.assumption _ _ (by simp [hΓ])
+  have hA' : Γ ⊢[FrameClass.Discrete] A := andFst h0
+  have hX : Γ ⊢[FrameClass.Discrete] Formula.untl Formula.bot Formula.top :=
+    wk _ _ succIndicator
+  have h2 : Γ ⊢[FrameClass.Discrete]
+      Formula.untl Formula.bot (Formula.and Formula.top (Formula.snce Formula.bot A)) :=
+    ctxMp (DerivationTree.axiom _ _ (Axiom.enrichment_until Formula.bot Formula.top A)
+      (FrameClass.base_le _)) (andIntro hA' hX)
+  have h3 : Γ ⊢[FrameClass.Discrete] Formula.untl Formula.bot φ.allPast :=
+    eventMono _ (Formula.and Formula.top (Formula.snce Formula.bot A)) φ.allPast Formula.bot
+      (impTrans (rceImp Formula.top (Formula.snce Formula.bot A)) (prevAllPast φ)) h2
+  exact ctxMp (DerivationTree.axiom _ _ (Axiom.until_F Formula.bot φ.allPast)
+    (FrameClass.base_le _)) h3
+
 end -- noncomputable section
 
 end FormalSystem.Theorems.DiscreteUnfolding

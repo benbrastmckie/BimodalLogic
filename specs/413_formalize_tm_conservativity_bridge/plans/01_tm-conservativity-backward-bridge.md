@@ -383,35 +383,35 @@ a note in the module docstring rather than blocking Phase 8.
 
 ---
 
-### Phase 5: The DF derivation at `FrameClass.Discrete` [NOT STARTED]
+### Phase 5: The DF derivation at `FrameClass.Discrete` [COMPLETED]
 
 **Goal**: Derive `|-[FrameClass.Discrete] (H phi AND phi AND F top) -> F (H phi)` syntactically.
 This is the single largest unknown in the task and shares no file territory with any other phase.
 
 **Tasks**:
-- [ ] Read `FormalSystem/Theorems/DiscreteUnfolding.lean` in full — in particular
+- [x] Read `FormalSystem/Theorems/DiscreteUnfolding.lean` in full — in particular
       `succIndicator` (`|-[Discrete] Formula.next Formula.top`, line ~85), `unfoldForward`
       (line ~106) and `unfoldTableForward` (line ~245) — plus the module docstring's explanation
       of why the frame class is pinned to `Discrete` rather than left free.
-- [ ] **Route A, step 1**: obtain `X top` from `Theorems.DiscreteUnfolding.succIndicator`.
-- [ ] **Route A, step 2**: obtain `X psi -> F psi` at `Base` from `Axiom.until_F` instantiated
+- [x] **Route A, step 1**: obtain `X top` from `Theorems.DiscreteUnfolding.succIndicator`.
+- [x] **Route A, step 2**: obtain `X psi -> F psi` at `Base` from `Axiom.until_F` instantiated
       with guard `bot` (`X psi := U(psi, bot)`); confirm the exact guard convention against
       `Formula.next`'s definition before instantiating.
-- [ ] **Route A, step 3** (the real work): derive `H phi AND phi -> X (H phi)`. This is the
+- [x] **Route A, step 3** (the real work): derive `H phi AND phi -> X (H phi)`. This is the
       **past-dual** of the one-step unfolding in `unfoldForward`/`unfoldTableForward`. Past duals
       are free: `DerivationTree.temporal_duality` is a primitive rule applying to any theorem at
       any frame class, so no past-mirrored axiom is needed. Derive the forward form first, then
       apply `temporal_duality` (note its empty-context restriction — stage the derivation as a
       closed theorem, then use the deduction theorem from `Theorems/Propositional/` if a context
       form is wanted).
-- [ ] Compose steps 1-3 into `discreteFuture` (or `dfSchema`):
+- [x] Compose steps 1-3 into `discreteFuture` (named `dfSchema`):
       `def dfSchema (phi : Formula) : |-[FrameClass.Discrete] ((phi.allPast.and phi).and Formula.top.someFuture).imp (phi.allPast.someFuture)`
       — match the exact BL+ operator spelling and association that Phase 7 will need, and state
       it so Phase 7 can use it without reassociating.
-- [ ] Append to `FormalSystem/Theorems/DiscreteUnfolding.lean` (same namespace, same
+- [x] Append to `FormalSystem/Theorems/DiscreteUnfolding.lean` (same namespace, same
       `noncomputable section`); update that file's module docstring bullet list to name the new
       declaration.
-- [ ] Pull all propositional plumbing (`andIntro`, `andElim`, `impTrans`, `deductionTheorem`)
+- [x] Pull all propositional plumbing (`andIntro`, `andElim`, `impTrans`, `deductionTheorem`)
       from `Theorems/Propositional/` and `Theorems/Combinators.lean`. Do not re-derive.
 
 **ROUTE B ESCALATION CONTRACT** (binding): Route B derives `tr(DF)` from
