@@ -34,7 +34,7 @@ next_project_number: 477
 
 ### Code Quality
 
-472 [PLANNING] — THE IMMEDIATE, UNGATED DOCUMENTATION-CORRECTION PASS. This is the
+472 [PLANNED] — THE IMMEDIATE, UNGATED DOCUMENTATION-CORRECTION PASS. This is the
 455 [NOT STARTED] — BACKLOG REALIGNMENT: bring specs/ROADMAP.md and every remaining a
 
 ### Completeness
@@ -466,11 +466,12 @@ Grounding: specs/reviews/review-2026-08-24.md, Addendum 1 item A-3, and task 468
 
 ### 472. Immediate documentation correction pass
 - **Effort**: medium
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: code-quality
 - **Dependencies**: Task 470
 - **Research**: [472_immediate_documentation_correction_pass/reports/01_documentation-correction-verification.md]
+- **Plan**: [472_immediate_documentation_correction_pass/plans/01_documentation-correction-pass.md]
 
 **Description**: THE IMMEDIATE, UNGATED DOCUMENTATION-CORRECTION PASS. This is the first half of the DIVIDE of task
 177 that task 468 Stage 3 directs. It is split out and un-gated deliberately: 177 sits behind

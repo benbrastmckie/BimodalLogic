@@ -1255,7 +1255,7 @@
     {
       "project_number": 472,
       "project_name": "immediate_documentation_correction_pass",
-      "status": "planning",
+      "status": "planned",
       "task_type": "lean4",
       "topic": "code-quality",
       "priority": "high",
@@ -1276,7 +1276,7 @@
         470
       ],
       "created": "2026-08-24T00:00:00Z",
-      "last_updated": "2026-08-25T01:48:59Z",
+      "last_updated": "2026-08-25T01:55:59Z",
       "session_id": "sess_1787618565_717c84_472",
       "artifacts": [
         {
@@ -1284,6 +1284,12 @@
           "path": "specs/472_immediate_documentation_correction_pass/reports/01_documentation-correction-verification.md",
           "summary": "Per-item verification of all nine false/stale documentation claims (a)-(i) against the live tree, with grounded replacement text, six additional in-scope defects found, and a green build/C1-C11 baseline.",
           "created": "2026-08-25T00:56:20Z"
+        },
+        {
+          "type": "plan",
+          "path": "specs/472_immediate_documentation_correction_pass/plans/01_documentation-correction-pass.md",
+          "summary": "Ten-phase documentation-correction plan covering items (a)-(i) plus the six additional in-scope defects, each grounded in a check-module-invariants.sh check.",
+          "created": "2026-08-25T01:56:07Z"
         }
       ]
     },
