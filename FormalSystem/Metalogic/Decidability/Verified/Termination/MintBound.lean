@@ -13858,6 +13858,101 @@ private theorem pickBranches_mintPays {U : Finset SignedFormula}
     · exact Or.inl (mintPays_bucketA (Tmax := Tmax) haux hsf hA hnm hnb)
 
 
+/-! ### The engine lift and the discharge -/
+
+/-- **The engine-level lift.** The `keyO`/`keyB` pattern of `expandOnceUnblocked_ordTimes`, run
+once more: `pick_ord_eq` and `pick_branches_eq` restate the step's two components as `pickOrd` and
+`pickBranches` over the three-stage `match`, and the pick-level result is applied to it with
+`pick_stage_source_rule` as the source. The three-stage pick is not destructured a second time. -/
+theorem expandOnceUnblocked_mintPays {U : Finset SignedFormula}
+    {σ : SignedFormula → SignedFormula} {b : Branch} {ord : TimeOrdering}
+    {fc : FormalSystem.ProofSystem.FrameClass} {tr : EventualityTracker} {Tmax : Nat}
+    (hfc : ¬ (FormalSystem.ProofSystem.FrameClass.Dense ≤ fc))
+    (haux : OrdTimesKnown b ord) (hconf : ∀ x ∈ b, x ∈ U) (hfix : SigmaFixed σ b) :
+    ∀ nb ∈ unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1,
+      (nb.knownTimes.toFinset.card ≤ b.knownTimes.toFinset.card ∧
+        splitOrderedRank Tmax nb (expandOnceUnblocked b ord fc tr).2
+          ≤ splitOrderedRank Tmax b ord)
+      ∨ (mintTimeBudget U σ nb (expandOnceUnblocked b ord fc tr).2
+            ≤ mintTimeBudget U σ b ord ∧
+          mintPotential U σ nb (expandOnceUnblocked b ord fc tr).2
+            < mintPotential U σ b ord)
+      ∨ (mintTimeBudget U σ nb (expandOnceUnblocked b ord fc tr).2
+            + selfGuardPotential U σ (expandOnceUnblocked b ord fc tr).2
+            ≤ mintTimeBudget U σ b ord + selfGuardPotential U σ ord ∧
+          selfGuardPotential U σ (expandOnceUnblocked b ord fc tr).2
+            < selfGuardPotential U σ ord) := by
+  have keyO : (expandOnceUnblocked b ord fc tr).2
+      = pickOrd ord
+          (match findUnexpandedUnblockedWith b ord fc (blockedTimes b ord fc tr) with
+           | some sf => findApplicableRule sf b ord fc
+           | none =>
+             match b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
+                 && (findApplicableSerialRule sf b ord).isSome) with
+             | some sf => findApplicableSerialRule sf b ord
+             | none =>
+               match b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
+                   && (findApplicableLinearityRule sf b ord).isSome) with
+               | some sf => findApplicableLinearityRule sf b ord
+               | none => none) := pick_ord_eq
+  have keyB : unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1
+      = pickBranches b
+          (match findUnexpandedUnblockedWith b ord fc (blockedTimes b ord fc tr) with
+           | some sf => findApplicableRule sf b ord fc
+           | none =>
+             match b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
+                 && (findApplicableSerialRule sf b ord).isSome) with
+             | some sf => findApplicableSerialRule sf b ord
+             | none =>
+               match b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
+                   && (findApplicableLinearityRule sf b ord).isSome) with
+               | some sf => findApplicableLinearityRule sf b ord
+               | none => none) := pick_branches_eq
+  rw [keyO, keyB]
+  exact pickBranches_mintPays hfc haux hconf hfix (pick_stage_source_rule b ord fc tr)
+
+/-- **The discharge.** `MintPaysForTimeFixed fc U Tmax` at an **arbitrary** universe — no syntactic
+condition on the formulas, no emptiness, no added hypothesis on the predicate — for every frame
+class the density rule cannot fire at.
+
+**The one restriction, in the statement.** `¬ (FrameClass.Dense ≤ fc)` is a single hypothesis and
+it is written here rather than hidden behind a definition, a `variable`, or a typeclass. It covers
+`.Dense` and `.Dedekind` together and admits exactly `.Base` and `.Discrete`, and it is what buys
+the exclusion of the density coordinate — register entry 20's item (b) — rather than closing it.
+`gapPotential` is still implemented nowhere and assumed by nothing.
+
+**What this retires.** Entry 20's item (a): the engine-level assembly. The per-rule payments all
+existed; what was missing was the pick's rule identity at the successor, which
+`pick_stage_source_rule` now threads. The predicate's hypothesis list is untouched.
+
+**What this does not do.** It makes no terminus in this file non-vacuous. See the section prose. -/
+theorem mintPaysForTimeFixed_of_not_dense {fc : FormalSystem.ProofSystem.FrameClass}
+    {U : Finset SignedFormula} {Tmax : Nat}
+    (hfc : ¬ (FormalSystem.ProofSystem.FrameClass.Dense ≤ fc)) :
+    MintPaysForTimeFixed fc U Tmax := by
+  intro σ b ord tr hri hconf hfix nb hnb
+  exact expandOnceUnblocked_mintPays hfc hri.ordTimesKnown hconf hfix nb hnb
+
+/-- **The discharge at the concrete universe the seed-level termini consume**, for **every** stock
+`C` and every label set `L`.
+
+This supersedes `mintPaysForTimeFixed_signedUniverse_empty`, whose universe is the `L = ∅` shadow,
+and generalizes `mintPaysForTimeFixed_signedUniverse_untlSnceFree` off its syntactic fragment: `C`
+here may carry `untl` and `snce` nodes freely, which is the case register entry 20 itself calls the
+hard one. Neither of those two is deleted or altered; they are superseded in prose only, and
+`mintPaysForTimeFixed_signedUniverse_untlSnceFree` remains the statement to reach for at `.Dense`
+and `.Dedekind`, where this one is silent.
+
+**Satisfiable rather than vacuous.** `signedUniverse_nonempty` makes the universe nonempty as soon
+as `C` and `L` are, and the discharged hypothesis is a *theorem* there rather than a condition
+nobody meets — which is exactly what separates this from the `hlab` residual. -/
+theorem mintPaysForTimeFixed_signedUniverse_of_not_dense
+    {fc : FormalSystem.ProofSystem.FrameClass} (C : Finset Formula) (L : Finset Label)
+    (Tmax : Nat) (hfc : ¬ (FormalSystem.ProofSystem.FrameClass.Dense ≤ fc)) :
+    MintPaysForTimeFixed fc (signedUniverse C L) Tmax :=
+  mintPaysForTimeFixed_of_not_dense hfc
+
+
 
 /-! ## C9. The do-not-re-attempt register
 

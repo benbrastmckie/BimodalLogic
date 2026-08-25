@@ -415,29 +415,29 @@ lemma's statement before writing more lines.
 
 ---
 
-### Phase 4: Engine lift, the discharge, and the `signedUniverse` instantiation [NOT STARTED]
+### Phase 4: Engine lift, the discharge, and the `signedUniverse` instantiation [COMPLETED]
 
 **Goal**: Lift the `pickBranches`-level result to the engine, state and prove the discharge under
 `¬ (FrameClass.Dense ≤ fc)`, and instantiate it at `signedUniverse C L` for arbitrary `C`.
 
 **Tasks**:
-- [ ] Re-read the engine-lift template `pickBranches_ordTimes` / `expandOnceUnblocked_ordTimes`
+- [x] Re-read the engine-lift template `pickBranches_ordTimes` / `expandOnceUnblocked_ordTimes`
       (grep the names; was ~:1205/:1226) — the `keyO` pattern joining `pick_ord_eq` (:972) and
       `pick_branches_eq` (:1139) is copied from there.
-- [ ] Land `expandOnceUnblocked_mintPays` by that template, feeding Phase 3's
+- [x] Land `expandOnceUnblocked_mintPays` by that template, feeding Phase 3's
       `pickBranches_mintPays` and Phase 1's `pick_stage_source_rule` as the `hp` argument.
-- [ ] Land `mintPaysForTimeFixed_of_not_dense`, carrying
+- [x] Land `mintPaysForTimeFixed_of_not_dense`, carrying
       `(hfc : ¬ (FormalSystem.ProofSystem.FrameClass.Dense ≤ fc))` **explicitly in the statement**.
       It is a single hypothesis; do not state it as two disequalities against `.Dense` and
       `.Dedekind`, which would be both weaker in form and redundant.
-- [ ] Land `mintPaysForTimeFixed_signedUniverse_of_not_dense`, the `signedUniverse C L`
+- [x] Land `mintPaysForTimeFixed_signedUniverse_of_not_dense`, the `signedUniverse C L`
       instantiation, holding for **every** `C` — no `untl`/`snce`-free side condition.
-- [ ] Docstring the two termini: record that this supersedes
+- [x] Docstring the two termini: record that this supersedes
       `mintPaysForTimeFixed_signedUniverse_empty` (:11147) and generalizes
       `mintPaysForTimeFixed_signedUniverse_untlSnceFree` (:12897) off its syntactic fragment, and
       that non-vacuity comes from `signedUniverse_nonempty` (:12919) plus any nonempty `C` carrying
       a temporal operator.
-- [ ] Build the module; commit each green sub-step.
+- [x] Build the module; commit each green sub-step. *(deviation: altered — verified first by an isolated `lake env lean` probe against the phase-3 olean (`scratchpad/P4.lean`/`P5.lean`, exit 0, with `#print axioms` on all three new declarations showing only `propext`, `Classical.choice`, `Quot.sound`), then built in place once.)*
 
 **Timing**: 1 hour
 
