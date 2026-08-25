@@ -486,32 +486,50 @@ before asserting the exit code — a test that silently stays under the ceiling 
 
 ---
 
-### Phase 7: Redeploy, parity verification, and live acceptance [IN PROGRESS]
+### Phase 7: Redeploy, parity verification, and live acceptance [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: The source-store fixes are deployed into this repo's `.claude/` tree, the copies are
 confirmed identical, and every acceptance criterion in the task description is demonstrated
 against the live repo.
 
 **Tasks**:
-- [ ] Take a git snapshot before any live-file operation:
-      `bash .claude/scripts/git-snapshot.sh 487`
-- [ ] Commit the source-store changes in the source-store repository
+- [x] Take a git snapshot before any live-file operation:
+      `bash .claude/scripts/git-snapshot.sh 487` *(completed: deviation — see incident note in
+      progress file; default mode's revert briefly stashed concurrent orchestrator state changes,
+      caught and popped back immediately, then correctly re-run with `--no-revert`)*
+- [x] Commit the source-store changes in the source-store repository
       (`/home/benjamin/.config/nvim/`) — it is a separate git-tracked location shared across
-      projects; do not push
+      projects; do not push *(completed: commit 67876e6b3, not pushed)*
 - [ ] Redeploy:
       `bash /home/benjamin/.config/nvim/.claude/scripts/deploy-headless.sh /home/benjamin/Projects/BimodalLogic`
+      *(deviation: skipped — see `#### Reasoned Exclusions` below)*
 - [ ] Confirm parity: `diff -q <source-store>/roadmap-integration.sh .claude/scripts/roadmap-integration.sh`
-      and the same for `state-write.sh`, plus the two new test files
-- [ ] Acceptance 1: `bash .claude/scripts/roadmap-integration.sh --roadmap specs/ROADMAP.md
-      --state specs/state.json` exits 0 (parse-only, the invocation that fails today)
-- [ ] Acceptance 2: copy `specs/ROADMAP.md` to a scratch path, run `--annotate` against the
+      and the same for `state-write.sh`, plus the two new test files *(deviation: skipped — depends
+      on the redeploy above; see `#### Reasoned Exclusions` below)*
+- [x] Acceptance 1: `bash .claude/scripts/roadmap-integration.sh --roadmap specs/ROADMAP.md
+      --state specs/state.json` exits 0 (parse-only, the invocation that fails today) *(completed
+      against a scratch copy of the source-store fix, using the real live specs/ROADMAP.md and
+      specs/state.json — see Reasoned Exclusions)*
+- [x] Acceptance 2: copy `specs/ROADMAP.md` to a scratch path, run `--annotate` against the
       **copy** with the full live `specs/state.json`, confirm exit 0 and inspect the diff. Only
       after that is green, run `--annotate` against the real `specs/ROADMAP.md` and review the
-      resulting diff before committing anything
-- [ ] Acceptance 3: forced mid-run failure against a scratch copy leaves it byte-identical
-- [ ] Acceptance 4: run both new test suites from the deployed `.claude/scripts/` copies
-- [ ] Record in the implementation summary: the confirmed Scope Hypothesis counts from Phases 1,
-      3, 4, 5, and 6, and the descoping of requirement 4
+      resulting diff before committing anything *(completed: scratch-copy run applied exactly one
+      annotation — the BimodalReference item, now legitimately matchable since all its referenced
+      sibling tasks have since resolved to terminal states — then the identical single-line diff
+      was applied to the real specs/ROADMAP.md)*
+- [x] Acceptance 3: forced mid-run failure against a scratch copy leaves it byte-identical
+      *(completed)*
+- [x] Acceptance 4: run both new test suites from the deployed `.claude/scripts/` copies
+      *(completed against the scratch copy instead — see Reasoned Exclusions; both suites: 7/7 and
+      5/5 passing)*
+- [x] Record in the implementation summary: the confirmed Scope Hypothesis counts from Phases 1,
+      3, 4, 5, and 6, and the descoping of requirement 4 *(completed — see implementation summary)*
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| Redeploy (`deploy-headless.sh`) and the `diff -q` parity check against `.claude/scripts/` | The delegating orchestrator's explicit live-machinery-hazard instruction forbids running `deploy-headless.sh` during this dispatch: a concurrent `/orchestrate` multi-task loop is running in this repo right now and calls `.claude/scripts/state-write.sh`/`task-lock.sh` between every dispatch, so overwriting that live tree mid-loop is unsafe. The instruction explicitly redirects verification to a scratch copy instead, which is what Acceptance 1/3/4 above use. | Delegation context: "Do NOT run deploy-headless.sh or otherwise overwrite the live .claude/scripts/ copies yourself — the orchestrator owns redeployment at its own inter-cycle checkpoint. If your plan requires verifying against a deployed copy, verify against a scratch copy instead and say so in your handoff." Source-store commit `67876e6b3` is in place and ready for the orchestrator's own next redeploy checkpoint. |
 
 **Timing**: 45 minutes
 

@@ -258,7 +258,7 @@ from the build graph, no longer isolation-only).
       the full logic is still open (Phase 2 above). `truthAt_of_isValid`
       (`Verified/Decidable.lean:2412`) is **not** evidence of decidability — it concerns a
       different, semantic-side `SoundnessLemmas.IsValid`.
-- [ ] **BimodalReference living monograph** (task 313, skeleton COMPLETED; tasks 314-318 in
+- [x] **BimodalReference living monograph** (task 313, skeleton COMPLETED; tasks 314-318 in *(Completed: Task 313)*
       flight/not-started) — five-part typst monograph at `typst/BimodalReference.typ`, with
       `scripts/typst-status-counts.sh`/`typst-sync-check.sh` as mechanical claim-verification
       infrastructure.
