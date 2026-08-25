@@ -11,9 +11,9 @@ next_project_number: 483
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,193,257,298,422,434,455,461,462,476,480 | -- | automation, code-quality, dataset-enhancement, ... |
-| 2 | 125,169,178,231,282,296,433,463,481 | 193,298,422,434,461,462 | algebraic-representation, dataset-enhancement, decidability, ... |
-| 3 | 95,219,362,464 | 169,231,463 | completeness, dataset-enhancement, decidability, ... |
+| 1 | 127,128,193,257,298,362,434,461,462,476,480 | -- | automation, dataset-enhancement, decidability, ... |
+| 2 | 125,178,231,282,296,433,463,481 | 193,298,434,461,462 | algebraic-representation, dataset-enhancement, decidability, ... |
+| 3 | 219,464 | 231,463 | dataset-enhancement, decidability |
 | 4 | 465 | 464 | decidability |
 | 5 | 428 | 433,465 | decidability |
 | 6 | 429 | 428 | decidability |
@@ -32,14 +32,6 @@ next_project_number: 483
 ### Automation
 
 193 [NOT STARTED] — Apply validity-intro and truth-simp macros to the soundness layer
-
-### Code Quality
-
-455 [NOT STARTED] — BACKLOG REALIGNMENT: bring specs/ROADMAP.md and every remaining a
-
-### Completeness
-
-95 [NOT STARTED] — Verify and record the final axiom/sorry status of the headline me
 
 ### Dataset Enhancement
 
@@ -86,9 +78,7 @@ next_project_number: 483
 
 ### Strong Completeness
 
-422 [RESEARCHED] — Construct the discrete-case analogue of the existing dense chroni
-  └─ 169 [NOT STARTED] — Base (FrameClass.Base / general) WEAK completeness green: make th
-    └─ 362 [NOT STARTED] — Implement the completeness capstone under the SETTLED TERMINOLOGY
+362 [NOT STARTED] — Implement the completeness capstone under the SETTLED TERMINOLOGY
 
 ## Tasks
 
@@ -1715,148 +1705,6 @@ universe in this task's own work.
 
 ---
 
-### 455. Survey and realign remaining tasks and roadmap
-- **Status**: [NOT STARTED]
-- **Task Type**: meta
-- **Topic**: code-quality
-- **Dependencies**: Task 452, Task 454, Task 468
-
-**Description**: BACKLOG REALIGNMENT: bring specs/ROADMAP.md and every remaining active task into agreement with
-the progress actually made and the goals actually remaining.
-
-Ordering is not optional. Stage 1 (ROADMAP) produces the reference frame that Stages 2-4 judge
-every task against. Do not begin surveying tasks before the roadmap states what remains.
-
-=== 0. WHY THIS TASK EXISTS ===
-
-A prioritization review (specs/reviews/review-2026-08-18.md) sampled a handful of tasks and found
-description rot in most of what it touched: file:line anchors past end-of-file, an acceptance
-criterion pinned to four line numbers that had all moved, a governing design built on a Lean
-parameter deleted by a completed refactor, and a "gate" that gates nothing in the dependency
-graph. That review corrected the six strong-completeness tasks on the critical path (its
-predecessor task) and the two worst ROADMAP sections (its dependency). It did NOT sweep the
-remaining backlog, and there is no reason to think the rot stopped at the sample.
-
-The tree has moved a long way underneath these descriptions: the total-history-validity refactor,
-the untl/snce guard-first argument-order migration (3,711 occurrences across 152 files), the
-paper-refactor cluster, the bi-lasso decision layer, and the arrival of a sorry count of ONE. Many
-task descriptions predate several of those.
-
-=== 1. STAGE 1 -- REFINE specs/ROADMAP.md (do this FIRST) ===
-
-The dependency task corrects two specific inverted sections (the Sorry Inventory's false 23-vs-1
-count, and the "BXCanonical Path (DEAD CODE)" mislabel). That is triage, not completeness. This
-stage finishes the job: make ROADMAP.md an accurate statement of WHAT REMAINS.
-
-(a) Audit the whole file, not the two sections already fixed. It is ~1,770 lines and is
-selectively maintained -- some sections were current as of 2026-08-10 while others had not been
-touched since April. For every section, establish whether it describes (i) current reality,
-(ii) settled history that should be explicitly marked historical, or (iii) a stale claim that must
-be corrected or deleted. The 111 status-table rows are the roadmap-integration matching surface
-and parse cleanly; treat them with care but do not assume they are current.
-
-(b) Ground every status claim in a machine-checkable source. scripts/check-module-invariants.sh is
-the generator of record: C2 for the flagship axiom sets, C3 for the live sorry inventory, C4/C5 for
-reference resolution, C7 for file counts. A claim in ROADMAP.md that no check can reproduce is
-either rewritten to be reproducible or removed.
-
-(c) Add the missing forward-looking content. The file is heavy on how things were built and light
-on what is left. It should state, per active front (strong completeness, decidability, FMP,
-paper/publication, dataset, hygiene), what remains, what the terminus looks like, and what is
-known to be blocked or refuted. Refuted routes deserve explicit tombstones -- the strong-
-completeness cluster already carries at least one hard-won refutation (the Base-MCS to
-Discrete-MCS transfer lemma, killed by a lex-order countermodel) whose whole value is that nobody
-re-attempts it.
-
-(d) Make the sections that rotted structurally harder to rot. Where a section restates a fact a
-script can compute, say which script computes it and when it was last reconciled.
-
-=== 2. STAGE 2 -- SURVEY EVERY REMAINING TASK ===
-
-Cover every task in specs/state.json active_projects EXCEPT the six already re-issued by the
-predecessor task (169, 362, 421, 422, 423, 424) and this task's own dependencies. At the time of
-writing that is roughly 35 tasks across the topics: decidability, completeness, dataset-enhancement,
-formula-refactor, frame-extensions, publication-quality, algebraic-representation, automation,
-proof-system-infrastructure, repo-hygiene, code-quality.
-
-For each task, produce a verdict in one of these categories, with evidence:
-
-  CURRENT     -- description matches the tree; no change needed. Say what you checked.
-  RE-ANCHOR   -- substance intact, citations drifted. List the drifted anchors and fix them.
-  RE-SCOPE    -- the work is still wanted but the description's premise has moved (a vocabulary it
-                 names is gone, a lemma it targets has been proved, a route it proposes is
-                 refuted). State the new scope.
-  SUPERSEDED  -- the work has been done, or subsumed by another task. Name what did it. Propose
-                 completion or abandonment; do NOT change status unilaterally (see section 5).
-  OBSOLETE    -- the goal itself no longer serves the project. Argue it and propose abandonment.
-
-Specific checks each task must survive:
-  - Every file:line and symbol it cites resolves in the live tree. Prefer symbol names over line
-    numbers when rewriting; line-number anchors are the observed failure mode.
-  - No dependency on a task that is archived-but-unsatisfying, and no dangling dependency. (All 41
-    edges resolved as of 2026-08-18 -- confirm this still holds and keep it true.)
-  - Acceptance criteria are still satisfiable. The observed failure was an acceptance criterion
-    demanding byte-comparability against four specific line numbers, none of which still held the
-    definitions.
-  - Any "PRE-EXISTING RED" or baseline note it records still describes the current build. At least
-    one task was found carrying a stale baseline naming a compile failure that no longer exists
-    while the real failure had moved elsewhere.
-  - Stated priority still reflects reality given what has since landed.
-
-=== 3. STAGE 3 -- RECONCILE THE DEPENDENCY GRAPH ===
-
-Descriptions and edges must agree. The observed failure mode was a task describing itself as a
-"feasibility gate" while no task listed it as a dependency, so Kahn's algorithm in
-generate-task-order.sh placed it in wave 1 alongside the work it claimed to gate.
-
-  (a) For every task whose prose asserts it blocks, gates, or must precede other work, verify a
-      corresponding edge exists. Add it, or downgrade the prose. Do not leave both readings.
-  (b) Look for the converse: declared edges with no justification in either description.
-  (c) Re-derive the wave structure afterwards and sanity-check it against the stated goals. If the
-      capstone of a front is not downstream of that front's open work, something is miswired.
-  (d) Confirm active_topics in state.json still matches the topics tasks actually carry
-      (generate-task-order.sh warns on undeclared topics rather than failing).
-
-=== 4. STAGE 4 -- REPORT ===
-
-Deliver a survey artifact under this task's reports/ directory containing:
-  - the per-task verdict table (task, topic, verdict, evidence, action taken)
-  - every anchor corrected, with old -> new
-  - every dependency edge added or removed, with justification
-  - the ROADMAP.md changes and what machine-checked source grounds each
-  - an explicit list of tasks proposed for completion or abandonment, for user decision
-  - a short statement of the resulting critical path per front
-
-=== 5. CONSTRAINTS ===
-
-- Descriptions, ROADMAP.md, and dependency edges are in scope. TASK STATUS IS NOT. Propose
-  completions and abandonments in the report; do not transition any task to completed, abandoned,
-  or expanded. That decision stays with the user.
-- No .lean edits. This task proves nothing and closes no sorry.
-- All specs/state.json writes go through .claude/scripts/state-write.sh; TODO.md is regenerated via
-  generate-todo.sh, never hand-edited.
-- Do not re-touch the six tasks handled by the predecessor task. If the survey finds a defect in
-  one of them, record it in the report rather than editing it, so the two passes cannot conflict.
-- Every claim about build state, sorry counts, or axiom sets must cite the check that produced it.
-  Do not restate a status from another description as if it were verified -- the stale-baseline
-  finding above is exactly that failure.
-
-=== 6. VERIFICATION ===
-
-- scripts/check-module-invariants.sh C5 passes (module-shaped paths in markdown resolve), which
-  covers the rewritten ROADMAP.md.
-- Zero dangling dependency edges across active_projects.
-- Every task in the survey has a verdict; no task is silently skipped. A task judged CURRENT still
-  gets a row saying what was checked.
-- generate-todo.sh regenerates cleanly with no undeclared-topic warnings.
-
-=== 7. NON-GOALS ===
-- Does not implement, research, or plan any surveyed task.
-- Does not archive anything (that is /todo's job, after the user acts on the report).
-- Does not restructure the topic taxonomy; it only reports desync.
-
----
-
 ### 451. Consolidate boneyard archives
 - **Effort**: medium
 - **Status**: [COMPLETED]
@@ -2214,55 +2062,6 @@ Acceptance (from design/01 section 6, all five required): zero sorries and zero 
 
 ---
 
-### 422. Build discrete chronicle over non archimedean block carrier with restricted coherence
-- **Effort**: high
-- **Status**: [RESEARCHED]
-- **Task Type**: lean4
-- **Topic**: strong_completeness
-- **Dependencies**: Task 414, Task 420, Task 421, Task 439, Task 448
-- **Research**:
-  - [422_build_discrete_chronicle_over_non_archimedean_block_carrier_with_restricted_coherence/reports/01_discrete-block-carrier-refutation.md]
-  - [422_build_discrete_chronicle_over_non_archimedean_block_carrier_with_restricted_coherence/reports/02_o1-verdict-k-equivalence-transfer.md]
-- **Summary**: [422_build_discrete_chronicle_over_non_archimedean_block_carrier_with_restricted_coherence/verification/block_order_refutation.lean]
-- **Evidence**: [422_build_discrete_chronicle_over_non_archimedean_block_carrier_with_restricted_coherence/verification/qlex_frame_probe.lean]
-
-**Description**: Construct the discrete-case analogue of the existing dense chronicle machinery, over the non-Archimedean carrier Q x_lex Z confirmed by the predecessor task.
-
-Deliverable (a): the analogue of `box_dense_gives_density` (`FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodelBasic.lean`; currently near :430, hint only) and `cantorIsoDense` (same file; currently near :231) for the "box U(T,F) in A" case — block decomposition of the chronicle order into Z-blocks, densification of the block order, and the isomorphism into Q x_lex Z.
-
-Deliverable (b): the three restricted-coherence analogues, mirroring `cantor_bfmcs_dense_restricted_tc` (same file; currently near :624), `cantor_bfmcs_dense_restricted_buc` (currently near :675), `cantor_bfmcs_dense_restricted_fuc` (currently near :750) at the new carrier — all hints only, re-verify by symbol before use.
-
-Why this carrier and not Z: succ_cofinal — the obligation that killed the old BX pipeline, refuted by the Z+Z counterexample in Boneyard/BXPipelineGapAnalysis/ — was only ever needed to force the chronicle into Z, i.e. to make it Archimedean. FrameClass.Base imposes no Archimedean-ness (`valid`, `FormalSystem/Semantics/Validity.lean`, currently near :94, has no IsSuccArchimedean binder — confirmed against the live definition). The Z+Z shape is not a counterexample here — it is the intended carrier. Do not re-attempt succ_cofinal.
-
-PRINCIPAL RISK, unresolved at scoping time: it has NOT been verified that the chronicle's block order can always be densified without disturbing MCS-chain coherence. A countable discrete order without endpoints is a Z-indexed fibration over its block order, but making the total structure a group requires the block order to carry a compatible group structure. If this fails, escalate as [BLOCKED] with the failing coherence obligation named — do not paper over it with a sorry or a vacuous placeholder.
-
-Governing design document: specs/archive/361_strong_completeness_architecture_and_weak_terminus_gap_analysis/design/03_weak-terminus-status.md, sections 5.4-5.7.
-
-Acceptance: the block-carrier construction and all three restricted-coherence analogues are sorry-free; #print axioms on each reports no sorryAx; lake build green. This task does NOT close the `sorry` inside `WeakCanonical.countermodel_discrete` (`FormalSystem/Metalogic/WeakCanonical/Transfer.lean`; declaration currently near :1068, sorry token currently near :1084, hints only) — that is task 169's job, which consumes this output.
-
-FOUR-AXIOM / TOTALITY EXPOSURE NOTE (added 2026-08-10; discharge recorded 2026-08-18): this task constructs a chronicle-backed frame while the paper-refactor cluster (tasks 420, 414, 415) refactors TaskFrame and validity underneath it. Once task 420 lands, TaskFrame carries the paper's FOUR def:frame axioms (biconditional Compositionality, Seriality, Limit, Spherical -- pinned in specs/paper-definitions-of-record.md) plus a Nonempty WorldState field and a [Nontrivial D] binder; any frame this task builds must discharge ALL of them, not just the current three structure fields. Once task 414 lands, `valid` / `SemanticConsequence` are Omega-free and totality-based, so the Validity.lean line citation above and the 'no IsSuccArchimedean binder' observation must be re-verified against the refactored signatures. Tasks 414 and 420 have both now landed and are archived; the re-verification obligation for the `valid`/Validity.lean citation and the 'no IsSuccArchimedean binder' observation above is discharged by this re-issue (re-confirmed against the live, post-refactor `valid` definition). Sequence this task after 420/414/415 or budget for the rebase.
-REALIGNMENT FINDING (task 468, 2026-08-25) -- PROPOSED FOR ABANDONMENT, NOT TRANSITIONED HERE:
-this task's specified deliverables -- (a) a block-decomposition/densification/isomorphism into the
-carrier `Q x_lex Z`, and (b) three restricted-coherence analogues at that carrier -- are
-permanently REFUTED at the isomorphism level (this task's own report 01,
-`verification/block_order_refutation.lean`, sorry-free, machine-checked: no linearly ordered
-abelian group has order type Z+Z) and, independently, SUPERSEDED: the goal they existed to serve
-(closing `WeakCanonical.countermodel_discrete`) has already been reached by a different,
-already-completed three-task chain (477 -> 478 -> 479) that consumes none of deliverable (a) or
-(b) -- confirmed by grep: no active task references `cantor_bfmcs_dense_restricted_tc`/`_buc`/
-`_fuc`'s discrete-case analogue or a discrete block-carrier isomorphism symbol. This task's own
-report 02 (`o1-verdict-k-equivalence-transfer.md`) is the governing document 477-479 actually
-followed, via a structurally different technique (`KEquiv` at fixed depth, not an isomorphism) --
-so this task's research output was valuable and consumed, but its originally-specified
-deliverables were not, and re-attempting deliverable (a) would violate its own refutation's
-"do not re-attempt" instruction.
-
-Full evidence and adjudication: specs/468_realign_task_programme_from_proof_state_audit/reports/03_implementation-evidence-ledger.md
-(Phase 2 section). RECOMMENDATION: abandon this task once the task-468 realignment report is
-acted on by the user. Not transitioned by task 468 -- status transitions are outside its scope.
-
----
-
 ### 421. Correct transfer route guidance and probe non archimedean discrete carrier
 - **Effort**: medium
 - **Status**: [COMPLETED]
@@ -2418,7 +2217,7 @@ not an addition to this task's scope.
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: strong_completeness
-- **Dependencies**: Task 361, Task 375, Task 169, Task 170, Task 424
+- **Dependencies**: Task 361, Task 375, Task 170, Task 424
 
 **Description**: Implement the completeness capstone under the SETTLED TERMINOLOGY (2026-07-27): "strong completeness" is reserved for consequence from possibly-infinite premise sets (Γ : Set Formula) with finitary set-derivability; finite-context (Context = List Formula) consequence statements are inter-derivable with weak completeness via the deduction theorem and are named CONSEQUENCE completeness, never strong. (This task was formerly named "main_strong_completeness: finite-context strong completeness" — that framing was misleading and is retired. "main_strong_completeness" was never a Lean or LaTeX identifier; it was this task's own former title.)
 
@@ -2645,48 +2444,6 @@ REALIGNMENT NOTE (task 468, 2026-08-25, verdict per specs/468_realign_task_progr
 
 ---
 
-### 169. Complete frame extension setup and soundness
-- **Effort**: high
-- **Status**: [NOT STARTED]
-- **Task Type**: lean4
-- **Topic**: strong_completeness
-- **Dependencies**: Task 361, Task 422, Task 448
-
-**Description**: Base (FrameClass.Base / general) WEAK completeness green: make the empty-context theorem `completeness` (the Base-class terminus in `FormalSystem/Metalogic/BXCanonical/Completeness.lean`, signature `valid φ → Derivable FrameClass.Base [] φ`, currently near :191, hint only — the file has a second, unrelated declaration also named `completeness` currently near :26; this task's terminus is the one at :191 with the signature above) genuinely sorry-free.
-
-CORRECTED SCOPE (2026-07-28, from task 361's design/03_weak-terminus-status.md): this task's earlier description named THREE open sorries. That was stale. `completeness` has EXACTLY ONE reachable sorry: the `sorry` inside `WeakCanonical.countermodel_discrete` in `FormalSystem/Metalogic/WeakCanonical/Transfer.lean` (declaration currently near :1068, sorry token currently near :1084, hints only). Machine-verified this session via `lean_verify`: `#print axioms completeness` = [propext, sorryAx, Classical.choice, Quot.sound], with that `sorry` the sole `sorryAx` source. The other two the old description named are gone from live code — the dense arm now runs through `countermodel_dense_enriched` (`Completeness.lean`; declaration currently near :135, called at its use site currently near :216), which is sorry-free, and the mixed case is closed by `Chronicle.mcs_mixed_case_absurd` (`MCSMixedCase.lean`, called from `Completeness.lean` currently near :226-227), also sorry-free. `dd_countermodel_chronicle_mixed_sorry` is archived.
-
-ROUTE (settled by task 361, design/03 sections 5.3-5.7):
-- Route (i) — a Base-MCS → Discrete-MCS transfer lemma letting `countermodel_discrete_reynolds_v2` apply (the route the Transfer.lean docstring currently proposes) — is REFUTED and MUST NOT be re-attempted. Witness: over `ℤ ×ₗ ℤ` with `p` true exactly at points ≥ (1,0), `□U(⊤,⊥)` holds everywhere while `Axiom.z1 p` is false at (0,0); so a Base-MCS containing `□U(⊤,⊥)` need not be Discrete-consistent.
-- Route (iii) — reuse the existing ℚ dense chronicle — is BLOCKED: `box_dense_gives_density` (`FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodelBasic.lean`; currently near :430, hint only) is load-bearing for the ℚ Cantor isomorphism and is unavailable when the order is discrete.
-- Route (ii) — direct construction over the NON-ARCHIMEDEAN discrete carrier `ℚ ×ₗ ℤ` — is RECOMMENDED. `FrameClass.Base` imposes no Archimedean-ness (`valid`, `FormalSystem/Semantics/Validity.lean`; currently near :94, hint only, has no `IsSuccArchimedean` binder), so the ℤ+ℤ shape that killed the old BX `succ_cofinal` pipeline is not a counterexample here — it is the intended carrier. Do not re-attempt `succ_cofinal`.
-
-DEPENDENCIES: task 421 corrects the refuted route guidance in Transfer.lean and probes the carrier's Mathlib instances; task 422 builds the discrete chronicle over that carrier plus its three restricted-coherence analogues. THIS task consumes 422's output to close `countermodel_discrete`, delete the Transfer.lean sorry, and re-verify `#print axioms completeness` reports no `sorryAx`.
-
-ROLE IN THE COMPLETENESS PROGRAMME (terminology settled 2026-07-27): this is the headline WEAK terminus for Base, consumed by the consequence-completeness capstone (task 362) as its single-formula engine. The weak engine yields only the finite-context consequence corollary (inter-derivable with weak completeness via the deduction theorem — deliberately NOT called "strong completeness"). Genuine STRONG completeness for Base (Γ : Set Formula) additionally requires semantic compactness, gated on task 424; that obligation is NOT discharged by this task.
-
-Governing design document: specs/archive/361_strong_completeness_architecture_and_weak_terminus_gap_analysis/design/03_weak-terminus-status.md.
-REALIGNMENT FINDING (task 468, 2026-08-25) -- PROPOSED FOR ABANDONMENT, NOT TRANSITIONED HERE:
-this task's sole deliverable -- consume task 422's output to close `WeakCanonical.countermodel_discrete`,
-delete the Transfer.lean sorry, and re-verify `#print axioms completeness` reports no `sorryAx` --
-is ALREADY FULLY ACCOMPLISHED, via a different route than the one this task and 422 were built to
-supply. Tasks 477 (ta_qz_target_structure_plumbing) -> 478 (tb_groupable_companion_lemma) -> 479
-(tc_close_countermodel_discrete_at_base), all completed, closed `countermodel_discrete` via a
-k-equivalence/groupable-companion construction at the carrier `Rat x_lex Int`, landing the theorem
-in `FormalSystem/Metalogic/WeakCanonical/GroupModel/CountermodelBase.lean`. Verified fresh at
-realignment time: check-module-invariants.sh C3 reports zero live structural sorries tree-wide; C2
-reports `BXCanonical.completeness` axiom-clean. `WeakCanonical/Transfer.lean`'s own current header
-confirms the theorem "had to move" to the GroupModel route.
-
-Full evidence and adjudication: specs/468_realign_task_programme_from_proof_state_audit/reports/03_implementation-evidence-ledger.md
-(Phase 2 section). This task's own `BXCanonical/Completeness.lean`/`BXCanonical/Chronicle/`
-`file_scope` names no obligation that remains open. RECOMMENDATION: abandon this task once the
-task-468 realignment report is acted on by the user. Note: task 362 lists this task among its
-dependencies; that edge should be reviewed alongside any abandonment decision (see task 468's
-report 04 for detail). Not transitioned by task 468 -- status transitions are outside its scope.
-
----
-
 ### 128. Open set operator dense continuous
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
@@ -2716,69 +2473,3 @@ report 04 for detail). Not transitioned by task 468 -- status transitions are ou
 **Description**: Implement a Jonsson-Tarski representation theorem for TM logic: every STSA embeds into the complex algebra of a concrete frame. Phased approach: Phase 1 — Complex algebra Cm(F): define powerset STSA for TaskFrames with box/G/H/sigma operators derived from frame relations. Prove Cm(F) satisfies all STSA axioms. Phase 2 — Ultrafilter frame Uf(A): given abstract STSA A, construct frame whose worlds are ultrafilters with canonical relations R_G, R_H, R_Box (seed infrastructure from task 163 recovery of UltrafilterChain.lean). Prove Uf(A) satisfies TaskFrame axioms. Phase 3 — Embedding theorem: prove eta(a) = {U | a in U} is an injective STSA homomorphism A into Cm(Uf(A)). Phase 4 — Since/Until extension: extend STSA typeclass with binary untl/sinc operators and prove representation for the full operator signature. Start with basic {box, G, H} fragment (Phases 1-3) before tackling S/U (Phase 4). Prerequisites: resolve 6 algebraic sorries (temp_k_dist, temp_a, temp_l in TenseS5Algebra/InteriorOperators/LindenbaumQuotient); obtain 3 missing papers (Jonsson-Tarski 1951/52, BRV 2001 Ch.5, Goldblatt 1989). Task 992 research report (01_stsa-algebraic-analysis.md) maps ~80% of needed infrastructure. Architecture: restructure Algebraic/ into Core/ (shared STSA/Boolean/ultrafilter), Completeness/ (renamed existing), Representation/ (new J-T work).
 
 FOUR-AXIOM EXPOSURE NOTE (added 2026-08-10): Phase 2's obligation 'Prove Uf(A) satisfies TaskFrame axioms' is about to get strictly harder. Once task 420 lands, TaskFrame carries the paper's four def:frame axioms (biconditional Compositionality, Seriality, Limit, Spherical -- pinned in specs/paper-definitions-of-record.md) plus a Nonempty WorldState field and a [Nontrivial D] binder. Spherical (every directed family of nonempty fibers and segments has nonempty intersection) for an ultrafilter frame is a genuinely nontrivial NEW obligation the current three-field structure does not anticipate -- scope Phase 2 against the four-axiom target, and note the paper's finite-W discharge pattern (subset-least member of a finite directed family) does NOT apply to ultrafilter frames, which are typically infinite.
-
----
-
-### 95. Completeness verification audit
-- **Status**: [NOT STARTED]
-- **Task Type**: lean4
-- **Topic**: completeness
-- **Dependencies**: Task 169
-
-**Description**: Verify and record the final axiom/sorry status of the headline metalogical results, then close.
-
-RE-SCOPED 2026-07-26. Most of this task's original content has been ANSWERED by the archivable-sorry review, which resolved the question definitively rather than partially. Do not re-derive it:
-
-  - The discrete-case sorryAx trace is COMPLETE. `WeakCanonical.countermodel_discrete`
-    (FormalSystem/Metalogic/WeakCanonical/Transfer.lean) is the SOLE sorryAx source reaching
-    `BXCanonical.completeness`. This was established by a whole-environment
-    `Lean.collectAxioms` scan, not by inference from names or file locations.
-  - The tainted set is exactly 3 declarations: countermodel_discrete,
-    completeness, completeness'. It was 47 before the archival.
-  - `completeness_dense` and `completeness_discrete` are CLEAN.
-  - The BX chronicle path named in the original charter
-    (dd_countermodel_chronicle_discrete -> succ_embed_surjective ->
-    chronicle_gap_contradiction) was dead code and has been ARCHIVED to
-    FormalSystem/Boneyard/DeadChronicleGapElimination/. It is no longer in
-    the build, so there is nothing left to trace along that path.
-  - The dense and mixed chronicle countermodels were already confirmed
-    sorry-free.
-
-WHAT REMAINS -- a narrow confirmation pass, not an investigation:
-  (1) Re-run `#print axioms` (or lean_verify) on the headline theorems and
-      confirm the state above still holds. Record the result.
-  (2) Confirm the live sorry count is exactly 1, located BY CONTENT in
-      FormalSystem/Metalogic/WeakCanonical/Transfer.lean -- never by line number, it drifts
-      with every edit to that file.
-  (3) Record, in a durable location, that discharging countermodel_discrete is a
-      genuine open construction rather than an oversight: the clean
-      `countermodel_discrete_reynolds_v2` requires a Discrete-MCS, and the old
-      BX route is PROVABLY unavailable (succ_cofinal is refuted by the Z+Z
-      counterexample). Proving it belongs to its own task.
-
-METHODOLOGY WARNING, established the hard way: do NOT build a reverse-dependency
-graph over `ConstantInfo.value?` to decide what depends on what. Under Lean
-4.33's module system imported THEOREM bodies are unavailable, so such a graph
-silently under-reports -- it wrongly showed countermodel_discrete as having zero
-consumers, which would have led to archiving the one sorry that breaks
-completeness. Use `Lean.collectAxioms` plus textual analysis instead.
-
-EXPECTED OUTCOME: this task most likely closes as verified-complete. If step (1)
-or (2) diverges from the state above, that divergence IS the finding and should
-be reported prominently rather than silently reconciled.
-REALIGNMENT FINDING (task 468, 2026-08-25) -- PROPOSED FOR ABANDONMENT, NOT TRANSITIONED HERE:
-this task's narrow confirmation-pass content (re-run #print axioms on the headline theorems;
-confirm the live sorry count is exactly 1, located in WeakCanonical/Transfer.lean; record that
-discharging countermodel_discrete is genuine open construction belonging to its own task) is
-FULLY SUBSUMED by task 468's own Phase 1 baseline re-verification, which performed exactly this
-confirmation pass fresh and found: the live sorry count is ZERO, not 1 (step (2) above can no
-longer be satisfied as originally written -- it presupposes exactly one live sorry in
-Transfer.lean, which has been closed by tasks 477 -> 478 -> 479). Step (3)'s prediction has been
-fulfilled in precisely the form it anticipated ("proving it belongs to its own task"), so there is
-nothing left to record as open; it is closed. Step (1) does not need to wait on this task's
-dependency (169) -- confirmed by scripts/check-module-invariants.sh C2/C3, run fresh at
-realignment time, independent of 169's status.
-
-Full evidence: specs/468_realign_task_programme_from_proof_state_audit/reports/03_implementation-evidence-ledger.md
-(Phase 2 section). RECOMMENDATION: abandon this task once the task-468 realignment report is
-acted on by the user. Not transitioned by task 468 -- status transitions are outside its scope.
