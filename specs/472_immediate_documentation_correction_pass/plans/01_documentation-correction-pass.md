@@ -1,7 +1,7 @@
 # Implementation Plan: Immediate documentation-correction pass
 
 - **Task**: 472 - Immediate documentation correction pass
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 10 hours
 - **Dependencies**: 470 (recorded in state.json; not gating this ungated pass)
 - **Research Inputs**: specs/472_immediate_documentation_correction_pass/reports/01_documentation-correction-verification.md
@@ -118,26 +118,26 @@ per-file rebuild discipline is what matters, not the ordering.
 
 ---
 
-### Phase 1: Baseline confirmation and scope lock [NOT STARTED]
+### Phase 1: Baseline confirmation and scope lock [COMPLETED]
 
 **Goal**: Reconfirm the green baseline on the current HEAD and re-validate the research report's
 present/absent symbol lists, so every later red is attributable to an edit made in this pass.
 
 **Tasks**:
-- [ ] Confirm the working tree is clean for the nine `file_scope` paths (`git status --short`).
-- [ ] Run `lake build` — must exit 0.
-- [ ] Run `lake build BimodalTest` — must exit 0.
-- [ ] Run `bash scripts/check-module-invariants.sh` — must report ALL CHECKS PASSED.
-- [ ] Re-verify the six ABSENT symbols still have zero declaration hits:
+- [x] Confirm the working tree is clean for the nine `file_scope` paths (`git status --short`).
+- [x] Run `lake build` — must exit 0.
+- [x] Run `lake build BimodalTest` — must exit 0.
+- [x] Run `bash scripts/check-module-invariants.sh` — must report ALL CHECKS PASSED.
+- [x] Re-verify the six ABSENT symbols still have zero declaration hits:
       `filtration_is_finite`, `truth_preserved_under_filtration`, `buildTableau_isSome`,
       `chronicle_is_good`, `irr_sound_dense_at_domain`, bare `finite_model_property`, using
       `grep -rnE '^(theorem|lemma|def|noncomputable def|abbrev|instance|structure|class) NAME\b' --include='*.lean' FormalSystem/ | grep -v Boneyard`.
-- [ ] Re-verify the five ABSENT files still do not exist (`Verified/Internalize.lean`,
+- [x] Re-verify the five ABSENT files still do not exist (`Verified/Internalize.lean`,
       `Verified/Refutation/`, `Verified/Bridge/Omega.lean`, `Verified/Provable.lean`,
       `IRRSoundness.lean` anywhere).
-- [ ] Spot-check the present-symbols list for the symbols each phase will cite; record any symbol
+- [x] Spot-check the present-symbols list for the symbols each phase will cite; record any symbol
       that has since moved or been renamed and adjust that phase's replacement text before writing it.
-- [ ] Record the C3 sole-sorry location and the C2 axiom baseline verbatim for use in Phases 6 and 2.
+- [x] Record the C3 sole-sorry location and the C2 axiom baseline verbatim for use in Phases 6 and 2.
 
 **Timing**: 0.5 hours
 
