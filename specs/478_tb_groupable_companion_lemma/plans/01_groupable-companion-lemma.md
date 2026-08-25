@@ -248,7 +248,7 @@ checkpoint rather than compressing the variants.
 
 ---
 
-### Phase 3: Ramsey factorization, tail absorption, and per-block inflation [NOT STARTED]
+### Phase 3: Ramsey factorization, tail absorption, and per-block inflation [IN PROGRESS]
 
 **Goal**: Land `TailAbsorption` (both duals) and per-block inflation `Inflate`: for each block
 `(ℤ, cᵢ)` there is a colouring `e` of `ℚ ×ₗ ℤ` with `(ℤ, cᵢ) ≡ₖ ℤ + (ℚ ×ₗ ℤ, e)`-shaped
