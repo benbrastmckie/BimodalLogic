@@ -1,6 +1,13 @@
 # T-C: closing `countermodel_discrete` via the v2 blueprint at `ℚ ×ₗ ℤ`
 
 **Task**: 479 · **Type**: lean4 · **Session**: sess_1787655570_fed45b · **Dispatch**: 1
+- **Started**: TBD
+- **Completed**: TBD
+- **Effort**: TBD
+- **Dependencies**: TBD
+- **Sources/Inputs**: TBD
+- **Artifacts**: TBD
+- **Standards**: TBD
 
 All claims below were re-verified **by symbol against the live source** on a green tree
 (`lake build` → "Build completed successfully (2492 jobs)") and by a compiled probe at

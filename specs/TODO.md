@@ -11,7 +11,7 @@ next_project_number: 480
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,193,257,298,422,434,461,462,468,476,479 | -- | automation, dataset-enhancement, decidability, ... |
+| 1 | 127,128,193,257,298,422,434,461,462,468,476 | -- | automation, dataset-enhancement, decidability, ... |
 | 2 | 125,169,178,231,282,296,433,455,463 | 193,298,422,434,461,462,468 | algebraic-representation, code-quality, dataset-enhancement, ... |
 | 3 | 95,219,362,464 | 169,231,463 | completeness, dataset-enhancement, decidability, ... |
 | 4 | 465 | 464 | decidability |
@@ -87,20 +87,17 @@ next_project_number: 480
   └─ 169 [NOT STARTED] — Base (FrameClass.Base / general) WEAK completeness green: make th
     └─ 362 [NOT STARTED] — Implement the completeness capstone under the SETTLED TERMINOLOGY
 
-### Metalogic
-
-479 [PLANNED] — T-C: CLOSE `countermodel_discrete` VIA THE v2 BLUEPRINT AT Rat x_
-
 ## Tasks
 
 ### 479. Tc close countermodel discrete at base
 - **Effort**: medium
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: Task 478
 - **Research**: [479_tc_close_countermodel_discrete_at_base/reports/01_countermodel-discrete-base-port.md]
 - **Plan**: [479_tc_close_countermodel_discrete_at_base/plans/01_close-countermodel-discrete-base.md]
+- **Summary**: [479_tc_close_countermodel_discrete_at_base/summaries/01_close-countermodel-discrete-base-summary.md]
 
 **Description**: T-C: CLOSE `countermodel_discrete` VIA THE v2 BLUEPRINT AT Rat x_lex Int.
 

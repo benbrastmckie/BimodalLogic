@@ -6,6 +6,10 @@
 - **Report**: `specs/479_tc_close_countermodel_discrete_at_base/reports/01_countermodel-discrete-base-port.md`
 - **Phases**: 5 of 5 completed
 - **Status**: implemented
+- **Started**: TBD
+- **Completed**: TBD
+- **Artifacts**: TBD
+- **Standards**: TBD
 
 ## Outcome
 
