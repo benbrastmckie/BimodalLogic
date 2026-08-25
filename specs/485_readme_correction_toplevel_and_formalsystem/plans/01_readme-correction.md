@@ -540,19 +540,19 @@ Use the observed values, not these.
 
 ---
 
-### Phase 5: `Metalogic/Algebraic/README.md` and `Metalogic/BXCanonical/README.md` [NOT STARTED]
+### Phase 5: `Metalogic/Algebraic/README.md` and `Metalogic/BXCanonical/README.md` [COMPLETED]
 
 **Goal**: Delete two phantom file rows and three contradictory scope statements from
 `Algebraic/`; widen `BXCanonical/` from two classes to four, remove its phantom `truth_lemma`,
 and refresh both module tables from the filesystem.
 
 **Tasks**:
-- [ ] **B2**: delete `Algebraic/README.md:32` (`AlgebraicCompleteness.lean` | Main completeness
+- [x] **B2**: delete `Algebraic/README.md:32` (`AlgebraicCompleteness.lean` | Main completeness
       theorem | **Sorry-free**) and `:55` (`DovetailedChain.lean`). **Neither file exists.** The
       directory holds exactly `BooleanStructure.lean` (441), `FlowFrame.lean` (806),
       `InteriorOperators.lean` (176), `LindenbaumQuotient.lean` (393), `UltrafilterMCS.lean`
       (1,071) — 5 files, 2,887 lines.
-- [ ] **B2 (cont.)**: reconcile the *three* mutually inconsistent scope statements — `:3` and `:8`
+- [x] **B2 (cont.)**: reconcile the *three* mutually inconsistent scope statements — `:3` and `:8`
       ("primary completeness path via deterministic chains"), `:18-19` ("supplementary
       infrastructure, not required for the current proof architecture"), `:179` ("[Bundle README]
       - **Primary** BFMCS completeness approach"). All three are wrong against the corrected
@@ -563,20 +563,20 @@ and refresh both module tables from the filesystem.
       participates in the live proof. Per **D3**, cite that fact **without any import count**.
       `:49-55` correctly records the deterministic-chain modules as archived, which is what makes
       `:3` and `:8` self-contradictory within the same file.
-- [ ] **B11**: repair `Algebraic/README.md:26` (lists the *sibling* aggregator
+- [x] **B11**: repair `Algebraic/README.md:26` (lists the *sibling* aggregator
       `FormalSystem/Metalogic/Algebraic.lean`, 40 lines, as a file inside the directory). Copy the
       already-repaired `BXCanonical/README.md:13` row **verbatim** as the house pattern.
-- [ ] **D2**: rewrite `Algebraic/README.md:173` and `BXCanonical/README.md:50-51` from `Bimodal.*`
+- [x] **D2**: rewrite `Algebraic/README.md:173` and `BXCanonical/README.md:50-51` from `Bimodal.*`
       to `FormalSystem.*`.
-- [ ] **B7**: widen `BXCanonical/README.md:3` and `:5` from "Dense and Discrete TM completeness"
+- [x] **B7**: widen `BXCanonical/README.md:3` and `:5` from "Dense and Discrete TM completeness"
       to all four classes. Add `completeness` (Base, `Completeness.lean:196`) — the theorem that
       closed last and the entire reason the tree is sorry-free — and the Dedekind route
       (`CompletenessDedekind.lean`, 607 lines) to Key Results at `:24-28`.
-- [ ] **B7 (cont.)**: remove `truth_lemma` from Key Results — **it does not exist in
+- [x] **B7 (cont.)**: remove `truth_lemma` from Key Results — **it does not exist in
       `BXCanonical/` either**. `TruthLemma.lean` holds `bot_not_in_mcs`, `imp_iff_mcs`,
       `G_iff_mcs`, `H_iff_mcs`, `box_iff_mcs`, `F_from_witness`, `P_from_witness`,
       `until_forward_mcs`, `since_forward_mcs`. Name real declarations.
-- [ ] **B7 (cont.)**: refresh the Modules table (`:13-22`) from the filesystem —
+- [x] **B7 (cont.)**: refresh the Modules table (`:13-22`) from the filesystem —
       `CanonicalChain.lean` 110 -> 119, `CanonicalModel.lean` 794 -> 855, `Completeness.lean`
       439 -> 432, `Frame.lean` 710 -> 728, `OrderedSeedConsistency.lean` 254 -> 261,
       `TruthLemma.lean` 302 -> 312, add `CompletenessDedekind.lean` (607) and

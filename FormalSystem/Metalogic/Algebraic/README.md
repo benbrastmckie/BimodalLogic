@@ -1,12 +1,14 @@
 # Algebraic Representation Infrastructure
 
-**Status**: Active -- Contains the primary completeness path via deterministic chains
+**Status**: Active -- infrastructure consumed by the live completeness proof
 
 This directory contains:
 1. An algebraic approach to the representation theorem using Lindenbaum-Tarski algebra and ultrafilter theory
-2. The parametric truth lemma and representation infrastructure
-3. The deterministic chain construction (primary completeness path)
-4. The deprecated dovetailed chain construction (architecturally blocked)
+2. The generic flow-frame countermodel engine (`FlowFrame.lean`) and the re-hosted dense truth lemma
+3. Boolean-algebra and ultrafilter foundations shared with `Core/`
+
+The deterministic and dovetailed chain constructions that this directory once hosted are
+**archived** to `Boneyard/ChainCompleteness/`; see the Chain Constructions table below.
 
 ## Purpose
 
@@ -15,21 +17,28 @@ The algebraic modules provide:
 2. Infrastructure for Stone duality and algebraic topology extensions
 3. A cleaner mathematical foundation for future algebraic modal logic research
 
-**Note**: The main completeness proof uses `Bundle/` (BFMCS). This algebraic path is
-supplementary infrastructure, not required for the current proof architecture.
+**Note**: `BXCanonical/` is the wired completeness entry point. This directory is **not**
+optional relative to it: `BXCanonical` imports `Algebraic.FlowFrame` — from `Completeness.lean`,
+`Chronicle/ChronicleToCountermodelBasic.lean`, `Chronicle/ChronicleMonadicBridge.lean`, and
+`DiscreteCarrierProbe.lean` — so `Algebraic/` participates in the live proof rather than standing
+beside it. See [Metalogic README](../README.md) for the route diagram.
 
 ## Modules
+
+The directory holds **5 `.lean` files, 2,887 lines**: `BooleanStructure.lean` (441),
+`FlowFrame.lean` (806), `InteriorOperators.lean` (176), `LindenbaumQuotient.lean` (393), and
+`UltrafilterMCS.lean` (1,071). Rows below that name any other file describe **archived** modules
+under `Boneyard/` and are labelled as such.
 
 ### Boolean Algebra Foundation
 | Module | Purpose | Status |
 |--------|---------|--------|
-| `Algebraic.lean` | Module root, re-exports all components | Complete |
+| `../Algebraic.lean` | Re-export module for the Algebraic package. **Sibling aggregator**, at `FormalSystem/Metalogic/Algebraic.lean` — not a file inside this directory | Complete |
 | `LindenbaumQuotient.lean` | Quotient by provable equivalence | **Sorry-free** |
 | `BooleanStructure.lean` | Boolean algebra instance | **Sorry-free** |
 | `InteriorOperators.lean` | G/H as interior operators | **Sorry-free** |
 | `TenseS5Algebra.lean` | Tense S5 algebra structure | **Archived** (3 sorries; moved to `Boneyard/UltrafilterFrame/`) |
 | `UltrafilterMCS.lean` | Ultrafilter-MCS bijection | **Sorry-free** |
-| `AlgebraicCompleteness.lean` | Main completeness theorem | **Sorry-free** |
 
 ### Ultrafilter Frame Infrastructure (Archived to `Boneyard/UltrafilterFrame/`)
 | Module | Purpose | Status |
@@ -52,7 +61,6 @@ truth lemma is re-hosted on `bundleFlowFrame` in `FlowFrame.lean`.
 | `DeterministicChain.lean` | Deterministic chain construction | **Archived** |
 | `DeterministicFMCS.lean` | FMCS/BFMCS bundle + completeness wiring | **Archived** |
 | `FiniteDeferral.lean` | Finite deferral infrastructure for forward_F | **Archived** |
-| `DovetailedChain.lean` | Dovetailed chain (active, deprecated) | **DEPRECATED** |
 
 ## Dependency Flowchart
 
@@ -70,7 +78,7 @@ Boolean Algebra Path:
               UltrafilterMCS
                          │
                          v
-           AlgebraicRepresentation
+           (ultrafilter representation; no completeness theorem is stated here)
 
 Completeness Path (current):
 
@@ -151,13 +159,16 @@ The algebraic approach proceeds as follows:
 
 ## Relationship to Main Proof Path
 
-The main completeness proof architecture uses:
+The wired completeness entry point is `BXCanonical/`, which consumes this directory's
+`FlowFrame.lean` directly. The supporting layers are:
 - `Core/` - MCS foundations (shared)
-- `Bundle/` - BFMCS completeness via bundled MCS families
+- `Bundle/` - BFMCS canonical-frame construction via bundled MCS families
+- `Algebraic/` - Boolean-algebra and ultrafilter foundations, plus the flow-frame countermodel
+  engine that `BXCanonical` imports
 
-This algebraic path provides:
+This directory additionally provides:
 - Independent verification that MCS theory is sound
-- Alternative route from consistency to satisfiability
+- An alternative route from consistency to satisfiability
 - Foundation for future Stone duality extensions
 
 ## Future Extension Opportunities
@@ -170,13 +181,13 @@ This algebraic path provides:
 ## Dependencies
 
 - **Mathlib**: `BooleanAlgebra`, `Quotient`, `Filter`
-- **ProofChecker**: `Bimodal.ProofSystem`, `Bimodal.Metalogic.Core`
+- **ProofChecker**: `FormalSystem.ProofSystem`, `FormalSystem.Metalogic.Core`
 
 ## Related Documentation
 
 - [Metalogic README](../README.md) - Overall metalogic architecture
 - [Core README](../Core/README.md) - MCS foundations shared by both approaches
-- [Bundle README](../Bundle/README.md) - Primary BFMCS completeness approach
+- [Bundle README](../Bundle/README.md) - BFMCS canonical-frame construction
 - [Decidability README](../Decidability/README.md) - Decision procedure
 
 ## References
