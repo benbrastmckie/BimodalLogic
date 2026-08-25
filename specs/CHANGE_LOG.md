@@ -1,6 +1,18 @@
 # Change Log
 
 
+## 2026-08-25: Archive 4 completed tasks
+
+**Archived**:
+- **487** (completed, meta): Fixed the 128KB Linux `MAX_ARG_STRLEN` argv ceiling that crashed `roadmap-integration.sh` unconditionally against the live repo and `state-write.sh` for any oversized `--argjson` payload -- transparent auto-spill to `jq --slurpfile` above a 100,000-byte threshold plus an additive `--argjson-file` flag; also made `--annotate` atomic (staged copy committed once, report -> commit -> print) so a mid-run failure leaves `ROADMAP.md` byte-identical, and tightened `explicit_task_ref` to collect every `(task N)` reference and reject the high-confidence verdict while any referenced task is still non-terminal; two new regression suites (7-case and 5-case) fail 5/7 and 3/5 respectively against the pre-fix scripts
+- **486** (completed, lean4): Ten-phase `docs/` overhaul -- deleted `SORRY_REGISTRY.md` (196 lines) and `IMPLEMENTATION_STATUS.md` (331 lines) as confirmed fiction (both claimed 9 sorries in files that do not exist, globbing a nonexistent `Bimodal/` tree), drove the dead-link resolver from 74 to **0**, created the nine missing `FormalSystem/` READMEs so `readme-lint.sh` reports 0 missing / 0 broken, and added checks C12, C13 and C14 so this class of drift fails the build; zero `.lean` edits. Two plan hypotheses were measured wrong and recorded rather than reworked (28 `SORRY_REGISTRY` inbound refs, not 15; 138 task-number citations, not 152) because the gates were commands, not numbers
+- **485** (completed, lean4): Ten-phase README correction across the top-level `README.md` and `FormalSystem/**` -- drove `readme-lint.sh` broken references from 5 to **0**, deleted the "Active sorry obligations" section naming files whose structural inventory is zero, replaced "axiom-free" with the house `sorryAx`-free phrasing, removed the "decidability fully proven" over-claim, swept 42 -> 45 constructors and "8 layers" -> nine throughout, added the three-way strong-completeness split and the fourth (Dedekind) variant, and deleted phantom file rows, Key Results, and declarations that do not exist
+- **484** (completed, lean4): Corrected the two anchor documents (`specs/ROADMAP.md`, `FormalSystem/Metalogic/README.md`) against Lean source -- all nine asserted defects repaired, three (A3, B4, B5) at the larger true size research found. Rebuilt the axiom layer table from a fresh enumeration (three phantom rows removed, three layers added, 45 rows matching the 45 `inductive Axiom` constructors with every citation checked), replaced the false `sorryAx` axiom-set block with a drift-proof pointer to check C2, and replaced the false one-structural-sorry inventory with the verified zero per C3; prose only, no `.lean` changes
+
+**Directories moved**: 4 (specs/ -> specs/archive/)
+**Roadmap updates**: 0 annotations applied -- all 5 eligible matches were low-confidence keyword matches; `specs/ROADMAP.md` unchanged
+**Repository health**: todo_count 5, fixme_count 0, build_errors 0, status `healthy`
+
 ## 2026-08-25: Archive 21 completed tasks
 
 **Archived**:
