@@ -589,7 +589,7 @@ with no front, add a front for it rather than dropping the work.
 
 ---
 
-### Phase 8: Stage 5 report [NOT STARTED]
+### Phase 8: Stage 5 report [COMPLETED]
 
 **Goal**: One artifact carrying the whole decision record, including the explicit list of proposed
 status corrections for user decision.
