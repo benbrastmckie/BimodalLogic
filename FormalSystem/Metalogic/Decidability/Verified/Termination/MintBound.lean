@@ -13467,6 +13467,137 @@ theorem findApplicableRule_ne_densityRule {sf : SignedFormula} {b : Branch}
   split at hA <;> simp_all
 
 
+/-! ### The leaf inversions the census case split consumes
+
+Four kinds of fact, all of them read straight off `isApplicable` and `applyRule`: the result shapes
+the six witness-guarded minting rules can report, the trigger shape `untlNeg` / `snceNeg` fire on,
+their ACTIVE guard, and the four-bucket partition of all thirty-six constructors. None of them is
+new mathematics; each is an inversion of an engine definition that is already frozen. -/
+
+set_option maxHeartbeats 4000000 in
+/-- **None of the six witness-guarded minting rules ever reports `.persistent`.**
+
+The six are `freshLabelRules ∩ freshTimeRules` — `allFutureNeg`, `allPastNeg`, `someFuturePos`,
+`somePastPos`, `untlPos`, `sncePos` — and the two payment lemmas that cover them,
+`mintPotential_lt_of_pick_linear_sigmaFixed` and `..._branching_sigmaFixed`, between them cover
+`.linear` and `.branching` only. `.branchingOrdered` and `.notApplicable` need no cover: neither
+contributes a successor branch to `pickBranches`. `.persistent` would, and this lemma is what
+closes it.
+
+**Why the cheaper route is not available, recorded so it is not re-costed.** The obvious saving is
+a `.persistent` variant of `mintPotential_lt_of_pick_linear_sigmaFixed`, since
+`nonBranchingResultBranch` treats `.linear` and `.persistent` alike and
+`applyRule_fresh_witness_nonbranching` is shape-agnostic. It does not exist, and cannot: the
+missing input is `witnessPresent r sf b ord = false`, which the `.linear` and `.branching` arms of
+`findApplicableRule` supply from their own `if` and the `.persistent` arm **deliberately does not**
+— that arm carries no guard at all, by a design decision `findApplicableRule`'s own comment
+records. So there is no `findApplicableRule_guard_persistent` to be had, and the exclusion has to
+come from the rule side. It does, decidably, and that is this lemma.
+
+The `.persistent` arms of `applyRule` belong to `allPastPos`, `someFutureNeg` and `densityRule`,
+none of which is among the six. -/
+private theorem applyRule_ne_persistent_of_fresh {r : TableauRule} {sf : SignedFormula}
+    {b : Branch} {ord : TimeOrdering} {fs : List SignedFormula} {o : TimeOrdering}
+    (hlab : ruleMintsFreshLabel r = true) (htime : ruleMintsFreshTime r = true)
+    (hA : applyRule r sf b ord = (RuleResult.persistent fs, o)) : False := by
+  cases r <;>
+    first
+      | exact Bool.noConfusion hlab
+      | exact Bool.noConfusion htime
+      | (simp only [applyRule] at hA
+         (repeat' split at hA)
+         all_goals simp_all)
+
+/-- **`untlNeg`'s trigger shape, recovered from `isApplicable`.** The rule's arm is
+`| .untlNeg, .neg, φ => (asUntil? φ).isSome`, so applicability fixes the sign and hands back the
+`asUntil?` view's two components. Destructuring `sf` in the conclusion rather than asserting
+`sf.sign = .neg` is what lets the consumer feed `selfGuardPotential_lt_of_untlNeg`, whose trigger
+argument is a literal `⟨Sign.neg, φ, l⟩`, without a further rewrite. -/
+theorem isApplicable_untlNeg_trigger {sf : SignedFormula}
+    {fc : FormalSystem.ProofSystem.FrameClass}
+    (hA : isApplicable TableauRule.untlNeg sf fc = true) :
+    ∃ e g l, sf = ⟨Sign.neg, sf.formula, l⟩ ∧ asUntil? sf.formula = some (e, g) := by
+  rcases sf with ⟨sign, φ, l⟩
+  cases sign
+  · simp only [isApplicable] at hA; simp at hA
+  · rcases h : asUntil? φ with _ | ⟨e, g⟩
+    · simp only [isApplicable, h] at hA; simp at hA
+    · exact ⟨e, g, l, rfl, rfl⟩
+
+/-- **The `snceNeg` mirror**, through `asSince?`. -/
+theorem isApplicable_snceNeg_trigger {sf : SignedFormula}
+    {fc : FormalSystem.ProofSystem.FrameClass}
+    (hA : isApplicable TableauRule.snceNeg sf fc = true) :
+    ∃ e g l, sf = ⟨Sign.neg, sf.formula, l⟩ ∧ asSince? sf.formula = some (e, g) := by
+  rcases sf with ⟨sign, φ, l⟩
+  cases sign
+  · simp only [isApplicable] at hA; simp at hA
+  · rcases h : asSince? φ with _ | ⟨e, g⟩
+    · simp only [isApplicable, h] at hA; simp at hA
+    · exact ⟨e, g, l, rfl, rfl⟩
+
+/-- **`untlNeg`'s ACTIVE guard, inverted from a non-`notApplicable` result.**
+
+One `by_contra` and no arm analysis, and the absence of the arm analysis is the point: the rule's
+PASSIVE arm was retired from `applyRule`, so on a trigger the `asUntil?` view accepts there are
+exactly two outcomes — the ACTIVE arm under its own `if`, or `.notApplicable`. A reported result
+that is not `.notApplicable` therefore *forces* the guard, and the guard is transcribed here
+character for character as the arm's `if` writes it, which is also character for character what
+`selfGuardPotential_lt_of_untlNeg` asks for. -/
+theorem applyRule_untlNeg_active_guard {φ : Formula} {l : Label} {b : Branch} {ord : TimeOrdering}
+    {e g : Formula} {res : RuleResult} {o : TimeOrdering}
+    (hform : asUntil? φ = some (e, g))
+    (hA : applyRule TableauRule.untlNeg ⟨Sign.neg, φ, l⟩ b ord = (res, o))
+    (hne : res ≠ RuleResult.notApplicable) :
+    ((ord.futureOf l.time).isEmpty && decide (0 < ord.timeCount)
+      && decide (ord.timeCount < 4)) = true := by
+  by_contra hg
+  simp only [Bool.not_eq_true] at hg
+  rw [show applyRule TableauRule.untlNeg ⟨Sign.neg, φ, l⟩ b ord
+      = (RuleResult.notApplicable, ord) by
+    simp only [applyRule, hform]
+    simp_all] at hA
+  exact hne (by simp_all)
+
+/-- **The `snceNeg` mirror**: `pastOf` in place of `futureOf`, same one-`by_contra` inversion, same
+absent PASSIVE arm. -/
+theorem applyRule_snceNeg_active_guard {φ : Formula} {l : Label} {b : Branch} {ord : TimeOrdering}
+    {e g : Formula} {res : RuleResult} {o : TimeOrdering}
+    (hform : asSince? φ = some (e, g))
+    (hA : applyRule TableauRule.snceNeg ⟨Sign.neg, φ, l⟩ b ord = (res, o))
+    (hne : res ≠ RuleResult.notApplicable) :
+    ((ord.pastOf l.time).isEmpty && decide (0 < ord.timeCount)
+      && decide (ord.timeCount < 4)) = true := by
+  by_contra hg
+  simp only [Bool.not_eq_true] at hg
+  rw [show applyRule TableauRule.snceNeg ⟨Sign.neg, φ, l⟩ b ord
+      = (RuleResult.notApplicable, ord) by
+    simp only [applyRule, hform]
+    simp_all] at hA
+  exact hne (by simp_all)
+
+/-- **The four-bucket census, decided over all thirty-six constructors.**
+
+Every rule either mints no fresh time, or mints one *and* is witness-guarded (the six of
+`freshLabelRules ∩ freshTimeRules`), or is one of the two self-guarded minters, or is
+`densityRule`. There is no fifth bucket and no residue, and `decide` rather than a hand-written
+case list is what guarantees it: a constructor added to `TableauRule` without a home here would
+break this proof rather than fall silently into a catch-all. The split is `cases r <;> decide`
+rather than `revert r; decide` because `TableauRule` carries no `Fintype` instance, so the
+quantified form has no `Decidable` instance to run; `cases` is exhaustive by construction, so the
+anti-drift guarantee is the same.
+
+The census is stated over `TableauRule` as a whole rather than over the rules the engine's three
+stages can pick, so it covers `serialityRule` and `timeLinearity` too — both in the first bucket,
+neither in `freshTimeRules`. -/
+private theorem rule_census (r : TableauRule) :
+    ruleMintsFreshTime r = false
+    ∨ (r ∈ freshLabelRules ∧ ruleMintsFreshTime r = true)
+    ∨ r = TableauRule.untlNeg ∨ r = TableauRule.snceNeg
+    ∨ r = TableauRule.densityRule := by
+  cases r <;> decide
+
+
 
 /-! ## C9. The do-not-re-attempt register
 

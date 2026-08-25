@@ -266,36 +266,36 @@ figure. A material overrun is a signal to re-read `pick_stage_source_noMint`, no
 
 ---
 
-### Phase 2: Guard, trigger, and result-shape inversions [NOT STARTED]
+### Phase 2: Guard, trigger, and result-shape inversions [COMPLETED]
 
 **Goal**: Land the leaf inversion lemmas the census case split will consume: the `untlNeg`/`snceNeg`
 ACTIVE-guard extraction, the trigger-shape recovery, and the result-shape lemmas for the six
 witness-guarded minting rules (or the cheaper `.persistent` variant that replaces them).
 
 **Tasks**:
-- [ ] Cost the report's §8 alternative **first**, time-boxed to ~15 minutes: attempt a `.persistent`
+- [x] Cost the report's §8 alternative **first**, time-boxed to ~15 minutes: attempt a `.persistent`
       variant of `mintPotential_lt_of_pick_linear_sigmaFixed` (:10575). `nonBranchingResultBranch`
       treats `.linear` and `.persistent` alike and `applyRule_fresh_witness_nonbranching` is
       already shape-agnostic, so it is plausibly ~3 lines and removes six lemmas. If it does not
       land inside the time box, abandon it and take the six shape lemmas. Record which route was
-      taken and why.
-- [ ] Transplant Probe 2 (`probes/Probe462.lean`) as `theorem applyRule_untlNeg_active_guard`, and
+      taken and why. *(outcome: the `.persistent` variant is NOT available. `findApplicableRule`'s `.persistent` arm carries **no guard at all** — a deliberate design decision the engine's own comment records — so there is no `findApplicableRule_guard_persistent` to build a `.persistent` payment lemma on. Route taken: exclude `.persistent` from the six on the rule side instead.)*
+- [x] Transplant Probe 2 (`probes/Probe462.lean`) as `theorem applyRule_untlNeg_active_guard`, and
       mirror it for `snceNeg` as `applyRule_snceNeg_active_guard`. The proof is a single
       `by_contra` — do not write a two-way PASSIVE/ACTIVE arm analysis; the PASSIVE arm is retired
       in `Tableau.lean:1022-1142` and no longer exists.
-- [ ] Transplant the trigger recovery: prefer Probe 5' (`probes/Probe462d.lean`, destructures `sf`)
+- [x] Transplant the trigger recovery (Probe 5' chosen — destructuring `sf` is what lets the consumer feed `selfGuardPotential_lt_of_untlNeg`'s literal `⟨Sign.neg, φ, l⟩` trigger without a further rewrite): prefer Probe 5' (`probes/Probe462d.lean`, destructures `sf`)
       over Probe 5 (`probes/Probe462c.lean`) if it fits the consuming site better; land
       `isApplicable_untlNeg_trigger` and the `snceNeg` mirror.
-- [ ] If the six shape lemmas are needed: transplant Probe 3 (`allFutureNeg`, `probes/Probe462.lean`)
+- [x] *(deviation: altered — ONE lemma replaces six.* `applyRule_ne_persistent_of_fresh` is quantified over `r` under `ruleMintsFreshLabel r = true` and `ruleMintsFreshTime r = true`, which is exactly the six, and excludes only `.persistent` — the sole shape the payment lemmas do not cover that also contributes a successor branch. `.branchingOrdered` and `.notApplicable` need no exclusion: neither contributes a branch to `pickBranches`. Proof skeleton is Probe 3's/Probe 6's, run once instead of six times.)* If the six shape lemmas are needed: transplant Probe 3 (`allFutureNeg`, `probes/Probe462.lean`)
       and Probe 6 (`untlPos`, `probes/Probe462c.lean`) and write the four siblings by the same
       pattern, for `allPastNeg`, `someFuturePos`, `somePastPos`, `sncePos`. Model on the existing
       `applyRule_boxNeg_result`.
-- [ ] Assert, in a docstring on the shape lemmas, the probe-established fact that **none** of the
+- [x] Assert, in a docstring on the shape lemmas, the probe-established fact that **none** of the
       six ever returns `.persistent` — the `.persistent` arms in `applyRule` belong to
       `allPastPos` and `someFutureNeg`, which are not among the six.
-- [ ] Land the census helper: transplant Probe 7 (`probes/Probe462c.lean`) as a private
+- [x] *(deviation: altered — Probe 7's `revert r; decide` does NOT compile: `TableauRule` carries no `Fintype` instance, so the quantified form has no `Decidable` instance. Replaced with `cases r <;> decide`, which is equally exhaustive-by-construction and keeps the anti-drift guarantee.)* Land the census helper: transplant Probe 7 (`probes/Probe462c.lean`) as a private
       `rule_census` lemma, proved by `revert r; decide` over all 36 constructors.
-- [ ] Build the module after each declaration; commit each green sub-step.
+- [x] Build the module after each declaration; commit each green sub-step. *(deviation: altered — each declaration was verified individually by an isolated `lake env lean` probe against the phase-1 olean (`scratchpad/P2.lean`, exit 0) before insertion, then the whole phase was built in place once. A full MintBound module build costs ~15 minutes, so per-declaration module builds were not affordable; the isolated probe is per-declaration evidence of the same kind.)*
 
 **Timing**: 1.5 hours
 
