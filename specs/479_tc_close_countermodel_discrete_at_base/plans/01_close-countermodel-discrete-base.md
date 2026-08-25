@@ -156,7 +156,7 @@ add it to this module and record the deviation rather than inlining an ad hoc ta
 
 ---
 
-### Phase 2: Port the v2 proof body at `ℚ ×ₗ ℤ` under a temporary name [NOT STARTED]
+### Phase 2: Port the v2 proof body at `ℚ ×ₗ ℤ` under a temporary name [COMPLETED]
 
 **Goal**: Transcribe `countermodel_discrete_reynolds_v2`'s body (`ReynoldsBridge.lean:936-1352`)
 into `CountermodelBase.lean` as `countermodel_discrete_base_port`, with the Base statement, the
@@ -204,7 +204,19 @@ cutover.
       `rc - w₀` (was `rc.val - w₀`). Replace every `omega` with the Phase 1 lemma matching its
       shape. `TruthAt`'s `untl`/`snce` clauses quantify over all `s : D`, not over `τ.domain`,
       so there are no domain side conditions.
-- [ ] Confirm the module still has zero `sorry` and no new `axiom`.
+- [x] Confirm the module still has zero `sorry` and no new `axiom`. *(completed)*
+
+**Deviations recorded (Scope Hypothesis confirmation)**: two additional private arithmetic
+helpers beyond the three of Phase 1 were required, both anticipated by the phase's Scope
+Hypothesis clause. (a) `qz_sub_add_cancel` (`z - t + t = z`) — a fourth arithmetic shape, in the
+**box** forward case (`h_univ`), where the `ℤ` blueprint used `omega`; (b) `qz_exists_shift`
+(`∃ x, w + x = r`) — the offset-surjectivity packaging of `qz_add_sub_cancel`, needed because
+`rc`/`sc` in the `untl`/`snce` cases have type `((getQ f).toOrdered sig).carrier`, which is only
+`rfl`-equal to `ℚ ×ₗ ℤ`; Lean's `-` elaborator compares operand types syntactically and cannot
+see through the projection, so a subtraction cannot be written against those points directly.
+The same `rfl`-not-syntactic gap forced the existential-packaging zero-shift step to use an
+explicit congruence (`h_point`) instead of `rw [qz_zero_add]`. All three are bookkeeping around
+the carrier's defeq presentation, not mathematical additions.
 
 **Timing**: 2 hours
 
