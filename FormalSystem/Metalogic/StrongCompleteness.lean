@@ -292,11 +292,15 @@ ultraproduct route that would settle it is passed, but the route itself is a sep
 multi-phase piece of work that is deliberately not attempted in this file: it needs an
 ultraproduct carrier, a Łoś lemma for `TruthAt`, `ModelExistenceBase` and hence `CompactBase`.
 The existing `BXCanonical` chronicle machinery **structurally cannot** be extended to reach it,
-because every countermodel there routes through
-`fully_restricted_parametric_completeness_from_neg_membership`, whose coherence hypotheses are
-root-relative and quantify over `Finset`-valued subformula and deferral closures; an infinite
-`Γ` would need coherence over `⋃_{ψ ∈ Γ} subformulaClosure ψ`, which is not a `Finset`. That is
-why the route abandons the chronicle rather than extending it.
+because every countermodel there routes through `bundleFlow_completeness_from_neg_membership`
+(`Metalogic/Algebraic/FlowFrame.lean:791`), whose three coherence hypotheses —
+`BFMCS.RestrictedTemporallyCoherent`, `…RestrictedBackwardUntilSinceCoherent`,
+`…RestrictedForwardUntilSinceCoherent` — are all relative to a single `root : Formula` and
+quantify over `deferralClosure root`, while the engine additionally demands
+`φ ∈ subformulaClosure root`. Both closures are `Finset Formula`-valued. An infinite `Γ` would
+need coherence over `⋃_{ψ ∈ Γ} subformulaClosure ψ`, which is not a `Finset` and has no single
+`root` to be relative to. That is why the route abandons the chronicle rather than extending
+it.
 -/
 theorem strongCompletenessBase_of_compact (hc : CompactBase)
     (engine : ∀ ψ : Formula, valid ψ → Derivable FrameClass.Base [] ψ) :

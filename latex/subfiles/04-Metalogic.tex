@@ -211,7 +211,7 @@ The aggregator files \texttt{Core.lean}, \texttt{Bundle.lean}, \texttt{BXCanonic
 \end{figure}
 
 The three foundational components---the \emph{Deduction Theorem}, \emph{Lindenbaum's Lemma}, and \emph{Maximal Consistent Sets}---provide the infrastructure for the canonical bundle construction (\texttt{Bundle/}), which \texttt{BXCanonical/CanonicalModel.lean} uses to build the canonical model.
-The truth lemma and the per-class completeness theorems then follow, with the conditional consequence-completeness result following the same pattern via \texttt{StrongCompleteness.lean}.
+The truth lemma and the per-class completeness theorems then follow, with the per-class consequence-completeness results following the same pattern via \texttt{StrongCompleteness.lean}.
 
 \subsection{Completeness as Corollary}
 
@@ -220,7 +220,7 @@ The \emph{Completeness Theorems} follow directly from the \emph{Representation T
 \subsubsection{Weak Completeness}
 
 \begin{theorem}[Weak Completeness]
-If $~\satisfies{\varphi}$, then $\proves \varphi$.\footnote{Proven per frame class in \texttt{FormalSystem/Metalogic/BXCanonical/Completeness.lean}: \texttt{completeness} (Base, line 196, carrying one live \texttt{sorryAx} sourced from the deprecated \texttt{WeakCanonical.countermodel\_discrete} fallback in its discrete branch), \texttt{completeness\_dense} (line 255, \texttt{sorryAx}-free), and \texttt{completeness\_discrete} (line 296, \texttt{sorryAx}-free).}
+If $~\satisfies{\varphi}$, then $\proves \varphi$.\footnote{Proven per frame class in \texttt{FormalSystem/Metalogic/BXCanonical/Completeness.lean}: \texttt{completeness} (Base, line 196), \texttt{completeness\_dense} (line 255), and \texttt{completeness\_discrete} (line 296) --- all three \texttt{sorryAx}-free, with axioms exactly \texttt{[propext, Classical.choice, Quot.sound]}. The Dedekind instance \texttt{completeness\_dedekind} is in \texttt{Metalogic/StrongCompleteness.lean}, at the same axiom set.}
 \end{theorem}
 
 The proof proceeds by contraposition:
@@ -245,11 +245,22 @@ the next subsection, which is a genuinely different result --- and one that is p
 unavailable for some of the frame classes treated here.
 
 \begin{theorem}[Consequence Completeness]
-If $\context \satisfies \varphi$, then $\context \proves \varphi$.\footnote{The landed pattern
-is \texttt{consequence\_completeness\_dedekind\_of\_engine} in
-\texttt{FormalSystem/Metalogic/StrongCompleteness.lean}, stated there modulo its single-formula
-completeness engine; the Base, Dense, and Discrete instances follow the same three-declaration
-shape against their own validity predicates.}
+If $\context \satisfies \varphi$, then $\context \proves \varphi$.\footnote{Landed
+\emph{unconditionally} for all four frame classes in
+\texttt{FormalSystem/Metalogic/StrongCompleteness.lean}, as
+\texttt{consequence\_completeness\_base}, \texttt{consequence\_completeness\_dense},
+\texttt{consequence\_completeness\_discrete} and \texttt{consequence\_completeness\_dedekind}.
+Each comes with a semantic deduction theorem, a soundness guard
+(\texttt{soundness\_base\_consequence} and its dense, discrete and Dedekind siblings) that pins
+the consequence relation to the matching soundness theorem and so rules out a vacuous target,
+and a weak corollary at $\context = []$. The Dense and Discrete instances are five declarations
+each, carrying their own \texttt{SemanticConsequenceDense} / \texttt{SemanticConsequenceDiscrete}
+relation; the Base instance is \emph{four}, because it reuses the existing general
+\texttt{SemanticConsequence} relation --- for the base class ``all carriers'' \emph{is} the
+class, so no restricted relation is needed. The engine-parametric
+\texttt{consequence\_completeness\_dedekind\_of\_engine} is retained alongside them as the
+pinned interface. All are \texttt{sorryAx}-free at exactly
+\texttt{[propext, Classical.choice, Quot.sound]}.}
 \end{theorem}
 
 The proof extends weak completeness using an implication chain technique:
@@ -276,30 +287,65 @@ consequence relation is compact.
 The classes treated in this development split as follows:
 
 \begin{itemize}
-  \item \textbf{Base and Dense}: open.
+  \item \textbf{Base and Dense}: open --- neither proved nor refuted.
     Neither class imposes Archimedean structure, so no known non-compactness counterexample
-    applies.
-    Establishing strong completeness would require migrating premises to \texttt{Set Formula}
-    and proving a \emph{model-existence} theorem --- every consistent set of formulas is
+    applies; but whether the consequence relation is in fact compact is unsettled.
+    A design review of the available routes has been completed and passed, authorising the
+    construction sketched below without carrying it out.
+    The premise migration to \texttt{Set Formula} is done: \texttt{SetDerivable}, the four per-class
+    set consequence relations, and \texttt{Prop}-valued names for each remaining obligation
+    (\texttt{CompactBase}, \texttt{ModelExistenceBase}, \texttt{SatisfiableBaseSet},
+    \texttt{StrongCompletenessBase} and their Dense siblings) are landed in
+    \texttt{Metalogic/SetConsequence.lean}; and
+    \texttt{strongCompletenessBase\_of\_compact} / \texttt{strongCompletenessDense\_of\_compact}
+    (\texttt{StrongCompleteness.lean}) reduce strong completeness for each class to its compactness
+    hypothesis alone --- each deliberately keeping its single-formula \texttt{engine} hypothesis
+    live, though that hypothesis is now dischargeable, so that compactness is isolated as
+    \emph{the whole} of what remains.
+    What is not done is the \emph{model-existence} theorem --- every consistent set of formulas is
     satisfiable in a frame of the class --- which does not follow from the single-formula
     countermodel constructions.
+    The recommended route is a bespoke ultraproduct over the finite sublists of $\Gamma$, in four
+    steps: an ultraproduct carrier, a \L{}o\'{s} lemma for \texttt{TruthAt}, model existence and
+    hence compactness, and finally strong completeness.
+    It deliberately abandons the chronicle machinery rather than extending it, and the reason is
+    structural rather than a matter of effort: every \texttt{BXCanonical} countermodel routes
+    through \texttt{bundleFlow\_completeness\_from\_neg\_membership}
+    (\texttt{Algebraic/FlowFrame.lean}), whose three coherence hypotheses are
+    relative to a single \texttt{root : Formula} and quantify over \texttt{deferralClosure root},
+    with the engine additionally demanding $\varphi \in \texttt{subformulaClosure root}$.
+    Both closures are \texttt{Finset}-valued, whereas an infinite $\Gamma$ would need coherence over
+    $\bigcup_{\psi \in \Gamma} \texttt{subformulaClosure}\;\psi$, which is not a \texttt{Finset} and
+    has no single root to be relative to.
     The set-level consistency layer (\texttt{SetConsistent}, \texttt{SetMaximalConsistent},
     \texttt{set\_lindenbaum} in \texttt{FormalSystem/Metalogic/Core/MaximalConsistent.lean}) is
     already finitary and in place.
-  \item \textbf{Discrete}: provably unavailable.
-    On discrete orders the next-step operator $X\varphi = U(\varphi, \bot)$ is genuine, so the
-    premise set $\{F p\} \cup \{\lneg X^n p : n \in \mathbb{N}\}$ is expressible; it is
-    finitely satisfiable over $\mathbb{Z}$ (place $p$ far enough out) yet unsatisfiable over
-    every Archimedean discrete order, since the $F p$ witness would lie at some finite
-    successor distance.
-    The consequence relation is therefore not compact, and weak completeness is the strongest
-    form for this class.
-  \item \textbf{Dedekind}: provably unavailable.
+  \item \textbf{Discrete}: provably unavailable --- and this is a theorem, not a remark.
+    \texttt{discrete\_consequence\_not\_compact} refutes \texttt{CompactDiscrete} and
+    \texttt{strongCompletenessDiscrete\_refuted} refutes \texttt{StrongCompletenessDiscrete}
+    outright, both in \texttt{Metalogic/DiscreteNonCompactness.lean} and both
+    \texttt{sorryAx}-free at exactly \texttt{[propext, Classical.choice, Quot.sound]} under the
+    \texttt{\#print axioms} audit block at the end of that file.
+    The witness is \texttt{archWitness}: on discrete orders the next-step operator
+    $X\varphi = U(\varphi, \bot)$ is genuine, so the premise set
+    $\{F p\} \cup \{\lneg X^n p : n \in \mathbb{N}\}$ is expressible, and its two halves are
+    \texttt{archWitness\_finitely\_satisfiable} (finite satisfiability over $\mathbb{Z}$, placing
+    $p$ far enough out) and \texttt{archWitness\_not\_satisfiable} (unsatisfiability over every
+    Archimedean discrete order, since the $F p$ witness would lie at some finite successor
+    distance).
+    The consequence relation is therefore not compact, and weak completeness --- with its
+    finite-context consequence corollary \texttt{consequence\_completeness\_discrete} --- is the
+    strongest form for this class.
+  \item \textbf{Dedekind}: unavailable on the primary source's own terms --- a weaker claim
+    than Discrete's, and one that must not be read as sharing its status.
     Completeness over real-flowed (Dedekind complete) time is \emph{weak} in Reynolds' sense
-    (Reynolds 1992, Theorem 7), and the restriction is genuine: the consequence relation over
-    Dedekind complete flows is not compact.
-    Weak completeness, with its finite-context consequence corollary, is the strongest form for
-    this class.
+    (Reynolds 1992, Theorem 7), and the restriction there is genuine rather than an artefact of
+    presentation.
+    What this development does \emph{not} contain is a refutation: there is no
+    \texttt{CompactDedekind} definition and no refuting theorem anywhere in the tree, so for this
+    class the infinitary statement is \emph{unproved} rather than settled negatively.
+    Weak completeness, with its finite-context consequence corollary
+    \texttt{consequence\_completeness\_dedekind}, is the strongest form established here.
 \end{itemize}
 
 \paragraph{Provable iff Valid.}
@@ -451,7 +497,7 @@ The following diagram illustrates this top-level layout at summary level; \textt
   \node[dirbox, fill=purple!10] (alg) at (8.5,1.8) {Algebraic/\\{\scriptsize LindenbaumQuotient}};
 
   % Consequence completeness and decidability
-  \node[dirbox, fill=orange!15] (strong) at (1.5,3.6) {StrongCompleteness.lean\\{\scriptsize consequence\_completeness\_dedekind\_of\_engine}};
+  \node[dirbox, fill=orange!15] (strong) at (1.5,3.6) {StrongCompleteness.lean\\{\scriptsize consequence\_completeness\_$\ast$}};
   \node[dirbox, fill=yellow!20, minimum width=4cm] (decid) at (8,3.6) {Decidability/\\{\scriptsize Tableau, Saturation; FMP/FMP.lean nested inside}};
 
   % Arrows
@@ -473,7 +519,9 @@ The following diagram illustrates this top-level layout at summary level; \textt
   \item \textbf{\texttt{WeakCanonical/}}: The Reynolds/Doets discrete completeness route, including the large \texttt{Kamp/} subtree.
   \item \textbf{\texttt{Algebraic/}}: The Lindenbaum-Tarski quotient-algebra completeness route.
   \item \textbf{\texttt{Soundness.lean} (+ \texttt{SoundnessLemmas/})}: Validity proofs for all 15 axiom schemata and the main soundness theorems.
-  \item \textbf{\texttt{StrongCompleteness.lean}}: The consequence-completeness statements, including the conditional \texttt{consequence\_completeness\_dedekind\_of\_engine}.
+  \item \textbf{\texttt{StrongCompleteness.lean}}: The per-class finite-context consequence-completeness layer, unconditional for all four frame classes, plus the two compactness reductions \texttt{strongCompleteness\{Base,Dense\}\_of\_compact}; the engine-parametric \texttt{consequence\_completeness\_dedekind\_of\_engine} is retained as the pinned interface.
+\item \textbf{\texttt{SetConsequence.lean}}: The \texttt{Set Formula} vocabulary the strong-completeness statements are phrased in --- \texttt{SetDerivable}, the four per-class set consequence relations, and \texttt{Prop}-valued names for the open Base/Dense obligations and the refuted Discrete ones.
+\item \textbf{\texttt{DiscreteNonCompactness.lean}}: The machine-checked refutations \texttt{discrete\_consequence\_not\_compact} and \texttt{strongCompletenessDiscrete\_refuted}, via the \texttt{archWitness} premise set.
   \item \textbf{\texttt{Decidability/}}: Tableau-based decision procedure with proof/countermodel extraction; the finite model property lives nested inside at \texttt{Decidability/FMP/FMP.lean}, not as a top-level hub.
 \end{itemize}
 
@@ -484,13 +532,13 @@ The following diagram illustrates this top-level layout at summary level; \textt
 The live per-class completeness picture, in \texttt{FormalSystem/Metalogic/BXCanonical/Completeness.lean} unless noted:
 
 \begin{itemize}
-  \item \texttt{completeness} (Base, line 196) carries exactly \textbf{one} live \texttt{sorryAx}, sourced from the deprecated \texttt{WeakCanonical.countermodel\_discrete} fallback in its discrete branch. Its dense branch (\texttt{countermodel\_dense\_enriched}) and mixed branch (\texttt{Chronicle.mcs\_mixed\_case\_absurd}) are individually \texttt{sorryAx}-free.
-  \item \texttt{completeness\_dense} (line 255) and \texttt{completeness\_discrete} (line 296) are \textbf{\texttt{sorryAx}-free}, with axioms exactly \texttt{[propext, Classical.choice, Quot.sound]}.
-  \item An unconditional \texttt{completeness\_dedekind} \textbf{does not exist}. Only \texttt{completeness\_dedekind\_of\_engine} and \texttt{consequence\_completeness\_dedekind\_of\_engine} (\texttt{FormalSystem/Metalogic/StrongCompleteness.lean:274,308}) are landed, both conditional on a supplied single-formula completeness engine hypothesis.
+  \item \texttt{completeness} (Base, line 196), \texttt{completeness\_dense} (line 255) and \texttt{completeness\_discrete} (line 296) are all \textbf{\texttt{sorryAx}-free}, with axioms exactly \texttt{[propext, Classical.choice, Quot.sound]}. The Base instance's discrete branch no longer routes through the deprecated \texttt{WeakCanonical.countermodel\_discrete} fallback: it is proved at the non-Archimedean discrete carrier $\mathbb{Q} \times_{\ell} \mathbb{Z}$ in \texttt{WeakCanonical/GroupModel/CountermodelBase.lean}, off \texttt{companionChronicle}.
+\item \texttt{completeness\_dedekind} and \texttt{consequence\_completeness\_dedekind} are landed \textbf{unconditionally} in \texttt{Metalogic/StrongCompleteness.lean}, at the same axiom set, with \texttt{\#print axioms} audits in that file; the engine hypothesis is discharged by \texttt{BXCanonical.completeness\_dedekind\_engine}. The engine-parametric \texttt{completeness\_dedekind\_of\_engine} and \texttt{consequence\_completeness\_dedekind\_of\_engine} are retained unmodified alongside them as the pinned interface.
+\item The per-class finite-context consequence layer --- \texttt{consequence\_completeness\_base}, \texttt{\ldots\_dense}, \texttt{\ldots\_discrete}, \texttt{\ldots\_dedekind}, each with its soundness guard and weak corollary --- is likewise \texttt{sorryAx}-free at the same axiom set, audited in \texttt{StrongCompleteness.lean}.
 \end{itemize}
 
 \noindent
-The one remaining sorry has a specific, named blocker rather than a vague gap: per \texttt{Completeness.lean}'s own docstring, the underlying \texttt{succ\_cofinal} argument behind \texttt{WeakCanonical.countermodel\_discrete} is characterized as provably unfixable and has been archived; closing it needs a genuine new construction --- a Base-to-Discrete MCS transfer or a Henkin-style discrete model --- not a re-wiring of the existing fallback.
+No live \texttt{sorryAx} remains on any of these paths. The \texttt{succ\_cofinal} argument behind the former \texttt{WeakCanonical.countermodel\_discrete} fallback was characterized as provably unfixable and has been archived; the Base-frame discrete branch was closed by a genuine new construction at $\mathbb{Q} \times_{\ell} \mathbb{Z}$ rather than by re-wiring that fallback.
 
 \subsubsection{Decidability Implementation}
 
@@ -524,8 +572,9 @@ Deduction Theorem & Proven & \texttt{deductionTheorem} (general form: \texttt{De
 Lindenbaum Lemma & Proven & \texttt{set\_lindenbaum} \\
 Canonical Bundle & Proven & \texttt{FMCS}, \texttt{BFMCS} (\texttt{Bundle/}) \\
 Truth Lemma & Proven (per development) & \texttt{BXCanonical/TruthLemma.lean} \\
-Weak Completeness & Proven*, one Base-case sorry & \texttt{completeness}/\texttt{completeness\_dense}/\texttt{completeness\_discrete} \\
-Consequence Completeness & Proven, conditional on engine & \texttt{consequence\_completeness\_dedekind\_of\_engine} \\
+Weak Completeness & Proven* & \texttt{completeness}/\texttt{completeness\_dense}/\texttt{completeness\_discrete} \\
+Consequence Completeness & Proven, all four classes & \texttt{consequence\_completeness\_\{base,dense,discrete,dedekind\}} \\
+Strong Completeness & Reduced to compactness & \texttt{strongCompleteness\{Base,Dense\}\_of\_compact} \\
 Finite Model Property & Statement & \texttt{mcs\_finite\_model\_property} \\
 Decidability Soundness & Proven & \texttt{decide\_sound} \\
 \bottomrule
@@ -533,13 +582,20 @@ Decidability Soundness & Proven & \texttt{decide\_sound} \\
 \end{center}
 
 \noindent
-* Weak completeness is proven for all three frame classes; the Base-class instance additionally
-carries the single live sorry described above (\emph{Sorry Status}), sourced from the deprecated
-\texttt{WeakCanonical.countermodel\_discrete} fallback.
-\texttt{completeness\_dense} and \texttt{completeness\_discrete} are \texttt{sorryAx}-free.
-Consequence completeness (\texttt{consequence\_completeness\_dedekind\_of\_engine}) is conditional
-on a supplied single-formula completeness engine hypothesis; genuine strong completeness over
-infinite premise sets is a separate statement, unavailable for the Discrete and Dedekind classes
-(see \emph{Strong Completeness and Compactness}).
+* Weak completeness is proven for all four frame classes ---
+\texttt{completeness}, \texttt{completeness\_dense}, \texttt{completeness\_discrete} and
+\texttt{completeness\_dedekind} --- and every one of them is \texttt{sorryAx}-free at exactly
+\texttt{[propext, Classical.choice, Quot.sound]}.
+Consequence completeness is likewise unconditional for all four classes, at the same axiom set;
+the engine-parametric \texttt{\ldots\_of\_engine} forms are retained as pinned interfaces rather
+than as the only landed statements.
+These are \emph{finite}-context results (\texttt{Context = List Formula}) and are therefore not
+strong completeness.
+Genuine strong completeness over infinite premise sets is a separate statement with three
+distinct statuses across the classes: machine-refuted for Discrete, open for Base and Dense
+(each reduced to its compactness hypothesis by
+\texttt{strongCompleteness\{Base,Dense\}\_of\_compact}), and unavailable on Reynolds' own terms
+--- unproved, not refuted --- for Dedekind.
+See \emph{Strong Completeness and Compactness}.
 
 \end{document}

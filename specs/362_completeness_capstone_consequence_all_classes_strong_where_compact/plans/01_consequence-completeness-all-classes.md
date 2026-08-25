@@ -476,10 +476,14 @@ re-verified at `full`.
 
 ---
 
-### Phase 6: LaTeX currency in `latex/subfiles/04-Metalogic.tex` [NOT STARTED]
+### Phase 6: LaTeX currency in `latex/subfiles/04-Metalogic.tex` [COMPLETED]
 
 **Goal**: Correct the three false claims the file makes about the Lean tree, and apply four
 adjacent currency edits.
+
+**SCOPE EXTENSION TAKEN.** The implementing dispatch's delegation context named this phase's
+`latex/subfiles/04-Metalogic.tex` work explicitly, so the extension below was authorised and is
+taken in full.
 
 **SCOPE EXTENSION — explicit decision.** `latex/` is outside the task's declared `file_scope`
 even though leg D is inside the task's SCOPE. Same treatment as Phase 4's: this is a visible
@@ -495,23 +499,23 @@ Compactness}` (:267) already implement the settled 2026-07-27 discipline, and :2
 that "strong completeness" is reserved for the infinite-premise statement. Do not re-do it.
 
 **Tasks**:
-- [ ] `:487` — delete the claim that `completeness` (Base) "carries exactly **one** live
+- [x] `:487` — delete the claim that `completeness` (Base) "carries exactly **one** live
       `sorryAx`, sourced from the deprecated `WeakCanonical.countermodel_discrete` fallback".
       **FALSE**: verified at `[propext, Classical.choice, Quot.sound]`, no `sorryAx`.
       `FormalSystem/Metalogic.lean:48` already records the correction.
-- [ ] `:489` — delete the claim that an unconditional `completeness_dedekind` "does not exist"
+- [x] `:489` — delete the claim that an unconditional `completeness_dedekind` "does not exist"
       and that only `…_of_engine` forms are landed. **FALSE**: `completeness_dedekind` and
       `consequence_completeness_dedekind` are landed unconditionally at
       `StrongCompleteness.lean:398–399` with `#print axioms` audits in the file.
-- [ ] `:493` — remove the whole "The one remaining sorry has a specific, named blocker…"
+- [x] `:493` — remove the whole "The one remaining sorry has a specific, named blocker…"
       paragraph. **Moot**: no such sorry.
-- [ ] `:536–538` — remove the summary-table footnote restating the same defect ("the Base-class
+- [x] `:536–538` — remove the summary-table footnote restating the same defect ("the Base-class
       instance additionally carries the single live sorry described above"). **FALSE**.
-- [ ] `:246–250` — repoint the Consequence Completeness footnote from
+- [x] `:246–250` — repoint the Consequence Completeness footnote from
       `consequence_completeness_dedekind_of_engine` at the now-unconditional per-class theorems,
       and correct "three-declaration shape": Base is **four** declarations and reuses
       `SemanticConsequence`; Dense and Discrete are **five** each.
-- [ ] `:275–290` — in the "Base and Dense: open" bullet, record 424's PASSED gate and the
+- [x] `:275–290` — in the "Base and Dense: open" bullet, record 424's PASSED gate and the
       ultraproduct route, and add 361's **Q2** finding, which is the more informative half and is
       currently absent: the existing BXCanonical chronicle machinery **structurally cannot** reach
       model existence for arbitrary `SetConsistent` sets, because every countermodel routes
@@ -521,10 +525,10 @@ that "strong completeness" is reserved for the infinite-premise statement. Do no
       `⋃_{ψ ∈ Γ} subformulaClosure ψ`, which is not a `Finset`. This is why the recommended route
       abandons the chronicle rather than extending it. Note also that Q1 (is `⊨_Base`/`⊨_Dense`
       compact?) is **likely but not proved**, and that S2–S5 are authorized-but-unspawned.
-- [ ] `:288–296` — in the "Discrete: provably unavailable" bullet, replace prose with citations
+- [x] `:288–296` — in the "Discrete: provably unavailable" bullet, replace prose with citations
       to `discrete_consequence_not_compact` and `strongCompletenessDiscrete_refuted` by name,
       noting the `#print axioms` audits at `DiscreteNonCompactness.lean:295–315`.
-- [ ] `:296–302` — apply Phase 4's Dedekind softening to the Dedekind bullet, so Dedekind and
+- [x] `:296–302` — apply Phase 4's Dedekind softening to the Dedekind bullet, so Dedekind and
       Discrete do not read as sharing a status.
 
 **Timing**: 1.0 hours
@@ -541,6 +545,28 @@ that "strong completeness" is reserved for the infinite-premise statement. Do no
 will drift as edits land — re-locate each by its surrounding text, not by line number, and
 re-count the false claims found: if a fourth surfaces, fix it and record the discrepancy in the
 task summary rather than silently widening the phase.
+
+*(Confirmed at implementation time, with two recorded discrepancies:*
+
+*1. **A fourth instance of the false `sorryAx` claim surfaced** and was fixed, as this hypothesis
+directs. Beyond the three named sites, the `\begin{theorem}[Weak Completeness]` footnote
+(pre-edit :223) also asserted that `completeness` (Base) carries "one live `sorryAx` sourced from
+the deprecated `WeakCanonical.countermodel_discrete` fallback". Same claim, same falsity, fourth
+location. Two adjacent stale-but-not-false claims were corrected in the same pass: the roadmap
+sentence calling the consequence-completeness result "conditional", and the architecture
+diagram's `StrongCompleteness.lean` node labelled `consequence_completeness_dedekind_of_engine`.
+Also fixed, in the Metalogic Implementation table, the row `Weak Completeness | Proven*, one
+Base-case sorry` — a fifth restatement of the same defect — and the row `Consequence Completeness
+| Proven, conditional on engine`, now false.*
+
+*2. **A pre-existing dangling Lean citation was found and deliberately NOT fixed.** The
+axiom-validity table (:48) cites `temp_future_valid` for the TF axiom. No such declaration
+exists anywhere in `FormalSystem/`, and no TF-specific validity lemma was found under any
+name — `modal_future_valid` (MF, the row above) exists, but its temporal counterpart does not.
+This citation predates this task (it entered with the `latex/` relocation commit), sits in the
+axiom-validity table rather than in any region this phase is directed to edit, and is not
+"newly cited" for the purposes of the verification criterion. Recording it here and in the task
+summary rather than silently widening the phase, as this hypothesis instructs.)*
 
 **Files to modify**:
 - `latex/subfiles/04-Metalogic.tex` (**scope extension**).
