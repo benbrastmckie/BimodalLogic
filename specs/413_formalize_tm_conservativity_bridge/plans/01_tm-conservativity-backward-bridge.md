@@ -326,37 +326,47 @@ rules than seven, mirror what is actually there and record the deviation.
 
 ---
 
-### Phase 4: The translation — `tr`, `tr_swapBL`, range and injectivity lemmas [NOT STARTED]
+### Phase 4: The translation — `tr`, `tr_swapBL`, range and injectivity lemmas [COMPLETED]
 
 **Goal**: The map from BL into BL+ exists, together with the one commutation lemma without which
 the TD case of the Phase 8 recursion does not typecheck.
 
 **Tasks**:
-- [ ] Create `FormalSystem/BaseLanguage/Translation.lean`; import `BaseLanguage.Formula` and
+- [x] Create `FormalSystem/BaseLanguage/Translation.lean`; import `BaseLanguage.Formula` and
       `FormalSystem.Syntax.Formula`.
-- [ ] Define `tr : BLFormula -> Formula` structurally (report §7 gives the exact six lines):
+- [x] Define `tr : BLFormula -> Formula` structurally (report §7 gives the exact six lines):
       `atom |-> Formula.atom`, `bot |-> Formula.bot`, `imp |-> Formula.imp`,
       `box |-> Formula.box`, `allPast |-> Formula.allPast`, `allFuture |-> Formula.allFuture`.
       Note `Formula.allPast`/`allFuture` on the BL+ side are the *derived* until/since
       abbreviations — that is exactly the point.
-- [ ] Prove `tr_swapBL (phi) : (phi.swapBL).tr = (phi.tr).swapTemporal`. **This is the
+- [x] Prove `tr_swapBL (phi) : (phi.swapBL).tr = (phi.tr).swapTemporal`. **This is the
       load-bearing lemma.** Report §7 gives the verified per-case proof; the `allPast`/`allFuture`
       cases need `Formula.swap_temporal_all_past` / `Formula.swap_temporal_all_future` supplied
       explicitly to `simp`.
-- [ ] Prove the two range lemmas `tr_ne_untl` and `tr_ne_snce` (verified in §7): `tr` never
+- [x] Prove the two range lemmas `tr_ne_untl` and `tr_ne_snce` (verified in §7): `tr` never
       produces a top-level `untl`/`snce`. Both need the unfoldings
       `Formula.allPast, allFuture, somePast, someFuture, neg, top` passed to `simp`.
-- [ ] Prove push-through lemmas for the derived operators — `tr (neg phi) = Formula.neg (tr phi)`,
+- [x] Prove push-through lemmas for the derived operators — `tr (neg phi) = Formula.neg (tr phi)`,
       and the same for `and`/`or`/`top`/`somePast`/`someFuture` — since Phases 6 and 7 will state
-      every discharge goal in terms of BL+ derived operators.
-- [ ] Prove `tr_injective : Function.Injective tr`. Report §7 measured `induction ... <;>
+      every discharge goal in terms of BL+ derived operators. *(deviation: altered — the
+      `somePast`/`someFuture` push-throughs are FALSE and were replaced by `tr_someFuture` /
+      `tr_somePast` (the shape `tr` really produces) plus `tr_someFuture_ne` / `tr_somePast_ne`,
+      which prove the non-equality. `Formula.someFuture` is a top-level `untl` and by
+      `tr_ne_untl` nothing in the range of `tr` is; no BL-side abbreviation could have made it
+      exact. Consequence: the report's "exact syntactic match" claims for TA and TB are refuted,
+      and Phase 6 carries an `F`/`P` bridge instead. `neg`/`and`/`or`/`top`/`diamond`/`always`
+      all push through by `rfl` as planned.)*
+- [x] Prove `tr_injective : Function.Injective tr`. Report §7 measured `induction ... <;>
       simp_all` leaving exactly 8 goals: 4 direct IH applications, 4 shape clashes closed by the
-      range lemmas with orientation fixed (`(tr_ne_snce _ _ _ h.1.symm).elim`).
-- [ ] **Do not attempt the `untr : Formula -> Option BLFormula` recognizer route.** Measured
+      range lemmas with orientation fixed (`(tr_ne_snce _ _ _ h.1.symm).elim`). *(completed: the
+      8-goal count and the two closing shapes were both confirmed. `simp_all` had to be replaced
+      by explicit per-case `cases ψ with` blocks because `simp_all` rewrote inside the induction
+      hypotheses using `h`, mangling them.)*
+- [x] **Do not attempt the `untr : Formula -> Option BLFormula` recognizer route.** Measured
       failure: overlapping match patterns block `simp [untr]` from reducing.
-- [ ] Define the context-level lift `trCtx (G : BaseLanguage.Context) : Context := G.map tr`
+- [x] Define the context-level lift `trCtx (G : BaseLanguage.Context) : Context := G.map tr`
       (or use `List.map tr` inline — pick one and use it consistently from Phase 8 onward).
-- [ ] Uncomment the `Translation` import in `FormalSystem/BaseLanguage.lean`.
+- [x] Uncomment the `Translation` import in `FormalSystem/BaseLanguage.lean`.
 
 **Timing**: 1.5 hours
 
