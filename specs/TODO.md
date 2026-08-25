@@ -66,7 +66,7 @@ next_project_number: 477
       └─ 465 [NOT STARTED] — Complete the terminus restatement family at the repaired residual
         └─ 428 [BLOCKED] — Engine totality at a quantified branch budget. Owns obstruction O (see above)
 468 [NOT STARTED] — PROGRAMME REALIGNMENT FROM A VERIFIED PROOF-STATE AUDIT: restruct
-474 [RESEARCHED] — WIRE THE BILASSO DECISION LAYER INTO THE LIVE TREE.
+474 [PLANNED] — WIRE THE BILASSO DECISION LAYER INTO THE LIVE TREE.
 476 [NOT STARTED] — THE BOX-FAITHFUL SMALL-MODEL THEOREM.
 
 ### Formula Refactor
@@ -297,12 +297,13 @@ measuring the `D`-polymorphic case.
 
 ### 474. Wire bilasso decision layer into live tree
 - **Effort**: small
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
 - **Research**: [474_wire_bilasso_decision_layer_into_live_tree/reports/01_wire-bilasso-into-build-graph.md]
 - **Evidence**: [474_wire_bilasso_decision_layer_into_live_tree/evidence/assembly-merged-verified.lean]
+- **Plan**: [474_wire_bilasso_decision_layer_into_live_tree/plans/01_wire-bilasso-decision-layer.md]
 
 **Description**: WIRE THE BILASSO DECISION LAYER INTO THE LIVE TREE.
 
