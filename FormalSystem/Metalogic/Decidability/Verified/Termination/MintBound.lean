@@ -13367,6 +13367,106 @@ it is **not** is a terminus: no theorem in this section removes `hlab` from
 siblings, and every one of those nine remains vacuous at every nonempty `L`. Register entry 21 is
 the verdict and is written to say exactly this. -/
 
+/-! ## D5. The engine-level assembly: `MintPaysForTimeFixed` off `.Dense`, at any universe
+
+*Placeholder intro. The full section prose is written last, once the assembly is standing, and
+states the scope honestly.* -/
+
+/-- **The strengthened pick-stage bridge.** `pick_stage_source` with the picked rule's *identity*
+threaded through, in the only form the three stages can all support: stage one hands on its own
+`findApplicableRule` equation, and stages two and three report that their rule is outside the time
+census.
+
+This is the whole of what the engine-level assembly was missing. `pick_stage_source` discards the
+stage-one equation and keeps only `applyRule`'s pair, which is enough for the disjunct-1 arguments
+(`pickBranches_ordTimes`, `pickBranches_time_dichotomy`) and not enough for disjunct 2: the
+witness-guard the per-rule payment lemmas consume — `findApplicableRule_guard_linear` and its
+`.branching` twin — lives in `findApplicableRule`'s own `if`, not in `applyRule`, and there is no
+route to it from `applyRule r sf b ord = (res, o)` alone.
+
+Its two precedents are `pick_stage_source_guarded`, which attaches the blocking-side fact by the
+same three-stage `rcases`, and `pick_stage_source_noMint`, whose proof skeleton this is verbatim:
+the only difference is that the two later stages report `Or.inr` of the no-mint fact where that
+lemma reports it bare, and the first stage reports `Or.inl` of its own equation where that lemma
+computes the no-mint fact from a syntactic hypothesis it does not have here. The disjunction is the
+honest shape — stages two and three run `serialityRule` and `timeLinearity`, neither of which is
+in `freshTimeRules`, and neither of which has a `findApplicableRule` equation to give. -/
+private theorem pick_stage_source_rule (b : Branch) (ord : TimeOrdering)
+    (fc : FormalSystem.ProofSystem.FrameClass) (tr : EventualityTracker) :
+    ∀ r res o,
+      (match findUnexpandedUnblockedWith b ord fc (blockedTimes b ord fc tr) with
+       | some sf => findApplicableRule sf b ord fc
+       | none =>
+         match b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
+             && (findApplicableSerialRule sf b ord).isSome) with
+         | some sf => findApplicableSerialRule sf b ord
+         | none =>
+           match b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
+               && (findApplicableLinearityRule sf b ord).isSome) with
+           | some sf => findApplicableLinearityRule sf b ord
+           | none => none) = some (r, res, o) →
+      ∃ sf, sf ∈ b ∧ applyRule r sf b ord = (res, o) ∧
+        (findApplicableRule sf b ord fc = some (r, res, o)
+          ∨ ruleMintsFreshTime r = false) := by
+  intro r res o h
+  rcases hpick : findUnexpandedUnblockedWith b ord fc (blockedTimes b ord fc tr) with _ | sf
+  · rw [hpick] at h
+    rcases hser : b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
+                             && (findApplicableSerialRule sf b ord).isSome) with _ | sf2
+    · rw [hser] at h
+      rcases hlin : b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
+                               && (findApplicableLinearityRule sf b ord).isSome) with _ | sf3
+      · rw [hlin] at h
+        simp only at h
+        exact absurd h (by simp)
+      · rw [hlin] at h
+        simp only at h
+        refine ⟨sf3, List.mem_of_find?_eq_some hlin,
+          findApplicableLinearityRule_applyRule_pair h, Or.inr ?_⟩
+        rw [findApplicableLinearityRule_rule h]
+        rfl
+    · rw [hser] at h
+      simp only at h
+      refine ⟨sf2, List.mem_of_find?_eq_some hser,
+        findApplicableSerialRule_applyRule_pair h, Or.inr ?_⟩
+      rw [findApplicableSerialRule_rule h]
+      rfl
+  · rw [hpick] at h
+    simp only at h
+    have hmem : sf ∈ b := by
+      unfold findUnexpandedUnblockedWith at hpick
+      exact List.mem_of_find?_eq_some hpick
+    exact ⟨sf, hmem, findApplicableRule_applyRule_pair h, Or.inl h⟩
+
+/-- **The density exclusion, by frame class.** `densityRule`'s arm of `isApplicable` is
+`| .densityRule, .pos, .allFuture _ => decide (FrameClass.Dense ≤ fc)`, so a first-stage pick of it
+carries `Dense ≤ fc` as a decided fact; denying that fact excludes the rule outright. Reached
+through `findApplicableRule_isApplicable`, which is what makes this ten lines rather than a walk
+over `findApplicableRule`'s arm list.
+
+**One hypothesis, not two.** `¬ (FrameClass.Dense ≤ fc)` excludes `.Dense` and `.Dedekind`
+*together*: `Dense ≤ Dedekind` holds in the `FrameClass` order, so a `fc` above `.Dense` is
+excluded whether it is `.Dense` itself or anything above it. What it admits is exactly `.Base` and
+`.Discrete`. Stating it as a pair of disequalities would be both weaker in form and redundant, and
+it is deliberately not hidden behind a definition: a reader of the discharge below sees the
+restriction in the statement.
+
+This is the whole of the density treatment in this section. `gapPotential` — register entry 19's
+and entry 20's item (b) — is not introduced, not assumed, and not needed here; buying the
+exclusion with a frame-class hypothesis is what makes that so. -/
+theorem findApplicableRule_ne_densityRule {sf : SignedFormula} {b : Branch}
+    {ord : TimeOrdering} {fc : FormalSystem.ProofSystem.FrameClass}
+    {r : TableauRule} {res : RuleResult} {o : TimeOrdering}
+    (hfc : ¬ (FormalSystem.ProofSystem.FrameClass.Dense ≤ fc))
+    (h : findApplicableRule sf b ord fc = some (r, res, o)) :
+    r ≠ TableauRule.densityRule := by
+  intro hr
+  subst hr
+  have hA := findApplicableRule_isApplicable h
+  simp only [isApplicable] at hA
+  split at hA <;> simp_all
+
+
 
 /-! ## C9. The do-not-re-attempt register
 

@@ -1,7 +1,7 @@
 # Implementation Plan: Engine-Level Assembly for `MintPaysForTimeFixed` at a Nonempty Universe
 
 - **Task**: 462 - mintpaysfortime_engine_level_assembly
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 6.5 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/462_mintpaysfortime_engine_level_assembly/reports/01_engine-level-mint-assembly.md`
@@ -205,35 +205,35 @@ lands in the same file (`MintBound.lean`), so parallel phases would collide.
 
 ---
 
-### Phase 1: Section D5 scaffold, strengthened bridge, density exclusion [NOT STARTED]
+### Phase 1: Section D5 scaffold, strengthened bridge, density exclusion [COMPLETED]
 
 **Goal**: Open section D5 at the correct insertion point and land the two zero-risk spine items:
 the strengthened pick-stage bridge (which is the *entire* missing threading the task names) and
 the frame-class density exclusion.
 
 **Tasks**:
-- [ ] Re-locate the insertion point: `grep -n '^/-! ## C9\. The do-not-re-attempt register'` on
+- [x] Re-locate the insertion point: `grep -n '^/-! ## C9\. The do-not-re-attempt register'` on
       `FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean`. D5 opens
       immediately **before** that header and after D4's boundary note, so the register stays last.
-- [ ] Read `pick_stage_source_noMint` (grep for the name; ~:12738) in full — the new bridge is a
+- [x] Read `pick_stage_source_noMint` (grep for the name; ~:12738) in full — the new bridge is a
       structural copy of it.
-- [ ] Add the D5 section header `/-! ## D5. ...` with a placeholder one-paragraph intro (the full
+- [x] Add the D5 section header `/-! ## D5. ...` with a placeholder one-paragraph intro (the full
       prose lands in Phase 5).
-- [ ] Transplant Probe 4 from `specs/462_mintpaysfortime_engine_level_assembly/probes/Probe462b.lean`
+- [x] Transplant Probe 4 from `specs/462_mintpaysfortime_engine_level_assembly/probes/Probe462b.lean`
       as `private theorem pick_stage_source_rule`. Statement and 44-line proof are consumed
       verbatim; adjust only binder/namespace details forced by the surrounding file. Do not
       re-derive it.
-- [ ] Verify the transplanted bridge's conclusion is exactly
+- [x] Verify the transplanted bridge's conclusion is exactly
       `∃ sf, sf ∈ b ∧ applyRule r sf b ord = (res, o) ∧ (findApplicableRule sf b ord fc = some (r, res, o) ∨ ruleMintsFreshTime r = false)`
       — the third conjunct's left disjunct is what `pick_stage_source` (:1163) discards and what
       disjunct 2 requires.
-- [ ] Transplant Probe 1 from `probes/Probe462.lean` as
+- [x] Transplant Probe 1 from `probes/Probe462.lean` as
       `theorem findApplicableRule_ne_densityRule`, carrying `hfc : ¬ (FormalSystem.ProofSystem.FrameClass.Dense ≤ fc)`.
-- [ ] Docstring both: the bridge cites `pick_stage_source_guarded` (:2767) and
+- [x] Docstring both: the bridge cites `pick_stage_source_guarded` (:2767) and
       `pick_stage_source_noMint` (:12738) as its two precedents; the exclusion cites
       `findApplicableRule_isApplicable` (:12711) and records that `¬(Dense ≤ fc)` covers `.Dense`
       and `.Dedekind` together and admits exactly `.Base` and `.Discrete`.
-- [ ] Build the module; commit each green sub-step.
+- [x] Build the module; commit each green sub-step. *(deviation: altered — Phase 1 landed as a single green sub-step; the module build costs ~15 minutes, so both declarations were built together rather than one at a time)*
 
 **Timing**: 1 hour
 
