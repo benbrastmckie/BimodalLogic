@@ -68,6 +68,7 @@ import FormalSystem.Metalogic.WeakCanonical.GroupModel.RamseyFactorization
 -- the Base analogue of `limitdom_is_good`) is a leaf until the discrete-branch replacement of
 -- `countermodel_discrete` consumes it. Same precedent.
 import FormalSystem.Metalogic.WeakCanonical.GroupModel.GroupableCompanion
+import FormalSystem.Metalogic.WeakCanonical.GroupModel.CountermodelBase
 
 /-!
 # WeakCanonical: Reynolds/Doets Discrete Completeness

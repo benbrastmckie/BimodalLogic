@@ -1,7 +1,7 @@
 # Implementation Plan: Close `WeakCanonical.countermodel_discrete` at Base
 
 - **Task**: 479 - tc_close_countermodel_discrete_at_base
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 5 hours
 - **Dependencies**: Task 478 (delivered `WeakCanonical.companionChronicle`, axiom-clean, landed)
 - **Research Inputs**: `specs/479_tc_close_countermodel_discrete_at_base/reports/01_countermodel-discrete-base-port.md`
@@ -96,7 +96,7 @@ Phases within the same wave can execute in parallel. This plan is fully sequenti
 
 ---
 
-### Phase 1: New module scaffold, aggregator wiring, and carrier arithmetic lemmas [NOT STARTED]
+### Phase 1: New module scaffold, aggregator wiring, and carrier arithmetic lemmas [COMPLETED]
 
 **Goal**: Land every piece of mechanical scaffolding the port needs — the new module in the
 build closure, the import edges, and the three `ℚ ×ₗ ℤ` arithmetic facts that replace `omega` —
