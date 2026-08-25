@@ -157,36 +157,36 @@ collides, stop and report rather than renaming silently.
 
 ---
 
-### Phase 2: New module, next-step truth lemmas, aggregator registration [NOT STARTED]
+### Phase 2: New module, next-step truth lemmas, aggregator registration [COMPLETED]
 
 **Goal**: `FormalSystem/Metalogic/DiscreteNonCompactness.lean` exists, imports
 `FormalSystem.Metalogic.StrongCompleteness`, hosts `truthAt_next_iff` and
 `truthAt_next_iterate`, and is re-exported from `FormalSystem/Metalogic.lean`.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/DiscreteNonCompactness.lean` with the repository's standard
+- [x] Create `FormalSystem/Metalogic/DiscreteNonCompactness.lean` with the repository's standard
       copyright header (copy the four-line form used by `SetConsequence.lean`) and
       `import FormalSystem.Metalogic.StrongCompleteness`. This import — not
       `SetConsequence` — is the one that matters: it is what makes `truthAt_foldr_imp`
       (`StrongCompleteness.lean:148`) reachable in Phase 4, and it was the missing piece in
       research probe 5.
-- [ ] Write the module docstring: what the module establishes (the Discrete consequence relation
+- [x] Write the module docstring: what the module establishes (the Discrete consequence relation
       is not compact), the witness set in prose, and a note that `truthAt_next_iff` /
       `truthAt_next_iterate` are pure semantics whose natural eventual home is
       `FormalSystem/Semantics/Truth.lean`'s `Truth` namespace, deferred until a second consumer
       appears. **No task-number citations** anywhere in this file.
-- [ ] Open the `FormalSystem.Metalogic` namespace and declare the shared variable block
+- [x] Open the `FormalSystem.Metalogic` namespace and declare the shared variable block
       `{D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]`.
-- [ ] Transcribe `truthAt_next_iff` verbatim from report §3 Layer 1, with binders
+- [x] Transcribe `truthAt_next_iff` verbatim from report §3 Layer 1, with binders
       `[SuccOrder D] [NoMaxOrder D]`. Do **not** mark it `@[simp]` — it would rewrite `next`
       occurrences inside the proof-theoretic reasoning in
       `FormalSystem/Theorems/DiscreteUnfolding.lean` if the lemma is ever promoted upstream.
-- [ ] Transcribe `truthAt_next_iterate` verbatim. The inductive step uses **asymmetric**
+- [x] Transcribe `truthAt_next_iterate` verbatim. The inductive step uses **asymmetric**
       rewrites: `Function.iterate_succ_apply` on the formula side
       (`next^[k+1] φ = next^[k] (next φ)`) and `Function.iterate_succ_apply'` on the time side
       (`succ^[k+1] t = succ (succ^[k] t)`). Using the same one on both sides produces a measured
       type mismatch at the `exact`.
-- [ ] Add `import FormalSystem.Metalogic.DiscreteNonCompactness` to `FormalSystem/Metalogic.lean`
+- [x] Add `import FormalSystem.Metalogic.DiscreteNonCompactness` to `FormalSystem/Metalogic.lean`
       beside the existing `import FormalSystem.Metalogic.StrongCompleteness` (`:9`).
 
 **Timing**: 1 hour
