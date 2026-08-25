@@ -34,7 +34,7 @@ next_project_number: 477
 
 ### Code Quality
 
-472 [RESEARCHED] — THE IMMEDIATE, UNGATED DOCUMENTATION-CORRECTION PASS. This is the
+472 [PLANNING] — THE IMMEDIATE, UNGATED DOCUMENTATION-CORRECTION PASS. This is the
 455 [NOT STARTED] — BACKLOG REALIGNMENT: bring specs/ROADMAP.md and every remaining a
 
 ### Completeness
@@ -86,14 +86,14 @@ next_project_number: 477
 
 ### Semantics
 
-475 [RESEARCHED] — CARRIER NORMALIZATION: THE SUCCESSOR-ARCHIMEDEAN TRANSFER.
+475 [PLANNED] — CARRIER NORMALIZATION: THE SUCCESSOR-ARCHIMEDEAN TRANSFER.
 
 ### Strong Completeness
 
 422 [BLOCKED] — Construct the discrete-case analogue of the existing dense chroni
   └─ 169 [NOT STARTED] — Base (FrameClass.Base / general) WEAK completeness green: make th
     └─ 362 [NOT STARTED] — Implement the completeness capstone under the SETTLED TERMINOLOGY
-425 [RESEARCHED] — Convert the informal argument at FormalSystem/Metalogic/StrongCom
+425 [PLANNING] — Convert the informal argument at FormalSystem/Metalogic/StrongCom
 
 ## Tasks
 
@@ -217,11 +217,12 @@ properties.
 
 ### 475. Carrier normalization successor archimedean transfer
 - **Effort**: medium
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: semantics
 - **Dependencies**: None
 - **Research**: [475_carrier_normalization_successor_archimedean_transfer/reports/01_carrier-normalization-transfer.md]
+- **Plan**: [475_carrier_normalization_successor_archimedean_transfer/plans/01_carrier-normalization-int-transfer.md]
 
 **Description**: CARRIER NORMALIZATION: THE SUCCESSOR-ARCHIMEDEAN TRANSFER.
 
@@ -465,7 +466,7 @@ Grounding: specs/reviews/review-2026-08-24.md, Addendum 1 item A-3, and task 468
 
 ### 472. Immediate documentation correction pass
 - **Effort**: medium
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Topic**: code-quality
 - **Dependencies**: Task 470
@@ -1814,7 +1815,7 @@ RESUME SEQUENCE: `/research 428` first (discharge the two uncertain claims above
 
 ### 425. Machine check discrete non compactness witness
 - **Effort**: high
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Topic**: strong_completeness
 - **Dependencies**: Task 361, Task 423
