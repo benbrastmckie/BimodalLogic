@@ -486,7 +486,7 @@ before asserting the exit code — a test that silently stays under the ceiling 
 
 ---
 
-### Phase 7: Redeploy, parity verification, and live acceptance [NOT STARTED]
+### Phase 7: Redeploy, parity verification, and live acceptance [IN PROGRESS]
 
 **Goal**: The source-store fixes are deployed into this repo's `.claude/` tree, the copies are
 confirmed identical, and every acceptance criterion in the task description is demonstrated
