@@ -6,35 +6,40 @@ This document specifies the directory structure, namespace conventions, and modu
 
 ```
 BimodalLogic/
-├── lakefile.toml               # Lake build configuration (package name: Logos)
-├── FormalSystem/
-│   └── Bimodal/                # Main library source
-│       ├── FormalSystem.lean        # Library root (re-exports all sub-modules)
-│       ├── Syntax.lean         # Aggregates Syntax/
-│       ├── ProofSystem.lean    # Aggregates ProofSystem/
-│       ├── Semantics.lean      # Aggregates Semantics/
-│       ├── Metalogic.lean      # Aggregates Metalogic/
-│       ├── Theorems.lean       # Aggregates Theorems/
-│       ├── Automation.lean     # Aggregates Automation/
-│       ├── Syntax/             # Formula types, atoms, contexts
-│       ├── ProofSystem/        # Axioms, derivation trees, inference rules
-│       ├── Semantics/          # Task frame semantics, truth evaluation
-│       ├── Metalogic/          # Soundness, completeness, decidability
-│       ├── Theorems/           # Derived theorems (perpetuity, combinators, propositional)
-│       ├── Automation/         # Proof tactics and search
-│       ├── Examples/           # Pedagogical examples
-│       ├── FrameConditions/    # Frame condition characterizations
-│       ├── Boneyard/           # Archived/experimental work
-│       └── docs/               # Theory-specific documentation
+├── lakefile.lean               # Lake build configuration
+├── lean-toolchain              # Lean version pin
+├── FormalSystem.lean           # Library root (re-exports all sub-modules)
+├── FormalSystem/               # Main library source
+│   ├── Syntax.lean             # Aggregates Syntax/
+│   ├── ProofSystem.lean        # Aggregates ProofSystem/
+│   ├── BaseLanguage.lean       # Aggregates BaseLanguage/
+│   ├── Semantics.lean          # Aggregates Semantics/
+│   ├── Metalogic.lean          # Aggregates Metalogic/
+│   ├── Theorems.lean           # Aggregates Theorems/
+│   ├── Automation.lean         # Aggregates Automation/
+│   ├── FrameConditions.lean    # Aggregates FrameConditions/
+│   ├── Examples.lean           # Aggregates Examples/
+│   ├── Syntax/                 # Formula types, atoms, contexts, subformulas
+│   ├── ProofSystem/            # Axioms, derivation trees, inference rules
+│   ├── BaseLanguage/           # The tense-primitive second object language
+│   ├── Semantics/              # Task frame semantics, truth evaluation, extension
+│   ├── Metalogic/              # Soundness, completeness, decidability, independence
+│   ├── Theorems/               # Derived theorems (perpetuity, combinators, propositional)
+│   ├── Automation/             # Proof tactics, search, dataset generation
+│   ├── FrameConditions/        # Frame condition characterizations
+│   ├── Examples/               # Pedagogical examples
+│   └── Boneyard/               # Archived work (excluded from every invariant check)
 ├── Tests/
 │   └── BimodalTest/            # Test suite mirroring FormalSystem/ structure
-│       ├── BimodalTest.lean    # Test root
 │       ├── Syntax/             # Syntax tests
 │       ├── ProofSystem/        # Proof system tests
 │       ├── Semantics/          # Semantic tests
 │       ├── Metalogic/          # Metalogic tests
 │       ├── Theorems/           # Theorem tests
-│       └── Automation/         # Automation tests
+│       ├── Automation/         # Automation tests
+│       ├── Integration/        # Integration tests
+│       └── Property/           # Property-based tests
+├── scripts/                    # Invariant checks and lints
 └── docs/                       # Project-level documentation
 ```
 
@@ -221,12 +226,27 @@ logic with linear temporal logic. Proven sound and complete.
 ## Core Modules
 
 ### Syntax
-* `FormalSystem.Syntax.Formula`
-* `FormalSystem.Syntax.Context`
+* `FormalSystem.Syntax.Formula` -- `untl`/`snce` primitive; H/P/G/F derived
+* `FormalSystem.Syntax.Atom`
+* `FormalSystem.Syntax.Context` -- `List Formula`, hence finite
+* `FormalSystem.Syntax.Subformulas`
 
 ### Proof System
-* `FormalSystem.ProofSystem.Axioms`
-* `FormalSystem.ProofSystem.Derivation`
+* `FormalSystem.ProofSystem.Axioms` -- 45 constructors in four layers
+* `FormalSystem.ProofSystem.Derivable`
+* `FormalSystem.ProofSystem.Derivation` -- `DerivationTree`, 7 inference rules
+
+### BaseLanguage
+
+A **second object language**, tense-primitive (`H`/`G` are constructors rather than
+abbreviations), with its own axioms and proof system, related to the primary language by a
+translation. It is the language in which the source paper states TM.
+
+* `FormalSystem.BaseLanguage.Formula` -- `BLFormula`
+* `FormalSystem.BaseLanguage.Axioms` -- a second `inductive Axiom`
+* `FormalSystem.BaseLanguage.Derivation` -- the mirror proof system
+* `FormalSystem.BaseLanguage.Translation` -- `tr : BLFormula → Formula`
+* `FormalSystem.BaseLanguage.AxiomDischarge`
 
 ### Semantics
 * `FormalSystem.Semantics.TaskFrame`
@@ -234,13 +254,30 @@ logic with linear temporal logic. Proven sound and complete.
 * `FormalSystem.Semantics.TaskModel`
 * `FormalSystem.Semantics.Truth`
 * `FormalSystem.Semantics.Validity`
+* `FormalSystem.Semantics.Extension` -- the Extension Theorem: every partial history
+  extends to a total one
 
 ### Metalogic
 * `FormalSystem.Metalogic.Soundness`
-* `FormalSystem.Metalogic.BXCanonical`
-* `FormalSystem.Metalogic.WeakCanonical`
-* `FormalSystem.Metalogic.Algebraic`
+* `FormalSystem.Metalogic.SoundnessLemmas`
 * `FormalSystem.Metalogic.Core.DeductionTheorem`
+* `FormalSystem.Metalogic.Core.MaximalConsistent` -- `SetConsistent`, `set_lindenbaum`
+* `FormalSystem.Metalogic.Bundle` -- FMCS / BFMCS bundle construction
+* `FormalSystem.Metalogic.BXCanonical` -- canonical model; the Base/Dense/Discrete
+  completeness theorems
+* `FormalSystem.Metalogic.WeakCanonical` -- countermodel engines, including the
+  Reynolds real-line route
+* `FormalSystem.Metalogic.Algebraic` -- flow-frame infrastructure
+* `FormalSystem.Metalogic.StrongCompleteness` -- `completeness_dedekind`, and the
+  terminology discipline separating consequence completeness from strong completeness
+* `FormalSystem.Metalogic.SetConsequence` -- the set-based consequence layer;
+  `CompactBase` and `CompactDense` name the two open obligations
+* `FormalSystem.Metalogic.DiscreteNonCompactness` -- the machine refutation of Discrete
+  strong completeness
+* `FormalSystem.Metalogic.Conservativity` -- the TM/TM⁺ backward bridge
+* `FormalSystem.Metalogic.Independence` -- underivability results
+* `FormalSystem.Metalogic.Decidability` -- the tableau decision procedure and its
+  sound-direction correctness proofs
 
 ### Theorems
 * `FormalSystem.Theorems.Perpetuity`

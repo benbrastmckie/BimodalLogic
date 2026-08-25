@@ -258,6 +258,78 @@ with finite premise sets over Discrete frames.
 Settled. This limitation is permanent and is recorded here so that the absence of a Discrete
 strong-completeness theorem is not misread as outstanding work.
 
+## Limitation 8: TM/TM⁺ Conservativity Holds Backward Only
+
+### Description
+
+The bridge between TM (stated over the tense-primitive base language,
+`FormalSystem/BaseLanguage/`) and TM⁺ (this repository's until/since-primitive system) is
+proved in the **backward** direction only:
+
+```
+TM ⊢ φ   ⟹   TM⁺ ⊢ tr φ
+```
+
+`FormalSystem/Metalogic/Conservativity.lean` proves this by structural recursion over TM
+derivations, parameterized by frame class so that the paper's four rows are four instantiations
+of one theorem: `translate` (`:170`), `derivable_translate` (`:194`), and the four row
+corollaries `ceb_backward` (`:210`), `cef_backward` (`:222`), `ced_backward` (`:232`),
+`cec_backward` (`:253`). All are sorry-free.
+
+**The forward direction is refuted, not open.** `TM⁺ ⊢ tr φ ⟹ TM ⊢ φ` is refuted for the Base
+and Discrete rows and open for the other two. The module docstring is the standing record of
+why it must not be attempted or `sorry`-ed; see also `FormalSystem/Metalogic.lean:33-38`.
+
+### Impact
+
+- A TM theorem transfers to TM⁺ automatically. A TM⁺ theorem does **not** transfer back.
+- Results proved in the until/since-primitive language cannot be assumed to be statable, let
+  alone provable, in the tense-primitive one.
+
+### Workaround
+
+State results in the base language where backward transfer is needed, and use `tr` to move
+them across.
+
+### Resolution
+
+Settled negatively for two rows; the remaining two are open. This is not outstanding work on
+the two refuted rows.
+
+## Limitation 9: `CO` Does Not Derive Reynolds's Prior-U
+
+### Description
+
+An independence result, established by exhibiting a model rather than by failing to find a
+proof. Over the dense base, the paper's `CO` principle (`Formula.co`,
+`△(Hφ → F(Hφ)) → (Hφ → Gφ)`) does **not** derive `Axiom.prior_U_gap`.
+
+The witness is the periodic clock frame (`FormalSystem/Metalogic/Independence/ClockFrame.lean`)
+-- temporal order `D = ℚ`, world-state carrier the rational circle `W = ℚ ⧸ ℤ`, task relation
+the deterministic translation flow -- carrying the symmetric irrational arc valuation
+(`Independence/CoNotPriorU.lean`). `Independence/LoopingDuration.lean` isolates the reusable
+content: any frame carrying a *looping duration* has periodic histories, hence periodic truth,
+hence validates every instance of `CO`.
+
+The converse direction is a **positive** result: Reynolds's triple *does* derive `CO`, as
+`FormalSystem.Theorems.DedekindDerived.co_derived`. The two together settle the relationship in
+both directions.
+
+### Impact
+
+- `CO` is strictly weaker than Reynolds's Prior-U over the dense base. A development that
+  assumes only `CO` cannot recover the Dedekind layer.
+
+### Workaround
+
+Assume the Dedekind axioms (`prior_U_gap`, `prior_S_gap`, `sep`) where the strength is needed;
+`CO` alone does not suffice.
+
+### Resolution
+
+Settled. Recorded here so that the absence of a `CO`-based derivation is not misread as
+outstanding work.
+
 ## Summary Table
 
 | Limitation | Severity | Workaround | Status |
@@ -269,6 +341,8 @@ strong-completeness theorem is not misread as outstanding work.
 | Modal S4 partial | Low | Manual derivation | Resolved |
 | Decision procedure completeness direction | Medium | Treat as semi-decision procedure | Open (`valid_iff_allClosed`) |
 | Discrete consequence relation not compact | Medium | None; work with finite premise sets | Settled negatively |
+| TM/TM⁺ conservativity backward only | Low | State results in the base language | Two rows refuted, two open |
+| `CO` does not derive Prior-U | Low | Assume the Dedekind axioms directly | Settled negatively |
 
 ## What Works Well
 

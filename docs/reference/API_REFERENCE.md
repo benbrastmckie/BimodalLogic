@@ -648,6 +648,142 @@ strong completeness across the four classes.
 
 ---
 
+### Decidability (`FormalSystem.Metalogic.Decidability`)
+
+**Module**: `FormalSystem/Metalogic/Decidability/Correctness.lean`
+
+The tableau decision procedure's **sound direction**. Entry points returning a
+`DecisionResult` are `decide`, `decideBlocking`, `decideAuto`, and `decideAutoAdaptive`.
+
+| Declaration | Line | Statement |
+|-------------|------|-----------|
+| `sound_of_isValid` | 100 | `r.isValid = true → ⊨ φ`, for any `DecisionResult φ` |
+| `isValid_sound` | 111 | `isValid φ fc = true → ⊨ φ` |
+| `isTautology_sound` | 124 | `isTautology φ fc = true → ⊨ φ` |
+| `isContradiction_sound` | 131 | `isContradiction φ fc = true → ⊨ φ.neg` |
+| `not_isSatisfiable_sound` | 142 | `isSatisfiable φ fc = false → ⊨ φ.neg` |
+
+The conclusion is the *unrelativized* `⊨ φ`, forced by the types: `DecisionResult.valid`
+carries `⊢ φ` at `FrameClass.Base` regardless of which `fc` was passed in.
+
+**The `extractionFailed` caveat.** `isKnownValid` is **not** a substitute hypothesis for
+`isValid`: it is also `true` on `extractionFailed`, which carries no `⊢ φ` witness. Getting
+`⊨ φ` from a closed tableau with no extracted proof is the open `valid_iff_allClosed`
+obligation, not a consequence of anything proved in `Correctness.lean` (see `:95-99`). Use
+`isValid`.
+
+The **completeness direction** -- `models φ → isValid φ fc = true` -- is open. A non-`true`
+result is therefore not evidence of invalidity; it may be `fuelExhausted` or
+`extractionFailed`.
+
+---
+
+### SetConsequence (`FormalSystem.Metalogic.SetConsequence`)
+
+**Module**: `FormalSystem/Metalogic/SetConsequence.lean`
+
+The set-based consequence layer, over possibly-infinite `Γ : Set Formula`.
+
+| Declaration | Line | What it is |
+|-------------|------|------------|
+| `StrongCompletenessBase` | 211 | The named strong-completeness obligation for Base |
+| `CompactBase` | 219 | Semantic compactness of the Base consequence relation (**open**) |
+| `StrongCompletenessDense` | 256 | The Dense obligation |
+| `CompactDense` | 263 | Semantic compactness for Dense (**open**) |
+| `not_setConsistent_of_setDerivable_bot` | 184 | Bridge from set-derivability of `⊥` to inconsistency |
+
+Supporting definitions live in `FormalSystem/Metalogic/Core/MaximalConsistent.lean`:
+`SetConsistent` (`:96`, correctly finitary), `SetMaximalConsistent` (`:103`), and
+`set_lindenbaum` (`:303`).
+
+`strongCompletenessBase_of_compact` and `strongCompletenessDense_of_compact` reduce each
+strong-completeness statement to its compactness hypothesis alone.
+
+---
+
+### DiscreteNonCompactness (`FormalSystem.Metalogic.DiscreteNonCompactness`)
+
+**Module**: `FormalSystem/Metalogic/DiscreteNonCompactness.lean`
+
+A machine-checked **negative** result: the Discrete consequence relation is not compact, so
+strong completeness for `FrameClass.Discrete` is false rather than merely unproved.
+
+| Declaration | Line | What it is |
+|-------------|------|------------|
+| `archWitness` | 102 | The witness set `{F p} ∪ {¬Xⁿ p : n ∈ ℕ}` |
+| `archWitness_finitely_satisfiable` | 194 | Every finite subset is satisfiable over `ℤ` |
+| `archWitness_not_satisfiable` | 229 | The whole set is satisfiable over no Archimedean discrete carrier |
+| `discrete_consequence_not_compact` | 250 | Refutes `CompactDiscrete` |
+| `strongCompletenessDiscrete_refuted` | 280 | Refutes `StrongCompletenessDiscrete` |
+
+---
+
+### Conservativity (`FormalSystem.Metalogic.Conservativity`)
+
+**Module**: `FormalSystem/Metalogic/Conservativity.lean`
+
+The TM/TM⁺ bridge: `TM ⊢ φ ⟹ TM⁺ ⊢ tr φ`, by structural recursion over TM derivations,
+parameterized by frame class so that the paper's four rows are four instantiations of one
+theorem.
+
+| Declaration | Line | What it is |
+|-------------|------|------------|
+| `translate` | 170 | The recursion itself |
+| `derivable_translate` | 194 | The `Prop`-level corollary |
+| `ceb_backward` | 210 | The Base row |
+| `cef_backward` | 222 | The second row |
+| `ced_backward` | 232 | The Discrete row |
+| `cec_backward` | 253 | The fourth row |
+
+**Backward direction only.** The converse `TM⁺ ⊢ tr φ ⟹ TM ⊢ φ` is **refuted** for the Base
+and Discrete rows and **open** for the other two. This is a negative result recorded in the
+module docstring, not outstanding work.
+
+The tense-primitive source language is `FormalSystem/BaseLanguage/` -- see the entry below.
+
+---
+
+### BaseLanguage (`FormalSystem.BaseLanguage`)
+
+**Module**: `FormalSystem/BaseLanguage/`
+
+A **second object language**, in which `H` (`allPast`) and `G` (`allFuture`) are primitive
+rather than derived:
+
+```
+φ, ψ ::= pᵢ | ⊥ | φ → ψ | □φ | Hφ | Gφ
+```
+
+| File | What it carries |
+|------|-----------------|
+| `BaseLanguage/Formula.lean` | `BLFormula`, the tense-primitive language |
+| `BaseLanguage/Axioms.lean` | A second `inductive Axiom` (`:73`), TM's schemata over BL |
+| `BaseLanguage/Derivation.lean` | A constructor-for-constructor mirror of `DerivationTree` |
+| `BaseLanguage/Translation.lean` | `tr : BLFormula → Formula` and `trCtx` |
+| `BaseLanguage/AxiomDischarge.lean` | `dischargeAxiom`, the per-axiom discharge table |
+
+---
+
+### Independence (`FormalSystem.Metalogic.Independence`)
+
+**Module**: `FormalSystem/Metalogic/Independence/`
+
+Underivability results, established by exhibiting a model of the assumptions in which the
+target fails.
+
+| File | What it carries |
+|------|-----------------|
+| `Independence/ClockFrame.lean` | The periodic clock frame: `D = ℚ`, `W = ℚ ⧸ ℤ`, translation flow |
+| `Independence/LoopingDuration.lean` | Looping durations, history and truth periodicity, validity of `CO` |
+| `Independence/CoNotPriorU.lean` | The symmetric irrational arc valuation, and the independence statements |
+
+The result: `CO` does **not** derive `Axiom.prior_U_gap` over the dense base. The converse --
+Reynolds's triple *does* derive `CO` -- is
+`FormalSystem.Theorems.DedekindDerived.co_derived`, so the two together settle the relationship
+in both directions.
+
+---
+
 ## Usage Examples
 
 ### Basic Proof Construction

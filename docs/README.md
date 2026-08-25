@@ -98,6 +98,7 @@ Project-wide status and tracking:
 
 - [README.md](project-info/README.md) - Directory overview
 - [FEATURE_REGISTRY.md](project-info/FEATURE_REGISTRY.md) - Feature tracking and capabilities
+- [known-limitations.md](project-info/known-limitations.md) - The genuine open items: strong completeness, the decision procedure's completeness direction, discrete non-compactness, conservativity, independence
 - [implementation-status.md](project-info/implementation-status.md) - Module-by-module status tracking with verification commands
 - [MAINTENANCE.md](project-info/MAINTENANCE.md) - TODO management workflow
 

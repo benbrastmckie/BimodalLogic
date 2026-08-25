@@ -359,20 +359,21 @@ walk of each directory; write the inventory from the walk, never from this list.
 
 ---
 
-### Phase 6: Documentation Gaps G3-G8 [NOT STARTED]
+### Phase 6: Documentation Gaps G3-G8 [COMPLETED]
 
 **Goal**: Give the six remaining landed-but-undocumented results their first coverage anywhere
 in `docs/`. (G1, G2, and G9 landed in Phase 2 alongside the limitation rewrites.)
 
 **Tasks**:
-- [ ] **G8 first — the four-frame-class model.** `FrameClass`, its partial order, why Dedekind sits **above** Dense rather than being a fourth leaf, the TM+_c gap, and the `minFrameClass <= fc` derivation invariant. An extensive primary-source-grounded explanation already exists at `Axioms.lean:461-517` — lift it. This is the central organizing concept and every other gap entry reads against it
-- [ ] **G3 — Dedekind / real-line completeness.** `completeness_dedekind` (`StrongCompleteness.lean:469`), `consequence_completeness_dedekind` (`:450`), `FrameClass.Dedekind`, `ValidDedekindDense`, Reynolds 1992 section 9 Thm 7 provenance (`Axioms.lean:485-513`)
-- [ ] **G1 (API side)** — add the decidability soundness bridge to `docs/reference/API_REFERENCE.md`: `sound_of_isValid` (`Correctness.lean:100`), `isValid_sound` (`:111`), `isTautology_sound` (`:124`), `isContradiction_sound` (`:131`), `not_isSatisfiable_sound` (`:142`), carrying the `extractionFailed` caveat from `:95-99`
-- [ ] **G4 — conservativity.** `Metalogic/Conservativity.lean`: the TM/TM+ backward bridge (`translate`, `derivable_translate` at `:194`, and `ceb_backward`/`cef_backward`/`ced_backward`/`cec_backward` at `:210,222,232,253`) **and** the negative result that the forward direction is refuted for Base and Discrete
-- [ ] **G5 — independence results.** `Metalogic/Independence/{ClockFrame,CoNotPriorU,LoopingDuration}.lean`
-- [ ] **G6 — the tense-primitive base language.** `FormalSystem/BaseLanguage/` (`Formula`, `Axioms`, `Derivation`, `Translation`, `AxiomDischarge`). Add to `docs/development/MODULE_ORGANIZATION.md`, which currently mentions **none** of `BaseLanguage`, `Decidability`, `Independence`, `Conservativity`, or `SetConsequence` — add all five
-- [ ] **G7 — the set-based consequence layer.** `SetConsequence.lean`: `SetConsistent`, `SetMaximalConsistent`, `set_lindenbaum`, `CompactBase` (`:219`), `CompactDense` (`:263`), the `Core.SetConsistent` bridge (`:184`), and the two reductions. Correct `docs/user-guide/architecture.md:747-796` (and the `:920` area), which still places `set_lindenbaum` in an archived `Completeness.lean`
-- [ ] Cross-link the new entries to the rewritten Limitations 1 and 6 from Phase 2
+- [x] **G8 first — the four-frame-class model.** `FrameClass`, its partial order, why Dedekind sits **above** Dense rather than being a fourth leaf, the TM+_c gap, and the `minFrameClass <= fc` derivation invariant. An extensive primary-source-grounded explanation already exists at `Axioms.lean:461-517` — lift it. This is the central organizing concept and every other gap entry reads against it
+- [x] **G3 — Dedekind / real-line completeness.** `completeness_dedekind` (`StrongCompleteness.lean:469`), `consequence_completeness_dedekind` (`:450`), `FrameClass.Dedekind`, `ValidDedekindDense`, Reynolds 1992 section 9 Thm 7 provenance (`Axioms.lean:485-513`)
+- [x] **G1 (API side)** — add the decidability soundness bridge to `docs/reference/API_REFERENCE.md`: `sound_of_isValid` (`Correctness.lean:100`), `isValid_sound` (`:111`), `isTautology_sound` (`:124`), `isContradiction_sound` (`:131`), `not_isSatisfiable_sound` (`:142`), carrying the `extractionFailed` caveat from `:95-99`
+- [x] **G4 — conservativity.** `Metalogic/Conservativity.lean`: the TM/TM+ backward bridge (`translate`, `derivable_translate` at `:194`, and `ceb_backward`/`cef_backward`/`ced_backward`/`cec_backward` at `:210,222,232,253`) **and** the negative result that the forward direction is refuted for Base and Discrete
+- [x] **G5 — independence results.** `Metalogic/Independence/{ClockFrame,CoNotPriorU,LoopingDuration}.lean`
+- [x] Also replaced `MODULE_ORGANIZATION.md`'s stale section 1 directory tree (a nested `FormalSystem/Bimodal/` layout with `lakefile.toml` and an in-tree `docs/`, none of which exists) *(deviation: altered -- surplus defect found while adding the five absent subtrees)*
+- [x] **G6 — the tense-primitive base language.** `FormalSystem/BaseLanguage/` (`Formula`, `Axioms`, `Derivation`, `Translation`, `AxiomDischarge`). Add to `docs/development/MODULE_ORGANIZATION.md`, which currently mentions **none** of `BaseLanguage`, `Decidability`, `Independence`, `Conservativity`, or `SetConsequence` — add all five
+- [x] **G7 — the set-based consequence layer.** `SetConsequence.lean`: `SetConsistent`, `SetMaximalConsistent`, `set_lindenbaum`, `CompactBase` (`:219`), `CompactDense` (`:263`), the `Core.SetConsistent` bridge (`:184`), and the two reductions. Correct `docs/user-guide/architecture.md:747-796` (and the `:920` area), which still places `set_lindenbaum` in an archived `Completeness.lean`
+- [x] Cross-link the new entries to the rewritten Limitations 1 and 6 from Phase 2
 
 **Timing**: 2 hours
 

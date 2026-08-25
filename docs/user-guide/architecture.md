@@ -751,7 +751,8 @@ theorem set_lindenbaum (S : Set Formula) (hS : SetConsistent S) :
   -- Apply Zorn's lemma to ConsistentSupersets S
   -- Chain union consistency: consistent_chain_union
   -- Upper bound exists for every chain
-  -- Proven in Completeness.lean (lines 342-391)
+  -- Proven in FormalSystem/Metalogic/Core/MaximalConsistent.lean:303,
+-- via consistent_chain_union (:264). NOT in an archived Completeness.lean.
 
 -- Truth lemma for canonical model (key completeness lemma, set-based)
 -- States: φ ∈ S.val ↔ TruthAt canonical_model (canonical_history S) 0 φ
@@ -791,9 +792,105 @@ theorem strong_completeness (Γ : Context) (φ : Formula) :
 ```
 
 **Key Implementation Note**: The `set_lindenbaum` theorem is fully proven using Zorn's lemma
-from Mathlib. The proof relies on `consistent_chain_union` which shows that the union of a
-chain of consistent sets is consistent. This is the main mathematical content of the
-completeness proof infrastructure.
+from Mathlib, at `FormalSystem/Metalogic/Core/MaximalConsistent.lean:303`. The proof relies on
+`consistent_chain_union` (`:264`), which shows that the union of a chain of consistent sets is
+consistent.
+
+### 4.2a The set-based consequence layer
+
+The sketches above are pedagogical. The **actual** set-based consequence layer lives in
+`FormalSystem/Metalogic/SetConsequence.lean`, and its shape matters because it is where the
+distinction between consequence completeness and *strong* completeness is made precise.
+
+| Item | Location | What it is |
+|------|----------|------------|
+| `SetConsistent` | `Core/MaximalConsistent.lean:96` | Consistency of a possibly-infinite set, **finitary**: no finite sublist derives `⊥` |
+| `SetMaximalConsistent` | `Core/MaximalConsistent.lean:103` | Maximality of such a set |
+| `set_lindenbaum` | `Core/MaximalConsistent.lean:303` | Every `SetConsistent` set extends to a `SetMaximalConsistent` one |
+| `not_setConsistent_of_setDerivable_bot` | `SetConsequence.lean:184` | The bridge from set-derivability of `⊥` back to inconsistency |
+| `StrongCompletenessBase` | `SetConsequence.lean:211` | The named strong-completeness obligation for Base |
+| `CompactBase` | `SetConsequence.lean:219` | Semantic compactness of the Base consequence relation -- an **open obligation** |
+| `StrongCompletenessDense` | `SetConsequence.lean:256` | The Dense obligation |
+| `CompactDense` | `SetConsequence.lean:263` | Semantic compactness for Dense -- also open |
+
+Two reductions sit on top: `strongCompletenessBase_of_compact` and
+`strongCompletenessDense_of_compact` reduce each strong-completeness statement to its
+compactness hypothesis alone. That is the whole of what remains for those two classes.
+
+The set-based MCS layer is therefore already in place; the missing substantive piece is a
+**model-existence** theorem -- every `SetConsistent` set is satisfiable in a frame of the class
+-- which does *not* follow from the single-formula countermodel engines. See
+[known-limitations.md](../project-info/known-limitations.md), Limitation 1.
+
+### 4.2b The four frame classes and their partial order
+
+Everything above is relative to a **frame class**. There are four, and they form a partial
+order rather than a flat list:
+
+```
+              Dedekind
+                 ↑
+    Dense --------'      Discrete
+      ↑                     ↑
+       \___________________/
+                |
+               Base
+```
+
+- **`Base`** is the bottom element: its 37 axioms are valid on all linear temporal orders.
+- **`Dense`** extends Base with `density` (`GGφ → Gφ`) and `dense_indicator` (`¬U(⊤,⊥)`).
+- **`Discrete`** extends Base with `prior_UZ`, `prior_SZ` and `z1`, valid on discrete
+  (successor-Archimedean) frames.
+- **`Dedekind`** extends **Dense** with Reynolds's definable-gap axioms `prior_U_gap`,
+  `prior_S_gap` and `sep`.
+
+**Why Dedekind sits above Dense rather than being a fourth incomparable leaf.** This is a
+primary-source placement, not an intuition. Reynolds 1992 (printed p.168) lists axioms for
+density and no end points as part of the axiomatization US/R for real flow. Unfolding
+`K⁺⊤ = ¬U(⊤,¬⊤)` and normalising gives `¬U(⊤,⊥)` -- this tree's `dense_indicator`. So
+Reynolds's real-line axiom set genuinely contains the density axiom, and a Dedekind derivation
+must be allowed to use it. Making `Dedekind` a fresh incomparable leaf would render `density`
+and `dense_indicator` inadmissible in a `Dedekind` derivation, and so could not host Reynolds's
+system at all.
+
+Dense and Discrete are incomparable (density contradicts discreteness); so are Discrete and
+Dedekind.
+
+**The governing invariant** is `ax.minFrameClass ≤ fc`
+(`FormalSystem/ProofSystem/Axioms.lean:588`): an axiom may appear in a derivation parameterized
+by frame class `fc` only when its minimum frame class is at most `fc`. This single constraint
+replaces the ad-hoc predicates an earlier design used.
+
+**The TM⁺_c gap.** The paper's TM⁺_c is completeness *simpliciter* -- no density binder -- so
+its models are exactly `{ℤ, ℝ}` up to order-and-group isomorphism, and its theory is
+`Th(ℤ) ∩ Th(ℝ)`. **No element of `FrameClass` picks that class out.** The two branches are
+covered separately and exhaustively: the complete-but-discrete branch is exactly `ℤ` and is
+handled by `Discrete`; the dense branch is `Dedekind`. But their *intersection* is not itself a
+frame class, and adding one would require an axiom set for `Th(ℤ) ∩ Th(ℝ)` that this tree does
+not have. `ValidDedekind` exists as a predicate matching the TM⁺_c binder set, but is
+deliberately not a soundness target.
+
+**Soundness caveat.** Because `density` and `dense_indicator` are admissible at `Dedekind` and
+both are false on `ℤ` (which is nonetheless conditionally complete), the soundness theorem for
+that class targets the *dense* Dedekind predicate `ValidDedekindDense`, not `ValidDedekind`.
+
+### 4.2c Dedekind completeness and the real line
+
+`completeness_dedekind` (`FormalSystem/Metalogic/StrongCompleteness.lean:469`) is the fourth
+weak completeness theorem, and the one that reaches the real line:
+
+| Theorem | Location |
+|---------|----------|
+| `completeness_dedekind` | `StrongCompleteness.lean:469` |
+| `consequence_completeness_dedekind` | `StrongCompleteness.lean:450` |
+
+The semantic target is `ValidDedekindDense`, whose binder list is a linearly ordered
+`AddCommGroup` that is densely ordered, nontrivial, and Dedekind complete (every nonempty
+bounded-above set has a least upper bound). Provenance is Reynolds 1992, section 9 Theorem 7 --
+a *weak* completeness result for the real-line axiomatisation. The construction route runs
+through `FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/` (Reynolds sections 6 and 7,
+supplying the two hypotheses of Doets' theorem) and
+`FormalSystem/Metalogic/WeakCanonical/RealModel/` (section 8, Doets' theorem itself).
 
 ### 4.3 Additional Metalogical Properties
 
