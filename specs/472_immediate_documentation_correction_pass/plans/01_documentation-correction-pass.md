@@ -1,7 +1,7 @@
 # Implementation Plan: Immediate documentation-correction pass
 
 - **Task**: 472 - Immediate documentation correction pass
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 10 hours
 - **Dependencies**: 470 (recorded in state.json; not gating this ungated pass)
 - **Research Inputs**: specs/472_immediate_documentation_correction_pass/reports/01_documentation-correction-verification.md
@@ -593,33 +593,33 @@ count.
 
 ---
 
-### Phase 10: Final gate and scope audit [NOT STARTED]
+### Phase 10: Final gate and scope audit [COMPLETED]
 
 **Goal**: Run the complete gate set, confirm the diff is confined to `file_scope`, and confirm no
 surviving claim in any touched file names a nonexistent declaration or file.
 
 **Tasks**:
-- [ ] `lake build` — must exit 0.
-- [ ] `lake build BimodalTest` — must exit 0.
-- [ ] `bash scripts/check-module-invariants.sh` — C1-C11 must all pass (C1 build, C2 axiom baseline
+- [x] `lake build` — must exit 0.
+- [x] `lake build BimodalTest` — must exit 0.
+- [x] `bash scripts/check-module-invariants.sh` — C1-C11 must all pass (C1 build, C2 axiom baseline
       unchanged, C3 sole sorry unchanged, C4/C5 references resolve, C7 inventory, C9 no task-number
       citations under `FormalSystem/`).
-- [ ] `git diff --name-only` against the merge base — every path must be one of the nine `file_scope`
+- [x] `git diff --name-only` against the merge base — every path must be one of the nine `file_scope`
       files (plus `specs/472_*` artifacts). Any other path is a failure to be reverted.
-- [ ] Nonexistent-declaration sweep: extract every backticked identifier added by this pass from
+- [x] Nonexistent-declaration sweep: extract every backticked identifier added by this pass from
       `git diff` and confirm each resolves via
       `grep -rnE '^(theorem|lemma|def|noncomputable def|abbrev|instance|structure|class) NAME\b' --include='*.lean' FormalSystem/ | grep -v Boneyard`,
       or is a deliberate absence statement (e.g. `Verified/README.md`'s `not built` rows).
-- [ ] Confirm the six ABSENT symbols appear in no surviving claim across the nine files.
-- [ ] Line-citation sweep: `git diff` added lines contain no newly introduced `\.lean:[0-9]`
+- [x] Confirm the six ABSENT symbols appear in no surviving claim across the nine files.
+- [x] Line-citation sweep: `git diff` added lines contain no newly introduced `\.lean:[0-9]`
       citation.
-- [ ] Confirm C2's axiom baseline is byte-identical to Phase 1's recording (this pass changes no
+- [x] Confirm C2's axiom baseline is byte-identical to Phase 1's recording (this pass changes no
       proof, so any C2 movement means something non-documentation was touched).
-- [ ] Write the implementation summary at
+- [x] Write the implementation summary at
       `specs/472_immediate_documentation_correction_pass/summaries/01_documentation-correction-summary.md`,
       recording per-item what was corrected, which extra defects were fixed, and any divergence from
       the research report's baseline found in Phase 1.
-- [ ] Final commit.
+- [x] Final commit.
 
 **Timing**: 0.75 hours
 
@@ -642,21 +642,21 @@ commit rather than widening the declared scope.
 
 ## Testing & Validation
 
-- [ ] `lake build` exits 0 after every individual file edit, and at the final gate.
-- [ ] `lake build BimodalTest` exits 0 at Phase 1 and Phase 10.
-- [ ] `bash scripts/check-module-invariants.sh` reports ALL CHECKS PASSED at Phase 1 and Phase 10
+- [x] `lake build` exits 0 after every individual file edit, and at the final gate.
+- [x] `lake build BimodalTest` exits 0 at Phase 1 and Phase 10.
+- [x] `bash scripts/check-module-invariants.sh` reports ALL CHECKS PASSED at Phase 1 and Phase 10
       (C1-C11), and `--no-build` passes after each markdown phase.
-- [ ] `git diff --name-only` is a subset of the nine `file_scope` paths plus `specs/472_*`.
-- [ ] No surviving claim in any touched file names any of: `filtration_is_finite`,
+- [x] `git diff --name-only` is a subset of the nine `file_scope` paths plus `specs/472_*`.
+- [x] No surviving claim in any touched file names any of: `filtration_is_finite`,
       `truth_preserved_under_filtration`, `buildTableau_isSome`, `chronicle_is_good`,
       `irr_sound_dense_at_domain`, bare `finite_model_property`, `IRRSoundness.lean`.
-- [ ] Every backticked identifier added by this pass resolves by declaration grep, or is an explicit
+- [x] Every backticked identifier added by this pass resolves by declaration grep, or is an explicit
       absence statement.
-- [ ] The proven / sorry-free / axiom-clean distinction is preserved wherever it holds — in
+- [x] The proven / sorry-free / axiom-clean distinction is preserved wherever it holds — in
       particular `BXCanonical.completeness` (proved, `sorryAx`-dependent) vs.
       `completeness_dense`/`completeness_discrete` (proved and sorry-free).
-- [ ] No newly introduced `.lean:NNN` line-number citation in any added line.
-- [ ] No task-number citation under `FormalSystem/` (C9, enforced).
+- [x] No newly introduced `.lean:NNN` line-number citation in any added line.
+- [x] No task-number citation under `FormalSystem/` (C9, enforced).
 
 ## Artifacts & Outputs
 
