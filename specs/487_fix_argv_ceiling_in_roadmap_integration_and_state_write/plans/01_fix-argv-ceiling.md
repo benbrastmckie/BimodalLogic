@@ -314,30 +314,34 @@ second unbounded site is found, fix it in this phase and record the correction.
 
 ---
 
-### Phase 4: roadmap-integration.sh --annotate atomicity via staging copy [NOT STARTED]
+### Phase 4: roadmap-integration.sh --annotate atomicity via staging copy [COMPLETED]
 
 **Goal**: In `--annotate` mode, every annotation is applied to a private staging copy; the real
 `ROADMAP.md` is replaced exactly once, only after the JSON report has been fully constructed. Any
 mid-run failure leaves `ROADMAP.md` byte-identical.
 
 **Tasks**:
-- [ ] Introduce an `ANNOTATE_TARGET` variable: in `--annotate` mode, a `mktemp` file seeded with
+- [x] Introduce an `ANNOTATE_TARGET` variable: in `--annotate` mode, a `mktemp` file seeded with
       `cp "$ROADMAP_PATH" "$ANNOTATE_TARGET"`; in parse-only mode it is simply `$ROADMAP_PATH`
-      (read-only there, so no copy needed)
-- [ ] Retarget **every** read and write inside the annotate loop from `$ROADMAP_PATH` to
+      (read-only there, so no copy needed) *(completed)*
+- [x] Retarget **every** read and write inside the annotate loop from `$ROADMAP_PATH` to
       `$ANNOTATE_TARGET` — including the `grep -q`/`grep -F`/`grep -qxF` guard reads and the
       `sed -n` on-disk line read, not only the `awk`/`mv` writes. A guard that still reads the
       original file while writes go to the staging copy will make the second annotation in a run
-      compare against stale content
-- [ ] Restructure the end of the script: build the JSON report into a temp file first; only on
+      compare against stale content *(completed: confirmed via grep, all 11 in-loop occurrences
+      retargeted)*
+- [x] Restructure the end of the script: build the JSON report into a temp file first; only on
       success `mv "$ANNOTATE_TARGET" "$ROADMAP_PATH"`; then emit the report to stdout. Order is
-      load-bearing — report first, then commit the file, then print
-- [ ] Add `$ANNOTATE_TARGET` to the existing EXIT trap so a failed run removes the staging copy
-      and never touches `$ROADMAP_PATH`
-- [ ] Preserve the existing per-iteration `TMPFILE` mktemp/diff/mv mechanics within the loop; they
-      now operate against `$ANNOTATE_TARGET` rather than the real file
-- [ ] Preserve the `diff -q` no-op detection that currently suppresses counting an unchanged write
-      as an annotation
+      load-bearing — report first, then commit the file, then print *(completed; relies on `set -e`
+      to abort before the commit step if report-building fails)*
+- [x] Add `$ANNOTATE_TARGET` to the existing EXIT trap so a failed run removes the staging copy
+      and never touches `$ROADMAP_PATH` *(completed: trap conditionally removes ANNOTATE_TARGET
+      only when DO_ANNOTATE=true, since in parse-only mode ANNOTATE_TARGET IS $ROADMAP_PATH and
+      must never be rm -f'd)*
+- [x] Preserve the existing per-iteration `TMPFILE` mktemp/diff/mv mechanics within the loop; they
+      now operate against `$ANNOTATE_TARGET` rather than the real file *(completed)*
+- [x] Preserve the `diff -q` no-op detection that currently suppresses counting an unchanged write
+      as an annotation *(completed)*
 
 **Timing**: 1.5 hours
 
