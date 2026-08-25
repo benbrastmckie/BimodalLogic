@@ -68,14 +68,19 @@ as `Set.univ`.
 
 ## Full Derivation Soundness
 
-The theorem `soundness : (Γ ⊢ φ) → (Γ ⊨ φ)` follows from:
-1. **Axiom validity**: `axiom_valid`, `axiom_dense_valid`, `axiom_discrete_valid`
-2. **Modus ponens**: If `Γ ⊨ φ → ψ` and `Γ ⊨ φ` then `Γ ⊨ ψ` (semantic by definition)
-3. **Necessitation**: If `⊨ φ` then `⊨ □φ` (follows from S5 universal accessibility)
-4. **Temporal necessitation**: If `⊨ φ` then `⊨ Gφ` (follows from temporal quantification)
-5. **Temporal duality**: `derivable_implies_swap_valid` in SoundnessLemmas.lean
-6. **IRR rule**: Sound by construction (see IRRSoundness.lean)
-7. **Weakening**: Monotonicity of semantic consequence
+The theorem `soundness : (Γ ⊢ φ) → (Γ ⊨ φ)` is an induction over `DerivationTree`, which has
+exactly seven constructors (`ProofSystem/Derivation.lean`). One case each:
+1. **`axiom`**: `axiom_valid`, `axiom_dense_valid`, `axiom_discrete_valid`
+2. **`assumption`**: the formula is in `Γ`, so the context hypothesis supplies it directly
+3. **`modus_ponens`**: If `Γ ⊨ φ → ψ` and `Γ ⊨ φ` then `Γ ⊨ ψ` (semantic by definition)
+4. **`necessitation`**: If `⊨ φ` then `⊨ □φ` (follows from S5 universal accessibility)
+5. **`temporal_necessitation`**: If `⊨ φ` then `⊨ Gφ` (follows from temporal quantification)
+6. **`temporal_duality`**: `derivable_implies_swap_valid` in SoundnessLemmas.lean
+7. **`weakening`**: Monotonicity of semantic consequence
+
+There is no IRR rule in this proof system, and therefore no IRR case in this induction.
+Reynolds' IRR rule is mentioned in `ProofSystem/Axioms.lean` only bibliographically, in the title
+of his 1992 paper.
 
 **Frame-Class Architecture**:
 Soundness is organized by frame class because axioms require different frame conditions:
@@ -91,11 +96,10 @@ Prior-UZ/SZ are excluded from dense derivations by the `h.minFrameClass ≤ .Den
 
 ## References
 
-* [architecture.md](../../../docs/user-guide/architecture.md) - Soundness specification
+* [architecture.md](../../docs/user-guide/architecture.md) - Soundness specification
 * [Derivation.lean](../../ProofSystem/Derivation.lean) - Derivability relation
 * [Validity.lean](../../Semantics/Validity.lean) - Semantic validity
 * [SoundnessLemmas.lean](./SoundnessLemmas.lean) - Axiom validity and swap preservation
-* [IRRSoundness.lean](./IRRSoundness.lean) - IRR rule soundness
 * JPL Paper app:valid (line 1984) - Perpetuity principle validity proofs
 -/
 
@@ -1161,19 +1165,22 @@ that the general soundness theorem cannot handle extension axioms without frame 
 /--
 **Soundness Dense Valid**: Derivability from empty context implies dense validity.
 
-This theorem proves `ValidDense phi` for dense-compatible derivations from empty context,
-which provides the universal quantification needed for the IRR soundness lemma.
+This theorem proves `ValidDense phi` for dense-compatible derivations from empty context. The
+empty context is what makes the statement universally quantified over frames, models, histories
+and times, which is what the two necessitation cases need of their premise.
 
-**Key Insight**: The induction hypothesis at each step provides `ValidDense` for premises,
-which matches the signature required by `irr_sound_dense_at_domain`.
+**Key Insight**: the induction hypothesis at each step provides `ValidDense` for the premises,
+which is the universally quantified form the `necessitation` and `temporal_necessitation` cases
+consume — an empty-context `ValidDense` statement, unlike a `TruthAt` statement at a fixed
+history and time, is already closed over all frames, models, histories and times.
 
-**Note on domain membership**: The IRR case in `irr_sound_dense_at_domain` requires
-`h_dom : tau.domain t`. This is handled by case split:
-- Domain case: directly apply `irr_sound_dense_at_domain`
-- Non-domain case: a known semantic gap (sorried) - canonical models use full domains
+`ValidDense` quantifies over the frame's **total** histories, so no domain-membership side
+condition arises and there is nothing here to case-split on. This theorem is sorry-free, as are
+`soundness`, `soundness_dense` and `soundness_discrete`.
 
-This theorem is defined before `soundness_dense` because `soundness_dense`'s IRR case
-needs to invoke it for universal validity.
+It is defined before `soundness_dense` so that it is available to any later result needing the
+empty-context universal form; `soundness_dense` itself runs its own induction and reaches the
+necessitation cases through its induction hypothesis.
 -/
 theorem soundness_dense_valid {phi : Formula}
     (d : DerivationTree FrameClass.Dense [] phi) : ValidDense phi := by
@@ -1241,8 +1248,8 @@ The `DerivationTree .Dense` parameterization structurally ensures no discrete-sp
 (prior_UZ, prior_SZ, z1) appear in the derivation, since their `minFrameClass = .Discrete`
 is incomparable with `.Dense`.
 
-**Note on IRR rule**: The IRR case uses `soundness_dense_valid` to obtain universal validity,
-then instantiates for the specific model.
+**Constructor coverage**: this induction cases on all seven `DerivationTree` constructors and no
+others. There is no IRR rule in the proof system, so no IRR case appears here.
 -/
 theorem soundness_dense (Γ : Context) (φ : Formula)
     (d : DerivationTree FrameClass.Dense Γ φ)

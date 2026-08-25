@@ -29,7 +29,7 @@ apart.
 | `RuleSpec.lean` | rule/axiom frame-class gate lemmas: `ruleFrameClass`, `ruleAxioms`, and the three GATE theorems tying the rule lattice to the axiom lattice | landed |
 | `Termination/SubformulaProperty.lean` | T1, the signed subformula property (per rule): `RuleResult.emitted`, the `TableauClosed` closure census, the `as*?` inversions, all 36 rule cases, and the assembled `applyRule_subformula_closed` | landed |
 | `Termination/TimeTypeBound.lean` | T2, the `2 ^ (2 * \|C\|)` time-type bound and pigeonhole | landed |
-| `Termination/Fuel.lean` | T3, the set-growth progress measure and the uncapped fuel figure `soundFuel'`, with `soundFuel_le_soundFuel'`, `chain_le_stock`, `chain_le_soundFuel'`, `chain_le_worlds_bounded`, and the totality theorems `expandBranchWithFuel_isSome_of_noSplit` / `_of_stock` | landed |
+| `Termination/Fuel.lean` | T3, the set-growth progress measure and the uncapped fuel figure `soundFuel'`, with `soundFuel_le_soundFuel'`, `chain_le_stock`, `chain_le_soundFuel'`, `chain_le_worlds_bounded`, and the totality theorems `expandBranchWithFuel_isSome_of_noSplit` and `expandBranchWithFuel_isSome_of_stock` | landed |
 | `Termination/MintBound.lean` | an independent ceiling on fresh-time minting, lifting T3's no-branching scope: the `IrreflOrd` run invariant, reachability transport and witness preservation across `TimeOrdering.identifyTime`, the mint potential, and the amortized counting chain | landed |
 | `Bridge/BranchOrder.lean` | the finite linear order a gated saturated branch carries | landed |
 | `Bridge/Embed.lean` | monotone placement of a finite order in a dense carrier or in `ℤ` | landed |

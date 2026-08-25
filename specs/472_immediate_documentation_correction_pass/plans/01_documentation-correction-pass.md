@@ -250,7 +250,7 @@ landed-but-undocumented.
       route.
 - [x] Add rows for every currently omitted live file, including `Termination/MintBound.lean` (the
       largest file in the subtree and entirely absent from the current table).
-- [x] Fill the Contents column by **lifting** the per-file descriptions already in
+- [x] *(deviation: altered — the aggregator docstring covers 20 of the 21 files; `Termination/MintBound.lean`'s Contents cell was written from that file's own module docstring instead)* Fill the Contents column by **lifting** the per-file descriptions already in
       `Decidability.lean`'s aggregator docstring rather than composing new ones — it covers every
       live file, is written against current code, and keeps the two files in agreement.
 - [x] Where a successor is known, say so in the Contents column rather than inventing a third status
@@ -356,7 +356,7 @@ counterexample material.
         which need their own obligations where `expandOnce`, not `applyRule`, is the object.
       - Lift the "not landed" wording from `ruleSound_of_mem_allRulesForFC`'s own docstring, which
         already states it correctly, rather than composing new text.
-- [x] Delete (or retain explicitly as a past-tense record with the closure noted) the "blocked on a
+- [x] *(deviation: altered — retained as a past-tense record, and a closure note was added recording that remedy 2 WAS taken in its membership form: `OrdWithin` is a hypothesis of `RuleSound`)* Delete (or retain explicitly as a past-tense record with the closure noted) the "blocked on a
       defect in `RuleSound`'s own statement" paragraph and its two escalated remedies. The file's own
       convention ("Read Defect 1 below in the past tense") supports the past-tense-record option.
       Note the retraction that already exists in-file: `OrdWithin` is in `RuleSound` and the four
@@ -394,33 +394,33 @@ count differs, write what the grep shows.
 
 ---
 
-### Phase 6: (f) `WeakCanonical.lean` — five nonexistent sorries [IN PROGRESS]
+### Phase 6: (f) `WeakCanonical.lean` — five nonexistent sorries [COMPLETED]
 
 **Goal**: Replace the five-bullet sorry list with the single true statement about the subtree's sole
 structural `sorry`, and fix the two stale architecture lines and the stale fallback paragraph.
 
 **Tasks**:
-- [ ] Delete the five "documented sorries" bullets (Truth lemma G/H backward; Truth lemma
+- [x] Delete the five "documented sorries" bullets (Truth lemma G/H backward; Truth lemma
       Until/Since; `KEquivalenceFramework`; Table correctness; One-class theorem / `chronicle_is_good`
       — the last of which names a symbol that is not in the tree at all).
-- [ ] Replace with the grounded statement: the subtree carries exactly one structural `sorry`,
+- [x] Replace with the grounded statement: the subtree carries exactly one structural `sorry`,
       `countermodel_discrete` in `WeakCanonical/Transfer.lean`, which check C3 asserts **by content**
       (it locates the enclosing declaration by scanning backwards, never by line number). Do not cite
       a line number for it.
-- [ ] Note that `completeness_discrete` — the result a consumer wants — routes around it via
+- [x] Note that `completeness_discrete` — the result a consumer wants — routes around it via
       `countermodel_discrete_reynolds_v2` (`WeakCanonical/IntegerModel/ReynoldsBridge.lean`) and is
       sorry-free.
-- [ ] (extra defect) Fix architecture line 2: "**TruthLemma**: … (atom/bot/imp proved, rest sorried)"
+- [x] (extra defect) Fix architecture line 2: "**TruthLemma**: … (atom/bot/imp proved, rest sorried)"
       — `G_backward_mcs` and `H_backward_mcs` exist in `WeakCanonical/TruthLemma.lean` and the file
       has no `sorry`.
-- [ ] (extra defect) Fix architecture line 7: "**Table**: … (deferred)" — `table`,
+- [x] (extra defect) Fix architecture line 7: "**Table**: … (deferred)" — `table`,
       `table_depth_bound`, `TemporalTruth` and `table_correctness` are all landed in `Table.lean`.
-- [ ] (extra defect) Delete the interim-fallback paragraph ("Currently delegates to the chronicle
+- [x] (extra defect) Delete the interim-fallback paragraph ("Currently delegates to the chronicle
       construction as interim fallback … activation when the Phase 3-5 sorries are resolved"): the
       chronicle chain is archived (this same docstring says so eight lines earlier) and there are no
       Phase 3-5 sorries left.
-- [ ] KEEP the `## Main Export` block verbatim — it is the one current part of this docstring.
-- [ ] Rebuild `lake build`; commit.
+- [x] KEEP the `## Main Export` block verbatim — it is the one current part of this docstring.
+- [x] Rebuild `lake build`; commit.
 
 **Timing**: 1 hour
 
@@ -444,25 +444,25 @@ returns.
 
 ---
 
-### Phase 7: (g) `ShuffleReal.lean` — proved lemma called a strategic sorry [IN PROGRESS]
+### Phase 7: (g) `ShuffleReal.lean` — proved lemma called a strategic sorry [COMPLETED]
 
 **Goal**: Rewrite the module docstring's "What is landed here, and what is not" section so it agrees
 with the theorem docstrings 165 lines below it, which already record the correct state.
 
 **Tasks**:
-- [ ] Replace "`doets_lemma_1_5` is stated but not proved … carried as a documented strategic
+- [x] Replace "`doets_lemma_1_5` is stated but not proved … carried as a documented strategic
       `sorry`" with: `doets_lemma_1_5` is proved, via `kEquiv_orderedSum_of_kEquiv_colour`, with
       `BackAndForth.lean`'s `BackForth`/`kEquiv_iff_backForth` and `MixedSum.lean`'s
       `Mixed`/`backForth_of_mixed` supplying the engine (all named in the theorem's own docstring).
-- [ ] (extra defect) Replace the second false paragraph: the coloured-index `≡ₖ` fact is NOT carried
+- [x] (extra defect) Replace the second false paragraph: the coloured-index `≡ₖ` fact is NOT carried
       as an explicit hypothesis — it is proved by `kEquiv_colourStructure` (`ColourOrders.lean`), and
       `kEquiv_shuffle_shuffleReal`'s signature no longer takes `hcol`.
-- [ ] (extra defect) Delete the trailing "The only thing this theorem is still conditional on is
+- [x] (extra defect) Delete the trailing "The only thing this theorem is still conditional on is
       `doets_lemma_1_5` itself" sentence — vacuous now that `doets_lemma_1_5` is proved.
-- [ ] State that the module is sorry-free and unconditional (C3: the sole tree `sorry` is in
+- [x] State that the module is sorry-free and unconditional (C3: the sole tree `sorry` is in
       `Transfer.lean`).
-- [ ] KEEP the Doets/Reynolds provenance prose — it is accurate and is the module's value.
-- [ ] Rebuild `lake build`; commit.
+- [x] KEEP the Doets/Reynolds provenance prose — it is accurate and is the module's value. *(deviation: altered — also dropped the passage's citation of `sum_nf_agree`, which is not a declaration, and converted the wrong `OrderedSum.lean:41` citation on `doets_lemma_1_4` to a symbol reference)*
+- [x] Rebuild `lake build`; commit.
 
 **Timing**: 0.5 hours
 
@@ -485,30 +485,30 @@ writing the replacement text.
 
 ---
 
-### Phase 8: (h) `Soundness.lean` — IRR rule and `IRRSoundness.lean` do not exist [NOT STARTED]
+### Phase 8: (h) `Soundness.lean` — IRR rule and `IRRSoundness.lean` do not exist [COMPLETED]
 
 **Goal**: Remove every reference to a nonexistent IRR rule, a nonexistent file, and a nonexistent
 declaration; fix the broken relative documentation link in the same block.
 
 **Tasks**:
-- [ ] Delete numbered list item 6 ("**IRR rule**: Sound by construction (see IRRSoundness.lean)").
+- [x] Delete numbered list item 6 ("**IRR rule**: Sound by construction (see IRRSoundness.lean)").
       There is nothing to replace it with: `inductive DerivationTree` has exactly seven constructors
       (`axiom`, `assumption`, `modus_ponens`, `necessitation`, `temporal_necessitation`,
       `temporal_duality`, `weakening`) and no IRR among them.
-- [ ] Ensure the numbered list enumerates the constructors the soundness induction actually cases on;
+- [x] Ensure the numbered list enumerates the constructors the soundness induction actually cases on;
       re-derive the constructor list from `ProofSystem/Derivation.lean` before writing it.
-- [ ] Delete the `[IRRSoundness.lean](./IRRSoundness.lean)` link from `## References`.
-- [ ] Remove or rewrite the three `irr_sound_dense_at_domain` prose notes (attached to
+- [x] Delete the `[IRRSoundness.lean](./IRRSoundness.lean)` link from `## References`.
+- [x] *(deviation: altered — a fourth stale IRR site was found in `soundness_dense`'s docstring and fixed too, and the same block's false "Non-domain case: a known semantic gap (sorried)" claim was removed)* Remove or rewrite the three `irr_sound_dense_at_domain` prose notes (attached to
       `soundness_dense_valid` and `soundness_dense`) — the symbol does not exist as a declaration and
       the derivation type has no constructor for the case they describe.
-- [ ] (extra defect) Fix the link depth: `[architecture.md](../../../docs/user-guide/architecture.md)`
+- [x] (extra defect) Fix the link depth: `[architecture.md](../../../docs/user-guide/architecture.md)`
       resolves one level above the repository root from `FormalSystem/Metalogic/`. The correct target
       is `../../docs/user-guide/architecture.md`. (C5 lints markdown files only, so this `.lean`
       docstring link is invisible to it — verify by hand.)
-- [ ] KEEP untouched: "All soundness theorems are sorry-free" and the three `(sorry-free)`
+- [x] KEEP untouched: "All soundness theorems are sorry-free" and the three `(sorry-free)`
       annotations on `soundness` / `soundness_dense` / `soundness_discrete` — C3 confirms them.
       `derivable_implies_swap_valid` and `derivable_implies_swap_valid_discrete` also stay.
-- [ ] Rebuild `lake build`; commit.
+- [x] Rebuild `lake build`; commit.
 
 **Timing**: 0.75 hours
 
@@ -532,30 +532,30 @@ from `ProofSystem/Derivation.lean` and re-grep both citation counts in the file 
 
 ---
 
-### Phase 9: (i) `PriorExpressivenessDense.lean` — resolve the self-contradiction [NOT STARTED]
+### Phase 9: (i) `PriorExpressivenessDense.lean` — resolve the self-contradiction [COMPLETED]
 
 **Goal**: Remove the "this module's only sorry" claim (the later "now sorry-free" claim is the
 correct one), update the three further sites stale for the same reason, and preserve/strengthen the
 Reynolds Theorem 3 pinning point.
 
 **Tasks**:
-- [ ] Fix the "What this module lands" bullet claiming `uSExpressivelyCompleteOverDensePrior`
+- [x] Fix the "What this module lands" bullet claiming `uSExpressivelyCompleteOverDensePrior`
       "carries this module's only `sorry`, isolated in `kampFaithfulExpressiveCompleteness_open`".
       The DISCHARGED section ~130 lines later is correct: the module is sorry-free.
       `kampFaithfulExpressiveCompleteness_open` is now a retained alias for
       `kampFaithfulExpressiveCompleteness` at the same type with no weakening, contributing no
       `sorryAx` downstream.
-- [ ] (stale site 1) Fix the first "What this module lands" bullet:
+- [x] (stale site 1) Fix the first "What this module lands" bullet:
       `KampFaithfulExpressiveCompleteness` is no longer "stated as a type rather than proved" — it is
       proved in four sorry-free rungs the DISCHARGED section enumerates
       (`Kamp.kampArm_zeta_faithful`, `Kamp.aggOdPopFold_iff_faithful`, the bridge/trichotomy files,
       and `Kamp/KampPriorFaithful.lean`).
-- [ ] (stale site 2) Fix `uSExpressivelyCompleteOverDensePrior`'s docstring: delete "**Rests on one
+- [x] (stale site 2) Fix `uSExpressivelyCompleteOverDensePrior`'s docstring: delete "**Rests on one
       open obligation**, `kampFaithfulExpressiveCompleteness_open`".
-- [ ] (stale site 3) Fix `uSExpressivelyCompleteOverDensePrior_at_denseWindow`'s docstring: it no
+- [x] (stale site 3) Fix `uSExpressivelyCompleteOverDensePrior_at_denseWindow`'s docstring: it no
       longer "does not inherit the open obligation's `sorry`", and the anti-vacuity statement is no
       longer qualified by "while the obligation is open".
-- [ ] KEEP AND STRENGTHEN the pinning point already in the file:
+- [x] KEEP AND STRENGTHEN the pinning point already in the file:
       `uSExpressivelyCompleteOverDensePrior` **is** Reynolds' Theorem 3, whereas
       `uSExpressivelyCompleteOverPrior` (`PriorExpressiveness.lean`), pinned at the strictly stronger
       `SemanticPriorUZ`/`SemanticPriorSZ`, is NOT. Add that
@@ -563,12 +563,12 @@ Reynolds Theorem 3 pinning point.
       outright rather than Theorem 3 modulo an obligation. Keep the supporting citations
       (`semanticPriorU_not_implies_semanticPriorUZ` exhibiting `denseRayFlow`;
       `uSExpressivelyCompleteOverDensePrior_not_by_reuse`).
-- [ ] Replace all three `PriorDefsDense.lean:372` citations with a symbol reference —
+- [x] Replace all three `PriorDefsDense.lean:372` citations with a symbol reference —
       ``semanticPriorU_not_implies_semanticPriorUZ` (`PriorDefsDense.lean`)`` — the cited line is
       wrong (the theorem is one line later), which is the exact rot mode this task exists to retire.
-- [ ] Convert line-number citations to symbol references **inside rewritten passages only**; do not
+- [x] Convert line-number citations to symbol references **inside rewritten passages only**; do not
       convert the rest of the file's citations.
-- [ ] Rebuild `lake build`; commit.
+- [x] Rebuild `lake build`; commit.
 
 **Timing**: 1.25 hours
 

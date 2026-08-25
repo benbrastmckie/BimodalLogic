@@ -28,7 +28,7 @@ exactly `SemanticPriorU` and `SemanticPriorS`.
 **Consequence, and the reason this module exists**: Reynolds' Theorem 3 is a statement about
 `SemanticPriorU` / `SemanticPriorS`. The landed `uSExpressivelyCompleteOverPrior` is pinned at
 `SemanticPriorUZ` / `SemanticPriorSZ`, which are *not* Reynolds' Prior axioms and are strictly
-stronger (`semanticPriorU_not_implies_semanticPriorUZ`, `PriorDefsDense.lean:372`). So
+stronger (`semanticPriorU_not_implies_semanticPriorUZ`, `PriorDefsDense.lean`). So
 `uSExpressivelyCompleteOverPrior` **is not Reynolds' Theorem 3**, and
 `uSExpressivelyCompleteOverDensePrior` below is. This is a fidelity gap in the tree's existing
 naming, established by reading the source rather than inferred from the plan.
@@ -67,7 +67,7 @@ sorry-free. What remains open is the spine *above* the wire; see
 
 **And the obstruction is strictly worse than a missing composition.** The tree already
 machine-checks that the dense hypotheses do not supply the integer ones:
-`semanticPriorU_not_implies_semanticPriorUZ` (`PriorDefsDense.lean:372`) exhibits `denseRayFlow`
+`semanticPriorU_not_implies_semanticPriorUZ` (`PriorDefsDense.lean`) exhibits `denseRayFlow`
 satisfying `SemanticPriorU ∧ SemanticPriorS` and refuting `SemanticPriorUZ`. Its own docstring
 draws the consequence for exactly this module: *"every declaration pinned at `SemanticPriorUZ` /
 `SemanticPriorSZ` — `uSExpressivelyCompleteOverPrior` (`PriorExpressiveness.lean:357`) ... and
@@ -78,17 +78,26 @@ unavailability as a claim about this module's own target.
 
 ## What this module lands
 
-* `KampFaithfulExpressiveCompleteness` — the open obligation, named and stated: expressive
-  completeness at `HasFaithfulDedekindINF` / `HasFaithfulDedekindSUP`. This is the plan's
-  `kampDedekindExpressiveCompleteness`, stated as a type rather than proved, because the
-  measurement above shows it is a re-base of the whole zeta wire and not a composition.
+* `KampFaithfulExpressiveCompleteness` — expressive completeness at `HasFaithfulDedekindINF` /
+  `HasFaithfulDedekindSUP`, stated as a type and **proved**, by
+  `kampFaithfulExpressiveCompleteness`. The measurement above was right that it is a re-base of
+  the whole zeta wire rather than a composition; the re-base was then carried out, in four
+  sorry-free rungs the DISCHARGED section below enumerates — `Kamp.kampArm_zeta_faithful`
+  (`Kamp/ZetaUniformExtractFaithful.lean`), `Kamp.aggOdPopFold_iff_faithful`
+  (`Kamp/NfMultiAnchorBridge/AggregateOffDiagK1Faithful.lean`), the bridge and trichotomy files
+  under `Kamp/NfMultiAnchorBridge/`, and the spine `Kamp/KampPriorFaithful.lean`.
 * `uSExpressivelyCompleteOverDensePrior_of_faithful` — **sorry-free**. The composition the plan
   chartered, discharged in full: the obligation plus `prior_hasFaithfulDedekindINF_dense` /
   `prior_hasFaithfulDedekindSUP_dense` (Phase 10.1, `Kamp/KPlusFaithful.lean:474`, `:524`) gives
   the dense target. Every step of the intended composition that *can* be taken is taken here.
 * `uSExpressivelyCompleteOverDensePrior` — the plan-shaped target, obtained from the conditional
-  by the single open obligation. It carries this module's **only** `sorry`, isolated in
-  `kampFaithfulExpressiveCompleteness_open`.
+  by discharging the obligation. **This module is sorry-free**; the repository's sole structural
+  `sorry` is `countermodel_discrete` in `WeakCanonical/Transfer.lean`, which check C3 of
+  `scripts/check-module-invariants.sh` pins by content, and nothing here routes through it.
+  `kampFaithfulExpressiveCompleteness_open` is a retained alias for
+  `kampFaithfulExpressiveCompleteness` at the same type with no weakening, contributing no
+  `sorryAx` downstream. Because the target is now **unconditional**, it is Reynolds' Theorem 3
+  outright rather than Theorem 3 modulo an obligation.
 * Anti-vacuity, sorry-free, at Phase 9's positive dense witness `denseWindowFlow`.
 
 ## Domain restriction, inherited and stated
@@ -140,7 +149,7 @@ The gate's verdict, restated where it bites: the dense hypotheses of
 `uSExpressivelyCompleteOverDensePrior` at which `uSExpressivelyCompleteOverPrior`'s first
 hypothesis fails, so no instantiation of the landed integer theorem proves the dense one.
 
-This is `semanticPriorU_not_implies_semanticPriorUZ` (`PriorDefsDense.lean:372`) read as a
+This is `semanticPriorU_not_implies_semanticPriorUZ` (`PriorDefsDense.lean`) read as a
 statement about this module's charter: the witness is `denseRayFlow`. It is the reason
 `KampFaithfulExpressiveCompleteness` below is an obligation rather than a corollary. -/
 theorem uSExpressivelyCompleteOverDensePrior_not_by_reuse :
@@ -148,12 +157,13 @@ theorem uSExpressivelyCompleteOverDensePrior_not_by_reuse :
       SemanticPriorU M atomMap ∧ SemanticPriorS M atomMap ∧ ¬ SemanticPriorUZ M atomMap :=
   semanticPriorU_not_implies_semanticPriorUZ
 
-/-! ## The open obligation
+/-! ## The obligation, stated
 
-The plan's `kampDedekindExpressiveCompleteness`, stated. The measurement above shows it is a
-re-base of `Kamp/ZetaUniformExtract.lean`'s zeta wire from `HasAttainedINF` / `HasAttainedSUP`
-onto `HasFaithfulDedekindINF` / `HasFaithfulDedekindSUP`, together with everything the wire
-consumes below it — not a composition of already-landed parts. -/
+The plan's `kampDedekindExpressiveCompleteness`, stated here as a type and discharged in the
+DISCHARGED section below. The measurement above showed it to be a re-base of
+`Kamp/ZetaUniformExtract.lean`'s zeta wire from `HasAttainedINF` / `HasAttainedSUP` onto
+`HasFaithfulDedekindINF` / `HasFaithfulDedekindSUP`, together with everything the wire consumes
+below it — not a composition of already-landed parts. That re-base is what was then built. -/
 
 /-- **Expressive completeness at the faithful eq (5.2) carrier** — the obligation this module's
 target rests on, and the faithful sibling of `Kamp.kampPriorExpressiveCompleteness`
@@ -273,8 +283,8 @@ noncomputable def kampFaithfulExpressiveCompleteness
 
 /-- **Retained name.** This was the module's strategic sorry; it is now
 `kampFaithfulExpressiveCompleteness` under its former name, at the same type and with no
-weakening. It is kept so that every consumer written against the open obligation continues to
-typecheck unchanged, and it no longer contributes `sorryAx` to anything downstream. -/
+weakening. It is kept so that every consumer written against the obligation under its former
+name continues to typecheck unchanged, and it contributes no `sorryAx` to anything downstream. -/
 noncomputable def kampFaithfulExpressiveCompleteness_open
     {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (atomMap : Formula → sig.preds)
@@ -289,13 +299,17 @@ structures."*
 Reynolds' "Prior structure" is defined on that page as a linear temporal structure satisfying all
 substitution instances of Prior-U and Prior-S, which are `SemanticPriorU` / `SemanticPriorS`
 (printed p.168). So **this declaration is Reynolds' Theorem 3**, whereas
-`uSExpressivelyCompleteOverPrior` (`PriorExpressiveness.lean:357`), pinned at the strictly
+`uSExpressivelyCompleteOverPrior` (`PriorExpressiveness.lean`), pinned at the strictly
 stronger `SemanticPriorUZ` / `SemanticPriorSZ`, is not — see this module's header.
 `uSExpressivelyCompleteOverDensePrior_not_by_reuse` shows the gap between the two hypothesis sets
-is real, so this is not a restatement of the landed theorem.
+is real (its witness is `semanticPriorU_not_implies_semanticPriorUZ`, `PriorDefsDense.lean`,
+exhibiting `denseRayFlow`), so this is not a restatement of the landed theorem.
 
-**Rests on one open obligation**, `kampFaithfulExpressiveCompleteness_open`; see its docstring.
-The composition itself, `uSExpressivelyCompleteOverDensePrior_of_faithful`, is sorry-free.
+**Unconditional and sorry-free.** It routes through `kampFaithfulExpressiveCompleteness_open`,
+which is now a retained alias for the proved `kampFaithfulExpressiveCompleteness` at the same
+type and with no weakening; the composition itself,
+`uSExpressivelyCompleteOverDensePrior_of_faithful`, was always sorry-free. Being unconditional is
+what makes this Reynolds' Theorem 3 outright rather than Theorem 3 modulo an obligation.
 
 Obtained by Rabinovich's method relativized to the faithful eq (5.2) carrier, **not** by
 Reynolds' own reduction to `{U,S,U',S'}`, which would run through the Boneyard'd, sorry-tainted
@@ -318,8 +332,9 @@ noncomputable def uSExpressivelyCompleteOverDensePrior
 /-! ## Anti-vacuity
 
 **The phase's most important task**, and entirely sorry-free: everything below is independent of
-the open obligation. A sorry-free `uSExpressivelyCompleteOverDensePrior` whose hypothesis no
-dense structure satisfies would reproduce the exact defect this whole block exists to repair, so
+how the expressive-completeness obligation is met. A sorry-free
+`uSExpressivelyCompleteOverDensePrior` whose hypothesis no dense structure satisfies would
+reproduce the exact defect this whole block exists to repair, so
 the hypothesis pair is exhibited as inhabited at Phase 9's positive dense witness
 `denseWindowFlow` (`PriorDefsDense.lean:336`), and the conditional theorem is instantiated there
 at a non-trivial `psi`. -/
@@ -375,12 +390,14 @@ theorem denseTestPsi_eval (t : denseWindowFlow.carrier) :
 `{ A : Formula // … }` at the dense window flow for the non-trivial `denseTestPsi`, with the
 hypotheses discharged from `densePrior_target_hypotheses_inhabited` rather than assumed.
 
-**Sorry-free**: it consumes `uSExpressivelyCompleteOverDensePrior_of_faithful`, not
-`uSExpressivelyCompleteOverDensePrior`, so it does not inherit the open obligation's `sorry` —
-it takes the obligation as a hypothesis and is honest about doing so. This is the strongest
-anti-vacuity statement available while the obligation is open: it shows the target's conclusion
-is *reachable* at a dense structure, and that the route from the hypotheses to the carrier
-actually fires there. -/
+**Sorry-free**, and stated parametrically in `H` rather than applying
+`kampFaithfulExpressiveCompleteness` internally: it consumes
+`uSExpressivelyCompleteOverDensePrior_of_faithful` rather than
+`uSExpressivelyCompleteOverDensePrior`, so what it exhibits is independent of *how* the
+expressive-completeness obligation is met. That was originally a way of staying honest while the
+obligation was open; now that `kampFaithfulExpressiveCompleteness` proves it, the parametric form
+is simply the stronger statement. It shows the target's conclusion is *reachable* at a dense
+structure, and that the route from the hypotheses to the carrier actually fires there. -/
 noncomputable def uSExpressivelyCompleteOverDensePrior_at_denseWindow
     (H : KampFaithfulExpressiveCompleteness densePriorAtomMap densePriorAtomMap_surj) :
     { A : Formula //

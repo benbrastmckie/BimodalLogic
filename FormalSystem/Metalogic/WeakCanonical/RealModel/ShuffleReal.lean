@@ -35,13 +35,16 @@ Printed p.188:
 > But then `R` being Dedekind complete, dense, without end points and with a countable dense
 > subset must be isomorphic to the reals.
 
-## What is landed here, and what is not
+## What is landed here
 
 `shuffleColourReal` is `σ*`; `shuffleReal` is `Σ_{r∈ℝ} σ*(r)`.
 
-**`doets_lemma_1_5` is stated but not proved.** Reynolds' *"another simple game argument"* is one
-clause long and is not a proof. The result it names is **Doets 1987, 3.1.8** — the *mixing*
-lemma:
+**This module is sorry-free and unconditional.** The repository's sole structural `sorry` is
+`countermodel_discrete` in `WeakCanonical/Transfer.lean`, which check C3 of
+`scripts/check-module-invariants.sh` pins by content; nothing here routes through it.
+
+**`doets_lemma_1_5` is proved.** Reynolds' *"another simple game argument"* is one clause long
+and is not a proof. The result it names is **Doets 1987, 3.1.8** — the *mixing* lemma:
 
 > if `(I, {i | m(i) ⊨ σ})_{σ∈Z} ≡ⁿ (J, {j | m'(j) ⊨ σ})_{σ∈Z}` then
 > `Σ_{i∈I} m(i) ≡ⁿ Σ_{j∈J} m'(j)`
@@ -51,25 +54,23 @@ which reduces the claim to a `≡ⁿ` fact about the `Z`-coloured index orders. 
 `normalFormFintype`) and the colouring of an index the `k`-type of its summand — literally
 *"which sentences of `Z` the summand satisfies"*.
 
-The proof is a genuine Ehrenfeucht-Fraïssé argument on the sums, generalizing
-`doets_lemma_1_4`'s (`OrderedSum.lean:41`) normal-form induction from a *shared* index set to a
-*coloured back-and-forth between two different* index sets. `NEquivalence.lean`'s
-`sum_nf_agree` apparatus proves the shared-index case; the two-index case is not in the tree and
-is not derived here. It is carried as a documented strategic `sorry` with the follow-up named in
-the docstring, exactly as the honesty charter requires, rather than as a false or vacuous
-statement. **Nothing else in this module depends on it**: the order-theoretic content of `R`
-below is independent and sorry-free.
+Its proof is `kEquiv_orderedSum_of_kEquiv_colour` (`MixedSum.lean`) — a genuine
+Ehrenfeucht-Fraïssé argument on the sums, generalizing `doets_lemma_1_4`'s (`OrderedSum.lean`)
+normal-form induction from a *shared* index set to a *coloured back-and-forth between two
+different* index sets. The engine underneath it is `BackAndForth.lean`'s `BackForth` and
+`kEquiv_iff_backForth`, together with `MixedSum.lean`'s `Mixed` relation and `backForth_of_mixed`.
 
-The `≡ₖ` fact about the coloured index orders themselves — that `(ℚ, σ)` and `(ℝ, σ*)`, both
-densely coloured by the same finite palette, are `≡ₖ` — is likewise not proved here. It is
-carried as an **explicit hypothesis** of `kEquiv_shuffle_shuffleReal` rather than as a second
-`sorry`, so a reader of that theorem's statement can see precisely what remains open.
+**The `≡ₖ` fact about the coloured index orders themselves is proved too** — that `(ℚ, σ)` and
+`(ℝ, σ*)`, both densely coloured by the same finite palette, are `≡ₖ`. It is
+`kEquiv_colourStructure` (`ColourOrders.lean`). It was once carried as an explicit hypothesis
+`hcol` of `kEquiv_shuffle_shuffleReal`; that hypothesis is gone, and the theorem's signature now
+takes only the shuffle data `hγ` and `hσ` it was always a consequence of.
 
 ## References
 - Reynolds 1992, §8, printed p.188:
   `literature/sources/reynolds_1992/sec04_7-separability.md`
 - Doets 1987/1989, 3.1.8 (the mixing lemma): `literature/Doets_1989_Monadic_Pi11_Theories.md`
-- Doets 1989, Lemma 1.4 (shared-index case): `doets_lemma_1_4` (`OrderedSum.lean:41`)
+- Doets 1989, Lemma 1.4 (shared-index case): `doets_lemma_1_4` (`OrderedSum.lean`)
 -/
 
 namespace FormalSystem.Metalogic.WeakCanonical
@@ -186,7 +187,7 @@ restated here under Doets' numbering, which is how the rest of this file refers 
 > if `(I, {i | m(i) ⊨ σ})_{σ∈Z} ≡ⁿ (J, {j | m'(j) ⊨ σ})_{σ∈Z}` then
 > `Σ_{i∈I} m(i) ≡ⁿ Σ_{j∈J} m'(j)`
 
-This is the two-index generalization of `doets_lemma_1_4` (`OrderedSum.lean:41`), which is the
+This is the two-index generalization of `doets_lemma_1_4` (`OrderedSum.lean`), which is the
 special case `I = J` with the identity colour-matching. It is what Reynolds 1992 (printed p.188)
 invokes as *"another simple game argument"* when he passes from the `ℚ`-shuffle to its
 `ℝ`-extension; he gives no proof, and the game argument is not simple.
@@ -226,8 +227,6 @@ dense endpointless orders coloured by the same palette with every colour dense i
 interval, so the colour-preserving back-and-forth wins the depth-`k` game. It was carried as an
 explicit hypothesis `hcol` while it was open; that hypothesis is gone, replaced by the shuffle
 data `hγ` and `hσ` it was always a consequence of.
-
-The only thing this theorem is still conditional on is `doets_lemma_1_5` itself.
 -/
 theorem kEquiv_shuffle_shuffleReal (k : Nat) {ι : Type} {S : Finset ι}
     (N : ι → OrderedMonadicStructure sig) {γ₁ : ι} {σ : ℚ → ι}

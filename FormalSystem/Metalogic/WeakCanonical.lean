@@ -57,13 +57,16 @@ is archived — see `Boneyard/DeadChronicleGapElimination/ChronicleGapChainExcis
 ## Architecture
 
 1. **ReflexiveCanonical**: Domain, relation (reflexive), valuation
-2. **TruthLemma**: Truth lemma (atom/bot/imp proved, rest sorried)
+2. **TruthLemma**: Truth lemma; sorry-free, including the backward directions
+   `G_backward_mcs` and `H_backward_mcs`
 3. **FrameProperties**: Z1, Prior-UZ/SZ, seriality in canonical frame
 4. **ChronicleExtraction**: Extract chronicle as prior structure (Corollary 3)
 5. **NEquivalence**: Monadic FO framework, OrderedMonadicStructure, KEquivalenceFramework
 6. **OrderedSum**: Doets Lemma 1.4/1.5 (ordered sum preservation)
-7. **Table**: Temporal-to-monadic table translation (deferred)
-8. **IntegerModel**: Good/very good, ContempEquiv, one-class, chronicle_is_good
+7. **Table**: Temporal-to-monadic table translation — `table`, `table_depth_bound`,
+   `TemporalTruth` and `table_correctness` are all landed and sorry-free
+8. **IntegerModel**: Good/very good, ContempEquiv, one-class, and the sorry-free bridge
+   `countermodel_discrete_reynolds_v2` (`IntegerModel/ReynoldsBridge.lean`)
 9. **Transfer**: `countermodel_discrete` — the main theorem
 
 ## Main Export
@@ -79,20 +82,26 @@ is `completeness_discrete`, via `countermodel_discrete_reynolds_v2`
 
 ## Status
 
-The full Reynolds construction has documented sorries at:
-- Truth lemma: G/H backward, Until/Since
-- KEquivalenceFramework: awaiting Tarski semantics instance
-- Table correctness: monadic FO satisfaction deferred
-- One-class theorem: depends on gap-elimination lemmas
-- chronicle_is_good: cofinal sequence construction
+**This subtree carries exactly one structural `sorry`**: `countermodel_discrete`, in
+`WeakCanonical/Transfer.lean`. It is also the repository's only one. Check C3 of
+`scripts/check-module-invariants.sh` asserts this by content — it locates the enclosing
+declaration by scanning backwards from the `sorry`, never by line number — so the claim is
+re-derivable rather than maintained by hand, and no line number for it is recorded here.
+
+Every other declaration in this subtree is sorry-free, which for a live declaration follows from
+its existence given C3. In particular `G_backward_mcs` and `H_backward_mcs` (`TruthLemma.lean`),
+`class KEquivalenceFramework` (`NEquivalence.lean`), and `table_correctness` (`Table.lean`) are
+all proved.
+
+**The consumer-facing discrete result routes around the one `sorry`.**
+`BXCanonical.completeness_discrete` reaches its countermodel via
+`countermodel_discrete_reynolds_v2` (`IntegerModel/ReynoldsBridge.lean`) rather than through
+`countermodel_discrete`, and is therefore proved *and* sorry-free — check C2 records it as
+depending on `[propext, Classical.choice, Quot.sound]`, with no `sorryAx`. This is a different
+property from `BXCanonical.completeness` at `.Base`, which is proved but does depend on
+`sorryAx`; C2 pins both, and the distinction is deliberate.
 
 All definitions are NON-VACUOUS (no `True`, `trivial`, or `Unit` bodies).
-Sorries are clean — they represent standard model-theoretic results
-(Doets 1989) that follow once monadic FO Tarski semantics is formalized.
-
-Currently delegates to the chronicle construction as interim fallback.
-The structural Reynolds pipeline is fully wired for activation when
-the Phase 3-5 sorries are resolved.
 
 ## References
 - Reynolds 1994, Theorems 14-18
