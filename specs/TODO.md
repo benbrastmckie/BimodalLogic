@@ -26,7 +26,7 @@ next_project_number: 488
 
 ### Agent System
 
-487 [RESEARCHED] — TOOLING FIX: repair the 128KB argv ceiling that silently disables
+487 [PLANNED] — TOOLING FIX: repair the 128KB argv ceiling that silently disables
 
 ### Algebraic Representation
 
@@ -38,7 +38,7 @@ next_project_number: 488
 
 ### Code Quality
 
-484 [RESEARCHED] — DOCUMENTATION ANCHOR CORRECTION: repair specs/ROADMAP.md and Form
+484 [PLANNED] — DOCUMENTATION ANCHOR CORRECTION: repair specs/ROADMAP.md and Form
   └─ 485 [NOT STARTED] — README CORRECTION: rewrite the top-level README.md and repair the
     └─ 486 [NOT STARTED] — docs/ OVERHAUL: delete the documents that are fiction, rewrite th
 
@@ -86,11 +86,12 @@ next_project_number: 488
 ## Tasks
 
 ### 487. Fix argv ceiling in roadmap integration and state write
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
 - **Research**: [487_fix_argv_ceiling_in_roadmap_integration_and_state_write/reports/01_fix-argv-ceiling.md]
+- **Plan**: [487_fix_argv_ceiling_in_roadmap_integration_and_state_write/plans/01_fix-argv-ceiling.md]
 
 **Description**: TOOLING FIX: repair the 128KB argv ceiling that silently disables roadmap integration and can corrupt ROADMAP.md, plus the same defect in the state writer.
 
@@ -317,11 +318,12 @@ FormalSystem/Metalogic.lean, FormalSystem/Metalogic/Decidability.lean, FormalSys
 ---
 
 ### 484. Documentation anchor roadmap and metalogic readme
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: code-quality
 - **Dependencies**: None
 - **Research**: [484_documentation_anchor_roadmap_and_metalogic_readme/reports/01_anchor-doc-verification.md]
+- **Plan**: [484_documentation_anchor_roadmap_and_metalogic_readme/plans/01_anchor-doc-correction.md]
 
 **Description**: DOCUMENTATION ANCHOR CORRECTION: repair specs/ROADMAP.md and FormalSystem/Metalogic/README.md, the two documents every other correction pass is realigned against.
 
