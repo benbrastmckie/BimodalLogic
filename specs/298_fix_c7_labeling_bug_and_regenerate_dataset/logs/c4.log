@@ -1,0 +1,164 @@
+[warn] Slow formula (#323): □(□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 3000ms
+[warn] Slow formula (#324): □(□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 3000ms
+[warn] Slow formula (#325): □(□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 3000ms
+[warn] Slow formula (#326): □(□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 3001ms
+[warn] Slow formula (#957): U((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 3000ms
+[warn] Slow formula (#958): U((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 3000ms
+[warn] Slow formula (#959): U((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 3000ms
+[warn] Slow formula (#960): U((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 3000ms
+[warn] Slow formula (#1078): S((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 3000ms
+[warn] Slow formula (#1079): S((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 3000ms
+[warn] Slow formula (#1080): S((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 3000ms
+BMLogic Dataset Generator
+========================
+Max complexity: 4
+Max modal depth: 2
+Max temporal depth: 2
+Max formulas: unlimited
+Valid seed count: 500
+Output: specs/298_fix_c7_labeling_bug_and_regenerate_dataset/logs/test-c4.jsonl
+Include duals: false
+Frame class: Base
+Wall-clock timeout: 3000ms
+Generation mode: exhaustive
+
+Generating formulas...
+[gen] Starting formula enumeration (exhaustive mode, max complexity 4)...
+[enum] Level 1/4: 0 formulas (cumulative: 0), 0s elapsed, 0 formulas/sec, ETA:
+                0s
+[enum] Level 2/4: 0 formulas (cumulative: 0), 0s elapsed, 0 formulas/sec, ETA:
+                0s
+[enum] Level 3/4: 684 formulas (cumulative: 684), 0s elapsed, 684 formulas/sec, ETA:
+                0s
+[enum] Level 4/4: 7852 formulas (cumulative: 8536), 0s elapsed, 8536 formulas/sec, ETA:
+                0s
+[gen] Enumeration complete: 8536 formulas in 0s
+[gen] Starting valid-seed generation (500 seeds)...
+[valid] Seeding: 50/500 axiom instances, pool: 39 unique, 0s elapsed
+[valid] Seeding: 100/500 axiom instances, pool: 63 unique, 0s elapsed
+[valid] Seeding: 150/500 axiom instances, pool: 87 unique, 0s elapsed
+[valid] Seeding: 200/500 axiom instances, pool: 107 unique, 0s elapsed
+[valid] Seeding: 250/500 axiom instances, pool: 115 unique, 0s elapsed
+[valid] Seeding: 300/500 axiom instances, pool: 123 unique, 0s elapsed
+[valid] Seeding: 350/500 axiom instances, pool: 136 unique, 0s elapsed
+[valid] Seeding: 400/500 axiom instances, pool: 144 unique, 0s elapsed
+[valid] Seeding: 450/500 axiom instances, pool: 146 unique, 0s elapsed
+[valid] Seeding: 500/500 axiom instances, pool: 152 unique, 0s elapsed
+[valid] Closure round 1: pool 187 -> 194 (+7, 3% growth), 0s elapsed
+[valid] Closure round 2: pool 194 -> 194 (+0, 0% growth), 0s elapsed
+[valid] Closure converged at round 2 (0% growth < 1%)
+[gen] Valid-seed generation complete: 26 valid formulas in 0s
+[gen] Total: 8149 unique formulas after deduplication
+  Generated 8149 unique formulas
+Writing checkpoint file: specs/298_fix_c7_labeling_bug_and_regenerate_dataset/logs/test-c4.checkpoint...
+  Wrote 8149 formulas to checkpoint
+Deduplicated 8149 -> 3087 formulas (2.6x reduction)
+Labeling and streaming 3087 formulas to specs/298_fix_c7_labeling_bug_and_regenerate_dataset/logs/test-c4.jsonl...
+[label] Starting labeling of 3087 formulas...
+[label] 1000/3087 labeled (32%), 0% valid, 6% timeout, 37 formulas/sec, ETA: 0m 56s
+[label] 2000/3087 labeled (64%), 0% valid, 5% timeout, 53 formulas/sec, ETA: 0m 20s
+[label] 3000/3087 labeled (97%), 0% valid, 4% timeout, 76 formulas/sec, ETA: 0m 1s
+[cache] Cache: 0 hits, 3087 misses, 0% hit rate, 0 evictions, 3087 entries
+[label] Labeling complete: 3087 formulas in 39s (78 formulas/sec)
+[mem] VmPeak:	 5793124 kB
+[mem] VmRSS:	  132980 kB
+
+Batch Statistics:
+  Labeled: 3087
+  Valid: 28 (0%)
+  Invalid: 2931
+  Timeout: 128 (4%)
+  Avg decision time: 12ms
+
+  Wrote 3087 records to specs/298_fix_c7_labeling_bug_and_regenerate_dataset/logs/test-c4.jsonl
+  Wrote metadata file
+  Cleaned up checkpoint file: specs/298_fix_c7_labeling_bug_and_regenerate_dataset/logs/test-c4.checkpoint
+
+Feasibility Checks:
+  Timeout rate: 4% (target: <20%)
+  Valid fraction: 0% (target: >=30%)
+  Category diversity: 4 categories
+
+Done!
+[warn] Slow formula (#323): □(□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 3000ms
+[warn] Slow formula (#324): □(□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 3000ms
+[warn] Slow formula (#325): □(□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 3000ms
+[warn] Slow formula (#326): □(□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 3000ms
+[warn] Slow formula (#957): U((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 3000ms
+[warn] Slow formula (#958): U((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 3001ms
+[warn] Slow formula (#959): U((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 3001ms
+[warn] Slow formula (#960): U((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 3000ms
+[warn] Slow formula (#1078): S((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 3000ms
+[warn] Slow formula (#1079): S((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 3000ms
+[warn] Slow formula (#1080): S((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 3000ms
+BMLogic Dataset Generator
+========================
+Max complexity: 4
+Max modal depth: 2
+Max temporal depth: 2
+Max formulas: unlimited
+Valid seed count: 500
+Output: specs/298_fix_c7_labeling_bug_and_regenerate_dataset/logs/test-c4.jsonl
+Include duals: false
+Frame class: Base
+Wall-clock timeout: 3000ms
+Generation mode: exhaustive
+
+Generating formulas...
+[gen] Starting formula enumeration (exhaustive mode, max complexity 4)...
+[enum] Level 1/4: 0 formulas (cumulative: 0), 0s elapsed, 0 formulas/sec, ETA:
+                0s
+[enum] Level 2/4: 0 formulas (cumulative: 0), 0s elapsed, 0 formulas/sec, ETA:
+                0s
+[enum] Level 3/4: 684 formulas (cumulative: 684), 0s elapsed, 684 formulas/sec, ETA:
+                0s
+[enum] Level 4/4: 7852 formulas (cumulative: 8536), 0s elapsed, 8536 formulas/sec, ETA:
+                0s
+[gen] Enumeration complete: 8536 formulas in 0s
+[gen] Starting valid-seed generation (500 seeds)...
+[valid] Seeding: 50/500 axiom instances, pool: 42 unique, 0s elapsed
+[valid] Seeding: 100/500 axiom instances, pool: 75 unique, 0s elapsed
+[valid] Seeding: 150/500 axiom instances, pool: 96 unique, 0s elapsed
+[valid] Seeding: 200/500 axiom instances, pool: 111 unique, 0s elapsed
+[valid] Seeding: 250/500 axiom instances, pool: 123 unique, 0s elapsed
+[valid] Seeding: 300/500 axiom instances, pool: 129 unique, 0s elapsed
+[valid] Seeding: 350/500 axiom instances, pool: 137 unique, 0s elapsed
+[valid] Seeding: 400/500 axiom instances, pool: 145 unique, 0s elapsed
+[valid] Seeding: 450/500 axiom instances, pool: 154 unique, 0s elapsed
+[valid] Seeding: 500/500 axiom instances, pool: 156 unique, 0s elapsed
+[valid] Closure round 1: pool 190 -> 197 (+7, 3% growth), 0s elapsed
+[valid] Closure round 2: pool 197 -> 197 (+0, 0% growth), 0s elapsed
+[valid] Closure converged at round 2 (0% growth < 1%)
+[gen] Valid-seed generation complete: 26 valid formulas in 0s
+[gen] Total: 8149 unique formulas after deduplication
+  Generated 8149 unique formulas
+Writing checkpoint file: specs/298_fix_c7_labeling_bug_and_regenerate_dataset/logs/test-c4.checkpoint...
+  Wrote 8149 formulas to checkpoint
+Deduplicated 8149 -> 3087 formulas (2.6x reduction)
+Labeling and streaming 3087 formulas to specs/298_fix_c7_labeling_bug_and_regenerate_dataset/logs/test-c4.jsonl...
+[label] Starting labeling of 3087 formulas...
+[label] 1000/3087 labeled (32%), 0% valid, 6% timeout, 37 formulas/sec, ETA: 0m 56s
+[label] 2000/3087 labeled (64%), 0% valid, 5% timeout, 52 formulas/sec, ETA: 0m 20s
+[label] 3000/3087 labeled (97%), 0% valid, 4% timeout, 76 formulas/sec, ETA: 0m 1s
+[cache] Cache: 0 hits, 3087 misses, 0% hit rate, 0 evictions, 3087 entries
+[label] Labeling complete: 3087 formulas in 39s (77 formulas/sec)
+[mem] VmPeak:	 5793124 kB
+[mem] VmRSS:	  131276 kB
+
+Batch Statistics:
+  Labeled: 3087
+  Valid: 28 (0%)
+  Invalid: 2931
+  Timeout: 128 (4%)
+  Avg decision time: 12ms
+
+  Wrote 3087 records to specs/298_fix_c7_labeling_bug_and_regenerate_dataset/logs/test-c4.jsonl
+  Wrote metadata file
+  Cleaned up checkpoint file: specs/298_fix_c7_labeling_bug_and_regenerate_dataset/logs/test-c4.checkpoint
+
+Feasibility Checks:
+  Timeout rate: 4% (target: <20%)
+  Valid fraction: 0% (target: >=30%)
+  Category diversity: 4 categories
+
+Done!

@@ -1,0 +1,813 @@
+2026-08-24T18:00:42-07:00
+ℹ [680/855] Replayed FormalSystem.Syntax.Formula
+info: FormalSystem/Syntax/Formula.lean:287:0: 2
+info: FormalSystem/Syntax/Formula.lean:290:0: 2
+info: FormalSystem/Syntax/Formula.lean:293:0: 2
+info: FormalSystem/Syntax/Formula.lean:296:0: 2
+info: FormalSystem/Syntax/Formula.lean:299:0: 3
+info: FormalSystem/Syntax/Formula.lean:302:0: 3
+info: FormalSystem/Syntax/Formula.lean:303:0: 3
+info: FormalSystem/Syntax/Formula.lean:585:0: 3
+info: FormalSystem/Syntax/Formula.lean:588:0: 3
+info: FormalSystem/Syntax/Formula.lean:591:0: 3
+info: FormalSystem/Syntax/Formula.lean:594:0: 3
+info: FormalSystem/Syntax/Formula.lean:597:0: 4
+info: FormalSystem/Syntax/Formula.lean:600:0: 4
+info: FormalSystem/Syntax/Formula.lean:637:0: 2
+info: FormalSystem/Syntax/Formula.lean:640:0: 2
+info: FormalSystem/Syntax/Formula.lean:643:0: 2
+info: FormalSystem/Syntax/Formula.lean:646:0: 2
+info: FormalSystem/Syntax/Formula.lean:649:0: 2
+info: FormalSystem/Syntax/Formula.lean:652:0: 2
+info: FormalSystem/Syntax/Formula.lean:655:0: 2
+⚠ [688/855] Replayed FormalSystem.Metalogic.Decidability.Tableau
+warning: FormalSystem/Metalogic/Decidability/Tableau.lean:466:30: This simp argument is unused:
+  if_false
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [hc, if_true, reduceIte] at hsg
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Tableau.lean:466:40: This simp argument is unused:
+  reduceIte
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [hc, if_true, if_false] at hsg
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Tableau.lean:473:30: This simp argument is unused:
+  if_false
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [hc, if_true, reduceIte] at hsg
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Tableau.lean:473:40: This simp argument is unused:
+  reduceIte
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [hc, if_true, if_false] at hsg
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Tableau.lean:2993:52: This simp argument is unused:
+  Bool.not_eq_true
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [isExpanded, Option.isNone_iff_eq_none, decide_eq_true_eq, Bool.not_eq_eq_eq_not, Bool.not_false,
+    Bool.decide_eq_false, Bool.not_eq_false] at hfind
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Tableau.lean:2994:4: This simp argument is unused:
+  Bool.not_eq_eq_eq_not
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [isExpanded, Option.isNone_iff_eq_none, Bool.not_eq_true, decide_eq_true_eq, Bool.not_false,
+    Bool.decide_eq_false, Bool.not_eq_false] at hfind
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Tableau.lean:2994:27: This simp argument is unused:
+  Bool.not_false
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [isExpanded, Option.isNone_iff_eq_none, Bool.not_eq_true, decide_eq_true_eq, Bool.not_eq_eq_eq_not,
+    Bool.decide_eq_false, Bool.not_eq_false] at hfind
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Tableau.lean:2994:43: This simp argument is unused:
+  Bool.decide_eq_false
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [isExpanded, Option.isNone_iff_eq_none, Bool.not_eq_true, decide_eq_true_eq, Bool.not_eq_eq_eq_not,
+    Bool.not_false, Bool.not_eq_false] at hfind
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/Tableau.lean:2994:65: This simp argument is unused:
+  Bool.not_eq_false
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [isExpanded, Option.isNone_iff_eq_none, Bool.not_eq_true, decide_eq_true_eq, Bool.not_eq_eq_eq_not,
+    Bool.not_false, Bool.decide_eq_false] at hfind
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [787/855] Replayed FormalSystem.Semantics.TaskFrame
+warning: FormalSystem/Semantics/TaskFrame.lean:214:0: automatically included section variable(s) unused in theorem `FormalSystem.Semantics.TaskFrame.mem_Fib`:
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Semantics/TaskFrame.lean:236:0: automatically included section variable(s) unused in theorem `FormalSystem.Semantics.TaskFrame.mem_cone`:
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Semantics/TaskFrame.lean:242:0: automatically included section variable(s) unused in theorem `FormalSystem.Semantics.TaskFrame.cone_mono`:
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Semantics/TaskFrame.lean:262:0: automatically included section variable(s) unused in theorem `FormalSystem.Semantics.TaskFrame.mem_Seg`:
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Semantics/TaskFrame.lean:412:0: automatically included section variable(s) unused in theorem `FormalSystem.Semantics.TaskFrame.comp_of`:
+  [IsOrderedAddMonoid D]
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [IsOrderedAddMonoid D] [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Semantics/TaskFrame.lean:419:0: automatically included section variable(s) unused in theorem `FormalSystem.Semantics.TaskFrame.forward_of_comp`:
+  [IsOrderedAddMonoid D]
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [IsOrderedAddMonoid D] [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Semantics/TaskFrame.lean:424:0: automatically included section variable(s) unused in theorem `FormalSystem.Semantics.TaskFrame.interpolates_of_comp`:
+  [IsOrderedAddMonoid D]
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [IsOrderedAddMonoid D] [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Semantics/TaskFrame.lean:675:0: automatically included section variable(s) unused in theorem `FormalSystem.Semantics.TaskFrame.limit_of_succOrder`:
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Semantics/TaskFrame.lean:703:0: automatically included section variable(s) unused in theorem `FormalSystem.Semantics.TaskFrame.limit_of_shift`:
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Semantics/TaskFrame.lean:703:8: Overlapping instance parameters in `limit_of_shift`:
+
+⚠️ There are 2 `[Nontrivial D]` instances; one is sufficient.
+
+Note: This linter can be disabled with `set_option linter.overlappingInstances false`
+warning: FormalSystem/Semantics/TaskFrame.lean:754:0: automatically included section variable(s) unused in theorem `FormalSystem.Semantics.TaskFrame.exists_uniform_radius_of_finite`:
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Semantics/TaskFrame.lean:754:8: Overlapping instance parameters in `exists_uniform_radius_of_finite`:
+
+⚠️ There are 2 `[Nontrivial D]` instances; one is sufficient.
+
+Note: This linter can be disabled with `set_option linter.overlappingInstances false`
+warning: FormalSystem/Semantics/TaskFrame.lean:814:0: automatically included section variable(s) unused in theorem `FormalSystem.Semantics.TaskFrame.exists_pos_of_nontrivial`:
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Semantics/TaskFrame.lean:814:8: Overlapping instance parameters in `exists_pos_of_nontrivial`:
+
+⚠️ There are 2 `[Nontrivial D]` instances; one is sufficient.
+
+Note: This linter can be disabled with `set_option linter.overlappingInstances false`
+warning: FormalSystem/Semantics/TaskFrame.lean:930:0: automatically included section variable(s) unused in theorem `FormalSystem.Semantics.TaskFrame.spherical_of_finite`:
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Semantics/TaskFrame.lean:945:0: automatically included section variable(s) unused in theorem `FormalSystem.Semantics.TaskFrame.serial_of_total`:
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Semantics/TaskFrame.lean:954:0: automatically included section variable(s) unused in theorem `FormalSystem.Semantics.TaskFrame.interpolates_of_total`:
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Semantics/TaskFrame.lean:963:0: automatically included section variable(s) unused in theorem `FormalSystem.Semantics.TaskFrame.limit_of_subsingleton`:
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Semantics/TaskFrame.lean:974:0: automatically included section variable(s) unused in theorem `FormalSystem.Semantics.TaskFrame.spherical_of_subsingleton`:
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Semantics/TaskFrame.lean:989:0: automatically included section variable(s) unused in theorem `FormalSystem.Semantics.TaskFrame.Fib_permissive_zero`:
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Semantics/TaskFrame.lean:995:0: automatically included section variable(s) unused in theorem `FormalSystem.Semantics.TaskFrame.Fib_permissive_ne`:
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Semantics/TaskFrame.lean:1005:0: automatically included section variable(s) unused in theorem `FormalSystem.Semantics.TaskFrame.serial_of_permissive`:
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Semantics/TaskFrame.lean:1017:0: automatically included section variable(s) unused in theorem `FormalSystem.Semantics.TaskFrame.interpolates_of_permissive`:
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Semantics/TaskFrame.lean:1097:0: automatically included section variable(s) unused in theorem `FormalSystem.Semantics.TaskFrame.Fib_eq_singleton`:
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Semantics/TaskFrame.lean:1103:0: automatically included section variable(s) unused in theorem `FormalSystem.Semantics.TaskFrame.serial_of_eq`:
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Semantics/TaskFrame.lean:1112:0: automatically included section variable(s) unused in theorem `FormalSystem.Semantics.TaskFrame.interpolates_of_eq`:
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Semantics/TaskFrame.lean:1122:0: automatically included section variable(s) unused in theorem `FormalSystem.Semantics.TaskFrame.limit_of_eq`:
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Semantics/TaskFrame.lean:1122:8: Overlapping instance parameters in `limit_of_eq`:
+
+⚠️ There are 2 `[Nontrivial D]` instances; one is sufficient.
+
+Note: This linter can be disabled with `set_option linter.overlappingInstances false`
+warning: FormalSystem/Semantics/TaskFrame.lean:1238:0: automatically included section variable(s) unused in theorem `FormalSystem.Semantics.TaskFrame.staticFrame_rel_iff`:
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Semantics/TaskFrame.lean:1238:8: Overlapping instance parameters in `staticFrame_rel_iff`:
+
+⚠️ There are 2 `[Nontrivial D]` instances; one is sufficient.
+
+Note: This linter can be disabled with `set_option linter.overlappingInstances false`
+warning: FormalSystem/Semantics/TaskFrame.lean:1251:0: automatically included section variable(s) unused in theorem `FormalSystem.Semantics.TaskFrame.staticFrame_serial`:
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Semantics/TaskFrame.lean:1251:8: Overlapping instance parameters in `staticFrame_serial`:
+
+⚠️ There are 2 `[Nontrivial D]` instances; one is sufficient.
+
+Note: This linter can be disabled with `set_option linter.overlappingInstances false`
+warning: FormalSystem/Semantics/TaskFrame.lean:1258:0: automatically included section variable(s) unused in theorem `FormalSystem.Semantics.TaskFrame.staticFrame_interpolates`:
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Semantics/TaskFrame.lean:1258:8: Overlapping instance parameters in `staticFrame_interpolates`:
+
+⚠️ There are 2 `[Nontrivial D]` instances; one is sufficient.
+
+Note: This linter can be disabled with `set_option linter.overlappingInstances false`
+warning: FormalSystem/Semantics/TaskFrame.lean:1264:0: automatically included section variable(s) unused in theorem `FormalSystem.Semantics.TaskFrame.staticFrame_limit`:
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Semantics/TaskFrame.lean:1264:8: Overlapping instance parameters in `staticFrame_limit`:
+
+⚠️ There are 2 `[Nontrivial D]` instances; one is sufficient.
+
+Note: This linter can be disabled with `set_option linter.overlappingInstances false`
+warning: FormalSystem/Semantics/TaskFrame.lean:1271:0: automatically included section variable(s) unused in theorem `FormalSystem.Semantics.TaskFrame.staticFrame_spherical`:
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Semantics/TaskFrame.lean:1271:8: Overlapping instance parameters in `staticFrame_spherical`:
+
+⚠️ There are 2 `[Nontrivial D]` instances; one is sufficient.
+
+Note: This linter can be disabled with `set_option linter.overlappingInstances false`
+⚠ [788/855] Replayed FormalSystem.Semantics.PartialHistory
+warning: FormalSystem/Semantics/PartialHistory.lean:208:0: automatically included section variable(s) unused in theorem `FormalSystem.Semantics.PartialHistory.nonempty_of_total`:
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+⚠ [789/855] Replayed FormalSystem.Semantics.WorldHistory
+warning: FormalSystem/Semantics/WorldHistory.lean:399:0: automatically included section variable(s) unused in theorem `FormalSystem.Semantics.WorldHistory.neg_lt_neg_iff`:
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Semantics/WorldHistory.lean:415:0: automatically included section variable(s) unused in theorem `FormalSystem.Semantics.WorldHistory.neg_le_neg_iff`:
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Semantics/WorldHistory.lean:429:0: automatically included section variable(s) unused in theorem `FormalSystem.Semantics.WorldHistory.neg_neg_eq`:
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Semantics/WorldHistory.lean:436:0: automatically included section variable(s) unused in theorem `FormalSystem.Semantics.WorldHistory.neg_injective`:
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+⚠ [859/1292] Replayed FormalSystem.Semantics.PartialHistoryOrder
+warning: FormalSystem/Semantics/PartialHistoryOrder.lean:209:7: Variable name `t` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _t
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [860/1292] Replayed FormalSystem.Semantics.FrameAxioms
+warning: FormalSystem/Semantics/FrameAxioms.lean:149:0: automatically included section variable(s) unused in theorem `FormalSystem.Semantics.TaskFrame.nullity_of_serial_limit`:
+  [Nontrivial D]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Nontrivial D] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+⚠ [1354/1370] Replayed FormalSystem.Metalogic.Decidability.Saturation
+warning: FormalSystem/Metalogic/Decidability/Saturation.lean:1165:29: Variable name `appliedSet` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _appliedSet
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:1370:0: "PASS: U(p, bot) -> F(p) is valid"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:1380:0: "PASS: S(p, bot) -> P(p) is valid"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:1390:0: "PASS: F(p) -> U(p, top) is valid (BX12)"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:1399:0: "PASS: P(p) -> S(p, top) is valid (BX12')"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:1408:0: "PASS: F(top) -> top is valid"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:1418:0: "PASS: U(p, q) is satisfiable (open branch found)"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:1427:0: "PASS: p -> p is valid"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:1452:0: "PASS B1: G(p) -> G(p) is valid"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:1461:0: "PASS B2: U(p,q) -> U(p,q) is valid"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:1471:0: "PASS B3: U(p,bot) -> F(p) is valid (eventuality witnessed)"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:1498:0: "PASS: □p → Gp is valid"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:1507:0: "PASS: □p → Hp is valid"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:1519:0: "PASS: □p → always p is valid (P1 perpetuity)"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:1529:0: "PASS: □(□p) → G(□p) is valid"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:1543:0: "PASS: p ∧ F(¬p) is satisfiable (open branch found)"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:1552:0: "PASS: □p → □(Gp) is valid (modal_future)"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:1579:0: "PASS E1: U(U(p,q),r) -> U(U(p,q),r) is valid"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:1589:0: "PASS E2: S(p,bot) -> P(p) is valid"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:1598:0: "PASS E3: p -> (q -> p) is valid"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:1608:0: "PASS E4: U(p,q) is satisfiable (open branch with blocking)"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:1619:0: "INFO E5: G(p) -> p is invalid (strict reading)"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:2358:0: "PASS FC1: GGp → Gp closes under Dense"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:2368:0: "PASS FC2: GGp → Gp correctly open under Base"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:2377:0: "PASS FC3: ¬U(⊤,⊥) closes under Dense"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:2387:0: "PASS FC4: ¬U(⊤,⊥) correctly open under Base"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:2396:0: "PASS FC5: F(p) → U(p, ¬p) closes under Discrete"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:2406:0: "PASS FC6: F(p) → U(p, ¬p) correctly open under Base"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:2415:0: "PASS FC7: F(p) → U(p, ¬p) correctly open under Dense"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:2424:0: "PASS FC8: p → p closes under all frame classes (monotonicity)"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:2439:0: "PASS FC9: ¬U(⊤,⊥) correctly open under Discrete"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:2461:0: "PASS PL1: diamond p terminates with open branch (no loop)"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:2470:0: "PASS PL2: (box(bot -> bot) -> r) terminates (no stall)"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:2479:0: "PASS PL3: box(bot -> p) is valid"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:2488:0: "PASS PL4: box(p -> p) is valid"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:2497:0: "PASS PL5: (box bot -> r) is valid"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:2532:0: "PASS AN1: G(p) → ¬F(¬p) is valid"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:2545:0: "PASS AN2: U(p,q) is satisfiable (active untlNeg created time)"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:2558:0: "PASS AN3: U(p,q) → U(p,q) is valid"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:2568:0: "PASS AN4: S(p,q) is satisfiable (active snceNeg created time)"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:2580:0: "PASS AN5: H(p) → ¬P(¬p) is valid"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:2597:0: "PASS AN6: nested Until identity valid (fuel=500)"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:2611:0: "PASS AN7: U(p,q) → F(p) valid (fuel=500)"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:2624:0: "PASS AN8: ¬U(p,q) satisfiable (fuel=500, active rule + blocking)"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:2647:0: "PASS FA1: balanced branches get equal fuel"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:2660:0: "PASS FA2: temporal branch gets more fuel than propositional"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:2671:0: "PASS FA3: all allocations in bounds [1, 199]: [25, 100, 75]"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:2682:0: "PASS FA4: fuel=0 gives all zeros"
+info: FormalSystem/Metalogic/Decidability/Saturation.lean:2691:0: "PASS FA5: difficulty ordering correct: prop=1 < modal=3 < temp=4"
+⚠ [1356/1370] Replayed FormalSystem.Metalogic.Decidability.CountermodelExtraction
+warning: FormalSystem/Metalogic/Decidability/CountermodelExtraction.lean:605:46: This simp argument is unused:
+  if_false
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [isApplicable, asUntil?, hg', applyRule, ruleMintsFreshLabel, ruleSelfGuarded, if_true,
+    Option.isSome_some] at h
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/CountermodelExtraction.lean:606:34: This simp argument is unused:
+  Option.isSome_some
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [isApplicable, asUntil?, hg', if_false, applyRule, ruleMintsFreshLabel, ruleSelfGuarded,
+    if_true] at h
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/CountermodelExtraction.lean:671:46: This simp argument is unused:
+  if_false
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [isApplicable, asSince?, hg', applyRule, ruleMintsFreshLabel, ruleSelfGuarded, if_true,
+    Option.isSome_some] at h
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: FormalSystem/Metalogic/Decidability/CountermodelExtraction.lean:672:34: This simp argument is unused:
+  Option.isSome_some
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [isApplicable, asSince?, hg', if_false, applyRule, ruleMintsFreshLabel, ruleSelfGuarded,
+    if_true] at h
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+ℹ [1358/1370] Replayed FormalSystem.Automation.Normalization
+info: FormalSystem/Automation/Normalization.lean:239:0: neg_unfold : ∀ (φ : Formula), φ.neg = φ.imp bot
+info: FormalSystem/Automation/Normalization.lean:240:0: top_unfold : top = bot.imp bot
+info: FormalSystem/Automation/Normalization.lean:241:0: next_unfold : ∀ (φ : Formula), φ.next = bot.untl φ
+info: FormalSystem/Automation/Normalization.lean:242:0: prev_unfold : ∀ (φ : Formula), φ.prev = bot.snce φ
+info: FormalSystem/Automation/Normalization.lean:243:0: and_unfold : ∀ (φ ψ : Formula), φ.and ψ = (φ.imp (ψ.imp bot)).imp bot
+info: FormalSystem/Automation/Normalization.lean:244:0: or_unfold : ∀ (φ ψ : Formula), φ.or ψ = (φ.imp bot).imp ψ
+info: FormalSystem/Automation/Normalization.lean:245:0: diamond_unfold : ∀ (φ : Formula), φ.diamond = (φ.imp bot).box.imp bot
+info: FormalSystem/Automation/Normalization.lean:246:0: some_future_unfold : ∀ (φ : Formula), φ.someFuture = (bot.imp bot).untl φ
+info: FormalSystem/Automation/Normalization.lean:247:0: some_past_unfold : ∀ (φ : Formula), φ.somePast = (bot.imp bot).snce φ
+info: FormalSystem/Automation/Normalization.lean:248:0: all_future_unfold : ∀ (φ : Formula), φ.allFuture = ((bot.imp bot).untl (φ.imp bot)).imp bot
+info: FormalSystem/Automation/Normalization.lean:249:0: all_past_unfold : ∀ (φ : Formula), φ.allPast = ((bot.imp bot).snce (φ.imp bot)).imp bot
+info: FormalSystem/Automation/Normalization.lean:250:0: weak_future_unfold : ∀ (φ : Formula),
+  φ.weakFuture = (φ.imp ((((bot.imp bot).untl (φ.imp bot)).imp bot).imp bot)).imp bot
+info: FormalSystem/Automation/Normalization.lean:251:0: weak_past_unfold : ∀ (φ : Formula), φ.weakPast = (φ.imp ((((bot.imp bot).snce (φ.imp bot)).imp bot).imp bot)).imp bot
+info: FormalSystem/Automation/Normalization.lean:252:0: always_unfold : ∀ (φ : Formula), △φ = φ.allPast.and (φ.and φ.allFuture)
+info: FormalSystem/Automation/Normalization.lean:253:0: sometimes_unfold : ∀ (φ : Formula), ▽φ = (△φ.neg).neg
+info: FormalSystem/Automation/Normalization.lean:254:0: strong_release_unfold : ∀ (φ ψ : Formula), φ.strongRelease ψ = ψ.untl (ψ.and φ)
+info: FormalSystem/Automation/Normalization.lean:255:0: strong_trigger_unfold : ∀ (φ ψ : Formula), φ.strongTrigger ψ = ψ.snce (ψ.and φ)
+info: FormalSystem/Automation/Normalization.lean:613:0: FormalSystem.Automation.Normalization.EnrichedFormula.neg
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none })
+info: FormalSystem/Automation/Normalization.lean:620:0: FormalSystem.Automation.Normalization.EnrichedFormula.top
+info: FormalSystem/Automation/Normalization.lean:627:0: FormalSystem.Automation.Normalization.EnrichedFormula.diamond
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none })
+info: FormalSystem/Automation/Normalization.lean:634:0: FormalSystem.Automation.Normalization.EnrichedFormula.and_
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none })
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "q", freshIndex := none })
+info: FormalSystem/Automation/Normalization.lean:641:0: FormalSystem.Automation.Normalization.EnrichedFormula.imp
+  (FormalSystem.Automation.Normalization.EnrichedFormula.neg
+    (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none }))
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "q", freshIndex := none })
+info: FormalSystem/Automation/Normalization.lean:648:0: FormalSystem.Automation.Normalization.EnrichedFormula.some_future
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none })
+info: FormalSystem/Automation/Normalization.lean:655:0: FormalSystem.Automation.Normalization.EnrichedFormula.some_past
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none })
+info: FormalSystem/Automation/Normalization.lean:661:0: FormalSystem.Automation.Normalization.EnrichedFormula.all_future
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none })
+info: FormalSystem/Automation/Normalization.lean:667:0: FormalSystem.Automation.Normalization.EnrichedFormula.all_past
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none })
+info: FormalSystem/Automation/Normalization.lean:673:0: FormalSystem.Automation.Normalization.EnrichedFormula.next
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none })
+info: FormalSystem/Automation/Normalization.lean:679:0: FormalSystem.Automation.Normalization.EnrichedFormula.prev
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none })
+info: FormalSystem/Automation/Normalization.lean:686:0: [(true, (FormalSystem.Syntax.Formula.imp
+  (FormalSystem.Syntax.Formula.atom { base := "p", freshIndex := none })
+  (FormalSystem.Syntax.Formula.bot), FormalSystem.Automation.Normalization.EnrichedFormula.neg
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none }))), (true, (FormalSystem.Syntax.Formula.imp (FormalSystem.Syntax.Formula.bot) (FormalSystem.Syntax.Formula.bot), FormalSystem.Automation.Normalization.EnrichedFormula.top)), (true, (FormalSystem.Syntax.Formula.imp
+  (FormalSystem.Syntax.Formula.imp
+    (FormalSystem.Syntax.Formula.atom { base := "p", freshIndex := none })
+    (FormalSystem.Syntax.Formula.imp
+      (FormalSystem.Syntax.Formula.atom { base := "q", freshIndex := none })
+      (FormalSystem.Syntax.Formula.bot)))
+  (FormalSystem.Syntax.Formula.bot), FormalSystem.Automation.Normalization.EnrichedFormula.and_
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none })
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "q", freshIndex := none }))), (true, (FormalSystem.Syntax.Formula.imp
+  (FormalSystem.Syntax.Formula.imp
+    (FormalSystem.Syntax.Formula.atom { base := "p", freshIndex := none })
+    (FormalSystem.Syntax.Formula.bot))
+  (FormalSystem.Syntax.Formula.atom { base := "q", freshIndex := none }), FormalSystem.Automation.Normalization.EnrichedFormula.imp
+  (FormalSystem.Automation.Normalization.EnrichedFormula.neg
+    (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none }))
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "q", freshIndex := none }))), (true, (FormalSystem.Syntax.Formula.imp
+  (FormalSystem.Syntax.Formula.box
+    (FormalSystem.Syntax.Formula.imp
+      (FormalSystem.Syntax.Formula.atom { base := "p", freshIndex := none })
+      (FormalSystem.Syntax.Formula.bot)))
+  (FormalSystem.Syntax.Formula.bot), FormalSystem.Automation.Normalization.EnrichedFormula.diamond
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none }))), (true, (FormalSystem.Syntax.Formula.untl
+  (FormalSystem.Syntax.Formula.imp (FormalSystem.Syntax.Formula.bot) (FormalSystem.Syntax.Formula.bot))
+  (FormalSystem.Syntax.Formula.atom { base := "p", freshIndex := none }), FormalSystem.Automation.Normalization.EnrichedFormula.some_future
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none }))), (true, (FormalSystem.Syntax.Formula.snce
+  (FormalSystem.Syntax.Formula.imp (FormalSystem.Syntax.Formula.bot) (FormalSystem.Syntax.Formula.bot))
+  (FormalSystem.Syntax.Formula.atom { base := "p", freshIndex := none }), FormalSystem.Automation.Normalization.EnrichedFormula.some_past
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none }))), (true, (FormalSystem.Syntax.Formula.imp
+  (FormalSystem.Syntax.Formula.untl
+    (FormalSystem.Syntax.Formula.imp (FormalSystem.Syntax.Formula.bot) (FormalSystem.Syntax.Formula.bot))
+    (FormalSystem.Syntax.Formula.imp
+      (FormalSystem.Syntax.Formula.atom { base := "p", freshIndex := none })
+      (FormalSystem.Syntax.Formula.bot)))
+  (FormalSystem.Syntax.Formula.bot), FormalSystem.Automation.Normalization.EnrichedFormula.all_future
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none }))), (true, (FormalSystem.Syntax.Formula.imp
+  (FormalSystem.Syntax.Formula.snce
+    (FormalSystem.Syntax.Formula.imp (FormalSystem.Syntax.Formula.bot) (FormalSystem.Syntax.Formula.bot))
+    (FormalSystem.Syntax.Formula.imp
+      (FormalSystem.Syntax.Formula.atom { base := "p", freshIndex := none })
+      (FormalSystem.Syntax.Formula.bot)))
+  (FormalSystem.Syntax.Formula.bot), FormalSystem.Automation.Normalization.EnrichedFormula.all_past
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none }))), (true, (FormalSystem.Syntax.Formula.untl
+  (FormalSystem.Syntax.Formula.bot)
+  (FormalSystem.Syntax.Formula.atom { base := "p", freshIndex := none }), FormalSystem.Automation.Normalization.EnrichedFormula.next
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none }))), (true, (FormalSystem.Syntax.Formula.snce
+  (FormalSystem.Syntax.Formula.bot)
+  (FormalSystem.Syntax.Formula.atom { base := "p", freshIndex := none }), FormalSystem.Automation.Normalization.EnrichedFormula.prev
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none })))]
+info: FormalSystem/Automation/Normalization.lean:707:0: FormalSystem.Automation.Normalization.EnrichedFormula.weak_future
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none })
+info: FormalSystem/Automation/Normalization.lean:713:0: FormalSystem.Automation.Normalization.EnrichedFormula.weak_past
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none })
+info: FormalSystem/Automation/Normalization.lean:719:0: FormalSystem.Automation.Normalization.EnrichedFormula.always
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none })
+info: FormalSystem/Automation/Normalization.lean:725:0: FormalSystem.Automation.Normalization.EnrichedFormula.sometimes
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none })
+info: FormalSystem/Automation/Normalization.lean:731:0: [(true, FormalSystem.Automation.Normalization.EnrichedFormula.always
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none })), (true, FormalSystem.Automation.Normalization.EnrichedFormula.sometimes
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none })), (true, FormalSystem.Automation.Normalization.EnrichedFormula.weak_future
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none })), (true, FormalSystem.Automation.Normalization.EnrichedFormula.weak_past
+  (FormalSystem.Automation.Normalization.EnrichedFormula.atom { base := "p", freshIndex := none }))]
+info: FormalSystem/Automation/Normalization.lean:910:0: "Round-trip test: ALL PASS (21 formulas tested)"
+info: FormalSystem/Automation/Normalization.lean:1128:0: "{\"tag\": \"neg\", \"child\": {\"tag\": \"atom\", \"name\": \"p\"}}"
+info: FormalSystem/Automation/Normalization.lean:1134:0: "{\"tag\": \"diamond\", \"child\": {\"tag\": \"atom\", \"name\": \"p\"}}"
+info: FormalSystem/Automation/Normalization.lean:1140:0: "{\"tag\": \"diamond\", \"child\": {\"tag\": \"atom\", \"name\": \"p\"}}"
+info: FormalSystem/Automation/Normalization.lean:1146:0: "△p"
+info: FormalSystem/Automation/Normalization.lean:1152:0: "(and (atom \"p\") (atom \"q\"))"
+info: FormalSystem/Automation/Normalization.lean:1158:0: "{\"tag\": \"always\", \"child\": {\"tag\": \"atom\", \"name\": \"p\"}}"
+info: FormalSystem/Automation/Normalization.lean:1164:0: "(<>p → Gq)"
+⚠ [1360/1370] Replayed FormalSystem.Metalogic.Decidability.CancellableExpansion
+warning: FormalSystem/Metalogic/Decidability/CancellableExpansion.lean:272:29: Variable name `appliedSet` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _appliedSet
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+ℹ [1362/1370] Replayed FormalSystem.Automation.FormulaEnumerator
+info: FormalSystem/Automation/FormulaEnumerator.lean:2104:0: 7852
+info: FormalSystem/Automation/FormulaEnumerator.lean:2107:0: 75914
+info: FormalSystem/Automation/FormulaEnumerator.lean:2110:0: 45111
+info: FormalSystem/Automation/FormulaEnumerator.lean:2113:0: true
+info: FormalSystem/Automation/FormulaEnumerator.lean:2117:0: true
+info: FormalSystem/Automation/FormulaEnumerator.lean:2121:0: true
+⚠ [1367/1370] Replayed FormalSystem.Automation.DatasetGenerator
+info: FormalSystem/Automation/DatasetGenerator.lean:974:0: true
+info: FormalSystem/Automation/DatasetGenerator.lean:975:0: true
+info: FormalSystem/Automation/DatasetGenerator.lean:976:0: true
+info: FormalSystem/Automation/DatasetGenerator.lean:977:0: true
+info: FormalSystem/Automation/DatasetGenerator.lean:978:0: false
+info: FormalSystem/Automation/DatasetGenerator.lean:979:0: false
+info: FormalSystem/Automation/DatasetGenerator.lean:982:0: true
+info: FormalSystem/Automation/DatasetGenerator.lean:983:0: true
+info: FormalSystem/Automation/DatasetGenerator.lean:984:0: true
+info: FormalSystem/Automation/DatasetGenerator.lean:985:0: false
+info: FormalSystem/Automation/DatasetGenerator.lean:986:0: false
+info: FormalSystem/Automation/DatasetGenerator.lean:989:0: some true
+info: FormalSystem/Automation/DatasetGenerator.lean:991:0: some true
+info: FormalSystem/Automation/DatasetGenerator.lean:992:0: some true
+info: FormalSystem/Automation/DatasetGenerator.lean:994:0: none
+info: FormalSystem/Automation/DatasetGenerator.lean:997:0: some (true, "structural_bot_temporal")
+info: FormalSystem/Automation/DatasetGenerator.lean:999:0: some (true, "structural_tautology")
+info: FormalSystem/Automation/DatasetGenerator.lean:1001:0: some (true, "structural_bot_temporal")
+info: FormalSystem/Automation/DatasetGenerator.lean:1003:0: some (true, "structural_modal_4")
+info: FormalSystem/Automation/DatasetGenerator.lean:1005:0: some (true, "structural_modal_t_weakening")
+info: FormalSystem/Automation/DatasetGenerator.lean:1007:0: none
+info: FormalSystem/Automation/DatasetGenerator.lean:1013:0: [FormalSystem.Syntax.Formula.atom { base := "p", freshIndex := none },
+ FormalSystem.Syntax.Formula.atom { base := "q", freshIndex := none }]
+info: FormalSystem/Automation/DatasetGenerator.lean:1015:0: [FormalSystem.Syntax.Formula.atom { base := "p", freshIndex := none },
+ FormalSystem.Syntax.Formula.atom { base := "q", freshIndex := none },
+ FormalSystem.Syntax.Formula.imp
+   (FormalSystem.Syntax.Formula.atom { base := "p", freshIndex := none })
+   (FormalSystem.Syntax.Formula.atom { base := "p", freshIndex := none })]
+info: FormalSystem/Automation/DatasetGenerator.lean:1019:0: some (FormalSystem.Syntax.Formula.atom { base := "p", freshIndex := none })
+info: FormalSystem/Automation/DatasetGenerator.lean:1020:0: some (FormalSystem.Syntax.Formula.atom { base := "p", freshIndex := none })
+info: FormalSystem/Automation/DatasetGenerator.lean:1021:0: some (FormalSystem.Syntax.Formula.atom { base := "p", freshIndex := none })
+info: FormalSystem/Automation/DatasetGenerator.lean:1022:0: some (FormalSystem.Syntax.Formula.atom { base := "p", freshIndex := none })
+info: FormalSystem/Automation/DatasetGenerator.lean:1025:0: some (true, "structural_s5_reflexive_conflict")
+info: FormalSystem/Automation/DatasetGenerator.lean:1030:0: some (true, "structural_temporal_loop_until")
+info: FormalSystem/Automation/DatasetGenerator.lean:1036:0: some (true, "structural_temporal_loop_since")
+info: FormalSystem/Automation/DatasetGenerator.lean:1042:0: some (true, "structural_subsumption_gt")
+info: FormalSystem/Automation/DatasetGenerator.lean:1044:0: some (true, "structural_subsumption_ht")
+info: FormalSystem/Automation/DatasetGenerator.lean:1046:0: some (true, "structural_subsumption_gf")
+info: FormalSystem/Automation/DatasetGenerator.lean:1048:0: some (true, "structural_subsumption_hp")
+info: FormalSystem/Automation/DatasetGenerator.lean:1050:0: some (true, "structural_subsumption_g4")
+info: FormalSystem/Automation/DatasetGenerator.lean:1052:0: some (true, "structural_subsumption_h4")
+info: FormalSystem/Automation/DatasetGenerator.lean:1054:0: some (true, "structural_subsumption_ff")
+info: FormalSystem/Automation/DatasetGenerator.lean:1056:0: some (true, "structural_subsumption_pp")
+info: FormalSystem/Automation/DatasetGenerator.lean:1058:0: some (true, "structural_subsumption_modal_t")
+info: FormalSystem/Automation/DatasetGenerator.lean:1060:0: some (true, "structural_subsumption_modal_4")
+info: FormalSystem/Automation/DatasetGenerator.lean:1062:0: some (true, "structural_subsumption_modal_d")
+info: FormalSystem/Automation/DatasetGenerator.lean:1070:0: some (true, "structural_until_implies_future")
+info: FormalSystem/Automation/DatasetGenerator.lean:1074:0: some (true, "structural_since_implies_past")
+info: FormalSystem/Automation/DatasetGenerator.lean:1078:0: none
+info: FormalSystem/Automation/DatasetGenerator.lean:1082:0: some (true, "structural_subsumption_gf")
+info: FormalSystem/Automation/DatasetGenerator.lean:1086:0: some (true, "structural_subsumption_hp")
+info: FormalSystem/Automation/DatasetGenerator.lean:1090:0: some (true, "structural_identity")
+info: FormalSystem/Automation/DatasetGenerator.lean:1094:0: none
+info: FormalSystem/Automation/DatasetGenerator.lean:1098:0: none
+info: FormalSystem/Automation/DatasetGenerator.lean:1104:0: [(FormalSystem.Syntax.Formula.imp
+    (FormalSystem.Syntax.Formula.atom { base := "p", freshIndex := none })
+    (FormalSystem.Syntax.Formula.atom { base := "q", freshIndex := none }),
+  FormalSystem.Metalogic.Decidability.Sign.pos),
+ (FormalSystem.Syntax.Formula.atom { base := "p", freshIndex := none }, FormalSystem.Metalogic.Decidability.Sign.neg),
+ (FormalSystem.Syntax.Formula.atom { base := "q", freshIndex := none }, FormalSystem.Metalogic.Decidability.Sign.pos)]
+info: FormalSystem/Automation/DatasetGenerator.lean:1106:0: [(FormalSystem.Syntax.Formula.imp
+    (FormalSystem.Syntax.Formula.atom { base := "p", freshIndex := none })
+    (FormalSystem.Syntax.Formula.bot),
+  FormalSystem.Metalogic.Decidability.Sign.pos),
+ (FormalSystem.Syntax.Formula.atom { base := "p", freshIndex := none }, FormalSystem.Metalogic.Decidability.Sign.neg),
+ (FormalSystem.Syntax.Formula.bot, FormalSystem.Metalogic.Decidability.Sign.pos)]
+info: FormalSystem/Automation/DatasetGenerator.lean:1110:0: false
+info: FormalSystem/Automation/DatasetGenerator.lean:1112:0: true
+info: FormalSystem/Automation/DatasetGenerator.lean:1116:0: true
+info: FormalSystem/Automation/DatasetGenerator.lean:1118:0: some (true, "structural_polarity_drop_tautology")
+info: FormalSystem/Automation/DatasetGenerator.lean:1123:0: some (true, "structural_polarity_bot_neg")
+info: FormalSystem/Automation/DatasetGenerator.lean:1127:0: true
+info: FormalSystem/Automation/DatasetGenerator.lean:1128:0: true
+info: FormalSystem/Automation/DatasetGenerator.lean:1130:0: false
+info: FormalSystem/Automation/DatasetGenerator.lean:1131:0: some (true, "structural_prop_contradiction")
+info: FormalSystem/Automation/DatasetGenerator.lean:1135:0: true
+info: FormalSystem/Automation/DatasetGenerator.lean:1136:0: true
+info: FormalSystem/Automation/DatasetGenerator.lean:1137:0: some (true, "structural_tautology")
+info: FormalSystem/Automation/DatasetGenerator.lean:1139:0: some (true, "structural_tautology")
+info: FormalSystem/Automation/DatasetGenerator.lean:1145:0: true
+info: FormalSystem/Automation/DatasetGenerator.lean:1146:0: true
+info: FormalSystem/Automation/DatasetGenerator.lean:1147:0: true
+info: FormalSystem/Automation/DatasetGenerator.lean:1148:0: true
+info: FormalSystem/Automation/DatasetGenerator.lean:1149:0: true
+info: FormalSystem/Automation/DatasetGenerator.lean:1150:0: true
+info: FormalSystem/Automation/DatasetGenerator.lean:1153:0: false
+info: FormalSystem/Automation/DatasetGenerator.lean:1155:0: false
+info: FormalSystem/Automation/DatasetGenerator.lean:1157:0: false
+info: FormalSystem/Automation/DatasetGenerator.lean:1159:0: false
+info: FormalSystem/Automation/DatasetGenerator.lean:1163:0: true
+info: FormalSystem/Automation/DatasetGenerator.lean:1165:0: true
+info: FormalSystem/Automation/DatasetGenerator.lean:1167:0: true
+info: FormalSystem/Automation/DatasetGenerator.lean:1169:0: true
+info: FormalSystem/Automation/DatasetGenerator.lean:1171:0: true
+info: FormalSystem/Automation/DatasetGenerator.lean:1174:0: false
+info: FormalSystem/Automation/DatasetGenerator.lean:1176:0: false
+info: FormalSystem/Automation/DatasetGenerator.lean:1178:0: false
+info: FormalSystem/Automation/DatasetGenerator.lean:1180:0: false
+info: FormalSystem/Automation/DatasetGenerator.lean:1184:0: true
+info: FormalSystem/Automation/DatasetGenerator.lean:1186:0: true
+info: FormalSystem/Automation/DatasetGenerator.lean:1188:0: true
+info: FormalSystem/Automation/DatasetGenerator.lean:1189:0: true
+info: FormalSystem/Automation/DatasetGenerator.lean:1191:0: true
+info: FormalSystem/Automation/DatasetGenerator.lean:1194:0: false
+info: FormalSystem/Automation/DatasetGenerator.lean:1196:0: false
+info: FormalSystem/Automation/DatasetGenerator.lean:1198:0: false
+info: FormalSystem/Automation/DatasetGenerator.lean:1200:0: false
+info: FormalSystem/Automation/DatasetGenerator.lean:1204:0: true
+info: FormalSystem/Automation/DatasetGenerator.lean:1207:0: true
+info: FormalSystem/Automation/DatasetGenerator.lean:1210:0: true
+info: FormalSystem/Automation/DatasetGenerator.lean:1213:0: true
+info: FormalSystem/Automation/DatasetGenerator.lean:1217:0: false
+info: FormalSystem/Automation/DatasetGenerator.lean:1220:0: false
+info: FormalSystem/Automation/DatasetGenerator.lean:1222:0: false
+info: FormalSystem/Automation/DatasetGenerator.lean:1224:0: false
+info: FormalSystem/Automation/DatasetGenerator.lean:1228:0: some (false, "invalid_satisfiable_neg")
+info: FormalSystem/Automation/DatasetGenerator.lean:1230:0: some (false, "invalid_satisfiable_neg")
+info: FormalSystem/Automation/DatasetGenerator.lean:1232:0: some (false, "invalid_false_consequent")
+info: FormalSystem/Automation/DatasetGenerator.lean:1234:0: some (false, "invalid_unfulfillable_eventuality")
+info: FormalSystem/Automation/DatasetGenerator.lean:1237:0: none
+info: FormalSystem/Automation/DatasetGenerator.lean:1239:0: none
+info: FormalSystem/Automation/DatasetGenerator.lean:1241:0: none
+info: FormalSystem/Automation/DatasetGenerator.lean:1245:0: (2, 0)
+info: FormalSystem/Automation/DatasetGenerator.lean:2020:0: [proof-first] Seeding: 10/100, pool size: 10, elapsed: 5ms
+[proof-first] Seeding: 20/100, pool size: 19, elapsed: 11ms
+[proof-first] Seeding: 30/100, pool size: 27, elapsed: 16ms
+[proof-first] Seeding: 40/100, pool size: 35, elapsed: 21ms
+[proof-first] Seeding: 50/100, pool size: 41, elapsed: 22ms
+[proof-first] Seeding: 60/100, pool size: 50, elapsed: 27ms
+[proof-first] Seeding: 70/100, pool size: 59, elapsed: 29ms
+[proof-first] Seeding: 80/100, pool size: 68, elapsed: 31ms
+[proof-first] Seeding: 90/100, pool size: 76, elapsed: 33ms
+[proof-first] Seeding: 100/100, pool size: 84, elapsed: 34ms
+[proof-first] Ex-falso cap applied in 1ms, pool size: 84
+[proof-first] depth=0 pool=200 (+116, 138% growth) elapsed=67ms
+[proof-first] Generation complete: 200 theorems in 102ms
+[test] Pool generation: 200 entries (expected > 0)
+[test] PASS: pool is non-empty
+info: FormalSystem/Automation/DatasetGenerator.lean:2036:0: [proof-first] Seeding: 10/100, pool size: 10, elapsed: 2ms
+[proof-first] Seeding: 20/100, pool size: 20, elapsed: 6ms
+[proof-first] Seeding: 30/100, pool size: 30, elapsed: 10ms
+[proof-first] Seeding: 40/100, pool size: 40, elapsed: 11ms
+[proof-first] Seeding: 50/100, pool size: 47, elapsed: 13ms
+[proof-first] Seeding: 60/100, pool size: 57, elapsed: 19ms
+[proof-first] Seeding: 70/100, pool size: 67, elapsed: 21ms
+[proof-first] Seeding: 80/100, pool size: 75, elapsed: 22ms
+[proof-first] Seeding: 90/100, pool size: 83, elapsed: 24ms
+[proof-first] Seeding: 100/100, pool size: 92, elapsed: 25ms
+[proof-first] Ex-falso cap applied in 0ms, pool size: 92
+[proof-first] depth=0 pool=200 (+108, 117% growth) elapsed=74ms
+[proof-first] Generation complete: 200 theorems in 99ms
+[test] Pool contains (p → p): false
+[test] Hybrid label for (p → p): FormalSystem.Automation.FormulaLabel.valid, method: structural_prefilter
+[test] PASS: hybrid mode correctly labels (p → p) as valid
+info: FormalSystem/Automation/DatasetGenerator.lean:2060:0: [test] Hybrid fallthrough: label=FormalSystem.Automation.FormulaLabel.invalid, method=adaptive_360
+[test] PASS: hybrid mode fell through to tableau (not proof_first)
+info: FormalSystem/Automation/DatasetGenerator.lean:2078:0: [proof-first] Seeding: 20/200, pool size: 20, elapsed: 10ms
+[proof-first] Seeding: 40/200, pool size: 39, elapsed: 27ms
+[proof-first] Seeding: 60/200, pool size: 56, elapsed: 46ms
+[proof-first] Seeding: 80/200, pool size: 74, elapsed: 53ms
+[proof-first] Seeding: 100/200, pool size: 91, elapsed: 62ms
+[proof-first] Seeding: 120/200, pool size: 108, elapsed: 97ms
+[proof-first] Seeding: 140/200, pool size: 122, elapsed: 113ms
+[proof-first] Seeding: 160/200, pool size: 137, elapsed: 121ms
+[proof-first] Seeding: 180/200, pool size: 154, elapsed: 128ms
+[proof-first] Seeding: 200/200, pool size: 169, elapsed: 135ms
+[proof-first] Ex-falso cap applied in 2ms, pool size: 169
+[proof-first] depth=0 pool=500 (+331, 195% growth) elapsed=305ms
+[proof-first] Generation complete: 500 theorems in 442ms
+[test] Pool size: 500
+[test] OK: (p → p) -> FormalSystem.Automation.FormulaLabel.valid (ex: structural_prefilter, hy: structural_prefilter)
+[test] OK: (□p → p) -> FormalSystem.Automation.FormulaLabel.valid (ex: structural_prefilter, hy: structural_prefilter)
+[test] OK: (U(p, q) → U(q, (⊥ → ⊥))) -> FormalSystem.Automation.FormulaLabel.valid (ex: structural_prefilter, hy: structural_prefilter)
+[test] OK: (S(p, q) → S(q, (⊥ → ⊥))) -> FormalSystem.Automation.FormulaLabel.valid (ex: structural_prefilter, hy: structural_prefilter)
+[test] OK: (p → q) -> FormalSystem.Automation.FormulaLabel.invalid (ex: adaptive_240, hy: adaptive_240)
+[test] OK: (U(p, q) → U(r, q)) -> FormalSystem.Automation.FormulaLabel.invalid (ex: adaptive_360, hy: adaptive_360)
+[test] OK: (p → (q → q)) -> FormalSystem.Automation.FormulaLabel.valid (ex: structural_prefilter, hy: structural_prefilter)
+[test] OK: (□⊥ → q) -> FormalSystem.Automation.FormulaLabel.valid (ex: structural_prefilter, hy: structural_prefilter)
+[test] Prefilter hits: 6, Pool hits: 0
+[test] PASS: all labels match between exhaustive and hybrid modes
+info: FormalSystem/Automation/DatasetGenerator.lean:2143:0: [test] OK: (p → ⊥) -> invalid via structural_invalid_prefilter:invalid_satisfiable_neg
+[test] OK: (p → U(⊥, q)) -> invalid via structural_invalid_prefilter:invalid_satisfiable_neg
+[test] OK: (□p → ⊥) -> invalid via structural_invalid_prefilter:invalid_satisfiable_neg
+[test] OK: (U(p, q) → U(⊥, r)) -> invalid via structural_invalid_prefilter:invalid_false_consequent
+[test] OK: ((U(((p → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → U(p, q)) -> invalid via structural_invalid_prefilter:invalid_unfulfillable_eventuality
+[test] OK: (p → p) -> FormalSystem.Automation.FormulaLabel.valid via structural_prefilter (not invalid prefilter)
+[test] OK: (□⊥ → q) -> FormalSystem.Automation.FormulaLabel.valid via structural_prefilter (not invalid prefilter)
+[test] OK: (U(⊥, p) → U(⊥, q)) -> FormalSystem.Automation.FormulaLabel.valid via structural_prefilter (not invalid prefilter)
+[test] OK: (p → (q → q)) -> FormalSystem.Automation.FormulaLabel.valid via structural_prefilter (not invalid prefilter)
+[test] PASS: all invalid prefilter integration tests pass
+info: FormalSystem/Automation/DatasetGenerator.lean:2200:0: [test] OK: (p → ⊥) — prefilter=invalid, tableau=FormalSystem.Automation.FormulaLabel.invalid
+[test] OK: (□p → ⊥) — prefilter=invalid, tableau=FormalSystem.Automation.FormulaLabel.invalid
+[test] OK: (p → U(⊥, q)) — prefilter=invalid, tableau=FormalSystem.Automation.FormulaLabel.invalid
+[test] OK: (p → □⊥) — prefilter=invalid, tableau=FormalSystem.Automation.FormulaLabel.invalid
+[test] OK: (((p → (q → ⊥)) → ⊥) → ⊥) — prefilter=invalid, tableau=FormalSystem.Automation.FormulaLabel.invalid
+[test] OK: (□□p → U(⊥, q)) — prefilter=invalid, tableau=FormalSystem.Automation.FormulaLabel.invalid
+[test] OK: ((⊥ → ⊥) → ⊥) — prefilter=invalid, tableau=FormalSystem.Automation.FormulaLabel.invalid
+[test] OK: (p → S(⊥, q)) — prefilter=invalid, tableau=FormalSystem.Automation.FormulaLabel.invalid
+[test] OK: (((p → ((q → ⊥) → ⊥)) → ⊥) → ⊥) — prefilter=invalid, tableau=FormalSystem.Automation.FormulaLabel.invalid
+[test] OK: (U(p, q) → U(⊥, r)) — prefilter=invalid, tableau=FormalSystem.Automation.FormulaLabel.invalid
+[test] PASS: all cross-validation tests agree
+info: FormalSystem/Automation/DatasetGenerator.lean:2238:0: [test] OK: (p → p) — not caught by invalid prefilter
+[test] OK: (□⊥ → q) — not caught by invalid prefilter
+[test] OK: (p → (q → q)) — not caught by invalid prefilter
+[test] OK: (□p → p) — not caught by invalid prefilter
+[test] OK: (□p → □□p) — not caught by invalid prefilter
+[test] OK: ((U((p → ⊥), (⊥ → ⊥)) → ⊥) → p) — not caught by invalid prefilter
+[test] OK: ((U((p → ⊥), (⊥ → ⊥)) → ⊥) → U(p, (⊥ → ⊥))) — not caught by invalid prefilter
+[test] OK: (U(p, q) → U(q, (⊥ → ⊥))) — not caught by invalid prefilter
+[test] OK: (S(p, q) → S(q, (⊥ → ⊥))) — not caught by invalid prefilter
+[test] OK: (U(⊥, p) → U(⊥, q)) — not caught by invalid prefilter
+[test] PASS: no valid formulas mislabeled by invalid prefilter
+info: FormalSystem/Automation/DatasetGenerator.lean:2267:0: [test] ⊥ → ⊥: none (expected: none — vacuously valid)
+[test] ⊤ → ⊥: some (false, "invalid_satisfiable_neg") (expected: some (false, invalid_satisfiable_neg))
+[test] □⊥ → U(⊥,p): none (expected: none — vacuously valid)
+[test] p → □⊥: some (false, "invalid_satisfiable_neg") (expected: some (false, invalid_satisfiable_neg))
+[test] PASS: all edge case tests correct
+warning: FormalSystem/Automation/DatasetGenerator.lean:2269:6: Variable name `q` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _q
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [2722/2724] Built FormalSystem.Automation.DatasetExport (4.2s)
+warning: FormalSystem/Automation/DatasetExport.lean:1275:34: `String.trimLeft` has been deprecated: Use `String.trimAsciiStart` instead
+
+Note: The updated constant has a different type:
+  String → String.Slice
+instead of
+  String → String
+✔ [2723/2724] Built FormalSystem.Automation.DatasetExport:c.o (4.4s)
+✔ [2724/2724] Built dataset_generator:exe (2.5s)
+Build completed successfully (2724 jobs).
+LAKE_BUILD_RC=0
+2026-08-24T18:00:55-07:00

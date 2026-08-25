@@ -1,0 +1,16 @@
+[2026-08-24T18:04:54-07:00] === Step 1: waiting for in-flight native build (if any) ===
+[2026-08-24T18:04:54-07:00] no in-flight lake exe; ensuring binary is built
+[2026-08-24T18:04:54-07:00] === Step 2: build dataset_generator binary ===
+[2026-08-24T18:04:56-07:00] binary built OK
+[2026-08-24T18:04:56-07:00] === Step 3: c4 spot-check (soundness vs data/bmlogic-c4.jsonl) ===
+[2026-08-24T18:05:35-07:00] c4 exit=0 records=3087 (baseline 806, drift expected)
+[2026-08-24T18:05:36-07:00] watchdog: peak RSS 129MB
+baseline=806 new=3087 common=802
+coverage=0.9950 (min 0.99)
+timeout rate: baseline=0.1489 new=0.0415
+label movement: {('timeout', 'invalid'): 120, ('invalid', 'timeout'): 56}
+PASS: c4 spot-check sound (no valid<->invalid flips, coverage and decisiveness held)
+[2026-08-24T18:05:36-07:00] c4 spot-check PASSED
+[2026-08-24T18:05:36-07:00] === Step 4: c7 regeneration ===
+[2026-08-24T18:05:36-07:00] available memory: 17472MB
+[2026-08-24T18:05:36-07:00] backed up existing c7 (13749 records) to data/bmlogic-c7.jsonl.bak

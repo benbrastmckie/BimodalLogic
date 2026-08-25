@@ -1,0 +1,1066 @@
+[warn] Slow formula (#323): □(□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#324): □(□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#325): □(□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#326): □(□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#957): U((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#958): U((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#959): U((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#960): U((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#1078): S((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#1079): S((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2001ms
+[warn] Slow formula (#1080): S((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#3083): □(□(U((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#3084): □(□(U((U((p → ⊥), (⊥ → ⊥)) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#3086): □(□(U((S((p → ⊥), (⊥ → ⊥)) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) took 1937ms
+[warn] Slow formula (#3104): □(□(S((U((p → ⊥), (⊥ → ⊥)) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#3105): □(□(S((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#3106): □(□(S((S((p → ⊥), (⊥ → ⊥)) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#3119): □(□((U((U(⊥, (⊥ → ⊥)) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#3120): □(□((U((U(p, (⊥ → ⊥)) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#3121): □(□((U((S(⊥, (⊥ → ⊥)) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#3122): □(□((U((S(p, (⊥ → ⊥)) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#3123): □(□((U(((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#3124): □(□((U(((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#3125): □(□((U(((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#3126): □(□((U(((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#3129): □(□((U((((((S(((⊥ → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ((((⊥ → ⊥) → ((U(((⊥ → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#3130): □(□((U((((((S(((p → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ((((p → ⊥) → ((U(((p → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#3131): □(□((U((U(⊥, ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#3132): □(□((U((U(p, ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#3133): □(□((U((S(⊥, ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#3134): □(□((U((S(p, ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#3139): □(□((S((U(⊥, (⊥ → ⊥)) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#3140): □(□((S((U(p, (⊥ → ⊥)) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#3141): □(□((S((S(⊥, (⊥ → ⊥)) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#3142): □(□((S((S(p, (⊥ → ⊥)) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#3143): □(□((S(((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#3144): □(□((S(((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#3145): □(□((S(((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#3146): □(□((S(((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#3149): □(□((S((((((S(((⊥ → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ((((⊥ → ⊥) → ((U(((⊥ → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#3150): □(□((S((((((S(((p → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ((((p → ⊥) → ((U(((p → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#3151): □(□((S((U(⊥, ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#3152): □(□((S((U(p, ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#3153): □(□((S((S(⊥, ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#3154): □(□((S((S(p, ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#3183): □(□(((((S((((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → (((((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ((U((((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#3184): □(□(((((S((((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → (((((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ((U((((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#3185): □(□(((((S((((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → (((((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ((U((((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#3186): □(□(((((S((((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → (((((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ((U((((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#3337): □U((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#3338): □U((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#3339): □U((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#3340): □U((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#3452): □S((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#3453): □S((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#3454): □S((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2001ms
+[warn] Slow formula (#3565): □(U(((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) took 2000ms
+[warn] Slow formula (#3566): □(U(((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) took 2000ms
+[warn] Slow formula (#3567): □(U(((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) took 2001ms
+[warn] Slow formula (#3568): □(U(((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) took 2001ms
+[warn] Slow formula (#3679): □(S(((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) took 2000ms
+[warn] Slow formula (#3680): □(S(((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) took 2000ms
+[warn] Slow formula (#3681): □(S(((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) took 2000ms
+[warn] Slow formula (#3682): □(S(((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) took 2000ms
+[warn] Slow formula (#3793): □(((S(((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ((((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ((U(((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥) took 2000ms
+[warn] Slow formula (#3794): □(((S(((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ((((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ((U(((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥) took 2001ms
+[warn] Slow formula (#3795): □(((S(((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ((((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ((U(((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥) took 2000ms
+[warn] Slow formula (#3796): □(((S(((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ((((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ((U(((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥) took 2000ms
+[warn] Slow formula (#3907): □((((S((((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → (((((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ((U((((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#3908): □((((S((((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → (((((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ((U((((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#3909): □((((S((((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → (((((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ((U((((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#3910): □((((S((((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → (((((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ((U((((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#4249): □(((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ((U(((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) took 2000ms
+[warn] Slow formula (#4250): □(((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ((U(((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) took 2000ms
+[warn] Slow formula (#4251): □(((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ((U(((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) took 2000ms
+[warn] Slow formula (#4252): □(((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ((U(((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) took 2000ms
+[warn] Slow formula (#4363): □(((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ((S(((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) took 2000ms
+[warn] Slow formula (#4364): □(((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ((S(((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) took 2000ms
+[warn] Slow formula (#4365): □(((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ((S(((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) took 2000ms
+[warn] Slow formula (#4366): □(((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ((S(((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) took 2000ms
+[warn] Slow formula (#7969): U(□(□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#7970): U(□(□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#7971): U(□(□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#7972): U(□(□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2001ms
+[warn] Slow formula (#8063): U((□(□(U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 1649ms
+[warn] Slow formula (#8064): U((□(□(U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#8065): U((□(□(S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 1597ms
+[warn] Slow formula (#8066): U((□(□(S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 1132ms
+[warn] Slow formula (#8083): U((□((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#8084): U((□((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#8085): U((□((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#8086): U((□((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#8109): U((□((U(((□(⊥ → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#8110): U((□((U(((□(p → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#8113): U((□((S(((□(⊥ → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#8114): U((□((S(((□(p → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#8158): U((□(((S(⊥, ⊥) → ⊥) → (S((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#8159): U((□(((S(⊥, p) → ⊥) → (S((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#8160): U((□(((S(p, ⊥) → ⊥) → (S((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#8161): U((□(((S(p, p) → ⊥) → (S((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#8162): U((□(((S(p, q) → ⊥) → (S((q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#8497): S(□(□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#8498): S(□(□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#8499): S(□(□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#8500): S(□(□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#8591): S((□(□(U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#8592): S((□(□(U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#8593): S((□(□(S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#8594): S((□(□(S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2001ms
+[warn] Slow formula (#8612): S((□((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#8613): S((□((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#8614): S((□((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#8637): S((□((U(((□(⊥ → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#8638): S((□((U(((□(p → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#8641): S((□((S(((□(⊥ → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#8642): S((□((S(((□(p → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#8679): S((□(((U(⊥, p) → ⊥) → (U((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#8681): S((□(((U(p, p) → ⊥) → (U((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#8682): S((□(((U(p, q) → ⊥) → (U((q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#8686): S((□(((S(⊥, ⊥) → ⊥) → (S((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#8687): S((□(((S(⊥, p) → ⊥) → (S((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#8688): S((□(((S(p, ⊥) → ⊥) → (S((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#8689): S((□(((S(p, p) → ⊥) → (S((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#8690): S((□(((S(p, q) → ⊥) → (S((q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#13290): (p → (□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#13291): (p → (□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#13292): (p → (□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#13293): (p → (□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#13294): (p → (□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#13295): (p → (□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#14738): ((U(⊥, (□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#14739): ((U(⊥, (□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#14740): ((U(⊥, (□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#14741): ((U(⊥, (□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#14873): ((U(p, (□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#14874): ((U(p, (□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#14875): ((U(p, (□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#14876): ((U(p, (□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#14877): ((U(p, (□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#14878): ((U(p, (□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2001ms
+[warn] Slow formula (#15382): ((S(⊥, (□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (S(((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#15383): ((S(⊥, (□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (S(((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#15384): ((S(⊥, (□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (S(((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#15385): ((S(⊥, (□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (S(((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#15517): ((S(p, (□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (S(((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2001ms
+[warn] Slow formula (#15518): ((S(p, (□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (S(((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#15519): ((S(p, (□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (S(((□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#15520): ((S(p, (□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (S(((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2001ms
+[warn] Slow formula (#15521): ((S(p, (□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (S(((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#15522): ((S(p, (□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (S(((□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+BMLogic Dataset Generator
+========================
+Max complexity: 7
+Max modal depth: 2
+Max temporal depth: 2
+Max formulas: unlimited
+Valid seed count: 500
+Output: data/bmlogic-c7.jsonl
+Include duals: false
+Frame class: Base
+Wall-clock timeout: 2000ms
+Generation mode: exhaustive
+
+Generating formulas...
+[gen] Starting formula enumeration (exhaustive mode, max complexity 7)...
+[enum] Level 1/7: 0 formulas (cumulative: 0), 0s elapsed, 0 formulas/sec, ETA:
+                0s
+[enum] Level 2/7: 0 formulas (cumulative: 0), 0s elapsed, 0 formulas/sec, ETA:
+                0s
+[enum] Level 3/7: 684 formulas (cumulative: 684), 0s elapsed, 684 formulas/sec, ETA:
+                0s
+[enum] Level 4/7: 7852 formulas (cumulative: 8536), 0s elapsed, 8536 formulas/sec, ETA:
+                0s
+[enum] Level 5/7: 75851 formulas (cumulative: 84387), 0s elapsed, 84387 formulas/sec, ETA:
+                0s
+[enum] Level 6/7: 682504 formulas (cumulative: 766891), 0s elapsed, 766891 formulas/sec, ETA:
+                0s
+[enum] Level 7/7: 6115038 formulas (cumulative: 6881929), 1s elapsed, 6881929 formulas/sec, ETA:
+                0s
+[gen] Enumeration complete: 6881929 formulas in 1s
+[gen] Starting valid-seed generation (500 seeds)...
+[valid] Seeding: 50/500 axiom instances, pool: 43 unique, 0s elapsed
+[valid] Seeding: 100/500 axiom instances, pool: 87 unique, 0s elapsed
+[valid] Seeding: 150/500 axiom instances, pool: 123 unique, 0s elapsed
+[valid] Seeding: 200/500 axiom instances, pool: 159 unique, 0s elapsed
+[valid] Seeding: 250/500 axiom instances, pool: 196 unique, 0s elapsed
+[valid] Seeding: 300/500 axiom instances, pool: 231 unique, 0s elapsed
+[valid] Seeding: 350/500 axiom instances, pool: 261 unique, 0s elapsed
+[valid] Seeding: 400/500 axiom instances, pool: 287 unique, 0s elapsed
+[valid] Seeding: 450/500 axiom instances, pool: 308 unique, 0s elapsed
+[valid] Seeding: 500/500 axiom instances, pool: 333 unique, 0s elapsed
+[valid] Closure round 1: pool 373 -> 485 (+112, 30% growth), 0s elapsed
+[valid] Closure round 2: pool 485 -> 544 (+59, 12% growth), 0s elapsed
+[valid] Closure round 3: pool 544 -> 577 (+33, 6% growth), 0s elapsed
+[valid] Closure round 4: pool 577 -> 583 (+6, 1% growth), 0s elapsed
+[valid] Closure round 5: pool 583 -> 583 (+0, 0% growth), 0s elapsed
+[valid] Closure converged at round 5 (0% growth < 1%)
+[gen] Valid-seed generation complete: 375 valid formulas in 0s
+[gen] Total: 6480649 unique formulas after deduplication
+  Generated 6480649 unique formulas
+Writing checkpoint file: data/bmlogic-c7.checkpoint...
+  Wrote 6480649 formulas to checkpoint
+Deduplicated 6480649 -> 1646512 formulas (3.9x reduction)
+Labeling and streaming 1646512 formulas to data/bmlogic-c7.jsonl...
+[label] Starting labeling of 1646512 formulas...
+[label] 1000/1646512 labeled (0%), 0% valid, 6% timeout, 53 formulas/sec, ETA: 517m 27s
+[label] 2000/1646512 labeled (0%), 0% valid, 5% timeout, 74 formulas/sec, ETA: 370m 23s
+[label] 3000/1646512 labeled (0%), 0% valid, 4% timeout, 105 formulas/sec, ETA: 260m 52s
+[label] 4000/1646512 labeled (0%), 0% valid, 11% timeout, 23 formulas/sec, ETA: 1190m 13s
+[label] 5000/1646512 labeled (0%), 0% valid, 9% timeout, 26 formulas/sec, ETA: 1052m 15s
+[label] 6000/1646512 labeled (0%), 0% valid, 7% timeout, 31 formulas/sec, ETA: 881m 59s
+[label] 7000/1646512 labeled (0%), 0% valid, 6% timeout, 36 formulas/sec, ETA: 759m 2s
+[label] 8000/1646512 labeled (0%), 0% valid, 6% timeout, 40 formulas/sec, ETA: 682m 42s
+[label] 9000/1646512 labeled (0%), 0% valid, 10% timeout, 29 formulas/sec, ETA: 941m 5s
+[label] 10000/1646512 labeled (0%), 0% valid, 9% timeout, 32 formulas/sec, ETA: 852m 21s
+[label] 11000/1646512 labeled (0%), 0% valid, 8% timeout, 35 formulas/sec, ETA: 778m 48s
+[label] 12000/1646512 labeled (0%), 0% valid, 8% timeout, 39 formulas/sec, ETA: 698m 30s
+[label] 13000/1646512 labeled (0%), 0% valid, 7% timeout, 42 formulas/sec, ETA: 648m 13s
+[label] 14000/1646512 labeled (0%), 0% valid, 7% timeout, 43 formulas/sec, ETA: 632m 45s
+[label] 15000/1646512 labeled (0%), 0% valid, 6% timeout, 43 formulas/sec, ETA: 632m 22s
+[la[warn] Slow formula (#22777): (□U(p, (⊥ → ⊥)) → p) took 2001ms
+[warn] Slow formula (#22778): (□U(p, (⊥ → ⊥)) → q) took 2000ms
+[warn] Slow formula (#22782): (□S(p, (⊥ → ⊥)) → p) took 2000ms
+[warn] Slow formula (#22783): (□S(p, (⊥ → ⊥)) → q) took 2000ms
+[warn] Slow formula (#25677): □(□(U(((U(⊥, p) → ⊥) → (U((p → ⊥), (⊥ → ⊥)) → ⊥)), (⊥ → ⊥)) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#25678): □(□(U(((U(p, ⊥) → ⊥) → (U((⊥ → ⊥), (⊥ → ⊥)) → ⊥)), (⊥ → ⊥)) → ⊥) → ⊥) took 1128ms
+[warn] Slow formula (#25679): □(□(U(((U(p, p) → ⊥) → (U((p → ⊥), (⊥ → ⊥)) → ⊥)), (⊥ → ⊥)) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#25680): □(□(U(((U(p, q) → ⊥) → (U((q → ⊥), (⊥ → ⊥)) → ⊥)), (⊥ → ⊥)) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#25685): □(□(U(((S(⊥, p) → ⊥) → (S((p → ⊥), (⊥ → ⊥)) → ⊥)), (⊥ → ⊥)) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#25687): □(□(U(((S(p, p) → ⊥) → (S((p → ⊥), (⊥ → ⊥)) → ⊥)), (⊥ → ⊥)) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#25688): □(□(U(((S(p, q) → ⊥) → (S((q → ⊥), (⊥ → ⊥)) → ⊥)), (⊥ → ⊥)) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#25711): □(□(S(((U(⊥, p) → ⊥) → (U((p → ⊥), (⊥ → ⊥)) → ⊥)), (⊥ → ⊥)) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#25713): □(□(S(((U(p, p) → ⊥) → (U((p → ⊥), (⊥ → ⊥)) → ⊥)), (⊥ → ⊥)) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#25714): □(□(S(((U(p, q) → ⊥) → (U((q → ⊥), (⊥ → ⊥)) → ⊥)), (⊥ → ⊥)) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#25733): □(□((U(((p → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#25734): □(□((U(((p → q) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#25735): □(□((U((U(⊥, p) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#25736): □(□((U((U(p, p) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#25737): □(□((U((U(p, q) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#25738): □(□((U((S(⊥, p) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2001ms
+[warn] Slow formula (#25739): □(□((U((S(p, p) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#25740): □(□((U((S(p, q) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#25744): □(□((U((((U(⊥, ⊥) → ⊥) → (U((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#25745): □(□((U((((U(⊥, p) → ⊥) → (U((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#25746): □(□((U((((U(p, ⊥) → ⊥) → (U((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#25747): □(□((U((((U(p, p) → ⊥) → (U((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#25748): □(□((U((((U(p, q) → ⊥) → (U((q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#25752): □(□((U((((S(⊥, ⊥) → ⊥) → (S((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#25753): □(□((U((((S(⊥, p) → ⊥) → (S((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#25754): □(□((U((((S(p, ⊥) → ⊥) → (S((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#25755): □(□((U((((S(p, p) → ⊥) → (S((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#25756): □(□((U((((S(p, q) → ⊥) → (S((q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#25757): □(□((U((U(((⊥ → (⊥ → ⊥)) → ⊥), ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#25758): □(□((U((U(((p → (⊥ → ⊥)) → ⊥), p) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2001ms
+[warn] Slow formula (#25759): □(□((U((U(((⊥ → (p → ⊥)) → ⊥), ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2001ms
+[warn] Slow formula (#25760): □(□((U((U(((p → (p → ⊥)) → ⊥), p) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#25761): □(□((U((U(((p → (q → ⊥)) → ⊥), p) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2001ms
+[warn] Slow formula (#25762): □(□((U((S(((⊥ → (⊥ → ⊥)) → ⊥), ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#25763): □(□((U((S(((p → (⊥ → ⊥)) → ⊥), p) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2001ms
+[warn] Slow formula (#25764): □(□((U((S(((⊥ → (p → ⊥)) → ⊥), ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#25765): □(□((U((S(((p → (p → ⊥)) → ⊥), p) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#25766): □(□((U((S(((p → (q → ⊥)) → ⊥), p) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#25767): □(□((S(((p → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#25768): □(□((S(((p → q) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#25769): □(□((S((U(⊥, p) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#25770): □(□((S((U(p, p) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2001ms
+[warn] Slow formula (#25771): □(□((S((U(p, q) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#25772): □(□((S((S(⊥, p) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#25773): □(□((S((S(p, p) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#25774): □(□((S((S(p, q) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#25778): □(□((S((((U(⊥, ⊥) → ⊥) → (U((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#25779): □(□((S((((U(⊥, p) → ⊥) → (U((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#25780): □(□((S((((U(p, ⊥) → ⊥) → (U((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#25781): □(□((S((((U(p, p) → ⊥) → (U((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#25782): □(□((S((((U(p, q) → ⊥) → (U((q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#25786): □(□((S((((S(⊥, ⊥) → ⊥) → (S((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#25787): □(□((S((((S(⊥, p) → ⊥) → (S((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#25788): □(□((S((((S(p, ⊥) → ⊥) → (S((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#25789): □(□((S((((S(p, p) → ⊥) → (S((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#25790): □(□((S((((S(p, q) → ⊥) → (S((q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#25791): □(□((S((U(((⊥ → (⊥ → ⊥)) → ⊥), ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#25792): □(□((S((U(((p → (⊥ → ⊥)) → ⊥), p) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#25793): □(□((S((U(((⊥ → (p → ⊥)) → ⊥), ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#25794): □(□((S((U(((p → (p → ⊥)) → ⊥), p) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#25795): □(□((S((U(((p → (q → ⊥)) → ⊥), p) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#25796): □(□((S((S(((⊥ → (⊥ → ⊥)) → ⊥), ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#25797): □(□((S((S(((p → (⊥ → ⊥)) → ⊥), p) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#25798): □(□((S((S(((⊥ → (p → ⊥)) → ⊥), ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#25799): □(□((S((S(((p → (p → ⊥)) → ⊥), p) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#25800): □(□((S((S(((p → (q → ⊥)) → ⊥), p) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#25847): □(□(((((S(((((U(⊥, p) → ⊥) → (U((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ((((((U(⊥, p) → ⊥) → (U((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ((U(((((U(⊥, p) → ⊥) → (U((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) took 1556ms
+[warn] Slow formula (#25849): □(□(((((S(((((U(p, p) → ⊥) → (U((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ((((((U(p, p) → ⊥) → (U((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ((U(((((U(p, p) → ⊥) → (U((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) took 1588ms
+[warn] Slow formula (#25850): □(□(((((S(((((U(p, q) → ⊥) → (U((q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ((((((U(p, q) → ⊥) → (U((q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ((U(((((U(p, q) → ⊥) → (U((q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) took 1550ms
+[warn] Slow formula (#26011): □(□((p → (U((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#26013): □(□((p → (U((q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#26014): □(□((p → (S((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#26016): □(□((p → (S((q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#26189): □(□(((U(⊥, (U((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → (U(((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#26190): □(□(((U(⊥, (U((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → (U(((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#26191): □(□(((U(⊥, (S((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → (U(((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#26192): □(□(((U(⊥, (S((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → (U(((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#26211): □(□(((U(p, (U((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → (U(((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#26212): □(□(((U(p, (U((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → (U(((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#26213): □(□(((U(p, (U((q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → (U(((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#26214): □(□(((U(p, (S((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → (U(((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#26215): □(□(((U(p, (S((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → (U(((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#26216): □(□(((U(p, (S((q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → (U(((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#26289): □(□(((S(⊥, (U((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → (S(((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#26290): □(□(((S(⊥, (U((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → (S(((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#26291): □(□(((S(⊥, (S((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → (S(((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#26292): □(□(((S(⊥, (S((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → (S(((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#26311): □(□(((S(p, (U((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → (S(((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#26312): □(□(((S(p, (U((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → (S(((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#26313): □(□(((S(p, (U((q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → (S(((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) took 2001ms
+[warn] Slow formula (#26314): □(□(((S(p, (S((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → (S(((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#26315): □(□(((S(p, (S((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → (S(((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#26316): □(□(((S(p, (S((q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → (S(((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#26437): □(□((U(p, (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#26439): □(□((U(p, (⊥ → ⊥)) → q) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#26442): □(□((S(p, (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#26444): □(□((S(p, (⊥ → ⊥)) → q) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#26585): □(□(((U((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥), ⊥) → ⊥) → (U((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#26586): □(□(((U((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥), p) → ⊥) → (U((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) took 1597ms
+[warn] Slow formula (#26587): □(□(((U((U((p → ⊥), (⊥ → ⊥)) → ⊥), ⊥) → ⊥) → (U((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) took 1887ms
+[warn] Slow formula (#26588): □(□(((U((U((p → ⊥), (⊥ → ⊥)) → ⊥), p) → ⊥) → (U((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) took 1713ms
+[warn] Slow formula (#26589): □(□(((U((U((p → ⊥), (⊥ → ⊥)) → ⊥), q) → ⊥) → (U((q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) took 1596ms
+[warn] Slow formula (#26591): □(□(((U((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥), p) → ⊥) → (U((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#26592): □(□(((U((S((p → ⊥), (⊥ → ⊥)) → ⊥), ⊥) → ⊥) → (U((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#26594): □(□(((U((S((p → ⊥), (⊥ → ⊥)) → ⊥), q) → ⊥) → (U((q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#26666): □(□(((S((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥), p) → ⊥) → (S((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#26667): □(□(((S((U((p → ⊥), (⊥ → ⊥)) → ⊥), ⊥) → ⊥) → (S((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#26669): □(□(((S((U((p → ⊥), (⊥ → ⊥)) → ⊥), q) → ⊥) → (S((q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#26670): □(□(((S((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥), ⊥) → ⊥) → (S((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#26671): □(□(((S((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥), p) → ⊥) → (S((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#26672): □(□(((S((S((p → ⊥), (⊥ → ⊥)) → ⊥), ⊥) → ⊥) → (S((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#26673): □(□(((S((S((p → ⊥), (⊥ → ⊥)) → ⊥), p) → ⊥) → (S((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#26674): □(□(((S((S((p → ⊥), (⊥ → ⊥)) → ⊥), q) → ⊥) → (S((q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) took 2000ms
+[warn] Slow formula (#26850): □U((□(((S(⊥, ⊥) → ⊥) → (S((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#26851): □U((□(((S(⊥, p) → ⊥) → (S((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#26852): □U((□(((S(p, ⊥) → ⊥) → (S((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#26853): □U((□(((S(p, p) → ⊥) → (S((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#26854): □U((□(((S(p, q) → ⊥) → (S((q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#27171): □S((□(((U(⊥, p) → ⊥) → (U((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#27173): □S((□(((U(p, p) → ⊥) → (U((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#27174): □S((□(((U(p, q) → ⊥) → (U((q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#27178): □S((□(((S(⊥, ⊥) → ⊥) → (S((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#27179): □S((□(((S(⊥, p) → ⊥) → (S((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#27180): □S((□(((S(p, ⊥) → ⊥) → (S((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#27181): □S((□(((S(p, p) → ⊥) → (S((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#27182): □S((□(((S(p, q) → ⊥) → (S((q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#27506): □(U(((□(((S(⊥, ⊥) → ⊥) → (S((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) took 2000ms
+[warn] Slow formula (#27507): □(U(((□(((S(⊥, p) → ⊥) → (S((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) took 2000ms
+[warn] Slow formula (#27508): □(U(((□(((S(p, ⊥) → ⊥) → (S((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) took 2000ms
+[warn] Slow formula (#27509): □(U(((□(((S(p, p) → ⊥) → (S((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) took 2001ms
+[warn] Slow formula (#27510): □(U(((□(((S(p, q) → ⊥) → (S((q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) took 2000ms
+[warn] Slow formula (#27826): □(S(((□(((U(⊥, ⊥) → ⊥) → (U((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) took 2000ms
+[warn] Slow formula (#27827): □(S(((□(((U(⊥, p) → ⊥) → (U((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) took 2000ms
+[warn] Slow formula (#27828): □(S(((□(((U(p, ⊥) → ⊥) → (U((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) took 2000ms
+[warn] Slow formula (#27829): □(S(((□(((U(p, p) → ⊥) → (U((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) took 2000ms
+[warn] Slow formula (#27830): □(S(((□(((U(p, q) → ⊥) → (U((q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) took 2000ms
+[warn] Slow formula (#28154): □(((S(((□(((U(⊥, ⊥) → ⊥) → (U((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ((((□(((U(⊥, ⊥) → ⊥) → (U((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ((U(((□(((U(⊥, ⊥) → ⊥) → (U((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥) took 1026ms
+[warn] Slow formula (#28155): □(((S(((□(((U(⊥, p) → ⊥) → (U((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ((((□(((U(⊥, p) → ⊥) → (U((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ((U(((□(((U(⊥, p) → ⊥) → (U((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥) took 1015ms
+[warn] Slow formula (#28156): □(((S(((□(((U(p, ⊥) → ⊥) → (U((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ((((□(((U(p, ⊥) → ⊥) → (U((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ((U(((□(((U(p, ⊥) → ⊥) → (U((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥) took 1013ms
+[warn] Slow formula (#28157): □(((S(((□(((U(p, p) → ⊥) → (U((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ((((□(((U(p, p) → ⊥) → (U((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ((U(((□(((U(p, p) → ⊥) → (U((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥) took 1002ms
+[warn] Slow formula (#28158): □(((S(((□(((U(p, q) → ⊥) → (U((q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ((((□(((U(p, q) → ⊥) → (U((q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ((U(((□(((U(p, q) → ⊥) → (U((q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥) took 1020ms
+[warn] Slow formula (#28600): □((((S(((((U(p, (□(q → ⊥) → ⊥)) → ⊥) → (U(((□(q → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ((((((U(p, (□(q → ⊥) → ⊥)) → ⊥) → (U(((□(q → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ((U(((((U(p, (□(q → ⊥) → ⊥)) → ⊥) → (U(((□(q → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥) took 1975ms
+[warn] Slow formula (#29794): □(((□(((U(⊥, ⊥) → ⊥) → (U((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ((S(((□(((U(⊥, ⊥) → ⊥) → (U((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) took 1906ms
+[warn] Slow formula (#29795): □(((□(((U(⊥, p) → ⊥) → (U((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ((S(((□(((U(⊥, p) → ⊥) → (U((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) took 1943ms
+[warn] Slow formula (#29796): □(((□(((U(p, ⊥) → ⊥) → (U((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ((S(((□(((U(p, ⊥) → ⊥) → (U((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) took 1942ms
+[warn] Slow formula (#29797): □(((□(((U(p, p) → ⊥) → (U((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ((S(((□(((U(p, p) → ⊥) → (U((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) took 2000ms
+[warn] Slow formula (#29798): □(((□(((U(p, q) → ⊥) → (U((q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ((S(((□(((U(p, q) → ⊥) → (U((q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) took 1966ms
+[warn] Slow formula (#30113): □(p → (□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#30114): □(p → (□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#30115): □(p → (□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#30116): □(p → (□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#30117): □(p → (□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#30118): □(p → (□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#31515): □((U(⊥, (□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#31516): □((U(⊥, (□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#31517): □((U(⊥, (□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#31518): □((U(⊥, (□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#31641): □((U(p, (□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#31642): □((U(p, (□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#31643): □((U(p, (□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#31644): □((U(p, (□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#31645): □((U(p, (□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#31646): □((U(p, (□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#32129): □((S(⊥, (□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (S(((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#32130): □((S(⊥, (□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (S(((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#32131): □((S(⊥, (□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (S(((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#32132): □((S(⊥, (□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (S(((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#32255): □((S(p, (□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (S(((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#32256): □((S(p, (□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (S(((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#32257): □((S(p, (□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (S(((□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#32258): □((S(p, (□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (S(((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#32259): □((S(p, (□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (S(((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#32260): □((S(p, (□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (S(((□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#39480): □(□U(p, (⊥ → ⊥)) → ⊥) took 2000ms
+[warn] Slow formula (#39481): □(□U(p, (⊥ → ⊥)) → p) took 2000ms
+[warn] Slow formula (#39482): □(□U(p, (⊥ → ⊥)) → q) took 2000ms
+[warn] Slow formula (#39485): □(□S(p, (⊥ → ⊥)) → ⊥) took 2000ms
+[warn] Slow formula (#39486): □(□S(p, (⊥ → ⊥)) → p) took 2000ms
+[warn] Slow formula (#39487): □(□S(p, (⊥ → ⊥)) → q) took 2000ms
+[warn] Slow formula (#40692): □(U(((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (p → ⊥)) → ⊥) took 2001ms
+[warn] Slow formula (#40693): □(U(((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (p → ⊥)) → ⊥) took 2000ms
+[warn] Slow formula (#40694): □(U(((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (q → ⊥)) → ⊥) took 2000ms
+[warn] Slow formula (#40695): □(U(((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (p → ⊥)) → ⊥) took 2000ms
+[warn] Slow formula (#40696): □(U(((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (p → ⊥)) → ⊥) took 2000ms
+[warn] Slow formula (#40697): □(U(((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (q → ⊥)) → ⊥) took 2000ms
+[warn] Slow formula (#41192): □(S(((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (p → ⊥)) → ⊥) took 2001ms
+[warn] Slow formula (#41193): □(S(((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (p → ⊥)) → ⊥) took 2000ms
+[warn] Slow formula (#41194): □(S(((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (q → ⊥)) → ⊥) took 2000ms
+[warn] Slow formula (#41195): □(S(((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (p → ⊥)) → ⊥) took 2000ms
+[warn] Slow formula (#41196): □(S(((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (p → ⊥)) → ⊥) took 2000ms
+[warn] Slow formula (#41197): □(S(((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (q → ⊥)) → ⊥) took 2000ms
+[warn] Slow formula (#60026): U(□(□(((S(⊥, ⊥) → ⊥) → (S((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#60027): U(□(□(((S(⊥, p) → ⊥) → (S((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2001ms
+[warn] Slow formula (#60028): U(□(□(((S(p, ⊥) → ⊥) → (S((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#60029): U(□(□(((S(p, p) → ⊥) → (S((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#60030): U(□(□(((S(p, q) → ⊥) → (S((q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2001ms
+[warn] Slow formula (#60129): U(□((U(⊥, (□(⊥ → ⊥) → ⊥)) → ⊥) → (U(((□(⊥ → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)), (⊥ → ⊥)) took 1348ms
+[warn] Slow formula (#60130): U(□((U(⊥, (□(p → ⊥) → ⊥)) → ⊥) → (U(((□(p → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)), (⊥ → ⊥)) took 1929ms
+[warn] Slow formula (#60134): U(□((U(p, (□(⊥ → ⊥) → ⊥)) → ⊥) → (U(((□(⊥ → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#60135): U(□((U(p, (□(p → ⊥) → ⊥)) → ⊥) → (U(((□(p → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)), (⊥ → ⊥)) took 1935ms
+[warn] Slow formula (#60136): U(□((U(p, (□(q → ⊥) → ⊥)) → ⊥) → (U(((□(q → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#60313): U((□(□((U(⊥, p) → ⊥) → (U((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#60314): U((□(□((U(p, ⊥) → ⊥) → (U((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#60315): U((□(□((U(p, p) → ⊥) → (U((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#60316): U((□(□((U(p, q) → ⊥) → (U((q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#60321): U((□(□((S(⊥, p) → ⊥) → (S((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 1009ms
+[warn] Slow formula (#60324): U((□(□((S(p, q) → ⊥) → (S((q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 1063ms
+[warn] Slow formula (#60354): U((□((□(((S(⊥, ⊥) → ⊥) → (S((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#60355): U((□((□(((S(⊥, p) → ⊥) → (S((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#60356): U((□((□(((S(p, ⊥) → ⊥) → (S((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#60357): U((□((□(((S(p, p) → ⊥) → (S((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#60358): U((□((□(((S(p, q) → ⊥) → (S((q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2001ms
+[warn] Slow formula (#60373): U((□((U(((p → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#60374): U((□((U(((p → q) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#60375): U((□((S(((p → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#60376): U((□((S(((p → q) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#60401): U((□((p → (U((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#60403): U((□((p → (U((q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#60404): U((□((p → (S((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#60406): U((□((p → (S((q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#60477): U((□(((S(⊥, (□(⊥ → ⊥) → ⊥)) → ⊥) → (S(((□(⊥ → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#60478): U((□(((S(⊥, (□(p → ⊥) → ⊥)) → ⊥) → (S(((□(p → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#60482): U((□(((S(p, (□(⊥ → ⊥) → ⊥)) → ⊥) → (S(((□(⊥ → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#60483): U((□(((S(p, (□(p → ⊥) → ⊥)) → ⊥) → (S(((□(p → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#60484): U((□(((S(p, (□(q → ⊥) → ⊥)) → ⊥) → (S(((□(q → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#60517): U((□((U(p, (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#60519): U((□((U(p, (⊥ → ⊥)) → q) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#60522): U((□((S(p, (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#60524): U((□((S(p, (⊥ → ⊥)) → q) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#60599): U((□(((S(□⊥, ⊥) → ⊥) → (S((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#60600): U((□(((S(□⊥, p) → ⊥) → (S((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#60601): U((□(((S(□p, ⊥) → ⊥) → (S((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#60602): U((□(((S(□p, p) → ⊥) → (S((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#60603): U((□(((S(□p, q) → ⊥) → (S((q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#60604): U((□(((S((□(⊥ → ⊥) → ⊥), ⊥) → ⊥) → (S((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#60605): U((□(((S((□(⊥ → ⊥) → ⊥), p) → ⊥) → (S((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#60606): U((□(((S((□(p → ⊥) → ⊥), ⊥) → ⊥) → (S((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#60607): U((□(((S((□(p → ⊥) → ⊥), p) → ⊥) → (S((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#60608): U((□(((S((□(p → ⊥) → ⊥), q) → ⊥) → (S((q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#60874): U((p → (□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#60875): U((p → (□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#60876): U((p → (□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#60877): U((p → (□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#60878): U((p → (□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#60879): U((p → (□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#61097): U(((U(⊥, □(□(⊥ → ⊥) → ⊥)) → ⊥) → (U((□(□(⊥ → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)), (⊥ → ⊥)) took 1440ms
+[warn] Slow formula (#61098): U(((U(⊥, □(□(p → ⊥) → ⊥)) → ⊥) → (U((□(□(p → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#61099): U(((U(⊥, (□(□⊥ → ⊥) → ⊥)) → ⊥) → (U(((□(□⊥ → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)), (⊥ → ⊥)) took 1648ms
+[warn] Slow formula (#61100): U(((U(⊥, (□(□p → ⊥) → ⊥)) → ⊥) → (U(((□(□p → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#61105): U(((U(p, □(□(⊥ → ⊥) → ⊥)) → ⊥) → (U((□(□(⊥ → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#61106): U(((U(p, □(□(p → ⊥) → ⊥)) → ⊥) → (U((□(□(p → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)), (⊥ → ⊥)) took 2001ms
+[warn] Slow formula (#61107): U(((U(p, □(□(q → ⊥) → ⊥)) → ⊥) → (U((□(□(q → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#61108): U(((U(p, (□(□⊥ → ⊥) → ⊥)) → ⊥) → (U(((□(□⊥ → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#61109): U(((U(p, (□(□p → ⊥) → ⊥)) → ⊥) → (U(((□(□p → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#61110): U(((U(p, (□(□q → ⊥) → ⊥)) → ⊥) → (U(((□(□q → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#61111): U(((U(p, (□((□(⊥ → ⊥) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((□(⊥ → ⊥) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)), (⊥ → ⊥)) took 1426ms
+[warn] Slow formula (#61113): U(((U(p, (□((□(q → ⊥) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((□(q → ⊥) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)), (⊥ → ⊥)) took 1748ms
+[warn] Slow formula (#61359): U((U(p, (⊥ → ⊥)) → (U((q → ⊥), (⊥ → ⊥)) → ⊥)), (⊥ → ⊥)) took 1627ms
+[warn] Slow formula (#61976): U(((U((□(⊥ → ⊥) → ⊥), (□(p → ⊥) → ⊥)) → ⊥) → (U(((□(p → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)), (⊥ → ⊥)) took 1313ms
+[warn] Slow formula (#61980): U(((U((□(p → ⊥) → ⊥), (□(⊥ → ⊥) → ⊥)) → ⊥) → (U(((□(⊥ → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)), (⊥ → ⊥)) took 1117ms
+[warn] Slow formula (#61982): U(((U((□(p → ⊥) → ⊥), (□(q → ⊥) → ⊥)) → ⊥) → (U(((□(q → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)), (⊥ → ⊥)) took 1553ms
+bel] 16000/1646512 labeled (0%), 0% valid, 6% timeout, 43 formulas/sec, ETA: 631m 58s
+[label] 17000/1646512 labeled (1%), 1% valid, 6% timeout, 45 formulas/sec, ETA: 603m 31s
+[label] 18000/1646512 labeled (1%), 1% valid, 6% timeout, 48 formulas/sec, ETA: 565m 27s
+[label] 19000/1646512 labeled (1%), 1% valid, 6% timeout, 50 formulas/sec, ETA: 542m 30s
+[label] 20000/1646512 labeled (1%), 1% valid, 5% timeout, 53 formulas/sec, ETA: 511m 28s
+[label] 21000/1646512 labeled (1%), 1% valid, 5% timeout, 55 formulas/sec, ETA: 492m 34s
+[label] 22000/1646512 labeled (1%), 1% valid, 5% timeout, 57 formulas/sec, ETA: 475m 0s
+[label] 23000/1646512 labeled (1%), 1% valid, 5% timeout, 58 formulas/sec, ETA: 466m 31s
+[label] 24000/1646512 labeled (1%), 1% valid, 5% timeout, 60 formulas/sec, ETA: 450m 41s
+[label] 25000/1646512 labeled (1%), 1% valid, 5% timeout, 63 formulas/sec, ETA: 428m 58s
+[label] 26000/1646512 labeled (1%), 1% valid, 6% timeout, 47 formulas/sec, ETA: 574m 38s
+[label] 27000/1646512 labeled (1%), 1% valid, 7% timeout, 36 formulas/sec, ETA: 749m 46s
+[label] 28000/1646512 labeled (1%), 1% valid, 8% timeout, 35 formulas/sec, ETA: 770m 43s
+[label] 29000/1646512 labeled (1%), 1% valid, 9% timeout, 34 formulas/sec, ETA: 792m 53s
+[label] 30000/1646512 labeled (1%), 1% valid, 9% timeout, 35 formulas/sec, ETA: 769m 46s
+[label] 31000/1646512 labeled (1%), 1% valid, 8% timeout, 36 formulas/sec, ETA: 747m 55s
+[label] 32000/1646512 labeled (1%), 0% valid, 8% timeout, 36 formulas/sec, ETA: 747m 27s
+[label] 33000/1646512 labeled (2%), 0% valid, 8% timeout, 36 formulas/sec, ETA: 746m 59s
+[label] 34000/1646512 labeled (2%), 1% valid, 8% timeout, 37 formulas/sec, ETA: 726m 21s
+[label] 35000/1646512 labeled (2%), 1% valid, 8% timeout, 38 formulas/sec, ETA: 706m 48s
+[label] 36000/1646512 labeled (2%), 1% valid, 8% timeout, 38 formulas/sec, ETA: 706m 21s
+[label] 37000/1646512 labeled (2%), 1% valid, 8% timeout, 39 formulas/sec, ETA: 687m 49s
+[label] 38000/1646512 labeled (2%), 1% valid, 7% timeout, 40 formulas/sec, ETA: 670m 12s
+[label] 39000/1646512 labeled (2%), 1% valid, 7% timeout, 41 formulas/sec, ETA: 653m 27s
+[label] 40000/1646512 labeled (2%), 1% valid, 8% timeout, 41 formulas/sec, ETA: 653m 3s
+[label] 41000/1646512 labeled (2%), 1% valid, 8% timeout, 42 formulas/sec, ETA: 637m 6s
+[label] 42000/1646512 labeled (2%), 1% valid, 8% timeout, 42 formulas/sec, ETA: 636m 42s
+[label] 43000/1646512 labeled (2%), 1% valid, 7% timeout, 43 formulas/sec, ETA: 621m 30s
+[label] 44000/1646512 labeled (2%), 1% valid, 7% timeout, 44 formulas/sec, ETA: 607m 0s
+[label] 45000/1646512 labeled (2%), 1% valid, 7% timeout, 45 formulas/sec, ETA: 593m 9s
+[label] 46000/1646512 labeled (2%), 1% valid, 7% timeout, 46 formulas/sec, ETA: 579m 53s
+[label] 47000/1646512 labeled (2%), 1% valid, 7% timeout, 47 formulas/sec, ETA: 567m 12s
+[label] 48000/1646512 labeled (2%), 1% valid, 7% timeout, 48 formulas/sec, ETA: 555m 2s
+[label] 49000/1646512 labeled (2%), 1% valid, 6% timeout, 49 formulas/sec, ETA: 543m 22s
+[label] 50000/1646512 labeled (3%), 1% valid, 6% timeout, 50 formulas/sec, ETA: 532m 10s
+[label] 51000/1646512 labeled (3%), 1% valid, 6% timeout, 51 formulas/sec, ETA: 521m 24s
+[label] 52000/1646512 labeled (3%), 1% valid, 6% timeout, 52 formulas/sec, ETA: 511m 3s
+[label] 53000/1646512 labeled (3%), 1% valid, 6% timeout, 53 formulas/sec, ETA: 501m 6s
+[label] 54000/1646512 labeled (3%), 1% valid, 6% timeout, 54 formulas/sec, ETA: 491m 30s
+[label] 55000/1646512 labeled (3%), 1% valid, 6% timeout, 55 formulas/sec, ETA: 482m 16s
+[label] 56000/1646512 labeled (3%), 1% valid, 6% timeout, 56 formulas/sec, ETA: 473m 22s
+[label] 57000/1646512 labeled (3%), 1% valid, 5% timeout, 57 formulas/sec, ETA: 464m 46s
+[label] 58000/1646512 labeled (3%), 1% valid, 5% timeout, 58 formulas/sec, ETA: 456m 28s
+[label] 59000/1646512 labeled (3%), 0% valid, 5% timeout, 59 formulas/sec, ETA: 448m 26s
+[label] 60000/1646512 labeled (3%), 0% valid, 5% timeout, 60 formulas/sec, ETA: 440m 41s
+[label] 61000/1646512 labeled (3%), 0% valid, 6% timeout, 53 formulas/sec, ETA: 498m 35s
+[label] 62000[warn] Slow formula (#62069): U((□U(p, (⊥ → ⊥)) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#62070): U((□U(p, (⊥ → ⊥)) → p), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#62071): U((□U(p, (⊥ → ⊥)) → q), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#62074): U((□S(p, (⊥ → ⊥)) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#62075): U((□S(p, (⊥ → ⊥)) → p), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#62076): U((□S(p, (⊥ → ⊥)) → q), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#62434): U(((U((□((□(p → ⊥) → ⊥) → ⊥) → ⊥), q) → ⊥) → (U((q → ⊥), (⊥ → ⊥)) → ⊥)), (⊥ → ⊥)) took 1131ms
+[warn] Slow formula (#62533): S(□(□(((U(⊥, ⊥) → ⊥) → (U((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#62534): S(□(□(((U(⊥, p) → ⊥) → (U((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#62535): S(□(□(((U(p, ⊥) → ⊥) → (U((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#62536): S(□(□(((U(p, p) → ⊥) → (U((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#62537): S(□(□(((U(p, q) → ⊥) → (U((q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#62541): S(□(□(((S(⊥, ⊥) → ⊥) → (S((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#62542): S(□(□(((S(⊥, p) → ⊥) → (S((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#62543): S(□(□(((S(p, ⊥) → ⊥) → (S((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#62544): S(□(□(((S(p, p) → ⊥) → (S((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#62545): S(□(□(((S(p, q) → ⊥) → (S((q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#62827): S((□(□((U(⊥, ⊥) → ⊥) → (U((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#62828): S((□(□((U(⊥, p) → ⊥) → (U((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#62829): S((□(□((U(p, ⊥) → ⊥) → (U((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#62830): S((□(□((U(p, p) → ⊥) → (U((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#62831): S((□(□((U(p, q) → ⊥) → (U((q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#62835): S((□(□((S(⊥, ⊥) → ⊥) → (S((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 1738ms
+[warn] Slow formula (#62837): S((□(□((S(p, ⊥) → ⊥) → (S((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#62862): S((□((□(((U(⊥, p) → ⊥) → (U((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#62864): S((□((□(((U(p, p) → ⊥) → (U((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#62865): S((□((□(((U(p, q) → ⊥) → (U((q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#62869): S((□((□(((S(⊥, ⊥) → ⊥) → (S((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#62870): S((□((□(((S(⊥, p) → ⊥) → (S((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#62871): S((□((□(((S(p, ⊥) → ⊥) → (S((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#62872): S((□((□(((S(p, p) → ⊥) → (S((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#62873): S((□((□(((S(p, q) → ⊥) → (S((q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#62888): S((□((U(((p → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#62889): S((□((U(((p → q) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#62890): S((□((S(((p → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#62891): S((□((S(((p → q) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#62918): S((□((p → (U((q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#62919): S((□((p → (S((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#62921): S((□((p → (S((q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#62970): S((□(((U(⊥, □⊥) → ⊥) → (U((□⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 1949ms
+[warn] Slow formula (#62971): S((□(((U(⊥, □p) → ⊥) → (U((□p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 1951ms
+[warn] Slow formula (#62972): S((□(((U(⊥, (□(⊥ → ⊥) → ⊥)) → ⊥) → (U(((□(⊥ → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#62973): S((□(((U(⊥, (□(p → ⊥) → ⊥)) → ⊥) → (U(((□(p → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#62974): S((□(((U(p, □⊥) → ⊥) → (U((□⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 1985ms
+[warn] Slow formula (#62975): S((□(((U(p, □p) → ⊥) → (U((□p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 1920ms
+[warn] Slow formula (#62976): S((□(((U(p, □q) → ⊥) → (U((□q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2001ms
+[warn] Slow formula (#62977): S((□(((U(p, (□(⊥ → ⊥) → ⊥)) → ⊥) → (U(((□(⊥ → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#62978): S((□(((U(p, (□(p → ⊥) → ⊥)) → ⊥) → (U(((□(p → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#62979): S((□(((U(p, (□(q → ⊥) → ⊥)) → ⊥) → (U(((□(q → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#62992): S((□(((S(⊥, (□(⊥ → ⊥) → ⊥)) → ⊥) → (S(((□(⊥ → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#62993): S((□(((S(⊥, (□(p → ⊥) → ⊥)) → ⊥) → (S(((□(p → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#62997): S((□(((S(p, (□(⊥ → ⊥) → ⊥)) → ⊥) → (S(((□(⊥ → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#62998): S((□(((S(p, (□(p → ⊥) → ⊥)) → ⊥) → (S(((□(p → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#62999): S((□(((S(p, (□(q → ⊥) → ⊥)) → ⊥) → (S(((□(q → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#63032): S((□((U(p, (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#63034): S((□((U(p, (⊥ → ⊥)) → q) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#63037): S((□((S(p, (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#63039): S((□((S(p, (⊥ → ⊥)) → q) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#63099): S((□(((U(□⊥, p) → ⊥) → (U((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#63101): S((□(((U(□p, p) → ⊥) → (U((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#63102): S((□(((U(□p, q) → ⊥) → (U((q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#63104): S((□(((U((□(⊥ → ⊥) → ⊥), p) → ⊥) → (U((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#63106): S((□(((U((□(p → ⊥) → ⊥), p) → ⊥) → (U((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#63107): S((□(((U((□(p → ⊥) → ⊥), q) → ⊥) → (U((q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#63114): S((□(((S(□⊥, ⊥) → ⊥) → (S((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#63115): S((□(((S(□⊥, p) → ⊥) → (S((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2001ms
+[warn] Slow formula (#63116): S((□(((S(□p, ⊥) → ⊥) → (S((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2001ms
+[warn] Slow formula (#63117): S((□(((S(□p, p) → ⊥) → (S((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#63118): S((□(((S(□p, q) → ⊥) → (S((q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#63119): S((□(((S((□(⊥ → ⊥) → ⊥), ⊥) → ⊥) → (S((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#63120): S((□(((S((□(⊥ → ⊥) → ⊥), p) → ⊥) → (S((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#63121): S((□(((S((□(p → ⊥) → ⊥), ⊥) → ⊥) → (S((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#63122): S((□(((S((□(p → ⊥) → ⊥), p) → ⊥) → (S((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#63123): S((□(((S((□(p → ⊥) → ⊥), q) → ⊥) → (S((q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#63390): S((p → (□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#63391): S((p → (□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)), (⊥ → ⊥)) took 2001ms
+[warn] Slow formula (#63392): S((p → (□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#63393): S((p → (□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#63394): S((p → (□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#64584): S((□U(p, (⊥ → ⊥)) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#64585): S((□U(p, (⊥ → ⊥)) → p), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#64586): S((□U(p, (⊥ → ⊥)) → q), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#64589): S((□S(p, (⊥ → ⊥)) → ⊥), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#64590): S((□S(p, (⊥ → ⊥)) → p), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#64591): S((□S(p, (⊥ → ⊥)) → q), (⊥ → ⊥)) took 2000ms
+[warn] Slow formula (#85163): (p → □(□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#85164): (p → □(□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#85165): (p → □(□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#85166): (p → □(□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#85167): (p → □(□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#85168): (p → □(□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#85656): (p → (□((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#85657): (p → (□((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#85658): (p → (□((□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#85659): (p → (□((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#85660): (p → (□((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#85661): (p → (□((□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#85692): (p → (□(U((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#85693): (p → (□(U((U((p → ⊥), (⊥ → ⊥)) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#85694): (p → (□(U((U((q → ⊥), (⊥ → ⊥)) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#85731): (p → (□(S((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#85732): (p → (□(S((S((p → ⊥), (⊥ → ⊥)) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) took 2001ms
+[warn] Slow formula (#85733): (p → (□(S((S((q → ⊥), (⊥ → ⊥)) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#85755): (p → (□((U(((□(⊥ → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#85757): (p → (□((U(((□(q → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#85758): (p → (□((U((U(⊥, (⊥ → ⊥)) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#85759): (p → (□((U((U(p, (⊥ → ⊥)) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#85760): (p → (□((U((U(q, (⊥ → ⊥)) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#85761): (p → (□((U((S(⊥, (⊥ → ⊥)) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#85763): (p → (□((U((S(q, (⊥ → ⊥)) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#85764): (p → (□((U(((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#85765): (p → (□((U(((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#85766): (p → (□((U(((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#85767): (p → (□((U(((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#85768): (p → (□((U(((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#85769): (p → (□((U(((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#85773): (p → (□((U((((((S(((⊥ → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ((((⊥ → ⊥) → ((U(((⊥ → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#85775): (p → (□((U((((((S(((q → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ((((q → ⊥) → ((U(((q → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#85776): (p → (□((U((U(⊥, ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#85777): (p → (□((U((U(p, ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#85778): (p → (□((U((U(q, ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#85779): (p → (□((U((S(⊥, ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#85780): (p → (□((U((S(p, ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#85781): (p → (□((U((S(q, ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#85791): (p → (□((S(((□(⊥ → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#85793): (p → (□((S(((□(q → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#85794): (p → (□((S((U(⊥, (⊥ → ⊥)) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#85796): (p → (□((S((U(q, (⊥ → ⊥)) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#85797): (p → (□((S((S(⊥, (⊥ → ⊥)) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#85798): (p → (□((S((S(p, (⊥ → ⊥)) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#85799): (p → (□((S((S(q, (⊥ → ⊥)) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#85800): (p → (□((S(((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#85801): (p → (□((S(((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#85802): (p → (□((S(((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#85803): (p → (□((S(((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#85804): (p → (□((S(((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#85805): (p → (□((S(((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#85809): (p → (□((S((((((S(((⊥ → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ((((⊥ → ⊥) → ((U(((⊥ → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#85811): (p → (□((S((((((S(((q → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ((((q → ⊥) → ((U(((q → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#85812): (p → (□((S((U(⊥, ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#85813): (p → (□((S((U(p, ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#85814): (p → (□((S((U(q, ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#85815): (p → (□((S((S(⊥, ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#85816): (p → (□((S((S(p, ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#85817): (p → (□((S((S(q, ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#85872): (p → (□(((((S((((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → (((((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ((U((((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#85873): (p → (□(((((S((((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → (((((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ((U((((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#85874): (p → (□(((((S((((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → (((((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ((U((((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#85875): (p → (□(((((S((((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → (((((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ((U((((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#85876): (p → (□(((((S((((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → (((((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ((U((((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#85877): (p → (□(((((S((((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → (((((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ((U((((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#86158): (p → U((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥))) took 2000ms
+[warn] Slow formula (#86159): (p → U((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥))) took 2000ms
+[warn] Slow formula (#86160): (p → U((□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥))) took 2000ms
+[warn] Slow formula (#86161): (p → U((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥))) took 2000ms
+[warn] Slow formula (#86162): (p → U((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥))) took 2000ms
+[warn] Slow formula (#86163): (p → U((□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥))) took 2000ms
+[warn] Slow formula (#86361): (p → S((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥))) took 2000ms
+[warn] Slow formula (#86362): (p → S((□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥))) took 2001ms
+[warn] Slow formula (#86363): (p → S((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥))) took 2000ms
+[warn] Slow formula (#86364): (p → S((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥))) took 2000ms
+[warn] Slow formula (#86365): (p → S((□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥))) took 2000ms
+[warn] Slow formula (#86562): (p → (U(((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#86563): (p → (U(((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#86564): (p → (U(((□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#86565): (p → (U(((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#86566): (p → (U(((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#86567): (p → (U(((□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#86764): (p → (S(((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#86765): (p → (S(((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#86766): (p → (S(((□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#86767): (p → (S(((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#86768): (p → (S(((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#86769): (p → (S(((□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#86966): (p → (((S(((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ((((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ((U(((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#86967): (p → (((S(((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ((((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ((U(((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#86968): (p → (((S(((□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ((((□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ((U(((□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#86969): (p → (((S(((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ((((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ((U(((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#86970): (p → (((S(((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ((((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ((U(((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#86971): (p → (((S(((□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ((((□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ((U(((□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#87168): (p → ((((S((((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → (((((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ((U((((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#87169): (p → ((((S((((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → (((((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ((U((((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#87170): (p → ((((S((((□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → (((((□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ((U((((□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#87171): (p → ((((S((((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → (((((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ((U((((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#87172): (p → ((((S((((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → (((((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ((U((((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#87173): (p → ((((S((((□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → (((((□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ((U((((□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#87774): (p → (((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ((U(((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#87775): (p → (((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ((U(((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#87776): (p → (((□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ((U(((□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#87777): (p → (((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ((U(((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#87778): (p → (((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ((U(((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#87779): (p → (((□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ((U(((□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#87976): (p → (((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ((S(((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#87977): (p → (((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ((S(((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#87978): (p → (((□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ((S(((□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥)) took 2001ms
+[warn] Slow formula (#87979): (p → (((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ((S(((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#87980): (p → (((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ((S(((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#87981): (p → (((□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ((S(((□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#94677): ((U(⊥, □(□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U((□(□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#94678): ((U(⊥, □(□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U((□(□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#94679): ((U(⊥, □(□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U((□(□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#94680): ((U(⊥, □(□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U((□(□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#94773): ((U(⊥, (□(□(S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□(□(S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 1753ms
+[warn] Slow formula (#94774): ((U(⊥, (□(□(S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□(□(S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#94791): ((U(⊥, (□((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#94792): ((U(⊥, (□((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#94793): ((U(⊥, (□((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#94794): ((U(⊥, (□((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#94817): ((U(⊥, (□((U(((□(⊥ → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U(((□(⊥ → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#94818): ((U(⊥, (□((U(((□(p → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U(((□(p → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2001ms
+[warn] Slow formula (#94821): ((U(⊥, (□((S(((□(⊥ → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S(((□(⊥ → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#94822): ((U(⊥, (□((S(((□(p → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S(((□(p → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#94866): ((U(⊥, (□(((S(⊥, ⊥) → ⊥) → (S((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥)) → ⊥) → (U(((□(((S(⊥, ⊥) → ⊥) → (S((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#94867): ((U(⊥, (□(((S(⊥, p) → ⊥) → (S((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥)) → ⊥) → (U(((□(((S(⊥, p) → ⊥) → (S((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#94868): ((U(⊥, (□(((S(p, ⊥) → ⊥) → (S((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥)) → ⊥) → (U(((□(((S(p, ⊥) → ⊥) → (S((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#94869): ((U(⊥, (□(((S(p, p) → ⊥) → (S((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥)) → ⊥) → (U(((□(((S(p, p) → ⊥) → (S((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#94870): ((U(⊥, (□(((S(p, q) → ⊥) → (S((q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥)) → ⊥) → (U(((□(((S(p, q) → ⊥) → (S((q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#95207): ((U(p, □(□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U((□(□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#95208): ((U(p, □(□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U((□(□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#95209): ((U(p, □(□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U((□(□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#95210): ((U(p, □(□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U((□(□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#95211): ((U(p, □(□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U((□(□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#95212): ((U(p, □(□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U((□(□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#95373): ((U(p, (□(□(S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□(□(S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 1723ms
+[warn] Slow formula (#95374): ((U(p, (□(□(S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□(□(S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 1826ms
+[warn] Slow formula (#95375): ((U(p, (□(□(S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□(□(S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 1864ms
+[warn] Slow formula (#95400): ((U(p, (□((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#95401): ((U(p, (□((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#95402): ((U(p, (□((□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#95403): ((U(p, (□((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#95404): ((U(p, (□((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#95405): ((U(p, (□((□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#95439): ((U(p, (□((U(((□(⊥ → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U(((□(⊥ → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#95440): ((U(p, (□((U(((□(p → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U(((□(p → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#95441): ((U(p, (□((U(((□(q → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U(((□(q → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#95445): ((U(p, (□((S(((□(⊥ → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S(((□(⊥ → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#95446): ((U(p, (□((S(((□(p → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S(((□(p → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#95447): ((U(p, (□((S(((□(q → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S(((□(q → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#95527): ((U(p, (□(((S(⊥, ⊥) → ⊥) → (S((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥)) → ⊥) → (U(((□(((S(⊥, ⊥) → ⊥) → (S((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#95528): ((U(p, (□(((S(⊥, p) → ⊥) → (S((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥)) → ⊥) → (U(((□(((S(⊥, p) → ⊥) → (S((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#95529): ((U(p, (□(((S(⊥, q) → ⊥) → (S((q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥)) → ⊥) → (U(((□(((S(⊥, q) → ⊥) → (S((q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#95530): ((U(p, (□(((S(p, ⊥) → ⊥) → (S((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥)) → ⊥) → (U(((□(((S(p, ⊥) → ⊥) → (S((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#95531): ((U(p, (□(((S(p, p) → ⊥) → (S((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥)) → ⊥) → (U(((□(((S(p, p) → ⊥) → (S((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#95532): ((U(p, (□(((S(p, q) → ⊥) → (S((q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥)) → ⊥) → (U(((□(((S(p, q) → ⊥) → (S((q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#95533): ((U(p, (□(((S(q, ⊥) → ⊥) → (S((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥)) → ⊥) → (U(((□(((S(q, ⊥) → ⊥) → (S((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#95534): ((U(p, (□(((S(q, p) → ⊥) → (S((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥)) → ⊥) → (U(((□(((S(q, p) → ⊥) → (S((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#95535): ((U(p, (□(((S(q, q) → ⊥) → (S((q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥)) → ⊥) → (U(((□(((S(q, q) → ⊥) → (S((q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#95536): ((U(p, (□(((S(q, r) → ⊥) → (S((r → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥)) → ⊥) → (U(((□(((S(q, r) → ⊥) → (S((r → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#97725): ((S(⊥, □(□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (S((□(□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#97726): ((S(⊥, □(□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (S((□(□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#97727): ((S(⊥, □(□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (S((□(□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#97728): ((S(⊥, □(□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (S((□(□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#97819): ((S(⊥, (□(□(U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (S(((□(□(U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#97820): ((S(⊥, (□(□(U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (S(((□(□(U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#97839): ((S(⊥, (□((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥)) → ⊥) → (S(((□((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2001ms
+[warn] Slow formula (#97840): ((S(⊥, (□((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥)) → ⊥) → (S(((□((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#97841): ((S(⊥, (□((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥)) → ⊥) → (S(((□((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#97842): ((S(⊥, (□((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥)) → ⊥) → (S(((□((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#97865): ((S(⊥, (□((U(((□(⊥ → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (S(((□((U(((□(⊥ → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#97866): ((S(⊥, (□((U(((□(p → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (S(((□((U(((□(p → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#97869): ((S(⊥, (□((S(((□(⊥ → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (S(((□((S(((□(⊥ → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#97870): ((S(⊥, (□((S(((□(p → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (S(((□((S(((□(p → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#97906): ((S(⊥, (□(((U(⊥, ⊥) → ⊥) → (U((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥)) → ⊥) → (S(((□(((U(⊥, ⊥) → ⊥) → (U((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#97907): ((S(⊥, (□(((U(⊥, p) → ⊥) → (U((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥)) → ⊥) → (S(((□(((U(⊥, p) → ⊥) → (U((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#97908): ((S(⊥, (□(((U(p, ⊥) → ⊥) → (U((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥)) → ⊥) → (S(((□(((U(p, ⊥) → ⊥) → (U((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#97909): ((S(⊥, (□(((U(p, p) → ⊥) → (U((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥)) → ⊥) → (S(((□(((U(p, p) → ⊥) → (U((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#97910): ((S(⊥, (□(((U(p, q) → ⊥) → (U((q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥)) → ⊥) → (S(((□(((U(p, q) → ⊥) → (U((q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#97948): ((S(⊥, (U(((□(□p → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → (S(((U(((□(□p → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 1767ms
+[warn] Slow formula (#98255): ((S(p, □(□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (S((□(□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#98256): ((S(p, □(□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (S((□(□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#98257): ((S(p, □(□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (S((□(□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#98258): ((S(p, □(□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (S((□(□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#98259): ((S(p, □(□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (S((□(□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#98260): ((S(p, □(□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (S((□(□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#98418): ((S(p, (□(□(U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (S(((□(□(U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#98419): ((S(p, (□(□(U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (S(((□(□(U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#98420): ((S(p, (□(□(U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (S(((□(□(U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#98448): ((S(p, (□((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥)) → ⊥) → (S(((□((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#98449): ((S(p, (□((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥)) → ⊥) → (S(((□((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#98450): ((S(p, (□((□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥)) → ⊥) → (S(((□((□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2001ms
+[warn] Slow formula (#98451): ((S(p, (□((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥)) → ⊥) → (S(((□((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#98452): ((S(p, (□((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥)) → ⊥) → (S(((□((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#98453): ((S(p, (□((□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥)) → ⊥) → (S(((□((□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#98487): ((S(p, (□((U(((□(⊥ → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (S(((□((U(((□(⊥ → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#98488): ((S(p, (□((U(((□(p → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (S(((□((U(((□(p → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#98489): ((S(p, (□((U(((□(q → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (S(((□((U(((□(q → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#98493): ((S(p, (□((S(((□(⊥ → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (S(((□((S(((□(⊥ → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#98494): ((S(p, (□((S(((□(p → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (S(((□((S(((□(p → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#98495): ((S(p, (□((S(((□(q → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (S(((□((S(((□(q → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#98558): ((S(p, (□(((U(⊥, ⊥) → ⊥) → (U((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥)) → ⊥) → (S(((□(((U(⊥, ⊥) → ⊥) → (U((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#98559): ((S(p, (□(((U(⊥, p) → ⊥) → (U((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥)) → ⊥) → (S(((□(((U(⊥, p) → ⊥) → (U((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#98560): ((S(p, (□(((U(⊥, q) → ⊥) → (U((q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥)) → ⊥) → (S(((□(((U(⊥, q) → ⊥) → (U((q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#98561): ((S(p, (□(((U(p, ⊥) → ⊥) → (U((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥)) → ⊥) → (S(((□(((U(p, ⊥) → ⊥) → (U((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#98562): ((S(p, (□(((U(p, p) → ⊥) → (U((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥)) → ⊥) → (S(((□(((U(p, p) → ⊥) → (U((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#98563): ((S(p, (□(((U(p, q) → ⊥) → (U((q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥)) → ⊥) → (S(((□(((U(p, q) → ⊥) → (U((q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#98564): ((S(p, (□(((U(q, ⊥) → ⊥) → (U((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥)) → ⊥) → (S(((□(((U(q, ⊥) → ⊥) → (U((⊥ → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#98565): ((S(p, (□(((U(q, p) → ⊥) → (U((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥)) → ⊥) → (S(((□(((U(q, p) → ⊥) → (U((p → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#98566): ((S(p, (□(((U(q, q) → ⊥) → (U((q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥)) → ⊥) → (S(((□(((U(q, q) → ⊥) → (U((q → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#98567): ((S(p, (□(((U(q, r) → ⊥) → (U((r → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥)) → ⊥) → (S(((□(((U(q, r) → ⊥) → (U((r → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#98637): ((S(p, (U(((□(□p → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → (S(((U(((□(□p → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 1789ms
+[warn] Slow formula (#98638): ((S(p, (U(((□(□q → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) → ⊥) → (S(((U(((□(□q → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 1787ms
+[warn] Slow formula (#102658): (□p → (□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#102660): (□p → (□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#102661): (□p → (□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#102663): (□p → (□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#103480): ((□(p → ⊥) → ⊥) → (□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#103481): ((□(p → ⊥) → ⊥) → (□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#103482): ((□(p → ⊥) → ⊥) → (□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#103483): ((□(p → ⊥) → ⊥) → (□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#103484): ((□(p → ⊥) → ⊥) → (□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#103485): ((□(p → ⊥) → ⊥) → (□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#104302): (U(p, (⊥ → ⊥)) → (□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#104303): (U(p, (⊥ → ⊥)) → (□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2001ms
+[warn] Slow formula (#104304): (U(p, (⊥ → ⊥)) → (□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#104305): (U(p, (⊥ → ⊥)) → (□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#104306): (U(p, (⊥ → ⊥)) → (□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#104307): (U(p, (⊥ → ⊥)) → (□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#105124): (S(p, (⊥ → ⊥)) → (□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#105125): (S(p, (⊥ → ⊥)) → (□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#105126): (S(p, (⊥ → ⊥)) → (□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#105127): (S(p, (⊥ → ⊥)) → (□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2001ms
+[warn] Slow formula (#105128): (S(p, (⊥ → ⊥)) → (□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#105129): (S(p, (⊥ → ⊥)) → (□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#105613): ((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → (□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#105614): ((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → (□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#105946): ((U((p → ⊥), (⊥ → ⊥)) → ⊥) → (□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#105948): ((U((p → ⊥), (⊥ → ⊥)) → ⊥) → (□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#105949): ((U((p → ⊥), (⊥ → ⊥)) → ⊥) → (□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#105950): ((U((p → ⊥), (⊥ → ⊥)) → ⊥) → (□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#105951): ((U((p → ⊥), (⊥ → ⊥)) → ⊥) → (□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#106433): ((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → (□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#106434): ((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → (□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#106768): ((S((p → ⊥), (⊥ → ⊥)) → ⊥) → (□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#106769): ((S((p → ⊥), (⊥ → ⊥)) → ⊥) → (□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#106770): ((S((p → ⊥), (⊥ → ⊥)) → ⊥) → (□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#106771): ((S((p → ⊥), (⊥ → ⊥)) → ⊥) → (□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#106773): ((S((p → ⊥), (⊥ → ⊥)) → ⊥) → (□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#107590): ((((S((p → ⊥), (⊥ → ⊥)) → ⊥) → (((p → ((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥) → (□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#107592): ((((S((p → ⊥), (⊥ → ⊥)) → ⊥) → (((p → ((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥) → (□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2001ms
+[warn] Slow formula (#107593): ((((S((p → ⊥), (⊥ → ⊥)) → ⊥) → (((p → ((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥) → (□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#107595): ((((S((p → ⊥), (⊥ → ⊥)) → ⊥) → (((p → ((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥) → (□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+/1646512 labeled (3%), 0% valid, 7% timeout, 52 formulas/sec, ETA: 507m 51s
+[label] 63000/1646512 labeled (3%), 0% valid, 8% timeout, 47 formulas/sec, ETA: 561m 31s
+[label] 64000/1646512 labeled (3%), 0% valid, 9% timeout, 45 formulas/sec, ETA: 586m 6s
+[label] 65000/1646512 labeled (3%), 0% valid, 9% timeout, 45 formulas/sec, ETA: 585m 44s
+[label] 66000/1646512 labeled (4%), 0% valid, 9% timeout, 45 formulas/sec, ETA: 585m 22s
+[label] 67000/1646512 labeled (4%), 0% valid, 9% timeout, 46 formulas/sec, ETA: 572m 17s
+[label] 68000/1646512 labeled (4%), 0% valid, 9% timeout, 47 formulas/sec, ETA: 559m 45s
+[label] 69000/1646512 labeled (4%), 0% valid, 9% timeout, 48 formulas/sec, ETA: 547m 44s
+[label] 70000/1646512 labeled (4%), 0% valid, 9% timeout, 48 formulas/sec, ETA: 547m 24s
+[label] 71000/1646512 labeled (4%), 0% valid, 8% timeout, 49 formulas/sec, ETA: 535m 53s
+[label] 72000/1646512 labeled (4%), 0% valid, 8% timeout, 50 formulas/sec, ETA: 524m 50s
+[label] 73000/1646512 labeled (4%), 0% valid, 8% timeout, 50 formulas/sec, ETA: 524m 30s
+[label] 74000/1646512 labeled (4%), 0% valid, 8% timeout, 51 formulas/sec, ETA: 513m 53s
+[label] 75000/1646512 labeled (4%), 0% valid, 8% timeout, 52 formulas/sec, ETA: 503m 41s
+[label] 76000/1646512 labeled (4%), 0% valid, 8% timeout, 52 formulas/sec, ETA: 503m 22s
+[label] 77000/1646512 labeled (4%), 0% valid, 8% timeout, 53 formulas/sec, ETA: 493m 33s
+[label] 78000/1646512 labeled (4%), 0% valid, 8% timeout, 54 formulas/sec, ETA: 484m 6s
+[label] 79000/1646512 labeled (4%), 0% valid, 8% timeout, 54 formulas/sec, ETA: 483m 48s
+[label] 80000/1646512 labeled (4%), 0% valid, 7% timeout, 55 formulas/sec, ETA: 474m 42s
+[label] 81000/1646512 labeled (4%), 0% valid, 7% timeout, 56 formulas/sec, ETA: 465m 55s
+[label] 82000/1646512 labeled (4%), 0% valid, 7% timeout, 56 formulas/sec, ETA: 465m 37s
+[label] 83000/1646512 labeled (5%), 0% valid, 7% timeout, 57 formulas/sec, ETA: 457m 10s
+[label] 84000/1646512 labeled (5%), 0% valid, 7% timeout, 58 formulas/sec, ETA: 448m 59s
+[label] 85000/1646512 labeled (5%), 0% valid, 7% timeout, 58 formulas/sec, ETA: 448m 42s
+[label] 86000/1646512 labeled (5%), 0% valid, 7% timeout, 54 formulas/sec, ETA: 481m 38s
+[label] 87000/1646512 labeled (5%), 0% valid, 7% timeout, 52 formulas/sec, ETA: 499m 50s
+[label] 88000/1646512 labeled (5%), 0% valid, 8% timeout, 51 formulas/sec, ETA: 509m 19s
+[label] 89000/1646512 labeled (5%), 0% valid, 7% timeout, 51 formulas/sec, ETA: 508m 59s
+[label] 90000/1646512 labeled (5%), 0% valid, 7% timeout, 52 formulas/sec, ETA: 498m 52s
+[label] 91000/1646512 labeled (5%), 0% valid, 7% timeout, 52 formulas/sec, ETA: 498m 33s
+[label] 92000/1646512 labeled (5%), 0% valid, 7% timeout, 53 formulas/sec, ETA: 488m 50s
+[label] 93000/1646512 labeled (5%), 0% valid, 7% timeout, 53 formulas/sec, ETA: 488m 31s
+[label] 94000/1646512 labeled (5%), 0% valid, 7% timeout, 54 formulas/sec, ETA: 479m 10s
+[label] 95000/1646512 labeled (5%), 0% valid, 7% timeout, 53 formulas/sec, ETA: 487m 53s
+[label] 96000/1646512 labeled (5%), 0% valid, 7% timeout, 51 formulas/sec, ETA: 506m 42s
+[label] 97000/1646512 labeled (5%), 0% valid, 7% timeout, 52 formulas/sec, ETA: 496m 38s
+[label] 98000/1646512 labeled (5%), 0% valid, 7% timeout, 50 formulas/sec, ETA: 516m 10s
+[label] 99000/1646512 labeled (6%), 0% valid, 7% timeout, 48 formulas/sec, ETA: 537m 19s
+[label] 100000/1646512 labeled (6%), 0% valid, 7% timeout, 49 formulas/sec, ETA: 526m 1s
+[label] 101000/1646512 labeled (6%), 0% valid, 7% timeout, 49 formulas/sec, ETA: 525m 41s
+[label] 102000/1646512 labeled (6%), 0% valid, 7% timeout, 50 formulas/sec, ETA: 514m 50s
+[label] 103000/1646512 labeled (6%), 0% valid, 7% timeout, 50 formulas/sec, ETA: 514m 30s
+[label] 104000/1646512 labeled (6%), 1% valid, 7% timeout, 50 formulas/sec, ETA: 514m 10s
+[label] 105000/1646512 labeled (6%), 1% valid, 7% timeout, 50 formulas/sec, ETA: 513m 50s
+[label] 106000/1646512 labeled (6%), 1% valid, 8% timeout, 50 formulas/sec, ETA: 513m 30s
+[label] 107000/1646512 labeled (6%), 1% valid, 8% timeout, 50 formulas/sec, ETA: 513m 10s
+[label] 10[warn] Slow formula (#108412): (((((S(((p → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ((((p → ⊥) → ((U(((p → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥) → (□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#108413): (((((S(((p → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ((((p → ⊥) → ((U(((p → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥) → (□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#108414): (((((S(((p → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ((((p → ⊥) → ((U(((p → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥) → (□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#108415): (((((S(((p → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ((((p → ⊥) → ((U(((p → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥) → (□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#108416): (((((S(((p → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ((((p → ⊥) → ((U(((p → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥) → (□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#108417): (((((S(((p → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ((((p → ⊥) → ((U(((p → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥) → (□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#109234): (U(p, ⊥) → (□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#109235): (U(p, ⊥) → (□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 1878ms
+[warn] Slow formula (#109236): (U(p, ⊥) → (□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 1903ms
+[warn] Slow formula (#109237): (U(p, ⊥) → (□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#109238): (U(p, ⊥) → (□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#109239): (U(p, ⊥) → (□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2001ms
+[warn] Slow formula (#110056): (S(p, ⊥) → (□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#110057): (S(p, ⊥) → (□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#110058): (S(p, ⊥) → (□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#110059): (S(p, ⊥) → (□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#110060): (S(p, ⊥) → (□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#110061): (S(p, ⊥) → (□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#110878): (((p → ((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → (□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#110880): (((p → ((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → (□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#110881): (((p → ((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → (□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#110882): (((p → ((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → (□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#110883): (((p → ((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → (□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#111700): (((p → ((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → (□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#111701): (((p → ((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → (□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#111702): (((p → ((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → (□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#111703): (((p → ((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → (□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#111705): (((p → ((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → (□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) took 2000ms
+[warn] Slow formula (#123779): ((U(□⊥, (□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#123780): ((U(□⊥, (□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#123781): ((U(□⊥, (□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#123782): ((U(□⊥, (□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#123914): ((U(□p, (□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#123915): ((U(□p, (□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2001ms
+[warn] Slow formula (#123916): ((U(□p, (□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#123917): ((U(□p, (□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#123918): ((U(□p, (□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#123919): ((U(□p, (□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#124101): ((U((□(⊥ → ⊥) → ⊥), (□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#124102): ((U((□(⊥ → ⊥) → ⊥), (□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2001ms
+[warn] Slow formula (#124103): ((U((□(⊥ → ⊥) → ⊥), (□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#124104): ((U((□(⊥ → ⊥) → ⊥), (□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#124236): ((U((□(p → ⊥) → ⊥), (□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#124237): ((U((□(p → ⊥) → ⊥), (□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#124238): ((U((□(p → ⊥) → ⊥), (□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#124239): ((U((□(p → ⊥) → ⊥), (□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2001ms
+[warn] Slow formula (#124240): ((U((□(p → ⊥) → ⊥), (□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#124241): ((U((□(p → ⊥) → ⊥), (□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#124423): ((U(U(⊥, (⊥ → ⊥)), (□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#124424): ((U(U(⊥, (⊥ → ⊥)), (□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#124425): ((U(U(⊥, (⊥ → ⊥)), (□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#124426): ((U(U(⊥, (⊥ → ⊥)), (□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#124558): ((U(U(p, (⊥ → ⊥)), (□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#124559): ((U(U(p, (⊥ → ⊥)), (□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#124560): ((U(U(p, (⊥ → ⊥)), (□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#124561): ((U(U(p, (⊥ → ⊥)), (□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#124562): ((U(U(p, (⊥ → ⊥)), (□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#124563): ((U(U(p, (⊥ → ⊥)), (□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#124745): ((U(S(⊥, (⊥ → ⊥)), (□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#124746): ((U(S(⊥, (⊥ → ⊥)), (□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#124747): ((U(S(⊥, (⊥ → ⊥)), (□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#124748): ((U(S(⊥, (⊥ → ⊥)), (□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#124880): ((U(S(p, (⊥ → ⊥)), (□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#124881): ((U(S(p, (⊥ → ⊥)), (□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#124882): ((U(S(p, (⊥ → ⊥)), (□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#124883): ((U(S(p, (⊥ → ⊥)), (□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#124884): ((U(S(p, (⊥ → ⊥)), (□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#124885): ((U(S(p, (⊥ → ⊥)), (□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#125067): ((U((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥), (□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#125068): ((U((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥), (□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#125069): ((U((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥), (□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#125070): ((U((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥), (□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#125202): ((U((U((p → ⊥), (⊥ → ⊥)) → ⊥), (□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2001ms
+[warn] Slow formula (#125203): ((U((U((p → ⊥), (⊥ → ⊥)) → ⊥), (□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#125204): ((U((U((p → ⊥), (⊥ → ⊥)) → ⊥), (□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#125205): ((U((U((p → ⊥), (⊥ → ⊥)) → ⊥), (□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#125206): ((U((U((p → ⊥), (⊥ → ⊥)) → ⊥), (□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#125207): ((U((U((p → ⊥), (⊥ → ⊥)) → ⊥), (□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#125389): ((U((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥), (□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2001ms
+[warn] Slow formula (#125390): ((U((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥), (□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#125391): ((U((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥), (□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#125392): ((U((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥), (□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#125524): ((U((S((p → ⊥), (⊥ → ⊥)) → ⊥), (□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#125525): ((U((S((p → ⊥), (⊥ → ⊥)) → ⊥), (□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#125526): ((U((S((p → ⊥), (⊥ → ⊥)) → ⊥), (□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#125527): ((U((S((p → ⊥), (⊥ → ⊥)) → ⊥), (□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#125528): ((U((S((p → ⊥), (⊥ → ⊥)) → ⊥), (□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#125529): ((U((S((p → ⊥), (⊥ → ⊥)) → ⊥), (□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#125711): ((U((((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → (((⊥ → ((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥), (□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#125712): ((U((((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → (((⊥ → ((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥), (□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#125713): ((U((((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → (((⊥ → ((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥), (□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#125714): ((U((((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → (((⊥ → ((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥), (□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#125846): ((U((((S((p → ⊥), (⊥ → ⊥)) → ⊥) → (((p → ((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥), (□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#125847): ((U((((S((p → ⊥), (⊥ → ⊥)) → ⊥) → (((p → ((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥), (□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#125848): ((U((((S((p → ⊥), (⊥ → ⊥)) → ⊥) → (((p → ((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥), (□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#125849): ((U((((S((p → ⊥), (⊥ → ⊥)) → ⊥) → (((p → ((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥), (□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#125850): ((U((((S((p → ⊥), (⊥ → ⊥)) → ⊥) → (((p → ((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥), (□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#125851): ((U((((S((p → ⊥), (⊥ → ⊥)) → ⊥) → (((p → ((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥), (□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2001ms
+[warn] Slow formula (#126033): ((U(((((S(((⊥ → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ((((⊥ → ⊥) → ((U(((⊥ → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥), (□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#126034): ((U(((((S(((⊥ → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ((((⊥ → ⊥) → ((U(((⊥ → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥), (□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#126035): ((U(((((S(((⊥ → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ((((⊥ → ⊥) → ((U(((⊥ → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥), (□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#126036): ((U(((((S(((⊥ → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ((((⊥ → ⊥) → ((U(((⊥ → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥), (□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#126168): ((U(((((S(((p → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ((((p → ⊥) → ((U(((p → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥), (□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#126169): ((U(((((S(((p → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ((((p → ⊥) → ((U(((p → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥), (□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2001ms
+[warn] Slow formula (#126170): ((U(((((S(((p → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ((((p → ⊥) → ((U(((p → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥), (□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#126171): ((U(((((S(((p → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ((((p → ⊥) → ((U(((p → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥), (□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#126172): ((U(((((S(((p → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ((((p → ⊥) → ((U(((p → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥), (□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#126173): ((U(((((S(((p → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ((((p → ⊥) → ((U(((p → ⊥) → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥)) → ⊥) → ⊥), (□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#126355): ((U(U(⊥, ⊥), (□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2001ms
+[warn] Slow formula (#126356): ((U(U(⊥, ⊥), (□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#126357): ((U(U(⊥, ⊥), (□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2001ms
+[warn] Slow formula (#126358): ((U(U(⊥, ⊥), (□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#126490): ((U(U(p, ⊥), (□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2001ms
+[warn] Slow formula (#126491): ((U(U(p, ⊥), (□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#126492): ((U(U(p, ⊥), (□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#126493): ((U(U(p, ⊥), (□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#126494): ((U(U(p, ⊥), (□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#126495): ((U(U(p, ⊥), (□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#126677): ((U(S(⊥, ⊥), (□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#126678): ((U(S(⊥, ⊥), (□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#126679): ((U(S(⊥, ⊥), (□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2001ms
+[warn] Slow formula (#126680): ((U(S(⊥, ⊥), (□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#126812): ((U(S(p, ⊥), (□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#126813): ((U(S(p, ⊥), (□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#126814): ((U(S(p, ⊥), (□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#126815): ((U(S(p, ⊥), (□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#126816): ((U(S(p, ⊥), (□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#126817): ((U(S(p, ⊥), (□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#126999): ((U(((⊥ → ((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥), (□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#127000): ((U(((⊥ → ((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥), (□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#127001): ((U(((⊥ → ((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥), (□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#127002): ((U(((⊥ → ((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥), (□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#127134): ((U(((p → ((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥), (□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#127135): ((U(((p → ((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥), (□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#127136): ((U(((p → ((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥), (□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#127137): ((U(((p → ((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥), (□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#127138): ((U(((p → ((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥), (□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#127139): ((U(((p → ((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥), (□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#127321): ((U(((⊥ → ((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥), (□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2001ms
+[warn] Slow formula (#127322): ((U(((⊥ → ((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥), (□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#127323): ((U(((⊥ → ((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥), (□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#127324): ((U(((⊥ → ((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥), (□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#127456): ((U(((p → ((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥), (□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2001ms
+[warn] Slow formula (#127457): ((U(((p → ((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥), (□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#127458): ((U(((p → ((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥), (□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((U((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#127459): ((U(((p → ((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥), (□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((⊥ → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#127460): ((U(((p → ((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥), (□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2000ms
+[warn] Slow formula (#127461): ((U(((p → ((S((p → ⊥), (⊥ → ⊥)) → ⊥) → ⊥)) → ⊥), (□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥)) → ⊥) → (U(((□((S((q → ⊥), (⊥ → ⊥)) → ⊥) → ⊥) → ⊥) → ⊥), (⊥ → ⊥)) → ⊥)) took 2001ms

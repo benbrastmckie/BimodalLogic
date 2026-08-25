@@ -267,6 +267,12 @@
           "path": "specs/298_fix_c7_labeling_bug_and_regenerate_dataset/summaries/01_c7-labeling-bug-summary.md",
           "type": "summary",
           "summary": "Implementation summary: verified fix, task 343 interaction, blocker analysis, deviations, continuation instructions"
+        },
+        {
+          "type": "summary",
+          "path": "specs/298_fix_c7_labeling_bug_and_regenerate_dataset/summaries/01_c7-labeling-bug-summary.md",
+          "summary": "Implementation summary: proven fix, build repair, c4 soundness gate, two stale baselines, deviations",
+          "created": "2026-08-25T01:48:21Z"
         }
       ],
       "topic": "dataset-enhancement",
