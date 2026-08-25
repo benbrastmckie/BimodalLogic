@@ -1584,6 +1584,46 @@ since `Int` is not densely ordered; independent of the BX canonical construction
   theorem.
 - Independent of BXCanonical.
 
+### Bi-Lasso Decision Layer (landed sorry-free; `fmp` open)
+
+**Decidability track only** — like the entry above, and not a path to the completeness
+representation theorem.
+
+- **Status: landed.** `FormalSystem/Metalogic/Decidability/BiLasso/` is 19 modules, sorry-free,
+  and registered in the build graph as of this commit: `Decidability.lean` imports the re-export
+  `FormalSystem.Metalogic.Decidability.BiLasso`, so `lake build` compiles the layer. It was
+  previously unreachable from every Lake target root and compile-checked only in isolation by
+  check C6.
+- **What it decides.** Truth of a formula at a state of a **given** `IntPresentation` — a finite
+  graph on `Fin card` with a `Bool` valuation — by bounded enumeration of annotated bi-lassos.
+  Entry point `check` with correctness theorem `check_correct` (`BiLasso/Check.lean`), plus a
+  `Decidable` instance that computes. No efficiency claim: the enumeration bound is a closed
+  arithmetic expression and it is astronomically large.
+- **It does not decide the logic.** Nothing in the layer quantifies over frames.
+  `cor:tm-decidability` stays open.
+- **It performs no part of the finite-model step.** `exists_annot_of_truth`
+  (`BiLasso/Extraction.lean`) takes a `WorldHistory P.toTaskFrame` as *input*: it compresses
+  histories **within** a presentation, and does not produce a presentation from an arbitrary
+  countermodel. Reading this directory as covering the semantic finite model property misreads
+  that hypothesis.
+- **What remains is exactly one theorem**, `fmp`:
+  `∀ ψ, ¬ ValidDiscrete ψ → ∃ P ∈ cands ψ, ∃ w, SatAtState P w ψ.neg`, for a computable
+  `cands : Formula → List IntPresentation`. Its crux is box-faithfulness — `box` truth is a
+  global constant of its own model, so a source model's and a target presentation's box facts
+  need not agree — and it is genuinely hard.
+- **Given `fmp`, the assembly is live and machine-checked**: `validDiscrete_iff_checkFamily` and
+  `decidableValidDiscreteFamily` in `BiLasso/Assembly.lean`, with the single-presentation forms
+  `validDiscrete_iff_check`/`decidableValidDiscrete` and the hypothesis-free soundness direction
+  `not_validDiscrete_of_satAtState`. That module takes `fmp` as a hypothesis and proves no part
+  of it.
+- **Axioms**: all five `Assembly.lean` declarations, and the layer's `Decidable` instance,
+  measure `[propext, Classical.choice, Quot.sound]`. **No choice-freedom is claimed** — the
+  instance computing and the instance being choice-free are different properties, and only the
+  first holds (`wlem_of_spherical` rules out any choice-free finite-carrier route).
+- Four sibling modules in the same directory — `Extend`, `Successor`, `Orbit`, `Agreement` —
+  belong to the effective-periodic-extension work, not to this layer. They are deliberately
+  outside the re-export and remain unreachable and manifested.
+
 ### Soundness (sorry-free)
 
 - **Corrected 2026-08-17**: `FormalSystem/Metalogic/Soundness.lean` is confirmed sorry-free (no
