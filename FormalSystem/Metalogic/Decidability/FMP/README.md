@@ -8,19 +8,41 @@ and is used by the tableau decision procedure.
 
 ## Modules
 
-| File | Lines | Description |
+The Decls column is a declaration count, re-derivable by
+`grep -cE '^(theorem|lemma|def|abbrev|instance|noncomputable def|structure) ' FILE`. It replaces
+a line count, which rots on every edit and which every row of this table previously got wrong.
+
+| File | Decls | Description |
 |------|-------|-------------|
-| `ClosureMCS.lean` | 279 | MCS theory restricted to subformula closure (foundation for filtration) |
-| `Filtration.lean` | 323 | Filtration construction: quotienting a model by subformula closure equivalence |
-| `FiniteModel.lean` | 177 | Finite model extraction and cardinality bounds |
-| `FMP.lean` | 248 | Main FMP re-export and unified interface |
-| `Periodicity.lean` | 210 | Pigeonhole, loop splicing, and bounded reachability over a finite carrier |
-| `TruthPreservation.lean` | 400 | Truth preservation across the filtration quotient |
+| `ClosureMCS.lean` | 16 | MCS theory restricted to subformula closure (foundation for filtration) |
+| `Filtration.lean` | 29 | Filtration construction: quotienting a model by subformula closure equivalence |
+| `FiniteModel.lean` | 13 | Finite model extraction and cardinality bounds |
+| `FMP.lean` | 10 | Main FMP re-export and unified interface |
+| `Periodicity.lean` | 7 | Pigeonhole, loop splicing, and bounded reachability over a finite carrier |
+| `TruthPreservation.lean` | 16 | Truth preservation across the filtration quotient |
 
 ## Key Results
 
-- `filtration_is_finite`: The filtrated model has bounded cardinality
-- `truth_preserved_under_filtration`: Filtration preserves truth of closure formulas
+Every symbol below is a declaration in this directory and is sorry-free (the repository's sole
+structural `sorry` is `countermodel_discrete` in `WeakCanonical/Transfer.lean`, which check C3 of
+`scripts/check-module-invariants.sh` pins by content).
+
+- `fmp_contrapositive` (`FMP.lean`): `(∀ S : ClosureMCSBundle φ, φ ∈ S.carrier) → Derivable .Base [] φ`
+  — the FMP-based completeness direction
+- `mcs_finite_model_property` (`FMP.lean`):
+  `¬Derivable .Base [] φ → ∃ S, φ ∉ S.carrier ∧ Finite (FilteredWorld φ)`
+- `assignmentSpace_card` (`FMP.lean`): the assignment space has exactly `2 ^ |closure φ|` elements
+- `filtered_world_bound` (`FMP.lean`): `Nat.card (FilteredWorld φ) ≤ 2 ^ |closure φ|`
+- `fmp_size_bound` (`FMP.lean`): the FMP countermodel is finite and bounded by `2 ^ |closure φ|`
+- `FilteredWorld.finite` (`FiniteModel.lean`): a `noncomputable instance` — the filtered world type
+  is finite
+- `filteredCharacteristicSet_injective` (`FiniteModel.lean`): the injection the cardinality bound
+  rides
+- `filtration_lemma_membership`, `filtration_imp_forward`, `filtration_box_forward`,
+  `filtration_lemma_bot` (`TruthPreservation.lean`): the filtration lemma, one clause per
+  connective. **These are statements about MCS membership, not about `TruthAt`** — see the next
+  section, which explains why no `TruthAt`-shaped version of them is available on this frame. Read
+  as membership facts they are exactly the truth-preservation content this directory supplies
 - `exists_lt_iter_of_card_le` (`Periodicity.lean`): an iterate at least as long as the carrier
   passes through some state twice, and the loop can be excised — a strictly shorter iterate joins
   the same endpoints
@@ -84,8 +106,15 @@ Archived: the former `DenseFMP.lean`/`DiscreteFMP.lean` variant modules
 
 ## Dependencies
 
-- **Imports from**: `Bimodal.Metalogic.Core.RestrictedMCS`, `Bimodal.Syntax.SubformulaClosure`
-- **Imported by**: `Bimodal.Metalogic.Decidability`
+- **Imports from** (outside this directory): `FormalSystem.Metalogic.Core.RestrictedMCS.Basic`,
+  `FormalSystem.Metalogic.Core.MCSProperties`, `FormalSystem.Syntax.SubformulaClosure.Closure`,
+  `FormalSystem.Metalogic.Soundness`, `FormalSystem.Semantics.Truth`,
+  `FormalSystem.Semantics.Validity`, `FormalSystem.Semantics.IntNormalForm`,
+  `FormalSystem.Theorems.Propositional.Core`, `FormalSystem.Theorems.TemporalDerived`
+- **Imported by**: `FormalSystem.Metalogic.Decidability.Correctness`,
+  `FormalSystem.Metalogic.Decidability.IntPresentation`,
+  `FormalSystem.Metalogic.Decidability.BiLasso.GoodCycle`,
+  `FormalSystem.Semantics.Extension.PeriodicExtension`
 
 ## Related Documentation
 
@@ -95,4 +124,4 @@ Archived: the former `DenseFMP.lean`/`DiscreteFMP.lean` variant modules
 
 ---
 
-*Last verified: 2026-05-29*
+*Last verified: 2026-08-24*

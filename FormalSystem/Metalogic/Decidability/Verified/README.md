@@ -11,27 +11,62 @@ obligations, and the proofs stay free of the engine's performance knobs.
 
 ## Layout
 
+Two status values, both mechanically checkable, and neither asserting schedule or intent:
+
+- **`landed`** — the path exists (`test -f`) *and* is imported by the
+  `FormalSystem/Metalogic/Decidability.lean` aggregator (a grep of its import block; check C4 of
+  `scripts/check-module-invariants.sh` keeps that import resolvable).
+- **`not built`** — no such path exists (`test -e`).
+
+All 21 live `.lean` files in this subtree are `landed`; every one is imported by the aggregator.
+The Contents column is lifted from that aggregator's own module docstring so the two cannot drift
+apart.
+
+### Landed
+
 | Path | Contents | Status |
 |------|----------|--------|
-| `RuleSpec.lean` | `ruleFrameClass`, `ruleAxioms`, and the three GATE theorems tying the rule lattice to the axiom lattice | present |
-| `Internalize.lean` | `Branch.internalize`, label-to-modality encoding | planned |
-| `Refutation/Core.lean` | the generic `allClosed → Derivable` induction, parameterized by the rule spec | planned |
-| `Refutation/Rules/*.lean` | one admissibility lemma per rule, grouped by rule family | planned |
-| `Termination/SubformulaProperty.lean` | T1, the generalized signed subformula property (one theorem per rule): `RuleResult.emitted`, the `TableauClosed` closure census, the `as*?` inversions, all 36 rule cases, and the assembled `applyRule_subformula_closed` | complete |
-| `Termination/TimeTypeBound.lean` | T2, the pigeonhole bound on time-types | planned |
-| `Termination/Fuel.lean` | T3, uncapped `soundFuel'` and `buildTableau_isSome` | planned |
-| `Bridge/Carrier.lean` | `class TemporalCarrier`, the four carrier instances (Base/Dense to Q, Discrete to Z, Dedekind to R) | planned |
-| `Bridge/BranchOrder.lean` | the finite total order extracted from a saturated branch | planned |
-| `Bridge/Embed.lean` | embedding that order into the carrier | planned |
-| `Bridge/Interpolate.lean` | the constant-on-half-open-intervals model and its invariance lemma | planned |
-| `Bridge/Omega.lean` | history construction and shift-closure | planned |
-| `Bridge/TruthLemma.lean` | `not_valid_of_hasOpen`, proved once, generic in the carrier | planned |
-| `Decidable.lean` | Track A: `Decidable (⊨ φ)` plus the three frame-class variants | planned |
-| `Provable.lean` | Track B: `Decidable (Derivable fc [] φ)` and the completeness corollaries | deferred |
+| `RuleSpec.lean` | rule/axiom frame-class gate lemmas: `ruleFrameClass`, `ruleAxioms`, and the three GATE theorems tying the rule lattice to the axiom lattice | landed |
+| `Termination/SubformulaProperty.lean` | T1, the signed subformula property (per rule): `RuleResult.emitted`, the `TableauClosed` closure census, the `as*?` inversions, all 36 rule cases, and the assembled `applyRule_subformula_closed` | landed |
+| `Termination/TimeTypeBound.lean` | T2, the `2 ^ (2 * \|C\|)` time-type bound and pigeonhole | landed |
+| `Termination/Fuel.lean` | T3, the set-growth progress measure and the uncapped fuel figure `soundFuel'`, with `soundFuel_le_soundFuel'`, `chain_le_stock`, `chain_le_soundFuel'`, `chain_le_worlds_bounded`, and the totality theorems `expandBranchWithFuel_isSome_of_noSplit` / `_of_stock` | landed |
+| `Termination/MintBound.lean` | an independent ceiling on fresh-time minting, lifting T3's no-branching scope: the `IrreflOrd` run invariant, reachability transport and witness preservation across `TimeOrdering.identifyTime`, the mint potential, and the amortized counting chain | landed |
+| `Bridge/BranchOrder.lean` | the finite linear order a gated saturated branch carries | landed |
+| `Bridge/Embed.lean` | monotone placement of a finite order in a dense carrier or in `ℤ` | landed |
+| `Bridge/Carrier.lean` | `TemporalCarrier fc D`, the per-frame-class carrier interface | landed |
+| `Bridge/Interpolate.lean` | the region structure a placement cuts in the carrier, the total-on-`D` extension operator, and the invariance induction's propositional and modal cases | landed |
+| `Bridge/RegionFrame.lean` | the countermodel's `TaskFrame`, its region histories, the fact that those are exactly the frame's total histories — which is what `valid` quantifies over — and `truthAt_box_iff`: `□` is the universal modality, with no closure hypothesis needed | landed |
+| `Bridge/TruthLemma.lean` | `InterpInvariantAt`, region invariance at a single history — the form this carrier admits — and its instantiation at the countermodel's base histories | landed |
+| `Bridge/Valuation.lean` | the countermodel's `TaskModel` — the branch's atoms at placed region codes, a parameter at gap codes — with the placed-point readback the truth lemma's atom case consumes, and the two theorems refuting the endpoint-copy gap policies | landed |
+| `Bridge/BoxSaturation.lean` | `sat_box_temporal`, `sat_all_future_pos`, `sat_all_past_pos` and their composition `sat_box_cross`, plus `BoxAnchored`/`boxAnchoredCheck` and `sat_box_grid_of_check` | landed |
+| `Bridge/PropSaturation.lean` | `sat_imp_pos`, the one member of the `sat_*` family `CountermodelExtraction.lean` does not carry, because `impPos` is the only *branching* propositional rule | landed |
+| `Bridge/TemporalSaturation.lean` | `sat_untl_pos_future` and `sat_snce_pos_past` — the positive temporal witnesses with the one fact `sat_untl_pos`/`sat_snce_pos` discard, namely that the witness lies strictly after (resp. before) the formula's own time; also `orderDual_converse` | landed |
+| `Bridge/RegionLabel.lean` | the gap arm of the atom clause: a region takes the atoms of a *chosen known label*, certified by the decidable gate `regionLabelCheck` | landed |
+| `Bridge/TemporalGate.lean` | `temporalWitnessCheck`, a fourth decidable branch gate, carrying the four demands the `untl`/`snce` cases make and the region gate does not | landed |
+| `Bridge/IntGaps.lean` | the `ℤ` placement is contiguous, so a non-placed integer lies on one of the two rays and there is no interior gap | landed |
+| `Bridge/IntTruth.lean` | the signed truth correspondence and its six-case induction, run at `ℤ`; the `atom`, `bot`, `imp` and `box` cases are proved for an arbitrary carrier and an arbitrary injective placement | landed |
+| `Bridge/DenseTruth.lean` | the same correspondence at a dense carrier; `branchTruthAt_of_temporal` is the machine-checked statement of what the two milestones share | landed |
+| `Decidable.lean` | the *other* direction — `allClosed → valid`. `SatState`, `SatResult`, `RuleSound`, the 34 `ruleSound_*` instances, and their assembly `ruleSound_of_mem_allRulesForFC` | landed |
 
-Rows marked *planned* are scheduled work, not aspiration; rows marked *deferred* belong to
-follow-up tasks. Nothing in this table is a placeholder file — a path exists here only once its
-contents do.
+### Not built
+
+These paths record a designed-but-unbuilt route. None of them exists; each is listed so the route
+stays visible and so nobody mistakes an absent path for a landed one.
+
+| Path | Contents it was to carry | Status |
+|------|--------------------------|--------|
+| `Internalize.lean` | `Branch.internalize`, label-to-modality encoding | not built |
+| `Refutation/Core.lean` | the generic `allClosed → Derivable` induction, parameterized by the rule spec | not built |
+| `Refutation/Rules/*.lean` | one admissibility lemma per rule, grouped by rule family | not built |
+| `Bridge/Omega.lean` | history construction and shift-closure; this content is covered by `Bridge/RegionFrame.lean`, whose region histories are exactly the frame's total histories | not built |
+| `Provable.lean` | Track B: `Decidable (Derivable fc [] φ)` and the completeness corollaries | not built |
+
+Note what `Decidable.lean`'s `landed` marker does and does not say. The file exists and is
+imported; what it *proves* is the rule half of `allClosed → valid`
+(`ruleSound_of_mem_allRulesForFC`, all 34 rules, sorry-free). The `Decidable (⊨ φ)` instances for
+the four frame classes are **not** proved there — see `Decidability/Correctness.lean`'s section
+"`validity_decidable` / `validity_has_decision_procedure` — Retired as vacuous" for what is still
+owed. `landed` is a claim about the path, never about the contents of a theorem name.
 
 ## The organising idea: base plus extensions, not four copies
 
@@ -104,3 +139,14 @@ saturated while still owed `T(F ⊤)` and `T(P ⊤)` at each of its labels. Thos
 point of a serial frame, so the extracted model is unaffected — but the truth lemma must state
 that `findUnexpanded = none` means "no **ordinary** rule applies", rather than quietly assuming
 more.
+
+## Related Documentation
+
+- [Decidability README](../README.md) - the engine this subtree proves things about
+- [Metalogic README](../../README.md) - overall metalogic architecture
+- [FMP README](../FMP/README.md) - the finite model property route
+- [Propositional README](../Propositional/README.md) - Kalmár-style propositional decision procedure
+
+---
+
+*Last verified: 2026-08-24*

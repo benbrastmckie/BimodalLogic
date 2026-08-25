@@ -159,7 +159,7 @@ affected phase's replacement text before writing it, and record the divergence i
 
 ---
 
-### Phase 2: (a) `Decidability.lean` Status block and (d) `decideAuto` termination claim [NOT STARTED]
+### Phase 2: (a) `Decidability.lean` Status block and (d) `decideAuto` termination claim [IN PROGRESS]
 
 **Goal**: Make the subject of every claim in `Decidability.lean`'s `## Status` block explicit
 (proof-system result vs. tableau result), and replace `decideAuto`'s unsupported "ensures
@@ -229,38 +229,38 @@ before writing "five"; if the count differs, write the count the code shows.
 
 ---
 
-### Phase 3: (b) Rebuild `Verified/README.md` against the live tree [NOT STARTED]
+### Phase 3: (b) Rebuild `Verified/README.md` against the live tree [COMPLETED]
 
 **Goal**: Replace the Layout table with one built from the live tree, using a two-value,
 mechanically checkable status vocabulary that gives absent-by-design a distinct marker from
 landed-but-undocumented.
 
 **Tasks**:
-- [ ] Enumerate the live `.lean` files under `FormalSystem/Metalogic/Decidability/Verified/` and
+- [x] Enumerate the live `.lean` files under `FormalSystem/Metalogic/Decidability/Verified/` and
       cross-check each against the import block of the `FormalSystem/Metalogic/Decidability.lean`
       aggregator.
-- [ ] Rebuild the Layout table with the two-value vocabulary decided by research:
+- [x] Rebuild the Layout table with the two-value vocabulary decided by research:
       - `landed` — file exists AND is imported by the `Decidability.lean` aggregator (checkable by
         `test -f` plus a grep of the aggregator import block; C4 keeps the import resolvable).
       - `not built` — no such path exists (checkable by `test -e`).
       Neither value asserts schedule or intent. Do not reintroduce `planned` or `deferred`.
-- [ ] Move the absent rows (`Internalize.lean`, `Refutation/Core.lean`, `Refutation/Rules/*.lean`,
+- [x] Move the absent rows (`Internalize.lean`, `Refutation/Core.lean`, `Refutation/Rules/*.lean`,
       `Bridge/Omega.lean`, `Provable.lean`) under their own subheading with the `not built` marker,
       so the two registers cannot be confused. Keep them visible — they record a designed-but-unbuilt
       route.
-- [ ] Add rows for every currently omitted live file, including `Termination/MintBound.lean` (the
+- [x] Add rows for every currently omitted live file, including `Termination/MintBound.lean` (the
       largest file in the subtree and entirely absent from the current table).
-- [ ] Fill the Contents column by **lifting** the per-file descriptions already in
+- [x] Fill the Contents column by **lifting** the per-file descriptions already in
       `Decidability.lean`'s aggregator docstring rather than composing new ones — it covers every
       live file, is written against current code, and keeps the two files in agreement.
-- [ ] Where a successor is known, say so in the Contents column rather than inventing a third status
+- [x] Where a successor is known, say so in the Contents column rather than inventing a third status
       (e.g. `Bridge/Omega.lean`'s history construction and shift-closure is covered by
       `Bridge/RegionFrame.lean`).
-- [ ] Fix the false sentence under the table ("Nothing in this table is a placeholder file — a path
+- [x] Fix the false sentence under the table ("Nothing in this table is a placeholder file — a path
       exists here only once its contents do") — it is false in both directions as written.
-- [ ] Add a "Related Documentation" section and a `Last verified` stamp to match the convention of
+- [x] Add a "Related Documentation" section and a `Last verified` stamp to match the convention of
       the sibling `FMP/README.md` and `Decidability/README.md`.
-- [ ] Run `bash scripts/check-module-invariants.sh --no-build` (C4/C5/C7); commit.
+- [x] Run `bash scripts/check-module-invariants.sh --no-build` (C4/C5/C7); commit.
 
 **Timing**: 1.5 hours
 
@@ -284,38 +284,38 @@ the table from what the tree actually shows — never from these numbers.
 
 ---
 
-### Phase 4: (c) `FMP/README.md` — replace nonexistent Key Results [NOT STARTED]
+### Phase 4: (c) `FMP/README.md` — replace nonexistent Key Results [COMPLETED]
 
 **Goal**: Remove the two Key Results that do not exist, replace them with what the directory
 actually proves, and correct the three additional defects in the same file.
 
 **Tasks**:
-- [ ] Delete `filtration_is_finite` and `truth_preserved_under_filtration` from Key Results (zero
+- [x] Delete `filtration_is_finite` and `truth_preserved_under_filtration` from Key Results (zero
       occurrences in the tree, as declarations or as prose).
-- [ ] Replace with verified-present results, each with its file and what it says: `fmp_contrapositive`,
+- [x] Replace with verified-present results, each with its file and what it says: `fmp_contrapositive`,
       `mcs_finite_model_property`, `assignmentSpace_card`, `filtered_world_bound`, `fmp_size_bound`
       (`FMP.lean`); `FilteredWorld.finite`, `filteredCharacteristicSet_injective`
       (`FiniteModel.lean`); `filtration_lemma_membership`, `filtration_imp_forward`,
       `filtration_box_forward`, `filtration_lemma_bot` (`TruthPreservation.lean`);
       `exists_lt_iter_of_card_le`, `exists_bounded_iter` (`Periodicity.lean`, already correct — keep
       verbatim).
-- [ ] State explicitly that the four `filtration_*` theorems are **MCS membership** facts, not
+- [x] State explicitly that the four `filtration_*` theorems are **MCS membership** facts, not
       `TruthAt` facts — this makes the README's existing "about MCS membership, not about truth"
       section checkable instead of merely asserted.
-- [ ] KEEP the claim that the directory contains **zero** occurrences of `TruthAt`. It is true of the
+- [x] KEEP the claim that the directory contains **zero** occurrences of `TruthAt`. It is true of the
       code; the single `grep` hit is the README's own self-referential sentence in `FMP.lean` prose.
       Do not "correct" the count to 1.
-- [ ] KEEP the `refinedFilteredTaskRel` permissiveness note — `def refinedFilteredTaskRel` exists in
+- [x] KEEP the `refinedFilteredTaskRel` permissiveness note — `def refinedFilteredTaskRel` exists in
       `Filtration.lean` and the quoted body is accurate.
-- [ ] (extra defect) Replace the Modules table's Lines column with a **declaration count** —
+- [x] (extra defect) Replace the Modules table's Lines column with a **declaration count** —
       `grep -cE '^(theorem|lemma|def|abbrev|instance|noncomputable def|structure) '` — re-derived at
       implementation time. All six current line figures are wrong; a declaration count is
       re-derivable by one command and rots an order of magnitude slower.
-- [ ] (extra defect) Rename the Dependencies section's pre-rename `Bimodal.*` module paths to
+- [x] (extra defect) Rename the Dependencies section's pre-rename `Bimodal.*` module paths to
       `FormalSystem.*`. This both fixes the claim and brings them under C5's guard (a stale
       `Bimodal.*` path is invisible to C5, which only resolves `FormalSystem.*`-shaped paths).
-- [ ] (extra defect) Refresh the stale `*Last verified:*` footer.
-- [ ] Run `bash scripts/check-module-invariants.sh --no-build`; commit.
+- [x] (extra defect) Refresh the stale `*Last verified:*` footer.
+- [x] Run `bash scripts/check-module-invariants.sh --no-build`; commit.
 
 **Timing**: 1 hour
 
