@@ -11,7 +11,7 @@ next_project_number: 483
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,193,257,298,362,433,461,462,476,480,481 | -- | automation, dataset-enhancement, decidability, ... |
+| 1 | 127,128,193,257,298,433,461,462,476,481 | -- | automation, dataset-enhancement, decidability, ... |
 | 2 | 125,178,231,282,296,463 | 193,298,461,462 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 219,464 | 231,463 | dataset-enhancement, decidability |
 | 4 | 465 | 464 | decidability |
@@ -58,7 +58,6 @@ next_project_number: 483
       └─ 465 [NOT STARTED] — Complete the terminus restatement family at the repaired residual
         └─ 428 [BLOCKED] — Engine totality at a quantified branch budget. Owns obstruction O (see above)
 476 [NOT STARTED] — THE BOX-FAITHFUL SMALL-MODEL THEOREM.
-480 [PLANNED] — CLASSIFICATION: routine engineering, not open mathematics. Starta
 481 [NOT STARTED] — CLASSIFICATION: genuinely open -- the predicate is refuted as sta
 
 ### Formula Refactor
@@ -74,10 +73,6 @@ next_project_number: 483
 ### Literature
 
 461 [BLOCKED] — SCOPE 8 acquisition gap identified by task 457's research and re-
-
-### Strong Completeness
-
-362 [PLANNED] — Implement the completeness capstone under the SETTLED TERMINOLOGY
 
 ## Tasks
 
@@ -139,12 +134,13 @@ PROVENANCE: specced by task 468's realignment (report `specs/468_realign_task_pr
 
 ### 480. Bridge isvalid bool to semantic validity
 - **Effort**: small
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
 - **Research**: [480_bridge_isvalid_bool_to_semantic_validity/reports/01_isvalid-bool-semantic-bridge.md]
 - **Plan**: [480_bridge_isvalid_bool_to_semantic_validity/plans/01_isvalid-bool-semantic-bridge.md]
+- **Summary**: [480_bridge_isvalid_bool_to_semantic_validity/summaries/01_isvalid-bool-semantic-bridge-summary.md]
 
 **Description**: CLASSIFICATION: routine engineering, not open mathematics. Startable today, independent of the whole decidability chain (410-465). State this explicitly so the task is never budgeted as anything larger.
 
@@ -2215,12 +2211,13 @@ not an addition to this task's scope.
 
 ### 362. Completeness capstone consequence all classes strong where compact
 - **Effort**: high
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: strong_completeness
 - **Dependencies**: Task 361, Task 375, Task 170, Task 424
 - **Research**: [362_completeness_capstone_consequence_all_classes_strong_where_compact/reports/01_completeness-capstone-reachability.md]
 - **Plan**: [362_completeness_capstone_consequence_all_classes_strong_where_compact/plans/01_consequence-completeness-all-classes.md]
+- **Summary**: [362_completeness_capstone_consequence_all_classes_strong_where_compact/summaries/01_consequence-completeness-all-classes-summary.md]
 
 **Description**: Implement the completeness capstone under the SETTLED TERMINOLOGY (2026-07-27): "strong completeness" is reserved for consequence from possibly-infinite premise sets (Γ : Set Formula) with finitary set-derivability; finite-context (Context = List Formula) consequence statements are inter-derivable with weak completeness via the deduction theorem and are named CONSEQUENCE completeness, never strong. (This task was formerly named "main_strong_completeness: finite-context strong completeness" — that framing was misleading and is retired. "main_strong_completeness" was never a Lean or LaTeX identifier; it was this task's own former title.)
 
