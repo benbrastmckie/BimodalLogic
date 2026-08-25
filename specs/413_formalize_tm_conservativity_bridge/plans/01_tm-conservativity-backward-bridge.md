@@ -581,16 +581,16 @@ relying on it; confirm `co_derived`'s signature and its `Formula.co` unfolding b
 
 ---
 
-### Phase 8: The bridge — `translate`, `derivable_translate`, four row corollaries [NOT STARTED]
+### Phase 8: The bridge — `translate`, `derivable_translate`, four row corollaries [COMPLETED]
 
 **Goal**: The backward direction itself: one structural recursion, its Prop-level corollary, and
 the four paper rows as instantiations.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/Conservativity.lean`; import `FormalSystem.BaseLanguage` and
+- [x] Create `FormalSystem/Metalogic/Conservativity.lean`; import `FormalSystem.BaseLanguage` and
       `FormalSystem.ProofSystem`. **Do not import any `FormalSystem.Semantics.*` module** — the
       bridge touches no semantics (report §8.4).
-- [ ] State and prove the recursion:
+- [x] State and prove the recursion:
       ```
       def translate {fc : FrameClass} {G : BaseLanguage.Context} {phi : BLFormula} :
           BaseLanguage.DerivationTree fc G phi ->
@@ -598,7 +598,8 @@ the four paper rows as instantiations.
       ```
       Case by case:
       - `axiom` -> the Phase 6/7 lookup table plus the `minFrameClass <= fc` side condition
-        by `decide`.
+        by `decide`. *(deviation: altered — no `decide`; `h_fc` is passed to `dischargeAxiom`
+        unchanged, which is both simpler and the only thing that works under a free `fc`.)*
       - `assumption` -> `List.mem_map` to transport membership through `tr`.
       - `modus_ponens`, `weakening` -> structural.
       - `necessitation`, `temporal_necessitation` -> structural (both are empty-context rules on
@@ -606,22 +607,22 @@ the four paper rows as instantiations.
       - `temporal_duality` -> the load-bearing case:
         `(tr_swapBL phi) |> ProofSystem.DerivationTree.temporal_duality (tr phi) (translate d)`
         (report §8.3 gives the `▸`-rewrite shape).
-- [ ] Prove the Prop-level corollary:
+- [x] Prove the Prop-level corollary:
       ```
       theorem derivable_translate {fc} {G} {phi} :
           BaseLanguage.Derivable fc G phi -> ProofSystem.Derivable fc (G.map tr) (tr phi)
       ```
-- [ ] State and prove the four row corollaries, each at empty context (the paper's rows are
+- [x] State and prove the four row corollaries, each at empty context (the paper's rows are
       theoremhood claims):
       - `ceb_backward` at `FrameClass.Base` (TM -> TM+)
       - `cef_backward` at `FrameClass.Discrete` (TM_f -> TM+_f)
       - `ced_backward` at `FrameClass.Dense` (TM_d -> TM+_d)
       - `cec_backward` at `FrameClass.Dedekind` (TM_dc -> TM+_dc)
-- [ ] **`cec_backward`'s docstring must record the fidelity caveat**: this repository's
+- [x] **`cec_backward`'s docstring must record the fidelity caveat**: this repository's
       `Dedekind` class admits the `Dense` axioms (`Dense <= Dedekind`), so `|-[Dedekind]`
       corresponds to the paper's TM+_dc, not TM+_c. There is no repository class for "complete
       but not dense". Say so; do not let a reader infer TM_c.
-- [ ] Add `import FormalSystem.Metalogic.Conservativity` to `FormalSystem/Metalogic.lean`.
+- [x] Add `import FormalSystem.Metalogic.Conservativity` to `FormalSystem/Metalogic.lean`.
 
 **Timing**: 1.5 hours
 
