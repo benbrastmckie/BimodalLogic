@@ -38,7 +38,7 @@ next_project_number: 477
 
 ### Completeness
 
-413 [RESEARCHED] — Formalize the TM+ over TM conservativity bridge in Lean 4 -- BACK
+413 [PLANNED] — Formalize the TM+ over TM conservativity bridge in Lean 4 -- BACK
 95 [NOT STARTED] — Verify and record the final axiom/sorry status of the headline me
 
 ### Dataset Enhancement
@@ -1966,11 +1966,12 @@ Acceptance: the refuted-route comment (the "(i) a Base-MCS ... (ii) a Henkin-sty
 ---
 
 ### 413. Formalize tm conservativity bridge
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: Task 439, Task 470
 - **Research**: [413_formalize_tm_conservativity_bridge/reports/01_tm-conservativity-bridge.md]
+- **Plan**: [413_formalize_tm_conservativity_bridge/plans/01_tm-conservativity-backward-bridge.md]
 
 **Description**: Formalize the TM+ over TM conservativity bridge in Lean 4 -- BACKWARD DIRECTION ONLY, plus a documented refutation record for the forward direction.
 
