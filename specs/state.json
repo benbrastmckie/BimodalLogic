@@ -9,12 +9,21 @@
     {
       "project_number": 488,
       "project_name": "align_lean_code_and_docs_with_possible_worlds_paper",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "description": "Review possible_worlds.tex (JPL paper) and align the Lean code and documentation such as README.md with the paper, identifying and fixing discrepancies so all claims are verified in the Lean codebase and reported accurately in the documentation",
       "topic": "paper-refactor",
       "created": "2026-08-25T23:24:50Z",
-      "last_updated": "2026-08-25T23:24:50Z"
+      "last_updated": "2026-08-25T23:45:48Z",
+      "session_id": "sess_1787700359_c0c128",
+      "researched": "2026-08-25T23:45:48Z",
+      "artifacts": [
+        {
+          "path": "specs/488_align_lean_code_and_docs_with_possible_worlds_paper/reports/01_paper-code-docs-alignment.md",
+          "type": "report",
+          "summary": "Evidence-backed discrepancy inventory (27 IDs) across the JPL paper, the Lean tree, and the docs: paper over-claims strong completeness/decidability/blanket formalization, the paper-definitions gate is red with 32 drifted anchors, 30 dangling anchor citations, and three concrete README errors; all 25 audited metatheorems verified sorry-free at exactly [propext, Classical.choice, Quot.sound]."
+        }
+      ]
     },
     {
       "project_number": 298,

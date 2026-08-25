@@ -75,15 +75,16 @@ next_project_number: 489
 
 ### Paper Refactor
 
-488 [NOT STARTED] — Review possible_worlds.tex (JPL paper) and align the Lean code an
+488 [RESEARCHED] — Review possible_worlds.tex (JPL paper) and align the Lean code an
 
 ## Tasks
 
 ### 488. Align lean code and docs with possible worlds paper
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: paper-refactor
 - **Dependencies**: None
+- **Research**: [488_align_lean_code_and_docs_with_possible_worlds_paper/reports/01_paper-code-docs-alignment.md]
 
 **Description**: Review possible_worlds.tex (JPL paper) and align the Lean code and documentation such as README.md with the paper, identifying and fixing discrepancies so all claims are verified in the Lean codebase and reported accurately in the documentation
 
