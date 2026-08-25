@@ -322,26 +322,26 @@ with `grep -n 'theorem countermodel_discrete' -r FormalSystem/Metalogic/WeakCano
 
 ---
 
-### Phase 5: README B4 (Lake root) + B3 (aggregator row) [NOT STARTED]
+### Phase 5: README B4 (Lake root) + B3 (aggregator row) [COMPLETED]
 
 **Goal**: Correct the Lake root paragraph by transcription from C8's own comment, and fix the one
 genuine aggregator-convention violation.
 
 **Tasks**:
-- [ ] Confirm ground truth at `lakefile.lean:15-19`: `lean_lib FormalSystem where srcDir := "."`,
+- [x] Confirm ground truth at `lakefile.lean:15-19`: `lean_lib FormalSystem where srcDir := "."`,
       ``roots := #[`FormalSystem]``. Confirm `FormalSystem/Bimodal.lean` does not exist.
-- [ ] Rewrite `FormalSystem/Metalogic/README.md:147-150` by transcribing C8's own comment at
+- [x] Rewrite `FormalSystem/Metalogic/README.md:147-150` by transcribing C8's own comment at
       `scripts/check-module-invariants.sh:402-407`: the allowlisted exception is the pair
       `FormalSystem.lean` + `FormalSystem/FormalSystem.lean`, which is the Lake `lean_lib
       FormalSystem` root, so the self-named indirection is load-bearing, not a convention
       violation.
-- [ ] Do NOT write "the real root is `FormalSystem/FormalSystem.lean`" — the task description's
+- [x] Do NOT write "the real root is `FormalSystem/FormalSystem.lean`" — the task description's
       own replacement is wrong. With `srcDir := "."`, module `FormalSystem` resolves to the
       repository-root `FormalSystem.lean` (50 lines), which imports
       `FormalSystem.FormalSystem` at `FormalSystem.lean:8`. The allowlisted pair is both files.
-- [ ] Keep the README's existing "allowlists it by name" phrasing — it is accurate against
+- [x] Keep the README's existing "allowlists it by name" phrasing — it is accurate against
       `C8_ALLOW_SELFNAMED = {"FormalSystem/FormalSystem.lean"}`.
-- [ ] Fix the single row at `FormalSystem/Metalogic/BXCanonical/README.md:13`: `BXCanonical.lean`
+- [x] Fix the single row at `FormalSystem/Metalogic/BXCanonical/README.md:13`: `BXCanonical.lean`
       is a **sibling** at `FormalSystem/Metalogic/BXCanonical.lean`, not a file inside
       `BXCanonical/`, and it is 43 lines, not 28. Change that row only; leave the rest of
       `BXCanonical/README.md` to the downstream README pass.

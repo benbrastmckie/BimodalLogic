@@ -145,9 +145,12 @@ Two rules keep this safe:
    compile-checks them, so an unreachable aggregator cannot rot unnoticed.
 
 The one deliberate exception to the sibling rule is the Lake library root pair
-`FormalSystem.lean` + `FormalSystem/Bimodal.lean`. `lean_lib FormalSystem` sets
-`srcDir := "FormalSystem"` and `roots := #[`Bimodal]`, so that indirection is
-load-bearing. The invariant check allowlists it by name.
+`FormalSystem.lean` + `FormalSystem/FormalSystem.lean` — *both* files, not one of them.
+`lean_lib FormalSystem` sets `srcDir := "."` and ``roots := #[`FormalSystem]`` (`lakefile.lean:15-19`),
+so module `FormalSystem` resolves to the **repository-root** `FormalSystem.lean` (50 lines), which
+in turn imports module `FormalSystem.FormalSystem` — the file `FormalSystem/FormalSystem.lean`
+(107 lines). That self-named indirection is load-bearing, not a convention violation. The
+invariant check allowlists it by name (check C8; the allowlist entry is the inner file).
 
 ## Directory Inventory
 

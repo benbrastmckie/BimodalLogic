@@ -10,7 +10,7 @@ satisfying coherence conditions that correspond to the temporal and modal struct
 
 | File | Lines | Description |
 |------|-------|-------------|
-| `BXCanonical.lean` | 28 | Re-export module for the BXCanonical package |
+| `../BXCanonical.lean` | 43 | Re-export module for the BXCanonical package. **Sibling aggregator**, at `FormalSystem/Metalogic/BXCanonical.lean` — not a file inside this directory |
 | `CanonicalChain.lean` | 110 | Chronicle chain construction and its linear order |
 | `CanonicalModel.lean` | 794 | Canonical model assembly from chronicles; frame/model structure |
 | `Completeness.lean` | 439 | Main completeness theorem wiring for Dense and Discrete variants |
