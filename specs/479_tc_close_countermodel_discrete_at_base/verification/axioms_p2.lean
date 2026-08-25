@@ -1,2 +1,0 @@
-import FormalSystem.Metalogic.WeakCanonical.GroupModel.CountermodelBase
-#print axioms FormalSystem.Metalogic.WeakCanonical.countermodel_discrete_base_port

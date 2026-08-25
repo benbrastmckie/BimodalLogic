@@ -1,9 +1,0 @@
-import FormalSystem.Metalogic.WeakCanonical.GroupModel.GoodGroupable
-
-open FormalSystem.Metalogic.WeakCanonical
-
-#print axioms FormalSystem.Metalogic.WeakCanonical.QZStructure.toOrdered
-#print axioms FormalSystem.Metalogic.WeakCanonical.goodGroupable_of_kEquiv
-#print axioms FormalSystem.Metalogic.WeakCanonical.goodGroupable_of_orderIso
-#print axioms FormalSystem.Metalogic.WeakCanonical.noMaxOrder_of_goodGroupable
-#print axioms FormalSystem.Metalogic.WeakCanonical.noMinOrder_of_goodGroupable

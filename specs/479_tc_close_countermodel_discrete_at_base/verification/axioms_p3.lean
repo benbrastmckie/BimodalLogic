@@ -1,4 +1,0 @@
-import FormalSystem.Metalogic.BXCanonical.Completeness
-import FormalSystem.Metalogic.WeakCanonical
-#print axioms FormalSystem.Metalogic.WeakCanonical.countermodel_discrete
-#print axioms FormalSystem.Metalogic.BXCanonical.completeness

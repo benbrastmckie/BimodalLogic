@@ -65,7 +65,7 @@ tree — report it as such.
 - [x] **Dedekind weak/consequence completeness — DONE.** Task 408 (completed, archived): headline
       `completeness_dedekind` and corollary `consequence_completeness_dedekind`, both
       `sorryAx`-free.
-- [ ] **Consequence-completeness capstone (task 362, not_started)** — Leg A: finite-context
+- [x] **Consequence-completeness capstone (task 362, not_started)** — Leg A: finite-context *(Completed: Task 362)*
       consequence completeness for all four frame classes, `Derivable`-stated corollaries of the
       four weak engines above, all now unblocked (the weak engines they build on are DONE). Legs
       B (genuine `Set Formula` strong completeness, Base/Dense only) and C/D (Discrete/Dedekind
