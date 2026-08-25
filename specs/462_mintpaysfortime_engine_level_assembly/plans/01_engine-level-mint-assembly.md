@@ -1,7 +1,7 @@
 # Implementation Plan: Engine-Level Assembly for `MintPaysForTimeFixed` at a Nonempty Universe
 
 - **Task**: 462 - mintpaysfortime_engine_level_assembly
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 6.5 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/462_mintpaysfortime_engine_level_assembly/reports/01_engine-level-mint-assembly.md`
@@ -470,34 +470,34 @@ shape has drifted, record the difference rather than assuming this plan's descri
 
 ---
 
-### Phase 5: Section D5 prose, C9 entry 20 amendment, and the full gate [NOT STARTED]
+### Phase 5: Section D5 prose, C9 entry 20 amendment, and the full gate [COMPLETED]
 
 **Goal**: Write section D5's prose stating the scope honestly, amend C9 entry 20's "*What is left*"
 paragraph in place, and run the full repository gate.
 
 **Tasks**:
-- [ ] Replace Phase 1's placeholder D5 intro with the full section prose. It must state, in terms:
+- [x] Replace Phase 1's placeholder D5 intro with the full section prose. It must state, in terms:
       what D5 delivers (entry 20 item (a) retired; D3's discharge generalized to arbitrary `C`
       including temporal operators — the case entry 20 calls the hard one; satisfiable rather than
       vacuous); the frame-class restriction and why `¬(Dense ≤ fc)` is one condition covering
       `.Dense` and `.Dedekind` and admitting exactly `.Base` and `.Discrete`; and — unambiguously —
       that landing this makes **no** terminus in the file non-vacuous.
-- [ ] The negative finding must name both halves: the nine `hlab` carriers stay vacuous
+- [x] The negative finding must name both halves: the nine `hlab` carriers stay vacuous
       (`unorderedSuccessorLabelClosed_nonempty_false`), **and** every `hlab`-free `hmint`-carrying
       terminus stays conditioned on `UniverseClosedAt` plus `DifficultyBounded`/`StepLengthBounded`
       plus `PostBlockingSettles`/`PostBlockingSettlesRun`, three of which C9 entries 9, 11 and 22
       refute. Re-locate the nine carriers by grep before citing any line.
-- [ ] Amend C9 entry 20's `*What is left, ...*` paragraph **in place** (grep for
+- [x] Amend C9 entry 20's `*What is left, ...*` paragraph **in place** (grep for
       `What is left, stated so it is not mistaken`): item (a) becomes landed, naming the new
       theorems; item (b) — the density coordinate — is unchanged and remains the only thing left;
       the paragraph carries the finding that the discharge unlocks no terminus.
-- [ ] **Do not add C9 entry 25.** Do not modify entries 11 or 21 — they already cover the `hlab`
+- [x] **Do not add C9 entry 25.** Do not modify entries 11 or 21 — they already cover the `hlab`
       side. Confirm the register still contains exactly 24 entries, and that the header sentence
       still reads "Twenty-four statements".
-- [ ] Run the full gate: `lake build`, then `bash scripts/check-module-invariants.sh`.
-- [ ] Compare the invariants output against the pre-task baseline; any newly failing check is a
+- [x] Run the full gate: `lake build`, then `bash scripts/check-module-invariants.sh`.
+- [x] Compare the invariants output *(identical to the pre-task baseline: ALL CHECKS PASSED, no newly failing check)* against the pre-task baseline; any newly failing check is a
       regression and must be fixed before the phase closes.
-- [ ] Commit.
+- [x] Commit.
 
 **Timing**: 1 hour
 
@@ -542,21 +542,21 @@ header and the file's `end`, asserting 24.
 
 ## Testing & Validation
 
-- [ ] `lake build` exits 0 with no new warnings attributable to D5.
-- [ ] Zero `sorry` — asserted by content, not by line number (invariants check C3).
-- [ ] `#print axioms` for the four flagship theorems matches the recorded baseline (check C2).
-- [ ] `bash scripts/check-module-invariants.sh` passes every check that passed before this task.
-- [ ] Zero task-number citations under `FormalSystem/` (check C9).
-- [ ] `mintPaysForTimeFixed_of_not_dense` and `mintPaysForTimeFixed_signedUniverse_of_not_dense`
+- [x] `lake build` exits 0 with no new warnings attributable to D5.
+- [x] Zero `sorry` — asserted by content, not by line number (invariants check C3).
+- [x] `#print axioms` for the four flagship theorems matches the recorded baseline (check C2).
+- [x] `bash scripts/check-module-invariants.sh` passes every check that passed before this task.
+- [x] Zero task-number citations under `FormalSystem/` (check C9).
+- [x] `mintPaysForTimeFixed_of_not_dense` and `mintPaysForTimeFixed_signedUniverse_of_not_dense`
       both exist, both carry `¬ (FrameClass.Dense ≤ fc)` visibly in their statements, and neither
       adds a hypothesis to `MintPaysForTimeFixed`.
-- [ ] The `signedUniverse` terminus has no syntactic side condition on `C` (it is not restricted to
+- [x] The `signedUniverse` terminus has no syntactic side condition on `C` (it is not restricted to
       the `untl`/`snce`-free fragment).
-- [ ] `git diff` confirms `Fuel.lean`, `Saturation.lean`, `Tableau.lean` are untouched.
-- [ ] `git diff` confirms every Lean change is an addition inside section D5, plus the single
+- [x] `git diff` confirms `Fuel.lean`, `Saturation.lean`, `Tableau.lean` are untouched.
+- [x] `git diff` confirms every Lean change is an addition inside section D5, plus the single
       prose-only amendment to C9 entry 20.
-- [ ] The C9 register stands at exactly 24 entries.
-- [ ] D5's prose carries the honest scope statement.
+- [x] The C9 register stands at exactly 24 entries.
+- [x] D5's prose carries the honest scope statement.
 
 ## Artifacts & Outputs
 

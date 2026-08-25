@@ -13369,8 +13369,69 @@ the verdict and is written to say exactly this. -/
 
 /-! ## D5. The engine-level assembly: `MintPaysForTimeFixed` off `.Dense`, at any universe
 
-*Placeholder intro. The full section prose is written last, once the assembly is standing, and
-states the scope honestly.* -/
+**What this section delivers.** `MintPaysForTimeFixed fc U Tmax` — the repaired mint residual the
+terminus chain is stated against — proved outright at an **arbitrary** universe, for every frame
+class `fc` satisfying `¬ (FrameClass.Dense ≤ fc)`. No syntactic condition on the formulas, no
+emptiness, no hypothesis added to the predicate, no figure changed, and no engine definition
+touched. At the concrete universe the seed-level termini consume it reads
+`mintPaysForTimeFixed_signedUniverse_of_not_dense`, which holds for **every** stock `C` — `untl`
+and `snce` nodes included.
+
+**The frame restriction is one condition, and it is written in the statement.** `¬ (FrameClass.Dense
+≤ fc)` excludes `.Dense` and `.Dedekind` together, because `Dense ≤ Dedekind` holds in the
+`FrameClass` order, and it admits exactly `.Base` and `.Discrete`. It is not hidden behind a
+definition, a `variable`, or a typeclass: a reader of `mintPaysForTimeFixed_of_not_dense` alone sees
+it. What it buys is the exclusion of `densityRule` — the one rule that mints a fresh time while
+sitting outside both `freshLabelRules` and `selfGuardRules`, and therefore outside every disjunct —
+via `findApplicableRule_ne_densityRule`. It does not close the density coordinate: `gapPotential` is
+still implemented nowhere and assumed by nothing, and register entry 20's item (b) stands exactly as
+written.
+
+**What was missing, and what supplies it.** The per-rule payments all existed already. What did not
+exist was the picked rule's *identity* at the successor: `pick_stage_source` hands on `applyRule`'s
+pair and discards stage one's `findApplicableRule` equation, and the equation is precisely what the
+witness-guarded payments need — `findApplicableRule_guard_linear` and its `.branching` twin read
+`witnessPresent … = false` off `findApplicableRule`'s own `if`, which `applyRule` does not carry.
+`pick_stage_source_rule` is that threading, in the only shape all three stages support: stage one
+reports its equation, stages two and three report that their rule (`serialityRule`, `timeLinearity`)
+is outside `freshTimeRules`. With it, `pickBranches_mintPays` splits the picked rule into the four
+buckets a `decide`-proved census fixes — no fresh time (disjunct 1), witness-guarded mint (disjunct
+2), self-guarded mint (disjunct 3), `densityRule` (excluded) — and every bucket closes from a landed
+lemma with both budget conjuncts exact.
+
+**What this retires, and what it generalizes.** Register entry 20's item (a), the engine-level
+assembly, is the last non-density obstruction to the mint predicate itself, and it is retired here;
+entry 20's paragraph is amended in place to say so. `mintPaysForTimeFixed_signedUniverse_of_not_dense`
+generalizes section D3's `mintPaysForTimeFixed_signedUniverse_untlSnceFree` off its syntactic
+fragment onto arbitrary `C` — the case entry 20 itself calls the hard one, and the case
+`mintPaysForTime_untlNeg_false` refutes the *unrepaired* predicate at. Neither D3's discharge nor
+`mintPaysForTimeFixed_signedUniverse_empty` is deleted or altered; both are superseded in prose
+only, and D3's remains the statement to reach for at `.Dense` and `.Dedekind`, where this section is
+silent. The discharge here is satisfiable rather than vacuous: `signedUniverse_nonempty` makes the
+universe nonempty as soon as `C` and `L` are, and the hypothesis discharged is a *theorem* there.
+
+**And now the part that must not be omitted: this makes NO terminus in this file non-vacuous.**
+Landing it unlocks nothing downstream, and saying otherwise would reproduce exactly the failure mode
+register entry 21 documents for
+`buildTableauAt_isSome_at_seed_lengthBudget_signedUniverse_untlSnceFree`. Both halves of that, named:
+
+* *The nine `hlab` carriers stay vacuous.* Nine statements in this file carry
+  `hlab : UnorderedSuccessorLabelClosed fc L` as a live hypothesis, and every one of them is a true
+  conditional with a false antecedent at every nonempty `L`, because
+  `unorderedSuccessorLabelClosed_nonempty_false` pins that predicate's satisfiability set at exactly
+  `{∅}`. Removing `hmint` from such a statement changes nothing about its reach — and this section
+  removes `hmint` from none of them in any case, because it restates no terminus at all.
+* *The `hlab`-free `hmint`-carrying termini stay conditioned elsewhere.* Each of them still requires
+  `UniverseClosedAt fc U`, plus `DifficultyBounded` or `StepLengthBounded`, plus `PostBlockingSettles`
+  or `PostBlockingSettlesRun`. Three of those are refuted outright — `DifficultyBounded` by register
+  entry 9, clause 1 of `UniverseClosed`/`UniverseClosedAt` at a fixed finite `signedUniverse C L` by
+  entry 11, and `PostBlockingSettles` by entry 22. A discharged mint residual does not touch any of
+  them.
+
+So the honest reading of this section is: one named residual of the four is now a theorem at a
+nonempty universe off `.Dense`, and the count of *satisfiable* residual conditions blocking any
+terminus is unchanged. No artifact should read `mintPaysForTimeFixed_of_not_dense` as de-vacuifying
+anything. -/
 
 /-- **The strengthened pick-stage bridge.** `pick_stage_source` with the picked rule's *identity*
 threaded through, in the only form the three stages can all support: stage one hands on its own
@@ -14418,16 +14479,34 @@ already been here.
     its five predecessors. `flatSigma_not_sigmaFixed` decides that the vehicle above does not reach
     the repaired predicate.
 
-    *What is left, stated so it is not mistaken for what entry 19 said was left.* Two things, not
-    one. **(a)** The engine-level assembly: the per-rule payments now all exist —
-    `mintPotential_lt_of_pick_linear_sigmaFixed` and `..._branching_sigmaFixed` for the six
-    witness-guarded minting rules, `selfGuardPotential_lt_of_untlNeg` / `..._snceNeg` for the two
-    self-guarded ones, `applyRule_emitted_time_dichotomy` plus `expandOnceUnblocked_ord_mono` for
-    the twenty-seven that mint no time — and what is missing is threading the pick's rule through
+    *What is left, stated so it is not mistaken for what entry 19 said was left.* One thing now,
+    where there were two. **(a)** The engine-level assembly is **landed**, in section D5. The
+    per-rule payments all existed — `mintPotential_lt_of_pick_linear_sigmaFixed` and
+    `..._branching_sigmaFixed` for the six witness-guarded minting rules,
+    `selfGuardPotential_lt_of_untlNeg` / `..._snceNeg` for the two self-guarded ones,
+    `applyRule_emitted_time_dichotomy` plus `expandOnceUnblocked_ord_mono` for the twenty-seven that
+    mint no time — and what was missing was threading the pick's rule through
     `expandOnceUnblocked`'s three stages so that the case split is available at the successor.
-    **(b)** The density coordinate, exactly as entry 19 describes it and untouched by any of this.
-    A discharge at frame classes outside `.Dense` / `.Dedekind` needs only (a); a discharge at every
-    frame class needs `gapPotential`, which remains implemented nowhere and assumed by nothing.
+    `pick_stage_source_rule` is that threading, `pickBranches_mintPays` is the four-bucket case
+    split it enables, and `mintPaysForTimeFixed_of_not_dense` is the discharge, at an arbitrary
+    universe under the single hypothesis `¬ (FrameClass.Dense ≤ fc)`;
+    `mintPaysForTimeFixed_signedUniverse_of_not_dense` is its `signedUniverse C L` form, for **every**
+    stock `C` including one carrying `untl` and `snce` — the case this entry calls the hard one, and
+    the case section D3's syntactic fragment excludes. **(b)** The density coordinate, exactly as
+    entry 19 describes it and untouched by any of this, is what remains. The frame-class hypothesis
+    excludes `densityRule` rather than paying for it; a discharge at `.Dense` and `.Dedekind` still
+    needs `gapPotential`, which remains implemented nowhere and assumed by nothing.
+
+    *And the scope of (a), stated so it is not overread.* Landing the assembly makes **no** terminus
+    in this file non-vacuous, and no artifact should claim otherwise. The nine `hlab` carriers stay
+    vacuous at every nonempty `L` by `unorderedSuccessorLabelClosed_nonempty_false`, whatever happens
+    to `hmint`; and every `hlab`-free `hmint`-carrying terminus stays conditioned on
+    `UniverseClosedAt` plus `DifficultyBounded` or `StepLengthBounded` plus `PostBlockingSettles` or
+    `PostBlockingSettlesRun`, three of which entries 9, 11 and 22 refute. What (a) delivers is that
+    one named residual of the four is now a theorem at a nonempty universe off `.Dense`, and that
+    section D3's discharge is generalized off its syntactic fragment. The count of *satisfiable*
+    residual conditions blocking any terminus is unchanged. Omitting this sentence would reproduce
+    exactly the failure mode entry 21 documents.
 
     *And what neither (a) nor (b) is needed for.* Both are obligations on a **time mint**, so both
     are vacuous on a universe where no rule can mint. Section D3 discharges `MintPaysForTime`
