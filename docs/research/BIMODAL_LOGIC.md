@@ -21,7 +21,12 @@ Bimodal logic (TM) is a propositional intensional logic implementing Tense and M
 In Bimodal, the fundamental semantic elements are **world-states**:
 
 - **World States (`W`)**: Primitive elements representing possible states of affairs
-- **Times (`T`)**: Discrete temporal points (implemented as integers)
+- **Times (`T`)**: An arbitrary **ordered abelian group** `D` -- a linearly ordered
+  `AddCommGroup` with `IsOrderedAddMonoid` -- not fixed to the integers. Dense carriers
+  (`DenselyOrdered`) and Dedekind-complete carriers (every nonempty bounded-above set has a
+  least upper bound) are explicitly supported; see
+  `FormalSystem/Metalogic/StrongCompleteness.lean:165-171`. The four frame classes -- Base,
+  Dense, Discrete, Dedekind -- differ exactly in which binders they impose on `D`.
 - **Task Relation (`R`)**: Accessibility relation over world-state/time pairs
 
 ### Interpretation
@@ -40,7 +45,8 @@ A sentence letter `p` is true at world `w` iff `w` is a member of `V(p)`.
 | --------------- | ---------------------------------------------------------------------------------- | --------------------------- |
 | **Extensional** | not, and, or, implies, iff, bottom, top                                            | Boolean connectives         |
 | **Modal**       | necessity (box), possibility (diamond)                                             | S5 historical modality      |
-| **Temporal**    | H (always past), G (always future), P (sometime past), F (sometime future), triangle (always), nabla (sometimes) | Linear temporal operators   |
+| **Temporal (primitive)** | `untl` (until, U), `snce` (since, S) | The only primitive temporal constructors (`FormalSystem/Syntax/Formula.lean:96`, `:106`) |
+| **Temporal (derived)** | H (always past), G (always future), P (sometime past), F (sometime future), X (next), K⁺/K⁻, triangle (always), nabla (sometimes) | All defined from `untl`/`snce` |
 
 ### Axiom Schemas
 
@@ -79,12 +85,16 @@ Six theorems connecting modal and temporal operators:
 | Component | Status | Details |
 |-----------|--------|---------|
 | **Syntax** | Complete | Formula, Context, derived operators |
-| **Proof System** | Complete | 14 axiom schemata, 7 inference rules |
+| **Proof System** | Complete | 45 axiom constructors (Base 37 / Dense 2 / Discrete 3 / Dedekind 3), 7 inference rules |
 | **Semantics** | Complete | TaskFrame, TaskModel, Truth, Validity |
 | **Metalogic** | **Complete** | Soundness, Completeness, Deduction theorem |
 | **Automation** | Partial | Core tactics working |
 
-**Key Result**: Bimodal has fully verified soundness and completeness proofs, establishing it as a production-ready implementation.
+**Key Result**: Bimodal has fully verified soundness proofs and weak completeness proofs for
+all four frame classes. Note two qualifications: *strong* completeness (arbitrary infinite
+premise sets) is not available uniformly -- it is machine-refuted for Discrete and open for
+Base and Dense -- and the decision procedure's proved direction is soundness only. See
+[known-limitations.md](../project-info/known-limitations.md).
 
 **Implementation location**: [FormalSystem/README.md](../../FormalSystem/README.md)
 
@@ -124,7 +134,7 @@ Bimodal follows the Kripke tradition:
 
 ## The Logos Connection
 
-Bimodal logic is a fragment of the **Logos**, a formal language of thought designed to enable AI systems to reason with mathematical certainty. The Logos provides verified synthetic reasoning data of arbitrary complexity through an extensible system of proof theory and semantics. This repository focuses specifically on the bimodal fragment, which is of independent interest due to its completeness and decidability. For more about the Logos project, see [logos-labs.ai](https://logos-labs.ai/).
+Bimodal logic is a fragment of the **Logos**, a formal language of thought designed to enable AI systems to reason with mathematical certainty. The Logos provides verified synthetic reasoning data of arbitrary complexity through an extensible system of proof theory and semantics. This repository focuses specifically on the bimodal fragment, which is of independent interest due to its machine-verified weak completeness and its implemented (sound-direction-verified) decision procedure. For more about the Logos project, see [logos-labs.ai](https://logos-labs.ai/).
 
 ---
 

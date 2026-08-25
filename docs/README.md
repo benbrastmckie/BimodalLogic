@@ -13,7 +13,13 @@ Project-wide documentation hub for the ProofChecker formal verification project.
 
 ProofChecker implements TM bimodal logic (Tense and Modality) in Lean 4 with verified soundness and completeness proofs.
 
-**Bimodal** is the production-ready implementation providing a complete propositional intensional logic combining S5 modal and linear temporal operators. The implementation includes fully verified soundness, completeness, deduction theorem, and decidability results.
+**Bimodal** is the production-ready implementation providing a complete propositional
+intensional logic combining S5 modal and linear temporal operators. The implementation includes
+fully verified soundness, weak completeness for all four frame classes, and the deduction
+theorem. A tableau decision procedure is implemented with its **sound direction** proved; the
+completeness direction is open. *Strong* completeness (arbitrary infinite premise sets) is not
+available uniformly -- see
+[known-limitations.md](project-info/known-limitations.md).
 
 **Getting Started**: See the [Bimodal documentation](.) for tutorials, examples, and reference materials.
 

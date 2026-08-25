@@ -41,8 +41,8 @@ and `countermodel_dense` (`BXCanonical/Chronicle/ChronicleToCountermodelBasic.le
 The other two are **not** dead alternatives. `BXCanonical` imports from both of them,
 so all three participate in the live proof:
 
-- `BXCanonical → WeakCanonical` — 2 import lines
-- `BXCanonical → Algebraic` — 2 import lines
+- `BXCanonical → WeakCanonical` — 9 import lines
+- `BXCanonical → Algebraic` — 4 import lines
 
 Beneath all three sits a genuinely layered core:
 

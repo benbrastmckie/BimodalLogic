@@ -213,7 +213,11 @@ Semantic validity and consequence relations for TM logic.
 
 **Module**: `FormalSystem/ProofSystem/Axioms.lean`
 
-The 14 axiom schemata for bimodal logic TM.
+The **45** axiom constructors for bimodal logic TM, in four layers: Base 37, Dense 2,
+Discrete 3, Dedekind 3. The layer of each constructor is given by `Axiom.minFrameClass`
+(`Axioms.lean:588`), and the invariant `ax.minFrameClass ≤ fc` governs which may appear in a
+derivation at frame class `fc`. See
+[axiom-reference.md](axiom-reference.md) for the per-constructor breakdown.
 
 #### Axiom Type
 
@@ -597,7 +601,11 @@ Perpetuity principles connecting modal and temporal operators.
 
 Soundness theorem: derivability implies semantic consequence.
 
-**Main Theorem**: `soundness : Γ ⊢ φ → Γ ⊨ φ`
+**Main Theorem**: `soundness : Derivable fc Γ φ → SemanticConsequence fc Γ φ`
+
+Derivability carries a **frame-class parameter** `fc`, and soundness is relative to it: an
+axiom may appear in the derivation only when `ax.minFrameClass ≤ fc`
+(`FormalSystem/ProofSystem/Axioms.lean:588`).
 
 ---
 
@@ -608,8 +616,6 @@ Soundness theorem: derivability implies semantic consequence.
 Deduction theorem for TM logic.
 
 **Main Theorem**: `deductionTheorem : (φ :: Γ) ⊢ ψ → Γ ⊢ (φ → ψ)`
-
-**Note**: Currently has build errors (type class instance problems).
 
 ---
 
@@ -624,7 +630,21 @@ are the two alternative routes. The former top-level `Metalogic/Completeness.lea
 had no live importer and is archived under
 `FormalSystem/Boneyard/SupersededCompleteness/`.
 
-**Main Theorem**: `completeness : Γ ⊨ φ → Γ ⊢ φ`
+**Main Theorems** -- four weak completeness results, one per frame class, all sorryAx-free at
+exactly `[propext, Classical.choice, Quot.sound]`:
+
+| Theorem | Location | Frame class |
+|---------|----------|-------------|
+| `completeness` | `BXCanonical/Completeness.lean:196` | Base |
+| `completeness_dense` | `BXCanonical/Completeness.lean:255` | Dense |
+| `completeness_discrete` | `BXCanonical/Completeness.lean:296` | Discrete |
+| `completeness_dedekind` | `Metalogic/StrongCompleteness.lean:469` | Dedekind |
+
+Each has a finite-context companion `consequence_completeness_*`. **These are not strong
+completeness.** `Context` is `List Formula`, so each is inter-derivable with the weak form
+through the deduction theorem. See
+[known-limitations.md](../project-info/known-limitations.md) for the three distinct statuses of
+strong completeness across the four classes.
 
 ---
 

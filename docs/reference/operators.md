@@ -1,12 +1,12 @@
 # Logical Operators Glossary
 
-**Navigation**: [Documentation](../) > [Architecture](../../user-guide/architecture.md) > Glossary
+**Navigation**: [Documentation](../) > [Architecture](../user-guide/architecture.md) > Glossary
 
 ## Purpose
 
-This glossary provides a comprehensive reference for all logical operators, symbols, and principles used in the Logos bimodal logic TM system. It serves as a single source of truth for symbol meanings, formal definitions, LEAN code representations, and semantic interpretations.
+This glossary provides a comprehensive reference for all logical operators, symbols, and principles used in the ProofChecker bimodal logic TM system. It serves as a single source of truth for symbol meanings, formal definitions, LEAN code representations, and semantic interpretations.
 
-**Audience**: Developers, researchers, and users working with Logos's formal proof system.
+**Audience**: Developers, researchers, and users working with the TM formal proof system.
 
 ---
 
@@ -14,7 +14,8 @@ This glossary provides a comprehensive reference for all logical operators, symb
 
 1. [Propositional Operators](#propositional-operators)
 2. [Modal Operators](#modal-operators)
-3. [Temporal Operators](#temporal-operators)
+3. [Primitive Temporal Operators](#primitive-temporal-operators)
+4. [Temporal Operators](#temporal-operators)
 4. [Meta-logical Symbols](#meta-logical-symbols)
 5. [Perpetuity Principles](#perpetuity-principles)
 6. [Variable Conventions](#variable-conventions)
@@ -113,7 +114,63 @@ Modal possibility operator from S5 modal logic - expresses metaphysical possibil
 
 ---
 
+## Primitive Temporal Operators
+
+`untl` and `snce` are the **only** primitive temporal constructors of `Formula`
+(`FormalSystem/Syntax/Formula.lean:96` and `:106`). Every H/P/G/F entry in the next section is a
+*derived* form defined from them. Documenting only the derived forms would misrepresent the
+language.
+
+### U (untl / until)
+Binary primitive - **argument 1 is the guard, argument 2 is the event**.
+
+**LEAN Code**: `Formula.untl φ ψ`
+**Alternative Notation**: `U(φ, ψ)`
+**Semantics**: `M,h,t ⊨ U(φ,ψ)` iff the *event* `ψ` is witnessed at some strictly later time
+`s`, and the *guard* `φ` holds at every time in the open interval `(t, s)`
+**Axioms**: `left_mono_until_G`, `right_mono_until`, `enrichment_until`, `self_accum_until`,
+`absorb_until`, `linear_until`, `until_F`, `F_until_equiv`
+**Note**: the argument order is guard-first. Written with the arguments swapped, definitions
+built on it silently never fire -- see the guard-first warning at
+`FormalSystem/Metalogic/DiscreteNonCompactness.lean:102` and following.
+
+### S (snce / since)
+Binary primitive - the past mirror image of `untl`.
+
+**LEAN Code**: `Formula.snce φ ψ`
+**Alternative Notation**: `S(φ, ψ)`
+**Semantics**: `M,h,t ⊨ S(φ,ψ)` iff `ψ` is witnessed at some strictly earlier time `s`, and `φ`
+holds at every time in the open interval `(s, t)`
+
+### X (next)
+Derived from `untl` with a `⊥` guard: the guard condition is vacuous exactly on an immediate
+successor.
+
+**Formal Definition**: `next φ := U(⊥, φ)`
+**LEAN Code**: `Formula.next` (`FormalSystem/Syntax/Formula.lean:511`)
+**Note**: This is a genuine next-step operator on discrete orders, and is what makes the
+Discrete non-compactness witness set work.
+
+### K⁺ (kPlus) and K⁻ (kMinus)
+Reynolds's gap operators, used to state the Dedekind-layer axioms.
+
+**Formal Definition**: `K⁺φ := ¬U(¬φ, ⊤)`, `K⁻φ := ¬S(¬φ, ⊤)`
+**LEAN Code**: `Formula.kPlus` (`:196`), `Formula.kMinus` (`:209`)
+**Meaning**: "φ holds arbitrarily soon" / "φ held arbitrarily recently"
+**Used by**: `Axiom.prior_U_gap`, `Axiom.prior_S_gap`, `Axiom.sep`
+
+---
+
 ## Temporal Operators
+
+Every operator in this section is **derived** from `untl`/`snce`, not primitive:
+
+| Operator | Definition | Source |
+|----------|-----------|--------|
+| `someFuture` (F) | `U(⊤, φ)` | `Formula.lean:147` |
+| `somePast` (P) | `S(⊤, φ)` | `Formula.lean:157` |
+| `allFuture` (G) | `¬F¬φ` | `Formula.lean:167` |
+| `allPast` (H) | `¬P¬φ` | `Formula.lean:177` |
 
 ### H (allPast / universal past)
 Universal past operator - expresses that a formula held at all past times.
@@ -143,15 +200,18 @@ Universal future operator - expresses that a formula will hold at all future tim
 **LEAN Code**: `Formula.allFuture φ`
 **Alternative Notation**: `G` (from "Globally" or "Going to always be")
 **Semantics**: `M,h,t ⊨ G φ` iff for all times t' > t in domain(h), `M,h,t' ⊨ φ`
-**Axioms**: T4 (`G φ → G G φ`), TA (`φ → G P φ`)
+**Formal Definition**: `G φ := ¬F¬φ` (`FormalSystem/Syntax/Formula.lean:167`) -- derived, not primitive
+**Axioms**: `connect_future` (`φ → G P φ`). Note that `G φ → G G φ` is the *derived* theorem `temporal4Derived` (`FormalSystem/Theorems/TemporalDerived.lean`), not an axiom
 **See also**: [F (someFuture)](#f-someFuture--existential-future), [H (allPast)](#h-allPast--universal-past)
 **Examples**: `G p` means "p will always be true (in the future)"
 
 ### F (someFuture / existential future)
 Existential future operator - expresses that a formula will hold at some future time.
 
-**Formal Definition**: `F φ := ¬G¬φ` (dual of universal future)
-**LEAN Code**: Defined via `Formula.allFuture` and negation as `someFuture`
+**Formal Definition**: `F φ := U(⊤, φ)` (`FormalSystem/Syntax/Formula.lean:147`). The duality
+`F φ ↔ ¬G¬φ` holds, but the *definitional* direction runs the other way: `allFuture` is defined
+from `someFuture`, which is defined from `untl`.
+**LEAN Code**: `Formula.someFuture`
 **Alternative Notation**: `F` (from "Future occurrence" or "Finally")
 **Semantics**: `M,h,t ⊨ F φ` iff there exists time t' > t in domain(h) such that `M,h,t' ⊨ φ`
 **See also**: [G (allFuture)](#g-allFuture--universal-future), [P (somePast)](#p-somePast--existential-past)
@@ -191,8 +251,12 @@ Temporal operator - expresses that a formula holds at some time (past, present, 
 Syntactic provability relation - expresses derivability in the TM proof system.
 
 **Formal Definition**: `Γ ⊢ φ` means φ is derivable from premises Γ using TM axioms and rules
-**LEAN Code**: `Derivable Γ φ` (inductive type)
-**Rules**: Axiom schemas, Modus Ponens (MP), Modal K (MK), Temporal K (TK), Temporal Duality (TD)
+**LEAN Code**: `Derivable (fc : FrameClass) (G : Context) (p : Formula)`
+(`FormalSystem/ProofSystem/Derivable.lean:69`) -- note the **frame-class parameter**: derivability
+is always relative to a frame class, and the invariant `ax.minFrameClass ≤ fc` governs which
+axioms may appear.
+**Rules**: the 7 `DerivationTree` constructors -- `axiom`, `assumption`, `modus_ponens`,
+`necessitation`, `temporal_necessitation`, `temporal_duality`, `weakening`
 **See also**: [⊨ (semantic consequence)](#-models--semantic-consequence)
 **Soundness**: If `Γ ⊢ φ` then `Γ ⊨ φ`
 **Examples**: `⊢ □p → p` means "necessarily p implies p" is a theorem (axiom MT)
@@ -204,7 +268,14 @@ Semantic consequence relation - expresses validity in task frame models.
 **LEAN Code**: `valid Γ φ` (semantic validity definition)
 **Semantics**: Based on task frame structures with world histories and time domains
 **See also**: [⊢ (provability)](#-turnstile--provability)
-**Completeness**: If `Γ ⊨ φ` then `Γ ⊢ φ`
+**Completeness**: available in the **finite-context** form only. `Context` is `List Formula`,
+so `consequence_completeness` (`FormalSystem/Metalogic/StrongCompleteness.lean`) is
+inter-derivable with weak completeness through the deduction theorem. The unqualified
+arbitrary-`Γ` reading -- *strong* completeness over a possibly-infinite `Γ : Set Formula` -- is
+**not** available uniformly: it is machine-refuted for Discrete, open for Base and Dense, and
+outside the primary source's scope for Dedekind. See
+`FormalSystem/Metalogic/StrongCompleteness.lean:25-41` and
+[known-limitations.md](../project-info/known-limitations.md).
 **Examples**: `⊨ □p → ◇p` means "necessary implies possible" is valid in all models
 
 ### ∀ (universal quantifier)
@@ -309,7 +380,7 @@ The perpetuity principles (P1-P6) are key derived theorems in TM logic connectin
 
 ## Variable Conventions
 
-Logos follows consistent naming conventions for variables across documentation and code. These conventions are established in the [LEAN Style Guide](../../Development/LEAN_STYLE_GUIDE.md).
+ProofChecker follows consistent naming conventions for variables across documentation and code. These conventions are established in the [LEAN Style Guide](../development/LEAN_STYLE_GUIDE.md).
 
 ### Formulas
 - **φ** (phi) - Primary formula variable
@@ -356,13 +427,13 @@ Logos follows consistent naming conventions for variables across documentation a
 
 ## Related Documentation
 
-- [Architecture Guide](../../user-guide/architecture.md) - Complete TM logic specification with formal semantics
-- [LEAN Style Guide](../../Development/LEAN_STYLE_GUIDE.md) - Coding conventions and variable naming
-- [Tutorial](../../user-guide/tutorial.md) - Practical examples using these operators
-- [Examples](../../user-guide/examples.md) - Modal, temporal, and bimodal proof examples
+- [Architecture Guide](../user-guide/architecture.md) - Complete TM logic specification with formal semantics
+- [LEAN Style Guide](../development/LEAN_STYLE_GUIDE.md) - Coding conventions and variable naming
+- [Tutorial](../user-guide/tutorial.md) - Practical examples using these operators
+- [Examples](../user-guide/examples.md) - Modal, temporal, and bimodal proof examples
 
 ---
 
 **Last Updated**: 2025-12-01
 **Version**: 1.0
-**Maintainer**: Logos Development Team
+**Maintainer**: ProofChecker Development Team

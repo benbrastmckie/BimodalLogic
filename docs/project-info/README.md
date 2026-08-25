@@ -119,23 +119,28 @@ Project status and tracking for the Bimodal TM logic implementation.
 |-------|--------|------------|
 | Layer 0 (Syntax, ProofSystem) | Complete | 100% |
 | Layer 1 (Semantics) | Complete | 100% |
-| Layer 2 (Metalogic) | Partial | ~60% |
-| Layer 3 (Theorems) | Partial | ~80% |
-| Layer 4 (Automation) | Partial | ~50% |
+| Layer 2 (Metalogic) | Complete for the weak/finite-context results | 100% |
+| Layer 3 (Theorems) | Complete | 100% |
+| Layer 4 (Automation) | Active | -- |
 
 ## Key Metrics
 
-- **Total Lean Files**: ~40
 - **Soundness**: Proven
-- **Completeness**: Dense/discrete frame classes proven sorry-free; general Base-frame case has
-  one residual proof debt
-- **Known Sorries**: 12 (all in `Metalogic/`; none in `Examples/` or `Tests/`)
+- **Completeness**: weak completeness proven and sorryAx-free for all four frame classes
+  (Base, Dense, Discrete, Dedekind). *Strong* completeness is a separate question -- see
+  [known-limitations.md](known-limitations.md)
+- **Known Sorries**: 0, asserted by check C3 of `scripts/check-module-invariants.sh`
+
+Do not hardcode file and line counts here; reproduce them:
+
+```bash
+cloc --include-lang=Lean --exclude-dir=.lake,lake-packages,Boneyard .
+```
 
 ## See Also
 
-- [Project Implementation Status](../../../docs/project-info/implementation-status.md) -
-  Project-wide status
-- [Feature Registry](../../../docs/project-info/FEATURE_REGISTRY.md) - Feature tracking
+- [Implementation Status](implementation-status.md) - Module-by-module status
+- [Feature Registry](FEATURE_REGISTRY.md) - Feature tracking
 
 ## Navigation
 
