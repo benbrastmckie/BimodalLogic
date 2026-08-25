@@ -7,6 +7,7 @@ Authors: Benjamin Brast-McKie
 -- Re-export all Bimodal library modules
 import FormalSystem.Syntax
 import FormalSystem.ProofSystem
+import FormalSystem.BaseLanguage
 import FormalSystem.Semantics
 import FormalSystem.Metalogic
 import FormalSystem.FrameConditions
@@ -28,6 +29,10 @@ with linear temporal logic.
 - `FormalSystem.ProofSystem`: Hilbert-style proof system with 21 axiom schemata
 (base/dense/discrete)
 and 7 inference rules
+- `FormalSystem.BaseLanguage`: The tense-primitive base language BL (`H`/`G` primitive) with
+  TM's Hilbert system and the translation `tr : BLFormula → Formula` into BL⁺, supporting the
+  backward conservativity bridge in `Metalogic/Conservativity.lean`. Imports nothing from
+  `Semantics/`
 - `FormalSystem.Semantics`: Task frame semantics with world histories, truth evaluation, and
 validity
 - `FormalSystem.Metalogic`: Soundness, three completeness routes, and the tableau decision

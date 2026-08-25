@@ -2,7 +2,7 @@
 
 - **Task**: 413 - Formalize the TM+/TM conservativity bridge (backward direction only, plus a
   documented refutation record for the forward direction)
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 12 hours
 - **Dependencies**: 439, 470 (recorded in state.json; neither gates this plan — see "Dependency
   note" in the Overview)
@@ -152,37 +152,37 @@ not-yet-existing modules commented out and have each later phase uncomment its o
 
 ---
 
-### Phase 1: BL syntax — `BLFormula`, `swapBL`, instances [NOT STARTED]
+### Phase 1: BL syntax — `BLFormula`, `swapBL`, instances [COMPLETED]
 
 **Goal**: The base language exists as a Lean type, with the swap operation TM's TD rule needs and
 the instances downstream phases require, wired into the build without disturbing anything.
 
 **Tasks**:
-- [ ] Create `FormalSystem/BaseLanguage/Formula.lean` under namespace `FormalSystem.BaseLanguage`.
-- [ ] Define `BLFormula : Type` with exactly six constructors: `atom : Atom -> BLFormula`, `bot`,
+- [x] Create `FormalSystem/BaseLanguage/Formula.lean` under namespace `FormalSystem.BaseLanguage`.
+- [x] Define `BLFormula : Type` with exactly six constructors: `atom : Atom -> BLFormula`, `bot`,
       `imp`, `box`, `allPast`, `allFuture`. Reuse the existing `FormalSystem.Syntax.Atom`; do not
       define a new atom type.
-- [ ] **Polarity check before writing anything**: the paper writes `\Past`/`\Future` for the
+- [x] **Polarity check before writing anything**: the paper writes `\Past`/`\Future` for the
       UNIVERSAL H/G and `\past`/`\future` for the existential P/F. `allPast` = H (universal),
       `allFuture` = G (universal). Getting this backwards transcribes a different logic. Add a
       docstring line on each constructor stating which paper symbol it is.
-- [ ] Define derived operators from the primitives: `neg`, `top`, `and`, `or`, `iff`,
+- [x] Define derived operators from the primitives: `neg`, `top`, `and`, `or`, `iff`,
       `somePast` (P := `neg (allPast (neg phi))`), `someFuture` (F := `neg (allFuture (neg phi))`).
       Mirror the naming used in `FormalSystem/Syntax/Formula.lean` so the two sides read alike.
-- [ ] Define `swapBL : BLFormula -> BLFormula` interchanging `allPast` and `allFuture`
+- [x] Define `swapBL : BLFormula -> BLFormula` interchanging `allPast` and `allFuture`
       structurally (report §7 gives the exact six-line definition).
-- [ ] `deriving Repr, DecidableEq`; add a `Countable BLFormula` instance (follow whatever pattern
+- [x] `deriving Repr, DecidableEq`; add a `Countable BLFormula` instance (follow whatever pattern
       `Syntax/Formula.lean` uses for its own `Countable`; if it derives via an encoding, reuse it).
-- [ ] Prove `swapBL_involution (phi) : phi.swapBL.swapBL = phi` by
+- [x] Prove `swapBL_involution (phi) : phi.swapBL.swapBL = phi` by
       `induction phi <;> simp_all [swapBL]` (verified compiling in report §7).
-- [ ] Add convenience `simp` lemmas for `swapBL` on the derived operators if the induction in
-      Phase 4 will need them (`swapBL (neg phi) = neg (swapBL phi)` etc.).
-- [ ] Create `FormalSystem/BaseLanguage.lean` aggregator importing
+- [x] Add convenience `simp` lemmas for `swapBL` on the derived operators if the induction in
+      Phase 4 will need them (`swapBL (neg phi) = neg (swapBL phi)` etc.). *(completed: neg/and/or/iff/diamond/somePast/someFuture/top all `rfl`; `swapBL_always` stated non-`simp` since the conjunct order reverses)*
+- [x] Create `FormalSystem/BaseLanguage.lean` aggregator importing
       `FormalSystem.BaseLanguage.Formula`, with the remaining four imports present but commented
       out (see the territory note above).
-- [ ] Add `import FormalSystem.BaseLanguage` to `FormalSystem/FormalSystem.lean` and add a bullet
+- [x] Add `import FormalSystem.BaseLanguage` to `FormalSystem/FormalSystem.lean` and add a bullet
       for the new component to that file's `## Components` list.
-- [ ] Add a module docstring stating the invariant: **`BaseLanguage/` imports nothing from
+- [x] Add a module docstring stating the invariant: **`BaseLanguage/` imports nothing from
       `FormalSystem/Semantics/`.**
 
 **Timing**: 1 hour
