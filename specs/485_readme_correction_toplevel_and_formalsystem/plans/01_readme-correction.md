@@ -805,38 +805,40 @@ directory-shaped link from the one `.lean` file in scope.
 
 ---
 
-### Phase 9: B14 — take the broken-reference count from 5 to 0 [NOT STARTED]
+### Phase 9: B14 — take the broken-reference count from 5 to 0 [COMPLETED]
 
 **Goal**: Repoint all five broken references reported by `readme-lint.sh` Check 3 and correct the
 Perpetuity declaration enumeration that the fifth one exposes.
 
 **Tasks**:
-- [ ] **D4 first**: `state.json`'s `file_scope` for this task lists 13 files; none of this
+- [x] **D4 first**: `state.json`'s `file_scope` for this task lists 13 files; none of this
       phase's four are among them. Extend `file_scope` to 17 by adding
       `FormalSystem/Metalogic/WeakCanonical/EFGames/README.md`,
       `FormalSystem/Metalogic/WeakCanonical/Expressiveness/README.md`,
       `FormalSystem/Metalogic/WeakCanonical/Separation/README.md`, and
       `FormalSystem/Theorems/Perpetuity/README.md` before editing. Without them the gate is
       unsatisfiable.
-- [ ] Run `bash scripts/readme-lint.sh` and record the 5 broken references as the phase's
+- [x] Run `bash scripts/readme-lint.sh` and record the 5 broken references as the phase's
       starting baseline.
-- [ ] **B14 / D5**: repoint the four archived targets, labelling each as archived:
+- [x] **B14 / D5**: repoint the four archived targets, labelling each as archived:
       - `WeakCanonical/EFGames/README.md:39` -> `../../../Boneyard/Kamp/KampWeakCanonical/ExpressiveCompleteness/README.md`
       - `WeakCanonical/Expressiveness/README.md:34` -> `../../../Boneyard/Kamp/KampWeakCanonical/ExpressiveCompleteness/README.md`
       - `WeakCanonical/Separation/README.md:42` -> `../../../Boneyard/Kamp/KampWeakCanonical/Separation/DedekindZ/README.md`
       - `WeakCanonical/Separation/README.md:43` -> `../../../Boneyard/Kamp/KampWeakCanonical/Separation/Hierarchy/README.md`
-- [ ] **B14 (fifth)**: `Theorems/Perpetuity/README.md:46` links `Bridge.lean`, which does not
+- [x] **B14 (fifth)**: `Theorems/Perpetuity/README.md:46` links `Bridge.lean`, which does not
       exist — the directory holds `Helpers.lean`, `MonotonicityDuality.lean`, `Principles.lean`.
       Repoint to `MonotonicityDuality.lean`.
-- [ ] The fifth needs more than a path swap. `Perpetuity/README.md:45` ("P1-P5: `perpetuity_1`
+- [x] The fifth needs more than a path swap. `Perpetuity/README.md:45` ("P1-P5: `perpetuity_1`
       through `perpetuity_5` in `Principles.lean`") is **also wrong**: the underscore appears only
       on P1 and P2, there is no `perpetuity_5`, and P6 lives in a different file. Enumerate the
       six exact names instead of writing a range — `perpetuity_1` (`Principles.lean:77`),
       `perpetuity_2` (`:308`), `perpetuity3` (`:443`), `perpetuity4` (`:512`), `perpetuity5`
       (`:811`), `perpetuity6` (`MonotonicityDuality.lean:560`).
-- [ ] Add `MonotonicityDuality.lean` to `Perpetuity/README.md`'s inventory — Check 2 flags its
-      absence.
-- [ ] Re-run `bash scripts/readme-lint.sh` and confirm the broken-reference count is **exactly 0**.
+- [x] Add `MonotonicityDuality.lean` to `Perpetuity/README.md`'s inventory — Check 2 flags its
+      absence. *(deviation: altered — also replaced the file's snake_case Helper and Bridge lemma
+      lists, none of which name a live declaration; the real names are camelCase. Unlisted defect
+      in the same file, same defect class.)*
+- [x] Re-run `bash scripts/readme-lint.sh` and confirm the broken-reference count is **exactly 0**.
 
 **Timing**: 1 hour
 

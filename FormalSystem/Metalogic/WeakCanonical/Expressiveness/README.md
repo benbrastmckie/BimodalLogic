@@ -31,7 +31,7 @@ between Base, Dense, and Discrete TM.
 
 - [WeakCanonical README](../README.md)
 - [EFGames README](../EFGames/README.md)
-- [ExpressiveCompleteness README](../ExpressiveCompleteness/README.md)
+- [ExpressiveCompleteness README](../../../Boneyard/Kamp/KampWeakCanonical/ExpressiveCompleteness/README.md) (archived)
 
 ---
 

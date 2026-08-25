@@ -7,9 +7,9 @@ modal necessity (□) and temporal operators (always △, sometimes ▽).
 
 | File | Description |
 |------|-------------|
-| `Principles.lean` | P1-P5 perpetuity principle proofs |
-| `Helpers.lean` | Helper lemmas for perpetuity proofs |
-| `Bridge.lean` | Bridge lemmas and P6 proof |
+| `Principles.lean` | P1-P5 perpetuity principle proofs (814 lines) |
+| `Helpers.lean` | Helper lemmas for perpetuity proofs (171 lines) |
+| `MonotonicityDuality.lean` | Monotonicity and duality lemmas, and the P6 proof (658 lines) |
 
 ## Key Results
 
@@ -23,7 +23,7 @@ modal necessity (□) and temporal operators (always △, sometimes ▽).
 | P4 | `◇▽φ → ◇φ` (possibility of occurrence) |
 | P5 | `◇▽φ → △◇φ` (persistent possibility) |
 
-### P6 (`Bridge.lean`)
+### P6 (`MonotonicityDuality.lean`)
 
 | Principle | Statement |
 |-----------|-----------|
@@ -31,20 +31,32 @@ modal necessity (□) and temporal operators (always △, sometimes ▽).
 
 ### Helper Lemmas (`Helpers.lean`)
 
-- Temporal components: `box_to_future`, `box_to_past`, `box_to_present`
-- Propositional reasoning: Re-exports from `Combinators.lean`
+- Temporal components: `boxToFuture`, `boxToPast`, `boxToPresent`
+- Context plumbing: `axiomInContext`, `applyAxiomTo`, `applyAxiomInContext`
 
-### Bridge Lemmas (`Bridge.lean`)
+### Monotonicity and Duality Lemmas (`MonotonicityDuality.lean`)
 
-- Modal/temporal duality: `modal_duality_neg`, `temporal_duality_neg`
-- Monotonicity: `box_mono`, `diamond_mono`, `future_mono`, `past_mono`, `always_mono`
-- Double negation: `dne`, `box_dne`, `double_contrapose`
+- Modal/temporal duality: `modalDualityNeg`, `modalDualityNegRev`, `temporalDualityNeg`,
+  `temporalDualityNegRev`
+- Monotonicity: `boxMono`, `diamondMono`, `futureMono`, `pastMono`, `alwaysMono`
+- Double negation: `alwaysDni`, `alwaysDne`, `doubleContrapose`
+- Bridges into P6: `bridge1`, `bridge2`
 
 ## Quick Reference
 
-- **P1-P5**: `perpetuity_1` through `perpetuity_5` in [Principles.lean](Principles.lean)
-- **P6**: `perpetuity_6` in [Bridge.lean](Bridge.lean)
-- **Temporal Components**: `box_to_future`, `box_to_past` in [Helpers.lean](Helpers.lean)
+The six principles do **not** share a single naming pattern — the underscore appears only on P1
+and P2, and P6 lives in a different file. The exact names are:
+
+| Principle | Declaration | Site |
+|-----------|-------------|------|
+| P1 | `perpetuity_1` | [Principles.lean](Principles.lean):77 |
+| P2 | `perpetuity_2` | [Principles.lean](Principles.lean):308 |
+| P3 | `perpetuity3` | [Principles.lean](Principles.lean):443 |
+| P4 | `perpetuity4` | [Principles.lean](Principles.lean):512 |
+| P5 | `perpetuity5` | [Principles.lean](Principles.lean):811 |
+| P6 | `perpetuity6` | [MonotonicityDuality.lean](MonotonicityDuality.lean):560 |
+
+- **Temporal Components**: `boxToFuture`, `boxToPast` in [Helpers.lean](Helpers.lean)
 
 ## Building
 
