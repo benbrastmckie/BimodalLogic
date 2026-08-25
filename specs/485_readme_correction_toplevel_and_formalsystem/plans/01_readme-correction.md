@@ -485,33 +485,33 @@ not these.
 
 ---
 
-### Phase 4: `FormalSystem/ProofSystem/README.md` [NOT STARTED]
+### Phase 4: `FormalSystem/ProofSystem/README.md` [COMPLETED]
 
 **Goal**: Fix the Dense/Discrete split (this is the wrong side of the B4 contradiction), sweep 42
 to 45, add the fourth variant, and remove the phantom module and four stale line counts.
 
 **Tasks**:
-- [ ] **B4**: `:37` reads "37 Base constructors, **2 Discrete-only, 3 Dense-only**". This is the
+- [x] **B4**: `:37` reads "37 Base constructors, **2 Discrete-only, 3 Dense-only**". This is the
       **wrong** side of the contradiction: `Axioms.lean:589-594` gives 2 Dense (`density`,
       `dense_indicator`) and 3 Discrete (`prior_UZ`, `prior_SZ`, `z1`). Correct it here;
       `FormalSystem/README.md:97` is already right and is not touched.
-- [ ] **B5**: sweep 42 -> **45** at `:12`, `:22`, `:40`, and "8 layers" -> **nine** at `:22`.
+- [x] **B5**: sweep 42 -> **45** at `:12`, `:22`, `:40`, and "8 layers" -> **nine** at `:22`.
       Rebuild the layer table (`:26-35`, currently summing to 42) to nine layers summing to 45,
       splitting BX Temporal 18 + 4 and adding the Dedekind row.
-- [ ] **B6**: `:5-6` says "all three TM logic variants (Base, Dense, Discrete)". There are four.
+- [x] **B6**: `:5-6` says "all three TM logic variants (Base, Dense, Discrete)". There are four.
       Add Dedekind; `completeness_dedekind` currently appears nowhere in this file.
-- [ ] **B10**: delete the `Substitution.lean` row at `:15` — the file does not exist
+- [x] **B10**: delete the `Substitution.lean` row at `:15` — the file does not exist
       (`ProofSystem/` holds exactly `Axioms.lean`, `Derivable.lean`, `Derivation.lean`,
       `LinearityDerivedFacts.lean`). Delete the `Formula.subst` entry at `:64` — zero occurrences
       of `Formula.subst` or `def subst` anywhere in `Syntax/` or `ProofSystem/`.
-- [ ] **B10 (cont.)**: correct all four stale line counts, not just `Axioms.lean` as the task
+- [x] **B10 (cont.)**: correct all four stale line counts, not just `Axioms.lean` as the task
       description states: `Axioms.lean` 468 -> **625** (`:12`), `Derivation.lean` 385 -> **386**
       (`:13`), `Derivable.lean` 221 -> **228** (`:14`), `LinearityDerivedFacts.lean` 82 -> **88**
       (`:16`).
-- [ ] Leave "Inference Rules (7 total)" alone — `inductive DerivationTree` has exactly 7
+- [x] Leave "Inference Rules (7 total)" alone — `inductive DerivationTree` has exactly 7
       constructors (`axiom`, `assumption`, `modus_ponens`, `necessitation`,
       `temporal_necessitation`, `temporal_duality`, `weakening`). Verified correct.
-- [ ] **Unlisted 6**: `:39-41` cross-references "The root README references '21 axiom schemata'".
+- [x] **Unlisted 6**: `:39-41` cross-references "The root README references '21 axiom schemata'".
       The top-level `README.md` no longer contains that string. Repoint or drop the
       cross-reference; do not leave it dangling.
 
