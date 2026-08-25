@@ -1,7 +1,7 @@
 # Implementation Plan: Task #477
 
 - **Task**: 477 - T-A: Target-structure plumbing for the groupable-companion route
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 2.5 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/477_ta_qz_target_structure_plumbing/reports/01_qz-target-structure-plumbing.md`
@@ -227,7 +227,7 @@ re-deriving content the siblings already hold — check which before proceeding.
 
 ---
 
-### Phase 3: Acceptance gate [IN PROGRESS]
+### Phase 3: Acceptance gate [COMPLETED]
 
 **Goal**: Every acceptance criterion in the task brief is machine-checked and the results recorded,
 with the sorry and axiom baselines demonstrably unchanged.
