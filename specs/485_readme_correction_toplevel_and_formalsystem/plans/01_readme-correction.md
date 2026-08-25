@@ -409,13 +409,13 @@ per-class counts (37/39/40/42), a 19-module/8-subdirectory `WeakCanonical/`, and
 
 ---
 
-### Phase 3: `FormalSystem/README.md` [NOT STARTED]
+### Phase 3: `FormalSystem/README.md` [COMPLETED]
 
 **Goal**: Remove the "decidability fully proven" over-claim, add the fourth variant, sweep 42 to
 45 across six sites, rebuild the root-file table, and fix the two unlisted copy-paste defects.
 
 **Tasks**:
-- [ ] **B1**: rewrite `:285` ("| 2 | Metalogic | **Complete** (Soundness, Completeness, Deduction,
+- [x] **B1**: rewrite `:285` ("| 2 | Metalogic | **Complete** (Soundness, Completeness, Deduction,
       Decidability) |") and `:289-290` ("... decidability are all fully proven"). Read
       `FormalSystem/Metalogic/Decidability/Correctness.lean:183-224` ("Retired as vacuous")
       **before** rewriting: two declarations, `validity_decidable` and
@@ -425,15 +425,15 @@ per-class counts (37/39/40/42), a 19-module/8-subdirectory `WeakCanonical/`, and
       direction exists. Also correct "(Dense and Discrete variants)" — all four classes have weak
       completeness. Row `:284` (`| 1 | FrameConditions | Complete (Base, Dense, Discrete
       soundness) |`) carries the same three-of-four omission.
-- [ ] **B4 — DO NOT TOUCH `:97`.** "3 Discrete-only, 2 Dense-only" is **already correct** per
+- [x] **B4 — DO NOT TOUCH `:97`.** "3 Discrete-only, 2 Dense-only" is **already correct** per
       `Axioms.lean:589-594`. The contradictory site is `ProofSystem/README.md:37`, owned by
       Phase 4. `:97` still needs the 3 Dedekind axioms added, which is why its total reads 42 —
       that part is B5 below.
-- [ ] **B5**: sweep 42 -> **45** at `:79`, `:92`, `:94`, `:200`, `:252`, `:282`, and "8 layers"
+- [x] **B5**: sweep 42 -> **45** at `:79`, `:92`, `:94`, `:200`, `:252`, `:282`, and "8 layers"
       -> **nine** at `:79`. Rebuild the layer table (`:81-90`, currently summing 4+5+22+1+5+2+1+2
       = 42) to nine layers summing to 45, splitting BX Temporal into 18 + 4 and adding the
       Dedekind row.
-- [ ] **B6**: `:138` says "TM logic has three variants based on frame conditions" with sections
+- [x] **B6**: `:138` says "TM logic has three variants based on frame conditions" with sections
       for Base/Dense/Discrete at `:140-165` and no Dedekind section. Add
       `### TM Dedekind (Base + 2 Dense + 3 Dedekind constructors)` modelled on the existing
       three, citing `soundness_dedekind` (`Metalogic/Soundness.lean`) and `completeness_dedekind`
@@ -441,22 +441,22 @@ per-class counts (37/39/40/42), a 19-module/8-subdirectory `WeakCanonical/`, and
       Extend `:167-169` ("Variant Incompatibility"), which is correct but incomplete —
       `Axioms.lean:481-483` adds that Discrete and Dedekind are likewise incomparable and
       `Dedekind </= Dense`.
-- [ ] **B13**: rebuild the root-file table at `:183-193`. All nine line counts are wrong and the
+- [x] **B13**: rebuild the root-file table at `:183-193`. All nine line counts are wrong and the
       first row names `Bimodal.lean`, which does not exist. The Lake roots are the pair
       `FormalSystem.lean` (repo root) and `FormalSystem/FormalSystem.lean`, described precisely at
       `scripts/check-module-invariants.sh:402-407` (C8's own comment) — reuse the wording the
       anchor task already transcribed into `Metalogic/README.md`. Add the missing
       `BaseLanguage.lean` row. Regenerate every count with `wc -l`.
-- [ ] **D1**: add `BaseLanguage/` to the Submodule Navigation table (`:233-243`) as a plain
+- [x] **D1**: add `BaseLanguage/` to the Submodule Navigation table (`:233-243`) as a plain
       **unlinked** row with the README column reading "No". Add `Boneyard/` as a normal linked row
       labelled as the archive.
-- [ ] **Unlisted 1**: `:266-267` ships `lake build Bimodal`. `lakefile.lean` declares exactly two
+- [x] **Unlisted 1**: `:266-267` ships `lake build Bimodal`. `lakefile.lean` declares exactly two
       libs, `FormalSystem` and `BimodalTest`; there is no `Bimodal` target. Correct to
       `lake build FormalSystem`.
-- [ ] **Unlisted 2**: `:307` reads `**Parent**: [Project Root](../../)`. From `FormalSystem/`
+- [x] **Unlisted 2**: `:307` reads `**Parent**: [Project Root](../../)`. From `FormalSystem/`
       that resolves above the repository root; it should be `../`. Check 3 misses it because the
       path exists on disk.
-- [ ] **Unlisted 5**: `:152` gives BX Temporal as a single layer of 22; write 18 + 4.
+- [x] **Unlisted 5**: `:152` gives BX Temporal as a single layer of 22; write 18 + 4. *(deviation: altered — the stale `22` lived in the layer table's BX Temporal row, not at `:152`; rebuilt as 18 + a 3b row of 4. Also fixed an unlisted defect in the same table and at the Dense variant section: `density` was printed as `Gφ → GGφ`, but `Axioms.lean` states it as `GGφ → Gφ`.)*
 
 **Timing**: 2 hours
 

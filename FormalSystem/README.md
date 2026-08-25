@@ -76,25 +76,28 @@ See BimodalReference Section 1 for complete syntax details.
 
 ### Axiom System
 
-The axiom system uses the `Axiom` inductive type with **42 constructors** organized into 8 layers:
+The axiom system uses the `Axiom` inductive type with **45 constructors** organized into nine layers:
 
 | Layer | Constructors | Frame Class | Description |
-|-------|-------------|-------------|-------------|
-| Propositional | 4 | Base | K, S, EFQ, Peirce |
-| S5 Modal | 5 | Base | T, 4, B, 5-collapse, K-distribution |
-| BX Temporal | 22 | Base | Burgess-Xu Until/Since axioms (paired G/H forms) |
-| Interaction | 1 | Base | MF (`□φ → □Gφ`); TF is now derived |
-| Uniformity | 5 | Base | Discrete uniformity (valid on all ordered abelian groups) |
-| Prior | 2 | Discrete | Prior-UZ/SZ for discrete well-ordering |
-| Z1 | 1 | Discrete | IsSuccArchimedean characteristic axiom |
-| Density | 2 | Dense | `Gφ → GGφ` and `¬U(⊤,⊥)` |
+|-------|------------:|-------------|-------------|
+| 1. Propositional | 4 | Base | K, S, EFQ, Peirce |
+| 2. S5 Modal | 5 | Base | T, 4, B, 5-collapse, K-distribution |
+| 3. BX Temporal | 18 | Base | Burgess-Xu Until/Since axioms (paired G/H forms) |
+| 3b. Additional BX Temporal | 4 | Base | `temp_linearity`, `temp_linearity_past`, `F_until_equiv`, `P_since_equiv` |
+| 4. Interaction | 1 | Base | MF (`□φ → □Gφ`); TF is now derived |
+| 5. Uniformity | 5 | Base | Discrete uniformity (valid on all ordered abelian groups) |
+| 6. Prior | 2 | Discrete | Prior-UZ/SZ for discrete well-ordering |
+| 7. Z1 | 1 | Discrete | IsSuccArchimedean characteristic axiom |
+| 8. Density | 2 | Dense | `density` (`GGφ → Gφ`) and `dense_indicator` (`¬U(⊤,⊥)`) |
+| 9. Reynolds Dedekind | 3 | Dedekind | `prior_U_gap`, `prior_S_gap`, `sep` — definable-gap-freeness for real flow |
+| **Total** | **45** | | |
 
-**Schema vs. constructor count**: The 42 constructors implement a smaller set of logical schemas.
-The "21 axiom schemata" figure counts distinct logical schemas (e.g., G-monotonicity and H-monotonicity
-count as one schema with two constructors). The `Axiom` inductive type uses 42 constructors to
-represent all paired temporal forms explicitly.
+**Schema vs. constructor count**: The 45 constructors implement a smaller set of logical schemas —
+G-monotonicity and H-monotonicity, for instance, count as one schema with two constructors. The
+`Axiom` inductive type represents all paired temporal forms explicitly.
 
-**Frame classification**: 37 Base constructors (valid on all linear orders), 3 Discrete-only, 2 Dense-only.
+**Frame classification**: 37 Base constructors (valid on all linear orders), 3 Discrete-only, 2 Dense-only,
+3 Dedekind-only. Cumulatively (`Dense ≤ Dedekind`): Base 37, Dense 39, Discrete 40, Dedekind 42.
 
 See [ProofSystem/Axioms.lean](ProofSystem/Axioms.lean) for the complete definition.
 
@@ -135,7 +138,7 @@ See BimodalReference Section 2 for formal semantic definitions.
 
 ## Logic Variants
 
-TM logic has three variants based on frame conditions:
+TM logic has four variants based on frame conditions:
 
 ### TM Base (37 constructor axioms)
 
@@ -148,7 +151,7 @@ The core logic valid on all linear orders. See `FrameClass.Base` in [ProofSystem
 
 Extension requiring densely ordered temporal domains. See `FrameClass.Dense`.
 
-- **Additional Axioms**: `density` (`Gφ → GGφ`) and `dense_indicator` (`¬U(⊤,⊥)`)
+- **Additional Axioms**: `density` (`GGφ → Gφ`) and `dense_indicator` (`¬U(⊤,⊥)`)
 - **Completeness**: `completeness_dense` in [BXCanonical/Completeness.lean](Metalogic/BXCanonical/Completeness.lean)
 - **Frame**: `DenselyOrdered D` - between any two times exists another
 
@@ -157,12 +160,35 @@ Extension requiring densely ordered temporal domains. See `FrameClass.Dense`.
 Extension requiring discretely ordered temporal domains. See `FrameClass.Discrete`.
 
 - **Additional Axioms**: `prior_UZ`, `prior_SZ` (Prior's axioms), `z1` (IsSuccArchimedean)
-- **Completeness**: `completeness_discrete` in [BXCanonical/Completeness.lean](Metalogic/BXCanonical/Completeness.lean)
+- **Completeness**: `completeness_discrete` in [StrongCompleteness.lean](Metalogic/StrongCompleteness.lean)
 - **Frame**: `SuccOrder D`, `PredOrder D`, `NoMaxOrder D`, `NoMinOrder D`
+
+### TM Dedekind (Base + 2 Dense + 3 Dedekind constructors)
+
+Extension for dense Dedekind-complete temporal domains — the real flow. See `FrameClass.Dedekind`.
+Because `Dense ≤ Dedekind`, a Dedekind derivation admits the two density axioms as well.
+
+- **Additional Axioms**: Reynolds' `prior_U_gap`, `prior_S_gap`, `sep` (definable-gap-freeness),
+  on top of `density` and `dense_indicator`
+- **Soundness**: `soundness_dedekind` in [Soundness.lean](Metalogic/Soundness.lean)
+- **Completeness**: `completeness_dedekind` in [StrongCompleteness.lean](Metalogic/StrongCompleteness.lean)
+- **Binder caveat**: both results are stated against `ValidDedekindDense`, *not* the density-free
+  `ValidDedekind`. `density` and `dense_indicator` are admissible at `.Dedekind` and both are false
+  on ℤ, which is nonetheless conditionally complete.
+- **Frame**: `DenselyOrdered D` plus Dedekind completeness
+
+**The paper's TM⁺_c has no frame class here.** `FrameClass.Dedekind` is the paper's TM⁺_dc (dense
+complete / real flow). TM⁺_c is completeness *simpliciter* — no density binder — so its models are
+exactly `{ℤ, ℝ}` up to order-and-group isomorphism and its theory is `Th(ℤ) ∩ Th(ℝ)`. No element of
+`FrameClass` picks that class out; the two branches are handled separately and exhaustively by
+`FrameClass.Discrete` and `FrameClass.Dedekind`, but their intersection is not itself a frame class,
+and adding one would require an axiom set this tree does not have. That is a real gap, not an omission.
 
 ### Variant Incompatibility
 
-Dense and discrete extensions are **incompatible** on any non-degenerate domain.
+Dense and discrete extensions are **incompatible** on any non-degenerate domain. Discrete and
+Dedekind are likewise incomparable, and `Dedekind ≰ Dense` — the order on `FrameClass` places
+`Dedekind` strictly above `Dense` and unrelated to `Discrete`.
 
 ## Key Results Proven
 
@@ -180,24 +206,32 @@ The Bimodal library follows a layered architecture:
 
 ### Root Entry Point
 
+The Lake library root is a **pair** of files, not one: `lean_lib FormalSystem` sets
+`srcDir := "."` and ``roots := #[`FormalSystem]``, so module `FormalSystem` resolves to the
+**repository-root** `FormalSystem.lean`, which in turn imports module `FormalSystem.FormalSystem`
+— the file `FormalSystem/FormalSystem.lean`. That self-named indirection is load-bearing, and the
+invariant check allowlists it by name (check C8).
+
 | File | Lines | Description |
-|------|-------|-------------|
-| `Bimodal.lean` | 86 | Top-level re-export: imports all submodules for unified access |
-| `Automation.lean` | 92 | Re-export for Automation submodule |
-| `Examples.lean` | 27 | Re-export for Examples submodule |
-| `FrameConditions.lean` | 52 | Re-export for FrameConditions submodule |
-| `Metalogic.lean` | 55 | Re-export for Metalogic submodule |
-| `ProofSystem.lean` | 73 | Re-export for ProofSystem submodule |
-| `Semantics.lean` | 86 | Re-export for Semantics submodule |
-| `Syntax.lean` | 68 | Re-export for Syntax submodule |
-| `Theorems.lean` | 74 | Re-export for Theorems submodule |
+|------|------:|-------------|
+| `../FormalSystem.lean` | 50 | Repository-root Lake root module for `lean_lib FormalSystem` |
+| `FormalSystem.lean` | 107 | Library aggregator: imports all submodules for unified access |
+| `Automation.lean` | 102 | Re-export for Automation submodule |
+| `BaseLanguage.lean` | 34 | Re-export for BaseLanguage submodule |
+| `Examples.lean` | 33 | Re-export for Examples submodule |
+| `FrameConditions.lean` | 68 | Re-export for FrameConditions submodule |
+| `Metalogic.lean` | 199 | Re-export for Metalogic submodule |
+| `ProofSystem.lean` | 88 | Re-export for ProofSystem submodule |
+| `Semantics.lean` | 137 | Re-export for Semantics submodule |
+| `Syntax.lean` | 75 | Re-export for Syntax submodule |
+| `Theorems.lean` | 88 | Re-export for Theorems submodule |
 
 ### Layer 0 — Foundation
 
 | Module | File | Description |
 |--------|------|-------------|
 | Syntax | `Syntax.lean` | Formula type, atoms, contexts, subformula closure |
-| ProofSystem | `ProofSystem.lean` | 42 axiom constructors, 7 inference rules, derivation trees |
+| ProofSystem | `ProofSystem.lean` | 45 axiom constructors, 7 inference rules, derivation trees |
 
 ### Layer 1 — Semantics
 
@@ -242,6 +276,8 @@ The Bimodal library follows a layered architecture:
 | [Theorems/](Theorems/README.md) | Yes | Derived theorems |
 | [Automation/](Automation/README.md) | Yes | Proof tactics and ML pipeline |
 | [Examples/](Examples/README.md) | Yes | Pedagogical examples |
+| `BaseLanguage/` | No | Shared base-language definitions (no README yet) |
+| [Boneyard/](Boneyard/README.md) | Yes | ARCHIVE — 156 archived `.lean` files, excluded from the live build |
 
 ## Quick Reference
 
@@ -249,7 +285,7 @@ The Bimodal library follows a layered architecture:
 
 - **Formulas**: `Syntax/Formula.lean` - Inductive formula type
 - **Contexts**: `Syntax/Context.lean` - Proof context lists
-- **Axioms**: `ProofSystem/Axioms.lean` - TM axiom constructors (42)
+- **Axioms**: `ProofSystem/Axioms.lean` - TM axiom constructors (45)
 - **Derivation Trees**: `ProofSystem/Derivation.lean` - DerivationTree type
 - **Task Frames**: `Semantics/TaskFrame.lean` - Task frame structure
 - **Models**: `Semantics/TaskModel.lean` - Models with valuation
@@ -263,8 +299,8 @@ The Bimodal library follows a layered architecture:
 ## Building and Type-Checking
 
 ```bash
-# Build Bimodal library
-lake build Bimodal
+# Build the FormalSystem library
+lake build FormalSystem
 
 # Build entire project
 lake build
@@ -279,15 +315,25 @@ lake env lean FormalSystem/ProofSystem/Axioms.lean
 | Layer | Component | Status |
 |-------|-----------|--------|
 | 0 | Syntax | Complete |
-| 0 | ProofSystem | Complete (42 axiom constructors, 7 rules) |
+| 0 | ProofSystem | Complete (45 axiom constructors, 7 rules) |
 | 1 | Semantics | Complete (TaskFrame, TaskModel, Truth) |
-| 1 | FrameConditions | Complete (Base, Dense, Discrete soundness) |
-| 2 | Metalogic | **Complete** (Soundness, Completeness, Deduction, Decidability) |
+| 1 | FrameConditions | Complete (Base, Dense, Discrete, Dedekind soundness) |
+| 2 | Metalogic | Soundness, weak and finite-context completeness, and the deduction theorem for all four frame classes; decidability **sound direction only** |
 | 3 | Theorems | Complete (P1-P6 perpetuity principles, S4/S5 modal) |
 | 4 | Automation | Complete (tactics); ML pipeline active |
 
-**Key Results**: Soundness theorem, completeness theorem (Dense and Discrete variants),
-deduction theorem, and decidability are all fully proven.
+**Key Results**: soundness, weak completeness, finite-context consequence completeness, and the
+deduction theorem are proven for **all four** frame classes (Base, Dense, Discrete, Dedekind),
+each `SORRY-FREE (sorryAx-free; axioms: exactly propext, Classical.choice, Quot.sound)`.
+
+**Decidability is not "fully proven" and must not be described that way.** Only the *sound*
+direction of the `isValid`-shaped statement is landed — `sound_of_isValid` and `isValid_sound`
+(`Metalogic/Decidability/Correctness.lean`). The *completeness* direction
+`⊨ φ → isValid φ fc = true`, and hence `valid_iff_allClosed`, the biconditional, and the four
+`Decidable (⊨ φ)` instances, are **open**. Two declarations, `validity_decidable` and
+`validity_has_decision_procedure`, previously papered over exactly this gap and are recorded in
+`Correctness.lean` as *retired as vacuous* because their names claimed a decidability result their
+proofs did not contain; restating the claim in prose would reproduce that defect.
 
 ## Theory-Specific Documentation
 
@@ -302,7 +348,7 @@ For Bimodal-specific guides and references, see [docs/](../docs/README.md):
 
 ## Navigation
 
-- **Parent**: [Project Root](../../) | [Tests](../Tests/)
+- **Parent**: [Project Root](../) | [Tests](../Tests/)
 - **Docs**: [docs/](../docs/README.md)
 - **Boneyard**: [Boneyard/](Boneyard/README.md) (archived code)
 
