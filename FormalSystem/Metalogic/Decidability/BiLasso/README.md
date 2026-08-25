@@ -26,8 +26,10 @@ for engineering:
 
 Given `fmp`, the rest assembles: `(∀ P ∈ cands φ, ∀ w, check P w φ.neg = false) ↔ ValidDiscrete φ`,
 with `Decidable (ValidDiscrete φ)` read off by `decidable_of_iff`. Both that assembly and the
-converse (soundness) direction have been compiled sorry-free, and are retained under
-`specs/469_eliminate_the_bridge_filtration_into_intpresentation/evidence/`. Three things this
+converse (soundness) direction are live and sorry-free in `Assembly.lean`, as
+`validDiscrete_iff_checkFamily` and `decidableValidDiscreteFamily` (the candidate-list form),
+`validDiscrete_iff_check` and `decidableValidDiscrete` (the single-presentation form), and
+`not_validDiscrete_of_satAtState` (soundness, which needs no hypothesis). Three things this
 establishes, each measured rather than assumed:
 
 - `check_correct` is the **final** step of the argument, not the far side of a transfer. The
@@ -72,6 +74,7 @@ Computability and choice-freedom are different properties, and only the first is
 | `Extraction.lean` | 564 | `bound`, and `exists_annot_of_truth` — the small-model theorem in its windowed shape, delivering a position inside the coherence window |
 | `BoxOracle.lean` | 269 | `boxOracle`, a concrete `Formula → Bool` by strong recursion on `modalDepth`, and `boxOracle_sound` — what breaks the annotation ↔ oracle circularity |
 | `Check.lean` | 249 | `SatAtState`, `checkAt`, `check`, `check_correct`, the `Decidable` instance, and the discrimination theorems |
+| `Assembly.lean` | 113 | The route from `check` to `Decidable (ValidDiscrete φ)` **given** `fmp` as a hypothesis: `not_validDiscrete_of_satAtState`, `validDiscrete_iff_check`/`decidableValidDiscrete`, `validDiscrete_iff_checkFamily`/`decidableValidDiscreteFamily`. Proves no part of `fmp` |
 | `Extend.lean` | 120 | `PlacedBiLasso` — a bi-lasso plus an `origin : ℤ`, so a window at arbitrary absolute times is representable — with shift-invariance of step paths |
 | `Successor.lean` | 157 | Choice-free, `#eval`-able `succOf` / `predOf` on a presentation, via `List.find?` over `List.finRange`, and their orbits |
 | `Orbit.lean` | 916 | A choice-free pigeonhole on `Fin`, the forward and backward rho decompositions, the window assembly, and `IntPresentation.extend_periodic` |
