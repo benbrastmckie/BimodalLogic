@@ -398,17 +398,90 @@ Reynolds' §9 Theorem 7 is discharged with no `sorryAx` and no new axiom: exactl
 #print axioms consequence_completeness_dedekind
 #print axioms completeness_dedekind
 
-/-! ## Consequence and strong completeness for `FrameClass.Base`
+/-! ## Consequence completeness for `FrameClass.Base`
 
-Reserved. Two layers are expected here, and both are intentionally absent rather than stubbed:
+The finite-context consequence layer for the base class, in the same four-layer shape as the
+Dedekind section above: a semantic deduction theorem, the consequence terminus, the matching
+soundness guard, and weak completeness as the `Γ = []` corollary.
 
-1. The finite-context consequence instance, with the same three-declaration shape as the
-   Dedekind section above (`SemanticConsequenceBase`, its semantic deduction lemma, and a
-   `_of_engine` form), reusing `truthAt_foldr_imp` and `derivable_foldr_imp_iff` unchanged;
-   only the binder list of the consequence relation differs.
-2. Genuine strong completeness over `Set Formula` premise sets, pending the compactness /
-   model-existence research described in the module docstring. The Base binder list imposes no
-   Archimedean-ness, so no known non-compactness obstruction applies. -/
+**Base reuses `SemanticConsequence`; there is no `SemanticConsequenceBase` synonym.**
+`SemanticConsequence` (`Semantics/Validity.lean`) is `valid`'s binder list verbatim with the
+context hypothesis `∀ ψ ∈ Γ, TruthAt M τ t ψ` inserted before the conclusion — precisely the
+surgery the other three classes perform on their own validity predicates. It quantifies over
+*all* carriers `D` with no order-theoretic side conditions, and for `FrameClass.Base` "all
+carriers" **is** the class, so the general relation expresses base-class consequence exactly.
+The `SemanticConsequenceDedekindDense` docstring's warning against the general relation is
+correct for Dedekind, Dense and Discrete — each of which restricts the carrier — and
+inapplicable here. Introducing a `SemanticConsequenceBase` synonym would be a gratuitous defeq
+duplicate of a definition that already owns the `Γ ⊨ φ` notation.
+
+Genuine strong completeness over `Set Formula` premise sets remains open for this class; the
+vocabulary for it is `StrongCompletenessBase` / `CompactBase` in
+`FormalSystem/Metalogic/SetConsequence.lean`, and the one theorem about it is
+`strongCompletenessBase_of_compact` above. Nothing in this section is strong completeness:
+`Context` is `List Formula`. -/
+
+/--
+**Semantic deduction theorem for the base class.** Consequence from a finite context is
+validity of the corresponding iterated implication.
+
+Both directions are `truthAt_foldr_imp` transported across the shared binder list of `valid`
+and `SemanticConsequence`; no frame-condition reasoning is involved. This is the lemma that
+lets `BXCanonical.completeness` be consumed as a single-formula engine.
+-/
+theorem semantic_deduction_base (Γ : Context) (φ : Formula) :
+    SemanticConsequence Γ φ ↔ valid (Γ.foldr Formula.imp φ) := by
+  constructor
+  · intro h D _ _ _ _ F M τ hτ t
+    exact (truthAt_foldr_imp M τ t Γ φ).mpr (h D F M τ hτ t)
+  · intro h D _ _ _ _ F M τ hτ t
+    exact (truthAt_foldr_imp M τ t Γ φ).mp (h D F M τ hτ t)
+
+/--
+**Finite-context consequence completeness for `FrameClass.Base`, unconditional.**
+
+`BXCanonical.completeness` (`BXCanonical/Completeness.lean:196`) already exists as the
+single-formula engine for `valid`, so there is no `_of_engine` layer here: the engine is
+consumed directly.
+
+**This is not strong completeness.** `Context := List Formula`, so every `Γ` here is finite and
+this statement is inter-derivable with weak completeness through the deduction theorem. The
+infinitary statement over `Γ : Set Formula` is `StrongCompletenessBase`
+(`SetConsequence.lean`), which is **open** for this class — neither proved nor refuted — and is
+not reached by anything in this file.
+-/
+theorem consequence_completeness_base (Γ : Context) (φ : Formula)
+    (h : SemanticConsequence Γ φ) : Derivable FrameClass.Base Γ φ :=
+  (derivable_foldr_imp_iff Γ φ).mpr
+    (BXCanonical.completeness _ ((semantic_deduction_base Γ φ).mp h))
+
+/--
+**Soundness, restated against `SemanticConsequence`.**
+
+This is `soundness` (`Metalogic/Soundness.lean:1080`) with its hypothesis-and-conclusion block
+folded into the definition. It is the guard that keeps the completeness target honest: it holds
+*only* because `SemanticConsequence` reproduces `valid`'s binder list verbatim. If a later edit
+weakens the consequence relation, this theorem breaks and the build fails before a mis-stated
+completeness terminus can be proved against it. In particular it establishes that
+`consequence_completeness_base` is not vacuous: its hypothesis is inhabited for every derivable
+pair `(Γ, φ)`.
+-/
+theorem soundness_base_consequence (Γ : Context) (φ : Formula)
+    (h : Derivable FrameClass.Base Γ φ) : SemanticConsequence Γ φ := by
+  intro D _ _ _ _ F M τ hτ t h_ctx
+  exact h.elim fun d => soundness Γ φ d D F M τ hτ t h_ctx
+
+/--
+**Weak completeness for `FrameClass.Base`, as the `Γ = []` instance of the consequence form.**
+
+Definitionally `BXCanonical.completeness` routed through the deduction theorem in both
+directions; recorded here so that the base class carries the same four-layer shape as the other
+three, and so that the weak form is visibly a corollary rather than a parallel construction.
+The vacuous `∀ ψ ∈ [], _` premise binder is discharged by `simpa`.
+-/
+theorem completeness_base (φ : Formula) (h : valid φ) : Derivable FrameClass.Base [] φ :=
+  consequence_completeness_base [] φ
+    ((semantic_deduction_base [] φ).mpr (by simpa using h))
 
 /-! ## Consequence and strong completeness for `FrameClass.Dense`
 

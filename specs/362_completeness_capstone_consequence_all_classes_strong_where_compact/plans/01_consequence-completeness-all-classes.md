@@ -1,7 +1,7 @@
 # Implementation Plan: Completeness Capstone — Consequence Completeness for All Classes
 
 - **Task**: 362 - completeness capstone: consequence completeness for all classes, strong where compact
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 4.75 hours
 - **Dependencies**: None live. See "Dependency Status" below — the declared edges (361, 375, 170, 424) are either archived, landed, or non-existent as tasks; no unlanded dependency is assumed anywhere in this plan.
 - **Research Inputs**: `specs/362_completeness_capstone_consequence_all_classes_strong_where_compact/reports/01_completeness-capstone-reachability.md`
@@ -158,37 +158,37 @@ they can be asserted.
 
 ---
 
-### Phase 1: Base consequence block [NOT STARTED]
+### Phase 1: Base consequence block [COMPLETED]
 
 **Goal**: Land unconditional finite-context consequence completeness for `FrameClass.Base`,
 reusing the existing `SemanticConsequence` relation, and replace the section's "Reserved" prose.
 
 **Tasks**:
-- [ ] Confirm by symbol (`lean_local_search` / `lean_hover_info`) that `truthAt_foldr_imp`,
+- [x] Confirm by symbol (`lean_local_search` / `lean_hover_info`) that `truthAt_foldr_imp`,
       `derivable_foldr_imp_iff`, `SemanticConsequence`, `soundness` and
       `BXCanonical.completeness` are present with the signatures the report recorded.
-- [ ] Replace the "Reserved. Two layers are expected here, and both are intentionally absent
+- [x] Replace the "Reserved. Two layers are expected here, and both are intentionally absent
       rather than stubbed" prose under `/-! ## Consequence and strong completeness for
       \`FrameClass.Base\`` (currently near :401) — **replace, do not append**: the claim becomes
       false the moment the block lands.
-- [ ] In the new prose, state the reuse decision explicitly: Base does not get a
+- [x] In the new prose, state the reuse decision explicitly: Base does not get a
       `SemanticConsequenceBase` synonym because `SemanticConsequence` quantifies over *all*
       carriers and for Base "all carriers" **is** the class. The `SemanticConsequenceDedekindDense`
       docstring's warning is correct for Dedekind/Dense/Discrete and inapplicable here.
-- [ ] Add `semantic_deduction_base` — the `SemanticConsequence Γ φ ↔ valid (Γ.foldr Formula.imp φ)`
+- [x] Add `semantic_deduction_base` — the `SemanticConsequence Γ φ ↔ valid (Γ.foldr Formula.imp φ)`
       biconditional, both directions transporting `truthAt_foldr_imp` across the shared binder
       list. **`intro` takes `D` then 4 placeholders**, then `F M τ hτ t`.
-- [ ] Add `consequence_completeness_base` — `(derivable_foldr_imp_iff Γ φ).mpr` applied to
+- [x] Add `consequence_completeness_base` — `(derivable_foldr_imp_iff Γ φ).mpr` applied to
       `BXCanonical.completeness _ ((semantic_deduction_base Γ φ).mp h)`.
-- [ ] Add `soundness_base_consequence` — the guard, a two-line proof off
+- [x] Add `soundness_base_consequence` — the guard, a two-line proof off
       `soundness` (`Soundness.lean:1080`), whose binder shape `(Γ) (φ) (d) (D) [binders] (F) (M)
       (τ) (h_mem) (t) (h_ctx)` already matches. This is **not** optional decoration: it is what
       stops a mis-stated consequence relation from making the terminus vacuous, the role
       `soundness_dedekind_consequence` already plays for Dedekind.
-- [ ] Add `completeness_base` — the weak corollary at `Γ := []`, discharging the vacuous
+- [x] Add `completeness_base` — the weak corollary at `Γ := []`, discharging the vacuous
       `∀ ψ ∈ [], _` binder with `simpa using h`.
-- [ ] MUST NOT add any `import` line (transitive reach verified by deletion + recompile).
-- [ ] MUST NOT add an `_of_engine` layer — `BXCanonical.completeness` already exists.
+- [x] MUST NOT add any `import` line (transitive reach verified by deletion + recompile).
+- [x] MUST NOT add an `_of_engine` layer — `BXCanonical.completeness` already exists.
 
 **Timing**: 0.75 hours
 
