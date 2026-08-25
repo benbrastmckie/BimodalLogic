@@ -8,8 +8,11 @@ terms or countermodels.
 This directory implements a tableau search procedure that:
 - Searches, via tableau expansion, for a proof of `φ` or a countermodel to `φ` — this does not by
   itself establish decidability of TM validity
-- `decide_sound` (`Correctness.lean`) is the one direction that is machine-checked: a proof
-  `decide` returns (its `.valid` constructor) yields `⊨ φ`
+- The **sound direction** of the `isValid`-shaped statement, `isValid φ fc = true → ⊨ φ`, is
+  proved and landed: `sound_of_isValid` and `isValid_sound` (`Correctness.lean`), sorry-free,
+  along with the `isTautology` / `isContradiction` / `isSatisfiable` siblings and the
+  frame-class-relativized forms. `decide_sound` (same file) is the corresponding corollary at the
+  empty context: a proof `decide` returns (its `.valid` constructor) yields `⊨ φ`
 - The full decidability biconditional — `isValid φ fc = true ↔ ⊨ φ`, plus `Decidable (⊨ φ)`
   instances for the four frame classes — is not established; see `Correctness.lean`'s
   "`validity_decidable` / `validity_has_decision_procedure` — Retired as vacuous" section

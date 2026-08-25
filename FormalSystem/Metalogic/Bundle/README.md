@@ -67,10 +67,9 @@ Bundle/
 
 ### Sorry Status
 
-**Active sorries in Bundle/**: 0 in core completeness chain.
-
-The main completeness infrastructure is sorry-free. Any remaining sorries are in optional
-or experimental files that do not affect the primary completeness theorems.
+**Active sorries in `Bundle/`**: **0**, without qualification. The structural sorry inventory is
+zero across all of `FormalSystem/` (`Boneyard/` excluded); check C3 of
+`scripts/check-module-invariants.sh` asserts this directory-wide and unconditionally.
 
 **Key Achievement**: The BFMCS construction provides a complete, verified path from
 consistent formula to satisfying model.
@@ -167,10 +166,9 @@ import FormalSystem.Metalogic.Bundle.CanonicalFrame
 
 ## Future Work
 
-1. **Eliminate temporal sorries**: Add temporal_backward_G/H properties to FMCS
-2. **Prove classical tautologies**: Derive DNE and related lemmas from the proof system
-3. **Multi-family saturation**: Generalize singleFamilyBFMCS to full multi-family construction
-4. **Compactness via BFMCS**: Potentially restore infinitary strong completeness using BFMCS
+1. **Prove classical tautologies**: Derive DNE and related lemmas from the proof system
+2. **Multi-family saturation**: Generalize singleFamilyBFMCS to full multi-family construction
+3. **Compactness via BFMCS**: Potentially restore infinitary strong completeness using BFMCS
 
 ---
 

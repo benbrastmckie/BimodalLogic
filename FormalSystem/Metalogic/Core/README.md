@@ -18,11 +18,11 @@ The Core modules provide essential infrastructure shared by both the `Bundle/` (
 
 | Module | Purpose | Status |
 |--------|---------|--------|
-| `Core.lean` | Module root, re-exports components | Complete |
+| `../Core.lean` | Re-export module for the Core package. **Sibling aggregator**, at `FormalSystem/Metalogic/Core.lean` (37 lines) — not a file inside this directory | Complete |
 | `MaximalConsistent.lean` | Complete MCS theory with Lindenbaum | **Sorry-free** |
 | `DeductionTheorem.lean` | Deduction theorem infrastructure | **Sorry-free** |
 | `MCSProperties.lean` | Essential MCS lemmas | **Sorry-free** |
-| `RestrictedMCS/` | MCS restricted to subformula closure (2 files) | **Sorry-free** |
+| `RestrictedMCS/` | MCS restricted to subformula closure (1 file: `Basic.lean`) | **Sorry-free** |
 
 ## Dependency Flowchart
 
@@ -36,8 +36,11 @@ The Core modules provide essential infrastructure shared by both the `Bundle/` (
            │             │             other modules)
            │             │
            v             v
-        Core.lean (aggregator)
+     ../Core.lean (sibling aggregator)
 ```
+
+The aggregator is `FormalSystem/Metalogic/Core.lean`, a **sibling** of this directory rather than
+a file inside it.
 
 ## Key Definitions
 

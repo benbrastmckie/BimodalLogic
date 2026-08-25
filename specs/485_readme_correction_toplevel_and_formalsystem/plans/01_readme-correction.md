@@ -669,21 +669,21 @@ file/line counts above. Confirm at implementation time with
 
 ---
 
-### Phase 7: `Metalogic/{Bundle,Decidability,Core}/README.md` and `FrameConditions/README.md` [NOT STARTED]
+### Phase 7: `Metalogic/{Bundle,Decidability,Core}/README.md` and `FrameConditions/README.md` [COMPLETED]
 
 **Goal**: Remove the Bundle hedges against sorries that do not exist, un-stale the Decidability
 sound-direction claim, repair the last sibling-aggregator violation, and correct
 `FrameConditions/`'s citation, class count, and line counts.
 
 **Tasks**:
-- [ ] **B8**: `Bundle/README.md:70` ("Active sorries in Bundle/: 0 in core completeness chain")
+- [x] **B8**: `Bundle/README.md:70` ("Active sorries in Bundle/: 0 in core completeness chain")
       and `:72-73` ("Any remaining sorries are in optional or experimental files") both assert
       live sorries via their qualifiers. C3 is directory-wide and unconditional: there are none.
       Remove both qualifiers. Delete the dead Future Work item at `:170` ("Eliminate temporal
       sorries"). **Preserve `:159`** ("Archived the previous 30-sorry Representation development
       to `Boneyard/Metalogic_v5/`") — that is a historical statement about the archive and is
       correct.
-- [ ] **B9**: `Decidability/README.md:11` ("`decide_sound` ... is **the one direction** that is
+- [x] **B9**: `Decidability/README.md:11` ("`decide_sound` ... is **the one direction** that is
       machine-checked") is stale since `sound_of_isValid` (`Correctness.lean:100`) and
       `isValid_sound` (`:111`) landed. Mirror `Decidability.lean:141-153`, which separates the two
       claims correctly: `decide_sound` is the corollary at the empty context, while the
@@ -691,31 +691,31 @@ sound-direction claim, repair the last sibling-aggregator violation, and correct
       unchanged** — the biconditional-not-established statement with its pointer to the "Retired
       as vacuous" section is already correct. This is otherwise the most accurate README of the
       set; change only `:11`.
-- [ ] **B11**: repair `Core/README.md:21`, which lists the sibling aggregator
+- [x] **B11**: repair `Core/README.md:21`, which lists the sibling aggregator
       `FormalSystem/Metalogic/Core.lean` (37 lines) as a file inside the directory. Copy the
       already-repaired `BXCanonical/README.md:13` row verbatim as the house pattern. Fix the same
       error in ASCII form at `:39`, where the dependency flowchart draws `Core.lean (aggregator)`
       inside the directory.
-- [ ] **B13 (Core)**: `Core/README.md:25` says `RestrictedMCS/` has 2 files; it holds exactly one
+- [x] **B13 (Core)**: `Core/README.md:25` says `RestrictedMCS/` has 2 files; it holds exactly one
       `.lean` file (`Basic.lean`) plus its README.
-- [ ] **B12**: `FrameConditions/README.md:22` cites `ProofSystem/Axioms.lean:378` for
+- [x] **B12**: `FrameConditions/README.md:22` cites `ProofSystem/Axioms.lean:378` for
       `inductive FrameClass`; the actual site is **`:519`**. `:3-4` says "Base, Dense, and
       Discrete variants" — four. `:4` "Four modules, 816 lines" -> 4 modules, **892** lines.
       Line counts: `FrameClass.lean` 220 -> **292**, `Validity.lean` 204 -> **209**,
       `Soundness.lean` 190 -> **204**, `Compatibility.lean` 176 -> **187**.
-- [ ] **B12 (cont.)**: `:10` says "the four marker typeclasses"; there are **five**. The fifth is
+- [x] **B12 (cont.)**: `:10` says "the four marker typeclasses"; there are **five**. The fifth is
       `DedekindTemporalFrame` (`FrameConditions/FrameClass.lean:182`). **Transcribe** its
       docstring (`:165-178`) rather than paraphrasing: it is "a side-car, not the load-bearing
       layer" — neither soundness nor completeness consumes it, exactly as neither consumes
       `DenseTemporalFrame` or `DiscreteTemporalFrame`; the load-bearing predicates are
       `ValidDedekind` / `ValidDedekindDense` in `Semantics/Validity.lean`.
-- [ ] **B12 (cont.)**: `:42` names `FormalSystem/Bimodal.lean` as the single live importer. The
+- [x] **B12 (cont.)**: `:42` names `FormalSystem/Bimodal.lean` as the single live importer. The
       **count 1 is correct**; only the filename is wrong — it is
       `FormalSystem/FormalSystem.lean:13`. **Preserve `:37-41` unchanged**: the measured
       dependency-direction claims there (0 files under `Metalogic/` import
       `FormalSystem.FrameConditions`; the module's only external importer is the library root)
       are correct.
-- [ ] **D2**: rewrite `FrameConditions/README.md:37,39,40,41,42,55` from `Bimodal.*` to
+- [x] **D2**: rewrite `FrameConditions/README.md:37,39,40,41,42,55` from `Bimodal.*` to
       `FormalSystem.*`.
 
 **Timing**: 1.5 hours
