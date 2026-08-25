@@ -115,42 +115,47 @@ a single 13,442-line file with no benefit.
 
 ---
 
-### Phase 1: Label-generalized refutation family in section C11 [IN PROGRESS]
+### Phase 1: Label-generalized refutation family in section C11 [COMPLETED]
 
 **Goal**: `UnorderedSuccessorLabelClosed` and `UnorderedSuccessorLabelClosedOrd` are proved false at
 every nonempty finite `L` at every frame class, and proved true at `∅`, so the residual's
 satisfiability set is pinned to exactly `{∅}` in-tree.
 
 **Tasks**:
-- [ ] Read `specs/481_discharge_or_replace_unorderedsuccessorlabelclosed_residual/probes/Probe2.lean`
+- [x] Read `specs/481_discharge_or_replace_unorderedsuccessorlabelclosed_residual/probes/Probe2.lean`
       in full before writing any Lean. Its bodies transfer; do not re-derive them.
-- [ ] Locate the insertion point: section C11, after `unorderedSuccessorLabelClosedOrd_not_universal`
+- [x] Locate the insertion point: section C11, after `unorderedSuccessorLabelClosedOrd_not_universal`
       (currently `:11353`) and before the `/-! ## C12` heading (currently `:11374`). Confirm by
       `grep -n "unorderedSuccessorLabelClosedOrd_not_universal\|## C12" <file>` rather than by the
       line numbers recorded here.
-- [ ] Open a new `/-! ### ... -/` subsection heading in the file's established register, stating in
+- [x] Open a new `/-! ### ... -/` subsection heading in the file's established register, stating in
       two or three sentences that the refutation the file already records at one witness `L`
       generalizes to every nonempty `L`, and why the generalization is mechanical (the engine's shape
       gates match on sign and formula constructor, never on the label).
-- [ ] Add the label-generalized witness family beside — never replacing — the existing `freshWorld*`
+- [x] Add the label-generalized witness family beside — never replacing — the existing `freshWorld*`
       family: a private atom, `gWitness (l : Label)`, `gBranch (l : Label)`, `gEmitted (l : Label)`.
       Choose names in the file's own idiom (e.g. `freshWorldWitnessAt` / `freshWorldBranchAt` /
       `freshWorldEmittedAt`); the probe's `g*` names are scratch names, not a naming proposal.
-- [ ] Add the fourteen `private theorem` `rfl` facts (`g_ia_ug` … `g_tw_bn` in the probe), then the
-      `attribute [local simp]` line over them.
-- [ ] Add `findApplicableRule_gWitness` and `expandOnceUnblocked_gBranch` (renamed to match the
+- [x] Add the fourteen `private theorem` `rfl` facts (`g_ia_ug` … `g_tw_bn` in the probe), then the
+      `attribute [local simp]` line over them. *(deviation: altered — **thirteen** new facts, not
+      fourteen. The probe's `g_rm_bn` (`ruleMintsFreshLabel .boxNeg = true`) mentions neither the
+      witness nor a label, so the in-file `rm_bn` is reused instead of restated; the local simp set
+      still has fourteen members. Also altered: the explanatory doc comment above the `attribute`
+      line had to become a `--` comment, since Lean rejects a `/-- -/` doc comment on an
+      `attribute` command.)*
+- [x] Add `findApplicableRule_gWitness` and `expandOnceUnblocked_gBranch` (renamed to match the
       witness family). Their proof scripts transfer character for character.
-- [ ] Add `unorderedSuccessorLabelClosedOrd_nonempty_false` — the `Ord` form, which is the stronger
+- [x] Add `unorderedSuccessorLabelClosedOrd_nonempty_false` — the `Ord` form, which is the stronger
       statement since `Ord` is the weaker predicate.
-- [ ] Add `unorderedSuccessorLabelClosed_nonempty_false`, derived from the `Ord` form via the landed
+- [x] Add `unorderedSuccessorLabelClosed_nonempty_false`, derived from the `Ord` form via the landed
       `unorderedSuccessorLabelClosedOrd_of_unorderedSuccessorLabelClosed` (`:11313`). Prefer the
       one-line derivation (Probe2's `unorderedSuccessorLabelClosed_nonempty_false'`) over Probe2's
       duplicated direct proof, so the file carries one refutation argument rather than two.
-- [ ] Add `unorderedSuccessorLabelClosed_empty`, completing `{∅}` as the exact satisfiability set.
-- [ ] Give each new public theorem a docstring in the file's register, stating the result and the
+- [x] Add `unorderedSuccessorLabelClosed_empty`, completing `{∅}` as the exact satisfiability set.
+- [x] Give each new public theorem a docstring in the file's register, stating the result and the
       one-line reason (`.boxNeg` emits at `Branch.nextWorld = l₀.world + 1`, outside `L`'s world
       projection by maximality of `l₀`).
-- [ ] Verify: `lake build` green, `grep` confirms no `sorry` added, `#print axioms` on the two new
+- [x] Verify: `lake build` green, `grep` confirms no `sorry` added, `#print axioms` on the two new
       refutation theorems shows only `[propext, Classical.choice, Quot.sound]`.
 
 **Timing**: 1.5 hours
@@ -160,6 +165,12 @@ satisfiability set is pinned to exactly `{∅}` in-tree.
 **Verification Tier**: local
 
 **Commit Mode**: per-substep
+
+**Scope Hypothesis result** (recorded at implementation time): (i) **refined** — 180 insertions,
+not ~150 (`git diff --stat`, zero deletions). (ii) **refined** — thirteen new `rfl` facts, not
+fourteen; each closed by `rfl` with the label a free variable, so the mechanicality claim holds.
+(iii) **confirmed** — both engine lemmas' proof scripts transferred character for character apart
+from the renames. (iv) **confirmed** — both predicates are in scope at the C11 insertion point.
 
 **Scope Hypothesis**: This phase asserts (i) ~150 new lines, (ii) exactly fourteen `rfl`-provable
 supporting facts, (iii) that both engine lemmas' proof scripts transfer unchanged, and (iv) that the
@@ -180,7 +191,7 @@ from `git diff --stat` rather than restating this estimate.
 
 ---
 
-### Phase 2: Docstring corrections and C9 entries 11/21 amendment [NOT STARTED]
+### Phase 2: Docstring corrections and C9 entries 11/21 amendment [COMPLETED]
 
 **Goal**: The file's own prose stops overstating the residual's reach. Entry 21 records the sharpened
 verdict and the nine-carrier list; entry 11's closing paragraph is brought into the same register; the
@@ -188,21 +199,21 @@ two misleading docstrings are corrected. This phase, together with Phase 1, is t
 deliverable.
 
 **Tasks**:
-- [ ] Correct `unorderedSuccessorLabelClosed_not_universal`'s docstring (currently at the `:6236`
+- [x] Correct `unorderedSuccessorLabelClosed_not_universal`'s docstring (currently at the `:6236`
       region; re-locate by declaration name). It currently claims the residual "holds at every `L` for
       which the engine never fires" as if that were a substantive class, and brackets it as
       "refutable at some `signedUniverse C L` … satisfiable at others". Both readings are now false.
       Replace with the exact bracket: refuted at every nonempty `L`, satisfiable exactly at `∅`,
       citing the Phase 1 theorem names. Leave the theorem's **statement and proof byte-identical** —
       it remains the single-witness form and is not withdrawn.
-- [ ] Add the vacuity note to
+- [x] Add the vacuity note to
       `buildTableauAt_isSome_at_seed_lengthBudget_signedUniverse_untlSnceFree`'s docstring (currently
       the `:12750` region). It is presented as "the residual, discharged at a nonempty concrete
       universe", but it still carries `hlab`, so at every `L` where the universe is in fact nonempty
       it is a **vacuously true conditional**. Say so in the register `MintBound.lean:5711-5713` uses
       for `DifficultyBounded` ("a residual nobody can satisfy makes its theorem a true conditional
       with no reach"). Do not alter the theorem's statement or proof.
-- [ ] Amend C9 entry 21 (`:13266`, "Discharging `UnorderedSuccessorLabelClosed` now that the time
+- [x] Amend C9 entry 21 (`:13266`, "Discharging `UnorderedSuccessorLabelClosed` now that the time
       coordinate has landed"): upgrade "the reduced antecedent is refutable" to the direct statement
       that the residual **itself** is refuted at every nonempty `L`, citing the Phase 1 theorem names,
       and note that the satisfiability set is exactly `{∅}`. Add the explicit nine-carrier list
@@ -212,12 +223,12 @@ deliverable.
       `buildTableauAt_isSome_at_seed_lengthBudget_signedUniverse`, the two `_selfGuarded` siblings,
       the two `_fixed` siblings, and `..._untlSnceFree`) by declaration name, never by line number,
       and state that each is vacuous at every nonempty `L`.
-- [ ] Amend entry 11's closing paragraph (`:12889` region, the "*And the label coordinate is not open
+- [x] Amend entry 11's closing paragraph (`:12889` region, the "*And the label coordinate is not open
       either*" paragraph) into the same register, so the two entries agree rather than one implying a
       weaker fact than the other.
-- [ ] Do **not** add a 25th entry. Confirm the register's opening sentence still reads
+- [x] Do **not** add a 25th entry. Confirm the register's opening sentence still reads
       "Twenty-four statements" and that the count is unchanged.
-- [ ] Confirm no task number appears in any added prose (invariant check C9 asserts zero task-number
+- [x] Confirm no task number appears in any added prose (invariant check C9 asserts zero task-number
       citations under `FormalSystem/`).
 
 **Timing**: 1 hour
@@ -227,6 +238,20 @@ deliverable.
 **Verification Tier**: local
 
 **Commit Mode**: per-substep
+
+**Scope Hypothesis result** (recorded at implementation time): (i) **confirmed** — exactly nine
+`hlab : UnorderedSuccessorLabelClosed fc L` carriers, and they are exactly the nine the plan names.
+The full census (`grep -rn "UnorderedSuccessorLabelClosed" FormalSystem/ Tests/`) finds 37
+occurrences, all inside `MintBound.lean`: the two predicate definitions, the `_of_` implication, the
+four refutation/`∅` theorems, the nine `hlab` hypotheses, and prose. No tenth carrier, and no
+occurrence in any other module. (ii) **confirmed** — entries 11 and 21 are the only two register
+entries covering this residual; no 25th entry was added and the register still opens "Twenty-four
+statements" with exactly 24 numbered entries.
+
+Additional finding recorded here rather than propagated: one deviation from the plan's Phase 2 text
+— the vacuity note added to the `_untlSnceFree` docstring deliberately does **not** name section D4,
+because at Phase 2 close that section does not exist and Phases 3-7 are optional. The D4 pointer is
+added in Phase 7 if and only if D4 lands.
 
 **Scope Hypothesis**: This phase asserts (i) exactly nine carriers and (ii) that entries 11 and 21
 are the only two register entries covering this residual, so no 25th is warranted. Confirm at
@@ -247,7 +272,7 @@ tenth carrier appears, the list is wrong and must be corrected here rather than 
 
 ---
 
-### Phase 3: The `boxFree` shape gate — new section D4 [NOT STARTED]
+### Phase 3: The `boxFree` shape gate — new section D4 [IN PROGRESS]
 
 **Goal**: The world-minting escape route is closed at the shape gate, before any frame-class gate is
 consulted, so the replacement carries **no** frame-class restriction.

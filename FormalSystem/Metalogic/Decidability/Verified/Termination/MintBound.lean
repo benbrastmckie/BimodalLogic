@@ -6236,13 +6236,27 @@ theorem unorderedSuccessor_confined_signedUniverse_of_headroom {C : Finset Formu
     (unorderedSuccessor_formula_mem hC hT hbf nb hnb x hx)
     (hlab b ord tr hbl nb hnb x hx)
 
-/-- **The label residual is not vacuous, and not free either.** It holds at every `L` for which the
-engine never fires — and `universeClosed_fresh_world_escapes` exhibits a `C`, `L` at which it fails,
-so it is a genuine condition rather than a restatement of something already true.
+/-- **The label residual is refuted at this `L`** — the single-witness form, retained as the file's
+original record of the finding. `universeClosed_fresh_world_escapes`'s configuration, read at the
+residual's own shape: the one-formula branch `[F(□p)@⟨0,0⟩]` is confined to
+`freshWorldLabels = {⟨0,0⟩}`, its step fires `.boxNeg` at every frame class and every tracker, and
+the emitted `F(p)` sits at world `1`.
 
-Stated as the honest bracket on the residual: it is refutable at some `signedUniverse C L`, so the
-composite below is genuinely conditional; and it is satisfiable at others, so the composite is not
-vacuous. -/
+**The bracket this docstring used to state is false, and section C11 proves it false.** An earlier
+version said the residual "holds at every `L` for which the engine never fires", and bracketed it as
+*refutable at some `signedUniverse C L`, satisfiable at others*, so that the composite above would be
+genuinely conditional without being vacuous. Neither half survives:
+`unorderedSuccessorLabelClosed_nonempty_false` refutes the residual at **every** nonempty finite `L`,
+at every frame class, and `unorderedSuccessorLabelClosed_empty` proves it at `∅`. Its satisfiability
+set is therefore exactly `{∅}` — so the "engine never fires" class is not a substantive class of
+label sets, it is the one-element class `{∅}`. And `signedUniverse C ∅ = ∅`, so at the only `L` where
+the hypothesis is available the universe is empty and every consumer of it is a true conditional with
+no reach. Register entries 11 and 21 carry the consequence for the nine theorems that take this
+predicate as a hypothesis.
+
+The statement and proof below are unchanged and are **not** withdrawn: the single witness is what the
+sections between here and C11 cite, and `UnorderedSuccessorLabelClosedOrd` — needed to state the
+generalized form — is not defined until C11, so the general form could not be stated here. -/
 theorem unorderedSuccessorLabelClosed_not_universal
     (fc : FormalSystem.ProofSystem.FrameClass) :
     ¬ UnorderedSuccessorLabelClosed fc freshWorldLabels := by
@@ -12937,7 +12951,19 @@ theorem mintPaysForTime_modalWitness (fc : FormalSystem.ProofSystem.FrameClass)
 The exact statement of `buildTableauAt_isSome_at_seed_lengthBudget_signedUniverse_fixed` with its
 `hmint` argument gone: on an `untl`/`snce`-free stock the hypothesis is a theorem, so the terminus
 carries one named residual fewer. The other three (`UnorderedSuccessorLabelClosed`,
-`StepLengthBounded`, `PostBlockingSettles`) are untouched — this section says nothing about them. -/
+`StepLengthBounded`, `PostBlockingSettles`) are untouched — this section says nothing about them.
+
+**But read the reach honestly: `hlab` makes this statement vacuous wherever the universe is not
+empty.** The section heading promises a discharge "at a **nonempty** universe", and the `hmint`
+half of that promise is kept. The `hlab` half is not, and cannot be:
+`unorderedSuccessorLabelClosed_nonempty_false` refutes `hlab` at every nonempty finite `L`, so at
+exactly the `L` this section is interested in, the theorem above is a true conditional with a false
+antecedent. It is the failure mode `DifficultyBounded` fell into and that `timeMergeClosed_product`
+was added to rule out — a residual nobody can satisfy makes its theorem a true conditional with no
+reach. What removes `hlab` is not a better proof of this theorem but a **replacement** for the
+predicate — a condition that is actually satisfiable at a nonempty `L`. No artifact should read this
+theorem, or any of the eight siblings that carry `hlab`, as claiming a discharge at a nonempty
+universe until `hlab` is absent from the signature. -/
 theorem buildTableauAt_isSome_at_seed_lengthBudget_signedUniverse_untlSnceFree
     {fc : FormalSystem.ProofSystem.FrameClass}
     {C : Finset Formula} {L : Finset Label} {L' β : Nat} (phi : Formula) (hβ : 3 ≤ β)
@@ -13089,11 +13115,17 @@ already been here.
     outright, is clause 1's *formula* coordinate: `unorderedSuccessor_formula_mem`, for both unordered
     successor shapes.
 
-    *And the label coordinate is not open either*, now that section D1's time analogue has landed:
-    section C11 reduces the residual to the branch-side rectangle `FreshLabelHeadroom`
+    *And the label coordinate is not open either — it is refuted outright.* Section C11 reduces the
+    residual to the branch-side rectangle `FreshLabelHeadroom`
     (`unorderedSuccessorLabelClosedOrd_of_headroom`) with both coordinates fully accounted for, and
     `freshLabelHeadroom_not_universal` refutes that rectangle at every nonempty finite `L` by the same
-    argument. See entry 21.
+    `maxWorld` argument. That much refutes the *reduction's antecedent*. The residual **itself** is
+    refuted one step further on, at the same generality:
+    `unorderedSuccessorLabelClosed_nonempty_false` and
+    `unorderedSuccessorLabelClosedOrd_nonempty_false` are false at every nonempty finite `L`, at every
+    frame class, and `unorderedSuccessorLabelClosed_empty` holds at `∅` — so the residual's
+    satisfiability set is exactly `{∅}`. Entry 21 carries the consequence for the theorems that
+    assume it.
 
 12. **Repairing clause 2 by constraining `t₂`, or by constraining both `t₁` and `t₂`.** Neither is
     wrong in the sense of being false — they are weaker predicates than necessary, which makes every
@@ -13464,6 +13496,52 @@ already been here.
     `freshWorldHeadroom_of_freshLabelHeadroom` is the one line that transports it. The obstruction is
     the world coordinate's refutation, and it was never the missing time lemma. A reader who reaches
     for the time analogue expecting the residual to close has already been here.
+
+    *And the residual is not merely un-discharged — it is FALSE, at every nonempty finite `L`.* This
+    is stronger than the paragraph above, which refutes only the *reduced antecedent* and so leaves
+    open the reading that a route not through `FreshLabelHeadroom` might still succeed at some
+    carefully chosen `L`. No such `L` exists. `unorderedSuccessorLabelClosedOrd_nonempty_false`
+    refutes the weaker `Ord` form at every nonempty finite `L` at every frame class, and
+    `unorderedSuccessorLabelClosed_nonempty_false` is the one-line consequence for the original;
+    `unorderedSuccessorLabelClosed_empty` supplies the other end. **The satisfiability set of
+    `UnorderedSuccessorLabelClosed fc L` is exactly `{∅}`** — and `signedUniverse C ∅ = ∅`, so the
+    only label set at which the hypothesis is available is the one at which the universe is empty.
+
+    The generalization from `unorderedSuccessorLabelClosed_not_universal`'s single witness is
+    mechanical, and the reason is structural rather than lucky: the engine's shape gates match a
+    signed formula's **sign and formula constructor**, never its label, so `F(□p)` fires `.boxNeg`
+    wherever it is put and the emission always lands at `Branch.nextWorld`. Running the witness at a
+    label of maximal world in `L` therefore escapes `L` by maximality. The label-generalized witness
+    family (`freshWorldWitnessAt`, `freshWorldBranchAt`, `freshWorldEmittedAt`) sits in section C11
+    beside the original, which is retained.
+
+    *The consequence for the nine theorems that assume it.* Every one of these carries
+    `hlab : UnorderedSuccessorLabelClosed fc L` as a live hypothesis, and each is therefore a
+    **vacuously true conditional at every `L` for which its universe is nonempty**:
+
+    - `unorderedSuccessor_confined_signedUniverse_of_headroom`
+    - `universeClosedAt_signedUniverse_of_headroom`
+    - `buildTableauAt_isSome_of_lengthBudget_signedUniverse`
+    - `buildTableauAt_isSome_at_seed_lengthBudget_signedUniverse`
+    - `buildTableauAt_isSome_of_lengthBudget_signedUniverse_selfGuarded`
+    - `buildTableauAt_isSome_at_seed_lengthBudget_signedUniverse_selfGuarded`
+    - `buildTableauAt_isSome_of_lengthBudget_signedUniverse_fixed`
+    - `buildTableauAt_isSome_at_seed_lengthBudget_signedUniverse_fixed`
+    - `buildTableauAt_isSome_at_seed_lengthBudget_signedUniverse_untlSnceFree`
+
+    That last one is worth naming twice, because its section heading promises a discharge "at a
+    **nonempty** universe" and its docstring once read as though the promise were kept: the `hmint`
+    half is kept, the `hlab` half is not, and the theorem is vacuous at exactly the universes the
+    section is about. This is the failure mode `DifficultyBounded` fell into and that
+    `timeMergeClosed_product` exists to rule out elsewhere. Discharging `hmint` at a nonempty
+    universe — a separate line of work — does **not** unlock any of the nine; `hlab` has to go, and
+    going means being *replaced* by a condition that is satisfiable, not proved.
+
+    *What a replacement may not be.* Any candidate replacement must be exhibited as satisfiable at a
+    nonempty `L` before it is stated as a discharge, and no `L`-side condition can do it:
+    `freshWorldHeadroom_not_universal` proves that no condition on a finite `L` absorbs a fresh
+    world. A replacement therefore has to bite on the *stock*, before the world-minting rules can
+    fire at all.
 
     *The rectangle is not an over-approximation that a sharper proof would shrink.* A label is a
     **pair** and the two dichotomies are per-coordinate, so four quadrants have to be covered.
