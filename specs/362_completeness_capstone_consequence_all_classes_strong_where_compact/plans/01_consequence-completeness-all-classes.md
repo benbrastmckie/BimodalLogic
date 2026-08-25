@@ -1,7 +1,7 @@
 # Implementation Plan: Completeness Capstone — Consequence Completeness for All Classes
 
 - **Task**: 362 - completeness capstone: consequence completeness for all classes, strong where compact
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 4.75 hours
 - **Dependencies**: None live. See "Dependency Status" below — the declared edges (361, 375, 170, 424) are either archived, landed, or non-existent as tasks; no unlanded dependency is assumed anywhere in this plan.
 - **Research Inputs**: `specs/362_completeness_capstone_consequence_all_classes_strong_where_compact/reports/01_completeness-capstone-reachability.md`
@@ -583,18 +583,18 @@ summary rather than silently widening the phase, as this hypothesis instructs.)*
 
 ## Testing & Validation
 
-- [ ] `lake build FormalSystem.Metalogic.StrongCompleteness` exits 0 after each of Phases 1–4.
-- [ ] `lake build` (full-tree acceptance) exits 0 at the end of Phase 3, Phase 4, and Phase 5.
-- [ ] Every new terminus and corollary reports exactly `[propext, Classical.choice, Quot.sound]`
+- [x] `lake build FormalSystem.Metalogic.StrongCompleteness` exits 0 after each of Phases 1–4.
+- [x] `lake build` (full-tree acceptance) exits 0 at the end of Phase 3, Phase 4, and Phase 5.
+- [x] Every new terminus and corollary reports exactly `[propext, Classical.choice, Quot.sound]`
       under `#print axioms` — no `sorryAx`, no `Lean.ofReduceBool`, no `Lean.trustCompiler`.
-- [ ] `grep -rn "sorry" ` over the task's full diff shows **zero** additions. No phase requires a
+- [x] `grep -rn "sorry" ` over the task's full diff shows **zero** additions. No phase requires a
       `sorry` and none is permitted.
 - [x] Fourteen new leg-A declarations exist (Base 4, Dense 5, Discrete 5 — the plan's
       "twelve" was an arithmetic slip; the per-class counts are exactly as specified).
-- [ ] No "Reserved"/"intentionally absent" prose survives in the three
+- [x] No "Reserved"/"intentionally absent" prose survives in the three
       `StrongCompleteness.lean` sections that received content.
-- [ ] `latexmk` on `latex/BimodalReference.tex` compiles clean (Phase 6 only).
-- [ ] Terminology audit: no finite-context (`Context = List Formula`) result is called "strong
+- [x] `latexmk` on `latex/BimodalReference.tex` compiles clean (Phase 6 only).
+- [x] Terminology audit: no finite-context (`Context = List Formula`) result is called "strong
       completeness" in any file touched.
 
 ## Artifacts & Outputs
