@@ -125,7 +125,7 @@ echo
 # re-emit them. A dedicated scratch file is compiled against the built library.
 # ---------------------------------------------------------------------------
 read -r -d '' AXIOM_BASELINE <<'BASELINE'
-'FormalSystem.Metalogic.BXCanonical.completeness' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.BXCanonical.completeness' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.BXCanonical.completeness_dense' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.BXCanonical.completeness_discrete' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.BXCanonical.Chronicle.countermodel_dense' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -164,38 +164,28 @@ fi
 echo
 
 # ---------------------------------------------------------------------------
-# C3: the sole structural sorry, asserted BY CONTENT
+# C3: the structural sorry inventory, asserted BY CONTENT
 #
-# Never assert a line number: the enclosing theorem is found by scanning
-# backwards from the sorry to the nearest declaration header.
+# The inventory is ZERO. `FormalSystem/` (excluding `Boneyard/`) contains no
+# structural `sorry` at all: the last one, `countermodel_discrete`, was closed
+# when the theorem moved from `WeakCanonical/Transfer.lean` to
+# `WeakCanonical/GroupModel/CountermodelBase.lean` and was proved there at the
+# `Q x_l Z` carrier off `companionChronicle`.
+#
+# Never assert a line number, and never relax this back to a nonzero count to
+# accommodate a new sorry: a new structural sorry is a regression, and this
+# check is the gate that says so.
 # ---------------------------------------------------------------------------
 SORRY_HITS=$(grep -rnE --include='*.lean' \
   '(^[[:space:]]*sorry[[:space:]]*$)|(:=[[:space:]]*sorry[[:space:]]*$)|(\bexact sorry\b)|(<;> sorry)' \
   FormalSystem | grep -v '/Boneyard/')
 SORRY_COUNT=$(printf '%s' "$SORRY_HITS" | grep -c . || true)
 
-if [ "$SORRY_COUNT" -ne 1 ]; then
-  fail C3 "expected exactly 1 structural sorry, found $SORRY_COUNT"
+if [ "$SORRY_COUNT" -ne 0 ]; then
+  fail C3 "expected zero structural sorries, found $SORRY_COUNT"
   while IFS= read -r l; do note "$l"; done <<<"$SORRY_HITS"
 else
-  SORRY_FILE=${SORRY_HITS%%:*}
-  SORRY_LINE=$(printf '%s' "$SORRY_HITS" | cut -d: -f2)
-  EXPECTED_FILE="FormalSystem/Metalogic/WeakCanonical/Transfer.lean"
-  EXPECTED_THM="countermodel_discrete"
-  ENCLOSING=$(awk -v n="$SORRY_LINE" '
-    NR <= n && /^[[:space:]]*(private[[:space:]]+|protected[[:space:]]+|noncomputable[[:space:]]+)*(theorem|lemma|def|example|instance)[[:space:]]+/ {
-      last = $0
-    }
-    END { print last }' "$SORRY_FILE" 2>/dev/null)
-  if [ "$SORRY_FILE" != "$EXPECTED_FILE" ]; then
-    fail C3 "sole sorry moved file: expected $EXPECTED_FILE, found $SORRY_FILE"
-  elif ! printf '%s' "$ENCLOSING" | grep -q "\b${EXPECTED_THM}\b"; then
-    fail C3 "sole sorry is no longer inside 'theorem $EXPECTED_THM'"
-    note "enclosing declaration: $ENCLOSING"
-  else
-    pass C3 "sole structural sorry is in theorem $EXPECTED_THM ($SORRY_FILE)"
-    note "enclosing declaration: $(printf '%s' "$ENCLOSING" | sed 's/[[:space:]]*$//')"
-  fi
+  pass C3 "structural sorry inventory is ZERO across FormalSystem/ (Boneyard/ excluded)"
 fi
 echo
 
