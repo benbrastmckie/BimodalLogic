@@ -31,8 +31,10 @@ constructor is **guard-first**: `next φ` is `untl (guard := ⊥) (event := φ)`
   `IsSuccArchimedean` does its work — so `Xⁿ⁺¹ p` holds at `t` for that `n`, contradicting the
   corresponding `¬Xⁿ⁺¹ p`.
 
-Together these refute `CompactDiscrete` (`Metalogic/SetConsequence.lean`), and hence
-`StrongCompletenessDiscrete`.
+Together these refute `CompactDiscrete` (`discrete_consequence_not_compact`) and, by way of
+`soundness_discrete`, `StrongCompletenessDiscrete` itself
+(`strongCompletenessDiscrete_refuted`). Both statements are declared in
+`Metalogic/SetConsequence.lean`.
 
 ## Note on `truthAt_next_iff` / `truthAt_next_iterate`
 
@@ -49,7 +51,7 @@ rewrite would fire inside the proof-theoretic reasoning in `Theorems/DiscreteUnf
 
 namespace FormalSystem.Metalogic
 
-open FormalSystem.Syntax FormalSystem.Semantics
+open FormalSystem.Syntax FormalSystem.Semantics FormalSystem.ProofSystem
 
 variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
 
@@ -261,11 +263,41 @@ theorem discrete_consequence_not_compact : ¬ CompactDiscrete := by
   have hv := hvalid D F M τ hτ t
   exact (truthAt_foldr_imp M τ t L Formula.bot).mp hv (fun ψ hψ => hsat ψ hψ)
 
+/-! ## Strong completeness for `FrameClass.Discrete` is refuted -/
+
+/-- **Strong completeness fails for `FrameClass.Discrete`.**
+
+    `archWitness p ⊨ ⊥` holds vacuously (`archWitness_not_satisfiable`). Strong completeness
+    would hand back a *finite* `L ⊆ archWitness p` with a derivation of `⊥` from `L` — a
+    derivation is a finite object, so it can cite only finitely many premises. But
+    `archWitness_finitely_satisfiable` supplies a Discrete model of exactly that `L`, and
+    `soundness_discrete` (`Metalogic/Soundness.lean`) — whose binder list is precisely what
+    `SatisfiableDiscreteSet` unpacks to — transports the derivation into `TruthAt … ⊥`, i.e.
+    `False`.
+
+    This is the theorem behind the module docstring claim in `Metalogic/StrongCompleteness.lean`
+    that only weak completeness is available for this class. -/
+theorem strongCompletenessDiscrete_refuted : ¬ StrongCompletenessDiscrete := by
+  intro hsc
+  classical
+  set p : Atom := ⟨"p", none⟩ with hp
+  have hcons : SetSemanticConsequenceDiscrete (archWitness p) Formula.bot := by
+    intro D _ _ _ _ _ _ _ _ F M τ hτ t hall
+    exact absurd
+      ⟨D, inferInstance, inferInstance, inferInstance, inferInstance, inferInstance,
+        inferInstance, inferInstance, inferInstance, F, M, τ, hτ, t, hall⟩
+      (archWitness_not_satisfiable p)
+  obtain ⟨L, hL, ⟨d⟩⟩ := hsc _ _ hcons
+  obtain ⟨D, _, _, _, _, _, _, _, _, F, M, τ, hτ, t, hsat⟩ :=
+    archWitness_finitely_satisfiable p L hL
+  exact soundness_discrete L Formula.bot d D F M τ hτ t (fun ψ hψ => hsat ψ hψ)
+
 #print axioms truthAt_next_iff
 #print axioms truthAt_next_iterate
 #print axioms archWitness_finitely_satisfiable
 #print axioms archWitness_not_satisfiable
 #print axioms discrete_consequence_not_compact
+#print axioms strongCompletenessDiscrete_refuted
 
 /-! ## Axiom Audit
 
@@ -279,6 +311,8 @@ theorem discrete_consequence_not_compact : ¬ CompactDiscrete := by
 #print axioms archWitness_not_satisfiable
 -- depends on: [propext, Classical.choice, Quot.sound]
 #print axioms discrete_consequence_not_compact
+-- depends on: [propext, Classical.choice, Quot.sound]
+#print axioms strongCompletenessDiscrete_refuted
 -- depends on: [propext, Classical.choice, Quot.sound]
 ```
 

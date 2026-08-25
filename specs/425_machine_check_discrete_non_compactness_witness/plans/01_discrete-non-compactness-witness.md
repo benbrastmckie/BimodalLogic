@@ -309,23 +309,23 @@ impossible — stop and report rather than inserting a `sorry`.
 
 ---
 
-### Phase 5: Strong-completeness refutation for `FrameClass.Discrete` [NOT STARTED]
+### Phase 5: Strong-completeness refutation for `FrameClass.Discrete` [COMPLETED]
 
 **Goal**: Deliver the task sentence's "hence strong completeness is refuted for that class" as an
 actual theorem rather than prose.
 
 **Tasks**:
-- [ ] Add `StrongCompletenessDiscrete` to `SetConsequence.lean` beside `StrongCompletenessDense`
+- [x] Add `StrongCompletenessDiscrete` to `SetConsequence.lean` beside `StrongCompletenessDense`
       (`:192`), as
       `∀ (Γ : Set Formula) (φ : Formula), SetSemanticConsequenceDiscrete Γ φ → SetDerivable FrameClass.Discrete Γ φ`.
-- [ ] Prove `strongCompletenessDiscrete_refuted : ¬ StrongCompletenessDiscrete` in the new module:
+- [x] Prove `strongCompletenessDiscrete_refuted : ¬ StrongCompletenessDiscrete` in the new module: *(deviation: altered — `open FormalSystem.ProofSystem` added to the module's open line, since `FrameClass` lives there; and `Derivable`'s `Nonempty` destructured as `⟨L, hL, ⟨d⟩⟩` so `soundness_discrete` receives the `DerivationTree`)*
       take `Γ = archWitness p`, `φ = ⊥`; the finitary derivation cites some `L ⊆ Γ`; feed
       `archWitness_finitely_satisfiable`'s model to `soundness_discrete`
       (`FormalSystem/Metalogic/Soundness.lean:1393`), whose binder list is exactly what
       `SatisfiableDiscreteSet` unpacks to, to derive `TruthAt … ⊥`.
-- [ ] Update the `SetConsequence.lean` docstring asymmetry note from Phase 1 to mention the new
+- [x] Update the `SetConsequence.lean` docstring asymmetry note from Phase 1 to mention the new
       `StrongCompletenessDiscrete` statement and that it is refuted, not open.
-- [ ] `#print axioms FormalSystem.Metalogic.strongCompletenessDiscrete_refuted`.
+- [x] `#print axioms FormalSystem.Metalogic.strongCompletenessDiscrete_refuted`.
 
 **Timing**: 0.75 hours
 

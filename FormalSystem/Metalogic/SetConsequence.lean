@@ -18,15 +18,16 @@ This module supplies the **vocabulary** for consequence from a possibly-infinite
 set-based semantic consequence predicates, the basic lemmas relating them to the finite-context
 (`Γ : Context`) layer, and the statements — not the proofs — of strong completeness,
 compactness, satisfiability and model existence for `FrameClass.Dense`, together with the
-satisfiability and compactness statements for `FrameClass.Discrete`.
+strong-completeness, satisfiability and compactness statements for `FrameClass.Discrete`.
 
 It is vocabulary only. **No compactness result is proved or refuted here**, and no existing
 proof gap anywhere in the tree is closed by this module. `CompactDense` and
 `ModelExistenceDense` are `Prop`-valued definitions that name **open obligations**; discharging
-them is future work. `CompactDiscrete` is different in kind: it is not open but **refuted**, in
-`Metalogic/DiscreteNonCompactness.lean`, by `discrete_consequence_not_compact`. The two must not
-be read as sharing a status — the Dense question is unsettled, the Discrete one is settled
-negatively.
+them is future work. `CompactDiscrete` and `StrongCompletenessDiscrete` are different in kind:
+they are not open but **refuted**, in `Metalogic/DiscreteNonCompactness.lean`, by
+`discrete_consequence_not_compact` and `strongCompletenessDiscrete_refuted`. The Dense and
+Discrete statements must not be read as sharing a status — the Dense question is unsettled, the
+Discrete one is settled negatively.
 
 ## Design
 
@@ -226,18 +227,28 @@ def ModelExistenceDense : Prop :=
     (∀ L : List Formula, (∀ ψ ∈ L, ψ ∈ Γ) → SatisfiableDenseSet {ψ | ψ ∈ L}) →
     SatisfiableDenseSet Γ
 
-/-! ## Satisfiability and compactness for `FrameClass.Discrete`
+/-! ## Strong completeness, satisfiability and compactness for `FrameClass.Discrete`
 
-These two definitions are **statements, not results** — but unlike their Dense counterparts
-above they do not name an open obligation. `CompactDiscrete` is *refuted* downstream by
-`discrete_consequence_not_compact` (`Metalogic/DiscreteNonCompactness.lean`), which exhibits the
-premise set `{F p} ∪ {¬Xⁿ p : n ∈ ℕ}` as finitely satisfiable over `ℤ` yet unsatisfiable over
-every Archimedean discrete carrier. Nothing about that refutation is imported here; this module
-supplies only the vocabulary it is stated in.
+These three definitions are **statements, not results** — but unlike their Dense counterparts
+above they do not name open obligations. Both `CompactDiscrete` and `StrongCompletenessDiscrete`
+are *refuted* downstream in `Metalogic/DiscreteNonCompactness.lean`, by
+`discrete_consequence_not_compact` and `strongCompletenessDiscrete_refuted` respectively, which
+exhibit the premise set `{F p} ∪ {¬Xⁿ p : n ∈ ℕ}` as finitely satisfiable over `ℤ` yet
+unsatisfiable over every Archimedean discrete carrier. Nothing about those refutations is
+imported here; this module supplies only the vocabulary they are stated in.
 
 No import change is required for these: `IsSuccArchimedean` and `IsPredArchimedean` are already
 in scope via `SetSemanticConsequenceDiscrete` above.
 -/
+
+/-- **Strong completeness for `FrameClass.Discrete`** — the `StrongCompletenessDense` statement
+    with `SetSemanticConsequenceDiscrete` in place of `SetSemanticConsequenceDense`.
+
+    **This statement is false.** See `strongCompletenessDiscrete_refuted`. It is stated here so
+    that the refutation has something to name; it is not a reserved obligation. -/
+def StrongCompletenessDiscrete : Prop :=
+  ∀ (Γ : Set Formula) (φ : Formula),
+    SetSemanticConsequenceDiscrete Γ φ → SetDerivable FrameClass.Discrete Γ φ
 
 /-- Satisfiability of a possibly-infinite set over discrete carriers. This is
     `FormulaSatisfiable` (`Validity.lean:190`) with `ValidDiscrete`'s binder list
