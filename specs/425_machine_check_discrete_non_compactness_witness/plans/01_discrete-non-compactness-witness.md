@@ -1,7 +1,7 @@
 # Implementation Plan: Discrete non-compactness witness
 
 - **Task**: 425 - Machine-check the Discrete non-compactness witness
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 4.5 hours
 - **Dependencies**: 361, 423
 - **Research Inputs**: specs/425_machine_check_discrete_non_compactness_witness/reports/01_discrete-non-compactness-witness.md
@@ -109,26 +109,26 @@ Phase 1 owns `FormalSystem/Metalogic/SetConsequence.lean`; Phase 2 owns the new 
 
 ---
 
-### Phase 1: Discrete satisfiability and compactness vocabulary [NOT STARTED]
+### Phase 1: Discrete satisfiability and compactness vocabulary [COMPLETED]
 
 **Goal**: `SatisfiableDiscreteSet` and `CompactDiscrete` exist in `SetConsequence.lean` beside
 their Dense counterparts, with the module docstring widened to admit them.
 
 **Tasks**:
-- [ ] Add `SatisfiableDiscreteSet` and `CompactDiscrete` verbatim from report §3 Layer 0, placed
+- [x] Add `SatisfiableDiscreteSet` and `CompactDiscrete` verbatim from report §3 Layer 0, placed
       in the `## Strong completeness, compactness and model existence` region alongside
       `StrongCompletenessDense` (`:192`), `CompactDense` (`:199`), `SatisfiableDenseSet` (`:207`)
       and `ModelExistenceDense` (`:219`).
-- [ ] Give each a docstring in the register of its Dense sibling: `SatisfiableDiscreteSet` is
+- [x] Give each a docstring in the register of its Dense sibling: `SatisfiableDiscreteSet` is
       `FormulaSatisfiable` with `ValidDiscrete`'s binder list (`Semantics/Validity.lean:243`) in
       place of `ValidDense`'s and the conclusion generalised to `∀ ψ ∈ Γ`.
-- [ ] Widen the module docstring's scope sentence (currently "…strong completeness, compactness,
+- [x] Widen the module docstring's scope sentence (currently "…strong completeness, compactness,
       satisfiability and model existence for `FrameClass.Dense`", `:20`) to name Discrete.
-- [ ] Record the asymmetry that matters, in the docstring: `CompactDense` names an **open
+- [x] Record the asymmetry that matters, in the docstring: `CompactDense` names an **open
       obligation**, whereas `CompactDiscrete` is **refuted downstream**. The existing "no
       compactness result is proved here" sentence (`:22-24`) needs the same qualification so it
       does not read as claiming the Discrete question is also open.
-- [ ] Confirm no import change is required (`IsSuccArchimedean` is already in scope via
+- [x] Confirm no import change is required (`IsSuccArchimedean` is already in scope via
       `SetSemanticConsequenceDiscrete` at `:85`).
 
 **Timing**: 0.75 hours

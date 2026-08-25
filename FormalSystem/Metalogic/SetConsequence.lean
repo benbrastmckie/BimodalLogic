@@ -17,11 +17,16 @@ This module supplies the **vocabulary** for consequence from a possibly-infinite
 `Γ : Set Formula`: the finitary derivability relation `SetDerivable`, the four per-class
 set-based semantic consequence predicates, the basic lemmas relating them to the finite-context
 (`Γ : Context`) layer, and the statements — not the proofs — of strong completeness,
-compactness, satisfiability and model existence for `FrameClass.Dense`.
+compactness, satisfiability and model existence for `FrameClass.Dense`, together with the
+satisfiability and compactness statements for `FrameClass.Discrete`.
 
-It is vocabulary only. **No compactness result is proved here**, and no existing proof gap
-anywhere in the tree is closed by this module. `CompactDense` and `ModelExistenceDense` are
-`Prop`-valued definitions that name obligations; discharging them is future work.
+It is vocabulary only. **No compactness result is proved or refuted here**, and no existing
+proof gap anywhere in the tree is closed by this module. `CompactDense` and
+`ModelExistenceDense` are `Prop`-valued definitions that name **open obligations**; discharging
+them is future work. `CompactDiscrete` is different in kind: it is not open but **refuted**, in
+`Metalogic/DiscreteNonCompactness.lean`, by `discrete_consequence_not_compact`. The two must not
+be read as sharing a status — the Dense question is unsettled, the Discrete one is settled
+negatively.
 
 ## Design
 
@@ -220,5 +225,45 @@ def ModelExistenceDense : Prop :=
   ∀ Γ : Set Formula,
     (∀ L : List Formula, (∀ ψ ∈ L, ψ ∈ Γ) → SatisfiableDenseSet {ψ | ψ ∈ L}) →
     SatisfiableDenseSet Γ
+
+/-! ## Satisfiability and compactness for `FrameClass.Discrete`
+
+These two definitions are **statements, not results** — but unlike their Dense counterparts
+above they do not name an open obligation. `CompactDiscrete` is *refuted* downstream by
+`discrete_consequence_not_compact` (`Metalogic/DiscreteNonCompactness.lean`), which exhibits the
+premise set `{F p} ∪ {¬Xⁿ p : n ∈ ℕ}` as finitely satisfiable over `ℤ` yet unsatisfiable over
+every Archimedean discrete carrier. Nothing about that refutation is imported here; this module
+supplies only the vocabulary it is stated in.
+
+No import change is required for these: `IsSuccArchimedean` and `IsPredArchimedean` are already
+in scope via `SetSemanticConsequenceDiscrete` above.
+-/
+
+/-- Satisfiability of a possibly-infinite set over discrete carriers. This is
+    `FormulaSatisfiable` (`Validity.lean:190`) with `ValidDiscrete`'s binder list
+    (`Validity.lean:243`) — `SuccOrder`, `PredOrder`, `IsSuccArchimedean`, `IsPredArchimedean`
+    — in place of `ValidDense`'s `DenselyOrdered`, and the conclusion generalised from a single
+    formula to `∀ ψ ∈ Γ`.
+
+    The five extra class binders are written as **anonymous** existential binders. When this
+    existential is destructured, use bare `_` names for them and let instance synthesis recover
+    them: naming them and re-installing with `haveI` drops the value and breaks definitional
+    equality with the instances baked into `F`'s and `M`'s types. -/
+def SatisfiableDiscreteSet (Γ : Set Formula) : Prop :=
+  ∃ (D : Type) (_ : AddCommGroup D) (_ : LinearOrder D) (_ : IsOrderedAddMonoid D)
+    (_ : SuccOrder D) (_ : PredOrder D) (_ : IsSuccArchimedean D) (_ : IsPredArchimedean D)
+    (_ : Nontrivial D)
+    (F : TaskFrame D) (M : TaskModel F)
+    (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
+    ∀ ψ ∈ Γ, TruthAt M τ t ψ
+
+/-- Semantic compactness of the Discrete consequence relation, in the same shape as
+    `CompactDense`: a set-consequence yields a *finite* premise list whose `foldr`-implication
+    into the conclusion is Discrete-valid.
+
+    **This statement is false.** See `discrete_consequence_not_compact`. -/
+def CompactDiscrete : Prop :=
+  ∀ (Γ : Set Formula) (φ : Formula), SetSemanticConsequenceDiscrete Γ φ →
+    ∃ L : List Formula, (∀ ψ ∈ L, ψ ∈ Γ) ∧ ValidDiscrete (L.foldr Formula.imp φ)
 
 end FormalSystem.Metalogic
