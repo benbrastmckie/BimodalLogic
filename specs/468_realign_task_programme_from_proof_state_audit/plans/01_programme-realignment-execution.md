@@ -502,7 +502,7 @@ report 02's.
 
 ---
 
-### Phase 7: Author the rewritten specs/ROADMAP.md [NOT STARTED]
+### Phase 7: Author the rewritten specs/ROADMAP.md [COMPLETED]
 
 **Goal**: Produce the current roadmap: one current-state statement per front, retitled, every claim
 grounded in a named check, machine-annotatable.

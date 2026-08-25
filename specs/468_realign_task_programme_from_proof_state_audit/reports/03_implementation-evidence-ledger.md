@@ -543,3 +543,69 @@ multi-month, parallel to the spine).
 
 No `.lean` file touched. No task status transitioned. All writes through `state-write.sh`;
 `TODO.md` regenerated; `generate-task-order.sh --print` exits 0 with no undeclared-topic warning.
+
+## Phase 7 — Rewritten specs/ROADMAP.md
+
+### What changed
+
+Wholesale rewrite: retitled `# Roadmap: TM Decidability, Completeness, and Publication` (naming
+decidability alongside completeness, per the plan's requirement). New structure: a PROVEN-vs-
+SORRY-FREE opening statement, then `## Phase 1` through `## Phase 7` — one current-state
+statement per front (weak/strong completeness; decidability/tableau; Kamp/expressive
+completeness; FMP; publication/documentation; dataset/training; repository hygiene) — each with
+`- [ ]`/`- [x]` checkboxes, followed by a `## Tombstoned Routes` section cross-referencing the C9
+register without duplicating its entries, then the durable technical-reference sections retained
+from the reduced file (BX Axiom System, Irreflexive Truth Semantics, X/Y Operator Status,
+Canonical Model Construction, Quasimodel/Filtration Infrastructure, Burgess-Xu Until-Induction
+Technique, Representation Theorem Goal, Paper Alignment Programme — the last corrected, not
+merely retained), and a closing `## Recommended Priority Order`.
+
+Corrections applied per the plan's checklist:
+- **Completeness front corrected to the re-verified state**: Phase 1 states `completeness`'s
+  Base-discrete-branch closure via 477-479, removes the stale "task 169/422 route" framing from
+  the per-class table, and states the strong-completeness gating rule's actual current status
+  (task 424 completed, not merely "in flight").
+- **Stavi/EFGames corrected**: stated LIVE with the confirming import chain
+  (`WeakCanonical.lean` -> `EFGames.StaviCompleteness`, plus four further live importers),
+  retracting the prior "superseded and parked" claim.
+- **BiLasso stated honestly**: landed sorry-free, computing-not-choice-free, the single remaining
+  `fmp` theorem named as the box-faithfulness obstruction, folded into Phase 4 as the front's own
+  statement rather than a late addendum, with the F6-qualification note.
+- **Refuted routes tombstoned** with a dedicated section cross-referencing C9 rather than
+  duplicating its 24 entries.
+- **Paper Alignment Programme corrected**: the six tasks (420/414/415/417/419/427) previously
+  listed not-started/blocked are now shown against their actual archived status (five completed,
+  one expanded), confirmed via `jq` against `specs/archive/state.json` this dispatch.
+- **Five-residual terminus stated**, not four, naming `UnorderedSuccessorLabelClosed` and its
+  owner (task 481).
+- **Every status line grounded**: C2/C3/C4/C5/C6/C9 named inline throughout; the closing "Check
+  grounding" line under each phase names the checks specific to that front.
+- **Machine-annotatable structure**: `## Phase N: {Title} ({Priority} Priority)` headings with
+  `- [ ]`/`- [x]` items throughout.
+- **Critical path per front carried in**, with the routine/hard split visible (Phase 2).
+
+### Verification
+
+- `wc -l specs/ROADMAP.md` = 712 lines (down from 1,970 pre-split; the retained technical
+  reference sections account for most of this length).
+- `grep -c "HISTORICAL\|SUPERSEDED\|STALE"` = **0** (down from 10) — every stale claim was
+  corrected in place rather than banner-flagged, since this is the rewritten current file, not an
+  archive.
+- **C5-equivalent replication**: 0 unresolved module-shaped paths.
+- **`roadmap-integration.sh --roadmap specs/ROADMAP.md --state specs/state.json`** (parse-only,
+  no `--annotate`): stderr marker `<!-- roadmap-structure phases=7 checkboxes=39 table_rows=57
+  parseable=true -->` — satisfies `phases > 0` and `checkboxes > 0`.
+  **Observed script limitation** (not fixed, out of this task's charter): the script's own JSON
+  assembly step later in the same run failed with `jq: Argument list too long` (exit 126), passing
+  a `--argjson` blob built by cross-referencing every task number cited in `specs/ROADMAP.md`
+  against the now-51-entry, longer-description `specs/state.json` via the command line rather than
+  a file/stdin. The structure marker above is printed before that failure and is unaffected by
+  it — this is the value Phase 7's own verification criterion asks for. Fixing
+  `roadmap-integration.sh`'s argument-passing mechanism is outside task 468's charter (no `.sh`
+  script repair is in its Goals, and its Non-Goals forbid scope creep into unrelated fixes);
+  recorded here as a finding for a future task, not actioned.
+- `git diff --stat -- '*.lean'` — zero files.
+
+### Hard-constraint check for this phase
+
+No `.lean` file touched. No task status transitioned.
