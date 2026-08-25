@@ -1,0 +1,49 @@
+{
+  "status": "implemented",
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/487_fix_argv_ceiling_in_roadmap_integration_and_state_write/summaries/01_fix-argv-ceiling-summary.md",
+      "summary": "Fixed the 128KB argv ceiling in state-write.sh (transparent spill + --argjson-file) and roadmap-integration.sh (--slurpfile final report, --annotate atomicity via staging copy, tightened explicit_task_ref heuristic), with regression tests for both scripts and one live specs/ROADMAP.md annotation applied. Redeploy deferred to the orchestrator per an explicit live-machinery-hazard instruction."
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Fixed the 128KB argv ceiling in state-write.sh (transparent spill above 100KB + additive --argjson-file flag) and roadmap-integration.sh (--slurpfile final report, --annotate atomicity via a staging copy, tightened explicit_task_ref heuristic requiring all task references to be checked and none non-terminal). Added two regression test suites (7/7 and 5/5 passing, both proven to fail against pre-fix copies) and applied one live specs/ROADMAP.md annotation. Source-store commit 67876e6b3 is ready; redeploy and .claude/scripts/ parity verification were deliberately deferred to the orchestrator's own redeploy checkpoint per an explicit live-machinery-hazard instruction in the delegation context."
+  },
+  "modified_files": [
+    "specs/487_fix_argv_ceiling_in_roadmap_integration_and_state_write/plans/01_fix-argv-ceiling.md",
+    "specs/487_fix_argv_ceiling_in_roadmap_integration_and_state_write/progress/phase-1-progress.json",
+    "specs/487_fix_argv_ceiling_in_roadmap_integration_and_state_write/progress/phase-2-progress.json",
+    "specs/487_fix_argv_ceiling_in_roadmap_integration_and_state_write/progress/phase-3-progress.json",
+    "specs/487_fix_argv_ceiling_in_roadmap_integration_and_state_write/progress/phase-4-progress.json",
+    "specs/487_fix_argv_ceiling_in_roadmap_integration_and_state_write/progress/phase-5-progress.json",
+    "specs/487_fix_argv_ceiling_in_roadmap_integration_and_state_write/progress/phase-6-progress.json",
+    "specs/487_fix_argv_ceiling_in_roadmap_integration_and_state_write/progress/phase-7-progress.json",
+    "specs/487_fix_argv_ceiling_in_roadmap_integration_and_state_write/summaries/01_fix-argv-ceiling-summary.md",
+    "specs/ROADMAP.md"
+  ],
+  "memory_candidates": [
+    {
+      "content": "Linux's MAX_ARG_STRLEN (131,072-byte single-argument execve() ceiling) applies to EVERY process invocation, not just the terminal command you're worried about. A caller invoking `bash some_script.sh --argjson NAME \"$HUGE_VALUE\"` hits this ceiling at the OUTER bash invocation itself if $HUGE_VALUE exceeds ~131KB -- the target script's own internal argv-forwarding fix (e.g. spilling to jq --slurpfile before calling jq) never even runs, because the script's process can't be spawned with that argv in the first place. The only mechanism that genuinely accepts an unbounded single-call payload is one where the caller writes the payload to a file FIRST (inside its own already-running process, no new exec involved) and passes a short file-path argv token instead (e.g. an additive --argjson-file NAME PATH flag using jq --slurpfile). Before believing an internal-to-the-script argv fix resolves a >128KB-payload defect end-to-end, test the OUTER invocation with the oversized value literally on its own command line -- don't assume the fix's own internal logic is reachable.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/487_fix_argv_ceiling_in_roadmap_integration_and_state_write/summaries/01_fix-argv-ceiling-summary.md",
+      "confidence": 0.9,
+      "suggested_keywords": ["argv-ceiling", "MAX_ARG_STRLEN", "execve", "argument-list-too-long", "argjson-file", "slurpfile"]
+    },
+    {
+      "content": "git-snapshot.sh's DEFAULT mode reverts the working tree (git stash push -u) -- in a repo with concurrent orchestrator/agent activity, running it in default mode can stash away OTHER sessions' unrelated in-flight state.json/TODO.md/log changes, not just your own task's work, because the stash captures the ENTIRE dirty tree indiscriminately. When any concurrent process might be touching the same repo, always use `--no-revert` (a durable backup with zero working-tree mutation) instead of the default/--branch modes, and check `git status --short` before AND immediately after any snapshot call to catch an accidental broad-scope stash early -- it can be corrected via `git stash pop` if caught immediately, but the safe default is --no-revert from the start whenever live/concurrent machinery is a stated constraint.",
+      "category": "PATTERN",
+      "source_artifact": "specs/487_fix_argv_ceiling_in_roadmap_integration_and_state_write/summaries/01_fix-argv-ceiling-summary.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["git-snapshot", "concurrent-sessions", "stash", "no-revert", "live-machinery"]
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1787688954_7fb0f6",
+    "agent_type": "general-implementation-agent",
+    "delegation_depth": 2,
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "phases_completed": 7,
+    "phases_total": 7
+  }
+}

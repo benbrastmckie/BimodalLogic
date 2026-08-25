@@ -74,6 +74,10 @@ specs/archive/
 specs/vault/
 specs/tmp/
 specs/**/.*
+# Durable provenance must stay tracked (orchestrator-runtime-files.md policy);
+# every other specs/ dotfile above remains ephemeral and ignored.
+!specs/**/.orchestrator-handoff.json
+!specs/**/.return-meta.json
 benchmarks/
 indent.log
 /.claude_OLD
