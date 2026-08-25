@@ -209,31 +209,31 @@ collides, stop and report rather than renaming silently.
 
 ---
 
-### Phase 3: Witness set, index functions, and the ℤ model [NOT STARTED]
+### Phase 3: Witness set, index functions, and the ℤ model [COMPLETED]
 
 **Goal**: The witness set, its computable index function, and the concrete ℤ frame/model/history
 all live in the new module and compile.
 
 **Tasks**:
-- [ ] Transcribe `archWitness` from report §3 Layer 2:
+- [x] Transcribe `archWitness` from report §3 Layer 2:
       `{(Formula.atom p).someFuture} ∪ {ψ | ∃ n : ℕ, ψ = (Formula.next^[n] (Formula.atom p)).neg}`.
-- [ ] Transcribe `nextDepth` and `witIdx` with their equation-compiler patterns exactly as
+- [x] Transcribe `nextDepth` and `witIdx` with their equation-compiler patterns exactly as
       written. `nextDepth`'s first equation is `| Formula.untl Formula.bot φ => nextDepth φ + 1`
       — **guard-first**; the swapped form silently never fires.
-- [ ] Transcribe `nextDepth_next_iterate` and `witIdx_neg_next_iterate`.
-- [ ] Add a docstring on `witIdx` recording *why* it exists: membership in `archWitness` gives
+- [x] Transcribe `nextDepth_next_iterate` and `witIdx_neg_next_iterate`.
+- [x] Add a docstring on `witIdx` recording *why* it exists: membership in `archWitness` gives
       only `∃ n, ψ = ¬Xⁿ p` per element, and `archWitness_finitely_satisfiable` needs a single
       threshold over an arbitrary list, so the existential must be turned into a computable
       index. Record that `Formula.complexity` (`Syntax/Formula.lean:224`) is **not** usable here:
       it is pattern-aware and therefore not a monotone structural size.
-- [ ] Transcribe the ℤ layer: `zHistory`, `zModel`, `zHistory_total`, `zTruth_atom`,
+- [x] Transcribe the ℤ layer: `zHistory`, `zModel`, `zHistory_total`, `zTruth_atom`,
       `succ_iterate_zero_int` from report §3 Layer 3, on `TaskFrame.natFrame`
       (`Semantics/TaskFrame.lean:1288`).
-- [ ] Apply both numeral-elaboration fixes exactly: `states := fun t _ => (if N < t then 1 else 0 : Nat)`
+- [x] Apply both numeral-elaboration fixes exactly: `states := fun t _ => (if N < t then 1 else 0 : Nat)`
       (ascribe the **body**) and `valuation := fun (w : Nat) _ => w = 1` (annotate the **lambda
       binder**). `fun w _ => (w : Nat) = 1` does **not** work — ascription on an existing fvar
       does not retarget numeral elaboration.
-- [ ] Add a short comment recording why `TaskFrame.natFrame` is the right frame: its relation
+- [x] Add a short comment recording why `TaskFrame.natFrame` is the right frame: its relation
       `TaskRel w d u := d ≠ 0 ∨ w = u` is permissive, so an arbitrary state function respects it,
       which a non-constant history requires. `WorldHistory.universalNatFrame` is constant-state
       and `staticFrame`'s relation forces constant histories; neither works.

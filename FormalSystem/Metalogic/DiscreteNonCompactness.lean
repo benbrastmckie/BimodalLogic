@@ -89,4 +89,96 @@ theorem truthAt_next_iterate [SuccOrder D] [NoMaxOrder D]
     rw [Function.iterate_succ_apply, ih, Function.iterate_succ_apply']
     exact truthAt_next_iff M τ _ φ
 
+/-! ## The witness set and its index function -/
+
+/-- The non-compactness witness set for the atom `p`:
+
+      `{F p} ∪ {¬Xⁿ p : n ∈ ℕ}`
+
+    Every finite subset is satisfiable over `ℤ` (`archWitness_finitely_satisfiable`); the whole
+    set is satisfiable over no Archimedean discrete carrier (`archWitness_not_satisfiable`). -/
+def archWitness (p : Atom) : Set Formula :=
+  {(Formula.atom p).someFuture} ∪ {ψ | ∃ n : ℕ, ψ = (Formula.next^[n] (Formula.atom p)).neg}
+
+/-- Number of leading `Formula.next` layers of a formula.
+
+    The first equation matches `Formula.untl Formula.bot φ` — **guard-first**, matching
+    `Formula.next`'s definition (`Syntax/Formula.lean`). Written with the arguments swapped it
+    would silently never fire and the function would be constantly `0`. -/
+def nextDepth : Formula → ℕ
+  | Formula.untl Formula.bot φ => nextDepth φ + 1
+  | _ => 0
+
+/-- The index `n` recovered from a witness element `¬Xⁿ p` (which is `Formula.imp (Xⁿ p) ⊥`).
+
+    **Why this exists.** `archWitness_finitely_satisfiable` receives an arbitrary
+    `L : List Formula` whose members lie in `archWitness p`, and must produce a *single*
+    threshold beyond which to place `p`. Membership only supplies `∃ n, ψ = ¬Xⁿ p` element by
+    element; `witIdx` turns that existential into a computable index, so the threshold can be
+    taken as a sum (hence an upper bound) over `L`.
+
+    `Formula.complexity` (`Syntax/Formula.lean`) is **not** usable for this. It is pattern-aware
+    — it special-cases the `always` / `sometimes` / `weakFuture` / `weakPast` expansions and
+    charges them overhead — so it is not a monotone structural size and yields no usable bound. -/
+def witIdx : Formula → ℕ
+  | Formula.imp χ Formula.bot => nextDepth χ
+  | _ => 0
+
+theorem nextDepth_next_iterate (p : Atom) (n : ℕ) :
+    nextDepth (Formula.next^[n] (Formula.atom p)) = n := by
+  induction n with
+  | zero => simp [nextDepth]
+  | succ k ih => rw [Function.iterate_succ_apply']; simp [Formula.next, nextDepth, ih]
+
+theorem witIdx_neg_next_iterate (p : Atom) (n : ℕ) :
+    witIdx ((Formula.next^[n] (Formula.atom p)).neg) = n := by
+  simp [Formula.neg, witIdx, nextDepth_next_iterate]
+
+/-! ## The `ℤ` model witnessing finite satisfiability
+
+`TaskFrame.natFrame` (`Semantics/TaskFrame.lean`) is the right frame off the shelf: its relation
+`TaskRel w d u := d ≠ 0 ∨ w = u` is permissive, so an **arbitrary** state function respects it —
+which is exactly what the non-constant history below needs. `WorldHistory.universalNatFrame` is
+constant-state and so cannot separate the times; `staticFrame` is worse still, its relation
+forcing constant histories outright.
+-/
+
+/-- The history over `ℤ` whose world-state flips from `0` to `1` strictly after `N`. -/
+def zHistory (N : ℤ) : WorldHistory (TaskFrame.natFrame (D := ℤ)) where
+  domain := fun _ => True
+  nonempty_domain := ⟨0, True.intro⟩
+  convex := fun _ _ _ _ _ _ _ => True.intro
+  -- `TaskFrame.natFrame.WorldState` does not reduce far enough for numeral elaboration, so the
+  -- `ite` *body* carries the ascription. Ascribing an existing fvar instead does not work.
+  states := fun t _ => (if N < t then 1 else 0 : Nat)
+  respects_task := by
+    intro s t _ _
+    rcases eq_or_ne t s with rfl | hne
+    · right; rfl
+    · left; exact sub_ne_zero.mpr hne
+
+/-- The model over `natFrame` whose only true atom-condition is "the world-state is `1`".
+
+    The **lambda binder** carries the `Nat` annotation; `fun w _ => (w : Nat) = 1` does not
+    elaborate, since ascribing an existing fvar does not retarget numeral elaboration. -/
+def zModel : TaskModel (TaskFrame.natFrame (D := ℤ)) where
+  valuation := fun (w : Nat) _ => w = 1
+
+theorem zHistory_total (N : ℤ) : (zHistory N).IsTotal := fun _ => True.intro
+
+theorem zTruth_atom (N : ℤ) (p : Atom) (t : ℤ) :
+    TruthAt zModel (zHistory N) t (Formula.atom p) ↔ N < t := by
+  constructor
+  · rintro ⟨_, h⟩
+    simp only [zModel, zHistory] at h
+    by_contra hc
+    simp [hc] at h
+  · intro h
+    exact ⟨True.intro, by simp only [zModel, zHistory]; simp [h]⟩
+
+theorem succ_iterate_zero_int (n : ℕ) : Order.succ^[n] (0:ℤ) = (n : ℤ) := by
+  induction n with
+  | zero => simp
+  | succ k ih => rw [Function.iterate_succ_apply', ih]; simp [Order.succ_eq_add_one]
+
 end FormalSystem.Metalogic
