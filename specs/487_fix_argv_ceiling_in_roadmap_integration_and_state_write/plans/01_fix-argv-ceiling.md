@@ -260,26 +260,31 @@ not collect top-level tests, skip registration and record that in the commit mes
 
 ---
 
-### Phase 3: roadmap-integration.sh final `jq -n` argv fix [NOT STARTED]
+### Phase 3: roadmap-integration.sh final `jq -n` argv fix [COMPLETED]
 
 **Goal**: The report-building `jq -n` at the end of `roadmap-integration.sh` no longer passes
 `ROADMAP_STATE` / `ROADMAP_MATCHES` through argv; the script completes parse-only mode with exit 0
 against the live repo, emitting a byte-identical JSON report shape.
 
 **Tasks**:
-- [ ] Capture a baseline: run the current script against a *small* fixture roadmap (small enough
+- [x] Capture a baseline: run the current script against a *small* fixture roadmap (small enough
       that it does not crash today) and save the emitted JSON for later shape comparison
-- [ ] Write `$ROADMAP_STATE` and `$ROADMAP_MATCHES` to `mktemp` files and bind them with
-      `jq --slurpfile roadmap_state_arr FILE --slurpfile roadmap_matches_arr FILE`
-- [ ] Update the filter body to dereference `$roadmap_state_arr[0]` / `$roadmap_matches_arr[0]`
-      (`--slurpfile` always binds an array of the file's JSON values)
-- [ ] Leave the small scalar/array payloads (`annotations_made`, `items_skipped`,
+      *(completed: fixture with 1 checkbox-phase item + 1 table row; pre-fix and post-fix outputs
+      diff -S-identical)*
+- [x] Write `$ROADMAP_STATE` and `$ROADMAP_MATCHES` to `mktemp` files and bind them with
+      `jq --slurpfile roadmap_state_arr FILE --slurpfile roadmap_matches_arr FILE` *(completed)*
+- [x] Update the filter body to dereference `$roadmap_state_arr[0]` / `$roadmap_matches_arr[0]`
+      (`--slurpfile` always binds an array of the file's JSON values) *(completed)*
+- [x] Leave the small scalar/array payloads (`annotations_made`, `items_skipped`,
       `skipped_reasons`, `high_confidence_matches`, `silent_noop`, counts, `parseable`,
-      `warnings`) on `--argjson` — they are bounded and unaffected
-- [ ] **Extend** the existing `trap 'rm -f "$TMP_ROADMAP_STATE" "$TMP_ALL_COMPLETED"' EXIT` at
+      `warnings`) on `--argjson` — they are bounded and unaffected *(completed: confirmed via grep,
+      only 2 of 12 --argjson bindings were unbounded, matching Scope Hypothesis)*
+- [x] **Extend** the existing `trap 'rm -f "$TMP_ROADMAP_STATE" "$TMP_ALL_COMPLETED"' EXIT` at
       line ~369 to also remove the two new temp files. Do NOT install a second EXIT trap — it
-      would silently replace the first and leak the original two files
-- [ ] Update the stale forward-referencing comment near line 172 that promised "the analogous fix"
+      would silently replace the first and leak the original two files *(completed: single trap,
+      now covering 4 temp files)*
+- [x] Update the stale forward-referencing comment near line 172 that promised "the analogous fix"
+      *(completed)*
       so it now points at the fix that actually exists
 
 **Timing**: 45 minutes
