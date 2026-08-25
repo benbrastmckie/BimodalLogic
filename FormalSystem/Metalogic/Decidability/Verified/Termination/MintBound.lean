@@ -13494,8 +13494,10 @@ missing input is `witnessPresent r sf b ord = false`, which the `.linear` and `.
 records. So there is no `findApplicableRule_guard_persistent` to be had, and the exclusion has to
 come from the rule side. It does, decidably, and that is this lemma.
 
-The `.persistent` arms of `applyRule` belong to `allPastPos`, `someFutureNeg` and `densityRule`,
-none of which is among the six. -/
+`applyRule` has `.persistent` arms in plenty — `boxPos`, `diamondNeg`, `boxTemporal`,
+`allFuturePos`, `allPastPos`, `someFutureNeg`, `somePastNeg`, `densityRule`, `priorUZ`, `priorSZ`,
+`z1Rule`, `priorUGap`, `priorSGap`, `sepRule` and `serialityRule` all have one — and not one of them
+is among the six. -/
 private theorem applyRule_ne_persistent_of_fresh {r : TableauRule} {sf : SignedFormula}
     {b : Branch} {ord : TimeOrdering} {fs : List SignedFormula} {o : TimeOrdering}
     (hlab : ruleMintsFreshLabel r = true) (htime : ruleMintsFreshTime r = true)
@@ -13596,6 +13598,264 @@ private theorem rule_census (r : TableauRule) :
     ∨ r = TableauRule.untlNeg ∨ r = TableauRule.snceNeg
     ∨ r = TableauRule.densityRule := by
   cases r <;> decide
+
+
+/-! ### The four-bucket case split at the `pickBranches` level
+
+The bulk of the section. `MintPaysForTimeFixed`'s three-way disjunct is proved for every successor
+branch a pick reports, by splitting the picked rule into the census's four buckets and closing each
+from a payment lemma that is already landed. Every bucket's arithmetic is **exact** — the two
+budget conjuncts close by `omega` from inequalities with no slack in them — and no bucket adds a
+hypothesis to the predicate.
+
+The buckets are stated separately, each with the pick already destructured, so that each is a
+standalone obligation with a readable statement rather than a branch of a long tactic block. -/
+
+/-- The pick-source hypothesis `pick_stage_source`'s consumers take, specialised to a pick that has
+already been destructured. Saves repeating the `Option`/`Prod` injectivity dance in every bucket. -/
+private theorem pick_singleton_source {b : Branch} {ord : TimeOrdering} {r : TableauRule}
+    {sf : SignedFormula} {res : RuleResult} {o : TimeOrdering}
+    (hsf : sf ∈ b) (hA : applyRule r sf b ord = (res, o)) :
+    ∀ r' res' o', (some (r, res, o) : Option (TableauRule × RuleResult × TimeOrdering))
+      = some (r', res', o') → ∃ x, x ∈ b ∧ applyRule r' x b ord = (res', o') := by
+  rintro r' res' o' h
+  simp only [Option.some.injEq, Prod.mk.injEq] at h
+  obtain ⟨rfl, rfl, rfl⟩ := h
+  exact ⟨sf, hsf, hA⟩
+
+/-- The same, carrying the no-mint fact `pickBranches_knownTimes_subset` additionally wants. -/
+private theorem pick_singleton_source_noMint {b : Branch} {ord : TimeOrdering} {r : TableauRule}
+    {sf : SignedFormula} {res : RuleResult} {o : TimeOrdering}
+    (hsf : sf ∈ b) (hA : applyRule r sf b ord = (res, o))
+    (hnm : ruleMintsFreshTime r = false) :
+    ∀ r' res' o', (some (r, res, o) : Option (TableauRule × RuleResult × TimeOrdering))
+      = some (r', res', o') → ∃ x, x ∈ b ∧ applyRule r' x b ord = (res', o')
+        ∧ ruleMintsFreshTime r' = false := by
+  rintro r' res' o' h
+  simp only [Option.some.injEq, Prod.mk.injEq] at h
+  obtain ⟨rfl, rfl, rfl⟩ := h
+  exact ⟨sf, hsf, hA, hnm⟩
+
+/-- **One step adds at most one known time, at the pick level.** The `pickBranches` counterpart of
+`knownTimes_card_le_succ_of_unorderedSuccessor`, whose proof this is verbatim with
+`pickBranches_time_dichotomy` in place of its engine-level lift. Buckets B and C both need the
+inequality *before* the engine lift, because that is where the payment lemmas live. -/
+private theorem pickBranches_knownTimes_card_le_succ {b : Branch} {ord : TimeOrdering}
+    {p : Option (TableauRule × RuleResult × TimeOrdering)}
+    (haux : OrdTimesKnown b ord)
+    (hp : ∀ r res o, p = some (r, res, o) → ∃ sf, sf ∈ b ∧ applyRule r sf b ord = (res, o)) :
+    ∀ nb ∈ pickBranches b p, nb.knownTimes.toFinset.card ≤ b.knownTimes.toFinset.card + 1 := by
+  intro nb hnb
+  have hsub : nb.knownTimes.toFinset ⊆ insert b.nextTime b.knownTimes.toFinset := by
+    intro t ht
+    rcases pickBranches_time_dichotomy haux hp nb hnb t (List.mem_toFinset.mp ht) with h | h
+    · exact Finset.mem_insert_of_mem (List.mem_toFinset.mpr h)
+    · exact h ▸ Finset.mem_insert_self _ _
+  exact le_trans (Finset.card_le_card hsub) (Finset.card_insert_le _ _)
+
+/-- **Bucket A — the rule mints no fresh time: disjunct 1.**
+
+Twenty-seven of the thirty-six constructors, plus `serialityRule` and `timeLinearity`, which is
+what the engine's second and third stages run. Nothing about the rule's identity is used beyond the
+negative fact: `applyRule_emitted_time_mem` turns it into a `knownTimes` subset, and both of
+disjunct 1's conjuncts are read off that subset — the cardinality by `Finset.card_le_card`, the
+rank by `splitOrderedRank_le_of_knownTimes_subset` against the ordering growth `pickOrd_mono`
+supplies. `σ` does not appear.
+
+This is also the bucket the strengthened bridge's *right* disjunct lands in: stages two and three
+report no `findApplicableRule` equation, and they do not need one. -/
+private theorem mintPays_bucketA {b : Branch} {ord : TimeOrdering} {Tmax : Nat}
+    {r : TableauRule} {sf : SignedFormula} {res : RuleResult} {o : TimeOrdering} {nb : Branch}
+    (haux : OrdTimesKnown b ord) (hsf : sf ∈ b)
+    (hA : applyRule r sf b ord = (res, o)) (hnm : ruleMintsFreshTime r = false)
+    (hnb : nb ∈ pickBranches b (some (r, res, o))) :
+    nb.knownTimes.toFinset.card ≤ b.knownTimes.toFinset.card ∧
+      splitOrderedRank Tmax nb o ≤ splitOrderedRank Tmax b ord := by
+  have hsub := pickBranches_knownTimes_subset haux
+    (pick_singleton_source_noMint hsf hA hnm) nb hnb
+  refine ⟨Finset.card_le_card ?_, ?_⟩
+  · intro t ht
+    simp only [List.mem_toFinset] at ht ⊢
+    exact hsub t ht
+  · exact splitOrderedRank_le_of_knownTimes_subset hsub
+      (pickOrd_mono (p := some (r, res, o)) (pick_singleton_source hsf hA))
+
+/-- **Bucket B — the rule is witness-guarded and mints a time: disjunct 2.**
+
+The six of `freshLabelRules ∩ freshTimeRules`. This is the bucket the strengthened bridge exists
+for: the payment lemmas consume `findApplicableRule_guard_linear` / `_branching`, whose
+`witnessPresent … = false` guard lives inside `findApplicableRule`'s own `if` and **not** inside
+`applyRule`, so `pick_stage_source`'s `applyRule` pair is not enough and the stage-one equation is.
+
+Three of the five result shapes are reachable and only two of them carry a successor branch:
+`.branchingOrdered` and `.notApplicable` contribute nothing to `pickBranches`, and `.persistent` is
+excluded by `applyRule_ne_persistent_of_fresh`. The remaining two are exactly the two the payment
+lemmas cover.
+
+Conjunct 1 is the sum, and it is exact: `|kt nb| ≤ |kt b| + 1` from the pick-level dichotomy, and
+`mintPotential nb o + 1 ≤ mintPotential b ord` from the payment, add to
+`mintTimeBudget nb o ≤ mintTimeBudget b ord` with nothing left over. -/
+private theorem mintPays_bucketB {U : Finset SignedFormula} {σ : SignedFormula → SignedFormula}
+    {b : Branch} {ord : TimeOrdering} {fc : FormalSystem.ProofSystem.FrameClass}
+    {r : TableauRule} {sf : SignedFormula} {res : RuleResult} {o : TimeOrdering} {nb : Branch}
+    (haux : OrdTimesKnown b ord) (hconf : ∀ x ∈ b, x ∈ U) (hfix : SigmaFixed σ b) (hsf : sf ∈ b)
+    (hpick : findApplicableRule sf b ord fc = some (r, res, o))
+    (hlab : ruleMintsFreshLabel r = true) (htime : ruleMintsFreshTime r = true)
+    (hnb : nb ∈ pickBranches b (some (r, res, o))) :
+    mintTimeBudget U σ nb o ≤ mintTimeBudget U σ b ord ∧
+      mintPotential U σ nb o < mintPotential U σ b ord := by
+  have hA : applyRule r sf b ord = (res, o) := findApplicableRule_applyRule_pair hpick
+  have hlt : mintPotential U σ nb o < mintPotential U σ b ord := by
+    cases res with
+    | notApplicable =>
+        simp [pickBranches, nonBranchingResultBranch, branchingResultBranches] at hnb
+    | branchingOrdered bs =>
+        simp [pickBranches, nonBranchingResultBranch, branchingResultBranches] at hnb
+    | persistent fs => exact (applyRule_ne_persistent_of_fresh hlab htime hA).elim
+    | linear fs =>
+        simp only [pickBranches, nonBranchingResultBranch, branchingResultBranches,
+          Option.toList, List.append_nil, List.mem_cons, List.not_mem_nil, or_false] at hnb
+        subst hnb
+        exact mintPotential_lt_of_pick_linear_sigmaFixed hconf hfix hsf hpick hlab
+    | branching bss =>
+        simp only [pickBranches, nonBranchingResultBranch, branchingResultBranches,
+          Option.toList, List.nil_append, List.mem_map] at hnb
+        obtain ⟨arm, harm, rfl⟩ := hnb
+        exact mintPotential_lt_of_pick_branching_sigmaFixed hconf hfix hsf hpick hlab arm harm
+  refine ⟨?_, hlt⟩
+  have hcard := pickBranches_knownTimes_card_le_succ haux
+    (pick_singleton_source hsf hA) nb hnb
+  simp only [mintTimeBudget]
+  omega
+
+/-- **Bucket C, the `untlNeg` half — the rule is self-guarded: disjunct 3.**
+
+`untlNeg` mints a fresh time and is not in `freshLabelRules`, so disjunct 1 fails (a known time was
+added) and disjunct 2 cannot move (`mintPotential`'s index set does not mention the rule). What
+pays is the rule's own guard: the ACTIVE arm fires only into an empty future and leaves an edge
+behind, so `selfGuardPotential` strictly drops. That is register entry 19's route 2 working exactly
+as designed — the drop is *paired* with the combined-budget conjunct rather than offered bare,
+because a bare drop is refuted there.
+
+The combined conjunct is again exact: `|kt nb| ≤ |kt b| + 1`, `mintPotential nb o ≤ mintPotential b
+ord` (branch and ordering both only grow), and `selfGuardPotential o + 1 ≤ selfGuardPotential ord`
+sum to the required inequality with nothing to spare.
+
+`sigmaTimeStable_of_sigmaFixed` is what lets `selfGuardPotential_lt_of_untlNeg` — stated at the
+time-level hypothesis — be fed from the predicate's formula-level one. -/
+private theorem mintPays_bucketC_untlNeg {U : Finset SignedFormula}
+    {σ : SignedFormula → SignedFormula} {b : Branch} {ord : TimeOrdering}
+    {fc : FormalSystem.ProofSystem.FrameClass} {sf : SignedFormula} {res : RuleResult}
+    {o : TimeOrdering} {nb : Branch}
+    (haux : OrdTimesKnown b ord) (hconf : ∀ x ∈ b, x ∈ U) (hfix : SigmaFixed σ b) (hsf : sf ∈ b)
+    (hAp : isApplicable TableauRule.untlNeg sf fc = true)
+    (hA : applyRule TableauRule.untlNeg sf b ord = (res, o))
+    (hnb : nb ∈ pickBranches b (some (TableauRule.untlNeg, res, o))) :
+    mintTimeBudget U σ nb o + selfGuardPotential U σ o
+        ≤ mintTimeBudget U σ b ord + selfGuardPotential U σ ord ∧
+      selfGuardPotential U σ o < selfGuardPotential U σ ord := by
+  obtain ⟨e, g, l, hsfeq, hform⟩ := isApplicable_untlNeg_trigger hAp
+  have hne : res ≠ RuleResult.notApplicable := by
+    rintro rfl
+    simp [pickBranches, nonBranchingResultBranch, branchingResultBranches] at hnb
+  have hsfb : (⟨Sign.neg, sf.formula, l⟩ : SignedFormula) ∈ b := by
+    rw [← hsfeq]; exact hsf
+  have hA' : applyRule TableauRule.untlNeg ⟨Sign.neg, sf.formula, l⟩ b ord = (res, o) := by
+    rw [← hsfeq]; exact hA
+  have hguard := applyRule_untlNeg_active_guard hform hA' hne
+  have hdrop : selfGuardPotential U σ o < selfGuardPotential U σ ord := by
+    have h := selfGuardPotential_lt_of_untlNeg (U := U) (σ := σ) hconf
+      (sigmaTimeStable_of_sigmaFixed hfix) hsfb hform hguard
+    rwa [hA'] at h
+  refine ⟨?_, hdrop⟩
+  have hcard := pickBranches_knownTimes_card_le_succ haux
+    (pick_singleton_source hsf hA) nb hnb
+  have hgrow : mintPotential U σ nb o ≤ mintPotential U σ b ord := by
+    refine mintPotential_le_of_grow (resultBranch_sub (b := b) (nb := nb) (res := res) hnb).1 ?_
+    have hm := applyRule_ord_mono TableauRule.untlNeg sf b ord
+    rwa [hA] at hm
+  simp only [mintTimeBudget]
+  omega
+
+/-- **Bucket C, the `snceNeg` half.** The exact past mirror, `pastOf` for `futureOf` throughout. -/
+private theorem mintPays_bucketC_snceNeg {U : Finset SignedFormula}
+    {σ : SignedFormula → SignedFormula} {b : Branch} {ord : TimeOrdering}
+    {fc : FormalSystem.ProofSystem.FrameClass} {sf : SignedFormula} {res : RuleResult}
+    {o : TimeOrdering} {nb : Branch}
+    (haux : OrdTimesKnown b ord) (hconf : ∀ x ∈ b, x ∈ U) (hfix : SigmaFixed σ b) (hsf : sf ∈ b)
+    (hAp : isApplicable TableauRule.snceNeg sf fc = true)
+    (hA : applyRule TableauRule.snceNeg sf b ord = (res, o))
+    (hnb : nb ∈ pickBranches b (some (TableauRule.snceNeg, res, o))) :
+    mintTimeBudget U σ nb o + selfGuardPotential U σ o
+        ≤ mintTimeBudget U σ b ord + selfGuardPotential U σ ord ∧
+      selfGuardPotential U σ o < selfGuardPotential U σ ord := by
+  obtain ⟨e, g, l, hsfeq, hform⟩ := isApplicable_snceNeg_trigger hAp
+  have hne : res ≠ RuleResult.notApplicable := by
+    rintro rfl
+    simp [pickBranches, nonBranchingResultBranch, branchingResultBranches] at hnb
+  have hsfb : (⟨Sign.neg, sf.formula, l⟩ : SignedFormula) ∈ b := by
+    rw [← hsfeq]; exact hsf
+  have hA' : applyRule TableauRule.snceNeg ⟨Sign.neg, sf.formula, l⟩ b ord = (res, o) := by
+    rw [← hsfeq]; exact hA
+  have hguard := applyRule_snceNeg_active_guard hform hA' hne
+  have hdrop : selfGuardPotential U σ o < selfGuardPotential U σ ord := by
+    have h := selfGuardPotential_lt_of_snceNeg (U := U) (σ := σ) hconf
+      (sigmaTimeStable_of_sigmaFixed hfix) hsfb hform hguard
+    rwa [hA'] at h
+  refine ⟨?_, hdrop⟩
+  have hcard := pickBranches_knownTimes_card_le_succ haux
+    (pick_singleton_source hsf hA) nb hnb
+  have hgrow : mintPotential U σ nb o ≤ mintPotential U σ b ord := by
+    refine mintPotential_le_of_grow (resultBranch_sub (b := b) (nb := nb) (res := res) hnb).1 ?_
+    have hm := applyRule_ord_mono TableauRule.snceNeg sf b ord
+    rwa [hA] at hm
+  simp only [mintTimeBudget]
+  omega
+
+/-- **The census case split, assembled: `MintPaysForTimeFixed`'s disjunct at the pick level.**
+
+The four buckets joined by `rule_census`, with `densityRule` — bucket D — discharged rather than
+proved: `findApplicableRule_ne_densityRule` excludes it outright under the frame-class hypothesis,
+and it is the only place that hypothesis is used in the whole section. When the bridge reports its
+*right* disjunct instead, the rule is outside `freshTimeRules` and lands in bucket A, so no density
+case arises on that side either.
+
+Because the split is driven by a `decide`-proved census rather than by a hand-written constructor
+list, no rule is handled by an unexamined catch-all: a rule with no bucket would break `rule_census`
+rather than pass through here silently. -/
+private theorem pickBranches_mintPays {U : Finset SignedFormula}
+    {σ : SignedFormula → SignedFormula} {b : Branch} {ord : TimeOrdering}
+    {fc : FormalSystem.ProofSystem.FrameClass} {Tmax : Nat}
+    {p : Option (TableauRule × RuleResult × TimeOrdering)}
+    (hfc : ¬ (FormalSystem.ProofSystem.FrameClass.Dense ≤ fc))
+    (haux : OrdTimesKnown b ord) (hconf : ∀ x ∈ b, x ∈ U) (hfix : SigmaFixed σ b)
+    (hp : ∀ r res o, p = some (r, res, o) → ∃ sf, sf ∈ b ∧ applyRule r sf b ord = (res, o) ∧
+      (findApplicableRule sf b ord fc = some (r, res, o) ∨ ruleMintsFreshTime r = false)) :
+    ∀ nb ∈ pickBranches b p,
+      (nb.knownTimes.toFinset.card ≤ b.knownTimes.toFinset.card ∧
+        splitOrderedRank Tmax nb (pickOrd ord p) ≤ splitOrderedRank Tmax b ord)
+      ∨ (mintTimeBudget U σ nb (pickOrd ord p) ≤ mintTimeBudget U σ b ord ∧
+          mintPotential U σ nb (pickOrd ord p) < mintPotential U σ b ord)
+      ∨ (mintTimeBudget U σ nb (pickOrd ord p) + selfGuardPotential U σ (pickOrd ord p)
+            ≤ mintTimeBudget U σ b ord + selfGuardPotential U σ ord ∧
+          selfGuardPotential U σ (pickOrd ord p) < selfGuardPotential U σ ord) := by
+  rcases p with _ | ⟨r, res, o⟩
+  · simp [pickBranches]
+  · obtain ⟨sf, hsf, hA, hsrc⟩ := hp r res o rfl
+    intro nb hnb
+    rcases hsrc with hpick | hnm
+    · rcases rule_census r with hnm | ⟨hlabmem, htime⟩ | hun | hsn | hden
+      · exact Or.inl (mintPays_bucketA (Tmax := Tmax) haux hsf hA hnm hnb)
+      · exact Or.inr (Or.inl (mintPays_bucketB haux hconf hfix hsf hpick
+          (mem_freshLabelRules.mp hlabmem) htime hnb))
+      · subst hun
+        exact Or.inr (Or.inr (mintPays_bucketC_untlNeg haux hconf hfix hsf
+          (findApplicableRule_isApplicable hpick) hA hnb))
+      · subst hsn
+        exact Or.inr (Or.inr (mintPays_bucketC_snceNeg haux hconf hfix hsf
+          (findApplicableRule_isApplicable hpick) hA hnb))
+      · exact absurd hden (findApplicableRule_ne_densityRule hfc hpick)
+    · exact Or.inl (mintPays_bucketA (Tmax := Tmax) haux hsf hA hnm hnb)
 
 
 

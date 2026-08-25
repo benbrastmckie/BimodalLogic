@@ -332,28 +332,28 @@ message.
 
 ---
 
-### Phase 3: `pickBranches_mintPays` — the four-bucket census case split [NOT STARTED]
+### Phase 3: `pickBranches_mintPays` — the four-bucket census case split [COMPLETED]
 
 **Goal**: Land the bulk of the work: at the `pickBranches` level, prove the three-way disjunct of
 `MintPaysForTimeFixed` for every successor branch, by case-splitting the picked rule into the four
 census buckets and closing each from an already-landed payment lemma.
 
 **Tasks**:
-- [ ] Re-read the disjunct of `MintPaysForTimeFixed` at its current line (grep the name; was :10537)
+- [x] Re-read the disjunct of `MintPaysForTimeFixed` at its current line (grep the name; was :10537)
       so the goal shape is exact, including that
       `mintTimeBudget U σ b ord = b.knownTimes.toFinset.card + mintPotential U σ b ord`.
-- [ ] Confirm the hypotheses available at the consuming site are exactly the ones the payment
+- [x] Confirm the hypotheses available at the consuming site *(confirmed: `hconf`, `hfix`, `hri.ordTimesKnown` and `sf ∈ b` from the pick are exactly what the buckets need; no new hypothesis was required)* are exactly the ones the payment
       lemmas need — `hconf : ∀ x ∈ b, x ∈ U`, `hfix : SigmaFixed σ b`, `hri : RunInvariant b ord`
       (whose `.ordTimesKnown` field supplies `OrdTimesKnown b ord`), and `sf ∈ b` from the pick.
       **No new hypothesis is added to the predicate.** If one appears to be needed, STOP and record.
-- [ ] **Build the phase as four separately-stated private bucket lemmas, each compiling green on
+- [x] **Build the phase as four separately-stated private bucket lemmas, each compiling green on
       its own and committed as its own sub-step**, then a short combinator. This is what keeps the
       phase inside one agent run and gives four natural checkpoints.
-- [ ] **Bucket A — `ruleMintsFreshTime r = false` (27 rules, plus `serialityRule`/`timeLinearity`
+- [x] **Bucket A — `ruleMintsFreshTime r = false` (27 rules, plus `serialityRule`/`timeLinearity`
       from stages 2/3) → disjunct 1.** Close from `applyRule_emitted_time_mem` (:6887) → knownTimes
       subset → `Finset.card_le_card` for conjunct 1, and
       `splitOrderedRank_le_of_knownTimes_subset` (:12838) + `pickOrd_mono` (:1928) for conjunct 2.
-- [ ] **Bucket B — `freshLabelRules ∩ freshTimeRules` (`allFutureNeg`, `allPastNeg`,
+- [x] **Bucket B — `freshLabelRules ∩ freshTimeRules` (`allFutureNeg`, `allPastNeg`,
       `someFuturePos`, `somePastPos`, `untlPos`, `sncePos`) → disjunct 2.** Conjunct 2 from
       `mintPotential_lt_of_pick_linear_sigmaFixed` (:10575) or `..._branching_sigmaFixed` (:10587),
       selected by Phase 2's shape lemma (exactly two shapes reachable; `.persistent` is not one).
@@ -363,19 +363,19 @@ census buckets and closing each from an already-landed payment lemma.
       in `findApplicableRule`'s `if` and **not** in `applyRule`. Conjunct 1 by `omega` from
       `knownTimes_card_le_succ_of_unorderedSuccessor` (:7196, giving `|kt nb| ≤ |kt b| + 1`) and
       conjunct 2's `mintPotential nb o + 1 ≤ mintPotential b ord`. The sum is exact, with no slack.
-- [ ] **Bucket C — `untlNeg`, `snceNeg` → disjunct 3.** Conjunct 2 from
+- [x] **Bucket C — `untlNeg`, `snceNeg` → disjunct 3.** Conjunct 2 from
       `selfGuardPotential_lt_of_untlNeg` (:9250) / `..._snceNeg` (:9265), reached through Phase 2's
       guard inversion. Conjunct 1 by `omega` from :7196, `mintPotential_expandOnceUnblocked` (:3156,
       applicable because neither rule is in `freshLabelRules` so the potential only grows on the
       state side), and the self-guard drop. Again exact, no slack — this is C9 entry 19's route 2
       working as designed, and `sigmaTimeStable_of_sigmaFixed` (:10388) weakens `hfix` where needed.
-- [ ] **Bucket D — `densityRule` → excluded.** Discharge by Phase 1's
+- [x] **Bucket D — `densityRule` → excluded.** Discharge by Phase 1's
       `findApplicableRule_ne_densityRule` under `hfc`, reached through the bridge's left disjunct.
       When the bridge yields its *right* disjunct (`ruleMintsFreshTime r = false`) the rule is in
       Bucket A, so no density case arises there.
-- [ ] Combine the four buckets into `private theorem pickBranches_mintPays`, driven by Phase 2's
+- [x] Combine the four buckets into `private theorem pickBranches_mintPays`, driven by Phase 2's
       `decide`-proved census lemma so no constructor is silently missed.
-- [ ] Build the module after each bucket; commit each green sub-step.
+- [x] Build the module after each bucket; commit each green sub-step. *(deviation: altered — each bucket lemma was verified individually by an isolated `lake env lean` probe against the phase-2 olean (`scratchpad/P3.lean`, exit 0) before insertion; the phase was then built in place once. A MintBound module build costs ~15 minutes. Three private adapters not named in the plan were added to keep the buckets readable: `pick_singleton_source`, `pick_singleton_source_noMint`, `pickBranches_knownTimes_card_le_succ` — the last is the pick-level counterpart of `knownTimes_card_le_succ_of_unorderedSuccessor`, which buckets B and C need before the engine lift.)*
 
 **Timing**: 2 hours
 
