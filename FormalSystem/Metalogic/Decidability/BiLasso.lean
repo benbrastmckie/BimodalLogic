@@ -18,6 +18,7 @@ import FormalSystem.Metalogic.Decidability.BiLasso.GoodCycle
 import FormalSystem.Metalogic.Decidability.BiLasso.Extraction
 import FormalSystem.Metalogic.Decidability.BiLasso.BoxOracle
 import FormalSystem.Metalogic.Decidability.BiLasso.Check
+import FormalSystem.Metalogic.Decidability.BiLasso.Assembly
 
 /-!
 # FormalSystem.Metalogic.Decidability.BiLasso — the Bi-Lasso Decision Layer
@@ -62,6 +63,10 @@ enumeration bound is a closed arithmetic expression, and it is astronomically la
   `modalDepth`, with `boxOracle_sound`. This is what breaks the annotation ↔ oracle circularity
 - `Check`: `SatAtState` (the specification), `checkAt`, `check`, `check_correct`, the `Decidable`
   instance, and the discrimination theorems
+- `Assembly`: what this layer buys *given* a finite-model theorem, taken as a hypothesis `fmp`
+  and not proved here — `not_validDiscrete_of_satAtState` (the soundness direction, hypothesis-
+  free), `validDiscrete_iff_check`/`decidableValidDiscrete` for a single canonical presentation,
+  and `validDiscrete_iff_checkFamily`/`decidableValidDiscreteFamily` for a candidate list
 
 ## Not re-exported here
 
