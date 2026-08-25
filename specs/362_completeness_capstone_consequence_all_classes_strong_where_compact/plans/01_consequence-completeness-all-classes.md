@@ -271,30 +271,30 @@ variation crept in.
 
 ---
 
-### Phase 3: Discrete consequence block and the axiom audit [NOT STARTED]
+### Phase 3: Discrete consequence block and the axiom audit [COMPLETED]
 
 **Goal**: Land the Discrete consequence layer and add the `#print axioms` audit covering all
 three new class termini.
 
 **Tasks**:
-- [ ] Replace the "Reserved — the finite-context consequence layer only" prose under
+- [x] Replace the "Reserved — the finite-context consequence layer only" prose under
       `/-! ## Consequence completeness for \`FrameClass.Discrete\`` (currently near :419) —
       replace, do not append.
-- [ ] Add `def SemanticConsequenceDiscrete`: `SetSemanticConsequenceDiscrete` with
+- [x] Add `def SemanticConsequenceDiscrete`: `SetSemanticConsequenceDiscrete` with
       `Γ : Set Formula` changed to `Γ : Context`, nothing else.
-- [ ] Add `semantic_deduction_discrete`, `consequence_completeness_discrete`,
+- [x] Add `semantic_deduction_discrete`, `consequence_completeness_discrete`,
       `soundness_discrete_consequence`, `completeness_discrete` against `ValidDiscrete` /
       `soundness_discrete` (`Soundness.lean:1400`) / `BXCanonical.completeness_discrete`.
-- [ ] **`intro` takes `D` then 8 placeholders** — Base's four plus `[SuccOrder D] [PredOrder D]
+- [x] **`intro` takes `D` then 8 placeholders** — Base's four plus `[SuccOrder D] [PredOrder D]
       [IsSuccArchimedean D] [IsPredArchimedean D]`.
-- [ ] Add a `/-! ### Axiom audit -/` block, in the style of the existing one at :392–399,
+- [x] Add a `/-! ### Axiom audit -/` block, in the style of the existing one at :392–399,
       carrying `#print axioms` for all six new termini and corollaries from Phases 1–3.
-- [ ] Note in the Discrete section prose that consequence completeness for Discrete is a
+- [x] Note in the Discrete section prose that consequence completeness for Discrete is a
       finite-context result and that the infinitary statement for this class is not merely
       unproved but **machine-refuted** (`discrete_consequence_not_compact`,
       `strongCompletenessDiscrete_refuted`, `DiscreteNonCompactness.lean`) — Discrete is the one
       class where that phrasing is earned.
-- [ ] MUST NOT add any `import` line.
+- [x] MUST NOT add any `import` line.
 
 **Timing**: 0.75 hours
 
@@ -309,6 +309,17 @@ that leg A totals **twelve** new declarations across Phases 1–3 (4 + 5 + 5, si
 `SemanticConsequence`) — matching the twelve the research prototype compiled. Confirm the running
 total before closing the phase; a count other than twelve means a class picked up an unplanned
 relation or lost a soundness guard.
+
+*(Confirmed at implementation time, with one correction to the plan's own arithmetic: the three
+per-phase counts land exactly as specified — Base 4, Dense 5, Discrete 5 — but their sum is
+**fourteen**, not twelve. `4 + 5 + 5 = 14`; the "twelve" figure is an arithmetic slip in this
+plan, not a discrepancy in the implementation. Measured leg-A declarations:
+`semantic_deduction_base`, `consequence_completeness_base`, `soundness_base_consequence`,
+`completeness_base`; `SemanticConsequenceDense`, `semantic_deduction_dense`,
+`consequence_completeness_dense`, `soundness_dense_consequence`, `completeness_dense`;
+`SemanticConsequenceDiscrete`, `semantic_deduction_discrete`,
+`consequence_completeness_discrete`, `soundness_discrete_consequence`, `completeness_discrete`.
+No class picked up an unplanned relation and none lost a soundness guard.)*
 
 **Files to modify**:
 - `FormalSystem/Metalogic/StrongCompleteness.lean` — Discrete section near :419, plus the new
@@ -540,7 +551,8 @@ task summary rather than silently widening the phase.
       under `#print axioms` — no `sorryAx`, no `Lean.ofReduceBool`, no `Lean.trustCompiler`.
 - [ ] `grep -rn "sorry" ` over the task's full diff shows **zero** additions. No phase requires a
       `sorry` and none is permitted.
-- [ ] Twelve new leg-A declarations exist (Base 4, Dense 5, Discrete 5).
+- [x] Fourteen new leg-A declarations exist (Base 4, Dense 5, Discrete 5 — the plan's
+      "twelve" was an arithmetic slip; the per-class counts are exactly as specified).
 - [ ] No "Reserved"/"intentionally absent" prose survives in the three
       `StrongCompleteness.lean` sections that received content.
 - [ ] `latexmk` on `latex/BimodalReference.tex` compiles clean (Phase 6 only).

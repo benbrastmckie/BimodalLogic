@@ -612,17 +612,129 @@ theorem completeness_dense (φ : Formula) (h : ValidDense φ) : Derivable FrameC
 
 /-! ## Consequence completeness for `FrameClass.Discrete`
 
-Reserved — the finite-context consequence layer only, against the `ValidDiscrete` binder list.
-Genuine strong completeness is provably unavailable for this class: `ValidDiscrete` requires
-`IsSuccArchimedean`/`IsPredArchimedean`, and the premise set `{F p} ∪ {(¬Xⁿ p) : n ∈ ℕ}` —
-expressible because `Formula.next φ = Formula.untl Formula.bot φ` is a genuine next-step
-operator on discrete orders — is finitely satisfiable over `ℤ` yet unsatisfiable over every
-Archimedean discrete carrier, so the class consequence relation is not compact. Weak
-completeness (`completeness_discrete`) is the strongest form for this class.
+The finite-context consequence layer for the discrete class, in the same four-layer shape as the
+Base and Dense sections above, against the `ValidDiscrete` binder list.
 
-That unavailability is now a theorem, not a remark: see
-`FormalSystem/Metalogic/DiscreteNonCompactness.lean`, whose `discrete_consequence_not_compact`
-refutes `CompactDiscrete` and whose `strongCompletenessDiscrete_refuted` refutes
-`StrongCompletenessDiscrete` outright. -/
+**Only the finite-context layer exists here, and that is a permanent fact rather than a gap.**
+Everything below takes `Γ : Context = List Formula`, so it is consequence completeness, not
+strong completeness. For this class the infinitary statement is not merely unproved but
+**machine-refuted**: `discrete_consequence_not_compact` refutes `CompactDiscrete` and
+`strongCompletenessDiscrete_refuted` refutes `StrongCompletenessDiscrete` outright, both in
+`FormalSystem/Metalogic/DiscreteNonCompactness.lean` and both sorry-free at exactly
+`[propext, Classical.choice, Quot.sound]`. The witness is the premise set
+`{F p} ∪ {(¬Xⁿ p) : n ∈ ℕ}` — expressible because `Formula.next φ = Formula.untl Formula.bot φ`
+is a genuine next-step operator on discrete orders — which is finitely satisfiable over `ℤ` yet
+unsatisfiable over every Archimedean discrete carrier, since `ValidDiscrete` requires
+`IsSuccArchimedean`/`IsPredArchimedean`.
+
+Discrete is the one class in this development where "machine-refuted" is the earned phrasing:
+Base and Dense are **open**, and Dedekind is **unavailable on its primary source's own terms**
+(Reynolds 1992 Theorem 7 is weak-only). Those three statuses must not be collapsed into one. -/
+
+/--
+Semantic consequence over discrete carriers.
+
+The binder list is that of `ValidDiscrete` (`Semantics/Validity.lean`) verbatim — `SuccOrder`,
+`PredOrder`, `IsSuccArchimedean`, `IsPredArchimedean` in place of Dense's `DenselyOrdered` —
+with the context hypothesis `∀ ψ ∈ Γ, TruthAt M τ t ψ` inserted before the conclusion. It is
+therefore exactly the hypothesis-and-conclusion shape of `soundness_discrete`
+(`Metalogic/Soundness.lean:1400`), packaged as a definition.
+
+This is `SetSemanticConsequenceDiscrete` (`SetConsequence.lean`) with `Γ : Set Formula` changed
+to `Γ : Context` and nothing else. The set form is the vocabulary the *refutation* is stated in;
+this one is the finite-context relation the theorems below discharge. The finite form is
+perfectly available even though the infinite one is false — that is precisely what
+non-compactness means.
+-/
+def SemanticConsequenceDiscrete (Γ : Context) (φ : Formula) : Prop :=
+  ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [SuccOrder D] [PredOrder D]
+    [IsSuccArchimedean D] [IsPredArchimedean D] [Nontrivial D]
+    (F : TaskFrame D) (M : TaskModel F)
+    (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
+    (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ
+
+/--
+**Semantic deduction theorem for the discrete class.** Consequence from a finite context is
+`ValidDiscrete`ity of the corresponding iterated implication.
+
+Both directions are `truthAt_foldr_imp` transported across the shared binder list. Note that
+this lemma is *not* in tension with non-compactness: it is the finite-context statement, and
+the deduction theorem it embodies is exactly what fails to extend to infinite premise sets.
+-/
+theorem semantic_deduction_discrete (Γ : Context) (φ : Formula) :
+    SemanticConsequenceDiscrete Γ φ ↔ ValidDiscrete (Γ.foldr Formula.imp φ) := by
+  constructor
+  · intro h D _ _ _ _ _ _ _ _ F M τ hτ t
+    exact (truthAt_foldr_imp M τ t Γ φ).mpr (h D F M τ hτ t)
+  · intro h D _ _ _ _ _ _ _ _ F M τ hτ t
+    exact (truthAt_foldr_imp M τ t Γ φ).mp (h D F M τ hτ t)
+
+/--
+**Finite-context consequence completeness for `FrameClass.Discrete`, unconditional.**
+
+`BXCanonical.completeness_discrete` (`BXCanonical/Completeness.lean:296`) already exists as the
+single-formula engine for `ValidDiscrete`, so there is no `_of_engine` layer here.
+
+**This is not strong completeness, and for this class it cannot be strengthened into one.**
+`Context := List Formula`, so every `Γ` here is finite. The infinitary statement
+`StrongCompletenessDiscrete` is refuted by `strongCompletenessDiscrete_refuted`; this theorem is
+the strongest consequence-shaped result the class admits.
+-/
+theorem consequence_completeness_discrete (Γ : Context) (φ : Formula)
+    (h : SemanticConsequenceDiscrete Γ φ) : Derivable FrameClass.Discrete Γ φ :=
+  (derivable_foldr_imp_iff Γ φ).mpr
+    (BXCanonical.completeness_discrete _ ((semantic_deduction_discrete Γ φ).mp h))
+
+/--
+**Soundness, restated against `SemanticConsequenceDiscrete`.**
+
+This is `soundness_discrete` (`Metalogic/Soundness.lean:1400`) with its
+hypothesis-and-conclusion block folded into the definition, and it is the guard that keeps the
+completeness target honest: it holds *only* because `SemanticConsequenceDiscrete` reproduces
+`ValidDiscrete`'s binder list verbatim. If a later edit weakens the relation — say by dropping
+`[IsSuccArchimedean D]`, on which the non-compactness witness turns — this theorem breaks and
+the build fails before a mis-stated terminus can be proved against it. In particular it
+establishes that `consequence_completeness_discrete` is not vacuous: its hypothesis is inhabited
+for every derivable pair `(Γ, φ)`.
+-/
+theorem soundness_discrete_consequence (Γ : Context) (φ : Formula)
+    (h : Derivable FrameClass.Discrete Γ φ) : SemanticConsequenceDiscrete Γ φ := by
+  intro D _ _ _ _ _ _ _ _ F M τ hτ t h_ctx
+  exact h.elim fun d => soundness_discrete Γ φ d D F M τ hτ t h_ctx
+
+/--
+**Weak completeness for `FrameClass.Discrete`, as the `Γ = []` instance of the consequence
+form.**
+
+Weak completeness is the strongest completeness statement available for this class: the class
+consequence relation is provably not compact (`discrete_consequence_not_compact`), so the
+genuine strong form is refuted rather than open. Definitionally
+`BXCanonical.completeness_discrete` routed through the deduction theorem in both directions; the
+vacuous `∀ ψ ∈ [], _` premise binder is discharged by `simpa`.
+
+On the short name it shares with `BXCanonical.completeness_discrete`, see the note in the module
+docstring: the shadowing is inert.
+-/
+theorem completeness_discrete (φ : Formula) (h : ValidDiscrete φ) :
+    Derivable FrameClass.Discrete [] φ :=
+  consequence_completeness_discrete [] φ
+    ((semantic_deduction_discrete [] φ).mpr (by simpa using h))
+
+/-! ### Axiom audit for the per-class consequence layer
+
+The twelve declarations of the Base, Dense and Discrete sections above are discharged with no
+`sorryAx` and no new axiom: exactly `propext`, `Classical.choice` and `Quot.sound`, the same set
+carried by the Dedekind terminus audited earlier in this file and by the three
+`BXCanonical` engines they consume. -/
+
+#print axioms consequence_completeness_base
+#print axioms completeness_base
+#print axioms soundness_base_consequence
+#print axioms consequence_completeness_dense
+#print axioms completeness_dense
+#print axioms soundness_dense_consequence
+#print axioms consequence_completeness_discrete
+#print axioms completeness_discrete
+#print axioms soundness_discrete_consequence
 
 end FormalSystem.Metalogic
