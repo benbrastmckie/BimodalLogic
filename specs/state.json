@@ -1261,7 +1261,7 @@
     {
       "project_number": 472,
       "project_name": "immediate_documentation_correction_pass",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "topic": "code-quality",
       "priority": "high",
@@ -1282,7 +1282,7 @@
         470
       ],
       "created": "2026-08-24T00:00:00Z",
-      "last_updated": "2026-08-25T01:56:41Z",
+      "last_updated": "2026-08-25T02:39:21Z",
       "session_id": "sess_1787618565_717c84_472",
       "artifacts": [
         {
@@ -1296,6 +1296,12 @@
           "path": "specs/472_immediate_documentation_correction_pass/plans/01_documentation-correction-pass.md",
           "summary": "Ten-phase documentation-correction plan covering items (a)-(i) plus the six additional in-scope defects, each grounded in a check-module-invariants.sh check.",
           "created": "2026-08-25T01:56:07Z"
+        },
+        {
+          "type": "summary",
+          "path": "specs/472_immediate_documentation_correction_pass/summaries/01_documentation-correction-summary.md",
+          "summary": "Implementation summary: all nine items (a)-(i) plus six additional in-scope defects corrected; both builds green.",
+          "created": "2026-08-25T02:39:27Z"
         }
       ]
     },

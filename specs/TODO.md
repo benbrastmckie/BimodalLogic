@@ -11,7 +11,7 @@ next_project_number: 477
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,193,257,298,413,422,434,461,462,468,472,474,476 | -- | automation, code-quality, completeness, ... |
+| 1 | 127,128,193,257,298,413,422,434,461,462,468,474,476 | -- | automation, completeness, dataset-enhancement, ... |
 | 2 | 125,169,178,231,282,296,433,455,463 | 193,298,422,434,461,462,468 | algebraic-representation, code-quality, dataset-enhancement, ... |
 | 3 | 95,219,362,464 | 169,231,463 | completeness, dataset-enhancement, decidability, ... |
 | 4 | 465 | 464 | decidability |
@@ -34,7 +34,6 @@ next_project_number: 477
 
 ### Code Quality
 
-472 [IMPLEMENTING] — THE IMMEDIATE, UNGATED DOCUMENTATION-CORRECTION PASS. This is the
 455 [NOT STARTED] — BACKLOG REALIGNMENT: bring specs/ROADMAP.md and every remaining a
 
 ### Completeness
@@ -462,12 +461,13 @@ Grounding: specs/reviews/review-2026-08-24.md, Addendum 1 item A-3, and task 468
 
 ### 472. Immediate documentation correction pass
 - **Effort**: medium
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: code-quality
 - **Dependencies**: Task 470
 - **Research**: [472_immediate_documentation_correction_pass/reports/01_documentation-correction-verification.md]
 - **Plan**: [472_immediate_documentation_correction_pass/plans/01_documentation-correction-pass.md]
+- **Summary**: [472_immediate_documentation_correction_pass/summaries/01_documentation-correction-summary.md]
 
 **Description**: THE IMMEDIATE, UNGATED DOCUMENTATION-CORRECTION PASS. This is the first half of the DIVIDE of task
 177 that task 468 Stage 3 directs. It is split out and un-gated deliberately: 177 sits behind
