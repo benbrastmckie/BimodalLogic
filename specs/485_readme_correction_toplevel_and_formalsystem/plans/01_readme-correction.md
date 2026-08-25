@@ -1,7 +1,7 @@
 # Implementation Plan: README Correction — Top-Level and `FormalSystem/**`
 
 - **Task**: 485 - README CORRECTION: rewrite the top-level `README.md` and repair the `FormalSystem/**/README.md` layer
-- **Status**: [IMPLEMENTING]
+- **Status**: COMPLETED
 - **Effort**: 13.5 hours
 - **Dependencies**: 484 (complete — its corrected `specs/ROADMAP.md` and `FormalSystem/Metalogic/README.md` are the ground-truth anchors this task realigns against)
 - **Research Inputs**: specs/485_readme_correction_toplevel_and_formalsystem/reports/01_readme-correction-verification.md
@@ -869,18 +869,18 @@ their line numbers. Use the observed values, not these.
 
 ---
 
-### Phase 10: Verification gate [NOT STARTED]
+### Phase 10: Verification gate [COMPLETED]
 
 **Goal**: Confirm the whole layer is internally consistent, both gate conditions are met, and no
 `.lean` file changed outside the one permitted docstring.
 
 **Tasks**:
-- [ ] Run `bash scripts/check-module-invariants.sh`; confirm **ALL CHECKS PASSED** (exit 0), with
+- [x] Run `bash scripts/check-module-invariants.sh`; confirm **ALL CHECKS PASSED** (exit 0), with
       C3, C5, C8, and C9 individually PASS.
-- [ ] Run `bash scripts/readme-lint.sh`; confirm **0 broken references** (down from 5) and 9
+- [x] Run `bash scripts/readme-lint.sh`; confirm **0 broken references** (down from 5) and 9
       missing READMEs (unchanged — explicitly out of scope; the script will still exit FAIL on
       that count and that is the recorded baseline).
-- [ ] Cross-file consistency sweep — the failure mode this task exists to fix is two documents
+- [x] Cross-file consistency sweep — the failure mode this task exists to fix is two documents
       disagreeing:
       - `grep -rn '\b42\b' README.md FormalSystem/README.md FormalSystem/ProofSystem/README.md`
         returns no constructor-count claim.
@@ -892,16 +892,16 @@ their line numbers. Use the observed values, not these.
       - Both layer tables sum to 45 across nine layers.
       - `grep -rn 'weak_completeness\|transfer_theorem\|normal_form_reduction\|truth_lemma\|Formula.subst\|perpetuity_5\|perpetuity_6' README.md FormalSystem/**/README.md`
         returns nothing.
-- [ ] Confirm `git diff --name-only` contains exactly one `.lean` path,
+- [x] Confirm `git diff --name-only` contains exactly one `.lean` path,
       `FormalSystem/Theorems.lean`, and that its diff hunks lie entirely inside the module
       docstring.
-- [ ] Confirm no file in report §5's DO-NOT-TOUCH list appears in `git diff --name-only`:
+- [x] Confirm no file in report §5's DO-NOT-TOUCH list appears in `git diff --name-only`:
       `FormalSystem/Metalogic.lean`, `FormalSystem/Metalogic/Decidability.lean`,
       `FormalSystem/Metalogic/WeakCanonical.lean`, `FormalSystem/Metalogic/StrongCompleteness.lean`,
       `FormalSystem/Metalogic/SoundnessLemmas/README.md`, `FormalSystem/ProofSystem/Axioms.lean`,
       `specs/ROADMAP.md`, `FormalSystem/Metalogic/README.md`.
-- [ ] Confirm `FormalSystem/README.md:97`'s "3 Discrete-only, 2 Dense-only" clause is unchanged.
-- [ ] Record in the summary: D1 through D5 as taken; the A7 metrics edit's working-tree
+- [x] Confirm `FormalSystem/README.md:97`'s "3 Discrete-only, 2 Dense-only" clause is unchanged.
+- [x] Record in the summary: D1 through D5 as taken; the A7 metrics edit's working-tree
       provenance; the D2 handoff of the ~30 out-of-scope `Bimodal.*` occurrences to a downstream
       sweep; the D3 handoff of `Metalogic/README.md:44-45`'s two stale import numerals with the
       re-derived values (9 and 4); `docs/reference/axiom-reference.md`'s 42-to-45 sweep; the
@@ -932,27 +932,27 @@ the divergence in the summary rather than forcing these numbers.
 
 ## Testing & Validation
 
-- [ ] `bash scripts/check-module-invariants.sh` prints ALL CHECKS PASSED (exit 0), C3/C5/C8/C9
+- [x] `bash scripts/check-module-invariants.sh` prints ALL CHECKS PASSED (exit 0), C3/C5/C8/C9
       individually PASS.
-- [ ] `bash scripts/readme-lint.sh` broken-reference count is **0** (baseline 5); missing-README
+- [x] `bash scripts/readme-lint.sh` broken-reference count is **0** (baseline 5); missing-README
       count is unchanged at **9**.
-- [ ] `grep -rn 'axiom-free' README.md FormalSystem/` returns nothing.
-- [ ] `grep -rn 'Active sorry\|remaining sorries' README.md FormalSystem/` returns nothing.
-- [ ] No phantom declaration name (`weak_completeness`, `truth_lemma`, `transfer_theorem`,
+- [x] `grep -rn 'axiom-free' README.md FormalSystem/` returns nothing.
+- [x] `grep -rn 'Active sorry\|remaining sorries' README.md FormalSystem/` returns nothing.
+- [x] No phantom declaration name (`weak_completeness`, `truth_lemma`, `transfer_theorem`,
       `normal_form_reduction`, `Formula.subst`, `perpetuity_5`, `perpetuity_6`) survives in any
       edited README.
-- [ ] No phantom file reference (`Bimodal/`, `Bimodal.lean`, `AlgebraicCompleteness.lean`,
+- [x] No phantom file reference (`Bimodal/`, `Bimodal.lean`, `AlgebraicCompleteness.lean`,
       `DovetailedChain.lean`, `Substitution.lean`, `Bridge.lean`, `Theorems/Propositional.lean`,
       `ExpressiveCompleteness/`, `DedekindZ/`, `Hierarchy/`) survives in any edited README.
-- [ ] Both layer tables (`FormalSystem/README.md`, `ProofSystem/README.md`) sum to 45 across nine
+- [x] Both layer tables (`FormalSystem/README.md`, `ProofSystem/README.md`) sum to 45 across nine
       layers and agree with each other.
-- [ ] `README.md`'s Project Structure tree matches `find FormalSystem -maxdepth 1 -type d`, is
+- [x] `README.md`'s Project Structure tree matches `find FormalSystem -maxdepth 1 -type d`, is
       rooted at the repository, and every path in it is copy-pasteable.
-- [ ] `lake build FormalSystem` is the build command shipped in `FormalSystem/README.md`
+- [x] `lake build FormalSystem` is the build command shipped in `FormalSystem/README.md`
       (a valid Lake target), not `lake build Bimodal`.
-- [ ] `git diff --name-only` contains exactly one `.lean` path (`FormalSystem/Theorems.lean`,
+- [x] `git diff --name-only` contains exactly one `.lean` path (`FormalSystem/Theorems.lean`,
       docstring-only) and no DO-NOT-TOUCH file.
-- [ ] Every relative link in `README.md` resolves, hand-checked (readme-lint does not cover the
+- [x] Every relative link in `README.md` resolves, hand-checked (readme-lint does not cover the
       repository root).
 
 ## Artifacts & Outputs

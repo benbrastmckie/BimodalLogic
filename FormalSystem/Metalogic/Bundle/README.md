@@ -10,10 +10,12 @@ Under reflexive semantics, G and H quantify over `s >= t` and `s <= t` respectiv
 (including the current time). The canonical accessibility relation is a **reflexive
 transitive preorder**.
 
-### Axiom-Free Reflexive Semantics
+### Reflexive Semantics Without Added Axioms
 
-- All BFMCS completeness infrastructure is axiom-free
-- CanonicalFrame, CanonicalTaskRelation, Construction proven without axioms
+- All BFMCS completeness infrastructure is `SORRY-FREE (sorryAx-free; axioms: exactly propext,
+  Classical.choice, Quot.sound)` — never "axiom-free", which would misdescribe the three
+  Lean-level axioms every result here depends on
+- CanonicalFrame, CanonicalTaskRelation, Construction proven without adding any frame axiom
 - `canonicalR_reflexive` proven via T-axiom (reflexive preorder)
 - Per-construction strictness pattern for local irreflexivity proofs
 - Removed inconsistent `existsTask_irreflexive_axiom`
