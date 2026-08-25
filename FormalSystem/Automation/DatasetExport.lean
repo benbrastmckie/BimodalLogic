@@ -571,6 +571,7 @@ def parseFrameClass (s : String) : FrameClass :=
   let lower := s.toLower
   if lower == "dense" then .Dense
   else if lower == "discrete" then .Discrete
+  else if lower == "dedekind" then .Dedekind
   else .Base
 
 /--
@@ -581,6 +582,7 @@ def frameClassName (fc : FrameClass) : String :=
   | .Base => "Base"
   | .Dense => "Dense"
   | .Discrete => "Discrete"
+  | .Dedekind => "Dedekind"
 
 /--
 Parse CLI arguments from a list of strings.
