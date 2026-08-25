@@ -439,18 +439,18 @@ gate is **zero lines returned**, not a count matching this hypothesis.
 
 ---
 
-### Phase 8: Guard Part 1 — C12 and C13 [NOT STARTED]
+### Phase 8: Guard Part 1 — C12 and C13 [COMPLETED]
 
 **Goal**: Add the two resolution checks that would have caught this task's link and path defects,
 following the script's own established check idiom.
 
 **Tasks**:
-- [ ] Read `scripts/check-module-invariants.sh`'s existing idiom for C5/C8/C9/C10: an `ENFORCE_Cn` flag, a computation, `pass`/`fail`/`soft` + `note`, and an optional companion allowlist file. C1-C11 exist; C12 and C13 are the next free numbers
-- [ ] **C12 — slash-path resolution in markdown.** Assert that every `FormalSystem/...`, `Tests/...`, `Logos/...`, `Bimodal/...` slash-shaped path in non-`specs` markdown resolves to a file or directory (try bare, `.lean`, `.md`, and trailing `/`). This is the check that closes report F7: C5 matches **dotted** names via `\b(?:FormalSystem|BimodalTest)(?:\.[A-Z][A-Za-z0-9_]*)+` and is blind to the slash form, which is why `BFMCS_ARCHITECTURE.md`'s dead source table passed a green gate
-- [ ] **Do not modify C5's regex.** Extending it to `Bimodal.*` would immediately fail the gate on occurrences in `FormalSystem/**/README.md`, outside this task's `file_scope` (report F8)
-- [ ] **C13 — markdown link resolution.** Assert that every relative markdown link in `docs/` and `README.md` resolves. Implement the three documented ignore-paths (`development/DIRECTORY_README_STANDARD.md`, `reference/readme-standard.md`, `project-info/MAINTENANCE.md`) via a companion **allowlist file**, not hardcoded exclusions, so a future surprise is recorded rather than forcing an out-of-scope edit
-- [ ] Enforce both at once: Phase 7 clears their debt, so both should report a real zero, not a soft note
-- [ ] Verify both checks actually fail when they should: temporarily introduce one broken slash path and one broken link, confirm each check reports it, then revert
+- [x] Read `scripts/check-module-invariants.sh`'s existing idiom for C5/C8/C9/C10: an `ENFORCE_Cn` flag, a computation, `pass`/`fail`/`soft` + `note`, and an optional companion allowlist file. C1-C11 exist; C12 and C13 are the next free numbers
+- [x] **C12 — slash-path resolution in markdown.** Assert that every `FormalSystem/...`, `Tests/...`, `Logos/...`, `Bimodal/...` slash-shaped path in non-`specs` markdown resolves to a file or directory (try bare, `.lean`, `.md`, and trailing `/`). This is the check that closes report F7: C5 matches **dotted** names via `\b(?:FormalSystem|BimodalTest)(?:\.[A-Z][A-Za-z0-9_]*)+` and is blind to the slash form, which is why `BFMCS_ARCHITECTURE.md`'s dead source table passed a green gate
+- [x] **Do not modify C5's regex.** Extending it to `Bimodal.*` would immediately fail the gate on occurrences in `FormalSystem/**/README.md`, outside this task's `file_scope` (report F8)
+- [x] **C13 — markdown link resolution.** *(deviation: altered -- two allowlist files were created, not one: C12 got `scripts/markdown-slash-path-allowlist.txt` as well, following the same companion-file convention, though it is currently empty)* Assert that every relative markdown link in `docs/` and `README.md` resolves. Implement the three documented ignore-paths (`development/DIRECTORY_README_STANDARD.md`, `reference/readme-standard.md`, `project-info/MAINTENANCE.md`) via a companion **allowlist file**, not hardcoded exclusions, so a future surprise is recorded rather than forcing an out-of-scope edit
+- [x] Enforce both at once: Phase 7 clears their debt, so both should report a real zero, not a soft note
+- [x] Verify both checks actually fail when they should: temporarily introduce one broken slash path and one broken link, confirm each check reports it, then revert
 
 **Timing**: 1.5 hours
 

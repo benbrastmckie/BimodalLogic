@@ -1,0 +1,17 @@
+# C12 companion: slash-shaped source paths that are permitted not to resolve.
+#
+# One path per line, relative to the repository root, matching the text as it
+# appears in the markdown. Blank lines and `#` comments are ignored. An entry that
+# no longer occurs is reported by C12 as stale, so this list cannot silently rot.
+#
+# C12 exists because C5 matches only DOTTED module names
+# (`FormalSystem.Metalogic.Foo`) and is blind to the slash form
+# (`FormalSystem/Metalogic/Foo.lean`). That blind spot is why a table of six
+# source files, four of which did not exist, survived a green gate.
+#
+# The bar for an entry here is a path that is deliberately hypothetical -- a
+# "create this file" instruction in a guide. Prefer naming the containing
+# directory instead, which resolves and needs no entry. A path that is simply
+# stale is a defect: fix it.
+
+# (empty)

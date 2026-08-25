@@ -1,0 +1,23 @@
+# C13 companion: markdown files whose relative links are NOT resolution-checked.
+#
+# One path per line, relative to the repository root. Blank lines and `#` comments
+# are ignored. An entry that no longer matches a file is reported by C13 as stale,
+# so this list cannot silently rot.
+#
+# Only two justifications are admissible here, and both are about links that are
+# *illustrations of link syntax* rather than links a reader is meant to follow:
+#
+#   1. Template snippets -- a README template showing what a link should look like.
+#   2. Grep patterns inside a fenced code block that happen to parse as links.
+#
+# "This link is broken and I do not want to fix it" is NOT an admissible reason.
+# Fix the link, or delete it and keep the prose.
+
+# 18 template snippets illustrating the directory-README format.
+docs/development/DIRECTORY_README_STANDARD.md
+
+# Template illustrations of the same class (the naming-convention table).
+docs/reference/readme-standard.md
+
+# Grep patterns inside a bash fence; they are shell arguments, not links.
+docs/project-info/MAINTENANCE.md

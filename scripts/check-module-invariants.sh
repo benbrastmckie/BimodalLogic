@@ -17,6 +17,8 @@
 #   C9  Zero task-number citations under FormalSystem/
 #   C10 Zero references to the pre-relocation docs/latex/typst paths
 #   C11 Every import inside FormalSystem/Boneyard/ resolves, or is waived
+#   C12 Every slash-shaped source path in docs/ + README.md resolves
+#   C13 Every relative markdown link in docs/ + README.md resolves
 #
 # Every filesystem traversal excludes the archive via `-not -path '*/Boneyard/*'`.
 # The archive was consolidated into a single tree at `FormalSystem/Boneyard/`; the
@@ -35,6 +37,8 @@
 #   scripts/module-invariants-manifest.txt   known-unreachable live modules (C6)
 #   scripts/module-invariants-allowlist.txt  pre-existing unresolved md paths (C5)
 #   scripts/boneyard-import-waivers.txt    unrepairable archived imports (C11)
+#   scripts/markdown-slash-path-allowlist.txt  hypothetical slash paths (C12)
+#   scripts/markdown-link-allowlist.txt        link-syntax-illustration files (C13)
 
 set -uo pipefail
 
@@ -44,6 +48,8 @@ cd "$REPO_ROOT" || exit 1
 MANIFEST="scripts/module-invariants-manifest.txt"
 ALLOWLIST="scripts/module-invariants-allowlist.txt"
 WAIVERS="scripts/boneyard-import-waivers.txt"
+SLASH_ALLOWLIST="scripts/markdown-slash-path-allowlist.txt"
+LINK_ALLOWLIST="scripts/markdown-link-allowlist.txt"
 
 RUN_BUILD=1
 [ "${1:-}" = "--no-build" ] && RUN_BUILD=0
@@ -549,6 +555,137 @@ else
   printf '%s\n' "$STALE_PATHS" | head -20 | while IFS= read -r l; do note "$l"; done
   [ "$STALE_COUNT" -gt 20 ] && note "... and $((STALE_COUNT - 20)) more"
 fi
+echo
+
+# ---------------------------------------------------------------------------
+# C12/C13: markdown path and link resolution across docs/ + README.md
+#
+# C5 matches only DOTTED module names (`FormalSystem.Metalogic.Foo`) via
+# `\b(?:FormalSystem|BimodalTest)(?:\.[A-Z][A-Za-z0-9_]*)+`, so the SLASH form
+# (`FormalSystem/Metalogic/Foo.lean`) is invisible to it. That blind spot is why a
+# source-file table naming six files, four of which did not exist, survived a green
+# gate for as long as it did. C12 closes it.
+#
+# C5's regex is deliberately NOT extended to cover this: adding `Bimodal` to it
+# would turn the gate red on occurrences in `FormalSystem/**/README.md` that are a
+# separate piece of work. C12 is a distinct check over a distinct path shape.
+#
+# Both are scoped to `docs/` + `README.md`, and both take a companion allowlist
+# FILE rather than hardcoded exclusions, so a future surprise is recorded rather
+# than forcing an unrelated edit.
+# ---------------------------------------------------------------------------
+python3 - "$SLASH_ALLOWLIST" "$LINK_ALLOWLIST" <<'MDPYEOF'
+import os, re, sys
+
+slash_allow_path, link_allow_path = sys.argv[1], sys.argv[2]
+failures = 0
+def pas(c, m): print(f"PASS  {c:<4} {m}")
+def bad(c, m):
+    global failures
+    failures += 1
+    print(f"FAIL  {c:<4} {m}")
+def inf(c, m): print(f"INFO  {c:<4} {m}")
+def note(m):   print(f"            {m}")
+
+def read_allowlist(path):
+    out = set()
+    if os.path.isfile(path):
+        for line in open(path, encoding="utf-8"):
+            line = line.split("#")[0].strip()
+            if line:
+                out.add(line)
+    return out
+
+# The scope: every markdown file under docs/, plus the front page.
+md_files = []
+for root, dirs, files in os.walk("docs"):
+    dirs[:] = [d for d in dirs if d not in (".git", "__pycache__")]
+    for f in files:
+        if f.endswith(".md"):
+            md_files.append(os.path.normpath(os.path.join(root, f)))
+if os.path.isfile("README.md"):
+    md_files.append("README.md")
+md_files.sort()
+
+# --- C12: slash-shaped source paths ----------------------------------------
+# `Logos/` and `Bimodal/` are the two pre-merge tree roots. Neither resolves to
+# anything today, so any occurrence is by construction a defect -- which is exactly
+# why they are in the pattern.
+slash_re = re.compile(r"\b(?:FormalSystem|Tests|Logos|Bimodal)/[A-Za-z0-9_./-]+")
+
+def slash_resolves(p):
+    return (os.path.exists(p) or os.path.isfile(p + ".lean")
+            or os.path.isfile(p + ".md") or os.path.isdir(p))
+
+slash_allow = read_allowlist(slash_allow_path)
+unresolved, used_slash_allow = [], set()
+for f in md_files:
+    for i, line in enumerate(open(f, encoding="utf-8", errors="replace"), 1):
+        for m in slash_re.findall(line):
+            m = m.rstrip("./,:;)")
+            if not m or slash_resolves(m):
+                continue
+            if m in slash_allow:
+                used_slash_allow.add(m)
+                continue
+            unresolved.append((f, i, m))
+
+if unresolved:
+    bad("C12", f"{len(unresolved)} unresolved slash-shaped source path(s) in docs/ + README.md")
+    for f, i, m in unresolved[:20]:
+        note(f"{f}:{i}: {m}")
+    if len(unresolved) > 20:
+        note(f"... and {len(unresolved) - 20} more")
+else:
+    pas("C12", f"all slash-shaped source paths in {len(md_files)} markdown files resolve"
+               + (f" ({len(used_slash_allow)} allowlisted)" if used_slash_allow else ""))
+stale = slash_allow - used_slash_allow
+if stale:
+    inf("C12", f"{len(stale)} allowlist entr(y/ies) no longer occur; prune them")
+    for m in sorted(stale):
+        note(m)
+
+# --- C13: relative markdown links ------------------------------------------
+link_re = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
+link_allow = read_allowlist(link_allow_path)
+used_link_allow = set()
+broken = []
+for f in md_files:
+    if f in link_allow:
+        used_link_allow.add(f)
+        continue
+    d = os.path.dirname(f) or "."
+    for i, line in enumerate(open(f, encoding="utf-8", errors="replace"), 1):
+        for link in link_re.findall(line):
+            if link.startswith(("http://", "https://", "mailto:", "#")):
+                continue
+            target = link.split("#")[0]
+            if not target:
+                continue
+            full = target if target.startswith("/") else os.path.join(d, target)
+            if not os.path.exists(full):
+                broken.append((f, i, link))
+
+if broken:
+    bad("C13", f"{len(broken)} unresolved relative markdown link(s) in docs/ + README.md")
+    for f, i, link in broken[:20]:
+        note(f"{f}:{i}: -> {link}")
+    if len(broken) > 20:
+        note(f"... and {len(broken) - 20} more")
+else:
+    pas("C13", f"all relative markdown links in {len(md_files) - len(used_link_allow)} "
+               f"markdown files resolve"
+               + (f" ({len(used_link_allow)} file(s) allowlisted)" if used_link_allow else ""))
+stale_links = link_allow - used_link_allow
+if stale_links:
+    inf("C13", f"{len(stale_links)} link-allowlist entr(y/ies) match no file; prune them")
+    for m in sorted(stale_links):
+        note(m)
+
+sys.exit(1 if failures else 0)
+MDPYEOF
+MD_STATUS=$?
+[ "$MD_STATUS" -ne 0 ] && FAILURES=$((FAILURES + 1))
 echo
 
 # ---------------------------------------------------------------------------
