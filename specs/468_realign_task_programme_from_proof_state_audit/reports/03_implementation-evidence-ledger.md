@@ -145,3 +145,139 @@ artifact is not rediscovered downstream.
 `.return-meta.json` written).
 
 ---
+
+## Phase 2 — Adjudication of 169, 422, 95 against the 477-479 closure
+
+### Scope-hypothesis grep
+
+Grepped every active task's description and `file_scope` for `countermodel_discrete`,
+`BXCanonical/Chronicle`, `BXCanonical/Completeness`. Hits: 468 (self), 422, 421, 169, 95, 362,
+412, 451, 469, 470, 472, 473, 474, 477, 478, 479. All but 362 already carry a verdict from
+report 02's survey or this task's own Phase 5 REVISE list (412). **362 is a genuinely new hit**,
+addressed in its own subsection below — it is a dependent of 169, not itself targeting
+`countermodel_discrete`'s closure, and its adjudication is scoped narrowly (an observation, not a
+fourth full verdict) since its actual content (the consequence-completeness capstone) is far
+broader than the three-task question this phase was dispatched to answer.
+
+### What 477 -> 478 -> 479 actually proved (by symbol)
+
+- **477** (`ta_qz_target_structure_plumbing`, completed): defined `QZStructure` (carrier `Rat
+  x_lex Int`) and `goodGroupable` in
+  `FormalSystem/Metalogic/WeakCanonical/IntegerModel/` — pure target-structure plumbing, explicit
+  non-goal "do NOT prove the companion lemma."
+- **478** (`tb_groupable_companion_lemma`, completed): proved the groupable-companion lemma itself
+  (`KEquiv`-based, NOT an order isomorphism) via composition over ordered sums, monochromatic
+  segment completeness, and region condensation/replacement — the Base analogue of
+  `limitdom_is_good` (`WeakCanonical/IntegerModel/ReynoldsBridge.lean`).
+- **479** (`tc_close_countermodel_discrete_at_base`, completed): closed
+  `WeakCanonical.countermodel_discrete` by porting `countermodel_discrete_reynolds_v2`'s proof
+  body with three substitutions (`fc := Base`; `limitdom_is_good` -> 478's companion lemma;
+  `multiFamTaskFrame` -> `multiFamTaskFrameGen (Rat x_lex Int)`), landing the theorem in
+  `WeakCanonical/GroupModel/CountermodelBase.lean`.
+- **`WeakCanonical/Transfer.lean`'s current header** (re-read this dispatch) states explicitly:
+  *"It no longer contains `countermodel_discrete`... It had to move because closing it needs
+  `companionChronicle`, and `Transfer <- IntegerModel/ReynoldsBridge <- GroupModel/
+  GroupableCompanion` makes importing that from here a cycle."* — confirming the actual proof
+  chain is `companionChronicle`/`GroupableCompanion`/`ReynoldsBridge`, not a block-carrier
+  isomorphism.
+- **Governing document for all three**: `specs/422_.../reports/02_o1-verdict-k-equivalence-
+  transfer.md` — i.e. **477-479 were spawned directly from 422's own research report**, but
+  execute the report's *alternative* (k-equivalence/companion) route, not 422's originally
+  specified deliverables.
+
+### Three questions, answered by symbol-level evidence
+
+**(a) Does 422's discrete-chronicle construction supply anything 477-479 did not?**
+NO. 422's specified deliverables were (a) a block-decomposition/densification/isomorphism into
+`Q x_lex Z` (analogue of `box_dense_gives_density`/`cantorIsoDense`,
+`ChronicleToCountermodelBasic.lean:~430,~231`) and (b) three restricted-coherence analogues
+(analogues of `cantor_bfmcs_dense_restricted_tc`/`_buc`/`_fuc`, same file, `:~624,~675,~750`).
+422's own report 01 (`verification/block_order_refutation.lean`, sorry-free, `#print axioms`
+clean) **permanently refutes the isomorphism formulation**: no linearly ordered abelian group has
+order type `Z+Z`. Report 02 then pivots to a structurally different technique (`KEquiv` at fixed
+finite depth `k`, not an isomorphism) and explicitly names it a "strictly weaker" route. 477-479
+implement report 02's route end to end and **consume none of deliverable (a) or (b)** — confirmed
+by `grep -n "cantor_bfmcs_dense_restricted_tc\|cantor_bfmcs_dense_restricted_buc\|
+cantor_bfmcs_dense_restricted_fuc\|box_dense_gives_density"
+ChronicleToCountermodelBasic.lean`, which shows these symbols used only in the pre-existing dense
+case (unaffected by 422's scope) — no discrete-case analogue was built or is referenced by
+477-479. No active task (`grep` over every description) references 422's specified deliverable
+symbols. **422 supplies nothing 477-479 did not already deliver via a different, non-isomorphism
+route.**
+
+**(b) Does 169's `BXCanonical`-side target still have a consumer, or was its only consumer the
+now-closed theorem?**
+Its only consumer was `countermodel_discrete` itself. 169's description states its job in full:
+"consume 422's output to close `countermodel_discrete`, delete the Transfer.lean sorry, and
+re-verify `#print axioms completeness` reports no `sorryAx`." All three of those outcomes are
+**already accomplished** by 479 (confirmed fresh, Phase 1 of this ledger: C2 shows `completeness`
+clean, C3 shows zero live sorries). 169's `file_scope`
+(`BXCanonical/Completeness.lean`, `BXCanonical/Chronicle/`) names files whose relevant obligation
+(the Base discrete branch of `completeness`) is now discharged from a different file
+(`WeakCanonical/GroupModel/CountermodelBase.lean`) that 169 never named. **169 has no remaining
+consumer for its stated deliverable.**
+
+**(c) Is 95's confirmation pass already satisfiable today given C2's clean axiom sets, and does
+it still need to wait on 169?**
+95's "what remains" is a three-step confirmation pass: (1) re-run `#print axioms`/`lean_verify` on
+the headline theorems; (2) confirm the live sorry count is exactly 1, located in
+`WeakCanonical/Transfer.lean`; (3) record that discharging `countermodel_discrete` is genuine open
+construction belonging to its own task. **Step (2) as written can no longer be satisfied — the
+live sorry count is ZERO, not 1** (Phase 1, this dispatch). Step (3)'s prediction has been
+fulfilled in exactly the form it anticipated ("proving it belongs to its own task" — the 477-479
+chain), so there is nothing left to *record* as open; it is closed. Step (1) is satisfiable today
+(Phase 1's C2 run already performs it) and does **not** need to wait on 169 — 169 was never a
+prerequisite for running `check-module-invariants.sh`, and 95's own dependency on 169 exists only
+because 169 was expected to be the closer of the last sorry, which did not happen via 169's route.
+**95's confirmation-pass job is fully subsumed by Phase 1 of this ledger; nothing distinct remains
+for it to do.**
+
+### Verdicts
+
+| Task | Verdict | Action |
+|---|---|---|
+| **422** | **REMOVE** (propose abandonment) | Its specified deliverables are permanently refuted (isomorphism) or superseded by a different technique that consumed none of them (restricted-coherence analogues). No consumer remains. |
+| **169** | **REMOVE** (propose abandonment) | Its sole deliverable (close `countermodel_discrete` via 422's output) is already fully accomplished via a different route (477-479). No remaining consumer for its `file_scope`. |
+| **95** | **REMOVE** (propose abandonment) | Its confirmation-pass content is subsumed by this task's own Phase 1 evidence ledger, which already performed steps (1)-(3) fresh and found the state 95 predicted as its "most likely" closing outcome, minus the need for a separate task to have closed it via 169's specific route. |
+
+This is a **conclusive** finding, symbol-grounded and cross-checked two ways (report 02's
+narrative plus this dispatch's independent re-read of `Transfer.lean`'s current header and the
+three tasks' own descriptions) — the plan's declared fallback (REVISE-with-open-question) is not
+invoked because the evidence does not leave a genuine open question.
+
+### Abandonment arguments (for Phase 8's report; no transition performed here)
+
+**422** — `discharge_or_replace_unorderedsuccessorlabelclosed_residual`-style candor: propose
+abandonment because its specified deliverables are (a) permanently refuted at the isomorphism
+level per its own machine-checked report 01, and (b) superseded — the goal they existed to serve
+was reached by a different, already-completed three-task chain (477-479) that used none of them.
+Re-attempting deliverable (a) would violate the refutation's own "do not re-attempt" instruction
+(carried into 477/478/479's own non-goals sections verbatim). No downstream task references
+deliverable (a) or (b)'s symbols.
+
+**169** — propose abandonment because its sole deliverable (closing `countermodel_discrete`) is
+already closed, via a route (477-479) that did not consume 169's stated inputs
+(`BXCanonical/Completeness.lean`, `BXCanonical/Chronicle/`) or 422's output. Nothing in 169's
+`file_scope` names an obligation still open.
+
+**95** — propose abandonment because its narrow confirmation-pass content is fully subsumed by
+this task's own Phase 1 baseline re-verification (C2/C3, this dispatch), which already performed
+exactly what 95 asks for and found the sorry count to be zero (95's own step (2) can no longer be
+satisfied as originally written, since it presupposes exactly one live sorry in `Transfer.lean`).
+
+### Observation: task 362's dependency on 169 (not actioned — out of this phase's 3-task scope)
+
+362 (`main_strong_completeness` capstone) lists `169` among its dependencies
+(`[361,375,169,170,424]`) and its own DEPENDENCY STATUS prose states "169 (base weak) not_started"
+and "170 (dense weak) not_started" — the latter is independently stale (170 is archived
+`completed`, reconfirmed CURRENT by report 02 §4 and by this dispatch's C2 run). 362's actual
+requirement is that the Base and Dense weak completeness engines be sorry-free, which they already
+are (Phase 1, C2). If 169 is abandoned per this phase's recommendation, 362's `169` dependency
+edge would need either removal (the underlying obligation is already met) or reinterpretation.
+This is **flagged for the Phase 8 report and for whoever acts on the proposed abandonments** —
+adjudicating or revising 362 itself is outside this phase's declared scope (exactly 169/422/95)
+and outside the plan's REVISE list (412/428/429/462/178/177). Not actioned here.
+
+### Hard-constraint check for this phase
+
+No task status transitioned. No `.lean` file touched (`git diff --stat` — ledger append only).

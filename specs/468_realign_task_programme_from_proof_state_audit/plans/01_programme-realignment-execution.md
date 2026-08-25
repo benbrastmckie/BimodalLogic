@@ -200,7 +200,7 @@ recomputed values everywhere downstream; never hard-code 48 or 480.
 
 ---
 
-### Phase 2: Adjudicate 169, 422, and 95 against the 477-479 closure [NOT STARTED]
+### Phase 2: Adjudicate 169, 422, and 95 against the 477-479 closure [COMPLETED]
 
 **Goal**: Settle the single highest-priority open question report 02 surfaced and could not answer
 within a research-only charter: whether tasks 169, 422, and 95 still describe live work now that
