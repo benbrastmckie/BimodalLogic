@@ -1,7 +1,7 @@
 # Implementation Plan: README Correction — Top-Level and `FormalSystem/**`
 
 - **Task**: 485 - README CORRECTION: rewrite the top-level `README.md` and repair the `FormalSystem/**/README.md` layer
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 13.5 hours
 - **Dependencies**: 484 (complete — its corrected `specs/ROADMAP.md` and `FormalSystem/Metalogic/README.md` are the ground-truth anchors this task realigns against)
 - **Research Inputs**: specs/485_readme_correction_toplevel_and_formalsystem/reports/01_readme-correction-verification.md
@@ -280,30 +280,30 @@ No file appears in two territories. If parallel dispatch is not used, run phases
 
 ---
 
-### Phase 1: `README.md` — remove the false sorry claim and correct proof status [NOT STARTED]
+### Phase 1: `README.md` — remove the false sorry claim and correct proof status [COMPLETED]
 
 **Goal**: Delete the "Active sorry obligations" section, replace "axiom-free" with the house
 phrasing, and rewrite the proof-status prose at `:127-152` so all four frame classes and the
 three-way strong-completeness split are stated correctly.
 
 **Tasks**:
-- [ ] Run `bash scripts/check-module-invariants.sh` and record the C3 line verbatim as the
+- [x] Run `bash scripts/check-module-invariants.sh` and record the C3 line verbatim as the
       evidence for the deletion below.
-- [ ] **A1**: delete `README.md:154-156` ("Active sorry obligations") entirely. It names
+- [x] **A1**: delete `README.md:154-156` ("Active sorry obligations") entirely. It names
       `WeakCanonical/Transfer.lean` and `WeakCanonical/Separation/` as carrying sorries; neither
       does. This is the single most damaging line in the file.
-- [ ] **A10**: replace `:129`'s "sorry-free and axiom-free (no `sorryAx` dependency)" with the
+- [x] **A10**: replace `:129`'s "sorry-free and axiom-free (no `sorryAx` dependency)" with the
       house phrasing transcribed verbatim from `FormalSystem/Metalogic.lean:48`. Never write
       "axiom-free".
-- [ ] **A2**: correct `:129` ("continuous and discrete completeness have remaining obligations")
+- [x] **A2**: correct `:129` ("continuous and discrete completeness have remaining obligations")
       and the mermaid Discrete node at `:136` — `completeness_discrete` is proven and
       axiom-clean.
-- [ ] **A3**: mark Continuous/Dedekind soundness and completeness as proven at both the mermaid
+- [x] **A3**: mark Continuous/Dedekind soundness and completeness as proven at both the mermaid
       node (`:135`) and the axiom table (`:150`, currently `--` / `--`). Add the binder clause:
       both results are stated against `ValidDedekindDense`, not the density-free `ValidDedekind`,
       because `density` and `dense_indicator` are admissible in a Dedekind derivation and both
       are false on `Z` (`Axioms.lean:499-502`). One clause suffices; it must not be dropped.
-- [ ] **A5**: rewrite `:129-152` to adopt the repo's settled terminology
+- [x] **A5**: rewrite `:129-152` to adopt the repo's settled terminology
       (`StrongCompleteness.lean:25-41`: "strong completeness" is reserved for a possibly-infinite
       premise set; `Context` is `List Formula`, so every context here is finite). State the
       three-way status — weak plus finite-context consequence completeness PROVEN for all four

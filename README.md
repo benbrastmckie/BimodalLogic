@@ -16,9 +16,9 @@ The repository implements the syntax, task semantics, proof theory, and metalogi
 
 | Metric | Count |
 |--------|-------|
-| Lean files | 301 |
-| Lines of code | ~109,364 |
-| Comment lines | ~50,913 |
+| Lean files | 539 |
+| Lines of code | ~170,898 |
+| Comment lines | ~96,290|
 
 To get current numbers (excludes `.lake` dependencies and `Boneyard/`), run:
 
@@ -126,14 +126,22 @@ For detailed setup instructions, see [Installation Guide](docs/installation/BASI
 
 ## Metalogical Results
 
-The metalogic is organized around a base axiom system with three extensions: Dense, Continuous, and Discrete. All soundness results are sorry-free and axiom-free (no `sorryAx` dependency). Completeness is established for the base and dense systems; continuous and discrete completeness have remaining obligations.
+The metalogic is organized around a base axiom system with three extensions: Dense, Continuous, and Discrete. Every flagship soundness and completeness result below is `SORRY-FREE (sorryAx-free; axioms: exactly propext, Classical.choice, Quot.sound)`. Weak completeness and finite-context consequence completeness are proven for **all four** frame classes — Base, Dense, Discrete, and Continuous.
+
+**Strong completeness** is a separate and weaker-established matter. The repository reserves the term for consequence from a possibly-infinite premise set `Γ : Set Formula`; the results above are *finite*-context (`Context` is `List Formula`, so every context here is finite, and each such result is inter-derivable with the corresponding weak form through the deduction theorem). The infinitary statement has three distinct statuses across the four classes, which must not be collapsed into one:
+
+- **Discrete** — **refuted**. `strongCompletenessDiscrete_refuted` and its companion `discrete_consequence_not_compact` (`Metalogic/DiscreteNonCompactness.lean`) settle it negatively.
+- **Base** and **Dense** — **open**. Neither proved nor refuted; `CompactBase`/`StrongCompletenessBase` and `CompactDense`/`StrongCompletenessDense` (`Metalogic/SetConsequence.lean`) name the obligations.
+- **Continuous** — **not stated**, and unavailable on the primary source's own terms. Reynolds 1992 Theorem 7 is weak-only, and this tree contains no `CompactDedekind` definition and no refuting theorem, so the class is *unproved* rather than refuted.
+
+Soundness and completeness for the Continuous class are both stated against the *dense* Dedekind validity predicate `ValidDedekindDense`, not the density-free `ValidDedekind`: `density` and `dense_indicator` are admissible in a Dedekind derivation and both are false on ℤ (`FormalSystem/ProofSystem/Axioms.lean`).
 
 ```mermaid
 graph TD
     B("<b>Base</b><br/>AddCommGroup<br/>LinearOrder · Nontrivial<br/>NoMaxOrder · NoMinOrder<br/>37 axioms<br/>Sound ✓ · Complete ✓")
     D("<b>Dense</b><br/>+ DenselyOrdered<br/>Base + 1 axiom<br/>Sound ✓ · Complete ✓")
-    C("<b>Continuous</b><br/>+ DedekindComplete<br/>Dense + 1 axiom<br/>Sound ✗ · Complete ✗")
-    Z("<b>Discrete</b><br/>+ SuccOrder · PredOrder<br/>+ IsSuccArchimedean<br/>Base + 3 axioms<br/>Sound ✓ · Complete ⧖")
+    C("<b>Continuous</b><br/>+ DedekindComplete<br/>Dense + 1 axiom<br/>Sound ✓ · Complete ✓")
+    Z("<b>Discrete</b><br/>+ SuccOrder · PredOrder<br/>+ IsSuccArchimedean<br/>Base + 3 axioms<br/>Sound ✓ · Complete ✓")
 
     B --> D
     D --> C
@@ -147,13 +155,9 @@ graph TD
 | **Base** | 37 | seriality built in (`⊤ → F⊤`, `⊤ → P⊤`) | — | `soundness` | `completeness` |
 | **Discrete** | 40 | `Fφ → U(φ,¬φ)`, `Pφ → S(φ,¬φ)`, `G(Gφ→φ) → (FGφ→Gφ)` | ℤ | `soundness_discrete` | `completeness_discrete` |
 | **Dense** | 38 | `Fφ → FFφ` | ℚ | `soundness_dense` | `completeness_dense` |
-| **Continuous** | 39 | `G(Pφ → FPφ) → (Pφ → Fφ)` | ℝ | — | — |
+| **Continuous** | 39 | `G(Pφ → FPφ) → (Pφ → Fφ)` | ℝ | `soundness_dedekind` | `completeness_dedekind` |
 
 The base system includes propositional (4), S5 modal (5), Burgess-Xu temporal (22), modal-temporal interaction (1), and uniformity (5) axioms. The Dense and Discrete logics are independent extensions — neither subsumes the other. The Continuous logic extends the Dense logic with the completeness axiom CO, which characterizes Dedekind-complete ordered groups. Since every Archimedean discrete order is conditionally complete, CO is already valid on discrete frames; it only adds content over dense frames, distinguishing ℚ-like from ℝ-like time.
-
-**Active sorry obligations**:
-
-- *Discrete completeness* (`WeakCanonical/Transfer.lean`, `WeakCanonical/Separation/`): Multiple sorries in the Reynolds/Doets pipeline — truth lemma backward cases (G/H/Until/Since), monadic FO Tarski semantics, and gap-elimination lemmas. These represent standard model-theoretic results (Doets 1989) pending formalization.
 
 ---
 
