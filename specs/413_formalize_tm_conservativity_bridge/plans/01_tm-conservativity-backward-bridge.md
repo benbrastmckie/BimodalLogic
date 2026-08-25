@@ -463,39 +463,48 @@ inventing a fourth step, and re-estimate before continuing.
 
 ---
 
-### Phase 6: Base-row axiom discharge [NOT STARTED]
+### Phase 6: Base-row axiom discharge [COMPLETED]
 
 **Goal**: For every Base-row TM axiom constructor, a BL+ derivation of its translation at
 `FrameClass.Base` — the table that makes the Phase 8 `axiom` case a lookup rather than a proof.
 
 **Tasks**:
-- [ ] Create `FormalSystem/BaseLanguage/AxiomDischarge.lean`; import `BaseLanguage.Axioms`,
+- [x] Create `FormalSystem/BaseLanguage/AxiomDischarge.lean`; import `BaseLanguage.Axioms`,
       `BaseLanguage.Translation`, `ProofSystem`, and the `Theorems.*` modules named below.
-- [ ] Work report §5.2's table top to bottom, one lemma per row, each of shape
+- [x] Work report §5.2's table top to bottom, one lemma per row, each of shape
       `|-[FrameClass.Base] tr (<the BL axiom formula>)`:
       - CPL group -> `Axiom.prop_k`, `prop_s`, `ex_falso`, `peirce` (direct)
       - MK -> `Axiom.modal_k_dist` (direct)
       - MT -> `Axiom.modal_t` (direct)
       - M5 -> `Axiom.modal_5_collapse` (direct)
-      - MF -> `Axiom.modal_future` (**exact syntactic match**)
+      - MF -> `Axiom.modal_future` (**exact syntactic match** — CONFIRMED by `rfl`-level
+        comparison; the only "exact match" claim in the report that survives)
       - TK -> `Theorems.TemporalDerived.gDistribution` (`TemporalDerived.lean:259`, sorry-free)
       - T4 -> `Theorems.TemporalDerived.gTransitivity` (`TemporalDerived.lean:274`, sorry-free)
       - TB -> `Axiom.serial_future` (`top -> F top`) + MP on `top`; cf.
-        `ContextualProofs.serial_future_ctx:294`
-      - TA -> `Axiom.connect_future` (**exact syntactic match**)
+        `ContextualProofs.serial_future_ctx:294` *(deviation: altered — plus the `F`-bridge, for
+        the same structural reason as TA)*
+      - TA -> `Axiom.connect_future` (**exact syntactic match** — *deviation: REFUTED.*
+        `tr (P a) = ¬H¬(tr a)`, not `Formula.somePast (tr a)`, so TA needs the `P`-bridge
+        pushed under `G`. See the Phase 4 deviation note; the mismatch is structural, not
+        incidental.)
       - TL -> `Axiom.temp_linearity` (`Axioms.lean:253`) **plus a propositional reshuffle**: the
         paper's `F(F phi AND psi) OR F(phi AND psi) OR F(phi AND F psi)` vs. the repo's
         `F(phi AND psi) OR (F(phi AND F psi) OR F(F phi AND psi))` — same three disjuncts,
         different order and association. Discharge with `orElim`/`orIntro` from
         `Theorems/Propositional/`. This is the only Base-row friction; budget most of the phase
         here.
-- [ ] MP, MN and TD are **rules** and are discharged in Phase 8's recursion, not here.
-- [ ] Each lemma's statement must be phrased in the form the Phase 8 `axiom` case will consume —
+- [x] MP, MN and TD are **rules** and are discharged in Phase 8's recursion, not here.
+- [x] Each lemma's statement must be phrased in the form the Phase 8 `axiom` case will consume —
       i.e. `tr` applied to the BL axiom formula, reduced via the Phase 4 push-through lemmas.
       Write one such lemma against the Phase 8 skeleton *first* to fix the shape, then fill in.
-- [ ] Uncomment the `AxiomDischarge` import in `FormalSystem/BaseLanguage.lean`.
+- [x] Uncomment the `AxiomDischarge` import in `FormalSystem/BaseLanguage.lean`.
 
 **Timing**: 2 hours
+
+**Note on execution**: Phases 6 and 7 were executed in one file write. The plan already has
+Phase 7 appending to the file Phase 6 creates and marks them sequential rather than parallel,
+so this changes no ordering; it only avoids a throwaway intermediate build.
 
 **Depends on**: 2, 4, 5
 
@@ -523,24 +532,30 @@ a licence to weaken the statement.
 
 ---
 
-### Phase 7: Extension-row axiom discharge — DN, CO, DF [NOT STARTED]
+### Phase 7: Extension-row axiom discharge — DN, CO, DF [COMPLETED]
 
 **Goal**: The three extension axioms discharged at their respective frame classes, completing the
 lookup table.
 
 **Tasks**:
-- [ ] DN at `Dense`: `Axiom.density phi` (`Axioms.lean:358`) is **literally the same formula**.
-      Confirm by `rfl` and close in one line.
-- [ ] CO at `Dedekind`: `Theorems.DedekindDerived.co_derived {fc} (h_fc : Dedekind <= fc) (phi) :
+- [x] DN at `Dense`: `Axiom.density phi` (`Axioms.lean:358`) is **literally the same formula**.
+      Confirm by `rfl` and close in one line. *(completed: literal-match claim CONFIRMED; the
+      discharge is one `DerivationTree.axiom` consuming the BL-side `h_fc` unchanged.)*
+- [x] CO at `Dedekind`: `Theorems.DedekindDerived.co_derived {fc} (h_fc : Dedekind <= fc) (phi) :
       |-[fc] Formula.co phi` (`DedekindDerived.lean:372`, already sorry-free). Confirm that
       `Formula.co` (`Formula.lean:506`) unfolds to the same formula as `tr (CO phi)` after the
       Phase 4 push-through lemmas; if the association differs, reshuffle as in Phase 6's TL step.
-- [ ] DF at `Discrete`: use Phase 5's `dfSchema`. Confirm its statement matches
+- [x] DF at `Discrete`: use Phase 5's `dfSchema`. Confirm its statement matches
       `tr (DF phi)` exactly; any residual mismatch is reassociation work, done here.
-- [ ] Each lemma carries the `minFrameClass <= fc` side condition in the same shape Phase 8 needs;
+- [x] Each lemma carries the `minFrameClass <= fc` side condition in the same shape Phase 8 needs;
       discharge those conditions by `decide` (`FrameClass` is finite with `DecidableEq` and a
-      `DecidableRel` instance, `Axioms.lean:531`).
-- [ ] Append to `FormalSystem/BaseLanguage/AxiomDischarge.lean` (same file as Phase 6 — hence the
+      `DecidableRel` instance, `Axioms.lean:531`). *(deviation: altered — `decide` is NOT usable
+      here: the goals carry a free `fc`, and `decide` rejects a goal with free variables. No
+      `decide` was needed either: on each extension row the BL-side `h_fc` reduces to exactly
+      the hypothesis the BL+ asset already wants (`Dense <= fc`, `Dedekind <= fc`,
+      `Discrete <= fc`), so it is threaded through unchanged; Base rows use
+      `FrameClass.base_le fc`.)*
+- [x] Append to `FormalSystem/BaseLanguage/AxiomDischarge.lean` (same file as Phase 6 — hence the
       sequential dependency rather than a parallel wave).
 
 **Timing**: 1 hour

@@ -8,7 +8,7 @@ import FormalSystem.BaseLanguage.Formula
 import FormalSystem.BaseLanguage.Axioms
 import FormalSystem.BaseLanguage.Derivation
 import FormalSystem.BaseLanguage.Translation
--- import FormalSystem.BaseLanguage.AxiomDischarge
+import FormalSystem.BaseLanguage.AxiomDischarge
 
 /-!
 # `FormalSystem.BaseLanguage` — the tense-primitive base language BL and its logic TM
