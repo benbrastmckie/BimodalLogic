@@ -11,17 +11,18 @@ next_project_number: 483
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,193,257,298,433,461,462,476,481 | -- | automation, dataset-enhancement, decidability, ... |
-| 2 | 125,178,231,282,296,463 | 193,298,461,462 | algebraic-representation, dataset-enhancement, decidability, ... |
-| 3 | 219,464 | 231,463 | dataset-enhancement, decidability |
-| 4 | 465 | 464 | decidability |
-| 5 | 428 | 433,465 | decidability |
-| 6 | 429 | 428 | decidability |
-| 7 | 410 | 429 | decidability |
-| 8 | 411 | 410 | decidability |
-| 9 | 430 | 411 | decidability |
-| 10 | 177,412 | 193,430 | decidability, formula-refactor |
-| 11 | 482 | 412 | decidability |
+| 1 | 127,128,193,257,298,433,461,476,481 | -- | automation, dataset-enhancement, decidability, ... |
+| 2 | 125,178,231,282,296,462 | 193,298,461,481 | algebraic-representation, dataset-enhancement, decidability, ... |
+| 3 | 219,463 | 231,462 | dataset-enhancement, decidability |
+| 4 | 464 | 463 | decidability |
+| 5 | 465 | 464 | decidability |
+| 6 | 428 | 433,465 | decidability |
+| 7 | 429 | 428 | decidability |
+| 8 | 410 | 429 | decidability |
+| 9 | 411 | 410 | decidability |
+| 10 | 430 | 411 | decidability |
+| 11 | 177,412 | 193,430 | decidability, formula-refactor |
+| 12 | 482 | 412 | decidability |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -52,13 +53,13 @@ next_project_number: 483
           └─ 430 [NOT STARTED] — The semantic lift and the Track A assembly. Owns obstruction O4 o
             └─ 412 [NOT STARTED] — Track B finish for the TM tableau decidability program (parent: t
               └─ 482 [NOT STARTED] — CLASSIFICATION: OPEN MATHEMATICS, multi-month. This MUST NOT be r
-462 [NOT STARTED] — Land the engine-level assembly that lets `MintPaysForTimeFixed` b
-  └─ 463 [NOT STARTED] — Decide `PostBlockingSettlesRun fc (mintAwareFuelAt U.card Tmax mi
-    └─ 464 [NOT STARTED] — Design and land `gapPotential`, the density coordinate of the ter
-      └─ 465 [NOT STARTED] — Complete the terminus restatement family at the repaired residual
-        └─ 428 [BLOCKED] — Engine totality at a quantified branch budget. Owns obstruction O (see above)
 476 [NOT STARTED] — THE BOX-FAITHFUL SMALL-MODEL THEOREM.
-481 [NOT STARTED] — CLASSIFICATION: genuinely open -- the predicate is refuted as sta
+481 [RESEARCHED] — CLASSIFICATION: genuinely open -- the predicate is refuted as sta
+  └─ 462 [NOT STARTED] — Land the engine-level assembly that lets `MintPaysForTimeFixed` b
+    └─ 463 [NOT STARTED] — Decide `PostBlockingSettlesRun fc (mintAwareFuelAt U.card Tmax mi
+      └─ 464 [NOT STARTED] — Design and land `gapPotential`, the density coordinate of the ter
+        └─ 465 [NOT STARTED] — Complete the terminus restatement family at the repaired residual
+          └─ 428 [BLOCKED] — Engine totality at a quantified branch budget. Owns obstruction O (see above)
 
 ### Formula Refactor
 
@@ -104,10 +105,11 @@ PROVENANCE: specced by task 468's realignment (report `specs/468_realign_task_pr
 
 ### 481. Discharge or replace unorderedsuccessorlabelclosed residual
 - **Effort**: large
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 434
+- **Specs/481_discharge_or_replace_unorderedsuccessorlabelclosed_residual/reports/01_unorderedsuccessorlabelclosed-verdict.md**: [report]
 
 **Description**: CLASSIFICATION: genuinely open -- the predicate is refuted as stated, so this is a repair-or-replace problem, not routine discharge. This is the FIFTH termination residual; the four-residual framing used elsewhere in this programme (`UniverseClosed`, `DifficultyBounded`/`StepLengthBounded`, `MintPaysForTime`, `PostBlockingSettles`) is WRONG and must be corrected wherever it recurs.
 
@@ -1661,7 +1663,7 @@ Dependencies: 462, as a file_scope SERIALIZATION edge only (both tasks edit Mint
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: decidability
-- **Dependencies**: Task 469, Task 470
+- **Dependencies**: Task 469, Task 470, Task 481
 
 **Description**: Land the engine-level assembly that lets `MintPaysForTimeFixed` be discharged at a NONEMPTY universe. This is the plumbing half of the residual task 434 left open at its Phase 8; it is explicitly proof engineering, not open mathematics, and task 434's own handoff records it as "spawnable on its own".
 
