@@ -38,7 +38,7 @@ next_project_number: 477
 
 ### Completeness
 
-413 [RESEARCHED] — Formalize the TM+ over TM conservativity bridge in Lean 4 (paper 
+413 [RESEARCHED] — Formalize the TM+ over TM conservativity bridge in Lean 4 -- BACK
 95 [NOT STARTED] — Verify and record the final axiom/sorry status of the headline me
 
 ### Dataset Enhancement
@@ -1972,11 +1972,66 @@ Acceptance: the refuted-route comment (the "(i) a Base-MCS ... (ii) a Henkin-sty
 - **Dependencies**: Task 439, Task 470
 - **Research**: [413_formalize_tm_conservativity_bridge/reports/01_tm-conservativity-bridge.md]
 
-**Description**: Formalize the TM+ over TM conservativity bridge in Lean 4 (paper thm:ConservativeExtension, CEB/CEF/CED/CEC): add a BL base-language Formula type with primitive box/G/H, its TM axiom set and derivation trees, a translation into the existing BL+ Formula type, and prove that TM+ derivability of a translated BL-formula yields TM derivability, supplying the missing step in the paper's cor:tm-completeness route
+**Description**: Formalize the TM+ over TM conservativity bridge in Lean 4 -- BACKWARD DIRECTION ONLY, plus a documented refutation record for the forward direction.
 
-ANCHORS RE-VERIFIED 2026-08-10: \label{thm:ConservativeExtension} [Conservative Extension] and \label{cor:tm-completeness} [Completeness] both resolve in the current paper. Cite by \label only, never bare line numbers; before consuming any semantic definition, run `bash scripts/check-paper-definitions.sh` and cite specs/paper-definitions-of-record.md rather than the paper directly.
+=== MOTIVATION (RESTATED 2026-08-24; the original clause was stale) ===
 
-NEW PAPER CONTENT THIS TASK MUST KNOW (2026-08-10): cor:tm-completeness's proof now carries a footnote (source-tagged 'task 52 total-histories: optional S43 hedge') stating that the machine-checked completeness results in THIS repository are for "a parametric variant of the semantics in which validity is relativized to a designated shift-closed set of histories"; that their transfer to the paper's total-history semantics "proceeds by a strand construction covering BL and BL+ only, and is not itself machine-checked"; and that the transfer must verify the biconditional Compositionality, Seriality, and Spherical axioms of def:frame for the strand-delivered frames (Occurrence then follows by cor:occurrence; Seriality is free wherever Occurrence was already checked; Spherical is automatic for finite W; infinite W is a genuine obligation external to the paper). This footnote sits in exactly the proof this task formalizes. The conservativity bridge itself is PROOF-THEORETIC (translation plus derivability) and therefore does not depend on the semantics refactor -- this task does NOT need tasks 414/415 to land first -- but phrase its Lean statements so they compose with the totality-based validity once 414/415 land, and coordinate naming with the paper-refactor cluster, whose completeness route (task 415) this bridge feeds.
+This task previously claimed it was "supplying the missing step in the paper's cor:tm-completeness route". That is NO LONGER TRUE of the live paper and must not be reinstated. The live cor:tm-completeness's four rows are BL+ systems only and it says nothing about TM. The footnote the original description quoted verbatim (about "a parametric variant of the semantics", a "shift-closed set of histories", and a "strand construction covering BL and BL+ only") does NOT exist in the live paper or in the pinned record.
+
+The actual, current motivation: TM is the tense-primitive base language and BL+ is the until/since-primitive extension the repository formalizes. Nothing in the tree currently relates derivability in the two. This task builds that relation in the direction that is TRUE, and permanently records why the other direction is not.
+
+=== THE ANCHOR IS HISTORICAL, NOT LIVE ===
+
+\label{thm:ConservativeExtension} was DELETED from the paper on 2026-08-14 (commit c0116d04). Do NOT cite it as a live \label -- the "cite by \label only" rule cannot be satisfied for it. Cite the last revision that carried it, 58c7c0c0^ (2026-08-12), and mark every such citation explicitly as historical. Live anchors that DO resolve and may be cited normally: def:BL-language, def:BLplus-language, def:BLplus-defined, thm:BLplus-PastFuture, def:S5, def:BX, def:TMplus, def:TMplus-{f,d,c}, cor:tm-completeness, and the informal TM axiomatization in \S sub:Logic. Before consuming any semantic definition run `bash scripts/check-paper-definitions.sh` and cite specs/paper-definitions-of-record.md rather than the paper directly.
+
+=== DELIVERABLE A: THE BRIDGE (backward direction, zero sorry) ===
+
+1. `BaseLanguage/Formula.lean` -- `BLFormula` with primitive box/allPast/allFuture, `swapBL`, `DecidableEq`, `Countable`, reusing the existing `Atom`. NOTE: the paper writes \Past/\Future for the UNIVERSAL H/G and \past/\future for the existential P/F; getting this backwards transcribes a different logic.
+2. `BaseLanguage/Axioms.lean` -- TM's 12 schemata/rules plus DF/DN/CO, with `minFrameClass`.
+3. `BaseLanguage/Derivation.lean` -- `DerivationTree` mirroring the 7-rule shape, `Derivable`, notation. TM's TD rule is `swapBL`, NOT `swapTemporal`.
+4. `BaseLanguage/Translation.lean` -- `tr`, `tr_swapBL`, range lemmas, `tr_injective`.
+5. `Metalogic/Conservativity.lean` -- `translate` and `derivable_translate`, plus the four named row corollaries `ceb_backward`, `cef_backward`, `ced_backward`, `cec_backward`.
+6. The DF derivation at Discrete -- ITS OWN PHASE (see below).
+
+The backward direction is `TM |- phi  ==>  TM+ |- tr phi`. It holds unconditionally.
+
+=== DELIVERABLE B: THE REFUTATION RECORD (documentation, not proof) ===
+
+7. A module docstring in `Metalogic/Conservativity.lean` recording that the CONVERSE (forward) direction is REFUTED for the Base and Discrete rows and OPEN for the other two, so that no future dispatch re-attempts it. Use this repository's own axioms as the evidence:
+   - CEF/Discrete: `Axiom.z1` (ProofSystem/Axioms.lean, minFrameClass = .Discrete) is built entirely from allFuture/someFuture/imp, so `z1 phi = tr (Z1 phi')` for the obvious BL formula. Hence `|-[Discrete] tr(Z1)` holds by a ONE-LINE axiom invocation while `TM_f |- Z1` is refuted by soundness over Z x_lex Z. The forward direction is false by construction of this repository's own axiom set, with no appeal to completeness.
+   - CEB/Base: `Axiom.discrete_box_necessity` is the paper's TMP-NB (`X top -> box X top`) and `Axiom.modal_5_collapse` is M5; both fall to .Base via `minFrameClass`'s catch-all, so the paper's (Sp) derivation is available verbatim in `|-[FrameClass.Base]`.
+   Cite the deleted-theorem provenance (58c7c0c0^), not a live \label.
+
+=== THE ONE OPEN SUB-OBLIGATION: DF AT FrameClass.Discrete ===
+
+CEF's backward direction needs `|-[Discrete] (H phi AND phi AND F top) -> F(H phi)`. Nothing in the tree proves this. Budget it its own dispatch -- it is the single largest unknown.
+
+ROUTE A (REQUIRED -- syntactic): at the immediate successor s of t, every time < s is <= t, so `H phi AND phi` at t yields `H phi` at s. The pieces exist: `Theorems.DiscreteUnfolding.succIndicator : |-[Discrete] Formula.next Formula.top` gives X top; `Axiom.until_F` with guard bot gives `X psi -> F psi` at Base; the remaining step `H phi AND phi -> X(H phi)` is the past-dual of the one-step unfolding in `unfoldForward`/`unfoldTableForward`. Past duals are FREE -- `DerivationTree.temporal_duality` is a primitive rule applying to any theorem at any frame class, so no past-mirrored axiom is needed.
+
+ROUTE B (fallback only, requires explicit approval before use): `tr(DF)` is valid over Z-time so `completeness_discrete` delivers derivability. Sorry-free, but it makes a proof-theoretic bridge depend on the completeness machinery it is meant to feed -- a presentational regression. Do not take Route B without escalating first.
+
+=== ASSETS ALREADY IN THE TREE (verified 2026-08-24) ===
+
+Base row: CPL/MP/MN/MK/MT/M5 direct; MF = `Axiom.modal_future` (exact syntactic match); TD = `DerivationTree.temporal_duality` + the commutation lemma `tr (swapBL phi) = swapTemporal (tr phi)` (prototyped, compiles clean); TK = `Theorems.TemporalDerived.gDistribution`; T4 = `Theorems.TemporalDerived.gTransitivity`; TB = `Axiom.serial_future` + MP; TA = `Axiom.connect_future` (exact syntactic match). TL is the ONLY Base-row friction: same three disjuncts as `Axiom.temp_linearity` but different order/association -- routine orElim/orIntro plumbing from `Theorems/Propositional/`.
+
+Extension rows: CED's DN is `Axiom.density` (literally the same formula); CEC's CO is `Theorems.DedekindDerived.co_derived`, already sorry-free; CEF's DF is the open item above.
+
+Prior art for SHAPE ONLY (do not reuse content): `FormalSystem/Boneyard/ConservativeExtension/` is an `#exit`-guarded mirrored-type + embedAxiom/embedDerivation skeleton.
+
+Reuse `FrameClass`; do not clone it. Phrase all statements so they compose with the totality-based validity.
+
+=== EXPLICITLY OUT OF SCOPE ===
+
+- The FORWARD direction. Do not state it, and do not discharge it with a sorry -- that would place a sorry on a PROVABLY FALSE statement, which is an unsound placeholder, not deferred debt, and the zero-debt gate forbids it.
+- Any BL-side semantics or soundness theorem.
+- The two-fibre and Z x_lex Z countermodels. A machine-checked (rather than documented) refutation is separate task material and would consume non-Archimedean carrier work that is currently blocked.
+
+=== ACCEPTANCE ===
+
+- `lake build` green; no new sorry; no new axiom.
+- Deliverable A items 1-6 land sorry-free; all four row corollaries stated and proved.
+- Deliverable B docstring present, citing Axiom.z1 and Axiom.discrete_box_necessity by name.
+- `#print axioms` clean on the four row corollaries.
 
 ---
 
