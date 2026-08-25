@@ -93,7 +93,7 @@ next_project_number: 477
 422 [BLOCKED] — Construct the discrete-case analogue of the existing dense chroni
   └─ 169 [NOT STARTED] — Base (FrameClass.Base / general) WEAK completeness green: make th
     └─ 362 [NOT STARTED] — Implement the completeness capstone under the SETTLED TERMINOLOGY
-425 [PLANNING] — Convert the informal argument at FormalSystem/Metalogic/StrongCom
+425 [PLANNED] — Convert the informal argument at FormalSystem/Metalogic/StrongCom
 
 ## Tasks
 
@@ -1815,11 +1815,12 @@ RESUME SEQUENCE: `/research 428` first (discharge the two uncertain claims above
 
 ### 425. Machine check discrete non compactness witness
 - **Effort**: high
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: strong_completeness
 - **Dependencies**: Task 361, Task 423
 - **Research**: [425_machine_check_discrete_non_compactness_witness/reports/01_discrete-non-compactness-witness.md]
+- **Plan**: [425_machine_check_discrete_non_compactness_witness/plans/01_discrete-non-compactness-witness.md]
 
 **Description**: Convert the informal argument at FormalSystem/Metalogic/StrongCompleteness.lean:56-62 into a machine-checked theorem: the FrameClass.Discrete consequence relation is not compact, hence strong completeness is refuted for that class.
 
