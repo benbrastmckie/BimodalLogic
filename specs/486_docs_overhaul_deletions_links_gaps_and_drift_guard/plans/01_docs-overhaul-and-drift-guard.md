@@ -202,19 +202,20 @@ editing; if the count differs, repair the actual set and record the deviation.
 
 ---
 
-### Phase 2: `known-limitations.md` — the Completeness and Decidability Core [NOT STARTED]
+### Phase 2: `known-limitations.md` — the Completeness and Decidability Core [COMPLETED]
 
 **Goal**: Replace the two false limitation entries with the genuine open items, stated in the
 tree's own words.
 
 **Tasks**:
-- [ ] Delete Limitation 1 (`:9-37`, "General Base-Frame Completeness Has Residual Proof Debt", including `:21` and the citation to `BXCanonical/Completeness.lean:187`). `completeness` is at `Completeness.lean:196` and is sorryAx-free per C2
-- [ ] Replace it with the **three** distinct strong-completeness statuses (report F9): Discrete machine-refuted (`DiscreteNonCompactness.lean:280` `strongCompletenessDiscrete_refuted`); Base and Dense open (`SetConsequence.lean:219` `CompactBase`, `:263` `CompactDense`); Dedekind unavailable on Reynolds's terms — unproved **and** unrefuted. Lift the wording from `Metalogic.lean:83-101` and `StrongCompleteness.lean:59-89`; do not collapse the three into two
-- [ ] Rewrite Limitation 6 (`:123-127`, "No Decidability Procedures"). The decision procedure exists (the `FormalSystem/Metalogic/Decidability/` subtree); the sound direction is proved (`Correctness.lean:100` `sound_of_isValid`, `:111` `isValid_sound`); the completeness direction `models phi -> isValid phi fc = true` is open (`Correctness.lean:107-109` is the model phrasing)
-- [ ] Surface, do not elide, the `extractionFailed` caveat: `isKnownValid` is true on `extractionFailed`, which carries no proof witness. The prose is already written at `Correctness.lean:95-99` — quote it
-- [ ] Add a genuine limitation entry for discrete non-compactness (G2): `archWitness` (`DiscreteNonCompactness.lean:102`), `discrete_consequence_not_compact` (`:250`), `strongCompletenessDiscrete_refuted` (`:280`). Lift from `StrongCompleteness.lean:59-72` and `Metalogic.lean:102-110`
-- [ ] Ensure the consequence-completeness / strong-completeness distinction (G9) is stated explicitly, so a reader cannot read the four completeness theorems *as* strong completeness
-- [ ] Repoint the `../../../` escape at `:178` to `implementation-status.md`
+- [x] Delete Limitation 1 (`:9-37`, "General Base-Frame Completeness Has Residual Proof Debt", including `:21` and the citation to `BXCanonical/Completeness.lean:187`). `completeness` is at `Completeness.lean:196` and is sorryAx-free per C2
+- [x] Replace it with the **three** distinct strong-completeness statuses (report F9): Discrete machine-refuted (`DiscreteNonCompactness.lean:280` `strongCompletenessDiscrete_refuted`); Base and Dense open (`SetConsequence.lean:219` `CompactBase`, `:263` `CompactDense`); Dedekind unavailable on Reynolds's terms — unproved **and** unrefuted. Lift the wording from `Metalogic.lean:83-101` and `StrongCompleteness.lean:59-89`; do not collapse the three into two
+- [x] Rewrite Limitation 6 (`:123-127`, "No Decidability Procedures"). The decision procedure exists (the `FormalSystem/Metalogic/Decidability/` subtree); the sound direction is proved (`Correctness.lean:100` `sound_of_isValid`, `:111` `isValid_sound`); the completeness direction `models phi -> isValid phi fc = true` is open (`Correctness.lean:107-109` is the model phrasing)
+- [x] Surface, do not elide, the `extractionFailed` caveat: `isKnownValid` is true on `extractionFailed`, which carries no proof witness. The prose is already written at `Correctness.lean:95-99` — quote it
+- [x] Add a genuine limitation entry for discrete non-compactness (G2): `archWitness` (`DiscreteNonCompactness.lean:102`), `discrete_consequence_not_compact` (`:250`), `strongCompletenessDiscrete_refuted` (`:280`). Lift from `StrongCompleteness.lean:59-72` and `Metalogic.lean:102-110`
+- [x] Also corrected `:157` "All 21 axiom schemas" -> 45 and removed the summary table's task-number citation column *(deviation: altered -- both are Phase 4-class defects, taken here because wave 2 is split by file ownership and this file is Phase 2's exclusive owner)*
+- [x] Ensure the consequence-completeness / strong-completeness distinction (G9) is stated explicitly, so a reader cannot read the four completeness theorems *as* strong completeness
+- [x] Repoint the `../../../` escape at `:178` to `implementation-status.md` *(deviation: altered -- the escape duplicated an existing `implementation-status.md` link two lines above, so it was repointed to `../reference/API_REFERENCE.md` instead of creating a duplicate)*
 
 **Timing**: 2 hours
 
