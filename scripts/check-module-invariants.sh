@@ -19,6 +19,9 @@
 #   C11 Every import inside FormalSystem/Boneyard/ resolves, or is waived
 #   C12 Every slash-shaped source path in docs/ + README.md resolves
 #   C13 Every relative markdown link in docs/ + README.md resolves
+#   C14 Documented axiom/sorry counts match the tree; axiom sets of the two
+#       headline theorems C2 does not cover match their baseline
+#   C9D Task-number citations under docs/ (computed always, soft by default)
 #
 # Every filesystem traversal excludes the archive via `-not -path '*/Boneyard/*'`.
 # The archive was consolidated into a single tree at `FormalSystem/Boneyard/`; the
@@ -62,6 +65,10 @@ RUN_BUILD=1
 ENFORCE_C8=${ENFORCE_C8:-1}   # aggregator convention (enforced)
 ENFORCE_C9=${ENFORCE_C9:-1}   # no task-number citations under FormalSystem/ (enforced)
 ENFORCE_C10=${ENFORCE_C10:-1} # no stale docs/latex/typst paths (enforced)
+# C9D is the C9 rule applied to docs/, which does not yet satisfy it. Computed and
+# reported from the outset; flip to 1 once docs/development/PHASED_IMPLEMENTATION.md
+# and the smaller residue are cleared.
+ENFORCE_C9_DOCS=${ENFORCE_C9_DOCS:-0} # no task-number citations under docs/ (NOT yet enforced)
 
 FAILURES=0
 pass() { printf 'PASS  %-4s %s\n' "$1" "$2"; }
@@ -686,6 +693,112 @@ sys.exit(1 if failures else 0)
 MDPYEOF
 MD_STATUS=$?
 [ "$MD_STATUS" -ne 0 ] && FAILURES=$((FAILURES + 1))
+echo
+
+# ---------------------------------------------------------------------------
+# C14: status-claim tripwires
+#
+# This is the check that closes the loop the rest of this script leaves open.
+# C2 and C3 assert facts about the TREE; nothing asserted that `docs/` agrees
+# with them. It has two halves:
+#
+#   (i)  a content scan of docs/ + README.md for STALE literals -- an axiom count
+#        that is not 45, or a table row documenting a non-zero sorry count. This
+#        half is cheap and always runs.
+#   (ii) `#print axioms` for the two headline theorems that C2's four do not
+#        cover, so that the decidability soundness bridge and Dedekind
+#        completeness are pinned by the BUILD rather than by prose. This half
+#        reuses C2's scratch-file + `lake env lean` machinery, including the
+#        continuation-line rejoin, and skips under --no-build exactly as C2 does.
+#
+# The stale-literal patterns are deliberately narrow. A broad `[1-9]` scan over
+# any line containing "sorry" produces false positives on prose that says the
+# count is zero; the table-row shape is what actually carries a documented count.
+# ---------------------------------------------------------------------------
+C14_FAIL=0
+
+# (i) stale axiom counts. 45 is the constructor count of `inductive Axiom`, per
+# `Axiom.minFrameClass`. 42 is the figure in the stale `Axioms.lean` docstring,
+# which omits the Dedekind layer; 21, 14 and 44 are older figures still.
+STALE_AXIOMS=$(grep -rniE --include='*.md' \
+  '\b(14|21|42|44)[[:space:]]+(axiom|constructor)' docs README.md 2>/dev/null || true)
+STALE_AXIOM_COUNT=$(printf '%s' "$STALE_AXIOMS" | grep -c . || true)
+
+# (i) documented non-zero sorry counts, in table-row shape (`... sorries | 7`).
+# C3 asserts the real inventory is zero, so any such row is stale by construction.
+STALE_SORRIES=$(grep -rniE --include='*.md' \
+  'sorr(y|ies)[^|]*\|[[:space:]]*[1-9]' docs README.md 2>/dev/null || true)
+STALE_SORRY_COUNT=$(printf '%s' "$STALE_SORRIES" | grep -c . || true)
+
+if [ "$STALE_AXIOM_COUNT" -eq 0 ] && [ "$STALE_SORRY_COUNT" -eq 0 ]; then
+  pass C14 "no stale axiom or sorry counts documented in docs/ + README.md"
+else
+  C14_FAIL=1
+  fail C14 "$STALE_AXIOM_COUNT stale axiom count(s), $STALE_SORRY_COUNT documented non-zero sorry count(s)"
+  [ "$STALE_AXIOM_COUNT" -gt 0 ] && printf '%s\n' "$STALE_AXIOMS" | head -10 \
+    | while IFS= read -r l; do note "$l"; done
+  [ "$STALE_SORRY_COUNT" -gt 0 ] && printf '%s\n' "$STALE_SORRIES" | head -10 \
+    | while IFS= read -r l; do note "$l"; done
+  note "the tree is the authority: C3 asserts zero sorries, Axiom.minFrameClass gives 45 axioms"
+fi
+
+# (ii) #print axioms for the two theorems C2 does not cover.
+read -r -d '' C14_BASELINE <<'C14BASE'
+'FormalSystem.Metalogic.Decidability.sound_of_isValid' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.completeness_dedekind' depends on axioms: [propext, Classical.choice, Quot.sound]
+C14BASE
+
+if [ "$RUN_BUILD" -eq 1 ]; then
+  C14_SRC=$(mktemp --suffix=.lean)
+  cat >"$C14_SRC" <<'C14LEAN'
+import FormalSystem
+#print axioms FormalSystem.Metalogic.Decidability.sound_of_isValid
+#print axioms FormalSystem.Metalogic.completeness_dedekind
+C14LEAN
+  C14_OUT=$(lake env lean "$C14_SRC" 2>&1 \
+    | sed -e ':a' -e '$!N' -e 's/\n / /' -e 'ta' -e 'P' -e 'D' \
+    | grep 'depends on axioms')
+  rm -f "$C14_SRC"
+  if [ "$C14_OUT" = "$C14_BASELINE" ]; then
+    pass C14 "decidability soundness and Dedekind completeness match their axiom baseline"
+    while IFS= read -r l; do note "$l"; done <<<"$C14_OUT"
+  else
+    C14_FAIL=1
+    fail C14 "axiom sets diverged from baseline -- this is a HARD STOP, not a new baseline"
+    note "--- expected ---"
+    while IFS= read -r l; do note "$l"; done <<<"$C14_BASELINE"
+    note "--- actual ---"
+    while IFS= read -r l; do note "$l"; done <<<"$C14_OUT"
+  fi
+else
+  info C14 "#print axioms half skipped (--no-build); the content scan above still ran"
+fi
+echo
+
+# ---------------------------------------------------------------------------
+# C9-DOCS: task-number citations under docs/
+#
+# `.claude/rules/no-task-references-in-deliverables.md` binds docs/ exactly as it
+# binds FormalSystem/, but docs/ does not yet satisfy it. Following this script's
+# own documented pattern for an end-state invariant the tree has not reached, the
+# computation runs from the outset and is REPORTED at every gate, while only the
+# flag controls whether it affects the exit code.
+#
+# Do not silently omit this check to keep the gate quiet, and do not flip the flag
+# to 0 once it is 1. Clear the citations instead.
+# ---------------------------------------------------------------------------
+DOCS_TASK_REFS=$(grep -rniE --include='*.md' \
+  '\b(tasks?[[:space:]]+#?[0-9]+|task-[0-9]+)\b' docs 2>/dev/null || true)
+DOCS_TASK_REF_COUNT=$(printf '%s' "$DOCS_TASK_REFS" | grep -c . || true)
+if [ "$DOCS_TASK_REF_COUNT" -eq 0 ]; then
+  pass C9D "zero task-number citations under docs/"
+else
+  MSG="$DOCS_TASK_REF_COUNT task-number citation(s) under docs/ (use a durable anchor instead)"
+  if [ "$ENFORCE_C9_DOCS" -eq 1 ]; then fail C9D "$MSG"; else soft C9D "$MSG (not yet enforced)"; fi
+  printf '%s\n' "$DOCS_TASK_REFS" | cut -d: -f1 | sort | uniq -c | sort -rn | head -5 \
+    | while IFS= read -r l; do note "$l"; done
+  note "set ENFORCE_C9_DOCS=1 to make this exit-code-affecting once the citations are cleared"
+fi
 echo
 
 # ---------------------------------------------------------------------------

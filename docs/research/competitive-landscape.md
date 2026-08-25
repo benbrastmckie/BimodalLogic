@@ -98,7 +98,10 @@ The decision procedure is implemented in Lean 4 with a machine-checked sound dir
 - Very Hard: 115 records (15.8%) — avg valid rate ~49%
 - Valid fraction: 46.8% (stratified sampling; targeted inclusion of axiom instances)
 
-**Anchor coverage**: 14 of 42 axiom constructors (33%) represented in benchmark anchors.
+**Anchor coverage**: 14 of **45** axiom constructors (31%) represented in benchmark anchors.
+The denominator is `Axiom.minFrameClass` (`FormalSystem/ProofSystem/Axioms.lean:588`); an
+earlier figure of 42 came from a stale docstring that omits the Dedekind layer. The numerator
+is this benchmark's own measurement and has not been re-derived here.
 
 ### 2.4 Multi-Representation Schema
 
@@ -338,11 +341,11 @@ These sub-slices enable:
 **Impact**: Medium (improves semantic completeness of the benchmark)  
 **Dependencies**: benchmark\_anchors executable in the Lean 4 project
 
-**Description**: Current anchor coverage is 14 of 42 axiom constructors (33%). Expand to cover all 42 axiom constructors with at least 3 instances each (target: 126+ anchor records). This ensures all TM axiom patterns are explicitly evaluated in the benchmark.
+**Description**: Current anchor coverage is 14 of 45 axiom constructors (31%). Expand to cover all 45 axiom constructors with at least 3 instances each (target: 135+ anchor records). This ensures all TM axiom patterns are explicitly evaluated in the benchmark.
 
 **Acceptance criteria**:
-- At least 3 instances of each of the 42 axiom constructors in bmlogic-bench
-- Total anchor records: ≥126 (vs. current 78)
+- At least 3 instances of each of the 45 axiom constructors in bmlogic-bench
+- Total anchor records: ≥135 (vs. current 78)
 - Overall benchmark size may grow to 800–900 records
 - No regression in existing record labels
 

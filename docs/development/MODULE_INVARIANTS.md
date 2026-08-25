@@ -28,8 +28,24 @@ file and line.
 | C9 | Zero task-number citations under `FormalSystem/` | Task numbers are renumbered by archival and mean nothing to a later reader |
 | C10 | Zero references to the pre-relocation `FormalSystem/{docs,latex,typst}` paths | `docs/`, `latex/` and `typst/` live at the project root |
 | C11 | Every `import` inside `FormalSystem/Boneyard/` resolves, or is waived | The archive is never compiled, so `lake build` cannot see its imports rot. 65 archived import lines were already dangling when the two archives were consolidated |
+| C12 | Every **slash-shaped** source path in `docs/` + `README.md` resolves | C5 matches only *dotted* module names, so the slash form of `FormalSystem/Metalogic/Bundle/BFMCS.lean` is invisible to it. A table naming six source files, four of which did not exist, survived a green gate on exactly this blind spot |
+| C13 | Every relative markdown link in `docs/` + `README.md` resolves | Nothing checked `docs/` links at all; 96 of them had rotted, several pointing outside the repository |
+| C14 | Documented axiom and sorry counts match the tree, and the two headline theorems C2 does not cover match their axiom baseline | C2 and C3 assert facts about the *tree*; C14 is what asserts the *documentation* agrees with them. `docs/` had documented the axiom count as 21 against an actual 45, and the sorry count as 12 against an actual 0 |
+| C9D | Task-number citations under `docs/` (computed always, **soft** by default) | C9's rule binds `docs/` too, but `docs/` does not yet satisfy it. Reported at every gate so the debt is visible rather than forgotten |
 
-## The Three Companion Files
+### Why C5 was not simply extended
+
+C12 is a separate check rather than a widening of C5's regex, and this is deliberate.
+Extending C5 to also match `Bimodal.*` would immediately turn the gate red on occurrences in
+`FormalSystem/**/README.md` that are a separate piece of work. C12 covers the *slash* form over
+a *different scope*, so it can be enforced today without holding the gate hostage to unrelated
+files. Do not merge the two.
+
+C12's pattern includes `Logos/` and `Bimodal/` — the two pre-merge tree roots. Neither resolves
+to anything in the current tree, so any occurrence is a defect by construction, which is the
+point of naming them.
+
+## The Companion Files
 
 ### `scripts/module-invariants-manifest.txt` — known-unreachable modules (C6)
 
@@ -74,16 +90,54 @@ This is not a backlog. Before adding an entry, prove there is no unique target f
 disk; if there is one, fix the import instead. C11 reports entries that no longer occur
 as stale, on the C5 model, so the file cannot become a dumping ground.
 
+### `scripts/markdown-link-allowlist.txt` — link-syntax illustrations (C13)
+
+Markdown **files** (not individual links) whose relative links are not resolution-checked. Only
+two justifications are admissible, and both are about links that illustrate link *syntax*
+rather than links a reader is meant to follow: template snippets showing what a directory
+README should look like, and grep patterns inside a fenced code block that happen to parse as
+markdown links. Three files qualify today.
+
+"This link is broken and I do not want to fix it" is not an admissible reason. Fix the link, or
+delete it and keep the prose.
+
+`scripts/readme-lint.sh` reads the same file, so the two checks cannot disagree about what
+counts as an illustration.
+
+### `scripts/markdown-slash-path-allowlist.txt` — hypothetical source paths (C12)
+
+Slash-shaped paths permitted not to resolve. The bar is a path that is deliberately
+hypothetical — a "create this file" instruction in a guide. Prefer naming the containing
+directory instead, which resolves and needs no entry at all; that is why this file is currently
+**empty**.
+
+Both allowlists report entries that no longer match anything as an `INFO` line, so neither can
+silently rot.
+
 C11 ships enforced, with no `ENFORCE_C11` flag: unlike C8/C9/C10 below, the invariant was
 already true at the moment the check landed, so there was never a red phase to gate.
 
 ## Adding a Check
 
-Checks C8, C9 and C10 describe end-state invariants that a tree in mid-reorganization
+Checks C8, C9, C10 and C9D describe end-state invariants that a tree in mid-reorganization
 does not yet satisfy. Each is computed and reported from the outset but gated behind an
 `ENFORCE_C<n>` variable near the top of the script; while the flag is 0 the check prints
 a `TODO` line and does not affect the exit code. This makes progress visible without a
 permanently-red gate.
+
+`ENFORCE_C9_DOCS` is the live example. It defaults to **0**, and the check reports a
+three-figure citation count at every gate, two thirds of it in a single historical file
+(`PHASED_IMPLEMENTATION.md`). Verify it is a real computation rather than a stub with:
+
+```bash
+ENFORCE_C9_DOCS=1 bash scripts/check-module-invariants.sh --no-build   # exits 1, with a count
+```
+
+Flip the default to 1 once those citations are cleared.
+
+C12, C13 and C14 ship **enforced**, with no flags, because the work that cleared their debt
+landed in the same change that added them. C14 has two halves: a content scan that always runs,
+and a `#print axioms` half that skips cleanly under `--no-build` exactly as C2 does.
 
 **Never flip an `ENFORCE_` flag back to 0 to make a gate pass.** Preventing exactly that
 is why the flags are named and defaulted in the script rather than passed on the command
@@ -101,3 +155,11 @@ line.
 - [Metalogic architecture map](../../FormalSystem/Metalogic/README.md)
 - [Module organization](MODULE_ORGANIZATION.md)
 - [Library README](../../FormalSystem/README.md)
+
+## A note on this file
+
+C12 and C14 scan `docs/`, and this file is in `docs/`. Prose here that names a hypothetical
+source path, or quotes a stale count in the shape the tripwire matches, will fail the very
+checks it documents. That is the checks working, not a false positive: both were caught on this
+page while it was being written. Cite a path that resolves, and phrase a historical count so it
+does not read as a current claim.
