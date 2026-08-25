@@ -12989,6 +12989,115 @@ theorem buildTableauAt_isSome_at_seed_lengthBudget_signedUniverse_untlSnceFree
   buildTableauAt_isSome_at_seed_lengthBudget_signedUniverse_fixed phi hβ hC hT hL hlab hSL
     (mintPaysForTimeFixed_signedUniverse_untlSnceFree fc L _ hfree) hpb hseed
 
+/-! ## D4. The label residual, **replaced**: the `boxFree` shape gate and the world coordinate
+
+**What this section delivers.** A route to clause 1 at `signedUniverse C L`, and to a seed-level
+terminus, that carries **no** `UnorderedSuccessorLabelClosed` hypothesis at all. Section C11 proves
+that residual false at every nonempty finite `L` (`unorderedSuccessorLabelClosed_nonempty_false`),
+so the nine theorems that assume it are vacuously true at exactly the universes anyone cares about.
+A *discharge* of it is therefore not available and never was — it is not a hard lemma, it is a false
+statement. What is available is a **replacement**: a different hypothesis, satisfiable at a nonempty
+`L` and discharged rather than assumed, bought at the price of a syntactic restriction on the stock.
+
+**Why the replacement has to bite on the stock and not on `L`.** `freshWorldHeadroom_not_universal`
+proves that for no nonempty finite `L` does every `L`-confined branch have the headroom: each
+enlargement of `L` raises the reachable `maxWorld` at least as much as it adds, so the gap re-opens.
+Every `L`-side repair is refuted before it is written. The one remaining place to intervene is
+**before the world-minting rules can fire at all**, and that means a condition on the formulas a
+branch may carry.
+
+**Why exactly two rules have to be stopped.** `applyRule_emitted_world_mem` bounds the worlds a rule
+emits at by `b.worldFinset` under exactly two hypotheses, `rule ≠ .boxNeg` and `rule ≠ .diamondPos`.
+Those two inequalities *are* the world-minting census — there is no third rule, and if there were,
+`findApplicableRule_not_worldMinting`'s conclusion below would be incomplete rather than merely
+weak. `boxFree` closes both at the **shape gate**: `.boxNeg` is gated by `isApplicable`'s
+`| .boxNeg, .neg, .box _ => true` arm, and `.diamondPos` by `asDiamond? φ`, whose only matching
+pattern is itself built from a `.box` node. A branch carrying no `.box` anywhere can have neither
+picked, at any frame class and any tracker.
+
+**No frame-class restriction, for the same structural reason as D3.** The exclusion happens at the
+shape gate, before `isApplicable` consults any `fc`-dependent gate, so nothing in this section
+quantifies `fc` away or restricts it.
+
+**What this is not — read this before citing anything below.** The terminus this section builds
+combines `boxFree` with D3's `untlSnceFree`, and the two together collapse the stock to the **purely
+propositional fragment**: atoms, `⊥`, `→`, and nothing else. That is a severe narrowing, and it is
+**forced rather than a proof weakness**. `freshWorldHeadroom_not_universal` rules out every `L`-side
+alternative, so the only handle is the stock; and stopping `.boxNeg` and `.diamondPos` at the stock
+means excluding `□` outright, since both are gated on a `.box` node. No artifact may read this
+section as a discharge over the modal fragment, as a general discharge, or as superseding D3's
+reach: D3's `MintPaysForTime` result covers the whole modal fragment **including** `□`, and this
+section does not. What this section adds is orthogonal to D3 — it removes a *false* hypothesis from
+a terminus, at the one fragment where removing it is possible. -/
+
+/-- **The syntactic condition**: no `.box` node anywhere in the formula.
+
+Stated on the raw constructors rather than on the `asDiamond?` view, for the same reason
+`untlSnceFree` is: it is then manifestly closed under subformulas and manifestly checkable on a
+concrete stock by `rfl`. Like `untlSnceFree` it is *sufficient* rather than necessary — `asDiamond?`
+also rejects `.box`-bearing shapes this predicate excludes outright — and sufficiency is all the
+replacement needs. -/
+def boxFree : Formula → Bool
+  | .atom _ => true
+  | .bot => true
+  | .imp a b => boxFree a && boxFree b
+  | .box _ => false
+  | .untl a b => boxFree a && boxFree b
+  | .snce a b => boxFree a && boxFree b
+
+/-- **The `◇` view is empty on a `boxFree` formula.** `asDiamond? φ` matches only the shape whose
+body is a `.box` node, so a formula with no `.box` anywhere cannot present as a diamond. This is the
+half of the census that is *not* visible from `isApplicable`'s own pattern match, which is why it is
+stated separately. -/
+theorem asDiamond_eq_none_of_boxFree {φ : Formula} (h : boxFree φ = true) :
+    asDiamond? φ = none := by
+  cases φ <;> simp_all [asDiamond?, boxFree]
+  rename_i a b
+  cases a <;> simp_all [boxFree]
+
+/-- **`.boxNeg` is inapplicable to a `boxFree` trigger**, at every frame class. Straight off
+`isApplicable`'s `| .boxNeg, .neg, .box _ => true` arm: the arm requires a `.box` constructor, and
+`boxFree` excludes it. -/
+theorem isApplicable_boxNeg_false_of_boxFree {sf : SignedFormula}
+    {fc : FormalSystem.ProofSystem.FrameClass} (h : boxFree sf.formula = true) :
+    isApplicable .boxNeg sf fc = false := by
+  cases sf with
+  | mk sign formula label =>
+    cases sign <;> cases formula <;> simp_all [isApplicable, boxFree]
+
+/-- **`.diamondPos` is inapplicable to a `boxFree` trigger**, at every frame class. Through
+`asDiamond_eq_none_of_boxFree`: the arm consults the view, and the view is `none`. -/
+theorem isApplicable_diamondPos_false_of_boxFree {sf : SignedFormula}
+    {fc : FormalSystem.ProofSystem.FrameClass} (h : boxFree sf.formula = true) :
+    isApplicable .diamondPos sf fc = false := by
+  cases sf with
+  | mk sign formula label =>
+    cases sign <;>
+      simp_all [isApplicable, asDiamond_eq_none_of_boxFree h]
+
+/-- **The first stage cannot pick a world-minting rule on a `boxFree` trigger.** The world-coordinate
+counterpart of `findApplicableRule_not_mintsFreshTime`, and the fact `pick_stage_source_noWorldMint`
+threads to the successor.
+
+The conclusion is stated as the pair of inequalities `applyRule_emitted_world_mem` asks for, rather
+than as a `ruleMintsFreshLabel` fact, because that lemma's hypotheses are the authoritative census:
+`.boxNeg` and `.diamondPos` are the only two rules that can emit outside `b.worldFinset`, and both
+are gated on a `.box` node — the first by `isApplicable`'s own pattern, the second through
+`asDiamond?`. This is the structural reason the whole route carries no frame-class restriction: the
+shape gate is consulted before any `fc`-dependent gate. -/
+theorem findApplicableRule_not_worldMinting {sf : SignedFormula} {b : Branch}
+    {ord : TimeOrdering} {fc : FormalSystem.ProofSystem.FrameClass}
+    {r : TableauRule} {res : RuleResult} {o : TimeOrdering}
+    (hfree : boxFree sf.formula = true)
+    (h : findApplicableRule sf b ord fc = some (r, res, o)) :
+    r ≠ .boxNeg ∧ r ≠ .diamondPos := by
+  have happ := findApplicableRule_isApplicable h
+  constructor
+  · rintro rfl
+    simp [isApplicable_boxNeg_false_of_boxFree (fc := fc) hfree] at happ
+  · rintro rfl
+    simp [isApplicable_diamondPos_false_of_boxFree (fc := fc) hfree] at happ
+
 
 /-! ## C9. The do-not-re-attempt register
 

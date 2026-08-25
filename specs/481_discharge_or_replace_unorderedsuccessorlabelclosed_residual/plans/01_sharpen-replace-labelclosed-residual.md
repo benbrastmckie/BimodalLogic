@@ -272,33 +272,36 @@ tenth carrier appears, the list is wrong and must be corrected here rather than 
 
 ---
 
-### Phase 3: The `boxFree` shape gate — new section D4 [IN PROGRESS]
+### Phase 3: The `boxFree` shape gate — new section D4 [COMPLETED]
 
 **Goal**: The world-minting escape route is closed at the shape gate, before any frame-class gate is
 consulted, so the replacement carries **no** frame-class restriction.
 
 **Tasks**:
-- [ ] Read `specs/481_discharge_or_replace_unorderedsuccessorlabelclosed_residual/probes/Probe3.lean`
+- [x] Read `specs/481_discharge_or_replace_unorderedsuccessorlabelclosed_residual/probes/Probe3.lean`
       in full. All four theorems compiled first try; transfer them.
-- [ ] Open a new section `/-! ## D4. ... -/` immediately after section D3's last declaration
+- [x] Open a new section `/-! ## D4. ... -/` immediately after section D3's last declaration
       (`buildTableauAt_isSome_at_seed_lengthBudget_signedUniverse_untlSnceFree`, currently `:12786`)
       and before the `/-! ## C9` heading (currently `:12787`).
-- [ ] Write the section docstring in D3's own register (compare `:12377-12419`): what the section
+- [x] Write the section docstring in D3's own register (compare `:12377-12419`): what the section
       delivers, why the two escape routes are the only two, and — critically — a **"What this is not"**
       paragraph stating that combining `boxFree` with `untlSnceFree` collapses the stock to the purely
       propositional fragment, that this narrowing is **forced** rather than a proof weakness
       (`freshWorldHeadroom_not_universal` proves no condition on a finite `L` can absorb a fresh
       world), and that no downstream artifact may read the propositional discharge as a general one.
-- [ ] Add `def boxFree : Formula → Bool`, stated on raw constructors (mirroring `untlSnceFree`'s
+- [x] Add `def boxFree : Formula → Bool`, stated on raw constructors (mirroring `untlSnceFree`'s
       own justification for that choice), with a docstring saying it is *sufficient* rather than
       necessary.
-- [ ] Add `asDiamond_eq_none_of_boxFree`, `isApplicable_boxNeg_false_of_boxFree`,
+- [x] Add `asDiamond_eq_none_of_boxFree`, `isApplicable_boxNeg_false_of_boxFree`,
       `isApplicable_diamondPos_false_of_boxFree`, and `findApplicableRule_not_worldMinting`.
-- [ ] State in the `findApplicableRule_not_worldMinting` docstring that `.boxNeg` is gated by
+      *(deviation: altered — the probe's second `simp_all [asDiamond?, boxFree]` inside
+      `asDiamond_eq_none_of_boxFree` triggers the `unusedSimpArgs` linter in-tree; `asDiamond?` was
+      dropped from that one call. Proof otherwise character-for-character from the probe.)*
+- [x] State in the `findApplicableRule_not_worldMinting` docstring that `.boxNeg` is gated by
       `isApplicable`'s `| .boxNeg, .neg, .box _ => true` arm and `.diamondPos` by `asDiamond? φ`,
       whose only matching pattern also contains a `.box` node — the structural reason the discharge
       carries no frame-class restriction.
-- [ ] Verify: `lake build` green; no `sorry`; no new axiom.
+- [x] Verify: `lake build` green; no `sorry`; no new axiom.
 
 **Timing**: 0.75 hours
 
@@ -307,6 +310,14 @@ consulted, so the replacement carries **no** frame-class restriction.
 **Verification Tier**: local
 
 **Commit Mode**: per-substep
+
+**Scope Hypothesis result** (recorded at implementation time): **confirmed**.
+`applyRule_emitted_world_mem`'s signature carries exactly two inequality hypotheses,
+`(h1 : rule ≠ .boxNeg)` and `(h2 : rule ≠ .diamondPos)`, and no others — so the census is exactly
+two and `findApplicableRule_not_worldMinting`'s conclusion is complete. No third world-minting rule
+exists. Confirmed additionally that `boxFree` collides with no existing name anywhere in
+`FormalSystem/` or `Tests/`. All four theorems transferred from the probe; one deviation, noted on
+the checklist item below.
 
 **Scope Hypothesis**: This phase asserts that exactly two rules (`.boxNeg`, `.diamondPos`) can emit
 at a fresh world, per `applyRule_emitted_world_dichotomy` and `applyRule_emitted_world_mem`'s
@@ -325,7 +336,7 @@ conclusion is incomplete and the whole route must be re-scoped, not patched.
 
 ---
 
-### Phase 4: The world-subset machinery — mirror of D3's time machinery [NOT STARTED]
+### Phase 4: The world-subset machinery — mirror of D3's time machinery [IN PROGRESS]
 
 **Goal**: `unorderedSuccessor_worldFinset_subset`: no unordered successor of a `boxFree` branch
 carries a new world — the world-coordinate mirror of the landed
