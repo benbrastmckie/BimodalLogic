@@ -275,32 +275,35 @@ match *it*, and record the deviation.
 
 ---
 
-### Phase 3: TM derivations — `BaseLanguage.DerivationTree`, `Derivable`, notation [NOT STARTED]
+### Phase 3: TM derivations — `BaseLanguage.DerivationTree`, `Derivable`, notation [COMPLETED]
 
 **Goal**: TM's proof system exists as a `Type`-valued inductive mirroring the BL+ side's 7-rule
 shape, so the Phase 8 recursion is constructor-for-constructor.
 
 **Tasks**:
-- [ ] Create `FormalSystem/BaseLanguage/Derivation.lean`; `abbrev Context := List BLFormula`.
-- [ ] Define `inductive DerivationTree (fc : FrameClass) : Context -> BLFormula -> Type` with the
+- [x] Create `FormalSystem/BaseLanguage/Derivation.lean`; `abbrev Context := List BLFormula`. *(deviation: altered — `Context` was placed in `BaseLanguage/Formula.lean` instead, because `Translation.lean` also needs it and neither file imports the other; defining it in both would collide in the aggregator.)*
+- [x] Define `inductive DerivationTree (fc : FrameClass) : Context -> BLFormula -> Type` with the
       seven rules mirroring `FormalSystem/ProofSystem/Derivation.lean`: `axiom` (with the
       `h.minFrameClass <= fc` side condition), `assumption`, `modus_ponens`, `necessitation`,
       `temporal_necessitation`, `temporal_duality`, `weakening`.
-- [ ] **`temporal_duality` uses `swapBL`, not `swapTemporal`.** Its shape mirrors the BL+ rule:
+- [x] **`temporal_duality` uses `swapBL`, not `swapTemporal`.** Its shape mirrors the BL+ rule:
       empty context on both sides, `DerivationTree fc [] phi -> DerivationTree fc [] phi.swapBL`.
       Read `ProofSystem/Derivation.lean`'s `temporal_duality` constructor and match its
       context discipline exactly.
-- [ ] Define `Derivable (fc) (G) (phi) : Prop := Nonempty (DerivationTree fc G phi)`, mirroring
+- [x] Define `Derivable (fc) (G) (phi) : Prop := Nonempty (DerivationTree fc G phi)`, mirroring
       `ProofSystem/Derivable.lean`.
-- [ ] Add notation distinct from the BL+ side's `|-[fc]` (e.g. `|-BL[fc]` / `G |-BL[fc] phi`).
+- [x] Add notation distinct from the BL+ side's `|-[fc]` (e.g. `|-BL[fc]` / `G |-BL[fc] phi`).
       Verify no clash by building a file that opens both namespaces.
-- [ ] Add the `lift` lemma (`fc1 <= fc2 -> DerivationTree fc1 G phi -> DerivationTree fc2 G phi`)
+- [x] Add the `lift` lemma (`fc1 <= fc2 -> DerivationTree fc1 G phi -> DerivationTree fc2 G phi`)
       mirroring `ProofSystem/Derivation.lean`'s `lift`, if Phase 8's row corollaries will need it.
-- [ ] Module docstring **fidelity note**: TM as axiomatized in the paper has no primitive
+- [x] Module docstring **fidelity note**: TM as axiomatized in the paper has no primitive
       temporal necessitation rule; `|- phi ==> |- G phi` is derivable from MN + MF + MT. Including
       it as a primitive here therefore changes no TM theorem and preserves the 7-rule mirror.
       State this explicitly so a reader does not read the extra rule as a strengthening.
-- [ ] Uncomment the `Derivation` import in `FormalSystem/BaseLanguage.lean`.
+      *(completed and strengthened: the claim is not only stated but discharged by
+      `temporalNecessitationDerivable`, a machine-checked MN+MF+MT derivation of `G` that never
+      uses the `temporal_necessitation` constructor.)*
+- [x] Uncomment the `Derivation` import in `FormalSystem/BaseLanguage.lean`.
 
 **Timing**: 1 hour
 

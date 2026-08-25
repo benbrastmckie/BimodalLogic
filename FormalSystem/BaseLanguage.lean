@@ -6,7 +6,7 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.BaseLanguage.Formula
 import FormalSystem.BaseLanguage.Axioms
--- import FormalSystem.BaseLanguage.Derivation
+import FormalSystem.BaseLanguage.Derivation
 import FormalSystem.BaseLanguage.Translation
 -- import FormalSystem.BaseLanguage.AxiomDischarge
 

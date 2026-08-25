@@ -242,9 +242,6 @@ theorem tr_injective : Function.Injective tr := by
 
 /-! ### Contexts -/
 
-/-- BL-side contexts, mirroring `FormalSystem.Syntax.Context`. -/
-abbrev Context := List BLFormula
-
 /-- The translation lifted to contexts. Definitionally `List.map tr`, so `List.mem_map` and
 friends apply directly at the `assumption` case of the bridge. -/
 abbrev trCtx (Γ : Context) : Syntax.Context := Γ.map tr

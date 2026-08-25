@@ -194,4 +194,10 @@ theorem atom_injective : Function.Injective BLFormula.atom := by
 
 end BLFormula
 
+/-- BL-side proof contexts, mirroring `FormalSystem.Syntax.Context`.
+
+Defined here rather than in `BaseLanguage/Derivation.lean` because both `Derivation.lean` and
+`Translation.lean` need it and neither imports the other. -/
+abbrev Context := List BLFormula
+
 end FormalSystem.BaseLanguage
