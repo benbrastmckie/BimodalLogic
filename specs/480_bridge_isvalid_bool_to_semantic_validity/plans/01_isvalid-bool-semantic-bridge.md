@@ -1,7 +1,7 @@
 # Implementation Plan: Bridge `isValid`'s `Bool` to Semantic Validity
 
 - **Task**: 480 - bridge_isvalid_bool_to_semantic_validity
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 1.5 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/480_bridge_isvalid_bool_to_semantic_validity/reports/01_isvalid-bool-semantic-bridge.md`
@@ -215,20 +215,20 @@ read-through.
 
 ---
 
-### Phase 3: Final gate and summary [NOT STARTED]
+### Phase 3: Final gate and summary [COMPLETED]
 
 **Goal**: Whole-tree acceptance is demonstrated with evidence, and the deliverable plus its scope
 extension is written up.
 
 **Tasks**:
-- [ ] `lake build` (full tree) green.
-- [ ] `#print axioms` on all ten new theorems, output captured; each exactly
+- [x] `lake build` (full tree) green.
+- [x] `#print axioms` on all ten new theorems, output captured; each exactly
       `[propext, Classical.choice, Quot.sound]`.
-- [ ] Tree-wide audit: no new `sorry` and no new `axiom` anywhere. Compare against the
+- [x] Tree-wide audit: no new `sorry` and no new `axiom` anywhere. Compare against the
       pre-change baseline rather than asserting an absolute count.
-- [ ] Confirm the added declaration set is exactly the ten named theorems — no biconditional, no
+- [x] Confirm the added declaration set is exactly the ten named theorems — no biconditional, no
       `isKnownValid` variant, no `Decidable` instance (Non-Goals check).
-- [ ] Write the implementation summary under `summaries/`, explicitly recording (a) the ten
+- [x] Write the implementation summary under `summaries/`, explicitly recording (a) the ten
       theorems, (b) the docstring amendments, (c) the `Decidability.lean` **scope extension**
       beyond the declared `file_scope`, and (d) the carry-forward note for task 430: because
       `isValid φ .Dense = true` yields *unrelativized* `⊨ φ`, the eventual biconditional at
@@ -253,15 +253,15 @@ extension is written up.
 
 ## Testing & Validation
 
-- [ ] `lake build` completes with exit 0 across the whole tree.
-- [ ] `lake build FormalSystem.Metalogic.Decidability.Correctness` completes with exit 0.
-- [ ] `#print axioms FormalSystem.Metalogic.Decidability.sound_of_isValid` (and the other nine)
+- [x] `lake build` completes with exit 0 across the whole tree.
+- [x] `lake build FormalSystem.Metalogic.Decidability.Correctness` completes with exit 0.
+- [x] `#print axioms FormalSystem.Metalogic.Decidability.sound_of_isValid` (and the other nine)
       each report exactly `[propext, Classical.choice, Quot.sound]`.
-- [ ] No `sorryAx` in any `#print axioms` output.
-- [ ] No new `sorry` or `axiom` occurrence anywhere in the tree relative to baseline commit.
-- [ ] Neither `Correctness.lean` nor `Decidability.lean` still asserts that no `isValid`-shaped
+- [x] No `sorryAx` in any `#print axioms` output.
+- [x] No new `sorry` or `axiom` occurrence anywhere in the tree relative to baseline commit.
+- [x] Neither `Correctness.lean` nor `Decidability.lean` still asserts that no `isValid`-shaped
       sound statement is written.
-- [ ] The `validity_decidable` / `validity_has_decision_procedure` retirement narrative is still
+- [x] The `validity_decidable` / `validity_has_decision_procedure` retirement narrative is still
       present and unmodified in substance.
 
 ## Artifacts & Outputs
