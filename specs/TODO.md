@@ -1201,7 +1201,10 @@ result and decidability only. Grounding: specs/reviews/review-2026-08-24.md, Add
 - **Research**:
   - [468_realign_task_programme_from_proof_state_audit/reports/01_proof-state-audit-and-realignment-charter.md]
   - [468_realign_task_programme_from_proof_state_audit/reports/02_stage1-verification-and-programme-realignment.md]
+  - [468_realign_task_programme_from_proof_state_audit/reports/03_implementation-evidence-ledger.md]
+  - [468_realign_task_programme_from_proof_state_audit/reports/04_realignment-decisions-and-verdicts.md]
 - **Plan**: [468_realign_task_programme_from_proof_state_audit/plans/01_programme-realignment-execution.md]
+- **Summary**: [468_realign_task_programme_from_proof_state_audit/summaries/01_programme-realignment-summary.md]
 
 **Description**: PROGRAMME REALIGNMENT FROM A VERIFIED PROOF-STATE AUDIT: restructure the active task set, its
 dependency graph, and specs/ROADMAP.md so that they describe the work actually remaining to close

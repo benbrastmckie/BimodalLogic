@@ -646,7 +646,7 @@ forward as a literal.
 
 ---
 
-### Phase 9: Final verification gate [NOT STARTED]
+### Phase 9: Final verification gate [COMPLETED]
 
 **Goal**: Check the charter's section-8 criteria one by one and record the outcome of each.
 

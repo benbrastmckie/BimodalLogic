@@ -40,6 +40,21 @@
           "path": "specs/468_realign_task_programme_from_proof_state_audit/plans/01_programme-realignment-execution.md",
           "type": "plan",
           "summary": "Nine-phase plan executing the charter's Stages 0-5 against the re-verified proof state."
+        },
+        {
+          "type": "report",
+          "path": "specs/468_realign_task_programme_from_proof_state_audit/reports/03_implementation-evidence-ledger.md",
+          "summary": "Per-phase evidence ledger: fresh C2/C3 re-verification, 169/422/95 adjudication, ROADMAP split accounting, new-task creation record, dependency/counter/critical-path derivation, ROADMAP rewrite grounding."
+        },
+        {
+          "type": "report",
+          "path": "specs/468_realign_task_programme_from_proof_state_audit/reports/04_realignment-decisions-and-verdicts.md",
+          "summary": "Stage 5 decision record: 51-row per-task verdict table, new-task specs, dependency-edge log, ROADMAP grounding, critical path, proposed status corrections, final gate results."
+        },
+        {
+          "type": "summary",
+          "path": "specs/468_realign_task_programme_from_proof_state_audit/summaries/01_programme-realignment-summary.md",
+          "summary": "Implementation summary for the nine-phase programme realignment."
         }
       ],
       "session_id": "sess_1787658359_f24b55"

@@ -367,3 +367,36 @@ future `/task`/`/todo` invocation) to act on.
 - `specs/468_realign_task_programme_from_proof_state_audit/plans/01_programme-realignment-execution.md`
 - `specs/ROADMAP.md`, `specs/ROADMAP-ARCHIVE.md`
 - `specs/reviews/review-2026-08-24.md`
+
+---
+
+## 11. Final verification gate (charter section 8, checked one by one)
+
+| Criterion | Result |
+|---|---|
+| Every active task has a verdict; none silently skipped | **PASS** — 51/51, programmatic diff confirms exact match, §4. |
+| Zero dangling dependency edges across `active_projects` | **PASS** — zero-padded scan, re-run at gate time: 0 dangling. |
+| `generate-todo.sh` regenerates cleanly, no undeclared-topic warning; `generate-task-order.sh --print` exits 0 | **PASS** — both exit 0, no undeclared-topic warning in either. |
+| C5 over the rewritten `specs/ROADMAP.md` | **PASS, with the stated qualification** — C5 proper (part of the full `check-module-invariants.sh` run at gate time, exit 0, ALL CHECKS PASSED) structurally excludes `specs/` from its walk, so it does not read either roadmap file; the C5-equivalent replication (this task's own standalone implementation of C5's `mod_re`/`resolves()` logic) is what actually covers them and reports **zero unresolved module-shaped paths** in both `specs/ROADMAP.md` and `specs/ROADMAP-ARCHIVE.md`, re-run at gate time. |
+| Stage 1b box-anchor verdict recorded | **PASS** — NEGATIVE, §3, cited from the artifact, probe not re-run. |
+| `specs/ROADMAP.md` contains no status claim no check can reproduce | **PASS** — every `## Phase N` section closes with a "Check grounding" line naming the specific C-checks that support it; `grep -c "HISTORICAL\|SUPERSEDED\|STALE"` = 0 (every formerly-stale claim was corrected in place, not banner-flagged). |
+| 177 is divided, or a written argument for leaving it whole is in the report | **PASS** — DIVIDE verdict recorded (§4, Phase 5's REVISE), the retained-half text applied verbatim from report 02 §6, 472/473's territory explicitly excluded. |
+
+**Hard constraints, confirmed held across the whole task 468 implementation range** (baseline
+commit `391e9928f` through this task's final commit):
+
+- `git diff --stat 391e9928f..HEAD -- '*.lean'` — **zero files**. No `.lean` file touched.
+- **No existing task moved to `completed`/`abandoned`/`expanded`** — a full status diff of every
+  pre-existing task (the 48 present at baseline) against the current `specs/state.json` shows
+  exactly one change: task 468 itself, `not_started` → `implementing` (the standard preflight
+  transition for the task under execution, not a transition this task performed on another task,
+  and not one of the three forbidden terminal states). All 47 other pre-existing tasks unchanged;
+  the three new tasks (480-482) were created at `not_started`, which is creation, not a
+  transition, per the plan's own Non-Goals clarification.
+- **Every `specs/state.json` write went through `state-write.sh`** — confirmed by construction
+  (every write command in Phases 4-6 invoked the script directly; no `jq ... > tmp && mv` pattern
+  was used anywhere in this implementation).
+- **`specs/TODO.md` was only ever regenerated** via `generate-todo.sh`, never hand-edited.
+
+All eight charter criteria PASS (one with an explicitly stated, charter-anticipated
+qualification); all four hard constraints confirmed held.
