@@ -424,7 +424,7 @@ any third axis of variation means the mirror is wrong.
 
 ---
 
-### Phase 5: Tracking-table update in `FormalSystem/Metalogic.lean` [NOT STARTED]
+### Phase 5: Tracking-table update in `FormalSystem/Metalogic.lean` [COMPLETED]
 
 **Goal**: Bring the repo-root aggregator's "Publication-Ready Results" list and "Key Components"
 bullet current with what Phases 1–4 landed.
@@ -434,20 +434,20 @@ bullet current with what Phases 1–4 landed.
 lives inside the single module docstring spanning roughly :17–157.
 
 **Tasks**:
-- [ ] Add entries to "Publication-Ready Results" (currently :44–75) for the new consequence
+- [x] Add entries to "Publication-Ready Results" (currently :44–75) for the new consequence
       termini, each with its axiom set stated as exactly `propext`, `Classical.choice`,
       `Quot.sound`, in the style of the existing entries.
-- [ ] Generalize the existing "Consequence completeness (Dedekind)" entry (near :62) to record
+- [x] Generalize the existing "Consequence completeness (Dedekind)" entry (near :62) to record
       that the finite-context consequence form now exists for **all four** classes.
-- [ ] Preserve that entry's terminology caveat verbatim in spirit: `Context` is `List Formula`,
+- [x] Preserve that entry's terminology caveat verbatim in spirit: `Context` is `List Formula`,
       so these are inter-derivable with the weak forms through the deduction theorem and are
       **not** strong completeness. Extend the caveat to cover the three new classes, noting that
       the infinitary statement is machine-refuted for Discrete, open for Base and Dense, and
       unavailable-on-Reynolds's-terms for Dedekind — three distinct statuses that must not be
       collapsed.
-- [ ] Update the `StrongCompleteness.lean` bullet under "Key Components" (near :101) to mention
+- [x] Update the `StrongCompleteness.lean` bullet under "Key Components" (near :101) to mention
       the per-class consequence layer alongside the Dedekind terminus.
-- [ ] If Phase 4's scope extension landed, mention the Base set-layer mirror
+- [x] If Phase 4's scope extension landed, mention the Base set-layer mirror
       (`CompactBase` / `StrongCompletenessBase` as named open obligations) in the same bullet.
 
 **Timing**: 0.5 hours

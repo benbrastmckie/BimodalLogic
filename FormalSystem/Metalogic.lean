@@ -61,9 +61,41 @@ temporal analogs (G phi -> phi, H phi -> phi) are NOT valid under irreflexive se
 - **Consequence completeness (Dedekind)** (`consequence_completeness_dedekind`): SORRY-FREE
   (sorryAx-free; axioms: exactly `propext`, `Classical.choice`, `Quot.sound`). Finite-context
   consequence completeness. This is **not** strong completeness: `Context` is `List Formula`,
-  so it is inter-derivable with the weak form through the deduction theorem, and the
-  infinitary statement is refuted for this class by non-compactness — see the module docstring
-  of `StrongCompleteness.lean`.
+  so it is inter-derivable with the weak form through the deduction theorem — see the module
+  docstring of `StrongCompleteness.lean`. The finite-context consequence form now exists for
+  **all four** frame classes; the three siblings follow.
+- **Consequence completeness (base)** (`consequence_completeness_base`): SORRY-FREE
+  (sorryAx-free; axioms: exactly `propext`, `Classical.choice`, `Quot.sound`). Stated against
+  the existing general `SemanticConsequence` relation (`Semantics/Validity.lean`) rather than a
+  new one, because for `FrameClass.Base` "all carriers" *is* the class. Its soundness guard is
+  `soundness_base_consequence` and its weak corollary `completeness_base`, both at the same
+  axiom set.
+- **Consequence completeness (dense)** (`consequence_completeness_dense`): SORRY-FREE
+  (sorryAx-free; axioms: exactly `propext`, `Classical.choice`, `Quot.sound`). Stated against
+  `SemanticConsequenceDense`, with guard `soundness_dense_consequence` and weak corollary
+  `completeness_dense`, both at the same axiom set.
+- **Consequence completeness (discrete)** (`consequence_completeness_discrete`): SORRY-FREE
+  (sorryAx-free; axioms: exactly `propext`, `Classical.choice`, `Quot.sound`). Stated against
+  `SemanticConsequenceDiscrete`, with guard `soundness_discrete_consequence` and weak corollary
+  `completeness_discrete`, both at the same axiom set.
+
+  **Terminology caveat, binding on all four entries above.** `Context` is `List Formula`, so
+  every one of these is a *finite*-context result, inter-derivable with the corresponding weak
+  form through the deduction theorem. None of them is **strong completeness**, which is reserved
+  for consequence from a possibly-infinite `Γ : Set Formula` under a finitary set-derivability
+  relation. The infinitary statement has **three distinct statuses** across the four classes,
+  which must not be collapsed into one:
+
+  * `FrameClass.Discrete` — **machine-refuted**. `discrete_consequence_not_compact` and
+    `strongCompletenessDiscrete_refuted` (entry below) settle it negatively.
+  * `FrameClass.Base` and `FrameClass.Dense` — **open**. Neither proved nor refuted;
+    `CompactBase`/`CompactDense` and `StrongCompletenessBase`/`StrongCompletenessDense`
+    (`Metalogic/SetConsequence.lean`) name the obligations, and
+    `strongCompletenessBase_of_compact`/`strongCompletenessDense_of_compact` reduce each to its
+    compactness hypothesis alone.
+  * `FrameClass.Dedekind` — **unavailable on the primary source's own terms**. Reynolds 1992
+    Theorem 7 is weak-only, and this tree contains no `CompactDedekind` definition and no
+    refuting theorem, so the class is *unproved* rather than refuted.
 - **Non-compactness (discrete)** (`discrete_consequence_not_compact`): SORRY-FREE (sorryAx-free;
   axioms: exactly `propext`, `Classical.choice`, `Quot.sound`). The `FrameClass.Discrete`
   set-based consequence relation is **not** compact: the premise set `{F p} ∪ {¬Xⁿ p : n ∈ ℕ}`
@@ -100,9 +132,19 @@ theorem (Reynolds 1992, Section 8 Theorem 6) at the chronicle bridge and reading
   (Theorems 4, 5 and Doets' Theorem 6), the Dedekind route's model surgery and real-flow layer
 - **BXCanonical/CompletenessDedekind.lean**: Reynolds Section 9 Theorem 7 — the real-line
   countermodel and the single-formula completeness engine
-- **StrongCompleteness.lean**: the Dedekind terminus (`consequence_completeness_dedekind`,
-  `completeness_dedekind`), plus the per-class strong-completeness programme and the
-  non-compactness obstructions that bound it
+- **StrongCompleteness.lean**: the per-class finite-context consequence layer — for each of
+  Base, Dense, Discrete and Dedekind a semantic deduction theorem, a consequence terminus, a
+  soundness guard and a weak corollary — including the Dedekind terminus
+  (`consequence_completeness_dedekind`, `completeness_dedekind`); plus the strong-completeness
+  programme, the two compactness reductions `strongCompletenessBase_of_compact` and
+  `strongCompletenessDense_of_compact` (each keeping its single-formula `engine` hypothesis
+  live so that compactness is isolated as the whole remaining obligation), and the
+  non-compactness obstruction that bounds the Discrete class
+- **SetConsequence.lean**: the `Γ : Set Formula` vocabulary the strong-completeness statements
+  are phrased in — `SetDerivable`, the four per-class set consequence relations, and the
+  `Prop`-valued names for the open Base and Dense obligations (`StrongCompletenessBase`,
+  `CompactBase`, `SatisfiableBaseSet`, `ModelExistenceBase` and their Dense siblings) together
+  with the refuted Discrete ones
 - **DiscreteNonCompactness.lean**: the machine-checked discharge of one of those obstructions —
   the `{F p} ∪ {¬Xⁿ p}` witness, the first semantic characterisation of `Formula.next`
   (`truthAt_next_iff`), and the two refutations `discrete_consequence_not_compact` and
