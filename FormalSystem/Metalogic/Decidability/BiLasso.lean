@@ -69,15 +69,16 @@ enumeration bound is a closed arithmetic expression, and it is astronomically la
 effective-periodic-extension work, not to this decision layer. They are deliberately absent from
 this aggregator, and their build wiring is that work's to own.
 
-## This aggregator is not itself imported
+## This aggregator is registered
 
-Nothing in the Lake build graph imports this module, so `lake build` does not compile it or the
-layer beneath it. That is deliberate while the effective-periodic-extension work is in flight
-above the same directory: registering this module in `Decidability.lean` would mean two
-concurrent lines of work editing one aggregator. The layer is compile-checked in the meantime by
-the C6 rot guard in `scripts/check-module-invariants.sh`, which builds each manifested
-unreachable module in isolation; this module is listed there alongside its submodules. Wiring the
-layer in means adding one import to `Decidability.lean` and deleting the corresponding manifest
-lines — C6 fails if a manifest entry names a module that has become reachable, so the two edits
-must happen together.
+`FormalSystem/Metalogic/Decidability.lean` imports this module, so the layer is reachable from
+the Lake target roots and `lake build` compiles it along with everything it re-exports. The
+fifteen manifest lines that used to record this module and its imports as known-unreachable were
+deleted in the same commit that added that import: C6 of `scripts/check-module-invariants.sh`
+fails if a manifest entry names a module that has become reachable.
+
+The four modules named under "Not re-exported here" are not covered by that registration. They
+stay unreachable, and stay listed in `scripts/module-invariants-manifest.txt` so the C6 rot guard
+keeps compile-checking each of them in isolation, until the effective-periodic-extension work
+wires them in itself.
 -/

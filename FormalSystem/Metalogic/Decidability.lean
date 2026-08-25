@@ -37,6 +37,7 @@ import FormalSystem.Metalogic.Decidability.Verified.Bridge.IntGaps
 import FormalSystem.Metalogic.Decidability.Verified.Bridge.IntTruth
 import FormalSystem.Metalogic.Decidability.Verified.Bridge.DenseTruth
 import FormalSystem.Metalogic.Decidability.Verified.Decidable
+import FormalSystem.Metalogic.Decidability.BiLasso
 
 /-!
 # FormalSystem.Metalogic.Decidability - Decision Procedure for TM Logic
@@ -107,6 +108,11 @@ Tableau-based decision procedure returning proof terms or countermodels.
   abstract `TimeOrdering`); `SatResult` is satisfiability preservation read off `applyRule`'s
   own `RuleResult × TimeOrdering`; `RuleSound` is the per-rule obligation, indexed by a carrier
   property so that a frame-class-gated rule can assume what its class supplies
+- `BiLasso`: the bi-lasso decision layer — decides truth of a formula at a state of a *given*
+  `IntPresentation` (a finite graph on `Fin card` with a `Bool` valuation), by bi-lasso unfolding
+  and periodicity. Entry point `check` and its correctness theorem `check_correct`
+  (`BiLasso/Check.lean`). It decides a *presentation*, not the logic: nothing in it quantifies
+  over frames
 
 ## Status
 
