@@ -1,16 +1,45 @@
 {
-  "status": "researched",
+  "status": "planned",
+  "agent_type": "planner-agent",
+  "delegation_path": ["orchestrator", "plan", "planner-agent"],
+  "task_number": 486,
+  "session_id": "sess_1787688954_7fb0f6_486",
+  "completed": "2026-08-25T22:20:00Z",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/486_docs_overhaul_deletions_links_gaps_and_drift_guard/reports/01_docs-overhaul-verification.md",
-      "summary": "Verification of all six task phases against Lean source: confirms every substantive defect claim, re-derives ground-truth counts (539 files / 170,898 code / 45 axioms / 0 sorries / 7 rules), replaces the unreproducible 94 dead-link figure with a measured 96/76/74 breakdown plus a complete per-line repair table, documents nine findings that change the work's shape, and designs three new check-module-invariants checks (C12/C13/C14) plus the readme-lint scope extension."
+      "type": "plan",
+      "path": "specs/486_docs_overhaul_deletions_links_gaps_and_drift_guard/plans/01_docs-overhaul-and-drift-guard.md",
+      "summary": "Ten-phase, 17.5-hour plan covering the two document deletions and the MAINTENANCE.md procedure rewrite, three file-disjoint false-status phases, documentation gaps G1-G9, the command-gated dead-link sweep, nine missing FormalSystem READMEs, and the C12/C13/C14 drift guard plus readme-lint scope extension."
     }
   ],
-  "metadata": {
-    "session_id": "sess_1787688954_7fb0f6_486",
-    "agent_type": "lean-research-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+  "phase_count": 10,
+  "estimated_hours": 17.5,
+  "dependency_waves": [[1, 5], [2, 3, 4], [6], [7], [8], [9], [10]],
+  "plan_metadata": {
+    "phases": 10,
+    "total_effort_hours": 18,
+    "complexity": "complex",
+    "research_integrated": true,
+    "plan_version": 1,
+    "dependency_waves": [[1, 5], [2, 3, 4], [6], [7], [8], [9], [10]],
+    "reports_integrated": [
+      {
+        "path": "specs/486_docs_overhaul_deletions_links_gaps_and_drift_guard/reports/01_docs-overhaul-verification.md",
+        "integrated_in_plan_version": 1,
+        "integrated_date": "2026-08-25"
+      }
+    ],
+    "skeleton": false,
+    "follow_up_tasks": []
+  },
+  "memory_candidates": [
+    {
+      "content": "When a task description asserts a defect count measured by a lint or resolver (dead links, missing files, stale citations), the plan's verification gate must name the reproducing COMMAND and require zero, never the number. Task 486's docs overhaul inherited a '94 dead links' figure that no classification could reproduce; research measured 96 total / 76 after documented ignore-classes / 74 actionable. A number-based gate is unfalsifiable when the measurement method is unstated, and it silently drifts as adjacent phases delete host files. The plan-side carrier is a Scope Hypothesis line stating the count AND the command that confirms it, with the phase's Verification block gating on the command's zero-line output. The same pattern applies in reverse to guard design: a new check whose initial debt is non-zero should ship with the codebase's soft-enforcement idiom (ENFORCE_Cn=${ENFORCE_Cn:-0}) so the invariant is recorded and progress is visible at every gate, rather than being omitted until the debt is cleared.",
+      "category": "PATTERN",
+      "source_artifact": "specs/486_docs_overhaul_deletions_links_gaps_and_drift_guard/plans/01_docs-overhaul-and-drift-guard.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["scope-hypothesis", "verification-gate", "dead-links", "soft-enforcement", "drift-guard", "measured-baseline"]
+    }
+  ],
+  "next_steps": "Run /implement 486 to execute the plan"
 }

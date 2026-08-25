@@ -1,19 +1,41 @@
 {
-  "status": "researched",
-  "phase": "research",
-  "dispatch_seq": 10,
-  "summary": "Research complete for the docs/ overhaul. Every substantive defect claim in the task description is confirmed against Lean source; nine findings change the work's shape, the largest being that the 94 dead-link figure is unreproducible (measured 96 total / 74 genuinely actionable, now tabulated per line) and that deleting SORRY_REGISTRY.md requires rewriting MAINTENANCE.md's 4-document sync procedure rather than repointing 4 links.",
+  "task_number": 486,
+  "dispatch_seq": 11,
+  "stage": "plan",
+  "status": "planned",
+  "session_id": "sess_1787688954_7fb0f6_486",
+  "phases_completed": 0,
+  "phases_total": 10,
+  "verification_passed": true,
+  "gates": {
+    "plan_validator": "PASS (validate-artifact.sh plan --strict, 0 warnings)",
+    "required_metadata_fields": "PASS (Task, Status, Effort, Dependencies, Research Inputs, Artifacts, Standards, Type)",
+    "phase_heading_conformance": "PASS (10/10 conform to '### Phase N: {name} [NOT STARTED]')",
+    "dependency_wave_consistency": "PASS (wave table matches all 10 per-phase 'Depends on' fields)",
+    "verification_tier_coverage": "PASS (10/10 phases carry a tier; 7 prose, 3 full)"
+  },
   "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/486_docs_overhaul_deletions_links_gaps_and_drift_guard/plans/01_docs-overhaul-and-drift-guard.md",
+      "summary": "Ten-phase, 17.5-hour implementation plan: two document deletions plus the MAINTENANCE.md four-document sync rewrite, three file-disjoint false-status phases, documentation gaps G1-G9, the command-gated dead-link sweep, nine missing FormalSystem READMEs, and the C12/C13/C14 drift guard plus readme-lint scope extension."
+    },
     {
       "type": "report",
       "path": "specs/486_docs_overhaul_deletions_links_gaps_and_drift_guard/reports/01_docs-overhaul-verification.md",
-      "summary": "Verified ground truth (539 files / 170,898 code / 45 axioms / 0 sorries / 7 rules), complete per-line dead-link repair table, confirmed zero coverage for all nine documentation gaps, missing-README baseline, and a three-check drift-guard design (C12 slash-path resolution, C13 markdown link resolution, C14 status-claim tripwires) plus the readme-lint scope extension."
+      "summary": "Research input consumed by the plan: measured 96/76/74 dead-link breakdown replacing the unreproducible 94, complete per-line repair table (Classes A-J), 15 SORRY_REGISTRY inbound references, and the three-check guard design."
     }
   ],
-  "phases_completed": 0,
-  "phases_total": 0,
-  "blockers": [],
-  "next_action": "Dispatch planning. Report section 10 proposes an eight-phase decomposition (P1 deletions, P2 completeness/decidability status core, P3 remaining false-status sites, P4 count sweep, P5 dead links, P6 gaps, P7 the 9 missing READMEs, P8 the guard) with per-phase gates. Report section 9 raises three scope decisions the plan must settle: whether the guard extends check C9 to docs/ (152 latent task-number citations), whether docs/ should link into the gitignored .claude/ tree at all, and whether metric tables become reproduction commands.",
-  "sorry_inventory": [],
-  "continuation_path": null
+  "modified_files": [
+    "specs/486_docs_overhaul_deletions_links_gaps_and_drift_guard/plans/01_docs-overhaul-and-drift-guard.md",
+    "specs/486_docs_overhaul_deletions_links_gaps_and_drift_guard/.return-meta.json",
+    "specs/486_docs_overhaul_deletions_links_gaps_and_drift_guard/.orchestrator-handoff.json"
+  ],
+  "handoffs_accounted": {
+    "axiom_reference_42_to_45_sweep": "in scope - Phase 4",
+    "bimodal_dotted_module_references": "out of scope - declared in Non-Goals; outside file_scope, ~38 occurrences across ~20 FormalSystem READMEs, and report F8 shows extending C5's regex would fail the gate on untouched files. C12 covers the slash form only",
+    "metalogic_readme_import_numerals": "in scope - Phase 4; confirmed at plan time that lines 44-45 both read '2 import lines' against measured 9 and 4",
+    "nine_missing_readmes": "in scope - Phase 5; a declared file_scope widening mandated by the task's own verification gate"
+  },
+  "next_steps": "Run /implement 486 to execute the plan. Waves 1 and 2 are file-disjoint and parallelizable; Phases 8-10 (the guard) must run last by construction."
 }
