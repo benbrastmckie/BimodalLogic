@@ -320,23 +320,23 @@ It also asserts the import numerals 9 and 4; re-derive both by grep.
 
 ---
 
-### Phase 5: The Nine Missing READMEs [NOT STARTED]
+### Phase 5: The Nine Missing READMEs [COMPLETED]
 
 **Goal**: Take `readme-lint.sh`'s missing-README count from 9 to 0.
 
 **Tasks**:
-- [ ] Record the baseline: `bash scripts/readme-lint.sh` (expected `Missing READMEs: 9`, `Total READMEs found: 37`, `Broken file references: 0`)
-- [ ] Write `FormalSystem/Metalogic/WeakCanonical/GroupModel/README.md` (6 files — hosts `countermodel_discrete` at `CountermodelBase.lean:142`, the tree's most consequential recent theorem)
-- [ ] Write `FormalSystem/BaseLanguage/README.md` (5 files — the second object language, with its own `inductive Axiom` at `BaseLanguage/Axioms.lean:73` and a translation into the primary language)
-- [ ] Write `FormalSystem/Metalogic/Independence/README.md` (3 files — `ClockFrame`, `CoNotPriorU`, `LoopingDuration`)
-- [ ] Write `FormalSystem/Metalogic/Decidability/Verified/Bridge/README.md` (15 files)
-- [ ] Write `FormalSystem/Metalogic/Decidability/Verified/Termination/README.md` (4 files)
-- [ ] Write `FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/README.md` (9 files)
-- [ ] Write `FormalSystem/Metalogic/WeakCanonical/Kamp/EANegationFixFaithful/README.md` (5 files)
-- [ ] Write `FormalSystem/Metalogic/WeakCanonical/RealModel/README.md` (7 files)
-- [ ] Write `FormalSystem/Semantics/Extension/README.md` (5 files)
-- [ ] Follow `docs/reference/readme-standard.md` and the existing sibling READMEs for format; every file must carry a `Last verified` line (readme-lint Check 4)
-- [ ] Use no dotted `Bimodal.*` module names and no task-number citations in the new files (C5, C9)
+- [x] Record the baseline: `bash scripts/readme-lint.sh` (expected `Missing READMEs: 9`, `Total READMEs found: 37`, `Broken file references: 0`)
+- [x] Write `FormalSystem/Metalogic/WeakCanonical/GroupModel/README.md` (6 files — hosts `countermodel_discrete` at `CountermodelBase.lean:142`, the tree's most consequential recent theorem)
+- [x] Write `FormalSystem/BaseLanguage/README.md` (5 files — the second object language, with its own `inductive Axiom` at `BaseLanguage/Axioms.lean:73` and a translation into the primary language)
+- [x] Write `FormalSystem/Metalogic/Independence/README.md` (3 files — `ClockFrame`, `CoNotPriorU`, `LoopingDuration`)
+- [x] Write `FormalSystem/Metalogic/Decidability/Verified/Bridge/README.md` (15 files)
+- [x] Write `FormalSystem/Metalogic/Decidability/Verified/Termination/README.md` (4 files)
+- [x] Write `FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/README.md` (9 files)
+- [x] Write `FormalSystem/Metalogic/WeakCanonical/Kamp/EANegationFixFaithful/README.md` (5 files)
+- [x] Write `FormalSystem/Metalogic/WeakCanonical/RealModel/README.md` (7 files)
+- [x] Write `FormalSystem/Semantics/Extension/README.md` (5 files)
+- [x] Follow `docs/reference/readme-standard.md` and the existing sibling READMEs for format; every file must carry a `Last verified` line (readme-lint Check 4)
+- [x] Use no dotted `Bimodal.*` module names and no task-number citations in the new files (C5, C9)
 
 **Timing**: 2 hours
 
