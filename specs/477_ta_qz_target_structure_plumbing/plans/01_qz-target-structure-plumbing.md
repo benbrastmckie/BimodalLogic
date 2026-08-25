@@ -165,7 +165,7 @@ is needed.
 
 ---
 
-### Phase 2: Write the repo-standard module header [IN PROGRESS]
+### Phase 2: Write the repo-standard module header [COMPLETED]
 
 **Goal**: The module carries a `/-! … -/` header matching the sibling modules' conventions, so that
 the Reynolds anchor and both design rulings survive independently of the specs/ artifacts.
@@ -227,7 +227,7 @@ re-deriving content the siblings already hold — check which before proceeding.
 
 ---
 
-### Phase 3: Acceptance gate [NOT STARTED]
+### Phase 3: Acceptance gate [IN PROGRESS]
 
 **Goal**: Every acceptance criterion in the task brief is machine-checked and the results recorded,
 with the sorry and axiom baselines demonstrably unchanged.
