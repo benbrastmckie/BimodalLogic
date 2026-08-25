@@ -38,12 +38,12 @@ pairing, notNotIntro)
 ## Status
 
 ### Propositional & Combinators
-- Combinators: COMPLETE (15+ combinators, zero sorry)
-- Propositional Phase 1: COMPLETE (8 theorems, zero sorry)
+- Combinators: PROVEN (zero sorry) — 15+ combinators
+- Propositional: PROVEN (zero sorry) — 8 theorems
 
 ### Modal S5/S4
-- Modal S5 Phase 2: COMPLETE (11 derivations + `iff` connective, zero sorry)
-- Modal S4 Phase 4: COMPLETE (4/4 theorems, zero sorry)
+- Modal S5: PROVEN (zero sorry) — 11 derivations plus the `iff` connective
+- Modal S4: PROVEN (zero sorry) — 4/4 theorems
 
 ### Perpetuity Principles
 - P1: `□φ → △φ` - PROVEN (zero sorry)
@@ -81,7 +81,7 @@ open FormalSystem.Theorems.Perpetuity
 ## References
 
 * [Combinators.lean](Theorems/Combinators.lean) - SKI combinator basis
-* [Propositional.lean](Theorems/Propositional.lean) - Classical propositional theorems
+* [Propositional/](Theorems/Propositional/README.md) - Classical propositional theorems
 * [ModalS5.lean](Theorems/ModalS5.lean) - S5 modal logic theorems
 * [ModalS4.lean](Theorems/ModalS4.lean) - S4 nested modality theorems
 * [Perpetuity.lean](Theorems/Perpetuity.lean) - Modal-temporal perpetuity principles

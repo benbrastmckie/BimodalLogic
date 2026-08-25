@@ -13,6 +13,12 @@ Task frame semantics for TM bimodal logic.
 | Truth.lean | Truth relation for formula evaluation |
 | ShiftSet.lean | Shift-set representation theorem: task models ↔ shift sets, both directions with truth correspondence |
 | Validity.lean | Validity and semantic consequence |
+| DurationClassification.lean | Classification of Dedekind-complete duration groups: discrete (`≃+o ℤ`) or densely ordered |
+| FrameAxioms.lean | The frame axioms (nullity, compositionality, reflection) as standalone statements |
+| IntTransfer.lean | Transfer of ℤ-frame facts across the normal form |
+| PartialHistory.lean | Partial world-histories on convex subsets of the duration group |
+| PartialHistoryOrder.lean | The order structure on partial histories |
+| Extension/ | Extension of partial histories: `Admissible`, `Constraint`, `Extension`, `PeriodicExtension`, `Step` (5 files) |
 
 ## Key Definitions
 

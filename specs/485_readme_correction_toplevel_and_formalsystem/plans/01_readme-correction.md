@@ -749,32 +749,32 @@ not these.
 
 ---
 
-### Phase 8: `Semantics/README.md`, `Theorems/README.md`, `FormalSystem/Theorems.lean` [NOT STARTED]
+### Phase 8: `Semantics/README.md`, `Theorems/README.md`, `FormalSystem/Theorems.lean` [COMPLETED]
 
 **Goal**: Complete two module inventories and remove the PROVEN/SORRY-FREE conflation and a
 directory-shaped link from the one `.lean` file in scope.
 
 **Tasks**:
-- [ ] **B13 (Semantics)**: `Semantics/README.md:6-15` lists 7 of 12 loose modules. Add
+- [x] **B13 (Semantics)**: `Semantics/README.md:6-15` lists 7 of 12 loose modules. Add
       `DurationClassification.lean` (259), `FrameAxioms.lean` (239), `IntTransfer.lean` (366),
       `PartialHistory.lean` (213), `PartialHistoryOrder.lean` (238), plus the `Extension/`
       subdirectory (5 files). The table has no Lines column, so no line-count work is needed here.
-- [ ] **B13 (Theorems)**: `Theorems/README.md:10-21` omits `ContextualProofs.lean` (474) and
+- [x] **B13 (Theorems)**: `Theorems/README.md:10-21` omits `ContextualProofs.lean` (474) and
       `DiscreteUnfolding.lean` (476). Every listed line count is also stale:
       `Combinators.lean` 675 -> **747**, `DedekindDerived.lean` 400 -> **413**,
       `GeneralizedNecessitation.lean` 240 -> **241**, `ModalS4.lean` 468 -> **421**,
       `ModalS5.lean` 859 -> **781**, `Perpetuity.lean` 88 -> **95**, `TemporalDerived.lean`
       366 -> **801**. `Perpetuity/` holds 3 `.lean` files; `Propositional/` holds 3 (correct).
-- [ ] **B13 (`Theorems.lean`)**: `:41`, `:42`, `:45`, `:46` use "COMPLETE (..., zero sorry)" as a
+- [x] **B13 (`Theorems.lean`)**: `:41`, `:42`, `:45`, `:46` use "COMPLETE (..., zero sorry)" as a
       single status token — the PROVEN/SORRY-FREE conflation. `:49-54` use the correct
       "PROVEN (zero sorry)" form and are the **in-file model to copy**. Rewrite the four lines to
       match.
-- [ ] **B13 (`Theorems.lean`)**: `:84` links `[Propositional.lean](Theorems/Propositional.lean)`.
+- [x] **B13 (`Theorems.lean`)**: `:84` links `[Propositional.lean](Theorems/Propositional.lean)`.
       `FormalSystem/Theorems/Propositional` is a **directory** (`Connectives.lean`, `Core.lean`,
       `Reasoning.lean`, `README.md`) with no `Propositional.lean`. Repoint to
       `Theorems/Propositional/README.md`. The other four links in that block resolve and are not
       touched.
-- [ ] **Constraint**: only the module docstring of `FormalSystem/Theorems.lean` may change. No
+- [x] **Constraint**: only the module docstring of `FormalSystem/Theorems.lean` may change. No
       declaration, signature, import, or tactic. Confirm with `git diff` that every hunk lies
       inside the `/-! ... -/` block.
 
