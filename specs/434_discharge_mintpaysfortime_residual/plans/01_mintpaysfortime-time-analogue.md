@@ -1,7 +1,7 @@
 # Implementation Plan: Task #434
 
 - **Task**: 434 - Discharge `MintPaysForTime fc U Tmax` (the open mathematical core on the totality terminus)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 15 hours
 - **Dependencies**: None (unblocks task 432 Phase 7)
 - **Research Inputs**: `specs/434_discharge_mintpaysfortime_residual/reports/01_spawn-inherited-research.md`
