@@ -6,7 +6,7 @@ next_project_number: 477
 
 ## Task Order
 
-*Updated 2026-08-24. Generated from state.json dependency graph.*
+*Updated 2026-08-25. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
@@ -34,18 +34,18 @@ next_project_number: 477
 
 ### Code Quality
 
-472 [NOT STARTED] — THE IMMEDIATE, UNGATED DOCUMENTATION-CORRECTION PASS. This is the
+472 [RESEARCHING] — THE IMMEDIATE, UNGATED DOCUMENTATION-CORRECTION PASS. This is the
 455 [NOT STARTED] — BACKLOG REALIGNMENT: bring specs/ROADMAP.md and every remaining a
 
 ### Completeness
 
-413 [NOT STARTED] — Formalize the TM+ over TM conservativity bridge in Lean 4 (paper 
+413 [RESEARCHING] — Formalize the TM+ over TM conservativity bridge in Lean 4 (paper 
 95 [NOT STARTED] — Verify and record the final axiom/sorry status of the headline me
 
 ### Dataset Enhancement
 
 257 [BLOCKED] — Complete the Hugging Face Hub migration for large dataset storage
-298 [PARTIAL] — Fix c7 labeling bug at formula ~13750 that causes unbounded memor
+298 [IMPLEMENTING] — Fix c7 labeling bug at formula ~13750 that causes unbounded memor
   └─ 231 [NOT STARTED] — Build comprehensive automation so that every dataset regeneration
     └─ 219 [RESEARCHED] — Run bmlogic-bench through multiple LLMs to establish baseline dif
   └─ 282 [PARTIAL] — Flip complexity-9 dataset generation from stratified to exhaustiv
@@ -86,14 +86,14 @@ next_project_number: 477
 
 ### Semantics
 
-475 [NOT STARTED] — CARRIER NORMALIZATION: THE SUCCESSOR-ARCHIMEDEAN TRANSFER.
+475 [RESEARCHED] — CARRIER NORMALIZATION: THE SUCCESSOR-ARCHIMEDEAN TRANSFER.
 
 ### Strong Completeness
 
-422 [NOT STARTED] — Construct the discrete-case analogue of the existing dense chroni
+422 [RESEARCHING] — Construct the discrete-case analogue of the existing dense chroni
   └─ 169 [NOT STARTED] — Base (FrameClass.Base / general) WEAK completeness green: make th
     └─ 362 [NOT STARTED] — Implement the completeness capstone under the SETTLED TERMINOLOGY
-425 [NOT STARTED] — Convert the informal argument at FormalSystem/Metalogic/StrongCom
+425 [RESEARCHING] — Convert the informal argument at FormalSystem/Metalogic/StrongCom
 
 ## Tasks
 
@@ -217,7 +217,7 @@ properties.
 
 ### 475. Carrier normalization successor archimedean transfer
 - **Effort**: medium
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: semantics
 - **Dependencies**: None
@@ -464,7 +464,7 @@ Grounding: specs/reviews/review-2026-08-24.md, Addendum 1 item A-3, and task 468
 
 ### 472. Immediate documentation correction pass
 - **Effort**: medium
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Topic**: code-quality
 - **Dependencies**: Task 470
@@ -1812,7 +1812,7 @@ RESUME SEQUENCE: `/research 428` first (discharge the two uncertain claims above
 
 ### 425. Machine check discrete non compactness witness
 - **Effort**: high
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Topic**: strong_completeness
 - **Dependencies**: Task 361, Task 423
@@ -1913,7 +1913,7 @@ Acceptance (from design/01 section 6, all five required): zero sorries and zero 
 
 ### 422. Build discrete chronicle over non archimedean block carrier with restricted coherence
 - **Effort**: high
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Topic**: strong_completeness
 - **Dependencies**: Task 414, Task 420, Task 421, Task 439, Task 448
@@ -1958,7 +1958,7 @@ Acceptance: the refuted-route comment (the "(i) a Base-MCS ... (ii) a Henkin-sty
 ---
 
 ### 413. Formalize tm conservativity bridge
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: Task 439, Task 470
@@ -2041,7 +2041,7 @@ DEPENDENCY STATUS (re-verified 2026-08-18; dependencies array now includes 424, 
 ---
 
 ### 298. Fix c7 labeling bug and regenerate dataset
-- **Status**: [PARTIAL]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: dataset-enhancement
 - **Dependencies**: Task 297, Task 343

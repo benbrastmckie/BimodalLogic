@@ -53,7 +53,7 @@
     {
       "project_number": 425,
       "project_name": "machine_check_discrete_non_compactness_witness",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "lean4",
       "description": "Convert the informal argument at FormalSystem/Metalogic/StrongCompleteness.lean:56-62 into a machine-checked theorem: the FrameClass.Discrete consequence relation is not compact, hence strong completeness is refuted for that class.\n\nThe witness is the premise set {F p} union {not X^n p : n in N} where X phi = Formula.next phi. Every finite subset is satisfiable over Z (place p beyond the largest n used); the whole set is unsatisfiable over any Archimedean discrete carrier, because the F p witness would lie at some finite successor distance, contradicting the corresponding not X^n p.\n\nThe load-bearing ingredient is already in the tree: Formula.next phi = Formula.untl phi Formula.bot (FormalSystem/Syntax/Formula.lean:490) genuinely is a next-step operator — through the untl clause of TruthAt, \"exists s > t, phi(s) and for all r in (t,s), false\" says exactly that s is the immediate successor. No extra hypothesis is needed for this. The \"not satisfiable\" half is where IsSuccArchimedean does its work, via Order.succ_iterate-style reachability lemmas in Mathlib.\n\nThis is the negative half of the per-class split and is independent of the compactness gate — it is not affected by whether Route B succeeds. It depends only on the set-based layer's vocabulary (SatisfiableDiscreteSet / CompactDiscrete are the Discrete analogues of SatisfiableDenseSet / CompactDense).\n\nExplicitly out of scope: an analogous Dedekind non-compactness witness. That belongs to task 408 and the class's non-compactness is already established; duplicating it here would create scope overlap with an in-flight task for no gain.\n\nGoverning design document: specs/361_strong_completeness_architecture_and_weak_terminus_gap_analysis/design/02_compactness-route.md, section \"Discrete non-compactness witness\".\n\nAcceptance: archWitness_finitely_satisfiable, archWitness_not_satisfiable, and discrete_consequence_not_compact all land sorry-free; #print axioms clean on each; lake build green.",
       "topic": "strong_completeness",
@@ -66,7 +66,8 @@
         "FormalSystem/Metalogic/DiscreteNonCompactness.lean"
       ],
       "created": "2026-07-29T06:38:08Z",
-      "last_updated": "2026-07-29T06:38:08Z"
+      "last_updated": "2026-08-25T00:44:28Z",
+      "session_id": "sess_1787618565_717c84_425"
     },
     {
       "project_number": 424,
@@ -142,7 +143,7 @@
     {
       "project_number": 422,
       "project_name": "build_discrete_chronicle_over_non_archimedean_block_carrier_with_restricted_coherence",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "lean4",
       "description": "Construct the discrete-case analogue of the existing dense chronicle machinery, over the non-Archimedean carrier Q x_lex Z confirmed by the predecessor task.\n\nDeliverable (a): the analogue of `box_dense_gives_density` (`FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodelBasic.lean`; currently near :430, hint only) and `cantorIsoDense` (same file; currently near :231) for the \"box U(T,F) in A\" case — block decomposition of the chronicle order into Z-blocks, densification of the block order, and the isomorphism into Q x_lex Z.\n\nDeliverable (b): the three restricted-coherence analogues, mirroring `cantor_bfmcs_dense_restricted_tc` (same file; currently near :624), `cantor_bfmcs_dense_restricted_buc` (currently near :675), `cantor_bfmcs_dense_restricted_fuc` (currently near :750) at the new carrier — all hints only, re-verify by symbol before use.\n\nWhy this carrier and not Z: succ_cofinal — the obligation that killed the old BX pipeline, refuted by the Z+Z counterexample in Boneyard/BXPipelineGapAnalysis/ — was only ever needed to force the chronicle into Z, i.e. to make it Archimedean. FrameClass.Base imposes no Archimedean-ness (`valid`, `FormalSystem/Semantics/Validity.lean`, currently near :94, has no IsSuccArchimedean binder — confirmed against the live definition). The Z+Z shape is not a counterexample here — it is the intended carrier. Do not re-attempt succ_cofinal.\n\nPRINCIPAL RISK, unresolved at scoping time: it has NOT been verified that the chronicle's block order can always be densified without disturbing MCS-chain coherence. A countable discrete order without endpoints is a Z-indexed fibration over its block order, but making the total structure a group requires the block order to carry a compatible group structure. If this fails, escalate as [BLOCKED] with the failing coherence obligation named — do not paper over it with a sorry or a vacuous placeholder.\n\nGoverning design document: specs/archive/361_strong_completeness_architecture_and_weak_terminus_gap_analysis/design/03_weak-terminus-status.md, sections 5.4-5.7.\n\nAcceptance: the block-carrier construction and all three restricted-coherence analogues are sorry-free; #print axioms on each reports no sorryAx; lake build green. This task does NOT close the `sorry` inside `WeakCanonical.countermodel_discrete` (`FormalSystem/Metalogic/WeakCanonical/Transfer.lean`; declaration currently near :1068, sorry token currently near :1084, hints only) — that is task 169's job, which consumes this output.\n\nFOUR-AXIOM / TOTALITY EXPOSURE NOTE (added 2026-08-10; discharge recorded 2026-08-18): this task constructs a chronicle-backed frame while the paper-refactor cluster (tasks 420, 414, 415) refactors TaskFrame and validity underneath it. Once task 420 lands, TaskFrame carries the paper's FOUR def:frame axioms (biconditional Compositionality, Seriality, Limit, Spherical -- pinned in specs/paper-definitions-of-record.md) plus a Nonempty WorldState field and a [Nontrivial D] binder; any frame this task builds must discharge ALL of them, not just the current three structure fields. Once task 414 lands, `valid` / `SemanticConsequence` are Omega-free and totality-based, so the Validity.lean line citation above and the 'no IsSuccArchimedean binder' observation must be re-verified against the refactored signatures. Tasks 414 and 420 have both now landed and are archived; the re-verification obligation for the `valid`/Validity.lean citation and the 'no IsSuccArchimedean binder' observation above is discharged by this re-issue (re-confirmed against the live, post-refactor `valid` definition). Sequence this task after 420/414/415 or budget for the rebase.",
       "topic": "strong_completeness",
@@ -158,7 +159,8 @@
         "FormalSystem/Metalogic/BXCanonical/Chronicle/"
       ],
       "created": "2026-07-29T06:38:08Z",
-      "last_updated": "2026-08-11T01:20:00Z"
+      "last_updated": "2026-08-25T00:44:20Z",
+      "session_id": "sess_1787618565_717c84_422"
     },
     {
       "project_number": 421,
@@ -194,21 +196,22 @@
     {
       "project_number": 413,
       "project_name": "formalize_tm_conservativity_bridge",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "lean4",
       "description": "Formalize the TM+ over TM conservativity bridge in Lean 4 (paper thm:ConservativeExtension, CEB/CEF/CED/CEC): add a BL base-language Formula type with primitive box/G/H, its TM axiom set and derivation trees, a translation into the existing BL+ Formula type, and prove that TM+ derivability of a translated BL-formula yields TM derivability, supplying the missing step in the paper's cor:tm-completeness route\n\nANCHORS RE-VERIFIED 2026-08-10: \\label{thm:ConservativeExtension} [Conservative Extension] and \\label{cor:tm-completeness} [Completeness] both resolve in the current paper. Cite by \\label only, never bare line numbers; before consuming any semantic definition, run `bash scripts/check-paper-definitions.sh` and cite specs/paper-definitions-of-record.md rather than the paper directly.\n\nNEW PAPER CONTENT THIS TASK MUST KNOW (2026-08-10): cor:tm-completeness's proof now carries a footnote (source-tagged 'task 52 total-histories: optional S43 hedge') stating that the machine-checked completeness results in THIS repository are for \"a parametric variant of the semantics in which validity is relativized to a designated shift-closed set of histories\"; that their transfer to the paper's total-history semantics \"proceeds by a strand construction covering BL and BL+ only, and is not itself machine-checked\"; and that the transfer must verify the biconditional Compositionality, Seriality, and Spherical axioms of def:frame for the strand-delivered frames (Occurrence then follows by cor:occurrence; Seriality is free wherever Occurrence was already checked; Spherical is automatic for finite W; infinite W is a genuine obligation external to the paper). This footnote sits in exactly the proof this task formalizes. The conservativity bridge itself is PROOF-THEORETIC (translation plus derivability) and therefore does not depend on the semantics refactor -- this task does NOT need tasks 414/415 to land first -- but phrase its Lean statements so they compose with the totality-based validity once 414/415 land, and coordinate naming with the paper-refactor cluster, whose completeness route (task 415) this bridge feeds.",
       "topic": "completeness",
       "created": "2026-07-28T16:58:26Z",
-      "last_updated": "2026-08-11T01:20:00Z",
+      "last_updated": "2026-08-25T00:44:36Z",
       "dependencies": [
         439,
         470
-      ]
+      ],
+      "session_id": "sess_1787618565_717c84_413"
     },
     {
       "project_number": 298,
       "project_name": "fix_c7_labeling_bug_and_regenerate_dataset",
-      "status": "partial",
+      "status": "implementing",
       "task_type": "lean4",
       "description": "Fix c7 labeling bug at formula ~13750 that causes unbounded memory growth in the decision procedure's timeout handling, then regenerate the full c7 dataset. During task 297 dataset regeneration, all 3 attempts to generate c7 stalled at exactly record 13,749 with RSS growing ~40MB/6s. The labeling function enters an apparent infinite loop or unbounded search for formula #13,750 in the sorted enumeration order. The timeout mechanism either does not fire or cannot interrupt the stuck state. Steps: (1) Identify the specific formula at position ~13,750 in the c7 enumeration. (2) Reproduce the hang in isolation with that formula. (3) Diagnose whether the decision procedure's timeout is failing to fire or the procedure is in an uninterruptible state. (4) Fix the timeout handling so it reliably terminates. (5) Regenerate the full c7 dataset (target: 77,272 records)",
       "dependencies": [
@@ -216,8 +219,8 @@
         343
       ],
       "created": "2026-06-09T05:55:43Z",
-      "last_updated": "2026-07-25T17:01:11Z",
-      "session_id": "sess_1784061208_6ea403",
+      "last_updated": "2026-08-25T00:44:45Z",
+      "session_id": "sess_1787618565_717c84_298",
       "researched": "2026-06-09T06:07:43Z",
       "artifacts": [
         {
@@ -1210,7 +1213,7 @@
     {
       "project_number": 472,
       "project_name": "immediate_documentation_correction_pass",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "lean4",
       "topic": "code-quality",
       "priority": "high",
@@ -1230,7 +1233,9 @@
       "dependencies": [
         470
       ],
-      "created": "2026-08-24T00:00:00Z"
+      "created": "2026-08-24T00:00:00Z",
+      "last_updated": "2026-08-25T00:44:12Z",
+      "session_id": "sess_1787618565_717c84_472"
     },
     {
       "project_number": 473,
@@ -1298,7 +1303,7 @@
     {
       "project_number": 475,
       "project_name": "carrier_normalization_successor_archimedean_transfer",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "topic": "semantics",
       "priority": "high",
@@ -1311,8 +1316,9 @@
         "FormalSystem/Semantics/Validity.lean"
       ],
       "created": "2026-08-24T00:00:00Z",
-      "last_updated": "2026-08-24T00:00:00Z",
-      "artifacts": []
+      "last_updated": "2026-08-25T00:55:11Z",
+      "artifacts": [],
+      "session_id": "sess_1787618565_717c84_475"
     },
     {
       "project_number": 476,
