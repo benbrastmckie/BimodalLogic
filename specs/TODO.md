@@ -11,7 +11,7 @@ next_project_number: 477
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,193,257,298,413,422,434,461,462,468,474,476 | -- | automation, completeness, dataset-enhancement, ... |
+| 1 | 127,128,193,257,298,413,422,434,461,462,468,476 | -- | automation, completeness, dataset-enhancement, ... |
 | 2 | 125,169,178,231,282,296,433,455,463 | 193,298,422,434,461,462,468 | algebraic-representation, code-quality, dataset-enhancement, ... |
 | 3 | 95,219,362,464 | 169,231,463 | completeness, dataset-enhancement, decidability, ... |
 | 4 | 465 | 464 | decidability |
@@ -66,7 +66,6 @@ next_project_number: 477
       └─ 465 [NOT STARTED] — Complete the terminus restatement family at the repaired residual
         └─ 428 [BLOCKED] — Engine totality at a quantified branch budget. Owns obstruction O (see above)
 468 [NOT STARTED] — PROGRAMME REALIGNMENT FROM A VERIFIED PROOF-STATE AUDIT: restruct
-474 [PLANNED] — WIRE THE BILASSO DECISION LAYER INTO THE LIVE TREE.
 476 [NOT STARTED] — THE BOX-FAITHFUL SMALL-MODEL THEOREM.
 
 ### Formula Refactor
@@ -297,13 +296,14 @@ measuring the `D`-polymorphic case.
 
 ### 474. Wire bilasso decision layer into live tree
 - **Effort**: small
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
 - **Research**: [474_wire_bilasso_decision_layer_into_live_tree/reports/01_wire-bilasso-into-build-graph.md]
 - **Evidence**: [474_wire_bilasso_decision_layer_into_live_tree/evidence/assembly-merged-verified.lean]
 - **Plan**: [474_wire_bilasso_decision_layer_into_live_tree/plans/01_wire-bilasso-decision-layer.md]
+- **Summary**: [474_wire_bilasso_decision_layer_into_live_tree/summaries/01_wire-bilasso-decision-layer-summary.md]
 
 **Description**: WIRE THE BILASSO DECISION LAYER INTO THE LIVE TREE.
 

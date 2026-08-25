@@ -1350,7 +1350,7 @@
     {
       "project_number": 474,
       "project_name": "wire_bilasso_decision_layer_into_live_tree",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "topic": "decidability",
       "priority": "high",
@@ -1365,7 +1365,7 @@
         "specs/ROADMAP.md"
       ],
       "created": "2026-08-24T00:00:00Z",
-      "last_updated": "2026-08-25T02:54:31Z",
+      "last_updated": "2026-08-25T03:03:38Z",
       "artifacts": [
         {
           "type": "report",
@@ -1384,6 +1384,12 @@
           "path": "specs/474_wire_bilasso_decision_layer_into_live_tree/plans/01_wire-bilasso-decision-layer.md",
           "summary": "Phased plan to wire BiLasso into the build graph: single-commit import+manifest edit, Assembly module transcription, ROADMAP entry.",
           "created": "2026-08-25T02:54:37Z"
+        },
+        {
+          "type": "summary",
+          "path": "specs/474_wire_bilasso_decision_layer_into_live_tree/summaries/01_wire-bilasso-decision-layer-summary.md",
+          "summary": "Implementation summary: BiLasso wired into the build graph, Assembly module landed, manifest split applied, ROADMAP entry added.",
+          "created": "2026-08-25T03:03:45Z"
         }
       ],
       "session_id": "sess_1787618565_717c84_474"
