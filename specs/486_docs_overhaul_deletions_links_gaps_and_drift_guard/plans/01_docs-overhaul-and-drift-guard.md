@@ -1,11 +1,11 @@
 # Implementation Plan: `docs/` Overhaul — Deletions, Links, Gaps, and Drift Guard
 
 - **Task**: 486 - docs/ OVERHAUL: delete the documents that are fiction, rewrite the false limitation entries, repair the dead links, close the documentation gaps, and add a mechanical drift guard
-- **Status**: [IMPLEMENTING]
+- **Status**: COMPLETED
 - **Effort**: 17.5 hours
 - **Dependencies**: 484 (complete — corrected `specs/ROADMAP.md` and `FormalSystem/Metalogic/README.md`), 485 (complete — corrected `README.md` and the `FormalSystem/**/README.md` layer). Both are ground truth for this task.
 - **Research Inputs**: specs/486_docs_overhaul_deletions_links_gaps_and_drift_guard/reports/01_docs-overhaul-verification.md
-- **Artifacts**: plans/01_docs-overhaul-and-drift-guard.md (this file)
+- **Artifacts**: plans/01_docs-overhaul-and-drift-guard.md (this file), summaries/01_docs-overhaul-summary.md
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean4
 - **Lean Intent**: false
@@ -512,17 +512,17 @@ number is reported, not gated, so a divergence is recorded rather than fixed her
 
 ---
 
-### Phase 10: Final Verification Gate [NOT STARTED]
+### Phase 10: Final Verification Gate [COMPLETED]
 
 **Goal**: Run the task's stated verification gate end to end and record the closing figures.
 
 **Tasks**:
-- [ ] `bash scripts/check-module-invariants.sh` -> ALL CHECKS PASSED, including C12, C13, C14
-- [ ] `bash scripts/readme-lint.sh` -> missing-README count 0
-- [ ] Report §6.1 resolver command -> 0 lines
-- [ ] Confirm no `.lean` declaration, signature, import, or tactic changed: `git diff --stat` over `*.lean` should show only `FormalSystem/Metalogic/README.md` (markdown) and the nine new READMEs (markdown) — zero `.lean` files
-- [ ] Re-derive and record the closing ground truth: file/line counts via `cloc`, axiom constructor count via `Axiom.minFrameClass`, sorry count via C3
-- [ ] Record in the implementation summary: the actual dead-link count repaired against the 74 hypothesis, the actual `SORRY_REGISTRY` inbound count against the 15 hypothesis, and the C9-over-`docs/` figure against the 152 hypothesis
+- [x] `bash scripts/check-module-invariants.sh` -> ALL CHECKS PASSED, including C12, C13, C14
+- [x] `bash scripts/readme-lint.sh` -> missing-README count 0
+- [x] Report §6.1 resolver command -> 0 lines
+- [x] Confirm no `.lean` declaration, signature, import, or tactic changed: `git diff --stat` over `*.lean` should show only `FormalSystem/Metalogic/README.md` (markdown) and the nine new READMEs (markdown) — zero `.lean` files
+- [x] Re-derive and record the closing ground truth: file/line counts via `cloc`, axiom constructor count via `Axiom.minFrameClass`, sorry count via C3
+- [x] Record in the implementation summary: the actual dead-link count repaired against the 74 hypothesis, the actual `SORRY_REGISTRY` inbound count against the 15 hypothesis, and the C9-over-`docs/` figure against the 152 hypothesis
 
 **Timing**: 0.5 hours
 
@@ -541,14 +541,14 @@ number is reported, not gated, so a divergence is recorded rather than fixed her
 
 ## Testing & Validation
 
-- [ ] `bash scripts/check-module-invariants.sh` reports ALL CHECKS PASSED, with C12, C13, and C14 present and reporting real (non-skipped) results
-- [ ] `bash scripts/check-module-invariants.sh --no-build` also passes, with C14's `#print axioms` half skipping cleanly
-- [ ] `bash scripts/readme-lint.sh` reports `Missing READMEs: 0` and `Broken file references: 0`
-- [ ] The report §6.1 link resolver returns zero lines over `docs/`
-- [ ] `grep -rn '\b21 axiom\|14 axiom\|~40 \|~8000\|44 constructor\|Lacunae\|Logos/' docs/` is empty
-- [ ] All 15 gap-coverage grep terms from report §7 hit at least one `docs/` file
-- [ ] No `.lean` file appears in `git diff --name-only`
-- [ ] Negative tests for C12, C13, and C14 each fail on an injected defect and revert cleanly
+- [x] `bash scripts/check-module-invariants.sh` reports ALL CHECKS PASSED, with C12, C13, and C14 present and reporting real (non-skipped) results
+- [x] `bash scripts/check-module-invariants.sh --no-build` also passes, with C14's `#print axioms` half skipping cleanly
+- [x] `bash scripts/readme-lint.sh` reports `Missing READMEs: 0` and `Broken file references: 0`
+- [x] The report §6.1 link resolver returns zero lines over `docs/`
+- [x] `grep -rn '\b21 axiom\|14 axiom\|~40 \|~8000\|44 constructor\|Lacunae\|Logos/' docs/` is empty
+- [x] All 15 gap-coverage grep terms from report §7 hit at least one `docs/` file
+- [x] No `.lean` file appears in `git diff --name-only`
+- [x] Negative tests for C12, C13, and C14 each fail on an injected defect and revert cleanly
 
 ## Artifacts & Outputs
 

@@ -1,21 +1,11 @@
 {
+  "task_number": 486,
+  "dispatch_seq": 12,
   "status": "implemented",
-  "started_at": "2026-08-25T22:30:00Z",
-  "completed_at": "2026-08-26T02:10:00Z",
-  "verification": {
-    "verification_passed": true,
-    "sorry_count": 0,
-    "vacuous_count": 0,
-    "axiom_count": 0,
-    "build_passed": true,
-    "gate_results": {
-      "check_module_invariants_full": "ALL CHECKS PASSED (exit 0); C12, C13, C14 all real non-soft results; C14 #print axioms half ran",
-      "check_module_invariants_no_build": "ALL CHECKS PASSED (exit 0); C14 #print axioms half skipped cleanly",
-      "readme_lint": "Missing READMEs: 0, Broken file references: 0, RESULT: PASS",
-      "link_resolver": "0 lines",
-      "lean_files_changed": 0
-    }
-  },
+  "phases_completed": 10,
+  "phases_total": 10,
+  "session_id": "sess_1787688954_7fb0f6",
+  "verification_passed": true,
   "artifacts": [
     {
       "type": "summary",
@@ -92,73 +82,12 @@
     "completion_summary": "Corrected every status, count, and path claim in docs/ against Lean source: deleted the two fiction documents (SORRY_REGISTRY.md, IMPLEMENTATION_STATUS.md) and repaired all 28 inbound references, rewrote the false completeness and decidability limitations around the three distinct strong-completeness statuses, brought every count table to the measured ground truth (45 axiom constructors, 0 sorries, 539 files / 170,898 lines), gave all 15 previously-undocumented results their first coverage, took the link resolver from 74 dead links to 0, and wrote the nine missing FormalSystem READMEs. Added three enforced drift checks (C12 slash-path resolution, C13 markdown-link resolution, C14 status-claim tripwires with a #print axioms half) plus a soft C9-over-docs computation, and extended readme-lint.sh to be effective outside a Lean tree. No .lean declaration, signature, import, or tactic was changed.",
     "roadmap_items": []
   },
-  "measurements": {
-    "dead_links": {
-      "hypothesis": 74,
-      "baseline_measured": 74,
-      "final": 0
-    },
-    "sorry_registry_inbound_refs": {
-      "hypothesis": 15,
-      "measured": 28
-    },
-    "task_citations_under_docs": {
-      "hypothesis": 152,
-      "measured": 138,
-      "enforced": false,
-      "note": "100 of 138 in docs/development/PHASED_IMPLEMENTATION.md; ENFORCE_C9_DOCS defaults to 0"
-    },
-    "axiom_constructors": {
-      "hypothesis": 45,
-      "measured": 45,
-      "split": {
-        "Base": 37,
-        "Dense": 2,
-        "Discrete": 3,
-        "Dedekind": 3
-      }
-    },
-    "repository_metrics": {
-      "files": 539,
-      "code_lines": 170898,
-      "comment_lines": 96290
-    },
-    "missing_readmes": {
-      "before": 9,
-      "after": 0
-    }
-  },
-  "deleted_files": [
-    {
-      "path": "docs/project-info/SORRY_REGISTRY.md",
-      "lines": 196,
-      "evidence": "Claimed 9 sorries in Domain/DiscreteTimeline.lean and Canonical/ConstructiveFragment.lean, neither of which exists; its own verification commands glob Bimodal/**/*.lean, a tree that does not exist."
-    },
-    {
-      "path": "docs/project-info/IMPLEMENTATION_STATUS.md",
-      "lines": 331,
-      "evidence": "Duplicated and contradicted the lowercase implementation-status.md, to which its own scope note at :7-9 defers as authoritative; claimed the same 9 nonexistent sorries."
-    }
-  ],
+  "next_action": "postflight: mark task 486 [COMPLETED]",
   "follow_ups": [
     "Correct FormalSystem/ProofSystem/Axioms.lean:92-95 (stale 42-axiom docstring omitting the Dedekind layer) -- prose only, outside this task's file_scope",
     "Clear the 138 task-number citations under docs/, then flip ENFORCE_C9_DOCS to 1",
     "The dotted Bimodal.* sweep across FormalSystem/**/README.md handed off by task 485",
     "Re-derive competitive-landscape.md's anchor-coverage numerator (14), flagged in-text as unverified",
     "FormalSystem/Metalogic/Bundle/README.md lists three nonexistent files inside a code fence, invisible to both C12 and readme-lint"
-  ],
-  "metadata": {
-    "session_id": "sess_1787688954_7fb0f6",
-    "agent_type": "lean-implementation-agent",
-    "delegation_depth": 1,
-    "delegation_path": [
-      "orchestrator",
-      "implement",
-      "skill-lean-implementation"
-    ],
-    "compliance_check": "passed",
-    "phases_completed": 10,
-    "phases_total": 10,
-    "lean_intent": false
-  }
+  ]
 }
