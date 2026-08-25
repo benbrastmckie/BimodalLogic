@@ -324,11 +324,37 @@ def isSatisfiable (φ : Formula) (fc : FrameClass := .Base) : Bool :=
   ¬isValid φ.neg fc
 
 /--
-Decide with automatic fuel based on FMP-derived sound bound.
+Decide with automatic fuel, using `soundFuel` (from subformula closure cardinality) instead of the
+ad-hoc `recommendedFuel` heuristic.
 
-Uses `soundFuel` (from subformula closure cardinality) instead of the
-ad-hoc `recommendedFuel` heuristic. Combined with subset blocking in
-`expandBranchWithFuel`, this ensures termination for all formulas.
+**What termination means here.** `decideAuto` terminates on every input because it is a total
+function called at a finite fuel figure: every path through `decide` returns a `DecisionResult`,
+and `.fuelExhausted` is one of the four constructors it may return. No theorem rules
+`.fuelExhausted` out, and this docstring does not claim one does.
+
+**What is actually bounded, and under which hypotheses.** The expansion `decideAuto` drives is
+proved total only under stated hypotheses:
+`expandBranchWithFuel_isSome_of_stock` (`Verified/Termination/Fuel.lean`) gives
+`(expandBranchWithFuel …).isSome` from three hypothesis families together — no splitting
+(`NoSplit P fc`), a confined formula stock `C` and label set `L`, fuel exceeding
+`2 * C.card * L.card`, and a branch budget accommodating that fuel
+(`branchesUsed + fuel ≤ maxBranches`). It is derived from
+`expandBranchWithFuel_isSome_of_noSplit`, which takes the same shape against an arbitrary finite
+signed universe. None of these hypotheses is discharged by `decideAuto` itself.
+
+**Where `soundFuel` sits relative to the justified figure.** `soundFuel φ` is
+`min (n * 2 ^ n) 100000` — a *capped* runtime default. `soundFuel_le_soundFuel'`
+(`Verified/Termination/Fuel.lean`) proves it is dominated by the uncapped `soundFuel' φ`, and
+`soundFuel'` is itself justified only in the single-world dimension: `chain_le_soundFuel'` reaches
+it under a hypothesis `hL` confining the label count to the T2 *time* figure, which its own
+docstring records as not dischargeable once any `boxNeg` or `diamondPos` fires. The figure that
+takes the world dimension as a dimension is `chain_le_worlds_bounded` / `worldFuel'`.
+
+**Subset blocking is a measured behaviour, not a universal guarantee.** `Fuel.lean` evaluates
+`buildTableau ((G p) → □(G p)) n .Base` across `n ∈ [0, 40]` and beyond: `none` for every
+`n ≤ 24`, and `hasOpen` with a stationary 40-formula certified open branch for every `n ≥ 25` —
+a measured ceiling roughly 82× below `soundFuel φ` at that formula. That is an empirical witness
+for one `φ`, and is recorded as such rather than quantified over all formulas.
 -/
 def decideAuto (φ : Formula) (fc : FrameClass := .Base) : DecisionResult φ :=
   let fuel := soundFuel φ

@@ -159,7 +159,7 @@ affected phase's replacement text before writing it, and record the divergence i
 
 ---
 
-### Phase 2: (a) `Decidability.lean` Status block and (d) `decideAuto` termination claim [IN PROGRESS]
+### Phase 2: (a) `Decidability.lean` Status block and (d) `decideAuto` termination claim [COMPLETED]
 
 **Goal**: Make the subject of every claim in `Decidability.lean`'s `## Status` block explicit
 (proof-system result vs. tableau result), and replace `decideAuto`'s unsupported "ensures
@@ -167,7 +167,7 @@ termination for all formulas" with what is actually guaranteed. These two items 
 framing — what the tableau does and does not prove — so they are corrected together.
 
 **Tasks**:
-- [ ] (a) Rewrite the `## Status` block in `FormalSystem/Metalogic/Decidability.lean` so each claim
+- [x] (a) Rewrite the `## Status` block in `FormalSystem/Metalogic/Decidability.lean` so each claim
       names its subject and its theorem:
       - Soundness of the **proof system**: `Metalogic.soundness` (`Γ ⊢[fc] φ → Γ ⊨ φ`), with
         `Decidability.decide_sound` the corollary at the empty context that `decide`'s `.valid`
@@ -181,12 +181,12 @@ framing — what the tableau does and does not prove — so they are corrected t
         `ruleSound_of_mem_allRulesForFC`; the `isValid φ fc = true ↔ ⊨ φ` biconditional and the
         `Decidable (⊨ φ)` instances for the four frame classes are OPEN, per `Correctness.lean`'s
         "Retired as vacuous" section.
-- [ ] (a, extra defect) Correct "Proof extraction: Partial (axiom instances only)" — `extractProof`
+- [x] (a, extra defect) Correct "Proof extraction: Partial (axiom instances only)" — `extractProof`
       runs five strategies (`tryAxiomProof`, `matchDerived`, the closure-based `.axiomNeg` filter,
       `buildCompositionalProof`, `enhancedSearch`) before returning `.incomplete`. Keep "Partial";
       drop the "axiom instances only" parenthetical.
-- [ ] Rebuild: `lake build` after the `Decidability.lean` edit; commit before starting (d).
-- [ ] (d) Rewrite the `decideAuto` docstring in
+- [x] Rebuild: `lake build` after the `Decidability.lean` edit; commit before starting (d).
+- [x] (d) Rewrite the `decideAuto` docstring in
       `FormalSystem/Metalogic/Decidability/DecisionProcedure.lean`:
       - State the real guarantee: `decideAuto` terminates because it is a total function at a finite
         fuel figure — every path returns a `DecisionResult`, with `.fuelExhausted` a first-class
@@ -203,7 +203,7 @@ framing — what the tableau does and does not prove — so they are corrected t
         `n ≥ 25`), never as a universally quantified guarantee.
       - Do not cite `buildTableau_isSome` — it does not exist, and `Fuel.lean` records it as false as
         stated.
-- [ ] Rebuild: `lake build` after the `DecisionProcedure.lean` edit; commit.
+- [x] Rebuild: `lake build` after the `DecisionProcedure.lean` edit; commit.
 
 **Timing**: 1.5 hours
 
@@ -338,14 +338,14 @@ report's figures into the file without re-running it.
 
 ---
 
-### Phase 5: (e) `Verified/Decidable.lean` Status block and the stale BLOCKED section [NOT STARTED]
+### Phase 5: (e) `Verified/Decidable.lean` Status block and the stale BLOCKED section [COMPLETED]
 
 **Goal**: Rewrite the `## Status` block as a landed/open split (every item it lists as owed is in
 fact proved), and retitle/re-tense the stale `untlNeg`/`snceNeg` BLOCKED section without losing its
 counterexample material.
 
 **Tasks**:
-- [ ] Rewrite `## Status` as a landed/open split:
+- [x] Rewrite `## Status` as a landed/open split:
       - **Landed**: all `RuleSound` instances in this file, listed by carrier (the bulk at
         `carrierBase` via `ruleSound_base_mono`, `ruleSound_densityRule` at `carrierDense`, the
         discrete rules at `carrierDiscrete`, the Dedekind rules at `carrierDedekind`), plus the
@@ -356,19 +356,19 @@ counterexample material.
         which need their own obligations where `expandOnce`, not `applyRule`, is the object.
       - Lift the "not landed" wording from `ruleSound_of_mem_allRulesForFC`'s own docstring, which
         already states it correctly, rather than composing new text.
-- [ ] Delete (or retain explicitly as a past-tense record with the closure noted) the "blocked on a
+- [x] Delete (or retain explicitly as a past-tense record with the closure noted) the "blocked on a
       defect in `RuleSound`'s own statement" paragraph and its two escalated remedies. The file's own
       convention ("Read Defect 1 below in the past tense") supports the past-tense-record option.
       Note the retraction that already exists in-file: `OrdWithin` is in `RuleSound` and the four
       fresh-time existentials are proved against it.
-- [ ] (extra defect) Retitle the section header
+- [x] (extra defect) Retitle the section header
       ``## `untlNeg` and `snceNeg` — BLOCKED, two independent engine defects`` so it no longer says
       BLOCKED, and convert its body to past tense — `ruleSound_untlNeg` and `ruleSound_snceNeg` are
       proved earlier in this same file.
-- [ ] PRESERVE the counterexample material in that section verbatim: it is load-bearing (it explains
+- [x] PRESERVE the counterexample material in that section verbatim: it is load-bearing (it explains
       why the PASSIVE arm was retired, as `exists_gt_not_untl_disj`'s docstring records). Delete only
       claims about *current* status, never the measured refutations.
-- [ ] Rebuild `lake build`; commit.
+- [x] Rebuild `lake build`; commit.
 
 **Timing**: 1.5 hours
 
@@ -394,7 +394,7 @@ count differs, write what the grep shows.
 
 ---
 
-### Phase 6: (f) `WeakCanonical.lean` — five nonexistent sorries [NOT STARTED]
+### Phase 6: (f) `WeakCanonical.lean` — five nonexistent sorries [IN PROGRESS]
 
 **Goal**: Replace the five-bullet sorry list with the single true statement about the subtree's sole
 structural `sorry`, and fix the two stale architecture lines and the stale fallback paragraph.
@@ -444,7 +444,7 @@ returns.
 
 ---
 
-### Phase 7: (g) `ShuffleReal.lean` — proved lemma called a strategic sorry [NOT STARTED]
+### Phase 7: (g) `ShuffleReal.lean` — proved lemma called a strategic sorry [IN PROGRESS]
 
 **Goal**: Rewrite the module docstring's "What is landed here, and what is not" section so it agrees
 with the theorem docstrings 165 lines below it, which already record the correct state.

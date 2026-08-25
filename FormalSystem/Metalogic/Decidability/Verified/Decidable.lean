@@ -78,27 +78,44 @@ one, so the base family never needs restating.
 
 ## Status
 
-Landed: the framework; the eight truth-functional rules (`andPos`, `andNeg`, `orPos`, `orNeg`,
-`impPos`, `impNeg`, `negPos`, `negNeg`); and the three *label-preserving* modal rules (`boxPos`,
-`diamondNeg`, `boxTemporal`).
+**Landed — every `RuleSound` instance this file states, plus the sub-phase 7.2 assembly.** There
+are 34 per-rule instances, split by the carrier property each is stated at:
 
-Also landed: the two fresh-world modal rules `boxNeg` and `diamondPos`, together with the four
-temporal *universal* rules and `orderTrichotomy`.
+- **27 at `carrierBase`**, and therefore available at every frame class via `ruleSound_base_mono`:
+  the eight truth-functional rules (`andPos`, `andNeg`, `orPos`, `orNeg`, `impPos`, `impNeg`,
+  `negPos`, `negNeg`); the three *label-preserving* modal rules (`boxPos`, `diamondNeg`,
+  `boxTemporal`); the two fresh-world modal rules (`boxNeg`, `diamondPos`); the four temporal
+  *universal* rules (`allFuturePos`, `allPastPos`, `someFutureNeg`, `somePastNeg`);
+  `orderTrichotomy`; the four fresh-*time* existential rules (`allFutureNeg`, `allPastNeg`,
+  `someFuturePos`, `somePastPos`); `denseIndicatorClosure`; and all four of `untlPos`, `sncePos`,
+  `untlNeg`, `snceNeg`.
+- **1 at `carrierDense`**: `densityRule`.
+- **3 at `carrierDiscrete`**: `priorUZ`, `priorSZ`, `z1Rule`.
+- **3 at `carrierDedekind`**: `priorUGap`, `priorSGap`, `sepRule`.
 
-Still owed by sub-phase 7.2: the four fresh-*time* existential rules (`allFutureNeg`,
-`allPastNeg`, `someFuturePos`, `somePastPos`); `untlPos`/`untlNeg`/`sncePos`/`snceNeg`; the two
-dense, three discrete and three Dedekind rules; and the assembly
-`∀ r ∈ allRulesForFC fc, RuleSound _ r` via `RuleSpec.mem_allRulesForFC_iff`.
+The sub-phase 7.2 assembly `ruleSound_of_mem_allRulesForFC` is landed too: one induction over
+`RuleSpec.mem_allRulesForFC_iff`, discharged case by case against that ledger. All of the above
+are sorry-free — the repository's sole structural `sorry` is `countermodel_discrete` in
+`WeakCanonical/Transfer.lean`, which check C3 of `scripts/check-module-invariants.sh` pins by
+content.
 
-All six fresh-*time* producers are blocked on a defect in `RuleSound`'s own statement, not on
-proof effort: nothing ties `ord`'s times to `b`'s, so `Branch.nextTime` need not be fresh for the
-ordering, and the successor's `ordResp` obligation can be outright unsatisfiable. See "The
-fresh-time producers' ordering obligation is not discharged by freshness alone" below, and the
-two theorems that prove it. Two remedies are priced there; both change a definition the landed
-rules are stated against, so both are escalated rather than taken.
+**Not landed**, in the assembly theorem's own words, since it states the boundary correctly at
+the point of use: `ruleSound_of_mem_allRulesForFC` is the `allClosed → valid` direction's rule
+half, and is *not* yet `valid_iff_allClosed` (sub-phase 7.3), which additionally needs the
+fuel/termination side and the truth-lemma gate. It also says nothing about the two rules
+scheduled outside `allRulesForFC` — `serialityRule` and `timeLinearity` run as stages 2 and 3 of
+`expandOnce` and need their own obligations at the point where `expandOnce`, rather than
+`applyRule`, is the object.
 
-`boxNeg` and `diamondPos` were previously held back for a different and now-resolved reason —
-see "What `boxNeg` and `diamondPos` owed, and how it was discharged" at the end of this file.
+**Three obstructions are recorded below, all now closed; read each section in the past tense.**
+The ordering gap the fresh-time producers were held on is closed by `OrdWithin`, which is a
+hypothesis of `RuleSound`, and the four fresh-time existentials are proved against it — see "The
+fresh-time producers' ordering obligation is not discharged by freshness alone" for the record of
+what was measured and which remedy was taken. `untlNeg`/`snceNeg` were held on three successive
+engine defects and went through once the PASSIVE arms were retired — see "`untlNeg` and `snceNeg`
+— provable once the PASSIVE arms are retired". `boxNeg` and `diamondPos` were held on an unsound
+engine step — see "What `boxNeg` and `diamondPos` owed, and how it was discharged" at the end of
+this file.
 
 ## References
 
@@ -1105,8 +1122,9 @@ the two theorems below prove outright. The freedom `SatResult` grants the succes
 This is a defect in the *statement*, not in the engine. The engine threads its ordering from
 `TimeOrdering.empty` and only ever adds an edge to a genuinely fresh index, so every ordering it
 actually builds has all its times occurring on the branch; the cyclic orderings refuted below are
-not ones it constructs. Two remedies were considered and **both are escalated rather than taken
-here**, because each changes a definition this phase's sixteen landed rules are stated against:
+not ones it constructs. **This gap is now closed, and the record below is a past-tense account of
+how.** Two remedies were considered at the time, each changing a definition the then-landed rules
+were stated against:
 
 1. **A fifth `SatState` field** bounding `ord`'s times by `b.nextTime`. Measured obstruction:
    any such field mentions `b` *positively*, and `SatState.mono` (line 152) weakens `b` to a
@@ -1120,7 +1138,13 @@ here**, because each changes a definition this phase's sixteen landed rules are 
 Remedy 2 is *not* the schedule-reachability weakening that was measured and closed earlier: it
 does not restrict which branches the engine builds, and it is not tailored to exclude a
 counterexample. It is a well-formedness condition on the `(branch, ordering)` pair, discharged
-by construction rather than assumed. The distinction is real, and the choice is still the user's.
+by construction rather than assumed.
+
+**Remedy 2 is the one that was taken**, in the membership rather than the numeric formulation:
+`OrdWithin b ord` is a hypothesis of `RuleSound`, discharged at the root by `OrdWithin.empty` and
+preserved by every arm of `applyRule`. See "Well-formedness of the `(branch, ordering)` pair"
+earlier in this file for why membership was chosen over the numeric bound, and `OrdWithin.bound`
+for the implication between them. The four fresh-time existentials are proved against it.
 -/
 
 /-- **The gap, proved.** If `ord` already records `b.nextTime` as lying *before* `t`, then the
@@ -2824,30 +2848,30 @@ theorem ruleSound_sepRule : RuleSound carrierDedekind .sepRule := by
           using truthAt_sep h_lub hsrc
 
 /-!
-## `untlNeg` and `snceNeg` — BLOCKED, two independent engine defects
+## `untlNeg` and `snceNeg` — the three engine defects, and how each was closed
 
-**Status.** `untlPos` and `sncePos` are proved above; the copy defect described below was
-repaired for those two arms by deleting the block, gated on the full conformance corpus. This
-section is retained because `untlNeg`/`snceNeg` are still blocked — but the count of live
-obstructions has since fallen from three to one, and only the last of the three is still open.
+**Status: closed.** `ruleSound_untlPos`, `ruleSound_sncePos`, `ruleSound_untlNeg` and
+`ruleSound_snceNeg` are all proved above, sorry-free. This section is retained as the measured
+record of the three defects that had to be closed first: the counterexamples below are why each
+repair took the shape it did, and they are load-bearing for anyone tempted to reinstate a deleted
+block. **Read the whole section in the past tense.**
 
-**Current status, superseding the present tense below.** Three independent defects were found in
-these two rules, not two. (1) The copy block, described as Defect 1 below: deleted from the
-ACTIVE arms, as it had already been from `untlPos`/`sncePos`. (2) A *third* defect, found after
-that deletion and independent of it — the ACTIVE arm re-asserting its **own**
-`F(U(event,guard))` at the time it had just minted, refuted over a **dense** carrier where the
-copy needed a discrete one: also deleted, gated on the full conformance corpus, and measured by
-section D of `Tests/BimodalTest/UntlSnceCopyProbe.lean`. **The ACTIVE arms are now sound.**
-(3) Defect 2 below, the PASSIVE arms' endpoint co-decomposition: still open, and it alone is why
-these two rules remain unproved. `RuleSound` is per rule over **both** arms, so repairing the
-ACTIVE arms moved no theorem.
+**The three defects and their resolutions.** Three independent defects were found in these two
+rules, not two. (1) The copy block, described as Defect 1 below: deleted from the ACTIVE arms, as
+it had already been from `untlPos`/`sncePos`. (2) A *third* defect, found after that deletion and
+independent of it — the ACTIVE arm re-asserting its **own** `F(U(event,guard))` at the time it
+had just minted, refuted over a **dense** carrier where the copy needed a discrete one: also
+deleted, gated on the full conformance corpus, and measured by section D of
+`Tests/BimodalTest/UntlSnceCopyProbe.lean`. That made the ACTIVE arms sound. (3) Defect 2 below,
+the PASSIVE arms' endpoint co-decomposition: not repairable in place, so the PASSIVE arms were
+**retired** rather than fixed. `RuleSound` is per rule over **both** arms, so neither of the
+first two deletions moved the ledger on its own; the third is what made these statements true.
+See "`untlNeg` and `snceNeg` — provable once the PASSIVE arms are retired" above for the
+surviving single-arm proof, and `exists_gt_not_untl_disj` for the classical split it runs on.
 
-Read Defect 1 below in the past tense for all four rules. Read Defect 2 in the present tense —
-it is the live one.
-
-Neither obstruction is the ordering gap this section's predecessors were about. That gap is
-closed: `OrdWithin` is in `RuleSound`, and the four fresh-time existentials above are proved
-against it.
+None of the three obstructions was the ordering gap this section's predecessors were about. That
+gap is closed too: `OrdWithin` is a hypothesis of `RuleSound`, and the four fresh-time
+existentials above are proved against it.
 
 **Defect 1, the copy.** The ACTIVE arm of `untlNeg`/`snceNeg` (and, before its deletion,
 `untlPos`/`sncePos`)
@@ -2941,12 +2965,14 @@ ordering constraint.
   direction the deletion is a strict gain — `UntlSnceCopyProbe.lean` row C2 shows the engine now
   returns a countermodel for the invalid `U(p,q) → U(r,s)` where it previously exhausted its
   fuel, because the copy had been closing off the branches a countermodel is read from.
-* For `untlNeg`/`snceNeg` deletion is **necessary but not sufficient** — it leaves the PASSIVE
-  defect intact, and `RuleSound` is per rule. The sound restatement is an adjacency-aware
-  co-decomposition (mint an interpolant `z` with `t < z < t'` and emit `F(guard)@z`), which turns
-  the PASSIVE arm into a fresh-time producer and so carries termination and completeness
-  consequences of exactly the kind `densityRule`'s gap-selection comment documents. That change
-  is *not* authorized here and is escalated rather than improvised.
+* For `untlNeg`/`snceNeg` deletion was **necessary but not sufficient** — it left the PASSIVE
+  defect intact, and `RuleSound` is per rule. The sound restatement would have been an
+  adjacency-aware co-decomposition (mint an interpolant `z` with `t < z < t'` and emit
+  `F(guard)@z`), which turns the PASSIVE arm into a fresh-time producer and so carries
+  termination and completeness consequences of exactly the kind `densityRule`'s gap-selection
+  comment documents. That redesign was not taken. The PASSIVE arms were **retired** instead,
+  which is what made `ruleSound_untlNeg` and `ruleSound_snceNeg` provable; `Tableau.lean`'s two
+  arms carry the authorization and the refuting model.
 
 **What this does *not* affect.** Nothing above this section. The four fresh-time existentials
 mint their witness the same way and are unaffected, because their propagation families are `G`/`H`

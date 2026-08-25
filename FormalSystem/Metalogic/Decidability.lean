@@ -110,9 +110,35 @@ Tableau-based decision procedure returning proof terms or countermodels.
 
 ## Status
 
-- Soundness: Proven
-- Completeness: Proven (via BFMCS approach)
-- Proof extraction: Partial (axiom instances only)
+Each claim below names its subject and the theorem that carries it. Proof-system results and this
+directory's decision-procedure results are different claims, and they are kept apart deliberately:
+the tableau contributes the derivation, not the soundness.
+
+**Proof system** — proved elsewhere, consumed here:
+
+- Soundness: `Metalogic.soundness` (`Soundness.lean`), `Γ ⊢[Base] φ → Γ ⊨ φ`, sorry-free, with
+  `soundness_dense` and `soundness_discrete` the frame-class variants. Its corollary at the empty
+  context is `decide_sound` (`Correctness.lean`), `⊢ φ → ⊨ φ`, which is what consumes the
+  derivation `decide` returns in its `.valid` constructor.
+- Completeness: `BXCanonical.completeness_dense` and `BXCanonical.completeness_discrete`
+  (`BXCanonical/Completeness.lean`) are proved *and* sorry-free; `BXCanonical.completeness` at
+  `.Base` is proved but depends on `sorryAx`. Check C2 of `scripts/check-module-invariants.sh`
+  pins all three axiom sets; the distinction between them is real and is not to be collapsed.
+  "BFMCS" names the canonical-frame construction under `Metalogic/Bundle/`, which is not part of
+  `Decidability/`.
+
+**This directory's decision procedure**:
+
+- The rule half of `allClosed → valid` is proved: `ruleSound_of_mem_allRulesForFC`
+  (`Verified/Decidable.lean`), sorry-free — every rule `allRulesForFC` can schedule at a frame
+  class preserves satisfiability under that class's carrier property.
+- `valid_iff_allClosed`, the `isValid φ fc = true ↔ ⊨ φ` biconditional, and the `Decidable (⊨ φ)`
+  instances for the four frame classes are **open**. See `Correctness.lean`'s section
+  "`validity_decidable` / `validity_has_decision_procedure` — Retired as vacuous" for what is
+  still owed and why no `isValid`-shaped statement is written before it can be proved.
+- Proof extraction: Partial. `extractProof` (`ProofExtraction.lean`) runs five strategies in order
+  — `tryAxiomProof`, `matchDerived`, the closure-based `.axiomNeg` filter,
+  `buildCompositionalProof`, `enhancedSearch` — and returns `.incomplete` once all are exhausted.
 
 ## Usage
 
