@@ -11,8 +11,8 @@ next_project_number: 480
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,193,257,298,422,434,461,462,468,476,478 | -- | automation, dataset-enhancement, decidability, ... |
-| 2 | 125,169,178,231,282,296,433,455,463,479 | 193,298,422,434,461,462,468,478 | algebraic-representation, code-quality, dataset-enhancement, ... |
+| 1 | 127,128,193,257,298,422,434,461,462,468,476,479 | -- | automation, dataset-enhancement, decidability, ... |
+| 2 | 125,169,178,231,282,296,433,455,463 | 193,298,422,434,461,462,468 | algebraic-representation, code-quality, dataset-enhancement, ... |
 | 3 | 95,219,362,464 | 169,231,463 | completeness, dataset-enhancement, decidability, ... |
 | 4 | 465 | 464 | decidability |
 | 5 | 428 | 433,465 | decidability |
@@ -89,8 +89,7 @@ next_project_number: 480
 
 ### Metalogic
 
-478 [PLANNED] — T-B: THE GROUPABLE COMPANION LEMMA.
-  └─ 479 [NOT STARTED] — T-C: CLOSE `countermodel_discrete` VIA THE v2 BLUEPRINT AT Rat x_
+479 [NOT STARTED] — T-C: CLOSE `countermodel_discrete` VIA THE v2 BLUEPRINT AT Rat x_
 
 ## Tasks
 
@@ -149,12 +148,13 @@ specs/422_build_discrete_chronicle_over_non_archimedean_block_carrier_with_restr
 
 ### 478. Tb groupable companion lemma
 - **Effort**: large
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: Task 477
 - **Research**: [478_tb_groupable_companion_lemma/reports/01_groupable-companion-feasibility.md]
 - **Plan**: [478_tb_groupable_companion_lemma/plans/01_groupable-companion-lemma.md]
+- **Summary**: [478_tb_groupable_companion_lemma/summaries/01_execution-summary.md]
 
 **Description**: T-B: THE GROUPABLE COMPANION LEMMA.
 
