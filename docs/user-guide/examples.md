@@ -9,7 +9,7 @@ This document provides comprehensive examples of modal, temporal, and bimodal re
 ### Automated Proof Search
 
 The ProofSearch module provides automated proof discovery capabilities for modal logic formulas.
-See `Logos/Core/Automation/ProofSearch.lean` for the full API.
+See `FormalSystem/Automation/ProofSearch/` for the full API.
 
 ```lean
 import Logos.Core.Automation.ProofSearch
@@ -917,7 +917,7 @@ noncomputable example (P : Formula) : ⊢ P.box.always.iff P.box := by
 
 This is a conceptual exercise about the completeness proof infrastructure.
 
-**Hint 1**: Review `Bimodal/Metalogic/Completeness.lean` for the scaffolding.
+**Hint 1**: Review `FormalSystem/Metalogic/BXCanonical/Completeness.lean` for the scaffolding.
 
 **Hint 2**: The key components are: (1) maximal consistent sets, (2) canonical frame construction, (3) truth lemma.
 
@@ -959,9 +959,9 @@ See also: [known-limitations.md](../project-info/known-limitations.md) for statu
 ### Additional Resources
 
 - **Lean Source Files**:
-  - `Bimodal/Examples/BimodalProofs.lean` - Combined modal-temporal proofs
-  - `Bimodal/Examples/TemporalStructures.lean` - Temporal logic examples
-  - `Bimodal/Theorems/Combinators.lean` - Proof combinators used above
+  - `FormalSystem/Examples/BimodalProofs.lean` - Combined modal-temporal proofs
+  - `FormalSystem/Examples/TemporalStructures.lean` - Temporal logic examples
+  - `FormalSystem/Theorems/Combinators.lean` - Proof combinators used above
 
 - **Reference Guides**:
   - [Axiom Reference](../reference/axiom-reference.md) - Complete list of TM axioms

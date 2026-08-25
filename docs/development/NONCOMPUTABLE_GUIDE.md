@@ -2,7 +2,7 @@
 
 **Status**: Complete  
 **Last Updated**: 2025-12-28  
-**Related**: [Task 192](../../specs/192_fix_generalized_necessitation_termination/), ADR-001-Classical-Logic-Noncomputable.md
+**Related**: ADR-001-Classical-Logic-Noncomputable.md
 
 ---
 
@@ -173,7 +173,7 @@ noncomputable def de (Γ : Context) (A B C : Formula) (h1 : (A :: Γ) ⊢ C) (h2
    ```
    - **Current Status**: Marked as `def` (computable)
    - **Problem**: Calls `deductionTheorem` (Line 71) without being marked noncomputable
-   - **Error**: `failed to compile definition, compiler IR check failed at 'Logos.Core.Theorems.generalized_modal_k'. Error: depends on declaration 'Logos.Core.Metalogic.deduction_theorem', which has no executable code`
+   - **Error**: `failed to compile definition, compiler IR check failed at 'FormalSystem.Theorems.generalized_modal_k'. Error: depends on declaration 'FormalSystem.Metalogic.Core.deduction_theorem', which has no executable code`
    - **Fix**: Add `noncomputable` keyword
    - **Why Noncomputable**: Dependency on `deductionTheorem`
 
@@ -183,11 +183,9 @@ noncomputable def de (Γ : Context) (A B C : Formula) (h1 : (A :: Γ) ⊢ C) (h2
    ```
    - **Current Status**: Marked as `def` (computable)
    - **Problem**: Calls `deductionTheorem` (Line 105) without being marked noncomputable
-   - **Error**: `failed to compile definition, compiler IR check failed at 'Logos.Core.Theorems.generalized_temporal_k'. Error: depends on declaration 'Logos.Core.Metalogic.deduction_theorem', which has no executable code`
+   - **Error**: `failed to compile definition, compiler IR check failed at 'FormalSystem.Theorems.generalized_temporal_k'. Error: depends on declaration 'FormalSystem.Metalogic.Core.deduction_theorem', which has no executable code`
    - **Fix**: Add `noncomputable` keyword
    - **Why Noncomputable**: Dependency on `deductionTheorem`
-
-**Task Reference**: [Task 192](../../specs/192_fix_generalized_necessitation_termination/)
 
 ---
 
@@ -198,8 +196,8 @@ noncomputable def de (Γ : Context) (A B C : Formula) (h1 : (A :: Γ) ⊢ C) (h2
 **Status**: ✅ No explicit `noncomputable` markers, but compiles successfully
 
 **Uses `deductionTheorem`**:
-- Line 707: `exact Logos.Core.Metalogic.deductionTheorem [(A.imp B).allFuture] A.allFuture B.allFuture step3_reordered`
-- Line 711: `exact Logos.Core.Metalogic.deductionTheorem [] (A.imp B).allFuture (A.allFuture.imp B.allFuture) step4`
+- Line 707: `exact FormalSystem.Metalogic.Core.deductionTheorem [(A.imp B).allFuture] A.allFuture B.allFuture step3_reordered`
+- Line 711: `exact FormalSystem.Metalogic.Core.deductionTheorem [] (A.imp B).allFuture (A.allFuture.imp B.allFuture) step4`
 
 **Why It Compiles**:
 - These are used in **tactic proofs** (`by` blocks), not in definition bodies
@@ -222,8 +220,8 @@ noncomputable def de (Γ : Context) (A B C : Formula) (h1 : (A :: Γ) ⊢ C) (h2
 **Status**: ✅ No explicit `noncomputable` markers, compiles successfully
 
 **Uses `deductionTheorem`**:
-- Line 508: `exact Logos.Core.Metalogic.deductionTheorem [] (A.and B) A h`
-- Line 515: `exact Logos.Core.Metalogic.deductionTheorem [] (A.and B) B h`
+- Line 508: `exact FormalSystem.Metalogic.Core.deductionTheorem [] (A.and B) A h`
+- Line 515: `exact FormalSystem.Metalogic.Core.deductionTheorem [] (A.and B) B h`
 
 **Definitions**:
 - `dne`, `modalDualityNeg`, `modalDualityNegRev`
@@ -283,8 +281,8 @@ Perpetuity/ modules:
 
 **Error Message**:
 ```
-failed to compile definition, compiler IR check failed at 'Logos.Core.Theorems.my_function'. 
-Error: depends on declaration 'Logos.Core.Metalogic.deduction_theorem', which has no executable code; 
+failed to compile definition, compiler IR check failed at 'FormalSystem.Theorems.my_function'. 
+Error: depends on declaration 'FormalSystem.Metalogic.Core.deduction_theorem', which has no executable code; 
 consider marking definition as 'noncomputable'
 ```
 
@@ -398,7 +396,7 @@ Fix by adding `noncomputable` keyword before `def`.
   - [Noncomputable Keyword Explanation](../research/NONCOMPUTABLE.md)
   - [Deduction Theorem Necessity Analysis](../research/DEDUCTION_THEOREM_NECESSITY.md)
 - **Style Guide**: [LEAN_STYLE_GUIDE.md](LEAN_STYLE_GUIDE.md) (see "Noncomputable Patterns" section)
-- **Task Tracker**: [Task 192 - Fix GeneralizedNecessitation Termination](../../TODO.md)
+- **Task Tracker**: [specs/TODO.md](../../specs/TODO.md)
 
 ---
 

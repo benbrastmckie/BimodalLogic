@@ -12,16 +12,16 @@ This registry provides a high-level view of tactic implementation status across 
 
 | Tactic | Purpose | Status | Location |
 |--------|---------|--------|----------|
-| `modal_k_tactic` | Apply modal K rule (MK) | ✅ Complete | `Logos/Core/Automation/Tactics.lean` |
-| `temporal_k_tactic` | Apply temporal K rule (TK) | ✅ Complete | `Logos/Core/Automation/Tactics.lean` |
-| `modal_t` | Apply axiom MT (□φ → φ) | ✅ Complete | `Logos/Core/Automation/Tactics.lean` |
-| `modal_4_tactic` | Apply axiom M4 (□φ → □□φ) | ✅ Complete | `Logos/Core/Automation/Tactics.lean` |
-| `modal_b_tactic` | Apply axiom MB (φ → □◇φ) | ✅ Complete | `Logos/Core/Automation/Tactics.lean` |
-| `temp_4_tactic` | Apply axiom T4 (Fφ → FFφ) | ✅ Complete | `Logos/Core/Automation/Tactics.lean` |
-| `temp_a_tactic` | Apply axiom TA (φ → F(Pφ)) | ✅ Complete | `Logos/Core/Automation/Tactics.lean` |
-| `apply_axiom` | Apply TM axiom by unification | ✅ Complete | `Logos/Core/Automation/Tactics.lean` |
-| `assumption_search` | Search context for matching assumption | ✅ Complete | `Logos/Core/Automation/Tactics.lean` |
-| `tm_auto` | Comprehensive TM automation (Aesop) | 🚧 Partial (noncomputable errors fixed, proof reconstruction issues remain) | `Logos/Core/Automation/Tactics.lean` |
+| `modal_k_tactic` | Apply modal K rule (MK) | ✅ Complete | `FormalSystem/Automation/Tactics/` |
+| `temporal_k_tactic` | Apply temporal K rule (TK) | ✅ Complete | `FormalSystem/Automation/Tactics/` |
+| `modal_t` | Apply axiom MT (□φ → φ) | ✅ Complete | `FormalSystem/Automation/Tactics/` |
+| `modal_4_tactic` | Apply axiom M4 (□φ → □□φ) | ✅ Complete | `FormalSystem/Automation/Tactics/` |
+| `modal_b_tactic` | Apply axiom MB (φ → □◇φ) | ✅ Complete | `FormalSystem/Automation/Tactics/` |
+| `temp_4_tactic` | Apply axiom T4 (Fφ → FFφ) | ✅ Complete | `FormalSystem/Automation/Tactics/` |
+| `temp_a_tactic` | Apply axiom TA (φ → F(Pφ)) | ✅ Complete | `FormalSystem/Automation/Tactics/` |
+| `apply_axiom` | Apply TM axiom by unification | ✅ Complete | `FormalSystem/Automation/Tactics/` |
+| `assumption_search` | Search context for matching assumption | ✅ Complete | `FormalSystem/Automation/Tactics/` |
+| `tm_auto` | Comprehensive TM automation (Aesop) | 🚧 Partial (noncomputable errors fixed, proof reconstruction issues remain) | `FormalSystem/Automation/Tactics/` |
 | `s5_simp` | Simplify S5 modal formulas | 📋 Planned | N/A |
 | `temporal_simp` | Simplify temporal formulas | 📋 Planned | N/A |
 | `bimodal_simp` | Simplify using MF/TF axioms | 📋 Planned | N/A |
@@ -31,9 +31,9 @@ This registry provides a high-level view of tactic implementation status across 
 
 | Tactic | Purpose | Status | Location |
 |--------|---------|--------|----------|
-| `modal_search` | Bounded proof search for TM derivability goals | ✅ Complete | `Logos/Core/Automation/Tactics.lean` |
-| `temporal_search` | Proof search optimized for temporal formulas | ✅ Complete | `Logos/Core/Automation/Tactics.lean` |
-| `propositional_search` | Proof search for purely propositional formulas | ✅ Complete | `Logos/Core/Automation/Tactics.lean` |
+| `modal_search` | Bounded proof search for TM derivability goals | ✅ Complete | `FormalSystem/Automation/Tactics/` |
+| `temporal_search` | Proof search optimized for temporal formulas | ✅ Complete | `FormalSystem/Automation/Tactics/` |
+| `propositional_search` | Proof search for purely propositional formulas | ✅ Complete | `FormalSystem/Automation/Tactics/` |
 
 **Advanced-tactic implementation notes**:
 - `modal_search`: General purpose bounded proof search with configurable depth
@@ -169,4 +169,4 @@ This registry provides a high-level view of tactic implementation status across 
 
 - [tactic-development.md](../user-guide/tactic-development.md) - Guide for developing custom tactics
 - [implementation-status.md](implementation-status.md) - Overall project implementation status
-- [Automation Documentation](../../Logos/Core/Automation/) - Source code for tactics
+- [Automation Documentation](../../FormalSystem/Automation/Tactics/) - Source code for tactics

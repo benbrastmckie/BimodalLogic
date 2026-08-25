@@ -573,7 +573,7 @@ example : Formula.var "p" ⊃ Formula.var "p" =
 Add to your test suite:
 
 ```lean
--- Tests/BimodalTest/PropertyTests.lean
+-- Tests/BimodalTest/Property/
 import Plausible
 import Logos.Core
 

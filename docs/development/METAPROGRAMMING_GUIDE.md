@@ -68,7 +68,7 @@ import FormalSystem.ProofSystem.Derivation -- Derivable relation, inference rule
 Full import block for a tactic file:
 
 ```lean
--- File: FormalSystem/Automation/Tactics.lean
+-- File: FormalSystem/Automation/Tactics/
 import Lean.Elab.Tactic
 import Lean.Meta.Basic
 import Lean.Expr

@@ -242,7 +242,7 @@ a self-declared roadmap whose `Formula` type (6 constructors, `String` atoms) di
 real `Syntax/Formula.lean` type, which is what makes this block schematic rather than stale. In
 the actual implementation, all six perpetuity principles are complete and sorry-free — see
 `FormalSystem/Theorems/Perpetuity/Principles.lean` (P1–P5) and
-`FormalSystem/Theorems/Perpetuity/Bridge.lean` (P6).
+`FormalSystem/Theorems/Perpetuity/Principles.lean` (P6).
 
 #### Derivation Trees: Type vs Prop
 
@@ -1320,7 +1320,7 @@ example (P Q : ExtendedFormula) :
 
 ## 8. Integration with Logos Architecture
 
-Logos implements the Logos formal language of thought. For philosophical foundations and research context, see [METHODOLOGY.md](METHODOLOGY.md).
+Logos implements the Logos formal language of thought. For philosophical foundations and research context, see METHODOLOGY.md.
 
 ### Implementation Status
 
@@ -1332,18 +1332,18 @@ The current implementation provides Boolean, modal, and temporal operators with 
 
 ### 8.2 Layers 1-3 Extensions
 
-See [Research/layer-extensions.md](../research/layer-extensions.md) for specifications of planned extensions:
+See Research/layer-extensions.md for specifications of planned extensions:
 - Layer 1 (Explanatory): Counterfactual, constitutive, causal operators
 - Layer 2 (Epistemic): Belief, probability, knowledge operators
 - Layer 3 (Normative): Obligation, permission, preference operators
 
 ### 8.3 Dual Verification Architecture
 
-See [Research/dual-verification.md](../research/dual-verification.md) for RL training design combining proof-checker (syntactic verification) with model-checker (semantic verification).
+See [Research/dual-verification.md](../research/DUAL_VERIFICATION.md) for RL training design combining proof-checker (syntactic verification) with model-checker (semantic verification).
 
 ### 8.4 Proof Library Architecture
 
-See [Research/proof-library-design.md](../research/proof-library-design.md) for theorem caching and pattern matching design.
+See [Research/proof-library-design.md](../research/PROOF_LIBRARY_DESIGN.md) for theorem caching and pattern matching design.
 
 ### 8.5 Operator Layer Alignment
 
@@ -1419,7 +1419,7 @@ For current implementation status, see [implementation-status.md](../project-inf
 - Extended axioms: Layer-specific axiom schemata
 - **Goal**: Progressive addition following phased roadmap
 
-For extension specifications, see [Research/layer-extensions.md](../research/layer-extensions.md).
+For extension specifications, see Research/layer-extensions.md.
 
 **Benefits of Layered Approach**:
 1. **Conceptual Clarity**: Separate core system from advanced operators
@@ -1474,16 +1474,16 @@ This architecture provides a comprehensive foundation for developing a sophistic
 ---
 
 **Related Documentation:**
-- [METHODOLOGY.md](METHODOLOGY.md) - Philosophical foundations
+- METHODOLOGY.md - Philosophical foundations
 - [Tutorial](tutorial.md) - Getting started guide
 - [Examples](examples.md) - Modal, temporal, and bimodal examples
 - [implementation-status.md](../project-info/implementation-status.md) - Current progress
-- [Research/layer-extensions.md](../research/layer-extensions.md) - Layers 1-3 specifications
-- [Research/dual-verification.md](../research/dual-verification.md) - RL training architecture
-- [Research/proof-library-design.md](../research/proof-library-design.md) - Theorem caching design
-- [LEAN Style Guide](../Development/LEAN_STYLE_GUIDE.md) - Coding conventions
-- [Module Organization](../Development/MODULE_ORGANIZATION.md) - Project structure
+- Research/layer-extensions.md - Layers 1-3 specifications
+- [Research/dual-verification.md](../research/DUAL_VERIFICATION.md) - RL training architecture
+- [Research/proof-library-design.md](../research/PROOF_LIBRARY_DESIGN.md) - Theorem caching design
+- [LEAN Style Guide](../development/LEAN_STYLE_GUIDE.md) - Coding conventions
+- [Module Organization](../development/MODULE_ORGANIZATION.md) - Project structure
 - [Integration Guide](INTEGRATION.md) - Model-Checker integration
-- [Contributing](../Development/CONTRIBUTING.md) - How to contribute
+- [Contributing](../development/CONTRIBUTING.md) - How to contribute
 
 _Last updated: December 2025_

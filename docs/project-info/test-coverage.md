@@ -122,7 +122,7 @@ Run `./scripts/coverage-analysis.sh --verbose` for the complete list.
 
 **Blocked by Infrastructure (3)**:
 Cannot be resolved until source implementation completes:
-- `CompletenessTest.lean:51,65,83` - Completeness proofs require `Bimodal/Metalogic/Completeness.lean` implementation
+- `CompletenessTest.lean:51,65,83` - Completeness proofs require `FormalSystem/Metalogic/BXCanonical/Completeness.lean` implementation
 
 **Could Be Completed (2)**:
 Could be resolved with additional proof work:
@@ -153,12 +153,12 @@ Could be resolved with additional proof work:
 ## Related Documentation
 
 - [performance-targets.md](performance-targets.md) - Benchmark baselines and performance goals
-- [TESTING_STANDARDS.md](../../../docs/development/TESTING_STANDARDS.md) - Test requirements and conventions
-- [BimodalTest README](../../../BimodalTest/README.md) - Test organization and running tests
+- [TESTING_STANDARDS.md](../development/TESTING_STANDARDS.md) - Test requirements and conventions
+- [BimodalTest README](../../Tests/BimodalTest/README.md) - Test organization and running tests
 - [implementation-status.md](implementation-status.md) - Module implementation status
 
 ## Navigation
 
 - **Up**: [ProjectInfo/](./)
-- **Tests**: [BimodalTest/](../../../BimodalTest/)
-- **Benchmarks**: [benchmarks/](../../../benchmarks/)
+- **Tests**: [BimodalTest/](../../Tests/BimodalTest/)
+- **Benchmarks**: benchmarks/

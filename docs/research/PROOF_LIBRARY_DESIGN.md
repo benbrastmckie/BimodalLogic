@@ -404,8 +404,8 @@ See [implementation-status.md](../project-info/implementation-status.md) for cur
 ## Related Documentation
 
 - [DUAL_VERIFICATION.md](DUAL_VERIFICATION.md) - RL training architecture
-- [layer-extensions.md](layer-extensions.md) - Layers 1-3 specifications
-- [METHODOLOGY.md](../user-guide/METHODOLOGY.md) - Philosophical foundations
+- layer-extensions.md - Layers 1-3 specifications
+- METHODOLOGY.md - Philosophical foundations
 - [architecture.md](../user-guide/architecture.md) - Layer 0 specification
 
 ---

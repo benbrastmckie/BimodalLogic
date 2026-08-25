@@ -142,7 +142,7 @@ directory.
 
 Research and design documents for proof search automation and related features in Bimodal TM logic.
 
-> **Parent**: [Bimodal/docs/](../README.md) | **Project Research**: [docs/research/](../../../docs/research/)
+> **Parent**: [docs/](../README.md) | **Project Research**: [docs/research/](.)
 
 ## Documents
 
@@ -201,11 +201,11 @@ invalidation strategies and memory management.
 
 ## Related Documentation
 
-- [bimodal-logic.md](../../../../docs/research/bimodal-logic.md) - Comparison with Logos
+- [bimodal-logic.md](BIMODAL_LOGIC.md) - Comparison with Logos
 - [architecture.md](../user-guide/architecture.md) - TM logic specification
 - [tactic-registry.md](../project-info/tactic-registry.md) - Tactic implementation status
 
 ## Navigation
 
-- **Up**: [Bimodal/docs/](../README.md)
-- **Project Research**: [docs/research/](../../../docs/research/)
+- **Up**: [docs/](../README.md)
+- **Project Research**: [docs/research/](.)

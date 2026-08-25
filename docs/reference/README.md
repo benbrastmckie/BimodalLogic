@@ -98,8 +98,8 @@ See [tactic-reference.md](tactic-reference.md) for usage details.
 
 ## See Also
 
-- [Project Operators Reference](../../../docs/reference/operators.md) - Symbol notation
-- [Project API Reference](../../../docs/reference/API_REFERENCE.md) - Full API docs
+- [Project Operators Reference](operators.md) - Symbol notation
+- [Project API Reference](API_REFERENCE.md) - Full API docs
 
 ## Navigation
 

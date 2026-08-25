@@ -572,10 +572,10 @@ Property tests are integrated into the CI pipeline:
 lake build BimodalTest
 
 # Run specific property test file
-lake env lean Tests/BimodalTest/Core/Syntax/FormulaPropertyTest.lean
-lake env lean Tests/BimodalTest/Core/ProofSystem/DerivationPropertyTest.lean
-lake env lean Tests/BimodalTest/Core/Semantics/SemanticPropertyTest.lean
-lake env lean Tests/BimodalTest/Core/Metalogic/SoundnessPropertyTest.lean
+lake env lean Tests/BimodalTest/Syntax/FormulaPropertyTest.lean
+lake env lean Tests/BimodalTest/ProofSystem/DerivationPropertyTest.lean
+lake env lean Tests/BimodalTest/Semantics/
+lake env lean Tests/BimodalTest/Metalogic/
 ```
 
 ### GitHub Actions Workflow
@@ -601,10 +601,10 @@ jobs:
       
       - name: Run Property Tests
         run: |
-          lake env lean Tests/BimodalTest/Core/Syntax/FormulaPropertyTest.lean
-          lake env lean Tests/BimodalTest/Core/ProofSystem/DerivationPropertyTest.lean
-          lake env lean Tests/BimodalTest/Core/Semantics/SemanticPropertyTest.lean
-          lake env lean Tests/BimodalTest/Core/Metalogic/SoundnessPropertyTest.lean
+          lake env lean Tests/BimodalTest/Syntax/FormulaPropertyTest.lean
+          lake env lean Tests/BimodalTest/ProofSystem/DerivationPropertyTest.lean
+          lake env lean Tests/BimodalTest/Semantics/
+          lake env lean Tests/BimodalTest/Metalogic/
 ```
 
 ### Performance Monitoring
@@ -613,10 +613,10 @@ Track test execution time:
 
 ```bash
 # Time individual test files
-time lake env lean Tests/BimodalTest/Core/Syntax/FormulaPropertyTest.lean
+time lake env lean Tests/BimodalTest/Syntax/FormulaPropertyTest.lean
 
 # Set timeout for CI (5 minutes per file)
-timeout 300 lake env lean Tests/BimodalTest/Core/Syntax/FormulaPropertyTest.lean
+timeout 300 lake env lean Tests/BimodalTest/Syntax/FormulaPropertyTest.lean
 ```
 
 ---
@@ -709,5 +709,5 @@ Property-based testing with Plausible provides:
 
 **Resources**:
 - [Plausible Repository](https://github.com/leanprover-community/plausible)
-- [Logos Property Tests](../../Tests/BimodalTest/Core/Property/)
-- [Research Report](../../specs/174_property_based_testing/reports/research-001.md)
+- [Logos Property Tests](../../Tests/BimodalTest/Property/)
+- Research Report

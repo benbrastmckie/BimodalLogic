@@ -432,14 +432,14 @@ Logos supports future extensions:
 
 - [Architecture Guide](architecture.md) - Full TM logic specification
 - [Examples](examples.md) - More example proofs
-- [Contributing](../Development/CONTRIBUTING.md) - How to contribute
+- [Contributing](../development/CONTRIBUTING.md) - How to contribute
 - [Integration](INTEGRATION.md) - Model-Checker integration
 
 ### Developer Resources
 
-- [LEAN Style Guide](../Development/LEAN_STYLE_GUIDE.md)
-- [Module Organization](../Development/MODULE_ORGANIZATION.md)
-- [Testing Standards](../Development/TESTING_STANDARDS.md)
+- [LEAN Style Guide](../development/LEAN_STYLE_GUIDE.md)
+- [Module Organization](../development/MODULE_ORGANIZATION.md)
+- [Testing Standards](../development/TESTING_STANDARDS.md)
 - [Tactic Development](tactic-development.md)
 
 ### External Resources

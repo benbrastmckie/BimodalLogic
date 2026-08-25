@@ -34,7 +34,7 @@ These checks verify that information is consistent across all documentation file
 **Verification**:
 ```bash
 # Count tactic declarations in Tactics.lean
-TACTICS_IMPL=$(grep -c "^axiom \|^def \|^elab " FormalSystem/Automation/Tactics.lean)
+TACTICS_IMPL=$(grep -c "^axiom \|^def \|^elab " FormalSystem/Automation/Tactics/)
 
 # Count tactic references in tactic-development.md
 TACTICS_DOC=$(grep -c "^\#\#\# " docs/project-info/tactic-registry.md)
@@ -472,7 +472,7 @@ priorities.
 ```bash
 # Count tasks in TODO.md
 TASK_COUNT=$(grep -E "^### [0-9]+\. [A-Z]" TODO.md | grep -v "Archive/" |
-             grep -v "Logos/" | wc -l)
+             grep -v "FormalSystem/" | wc -l)
 echo "Total tasks in TODO.md: $TASK_COUNT"
 
 # Expected: 13 tasks (11 original + 2 new from best practices)

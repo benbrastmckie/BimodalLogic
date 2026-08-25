@@ -29,7 +29,7 @@ For documentation specific to the bimodal logic theory, see:
 
 | Theory | Status | Description | Documentation |
 |--------|--------|-------------|---------------|
-| **Bimodal** | Complete | Propositional intensional logic with soundness/completeness proofs | [Bimodal/docs/](.) |
+| **Bimodal** | Complete | Propositional intensional logic with soundness/completeness proofs | [docs/](.) |
 
 ### Quick Access by Need
 
@@ -148,7 +148,7 @@ Architectural Decision Records (ADRs) and system architecture documentation:
 - [README.md](architecture/README.md) - ADR catalog and guidance
 - [ADR-001-Classical-Logic-Noncomputable.md](architecture/ADR-001-Classical-Logic-Noncomputable.md) - Classical logic for metalogic
 - [ADR-004-Remove-Project-Level-State-Files.md](architecture/ADR-004-Remove-Project-Level-State-Files.md) - State file architecture
-- [BFMCS_architecture.md](architecture/BFMCS_architecture.md) - BFMCS proof architecture (base completeness construction)
+- [BFMCS_architecture.md](architecture/BFMCS_ARCHITECTURE.md) - BFMCS proof architecture (base completeness construction)
 
 **Audience**: Architects, maintainers
 
@@ -307,7 +307,7 @@ directory.
 Theory-specific documentation hub for the Bimodal TM (Tense and Modality) logic implementation.
 
 > **Note**: For project-wide documentation applicable to all theories, see
-> [docs/](../../docs/README.md).
+> [docs/](README.md).
 
 ## About Bimodal Logic
 
@@ -318,7 +318,7 @@ Bimodal is a **propositional intensional logic** with:
 - **Logical level**: Propositional (zeroth-order)
 
 For comparison with the planned Logos hyperintensional logic, see
-[bimodal-logic.md](../../../docs/research/bimodal-logic.md).
+[bimodal-logic.md](research/BIMODAL_LOGIC.md).
 
 ## Documentation Organization
 
@@ -401,12 +401,12 @@ Most-referenced documents:
 - [tactic-registry](project-info/tactic-registry.md) - Tactic status
 - [research/](research/) - Proof search automation research
 
-**Project-Wide** (in [docs/](../../docs/)):
-- [STYLE_GUIDE](../../docs/development/LEAN_STYLE_GUIDE.md) - Coding style
-- [TESTING](../../docs/development/TESTING_STANDARDS.md) - Test standards
+**Project-Wide** (in [docs/](.)):
+- [STYLE_GUIDE](development/LEAN_STYLE_GUIDE.md) - Coding style
+- [TESTING](development/TESTING_STANDARDS.md) - Test standards
 
 ## Navigation
 
 - **Up**: [Bimodal/](../)
-- **Project Documentation**: [docs/](../../docs/)
-- **Theory Comparison**: [bimodal-logic.md](../../../docs/research/bimodal-logic.md)
+- **Project Documentation**: [docs/](.)
+- **Theory Comparison**: [bimodal-logic.md](research/BIMODAL_LOGIC.md)

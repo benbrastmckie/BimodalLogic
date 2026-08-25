@@ -65,7 +65,7 @@ example : ⊢ my_new_theorem := by
 #### 2. GREEN: Implement Minimal Code
 
 ```lean
--- Bimodal/Theorems/NewTheorem.lean
+-- FormalSystem/Theorems/
 
 /-- New theorem: description -/
 theorem my_new_theorem : ⊢ ... := by
@@ -127,7 +127,7 @@ This project follows Lean 4 ecosystem conventions for directory naming:
 
 Directories containing Lean source code use PascalCase. These names must match Lean's import path requirements:
 
-- `Logos/` - Main Lean source code
+- `FormalSystem/` - Main Lean source code
 - `FormalSystem/` - Theory implementations (Bimodal, Logos)
 - `Tests/` - Test suites
 
@@ -391,7 +391,7 @@ Logos includes an AI agent system that automates development workflows:
 /lean 045
 
 # Refactor code
-/refactor Logos/Automation/Tactics.lean
+/refactor FormalSystem/Automation/Tactics/
 
 # Update documentation
 /document "automation tactics"
@@ -417,8 +417,9 @@ The meta system provides templates and patterns for extending the AI agent syste
 
 ### AI System Documentation
 
-- [Claude Code System](.claude/CLAUDE.md) - Complete system documentation
-- [Agent Architecture](.claude/docs/README.md) - Detailed system architecture
+The agent-system configuration lives under `.claude/`. It is deliberately not linked here:
+`.claude/` is a gitignored, regenerable deploy artifact, so a committed link into it is dead in
+a fresh clone.
 
 ## References
 

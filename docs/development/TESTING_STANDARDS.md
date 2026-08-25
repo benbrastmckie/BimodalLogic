@@ -93,7 +93,7 @@ end BimodalTest.Theorems
 Test properties that should hold for all inputs.
 
 ```lean
--- Tests/BimodalTest/Metalogic/SoundnessTest.lean
+-- Tests/BimodalTest/Metalogic/
 import Bimodal
 
 namespace BimodalTest.Metalogic
@@ -122,7 +122,7 @@ end BimodalTest.Metalogic
 Test specific bugs that were fixed.
 
 ```lean
--- Tests/BimodalTest/ProofSystem/RegressionTest.lean
+-- Tests/BimodalTest/ProofSystem/
 import Bimodal
 
 namespace BimodalTest.ProofSystem
@@ -258,7 +258,7 @@ Before committing:
 **1. RED: Write a failing test**
 
 ```lean
--- Tests/BimodalTest/ProofSystem/NewFeatureTest.lean
+-- Tests/BimodalTest/ProofSystem/
 /-- Test new axiom X application -/
 example (φ : Formula) : ⊢ (φ.new_operator.imp φ) := by
   apply Derivable.axiom

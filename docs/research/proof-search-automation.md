@@ -417,13 +417,13 @@ def handleUntil : TacticM Unit := do
 #### 4. Integration with Existing Code
 
 The ProofChecker project already has:
-- `Logos/Core/Automation/ProofSearch.lean` - extend this
-- `Logos/Core/Automation/Tactics.lean` - add modal-specific tactics
-- `Logos/Core/Automation/AesopRules.lean` - register new rules
+- `FormalSystem/Automation/ProofSearch/` - extend this
+- `FormalSystem/Automation/Tactics/` - add modal-specific tactics
+- `FormalSystem/Automation/AesopRules.lean` - register new rules
 
 **Suggested additions**:
-1. Create `Logos/Core/Automation/ModalSearch.lean` for modal-specific search
-2. Create `Logos/Core/Automation/TemporalSearch.lean` for temporal operators
+1. Create `FormalSystem/Automation/ProofSearch/` for modal-specific search
+2. Create `FormalSystem/Automation/ProofSearch/` for temporal operators
 3. Extend `AesopRules.lean` with modal/temporal rules
 4. Add configuration system for search parameters
 

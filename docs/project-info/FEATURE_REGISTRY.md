@@ -48,7 +48,7 @@ For implementation status by module, see [implementation-status.md](implementati
 - **Status**: Complete (10 theorems, zero sorry)
 - **Description**: Key propositional theorems in Hilbert-style calculus including double
   negation elimination, ex contradictione quodlibet, law of excluded middle, and combinators.
-- **Key Files**: `FormalSystem/Theorems/Propositional.lean` (aggregator) and
+- **Key Files**: `FormalSystem/Theorems/Propositional/` (aggregator) and
   `FormalSystem/Theorems/Propositional/` (`Core.lean`, `Connectives.lean`, `Reasoning.lean`)
 
 ## Automation Features

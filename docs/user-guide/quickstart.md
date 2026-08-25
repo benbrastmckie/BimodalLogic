@@ -99,8 +99,8 @@ example (A B C : Formula) : ⊢ (A.imp B).imp ((B.imp C).imp (A.imp C)) :=
 
 1. **Learn proof patterns**: [proof-patterns.md](proof-patterns.md)
 2. **Reference axioms**: [axiom-reference.md](../reference/axiom-reference.md)
-3. **See examples**: [Bimodal/Examples/](../../FormalSystem/Examples/)
-4. **General tutorial**: [tutorial.md](../../../docs/user-guide/tutorial.md)
+3. **See examples**: [FormalSystem/Examples/](../../FormalSystem/Examples/)
+4. **General tutorial**: [tutorial.md](tutorial.md)
 
 ## Troubleshooting
 

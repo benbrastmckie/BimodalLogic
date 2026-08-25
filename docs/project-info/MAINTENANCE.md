@@ -260,7 +260,7 @@ grep -rn "sorry" FormalSystem/**/*.lean 2>/dev/null | wc -l
 grep -rn "sorry" FormalSystem/**/*.lean 2>/dev/null
 
 # Find sorry in specific module
-grep -n "sorry" FormalSystem/Core/Theorems/Perpetuity.lean
+grep -n "sorry" FormalSystem/Theorems/Perpetuity.lean
 
 # Search commit history for sorry resolutions
 git log --all --grep="sorry" --oneline

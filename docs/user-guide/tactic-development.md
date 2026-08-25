@@ -179,7 +179,7 @@ elab_rules : tactic
 5. **Error Handling**: Provide specific error messages showing expected vs actual
    patterns for easier debugging.
 
-**Reference**: See [METAPROGRAMMING_GUIDE.md](../../Development/METAPROGRAMMING_GUIDE.md) for detailed
+**Reference**: See [METAPROGRAMMING_GUIDE.md](../development/METAPROGRAMMING_GUIDE.md) for detailed
 explanation of `Lean.Elab.Tactic` API, expression manipulation, and proof term
 construction.
 
@@ -631,7 +631,7 @@ macro "modal_reasoning" : tactic =>
 ### Unit Tests for Tactics
 
 ```lean
--- Tests/Unit/Automation/TacticsTests.lean
+-- Tests/BimodalTest/Automation/TacticsTest.lean
 
 /-- Test modal_t applies correctly -/
 example (P : Formula) : ⊢ (P.box.imp P) := by
@@ -786,6 +786,6 @@ throwError "tactic failed"
 - [Aesop Documentation](https://github.com/leanprover-community/aesop)
 - [Mathlib4 Tactics](https://leanprover-community.github.io/mathlib4_docs/)
 - [Logos Architecture](architecture.md)
-- [METAPROGRAMMING_GUIDE.md](../Development/METAPROGRAMMING_GUIDE.md)
-- [TESTING_STANDARDS.md](../Development/TESTING_STANDARDS.md)
+- [METAPROGRAMMING_GUIDE.md](../development/METAPROGRAMMING_GUIDE.md)
+- [TESTING_STANDARDS.md](../development/TESTING_STANDARDS.md)
 - [tactic-registry.md](../project-info/tactic-registry.md)

@@ -395,24 +395,25 @@ in `docs/`. (G1, G2, and G9 landed in Phase 2 alongside the limitation rewrites.
 
 ---
 
-### Phase 7: Dead-Link Repair and Stale Prose Paths [NOT STARTED]
+### Phase 7: Dead-Link Repair and Stale Prose Paths [COMPLETED]
 
 **Goal**: Take the report §6.1 resolver command to zero lines, and clear the non-link stale
 paths that no link checker can see.
 
 **Tasks**:
-- [ ] Record the current count with the report §6.1 resolver command before editing
-- [ ] **Class A** (12 sites) — case-wrong `Development/` -> `development/`: `user-guide/tutorial.md:425,430,431,432`; `user-guide/architecture.md:1380,1381,1383`; `user-guide/tactic-development.md:789,790`; `user-guide/tactic-development.md:182` and `reference/operators.md:312,360` (depth **and** case)
-- [ ] **Class B** (24 sites) — `../../../` and `../../` escapes resolving outside the repository. Per-line targets in report §6.2; nine of these disappear for free because Phase 1 deleted their host file or target
-- [ ] **Class C** (9 sites) — never-existed targets `METHODOLOGY.md` and `research/layer-extensions.md`: **delete the link**, keep the prose
-- [ ] **Class D** (6 sites) — case-wrong filenames: `BFMCS_architecture.md` -> `BFMCS_ARCHITECTURE.md` at `docs/README.md:145` and `architecture/README.md:35`; `dual-verification.md` / `proof-library-design.md` -> uppercase at `user-guide/architecture.md:1240,1244,1378,1379` (four the review did not enumerate)
-- [ ] **Class E** (4 sites) — wrong depth from `docs/reference/`: `operators.md:3,359,361,362` use `../../user-guide/`, should be `../user-guide/`
-- [ ] **Class F** (6 sites) — `.claude/` links: convert to **unlinked prose** rather than repointing (report §9.2). `.claude/` is a gitignored, regenerable deploy artifact; a committed document linking into it is dead in a fresh clone and is itself a drift source
-- [ ] **Class G** (3 sites) — root `TODO.md` moved to `specs/TODO.md`
-- [ ] **Class H** (5 sites) — archived task directories: **delete, do not repoint**. `192_` and `174_` were renumbered and now name entirely different tasks; `.claude/rules/no-task-references-in-deliverables.md` forbids the citation regardless
-- [ ] **Class I** (1 link + 25 non-link prose paths) — stale `Logos/Core/` root. Only `tactic-registry.md:173` is a markdown link; the other 25 are bare paths in tables and prose, invisible to any link checker (report F7's blind spot). Sites: `tactic-registry.md:15-24,34-36,173`; `research/proof-search-automation.md:420-422,425,426`; `user-guide/examples.md:12`; `development/CONTRIBUTING.md:130,394`; `development/DOC_QUALITY_CHECKLIST.md:475`. Real target is `FormalSystem/Automation/Tactics/` — note it is a **directory**, as are `FormalSystem/Automation/ProofSearch/` and `FormalSystem/Theorems/Propositional/`
-- [ ] **Class J** (3 sites) — `Bimodal/` two-tree merge leftovers: `development/BENCHMARKING_GUIDE.md:86,228` -> `../project-info/performance-targets.md`; `development/PROPERTY_TESTING_GUIDE.md:712` -> a nonexistent `Tests/BimodalTest/Core/Property/`, delete the link
-- [ ] Leave the three ignore-classes alone: `development/DIRECTORY_README_STANDARD.md` (18 template snippets), `reference/readme-standard.md:72,73` (same class), `project-info/MAINTENANCE.md:463,466` (grep patterns inside a bash fence)
+- [x] Record the current count with the report §6.1 resolver command before editing
+- [x] **Class A** (12 sites) — case-wrong `Development/` -> `development/`: `user-guide/tutorial.md:425,430,431,432`; `user-guide/architecture.md:1380,1381,1383`; `user-guide/tactic-development.md:789,790`; `user-guide/tactic-development.md:182` and `reference/operators.md:312,360` (depth **and** case)
+- [x] **Class B** (24 sites) — `../../../` and `../../` escapes resolving outside the repository. Per-line targets in report §6.2; nine of these disappear for free because Phase 1 deleted their host file or target
+- [x] **Class C** (9 sites) — never-existed targets `METHODOLOGY.md` and `research/layer-extensions.md`: **delete the link**, keep the prose
+- [x] **Class D** (6 sites) — case-wrong filenames: `BFMCS_architecture.md` -> `BFMCS_ARCHITECTURE.md` at `docs/README.md:145` and `architecture/README.md:35`; `dual-verification.md` / `proof-library-design.md` -> uppercase at `user-guide/architecture.md:1240,1244,1378,1379` (four the review did not enumerate)
+- [x] **Class E** (4 sites) — wrong depth from `docs/reference/`: `operators.md:3,359,361,362` use `../../user-guide/`, should be `../user-guide/`
+- [x] **Class F** (6 sites) — `.claude/` links: convert to **unlinked prose** rather than repointing (report §9.2). `.claude/` is a gitignored, regenerable deploy artifact; a committed document linking into it is dead in a fresh clone and is itself a drift source
+- [x] **Class G** (3 sites) — root `TODO.md` moved to `specs/TODO.md`
+- [x] **Class H** (5 sites) — archived task directories: **delete, do not repoint**. `192_` and `174_` were renumbered and now name entirely different tasks; `.claude/rules/no-task-references-in-deliverables.md` forbids the citation regardless
+- [x] **Class I** (1 link + 25 non-link prose paths) — stale `Logos/Core/` root. Only `tactic-registry.md:173` is a markdown link; the other 25 are bare paths in tables and prose, invisible to any link checker (report F7's blind spot). Sites: `tactic-registry.md:15-24,34-36,173`; `research/proof-search-automation.md:420-422,425,426`; `user-guide/examples.md:12`; `development/CONTRIBUTING.md:130,394`; `development/DOC_QUALITY_CHECKLIST.md:475`. Real target is `FormalSystem/Automation/Tactics/` — note it is a **directory**, as are `FormalSystem/Automation/ProofSearch/` and `FormalSystem/Theorems/Propositional/`
+- [x] **Class J** (3 sites) — `Bimodal/` two-tree merge leftovers: `development/BENCHMARKING_GUIDE.md:86,228` -> `../project-info/performance-targets.md`; `development/PROPERTY_TESTING_GUIDE.md:712` *(deviation: altered -- repointed to `Tests/BimodalTest/Property/`, which does exist, rather than deleting the link as the report advised)*
+- [x] Surplus work beyond the plan's classes: 25 further unresolved slash-shaped source paths across 17 files (stale `Automation/Tactics.lean` for a directory, `Metalogic/Completeness.lean` for the archived aggregator, `Tests/BimodalTest/Core/**`, and five illustrative placeholder filenames rewritten as directories) *(deviation: altered -- required to give C12 a real zero in Phase 8)*
+- [x] Leave the three ignore-classes alone: `development/DIRECTORY_README_STANDARD.md` (18 template snippets), `reference/readme-standard.md:72,73` (same class), `project-info/MAINTENANCE.md:463,466` (grep patterns inside a bash fence)
 
 **Timing**: 2 hours
 

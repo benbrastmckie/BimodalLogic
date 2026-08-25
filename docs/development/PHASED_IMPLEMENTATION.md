@@ -94,7 +94,7 @@ TemporalProofs.lean).
 1. Create `Archive/ModalProofs.lean` with S5 examples
 2. Create `Archive/TemporalProofs.lean` with temporal reasoning examples
 3. Update `Archive/Archive.lean` to re-export new modules
-4. Write tests in `Tests/BimodalTest/Archive/`
+4. Write tests in `Tests/BimodalTest/`
 5. Update implementation-status.md Archive status (3/3 complete)
 
 **Dependencies**: None
@@ -294,7 +294,7 @@ Tasks 5, 7, 8 immediately; start Task 6 as soon as Task 2 finishes.
 **Phased Implementation**:
 
 **Phase 1** (15-20 hours): Decidability Infrastructure
-- Create FormalSystem/Decidability/Procedures.lean
+- Create FormalSystem/Metalogic/Decidability/
 - Define satisfiability decision algorithm
 - Define validity decision algorithm via completeness
 
@@ -524,7 +524,7 @@ If working alone, prioritize critical path to minimize project duration:
 
 ### TODO.md Task Details
 
-- [TODO.md](../../TODO.md) - Comprehensive task tracking with dependencies
+- [TODO.md](../../specs/TODO.md) - Comprehensive task tracking with dependencies
 - TODO.md Dependency Graph (lines 701-805) - Full dependency visualization
 
 ### Best Practices Reports

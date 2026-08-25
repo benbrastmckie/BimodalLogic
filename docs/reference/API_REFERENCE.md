@@ -303,7 +303,7 @@ inductive DerivationTree : Context → Formula → Prop where
 
 ### Tactics (`FormalSystem.Automation.Tactics`)
 
-**Module**: `FormalSystem/Automation/Tactics.lean`
+**Module**: `FormalSystem/Automation/Tactics/`
 
 Custom tactics for modal and temporal reasoning.
 
@@ -372,7 +372,7 @@ example (h : p → q) : p → q := by
 
 ### ProofSearch (`FormalSystem.Automation.ProofSearch`)
 
-**Module**: `Bimodal/Automation/ProofSearch.lean`
+**Module**: `FormalSystem/Automation/ProofSearch/`
 
 Advanced proof search with multiple strategies, heuristics, caching, and pattern learning.
 
@@ -442,7 +442,7 @@ Batch search that accumulates patterns across multiple goals.
 
 ### SuccessPatterns (`FormalSystem.Automation.SuccessPatterns`)
 
-**Module**: `Bimodal/Automation/SuccessPatterns.lean`
+**Module**: `FormalSystem/Automation/SuccessPatterns.lean`
 
 Pattern learning for proof search optimization.
 
@@ -506,7 +506,7 @@ Aesop rule registration for TM automation.
 
 ### Propositional (`FormalSystem.Theorems.Propositional`)
 
-**Module**: `FormalSystem/Theorems/Propositional.lean`
+**Module**: `FormalSystem/Theorems/Propositional/`
 
 Key propositional theorems in Hilbert-style proof calculus.
 

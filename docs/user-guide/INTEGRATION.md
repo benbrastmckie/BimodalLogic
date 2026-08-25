@@ -2,7 +2,10 @@
 
 This document describes how to integrate ProofChecker (Bimodal) with the Model-Checker to create a comprehensive dual verification architecture.
 
-> **For AI-Assisted Development**: See [.claude/CLAUDE.md](.claude/CLAUDE.md) for automated research, planning, and implementation workflows that integrate with the development process described in this guide.
+> **For AI-Assisted Development**: the agent-system configuration under `.claude/` provides
+> automated research, planning, and implementation workflows that integrate with the development
+> process described in this guide. It is not linked: `.claude/` is a gitignored, regenerable
+> deploy artifact.
 
 ## 1. Overview
 
@@ -332,7 +335,7 @@ def handle_integration_error (e : IntegrationError) : IO Unit := do
 ### Integration Test Setup
 
 ```lean
--- Tests/BimodalTest/Integration/ModelCheckerTest.lean
+-- Tests/BimodalTest/Integration/
 
 /-- Test round-trip serialization -/
 example (φ : Formula) : deserialize (serialize φ) = some φ := by
@@ -405,7 +408,8 @@ Updates integration documentation to reflect current implementation status and u
 - **`/document`**: Update integration documentation
 - **`/review`**: Analyze integration completeness and identify gaps
 
-See [Claude Code System](.claude/CLAUDE.md) for complete command reference and workflow details.
+See the agent-system configuration under `.claude/` for the complete command reference and
+workflow details.
 
 ## References
 
@@ -413,4 +417,4 @@ See [Claude Code System](.claude/CLAUDE.md) for complete command reference and w
 - [Tutorial](tutorial.md) - Getting started
 - [Examples](examples.md) - Usage examples
 - [Versioning](../development/VERSIONING.md) - Version policy
-- [Claude Code System](.claude/CLAUDE.md) - Automated development workflows
+- The agent-system configuration under `.claude/` - Automated development workflows

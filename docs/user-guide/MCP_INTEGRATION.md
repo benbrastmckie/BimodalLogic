@@ -3,7 +3,8 @@
 > **Legacy Notice**: This document originally described MCP integration for the OpenCode AI
 > development system (which preceded Claude Code). The OpenCode-specific content (opencode.json
 > configuration, OpenCode agent definitions) is no longer applicable. The current development
-> system is Claude Code, documented at [.claude/CLAUDE.md](../../.claude/CLAUDE.md).
+> system is Claude Code, configured under `.claude/` (not linked: that tree is a gitignored,
+> regenerable deploy artifact).
 >
 > The core concepts below (lean-lsp-mcp server, tool capabilities) remain valid for Claude Code
 > as well, which also supports MCP servers.
@@ -40,7 +41,7 @@ current Claude Code system documentation.
 When developing proofs, use `lean_goal` to check proof state:
 
 ```
-lean_goal(file_path="FormalSystem/Metalogic/Completeness.lean", line=42, column=4)
+lean_goal(file_path="FormalSystem/Metalogic/BXCanonical/Completeness.lean", line=42, column=4)
 ```
 
 ### Mathlib Search
@@ -54,6 +55,6 @@ lean_leansearch("Filter preserves membership")
 
 ## References
 
-- [Claude Code System](.claude/CLAUDE.md) - Current AI development system
+- The agent-system configuration under `.claude/` - Current AI development system
 - [Lean Style Guide](../development/LEAN_STYLE_GUIDE.md) - Lean 4 coding conventions
 - [Contributing Guide](../development/CONTRIBUTING.md) - Development workflow
