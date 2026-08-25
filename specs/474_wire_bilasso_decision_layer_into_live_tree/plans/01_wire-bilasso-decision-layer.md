@@ -1,7 +1,7 @@
 # Implementation Plan: Wire the BiLasso Decision Layer into the Live Tree
 
 - **Task**: 474 - Wire the BiLasso decision layer into the live tree
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 3.5 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/474_wire_bilasso_decision_layer_into_live_tree/reports/01_wire-bilasso-into-build-graph.md`
@@ -156,7 +156,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Register the layer and retire its manifest block (atomic) [NOT STARTED]
+### Phase 1: Register the layer and retire its manifest block (atomic) [COMPLETED]
 
 **Goal**: `lake build` compiles the bi-lasso decision layer, the manifest no longer names any of
 the 15 modules that just became reachable, and every prose claim falsified by that change is
@@ -250,7 +250,7 @@ edited, or vice versa) is expected red — C6 fails in both directions — which
 
 ---
 
-### Phase 2: Land the three probes as `BiLasso/Assembly.lean` [NOT STARTED]
+### Phase 2: Land the three probes as `BiLasso/Assembly.lean` [COMPLETED]
 
 **Goal**: The three 469-era probes become live, machine-checked theorems in the build graph as one
 module with five declarations, reachable through `BiLasso.lean` and therefore requiring no
@@ -323,7 +323,7 @@ C6.
 
 ---
 
-### Phase 3: Correct `BiLasso/README.md` [NOT STARTED]
+### Phase 3: Correct `BiLasso/README.md` [COMPLETED]
 
 **Goal**: The layer's own README stops describing the assembly as retained evidence under
 `specs/469_.../evidence/` and points at the live module.
@@ -336,7 +336,7 @@ C6.
       `specs/469_eliminate_the_bridge_filtration_into_intpresentation/evidence/`". Point instead
       at `FormalSystem/Metalogic/Decidability/BiLasso/Assembly.lean` and name the five
       declarations.
-- [ ] Preserve the three "things this establishes" bullets that follow — they are still true and
+- [x] Preserve the three "things this establishes" bullets that follow — they are still true and
       still measured.
 - [ ] Do not weaken the `fmp` framing above it: `fmp` remains exactly one open theorem, its crux
       is box-faithfulness, and it is genuinely hard.
@@ -370,7 +370,7 @@ returning nothing after the edit; if it returns other occurrences that are genui
 
 ---
 
-### Phase 4: Add the honest ROADMAP entry [NOT STARTED]
+### Phase 4: Add the honest ROADMAP entry [COMPLETED]
 
 **Goal**: `specs/ROADMAP.md` accounts for the bi-lasso decision layer — for the first time — and
 states its status without overclaiming.
