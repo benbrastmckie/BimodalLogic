@@ -89,7 +89,7 @@ next_project_number: 480
 
 ### Metalogic
 
-478 [NOT STARTED] — T-B: THE GROUPABLE COMPANION LEMMA.
+478 [RESEARCHED] — T-B: THE GROUPABLE COMPANION LEMMA.
   └─ 479 [NOT STARTED] — T-C: CLOSE `countermodel_discrete` VIA THE v2 BLUEPRINT AT Rat x_
 
 ## Tasks
@@ -149,10 +149,11 @@ specs/422_build_discrete_chronicle_over_non_archimedean_block_carrier_with_restr
 
 ### 478. Tb groupable companion lemma
 - **Effort**: large
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: Task 477
+- **Research**: [478_tb_groupable_companion_lemma/reports/01_groupable-companion-feasibility.md]
 
 **Description**: T-B: THE GROUPABLE COMPANION LEMMA.
 
