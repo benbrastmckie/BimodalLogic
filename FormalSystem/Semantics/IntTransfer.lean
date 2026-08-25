@@ -237,4 +237,92 @@ theorem aligned_comap {F : TaskFrame D} (e : D ≃+o E)
     show σ'.states n h' = σ'.states (e (e.symm n)) h
     exact WorldHistory.states_eq_of_time_eq σ' n (e (e.symm n)) (by simp) h' h
 
+/--
+**Truth transfers across the frame transport.** For aligned histories `σ` and `σ'`, `φ` holds at
+`t` in `M` along `σ` exactly when it holds at `e t` in `M.map e` along `σ'`.
+
+The induction is on `φ`, generalizing over **both** histories and the time. That generalization
+is exactly what makes the two hard cases go through: `box` swaps the history (it quantifies over
+all histories of the ambient frame, so the forward direction consumes `WorldHistory.comap`), and
+`untl`/`snce` move the time. `box` is the only case that touches `comap`; `untl` and `snce` are
+pure order transfer, riding on `map_lt_map_iff`.
+
+Trap, recorded: in the `box` forward case, `(WorldHistory.comap e ρ').domain s` follows from
+`ρ'.domain (e s)` **definitionally**, and `simpa` normalizes past it and fails. The bare term
+`fun s => hρ' (e s)` is the proof.
+-/
+theorem truthAt_map {F : TaskFrame D} (e : D ≃+o E) (M : TaskModel F) (φ : Formula) :
+    ∀ (σ : WorldHistory F) (σ' : WorldHistory (TaskFrame.map F e)), Aligned e σ σ' →
+      ∀ t : D, (TruthAt M σ t φ ↔ TruthAt (TaskModel.map M e) σ' (e t) φ) := by
+  induction φ with
+  | atom p =>
+    intro σ σ' ha t
+    constructor
+    · rintro ⟨ht, hv⟩
+      have ht' : σ'.domain (e t) := (ha.dom (e t)).mpr (by simpa using ht)
+      refine ⟨ht', ?_⟩
+      have := ha.st (e t) ht' (by simpa using ht)
+      show (TaskModel.map M e).valuation (σ'.states (e t) ht') p
+      rw [this]
+      show M.valuation (σ.states (e.symm (e t)) _) p
+      rw [σ.states_eq_of_time_eq (e.symm (e t)) t (by simp) _ ht]
+      exact hv
+    · rintro ⟨ht', hv⟩
+      have ht : σ.domain t := by
+        have := (ha.dom (e t)).mp ht'
+        simpa using this
+      refine ⟨ht, ?_⟩
+      have heq := ha.st (e t) ht' (by simpa using ht)
+      rw [heq] at hv
+      rw [σ.states_eq_of_time_eq (e.symm (e t)) t (by simp) _ ht] at hv
+      exact hv
+  | bot => intro σ σ' ha t; exact Iff.rfl
+  | imp ψ χ ihψ ihχ =>
+    intro σ σ' ha t
+    exact imp_congr (ihψ σ σ' ha t) (ihχ σ σ' ha t)
+  | box ψ ih =>
+    intro σ σ' ha t
+    constructor
+    · intro h ρ' hρ'
+      -- TRAP: `simpa` fails here; `(comap e ρ').domain s` is *definitionally* `ρ'.domain (e s)`.
+      exact (ih (WorldHistory.comap e ρ') ρ' (aligned_comap e ρ') t).mp
+        (h _ (fun s => hρ' (e s)))
+    · intro h ρ hρ
+      exact (ih ρ (WorldHistory.map ρ e) (aligned_map e ρ) t).mpr
+        (h _ (isTotal_map e (aligned_map e ρ) hρ))
+  | untl ψ χ ihψ ihχ =>
+    intro σ σ' ha t
+    constructor
+    · rintro ⟨s, hts, hχ, hψ⟩
+      refine ⟨e s, (map_lt_map_iff e).mpr hts, (ihχ σ σ' ha s).mp hχ, ?_⟩
+      intro r htr hrs
+      have hr : t < e.symm r := by simpa using (map_lt_map_iff e.symm).mpr htr
+      have hr2 : e.symm r < s := by simpa using (map_lt_map_iff e.symm).mpr hrs
+      have := (ihψ σ σ' ha (e.symm r)).mp (hψ _ hr hr2)
+      simpa using this
+    · rintro ⟨s, hts, hχ, hψ⟩
+      refine ⟨e.symm s, ?_, ?_, ?_⟩
+      · simpa using (map_lt_map_iff e.symm).mpr hts
+      · refine (ihχ σ σ' ha (e.symm s)).mpr ?_; simpa using hχ
+      · intro r htr hrs
+        refine (ihψ σ σ' ha r).mpr (hψ (e r) ((map_lt_map_iff e).mpr htr) ?_)
+        simpa using (map_lt_map_iff e).mpr hrs
+  | snce ψ χ ihψ ihχ =>
+    intro σ σ' ha t
+    constructor
+    · rintro ⟨s, hts, hχ, hψ⟩
+      refine ⟨e s, (map_lt_map_iff e).mpr hts, (ihχ σ σ' ha s).mp hχ, ?_⟩
+      intro r hsr hrt
+      have hr : s < e.symm r := by simpa using (map_lt_map_iff e.symm).mpr hsr
+      have hr2 : e.symm r < t := by simpa using (map_lt_map_iff e.symm).mpr hrt
+      have := (ihψ σ σ' ha (e.symm r)).mp (hψ _ hr hr2)
+      simpa using this
+    · rintro ⟨s, hts, hχ, hψ⟩
+      refine ⟨e.symm s, ?_, ?_, ?_⟩
+      · simpa using (map_lt_map_iff e.symm).mpr hts
+      · refine (ihχ σ σ' ha (e.symm s)).mpr ?_; simpa using hχ
+      · intro r hsr hrt
+        refine (ihψ σ σ' ha r).mpr (hψ (e r) ?_ ((map_lt_map_iff e).mpr hrt))
+        simpa using (map_lt_map_iff e).mpr hsr
+
 end FormalSystem.Semantics

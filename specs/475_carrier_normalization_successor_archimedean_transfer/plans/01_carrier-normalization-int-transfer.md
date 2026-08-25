@@ -262,26 +262,30 @@ enumerating the declaration names in the phase diff against prototype lines 117-
 **Verification**:
 - `lake build FormalSystem.Semantics.IntTransfer` green.
 - `grep -n "HEq" FormalSystem/Semantics/IntTransfer.lean` returns nothing — an `HEq` appearing is
-  the signal that the forbidden `Equiv` route was taken.
+  the signal that the forbidden `Equiv` route was taken. *(deviation: altered — the literal grep
+  returns 4 hits, all inside doc-comments that this plan's own Phase 2 and Phase 3 tasks required
+  ("record the `Aligned`-not-`Equiv` design decision"; "Docstring `Aligned` with the design
+  rationale"). Gate re-run with block comments stripped: 0 hits, i.e. no `HEq` in any proof term,
+  which is the property the gate exists to check.)*
 - No `sorry`, no `axiom` in the file.
 
 ---
 
-### Phase 4: truthAt_map [NOT STARTED]
+### Phase 4: truthAt_map [COMPLETED]
 
 **Goal**: Land the truth-transfer theorem — the induction on `Formula` that carries `TruthAt`
 across the frame transport.
 
 **Tasks**:
-- [ ] Transcribe `truthAt_map` from prototype lines 200-271 into `IntTransfer.lean`.
-- [ ] Keep the statement's generalization shape exactly as in the prototype: the induction is on
+- [x] Transcribe `truthAt_map` from prototype lines 200-271 into `IntTransfer.lean`.
+- [x] Keep the statement's generalization shape exactly as in the prototype: the induction is on
       `φ`, generalizing over **both** histories and the time. That generalization is what makes
       `box` (which swaps the history) and `untl`/`snce` (which move the time) both go through.
       Do not specialize the statement to a fixed `σ`/`t`.
-- [ ] TRAP: in the `box` forward case, `(comap e ρ').domain s` follows from `ρ'.domain (e s)`
+- [x] TRAP: in the `box` forward case, `(comap e ρ').domain s` follows from `ρ'.domain (e s)`
       *definitionally*. `simpa` normalizes past it and fails. Use the bare term
       `fun s => hρ' (e s)` exactly as in the prototype.
-- [ ] Docstring `truthAt_map` naming `box` as the only case that uses `comap`, and `untl`/`snce`
+- [x] Docstring `truthAt_map` naming `box` as the only case that uses `comap`, and `untl`/`snce`
       as pure order transfer.
 
 **Timing**: 1 hour
@@ -307,7 +311,7 @@ must be re-checked rather than patched.
 
 ---
 
-### Phase 5: ValidInt, validDiscrete_iff_validInt, and aggregator wiring [NOT STARTED]
+### Phase 5: ValidInt, validDiscrete_iff_validInt, and aggregator wiring [IN PROGRESS]
 
 **Goal**: Land the headline theorem and make the new module reachable and manifested.
 
