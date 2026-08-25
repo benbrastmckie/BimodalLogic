@@ -11,9 +11,9 @@ next_project_number: 488
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,193,257,298,433,461,463,476,483,484,487 | -- | agent-system, automation, code-quality, ... |
-| 2 | 125,178,231,282,296,464,481,485 | 193,298,461,463,483,484 | algebraic-representation, code-quality, dataset-enhancement, ... |
-| 3 | 219,465,486 | 231,464,485 | code-quality, dataset-enhancement, decidability |
+| 1 | 127,128,193,257,298,433,461,463,476,483,485 | -- | automation, code-quality, dataset-enhancement, ... |
+| 2 | 125,178,231,282,296,464,481,486 | 193,298,461,463,483,485 | algebraic-representation, code-quality, dataset-enhancement, ... |
+| 3 | 219,465 | 231,464 | dataset-enhancement, decidability |
 | 4 | 428 | 433,465 | decidability |
 | 5 | 429 | 428 | decidability |
 | 6 | 410 | 429 | decidability |
@@ -23,10 +23,6 @@ next_project_number: 488
 | 10 | 482 | 412 | decidability |
 
 **Grouped by Topic** (indented = depends on parent):
-
-### Agent System
-
-487 [PLANNED] — TOOLING FIX: repair the 128KB argv ceiling that silently disables
 
 ### Algebraic Representation
 
@@ -38,9 +34,8 @@ next_project_number: 488
 
 ### Code Quality
 
-484 [PLANNED] — DOCUMENTATION ANCHOR CORRECTION: repair specs/ROADMAP.md and Form
-  └─ 485 [NOT STARTED] — README CORRECTION: rewrite the top-level README.md and repair the
-    └─ 486 [NOT STARTED] — docs/ OVERHAUL: delete the documents that are fiction, rewrite th
+485 [NOT STARTED] — README CORRECTION: rewrite the top-level README.md and repair the
+  └─ 486 [NOT STARTED] — docs/ OVERHAUL: delete the documents that are fiction, rewrite th
 
 ### Dataset Enhancement
 
@@ -86,7 +81,7 @@ next_project_number: 488
 ## Tasks
 
 ### 487. Fix argv ceiling in roadmap integration and state write
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
@@ -318,12 +313,13 @@ FormalSystem/Metalogic.lean, FormalSystem/Metalogic/Decidability.lean, FormalSys
 ---
 
 ### 484. Documentation anchor roadmap and metalogic readme
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: code-quality
 - **Dependencies**: None
 - **Research**: [484_documentation_anchor_roadmap_and_metalogic_readme/reports/01_anchor-doc-verification.md]
 - **Plan**: [484_documentation_anchor_roadmap_and_metalogic_readme/plans/01_anchor-doc-correction.md]
+- **Summary**: [484_documentation_anchor_roadmap_and_metalogic_readme/summaries/01_anchor-doc-correction-summary.md]
 
 **Description**: DOCUMENTATION ANCHOR CORRECTION: repair specs/ROADMAP.md and FormalSystem/Metalogic/README.md, the two documents every other correction pass is realigned against.
 
