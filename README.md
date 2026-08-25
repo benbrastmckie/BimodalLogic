@@ -18,7 +18,7 @@ The repository implements the syntax, task semantics, proof theory, and metalogi
 |--------|-------|
 | Lean files | 539 |
 | Lines of code | ~170,898 |
-| Comment lines | ~96,290|
+| Comment lines | ~96,290 |
 
 To get current numbers (excludes `.lake` dependencies and `Boneyard/`), run:
 
@@ -85,24 +85,39 @@ The task semantics is developed in ["The Construction of Possible Worlds"](https
 ## Project Structure
 
 ```
-ProofChecker/
-├── FormalSystem/
-│   └── Bimodal/                  # TM bimodal logic library
-│       ├── Syntax/               # Formula types, atoms, signed formulas
-│       ├── ProofSystem/          # Axioms (44 constructors, 7 layers)
-│       ├── Semantics/            # TaskFrame, WorldHistory, TaskModel
-│       ├── Metalogic/            # Soundness, completeness, decidability
-│       │   ├── Core/             # MCS theory, deduction theorem
-│       │   ├── Bundle/           # BFMCS construction (base completeness)
-│       │   ├── BXCanonical/      # BX chronicle mixed construction
-│       │   ├── WeakCanonical/    # Reynolds/Doets discrete pipeline
-│       │   └── Decidability/     # Tableau procedure with proof extraction
-│       ├── FrameConditions/      # Dense/discrete frame soundness
-│       ├── Theorems/             # Perpetuity principles P1-P6
-│       └── Automation/           # Proof search tactics & training data pipeline
-├── Tests/                        # Test suite
+.                                 # repository root
+├── lakefile.lean                 # two libraries: FormalSystem (default target), BimodalTest
+├── FormalSystem.lean             # Lake root module for the FormalSystem library
+├── FormalSystem/                 # TM bimodal logic library (413 live .lean files)
+│   ├── FormalSystem.lean         # library aggregator
+│   ├── BaseLanguage/             # shared base-language definitions
+│   ├── Syntax/                   # Formula types, atoms, contexts
+│   ├── ProofSystem/              # Axioms (45 constructors, nine layers), derivation trees
+│   ├── Semantics/                # TaskFrame, WorldHistory, TaskModel, validity predicates
+│   ├── FrameConditions/          # Dense/Discrete/Dedekind frame classes and their soundness
+│   ├── Metalogic/                # Soundness, completeness, decidability
+│   │   ├── Core/                 # MCS theory, deduction theorem
+│   │   ├── Bundle/               # BFMCS construction
+│   │   ├── BXCanonical/          # BX chronicle construction — the wired completeness entry point
+│   │   ├── WeakCanonical/        # Reynolds/Doets pipeline (19 modules, 8 subdirectories)
+│   │   ├── Algebraic/            # Boolean/ultrafilter infrastructure (FlowFrame, Lindenbaum quotient)
+│   │   ├── Decidability/         # Tableau procedure with proof extraction
+│   │   ├── Independence/         # axiom-independence results
+│   │   └── SoundnessLemmas/      # per-axiom soundness lemmas
+│   ├── Theorems/                 # Derived theorems (perpetuity, combinators, propositional)
+│   ├── Automation/               # Proof search tactics & training data pipeline
+│   ├── Examples/                 # Pedagogical examples
+│   └── Boneyard/                 # ARCHIVE — 156 archived .lean files, excluded from the live build
+├── Tests/BimodalTest/            # Test suite (the BimodalTest library)
+├── scripts/                      # Repository invariant checks and tooling
 └── docs/                         # Repository documentation
 ```
+
+`Metalogic/WeakCanonical/` is the largest subtree: 19 loose modules and 8 subdirectories. Besides
+the Reynolds/Doets discrete pipeline it carries the Dedekind/real route — `DenseModelSurgery/`
+(9 files) and `RealModel/` (7 files) — and `GroupModel/` (6 files), which hosts the discharged
+`countermodel_discrete` at the non-Archimedean discrete carrier `ℚ ×ₗ ℤ`. `Kamp/` (116 files) is
+the Kamp-style expressiveness development.
 
 ---
 
@@ -126,22 +141,22 @@ For detailed setup instructions, see [Installation Guide](docs/installation/BASI
 
 ## Metalogical Results
 
-The metalogic is organized around a base axiom system with three extensions: Dense, Continuous, and Discrete. Every flagship soundness and completeness result below is `SORRY-FREE (sorryAx-free; axioms: exactly propext, Classical.choice, Quot.sound)`. Weak completeness and finite-context consequence completeness are proven for **all four** frame classes — Base, Dense, Discrete, and Continuous.
+The metalogic is organized around a base axiom system with three extensions: Dense, Discrete, and Dedekind. Every flagship soundness and completeness result below is `SORRY-FREE (sorryAx-free; axioms: exactly propext, Classical.choice, Quot.sound)`. Weak completeness and finite-context consequence completeness are proven for **all four** frame classes — Base, Dense, Discrete, and Dedekind.
 
 **Strong completeness** is a separate and weaker-established matter. The repository reserves the term for consequence from a possibly-infinite premise set `Γ : Set Formula`; the results above are *finite*-context (`Context` is `List Formula`, so every context here is finite, and each such result is inter-derivable with the corresponding weak form through the deduction theorem). The infinitary statement has three distinct statuses across the four classes, which must not be collapsed into one:
 
 - **Discrete** — **refuted**. `strongCompletenessDiscrete_refuted` and its companion `discrete_consequence_not_compact` (`Metalogic/DiscreteNonCompactness.lean`) settle it negatively.
 - **Base** and **Dense** — **open**. Neither proved nor refuted; `CompactBase`/`StrongCompletenessBase` and `CompactDense`/`StrongCompletenessDense` (`Metalogic/SetConsequence.lean`) name the obligations.
-- **Continuous** — **not stated**, and unavailable on the primary source's own terms. Reynolds 1992 Theorem 7 is weak-only, and this tree contains no `CompactDedekind` definition and no refuting theorem, so the class is *unproved* rather than refuted.
+- **Dedekind** — **not stated**, and unavailable on the primary source's own terms. Reynolds 1992 Theorem 7 is weak-only, and this tree contains no `CompactDedekind` definition and no refuting theorem, so the class is *unproved* rather than refuted.
 
-Soundness and completeness for the Continuous class are both stated against the *dense* Dedekind validity predicate `ValidDedekindDense`, not the density-free `ValidDedekind`: `density` and `dense_indicator` are admissible in a Dedekind derivation and both are false on ℤ (`FormalSystem/ProofSystem/Axioms.lean`).
+Soundness and completeness for the Dedekind class are both stated against the *dense* Dedekind validity predicate `ValidDedekindDense`, not the density-free `ValidDedekind`: `density` and `dense_indicator` are admissible in a Dedekind derivation and both are false on ℤ (`FormalSystem/ProofSystem/Axioms.lean`).
 
 ```mermaid
 graph TD
     B("<b>Base</b><br/>AddCommGroup<br/>LinearOrder · Nontrivial<br/>NoMaxOrder · NoMinOrder<br/>37 axioms<br/>Sound ✓ · Complete ✓")
-    D("<b>Dense</b><br/>+ DenselyOrdered<br/>Base + 1 axiom<br/>Sound ✓ · Complete ✓")
-    C("<b>Continuous</b><br/>+ DedekindComplete<br/>Dense + 1 axiom<br/>Sound ✓ · Complete ✓")
-    Z("<b>Discrete</b><br/>+ SuccOrder · PredOrder<br/>+ IsSuccArchimedean<br/>Base + 3 axioms<br/>Sound ✓ · Complete ✓")
+    D("<b>Dense</b><br/>+ DenselyOrdered<br/>Base + 2 axioms = 39<br/>Sound ✓ · Complete ✓")
+    C("<b>Dedekind</b><br/>+ DedekindComplete<br/>Dense + 3 axioms = 42<br/>Sound ✓ · Complete ✓")
+    Z("<b>Discrete</b><br/>+ SuccOrder · PredOrder<br/>+ IsSuccArchimedean<br/>Base + 3 axioms = 40<br/>Sound ✓ · Complete ✓")
 
     B --> D
     D --> C
@@ -154,10 +169,36 @@ graph TD
 |--------|--------|-------------------|----------------|-----------|--------------|
 | **Base** | 37 | seriality built in (`⊤ → F⊤`, `⊤ → P⊤`) | — | `soundness` | `completeness` |
 | **Discrete** | 40 | `Fφ → U(φ,¬φ)`, `Pφ → S(φ,¬φ)`, `G(Gφ→φ) → (FGφ→Gφ)` | ℤ | `soundness_discrete` | `completeness_discrete` |
-| **Dense** | 38 | `Fφ → FFφ` | ℚ | `soundness_dense` | `completeness_dense` |
-| **Continuous** | 39 | `G(Pφ → FPφ) → (Pφ → Fφ)` | ℝ | `soundness_dedekind` | `completeness_dedekind` |
+| **Dense** | 39 | `GGφ → Gφ` (`density`), `¬U(⊤,⊥)` (`dense_indicator`) | ℚ | `soundness_dense` | `completeness_dense` |
+| **Dedekind** | 42 | the two Dense axioms plus Reynolds' `prior_U_gap`, `prior_S_gap`, `sep` | ℝ | `soundness_dedekind` | `completeness_dedekind` |
 
-The base system includes propositional (4), S5 modal (5), Burgess-Xu temporal (22), modal-temporal interaction (1), and uniformity (5) axioms. The Dense and Discrete logics are independent extensions — neither subsumes the other. The Continuous logic extends the Dense logic with the completeness axiom CO, which characterizes Dedekind-complete ordered groups. Since every Archimedean discrete order is conditionally complete, CO is already valid on discrete frames; it only adds content over dense frames, distinguishing ℚ-like from ℝ-like time.
+`inductive Axiom` has **45 constructors in nine layers** (`FormalSystem/ProofSystem/Axioms.lean`). The 37 Base constructors are propositional (4), S5 modal (5), Burgess-Xu temporal (18), an additional Burgess-Xu temporal layer (4), modal-temporal interaction (1), and uniformity (5). The remaining eight are the class-specific extensions: density (2), Prior-UZ/SZ (2) and Z1 (1) for the discrete class, and Reynolds' Dedekind axioms (3).
+
+The Dense and Discrete logics are independent extensions — neither subsumes the other. Dedekind extends **Dense**: `Axiom.minFrameClass` places `density` and `dense_indicator` below `FrameClass.Dedekind`, because Reynolds' own axiomatization of real flow contains them. Discrete and Dedekind are likewise incomparable, and `Dedekind ≰ Dense`.
+
+**A gap worth naming.** `FrameClass.Dedekind` is the paper's **TM⁺_dc** (dense complete / real flow), *not* TM⁺_c. The paper's TM⁺_c is completeness *simpliciter* — no density binder — so its models are exactly `{ℤ, ℝ}` up to order-and-group isomorphism and its theory is `Th(ℤ) ∩ Th(ℝ)`. **No element of `FrameClass` picks that class out.** The two branches are covered separately and exhaustively (the complete-but-discrete branch is exactly `ℤ`, handled by `FrameClass.Discrete`; the dense branch is `FrameClass.Dedekind`), but their intersection is not itself a frame class, and adding one would require an axiom set for `Th(ℤ) ∩ Th(ℝ)` that this tree does not have.
+
+### Decidability
+
+`FormalSystem/Metalogic/Decidability/` implements a tableau decision procedure with proof
+extraction. Its status is **one-directional**, and the directory's own history is the reason to
+state that precisely: two theorems named `validity_decidable` and
+`validity_has_decision_procedure` once stood in `Decidability/Correctness.lean` and are recorded
+there as *retired as vacuous*, because their names claimed a decidability result their proofs
+(instances of `Classical.em`) did not contain.
+
+- **Landed.** The sound direction of the `isValid`-shaped statement, `isValid φ fc = true → ⊨ φ`:
+  `sound_of_isValid` and its corollary `isValid_sound` (`Decidability/Correctness.lean`),
+  sorry-free, together with the `isTautology` / `isContradiction` / `isSatisfiable` siblings and
+  the frame-class-relativized forms. `decide_sound` (same file) is the corresponding corollary at
+  the empty context. On the tableau side, `ruleSound_of_mem_allRulesForFC`
+  (`Decidability/Verified/Decidable.lean`) is the rule half of `allClosed → valid`.
+- **Open.** The completeness direction, `⊨ φ → isValid φ fc = true`, and therefore
+  `valid_iff_allClosed`, the `isValid φ fc = true ↔ ⊨ φ` biconditional, and the `Decidable (⊨ φ)`
+  instances for the four frame classes. No `isValid`-shaped biconditional is written before it
+  can be proved.
+- **Partial.** Proof extraction: `extractProof` (`Decidability/ProofExtraction.lean`) runs five
+  strategies in order and returns `.incomplete` once all are exhausted.
 
 ---
 
@@ -165,7 +206,7 @@ The base system includes propositional (4), S5 modal (5), Burgess-Xu temporal (2
 
 ### Reference
 
-- [Axiom Reference](docs/reference/axiom-reference.md) — complete axiom schemas for all 44 constructors
+- [Axiom Reference](docs/reference/axiom-reference.md) — complete axiom schemas for all 45 constructors
 - [Operator Reference](docs/reference/operators.md) — formal operator definitions
 - [Tactic Reference](docs/reference/tactic-reference.md) — custom proof tactics
 - [Specification Document](latex/BimodalReference.pdf) — full formal specification

@@ -338,7 +338,7 @@ before editing, and re-grep after each edit. Use the observed positions, not the
 
 ---
 
-### Phase 2: `README.md` — counts, naming, structure, and the Decidability section [NOT STARTED]
+### Phase 2: `README.md` — counts, naming, structure, and the Decidability section [COMPLETED]
 
 **Goal**: Rename Continuous to Dedekind with the TM+_c gap note, correct all constructor and
 per-class counts, regenerate the Project Structure tree from the filesystem, expand the
@@ -346,38 +346,38 @@ per-class counts, regenerate the Project Structure tree from the filesystem, exp
 slip.
 
 **Tasks**:
-- [ ] **A4**: rename the class "Continuous" to "Dedekind" throughout (`:135-136`, `:148`, `:150`)
+- [x] **A4**: rename the class "Continuous" to "Dedekind" throughout (`:135-136`, `:148`, `:150`)
       and add a one-line note, transcribed from `Axioms.lean:503-513`, that the paper's TM+_c has
       **no** frame class in this tree — its models are exactly `{Z, R}` up to isomorphism and
       picking that class out would need an axiom set for `Th(Z) ∩ Th(R)` the tree does not have.
       Without the note the rename hides a genuine gap.
-- [ ] **A12**: correct the per-class cumulative counts from the Shared ground truth table —
+- [x] **A12**: correct the per-class cumulative counts from the Shared ground truth table —
       Dense 38 -> **39**, Continuous/Dedekind 39 -> **42**. Base 37 and Discrete 40 are already
       correct. The mermaid nodes at `:132-136` carry the same counts and must move together with
       the table or the two will disagree.
-- [ ] **A12 (cont.)**: `:152` gives "Burgess-Xu temporal (22)". The source structure is BX
+- [x] **A12 (cont.)**: `:152` gives "Burgess-Xu temporal (22)". The source structure is BX
       Temporal **18** plus a separate Additional BX Temporal layer of **4**. Write the two layers.
-- [ ] **A9**: `:92` "Axioms (44 constructors, 7 layers)" and `:164` "all 44 constructors" ->
+- [x] **A9**: `:92` "Axioms (44 constructors, 7 layers)" and `:164` "all 44 constructors" ->
       **45 constructors in nine layers**. The "7 layers" figure is also wrong.
-- [ ] **A6**: add a Decidability subsection. Model it on
+- [x] **A6**: add a Decidability subsection. Model it on
       `FormalSystem/Metalogic/Decidability.lean:141-160`: the sound direction is landed
       (`sound_of_isValid`, `isValid_sound`); the completeness direction, `valid_iff_allClosed`,
       and the four `Decidable` instances are OPEN. Copy `Decidability.lean`'s discipline of
       citing **files without line numbers** — these are the citations most likely to drift.
-- [ ] **A8**: regenerate the Project Structure block (`:87-105`) from the filesystem. The current
+- [x] **A8**: regenerate the Project Structure block (`:87-105`) from the filesystem. The current
       block has no copy-pasteable line: it is rooted `ProofChecker/` (repo is `BimodalLogic`,
       Lake lib root is `FormalSystem`, `lakefile.lean:17-19`), shows a nonexistent
       `FormalSystem/Bimodal/`, omits `BaseLanguage/` and `Boneyard/`, and writes `Tests/` where
       tests live at `Tests/BimodalTest/`. Label `Boneyard/` (156 archived files) as the archive so
       its presence is not read as live code.
-- [ ] **A11**: expand `:98`'s "`WeakCanonical/ # Reynolds/Doets discrete pipeline`". Measured
+- [x] **A11**: expand `:98`'s "`WeakCanonical/ # Reynolds/Doets discrete pipeline`". Measured
       live contents are 19 loose modules and 8 subdirectories, including `DenseModelSurgery/`
       (9 files) and `RealModel/` (7 files) — the Dedekind/real route — and `GroupModel/`
       (6 files), which hosts the discharged `countermodel_discrete`.
-- [ ] **A7**: restore the dropped space in `| Comment lines | ~96,290|` at `:21`. Carry the
+- [x] **A7**: restore the dropped space in `| Comment lines | ~96,290|` at `:21`. Carry the
       uncommitted 539 / ~170,898 / ~96,290 figures forward unchanged; do **not** revert them.
       Record in the summary that A7 arrived from the working tree, not this task's own edit.
-- [ ] Hand-check every relative link in `README.md`. `readme-lint.sh` takes
+- [x] Hand-check every relative link in `README.md`. `readme-lint.sh` takes
       `ROOT="${1:-FormalSystem}"` (`scripts/readme-lint.sh:17`), so the repository root is
       **outside its coverage entirely** — any link added by this phase must be checked by hand.
 
