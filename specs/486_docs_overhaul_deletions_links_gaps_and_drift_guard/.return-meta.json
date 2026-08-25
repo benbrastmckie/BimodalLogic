@@ -1,0 +1,16 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/486_docs_overhaul_deletions_links_gaps_and_drift_guard/reports/01_docs-overhaul-verification.md",
+      "summary": "Verification of all six task phases against Lean source: confirms every substantive defect claim, re-derives ground-truth counts (539 files / 170,898 code / 45 axioms / 0 sorries / 7 rules), replaces the unreproducible 94 dead-link figure with a measured 96/76/74 breakdown plus a complete per-line repair table, documents nine findings that change the work's shape, and designs three new check-module-invariants checks (C12/C13/C14) plus the readme-lint scope extension."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1787688954_7fb0f6_486",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}

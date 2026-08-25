@@ -1,0 +1,19 @@
+{
+  "status": "researched",
+  "phase": "research",
+  "dispatch_seq": 10,
+  "summary": "Research complete for the docs/ overhaul. Every substantive defect claim in the task description is confirmed against Lean source; nine findings change the work's shape, the largest being that the 94 dead-link figure is unreproducible (measured 96 total / 74 genuinely actionable, now tabulated per line) and that deleting SORRY_REGISTRY.md requires rewriting MAINTENANCE.md's 4-document sync procedure rather than repointing 4 links.",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/486_docs_overhaul_deletions_links_gaps_and_drift_guard/reports/01_docs-overhaul-verification.md",
+      "summary": "Verified ground truth (539 files / 170,898 code / 45 axioms / 0 sorries / 7 rules), complete per-line dead-link repair table, confirmed zero coverage for all nine documentation gaps, missing-README baseline, and a three-check drift-guard design (C12 slash-path resolution, C13 markdown link resolution, C14 status-claim tripwires) plus the readme-lint scope extension."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 0,
+  "blockers": [],
+  "next_action": "Dispatch planning. Report section 10 proposes an eight-phase decomposition (P1 deletions, P2 completeness/decidability status core, P3 remaining false-status sites, P4 count sweep, P5 dead links, P6 gaps, P7 the 9 missing READMEs, P8 the guard) with per-phase gates. Report section 9 raises three scope decisions the plan must settle: whether the guard extends check C9 to docs/ (152 latent task-number citations), whether docs/ should link into the gitignored .claude/ tree at all, and whether metric tables become reproduction commands.",
+  "sorry_inventory": [],
+  "continuation_path": null
+}

@@ -34,7 +34,7 @@ next_project_number: 488
 
 ### Code Quality
 
-486 [NOT STARTED] — docs/ OVERHAUL: delete the documents that are fiction, rewrite th
+486 [RESEARCHED] — docs/ OVERHAUL: delete the documents that are fiction, rewrite th
 
 ### Dataset Enhancement
 
@@ -125,10 +125,11 @@ Required fix: add a file-based passthrough (e.g. `--argjson-file NAME PATH` mapp
 ---
 
 ### 486. Docs overhaul deletions links gaps and drift guard
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: code-quality
 - **Dependencies**: Task 484, Task 485
+- **Research**: [486_docs_overhaul_deletions_links_gaps_and_drift_guard/reports/01_docs-overhaul-verification.md]
 
 **Description**: docs/ OVERHAUL: delete the documents that are fiction, rewrite the false limitation entries, repair 94 dead links, and close the documentation gaps -- then add a mechanical guard so status drift cannot recur.
 
