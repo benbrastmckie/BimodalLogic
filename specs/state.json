@@ -196,17 +196,25 @@
     {
       "project_number": 413,
       "project_name": "formalize_tm_conservativity_bridge",
-      "status": "researching",
+      "status": "researched",
       "task_type": "lean4",
       "description": "Formalize the TM+ over TM conservativity bridge in Lean 4 (paper thm:ConservativeExtension, CEB/CEF/CED/CEC): add a BL base-language Formula type with primitive box/G/H, its TM axiom set and derivation trees, a translation into the existing BL+ Formula type, and prove that TM+ derivability of a translated BL-formula yields TM derivability, supplying the missing step in the paper's cor:tm-completeness route\n\nANCHORS RE-VERIFIED 2026-08-10: \\label{thm:ConservativeExtension} [Conservative Extension] and \\label{cor:tm-completeness} [Completeness] both resolve in the current paper. Cite by \\label only, never bare line numbers; before consuming any semantic definition, run `bash scripts/check-paper-definitions.sh` and cite specs/paper-definitions-of-record.md rather than the paper directly.\n\nNEW PAPER CONTENT THIS TASK MUST KNOW (2026-08-10): cor:tm-completeness's proof now carries a footnote (source-tagged 'task 52 total-histories: optional S43 hedge') stating that the machine-checked completeness results in THIS repository are for \"a parametric variant of the semantics in which validity is relativized to a designated shift-closed set of histories\"; that their transfer to the paper's total-history semantics \"proceeds by a strand construction covering BL and BL+ only, and is not itself machine-checked\"; and that the transfer must verify the biconditional Compositionality, Seriality, and Spherical axioms of def:frame for the strand-delivered frames (Occurrence then follows by cor:occurrence; Seriality is free wherever Occurrence was already checked; Spherical is automatic for finite W; infinite W is a genuine obligation external to the paper). This footnote sits in exactly the proof this task formalizes. The conservativity bridge itself is PROOF-THEORETIC (translation plus derivability) and therefore does not depend on the semantics refactor -- this task does NOT need tasks 414/415 to land first -- but phrase its Lean statements so they compose with the totality-based validity once 414/415 land, and coordinate naming with the paper-refactor cluster, whose completeness route (task 415) this bridge feeds.",
       "topic": "completeness",
       "created": "2026-07-28T16:58:26Z",
-      "last_updated": "2026-08-25T00:44:36Z",
+      "last_updated": "2026-08-25T00:58:37Z",
       "dependencies": [
         439,
         470
       ],
-      "session_id": "sess_1787618565_717c84_413"
+      "session_id": "sess_1787618565_717c84_413",
+      "artifacts": [
+        {
+          "type": "report",
+          "path": "specs/413_formalize_tm_conservativity_bridge/reports/01_tm-conservativity-bridge.md",
+          "summary": "TM+/TM conservativity bridge research: paper anchor deleted 2026-08-14; requested forward direction refuted not open; backward direction assets inventoried; DF at FrameClass.Discrete is the one open sub-obligation.",
+          "created": "2026-08-25T00:58:45Z"
+        }
+      ]
     },
     {
       "project_number": 298,

@@ -39,7 +39,7 @@ next_project_number: 477
 
 ### Completeness
 
-413 [RESEARCHING] — Formalize the TM+ over TM conservativity bridge in Lean 4 (paper 
+413 [RESEARCHED] — Formalize the TM+ over TM conservativity bridge in Lean 4 (paper 
 95 [NOT STARTED] — Verify and record the final axiom/sorry status of the headline me
 
 ### Dataset Enhancement
@@ -1960,10 +1960,11 @@ Acceptance: the refuted-route comment (the "(i) a Base-MCS ... (ii) a Henkin-sty
 ---
 
 ### 413. Formalize tm conservativity bridge
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: Task 439, Task 470
+- **Research**: [413_formalize_tm_conservativity_bridge/reports/01_tm-conservativity-bridge.md]
 
 **Description**: Formalize the TM+ over TM conservativity bridge in Lean 4 (paper thm:ConservativeExtension, CEB/CEF/CED/CEC): add a BL base-language Formula type with primitive box/G/H, its TM axiom set and derivation trees, a translation into the existing BL+ Formula type, and prove that TM+ derivability of a translated BL-formula yields TM derivability, supplying the missing step in the paper's cor:tm-completeness route
 
