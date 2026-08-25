@@ -4,8 +4,18 @@
     "total_tasks": 42,
     "last_sync": "2026-08-24T21:34:14Z"
   },
-  "next_project_number": 488,
+  "next_project_number": 489,
   "active_projects": [
+    {
+      "project_number": 488,
+      "project_name": "align_lean_code_and_docs_with_possible_worlds_paper",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Review possible_worlds.tex (JPL paper) and align the Lean code and documentation such as README.md with the paper, identifying and fixing discrepancies so all claims are verified in the Lean codebase and reported accurately in the documentation",
+      "topic": "paper-refactor",
+      "created": "2026-08-25T23:24:50Z",
+      "last_updated": "2026-08-25T23:24:50Z"
+    },
     {
       "project_number": 298,
       "project_name": "fix_c7_labeling_bug_and_regenerate_dataset",

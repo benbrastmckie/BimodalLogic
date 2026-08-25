@@ -1,5 +1,5 @@
 ---
-next_project_number: 488
+next_project_number: 489
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 488
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,193,257,298,433,461,463,476,483 | -- | automation, dataset-enhancement, decidability, ... |
+| 1 | 127,128,193,257,298,433,461,463,476,483,488 | -- | automation, dataset-enhancement, decidability, ... |
 | 2 | 125,178,231,282,296,464,481 | 193,298,461,463,483 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 219,465 | 231,464 | dataset-enhancement, decidability |
 | 4 | 428 | 433,465 | decidability |
@@ -73,7 +73,21 @@ next_project_number: 488
 
 461 [BLOCKED] — SCOPE 8 acquisition gap identified by task 457's research and re-
 
+### Paper Refactor
+
+488 [NOT STARTED] — Review possible_worlds.tex (JPL paper) and align the Lean code an
+
 ## Tasks
+
+### 488. Align lean code and docs with possible worlds paper
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: paper-refactor
+- **Dependencies**: None
+
+**Description**: Review possible_worlds.tex (JPL paper) and align the Lean code and documentation such as README.md with the paper, identifying and fixing discrepancies so all claims are verified in the Lean codebase and reported accurately in the documentation
+
+---
 
 ### 483. Route1 restricted applyrule emitted time mem
 - **Effort**: 3-5 hours
