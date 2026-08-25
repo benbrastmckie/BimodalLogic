@@ -65,9 +65,14 @@ than resolved by moving the helper, which would drag `Metalogic` proofs into a r
 
 ## Main results
 
-- `archimedean_of_lub`: Dedekind completeness ⇒ `Archimedean`.
+- `archimedean_of_lub`: Dedekind completeness ⇒ `Archimedean` (the Dedekind branch).
 - `complete_duration_discrete_or_dense`: `Nonempty (D ≃+o ℤ) ∨ DenselyOrdered D`.
 - `complete_not_dense_iso_int`: not densely ordered ⇒ `Nonempty (D ≃+o ℤ)`.
+- `isLeast_pos_succ_zero`: `Order.succ 0` is the least strictly positive element.
+- `archimedean_of_succ`: `IsSuccArchimedean` ⇒ `Archimedean` (the discrete branch, the
+  successor-side companion to `archimedean_of_lub`).
+- `intIso`: the packaged additive transfer `D ≃+o ℤ` for a nontrivial successor-Archimedean
+  duration group; consumed by `Semantics/IntTransfer.lean`'s `validDiscrete_iff_validInt`.
 -/
 
 namespace FormalSystem.Semantics
@@ -83,17 +88,18 @@ contradicting that `s` bounds the set.
 provides is `ConditionallyCompleteLinearOrderedField.to_archimedean`, which requires a field —
 useless for a duration *group*. So this is a genuine new lemma, not a re-export.
 
-## This is the Dedekind branch only; the discrete branch has no analogue in this tree
+## Both branches are present: this is the Dedekind one
 
 The hypothesis here is the least-upper-bound property, so this lemma serves
 `Semantics/Validity.lean`'s `ValidDense`/Dedekind-complete side. The **successor**-based analogue
-— the one that would serve `ValidDiscrete`, whose binder bundle offers `[SuccOrder D] [PredOrder D]
-[IsSuccArchimedean D] [IsPredArchimedean D] [Nontrivial D]` and *not* a lub hypothesis — **is
-absent**: this file's entire theorem inventory is `archimedean_of_lub`,
-`complete_duration_discrete_or_dense`, and `complete_not_dense_iso_int`, and none of them takes a
-successor-structured `D`.
+— the one that serves `ValidDiscrete`, whose binder bundle offers `[SuccOrder D] [PredOrder D]
+[IsSuccArchimedean D] [IsPredArchimedean D] [Nontrivial D]` and *not* a lub hypothesis — is
+`archimedean_of_succ`, further down this same file. Measured: it needs only the **successor** half
+of that bundle (`[SuccOrder D] [IsSuccArchimedean D] [Nontrivial D]`); `PredOrder D` and
+`IsPredArchimedean D` are not used by it or by `intIso`.
 
-What that missing lemma must produce is fixed by its consumer. The transfer
+What that companion lemma must produce is fixed by its consumer, and `intIso` below is where both
+halves are assembled. The transfer
 `LinearOrderedAddCommGroup.int_orderAddMonoidIso_of_isLeast_pos : D ≃+o ℤ` needs exactly two
 inputs the `ValidDiscrete` bundle does not already supply:
 

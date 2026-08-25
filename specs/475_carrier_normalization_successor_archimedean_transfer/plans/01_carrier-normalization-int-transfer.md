@@ -1,7 +1,7 @@
 # Implementation Plan: Carrier Normalization — the Successor-Archimedean Transfer
 
 - **Task**: 475 - CARRIER NORMALIZATION: THE SUCCESSOR-ARCHIMEDEAN TRANSFER
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 5 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/475_carrier_normalization_successor_archimedean_transfer/reports/01_carrier-normalization-transfer.md`
@@ -353,30 +353,30 @@ edits to `FormalSystem/Semantics.lean` (one import line, one Submodules bullet).
 
 ---
 
-### Phase 6: Repair the three stale docstrings [IN PROGRESS]
+### Phase 6: Repair the three stale docstrings [COMPLETED]
 
 **Goal**: Remove the three recorded findings that assert the successor-based lemma is absent from
 the tree. A build will not catch these; that is why this is a separate gated phase.
 
 **Tasks**:
-- [ ] `FormalSystem/Semantics/Validity.lean` (~line 241, in the `ValidDiscrete` docstring):
+- [x] `FormalSystem/Semantics/Validity.lean` (~line 241, in the `ValidDiscrete` docstring):
       the sentence "The successor-based analogue of `DurationClassification.lean`'s
       `archimedean_of_lub` — the missing input to that route — is not in this tree." Rewrite to
       state that it is now present, pointing at `archimedean_of_succ` / `intIso` and at
       `validDiscrete_iff_validInt`.
-- [ ] `FormalSystem/Semantics/DurationClassification.lean` (~line 85, in the `archimedean_of_lub`
+- [x] `FormalSystem/Semantics/DurationClassification.lean` (~line 85, in the `archimedean_of_lub`
       docstring): the whole section headed "This is the Dedekind branch only; the discrete branch
       has no analogue in this tree", including the "**is absent**" sentence. Rewrite as *both
       branches present*. Also add `archimedean_of_succ`, `isLeast_pos_succ_zero`, and `intIso` to
       the module docstring's `## Main results` list.
-- [ ] `FormalSystem/Semantics/IntNormalForm.lean` (~line 76): "the discrete branch needs the
+- [x] `FormalSystem/Semantics/IntNormalForm.lean` (~line 76): "the discrete branch needs the
       successor-based analogue, which is not in the tree." Rewrite to name the landed
       declarations.
-- [ ] **Keep the recorded wrong turn in all three places.** The `orderIsoIntOfLinearSuccPredArch`
+- [x] **Keep the recorded wrong turn in all three places.** The `orderIsoIntOfLinearSuccPredArch`
       finding — that it fits the bundle verbatim but yields only `D ≃o ℤ`, and that durations add
       so an order-only isomorphism cannot carry a frame — remains true and remains the reason the
       route is what it is. Only the "absent"/"not in this tree" claims change.
-- [ ] Confirm line numbers before editing; the numbers above are from the planning-time tree and
+- [x] Confirm line numbers before editing; the numbers above are from the planning-time tree and
       may have drifted. Anchor on the quoted sentence text, not the line number.
 
 **Timing**: 0.5 hours
@@ -413,20 +413,23 @@ returns 0 hits, stop and re-locate the claim by text rather than assuming it was
 
 ## Testing & Validation
 
-- [ ] Full `lake build` green with no new warnings attributable to this task.
-- [ ] `#print axioms FormalSystem.Semantics.validDiscrete_iff_validInt` reports exactly
+- [x] Full `lake build` green with no new warnings attributable to this task.
+- [x] `#print axioms FormalSystem.Semantics.validDiscrete_iff_validInt` reports exactly
       `[propext, Classical.choice, Quot.sound]` — the task's headline acceptance criterion.
-- [ ] Same axiom check clean for `archimedean_of_succ`, `intIso`, and `truthAt_map`.
-- [ ] No new `sorry` anywhere: repo `sorry` count unchanged from the pre-task baseline (capture
+- [x] Same axiom check clean for `archimedean_of_succ`, `intIso`, and `truthAt_map`.
+- [x] No new `sorry` anywhere: repo `sorry` count unchanged from the pre-task baseline (capture
       the baseline at Phase 1 start).
-- [ ] No new `axiom` declaration introduced in any touched file.
-- [ ] `bash scripts/check-module-invariants.sh` passes (C8 aggregator convention, C6 reachability).
-- [ ] The four docstring greps in Phase 6 return their expected counts.
-- [ ] Cross-check against the prototype: re-run
+- [x] No new `axiom` declaration introduced in any touched file.
+- [x] `bash scripts/check-module-invariants.sh` passes (C8 aggregator convention, C6 reachability).
+- [x] The four docstring greps in Phase 6 return their expected counts.
+- [x] Cross-check against the prototype: re-run
       `lake env lean specs/475_carrier_normalization_successor_archimedean_transfer/prototype/verified-prototype.lean`
       if any transcribed proof needs to be diffed against its verified source.
-- [ ] `grep -rn "orderIsoIntOfLinearSuccPredArch" FormalSystem/` shows it referenced only in
-      wrong-turn prose, never applied in a proof term.
+- [x] `grep -rn "orderIsoIntOfLinearSuccPredArch" FormalSystem/` shows it referenced only in
+      wrong-turn prose, never applied in a proof term. *(deviation: altered — holds for every LIVE
+      module; the one application site is the pre-existing archived
+      `FormalSystem/Boneyard/DeadChronicleGapElimination/TransferDead.lean:79`, dead code that
+      predates this task and was not touched.)*
 
 ## Artifacts & Outputs
 

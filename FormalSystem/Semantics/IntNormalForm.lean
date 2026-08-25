@@ -68,12 +68,17 @@ this repository's pinned Mathlib before anything here was written:
 
 The distinction is load bearing rather than cosmetic. Durations *add* — `TaskRel`'s
 *Compositionality* is stated at `x + y` — so a transfer that only preserves order is not enough to
-carry a frame across; the additive iso is the one that is actually needed. The route for a future
+carry a frame across; the additive iso is the one that is actually needed. The route for the
 `ValidDiscrete`-to-ℤ transfer is therefore the second lemma, with `Archimedean D` and the
 least-positive-element witness supplied (the successor structure is what produces the latter),
-**not** a drop-in application of the first. `Semantics/DurationClassification.lean` already carries
-the companion `archimedean_of_lub` for the Dedekind-complete branch; the discrete branch needs the
-successor-based analogue, which is not in the tree.
+**not** a drop-in application of the first.
+
+That route has since been taken. `Semantics/DurationClassification.lean` carries
+`archimedean_of_lub` for the Dedekind-complete branch and now also the discrete branch's
+successor-based analogue: `archimedean_of_succ` (the `Archimedean D` instance),
+`isLeast_pos_succ_zero` (the witness), and `intIso : D ≃+o ℤ` packaging both.
+`Semantics/IntTransfer.lean` transports `TaskFrame`, `TaskModel`, `WorldHistory`, and `TruthAt`
+along that isomorphism, yielding `validDiscrete_iff_validInt : ValidDiscrete φ ↔ ValidInt φ`.
 
 ## What buying the right to work over ℤ is worth
 

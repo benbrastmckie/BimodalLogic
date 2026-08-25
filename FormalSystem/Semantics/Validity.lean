@@ -237,8 +237,13 @@ The binder bundle below is instantiated by `ℤ` with **no instance work whatsoe
 
 `Semantics/IntNormalForm.lean`'s module docstring names the exact Mathlib route for that
 normalization, and records why the order-only isomorphism is the wrong turn. The successor-based
-analogue of `DurationClassification.lean`'s `archimedean_of_lub` — the missing input to that route
-— is not in this tree.
+analogue of `DurationClassification.lean`'s `archimedean_of_lub` — the input that route needs — is
+now present: `DurationClassification.lean`'s `archimedean_of_succ` supplies the `Archimedean D`
+instance from `[IsSuccArchimedean D]`, `isLeast_pos_succ_zero` supplies the least-positive-element
+witness, and `intIso : D ≃+o ℤ` packages both into the additive transfer. The transport itself is
+`Semantics/IntTransfer.lean`, whose `validDiscrete_iff_validInt : ValidDiscrete φ ↔ ValidInt φ`
+closes this direction outright: establishing `ValidDiscrete φ` from a statement about ℤ-frames
+alone is now a single rewrite.
 -/
 def ValidDiscrete (φ : Formula) : Prop :=
   ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [SuccOrder D] [PredOrder D]
