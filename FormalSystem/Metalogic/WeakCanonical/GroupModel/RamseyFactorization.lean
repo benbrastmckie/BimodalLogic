@@ -257,7 +257,7 @@ instance Sum.Lex.predOrder {α β : Type} [LinearOrder α] [LinearOrder β]
         rw [Sum.Lex.inr_le_inr_iff, Sum.Lex.inr_lt_inr_iff, Order.le_pred_iff])
 
 /-- Constructor view of a lexicographic sum element, packaged for `rcases`. -/
-private theorem sumLex_cases {α β : Type} (x : α ⊕ₗ β) :
+theorem sumLex_cases {α β : Type} (x : α ⊕ₗ β) :
     (∃ a : α, x = toLex (Sum.inl a)) ∨ (∃ b : β, x = toLex (Sum.inr b)) := by
   cases h : ofLex x with
   | inl a => exact Or.inl ⟨a, congrArg toLex h⟩

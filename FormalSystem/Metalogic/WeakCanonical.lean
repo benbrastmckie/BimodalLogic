@@ -64,6 +64,10 @@ import FormalSystem.Metalogic.WeakCanonical.GroupModel.MonoDiscrete
 -- inflation `inflate_right`/`inflate_left`) is a leaf until the companion assembly
 -- (`GroupModel/GroupableCompanion.lean`) consumes it. Same precedent.
 import FormalSystem.Metalogic.WeakCanonical.GroupModel.RamseyFactorization
+-- CI edge only: `GroupModel/GroupableCompanion.lean` (`companionGeneral`/`companionChronicle`,
+-- the Base analogue of `limitdom_is_good`) is a leaf until the discrete-branch replacement of
+-- `countermodel_discrete` consumes it. Same precedent.
+import FormalSystem.Metalogic.WeakCanonical.GroupModel.GroupableCompanion
 
 /-!
 # WeakCanonical: Reynolds/Doets Discrete Completeness

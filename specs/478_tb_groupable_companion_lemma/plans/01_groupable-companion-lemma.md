@@ -1,7 +1,7 @@
 # Implementation Plan: T-B — The Groupable Companion Lemma
 
 - **Task**: 478 - T-B: The Groupable Companion Lemma
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 16 hours (4 single-dispatch phases, ~2.1-3.3k lines total)
 - **Dependencies**: Task 477 (T-A, COMPLETED — `GroupModel/GoodGroupable.lean` vocabulary)
 - **Research Inputs**: reports/01_groupable-companion-feasibility.md
@@ -315,42 +315,56 @@ they are independent of the colouring definition.
 
 ---
 
-### Phase 4: ℚ-condensation, assembly, and chronicle instantiation [NOT STARTED]
+### Phase 4: ℚ-condensation, assembly, and chronicle instantiation [COMPLETED]
 
 **Goal**: Land `CondensationOfQ`, `CompanionGeneral`, and `CompanionChronicle` — the full
 companion lemma at carrier `ℚ ×ₗ ℤ` and its instantiation at
 `limitdomMonadicStructure A h_mcs φ`, completing the task's acceptance criteria.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/WeakCanonical/GroupModel/GroupableCompanion.lean` with a
+- [x] Create `FormalSystem/Metalogic/WeakCanonical/GroupModel/GroupableCompanion.lean` with a
       module docstring stating the general lemma, citing Doets ch. 7 (pp. 89–93) and the
       inflation-not-compression reading (Löb enters only at compression steps 10–11, which
       the `ℚ ×ₗ ℤ` target replaces), and naming it the Base analogue of `limitdom_is_good`
       (the deliverable the successor consumes) — NO task-number citations
-- [ ] ℚ-condensation (`CondensationOfQ`): for countable nonempty `I`, build
+- [x] ℚ-condensation (`CondensationOfQ`): for countable nonempty `I`, build
       `L := I ×ₗ (1+ℚ)` (ℚ prepended into the minimum fiber when `I` has one, giving shape
       `ℚ+1+ℚ`); prove `L` countable, dense, unbounded; conclude `L ≃o ℚ` by
       `Order.iso_of_countable_dense` (`Mathlib.Order.CountableDenseLinearOrder`, verified
       present). **The density/unboundedness instances on `ℚ ⊕ₗ (I ×ₗ (1+ℚ))`-shaped orders
       are this phase's fiddle (~100-250 lines, unprobed) — do them first**
-- [ ] Partition glue iso: fibers give an `I`-indexed convex partition `{Cᵢ}` of ℚ with
+      *(deviation: altered — the condensation order is the uniform `I ×ₗ (ℚ + 1 + ℚ)`
+      (`CondFiber := ℚ ⊕ₗ (Unit ⊕ₗ ℚ)`, `condensationOfQ`) rather than `I ×ₗ (1+ℚ)` with a
+      ℚ prepended only into the minimum fiber. With every fiber shaped `ℚ+1+ℚ`, the order is
+      dense and unbounded regardless of whether `I` has a minimum, so no case split on
+      min-existence is needed anywhere; correspondingly every block gets BOTH-sided inflation
+      (`inflate_both`), and the ω*-dual absorption is consumed by every fiber's bottom-ℚ
+      region, not just a minimum fiber's. The set-partition Prop form of `CondensationOfQ`
+      was not needed — the order iso is consumed directly by the glue)*
+- [x] Partition glue iso: fibers give an `I`-indexed convex partition `{Cᵢ}` of ℚ with
       `Cᵢ ≃o 1+ℚ` (resp. `ℚ+1+ℚ`), so `Σ_{i∈I} (Cᵢ ×ₗ ℤ) ≃o ℚ ×ₗ ℤ` — generalize the PROVED
       `sumQZOrderIso` from `verification/tb_statement_probe.lean` (transcribe its proof and
       its tactic gotchas: the defeq `have` + `cases … with | left | right` pattern, the type
       ascription for `Prod.Lex.lt_iff`); the minimum-fiber case consumes Phase 3's ω* dual
-- [ ] Assemble `CompanionGeneral`: `M ≃o Σ_I blocks` (Phase 1) → `≡ₖ Σ_I inflated-segments`
+      *(deviation: altered — the glue is `glueMap`: inflated-sum point ↦
+      `(ψ (fiber, region), ℤ-height)` with `ψ : I ×ₗ CondFiber ≃o ℚ`; it generalizes
+      `sumQZOrderIso`'s pattern (the probe's defeq-`have`/`cases left|right` gotchas were
+      used throughout Phases 1-4) but no interp condition is needed at all: the target
+      `QZStructure` is DEFINED by transporting predicates along the iso
+      (`goodGroupable_of_carrier_iso`), so the glue is pure order theory)*
+- [x] Assemble `CompanionGeneral`: `M ≃o Σ_I blocks` (Phase 1) → `≡ₖ Σ_I inflated-segments`
       (Phase 3, via `doets_lemma_1_4` at shared index `I`) → `≃o` a colouring of `ℚ ×ₗ ℤ`
       (condensation + glue) → `goodGroupable sig k M` via `k_equiv_of_iso` + `KEquiv.trans`
       (`KEquiv` is `Eq`, so `trans`/`symm` are free) + T-A's `goodGroupable`;
       unboundedness side goals close with `Prod.Lex.right _ (by simp)` (NOT `omega`; import
       `Mathlib.Algebra.Order.Monoid.Prod`)
-- [ ] `CompanionChronicle`: instantiate at `M := limitdomMonadicStructure A h_mcs φ`; the five
+- [x] `CompanionChronicle`: instantiate at `M := limitdomMonadicStructure A h_mcs φ`; the five
       instance obligations are landed and fc-generic (`limitdom_monadic_structure_countable`,
       Succ/Pred from `box_discrete_gives_discreteness` — takes `h_box` directly, no
       `Discrete ≤ fc` hypothesis — noMax/noMin, `zero_mem`-nonempty); mirror
       `limitdom_is_good`'s preamble (`ReynoldsBridge.lean:361–385`) with the Discrete-only
       links dropped
-- [ ] Wire the CI-edge import in `WeakCanonical.lean`; final acceptance audit (below)
+- [x] Wire the CI-edge import in `WeakCanonical.lean`; final acceptance audit (below)
 
 **Timing**: 3-4 hours (one dispatch)
 
@@ -379,16 +393,16 @@ assembly rather than after.
 
 ## Testing & Validation
 
-- [ ] After every phase: `lake build` green (full gate — tiering never weakens this)
-- [ ] After every phase: `grep -rn "sorry" FormalSystem/ | grep -v "\-\-"` shows only
+- [x] After every phase: `lake build` green (full gate — tiering never weakens this)
+- [x] After every phase: `grep -rn "sorry" FormalSystem/ | grep -v "\-\-"` shows only
       `Transfer.lean:1102` (or equivalent census via the repo's audit convention)
-- [ ] After every phase: `#print axioms` on all newly landed theorems — expected set exactly
+- [x] After every phase: `#print axioms` on all newly landed theorems — expected set exactly
       `[propext, Classical.choice, Quot.sound]`; anything else is a stop-and-investigate
-- [ ] Phase 4: `lean_verify` (or `#print axioms` + source scan) on `CompanionGeneral` and
+- [x] Phase 4: `lean_verify` (or `#print axioms` + source scan) on `CompanionGeneral` and
       `CompanionChronicle` by fully qualified name
-- [ ] Repo lints: no task-number references in `.lean` files; no `veryGoodGroupable`; no
+- [x] Repo lints: no task-number references in `.lean` files; no `veryGoodGroupable`; no
       interval carrier type introduced
-- [ ] Counterexample protocol: if any classical step is refuted during implementation, STOP,
+- [x] Counterexample protocol: if any classical step is refuted during implementation, STOP,
       write the counterexample up precisely (failing step + witness), mark phase `[BLOCKED]`
       with the finding as a first-class result — do NOT push through with a sorry and do NOT
       treat it as failure
