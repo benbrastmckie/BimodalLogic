@@ -55,7 +55,7 @@ next_project_number: 483
               └─ 482 [NOT STARTED] — CLASSIFICATION: OPEN MATHEMATICS, multi-month. This MUST NOT be r
 476 [NOT STARTED] — THE BOX-FAITHFUL SMALL-MODEL THEOREM.
 481 [PARTIAL] — CLASSIFICATION: genuinely open -- the predicate is refuted as sta
-  └─ 462 [RESEARCHED] — Land the engine-level assembly that lets `MintPaysForTimeFixed` b
+  └─ 462 [PLANNED] — Land the engine-level assembly that lets `MintPaysForTimeFixed` b
     └─ 463 [NOT STARTED] — Decide `PostBlockingSettlesRun fc (mintAwareFuelAt U.card Tmax mi
       └─ 464 [NOT STARTED] — Design and land `gapPotential`, the density coordinate of the ter
         └─ 465 [NOT STARTED] — Complete the terminus restatement family at the repaired residual
@@ -1662,11 +1662,12 @@ Dependencies: 462, as a file_scope SERIALIZATION edge only (both tasks edit Mint
 ---
 
 ### 462. Mintpaysfortime engine level assembly
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 469, Task 470, Task 481
 - **Research**: [462_mintpaysfortime_engine_level_assembly/reports/01_engine-level-mint-assembly.md]
+- **Plan**: [462_mintpaysfortime_engine_level_assembly/plans/01_engine-level-mint-assembly.md]
 
 **Description**: Land the engine-level assembly that lets `MintPaysForTimeFixed` be discharged at a NONEMPTY universe. This is the plumbing half of the residual task 434 left open at its Phase 8; it is explicitly proof engineering, not open mathematics, and task 434's own handoff records it as "spawnable on its own".
 
