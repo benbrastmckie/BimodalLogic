@@ -605,7 +605,7 @@
     {
       "project_number": 362,
       "project_name": "completeness_capstone_consequence_all_classes_strong_where_compact",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "topic": "strong_completeness",
       "description": "Implement the completeness capstone under the SETTLED TERMINOLOGY (2026-07-27): \"strong completeness\" is reserved for consequence from possibly-infinite premise sets (Γ : Set Formula) with finitary set-derivability; finite-context (Context = List Formula) consequence statements are inter-derivable with weak completeness via the deduction theorem and are named CONSEQUENCE completeness, never strong. (This task was formerly named \"main_strong_completeness: finite-context strong completeness\" — that framing was misleading and is retired. \"main_strong_completeness\" was never a Lean or LaTeX identifier; it was this task's own former title.)\n\nSCOPE:\n(A) Finite-context CONSEQUENCE completeness for all four frame classes. For each X ∈ {Base, Dense, Discrete}: define SemanticConsequenceX (Γ : Context) (paralleling the ValidX binder list), prove the semantic deduction lemma, and prove consequence_completeness_X : SemanticConsequenceX Γ φ → Derivable FrameClass.X Γ φ via (a) the semantic deduction lemma, (b) the class's weak completeness engine, (c) the fc-generic derivable_foldr_imp_iff. The Dedekind instance and all the generic lemmas (truthAt_foldr_imp, derivable_of_derivable_foldr_imp, derivable_foldr_imp_of_derivable, derivable_foldr_imp_iff) ALREADY EXIST in FormalSystem/Metalogic/StrongCompleteness.lean (landed by task 408 phase 2, reframed 2026-07-27) — follow its three-declaration shape and drop the Base/Dense/Discrete instances into that file's reserved sections. Weak completeness for each class stays re-exposed as the Γ=[] corollary (exactly one proof of the weak form per class, as a corollary). State conclusions as `Derivable` (definitionally Nonempty (DerivationTree ...), `FormalSystem/ProofSystem/Derivable.lean`; currently near :69, hint only), matching the existing weak termini.\n(B) GENUINE strong completeness (Γ : Set Formula with finitary set-derivability) for Base and Dense ONLY, conditional on task 361's feasibility verdict and gated on the set-based model-existence theorem it scopes (every SetConsistent set satisfiable in a class frame). If 361 returns a non-compactness verdict for Base or Dense, record the counterexample and downgrade that leg to consequence-only, matching Discrete/Dedekind. Leg B — and only leg B — is additionally gated on task 424's shift-set Representation Theorem (semantic compactness via the ultraproduct route); legs A, C, and D do not depend on 424. The declared dependency edge on 424 (added by this re-issue) cannot express that partiality by itself, which is why it is stated here in prose.\n(C) Discrete and Dedekind get NO strong form — both provably non-compact (Discrete: the {F p} ∪ {¬Xⁿ p : n} witness under IsSuccArchimedean, since next = untl φ bot is definable; Dedekind: Reynolds 1992 Thm 7 weak-only, restriction genuine). The StrongCompleteness.lean section headers already document this; optionally land the formalized Discrete non-compactness witness if 361 scoped it.\n(D) LaTeX alignment: restate latex/subfiles/04-Metalogic.tex so \"Strong Completeness and Compactness\" (the `\\subsubsection` heading currently near :267, with a backreference to the same phrase currently near :543 — hints only, re-verify by the phrase's exact text before use) is used ONLY for the Set Formula statement (stated for Base/Dense if reachable, with the non-compactness of Discrete/Dedekind recorded), presenting the finite-context result as consequence completeness derived from weak completeness; resolve that file's \"Note on Infinite Contexts\" TODO accordingly.\n\nVERIFIED ANCHORS (re-checked 2026-08-18):\n  - `FormalSystem/Metalogic/BXCanonical/Completeness.lean`: `completeness` (currently near :191 — the file also carries an unrelated second declaration named `completeness` near :26; this task's target is the Base-class terminus at :191), `completeness_dense` (currently near :250), `completeness_discrete` (currently near :291) — base validity predicate is lowercase `valid`; dense/discrete are `ValidDense`/`ValidDiscrete` (`FormalSystem/Semantics/Validity.lean`; currently near :94, :206, :222 respectively). All line numbers are hints only — re-verify by symbol before use.\n  - FormalSystem/Metalogic/StrongCompleteness.lean — module docstring carries the per-class programme and reserved sections; Dedekind instance complete modulo its engine (`consequence_completeness_dedekind_of_engine`, currently near :274; `completeness_dedekind_of_engine`, currently near :308).\n  - Syntactic deduction theorem: `FormalSystem.ProofSystem.Derivable.deduction` (`Metalogic/Core/DeductionTheorem.lean`; currently near :467, Prop-level), data-level `deductionTheorem` currently near :325, `deductionConverse` currently near :447.\n  - Set-based MCS layer (for leg B): `SetConsistent`/`SetMaximalConsistent`/`set_lindenbaum`, `Metalogic/Core/MaximalConsistent.lean`; currently near :96/:103/:303. SetConsistent is already finitary (every finite sublist consistent).\n  - Frame-class-agnostic `SemanticConsequence` (Γ : Context) exists in `Semantics/Validity.lean` (currently near :125) with notation `Γ ⊨ φ` (currently near :135) — it quantifies over ALL carriers and is NOT the per-class relation; per-class variants named in UpperCamel (Prop-valued definitions), theorem names snake_case.\n  - Update the tracking table in FormalSystem/Metalogic.lean (the file at the FormalSystem/ root, NOT FormalSystem/Metalogic/Metalogic.lean, which does not exist).\n\nAxioms exactly [propext, Classical.choice, Quot.sound] modulo whatever the underlying weak terminus already carries; leg A sorry-free once the three weak termini are green.\n\nDEPENDENCY STATUS (re-verified 2026-08-18; dependencies array now includes 424, added by this re-issue): 375 (discrete weak terminus) COMPLETED — completeness_discrete/completeness_dense kernel-verify to the pristine axiom set. 169 (base weak) not_started. 170 (dense weak) not_started. 361 (terminology/architecture research + set-based layer design + Base/Dense compactness verdict) not_started. 424 (shift-set Representation Theorem, gate for the ultraproduct branch) not_started. Leg B is gated on both 361's verdict and 424's theorem, plus the model-existence tasks 361 spawns; legs A, C, and D are gated on neither.",
@@ -621,13 +621,18 @@
         "FormalSystem/Metalogic.lean"
       ],
       "created": "2026-07-13T21:48:29Z",
-      "last_updated": "2026-08-25T13:39:42Z",
+      "last_updated": "2026-08-25T13:47:28Z",
       "session_id": "sess_1787662855_e59fd5_362",
       "artifacts": [
         {
           "path": "specs/362_completeness_capstone_consequence_all_classes_strong_where_compact/reports/01_completeness-capstone-reachability.md",
           "type": "report",
           "summary": "Reachability analysis for the completeness capstone: leg A prototyped sorry-free; leg B deferred; legs C/D reduced to documentation currency"
+        },
+        {
+          "path": "specs/362_completeness_capstone_consequence_all_classes_strong_where_compact/plans/01_consequence-completeness-all-classes.md",
+          "type": "plan",
+          "summary": "Six-phase plan: leg A consequence completeness, reachable leg-B Base set-layer mirror, leg-C prose, leg-D LaTeX currency"
         }
       ]
     },
@@ -1505,7 +1510,7 @@
       "project_number": 480,
       "project_name": "bridge_isvalid_bool_to_semantic_validity",
       "description": "CLASSIFICATION: routine engineering, not open mathematics. Startable today, independent of the whole decidability chain (410-465). State this explicitly so the task is never budgeted as anything larger.\n\nTARGET: prove `isValid_sound (φ : Formula) (fc : FrameClass) (h : isValid φ fc = true) : ⊨ φ` (or the frame-class-relativized form actually consumed downstream -- check what task 430's `valid_iff_allClosed` and the four `Decidable` instances will actually need before fixing the exact statement).\n\nWHY THIS IS NEEDED: `decide_sound'` (`FormalSystem/Metalogic/Decidability/Correctness.lean:66`) already proves `decide φ ... = .valid proof → ⊨ φ`, but nothing bridges the *Boolean* wrapper `DecisionProcedure.isValid` (`FormalSystem/Metalogic/Decidability/DecisionProcedure.lean:317-318`, `def isValid (φ) (fc) : Bool := (decide φ (fc := fc)).isValid`, which discards the proof term) back to a semantic conclusion.\n\nPROOF SKETCH: `unfold isValid at h`; case on `decide φ (fc := fc)` via its four constructors (`.valid`, `.invalid`, `.fuelExhausted`, `.extractionFailed`); in the `.valid proof` case, `h` is definitionally `true = true` and `decide_sound' φ … proof rfl` (or equivalent) closes it; the other three cases make `h` a contradiction, since `DecisionResult.isValid` is `false` on `invalid`/`fuelExhausted`/`extractionFailed` -- already proved by the case-exhaustion lemma at `Correctness.lean:122-126`.\n\nDEPENDENCIES: none beyond what already exists (`decide_sound'` is landed).\n\nWHY THIS IS NOT FOLDED INTO TASK 430: 430's target (`valid_iff_allClosed`) is the *engine*-facing direction over `Derivable`/branch closure; this is the *decision-procedure*-facing direction over the `Bool` API a caller of `isValid`/`isTautology`/`isContradiction` actually holds. They are different theorems about different functions and should not be conflated -- the whole audit that produced this task warns against exactly this conflation (F1: \"`isValid`'s `false` conflates 'judged invalid' with 'claimed valid'\").\n\nACCEPTANCE: `isValid_sound` (or its frame-class-relativized form) lands sorry-free; `#print axioms` clean; `lake build` green; no new sorry or axiom anywhere else in the tree.\n\nPROVENANCE: specced by task 468's realignment (report `specs/468_realign_task_programme_from_proof_state_audit/reports/02_stage1-verification-and-programme-realignment.md` §5, new-task-spec-1), itself descended from `specs/reviews/review-2026-08-24.md` amendment 10b's surviving ADD-list item.",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "topic": "decidability",
       "priority": "medium",
@@ -1516,12 +1521,17 @@
         "FormalSystem/Metalogic/Decidability/DecisionProcedure.lean"
       ],
       "created": "2026-08-25T12:18:48Z",
-      "last_updated": "2026-08-25T13:39:35Z",
+      "last_updated": "2026-08-25T13:47:22Z",
       "artifacts": [
         {
           "path": "specs/480_bridge_isvalid_bool_to_semantic_validity/reports/01_isvalid-bool-semantic-bridge.md",
           "type": "report",
           "summary": "Verified-compiling implementation of isValid_sound plus nine corollaries bridging DecisionProcedure's Bool API to semantic validity"
+        },
+        {
+          "path": "specs/480_bridge_isvalid_bool_to_semantic_validity/plans/01_isvalid-bool-semantic-bridge.md",
+          "type": "plan",
+          "summary": "Three-phase plan transcribing ten pre-verified theorems into Correctness.lean"
         }
       ],
       "session_id": "sess_1787662855_e59fd5_480"

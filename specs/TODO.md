@@ -58,7 +58,7 @@ next_project_number: 483
       └─ 465 [NOT STARTED] — Complete the terminus restatement family at the repaired residual
         └─ 428 [BLOCKED] — Engine totality at a quantified branch budget. Owns obstruction O (see above)
 476 [NOT STARTED] — THE BOX-FAITHFUL SMALL-MODEL THEOREM.
-480 [RESEARCHED] — CLASSIFICATION: routine engineering, not open mathematics. Starta
+480 [PLANNED] — CLASSIFICATION: routine engineering, not open mathematics. Starta
 481 [NOT STARTED] — CLASSIFICATION: genuinely open -- the predicate is refuted as sta
 
 ### Formula Refactor
@@ -77,7 +77,7 @@ next_project_number: 483
 
 ### Strong Completeness
 
-362 [RESEARCHED] — Implement the completeness capstone under the SETTLED TERMINOLOGY
+362 [PLANNED] — Implement the completeness capstone under the SETTLED TERMINOLOGY
 
 ## Tasks
 
@@ -139,11 +139,12 @@ PROVENANCE: specced by task 468's realignment (report `specs/468_realign_task_pr
 
 ### 480. Bridge isvalid bool to semantic validity
 - **Effort**: small
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
 - **Research**: [480_bridge_isvalid_bool_to_semantic_validity/reports/01_isvalid-bool-semantic-bridge.md]
+- **Plan**: [480_bridge_isvalid_bool_to_semantic_validity/plans/01_isvalid-bool-semantic-bridge.md]
 
 **Description**: CLASSIFICATION: routine engineering, not open mathematics. Startable today, independent of the whole decidability chain (410-465). State this explicitly so the task is never budgeted as anything larger.
 
@@ -2214,11 +2215,12 @@ not an addition to this task's scope.
 
 ### 362. Completeness capstone consequence all classes strong where compact
 - **Effort**: high
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: strong_completeness
 - **Dependencies**: Task 361, Task 375, Task 170, Task 424
 - **Research**: [362_completeness_capstone_consequence_all_classes_strong_where_compact/reports/01_completeness-capstone-reachability.md]
+- **Plan**: [362_completeness_capstone_consequence_all_classes_strong_where_compact/plans/01_consequence-completeness-all-classes.md]
 
 **Description**: Implement the completeness capstone under the SETTLED TERMINOLOGY (2026-07-27): "strong completeness" is reserved for consequence from possibly-infinite premise sets (Γ : Set Formula) with finitary set-derivability; finite-context (Context = List Formula) consequence statements are inter-derivable with weak completeness via the deduction theorem and are named CONSEQUENCE completeness, never strong. (This task was formerly named "main_strong_completeness: finite-context strong completeness" — that framing was misleading and is retired. "main_strong_completeness" was never a Lean or LaTeX identifier; it was this task's own former title.)
 
