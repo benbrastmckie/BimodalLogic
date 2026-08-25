@@ -1,5 +1,5 @@
 ---
-next_project_number: 477
+next_project_number: 480
 ---
 
 # TODO
@@ -11,9 +11,9 @@ next_project_number: 477
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,193,257,298,422,434,461,462,468,476 | -- | automation, dataset-enhancement, decidability, ... |
-| 2 | 125,169,178,231,282,296,433,455,463 | 193,298,422,434,461,462,468 | algebraic-representation, code-quality, dataset-enhancement, ... |
-| 3 | 95,219,362,464 | 169,231,463 | completeness, dataset-enhancement, decidability, ... |
+| 1 | 127,128,193,257,298,422,434,461,462,468,476,477 | -- | automation, dataset-enhancement, decidability, ... |
+| 2 | 125,169,178,231,282,296,433,455,463,478 | 193,298,422,434,461,462,468,477 | algebraic-representation, code-quality, dataset-enhancement, ... |
+| 3 | 95,219,362,464,479 | 169,231,463,478 | completeness, dataset-enhancement, decidability, ... |
 | 4 | 465 | 464 | decidability |
 | 5 | 428 | 433,465 | decidability |
 | 6 | 429 | 428 | decidability |
@@ -87,7 +87,176 @@ next_project_number: 477
   └─ 169 [NOT STARTED] — Base (FrameClass.Base / general) WEAK completeness green: make th
     └─ 362 [NOT STARTED] — Implement the completeness capstone under the SETTLED TERMINOLOGY
 
+### Metalogic
+
+477 [NOT STARTED] — T-A: TARGET-STRUCTURE PLUMBING FOR THE GROUPABLE-COMPANION ROUTE.
+  └─ 478 [NOT STARTED] — T-B: THE GROUPABLE COMPANION LEMMA.
+    └─ 479 [NOT STARTED] — T-C: CLOSE `countermodel_discrete` VIA THE v2 BLUEPRINT AT Rat x_
+
 ## Tasks
+
+### 479. Tc close countermodel discrete at base
+- **Effort**: medium
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: metalogic
+- **Dependencies**: Task 478
+
+**Description**: T-C: CLOSE `countermodel_discrete` VIA THE v2 BLUEPRINT AT Rat x_lex Int.
+
+CLASSIFICATION: MECHANICAL PORT. ~300-600 lines. No open mathematics -- all the risk lives in the predecessor task. This is the third and final task of the k-equivalence/companion chain, and it closes the SOLE remaining structural sorry in the tree.
+
+=== THE TARGET ===
+
+`WeakCanonical.countermodel_discrete` (`FormalSystem/Metalogic/WeakCanonical/Transfer.lean`, declaration near :1069, sorry token near :1084 -- HINTS ONLY, re-verify by symbol). It is the purely-discrete branch of the BASE-class weak completeness proof `BXCanonical.completeness`, and it is the only `sorryAx` source reaching that theorem.
+
+=== WHAT TO DO ===
+
+Reproduce the proof body of `countermodel_discrete_reynolds_v2` (`WeakCanonical/IntegerModel/ReynoldsBridge.lean`) with exactly three substitutions:
+
+1. `fc := FrameClass.Base` (instead of Discrete).
+2. `limitdom_is_good` -> the groupable-companion lemma delivered by the predecessor task. This is the ONLY Discrete-bound link in the v2 chain: `limitdom_is_good` carries `(h_fc : FrameClass.Discrete <= fc)` and discharges through `limitdom_semantic_prior_UZ`/`_SZ`, the Discrete-only Prior axioms a Base MCS does not have. Everything else in the chain is already fc-generic.
+3. `multiFamTaskFrame` -> `multiFamTaskFrameGen (Rat x_lex Int)`, already D-generic in `FormalSystem/Metalogic/Algebraic/FlowFrame.lean`.
+
+VERIFIED THIS SESSION by compiled probe (specs/422_.../verification/qlex_frame_probe.lean): `multiFamTaskFrameGen` and `History` elaborate at `Rat x_lex Int` with clean axioms, and the needed extra import is `Mathlib.Algebra.Order.Monoid.Prod` for the lex `IsOrderedAddMonoid` instance.
+
+The Base existential is WEAKER than the Discrete one -- there are no Succ/Pred/Archimedean binders to discharge. Confirm this by symbol against the live `valid` before relying on it.
+
+The box dimension carries over unchanged: box surrogates are rigid across box-equivalent families by S5, exactly as in v2's truth-correspondence induction.
+
+=== CARRIER UNIFORMITY (the obligation formerly known as O2) ===
+
+All families receive COLORINGS OF THE SAME CARRIER `Rat x_lex Int` -- the valuation is per-family, `TM.valuation (f, d)` -- so carrier-uniformity dissolves provided the predecessor lands at the fixed carrier. If per-family carriers are ever forced, note that `valid` does not require countability of `D`: a single larger discrete ordered abelian group (any `G x_lex Int` with `G` sufficiently saturated) is an admissible common target. Carrier-uniformity therefore cannot resurrect as a hard blocker on this route.
+
+=== GOVERNING DOCUMENT ===
+
+specs/422_build_discrete_chronicle_over_non_archimedean_block_carrier_with_restricted_coherence/reports/02_o1-verdict-k-equivalence-transfer.md, sections 3 and 6. Report 01 in the same directory records the isomorphism refutations, which are FINAL.
+
+=== NON-GOALS ===
+
+- Do NOT re-attempt the O1 isomorphism or `succ_cofinal`; both are settled negatively and permanently.
+- Do NOT re-derive the companion lemma; consume the predecessor's statement.
+- Do NOT do construction-level work in `ChronicleConstruction.lean` or `PointInsertion.lean`.
+- Do NOT weaken `countermodel_discrete`'s statement to make it close. If the port does not go through, report the specific mismatch and escalate.
+
+=== ACCEPTANCE ===
+
+- `lake build` green; no new sorry; no new axiom.
+- `countermodel_discrete` lands sorry-free; `#print axioms` reports no `sorryAx`.
+- `BXCanonical.completeness` (Base-class weak completeness) is thereby sorry-free end to end -- verify with `#print axioms` on it directly, and update any module docstring that still describes it as carrying a sorry.
+- `scripts/check-module-invariants.sh` C3 shows the structural sorry inventory reduced to ZERO. Update every docstring that names `countermodel_discrete` as the sole live sorry -- the repository has a documented history of stale sorry claims, and this task retires the last one.
+
+---
+
+### 478. Tb groupable companion lemma
+- **Effort**: large
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: metalogic
+- **Dependencies**: Task 477
+
+**Description**: T-B: THE GROUPABLE COMPANION LEMMA.
+
+CLASSIFICATION: REAL MODEL THEORY. THE ONLY RISK ITEM OF THE THREE-TASK CHAIN. Estimate 1.5-3k lines across 2-3 plan phases. Zero-sorry-reachable in each sub-phase.
+
+=== THE LEMMA ===
+
+For every finite signature `sig`, every depth `k`, and every countable, discrete (Succ/Pred), unbounded-both-ways `OrderedMonadicStructure sig` `M`, there is an `OrderedMonadicStructure sig` `N` with carrier `Rat x_lex Int` (fallback: some discrete linearly ordered abelian group) such that `KEquiv sig k M N`.
+
+Instantiated at `M := limitdomMonadicStructure A h_mcs phi` for a Base-MCS `A` with `box nextTop in A`, this is the Base analogue of `limitdom_is_good` (`WeakCanonical/IntegerModel/ReynoldsBridge.lean`, declaration near :361 -- HINT ONLY, re-verify by symbol), and it is ALL that separates `countermodel_discrete` from the sorry-free v2 blueprint. Discreteness comes from `box_discrete_gives_discreteness`; unboundedness from the sorry-free Z-block infrastructure recorded in report 01 section 2.
+
+Governing document: specs/422_.../reports/02_o1-verdict-k-equivalence-transfer.md, section 4. READ IT FIRST -- it contains the three worked witness cases below and the reasons the lemma is expected to hold.
+
+=== WHY THIS IS NOT REFUTED BY THE PRIOR REFUTATIONS ===
+
+The predecessor research refuted the existence of an ORDER ISOMORPHISM (equivalently, a strictly monotone map, which the restricted-coherence conditions force to be an iso). `KEquiv` at fixed finite depth k is incomparably weaker: Z+Z is isomorphic to no group order, but AS A COLORED ORDER it is k-equivalent to a colored group order for every k. Verified case by case in the report:
+
+- Constant coloring on Z+Z (the interface-refutation witness) is k-equiv to constant coloring on Z -- both monochromatic discrete unbounded, Th(Z,<) complete.
+- Two-block coloring Z_c1 + Z_c2 is k-equiv to Z x_lex Z colored c1 on negative blocks, c2 on non-negative: split at the color boundary, each side monochromatic discrete with no endpoint on the boundary side, glue by Ehrenfeucht-Fraisse composition over ordered sums. NOTE the naive companion ON Z ITSELF FAILS -- Z forces an adjacent boundary pair, FO-visible at rank ~3, which is exactly the z1 phenomenon. The non-Archimedean target is what makes the companion exist.
+- Endpoint-block case (eta.Z_c0) + Z_c1 is k-equiv to Rat x_lex Int colored c0 on blocks q<0, c1 on blocks q>=0. THIS CASE IS LOAD-BEARING: it kills the tempting weaker move of selecting a sub-union of whole blocks, since any such selection must keep the final block plus blocks below it, yielding a last-block order that is never groupable. Quotient/restriction of the chronicle BEFORE demanding the carrier is therefore insufficient; free RECOLORING of the fixed carrier is the correct move.
+
+=== SUB-PHASE DECOMPOSITION (from the report) ===
+
+(1) KEquiv composition over ordered sums.
+(2) Completeness-at-depth-k of monochromatic discrete segment theories (finitely many endpoint variants).
+(3) Region condensation + replacement.
+
+IF SUB-PHASE (3) STALLS: the coherence facts of the chronicle interface (C4/C4'/C5/C5') are available to tame the region structure -- a WEAKER, CHRONICLE-SPECIFIC companion suffices for the downstream consumer. Escalate before abandoning; do not silently weaken the statement without recording it.
+
+=== EVIDENCE THE LEMMA SHOULD HOLD (literature, cite in this form) ===
+
+- Burgess, "Basic Tense Logic": completeness for the tense logic of discrete total orders is proved over the CLASS of discrete orders -- chronicle grown by the Killing Lemma 1.11 (printed p. 101 / PDF p. 23), discreteness protected by S-relation bookkeeping, carrier whatever countable discrete order the omega-construction produces (discrete-time discussion, printed p. 108 / PDF p. 30). The group demand is this repository's def:logical-consequence, not a classical requirement, so no classical obstruction attaches to it.
+- Burgess (printed pp. 108-109 / PDF pp. 30-31, citing Burgess [1979]): homogeneity adds only dense-or-discrete.
+- Doets 1987 thesis ch. 7 (thesis pp. 89-93): builds an arbitrary block-sum countermodel then compresses to Z using exactly the Loeb/z1 axioms a Base-MCS lacks. The companion lemma is that final step with the Loeb-free target.
+- Doets 1989 closed the Dedekind branch by the same pattern; `goodDense` is already formalized in this tree. This is the last cell of a 2x2 table whose other three cells closed by this technique.
+
+CITATION DISCIPLINE (this corpus has a documented history of citation rot): cite by structural label PLUS printed PDF page, never `md:NN` line numbers. Check each source's `known_corrections` and `hazard` fields in specs/literature-index.json before relying on a passage.
+
+=== HONEST RISK NOTE ===
+
+The companion lemma is SUFFICIENT, NOT KNOWN NECESSARY. It has not been proved. Report 02 section 4 records its falsification shape and states there is no current failure evidence. If a counterexample emerges, report it as a first-class result -- it would settle the Base discrete branch negatively and is as valuable as a proof.
+
+=== NON-GOALS ===
+
+- Do NOT re-attempt the O1 isomorphism or `succ_cofinal`; both settled negatively and final.
+- Do NOT modify `countermodel_discrete` -- that is the successor task.
+- Do NOT do construction-level work in `ChronicleConstruction.lean` or `PointInsertion.lean`. The whole point of this route is that none is needed.
+- S2 (Z-block quotient packaging) is OPTIONAL: pull it in as a Phase 0 only if the plan's region-condensation step wants the quotient API. Decide at planning time.
+
+=== ACCEPTANCE ===
+
+- `lake build` green; no new sorry; no new axiom.
+- The companion lemma lands sorry-free at the fixed carrier `Rat x_lex Int`, or -- if the fallback is taken -- at an explicitly named discrete linearly ordered abelian group, with the weakening recorded in the module docstring.
+- `#print axioms` clean on the lemma.
+- The sole structural sorry remains `countermodel_discrete`; the count does not increase.
+
+---
+
+### 477. Ta qz target structure plumbing
+- **Effort**: small
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: metalogic
+- **Dependencies**: None
+
+**Description**: T-A: TARGET-STRUCTURE PLUMBING FOR THE GROUPABLE-COMPANION ROUTE.
+
+CLASSIFICATION: SMALL, MECHANICAL. ~150-300 lines. No open mathematics. This is the first of three strictly-ordered tasks implementing the k-equivalence/companion route to `WeakCanonical.countermodel_discrete` at FrameClass.Base.
+
+=== BACKGROUND: WHY THIS ROUTE ===
+
+The sole remaining structural sorry in the tree is `WeakCanonical.countermodel_discrete` (`FormalSystem/Metalogic/WeakCanonical/Transfer.lean`, declaration near :1069 -- HINT ONLY, re-verify by symbol). It sits in the PURELY DISCRETE BRANCH of the BASE-class weak completeness proof `BXCanonical.completeness`, which case-splits dense / purely-discrete / mixed. The Discrete-class theorem `completeness_discrete` does NOT depend on it: at FrameClass.Discrete the dense branch is refuted outright because `U(T,bot)` is a Discrete theorem via `prior_UZ`. Base lacks `prior_UZ`, so at Base the discrete countermodel must actually be constructed.
+
+The predecessor research established that the ISOMORPHISM formulation of this obligation is permanently refuted (no linearly ordered abelian group has order type Z+Z; machine-checked, clean axioms), but that an isomorphism was never required: the goal is an existential for ONE formula of bounded operator depth on ANY admissible group carrier. The repository already closed that exact shape for Discrete, sorry-free and with no isomorphism, via chronicle -> OrderedMonadicStructure -> k-equivalence -> truth_transfer -> multiFamTaskFrame reassembly.
+
+Governing document: specs/422_build_discrete_chronicle_over_non_archimedean_block_carrier_with_restricted_coherence/reports/02_o1-verdict-k-equivalence-transfer.md (sections 3, 4, 6). Read it before starting. Report 01 in the same directory records the refutations that are now FINAL -- do not re-attempt the isomorphism, and do not re-attempt `succ_cofinal`.
+
+=== WHAT TO DO ===
+
+(1) Define `QZStructure sig` with carrier `Rat x_lex Int`, mirroring the existing `ZIntervalStructure`, together with its `toOrdered` projection.
+
+(2) Define `goodGroupable sig k M := exists N : QZStructure sig, KEquiv sig k M (N.toOrdered sig)`.
+
+PATTERN SOURCES (mirror their shape; do not clone content blindly):
+- `FormalSystem/Metalogic/WeakCanonical/IntegerModel/GoodStructures.lean`
+- `FormalSystem/Metalogic/WeakCanonical/RealModel/GoodDense.lean`
+
+KNOWN INSTANCE REQUIREMENT, verified by compiled probe this session: the lex `IsOrderedAddMonoid` instance for `Rat x_lex Int` needs `import Mathlib.Algebra.Order.Monoid.Prod`. The probe is at specs/422_.../verification/qlex_frame_probe.lean and confirms `multiFamTaskFrameGen`/`History` elaborate at this carrier with clean axioms.
+
+=== NON-GOALS ===
+
+- Do NOT prove the companion lemma itself. That is the successor task.
+- Do NOT touch `countermodel_discrete` or its sorry.
+- Do NOT re-attempt the O1 isomorphism or `succ_cofinal`; both are settled negatively.
+- Do NOT do the S1 carrier-generic refactor of the dense cantor machinery -- it is retired for this branch.
+
+=== ACCEPTANCE ===
+
+- `lake build` green; no new sorry; no new axiom.
+- `QZStructure`, its `toOrdered`, and `goodGroupable` land sorry-free with `#print axioms` clean.
+- The sole structural sorry remains `countermodel_discrete`; the count does not increase.
+
+---
 
 ### 476. Box faithful small model theorem
 - **Effort**: large
