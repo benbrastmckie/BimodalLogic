@@ -141,10 +141,15 @@ the tableau contributes the derivation, not the soundness.
 - The rule half of `allClosed → valid` is proved: `ruleSound_of_mem_allRulesForFC`
   (`Verified/Decidable.lean`), sorry-free — every rule `allRulesForFC` can schedule at a frame
   class preserves satisfiability under that class's carrier property.
-- `valid_iff_allClosed`, the `isValid φ fc = true ↔ ⊨ φ` biconditional, and the `Decidable (⊨ φ)`
-  instances for the four frame classes are **open**. See `Correctness.lean`'s section
+- The **sound direction** of the `isValid`-shaped statement, `isValid φ fc = true → ⊨ φ`, is
+  proved and landed: `sound_of_isValid` and `isValid_sound` (`Correctness.lean`), sorry-free,
+  along with the `isTautology` / `isContradiction` / `isSatisfiable` siblings and the
+  frame-class-relativized forms.
+- The **completeness direction**, `⊨ φ → isValid φ fc = true` — and therefore
+  `valid_iff_allClosed`, the `isValid φ fc = true ↔ ⊨ φ` biconditional, and the `Decidable (⊨ φ)`
+  instances for the four frame classes — is **open**. See `Correctness.lean`'s section
   "`validity_decidable` / `validity_has_decision_procedure` — Retired as vacuous" for what is
-  still owed and why no `isValid`-shaped statement is written before it can be proved.
+  still owed and why no `isValid`-shaped biconditional is written before it can be proved.
 - Proof extraction: Partial. `extractProof` (`ProofExtraction.lean`) runs five strategies in order
   — `tryAxiomProof`, `matchDerived`, the closure-based `.axiomNeg` filter,
   `buildCompositionalProof`, `enhancedSearch` — and returns `.incomplete` once all are exhausted.

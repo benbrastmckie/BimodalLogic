@@ -176,18 +176,18 @@ FormalSystem.Metalogic.Decidability.Correctness`).
 
 ---
 
-### Phase 2: Narrow the `Decidability.lean` prose [NOT STARTED]
+### Phase 2: Narrow the `Decidability.lean` prose [COMPLETED]
 
 **Goal**: The parent module's docstring stops asserting that no `isValid`-shaped statement is
 written, and the scope extension is recorded.
 
 **Tasks**:
-- [ ] Amend `FormalSystem/Metalogic/Decidability.lean:144-147`: narrow the bullet so that the
+- [x] Amend `FormalSystem/Metalogic/Decidability.lean:144-147`: narrow the bullet so that the
       **sound direction** (`isValid φ fc = true → ⊨ φ`) is recorded as landed in
       `Correctness.lean`, and only `valid_iff_allClosed`, the biconditional, and the four
       `Decidable (⊨ φ)` instances remain **open**. Preserve the existing cross-reference to
       `Correctness.lean`'s retirement section.
-- [ ] Note in the working record that this file is **outside the declared `file_scope`**
+- [x] Note in the working record that this file is **outside the declared `file_scope`**
       (`Correctness.lean`, `DecisionProcedure.lean`), so the implementation summary must state the
       scope extension explicitly. The alternative — leaving the contradiction in the tree — is not
       acceptable; the report treats this as required, not optional.
