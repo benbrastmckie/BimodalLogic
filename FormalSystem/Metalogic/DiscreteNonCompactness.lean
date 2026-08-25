@@ -181,4 +181,120 @@ theorem succ_iterate_zero_int (n : ℕ) : Order.succ^[n] (0:ℤ) = (n : ℤ) := 
   | zero => simp
   | succ k ih => rw [Function.iterate_succ_apply', ih]; simp [Order.succ_eq_add_one]
 
+/-! ## The three acceptance theorems -/
+
+/-- **Every finite subset of `archWitness p` is satisfiable.** Over `ℤ`, place `p` strictly
+    beyond `N = (L.map witIdx).sum` — an upper bound for every index occurring in `L` — and
+    evaluate at `0`.
+
+    `List.single_le_sum (fun _ _ => Nat.zero_le _)` supplies `witIdx ψ ≤ N` directly; no `foldr
+    max` helper and no auxiliary lemma is needed. -/
+theorem archWitness_finitely_satisfiable (p : Atom) (L : List Formula)
+    (hL : ∀ ψ ∈ L, ψ ∈ archWitness p) : SatisfiableDiscreteSet {ψ | ψ ∈ L} := by
+  classical
+  refine ⟨ℤ, inferInstance, inferInstance, inferInstance, inferInstance, inferInstance,
+    inferInstance, inferInstance, inferInstance, TaskFrame.natFrame, zModel,
+    zHistory ((L.map witIdx).sum : ℕ), zHistory_total _, 0, ?_⟩
+  set N : ℕ := (L.map witIdx).sum with hNdef
+  intro ψ hψ
+  have hmem := hL ψ hψ
+  simp only [archWitness, Set.mem_union, Set.mem_singleton_iff, Set.mem_setOf_eq] at hmem
+  rcases hmem with rfl | ⟨n, rfl⟩
+  · -- `F p` : place the witness at `N + 1`
+    refine ⟨(N : ℤ) + 1, by positivity, ?_, fun r _ _ => id⟩
+    exact (zTruth_atom _ p _).mpr (by omega)
+  · -- `¬ Xⁿ p`, with `n ≤ N`
+    have hn_le : n ≤ N := by
+      have : witIdx ((Formula.next^[n] (Formula.atom p)).neg) ∈ L.map witIdx :=
+        List.mem_map_of_mem hψ
+      have hle := List.single_le_sum (fun _ _ => Nat.zero_le _) _ this
+      rwa [witIdx_neg_next_iterate] at hle
+    intro hcon
+    have := (truthAt_next_iterate zModel (zHistory (N:ℤ)) n 0 (Formula.atom p)).mp hcon
+    rw [succ_iterate_zero_int] at this
+    have := (zTruth_atom _ p _).mp this
+    omega
+
+/-- **`archWitness p` is satisfiable over no Archimedean discrete carrier.** The `F p` witness
+    `s > t` is reachable from `t` in finitely many successor steps — this is exactly where
+    `IsSuccArchimedean` does its work, via
+    `(Order.succ_le_of_lt hts).exists_succ_iterate`, the idiom already used throughout
+    `SoundnessLemmas/FrameClassVariants.lean`. That contradicts the corresponding `¬Xⁿ⁺¹ p`.
+
+    The existential is destructured with **bare `_` instance binders** so that synthesis recovers
+    the originals. Naming them and re-installing with `haveI` would drop the value and break
+    definitional equality with the instances baked into `F`'s and `M`'s types. -/
+theorem archWitness_not_satisfiable (p : Atom) : ¬ SatisfiableDiscreteSet (archWitness p) := by
+  rintro ⟨D, _, _, _, _, _, _, _, _, F, M, τ, hτ, t, h⟩
+  haveI : NoMaxOrder D := inferInstance
+  have hF : TruthAt M τ t ((Formula.atom p).someFuture) := by
+    apply h; simp [archWitness]
+  obtain ⟨s, hts, hs, -⟩ := hF
+  obtain ⟨n, hn⟩ := (Order.succ_le_of_lt hts).exists_succ_iterate
+  have hs' : TruthAt M τ (Order.succ^[n + 1] t) (Formula.atom p) := by
+    rw [Function.iterate_succ_apply, hn]; exact hs
+  have hX : TruthAt M τ t (Formula.next^[n + 1] (Formula.atom p)) :=
+    (truthAt_next_iterate M τ (n + 1) t _).mpr hs'
+  have hneg : TruthAt M τ t ((Formula.next^[n+1] (Formula.atom p)).neg) := by
+    apply h; right; exact ⟨n + 1, rfl⟩
+  exact hneg hX
+
+/-- **The `FrameClass.Discrete` consequence relation is not compact.**
+
+    `archWitness p ⊨ ⊥` holds vacuously, since the set has no model at all. Compactness would
+    hand back a finite `L ⊆ archWitness p` with `ValidDiscrete (L.foldr Formula.imp ⊥)`; but
+    `archWitness_finitely_satisfiable` supplies a Discrete model of exactly that `L`, and
+    `truthAt_foldr_imp` turns the validity into `TruthAt … ⊥`. -/
+theorem discrete_consequence_not_compact : ¬ CompactDiscrete := by
+  intro hc
+  classical
+  set p : Atom := ⟨"p", none⟩ with hp
+  have hcons : SetSemanticConsequenceDiscrete (archWitness p) Formula.bot := by
+    intro D _ _ _ _ _ _ _ _ F M τ hτ t hall
+    exact absurd
+      ⟨D, inferInstance, inferInstance, inferInstance, inferInstance, inferInstance,
+        inferInstance, inferInstance, inferInstance, F, M, τ, hτ, t, hall⟩
+      (archWitness_not_satisfiable p)
+  obtain ⟨L, hL, hvalid⟩ := hc _ _ hcons
+  obtain ⟨D, _, _, _, _, _, _, _, _, F, M, τ, hτ, t, hsat⟩ :=
+    archWitness_finitely_satisfiable p L hL
+  have hv := hvalid D F M τ hτ t
+  exact (truthAt_foldr_imp M τ t L Formula.bot).mp hv (fun ψ hψ => hsat ψ hψ)
+
+#print axioms truthAt_next_iff
+#print axioms truthAt_next_iterate
+#print axioms archWitness_finitely_satisfiable
+#print axioms archWitness_not_satisfiable
+#print axioms discrete_consequence_not_compact
+
+/-! ## Axiom Audit
+
+```
+#print axioms truthAt_next_iff
+-- depends on: [propext, Classical.choice, Quot.sound]
+#print axioms truthAt_next_iterate
+-- depends on: [propext, Classical.choice, Quot.sound]
+#print axioms archWitness_finitely_satisfiable
+-- depends on: [propext, Classical.choice, Quot.sound]
+#print axioms archWitness_not_satisfiable
+-- depends on: [propext, Classical.choice, Quot.sound]
+#print axioms discrete_consequence_not_compact
+-- depends on: [propext, Classical.choice, Quot.sound]
+```
+
+**`sorryAx`-free throughout.** Every declaration in this module carries exactly the three
+standard classical axioms, the identical set already carried by `completeness_dense`,
+`completeness_discrete` and `consequence_completeness_dedekind`. No new axiom is introduced and
+no obligation is deferred.
+
+### Axiom classification
+
+* `propext` — propositional extensionality, entering through `simp`/`omega` normalisation.
+* `Classical.choice` — via the `classical` tactic and Mathlib's order-theoretic lemmas
+  (`Order.succ_le_of_lt`, `IsSuccArchimedean.exists_succ_iterate`).
+* `Quot.sound` — quotient soundness, entering through Mathlib's `List` and `Int` API.
+
+None of the three is avoidable in this development, and none is specific to this module.
+-/
+
 end FormalSystem.Metalogic

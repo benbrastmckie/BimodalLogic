@@ -257,31 +257,31 @@ all live in the new module and compile.
 
 ---
 
-### Phase 4: The three acceptance theorems and the axiom audit [NOT STARTED]
+### Phase 4: The three acceptance theorems and the axiom audit [COMPLETED]
 
 **Goal**: `archWitness_finitely_satisfiable`, `archWitness_not_satisfiable` and
 `discrete_consequence_not_compact` all land sorry-free with a clean axiom audit — the task's
 stated acceptance criteria, met.
 
 **Tasks**:
-- [ ] Transcribe `archWitness_finitely_satisfiable` verbatim from report §3 Layer 4. It uses
+- [x] Transcribe `archWitness_finitely_satisfiable` verbatim from report §3 Layer 4. It uses
       `(L.map witIdx).sum` as the threshold `N` and Mathlib's
       `List.single_le_sum (fun _ _ => Nat.zero_le _)` for `witIdx ψ ≤ N` — simpler than a
       `foldr max` helper and requiring no auxiliary lemma. Do not substitute a `max`-based bound.
-- [ ] Transcribe `archWitness_not_satisfiable` verbatim. The reachability step is
+- [x] Transcribe `archWitness_not_satisfiable` verbatim. The reachability step is
       `(Order.succ_le_of_lt hts).exists_succ_iterate` — the same idiom already used at
       `FormalSystem/Metalogic/SoundnessLemmas/FrameClassVariants.lean:748`, `:767`, `:828`,
       `:865`, `:877`. This is precisely where `IsSuccArchimedean` does its work.
-- [ ] **MUST NOT**: destructure the `SatisfiableDiscreteSet` existential with *named* instance
+- [x] **MUST NOT**: destructure the `SatisfiableDiscreteSet` existential with *named* instance
       binders and re-install them with `haveI`. `haveI` drops the value, so the re-synthesised
       instance is no longer defeq to the one baked into `F`/`M`'s types, producing
       "synthesized type class instance is not definitionally equal…". Use bare `_` binders
       (`rintro ⟨D, _, _, _, _, _, _, _, _, F, M, τ, hτ, t, h⟩`) and let synthesis find the
       originals. This is measured, not theoretical.
-- [ ] Transcribe `discrete_consequence_not_compact` verbatim, with the concrete atom
+- [x] Transcribe `discrete_consequence_not_compact` verbatim, with the concrete atom
       `p : Atom := ⟨"p", none⟩` (`Atom` is a plain structure at `Syntax/Atom.lean:75`, so no
       `Nonempty Atom` plumbing is needed).
-- [ ] Add a module-level Axiom Audit docstring section recording the five `#print axioms` results,
+- [x] Add a module-level Axiom Audit docstring section recording the five `#print axioms` results,
       in the register used by `FormalSystem/Metalogic/BXCanonical/Completeness.lean`.
 
 **Timing**: 1 hour
