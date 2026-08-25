@@ -28,7 +28,9 @@ Module-by-module implementation status and technical debt:
 | Document | Description |
 |----------|-------------|
 | [implementation-status.md](implementation-status.md) | Module completion percentages and Known Limitations section |
-| [SORRY_REGISTRY.md](SORRY_REGISTRY.md) | Technical debt tracking (sorry placeholders with resolution context) |
+
+Technical debt is not tracked by hand: check C3 of `scripts/check-module-invariants.sh`
+asserts the structural sorry inventory is zero.
 
 ## Feature Tracking
 
@@ -51,12 +53,15 @@ Task management and documentation synchronization:
 
 ## The Four-Document Model
 
-The project uses a Four-Document Model for tracking project state:
+The project uses a Three-Document Model for tracking project state, with the sorry
+inventory delegated to a mechanical check rather than a fourth document:
 
 1. **[TODO.md](../../specs/TODO.md)** - Active task tracking (active work only)
 2. **[implementation-status.md](implementation-status.md)** - Module-by-module completion tracking
 3. **[FEATURE_REGISTRY.md](FEATURE_REGISTRY.md)** - Feature tracking and capabilities
-4. **[SORRY_REGISTRY.md](SORRY_REGISTRY.md)** - Technical debt tracking
+
+Check C3 of `scripts/check-module-invariants.sh` is the sorry inventory: it asserts a hard
+zero across `FormalSystem/` by content and is exit-code-affecting.
 
 See [MAINTENANCE.md](MAINTENANCE.md) for the complete workflow for updating these documents.
 
@@ -66,7 +71,7 @@ See [MAINTENANCE.md](MAINTENANCE.md) for the complete workflow for updating thes
 
 - **Module completion**: [implementation-status.md](implementation-status.md)
 - **Known limitations**: [implementation-status.md#known-limitations](implementation-status.md#known-limitations)
-- **Sorry placeholders**: [SORRY_REGISTRY.md](SORRY_REGISTRY.md)
+- **Sorry placeholders**: none; asserted zero by check C3 of `scripts/check-module-invariants.sh`
 
 ### Finding Capabilities
 
@@ -130,7 +135,6 @@ Project status and tracking for the Bimodal TM logic implementation.
 
 - [Project Implementation Status](../../../docs/project-info/implementation-status.md) -
   Project-wide status
-- [Sorry Registry](../../../docs/project-info/SORRY_REGISTRY.md) - Technical debt tracking
 - [Feature Registry](../../../docs/project-info/FEATURE_REGISTRY.md) - Feature tracking
 
 ## Navigation

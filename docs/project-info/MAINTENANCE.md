@@ -6,11 +6,20 @@ This document describes the workflow for maintaining TODO.md and related project
 
 ## Related Documentation
 
-**Four-Document Model**:
+**Three-Document Model**:
 - [TODO.md](../../specs/TODO.md) - Active task tracking (active work only)
 - [implementation-status.md](implementation-status.md) - Module-by-module completion tracking (includes Known Limitations section)
 - [FEATURE_REGISTRY.md](FEATURE_REGISTRY.md) - Feature tracking and capability documentation
-- [SORRY_REGISTRY.md](SORRY_REGISTRY.md) - Technical debt tracking (sorry placeholders)
+
+**Sorry inventory is mechanical, not documentary.** There is no hand-maintained sorry
+registry. Check C3 of `scripts/check-module-invariants.sh` is the inventory: it asserts a
+hard zero across `FormalSystem/` (excluding `Boneyard/`) by content, never by line number,
+and it is exit-code-affecting. The maintenance step is to *run the check*, not to edit a
+document that can silently disagree with the tree.
+
+```bash
+bash scripts/check-module-invariants.sh --no-build   # C3 among the structural checks
+```
 
 **Theory-Specific Documents** (in docs/project-info/):
 - [tactic-registry.md](tactic-registry.md) - Custom tactic documentation and usage
@@ -87,8 +96,9 @@ This model provides:
 1. Create implementation summary in spec directory (if spec exists)
 
 2. Update related documentation:
-   - **implementation-status.md**: Update module status, sorry counts, and Known Limitations section
-   - **SORRY_REGISTRY.md**: Remove resolved placeholders
+   - **implementation-status.md**: Update module status and Known Limitations section
+   - Sorry counts are not documented by hand: run `bash scripts/check-module-invariants.sh --no-build`
+     and let C3 assert the zero
 
 3. **Remove completed task from TODO.md entirely** (don't mark as complete)
 
@@ -131,7 +141,7 @@ Update these files in order:
 | 1 | Spec summaries | Create completion summary |
 | 2 | implementation-status.md | Module %, sorry counts, Known Limitations section |
 | 3 | FEATURE_REGISTRY.md | Add new features, update feature status |
-| 4 | SORRY_REGISTRY.md | Remove resolved items |
+| 4 | `check-module-invariants.sh` | Run it; C3 asserts the sorry inventory is zero |
 | 5 | tactic-registry.md | Add/update custom tactics (in docs/) |
 | 6 | TODO.md | Remove task, update counts |
 | 7 | Git commit | Comprehensive message |
@@ -149,7 +159,7 @@ Is this about a new feature or capability?
   -> FEATURE_REGISTRY.md (add entry with status and description)
 
 Is this about a sorry placeholder?
-  -> SORRY_REGISTRY.md (remove/move to resolved)
+  -> nothing to edit; run check-module-invariants.sh (C3 asserts zero)
 
 Is this about a custom tactic?
   -> tactic-registry.md (add/update tactic documentation)
@@ -167,19 +177,21 @@ After major updates, verify bidirectional links work:
 
 ```bash
 # Check registry references
-grep -l "SORRY_REGISTRY.md" TODO.md docs/project-info/*.md
-grep -l "FEATURE_REGISTRY.md" TODO.md docs/project-info/*.md
-grep -l "tactic-registry.md" TODO.md docs/project-info/*.md
+grep -l "FEATURE_REGISTRY.md" specs/TODO.md docs/project-info/*.md
+grep -l "tactic-registry.md" specs/TODO.md docs/project-info/*.md
 
 # Check all core docs reference each other appropriately
-for doc in TODO.md docs/project-info/implementation-status.md \
+for doc in specs/TODO.md docs/project-info/implementation-status.md \
            docs/project-info/FEATURE_REGISTRY.md \
-           docs/project-info/SORRY_REGISTRY.md \
            docs/project-info/tactic-registry.md; do
   echo "=== $doc ==="
-  grep -E "(TODO\.md|implementation-status|FEATURE_REGISTRY|SORRY_REGISTRY|tactic-registry|MAINTENANCE)" "$doc"
+  grep -E "(TODO\.md|implementation-status|FEATURE_REGISTRY|tactic-registry|MAINTENANCE)" "$doc"
 done
 ```
+
+Link resolution across `docs/` is itself mechanical: checks C12 (slash-shaped source paths)
+and C13 (relative markdown links) in `scripts/check-module-invariants.sh` assert that every
+path and link resolves, so a stale cross-reference fails the gate rather than accumulating.
 
 ---
 
@@ -263,9 +275,13 @@ git log --all -S "sorry" -- FormalSystem/Semantics/Truth.lean
 
 ### Resolution Process
 
-1. Identify sorry item in [SORRY_REGISTRY.md](SORRY_REGISTRY.md)
+1. Locate the sorry mechanically:
 
-2. Review resolution guidance and effort estimate
+   ```bash
+   bash scripts/check-module-invariants.sh --no-build   # C3 reports the count and the sites
+   ```
+
+2. Review the surrounding module docstring for resolution guidance
 
 3. Check for blockers in [implementation-status.md - Known Limitations](implementation-status.md#known-limitations)
 
@@ -275,9 +291,9 @@ git log --all -S "sorry" -- FormalSystem/Semantics/Truth.lean
 
 6. Run `lake test` to verify tests pass
 
-7. Update SORRY_REGISTRY.md (move to Resolved section or remove)
+7. Re-run `bash scripts/check-module-invariants.sh --no-build` and confirm C3 still passes
 
-8. Update implementation-status.md (decrement sorry count for module)
+8. Update implementation-status.md if the module's status changed
 
 9. Commit with clear message:
    ```bash
@@ -288,7 +304,7 @@ git log --all -S "sorry" -- FormalSystem/Semantics/Truth.lean
 
 If resolution is blocked:
 
-1. Document blocker in SORRY_REGISTRY.md entry
+1. Document the blocker in the module docstring beside the `sorry`
 2. Cross-reference to implementation-status.md Known Limitations section
 3. Mark status as BLOCKED
 4. Create workaround if possible
@@ -410,7 +426,7 @@ Resolve sorry at File.lean:123 - [description]
 - Implemented [proof/function]
 - [Any related changes]
 
-Updates SORRY_REGISTRY.md and implementation-status.md
+Verified by check-module-invariants.sh C3; updates implementation-status.md
 ```
 
 ### Documentation Update
@@ -428,17 +444,18 @@ Update documentation: [brief description]
 
 ### Desynchronized Sorry Counts
 
-If SORRY_REGISTRY.md count doesn't match actual:
+There is no registry to desynchronize: C3 computes the inventory from the tree on every
+run and fails the gate on any non-zero result. If a document states a non-zero sorry
+count, the *document* is stale, not the check.
 
 ```bash
-# Get actual count
-grep -rn "sorry" FormalSystem/**/*.lean 2>/dev/null | wc -l
+# The authoritative inventory
+bash scripts/check-module-invariants.sh --no-build
 
-# Compare with registry
-grep -c "^- \*\*.*\.lean:" docs/project-info/SORRY_REGISTRY.md
+# Check C14 additionally greps docs/ for stale documented sorry and axiom counts
 ```
 
-Fix by updating SORRY_REGISTRY.md to match actual codebase state.
+Fix by correcting the document to match the check's output.
 
 ### Missing Spec Summaries
 
@@ -589,10 +606,9 @@ When the `/review` command completes a repository analysis, it should update the
    - Update feature status based on implementation state
    - Cross-reference with implementation-status.md
 
-3. **SORRY_REGISTRY.md** - Update sorry placeholder tracking
-   - Add newly discovered sorry placeholders
-   - Remove resolved placeholders
-   - Update resolution guidance based on findings
+3. **`scripts/check-module-invariants.sh`** - Run it rather than editing a tracking document
+   - C3 reports the structural sorry inventory (asserted zero)
+   - C14 reports stale documented sorry/axiom counts under `docs/`
 
 4. **tactic-registry.md** - Update custom tactic documentation
    - Add newly discovered tactics
@@ -650,7 +666,7 @@ These instructions are general and apply to any repository using this workflow s
 
 **Files Modified**:
 - docs/project-info/implementation-status.md
-- docs/project-info/SORRY_REGISTRY.md
+- docs/project-info/SORRY_REGISTRY.md (since deleted; the sorry inventory is now check C3)
 - .claude/CLAUDE.md
 - docs/development/LEAN_STYLE_GUIDE.md
 - docs/development/CONTRIBUTING.md

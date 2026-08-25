@@ -149,4 +149,3 @@ grep -r "sorry" Bimodal/ --include="*.lean" | wc -l
 
 - [Known Limitations](known-limitations.md) - Current limitations
 - [Project Status](../../../docs/project-info/implementation-status.md) - Project-wide
-- [Sorry Registry](../../../docs/project-info/SORRY_REGISTRY.md) - Detailed tracking

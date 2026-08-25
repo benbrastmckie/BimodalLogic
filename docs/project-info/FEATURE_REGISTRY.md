@@ -4,7 +4,8 @@
 **Status**: Current features of the Bimodal library
 
 This document tracks the implemented features and capabilities of the Bimodal Lean 4 library.
-For sorry placeholder tracking, see [SORRY_REGISTRY.md](SORRY_REGISTRY.md).
+The sorry inventory is mechanical, not documentary: check C3 of
+`scripts/check-module-invariants.sh` asserts a hard zero across `FormalSystem/`.
 For implementation status by module, see [implementation-status.md](implementation-status.md).
 
 ## Core Logic Features

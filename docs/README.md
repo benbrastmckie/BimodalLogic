@@ -94,7 +94,6 @@ Project-wide status and tracking:
 - [FEATURE_REGISTRY.md](project-info/FEATURE_REGISTRY.md) - Feature tracking and capabilities
 - [implementation-status.md](project-info/implementation-status.md) - Module-by-module status tracking with verification commands
 - [MAINTENANCE.md](project-info/MAINTENANCE.md) - TODO management workflow
-- [SORRY_REGISTRY.md](project-info/SORRY_REGISTRY.md) - Technical debt tracking
 
 > **Theory-specific status**: See theory project-info directories for implementation status.
 
@@ -168,10 +167,9 @@ Training data pipeline documentation:
 ### For Contributors
 
 1. [Implementation Status](project-info/implementation-status.md) - What's implemented
-2. [Sorry Registry](project-info/SORRY_REGISTRY.md) - Technical debt tracking
-3. [Contributing Guidelines](development/CONTRIBUTING.md) - How to contribute
-4. [Style Guide](development/LEAN_STYLE_GUIDE.md) - Coding standards
-5. [Maintenance Workflow](project-info/MAINTENANCE.md) - TODO and documentation procedures
+2. [Contributing Guidelines](development/CONTRIBUTING.md) - How to contribute
+3. [Style Guide](development/LEAN_STYLE_GUIDE.md) - Coding standards
+4. [Maintenance Workflow](project-info/MAINTENANCE.md) - TODO and documentation procedures
 
 ### For Developers
 
@@ -219,8 +217,7 @@ Training data pipeline documentation:
 **Start with**:
 1. [Contributing Guide](development/CONTRIBUTING.md) - Contribution workflow
 2. [Implementation Status](project-info/implementation-status.md) - What's implemented
-3. [Sorry Registry](project-info/SORRY_REGISTRY.md) - Technical debt tracking
-4. [TODO.md](../specs/TODO.md) - Active tasks
+3. [TODO.md](../specs/TODO.md) - Active tasks
 
 ## Documentation Update Workflow
 

@@ -159,7 +159,7 @@ This registry provides a high-level view of tactic implementation status across 
 - Undocumented tactics: 0 (all implemented tactics fully documented)
 
 ### 2025-12-22
-- Standards updated: `/task`, `/add`, `/review`, and `/todo` now must update tactic-registry.md alongside implementation-status.md and SORRY_REGISTRY.md when sorry/tactic/task status changes occur; dry-run/test modes must avoid registry writes and must not create project directories for doc-only updates.
+- Standards updated: `/task`, `/add`, `/review`, and `/todo` must update tactic-registry.md alongside implementation-status.md when tactic or task status changes occur; dry-run/test modes must avoid registry writes and must not create project directories for doc-only updates. Sorry status is not documented by hand -- check C3 of `scripts/check-module-invariants.sh` asserts it.
 
 ### 2025-12-16
 - Split tactic-development.md into tactic-registry.md (this file) and UserGuide/tactic-development.md
@@ -169,5 +169,4 @@ This registry provides a high-level view of tactic implementation status across 
 
 - [tactic-development.md](../user-guide/tactic-development.md) - Guide for developing custom tactics
 - [implementation-status.md](implementation-status.md) - Overall project implementation status
-- [SORRY_REGISTRY.md](SORRY_REGISTRY.md) - Registry of unproven theorems
 - [Automation Documentation](../../Logos/Core/Automation/) - Source code for tactics

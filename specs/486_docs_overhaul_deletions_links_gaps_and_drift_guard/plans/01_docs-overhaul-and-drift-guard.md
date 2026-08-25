@@ -1,7 +1,7 @@
 # Implementation Plan: `docs/` Overhaul — Deletions, Links, Gaps, and Drift Guard
 
 - **Task**: 486 - docs/ OVERHAUL: delete the documents that are fiction, rewrite the false limitation entries, repair the dead links, close the documentation gaps, and add a mechanical drift guard
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 17.5 hours
 - **Dependencies**: 484 (complete — corrected `specs/ROADMAP.md` and `FormalSystem/Metalogic/README.md`), 485 (complete — corrected `README.md` and the `FormalSystem/**/README.md` layer). Both are ground truth for this task.
 - **Research Inputs**: specs/486_docs_overhaul_deletions_links_gaps_and_drift_guard/reports/01_docs-overhaul-verification.md
@@ -160,19 +160,19 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Deletions and the `MAINTENANCE.md` Procedure Rewrite [NOT STARTED]
+### Phase 1: Deletions and the `MAINTENANCE.md` Procedure Rewrite [COMPLETED]
 
 **Goal**: Remove the two fiction documents and leave no inbound reference dangling, including
 the four-document sync procedure that one of them anchors.
 
 **Tasks**:
-- [ ] Re-derive the inbound reference set: `grep -rn 'SORRY_REGISTRY\|IMPLEMENTATION_STATUS' docs/ README.md scripts/ FormalSystem/`
-- [ ] Delete `docs/project-info/SORRY_REGISTRY.md` (every path it names is nonexistent; its own verification commands at `:24-31` and `:56-69` glob `Bimodal/**/*.lean` and match nothing)
-- [ ] Delete `docs/project-info/IMPLEMENTATION_STATUS.md` (duplicates and contradicts the lowercase `implementation-status.md`, which declares itself authoritative at `:7-9`)
-- [ ] Repoint or remove the markdown links at `docs/README.md:97,171,222`, `docs/project-info/FEATURE_REGISTRY.md:7`, `docs/project-info/implementation-status.md:152`
-- [ ] Rewrite `docs/project-info/MAINTENANCE.md`'s four-document sync procedure (9 sites: `:13,91,134,152,170,177,180,266,278`) around the **mechanical** replacement: C3 of `check-module-invariants.sh` is the sorry inventory and asserts a hard zero by content. The maintenance step becomes "run the check", not "hand-edit a registry". Note `:170` and `:177-180` sit inside a bash fence — they need editing as prose but are not broken links
-- [ ] Update the prose mention at `docs/development/DIRECTORY_README_STANDARD.md:296` (template listing)
-- [ ] Leave `docs/reference/readme-standard.md:166` **unchanged** — it is a row in a naming-convention table that is *about* the uppercase/lowercase convention
+- [x] Re-derive the inbound reference set: `grep -rn 'SORRY_REGISTRY\|IMPLEMENTATION_STATUS' docs/ README.md scripts/ FormalSystem/`
+- [x] Delete `docs/project-info/SORRY_REGISTRY.md` (every path it names is nonexistent; its own verification commands at `:24-31` and `:56-69` glob `Bimodal/**/*.lean` and match nothing)
+- [x] Delete `docs/project-info/IMPLEMENTATION_STATUS.md` (duplicates and contradicts the lowercase `implementation-status.md`, which declares itself authoritative at `:7-9`)
+- [x] Repoint or remove the markdown links at `docs/README.md:97,171,222`, `docs/project-info/FEATURE_REGISTRY.md:7`, `docs/project-info/implementation-status.md:152` *(deviation: altered -- the measured inbound set was 28 non-self references, not the report's 15; six further sites in `docs/project-info/README.md` (4) and `docs/project-info/tactic-registry.md` (2) and seven further `MAINTENANCE.md` sites were repaired in the same pass)*
+- [x] Rewrite `docs/project-info/MAINTENANCE.md`'s four-document sync procedure (9 sites: `:13,91,134,152,170,177,180,266,278`) around the **mechanical** replacement: C3 of `check-module-invariants.sh` is the sorry inventory and asserts a hard zero by content. The maintenance step becomes "run the check", not "hand-edit a registry". Note `:170` and `:177-180` sit inside a bash fence — they need editing as prose but are not broken links
+- [x] Update the prose mention at `docs/development/DIRECTORY_README_STANDARD.md:296` (template listing)
+- [x] Leave `docs/reference/readme-standard.md:166` **unchanged** — it is a row in a naming-convention table that is *about* the uppercase/lowercase convention
 
 **Timing**: 1.5 hours
 
