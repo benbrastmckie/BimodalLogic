@@ -1,0 +1,24 @@
+{
+  "status": "researched",
+  "dispatch_seq": 2,
+  "summary": "Researched the ModelExistence -> Compact bridge for FrameClass.Base and FrameClass.Dense. Both deliverable theorems were written as complete sorry-free Lean proofs and machine-verified during research (isolated, and inserted into a full copy of StrongCompleteness.lean): both audit to exactly [propext, Classical.choice, Quot.sound]. Key correction to the brief: the theorems cannot live in SetConsequence.lean (import cycle via truthAt_foldr_imp) and belong in StrongCompleteness.lean after line 336, the same constraint already documented for strongCompletenessBase_of_compact. Also identified push_neg as deprecated in this toolchain (use push Not) and enumerated seven docstring sites whose prose becomes false.",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/490_prove_model_existence_implies_compactness_bridge/reports/01_model-existence-compactness-bridge.md",
+      "summary": "Verified proofs, mathematical route, placement analysis, tactic survey, and the docstring-update inventory."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 0,
+  "blockers": [],
+  "next_action_hint": "plan",
+  "files_modified": [],
+  "decisions_made": [
+    "Home is FormalSystem/Metalogic/StrongCompleteness.lean (after strongCompletenessDense_of_compact, line 336), not SetConsequence.lean: truthAt_foldr_imp is owned by StrongCompleteness.lean, which imports SetConsequence.lean, so the reverse placement is an import cycle. This preserves SetConsequence.lean's module-docstring claim that no compactness result is proved there.",
+    "Proofs use `push Not` rather than the deprecated `push_neg` (repo: 535 vs 245 occurrences).",
+    "Classical decidability plus List.filter extracts the Gamma-part of a finite subset of insert phi.neg Gamma; Set membership carries no decidability instance.",
+    "No truthAt_neg lemma is introduced: Formula.neg phi = phi.imp bot and TruthAt _ _ _ bot = False unfold at default transparency, matching the DiscreteNonCompactness.lean idiom.",
+    "The optional StrongCompletenessBase-from-ModelExistenceBase corollary is deliberately NOT recommended: the tree keeps engine hypotheses live so compactness stays isolated as the whole remaining obligation, and it is outside this task's declared scope."
+  ]
+}
