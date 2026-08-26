@@ -169,7 +169,7 @@ namespace counterpart on the BL⁺ side either.
 
 ---
 
-### Phase 2: `Semantics/BLValidity.lean` — the four validity predicates [IN PROGRESS]
+### Phase 2: `Semantics/BLValidity.lean` — the four validity predicates [COMPLETED]
 
 **Goal**: Land the BL validity predicates as binder-for-binder mirrors of
 `Semantics/Validity.lean`, with the inclusion lemmas, and register the module.
@@ -204,6 +204,17 @@ is the unconfirmed part: enumerate the actual `valid_implies_*` family in
 `FormalSystem/Semantics/Validity.lean` at implementation time and mirror exactly that set,
 recording the count. Do not invent a mirror for a lemma that has no BL⁺ counterpart.
 
+*Measured*: `Validity.lean` carries a five-member inclusion family —
+`valid_implies_valid_dense`, `valid_implies_valid_discrete`, `valid_implies_validDedekind`,
+`valid_implies_validDedekindDense`, `validDedekindDense_of_validDedekind`. **Three** were
+mirrored (`blValid_implies_blValidDense`, `blValid_implies_blValidDiscrete`,
+`blValid_implies_blValidDedekindDense`). The two omitted both mention `ValidDedekind`, whose BL
+counterpart is deliberately not defined; mirroring them would require introducing the refutable
+`BLValidDedekind` this plan forbids. The omission and its reason are recorded in the
+`BLValidity` namespace docstring. One further mirror was added beyond the inclusion family,
+`blValid_iff_empty_consequence`, as the "trivial unfolding lemma" the research report
+recommends alongside `BLSemanticConsequence`.
+
 **Files to modify**:
 - `FormalSystem/Semantics/BLValidity.lean` - new; five predicates + inclusion lemmas
 - `FormalSystem/Semantics.lean` - add the import and a submodule docstring bullet
@@ -217,7 +228,7 @@ recording the count. Do not invent a mirror for a lemma that has no BL⁺ counte
 
 ---
 
-### Phase 3: `Metalogic/BaseLanguageSoundness.lean` — bridge, soundness, consistency [NOT STARTED]
+### Phase 3: `Metalogic/BaseLanguageSoundness.lean` — bridge, soundness, consistency [IN PROGRESS]
 
 **Goal**: Prove the bridge by induction and land all four soundness theorems, their validity
 forms, both consistency corollaries, and the three native spot checks.

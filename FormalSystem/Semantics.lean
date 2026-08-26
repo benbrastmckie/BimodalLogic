@@ -19,6 +19,7 @@ import FormalSystem.Semantics.Truth
 import FormalSystem.Semantics.BLTruth
 import FormalSystem.Semantics.ShiftSet
 import FormalSystem.Semantics.Validity
+import FormalSystem.Semantics.BLValidity
 import FormalSystem.Semantics.DurationClassification
 import FormalSystem.Semantics.IntTransfer
 
@@ -73,6 +74,9 @@ against `specs/paper-definitions-of-record.md`'s DANGLING entry, not a live `\la
   strictly past/future times directly, not via `untl`/`snce`), plus the `BLTruth.*` clause and
   derived-operator characterization lemmas
 - `Validity`: Semantic validity `⊨ φ` and consequence `Γ ⊨ φ` quantifying over all temporal types
+- `BLValidity`: the base-language mirrors — `BLValid`, `BLSemanticConsequence`, `BLValidDense`,
+  `BLValidDiscrete` and `BLValidDedekindDense`, binder for binder against `BLTruthAt`; there is
+  deliberately no density-free `BLValidDedekind`, which would be refutable
 - `DurationClassification`: Hölder classification of Dedekind-complete duration groups --
   completeness implies Archimedean, and the discrete-or-dense dichotomy pinning the discrete
   branch to `ℤ`
