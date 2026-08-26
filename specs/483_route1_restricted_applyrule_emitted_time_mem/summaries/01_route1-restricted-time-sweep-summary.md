@@ -157,7 +157,7 @@ Route 2 was not started, in any part.
 | `lake build` | exit 0, 2493 jobs |
 | `lake build BimodalTest` | exit 0, 2543 jobs |
 | `bash scripts/check-module-invariants.sh` | **ALL CHECKS PASSED**, exit 0 (18 checks, none regressed) |
-| `#print axioms`, all 11 new public declarations | `[propext, Classical.choice, Quot.sound]`; the four trigger-shape exclusions show only `[propext]` |
+| `#print axioms`, all 13 new public declarations | `[propext, Classical.choice, Quot.sound]` or a subset; the four trigger-shape exclusions show only `[propext]`, `time_mem_of_emitted_nil` only `[propext, Quot.sound]`. The 14th new declaration, `pickBranches_knownTimes_subset_of_untlSnceFree`, is `private` — matching its `haux`-carrying original — and so is checked inside the module rather than from a probe. |
 | sorries added | 0 |
 | vacuous definitions added | 0 |
 | new axioms | 0 |
