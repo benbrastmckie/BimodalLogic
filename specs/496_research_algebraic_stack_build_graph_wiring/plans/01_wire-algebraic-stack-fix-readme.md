@@ -318,29 +318,29 @@ here, evaluate it against the same evidence and report the extra occurrence.
 
 ---
 
-### Phase 4: Record the Adjudication in the Boneyard [NOT STARTED]
+### Phase 4: Record the Adjudication in the Boneyard [COMPLETED]
 
 **Goal**: The next reader of the archived `UltrafilterFrame` subtree inherits a *scoped* warning,
 not an unqualified one — without weakening it for the two files that were never tested.
 
 **Tasks**:
-- [ ] Add a short note to `FormalSystem/Boneyard/UltrafilterFrame/README.md`, under or beside the
+- [x] Add a short note to `FormalSystem/Boneyard/UltrafilterFrame/README.md`, under or beside the
       "Why Archived" section, stating: the elaboration-conflict concern was tested against the four
       remaining `Metalogic/Algebraic/` modules and did **not** reproduce — an adversarial build
       importing the aggregator directly into `BXCanonical/Completeness.lean` re-elaborated
       `Completeness`, `CompletenessDedekind` and `StrongCompleteness` with `rc=0` and zero errors —
       and those four modules are now wired into the build graph.
-- [ ] State the scope limit in the same note, explicitly: the warning **remains in force** for
+- [x] State the scope limit in the same note, explicitly: the warning **remains in force** for
       `UltrafilterFrame.lean` and `TenseS5Algebra.lean` themselves. They carry five sorries, were
       not built, and were not part of the experiment. Anyone recovering them should re-run the
       adversarial (upstream-import) build with those files included before assuming the same clean
       result.
-- [ ] Mirror the qualification at the second location carrying the same claim:
+- [x] Mirror the qualification at the second location carrying the same claim:
       `FormalSystem/Boneyard/README.md` (the `### UltrafilterFrame` entry, currently `:377-379`,
       repeats "commented out from Algebraic.lean due to elaboration interference with
       BXCanonical/Completeness.lean rfl proofs" verbatim). A one-clause cross-reference to the
       subdirectory README is sufficient; do not duplicate the full note.
-- [ ] Cite the evidence by durable path — `specs/496_research_algebraic_stack_build_graph_wiring/reports/01_algebraic-stack-build-graph-wiring.md`
+- [x] Cite the evidence by durable path — `specs/496_research_algebraic_stack_build_graph_wiring/reports/01_algebraic-stack-build-graph-wiring.md`
       — and **not** by task number. `.claude/rules/no-task-references-in-deliverables.md` blocks
       `task N` citations outside `specs/**`, and a `PreToolUse` hook enforces it. Note that both
       files already contain pre-existing task-number references; leave those alone rather than

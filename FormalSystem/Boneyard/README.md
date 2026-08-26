@@ -378,8 +378,11 @@ instance. UltrafilterFrame defines R_G/R_H/R_Box accessibility relations,
 UltrafilterChain structure, and F/P resolution theorems. UltrafilterFrame was
 commented out from Algebraic.lean due to elaboration interference with
 BXCanonical/Completeness.lean rfl proofs; TenseS5Algebra's only consumer was
-UltrafilterFrame. Both are prerequisites for the Jonsson-Tarski representation
-theorem. Recoverable via git history.
+UltrafilterFrame. That elaboration-interference attribution has since been tested and did
+not reproduce for the four `Algebraic/` modules that remain live -- which are now wired into
+the build graph -- but it remains untested, and so remains in force, for these two archived
+files; see the subdirectory README for the scoped adjudication. Both are prerequisites for
+the Jonsson-Tarski representation theorem. Recoverable via git history.
 
 ### XuLemma321Legacy
 Blocked proof-by-contradiction attempt for Xu's Lemma 3.2.1(i)/(ii). The
