@@ -1,0 +1,29 @@
+{
+  "phase": "research",
+  "dispatch_seq": 4,
+  "status": "researched",
+  "summary": "Adjudicated the algebraic-stack wiring question empirically. The recorded elaboration-conflict hazard does NOT reproduce for the four orphaned Algebraic/ modules: an adversarial build importing the aggregator directly into BXCanonical/Completeness.lean re-elaborated Completeness, CompletenessDedekind and StrongCompleteness with rc=0 and zero errors. Recommendation is option (a), re-wire via one import in FormalSystem/Metalogic.lean; measured marginal cost 5.3s elaboration and 948 KB olean. Confirmed all README overstatements plus three further doc inaccuracies.",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/496_research_algebraic_stack_build_graph_wiring/reports/01_algebraic-stack-build-graph-wiring.md",
+      "summary": "Recommends re-wiring the Algebraic aggregator into Metalogic.lean; refutes the elaboration-conflict hazard empirically and specifies seven README/manifest corrections."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 0,
+  "blockers": [],
+  "continuation_path": null,
+  "next_action_hint": "plan",
+  "files_modified": [],
+  "decisions_made": [
+    "Recommend option (a) re-wire: the isolation rationale does not survive measurement and the cost is 5.3s elaboration / 948 KB olean",
+    "Wire at FormalSystem/Metalogic.lean (downstream), not at BXCanonical/Completeness.lean: both build green, but the downstream position does not falsely assert that completeness depends on the algebra",
+    "Import the aggregator rather than the deepest leaf, so all five manifest entries clear and the aggregator itself becomes lake-verified",
+    "Do not widen scope to Core.lean / Bundle.lean / SoundnessLemmas.lean: same manifest block, but each needs its own cycle analysis and none was tested"
+  ],
+  "dead_ends": [
+    "Git archaeology cannot explain the original hazard as an import-graph effect: at commit 1961830e2 neither Completeness.lean nor Metalogic.lean imported the aggregator, so the recorded interference has uncertain provenance",
+    "Cold full-build wall time was not measured (would require discarding the entire 484 MB FormalSystem build cache), so the build delta is reported in absolute terms rather than as a percentage"
+  ]
+}

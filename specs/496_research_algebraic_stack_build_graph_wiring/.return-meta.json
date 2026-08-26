@@ -1,0 +1,16 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/496_research_algebraic_stack_build_graph_wiring/reports/01_algebraic-stack-build-graph-wiring.md",
+      "summary": "Recommends re-wiring the Algebraic aggregator into FormalSystem/Metalogic.lean; empirically refutes the recorded elaboration-conflict hazard (adversarial upstream build rc=0), measures the marginal build cost at 5.3s elaboration / 948 KB olean, and specifies seven README and manifest corrections."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1787724130_558d21_496",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
