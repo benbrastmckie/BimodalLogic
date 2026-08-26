@@ -1,33 +1,38 @@
 {
-  "phase": "plan",
-  "dispatch_seq": 9,
-  "status": "planned",
-  "summary": "Created a 5-phase plan implementing the report's recommendation (option (a), re-wire). Phase 1 is an atomic-batch two-file change: add `import FormalSystem.Metalogic.Algebraic` to FormalSystem/Metalogic.lean and delete the five now-stale entries plus rewrite two comment blocks in scripts/module-invariants-manifest.txt -- either file alone leaves C6 red, so they must land in one commit. Phases 2-4 run in parallel and correct the documented overstatements: eight sites in Algebraic/README.md (including both overstatements the task named), four in Metalogic/README.md, and a scoped adjudication note in the two Boneyard READMEs that keeps the elaboration warning in force for the untested UltrafilterFrame.lean/TenseS5Algebra.lean. Phase 5 is the full acceptance gate. The plan does NOT re-run the Variant B experiment -- F4 already measured it -- and does not widen scope to Core.lean/Bundle.lean/SoundnessLemmas.lean per D4.",
+  "status": "implemented",
+  "phase": "implement",
+  "dispatch_seq": 14,
+  "summary": "Landed the research report's recommendation (a), re-wire. One line -- import FormalSystem.Metalogic.Algebraic in FormalSystem/Metalogic.lean -- brings the sibling aggregator and its four orphaned children (LindenbaumQuotient, BooleanStructure, InteriorOperators, UltrafilterMCS; 2,081 sorry-free lines, the Jonsson-Tarski-relevant part) into the lake build closure, with the five now-stale scripts/module-invariants-manifest.txt entries deleted in the same atomic two-file commit and the two surrounding comment blocks rewritten. Both README overstatements the task named were fixed, plus six more the audit found: 'this directory is not optional' and 'participates in the live proof' are now scoped to FlowFrame.lean (whose importer list was also corrected from four to six, two of them outside BXCanonical/), and 'G and H are shown to be interior operators' -- false on both counts, and repeated in expanded form in the Mathematical Overview -- was replaced everywhere with what InteriorOperators.lean actually proves: boxInterior is the only InteriorOp, H_monotone the only surviving G/H-family result, and there is no G operator on the quotient at all. Metalogic/README.md lost its stale 'Parametric' labels and its already-false aggregator rule. The Boneyard now carries a scoped adjudication: the elaboration hazard did not reproduce for the four wired modules, and remains in force for UltrafilterFrame.lean and TenseS5Algebra.lean, which were never built. Final gate: lake build rc=0 (2501 jobs, 0 error: lines) and check-module-invariants.sh rc=0, ALL CHECKS PASSED.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/496_research_algebraic_stack_build_graph_wiring/plans/01_wire-algebraic-stack-fix-readme.md",
-      "summary": "5-phase, 2.75-hour plan wiring the Algebraic aggregator into the build graph and correcting fourteen documentation claims across four READMEs."
+      "type": "summary",
+      "path": "specs/496_research_algebraic_stack_build_graph_wiring/summaries/01_wire-algebraic-stack-fix-readme-summary.md",
+      "summary": "Wiring result, measured build and invariant figures, all fourteen documentation corrections, three plan deviations, the concurrency record, and the out-of-scope observations carried forward."
     }
   ],
-  "phases_completed": 0,
+  "phases_completed": 5,
   "phases_total": 5,
+  "plan_markers_verified": true,
+  "acceptance_criteria": {
+    "lake_build_green": "MET -- rc=0, 2501 jobs, 0 error: lines on the final tree (logs/phase5-build.log). All five Algebraic modules genuinely Built, not replayed.",
+    "no_invariant_regression": "MET, and improved. Baseline was rc=1 with C6 failing for a foreign cause; the final run is rc=0 with ALL CHECKS PASSED (logs/phase5-invariants.log). C8 unaffected as predicted. No Algebraic module ever appeared in a C6 failure, which is what confirms the five manifest deletions were correct.",
+    "readme_overstatement_1": "MET -- the 'not optional' / 'participates in the live proof' claims are scoped to FlowFrame.lean, with an explicit sentence stating the other four modules do stand beside the proof.",
+    "readme_overstatement_2": "MET -- the interior-operator claim was corrected at both sites that carried it (the Interior Operators section and Mathematical Overview step 3), plus the modules-table row."
+  },
+  "deviations": [
+    "Phase ordering (altered): Wave 2's prose phases were executed during Phase 1's detached build wait rather than strictly after it. Disjoint file sets, no compile surface; Phase 1 was still committed first as its own atomic batch, and no prose commit preceded its green build.",
+    "Phase 2 verification grep 'grep -c gQuot ... returns 0' is unsatisfiable as literally written -- the same phase instructs naming negQuot, which contains gQuot as a substring. Verified with the word-anchored 'grep -c \\bgQuot', which returns 0. Annotated inline on the plan.",
+    "Phase 2 verification grep for 'participates in the live proof' conflicted with the same phase's instruction to scope rather than delete that claim; the scoped restatement was worded to avoid the retired phrase, satisfying both."
+  ],
+  "concurrency_report": "Three sibling lean4 dispatches (489, 490, 491) were active in this repository throughout, creating and editing files in FormalSystem/, FormalSystem/Semantics/, FormalSystem/Metalogic/ and Tests/, and landing commits on main between this task's own. Nothing foreign was reverted, staged, or fixed; every commit here is scoped to this task's six files plus its specs/** artifacts. One foreign edit touched FormalSystem/Metalogic.lean after this task's import landed there (a docstring amendment from task 490); the import survives intact at line 17. Recorded in logs/concurrency-observations.md.",
   "blockers": [],
   "sorry_inventory": [],
-  "continuation_path": null,
-  "next_action_hint": "implement",
-  "files_modified": [
-    "specs/496_research_algebraic_stack_build_graph_wiring/plans/01_wire-algebraic-stack-fix-readme.md"
+  "follow_ons": [
+    "FormalSystem/Metalogic/README.md's 'total 314 files, matching C7's Metalogic 314 rollup' line is now stale (C7 reads 315) because a sibling dispatch added FormalSystem/Metalogic/BaseLanguageSoundness.lean. Not this task's file set; deliberately left alone.",
+    "D4: Core.lean, Bundle.lean and SoundnessLemmas.lean sit in the same manifest block for the same reason and are plausible follow-on wiring candidates, but each needs its own cycle analysis and none was tested. Their manifest entries were left untouched.",
+    "The UltrafilterFrame / TenseS5Algebra elaboration hazard remains untested and in force. The STSA / Jonsson-Tarski port should re-run the adversarial upstream-import build with those two files included before assuming the same clean result.",
+    "Whether Algebraic/ should be described as a 'completeness route' at all is arguable -- the directory's own flowchart says no completeness theorem is stated there -- but the report evidenced only the word 'parametric', so only that was changed. Left for a future documentation pass.",
+    "Named first suspect if the wiring ever bites: the generic instMembershipUltrafilter instance (UltrafilterMCS.lean:63) and the two @[simp] lemmas (:537, :976) are the only global declarations the wiring adds library-wide. Not observed to interfere in any measured build; scoping the instance is the remedy."
   ],
-  "decisions_made": [
-    "Phase 1 declared Commit Mode: atomic-batch over exactly {FormalSystem/Metalogic.lean, scripts/module-invariants-manifest.txt} -- C6 fails on either half alone (import without deletion makes five entries name reachable modules; deletion without import leaves five unreachable modules unmanifested)",
-    "Phase 1 opens with a pre-edit baseline build so a red post-edit build caused by a concurrent task editing FormalSystem/ is attributable rather than misread as an elaboration conflict",
-    "Did not re-run the Variant B adversarial experiment as a gate: F4 already measured it green, and repeating it is a non-goal",
-    "Added two edit sites beyond the report's F7/F8 enumeration where the same false claim recurs verbatim: Algebraic/README.md's Mathematical Overview step 3 (repeats the G/H interior-operator claim in expanded form) and Boneyard/README.md's UltrafilterFrame entry (repeats the elaboration-interference claim). Correcting one occurrence while leaving its twin would reinstate the error.",
-    "Prose phases carry Verification Tier: prose but still run check-module-invariants.sh --no-build, because C5/C12 scan FormalSystem/**/*.md for stale dotted and slash-form module paths"
-  ],
-  "dead_ends": [
-    "Line numbers cited from the report (:33, :154-158, :171) are treated as navigational hints only; every phase locates its edit sites by grep on quoted text, since a parallel task editing the same README would drift them",
-    "The Context Extension Recommendation (context/project/lean4/patterns/testing-archived-elaboration-hazards.md) is out of scope: it lives in agent-system/extensions/**, a different source store and task type"
-  ]
+  "continuation_path": null
 }

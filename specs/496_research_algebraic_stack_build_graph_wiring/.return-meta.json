@@ -1,15 +1,67 @@
 {
-  "status": "in_progress",
+  "status": "implemented",
   "started_at": "2026-08-26T00:00:00Z",
-  "artifacts": [],
+  "completed_at": "2026-08-26T02:10:00Z",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true,
+    "build_jobs": 2501,
+    "build_errors": 0,
+    "invariants_rc": 0,
+    "invariants_result": "ALL CHECKS PASSED",
+    "notes": "check-module-invariants.sh baseline at task start was rc=1 with C6 failing for a foreign cause (files created by concurrent sibling dispatches 489/490/491). The final run is rc=0 with every check green, so the task strictly improved the gate rather than regressing it. No Algebraic module ever appeared in a C6 failure, confirming the five manifest deletions were correct."
+  },
+  "modified_files": [
+    "FormalSystem/Metalogic.lean",
+    "scripts/module-invariants-manifest.txt",
+    "FormalSystem/Metalogic/Algebraic/README.md",
+    "FormalSystem/Metalogic/README.md",
+    "FormalSystem/Boneyard/UltrafilterFrame/README.md",
+    "FormalSystem/Boneyard/README.md",
+    "specs/496_research_algebraic_stack_build_graph_wiring/plans/01_wire-algebraic-stack-fix-readme.md",
+    "specs/496_research_algebraic_stack_build_graph_wiring/summaries/01_wire-algebraic-stack-fix-readme-summary.md",
+    "specs/496_research_algebraic_stack_build_graph_wiring/handoffs/phase-1-handoff-20260826.md",
+    "specs/496_research_algebraic_stack_build_graph_wiring/handoffs/phase-5-handoff-20260826.md",
+    "specs/496_research_algebraic_stack_build_graph_wiring/logs/baseline-build.log",
+    "specs/496_research_algebraic_stack_build_graph_wiring/logs/baseline-invariants.log",
+    "specs/496_research_algebraic_stack_build_graph_wiring/logs/phase1-build.log",
+    "specs/496_research_algebraic_stack_build_graph_wiring/logs/phase5-build.log",
+    "specs/496_research_algebraic_stack_build_graph_wiring/logs/phase5-invariants.log",
+    "specs/496_research_algebraic_stack_build_graph_wiring/logs/concurrency-observations.md"
+  ],
+  "commits": [
+    {"sha": "b06c3b961", "phase": 1, "message": "task 496 phase 1: wire the aggregator and clear the manifest"},
+    {"sha": "2bc0e53c9", "phase": 2, "message": "task 496 phase 2: correct Algebraic/README.md"},
+    {"sha": "e191666c7", "phase": 3, "message": "task 496 phase 3: correct Metalogic/README.md"},
+    {"sha": "cb71c0ef2", "phase": 4, "message": "task 496 phase 4: record the elaboration-hazard adjudication in the Boneyard"},
+    {"sha": "8f83b3878", "phase": 5, "message": "task 496 phase 5: full gate and summary"}
+  ],
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/496_research_algebraic_stack_build_graph_wiring/summaries/01_wire-algebraic-stack-fix-readme-summary.md",
+      "summary": "Wiring result, measured build/invariant figures, the eight+four+two documentation corrections, three plan deviations, and the out-of-scope observations carried forward."
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Implemented the research report's recommendation (a): one import line in FormalSystem/Metalogic.lean brings the Algebraic sibling aggregator and its four orphaned children (2,081 sorry-free lines) into the lake build closure, with the five now-stale scripts/module-invariants-manifest.txt entries deleted in the same atomic commit. Corrected eight overstatements in Algebraic/README.md (including the two the task named: the directory-wide 'not optional'/'participates in the live proof' claims, now scoped to FlowFrame.lean, and the false 'G and H are shown to be interior operators', replaced with the boxInterior/H_monotone facts), four in Metalogic/README.md, and recorded a scoped adjudication of the elaboration-conflict hazard in the Boneyard that stays in force for the two untested archived files. lake build rc=0 (2501 jobs, 0 errors) and check-module-invariants.sh rc=0 with ALL CHECKS PASSED.",
+    "roadmap_items": []
+  },
   "partial_progress": {
-    "stage": "initializing",
-    "details": "Agent started, parsing delegation context"
+    "stage": "complete",
+    "details": "All 5 phases COMPLETED.",
+    "phases_completed": 5,
+    "phases_total": 5
   },
   "metadata": {
     "session_id": "sess_1787724130_558d21",
     "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"]
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "compliance_check": "passed",
+    "compliance_note": "The plan's Goals name no Lean declarations to create -- this task's deliverable is one import line, five manifest deletions, and prose corrections. Compliance was verified directly: the import is present at FormalSystem/Metalogic.lean:17, zero Algebraic entries remain in the manifest, and the retired README claims return no grep hits."
   }
 }
