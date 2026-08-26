@@ -1431,24 +1431,67 @@ metatheory rather than in the object language; that subsection states the cost t
 
 The target is a pair of constructions: every shift set induces a task model, and every task model
 arises from one, so that the class of task models is captured by a first-order theory in the
-two-sorted signature $(Omega, D; <, +, 0, "sh", (A_p))$. The payoff is exactly first-order
-axiomatizability, and the reason to expect it is that the frame's algebraic content reaches truth
-only through the atom clause: by @sec:system a sentence's truth at $(tau, x)$ depends on the frame
-only via the world state $tau(x)$, so a structure that records where the action sends each point
-records everything truth can see.
+two-sorted signature $(Omega, D; <, +, 0, "sh", (A_p))$. The reason to expect the class to be
+first-order at all is that the frame's algebraic content reaches truth only through the atom
+clause: by @sec:system a sentence's truth at $(tau, x)$ depends on the frame only via the world
+state $tau(x)$, so a structure that records where the action sends each point records everything
+truth can see. *The payoff is not, however, uniformly first-order axiomatizability*, and the
+qualification is the same one @sec:duality already forced: of the frame axioms, *Compositionality*
+and *Seriality* are ordinary two-sorted first-order sentences, and *Limit*'s infinite intersection
+unfolds to a first-order sentence quantifying over the duration sort ($forall u (forall x > 0.
+u in (w)_x) arrow.r u = w$); *Spherical* alone quantifies over a *family of subsets* of the
+world-state sort and is second-order. The whole difficulty of the shift-set programme is the same
+axiom, for the same reason, as the whole difficulty of the algebraic programme.
 
 Shift sets are ordinary mathematics here, not names in the development: no such identifier exists
 anywhere in the tree, and the programme is not started. The design document's own Lean signatures
 predate the total-history refactor and would need restating; the argument they encode is what
 survives, not the signatures.
 
+Two further facts, standard model theory rather than anything specific to TM, bound what a
+first-order shift-set theorem can deliver once the class is fixed to a particular temporal order:
+
+#items[
+  + *Successor-Archimedean discreteness is not first-order.* The ordered abelian group $ZZ times ZZ$
+    under the lexicographic order is discrete but not Archimedean, so the theory of $(ZZ, +, lt.eq)$
+    admits non-Archimedean models. $op("TM")_f$'s class --- $ZZ$-time, by Hölder's theorem --- is
+    therefore not an elementary class.
+  + *Dedekind completeness is not first-order.* $RR$ has non-Archimedean elementary extensions, so
+    the class ${ZZ, RR}$ that $op("TM")_c$ targets is not elementary either.
+]
+
+Three consequences follow from the same two facts, not from anything new. Non-elementarity is why
+compactness fails over these classes (the development's own witness, cited below). It is why
+Fine's theorem supplies no canonicity there: neither class is closed under ultraproducts, so
+Theorem 6.17 of @venema2007algebrascoalgebras does not apply to either
+@fine1975elementarymodal. And it is why the shift-set programme's first-order payoff specifically
+cannot be had there: a first-order theory can characterize a non-elementary class only up to
+elementary equivalence, which is not the same class.
+
+So the shift-set target amounts to something different per frame class, and the section should say
+so rather than speak of "the" class:
+#items[
+  + *Base class*: a genuine target. Ordered abelian groups are elementary and ultraproduct-closed,
+    and three of the four frame axioms are first-order as shown above.
+  + *Dense class*: the same, plus density (axiom DN), which is elementary and Sahlqvist. The best
+    prospect of the four.
+  + $op("TM")_f$ *and* $op("TM")_c$: a first-order representation is impossible, because
+    successor-Archimedean discreteness and Dedekind completeness are not first-order properties.
+    Any shift-set theorem for these classes can characterize them only up to elementary
+    equivalence, which is precisely not strong enough for the strong-completeness motivation that
+    opened this section.
+]
+
 #remark[
-  This is the project's declared gate. The expensive semantic-compactness programme --- an
-  ultraproduct of carriers, a Łoś lemma for truth, compactness, and per-class strong completeness
-  --- is deliberately not authorized until the shift-set representation theorem lands sorry-free in
-  *both* directions with a clean axiom report. If either direction is refuted, the route is
-  cancelled and not retried. The gate is cheap and the programme behind it is not, which is why the
-  ordering matters.
+  This re-scopes the project's declared gate. As stated, the gate authorizes the expensive
+  semantic-compactness programme --- an ultraproduct of carriers, a Łoś lemma for truth,
+  compactness, and per-class strong completeness --- only once a shift-set representation lands
+  sorry-free in both directions for *the* class, with a clean axiom report. Read literally, that
+  gate can never open for $op("TM")_f$ or $op("TM")_c$: no first-order representation exists for
+  either to land. The gate should be stated per class: open for the base and dense classes on the
+  existing terms, and for $op("TM")_f$/$op("TM")_c$ read as permanently declined by this route,
+  not merely unmet. The gate is cheap and the programme behind it is not, which is why the ordering
+  still matters for the two classes where it can open.
 ]
 
 #remark[
@@ -1458,12 +1501,13 @@ survives, not the signatures.
   structures* is the image of a construction from abstract data. The first is used inside the
   discrete branch's neighborhood as an expressiveness fact about Until and Since; the second is
   what is wanted here, and no amount of the first yields it. Metric tense operators --- indexed
-  operators saying that $phi.alt$ holds exactly $d$ hence --- bear on the second, not the first:
-  they would put $D$ into the object language, which is precisely the two-sorted signature above
-  made internal, and would make the first-order axiomatizability claim a statement about the logic
-  itself and not about a metatheoretic signature. The cost is that they change the logic: the systems
-  of @sec:system have no metric operators and their completeness results would not transfer, so
-  this is a proposal about the representation target and not a repair to what is already proved.
+  operators saying that $phi.alt$ holds exactly $d$ hence --- bear on the second, not the first,
+  and are Route M of @sec:duality made concrete at the shift-set level: they put $D$ into the
+  object language, which is precisely the two-sorted signature above made internal, and would make
+  the first-order axiomatizability claim a statement about the logic itself rather than about a
+  metatheoretic signature. The cost is the same one named there: the systems of @sec:system have
+  no metric operators and their completeness results would not transfer, so this is a proposal
+  about the representation target and not a repair to what is already proved.
 ]
 
 == The Obstruction
@@ -1488,24 +1532,46 @@ invariance, the converse convention depends on negation, and *Compositionality* 
 of addition. What survives each weakening is what a general representation theorem must be stated
 over, and it is not yet worked out.
 
+One of the section's open remarks is settled by the literature rather than by further work here.
+The coset-domain construction of @sec:contingency was floated as a possible route to
+disjoint-union closure; it is not. The complex algebra of a disjoint union of frames is the
+product of the complex algebras, but the converse fails --- a countable product of finite algebras
+can have uncountably many ultrafilters while the disjoint union of their ultrafilter frames stays
+countable @blackburnderijkevenema2001. Disjoint-union closure is therefore available on the
+frame-to-algebra side and provably unavailable on the algebra-to-frame side; no correspondence is
+being given up by not pursuing it further.
+
 #remark[
-  Three further points collapse into one. Whether the algebraic and shift-set routes are the same
-  theorem twice is open; whether the coset-domain construction of @sec:contingency is the route to
-  disjoint-union closure, at the price of the correspondences, is open; and strong completeness is
-  *foreclosed* for $ZZ$-time and for $RR$, where compactness fails, so any proposal promising it
-  there is wrong on arrival.#footnote[The development records an explicit non-compactness witness for the successor-Archimedean discrete case, and Reynolds @reynolds1992 establishes the analogous failure over $RR$.]
+  Strong completeness is *foreclosed* for $ZZ$-time and for $RR$, where compactness fails, so any
+  proposal promising it there is wrong on arrival.#footnote[The development records an explicit non-compactness witness for the successor-Archimedean discrete case, and Reynolds @reynolds1992 establishes the analogous failure over $RR$.] @sec:duality and the per-class scoping above give
+  the cause, not only the symptom: successor-Archimedean discreteness and Dedekind completeness are
+  not first-order, which is why compactness fails, why Fine's theorem supplies no canonicity, and
+  why no first-order shift-set theorem is available for either class.
 ]
 
-The section closes with the question the rest of it reduces to.
+The question that survives is whether the algebraic route (rungs 3--5 of the ladder) and the
+shift-set route are the same theorem stated twice. The literature's suggestion is that they are
+*not*: one is a topological duality (Theorem Duality of @sec:duality, off the shelf for every
+similarity type), the other a first-order definability claim over a two-sorted signature, and
+@sec:duality shows the two diverge at exactly the same point --- *Spherical* is second-order for
+the same structural reason on both routes, namely that it quantifies over a family of subsets
+rather than over elements of a sort.
 
 #remark[
-  *Open question.* Is there a condition $Phi$ on task relations that (a) holds of every frame with
-  finite carrier and of every deterministic frame, (b) suffices in place of *Spherical* for the
-  Step Lemma, and (c) is preserved under the passage from an algebra to its ultrafilter frame? An
-  affirmative answer revives the Jónsson--Tarski route and, with it, the duality that the algebraic
-  layer currently supplies in one direction only. A negative answer would show the obstruction is
-  not an artifact of how *Spherical* is stated, and would make the shift-set route the only one
-  left.
+  *What remains genuinely unsettled.* Three items, stated candidly rather than folded into an
+  impasse. First, whether the algebraic and shift-set routes coincide, just above --- open, with
+  the literature's suggestion recorded, not a proof. Second, whether *Spherical* actually holds on
+  the descriptive general frame of a TM-algebra once metric operators are added along Route M of
+  @sec:duality: the general mechanism (Proposition 5.83 of @blackburnderijkevenema2001, applied to
+  the enriched similarity type) makes this plausible, but the application to TM's specific
+  extension is not carried out here, in Lean or otherwise. Third, whether TM's non-Sahlqvist
+  axioms --- CO, Z1, and their kin --- are canonical by some route other than Sahlqvist's: Theorem
+  6.18 of @venema2007algebrascoalgebras (via @goldblatt2003ghv) means this cannot be settled by
+  appeal to elementarity in either direction, and canonicity itself is undecidable in general
+  @venema2007algebrascoalgebras, so no argument here is expected to close it. The way forward that
+  is concrete, by contrast, is not open at all: it is the two Lean obligations named in *The
+  Algebraic Layer* above --- a $G$ operator on the quotient and its normality/additivity --- which
+  is the smallest step that moves rung 2 forward.
 ]
 
 

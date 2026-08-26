@@ -364,41 +364,49 @@ ultrafilter frame.
 
 ---
 
-### Phase 5: Rewrite The Shift-Set Target and What Is Foreclosed [NOT STARTED]
+### Phase 5: Rewrite The Shift-Set Target and What Is Foreclosed [COMPLETED]
 
 **Goal**: State honestly what the shift-set programme can and cannot deliver, per frame class,
 and re-scope the project's declared gate accordingly.
 
 **Tasks**:
-- [ ] Keep the shift-set definition and the statement of the target, but qualify the
+- [x] Keep the shift-set definition and the statement of the target, but qualify the
       first-order-axiomatizability claim: *Compositionality*, *Seriality* and *Limit* are
       expressible in the two-sorted signature; *Spherical* is second-order, since it quantifies
       over families of subsets of the carrier. The whole difficulty of the shift-set programme is
       the same axiom, for the same reason, as the whole difficulty of the algebraic programme.
-- [ ] Add the two non-elementarity facts, stated as standard model theory rather than attributed
+      *(completed)*
+- [x] Add the two non-elementarity facts, stated as standard model theory rather than attributed
       to a corpus source: successor-Archimedean discreteness is not first-order (there are
       non-Archimedean discrete ordered abelian groups), and Dedekind completeness is not
       first-order. Draw the three consequences: it is why compactness fails there, why Fine's
       theorem supplies no canonicity there, and why the shift-set programme's first-order payoff
-      cannot be had there.
-- [ ] Say per class what the target amounts to: a genuine target for the base class; the best
+      cannot be had there. *(completed, using the `ZZ times ZZ` lexicographic witness for the
+      first fact)*
+- [x] Say per class what the target amounts to: a genuine target for the base class; the best
       prospect for the dense class; and impossible as a first-order result for `TM_f` and `TM_c`,
       where any shift-set theorem could only characterize the class up to elementary equivalence.
-- [ ] Re-scope the declared gate. As currently stated the gate authorizes the semantic-
+      *(completed, as an `#items` list)*
+- [x] Re-scope the declared gate. As currently stated the gate authorizes the semantic-
       compactness programme only once a shift-set representation lands sorry-free in both
       directions for *the* class; for `TM_f` and `TM_c` that gate can never open. State the gate
-      per class.
-- [ ] Settle the disjoint-union aside: the complex algebra of a disjoint union is the product of
+      per class. *(completed)*
+- [x] Settle the disjoint-union aside: the complex algebra of a disjoint union is the product of
       the complex algebras, but the converse fails, so disjoint-union closure is available on the
-      frame-to-algebra side and provably unavailable on the algebra-to-frame side.
-- [ ] Revise the closing remark: keep the open question that survives (whether the algebraic and
+      frame-to-algebra side and provably unavailable on the algebra-to-frame side. *(completed;
+      the old "is open" framing in `== The Obstruction`'s closing remark replaced with the settled
+      statement)*
+- [x] Revise the closing remark: keep the open question that survives (whether the algebraic and
       shift-set routes are the same theorem twice) and record the literature's suggestion that
       they are not, since one is a topological duality and the other a first-order definability
       claim, and they diverge precisely at *Spherical*. Keep the metric-operator discussion but
       cross-reference it to the diagnosis of Phase 4 rather than leaving it as a free-standing
-      aside.
-- [ ] Add a short closing inventory of what remains genuinely unsettled, so the section ends with
-      an honest statement of the way forward rather than only an impasse.
+      aside. *(completed; the stale end-of-section "Open question" remark, which still asked for
+      preservation under the passage to the bare ultrafilter frame, is replaced -- @sec:duality
+      already re-posed and answered that framing, so repeating the old form would contradict it)*
+- [x] Add a short closing inventory of what remains genuinely unsettled, so the section ends with
+      an honest statement of the way forward rather than only an impasse. *(completed, as the
+      "What remains genuinely unsettled" remark: three items, plus the concrete next step)*
 
 **Timing**: 1.5 hours
 
