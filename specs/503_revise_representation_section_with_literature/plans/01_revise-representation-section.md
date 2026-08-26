@@ -301,7 +301,7 @@ relying on the research report's enumeration.
 
 ---
 
-### Phase 4: New Subsection — Duality, Canonicity, and the Obstruction Diagnosed [NOT STARTED]
+### Phase 4: New Subsection — Duality, Canonicity, and the Obstruction Diagnosed [COMPLETED]
 
 **Goal**: Introduce the material that is the new centre of gravity of the section: what
 Jonsson-Tarski leaves undone, what canonicity is, what the Goldblatt/Esakia duality gives, and
@@ -309,35 +309,41 @@ the diagnosis of *Spherical* as a compactness condition that cannot descend to t
 ultrafilter frame.
 
 **Tasks**:
-- [ ] State Jonsson-Tarski precisely and then state what it does not give: an embedding yields
+- [x] State Jonsson-Tarski precisely and then state what it does not give: an embedding yields
       `V_L subset HSPCmK`, an inclusion, where completeness needs an equality. Replace the
       current "route is blocked" framing with "route is insufficient, and the missing ingredient
-      is canonicity".
-- [ ] Introduce canonicity: a canonical variety, canonical formulas, Sahlqvist canonicity, and
+      is canonicity". *(completed)*
+- [x] Introduce canonicity: a canonical variety, canonical formulas, Sahlqvist canonicity, and
       the fact that canonical implies complete. Include the axiom-by-axiom Sahlqvist
       classification re-derived in Phase 1, with the reading stated plainly: everything making TM
       a bimodal S5-plus-linear-tense logic is Sahlqvist and hence canonical; everything pinning
-      down *which* linear order (CO, Z1, Sep) falls outside the fragment.
-- [ ] Introduce descriptive general frames (differentiated, tight, compact) and the
+      down *which* linear order (CO, Z1, Sep) falls outside the fragment. *(completed; table
+      condensed from claim-audit.md's 14-row classification to a 4-row grouped table, since the
+      per-axiom detail is already in the audit note and the section's role is the status claim,
+      not a literature survey)*
+- [x] Introduce descriptive general frames (differentiated, tight, compact) and the
       Goldblatt/Esakia dual equivalence between `BAO_tau` and `DGF_tau`, noting that this gives
-      soundness and strong completeness with respect to general frames off the shelf.
-- [ ] State the diagnosis: *Spherical* is a directed-intersection compactness condition, the
+      soundness and strong completeness with respect to general frames off the shelf. *(completed)*
+- [x] State the diagnosis: *Spherical* is a directed-intersection compactness condition, the
       corresponding statement is a theorem for every descriptive general frame, and it fails to
       transfer to TM's bare Kripke reduct because fibers are indexed by durations and no operator
       of TM's similarity type denotes the duration-indexed relation. The algebra therefore
-      carries no information about it.
-- [ ] Re-pose the section's Open Question: condition (c) — preservation under the passage to the
+      carries no information about it. *(completed, as the "Spherical, diagnosed" remark)*
+- [x] Re-pose the section's Open Question: condition (c) — preservation under the passage to the
       ultrafilter frame — is the wrong requirement, because that passage discards the topology
       where compactness lives. The question should be asked over the descriptive general frame
-      instead.
-- [ ] Present the two routes that follow — the topological route (aim at the descriptive general
+      instead. *(completed)*
+- [x] Present the two routes that follow — the topological route (aim at the descriptive general
       frame, accepting that the dual object is not a task frame) and the metric-operator route
       (put each duration-indexed relation into the similarity type) — and say that the second is
-      the standard mechanism for exactly this obstruction, not a stylistic proposal.
-- [ ] Scope the existing "this is not a general frame" claim rather than deleting it: it is true
+      the standard mechanism for exactly this obstruction, not a stylistic proposal. *(completed:
+      Route T / Route M)*
+- [x] Scope the existing "this is not a general frame" claim rather than deleting it: it is true
       over the world-state carrier, but the operators act on the two-dimensional point set where
       the admissible propositions form a proper subalgebra, which is precisely why the
-      descriptive duality is the right target.
+      descriptive duality is the right target. *(completed, as a closing remark; the original
+      claim at the current line ~428 outside `<sec:representation>` is left unedited, since it
+      remains true as stated and the plan's Non-Goals restrict edits outside the section)*
 
 **Timing**: 2 hours
 
