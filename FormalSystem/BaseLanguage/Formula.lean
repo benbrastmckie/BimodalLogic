@@ -50,6 +50,13 @@ The bridge is purely proof-theoretic: it is a map between two `DerivationTree` t
 touches no truth definition, frame, or validity predicate. Keeping the invariant means the
 bridge composes unchanged with whatever the totality-based validity definition becomes.
 
+The invariant is **directional**. It forbids the edge `BaseLanguage/ → Semantics/` and says
+nothing about the converse, which is permitted and is how this file's `BLFormula` acquires a
+semantics: `FormalSystem/Semantics/BLTruth.lean` imports *this module* — a leaf that itself
+imports only `FormalSystem.Syntax.Atom` — and defines `BLTruthAt` by recursion on the six
+constructors below. Nothing flows back the other way, so the `grep` check above still returns no
+`import` line.
+
 ## References
 
 * JPL paper `\S sub:Logic` — `def:BL-language` and the TM axiomatization

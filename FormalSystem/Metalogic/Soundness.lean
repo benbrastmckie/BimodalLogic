@@ -100,6 +100,20 @@ proves Prior-UZ/SZ validity via well-founded descent on succ/pred chains.
 Prior-UZ/SZ are excluded from dense derivations by the `h.minFrameClass ≤ .Dense` constraint
 (their `minFrameClass = .Discrete` is incomparable with `.Dense`).
 
+## Soundness for the base language BL
+
+The four theorems here are stated over `FormalSystem.Syntax.Formula`, the `untl`/`snce`-primitive
+language BL⁺. Their counterparts for the tense-primitive base language BL live in
+`FormalSystem/Metalogic/BaseLanguageSoundness.lean`: `bl_soundness`, `bl_soundness_dense`,
+`bl_soundness_discrete` and `bl_soundness_dedekind`, each obtained by composing
+`Metalogic/Conservativity.lean`'s `translate` with the theorem of the same frame class below,
+then crossing the truth-transfer bridge `truthAt_tr` into the native BL semantics of
+`Semantics/BLTruth.lean`. That module also carries the BL consistency corollaries
+`bl_not_derivable_nil_bot` and `bl_not_derivable_nil_bot_discrete`, which mirror
+`not_derivable_nil_bot` and `not_derivable_nil_bot_discrete` below — and inherit their
+frame-class asymmetry, for the same reason: there is no dense or Dedekind-complete witness frame
+in the tree.
+
 ## References
 
 * [architecture.md](../../docs/user-guide/architecture.md) - Soundness specification

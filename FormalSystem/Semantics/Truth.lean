@@ -25,14 +25,18 @@ axioms (⊤ → F(⊤), ⊤ → P(⊤)) replace the T-axioms (BX1/BX1').
 ## Paper Specification Reference
 
 **Bimodal Logic Semantics (app:TaskSemantics, def:BL-semantics, lines 1857-1872)**:
-The JPL paper defines truth evaluation for TM formulas. Our implementation uses
-strict temporal quantification (a refinement of the paper's reflexive convention):
+The JPL paper defines truth evaluation for TM formulas, and this module transcribes it. The
+temporal clauses are **strict** on both sides: the pinned anchor `def:BL-semantics` quantifies H
+over `y < x` and G over `x < y` on the nose, so this tree matches the paper exactly rather than
+refining it. (Earlier revisions of this docstring described the paper's convention as reflexive
+and this tree's reading as a refinement of it; both descriptions were stale and have been
+corrected against the anchor of record.)
 - `M,τ,x ⊨ p` iff `x ∈ dom(τ)` AND `τ(x) ∈ V(p)` (atom satisfaction, line 892)
 - `M,τ,x ⊨ ⊥` is false (bottom)
 - `M,τ,x ⊨ φ → ψ` iff `M,τ,x ⊨ φ` implies `M,τ,x ⊨ ψ` (implication)
 - `M,τ,x ⊨ □φ` iff `M,σ,x ⊨ φ` for all σ ∈ H_F, the total histories (box: necessity)
-- `M,τ,x ⊨ Past φ` iff `M,τ,y ⊨ φ` for all y ∈ D where y ≤ x (past, reflexive)
-- `M,τ,x ⊨ Future φ` iff `M,τ,y ⊨ φ` for all y ∈ D where x ≤ y (future, reflexive)
+- `M,τ,x ⊨ Past φ` iff `M,τ,y ⊨ φ` for all y ∈ D where y < x (past, strict)
+- `M,τ,x ⊨ Future φ` iff `M,τ,y ⊨ φ` for all y ∈ D where x < y (future, strict)
 
 **Critical Semantic Design (lines 899-919)**:
 The paper explicitly quantifies temporal operators over ALL times `y ∈ D` (the entire

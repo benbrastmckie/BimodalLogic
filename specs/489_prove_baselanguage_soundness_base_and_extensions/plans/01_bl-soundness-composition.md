@@ -288,20 +288,20 @@ forms, both consistency corollaries, and the three native spot checks.
 
 ---
 
-### Phase 4: Lean docstring amendments — the invariant and the four stale claims [IN PROGRESS]
+### Phase 4: Lean docstring amendments — the invariant and the four stale claims [COMPLETED]
 
 **Goal**: Amend every `.lean` docstring that now asserts something false, and make the
 `BaseLanguage/` module invariant directional rather than silently ambiguous.
 
 **Tasks**:
-- [ ] `FormalSystem/BaseLanguage.lean` ("## Module Invariant") and
+- [x] `FormalSystem/BaseLanguage.lean` ("## Module Invariant") and
       `FormalSystem/BaseLanguage/Formula.lean:46` (the same block): keep the invariant — it is
       still literally true — and make it **directional** in words. State that the invariant
       forbids `BaseLanguage/ → Semantics/`, and that the converse edge
       (`Semantics/BLTruth.lean` importing `BaseLanguage.Formula`) is permitted and is how the BL
       semantics is sited. Keep the `grep -rn 'FormalSystem.Semantics' FormalSystem/BaseLanguage/`
       check sentence.
-- [ ] `FormalSystem/Metalogic/Conservativity.lean` — amend the four now-false claims:
+- [x] `FormalSystem/Metalogic/Conservativity.lean` — amend the four now-false claims:
       (a) the "## No semantics" diagram's left-arrow annotation `⟸[BL soundness, not built]`
       (line ~139); (b) "## What a machine-checked refutation would need" — "None of the three
       exists in this repository" (lines ~100-101): two of the three now exist, only the
@@ -309,19 +309,19 @@ forms, both consistency corollaries, and the three native spot checks.
       soundness theorem, which this repository does not have" (line ~65); (d) the CEB section's
       "needs a BL-side semantics this repository does not have" (line ~87). Point each at
       `FormalSystem/Metalogic/BaseLanguageSoundness.lean` by module path, never by task number.
-- [ ] **The forward direction stays refuted** and must still not be stated or `sorry`-ed. The
+- [x] **The forward direction stays refuted** and must still not be stated or `sorry`-ed. The
       amendments must not read as softening it — what changes is only which prerequisites are
       missing.
-- [ ] `FormalSystem/Semantics/Truth.lean` (module docstring, ~lines 25-36): the "(past,
+- [x] `FormalSystem/Semantics/Truth.lean` (module docstring, ~lines 25-36): the "(past,
       reflexive)" / "(future, reflexive)" clause descriptions and the "a refinement of the
       paper's reflexive convention" sentence are stale — the pinned anchor `def:BL-semantics` has
       `y < x` and `x < y` on the nose, so the tree matches the paper exactly rather than refining
       it. Correct both.
-- [ ] `FormalSystem/Metalogic/Soundness.lean` module docstring and `FormalSystem/Metalogic.lean`
+- [x] `FormalSystem/Metalogic/Soundness.lean` module docstring and `FormalSystem/Metalogic.lean`
       (the Conservativity + Soundness status block, ~lines 33-48): add the BL row so the new
       theorems are discoverable from the aggregator.
-- [ ] No task-number citations anywhere in these edits (C9 is enforced over `FormalSystem/`).
-- [ ] Avoid bare axiom/constructor counts that would trip C14(i)'s stale-count regex.
+- [x] No task-number citations anywhere in these edits (C9 is enforced over `FormalSystem/`).
+- [x] Avoid bare axiom/constructor counts that would trip C14(i)'s stale-count regex.
 
 **Timing**: 1 hour
 

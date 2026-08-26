@@ -62,10 +62,12 @@ the same formula with BL's *derived* `F` — and `z1_translate` proves
 So the TM⁺_f side of the witness is not a conjecture in this repository; it is a theorem
 below. What refutes the forward direction is the other half: `TM_f ⊢ Z1 φ` fails, because
 `TM_f = TM + DF` is sound over *every* discrete frame while `Z1` is unsound over
-non-Archimedean discrete orders such as `ℤ ×_lex ℤ`. That half needs a BL-side semantics and
-soundness theorem, which this repository does not have and which is deliberately out of scope
-here (see "What a machine-checked refutation would need"). The refutation is therefore
-*documented*, with its TM⁺ half proved.
+non-Archimedean discrete orders such as `ℤ ×_lex ℤ`. That half needs a BL-side semantics and a
+BL-side soundness theorem — both of which now exist, in `FormalSystem/Semantics/BLTruth.lean` and
+`FormalSystem/Metalogic/BaseLanguageSoundness.lean` — together with the `ℤ ×_lex ℤ` countermodel,
+which does not (see "What a machine-checked refutation would need"). The refutation is therefore
+still *documented* rather than machine-checked, with its TM⁺ half proved; what has changed is
+only which prerequisite is missing.
 
 **One correction to the research report.** The report asserted `z1 φ = tr (Z1 φ')` as a
 syntactic identity. It is not, and cannot be: `Formula.someFuture` is a top-level `untl`, and
@@ -84,7 +86,9 @@ given the repository's own `completeness_*` results for the two BL⁺-valid cond
 
 As with CEF, the failing half — no instance of `(Sp)` is a TM-theorem, by soundness on a
 disjoint two-fibre structure (a `ℤ`-fibre and an `ℝ`-fibre with `□` read globally over both) —
-needs a BL-side semantics this repository does not have.
+needs a BL-side semantics and soundness theorem, which are now available
+(`FormalSystem/Semantics/BLTruth.lean`, `FormalSystem/Metalogic/BaseLanguageSoundness.lean`),
+plus the two-fibre countermodel itself, which is not.
 
 ## CED / CEC — open
 
@@ -98,10 +102,18 @@ merely unattempted here.
 ## What a machine-checked refutation would need
 
 A BL-side semantics, a BL-side soundness theorem, and the two countermodels — the two-fibre
-structure for CEB and `ℤ ×_lex ℤ` for CEF. None of the three exists in this repository, and
-building them is separate task material: they would consume the non-Archimedean discrete
-carrier work, not this proof-theoretic bridge. Deliverable B of this task is documentation,
-by design, not proof.
+structure for CEB and `ℤ ×_lex ℤ` for CEF. The first two now exist:
+`FormalSystem/Semantics/BLTruth.lean` defines `BLTruthAt` natively on `BLFormula` per
+`def:BL-semantics`, and `FormalSystem/Metalogic/BaseLanguageSoundness.lean` proves
+`bl_soundness` together with its dense, discrete and Dedekind siblings, by composing `translate`
+below with `Metalogic/Soundness.lean` across the truth-transfer bridge `truthAt_tr`.
+
+**The countermodels do not exist**, and building them is separate material: they would consume
+the non-Archimedean discrete carrier work, not this proof-theoretic bridge. So the missing
+prerequisite is now the countermodels alone. The **forward direction remains refuted** and must
+still not be stated or `sorry`-ed here — nothing about the arrival of a BL semantics softens
+that; this module's documentation records which prerequisite is still missing, and that has
+simply narrowed from three items to one.
 
 ## Provenance of the source claim — historical, not a live anchor
 
@@ -136,11 +148,15 @@ touches no truth definition, frame, or validity predicate, so the bridge compose
 with whatever the totality-based validity definition becomes. The intended composition is
 
 ```
-BL-validity over C  ⟸[BL soundness, not built]  ⊢ᴮᴸ[fc] φ  ⟶[translate]  ⊢[fc] tr φ
+BL-validity over C  ⟸[bl_soundness…]  ⊢ᴮᴸ[fc] φ  ⟶[translate]  ⊢[fc] tr φ
                                                           ⟸[completeness_*]  BL⁺-validity over C
 ```
 
-and this module is the middle arrow only.
+and this module is the middle arrow only. The left arrow is now built, in
+`FormalSystem/Metalogic/BaseLanguageSoundness.lean`, which is where the `FormalSystem.Semantics`
+import lives; it composes `translate` with `Metalogic/Soundness.lean`'s four theorems across the
+truth-transfer bridge `truthAt_tr`. This module and everything under
+`FormalSystem/BaseLanguage/` remain semantics-free.
 -/
 
 namespace FormalSystem.Metalogic.Conservativity
