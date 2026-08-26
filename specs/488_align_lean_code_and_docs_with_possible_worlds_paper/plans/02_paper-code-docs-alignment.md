@@ -1,7 +1,7 @@
 # Implementation Plan: Paper / Lean / Docs Alignment
 
 - **Task**: 488 - align_lean_code_and_docs_with_possible_worlds_paper
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 13 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/488_align_lean_code_and_docs_with_possible_worlds_paper/reports/01_paper-code-docs-alignment.md` (including its "Addendum: Orchestrator Verification Pass", which overrides the main body on D25, adds D28, and sharpens D20/D21)
@@ -136,29 +136,29 @@ wave; see each phase's "Files to modify" list.
 
 ---
 
-### Phase 1: Re-pin the record -- dangling anchors and substantive drift [NOT STARTED]
+### Phase 1: Re-pin the record -- dangling anchors and substantive drift [COMPLETED]
 
 - **Goal**: Resolve the 6 dangling anchors and re-quote the 7 anchors whose mathematics or claim
   actually changed, so later phases have a correct baseline for the substantive items.
 - **Tasks**:
-  - [ ] Run `bash scripts/check-paper-definitions.sh` and capture the current failure output as
-        the phase's starting evidence.
-  - [ ] Fix the four `def:frame#*` item anchors (`Compositionality`, `Seriality`, `Limit`,
+  - [x] Run `bash scripts/check-paper-definitions.sh` and capture the current failure output as
+        the phase's starting evidence. *(completed: exit 1, 32 drifted, 6 dangling — matches the plan's asserted counts exactly)*
+  - [x] Fix the four `def:frame#*` item anchors (`Compositionality`, `Seriality`, `Limit`,
         `Spherical`): the paper changed `\item[\it X:]` to `\item[\bf X:]` and the `\aitem`/item
-        resolver keys on the markup. Re-resolve against `\bf`.
-  - [ ] Retire `thm:s4` and `thm:sym` as DANGLING (removed from the paper, folded into a single
+        resolver keys on the markup. Re-resolve against `\bf`. *(deviation: altered — re-resolving "against `\bf`" alone would only move the brittleness one markup wave along, so the `item` resolver in `scripts/check-paper-definitions.sh` was made markup-agnostic (tries `\it`, `\bf`, `\em`, `\itshape`, `\bfseries`, bare; first match wins, still literal `grep -F`). The hash still covers the resolved line verbatim, so a markup change is still reported as drift — only resolution is agnostic. This adds `scripts/check-paper-definitions.sh` to the phase's file set.)*
+  - [x] Retire `thm:s4` and `thm:sym` as DANGLING (removed from the paper, folded into a single
         `thm:s5` at paper line 2158) and add `thm:s5` following the record's own convention for
-        new anchors.
-  - [ ] Re-quote and re-hash the 7 substantive anchors: `def:directed` (split into
+        new anchors. *(completed: `\label{thm:s5}` confirmed at live paper line 2158; it states S4, B and T as three conjuncts of one theorem)*
+  - [x] Re-quote and re-hash the 7 substantive anchors: `def:directed` (split into
         `⊇-Directed` / `⊆-Directed`), `def:frame` (Spherical now reads "`⊇`-directed family",
         plus the new `S₁ᵈ` ball-space footnote), `def:frame-properties` (Deterministic clause
         removed, now standalone `def:deterministic` at 2868), `cor:tm-completeness` (new Lean
         attribution footnote), `def:strongest` / `thm:exist` ("normal" dropped), `def:id`
         (expanded), `thm:extension` (footnote no longer says "and hence to the axiom of choice").
-  - [ ] For each of the 7, record in the record file what changed and whether it has Lean impact,
-        so Phases 8-11 can quote from it rather than from the live paper.
-  - [ ] Re-run `bash scripts/check-paper-definitions.sh`; confirm the dangling count has gone
-        6 -> 0 and only terminological/cosmetic drift remains.
+  - [x] For each of the 7, record in the record file what changed and whether it has Lean impact,
+        so Phases 8-11 can quote from it rather than from the live paper. *(completed in the Phase-1 drift-correction section; the per-anchor Lean-impact column is written there)*
+  - [x] Re-run `bash scripts/check-paper-definitions.sh`; confirm the dangling count has gone
+        6 -> 0 and only terminological/cosmetic drift remains. *(completed: dangling 6 -> 0, drift 32 -> 24; the 24 residual are Phase 5's terminological/cosmetic set)*
 - **Timing**: 1.5 hours
 - **Depends on**: none
 - **Verification Tier**: prose

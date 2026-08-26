@@ -183,10 +183,21 @@ resolve_text() {
       sed -n "${start},${end}p" "$file"
       ;;
     item)
-      local range start end line
+      # The paper's item markup is NOT stable: the same item has appeared as `\item[\it NAME:]`
+      # and, after a 2026-08 editing wave, as `\item[\bf NAME:]`. Keying the resolver on one
+      # spelling made four `def:frame#*` sub-anchors go DANGLING on a purely cosmetic change.
+      # Resolution is therefore markup-agnostic: try each known emphasis prefix (and the bare
+      # form) in turn, first match wins. Matching stays literal (`grep -F`) so a locator
+      # containing regex metacharacters cannot be misinterpreted.
+      local range start end line body mk
       range=$(resolve_env "$file" "$enclosing") || return 1
       start=${range% *}; end=${range#* }
-      line=$(sed -n "${start},${end}p" "$file" | grep -v -E '^[[:space:]]*%' | grep -F -m1 "\\item[\\it ${locator}:]") || return 1
+      body=$(sed -n "${start},${end}p" "$file" | grep -v -E '^[[:space:]]*%')
+      line=""
+      for mk in '\it ' '\bf ' '\em ' '\itshape ' '\bfseries ' ''; do
+        line=$(printf '%s\n' "$body" | grep -F -m1 "\\item[${mk}${locator}:]") || line=""
+        [ -n "$line" ] && break
+      done
       [ -z "$line" ] && return 1
       printf '%s\n' "$line"
       ;;

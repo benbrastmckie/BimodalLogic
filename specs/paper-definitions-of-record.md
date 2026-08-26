@@ -73,6 +73,50 @@ removed from the manifest. Sentinels re-pinned: checksum
 `f134fd7d460c08aaf94c5b1c09571ab2663c509d1ee32f2d31b89ee640281381`, paper repo `git HEAD`
 `d1a26f75bcd3e0623d1593263471c5fc63126894` (dirty-pin caveat applies), 4213 lines.
 
+### Drift correction (2026-08-25), part 1: dangling anchors and substantive drift
+
+The paper moved again (4213 -> 4856 lines). `check-paper-definitions.sh` reported **32 drifted
+anchors and 6 unresolvable anchors** before this correction. Part 1 resolves every unresolvable
+anchor and re-quotes the anchors whose *mathematics or claim* actually changed; part 2 (below)
+absorbs the residual terminological and cosmetic drift and re-pins the sentinels.
+
+**6 unresolvable anchors, resolved (4) or retired (2):**
+
+| Anchor | Cause | Resolution |
+|---|---|---|
+| `def:frame#Compositionality` | paper re-spelled `\item[\it X:]` as `\item[\bf X:]` | resolver made markup-agnostic; re-quoted, re-hashed |
+| `def:frame#Seriality` | same | same |
+| `def:frame#Limit` | same | same |
+| `def:frame#Spherical` | same, plus a genuine change (see below) | same |
+| `thm:s4` | label removed from the paper | retired DANGLING; succeeded by `thm:s5` |
+| `thm:sym` | label removed from the paper | retired DANGLING; succeeded by `thm:s5` |
+
+The four `def:frame#*` anchors did **not** go dangling because the paper dropped an axiom — all
+four axioms are still there. They went dangling because `resolve_text`'s `item` case searched for
+the literal `\item[\it NAME:]` and the paper re-spelled the emphasis command. That brittleness is
+now fixed in the script itself rather than by re-keying the manifest on `\bf` (which would fail
+again on the next markup wave); see "Hashing method" above.
+
+`thm:s4` and `thm:sym` were merged by the paper into a single `thm:s5` (live line 2158), which
+states S4, B, **and** T as three conjuncts of one theorem. `thm:s5` is added to the manifest here.
+
+**7 substantive anchors re-quoted and re-hashed** (what changed, and whether it reaches Lean):
+
+| Anchor | What changed | Lean impact |
+|---|---|---|
+| `def:directed` | split into two clauses, `$\supseteq$-Directed` and `$\subseteq$-Directed`; the old bare "directed" is now the `$\supseteq$` half | **Yes.** Every in-tree quotation of "directed family" is now under-qualified and must read `⊇`-directed. `Spherical` consumes the `⊇` half. |
+| `def:frame` | `frame` -> `task frame`; `Spherical` now reads "$\supseteq$-directed family"; a new footnote places Spherical as $\mathbf{S}_1^d$ in the Ćmiel-Kuhlmann-Kuhlmann ball-space hierarchy, **strictly stronger** than "spherically complete" ($\mathbf{S}_1$) | **Yes.** `TaskFrame.lean`'s `Spherical` docstring must carry the `⊇` qualifier and the $\mathbf{S}_1^d$ characterization. Still four axioms; nullity is still not one. |
+| `def:frame-properties` | the `Deterministic` clause was **removed**; only Discrete/Dense/Complete remain. Deterministic is now standalone `def:deterministic` (live line 2868) | **Yes.** Any citation of `def:frame-properties` for determinism must repoint to `def:deterministic`. |
+| `cor:tm-completeness` | restructured; now states four systems explicitly (TM$^+$ strongly complete over **all** task frames; TM$^+_\textsc{d}$ strongly complete over the dense; TM$^+_\textsc{f}$ weakly complete over $\Z$-time; TM$^+_\textsc{c}$ **weakly** complete over the dense-and-complete class), and adds a footnote attributing these results *and the corresponding soundness results* to this Lean repository | **Yes, twice.** (i) TM$^+_\textsc{c}$ is now weak completeness over the dense-and-complete class, which is what `FrameClass.Dedekind` is — the in-tree "completeness *simpliciter*" / "no `FrameClass` member picks it out" passages are stale. (ii) The new footnote attributes strong completeness for TM$^+$ / TM$^+_\textsc{d}$ to this repository, where both are **conditional** on the unproved `CompactBase` / `CompactDense`. That mismatch is a paper-side correction, recorded in the author memo. |
+| `def:strongest` | "strongest objective **normal** modal operator" -> "strongest objective modal operator"; "iff" -> "if and only if"; the normality-redundancy comment removed | No Lean counterpart in the tree (objective-modality appendix is unformalized). |
+| `thm:exist` | same "normal" drop | As above. |
+| `def:id` | substantially expanded: propositional *variables* rather than sentence letters, an explicit $\chi_{(\psi/\varphi)}$ substitution convention, and a long free-for/operator-scope footnote making $\equiv$ a congruence for the logical vocabulary but not for operator terms | No Lean counterpart (identity extension is unformalized). |
+| `thm:extension` | footnote restructured; it **no longer says** the Zorn appeal is "and hence to the axiom of choice", now saying the derivation of *Occurrence* is "a theorem of ZFC" and contrasting it with the choice-free `lem:nullity` and `cor:spherical-finite` | **Yes.** Three in-tree sites quote the retired "and hence to the axiom of choice" wording verbatim. |
+
+(That is eight rows for "7 substantive anchors": `def:strongest` and `thm:exist` carry one and the
+same change — the `normal` drop — and the plan counted them as one item. The row count, not the
+item count, is what the manifest tracks.)
+
 ### Dirty-pin caveat (why the pin is a checksum, not a clean commit)
 
 At the moment this file was authored, the paper's working tree was **dirty relative to its own
@@ -262,9 +306,15 @@ settled inputs, same as a definition.
   the hash covers every line from that `\begin{ENV}` line (inclusive) through the next line
   containing the literal string `\end{ENV}` (inclusive) — i.e. the whole definition/theorem
   environment, including any editorial `%%` comment lines inside it.
-- **`item` anchors** (one of `def:frame`'s four axioms, which are `\item[\it NAME:]` entries with
-  no `\label` of their own): the enclosing environment is resolved first as above, then the hash
-  covers exactly the single line inside that block matching `\item[\it NAME:]`.
+- **`item` anchors** (one of `def:frame`'s four axioms, which are `\item[MARKUP NAME:]` entries
+  with no `\label` of their own): the enclosing environment is resolved first as above, then the
+  hash covers exactly the single line inside that block whose item label is `NAME:`. Resolution is
+  **markup-agnostic**: the emphasis command is tried in the order `\it`, `\bf`, `\em`,
+  `\itshape`, `\bfseries`, bare, and the first match wins. This is deliberate — the paper
+  re-spelled all four `def:frame` items from `\item[\it NAME:]` to `\item[\bf NAME:]` in a
+  2026-08 editing wave, and a resolver keyed on one spelling reported four live anchors as
+  DANGLING on a purely cosmetic change. The hash still covers the resolved line **verbatim**, so
+  the markup change itself is still reported as drift; only the *resolution* is markup-agnostic.
 - **`aitem` anchors** (an axiom introduced via the paper's `\newcommand{\aitem}[2][]{...\label{#2}}`
   macro, e.g. `\aitem{CO}` or `\aitem[CO]{TMP-CO}`): the hash covers exactly the single line
   matching `\aitem` (optionally `[KEY]`) `{LABEL}`.
@@ -305,42 +355,47 @@ sha256: `3ee787814dd714aa6c46811cce180d64cc2a3f931f348e088fff8aedad043367`
 
 ```latex
 \begin{Ddef} \label{def:directed}
-	A nonempty family of sets $\mathcal{S}$ is \textit{directed} just in case $S \subseteq S_1 \cap S_2$ for some $S \in \mathcal{S}$ whenever $S_1, S_2 \in \mathcal{S}$.
+	A nonempty family of sets $\mathcal{S}$ is:
+	\begin{enumerate}[wide=0pt, labelsep=.1in, itemsep=.075in]
+		\item[\bf $\mathbf{\supseteq}$-Directed:] just in case $S \subseteq S_1 \cap S_2$ for some $S \in \mathcal{S}$ whenever $S_1, S_2 \in \mathcal{S}$.
+		\item[\bf $\mathbf{\subseteq}$-Directed:] just in case $S_1, S_2 \subseteq S$ for some $S \in \mathcal{S}$ whenever $S_1, S_2 \in \mathcal{S}$.
+	\end{enumerate}
 \end{Ddef}
 ```
-sha256: `ef9852efbe0e53cc226423bd2c9d5da0decba54cde07bd7f91f1e06515c97d20`
+sha256: `096a8398223596825ff71372dc565a77354d41fff69f8bf0b3fe485edad0c75b`
 
 ### `def:frame` — the frame definition (whole block, all four axioms)
 
 ```latex
 \begin{Ddef} \label{def:frame}
-	A \textit{frame} is any $\F = \tuple{W, \D, \Rightarrow}$ where $W$ is a nonempty set of world states, $\D$ is a temporal order, and $\Rightarrow$ is a task relation satisfying the following for $x, y \geq 0$:
+	A \textit{task frame} is any $\F = \tuple{W, \D, \Rightarrow}$ where $W$ is a nonempty set of world states, $\D$ is a temporal order, and $\Rightarrow$ is a task relation satisfying the following for $x, y \geq 0$:
 	\begin{enumerate}[wide=0pt, labelsep=.1in, itemsep=.075in]
-		\item[\it Compositionality:] $w \Rightarrow_{x + y} v$ if and only if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some $u \in W$.
-		\item[\it Seriality:] $w \Rightarrow_x u$ and $v \Rightarrow_x w$ for some $u, v \in W$.
-		\item[\it Limit:] $\bigcap\limits_{x > 0} (w)_x = \set{w}$.
-		\item[\it Spherical:] $\bigcap \mathcal{S} \neq \emptyset$ for any directed family $\mathcal{S}$ of nonempty fibers and segments.
-    % \footnote{
-    %   Spherical is the directed-intersection condition $\mathbf{S}_1^d$ in the theory of ball spaces~\cite{Cmiel2021}.
-    % }
+		\item[\bf Compositionality:] $w \Rightarrow_{x + y} v$ if and only if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some $u \in W$.
+		\item[\bf Seriality:] $w \Rightarrow_x u$ and $v \Rightarrow_x w$ for some $u, v \in W$.
+		\item[\bf Limit:] $\bigcap\limits_{x > 0} (w)_x = \set{w}$.
+		\item[\bf Spherical:] $\bigcap \mathcal{S} \neq \emptyset$ for any $\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments.%
+    \footnote{
+      The nonempty fibers and segments form a \textit{ball space} on $W$ in the sense of \'{C}miel, Kuhlmann, and Kuhlmann.
+      \textit{Spherical} is the downward-directed-intersection condition $\mathbf{S}_1^d$ of the ball-space hierarchy of~\cite{Cmiel2021}--- the nest condition $\mathbf{S}_1$ with a $\supseteq$-directed system of balls in place of a nest--- and so is strictly stronger than the standard \textit{spherically complete} condition, which is $\mathbf{S}_1$ itself.
+    }
 	\end{enumerate}
-  \vspace{-.15in}
+  \vspace{-.1in}
 \end{Ddef}
 ```
-sha256: `944879579f6b176390b9622db9c9cdfa52f07bc3f8244bd3f01dac1f77ca6926`
+sha256: `294733a3cb5d65a1c048d850689e6d78e7a29c8b78cc8fed5d35b3ce3618583b`
 
 Four axioms, not more, not fewer — **Nullity is NOT an axiom**, it is `lem:nullity` below, DERIVED
 from Seriality and Limit. Each axiom is also tracked individually (sub-anchors of `def:frame`, no
-`\label` of their own — resolved as the enclosing block's `\item[\it NAME:]` line), so that a
+`\label` of their own — resolved as the enclosing block's `\item[MARKUP NAME:]` line, markup-agnostically), so that a
 future paper edit which reorders or drops exactly one axiom is named precisely rather than only
 flagging "`def:frame` changed":
 
 | Sub-anchor | Verbatim text | sha256 |
 |---|---|---|
-| `def:frame#Compositionality` | `\item[\it Compositionality:] $w \Rightarrow_{x + y} v$ if and only if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some $u \in W$.` | `4b9248498399338eeaccb63c5e8952ca0928b87bb85bcd94f596d9c263bb64fa` |
-| `def:frame#Seriality` | `\item[\it Seriality:] $w \Rightarrow_x u$ and $v \Rightarrow_x w$ for some $u, v \in W$.` | `ad1863bf950f17906a79b469b40fddb102e4abf5bd1bfd828a2f4b4900c7dbad` |
-| `def:frame#Limit` | `\item[\it Limit:] $\bigcap\limits_{x > 0} (w)_x = \set{w}$.` | `3eedd389d6cbdf5dff50f82ad9bafed30fe5eff5ec923cfdc165ca75dbe60a5f` |
-| `def:frame#Spherical` | `\item[\it Spherical:] $\bigcap \mathcal{S} \neq \emptyset$ for any directed family $\mathcal{S}$ of nonempty fibers and segments.` | `656c4b68708828cbf47849b70636c428257b45f6b9427fa0368d6876408947c9` |
+| `def:frame#Compositionality` | `\item[\bf Compositionality:] $w \Rightarrow_{x + y} v$ if and only if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some $u \in W$.` | `35905314d686a1676dfda8d4c7d092de8c3335104c0510e7069d6656a4ac87e3` |
+| `def:frame#Seriality` | `\item[\bf Seriality:] $w \Rightarrow_x u$ and $v \Rightarrow_x w$ for some $u, v \in W$.` | `afffcd074afce7442d2c02108f49e70c128de3d4d7ccac41833f95e2ae3cd952` |
+| `def:frame#Limit` | `\item[\bf Limit:] $\bigcap\limits_{x > 0} (w)_x = \set{w}$.` | `6acfdc8df119a71d24d863399f6e6d3aff9a507e920c8a57e9427df94224b369` |
+| `def:frame#Spherical` | `\item[\bf Spherical:] $\bigcap \mathcal{S} \neq \emptyset$ for any $\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments.%` | `92b407bc45ab62ce5bac22982c67e2555efb4a990ddf8e61fd7f1b45840bcf60` |
 
 Note: **Compositionality is a biconditional**, not a one-directional implication — this is load
 bearing (the right-to-left direction is used directly in, e.g., the constraint-family proofs).
@@ -381,13 +436,13 @@ point). `H_F` denotes only the *total* histories.
 
 ```latex
 \begin{Tthm} \label{thm:extension}
-	Every partial history $\tau : X \to W$ over a frame $\F = \tuple{W, \D, \Rightarrow}$ is extended by some total world history $\sigma \in H_{\F}$.%
+	Every partial history $\tau : X \to W$ over a task frame $\F = \tuple{W, \D, \Rightarrow}$ is extended by some total world history $\sigma \in H_{\F}$.%
 	  \footnote{
-	    The proof appeals to Zorn's lemma and hence to the axiom of choice, and so the derivation of \textit{Occurrence} from \textit{Seriality} and \textit{Spherical} in \textbf{\ref{cor:occurrence}} is a theorem of ZFC, in contrast with the choice-free derivation of the zero loops in \textbf{\ref{lem:nullity}} and of \textit{Spherical} for finite $W$ in \textbf{\ref{cor:spherical-finite}}.
+	    The proof appeals to Zorn's lemma, and so the derivation of \textit{Occurrence} from \textit{Seriality} and \textit{Spherical} in \textbf{\ref{cor:occurrence}} is a theorem of ZFC, in contrast with the derivation of the zero loops in \textbf{\ref{lem:nullity}} and the derivation of \textit{Spherical} for finite $W$ in \textbf{\ref{cor:spherical-finite}}, both of which are choice-free.
 	  }
 \end{Tthm}
 ```
-sha256: `9fbb0fc2d324d6858019aea429c48709a147dfd51ecd9e840aeeef500153d220`
+sha256: `1140d4819b9b0030275f249c60b7cb2fb15da97f9d07df2196d6e06508f65e38`
 
 ### `cor:occurrence` — DERIVED: every world state occurs at any prescribed time in some total world history (renamed from `thm:occurrence`; see "Drift correction" below)
 
@@ -929,11 +984,10 @@ sha256: `a3b4e39b80ffdf9e94fb48cea4bc9f719391d845a648da8aa9bcf2c0f0d5ea04`
 		\item[\sc Discrete] if for any $x \in D$, whenever there exists $y > x$, there is a least such $y' > x$ satisfying $z \geq y'$ for all $z > x$.
 		\item[\sc Dense] if for any $x, y \in D$ where $x < y$, there exists $z \in D$ where $x < z < y$.
 		\item[\sc Complete] if every nonempty $S \subseteq D$ bounded above has a least upper bound in $D$.
-		\item[\sc Deterministic] if $u = v$ whenever $w \Rightarrow_x u$ and $w \Rightarrow_x v$ for $w, u, v \in W$ and $x \in D$.
 	\end{enumerate}
 \end{Ddef}
 ```
-sha256: `fa34cc4eed0a85acd583c4b7634beddbaf58bb2756ed95bd0bb06c8560e6e0c0`
+sha256: `7820dd2fdaada72ff505787f47c049f63c24362cf25e48b7677724d850275086`
 
 Note: promoted into coverage by this task (previously listed under "Deliberately not covered"
 below, which is updated accordingly).
@@ -955,14 +1009,17 @@ sha256: `76258a4c835d4fa0dde3fd037da52e706d0f20c9d7872ab523d3b81597b99b9d`
   Completeness is then carried by the following $\BL^+$ systems:
   \begin{enumerate}[leftmargin=.5in,labelsep=.15in,itemsep=.075in]
     \item[\bf TM$^+$] Strongly complete over all task frames.
-    \item[\bf TM$^+_\textsc{d}$] Strongly complete over the dense frames.
+    \item[\bf TM$^+_\textsc{d}$] Strongly complete over the dense task frames.
     \item[\bf TM$^+_\textsc{f}$] Weakly complete over $\Z$-time.
     \item[\bf TM$^+_\textsc{c}$] Weakly complete over the dense-and-complete class.
   \end{enumerate}
-  Strong completeness provably fails for $\Z$-time as well as for the dense-and-complete class $\R$ where compactness fails, and so weak completeness is the appropriate target.
+  Strong completeness provably fails for $\Z$-time as well as for the dense-and-complete class $\R$ where compactness fails, and so weak completeness is the appropriate target.%
+    \footnote{
+      These results, together with the soundness of the corresponding systems, have been established in the Lean 4 \href{https://github.com/benbrastmckie/BimodalLogic}{repository} for this paper, and so their proofs are not reproduced here.
+    }
 \end{Cthm}
 ```
-sha256: `68e3ea9af3305f6982d1c61a26c09ff15d919d783c5fe74e7f55b6d9a748247d`
+sha256: `04255c86b60567dd33a9cc708351dc02af254f798f4e82663e60b83b6f41847d`
 
 ### `cor:tm-decidability` — the Decidability corollary (open) — **DANGLING as of the 2026-08-17 re-pin (removed from manifest)**
 
@@ -991,53 +1048,53 @@ sha256: `ac35ffaa47da467febc431669f604d02622301f369bf795075dbe46ed3ee1bcf`
 
 ```latex
 \begin{Ddef} \label{def:id}
-  The \textit{identity extension of $\BL^{\Box}$} is a language $\BL^{\equiv}$ enriched to include a binary propositional identity operator $\equiv$, read $\ulcorner$For $\varphi$ just is for $\psi\urcorner$, whose logic comprises classical propositional logic and the minimal theory of identity given below, where $\chi_{(\psi/\varphi)}$ is the result of replacing one or more occurrences of $\varphi$ in any formula $\chi$ with $\psi$:
+  Letting $\BL^{\Box}$ be the purely modal fragment of $\BL$, each $p_i \in \SL$ will be understood to be a \textit{propositional variable} rather than sentence letter.
+  The \textit{identity extension} of $\BL^{\Box}$ is a language $\BL^{\equiv}$ enriched to include a binary propositional identity operator $\equiv$, read $\ulcorner$For $\varphi$ just is for $\psi\urcorner$, whose logic comprises classical propositional logic and the minimal theory of identity given below, where $\chi_{(\psi/\varphi)}$ is the result of replacing one or more occurrences of $\varphi$ in any formula $\chi$ with $\psi$:
 	\vspace{-.125in}
 	\begin{enumerate}[leftmargin=.5in,labelsep=.15in,itemsep=.075in]
 		\begin{multicols}{2}
 			\aitem{Ref} $\vdash \varphi \equiv \varphi$.
 			\aitem{Imp} $\vdash (\varphi \equiv \psi) \rightarrow (\varphi \rightarrow \psi)$.
-			\aitem{LL} $\vdash (\varphi \equiv \psi) \rightarrow (\chi \rightarrow \chi_{(\psi/\varphi)})$\\
-        \strut\hspace{5pt}where $\psi$ is free for $\varphi$ in $\chi$.%
+			\aitem[LL$^{-}$]{LL} $\vdash (\varphi \equiv \psi) \rightarrow (\chi \rightarrow \chi_{(\psi/\varphi)})$
+        where $\psi$ is free for $\varphi$ in $\chi$ and no replaced $\varphi$ lies in the scope of an operator.%
         \footnote{
           A formula $\psi$ is \textit{free for} $\varphi$ in $\chi$ just in case no replaced occurrence of $\varphi$ lies within the scope of a quantifier binding a variable free in $\varphi$ or $\psi$.
-          The condition is vacuous in $\BL^{\equiv}$, which has no quantifiers, and constrains \textbf{\aref{LL}} only in the quantified extension of \textbf{\ref{def:lang}}.
+          The condition is vacuous in $\BL^{\equiv}$, which has no quantifiers.
+          The operator-scope proviso makes $\equiv$ a congruence for the logical vocabulary--- identicals may be substituted for one another within $\rightarrow$, $\bot$, $\equiv$, and the quantifiers added below--- but not for operator terms. % as in \textbf{\S\ref{sec:Introduction}}. %: the logical constants are objective, whereas an operator may be opaque.
         }
 		\end{multicols}
 	\end{enumerate}
 	\vspace{-.175in}
-  % Substitution in \textbf{\aref{LL}} is restricted so that no variable free in $\varphi$ or $\psi$ is bound at a replaced occurrence in $\chi$, though this is vacuous in $\BL^{\equiv}$ which has no propositional quantifiers.
-  % The restriction on substitution is vacuous without propositional quantifiers. 
   The theory of propositional identity need not be Boolean, accommodating theories in which the absorption laws or other Boolean identities do not hold.\footnote{I defend a bilateral theory of propositional identity in Brast-McKie \cite{Brast-McKie2021}.}
-  Symmetry and transitivity of $\equiv$ are nevertheless derivable.
-  % Given $\varphi \equiv \psi$: instantiating \textbf{\aref{Ref}} at $\varphi$ gives $\vdash \varphi \equiv \varphi$, and applying \textbf{\aref{LL}} with $\chi \coloneq (\varphi \equiv \varphi)$, replacing the first occurrence of $\varphi$, gives $\vdash (\varphi \equiv \psi) \rightarrow [(\varphi \equiv \varphi) \rightarrow (\psi \equiv \varphi)]$, which detaches--- as in \textbf{\ref{thm:trans}}'s proof, by permuting antecedents and applying modus ponens--- to give $\psi \equiv \varphi$, i.e., symmetry.
-  % Given also $\psi \equiv \theta$: a further application of \textbf{\aref{LL}}, with $\chi \coloneq (\varphi \equiv \psi)$, replacing the occurrence of $\psi$, gives $\vdash (\psi \equiv \theta) \rightarrow [(\varphi \equiv \psi) \rightarrow (\varphi \equiv \theta)]$, which detaches with both hypotheses to give $\varphi \equiv \theta$, i.e., transitivity.
+  Symmetry and transitivity of $\equiv$ are nevertheless derivable, and since each replaces an occurrence lying outside any operator term, both survive the proviso on \textbf{\aref{LL}}.
+  % Given $\varphi \equiv \psi$, instantiating \textbf{\aref{Ref}} at $\varphi$ gives $\vdash \varphi \equiv \varphi$, and applying \textbf{\aref{LL}} with $\chi \coloneq (\varphi \equiv \varphi)$, replacing the first occurrence of $\varphi$, gives $\vdash (\varphi \equiv \psi) \rightarrow [(\varphi \equiv \varphi) \rightarrow (\psi \equiv \varphi)]$, which detaches by permuting antecedents and applying modus ponens to give $\psi \equiv \varphi$, i.e., symmetry.
+  % Given also $\psi \equiv \theta$, a further application of \textbf{\aref{LL}}, with $\chi \coloneq (\varphi \equiv \psi)$, replacing the occurrence of $\psi$, gives $\vdash (\psi \equiv \theta) \rightarrow [(\varphi \equiv \psi) \rightarrow (\varphi \equiv \theta)]$, which detaches with both hypotheses to give $\varphi \equiv \theta$, i.e., transitivity.
 \end{Ddef}
 ```
-sha256: `4c7d0de01117c6ba656d988789d341a9f463f500f2cdeaaaf827ae8911353cb9`
+sha256: `1a608153e9b78659db2bfc13b2c11c024dceb0acde9cfaa8b900345cda2af238`
 
 ### `def:strongest` — strongest objective normal modal operator, Str^O_L(Q)
 
 ```latex
 \begin{Ddef} \label{def:strongest}
-	$\Q$ is a \textit{strongest objective normal modal operator in $L$}--- $\Str^{\OO}_{L}(\Q)$--- iff:
+	$\Q$ is a \textit{strongest objective modal operator in $L$}--- $\Str^{\OO}_{L}(\Q)$--- if and only if:
 	\begin{enumerate}[leftmargin=.5in,labelsep=.15in,itemsep=.075in]
     \item $\vdash \OO(\Q)$; and
 		\item $\vdash \forall\P[\OO(\P) \rightarrow (\Q \preceq \P)]$.
 	\end{enumerate}
-	% Normality need not be stated separately: clause (1) already entails $\vdash \Ax(\Q)$ and $\Norm_L(\Q)$ by \textbf{\ref{lem:obj-norm}}.
+  \vspace{-.1in}
 \end{Ddef}
 ```
-sha256: `859a787262717b5fec2fae76b2884c41b4f3583bc668eea7e35ee64fb3e23e45`
+sha256: `57786b2c8758c3c7ea80ac7a80464b331ea77ff9b8c804a032504394bc800369`
 
 ### `thm:exist` — L has a strongest objective normal modal operator (Bm witnesses)
 
 ```latex
 \begin{Tthm} \label{thm:exist}
-	$\Str^{\OO}_{L}(\Bm)$, so $L$ includes a strongest objective normal modal operator.
+	$\Str^{\OO}_{L}(\Bm)$, so $L$ includes a strongest objective modal operator.
 \end{Tthm}
 ```
-sha256: `0bdec1fca347c226774e622c5ff2b412fdabd7f0eb340c91858ca6fc97b6556c`
+sha256: `fb6d83115f2effb62bc56a233e84212da50c0b692a60ebcdf2a0ea30fcfa9db9`
 
 ### `lem:uniq` — uniqueness of the strongest objective normal modal operator
 
@@ -1048,7 +1105,15 @@ sha256: `0bdec1fca347c226774e622c5ff2b412fdabd7f0eb340c91858ca6fc97b6556c`
 ```
 sha256: `ff8ac0629d00554c5d54c580e68c4886297c63e24fd214338614560eedb862cf`
 
-### `thm:s4` — the strongest objective operator obeys S4
+### `thm:s4` — the strongest objective operator obeys S4 — **DANGLING as of the 2026-08-25 re-pin (removed from manifest)**
+
+The live paper no longer carries a `\label{thm:s4}`. The paper folded the S4, B/Symmetry, and T
+results for the strongest objective operator into a **single** theorem, `thm:s5` (live paper line
+2158), which states all three conjuncts at once. The quoted text below is retained as the
+last-resolved historical record; the anchor is removed from the machine manifest so the checker no
+longer reports it as unresolvable. Its successor is tracked as `thm:s5` below. If the paper
+restores the anchor, re-add a manifest row via
+`check-paper-definitions.sh --resolve "thm:s4|env|-|-"`.
 
 ```latex
 \begin{Tthm} \label{thm:s4}
@@ -1057,7 +1122,15 @@ sha256: `ff8ac0629d00554c5d54c580e68c4886297c63e24fd214338614560eedb862cf`
 ```
 sha256: `09599de2c925eba38b8ac8e9e6007118e9c6539100a777d98ada030d3d5fcd95`
 
-### `thm:sym` — the strongest objective operator obeys B/Symmetry
+### `thm:sym` — the strongest objective operator obeys B/Symmetry — **DANGLING as of the 2026-08-25 re-pin (removed from manifest)**
+
+The live paper no longer carries a `\label{thm:sym}`. The paper folded the S4, B/Symmetry, and T
+results for the strongest objective operator into a **single** theorem, `thm:s5` (live paper line
+2158), which states all three conjuncts at once. The quoted text below is retained as the
+last-resolved historical record; the anchor is removed from the machine manifest so the checker no
+longer reports it as unresolvable. Its successor is tracked as `thm:s5` below. If the paper
+restores the anchor, re-add a manifest row via
+`check-paper-definitions.sh --resolve "thm:sym|env|-|-"`.
 
 ```latex
 \begin{Tthm} \label{thm:sym}
@@ -1069,6 +1142,19 @@ sha256: `09599de2c925eba38b8ac8e9e6007118e9c6539100a777d98ada030d3d5fcd95`
 \end{Tthm}
 ```
 sha256: `64e88f37ad07f9dcd339ebd0789e5a84cc6a0098f597cbcef2513a801332e582`
+
+### `thm:s5` — the strongest objective operator obeys S5 (S4 + B + T, in one theorem)
+
+Successor to the retired `thm:s4` and `thm:sym` above: the paper merged both, and added the T
+conjunct, into a single theorem in the 2026-08 wave. Added to the manifest at the 2026-08-25
+re-pin because the pair it replaces was load-bearing and would otherwise have gone untracked.
+
+```latex
+\begin{Tthm} \label{thm:s5}
+	If $\Str^{\OO}_{L}(\Q)$, then  $\vdash \forall p(\Q p \rightarrow \Q\Q p)$, $\vdash \forall p(p \rightarrow \Q\Dual{\Q}p)$, and $\vdash \forall p(\Q p \rightarrow p)$.
+\end{Tthm}
+```
+sha256: `14b32c8a3281aa246e1f83277fd940bdb9fcb8b88b702cda42c0fbf89a0112d7`
 
 ### Satisfiability — **no paper-native definition exists** (recorded as a gap, not fabricated)
 
@@ -1142,15 +1228,15 @@ human readability and are not machine-parsed. Columns: `anchor_id|kind|enclosing
 # anchor_id|kind|enclosing|locator|sha256
 def:temporal-order|env|-|-|bc89eea5f9bafa1e326bc8bda93b6631c49212c1f0c3253208f0cfbdb049fb1f
 def:task-relation|env|-|-|3ee787814dd714aa6c46811cce180d64cc2a3f931f348e088fff8aedad043367
-def:directed|env|-|-|ef9852efbe0e53cc226423bd2c9d5da0decba54cde07bd7f91f1e06515c97d20
-def:frame|env|-|-|944879579f6b176390b9622db9c9cdfa52f07bc3f8244bd3f01dac1f77ca6926
-def:frame#Compositionality|item|def:frame|Compositionality|4b9248498399338eeaccb63c5e8952ca0928b87bb85bcd94f596d9c263bb64fa
-def:frame#Seriality|item|def:frame|Seriality|ad1863bf950f17906a79b469b40fddb102e4abf5bd1bfd828a2f4b4900c7dbad
-def:frame#Limit|item|def:frame|Limit|3eedd389d6cbdf5dff50f82ad9bafed30fe5eff5ec923cfdc165ca75dbe60a5f
-def:frame#Spherical|item|def:frame|Spherical|656c4b68708828cbf47849b70636c428257b45f6b9427fa0368d6876408947c9
+def:directed|env|-|-|096a8398223596825ff71372dc565a77354d41fff69f8bf0b3fe485edad0c75b
+def:frame|env|-|-|294733a3cb5d65a1c048d850689e6d78e7a29c8b78cc8fed5d35b3ce3618583b
+def:frame#Compositionality|item|def:frame|Compositionality|35905314d686a1676dfda8d4c7d092de8c3335104c0510e7069d6656a4ac87e3
+def:frame#Seriality|item|def:frame|Seriality|afffcd074afce7442d2c02108f49e70c128de3d4d7ccac41833f95e2ae3cd952
+def:frame#Limit|item|def:frame|Limit|6acfdc8df119a71d24d863399f6e6d3aff9a507e920c8a57e9427df94224b369
+def:frame#Spherical|item|def:frame|Spherical|92b407bc45ab62ce5bac22982c67e2555efb4a990ddf8e61fd7f1b45840bcf60
 lem:nullity|env|-|-|7840512db4eb75a6f8d4224b80d784239e554f2742163722236df4778de8d9de
 def:world-history|env|-|-|4aaa6ec0db38ccbba25ce6dc61d81b8a28f82913ba6b2b1defabaa42f9caf205
-thm:extension|env|-|-|9fbb0fc2d324d6858019aea429c48709a147dfd51ecd9e840aeeef500153d220
+thm:extension|env|-|-|1140d4819b9b0030275f249c60b7cb2fb15da97f9d07df2196d6e06508f65e38
 cor:occurrence|env|-|-|b0228712e0d847f600b5b353b783ec3bc24e7722620f7e39e284af1f1fa5ebea
 def:constraints|env|-|-|aaf87cd1fc4d88b372ed586194468ea9b7721ab8c5d5a52125c65e847986d76c
 lem:nesting|env|-|-|971a38bb2fb7169976868b9fdcedbb1b8bcc01793d96be6e26b982ba1e06fa4c
@@ -1180,15 +1266,14 @@ thm:TM-soundness|env|-|-|23cae2b2fcd8c034b82c4f9294b21aa4d141429a278fa08d085cae2
 app:discrete|env|-|-|390d37f1e1813e41aefac5c2db8add88490e120f9f4e11fa36b9842d5486f711
 app:dense|env|-|-|6a6b76ccb40bc9059627c40826f9f64edf0e1716650df11bf46f5c0b8ba3e554
 app:complete|env|-|-|a3b4e39b80ffdf9e94fb48cea4bc9f719391d845a648da8aa9bcf2c0f0d5ea04
-def:frame-properties|env|-|-|fa34cc4eed0a85acd583c4b7634beddbaf58bb2756ed95bd0bb06c8560e6e0c0
+def:frame-properties|env|-|-|7820dd2fdaada72ff505787f47c049f63c24362cf25e48b7677724d850275086
 cor:spherical-finite|env|-|-|76258a4c835d4fa0dde3fd037da52e706d0f20c9d7872ab523d3b81597b99b9d
-cor:tm-completeness|env|-|-|68e3ea9af3305f6982d1c61a26c09ff15d919d783c5fe74e7f55b6d9a748247d
-def:id|env|-|-|4c7d0de01117c6ba656d988789d341a9f463f500f2cdeaaaf827ae8911353cb9
-def:strongest|env|-|-|859a787262717b5fec2fae76b2884c41b4f3583bc668eea7e35ee64fb3e23e45
-thm:exist|env|-|-|0bdec1fca347c226774e622c5ff2b412fdabd7f0eb340c91858ca6fc97b6556c
+cor:tm-completeness|env|-|-|04255c86b60567dd33a9cc708351dc02af254f798f4e82663e60b83b6f41847d
+def:id|env|-|-|1a608153e9b78659db2bfc13b2c11c024dceb0acde9cfaa8b900345cda2af238
+def:strongest|env|-|-|57786b2c8758c3c7ea80ac7a80464b331ea77ff9b8c804a032504394bc800369
+thm:exist|env|-|-|fb6d83115f2effb62bc56a233e84212da50c0b692a60ebcdf2a0ea30fcfa9db9
 lem:uniq|env|-|-|ff8ac0629d00554c5d54c580e68c4886297c63e24fd214338614560eedb862cf
-thm:s4|env|-|-|09599de2c925eba38b8ac8e9e6007118e9c6539100a777d98ada030d3d5fcd95
-thm:sym|env|-|-|64e88f37ad07f9dcd339ebd0789e5a84cc6a0098f597cbcef2513a801332e582
+thm:s5|env|-|-|14b32c8a3281aa246e1f83277fd940bdb9fcb8b88b702cda42c0fbf89a0112d7
 ```
 <!-- MANIFEST:END -->
 
