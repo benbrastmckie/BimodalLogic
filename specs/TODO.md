@@ -1,5 +1,5 @@
 ---
-next_project_number: 504
+next_project_number: 505
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 504
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,193,257,298,433,461,476,481,492,494,495,503 | -- | algebraic-representation, automation, dataset-enhancement, ... |
+| 1 | 127,128,193,257,298,433,461,476,481,492,494,495,503,504 | -- | algebraic-representation, automation, dataset-enhancement, ... |
 | 2 | 178,231,282,296,463,493,502 | 193,298,433,461,492 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 219,464,497 | 231,463,502 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 465,498,499,500 | 464,492,497 | algebraic-representation, decidability |
@@ -81,6 +81,7 @@ next_project_number: 504
 ### Literature
 
 461 [NOT STARTED] — SCOPE 8 acquisition gap identified by task 457's research and re-
+504 [NOT STARTED] — Retry acquisition of the standard modal-representation sources th
 
 ### Metalogic
 
@@ -93,6 +94,16 @@ next_project_number: 504
 494 [NOT STARTED] — UNBLOCKED TODAY, INDEPENDENT of the ultraproduct chain. Settle th
 
 ## Tasks
+
+### 504. Retry acquisition of missing representation sources
+- **Status**: [NOT STARTED]
+- **Task Type**: general
+- **Topic**: literature
+- **Dependencies**: None
+
+**Description**: Retry acquisition of the standard modal-representation sources that the representation-section literature research could not obtain because Semantic Scholar (literature-discover.sh Tier 3) was rate-limited (HTTP 429) for the whole session: Sambin & Vaccaro 1988 "Topology and duality in modal logic"; S. K. Thomason 1972 "Semantic analysis of tense logics" and 1975 "Categories of frames for modal logic"; Goldblatt 1976 "Metamathematics of modal logic" I-II; Fine 1975 "Some connections between elementary and modal logic"; Gehrke & Jonsson 2004 "Bounded distributive lattice expansions" (mscand.dk URLs 404; proxy gehrke_vosmaer_2011 already ingested); Gabbay & Shehtman "Products of modal logics I"; Marx & Venema 1997 "Multi-dimensional modal logic" (Zotero metadata only, no PDF). Use /literature "<title>" or literature-discover.sh once Tier 3 recovers (or after the S2_API_KEY / multi-provider fallback lands in the literature extension), ingest what is open-access or in Zotero, record paywalled items honestly as not acquired, and register every acquired doc in specs/literature-index.json with reason and citation_rule fields following the existing entries. Evidence and the full standard-sources checklist are in specs/503_revise_representation_section_with_literature/reports/01_representation-literature-research.md sections 2.2-2.3
+
+---
 
 ### 503. Revise representation section with literature
 - **Status**: [RESEARCHED]

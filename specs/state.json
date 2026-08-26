@@ -4,8 +4,18 @@
     "total_tasks": 42,
     "last_sync": "2026-08-24T21:34:14Z"
   },
-  "next_project_number": 504,
+  "next_project_number": 505,
   "active_projects": [
+    {
+      "project_number": 504,
+      "project_name": "retry_acquisition_of_missing_representation_sources",
+      "status": "not_started",
+      "task_type": "general",
+      "description": "Retry acquisition of the standard modal-representation sources that the representation-section literature research could not obtain because Semantic Scholar (literature-discover.sh Tier 3) was rate-limited (HTTP 429) for the whole session: Sambin & Vaccaro 1988 \"Topology and duality in modal logic\"; S. K. Thomason 1972 \"Semantic analysis of tense logics\" and 1975 \"Categories of frames for modal logic\"; Goldblatt 1976 \"Metamathematics of modal logic\" I-II; Fine 1975 \"Some connections between elementary and modal logic\"; Gehrke & Jonsson 2004 \"Bounded distributive lattice expansions\" (mscand.dk URLs 404; proxy gehrke_vosmaer_2011 already ingested); Gabbay & Shehtman \"Products of modal logics I\"; Marx & Venema 1997 \"Multi-dimensional modal logic\" (Zotero metadata only, no PDF). Use /literature \"<title>\" or literature-discover.sh once Tier 3 recovers (or after the S2_API_KEY / multi-provider fallback lands in the literature extension), ingest what is open-access or in Zotero, record paywalled items honestly as not acquired, and register every acquired doc in specs/literature-index.json with reason and citation_rule fields following the existing entries. Evidence and the full standard-sources checklist are in specs/503_revise_representation_section_with_literature/reports/01_representation-literature-research.md sections 2.2-2.3",
+      "topic": "literature",
+      "created": "2026-08-26T18:54:46Z",
+      "last_updated": "2026-08-26T18:54:46Z"
+    },
     {
       "project_number": 503,
       "project_name": "revise_representation_section_with_literature",
