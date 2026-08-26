@@ -228,7 +228,7 @@ recommends alongside `BLSemanticConsequence`.
 
 ---
 
-### Phase 3: `Metalogic/BaseLanguageSoundness.lean` — bridge, soundness, consistency [IN PROGRESS]
+### Phase 3: `Metalogic/BaseLanguageSoundness.lean` — bridge, soundness, consistency [COMPLETED]
 
 **Goal**: Prove the bridge by induction and land all four soundness theorems, their validity
 forms, both consistency corollaries, and the three native spot checks.
@@ -288,7 +288,7 @@ forms, both consistency corollaries, and the three native spot checks.
 
 ---
 
-### Phase 4: Lean docstring amendments — the invariant and the four stale claims [NOT STARTED]
+### Phase 4: Lean docstring amendments — the invariant and the four stale claims [IN PROGRESS]
 
 **Goal**: Amend every `.lean` docstring that now asserts something false, and make the
 `BaseLanguage/` module invariant directional rather than silently ambiguous.
