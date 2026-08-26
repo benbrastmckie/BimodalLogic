@@ -11,9 +11,9 @@ next_project_number: 503
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,193,257,298,433,461,476,481,489,490,491,496 | -- | algebraic-representation, automation, dataset-enhancement, ... |
-| 2 | 178,231,282,296,463,492,494,495,502 | 193,298,433,461,489,490,491 | algebraic-representation, dataset-enhancement, decidability, ... |
-| 3 | 219,464,493,497 | 231,463,490,492,496,502 | algebraic-representation, dataset-enhancement, decidability, ... |
+| 1 | 127,128,193,257,298,433,461,476,481,489,492,494 | -- | automation, dataset-enhancement, decidability, ... |
+| 2 | 178,231,282,296,463,493,495,502 | 193,298,433,461,489,492 | algebraic-representation, dataset-enhancement, decidability, ... |
+| 3 | 219,464,497 | 231,463,502 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 465,498,499,500 | 464,492,497 | algebraic-representation, decidability |
 | 5 | 125,428 | 465,498,499 | algebraic-representation, decidability |
 | 6 | 429,501 | 125,428 | algebraic-representation, decidability |
@@ -27,14 +27,14 @@ next_project_number: 503
 
 ### Algebraic Representation
 
-496 [IMPLEMENTING] — RESEARCH TASK, UNBLOCKED TODAY. Decide whether the algebraic stac
-  └─ 497 [NOT STARTED] — Bring the Shift-closed Tense S5 Algebra class into live code and 
-    └─ 498 [NOT STARTED] — Phase 1 of the Jonsson-Tarski representation: the complex algebra
-      └─ 125 [NOT STARTED] — CAPSTONE of the algebraic representation front. Prove the Jonsson
-        └─ 501 [NOT STARTED] — Phase 4 of the Jonsson-Tarski representation: extend STSA with th
-    └─ 499 [NOT STARTED] — HARD. Phase 2 of the Jonsson-Tarski representation: the ultrafilt
-      └─ 125 [NOT STARTED] — CAPSTONE of the algebraic representation front. Prove the Jonsson (see above)
-    └─ 500 [NOT STARTED] — RESEARCH TASK. Prevent two parallel representation theorems from 
+125 [NOT STARTED] — CAPSTONE of the algebraic representation front. Prove the Jonsson
+  └─ 501 [NOT STARTED] — Phase 4 of the Jonsson-Tarski representation: extend STSA with th
+497 [NOT STARTED] — Bring the Shift-closed Tense S5 Algebra class into live code and 
+  └─ 498 [NOT STARTED] — Phase 1 of the Jonsson-Tarski representation: the complex algebra
+    └─ 125 [NOT STARTED] — CAPSTONE of the algebraic representation front. Prove the Jonsson (see above)
+  └─ 499 [NOT STARTED] — HARD. Phase 2 of the Jonsson-Tarski representation: the ultrafilt
+    └─ 125 [NOT STARTED] — CAPSTONE of the algebraic representation front. Prove the Jonsson (see above)
+  └─ 500 [NOT STARTED] — RESEARCH TASK. Prevent two parallel representation theorems from 
 502 [NOT STARTED] — RESEARCH TASK. Ground the algebraic representation front in the l
   └─ 497 [NOT STARTED] — Bring the Shift-closed Tense S5 Algebra class into live code and  (see above)
 
@@ -88,12 +88,9 @@ next_project_number: 503
 
 ### Strong Completeness
 
-490 [IMPLEMENTING] — ROUTINE, UNBLOCKED TODAY. Close a silent second gap on the compac
+492 [NOT STARTED] — HARD. Build the ultraproduct of shift sets and prove Los for Trut
   └─ 493 [NOT STARTED] — Assemble the compactness result and collect strong completeness f
-  └─ 494 [NOT STARTED] — UNBLOCKED TODAY, INDEPENDENT of the ultraproduct chain. Settle th
-491 [IMPLEMENTING] — RESEARCH TASK, UNBLOCKED TODAY. Decide how to build the ultraprod
-  └─ 492 [NOT STARTED] — HARD. Build the ultraproduct of shift sets and prove Los for Trut
-    └─ 493 [NOT STARTED] — Assemble the compactness result and collect strong completeness f (see above)
+494 [NOT STARTED] — UNBLOCKED TODAY, INDEPENDENT of the ultraproduct chain. Settle th
 
 ## Tasks
 
@@ -185,12 +182,13 @@ DELIVERABLE: a grounding report answering, with citations to specific pages read
 
 ### 496. Research algebraic stack build graph wiring
 - **Effort**: 6-10 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: algebraic-representation
 - **Dependencies**: None
 - **Research**: [496_research_algebraic_stack_build_graph_wiring/reports/01_algebraic-stack-build-graph-wiring.md]
 - **Plan**: [496_research_algebraic_stack_build_graph_wiring/plans/01_wire-algebraic-stack-fix-readme.md]
+- **Summary**: [496_research_algebraic_stack_build_graph_wiring/summaries/01_wire-algebraic-stack-fix-readme-summary.md]
 
 **Description**: RESEARCH TASK, UNBLOCKED TODAY. Decide whether the algebraic stack should be wired into the build graph, and settle the elaboration-conflict question before anything is built on top of it. THE FINDING: FormalSystem/Metalogic/Algebraic/ holds five sorry-free files, but only FlowFrame.lean (806 lines, 6 live importers) is reachable from the default target root FormalSystem.lean. BooleanStructure.lean (441), InteriorOperators.lean (176), LindenbaumQuotient.lean (393) and UltrafilterMCS.lean (1071) -- 2,081 lines, and exactly the part relevant to Jonsson-Tarski -- are ORPHANED: no live .lean file anywhere imports FormalSystem.Metalogic.Algebraic, verified by grep returning zero hits. The aggregator exists only to satisfy the C8 sibling-aggregator invariant (scripts/check-module-invariants.sh:418-449). They are LSP-checked and manifested under C6, but not verified by lake build. Stale oleans for deleted modules dated 2026-08-10 sit in .lake/build/, so build artifacts there are NOT evidence of reachability. THE RISK TO ADJUDICATE: Boneyard/UltrafilterFrame/README.md records that that subtree was archived on 2026-05-20 because of 'elaboration conflicts with BXCanonical completeness'. It is UNKNOWN whether those conflicts were specific to the Boneyard files or would also bite the currently-orphaned Algebraic/ stack if it were imported live. Determine this empirically before recommending. DELIVERABLE: a report recommending either (a) re-wire -- import the aggregator from a live module so lake build covers the stack, with measured build-time delta and any elaboration conflicts named; or (b) keep isolation-only and document it honestly. EITHER WAY, fix two overstatements in Algebraic/README.md: it claims 'this directory is not optional' and 'participates in the live proof' (true only of FlowFrame.lean), and it claims 'G and H are shown to be interior operators' when InteriorOperators.lean proves only H_monotone (:80) plus the box triple (:101, :112, :130) -- there is no G operator on the quotient at all.
 
@@ -242,12 +240,13 @@ DELIVERABLE: a grounding report answering, with citations to specific pages read
 
 ### 491. Select dependent ultraproduct carrier route
 - **Effort**: 6-10 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: strong_completeness
 - **Dependencies**: None
 - **Research**: [491_select_dependent_ultraproduct_carrier_route/reports/01_dependent-ultraproduct-carrier-route.md]
 - **Plan**: [491_select_dependent_ultraproduct_carrier_route/plans/01_land-carrier-route-decision.md]
+- **Summary**: [491_select_dependent_ultraproduct_carrier_route/summaries/01_land-carrier-route-decision-summary.md]
 
 **Description**: RESEARCH TASK, UNBLOCKED TODAY. Decide how to build the ultraproduct carrier before any Los-lemma work starts. CONTEXT: task 424 PASSED the compactness feasibility gate and landed FormalSystem/Semantics/ShiftSet.lean (506 lines, sorry-free) with forward_repr (:263) and reverse_repr (:362). Its cancel condition did not fire: the one extra hypothesis needed, sep, is first-order over the two-sorted signature <Omega, D; <, +, 0, sh, (A_p)>, hence Los-preserved. THE PROBLEM (task 424's risk R1, its own largest named unknown): the index type is {L : List Formula // forall psi in L, psi in Gamma}, and the carriers D_L differ per finite subset, so the ultraproduct is DEPENDENT. Mathlib's ordered instances (Mathlib/Order/Filter/FilterProduct.lean:92, LinearOrder for Germ) live only on the NON-dependent Filter.Germ; the dependent Filter.Product (Mathlib/Order/Filter/Germ/Basic.lean:100) has no ordered-group instances. TWO ROUTES TO ADJUDICATE: (a) a bespoke quotient of (forall i, D i) with roughly 15 hand-supplied instances (AddCommGroup, LinearOrder, IsOrderedAddMonoid, Nontrivial, and the frame-class binders); (b) a carrier-normalization step that collapses the family to a single carrier first -- note task 475 (carrier_normalization_successor_archimedean_transfer, completed) may or may not supply reusable machinery, and whether it does is part of what this task must determine rather than assume. ALSO IN SCOPE: Mathlib build cost. Ultrafilter (Order/Filter/Ultrafilter/) is already built and free; Filter.Germ and FilterProduct are present in source but have NO oleans in this checkout, so importing them triggers a Mathlib build -- quantify it. DELIVERABLE: a research report naming the chosen route with evidence, the exact instance list route (a) would require, and a go/no-go on route (b). MUST NOT write the Los lemma.
 
@@ -255,12 +254,13 @@ DELIVERABLE: a grounding report answering, with citations to specific pages read
 
 ### 490. Prove model existence implies compactness bridge
 - **Effort**: 3-5 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: strong_completeness
 - **Dependencies**: None
 - **Research**: [490_prove_model_existence_implies_compactness_bridge/reports/01_model-existence-compactness-bridge.md]
 - **Plan**: [490_prove_model_existence_implies_compactness_bridge/plans/01_land-compactness-bridge-theorems.md]
+- **Summary**: [490_prove_model_existence_implies_compactness_bridge/summaries/01_land-compactness-bridge-theorems-summary.md]
 
 **Description**: ROUTINE, UNBLOCKED TODAY. Close a silent second gap on the compactness route. FormalSystem/Metalogic/SetConsequence.lean states both ModelExistenceBase (:239-242) and CompactBase (:219-221), and the Dense siblings ModelExistenceDense (:283-286) and CompactDense (:263-265), but the implication ModelExistence -> Compact is NOT proved: the module docstrings at :234-238 and :278-282 say verbatim that 'that implication is future work and is not proved here'. The compactness programme is routinely described as having one gap (the model-existence theorem); it has two, and this is the cheap one. DELIVERABLE: theorems compactBase_of_modelExistence : ModelExistenceBase -> CompactBase and compactDense_of_modelExistenceDense : ModelExistenceDense -> CompactDense, in SetConsequence.lean or a sibling. ROUTE: contrapose through the Formula.neg clause of TruthAt plus the existing truthAt_foldr_imp (StrongCompleteness.lean:183); SetDerivable (:69) and the finite-restriction lemmas (:151, :156, :166, :174) are already available. ACCEPTANCE: both theorems sorry-free, #print axioms exactly [propext, Classical.choice, Quot.sound], lake build green. DO NOT attempt the model-existence theorem itself here -- that is the ultraproduct work and is separately tasked.
 

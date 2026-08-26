@@ -957,14 +957,14 @@
     {
       "project_number": 490,
       "project_name": "prove_model_existence_implies_compactness_bridge",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "topic": "strong_completeness",
       "effort": "3-5 hours",
       "dependencies": [],
       "description": "ROUTINE, UNBLOCKED TODAY. Close a silent second gap on the compactness route. FormalSystem/Metalogic/SetConsequence.lean states both ModelExistenceBase (:239-242) and CompactBase (:219-221), and the Dense siblings ModelExistenceDense (:283-286) and CompactDense (:263-265), but the implication ModelExistence -> Compact is NOT proved: the module docstrings at :234-238 and :278-282 say verbatim that 'that implication is future work and is not proved here'. The compactness programme is routinely described as having one gap (the model-existence theorem); it has two, and this is the cheap one. DELIVERABLE: theorems compactBase_of_modelExistence : ModelExistenceBase -> CompactBase and compactDense_of_modelExistenceDense : ModelExistenceDense -> CompactDense, in SetConsequence.lean or a sibling. ROUTE: contrapose through the Formula.neg clause of TruthAt plus the existing truthAt_foldr_imp (StrongCompleteness.lean:183); SetDerivable (:69) and the finite-restriction lemmas (:151, :156, :166, :174) are already available. ACCEPTANCE: both theorems sorry-free, #print axioms exactly [propext, Classical.choice, Quot.sound], lake build green. DO NOT attempt the model-existence theorem itself here -- that is the ultraproduct work and is separately tasked.",
       "created": "2026-08-26T05:15:00Z",
-      "last_updated": "2026-08-26T07:03:25Z",
+      "last_updated": "2026-08-26T07:35:49Z",
       "session_id": "sess_1787724130_558d21_490",
       "artifacts": [
         {
@@ -976,20 +976,26 @@
           "path": "specs/490_prove_model_existence_implies_compactness_bridge/plans/01_land-compactness-bridge-theorems.md",
           "type": "plan",
           "summary": "3-phase plan: land both verified bridge theorems, reconcile seven stale prose sites, run the full acceptance gate."
+        },
+        {
+          "path": "specs/490_prove_model_existence_implies_compactness_bridge/summaries/01_land-compactness-bridge-theorems-summary.md",
+          "type": "summary",
+          "summary": ""
         }
-      ]
+      ],
+      "completion_summary": "Landed compactBase_of_modelExistence : ModelExistenceBase -> CompactBase and compactDense_of_modelExistenceDense : ModelExistenceDense -> CompactDense in FormalSystem/Metalogic/StrongCompleteness.lean (not SetConsequence.lean, which would be an import cycle), both sorry-free and auditing to exactly [propext, Classical.choice, Quot.sound]. Reconciled the seven prose sites across three files that asserted the implication was unproved future work, including the two module docstrings named in the task brief. Full lake build green."
     },
     {
       "project_number": 491,
       "project_name": "select_dependent_ultraproduct_carrier_route",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "topic": "strong_completeness",
       "effort": "6-10 hours",
       "dependencies": [],
       "description": "RESEARCH TASK, UNBLOCKED TODAY. Decide how to build the ultraproduct carrier before any Los-lemma work starts. CONTEXT: task 424 PASSED the compactness feasibility gate and landed FormalSystem/Semantics/ShiftSet.lean (506 lines, sorry-free) with forward_repr (:263) and reverse_repr (:362). Its cancel condition did not fire: the one extra hypothesis needed, sep, is first-order over the two-sorted signature <Omega, D; <, +, 0, sh, (A_p)>, hence Los-preserved. THE PROBLEM (task 424's risk R1, its own largest named unknown): the index type is {L : List Formula // forall psi in L, psi in Gamma}, and the carriers D_L differ per finite subset, so the ultraproduct is DEPENDENT. Mathlib's ordered instances (Mathlib/Order/Filter/FilterProduct.lean:92, LinearOrder for Germ) live only on the NON-dependent Filter.Germ; the dependent Filter.Product (Mathlib/Order/Filter/Germ/Basic.lean:100) has no ordered-group instances. TWO ROUTES TO ADJUDICATE: (a) a bespoke quotient of (forall i, D i) with roughly 15 hand-supplied instances (AddCommGroup, LinearOrder, IsOrderedAddMonoid, Nontrivial, and the frame-class binders); (b) a carrier-normalization step that collapses the family to a single carrier first -- note task 475 (carrier_normalization_successor_archimedean_transfer, completed) may or may not supply reusable machinery, and whether it does is part of what this task must determine rather than assume. ALSO IN SCOPE: Mathlib build cost. Ultrafilter (Order/Filter/Ultrafilter/) is already built and free; Filter.Germ and FilterProduct are present in source but have NO oleans in this checkout, so importing them triggers a Mathlib build -- quantify it. DELIVERABLE: a research report naming the chosen route with evidence, the exact instance list route (a) would require, and a go/no-go on route (b). MUST NOT write the Los lemma.",
       "created": "2026-08-26T05:15:00Z",
-      "last_updated": "2026-08-26T07:03:31Z",
+      "last_updated": "2026-08-26T07:36:01Z",
       "session_id": "sess_1787724130_558d21_491",
       "artifacts": [
         {
@@ -1001,8 +1007,14 @@
           "path": "specs/491_select_dependent_ultraproduct_carrier_route/plans/01_land-carrier-route-decision.md",
           "type": "plan",
           "summary": "2 phases, 1.75 hours, waves [[1],[2]]. Validator: PASS, 0 warnings."
+        },
+        {
+          "path": "specs/491_select_dependent_ultraproduct_carrier_route/summaries/01_land-carrier-route-decision-summary.md",
+          "type": "summary",
+          "summary": ""
         }
-      ]
+      ],
+      "completion_summary": "Promoted the verified route-(a) dependent ultraproduct carrier construction from a specs/ prototype to Tests/BimodalTest/Semantics/DependentUltraproductProbe.lean, imported from Tests/BimodalTest.lean so lake build now checks it: it compiles clean under the library's autoImplicit := false with 0 sorry, 0 new axioms, and axiom profiles exactly [propext, Classical.choice, Quot.sound] on all three probed declarations, with a declaration set identical to the prototype's. Recorded the selected route, the rejected route, and the probe's in-tree path in a new report section and in the successor task's state.json description. The Los lemma, the index-type ultrafilter, ShiftSet.sep, carrier_nonempty, and the valuation were all out of scope and none was attempted."
     },
     {
       "project_number": 492,
@@ -1065,14 +1077,14 @@
     {
       "project_number": 496,
       "project_name": "research_algebraic_stack_build_graph_wiring",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "topic": "algebraic-representation",
       "effort": "6-10 hours",
       "dependencies": [],
       "description": "RESEARCH TASK, UNBLOCKED TODAY. Decide whether the algebraic stack should be wired into the build graph, and settle the elaboration-conflict question before anything is built on top of it. THE FINDING: FormalSystem/Metalogic/Algebraic/ holds five sorry-free files, but only FlowFrame.lean (806 lines, 6 live importers) is reachable from the default target root FormalSystem.lean. BooleanStructure.lean (441), InteriorOperators.lean (176), LindenbaumQuotient.lean (393) and UltrafilterMCS.lean (1071) -- 2,081 lines, and exactly the part relevant to Jonsson-Tarski -- are ORPHANED: no live .lean file anywhere imports FormalSystem.Metalogic.Algebraic, verified by grep returning zero hits. The aggregator exists only to satisfy the C8 sibling-aggregator invariant (scripts/check-module-invariants.sh:418-449). They are LSP-checked and manifested under C6, but not verified by lake build. Stale oleans for deleted modules dated 2026-08-10 sit in .lake/build/, so build artifacts there are NOT evidence of reachability. THE RISK TO ADJUDICATE: Boneyard/UltrafilterFrame/README.md records that that subtree was archived on 2026-05-20 because of 'elaboration conflicts with BXCanonical completeness'. It is UNKNOWN whether those conflicts were specific to the Boneyard files or would also bite the currently-orphaned Algebraic/ stack if it were imported live. Determine this empirically before recommending. DELIVERABLE: a report recommending either (a) re-wire -- import the aggregator from a live module so lake build covers the stack, with measured build-time delta and any elaboration conflicts named; or (b) keep isolation-only and document it honestly. EITHER WAY, fix two overstatements in Algebraic/README.md: it claims 'this directory is not optional' and 'participates in the live proof' (true only of FlowFrame.lean), and it claims 'G and H are shown to be interior operators' when InteriorOperators.lean proves only H_monotone (:80) plus the box triple (:101, :112, :130) -- there is no G operator on the quotient at all.",
       "created": "2026-08-26T05:15:00Z",
-      "last_updated": "2026-08-26T07:03:36Z",
+      "last_updated": "2026-08-26T07:36:12Z",
       "session_id": "sess_1787724130_558d21_496",
       "artifacts": [
         {
@@ -1084,8 +1096,14 @@
           "path": "specs/496_research_algebraic_stack_build_graph_wiring/plans/01_wire-algebraic-stack-fix-readme.md",
           "type": "plan",
           "summary": "5-phase, 2.75-hour plan wiring the Algebraic aggregator into the build graph and correcting fourteen documentation claims across four READMEs."
+        },
+        {
+          "path": "specs/496_research_algebraic_stack_build_graph_wiring/summaries/01_wire-algebraic-stack-fix-readme-summary.md",
+          "type": "summary",
+          "summary": "Wiring result, measured build and invariant figures, all fourteen documentation corrections, three plan deviations, the concurrency record, and the out-of-scope observations carried forward."
         }
-      ]
+      ],
+      "completion_summary": "Implemented the research report's recommendation (a): one import line in FormalSystem/Metalogic.lean brings the Algebraic sibling aggregator and its four orphaned children (2,081 sorry-free lines) into the lake build closure, with the five now-stale scripts/module-invariants-manifest.txt entries deleted in the same atomic commit. Corrected eight overstatements in Algebraic/README.md (including the two the task named: the directory-wide 'not optional'/'participates in the live proof' claims, now scoped to FlowFrame.lean, and the false 'G and H are shown to be interior operators', replaced with the boxInterior/H_monotone facts), four in Metalogic/README.md, and recorded a scoped adjudication of the elaboration-conflict hazard in the Boneyard that stays in force for the two untested archived files. lake build rc=0 (2501 jobs, 0 errors) and check-module-invariants.sh rc=0 with ALL CHECKS PASSED."
     },
     {
       "project_number": 497,
