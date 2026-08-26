@@ -239,8 +239,11 @@ If you use this project in your research, please cite:
 @article{brastmckie2025construction,
   title     = {The Construction of Possible Worlds},
   author    = {Brast-McKie, Benjamin},
+  journal   = {Journal of Philosophical Logic},
+  publisher = {Springer},
   year      = {2026},
-  url       = {https://benbrastmckie.com/wp-content/uploads/2026/07/possible_worlds.pdf}
+  note      = {Forthcoming},
+  url       = {https://benbrastmckie.com/publications/possible_worlds.pdf}
 }
 
 @software{proofchecker2025,
