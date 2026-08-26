@@ -133,7 +133,7 @@ Every subdirectory has exactly one **sibling** aggregator: `X.lean` sits *beside
 | `SoundnessLemmas.lean` | 34 | `SoundnessLemmas/` |
 | `WeakCanonical.lean` | 144 | `WeakCanonical/` |
 
-**Five** loose files in `Metalogic/` are not aggregators — they have no same-named
+**Six** loose files in `Metalogic/` are not aggregators — they have no same-named
 sibling directory:
 
 | Loose non-aggregator | Lines | Role |
@@ -143,6 +143,7 @@ sibling directory:
 | `SetConsequence.lean` | 338 | Set-indexed consequence relation |
 | `DiscreteNonCompactness.lean` | 334 | Non-compactness of the discrete frame class |
 | `Conservativity.lean` | 295 | Conservativity of the extension |
+| `BaseLanguageSoundness.lean` | 318 | Soundness for the base language BL, by composing `Conservativity.translate` with `Soundness.lean` across the truth-transfer bridge `truthAt_tr` |
 
 Plus the directory's own root `Metalogic.lean` (199 lines), which sits one level up,
 beside `Metalogic/`.
