@@ -245,33 +245,38 @@ plus the six-rung ladder and each rung's real status.
 
 ---
 
-### Phase 3: Rewrite The Algebraic Layer [NOT STARTED]
+### Phase 3: Rewrite The Algebraic Layer [COMPLETED]
 
 **Goal**: Make the subsection factually correct about what the Lean layer contains, state the
 three concrete gaps between it and a BAO for TM, and add the tense-algebra structure the section
 currently omits.
 
 **Tasks**:
-- [ ] Correct the `#definition("The Lindenbaum--Tarski Algebra")` block: `box` is an interior
+- [x] Correct the `#definition("The Lindenbaum--Tarski Algebra")` block: `box` is an interior
       operator on the quotient; `#allpast` and `#allfuture` are not, under strict temporal
       semantics; and no `G` operator exists on the quotient at all. Cite the module that says so
-      alongside the existing `#leansrc` pointers.
-- [ ] State the three gaps between `LindenbaumAlg` and a BAO for TM's similarity type: no `G`;
+      alongside the existing `#leansrc` pointers. *(completed)*
+- [x] State the three gaps between `LindenbaumAlg` and a BAO for TM's similarity type: no `G`;
       no normality/additivity statement (which is exactly the hypothesis Jonsson-Tarski
       consumes); and one algebra for the base logic only, with no per-frame-class algebras.
-- [ ] Name the smallest concrete next step: `sigmaQuot` is already present and involutive, so
+      *(completed, as an `#items` list with a `Derives` #leansrc pointer)*
+- [x] Name the smallest concrete next step: `sigmaQuot` is already present and involutive, so
       `gQuot := sigmaQuot . hQuot . sigmaQuot` is one definition away, leaving normality and
       additivity as the remaining obligations. Present it as the next step, not as done.
-- [ ] Add the tense-algebra observation: TA (`phi -> G P phi`) and its TD-dual are exactly the
+      *(completed; the composite is written in math notation, not backticked, since `gQuot` is
+      not a live Lean identifier and would fail `typst-sync-check.sh` Check 1)*
+- [x] Add the tense-algebra observation: TA (`phi -> G P phi`) and its TD-dual are exactly the
       tense-algebra axioms, and a tense algebra's diamonds are *complete* operators, preserving
       all existing joins. Attribute the statement to the literature and state the payoff (this is
       what makes the atom-structure duality work) without over-claiming that it has been used.
-- [ ] Keep the ultrafilter/MCS correspondence claim, which is verified, and keep its `#leansrc`
-      pointer.
-- [ ] Fix the anachronistic attribution: the `eta(a) = {U : a in U}` ultrafilter-frame
+      *(completed, as a `#remark`, attributed to `@venema2007algebrascoalgebras`)*
+- [x] Keep the ultrafilter/MCS correspondence claim, which is verified, and keep its `#leansrc`
+      pointer. *(completed, unchanged)*
+- [x] Fix the anachronistic attribution: the `eta(a) = {U : a in U}` ultrafilter-frame
       formulation is the modern restatement and should be attributed as such, with the theorem
       attributed to Jonsson & Tarski. Note in a footnote that the 1951/52 papers construct a
-      *perfect extension* and contain no occurrence of "ultrafilter".
+      *perfect extension* and contain no occurrence of "ultrafilter". *(completed, footnote citing
+      `@blackburnderijkevenema2001` §5.3 for the modern notation)*
 
 **Timing**: 2 hours
 

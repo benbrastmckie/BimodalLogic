@@ -1179,7 +1179,7 @@ The difficulty resolves into six rungs, of markedly different status.
     table.header([*Rung*], [*Statement*], [*Status for TM*]),
     table.hline(),
     [1. Lindenbaum--Tarski algebra], [exists, Boolean, ultrafilters $tilde.equiv$ MCSs], [done in Lean, sorry-free],
-    [2. BAO for the full similarity type], [$\{square.stroked, G, H, until, since\}$, normal and additive], [not done -- no $G$ on the quotient, no normality/additivity lemma],
+    [2. BAO for the full similarity type], [${square.stroked, G, H, until, since}$, normal and additive], [not done -- no $G$ on the quotient, no normality/additivity lemma],
     [3. Jónsson--Tarski], [$A arrow.r.hook op("Em")(A)$; canonical frame $tilde.equiv$ ultrafilter frame], [available off the shelf; the ultrafilter/MCS half is Lean-verified],
     [4. Full duality], [$op("BAO")_tau tilde.equiv op("DGF")_tau^op("op")$, descriptive general frames], [available off the shelf],
     [5. Dual Kripke reduct is a task frame], [*Compositionality*, *Seriality*, *Limit*, *Spherical*], [blocked at *Spherical*],
@@ -1201,7 +1201,7 @@ The difficulty resolves into six rungs, of markedly different status.
     let boxstyle(fill-c, stroke-c) = (fill: fill-c, stroke: (paint: stroke-c, thickness: 1pt), inset: 5pt, radius: 3pt, width: 9cm)
     content(r1, box(..boxstyle(green.transparentize(85%), green.darken(20%)))[#align(center)[#text(size: 7pt)[Rung 1: Lindenbaum--Tarski algebra, ultrafilters $tilde.equiv$ MCSs -- *live, sorry-free*]]])
     line(r1, r2, stroke: (paint: gray.darken(20%), thickness: 1pt), mark: (end: ">"))
-    content(r2, box(..boxstyle(red.transparentize(88%), red.darken(20%)))[#align(center)[#text(size: 7pt)[Rung 2: BAO for $\{square.stroked, G, H, until, since\}$ -- *not done: no $G$, no normality/additivity*]]])
+    content(r2, box(..boxstyle(red.transparentize(88%), red.darken(20%)))[#align(center)[#text(size: 7pt)[Rung 2: BAO for ${square.stroked, G, H, until, since}$ -- *not done: no $G$, no normality/additivity*]]])
     line(r2, r3, stroke: (paint: gray.darken(20%), thickness: 1pt), mark: (end: ">"))
     content(r3, box(..boxstyle(orange.transparentize(85%), orange.darken(20%)))[#align(center)[#text(size: 7pt)[Rung 3: Jónsson--Tarski embedding $A arrow.r.hook op("Em")(A)$ -- *off the shelf*]]])
     line(r3, r4, stroke: (paint: gray.darken(20%), thickness: 1pt), mark: (end: ">"))
@@ -1214,18 +1214,27 @@ The difficulty resolves into six rungs, of markedly different status.
 
 == The Algebraic Layer
 
-One route has live, sorry-free groundwork.
+Rung 1 of the ladder has live, sorry-free groundwork; rung 2 does not; the two nearby steps that
+would close rung 2 are named below.
 
 #definition("The Lindenbaum--Tarski Algebra")[
   Quotient the sentences of $#BLplus$ by provable equivalence. The result carries a Boolean algebra
-  structure induced by the connectives, on which $#allpast$ and $#allfuture$ act as *interior
-  operators*: each is monotone, deflationary on the relevant order, and idempotent, so each is
-  determined by its algebra of fixed points. The ultrafilters of this algebra correspond
-  bijectively to the maximal consistent sets of @sec:construction.#footnote[The flow-frame engine of @sec:construction lives alongside them in `FlowFrame.lean`. All five measure sorry-free.]
+  structure induced by the connectives, on which $square.stroked$ acts as an *interior operator*:
+  it is monotone, deflationary, and idempotent, so it is determined by its algebra of fixed points.
+  Under strict temporal semantics $#allpast$ and $#allfuture$ are *not* interior operators ---
+  their T-axioms $#allpast phi.alt arrow.r phi.alt$ and $#allfuture phi.alt arrow.r phi.alt$ fail
+  when $H$ and $G$ quantify over strictly past/future times --- and only $H$'s monotonicity
+  survives on the quotient; no $G$ operator is defined on the quotient at all. The ultrafilters of
+  this algebra correspond bijectively to the maximal consistent sets of
+  @sec:construction.#footnote[The flow-frame engine of @sec:construction lives alongside them in `FlowFrame.lean`. All five measure sorry-free.]
 ]
 #leansrc("Metalogic.Algebraic.LindenbaumQuotient", "LindenbaumAlg")
 #leansrc("Metalogic.Algebraic.InteriorOperators", "boxInterior")
 #leansrc("Metalogic.Algebraic.UltrafilterMCS", "mcsToUltrafilter")
+
+The directory's own README states this precisely and is the source the definition above follows:
+$H$-monotonicity is the only surviving $G$/$H$-family result, and the quotient carries $#allpast$
+(as `hQuot`) but no $#allfuture$ counterpart anywhere in the tree.
 
 #remark[
   The correspondence is Stone's @stone1936, specialized: points of the dual space are ultrafilters
@@ -1235,11 +1244,50 @@ One route has live, sorry-free groundwork.
   where the frame axioms of @sec:system enter and where the difficulty is.
 ]
 
-The Jónsson--Tarski route @jonssontarski1951 @jonssontarski1952 --- the complex algebra
-$"Cm"(#taskframe)$ of a frame, the ultrafilter frame $"Uf"(A)$ of an abstract algebra, and the
-canonical embedding $eta(a) = {U : a in U}$ --- was moved out of the live tree into an archived
-subtree, and nothing under it is live. What it leaves undone, and the diagnosis of the block at
-rung 5, are taken up below.
+Three gaps separate rung 1 from rung 2, a BAO for TM's full similarity type
+${square.stroked, G, H, until, since}$:
+#items[
+  + *No $G$.* The quotient has `boxQuot` and `hQuot` but no lift of the $#allfuture$ connective.
+  + *No BAO instance.* Nothing states that `boxQuot` and `hQuot` are normal and additive
+    ($f(a or b) = f a or f b$, $f bot = bot$), which is exactly the hypothesis Jónsson--Tarski
+    consumes.
+  + *Base class only.* `Derives` is defined at `FrameClass.Base`, so there is one Lindenbaum
+    algebra for the base logic. The per-frame-class algebras a per-class completeness result would
+    need do not exist.
+]
+#leansrc("Metalogic.Algebraic.LindenbaumQuotient", "Derives")
+
+The smallest concrete step that closes the first gap is cheap and unbuilt: `sigmaQuot` is already
+an involution commuting with the Booleans and with `boxQuot`, so the composite
+$sigma_"quot" compose H compose sigma_"quot"$ is one definition away from a $G$ operator on the
+quotient. Normality and additivity for the resulting operator, and for `hQuot` itself, are the
+remaining obligations for rung 2. This is named as the next step, not claimed as done.
+#leansrc("Metalogic.Algebraic.LindenbaumQuotient", "sigmaQuot")
+#leansrc("Metalogic.Algebraic.LindenbaumQuotient", "sigma_quot_involution")
+
+#remark[
+  TM's *TA* axiom, $phi.alt arrow.r #allfuture #somepast phi.alt$, and its TD-dual
+  $phi.alt arrow.r #allpast #somefuture phi.alt$ are exactly the *tense-algebra* axioms
+  @venema2007algebrascoalgebras: a Boolean algebra with monotone $diamond.stroked_F, diamond.stroked_P$
+  satisfying $x lt.eq square.stroked_F diamond.stroked_P x$ and $x lt.eq square.stroked_P diamond.stroked_F x$.
+  In a tense algebra, $diamond.stroked_F$ and $diamond.stroked_P$ are *complete* operators ---
+  they preserve every existing join, not merely finite ones @venema2007algebrascoalgebras.
+  Complete additivity is precisely what makes the atom-structure duality of rung 3 work, and TA
+  gives it for free once $G$ and its normality/additivity are in place. This is named as a live
+  asset the algebra will carry, not as something already used: nothing in the Lean tree currently
+  exploits it.
+]
+
+Fixing an inaccuracy in the section's own citation: the canonical embedding
+$eta(a) = {U : a in U}$ into the complex algebra of the ultrafilter frame is the *modern*
+restatement of the Jónsson--Tarski theorem, not their own formulation. The route
+@jonssontarski1951 @jonssontarski1952 --- the complex algebra $"Cm"(#taskframe)$ of a frame, the
+ultrafilter frame $"Uf"(A)$ of an abstract algebra, and the embedding above --- was moved out of
+the live tree into an archived subtree, and nothing under it is live. What it leaves undone, and
+the diagnosis of the block at rung 5, are taken up below.#footnote[The 1951/1952 papers construct
+a *perfect extension* $A^sigma$ and contain no occurrence of "ultrafilter"; the ultrafilter-frame
+notation above is due to the modern restatement in @blackburnderijkevenema2001, §5.3. The theorem
+itself --- that the embedding exists --- is still Jónsson and Tarski's.]
 
 == The Shift-Set Target
 
