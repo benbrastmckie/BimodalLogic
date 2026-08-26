@@ -1,29 +1,33 @@
 {
-  "status": "planned",
-  "dispatch_seq": 8,
-  "phase": "plan",
-  "summary": "Deliberately minimal 2-phase plan. The task's primary deliverable (the route-selection report) is already produced and is not re-opened. What the plan adds is durability: Phase 1 lands the verified route-(a) carrier construction as Tests/BimodalTest/Semantics/DependentUltraproductProbe.lean, Phase 2 wires it into Tests/BimodalTest.lean and records the decision plus its checked anchor in the report and in the successor task's description. Total 1.75 hours. Nothing in FormalSystem/ is touched. The Los lemma, the index-type ultrafilter, ShiftSet.sep, carrier_nonempty, and the valuation are all named as Non-Goals and left to the S2/S3 task.",
+  "dispatch_seq": 13,
+  "phase": "implement",
+  "status": "implemented",
+  "phases_completed": 2,
+  "phases_total": 2,
+  "summary": "Landed the route-(a) dependent ultraproduct carrier construction as a compiled probe and recorded the route decision where the successor task will read it. Tests/BimodalTest/Semantics/DependentUltraproductProbe.lean carries the construction verbatim from the specs/ prototype, is imported from Tests/BimodalTest.lean, and builds clean under the library's autoImplicit := false in 1.4s with 0 sorry, 0 new axioms, and axiom profiles exactly [propext, Classical.choice, Quot.sound] on all three probed declarations. Its declaration set is identical to the prototype's (23 declarations, diffed both directions), so no successor-task scope leaked in. lake build BimodalTest green (2552 jobs, 0 errors, probe job 1.6s); default lake build green. The report gained a section 9 decision record and specs/state.json's build_shiftset_ultraproduct_and_los_lemma description gained the concrete route pointer (appended; artifacts untouched). The Los lemma, the index-type ultrafilter, ShiftSet.sep, carrier_nonempty, and the valuation were all out of scope and none was attempted. Nothing under FormalSystem/ was touched.",
+  "decisions_made": [
+    "Promoted the prototype to Tests/BimodalTest/Semantics/ as a probe rather than into FormalSystem/, following the plan's stated scope judgment and this repository's existing probe convention (RayRegionProbe, RegionGateProbe, UntlSnceCopyProbe).",
+    "Kept the three #print axioms as prints rather than wrapping them in #guard_msgs \u2014 the plan's default choice; the guard-wrapping was conditioned on the info-message noise being judged unacceptable, and it was not.",
+    "Appended the decision record as a new report section 9 rather than editing the existing findings, so the original reasoning stays intact.",
+    "Copied the mathematical content verbatim: no proof was re-derived, re-proved, or improved. Only the header, module docstring, and namespace changed."
+  ],
+  "blockers": [],
+  "files_modified": [
+    "Tests/BimodalTest/Semantics/DependentUltraproductProbe.lean",
+    "Tests/BimodalTest.lean",
+    "specs/491_select_dependent_ultraproduct_carrier_route/reports/01_dependent-ultraproduct-carrier-route.md",
+    "specs/491_select_dependent_ultraproduct_carrier_route/plans/01_land-carrier-route-decision.md",
+    "specs/491_select_dependent_ultraproduct_carrier_route/summaries/01_land-carrier-route-decision-summary.md",
+    "specs/491_select_dependent_ultraproduct_carrier_route/handoffs/phase-1-handoff-20260826.md",
+    "specs/491_select_dependent_ultraproduct_carrier_route/handoffs/phase-2-handoff-20260826.md",
+    "specs/state.json",
+    "specs/TODO.md"
+  ],
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/491_select_dependent_ultraproduct_carrier_route/plans/01_land-carrier-route-decision.md",
-      "summary": "2 phases, 1.75 hours, waves [[1],[2]]. Validator: PASS, 0 warnings."
+      "type": "summary",
+      "path": "specs/491_select_dependent_ultraproduct_carrier_route/summaries/01_land-carrier-route-decision-summary.md"
     }
   ],
-  "phases_completed": 0,
-  "phases_total": 2,
-  "blockers": [],
-  "next_action_hint": "implement",
-  "files_modified": [
-    "specs/491_select_dependent_ultraproduct_carrier_route/plans/01_land-carrier-route-decision.md"
-  ],
-  "decisions_made": [
-    "SCOPE JUDGMENT, flagged in the plan: the delegating instruction gated promotion of the prototype on the report recommending it, and the report does NOT literally recommend promotion -- it treats the prototype as evidence. The plan therefore does NOT put the file in FormalSystem/, where it would be unused library code the successor task immediately supersedes. It lands it under Tests/BimodalTest/Semantics/ as a probe, matching this repo's existing probe convention (RayRegionProbe, RegionGateProbe, BoxNegPreservationProbe, UntlSnceCopyProbe, all already wired into Tests/BimodalTest.lean). This protects the decision with lake build without pre-empting S2. If the reviewer wants FormalSystem/ instead, Phase 1 is a single-path change and nothing else in the plan moves.",
-    "Non-Goals state explicitly and by name: no Los lemma or any clause of it; no ultrafilter on {L : List Formula // forall psi in L, psi in Gamma}; no ShiftSet.sep on the ultraproduct; no carrier_nonempty; no valuation A; no re-litigation of route (b); no import of Mathlib.Order.Filter.Germ or FilterProduct; nothing added to the FormalSystem/ library.",
-    "Newly identified risk not in the research report: the prototype was verified with bare `lake env lean`, which does NOT apply the BimodalTest lean_lib's leanOptions (autoImplicit := false, per lakefile.lean's theoryLeanOptions). Promotion therefore carries genuine elaboration-fallout risk. Phase 1 makes this a named verification item, and the contingency forbids rewriting proofs to make it fit -- if it does not survive, stop, record, and keep the prototype under specs/ as the still-valid evidence.",
-    "Anti-scope-creep guard: Phase 1 carries a Scope Hypothesis enumerating all 23 declarations of the prototype and requires a declaration-set diff against it at implementation time. Any added declaration is scope creep into S2 and must be reverted, not justified.",
-    "Phase 2 records the decision where the successor will read it: appends a decision-record section to the report, and appends a concrete pointer (route named, report path, probe path) to build_shiftset_ultraproduct_and_los_lemma's description in specs/state.json, replacing its current indirect 'the carrier route selected by the preceding research task'. state.json artifacts arrays are not touched (append-only rule); TODO.md is regenerated via generate-todo.sh, not hand-edited.",
-    "specs/ROADMAP.md was consulted read-only and is left unmodified; no roadmap phases were added (roadmap_flag was not set in the delegation context).",
-    "Task-reference lint is called out as a Phase 1 requirement: Tests/** is outside specs/**, so the probe's docstring must cite durable anchors (ShiftSet.lean, SetConsequence.lean, DiscreteNonCompactness.lean, symbol names) and no task numbers."
-  ]
+  "next_action_hint": "Task complete; ready for postflight. Both phases COMPLETED and committed (9ece3e19a, 7763c33bf). Two foreign observations to be aware of, neither this task's and neither acted on: (1) a first lake build BimodalTest went red on task 489's half-landed FormalSystem/Metalogic.lean import of BaseLanguageSoundness, and went green on retry once 489 committed 84c602b36; (2) check-module-invariants.sh --no-build fails C6 on task 489's two untracked modules (BaseLanguageSoundness, BLValidity) \u2014 every other no-build check passes and this task introduced no C6 entry."
 }

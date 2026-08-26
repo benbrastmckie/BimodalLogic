@@ -1,7 +1,7 @@
 # Implementation Plan: Land the Dependent Ultraproduct Carrier Route Decision
 
 - **Task**: 491 - select_dependent_ultraproduct_carrier_route
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 1.75 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/491_select_dependent_ultraproduct_carrier_route/reports/01_dependent-ultraproduct-carrier-route.md`
