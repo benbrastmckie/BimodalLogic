@@ -1,7 +1,7 @@
 # Implementation Plan: BL (TM) Soundness by Composition
 
 - **Task**: 489 - Prove soundness for the BaseLanguage (BL) proof system at `FrameClass.Base` and its Dense/Discrete/Dedekind extensions
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 6 hours
 - **Dependencies**: None (research complete; all obligations prototype-verified)
 - **Research Inputs**: `specs/489_prove_baselanguage_soundness_base_and_extensions/reports/01_bl-soundness-by-composition.md`
@@ -112,7 +112,7 @@ Phases within the same wave can execute in parallel. Phases 4 and 5 touch disjoi
 
 ---
 
-### Phase 1: `Semantics/BLTruth.lean` — native BL truth [NOT STARTED]
+### Phase 1: `Semantics/BLTruth.lean` — native BL truth [COMPLETED]
 
 **Goal**: Land `BLTruthAt` as a native six-clause recursion on `BLFormula`, together with the
 `BLTruth.*` characterization lemmas, and register the module in the `Semantics` aggregator.
@@ -150,6 +150,13 @@ actually landed in the `BLTruth` namespace and recording the number in the phase
 entry; if the derived-operator set in `BaseLanguage/Formula.lean` yields more or fewer, adjust the
 count rather than forcing it, and note the discrepancy.
 
+*Measured*: **13** declarations landed in the `BLTruth` namespace — the twelve the report
+enumerated (`bot_false`, `imp_iff`, `box_iff`, `past_iff`, `future_iff`, `neg_iff`, `top_true`,
+`and_iff`, `or_iff`, `diamond_iff`, `somePast_iff`, `someFuture_iff`) plus `always_iff`. No
+discrepancy against the derived-operator set in `BaseLanguage/Formula.lean`; `iff` and `swapBL`
+are the only derived items without a truth-characterization lemma, and neither has a `Truth`
+namespace counterpart on the BL⁺ side either.
+
 **Files to modify**:
 - `FormalSystem/Semantics/BLTruth.lean` - new; `BLTruthAt` + `BLTruth.*` lemmas
 - `FormalSystem/Semantics.lean` - add the import and a submodule docstring bullet
@@ -162,7 +169,7 @@ count rather than forcing it, and note the discrepancy.
 
 ---
 
-### Phase 2: `Semantics/BLValidity.lean` — the four validity predicates [NOT STARTED]
+### Phase 2: `Semantics/BLValidity.lean` — the four validity predicates [IN PROGRESS]
 
 **Goal**: Land the BL validity predicates as binder-for-binder mirrors of
 `Semantics/Validity.lean`, with the inclusion lemmas, and register the module.

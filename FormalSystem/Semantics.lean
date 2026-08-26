@@ -16,6 +16,7 @@ import FormalSystem.Semantics.Extension.Extension
 import FormalSystem.Semantics.WorldHistory
 import FormalSystem.Semantics.TaskModel
 import FormalSystem.Semantics.Truth
+import FormalSystem.Semantics.BLTruth
 import FormalSystem.Semantics.ShiftSet
 import FormalSystem.Semantics.Validity
 import FormalSystem.Semantics.DurationClassification
@@ -67,6 +68,10 @@ against `specs/paper-definitions-of-record.md`'s DANGLING entry, not a live `\la
   world states, respecting the task relation
 - `TaskModel`: Task models extending frames with valuation functions `V: W × String → Prop`
 - `Truth`: Recursive truth evaluation `M,τ,t ⊨ φ` for formulas at model-history-time triples
+- `BLTruth`: the same recursion for the tense-primitive base language — `BLTruthAt`, defined
+  natively on `BLFormula`'s six constructors per `def:BL-semantics` (H and G quantify over
+  strictly past/future times directly, not via `untl`/`snce`), plus the `BLTruth.*` clause and
+  derived-operator characterization lemmas
 - `Validity`: Semantic validity `⊨ φ` and consequence `Γ ⊨ φ` quantifying over all temporal types
 - `DurationClassification`: Hölder classification of Dedekind-complete duration groups --
   completeness implies Archimedean, and the discrete-or-dense dichotomy pinning the discrete
