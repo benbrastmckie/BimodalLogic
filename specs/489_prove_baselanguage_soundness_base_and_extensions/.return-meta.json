@@ -1,16 +1,29 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/489_prove_baselanguage_soundness_base_and_extensions/reports/01_bl-soundness-by-composition.md",
-      "summary": "Prototype-verified route for BL (TM) soundness: native BLTruthAt, the proved TruthAt/tr bridge, four soundness theorems by composition, consistency corollaries, placement outside BaseLanguage/, and the Conservativity.lean stale-claim amendment list."
+      "type": "plan",
+      "path": "specs/489_prove_baselanguage_soundness_base_and_extensions/plans/01_bl-soundness-composition.md",
+      "summary": "Six-phase, 6-hour plan for BL soundness by composition: three new Lean modules, Lean docstring amendments, markdown inventory sync, and a full gate phase."
     }
   ],
+  "next_steps": "Run /implement 489 to execute the plan",
   "metadata": {
     "session_id": "sess_1787724130_558d21_489",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 6,
+    "estimated_hours": 6,
+    "dependency_waves": [[1], [2], [3], [4, 5], [6]]
+  },
+  "memory_candidates": [
+    {
+      "content": "When a formalization task must define a second, native semantics for a sub-language that already has a translation into a larger one, the soundness result can be obtained purely by composition: translate the derivation into the larger system, apply the existing soundness theorem there, then cross a truth-transfer bridge proved by induction. The bridge's only content lies in the clauses where the larger language's operator is DERIVED rather than primitive (here allPast/allFuture derived from until/since) -- and those cases are usually already discharged by existing characterization lemmas (past_iff/future_iff). The anti-pattern that voids the whole result is defining the native semantics as (large-language truth composed with the translation), which makes the bridge definitionally trivial and the soundness claim vacuous; the standing guard is a small set of native spot-check examples that only elaborate under a genuinely native definition. Placement matters too: siting the new semantics module OUTSIDE the sub-language directory keeps a 'nothing under X imports Y' module invariant literally true rather than requiring it to be weakened.",
+    "category": "PATTERN",
+    "source_artifact": "specs/489_prove_baselanguage_soundness_base_and_extensions/plans/01_bl-soundness-composition.md",
+    "confidence": 0.8,
+    "suggested_keywords": ["soundness-by-composition", "truth-transfer-bridge", "sub-language-semantics", "module-invariant-placement", "lean4", "translation-homomorphism"]
   }
+  ]
 }
