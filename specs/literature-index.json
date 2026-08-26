@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated": "2026-08-07T15:47:33Z",
+  "updated": "2026-08-26T18:33:21Z",
   "entries": [
     {
       "doc_id": "rabinovich_2014",
@@ -255,6 +255,129 @@
       ],
       "added": "2026-08-26",
       "source": "manual"
+    },
+    {
+      "doc_id": "venema_2007_algebras_and_coalgebras",
+      "reason": "Representation section: PRIMARY modern survey. Sec 5.2 complex duality, 5.3 ultrafilter frames, 5.4 topological duality (Thm 5.28: dual equivalence BAO_tau <-> descriptive general frames, due to Goldblatt, independently Esakia), 5.5 subdirect irreducibility needs topo-roots not mere rootedness, 6.2 canonicity (Thm 6.11 logical = algebraic canonicity; Thm 6.14 Sahlqvist canonicity; Thm 6.17 Fine; Thm 6.18 GHV negative answer), 7 canonical extensions case study, 8.1 TENSE ALGEBRA (Thm 8.4: tense-algebra operators are COMPLETE operators, A_bullet is bidirectional, A^sigma is a tense algebra; Prop 8.5 conjugation/residuation; Thm 8.6 atomic tense algebras), 8.2 global modality and discriminator varieties (Def 8.11, Thm 8.10).",
+      "added": "2026-08-26",
+      "source": "formal-research (representation-section literature sweep)",
+      "citation_rule": "Cite by the chapter's own numbered label, e.g. \"Theorem 5.28\", \"Definition 5.25\", \"Theorem 8.4\". Never cite md line numbers.",
+      "fidelity": "unverified_conversion: PyMuPDF fallback engine; CMEX delimiter glyphs repaired post-conversion (0x00/0x10/0x12 -> '(' , 0x01/0x11/0x13 -> ')' , 0x02/0x0E/0x1B deleted as picture-environment glyphs). Prose, definitions and theorem statements are reliable; commutative diagrams and display-math layout are linearised. Verify equations against the sibling PDF before transcribing into Lean."
+    },
+    {
+      "doc_id": "gehrke_vosmaer_2011_view-of-canonical-extension",
+      "reason": "Representation section: the modern successor framework to Jonsson-Tarski canonical embedding algebras. Abstract characterisation of the canonical extension as a dense-and-compact extension, sigma-/pi-extensions of maps, relation to Stone/Priestley duality and profinite completions, and how canonicity proofs are organised in that framework.",
+      "added": "2026-08-26",
+      "source": "formal-research (representation-section literature sweep)",
+      "citation_rule": "Cite by the survey's own numbered label plus arXiv page. Never cite md line numbers.",
+      "fidelity": "unverified_conversion: PyMuPDF fallback engine; 14 Hasse-diagram picture glyphs deleted. Quality gate clean thereafter."
+    },
+    {
+      "doc_id": "blackburn_2002_ch05_sec04",
+      "reason": "Representation section: BdRV §5.4 Duality Theory. Thm 5.47 (contravariant duality: generated subframe / bounded morphic image <-> homomorphic image / subalgebra), Thm 5.48 (complex algebra of a disjoint union = product of complex algebras; the CONVERSE FAILS, Exercise 5.4.1), Thm 5.54 Goldblatt-Thomason, Thm 5.56 (frame class closed under ultraproducts => V_K canonical), Cor 5.58, Open Problem 2 (converse; settled negatively by Goldblatt-Hodkinson-Venema).",
+      "added": "2026-08-26",
+      "source": "formal-research (representation-section literature sweep)",
+      "citation_rule": "Cite by BdRV's own numbering, e.g. \"Theorem 5.54\". Never cite md line numbers."
+    },
+    {
+      "doc_id": "blackburn_2002_ch05_sec05",
+      "reason": "Representation section: BdRV §5.5 General Frames. Def 5.59 general frame; Def 5.65 differentiated / tight / COMPACT / refined / descriptive / full / discrete; Thm 5.64 (every normal modal logic is sound and STRONGLY complete w.r.t. general frames); Prop 5.69 (canonical general frame is descriptive); Thm 5.76 (A-bullet is descriptive; (g°)• = g iff g descriptive); Thm 5.81 (full duality); topology paragraph (descriptive iff Boolean space with A the clopens and R point-closed); Prop 5.83 (closed sets: singletons closed, R_alpha[c] closed, and (v) every family of CLOSED sets with the finite intersection property has nonempty intersection); infinite disjoint unions are never descriptive.",
+      "added": "2026-08-26",
+      "source": "formal-research (representation-section literature sweep)",
+      "citation_rule": "Cite by BdRV's own numbering, e.g. \"Definition 5.65\", \"Proposition 5.83(v)\". Never cite md line numbers."
+    },
+    {
+      "doc_id": "blackburn_2002_ch05_sec06-07",
+      "reason": "Representation section: BdRV §5.6-5.7 Persistence. d-/di-/r-persistence, the algebraic proof of the Sahlqvist Completeness Theorem via closed valuations.",
+      "added": "2026-08-26",
+      "source": "formal-research (representation-section literature sweep)",
+      "citation_rule": "Cite by BdRV's own numbering. Never cite md line numbers."
+    },
+    {
+      "doc_id": "blackburn_2002_ch03_sec05-06",
+      "reason": "Representation section: BdRV §3.5-3.6 First-order correspondence and Sahlqvist formulas. Def 3.51 (Sahlqvist antecedent: built from top, bottom, BOXED ATOMS and negative formulas using and/or and EXISTENTIAL modal operators; Sahlqvist implication = such an antecedent implying a POSITIVE consequent), Thm 3.54 (Sahlqvist correspondence), Ex 3.48 (what is forbidden in an antecedent: boxes over disjunctions, boxes over diamonds), Thm 3.56 Chagrova (canonicity/first-order-correspondence undecidable). Use this to classify which TM axioms are Sahlqvist.",
+      "added": "2026-08-26",
+      "source": "formal-research (representation-section literature sweep)",
+      "citation_rule": "Cite by BdRV's own numbering, e.g. \"Definition 3.51\". Never cite md line numbers."
+    },
+    {
+      "doc_id": "blackburn_2002_ch03_sec07",
+      "reason": "Representation section: BdRV §3.7 More about Sahlqvist formulas. Kracht's Theorem 3.59 (Kracht formulas are exactly the first-order correspondents of Sahlqvist formulas); the Sahlqvist fragment does NOT contain all modal formulas with first-order correspondents (McKinsey-and-4 counterexample).",
+      "added": "2026-08-26",
+      "source": "formal-research (representation-section literature sweep)",
+      "citation_rule": "Cite by BdRV's own numbering. Never cite md line numbers."
+    },
+    {
+      "doc_id": "blackburn_2002_ch07_sec05",
+      "reason": "Representation section: BdRV §7.5 Multi-Dimensional Modal Logic — textbook framing of product frames and the two-dimensional setting that the task-frame semantics (history x time) structurally resembles.",
+      "added": "2026-08-26",
+      "source": "formal-research (representation-section literature sweep)",
+      "citation_rule": "Cite by BdRV's own numbering. Never cite md line numbers."
+    },
+    {
+      "doc_id": "derijke_1995",
+      "reason": "Representation section: de Rijke & Venema, 'A Sahlqvist Theorem for Boolean Algebras with Operators'. The ALGEBRAIC form of Sahlqvist canonicity — Sahlqvist identities are preserved under canonical extensions of BAOs, for general modal similarity types. This is the form needed to talk about the TM algebra rather than the TM logic.",
+      "added": "2026-08-26",
+      "source": "formal-research (representation-section literature sweep)",
+      "citation_rule": "Cite by the paper's own numbering plus printed page. Never cite md line numbers."
+    },
+    {
+      "doc_id": "venema_1991",
+      "reason": "Representation section: Venema, 'Many-Dimensional Modal Logics' (PhD thesis). Appendix A sec A5-A8 'Frames and Algebras' sets up the frames<->algebras correspondence for multi-dimensional and tense similarity types; sec A9 'Versatility'. Chapter 2 covers Sahlqvist tense formulas and the SD theorem. The closest source in the corpus to the two-dimensional structure of the task-frame semantics.",
+      "added": "2026-08-26",
+      "source": "formal-research (representation-section literature sweep)",
+      "citation_rule": "Cite by thesis section/theorem number. Never cite md line numbers."
+    },
+    {
+      "doc_id": "venema_1993_anti_axioms",
+      "reason": "Representation section: Venema, 'Derivation Rules as Anti-Axioms in Modal Logic'. The doctrine that NON-Sahlqvist, negatively-definable frame conditions (irreflexivity and relatives) are captured by non-orthodox DERIVATION RULES rather than axioms. Directly relevant to TM's discreteness and Dedekind-completeness axioms, which are the ones that fall outside the Sahlqvist fragment.",
+      "added": "2026-08-26",
+      "source": "formal-research (representation-section literature sweep)",
+      "citation_rule": "Cite by the paper's own section/theorem numbering. Never cite md line numbers."
+    },
+    {
+      "doc_id": "venema_1997",
+      "reason": "Representation section: Venema, 'Atom Structures and Sahlqvist Equations'. Atom structures, when a variety of BAOs is generated by complex algebras of atom structures, conjugated varieties. The bridge between the discrete (atom-structure) dual and the variety.",
+      "added": "2026-08-26",
+      "source": "formal-research (representation-section literature sweep)",
+      "citation_rule": "Cite by the paper's own numbering. Never cite md line numbers."
+    },
+    {
+      "doc_id": "goldblatt_2003",
+      "reason": "Representation section: Goldblatt, Hodkinson & Venema, 'Erdos Graphs Resolve Fine's Canonicity Problem'. The NEGATIVE answer to the converse of Fine's theorem: there is a canonical variety of BAOs not generated by any elementary frame class. Settles BdRV Open Problem 2. Load-bearing for any honest claim about what canonicity does and does not buy.",
+      "added": "2026-08-26",
+      "source": "formal-research (representation-section literature sweep)",
+      "citation_rule": "Cite by the paper's own numbering plus printed page. Never cite md line numbers."
+    },
+    {
+      "doc_id": "gabbay_kurucz_wolter_zakharyaschev_2003_many_dimensional_modal_logics",
+      "reason": "Representation section: the standard reference on PRODUCTS and FUSIONS of modal logics, including the negative results (non-finite-axiomatisability, undecidability, incompleteness) for products with an S5 factor and a linear/transitive factor. The reference point for what is and is not achievable for an S5-plus-linear-time system.",
+      "added": "2026-08-26",
+      "source": "formal-research (representation-section literature sweep)",
+      "citation_rule": "Cite by the book's own numbering plus printed page. Never cite md line numbers.",
+      "fidelity": "unverified_conversion (global index). Verify any theorem statement against the source PDF before relying on it."
+    },
+    {
+      "doc_id": "chagrovzakharyaschev_1997_modallogic",
+      "reason": "Representation section: Chagrov & Zakharyaschev, 'Modal Logic' (Oxford Logic Guides 35). Chapters 7-8 cover canonical formulas, completeness and incompleteness, and the algebraic/general-frame machinery. Secondary reference alongside BdRV.",
+      "added": "2026-08-26",
+      "source": "formal-research (representation-section literature sweep)",
+      "citation_rule": "Cite by the book's own numbering plus printed page. Never cite md line numbers.",
+      "fidelity": "Converted from DJVU. Verify statements against the source before relying on them."
+    },
+    {
+      "doc_id": "zakharyaschev_2001",
+      "reason": "Representation section: Zakharyaschev, Wolter & Chagrov, 'Advanced Modal Logic' (Handbook of Philosophical Logic). Section 2 'Polymodal Logics' is the survey treatment of fusions, products and transfer results for combined systems.",
+      "added": "2026-08-26",
+      "source": "formal-research (representation-section literature sweep)",
+      "citation_rule": "Cite by section/theorem number. Never cite md line numbers."
+    },
+    {
+      "doc_id": "thomason_1984",
+      "reason": "Representation section: R.H. Thomason, 'Combinations of Tense and Modality' (Handbook of Philosophical Logic). The philosophical-logic lineage of exactly the tense-plus-modality combination the project formalises, including sec 6 on METRIC TENSE LOGIC (operators indexed by a duration) — directly relevant to the proposal to internalise the duration group D into the object language.",
+      "added": "2026-08-26",
+      "source": "formal-research (representation-section literature sweep)",
+      "citation_rule": "Cite by the chapter's own section numbering. Never cite md line numbers."
     }
   ]
 }

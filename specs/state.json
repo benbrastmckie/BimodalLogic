@@ -9,12 +9,60 @@
     {
       "project_number": 503,
       "project_name": "revise_representation_section_with_literature",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "formal",
       "description": "Review <sec:representation> (line 1151 and following) in /home/benjamin/Projects/BimodalLogic/typst/FormalFoundations.typ and /home/benjamin/Projects/BimodalLogic/FormalSystem/Metalogic/Algebraic/ to get a sense of where things stand, then review what literature sources are available already and which standard sources are missing in order to download and ingest these sources, then research these sources to gain a more complete understanding of standard representation theorems in modal logic in order to systematically revise <sec:representation> in /home/benjamin/Projects/BimodalLogic/typst/FormalFoundations.typ to provide a more careful and complete overview of what is intended, building up the elements that are needed towards achieving this result, and saying what remains honestly so I can contemplate the way forward",
       "topic": "algebraic-representation",
       "created": "2026-08-26T17:36:21Z",
-      "last_updated": "2026-08-26T17:36:21Z"
+      "last_updated": "2026-08-26T18:41:00Z",
+      "session_id": "sess_1787765867_5f8b5f",
+      "artifacts": [
+        {
+          "path": "specs/503_revise_representation_section_with_literature/reports/01_representation-literature-research.md",
+          "type": "report",
+          "summary": "Literature-grounded research report on modal representation theorems for the bimodal TM system: corpus inventory and acquisition table, Jonsson-Tarski vs. topological duality analysis, Sahlqvist classification of TM's axioms, diagnosis of the Spherical obstruction as a discrete-vs-topological duality mismatch, a 12-element proposed structure for the revised section, and 9 risks."
+        }
+      ],
+      "memory_candidates": [
+        {
+          "content": "literature-search.sh is FTS5-backed and AND-s every term: queries longer than 2-4 words reliably return zero hits. Always search the corpus with SHORT queries ('Jonsson Tarski', 'tense algebra', 'canonical extension'), never with a sentence.",
+          "category": "TECHNIQUE",
+          "source_artifact": "specs/503_revise_representation_section_with_literature/reports/01_representation-literature-research.md",
+          "confidence": 0.9,
+          "suggested_keywords": [
+            "literature-search",
+            "FTS5",
+            "corpus query",
+            "short query"
+          ]
+        },
+        {
+          "content": "The literature conversion quality gate rejects many otherwise-clean math PDFs on two marginal signals: 'sentence-boundary-glue' (whose benign journal-abbreviation class, e.g. 'Theor.Comp.Sci.', is deliberately unexempted) and zero-tolerance NUL/control characters (which for LaTeX-produced PDFs are almost always unmapped CMEX size-graded delimiters: 0x00/0x10/0x12 = '(' and 0x01/0x11/0x13 = ')', plus picture-environment line glyphs 0x02/0x0E/0x1B). The documented remedy of reconverting with LITERATURE_CONVERTER=fallback removes the genuine <sup>-span fusion corruption but not the delimiter glyphs. Workflow that works: convert with the fallback engine, inspect every gate hit individually, apply a determinate context-verified character repair, re-run literature_quality_gate.py directly, then install via literature-chunk.sh + a hand-written index.json entry carrying a conversion_note, and rebuild with literature-build-index.sh --global.",
+          "category": "WORKFLOW",
+          "source_artifact": "specs/503_revise_representation_section_with_literature/reports/01_representation-literature-research.md",
+          "confidence": 0.85,
+          "suggested_keywords": [
+            "literature-convert",
+            "quality gate",
+            "CMEX delimiters",
+            "literature-chunk",
+            "literature-build-index",
+            "conversion_note"
+          ]
+        },
+        {
+          "content": "Registering a global-corpus document into a repo's specs/literature-index.json is a plain JSON append: {doc_id, reason, added, source, citation_rule, optional fidelity}, then bump .updated. No script is required and literature-build-index.sh is only needed when chunk files change, not when sub-index metadata changes. The sub-index doc_id must match the global index entry's id, which for a chunked book is the per-section id (e.g. blackburn_2002_ch05_sec04), not the book-level id.",
+          "category": "PATTERN",
+          "source_artifact": "specs/503_revise_representation_section_with_literature/reports/01_representation-literature-research.md",
+          "confidence": 0.85,
+          "suggested_keywords": [
+            "literature-index",
+            "sub-index",
+            "doc_id",
+            "curation"
+          ]
+        }
+      ]
     },
     {
       "project_number": 489,
