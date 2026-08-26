@@ -24,7 +24,9 @@ and we can construct a syntactic proof.
 ## Implementation Notes
 
 The proof extraction uses a multi-strategy approach:
-1. **Direct axiom match**: Pattern-match against all 42 axiom schemata
+1. **Direct axiom match**: Pattern-match against 42 of the 45 axiom schemata
+   (via `matchAxiom`, which does not cover the three Layer-9 Reynolds Dedekind axioms
+   (`prior_U_gap`, `prior_S_gap`, `sep`))
 2. **Derived theorem match**: Known derived theorems (e.g., temporalFutureDerived)
 3. **Compositional builder**: Recursively builds proofs for propositional,
    modal, and temporal formulas using combinators (identity, impTrans, etc.)

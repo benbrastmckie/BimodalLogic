@@ -99,7 +99,8 @@ example (p : Formula) : ⊢ (p.box).imp p := by
 
 **Algorithm**:
 1. Extract goal type and validate it's a `DerivationTree Γ φ` goal
-2. Try axiom matching against all 21 axiom schemata
+2. Try axiom matching against 42 of the 45 axiom schemata (`tryAxiomMatch`'s list
+   omits the three Layer-9 Reynolds Dedekind axioms)
 3. Try assumption matching if formula is in context
 4. Try modus ponens decomposition
 5. Try modal K rule (reduce □Γ ⊢ □φ to Γ ⊢ φ)
@@ -451,7 +452,9 @@ example (p : Formula) : ⊢ (p.box).imp (p.box.box) := by
 /-!
 ### Phase 185.1 Tests: Extended Axiom Coverage (30 new axioms)
 
-These tests verify that `tryAxiomMatch` can now resolve all 42 axiom constructors.
+These tests verify that `tryAxiomMatch` can now resolve every axiom constructor its
+list carries -- 42 of the tree's 45. The three Layer-9 Reynolds Dedekind axioms
+`prior_U_gap`, `prior_S_gap` and `sep` are outside that list.
 Grouped by layer following the axiom classification in Axioms.lean.
 -/
 

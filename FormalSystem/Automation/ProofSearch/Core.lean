@@ -319,7 +319,8 @@ Axiom constructor that matches the formula pattern. Now that Axiom is a Type
 - Uses a decomposition approach (like matchesAxiom) to handle derived operators
 -/
 def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
-  -- Decompose into implication (all 42 axioms are implications or negations)
+  -- Decompose into implication (every axiom this matcher covers -- 42 of the tree's
+  -- 45 -- is an implication or a negation)
   match φ with
   | .imp lhs rhs =>
       -- ex_falso: ⊥ → φ
@@ -693,7 +694,11 @@ def matchAxiom (φ : Formula) : Option (Sigma Axiom) :=
   | _ => none
 
 /--
-Check if a formula matches any of the 42 TM axiom schemata.
+Check if a formula matches any of the 42 TM axiom schemata this matcher covers.
+
+The tree has 45 axiom constructors; `matchAxiom` covers 42 of them, omitting
+the three Layer-9 Reynolds Dedekind axioms (`prior_U_gap`, `prior_S_gap`, `sep`). See
+`FormalSystem.ProofSystem.Axiom` for the full nine-layer inventory.
 
 Delegates to `matchAxiom` and returns `true` on match, `false` otherwise.
 Covers all axiom constructors: propositional (4), modal (5), BX temporal (22),

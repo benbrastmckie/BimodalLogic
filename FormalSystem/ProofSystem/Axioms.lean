@@ -52,10 +52,20 @@ requiring successor-chain constructions.
    - BX10/BX10': until_F/since_P (eventuality extraction)
    - BX11/BX11': temp_linearity/temp_linearity_past (future/past linearity)
    - BX12/BX12': F_until_equiv/P_since_equiv (F-Until/P-Since bridge)
+   - BX13/BX13': enrichment_until/since (Until-Since enrichment; Burgess A3a, Xu axiom (3))
 4. **Modal-Temporal Interaction** (1): modal_future
    Note: temp_future (□φ → G□φ) is now derived from MF + T + Modal 4.
+5. **Uniformity** (5): discrete_symm_fwd/bwd, discrete_propagate_fwd/bwd, discrete_box_necessity
+6. **Prior** (2): prior_UZ, prior_SZ
+7. **Z1** (1): z1
+8. **Density** (2): density, dense_indicator
+9. **Reynolds Dedekind** (3): prior_U_gap, prior_S_gap, sep
 
-**Total**: 42 axiom constructors (32 base + 5 uniformity + 2 prior + 1 Z1 + 2 density).
+**Total**: 45 axiom constructors
+(32 core + 5 uniformity + 2 prior + 1 Z1 + 2 density + 3 Reynolds Dedekind),
+where "core" is layers 1-4 (4 + 5 + 22 + 1). By frame class that is
+37 base (layers 1-5) + 3 discrete-only (layers 6-7) + 2 dense-only (layer 8)
++ 3 Dedekind-only (layer 9), matching `scripts/typst-status-counts.sh`.
 Note: temp_k_dist and temp_4 are now derived theorems (`temporalKDistDerived`,
 `temporal4Derived` in TemporalDerived.lean).
 
@@ -81,7 +91,7 @@ open FormalSystem.Syntax
 /--
 Axiom schemata for bimodal logic TM under the Burgess-Xu (BX) system.
 
-42 constructors organized into eight layers:
+45 constructors organized into nine layers:
 - **Propositional** (4): Classical propositional tautologies
 - **S5 Modal** (5): S5 axioms for metaphysical necessity □
 - **BX Temporal** (22): Burgess-Xu axioms for Until/Since on linear orders
@@ -90,9 +100,11 @@ Axiom schemata for bimodal logic TM under the Burgess-Xu (BX) system.
 - **Prior** (2): Prior-UZ/SZ for discrete well-ordering (valid on discrete orders only)
 - **Z1** (1): IsSuccArchimedean characteristic axiom (discrete-only)
 - **Density** (2): GGφ → Gφ and ¬U(⊤,⊥) (dense-only)
+- **Reynolds Dedekind** (3): Prior-U/Prior-S gap axioms and Sep (Dedekind-only)
 
 Base axioms (37) are valid on all linear temporal orders. Prior/Z1 axioms (3) are discrete-only.
-The density axioms (2) are valid only on densely ordered frames.
+The density axioms (2) are valid only on densely ordered frames, and the three Reynolds
+definable-gap axioms (3) only on the Dedekind class.
 Note: temp_k_dist and temp_4 are now derived theorems (`temporalKDistDerived`,
 `temporal4Derived` in TemporalDerived.lean).
 -/

@@ -30,7 +30,8 @@ bimodal logic system.
 
 The `searchProof` function uses five strategies in order:
 
-1. **Axiom matching** (`tryAxiomMatch`): All 42 axiom constructors across 8 layers:
+1. **Axiom matching** (`tryAxiomMatch`): 42 of the tree's 45 axiom constructors,
+   drawn from eight of its nine layers:
    - Propositional (4): prop_k, prop_s, ex_falso, peirce
    - S5 Modal (5): modal_t, modal_4, modal_b, modal_5_collapse, modal_k_dist
    - BX Temporal (22): seriality, monotonicity, connectedness, enrichment,
@@ -39,6 +40,11 @@ The `searchProof` function uses five strategies in order:
    - Uniformity (5): discrete_symm_fwd/bwd, discrete_propagate_fwd/bwd, discrete_box_necessity
    - Discrete (3): prior_UZ, prior_SZ, z1
    - Dense (2): density, dense_indicator
+
+   Not covered: the three Layer-9 Reynolds Dedekind axioms (`prior_U_gap`, `prior_S_gap`, `sep`),
+   which are
+   Dedekind-only. A Dedekind-class goal needing one of them will not be closed by
+   `tryAxiomMatch` and must be discharged another way.
 
 2. **Lemma database matching** (`tryLemmaMatch`): empty-context derived theorems
    registered via the `@[tmLemma]` label attribute (declared in
@@ -561,7 +567,8 @@ def tryAxiomMatch (goal : MVarId) (_ctx _formula : Expr) : TacticM Bool := do
       | some g => pure g
       | none => throwError "no axiom goal found"
 
-    -- Try each axiom constructor (all 42)
+    -- Try each axiom constructor this list carries (42 of the tree's 45; the three
+    -- Layer-9 Reynolds Dedekind axioms prior_U_gap/prior_S_gap/sep are not listed)
     let axiomCtors : List Name := [
       -- Layer 1: Propositional (4)
       ``Axiom.prop_k,       -- (φ → (ψ → χ)) → ((φ → ψ) → (φ → χ))
@@ -1100,7 +1107,8 @@ def tryTemporalK (goal : MVarId) (_fc ctx formula : Expr) (searchFn : MVarId →
 Recursive proof search implementation.
 
 **Algorithm**:
-1. Check if goal matches any axiom schema (42 constructors)
+1. Check if goal matches any axiom schema `tryAxiomMatch` carries -- 42 of the
+   tree's 45
 1b. Check if goal matches any `@[tmLemma]` database lemma (with backward
     chaining through derivability premises)
 2. Check if goal is in assumptions
