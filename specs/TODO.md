@@ -11,8 +11,8 @@ next_project_number: 503
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,193,257,298,433,461,476,481,489,492,494 | -- | automation, dataset-enhancement, decidability, ... |
-| 2 | 178,231,282,296,463,493,495,502 | 193,298,433,461,489,492 | algebraic-representation, dataset-enhancement, decidability, ... |
+| 1 | 127,128,193,257,298,433,461,476,481,492,494,495 | -- | automation, dataset-enhancement, decidability, ... |
+| 2 | 178,231,282,296,463,493,502 | 193,298,433,461,492 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 219,464,497 | 231,463,502 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 465,498,499,500 | 464,492,497 | algebraic-representation, decidability |
 | 5 | 125,428 | 465,498,499 | algebraic-representation, decidability |
@@ -83,8 +83,7 @@ next_project_number: 503
 
 ### Metalogic
 
-489 [IMPLEMENTING] — Prove soundness for the BaseLanguage (BL) proof system -- the pap
-  └─ 495 [NOT STARTED] — RESEARCH TASK, DELIBERATELY AGNOSTIC ABOUT THE VERDICT. Determine
+495 [NOT STARTED] — RESEARCH TASK, DELIBERATELY AGNOSTIC ABOUT THE VERDICT. Determine
 
 ### Strong Completeness
 
@@ -267,12 +266,13 @@ DELIVERABLE: a grounding report answering, with citations to specific pages read
 ---
 
 ### 489. Prove baselanguage soundness base and extensions
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: None
 - **Research**: [489_prove_baselanguage_soundness_base_and_extensions/reports/01_bl-soundness-by-composition.md]
 - **Plan**: [489_prove_baselanguage_soundness_base_and_extensions/plans/01_bl-soundness-composition.md]
+- **Summary**: [489_prove_baselanguage_soundness_base_and_extensions/summaries/01_bl-soundness-composition-summary.md]
 
 **Description**: Prove soundness for the BaseLanguage (BL) proof system -- the paper's TM -- establishing it at FrameClass.Base first and then extending to Dense, Discrete and Dedekind, mirroring Metalogic/Soundness.lean's Base-then-extensions structure. This gives thm:TM-soundness (possible_worlds.tex:4484) a direct Lean counterpart and retires a live over-claim: the paper asserts at four sites (:1661, :4311, :4484, :4494) that TM's soundness is formalized here, and only the TM+ half of each sentence is currently supported.
 

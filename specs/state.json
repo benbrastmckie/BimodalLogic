@@ -9,12 +9,12 @@
     {
       "project_number": 489,
       "project_name": "prove_baselanguage_soundness_base_and_extensions",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Prove soundness for the BaseLanguage (BL) proof system -- the paper's TM -- establishing it at FrameClass.Base first and then extending to Dense, Discrete and Dedekind, mirroring Metalogic/Soundness.lean's Base-then-extensions structure. This gives thm:TM-soundness (possible_worlds.tex:4484) a direct Lean counterpart and retires a live over-claim: the paper asserts at four sites (:1661, :4311, :4484, :4494) that TM's soundness is formalized here, and only the TM+ half of each sentence is currently supported.\n\nTHE ROUTE IS COMPOSITION, NOT A SECOND SEMANTICS. def:BL-semantics (possible_worlds.tex:3566) defines a BL model as <W, D, =>, |.|> where <W, D, =>> IS A TASK FRAME -- the same structure TM+ uses -- with clauses for p, bot, ->, box, H and G identical to TM+'s clauses for those six connectives. And tr (BaseLanguage/Translation.lean:69) is a structural homomorphism on exactly those six primitives, every push-through equation rfl (:82-87).\n\nDELIVERABLE 1 -- FormalSystem/BaseLanguage/Semantics.lean: define BLTruthAt by recursion on BLFormula, transcribing def:BL-semantics clause for clause. The box clause quantifies over TOTAL world-histories (matching TruthAt, Semantics/Truth.lean:164, and H_F in the paper). Then BLValid, BLValidDense, BLValidDiscrete and BLValidDedekindDense mirroring Semantics/Validity.lean (:103, :206, :248, :336).\n\nDELIVERABLE 2 -- the truth-transfer bridge: TruthAt M tau x (tr phi) <-> BLTruthAt M tau x phi, by induction on phi. Four of the six cases are definitional. The allPast and allFuture cases are the only ones with content, because Formula.allFuture/allPast are DERIVED from untl/snce (Syntax/Formula.lean:167, :177) -- and they are already discharged by the existing @[simp] lemmas future_iff (Semantics/Truth.lean:287) and past_iff (:305), which state exactly the paper's G and H clauses.\n\nDELIVERABLE 3 -- four soundness theorems by composition: Metalogic.Conservativity.translate (already proved, already fc-parameterized) into soundness (Soundness.lean:1086), soundness_dense (:1260), soundness_discrete (:1406) and soundness_dedekind (:1933), then across the bridge. The Base-then-extensions structure is inherited free: BaseLanguage.Axiom.minFrameClass reuses ProofSystem.FrameClass and only df/dn/co are non-Base, so TM, TM_f, TM_d and TM_dc are four instantiations of one derivation type.\n\nDELIVERABLE 4 -- consistency corollaries mirroring not_derivable_nil_bot (Soundness.lean:1993).\n\nFORBIDDEN DESIGN, THE ONE TRAP: do NOT define BLTruthAt as TruthAt (tr phi). That makes the bridge trivially true and the soundness theorem vacuous as a claim about BL, leaving thm:TM-soundness still without a real counterpart. The semantics must be defined natively on BLFormula and the bridge PROVED.\n\nNOTE THE DEDEKIND ASYMMETRY: soundness_dedekind targets ValidDedekindDense, not ValidDedekind (Soundness.lean:1438-1454), because Dense <= Dedekind makes density and dense_indicator admissible and both are false on Z. The BL-side Dedekind statement must inherit that same target or it will be refutable.\n\nMODULE INVARIANT TO PRESERVE OR AMEND DELIBERATELY: BaseLanguage.lean and Formula.lean:48 currently state that nothing under FormalSystem/BaseLanguage/ imports anything from FormalSystem/Semantics/. Deliverable 1 breaks that invariant by design. Either place Semantics.lean outside BaseLanguage/ or amend the invariant explicitly in both docstrings -- do not leave it silently false.\n\nACCEPTANCE: all four soundness theorems and the bridge sorry-free, #print axioms exactly [propext, Classical.choice, Quot.sound], lake build green, and scripts/check-module-invariants.sh still ALL PASSED.",
       "topic": "metalogic",
       "created": "2026-08-26T01:33:14Z",
-      "last_updated": "2026-08-26T07:03:19Z",
+      "last_updated": "2026-08-26T07:46:36Z",
       "blocks_note": "carries D5 split out of task 488",
       "session_id": "sess_1787724130_558d21_489",
       "artifacts": [
@@ -27,8 +27,14 @@
           "path": "specs/489_prove_baselanguage_soundness_base_and_extensions/plans/01_bl-soundness-composition.md",
           "type": "plan",
           "summary": "Six-phase implementation plan with dependency waves, per-phase verification tiers, and four scope hypotheses."
+        },
+        {
+          "path": "specs/489_prove_baselanguage_soundness_base_and_extensions/summaries/01_bl-soundness-composition-summary.md",
+          "type": "summary",
+          "summary": "BL soundness by composition — implementation summary"
         }
-      ]
+      ],
+      "completion_summary": "The base language BL now has a native semantics and a soundness theorem. BLTruthAt is defined by six-clause recursion on BLFormula (never as TruthAt (tr phi)), the truth-transfer bridge truthAt_tr is proved by induction, and bl_soundness plus its dense, discrete and Dedekind siblings follow by composing Conservativity.translate with the four BL+ soundness theorems; the Dedekind statement targets BLValidDedekindDense. All seven headline results are sorry-free at exactly [propext, Classical.choice, Quot.sound], lake build is green, and scripts/check-module-invariants.sh reports ALL CHECKS PASSED on the tree merged with three concurrent sibling tasks."
     },
     {
       "project_number": 488,
