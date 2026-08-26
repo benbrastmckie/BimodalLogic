@@ -1,0 +1,27 @@
+{
+  "status": "planned",
+  "agent_type": "planner-agent",
+  "task_number": 483,
+  "session_id": "sess_1787724130_558d21_483",
+  "delegation_path": ["orchestrator", "plan", "planner-agent"],
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/483_route1_restricted_applyrule_emitted_time_mem/plans/01_route1-restricted-time-sweep.md",
+      "summary": "Six-phase plan attempting Route 1 only: replace applyRule_emitted_time_mem's OrdTimesKnown hypothesis with a branch-level untlSnceFree condition, propagate through the pick/engine chain to section D4, and record the verdict as a C9 entry 16 amendment either way."
+    }
+  ],
+  "phase_count": 6,
+  "estimated_hours": 5,
+  "dependency_waves": 6,
+  "memory_candidates": [
+    {
+      "content": "When a Lean development blocks on a semantic run-invariant hypothesis (e.g. OrdTimesKnown b ord) that an interface's universally-quantified clause cannot supply, check whether a SYNTACTIC branch-level condition already carried by that clause's own antecedent shape-gates every proof site consuming the invariant. In BimodalLogic's MintBound.lean, applyRule_emitted_time_mem needed OrdTimesKnown at exactly five rule arms (allFuturePos, allPastPos, someFutureNeg, somePastNeg, orderTrichotomy), and all five are gated by untl/snce-freeness of the branch -- a condition UniverseClosedAt's clause 1 supplies for free via (forall x in b, x in signedUniverse C L), whereas OrdTimesKnown it cannot supply at all. The general pattern: a hypothesis that an interface cannot supply may be replaceable by an incomparable one the interface already implies, and the audit that decides it is a per-proof-site census of where the hypothesis is actually consumed -- not a reading of the theorem's statement. The two forms stay incomparable, so an existing non-removability refutation of the unconditional statement is not contradicted and must be recorded as still standing.",
+      "category": "PATTERN",
+      "source_artifact": "specs/483_route1_restricted_applyrule_emitted_time_mem/plans/01_route1-restricted-time-sweep.md",
+      "confidence": 0.75,
+      "suggested_keywords": ["lean4", "hypothesis-replacement", "syntactic-gate", "run-invariant", "interface-shape-mismatch", "proof-site-census"]
+    }
+  ],
+  "next_steps": "Run /implement 483 to execute the plan"
+}

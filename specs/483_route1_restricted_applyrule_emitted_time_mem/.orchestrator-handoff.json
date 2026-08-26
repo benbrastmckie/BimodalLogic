@@ -1,0 +1,12 @@
+{
+  "dispatch_seq": 5,
+  "task_number": 483,
+  "session_id": "sess_1787724130_558d21_483",
+  "stage": "plan",
+  "status": "planned",
+  "plan_path": "specs/483_route1_restricted_applyrule_emitted_time_mem/plans/01_route1-restricted-time-sweep.md",
+  "phase_count": 6,
+  "estimated_hours": 5,
+  "next_stage": "implement",
+  "notes": "Route 1 only. Strict phase chain (waves 1-6), each phase carrying an explicit escape to Phase 6 where a negative result is recorded as a C9 register amendment. Plan deviates from the task description on the amendment site: entry 16 (the unconditional applyRule_emitted_time_mem entry) is primary rather than 11 or 21; deviation must be stated in the summary. Route 2 and task 481's Phase 6/7 landing are explicit non-goals; Phase 6 assesses their reachability only."
+}
