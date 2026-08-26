@@ -677,3 +677,125 @@ true. Strong completeness for Base and Dense is a genuine open research problem
   **Gap**: check C14 lints only `docs/` + `README.md`, which is why six "42 axiom constructors"
   claims survived a 42→45 change.
   **Recommendation**: extend C14's content scan to `FormalSystem/**/*.lean`.
+
+---
+
+## Addendum: Orchestrator Verification Pass (semantics + README semantics section)
+
+Added after the report was first committed, in response to a follow-up question about whether the
+Lean *semantics* is completely accurate and whether `README.md`'s semantics section matches. This
+pass re-derived F10's conclusions independently rather than accepting them. It **corrects one
+finding (D25)**, **adds one new discrepancy (D28)**, and sharpens two existing ones.
+
+### A1. D25 is WRONG — `nullity_identity` is derivable, not "strictly stronger"
+
+`TaskFrame.lean:501-509` asserts that the `nullity_identity` field is "**Strictly stronger than
+the paper** — OPEN DESIGN QUESTION", on the grounds that `lem:nullity` (`:2889`) asserts
+reflexivity only while the Lean field is an `iff` that additionally asserts injectivity-at-zero.
+F10's last row and Discrepancy D25 both repeat that claim and defer it.
+
+**The claim is false.** Injectivity-at-zero follows from the `limit` field *alone*, by
+instantiating the cone witness at `y := 0`: if `R w 0 u` then for every `x > 0` we have
+`|0| < x` and `R w 0 u`, so `u` lies in every positive cone of `w`, so `limit` gives `u = w`.
+Reflexivity is then `nullity_of_serial_limit` (`FrameAxioms.lean:149`), i.e. `serial` at `x = 0`
+composed with the same `limit`. Together they give the field's full `↔`.
+
+Verified against the real definitions (not a paraphrase) — both theorems typecheck under
+`lake env lean`, emitting only an `unusedSectionVars` linter warning for `[Nontrivial D]`:
+
+```lean
+theorem inj_at_zero_of_limit {W : Type} {R : W → D → W → Prop}
+    (hLim : ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ R w y u) → u = w)
+    (w u : W) (h : R w 0 u) : u = w := by
+  refine hLim w u ?_
+  intro x hx
+  exact ⟨0, by simpa using hx, h⟩
+
+theorem nullity_iff_of_serial_limit {W : Type} {R : W → D → W → Prop}
+    (hSer : TaskFrame.Serial R)
+    (hLim : ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ R w y u) → u = w)
+    (w u : W) : R w 0 u ↔ w = u := by
+  constructor
+  · intro h; exact (inj_at_zero_of_limit hLim w u h).symm
+  · rintro rfl; exact TaskFrame.nullity_of_serial_limit hSer hLim w
+```
+
+**Consequences for the plan:**
+
+1. **The Lean frame class is extensionally exactly the paper's**, not a proper subclass. Lean's
+   `{nullity_identity, comp, converse, serial, limit, spherical}` and the paper's
+   `{Compositionality, Seriality, Limit, Spherical}` + nonempty `W` + converse convention are
+   inter-derivable. F10's separate worry that Lean's `limit` states only the `⊆` half of
+   `⋂_{x>0}(w)_x = {w}` is likewise closed: the `⊇` half is `w ∈ (w)_x` for all `x > 0`, which is
+   reflexivity-at-zero, which the above derives. No circularity — the `⊆` half alone drives it.
+2. **D25 moves from BLOCKED/deferred to a mechanical docstring correction.** Option (a) recorded
+   at `TaskFrame.lean:507` ("demote it to a derived lemma proved from Seriality + Limit once
+   those land") is available *now*; `serial` and `limit` are both already fields.
+3. The "OPEN DESIGN QUESTION" and "Strictly stronger than the paper" language at
+   `TaskFrame.lean:501-509` must be **retired**, and the joint-decision framing dropped — the
+   question is settled, not deferred. Whether to actually delete the field (making it a derived
+   lemma, a breaking change for construction sites) versus keeping it as documented redundancy
+   is a separate, purely ergonomic call.
+
+### A2. D28 (NEW, SUBSTANTIVE) — `README.md`'s box clause quantifies over the wrong histories
+
+| ID | Axis | Paper says | Lean/docs actually | Sev | Resolution direction |
+|---|---|---|---|---|---|
+| D28 | Semantics / docs | `def:BL-semantics` (`:3573`): "$\M,\tau,x \vDash \Box\varphi$ *iff* $\M,\sigma,x \vDash \varphi$ for all $\sigma \in H_{\F}$" — `H_F` is the **total** histories | `README.md:74`: "for all world-histories `σ`", where `README.md:68` defines a world-history as a map from a **convex subset** `X ⊆ D` — i.e. partial. Lean is correct (`Truth.lean:166`: `∀ σ, σ.IsTotal → …`; `Validity.lean:94-97` binds `τ.IsTotal`) | **SUBSTANTIVE** | **Change docs** — "for all **total** world-histories `σ`" |
+
+This was missed by the original pass, which checked `Truth.lean` against the paper (match) and
+`README.md`'s numeric claims (correct) but did not check `README.md`'s *truth clauses* against
+either. It is not cosmetic: atoms are false off-domain (`Truth.lean:161`), so a `□` ranging over
+partial histories would falsify `□p` at almost every point and break the S5 fragment.
+`Truth.lean:120-130` explicitly records that the quantifier ranges over `H_F` "with no `Ω` and no
+shift-closure side condition"; `README.md` never received that update.
+
+### A3. D20 is worse than stated — the three named constraints are the two non-axioms
+
+`README.md:66` names "three constraints: *nullity*, *compositionality*, and *reflection*".
+Against `def:frame`'s four axioms and `TaskFrame`'s six constraint fields, the omissions are
+**Seriality**, **Limit**, and **Spherical** — and *Spherical* is the condition the entire
+`def:constraints` → `lem:admissible` → `lem:step` → `thm:extension` (Zorn) → `cor:occurrence`
+chain consumes. Of the three the README does name, "reflection" is the converse *convention*
+(`def:task-relation`, definitional, not an axiom) and "nullity" is derivable (A1). So the
+sentence lists the two non-axioms and omits all three substantive frame conditions. Any rewrite
+should state the four paper axioms and note that `converse` and `nullity_identity` are carried as
+fields for construction ergonomics rather than as independent content.
+
+### A4. D21 confirmed, with the internal-consistency detail
+
+`README.md`'s `U(φ,ψ)` is **event-first**: its own truth clause (`README.md:75`) places `φ` at the
+witness `y > x` and `ψ` on the open interval. The paper's `φ \until \psi` (`def:BLplus-semantics`,
+`:3733`) is **guard-first**, as is Lean's `untl ψ φ` (`Truth.lean:167`). README is therefore
+internally consistent — its derived rows `Fφ = U(φ,¬⊥)` and `Xφ = U(φ,⊥)` follow its own
+convention correctly — and **only the "Lean Constructor" column is wrong**: `untl φ ψ` should read
+`untl ψ φ`, and `snce φ ψ` should read `snce ψ φ`. Worth pairing the fix with a sentence noting
+that README's `U(φ,ψ)` and the paper's `φ \until \psi` take their arguments in *opposite* orders,
+since a reader cross-referencing the two silently inverts every temporal clause.
+
+### A5. Semantics axes re-verified as MATCHING (no change needed)
+
+- **Truth clauses** `Truth.lean:161-168` vs `def:BL-semantics` + `def:BLplus-semantics`: match
+  clause for clause, including until/since guard/event order.
+- **Validity restricted to `H_F`**: `Validity.lean:94-97` binds `τ.IsTotal` at every consequence
+  and validity variant — the paper's `τ ∈ H_F`.
+- **Non-vacuity of validity**: `TaskFrame.not_validOn_bot` and `hF_nonempty_of_frameAxioms`
+  (`Validity.lean:586-601`) discharge `cor:occurrence`'s closing clause `H_F ≠ ∅` from the frame
+  fields alone. Without it `ValidOn ⊥` would be a theorem.
+- **World-history definition**: `README.md:68` (convex `X ⊆ D`, respects the task relation)
+  matches `WorldHistory.convex` (`WorldHistory.lean:112`) and `def:world-history`.
+- **Atom clause domain conjunct**: `README.md:70` correctly reflects Lean's `∃ ht : τ.domain t`
+  rather than the paper's total-history clause. Consistent with the accepted gap recorded at
+  `Truth.lean:132-135`; not a defect.
+- **`Serial` includes `x = 0`** (`TaskFrame.lean:359`, `0 ≤ x`), which A1's derivation requires.
+
+### A6. Revised inventory deltas
+
+| ID | Was | Now |
+|---|---|---|
+| D25 | SUBSTANTIVE, "deliberately deferred", do not settle | **Settled**: docstring correction at `TaskFrame.lean:501-509`; retire "strictly stronger"/"OPEN DESIGN QUESTION" |
+| D20 | SUBSTANTIVE, "names only three of six" | Unchanged severity; note that the three named are the two non-axioms and *Spherical* is among the omitted |
+| D21 | SUBSTANTIVE | Unchanged; scoped to the "Lean Constructor" column only, plus an opposite-argument-order note |
+| D28 | — | **NEW**, SUBSTANTIVE, change docs |
+
+Inventory total: **28** discrepancy IDs (27 original + D28).
