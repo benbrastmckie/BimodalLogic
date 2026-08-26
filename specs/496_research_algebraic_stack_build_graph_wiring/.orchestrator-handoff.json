@@ -1,29 +1,33 @@
 {
-  "phase": "research",
-  "dispatch_seq": 4,
-  "status": "researched",
-  "summary": "Adjudicated the algebraic-stack wiring question empirically. The recorded elaboration-conflict hazard does NOT reproduce for the four orphaned Algebraic/ modules: an adversarial build importing the aggregator directly into BXCanonical/Completeness.lean re-elaborated Completeness, CompletenessDedekind and StrongCompleteness with rc=0 and zero errors. Recommendation is option (a), re-wire via one import in FormalSystem/Metalogic.lean; measured marginal cost 5.3s elaboration and 948 KB olean. Confirmed all README overstatements plus three further doc inaccuracies.",
+  "phase": "plan",
+  "dispatch_seq": 9,
+  "status": "planned",
+  "summary": "Created a 5-phase plan implementing the report's recommendation (option (a), re-wire). Phase 1 is an atomic-batch two-file change: add `import FormalSystem.Metalogic.Algebraic` to FormalSystem/Metalogic.lean and delete the five now-stale entries plus rewrite two comment blocks in scripts/module-invariants-manifest.txt -- either file alone leaves C6 red, so they must land in one commit. Phases 2-4 run in parallel and correct the documented overstatements: eight sites in Algebraic/README.md (including both overstatements the task named), four in Metalogic/README.md, and a scoped adjudication note in the two Boneyard READMEs that keeps the elaboration warning in force for the untested UltrafilterFrame.lean/TenseS5Algebra.lean. Phase 5 is the full acceptance gate. The plan does NOT re-run the Variant B experiment -- F4 already measured it -- and does not widen scope to Core.lean/Bundle.lean/SoundnessLemmas.lean per D4.",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/496_research_algebraic_stack_build_graph_wiring/reports/01_algebraic-stack-build-graph-wiring.md",
-      "summary": "Recommends re-wiring the Algebraic aggregator into Metalogic.lean; refutes the elaboration-conflict hazard empirically and specifies seven README/manifest corrections."
+      "type": "plan",
+      "path": "specs/496_research_algebraic_stack_build_graph_wiring/plans/01_wire-algebraic-stack-fix-readme.md",
+      "summary": "5-phase, 2.75-hour plan wiring the Algebraic aggregator into the build graph and correcting fourteen documentation claims across four READMEs."
     }
   ],
   "phases_completed": 0,
-  "phases_total": 0,
+  "phases_total": 5,
   "blockers": [],
+  "sorry_inventory": [],
   "continuation_path": null,
-  "next_action_hint": "plan",
-  "files_modified": [],
+  "next_action_hint": "implement",
+  "files_modified": [
+    "specs/496_research_algebraic_stack_build_graph_wiring/plans/01_wire-algebraic-stack-fix-readme.md"
+  ],
   "decisions_made": [
-    "Recommend option (a) re-wire: the isolation rationale does not survive measurement and the cost is 5.3s elaboration / 948 KB olean",
-    "Wire at FormalSystem/Metalogic.lean (downstream), not at BXCanonical/Completeness.lean: both build green, but the downstream position does not falsely assert that completeness depends on the algebra",
-    "Import the aggregator rather than the deepest leaf, so all five manifest entries clear and the aggregator itself becomes lake-verified",
-    "Do not widen scope to Core.lean / Bundle.lean / SoundnessLemmas.lean: same manifest block, but each needs its own cycle analysis and none was tested"
+    "Phase 1 declared Commit Mode: atomic-batch over exactly {FormalSystem/Metalogic.lean, scripts/module-invariants-manifest.txt} -- C6 fails on either half alone (import without deletion makes five entries name reachable modules; deletion without import leaves five unreachable modules unmanifested)",
+    "Phase 1 opens with a pre-edit baseline build so a red post-edit build caused by a concurrent task editing FormalSystem/ is attributable rather than misread as an elaboration conflict",
+    "Did not re-run the Variant B adversarial experiment as a gate: F4 already measured it green, and repeating it is a non-goal",
+    "Added two edit sites beyond the report's F7/F8 enumeration where the same false claim recurs verbatim: Algebraic/README.md's Mathematical Overview step 3 (repeats the G/H interior-operator claim in expanded form) and Boneyard/README.md's UltrafilterFrame entry (repeats the elaboration-interference claim). Correcting one occurrence while leaving its twin would reinstate the error.",
+    "Prose phases carry Verification Tier: prose but still run check-module-invariants.sh --no-build, because C5/C12 scan FormalSystem/**/*.md for stale dotted and slash-form module paths"
   ],
   "dead_ends": [
-    "Git archaeology cannot explain the original hazard as an import-graph effect: at commit 1961830e2 neither Completeness.lean nor Metalogic.lean imported the aggregator, so the recorded interference has uncertain provenance",
-    "Cold full-build wall time was not measured (would require discarding the entire 484 MB FormalSystem build cache), so the build delta is reported in absolute terms rather than as a percentage"
+    "Line numbers cited from the report (:33, :154-158, :171) are treated as navigational hints only; every phase locates its edit sites by grep on quoted text, since a parallel task editing the same README would drift them",
+    "The Context Extension Recommendation (context/project/lean4/patterns/testing-archived-elaboration-hazards.md) is out of scope: it lives in agent-system/extensions/**, a different source store and task type"
   ]
 }
