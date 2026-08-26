@@ -42,9 +42,9 @@ re-derives every hash below directly from the live paper file on every run.
 
 <!-- PAPER_PATH: /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex -->
 <!-- PAPER_REPO_ROOT: /home/benjamin/Philosophy/Papers/PossibleWorlds -->
-<!-- PINNED_COMMIT: d1a26f75bcd3e0623d1593263471c5fc63126894 -->
-<!-- FILE_CHECKSUM: f134fd7d460c08aaf94c5b1c09571ab2663c509d1ee32f2d31b89ee640281381 -->
-<!-- LINE_COUNT: 4290 -->
+<!-- PINNED_COMMIT: 94f850f69f345fd8e4be2516eb3d74f944e66445 -->
+<!-- FILE_CHECKSUM: 5d700a2f05999bb697ab55e16f5a26732cbf7453dbb7d909d21fb67c70da7644 -->
+<!-- LINE_COUNT: 4856 -->
 
 ### Drift correction and coverage extension (2026-08-17): the target-state-revision re-pin
 
@@ -116,6 +116,60 @@ states S4, B, **and** T as three conjuncts of one theorem. `thm:s5` is added to 
 (That is eight rows for "7 substantive anchors": `def:strongest` and `thm:exist` carry one and the
 same change — the `normal` drop — and the plan counted them as one item. The row count, not the
 item count, is what the manifest tracks.)
+
+### Drift correction (2026-08-25), part 2: terminological drift, `def:deterministic`, re-pin
+
+Part 2 absorbs the residual drift left by part 1 and re-pins the sentinels. After part 1 the
+checker reported **24 drifted anchors and 0 unresolvable anchors**; all 24 are re-quoted and
+re-hashed here, and the checker now returns the quiet case-(a) pass.
+
+**The global `frame` -> `task frame` rename** accounts for most of it. The paper renamed its
+central object, so 17 anchors changed by exactly that substitution and nothing else:
+`lem:nullity`, `def:world-history`, `cor:occurrence`, `lem:nesting`, `lem:nonempty`,
+`lem:admissible`, `lem:step`, `def:BL-semantics`, `def:time-shift-histories`,
+`def:frame-validity`, `app:discrete`, `app:dense`, `app:complete`, `cor:spherical-finite`,
+`thm:BLplus-NextPrevious`, `def:constraints`, `lem:constraint`. This is terminological, not
+mathematical — but it is **not** cosmetic for this repository, because the tree quotes several of
+these blocks verbatim in docstrings. Those quotations are corrected against this record.
+
+**Three of the 24 carry a second, non-terminological change** and must not be filed as pure
+rename:
+
+| Anchor | Second change | Lean impact |
+|---|---|---|
+| `lem:constraint` | "form a directed family" -> "form a **$\supseteq$-directed** family", following `def:directed`'s split in part 1 | **Yes.** Every in-tree "directed family" quotation is under-qualified. |
+| `def:constraints` | the $\F = \tuple{W, \D, \Rightarrow}$ expansion contracted to a bare $\F$ | No. |
+| `thm:BLplus-NextPrevious` | the statement was **split into three sentences**: the `\Next` biconditional, then the no-successor `\leftrightarrow \bot` case as a separate "Additionally" clause, then the past dual. Same content, restructured. | No. |
+
+**Seven anchors changed cosmetically only** — `\vspace` retuning (`def:task-relation`,
+`def:BL-semantics`, `def:BLplus-semantics`, `def:S5`), `\item[\it ...]` -> `\item[\bf ...]`
+(`def:task-relation`'s Fiber/Cone/Segment items), a `\mathrm{Th}` -> `\Th` macro swap inside an
+already-commented-out block (`def:TMplus-c`), prose rewording that changes no claim (`def:BX`'s
+"swapping occurrences" -> "interchanging all occurrences", `def:TMplus-f`'s Hölder sentence), and
+`def:TMplus`'s deletion of a large commented-out conservativity footnote plus its `% TODO`.
+
+**One anchor added**: `def:deterministic` (live line 2868). The paper removed `Deterministic` from
+`def:frame-properties` and gave it its own definition. It is load-bearing —
+`FormalSystem/Examples/TemporalStructures.lean` cites it — so it is pinned here rather than left
+untracked.
+
+**Twelve new appendix anchors deliberately NOT pinned** (decision recorded, not an oversight).
+The paper grew a topology / presheaf / Conduché appendix block carrying
+`def:task-topology` (2872), `app:topology-t1` (2904), `app:topology-r0` (2923), `app:gluing`
+(2976), `def:interval-site` (3208), `def:behavior-presheaf` (3233), `lem:factorization-linear`
+(3247), `lem:interval-twisted-arrow` (3278), `app:presheaf-dictionary` (3313), `def:path-category`
+(3386), `def:conduche` (3406), `cor:path-fibration` (3510). **None of them is cited anywhere in
+this repository and none has a Lean counterpart.** Pinning them would widen this file's
+maintenance surface to a region the tree does not depend on, which is exactly what the
+"Deliberately not covered" scope boundary below exists to prevent. If any of them becomes
+load-bearing, add it then, via
+`check-paper-definitions.sh --resolve "ANCHOR|env|-|-"`.
+
+**Sentinels re-pinned**: checksum
+`5d700a2f05999bb697ab55e16f5a26732cbf7453dbb7d909d21fb67c70da7644`, paper repo `git HEAD`
+`94f850f69f345fd8e4be2516eb3d74f944e66445` (file dirty against it — the dirty-pin caveat below
+applies unchanged), 4856 lines (up from 4213). Post-edit verification run returned the quiet
+case-(a) pass: `bash scripts/check-paper-definitions.sh` exits 0.
 
 ### Dirty-pin caveat (why the pin is a checksum, not a clean commit)
 
@@ -342,14 +396,14 @@ sha256: `bc89eea5f9bafa1e326bc8bda93b6631c49212c1f0c3253208f0cfbdb049fb1f`
 \begin{Ddef} \label{def:task-relation}
 	A \textit{task relation} on a nonempty set of \textit{world states} $W$ over a temporal order $\D$ is any parameterized relation $w \Rightarrow_x u$ for $w,u \in W$ and $x \in D^+$, extended to negative durations by the \textit{converse convention} $w \Rightarrow_{-x} u \coloneq u \Rightarrow_{x} w$ for $x \geq 0$, determining the following for any world states $w, v \in W$ and durations $x, y \in D$:
 	\begin{enumerate}[wide=0pt, labelsep=.1in, itemsep=.075in]
-		\item[\it Fiber:] $\fib{w, x} \coloneq \set{u \in W : w \Rightarrow_x u}$.
-		\item[\it Cone:] $(w)_x \coloneq \bigcup\limits_{\vert{y} < x} \fib{w, y}$ where $x > 0$.
-		\item[\it Segment:] $[w, v]_x^y \coloneq \fib{w, x} \cap \fib{v, -y}$ where $x, y \geq 0$.
+		\item[\bf Fiber:] $\fib{w, x} \coloneq \set{u \in W : w \Rightarrow_x u}$.
+		\item[\bf Cone:] $(w)_x \coloneq \bigcup\limits_{\vert{y} < x} \fib{w, y}$ where $x > 0$.
+		\item[\bf Segment:] $[w, v]_x^y \coloneq \fib{w, x} \cap \fib{v, -y}$ where $x, y \geq 0$.
 	\end{enumerate}
-  \vspace{-.15in}
+  \vspace{-.1in}
 \end{Ddef}
 ```
-sha256: `3ee787814dd714aa6c46811cce180d64cc2a3f931f348e088fff8aedad043367`
+sha256: `c12d018290feb5a12e1757aae3718593c940c3d5bd19c6bbd5d8a87bcf525193`
 
 ### `def:directed` — directed family (used by Spherical)
 
@@ -404,10 +458,10 @@ bearing (the right-to-left direction is used directly in, e.g., the constraint-f
 
 ```latex
 \begin{Lthm} \label{lem:nullity}
-	$w \Rightarrow_0 w$ for every world state $w \in W$ in every frame $\F = \tuple{W, \D, \Rightarrow}$.
+	$w \Rightarrow_0 w$ for every world state $w \in W$ in every task frame $\F = \tuple{W, \D, \Rightarrow}$.
 \end{Lthm}
 ```
-sha256: `7840512db4eb75a6f8d4224b80d784239e554f2742163722236df4778de8d9de`
+sha256: `94ed018343635a8ef6671daef07eaa72da1cb49fd11043fb3aa9b391a2c9c973`
 
 Proved (per the paper) from Seriality at `x = 0` plus Limit — choice-free, unlike `thm:extension`
 below which needs Zorn's lemma.
@@ -416,7 +470,7 @@ below which needs Zorn's lemma.
 
 ```latex
 \begin{Ddef} \label{def:world-history}
-	A \textit{partial history} over a frame $\F = \tuple{W, \D, \Rightarrow}$ is a function $\tau : X \to W$ on a nonempty set $X \subseteq D$ where $\tau(x) \Rightarrow_{y-x} \tau(y)$ for all times $x, y \in X$.
+	A \textit{partial history} over a task frame $\F = \tuple{W, \D, \Rightarrow}$ is a function $\tau : X \to W$ on a nonempty set $X \subseteq D$ where $\tau(x) \Rightarrow_{y-x} \tau(y)$ for all times $x, y \in X$.
 	% Since the difference $y - x$ is negative whenever $y < x$, these instances are covered by the converse convention: $\tau(x) \Rightarrow_{y-x} \tau(y)$ then reads $\tau(y) \Rightarrow_{x-y} \tau(x)$.
 	A \textit{world history} is any partial history whose domain $X$ is \textit{convex}, so that $y \in X$ whenever $x, z \in X$ and $x < y < z$.
   A world history is \textit{total}--- equivalently, a \textit{possible world}--- just in case $X = D$.
@@ -424,7 +478,7 @@ below which needs Zorn's lemma.
 	The set of all total world histories over $\F$ is denoted $H_{\F}$.
 \end{Ddef}
 ```
-sha256: `4aaa6ec0db38ccbba25ce6dc61d81b8a28f82913ba6b2b1defabaa42f9caf205`
+sha256: `3d4679bdb4828aad40f6a0d8deb6ff5af09fa52d2181100cfe159f2a23303a15`
 
 Layering, exactly as the paper states it: **partial history** (nonempty domain, no convexity
 requirement) → **world history** (convex domain) → **total** / **possible world** (`X = D`). The
@@ -448,10 +502,10 @@ sha256: `1140d4819b9b0030275f249c60b7cb2fb15da97f9d07df2196d6e06508f65e38`
 
 ```latex
 \begin{Cthm} \label{cor:occurrence}
-	For any frame $\F = \tuple{W, \D, \Rightarrow}$, world state $w \in W$, and time $x \in D$, there is a total world history $\tau \in H_{\F}$ where $\tau(x) = w$, and so $H_{\F} \neq \emptyset$.
+	For any task frame $\F = \tuple{W, \D, \Rightarrow}$, world state $w \in W$, and time $x \in D$, there is a total world history $\tau \in H_{\F}$ where $\tau(x) = w$, and so $H_{\F} \neq \emptyset$.
 \end{Cthm}
 ```
-sha256: `b0228712e0d847f600b5b353b783ec3bc24e7722620f7e39e284af1f1fa5ebea`
+sha256: `244bb2e5f6036bbe405549501390b90f432ece28c232fd18caa8b82ab3bb9a8c`
 
 Follows from `thm:extension`, hence is also a ZFC (not choice-free) result. The paper merged the
 former `thm:occurrence` (existential over both the history and the time) with a separate
@@ -465,10 +519,10 @@ under `def:time-shift-histories`, which remains untracked).
 
 ```latex
 \begin{Ddef} \label{def:constraints}
-	For a partial history $\tau : X \to W$ over a frame $\F = \tuple{W, \D, \Rightarrow}$ and duration $z \in D \setminus X$, the \textit{constraints on $z$} are the segments $[\tau(t), \tau(s)]_{z-t}^{s-z}$ for times $t,s \in X$ where $t < z < s$ when both $t,s \in X$, and the fibers $\fib{\tau(t), z - t}$ for $t \in X$ otherwise.
+	For a partial history $\tau : X \to W$ over a task frame $\F$ and duration $z \in D \setminus X$, the \textit{constraints on $z$} are the segments $[\tau(t), \tau(s)]_{z-t}^{s-z}$ for times $t,s \in X$ where $t < z < s$ when both $t,s \in X$, and the fibers $\fib{\tau(t), z - t}$ for $t \in X$ otherwise.
 \end{Ddef}
 ```
-sha256: `aaf87cd1fc4d88b372ed586194468ea9b7721ab8c5d5a52125c65e847986d76c`
+sha256: `50aadae779c7d57c810e94209614b5cdfe2590fa82c1c0793db948e8d0917e28`
 
 Promoted from lead-in prose to a numbered definition so the lemmas below can cite it by name.
 The 2026-08-12 wave shortened the defined term to "the *constraints on `z`*" and added an explicit
@@ -480,10 +534,10 @@ appear in the live paper — this record quotes whichever one appears inside the
 
 ```latex
 \begin{Lthm} \label{lem:nesting}
-	For any partial history $\tau : X \to W$ over a frame $\F = \tuple{W, \D, \Rightarrow}$ and duration $z \in D \setminus X$, the fibers $\fib{\tau(t'), z - t'} \subseteq \fib{\tau(t), z - t}$ nest for all times $t \leq t' < z$ in $X$ and symmetrically for all times $z < t' \leq t$ in $X$, while the segments $[\tau(t'), \tau(s')]_{z - t'}^{s' - z} \subseteq [\tau(t), \tau(s)]_{z - t}^{s - z}$ nest for all times $t \leq t' < z < s' \leq s$ in $X$.
+	For any partial history $\tau : X \to W$ over a task frame $\F = \tuple{W, \D, \Rightarrow}$ and duration $z \in D \setminus X$, the fibers $\fib{\tau(t'), z - t'} \subseteq \fib{\tau(t), z - t}$ nest for all times $t \leq t' < z$ in $X$ and symmetrically for all times $z < t' \leq t$ in $X$, while the segments $[\tau(t'), \tau(s')]_{z - t'}^{s' - z} \subseteq [\tau(t), \tau(s)]_{z - t}^{s - z}$ nest for all times $t \leq t' < z < s' \leq s$ in $X$.
 \end{Lthm}
 ```
-sha256: `971a38bb2fb7169976868b9fdcedbb1b8bcc01793d96be6e26b982ba1e06fa4c`
+sha256: `ed036f28b70b99d4294515c0f1da64a62e471aa4795394cda4d9010b1f1971a7`
 
 The block carries an in-source `% FIX:` authorial note about the `\Fib` macro's italics. That line
 is literal paper source and is inside the hashed region, so it is quoted here verbatim like any
@@ -495,10 +549,10 @@ repository. Paper order places this lemma immediately after `def:constraints` an
 
 ```latex
 \begin{Lthm} \label{lem:nonempty}
-	For any partial history $\tau : X \to W$ over a frame $\F = \tuple{W, \D, \Rightarrow}$ and duration $z \in D \setminus X$, every constraint imposed on $z$ is nonempty.
+	For any partial history $\tau : X \to W$ over a task frame $\F = \tuple{W, \D, \Rightarrow}$ and duration $z \in D \setminus X$, every constraint imposed on $z$ is nonempty.
 \end{Lthm}
 ```
-sha256: `04a49ef8a67071b45bb42ad91ae8e7eba8a3c89a7fd785017e33507b7f8cc6c7`
+sha256: `8067bf45a360f04db7a94280bde1b359dac58e8311f2fba1d58db15bf2336598`
 
 Note the phrasing divergence already recorded under `def:constraints`: that definition was renamed
 to "the constraints *on* `z`", while this lemma (and `lem:nesting`, `lem:constraint`, `lem:fibers`,
@@ -509,10 +563,10 @@ both are quoted as they stand; neither is silently normalized here.
 
 ```latex
 \begin{Lthm} \label{lem:constraint}
-	For any partial history $\tau : X \to W$ over a frame $\F = \tuple{W, \D, \Rightarrow}$ and duration $z \in D \setminus X$, the constraints imposed on $z$ form a directed family of nonempty sets.
+	For any partial history $\tau : X \to W$ over a task frame $\F$ and duration $z \in D \setminus X$, the constraints imposed on $z$ form a $\supseteq$-directed family of nonempty sets.
 \end{Lthm}
 ```
-sha256: `9ebed5d29cd939e0b3486dee775b8135077819f0de7228877ffeef6a928bf5e7`
+sha256: `ca6719adfaad9f6dc3d1b6a57de013598dd80847014d9c2fb60ed626b895370f`
 
 This lemma now states **only** directedness + nonemptiness. The admissibility characterization
 that an earlier paper wave carried inside this lemma was split out into `lem:admissible` below —
@@ -539,10 +593,10 @@ New lemma (introduced by the same wave that split `lem:admissible` out of `lem:c
 
 ```latex
 \begin{Lthm} \label{lem:admissible}
-	For any partial history $\tau : X \to W$ over a frame $\F = \tuple{W, \D, \Rightarrow}$ and duration $z \in D \setminus X$, the function $\tau \cup \set{\tuple{z, u}}$ is a partial history on $X \cup \set{z}$ just in case $u$ belongs to every member of the constraints imposed on $z$.
+	For any partial history $\tau : X \to W$ over a task frame $\F = \tuple{W, \D, \Rightarrow}$ and duration $z \in D \setminus X$, the function $\tau \cup \set{\tuple{z, u}}$ is a partial history on $X \cup \set{z}$ just in case $u$ belongs to every member of the constraints imposed on $z$.
 \end{Lthm}
 ```
-sha256: `cc94cfdca6f3c1f581f3876ba737525288417ac9c05b3293c8fa4a621d262469`
+sha256: `9606ef1f1264887ed51358744df7e5fc290250dd8209f445fd138700da56de8e`
 
 Proof consumes `lem:nullity` (the zero loop at `z` itself) plus `lem:fibers`.
 
@@ -550,10 +604,10 @@ Proof consumes `lem:nullity` (the zero loop at `z` itself) plus `lem:fibers`.
 
 ```latex
 \begin{Lthm} \label{lem:step}
-	Every partial history $\tau : X \to W$ over a frame $\F = \tuple{W, \D, \Rightarrow}$ extends to a partial history on $X \cup \set{z}$ for any duration $z \in D$.
+	Every partial history $\tau : X \to W$ over a task frame $\F = \tuple{W, \D, \Rightarrow}$ extends to a partial history on $X \cup \set{z}$ for any duration $z \in D$.
 \end{Lthm}
 ```
-sha256: `82ab9eb861c6e4cb99575946f4a74f4296b5c8b979d3c2f6e28ac9fa705da94f`
+sha256: `b1f65f70cc243de5b32d4e2a46c35c986dd0322cf3ca0524fb76701af3e3be4b`
 
 Proof: `lem:constraint` gives the directed family, *Spherical* provides a common member, and
 `lem:admissible` certifies the extension. Closing remark (verbatim, load-bearing for the discrete
@@ -580,7 +634,7 @@ sha256: `239fba0ff163b461e0d1bf3c0e94da0cb0b62e7b2d7f4519916af4cc50d6967f`
 
 ```latex
 \begin{Ddef} \label{def:BL-semantics}
-	A \textit{model} of $\BL$ is a structure $\M = \tuple{W, \D, \Rightarrow, \vert{\cdot}}$ where $\F = \tuple{W, \D, \Rightarrow}$ is a frame and $\vert{p_i} \subseteq W$ for every sentence letter $p_i \in \SL$.
+	A \textit{model} of $\BL$ is a structure $\M = \tuple{W, \D, \Rightarrow, \vert{\cdot}}$ where $\F = \tuple{W, \D, \Rightarrow}$ is a task frame and $\vert{p_i} \subseteq W$ for every sentence letter $p_i \in \SL$.
 	Relative to a model $\M$, possible world $\tau \in H_{\F}$, and time $x \in D$, \textit{truth} is defined recursively as follows:
 	\begin{enumerate}[wide=0pt, labelsep=.1in, itemsep=.075in]
 		\item[($p_i$)] $\M,\tau,x \vDash p_i$ \textit{iff} $\tau(x) \in |p_i|$.
@@ -590,10 +644,10 @@ sha256: `239fba0ff163b461e0d1bf3c0e94da0cb0b62e7b2d7f4519916af4cc50d6967f`
 		\item[($\Past$)] $\M,\tau,x \vDash \Past \varphi$ \textit{iff} $\M,\tau,y \vDash \varphi$ for all $y\in D$ where $y < x$.
 		\item[($\Future$)] $\M,\tau,x \vDash \Future \varphi$ \textit{iff} $\M,\tau,y \vDash \varphi$ for all $y\in D$ where $x < y$.
 	\end{enumerate}
-  \vspace{-.15in}
+  \vspace{-.1in}
 \end{Ddef}
 ```
-sha256: `f6f7ef8d1755ba2f0179bcf84fa2ad3171b759355e54fe720b48deb3c2c09585`
+sha256: `5f53774a3b8a04272bb3c8bf9d41f5cd777e8dc8b1ba30c92aa19113399b228b`
 
 **The box clause's quantifier domain is `H_F`** — the full set of *total* world histories, not a
 maximal-history set `H^max_F` (that vocabulary is retired; the block's own `%%` comment history
@@ -628,9 +682,10 @@ sha256: `a43b3df2ea2fcb96eeb156b3403a33ac51fcafd2ad4eb55e7915c07cf509f8b7`
 		\item[($\until$)] $\M,\tau,x \vDash \varphi\until\psi$ \textit{iff} $\M,\tau,z \vDash \psi$ for some time $z > x$ where $\M,\tau,y \vDash \varphi$\\ 
       \strut\hspace{1.55in}for all $y \in D$ with $x < y < z$.
 	\end{enumerate}
+  \vspace{-.1in}
 \end{Ddef}
 ```
-sha256: `edde75176efc0936c96f8d9eb18628929c2dd3bdb1aa1c21d4a88af90276314a`
+sha256: `735c614181b042a498ec68826b234d30c9035464d9887b6fe717bab90e0705eb`
 
 **Argument-order caveat — DISCHARGED 2026-08-17. There is no longer a divergence, and there is no
 longer a footnote.**
@@ -712,32 +767,33 @@ sha256: `cf9d2e2bb1bcb17e3f27d9ac76f89c340f2cce5992586c617f4202051ac8256d`
 
 ```latex
 \begin{Tthm} \label{thm:BLplus-NextPrevious}
-	Over \textsc{Discrete} frames, $\M,\tau,x \vDash \Next\varphi$ \textit{iff} $\M,\tau,y \vDash \varphi$ for the immediate successor $y$ of $x$; and $\M,\tau,x \vDash \Next\varphi \leftrightarrow \bot$ when $x$ has no immediate successor.
-	The past dual holds for $\Previous\varphi$.
+	Over \textsc{Discrete} task frames, $\M,\tau,x \vDash \Next\varphi$ \textit{iff} $\M,\tau,y \vDash \varphi$ for the immediate successor $y$ of $x$.
+  Additionally, $\M,\tau,x \vDash \Next\varphi \leftrightarrow \bot$ when $x$ has no immediate successor.
+	The past dual holds for $\Previous\varphi$ in an analogous manner.
 \end{Tthm}
 ```
-sha256: `777b274d90440a174fb827ccb86d57ff617c65bfcafed9adc0f949e9332395c9`
+sha256: `5d9a6febeae6e2dd4c78e1912616e75e6ae7896c929e75345b2ba6403c0693c9`
 
 ### `def:time-shift-histories` — time-shift between possible worlds, translation form
 
 ```latex
 \begin{Ddef} \label{def:time-shift-histories}
-	For a frame $\F = \tuple{W, \D, \Rightarrow}$, the possible worlds $\tau, \sigma \in H_{\F}$ are \emph{time-shifted from $x$ to $y$}--- written $\tau \approx_x^y \sigma$--- \textit{iff} there exists a \textit{translation} $\bar{a} : D \to D$, $\bar{a}(z) = z + d$ for some $d \in D$, where $y = \bar{a}(x)$ and $\tau(z) = \sigma(\bar{a}(z))$ for all $z \in D$.
+	For a task frame $\F = \tuple{W, \D, \Rightarrow}$, the possible worlds $\tau, \sigma \in H_{\F}$ are \emph{time-shifted from $x$ to $y$}--- written $\tau \approx_x^y \sigma$--- \textit{iff} there exists a \textit{translation} $\bar{a} : D \to D$, $\bar{a}(z) = z + d$ for some $d \in D$, where $y = \bar{a}(x)$ and $\tau(z) = \sigma(\bar{a}(z))$ for all $z \in D$.
 \end{Ddef}
 ```
-sha256: `9aa6ca749adaa98c0ed28b7330a3e1dec976df66ebf6ae25d1d4fac89636b114`
+sha256: `d468e821f5d1edb0316cbc0ce3895a8148a2e460ba5e2a6f6c1b67f1c029d202`
 
 ### `def:frame-validity` — validity over a frame
 
 ```latex
 \begin{Ddef} \label{def:frame-validity}
-	A well-formed sentence $\varphi$ of $\BL$ is \emph{valid over a frame} $\F = \tuple{W, \D, \Rightarrow}$ which we may write $\vDash_{\F} \varphi$ if and only if $\M,\tau,x \vDash \varphi$ for every model $\M = \tuple{W, \D, \Rightarrow, \vert{\cdot}}$ where $\F = \tuple{W, \D, \Rightarrow}$, possible world $\tau \in H_{\F}$, and time $x \in D$.%
+	A well-formed sentence $\varphi$ of $\BL$ is \emph{valid over a task frame} $\F = \tuple{W, \D, \Rightarrow}$ which we may write $\vDash_{\F} \varphi$ if and only if $\M,\tau,x \vDash \varphi$ for every model $\M = \tuple{W, \D, \Rightarrow, \vert{\cdot}}$ where $\F = \tuple{W, \D, \Rightarrow}$, possible world $\tau \in H_{\F}$, and time $x \in D$.%
     \footnote{
-      Since $H_{\F} \neq \emptyset$ for every frame by \textbf{\ref{cor:occurrence}}, frame validity is never vacuous: every frame contributes evaluation points, and so $\nvDash_{\F} \bot$ for every frame $\F$.
+      Since $H_{\F} \neq \emptyset$ for every task frame by \textbf{\ref{cor:occurrence}}, frame validity is never vacuous: every task frame contributes evaluation points, and so $\nvDash_{\F} \bot$ for every task frame $\F$.
     }
 \end{Ddef}
 ```
-sha256: `ea98b31dfa42d15fa9b8e79d3156473e273da01e46a30ef0a584fdc685f43c6f`
+sha256: `86a0c4b220bc43d04a2bfc14ccd14f0dab0182ff735ffde9c660e3a0ce7b2259`
 
 ### `def:logical-consequence` — logical consequence and (global) validity
 
@@ -790,16 +846,16 @@ by a live task at recording time.
       \aitem[MN]{TMP-MN} \textit{If} $\vdash \varphi$, \textit{then} $\vdash \Box\varphi$.
     \end{multicols}
   \end{enumerate}
-  \vspace{-.175in}
+  \vspace{-.275in}
 \end{Ddef}
 ```
-sha256: `b090402a8048cd02cc163ebf0af7ec3f9c2630edc943feeaf5e9873072f50211`
+sha256: `f588157a5ad86a277b73c29b682d66052db206bf75111acebeef80b34a40c946`
 
 ### `def:BX` — the Base Burgess–Xu tense logic
 
 ```latex
 \begin{Ddef} \label{def:BX}
-  Letting $\varphi_{\tuple{\textsc{s} | \textsc{u}}}$ denote the result swapping occurrences of $\since$ and $\until$ in $\varphi$, \textbf{BX} is the \textit{Base Burgess--Xu Tense Logic} axiomatized below where the past/since direction of each axiom follows from the future/until direction:
+  Letting $\varphi_{\tuple{\textsc{s} | \textsc{u}}}$ denote the result of interchanging all occurrences of $\since$ and $\until$ in $\varphi$, \textbf{BX} is the \textit{Base Burgess--Xu Tense Logic} axiomatized below where the past/since direction of each axiom follows from the future/until direction:
   \vspace{-.125in}
   \begin{enumerate}[leftmargin=.5in,labelsep=.15in,itemsep=.075in]
     \begin{multicols}{2}
@@ -844,7 +900,7 @@ sha256: `b090402a8048cd02cc163ebf0af7ec3f9c2630edc943feeaf5e9873072f50211`
   The logic \textbf{BX} is smallest extension of \textbf{CPL} closed under all instances of the above.
 \end{Ddef}
 ```
-sha256: `aaaa62168c43b560e3988b945b8dd3342507593199b6c038f3187b05c5c81322`
+sha256: `9af6879e367d85e7732f2d699cb2fea1862f0efc44ea497fd25604405bc771f2`
 
 ### `def:TMplus-f` — the discrete Burgess–Xu tense logic BX_f, and its Z-time footnote
 
@@ -859,13 +915,13 @@ sha256: `aaaa62168c43b560e3988b945b8dd3342507593199b6c038f3187b05c5c81322`
     \end{multicols}
   \end{enumerate}
   \vspace{-.175in}
-  Whereas \textbf{\aref{TMP-UZ}} asserts that if $\varphi$ in the future, then there is a \textit{nearest} future $\varphi$-time where $\neg\varphi$ throughout the intervening interval, \textbf{\aref{TMP-Z1}} is a backward induction principle that is characteristic of successor-Archimedean frames.
-  Since if follows by H\"{o}lder's theorem that a nontrivial \textit{discrete} Archimedean totally ordered abelian group is isomorphic to $\Z$, the successor-Archimedean discrete class to which \textbf{BX}$_f$ and \textbf{TM}$^+_\textsc{f}$ are sound and complete is exactly $\Z$-time.
+  Whereas \textbf{\aref{TMP-UZ}} asserts that if $\varphi$ in the future, then there is a \textit{nearest} future $\varphi$-time where $\neg\varphi$ throughout the intervening interval, \textbf{\aref{TMP-Z1}} is a backward induction principle that is characteristic of successor-Archimedean task frames.
+  It follows by H\"{o}lder's theorem that a nontrivial discrete Archimedean totally ordered abelian group is isomorphic to $\Z$, and so the successor-Archimedean discrete class to which \textbf{BX}$_f$ and \textbf{TM}$^+_\textsc{f}$ are sound and complete is exactly $\Z$-time.
   % \textbf{TM}$_\textsc{f}$, by contrast, is sound over the full class of discrete frames, since \textbf{\aref{DF}} is valid on every discrete order and not only on $\Z$-time; whether \textbf{TM}$_\textsc{f}$ is complete over that broader class remains open, as discussed at \textbf{\ref{cor:tm-completeness}}.
   % \textbf{\aref{TMP-UZ}} and \textbf{\aref{TMP-Z1}} are not sound over non-Archimedean discrete orders: over $\Z \times_{\mathrm{lex}} \Z$, an atom true only in the second galaxy leaves \textbf{\aref{TMP-UZ}} without a first witness.
 \end{Ddef}
 ```
-sha256: `918ca6f47026d003680b1df4b579f9ea109223c5e969ee8f7bb58be69adf5437`
+sha256: `748db67fde66dfae930e60f5e332c608585b3ac2f3f35628704536b7884bde54`
 
 ### `def:TMplus-d` — the dense Burgess–Xu tense logic BX_d
 
@@ -902,12 +958,12 @@ sha256: `aa6542e6eee06e5c94dddc4b4581715d8b4310bba53615e0c0f80188016f10cf`
   % This derivation is machine-checked in the Lean 4 \href{https://github.com/benbrastmckie/BimodalLogic}{repository} for this paper, and so will not be provided here.
   % Whether \textbf{\aref{TMP-CO}} alone axiomatizes the same logic as the full triple is open: the converse derivation--- deriving \textbf{\aref{TMP-PU}} and \textbf{\aref{TMP-SEP}} from \textbf{\aref{TMP-CO}} alone--- is conjectured to fail, via an unformalized pen-and-paper sketch involving a $\Q$-flow with isolated $\neg\varphi$ points accumulating at an irrational from above; this independence is not asserted as established.\footnote{%
   %   A nontrivial Dedekind-complete totally ordered abelian group is Archimedean, hence by H\"{o}lder's theorem isomorphic to $\Z$ or $\R$.
-  %   The complete class is therefore exactly $\set{\Z, \R}$ up to isomorphism, so the Dedekind-complete theory of time is $\mathrm{Th}(\Z) \cap \mathrm{Th}(\R)$ and the dense-and-complete class is exactly $\R$.
+  %   The complete class is therefore exactly $\set{\Z, \R}$ up to isomorphism, so the Dedekind-complete theory of time is $\Th{\Z} \cap \Th{\R}$ and the dense-and-complete class is exactly $\R$.
   %   In particular, no non-Archimedean order is complete.
     % }
 \end{Ddef}
 ```
-sha256: `24b1b6a18ddf02c03dfe81fbf48c0883144e939d9fb752079427a81f42b5bdac`
+sha256: `116725ac133c7ce7660d6c32e3654c2e8456c03dcd1cf97cd3b254238c2d4c03`
 
 ### `def:TMplus` — TM+ base logic for BL+, and the four-part conservativity footnote
 
@@ -918,17 +974,9 @@ sha256: `24b1b6a18ddf02c03dfe81fbf48c0883144e939d9fb752079427a81f42b5bdac`
     \aitem[MF]{TMP-MF} $\Box\varphi \rightarrow \Box\Future\varphi$.
   \end{enumerate}
   Similarly, the discrete \textbf{TM}$^+_f$, dense \textbf{TM}$^+_d$, and complete \textbf{TM}$^+_c$ extensions of \textbf{TM}$^+$ include the additional axioms that distinguish \textbf{BX}$_f$, \textbf{BX}$_d$, and \textbf{BX}$_c$, respectively.
-  % TODO: it might be better just to cite the Lean repo for this paper where these results are established, though I would like this to happen in the cor:tm-completeness below rather than here. The footnote should not attempt to sketch the proofs, just state that they have been established.
-  % \footnote{
-  %   $\BL$ embeds into $\BL^+$ (\textbf{\ref{thm:BLplus-PastFuture}}), so the \textit{backward} direction holds unconditionally for every extension: every $\BL$-theorem of \textbf{TM}, \textbf{TM}$_\textsc{f}$, \textbf{TM}$_\textsc{d}$, and \textbf{TM}$_\textsc{c}$ remains a theorem of \textbf{TM}$^+$, \textbf{TM}$^+_\textsc{f}$, \textbf{TM}$^+_\textsc{d}$, and \textbf{TM}$^+_\textsc{c}$ respectively.
-  %   The \textit{forward} direction --- whether enriching the language proves genuinely new $\BL$-theorems --- fails for the base case, witnessed by \textbf{(DD)}: \textbf{TM}$^+$ derives \textbf{(DD)} from \textbf{\aref{TMP-NB}} and \textbf{\aref{M5}} together with two $\BL^+$-valid conditionals, a derivation that inherits \textbf{TM}$^+$'s own not-yet-fully-established weak completeness, since that is what supplies the two conditionals as $\textbf{TM}^+$-theorems, while $\textbf{TM} \nvdash \textbf{(DD)}$, refuted on the two-fibre structure of \textbf{\ref{cor:tm-completeness}}'s proof; \textbf{TM} would have to be extended by \textbf{(DD)} for any transfer to have a chance, and completeness of $\textbf{TM} + \textbf{(DD)}$ is itself open.
-  %   The forward direction also fails for the discrete extension, unconditionally, witnessed by \textbf{\aref{TMP-Z1}}: an axiom of the base tense logic's discrete extension and so a $\textbf{TM}^+_\textsc{f}$-theorem trivially, yet unsound over the non-Archimedean discrete order $\Z \times_{\mathrm{lex}} \Z$ and so not a $\textbf{TM}_\textsc{f}$-theorem.
-  %   The forward direction remains open for the dense and complete extensions, with no known counterexample.
-  %   No conservativity claim is therefore made for \textbf{TM}$^+$ over \textbf{TM}.
-  % }
 \end{Ddef}
 ```
-sha256: `4677290e1b2a4937d3f07ef606c4db37160692f176aeae7b017057c8baa8ba64`
+sha256: `f7a811e63f644732b3e316541ca281ce1bdce81bd7d9c4358514470c8185fa4b`
 
 ### `thm:M5-valid` — the M5 axiom is valid
 
@@ -952,28 +1000,28 @@ sha256: `23cae2b2fcd8c034b82c4f9294b21aa4d141429a278fa08d085cae2c53bf0529`
 
 ```latex
 \begin{Tthm} \label{app:discrete}
-	$\F \vDash (\Past\varphi \wedge \varphi \wedge \future\top) \rightarrow \future\Past\varphi$ iff $\F$ is a \textsc{Discrete} frame.
+	$\F \vDash (\Past\varphi \wedge \varphi \wedge \future\top) \rightarrow \future\Past\varphi$ iff $\F$ is a \textsc{Discrete} task frame.
 \end{Tthm}
 ```
-sha256: `390d37f1e1813e41aefac5c2db8add88490e120f9f4e11fa36b9842d5486f711`
+sha256: `fa0634d7f914f5cf78be7524ee8ced0d70cabf2d634db3ddeabbfe13b2be74db`
 
 ### `app:dense` — the Dense correspondence theorem (DN)
 
 ```latex
 \begin{Tthm} \label{app:dense}
-	$\F \vDash \Future\Future\varphi \rightarrow \Future\varphi$ iff $\F$ is a \textsc{Dense} frame.
+	$\F \vDash \Future\Future\varphi \rightarrow \Future\varphi$ iff $\F$ is a \textsc{Dense} task frame.
 \end{Tthm}
 ```
-sha256: `6a6b76ccb40bc9059627c40826f9f64edf0e1716650df11bf46f5c0b8ba3e554`
+sha256: `4f8bb793ec8d762013c413327c05c50e691c6d54fefdcb0bedd3076b3b782bfe`
 
 ### `app:complete` — the Complete correspondence theorem (CO)
 
 ```latex
 \begin{Tthm} \label{app:complete}
-	$\F \vDash \always(\Past\varphi \rightarrow \future\Past\varphi) \rightarrow (\Past\varphi \rightarrow \Future\varphi)$ iff $\F$ is a \textsc{Complete} frame.
+	$\F \vDash \always(\Past\varphi \rightarrow \future\Past\varphi) \rightarrow (\Past\varphi \rightarrow \Future\varphi)$ iff $\F$ is a \textsc{Complete} task frame.
 \end{Tthm}
 ```
-sha256: `a3b4e39b80ffdf9e94fb48cea4bc9f719391d845a648da8aa9bcf2c0f0d5ea04`
+sha256: `2fe5c5e879af2ae0e7ef1823d3c61b6d3608f21495525396b82a4350e349f168`
 
 ### `def:frame-properties` — Discrete/Dense/Complete/Deterministic frame-class predicates
 
@@ -992,14 +1040,28 @@ sha256: `7820dd2fdaada72ff505787f47c049f63c24362cf25e48b7677724d850275086`
 Note: promoted into coverage by this task (previously listed under "Deliberately not covered"
 below, which is updated accordingly).
 
+### `def:deterministic` — the Deterministic frame-class predicate (standalone since the 2026-08 wave)
+
+Split out of `def:frame-properties` by the paper: Deterministic used to be a fourth clause inside
+that definition and is now a definition of its own at live paper line 2868. Added to the manifest
+at the 2026-08-25 re-pin because `FormalSystem/Examples/TemporalStructures.lean` cites it, and
+citing `def:frame-properties` for determinism is now wrong.
+
+```latex
+\begin{Ddef} \label{def:deterministic}
+	A task frame $\F = \tuple{W, \D, \Rightarrow}$ is \textsc{Deterministic} just in case $u = v$ whenever $w \Rightarrow_x u$ and $w \Rightarrow_x v$ for $w, u, v \in W$ and $x \in D$, holding in both temporal directions since \textbf{\ref{def:task-relation}}'s converse convention already extends $x$ over all of $D$.
+\end{Ddef}
+```
+sha256: `3baae0ee62cee6a0bd81b18951efb3cd5d1097a017f9c60ccd2d8b87e4a3e175`
+
 ### `cor:spherical-finite` — every frame with finite W satisfies Spherical, choice-free
 
 ```latex
 \begin{Cthm} \label{cor:spherical-finite}
-	Every frame $\F = \tuple{W, \D, \Rightarrow}$ with finite $W$ satisfies \textit{Spherical}, choice-free.
+	Every task frame $\F = \tuple{W, \D, \Rightarrow}$ with finite $W$ satisfies \textit{Spherical}, choice-free.
 \end{Cthm}
 ```
-sha256: `76258a4c835d4fa0dde3fd037da52e706d0f20c9d7872ab523d3b81597b99b9d`
+sha256: `26ed8ff4c8b01f1dde980e075bc2e0bd45571951be82160bb184d59227b9f7b3`
 
 ### `cor:tm-completeness` — the Completeness corollary (TM sound but not complete; completeness carried by BL+)
 
@@ -1227,47 +1289,48 @@ human readability and are not machine-parsed. Columns: `anchor_id|kind|enclosing
 ```
 # anchor_id|kind|enclosing|locator|sha256
 def:temporal-order|env|-|-|bc89eea5f9bafa1e326bc8bda93b6631c49212c1f0c3253208f0cfbdb049fb1f
-def:task-relation|env|-|-|3ee787814dd714aa6c46811cce180d64cc2a3f931f348e088fff8aedad043367
+def:task-relation|env|-|-|c12d018290feb5a12e1757aae3718593c940c3d5bd19c6bbd5d8a87bcf525193
 def:directed|env|-|-|096a8398223596825ff71372dc565a77354d41fff69f8bf0b3fe485edad0c75b
 def:frame|env|-|-|294733a3cb5d65a1c048d850689e6d78e7a29c8b78cc8fed5d35b3ce3618583b
 def:frame#Compositionality|item|def:frame|Compositionality|35905314d686a1676dfda8d4c7d092de8c3335104c0510e7069d6656a4ac87e3
 def:frame#Seriality|item|def:frame|Seriality|afffcd074afce7442d2c02108f49e70c128de3d4d7ccac41833f95e2ae3cd952
 def:frame#Limit|item|def:frame|Limit|6acfdc8df119a71d24d863399f6e6d3aff9a507e920c8a57e9427df94224b369
 def:frame#Spherical|item|def:frame|Spherical|92b407bc45ab62ce5bac22982c67e2555efb4a990ddf8e61fd7f1b45840bcf60
-lem:nullity|env|-|-|7840512db4eb75a6f8d4224b80d784239e554f2742163722236df4778de8d9de
-def:world-history|env|-|-|4aaa6ec0db38ccbba25ce6dc61d81b8a28f82913ba6b2b1defabaa42f9caf205
+lem:nullity|env|-|-|94ed018343635a8ef6671daef07eaa72da1cb49fd11043fb3aa9b391a2c9c973
+def:world-history|env|-|-|3d4679bdb4828aad40f6a0d8deb6ff5af09fa52d2181100cfe159f2a23303a15
 thm:extension|env|-|-|1140d4819b9b0030275f249c60b7cb2fb15da97f9d07df2196d6e06508f65e38
-cor:occurrence|env|-|-|b0228712e0d847f600b5b353b783ec3bc24e7722620f7e39e284af1f1fa5ebea
-def:constraints|env|-|-|aaf87cd1fc4d88b372ed586194468ea9b7721ab8c5d5a52125c65e847986d76c
-lem:nesting|env|-|-|971a38bb2fb7169976868b9fdcedbb1b8bcc01793d96be6e26b982ba1e06fa4c
-lem:nonempty|env|-|-|04a49ef8a67071b45bb42ad91ae8e7eba8a3c89a7fd785017e33507b7f8cc6c7
-lem:constraint|env|-|-|9ebed5d29cd939e0b3486dee775b8135077819f0de7228877ffeef6a928bf5e7
-lem:admissible|env|-|-|cc94cfdca6f3c1f581f3876ba737525288417ac9c05b3293c8fa4a621d262469
-lem:step|env|-|-|82ab9eb861c6e4cb99575946f4a74f4296b5c8b979d3c2f6e28ac9fa705da94f
-def:BL-semantics|env|-|-|f6f7ef8d1755ba2f0179bcf84fa2ad3171b759355e54fe720b48deb3c2c09585
+cor:occurrence|env|-|-|244bb2e5f6036bbe405549501390b90f432ece28c232fd18caa8b82ab3bb9a8c
+def:constraints|env|-|-|50aadae779c7d57c810e94209614b5cdfe2590fa82c1c0793db948e8d0917e28
+lem:nesting|env|-|-|ed036f28b70b99d4294515c0f1da64a62e471aa4795394cda4d9010b1f1971a7
+lem:nonempty|env|-|-|8067bf45a360f04db7a94280bde1b359dac58e8311f2fba1d58db15bf2336598
+lem:constraint|env|-|-|ca6719adfaad9f6dc3d1b6a57de013598dd80847014d9c2fb60ed626b895370f
+lem:admissible|env|-|-|9606ef1f1264887ed51358744df7e5fc290250dd8209f445fd138700da56de8e
+lem:step|env|-|-|b1f65f70cc243de5b32d4e2a46c35c986dd0322cf3ca0524fb76701af3e3be4b
+def:BL-semantics|env|-|-|5f53774a3b8a04272bb3c8bf9d41f5cd777e8dc8b1ba30c92aa19113399b228b
 def:BLplus-language|env|-|-|a43b3df2ea2fcb96eeb156b3403a33ac51fcafd2ad4eb55e7915c07cf509f8b7
-def:BLplus-semantics|env|-|-|edde75176efc0936c96f8d9eb18628929c2dd3bdb1aa1c21d4a88af90276314a
+def:BLplus-semantics|env|-|-|735c614181b042a498ec68826b234d30c9035464d9887b6fe717bab90e0705eb
 def:BLplus-defined|env|-|-|2ac6361a2b84d20dd498f3e392072862554dd964a9ab6fc54bd868ee0a5bf56e
 thm:BLplus-PastFuture|env|-|-|cf9d2e2bb1bcb17e3f27d9ac76f89c340f2cce5992586c617f4202051ac8256d
-thm:BLplus-NextPrevious|env|-|-|777b274d90440a174fb827ccb86d57ff617c65bfcafed9adc0f949e9332395c9
-def:time-shift-histories|env|-|-|9aa6ca749adaa98c0ed28b7330a3e1dec976df66ebf6ae25d1d4fac89636b114
-def:frame-validity|env|-|-|ea98b31dfa42d15fa9b8e79d3156473e273da01e46a30ef0a584fdc685f43c6f
+thm:BLplus-NextPrevious|env|-|-|5d9a6febeae6e2dd4c78e1912616e75e6ae7896c929e75345b2ba6403c0693c9
+def:time-shift-histories|env|-|-|d468e821f5d1edb0316cbc0ce3895a8148a2e460ba5e2a6f6c1b67f1c029d202
+def:frame-validity|env|-|-|86a0c4b220bc43d04a2bfc14ccd14f0dab0182ff735ffde9c660e3a0ce7b2259
 def:logical-consequence|env|-|-|3af67167ee4a393d77fc8cfa8ddc065fe932bedf76a14febb8608a9001af5486
 CO|aitem|-|-|5c468c01776c449b212c98070b5bfc70951691a23905cd4d4c249bf1f5375d41
 TMP-CO|aitem|-|-|2205e7115342b037faeb67a24cb7679e393af582cedf6752c0c07d9a28b8f1be
-def:S5|env|-|-|b090402a8048cd02cc163ebf0af7ec3f9c2630edc943feeaf5e9873072f50211
-def:BX|env|-|-|aaaa62168c43b560e3988b945b8dd3342507593199b6c038f3187b05c5c81322
-def:TMplus-f|env|-|-|918ca6f47026d003680b1df4b579f9ea109223c5e969ee8f7bb58be69adf5437
+def:S5|env|-|-|f588157a5ad86a277b73c29b682d66052db206bf75111acebeef80b34a40c946
+def:BX|env|-|-|9af6879e367d85e7732f2d699cb2fea1862f0efc44ea497fd25604405bc771f2
+def:TMplus-f|env|-|-|748db67fde66dfae930e60f5e332c608585b3ac2f3f35628704536b7884bde54
 def:TMplus-d|env|-|-|aa6542e6eee06e5c94dddc4b4581715d8b4310bba53615e0c0f80188016f10cf
-def:TMplus-c|env|-|-|24b1b6a18ddf02c03dfe81fbf48c0883144e939d9fb752079427a81f42b5bdac
-def:TMplus|env|-|-|4677290e1b2a4937d3f07ef606c4db37160692f176aeae7b017057c8baa8ba64
+def:TMplus-c|env|-|-|116725ac133c7ce7660d6c32e3654c2e8456c03dcd1cf97cd3b254238c2d4c03
+def:TMplus|env|-|-|f7a811e63f644732b3e316541ca281ce1bdce81bd7d9c4358514470c8185fa4b
 thm:M5-valid|env|-|-|bce3cc3be256f7b4c10e34a397e4b3b14abe4e8ed6728e8e91768e9a2ad8b2af
 thm:TM-soundness|env|-|-|23cae2b2fcd8c034b82c4f9294b21aa4d141429a278fa08d085cae2c53bf0529
-app:discrete|env|-|-|390d37f1e1813e41aefac5c2db8add88490e120f9f4e11fa36b9842d5486f711
-app:dense|env|-|-|6a6b76ccb40bc9059627c40826f9f64edf0e1716650df11bf46f5c0b8ba3e554
-app:complete|env|-|-|a3b4e39b80ffdf9e94fb48cea4bc9f719391d845a648da8aa9bcf2c0f0d5ea04
+app:discrete|env|-|-|fa0634d7f914f5cf78be7524ee8ced0d70cabf2d634db3ddeabbfe13b2be74db
+app:dense|env|-|-|4f8bb793ec8d762013c413327c05c50e691c6d54fefdcb0bedd3076b3b782bfe
+app:complete|env|-|-|2fe5c5e879af2ae0e7ef1823d3c61b6d3608f21495525396b82a4350e349f168
 def:frame-properties|env|-|-|7820dd2fdaada72ff505787f47c049f63c24362cf25e48b7677724d850275086
-cor:spherical-finite|env|-|-|76258a4c835d4fa0dde3fd037da52e706d0f20c9d7872ab523d3b81597b99b9d
+def:deterministic|env|-|-|3baae0ee62cee6a0bd81b18951efb3cd5d1097a017f9c60ccd2d8b87e4a3e175
+cor:spherical-finite|env|-|-|26ed8ff4c8b01f1dde980e075bc2e0bd45571951be82160bb184d59227b9f7b3
 cor:tm-completeness|env|-|-|04255c86b60567dd33a9cc708351dc02af254f798f4e82663e60b83b6f41847d
 def:id|env|-|-|1a608153e9b78659db2bfc13b2c11c024dceb0acde9cfaa8b900345cda2af238
 def:strongest|env|-|-|57786b2c8758c3c7ea80ac7a80464b331ea77ff9b8c804a032504394bc800369

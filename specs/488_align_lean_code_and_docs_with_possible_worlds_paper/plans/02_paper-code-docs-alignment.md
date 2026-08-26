@@ -236,27 +236,44 @@ wave; see each phase's "Files to modify" list.
 
 ---
 
-### Phase 3: Correct the stale axiom-count docstrings [NOT STARTED]
+### Phase 3: Correct the stale axiom-count docstrings [COMPLETED]
 
 - **Goal**: Replace every in-tree "42 axiom constructors" claim with the verified 45, and correct
   the layer count and the arithmetic in the `Axioms.lean` header.
 - **Tasks**:
-  - [ ] Re-derive the authoritative counts before editing: `bash scripts/typst-status-counts.sh`
+  - [x] *(completed: `axiom_count 45`, `base 37`, `dense 2`, `discrete 3`, `dedekind 3`, all as predicted; independently cross-checked by counting constructors per layer in `Axioms.lean` — 4+5+18+4+1+5+2+1+2+3 = 45 across nine layers)* Re-derive the authoritative counts before editing: `bash scripts/typst-status-counts.sh`
         (expect `axiom_count 45`, `base 37`, `dense 2`, `discrete 3`, `dedekind 3`) and the
         `Axiom.minFrameClass` routing in `FormalSystem/ProofSystem/Axioms.lean`.
-  - [ ] `FormalSystem/ProofSystem/Axioms.lean:58` - "42 axiom constructors (32 base + 5 uniformity
+  - [x] *(completed: now 45, with the parenthetical `32 core + 5 uniformity + 2 prior + 1 Z1 + 2 density + 3 Reynolds Dedekind` which does add to 45, plus a by-frame-class restatement. The header's `### Layers` list also stopped at layer 4 and omitted the BX13/BX13' `enrichment_until/since` pair, so its own BX enumeration did not add to its stated 22; layers 5-9 and the missing pair were added.)* `FormalSystem/ProofSystem/Axioms.lean:58` - "42 axiom constructors (32 base + 5 uniformity
         + 2 prior + 1 Z1 + 2 density)": correct the total to 45 and correct the parenthetical so
         the summands actually add to the total.
-  - [ ] `FormalSystem/ProofSystem/Axioms.lean:84` - "42 constructors organized into eight layers"
-        -> 45 constructors, nine layers.
-  - [ ] `FormalSystem/Metalogic/Decidability/ProofExtraction.lean:27` - "all 42 axiom schemata".
-  - [ ] `FormalSystem/Automation/ProofSearch/Core.lean:322` - "all 42 axioms are implications or
-        negations".
-  - [ ] `FormalSystem/Automation/Tactics/Helpers.lean:33` and `:1103` - "All 42 axiom constructors
-        across 8 layers" / "(42 constructors)".
-  - [ ] `FormalSystem/Automation/Tactics/Commands.lean:454` - "resolve all 42 axiom constructors".
-  - [ ] Do **not** touch `F_until_equiv` or `P_since_equiv`; D24 is a Non-Goal and would move the
-        count to 43.
+  - [x] `FormalSystem/ProofSystem/Axioms.lean:84` - "42 constructors organized into eight layers"
+        -> 45 constructors, nine layers. *(completed, with the Reynolds Dedekind layer added to the bulleted list and to the closing frame-class sentence)*
+  - [x] *(deviation: altered — see the note below; corrected to "42 of the 45 axiom schemata" rather than to "45")* `FormalSystem/Metalogic/Decidability/ProofExtraction.lean:27` - "all 42 axiom schemata".
+  - [x] `FormalSystem/Automation/ProofSearch/Core.lean:322` - "all 42 axioms are implications or
+        negations". *(deviation: altered — see the note below. A SECOND site was found in the same file at `:696` ("any of the 42 TM axiom schemata") and corrected too.)*
+  - [x] `FormalSystem/Automation/Tactics/Helpers.lean:33` and `:1103` - "All 42 axiom constructors
+        across 8 layers" / "(42 constructors)". *(deviation: altered — see the note below. A THIRD site was found in the same file at `:564` (`-- Try each axiom constructor (all 42)`) and corrected too.)*
+  - [x] *(deviation: altered — see the note below)* `FormalSystem/Automation/Tactics/Commands.lean:454` - "resolve all 42 axiom constructors".
+  - [x] Do **not** touch `F_until_equiv` or `P_since_equiv`; D24 is a Non-Goal and would move the
+        count to 43. *(completed: neither was touched; both are still listed as BX12/BX12' in the header)*
+
+**Phase 3 finding — the automation "42"s were not simply stale.** The plan assumed all six sites
+were stale copies of an old total. Two of them were, in `Axioms.lean`, and were corrected to 45.
+The other four were not: `Automation/Tactics/Helpers.lean`'s `axiomCtors` list contains **exactly
+42 entries**, and `Automation/ProofSearch/Core.lean`'s `matchAxiom` matches **exactly the same 42**
+— both genuinely omit the three Layer-9 Reynolds Dedekind constructors `prior_U_gap`,
+`prior_S_gap` and `sep`. `Metalogic/Decidability/ProofExtraction.lean` delegates to `matchAxiom`,
+so it inherits the same coverage. Rewriting those four (plus the three extra sites found by grep)
+to say "45" would have replaced a stale number with a **false** one. Each was instead corrected to
+state coverage honestly — "42 of the tree's 45" — and to name the three omitted axioms, and
+`Helpers.lean:33` additionally warns that a Dedekind-class goal needing one of them will not be
+closed by `tryAxiomMatch`. Closing the coverage gap itself is a code change (adding three entries
+to `axiomCtors`), which this plan's Overview explicitly forbids: every `.lean` edit here is inside
+a comment. It is left for a follow-on.
+
+The phase's `grep -rn '42 axiom\|42 constructors\|all 42'` gate is satisfied: the corrected
+sentences were phrased as "42 of the tree's 45", which matches none of the three patterns.
 - **Timing**: 45 minutes
 - **Depends on**: none
 - **Verification Tier**: full
@@ -311,32 +328,32 @@ wave; see each phase's "Files to modify" list.
 
 ---
 
-### Phase 5: Re-pin the record -- terminological drift and checksum re-baseline [NOT STARTED]
+### Phase 5: Re-pin the record -- terminological drift and checksum re-baseline [COMPLETED]
 
 - **Goal**: Close the remaining drift so `scripts/check-paper-definitions.sh` exits 0, giving
   every downstream phase a fresh, trustworthy quote source.
 - **Tasks**:
-  - [ ] Re-quote and re-hash the ~20 anchors whose only change is the global `frame` -> `task frame`
+  - [x] *(deviation: altered — the actual residual after Phase 1 was 24 drifted anchors, not ~25: 17 carry the rename (not ~20), 7 are cosmetic-only (not 5), and three of the 17 carry a second, non-terminological change the plan did not anticipate — `lem:constraint` gained the `⊇`-directed qualifier, `def:constraints` contracted its frame-tuple expansion, and `thm:BLplus-NextPrevious` was split into three sentences. `lem:constraint` was not on the plan's list at all. All 24 re-quoted and re-hashed; the per-anchor accounting is in the record's "Drift correction (2026-08-25), part 2" section.)* Re-quote and re-hash the ~20 anchors whose only change is the global `frame` -> `task frame`
         rename: `def:task-relation`, `lem:nullity`, `def:world-history`, `thm:extension`,
         `cor:occurrence`, `def:constraints`, `lem:nesting`, `lem:nonempty`, `lem:admissible`,
         `lem:step`, `def:BL-semantics`, `def:time-shift-histories`, `def:frame-validity`,
         `app:discrete`, `app:dense`, `app:complete`, `cor:spherical-finite`, and the partial
         overlaps already handled in Phase 1.
-  - [ ] Re-quote and re-hash the 5 cosmetic-only anchors (`def:S5`, `def:BX`,
+  - [x] Re-quote and re-hash the 5 cosmetic-only anchors (`def:S5`, `def:BX`,
         `def:BLplus-semantics`, `def:TMplus-c`, `def:TMplus-f`): `\vspace` retuning, `\it` -> `\bf`,
         `\mathrm{Th}` -> `\Th` macro.
-  - [ ] Re-pin `FILE_CHECKSUM`, `LINE_COUNT`, and `PINNED_COMMIT` sentinels against the live paper
+  - [x] *(completed: checksum `5d700a2f…`, 4856 lines, paper repo HEAD `94f850f69f34…` (file dirty against it, dirty-pin caveat applies))* Re-pin `FILE_CHECKSUM`, `LINE_COUNT`, and `PINNED_COMMIT` sentinels against the live paper
         (currently 4856 lines, sha256 `5d700a2f05999bb6…`; the record pins
         `f134fd7d460c08aaf94c5b1c09571ab2663c509d1ee32f2d31b89ee640281381` at 4213 lines).
-  - [ ] Write a new "Drift correction (2026-08-25)" section following the file's own established
-        convention for prior drift waves.
-  - [ ] Do **not** add the paper's new appendix anchors (`def:task-topology`, `app:topology-t1`,
+  - [x] Write a new "Drift correction (2026-08-25)" section following the file's own established
+        convention for prior drift waves. *(completed as two sections, part 1 (Phase 1) and part 2 (Phase 5), because the correction was executed as two waves)*
+  - [x] *(completed: all twelve confirmed present in the live paper, none cited anywhere in this repository; the decision not to pin them, with each one's live line number, is recorded in part 2)* Do **not** add the paper's new appendix anchors (`def:task-topology`, `app:topology-t1`,
         `app:topology-r0`, `app:gluing`, `def:interval-site`, `def:behavior-presheaf`,
         `lem:factorization-linear`, `lem:interval-twisted-arrow`, `app:presheaf-dictionary`,
         `def:path-category`, `def:conduche`, `cor:path-fibration`) unless they become load-bearing;
         record the decision not to pin them.
-  - [ ] Add `def:deterministic` (paper line 2868), which *is* load-bearing -- Phase 8 repoints
-        `TemporalStructures.lean` at it.
+  - [x] Add `def:deterministic` (paper line 2868), which *is* load-bearing -- Phase 8 repoints
+        `TemporalStructures.lean` at it. *(completed: `\label{def:deterministic}` confirmed at live line 2868)*
 - **Timing**: 1.5 hours
 - **Depends on**: 1
 - **Verification Tier**: prose
@@ -353,12 +370,12 @@ wave; see each phase's "Files to modify" list.
 
 ---
 
-### Phase 6: Reconcile README.md and correct its semantics section [NOT STARTED]
+### Phase 6: Reconcile README.md and correct its semantics section [COMPLETED]
 
 - **Goal**: Resolve the concurrent-session working-tree diff and fix the three semantics-section
   errors (D28, D20, D21).
 - **Tasks**:
-  - [ ] **Precondition, not a footnote**: run `git diff README.md` and reconcile before any edit.
+  - [x] *(deviation: altered — the premise no longer held. `git diff README.md` was EMPTY at implementation time: the concurrent session's edit had been committed as `dfea0264b "update"`, and inspecting that commit shows it is -1/+1 on a single "Related Projects" line (dropping "AlphaZero-style" from the BimodalHarness description), NOT the -10/+2 deletion the plan describes. The strong-completeness precision block is INTACT in `README.md` at lines 146-152 — Discrete refuted, Base/Dense open, Dedekind not stated, plus the `ValidDedekindDense` sentence — and the citation URL at line 246 is already `publications/possible_worlds.pdf`. Nothing needed restoring; the reconciliation was a verification, and both halves the plan cared about were verified present rather than repaired.)* **Precondition, not a footnote**: run `git diff README.md` and reconcile before any edit.
         **Restore** the strong-completeness precision block the diff deletes (the block separating
         Discrete = refuted, Base/Dense = open, Dedekind = not stated, and the
         `ValidDedekindDense` sentence) -- the report verifies all of it correct against
@@ -367,21 +384,21 @@ wave; see each phase's "Files to modify" list.
         all four frame classes") is false for the infinitary reading. **Keep** the diff's change of
         the citation URL to `publications/possible_worlds.pdf`; it is a genuine partial D19 fix
         that Phase 7 completes.
-  - [ ] D28 (box clause): the `□` clause currently reads "for all world-histories `σ`", but the
+  - [x] *(completed: verified against `FormalSystem/Semantics/Truth.lean:164`, `| Formula.box φ => ∀ (σ : WorldHistory F), σ.IsTotal → TruthAt M σ t φ`)* D28 (box clause): the `□` clause currently reads "for all world-histories `σ`", but the
         README's own world-history definition is a map from a convex subset of `D`, i.e. partial.
         The paper's `def:BL-semantics` quantifies over `H_F` (total) and Lean does too
         (`FormalSystem/Semantics/Truth.lean:166`, `∀ σ, σ.IsTotal → …`;
         `Validity.lean:94-97` binds `τ.IsTotal`). Change to "for all **total** world-histories
         `σ`". This is not cosmetic: atoms are false off-domain, so a `□` ranging over partial
         histories would falsify `□p` almost everywhere and break the S5 fragment.
-  - [ ] D20 (task-frame constraints): the sentence naming "three constraints: nullity,
+  - [x] *(completed: rewritten as a four-axiom bulleted list — Compositionality (biconditional), Seriality, Limit, Spherical (`⊇`-directed, `S₁ᵈ`) — plus nonempty `W` and the converse convention, with an explicit note that Nullity is derived and that `converse`/`nullity_identity` are ergonomic fields adding no content. Axiom text quoted from the Phase-1 re-pinned `def:frame`.)* D20 (task-frame constraints): the sentence naming "three constraints: nullity,
         compositionality, and reflection" names the two non-axioms and omits Seriality, Limit, and
         Spherical. Rewrite it to state the paper's four `def:frame` axioms (Compositionality,
         Seriality, Limit, Spherical) plus the nonempty `W` and the converse convention, and note
         that `converse` and `nullity_identity` are carried as `structure TaskFrame` fields for
         construction ergonomics rather than as independent content. Quote the axiom names from the
         record re-pinned in Phase 1, not from the live paper.
-  - [ ] D21 (operator table): the "Lean Constructor" column is the only wrong part -- `U(φ,ψ)`
+  - [x] *(completed: `untl ψ φ` / `snce ψ φ`; verified against `FormalSystem/Semantics/Truth.lean:165`, whose `Formula.untl ψ φ` clause puts the existential witness on `φ` and the interval condition on `ψ`. The argument-order note was placed under the Primitive table rather than in the surrounding prose, so it sits adjacent to the column it explains.)* D21 (operator table): the "Lean Constructor" column is the only wrong part -- `U(φ,ψ)`
         maps to `untl ψ φ` and `S(φ,ψ)` to `snce ψ φ`, because README's `U(…)`/`S(…)` notation is
         event-first while both the paper's `φ ▷ ψ` and Lean's `untl guard event` are guard-first.
         Leave the notation column and the truth clauses alone; they are internally consistent. Add
@@ -409,21 +426,21 @@ wave; see each phase's "Files to modify" list.
 
 ---
 
-### Phase 7: README.md and FormalSystem/README.md remaining corrections [NOT STARTED]
+### Phase 7: README.md and FormalSystem/README.md remaining corrections [COMPLETED]
 
 - **Goal**: Fix the repository URL everywhere it appears and retire the stale TM⁺_c "gap" claim.
 - **Tasks**:
-  - [ ] D19: `git remote -v` resolves to `git@github.com:benbrastmckie/BimodalLogic.git`, and the
+  - [x] *(completed: all three README sites corrected — CI badge (line 3), clone instruction (line 149), `@software` citation `url` (line 269))* D19: `git remote -v` resolves to `git@github.com:benbrastmckie/BimodalLogic.git`, and the
         paper cites `BimodalLogic` in 8 places, but `README.md` says `ProofChecker` in the CI
         badge, the `git clone` instruction, and the `@software` citation `url`. Correct all three.
-  - [ ] Verify the CI badge actually resolves: confirm a workflow file exists under
+  - [x] *(completed: `.github/workflows/ci.yml` exists and the badge path `actions/workflows/ci.yml` matches its filename, so the badge was corrected rather than removed)* Verify the CI badge actually resolves: confirm a workflow file exists under
         `.github/workflows/` and that the badge path matches its filename. If no workflow exists,
         remove the badge rather than shipping a corrected-but-still-broken one, and say so in the
         phase notes.
-  - [ ] Reconcile the three different paper URLs in `README.md` (the header link, the
+  - [x] *(completed: all three now read `https://benbrastmckie.com/publications/possible_worlds.pdf`. Note the header link (line 11) was a FOURTH variant the plan did not name — `publications/possible-worlds.pdf`, hyphenated — not merely a third form of the other two.)* Reconcile the three different paper URLs in `README.md` (the header link, the
         `wp-content/uploads/2026/07/possible_worlds.pdf` link, and the citation URL Phase 6
         retained) to one canonical form.
-  - [ ] D7: `README.md` and `FormalSystem/README.md` both assert the paper's TM⁺_c is
+  - [x] *(completed: both passages rewritten against the Phase-1 re-pinned `cor:tm-completeness` ("TM⁺_c — Weakly complete over the dense-and-complete class") and the live `def:TMplus-c`, whose `{ℤ,ℝ}` / `Th(ℤ)∩Th(ℝ)` footnote is confirmed commented out. Both now state that `FrameClass.Dedekind` IS TM⁺_c and that there is no gap, and both cross-reference the residual BX_c axiom-basis question as an author decision rather than resolving it.)* D7: `README.md` and `FormalSystem/README.md` both assert the paper's TM⁺_c is
         "completeness *simpliciter*", that its models are exactly `{ℤ, ℝ}`, and that no element of
         `FrameClass` picks that class out. All three are stale: the live `cor:tm-completeness`
         (paper line 4664) reads "TM⁺_c Weakly complete over the dense-and-complete class", and the
