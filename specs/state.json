@@ -9,21 +9,85 @@
     {
       "project_number": 488,
       "project_name": "align_lean_code_and_docs_with_possible_worlds_paper",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "description": "Review possible_worlds.tex (JPL paper) and align the Lean code and documentation such as README.md with the paper, identifying and fixing discrepancies so all claims are verified in the Lean codebase and reported accurately in the documentation",
       "topic": "paper-refactor",
       "created": "2026-08-25T23:24:50Z",
-      "last_updated": "2026-08-25T23:45:48Z",
-      "session_id": "sess_1787700359_c0c128",
+      "last_updated": "2026-08-26T01:14:00Z",
+      "session_id": "sess_1787706306_28c530",
       "researched": "2026-08-25T23:45:48Z",
       "artifacts": [
         {
           "path": "specs/488_align_lean_code_and_docs_with_possible_worlds_paper/reports/01_paper-code-docs-alignment.md",
           "type": "report",
           "summary": "Evidence-backed discrepancy inventory (27 IDs) across the JPL paper, the Lean tree, and the docs: paper over-claims strong completeness/decidability/blanket formalization, the paper-definitions gate is red with 32 drifted anchors, 30 dangling anchor citations, and three concrete README errors; all 25 audited metatheorems verified sorry-free at exactly [propext, Classical.choice, Quot.sound]."
+        },
+        {
+          "path": "specs/488_align_lean_code_and_docs_with_possible_worlds_paper/plans/02_paper-code-docs-alignment.md",
+          "type": "plan",
+          "summary": "14-phase, 14-hour plan covering the repo-side half of the 28-item paper/Lean/docs discrepancy inventory, with the read-only paper's items routed to an author memo."
         }
-      ]
+      ],
+      "memory_candidates": [
+        {
+          "content": "When planning a wide documentation/docstring alignment sweep driven by a discrepancy inventory (D1..Dn), cut phases by FILE TERRITORY, not by discrepancy ID. Discrepancy IDs cross-cut files (one .lean file often carries three unrelated IDs), so ID-grouped phases collide on the same file and cannot be parallelized. Territory-grouped phases have disjoint file sets and run in one wave. Two corollaries: (1) any sweep whose file set is only estimated (\"~20 other quote sites\") must be its own phase scheduled AFTER every file-scoped phase, so it can touch any file without conflict, and its first task is producing the concrete grep-derived list; (2) a single file with concurrent uncommitted working-tree changes must have exactly one designated entry-point phase that owns the reconciliation, with all other phases touching it sequenced behind that one.",
+          "category": "PATTERN",
+          "source_artifact": "specs/488_align_lean_code_and_docs_with_possible_worlds_paper/plans/02_paper-code-docs-alignment.md",
+          "confidence": 0.75,
+          "suggested_keywords": [
+            "phase-decomposition",
+            "file-territory",
+            "documentation-sweep",
+            "discrepancy-inventory",
+            "parallel-waves"
+          ]
+        }
+      ],
+      "plan_metadata": {
+        "phases": 14,
+        "total_effort_hours": 14,
+        "complexity": "complex",
+        "research_integrated": true,
+        "plan_version": 1,
+        "dependency_waves": [
+          [
+            1,
+            2,
+            3,
+            4
+          ],
+          [
+            5,
+            6,
+            13
+          ],
+          [
+            7,
+            8,
+            9,
+            10
+          ],
+          [
+            11
+          ],
+          [
+            12
+          ],
+          [
+            14
+          ]
+        ],
+        "reports_integrated": [
+          {
+            "path": "specs/488_align_lean_code_and_docs_with_possible_worlds_paper/reports/01_paper-code-docs-alignment.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-08-25"
+          }
+        ],
+        "skeleton": false,
+        "follow_up_tasks": []
+      }
     },
     {
       "project_number": 298,
