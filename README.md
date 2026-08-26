@@ -1,6 +1,6 @@
 # A Bimodal Logic for Tense and Modality
 
-[![CI](https://github.com/benbrastmckie/ProofChecker/actions/workflows/ci.yml/badge.svg)](https://github.com/benbrastmckie/ProofChecker/actions/workflows/ci.yml)
+[![CI](https://github.com/benbrastmckie/BimodalLogic/actions/workflows/ci.yml/badge.svg)](https://github.com/benbrastmckie/BimodalLogic/actions/workflows/ci.yml)
 
 This repository implements the **bimodal fragment** of the [Logos](https://logos-labs.ai/) in Lean 4, establishing soundness and completeness for a logic designed for reasoning about future contingency in non-deterministic dynamical systems. The **task semantics** evaluates formulas at both a world-history and time, where world-histories are functions from times to world-states constrained by the task relation which encodes the possible transitions between world-states over a duration of time.
 
@@ -8,7 +8,7 @@ Whereas dynamical systems theory provides mathematical resources for modeling th
 
 The repository implements the syntax, task semantics, proof theory, and metalogic for the _Bimodal Logic of Tense and Modality_ (TM) which combines S5 modal operators with the Since/Until linear tense operators.
 
-**Paper**: ["The Construction of Possible Worlds"](https://benbrastmckie.com/publications/possible-worlds.pdf) (Brast-McKie, forthcoming in JPL) — compositional semantics for bimodal logics grounded in non-deterministic dynamical systems
+**Paper**: ["The Construction of Possible Worlds"](https://benbrastmckie.com/publications/possible_worlds.pdf) (Brast-McKie, forthcoming in JPL) — compositional semantics for bimodal logics grounded in non-deterministic dynamical systems
 
 **Specification**: [BimodalReference.pdf](latex/BimodalReference.pdf) — complete axiom schemas and proof-theoretic documentation (outdated)
 
@@ -39,8 +39,17 @@ The logic uses 5 primitive connectives. All other operators are derived.
 | `⊥` | `bot` | falsum |
 | `φ → ψ` | `imp φ ψ` | material conditional |
 | `□φ` | `box φ` | necessity ("necessarily φ") |
-| `U(φ,ψ)` | `untl φ ψ` | "ψ until φ" |
-| `S(φ,ψ)` | `snce φ ψ` | "ψ since φ" |
+| `U(φ,ψ)` | `untl ψ φ` | "ψ until φ" |
+| `S(φ,ψ)` | `snce ψ φ` | "ψ since φ" |
+
+**Argument order — the two notations are mirror images.** This table's `U(·,·)` / `S(·,·)` is
+**event-first**: in `U(φ,ψ)`, `φ` is the event at the witness time and `ψ` is the guard that holds
+across the intervening interval (see the truth clauses under "Task Semantics" below). Lean's
+`untl` / `snce` constructors are **guard-first** (`untl guard event`), matching the paper's infix
+`φ \until ψ`. That is why the Lean Constructor column reads `untl ψ φ` rather than `untl φ ψ`.
+A reader cross-referencing this README against the paper, or against
+`FormalSystem/Syntax/Formula.lean`, must swap the arguments or every temporal clause inverts.
+
 
 ### Derived
 
@@ -63,7 +72,14 @@ The logic uses 5 primitive connectives. All other operators are derived.
 
 ## Task Semantics
 
-A **task frame** `F = (W, D, R)` consists of a set `W` of world-states, a totally ordered commutative group `D` of durations, and a **task relation** `R : W → D → W → Prop` satisfying three constraints: *nullity* (each world-state transitions to itself in zero time), *compositionality* (accessibility composes forward across durations), and *reflection* (if `w ⇒_x u` then `u ⇒_{-x} w`).
+A **task frame** `F = (W, D, R)` consists of a **nonempty** set `W` of world-states, a totally ordered commutative group `D` of durations, and a **task relation** `R : W → D → W → Prop`. The relation is primitive on the non-negative durations and extended to negative ones by the *converse convention* `w ⇒_{-x} u := u ⇒_x w` for `x ≥ 0`. On top of that it satisfies four axioms:
+
+- ***Compositionality*** — `w ⇒_{x+y} v` **if and only if** `w ⇒_x u` and `u ⇒_y v` for some `u ∈ W`. Both directions are load bearing: the `←` half composes, the `→` half interpolates.
+- ***Seriality*** — for every `w` and every `x ≥ 0` there are `u, v ∈ W` with `w ⇒_x u` and `v ⇒_x w`.
+- ***Limit*** — `⋂_{x > 0} (w)_x = {w}`, where `(w)_x` is the cone of states reachable from `w` within duration `x`.
+- ***Spherical*** — `⋂ 𝒮 ≠ ∅` for every `⊇`-directed family `𝒮` of nonempty fibers and segments. In ball-space terms this is the condition `S₁ᵈ`, which is *strictly stronger* than "spherically complete" (`S₁`).
+
+Nullity (`w ⇒_0 w`) is **not** an axiom: it is derived, choice-free, from *Seriality* at `x = 0` together with *Limit*. In Lean, `structure TaskFrame` (`FormalSystem/Semantics/TaskFrame.lean`) additionally carries `converse` and `nullity_identity` as fields. Neither adds content — `converse` packages the converse convention, which a two-sided Lean relation cannot express in its type, and `nullity_identity` is derivable from `serial` and `limit`. Both are retained for construction ergonomics, so the Lean frame class is extensionally exactly the paper's.
 
 A **world-history** `τ` in a task frame `F` is a function `τ : X → W` from a convex subset `X ⊆ D` to world states that respects the task relation: for all times `x, y ∈ X` with `x ≤ y`, we have `τ(x) ⇒_{y-x} τ(y)`.
 
@@ -72,13 +88,13 @@ A **task model** `M = (F, I)` extends a task frame `F` with an interpretation fu
 - `M, τ, x ⊨ p_i` iff `x ∈ dom(τ)` and `I(τ(x), p_i)`
 - `M, τ, x ⊨ ⊥` never
 - `M, τ, x ⊨ φ → ψ` iff `M, τ, x ⊭ φ` or `M, τ, x ⊨ ψ`
-- `M, τ, x ⊨ □φ` iff `M, σ, x ⊨ φ` for all world-histories `σ`
+- `M, τ, x ⊨ □φ` iff `M, σ, x ⊨ φ` for all **total** world-histories `σ` (those with `dom(σ) = D`; the paper's `H_F`)
 - `M, τ, x ⊨ U(φ,ψ)` iff there exists `y > x` with `M, τ, y ⊨ φ` and `M, τ, z ⊨ ψ` for all `z` with `x < z < y`
 - `M, τ, x ⊨ S(φ,ψ)` iff there exists `y < x` with `M, τ, y ⊨ φ` and `M, τ, z ⊨ ψ` for all `z` with `y < z < x`
 
 Relative to a world-history, any duration `x` may be referred to as the *time* after `x` duration from the origin (the additive unit `0` in `D`) in that world-history.
 
-The task semantics is developed in ["The Construction of Possible Worlds"](https://benbrastmckie.com/wp-content/uploads/2026/07/possible_worlds.pdf) (Brast-McKie, 2025), providing resources for modeling non-deterministic dynamical systems.
+The task semantics is developed in ["The Construction of Possible Worlds"](https://benbrastmckie.com/publications/possible_worlds.pdf) (Brast-McKie, 2025), providing resources for modeling non-deterministic dynamical systems.
 
 ---
 
@@ -130,7 +146,7 @@ the Kamp-style expressiveness development.
 curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh
 
 # Clone and build (first build downloads Mathlib cache, ~30 minutes)
-git clone https://github.com/benbrastmckie/ProofChecker.git
+git clone https://github.com/benbrastmckie/BimodalLogic.git
 cd ProofChecker
 lake build
 ```
@@ -176,7 +192,9 @@ graph TD
 
 The Dense and Discrete logics are independent extensions — neither subsumes the other. Dedekind extends **Dense**: `Axiom.minFrameClass` places `density` and `dense_indicator` below `FrameClass.Dedekind`, because Reynolds' own axiomatization of real flow contains them. Discrete and Dedekind are likewise incomparable, and `Dedekind ≰ Dense`.
 
-**A gap worth naming.** `FrameClass.Dedekind` is the paper's **TM⁺_dc** (dense complete / real flow), *not* TM⁺_c. The paper's TM⁺_c is completeness *simpliciter* — no density binder — so its models are exactly `{ℤ, ℝ}` up to order-and-group isomorphism and its theory is `Th(ℤ) ∩ Th(ℝ)`. **No element of `FrameClass` picks that class out.** The two branches are covered separately and exhaustively (the complete-but-discrete branch is exactly `ℤ`, handled by `FrameClass.Discrete`; the dense branch is `FrameClass.Dedekind`), but their intersection is not itself a frame class, and adding one would require an axiom set for `Th(ℤ) ∩ Th(ℝ)` that this tree does not have.
+**`FrameClass.Dedekind` is the paper's TM⁺_c.** Under the paper's current text, `cor:tm-completeness` reads "TM⁺_c — Weakly complete over the dense-and-complete class", which is exactly what `FrameClass.Dedekind` denotes: `DenselyOrdered D` plus Dedekind completeness. Earlier revisions of this README described TM⁺_c as completeness *simpliciter* with models `{ℤ, ℝ}` and theory `Th(ℤ) ∩ Th(ℝ)`, and concluded that no element of `FrameClass` picks the class out. That is stale on both counts: the `{ℤ, ℝ}` / `Th(ℤ) ∩ Th(ℝ)` footnote is commented out in the live `def:TMplus-c`, and the class the paper now names for TM⁺_c is dense-and-complete, not complete-simpliciter. There is no gap.
+
+One question does remain open, and it is the paper's, not the tree's: `def:TMplus-c` bases BX_c on `TMP-PU` and `TMP-SEP` with **no density axiom**, whereas `FrameClass.Dedekind` admits `density` and `dense_indicator` alongside Reynolds' triple. Either the paper's BX_c should carry the density axioms, or this tree should record that `completeness_dedekind` proves a stronger-premise statement than the paper's corollary. That is an author decision and is not made here.
 
 ### Decidability
 
@@ -250,7 +268,7 @@ If you use this project in your research, please cite:
   title     = {ProofChecker: Lean 4 Formalization of Bimodal Logic TM},
   author    = {Brast-McKie, Benjamin},
   year      = {2025},
-  url       = {https://github.com/benbrastmckie/ProofChecker}
+  url       = {https://github.com/benbrastmckie/BimodalLogic}
 }
 ```
 
