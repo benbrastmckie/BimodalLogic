@@ -1,16 +1,35 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/490_prove_model_existence_implies_compactness_bridge/reports/01_model-existence-compactness-bridge.md",
-      "summary": "Machine-verified sorry-free Lean proofs of compactBase_of_modelExistence and compactDense_of_modelExistenceDense, plus placement analysis (StrongCompleteness.lean, not SetConsequence.lean, to avoid an import cycle) and the seven docstring sites that become false."
+      "type": "plan",
+      "path": "specs/490_prove_model_existence_implies_compactness_bridge/plans/01_land-compactness-bridge-theorems.md",
+      "summary": "3-phase plan to land the two verified ModelExistence -> Compact bridge theorems into StrongCompleteness.lean, reconcile seven stale prose sites, and run the full acceptance gate."
     }
   ],
+  "next_steps": "Run /implement 490 to execute the plan",
   "metadata": {
     "session_id": "sess_1787724130_558d21_490",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
+    "task_number": 490,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 3,
+    "estimated_hours": 2,
+    "dependency_waves": [[1], [2], [3]]
+  },
+  "memory_candidates": [
+    {
+      "content": "In the BimodalLogic FormalSystem tree, FormalSystem/Metalogic/SetConsequence.lean is deliberately vocabulary-only (Prop-valued statements of open obligations: StrongCompletenessBase, CompactBase, SatisfiableBaseSet, ModelExistenceBase and Dense siblings), while FormalSystem/Metalogic/StrongCompleteness.lean owns the foldr-implication bridge lemmas (truthAt_foldr_imp, derivable_foldr_imp_iff) and imports SetConsequence.lean. Consequence: any THEOREM about SetConsequence.lean's vocabulary whose proof consumes one of those bridge lemmas must live in StrongCompleteness.lean, not next to the definitions it is stated against -- placing it beside the definitions is an import cycle. This has now forced four theorems downstream (strongCompletenessBase_of_compact, strongCompletenessDense_of_compact, compactBase_of_modelExistence, compactDense_of_modelExistenceDense). A task brief that says 'prove X in SetConsequence.lean' should be read as 'in SetConsequence.lean or a sibling' and resolved to StrongCompleteness.lean whenever the proof route touches truthAt_foldr_imp. A side benefit preserved by this split: SetConsequence.lean's module-docstring claim that no compactness result is proved or refuted there stays literally true.",
+      "category": "PATTERN",
+      "source_artifact": "specs/490_prove_model_existence_implies_compactness_bridge/plans/01_land-compactness-bridge-theorems.md",
+      "confidence": 0.82,
+      "suggested_keywords": ["import-cycle", "SetConsequence", "StrongCompleteness", "theorem-placement", "lean-module-layout", "compactness"]
+    }
+  ],
+  "modified_files": [
+    "specs/490_prove_model_existence_implies_compactness_bridge/plans/01_land-compactness-bridge-theorems.md",
+    "specs/490_prove_model_existence_implies_compactness_bridge/.return-meta.json"
+  ],
+  "errors": []
 }

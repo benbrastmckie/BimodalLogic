@@ -1,24 +1,30 @@
 {
-  "status": "researched",
-  "dispatch_seq": 2,
-  "summary": "Researched the ModelExistence -> Compact bridge for FrameClass.Base and FrameClass.Dense. Both deliverable theorems were written as complete sorry-free Lean proofs and machine-verified during research (isolated, and inserted into a full copy of StrongCompleteness.lean): both audit to exactly [propext, Classical.choice, Quot.sound]. Key correction to the brief: the theorems cannot live in SetConsequence.lean (import cycle via truthAt_foldr_imp) and belong in StrongCompleteness.lean after line 336, the same constraint already documented for strongCompletenessBase_of_compact. Also identified push_neg as deprecated in this toolchain (use push Not) and enumerated seven docstring sites whose prose becomes false.",
+  "status": "planned",
+  "dispatch_seq": 7,
+  "summary": "Created a 3-phase implementation plan for the ModelExistence -> Compact bridge. Phase 1 lands both research-verified, sorry-free theorems (compactBase_of_modelExistence, compactDense_of_modelExistenceDense) into FormalSystem/Metalogic/StrongCompleteness.lean after strongCompletenessDense_of_compact -- NOT SetConsequence.lean, which is a confirmed import cycle via truthAt_foldr_imp -- plus their #print axioms lines. Phase 2 reconciles seven prose sites across three files whose text still asserts the implication is unproved future work, including the two module docstrings named in the task brief and a stale StrongCompleteness.lean:147 cross-reference. Phase 3 is the full acceptance gate (lake build green, both axiom audits exactly [propext, Classical.choice, Quot.sound], zero sorry, non-goals confirmed held). Total estimated effort 2 hours, fully sequential waves. Plan validated PASS with 0 warnings.",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/490_prove_model_existence_implies_compactness_bridge/reports/01_model-existence-compactness-bridge.md",
-      "summary": "Verified proofs, mathematical route, placement analysis, tactic survey, and the docstring-update inventory."
+      "type": "plan",
+      "path": "specs/490_prove_model_existence_implies_compactness_bridge/plans/01_land-compactness-bridge-theorems.md",
+      "summary": "3-phase plan: land both verified bridge theorems, reconcile seven stale prose sites, run the full acceptance gate."
     }
   ],
   "phases_completed": 0,
-  "phases_total": 0,
+  "phases_total": 3,
   "blockers": [],
-  "next_action_hint": "plan",
-  "files_modified": [],
+  "next_action_hint": "implement",
+  "files_modified": [
+    "specs/490_prove_model_existence_implies_compactness_bridge/plans/01_land-compactness-bridge-theorems.md"
+  ],
   "decisions_made": [
-    "Home is FormalSystem/Metalogic/StrongCompleteness.lean (after strongCompletenessDense_of_compact, line 336), not SetConsequence.lean: truthAt_foldr_imp is owned by StrongCompleteness.lean, which imports SetConsequence.lean, so the reverse placement is an import cycle. This preserves SetConsequence.lean's module-docstring claim that no compactness result is proved there.",
-    "Proofs use `push Not` rather than the deprecated `push_neg` (repo: 535 vs 245 occurrences).",
-    "Classical decidability plus List.filter extracts the Gamma-part of a finite subset of insert phi.neg Gamma; Set membership carries no decidability instance.",
-    "No truthAt_neg lemma is introduced: Formula.neg phi = phi.imp bot and TruthAt _ _ _ bot = False unfold at default transparency, matching the DiscreteNonCompactness.lean idiom.",
-    "The optional StrongCompletenessBase-from-ModelExistenceBase corollary is deliberately NOT recommended: the tree keeps engine hypotheses live so compactness stays isolated as the whole remaining obligation, and it is outside this task's declared scope."
-  ]
+    "Placement fixed to FormalSystem/Metalogic/StrongCompleteness.lean (immediately after strongCompletenessDense_of_compact, under a new '### Model existence implies compactness' subsection). The task brief's 'or a sibling' clause authorizes this; SetConsequence.lean is a confirmed import cycle because truthAt_foldr_imp is owned by StrongCompleteness.lean, which already imports SetConsequence.lean.",
+    "Three phases, not two: the prose reconciliation is separated from the code landing so it can carry the cheap 'prose' verification tier and run strictly after the insertion that shifts every line number it must anchor against.",
+    "Proof scripts are to be transcribed VERBATIM from the research report, which machine-verified both in isolation and inside a full copy of the target file. Explicit anti-goal: do not modernize or simplify, and in particular do not swap `push Not` back to the deprecated `push_neg`.",
+    "The two new names get their OWN one-line note in the axiom-audit prose rather than being folded into the existing 'fourteen declarations' count, avoiding a count that would be wrong either way.",
+    "Phase 2 also corrects a stale cross-reference already in the tree: the ModelExistenceDense docstring cites truthAt_foldr_imp at StrongCompleteness.lean:147; the lemma is actually at :183.",
+    "The optional StrongCompletenessBase-from-ModelExistenceBase corollary is recorded as an explicit non-goal, per the research report: the tree deliberately keeps `engine` hypotheses live so compactness stays isolated as the whole remaining obligation.",
+    "SetConsequence.lean's module-docstring claim 'No compactness result is proved or refuted here' is explicitly to be left untouched -- it stays literally true under the chosen placement and is itself an argument for it."
+  ],
+  "sorry_inventory": [],
+  "continuation_path": null
 }
