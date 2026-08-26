@@ -216,8 +216,8 @@ its absence from $#BL$ is what produces the split validity of @sec:dichotomy.
     + *Seriality*: $w arrow.r.double.long_(x) u$ and $v arrow.r.double.long_(x) w$ for some
       $u, v in #worldstate$.
     + *Limit*: $inter.big_(x > 0) (w)_x = {w}$.
-    + *Spherical*: $inter.big cal(S) eq.not emptyset$ for any directed family $cal(S)$ of nonempty
-      fibers and segments.
+    + *Spherical*: $inter.big cal(S) eq.not emptyset$ for any $supset.eq$-directed family $cal(S)$
+      of nonempty fibers and segments.
   ]
 ]
 #leansrc("Semantics", "TaskFrame")
@@ -261,7 +261,8 @@ below: two of the three results in @sec:histories are theorems of ZFC.
 
 #lemma("Directedness")[
   For any partial history $tau : X arrow.r #worldstate$ over a frame $#taskframe$ and duration
-  $z in D without X$, the constraints imposed on $z$ form a directed family of nonempty sets.
+  $z in D without X$, the constraints imposed on $z$ form a $supset.eq$-directed family of nonempty
+  sets.
 ]
 #proof[
   Every constraint imposed on $z$ is nonempty: a fiber $"Fib"(tau(t), z-t)$ is nonempty by
@@ -336,7 +337,7 @@ below: two of the three results in @sec:histories are theorems of ZFC.
 
 The Step Lemma above is the sole application site of *Spherical*, and Extension is the sole
 consumer of the Step Lemma; every appeal to *Spherical* in the semantics passes through this one
-point.#footnote[*Spherical* is not needed when the directed family has a $subset.eq$-least member, and on a finite carrier it holds outright and choice-free.] Extension and Occurrence are theorems of ZFC, in contrast with Nullity. That
+point.#footnote[*Spherical* is not needed when the $supset.eq$-directed family has a $subset.eq$-least member, and on a finite carrier it holds outright and choice-free.] Extension and Occurrence are theorems of ZFC, in contrast with Nullity. That
 localization is what makes *Spherical* the identified obstruction of @sec:representation.
 
 The cones are a basis for a topology on world states, and that topology is separated.
@@ -902,7 +903,7 @@ to the family itself.
 The construction is generic in $D$: it is performed once and instantiated at $QQ$, at $ZZ$, and at
 $RR$ by the three branches below. Its frame axioms are discharged separately, and *Spherical* is
 discharged by a *third* pattern, distinct from the two of @sec:histories. The induced task relation
-is deterministic, so its fibers are subsingletons, and a directed family of nonempty subsingletons
+is deterministic, so its fibers are subsingletons, and a $supset.eq$-directed family of nonempty subsingletons
 has nonempty intersection outright.#footnote[`multiFamGen_spherical`, via the reusable helper `sInter_nonempty_of_directed_subsingleton`. The argument sees only the shape of the fibers, so it applies to every deterministic frame. Contrast the finite-carrier discharge (`cor:spherical-finite`) and the Zorn route through the Step Lemma (`thm:extension`); this third pattern is what @sec:representation returns to.]
 
 == The Dense Branch

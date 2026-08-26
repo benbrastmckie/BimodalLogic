@@ -18,10 +18,16 @@ This module proves the soundness theorem for bimodal logic TM.
 
 ## Paper Specification Reference
 
-**Perpetuity Principles (app:valid, line 1984)**:
-The JPL paper "The Perpetuity Calculus of Agency" proves perpetuity principles
-P1 (□φ → △φ) and P2 (▽φ → ◇φ) are valid over all task semantic models using
-time-shift automorphisms.
+**Perpetuity Principles (`cor:perpetuity-valid`)**:
+The JPL paper "The Construction of Possible Worlds" proves the perpetuity
+principles valid over all task semantic models, using time-shift automorphisms.
+Its own statement is "The perpetuity principles P1 -- P6 are all valid", derived
+from `thm:TM-soundness` plus the derivations of P1 -- P6.
+
+There is **no `app:valid` anchor**, and there never was: earlier revisions of this
+module cited `app:valid` at "line 1984", which in the live paper is an unrelated
+`Ddef` about operator interpretation. The citation and its line number were both
+bogus; `cor:perpetuity-valid` is the live anchor that carries this content.
 
 **Axiom Validity**:
 All TM axioms (MT, M4, MB, T4, TA, TL, MF, TF) are proven valid over all
@@ -100,7 +106,7 @@ Prior-UZ/SZ are excluded from dense derivations by the `h.minFrameClass ≤ .Den
 * [Derivation.lean](../../ProofSystem/Derivation.lean) - Derivability relation
 * [Validity.lean](../../Semantics/Validity.lean) - Semantic validity
 * [SoundnessLemmas.lean](./SoundnessLemmas.lean) - Axiom validity and swap preservation
-* JPL Paper app:valid (line 1984) - Perpetuity principle validity proofs
+* JPL Paper `cor:perpetuity-valid` - Perpetuity principle validity proofs
 -/
 
 namespace FormalSystem.Metalogic

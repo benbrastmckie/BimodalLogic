@@ -4,8 +4,12 @@ A decision procedure for formulas evaluated on an `IntPresentation` — a finite
 `Fin card` with a `Bool`-valued valuation, mapped into the semantics through the ℤ-frame normal
 form (`Decidability/IntPresentation.lean`).
 
-**This directory does not decide the logic.** `cor:tm-decidability` records decidability of TM as
-open. What is decided here is truth on a *presented* ℤ-frame: the frame is given as data, and the
+**This directory does not decide the logic.** The paper's `cor:tm-decidability` — which recorded
+decidability of TM as open — is **fully commented out** in the live paper and carries no
+`\label` there; it is retained only as a DANGLING entry in
+`specs/paper-definitions-of-record.md`, and is cited here as an unpublished remark rather than
+as a published corollary. Its commented-out text is consistent with this tree: no decidability
+theorem is machine-checked at present. What is decided here is truth on a *presented* ℤ-frame: the frame is given as data, and the
 procedure searches the finitely presented paths of that specific frame.
 
 **And it performs no part of the finite-model step.** Its input is *already* a presentation:

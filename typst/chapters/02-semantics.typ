@@ -119,13 +119,13 @@ Any converse operation written explicitly in this book uses a superscript invers
   + *Compositionality*: $w arrow.r.double.long_(x+y) v$ if and only if $w arrow.r.double.long_x u$ and $u arrow.r.double.long_y v$ for some $u in W$.
   + *Seriality*: $w arrow.r.double.long_x u$ and $v arrow.r.double.long_x w$ for some $u, v in W$.
   + *Limit*: $inter.big_(x > 0) (w)_x = {w}$.
-  + *Spherical*: $inter.big S eq.not emptyset$ for any directed family $S$ of nonempty fibers and segments.
+  + *Spherical*: $inter.big S eq.not emptyset$ for any $supset.eq$-directed family $S$ of nonempty fibers and segments.
 ]#footnote[Compositionality is a *biconditional*, load bearing in both directions.]#footnote[The basic cones $(w)_x$ for $w in W$ and $x > 0$ form the basis of a topology on the world states, and that topology is separated: it is *T1* (each singleton ${w}$ is closed) and hence *R0* (topological indistinguishability is symmetric). Separation is exactly what *Limit* delivers topologically --- no world state other than $w$ lies in every cone around $w$.]
 
 *Compositionality* ensures that executing tasks sequentially yields results consistent with a single task of combined duration, in both directions.
 *Seriality* ensures every world state has a successor and a predecessor at every nonnegative duration.
 *Limit* ensures that shrinking the duration bound around $w$ pins down $w$ uniquely --- no other world state lies in every cone around it.
-*Spherical* is what makes the extension machinery of @sec:world-histories go through: it guarantees that a directed family of nonempty fibers and segments --- the constraints a new time imposes on a partial history, kept as two separate classes, never conflated --- has a common point.
+*Spherical* is what makes the extension machinery of @sec:world-histories go through: it guarantees that a $supset.eq$-directed family of nonempty fibers and segments --- the constraints a new time imposes on a partial history, kept as two separate classes, never conflated --- has a common point.
 Fibers and segments range over *two separate classes* in *Spherical*; the retired device by which fibers were folded into a one-sided case of segments is not current notation.
 
 Nullity is conspicuously absent from this list because it is not an axiom:
@@ -224,7 +224,7 @@ Not every partial history is total, and it is not obvious that a frame has *any*
 // CONFIRM(paper): def:constraints states this definition
 
 #lemma("Constraint Lemma")[
-  The constraints on $z$ form a directed family of nonempty sets.
+  The constraints on $z$ form a $supset.eq$-directed family of nonempty sets.
 ]#footnote[The proof uses *Compositionality* in both directions plus *Seriality*.]
 // CONFIRM(paper): lem:constraint states this lemma
 
@@ -252,7 +252,7 @@ Not every partial history is total, and it is not obvious that a frame has *any*
 // CONFIRM(paper): cor:spherical-finite states this corollary
 
 #remark("What the Finite-Carrier Discharge Does and Does Not Give")[
-  *Spherical* earns its place among the frame axioms because, without it, nothing guarantees a directed family of nonempty fibers and segments has a common point --- and the Step Lemma needs exactly that common point to extend a partial history by one more duration.
+  *Spherical* earns its place among the frame axioms because, without it, nothing guarantees a $supset.eq$-directed family of nonempty fibers and segments has a common point --- and the Step Lemma needs exactly that common point to extend a partial history by one more duration.
   The finite-carrier corollary above discharges *Spherical* choice-free whenever $W$ is finite, which covers every worked example and every finite countermodel this book constructs.
   It does *not* discharge *Spherical* for infinite-$W$ frames: those still need the axiom in full.
 ]
