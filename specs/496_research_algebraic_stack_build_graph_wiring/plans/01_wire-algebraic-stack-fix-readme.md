@@ -1,7 +1,7 @@
 # Implementation Plan: Wire the Algebraic Stack into the Build Graph
 
 - **Task**: 496 - research_algebraic_stack_build_graph_wiring
-- **Status**: [IMPLEMENTING]
+- **Status**: COMPLETED
 - **Effort**: 2.75 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/496_research_algebraic_stack_build_graph_wiring/reports/01_algebraic-stack-build-graph-wiring.md`
@@ -371,18 +371,18 @@ third location exists, qualify it in the same pass and note it in the summary.
 
 ---
 
-### Phase 5: Full Gate and Summary [NOT STARTED]
+### Phase 5: Full Gate and Summary [COMPLETED]
 
 **Goal**: Prove the acceptance criteria on the final tree, with all five phases' edits in place.
 
 **Tasks**:
-- [ ] Re-run the detached full build on the final tree and confirm `rc=0`, zero `error:` lines.
-- [ ] Re-run `bash scripts/check-module-invariants.sh` (with build) and diff the check-by-check
+- [x] Re-run the detached full build on the final tree and confirm `rc=0`, zero `error:` lines.
+- [x] Re-run `bash scripts/check-module-invariants.sh` (with build) and diff the check-by-check
       result against the baseline captured in Phase 1. Every check green at HEAD must still be
       green; no check may move from pass to fail, and no new `TODO` line may appear.
-- [ ] Confirm `git status --short` shows no unintended files and that the working tree contains
+- [x] Confirm `git status --short` shows no unintended files and that the working tree contains
       only this task's declared file set plus `specs/**` artifacts.
-- [ ] Write the execution summary to
+- [x] Write the execution summary to
       `specs/496_research_algebraic_stack_build_graph_wiring/summaries/01_wire-algebraic-stack-fix-readme-summary.md`,
       recording the measured build result, the invariant-check comparison, and the observations
       this plan deliberately left out of scope (the D4 aggregator candidates `Core.lean`,
@@ -405,16 +405,16 @@ third location exists, qualify it in the same pass and note it in the summary.
 
 ## Testing & Validation
 
-- [ ] `lake build` (via `lake-build-guard.sh`, detached) returns `rc=0` with zero `error:` lines
+- [x] `lake build` (via `lake-build-guard.sh`, detached) returns `rc=0` with zero `error:` lines
       on the final tree.
-- [ ] The build log shows all five `FormalSystem.Metalogic.Algebraic*` modules `Built`.
-- [ ] `bash scripts/check-module-invariants.sh` passes; C6 reports no stale entries, no phantom
+- [x] The build log shows all five `FormalSystem.Metalogic.Algebraic*` modules `Built`.
+- [x] `bash scripts/check-module-invariants.sh` passes; C6 reports no stale entries, no phantom
       entries, and no unmanifested unreachable modules.
-- [ ] C8 still passes — the aggregator file did not move, it only acquired an importer.
-- [ ] No check that passes at HEAD today has regressed.
-- [ ] `grep` confirms the corrected claims are gone from all three READMEs and the corrected
+- [x] C8 still passes — the aggregator file did not move, it only acquired an importer.
+- [x] No check that passes at HEAD today has regressed.
+- [x] `grep` confirms the corrected claims are gone from all three READMEs and the corrected
       statements are present.
-- [ ] No new `task N`-shaped citation was introduced outside `specs/**`.
+- [x] No new `task N`-shaped citation was introduced outside `specs/**`.
 
 ## Artifacts & Outputs
 

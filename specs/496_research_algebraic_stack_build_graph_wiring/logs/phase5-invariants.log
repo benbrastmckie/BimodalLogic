@@ -1,0 +1,63 @@
+=== Module invariants: 84c602b36 ===
+
+PASS  B0   Boneyard exclusion covers exactly 1 directory
+            FormalSystem/Boneyard
+            excluded 156 archived .lean files (572 total -> 416 live)
+
+PASS  C1   lake build exits 0
+PASS  C1   lake build BimodalTest exits 0
+
+PASS  C2   all four flagship axiom sets match baseline
+            'FormalSystem.Metalogic.BXCanonical.completeness' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.BXCanonical.completeness_dense' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.BXCanonical.completeness_discrete' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.BXCanonical.Chronicle.countermodel_dense' depends on axioms: [propext, Classical.choice, Quot.sound]
+
+PASS  C3   structural sorry inventory is ZERO across FormalSystem/ (Boneyard/ excluded)
+
+PASS  C4   all 1451 FormalSystem/BimodalTest import lines resolve
+PASS  C5   all module-shaped paths in 1671 markdown files resolve (4 allowlisted)
+PASS  C6   all 17 unreachable live module(s) are manifested
+INFO  C6   2 module(s) manifested as known-broken (not compile-checked)
+            BimodalTest.ProofSystem.DerivationBenchmark
+            BimodalTest.Semantics.SemanticBenchmark
+PASS  C6   all 15 manifested module(s) still compile in isolation
+INFO  C7   471 live .lean files (416 FormalSystem / 54 Tests); 454 reachable, 17 unreachable
+            (loose)                10
+            Automation             34
+            BaseLanguage            5
+            Examples                2
+            FrameConditions         4
+            Metalogic             315
+            ProofSystem             4
+            Semantics              19
+            Syntax                  8
+            Theorems               15
+PASS  C8   every FormalSystem/ and Metalogic/ subdirectory has exactly one sibling aggregator
+PASS  C11  all 497 archived import lines in 156 archived file(s) resolve (6 waived)
+
+PASS  C9   zero task-number citations under FormalSystem/
+
+PASS  C10  zero references to FormalSystem/{docs,latex,typst} outside specs/
+
+PASS  C12  all slash-shaped source paths in 71 markdown files resolve
+PASS  C13  all relative markdown links in 68 markdown files resolve (3 file(s) allowlisted)
+
+PASS  C14  no stale axiom or sorry counts documented in docs/ + README.md + FormalSystem/*.lean
+PASS  C14  decidability soundness and Dedekind completeness match their axiom baseline
+            'FormalSystem.Metalogic.Decidability.sound_of_isValid' depends on axioms: [propext, Classical.choice, Quot.sound]
+            'FormalSystem.Metalogic.completeness_dedekind' depends on axioms: [propext, Classical.choice, Quot.sound]
+
+PASS  C15  all 46 paper-anchor citation(s) resolve against specs/paper-definitions-of-record.md
+
+TODO  C9D  138 task-number citation(s) under docs/ (use a durable anchor instead) (not yet enforced)
+                100 docs/development/PHASED_IMPLEMENTATION.md
+                 11 docs/training/PIPELINE.md
+                  5 docs/research/NONCOMPUTABLE.md
+                  4 docs/architecture/ADR-001-Classical-Logic-Noncomputable.md
+                  3 docs/research/README.md
+            set ENFORCE_C9_DOCS=1 to make this exit-code-affecting once the citations are cleared
+
+===========================================================
+ALL CHECKS PASSED
+INVARIANTS_RC=0
