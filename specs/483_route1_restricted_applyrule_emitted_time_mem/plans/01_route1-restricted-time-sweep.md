@@ -1,7 +1,7 @@
 # Implementation Plan: Task #483
 
 - **Task**: 483 - route1_restricted_applyrule_emitted_time_mem
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 5 hours
 - **Dependencies**: None (task 481 is the parent; it is blocked, not a prerequisite)
 - **Research Inputs**: `specs/481_discharge_or_replace_unorderedsuccessorlabelclosed_residual/reports/02_spawn-analysis.md`
