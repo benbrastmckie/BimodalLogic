@@ -335,6 +335,13 @@ approximate lines given. Confirm at implementation time by re-running
 before and after; the "after" run must return no occurrence still asserting absence. If the grep
 surfaces a fifth site, amend it too and record the corrected count.
 
+*Measured*: the grep found the **four** asserted sites and no fifth. A **fifth** edit was made
+anyway, in the same "## No semantics" section: its closing sentence "and this module is the
+middle arrow only" was extended to say where the left arrow is now built, so the section's
+diagram and its prose agree. The "after" grep returns no occurrence still asserting absence of a
+BL semantics or BL soundness theorem, and the forward-direction refutation paragraph is present
+and unsoftened (`Conservativity.lean:113`, "**forward direction remains refuted**").
+
 **Files to modify**:
 - `FormalSystem/BaseLanguage.lean` - directional invariant wording
 - `FormalSystem/BaseLanguage/Formula.lean` - same block, same wording
@@ -353,7 +360,7 @@ surfaces a fifth site, amend it too and record the corrected count.
 
 ---
 
-### Phase 5: Markdown inventory and documentation sync [NOT STARTED]
+### Phase 5: Markdown inventory and documentation sync [IN PROGRESS]
 
 **Goal**: Register the three new modules in every README/docs inventory that enumerates modules,
 so C5 (markdown module paths) and C13 (markdown links) stay green and the layer architecture
@@ -389,6 +396,20 @@ by running
 for a module inventory or a BL-semantics-absence claim; amend any additional site found and
 record the corrected count. Line numbers given above are approximate anchors from research, not
 guarantees — locate by heading and content.
+
+*Measured*: **eight** markdown sites, not six. The sweep returned eight files carrying a
+`Conservativity`/`BaseLanguage` mention; `FormalSystem/BaseLanguage/README.md` had no inventory
+and no absence claim and was left untouched, while **two sites beyond the plan's six** did carry
+module inventories and were amended:
+
+- `docs/user-guide/architecture.md` — the `FormalSystem/` directory tree (`Semantics/` and
+  `Metalogic/` blocks).
+- `docs/project-info/implementation-status.md` — the Layer 1 Semantics and Layer 2 Metalogic
+  module tables, plus the "Soundness (✅)" bullet list.
+
+`FormalSystem/Metalogic/README.md`'s loose-file table also carried a written-out count
+("**Five** loose files"), corrected to "**Six**" along with the new row — a count the plan did
+not anticipate.
 
 **Files to modify**:
 - `FormalSystem/Semantics/README.md` - two new Contents rows
