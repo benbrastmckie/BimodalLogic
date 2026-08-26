@@ -1,0 +1,21 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/491_select_dependent_ultraproduct_carrier_route/reports/01_dependent-ultraproduct-carrier-route.md",
+      "summary": "Selects route (a) (bespoke dependent quotient) with a compiled prototype, gives the exact instance list, returns a no-go on route (b), and measures the Mathlib import cost at 8 seconds."
+    },
+    {
+      "type": "prototype",
+      "path": "specs/491_select_dependent_ultraproduct_carrier_route/prototype/DependentUltraproduct.lean",
+      "summary": "230-line sorry-free prototype: dependent ultraproduct of durations with all five (six for Dense) instances, plus the carrier ultraproduct with sh_zero and sh_add."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1787724130_558d21_491",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
