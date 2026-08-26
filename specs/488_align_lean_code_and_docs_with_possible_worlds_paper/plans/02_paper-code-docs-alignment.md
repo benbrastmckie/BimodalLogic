@@ -1,11 +1,11 @@
 # Implementation Plan: Paper / Lean / Docs Alignment
 
 - **Task**: 488 - align_lean_code_and_docs_with_possible_worlds_paper
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 13 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/488_align_lean_code_and_docs_with_possible_worlds_paper/reports/01_paper-code-docs-alignment.md` (including its "Addendum: Orchestrator Verification Pass", which overrides the main body on D25, adds D28, and sharpens D20/D21)
-- **Artifacts**: plans/02_paper-code-docs-alignment.md (this file)
+- **Artifacts**: plans/02_paper-code-docs-alignment.md (this file); reports/02_author-memo.md; summaries/03_paper-code-docs-alignment-summary.md
 - **Standards**: plan-format.md; status-markers.md; artifact-management.md; tasks.md
 - **Type**: lean4
 - **Lean Intent**: true
@@ -731,17 +731,17 @@ section was extended to record the C15 case for the next author.
 
 ---
 
-### Phase 13: Final gate sweep and stamp refresh [IN PROGRESS]
+### Phase 13: Final gate sweep and stamp refresh [COMPLETED]
 
 - **Goal**: Prove every gate green simultaneously at the end, and refresh the staleness stamps so
   their dates reflect the verification actually performed.
 - **Tasks**:
-  - [ ] Run the complete gate set in one pass and record the output: `lake build`;
+  - [x] *(completed, one recorded pass, all green: `lake build` 2493 jobs exit 0 / 0 errors / 0 sorries; `check-module-invariants.sh` in FULL mode ALL CHECKS PASSED, including C1, C2's four flagship axiom sets, C3, the widened C14 content scan, C14's `#print axioms` HARD STOP half, and C15's 46 resolved citations; `check-paper-definitions.sh` exit 0; `typst-sync-check.sh` PASS on all 3 checks; `typst-status-counts.sh` 45/37/2/3/3 with 0 sorries outside `Boneyard/`)* Run the complete gate set in one pass and record the output: `lake build`;
         `bash scripts/check-module-invariants.sh`; `bash scripts/check-paper-definitions.sh`;
         `bash scripts/typst-sync-check.sh`; `bash scripts/typst-status-counts.sh`.
-  - [ ] Confirm `lake build` is still clean and sorry-free -- it was clean before this task began,
+  - [x] *(completed: no regression)* Confirm `lake build` is still clean and sorry-free -- it was clean before this task began,
         so anything else is a regression introduced here.
-  - [ ] Confirm `scripts/check-paper-definitions.sh` exits 0 and
+  - [x] *(completed: both green, and the paper did NOT drift again mid-implementation -- its sha256 `5d700a2f…` is identical at the start and end of this task, so no second re-pin was needed)* Confirm `scripts/check-paper-definitions.sh` exits 0 and
         `scripts/typst-sync-check.sh` passes. If the paper drifted again mid-implementation, do not
         paper over it: re-run Phase 5's re-pin against the new paper state and record that a second
         re-pin was needed.
