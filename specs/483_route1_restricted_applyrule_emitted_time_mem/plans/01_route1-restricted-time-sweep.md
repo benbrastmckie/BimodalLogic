@@ -1,7 +1,7 @@
 # Implementation Plan: Task #483
 
 - **Task**: 483 - route1_restricted_applyrule_emitted_time_mem
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 5 hours
 - **Dependencies**: None (task 481 is the parent; it is blocked, not a prerequisite)
 - **Research Inputs**: `specs/481_discharge_or_replace_unorderedsuccessorlabelclosed_residual/reports/02_spawn-analysis.md`
@@ -148,7 +148,7 @@ a complete deliverable.
 
 ---
 
-### Phase 1: The `haux` census inside the time sweep [NOT STARTED]
+### Phase 1: The `haux` census inside the time sweep [COMPLETED]
 
 **Goal**: A mechanical, per-arm enumeration of every place `OrdTimesKnown` is consumed in the proof
 of `applyRule_emitted_time_mem` and of its helper `applyRule_orderTrichotomy_emitted_time`, each
@@ -156,30 +156,30 @@ paired with the `untlSnceFree`-derived fact that would exclude that arm — or m
 excluded*, which is the negative result.
 
 **Tasks**:
-- [ ] Re-locate by declaration name (not line number — the file is ~14,770 lines and every line
+- [x] Re-locate by declaration name (not line number — the file is ~14,770 lines and every line
       number in task 481's artifacts predates task 462's section D5 insertion):
       `applyRule_emitted_time_mem`, `applyRule_orderTrichotomy_emitted_time`,
       `applyRule_emitted_time_mem_ordTimesKnown_needed`, `mem_filterMap_futureOf_time`,
       `mem_filterMap_pastOf_time`, `mem_knownTimes_of_mem_pastOf`, and section D3's six
       `as…_eq_none_of_untlSnceFree` view lemmas.
-- [ ] Enumerate every syntactic occurrence of `haux` in the two proofs. There should be exactly
+- [x] Enumerate every syntactic occurrence of `haux` in the two proofs. There should be exactly
       three closer families: `mem_filterMap_futureOf_time haux`, `mem_filterMap_pastOf_time haux`,
       and `mem_knownTimes_of_mem_pastOf haux`. Record the actual count; a fourth family is a
       finding.
-- [ ] For each of the four propagation rules (`.allFuturePos`, `.allPastPos`, `.someFutureNeg`,
+- [x] For each of the four propagation rules (`.allFuturePos`, `.allPastPos`, `.someFutureNeg`,
       `.somePastNeg`), read `applyRule`'s own arm in `FormalSystem/Metalogic/Decidability/Tableau.lean`
       and record whether the arm is gated by a raw constructor pattern or by an `as…?` view. This
       determines which exclusion lemma shape Phase 2 must produce.
-- [ ] Read `applyRule`'s `.orderTrichotomy` arm and record the `fires` guard's final conjunct
+- [x] Read `applyRule`'s `.orderTrichotomy` arm and record the `fires` guard's final conjunct
       (`ds.any fun d => branch.contains (SignedFormula.neg d l0)`) and the shape of `disjuncts`.
       Confirm every member of `disjuncts φ ψ` is `Formula.someFuture`-headed.
-- [ ] Confirm no *other* rule arm reachable under `ruleMintsFreshTime rule = false` reads a time off
+- [x] Confirm no *other* rule arm reachable under `ruleMintsFreshTime rule = false` reads a time off
       the ordering. In particular check `serialityRule`, `timeLinearity`, `boxTemporal`,
       `denseIndicatorClosure`, `priorUZ`/`priorSZ`/`z1Rule`, `priorUGap`/`priorSGap`/`sepRule`, and
       the `boxPos`/`diamondNeg`/`boxNeg`/`diamondPos` world family. The sweep's own docstring claims
       they all emit at the trigger's time or at a constant time; verify against the arms rather than
       trusting the docstring.
-- [ ] Write the census into the task's `reports/` directory as a short table (arm, `haux` closer,
+- [x] Write the census into the task's `reports/` directory as a short table (arm, `haux` closer,
       excluding fact, status). This is the input Phase 2 works from and the evidence Phase 6 cites
       in the negative case.
 
@@ -207,26 +207,26 @@ rather than silently absorbed.
 
 ---
 
-### Phase 2: The five arm-exclusion facts, in a probe [NOT STARTED]
+### Phase 2: The five arm-exclusion facts, in a probe [COMPLETED]
 
 **Goal**: Five compiled facts, each saying that the named rule emits nothing when the branch is
 `untlSnceFree` — proved standalone in a probe file before any production source is touched, exactly
 as task 481 proved its Phase 5 composite standalone first.
 
 **Tasks**:
-- [ ] Create `specs/483_route1_restricted_applyrule_emitted_time_mem/probes/Probe1.lean`, importing
+- [x] Create `specs/483_route1_restricted_applyrule_emitted_time_mem/probes/Probe1.lean`, importing
       the `MintBound` module so section D3's view lemmas are in scope.
-- [ ] State and prove the two trigger-shape exclusions for the propagation rules whose arms match a
+- [x] State and prove the two trigger-shape exclusions for the propagation rules whose arms match a
       raw constructor pattern (per Phase 1's finding — expected to be `.allFuturePos` and
       `.allPastPos`):
       `untlSnceFree φ = true → (applyRule .allFuturePos ⟨sign, φ, l⟩ b ord).1.emitted = []`
       and its `.allPastPos` mirror. Route through the raw constructor shape
       (`Formula.allFuture ψ` is `.imp (.untl (.imp .bot .bot) (.imp ψ .bot)) .bot`), mirroring how
       `asAllFuture_eq_none_of_untlSnceFree` has to `cases a` through the implication.
-- [ ] State and prove the two view-gated exclusions (`.someFutureNeg`, `.somePastNeg`) directly from
+- [x] State and prove the two view-gated exclusions (`.someFutureNeg`, `.somePastNeg`) directly from
       `asSomeFuture_eq_none_of_untlSnceFree` / `asSomePast_eq_none_of_untlSnceFree`. These should be
       two-line proofs: the view returns `none`, the arm returns `.notApplicable`, `.emitted` is `[]`.
-- [ ] State and prove the `.orderTrichotomy` exclusion from the branch hypothesis:
+- [x] State and prove the `.orderTrichotomy` exclusion from the branch hypothesis:
       `(∀ x ∈ b, untlSnceFree x.formula = true) → (applyRule .orderTrichotomy sf b ord).1.emitted = []`.
       The argument: every `d ∈ disjuncts φ ψ` is `untl`-headed, so `branch.contains
       (SignedFormula.neg d l0) = false` for every candidate, so `fires` is false everywhere, so
@@ -234,7 +234,7 @@ as task 481 proved its Phase 5 composite standalone first.
       "`untl`-headed formulas are not on an `untlSnceFree` branch" step as its own named lemma —
       it is reused by nothing else, but it is the step most likely to need shape massaging and it
       should fail in isolation if it fails.
-- [ ] Do **not** attempt the full restricted sweep in this phase. Five separate facts, each
+- [x] Do **not** attempt the full restricted sweep in this phase. Five separate facts, each
       compiling, is the deliverable.
 
 **Timing**: 1.25 hours
