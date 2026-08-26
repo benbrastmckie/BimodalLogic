@@ -23,11 +23,11 @@ partial history by one point", mirroring the paper's decomposition exactly:
 Anchors are `\label` keys into `specs/paper-definitions-of-record.md`, which — not the paper
 source — is the citation source of record.
 
-- `lem:fibers` (verbatim): "For any partial history $\tau : X \to W$ over a frame
-  $\F = \tuple{W, \D, \Rightarrow}$ and duration $z \in D \setminus X$, a world state $u \in W$
-  belongs to every member of the constraints imposed on $z$ just in case
-  $\tau(t) \Rightarrow_{z-t} u$ for every $t \in X$."
-- `lem:admissible` (verbatim): "For any partial history $\tau : X \to W$ over a frame
+- `lem:fibers` (verbatim, as last resolved before the paper retired the anchor): "For any
+  partial history $\tau : X \to W$ over a frame $\F = \tuple{W, \D, \Rightarrow}$ and duration
+  $z \in D \setminus X$, a world state $u \in W$ belongs to every member of the constraints
+  imposed on $z$ just in case $\tau(t) \Rightarrow_{z-t} u$ for every $t \in X$."
+- `lem:admissible` (verbatim): "For any partial history $\tau : X \to W$ over a task frame
   $\F = \tuple{W, \D, \Rightarrow}$ and duration $z \in D \setminus X$, the function
   $\tau \cup \set{\tuple{z, u}}$ is a partial history on $X \cup \set{z}$ just in case $u$ belongs
   to every member of the constraints imposed on $z$."
@@ -38,8 +38,17 @@ source — is the citation source of record.
   imposed on $z$} are the segments $[\tau(t), \tau(s)]_{z-t}^{s-z}$ for times $t,s \in X$ where
   $t < z < s$, and the fibers $\Fib(\tau(t), z - t)$ for $t \in X$ otherwise."
 - `def:world-history` (verbatim, the clause `adjoin` discharges): "A \textit{partial history} over
-  a frame $\F = \tuple{W, \D, \Rightarrow}$ is a function $\tau : X \to W$ on a nonempty set
+  a task frame $\F = \tuple{W, \D, \Rightarrow}$ is a function $\tau : X \to W$ on a nonempty set
   $X \subseteq D$ where $\tau(x) \Rightarrow_{y-x} \tau(y)$ for all times $x, y \in X$."
+
+**`lem:fibers` is a RETIRED paper anchor.** The paper removed `\label{lem:fibers}` in a
+2026-08-17 editing wave; the lemma's content was absorbed into the proof of `lem:admissible`
+rather than restated. Every `lem:fibers` citation in this tree resolves against
+`specs/paper-definitions-of-record.md`'s **DANGLING** entry — which retains the lemma's last
+resolved text — and not against any live `\label` in the paper. The name is kept because the
+statement is still exactly what `PartialHistory.fibers` proves and because no live anchor covers
+the same content; a reader going to the paper for it will not find it there.
+
 
 The recorded proof recipe for `lem:admissible` is: "Proof consumes `lem:nullity` (the zero loop at
 `z` itself) plus `lem:fibers`." Both halves appear literally below — `fibers` for the domain-time
@@ -122,10 +131,12 @@ variable {F : TaskFrame D}
 `lem:fibers`: a world state belongs to every constraint imposed on `z` exactly when it satisfies
 the fiber condition at every domain time.
 
-Recorded source (`lem:fibers`, verbatim): "For any partial history $\tau : X \to W$ over a frame
-$\F = \tuple{W, \D, \Rightarrow}$ and duration $z \in D \setminus X$, a world state $u \in W$
-belongs to every member of the constraints imposed on $z$ just in case
-$\tau(t) \Rightarrow_{z-t} u$ for every $t \in X$."
+Recorded source (`lem:fibers`, verbatim, as last resolved before the paper retired the anchor):
+"For any partial history $\tau : X \to W$ over a frame $\F = \tuple{W, \D, \Rightarrow}$ and
+duration $z \in D \setminus X$, a world state $u \in W$ belongs to every member of the
+constraints imposed on $z$ just in case $\tau(t) \Rightarrow_{z-t} u$ for every $t \in X$."
+
+The anchor is DANGLING; see this module's header for the retirement note.
 
 **The statement carries no sign proviso**: `z - t` may be negative, in which case
 `τ(t) ⇒_{z-t} u` is read through the paper's converse convention, exactly as

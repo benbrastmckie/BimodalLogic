@@ -17,7 +17,8 @@ some total world history.
 
 The chain, in order, is
 
-`def:constraints` → `lem:constraint` → `lem:fibers` → `lem:admissible` → `lem:step` (the sole
+`def:constraints` → `lem:constraint` → `lem:fibers` (RETIRED anchor; see below) → `lem:admissible`
+→ `lem:step` (the sole
 *Spherical* application site) → `thm:extension` (Zorn) → `cor:occurrence`.
 
 ## Paper Specification Reference
@@ -25,13 +26,17 @@ The chain, in order, is
 Anchors are `\label` keys into `specs/paper-definitions-of-record.md`, which — not the paper
 source — is the citation source of record.
 
-- `thm:extension` (verbatim): "Every partial history $\tau : X \to W$ over a frame
+- `thm:extension` (verbatim): "Every partial history $\tau : X \to W$ over a task frame
   $\F = \tuple{W, \D, \Rightarrow}$ is extended by some total world history $\sigma \in H_{\F}$."
-  Its footnote (verbatim): "The proof appeals to Zorn's lemma and hence to the axiom of choice,
-  and so the derivation of \textit{Occurrence} from \textit{Seriality} and \textit{Spherical} in
-  \textbf{\ref{cor:occurrence}} is a theorem of ZFC, in contrast with the choice-free derivation
-  of the zero loops in \textbf{\ref{lem:nullity}}."
-- `cor:occurrence` (verbatim): "For any frame $\F = \tuple{W, \D, \Rightarrow}$, world state
+  Its footnote (verbatim): "The proof appeals to Zorn's lemma, and so the derivation of
+  \textit{Occurrence} from \textit{Seriality} and \textit{Spherical} in
+  \textbf{\ref{cor:occurrence}} is a theorem of ZFC, in contrast with the derivation of the zero
+  loops in \textbf{\ref{lem:nullity}} and the derivation of \textit{Spherical} for finite $W$ in
+  \textbf{\ref{cor:spherical-finite}}, both of which are choice-free."
+  The footnote **no longer says "and hence to the axiom of choice"**; the paper restructured it to
+  say the derivation is a theorem of ZFC, and widened the choice-free contrast class to include
+  `cor:spherical-finite`. The earlier wording must not be reintroduced.
+- `cor:occurrence` (verbatim): "For any task frame $\F = \tuple{W, \D, \Rightarrow}$, world state
   $w \in W$, and time $x \in D$, there is a total world history $\tau \in H_{\F}$ where
   $\tau(x) = w$, and so $H_{\F} \neq \emptyset$."
 
@@ -184,13 +189,15 @@ theorem isTotal_of_isMax (F : TaskFrame D) {τ : PartialHistory F} (hmax : IsMax
 /--
 `thm:extension`: every partial history is extended by some total world history.
 
-Recorded source (`thm:extension`, verbatim): "Every partial history $\tau : X \to W$ over a frame
-$\F = \tuple{W, \D, \Rightarrow}$ is extended by some total world history $\sigma \in H_{\F}$."
+Recorded source (`thm:extension`, verbatim): "Every partial history $\tau : X \to W$ over a task
+frame $\F = \tuple{W, \D, \Rightarrow}$ is extended by some total world history
+$\sigma \in H_{\F}$."
 
-Recorded footnote of the source (verbatim): "The proof appeals to Zorn's lemma and hence to the
-axiom of choice, and so the derivation of \textit{Occurrence} from \textit{Seriality} and
-\textit{Spherical} in \textbf{\ref{cor:occurrence}} is a theorem of ZFC, in contrast with the
-choice-free derivation of the zero loops in \textbf{\ref{lem:nullity}}."
+Recorded footnote of the source (verbatim): "The proof appeals to Zorn's lemma, and so the
+derivation of \textit{Occurrence} from \textit{Seriality} and \textit{Spherical} in
+\textbf{\ref{cor:occurrence}} is a theorem of ZFC, in contrast with the derivation of the zero
+loops in \textbf{\ref{lem:nullity}} and the derivation of \textit{Spherical} for finite $W$ in
+\textbf{\ref{cor:spherical-finite}}, both of which are choice-free."
 
 **Proof recipe, exactly as recorded**: Zorn's lemma over the extension order
 (`exists_maximal_extension`) produces a maximal extension; `lem:step` forces that maximal partial

@@ -20,7 +20,7 @@ over a finite carrier both must eventually repeat.
 
 | File | Lines | Description |
 |------|-------|-------------|
-| `Admissible.lean` | 312 | `lem:fibers` and `lem:admissible` — rewrites membership in *every* constraint as membership in a plain fiber, turning that into a one-point extension of the partial history. |
+| `Admissible.lean` | 312 | `lem:fibers` (RETIRED paper anchor; resolves against the record's DANGLING entry, not a live `\label`) and `lem:admissible` — rewrites membership in *every* constraint as membership in a plain fiber, turning that into a one-point extension of the partial history. |
 | `Constraint.lean` | 398 | `lem:constraint` — the constraints a partial history imposes on a new duration form a *directed* family of *nonempty* sets. That is the whole of the lemma; the admissibility characterization is split out into `Admissible.lean`. |
 | `Extension.lean` | 272 | `thm:extension` and `cor:occurrence` — every partial history is extended by some total world history, and every world state occurs at any prescribed time in some total world history. |
 | `PeriodicExtension.lean` | 444 | A constructive alternative over `ℤ`-time with a finite carrier: a bounded history's two departing orbits must repeat, giving a periodic total extension without Zorn's lemma. |

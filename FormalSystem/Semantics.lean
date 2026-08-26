@@ -49,6 +49,11 @@ polymorphic over temporal types.
   the fiber condition at every domain time, and that is exactly what makes the one-point extension
   `τ ∪ {⟨z, u⟩}` (`PartialHistory.adjoin`) a partial history; consumes `lem:nullity` via
   *Seriality* plus *Limit*
+`lem:fibers` above is a **RETIRED paper anchor**: the paper removed `\label{lem:fibers}` in a
+2026-08 editing wave and absorbed its content into `lem:admissible`'s proof. The citation resolves
+against `specs/paper-definitions-of-record.md`'s DANGLING entry, not a live `\label`. See
+`Semantics/Extension/Admissible.lean`'s header for the full note.
+
 - `Extension.Step`: `lem:step` — every partial history extends by one arbitrary duration; the
   join of `lem:constraint`, *Spherical*, and `lem:admissible`, and **the sole application site of
   the *Spherical* axiom** in the development

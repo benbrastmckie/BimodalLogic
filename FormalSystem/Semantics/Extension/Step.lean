@@ -72,7 +72,9 @@ source — is the citation source of record.
 ## The `z ∈ D` versus `z ∈ D \ X` asymmetry
 
 `lem:step` is stated for **any** duration `z ∈ D`, with no `z ∉ X` proviso — unlike
-`def:constraints`, `lem:fibers`, and `lem:admissible`, which are all stated over `z ∈ D \ X`.
+`def:constraints`, `lem:fibers` (a RETIRED paper anchor — the paper removed `\label{lem:fibers}`;
+the citation resolves against the record's DANGLING entry), and `lem:admissible`, which are all
+stated over `z ∈ D \ X`.
 That is not an oversight in the paper and it is not smoothed over here: the `z ∈ dom τ` case is
 handled separately and trivially, by taking `σ := τ` (which already has `z` in its domain and
 extends itself). Only the `z ∉ dom τ` branch reaches `lem:admissible`, whose `hz` proviso is

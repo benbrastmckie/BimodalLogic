@@ -287,8 +287,12 @@ middle from classical logic, which is trivially true and says nothing whatever a
 
 `cor:spherical-finite`'s substantive surviving content is that the finite-carrier discharge does
 **not** route through Zorn's lemma — in deliberate contrast with `thm:extension`, whose own
-recorded footnote says it "appeals to Zorn's lemma and hence to the axiom of choice", and
-contrasts itself against exactly this corollary.
+recorded footnote says "The proof appeals to Zorn's lemma, and so the derivation of
+\textit{Occurrence} ... is a theorem of ZFC, in contrast with the derivation of the zero loops in
+\textbf{\ref{lem:nullity}} and the derivation of \textit{Spherical} for finite $W$ in
+\textbf{\ref{cor:spherical-finite}}, both of which are choice-free", and so names exactly this
+corollary as one of its two choice-free contrasts. (The footnote's earlier wording, "appeals to
+Zorn's lemma and hence to the axiom of choice", is no longer the paper's text.)
 
 **This claim is not, and cannot be, expressed by any block above.** `#print axioms` reports
 `Classical.choice`, and Zorn's lemma is a theorem derived from `Classical.choice`, not an axiom

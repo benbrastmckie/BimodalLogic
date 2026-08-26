@@ -13,7 +13,9 @@ import Mathlib.Tactic.Abel
 This module proves the Constraint Lemma in its **restructured** form: the constraints a partial
 history imposes on a new duration form a *directed* family of *nonempty* sets. That is the whole
 of the lemma. The admissibility characterization that the lemma's earlier merged statement
-carried has been split out by the paper into `lem:admissible`, warranted by `lem:fibers`, and is
+carried has been split out by the paper into `lem:admissible`, warranted by `lem:fibers` (a
+RETIRED paper anchor — `\label{lem:fibers}` was later removed and the citation now resolves
+against the record's DANGLING entry), and is
 deliberately **not** folded back in here.
 
 ## Paper Specification Reference
@@ -368,7 +370,8 @@ frame $\F = \tuple{W, \D, \Rightarrow}$ and duration $z \in D \setminus X$, the 
 imposed on $z$ form a directed family of nonempty sets."
 
 **This is the restructured statement.** The admissibility characterization that the lemma's
-earlier merged form carried has been split out into `lem:admissible` (warranted by `lem:fibers`)
+earlier merged form carried has been split out into `lem:admissible` (warranted by `lem:fibers`,
+a RETIRED paper anchor resolving against the record's DANGLING entry)
 and must not be folded back in here; directedness and member-nonemptiness are the whole content.
 
 **Axioms consumed, for the §7-style threading check.** Exactly three, and the reader can verify
