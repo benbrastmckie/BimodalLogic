@@ -519,7 +519,7 @@ adds the notion that holds a single frame fixed.
 
 **Definition of record — `def:frame-validity`**, verbatim:
 
-> A well-formed sentence phi of BL is *valid over a frame* F = ⟨W, D, ⇒⟩ which we may write
+> A well-formed sentence phi of BL is *valid over a task frame* F = ⟨W, D, ⇒⟩ which we may write
 > |=_F phi if and only if M,tau,x |= phi for every model M = ⟨W, D, ⇒, |·|⟩ where
 > F = ⟨W, D, ⇒⟩, possible world tau in H_F, and time x in D.
 
@@ -539,7 +539,7 @@ respect to `WorldHistory.IsTotal`.
 every possible world `τ ∈ H_F`, and every time `x ∈ D`.
 
 Recorded source (`def:frame-validity`, verbatim): "A well-formed sentence $\varphi$ of $\BL$ is
-\emph{valid over a frame} $\F = \tuple{W, \D, \Rightarrow}$ which we may write
+\emph{valid over a task frame} $\F = \tuple{W, \D, \Rightarrow}$ which we may write
 $\vDash_{\F} \varphi$ if and only if $\M,\tau,x \vDash \varphi$ for every model
 $\M = \tuple{W, \D, \Rightarrow, \vert{\cdot}}$ where $\F = \tuple{W, \D, \Rightarrow}$, possible
 world $\tau \in H_{\F}$, and time $x \in D$."

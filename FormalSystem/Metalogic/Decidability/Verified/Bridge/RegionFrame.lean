@@ -283,9 +283,9 @@ theorem regionFrame_limit (W ι D : Type) [Nonempty W] [AddCommGroup D] [LinearO
     (fun s u h => (((regionFrame W ι D).nullity_identity s u).mp h).symm)
 
 /-- *Spherical* (`def:frame#Spherical`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
-directed family $\mathcal{S}$ of nonempty fibers and segments") for `regionFrame`: every fiber is
-a subsingleton and every segment is an intersection of fibers, so every nonempty member of a
-directed family is a singleton and
+$\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments") for `regionFrame`:
+every fiber is a subsingleton and every segment is an intersection of fibers, so every nonempty
+member of a directed family is a singleton and
 `TaskFrame.sInter_nonempty_of_directed_of_univ_or_singleton` applies. -/
 theorem regionFrame_spherical (W ι D : Type) [Nonempty W] [AddCommGroup D] [LinearOrder D]
     [IsOrderedAddMonoid D] [Nontrivial D] :

@@ -94,7 +94,7 @@ theorem customFrame_limit :
   TaskFrame.limit_of_permissive customFrame_rel_iff
 
 /-- *Spherical* (`def:frame#Spherical`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
-directed family $\mathcal{S}$ of nonempty fibers and segments") for `customFrame`. -/
+$\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments") for `customFrame`. -/
 theorem customFrame_spherical : TaskFrame.Spherical customFrame.TaskRel :=
   TaskFrame.spherical_of_permissive customFrame_rel_iff
 

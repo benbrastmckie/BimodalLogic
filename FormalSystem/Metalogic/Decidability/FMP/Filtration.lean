@@ -398,10 +398,10 @@ theorem RefinedFilteredTaskFrame_limit [SuccOrder D] [NoMaxOrder D] (phi : Formu
   TaskFrame.limit_of_permissive (RefinedFilteredTaskFrame_rel_iff D phi)
 
 /-- *Spherical* (`def:frame#Spherical`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
-directed family $\mathcal{S}$ of nonempty fibers and segments") for the refined filtered frame:
-every nonempty fiber and segment is the whole carrier (above duration zero) or a singleton (at
-zero), and a directed family cannot contain two distinct singletons. Unlike *Limit*, this needs
-no restriction on `D`. -/
+$\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments") for the refined
+filtered frame: every nonempty fiber and segment is the whole carrier (above duration zero) or a
+singleton (at zero), and a directed family cannot contain two distinct singletons. Unlike
+*Limit*, this needs no restriction on `D`. -/
 theorem RefinedFilteredTaskFrame_spherical [SuccOrder D] [NoMaxOrder D] (phi : Formula) :
     TaskFrame.Spherical (RefinedFilteredTaskFrame D phi).TaskRel :=
   TaskFrame.spherical_of_permissive (RefinedFilteredTaskFrame_rel_iff D phi)

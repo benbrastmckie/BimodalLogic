@@ -516,9 +516,9 @@ theorem zTaskFrameV2_limit :
   omega
 
 /-- *Spherical* (`def:frame#Spherical`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
-directed family $\mathcal{S}$ of nonempty fibers and segments") for `zTaskFrameV2`: every fiber
-is a singleton and every segment is an intersection of fibers, hence a subsingleton, so
-`Algebraic.sInter_nonempty_of_directed_subsingleton` applies. -/
+$\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments") for `zTaskFrameV2`:
+every fiber is a singleton and every segment is an intersection of fibers, hence a subsingleton,
+so `Algebraic.sInter_nonempty_of_directed_subsingleton` applies. -/
 theorem zTaskFrameV2_spherical : TaskFrame.Spherical zTaskFrameV2.TaskRel := by
   intro S hdir hmem
   refine Algebraic.sInter_nonempty_of_directed_subsingleton hdir
@@ -829,8 +829,8 @@ theorem multiFamTaskFrame_limit (FamIdx : Type) [Nonempty FamIdx] :
   Algebraic.multiFamTaskFrameGen_limit
 
 /-- *Spherical* (`def:frame#Spherical`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
-directed family $\mathcal{S}$ of nonempty fibers and segments") for `multiFamTaskFrame`, by
-specialization of `multiFamTaskFrameGen_spherical`. -/
+$\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments") for
+`multiFamTaskFrame`, by specialization of `multiFamTaskFrameGen_spherical`. -/
 theorem multiFamTaskFrame_spherical (FamIdx : Type) [Nonempty FamIdx] :
     TaskFrame.Spherical (multiFamTaskFrame FamIdx).TaskRel :=
   Algebraic.multiFamTaskFrameGen_spherical

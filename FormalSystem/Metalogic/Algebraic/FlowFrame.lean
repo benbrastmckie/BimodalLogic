@@ -39,7 +39,7 @@ relation satisfying the following for $x, y \geq 0$":
 - *Limit* (`def:frame#Limit`, verbatim): "$\bigcap\limits_{x > 0} (w)_x = \set{w}$" —
   `multiFamGen_limit`, via `TaskFrame.limit_of_shift` with `pos := Prod.snd`.
 - *Spherical* (`def:frame#Spherical`, verbatim): "$\bigcap \mathcal{S} \neq \emptyset$ for
-  any directed family $\mathcal{S}$ of nonempty fibers and segments" —
+  any $\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments" —
   `multiFamGen_spherical`, via `sInter_nonempty_of_directed_subsingleton`: determinism makes
   every fiber a singleton and every segment a subsingleton.
 
@@ -349,9 +349,9 @@ theorem multiFamTaskFrameGen_limit [Nontrivial D] {FamIdx : Type} [Nonempty FamI
   multiFamGen_limit
 
 /-- *Spherical* (`def:frame#Spherical`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
-directed family $\mathcal{S}$ of nonempty fibers and segments") for the generic flow frame, as
-the predicate of record. Repackages `multiFamGen_spherical`, splitting `Spherical`'s single
-per-member conjunction into that lemma's two separate hypotheses. -/
+$\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments") for the generic flow
+frame, as the predicate of record. Repackages `multiFamGen_spherical`, splitting `Spherical`'s
+single per-member conjunction into that lemma's two separate hypotheses. -/
 theorem multiFamTaskFrameGen_spherical [Nontrivial D] {FamIdx : Type} [Nonempty FamIdx] :
     TaskFrame.Spherical (multiFamTaskFrameGen D FamIdx).TaskRel :=
   fun S hdir hmem =>

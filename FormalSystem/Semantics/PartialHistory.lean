@@ -18,7 +18,7 @@ requirement. `WorldHistory` is the convex special case (see `FormalSystem/Semant
 **`def:world-history`**, quoted verbatim from `specs/paper-definitions-of-record.md` (which is what
 this repository cites — never the paper file directly, and never by line number):
 
-> `A \textit{partial history} over a frame $\F = \tuple{W, \D, \Rightarrow}$ is a function
+> `A \textit{partial history} over a task frame $\F = \tuple{W, \D, \Rightarrow}$ is a function
 > $\tau : X \to W$ on a nonempty set $X \subseteq D$ where $\tau(x) \Rightarrow_{y-x} \tau(y)$ for
 > all times $x, y \in X$.`
 >
