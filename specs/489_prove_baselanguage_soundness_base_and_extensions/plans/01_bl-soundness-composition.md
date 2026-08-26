@@ -1,7 +1,7 @@
 # Implementation Plan: BL (TM) Soundness by Composition
 
 - **Task**: 489 - Prove soundness for the BaseLanguage (BL) proof system at `FrameClass.Base` and its Dense/Discrete/Dedekind extensions
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 6 hours
 - **Dependencies**: None (research complete; all obligations prototype-verified)
 - **Research Inputs**: `specs/489_prove_baselanguage_soundness_base_and_extensions/reports/01_bl-soundness-by-composition.md`
@@ -118,25 +118,25 @@ Phases within the same wave can execute in parallel. Phases 4 and 5 touch disjoi
 `BLTruth.*` characterization lemmas, and register the module in the `Semantics` aggregator.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Semantics/BLTruth.lean` importing `FormalSystem.Semantics.Truth` and
+- [x] Create `FormalSystem/Semantics/BLTruth.lean` importing `FormalSystem.Semantics.Truth` and
       `FormalSystem.BaseLanguage.Formula` (and nothing else from `BaseLanguage/`).
-- [ ] Copy the variable bundle character-for-character from `Semantics/Truth.lean` (`{D : Type*}
+- [x] Copy the variable bundle character-for-character from `Semantics/Truth.lean` (`{D : Type*}
       [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D] {F : TaskFrame D}`).
-- [ ] Transcribe the six `BLTruthAt` clauses verbatim from the research report §3.1. No
+- [x] Transcribe the six `BLTruthAt` clauses verbatim from the research report §3.1. No
       `termination_by`, no `decreasing_by` — the equation compiler handles the `box`/temporal
       recursions exactly as it already does for `TruthAt`.
-- [ ] Write the `BLTruth` namespace characterization lemmas: `bot_false`, `imp_iff`, `box_iff`,
+- [x] Write the `BLTruth` namespace characterization lemmas: `bot_false`, `imp_iff`, `box_iff`,
       `future_iff`, `past_iff`, `neg_iff`, `top_true` (each `Iff.rfl`/`id`); `and_iff`, `or_iff`
       (`simp only [...]; tauto`); `diamond_iff`, `someFuture_iff`, `somePast_iff` (the classical
       `¬∀¬ ↔ ∃` step); `always_iff` (from `and_iff` + `past_iff` + `future_iff`).
-- [ ] Use `push Not`, not `push_neg`, in the three classical lemmas.
-- [ ] Module docstring: cite `def:BL-semantics`; state that the atom clause's domain conjunct is
+- [x] Use `push Not`, not `push_neg`, in the three classical lemmas.
+- [x] Module docstring: cite `def:BL-semantics`; state that the atom clause's domain conjunct is
       inherited knowingly from Decision A of
       `specs/decisions/total-history-validity-decisions.md`; state explicitly that this is a
       native recursion and **not** `TruthAt ∘ tr`. No task-number citations (C9).
-- [ ] Add `import FormalSystem.Semantics.BLTruth` to `FormalSystem/Semantics.lean` and a
+- [x] Add `import FormalSystem.Semantics.BLTruth` to `FormalSystem/Semantics.lean` and a
       submodule bullet to its docstring list.
-- [ ] `lake build` green.
+- [x] `lake build` green.
 
 **Timing**: 1 hour
 
@@ -175,22 +175,22 @@ namespace counterpart on the BL⁺ side either.
 `Semantics/Validity.lean`, with the inclusion lemmas, and register the module.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Semantics/BLValidity.lean` importing
+- [x] Create `FormalSystem/Semantics/BLValidity.lean` importing
       `FormalSystem.Semantics.BLTruth` and `FormalSystem.Semantics.Validity`.
-- [ ] Transcribe `BLValid`, `BLValidDense`, `BLValidDiscrete`, `BLValidDedekindDense` verbatim
+- [x] Transcribe `BLValid`, `BLValidDense`, `BLValidDiscrete`, `BLValidDedekindDense` verbatim
       from the report §3.3, mirroring `valid`, `ValidDense`, `ValidDiscrete`,
       `ValidDedekindDense`. Use `Type` (not `Type*`), per the universe note on `valid`.
-- [ ] Add `BLSemanticConsequence`, mirroring `SemanticConsequence`.
-- [ ] Add the inclusion lemmas mirroring `Validity.valid_implies_valid_dense` and its siblings,
+- [x] Add `BLSemanticConsequence`, mirroring `SemanticConsequence`.
+- [x] Add the inclusion lemmas mirroring `Validity.valid_implies_valid_dense` and its siblings,
       matching whatever set `Validity.lean` actually carries.
-- [ ] `BLValidDedekindDense` docstring: record the Dedekind asymmetry with the **BL-native**
+- [x] `BLValidDedekindDense` docstring: record the Dedekind asymmetry with the **BL-native**
       witness — `(Axiom.dn φ).minFrameClass = .Dense`, `FrameClass.Dense ≤ FrameClass.Dedekind`,
       and `dn` (`GGφ → Gφ`) is false on `ℤ` (take `φ` true exactly at times `≥ t + 2`) — rather
       than paraphrasing `Validity.lean`'s BL⁺ `dense_indicator` argument. State that a
       density-free `BLValidDedekind` is deliberately not defined because it would be refutable.
-- [ ] Add `import FormalSystem.Semantics.BLValidity` to `FormalSystem/Semantics.lean` plus a
+- [x] Add `import FormalSystem.Semantics.BLValidity` to `FormalSystem/Semantics.lean` plus a
       submodule docstring bullet.
-- [ ] `lake build` green.
+- [x] `lake build` green.
 
 **Timing**: 0.75 hours
 
@@ -234,36 +234,36 @@ recommends alongside `BLSemanticConsequence`.
 forms, both consistency corollaries, and the three native spot checks.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/BaseLanguageSoundness.lean` importing
+- [x] Create `FormalSystem/Metalogic/BaseLanguageSoundness.lean` importing
       `FormalSystem.Metalogic.Soundness`, `FormalSystem.Metalogic.Conservativity`,
       `FormalSystem.Semantics.BLValidity`.
-- [ ] Prove `truthAt_tr` by `induction φ generalizing τ t` per report §4. `generalizing τ t` is
+- [x] Prove `truthAt_tr` by `induction φ generalizing τ t` per report §4. `generalizing τ t` is
       mandatory — the `box` case needs the IH at `σ`, the temporal cases at `s`, so each use site
       applies it explicitly (`ih σ t`, `ih τ s`).
-- [ ] Prove the corollaries `truthAt_trCtx` (the side-condition discharger) and
+- [x] Prove the corollaries `truthAt_trCtx` (the side-condition discharger) and
       `blValid_iff_valid_tr` (stated **as a theorem**, precisely so the distinction from the
       forbidden definitional shortcut is visible in the file).
-- [ ] Transcribe `bl_soundness` and its `_dense`/`_discrete`/`_dedekind` siblings from report §5,
+- [x] Transcribe `bl_soundness` and its `_dense`/`_discrete`/`_dedekind` siblings from report §5,
       substituting `soundness_dense` / `soundness_discrete` / `soundness_dedekind` and copying
       each one's binder bundle; thread `soundness_dedekind`'s `h_lub` through in the same position
       (between `D` and `F`).
-- [ ] Transcribe the four empty-context validity forms
+- [x] Transcribe the four empty-context validity forms
       `bl_soundness{,_dense,_discrete,_dedekind}_valid`.
-- [ ] Transcribe the two consistency corollaries `bl_not_derivable_nil_bot` and
+- [x] Transcribe the two consistency corollaries `bl_not_derivable_nil_bot` and
       `bl_not_derivable_nil_bot_discrete`. Document in the module docstring why Dense and
       Dedekind corollaries are deliberately absent (no dense/complete witness frame in the tree;
       the same asymmetry `Soundness.lean`'s own docstring records).
-- [ ] Land the three native spot-check `example`s (TK, T4, MT) from report §5 — these are the
+- [x] Land the three native spot-check `example`s (TK, T4, MT) from report §5 — these are the
       standing evidence that `BLTruthAt` carries real content independently of the composition,
       and MT is the informative one (it goes through because `τ` is itself total, the `H_F`
       reading of the box clause).
-- [ ] Module docstring: state what composition does and does not certify (per-axiom validity is
+- [x] Module docstring: state what composition does and does not certify (per-axiom validity is
       inherited from `Soundness.lean` and `BaseLanguage/AxiomDischarge.lean`; no BL axiom is
       evaluated directly against `BLTruthAt` except by the three spot checks). Note that
       `Conservativity.translate` is `noncomputable` but appears only inside `Prop`-valued proof
       terms, so the axiom profile is unaffected. No task-number citations (C9).
-- [ ] Add `import FormalSystem.Metalogic.BaseLanguageSoundness` to `FormalSystem/Metalogic.lean`.
-- [ ] `lake build` green.
+- [x] Add `import FormalSystem.Metalogic.BaseLanguageSoundness` to `FormalSystem/Metalogic.lean`.
+- [x] `lake build` green.
 
 **Timing**: 1.5 hours
 
@@ -443,23 +443,30 @@ not a gate requirement.
 
 ---
 
-### Phase 6: Full gate [NOT STARTED]
+### Phase 6: Full gate [COMPLETED]
 
 **Goal**: Run the complete acceptance gate and record the measured results.
 
 **Tasks**:
-- [ ] `lake build` — green.
-- [ ] `#print axioms` on all seven headline results; each must be exactly
+- [x] `lake build` — green.
+- [x] `#print axioms` on all seven headline results; each must be exactly
       `[propext, Classical.choice, Quot.sound]`.
-- [ ] `bash scripts/check-module-invariants.sh` — ALL CHECKS PASSED. Pay particular attention to
+- [x] `bash scripts/check-module-invariants.sh` — ALL CHECKS PASSED. Pay particular attention to
       C6 (the three new modules must be **reachable** via the two aggregators; do **not** add
       them to `scripts/module-invariants-manifest.txt`), C5, C9, C13, C14(i) and C15.
-- [ ] If a `FAIL C6` appears with no corresponding module change, re-run before treating it as
+- [x] If a `FAIL C6` appears with no corresponding module change, re-run before treating it as
       real — a single non-reproducing transient was observed during research.
-- [ ] Confirm C2/C14(ii) `#print axioms` baselines are unchanged (the six pinned theorems are
+- [x] Confirm C2/C14(ii) `#print axioms` baselines are unchanged (the six pinned theorems are
       untouched; the new theorems are additions).
-- [ ] `grep -rn 'FormalSystem.Semantics' FormalSystem/BaseLanguage/` returns nothing.
-- [ ] Record measured gate output in the implementation summary — do not paraphrase.
+- [x] `grep -rn 'FormalSystem.Semantics' FormalSystem/BaseLanguage/` returns nothing.
+      *(deviation: altered — as literally written this criterion was never satisfiable. At the
+      commit preceding this task's first, the grep already returned two docstring-prose hits
+      (`Formula.lean:48`, `AxiomDischarge.lean:67`); it now returns three, the added one being
+      Phase 4's directional-invariant sentence. The load-bearing check is the import-level
+      `grep -rn '^import.*FormalSystem.Semantics' FormalSystem/BaseLanguage/`, which returns
+      nothing — the invariant holds. `BaseLanguage.lean`'s amended docstring now states that
+      the grep's only matches are prose.)*
+- [x] Record measured gate output in the implementation summary — do not paraphrase.
 
 **Timing**: 0.5 hours
 
@@ -478,18 +485,25 @@ not a gate requirement.
 
 ## Testing & Validation
 
-- [ ] `lake build` green with zero `sorry` in the three new modules.
-- [ ] `truthAt_tr`, `bl_soundness`, `bl_soundness_dense`, `bl_soundness_discrete`,
+- [x] `lake build` green with zero `sorry` in the three new modules.
+- [x] `truthAt_tr`, `bl_soundness`, `bl_soundness_dense`, `bl_soundness_discrete`,
       `bl_soundness_dedekind`, `bl_not_derivable_nil_bot`, `bl_not_derivable_nil_bot_discrete`
       each report `#print axioms` exactly `[propext, Classical.choice, Quot.sound]`.
-- [ ] `bl_soundness_dedekind` targets `BLValidDedekindDense`; no `BLValidDedekind` exists.
-- [ ] `BLTruthAt`'s definition contains no reference to `tr`.
-- [ ] The three native spot-check `example`s (TK, T4, MT) elaborate.
-- [ ] `bash scripts/check-module-invariants.sh` reports ALL CHECKS PASSED, with the three new
+- [x] `bl_soundness_dedekind` targets `BLValidDedekindDense`; no `BLValidDedekind` exists.
+- [x] `BLTruthAt`'s definition contains no reference to `tr`.
+- [x] The three native spot-check `example`s (TK, T4, MT) elaborate.
+- [x] `bash scripts/check-module-invariants.sh` reports ALL CHECKS PASSED, with the three new
       modules reachable (C6) and not manifested.
-- [ ] `grep -rn 'FormalSystem.Semantics' FormalSystem/BaseLanguage/` returns nothing.
-- [ ] No new `push_neg` deprecation warnings introduced.
-- [ ] No task-number citations in any file outside `specs/`.
+- [x] `grep -rn 'FormalSystem.Semantics' FormalSystem/BaseLanguage/` returns nothing.
+      *(deviation: altered — as literally written this criterion was never satisfiable. At the
+      commit preceding this task's first, the grep already returned two docstring-prose hits
+      (`Formula.lean:48`, `AxiomDischarge.lean:67`); it now returns three, the added one being
+      Phase 4's directional-invariant sentence. The load-bearing check is the import-level
+      `grep -rn '^import.*FormalSystem.Semantics' FormalSystem/BaseLanguage/`, which returns
+      nothing — the invariant holds. `BaseLanguage.lean`'s amended docstring now states that
+      the grep's only matches are prose.)*
+- [x] No new `push_neg` deprecation warnings introduced.
+- [x] No task-number citations in any file outside `specs/`.
 
 ## Artifacts & Outputs
 
