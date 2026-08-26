@@ -335,6 +335,66 @@ theorem strongCompletenessDense_of_compact (hc : CompactDense)
   obtain ⟨L, hL, hvalid⟩ := hc Γ φ h
   exact ⟨L, hL, (derivable_foldr_imp_iff L φ).mpr (engine _ hvalid)⟩
 
+/-! ### Model existence implies compactness -/
+
+/--
+**Model existence implies compactness, at the base class.**
+
+The contraposition. Suppose `SetSemanticConsequenceBase Γ φ` but no finite `L ⊆ Γ` has
+`valid (L.foldr Formula.imp φ)`. Then every finite sublist of `insert φ.neg Γ` is satisfiable:
+filtering such a sublist down to its `Γ`-part feeds the contradiction hypothesis, and
+`truthAt_foldr_imp` above turns the resulting failure of validity into the conjunction of
+"every filtered premise is true here" and "`φ` is false here" — which together satisfy the whole
+sublist, since a member outside `Γ` can only be `φ.neg`. Model existence then supplies one
+configuration satisfying all of `Γ` *and* `φ.neg`, while the consequence hypothesis forces `φ`
+true there. Contradiction.
+
+Two mechanics worth recording. `Formula.neg φ` is `φ.imp ⊥` (`Syntax/Formula.lean`) and
+`TruthAt M τ t ⊥` is `False` (`Semantics/Truth.lean`), so `TruthAt M τ t φ.neg` is
+*definitionally* `TruthAt M τ t φ → False`; no `truthAt_neg` lemma is needed or exists. And
+`Γ : Set Formula` carries no decidability, so `classical` is what makes the `List.filter` step
+available.
+
+Like the two strong-completeness reductions above, this theorem lives here rather than in
+`FormalSystem/Metalogic/SetConsequence.lean`, which supplies the `ModelExistenceBase` and
+`CompactBase` vocabulary it is stated against, because `truthAt_foldr_imp` is owned by this
+module and this module imports that one. Stating it there would be an import cycle.
+
+**A reduction, not a terminus.** `ModelExistenceBase` is itself an **open obligation** — the
+ultraproduct construction that would discharge it is not attempted anywhere in this tree — so
+`CompactBase` stays open. What this theorem establishes is that `CompactBase` is no *harder*
+than model existence, and that the remaining work on the Base strong-completeness route is
+concentrated in a single place.
+-/
+theorem compactBase_of_modelExistence (h : ModelExistenceBase) : CompactBase := by
+  classical
+  intro Γ φ hcons
+  by_contra hno
+  push Not at hno
+  have hfin : ∀ L : List Formula, (∀ ψ ∈ L, ψ ∈ insert φ.neg Γ) →
+      SatisfiableBaseSet {ψ | ψ ∈ L} := by
+    intro L hL
+    have hsub : ∀ ψ ∈ L.filter (fun ψ => decide (ψ ∈ Γ)), ψ ∈ Γ := by
+      intro ψ hψ
+      exact of_decide_eq_true (List.mem_filter.mp hψ).2
+    have hnv := hno _ hsub
+    unfold valid at hnv
+    push Not at hnv
+    obtain ⟨D, _, _, _, _, F, M, τ, hτ, t, hfalse⟩ := hnv
+    rw [truthAt_foldr_imp] at hfalse
+    push Not at hfalse
+    obtain ⟨hall, hnφ⟩ := hfalse
+    refine ⟨D, inferInstance, inferInstance, inferInstance, inferInstance, F, M, τ, hτ, t, ?_⟩
+    intro ψ hψ
+    by_cases hg : ψ ∈ Γ
+    · exact hall ψ (List.mem_filter.mpr ⟨hψ, decide_eq_true hg⟩)
+    · rcases hL ψ hψ with rfl | hmem
+      · exact fun hp => hnφ hp
+      · exact absurd hmem hg
+  obtain ⟨D, _, _, _, _, F, M, τ, hτ, t, hsat⟩ := h _ hfin
+  exact hsat φ.neg (Set.mem_insert _ _)
+    (hcons D F M τ hτ t (fun ψ hψ => hsat ψ (Set.mem_insert_of_mem _ hψ)))
+
 /-! ## Consequence completeness for `FrameClass.Dedekind` -/
 
 /--
