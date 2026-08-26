@@ -901,6 +901,8 @@ earlier in this file and by the three `BXCanonical` engines they consume.
 terminus, since its `CompactBase` hypothesis is an open obligation. -/
 
 #print axioms strongCompletenessBase_of_compact
+#print axioms compactBase_of_modelExistence
+#print axioms compactDense_of_modelExistenceDense
 #print axioms consequence_completeness_base
 #print axioms completeness_base
 #print axioms soundness_base_consequence
