@@ -280,19 +280,19 @@ wave; see each phase's "Files to modify" list.
 
 ---
 
-### Phase 4: Regenerate the typst status counts [NOT STARTED]
+### Phase 4: Regenerate the typst status counts [COMPLETED]
 
 - **Goal**: Bring `typst/generated/status.typ` back in sync with the tree so
   `scripts/typst-sync-check.sh` passes.
 - **Tasks**:
-  - [ ] Run `bash scripts/typst-sync-check.sh` and capture the three current mismatches
+  - [x] Run `bash scripts/typst-sync-check.sh` and capture the three current mismatches
         (`sorry-total` committed 5 / live 4; `sorry-total-excl-boneyard` committed 1 / live 0;
-        `sorry-table[WeakCanonical/]` committed 5 / live 4).
-  - [ ] Regenerate via `bash scripts/typst-status-counts.sh` and write the result to
+        `sorry-table[WeakCanonical/]` committed 5 / live 4). *(completed: exactly those three, confirmed by the resulting diff; checks 1 and 3 were already green, so the scope-hypothesis escape hatch did not fire)*
+  - [x] Regenerate via `bash scripts/typst-status-counts.sh` and write the result to
         `typst/generated/status.typ` using whatever mechanism the script documents; do not
-        hand-edit the generated numbers.
-  - [ ] Confirm the regenerated file's provenance stamp updates (it is currently stamped
-        `08927bc5e (2026-08-17)`).
+        hand-edit the generated numbers. *(completed: the script writes `typst/generated/status.typ` itself as a side effect, so no separate write step was needed; nothing was hand-edited)*
+  - [x] Confirm the regenerated file's provenance stamp updates (it is currently stamped
+        `08927bc5e (2026-08-17)`). *(completed: now `dfea0264b (2026-08-26)`)*
 - **Timing**: 15 minutes
 - **Depends on**: none
 - **Verification Tier**: local

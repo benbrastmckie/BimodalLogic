@@ -5,11 +5,11 @@
 //   scripts/typst-status-counts.sh
 //
 // Reproduces the SYNC-MAP.md Phase 1 ground-truth-counts methodology.
-// Stamped from live source at commit 08927bc5e (2026-08-17).
+// Stamped from live source at commit dfea0264b (2026-08-26).
 // ============================================================================
 
-#let stamp-commit = "08927bc5e"
-#let stamp-date = "2026-08-17"
+#let stamp-commit = "dfea0264b"
+#let stamp-date = "2026-08-26"
 
 #let axiom-count = 45
 #let rule-count = 7
@@ -18,13 +18,13 @@
 #let discrete-only-count = 3
 #let dedekind-only-count = 3
 
-#let sorry-total = 5
-#let sorry-total-excl-boneyard = 1
+#let sorry-total = 4
+#let sorry-total-excl-boneyard = 0
 
 #let sorry-table = (
   ("Algebraic/", 0),
   ("BXCanonical/", 0),
   ("Bundle/", 0),
-  ("WeakCanonical/", 5),
+  ("WeakCanonical/", 4),
   ("Core/, Decidability/, SoundnessLemmas/, top-level", 0),
 )
