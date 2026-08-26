@@ -200,28 +200,32 @@ no entry that will go uncited) and by enumerating TM's axiom schemas from `@sec:
 
 ---
 
-### Phase 2: Reframe the Opening — What "Representation" Would Mean [NOT STARTED]
+### Phase 2: Reframe the Opening — What "Representation" Would Mean [COMPLETED]
 
 **Goal**: Replace the section's opening paragraphs, the three-route table and the route diagram
 with an explicit statement of the four distinct things "representation theorem" has been naming,
 plus the six-rung ladder and each rung's real status.
 
 **Tasks**:
-- [ ] Rewrite the opening so it distinguishes (i) an algebraic representation `A >-> Em A`,
+- [x] Rewrite the opening so it distinguishes (i) an algebraic representation `A >-> Em A`,
       (ii) a duality `BAO ~= DGF^op`, (iii) a task-frame representation, and (iv) a first-order
       (shift-set) axiomatization, and says which of the four the strong-completeness motivation
-      actually requires.
-- [ ] Replace the three-route table with the six-rung ladder table: Lindenbaum-Tarski algebra
+      actually requires. *(completed)*
+- [x] Replace the three-route table with the six-rung ladder table: Lindenbaum-Tarski algebra
       (done in Lean, sorry-free); BAO for the full similarity type (not done); Jonsson-Tarski
       (off the shelf, Lean half done); full duality with descriptive general frames (off the
       shelf); dual Kripke reduct is a task frame (blocked at *Spherical*); per-class discrete /
       dense / Dedekind-complete (elementary and reachable for dense, out of first-order reach for
-      `TM_f` and `TM_c`).
-- [ ] Update the `cetz` route diagram so its endpoint is no longer labelled "Jonsson-Tarski
+      `TM_f` and `TM_c`). *(completed; old three-route table and the paragraph that followed it,
+      inside `== The Algebraic Layer`, removed as redundant with the new ladder)*
+- [x] Update the `cetz` route diagram so its endpoint is no longer labelled "Jonsson-Tarski
       duality". Either relabel the endpoints to match the ladder or replace the diagram with a
       ladder rendering. Preserve the existing visual convention (solid arrows = completed, dashed
-      = gap) and the green/orange/red status colouring.
-- [ ] Keep the existing footnote about the superseded unpublished draft, which remains accurate.
+      = gap) and the green/orange/red status colouring. *(completed: replaced with a vertical
+      5-box ladder diagram for rungs 1-5, rung 6 left to the table since its status splits by
+      frame class; same solid/dashed and green/orange/red convention)*
+- [x] Keep the existing footnote about the superseded unpublished draft, which remains accurate.
+      *(completed, unchanged content, reattached to the new opening paragraph)*
 
 **Timing**: 1.5 hours
 

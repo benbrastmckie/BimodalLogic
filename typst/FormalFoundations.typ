@@ -152,10 +152,9 @@ the proof systems that answer to them last.
   $ phi.alt, psi ::= p_i | bot | phi.alt arrow.r psi | square.stroked phi.alt | phi.alt #since psi | phi.alt #until psi. $
 ]
 #leansrc("Syntax", "Formula")
-#footnote[The paper's base language $#BL$ takes the one-place $#allpast$ and $#allfuture$ as primitive instead; it embeds into $#BLplus$ under @def-operators, and is not used below.]
 
 The two primitives are written infix and are *guard-first*: in $phi.alt #since psi$ the guard is
-$phi.alt$, holding throughout an interval, and the event is $psi$, witnessed at its far endpoint.
+$phi.alt$, holding throughout an interval, and the event is $psi$, witnessed at its far endpoint.#footnote[The paper's base language $#BL$ takes the one-place $#allpast$ and $#allfuture$ as primitive instead; it embeds into $#BLplus$ under @def-operators, and is not used below.]
 
 #definition("Defined Operators")[
   #items[
@@ -192,13 +191,12 @@ its absence from $#BL$ is what produces the split validity of @sec:dichotomy.
   #items[
     + *Fiber*: $"Fib"(w, x) := {u in #worldstate : w arrow.r.double.long_(x) u}$.
     + *Cone*: $(w)_x := union.big_(|y| < x) "Fib"(w, y)$, for $x > 0$.
-    + *Segment*: $[w, v]_x^y := "Fib"(w, x) inter "Fib"(v, -y)$, for $x, y gt.eq 0$.
+    + *Segment*: $[w, v]_x^y := "Fib"(w, x) inter "Fib"(v, -y)$, for $x, y gt.eq 0$.#footnote[The relation is primitive only on $D^+$; negative durations are defined, not given.]
   ]
 ]
 #leansrc("Semantics.TaskFrame", "Fib")
 #leansrc("Semantics.TaskFrame", "cone")
 #leansrc("Semantics.TaskFrame", "Seg")
-#footnote[The relation is primitive only on $D^+$; negative durations are defined, not given.]
 
 #definition("Directed Family")[
   A nonempty family of sets $cal(S)$ is *directed* just in case $S subset.eq S_1 inter S_2$ for
@@ -212,7 +210,7 @@ its absence from $#BL$ is what produces the split validity of @sec:dichotomy.
   relation satisfying the following constraints for all $x, y gt.eq 0$:
   #items[
     + *Compositionality*: $w arrow.r.double.long_(x+y) v$ if and only if
-      $w arrow.r.double.long_(x) u$ and $u arrow.r.double.long_(y) v$ for some $u in #worldstate$.
+      $w arrow.r.double.long_(x) u$ and $u arrow.r.double.long_(y) v$ for some $u in #worldstate$.#footnote[Compositionality is a biconditional, load-bearing in both directions.]
     + *Seriality*: $w arrow.r.double.long_(x) u$ and $v arrow.r.double.long_(x) w$ for some
       $u, v in #worldstate$.
     + *Limit*: $inter.big_(x > 0) (w)_x = {w}$.
@@ -221,7 +219,6 @@ its absence from $#BL$ is what produces the split validity of @sec:dichotomy.
   ]
 ]
 #leansrc("Semantics", "TaskFrame")
-#footnote[Compositionality is a biconditional, load-bearing in both directions.]
 
 #lemma("Nullity")[$w arrow.r.double.long_(0) w$ for every world state $w$ of every frame.]
 #leansrc("Semantics.TaskFrame", "nullity")
@@ -340,7 +337,7 @@ consumer of the Step Lemma; every appeal to *Spherical* in the semantics passes 
 point.#footnote[*Spherical* is not needed when the $supset.eq$-directed family has a $subset.eq$-least member, and on a finite carrier it holds outright and choice-free.] Extension and Occurrence are theorems of ZFC, in contrast with Nullity. That
 localization is what makes *Spherical* the identified obstruction of @sec:representation.
 
-The cones are a basis for a topology on world states, and that topology is separated.
+The cones are a basis for a topology on world states, and that topology is separated.#footnote[The topology is carried by the world states, not by $H_(#taskframe)$ or by $D$.]
 
 #definition("Task Topology")[
   Given a frame $#taskframe$:
@@ -356,7 +353,7 @@ The cones are a basis for a topology on world states, and that topology is separ
     + *R0*: $cal(T)_(#taskframe)$ is *R0* just in case $w in overline({u})$ iff
       $u in overline({w})$ for all $w, u in #worldstate$.
   ]
-]#footnote[The topology is carried by the world states, not by $H_(#taskframe)$ or by $D$.]
+]
 
 #theorem("Separation")[$cal(T)_(#taskframe)$ is T1, and hence R0, for every frame $#taskframe$.]
 #proof[
@@ -385,13 +382,12 @@ The cones are a basis for a topology on world states, and that topology is separ
 #definition("Model")[
   A *model* is a structure $#model = (#worldstate, #Dur, arrow.r.double.long, |dot.c|)$ where
   $(#worldstate, #Dur, arrow.r.double.long)$ is a frame and $|p_i| subset.eq #worldstate$ for every
-  sentence letter $p_i$.
+  sentence letter $p_i$.#footnote[An interpretation assigns each sentence letter a set of *world states*. Truth at a time is mediated entirely by the world state the history occupies there; this is the content of the atomic clause below, and it is what makes a possible world a trajectory through a fixed state space and not an independent index.]
 ]
 #leansrc("Semantics", "TaskModel")
-#footnote[An interpretation assigns each sentence letter a set of *world states*. Truth at a time is mediated entirely by the world state the history occupies there; this is the content of the atomic clause below, and it is what makes a possible world a trajectory through a fixed state space and not an independent index.]
 
 #definition("Truth")[
-  *Truth* in a model $#model$ at a possible world $tau in H_(#taskframe)$ and time $x in D$ is defined recursively as follows:
+  *Truth* in a model $#model$ at a possible world $tau in H_(#taskframe)$ and time $x in D$ is defined recursively as follows:#footnote[Evaluating at a possible world paired with a time, with truth at that time mediated by the world state occupied there, is an instance of Scott's proposal @scott1970advice that the index of evaluation be a structured point of reference and not a bare world.]
   #items[
     + $#model, tau, x #satisfies p_i$ iff $tau(x) in |p_i|$.
     + $#model, tau, x #notsatisfies bot$.
@@ -406,7 +402,6 @@ The cones are a basis for a topology on world states, and that topology is separ
   ]
 ]
 #leansrc("Semantics", "TruthAt")
-#footnote[Evaluating at a possible world paired with a time, with truth at that time mediated by the world state occupied there, is an instance of Scott's proposal @scott1970advice that the index of evaluation be a structured point of reference and not a bare world.]
 
 The semantic clause for $square.stroked$ quantifies over all possible worlds of the frame.
 It is not a relational modality with an accessibility relation to be tuned: the frame fixes $H_(#taskframe)$, and $square.stroked$ ranges over that set entire.
@@ -416,12 +411,11 @@ Its logic is correspondingly S5, and @sec:objective-modality takes up what else,
   A frame is *Discrete* if every $x in D$ having some $y > x$ has a least such; *Dense* if
   $x < z < y$ for some $z$ whenever $x < y$; *Complete* if every nonempty subset of $D$ bounded
   above has a least upper bound; and *Deterministic* if $w arrow.r.double.long_(x) u$ and
-  $w arrow.r.double.long_(x) v$ imply $u = v$.
+  $w arrow.r.double.long_(x) v$ imply $u = v$.#footnote[The first three constrain $#Dur$; the fourth constrains $arrow.r.double.long$.]
 ]
 #leansrc("FrameConditions", "DenseTemporalFrame")
 #leansrc("FrameConditions", "DiscreteTemporalFrame")
 #leansrc("FrameConditions", "DedekindTemporalFrame")
-#footnote[The first three constrain $#Dur$; the fourth constrains $arrow.r.double.long$.]
 
 #definition("Validity and Consequence")[
   $#taskframe #satisfies phi.alt$ just in case $#model, tau, x #satisfies phi.alt$ for every model
@@ -482,8 +476,8 @@ constrains is the points of evaluation, not the propositions.
   holding vacuously unless the order is discrete. In every case the past/since direction is
   derived from the future/until direction by TD, not separately postulated -- only the
   future/until direction is stated above. NB is stated here as it belongs to BX in the paper, even
-  though $square.stroked$ is only interpreted once S5 is fused with BX below.
-]#footnote[Seventeen named keys: two rules (TN, TD), three seriality/linearity/connectedness axioms (TB, TL, CN), eight primary Since/Until axioms (TA, UE, UT, UI, UC, UF, UG, SU), and four uniformity axioms (NP, NF, NA, NB).]
+  though $square.stroked$ is only interpreted once S5 is fused with BX below.#footnote[Seventeen named keys: two rules (TN, TD), three seriality/linearity/connectedness axioms (TB, TL, CN), eight primary Since/Until axioms (TA, UE, UT, UI, UC, UF, UG, SU), and four uniformity axioms (NP, NF, NA, NB).]
+]
 
 #definition($op("TM")^+$)[
   $op("TM")^+$, the base logic for $#BLplus$, is the smallest extension of S5 and BX to include
@@ -538,7 +532,7 @@ constrains is the points of evaluation, not the propositions.
 
 Similarly, $op("TM")^+_f$, $op("TM")^+_d$, and $op("TM")^+_c$ extend $op("TM")^+$ with the
 additional axioms that distinguish $"BX"_f$, $"BX"_d$, and $"BX"_c$ respectively: $op("TM")^+_f$
-adds UZ and Z1, $op("TM")^+_d$ adds DN and NN, and $op("TM")^+_c$ adds Prior-U and Sep.
+adds UZ and Z1, $op("TM")^+_d$ adds DN and NN, and $op("TM")^+_c$ adds Prior-U and Sep.#footnote[Whether CO alone axiomatizes the same $#BLplus$-logic as Prior-U and Sep together is open.]
 
 #figure(
   table(
@@ -552,7 +546,6 @@ adds UZ and Z1, $op("TM")^+_d$ adds DN and NN, and $op("TM")^+_c$ adds Prior-U a
   caption: [The three frame-class extensions of $op("TM")^+$.],
 )
 #leansrc("ProofSystem", "FrameClass")
-#footnote[Whether CO alone axiomatizes the same $#BLplus$-logic as Prior-U and Sep together is open.]
 
 By Hölder's theorem a nontrivial discrete Archimedean totally ordered abelian group is isomorphic
 to $ZZ$, and a nontrivial Dedekind-complete one is Archimedean and so isomorphic to $ZZ$ or $RR$.
@@ -619,13 +612,12 @@ op("Log")("Dense")$, which is a target rather than a result.
 
 #theorem("Soundness")[
   If $tack.r phi.alt$ then $#satisfies phi.alt$, for TM and for each of its four frame-class
-  extensions $op("TM")_f$, $op("TM")_d$, $op("TM")_c$, $op("TM")_(d c)$ over its own class.
+  extensions $op("TM")_f$, $op("TM")_d$, $op("TM")_c$, $op("TM")_(d c)$ over its own class.#footnote[The characteristic case is M5, $#satisfies diamond.stroked square.stroked phi.alt arrow.r square.stroked phi.alt$, which holds because $square.stroked$ quantifies over $H_(#taskframe)$ entire and so is insensitive to the possible world at which it is evaluated.]
 ]
 #leansrc("FrameConditions", "soundness_linear")
 #leansrc("FrameConditions", "soundness_dense")
 #leansrc("FrameConditions", "soundness_discrete")
 #leansrc("FrameConditions", "soundness_Int")
-#footnote[The characteristic case is M5, $#satisfies diamond.stroked square.stroked phi.alt arrow.r square.stroked phi.alt$, which holds because $square.stroked$ quantifies over $H_(#taskframe)$ entire and so is insensitive to the possible world at which it is evaluated.]
 
 The three frame properties that separate the extensions are each characterized by a single axiom.
 These correspondences are what make the extensions extensions *of a frame class* and not merely of
@@ -650,10 +642,10 @@ has no supremum.
   $#always square.stroked phi.alt arrow.l.r square.stroked phi.alt$,
   $square.stroked #always phi.alt arrow.l.r square.stroked phi.alt$, and
   $diamond.stroked phi.alt arrow.l.r diamond.stroked #sometimes phi.alt$ are all theorems of TM.
-]#footnote[Each is a chain of at most six lines from the perpetuity principles P1--P6 and TF ($square.stroked phi.alt arrow.r #allfuture square.stroked phi.alt$), which follow in turn from MF and MT.]
+]
 
 A modality prefixed by a tense operator, or a tense operator prefixed by $square.stroked$, is
-therefore no stronger than the modality alone. This bounds what the bimodal language can express
+therefore no stronger than the modality alone.#footnote[Each is a chain of at most six lines from the perpetuity principles P1--P6 and TF ($square.stroked phi.alt arrow.r #allfuture square.stroked phi.alt$), which follow in turn from MF and MT.] This bounds what the bimodal language can express
 beyond its two fragments, and it is the reason the completeness constructions below need only
 manage the interaction axiom MF and not an open-ended supply of mixed principles.
 
@@ -698,7 +690,7 @@ Axioms: exactly `propext`, `Classical.choice`, `Quot.sound`; no `sorryAx`.
 #leansrc("Metalogic.BXCanonical", "completeness_dedekind_engine")
 Axioms: exactly `propext`, `Classical.choice`, `Quot.sound`; no `sorryAx`.
 
-The fourth result, over *all* task frames, is the stated formalization target and is not a theorem.
+The fourth result, over *all* task frames, is the stated formalization target and is not a theorem.#footnote[The `sorryAx` traces to a single dependency, `countermodel_discrete`, which is dead code: the live replacement `countermodel_discrete_reynolds_v2` is what `completeness_discrete` actually calls (@sec:construction). The obligation is therefore narrow and identified, which is not the same as discharged.]
 
 #theorem("Base-class completeness (outstanding)")[
   Weak completeness over all task frames, for the Base frame class, is stated in the development as
@@ -707,7 +699,6 @@ The fourth result, over *all* task frames, is the stated formalization target an
 ]
 #leansrc("Metalogic.BXCanonical", "completeness")
 #leansrc("Metalogic.WeakCanonical", "countermodel_discrete_reynolds_v2")
-#footnote[The `sorryAx` traces to a single dependency, `countermodel_discrete`, which is dead code: the live replacement `countermodel_discrete_reynolds_v2` is what `completeness_discrete` actually calls (@sec:construction). The obligation is therefore narrow and identified, which is not the same as discharged.]
 
 Two further remarks bound what the four results above claim. First, the axiom reports quoted here
 are Lean's, and Lean's single `Classical.choice` axiom yields excluded middle and choice
@@ -723,8 +714,8 @@ asserted about compactness of the full discrete class in either direction.
   unconditionally, since $#BL$ embeds into $#BLplus$. The forward direction fails for the base
   case, witnessed by (DD) in @sec:dichotomy, and fails for the discrete extension via Z1 over
   $ZZ times_"lex" ZZ$; for the dense and complete extensions it is open, with no known
-  counterexample.
-]#footnote[The paper's former conservative-extension theorem has been deleted; this footnote's four parts replace it.]
+  counterexample.#footnote[The paper's former conservative-extension theorem has been deleted; this footnote's four parts replace it.]
+]
 
 == Decidability
 
@@ -742,11 +733,11 @@ property over $D = ZZ$ delivers this uniformly is false, and is retracted with t
   DF is a non-theorem of TM, $op("TM")_d$, $op("TM")_c$, and $op("TM")_(d c)$, yet is valid in
   every model over $D = ZZ$. And CO is a non-theorem of $op("TM")_f$, witnessed by
   $ZZ times_"lex" ZZ$, yet is likewise valid in every model over $D = ZZ$.
-]#footnote[A repaired finite model property must be class-specific, ranging over effective non-Archimedean carriers such as $ZZ times_"lex" ZZ$ and not over $ZZ$ alone.]
+]
 
 The failure is not incidental: $ZZ$ is a discrete carrier and bears no relation to the frame
 classes of the three non-discrete systems, so no property of models over $ZZ$ could have decided
-them. What exists in the development is a tableau procedure whose *soundness* is machine-checked,
+them.#footnote[A repaired finite model property must be class-specific, ranging over effective non-Archimedean carriers such as $ZZ times_"lex" ZZ$ and not over $ZZ$ alone.] What exists in the development is a tableau procedure whose *soundness* is machine-checked,
 together with ongoing work on a semantic, truth-connected finite model property for the $ZZ$-time
 discrete case (@sec:construction). No decidability theorem is machine-checked.
 
@@ -776,7 +767,6 @@ single sentence in the maximal consistent set. This section gives that machinery
 ]
 #leansrc("Metalogic.Core", "SetConsistent")
 #leansrc("Metalogic.Core", "SetMaximalConsistent")
-#footnote[Consistency is defined on finite subsets, so the set-level layer is finitary even though the sets themselves are infinite.]
 
 #lemma("Lindenbaum")[
   Every consistent set of sentences is contained in a maximal consistent set of the same frame
@@ -784,7 +774,7 @@ single sentence in the maximal consistent set. This section gives that machinery
 ]
 #leansrc("Metalogic.Core", "set_lindenbaum")
 The proof is Zorn's lemma over the consistent supersets, whose chains are bounded by their unions;
-finitary consistency is what makes a union of a chain of consistent sets consistent.
+finitary consistency is what makes a union of a chain of consistent sets consistent.#footnote[Consistency is defined on finite subsets, so the set-level layer is finitary even though the sets themselves are infinite.]
 
 Write $M$ for a maximal consistent set. Negation-completeness is used below exactly as a
 decision procedure: for any sentence $psi$ of interest, $M$ has already settled $psi$ one way or
@@ -883,11 +873,10 @@ family so that the box clause comes out right by fiat.
     + *Forward*: if $square.stroked phi.alt$ belongs to some family's set at time $t$, then
       $phi.alt$ belongs to *every* family's set at $t$.
     + *Backward*: if $phi.alt$ belongs to every family's set at $t$, then $square.stroked phi.alt$
-      belongs to each family's set at $t$.
+      belongs to each family's set at $t$.#footnote[The structure also designates an evaluation family, the one containing the original consistent set.]
   ]
 ]
 #leansrc("Metalogic.Bundle", "BFMCS")
-#footnote[The structure also designates an evaluation family, the one containing the original consistent set.]
 
 The two conditions are exactly the two directions of the box clause, transposed from truth to
 membership. Together they discharge the modal case of the truth lemma without any appeal to an
@@ -914,11 +903,10 @@ has nonempty intersection outright.#footnote[`multiFamGen_spherical`, via the re
   distinct points to the Since and Until sentences they contain. It is built as the limit of an
   $omega$-chain: the *singleton chronicle* maps $0$ to $A$; each successor step eliminates one
   potential counterexample, enumerated from $QQ times "Formula" times "Formula" times "Bool"$; and
-  the limit is the union of the chain.
+  the limit is the union of the chain.#footnote[Countability of the enumeration is what makes an $omega$-chain sufficient.]
 ]
 #leansrc("Metalogic.BXCanonical.Chronicle", "singletonChronicle")
 #leansrc("Metalogic.BXCanonical.Chronicle", "omegaChain")
-#footnote[Countability of the enumeration is what makes an $omega$-chain sufficient.]
 
 The obligation the chain exists to discharge is *eventuality-filling*. A sentence
 $phi.alt #until psi$ in a chronicle's set at $t$ is a promise that $psi$ holds at some later
@@ -940,14 +928,13 @@ unavailable and the argument runs the other way: build a structure first, then s
   when it is $k$-equivalent to a structure assembled from finitely many one-class pieces, and
   *very good* when that decomposition is uniform. The pipeline shows the chronicle's limit domain
   is good, extracts a $k$-equivalent interval of $ZZ$, and transfers satisfiability across the
-  $k$-equivalence.
+  $k$-equivalence.#footnote[The decomposition technique is Doets's @doets1987; the step-by-step k-equivalence argument for Until/Since is Reynolds's @reynolds1992, as developed in Gabbay, Hodkinson, and Reynolds @gabbayhodkinsonreynolds1994.]
 ]
 #leansrc("Metalogic.WeakCanonical", "one_class")
 #leansrc("Metalogic.WeakCanonical", "VeryGood")
 #leansrc("Metalogic.WeakCanonical", "good")
 #leansrc("Metalogic.WeakCanonical", "limitdom_is_good")
 #leansrc("Metalogic.WeakCanonical", "truth_transfer")
-#footnote[The decomposition technique is Doets's @doets1987; the step-by-step k-equivalence argument for Until/Since is Reynolds's @reynolds1992, as developed in Gabbay, Hodkinson, and Reynolds @gabbayhodkinsonreynolds1994.]
 
 Transfer is sound because $k$-equivalence preserves the truth of every formula of quantifier depth
 at most $k$, and the refuted sentence has a fixed depth. The resulting countermodel over $ZZ$ is
@@ -978,9 +965,8 @@ not arise.
 #leansrc("Metalogic.WeakCanonical", "kEquiv_shuffle_shuffleReal")
 #leansrc("Metalogic.WeakCanonical", "epsDense_isContempEquiv")
 #leansrc("Metalogic.WeakCanonical", "orderIsoRealOfDedekindDenseSeparable")
-#footnote[The basis is Prior-U and Sep, with CO derived.]
 
-The engine is `completeness_dedekind_engine`. Its consequence form,
+The engine is `completeness_dedekind_engine`.#footnote[The basis is Prior-U and Sep, with CO derived.] Its consequence form,
 `consequence_completeness_dedekind`, is what the development calls *consequence completeness*
 and not strong completeness: a derivation's context is a finite list, so a finite-context
 consequence result is inter-derivable with weak completeness by the deduction theorem, and the
@@ -1078,9 +1064,9 @@ The response available inside the framework is to relax totality.
 #definition("Irregular World")[
   An *irregular world* over a frame $#taskframe$ is a function $tau : X arrow.r #worldstate$ where
   $X subset.neq D$ is a *coset domain* --- a translate $G + c$ of a nontrivial subgroup
-  $G lt.eq #Dur$ --- and $tau(x) arrow.r.double.long_(y-x) tau(y)$ for all $x, y in X$. Consequence
+  $G lt.eq #Dur$ --- and $tau(x) arrow.r.double.long_(y-x) tau(y)$ for all $x, y in X$.#footnote[Cosets and not subgroups: a family of translates is closed under ambient translation and so preserves MF and the perpetuity principles, which the subgroup formulation loses.] Consequence
   is then defined over the irregular and the possible worlds alike.
-]#footnote[Cosets and not subgroups: a family of translates is closed under ambient translation and so preserves MF and the perpetuity principles, which the subgroup formulation loses.]
+]
 
 #proposition("The price of irregular worlds")[
   Under the broadened consequence relation:
@@ -1094,10 +1080,10 @@ The response available inside the framework is to relax totality.
       broadened consequence relation, but is *displaced* from its standing as the strongest
       objective modality.
   ]
-]#footnote[Parts (i)--(iii) are the paper's own; its verdict there is that "these considerations recommend possible over irregular worlds." Part (iv) is this document's addition, grounded in the Strongest Objective Normal Modal Operator definition and the Existence theorem below together with the observation that broadening the consequence relation changes which operator is $prec.eq$-least; the paper's sentence stating it is commented out in the live source and is not cited as paper text.]
+]
 
 Parts (i)--(iii) are severe: they cost the three theorems that make the frame-class hierarchy
-mean anything. What is bought is contingency in the *structure and cardinality* of the time
+mean anything.#footnote[Parts (i)--(iii) are the paper's own; its verdict there is that "these considerations recommend possible over irregular worlds." Part (iv) is this document's addition, grounded in the Strongest Objective Normal Modal Operator definition and the Existence theorem below together with the observation that broadening the consequence relation changes which operator is $prec.eq$-least; the paper's sentence stating it is commented out in the live source and is not cited as paper text.] What is bought is contingency in the *structure and cardinality* of the time
 series, and not composition contingency of the catastrophe or proper-initial-segment kind, since a
 difference-closed domain is a subgroup or a translate of one and so is unbounded in both
 directions either way.
@@ -1124,13 +1110,13 @@ necessities @bacon2022necessities, and not defined outright.#footnote[*Predicati
   them.
 ]
 
-#theorem("Existence")[$op("Str")^O_L (B m)$: the meet operator is a strongest objective normal modal operator, so $L$ contains one.]#footnote[Clause (1) is the second conjunct of O-Meet, clause (2) follows from the first, and T, N, K, and necessitation-closure follow by detaching O-Fac, O-Ax, and O-Nec at $B m$.]
+#theorem("Existence")[$op("Str")^O_L (B m)$: the meet operator is a strongest objective normal modal operator, so $L$ contains one.#footnote[Clause (1) is the second conjunct of O-Meet, clause (2) follows from the first, and T, N, K, and necessitation-closure follow by detaching O-Fac, O-Ax, and O-Nec at $B m$.]]
 
 #theorem("Uniqueness and logic")[
   Any two strongest objective normal modal operators are provably equivalent. If
   $op("Str")^O_L (Q)$ then $Q$ satisfies S4 and B. In particular, under the hypothesis
-  $op("Str")^O_L (square.stroked)$, the logic of $square.stroked$ is S5.
-]#footnote[Under the hypothesis, the uniqueness lemma gives $tack.r forall p(square.stroked p arrow.l.r B m p)$, and factivity and necessitation follow by detaching O-Fac and O-Nec.]
+  $op("Str")^O_L (square.stroked)$, the logic of $square.stroked$ is S5.#footnote[Under the hypothesis, the uniqueness lemma gives $tack.r forall p(square.stroked p arrow.l.r B m p)$, and factivity and necessitation follow by detaching O-Fac and O-Nec.]
+]
 
 Being S5 is not enough to identify $square.stroked$, and the paper supplies its own counterexample.
 
@@ -1140,8 +1126,8 @@ Being S5 is not enough to identify $square.stroked$, and the paper supplies its 
   possible world occupying the same world state as $tau$ at $x$ --- is S5, since its accessibility
   is the equivalence relation $sigma tilde.op_x tau$ iff $sigma(x) = tau(x)$. Yet on non-temporal
   sentences $phi.alt arrow.r "Stability" phi.alt$ is valid, so Stability collapses to the trivial
-  modality on that fragment.
-]#footnote[The general lesson drawn in the statement is this document's own; the paper's sentence stating it generally is commented out in the live source and is not cited as paper text.]
+  modality on that fragment.#footnote[The general lesson drawn in the statement is this document's own; the paper's sentence stating it generally is commented out in the live source and is not cited as paper text.]
+]
 
 It is $prec.eq$-leastness, and not S5-hood, that picks $square.stroked$ out.
 
@@ -1164,14 +1150,67 @@ It is $prec.eq$-leastness, and not S5-hood, that picks $square.stroked$ out.
 
 = Toward a Representation Theorem <sec:representation>
 
-A representation theorem here would characterize the class of task models abstractly: an
-algebraic or first-order description, together with constructions carrying each description to a
-task model and each task model to a description, inverse up to the appropriate equivalence. What
-makes this the live question is not tidiness. Strong completeness for the base and dense classes
-needs a model-existence theorem --- every consistent set satisfiable in a frame of the class ---
-and none of the countermodel engines of @sec:construction delivers one, since each refutes a
-single sentence. A representation theorem is the standard route to model existence, by way of
-compactness.#footnote[An earlier unpublished draft sketched a representation theorem and is superseded; its canonical order was hard-coded to $ZZ$ instead of parametric in $D$, and it asserted TM sound *and complete* over all task frames, which `cor:tm-completeness` refutes. No definition, statement, or proof step from it is used here.]
+"Representation theorem" has been asked to name four different things here, and the section below
+keeps conflating them. Distinguish:
+#items[
+  + *An algebraic representation*: an embedding $A arrow.r.hook op("Em")(A)$ of an abstract
+    algebra into the complex algebra of its own ultrafilter frame.
+  + *A duality*: a categorical dual equivalence $op("BAO")_tau tilde.equiv op("DGF")_tau^op("op")$
+    between algebras of a similarity type $tau$ and a class of topological (general) frames.
+  + *A task-frame representation*: a construction carrying every abstract algebra of the right
+    kind to a genuine task frame $#taskframe$ of @sec:system, and back, inverse up to isomorphism.
+  + *A first-order axiomatization*: a two-sorted first-order theory whose models correspond to
+    task models, so that the class of task models is captured by compactness in the usual sense.
+]
+What strong completeness for the base and dense classes needs is specifically the third: a
+model-existence theorem, every consistent set satisfiable in a frame of the class, and none of the
+countermodel engines of @sec:construction delivers one, since each refutes a single sentence. The
+first two are available, off the shelf, for BAOs of any similarity type; what is not available off
+the shelf is the passage from a duality to a *task-frame* representation, because a general frame
+is not the same structure as a task frame, and that gap is where the section's difficulty actually
+lives.#footnote[An earlier unpublished draft sketched a representation theorem and is superseded; its canonical order was hard-coded to $ZZ$ instead of parametric in $D$, and it asserted TM sound *and complete* over all task frames, which `cor:tm-completeness` refutes. No definition, statement, or proof step from it is used here.]
+
+The difficulty resolves into six rungs, of markedly different status.
+
+#figure(
+  table(
+    columns: 3, stroke: none, align: (left, left, left),
+    table.hline(),
+    table.header([*Rung*], [*Statement*], [*Status for TM*]),
+    table.hline(),
+    [1. Lindenbaum--Tarski algebra], [exists, Boolean, ultrafilters $tilde.equiv$ MCSs], [done in Lean, sorry-free],
+    [2. BAO for the full similarity type], [$\{square.stroked, G, H, until, since\}$, normal and additive], [not done -- no $G$ on the quotient, no normality/additivity lemma],
+    [3. Jónsson--Tarski], [$A arrow.r.hook op("Em")(A)$; canonical frame $tilde.equiv$ ultrafilter frame], [available off the shelf; the ultrafilter/MCS half is Lean-verified],
+    [4. Full duality], [$op("BAO")_tau tilde.equiv op("DGF")_tau^op("op")$, descriptive general frames], [available off the shelf],
+    [5. Dual Kripke reduct is a task frame], [*Compositionality*, *Seriality*, *Limit*, *Spherical*], [blocked at *Spherical*],
+    [6. Per-class refinement], [discrete / dense / Dedekind-complete], [elementary and reachable for dense; out of first-order reach for the discrete and complete classes],
+    table.hline(),
+  ),
+  caption: [The six-rung ladder toward a task-frame representation theorem for TM.],
+)
+
+#figure(
+  cetz.canvas({
+    import cetz.draw: *
+    let dy = 1.0
+    let r1 = (0, 4*dy)
+    let r2 = (0, 3*dy)
+    let r3 = (0, 2*dy)
+    let r4 = (0, 1*dy)
+    let r5 = (0, 0*dy)
+    let boxstyle(fill-c, stroke-c) = (fill: fill-c, stroke: (paint: stroke-c, thickness: 1pt), inset: 5pt, radius: 3pt, width: 9cm)
+    content(r1, box(..boxstyle(green.transparentize(85%), green.darken(20%)))[#align(center)[#text(size: 7pt)[Rung 1: Lindenbaum--Tarski algebra, ultrafilters $tilde.equiv$ MCSs -- *live, sorry-free*]]])
+    line(r1, r2, stroke: (paint: gray.darken(20%), thickness: 1pt), mark: (end: ">"))
+    content(r2, box(..boxstyle(red.transparentize(88%), red.darken(20%)))[#align(center)[#text(size: 7pt)[Rung 2: BAO for $\{square.stroked, G, H, until, since\}$ -- *not done: no $G$, no normality/additivity*]]])
+    line(r2, r3, stroke: (paint: gray.darken(20%), thickness: 1pt), mark: (end: ">"))
+    content(r3, box(..boxstyle(orange.transparentize(85%), orange.darken(20%)))[#align(center)[#text(size: 7pt)[Rung 3: Jónsson--Tarski embedding $A arrow.r.hook op("Em")(A)$ -- *off the shelf*]]])
+    line(r3, r4, stroke: (paint: gray.darken(20%), thickness: 1pt), mark: (end: ">"))
+    content(r4, box(..boxstyle(orange.transparentize(85%), orange.darken(20%)))[#align(center)[#text(size: 7pt)[Rung 4: duality $op("BAO")_tau tilde.equiv op("DGF")_tau^op("op")$ -- *off the shelf*]]])
+    line(r4, r5, stroke: (paint: gray.darken(20%), thickness: 1pt, dash: "dashed"), mark: (end: ">"))
+    content(r5, box(..boxstyle(red.transparentize(88%), red.darken(20%)))[#align(center)[#text(size: 7pt)[Rung 5: dual Kripke reduct is a *task frame* -- *blocked at* Spherical]]])
+  }),
+  caption: [Rungs 1--5 of the ladder. Solid arrows mark a step available now, in Lean or off the shelf; the dashed arrow marks the blocked step. Rung 6, the per-class refinement discussed in @sec:representation's closing subsection, is not pictured, since its status splits by frame class rather than forming a single further step.],
+)
 
 == The Algebraic Layer
 
@@ -1182,12 +1221,11 @@ One route has live, sorry-free groundwork.
   structure induced by the connectives, on which $#allpast$ and $#allfuture$ act as *interior
   operators*: each is monotone, deflationary on the relevant order, and idempotent, so each is
   determined by its algebra of fixed points. The ultrafilters of this algebra correspond
-  bijectively to the maximal consistent sets of @sec:construction.
+  bijectively to the maximal consistent sets of @sec:construction.#footnote[The flow-frame engine of @sec:construction lives alongside them in `FlowFrame.lean`. All five measure sorry-free.]
 ]
 #leansrc("Metalogic.Algebraic.LindenbaumQuotient", "LindenbaumAlg")
 #leansrc("Metalogic.Algebraic.InteriorOperators", "boxInterior")
 #leansrc("Metalogic.Algebraic.UltrafilterMCS", "mcsToUltrafilter")
-#footnote[The flow-frame engine of @sec:construction lives alongside them in `FlowFrame.lean`. All five measure sorry-free.]
 
 #remark[
   The correspondence is Stone's @stone1936, specialized: points of the dual space are ultrafilters
@@ -1197,53 +1235,11 @@ One route has live, sorry-free groundwork.
   where the frame axioms of @sec:system enter and where the difficulty is.
 ]
 
-Three candidate routes exist and are not equally positioned.
-
-#figure(
-  table(
-    columns: 3, stroke: none, align: (left, left, left),
-    table.hline(),
-    table.header([*Route*], [*State*], [*Blocking condition*]),
-    table.hline(),
-    [Lindenbaum--Tarski algebra, ultrafilters, interior operators], [live, sorry-free], [supplies one direction only],
-    [Jónsson--Tarski completion: complex algebra, ultrafilter frame, canonical embedding], [archived], [*Spherical* at infinite carriers],
-    [Shift sets and the two-sorted ultraproduct], [design only; no identifier exists], [feasibility not yet tested],
-    table.hline(),
-  ),
-  caption: [The three routes toward a representation theorem.],
-)
-
 The Jónsson--Tarski route @jonssontarski1951 @jonssontarski1952 --- the complex algebra
 $"Cm"(#taskframe)$ of a frame, the ultrafilter frame $"Uf"(A)$ of an abstract algebra, and the
 canonical embedding $eta(a) = {U : a in U}$ --- was moved out of the live tree into an archived
-subtree, and nothing under it is live. The obstruction on revival is stated below and is the same
-one the whole section turns on.
-
-#figure(
-  cetz.canvas({
-    import cetz.draw: *
-    let start = (-4.4, 0)
-    let algMid = (-1.3, 1.0)
-    let algEnd = (1.5, 1.0)
-    let jtEnd = (4.2, 1.0)
-    let ssMid = (-1.3, -1.0)
-    let ssEnd = (4.2, -1.0)
-    let boxstyle(fill-c, stroke-c) = (fill: fill-c, stroke: (paint: stroke-c, thickness: 1pt), inset: 4pt, radius: 3pt, width: 2.5cm)
-    content(start, box(fill: white, stroke: (paint: black, thickness: 1pt), inset: 4pt, radius: 3pt)[#text(size: 7pt)[task-model class]])
-    line(start, algMid, stroke: (paint: gray.darken(20%), thickness: 1pt), mark: (end: ">"))
-    content(algMid, box(..boxstyle(green.transparentize(85%), green.darken(20%)))[#align(center)[#text(size: 6.5pt)[Lindenbaum--Tarski algebra -- *live*]]])
-    line(algMid, algEnd, stroke: (paint: gray.darken(20%), thickness: 1pt), mark: (end: ">"))
-    content(algEnd, box(..boxstyle(green.transparentize(85%), green.darken(20%)))[#align(center)[#text(size: 6.5pt)[ultrafilters, interior operators -- *live*]]])
-    line(algEnd, jtEnd, stroke: (paint: gray.darken(20%), thickness: 1pt, dash: "dashed"), mark: (end: ">"))
-    content(jtEnd, box(..boxstyle(red.transparentize(88%), red.darken(20%)))[#align(center)[#text(size: 6.5pt)[Jönsson--Tarski duality -- *archived*]]])
-    line(start, ssMid, stroke: (paint: gray.darken(20%), thickness: 1pt), mark: (end: ">"))
-    content(ssMid, box(..boxstyle(orange.transparentize(85%), orange.darken(20%)))[#align(center)[#text(size: 6.5pt)[shift-set design -- *target*]]])
-    line(ssMid, ssEnd, stroke: (paint: gray.darken(20%), thickness: 1pt, dash: "dashed"), mark: (end: ">"))
-    content(ssEnd, box(..boxstyle(orange.transparentize(85%), orange.darken(20%)))[#align(center)[#text(size: 6.5pt)[ultraproduct pipeline -- *not started*]]])
-  }),
-  caption: [Both routes begin in live, sorry-free work and end in a target. Solid arrows mark completed steps; dashed arrows mark the gap.],
-)
-
+subtree, and nothing under it is live. What it leaves undone, and the diagnosis of the block at
+rung 5, are taken up below.
 
 == The Shift-Set Target
 
