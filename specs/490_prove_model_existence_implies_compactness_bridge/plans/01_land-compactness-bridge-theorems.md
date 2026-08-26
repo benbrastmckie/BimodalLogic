@@ -1,7 +1,7 @@
 # Implementation Plan: Model Existence -> Compactness Bridge
 
 - **Task**: 490 - prove_model_existence_implies_compactness_bridge
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 2 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/490_prove_model_existence_implies_compactness_bridge/reports/01_model-existence-compactness-bridge.md`
@@ -252,25 +252,28 @@ as a false positive, not edited.
 
 ---
 
-### Phase 3: Full acceptance gate [NOT STARTED]
+### Phase 3: Full acceptance gate [COMPLETED]
 
 **Goal**: Machine-confirm every acceptance criterion in the task brief against the whole build.
 
 **Tasks**:
-- [ ] Run `lake build` from a clean-enough state and confirm it exits green.
-- [ ] Diff the build's warning set against the pre-task baseline; confirm no new warnings were
+- [x] Run `lake build` from a clean-enough state and confirm it exits green.
+- [x] Diff the build's warning set against the pre-task baseline; confirm no new warnings were
       introduced by either phase.
-- [ ] Confirm `#print axioms compactBase_of_modelExistence` and
+- [x] Confirm `#print axioms compactBase_of_modelExistence` and
       `#print axioms compactDense_of_modelExistenceDense` each report exactly
       `[propext, Classical.choice, Quot.sound]` — no `sorryAx`, no new axiom.
-- [ ] Confirm every pre-existing `#print axioms` line in `StrongCompleteness.lean` still reports
+- [x] Confirm every pre-existing `#print axioms` line in `StrongCompleteness.lean` still reports
       its original axiom set (guards against an accidental regression through a shared lemma).
-- [ ] `grep -rn "sorry" FormalSystem/Metalogic/StrongCompleteness.lean` — confirm no `sorry`
+- [x] `grep -rn "sorry" FormalSystem/Metalogic/StrongCompleteness.lean` — confirm no `sorry`
       anywhere in the file.
-- [ ] Confirm the non-goals held: no new module, no import change, no lakefile change, no
+- [x] Confirm the non-goals held: no new module, no import change, no lakefile change, no
       `StrongCompletenessBase`-from-`ModelExistenceBase` corollary added
       (`git diff --stat` against the task's base commit names only the three files from Phases 1-2).
-- [ ] Commit the final green state.
+      *(deviation: altered — the base-commit `git diff --stat` was scoped by pathspec to the three
+      files rather than run bare, because three concurrent sibling dispatches committed to other
+      paths in the same window; the three-file assertion is confirmed within that scope.)*
+- [x] Commit the final green state.
 
 **Timing**: 0.5 hours
 
@@ -294,16 +297,16 @@ as a false positive, not edited.
 
 ## Testing & Validation
 
-- [ ] `lake build` exits green.
-- [ ] `compactBase_of_modelExistence` and `compactDense_of_modelExistenceDense` both exist,
+- [x] `lake build` exits green.
+- [x] `compactBase_of_modelExistence` and `compactDense_of_modelExistenceDense` both exist,
       both sorry-free, with the statement types `ModelExistenceBase → CompactBase` and
       `ModelExistenceDense → CompactDense` respectively.
-- [ ] `#print axioms` for each of the two new theorems reports exactly
+- [x] `#print axioms` for each of the two new theorems reports exactly
       `[propext, Classical.choice, Quot.sound]`.
-- [ ] No pre-existing `#print axioms` result in `StrongCompleteness.lean` changed.
-- [ ] No new build warnings (specifically: no `push_neg` deprecation warning from the new proofs).
-- [ ] `grep -rn "future work and is not proved here" --include=*.lean FormalSystem/` returns nothing.
-- [ ] `SetConsequence.lean`'s "No compactness result is proved or refuted here" claim is unmodified
+- [x] No pre-existing `#print axioms` result in `StrongCompleteness.lean` changed.
+- [x] No new build warnings (specifically: no `push_neg` deprecation warning from the new proofs).
+- [x] `grep -rn "future work and is not proved here" --include=*.lean FormalSystem/` returns nothing.
+- [x] `SetConsequence.lean`'s "No compactness result is proved or refuted here" claim is unmodified
       and still true.
 
 ## Artifacts & Outputs
