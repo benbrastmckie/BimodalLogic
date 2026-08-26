@@ -243,6 +243,18 @@
       "reason": "Task 125: survey of the BAO/representation lineage — partial substitute for the still-missing Goldblatt 1989 \"Varieties of complex algebras\". Also useful background on how the Jonsson-Tarski result was received and reformulated.",
       "conversion_note": "Converted via the FALLBACK tier only (LITERATURE_CONVERTER=pymupdf); the default pymupdf4llm tier was rejected by the quality gate (sentence-boundary-glue: 6 vs threshold 3). Verified after the fact: word ratio 0.979 against pdftotext over 98 pages, mathematical symbols and footnote markers preserved, and every apparent sentence-fusion hit traced to the running head \"Robert Goldblatt\" or a URL rather than genuine mid-sentence corruption.",
       "fidelity": "PROSE and SYMBOLS: good, spot-checked by direct read. Minor spacing artifacts around some operators (e.g. \"∨Oβ\", \"∈μ ∈Ω\") — harmless for reading, but do not copy formulas verbatim into Lean without checking the PDF."
+    },
+    {
+      "doc_id": "goldblatt_1989",
+      "reason": "Task 502: primary source for the algebraic representation front -- which varieties of BAOs are complex algebras, and canonicity. Sections 3.1 (canonical structures), 3.5 (canonical varieties), 3.6/3.8 (elementary case, first-order definability) and 4.2 (preservation by bounded morphisms) bear on the STSA axiomatization (task 497) and the ultrafilter-frame Spherical obligation (task 499). Section 4.3 (disjoint unions) is a cross-front pointer for the TM-completeness two-fibre countermodel (task 495).",
+      "citation_rule": "Cite by structural label PLUS printed journal page, e.g. \"Thm 3.5.2 (p.208)\". PDF page = journal page - 172. NEVER quote the stored .md and never cite md:NN line numbers -- the .md is an OCR extract of a scan and its wording is not the paper's wording.",
+      "hazard": "OPEN, NOT RESOLVED. The stored .md is a pdftotext extraction of a 2001 Acrobat 3.0 Capture SCAN. Verified by direct inspection at ingest: math-heavy pages yield mangled symbols ({9=, 4s: / 0% / $m), dropped and reordered lines, corrupted headings (\"3.7. Complete varieties\" -> \"3.7. Complete v&et&s\"), and the title page renders New Zealand as \"New 2Miand\". 295 of 2960 lines carry 3+ consecutive symbol runs. CRITICAL: literature-fidelity-audit.sh stamps this document verified_conversion at word_ratio 1.0162 -- that ratio compares the .md against pdftotext's OWN output, i.e. the extraction against itself, so it measures TRUNCATION of a conversion and is structurally incapable of detecting OCR GARBLING of a scan. The stamp was therefore deliberately NOT written (--write was not run). This is the same false-certification failure mode recorded under rabinovich_2014, whose own record notes the stamp must only ever be restored on a manual spot-check, never on the automated word-ratio alone.",
+      "known_corrections": [
+        "Read the PDF page images for every axiom, definition, theorem statement and equation. The .md is a locator only.",
+        "The paper's own table-of-contents page-number column is itself partly OCR-garbled (3.8 shows as \"3Z3\", section 4 as \"m\"); verify any section offset against the page image before relying on it."
+      ],
+      "added": "2026-08-26",
+      "source": "manual"
     }
   ]
 }
