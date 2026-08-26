@@ -1,7 +1,7 @@
 # Implementation Plan: Model Existence -> Compactness Bridge
 
 - **Task**: 490 - prove_model_existence_implies_compactness_bridge
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 2 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/490_prove_model_existence_implies_compactness_bridge/reports/01_model-existence-compactness-bridge.md`
@@ -108,36 +108,36 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Land both bridge theorems and their axiom audit [NOT STARTED]
+### Phase 1: Land both bridge theorems and their axiom audit [COMPLETED]
 
 **Goal**: Both theorems exist in `FormalSystem/Metalogic/StrongCompleteness.lean`, are sorry-free,
 compile clean, and are covered by `#print axioms`.
 
 **Tasks**:
-- [ ] Confirm the two target names are collision-free in the tree:
+- [x] Confirm the two target names are collision-free in the tree:
       `grep -rn "compactBase_of_modelExistence\|compactDense_of_modelExistenceDense" --include=*.lean .`
       must return nothing before any edit.
-- [ ] Locate the insertion point by symbol, not line number: immediately after the closing line of
+- [x] Locate the insertion point by symbol, not line number: immediately after the closing line of
       `strongCompletenessDense_of_compact`, inside the existing section heading
       `/-! ## Strong completeness for `FrameClass.Base` and `FrameClass.Dense`, modulo compactness -/`,
       and before the next section heading
       `/-! ## Consequence completeness for `FrameClass.Dedekind` -/`.
-- [ ] Insert a subsection heading `/-! ### Model existence implies compactness -/` at that point.
-- [ ] Transcribe `compactBase_of_modelExistence` **verbatim** from the research report's
+- [x] Insert a subsection heading `/-! ### Model existence implies compactness -/` at that point.
+- [x] Transcribe `compactBase_of_modelExistence` **verbatim** from the research report's
       "Verified Deliverables" section, with a docstring recording (a) the import-cycle reason it
       lives here rather than in `SetConsequence.lean` — mirroring the paragraph already in
       `strongCompletenessBase_of_compact`'s docstring — and (b) that `ModelExistenceBase` remains
       an open obligation, so this is a reduction and not a terminus.
-- [ ] Build and confirm green; this is green sub-step 1 — commit it.
-- [ ] Transcribe `compactDense_of_modelExistenceDense` **verbatim** from the report, with the
+- [x] Build and confirm green; this is green sub-step 1 — commit it.
+- [x] Transcribe `compactDense_of_modelExistenceDense` **verbatim** from the report, with the
       parallel docstring pointing at its Dense vocabulary.
-- [ ] Build and confirm green; this is green sub-step 2 — commit it.
-- [ ] Add `#print axioms compactBase_of_modelExistence` and
+- [x] Build and confirm green; this is green sub-step 2 — commit it.
+- [x] Add `#print axioms compactBase_of_modelExistence` and
       `#print axioms compactDense_of_modelExistenceDense` to the existing `#print axioms` block at
       the end of the file (the block that currently begins with
       `#print axioms strongCompletenessBase_of_compact`). Do **not** touch the surrounding prose
       paragraph in this phase — that is Phase 2's territory.
-- [ ] Capture the two `#print axioms` outputs and confirm each reads exactly
+- [x] Capture the two `#print axioms` outputs and confirm each reads exactly
       `[propext, Classical.choice, Quot.sound]`; commit as green sub-step 3.
 
 **Timing**: 0.75 hours
