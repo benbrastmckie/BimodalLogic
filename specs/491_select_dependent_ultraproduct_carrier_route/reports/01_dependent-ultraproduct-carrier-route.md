@@ -282,3 +282,42 @@ Named so the plan sizes them, not because this report attempts them:
 No `sorry` and no new axiom appears anywhere in the prototype, and none is required by the route
 it selects. The three obligations listed in §5 are *unstarted work with known routes*, not gaps
 being deferred: each names the Mathlib or tree anchor that discharges it.
+
+---
+
+## 9. Decision record
+
+**Selected**: route (a) — the duration carrier is the quotient of the Pi group `(∀ i, D i)` by
+its eventually-zero `AddSubgroup`, with `AddCommGroup` inherited from
+`QuotientAddGroup.Quotient.addCommGroup` and the remaining structure (`LE`, `LinearOrder`,
+`IsOrderedAddMonoid`, `Nontrivial`, and `DenselyOrdered` on the Dense branch) supplied by hand;
+the history carrier is the parallel `Quotient` of `(∀ i, Ω i)` by eventual equality, with the
+shift action lifted through both.
+
+**Rejected**: route (b) — normalizing the carrier family to a single carrier before quotienting.
+The only normalization machinery in the tree (`Semantics/DurationClassification.lean`'s `intIso`,
+`Semantics/IntTransfer.lean`'s `TaskFrame.map`) is Discrete-only, and
+`Metalogic/DiscreteNonCompactness.lean`'s `discrete_consequence_not_compact` refutes compactness
+exactly at Discrete (§3).
+
+**Where the evidence now lives**: `Tests/BimodalTest/Semantics/DependentUltraproductProbe.lean`,
+imported from `Tests/BimodalTest.lean` and therefore compiled by `lake build BimodalTest`. It
+carries the construction verbatim from
+`specs/491_select_dependent_ultraproduct_carrier_route/prototype/DependentUltraproduct.lean`
+(the prototype is retained here as the original artifact), now under the library's own
+`leanOptions` including `autoImplicit := false`. Its `shiftSetOnUD` is the live check that
+`ShiftSet (UD φ D)` elaborates — every instance binder resolves and the quotient lands in `Type`,
+which is R3 (§2.4). That check is now performed by the build rather than asserted in prose, so a
+change to `Semantics/ShiftSet.lean` or a Mathlib bump that invalidates the route shows up as a
+failing build.
+
+**Explicitly not done here**, restating §5 — these remain unstarted and belong to the
+ultraproduct-and-Łoś successor:
+
+1. the ultrafilter on the index type `{L : List Formula // ∀ ψ ∈ L, ψ ∈ Γ}`;
+2. `ShiftSet.sep` on the ultraproduct (the probe's `shiftSetOnUD` takes it as the hypothesis
+   `hsep`);
+3. `carrier_nonempty` and the valuation `A` (likewise hypotheses of `shiftSetOnUD`).
+
+The Łoś lemma itself is out of scope for this task by instruction and no clause of it was
+attempted.

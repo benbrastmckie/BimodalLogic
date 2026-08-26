@@ -27,7 +27,7 @@ next_project_number: 503
 
 ### Algebraic Representation
 
-496 [PLANNED] — RESEARCH TASK, UNBLOCKED TODAY. Decide whether the algebraic stac
+496 [IMPLEMENTING] — RESEARCH TASK, UNBLOCKED TODAY. Decide whether the algebraic stac
   └─ 497 [NOT STARTED] — Bring the Shift-closed Tense S5 Algebra class into live code and 
     └─ 498 [NOT STARTED] — Phase 1 of the Jonsson-Tarski representation: the complex algebra
       └─ 125 [NOT STARTED] — CAPSTONE of the algebraic representation front. Prove the Jonsson
@@ -83,15 +83,15 @@ next_project_number: 503
 
 ### Metalogic
 
-489 [PLANNED] — Prove soundness for the BaseLanguage (BL) proof system -- the pap
+489 [IMPLEMENTING] — Prove soundness for the BaseLanguage (BL) proof system -- the pap
   └─ 495 [NOT STARTED] — RESEARCH TASK, DELIBERATELY AGNOSTIC ABOUT THE VERDICT. Determine
 
 ### Strong Completeness
 
-490 [PLANNED] — ROUTINE, UNBLOCKED TODAY. Close a silent second gap on the compac
+490 [IMPLEMENTING] — ROUTINE, UNBLOCKED TODAY. Close a silent second gap on the compac
   └─ 493 [NOT STARTED] — Assemble the compactness result and collect strong completeness f
   └─ 494 [NOT STARTED] — UNBLOCKED TODAY, INDEPENDENT of the ultraproduct chain. Settle th
-491 [PLANNED] — RESEARCH TASK, UNBLOCKED TODAY. Decide how to build the ultraprod
+491 [IMPLEMENTING] — RESEARCH TASK, UNBLOCKED TODAY. Decide how to build the ultraprod
   └─ 492 [NOT STARTED] — HARD. Build the ultraproduct of shift sets and prove Los for Trut
     └─ 493 [NOT STARTED] — Assemble the compactness result and collect strong completeness f (see above)
 
@@ -185,7 +185,7 @@ DELIVERABLE: a grounding report answering, with citations to specific pages read
 
 ### 496. Research algebraic stack build graph wiring
 - **Effort**: 6-10 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: algebraic-representation
 - **Dependencies**: None
@@ -236,13 +236,13 @@ DELIVERABLE: a grounding report answering, with citations to specific pages read
 - **Topic**: strong_completeness
 - **Dependencies**: Task 491
 
-**Description**: HARD. Build the ultraproduct of shift sets and prove Los for TruthAt. This is steps S2 and S3 of the route task 424 authorized. S2: construct the ultraproduct over an ultrafilter on the index type {L : List Formula // forall psi in L, psi in Gamma}, using the carrier route selected by the preceding research task -- do not re-litigate that choice here. S3: the Los lemma for TruthAt, by induction on Formula, six cases (atom, bot, imp, box, untl, snce). Five are mechanical. The box case is the real content and carries task 424's risk R2: it needs a choice-function argument for the forward direction, because box quantifies over all total world-histories (TruthAt, Semantics/Truth.lean:164) rather than over a pointwise-definable family. ACCEPTANCE: sorry-free, lake build green, #print axioms recorded for the Los statement (Classical.choice is expected and acceptable here; sorryAx is not). SEQUENCING NOTE: ShiftSet.lean's forward_repr/reverse_repr is the representation this builds on, and it is also the representation the algebraic route should reuse -- see the reconciliation task, which should not be allowed to fork a second, parallel representation.
+**Description**: HARD. Build the ultraproduct of shift sets and prove Los for TruthAt. This is steps S2 and S3 of the route task 424 authorized. S2: construct the ultraproduct over an ultrafilter on the index type {L : List Formula // forall psi in L, psi in Gamma}, using the carrier route selected by the preceding research task -- do not re-litigate that choice here. S3: the Los lemma for TruthAt, by induction on Formula, six cases (atom, bot, imp, box, untl, snce). Five are mechanical. The box case is the real content and carries task 424's risk R2: it needs a choice-function argument for the forward direction, because box quantifies over all total world-histories (TruthAt, Semantics/Truth.lean:164) rather than over a pointwise-definable family. ACCEPTANCE: sorry-free, lake build green, #print axioms recorded for the Los statement (Classical.choice is expected and acceptable here; sorryAx is not). SEQUENCING NOTE: ShiftSet.lean's forward_repr/reverse_repr is the representation this builds on, and it is also the representation the algebraic route should reuse -- see the reconciliation task, which should not be allowed to fork a second, parallel representation. CARRIER ROUTE (SETTLED -- do not re-litigate): route (a), a bespoke quotient of the Pi group (forall i, D i) by its eventually-zero AddSubgroup, with AddCommGroup inherited free from QuotientAddGroup.Quotient.addCommGroup and only LE, LinearOrder, IsOrderedAddMonoid, Nontrivial (plus DenselyOrdered on the Dense branch) supplied by hand -- 5 instances, 6 on Dense, not the ~15 the design doc estimated. The history carrier is the parallel Quotient of (forall i, Omega i) by eventual equality, with the shift action lifted through both and sh_zero/sh_add discharged. Route (b), carrier normalization first, is a NO-GO: the only normalization machinery in the tree (DurationClassification.lean intIso, IntTransfer.lean TaskFrame.map) is Discrete-only, and DiscreteNonCompactness.lean discrete_consequence_not_compact refutes compactness exactly at Discrete. Do NOT import Mathlib.Order.Filter.Germ or FilterProduct: Filter.Product carries only coeTC and Inhabited, and Mathlib.Order.Filter.Ultrafilter.Basic (already built) supplies everything the route needs. EVIDENCE, COMPILED AND UNDER A BUILD TARGET: Tests/BimodalTest/Semantics/DependentUltraproductProbe.lean, imported from Tests/BimodalTest.lean, carries the whole carrier construction sorry-free with axiom profile [propext, Classical.choice, Quot.sound]; its shiftSetOnUD is the live check that ShiftSet (UD phi D) elaborates and that the quotient lands in Type. FULL REASONING: specs/491_select_dependent_ultraproduct_carrier_route/reports/01_dependent-ultraproduct-carrier-route.md (section 9 is the decision record, section 5 lists what S2 still owes). The probe deliberately does NOT supply: the ultrafilter on the index type, ShiftSet.sep, carrier_nonempty, or the valuation A -- shiftSetOnUD takes the last three as hypotheses. Those are this task's work.
 
 ---
 
 ### 491. Select dependent ultraproduct carrier route
 - **Effort**: 6-10 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: strong_completeness
 - **Dependencies**: None
@@ -255,7 +255,7 @@ DELIVERABLE: a grounding report answering, with citations to specific pages read
 
 ### 490. Prove model existence implies compactness bridge
 - **Effort**: 3-5 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: strong_completeness
 - **Dependencies**: None
@@ -267,7 +267,7 @@ DELIVERABLE: a grounding report answering, with citations to specific pages read
 ---
 
 ### 489. Prove baselanguage soundness base and extensions
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: None

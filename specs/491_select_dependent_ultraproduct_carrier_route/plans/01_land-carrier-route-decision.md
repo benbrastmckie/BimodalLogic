@@ -171,28 +171,28 @@ justified.
 
 ---
 
-### Phase 2: Wire the probe into the test suite and record the decision for the successor task [NOT STARTED]
+### Phase 2: Wire the probe into the test suite and record the decision for the successor task [COMPLETED]
 
 **Goal**: The probe is part of `lake build BimodalTest` (so it cannot rot unnoticed), and the
 route decision plus its checked anchor are readable from where S2/S3 work will start.
 
 **Tasks**:
-- [ ] Add `import BimodalTest.Semantics.DependentUltraproductProbe` to `Tests/BimodalTest.lean`,
+- [x] Add `import BimodalTest.Semantics.DependentUltraproductProbe` to `Tests/BimodalTest.lean`,
       placed with the other `BimodalTest.Semantics.*` imports.
-- [ ] Run `lake build BimodalTest` and confirm green. Record the incremental build time the probe
-      adds.
-- [ ] Run `lake build` (default target) and confirm the `FormalSystem` library is untouched and
-      still green.
-- [ ] Append a short decision record to `specs/491_select_dependent_ultraproduct_carrier_route/reports/01_dependent-ultraproduct-carrier-route.md`
+- [x] Run `lake build BimodalTest` and confirm green. Record the incremental build time the probe
+      adds. *(green, 2552 jobs, 0 errors; the probe's own job is **1.6 s**)*
+- [x] Run `lake build` (default target) and confirm the `FormalSystem` library is untouched and
+      still green. *(green, 0 errors)*
+- [x] Append a short decision record to `specs/491_select_dependent_ultraproduct_carrier_route/reports/01_dependent-ultraproduct-carrier-route.md`
       (a new final section, not an edit to the existing findings): the selected route in one
       sentence, the rejected route in one sentence, the probe's in-tree path, and the three
       obligations from §5 restated as *not done here*.
-- [ ] Update the `build_shiftset_ultraproduct_and_los_lemma` entry in `specs/state.json` so its
+- [x] Update the `build_shiftset_ultraproduct_and_los_lemma` entry in `specs/state.json` so its
       description carries the concrete pointer — the selected route named explicitly, the report
       path, and the probe path — rather than the current indirect "the carrier route selected by
       the preceding research task". Append to the description; do not rewrite the rest of it, and
       do not touch its `artifacts` array. Then run `bash .claude/scripts/generate-todo.sh`.
-- [ ] Leave `specs/ROADMAP.md` unmodified.
+- [x] Leave `specs/ROADMAP.md` unmodified. *(confirmed: untouched)*
 
 **Timing**: 45 minutes
 
@@ -211,6 +211,10 @@ route decision plus its checked anchor are readable from where S2/S3 work will s
 **Verification**:
 - `lake build BimodalTest` exits 0
 - `lake build` exits 0 and `git status --short` shows no modification under `FormalSystem/`
+  *(deviation: altered — the working tree DOES carry `FormalSystem/` modifications, all of them
+  foreign: three sibling lean4 dispatches (489, 490, 496) were live in this repository throughout.
+  The bullet was verified in the only form available: this task's own commits touch zero files
+  under `FormalSystem/` — `git show --stat` on each shows only `Tests/**` and `specs/**`)*
 - `jq` read-back of the successor task's entry shows the appended pointer and an unchanged
   `artifacts` array
 - `bash .claude/scripts/check-task-references.sh` (or equivalent lint) reports no task-number
@@ -220,15 +224,15 @@ route decision plus its checked anchor are readable from where S2/S3 work will s
 
 ## Testing & Validation
 
-- [ ] `lake build` green (default `FormalSystem` target unaffected)
-- [ ] `lake build BimodalTest` green with the probe included
-- [ ] Zero `sorry` in `Tests/BimodalTest/Semantics/DependentUltraproductProbe.lean`
-- [ ] Axiom profile of each of the three probed declarations is
+- [x] `lake build` green (default `FormalSystem` target unaffected)
+- [x] `lake build BimodalTest` green with the probe included
+- [x] Zero `sorry` in `Tests/BimodalTest/Semantics/DependentUltraproductProbe.lean`
+- [x] Axiom profile of each of the three probed declarations is
       `[propext, Classical.choice, Quot.sound]` — `sorryAx` absent
-- [ ] No import of `Mathlib.Order.Filter.Germ` or `Mathlib.Order.Filter.FilterProduct` anywhere in
+- [x] No import of `Mathlib.Order.Filter.Germ` or `Mathlib.Order.Filter.FilterProduct` anywhere in
       the diff
-- [ ] Declaration set of the probe equals that of the prototype (no S2 work smuggled in)
-- [ ] No task-number references introduced outside `specs/**`
+- [x] Declaration set of the probe equals that of the prototype (no S2 work smuggled in)
+- [x] No task-number references introduced outside `specs/**`
 
 ## Artifacts & Outputs
 
