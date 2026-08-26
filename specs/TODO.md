@@ -11,16 +11,17 @@ next_project_number: 503
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,193,257,298,433,461,463,476,483,489,490,491,494,496 | -- | algebraic-representation, automation, dataset-enhancement, ... |
-| 2 | 178,231,282,296,464,481,492,495,502 | 193,298,461,463,483,489,491 | algebraic-representation, dataset-enhancement, decidability, ... |
-| 3 | 219,465,493,497 | 231,464,490,492,496,502 | algebraic-representation, dataset-enhancement, decidability, ... |
-| 4 | 428,498,499,500 | 433,465,492,497 | algebraic-representation, decidability |
-| 5 | 125,429 | 428,498,499 | algebraic-representation, decidability |
-| 6 | 410,501 | 125,429 | algebraic-representation, decidability |
-| 7 | 411 | 410 | decidability |
-| 8 | 430 | 411 | decidability |
-| 9 | 177,412 | 193,430 | decidability, formula-refactor |
-| 10 | 482 | 412 | decidability |
+| 1 | 127,128,193,257,298,433,461,476,483,489,490,491,496 | -- | algebraic-representation, automation, dataset-enhancement, ... |
+| 2 | 178,231,282,296,463,481,492,494,495,502 | 193,298,433,461,483,489,490,491 | algebraic-representation, dataset-enhancement, decidability, ... |
+| 3 | 219,464,493,497 | 231,463,490,492,496,502 | algebraic-representation, dataset-enhancement, decidability, ... |
+| 4 | 465,498,499,500 | 464,492,497 | algebraic-representation, decidability |
+| 5 | 125,428 | 465,498,499 | algebraic-representation, decidability |
+| 6 | 429,501 | 125,428 | algebraic-representation, decidability |
+| 7 | 410 | 429 | decidability |
+| 8 | 411 | 410 | decidability |
+| 9 | 430 | 411 | decidability |
+| 10 | 177,412 | 193,430 | decidability, formula-refactor |
+| 11 | 482 | 412 | decidability |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -53,17 +54,16 @@ next_project_number: 503
 ### Decidability
 
 433 [PARTIAL] — Discharge `PostBlockingSettles fc`, defined at FormalSystem/Metal
-  └─ 428 [BLOCKED] — Engine totality at a quantified branch budget. Owns obstruction O
-    └─ 429 [NOT STARTED] — Repair the truth-lemma side conditions. Owns obstructions O2 and 
-      └─ 410 [PLANNED] — Track B part 1 for the TM tableau decidability program (parent: t
-        └─ 411 [NOT STARTED] — Track B part 2 for the TM tableau decidability program (parent: t
-          └─ 430 [NOT STARTED] — The semantic lift and the Track A assembly. Owns obstruction O4 o
-            └─ 412 [NOT STARTED] — Track B finish for the TM tableau decidability program (parent: t
-              └─ 482 [NOT STARTED] — CLASSIFICATION: OPEN MATHEMATICS, multi-month. This MUST NOT be r
-463 [NOT STARTED] — Decide `PostBlockingSettlesRun fc (mintAwareFuelAt U.card Tmax mi
-  └─ 464 [NOT STARTED] — Design and land `gapPotential`, the density coordinate of the ter
-    └─ 465 [NOT STARTED] — Complete the terminus restatement family at the repaired residual
-      └─ 428 [BLOCKED] — Engine totality at a quantified branch budget. Owns obstruction O (see above)
+  └─ 463 [NOT STARTED] — Decide `PostBlockingSettlesRun fc (mintAwareFuelAt U.card Tmax mi
+    └─ 464 [NOT STARTED] — Design and land `gapPotential`, the density coordinate of the ter
+      └─ 465 [NOT STARTED] — Complete the terminus restatement family at the repaired residual
+        └─ 428 [BLOCKED] — Engine totality at a quantified branch budget. Owns obstruction O
+          └─ 429 [NOT STARTED] — Repair the truth-lemma side conditions. Owns obstructions O2 and 
+            └─ 410 [PLANNED] — Track B part 1 for the TM tableau decidability program (parent: t
+              └─ 411 [NOT STARTED] — Track B part 2 for the TM tableau decidability program (parent: t
+                └─ 430 [NOT STARTED] — The semantic lift and the Track A assembly. Owns obstruction O4 o
+                  └─ 412 [NOT STARTED] — Track B finish for the TM tableau decidability program (parent: t
+                    └─ 482 [NOT STARTED] — CLASSIFICATION: OPEN MATHEMATICS, multi-month. This MUST NOT be r
 476 [NOT STARTED] — THE BOX-FAITHFUL SMALL-MODEL THEOREM.
 483 [RESEARCHED] — Decide the OrdTimesKnown/UniverseClosedAt shape mismatch blocking
   └─ 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as sta
@@ -91,10 +91,10 @@ next_project_number: 503
 
 490 [NOT STARTED] — ROUTINE, UNBLOCKED TODAY. Close a silent second gap on the compac
   └─ 493 [NOT STARTED] — Assemble the compactness result and collect strong completeness f
+  └─ 494 [NOT STARTED] — UNBLOCKED TODAY, INDEPENDENT of the ultraproduct chain. Settle th
 491 [NOT STARTED] — RESEARCH TASK, UNBLOCKED TODAY. Decide how to build the ultraprod
   └─ 492 [NOT STARTED] — HARD. Build the ultraproduct of shift sets and prove Los for Trut
     └─ 493 [NOT STARTED] — Assemble the compactness result and collect strong completeness f (see above)
-494 [NOT STARTED] — UNBLOCKED TODAY, INDEPENDENT of the ultraproduct chain. Settle th
 
 ## Tasks
 
@@ -211,7 +211,7 @@ DELIVERABLE: a grounding report answering, with citations to specific pages read
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: strong_completeness
-- **Dependencies**: None
+- **Dependencies**: Task 490
 
 **Description**: UNBLOCKED TODAY, INDEPENDENT of the ultraproduct chain. Settle the fourth frame class negatively and complete the compactness picture. CURRENT STATE: there is NO CompactDedekind definition anywhere in the tree, no StrongCompletenessDedekind, no SatisfiableDedekindSet, and no refutation -- the Dedekind row of StrongCompleteness.lean's status ledger (:84-89) rests on the scope of Reynolds 1992 section 9 Theorem 7 alone. Meanwhile the paper (cor:tm-completeness, possible_worlds.tex:4657) asserts that strong completeness 'provably fails for Z-time as well as for the dense-and-complete class R where compactness fails' -- so this is a REFUTATION target, not a proof target. DELIVERABLE PART 1: define the missing vocabulary in SetConsequence.lean mirroring the Base/Dense/Discrete groups -- SetSemanticConsequenceDedekindDense already exists (:103); add StrongCompletenessDedekind, CompactDedekind, SatisfiableDedekindSet, ModelExistenceDedekind. PART 2: refute CompactDedekind and StrongCompletenessDedekind. CRITICAL CONSTRAINT: the Discrete witness does NOT port. archWitness (DiscreteNonCompactness.lean:102) and its unsatisfiability half (:229-242) turn entirely on Order.succ_le_of_lt and exists_succ_iterate, i.e. on [SuccOrder D] + [IsSuccArchimedean D]; the Dedekind binder list is DenselyOrdered plus LUB with no successor at all, and over R the operator Formula.next = untl bot phi is vacuous, so archWitness carries no contradiction. A NEW witness is required. Model DiscreteNonCompactness.lean's structure (finitely-satisfiable half, then unsatisfiable half) but not its witness. ACCEPTANCE: both refutations sorry-free and axiom-audited; the four-class compactness picture complete (Base/Dense open pending the ultraproduct chain, Discrete refuted, Dedekind refuted).
 
@@ -555,7 +555,7 @@ Dependencies: 462 is a REAL SEMANTIC dependency -- the engine-level assembly is 
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: decidability
-- **Dependencies**: Task 462
+- **Dependencies**: Task 462, Task 433
 
 **Description**: Decide `PostBlockingSettlesRun fc (mintAwareFuelAt U.card Tmax mintBudget D beta)` -- the narrowed settlement residual task 433 landed -- at the terminus's OWN fuel figure. Nothing currently decides it in either direction, and task 433's C9 register entry 24 exists precisely so the narrowing is not mistaken for a proof.
 
