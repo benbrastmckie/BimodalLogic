@@ -1,5 +1,5 @@
 ---
-next_project_number: 490
+next_project_number: 502
 ---
 
 # TODO
@@ -11,11 +11,11 @@ next_project_number: 490
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,193,257,298,433,461,463,476,483,489 | -- | automation, dataset-enhancement, decidability, ... |
-| 2 | 125,178,231,282,296,464,481 | 193,298,461,463,483 | algebraic-representation, dataset-enhancement, decidability, ... |
-| 3 | 219,465 | 231,464 | dataset-enhancement, decidability |
-| 4 | 428 | 433,465 | decidability |
-| 5 | 429 | 428 | decidability |
+| 1 | 127,128,193,257,298,433,461,463,476,483,489,490,491,494,496 | -- | algebraic-representation, automation, dataset-enhancement, ... |
+| 2 | 178,231,282,296,464,481,492,495,497 | 193,298,463,483,489,491,496 | algebraic-representation, dataset-enhancement, decidability, ... |
+| 3 | 219,465,493,498,499,500 | 231,464,490,492,497 | algebraic-representation, dataset-enhancement, decidability, ... |
+| 4 | 125,428 | 433,461,465,498,499 | algebraic-representation, decidability |
+| 5 | 429,501 | 125,428 | algebraic-representation, decidability |
 | 6 | 410 | 429 | decidability |
 | 7 | 411 | 410 | decidability |
 | 8 | 430 | 411 | decidability |
@@ -26,7 +26,14 @@ next_project_number: 490
 
 ### Algebraic Representation
 
-125 [NOT STARTED] — Implement a Jonsson-Tarski representation theorem for TM logic: e
+496 [NOT STARTED] — RESEARCH TASK, UNBLOCKED TODAY. Decide whether the algebraic stac
+  └─ 497 [NOT STARTED] — Bring the Shift-closed Tense S5 Algebra class into live code and 
+    └─ 498 [NOT STARTED] — Phase 1 of the Jonsson-Tarski representation: the complex algebra
+      └─ 125 [NOT STARTED] — CAPSTONE of the algebraic representation front. Prove the Jonsson
+        └─ 501 [NOT STARTED] — Phase 4 of the Jonsson-Tarski representation: extend STSA with th
+    └─ 499 [NOT STARTED] — HARD. Phase 2 of the Jonsson-Tarski representation: the ultrafilt
+      └─ 125 [NOT STARTED] — CAPSTONE of the algebraic representation front. Prove the Jonsson (see above)
+    └─ 500 [NOT STARTED] — RESEARCH TASK. Prevent two parallel representation theorems from 
 
 ### Automation
 
@@ -71,13 +78,155 @@ next_project_number: 490
 
 ### Literature
 
-461 [BLOCKED] — SCOPE 8 acquisition gap identified by task 457's research and re-
+461 [NOT STARTED] — SCOPE 8 acquisition gap identified by task 457's research and re-
 
 ### Metalogic
 
-489 [NOT STARTED] — Prove soundness for the BaseLanguage (BL) proof system, establish
+489 [NOT STARTED] — Prove soundness for the BaseLanguage (BL) proof system -- the pap
+  └─ 495 [NOT STARTED] — RESEARCH TASK, DELIBERATELY AGNOSTIC ABOUT THE VERDICT. Determine
+
+### Strong Completeness
+
+490 [NOT STARTED] — ROUTINE, UNBLOCKED TODAY. Close a silent second gap on the compac
+  └─ 493 [NOT STARTED] — Assemble the compactness result and collect strong completeness f
+491 [NOT STARTED] — RESEARCH TASK, UNBLOCKED TODAY. Decide how to build the ultraprod
+  └─ 492 [NOT STARTED] — HARD. Build the ultraproduct of shift sets and prove Los for Trut
+    └─ 493 [NOT STARTED] — Assemble the compactness result and collect strong completeness f (see above)
+494 [NOT STARTED] — UNBLOCKED TODAY, INDEPENDENT of the ultraproduct chain. Settle th
 
 ## Tasks
+
+### 501. Extend stsa with until since operators
+- **Effort**: 20-32 hours
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: algebraic-representation
+- **Dependencies**: Task 125
+
+**Description**: Phase 4 of the Jonsson-Tarski representation: extend STSA with the binary Until and Since operators. The STSA class as seeded in Boneyard/UltrafilterFrame/TenseS5Algebra.lean carries only the unary box, G, H and sigma. The live object language's primitives are untl and snce (Formula, Syntax/Formula.lean), with allFuture and allPast DERIVED from them (:167, :177) -- so an STSA over the unary fragment alone does not represent the actual logic, and the representation theorem is incomplete without this. SCOPE: add binary operators to the STSA signature with their algebraic laws, extend the complex algebra Cm(F) to interpret them from the frame relations, extend the ultrafilter frame Uf(A) correspondingly, and re-prove the eta embedding at the extended signature. SEQUENCING: this deliberately follows the unary capstone rather than being folded into it -- the unary representation is a standalone result worth landing first, and folding the binary case in would make a single task that cannot complete in one dispatch. LITERATURE: Blackburn/de Rijke/Venema 2002 Chapter 5 (in the corpus as blackburn_2002, full text) is the standard reference for Jonsson-Tarski and its extensions to n-ary operators. Note the corpus warns blackburn_2002 exceeds a single context budget at 365,868 tokens -- a chapter-scoped sub-entry should be created before an agent consumes it.
+
+---
+
+### 500. Reconcile shiftset representation with stsa route
+- **Effort**: 10-16 hours
+- **Status**: [NOT STARTED]
+- **Task Type**: formal
+- **Topic**: algebraic-representation
+- **Dependencies**: Task 492, Task 497
+
+**Description**: RESEARCH TASK. Prevent two parallel representation theorems from being developed and having to be reconciled after the fact. THE OBSERVATION: FormalSystem/Semantics/ShiftSet.lean -- landed by task 424 for the COMPACTNESS route -- is already a representation theorem. forward_repr (:263) and reverse_repr (:362) represent task models as shift sets, both directions, sorry-free. Separately, the STSA design report (specs/archive/992_shift_closed_tense_s5_algebra/reports/01_stsa-algebraic-analysis.md) identifies its key structural claim as: box a <= box(G a) meet G(box a) says the box-fixed points form a G-invariant subalgebra, which is the algebraic encoding of OMEGA BEING SHIFT-CLOSED. That is the same shift structure ShiftSet.lean makes explicit. These look like two views of one representation. SCOPE: determine whether they are, and if so, specify the shared infrastructure so the algebraic route consumes ShiftSet rather than duplicating it. Concretely: (a) is Cm(F) expressible as an algebra of shift-invariant subsets of a ShiftSet carrier? (b) does ShiftSet's sep hypothesis correspond to an STSA axiom, and if so which? (c) can the eta embedding be factored through reverse_repr? DELIVERABLE: a report with a verdict and, if affirmative, a concrete refactor specification. A NEGATIVE VERDICT IS A COMPLETE OUTCOME -- if the two representations are genuinely different objects, say so with evidence and record it so the question is not reopened. TIMING: run this after the Los-lemma work and the STSA port have both landed, so both sides are concrete rather than projected.
+
+---
+
+### 499. Build ultrafilter frame and prove task frame axioms
+- **Effort**: 24-40 hours
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: algebraic-representation
+- **Dependencies**: Task 497
+
+**Description**: HARD. Phase 2 of the Jonsson-Tarski representation: the ultrafilter frame Uf(A), and the proof that it is a TaskFrame. THE SEED: Boneyard/UltrafilterFrame/UltrafilterFrame.lean (1189 lines, behind #exit, 4 sorry hits) already has R_G (:82), R_Box (:90), R_H (:98) and a substantial body of proved structure -- R_Box_refl (:111), R_Box_euclidean (:127), R_Box_symm (:154), R_Box_trans (:164), R_G_R_H_converse (:179), the preimage and upward-closure lemmas (:229-251), R_G_trans (:281), R_H_trans (:304), and the F/P resolution lemmas (:515, :750). Port and revive rather than rebuild. THE GENUINELY NEW OBLIGATION, flagged in task 125's own FOUR-AXIOM EXPOSURE NOTE (2026-08-10): proving SPHERICAL for an ultrafilter frame is nontrivial and unattempted, and the paper's finite-W discharge pattern EXPLICITLY DOES NOT APPLY. Budget this as the dominant cost of the task; Compositionality, Seriality and Limit are expected to be far cheaper. MATHLIB HOOKS: Order/PrimeSeparator.lean:44 (DistribLattice.prime_ideal_of_disjoint_filter_ideal -- the Boolean prime ideal theorem in distributive-lattice form) is what a Zorn-free Uf(A)-nonemptiness argument should use; Order/Ideal.lean and Order/PrimeIdeal.lean (:156, :171) give the ultrafilter-as-prime-filter characterization. NOTE: Mathlib has NO Ultrafilter on an abstract Boolean algebra -- its Ultrafilter is Filter-on-Set-based. UltrafilterMCS.lean:44 rolls its own structure for exactly this reason, and its MCS-to-ultrafilter bijection (ultrafilter_correspondence :782) is available, though stated existentially rather than as a named Equiv. SHADOWING HAZARD: if Mathlib's Ultrafilter is opened in that namespace it collides with the bespoke one; keep them explicitly qualified.
+
+---
+
+### 498. Build complex algebra for task frames
+- **Effort**: 16-24 hours
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: algebraic-representation
+- **Dependencies**: Task 497
+
+**Description**: Phase 1 of the Jonsson-Tarski representation: the complex algebra Cm(F). Construct the powerset STSA over a TaskFrame -- carrier the powerset of the world-history space, with box, G, H and sigma defined from the frame relations -- and prove it satisfies every STSA axiom. GREENFIELD WARNING: Mathlib has NO Boolean algebras with operators, no complex algebras, no canonical extensions, and no modal-algebra machinery of any kind; a survey of the pinned v4.33.0-rc1 tree found nothing reusable for this. What Mathlib DOES supply and should be used: Order/BooleanAlgebra/ (already consumed by BooleanStructure.lean:421) and Order/CompleteBooleanAlgebra.lean:711 (CompleteAtomicBooleanAlgebra). CONSTRAINT FROM THE FOUR-AXIOM WORK (task 420, completed): TaskFrame (Semantics/TaskFrame.lean:474-577) now carries SEVEN fields, not five -- biconditional Compositionality, Seriality, Limit and Spherical plus a Nonempty WorldState field and [Nontrivial D]. The complex algebra must be built against the live seven-field structure, not the five-field shape the older design documents assume. ACCEPTANCE: Cm(F) defined, instance STSA (Cm F) proved, sorry-free, lake build green.
+
+---
+
+### 497. Port stsa class and add g operator
+- **Effort**: 16-24 hours
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: algebraic-representation
+- **Dependencies**: Task 496
+
+**Description**: Bring the Shift-closed Tense S5 Algebra class into live code and close the G-operator gap. Phase 1 groundwork for the Jonsson-Tarski representation. THE SEED: Boneyard/UltrafilterFrame/TenseS5Algebra.lean (361 lines, behind #exit) already contains the full class STSA extending BooleanAlgebra with fields box, G, H, sigma and axioms box_deflationary, box_monotone, box_idempotent, box_s5, G_monotone, H_monotone, sigma_involution, sigma_neg, sigma_sup, sigma_G, sigma_H, sigma_box, MF, TF, TA, TL. This is the exact algebraic signature the representation needs. IT CARRIES 3 SORRIES, AND THEY MUST NOT BE PROVED AS-IS: they are for temp_a and temp_l, axioms that have since been REMOVED or restructured; restate them against the current 45-constructor ProofSystem.Axiom set (Axioms.lean:115-464) rather than reviving the old shapes. THE G GAP: LindenbaumQuotient.lean supplies boxQuot (:305-ish), hQuot, and sigmaQuot (:346) with its four laws (sigma_quot_involution :353, sigma_quot_neg :362, sigma_quot_sup :373, sigma_quot_box :385) -- but there is NO gQuot. G on the Lindenbaum quotient must be constructed and its congruence proved before LindenbaumAlg can be an STSA instance. Boneyard/SorriedDeclExcisions/AlgebraicGQuotChain.lean is the excised prior attempt and should be consulted, not trusted. DESIGN REFERENCE: specs/archive/992_shift_closed_tense_s5_algebra/reports/01_stsa-algebraic-analysis.md (538 lines) gives the full axiom-to-equation translation table and the key structural claim that box a <= box(G a) meet G(box a) says the box-fixed points form a G-invariant subalgebra -- the algebraic encoding of Omega being shift-closed. It is stale on file names (references deleted AlgebraicRepresentation.lean and ParametricRepresentation.lean) but sound on the mathematics. ACCEPTANCE: STSA class live and sorry-free, gQuot constructed with congruence, instance STSA LindenbaumAlg, lake build green.
+
+---
+
+### 496. Research algebraic stack build graph wiring
+- **Effort**: 6-10 hours
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: algebraic-representation
+- **Dependencies**: None
+
+**Description**: RESEARCH TASK, UNBLOCKED TODAY. Decide whether the algebraic stack should be wired into the build graph, and settle the elaboration-conflict question before anything is built on top of it. THE FINDING: FormalSystem/Metalogic/Algebraic/ holds five sorry-free files, but only FlowFrame.lean (806 lines, 6 live importers) is reachable from the default target root FormalSystem.lean. BooleanStructure.lean (441), InteriorOperators.lean (176), LindenbaumQuotient.lean (393) and UltrafilterMCS.lean (1071) -- 2,081 lines, and exactly the part relevant to Jonsson-Tarski -- are ORPHANED: no live .lean file anywhere imports FormalSystem.Metalogic.Algebraic, verified by grep returning zero hits. The aggregator exists only to satisfy the C8 sibling-aggregator invariant (scripts/check-module-invariants.sh:418-449). They are LSP-checked and manifested under C6, but not verified by lake build. Stale oleans for deleted modules dated 2026-08-10 sit in .lake/build/, so build artifacts there are NOT evidence of reachability. THE RISK TO ADJUDICATE: Boneyard/UltrafilterFrame/README.md records that that subtree was archived on 2026-05-20 because of 'elaboration conflicts with BXCanonical completeness'. It is UNKNOWN whether those conflicts were specific to the Boneyard files or would also bite the currently-orphaned Algebraic/ stack if it were imported live. Determine this empirically before recommending. DELIVERABLE: a report recommending either (a) re-wire -- import the aggregator from a live module so lake build covers the stack, with measured build-time delta and any elaboration conflicts named; or (b) keep isolation-only and document it honestly. EITHER WAY, fix two overstatements in Algebraic/README.md: it claims 'this directory is not optional' and 'participates in the live proof' (true only of FlowFrame.lean), and it claims 'G and H are shown to be interior operators' when InteriorOperators.lean proves only H_monotone (:80) plus the box triple (:101, :112, :130) -- there is no G operator on the quotient at all.
+
+---
+
+### 495. Determine tm completeness status over task frames
+- **Effort**: 12-20 hours
+- **Status**: [NOT STARTED]
+- **Task Type**: formal
+- **Topic**: metalogic
+- **Dependencies**: Task 489
+
+**Description**: RESEARCH TASK, DELIBERATELY AGNOSTIC ABOUT THE VERDICT. Determine whether TM (the BaseLanguage proof system) is complete over task frames, and if not, characterize what it IS complete for. DO NOT ASSUME COMPLETENESS HOLDS; the evidence points the other way, and a machine-checked incompleteness result is a complete and valid outcome. EVIDENCE THAT IT MAY FAIL: (1) the paper's cor:tm-completeness (possible_worlds.tex:4657) carries completeness for the BL+ systems ONLY -- TM+, TM+_d, TM+_f, TM+_c -- and never claims it for TM. (2) Metalogic/Conservativity.lean's scope section states that the forward direction TM+ |- tr phi => TM |- phi is REFUTED at FrameClass.Base (the (Sp) witness) and at FrameClass.Discrete (the Z1 witness), with the TM+ half of the Discrete witness already machine-checked in-tree as z1_translate. THE SUBTLETY ANY DISPATCH MUST CONFRONT FIRST: since |-[Base] tr (Sp) is proved and TM+ is sound over all task frames, (Sp) is VALID ON EVERY TASK FRAME. So a refutation of TM |- Sp by soundness CANNOT use a task frame. It needs a structure outside the class on which TM remains sound precisely because it lacks the Until/Since expressive power to detect the violation. Identifying that broader class is the actual research content. SCOPE: (a) settle whether TM is complete over task frames; (b) if not, identify the class TM is sound and complete for; (c) determine whether the CEB and CEF refutations that Conservativity.lean currently only DOCUMENTS can now be machine-checked, given the BL-side semantics and soundness theorem delivered by the prerequisite task. Conservativity.lean's own 'What a machine-checked refutation would need' section names three missing pieces: a BL-side semantics, a BL-side soundness theorem, and the two countermodels (a two-fibre structure for CEB, Z x_lex Z for CEF); the prerequisite supplies the first two. HARD CONSTRAINT INHERITED FROM Conservativity.lean: do not state a forward-conservativity theorem and discharge it with sorry -- it is provably false at two frame classes, so that would be an unsound placeholder, not deferred debt.
+
+---
+
+### 494. Define and refute dedekind compactness
+- **Effort**: 10-16 hours
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: strong_completeness
+- **Dependencies**: None
+
+**Description**: UNBLOCKED TODAY, INDEPENDENT of the ultraproduct chain. Settle the fourth frame class negatively and complete the compactness picture. CURRENT STATE: there is NO CompactDedekind definition anywhere in the tree, no StrongCompletenessDedekind, no SatisfiableDedekindSet, and no refutation -- the Dedekind row of StrongCompleteness.lean's status ledger (:84-89) rests on the scope of Reynolds 1992 section 9 Theorem 7 alone. Meanwhile the paper (cor:tm-completeness, possible_worlds.tex:4657) asserts that strong completeness 'provably fails for Z-time as well as for the dense-and-complete class R where compactness fails' -- so this is a REFUTATION target, not a proof target. DELIVERABLE PART 1: define the missing vocabulary in SetConsequence.lean mirroring the Base/Dense/Discrete groups -- SetSemanticConsequenceDedekindDense already exists (:103); add StrongCompletenessDedekind, CompactDedekind, SatisfiableDedekindSet, ModelExistenceDedekind. PART 2: refute CompactDedekind and StrongCompletenessDedekind. CRITICAL CONSTRAINT: the Discrete witness does NOT port. archWitness (DiscreteNonCompactness.lean:102) and its unsatisfiability half (:229-242) turn entirely on Order.succ_le_of_lt and exists_succ_iterate, i.e. on [SuccOrder D] + [IsSuccArchimedean D]; the Dedekind binder list is DenselyOrdered plus LUB with no successor at all, and over R the operator Formula.next = untl bot phi is vacuous, so archWitness carries no contradiction. A NEW witness is required. Model DiscreteNonCompactness.lean's structure (finitely-satisfiable half, then unsatisfiable half) but not its witness. ACCEPTANCE: both refutations sorry-free and axiom-audited; the four-class compactness picture complete (Base/Dense open pending the ultraproduct chain, Discrete refuted, Dedekind refuted).
+
+---
+
+### 493. Discharge compactbase compactdense and strong completeness
+- **Effort**: 10-16 hours
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: strong_completeness
+- **Dependencies**: Task 490, Task 492
+
+**Description**: Assemble the compactness result and collect strong completeness for Base and Dense. Steps S4 and S5 of task 424's authorized route. S4: from the Los lemma, prove ModelExistenceBase and ModelExistenceDense (every finitely-satisfiable Gamma is satisfiable), then compose with the ModelExistence -> Compact bridge to obtain CompactBase and CompactDense. S5: feed those into strongCompletenessBase_of_compact (StrongCompleteness.lean:305) and strongCompletenessDense_of_compact (:331), which are already proved as reductions, and DISCHARGE their engine hypotheses -- deliberately left live so that compactness was isolated as the whole remaining obligation. The engines are BXCanonical.completeness (BXCanonical/Completeness.lean:196) for Base and BXCanonical.completeness_dense (:256) for Dense, both sorry-free and both of exactly the required type. WHY THIS MATTERS BEYOND THE TREE: the paper's cor:tm-completeness rows 1 and 2 assert strong completeness for TM+ and TM+_d and attribute them to this repository, where they are currently CONDITIONAL on unproved hypotheses. This task is what makes the paper's own headline claim true; task 488's author memo records the mismatch as a live paper-side correction until then. ACCEPTANCE: StrongCompletenessBase and StrongCompletenessDense proved unconditionally, sorry-free, axiom-audited; the author-memo item retired.
+
+---
+
+### 492. Build shiftset ultraproduct and los lemma
+- **Effort**: 20-30 hours
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: strong_completeness
+- **Dependencies**: Task 491
+
+**Description**: HARD. Build the ultraproduct of shift sets and prove Los for TruthAt. This is steps S2 and S3 of the route task 424 authorized. S2: construct the ultraproduct over an ultrafilter on the index type {L : List Formula // forall psi in L, psi in Gamma}, using the carrier route selected by the preceding research task -- do not re-litigate that choice here. S3: the Los lemma for TruthAt, by induction on Formula, six cases (atom, bot, imp, box, untl, snce). Five are mechanical. The box case is the real content and carries task 424's risk R2: it needs a choice-function argument for the forward direction, because box quantifies over all total world-histories (TruthAt, Semantics/Truth.lean:164) rather than over a pointwise-definable family. ACCEPTANCE: sorry-free, lake build green, #print axioms recorded for the Los statement (Classical.choice is expected and acceptable here; sorryAx is not). SEQUENCING NOTE: ShiftSet.lean's forward_repr/reverse_repr is the representation this builds on, and it is also the representation the algebraic route should reuse -- see the reconciliation task, which should not be allowed to fork a second, parallel representation.
+
+---
+
+### 491. Select dependent ultraproduct carrier route
+- **Effort**: 6-10 hours
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: strong_completeness
+- **Dependencies**: None
+
+**Description**: RESEARCH TASK, UNBLOCKED TODAY. Decide how to build the ultraproduct carrier before any Los-lemma work starts. CONTEXT: task 424 PASSED the compactness feasibility gate and landed FormalSystem/Semantics/ShiftSet.lean (506 lines, sorry-free) with forward_repr (:263) and reverse_repr (:362). Its cancel condition did not fire: the one extra hypothesis needed, sep, is first-order over the two-sorted signature <Omega, D; <, +, 0, sh, (A_p)>, hence Los-preserved. THE PROBLEM (task 424's risk R1, its own largest named unknown): the index type is {L : List Formula // forall psi in L, psi in Gamma}, and the carriers D_L differ per finite subset, so the ultraproduct is DEPENDENT. Mathlib's ordered instances (Mathlib/Order/Filter/FilterProduct.lean:92, LinearOrder for Germ) live only on the NON-dependent Filter.Germ; the dependent Filter.Product (Mathlib/Order/Filter/Germ/Basic.lean:100) has no ordered-group instances. TWO ROUTES TO ADJUDICATE: (a) a bespoke quotient of (forall i, D i) with roughly 15 hand-supplied instances (AddCommGroup, LinearOrder, IsOrderedAddMonoid, Nontrivial, and the frame-class binders); (b) a carrier-normalization step that collapses the family to a single carrier first -- note task 475 (carrier_normalization_successor_archimedean_transfer, completed) may or may not supply reusable machinery, and whether it does is part of what this task must determine rather than assume. ALSO IN SCOPE: Mathlib build cost. Ultrafilter (Order/Filter/Ultrafilter/) is already built and free; Filter.Germ and FilterProduct are present in source but have NO oleans in this checkout, so importing them triggers a Mathlib build -- quantify it. DELIVERABLE: a research report naming the chosen route with evidence, the exact instance list route (a) would require, and a go/no-go on route (b). MUST NOT write the Los lemma.
+
+---
+
+### 490. Prove model existence implies compactness bridge
+- **Effort**: 3-5 hours
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: strong_completeness
+- **Dependencies**: None
+
+**Description**: ROUTINE, UNBLOCKED TODAY. Close a silent second gap on the compactness route. FormalSystem/Metalogic/SetConsequence.lean states both ModelExistenceBase (:239-242) and CompactBase (:219-221), and the Dense siblings ModelExistenceDense (:283-286) and CompactDense (:263-265), but the implication ModelExistence -> Compact is NOT proved: the module docstrings at :234-238 and :278-282 say verbatim that 'that implication is future work and is not proved here'. The compactness programme is routinely described as having one gap (the model-existence theorem); it has two, and this is the cheap one. DELIVERABLE: theorems compactBase_of_modelExistence : ModelExistenceBase -> CompactBase and compactDense_of_modelExistenceDense : ModelExistenceDense -> CompactDense, in SetConsequence.lean or a sibling. ROUTE: contrapose through the Formula.neg clause of TruthAt plus the existing truthAt_foldr_imp (StrongCompleteness.lean:183); SetDerivable (:69) and the finite-restriction lemmas (:151, :156, :166, :174) are already available. ACCEPTANCE: both theorems sorry-free, #print axioms exactly [propext, Classical.choice, Quot.sound], lake build green. DO NOT attempt the model-existence theorem itself here -- that is the ultraproduct work and is separately tasked.
+
+---
 
 ### 489. Prove baselanguage soundness base and extensions
 - **Status**: [NOT STARTED]
@@ -85,7 +234,25 @@ next_project_number: 490
 - **Topic**: metalogic
 - **Dependencies**: None
 
-**Description**: Prove soundness for the BaseLanguage (BL) proof system, establishing it first at FrameClass.Base and then extending it to the Dense, Discrete, and Dedekind extensions, mirroring the Base-then-extensions structure of Metalogic/Soundness.lean; this gives the paper's thm:TM-soundness a direct Lean counterpart
+**Description**: Prove soundness for the BaseLanguage (BL) proof system -- the paper's TM -- establishing it at FrameClass.Base first and then extending to Dense, Discrete and Dedekind, mirroring Metalogic/Soundness.lean's Base-then-extensions structure. This gives thm:TM-soundness (possible_worlds.tex:4484) a direct Lean counterpart and retires a live over-claim: the paper asserts at four sites (:1661, :4311, :4484, :4494) that TM's soundness is formalized here, and only the TM+ half of each sentence is currently supported.
+
+THE ROUTE IS COMPOSITION, NOT A SECOND SEMANTICS. def:BL-semantics (possible_worlds.tex:3566) defines a BL model as <W, D, =>, |.|> where <W, D, =>> IS A TASK FRAME -- the same structure TM+ uses -- with clauses for p, bot, ->, box, H and G identical to TM+'s clauses for those six connectives. And tr (BaseLanguage/Translation.lean:69) is a structural homomorphism on exactly those six primitives, every push-through equation rfl (:82-87).
+
+DELIVERABLE 1 -- FormalSystem/BaseLanguage/Semantics.lean: define BLTruthAt by recursion on BLFormula, transcribing def:BL-semantics clause for clause. The box clause quantifies over TOTAL world-histories (matching TruthAt, Semantics/Truth.lean:164, and H_F in the paper). Then BLValid, BLValidDense, BLValidDiscrete and BLValidDedekindDense mirroring Semantics/Validity.lean (:103, :206, :248, :336).
+
+DELIVERABLE 2 -- the truth-transfer bridge: TruthAt M tau x (tr phi) <-> BLTruthAt M tau x phi, by induction on phi. Four of the six cases are definitional. The allPast and allFuture cases are the only ones with content, because Formula.allFuture/allPast are DERIVED from untl/snce (Syntax/Formula.lean:167, :177) -- and they are already discharged by the existing @[simp] lemmas future_iff (Semantics/Truth.lean:287) and past_iff (:305), which state exactly the paper's G and H clauses.
+
+DELIVERABLE 3 -- four soundness theorems by composition: Metalogic.Conservativity.translate (already proved, already fc-parameterized) into soundness (Soundness.lean:1086), soundness_dense (:1260), soundness_discrete (:1406) and soundness_dedekind (:1933), then across the bridge. The Base-then-extensions structure is inherited free: BaseLanguage.Axiom.minFrameClass reuses ProofSystem.FrameClass and only df/dn/co are non-Base, so TM, TM_f, TM_d and TM_dc are four instantiations of one derivation type.
+
+DELIVERABLE 4 -- consistency corollaries mirroring not_derivable_nil_bot (Soundness.lean:1993).
+
+FORBIDDEN DESIGN, THE ONE TRAP: do NOT define BLTruthAt as TruthAt (tr phi). That makes the bridge trivially true and the soundness theorem vacuous as a claim about BL, leaving thm:TM-soundness still without a real counterpart. The semantics must be defined natively on BLFormula and the bridge PROVED.
+
+NOTE THE DEDEKIND ASYMMETRY: soundness_dedekind targets ValidDedekindDense, not ValidDedekind (Soundness.lean:1438-1454), because Dense <= Dedekind makes density and dense_indicator admissible and both are false on Z. The BL-side Dedekind statement must inherit that same target or it will be refutable.
+
+MODULE INVARIANT TO PRESERVE OR AMEND DELIBERATELY: BaseLanguage.lean and Formula.lean:48 currently state that nothing under FormalSystem/BaseLanguage/ imports anything from FormalSystem/Semantics/. Deliverable 1 breaks that invariant by design. Either place Semantics.lean outside BaseLanguage/ or amend the invariant explicitly in both docstrings -- do not leave it silently false.
+
+ACCEPTANCE: all four soundness theorems and the bridge sorry-free, #print axioms exactly [propext, Classical.choice, Quot.sound], lake build green, and scripts/check-module-invariants.sh still ALL PASSED.
 
 ---
 
@@ -379,7 +546,7 @@ Dependencies: 462, as a file_scope SERIALIZATION edge only (both tasks edit Mint
 ---
 
 ### 461. Acquire Goldblatt 1989 'Varieties of complex algebras' (Annals of Pure and Applied Logic)
-- **Status**: [BLOCKED]
+- **Status**: [NOT STARTED]
 - **Task Type**: general
 - **Topic**: literature
 - **Dependencies**: Task 460
@@ -834,8 +1001,18 @@ REALIGNMENT NOTE (task 468, 2026-08-25, verdict per specs/468_realign_task_progr
 - **Status**: [NOT STARTED]
 - **Task Type**: formal
 - **Topic**: algebraic-representation
-- **Dependencies**: Task 420, Task 439, Task 461
+- **Dependencies**: Task 420, Task 439, Task 461, Task 498, Task 499
 
-**Description**: Implement a Jonsson-Tarski representation theorem for TM logic: every STSA embeds into the complex algebra of a concrete frame. Phased approach: Phase 1 — Complex algebra Cm(F): define powerset STSA for TaskFrames with box/G/H/sigma operators derived from frame relations. Prove Cm(F) satisfies all STSA axioms. Phase 2 — Ultrafilter frame Uf(A): given abstract STSA A, construct frame whose worlds are ultrafilters with canonical relations R_G, R_H, R_Box (seed infrastructure from task 163 recovery of UltrafilterChain.lean). Prove Uf(A) satisfies TaskFrame axioms. Phase 3 — Embedding theorem: prove eta(a) = {U | a in U} is an injective STSA homomorphism A into Cm(Uf(A)). Phase 4 — Since/Until extension: extend STSA typeclass with binary untl/sinc operators and prove representation for the full operator signature. Start with basic {box, G, H} fragment (Phases 1-3) before tackling S/U (Phase 4). Prerequisites: resolve 6 algebraic sorries (temp_k_dist, temp_a, temp_l in TenseS5Algebra/InteriorOperators/LindenbaumQuotient); obtain 3 missing papers (Jonsson-Tarski 1951/52, BRV 2001 Ch.5, Goldblatt 1989). Task 992 research report (01_stsa-algebraic-analysis.md) maps ~80% of needed infrastructure. Architecture: restructure Algebraic/ into Core/ (shared STSA/Boolean/ultrafilter), Completeness/ (renamed existing), Representation/ (new J-T work).
+**Description**: CAPSTONE of the algebraic representation front. Prove the Jonsson-Tarski representation theorem for the bimodal logic: the embedding eta(a) = {U | a in U} is an injective STSA homomorphism A -> Cm(Uf(A)).
 
-FOUR-AXIOM EXPOSURE NOTE (added 2026-08-10): Phase 2's obligation 'Prove Uf(A) satisfies TaskFrame axioms' is about to get strictly harder. Once task 420 lands, TaskFrame carries the paper's four def:frame axioms (biconditional Compositionality, Seriality, Limit, Spherical -- pinned in specs/paper-definitions-of-record.md) plus a Nonempty WorldState field and a [Nontrivial D] binder. Spherical (every directed family of nonempty fibers and segments has nonempty intersection) for an ultrafilter frame is a genuinely nontrivial NEW obligation the current three-field structure does not anticipate -- scope Phase 2 against the four-axiom target, and note the paper's finite-W discharge pattern (subset-least member of a finite directed family) does NOT apply to ultrafilter frames, which are typically infinite.
+RE-SCOPED. This task's original four phases are now distributed: Phase 1 (complex algebra Cm(F)) and Phase 2 (ultrafilter frame Uf(A), including the Spherical obligation) are separately tasked and are this task's dependencies; Phase 4 (binary untl/snce operators) is separately tasked and depends on this one. What remains here is Phase 3 -- the embedding itself and its injectivity -- stated at the unary signature (box, G, H, sigma).
+
+PREREQUISITE STATE, RE-VERIFIED 2026-08-26: the STSA class and the R_G/R_H/R_Box ultrafilter frame exist as Boneyard seeds behind #exit and are ported by the dependency tasks. The MCS-to-ultrafilter bijection is live at Algebraic/UltrafilterMCS.lean:782 (ultrafilter_correspondence), though stated existentially rather than as a named Equiv -- converting it to an Equiv may be worth doing here. The BooleanAlgebra LindenbaumAlg instance is at BooleanStructure.lean:421.
+
+THE PRIOR PREREQUISITE LIST IN THIS DESCRIPTION IS STALE and is superseded: it named 'resolve 6 algebraic sorries in TenseS5Algebra/InteriorOperators/LindenbaumQuotient'. InteriorOperators.lean and LindenbaumQuotient.lean are sorry-free today; the remaining sorries are the 3 in the Boneyard TenseS5Algebra seed, and they are for REMOVED axioms (temp_a, temp_l) that must be restated against the current 45-constructor axiom set rather than proved as-is. That is the STSA port task's business, not this one's.
+
+LITERATURE: Goldblatt 1989 'Varieties of complex algebras' (APAL 44, 173-242, doi 10.1016/0168-0072(89)90032-8) has been acquired. CAVEAT THAT MUST BE HONORED: the acquired PDF is an Acrobat 3.0 Capture scan with a badly degraded OCR text layer -- math-heavy pages yield mangled symbols, dropped and reordered lines. READ THE PAGE IMAGES DIRECTLY (the Read tool's pages parameter); do NOT rely on a pdftotext-derived conversion for any axiom statement or equation. Blackburn/de Rijke/Venema 2002 Chapter 5 (corpus entry blackburn_2002) is the primary reference and is born-digital.
+
+MATHLIB HOOK: Order/Atoms.lean:710 (toSetOfIsAtom : alpha <-> Set {a // IsAtom a} for CompleteAtomicBooleanAlgebra) is the atom-structure half of Stone/Jonsson-Tarski for the complete atomic case and is the single most relevant Mathlib lemma here; supporting lemma eq_setOf_le_sSup_and_isAtom at :695. Mathlib has NO Stone duality for Boolean algebras and no BAO machinery -- the rest is greenfield.
+
+SEE ALSO the reconciliation task on whether this embedding can be factored through ShiftSet.lean's reverse_repr rather than built independently; if it can, that supersedes part of this task's construction and this description should be revised again before implementation starts.
