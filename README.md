@@ -18,7 +18,7 @@ The repository implements the syntax, task semantics, proof theory, and metalogi
 |--------|-------|
 | Lean files | 539 |
 | Lines of code | ~170,898 |
-| Comment lines | ~96,290 |
+| Comment lines | ~96,423 |
 
 To get current numbers (excludes `.lake` dependencies and `Boneyard/`), run:
 

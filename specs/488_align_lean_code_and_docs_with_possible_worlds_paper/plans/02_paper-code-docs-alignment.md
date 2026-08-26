@@ -177,14 +177,14 @@ wave; see each phase's "Files to modify" list.
 
 ---
 
-### Phase 2: Author-facing memo for paper-side and owner-decision items [NOT STARTED]
+### Phase 2: Author-facing memo for paper-side and owner-decision items [COMPLETED]
 
 - **Goal**: Collect every item this repository cannot resolve into one written deliverable, so
   nothing is silently dropped and no phase mistakes a paper correction for a repo edit.
 - **Tasks**:
-  - [ ] Create the memo under
+  - [x] Create the memo under
         `specs/488_align_lean_code_and_docs_with_possible_worlds_paper/`.
-  - [ ] Section "Paper corrections requested", one entry per item with the exact paper line and
+  - [x] Section "Paper corrections requested", one entry per item with the exact paper line and
         the exact Lean counter-evidence:
         - D1: TM⁺ strong completeness attributed to this repository (`:4661`, `:4668`) vs.
           `strongCompletenessBase_of_compact` being conditional on the unproved `CompactBase`
@@ -203,7 +203,7 @@ wave; see each phase's "Files to modify" list.
           Dense, Discrete, and Dedekind extensions. Record that the obligation is tracked there,
           and ask whether the author additionally wants the paper-side fix (narrowing the
           attribution to TM+ soundness) as a hedge until that task lands.
-  - [ ] Section "Owner decisions required", stating the question and the options without making
+  - [x] Section "Owner decisions required", stating the question and the options without making
         the call:
         - D6: `def:TMplus-c` bases BX_c on `TMP-PU` + `TMP-SEP` with no density axiom, while
           `FrameClass.Dedekind` carries 42 axioms including `density` and `dense_indicator`.
@@ -218,7 +218,7 @@ wave; see each phase's "Files to modify" list.
           corrects the docstring; the deletion question stays open here.
         - D27: `▽φ` is `¬△¬φ` in Lean vs. the paper's explicit disjunction. Classically
           equivalent, term-distinct; no change recommended.
-  - [ ] State plainly at the top of the memo that the paper is read-only from this repository and
+  - [x] State plainly at the top of the memo that the paper is read-only from this repository and
         that none of these items was edited into the `.tex`.
 - **Timing**: 1 hour
 - **Depends on**: none
@@ -467,12 +467,12 @@ sentences were phrased as "42 of the tree's 45", which matches none of the three
 
 ---
 
-### Phase 8: Semantics core docstrings -- retire the false nullity claim [NOT STARTED]
+### Phase 8: Semantics core docstrings -- retire the false nullity claim [COMPLETED]
 
 - **Goal**: Retire the "strictly stronger than the paper / OPEN DESIGN QUESTION" language the
   addendum disproves, and correct the three other semantics docstring claims in these files.
 - **Tasks**:
-  - [ ] D25 (the addendum's correction, which overrides the main report): at
+  - [x] *(completed: the whole "Strictly stronger than the paper -- OPEN DESIGN QUESTION" block and its three-options/joint-decision framing are gone. Both proofs the addendum supplies were INDEPENDENTLY TYPECHECKED before being written into the docstring, via a standalone snippet against `FormalSystem.Semantics.FrameAxioms` -- `inj_at_zero_of_limit` (injectivity-at-zero from `limit` alone, instantiating the cone witness at `y := 0`) and `nullity_iff_of_serial_limit` (the full `↔`, composing that with `TaskFrame.nullity_of_serial_limit`, confirmed to exist at `Semantics/FrameAxioms.lean:149`). Both compile clean; they are reproduced in the docstring as a `lean` fence rather than as live `example`s, since the plan's Overview forbids adding declarations. `FrameAxioms.lean`'s own closing note, which repeated the "strictly stronger" claim, was corrected to match.)* D25 (the addendum's correction, which overrides the main report): at
         `FormalSystem/Semantics/TaskFrame.lean:501-509`, replace the "Strictly stronger than the
         paper -- OPEN DESIGN QUESTION" block and its three-options/joint-decision framing. The
         question is **settled, not deferred**: injectivity-at-zero follows from the `limit` field
@@ -482,22 +482,22 @@ sentences were phrased as "42 of the tree's 45", which matches none of the three
         `↔`. The addendum supplies both proofs verbatim (`inj_at_zero_of_limit`,
         `nullity_iff_of_serial_limit`); reproduce them in the docstring, or as `example`s, only if
         they typecheck under the phase's build.
-  - [ ] State positively in the corrected docstring that the Lean frame class is **extensionally
+  - [x] *(completed: the corrected docstring states the inter-derivability of the Lean field set and the paper's axioms explicitly, and states that the `⊇` half of Limit's `⋂_{x>0}(w)_x = {w}` is supplied by reflexivity-at-zero rather than assumed)* State positively in the corrected docstring that the Lean frame class is **extensionally
         exactly the paper's** -- `{nullity_identity, comp, converse, serial, limit, spherical}` and
         the paper's four `def:frame` axioms plus nonempty `W` plus the converse convention are
         inter-derivable -- and that the `⊇` half of `⋂_{x>0}(w)_x = {w}` follows from
         reflexivity-at-zero, closing F10's separate worry.
-  - [ ] Keep the `nullity_identity` field. The keep-versus-delete call is an owner decision
+  - [x] *(completed: field untouched; the docstring records it as retained documented redundancy and refers the deletion question to the author memo)* Keep the `nullity_identity` field. The keep-versus-delete call is an owner decision
         recorded in Phase 2's memo; note in the docstring that the field is retained as documented
         redundancy for construction ergonomics.
-  - [ ] D10: add the paper's new `S₁ᵈ` ball-space characterization to the `Spherical` docstring
+  - [x] *(completed: added as a dedicated "Where this sits in the ball-space hierarchy" paragraph, quoting the Phase-1 re-pinned `def:frame` footnote, and warning that "Spherical" is not a synonym for "spherically complete")* D10: add the paper's new `S₁ᵈ` ball-space characterization to the `Spherical` docstring
         (`TaskFrame.lean:343`) -- it sits in the Cmiel-Kuhlmann-Kuhlmann ball-space hierarchy and
         is strictly stronger than "spherically complete" (`S₁`). Quote from the Phase 1 re-pinned
         `def:frame`.
-  - [ ] D11: `FormalSystem/Examples/TemporalStructures.lean:219` says `Deterministic` is a clause
+  - [x] *(completed: repointed to `def:deterministic`. Note the sentence was not simply a wrong citation -- it argued that `app:deterministic` does not exist and that determinism lives inside `def:frame-properties`. The first half is still true, the second no longer is, so the sentence was rewritten rather than having one anchor swapped.)* D11: `FormalSystem/Examples/TemporalStructures.lean:219` says `Deterministic` is a clause
         inside `def:frame-properties`. The paper removed it; it is now standalone
         `def:deterministic` (paper line 2868, pinned in Phase 5). Repoint the citation.
-  - [ ] Within these three files only, update verbatim quotes of `lem:nullity` and `def:frame` to
+  - [x] *(completed, and wider than the plan anticipated: the sweep found 6 quotations of the Spherical text needing the `⊇` qualifier in `TaskFrame.lean` alone (not just `:39`/`:343`), 2 of `cor:spherical-finite`'s "Every frame", and 5 sites in `FrameAxioms.lean`. `def:constraints`'s in-tree verbatim quote had drifted on THREE counts, not one -- "over a frame $\F = \tuple{...}$" -> "over a task frame $\F$", "constraints imposed on $z$" -> "constraints on $z$", and `\Fib(...)` -> `\fib{...}` -- and the paper also added a "when both $t,s \in X$" clause. The `DirectedFamily` definition docstring quoted an undifferentiated "directed" from before the paper split `def:directed`; it now quotes the `$\supseteq$` clause and records the split. Five lines that the qualifier pushed past 100 columns were reflowed.)* Within these three files only, update verbatim quotes of `lem:nullity` and `def:frame` to
         the re-pinned text (the `frame` -> `task frame` rename and the `⊇`-directed qualifier),
         including `TaskFrame.lean:39` and `FrameAxioms.lean:129`. Sites in other files are
         Phase 11's territory.
@@ -524,22 +524,22 @@ sentences were phrased as "42 of the tree's 45", which matches none of the three
 
 ---
 
-### Phase 9: Extension cluster -- lem:fibers and the Zorn footnote [NOT STARTED]
+### Phase 9: Extension cluster -- lem:fibers and the Zorn footnote [COMPLETED]
 
 - **Goal**: Repair the largest dangling-anchor cluster and the stale axiom-of-choice quotation.
 - **Tasks**:
-  - [ ] D16: `lem:fibers` was removed from the paper (retired 2026-08-17 wave 2, per the record)
+  - [x] *(completed: 17 occurrences across exactly the 6 files the plan names, confirmed by grep before and after. Strategy decided once and applied uniformly: NO live anchor covers `lem:fibers`' content -- `lem:admissible` states the extension criterion in terms of "belongs to every member of the constraints", which is `lem:fibers`' left-hand side, not its fiber-condition equivalence -- so every site keeps the name and is annotated as a RETIRED anchor resolving against the record's DANGLING entry. `Admissible.lean` carries the full retirement note; each other file carries a one-clause marker at its own citation; `Semantics.lean` carries a short paragraph. The two "verbatim" quotations are now attributed "as last resolved before the paper retired the anchor", which is why they alone correctly keep the pre-rename "over a frame" wording.)* D16: `lem:fibers` was removed from the paper (retired 2026-08-17 wave 2, per the record)
         and is cited 17 times across `FormalSystem/Semantics.lean` and
         `FormalSystem/Semantics/Extension/{README.md, Constraint.lean, Step.lean, Admissible.lean,
         Extension.lean}`. Repoint each citation to a live anchor if one covers the same content, or
         to the record's DANGLING entry with a note that the paper retired it. Decide once and apply
         uniformly; do not mix strategies across the 17 sites.
-  - [ ] D12: `thm:extension`'s footnote no longer says the proof appeals to Zorn's lemma "and
+  - [x] *(deviation: altered -- the plan says three sites; grep found TWO, `Extension.lean:30` and the test file. `Extension.lean:190` quotes the footnote but was a second copy in the theorem docstring rather than a third distinct site; both `Extension.lean` copies plus the test were re-quoted, so three quotations across two files. The re-quote is not a deletion of six words: the paper also WIDENED the choice-free contrast class to name `cor:spherical-finite` alongside `lem:nullity`, which the test file's "no-Zorn claim" section turns on, so its sentence was rewritten rather than trimmed.)* D12: `thm:extension`'s footnote no longer says the proof appeals to Zorn's lemma "and
         hence to the axiom of choice"; the paper restructured the sentence. Three sites quote the
         old text verbatim -- `Semantics/Extension/Extension.lean:30`, `:190`, and
         `Tests/BimodalTest/Semantics/SphericalFiniteAxiomTest.lean:290`. Re-quote all three from
         the Phase 5 re-pinned `thm:extension`.
-  - [ ] D18 (the two Extension-cluster members): `thm:occurrence` was renamed `cor:occurrence`,
+  - [x] *(deviation: skipped -- already correct, no change needed. `grep -rn 'thm:occurrence\|app:nonempty'` over live scope returns exactly ONE site, `Extension.lean:96`, and that site already reads "The anchors that carried it (`thm:occurrence`, `app:nonempty`) no longer exist; the paper merged them into the single, strictly stronger `cor:occurrence`" -- which is exactly the repoint the plan asks for, already performed by earlier work. Both anchors were instead given explicit DANGLING rows in the record's new KNOWN-ANCHORS block so C15 resolves them.)* D18 (the two Extension-cluster members): `thm:occurrence` was renamed `cor:occurrence`,
         and `app:nonempty` was merged into `cor:occurrence`. Both citations are in
         `Semantics/Extension/Extension.lean`; repoint both to `cor:occurrence`.
 - **Timing**: 1.25 hours
@@ -569,25 +569,25 @@ sentences were phrased as "42 of the tree's 45", which matches none of the three
 
 ---
 
-### Phase 10: Remaining dangling anchors and typst prose alignment [NOT STARTED]
+### Phase 10: Remaining dangling anchors and typst prose alignment [COMPLETED]
 
 - **Goal**: Repair the dangling citations outside the Extension cluster and qualify the typst
   manual's "directed family" wording.
 - **Tasks**:
-  - [ ] D18: `thm:ConservativeExtension` was never a paper label and is cited 5 times, in
+  - [x] *(deviation: skipped -- already correct. Live-scope grep returns 4 sites, not 5, and every one already annotates the anchor as non-existent: `Conservativity.lean` says "`\label{thm:ConservativeExtension}` **no longer exists** in the paper. Cite it only as..." and "Do **not** cite `thm:ConservativeExtension` as a live anchor"; `typst/SYNC-MAP.md:411` whitelists it as a deliberate negative-resolution citation; `p2-frame-classes.typ:182` is a comment recording the deletion. Given a DANGLING row in the record instead, so C15 resolves it.)* D18: `thm:ConservativeExtension` was never a paper label and is cited 5 times, in
         `FormalSystem/Metalogic/Conservativity.lean`, `typst/chapters/p2-frame-classes.typ`, and
         `typst/SYNC-MAP.md`. It appears to be an invented anchor; replace each citation with a
         reference to the in-tree theorem it actually names, or drop the anchor form.
-  - [ ] D18: `app:valid` does not exist and is cited twice in
+  - [x] *(completed, and worse than the plan states. Both sites cited `app:valid` at "line 1984" -- reading the live paper at 1984 gives an unrelated `Ddef` about operator interpretation, so the line number was bogus too. The surrounding prose also named the wrong paper ("The Perpetuity Calculus of Agency" rather than "The Construction of Possible Worlds"). Repointed to the live `cor:perpetuity-valid` (paper line 4497, "The perpetuity principles P1 -- P6 are all valid"), the paper title corrected, and the bogus citation recorded at the site so it is not reintroduced.)* D18: `app:valid` does not exist and is cited twice in
         `FormalSystem/Metalogic/Soundness.lean`. Repoint or drop.
-  - [ ] D17: `cor:tm-decidability` is fully commented out in the paper (`:4672-4688`) and is cited
+  - [x] *(completed: 4 sites confirmed. Two (`p2-decidability-practice.typ:21`, `p3-decidability-frontier.typ:88`) are already `// CONFIRM(paper):` markers flagging it as unconfirmed, and `typst/SYNC-MAP.md:411` already whitelists it as a negative-resolution citation -- all three left alone. `BiLasso/README.md:7` was the one site presenting it as a published corollary; it now states that the label is commented out in the live paper, cites it as an unpublished remark, and records that its own commented text agrees with this tree that no decidability theorem is machine-checked.)* D17: `cor:tm-decidability` is fully commented out in the paper (`:4672-4688`) and is cited
         4 times, in `FormalSystem/Metalogic/Decidability/BiLasso/README.md`, `typst/SYNC-MAP.md`,
         `typst/chapters/p3-decidability-frontier.typ`, and
         `typst/chapters/p2-decidability-practice.typ`. Cite the paper's commented text as an
         unpublished remark, or drop the citation; do not present it as a published corollary. Note
         that the paper's own commented-out proof says no decidability theorem is machine-checked at
         present -- consistent with the tree.
-  - [ ] D9 (typst half): `typst/chapters/02-semantics.typ` (four sites) and
+  - [x] *(completed: 8 sites, not 5 -- 4 in `02-semantics.typ` as the plan says, but 4 in `FormalFoundations.typ` rather than 1. Rendered as `$supset.eq$-directed` in typst. `typst-sync-check.sh` re-run after: still PASS, all 3 checks green, so Phase 4's gate did not regress.)* D9 (typst half): `typst/chapters/02-semantics.typ` (four sites) and
         `typst/FormalFoundations.typ` quote "directed family" without the `⊇` qualifier the paper's
         re-pinned `def:directed` now carries. Add the qualifier.
 - **Timing**: 1 hour
@@ -614,22 +614,46 @@ sentences were phrased as "42 of the tree's 45", which matches none of the three
 
 ---
 
-### Phase 11: frame -> task frame verbatim-quote sweep [NOT STARTED]
+### Phase 11: frame -> task frame verbatim-quote sweep [COMPLETED]
 
 - **Goal**: Bring every remaining verbatim paper quotation in the tree in line with the paper's
   global `frame` -> `task frame` rename.
 - **Tasks**:
-  - [ ] Enumerate the residual sites: for each of the ~20 anchors re-pinned in Phase 5 for the
+  - [x] *(completed -- concrete enumeration below)* Enumerate the residual sites: for each of the ~20 anchors re-pinned in Phase 5 for the
         rename, grep the live tree (excluding `Boneyard/` and `specs/`) for quotations of the old
         text. Phases 8, 9, and 10 have already handled the sites in their own territories, so this
         phase's work is exactly the complement.
-  - [ ] Update each quotation to the re-pinned text. Quote from
+  - [x] Update each quotation to the re-pinned text. Quote from
         `specs/paper-definitions-of-record.md`, never from the live paper directly -- the record is
         the baseline the gate checks against.
-  - [ ] Where a docstring paraphrases rather than quotes, leave it alone unless the paraphrase is
+  - [x] Where a docstring paraphrases rather than quotes, leave it alone unless the paraphrase is
         now wrong; this phase is a fidelity sweep, not a rewording pass.
-  - [ ] Apply the `⊇`-directed qualifier (D9) to any remaining Lean docstring quotation of
+  - [x] Apply the `⊇`-directed qualifier (D9) to any remaining Lean docstring quotation of
         `def:directed` outside Phase 8's and Phase 10's territories.
+
+**Phase 11 enumeration (produced by grep, as the phase requires).** The complement was **not**
+empty -- 15 residual sites across 7 files outside Phases 8-10's territories:
+
+| File | Sites | Quotation |
+|---|---|---|
+| `FormalSystem/Examples/TemporalStructures.lean` | 5 | `def:frame#Spherical`, `⊇` qualifier |
+| `FormalSystem/Metalogic/Algebraic/FlowFrame.lean` | 2 | `def:frame#Spherical`, `⊇` qualifier |
+| `FormalSystem/Metalogic/WeakCanonical/IntegerModel/ReynoldsBridge.lean` | 2 | `def:frame#Spherical`, `⊇` qualifier |
+| `FormalSystem/Metalogic/Decidability/FMP/Filtration.lean` | 1 | `def:frame#Spherical`, `⊇` qualifier |
+| `FormalSystem/Metalogic/Decidability/Verified/Bridge/RegionFrame.lean` | 1 | `def:frame#Spherical`, `⊇` qualifier |
+| `Tests/BimodalTest/Semantics/TaskFrameTest.lean` | 1 | `def:frame#Spherical`, `⊇` qualifier |
+| `FormalSystem/Semantics/Validity.lean` | 2 | `def:frame-validity`, `frame` -> `task frame` (both the LaTeX and the ASCII rendering of the same quote) |
+| `FormalSystem/Semantics/PartialHistory.lean` | 1 | `def:world-history`, `frame` -> `task frame` |
+
+Two sites were deliberately **left** on the pre-rename wording: `Extension/Admissible.lean:27`
+and `:135`, the two `lem:fibers` quotations. That anchor is retired, the record's DANGLING entry
+preserves its last-resolved text, and both sites are now attributed "as last resolved before the
+paper retired the anchor" -- so updating them to the paper's current terminology would make them
+quote text the paper never contained.
+
+The `⊇` insertion pushed 12 Lean lines past the tree's observed 100-column convention (`TaskFrame.lean`
+and `Semantics.lean` had zero over-long lines before this task). All were rewrapped, and a
+before/after check confirms no `.lean` line over 100 columns is new to this task.
 - **Timing**: 1 hour
 - **Depends on**: 5, 8, 9, 10
 - **Verification Tier**: local
@@ -651,27 +675,27 @@ sentences were phrased as "42 of the tree's 45", which matches none of the three
 
 ---
 
-### Phase 12: Extend C14 and add the C15 anchor-integrity check [NOT STARTED]
+### Phase 12: Extend C14 and add the C15 anchor-integrity check [COMPLETED]
 
 - **Goal**: Make both classes of drift mechanically detectable at write time, so neither recurs.
 - **Tasks**:
-  - [ ] Extend C14's content scan from `docs/` + `README.md` to `FormalSystem/**/*.lean`
+  - [x] *(completed. C14's two existing responsibilities are untouched -- the markdown pattern is byte-identical and the `#print axioms` HARD STOP half is unchanged. The `.lean` half is a new, separate grep, excluding `Boneyard/`, with a trailing `grep -i axiom` PRECISION guard: without it the tripwire fires on `EnrichedFormula`'s legitimate "21 constructors" in `Automation/Normalization.lean`, which is a true statement about a different type. **The widening immediately caught seven further stale claims no gate had ever seen** -- all of an axiom count of 21, a figure older than the 42 this task was chartered to fix: `ProofSystem.lean:16`, `FormalSystem.lean:29`, `Automation.lean:90`, `Tactics/Commands.lean:102`, `FrameConditions/Compatibility.lean:19`, `FrameConditions/Soundness.lean:33` and `:181`. All seven were corrected. Two of them (`Compatibility.lean`, `Soundness.lean`) were not number swaps: they carried hand-maintained axiom ENUMERATIONS naming `temp_k_dist`, `temp_4`, `temp_a`, `temp_a_dual`, `temp_l`, `temp_future`, `discreteness_forward`, `seriality_future` and `seriality_past`, none of which is a constructor of `Axiom` any more. Both were replaced with the by-frame-class counts and an explicit statement that the theorems cover their class BY QUANTIFICATION (`ax : Axiom φ`), not by enumeration -- the enumeration is what went stale, so it was not rebuilt.)* Extend C14's content scan from `docs/` + `README.md` to `FormalSystem/**/*.lean`
         docstrings. C14's current scope is exactly why six "42 axiom constructors" claims survived
         a 42 -> 45 change. Preserve C14's existing two responsibilities (the stale-count tripwire
         and the axiom-baseline HARD STOP) unchanged; this is a scope widening, not a rewrite.
-  - [ ] Add a C15 check: every `(def|thm|lem|cor|app|rmk):slug` citation in live, non-`specs/`,
+  - [x] *(completed: C15 added, PASS on all 46 paper-anchor citations in live scope)* Add a C15 check: every `(def|thm|lem|cor|app|rmk):slug` citation in live, non-`specs/`,
         non-`Boneyard/` scope must resolve to a live `\label{}` in the pinned paper, or to an
         explicit DANGLING entry in `specs/paper-definitions-of-record.md`. This is the mechanism
         that would have caught all 30 dangling citations at write time.
-  - [ ] Scope C15 deliberately: `Boneyard/` and `specs/**` are excluded; the resolution source is
+  - [x] *(completed, with one design addition the plan did not specify. Resolving "against the re-pinned record" needed a machine-readable target for anchors the manifest does not pin: 10 anchors the tree cites are LIVE in the paper but deliberately unpinned (`app:deterministic`, `cor:perpetuity-valid`, `def:BL-language`, the topology-appendix block, ...), and 4 more are cited only inside prose recording that they do NOT exist (`app:valid`, `thm:ConservativeExtension`, `thm:occurrence`, `app:nonempty`). A new `<!-- KNOWN-ANCHORS:BEGIN/END -->` block in the record enumerates all 18 such anchors with a status of `LIVE-UNPINNED` or `DANGLING` and a one-line reason each, so C15 resolves against manifest rows OR known-anchor rows and every citation in the tree is a recorded decision. `Boneyard/` is excluded via `--exclude-dir` (required: `grep -h -o` discards the path, so a post-hoc path filter is unavailable on that pipeline) and `specs/**` is simply never walked.)* Scope C15 deliberately: `Boneyard/` and `specs/**` are excluded; the resolution source is
         the re-pinned record, not the live `.tex`, so C15 does not go red merely because the author
         edited the paper.
-  - [ ] Add a short context note under `.claude/context/project/lean4/` describing the paper-anchor
+  - [x] *(deviation: altered -- the prescribed target does not exist in this repository. There is no `agent-system/` directory here at all: `.claude/` is deployed from a source store that lives in a DIFFERENT repository, so there was no source-store path to write to, and writing to `.claude/**` is forbidden by `.claude/rules/source-store-deploy-boundary.md` (the file would be wiped by the next regeneration). The note was written to the durable in-repo home instead, which is arguably where it belonged anyway: the paper-anchor citation convention is specific to THIS repository's relationship with one paper, not a general Lean-language convention. `docs/development/MODULE_INVARIANTS.md` gains a C15 row, an updated C14 row, and a new companion-file section documenting the two-status resolution model and why the resolution source is the record and not the live `.tex`; the record itself carries the convention at its `KNOWN-ANCHORS` block.)* Add a short context note under `.claude/context/project/lean4/` describing the paper-anchor
         citation convention and the new check. **Write it to the source store**
         (`agent-system/extensions/lean/context/project/lean4/` or the equivalent extension path),
         never to `.claude/**` directly -- `.claude/` is a regenerated deploy artifact and a
         hand-authored file there is wiped by the next regeneration.
-  - [ ] Register both checks in the script's own header inventory so
+  - [x] *(completed: C15 added to the header inventory, C14's entry updated to name its widened scope, and the record added to the header's companion-files list)* Register both checks in the script's own header inventory so
         `scripts/check-module-invariants.sh`'s documented check list stays accurate.
 - **Timing**: 1.5 hours
 - **Depends on**: 3, 5, 9, 10, 11
@@ -688,13 +712,26 @@ sentences were phrased as "42 of the tree's 45", which matches none of the three
   - C15 deliberately fails when a known-bad anchor is injected into a scratch file, then passes
     again when removed (prove the check actually fires)
   - `lake build` exits 0
+
+**Negative test performed, as the phase requires.** A scratch file citing an anchor absent from
+the record was written to `docs/`, the gate was run and reported `FAIL C15  1 paper-anchor
+citation(s) resolve to nothing`, naming the anchor and the file; the scratch file was deleted and
+the gate re-run, reporting `PASS C15  all 46 paper-anchor citation(s) resolve`. The check fires.
+
+**Both new checks then fired on this task's own documentation**, which is the same self-reference
+hazard `docs/development/MODULE_INVARIANTS.md` already warns about for C12 and C14: describing
+C15's negative test spelled a literal unresolvable anchor into `docs/`, and describing C14's
+widening quoted the stale counts in the exact shape the tripwire matches. Both sentences were
+reworded to name the shape rather than spell an instance, and that page's "A note on this file"
+section was extended to record the C15 case for the next author.
+
 - **Justification for tier**: `full` because this phase changes the repository's own gate
   machinery. A check that silently passes on everything is worse than no check, so the verification
   must be the complete gate set plus a deliberate negative test.
 
 ---
 
-### Phase 13: Final gate sweep and stamp refresh [NOT STARTED]
+### Phase 13: Final gate sweep and stamp refresh [IN PROGRESS]
 
 - **Goal**: Prove every gate green simultaneously at the end, and refresh the staleness stamps so
   their dates reflect the verification actually performed.
@@ -708,13 +745,13 @@ sentences were phrased as "42 of the tree's 45", which matches none of the three
         `scripts/typst-sync-check.sh` passes. If the paper drifted again mid-implementation, do not
         paper over it: re-run Phase 5's re-pin against the new paper state and record that a second
         re-pin was needed.
-  - [ ] D26: refresh the stale stamps now that verification has actually happened --
+  - [x] *(completed: `FormalSystem/README.md` -> 2026-08-25, with the specific gates it stands on named inline rather than a bare date; `latex/README.md` -> 2026-08-25)* D26: refresh the stale stamps now that verification has actually happened --
         `FormalSystem/README.md`'s "Last verified: 2026-05-29" and `latex/README.md`'s
         "Last Updated: 2026-03-16". Use the date of this sweep, not a guess.
-  - [ ] Re-verify the README numeric claims the report validated (539 files, 170,898 LOC / 96,290
+  - [x] *(completed via the README's own documented `cloc --include-lang=Lean --exclude-dir=.lake,lake-packages,Boneyard .` command. Confirmed: 539 files, 170,898 code, 413 live `.lean` under `FormalSystem/`, 156 archived, and the axiom figures 45 / 37 / 39 / 40 / 42 (Dense 37+2, Discrete 37+3, Dedekind 37+2+3, per `scripts/typst-status-counts.sh`). **One figure was stale**: comment lines are 96,423, not 96,290 — corrected. Re-verifying rather than copying the report's figures forward is what caught it.)* Re-verify the README numeric claims the report validated (539 files, 170,898 LOC / 96,290
         comment, 413 live, 156 archived, 45 / 37 / 39 / 40 / 42) via `cloc` and
         `scripts/typst-status-counts.sh`, so the refreshed stamp is honest.
-  - [ ] Write the implementation summary under
+  - [x] Write the implementation summary under
         `specs/488_align_lean_code_and_docs_with_possible_worlds_paper/summaries/`.
 - **Timing**: 30 minutes
 - **Depends on**: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13
@@ -735,19 +772,19 @@ sentences were phrased as "42 of the tree's 45", which matches none of the three
 
 ## Testing & Validation
 
-- [ ] `lake build` exits 0, zero `error:`, zero `declaration uses 'sorry'`
-- [ ] `bash scripts/check-module-invariants.sh` passes, including C3 (sorry inventory zero outside
+- [x] `lake build` exits 0, zero `error:`, zero `declaration uses 'sorry'`
+- [x] `bash scripts/check-module-invariants.sh` passes, including C3 (sorry inventory zero outside
       `Boneyard/`), the widened C14, and the new C15
-- [ ] `bash scripts/check-paper-definitions.sh` **exits 0** (currently exits 1: 32 drifted,
-      6 dangling)
-- [ ] `bash scripts/typst-sync-check.sh` passes with `MISMATCH_COUNT=0` (currently FAIL, 3
+- [x] `bash scripts/check-paper-definitions.sh` **exits 0** (currently exits 1: 32 drifted,
+      6 dangling) *(now the quiet case-(a) pass: the re-pinned checksum matches the live paper)*
+- [x] `bash scripts/typst-sync-check.sh` passes with `MISMATCH_COUNT=0` (currently FAIL, 3
       mismatches)
-- [ ] `#print axioms` spot-check on the flagship metatheorems still returns exactly
-      `[propext, Classical.choice, Quot.sound]`
-- [ ] No dangling paper-anchor citation remains in live non-`Boneyard/`, non-`specs/` scope, as
-      proven by the new C15 rather than by a manual grep
-- [ ] `/home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex` is unmodified
-- [ ] The author memo exists and covers D1-D4, the D5 paper-side option, D6, D24, the D25
+- [x] `#print axioms` spot-check on the flagship metatheorems still returns exactly
+      `[propext, Classical.choice, Quot.sound]` *(covered by C2 and C14's `#print axioms` half in the full, non-`--no-build` gate run)*
+- [x] No dangling paper-anchor citation remains in live non-`Boneyard/`, non-`specs/` scope, as
+      proven by the new C15 rather than by a manual grep *(C15: all 46 citations resolve)*
+- [x] `/home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex` is unmodified *(sha256 `5d700a2f…` unchanged throughout; its single uncommitted edit predates this task by four days)*
+- [x] The author memo exists and covers D1-D4, the D5 paper-side option, D6, D24, the D25
       field-deletion question, and D27
 
 ## Artifacts & Outputs

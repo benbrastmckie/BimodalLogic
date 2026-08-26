@@ -32,4 +32,4 @@ latexmk -pdf BimodalReference.tex
 
 ---
 
-*Last Updated: 2026-03-16*
+*Last Updated: 2026-08-25*

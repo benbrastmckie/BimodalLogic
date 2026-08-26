@@ -360,4 +360,6 @@ For Bimodal-specific guides and references, see [docs/](../docs/README.md):
 
 ---
 
-*Last verified: 2026-05-29*
+*Last verified: 2026-08-25 — `lake build` clean and sorry-free, `scripts/check-module-invariants.sh`
+all-green (including the widened C14 and the new C15), `scripts/check-paper-definitions.sh` exit 0,
+`scripts/typst-sync-check.sh` PASS.*
