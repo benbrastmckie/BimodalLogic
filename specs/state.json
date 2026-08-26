@@ -20,24 +20,34 @@
     {
       "project_number": 488,
       "project_name": "align_lean_code_and_docs_with_possible_worlds_paper",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Review possible_worlds.tex (JPL paper) and align the Lean code and documentation such as README.md with the paper, identifying and fixing discrepancies so all claims are verified in the Lean codebase and reported accurately in the documentation",
       "topic": "paper-refactor",
       "created": "2026-08-25T23:24:50Z",
-      "last_updated": "2026-08-26T01:14:00Z",
-      "session_id": "sess_1787706306_28c530",
+      "last_updated": "2026-08-26T02:24:32Z",
+      "session_id": "sess_1787708128_a07716",
       "researched": "2026-08-25T23:45:48Z",
       "artifacts": [
-        {
-          "path": "specs/488_align_lean_code_and_docs_with_possible_worlds_paper/reports/01_paper-code-docs-alignment.md",
-          "type": "report",
-          "summary": "Evidence-backed discrepancy inventory (27 IDs) across the JPL paper, the Lean tree, and the docs: paper over-claims strong completeness/decidability/blanket formalization, the paper-definitions gate is red with 32 drifted anchors, 30 dangling anchor citations, and three concrete README errors; all 25 audited metatheorems verified sorry-free at exactly [propext, Classical.choice, Quot.sound]."
-        },
         {
           "path": "specs/488_align_lean_code_and_docs_with_possible_worlds_paper/plans/02_paper-code-docs-alignment.md",
           "type": "plan",
           "summary": "14-phase, 14-hour plan covering the repo-side half of the 28-item paper/Lean/docs discrepancy inventory, with the read-only paper's items routed to an author memo."
+        },
+        {
+          "path": "specs/488_align_lean_code_and_docs_with_possible_worlds_paper/reports/02_author-memo.md",
+          "type": "report",
+          "summary": "Author-facing memo: D1-D5 as requested paper corrections, D6/D24/D25/D27 as owner decisions, each with verified paper lines and Lean counter-evidence."
+        },
+        {
+          "type": "report",
+          "path": "specs/488_align_lean_code_and_docs_with_possible_worlds_paper/reports/01_paper-code-docs-alignment.md",
+          "summary": "Research report: paper/code/docs alignment discrepancy inventory."
+        },
+        {
+          "type": "summary",
+          "path": "specs/488_align_lean_code_and_docs_with_possible_worlds_paper/summaries/03_paper-code-docs-alignment-summary.md",
+          "summary": "Realigned the Lean tree and its documentation with the JPL paper: record re-pinned, dangling anchors repaired, false docstring claims corrected, two write-time drift guards added."
         }
       ],
       "memory_candidates": [
@@ -97,7 +107,8 @@
         ],
         "skeleton": false,
         "follow_up_tasks": []
-      }
+      },
+      "completion_summary": "Re-baselined specs/paper-definitions-of-record.md against the paper's latest wave (4213 -> 4856 lines), taking scripts/check-paper-definitions.sh from exit 1 (32 drifted, 6 unresolvable) to exit 0, and corrected every false documentation and docstring claim the research report identified across README.md, FormalSystem/README.md, 20 Lean modules, and the typst manual. Added two mechanical guards so both classes of drift are caught at write time: C14's content scan was widened from markdown to Lean docstrings (immediately surfacing seven further stale axiom-count claims no gate had ever seen), and a new C15 asserts that every paper-anchor citation in live scope resolves against the pinned record. No Lean definition, proof, or declaration changed; lake build remains clean and sorry-free at 2493 jobs, and the paper itself was never edited."
     },
     {
       "project_number": 298,
