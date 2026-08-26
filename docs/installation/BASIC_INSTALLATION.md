@@ -80,7 +80,7 @@ You should see version numbers for all three commands.
 cd ~/Documents/Projects  # or wherever you keep projects
 
 # Clone ProofChecker
-git clone https://github.com/benbrastmckie/ProofChecker.git
+git clone https://github.com/benbrastmckie/BimodalLogic.git
 
 # Enter the project directory
 cd ProofChecker
@@ -180,7 +180,7 @@ chmod -R u+rw ~/.elan/
 |------|---------|
 | Install elan | `curl https://...elan-init.sh -sSf \| sh` |
 | Verify installation | `lean --version && lake --version` |
-| Clone repository | `git clone https://github.com/benbrastmckie/ProofChecker.git` |
+| Clone repository | `git clone https://github.com/benbrastmckie/BimodalLogic.git` |
 | Build project | `lake build` |
 | Run tests | `lake test` |
 | Update project | `git pull && lake update && lake build` |

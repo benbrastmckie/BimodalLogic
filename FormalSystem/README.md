@@ -177,12 +177,18 @@ Because `Dense ≤ Dedekind`, a Dedekind derivation admits the two density axiom
   on ℤ, which is nonetheless conditionally complete.
 - **Frame**: `DenselyOrdered D` plus Dedekind completeness
 
-**The paper's TM⁺_c has no frame class here.** `FrameClass.Dedekind` is the paper's TM⁺_dc (dense
-complete / real flow). TM⁺_c is completeness *simpliciter* — no density binder — so its models are
-exactly `{ℤ, ℝ}` up to order-and-group isomorphism and its theory is `Th(ℤ) ∩ Th(ℝ)`. No element of
-`FrameClass` picks that class out; the two branches are handled separately and exhaustively by
-`FrameClass.Discrete` and `FrameClass.Dedekind`, but their intersection is not itself a frame class,
-and adding one would require an axiom set this tree does not have. That is a real gap, not an omission.
+**`FrameClass.Dedekind` *is* the paper's TM⁺_c.** The live `cor:tm-completeness` reads
+"TM⁺_c — Weakly complete over the dense-and-complete class", and `FrameClass.Dedekind` is exactly
+that class (`DenselyOrdered D` plus Dedekind completeness). An earlier revision of this file said
+TM⁺_c was completeness *simpliciter*, with models `{ℤ, ℝ}` and theory `Th(ℤ) ∩ Th(ℝ)`, and that
+no element of `FrameClass` picked it out. Both halves are stale: that footnote is commented out in
+the live `def:TMplus-c`, and the paper's class for TM⁺_c is dense-and-complete. There is no gap.
+
+What remains open is an axiom-basis question on the paper's side: `def:TMplus-c` builds BX_c from
+`TMP-PU` and `TMP-SEP` with no density axiom, while `FrameClass.Dedekind` admits `density` and
+`dense_indicator` in addition to Reynolds' triple, so `completeness_dedekind` proves a
+stronger-premise statement than the paper's corollary as literally written. Resolving that is an
+author decision, not a tree change.
 
 ### Variant Incompatibility
 

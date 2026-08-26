@@ -364,7 +364,7 @@ Despite limitations, the following are fully functional:
 
 If you encounter issues not listed here:
 
-1. Check [Project Issues](https://github.com/owner/ProofChecker/issues)
+1. Check [Project Issues](https://github.com/benbrastmckie/BimodalLogic/issues)
 2. Verify against latest `main` branch
 3. Report with minimal reproducing example
 
