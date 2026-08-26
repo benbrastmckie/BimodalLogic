@@ -1,7 +1,7 @@
 # Implementation Plan: Wire the Algebraic Stack into the Build Graph
 
 - **Task**: 496 - research_algebraic_stack_build_graph_wiring
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 2.75 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/496_research_algebraic_stack_build_graph_wiring/reports/01_algebraic-stack-build-graph-wiring.md`
@@ -123,25 +123,25 @@ Phases within the same wave can execute in parallel. Wave 2's three phases touch
 
 ---
 
-### Phase 1: Wire the Aggregator and Clear the Manifest [NOT STARTED]
+### Phase 1: Wire the Aggregator and Clear the Manifest [COMPLETED]
 
 **Goal**: `FormalSystem.Metalogic.Algebraic` and its four children become reachable from the Lake
 default target root, and `scripts/module-invariants-manifest.txt` stops claiming they are not.
 
 **Tasks**:
-- [ ] Record the pre-edit baseline: `git status --short FormalSystem/ scripts/` (expect empty for
+- [x] Record the pre-edit baseline: `git status --short FormalSystem/ scripts/` (expect empty for
       these paths) and a detached baseline build (see Verification for the exact invocation).
       Record its `rc`. **If the baseline is not green, stop and report** — a pre-existing red tree
       makes this phase's result unattributable.
-- [ ] Add `import FormalSystem.Metalogic.Algebraic` to `FormalSystem/Metalogic.lean`, immediately
+- [x] Add `import FormalSystem.Metalogic.Algebraic` to `FormalSystem/Metalogic.lean`, immediately
       after the existing `import FormalSystem.Metalogic.Conservativity` line (currently `:15`).
       One line. Do not reorder the existing imports.
-- [ ] Delete these five lines from `scripts/module-invariants-manifest.txt`:
+- [x] Delete these five lines from `scripts/module-invariants-manifest.txt`:
       `FormalSystem.Metalogic.Algebraic` (currently `:29`) and
       `FormalSystem.Metalogic.Algebraic.{BooleanStructure,InteriorOperators,LindenbaumQuotient,UltrafilterMCS}`
       (currently `:51-54`). Delete only these five; leave `Core`, `Bundle`, `SoundnessLemmas`,
       `Bundle.Construction` and `SoundnessLemmas.CoValidity` untouched.
-- [ ] Rewrite the two comment blocks that now describe a state that no longer holds:
+- [x] Rewrite the two comment blocks that now describe a state that no longer holds:
       - The first block (currently `:20-26`) lists the sibling aggregators as "deliberately have
         no importer". Three remain; `Algebraic` is no longer among them.
       - The second block (currently `:34-50`) must lose the `Algebraic/FlowFrame.lean`
@@ -197,27 +197,27 @@ silently.
 
 ---
 
-### Phase 2: Correct `Algebraic/README.md` [NOT STARTED]
+### Phase 2: Correct `Algebraic/README.md` [COMPLETED]
 
 **Goal**: `FormalSystem/Metalogic/Algebraic/README.md` states what the directory actually proves
 and what actually consumes it.
 
 **Tasks**:
-- [ ] **Header status** (`:3`) — replace "Active -- infrastructure consumed by the live
+- [x] **Header status** (`:3`) — replace "Active -- infrastructure consumed by the live
       completeness proof". Say two things instead: `FlowFrame.lean` is consumed by the live
       completeness proof, and the Boolean-algebra/ultrafilter layer is standalone sorry-free
       infrastructure with no current consumer, now covered by `lake build` (Phase 1).
-- [ ] **"Not optional" claim** (Purpose note, `:20-24`) — drop "This directory is **not** optional
+- [x] **"Not optional" claim** (Purpose note, `:20-24`) — drop "This directory is **not** optional
       relative to it" and "so `Algebraic/` participates in the live proof rather than standing
       beside it" as directory-wide claims. Scope both to `FlowFrame.lean`.
-- [ ] **Importer list** (same note) — the list of four (`Completeness.lean`,
+- [x] **Importer list** (same note) — the list of four (`Completeness.lean`,
       `ChronicleToCountermodelBasic.lean`, `ChronicleMonadicBridge.lean`,
       `DiscreteCarrierProbe.lean`) is incomplete. There are **six** importers of
       `Algebraic.FlowFrame`; the two omitted are `Bundle/LimitMCS.lean` and
       `WeakCanonical/GroupModel/CountermodelBase.lean`. Note that the last two are not under
       `BXCanonical/`, so the sentence's "`BXCanonical` imports ..." framing needs widening, not
       just two more filenames appended.
-- [ ] **Interior-operators claim** (`:125`) — replace "G and H are shown to be interior operators
+- [x] **Interior-operators claim** (`:125`) — replace "G and H are shown to be interior operators
       using the T and 4 axioms" with what is actually proved: `boxInterior`
       (`InteriorOperators.lean:142`) is the only `InteriorOp`, assembled from `box_le_self`
       (`:101`), `box_monotone` (`:112`) and `box_idempotent` (`:130`); `H_monotone` (`:80`) is the
@@ -226,13 +226,13 @@ and what actually consumes it.
       (`:261`), and `gQuot` does not exist anywhere in the repository. The file's own module
       docstring (`InteriorOperators.lean:29-43`) already says this correctly and is the model to
       follow.
-- [ ] **Mathematical Overview step 3** (`:149-152`) — this passage repeats the same false claim in
+- [x] **Mathematical Overview step 3** (`:149-152`) — this passage repeats the same false claim in
       expanded form ("Show G and H are interior operators", with G-specific deflationary/monotone/
       idempotent bullets). Correct it in the same pass; leaving it would reinstate the error the
       previous bullet removes.
-- [ ] **Modules table row** (`:39`) — `InteriorOperators.lean` → "Box as interior operator; H
+- [x] **Modules table row** (`:39`) — `InteriorOperators.lean` → "Box as interior operator; H
       monotonicity".
-- [ ] **Footer** (`:200`) — refresh `*Last updated: 2026-04-06*` to the current date.
+- [x] **Footer** (`:200`) — refresh `*Last updated: 2026-04-06*` to the current date.
 
 **Timing**: 0.75 hours
 
@@ -254,9 +254,13 @@ phase.
 **Verification**:
 - Diff read-through confirming every changed hunk is markdown prose with no compile surface.
 - `grep -n 'G and H are shown to be interior operators\|not\*\* optional\|participates in the live
-  proof' FormalSystem/Metalogic/Algebraic/README.md` returns nothing.
+  proof' FormalSystem/Metalogic/Algebraic/README.md` returns nothing. *(verified; the scoped
+  FlowFrame-only restatement was worded to avoid the retired phrase rather than to reuse it.)*
 - `grep -c 'gQuot' FormalSystem/Metalogic/Algebraic/README.md` returns 0 — the correction must not
-  introduce a name that does not exist.
+  introduce a name that does not exist. *(deviation: altered — the literal unanchored grep returns 1,
+  because the corrected text names `negQuot`, which this same phase instructs be named and which
+  contains `gQuot` as a substring. The word-anchored form `grep -c '\bgQuot'` returns 0, which is the
+  criterion actually intended; verified.)*
 - `bash scripts/check-module-invariants.sh --no-build` passes (C5/C12 scan markdown for stale
   dotted and slash-form module paths).
 

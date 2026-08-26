@@ -1,6 +1,10 @@
 # Algebraic Representation Infrastructure
 
-**Status**: Active -- infrastructure consumed by the live completeness proof
+**Status**: Active, on two different footings. `FlowFrame.lean` is infrastructure consumed by
+the live completeness proof. The Boolean-algebra/ultrafilter layer (`LindenbaumQuotient.lean`,
+`BooleanStructure.lean`, `InteriorOperators.lean`, `UltrafilterMCS.lean`) is standalone
+sorry-free infrastructure with **no current consumer**; it is covered by `lake build` because
+`Metalogic.lean` imports the sibling aggregator `../Algebraic.lean`.
 
 This directory contains:
 1. An algebraic approach to the representation theorem using Lindenbaum-Tarski algebra and ultrafilter theory
@@ -17,11 +21,17 @@ The algebraic modules provide:
 2. Infrastructure for Stone duality and algebraic topology extensions
 3. A cleaner mathematical foundation for future algebraic modal logic research
 
-**Note**: `BXCanonical/` is the wired completeness entry point. This directory is **not**
-optional relative to it: `BXCanonical` imports `Algebraic.FlowFrame` — from `Completeness.lean`,
-`Chronicle/ChronicleToCountermodelBasic.lean`, `Chronicle/ChronicleMonadicBridge.lean`, and
-`DiscreteCarrierProbe.lean` — so `Algebraic/` participates in the live proof rather than standing
-beside it. See [Metalogic README](../README.md) for the route diagram.
+**Note**: `BXCanonical/` is the wired completeness entry point, and **`FlowFrame.lean` is not
+optional relative to it** — but that claim is about that one file, not about this directory as a
+whole. `Algebraic.FlowFrame` has six live importers, and they are not all under `BXCanonical/`:
+`BXCanonical/Completeness.lean`, `BXCanonical/Chronicle/ChronicleToCountermodelBasic.lean`,
+`BXCanonical/Chronicle/ChronicleMonadicBridge.lean` and `BXCanonical/DiscreteCarrierProbe.lean`,
+plus `Bundle/LimitMCS.lean` and `WeakCanonical/GroupModel/CountermodelBase.lean`. That one file
+is therefore part of the live proof, not merely adjacent to it.
+
+The other four modules do stand beside it: they have no consumer anywhere in the live tree.
+They are compiled by `lake build` (via the sibling aggregator, imported from `Metalogic.lean`),
+not depended on by any proof. See [Metalogic README](../README.md) for the route diagram.
 
 ## Modules
 
@@ -36,7 +46,7 @@ under `Boneyard/` and are labelled as such.
 | `../Algebraic.lean` | Re-export module for the Algebraic package. **Sibling aggregator**, at `FormalSystem/Metalogic/Algebraic.lean` — not a file inside this directory | Complete |
 | `LindenbaumQuotient.lean` | Quotient by provable equivalence | **Sorry-free** |
 | `BooleanStructure.lean` | Boolean algebra instance | **Sorry-free** |
-| `InteriorOperators.lean` | G/H as interior operators | **Sorry-free** |
+| `InteriorOperators.lean` | Box as interior operator; H monotonicity | **Sorry-free** |
 | `TenseS5Algebra.lean` | Tense S5 algebra structure | **Archived** (3 sorries; moved to `Boneyard/UltrafilterFrame/`) |
 | `UltrafilterMCS.lean` | Ultrafilter-MCS bijection | **Sorry-free** |
 
@@ -122,7 +132,16 @@ structure InteriorOp (alpha : Type*) [PartialOrder alpha] where
   idempotent : ∀ a, toFun (toFun a) = toFun a
 ```
 
-G and H are shown to be interior operators using the T and 4 axioms.
+`boxInterior` (`InteriorOperators.lean:142`) is the only `InteriorOp` built here. It is
+assembled from `box_le_self` (`:101`), `box_monotone` (`:112`) and `box_idempotent` (`:130`),
+which hold because the modal T-axiom `Box phi -> phi` is valid under S5 accessibility.
+
+G and H are **not** interior operators under strict temporal semantics: `G phi -> phi` and
+`H phi -> phi` fail when G and H quantify over strictly future/past times. `H_monotone` (`:80`)
+is the only surviving G/H-family result, and there is **no G operator on the quotient at all** —
+the quotient carries `boxQuot` (`LindenbaumQuotient.lean:289`), `hQuot` (`:296`) and `negQuot`
+(`:261`), with no G counterpart anywhere in the tree. The module's own docstring
+(`InteriorOperators.lean:29-43`) states this and is the model this section follows.
 
 ### Ultrafilter-MCS Correspondence (`UltrafilterMCS.lean`)
 
@@ -146,10 +165,13 @@ The algebraic approach proceeds as follows:
    - Order: `[phi] <= [psi] <-> derives phi -> psi`
    - Operations: `[phi] ⊔ [psi] = [phi ∨ psi]`, `[phi] ⊓ [psi] = [phi ∧ psi]`, etc.
 
-3. **Interior Operators**: Show G and H are interior operators:
-   - Deflationary: `G[phi] <= [phi]` (from T-axiom `G phi -> phi`)
-   - Monotone: `[phi] <= [psi] -> G[phi] <= G[psi]` (from K-distribution)
-   - Idempotent: `G(G[phi]) = G[phi]` (from 4-axiom `G phi -> GG phi`)
+3. **Interior Operators**: Show Box is an interior operator on the quotient (`boxInterior`):
+   - Deflationary: `Box[phi] <= [phi]` (from the modal T-axiom `Box phi -> phi`)
+   - Monotone: `[phi] <= [psi] -> Box[phi] <= Box[psi]` (from K-distribution)
+   - Idempotent: `Box(Box[phi]) = Box[phi]` (from the modal 4-axiom `Box phi -> Box Box phi`)
+
+   G and H are not interior operators here: under strict temporal semantics their T-axioms
+   fail, so only `H_monotone` survives and no G operator is defined on the quotient.
 
 4. **Ultrafilter-MCS Correspondence**: Establish bijection between:
    - Ultrafilters of `LindenbaumAlg`
@@ -197,4 +219,4 @@ This directory additionally provides:
 
 ---
 
-*Last updated: 2026-04-06*
+*Last updated: 2026-08-26*
