@@ -108,8 +108,8 @@ theorem intTimeFrame_limit :
   exact TaskFrame.limit_of_subsingleton
 
 /-- *Spherical* (`def:frame#Spherical`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
-directed family $\mathcal{S}$ of nonempty fibers and segments") for `intTimeFrame`: its carrier
-is `Unit`, so every nonempty subset is the whole carrier. -/
+$\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments") for `intTimeFrame`:
+its carrier is `Unit`, so every nonempty subset is the whole carrier. -/
 theorem intTimeFrame_spherical : TaskFrame.Spherical intTimeFrame.TaskRel := by
   haveI : Subsingleton intTimeFrame.WorldState := inferInstanceAs (Subsingleton Unit)
   exact TaskFrame.spherical_of_subsingleton
@@ -194,8 +194,8 @@ theorem intNatFrame_limit :
   TaskFrame.limit_of_permissive intNatFrame_rel_iff
 
 /-- *Spherical* (`def:frame#Spherical`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
-directed family $\mathcal{S}$ of nonempty fibers and segments") for `intNatFrame`: every nonempty
-fiber and segment is the whole carrier or a singleton. -/
+$\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments") for `intNatFrame`:
+every nonempty fiber and segment is the whole carrier or a singleton. -/
 theorem intNatFrame_spherical : TaskFrame.Spherical intNatFrame.TaskRel :=
   TaskFrame.spherical_of_permissive intNatFrame_rel_iff
 
@@ -214,10 +214,13 @@ the test now points at this declaration.
 **Axiom discharges** are cited to `def:frame`'s four sub-anchors below, exactly as `intNatFrame`
 and `intTimeFrame` above cite theirs. Note that `app:dense` and a putative `app:deterministic` are
 *not* the right anchors for these discharges, despite occasionally being named as such:
-`app:dense` is the density **correspondence** theorem (`FF φ → F φ` iff the frame is `Dense`),
-which says nothing about this frame's axioms, and there is no `app:deterministic` anchor at all —
-`Deterministic` is a clause inside `def:frame-properties`, a frame-class predicate rather than an
-axiom-discharge source. `def:frame` is the source of record for all four discharges.
+both are **correspondence** theorems, which say nothing about this frame's axioms. `app:dense` is
+density correspondence (`FF φ → F φ` iff the task frame is `Dense`) and `app:deterministic` (live
+paper line 4102) is determinism correspondence (`φ → ⊞φ` if the task frame is `Deterministic`).
+The *definition* of `Deterministic` is `def:deterministic`, a standalone definition of the paper's
+own since it was split out of `def:frame-properties` — which now carries only *Discrete*, *Dense*
+and *Complete*. None of the three is an axiom-discharge source: two are correspondence theorems
+and one is a frame-class predicate. `def:frame` is the source of record for all four discharges.
 -/
 def intBoolFrame : TaskFrame Int where
   WorldState := Bool
@@ -290,7 +293,7 @@ theorem intBoolFrame_limit :
 
 /--
 *Spherical* (`def:frame#Spherical`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
-directed family $\mathcal{S}$ of nonempty fibers and segments") for `intBoolFrame`.
+$\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments") for `intBoolFrame`.
 
 **The discharge route matters.** `Bool` is finite, so `TaskFrame.spherical_of_finite` would also
 apply — but it is *not* used here, and must not be substituted. `spherical_of_permissive` is
@@ -359,8 +362,8 @@ theorem genericTimeFrame_limit :
   exact TaskFrame.limit_of_subsingleton
 
 /-- *Spherical* (`def:frame#Spherical`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
-directed family $\mathcal{S}$ of nonempty fibers and segments") for `genericTimeFrame`: its
-carrier is `Unit`, so every nonempty subset is the whole carrier. -/
+$\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments") for
+`genericTimeFrame`: its carrier is `Unit`, so every nonempty subset is the whole carrier. -/
 theorem genericTimeFrame_spherical : TaskFrame.Spherical (genericTimeFrame D).TaskRel := by
   haveI : Subsingleton (genericTimeFrame D).WorldState := inferInstanceAs (Subsingleton Unit)
   exact TaskFrame.spherical_of_subsingleton
@@ -456,9 +459,9 @@ theorem genericNatFrame_limit [SuccOrder D] [NoMaxOrder D] :
   TaskFrame.limit_of_permissive (genericNatFrame_rel_iff D)
 
 /-- *Spherical* (`def:frame#Spherical`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
-directed family $\mathcal{S}$ of nonempty fibers and segments") for `genericNatFrame`: every
-nonempty fiber and segment is the whole carrier or a singleton, and a directed family cannot
-contain two distinct singletons. No restriction on `D` is needed. -/
+$\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments") for
+`genericNatFrame`: every nonempty fiber and segment is the whole carrier or a singleton, and a
+directed family cannot contain two distinct singletons. No restriction on `D` is needed. -/
 theorem genericNatFrame_spherical [SuccOrder D] [NoMaxOrder D] :
     TaskFrame.Spherical (genericNatFrame D).TaskRel :=
   TaskFrame.spherical_of_permissive (genericNatFrame_rel_iff D)

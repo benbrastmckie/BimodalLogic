@@ -52,16 +52,19 @@ paper source — is the citation source of record.
   some $u, v \in W$."
 - *Limit* (`def:frame#Limit`, verbatim): "$\bigcap\limits_{x > 0} (w)_x = \set{w}$."
 - *Spherical* (`def:frame#Spherical`, verbatim): "$\bigcap \mathcal{S} \neq \emptyset$ for any
-  directed family $\mathcal{S}$ of nonempty fibers and segments."
-- `def:directed` (verbatim): "A nonempty family of sets $\mathcal{S}$ is \textit{directed} just in
-  case $S \subseteq S_1 \cap S_2$ for some $S \in \mathcal{S}$ whenever $S_1, S_2 \in
-  \mathcal{S}$."
-- `lem:nullity` (verbatim): "$w \Rightarrow_0 w$ for every world state $w \in W$ in every frame
-  $\F = \tuple{W, \D, \Rightarrow}$."
-- `def:constraints` (verbatim): "For a partial history $\tau : X \to W$ over a frame
-  $\F = \tuple{W, \D, \Rightarrow}$ and duration $z \in D \setminus X$, the \textit{constraints
-  imposed on $z$} are the segments $[\tau(t), \tau(s)]_{z-t}^{s-z}$ for times $t,s \in X$ where
-  $t < z < s$, and the fibers $\Fib(\tau(t), z - t)$ for $t \in X$ otherwise."
+  $\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments."
+- `def:directed`, the `$\supseteq$` clause (verbatim): "\item[\bf $\mathbf{\supseteq}$-Directed:]
+  just in case $S \subseteq S_1 \cap S_2$ for some $S \in \mathcal{S}$ whenever
+  $S_1, S_2 \in \mathcal{S}$." The paper split `def:directed` into a `$\supseteq$-Directed` and a
+  `$\subseteq$-Directed` clause; *Spherical*, and hence `DirectedFamily`, consumes the
+  `$\supseteq$` half only. The enclosing definition still opens "A nonempty family of sets
+  $\mathcal{S}$ is:", which is where the family's own nonemptiness comes from."
+- `lem:nullity` (verbatim): "$w \Rightarrow_0 w$ for every world state $w \in W$ in every task
+  frame $\F = \tuple{W, \D, \Rightarrow}$."
+- `def:constraints` (verbatim): "For a partial history $\tau : X \to W$ over a task frame $\F$
+  and duration $z \in D \setminus X$, the \textit{constraints on $z$} are the segments
+  $[\tau(t), \tau(s)]_{z-t}^{s-z}$ for times $t,s \in X$ where $t < z < s$ when both
+  $t,s \in X$, and the fibers $\fib{\tau(t), z - t}$ for $t \in X$ otherwise."
 
 The `Fib` / `Seg` / `DirectedFamily` / `IsFiber` / `IsSegment` apparatus these statements are
 built from lives in `TaskFrame.lean`, transcribed there from `def:task-relation` and
@@ -126,7 +129,7 @@ makes the fields statable without restating anything.
 `lem:nullity`: every world state loops at duration zero.
 
 Recorded source (`lem:nullity`, verbatim): "$w \Rightarrow_0 w$ for every world state $w \in W$
-in every frame $\F = \tuple{W, \D, \Rightarrow}$."
+in every task frame $\F = \tuple{W, \D, \Rightarrow}$."
 
 **Nullity is DERIVED, not an axiom.** `def:frame` has exactly four axioms — *Compositionality*,
 *Seriality*, *Limit*, *Spherical* — and Nullity is not among them. This theorem is the
@@ -142,9 +145,12 @@ The *Limit* hypothesis is taken in the literal transcribed shape
 `TaskFrame.limit_of_succOrder` and `TaskFrame.limit_of_shift` conclude, so either may be passed
 directly.
 
-Note this asserts **reflexivity only**. The existing `TaskFrame.nullity_identity` field is an
-iff, strictly stronger than the paper's `lem:nullity`; nothing here strengthens or weakens that
-field, and nothing here depends on it.
+Note this asserts **reflexivity only**, which is all `lem:nullity` asserts. The
+`TaskFrame.nullity_identity` field is an iff, and its other half — injectivity-at-zero,
+`R w 0 u → u = w` — follows from the `limit` hypothesis **alone**, by instantiating the cone
+witness at `y := 0`. So the field is derivable from `serial` + `limit` together and is *not* a
+strengthening of the paper; see that field's own docstring in `TaskFrame.lean` for both
+derivations. Nothing here strengthens or weakens the field, and nothing here depends on it.
 -/
 theorem nullity_of_serial_limit {W : Type} {R : W → D → W → Prop}
     (hSer : Serial R)

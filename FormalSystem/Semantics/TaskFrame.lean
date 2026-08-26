@@ -33,10 +33,10 @@ $x, y \geq 0$") with exactly FOUR axioms:
   for some $u, v \in W$."
 - *Limit* (`def:frame#Limit`, verbatim): "$\bigcap\limits_{x > 0} (w)_x = \set{w}$."
 - *Spherical* (`def:frame#Spherical`, verbatim): "$\bigcap \mathcal{S} \neq \emptyset$ for any
-  directed family $\mathcal{S}$ of nonempty fibers and segments."
+  $\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments."
 
 Nullity is NOT an axiom. The paper's `lem:nullity` (verbatim: "$w \Rightarrow_0 w$ for every
-world state $w \in W$ in every frame $\F = \tuple{W, \D, \Rightarrow}$.") is DERIVED,
+world state $w \in W$ in every task frame $\F = \tuple{W, \D, \Rightarrow}$.") is DERIVED,
 choice-free, from *Seriality* at `x = 0` plus *Limit*, and asserts reflexivity only.
 
 The supporting apparatus — nonempty `W`, the positive-cone primitive relation, the converse
@@ -180,7 +180,7 @@ The supporting apparatus of the paper's frame definition (`def:frame`), stated �
 discharge helpers above — against a bare relation `R : W → D → W → Prop` rather than a
 `TaskFrame` field, so the definitions apply verbatim to a frame's `TaskRel` whether or not the
 corresponding axioms are carried as structure data. This apparatus is what makes the paper's
-*Spherical* axiom ("`⋂ 𝒮 ≠ ∅` for any directed family `𝒮` of nonempty fibers and segments")
+*Spherical* axiom ("`⋂ 𝒮 ≠ ∅` for any `⊇`-directed family `𝒮` of nonempty fibers and segments")
 statable at all.
 
 Recorded source, `def:task-relation` (verbatim):
@@ -263,15 +263,23 @@ theorem mem_Seg {W : Type} {R : W → D → W → Prop} {w v u : W} {x y : D} :
     u ∈ Seg R w v x y ↔ R w x u ∧ R v (-y) u := Iff.rfl
 
 /--
-A directed family of sets.
+A `⊇`-directed family of sets.
 
-Recorded source (`def:directed`, verbatim): "A nonempty family of sets $\mathcal{S}$ is
-\textit{directed} just in case $S \subseteq S_1 \cap S_2$ for some $S \in \mathcal{S}$ whenever
-$S_1, S_2 \in \mathcal{S}$."
+Recorded source (`def:directed`, the `$\supseteq$` clause, verbatim):
+"\item[\bf $\mathbf{\supseteq}$-Directed:] just in case $S \subseteq S_1 \cap S_2$ for some
+$S \in \mathcal{S}$ whenever $S_1, S_2 \in \mathcal{S}$."
 
-The nonemptiness of the family is part of the definition (a directed family is a *nonempty*
-family); the nonemptiness of its *members* is a separate hypothesis wherever *Spherical*-shaped
-statements need it.
+**The paper splits `def:directed` in two.** Its enclosing sentence reads "A nonempty family of
+sets $\mathcal{S}$ is:", followed by a `$\supseteq$-Directed` clause and a
+`$\subseteq$-Directed` clause (`$S_1, S_2 \subseteq S$ for some $S \in \mathcal{S}$`). This
+definition transcribes the **`$\supseteq$` clause only**, because that is the one *Spherical*
+consumes. An earlier revision quoted an undifferentiated "\textit{directed}", from before the
+split; the mathematics is unchanged but the unqualified word is now ambiguous and must not be
+reintroduced.
+
+The nonemptiness of the family is part of the definition (it comes from the enclosing "A nonempty
+family of sets"); the nonemptiness of its *members* is a separate hypothesis wherever
+*Spherical*-shaped statements need it.
 -/
 def DirectedFamily {W : Type} (S : Set (Set W)) : Prop :=
   S.Nonempty ∧ ∀ S₁ ∈ S, ∀ S₂ ∈ S, ∃ S' ∈ S, S' ⊆ S₁ ∩ S₂
@@ -325,12 +333,23 @@ predicate declared in a module that *imports* this one could never become a `Tas
 The *Spherical* axiom, over a bare task relation.
 
 Recorded source (`def:frame#Spherical`, verbatim): "$\bigcap \mathcal{S} \neq \emptyset$ for any
-directed family $\mathcal{S}$ of nonempty fibers and segments."
+$\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments."
+
+**Where this sits in the ball-space hierarchy.** The paper attaches a footnote to this axiom
+(quoted from `def:frame`): the nonempty fibers and segments form a *ball space* on `W` in the
+sense of Ćmiel, Kuhlmann and Kuhlmann, and *Spherical* is the **downward-directed-intersection
+condition $\mathbf{S}_1^d$** of that hierarchy — "the nest condition $\mathbf{S}_1$ with a
+$\supseteq$-directed system of balls in place of a nest". It is therefore **strictly stronger**
+than the standard *spherically complete* condition, which is $\mathbf{S}_1$ itself. The name
+"Spherical" is not a synonym for "spherically complete"; reading it as one understates the axiom.
 
 Three points of the transcription, each load bearing:
 
-1. *Directed* is `def:directed`, transcribed as `DirectedFamily` — a definition in its own right,
-   which already carries the nonemptiness of the family `S`.
+1. *Directed* is `def:directed`, transcribed as `DirectedFamily`. The paper split `def:directed`
+   into a `$\supseteq$-Directed` and a `$\subseteq$-Directed` clause; *Spherical* consumes the
+   `$\supseteq$` half — "$S \subseteq S_1 \cap S_2$ for some $S \in \mathcal{S}$ whenever
+   $S_1, S_2 \in \mathcal{S}$" — which is what `DirectedFamily` transcribes, and which already
+   carries the nonemptiness of the family `S`.
 2. "Nonempty fibers and segments" is a condition on each *member*: it is both a class condition
    (`IsFiber R s ∨ IsSegment R s`) and a nonemptiness condition (`s.Nonempty`). Fibers and
    segments are **two separate classes**; a one-sided fiber does not count as a segment.
@@ -498,15 +517,50 @@ structure TaskFrame (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMo
   For any world states `w` and `u`, `TaskRel w 0 u` holds iff `w = u`.
   This is stronger than just reflexivity: it says zero duration means no change.
 
-  **Strictly stronger than the paper — OPEN DESIGN QUESTION.** The paper has no Nullity axiom:
-  `lem:nullity` (verbatim: "$w \Rightarrow_0 w$ for every world state $w \in W$ in every frame
-  $\F = \tuple{W, \D, \Rightarrow}$.") is DERIVED, choice-free, from *Seriality* at `x = 0`
-  plus *Limit*, and asserts reflexivity only. This field's iff form additionally asserts
-  injectivity-at-zero. Three live options: (a) demote it to a derived lemma proved from
-  Seriality + Limit once those land; (b) keep the iff as a deliberate, documented
-  strengthening; (c) keep reflexivity derived and drop injectivity-at-zero. The choice is
-  joint with the consequence-refactor work and is deliberately NOT settled by this module;
-  the field stays as-is until that joint decision lands.
+  **Not a strengthening — this field is DERIVABLE, and the frame class is extensionally
+  exactly the paper's.** An earlier revision of this docstring called the field "strictly
+  stronger than the paper" and left the keep-or-demote choice open as a design question. That
+  was wrong on the mathematics. Both halves of the `↔` follow from the other fields:
+
+  * **Reflexivity** (`w = u → TaskRel w 0 u`) is `lem:nullity`, derived choice-free from
+    *Seriality* at `x = 0` plus *Limit*. It is already proved in this tree as
+    `TaskFrame.nullity_of_serial_limit` (`Semantics/FrameAxioms.lean`).
+  * **Injectivity-at-zero** (`TaskRel w 0 u → w = u`) follows from the `limit` field **alone**,
+    by instantiating its cone witness at `y := 0`: for every `x > 0` we have `|0| < x` and
+    `TaskRel w 0 u`, so `limit` forces `u = w`. *Seriality* is not needed for this half.
+
+  Verbatim, `lem:nullity` reads: "$w \Rightarrow_0 w$ for every world state $w \in W$ in every
+  task frame $\F = \tuple{W, \D, \Rightarrow}$." It asserts reflexivity only, which is why
+  the second bullet is the part that had to be checked separately.
+
+  Both derivations typecheck against this module's own predicates:
+
+  ```lean
+  theorem inj_at_zero_of_limit {W : Type} {R : W → D → W → Prop}
+      (hLim : ∀ w u, (∀ x : D, 0 < x → ∃ y, |y| < x ∧ R w y u) → u = w)
+      (w u : W) (h : R w 0 u) : u = w :=
+    hLim w u fun x hx => ⟨0, by simpa using hx, h⟩
+
+  theorem nullity_iff_of_serial_limit {W : Type} {R : W → D → W → Prop}
+      (hSer : TaskFrame.Serial R)
+      (hLim : ∀ w u, (∀ x : D, 0 < x → ∃ y, |y| < x ∧ R w y u) → u = w)
+      (w u : W) : R w 0 u ↔ w = u :=
+    ⟨fun h => (inj_at_zero_of_limit hLim w u h).symm,
+     fun h => h ▸ TaskFrame.nullity_of_serial_limit hSer hLim w⟩
+  ```
+
+  **Consequences.** The Lean frame class
+  `{nullity_identity, comp, converse, serial, limit, spherical}` and the paper's four `def:frame`
+  axioms plus nonempty `W` plus the converse convention are **inter-derivable**: the Lean class
+  adds no content the paper lacks, and imposes no constraint the paper does not. In particular
+  the `⊇` half of *Limit*'s `⋂_{x>0}(w)_x = {w}` — that `w` itself lies in every positive cone —
+  is exactly reflexivity-at-zero, so it is supplied by the first bullet rather than assumed.
+
+  **The field is kept.** With derivability settled, deleting it versus retaining it is an
+  *ergonomic* call, not a mathematical one — deletion would break every construction site that
+  currently discharges it directly. It is retained here as documented redundancy for construction
+  ergonomics. The deletion question is an owner decision and is recorded as such in this task's
+  author memo; it is not settled by this module either way.
   -/
   nullity_identity : ∀ w u, TaskRel w 0 u ↔ w = u
   /--
@@ -566,7 +620,8 @@ structure TaskFrame (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMo
   limit : ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ TaskRel w y u) → u = w
   /--
   **The paper's *Spherical* axiom** (`def:frame#Spherical`, verbatim:
-  "$\bigcap \mathcal{S} \neq \emptyset$ for any directed family $\mathcal{S}$ of nonempty fibers
+  "$\bigcap \mathcal{S} \neq \emptyset$ for any $\supseteq$-directed family $\mathcal{S}$ of
+  nonempty fibers
   and segments"), stated by citation as `TaskFrame.Spherical TaskRel` — the bare-relation
   predicate of record, never restated inline.
 
@@ -858,7 +913,7 @@ The *Spherical* core argument for a directed family that has a `⊆`-minimal mem
 actual mathematical content, in fully constructive form**.
 
 Recorded source (`cor:spherical-finite`, via `specs/paper-definitions-of-record.md`, verbatim:
-"Every frame $\F = \tuple{W, \D, \Rightarrow}$ with finite $W$ satisfies \textit{Spherical},
+"Every task frame $\F = \tuple{W, \D, \Rightarrow}$ with finite $W$ satisfies \textit{Spherical},
 choice-free."), whose argument is: directedness upgrades a `⊆`-minimal member to a `⊆`-*least*
 member, and a least member is both nonempty and equal to the intersection.
 
@@ -897,7 +952,7 @@ omit [IsOrderedAddMonoid D] in
 **Every relation on a finite carrier satisfies *Spherical***.
 
 Recorded source (`cor:spherical-finite`, via `specs/paper-definitions-of-record.md`, verbatim:
-"Every frame $\F = \tuple{W, \D, \Rightarrow}$ with finite $W$ satisfies \textit{Spherical},
+"Every task frame $\F = \tuple{W, \D, \Rightarrow}$ with finite $W$ satisfies \textit{Spherical},
 choice-free."). Since `Set W` is well-founded under `<` when `W` is finite, a directed family has
 a `⊆`-minimal member; `sInter_nonempty_of_directed_of_minimal` above then closes the goal.
 
@@ -967,7 +1022,8 @@ theorem limit_of_subsingleton {W : Type} [Subsingleton W] {R : W → D → W →
 omit [IsOrderedAddMonoid D] in
 /--
 *Spherical* (`def:frame#Spherical`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
-directed family $\mathcal{S}$ of nonempty fibers and segments") on a subsingleton carrier: every
+$\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments") on a subsingleton
+carrier: every
 nonempty subset is the whole carrier, so the intersection of a nonempty family of nonempty sets
 is nonempty. Independent of the relation.
 -/
@@ -1188,7 +1244,8 @@ theorem trivialFrame_limit :
   exact limit_of_subsingleton
 
 /-- *Spherical* (`def:frame#Spherical`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
-directed family $\mathcal{S}$ of nonempty fibers and segments") for `trivialFrame`: its carrier
+$\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments") for `trivialFrame`:
+its carrier
 is `Unit`, so every nonempty subset is the whole carrier. -/
 theorem trivialFrame_spherical : Spherical (trivialFrame (D := D)).TaskRel := by
   haveI : Subsingleton (trivialFrame (D := D)).WorldState := inferInstanceAs (Subsingleton Unit)
@@ -1266,7 +1323,8 @@ theorem staticFrame_limit [Nontrivial D] (W : Type) [Nonempty W] :
   limit_of_eq (staticFrame_rel_iff W)
 
 /-- *Spherical* (`def:frame#Spherical`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
-directed family $\mathcal{S}$ of nonempty fibers and segments") for `staticFrame`: every nonempty
+$\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments") for `staticFrame`:
+every nonempty
 fiber and segment is the same singleton along a directed family. -/
 theorem staticFrame_spherical [Nontrivial D] (W : Type) [Nonempty W] :
     Spherical (staticFrame W (D := D)).TaskRel :=
@@ -1378,7 +1436,8 @@ theorem natFrame_limit [SuccOrder D] [NoMaxOrder D] :
   limit_of_permissive natFrame_rel_iff
 
 /-- *Spherical* (`def:frame#Spherical`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
-directed family $\mathcal{S}$ of nonempty fibers and segments") for `natFrame`: every nonempty
+$\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments") for `natFrame`:
+every nonempty
 fiber and segment is the whole carrier or a singleton, and a directed family cannot contain two
 distinct singletons. No restriction on `D` is needed. -/
 theorem natFrame_spherical [SuccOrder D] [NoMaxOrder D] :
