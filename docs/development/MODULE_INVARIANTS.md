@@ -30,7 +30,8 @@ file and line.
 | C11 | Every `import` inside `FormalSystem/Boneyard/` resolves, or is waived | The archive is never compiled, so `lake build` cannot see its imports rot. 65 archived import lines were already dangling when the two archives were consolidated |
 | C12 | Every **slash-shaped** source path in `docs/` + `README.md` resolves | C5 matches only *dotted* module names, so the slash form of `FormalSystem/Metalogic/Bundle/BFMCS.lean` is invisible to it. A table naming six source files, four of which did not exist, survived a green gate on exactly this blind spot |
 | C13 | Every relative markdown link in `docs/` + `README.md` resolves | Nothing checked `docs/` links at all; 96 of them had rotted, several pointing outside the repository |
-| C14 | Documented axiom and sorry counts match the tree, and the two headline theorems C2 does not cover match their axiom baseline | C2 and C3 assert facts about the *tree*; C14 is what asserts the *documentation* agrees with them. `docs/` had documented the axiom count as 21 against an actual 45, and the sorry count as 12 against an actual 0 |
+| C14 | Documented axiom and sorry counts match the tree — in `docs/`, `README.md` **and** `FormalSystem/**/*.lean` docstrings — and the two headline theorems C2 does not cover match their axiom baseline | C2 and C3 assert facts about the *tree*; C14 is what asserts the *documentation* agrees with them. `docs/` had documented the axiom count as 21 against an actual 45, and the sorry count as 12 against an actual 0. The `.lean` half was added later: C14's original markdown-only scope is exactly why six docstrings claiming an axiom-constructor count of 42 survived a 42 → 45 change untouched, and widening it immediately surfaced seven further claims of an axiom count of 21, in Lean docstrings that no gate had ever seen |
+| C15 | Every `def:`/`thm:`/`lem:`/`cor:`/`app:`/`rmk:` paper-anchor citation in live scope resolves against `specs/paper-definitions-of-record.md` | Nothing asserted that a cited paper anchor exists. Thirty dangling citations accumulated across six paper editing waves; `lem:fibers` alone was cited 17 times after the paper deleted its `\label` |
 | C9D | Task-number citations under `docs/` (computed always, **soft** by default) | C9's rule binds `docs/` too, but `docs/` does not yet satisfy it. Reported at every gate so the debt is visible rather than forgotten |
 
 ### Why C5 was not simply extended
@@ -90,6 +91,30 @@ This is not a backlog. Before adding an entry, prove there is no unique target f
 disk; if there is one, fix the import instead. C11 reports entries that no longer occur
 as stale, on the C5 model, so the file cannot become a dumping ground.
 
+### `specs/paper-definitions-of-record.md` — the paper-anchor resolution source (C15)
+
+C15 resolves every paper-anchor citation against this file, **never against the paper**. That is
+deliberate. The paper (`possible_worlds.tex`) lives in a different repository this one cannot see
+from CI, and it is edited by its author on his own schedule — it moved through six definitional
+waves in ten days, twice while a dispatch against it was in flight. A check that resolved against
+the live `.tex` would go red whenever the author edited his own paper, an event this repository
+neither controls nor can fix by editing itself. Resolving against the pinned record makes C15
+assert something this repository *can* act on: that every anchor it cites is a recorded decision.
+
+A citation resolves if it has **either** a row in the record's `MANIFEST` block (a pinned anchor,
+whose verbatim text and hash are tracked) **or** a row in the record's `KNOWN-ANCHORS` block, with
+one of two statuses:
+
+- `LIVE-UNPINNED` — resolves to a live `\label{}` in the paper, but the tree cites it by name
+  only, so pinning its text would buy nothing. Promote it to the manifest if a docstring starts
+  quoting it verbatim.
+- `DANGLING` — does **not** resolve: retired, commented out, or never a paper label at all. Every
+  citation site for one of these must say so in its own prose; C15 asserts only that the anchor is
+  *recorded*, not that the surrounding sentence is honest.
+
+An anchor with no row in either block is a typo or an undocumented citation. Both are defects, and
+the fix is to correct the citation or record the anchor — not to widen the check's exclusions.
+
 ### `scripts/markdown-link-allowlist.txt` — link-syntax illustrations (C13)
 
 Markdown **files** (not individual links) whose relative links are not resolution-checked. Only
@@ -135,9 +160,15 @@ ENFORCE_C9_DOCS=1 bash scripts/check-module-invariants.sh --no-build   # exits 1
 
 Flip the default to 1 once those citations are cleared.
 
-C12, C13 and C14 ship **enforced**, with no flags, because the work that cleared their debt
+C12, C13, C14 and C15 ship **enforced**, with no flags, because the work that cleared their debt
 landed in the same change that added them. C14 has two halves: a content scan that always runs,
 and a `#print axioms` half that skips cleanly under `--no-build` exactly as C2 does.
+
+C15 was accepted only after a **deliberate negative test** — a scratch file citing a `thm:` anchor that
+appears nowhere in the record was added under `docs/`, the gate was confirmed to fail with
+`FAIL C15`, the file was removed, and the gate was confirmed to pass again. A check that
+silently passes on everything is worse than no check, so run that test again after any change
+to C15's scope or resolution source.
 
 **Never flip an `ENFORCE_` flag back to 0 to make a gate pass.** Preventing exactly that
 is why the flags are named and defaulted in the script rather than passed on the command
@@ -158,8 +189,10 @@ line.
 
 ## A note on this file
 
-C12 and C14 scan `docs/`, and this file is in `docs/`. Prose here that names a hypothetical
+C12, C14 and C15 scan `docs/`, and this file is in `docs/`. Prose here that names a hypothetical
 source path, or quotes a stale count in the shape the tripwire matches, will fail the very
-checks it documents. That is the checks working, not a false positive: both were caught on this
-page while it was being written. Cite a path that resolves, and phrase a historical count so it
-does not read as a current claim.
+checks it documents. That is the checks working, not a false positive: all three were caught on
+this page while it was being written. Cite a path that resolves, phrase a historical count so it
+does not read as a current claim, and **do not write a literal unresolvable anchor** — describing
+C15's negative test cost exactly one `FAIL C15` on this page before the sentence was reworded to
+name the anchor's shape rather than spell one out.

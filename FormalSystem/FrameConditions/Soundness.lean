@@ -30,10 +30,9 @@ wrappers that use the typeclass architecture for cleaner API.
 The `DerivationTree` is now parameterized over `FrameClass`, replacing
 the previous ad-hoc predicates `isDenseCompatible` and `isDiscreteCompatible`.
 
-All 21 axioms are covered:
-- 18 base axioms: valid on all LinearTemporalFrame
-- 1 density axiom (DN): valid on DenseTemporalFrame
-- 2 discreteness axioms (DF, seriality): valid on DiscreteTemporalFrame
+Axiom coverage is by quantification, not enumeration: `axiom_base_valid_linear` and its dense
+and discrete siblings take `ax : Axiom φ` and so cover every constructor of the relevant class.
+By `Axiom.minFrameClass` that is 37 base + 2 dense + 3 discrete + 3 Dedekind = 45.
 
 ## References
 
@@ -178,24 +177,27 @@ theorem soundness_Int {Γ : Context} {φ : Formula} (d : DerivationTree FrameCla
 
 /-! ## Axiom Coverage Summary
 
-All 21 axioms are covered by the soundness theorems:
+Every axiom of a frame class is covered by that class's soundness theorem, **by
+quantification rather than by enumeration**: `axiom_base_valid_linear`, `axiom_dense_valid_fc`
+and `axiom_discrete_valid_fc` each take `ax : Axiom φ` and discharge it for the whole class.
+There is nothing to keep in step one constructor at a time.
 
-**Base Axioms (18)** - valid on all LinearTemporalFrame:
-1. prop_k, prop_s: Propositional axioms
-2. ex_falso, peirce: Classical logic
-3. modal_t, modal_4, modal_b, modal_5_collapse: S5 modal axioms
-4. modal_k_dist: Modal K distribution
-5. temp_k_dist, temp_4: Temporal axioms
-6. temp_a, temp_a_dual, temp_l: Temporal interaction
-7. modal_future: Modal-temporal interaction (temp_future now derived from MF + T + Modal 4)
-8. temp_linearity: Linear time axiom
+The live counts, per `Axiom.minFrameClass` (`ProofSystem/Axioms.lean`), are 45 constructors in
+nine layers:
 
-**Dense Axiom (1)** - valid on DenseTemporalFrame:
-19. density (DN): Fφ → FFφ
+- **Base (37)** - valid on all LinearTemporalFrame: propositional (4), S5 modal (5),
+  Burgess-Xu temporal (18), additional Burgess-Xu temporal (4), modal-temporal interaction (1),
+  uniformity (5).
+- **Dense (2)** - valid on DenseTemporalFrame: `density`, `dense_indicator`.
+- **Discrete (3)** - valid on DiscreteTemporalFrame: `prior_UZ`, `prior_SZ`, `z1`.
+- **Dedekind (3)** - Reynolds' definable-gap axioms: `prior_U_gap`, `prior_S_gap`, `sep`.
 
-**Discrete Axioms (3)** - valid on DiscreteTemporalFrame:
-20. discreteness_forward (DF)
-21. seriality_future, seriality_past
+This section previously carried a hand-maintained list of 21 named axioms, including
+`temp_k_dist`, `temp_4`,
+`temp_a`, `temp_a_dual`, `temp_l`, `temp_future`, `discreteness_forward`, `seriality_future` and
+`seriality_past` -- none of which is a constructor of `Axiom` any more. The enumeration is
+deliberately not rebuilt: an enumeration is what went stale, and the theorems above never needed
+one.
 
 Note: Under strict semantics (G/H quantify over s > t / s < t), frame class constraints
 are essential for axiom validity, not merely structural.

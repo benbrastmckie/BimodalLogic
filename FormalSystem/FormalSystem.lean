@@ -26,7 +26,7 @@ with linear temporal logic.
 
 - `FormalSystem.Syntax`: Formula type with 6 primitives (atom, bot, imp, box, allPast, allFuture)
   plus derived operators and context types
-- `FormalSystem.ProofSystem`: Hilbert-style proof system with 21 axiom schemata
+- `FormalSystem.ProofSystem`: Hilbert-style proof system with 45 axiom schemata
 (base/dense/discrete)
 and 7 inference rules
 - `FormalSystem.BaseLanguage`: The tense-primitive base language BL (`H`/`G` primitive) with

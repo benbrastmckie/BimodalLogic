@@ -87,7 +87,8 @@ The proof search tactics work at the meta-level in TacticM, bypassing the Axiom 
 issue by constructing proof terms directly via `mkAppM` rather than returning proof witnesses.
 
 Search strategies (in order):
-1. Axiom matching against all 21 axiom schemata
+1. Axiom matching against 42 of the 45 axiom schemata (the three Layer-9 Reynolds
+   Dedekind axioms `prior_U_gap`, `prior_S_gap` and `sep` are outside the matcher's list)
 2. Assumption matching in context
 3. Modus ponens decomposition (backward chaining)
 4. Modal K rule (reduce □Γ ⊢ □φ to Γ ⊢ φ)

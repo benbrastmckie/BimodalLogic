@@ -16,7 +16,11 @@ type-safe way to express which axioms are valid on which frame classes.
 ## Main Definitions
 
 - `AxiomCompatible`: Typeclass relating axioms to frame classes
-- Instances for all 21 axioms
+- Twelve explicit `AxiomLinearCompatible` instances (`prop_k`, `prop_s`, `modal_t`, `modal_4`,
+  `modal_b`, `modal_5_collapse`, `ex_falso`, `peirce`, `modal_k_dist`, `serial_future`,
+  `serial_past`, `modal_future`) -- **not** one per axiom. The general route for the remaining
+  base axioms is `axiom_base_implies_linear_compatible`, which quantifies over `ax : Axiom φ`
+  and so covers all 37 base constructors without enumerating them.
 - Monotonicity lemmas (base compatibility implies dense/discrete compatibility)
 
 ## Design Notes
@@ -32,11 +36,19 @@ This enables:
 
 ## Axiom Classification
 
-- Linear (Base), 16 axioms: prop_k, prop_s, ex_falso, peirce, modal_t, modal_4, modal_b,
-  modal_5_collapse, modal_k_dist, temp_k_dist, temp_4, temp_a, temp_l, modal_future, temp_future,
-  temp_linearity
-- Dense, 1 axiom: density
-- Discrete, 3 axioms: discreteness_forward, seriality_future, seriality_past
+By frame class, per `Axiom.minFrameClass` (`ProofSystem/Axioms.lean`), out of 45 constructors
+in nine layers:
+
+- Base, 37 axioms: layers 1-5 (propositional 4, S5 modal 5, BX temporal 18, additional BX
+  temporal 4, modal-temporal interaction 1, uniformity 5)
+- Dense, 2 axioms: `density`, `dense_indicator`
+- Discrete, 3 axioms: `prior_UZ`, `prior_SZ`, `z1`
+- Dedekind, 3 axioms: `prior_U_gap`, `prior_S_gap`, `sep`
+
+The enumeration this section used to carry named `temp_k_dist`, `temp_4`, `temp_a`, `temp_a_dual`,
+`temp_l`, `temp_future`, `discreteness_forward`, `seriality_future` and `seriality_past` -- none of
+which is a constructor of `Axiom` any more. It is replaced by the class counts above rather than
+re-enumerated, because an enumeration is what went stale.
 
 Total: 19 axioms (2 T-axioms removed under strict semantics)
 

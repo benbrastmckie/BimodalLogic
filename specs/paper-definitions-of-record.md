@@ -1340,6 +1340,55 @@ thm:s5|env|-|-|14b32c8a3281aa246e1f83277fd940bdb9fcb8b88b702cda42c0fbf89a0112d7
 ```
 <!-- MANIFEST:END -->
 
+## Known anchors outside the manifest (machine-readable)
+
+`scripts/check-module-invariants.sh`'s **C15** check asserts that every `def:`/`thm:`/`lem:`/
+`cor:`/`app:`/`rmk:` citation in live, non-`specs/`, non-`Boneyard/` scope resolves *here* — never
+against the live `.tex`, so C15 does not go red merely because the author edited the paper. The
+manifest above covers every **pinned** anchor. This block covers the rest: anchors the tree cites
+that the manifest deliberately does not pin, each with an explicit status, so that every citation
+in the tree is a recorded decision rather than an accident.
+
+Two statuses:
+
+- **`LIVE-UNPINNED`** — the anchor resolves to a live, non-commented `\label{}` in the paper, but
+  is deliberately not pinned. Pinning costs a re-quote-and-re-hash on every paper wave, and is
+  warranted only where the tree quotes the anchor's *text*. These are cited by **name only** (as a
+  pointer, e.g. "see `app:deterministic`"), so a pin would buy nothing. If a docstring starts
+  quoting one verbatim, promote it to the manifest at that point.
+- **`DANGLING`** — the anchor does **not** resolve to a live `\label{}`: it was retired, it was
+  commented out, or it never existed. Every in-tree citation of one of these must say so at the
+  citation site; C15 only asserts that the anchor is *recorded* here, not that the prose is honest.
+
+<!-- KNOWN-ANCHORS:BEGIN -->
+```
+# anchor_id|status|note
+app:TaskSemantics|LIVE-UNPINNED|section label for the task-semantics appendix; cited as a pointer
+app:auto_existence|LIVE-UNPINNED|automorphism existence; cited as a pointer, text never quoted
+app:deterministic|LIVE-UNPINNED|determinism CORRESPONDENCE theorem, not the definition; the definition is def:deterministic, which IS pinned
+app:topology-r0|LIVE-UNPINNED|topology appendix; part of the block this file deliberately does not cover
+app:topology-t1|LIVE-UNPINNED|topology appendix; part of the block this file deliberately does not cover
+cor:perpetuity-valid|LIVE-UNPINNED|perpetuity principles valid; the live anchor that replaced the never-existent app:valid
+def:BL-language|LIVE-UNPINNED|the BL language; cited as a pointer alongside the pinned def:BLplus-language
+def:task-topology|LIVE-UNPINNED|topology appendix; part of the block this file deliberately does not cover
+lem:history-time-shift-preservation|LIVE-UNPINNED|time-shift preservation; cited as a pointer
+app:nonempty|DANGLING|merged by the paper into cor:occurrence; cited only where the tree records the merge
+app:valid|DANGLING|NEVER EXISTED; earlier revisions cited it at a bogus line number, corrected to cor:perpetuity-valid
+cor:tm-decidability|DANGLING|fully COMMENTED OUT in the paper; retained above as a DANGLING entry
+def:BL-model|DANGLING|label removed by the paper; retained above as a DANGLING entry
+lem:fibers|DANGLING|label removed 2026-08-17; content absorbed into lem:admissible's proof; retained above
+thm:ConservativeExtension|DANGLING|NEVER a paper label; cited only where the tree records that it is not one
+thm:occurrence|DANGLING|renamed by the paper to cor:occurrence; cited only where the tree records the rename
+thm:s4|DANGLING|folded by the paper into thm:s5; retained above as a DANGLING entry
+thm:sym|DANGLING|folded by the paper into thm:s5; retained above as a DANGLING entry
+```
+<!-- KNOWN-ANCHORS:END -->
+
+**Adding a row here is a decision, not a formality.** Before adding a `LIVE-UNPINNED` row, confirm
+the anchor really does resolve to a non-commented `\label{}` in the live paper. Before adding a
+`DANGLING` row, confirm it really does not, and fix the citation site to say so. If neither is
+true, the citation is a typo and the fix is to correct the citation, not to add a row.
+
 ## Untracked sources
 
 Not every passage of the paper this repository relies on is anchorable. `resolve_text` in

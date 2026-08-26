@@ -13,7 +13,7 @@ import FormalSystem.ProofSystem.LinearityDerivedFacts
 # FormalSystem.ProofSystem - TM Proof System
 
 Aggregates all proof system components for bimodal logic TM (Tense and Modality).
-Provides the Hilbert-style axiom system with 21 axiom schemata and derivation
+Provides the Hilbert-style axiom system with 45 axiom schemata and derivation
 trees with 7 inference rules.
 
 ## Submodules

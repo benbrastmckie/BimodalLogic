@@ -19,8 +19,11 @@
 #   C11 Every import inside FormalSystem/Boneyard/ resolves, or is waived
 #   C12 Every slash-shaped source path in docs/ + README.md resolves
 #   C13 Every relative markdown link in docs/ + README.md resolves
-#   C14 Documented axiom/sorry counts match the tree; axiom sets of the two
-#       headline theorems C2 does not cover match their baseline
+#   C14 Documented axiom/sorry counts match the tree -- in docs/, README.md AND
+#       FormalSystem/**/*.lean docstrings; axiom sets of the two headline
+#       theorems C2 does not cover match their baseline
+#   C15 Every paper-anchor citation in live scope resolves against the pinned
+#       record (manifest row, or an explicit KNOWN-ANCHORS row)
 #   C9D Task-number citations under docs/ (computed always, soft by default)
 #
 # Every filesystem traversal excludes the archive via `-not -path '*/Boneyard/*'`.
@@ -42,6 +45,7 @@
 #   scripts/boneyard-import-waivers.txt    unrepairable archived imports (C11)
 #   scripts/markdown-slash-path-allowlist.txt  hypothetical slash paths (C12)
 #   scripts/markdown-link-allowlist.txt        link-syntax-illustration files (C13)
+#   specs/paper-definitions-of-record.md       pinned paper anchors + known-anchor rows (C15)
 
 set -uo pipefail
 
@@ -702,9 +706,13 @@ echo
 # C2 and C3 assert facts about the TREE; nothing asserted that `docs/` agrees
 # with them. It has two halves:
 #
-#   (i)  a content scan of docs/ + README.md for STALE literals -- an axiom count
-#        that is not 45, or a table row documenting a non-zero sorry count. This
-#        half is cheap and always runs.
+#   (i)  a content scan for STALE literals -- an axiom count that is not 45, or a
+#        table row documenting a non-zero sorry count. This half is cheap and
+#        always runs. Its scope is docs/ + README.md + FormalSystem/**/*.lean:
+#        the .lean half was added because C14's markdown-only scope is exactly
+#        why SIX "42 axiom constructors" claims survived a 42 -> 45 change
+#        untouched -- every one of them lived in a Lean docstring, where C14
+#        could not see it. Lean doc comments are documentation and are in scope.
 #   (ii) `#print axioms` for the two headline theorems that C2's four do not
 #        cover, so that the decidability soundness bridge and Dedekind
 #        completeness are pinned by the BUILD rather than by prose. This half
@@ -720,8 +728,22 @@ C14_FAIL=0
 # (i) stale axiom counts. 45 is the constructor count of `inductive Axiom`, per
 # `Axiom.minFrameClass`. 42 is the figure in the stale `Axioms.lean` docstring,
 # which omits the Dedekind layer; 21, 14 and 44 are older figures still.
+# Scope note: `FormalSystem` is scanned for `*.lean` only, and Boneyard/ is excluded --
+# archived modules are not documentation and are allowed to carry historical figures.
 STALE_AXIOMS=$(grep -rniE --include='*.md' \
   '\b(14|21|42|44)[[:space:]]+(axiom|constructor)' docs README.md 2>/dev/null || true)
+# The trailing `grep -i axiom` is a PRECISION guard, not a weakening: `.lean` sources
+# carry constructor counts for types other than `Axiom` (e.g. `EnrichedFormula`'s 21
+# constructors in Automation/Normalization.lean), and a bare "21 constructors" in such
+# a docstring is a correct statement about a different type. Requiring the word "axiom"
+# somewhere on the line keeps the tripwire aimed at axiom-count claims. The markdown
+# half above is deliberately left exactly as it was -- this is a widening of C14's
+# scope, not a rewrite of its existing behavior.
+STALE_AXIOMS_LEAN=$(grep -rniE --include='*.lean' \
+  '\b(14|21|42|44)[[:space:]]+(axiom|constructor)' FormalSystem 2>/dev/null \
+  | grep -v '/Boneyard/' | grep -i 'axiom' || true)
+STALE_AXIOMS=$(printf '%s\n%s' "$STALE_AXIOMS" "$STALE_AXIOMS_LEAN" | grep -c . >/dev/null \
+  && printf '%s\n%s' "$STALE_AXIOMS" "$STALE_AXIOMS_LEAN" | grep . || true)
 STALE_AXIOM_COUNT=$(printf '%s' "$STALE_AXIOMS" | grep -c . || true)
 
 # (i) documented non-zero sorry counts, in table-row shape (`... sorries | 7`).
@@ -731,7 +753,7 @@ STALE_SORRIES=$(grep -rniE --include='*.md' \
 STALE_SORRY_COUNT=$(printf '%s' "$STALE_SORRIES" | grep -c . || true)
 
 if [ "$STALE_AXIOM_COUNT" -eq 0 ] && [ "$STALE_SORRY_COUNT" -eq 0 ]; then
-  pass C14 "no stale axiom or sorry counts documented in docs/ + README.md"
+  pass C14 "no stale axiom or sorry counts documented in docs/ + README.md + FormalSystem/*.lean"
 else
   C14_FAIL=1
   fail C14 "$STALE_AXIOM_COUNT stale axiom count(s), $STALE_SORRY_COUNT documented non-zero sorry count(s)"
@@ -772,6 +794,82 @@ C14LEAN
   fi
 else
   info C14 "#print axioms half skipped (--no-build); the content scan above still ran"
+fi
+echo
+
+# ---------------------------------------------------------------------------
+# C15: paper-anchor integrity
+#
+# WHY THIS EXISTS: 30 dangling paper-anchor citations accumulated in this tree
+# across six paper editing waves, and not one of them was caught at write time.
+# `lem:fibers` alone was cited 17 times after the paper deleted its `\label`.
+# Nothing in this script asserted that a `def:`/`thm:`/`lem:`/`cor:`/`app:`/`rmk:`
+# citation names an anchor that actually exists.
+#
+# RESOLUTION SOURCE IS THE RECORD, NOT THE PAPER. specs/paper-definitions-of-record.md
+# is this repository's citation source of record (that is the record's own charter),
+# and the paper lives in a different repository this one cannot see from CI. Resolving
+# against the live .tex would make this check go red whenever the author edits the
+# paper -- an event this repository does not control and cannot fix by editing itself.
+# So a citation resolves if EITHER:
+#
+#   (a) it has a row in the record's machine-readable MANIFEST (a pinned anchor), or
+#   (b) it has a row in the record's KNOWN-ANCHORS block, whose status is either
+#       LIVE-UNPINNED (live in the paper, deliberately not pinned) or DANGLING
+#       (retired, commented out, or never existed).
+#
+# Every anchor is therefore a RECORDED DECISION. An anchor with no row is either a
+# typo or an undocumented citation, and both are defects.
+#
+# SCOPE is deliberate: specs/** is excluded (task artifacts routinely quote anchors
+# that were live when they were written, and rewriting history is not the goal), and
+# FormalSystem/Boneyard/ is excluded (archived modules are frozen). What remains is
+# live, load-bearing scope: FormalSystem/ (non-Boneyard), Tests/, typst/, docs/,
+# and README.md.
+# ---------------------------------------------------------------------------
+C15_RECORD="specs/paper-definitions-of-record.md"
+if [ ! -f "$C15_RECORD" ]; then
+  fail C15 "record not found: $C15_RECORD (C15 cannot resolve any anchor without it)"
+else
+  C15_KNOWN=$(mktemp)
+  # (a) manifest rows: anchor_id is field 1; strip the `#SubAnchor` suffix so that
+  # `def:frame#Spherical` registers its parent `def:frame` too.
+  sed -n '/<!-- MANIFEST:BEGIN -->/,/<!-- MANIFEST:END -->/p' "$C15_RECORD" \
+    | grep -v '<!--' | grep -v '^```' | grep -v '^#' | grep -v '^[[:space:]]*$' \
+    | cut -d'|' -f1 | sed 's/#.*//' >> "$C15_KNOWN"
+  # (b) known-anchor rows
+  sed -n '/<!-- KNOWN-ANCHORS:BEGIN -->/,/<!-- KNOWN-ANCHORS:END -->/p' "$C15_RECORD" \
+    | grep -v '<!--' | grep -v '^```' | grep -v '^#' | grep -v '^[[:space:]]*$' \
+    | cut -d'|' -f1 >> "$C15_KNOWN"
+  sort -u -o "$C15_KNOWN" "$C15_KNOWN"
+
+  C15_CITED=$(mktemp)
+  # `--include` restricts the walk to documentation-bearing file types; `--exclude-dir`
+  # drops the archive. Both are needed: `-h -o` discards the path, so a post-hoc path
+  # filter is not available on this pipeline.
+  grep -rhoE '\b(def|thm|lem|cor|app|rmk):[A-Za-z0-9][A-Za-z0-9_-]*' \
+    --include='*.lean' --include='*.md' --include='*.typ' --exclude-dir=Boneyard \
+    FormalSystem Tests typst docs README.md 2>/dev/null \
+    | sort -u > "$C15_CITED" || true
+
+  C15_UNKNOWN=$(comm -23 "$C15_CITED" "$C15_KNOWN")
+  C15_UNKNOWN_COUNT=$(printf '%s' "$C15_UNKNOWN" | grep -c . || true)
+  if [ "$C15_UNKNOWN_COUNT" -eq 0 ]; then
+    C15_TOTAL=$(grep -c . "$C15_CITED" || true)
+    pass C15 "all $C15_TOTAL paper-anchor citation(s) resolve against $C15_RECORD"
+  else
+    fail C15 "$C15_UNKNOWN_COUNT paper-anchor citation(s) resolve to nothing in $C15_RECORD"
+    printf '%s\n' "$C15_UNKNOWN" | head -15 | while IFS= read -r a; do
+      [ -z "$a" ] && continue
+      loc=$(grep -rlF "$a" --include='*.lean' --include='*.md' --include='*.typ' \
+              FormalSystem Tests typst docs README.md 2>/dev/null \
+              | grep -v '/Boneyard/' | head -2 | tr '\n' ' ')
+      note "$a  <- $loc"
+    done
+    note "fix the citation, or record the anchor in the record's KNOWN-ANCHORS block"
+    note "(status LIVE-UNPINNED if it resolves in the paper, DANGLING if it does not)"
+  fi
+  rm -f "$C15_KNOWN" "$C15_CITED"
 fi
 echo
 
