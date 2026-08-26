@@ -3,11 +3,11 @@
 **Task**: 503 - revise_representation_section_with_literature
 **Started**: 2026-08-26T10:36:00Z
 **Completed**: 2026-08-26T12:05:00Z
-- **Effort**: TBD
-- **Dependencies**: TBD
-- **Sources/Inputs**: TBD
-- **Artifacts**: TBD
-- **Standards**: TBD
+- **Effort**: High — ~90 min wall clock, ~320k tokens; 2 corpus ingests with manual conversion repair, 17 sub-index registrations, 2 delegated sub-agents.
+- **Dependencies**: `typst/FormalFoundations.typ` (lines 140-236, 380-600, 1151-1318); `FormalSystem/Metalogic/Algebraic/` (all 5 `.lean` files + README); `FormalSystem/Semantics/TaskFrame.lean`; `FormalSystem/Semantics/Extension/Step.lean`; `FormalSystem/Boneyard/UltrafilterFrame/`; corpus doc_ids `blackburn_2002_ch05_sec03/04/05`, `blackburn_2002_ch03_sec05-06/07`, `venema_2007_algebras_and_coalgebras`, `gehrke_vosmaer_2011_view-of-canonical-extension`, `goldblatt_2003`, `derijke_1995`, `j_nsson_and_tarski_-_1951/1952`, `goldblatt_1989` (locator only).
+- **Sources/Inputs**: The task description (review `<sec:representation>` and the Lean `Algebraic/` layer, inventory and acquire literature, revise honestly); the `--lit` briefing at `scratchpad/literature-briefing-503.md` (46 sub-index docs + 9 global FTS searches); `specs/literature-index.json`; `~/Projects/Literature/index.json`; corpus tools `literature-search.sh`, `literature-discover.sh`, `literature-ingest-online.sh`, `literature-ingest.sh`, `literature-convert.sh`, `literature-chunk.sh`, `literature-build-index.sh`, `zotero-search.sh`.
+- **Artifacts**: This report (`specs/503_revise_representation_section_with_literature/reports/01_representation-literature-research.md`); `specs/literature-index.json` (46 -> 63 entries, backup at `specs/literature-index.json.bak-503`); two new corpus directories `~/Projects/Literature/sources/venema_2007_algebras_and_coalgebras/` (173 chunks) and `~/Projects/Literature/sources/gehrke_vosmaer_2011_view-of-canonical-extension/` (38 chunks); `~/Projects/Literature/index.json` (+2 entries, backup at `index.json.bak-task503`); rebuilt `~/Projects/Literature/.literature.db`.
+- **Standards**: `.claude/rules/artifact-formats.md`; `.claude/context/formats/return-metadata-file.md`; `.claude/rules/no-task-references-in-deliverables.md` (report lives under `specs/**`, exempt); corpus fidelity conventions per `provenance_fidelity` / `conversion_note` in `~/Projects/Literature/index.json`.
 **Task Type**: formal
 **Domains**: logic (primary), math (algebra / lattice / duality, secondary)
 **Session**: sess_1787765867_5f8b5f
@@ -81,7 +81,7 @@
 
 ---
 
-## Part 1 — Where Things Stand
+## Context & Scope
 
 ### 1.1 The Typst section as it currently reads
 
@@ -255,7 +255,7 @@ the sub-index to `specs/literature-index.json.bak-503`.
 
 ---
 
-## Part 3 — Literature-Grounded Findings
+## Findings
 
 ### 3.1 Logic domain: what Jónsson–Tarski does and does not give
 
@@ -508,6 +508,42 @@ a **proper subalgebra** of `P(H_F × D)`. See §5, Risk 3.
 
 ---
 
+## Decisions
+
+Research-level decisions taken while producing this report. Each was a fork in the investigation,
+not a conclusion about TM; the conclusions are in **Findings** and **Recommendations**.
+
+- **Treat the Goldblatt/Esakia duality, not Jónsson–Tarski, as the target theorem.** Jónsson–Tarski
+  yields an embedding and an inclusion `V_Λ ⊆ HSPCmK`; the section needs an equality. The full dual
+  equivalence `BAO_τ ≃ DGF_τ^op` is what "representation theorem" should name here. This reframing
+  drives the whole of Findings §3.4 and the six-rung ladder in Part 4.
+- **Diagnose *Spherical* as a compactness condition rather than an idiosyncratic frame axiom.**
+  Once its definition is read against BdRV Definition 5.65, the obstruction stops being specific to
+  task frames and becomes an instance of a known discrete-vs-topological duality mismatch. Chosen
+  over the alternative of hunting for a bespoke weakening of *Spherical*, which is what the
+  section's current Open Question invites.
+- **Treat metric tense operators as the principal repair route, not an aside.** Given the diagnosis,
+  enriching the similarity type is the standard mechanism for exactly this failure. The section's
+  existing accounting of its cost is kept and endorsed rather than argued down.
+- **Register the uncurated global-corpus documents rather than re-ingest them.** Fifteen relevant
+  documents were already converted and chunked in `~/Projects/Literature/sources/` but absent from
+  the repo sub-index, so `--lit` runs never saw them. Adding sub-index entries was the correct
+  minimal action; re-ingestion would have risked fidelity regressions on already-verified files.
+- **Use Gehrke & Vosmaer's survey as a proxy for Gehrke & Jónsson 2004.** The primary source's
+  open-access URL 404s on every form. The survey covers the canonical-extension framework the
+  section needs and was acquirable; the substitution is recorded rather than silently made.
+- **Install the two new documents manually after the conversion quality gate rejected them.** Each
+  gate hit was inspected individually and found to be either a benign journal-abbreviation match or
+  an unmapped CMEX delimiter glyph. A determinate, context-verified character repair was applied and
+  documented in each file header and index `conversion_note`, rather than either bypassing the gate
+  silently or abandoning the sources.
+- **Keep the delegated sub-agent findings advisory only.** Both sub-agents were still running at
+  finalisation. Every claim in this report is sourced to a document read directly; nothing rests on
+  a delegated summary. See Part 6.
+- **State the non-elementarity of Archimedeanness and Dedekind completeness as standard model
+  theory, not as a corpus citation.** No document in the corpus asserts it, and inventing a citation
+  would be worse than attributing it correctly to background theory.
+
 ## Part 4 — Cross-Domain Synthesis
 
 Four threads converge on one statement.
@@ -542,7 +578,7 @@ ladder, and the section is standing on the third rung while describing the fourt
 
 ---
 
-## Part 5 — Recommendations for the Revision
+## Recommendations
 
 ### 5.1 Proposed structure for `<sec:representation>`
 
