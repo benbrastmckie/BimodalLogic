@@ -171,44 +171,44 @@ second file — stop and report rather than widening the phase.
 
 ---
 
-### Phase 2: Reconcile the seven prose sites that assert the implication is unproved [NOT STARTED]
+### Phase 2: Reconcile the seven prose sites that assert the implication is unproved [COMPLETED]
 
 **Goal**: No text anywhere in the tree still claims that `ModelExistence* → Compact*` is future
 work, and every module inventory that should list the two new theorems does.
 
 **Tasks**:
-- [ ] Re-locate each site by heading text or symbol name (Phase 1 shifted line numbers).
-- [ ] `SetConsequence.lean`, `ModelExistenceBase` docstring: replace "that implication is future
+- [x] Re-locate each site by heading text or symbol name (Phase 1 shifted line numbers).
+- [x] `SetConsequence.lean`, `ModelExistenceBase` docstring: replace "that implication is future
       work and is not proved here" with a pointer to `compactBase_of_modelExistence` in
       `StrongCompleteness.lean`, keeping the "not *here*" import-cycle framing.
       `ModelExistenceBase` itself stays flagged as an **open obligation**.
-- [ ] `SetConsequence.lean`, `ModelExistenceDense` docstring: the same change pointing at
+- [x] `SetConsequence.lean`, `ModelExistenceDense` docstring: the same change pointing at
       `compactDense_of_modelExistenceDense`. Also correct the stale cross-reference
       `` `truthAt_foldr_imp` (`StrongCompleteness.lean:147`) `` — the lemma is not at line 147.
       Prefer a bare module reference with no line number.
-- [ ] `SetConsequence.lean`, `## Downstream` section of the module docstring: it currently names
+- [x] `SetConsequence.lean`, `## Downstream` section of the module docstring: it currently names
       only `strongCompletenessBase_of_compact` and `strongCompletenessDense_of_compact` as living
       downstream for the import-cycle reason. Add the two bridge theorems to that list; the reason
       is identical.
-- [ ] `StrongCompleteness.lean`, `## Contents` section of the module docstring: add a bullet for
+- [x] `StrongCompleteness.lean`, `## Contents` section of the module docstring: add a bullet for
       the two bridge theorems.
-- [ ] `StrongCompleteness.lean`, the "**Status of `CompactBase`.**" paragraph inside
+- [x] `StrongCompleteness.lean`, the "**Status of `CompactBase`.**" paragraph inside
       `strongCompletenessBase_of_compact`'s docstring: its enumeration of remaining work ends
       "…it needs an ultraproduct carrier, a Łoś lemma for `TruthAt`, `ModelExistenceBase` and hence
       `CompactBase`." The final "and hence" step is now a proved theorem. Shrink the enumeration
       accordingly. The "**Open** — neither proved nor refuted" verdict on `CompactBase` **stands**:
       it now reduces to `ModelExistenceBase`, which is itself still open. Do not overstate.
-- [ ] `StrongCompleteness.lean`, the `/-! ### Axiom audit for the per-class consequence layer`
+- [x] `StrongCompleteness.lean`, the `/-! ### Axiom audit for the per-class consequence layer`
       prose paragraph: add a **separate one-line note** covering the two bridge theorems, stating
       that they too are reductions rather than termini since their `ModelExistence*` hypotheses are
       open obligations. Do **not** fold them into the existing "fourteen declarations" count.
-- [ ] `FormalSystem/Metalogic.lean`, module inventory: extend the `StrongCompleteness.lean` bullet
+- [x] `FormalSystem/Metalogic.lean`, module inventory: extend the `StrongCompleteness.lean` bullet
       — which currently names the two compactness reductions — to also name
       `compactBase_of_modelExistence` and `compactDense_of_modelExistenceDense`.
-- [ ] Leave `SetConsequence.lean`'s "**No compactness result is proved or refuted here**" claim
+- [x] Leave `SetConsequence.lean`'s "**No compactness result is proved or refuted here**" claim
       untouched — it remains literally true under the chosen placement and is itself an argument
       for that placement.
-- [ ] Commit per green sub-step, grouping by file.
+- [x] Commit per green sub-step, grouping by file. *(deviation: altered — all three files were edited and then verified by a single guarded `lake build`, landing as one commit. The build guard serializes project-wide across the three concurrent sibling dispatches in this repo, and a docstring edit to `SetConsequence.lean` invalidates every downstream `.olean`; per-file sub-step builds would have queued two full-tree cascade rebuilds behind sibling builds for no added assurance, since all three edits are comment-only.)*
 
 **Timing**: 0.75 hours
 
@@ -225,6 +225,14 @@ work, and every module inventory that should list the two new theorems does.
 returning nothing after the edits, and `git diff --stat` naming exactly those three files. If a
 site outside this list is found still asserting the implication is unproved, fix it and record the
 widened count in the phase notes rather than leaving it stale.
+
+**Scope-hypothesis outcome (implementation)**: confirmed — exactly 7 sites across exactly 3 files,
+`git diff --stat` naming only those three. The looser probe
+`grep -rn "is not proved here" --include=*.lean FormalSystem/` additionally matched
+`FormalSystem/Metalogic/Decidability/Verified/Termination/Fuel.lean:1745`; a definition lookup
+showed it is the docstring of `expandOnceUnblocked_split_card_le`, disclaiming a *strict*
+split-cardinality variant and unrelated to the model-existence/compactness implication. Excluded
+as a false positive, not edited.
 
 **Files to modify**:
 - `FormalSystem/Metalogic/SetConsequence.lean` — `ModelExistenceBase` docstring,

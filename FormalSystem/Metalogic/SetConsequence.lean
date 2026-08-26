@@ -49,10 +49,13 @@ settled negatively.
 ## Downstream
 
 `FormalSystem/Metalogic/StrongCompleteness.lean` imports this module. Because that module owns
-the `foldr`-implication bridge between finite-context and empty-context derivability, the two
-*theorems* of the strong-completeness group — `strongCompletenessBase_of_compact` and
-`strongCompletenessDense_of_compact` — live there rather than here; placing them in this module
-would be an import cycle.
+the `foldr`-implication bridge between finite-context and empty-context derivability, and the
+pointwise currying lemma `truthAt_foldr_imp` with it, four *theorems* stated in this module's
+vocabulary live there rather than here: the two strong-completeness reductions
+`strongCompletenessBase_of_compact` and `strongCompletenessDense_of_compact`, and the two
+model-existence-to-compactness bridges `compactBase_of_modelExistence` and
+`compactDense_of_modelExistenceDense`. Placing any of them in this module would be an import
+cycle; the reason is the same in all four cases.
 -/
 
 namespace FormalSystem.Metalogic
@@ -234,8 +237,11 @@ def SatisfiableBaseSet (Γ : Set Formula) : Prop :=
 /-- The model-existence form, which is what an ultraproduct construction proves directly:
     finite satisfiability of every finite sublist lifts to satisfiability of the whole set.
     `ModelExistenceBase → CompactBase` is a contraposition through the `Formula.neg` clause of
-    `TruthAt` together with `truthAt_foldr_imp` (`StrongCompleteness.lean`); that implication is
-    future work and is not proved here. An **open obligation**. -/
+    `TruthAt` together with `truthAt_foldr_imp`, and it **is proved** — as
+    `compactBase_of_modelExistence` in `FormalSystem/Metalogic/StrongCompleteness.lean`. It is
+    not proved *here* for the import-cycle reason recorded under `## Downstream` above:
+    `truthAt_foldr_imp` is owned by that module, and that module imports this one.
+    `ModelExistenceBase` itself is undischarged — an **open obligation**. -/
 def ModelExistenceBase : Prop :=
   ∀ Γ : Set Formula,
     (∀ L : List Formula, (∀ ψ ∈ L, ψ ∈ Γ) → SatisfiableBaseSet {ψ | ψ ∈ L}) →
@@ -278,8 +284,10 @@ def SatisfiableDenseSet (Γ : Set Formula) : Prop :=
 /-- The model-existence form, which is what an ultraproduct construction proves directly:
     finite satisfiability of every finite sublist lifts to satisfiability of the whole set.
     `ModelExistenceDense → CompactDense` is a contraposition through the `Formula.neg` clause of
-    `TruthAt` together with `truthAt_foldr_imp` (`StrongCompleteness.lean:147`); that
-    implication is future work and is not proved here. -/
+    `TruthAt` together with `truthAt_foldr_imp` (`StrongCompleteness.lean`), and it **is
+    proved** — as `compactDense_of_modelExistenceDense` in that same module. It is not proved
+    *here* for the import-cycle reason recorded under `## Downstream` above. `ModelExistenceDense`
+    itself is undischarged — an **open obligation**. -/
 def ModelExistenceDense : Prop :=
   ∀ Γ : Set Formula,
     (∀ L : List Formula, (∀ ψ ∈ L, ψ ∈ Γ) → SatisfiableDenseSet {ψ | ψ ∈ L}) →

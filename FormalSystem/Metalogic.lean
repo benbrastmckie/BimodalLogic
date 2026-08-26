@@ -40,13 +40,26 @@ temporal analogs (G phi -> phi, H phi -> phi) are NOT valid under irreflexive se
   TM⁺ ⊢ tr φ` over the tense-primitive base language of `FormalSystem/BaseLanguage/`. The
   **forward** direction is refuted for the Base and Discrete rows and open for the other two;
   `Metalogic/Conservativity.lean`'s module docstring is the standing record of why it must not
-  be attempted or `sorry`-ed.
+  be attempted or `sorry`-ed. That record's list of prerequisites a machine-checked refutation
+  would need has narrowed: the BL-side semantics and soundness theorem now exist
+  (`Metalogic/BaseLanguageSoundness.lean`), and the two countermodels remain outstanding.
 
 ## Publication-Ready Results
 
 - **Soundness** (`soundness`): SORRY-FREE
 - **Soundness (dense)** (`soundness_dense`): SORRY-FREE
 - **Soundness (discrete)** (`soundness_discrete`): SORRY-FREE
+- **Soundness, base language BL** (`bl_soundness`, `bl_soundness_dense`,
+  `bl_soundness_discrete`, `bl_soundness_dedekind`, plus the empty-context validity forms and the
+  consistency corollaries `bl_not_derivable_nil_bot` / `bl_not_derivable_nil_bot_discrete`):
+  SORRY-FREE (axioms: exactly `propext`, `Classical.choice`, `Quot.sound`). Stated against the
+  **native** BL semantics `BLTruthAt` of `Semantics/BLTruth.lean` — a six-clause recursion on
+  `BLFormula`, not `TruthAt ∘ tr` — and obtained by composing `Conservativity.translate` with the
+  four theorems above across the truth-transfer bridge `Semantics.truthAt_tr`, which is proved by
+  induction in `Metalogic/BaseLanguageSoundness.lean`. `bl_soundness_dedekind` carries
+  `ValidDedekindDense`'s binder set and its validity form concludes at `BLValidDedekindDense`,
+  inheriting `soundness_dedekind`'s target; a density-free `BLValidDedekind` is deliberately not
+  defined because it would be refutable
 - **Completeness** (`completeness`): SORRY-FREE (sorryAx-free; axioms: exactly `propext`,
   `Classical.choice`, `Quot.sound`). Its Base-frame discrete branch,
   `WeakCanonical.countermodel_discrete`, is proved in
@@ -140,8 +153,12 @@ theorem (Reynolds 1992, Section 8 Theorem 6) at the chronicle bridge and reading
   (`consequence_completeness_dedekind`, `completeness_dedekind`); plus the strong-completeness
   programme, the two compactness reductions `strongCompletenessBase_of_compact` and
   `strongCompletenessDense_of_compact` (each keeping its single-formula `engine` hypothesis
-  live so that compactness is isolated as the whole remaining obligation), and the
-  non-compactness obstruction that bounds the Discrete class
+  live so that compactness is isolated as the whole remaining obligation), the two
+  model-existence bridges `compactBase_of_modelExistence` and
+  `compactDense_of_modelExistenceDense` (which discharge `CompactBase` / `CompactDense` from
+  the corresponding model-existence statements, relocating the remaining obligation onto
+  `ModelExistenceBase` / `ModelExistenceDense`), and the non-compactness obstruction that
+  bounds the Discrete class
 - **SetConsequence.lean**: the `Γ : Set Formula` vocabulary the strong-completeness statements
   are phrased in — `SetDerivable`, the four per-class set consequence relations, and the
   `Prop`-valued names for the open Base and Dense obligations (`StrongCompletenessBase`,

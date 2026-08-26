@@ -127,6 +127,12 @@ short name in this tree is docstring prose rather than a call site.
 * `SemanticConsequenceDedekindDense` — semantic consequence over dense Dedekind-complete
   frames; the hypothesis-and-conclusion shape of `soundness_dedekind` packaged as a definition.
 * `truthAt_foldr_imp` — the pointwise currying lemma relating a context to its `imp`-fold.
+* `strongCompletenessBase_of_compact` / `strongCompletenessDense_of_compact` — strong
+  completeness from compactness plus a single-formula engine, and
+  `compactBase_of_modelExistence` / `compactDense_of_modelExistenceDense` — compactness from
+  model existence, contraposed through the `Formula.neg` clause of `TruthAt` and
+  `truthAt_foldr_imp`. All four are reductions: their `Compact*` and `ModelExistence*`
+  hypotheses are open obligations stated in `SetConsequence.lean`.
 * `semantic_deduction_dedekind_dense` — the semantic deduction theorem for that relation.
 * `derivable_foldr_imp_iff` — its proof-theoretic counterpart, generic in the frame class.
 * `consequence_completeness_dedekind_of_engine` — finite-context consequence completeness,
@@ -290,7 +296,10 @@ leaving `engine` open here.
 **Status of `CompactBase`.** Open — neither proved nor refuted. The gate on the bespoke
 ultraproduct route that would settle it is passed, but the route itself is a separate,
 multi-phase piece of work that is deliberately not attempted in this file: it needs an
-ultraproduct carrier, a Łoś lemma for `TruthAt`, `ModelExistenceBase` and hence `CompactBase`.
+ultraproduct carrier, a Łoś lemma for `TruthAt`, and `ModelExistenceBase`. The last link of that
+chain is no longer outstanding — `compactBase_of_modelExistence` below derives `CompactBase`
+from `ModelExistenceBase` — so `CompactBase` is now open exactly and only because
+`ModelExistenceBase` is.
 The existing `BXCanonical` chronicle machinery **structurally cannot** be extended to reach it,
 because every countermodel there routes through `bundleFlow_completeness_from_neg_membership`
 (`Metalogic/Algebraic/FlowFrame.lean:791`), whose three coherence hypotheses —
@@ -898,7 +907,12 @@ Dense and Discrete — are discharged with no `sorryAx` and no new axiom: exactl
 `Classical.choice` and `Quot.sound`, the same set carried by the Dedekind terminus audited
 earlier in this file and by the three `BXCanonical` engines they consume.
 `strongCompletenessBase_of_compact` is audited alongside them; it is a reduction rather than a
-terminus, since its `CompactBase` hypothesis is an open obligation. -/
+terminus, since its `CompactBase` hypothesis is an open obligation.
+
+`compactBase_of_modelExistence` and `compactDense_of_modelExistenceDense` are audited on the
+same footing and are counted separately from the fourteen above: each is likewise a reduction
+rather than a terminus, since its `ModelExistenceBase` / `ModelExistenceDense` hypothesis is an
+open obligation. -/
 
 #print axioms strongCompletenessBase_of_compact
 #print axioms compactBase_of_modelExistence
