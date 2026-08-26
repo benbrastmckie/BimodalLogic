@@ -13,6 +13,7 @@ import FormalSystem.Metalogic.Independence
 import FormalSystem.Metalogic.BXCanonical
 import FormalSystem.Metalogic.WeakCanonical
 import FormalSystem.Metalogic.Conservativity
+import FormalSystem.Metalogic.Algebraic
 
 /-!
 # Bimodal Metalogic
