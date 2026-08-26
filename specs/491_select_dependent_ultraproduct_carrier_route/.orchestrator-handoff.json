@@ -1,33 +1,29 @@
 {
-  "status": "researched",
-  "dispatch_seq": 3,
-  "phase": "research",
-  "summary": "Route (a), a bespoke dependent quotient, is SELECTED and already verified: a 230-line prototype compiles sorry-free against the live tree with every instance the ShiftSet/SatisfiableBaseSet binder lists demand. Route (b) is a NO-GO on three independent grounds. Two premises of the brief were corrected by measurement: the instance burden is 5 instances (6 for Dense), not ~15, because AddCommGroup comes free from QuotientAddGroup when the quotient is taken by the eventually-zero AddSubgroup of the Pi group; and the Mathlib build the Germ/FilterProduct import triggers is 5 modules and 8 seconds, not a cost worth routing around.",
+  "status": "planned",
+  "dispatch_seq": 8,
+  "phase": "plan",
+  "summary": "Deliberately minimal 2-phase plan. The task's primary deliverable (the route-selection report) is already produced and is not re-opened. What the plan adds is durability: Phase 1 lands the verified route-(a) carrier construction as Tests/BimodalTest/Semantics/DependentUltraproductProbe.lean, Phase 2 wires it into Tests/BimodalTest.lean and records the decision plus its checked anchor in the report and in the successor task's description. Total 1.75 hours. Nothing in FormalSystem/ is touched. The Los lemma, the index-type ultrafilter, ShiftSet.sep, carrier_nonempty, and the valuation are all named as Non-Goals and left to the S2/S3 task.",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/491_select_dependent_ultraproduct_carrier_route/reports/01_dependent-ultraproduct-carrier-route.md",
-      "summary": "Route selection with compiled evidence, the exact instance inventory, the route (b) no-go, and the measured Mathlib build cost."
-    },
-    {
-      "type": "prototype",
-      "path": "specs/491_select_dependent_ultraproduct_carrier_route/prototype/DependentUltraproduct.lean",
-      "summary": "Sorry-free prototype of the dependent ultraproduct carrier; three #print axioms probes all report [propext, Classical.choice, Quot.sound]."
+      "type": "plan",
+      "path": "specs/491_select_dependent_ultraproduct_carrier_route/plans/01_land-carrier-route-decision.md",
+      "summary": "2 phases, 1.75 hours, waves [[1],[2]]. Validator: PASS, 0 warnings."
     }
   ],
   "phases_completed": 0,
-  "phases_total": 0,
+  "phases_total": 2,
   "blockers": [],
-  "next_action_hint": "plan",
-  "files_modified": [],
+  "next_action_hint": "implement",
+  "files_modified": [
+    "specs/491_select_dependent_ultraproduct_carrier_route/plans/01_land-carrier-route-decision.md"
+  ],
   "decisions_made": [
-    "Route (a) selected: D* := (forall i, D i) quotient by the eventually-zero AddSubgroup, NOT a raw setoid quotient. QuotientAddGroup.Quotient.addCommGroup then supplies AddCommGroup with zero hand-written fields, and ShiftSet.lean already imports Mathlib.GroupTheory.QuotientGroup.Basic.",
-    "Exact hand-supplied list: AddSubgroup evZero (3 fields), LE, LinearOrder (5 fields, lt/min/max/compare defaulted), IsOrderedAddMonoid (1 field), Nontrivial, plus DenselyOrdered for the Dense branch only. Five support lemmas. Only le_total and one half of mk_lt_mk need phi to be an ultrafilter rather than a filter.",
-    "Route (b) NO-GO: (i) the only normalization theorem in the tree, intIso (DurationClassification.lean:252), is gated on SuccOrder + IsSuccArchimedean and so is Discrete-only; (ii) Discrete is exactly where compactness is refuted (DiscreteNonCompactness.lean:250); (iii) no common carrier exists class-wide, since SatisfiableBaseSet binds D : Type and Type contains ordered abelian groups of unbounded cardinality.",
-    "Task 475 supplies no reusable normalization machinery: TaskFrame.map / TaskModel.map / truthAt_map are all indexed by an isomorphism e : D ~=+o E, and comap is built from e.symm. Weakening to embeddings fails because WorldHistory.IsTotal would require constructing task-relation data at the new durations.",
-    "What 475 DOES supply is a template, not machinery: truthAt_map (IntTransfer.lean:254) is a completed six-case TruthAt induction with the box case at :283, and its two recorded tactic traps apply verbatim to the Los induction. Its box case is NOT a solution to R2, because it gets the forward direction free from invertibility of e.",
-    "Do not import Mathlib.Order.Filter.Germ / FilterProduct: Filter.Product carries only coeTC and Inhabited. Mathlib.Order.Filter.Ultrafilter.Basic (already built) supplies everything used.",
-    "R3 is discharged by elaboration, not assertion: shiftSetOnUD elaborates ShiftSet (UD phi D), which is only well-typed because the quotient stays in Type.",
-    "Left to S2 and named with anchors, not attempted here: the ultrafilter on the index type (Filter.atTop_neBot on the subset-preorder, then Ultrafilter.of), ShiftSet.sep on the ultraproduct (first-order, hence Los-preserved, but needs the same pointwise-choice extraction as the box case), and carrier_nonempty plus the valuation."
+    "SCOPE JUDGMENT, flagged in the plan: the delegating instruction gated promotion of the prototype on the report recommending it, and the report does NOT literally recommend promotion -- it treats the prototype as evidence. The plan therefore does NOT put the file in FormalSystem/, where it would be unused library code the successor task immediately supersedes. It lands it under Tests/BimodalTest/Semantics/ as a probe, matching this repo's existing probe convention (RayRegionProbe, RegionGateProbe, BoxNegPreservationProbe, UntlSnceCopyProbe, all already wired into Tests/BimodalTest.lean). This protects the decision with lake build without pre-empting S2. If the reviewer wants FormalSystem/ instead, Phase 1 is a single-path change and nothing else in the plan moves.",
+    "Non-Goals state explicitly and by name: no Los lemma or any clause of it; no ultrafilter on {L : List Formula // forall psi in L, psi in Gamma}; no ShiftSet.sep on the ultraproduct; no carrier_nonempty; no valuation A; no re-litigation of route (b); no import of Mathlib.Order.Filter.Germ or FilterProduct; nothing added to the FormalSystem/ library.",
+    "Newly identified risk not in the research report: the prototype was verified with bare `lake env lean`, which does NOT apply the BimodalTest lean_lib's leanOptions (autoImplicit := false, per lakefile.lean's theoryLeanOptions). Promotion therefore carries genuine elaboration-fallout risk. Phase 1 makes this a named verification item, and the contingency forbids rewriting proofs to make it fit -- if it does not survive, stop, record, and keep the prototype under specs/ as the still-valid evidence.",
+    "Anti-scope-creep guard: Phase 1 carries a Scope Hypothesis enumerating all 23 declarations of the prototype and requires a declaration-set diff against it at implementation time. Any added declaration is scope creep into S2 and must be reverted, not justified.",
+    "Phase 2 records the decision where the successor will read it: appends a decision-record section to the report, and appends a concrete pointer (route named, report path, probe path) to build_shiftset_ultraproduct_and_los_lemma's description in specs/state.json, replacing its current indirect 'the carrier route selected by the preceding research task'. state.json artifacts arrays are not touched (append-only rule); TODO.md is regenerated via generate-todo.sh, not hand-edited.",
+    "specs/ROADMAP.md was consulted read-only and is left unmodified; no roadmap phases were added (roadmap_flag was not set in the delegation context).",
+    "Task-reference lint is called out as a Phase 1 requirement: Tests/** is outside specs/**, so the probe's docstring must cite durable anchors (ShiftSet.lean, SetConsequence.lean, DiscreteNonCompactness.lean, symbol names) and no task numbers."
   ]
 }

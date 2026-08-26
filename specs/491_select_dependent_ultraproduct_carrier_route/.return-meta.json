@@ -1,21 +1,28 @@
 {
-  "status": "researched",
+  "status": "planned",
+  "agent_type": "planner-agent",
+  "delegation_path": ["orchestrator", "plan", "planner-agent"],
+  "task_number": 491,
+  "task_type": "lean4",
+  "session_id": "sess_1787724130_558d21_491",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/491_select_dependent_ultraproduct_carrier_route/reports/01_dependent-ultraproduct-carrier-route.md",
-      "summary": "Selects route (a) (bespoke dependent quotient) with a compiled prototype, gives the exact instance list, returns a no-go on route (b), and measures the Mathlib import cost at 8 seconds."
-    },
-    {
-      "type": "prototype",
-      "path": "specs/491_select_dependent_ultraproduct_carrier_route/prototype/DependentUltraproduct.lean",
-      "summary": "230-line sorry-free prototype: dependent ultraproduct of durations with all five (six for Dense) instances, plus the carrier ultraproduct with sh_zero and sh_add."
+      "type": "plan",
+      "path": "specs/491_select_dependent_ultraproduct_carrier_route/plans/01_land-carrier-route-decision.md",
+      "summary": "Minimal 2-phase plan landing the verified route-(a) carrier construction as a compiled test probe and recording the route decision for the successor S2/S3 task; explicitly excludes the Los lemma and all ultraproduct-construction work."
     }
   ],
-  "metadata": {
-    "session_id": "sess_1787724130_558d21_491",
-    "agent_type": "lean-research-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+  "phase_count": 2,
+  "estimated_hours": 1.75,
+  "dependency_waves": [[1], [2]],
+  "memory_candidates": [
+    {
+      "content": "When a route-selection research task produces a compiled, sorry-free prototype as its evidence, the durable landing place is a test probe (Tests/BimodalTest/**Probe.lean, wired into Tests/BimodalTest.lean), not the FormalSystem/ library. This repo already uses that convention (RayRegionProbe, RegionGateProbe, BoxNegPreservationProbe, UntlSnceCopyProbe). Landing in Tests/ puts the decision under lake build, so a change to the modules it depends on or a Mathlib bump turns the build red instead of silently invalidating a report claim, while avoiding unused library code that the successor task will immediately supersede and avoiding scope creep into the successor's construction work. Second-order gotcha: a prototype verified with bare `lake env lean` has NOT been checked under the target lean_lib's leanOptions (here autoImplicit := false), so promotion always carries an elaboration-fallout risk that must be a named phase-verification item.",
+      "category": "PATTERN",
+      "source_artifact": "specs/491_select_dependent_ultraproduct_carrier_route/plans/01_land-carrier-route-decision.md",
+      "confidence": 0.7,
+      "suggested_keywords": ["prototype-promotion", "test-probe", "route-selection", "lean-lib-options", "autoImplicit", "build-protected-decision"]
+    }
+  ],
+  "next_steps": "Run /implement 491 to execute the plan"
 }
