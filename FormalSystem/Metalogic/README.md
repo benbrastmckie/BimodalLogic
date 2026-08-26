@@ -30,7 +30,7 @@ distinct routes to completeness, and they are siblings rather than layers.
 |-------|-----------|------:|------:|----------|
 | Chronicle | `BXCanonical/` | 28 | 23,256 | Chronicle construction over a canonical chain; carries the flagship theorems |
 | Kamp/Reynolds | `WeakCanonical/` | 179 | 132,177 | Reflexive canonical model, separation, and the Kamp/Reynolds machinery |
-| Parametric/algebraic | `Algebraic/` | 5 | 2,887 | Lindenbaum–Tarski quotient algebra and a parametric canonical model |
+| Algebraic | `Algebraic/` | 5 | 2,887 | Lindenbaum–Tarski quotient algebra, the ultrafilter/MCS correspondence, and the flow-frame countermodel engine |
 | Independence (support) | `Independence/` | 3 | 1,097 | Axiom-independence models; not a completeness route, listed here so the inventory is exhaustive |
 
 **`BXCanonical` is the wired entry point.** The flagship results — `completeness`,
@@ -149,12 +149,17 @@ beside `Metalogic/`.
 
 Two rules keep this safe:
 
-1. **Aggregators import concrete leaf modules only.** No existing file is edited to
-   import an aggregator — that is how a genuine module-level cycle would appear.
-2. Consequently `Core.lean`, `Bundle.lean`, `Algebraic.lean` and
-   `SoundnessLemmas.lean` have no importer and lie outside every Lake target's
-   import closure. They are listed in `scripts/module-invariants-manifest.txt`, which
-   compile-checks them, so an unreachable aggregator cannot rot unnoticed.
+1. **Aggregators import concrete leaf modules only**, and no file imports an
+   aggregator whose own contents already reach that file — *that* is the shape a
+   genuine module-level cycle takes. Importing an aggregator per se is fine and
+   routine: `Metalogic.lean` already imports `Decidability`, `Independence`,
+   `BXCanonical`, `WeakCanonical` and `Algebraic`.
+2. `Core.lean`, `Bundle.lean` and `SoundnessLemmas.lean` have no importer and lie
+   outside every Lake target's import closure. They are listed in
+   `scripts/module-invariants-manifest.txt`, which compile-checks them, so an
+   unreachable aggregator cannot rot unnoticed. `Algebraic.lean` is no longer among
+   them: `Metalogic.lean` imports it, so it and its four otherwise-orphaned children
+   are compiled by `lake build` itself rather than by the C6 manifest.
 
 The one deliberate exception to the sibling rule is the Lake library root pair
 `FormalSystem.lean` + `FormalSystem/FormalSystem.lean` — *both* files, not one of them.
@@ -168,7 +173,7 @@ invariant check allowlists it by name (check C8; the allowlist entry is the inne
 
 | Directory | Files | Lines | Role |
 |-----------|------:|------:|------|
-| [`Algebraic/`](Algebraic/README.md) | 5 | 2,887 | Parametric/algebraic completeness route |
+| [`Algebraic/`](Algebraic/README.md) | 5 | 2,887 | Quotient algebra, ultrafilter/MCS correspondence, flow-frame countermodel engine |
 | [`Bundle/`](Bundle/README.md) | 15 | 6,106 | Canonical frame from bundled families of MCSs |
 | [`BXCanonical/`](BXCanonical/README.md) | 28 | 23,256 | Chronicle completeness route; the wired entry point |
 | [`Core/`](Core/README.md) | 4 | 2,050 | MCS machinery shared by all three routes |
@@ -336,4 +341,4 @@ correct way to re-derive any count in this document.
 
 ---
 
-*Last verified: 2026-08-25*
+*Last verified: 2026-08-26*

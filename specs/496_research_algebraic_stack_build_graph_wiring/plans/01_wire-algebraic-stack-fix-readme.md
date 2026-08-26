@@ -266,31 +266,31 @@ phase.
 
 ---
 
-### Phase 3: Correct `Metalogic/README.md` [NOT STARTED]
+### Phase 3: Correct `Metalogic/README.md` [COMPLETED]
 
 **Goal**: The parent README stops describing a deleted parametric stack and stops asserting an
 aggregator rule that HEAD already violates.
 
 **Tasks**:
-- [ ] **Route table row** (currently `:33`) — drop "Parametric" from the route label and remove
+- [x] **Route table row** (currently `:33`) — drop "Parametric" from the route label and remove
       "and a parametric canonical model" from the approach column. The parametric canonical stack
       was deleted (`6c3419a4f`) and `Algebraic.lean`'s own docstring says so. Describe what is
       there: the Lindenbaum–Tarski quotient algebra, the ultrafilter–MCS correspondence, and the
       flow-frame countermodel engine.
-- [ ] **Directory Inventory row** (currently `:171`) — same fix for the "Parametric/algebraic
+- [x] **Directory Inventory row** (currently `:171`) — same fix for the "Parametric/algebraic
       completeness route" role label.
-- [ ] **Aggregator rule** (currently `:154`) — "No existing file is edited to import an aggregator
+- [x] **Aggregator rule** (currently `:154`) — "No existing file is edited to import an aggregator
       — that is how a genuine module-level cycle would appear" is already false at HEAD:
       `Metalogic.lean` imports `Decidability` (`:11`), `Independence` (`:12`), `BXCanonical`
       (`:13`) and `WeakCanonical` (`:14`), and after Phase 1 it imports `Algebraic` too. Restate
       the rule in its true narrow form: *do not import an aggregator whose own contents already
       reach the importing file* — that is the shape that creates a module-level cycle.
-- [ ] **"No importer" claim** (currently `:154-158`) — "Consequently `Core.lean`, `Bundle.lean`,
+- [x] **"No importer" claim** (currently `:154-158`) — "Consequently `Core.lean`, `Bundle.lean`,
       `Algebraic.lean` and `SoundnessLemmas.lean` have no importer and lie outside every Lake
       target's import closure" becomes false for `Algebraic.lean` the moment Phase 1 lands. Reduce
       the list to the three that remain, and say that `Algebraic.lean` is now imported by
       `Metalogic.lean` and covered by `lake build` rather than by the C6 manifest.
-- [ ] Refresh the `*Last verified:*` footer date if the edits land on a later day.
+- [x] Refresh the `*Last verified:*` footer date if the edits land on a later day.
 
 **Timing**: 0.5 hours
 
