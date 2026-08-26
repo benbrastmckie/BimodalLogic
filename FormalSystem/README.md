@@ -296,8 +296,11 @@ invariant check allowlists it by name (check C8).
 - **Task Frames**: `Semantics/TaskFrame.lean` - Task frame structure
 - **Models**: `Semantics/TaskModel.lean` - Models with valuation
 - **Truth**: `Semantics/Truth.lean` - Truth evaluation
+- **BL truth**: `Semantics/BLTruth.lean` - Native truth evaluation for the base language BL
 - **Validity**: `Semantics/Validity.lean` - Semantic consequence
+- **BL validity**: `Semantics/BLValidity.lean` - Base-language validity predicates
 - **Soundness**: `Metalogic/Soundness.lean` - Soundness theorem
+- **BL soundness**: `Metalogic/BaseLanguageSoundness.lean` - Soundness for BL, by composition
 - **Completeness**: `Metalogic/BXCanonical/Completeness.lean` - Canonical model
 - **Perpetuity**: `Theorems/Perpetuity.lean` - P1-P6 principles
 - **Tactics**: `Automation/Tactics/Commands.lean` - Custom tactics

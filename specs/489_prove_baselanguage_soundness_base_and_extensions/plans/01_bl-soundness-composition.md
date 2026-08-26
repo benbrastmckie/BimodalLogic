@@ -360,28 +360,28 @@ and unsoftened (`Conservativity.lean:113`, "**forward direction remains refuted*
 
 ---
 
-### Phase 5: Markdown inventory and documentation sync [IN PROGRESS]
+### Phase 5: Markdown inventory and documentation sync [COMPLETED]
 
 **Goal**: Register the three new modules in every README/docs inventory that enumerates modules,
 so C5 (markdown module paths) and C13 (markdown links) stay green and the layer architecture
 mentions `BaseLanguage` explicitly.
 
 **Tasks**:
-- [ ] `FormalSystem/Semantics/README.md` — add `BLTruth.lean` and `BLValidity.lean` rows to the
+- [x] `FormalSystem/Semantics/README.md` — add `BLTruth.lean` and `BLValidity.lean` rows to the
       Contents table.
-- [ ] `FormalSystem/Metalogic/README.md` — add a `BaseLanguageSoundness.lean` row to the file
+- [x] `FormalSystem/Metalogic/README.md` — add a `BaseLanguageSoundness.lean` row to the file
       table (~line 141 area).
-- [ ] `FormalSystem/README.md` — add the new modules to the module table (~line 226 area).
-- [ ] `docs/development/MODULE_ORGANIZATION.md` — add the two Semantics entries (~line 255 area)
+- [x] `FormalSystem/README.md` — add the new modules to the module table (~line 226 area).
+- [x] `docs/development/MODULE_ORGANIZATION.md` — add the two Semantics entries (~line 255 area)
       and the Metalogic entry; and amend the five-layer architecture list (~lines 107-129) to
       place `BaseLanguage` explicitly, noting the permitted `Semantics → BaseLanguage.Formula`
       edge, so the next reader does not have to re-derive it.
-- [ ] `docs/reference/API_REFERENCE.md` — add the new declarations to the BaseLanguage section
+- [x] `docs/reference/API_REFERENCE.md` — add the new declarations to the BaseLanguage section
       (~line 746 area).
-- [ ] `docs/project-info/known-limitations.md`, Limitation 8 (~line 260ff) — re-read the "Impact"
+- [x] `docs/project-info/known-limitations.md`, Limitation 8 (~line 260ff) — re-read the "Impact"
       and "Resolution" text against the amended `Conservativity.lean` and update anything it now
       asserts falsely about missing BL semantics.
-- [ ] All module paths written must name the files as actually created (C5), and any new links
+- [x] All module paths written must name the files as actually created (C5), and any new links
       must resolve (C13). No task-number citations.
 
 **Timing**: 0.75 hours
@@ -397,23 +397,40 @@ for a module inventory or a BL-semantics-absence claim; amend any additional sit
 record the corrected count. Line numbers given above are approximate anchors from research, not
 guarantees — locate by heading and content.
 
-*Measured*: **eight** markdown sites, not six. The sweep returned eight files carrying a
-`Conservativity`/`BaseLanguage` mention; `FormalSystem/BaseLanguage/README.md` had no inventory
-and no absence claim and was left untouched, while **two sites beyond the plan's six** did carry
-module inventories and were amended:
+*Measured*: **nine** markdown sites, not six. The sweep returned eight files carrying a
+`Conservativity`/`BaseLanguage` mention, and `FormalSystem/Semantics/README.md` (which names the
+base language only in lower case) is a ninth. **Three sites beyond the plan's six** carried module
+inventories and were amended:
 
 - `docs/user-guide/architecture.md` — the `FormalSystem/` directory tree (`Semantics/` and
   `Metalogic/` blocks).
 - `docs/project-info/implementation-status.md` — the Layer 1 Semantics and Layer 2 Metalogic
   module tables, plus the "Soundness (✅)" bullet list.
+- `FormalSystem/BaseLanguage/README.md` — an earlier pass recorded this file as carrying no
+  inventory and left it untouched; that reading was wrong. It carries a `## Modules` table with
+  per-file line counts (`Formula.lean`'s was stale by the seven lines the invariant amendment
+  added) and a `## Dependencies` section whose "Imported by" line named only
+  `Metalogic.Conservativity`, which the new `Semantics.BLTruth` edge falsified. Both were
+  corrected, and a `## Where the BL semantics lives` section was added pointing at the three new
+  modules, so a reader who arrives at the directory expecting a semantics is told where it is
+  rather than concluding none exists.
 
 `FormalSystem/Metalogic/README.md`'s loose-file table also carried a written-out count
 ("**Five** loose files"), corrected to "**Six**" along with the new row — a count the plan did
-not anticipate.
+not anticipate. That table's per-file **line counts** had also gone stale and were refreshed
+against `wc -l`: `Soundness.lean` 2,022 → 2,042 and `Conservativity.lean` 295 → 311 (both drifted
+by this task's own Phase 4 docstring amendments), `Metalogic.lean` 199 → 218, and
+`StrongCompleteness.lean` 807 → 930 with `SetConsequence.lean` 338 → 346 (these two drifted from
+concurrent sibling work on the compactness bridge, not from this task). The aggregator table
+above it was checked against `wc -l` too and was already accurate. No invariant check enforces
+these counts — C14(i) covers axiom and sorry counts only — so this is a documentation-truth fix,
+not a gate requirement.
 
 **Files to modify**:
 - `FormalSystem/Semantics/README.md` - two new Contents rows
-- `FormalSystem/Metalogic/README.md` - one new file-table row
+- `FormalSystem/Metalogic/README.md` - one new file-table row, plus stale line-count refresh
+- `FormalSystem/BaseLanguage/README.md` - stale line count, "Imported by", and a new section
+  siting the BL semantics (beyond the plan's six)
 - `FormalSystem/README.md` - module table rows
 - `docs/development/MODULE_ORGANIZATION.md` - module lists plus layer-list amendment
 - `docs/reference/API_REFERENCE.md` - BaseLanguage section additions

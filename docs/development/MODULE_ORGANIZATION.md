@@ -111,20 +111,34 @@ Dependencies flow in one direction to prevent circular imports:
 ```
 Layer 4: Automation (depends on all below)
     ↑
-Layer 3: Metalogic (depends on ProofSystem, Semantics)
+Layer 3: Metalogic (depends on ProofSystem, Semantics, BaseLanguage)
     ↑
-Layer 2: Semantics, Theorems (depend on Syntax, ProofSystem)
+Layer 2: Semantics, Theorems (depend on Syntax, ProofSystem; Semantics also on
+         BaseLanguage.Formula)
     ↑
-Layer 1: ProofSystem (depends on Syntax)
+Layer 1: ProofSystem (depends on Syntax), BaseLanguage (depends on Syntax)
     ↑
 Layer 0: Syntax (no internal dependencies)
 ```
+
+**Where `BaseLanguage` sits.** It is a second object language parallel to
+`Syntax` + `ProofSystem`, not a layer of its own: `BaseLanguage.Formula` imports only
+`Syntax.Atom`, and the rest of `BaseLanguage/` imports only `Syntax` and itself. Nothing under
+`BaseLanguage/` imports `Semantics/` — that is the directory's standing module invariant, stated
+in `FormalSystem/BaseLanguage.lean`.
+
+The invariant is **directional**, and the converse edge is both permitted and used:
+`Semantics/BLTruth.lean` imports `BaseLanguage.Formula` to define `BLTruthAt` natively on
+`BLFormula`, and `Metalogic/BaseLanguageSoundness.lean` composes that with `Translation` and
+`Conservativity`. So the one `Semantics → BaseLanguage` edge in the tree runs into a
+`Syntax.Atom`-only leaf and introduces no cycle.
 
 ### Dependency Rules
 
 1. **Syntax** has no internal dependencies.
 2. **ProofSystem** depends only on Syntax.
-3. **Semantics** depends on Syntax and ProofSystem.
+3. **Semantics** depends on Syntax and ProofSystem, plus `BaseLanguage.Formula` (a
+   `Syntax.Atom`-only leaf) in `BLTruth.lean` / `BLValidity.lean`.
 4. **Theorems** depends on Syntax and ProofSystem (and may use Semantics for transport lemmas where needed).
 5. **Metalogic** depends on Syntax, ProofSystem, Semantics, and Theorems infrastructure used in proofs.
 6. **Automation** (tactics, proof search) may depend on any module.
@@ -248,17 +262,26 @@ translation. It is the language in which the source paper states TM.
 * `FormalSystem.BaseLanguage.Translation` -- `tr : BLFormula → Formula`
 * `FormalSystem.BaseLanguage.AxiomDischarge`
 
+The base language's **semantics** deliberately does not live here, so that the directory's
+`BaseLanguage/ → Semantics/` invariant stays literally true: see
+`FormalSystem.Semantics.BLTruth`, `FormalSystem.Semantics.BLValidity` and
+`FormalSystem.Metalogic.BaseLanguageSoundness` below.
+
 ### Semantics
 * `FormalSystem.Semantics.TaskFrame`
 * `FormalSystem.Semantics.WorldHistory`
 * `FormalSystem.Semantics.TaskModel`
 * `FormalSystem.Semantics.Truth`
+* `FormalSystem.Semantics.BLTruth` -- `BLTruthAt`, the native base-language truth recursion
 * `FormalSystem.Semantics.Validity`
+* `FormalSystem.Semantics.BLValidity` -- the base-language validity predicates
 * `FormalSystem.Semantics.Extension` -- the Extension Theorem: every partial history
   extends to a total one
 
 ### Metalogic
 * `FormalSystem.Metalogic.Soundness`
+* `FormalSystem.Metalogic.BaseLanguageSoundness` -- BL soundness at Base/Dense/Discrete/Dedekind,
+  by composition, plus the truth-transfer bridge `truthAt_tr`
 * `FormalSystem.Metalogic.SoundnessLemmas`
 * `FormalSystem.Metalogic.Core.DeductionTheorem`
 * `FormalSystem.Metalogic.Core.MaximalConsistent` -- `SetConsistent`, `set_lindenbaum`

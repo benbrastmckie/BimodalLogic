@@ -45,7 +45,9 @@ Module-by-module implementation status for the Bimodal TM logic library.
 | `WorldHistory.lean` | ✅ | Temporal traces |
 | `TaskModel.lean` | ✅ | Models with valuation |
 | `Truth.lean` | ✅ | Truth evaluation |
+| `BLTruth.lean` | ✅ | `BLTruthAt`, native truth evaluation for the tense-primitive base language |
 | `Validity.lean` | ✅ | Semantic consequence |
+| `BLValidity.lean` | ✅ | The four base-language validity predicates plus `BLSemanticConsequence` |
 
 **Features**:
 - Task frame structure (worlds, times, task relation)
@@ -65,12 +67,18 @@ Module-by-module implementation status for the Bimodal TM logic library.
 | `Metalogic/DiscreteNonCompactness.lean` | ✅ | Machine-refutes Discrete strong completeness |
 | `Metalogic/SetConsequence.lean` | ✅ | Set-based consequence layer; `CompactBase`/`CompactDense` named as open obligations |
 | `Metalogic/Conservativity.lean` | ✅ | TM/TM+ backward bridge |
+| `Metalogic/BaseLanguageSoundness.lean` | ✅ | BL soundness at Base/Dense/Discrete/Dedekind by composition; `truthAt_tr`, the validity forms, and `bl_not_derivable_nil_bot{,_discrete}` |
 | `Metalogic/Independence/` | ✅ | Three independence results |
 
 **Soundness** (✅):
 - Full soundness proof: `derivable Γ φ → SemanticConsequence Γ φ`, over all 45 axiom
   constructors (Base 37 / Dense 2 / Discrete 3 / Dedekind 3, per `Axiom.minFrameClass` in
   `FormalSystem/ProofSystem/Axioms.lean`)
+- Base-language soundness (`bl_soundness` and its dense / discrete / Dedekind siblings,
+  `FormalSystem/Metalogic/BaseLanguageSoundness.lean`), stated against the native `BLTruthAt` of
+  `FormalSystem/Semantics/BLTruth.lean` and obtained by composing
+  `Conservativity.translate` with the four theorems above across the truth-transfer bridge
+  `truthAt_tr`
 
 **Completeness** (✅ Complete for the weak/finite-context forms):
 - Type definitions complete

@@ -278,13 +278,21 @@ corollaries `ceb_backward` (`:210`), `cef_backward` (`:222`), `ced_backward` (`:
 
 **The forward direction is refuted, not open.** `TM⁺ ⊢ tr φ ⟹ TM ⊢ φ` is refuted for the Base
 and Discrete rows and open for the other two. The module docstring is the standing record of
-why it must not be attempted or `sorry`-ed; see also `FormalSystem/Metalogic.lean:33-38`.
+why it must not be attempted or `sorry`-ed; see also the "Conservativity (proof-theoretic, no
+semantics)" section of `FormalSystem/Metalogic.lean`.
 
 ### Impact
 
 - A TM theorem transfers to TM⁺ automatically. A TM⁺ theorem does **not** transfer back.
 - Results proved in the until/since-primitive language cannot be assumed to be statable, let
   alone provable, in the tense-primitive one.
+- The base language now has a **semantics and a soundness theorem of its own**, so BL results
+  no longer have to be routed through `tr` to be given meaning:
+  `FormalSystem/Semantics/BLTruth.lean` defines `BLTruthAt` natively on `BLFormula`,
+  `FormalSystem/Semantics/BLValidity.lean` carries the four BL validity predicates, and
+  `FormalSystem/Metalogic/BaseLanguageSoundness.lean` proves BL soundness at `FrameClass.Base`
+  and its three extensions. **This does not change the limitation**: it is a fact about the
+  proof systems, and the forward direction stays refuted.
 
 ### Workaround
 
@@ -295,6 +303,13 @@ them across.
 
 Settled negatively for two rows; the remaining two are open. This is not outstanding work on
 the two refuted rows.
+
+What a *machine-checked* refutation of the two settled rows would need has narrowed from three
+items to one. `Metalogic/Conservativity.lean` used to record that a BL-side semantics, a BL-side
+soundness theorem, and two countermodels were all missing. The first two now exist (see the
+Impact section above); the countermodels — the two-fibre structure for the Base row and
+`ℤ ×_lex ℤ` for the Discrete row — do not, and building them is separate work against the
+non-Archimedean discrete carrier.
 
 ## Limitation 9: `CO` Does Not Derive Reynolds's Prior-U
 

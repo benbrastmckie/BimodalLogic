@@ -1061,7 +1061,9 @@ FormalSystem/                              # Main source directory
 │   ├── WorldHistory.lean                  # World history definition
 │   ├── TaskModel.lean                     # Task model with valuation
 │   ├── Truth.lean                         # Truth evaluation
+│   ├── BLTruth.lean                       # Native truth evaluation for the base language
 │   ├── Validity.lean                      # Validity and consequence
+│   ├── BLValidity.lean                    # Base-language validity predicates
 │   └── Extension/                         # Semantic extension layer
 ├── Metalogic/
 │   ├── Soundness.lean                     # Soundness theorem
@@ -1075,6 +1077,7 @@ FormalSystem/                              # Main source directory
 │   ├── SetConsequence.lean                # Set-based consequence; CompactBase/CompactDense
 │   ├── DiscreteNonCompactness.lean        # Refutation of Discrete strong completeness
 │   ├── Conservativity.lean                # TM/TM+ backward bridge
+│   ├── BaseLanguageSoundness.lean         # BL soundness by composition; the truth-transfer bridge
 │   ├── Independence/                      # Independence results
 │   └── Decidability/                      # Tableau decision procedure
 ├── Theorems/

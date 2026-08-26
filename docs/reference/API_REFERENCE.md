@@ -762,6 +762,28 @@ rather than derived:
 | `BaseLanguage/Translation.lean` | `tr : BLFormula → Formula` and `trCtx` |
 | `BaseLanguage/AxiomDischarge.lean` | `dischargeAxiom`, the per-axiom discharge table |
 
+**Its semantics lives outside the directory**, so that `BaseLanguage/`'s standing invariant
+(nothing here imports `FormalSystem/Semantics/`) stays literally true. The invariant is
+directional; the converse edge is permitted and is what these three modules use:
+
+| File | What it carries |
+|------|-----------------|
+| `Semantics/BLTruth.lean` | `BLTruthAt`, a native six-clause recursion on `BLFormula` per `def:BL-semantics` -- **not** `TruthAt ∘ tr` -- plus the `BLTruth.*` characterization lemmas |
+| `Semantics/BLValidity.lean` | `BLValid`, `BLSemanticConsequence`, `BLValidDense`, `BLValidDiscrete`, `BLValidDedekindDense`; no density-free `BLValidDedekind`, which would be refutable |
+| `Metalogic/BaseLanguageSoundness.lean` | `truthAt_tr` (the bridge, proved by induction), `bl_soundness{,_dense,_discrete,_dedekind}` and their validity forms, and `bl_not_derivable_nil_bot{,_discrete}` |
+
+| Result | What it says |
+|--------|--------------|
+| `truthAt_tr` | `TruthAt M τ t (tr φ) ↔ BLTruthAt M τ t φ` |
+| `bl_soundness` | A BL derivation at `FrameClass.Base` makes its conclusion true wherever its context is |
+| `bl_soundness_dense` / `_discrete` / `_dedekind` | The same at the three extensions; the Dedekind one carries `ValidDedekindDense`'s binder set |
+| `bl_not_derivable_nil_bot` / `_discrete` | BL is consistent at `FrameClass.Base` and `FrameClass.Discrete` |
+
+All are sorry-free at `[propext, Classical.choice, Quot.sound]`. They are obtained by composing
+`Conservativity.translate` with `Metalogic/Soundness.lean`'s four theorems and crossing
+`truthAt_tr`; no BL axiom is evaluated directly against `BLTruthAt` except by the three native
+spot checks that module carries.
+
 ---
 
 ### Independence (`FormalSystem.Metalogic.Independence`)

@@ -138,14 +138,14 @@ sibling directory:
 
 | Loose non-aggregator | Lines | Role |
 |----------------------|------:|------|
-| `Soundness.lean` | 2,022 | The soundness theorem itself |
-| `StrongCompleteness.lean` | 807 | Strong/consequence completeness, including `completeness_dedekind` |
-| `SetConsequence.lean` | 338 | Set-indexed consequence relation |
+| `Soundness.lean` | 2,042 | The soundness theorem itself |
+| `StrongCompleteness.lean` | 930 | Strong/consequence completeness, including `completeness_dedekind` |
+| `SetConsequence.lean` | 346 | Set-indexed consequence relation |
 | `DiscreteNonCompactness.lean` | 334 | Non-compactness of the discrete frame class |
-| `Conservativity.lean` | 295 | Conservativity of the extension |
+| `Conservativity.lean` | 311 | Conservativity of the extension |
 | `BaseLanguageSoundness.lean` | 318 | Soundness for the base language BL, by composing `Conservativity.translate` with `Soundness.lean` across the truth-transfer bridge `truthAt_tr` |
 
-Plus the directory's own root `Metalogic.lean` (199 lines), which sits one level up,
+Plus the directory's own root `Metalogic.lean` (218 lines), which sits one level up,
 beside `Metalogic/`.
 
 Two rules keep this safe:

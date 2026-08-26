@@ -11,8 +11,10 @@ Task frame semantics for TM bimodal logic.
 | TaskModel.lean | Task models with valuation functions |
 | WorldHistory.lean | World histories for temporal evaluation |
 | Truth.lean | Truth relation for formula evaluation |
+| BLTruth.lean | `BLTruthAt` — the same truth relation for the tense-primitive base language, by native six-clause recursion on `BLFormula` per `def:BL-semantics` (not `TruthAt ∘ tr`) |
 | ShiftSet.lean | Shift-set representation theorem: task models ↔ shift sets, both directions with truth correspondence |
 | Validity.lean | Validity and semantic consequence |
+| BLValidity.lean | `BLValid`, `BLSemanticConsequence`, `BLValidDense`, `BLValidDiscrete`, `BLValidDedekindDense` — binder-for-binder base-language mirrors of Validity.lean |
 | DurationClassification.lean | Classification of Dedekind-complete duration groups: discrete (`≃+o ℤ`) or densely ordered |
 | FrameAxioms.lean | The frame axioms (nullity, compositionality, reflection) as standalone statements |
 | IntTransfer.lean | Transfer of ℤ-frame facts across the normal form |
