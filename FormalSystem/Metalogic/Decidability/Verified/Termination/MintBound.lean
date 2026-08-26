@@ -13654,11 +13654,22 @@ constructor whose clause 2 is `timeMergeClosed_identifyTime_signedUniverse hL`, 
 no argument the `_of_headroom` original does not also give it. Only clause 1 differs, and it is the
 `ordFree` composite above.
 
-Every hypothesis here is exhibitable, so this composite is not vacuous in the way the
-`_of_headroom` original is: `hlab : UnorderedSuccessorLabelClosed fc L` is refutable
-(`unorderedSuccessorLabelClosed_not_universal`), whereas `TimeMergeClosed L` and the two shape
-conditions are all met by, for instance, a rectangle of labels over a modal stock — see this
-section's and section D3's non-vacuity blocks.
+**It is nevertheless vacuous, for a reason that has nothing to do with `hlab`.** `hC` and `hfree`
+are jointly unsatisfiable: `TableauClosed.serialFuture` requires `Formula.top.someFuture ∈ C`, and
+`Formula.someFuture ⊤` is `⊤ untl ⊤`, which `untlSnceFree` rejects.
+`tableauClosed_untlSnceFree_false` below decides this, and it is stated immediately after this
+theorem rather than in a note so that no reader takes the removal of `hlab` for a discharge. The
+same collision hits `unorderedSuccessor_confined_signedUniverse_of_propositional` and its `ordFree`
+sibling above, and section D3's
+`buildTableauAt_isSome_at_seed_lengthBudget_signedUniverse_untlSnceFree`, all of which carry both
+hypotheses.
+
+What is *not* hit is anything that takes only the syntactic condition:
+`applyRule_emitted_time_mem_of_untlSnceFree`,
+`unorderedSuccessor_knownTimes_subset_of_untlSnceFree`,
+`unorderedSuccessor_label_mem_of_propositional_ordFree`, and section D3's
+`mintPaysForTime_of_untlSnceFree` chain take no `TableauClosed` and are non-vacuous. The collision
+is between stock *closure* and stock *shape*, and it is located at exactly one field.
 
 What this does **not** do is restate the terminus. The `_at` / `_selfGuarded` / `_fixed` families and
 `buildTableauAt_isSome_at_seed_lengthBudget_signedUniverse_*` are untouched, and removing their
@@ -13670,6 +13681,39 @@ theorem universeClosedAt_signedUniverse_of_propositional {C : Finset Formula} {L
     UniverseClosedAt fc (signedUniverse C L) :=
   ⟨unorderedSuccessor_confined_signedUniverse_of_propositional_ordFree hC hT hL hbox hfree,
     fun _ _ _ hbU ht₁ => timeMergeClosed_identifyTime_signedUniverse hL hbU ht₁⟩
+
+/-- **`TableauClosed C` and `∀ φ ∈ C, untlSnceFree φ = true` cannot both hold.** Decided, not
+argued, and in one field: `TableauClosed.serialFuture` demands `Formula.top.someFuture ∈ C` —
+`serialityRule` emits `T(F⊤)` at every label from no trigger at all, so any stock closed under the
+engine's outputs contains it — and `Formula.someFuture ⊤` unfolds to `Formula.untl ⊤ ⊤`, which
+`untlSnceFree` rejects by its `untl` arm.
+
+**What this decides, and what it does not.** Every theorem in this file carrying *both* hypotheses is
+therefore vacuously true, whatever else its signature says. That is four declarations:
+`unorderedSuccessor_confined_signedUniverse_of_propositional` and its `ordFree` sibling,
+`universeClosedAt_signedUniverse_of_propositional`, and section D3's
+`buildTableauAt_isSome_at_seed_lengthBudget_signedUniverse_untlSnceFree` — the last of which register
+entry 21 already records as vacuous through `hlab`, and which is now vacuous twice over and for
+independent reasons.
+
+Nothing carrying only the syntactic condition is affected, and that is most of the machinery:
+section D3's `applyRule_emitted_time_mem_of_untlSnceFree`,
+`unorderedSuccessor_knownTimes_subset_of_untlSnceFree`, `mintPaysForTime_of_untlSnceFree` and its
+descendants, and this section's `unorderedSuccessor_label_mem_of_propositional_ordFree` all stand
+non-vacuously. Removing `OrdTimesKnown` from the time coordinate was real work with a real result;
+what it turns out not to buy is a non-vacuous composite at `signedUniverse C L`.
+
+**Where the obstruction actually sits, for whoever picks this up.** Not in the shape condition and
+not in the time coordinate, but in `TableauClosed`'s `serialFuture` / `serialPast` fields, which are
+forced by `serialityRule` firing unconditionally at every label. A non-vacuous propositional
+composite therefore needs either a weakened stock-closure predicate that does not demand the
+seriality outputs — and then a re-derivation of `unorderedSuccessor_formula_mem` at it — or a
+syntactic condition weaker than `untlSnceFree` that admits `⊤ untl ⊤` while still excluding the four
+propagation arms and `.orderTrichotomy`. Neither is attempted here, and neither is refuted. -/
+theorem tableauClosed_untlSnceFree_false {C : Finset Formula}
+    (hC : TableauClosed C) (hfree : ∀ φ ∈ C, untlSnceFree φ = true) : False := by
+  have h := hfree _ hC.serialFuture
+  simp [Formula.someFuture, untlSnceFree] at h
 
 /-! ### The boundary: what Route 1 turned out to be, and where this section now stops
 
@@ -13715,16 +13759,33 @@ rather than two.
 **What the section now delivers.** `universeClosedAt_signedUniverse_of_propositional`:
 `UniverseClosedAt fc (signedUniverse C L)` from `TableauClosed C`, `TrichStock C`,
 `TimeMergeClosed L`, and the two shape conditions — with no `UnorderedSuccessorLabelClosed`, no
-`OrdTimesKnown`, and no frame-class restriction. Every one of those hypotheses is exhibitable, so
-unlike `universeClosedAt_signedUniverse_of_headroom` — whose `hlab` is refutable
-(`unorderedSuccessorLabelClosed_not_universal`) — this composite is not vacuously true.
+`OrdTimesKnown`, and no frame-class restriction. It is the statement this block previously recorded
+as not stateable, and it is now stated and proved.
+
+**And it is vacuous — a second obstruction, found only once the first was removed.**
+`tableauClosed_untlSnceFree_false` decides that `TableauClosed C` and
+`∀ φ ∈ C, untlSnceFree φ = true` cannot both hold: `TableauClosed.serialFuture` demands
+`Formula.top.someFuture ∈ C`, and `Formula.someFuture ⊤` is `⊤ untl ⊤`. So the composite above,
+`unorderedSuccessor_confined_signedUniverse_of_propositional` and its `ordFree` sibling, and section
+D3's `buildTableauAt_isSome_at_seed_lengthBudget_signedUniverse_untlSnceFree` are all vacuously true
+— the last one now for two independent reasons, `hlab` and this. This is stated plainly rather than
+softened: removing `OrdTimesKnown` was necessary and is done, and it is not sufficient.
+
+**What is not vacuous.** Everything that takes the shape condition without `TableauClosed`:
+`applyRule_emitted_time_mem_of_untlSnceFree`,
+`unorderedSuccessor_knownTimes_subset_of_untlSnceFree`,
+`unorderedSuccessor_label_mem_of_propositional_ordFree`, and section D3's whole
+`mintPaysForTime_of_untlSnceFree` chain. The time coordinate is genuinely closed on this fragment;
+what is not available is a stock that is simultaneously closed under the engine's outputs and free
+of `untl`.
 
 **The boundary that remains, stated exactly.** No theorem in this section removes `hlab` from
 `buildTableauAt_isSome_at_seed_lengthBudget_signedUniverse_untlSnceFree` or from any of its eight
-siblings. Those termini consume `universeClosedAt_signedUniverse_of_headroom`, and re-pointing them
-at the composite above is a restatement exercise across the `_at`, `_selfGuarded` and `_fixed`
-families — additive, no longer blocked by anything, and deliberately not started here. Until it is
-done, the nine landed termini remain as vacuous as they were.
+siblings, and doing so would in any case exchange one vacuity for another. The live question is no
+longer `OrdTimesKnown`; it is whether a stock-closure predicate weaker than `TableauClosed` — one
+that does not demand `serialityRule`'s two outputs — supports `unorderedSuccessor_formula_mem`, or
+whether a shape condition weaker than `untlSnceFree` still excludes the five arms. Neither is
+attempted here and neither is refuted.
 
 **Route 2 remains unattempted and is now unnecessary for this purpose.** An `Ord`-flavoured
 `UniverseClosedAt`, and the same for `DifficultyBounded`, cascading through roughly twenty
@@ -15017,10 +15078,31 @@ already been here.
     unattempted and is no longer needed for this purpose.
 
     *What has not changed.* None of the nine carriers below has been restated, so every one still
-    takes `hlab` and **all nine remain vacuous at every nonempty `L`**. Re-pointing the `_at`,
-    `_selfGuarded` and `_fixed` families at the propositional composite is additive work that is no
-    longer blocked by anything; until it is done, this entry's consequence paragraph stands as
-    written.
+    takes `hlab` and **all nine remain vacuous at every nonempty `L`**. This entry's consequence
+    paragraph stands as written.
+
+    *And the replacement composite is vacuous too, for an unrelated reason — so re-pointing the
+    carriers at it would buy nothing.* `tableauClosed_untlSnceFree_false` (section D4) decides that
+    `TableauClosed C` and `∀ φ ∈ C, untlSnceFree φ = true` cannot both hold: `TableauClosed`'s
+    `serialFuture` field demands `Formula.top.someFuture ∈ C`, because `serialityRule` emits `T(F⊤)`
+    at every label from no trigger at all, and `Formula.someFuture ⊤` is `⊤ untl ⊤`. So
+    `universeClosedAt_signedUniverse_of_propositional`,
+    `unorderedSuccessor_confined_signedUniverse_of_propositional` and its `ordFree` sibling are all
+    vacuously true, and `buildTableauAt_isSome_at_seed_lengthBudget_signedUniverse_untlSnceFree` —
+    already in the list of nine — is vacuous twice over, through `hlab` and through this.
+
+    This does **not** retract anything above and it does not touch the machinery that carries only
+    the shape condition: `applyRule_emitted_time_mem_of_untlSnceFree`,
+    `unorderedSuccessor_knownTimes_subset_of_untlSnceFree`,
+    `unorderedSuccessor_label_mem_of_propositional_ordFree` and section D3's
+    `mintPaysForTime_of_untlSnceFree` chain take no `TableauClosed` and stand non-vacuously. The
+    obstruction has moved: it is no longer `OrdTimesKnown`, and it is no longer on the `L` side at
+    all. It is that no stock is simultaneously closed under the engine's unconditional outputs and
+    free of `untl`. A reader who wants a non-vacuous propositional terminus needs a stock-closure
+    predicate weaker than `TableauClosed` — one not demanding `serialityRule`'s two outputs — with
+    `unorderedSuccessor_formula_mem` re-derived at it, or a shape condition weaker than
+    `untlSnceFree` that admits `⊤ untl ⊤` while still excluding the five arms entry 16 names.
+    Neither is attempted and neither is refuted.
 
     *And the narrowing is forced.* D4's replacement reaches only the purely propositional fragment,
     because `boxFree` and `untlSnceFree` together exclude `□`, `untl` and `snce`. That is not a proof

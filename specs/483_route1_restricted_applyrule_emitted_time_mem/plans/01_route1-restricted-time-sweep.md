@@ -262,14 +262,14 @@ whole phase must be restated against `∀ g ∈ …, g.label.time ∈ b.knownTim
 
 ---
 
-### Phase 3: The restricted sweep, `applyRule_emitted_time_mem_of_untlSnceFree` [IN PROGRESS]
+### Phase 3: The restricted sweep, `applyRule_emitted_time_mem_of_untlSnceFree` [COMPLETED]
 
 **Goal**: The Route 1 deliverable itself — `applyRule_emitted_time_mem` with `haux : OrdTimesKnown b
 ord` replaced by `hbfree : ∀ x ∈ b, untlSnceFree x.formula = true` — proved in the probe, then landed
 in section D3 beside the original.
 
 **Tasks**:
-- [ ] In the probe, state:
+- [x] In the probe, state:
       ```
       theorem applyRule_emitted_time_mem_of_untlSnceFree {rule : TableauRule}
           {sf : SignedFormula} {b : Branch} {ord : TimeOrdering}
@@ -279,26 +279,30 @@ in section D3 beside the original.
       ```
       Note it takes `hbfree`, not a trigger-level hypothesis: the trigger-level fact is recovered as
       `hbfree sf hsf` where needed, and `.orderTrichotomy` needs the branch-level form.
-- [ ] Prove it by copying the existing sweep's script verbatim and inserting Phase 2's five facts as
+- [x] Prove it by copying the existing sweep's script verbatim and inserting Phase 2's five facts as
       `first` alternatives *ahead of* the `mem_filterMap_futureOf_time` / `mem_filterMap_pastOf_time`
       closers and in place of the `applyRule_orderTrichotomy_emitted_time` alternative. Do not
       rewrite the sweep from scratch; the existing script's ordering is load-bearing (its docstring
       records that a term-level `by` inside a `first` alternative can silently absorb a failing goal
       into `sorryAx`, which is why every closer is a backtrackable `refine … ?_`). Preserve that
       property.
-- [ ] Keep the existing `set_option maxHeartbeats 4000000 in` (or raise it only if the restricted
+- [x] Keep the existing `set_option maxHeartbeats 4000000 in` (or raise it only if the restricted
       version genuinely needs more; record the value actually used).
-- [ ] Land the theorem in `MintBound.lean` **section D3**, immediately after
+- [x] Land the theorem in `MintBound.lean` **section D3**, immediately after
       `applyRule_emitted_time_mem_ordTimesKnown_needed` and its witness block, so a reader hitting
       the refutation immediately meets the restricted form that survives it. Do **not** move, edit,
-      or reprove `applyRule_emitted_time_mem` or the refutation.
-- [ ] Docstring it to state three things and no more: (a) it is *incomparable* to the original, not
+      or reprove `applyRule_emitted_time_mem` or the refutation. *(deviation: altered — the two
+      placements named are incompatible: `applyRule_emitted_time_mem_ordTimesKnown_needed` is in
+      section D1 at ~line 6993, where `untlSnceFree` is not yet defined (it is defined in D3 at
+      ~12630). Landed in D3 immediately before `pickBranches_knownTimes_subset`, its consumer, and
+      an additive forward-pointing footnote was added to the D1 sweep's docstring instead.)*
+- [x] Docstring it to state three things and no more: (a) it is *incomparable* to the original, not
       stronger — it trades a semantic run invariant for a syntactic branch condition; (b) it does
       **not** contradict `applyRule_emitted_time_mem_ordTimesKnown_needed`, whose refuted statement
       is the *unconditional* one; (c) the five arms that consume `OrdTimesKnown` are precisely the
       five the syntactic hypothesis shape-gates, named individually.
-- [ ] Add the `Finset`-coordinate sibling (`…_timeFinset_mem_of_untlSnceFree`) only if Phase 4 turns
-      out to need it. Do not add it speculatively.
+- [x] Add the `Finset`-coordinate sibling (`…_timeFinset_mem_of_untlSnceFree`) only if Phase 4 turns
+      out to need it. Do not add it speculatively. *(Phase 4 did not need it; not added.)*
 
 **Timing**: 1 hour
 
@@ -330,18 +334,18 @@ task 481 exists to avoid.
 
 ---
 
-### Phase 4: Propagate through the pick and the engine step [IN PROGRESS]
+### Phase 4: Propagate through the pick and the engine step [COMPLETED]
 
 **Goal**: The haux-free form carried from `applyRule` up to
 `unorderedSuccessorBranches (expandOnceUnblocked …)`, so that section D4's composite can consume it.
 
 **Tasks**:
-- [ ] Add a haux-free `pickBranches_knownTimes_subset` variant. The original is `private` and takes
+- [x] Add a haux-free `pickBranches_knownTimes_subset` variant. The original is `private` and takes
       `(haux, hp)`; the variant takes `(hbfree, hp)` with the same `hp` source obligation. Route it
       through Phase 3's theorem at the one site where the original calls
       `applyRule_emitted_time_mem`. Note the source obligation `hp` already carries
       `ruleMintsFreshTime r = false`, so `hmint` costs nothing here.
-- [ ] Re-route `unorderedSuccessor_knownTimes_subset` so that `haux` is no longer used. Its `hfree :
+- [x] Re-route `unorderedSuccessor_knownTimes_subset` so that `haux` is no longer used. *(deviation: altered — the strengthened form `unorderedSuccessor_knownTimes_subset_of_untlSnceFree` was added as a new declaration, but the original was left **completely untouched** (proof body included) rather than re-derived from it. Re-deriving would have left `haux` an unused binder, triggering the unusedVariables linter, and would have made `pickBranches_knownTimes_subset` dead. Byte-identity of the original is thereby guaranteed rather than merely intended — verified programmatically against baseline f0fc2855f.)* Its `hfree :
       ∀ x ∈ b, untlSnceFree x.formula = true` is already exactly the hypothesis Phase 3 needs, so the
       haux-free form is *strictly stronger* with no new currency.
       - **Preferred shape**: state the strengthened form as a new declaration
@@ -352,10 +356,10 @@ task 481 exists to avoid.
         is not.
       - Do not delete the original even though it becomes redundant: it is cited by name in section
         D3's prose and in the D4 boundary block.
-- [ ] Confirm by `git diff` that `mintPaysForTime_of_untlSnceFree`,
+- [x] Confirm by `git diff` that `mintPaysForTime_of_untlSnceFree`,
       `mintPaysForTimeFixed_of_untlSnceFree`, and `mintPaysForTimeFixed_signedUniverse_untlSnceFree`
       are unmodified.
-- [ ] Update section D3's prose only where it now says something false. The section note claiming
+- [x] Update section D3's prose only where it now says something false. The section note claiming
       the time coordinate carries `OrdTimesKnown` unavoidably is the one to check; leave every other
       sentence alone. Prose edits are additive footnotes where possible, not rewrites.
 
@@ -386,37 +390,37 @@ or a consumer outside `MintBound.lean`, changes the propagation surface and must
 
 ---
 
-### Phase 5: Clause 1 without `OrdTimesKnown`, and the excluded theorem landed [IN PROGRESS]
+### Phase 5: Clause 1 without `OrdTimesKnown`, and the excluded theorem landed [COMPLETED]
 
 **Goal**: The item task 481's Phase 5 recorded as *not stateable* — stated and proved. This is what
 converts "Route 1 succeeded" from a claim into a compiled fact.
 
 **Tasks**:
-- [ ] Add `unorderedSuccessor_label_mem_of_propositional_ordFree` (or re-route the existing
+- [x] Add `unorderedSuccessor_label_mem_of_propositional_ordFree` (or re-route the existing
       `unorderedSuccessor_label_mem_of_propositional` if its signature can lose `haux` without
       breaking a consumer — check consumers first; it currently has exactly one). Its hypotheses:
       `hL : TimeMergeClosed L`, `hbox`, `hfree`, `hbl` — and **no** `OrdTimesKnown`.
-- [ ] Add the `signedUniverse` form without the `OrdTimesKnown` binder in the quantifier prefix. The
+- [x] Add the `signedUniverse` form without the `OrdTimesKnown` binder in the quantifier prefix. The
       original `unorderedSuccessor_confined_signedUniverse_of_propositional` has
       `OrdTimesKnown b ord →` inside its `∀ b ord tr` prefix; the new form drops exactly that arrow
       and nothing else.
-- [ ] Land `universeClosedAt_signedUniverse_of_propositional`, mirroring
+- [x] Land `universeClosedAt_signedUniverse_of_propositional`, mirroring
       `universeClosedAt_signedUniverse_of_headroom`'s two-component anonymous constructor: clause 1
       from the new composite, clause 2 from `timeMergeClosed_identifyTime_signedUniverse hL` exactly
       as the `_of_headroom` original does. Its hypotheses should be `hC : TableauClosed C`,
       `hT : TrichStock C`, `hL : TimeMergeClosed L`, `hbox : ∀ φ ∈ C, boxFree φ = true`,
       `hfree : ∀ φ ∈ C, untlSnceFree φ = true` — and **no** `UnorderedSuccessorLabelClosed` and **no**
       frame-class restriction.
-- [ ] Leave `unorderedSuccessor_confined_signedUniverse_of_headroom` and
+- [x] Leave `unorderedSuccessor_confined_signedUniverse_of_headroom` and
       `universeClosedAt_signedUniverse_of_headroom` byte-identical. Leave all nine `signedUniverse`
       carriers byte-identical. Confirm programmatically against the pre-task baseline commit, not by
       eyeball — this is the standard task 481 set and met.
-- [ ] Rewrite section D4's `### The boundary: why this section stops here` block. It currently says
+- [x] Rewrite section D4's `### The boundary: why this section stops here` block. It currently says
       the section stops at the shape mismatch and that Route 1 is *unattempted*. Both halves are now
       false. Replace with: what Route 1 turned out to be, which hypothesis replaced which, the five
       shape-gated arms, and the boundary that remains (the terminus restatement, which is task 481's
       Phase 6 and is not landed here).
-- [ ] Do **not** proceed into the terminus restatement, the `_at`/`_selfGuarded`/`_fixed` families,
+- [x] Do **not** proceed into the terminus restatement, the `_at`/`_selfGuarded`/`_fixed` families,
       or any non-vacuity stock. Phase 5 ends at `universeClosedAt_signedUniverse_of_propositional`.
 
 **Timing**: 0.75 hours
@@ -449,14 +453,14 @@ hypothesis.
 
 ---
 
-### Phase 6: The verdict — register amendment, Phase 6/7 reachability, and the final gate [IN PROGRESS]
+### Phase 6: The verdict — register amendment, Phase 6/7 reachability, and the final gate [COMPLETED]
 
 **Goal**: The task's decision recorded durably in the source, the reachability question answered
 explicitly, and every acceptance gate run. This phase executes in **both** the success and the
 failure case; only its content differs.
 
 **Tasks**:
-- [ ] **Amend the C9 register. Entry 16 is the primary site**, not 11 or 21. Entry 16 is
+- [x] **Amend the C9 register. Entry 16 is the primary site**, not 11 or 21. Entry 16 is
       *"An unconditional `applyRule_emitted_time_mem`, without `OrdTimesKnown`"* — it is the entry a
       reader would otherwise cite to conclude that the restricted form is forbidden, and it is the
       entry that becomes misleading the moment a restricted form lands. The task description names
@@ -469,13 +473,13 @@ failure case; only its content differs.
       - *Failure case*: amend entry 16 to record the negative result — the specific rule, the
         specific configuration, and why `untlSnceFree` does not exclude it — so that a future reader
         does not re-attempt Route 1 on the same evidence this task started from.
-- [ ] Amend entry 21's closing section and the D4 boundary block only to the extent they now assert
+- [x] Amend entry 21's closing section and the D4 boundary block only to the extent they now assert
       something false. In the success case both currently say Route 1 is *unattempted*, which must
       change. In the failure case both are nearly correct already and need only "unattempted"
       changed to "attempted and refuted, see entry 16".
-- [ ] **Do not add a 25th entry.** The register must still open "Twenty-four statements" and hold
+- [x] **Do not add a 25th entry.** The register must still open "Twenty-four statements" and hold
       exactly 24 numbered entries. Verify by counting, not by intent.
-- [ ] **Answer the reachability question explicitly**, in the task summary, in these terms:
+- [x] **Answer the reachability question explicitly**, in the task summary, in these terms:
       - Is task 481's Phase 6 (`universeClosedAt_signedUniverse_of_propositional` plus the terminus
         restatement) now reachable *as originally written*? In the success case, note that the first
         half is now landed by this task's Phase 5 and that only the terminus restatement remains;
@@ -488,13 +492,13 @@ failure case; only its content differs.
         question is settled or still open; do not assert Phase 7 is reachable without addressing it.
       - Should landing them be a **resumption of task 481** or a **further follow-up task**? Give one
         recommendation with a reason, not a menu.
-- [ ] Run the final gate: `lake build`, `lake build BimodalTest`, and
+- [x] Run the final gate: `lake build`, `lake build BimodalTest`, and
       `bash scripts/check-module-invariants.sh`. Compare the invariants output against the pre-task
       baseline check-by-check; no check that passed at baseline may fail. Note that the script's
       "C9" check (task-number citations under `FormalSystem/`) is a *different* C9 from
       `MintBound.lean`'s in-file section C9 register — do not conflate them, and in particular do not
       write a task number into any register amendment.
-- [ ] Write the task summary to `summaries/01_route1-restricted-time-sweep-summary.md`, including a
+- [x] Write the task summary to `summaries/01_route1-restricted-time-sweep-summary.md`, including a
       Scope Hypothesis results table for every phase.
 
 **Timing**: 1 hour
@@ -529,19 +533,19 @@ requires an explicit justification in the summary, and the task description's de
 
 ## Testing & Validation
 
-- [ ] `lake build` exits 0 at every phase boundary from Phase 3 onward.
-- [ ] `lake build BimodalTest` exits 0 at task close.
-- [ ] `bash scripts/check-module-invariants.sh` — no check failing that passed at the pre-task
-      baseline commit.
-- [ ] Every new public declaration: `#print axioms` shows only
-      `[propext, Classical.choice, Quot.sound]`.
-- [ ] Zero `sorry` added; zero vacuous definitions added; zero new global `@[simp]` attributes.
-- [ ] All nine `signedUniverse` carriers and both `_of_headroom` originals byte-identical against the
-      pre-task baseline, verified programmatically.
-- [ ] `applyRule_emitted_time_mem` and `applyRule_emitted_time_mem_ordTimesKnown_needed` unmodified.
-- [ ] `unorderedSuccessor_knownTimes_subset`'s elaborated signature unchanged.
-- [ ] C9 register: exactly 24 entries, opening line unchanged.
-- [ ] No file outside `FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean` and
+- [x] `lake build` exits 0 at every phase boundary from Phase 3 onward.
+- [x] `lake build BimodalTest` exits 0 at task close.
+- [x] `bash scripts/check-module-invariants.sh` — no check failing that passed at the pre-task
+      baseline commit. *(ALL CHECKS PASSED, exit 0.)*
+- [x] Every new public declaration: `#print axioms` shows only
+      `[propext, Classical.choice, Quot.sound]` (four exclusion lemmas show only `[propext]`).
+- [x] Zero `sorry` added; zero vacuous definitions added; zero new global `@[simp]` attributes.
+- [x] All nine `signedUniverse` carriers and both `_of_headroom` originals byte-identical against the
+      pre-task baseline, verified programmatically (18 declarations checked, all identical).
+- [x] `applyRule_emitted_time_mem` and `applyRule_emitted_time_mem_ordTimesKnown_needed` unmodified.
+- [x] `unorderedSuccessor_knownTimes_subset`'s elaborated signature unchanged.
+- [x] C9 register: exactly 24 entries, opening line unchanged.
+- [x] No file outside `FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean` and
       the task's own `specs/` directory is modified.
 
 ## Artifacts & Outputs

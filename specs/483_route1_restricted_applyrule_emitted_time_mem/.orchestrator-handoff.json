@@ -1,12 +1,13 @@
 {
-  "dispatch_seq": 5,
+  "dispatch_seq": 10,
   "task_number": 483,
-  "session_id": "sess_1787724130_558d21_483",
-  "stage": "plan",
-  "status": "planned",
+  "session_id": "sess_1787724130_558d21",
+  "stage": "implement",
+  "status": "implemented",
   "plan_path": "specs/483_route1_restricted_applyrule_emitted_time_mem/plans/01_route1-restricted-time-sweep.md",
-  "phase_count": 6,
-  "estimated_hours": 5,
-  "next_stage": "implement",
-  "notes": "Route 1 only. Strict phase chain (waves 1-6), each phase carrying an explicit escape to Phase 6 where a negative result is recorded as a C9 register amendment. Plan deviates from the task description on the amendment site: entry 16 (the unconditional applyRule_emitted_time_mem entry) is primary rather than 11 or 21; deviation must be stated in the summary. Route 2 and task 481's Phase 6/7 landing are explicit non-goals; Phase 6 assesses their reachability only."
+  "summary_path": "specs/483_route1_restricted_applyrule_emitted_time_mem/summaries/01_route1-restricted-time-sweep-summary.md",
+  "phases_completed": 6,
+  "phases_total": 6,
+  "next_stage": "complete",
+  "notes": "Route 1 succeeded. applyRule_emitted_time_mem_of_untlSnceFree landed in section D3 and propagated to universeClosedAt_signedUniverse_of_propositional in D4 -- no UnorderedSuccessorLabelClosed, no OrdTimesKnown, no frame-class hypothesis. A second obstruction was found and decided: tableauClosed_untlSnceFree_false proves TableauClosed C and untlSnceFree on C jointly unsatisfiable, so that composite is vacuous. Task 481 Phase 6 is stateable but its terminus would be vacuous; Phase 7 is REFUTED, not open. Recommendation: do not resume task 481; open a follow-up on weakening TableauClosed or untlSnceFree. Route 2 not started. All gates green."
 }
