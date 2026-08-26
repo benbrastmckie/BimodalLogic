@@ -1,0 +1,16 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/489_prove_baselanguage_soundness_base_and_extensions/reports/01_bl-soundness-by-composition.md",
+      "summary": "Prototype-verified route for BL (TM) soundness: native BLTruthAt, the proved TruthAt/tr bridge, four soundness theorems by composition, consistency corollaries, placement outside BaseLanguage/, and the Conservativity.lean stale-claim amendment list."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1787724130_558d21_489",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}

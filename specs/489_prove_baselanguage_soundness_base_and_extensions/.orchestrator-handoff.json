@@ -1,0 +1,16 @@
+{
+  "status": "researched",
+  "phase": "research",
+  "dispatch_seq": 1,
+  "summary": "Every deliverable was verified by prototype against the built library: BLTruthAt defined natively on BLFormula, the TruthAt M tau t (tr phi) <-> BLTruthAt M tau t phi bridge proved by induction, all four soundness theorems by composition through Conservativity.translate, four empty-context validity forms, and two consistency corollaries -- all sorry-free at #print axioms exactly [propext, Classical.choice, Quot.sound]. Recommended placement is Semantics/BLTruth.lean + Semantics/BLValidity.lean + Metalogic/BaseLanguageSoundness.lean, which keeps the BaseLanguage module invariant literally true. The report also identifies four now-false claims in Metalogic/Conservativity.lean that must be amended.",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/489_prove_baselanguage_soundness_base_and_extensions/reports/01_bl-soundness-by-composition.md",
+      "summary": "Verified Lean source for all four deliverables, placement decision, gate-impact table, and the documentation-amendment list."
+    }
+  ],
+  "phases_completed": 1,
+  "phases_total": 1,
+  "blockers": []
+}
