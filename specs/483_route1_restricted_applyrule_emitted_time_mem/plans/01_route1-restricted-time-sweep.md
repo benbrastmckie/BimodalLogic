@@ -262,7 +262,7 @@ whole phase must be restated against `∀ g ∈ …, g.label.time ∈ b.knownTim
 
 ---
 
-### Phase 3: The restricted sweep, `applyRule_emitted_time_mem_of_untlSnceFree` [NOT STARTED]
+### Phase 3: The restricted sweep, `applyRule_emitted_time_mem_of_untlSnceFree` [IN PROGRESS]
 
 **Goal**: The Route 1 deliverable itself — `applyRule_emitted_time_mem` with `haux : OrdTimesKnown b
 ord` replaced by `hbfree : ∀ x ∈ b, untlSnceFree x.formula = true` — proved in the probe, then landed
@@ -330,7 +330,7 @@ task 481 exists to avoid.
 
 ---
 
-### Phase 4: Propagate through the pick and the engine step [NOT STARTED]
+### Phase 4: Propagate through the pick and the engine step [IN PROGRESS]
 
 **Goal**: The haux-free form carried from `applyRule` up to
 `unorderedSuccessorBranches (expandOnceUnblocked …)`, so that section D4's composite can consume it.
@@ -386,7 +386,7 @@ or a consumer outside `MintBound.lean`, changes the propagation surface and must
 
 ---
 
-### Phase 5: Clause 1 without `OrdTimesKnown`, and the excluded theorem landed [NOT STARTED]
+### Phase 5: Clause 1 without `OrdTimesKnown`, and the excluded theorem landed [IN PROGRESS]
 
 **Goal**: The item task 481's Phase 5 recorded as *not stateable* — stated and proved. This is what
 converts "Route 1 succeeded" from a claim into a compiled fact.
@@ -449,7 +449,7 @@ hypothesis.
 
 ---
 
-### Phase 6: The verdict — register amendment, Phase 6/7 reachability, and the final gate [NOT STARTED]
+### Phase 6: The verdict — register amendment, Phase 6/7 reachability, and the final gate [IN PROGRESS]
 
 **Goal**: The task's decision recorded durably in the source, the reachability question answered
 explicitly, and every acceptance gate run. This phase executes in **both** the success and the

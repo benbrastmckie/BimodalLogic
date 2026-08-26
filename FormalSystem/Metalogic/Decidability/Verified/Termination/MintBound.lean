@@ -6883,7 +6883,15 @@ The time coordinate has no such luck: `allFuturePos` and its three siblings prop
 `TimeOrdering.futureOf` / `pastOf`, and nothing in `applyRule` ties an ordering time to the
 branch. `applyRule_emitted_time_mem_ordTimesKnown_needed` decides a configuration where dropping
 the hypothesis makes the statement false. The invariant is available at every consuming site —
-it is section A7's, threaded by `ordTimesKnown_expandOnceUnblocked`. -/
+it is section A7's, threaded by `ordTimesKnown_expandOnceUnblocked`.
+
+**Footnote, added later.** On the `untl`/`snce`-free fragment the hypothesis is nevertheless
+avoidable — not by weakening this statement, which stays exactly as it is, but by an incomparable
+one stated beside it in section D3: `applyRule_emitted_time_mem_of_untlSnceFree` trades
+`OrdTimesKnown b ord` for `∀ x ∈ b, untlSnceFree x.formula = true`, because the four propagation
+arms above and `.orderTrichotomy` are all shape-gated by that condition. The refutation is
+untouched: what it refutes is the *unconditional* statement, and its witness branch `[T(G p)]`
+carries an `untl` node. -/
 theorem applyRule_emitted_time_mem {rule : TableauRule} {sf : SignedFormula}
     {b : Branch} {ord : TimeOrdering}
     (hsf : sf ∈ b) (haux : OrdTimesKnown b ord)
@@ -12782,6 +12790,211 @@ private theorem pick_stage_source_noMint (b : Branch) (ord : TimeOrdering)
     exact ⟨sf, hmem, findApplicableRule_applyRule_pair h,
       findApplicableRule_not_mintsFreshTime (hfree sf hmem) h⟩
 
+/-! ### The time sweep with `OrdTimesKnown` traded for branch-level freeness
+
+`applyRule_emitted_time_mem` (section D1) carries `OrdTimesKnown b ord`, and
+`applyRule_emitted_time_mem_ordTimesKnown_needed` decides that the *unconditional* statement is
+false. Neither fact settles what happens on this section's fragment, and the difference matters
+downstream: `UniverseClosedAt`'s clause 1 hands over `∀ x ∈ b, x ∈ signedUniverse C L`, from which
+branch-level `untlSnceFree` follows in one line, but it hands over nothing at all about the
+ordering. A statement whose only currency is branch-level freeness therefore reaches sites the
+`OrdTimesKnown` form cannot.
+
+`haux` is consumed at exactly three closer families in the D1 sweep —
+`mem_filterMap_futureOf_time haux`, `mem_filterMap_pastOf_time haux`, and (through
+`applyRule_orderTrichotomy_emitted_time`) `mem_knownTimes_of_mem_pastOf haux` — spread across
+exactly five rule arms. All five are shape-gated, and the five lemmas below say so one arm at a
+time. Four are gated by the *trigger*: `.allFuturePos` and `.allPastPos` match the raw
+`Formula.allFuture` / `Formula.allPast` shape, whose head is an `untl` / `snce` node, and
+`.someFutureNeg` / `.somePastNeg` consult `asSomeFuture?` / `asSomePast?`, which the view lemmas
+above already return `none` for. The fifth is gated by the *branch*: `.orderTrichotomy`'s `fires`
+guard demands `branch.contains (SignedFormula.neg d l0)` for one of three `Formula.someFuture`-headed
+disjuncts, and an `untl`/`snce`-free branch carries no `untl`-headed formula at all. That asymmetry
+is why the restricted sweep takes a branch-level hypothesis rather than a trigger-level one.
+
+Each exclusion concludes `emitted = []` rather than the weaker "every emission is at a known time":
+on this fragment the four propagation arms and the trichotomy arm do not merely emit safely, they
+do not fire. -/
+
+/-- `.allFuturePos` does not fire on an `untl`/`snce`-free trigger. Its arm matches the raw shape
+`Formula.allFuture ψ = ((⊥ → ⊥) untl (ψ → ⊥)) → ⊥`, so the condition has to be pushed through the
+implication before the `untl` node is visible — the same extra split
+`asAllFuture_eq_none_of_untlSnceFree` needs, and for the same reason. Routing through that view
+lemma is not available here: `applyRule`'s arm is a constructor pattern, not a view. -/
+theorem applyRule_allFuturePos_emitted_nil_of_untlSnceFree
+    {sf : SignedFormula} {b : Branch} {ord : TimeOrdering}
+    (hfree : untlSnceFree sf.formula = true) :
+    (applyRule .allFuturePos sf b ord).1.emitted = [] := by
+  obtain ⟨sign, φ, l⟩ := sf
+  simp only at hfree
+  cases sign
+  case pos =>
+    cases φ with
+    | imp a c => cases a <;> simp_all [applyRule, untlSnceFree, RuleResult.emitted]
+    | _ => simp [applyRule, RuleResult.emitted]
+  case neg => simp [applyRule, RuleResult.emitted]
+
+/-- The past mirror, through `Formula.allPast` and `snce`. -/
+theorem applyRule_allPastPos_emitted_nil_of_untlSnceFree
+    {sf : SignedFormula} {b : Branch} {ord : TimeOrdering}
+    (hfree : untlSnceFree sf.formula = true) :
+    (applyRule .allPastPos sf b ord).1.emitted = [] := by
+  obtain ⟨sign, φ, l⟩ := sf
+  simp only at hfree
+  cases sign
+  case pos =>
+    cases φ with
+    | imp a c => cases a <;> simp_all [applyRule, untlSnceFree, RuleResult.emitted]
+    | _ => simp [applyRule, RuleResult.emitted]
+  case neg => simp [applyRule, RuleResult.emitted]
+
+/-- `.someFutureNeg` is view-gated: its arm is `| .someFutureNeg, .neg, φ => match asSomeFuture? φ`,
+and `asSomeFuture_eq_none_of_untlSnceFree` sends the view to `none`, hence the arm to
+`.notApplicable`. -/
+theorem applyRule_someFutureNeg_emitted_nil_of_untlSnceFree
+    {sf : SignedFormula} {b : Branch} {ord : TimeOrdering}
+    (hfree : untlSnceFree sf.formula = true) :
+    (applyRule .someFutureNeg sf b ord).1.emitted = [] := by
+  obtain ⟨sign, φ, l⟩ := sf
+  simp only at hfree
+  have h := asSomeFuture_eq_none_of_untlSnceFree hfree
+  cases sign <;> simp [applyRule, h, RuleResult.emitted]
+
+/-- The past mirror, through `asSomePast?`. -/
+theorem applyRule_somePastNeg_emitted_nil_of_untlSnceFree
+    {sf : SignedFormula} {b : Branch} {ord : TimeOrdering}
+    (hfree : untlSnceFree sf.formula = true) :
+    (applyRule .somePastNeg sf b ord).1.emitted = [] := by
+  obtain ⟨sign, φ, l⟩ := sf
+  simp only at hfree
+  have h := asSomePast_eq_none_of_untlSnceFree hfree
+  cases sign <;> simp [applyRule, h, RuleResult.emitted]
+
+/-- **The branch-level step**: an `untl`-headed formula is not carried by an `untl`/`snce`-free
+branch, at any sign and any label. Named separately because it is the one step of the
+`.orderTrichotomy` exclusion that is about the branch rather than about `applyRule`'s match, and it
+should fail in isolation if it fails. -/
+theorem untl_not_contains_of_untlSnceFree {b : Branch}
+    (hbfree : ∀ x ∈ b, untlSnceFree x.formula = true)
+    {s : Sign} {x y : Formula} {l : Label} :
+    b.contains ⟨s, Formula.untl x y, l⟩ = false := by
+  rcases hc : b.contains (⟨s, Formula.untl x y, l⟩ : SignedFormula) with _ | _
+  · rfl
+  · have hm : (⟨s, Formula.untl x y, l⟩ : SignedFormula) ∈ b := mem_of_branch_contains hc
+    have := hbfree _ hm
+    simp [untlSnceFree] at this
+
+/-- `.orderTrichotomy` does not fire on an `untl`/`snce`-free **branch**. Its `fires` guard ends in
+`ds.any fun d => branch.contains (SignedFormula.neg d l0)`, where every `d ∈ disjuncts φ ψ` is
+`Formula.someFuture (…) = Formula.untl ⊤ (…)`. So no candidate fires, `candidates.find? fires` is
+`none`, and the arm reports `.notApplicable`.
+
+This is the arm the trigger-level hypothesis does not reach: nothing about `sf`'s own shape
+constrains what the branch carries, which is why the restricted sweep below takes `hbfree`. -/
+theorem applyRule_orderTrichotomy_emitted_nil_of_untlSnceFree
+    {sf : SignedFormula} {b : Branch} {ord : TimeOrdering}
+    (hbfree : ∀ x ∈ b, untlSnceFree x.formula = true) :
+    (applyRule .orderTrichotomy sf b ord).1.emitted = [] := by
+  obtain ⟨sign, φ, l⟩ := sf
+  cases sign
+  case neg => simp [applyRule, RuleResult.emitted]
+  case pos =>
+    simp only [applyRule]
+    repeat' split
+    all_goals (try simp only [RuleResult.emitted])
+    rename_i heq
+    have hfires := List.find?_some heq
+    simp only [Formula.someFuture, SignedFormula.neg, List.any_cons, List.any_nil,
+      Bool.and_eq_true, Bool.or_eq_true, untl_not_contains_of_untlSnceFree hbfree] at hfires
+    simp at hfires
+
+/-- An arm that emits nothing meets the sweep's conclusion vacuously. Stated separately so the five
+exclusions can be fed into the sweep's `first` chain as one-line `exact`s. -/
+theorem time_mem_of_emitted_nil {b : Branch} {r : RuleResult × TimeOrdering}
+    (h : r.1.emitted = []) : ∀ g ∈ r.1.emitted, g.label.time ∈ b.knownTimes := by
+  rw [h]; simp
+
+set_option maxHeartbeats 4000000 in
+set_option linter.unusedTactic false in
+/-- **The time sweep on the `untl`/`snce`-free fragment, without `OrdTimesKnown`.**
+
+`applyRule_emitted_time_mem` with `haux : OrdTimesKnown b ord` replaced by
+`hbfree : ∀ x ∈ b, untlSnceFree x.formula = true`. Three things about it, and no more:
+
+* **It is incomparable to the original, not stronger.** It trades a semantic run invariant for a
+  syntactic branch condition. Neither hypothesis implies the other: an ordering can be
+  `OrdTimesKnown` over a branch carrying `untl` formulas, and an `untl`/`snce`-free branch can sit
+  under an ordering reaching times it does not know. Both statements are needed, and both are kept.
+* **It does not contradict `applyRule_emitted_time_mem_ordTimesKnown_needed`.** What that theorem
+  refutes is the *unconditional* statement — no `OrdTimesKnown`, no syntactic condition, nothing.
+  Its witness branch is `[T(G p)]`, and `Formula.allFuture p` is an `untl` node, so the witness
+  fails `hbfree` outright. The refutation stands exactly as stated.
+* **The five arms that consume `OrdTimesKnown` are precisely the five the syntactic hypothesis
+  shape-gates**: `.allFuturePos` and `.allPastPos` (raw `allFuture` / `allPast` constructor
+  patterns), `.someFutureNeg` and `.somePastNeg` (the `asSomeFuture?` / `asSomePast?` views), and
+  `.orderTrichotomy` (the `fires` guard's branch lookup). The five exclusions above are inserted
+  into the sweep's `first` chain *ahead of* the closers that would have needed `haux`, and the
+  `mem_filterMap_futureOf_time` / `mem_filterMap_pastOf_time` alternatives are then simply absent:
+  no arm reaches them. Every other arm is closed by the D1 sweep's own `haux`-free alternatives,
+  copied verbatim so that the ordering property that script's docstring records — every closer a
+  backtrackable `refine … ?_`, never a term-level `by` that could absorb a failing goal into
+  `sorryAx` — is preserved.
+
+`hmint : ruleMintsFreshTime rule = false` is retained. It is plausibly droppable on this fragment,
+since an `untl`/`snce`-free trigger fails every minting rule's shape view
+(`isApplicable_eq_false_of_untlSnceFree`), but `applyRule` is not gated by `isApplicable`, so
+dropping it is a separate proof and not one this statement needs. -/
+theorem applyRule_emitted_time_mem_of_untlSnceFree {rule : TableauRule} {sf : SignedFormula}
+    {b : Branch} {ord : TimeOrdering}
+    (hsf : sf ∈ b) (hbfree : ∀ x ∈ b, untlSnceFree x.formula = true)
+    (hmint : ruleMintsFreshTime rule = false) :
+    ∀ g ∈ (applyRule rule sf b ord).1.emitted, g.label.time ∈ b.knownTimes := by
+  have ht : sf.label.time ∈ b.knownTimes := mem_knownTimes_of_mem hsf
+  have hfree : untlSnceFree sf.formula = true := hbfree sf hsf
+  cases sf with
+  | mk sign formula label =>
+    cases rule <;> first
+      | exact Bool.noConfusion hmint
+      | exact time_mem_of_emitted_nil (applyRule_allFuturePos_emitted_nil_of_untlSnceFree hfree)
+      | exact time_mem_of_emitted_nil (applyRule_allPastPos_emitted_nil_of_untlSnceFree hfree)
+      | exact time_mem_of_emitted_nil (applyRule_someFutureNeg_emitted_nil_of_untlSnceFree hfree)
+      | exact time_mem_of_emitted_nil (applyRule_somePastNeg_emitted_nil_of_untlSnceFree hfree)
+      | exact time_mem_of_emitted_nil (applyRule_orderTrichotomy_emitted_nil_of_untlSnceFree hbfree)
+      | (cases sign <;> simp only [applyRule] <;> (repeat' split) <;>
+          (try contradiction) <;>
+          intro g hg <;>
+          repeat' first
+            | exact ht
+            | exact mem_knownTimes_of_mem hg
+            | (refine mem_identifyTime_time_at_trigger (ord := ord) ?_ hg
+               assumption)
+            | (refine mem_identifyTime_time_at_trigger_oriented (ord := ord) ?_ hg
+               assumption)
+            | (refine mem_filterMap_const_time_mem (t := label.time) ht ?_ hg
+               clear hg
+               intro x y hy
+               repeat' first
+                 | split at hy
+                 | simp only [Option.some.injEq] at hy
+               all_goals first
+                 | (subst hy; rfl)
+                 | (simp only [reduceCtorEq] at hy))
+            | (refine mem_filterMap_time ?_ hg
+               clear hg
+               intro x y hy
+               repeat' first
+                 | split at hy
+                 | simp only [Option.some.injEq] at hy
+               all_goals first
+                 | (subst hy; rfl)
+                 | (simp only [reduceCtorEq] at hy))
+            | (simp only [RuleResult.emitted, Branch.boxPosFormulas, Branch.diamondNegFormulas,
+                 List.map_cons, List.map_nil, List.flatten_cons, List.flatten_nil,
+                 List.append_nil, List.mem_cons, List.mem_append, List.not_mem_nil,
+                 or_false, List.mem_filter] at hg)
+            | (subst hg; exact ht)
+            | (rcases hg with hg | hg))
+
 /-- One pick stage adds no known time, given that its rule mints none. The join of
 `applyRule_emitted_time_mem` with the no-mint source, in the shape `pickBranches_world_dichotomy`
 uses for the world coordinate. -/
@@ -12830,6 +13043,66 @@ theorem unorderedSuccessor_knownTimes_subset {b : Branch} {ord : TimeOrdering}
                | none => none) := pick_branches_eq
   rw [keyB]
   exact pickBranches_knownTimes_subset haux (pick_stage_source_noMint b ord fc tr hfree)
+
+/-- The `haux`-free twin of `pickBranches_knownTimes_subset`, routed through
+`applyRule_emitted_time_mem_of_untlSnceFree` at the one site where the original calls
+`applyRule_emitted_time_mem`. The source obligation `hp` is unchanged and already carries
+`ruleMintsFreshTime r = false`, so the restricted sweep's `hmint` costs nothing here; the only new
+currency is the branch-level syntactic condition, which `pick_stage_source_noMint`'s own caller
+already has in hand. -/
+private theorem pickBranches_knownTimes_subset_of_untlSnceFree {b : Branch} {ord : TimeOrdering}
+    {p : Option (TableauRule × RuleResult × TimeOrdering)}
+    (hbfree : ∀ x ∈ b, untlSnceFree x.formula = true)
+    (hp : ∀ r res o, p = some (r, res, o) → ∃ sf, sf ∈ b ∧ applyRule r sf b ord = (res, o) ∧
+      ruleMintsFreshTime r = false) :
+    ∀ nb ∈ pickBranches b p, ∀ t ∈ nb.knownTimes, t ∈ b.knownTimes := by
+  rcases p with _ | ⟨r, res, o⟩
+  · simp [pickBranches]
+  · obtain ⟨sf, hsf, hA, hnm⟩ := hp r res o rfl
+    intro nb hnb t ht
+    obtain ⟨-, hsub⟩ := resultBranch_sub (b := b) (nb := nb) (res := res) hnb
+    obtain ⟨x, hx, rfl⟩ := exists_mem_of_mem_knownTimes ht
+    rcases hsub x hx with hxe | hxb
+    · refine applyRule_emitted_time_mem_of_untlSnceFree (rule := r) (sf := sf) (ord := ord)
+        hsf hbfree hnm x ?_
+      rw [hA]
+      exact hxe
+    · exact mem_knownTimes_of_mem hxb
+
+/-- **The engine-level statement without the run invariant.** `unorderedSuccessor_knownTimes_subset`
+with `OrdTimesKnown b ord` gone: its `hfree` was already exactly the hypothesis the restricted sweep
+needs, so the `haux`-free form is strictly stronger at no new cost.
+
+This is the declaration section D4's boundary block said would be needed and did not have. Its point
+is not economy — the original's `haux` is available at every site that currently consumes it, via
+`hri.ordTimesKnown` — but *reachability*: `UniverseClosedAt`'s clause 1 quantifies `ord` universally
+and unconstrained, so it can never supply `OrdTimesKnown b ord`, while branch-level freeness follows
+from clause 1's own `∀ x ∈ b, x ∈ signedUniverse C L` in one line.
+
+The original is retained with its signature byte-identical and its proof untouched: it is cited by
+name in this section's prose and in D4's boundary block, and `mintPaysForTime_of_untlSnceFree` and
+its three descendants continue to consume it unchanged. -/
+theorem unorderedSuccessor_knownTimes_subset_of_untlSnceFree {b : Branch} {ord : TimeOrdering}
+    {fc : FormalSystem.ProofSystem.FrameClass} {tr : EventualityTracker}
+    (hfree : ∀ x ∈ b, untlSnceFree x.formula = true) :
+    ∀ nb ∈ unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1,
+      ∀ t ∈ nb.knownTimes, t ∈ b.knownTimes := by
+  have keyB : unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1
+      = pickBranches b
+          (match findUnexpandedUnblockedWith b ord fc (blockedTimes b ord fc tr) with
+           | some sf => findApplicableRule sf b ord fc
+           | none =>
+             match b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
+                 && (findApplicableSerialRule sf b ord).isSome) with
+             | some sf => findApplicableSerialRule sf b ord
+             | none =>
+               match b.find? (fun sf => !(blockedTimes b ord fc tr).contains sf.label.time
+                   && (findApplicableLinearityRule sf b ord).isSome) with
+               | some sf => findApplicableLinearityRule sf b ord
+               | none => none) := pick_branches_eq
+  rw [keyB]
+  exact pickBranches_knownTimes_subset_of_untlSnceFree hfree
+    (pick_stage_source_noMint b ord fc tr hfree)
 
 /-- **The rank is monotone in the two things a step can move.** `splitOrderedRank` rises with
 `knownTimes` and falls with the constraint list, so a successor that adds no time and loses no
@@ -13108,7 +13381,12 @@ wonder about: `applyRule_emitted_world_mem` carries no `OrdTimesKnown b ord` hyp
 `applyRule_emitted_time_mem` does, so none of the three below takes one either. The asymmetry is
 real and is recorded at `applyRule_emitted_time_mem_ordTimesKnown_needed`: the time sweep needs the
 ordering's times to be branch-known because `timeLinearity` reads times off `ord`, whereas nothing
-reads *worlds* off the ordering at all. -/
+reads *worlds* off the ordering at all.
+
+**Footnote, added later.** The asymmetry is real but it is not permanent on this fragment:
+`unorderedSuccessor_knownTimes_subset_of_untlSnceFree` (section D3) is the time-coordinate mirror
+without the run invariant, and the boundary block at the end of this section records what that
+buys. -/
 
 /-- **`pick_stage_source` with the no-world-mint fact attached**, the world-coordinate counterpart
 of `pick_stage_source_noMint`. The three stages differ only in how the fact arrives: stage one has
@@ -13268,6 +13546,35 @@ theorem unorderedSuccessor_label_mem_of_propositional {L : Finset Label} {b : Br
   rw [hyw, hzt] at hkey
   exact hkey
 
+/-- **The same composite without `OrdTimesKnown`.** Identical to
+`unorderedSuccessor_label_mem_of_propositional` except that the time coordinate is routed through
+`unorderedSuccessor_knownTimes_subset_of_untlSnceFree`, so the run invariant is not required.
+
+`hfree` was already present for the time coordinate; it now pays for that coordinate outright.
+Nothing else changes: the world coordinate is `unorderedSuccessor_worldFinset_subset` as before, and
+the four quadrants are still closed by `TimeMergeClosed L`.
+
+The `haux`-carrying original is retained beside it and is unmodified. -/
+theorem unorderedSuccessor_label_mem_of_propositional_ordFree {L : Finset Label} {b : Branch}
+    {ord : TimeOrdering} {fc : FormalSystem.ProofSystem.FrameClass} {tr : EventualityTracker}
+    (hL : TimeMergeClosed L)
+    (hbox : ∀ x ∈ b, boxFree x.formula = true)
+    (hfree : ∀ x ∈ b, untlSnceFree x.formula = true)
+    (hbl : ∀ x ∈ b, x.label ∈ L) :
+    ∀ nb ∈ unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1,
+      ∀ x ∈ nb, x.label ∈ L := by
+  intro nb hnb x hx
+  have hw : x.label.world ∈ b.worldFinset :=
+    unorderedSuccessor_worldFinset_subset hbox nb hnb x.label.world (Branch.mem_worldFinset hx)
+  have ht : x.label.time ∈ b.knownTimes :=
+    unorderedSuccessor_knownTimes_subset_of_untlSnceFree hfree nb hnb x.label.time
+      (mem_knownTimes_of_mem hx)
+  obtain ⟨y, hy, hyw⟩ := exists_mem_of_mem_worldFinset hw
+  obtain ⟨z, hz, hzt⟩ := exists_mem_of_mem_knownTimes ht
+  have hkey := hL y.label (hbl y hy) z.label (hbl z hz)
+  rw [hyw, hzt] at hkey
+  exact hkey
+
 
 /-- **Clause 1 at `signedUniverse C L`, both dimensions, from satisfiable hypotheses.**
 
@@ -13307,65 +13614,122 @@ theorem unorderedSuccessor_confined_signedUniverse_of_propositional {C : Finset 
     (unorderedSuccessor_label_mem_of_propositional haux hL
       (fun y hy => hbox _ (hbf y hy)) (fun y hy => hfree _ (hbf y hy)) hbl nb hnb x hx)
 
-/-! ### The boundary: why this section stops here, and what would be needed to go further
+/-- **Clause 1 at `signedUniverse C L`, in `UniverseClosedAt`'s own shape.**
 
-**This section does not reach a restated terminus, and the reason is not a missing proof.** It is a
-shape mismatch that is settled rather than open, and it is recorded here so that nobody re-attempts
-the route on the assumption that it merely needs more work.
+`unorderedSuccessor_confined_signedUniverse_of_propositional` with the `OrdTimesKnown b ord →`
+arrow deleted from the quantifier prefix and nothing else changed. That arrow was the one thing
+standing between the propositional route and `UniverseClosedAt`'s clause 1, which quantifies `ord`
+universally and unconstrained; `unorderedSuccessor_knownTimes_subset_of_untlSnceFree` removes it,
+and the statement below is now literally clause 1 at `U = signedUniverse C L`.
 
-`UniverseClosedAt fc U`'s **clause 1** is
+The `haux`-carrying original is retained beside it and is unmodified. -/
+theorem unorderedSuccessor_confined_signedUniverse_of_propositional_ordFree {C : Finset Formula}
+    {L : Finset Label} {fc : FormalSystem.ProofSystem.FrameClass}
+    (hC : TableauClosed C) (hT : TrichStock C) (hL : TimeMergeClosed L)
+    (hbox : ∀ φ ∈ C, boxFree φ = true) (hfree : ∀ φ ∈ C, untlSnceFree φ = true) :
+    ∀ (b : Branch) (ord : TimeOrdering) (tr : EventualityTracker),
+      (∀ x ∈ b, x ∈ signedUniverse C L) →
+      ∀ nb ∈ unorderedSuccessorBranches (expandOnceUnblocked b ord fc tr).1, ∀ x ∈ nb,
+        x ∈ signedUniverse C L := by
+  intro b ord tr hb nb hnb x hx
+  have hbf : ∀ y ∈ b, y.formula ∈ C :=
+    fun y hy => (formula_label_of_mem_signedUniverse (hb y hy)).1
+  have hbl : ∀ y ∈ b, y.label ∈ L :=
+    fun y hy => (formula_label_of_mem_signedUniverse (hb y hy)).2
+  exact mem_signedUniverse
+    (unorderedSuccessor_formula_mem hC hT hbf nb hnb x hx)
+    (unorderedSuccessor_label_mem_of_propositional_ordFree hL
+      (fun y hy => hbox _ (hbf y hy)) (fun y hy => hfree _ (hbf y hy)) hbl nb hnb x hx)
+
+/-- **`UniverseClosedAt fc (signedUniverse C L)` with no residual and no frame-class restriction.**
+
+The theorem section D4's boundary block recorded as *not stateable*. Its hypotheses are two stock
+conditions (`TableauClosed C`, `TrichStock C`), the label-set closure condition (`TimeMergeClosed L`,
+satisfied by every rectangle — `timeMergeClosed_product`), and the two syntactic shape conditions on
+the stock. There is **no** `UnorderedSuccessorLabelClosed`, **no** `OrdTimesKnown`, and **no**
+frame-class hypothesis.
+
+Assembled exactly as `universeClosedAt_signedUniverse_of_headroom` is: a two-component anonymous
+constructor whose clause 2 is `timeMergeClosed_identifyTime_signedUniverse hL`, unchanged and taking
+no argument the `_of_headroom` original does not also give it. Only clause 1 differs, and it is the
+`ordFree` composite above.
+
+Every hypothesis here is exhibitable, so this composite is not vacuous in the way the
+`_of_headroom` original is: `hlab : UnorderedSuccessorLabelClosed fc L` is refutable
+(`unorderedSuccessorLabelClosed_not_universal`), whereas `TimeMergeClosed L` and the two shape
+conditions are all met by, for instance, a rectangle of labels over a modal stock — see this
+section's and section D3's non-vacuity blocks.
+
+What this does **not** do is restate the terminus. The `_at` / `_selfGuarded` / `_fixed` families and
+`buildTableauAt_isSome_at_seed_lengthBudget_signedUniverse_*` are untouched, and removing their
+`hlab` is separate, downstream work. See the boundary block below. -/
+theorem universeClosedAt_signedUniverse_of_propositional {C : Finset Formula} {L : Finset Label}
+    {fc : FormalSystem.ProofSystem.FrameClass}
+    (hC : TableauClosed C) (hT : TrichStock C) (hL : TimeMergeClosed L)
+    (hbox : ∀ φ ∈ C, boxFree φ = true) (hfree : ∀ φ ∈ C, untlSnceFree φ = true) :
+    UniverseClosedAt fc (signedUniverse C L) :=
+  ⟨unorderedSuccessor_confined_signedUniverse_of_propositional_ordFree hC hT hL hbox hfree,
+    fun _ _ _ hbU ht₁ => timeMergeClosed_identifyTime_signedUniverse hL hbU ht₁⟩
+
+/-! ### The boundary: what Route 1 turned out to be, and where this section now stops
+
+**An earlier version of this block recorded a shape mismatch as settled and Route 1 as
+unattempted. Both halves are now false, and the block is rewritten rather than patched so that no
+reader inherits the superseded verdict.** What it said was this: `UniverseClosedAt fc U`'s clause 1
+is
 
   `∀ b ord tr, (∀ x ∈ b, x ∈ U) → ∀ nb ∈ unorderedSuccessorBranches …, ∀ x ∈ nb, x ∈ U`
 
-with `ord` **universally quantified and unconstrained**. Every theorem above that closes the time
-coordinate carries `OrdTimesKnown b ord`, inherited through `unorderedSuccessor_knownTimes_subset`
-from `applyRule_emitted_time_mem` — where
-`applyRule_emitted_time_mem_ordTimesKnown_needed` proves the hypothesis is **not removable**, by
-deciding a configuration in which dropping it makes the statement false. So
-`unorderedSuccessor_confined_signedUniverse_of_propositional` cannot be handed to
-`UniverseClosedAt`'s clause 1: it discharges a strictly weaker statement, and the gap is exactly one
-hypothesis that the clause does not offer and that nothing can supply at an arbitrary `ord`.
+with `ord` **universally quantified and unconstrained**, while every theorem closing the time
+coordinate carried `OrdTimesKnown b ord`, inherited through `unorderedSuccessor_knownTimes_subset`
+from `applyRule_emitted_time_mem` — where `applyRule_emitted_time_mem_ordTimesKnown_needed` proves
+the hypothesis is not removable. Two routes past it were named: re-derive the time sweep on this
+fragment's reachable rules (Route 1), or thread `OrdTimesKnown` through the whole closure interface
+(Route 2).
 
-This is the same mismatch section C11 already ran into and already recorded from the other side:
-`UnorderedSuccessorLabelClosedOrd` exists precisely because `UnorderedSuccessorLabelClosed`
-"quantifies over an arbitrary `TimeOrdering` with nothing tying it to the branch, which is one
-hypothesis short of what `unorderedSuccessor_time_dichotomy` asks". C11's
-`unorderedSuccessor_confined_signedUniverse_of_freshLabelHeadroom` carries `OrdTimesKnown` for the
-same reason and is likewise not wired into `universeClosedAt_signedUniverse_of_headroom`. The
-observation is therefore not new to this section; what is new is that it is now the *only* thing
-standing between a satisfiable hypothesis set and a terminus with `hlab` genuinely absent.
+**Route 1 was attempted and it works.** `applyRule_emitted_time_mem_of_untlSnceFree` (section D3)
+is the time sweep with `OrdTimesKnown b ord` replaced by `∀ x ∈ b, untlSnceFree x.formula = true`.
+The replacement is exact, not approximate: `haux` is consumed at exactly five rule arms, and all
+five are shape-gated by that condition —
 
-**The two routes past it, and why neither is taken here.**
+* `.allFuturePos` and `.allPastPos`, whose `applyRule` arms match the raw `Formula.allFuture` /
+  `Formula.allPast` shapes, each headed by an `untl` / `snce` node;
+* `.someFutureNeg` and `.somePastNeg`, gated by `asSomeFuture?` / `asSomePast?`, which section D3's
+  view lemmas already send to `none`;
+* `.orderTrichotomy`, whose `fires` guard demands the branch carry
+  `SignedFormula.neg d l0` for one of three `Formula.someFuture`-headed disjuncts.
 
-1. *Remove `OrdTimesKnown` from the time coordinate on this fragment.* On a `boxFree`,
-   `untl`/`snce`-free branch the pick is heavily constrained — the linearity stage yields
-   `.branchingOrdered`, hence `.splitOrdered`, hence no unordered successor at all; the seriality
-   stage emits at the trigger's own label; and `orderTrichotomy`'s `fires` guard demands a
-   `someFuture`-shaped formula already on the branch, which such a branch does not carry. A bespoke
-   sweep over just the reachable rules might therefore avoid the hypothesis. That is a genuine
-   re-derivation of `applyRule_emitted_time_mem` on a restricted rule set, in the **time**
-   coordinate, which is section D3's territory and not this section's. It is *not* attempted here
-   and is *not* claimed to be impossible — it is unattempted, which is a different verdict from
-   refuted and should not be recorded as one.
+The first four are excluded by the *trigger's* shape; the fifth is excluded by what the *branch*
+carries, which is why the restricted sweep takes a branch-level hypothesis. That asymmetry is also
+what makes the route work at all: clause 1 hands over `∀ x ∈ b, x ∈ signedUniverse C L`, from which
+branch-level freeness follows in one line, and hands over nothing whatever about `ord`.
 
-2. *Thread `OrdTimesKnown` through the closure chain.* This means an `Ord`-flavoured
-   `UniverseClosedAt`, and then the same for `DifficultyBounded`, and then restating every consumer
-   of both down to `buildTableauAt` — roughly twenty theorems across the `_at`, `_selfGuarded` and
-   `_fixed` families. `DifficultyBounded` carries its own refutations and its own register entries,
-   so this is a redesign of the closure interface rather than an addition to it.
+**One correction to the superseded block's own reasoning, recorded because it was load-bearing.**
+That block conjectured Route 1 would need the pick to be constrained — the linearity stage yielding
+`.branchingOrdered`, the seriality stage emitting at the trigger's label, and so on. None of that is
+needed. The five exclusions are local to `applyRule`'s arms, no rule set is restricted, and `boxFree`
+plays no part in the time coordinate at all: it is what closes the **world** coordinate
+(`unorderedSuccessor_worldFinset_subset`), and the restricted sweep carries one syntactic hypothesis
+rather than two.
 
-**What this section therefore delivers, stated exactly.** The world coordinate of the label
-dimension is closed unconditionally on a `boxFree` branch
-(`unorderedSuccessor_worldFinset_subset`) — the coordinate that
-`freshWorldHeadroom_not_universal` proves no condition on `L` can ever close — and, joined with
-D3's time coordinate and the `TimeMergeClosed` rectangle, it discharges clause 1 at
-`signedUniverse C L` **from hypotheses that are all satisfiable**
-(`unorderedSuccessor_confined_signedUniverse_of_propositional`). That is a strictly stronger
-position than the one section C11 reached, where the reduced antecedent was itself refutable. What
-it is **not** is a terminus: no theorem in this section removes `hlab` from
+**What the section now delivers.** `universeClosedAt_signedUniverse_of_propositional`:
+`UniverseClosedAt fc (signedUniverse C L)` from `TableauClosed C`, `TrichStock C`,
+`TimeMergeClosed L`, and the two shape conditions — with no `UnorderedSuccessorLabelClosed`, no
+`OrdTimesKnown`, and no frame-class restriction. Every one of those hypotheses is exhibitable, so
+unlike `universeClosedAt_signedUniverse_of_headroom` — whose `hlab` is refutable
+(`unorderedSuccessorLabelClosed_not_universal`) — this composite is not vacuously true.
+
+**The boundary that remains, stated exactly.** No theorem in this section removes `hlab` from
 `buildTableauAt_isSome_at_seed_lengthBudget_signedUniverse_untlSnceFree` or from any of its eight
-siblings, and every one of those nine remains vacuous at every nonempty `L`. Register entry 21 is
-the verdict and is written to say exactly this. -/
+siblings. Those termini consume `universeClosedAt_signedUniverse_of_headroom`, and re-pointing them
+at the composite above is a restatement exercise across the `_at`, `_selfGuarded` and `_fixed`
+families — additive, no longer blocked by anything, and deliberately not started here. Until it is
+done, the nine landed termini remain as vacuous as they were.
+
+**Route 2 remains unattempted and is now unnecessary for this purpose.** An `Ord`-flavoured
+`UniverseClosedAt`, and the same for `DifficultyBounded`, cascading through roughly twenty
+restatements down to `buildTableauAt`, was the fallback if Route 1 failed. It did not fail. Route 2
+is neither started nor recommended. -/
 
 /-! ## D5. The engine-level assembly: `MintPaysForTimeFixed` off `.Dense`, at any universe
 
@@ -14226,6 +14590,31 @@ already been here.
     `mem_knownTimes_of_mem_futureOf` / `_pastOf` exist. The hypothesis costs nothing at the consuming
     sites — `expandOnceUnblocked_ordTimesKnown` supplies it.
 
+    *A syntactically restricted form does exist, and it does not weaken this entry.*
+    `applyRule_emitted_time_mem_of_untlSnceFree` (section D3) is the same sweep with
+    `OrdTimesKnown b ord` replaced by `∀ x ∈ b, untlSnceFree x.formula = true`, and it reaches
+    exactly the `untl`/`snce`-free fragment. The two statements are **incomparable**, not ordered:
+    neither hypothesis implies the other, and what this entry refutes is the *unconditional*
+    statement — no run invariant, no syntactic condition, nothing — which stays refuted. The witness
+    above fails the syntactic condition outright, since its branch carries `T(G p)` and
+    `Formula.allFuture p` is an `untl` node.
+
+    *Why it works, so that the boundary is not mistaken for luck.* `haux` is consumed at exactly five
+    rule arms and by exactly three closer families, and every one of the five is shape-gated by the
+    syntactic condition: `.allFuturePos` and `.allPastPos` through the raw `Formula.allFuture` /
+    `Formula.allPast` constructor patterns, `.someFutureNeg` and `.somePastNeg` through the
+    `asSomeFuture?` / `asSomePast?` views, and `.orderTrichotomy` through its `fires` guard's demand
+    that the branch carry a `Formula.someFuture`-headed disjunct. The first four are gated by the
+    *trigger's* shape; the fifth by what the *branch* carries, which is why the restricted form takes
+    a branch-level hypothesis rather than a trigger-level one. `boxFree` plays no part: it closes the
+    world coordinate, not this one.
+
+    *What this buys downstream.* `unorderedSuccessor_knownTimes_subset_of_untlSnceFree` and, through
+    it, `universeClosedAt_signedUniverse_of_propositional` — `UniverseClosedAt` at
+    `signedUniverse C L` with no `UnorderedSuccessorLabelClosed`, no `OrdTimesKnown` and no
+    frame-class restriction. See section D4's boundary block, and entry 21's closing paragraphs,
+    which this supersedes on the point of Route 1 being unattempted.
+
 17. **A fourth measure component in the shape of a second defect ledger over `selfGuardRules ×ˢ U`,
     paying for the self-guarded minting rules by their own discharge.** This is the component entry
     14 says is missing, built in the one shape that survives every objection entry 14 raises — and
@@ -14612,15 +15001,26 @@ already been here.
     from hypotheses that are **all satisfiable**. That is strictly better than C11's position, where
     the reduced antecedent was itself refutable.
 
-    It stops one step short of a restated terminus, and the reason is a **shape mismatch, not a
-    missing proof**. Every route through the time coordinate carries `OrdTimesKnown b ord`, which
+    *The shape mismatch this entry once recorded as the stopping point is gone.* An earlier version
+    of this paragraph said the section stopped one step short of a restated terminus because every
+    route through the time coordinate carried `OrdTimesKnown b ord` — which
     `applyRule_emitted_time_mem_ordTimesKnown_needed` proves is not removable from
-    `applyRule_emitted_time_mem`; `UniverseClosedAt`'s clause 1 quantifies `ord` freely and offers no
-    such hypothesis. So none of the nine carriers loses its `hlab`, and **all nine remain vacuous at
-    every nonempty `L`**. D4's own boundary note states the two routes past the mismatch and why
-    neither is taken there; note in particular that the first of them — removing `OrdTimesKnown` on
-    this fragment — is *unattempted*, which is not the same verdict as refuted and must not be
-    recorded as one.
+    `applyRule_emitted_time_mem` — while `UniverseClosedAt`'s clause 1 quantifies `ord` freely and
+    offers no such hypothesis. It named two routes past the mismatch and recorded the first of them,
+    removing `OrdTimesKnown` on this fragment, as **unattempted**. It has since been attempted and it
+    works: `applyRule_emitted_time_mem_of_untlSnceFree` trades the run invariant for branch-level
+    `untl`/`snce`-freeness (entry 16 records why, arm by arm), and
+    `universeClosedAt_signedUniverse_of_propositional` is `UniverseClosedAt fc (signedUniverse C L)`
+    with **no** `UnorderedSuccessorLabelClosed`, **no** `OrdTimesKnown` and **no** frame-class
+    hypothesis, every one of whose hypotheses is exhibitable. The second route — an `Ord`-flavoured
+    `UniverseClosedAt` and `DifficultyBounded` cascading through some twenty restatements — remains
+    unattempted and is no longer needed for this purpose.
+
+    *What has not changed.* None of the nine carriers below has been restated, so every one still
+    takes `hlab` and **all nine remain vacuous at every nonempty `L`**. Re-pointing the `_at`,
+    `_selfGuarded` and `_fixed` families at the propositional composite is additive work that is no
+    longer blocked by anything; until it is done, this entry's consequence paragraph stands as
+    written.
 
     *And the narrowing is forced.* D4's replacement reaches only the purely propositional fragment,
     because `boxFree` and `untlSnceFree` together exclude `□`, `untl` and `snce`. That is not a proof
