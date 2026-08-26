@@ -395,6 +395,53 @@ theorem compactBase_of_modelExistence (h : ModelExistenceBase) : CompactBase := 
   exact hsat φ.neg (Set.mem_insert _ _)
     (hcons D F M τ hτ t (fun ψ hψ => hsat ψ (Set.mem_insert_of_mem _ hψ)))
 
+/--
+**Model existence implies compactness, at the dense class.** The Dense mirror of
+`compactBase_of_modelExistence` above, with `ModelExistenceDense` / `CompactDense` /
+`SatisfiableDenseSet` / `ValidDense` in place of their Base counterparts and the
+`[DenselyOrdered D]` binder carried through every configuration tuple. The argument is
+unchanged: contrapose, extend the premise set by `φ.neg`, filter each finite sublist down to its
+`Γ`-part, and use `truthAt_foldr_imp` to read the failure of validity as premise-satisfaction
+together with conclusion-failure.
+
+It lives here rather than in `FormalSystem/Metalogic/SetConsequence.lean` for the same
+import-cycle reason recorded on its Base sibling: `truthAt_foldr_imp` is owned by this module,
+and this module imports the one supplying the vocabulary.
+
+**A reduction, not a terminus.** `ModelExistenceDense` is an **open obligation**, so
+`CompactDense` — which is the whole of what `strongCompletenessDense_of_compact` still needs —
+stays open too; this theorem only relocates that obligation.
+-/
+theorem compactDense_of_modelExistenceDense (h : ModelExistenceDense) : CompactDense := by
+  classical
+  intro Γ φ hcons
+  by_contra hno
+  push Not at hno
+  have hfin : ∀ L : List Formula, (∀ ψ ∈ L, ψ ∈ insert φ.neg Γ) →
+      SatisfiableDenseSet {ψ | ψ ∈ L} := by
+    intro L hL
+    have hsub : ∀ ψ ∈ L.filter (fun ψ => decide (ψ ∈ Γ)), ψ ∈ Γ := by
+      intro ψ hψ
+      exact of_decide_eq_true (List.mem_filter.mp hψ).2
+    have hnv := hno _ hsub
+    unfold ValidDense at hnv
+    push Not at hnv
+    obtain ⟨D, _, _, _, _, _, F, M, τ, hτ, t, hfalse⟩ := hnv
+    rw [truthAt_foldr_imp] at hfalse
+    push Not at hfalse
+    obtain ⟨hall, hnφ⟩ := hfalse
+    refine ⟨D, inferInstance, inferInstance, inferInstance, inferInstance, inferInstance,
+      F, M, τ, hτ, t, ?_⟩
+    intro ψ hψ
+    by_cases hg : ψ ∈ Γ
+    · exact hall ψ (List.mem_filter.mpr ⟨hψ, decide_eq_true hg⟩)
+    · rcases hL ψ hψ with rfl | hmem
+      · exact fun hp => hnφ hp
+      · exact absurd hmem hg
+  obtain ⟨D, _, _, _, _, _, F, M, τ, hτ, t, hsat⟩ := h _ hfin
+  exact hsat φ.neg (Set.mem_insert _ _)
+    (hcons D F M τ hτ t (fun ψ hψ => hsat ψ (Set.mem_insert_of_mem _ hψ)))
+
 /-! ## Consequence completeness for `FrameClass.Dedekind` -/
 
 /--
