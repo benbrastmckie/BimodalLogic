@@ -1,7 +1,7 @@
 # Implementation Plan: Land the Dependent Ultraproduct Carrier Route Decision
 
 - **Task**: 491 - select_dependent_ultraproduct_carrier_route
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 1.75 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/491_select_dependent_ultraproduct_carrier_route/reports/01_dependent-ultraproduct-carrier-route.md`
@@ -112,29 +112,30 @@ single-path change; nothing else in the plan moves.
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Land the verified carrier construction as a compiled semantics probe [NOT STARTED]
+### Phase 1: Land the verified carrier construction as a compiled semantics probe [COMPLETED]
 
 **Goal**: The route-(a) construction compiles as part of the `BimodalTest` lean_lib, under that
 library's own `leanOptions`, so the decision is protected by `lake build` from here on.
 
 **Tasks**:
-- [ ] Copy `specs/491_select_dependent_ultraproduct_carrier_route/prototype/DependentUltraproduct.lean`
+- [x] Copy `specs/491_select_dependent_ultraproduct_carrier_route/prototype/DependentUltraproduct.lean`
       to `Tests/BimodalTest/Semantics/DependentUltraproductProbe.lean`. Copy the mathematical
       content **verbatim**; do not re-derive, re-prove, or "improve" any proof.
-- [ ] Add the standard file header (copyright block matching the other probes) and rewrite the
+- [x] Add the standard file header (copyright block matching the other probes) and rewrite the
       module docstring in the probe idiom used by `Tests/BimodalTest/RayRegionProbe.lean`: what
       hypothesis was tested, what was measured, and what the result licenses. It must state
       plainly that this is the *carrier* only, and that the Łoś lemma, the index-type
       ultrafilter, `ShiftSet.sep`, `carrier_nonempty`, and the valuation are **not** here.
-- [ ] Cite anchors by path and symbol only. No task numbers anywhere in the file (this path is
+- [x] Cite anchors by path and symbol only. No task numbers anywhere in the file (this path is
       outside `specs/**`; see `.claude/rules/no-task-references-in-deliverables.md`).
-- [ ] Rename the namespace from `UProto` to something that reads as a probe rather than a
+- [x] Rename the namespace from `UProto` to something that reads as a probe rather than a
       prototype (e.g. `BimodalTest.DependentUltraproductProbe`), updating the three
       `#print axioms` lines to the new fully-qualified names.
-- [ ] Build the single module and resolve any fallout from `autoImplicit := false` by adding
+- [x] Build the single module and resolve any fallout from `autoImplicit := false` by adding
       explicit binders — **not** by re-enabling `autoImplicit` and **not** by changing
-      `lakefile.lean`'s `theoryLeanOptions`.
-- [ ] Confirm `grep -c sorry` is 0 on the new file and that the three `#print axioms` outputs are
+      `lakefile.lean`'s `theoryLeanOptions`. *(measured: no fallout — the module built clean in
+      1.4s under `theoryLeanOptions`; no binder was added and no option was changed)*
+- [x] Confirm `grep -c sorry` is 0 on the new file and that the three `#print axioms` outputs are
       still exactly `[propext, Classical.choice, Quot.sound]`.
 
 **Timing**: 1 hour
@@ -161,7 +162,10 @@ justified.
 
 **Verification**:
 - `lake env lean Tests/BimodalTest/Semantics/DependentUltraproductProbe.lean` exits 0 with no
-  errors and no `sorry`
+  errors and no `sorry` *(deviation: altered — verified with the scoped
+  `lake build BimodalTest.Semantics.DependentUltraproductProbe` instead, which is strictly
+  stronger: `lake env lean` does not apply the lib's `leanOptions`, and applying them is the
+  whole point of this phase. Exit 0, no errors, no warnings attributable to this file)*
 - The declaration-set diff described under Scope Hypothesis is empty in both directions
 - The three axiom profiles are unchanged from the report's §2.5
 
