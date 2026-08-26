@@ -4,8 +4,19 @@
     "total_tasks": 42,
     "last_sync": "2026-08-24T21:34:14Z"
   },
-  "next_project_number": 489,
+  "next_project_number": 490,
   "active_projects": [
+    {
+      "project_number": 489,
+      "project_name": "prove_baselanguage_soundness_base_and_extensions",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Prove soundness for the BaseLanguage (BL) proof system, establishing it first at FrameClass.Base and then extending it to the Dense, Discrete, and Dedekind extensions, mirroring the Base-then-extensions structure of Metalogic/Soundness.lean; this gives the paper's thm:TM-soundness a direct Lean counterpart",
+      "topic": "metalogic",
+      "created": "2026-08-26T01:33:14Z",
+      "last_updated": "2026-08-26T01:33:14Z",
+      "blocks_note": "carries D5 split out of task 488"
+    },
     {
       "project_number": 488,
       "project_name": "align_lean_code_and_docs_with_possible_worlds_paper",
@@ -45,8 +56,8 @@
         }
       ],
       "plan_metadata": {
-        "phases": 14,
-        "total_effort_hours": 14,
+        "phases": 13,
+        "total_effort_hours": 13,
         "complexity": "complex",
         "research_integrated": true,
         "plan_version": 1,
@@ -59,8 +70,7 @@
           ],
           [
             5,
-            6,
-            13
+            6
           ],
           [
             7,
@@ -75,7 +85,7 @@
             12
           ],
           [
-            14
+            13
           ]
         ],
         "reports_integrated": [

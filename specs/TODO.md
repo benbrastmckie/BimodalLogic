@@ -1,5 +1,5 @@
 ---
-next_project_number: 489
+next_project_number: 490
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 489
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,193,257,298,433,461,463,476,483,488 | -- | automation, dataset-enhancement, decidability, ... |
+| 1 | 127,128,193,257,298,433,461,463,476,483,488,489 | -- | automation, dataset-enhancement, decidability, ... |
 | 2 | 125,178,231,282,296,464,481 | 193,298,461,463,483 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 219,465 | 231,464 | dataset-enhancement, decidability |
 | 4 | 428 | 433,465 | decidability |
@@ -73,11 +73,25 @@ next_project_number: 489
 
 461 [BLOCKED] — SCOPE 8 acquisition gap identified by task 457's research and re-
 
+### Metalogic
+
+489 [NOT STARTED] — Prove soundness for the BaseLanguage (BL) proof system, establish
+
 ### Paper Refactor
 
 488 [PLANNED] — Review possible_worlds.tex (JPL paper) and align the Lean code an
 
 ## Tasks
+
+### 489. Prove baselanguage soundness base and extensions
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: metalogic
+- **Dependencies**: None
+
+**Description**: Prove soundness for the BaseLanguage (BL) proof system, establishing it first at FrameClass.Base and then extending it to the Dense, Discrete, and Dedekind extensions, mirroring the Base-then-extensions structure of Metalogic/Soundness.lean; this gives the paper's thm:TM-soundness a direct Lean counterpart
+
+---
 
 ### 488. Align lean code and docs with possible worlds paper
 - **Status**: [PLANNED]

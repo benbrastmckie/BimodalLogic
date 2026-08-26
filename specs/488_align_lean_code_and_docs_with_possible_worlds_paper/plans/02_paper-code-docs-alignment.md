@@ -2,7 +2,7 @@
 
 - **Task**: 488 - align_lean_code_and_docs_with_possible_worlds_paper
 - **Status**: [NOT STARTED]
-- **Effort**: 14 hours
+- **Effort**: 13 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/488_align_lean_code_and_docs_with_possible_worlds_paper/reports/01_paper-code-docs-alignment.md` (including its "Addendum: Orchestrator Verification Pass", which overrides the main body on D25, adds D28, and sharpens D20/D21)
 - **Artifacts**: plans/02_paper-code-docs-alignment.md (this file)
@@ -18,6 +18,13 @@ repo-side work**. The paper is read-only from this repository and is never edite
 items whose only correct resolution is a paper change (D1-D4, plus the paper-side option on D5 and
 the D6/D24 questions) are collected into a single author-facing memo instead of being silently
 dropped.
+
+D5's repo-side resolution -- giving the paper's `thm:TM-soundness` a direct Lean counterpart -- was
+originally a phase here and has been split out into task 489, which proves `BaseLanguage` soundness
+at `FrameClass.Base` and then extends it to the Dense, Discrete, and Dedekind extensions. That is a
+proof-architecture decision, not a documentation correction, and it is the only item that would have
+added a proof term to this sweep. With it gone, **this plan changes no Lean definition, proof, or
+declaration -- every `.lean` edit it makes is inside a docstring.**
 
 Definition of done: `scripts/check-paper-definitions.sh` exits 0, `scripts/typst-sync-check.sh`
 passes, `scripts/check-module-invariants.sh` passes with C14 extended and a new C15 anchor check
@@ -80,8 +87,6 @@ not set for this dispatch, so `specs/ROADMAP.md` is read-only here.
 - Repair all dangling paper-anchor citations in live (non-`Boneyard/`) scope.
 - Regenerate `typst/generated/status.typ` so `scripts/typst-sync-check.sh` passes.
 - Add mechanical guards (C14 extension, new C15) so both classes of drift are caught at write time.
-- Give the paper's `thm:TM-soundness` a direct Lean counterpart by stating `BaseLanguage`
-  soundness as a composite.
 - Collect the paper-side and owner-decision items into one author-facing memo.
 
 **Non-Goals**:
@@ -93,6 +98,11 @@ not set for this dispatch, so `specs/ROADMAP.md` is read-only here.
   appendix block (D4) -- roughly 1,500 paper lines with no Lean counterpart.
 - Retiring `F_until_equiv` / `P_since_equiv` (D24) or deleting the `nullity_identity` field (the
   ergonomic half of D25). Both are owner decisions, documented not made.
+- Proving `BaseLanguage` soundness (D5). Split out into its own task, which establishes
+  soundness at `FrameClass.Base` first and then extends it to the Dense, Discrete, and Dedekind
+  extensions -- the same Base-then-extensions shape `Metalogic/Soundness.lean` already uses for
+  TM+. That structure is a proof-architecture decision in its own right and does not belong inside
+  a documentation-alignment sweep.
 - Auditing `latex/BimodalReference.tex`, `Tests/BimodalTest/` against the paper, or the paper's
   bibliography -- named as out of scope by the report.
 
@@ -115,11 +125,11 @@ not set for this dispatch, so `specs/ROADMAP.md` is read-only here.
 | Wave | Phases | Blocked by |
 |------|--------|------------|
 | 1 | 1, 2, 3, 4 | -- |
-| 2 | 5, 6, 13 | 1, 2 |
+| 2 | 5, 6 | 1, 2 |
 | 3 | 7, 8, 9, 10 | 5, 6 |
 | 4 | 11 | 5, 8, 9, 10 |
 | 5 | 12 | 3, 5, 9, 10, 11 |
-| 6 | 14 | 1-13 |
+| 6 | 13 | 1-12 |
 
 Phases within the same wave can execute in parallel. File territories are disjoint within every
 wave; see each phase's "Files to modify" list.
@@ -187,9 +197,12 @@ wave; see each phase's "Files to modify" list.
         - D4: "The results throughout are formalized in Lean 4" (`:1801`) scoping over
           `app:ObjectiveModality`, `app:TwoDimensional`, and the topology/presheaf/Conduche block
           (~1,500 lines with no Lean counterpart).
-        - D5 (paper-side alternative): `thm:TM-soundness` (`:4484`, attributed at `:4311`,
-          `:4494`) has no direct Lean counterpart today. Note that Phase 13 supplies one; if the
-          author prefers the paper-side fix instead, say so and Phase 13 closes with exclusions.
+        - D5 (both resolutions): `thm:TM-soundness` (`:4484`, attributed at `:4311`, `:4494`)
+          has no direct Lean counterpart today. The repo-side resolution is split out into its own
+          task, which proves `BaseLanguage` soundness at `FrameClass.Base` and extends it to the
+          Dense, Discrete, and Dedekind extensions. Record that the obligation is tracked there,
+          and ask whether the author additionally wants the paper-side fix (narrowing the
+          attribution to TM+ soundness) as a hedge until that task lands.
   - [ ] Section "Owner decisions required", stating the question and the options without making
         the call:
         - D6: `def:TMplus-c` bases BX_c on `TMP-PU` + `TMP-SEP` with no density axiom, while
@@ -392,7 +405,7 @@ wave; see each phase's "Files to modify" list.
   - `bash scripts/check-module-invariants.sh --no-build` still passes (C5, C12, C13, C14)
 - **Justification for tier**: `prose` -- `README.md` is pure markdown with no compile or
   elaboration surface. The residual blind spot (broken cross-references) is covered by the C5/C12/C13
-  run in the verification list and again by the final gate in Phase 14.
+  run in the verification list and again by the final gate in Phase 13.
 
 ---
 
@@ -664,51 +677,7 @@ wave; see each phase's "Files to modify" list.
 
 ---
 
-### Phase 13: State BaseLanguage soundness as a composite [NOT STARTED]
-
-- **Goal**: Give the paper's `thm:TM-soundness` a direct Lean counterpart, converting a blocking
-  paper over-claim into a true one. This is the only phase that adds a theorem rather than editing
-  text.
-- **Tasks**:
-  - [ ] Confirm the two composands exist and have the shapes the report describes:
-        `Conservativity.translate` (`FormalSystem/Metalogic/Conservativity.lean:170`) and
-        `Metalogic.soundness` (`FormalSystem/Metalogic/Soundness.lean:1080`). Read both signatures
-        before writing anything.
-  - [ ] State BL-level soundness for the 16-constructor `BaseLanguage` `Axiom` inductive
-        (`FormalSystem/BaseLanguage/Axioms.lean:75-131`) as the composite: a `BLFormula` derivable
-        in TM translates to a derivable `Formula`, which `Metalogic.soundness` sends to validity.
-  - [ ] Prove it. The composition is mechanical; if it does not close mechanically, that is a real
-        finding -- report it rather than reaching for a `sorry`. This tree's sorry inventory is
-        zero outside `Boneyard/` and must stay that way.
-  - [ ] Add a docstring citing `thm:TM-soundness` from the Phase 5 re-pinned record, and note that
-        the theorem is the composite rather than an independent argument.
-  - [ ] Cross-reference the new theorem from Phase 2's memo entry for D5, so the memo's
-        paper-side alternative is marked as no longer needed.
-  - [ ] If the author elects the paper-side resolution instead (attribute TM⁺ soundness only),
-        close this phase as `[COMPLETED WITH EXCLUSIONS]` with a `#### Reasoned Exclusions` table
-        citing that decision as the evidence.
-- **Timing**: 1 hour
-- **Depends on**: 2
-- **Verification Tier**: full
-- **Scope Hypothesis**: This phase asserts that no BL-level soundness theorem exists today
-  (`grep -n 'soundness' FormalSystem/BaseLanguage/*.lean` returns nothing per the report) and that
-  the composite closes mechanically. Confirm the first by re-running that grep; the second is a
-  genuine hypothesis to be tested by the proof attempt, not an assertion.
-- **Files to modify**:
-  - `FormalSystem/BaseLanguage/` - new or extended module stating and proving the composite
-    (target module to be chosen at implementation time from the existing layout)
-- **Verification**:
-  - `lake build` exits 0 with no `declaration uses 'sorry'`
-  - `#print axioms` on the new theorem returns exactly
-    `[propext, Classical.choice, Quot.sound]` -- no `sorryAx`, no custom axiom
-  - `bash scripts/check-module-invariants.sh` passes, C3 sorry inventory still zero
-- **Justification for tier**: `full` -- this is the only phase that adds a proof term. It changes
-  elaboration behavior and adds a declaration to the public surface of `FormalSystem/BaseLanguage/`,
-  so nothing below the ceiling is defensible.
-
----
-
-### Phase 14: Final gate sweep and stamp refresh [NOT STARTED]
+### Phase 13: Final gate sweep and stamp refresh [NOT STARTED]
 
 - **Goal**: Prove every gate green simultaneously at the end, and refresh the staleness stamps so
   their dates reflect the verification actually performed.
@@ -756,7 +725,7 @@ wave; see each phase's "Files to modify" list.
       6 dangling)
 - [ ] `bash scripts/typst-sync-check.sh` passes with `MISMATCH_COUNT=0` (currently FAIL, 3
       mismatches)
-- [ ] `#print axioms` on the Phase 13 theorem returns exactly
+- [ ] `#print axioms` spot-check on the flagship metatheorems still returns exactly
       `[propext, Classical.choice, Quot.sound]`
 - [ ] No dangling paper-anchor citation remains in live non-`Boneyard/`, non-`specs/` scope, as
       proven by the new C15 rather than by a manual grep
@@ -768,7 +737,7 @@ wave; see each phase's "Files to modify" list.
 
 - `specs/488_align_lean_code_and_docs_with_possible_worlds_paper/plans/02_paper-code-docs-alignment.md` (this plan)
 - `specs/488_align_lean_code_and_docs_with_possible_worlds_paper/reports/02_author-memo.md` (Phase 2)
-- `specs/488_align_lean_code_and_docs_with_possible_worlds_paper/summaries/03_paper-code-docs-alignment-summary.md` (Phase 14)
+- `specs/488_align_lean_code_and_docs_with_possible_worlds_paper/summaries/03_paper-code-docs-alignment-summary.md` (Phase 13)
 - Re-pinned `specs/paper-definitions-of-record.md` (Phases 1, 5)
 - Corrected `README.md`, `FormalSystem/README.md` (Phases 6, 7, 14)
 - Corrected Lean docstrings across `FormalSystem/Semantics/`, `FormalSystem/ProofSystem/`,
@@ -777,7 +746,6 @@ wave; see each phase's "Files to modify" list.
 - Regenerated `typst/generated/status.typ` and corrected typst chapters (Phases 4, 10)
 - Widened C14 and new C15 in `scripts/check-module-invariants.sh`, plus a source-store context
   note on the citation convention (Phase 12)
-- New BaseLanguage soundness theorem under `FormalSystem/BaseLanguage/` (Phase 13)
 
 ## Rollback/Contingency
 
@@ -792,7 +760,8 @@ wave; see each phase's "Files to modify" list.
   fix forward -- never discard uncommitted changes to reach a passing build, and never introduce a
   `sorry` to close a phase. The tree's sorry inventory is zero outside `Boneyard/` and that is a
   hard invariant here.
-- If Phase 13's composite does not close mechanically, that is a finding, not a failure: mark the
-  phase `[BLOCKED]`, record the obstruction, and let the memo's paper-side alternative for D5 stand.
+- D5 carries no rollback risk in this plan: no phase here touches it. If its own task finds the
+  composite does not close mechanically, that is a finding to record there, and this plan's memo
+  entry for D5 stands unchanged.
 - If the paper drifts again mid-implementation, re-run Phase 5's re-pin before continuing; do not
   let later phases quote from a stale record.
