@@ -1,5 +1,5 @@
 ---
-next_project_number: 502
+next_project_number: 503
 ---
 
 # TODO
@@ -12,11 +12,11 @@ next_project_number: 502
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
 | 1 | 127,128,193,257,298,433,461,463,476,483,489,490,491,494,496 | -- | algebraic-representation, automation, dataset-enhancement, ... |
-| 2 | 178,231,282,296,464,481,492,495,497 | 193,298,463,483,489,491,496 | algebraic-representation, dataset-enhancement, decidability, ... |
-| 3 | 219,465,493,498,499,500 | 231,464,490,492,497 | algebraic-representation, dataset-enhancement, decidability, ... |
-| 4 | 125,428 | 433,461,465,498,499 | algebraic-representation, decidability |
-| 5 | 429,501 | 125,428 | algebraic-representation, decidability |
-| 6 | 410 | 429 | decidability |
+| 2 | 178,231,282,296,464,481,492,495,502 | 193,298,461,463,483,489,491 | algebraic-representation, dataset-enhancement, decidability, ... |
+| 3 | 219,465,493,497 | 231,464,490,492,496,502 | algebraic-representation, dataset-enhancement, decidability, ... |
+| 4 | 428,498,499,500 | 433,465,492,497 | algebraic-representation, decidability |
+| 5 | 125,429 | 428,498,499 | algebraic-representation, decidability |
+| 6 | 410,501 | 125,429 | algebraic-representation, decidability |
 | 7 | 411 | 410 | decidability |
 | 8 | 430 | 411 | decidability |
 | 9 | 177,412 | 193,430 | decidability, formula-refactor |
@@ -34,6 +34,8 @@ next_project_number: 502
     └─ 499 [NOT STARTED] — HARD. Phase 2 of the Jonsson-Tarski representation: the ultrafilt
       └─ 125 [NOT STARTED] — CAPSTONE of the algebraic representation front. Prove the Jonsson (see above)
     └─ 500 [NOT STARTED] — RESEARCH TASK. Prevent two parallel representation theorems from 
+502 [NOT STARTED] — RESEARCH TASK. Ground the algebraic representation front in the l
+  └─ 497 [NOT STARTED] — Bring the Shift-closed Tense S5 Algebra class into live code and  (see above)
 
 ### Automation
 
@@ -96,6 +98,37 @@ next_project_number: 502
 
 ## Tasks
 
+### 502. Ground algebraic representation in goldblatt and brv
+- **Effort**: 12-20 hours
+- **Status**: [NOT STARTED]
+- **Task Type**: formal
+- **Topic**: algebraic-representation
+- **Dependencies**: Task 461
+
+**Description**: RESEARCH TASK. Ground the algebraic representation front in the literature BEFORE the STSA axiom set is fixed and before Uf(A) is constructed. Gates the STSA port; the complex-algebra and ultrafilter-frame tasks inherit the gate transitively.
+
+WHY THIS RUNS EARLY. Goldblatt 1989 is largely about which varieties of Boolean algebras with operators are complex algebras, and about canonicity. Those are design questions for the STSA axiomatization and for the Uf(A) construction, not questions the eta-embedding capstone can act on. On the pre-existing graph this paper was ingested in wave 1 and not opened until wave 4, by which point three tasks would have committed to designs it should have informed.
+
+PRIMARY SOURCE, WITH A HARD READING CONSTRAINT. Goldblatt, R. "Varieties of complex algebras", Annals of Pure and Applied Logic 44 (1989) 173-242, doi 10.1016/0168-0072(89)90032-8. The acquired PDF is an Acrobat 3.0 Capture scan (70 pages) whose OCR text layer is UNRELIABLE ON MATHEMATICS: symbols mangle, lines drop and reorder, and even the title page renders New Zealand as "New 2Miand". READ THE PAGE IMAGES via the Read tool's pages parameter. Do NOT grep the text layer for definitions or theorem statements, and do NOT accept a pdftotext- or /literature --convert-derived markdown as a faithful source for any axiom or equation. The text layer is usable only as a rough locator.
+
+PAGINATION. Journal page 173 is PDF page 1, so PDF page = journal page - 172. The paper's own table of contents is partly OCR-garbled in its page-number column; verify each section start against the actual page image rather than trusting the offsets below.
+
+SECTIONS IN SCOPE (do not read the whole paper):
+- 2.2 The dual space of a lattice (journal ~185) and 2.3 Bounded morphisms (~192) -- the duality machinery the eta embedding rests on.
+- 3.1 Canonical structures (~198) -- the canonical extension / Uf(A) construction. Bears directly on the ultrafilter-frame task.
+- 3.5 Canonical varieties (~208) -- IS THE STSA VARIETY CANONICAL? This is the single most load-bearing question for the STSA port, which must restate three Boneyard sorries against the current 45-constructor axiom set and should not do so blind.
+- 3.6 The elementary case (~210) and 3.8 First-order definability -- bears on whether the Spherical frame condition is first-order definable and preserved, which is the ultrafilter-frame task's dominant and explicitly unattempted obligation, and one the paper's finite-W discharge pattern does not cover.
+- 4.2 Preservation by bounded morphisms and inner substructures (~229) -- whether the TaskFrame axioms transfer along the constructions.
+EXPLICITLY OUT OF SCOPE: 2.4 Heyting algebras (intuitionistic, not this signature).
+
+CROSS-FRONT NOTE, RECORD BUT DO NOT PURSUE HERE: section 4.3 covers preservation by DISJOINT UNIONS, which may bear on the two-fibre structure named in Metalogic/Conservativity.lean as the CEB countermodel shape. That belongs to the TM-completeness research task on the metalogic front; if 4.3 looks relevant, record a pointer for that task rather than expanding this one.
+
+SECONDARY SOURCE: Blackburn/de Rijke/Venema 2002 Chapter 5 (corpus entry blackburn_2002, born-digital, full text) is the standard Jonsson-Tarski reference and should be read alongside. CAVEAT: the corpus warns this entry is 365,868 tokens and exceeds a single context budget -- create a chapter-scoped sub-entry before an agent consumes it.
+
+DELIVERABLE: a grounding report answering, with citations to specific pages read as images: (1) does the STSA axiom set as seeded in Boneyard/UltrafilterFrame/TenseS5Algebra.lean match the standard BAO presentation, and where does it diverge; (2) is the variety canonical, and what does that buy or cost the representation; (3) what the literature says about discharging a Spherical-style frame condition on an ultrafilter frame; (4) a concrete recommendation on how the three removed-axiom sorries (temp_a, temp_l) should be restated against the current axiom set. A finding that the literature does NOT settle one of these is a complete and valid answer for that item -- record it as unsettled rather than manufacturing a verdict.
+
+---
+
 ### 501. Extend stsa with until since operators
 - **Effort**: 20-32 hours
 - **Status**: [NOT STARTED]
@@ -145,7 +178,7 @@ next_project_number: 502
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: algebraic-representation
-- **Dependencies**: Task 496
+- **Dependencies**: Task 496, Task 502
 
 **Description**: Bring the Shift-closed Tense S5 Algebra class into live code and close the G-operator gap. Phase 1 groundwork for the Jonsson-Tarski representation. THE SEED: Boneyard/UltrafilterFrame/TenseS5Algebra.lean (361 lines, behind #exit) already contains the full class STSA extending BooleanAlgebra with fields box, G, H, sigma and axioms box_deflationary, box_monotone, box_idempotent, box_s5, G_monotone, H_monotone, sigma_involution, sigma_neg, sigma_sup, sigma_G, sigma_H, sigma_box, MF, TF, TA, TL. This is the exact algebraic signature the representation needs. IT CARRIES 3 SORRIES, AND THEY MUST NOT BE PROVED AS-IS: they are for temp_a and temp_l, axioms that have since been REMOVED or restructured; restate them against the current 45-constructor ProofSystem.Axiom set (Axioms.lean:115-464) rather than reviving the old shapes. THE G GAP: LindenbaumQuotient.lean supplies boxQuot (:305-ish), hQuot, and sigmaQuot (:346) with its four laws (sigma_quot_involution :353, sigma_quot_neg :362, sigma_quot_sup :373, sigma_quot_box :385) -- but there is NO gQuot. G on the Lindenbaum quotient must be constructed and its congruence proved before LindenbaumAlg can be an STSA instance. Boneyard/SorriedDeclExcisions/AlgebraicGQuotChain.lean is the excised prior attempt and should be consulted, not trusted. DESIGN REFERENCE: specs/archive/992_shift_closed_tense_s5_algebra/reports/01_stsa-algebraic-analysis.md (538 lines) gives the full axiom-to-equation translation table and the key structural claim that box a <= box(G a) meet G(box a) says the box-fixed points form a G-invariant subalgebra -- the algebraic encoding of Omega being shift-closed. It is stale on file names (references deleted AlgebraicRepresentation.lean and ParametricRepresentation.lean) but sound on the mathematics. ACCEPTANCE: STSA class live and sorry-free, gQuot constructed with congruence, instance STSA LindenbaumAlg, lake build green.
 
