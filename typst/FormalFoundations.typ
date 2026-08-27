@@ -1337,6 +1337,66 @@ axiom above, which is first-order.
 
 == The Ultrafilter Frame
 
+#definition("Ultrafilter frame")[
+  For a $op("TM")^+$-algebra $A$, the *ultrafilter frame* $op("Uf")(A)$ has as its points the
+  ultrafilters of $A$, with three relations: $U R_square.stroked V$ iff
+  $forall a (square.stroked a in U arrow.r a in V)$; $U R_F V$ iff
+  $forall a (#allfuture a in U arrow.r a in V)$; and $U R_P V$ the mirror. $op("Uf")(A)$ is not,
+  and need not be, a task frame: it carries no duration sort and no group action, only the three
+  relations above.
+]
+
+#lemma("Relational correspondents")[
+  For every $op("TM")^+$-algebra $A$:
+  #items[
+    + $R_square.stroked$ is an equivalence relation (from the S5 equations);
+    + $R_F$ is transitive (T4), serial (TB), and weakly linear (TL): if $U R_F V$ and $U R_F V'$
+      then $V R_F V'$ or $V = V'$ or $V' R_F V$;
+    + $R_P = R_F^(-1)$ (TA and its mirror);
+    + $R_F subset.eq R_square.stroked$ and $R_P subset.eq R_square.stroked$ (MF and its mirror):
+      if $square.stroked a in U$ then $square.stroked #allfuture a in U$, so $#allfuture a in U$,
+      so $a in V$ for every $V$ with $U R_F V$; hence each $R_square.stroked$-class is closed
+      under $R_F$ and $R_P$.
+  ]
+  No reflexivity or irreflexivity condition appears among these; none is used or needed.
+]
+
+#proposition("Jónsson–Tarski")[
+  The map $eta(a) := {U : a in U}$ is an injective homomorphism from the
+  $(square.stroked, F, P)$-reduct of $A$ into the relational complex algebra of
+  $(op("Uf")(A), R_square.stroked, R_F, R_P)$ @jonssontarski1951 @jonssontarski1952
+  @blackburnderijkevenema2001.
+]#footnote[
+  The 1951/1952 papers construct a *perfect extension* and contain no occurrence of
+  "ultrafilter"; the ultrafilter-frame presentation above is the modern restatement, and the
+  successor framework organizes the same construction, abstracted away from Boolean algebras with
+  operators to arbitrary lattice expansions, as the *canonical extension* @gehrkevosmaer2011. The
+  theorem itself --- that the embedding exists --- is Jónsson and Tarski's.
+]
+
+#proposition("Components")[
+  For $U in op("Uf")(A)$, put $F_U := {a : square.stroked a in U}$: a filter, closed under
+  $square.stroked$, $#allfuture$, and $#allpast$ (MF and its mirror). The relation
+  $a theta_U b$ iff $(a arrow.l.r b) in F_U$ is a congruence of the full signature ---
+  compatibility with $#until$ and $#since$ follows from UC and UG composed with MF. Then:
+  #items[
+    + $A slash theta_U$ is $square.stroked$-simple: $square.stroked [a] in {0,1}$, since
+      $square.stroked a theta_U 1$ iff $square.stroked a in U$ and
+      $square.stroked a theta_U 0$ iff $not square.stroked a in U$;
+    + $theta_U = theta_V$ iff $U R_square.stroked V$, so the ultrafilters of
+      $A slash theta_U$ correspond to the $R_square.stroked$-class of $U$;
+    + $inter.big_U theta_U$ is the identity, so $A$ is a subdirect product of its
+      $square.stroked$-simple quotients, one per $R_square.stroked$-class;
+    + $A$ is $square.stroked$-simple iff $R_square.stroked$ is the universal relation on
+      $op("Uf")(A)$;
+    + $#Nxt top$ is $square.stroked$-fixed (NB, MT), so it lies in $\{0,1\}$ in a
+      $square.stroked$-simple algebra: $#Nxt top = 1$ iff $#Nxt top$ lies in every ultrafilter of
+      the class (the discrete case), $#Nxt top = 0$ iff its negation does (the dense case). This
+      is the algebraic form of the Case Split of @sec:dichotomy, stated for an arbitrary
+      $op("TM")^+$-algebra rather than for the Lindenbaum algebra alone.
+  ]
+]
+
 == The Representation Theorem
 
 #bibliography("bibliography.bib")

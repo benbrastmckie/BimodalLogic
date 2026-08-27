@@ -333,31 +333,33 @@ equivalence with task models, and the compactness situation per class.
 
 ---
 
-### Phase 5: Write `== The Ultrafilter Frame` [NOT STARTED]
+### Phase 5: Write `== The Ultrafilter Frame` [COMPLETED]
 
 **Goal**: Give the ultrafilter frame, its relational correspondents, the Jónsson–Tarski embedding
 of the (□, F, P)-reduct, and the component decomposition.
 
 **Tasks**:
 
-- [ ] `#definition("Ultrafilter frame")` — `Uf(A)` with `R_□`, `R_F`, `R_P` (report §2.5). State
+- [x] `#definition("Ultrafilter frame")` — `Uf(A)` with `R_□`, `R_F`, `R_P` (report §2.5). State
       plainly that `Uf(A)` is not, and need not be, a task frame — as a definition, not as a
-      concession.
-- [ ] `#lemma("Relational correspondents")` — the five items of report §2.5: `R_□` an equivalence
+      concession. *(completed)*
+- [x] `#lemma("Relational correspondents")` — the five items of report §2.5: `R_□` an equivalence
       relation; `R_F` transitive, serial, weakly linear; `R_P = R_F⁻¹`; `R_F, R_P ⊆ R_□`; hence
       each `R_□`-class closed under `R_F` and `R_P`. Note explicitly that no reflexivity or
-      irreflexivity condition appears.
-- [ ] `#proposition("Jónsson–Tarski")` — `η(a) = {U : a ∈ U}` is an injective homomorphism of the
+      irreflexivity condition appears. *(completed)*
+- [x] `#proposition("Jónsson–Tarski")` — `η(a) = {U : a ∈ U}` is an injective homomorphism of the
       (□, F, P)-reduct into the relational complex algebra of `Uf(A)`
       (`@jonssontarski1951`, `@jonssontarski1952`, `@blackburnderijkevenema2001`). Footnote: the
       1951/1952 papers construct a perfect extension and the modern successor framework organizes
       it as the canonical extension (`@gehrkevosmaer2011`). No "fixing an inaccuracy" framing.
-- [ ] `#proposition("Components")` — report §2.6: `F_U := {a : □a ∈ U}`; the congruence `θ_U`
+      *(completed)*
+- [x] `#proposition("Components")` — report §2.6: `F_U := {a : □a ∈ U}`; the congruence `θ_U`
       (compatibility with U and S via UC, UG composed with MF); `A/θ_U` □-simple; `θ_U = θ_V` iff
       `U R_□ V`; `⋂_U θ_U` the identity, so A is a subdirect product of □-simple quotients; `n`
       □-fixed hence in `{0, 1}` in a □-simple algebra. Cross-reference `@sec:dichotomy`'s Case
-      Split as the syntactic form of the last clause.
-- [ ] Compile `FormalFoundations.typ`.
+      Split as the syntactic form of the last clause. *(completed)*
+- [x] Compile `FormalFoundations.typ`. *(completed: exits 0; sync-check Check 1 passes with 0
+      violations)*
 
 **Timing**: 1 hour
 
