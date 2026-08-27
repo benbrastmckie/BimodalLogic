@@ -1,7 +1,7 @@
 # Implementation Plan: Task #505
 
 - **Task**: 505 - Revise representation section to ideal development
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 7.5 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/505_revise_representation_section_to_ideal_development/reports/01_representation-theorem-ideal-development.md`
@@ -114,14 +114,14 @@ produce write conflicts rather than speedup.
 
 ---
 
-### Phase 1: Ground Truth and Bibliography [NOT STARTED]
+### Phase 1: Ground Truth and Bibliography [COMPLETED]
 
 **Goal**: Establish that every Lean anchor the new section will cite resolves, fix the module
 paths, and land the bibliography additions with both documents still compiling.
 
 **Tasks**:
 
-- [ ] Confirm each `#leansrc` anchor resolves in live Lean source, and record the correct module
+- [x] Confirm each `#leansrc` anchor resolves in live Lean source, and record the correct module
       path for each: `Semantics.ShiftSet` (`ShiftSet`, `frame`, `ofModel`, `forward_repr`,
       `reverse_repr`, `sep_not_derivable`); `Metalogic.Algebraic.LindenbaumQuotient`
       (`LindenbaumAlg`); `Metalogic.Algebraic.UltrafilterMCS` (`mcsToUltrafilter`,
@@ -131,21 +131,24 @@ paths, and land the bibliography additions with both documents still compiling.
       `Metalogic.SetConsequence` (`StrongCompletenessBase`, `CompactBase`, `ModelExistenceBase`,
       `discrete_consequence_not_compact`); `FrameConditions.Soundness` (`soundness_linear`,
       `soundness_Int`); `Metalogic.BaseLanguageSoundness` (`soundness_dense`,
-      `soundness_discrete`); plus `completeness_dense` and `BFMCS`.
-- [ ] Use `bash -c 'grep -rl --include=*.lean --exclude-dir=Boneyard -F "<name>" FormalSystem/'`
-      as the resolution test, matching sync-check Check 1's own predicate.
-- [ ] Write the confirmed module/name table into the phase's progress record so Phases 3-6 cite
-      from it rather than re-deriving.
-- [ ] Add to `typst/bibliography.bib`: Halmos, *Algebraic Logic* (Chelsea, 1962) or "Algebraic
+      `soundness_discrete`); plus `completeness_dense` and `BFMCS`. *(completed: all 23 names
+      confirmed against live source; `LindenbaumAlg` def-site is
+      `Metalogic.Algebraic.LindenbaumQuotient` per plan)*
+- [x] Use `bash -c 'grep -rl --include=*.lean --exclude-dir=Boneyard -F "<name>" FormalSystem/'`
+      as the resolution test, matching sync-check Check 1's own predicate. *(completed)*
+- [x] Write the confirmed module/name table into the phase's progress record so Phases 3-6 cite
+      from it rather than re-deriving. *(completed: see progress/phase-1-progress.json)*
+- [x] Add to `typst/bibliography.bib`: Halmos, *Algebraic Logic* (Chelsea, 1962) or "Algebraic
       logic I: monadic Boolean algebras", *Compositio Math.* 12 (1956); Chang & Keisler,
       *Model Theory*, 3rd ed. (North-Holland, 1990); Robinson & Zakon, "Elementary properties of
       ordered abelian groups", *Trans. AMS* 96 (1960). Optionally Kowalski, "Varieties of tense
-      algebras", *Rep. Math. Logic* 32 (1998).
-- [ ] Follow the file's existing entry style and key convention (lowercase author-year, e.g.
-      `halmos1962`, `changkeisler1990`, `robinsonzakon1960`, `kowalski1998`).
-- [ ] Compile both documents: `cd typst && typst compile FormalFoundations.typ
+      algebras", *Rep. Math. Logic* 32 (1998). *(completed: all four entries added, including the
+      optional Kowalski)*
+- [x] Follow the file's existing entry style and key convention (lowercase author-year, e.g.
+      `halmos1962`, `changkeisler1990`, `robinsonzakon1960`, `kowalski1998`). *(completed)*
+- [x] Compile both documents: `cd typst && typst compile FormalFoundations.typ
       build/FormalFoundations.pdf` and `typst compile BimodalReference.typ
-      build/BimodalReference.pdf`.
+      build/BimodalReference.pdf`. *(completed: both exit 0)*
 
 **Timing**: 0.5 hours
 

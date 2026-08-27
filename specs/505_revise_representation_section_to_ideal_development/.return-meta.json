@@ -1,32 +1,9 @@
 {
-  "status": "planned",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/505_revise_representation_section_to_ideal_development/plans/01_representation-section-rewrite.md",
-      "summary": "Eight-phase, fully sequential plan to rewrite <sec:representation> in typst/FormalFoundations.typ as a positive development of the TM-plus representation theorem, with cross-reference, bibliography, and compile/sync-check verification."
-    }
-  ],
-  "next_steps": "Run /implement 505 to execute the plan",
+  "status": "in_progress",
   "metadata": {
     "session_id": "sess_1787791752_5c0441",
-    "agent_type": "planner-agent",
+    "agent_type": "general-implementation-agent",
     "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "orchestrate", "skill-orchestrate", "planner-agent"],
-    "phase_count": 8,
-    "estimated_hours": 7.5,
-    "dependency_waves": [[1],[2],[3],[4],[5],[6],[7],[8]]
-  },
-  "memory_candidates": [
-    {
-      "content": "In this repo, typst prose edits are gated by scripts/typst-sync-check.sh Check 1, which greps EVERY backticked span in typst/**/*.typ (excluding generated/) against live Lean source with `grep -rl --include=*.lean --exclude-dir=Boneyard -F`. The #leansrc(module, name) helper builds a raw block from plain string arguments, so its arguments are NOT backticks in the .typ source and are NOT scanned. Consequence for planning any typst rewrite that cites Lean: backticked identifiers in prose are hard-gated and must resolve or be whitelisted in typst/sync-check-whitelist.txt, whereas #leansrc tags carry no such gate and must be verified by hand against actual module paths (which drift -- e.g. multiFamTaskFrameGen lives in Metalogic.BXCanonical.CompletenessDedekind, not Metalogic.Algebraic).",
-      "category": "INSIGHT",
-      "source_artifact": "specs/505_revise_representation_section_to_ideal_development/plans/01_representation-section-rewrite.md",
-      "confidence": 0.82,
-      "suggested_keywords": ["typst", "sync-check", "leansrc", "backtick", "whitelist", "lean-anchor"]
-    }
-  ],
-  "modified_files": [
-    "specs/505_revise_representation_section_to_ideal_development/plans/01_representation-section-rewrite.md"
-  ]
+    "delegation_path": ["orchestrator", "orchestrate", "skill-orchestrate", "general-implementation-agent"]
+  }
 }
