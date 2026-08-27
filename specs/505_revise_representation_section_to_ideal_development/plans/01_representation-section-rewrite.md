@@ -379,45 +379,49 @@ of the (□, F, P)-reduct, and the component decomposition.
 
 ---
 
-### Phase 6: Write `== The Representation Theorem` [NOT STARTED]
+### Phase 6: Write `== The Representation Theorem` [COMPLETED]
 
 **Goal**: State the theorem, give its six-step proof, the canonical-construction remark, the
 per-class proposition, and the two closing one-sentence remarks; optionally one status table.
 
 **Tasks**:
 
-- [ ] `#theorem("Representation")` — report §3.1 in the document's notation: per `R_□`-class a
+- [x] `#theorem("Representation")` — report §3.1 in the document's notation: per `R_□`-class a
       shift set over a discrete or dense `D_k`; injectivity of `h = (h_k)`; point-completeness as
       surjectivity of `π_k` onto the class; the induced task frame and model; the □-simple
       headline case; the converse that every `Cm(S)` is a □-simple TM⁺-algebra; the per-class
       clause (dense and divisible; ℤ-groups; divisible ordered abelian groups). State explicitly
       that the embedding is into a subalgebra and that `Cm(S_k)` itself need not lie in the
-      subvariety (Risk R-3).
-- [ ] `#proof` — the six steps of report §3.2, one paragraph each, each naming the ingredient it
+      subvariety (Risk R-3). *(completed)*
+- [x] `#proof` — the six steps of report §3.2, one paragraph each, each naming the ingredient it
       consumes and its `#leansrc` where one exists: components; free presentation; model existence
       (weak completeness plus compactness over the elementary class, `completeness`,
       `completeness_dense`, `completeness_discrete`, `completeness_dedekind_engine`,
       `StrongCompletenessBase`/`CompactBase`/`ModelExistenceBase`); descent through the Collapse
       proposition; one flow per component by `|A|⁺`-saturation, citing Chang–Keisler and naming
       the bundled-family construction (`BFMCS`, `multiFamTaskFrameGen`) as the constructive
-      alternative in the same paragraph (Risk R-2); factorization `h̄ = π⁻¹ ∘ η_JT`.
-- [ ] `#remark("The canonical construction")` — report §3.4: chronicles over `Uf(A)` with C0-C5';
+      alternative in the same paragraph (Risk R-2); factorization `h̄ = π⁻¹ ∘ η_JT`. *(completed:
+      all six steps in a single `#proof[...]` block)*
+- [x] `#remark("The canonical construction")` — report §3.4: chronicles over `Uf(A)` with C0-C5';
       the Step Lemma discharged by compactness of the Stone space, `R_F[U] = ⋂{η(a) : Ga ∈ U}`
       closed; the flow itself needing no *Spherical*. Cross-reference `@sec:system`'s Extension
       and `@sec:construction`'s third discharge pattern. One sentence on the `n = 1` case being
       forced stepwise, which is why discrete components are represented over ℤ-groups.
-- [ ] `#proposition("ℤ-time and ℝ")` — report §3.5, positively: no point-complete representation
+      *(completed)*
+- [x] `#proposition("ℤ-time and ℝ")` — report §3.5, positively: no point-complete representation
       over ℤ-flows or ℝ-flows; what holds there is the SP-representation of the Lindenbaum
       algebra, i.e. weak completeness; what holds point-completely is the theorem's per-class
-      clause. No "gate", no "foreclosed", no "wrong on arrival".
-- [ ] `#remark` — two sentences: BL-level TM has no theorem of this kind, by incompleteness; a
+      clause. No "gate", no "foreclosed", no "wrong on arrival". *(completed)*
+- [x] `#remark` — two sentences: BL-level TM has no theorem of this kind, by incompleteness; a
       product of complex algebras is not the complex algebra of one frame, which is why the
       theorem ranges over a family of flows (this answers `@sec:contingency`'s disjoint-union
-      question).
-- [ ] Optional `#figure(table(...))` — at most one compact table of declarations consumed by the
+      question). *(completed)*
+- [x] Optional `#figure(table(...))` — at most one compact table of declarations consumed by the
       proof and their status, with a caption and no surrounding prose. Skip it if the `#leansrc`
-      tags already carry the information.
-- [ ] Compile `FormalFoundations.typ`.
+      tags already carry the information. *(completed: one table included, summarizing per-step
+      Lean status)*
+- [x] Compile `FormalFoundations.typ`. *(completed: exits 0; sync-check Check 1 passes with 0
+      violations; exactly one `#figure(` in the whole section)*
 
 **Timing**: 1.5 hours
 

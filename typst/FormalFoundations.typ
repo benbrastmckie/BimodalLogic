@@ -1399,4 +1399,141 @@ axiom above, which is first-order.
 
 == The Representation Theorem
 
+#theorem("Representation")[
+  Let $A$ be a $op("TM")^+$-algebra. For every $R_square.stroked$-class $k$ of $op("Uf")(A)$ there
+  is a shift set $S_k = (Omega_k, D_k, "sh"_k, A_k)$ over a temporal order $D_k$ --- discrete if
+  $#Nxt top = 1$ in $A slash theta_k$, dense if $#Nxt top = 0$ --- and a homomorphism
+  $h_k : A arrow.r op("Cm")(S_k)$ such that:
+  #items[
+    + $h := (h_k)_k : A arrow.r product_k op("Cm")(S_k)$ is injective, and each $h_k$ induces an
+      injective homomorphism $A slash theta_k arrow.r.hook op("Cm")(S_k)$;
+    + (*point-completeness*) for every ultrafilter $V$ in the class $k$ there is $w in Omega_k$
+      with ${a : w in h_k (a)} = V$; that is, $pi_k : Omega_k arrow.r op("Uf")(A)$,
+      $w mapsto {a : w in h_k (a)}$, maps onto $k$;
+    + $S_k$ induces a task frame ($S_k."frame"$, a translation flow) and a task model in which
+      $h_k (a)$ is the proposition of $a$.
+  ]
+  If $A$ is $square.stroked$-simple there is a single class, and $A arrow.r.hook op("Cm")(S)$
+  point-completely, into the complex algebra of one flow --- and the embedding is into a
+  subalgebra: $op("Cm")(S)$ itself need not lie in the subvariety $A$ belongs to. Conversely,
+  every $op("Cm")(S)$ is a $square.stroked$-simple $op("TM")^+$-algebra.
+
+  *Per class.* If $A$ is a $op("TM")^+_d$-algebra, every $D_k$ is dense (and may be taken
+  divisible). If $A$ is a $op("TM")^+_f$-algebra, every $D_k$ is a $ZZ$-group, elementarily
+  equivalent to $ZZ$. If $A$ is a $op("TM")^+_c$-algebra, every $D_k$ is a divisible ordered
+  abelian group, elementarily equivalent to $RR$.
+]
+
+#proof[
+  Six steps, each naming what it consumes.
+
+  *Components.* By Proposition (Components), $A$ is a subdirect product of its
+  $square.stroked$-simple quotients $A slash theta_k$, so it suffices to represent a
+  $square.stroked$-simple algebra point-completely by one shift set and set
+  $h_k := (A arrow.r.twohead A slash theta_k arrow.r.hook op("Cm")(S_k))$.
+
+  *Free presentation.* For $square.stroked$-simple $A$ and an ultrafilter $U_0$ of $A$, the
+  quotient $q : op("Fr")(A) arrow.r A$ of Lemma (Lindenbaum–Tarski) is onto, and
+  $M := q^(-1)(U_0)$ is a maximal consistent set of the language with atom set ${x_a : a in A}$.
+
+  *Model existence.* There is a task model, hence a shift set $S$, with a point $w_0 in Omega$
+  whose theory at time $0$ is $M$. This is strong completeness for a language of arbitrary atom
+  cardinality, obtained from weak completeness for the countable sublanguage --- a finite subset
+  of $M$ mentions only finitely many atoms, renamed into the countable language --- together with
+  compactness over the relevant elementary class of shift sets (Łoś, Proposition Compactness). For
+  the base class this is `completeness`; for the dense class, `completeness_dense`; for the
+  discrete class, `completeness_discrete`; for the Dedekind class, `completeness_dedekind_engine`;
+  each instance of `StrongCompletenessBase`, `CompactBase`, and `ModelExistenceBase`. The
+  ultraproduct's duration group is the ultraproduct of the finite-stage groups, which is where the
+  per-class clause comes from: an ultrapower of $ZZ$ is a $ZZ$-group, an ultrapower of $QQ$ or
+  $RR$ is a divisible ordered abelian group.
+
+  *Descent.* $h : op("Fr")(A) arrow.r op("Cm")(S)$, $phi.alt mapsto norm(phi.alt)$, is a
+  homomorphism, and it factors through $q$: $q(phi.alt) = 1$ gives $square.stroked #always
+  phi.alt in M$, so $phi.alt$ is true at every history at every time and $norm(phi.alt) = Omega$.
+  The induced $macron(h) : A arrow.r op("Cm")(S)$ realizes $U_0$ at $w_0$.
+
+  *One flow per component.* Expand $S$ by unary predicates $P_a := macron(h)(a)$ for $a in A$;
+  the statement that $macron(h)$ is a homomorphism is a set of first-order sentences of the
+  expanded two-sorted language, since the clauses defining $op("Cm")(S)$ are first-order over
+  $Omega$ and $D$. Pass to an $|A|^+$-saturated elementary extension $S'$ (Chang–Keisler
+  @changkeisler1990): it is again a shift set of the same elementary class, $macron(h)'(a) :=
+  P_a^(S')$ is again a homomorphism, and for every ultrafilter $V$ of $A$ the type
+  ${P_a (x) : a in V}$ is finitely satisfiable in $S$ and so realized in $S'$; injectivity of
+  $macron(h)'$ on the $square.stroked$-simple $A$ follows, since every nonzero element lies in
+  some ultrafilter. (The bundled family of one chronicle per ultrafilter over a common temporal
+  order is the constructive form of this step.)
+
+  *Factorization.* With $pi : Omega arrow.r op("Uf")(A)$, $w mapsto {a : w in macron(h)(a)}$, one
+  has $macron(h) = pi^(-1) compose eta$ on $A$, where $eta$ is the Jónsson--Tarski embedding of
+  Proposition (Jónsson--Tarski), and point-completeness is exactly surjectivity of $pi$. So the
+  task-frame representation is the Jónsson--Tarski embedding of the $(square.stroked, F, P)$-reduct
+  composed with the fibration of the point set over the ultrafilter frame; the extra content of
+  the theorem --- the order on $D$ representing $#until$ and $#since$, and the existence of enough
+  points --- is exactly what $pi$ adds.
+]
+#leansrc("Metalogic.BXCanonical.Completeness", "completeness")
+#leansrc("Metalogic.SetConsequence", "StrongCompletenessBase")
+#leansrc("Metalogic.SetConsequence", "CompactBase")
+#leansrc("Metalogic.SetConsequence", "ModelExistenceBase")
+#leansrc("Metalogic.Bundle.BFMCS", "BFMCS")
+#leansrc("Metalogic.BXCanonical.CompletenessDedekind", "multiFamTaskFrameGen")
+
+#remark("The canonical construction")[
+  For a $square.stroked$-simple $A$ with $#Nxt top = 0$, the theorem also has a direct
+  canonical-model proof, continuing @sec:construction and exhibiting its third discharge pattern.
+  A *chronicle* is a map $c : D arrow.r op("Uf")(A)$ ($D$ dense) with $c(s) in R_F [c(t)]$ for
+  $t < s$, Burgess's coherence conditions for $#until$ and $#since$, and *saturation*: every
+  $a #until b in c(t)$ has a witness $s > t$ with $b in c(s)$ and $a in c(e)$ for $t < e < s$, and
+  the mirror. Every partial chronicle extends to a total one, by the Extension theorem of
+  @sec:system read for chronicles: for a new point $z$, the constraints on $c(z)$ are the sets
+  $R_F [c(t)]$ for $t < z$, $R_P [c(s)]$ for $s > z$, and the clopen sets the coherence conditions
+  demand, each closed in the Stone topology of $op("Uf")(A)$ --- in particular
+  $R_F [U] = inter.big {eta(a) : #allfuture a in U}$ is closed --- the family directed and with
+  the finite intersection property; compactness of $op("Uf")(A)$ gives a point in the
+  intersection.
+  This is *Spherical*'s role played by Stone compactness on the algebra side; on the flow itself
+  *Spherical* is trivial, as noted above. For $#Nxt top = 1$ the chronicle is forced one step at a
+  time, and a promise not kept in finitely many steps needs a witness at infinite distance, which
+  is why the discrete components of the Representation theorem are represented over $ZZ$-groups
+  rather than over $ZZ$ itself.
+]
+
+#proposition("ℤ-time and ℝ")[
+  For $op("TM")^+_f$ there is no point-complete representation over $ZZ$-flows: the Lindenbaum
+  algebra has an ultrafilter, realized at no point of any model over $ZZ$, witnessed by
+  `discrete_consequence_not_compact`. For $op("TM")^+_c$ there is none over $RR$-flows
+  @reynolds1992. What holds over $ZZ$-flows and $RR$-flows is the SP-representation of the
+  Lindenbaum algebra --- `completeness_discrete` and `completeness_dedekind_engine` --- which is
+  weak completeness restated; what holds point-completely is the Representation theorem's per-class
+  clause, over $ZZ$-groups and over divisible ordered abelian groups.
+]
+
+#remark[
+  $#BL$-level TM has no representation theorem of this kind, since it has no representation
+  theorem at all: `cor:tm-completeness` and its kin show TM is not complete over its class, so no
+  algebra-to-frame construction can be point-complete for it. A product of complex algebras is
+  not, in general, the complex algebra of a single frame, which is why the Representation theorem
+  ranges over a family of flows rather than a single one --- answering @sec:contingency's
+  disjoint-union question in the negative for the algebra-to-frame direction, while the
+  frame-to-algebra direction (a disjoint union's complex algebra is the product of the summands')
+  remains available.
+]
+
+#figure(
+  table(
+    columns: 2, stroke: none, align: (left, left),
+    table.hline(),
+    table.header([*Ingredient*], [*Status*]),
+    table.hline(),
+    [Components, free presentation, descent, factorization], [sorry-free],
+    [Model existence (base class)], [`completeness`, one `sorryAx`],
+    [Model existence (dense, discrete, Dedekind)], [sorry-free],
+    [One flow per component (saturation)], [planned; bundled-family construction sorry-free for
+      finite families],
+    table.hline(),
+  ),
+  caption: [Lean status of the six proof steps, by ingredient.],
+)
+
 #bibliography("bibliography.bib")
