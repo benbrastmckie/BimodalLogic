@@ -1,7 +1,7 @@
 # Implementation Plan: Revise `<sec:representation>` with Literature
 
 - **Task**: 503 - revise_representation_section_with_literature
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 8.5 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/503_revise_representation_section_with_literature/reports/01_representation-literature-research.md`

@@ -6,12 +6,12 @@ next_project_number: 505
 
 ## Task Order
 
-*Updated 2026-08-26. Generated from state.json dependency graph.*
+*Updated 2026-08-27. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,193,257,298,433,461,476,481,492,494,495,503,504 | -- | algebraic-representation, automation, dataset-enhancement, ... |
+| 1 | 127,128,193,257,298,433,461,476,481,492,494,495,504 | -- | automation, dataset-enhancement, decidability, ... |
 | 2 | 178,231,282,296,463,493,502 | 193,298,433,461,492 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 219,464,497 | 231,463,502 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 465,498,499,500 | 464,492,497 | algebraic-representation, decidability |
@@ -27,7 +27,6 @@ next_project_number: 505
 
 ### Algebraic Representation
 
-503 [RESEARCHED] — Review <sec:representation> (line 1151 and following) in /home/be
 125 [NOT STARTED] — CAPSTONE of the algebraic representation front. Prove the Jonsson
   └─ 501 [NOT STARTED] — Phase 4 of the Jonsson-Tarski representation: extend STSA with th
 497 [NOT STARTED] — Bring the Shift-closed Tense S5 Algebra class into live code and 
@@ -106,11 +105,13 @@ next_project_number: 505
 ---
 
 ### 503. Revise representation section with literature
-- **Status**: [RESEARCHED]
+- **Status**: [COMPLETED]
 - **Task Type**: formal
 - **Topic**: algebraic-representation
 - **Dependencies**: None
 - **Research**: [503_revise_representation_section_with_literature/reports/01_representation-literature-research.md]
+- **Plan**: [503_revise_representation_section_with_literature/plans/01_revise-representation-section.md]
+- **Summary**: [503_revise_representation_section_with_literature/summaries/01_revise-representation-section-summary.md]
 
 **Description**: Review <sec:representation> (line 1151 and following) in /home/benjamin/Projects/BimodalLogic/typst/FormalFoundations.typ and /home/benjamin/Projects/BimodalLogic/FormalSystem/Metalogic/Algebraic/ to get a sense of where things stand, then review what literature sources are available already and which standard sources are missing in order to download and ingest these sources, then research these sources to gain a more complete understanding of standard representation theorems in modal logic in order to systematically revise <sec:representation> in /home/benjamin/Projects/BimodalLogic/typst/FormalFoundations.typ to provide a more careful and complete overview of what is intended, building up the elements that are needed towards achieving this result, and saying what remains honestly so I can contemplate the way forward
 
