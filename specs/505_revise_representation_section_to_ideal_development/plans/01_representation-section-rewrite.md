@@ -174,30 +174,31 @@ Phases 3-6.
 
 ---
 
-### Phase 2: Excise the Old Section and Erect the Scaffold [NOT STARTED]
+### Phase 2: Excise the Old Section and Erect the Scaffold [COMPLETED]
 
 **Goal**: Remove the whole of the current `<sec:representation>` body and leave a compiling
 skeleton with the new title, the opening paragraph, and four empty subsection headings.
 
 **Tasks**:
 
-- [ ] Delete everything from immediately after the section heading through the end of
+- [x] Delete everything from immediately after the section heading through the end of
       `== The Obstruction` — i.e. the current opening four-way distinction and its footnote, the
       six-rung table, the cetz ladder figure, `== The Algebraic Layer`,
       `== Duality, Canonicity, and the Obstruction Diagnosed <sec:duality>`,
       `== The Shift-Set Target`, and `== The Obstruction` — stopping before
-      `#bibliography("bibliography.bib")`.
-- [ ] Change the section heading to `= The Representation Theorem <sec:representation>`, keeping
-      the label unchanged.
-- [ ] Write the opening paragraph (3-4 sentences, report §R1.1): what the theorem says; that the
+      `#bibliography("bibliography.bib")`. *(completed)*
+- [x] Change the section heading to `= The Representation Theorem <sec:representation>`, keeping
+      the label unchanged. *(completed)*
+- [x] Write the opening paragraph (3-4 sentences, report §R1.1): what the theorem says; that the
       representable algebras are exactly the TM⁺-algebras; that point-completeness is model
       existence, hence strong completeness, per class. No meta-commentary, no ladder, no
-      four-way distinction.
-- [ ] Insert the four empty subsection headings in order: `== Algebras and Complex Algebras`,
-      `== Shift Sets`, `== The Ultrafilter Frame`, `== The Representation Theorem`.
-- [ ] Remove the now-unused `cetz` import from the preamble ONLY if no other `cetz.canvas` call
-      remains in the file; grep before deciding.
-- [ ] Compile `FormalFoundations.typ`.
+      four-way distinction. *(completed)*
+- [x] Insert the four empty subsection headings in order: `== Algebras and Complex Algebras`,
+      `== Shift Sets`, `== The Ultrafilter Frame`, `== The Representation Theorem`. *(completed)*
+- [x] Remove the now-unused `cetz` import from the preamble ONLY if no other `cetz.canvas` call
+      remains in the file; grep before deciding. *(deviation: altered — a second `cetz.canvas`
+      call remains at the Case Split figure outside the excised section, so the import is kept)*
+- [x] Compile `FormalFoundations.typ`. *(completed: exits 0)*
 
 **Timing**: 0.5 hours
 
