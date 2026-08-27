@@ -1,5 +1,5 @@
 ---
-next_project_number: 505
+next_project_number: 506
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 505
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,193,257,298,433,461,476,481,492,494,495,504 | -- | automation, dataset-enhancement, decidability, ... |
+| 1 | 127,128,193,257,298,433,461,476,481,492,494,495,504,505 | -- | algebraic-representation, automation, dataset-enhancement, ... |
 | 2 | 178,231,282,296,463,493,502 | 193,298,433,461,492 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 219,464,497 | 231,463,502 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 465,498,499,500 | 464,492,497 | algebraic-representation, decidability |
@@ -27,6 +27,7 @@ next_project_number: 505
 
 ### Algebraic Representation
 
+505 [RESEARCHED] — Revise <sec:representation> in typst/FormalFoundations.typ so tha
 125 [NOT STARTED] — CAPSTONE of the algebraic representation front. Prove the Jonsson
   └─ 501 [NOT STARTED] — Phase 4 of the Jonsson-Tarski representation: extend STSA with th
 497 [NOT STARTED] — Bring the Shift-closed Tense S5 Algebra class into live code and 
@@ -93,6 +94,17 @@ next_project_number: 505
 494 [NOT STARTED] — UNBLOCKED TODAY, INDEPENDENT of the ultraproduct chain. Settle th
 
 ## Tasks
+
+### 505. Revise representation section to ideal development
+- **Status**: [RESEARCHED]
+- **Task Type**: formal
+- **Topic**: algebraic-representation
+- **Dependencies**: None
+- **Research**: [505_revise_representation_section_to_ideal_development/reports/01_representation-theorem-ideal-development.md]
+
+**Description**: Revise <sec:representation> in typst/FormalFoundations.typ so that it presents the representation theorem for TM+ as it should be developed, not as the Lean tree currently approximates it: state the theorem (every TM+-algebra embeds, point-completely, into a product of complex algebras of shift-set flows, one per box-simple component, with the temporal order of each component discrete or dense according to the discreteness element), give its proof architecture (algebraic soundness, ultrafilter frame and Jonsson-Tarski reduct, component decomposition, model existence via weak completeness plus compactness over the elementary class of shift sets, saturation for one flow per component), and the per-class refinements (dense and base: point-complete; Z-time and R: only the weak SP-representation, by the non-compactness witnesses). Treat strict Since/Until and G/H as primitive and state positively that normality, transitivity, seriality, linearity and tense conjugacy are the only operator properties used, so the failure of the T-axioms for G/H is immaterial; drop the interior-operator framing. Remove everything not part of this theorem: the four-way distinction, the six-rung ladder and figure, the README-derived status prose, the sigmaQuot step, the descriptive-general-frame duality, the Sahlqvist table, the Spherical-diagnosed remark, Routes T and M, the gate remark, the Kamp remark, the Obstruction subsection, and the unsettled-items remark. No meta-commentary on the section or on the broader attempt; Lean status confined to #leansrc tags and at most one compact table. Update the abstract and the cross-references at lines 128, 340, 1005 and 1096, add the missing bibliography entries, and keep both typst documents compiling with scripts/typst-sync-check.sh passing. The research report in this task specifies the target section outline, the theorem statements, the cut list, and the style rules.
+
+---
 
 ### 504. Retry acquisition of missing representation sources
 - **Status**: [NOT STARTED]

@@ -4,8 +4,27 @@
     "total_tasks": 42,
     "last_sync": "2026-08-24T21:34:14Z"
   },
-  "next_project_number": 505,
+  "next_project_number": 506,
   "active_projects": [
+    {
+      "project_number": 505,
+      "project_name": "revise_representation_section_to_ideal_development",
+      "status": "researched",
+      "task_type": "formal",
+      "description": "Revise <sec:representation> in typst/FormalFoundations.typ so that it presents the representation theorem for TM+ as it should be developed, not as the Lean tree currently approximates it: state the theorem (every TM+-algebra embeds, point-completely, into a product of complex algebras of shift-set flows, one per box-simple component, with the temporal order of each component discrete or dense according to the discreteness element), give its proof architecture (algebraic soundness, ultrafilter frame and Jonsson-Tarski reduct, component decomposition, model existence via weak completeness plus compactness over the elementary class of shift sets, saturation for one flow per component), and the per-class refinements (dense and base: point-complete; Z-time and R: only the weak SP-representation, by the non-compactness witnesses). Treat strict Since/Until and G/H as primitive and state positively that normality, transitivity, seriality, linearity and tense conjugacy are the only operator properties used, so the failure of the T-axioms for G/H is immaterial; drop the interior-operator framing. Remove everything not part of this theorem: the four-way distinction, the six-rung ladder and figure, the README-derived status prose, the sigmaQuot step, the descriptive-general-frame duality, the Sahlqvist table, the Spherical-diagnosed remark, Routes T and M, the gate remark, the Kamp remark, the Obstruction subsection, and the unsettled-items remark. No meta-commentary on the section or on the broader attempt; Lean status confined to #leansrc tags and at most one compact table. Update the abstract and the cross-references at lines 128, 340, 1005 and 1096, add the missing bibliography entries, and keep both typst documents compiling with scripts/typst-sync-check.sh passing. The research report in this task specifies the target section outline, the theorem statements, the cut list, and the style rules.",
+      "topic": "algebraic-representation",
+      "created": "2026-08-27T00:34:23Z",
+      "last_updated": "2026-08-27T00:39:45Z",
+      "session_id": "sess_1787790863_d8078c",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/505_revise_representation_section_to_ideal_development/reports/01_representation-theorem-ideal-development.md",
+          "type": "report",
+          "summary": "Specifies the representation theorem for TM+ as it should be developed: point-complete embedding of every TM+-algebra into a product of complex algebras of shift-set flows (one per box-simple component, temporal order fixed by the discreteness element N1), six-step proof architecture (soundness, free algebra, Jonsson-Tarski reduct, component congruences, model existence via weak completeness plus Los compactness, saturation), per-class limits over Z-groups and divisible groups; answers that the T-axiom failure for strict G/H is immaterial and that Spherical is not an obstruction; prescribes the section outline, cut list, cross-reference edits, style rules, and bibliography additions."
+        }
+      ]
+    },
     {
       "project_number": 504,
       "project_name": "retry_acquisition_of_missing_representation_sources",
