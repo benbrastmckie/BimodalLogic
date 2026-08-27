@@ -1,0 +1,16 @@
+{
+  "status": "planned",
+  "dispatch_seq": 1,
+  "summary": "Created an 8-phase, fully sequential implementation plan for rewriting <sec:representation> in typst/FormalFoundations.typ. Phases: ground truth + bibliography; excise old section and erect scaffold; write Algebras and Complex Algebras; write Shift Sets; write The Ultrafilter Frame; write The Representation Theorem; abstract and cross-references; style audit and full verification. All 22 Lean anchors cited by the research report were verified to resolve against live source, and four wrong module paths in the report's appendix were corrected in the plan. Three bibliography entries (Halmos, Chang-Keisler, Robinson-Zakon) are confirmed missing and are added in Phase 1.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/505_revise_representation_section_to_ideal_development/plans/01_representation-section-rewrite.md",
+      "summary": "Eight-phase plan for the representation-section rewrite."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 8,
+  "blockers": [],
+  "next_action_hint": "Dispatch /implement 505 against plans/01_representation-section-rewrite.md; phases are strictly sequential since all edit typst/FormalFoundations.typ."
+}
