@@ -1,16 +1,17 @@
 {
-  "status": "planned",
-  "dispatch_seq": 1,
-  "summary": "Created an 8-phase, fully sequential implementation plan for rewriting <sec:representation> in typst/FormalFoundations.typ. Phases: ground truth + bibliography; excise old section and erect scaffold; write Algebras and Complex Algebras; write Shift Sets; write The Ultrafilter Frame; write The Representation Theorem; abstract and cross-references; style audit and full verification. All 22 Lean anchors cited by the research report were verified to resolve against live source, and four wrong module paths in the report's appendix were corrected in the plan. Three bibliography entries (Halmos, Chang-Keisler, Robinson-Zakon) are confirmed missing and are added in Phase 1.",
+  "status": "implemented",
+  "dispatch_seq": 2,
+  "summary": "Executed all 8 phases of the representation-section rewrite plan. Replaced <sec:representation> in typst/FormalFoundations.typ with a positive statement and six-step proof of the TM+ representation theorem (point-complete embedding into products of shift-set complex algebras, one per box-component, per-class temporal order), across four new subsections. Added four bibliography entries, repaired the abstract sentence and three out-of-section cross-references, and ran a full style/citation/backtick audit. Both typst/FormalFoundations.typ and typst/BimodalReference.typ compile cleanly and scripts/typst-sync-check.sh passes with 0 violations. No Lean source under FormalSystem/ was touched.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/505_revise_representation_section_to_ideal_development/plans/01_representation-section-rewrite.md",
-      "summary": "Eight-phase plan for the representation-section rewrite."
+      "type": "summary",
+      "path": "specs/505_revise_representation_section_to_ideal_development/summaries/01_representation-section-rewrite-summary.md",
+      "summary": "Implementation summary for the 8-phase representation-section rewrite."
     }
   ],
-  "phases_completed": 0,
+  "phases_completed": 8,
   "phases_total": 8,
+  "plan_markers_verified": true,
   "blockers": [],
-  "next_action_hint": "Dispatch /implement 505 against plans/01_representation-section-rewrite.md; phases are strictly sequential since all edit typst/FormalFoundations.typ."
+  "next_action_hint": "Task complete; no further implementation dispatch needed. Optional follow-up: fix the stale #leansrc(\"Metalogic.Algebraic\", \"multiFamTaskFrameGen\") module path at ~line 895 of typst/FormalFoundations.typ (outside this task's edited section) to Metalogic.BXCanonical.CompletenessDedekind, and consider re-targeting the sibling algebraic Lean tasks per the research report's Findings §4."
 }
