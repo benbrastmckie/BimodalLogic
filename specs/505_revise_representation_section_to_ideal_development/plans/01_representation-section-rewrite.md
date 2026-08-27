@@ -284,35 +284,36 @@ and weak completeness stated algebraically.
 
 ---
 
-### Phase 4: Write `== Shift Sets` [NOT STARTED]
+### Phase 4: Write `== Shift Sets` [COMPLETED]
 
 **Goal**: Present shift sets as a two-sorted first-order class, the standard translation, the
 equivalence with task models, and the compactness situation per class.
 
 **Tasks**:
 
-- [ ] `#definition("Shift set")` — report §2.4: the two-sorted signature
+- [x] `#definition("Shift set")` — report §2.4: the two-sorted signature
       `(Ω, D; <, +, 0, sh, (A_p))`, D a nontrivial ordered abelian group, the `sh_zero`,
       `sh_add`, and separation (Limit) axioms, Ω nonempty, valuation A.
-      `#leansrc("Semantics.ShiftSet", "ShiftSet")`.
-- [ ] `#definition("Standard translation")` — `φ ↦ φ*(w, t)` with the atom, □, and U/S clauses;
-      note each `φ*` is first-order in the two-sorted language.
-- [ ] `#theorem("Task models are shift sets")` — both directions, with `#leansrc` for
-      `forward_repr` and `reverse_repr`.
-- [ ] `#corollary` — the classes of all shift sets, of dense ones, and of discrete ones are
+      `#leansrc("Semantics.ShiftSet", "ShiftSet")`. *(completed)*
+- [x] `#definition("Standard translation")` — `φ ↦ φ*(w, t)` with the atom, □, and U/S clauses;
+      note each `φ*` is first-order in the two-sorted language. *(completed)*
+- [x] `#theorem("Task models are shift sets")` — both directions, with `#leansrc` for
+      `forward_repr` and `reverse_repr`. *(completed)*
+- [x] `#corollary` — the classes of all shift sets, of dense ones, and of discrete ones are
       elementary; ℤ-time and the Dedekind class are not; the elementary hulls are the ℤ-groups
       (models of `Th(ℤ, +, <)`) and the nontrivial divisible ordered abelian groups (models of
       `Th(ℝ, +, <)`), citing Robinson–Zakon. State this positively as a fact about elementary
-      hulls, not as a lament.
-- [ ] `#proposition("Compactness")` — Łoś for the standard translation over the elementary
+      hulls, not as a lament. *(completed)*
+- [x] `#proposition("Compactness")` — Łoś for the standard translation over the elementary
       classes; failure over ℤ and ℝ named by the two witnesses
       (`#leansrc` for `discrete_consequence_not_compact`; `@reynolds1992`). Cite Chang–Keisler for
-      Łoś and ultraproducts of two-sorted structures.
-- [ ] One sentence noting that the frames induced by shift sets are deterministic, so
+      Łoś and ultraproducts of two-sorted structures. *(completed)*
+- [x] One sentence noting that the frames induced by shift sets are deterministic, so
       *Spherical*, *Compositionality*, *Seriality* and *Nullity* hold outright and *Limit* is the
       separation axiom; cross-reference `@sec:construction`'s third discharge pattern. No
-      "obstruction" framing.
-- [ ] Compile `FormalFoundations.typ`.
+      "obstruction" framing. *(completed)*
+- [x] Compile `FormalFoundations.typ`. *(completed: exits 0; sync-check Check 1 passes with 0
+      violations)*
 
 **Timing**: 1 hour
 

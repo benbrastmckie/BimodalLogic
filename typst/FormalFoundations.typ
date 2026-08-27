@@ -1275,6 +1275,66 @@ the full similarity type.
 
 == Shift Sets
 
+#definition("Shift set")[
+  A *shift set* is a structure $S = (Omega, D, "sh", A)$ for the two-sorted signature
+  $(Omega, D; <, +, 0, "sh", (A_p)_p)$, where $#Dur := (D, +, 0, lt.eq)$ is a nontrivial ordered
+  abelian group, $Omega$ is a nonempty set, $"sh" : Omega times D arrow.r Omega$ satisfies
+  $"sh"(w, 0) = w$ (`sh_zero`) and $"sh"("sh"(w,a), b) = "sh"(w, a+b)$ (`sh_add`), and $A$ assigns
+  to each atom $p$ a subset $A_p subset.eq Omega$. Separation (*Limit*) holds:
+  $ forall w, u med (forall x > 0 med exists y med (|y| < x "and" u = "sh"(w,y))) arrow.r u = w. $
+]
+#leansrc("Semantics.ShiftSet", "ShiftSet")
+
+#definition("Standard translation")[
+  Each formula $phi.alt$ of $#BLplus$ translates to a formula $phi.alt^*(w,t)$ of the two-sorted
+  language, with $w$ a variable of sort $Omega$ and $t$ a variable of sort $D$:
+  $ p^*(w,t) &:= A_p("sh"(w,t)), \
+    (square.stroked phi.alt)^*(w,t) &:= forall w' med phi.alt^*(w', t), \
+    (phi.alt #until psi)^*(w,t) &:= exists d > t med (psi^*(w,d) "and" forall e med (t < e < d
+      arrow.r phi.alt^*(w,e))), $
+  and the mirror clause for $#since$ with $d < t$. Every $phi.alt^*$ is a first-order formula of
+  the two-sorted signature: it quantifies only over elements of $Omega$ and $D$ and mentions only
+  signature symbols.
+]
+
+#theorem("Task models are shift sets")[
+  Every shift set induces a task frame and a task model whose truth agrees with shift-set truth at
+  the standard translation, and every task model over a task frame induces a shift set whose
+  shift-set truth agrees with truth in the model. The two directions are mutually inverse up to
+  the translation.
+]
+#leansrc("Semantics.ShiftSet", "forward_repr")
+#leansrc("Semantics.ShiftSet", "reverse_repr")
+
+#corollary[
+  The class of all shift sets is elementary in the two-sorted signature, as are the dense ones
+  (adding density of $D$) and the discrete ones (adding "$D$ has a least positive element"). What
+  is *not* elementary is the class fixing $D$ to be $ZZ$ or $RR$ outright: the models of
+  $op("Th")(ZZ, +, lt.eq)$ are the $ZZ$-groups, discrete ordered abelian groups elementarily
+  equivalent to $ZZ$, and the models of $op("Th")(RR, +, lt.eq)$ are the nontrivial divisible
+  ordered abelian groups, elementarily equivalent to $RR$ @robinsonzakon1960. So $ZZ$ and $RR$ are
+  each the distinguished member of a strictly larger elementary class, and it is this class ---
+  not the single structure --- that a first-order representation theorem can characterize.
+]
+
+#proposition("Compactness")[
+  Łoś's theorem for ultraproducts of two-sorted structures @changkeisler1990 gives compactness for
+  the standard translation over every elementary class of shift sets, in particular over the base,
+  dense, and discrete classes. Compactness fails over the $ZZ$-group class read as fixing $D = ZZ$
+  and over the divisible-group class read as fixing $D = RR$: the base class has a
+  finitely-satisfiable but unsatisfiable set of consequences witnessing exactly this
+  (`discrete_consequence_not_compact`), and Reynolds proves the analogous failure over $RR$
+  @reynolds1992.
+]
+#leansrc("Metalogic.SetConsequence", "discrete_consequence_not_compact")
+
+The frame induced by a shift set is deterministic --- its task relation is functional, since
+$u = "sh"(w,d)$ determines $u$ from $w$ and $d$ --- so *Compositionality*, *Seriality*, and
+*Nullity* hold outright on it, and *Spherical* holds because every fiber and every segment is a
+singleton or empty, a directed family of singletons having its one member as intersection; this is
+the third of the three discharge patterns of @sec:construction. *Limit* is exactly the separation
+axiom above, which is first-order.
+
 == The Ultrafilter Frame
 
 == The Representation Theorem
