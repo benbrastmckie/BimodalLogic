@@ -499,25 +499,32 @@ reference discovered must be repaired in this phase.
 
 ---
 
-### Phase 8: Style Audit and Full Verification [NOT STARTED]
+### Phase 8: Style Audit and Full Verification [COMPLETED]
 
 **Goal**: Confirm the section obeys the report's §R2 style rules and that every mechanical gate
 passes.
 
 **Tasks**:
 
-- [ ] Grep the section for banned vocabulary (report §R2): "ladder", "rung", "gap", "next step",
+- [x] Grep the section for banned vocabulary (report §R2): "ladder", "rung", "gap", "next step",
       "gate", "not claimed", "candidly", "honestly", "re-posed", "retracting", "scoping",
       "draft", "README", "obstruction", "Route T", "Route M", "interior operator", "descriptive
       general frame", "Sahlqvist", "metric operator". Every hit inside `<sec:representation>` is a
-      defect to fix; hits elsewhere in the document are out of scope.
-- [ ] Confirm no task-number reference appears anywhere in `typst/` (repository rule
-      `no-task-references-in-deliverables.md`).
-- [ ] Confirm every cut-list item of report §5 is absent from the file.
-- [ ] Read the section end-to-end once: definitions precede use; every theorem has a proof sketch
-      or a citation; every citation key exists in `bibliography.bib`.
-- [ ] Run `bash scripts/typst-sync-check.sh` and confirm exit 0 across all three checks.
-- [ ] Compile both documents one final time.
+      defect to fix; hits elsewhere in the document are out of scope. *(completed: zero hits
+      inside the section)*
+- [x] Confirm no task-number reference appears anywhere in `typst/` (repository rule
+      `no-task-references-in-deliverables.md`). *(completed: zero hits)*
+- [x] Confirm every cut-list item of report §5 is absent from the file. *(completed: zero hits
+      inside the section; the one remaining "Kamp" mention repo-wide is pre-existing content in
+      the unrelated Completeness Construction section, not a cut-list item surviving)*
+- [x] Read the section end-to-end once: definitions precede use; every theorem has a proof sketch
+      or a citation; every citation key exists in `bibliography.bib`. *(completed: found and fixed
+      two field-access-in-quotes typos, `S."frame"` and `S_k."frame"`, that were valid-but-odd
+      Typst syntax rather than the intended dot-notation reference — replaced with a `S.frame`
+      backtick and a prose cross-reference respectively; all citation keys confirmed present)*
+- [x] Run `bash scripts/typst-sync-check.sh` and confirm exit 0 across all three checks.
+      *(completed: exit 0, 0 violations)*
+- [x] Compile both documents one final time. *(completed: both exit 0)*
 
 **Timing**: 1 hour
 

@@ -1235,9 +1235,9 @@ a point.
   `reverse_repr`, $#model, tau, t #satisfies phi.alt$ iff $tau + t in norm(phi.alt)$, where
   $norm(phi.alt) := {tau : #model, tau, 0 #satisfies phi.alt}$, so $phi.alt mapsto norm(phi.alt)$
   is a homomorphism from the Lindenbaum algebra to $op("Cm")(#taskframe)$. On a frame induced by a
-  shift set, world states and possible worlds coincide, so $op("Cm")(S."frame")$ is the full power
-  set of the world-state set and every subset of $Omega$ is the proposition of some atom under a
-  suitable valuation.
+  shift set, world states and possible worlds coincide, so the complex algebra of `S.frame` is the
+  full power set of the world-state set and every subset of $Omega$ is the proposition of some
+  atom under a suitable valuation.
 ]
 #leansrc("Semantics.ShiftSet", "ofModel")
 #leansrc("Semantics.ShiftSet", "reverse_repr")
@@ -1418,8 +1418,8 @@ axiom above, which is first-order.
     + (*point-completeness*) for every ultrafilter $V$ in the class $k$ there is $w in Omega_k$
       with ${a : w in h_k (a)} = V$; that is, $pi_k : Omega_k arrow.r op("Uf")(A)$,
       $w mapsto {a : w in h_k (a)}$, maps onto $k$;
-    + $S_k$ induces a task frame ($S_k."frame"$, a translation flow) and a task model in which
-      $h_k (a)$ is the proposition of $a$.
+    + $S_k$ induces a task frame (a translation flow, by Theorem Task models are shift sets) and a
+      task model in which $h_k (a)$ is the proposition of $a$.
   ]
   If $A$ is $square.stroked$-simple there is a single class, and $A arrow.r.hook op("Cm")(S)$
   point-completely, into the complex algebra of one flow --- and the embedding is into a
