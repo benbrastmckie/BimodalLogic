@@ -224,40 +224,46 @@ a grep of the whole file.
 
 ---
 
-### Phase 3: Write `== Algebras and Complex Algebras` [NOT STARTED]
+### Phase 3: Write `== Algebras and Complex Algebras` [COMPLETED]
 
 **Goal**: Define TM⁺-algebras and complex algebras, state algebraic soundness, Lindenbaum–Tarski,
 and weak completeness stated algebraically.
 
 **Tasks**:
 
-- [ ] `#definition("TM⁺-algebra")` — report §2.1: Boolean algebra with □, U, S; derived
+- [x] `#definition("TM⁺-algebra")` — report §2.1: Boolean algebra with □, U, S; derived
       `F, G, P, H, N, △`; the S5 equations for □; `□a ≤ □Ga`, `□a ≤ □Ha`; each BX schema and its
       mirror as an inequality; `G1 = H1 = □1 = 1`; the four subclasses (base, `TM⁺_d`, `TM⁺_f`,
       `TM⁺_c`) as varieties. Footnote: TD as closure under the U/S swap automorphism, not an
-      operation; `sigma` is not in the signature.
-- [ ] `#remark` — report §1.1 in prose: the operator properties actually used are normality and
+      operation; `sigma` is not in the signature. *(completed: swap note folded into the
+      definition body as a closing sentence rather than a `#footnote[...]` attached after the
+      block, matching the document's convention of inline footnotes rather than post-block ones)*
+- [x] `#remark` — report §1.1 in prose: the operator properties actually used are normality and
       multiplicativity, transitivity, seriality, weak linearity, tense conjugacy, and the
       □-interactions. State positively that T for G and H is not among them and that
       irreflexivity is neither expressible nor needed, strictness living in the order on the
       duration sort. One sentence that F and P are conjugate and hence complete operators
       (`@venema2007algebrascoalgebras`). One sentence that U and S are additive in the event
       argument only, hence not Jónsson–Tarski operators. No occurrence of "interior operator".
-- [ ] `#definition("Complex algebra")` — report §2.2: `Cm(S) := 𝒫(Ω)` for a shift set with the □
+      *(completed)*
+- [x] `#definition("Complex algebra")` — report §2.2: `Cm(S) := 𝒫(Ω)` for a shift set with the □
       and U/S clauses; `Cm(F) := Cm(ofModel F)` for a task frame; the note that world states and
       possible worlds coincide on a shift-set-induced frame, so the proposition algebra is the
       full powerset. `#leansrc("Semantics.ShiftSet", "ofModel")` and
-      `#leansrc("Semantics.ShiftSet", "reverse_repr")`.
-- [ ] `#proposition("Algebraic soundness")` — `Cm(F)` is a TM⁺-algebra, and a `TM⁺_d`/`TM⁺_f`/
+      `#leansrc("Semantics.ShiftSet", "reverse_repr")`. *(completed: forward-references the Shift
+      Sets subsection informally, since that formal definition follows immediately after)*
+- [x] `#proposition("Algebraic soundness")` — `Cm(F)` is a TM⁺-algebra, and a `TM⁺_d`/`TM⁺_f`/
       `TM⁺_c`-algebra under the corresponding condition on D; `Cm(S)` is □-simple. Tag with the
-      four `soundness_*` anchors at their Phase 1-confirmed module paths.
-- [ ] `#lemma("Lindenbaum–Tarski")` — the Lindenbaum algebra is the free TM⁺-algebra; its
+      four `soundness_*` anchors at their Phase 1-confirmed module paths. *(completed)*
+- [x] `#lemma("Lindenbaum–Tarski")` — the Lindenbaum algebra is the free TM⁺-algebra; its
       ultrafilters are the maximal consistent sets; every TM⁺-algebra is a quotient of a free one.
       `#leansrc` for `LindenbaumAlg` and `ultrafilter_correspondence`/`mcsToUltrafilter`.
-- [ ] `#proposition("Weak completeness, algebraically")` — `Fr(ω) ∈ SP Cm(K)` iff TM⁺ is weakly
-      complete over K; name the three proved instances by `#leansrc` tag.
-- [ ] One sentence carrying the Stone attribution (`@stone1936`).
-- [ ] Compile `FormalFoundations.typ`.
+      *(completed)*
+- [x] `#proposition("Weak completeness, algebraically")` — `Fr(ω) ∈ SP Cm(K)` iff TM⁺ is weakly
+      complete over K; name the three proved instances by `#leansrc` tag. *(completed)*
+- [x] One sentence carrying the Stone attribution (`@stone1936`). *(completed)*
+- [x] Compile `FormalFoundations.typ`. *(completed: exits 0; sync-check Check 1 also passes with
+      0 violations)*
 
 **Timing**: 1.5 hours
 

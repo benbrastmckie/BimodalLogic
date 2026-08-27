@@ -1165,6 +1165,114 @@ a point.
 
 == Algebras and Complex Algebras
 
+#definition("TM⁺-algebra")[
+  A *$op("TM")^+$-algebra* is a Boolean algebra $A = (A, and, or, not, 0, 1)$ together with a
+  unary operation $square.stroked$ and binary operations $#until$, $#since$, from which the
+  following are derived:
+  $ #somefuture a := 1 #until a, quad #allfuture a := not #somefuture (not a), quad
+    #somepast a := 1 #since a, quad #allpast a := not #somepast (not a), quad
+    #Nxt a := 0 #until a, quad #always a := #allpast a and a and #allfuture a. $
+  Every element $a, b in A$ satisfies:
+  #items[
+    + the S5 equations for $square.stroked$: $square.stroked 1 = 1$,
+      $square.stroked (a and b) = square.stroked a and square.stroked b$, $square.stroked a lt.eq a$,
+      and $not square.stroked a lt.eq square.stroked not square.stroked a$;
+    + $square.stroked a lt.eq square.stroked #allfuture a$ and
+      $square.stroked a lt.eq square.stroked #allpast a$ (MF and its mirror);
+    + for each schema of BX (@sec:system) and its $#since$/$#until$-mirror, the inequality obtained
+      by reading an implication as the corresponding order relation between the elements the two
+      sides denote;
+    + $#allfuture 1 = #allpast 1 = 1$ (TN and its mirror) and $square.stroked 1 = 1$ (MN).
+  ]
+  A *$op("TM")^+_d$-algebra* additionally satisfies DN and $#Nxt top = 0$; a
+  *$op("TM")^+_f$-algebra* additionally satisfies UZ and Z1; a *$op("TM")^+_c$-algebra*
+  additionally satisfies Prior-U and Sep, each read as an inequality in the same way. All four
+  classes are varieties. The rule TD becomes closure of the class under the signature automorphism
+  swapping $#until$ and $#since$ --- which holds because the defining set of inequalities is
+  mirror-closed --- and is not itself an operation of the algebra: the swap is not in the
+  signature.
+]
+
+#remark[
+  What the representation below actually uses of $#allfuture$ and $#allpast$ is: normality and
+  multiplicativity ($#allfuture 1 = 1$, $#allfuture (a and b) = #allfuture a and #allfuture b$,
+  from TN and TK); transitivity ($#allfuture a lt.eq #allfuture #allfuture a$, from T4); seriality
+  ($#somefuture 1 = 1$, from TB); weak linearity ($#somefuture a and #somefuture b lt.eq
+  #somefuture (a and b) or #somefuture (a and #somefuture b) or #somefuture (#somefuture a and b)$,
+  from TL); and tense conjugacy ($a lt.eq #allfuture #somepast a$, $a lt.eq #allpast #somefuture a$,
+  from TA and its mirror), together with the $square.stroked$-interactions MF and its mirror. Not
+  on this list, and not needed, is the T-axiom for $#allfuture$ or $#allpast$: both are transitive,
+  serial, weakly linear operators in the tradition of tense algebras
+  @venema2007algebrascoalgebras, not reflexive closure operators, and irreflexivity is neither
+  expressible nor needed here --- strictness lives in the order on the duration sort of the
+  representing flow (below), not in a relation on the point set. By TA and its mirror,
+  $#somefuture$ and $#somepast$ are the conjugate pair of a tense algebra, hence *complete*
+  operators: they preserve every existing join, not merely finite ones
+  @venema2007algebrascoalgebras. The binary operations $#until$ and $#since$, by contrast, are
+  additive only in their *event* argument: $a #until (b or c) = (a #until b) or (a #until c)$, but
+  $(a and a') #until b$ need only be *below* $(a #until b) and (a' #until b)$, since the two
+  witnessing durations for the guard need not coincide. So $#until$ and $#since$ are not operators
+  in the Jónsson--Tarski sense, and no relation of the ultrafilter frame below is assigned to them:
+  their content is carried by the order on the duration sort of the representing flow.
+]
+
+#definition("Complex algebra")[
+  For a shift set $S = (Omega, D, "sh", A)$ (below), the *complex algebra* $op("Cm")(S)$
+  is the power-set Boolean algebra $cal(P)(Omega)$ with
+  $ square.stroked X := cases(Omega & "if" X = Omega, emptyset & "otherwise"), quad
+    X #until Y := {w : exists d > 0, "sh"(w,d) in Y "and" forall e (0 < e < d arrow.r "sh"(w,e) in X)}, $
+  and $X #since Y$ the mirror image with $d < 0$. For a task frame $#taskframe$,
+  $op("Cm")(#taskframe) := op("Cm")("ofModel"(#taskframe)) = cal(P)(H_(#taskframe))$, where
+  `ofModel` carries $#taskframe$ to the shift set with $"sh"(tau, d) = tau(dot.c + d)$. By
+  `reverse_repr`, $#model, tau, t #satisfies phi.alt$ iff $tau + t in norm(phi.alt)$, where
+  $norm(phi.alt) := {tau : #model, tau, 0 #satisfies phi.alt}$, so $phi.alt mapsto norm(phi.alt)$
+  is a homomorphism from the Lindenbaum algebra to $op("Cm")(#taskframe)$. On a frame induced by a
+  shift set, world states and possible worlds coincide, so $op("Cm")(S."frame")$ is the full power
+  set of the world-state set and every subset of $Omega$ is the proposition of some atom under a
+  suitable valuation.
+]
+#leansrc("Semantics.ShiftSet", "ofModel")
+#leansrc("Semantics.ShiftSet", "reverse_repr")
+
+#proposition("Algebraic soundness")[
+  For every task frame $#taskframe$, $op("Cm")(#taskframe)$ is a $op("TM")^+$-algebra; it is a
+  $op("TM")^+_d$-algebra when $#Dur$ is dense, a $op("TM")^+_f$-algebra when $#Dur$ is a
+  $ZZ$-group, and a $op("TM")^+_c$-algebra when $#Dur in {ZZ, RR}$. For every shift set $S$,
+  $op("Cm")(S)$ is $square.stroked$-simple: $square.stroked X$ takes only the values $emptyset$ and
+  $Omega$.
+]
+#leansrc("FrameConditions.Soundness", "soundness_linear")
+#leansrc("Metalogic.BaseLanguageSoundness", "soundness_dense")
+#leansrc("Metalogic.BaseLanguageSoundness", "soundness_discrete")
+#leansrc("FrameConditions.Soundness", "soundness_Int")
+
+#lemma("Lindenbaum–Tarski")[
+  The Lindenbaum algebra on a set $X$ of atoms is the free $op("TM")^+$-algebra on $X$, and its
+  ultrafilters correspond bijectively to the maximal consistent sets of the language generated by
+  $X$. Every $op("TM")^+$-algebra $A$ is a quotient $q : op("Fr")(A) arrow.r A "(surjective)"$,
+  $x_a mapsto a$, of the free algebra on a generating set indexed by $A$ itself.
+]
+#leansrc("Metalogic.Algebraic.LindenbaumQuotient", "LindenbaumAlg")
+#leansrc("Metalogic.Algebraic.UltrafilterMCS", "mcsToUltrafilter")
+#leansrc("Metalogic.Algebraic.UltrafilterMCS", "ultrafilter_correspondence")
+
+#proposition("Weak completeness, algebraically")[
+  For a class $K$ of task frames, $op("Fr")(omega) in op("SP") op("Cm")(K)$ iff $op("TM")^+$ is
+  weakly complete over $K$: the map sending a formula to the tuple of its propositions across every
+  model on a frame of $K$ is a homomorphism into $product_M op("Cm")((#taskframe)_M)$, injective
+  exactly when every non-theorem is refuted somewhere in $K$. The three machine-checked weak
+  completeness results are exactly SP-representations of this shape.
+]
+#leansrc("Metalogic.BXCanonical.Completeness", "completeness_dense")
+#leansrc("Metalogic.WeakCanonical", "completeness_discrete")
+#leansrc("Metalogic.BXCanonical.CompletenessDedekind", "completeness_dedekind_engine")
+
+The correspondence between ultrafilters and points above specializes Stone's theorem
+@stone1936: points of the algebra's dual space are its ultrafilters, and the operations become
+relations or functions on that space, which is the pattern the rest of this section develops for
+the full similarity type.
+
+
 == Shift Sets
 
 == The Ultrafilter Frame
