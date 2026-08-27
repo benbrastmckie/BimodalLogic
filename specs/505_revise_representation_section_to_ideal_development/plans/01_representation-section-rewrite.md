@@ -442,34 +442,39 @@ per-class proposition, and the two closing one-sentence remarks; optionally one 
 
 ---
 
-### Phase 7: Abstract and Cross-References [NOT STARTED]
+### Phase 7: Abstract and Cross-References [COMPLETED]
 
 **Goal**: Repair the four out-of-section references and the abstract so the document describes the
 section that now exists.
 
 **Tasks**:
 
-- [ ] Abstract (~line 128): replace "Section 5 lays out a six-rung ladder toward a representation
+- [x] Abstract (~line 128): replace "Section 5 lays out a six-rung ladder toward a representation
       theorem, distinguishing the algebraic embedding, the topological duality, the task-frame
       representation, and the first-order axiomatization that 'representation theorem' has been
       asked to name, and diagnoses the single obstruction --- the second-order shape of
       *Spherical* --- shared by the two routes that reach it." with a sentence stating the
       theorem: every TM⁺-algebra embeds point-completely into a product of complex algebras of
       shift-set flows, one per □-component, with the per-class refinement. Preserve the
-      surrounding sentence flow and the paragraph's register.
-- [ ] Line ~340: "That localization is what makes *Spherical* the identified obstruction of
+      surrounding sentence flow and the paragraph's register. *(completed)*
+- [x] Line ~340: "That localization is what makes *Spherical* the identified obstruction of
       `@sec:representation`." becomes a statement that the representing frames of
       `@sec:representation` are deterministic, so the localization is what lets them discharge
-      *Spherical* outright.
-- [ ] Line ~1005: "The algebraic layer of `@sec:representation` measures zero sorries." — keep, or
+      *Spherical* outright. *(completed)*
+- [x] Line ~1005: "The algebraic layer of `@sec:representation` measures zero sorries." — keep, or
       name the modules; either is acceptable, but it must remain true of what the section now
-      cites.
-- [ ] Line ~1096: the disjoint-union remark now points at the component decomposition —
-      "represented over a family of frames, one temporal order per component".
-- [ ] Line ~898 footnote: verify it still reads correctly ("this third pattern is what
+      cites. *(completed: named the modules — `LindenbaumQuotient`, `UltrafilterMCS`,
+      `BooleanStructure` — and added a clause disambiguating from the model-existence step's
+      `sorryAx`, since the section now also cites the base-class `completeness` result)*
+- [x] Line ~1096: the disjoint-union remark now points at the component decomposition —
+      "represented over a family of frames, one temporal order per component". *(completed)*
+- [x] Line ~898 footnote: verify it still reads correctly ("this third pattern is what
       `@sec:representation` returns to") — the new §5 does return to it, so no edit is expected.
-- [ ] `grep -rn 'sec:duality' typst/` must return zero hits.
-- [ ] Compile both documents.
+      *(completed: verified unchanged and still accurate — the new Shift Sets subsection
+      explicitly names this the third discharge pattern)*
+- [x] `grep -rn 'sec:duality' typst/` must return zero hits. *(completed: zero hits)*
+- [x] Compile both documents. *(completed: both exit 0, no unresolved-reference warnings;
+      sync-check Check 1 passes with 0 violations)*
 
 **Timing**: 0.5 hours
 

@@ -125,11 +125,11 @@
   conditions that discharge the modal case of the truth lemma, and the three canonical
   constructions with their sources. Section 4 states the two costs the semantics incurs --- the
   necessity of temporal structure, and the higher-order character of the condition singling out
-  $square.stroked$ --- and where the two meet. Section 5 lays out a six-rung ladder toward a
-  representation theorem, distinguishing the algebraic embedding, the topological duality, the
-  task-frame representation, and the first-order axiomatization that "representation theorem" has
-  been asked to name, and diagnoses the single obstruction --- the second-order shape of
-  *Spherical* --- shared by the two routes that reach it. Complexity as distinct from
+  $square.stroked$ --- and where the two meet. Section 5 states and proves the representation
+  theorem for *TM⁺*: every *TM⁺*-algebra embeds, point-completely, into a product of complex
+  algebras of shift-set flows, one factor per □-component, each temporal order discrete or dense
+  according to the algebra's discreteness element, so that the representable algebras are exactly
+  the *TM⁺*-algebras. Complexity as distinct from
   decidability, interpolation, and finite axiomatizability are known open and are not treated here.
 
   This document reports what is machine-checked in `FormalSystem/`, following the presentation of
@@ -337,7 +337,9 @@ below: two of the three results in @sec:histories are theorems of ZFC.
 The Step Lemma above is the sole application site of *Spherical*, and Extension is the sole
 consumer of the Step Lemma; every appeal to *Spherical* in the semantics passes through this one
 point.#footnote[*Spherical* is not needed when the $supset.eq$-directed family has a $subset.eq$-least member, and on a finite carrier it holds outright and choice-free.] Extension and Occurrence are theorems of ZFC, in contrast with Nullity. That
-localization is what makes *Spherical* the identified obstruction of @sec:representation.
+localization is what lets the deterministic frames of @sec:representation discharge *Spherical*
+outright: every fiber and segment there is a singleton or empty, so the one point at this
+application site is already forced.
 
 The cones are a basis for a topology on world states, and that topology is separated.#footnote[The topology is carried by the world states, not by $H_(#taskframe)$ or by $D$.]
 
@@ -1002,7 +1004,10 @@ made it unreachable. What the `sorryAx` on the general Base-frame `completeness`
 therefore a stale dependency edge, not an unproved mathematical step in any result stated in this
 report --- but the edge is real, and until it is cut the theorem's axiom report says so.
 
-The algebraic layer of @sec:representation measures zero sorries.
+The Lindenbaum--Tarski and Jónsson--Tarski layer of @sec:representation ---
+`LindenbaumQuotient`, `UltrafilterMCS`, `BooleanStructure` --- measures zero sorries; what carries
+the base class's `sorryAx` is the model-existence step of the Representation theorem's proof, via
+`completeness` alone.
 
 #remark[
   The vocabulary above is the development's own: `FrameClass.Base`, `Dense`, `Discrete`,
@@ -1093,8 +1098,11 @@ directions either way.
 #remark[
   The question this leaves open is whether some semantics recovers temporal-structure contingency
   without lapsing the correspondences. The target is a class of frames closed under disjoint
-  union: by the Dichotomy the unrestricted class is not one, and @sec:representation returns to
-  what a class that is one would have to look like.
+  union: by the Dichotomy the unrestricted class is not one, and @sec:representation answers the
+  question in the negative for the algebra-to-frame direction --- a product of complex algebras is
+  not, in general, the complex algebra of a single frame, which is why its Representation theorem
+  is stated over a family of flows, represented over a family of frames, one temporal order per
+  component, rather than over a single disjoint union.
 ]
 
 == The Strongest Objective Modality <sec:objective-modality>
