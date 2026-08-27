@@ -125,10 +125,12 @@
   conditions that discharge the modal case of the truth lemma, and the three canonical
   constructions with their sources. Section 4 states the two costs the semantics incurs --- the
   necessity of temporal structure, and the higher-order character of the condition singling out
-  $square.stroked$ --- and where the two meet. Section 5 assesses the three candidate routes to a
-  representation theorem, commits to the one with live groundwork, and closes with the single
-  obstruction the others share. Complexity as distinct from decidability, interpolation, and finite
-  axiomatizability are known open and are not treated here.
+  $square.stroked$ --- and where the two meet. Section 5 lays out a six-rung ladder toward a
+  representation theorem, distinguishing the algebraic embedding, the topological duality, the
+  task-frame representation, and the first-order axiomatization that "representation theorem" has
+  been asked to name, and diagnoses the single obstruction --- the second-order shape of
+  *Spherical* --- shared by the two routes that reach it. Complexity as distinct from
+  decidability, interpolation, and finite axiomatizability are known open and are not treated here.
 
   This document reports what is machine-checked in `FormalSystem/`, following the presentation of
   Brast-McKie's task-frame semantics @brastmckie2026possibleworlds, available at
@@ -1298,7 +1300,10 @@ Jónsson--Tarski's theorem is precisely rung 3: the embedding $eta : A arrow.r.h
 into the complex algebra of $A$'s own ultrafilter frame. For a logic $Lambda$ this yields
 $V_Lambda subset.eq op("HSPCm") K$ for some frame class $K$ --- an *inclusion*, not the equality
 strong completeness needs. Rung 3 is therefore not blocked; it is *insufficient*, and the missing
-ingredient has a name.
+ingredient has a name.#footnote[$op("Em")(A)$ is the algebra Jónsson and Tarski called the
+*perfect extension*; the modern successor framework organizes the same construction, abstracted
+away from Boolean algebras with operators to arbitrary lattice expansions, as the *canonical
+extension* @gehrkevosmaer2011.]
 
 #definition("Canonicity")[
   A class of algebras is *canonical* if it is closed under the canonical-embedding-algebra
@@ -1529,8 +1534,8 @@ weakening $D$ --- to a linearly ordered set, a monoid, or a partially ordered gr
 the discreteness obstruction outright. The cost is precise and is charged to the parts of the
 theory that use the group operations: MF and the perpetuity principles depend on translation
 invariance, the converse convention depends on negation, and *Compositionality* is stated in terms
-of addition. What survives each weakening is what a general representation theorem must be stated
-over, and it is not yet worked out.
+of addition. What survives each weakening is what a general *task-frame* representation (sense
+(iii) of the section's opening) would have to be stated over, and it is not yet worked out.
 
 One of the section's open remarks is settled by the literature rather than by further work here.
 The coset-domain construction of @sec:contingency was floated as a possible route to

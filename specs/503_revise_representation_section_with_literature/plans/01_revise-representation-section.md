@@ -431,26 +431,46 @@ axioms as stated in `@sec:system` of `typst/FormalFoundations.typ` and their Lea
 
 ---
 
-### Phase 6: Integration, Cross-Reference Audit, and Full Verification [NOT STARTED]
+### Phase 6: Integration, Cross-Reference Audit, and Full Verification [COMPLETED]
 
 **Goal**: Confirm the revised section is internally coherent, that the rest of the document still
 refers to it accurately, and that all repository checks pass.
 
 **Tasks**:
-- [ ] Read the revised section end to end for flow and for redundancy introduced by phase-by-
-      phase editing; remove duplicated statements of the same point.
-- [ ] Re-read each site that cross-references `@sec:representation` (currently near lines 338,
+- [x] Read the revised section end to end for flow and for redundancy introduced by phase-by-
+      phase editing; remove duplicated statements of the same point. *(completed: the two
+      remaining "== The Obstruction" arguments -- the discharge-pattern inventory and the group-
+      structure argument -- were judged non-duplicate with the new @sec:duality diagnosis on
+      re-read, since each makes a distinct point (proof-technique inventory / algebraic-structure
+      dependency) rather than restating the compactness diagnosis; the stale end-of-section open
+      question and old three-route framing were the actual duplicates and were replaced in
+      Phases 2 and 5. One additional disambiguation fix: "a general representation theorem" in the
+      kept second Obstruction argument now reads "a general *task-frame* representation (sense
+      (iii))" for consistency with Phase 2's opening.)*
+- [x] Re-read each site that cross-references `@sec:representation` (currently near lines 338,
       896, 1003, 1094) and confirm each referring sentence still describes content present in the
-      revised section. Repair any that no longer do.
-- [ ] Confirm every `#leansrc` pointer in the section names a live declaration in
-      `FormalSystem/` outside `Boneyard/`.
-- [ ] Run `scripts/typst-sync-check.sh` and resolve every reported violation. Add a whitelist
+      revised section. Repair any that no longer do. *(completed: sites at ~338, ~896, ~1003,
+      ~1094 all still accurate and required no change; a fifth site found during this audit -- the
+      document abstract's "Section 5 assesses the three candidate routes..." sentence, outside
+      `<sec:representation>` but describing it -- was stale and was corrected, within the Non-
+      Goals' minimum-cross-reference-consistency allowance)*
+- [x] Confirm every `#leansrc` pointer in the section names a live declaration in
+      `FormalSystem/` outside `Boneyard/`. *(completed: 6 pointers, all previously verified live in
+      Phase 1/3 -- LindenbaumAlg, boxInterior, mcsToUltrafilter, Derives, sigmaQuot,
+      sigma_quot_involution)*
+- [x] Run `scripts/typst-sync-check.sh` and resolve every reported violation. Add a whitelist
       entry only for a genuine non-Lean proper noun or exposition-only type signature, never to
-      suppress a stale identifier.
-- [ ] Compile `typst/FormalFoundations.typ` and `typst/BimodalReference.typ` and confirm both
-      succeed with no unresolved-reference warnings.
-- [ ] Cross-check the finished prose against the Phase 1 audit note: no EXCLUDED claim present,
-      every PROVISIONAL claim hedged in the text.
+      suppress a stale identifier. *(completed: all 3 checks pass, 0 violations, no whitelist
+      entry needed)*
+- [x] Compile `typst/FormalFoundations.typ` and `typst/BimodalReference.typ` and confirm both
+      succeed with no unresolved-reference warnings. *(completed: both exit 0, only the
+      pre-existing "unknown font family" warnings, which predate this task and are unrelated to
+      the bibliography or section content)*
+- [x] Cross-check the finished prose against the Phase 1 audit note: no EXCLUDED claim present,
+      every PROVISIONAL claim hedged in the text. *(completed: grepped for "discriminator",
+      "goldblatt_1989"/"Goldblatt 1989", "Thomason 197", "Sambin", "Vaccaro" -- zero hits in the
+      section; the discriminator-variety conjecture, `goldblatt_1989`-sourced claims, and the
+      Thomason/Goldblatt-1976/Sambin-Vaccaro historical narrative are all absent, as required)*
 
 **Timing**: 1 hour
 
@@ -470,17 +490,27 @@ refers to it accurately, and that all repository checks pass.
 
 ## Testing & Validation
 
-- [ ] `typst compile typst/FormalFoundations.typ` succeeds after every phase
-- [ ] `typst compile typst/BimodalReference.typ` succeeds after the bibliography change and at
-      the end
-- [ ] `scripts/typst-sync-check.sh` exits 0 at the end
-- [ ] No BibTeX key added to `typst/bibliography.bib` is duplicated or uncited
-- [ ] Every `#leansrc` pointer and backticked Lean name in the revised section resolves against
-      live `FormalSystem/` source (not `Boneyard/`)
-- [ ] The revised section contains no claim classified EXCLUDED in the Phase 1 audit note
-- [ ] Every claim classified PROVISIONAL appears hedged, never as flat assertion
-- [ ] Each of the four cross-referencing sites elsewhere in the document still describes content
-      that exists in the revised section
+- [x] `typst compile typst/FormalFoundations.typ` succeeds after every phase *(verified after each
+      of Phases 1-6)*
+- [x] `typst compile typst/BimodalReference.typ` succeeds after the bibliography change and at
+      the end *(verified after Phase 1 and again at Phase 6)*
+- [x] `scripts/typst-sync-check.sh` exits 0 at the end *(all 3 checks green, 0 violations)*
+- [x] No BibTeX key added to `typst/bibliography.bib` is duplicated or uncited *(6 new keys, all
+      cited at least once; `gehrkevosmaer2011` was uncited after Phase 4/5's draft and was given a
+      citation during Phase 6's audit rather than dropped, since the source genuinely supports the
+      canonical-extension terminology footnote it was attached to)*
+- [x] Every `#leansrc` pointer and backticked Lean name in the revised section resolves against
+      live `FormalSystem/` source (not `Boneyard/`) *(6 `#leansrc` pointers and 7 backticked
+      identifiers, all verified live)*
+- [x] The revised section contains no claim classified EXCLUDED in the Phase 1 audit note
+      *(verified by grep: no hits for the discriminator conjecture, `goldblatt_1989`, or the
+      Thomason/Goldblatt-1976/Sambin-Vaccaro historical narrative)*
+- [x] Every claim classified PROVISIONAL appears hedged, never as flat assertion *(the BibTeX
+      metadata entries carry `note = {verify before print}`; the discriminator-variety conjecture
+      and `goldblatt_1989` are excluded outright rather than hedged, per the audit note)*
+- [x] Each of the four cross-referencing sites elsewhere in the document still describes content
+      that exists in the revised section *(verified by reading; a fifth site, the document
+      abstract, was also found stale and corrected)*
 
 ## Artifacts & Outputs
 
