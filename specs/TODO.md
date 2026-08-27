@@ -1,5 +1,5 @@
 ---
-next_project_number: 506
+next_project_number: 507
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 506
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,193,257,298,433,461,476,481,492,494,495,504 | -- | automation, dataset-enhancement, decidability, ... |
+| 1 | 127,128,193,257,298,433,461,476,481,492,494,495,504,506 | -- | automation, dataset-enhancement, decidability, ... |
 | 2 | 178,231,282,296,463,493,502 | 193,298,433,461,492 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 219,464,497 | 231,463,502 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 465,498,499,500 | 464,492,497 | algebraic-representation, decidability |
@@ -86,6 +86,10 @@ next_project_number: 506
 
 495 [NOT STARTED] — RESEARCH TASK, DELIBERATELY AGNOSTIC ABOUT THE VERDICT. Determine
 
+### Publication Quality
+
+506 [NOT STARTED] — Fix all outstanding display/layout defects in the compiled typst 
+
 ### Strong Completeness
 
 492 [NOT STARTED] — HARD. Build the ultraproduct of shift sets and prove Los for Trut
@@ -93,6 +97,16 @@ next_project_number: 506
 494 [NOT STARTED] — UNBLOCKED TODAY, INDEPENDENT of the ultraproduct chain. Settle th
 
 ## Tasks
+
+### 506. Fix typst display defects via playwright visual loop
+- **Status**: [NOT STARTED]
+- **Task Type**: typst
+- **Topic**: publication-quality
+- **Dependencies**: None
+
+**Description**: Fix all outstanding display/layout defects in the compiled typst documents (typst/FormalFoundations.typ and typst/BimodalReference.typ) using a Playwright-driven visual check loop. Known defect: in <sec:representation> Definition 5.1 (TM+-algebra), the display equation listing the derived operators (F a := 1 ▷ a, G a := ¬F(¬a), P a := 1 ◁ a, H a := ¬P(¬a), Next a := 0 ▷ a, △a := H a ∧ a ∧ G a) is set as one unbreakable math line and overflows both the definition box and the page margins; it must be broken across lines (e.g. an aligned block or a two-row layout) so it fits within the text block. Approach: compile each document to PDF (and/or SVG/PNG pages via `typst compile --format png`), serve the output to a headless browser via the Playwright MCP tools, screenshot every page, and systematically inspect for overflowing display math, content escaping theorem/definition boxes, text running past margins, clipped tables, orphaned headings, broken cross-references or citation placeholders, and any other visual defect. Catalogue every finding with page number and source line, then plan and implement fixes in the .typ sources (line-breaking long equations, resizing tables, adjusting box widths, etc.), recompiling and re-screenshotting after each fix and repeating the full sweep until no display issues remain. Both documents must compile cleanly and scripts/typst-sync-check.sh must pass at the end. Do not change mathematical content — layout only
+
+---
 
 ### 505. Revise representation section to ideal development
 - **Status**: [COMPLETED]
