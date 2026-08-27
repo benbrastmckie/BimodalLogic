@@ -1,85 +1,48 @@
 {
-  "status": "researched",
+  "status": "implemented",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/503_revise_representation_section_with_literature/reports/01_representation-literature-research.md",
-      "summary": "Literature-grounded research report on modal representation theorems for the bimodal TM system: corpus inventory and acquisition table, Jonsson-Tarski vs. topological duality analysis, Sahlqvist classification of TM's axioms, diagnosis of the Spherical obstruction as a discrete-vs-topological duality mismatch, a 12-element proposed structure for the revised section, and 9 risks."
+      "type": "summary",
+      "path": "specs/503_revise_representation_section_with_literature/summaries/01_revise-representation-section-summary.md",
+      "summary": "All 6 phases completed: rewrote <sec:representation> in typst/FormalFoundations.typ with a four-way representation-theorem distinction, a six-rung ladder, corrected interior-operator and Jonsson-Tarski-attribution errors, a new duality/canonicity/Spherical-diagnosis subsection, and a per-frame-class shift-set scoping; added 6 bibliography entries; both typst documents compile and scripts/typst-sync-check.sh passes all 3 checks."
     }
   ],
-  "next_steps": "Run /plan 503 to create the implementation plan for revising <sec:representation> in typst/FormalFoundations.typ. The plan should sequence: (1) correct the factual error in the Algebraic Layer definition block (G and H are not interior operators; no G exists on the quotient), (2) restructure the section along the six-rung ladder in Part 4 of the report, (3) add the descriptive-general-frame / Goldblatt-Esakia duality material as the new centre of gravity, (4) state the non-elementarity delimitation of the shift-set target. Two claims flagged unverified in the report (the discriminator-variety claim, and the row-by-row Sahlqvist classification) must be re-derived before they enter the Typst file.",
-  "metadata": {
-    "session_id": "sess_1787765867_5f8b5f",
-    "agent_type": "formal-research-agent",
-    "duration_seconds": 5400,
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "skill-formal-research", "formal-research-agent"],
-    "domains_researched": ["logic", "math"],
-    "findings_count": 24,
-    "context_files_loaded": [
-      "specs/literature-index.json",
-      "FormalSystem/Metalogic/Algebraic/README.md",
-      ".claude/context/formats/return-metadata-file.md"
-    ],
-    "literature_docs_ingested": 2,
-    "literature_docs_registered_in_subindex": 17,
-    "subindex_entries_before": 46,
-    "subindex_entries_after": 63,
-    "global_index_entries_after": 11545,
-    "mathlib_lookups_performed": 0
+  "completion_data": {
+    "completion_summary": "Rewrote <sec:representation> in typst/FormalFoundations.typ end to end across 6 sequential plan phases: replaced the section's single undifferentiated notion of a representation theorem with a four-way distinction and a six-rung ladder table/diagram, corrected two factual errors (the interior-operator claim about #allpast/#allfuture and the anachronistic Jonsson-Tarski ultrafilter-frame attribution), added a new subsection stating the Goldblatt/Esakia duality and diagnosing the Spherical obstruction as a compactness condition invisible to TM's similarity type, and re-scoped the shift-set target and its declared gate per frame class. Added 6 new BibTeX entries to typst/bibliography.bib, all cited. Both typst/FormalFoundations.typ and typst/BimodalReference.typ compile cleanly and scripts/typst-sync-check.sh passes all 3 checks (0 violations)."
   },
+  "modified_files": [
+    "typst/FormalFoundations.typ",
+    "typst/bibliography.bib"
+  ],
   "memory_candidates": [
     {
-      "content": "literature-search.sh is FTS5-backed and AND-s every term: queries longer than 2-4 words reliably return zero hits. Always search the corpus with SHORT queries ('Jonsson Tarski', 'tense algebra', 'canonical extension'), never with a sentence.",
+      "content": "In this repo, scripts/typst-sync-check.sh Check 1 (backtick name resolution) only scans literal `` `name` `` backtick spans in typst/**/*.typ via regex -- it does not inspect #leansrc(module, name) macro call arguments at all. When documentation prose needs to name a Lean identifier that is a proposed next step and does not exist yet (e.g. a composite like `gQuot := sigmaQuot . hQuot . sigmaQuot` that is one definition away but unbuilt), write it in math notation ($sigma_\"quot\" compose H compose sigma_\"quot\"$) rather than backticks -- backticking a non-existent identifier fails Check 1 as an unresolved name, while math notation carries the same information without tripping the mechanical check or requiring a whitelist entry (which is reserved for genuine non-Lean nouns, not for proposed-but-unbuilt code).",
       "category": "TECHNIQUE",
-      "source_artifact": "specs/503_revise_representation_section_with_literature/reports/01_representation-literature-research.md",
-      "confidence": 0.9,
-      "suggested_keywords": ["literature-search", "FTS5", "corpus query", "short query"]
-    },
-    {
-      "content": "The literature conversion quality gate rejects many otherwise-clean math PDFs on two marginal signals: 'sentence-boundary-glue' (whose benign journal-abbreviation class, e.g. 'Theor.Comp.Sci.', is deliberately unexempted) and zero-tolerance NUL/control characters (which for LaTeX-produced PDFs are almost always unmapped CMEX size-graded delimiters: 0x00/0x10/0x12 = '(' and 0x01/0x11/0x13 = ')', plus picture-environment line glyphs 0x02/0x0E/0x1B). The documented remedy of reconverting with LITERATURE_CONVERTER=fallback removes the genuine <sup>-span fusion corruption but not the delimiter glyphs. Workflow that works: convert with the fallback engine, inspect every gate hit individually, apply a determinate context-verified character repair, re-run literature_quality_gate.py directly, then install via literature-chunk.sh + a hand-written index.json entry carrying a conversion_note, and rebuild with literature-build-index.sh --global.",
-      "category": "WORKFLOW",
-      "source_artifact": "specs/503_revise_representation_section_with_literature/reports/01_representation-literature-research.md",
+      "source_artifact": "specs/503_revise_representation_section_with_literature/summaries/01_revise-representation-section-summary.md",
       "confidence": 0.85,
-      "suggested_keywords": ["literature-convert", "quality gate", "CMEX delimiters", "literature-chunk", "literature-build-index", "conversion_note"]
+      "suggested_keywords": ["typst-sync-check", "backtick resolution", "leansrc", "proposed next step", "Lean identifier"]
     },
     {
-      "content": "Registering a global-corpus document into a repo's specs/literature-index.json is a plain JSON append: {doc_id, reason, added, source, citation_rule, optional fidelity}, then bump .updated. No script is required and literature-build-index.sh is only needed when chunk files change, not when sub-index metadata changes. The sub-index doc_id must match the global index entry's id, which for a chunked book is the per-section id (e.g. blackburn_2002_ch05_sec04), not the book-level id.",
+      "content": "When a research report's literature-index sub-index entries (specs/literature-index.json) lack full bibliographic metadata (year, venue, publisher) because they were registered by 'reason' text rather than full ingestion, pull the missing metadata from the actual global-corpus PDF at ~/Projects/Literature/sources/{doc_id}/*.pdf via `pdfinfo` (CreationDate often narrows the year) and `pdftotext -f 1 -l 1` (title page) rather than relying on memory or the sub-index's summary text alone. Cross-check against the paper's own reference-list self-citations or 'Received by the editors' dates when the source PDF is a preprint/technical-report version rather than the final offprint. Follow this repo's existing bibliography.bib convention of adding `note = {verify before print}` when the exact venue/year is reconstructed this way rather than read directly off a published offprint.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/503_revise_representation_section_with_literature/summaries/01_revise-representation-section-summary.md",
+      "confidence": 0.7,
+      "suggested_keywords": ["bibliography", "literature corpus", "pdfinfo", "citation metadata", "typst bibliography.bib"]
+    },
+    {
+      "content": "When a Phase 1 claim-audit's planned bibliography-entry list turns out to include an entry that ends up uncited after drafting the later phases' prose (e.g. a source kept as a secondary/proxy reference), do not silently drop the bibliography entry to satisfy a 'no uncited key' verification bar -- instead find or create a genuinely honest, narrow place to cite it (a footnote naming the specific terminological or historical point the source actually supports), consistent with the source's role identified during research. Dropping the entry loses a legitimate citation opportunity; forcing an uncited entry into unrelated prose to satisfy the checker is dishonest. A one-sentence footnote is usually enough.",
       "category": "PATTERN",
-      "source_artifact": "specs/503_revise_representation_section_with_literature/reports/01_representation-literature-research.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["literature-index", "sub-index", "doc_id", "curation"]
+      "source_artifact": "specs/503_revise_representation_section_with_literature/summaries/01_revise-representation-section-summary.md",
+      "confidence": 0.7,
+      "suggested_keywords": ["bibliography", "uncited entry", "claim audit", "documentation task", "citation integrity"]
     }
   ],
-  "modified_files": [
-    "specs/503_revise_representation_section_with_literature/reports/01_representation-literature-research.md",
-    "specs/503_revise_representation_section_with_literature/.return-meta.json",
-    "specs/literature-index.json",
-    "specs/literature-index.json.bak-503",
-    "/home/benjamin/Projects/Literature/index.json",
-    "/home/benjamin/Projects/Literature/index.json.bak-task503",
-    "/home/benjamin/Projects/Literature/sources/venema_2007_algebras_and_coalgebras/",
-    "/home/benjamin/Projects/Literature/sources/gehrke_vosmaer_2011_view-of-canonical-extension/",
-    "/home/benjamin/Projects/Literature/.literature.db"
-  ],
-  "errors": [
-    {
-      "type": "execution",
-      "message": "literature-discover.sh Tier 3 (Semantic Scholar) returned HTTP 429 on every attempt across the whole session (20+ attempts, 3 queries, 75s backoff, ~35 minutes). No automated discovery record was produced for any absent source, so nothing could be passed to literature-ingest-online.sh by the normal route.",
-      "recoverable": true,
-      "recommendation": "Re-run `/literature <query>` or literature-discover.sh once Semantic Scholar recovers, targeting: Sambin & Vaccaro 1988 'Topology and duality in modal logic'; S. K. Thomason 1972 'Semantic analysis of tense logics' and 1975 'Categories of frames for modal logic'; Goldblatt 1976 'Metamathematics of modal logic' I-II; Fine 1975 'Some connections between elementary and modal logic'; Gehrke & Jonsson 2004 'Bounded distributive lattice expansions'; Gabbay & Shehtman 'Products of modal logics I'."
-    },
-    {
-      "type": "execution",
-      "message": "literature-ingest-online.sh emitted ONLINE_INGEST_PIPELINE_FAILED for Venema 2007 (conversion quality gate) and ONLINE_INGEST_ZOTERO_CREATE_FAILED for Gehrke & Vosmaer (zotero-write.sh item-add rejects a record carrying no DOI). Both documents were installed into the corpus manually instead, with documented conversion repairs; both are searchable and registered.",
-      "recoverable": true,
-      "recommendation": "The zotero-write.sh no-DOI failure is a reproducible bridge limitation worth a separate fix: an arXiv-only open_access record has an arxiv_id but no DOI, and item-add rejects it. Consider passing the published DOI when one exists (10.1007/978-3-642-22303-7_6 for Gehrke & Vosmaer)."
-    },
-    {
-      "type": "execution",
-      "message": "Gehrke & Jonsson 2004 'Bounded distributive lattice expansions' (Math. Scand. 94, 13-45) could not be downloaded: all three mscand.dk URL forms return HTTP 404 and the OJS article page exposes only BibTeX/RIS links. Not acquired.",
-      "recoverable": true,
-      "recommendation": "Its content is covered for present purposes by gehrke_vosmaer_2011_view-of-canonical-extension, which was acquired. Retry the primary source later, or via journals.msp.org once its mscand migration settles."
-    }
-  ]
+  "metadata": {
+    "session_id": "sess_1787787439_8e9fc8",
+    "agent_type": "general-implementation-agent",
+    "delegation_depth": 2,
+    "delegation_path": ["orchestrator", "orchestrate", "skill-orchestrate", "general-implementation-agent"],
+    "phases_completed": 6,
+    "phases_total": 6
+  }
 }
