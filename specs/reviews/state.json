@@ -1,7 +1,7 @@
 {
   "_schema_version": "1.0.0",
   "_comment": "Review state tracking",
-  "_last_updated": "2026-08-25T19:52:27Z",
+  "_last_updated": "2026-08-31T17:36:06Z",
   "reviews": [
     {
       "review_id": "review-20260331",
@@ -350,12 +350,36 @@
         487
       ],
       "registries_updated": []
+    },
+    {
+      "review_id": "review-2026-08-31-metalogic-systematicity",
+      "date": "2026-08-31T17:36:06Z",
+      "scope": "Metalogic infrastructure: soundness, completeness, compactness, frame characterization, and the structure of frame validity",
+      "report_path": "specs/reviews/review-2026-08-31-metalogic-systematicity.md",
+      "summary": {
+        "files_reviewed": 471,
+        "critical_issues": 0,
+        "high_issues": 3,
+        "medium_issues": 4,
+        "low_issues": 2
+      },
+      "tasks_created": [
+        507,
+        508,
+        509,
+        510,
+        511
+      ],
+      "tasks_revised": [
+        494
+      ],
+      "registries_updated": []
     }
   ],
   "statistics": {
-    "total_reviews": 19,
-    "last_review": "2026-08-25T19:52:27Z",
-    "total_issues_found": 199,
-    "total_tasks_created": 34
+    "total_reviews": 20,
+    "last_review": "2026-08-31T17:36:06Z",
+    "total_issues_found": 208,
+    "total_tasks_created": 39
   }
 }
