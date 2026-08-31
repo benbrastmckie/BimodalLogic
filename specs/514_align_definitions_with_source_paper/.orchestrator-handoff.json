@@ -1,0 +1,29 @@
+{
+  "dispatch_seq": 1,
+  "task_number": 514,
+  "phase": "research",
+  "status": "researched",
+  "session_id": "sess_1788206286_e33d62",
+  "artifacts": [
+    {
+      "path": "specs/514_align_definitions_with_source_paper/reports/01_definitional-review-and-closure.md",
+      "type": "report",
+      "summary": "Metatask research deliverable: (1) definitional review table mapping every listed paper definition to its Lean counterpart with named divergences, confirming D-as-frame-component, per-frame validity, and the COMPLETE (not Dedekind) naming, and determining the four category-theoretic definitions presentational for this front; (2) adjudicated app:dense verdict; (3) Galois-closure specification per frame class with a correction to the dispatch premise; (4) verdict-per-task realignment with verbatim replacement texts and the build order of record"
+    }
+  ],
+  "verdict": "researched_board_revision_specified",
+  "key_findings": [
+    "app:dense conflict adjudicated as resolution (a), precisely bounded: the per-frame reading of app:discrete/app:dense/app:complete is false in the => direction (machine-refuted by staticFrame), but the paper's own proofs construct a counterexample frame F-prime and conclude verbatim 'the axiom is not valid over every task frame with temporal order D' - the proven theorem is the temporal-order-level biconditional (forall F over D, F validates ax) iff D is X, which is true and is what the tree shall formalize. Candidates (b), (c), (d) each eliminated with evidence; the author met the degenerate-frame phenomenon in the commented cor:no-characterization/app:drift and kept app:deterministic one-directional",
+    "CORRECTION TO THE DISPATCH PREMISE: Sat .Dense IS Galois-closed. The dispatch computed the closure against the density axiom alone; Th(Sat .Dense) also contains the indicator NN = not-X-top (the tree's Axiom.dense_indicator, already sound over Dense, machine-checked), whose truth is model/history/valuation-independent, so Mod{NN} = Sat .Dense exactly. Mod{density-schema} = FwdRec characterizes the closure of the single axiom, not of the class. Dually the paper's Discrete class is Galois-closed via X-top, derivable from prior_UZ at top plus serial_future",
+    "Closure table: Base closed (trivial); Dense closed (NN indicator); paper-Discrete closed (X-top indicator); tree-Discrete (Z-time) NOT closed - witness staticFrame over Z lex Z validates every TM+_f theorem, sandwich Z-time strictly inside Mod(TM+_f) inside paper-Discrete, closed form open; Complete and dense-and-complete NOT closed - witness staticFrame over Q validates all Axioms(.Dedekind), sandwich R-time strictly inside Mod(TM+_c) inside Sat .Dense, closed form open and expected to stay open (Reynolds: no temporal formula characterizes completeness, already quoted in the tree's sep docstring; sep has no correspondent at all)",
+    "Task 513's uniform-faithfulness question is ANSWERED NEGATIVE and the task is revised into the Galois-closure implementation task: Th/Mod module, indicator exactness theorems, the FwdRec port from 511 probes as Mod{density} = FwdRec at Z, the (T1) duration-level correspondence for DF/DN/CO with the translation frame and two-state frame as witnesses, and the two non-closure witnesses; closed-form characterizations of Mod(TM+_f) and Mod(TM+_c) recorded as explicit non-goals",
+    "Definitional review: def:frame makes D a component (512 is paper-mandated, not preference); def:frame-properties' third class is named COMPLETE (507 gains the .Dedekind -> .Complete rename, with the bare-Complete property and the dense-and-complete class kept as distinct named notions); tree-Discrete's IsPredArchimedean narrowing matches the paper's own Z-time narrowing for TM+_f but must not be conflated with the Discrete property; the paper's class-restricted consequence relation in cor:tm-completeness is exactly the FrameClass-indexed ValidIn that 507 builds",
+    "The four category-theoretic definitions (interval-site, behavior-presheaf, path-category, conduche) are presentational for the metalogic front: no soundness/completeness/characterization result cites them; no Lean counterpart required, no task opened. Likewise def:bisimulation/order-automorphism/time-shifted/abundant belong to the two-dimensional layer; abundance cannot be an implicit hypothesis of app:dense since its task-frame analogue (app:auto_existence) is a theorem holding for every task frame",
+    "Board verdicts: 512 KEEP (amended grounding), 507 KEEP (amended: Sat spec + Complete rename), 508/509 KEEP (citation amendments), 510 KEEP with DELETE verdict pre-registered, 511 CLOSE terminal at researched (deliverables absorbed), 513 REVISE (description replaced). Build order: 512 -> 507 -> {508 -> 509, 510, 513-revised in parallel}. Verbatim amendment texts in report section 4.3"
+  ],
+  "open_items": [
+    "The [argued] items (X-top truth-unfolding, ordered-group homogeneity, X-top derivability, static-frame time-invariance at arbitrary D, the Q and Z-lex-Z witnesses, the T1 theorems) are formalization obligations inside revised 513, each a bounded lemma with a stated route - none is research",
+    "paper-definitions-of-record.md should gain the app:discrete/app:dense/app:complete and def:deterministic anchors when the implement phase touches it"
+  ],
+  "next_command": "/plan 514"
+}

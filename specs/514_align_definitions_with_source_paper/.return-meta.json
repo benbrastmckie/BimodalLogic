@@ -1,0 +1,21 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/514_align_definitions_with_source_paper/reports/01_definitional-review-and-closure.md",
+      "summary": "Definitional review mapping all 28 paper definitions to the Lean tree; adjudicated app:dense verdict (resolution (a): the per-frame statement is over-strong, the proofs establish the temporal-order-level biconditional); Galois-closure table for all five frame classes including the correction that Sat .Dense IS Galois-closed via the NN indicator axiom; revised task board with verbatim amendment texts for tasks 507-513"
+    }
+  ],
+  "next_steps": "Run /plan 514 to plan the board-revision implementation (apply the verbatim amendment texts in report 01 section 4.3, close 511 as terminal-researched, replace 513's description)",
+  "metadata": {
+    "session_id": "sess_1788206286_e33d62",
+    "agent_type": "formal-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "formal-research-agent"],
+    "domains_researched": ["logic", "math"],
+    "findings_count": 9,
+    "context_files_loaded": [],
+    "mathlib_lookups_performed": 0
+  }
+}
