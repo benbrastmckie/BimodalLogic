@@ -1107,14 +1107,14 @@
           "summary": "Bundling TaskFrame's duration type: target shape verified to elaborate, ofParam/toParam bridge enables incremental migration, 7-phase decomposition and scale measurements."
         },
         {
-          "path": "specs/512_bundle_duration_into_taskframe/plans/01_bundle-duration-into-taskframe.md",
-          "type": "plan",
-          "summary": "13-phase incremental migration plan bundling Duration as a TaskFrame field behind a definitional ParamTaskFrame bridge, with lake build green at every phase boundary."
-        },
-        {
           "path": "specs/512_bundle_duration_into_taskframe/summaries/01_bundle-duration-into-taskframe-summary.md",
           "type": "summary",
           "summary": "Phases 1-4,8 complete on bundled TaskFrame (86 files); phases 5-7,10,12 blocked on fixed-duration-fibre expressibility."
+        },
+        {
+          "path": "specs/512_bundle_duration_into_taskframe/plans/02_temporal-order-fibration.md",
+          "type": "plan",
+          "summary": "21-phase TemporalOrder/FrameOver/TaskFrame fibration plan; Phase 0 STOP-gated probe; preserves the 86 landed files."
         }
       ],
       "created": "2026-08-31T19:38:48Z",

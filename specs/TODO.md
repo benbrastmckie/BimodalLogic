@@ -210,8 +210,8 @@ specs/511_research_frame_correspondence_infrastructure/reports/01–03 + probes.
 - **Topic**: semantics foundations
 - **Dependencies**: Task 514
 - **Research**: [512_bundle_duration_into_taskframe/reports/01_bundle-duration-into-taskframe.md]
-- **Plan**: [512_bundle_duration_into_taskframe/plans/01_bundle-duration-into-taskframe.md]
 - **Summary**: [512_bundle_duration_into_taskframe/summaries/01_bundle-duration-into-taskframe-summary.md]
+- **Plan**: [512_bundle_duration_into_taskframe/plans/02_temporal-order-fibration.md]
 
 **Description**: FOUNDATIONAL REFACTOR, prerequisite for the whole metalogic systematicity front. Make the duration type a FIELD of TaskFrame rather than a PARAMETER, so that a frame carries its own temporal structure and every frame-class notion becomes a genuine property of a frame.
 
