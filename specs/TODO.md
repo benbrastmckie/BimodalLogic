@@ -14,9 +14,9 @@ next_project_number: 512
 | 1 | 127,128,193,257,298,433,461,476,481,492,495,504,506,514 | -- | automation, dataset-enhancement, decidability, ... |
 | 2 | 178,231,282,296,463,493,502,512,513 | 193,298,433,461,492,514 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 219,464,497,507,511 | 231,463,502,512,513 | algebraic-representation, dataset-enhancement, decidability, ... |
-| 4 | 465,498,499,500,508,509,510 | 464,492,497,507 | algebraic-representation, decidability, metalogic |
-| 5 | 125,428,494 | 465,498,499,509 | algebraic-representation, decidability, strong_completeness |
-| 6 | 429,501 | 125,428 | algebraic-representation, decidability |
+| 4 | 465,498,499,500,508,510 | 464,492,497,507 | algebraic-representation, decidability, metalogic |
+| 5 | 125,428,509 | 465,498,499,508 | algebraic-representation, decidability, metalogic |
+| 6 | 429,494,501 | 125,428,509 | algebraic-representation, decidability, strong_completeness |
 | 7 | 410 | 429 | decidability |
 | 8 | 411 | 410 | decidability |
 | 9 | 430 | 411 | decidability |
@@ -87,7 +87,7 @@ next_project_number: 512
 495 [NOT STARTED] — RESEARCH TASK, DELIBERATELY AGNOSTIC ABOUT THE VERDICT. Determine
 507 [RESEARCHED] — ROOT FIX for the metalogic systematicity front. Give the proof-si
   └─ 508 [NOT STARTED] — Collapse ~23 soundness theorems into ONE parameterized theorem pl
-  └─ 509 [NOT STARTED] — Make the compactness / strong-completeness layer a FrameClass-ind
+    └─ 509 [NOT STARTED] — Make the compactness / strong-completeness layer a FrameClass-ind
   └─ 510 [NOT STARTED] — Decide the fate of FormalSystem/FrameConditions/ (4 modules, 906 
 511 [RESEARCHED] — RESEARCH TASK, DELIBERATELY AGNOSTIC ABOUT FEASIBILITY. Determine
 
@@ -281,13 +281,19 @@ duration type. Do not plan against the earlier carrier-quantified shape
 (`fc.Sat D -> ValidOver D phi`), which is superseded. This task sequences transitively behind the
 TaskFrame duration-bundling refactor via its dependency on the indexed-validity task.
 
+=== VERDICT PRE-REGISTERED BY TASK 514 RESEARCH === DELETE. Under the frame-level Sat of 507
+the carrier-typeclass layer has no role and no paper counterpart (the paper has no
+carrier-level validity notion at all — def:frame-validity is per-frame, ⊨_C is per-class).
+Execute as deletion + C6 manifest update; promotion is off the table unless 507's
+implementation discovers a concrete consumer, which its plan must record explicitly if so.
+
 ---
 
 ### 509. Parameterize compactness and strong completeness family
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: metalogic
-- **Dependencies**: Task 507
+- **Dependencies**: Task 507, Task 508
 
 **Description**: Make the compactness / strong-completeness layer a FrameClass-indexed family instead of three hand-copied rows with a missing fourth. THE ARCHITECTURE IS ALREADY RIGHT AND IS THE PLAN OF RECORD -- strong completeness derived from compactness plus weak completeness. Present and sorry-free: strongCompletenessBase_of_compact (StrongCompleteness.lean:314), strongCompletenessDense_of_compact (:340), compactBase_of_modelExistence (:378), compactDense_of_modelExistenceDense (:424), and the negative results discrete_consequence_not_compact (DiscreteNonCompactness.lean:250) and strongCompletenessDiscrete_refuted (:280). WHAT IS WRONG IS THE SHAPE, NOT THE MATHEMATICS. SetConsequence.lean defines the family once per class by hand: Base at :214,:222,:230,:245; Dense at :262,:269,:277,:291; Discrete at :315,:329,:342 (ModelExistenceDiscrete correctly absent, it is refuted); Dedekind ENTIRELY ABSENT. And the two strongCompleteness*_of_compact reductions are the same argument written twice. DELIVERABLE: (1) StrongCompleteness (fc), Compact (fc), SatisfiableSet (fc), ModelExistence (fc) as one indexed family over the interpretation landed by the prerequisite; (2) ONE strongCompleteness_of_compact (fc) replacing the two reductions; (3) ONE modelExistence_implies_compact (fc) replacing the two bridges; (4) the existing Base/Dense/Discrete results recovered as instantiations with identical statements and axiom profiles. WHY THIS SEQUENCES BEFORE THE DEDEKIND REFUTATION TASK: that task's Part 1 is specified as defining the missing vocabulary 'mirroring the Base/Dense/Discrete groups' -- a fourth hand copy of exactly what this task collapses. After this lands, its Part 1 becomes a single instantiation and only its genuinely hard Part 2 (a new non-compactness witness that cannot reuse archWitness, since the Dedekind binder list has no successor structure) remains. DOES NOT DISCHARGE ANYTHING: ModelExistenceBase/Dense stay unproven here; the ultraproduct chain owns that. This is a restructuring task, and the conditional results must stay exactly as strong as they are today. ACCEPTANCE: sorry-free, lake build green, every currently-provable result still provable with an unchanged axiom profile. GROUNDING: specs/reviews/review-2026-08-31-metalogic-systematicity.md issue H3.=== DIRECTION NOTE ===
 The FrameClass-indexed validity this task builds on is being defined at FRAME level, not carrier
@@ -296,6 +302,12 @@ level: `FrameClass.Sat : FrameClass -> TaskFrame -> Prop` and
 duration type. Do not plan against the earlier carrier-quantified shape
 (`fc.Sat D -> ValidOver D phi`), which is superseded. This task sequences transitively behind the
 TaskFrame duration-bundling refactor via its dependency on the indexed-validity task.
+
+=== PAPER GROUNDING === Targets def:soundness / def:logical-consequence / cor:tm-completeness's
+⊨_C and per-class strong/weak completeness roster (TM+ strong over all task frames; TM+_d
+strong over dense; TM+_f weak over Z-time; TM+_c weak over dense-and-complete). Class naming
+follows 507's rename (.Complete, not .Dedekind). See
+specs/514_align_definitions_with_source_paper/reports/01 §1.2.
 
 ---
 
@@ -312,6 +324,12 @@ level: `FrameClass.Sat : FrameClass -> TaskFrame -> Prop` and
 duration type. Do not plan against the earlier carrier-quantified shape
 (`fc.Sat D -> ValidOver D phi`), which is superseded. This task sequences transitively behind the
 TaskFrame duration-bundling refactor via its dependency on the indexed-validity task.
+
+=== PAPER GROUNDING === Targets def:soundness / def:logical-consequence / cor:tm-completeness's
+⊨_C and per-class strong/weak completeness roster (TM+ strong over all task frames; TM+_d
+strong over dense; TM+_f weak over Z-time; TM+_c weak over dense-and-complete). Class naming
+follows 507's rename (.Complete, not .Dedekind). See
+specs/514_align_definitions_with_source_paper/reports/01 §1.2.
 
 ---
 

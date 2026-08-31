@@ -137,17 +137,17 @@ planning time); if not, this phase also corrects them and records the discrepanc
 
 ---
 
-### Phase 2: Amend downstream tasks 508, 509, 510 and set build-order dependencies [NOT STARTED]
+### Phase 2: Amend downstream tasks 508, 509, 510 and set build-order dependencies [COMPLETED]
 
 **Goal**: The three downstream KEEP tasks carry their §4.3 amendments and the dependency
 graph matches the §4.4 build order of record.
 
 **Tasks**:
-- [ ] Append the shared "508, 509 — append to each description" §4.3 block to both 508's and 509's descriptions (same `--rawfile` mechanics as Phase 1).
-- [ ] Append the "510 — append to description" DELETE pre-registration block to 510's description.
-- [ ] Set 509's `dependencies` to `[507, 508]` (build order: 508 -> 509). Leave 508 `[507]` and 510 `[507]` as-is (already conform).
-- [ ] Verify: JSON validity; three descriptions contain their texts verbatim; dependency edges for 507-510 match §4.4 exactly.
-- [ ] Regenerate TODO.md; commit (`task 514 phase 2: amend tasks 508-510 and build-order dependencies`).
+- [x] Append the shared "508, 509 — append to each description" §4.3 block to both 508's and 509's descriptions (same `--rawfile` mechanics as Phase 1). *(completed)*
+- [x] Append the "510 — append to description" DELETE pre-registration block to 510's description. *(completed)*
+- [x] Set 509's `dependencies` to `[507, 508]` (build order: 508 -> 509). Leave 508 `[507]` and 510 `[507]` as-is (already conform). *(completed)*
+- [x] Verify: JSON validity; three descriptions contain their texts verbatim; dependency edges for 507-510 match §4.4 exactly. *(completed)*
+- [x] Regenerate TODO.md; commit (`task 514 phase 2: amend tasks 508-510 and build-order dependencies`). *(completed)*
 
 **Timing**: 1 hour
 
