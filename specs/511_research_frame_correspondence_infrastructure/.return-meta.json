@@ -3,39 +3,25 @@
   "artifacts": [
     {
       "type": "report",
-      "path": "specs/511_research_frame_correspondence_infrastructure/reports/01_frame-correspondence-infrastructure.md",
-      "summary": "Frame-correspondence verdict for task frames: per-frame (Sahlqvist) correspondence provably unavailable; duration-type correspondence specified with a 6-phase construction plan anchored on a new transFrame necessity engine"
+      "path": "specs/511_research_frame_correspondence_infrastructure/reports/02_per-frame-correspondence-reassessment.md",
+      "summary": "Second-pass reassessment: per-frame correspondence for density is TRUE and proved (atomic fragment, arbitrary D); report 01's Tier-0 row, O1's conclusion, O2, O3's conclusion, and non-goal #1 amended; differentiation route refuted at all three readings"
+    },
+    {
+      "type": "report",
+      "path": "specs/511_research_frame_correspondence_infrastructure/reports/02_probes.lean",
+      "summary": "295-line machine-checked Lean evidence: natFrame realises every time-valuation over Z and refutes density; staticFrame validates density for all formulas; density_iff_fwdRec exact biconditional; looping-duration sufficiency; splitting condition is a frame axiom"
     }
   ],
-  "next_steps": "Run /plan 511 to create implementation plan; sequence behind review issue M1 (fc-indexed validity predicate) or absorb M1 Phase 1 as Phase 0",
+  "next_steps": "Run /plan 511 to sequence Phases A-E from report 02 section 9; Phases A-C are compiling Lean today and can land immediately",
   "metadata": {
     "session_id": "sess_1788198220_972012_511",
     "agent_type": "formal-research-agent",
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "research", "formal-research-agent"],
     "domains_researched": ["logic", "math"],
-    "findings_count": 12,
-    "context_files_loaded": [
-      "FormalSystem/Semantics/Truth.lean",
-      "FormalSystem/Semantics/TaskModel.lean",
-      "FormalSystem/Semantics/TaskFrame.lean",
-      "FormalSystem/Semantics/Validity.lean",
-      "FormalSystem/Semantics/DurationClassification.lean",
-      "FormalSystem/Semantics/IntTransfer.lean",
-      "FormalSystem/Semantics/PartialHistory.lean",
-      "FormalSystem/ProofSystem/Axioms.lean",
-      "FormalSystem/Metalogic/Independence/ClockFrame.lean",
-      "FormalSystem/Metalogic/Independence/LoopingDuration.lean",
-      "FormalSystem/Metalogic/Independence/CoNotPriorU.lean",
-      "FormalSystem/Metalogic/SoundnessLemmas/DenseValidity.lean",
-      "FormalSystem/Metalogic/SoundnessLemmas/Separability.lean",
-      "FormalSystem/Metalogic/WeakCanonical/PriorDefsDense.lean",
-      "FormalSystem/FrameConditions/Validity.lean",
-      "FormalSystem/FrameConditions/FrameClass.lean",
-      "specs/reviews/review-2026-08-31-metalogic-systematicity.md"
-    ],
-    "mathlib_lookups_performed": 0,
-    "web_searches_performed": 2,
-    "verdict": "split: Tier 0 per-frame correspondence provably false; Tier 1 duration-type correspondence available for 5-7 of 8 non-Base axioms; sep provably non-corresponding"
+    "findings_count": 7,
+    "dispatch_seq": 5,
+    "lean_probes_verified": 11,
+    "open_questions": 1
   }
 }

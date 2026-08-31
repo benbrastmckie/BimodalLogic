@@ -1,17 +1,33 @@
 {
-  "dispatch_seq": 2,
+  "dispatch_seq": 5,
   "task_number": 511,
   "phase": "research",
   "status": "researched",
   "session_id": "sess_1788198220_972012_511",
-  "agent_type": "formal-research-agent",
   "artifacts": [
-    "specs/511_research_frame_correspondence_infrastructure/reports/01_frame-correspondence-infrastructure.md"
+    {
+      "path": "specs/511_research_frame_correspondence_infrastructure/reports/02_per-frame-correspondence-reassessment.md",
+      "type": "report",
+      "summary": "Second-pass report: verdict on the variation claim (TRUE, Lean-verified), corrected frame-valued Tier 0 with an exact proved biconditional for density, negative verdict on the differentiation route with the exact collapse reason, amendment list for report 01 including a rewritten non-goal #1, and a 5-phase construction spec"
+    },
+    {
+      "path": "specs/511_research_frame_correspondence_infrastructure/reports/02_probes.lean",
+      "type": "report",
+      "summary": "Machine-checked Lean evidence file backing every verified claim in report 02; compiles under lake env lean with no sorry"
+    }
   ],
-  "verdict": "affirmative-with-qualification",
-  "blockers": [],
-  "dependencies": [
-    "Review issue M1 (fc-indexed validity predicate) must land first or be absorbed as Phase 0"
+  "verdict": "affirmative",
+  "key_findings": [
+    "Validity varies across frames at fixed D: staticFrame validates density for all formulas over Z, natFrame refutes it (both Lean-verified)",
+    "natFrame over Z already realises every time-valuation, so transFrame is not needed for the discrete necessity engine",
+    "Exact per-frame biconditional proved over arbitrary D: F validates atomic density iff F is forward-recurrent at covering pairs",
+    "Densely-ordered D makes the condition vacuous, recovering soundness and making the correspondent uniform",
+    "Differentiation route fails at all three readings; per-history atom differentiation is exactly equal to full realisability because the admissible atom algebra is always P(D/ker sigma), complete and atomic",
+    "The splitting condition is TaskFrame.Interpolates, a frame axiom true of every task frame",
+    "Report 01 sections 2, 5.2, 6, 7 stand; section 3 O1's conclusion, O2, O3's conclusion, section 5.3's Tier-0 row, and non-goal #1 require amendment"
+  ],
+  "open_items": [
+    "E2 (open): does FwdRec imply every total history is periodic over non-dense D? If yes, the biconditional upgrades from the atomic fragment to the full schema. Gated; a negative is a complete outcome."
   ],
   "next_command": "/plan 511"
 }
