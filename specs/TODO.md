@@ -89,7 +89,7 @@ next_project_number: 512
   └─ 508 [NOT STARTED] — Collapse ~23 soundness theorems into ONE parameterized theorem pl
   └─ 509 [NOT STARTED] — Make the compactness / strong-completeness layer a FrameClass-ind
   └─ 510 [NOT STARTED] — Decide the fate of FormalSystem/FrameConditions/ (4 modules, 906 
-511 [RESEARCHING] — RESEARCH TASK, DELIBERATELY AGNOSTIC ABOUT FEASIBILITY. Determine
+511 [RESEARCHED] — RESEARCH TASK, DELIBERATELY AGNOSTIC ABOUT FEASIBILITY. Determine
 
 ### Publication Quality
 
@@ -104,10 +104,11 @@ next_project_number: 512
 ## Tasks
 
 ### 511. Research frame correspondence infrastructure
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: formal
 - **Topic**: metalogic
 - **Dependencies**: None
+- **Research**: [511_research_frame_correspondence_infrastructure/reports/01_frame-correspondence-infrastructure.md]
 
 **Description**: RESEARCH TASK, DELIBERATELY AGNOSTIC ABOUT FEASIBILITY. Determine what frame-correspondence infrastructure this bimodal setting can support, and specify it. THE GAP IS TOTAL, NOT PARTIAL: there is NO result anywhere in the live tree of the form 'axiom X is valid on frame class C IF AND ONLY IF C satisfies condition Y'. A search for correspond|characteriz|definabl|Sahlqvist across live code returns only chronicleMonadic_truth_correspondence (a chronicle/monadic bridge, BXCanonical/Chronicle/ChronicleMonadicBridge.lean:413), SetMaximalConsistent.ultrafilter_correspondence (algebraic, Algebraic/UltrafilterMCS.lean:782), and the *Definable* family in WeakCanonical/EFGames/ -- which concerns DEFINABLE GAPS in the Kamp/Ehrenfeucht-Fraisse machinery, not axiom-frame correspondence. WHAT EXISTS IS THE SUFFICIENCY HALF ONLY: Axiom.minFrameClass declares the intended class per axiom (a definition, not a theorem); Metalogic/SoundnessLemmas/ proves each axiom valid on its class. The NECESSITY half -- that each frame condition is required, i.e. the axiom fails on some frame violating it -- is established nowhere systematically. The closest artifacts are the three ad hoc non-derivability countermodels in Metalogic/Independence/ (ClockFrame.lean, LoopingDuration.lean, CoNotPriorU.lean), which are per-axiom and not organized as correspondence. CONSEQUENCE: Axiom.minFrameClass is currently an ASSERTION about the axiom-class relation with one direction proven, and the tree cannot state 'TM+_d is the logic of dense task frames' as a theorem. SCOPE: (a) which of the 45 axiom constructors admit a correspondence argument at all; (b) whether Sahlqvist-style machinery transfers to task frames with Until/Since and an S5 modality, or whether a bespoke argument is needed per axiom layer -- DO NOT ASSUME IT TRANSFERS; (c) what the right general statement is here given that frame classes are carrier-type constraints (DenselyOrdered, SuccOrder, LUB) rather than relational conditions on a Kripke accessibility relation, which is the setting standard correspondence theory assumes; (d) whether the Independence/ countermodels generalize into the necessity half. A NEGATIVE OR HEAVILY-QUALIFIED VERDICT IS A COMPLETE OUTCOME -- if correspondence in the textbook sense does not apply to carrier-constraint frame classes, say so with evidence and specify whatever weaker characterization IS available, so the question is not reopened. SEQUENCING: run alongside the TM-completeness-characterization research task, which asks the adjacent question for the BaseLanguage fragment. DELIVERABLE: a report with a verdict and, if affirmative, a concrete construction specification. GROUNDING: specs/reviews/review-2026-08-31-metalogic-systematicity.md issue M2.
 

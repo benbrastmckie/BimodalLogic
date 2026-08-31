@@ -1,0 +1,17 @@
+{
+  "dispatch_seq": 2,
+  "task_number": 511,
+  "phase": "research",
+  "status": "researched",
+  "session_id": "sess_1788198220_972012_511",
+  "agent_type": "formal-research-agent",
+  "artifacts": [
+    "specs/511_research_frame_correspondence_infrastructure/reports/01_frame-correspondence-infrastructure.md"
+  ],
+  "verdict": "affirmative-with-qualification",
+  "blockers": [],
+  "dependencies": [
+    "Review issue M1 (fc-indexed validity predicate) must land first or be absorbed as Phase 0"
+  ],
+  "next_command": "/plan 511"
+}
