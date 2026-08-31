@@ -113,8 +113,8 @@ This is immediate since `valid` quantifies over all D.
 theorem valid_of_forall_valid_over {φ : Formula}
     (h : ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D], ValidOver D φ) :
     valid φ := by
-  intro D _ _ _ _ F M τ hτ t
-  exact h D F M τ hτ t
+  intro F M τ hτ t
+  exact h F.Duration F.toParam M τ hτ t
 
 /--
 Universal validity implies validity over any specific type.
@@ -122,23 +122,23 @@ Universal validity implies validity over any specific type.
 theorem valid_over_of_valid {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     [Nontrivial D] {φ : Formula} (h : valid φ) : ValidOver D φ := by
   intro F M τ hτ t
-  exact h D F M τ hτ t
+  exact h F M τ hτ t
 
 /--
 Dense validity (typeclass version) implies existing `ValidDense`.
 -/
 theorem valid_dense_of_valid_dense_fc {φ : Formula} (h : ValidDenseFc φ) : ValidDense φ := by
-  intro D _ _ _ _ _ F M τ hτ t
-  -- We need DenseTemporalFrame D, but we can construct it since D has all the required instances
-  haveI : DenseTemporalFrame D := {}
-  exact h D F M τ hτ t
+  intro F _ M τ hτ t
+  -- We need DenseTemporalFrame F.Duration, but it is constructible from the frame's own instances
+  haveI : DenseTemporalFrame F.Duration := {}
+  exact h F.Duration F.toParam M τ hτ t
 
 /--
 Existing `ValidDense` implies dense validity (typeclass version).
 -/
 theorem valid_dense_fc_of_valid_dense {φ : Formula} (h : ValidDense φ) : ValidDenseFc φ := by
   intro D _ _ _ _ _ _ _ _ F M τ hτ t
-  exact h D F M τ hτ t
+  exact h F M τ hτ t
 
 /--
 Dense validity equivalence: `ValidDenseFc φ ↔ ValidDense φ`.
@@ -162,7 +162,7 @@ typeclass-constrained types is sufficient for the weaker `ValidDiscrete`.
 theorem valid_discrete_fc_of_valid_discrete {φ : Formula} (h : ValidDiscrete φ) :
     ValidDiscreteFc φ := by
   intro D _ _ _ _ _ _ _ _ _ _ F M τ hτ t
-  exact h D F M τ hτ t
+  exact h F M τ hτ t
 
 /-! ## Relationship Between Frame Classes -/
 
@@ -171,7 +171,7 @@ Universal validity implies linear validity.
 -/
 theorem valid_linear_of_valid {φ : Formula} (h : valid φ) : ValidLinear φ := by
   intro D _ _ _ _ _ F M τ hτ t
-  exact h D F M τ hτ t
+  exact h F M τ hτ t
 
 /--
 Linear validity implies dense validity (base axioms are valid on dense frames).
@@ -204,6 +204,6 @@ If a formula is discretely valid, it is valid over Int.
 theorem valid_over_Int_of_valid_discrete {φ : Formula} (h : ValidDiscrete φ) :
     ValidOverInt φ := by
   intro F M τ hτ t
-  exact h Int F M τ hτ t
+  exact h F M τ hτ t
 
 end FormalSystem.FrameConditions

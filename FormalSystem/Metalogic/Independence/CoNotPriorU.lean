@@ -329,7 +329,7 @@ theorem co_not_derives_prior_U_gap (a : Atom) (Γ : Context)
     ¬ Derivable FrameClass.Dense Γ (priorUGapFormula (Formula.atom a)) := by
   rintro ⟨d⟩
   refine priorUGapFormula_false a ?_
-  refine soundness_dense Γ _ d ℚ clockFrame clockModel clockHistory clockHistory_isTotal 0 ?_
+  refine soundness_dense Γ _ d clockFrame clockModel clockHistory clockHistory_isTotal 0 ?_
   intro ψ hψ
   obtain ⟨χ, rfl⟩ := hΓ ψ hψ
   exact clock_co_true clockModel χ clockHistory clockHistory_isTotal 0
@@ -554,7 +554,7 @@ theorem coDerivation_sound (φ : Formula) (d : CoDerivation φ) :
   induction d with
   | «axiom» ψ h h_fc =>
       intro τ hτ t
-      exact soundness_dense [] ψ (DerivationTree.axiom [] ψ h h_fc) ℚ clockFrame clockModel τ hτ t
+      exact soundness_dense [] ψ (DerivationTree.axiom [] ψ h h_fc) clockFrame clockModel τ hτ t
         (by simp)
   | co χ => intro τ hτ t; exact clock_co_true clockModel χ τ hτ t
   | modus_ponens _ _ _ _ ih₁ ih₂ => intro τ hτ t; exact (ih₁ τ hτ t) (ih₂ τ hτ t)

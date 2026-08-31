@@ -75,9 +75,8 @@ worlds tau in H_F" are the total histories that `τ.IsTotal` picks out.
 Uses `Type` (not `Type*`) to avoid universe-level issues in proofs, as `valid` does.
 -/
 def BLValid (φ : BLFormula) : Prop :=
-  ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
-    (F : ParamTaskFrame D) (M : TaskModel F)
-    (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
+  ∀ (F : TaskFrame) (M : TaskModel F)
+    (τ : WorldHistory F) (_ : τ.IsTotal) (t : F.Duration),
     BLTruthAt M τ t φ
 
 /--
@@ -87,9 +86,8 @@ at which every formula of `Γ` is true.
 Binder-for-binder mirror of `Semantics.SemanticConsequence`.
 -/
 def BLSemanticConsequence (Γ : BaseLanguage.Context) (φ : BLFormula) : Prop :=
-  ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
-    (F : ParamTaskFrame D) (M : TaskModel F)
-    (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
+  ∀ (F : TaskFrame) (M : TaskModel F)
+    (τ : WorldHistory F) (_ : τ.IsTotal) (t : F.Duration),
     (∀ ψ ∈ Γ, BLTruthAt M τ t ψ) →
     BLTruthAt M τ t φ
 
@@ -100,10 +98,8 @@ list, capturing the frame condition for BL's density axiom `dn` (`GGφ → Gφ`)
 Binder-for-binder mirror of `Semantics.ValidDense`.
 -/
 def BLValidDense (φ : BLFormula) : Prop :=
-  ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [DenselyOrdered D]
-    [Nontrivial D]
-    (F : ParamTaskFrame D) (M : TaskModel F)
-    (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
+  ∀ (F : TaskFrame) [DenselyOrdered F.Duration] (M : TaskModel F)
+    (τ : WorldHistory F) (_ : τ.IsTotal) (t : F.Duration),
     BLTruthAt M τ t φ
 
 /--
@@ -113,10 +109,9 @@ added to the binder list, capturing the frame condition for BL's discreteness ax
 Binder-for-binder mirror of `Semantics.ValidDiscrete`.
 -/
 def BLValidDiscrete (φ : BLFormula) : Prop :=
-  ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [SuccOrder D] [PredOrder D]
-    [IsSuccArchimedean D] [IsPredArchimedean D] [Nontrivial D]
-    (F : ParamTaskFrame D) (M : TaskModel F)
-    (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
+  ∀ (F : TaskFrame) [SuccOrder F.Duration] [PredOrder F.Duration]
+    [IsSuccArchimedean F.Duration] [IsPredArchimedean F.Duration] (M : TaskModel F)
+    (τ : WorldHistory F) (_ : τ.IsTotal) (t : F.Duration),
     BLTruthAt M τ t φ
 
 /--
@@ -130,11 +125,10 @@ at `FrameClass.Dedekind` and is false on `ℤ`, which satisfies every remaining 
 deliberately no `BLValidDedekind` in this file.
 -/
 def BLValidDedekindDense (φ : BLFormula) : Prop :=
-  ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [DenselyOrdered D]
-    [Nontrivial D]
-    (_ : ∀ s : Set D, s.Nonempty → BddAbove s → ∃ x, IsLUB s x)
-    (F : ParamTaskFrame D) (M : TaskModel F)
-    (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
+  ∀ (F : TaskFrame) [DenselyOrdered F.Duration]
+    (_ : ∀ s : Set F.Duration, s.Nonempty → BddAbove s → ∃ x, IsLUB s x)
+    (M : TaskModel F)
+    (τ : WorldHistory F) (_ : τ.IsTotal) (t : F.Duration),
     BLTruthAt M τ t φ
 
 namespace BLValidity
@@ -151,27 +145,27 @@ Those are `Validity.valid_implies_validDedekind` and
 
 /-- Validity implies validity over dense orders. -/
 theorem blValid_implies_blValidDense {φ : BLFormula} (h : BLValid φ) : BLValidDense φ :=
-  fun D _ _ _ _ _ F M τ hτ t => h D F M τ hτ t
+  fun F _ M τ hτ t => h F M τ hτ t
 
 /-- Validity implies validity over discrete orders. -/
 theorem blValid_implies_blValidDiscrete {φ : BLFormula} (h : BLValid φ) : BLValidDiscrete φ :=
-  fun D _ _ _ _ _ _ _ _ F M τ hτ t => h D F M τ hτ t
+  fun F _ _ _ _ M τ hτ t => h F M τ hτ t
 
 /-- Validity implies validity over dense Dedekind-complete orders. The least-upper-bound
 hypothesis is simply discarded. -/
 theorem blValid_implies_blValidDedekindDense {φ : BLFormula} (h : BLValid φ) :
     BLValidDedekindDense φ :=
-  fun D _ _ _ _ _ _ F M τ hτ t => h D F M τ hτ t
+  fun F _ _hlub M τ hτ t => h F M τ hτ t
 
 /-- Validity is consequence from the empty context. Mirrors
 `Validity.valid_iff_empty_consequence`. -/
 theorem blValid_iff_empty_consequence (φ : BLFormula) :
     BLValid φ ↔ BLSemanticConsequence [] φ := by
   constructor
-  · intro h D _ _ _ _ F M τ hτ t _
-    exact h D F M τ hτ t
-  · intro h D _ _ _ _ F M τ hτ t
-    exact h D F M τ hτ t (by intro ψ hψ; exact absurd hψ List.not_mem_nil)
+  · intro h F M τ hτ t _
+    exact h F M τ hτ t
+  · intro h F M τ hτ t
+    exact h F M τ hτ t (by intro ψ hψ; exact absurd hψ List.not_mem_nil)
 
 end BLValidity
 

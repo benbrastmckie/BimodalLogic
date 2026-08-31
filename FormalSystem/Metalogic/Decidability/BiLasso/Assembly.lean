@@ -60,7 +60,7 @@ theorem not_validDiscrete_of_satAtState
     (h : SatAtState P w φ.neg) : ¬ ValidDiscrete φ := by
   obtain ⟨τ, hτ, t, -, htr⟩ := h
   intro hv
-  exact htr (hv ℤ P.toTaskFrame P.toModel τ hτ t)
+  exact htr (hv P.toTaskFrame P.toModel τ hτ t)
 
 theorem validDiscrete_iff_check
     (canon : Formula → IntPresentation)

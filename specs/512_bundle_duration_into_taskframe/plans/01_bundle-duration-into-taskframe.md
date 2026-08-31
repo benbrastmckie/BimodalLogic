@@ -331,22 +331,34 @@ enumerate the shim sites and record the count as the starting value of the shim 
 
 ---
 
-### Phase 3: Validity and the BL layer [NOT STARTED]
+### Phase 3: Validity and the BL layer [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: The five `Valid*` predicates and `TaskFrame.ValidOn` are stated over bundled frames;
 `valid_iff_forall_validOn` still ties the two notions.
 
 **Tasks**:
-- [ ] Migrate `Semantics/Validity.lean`: `valid` (`:94`), the `Valid*` predicates
+- [x] Migrate `Semantics/Validity.lean`: `valid` (`:94`), the `Valid*` predicates
       (`:94,206,248,301,336`) become `∀ F : TaskFrame, C F -> …`; `TaskFrame.ValidOn` (`:561`)
-      loses its binder list entirely.
-- [ ] Preserve `valid_iff_forall_validOn` (`:622`) as the tie between the two notions — statement
-      shape may change, content may not.
-- [ ] Introduce frame-class side conditions as `haveI`-introduced Prop hypotheses on the frame
-      (probe R7) rather than statement-level instance binders wherever the condition will later
-      be an arm of a `FrameConditionFor` match.
-- [ ] Migrate `BLValidity.lean`, `BLTruth.lean`, `DurationClassification.lean`.
-- [ ] Do **not** rename `Dedekind`; that is 507's territory.
+      loses its binder list entirely. *(Confirmed exactly five `Valid*` predicates, as the Scope
+      Hypothesis asserted: `ValidDense`, `ValidDiscrete`, `ValidDedekind`, `ValidDedekindDense`,
+      plus `valid` itself.)*
+- [x] Preserve `valid_iff_forall_validOn` (`:622`) as the tie between the two notions — statement
+      shape may change, content may not. *(It now reads `valid φ ↔ ∀ F : TaskFrame, F.ValidOn φ`
+      and closes with the same `.val`/`.property` bridge, no new lemma.)*
+- [x] *(deviation: altered — research option (b), statement-level instance binders
+      `[DenselyOrdered F.Duration]` / `[SuccOrder F.Duration]` / …, was taken throughout instead of
+      option (a)'s `haveI`-introduced Prop hypotheses. Reason: the plan's own preference is scoped
+      to "wherever the condition will later be an arm of a `FrameConditionFor` match", and that
+      collapse is an explicit Non-Goal of this task. Instance binders keep every downstream proof
+      script byte-identical, whereas Prop hypotheses would require a `haveI` at each of the ~90
+      consuming proofs — churn with no benefit inside this task's scope. The `FrameConditionFor`
+      work can convert them when it lands, which is exactly the point at which the choice pays.
+      The one genuinely propositional side condition, the least-upper-bound hypothesis, stays an
+      explicit anonymous hypothesis as it already was.)*
+- [x] Migrate `BLValidity.lean`, `BLTruth.lean`, `DurationClassification.lean`.
+      *(`DurationClassification.lean` needed no edit: it is entirely about duration **types**, and
+      carries no frame binder at all.)*
+- [x] Do **not** rename `Dedekind`; that is 507's territory. *(No `Dedekind` identifier appears in the diff.)*
 
 **Timing**: 2 hours
 
@@ -362,9 +374,42 @@ before editing; if more than five surface, report rather than silently widening 
 - `FormalSystem/Semantics/{Validity,BLValidity,BLTruth,DurationClassification}.lean`
 
 **Verification**:
-- Standing contract (1-7).
+- Standing contract (1-7). `lake build` exits 0; `check-module-invariants.sh` ALL CHECKS PASSED.
 - `valid_iff_forall_validOn` closes with the same proof term shape (no new lemmas).
 - No `Dedekind` identifier renamed anywhere in the diff.
+
+#### The finding that resizes this phase
+
+**The `Valid*` family is the one layer the Phase-1 coercion cannot hold green.** Everywhere else
+in this migration the `D` binders are implicit (`{D}`) or instance (`[…]`), so a consumer writes
+`foo F τ` and, once `foo` is bundled, the `CoeOut` fires and the consumer needs no edit at all.
+`valid` and its four siblings are different: their `D` binders are **explicit** (`∀ (D : Type)
+[4 instances] …`) *inside the Prop*, so every consumer supplies them positionally, in an `intro`
+pattern or an application spine. Migrating the definition therefore breaks every consumer at once
+and the breakage cannot be absorbed by a coercion or by any shim.
+
+The blast radius was measured, not guessed: one build after the `Validity.lean` edit reported
+errors in exactly four files, and iterating to green touched **17 files** spanning what the plan
+had assigned to Phases 3, 8, 9, 10 and 11. Those consumer-site fixes are all mechanical
+(`intro D _ _ _ _ F M τ hτ t` -> `intro F M τ hτ t`; `h D F M τ hτ t` -> `h F M τ hτ t`), and one
+non-mechanical bridge recurs: where a migrated theorem must feed a still-parameterized lemma, the
+frame crosses back over `F.toParam` (`ofParam ∘ toParam = id` by `rfl`, so `M : TaskModel F` is
+accepted unchanged). Where a still-parameterized lemma's frame is *implicit*, unification cannot
+invert `ofParam`, so the frame is supplied by name — `(F := F.toParam)`.
+
+**Consequence for the remaining plan.** Phase 8 is now substantially complete as a side effect
+(`Soundness.lean`, `BaseLanguageSoundness.lean`, `SetConsequence.lean`'s consumers,
+`StrongCompleteness.lean`, `DiscreteNonCompactness.lean`, `SoundnessLemmas/CoValidity.lean`), and
+parts of 9, 10 and 11 with it. A future re-plan should merge Phase 3 and Phase 8 rather than
+treat them as separable — they are one dependency component, not two.
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| `Semantics/Validity.lean`'s `satisfiable` / `SatisfiableAbs` | Both are *relative to a fixed duration type* (`satisfiable D Γ`), which is the one thing the bundled form cannot state without either a new abstraction or a semantic change. They are also self-contained: `grep` shows no application outside `Validity.lean` itself. Left parameterized; they are green as-is because `TaskModel F` / `WorldHistory F` coerce. | `grep -rn "satisfiable [A-Zℤℚℝ]"` returns only `Validity.lean` lines. |
+| `SoundnessLemmas/{Core,DenseValidity,FrameClassVariants}.lean`'s `IsValid D` | `IsValid D φ` under an ambient `[DenselyOrdered D]` is precisely "valid on the frames over a *fixed* `D`". Collapsing it onto the bundled form is the H1 `Valid*` collapse, an explicit Non-Goal of this task. Left parameterized; `Soundness.lean` reaches them across `F.toParam`. | `Soundness.lean` calls now read `SoundnessLemmas.prior_UZ_is_valid φ F.toParam M τ h_mem t`. |
+| `FrameConditions/Validity.lean`'s `ValidOver` | Same fixed-carrier shape; the plan schedules its **deletion** for Phase 11 rather than its migration, so migrating it here would be wasted work. Its two bridges to `valid` were repaired in place. | `valid_of_forall_valid_over` now crosses back over `F.Duration` / `F.toParam`. |
 
 ---
 

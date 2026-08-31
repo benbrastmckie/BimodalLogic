@@ -65,7 +65,7 @@ theorem soundness_over (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAdd
       (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
       (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ :=
   fun F M τ h_mem t h_ctx =>
-    soundness Γ φ d D F M τ h_mem t h_ctx
+    soundness Γ φ d F M τ h_mem t h_ctx
 
 /-! ## Frame-Class Soundness Theorems -/
 
@@ -100,7 +100,7 @@ theorem soundness_dense {Γ : Context} {φ : Formula} (d : DerivationTree FrameC
       (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
       (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ :=
   fun F M τ h_mem t h_ctx =>
-    Metalogic.soundness_dense Γ φ d D F M τ h_mem t h_ctx
+    Metalogic.soundness_dense Γ φ d F M τ h_mem t h_ctx
 
 /--
 Soundness for discrete temporal frames.
@@ -116,7 +116,7 @@ theorem soundness_discrete {Γ : Context} {φ : Formula} (d : DerivationTree Fra
       (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
       (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ :=
   fun F M τ h_mem t h_ctx =>
-    Metalogic.soundness_discrete Γ φ d D F M τ h_mem t h_ctx
+    Metalogic.soundness_discrete Γ φ d F M τ h_mem t h_ctx
 
 /-! ## Axiom Validity by Frame Class -/
 
@@ -133,7 +133,7 @@ theorem axiom_base_valid_linear {φ : Formula} (ax : Axiom φ)
     [Nontrivial D] [LinearTemporalFrame D] :
     ValidOver D φ := by
   intro F M τ h_mem t
-  exact axiom_valid ax h_fc D F M τ h_mem t
+  exact axiom_valid ax h_fc F M τ h_mem t
 
 /--
 Dense-compatible axioms are valid on dense temporal frames.
@@ -145,7 +145,7 @@ theorem axiom_dense_valid_fc {φ : Formula} (ax : Axiom φ)
     [DenseTemporalFrame D] :
     ValidOver D φ := by
   intro F M τ h_mem t
-  exact axiom_dense_valid ax h_fc D F M τ h_mem t
+  exact axiom_dense_valid ax h_fc F M τ h_mem t
 
 /--
 Discrete-compatible axioms are valid on discrete temporal frames.
@@ -159,7 +159,7 @@ theorem axiom_discrete_valid_fc {φ : Formula} (ax : Axiom φ)
   intro F M τ h_mem t
   -- Use axiom_discrete_valid from Soundness.lean
   have h := axiom_discrete_valid ax h_fc
-  exact h D F M τ h_mem t
+  exact h F M τ h_mem t
 
 /-! ## Soundness over Int -/
 
@@ -173,7 +173,7 @@ theorem soundness_Int {Γ : Context} {φ : Formula} (d : DerivationTree FrameCla
       (τ : WorldHistory F) (_ : τ.IsTotal) (t : Int),
       (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ :=
   fun F M τ h_mem t h_ctx =>
-    Metalogic.soundness_discrete Γ φ d Int F M τ h_mem t h_ctx
+    Metalogic.soundness_discrete Γ φ d F M τ h_mem t h_ctx
 
 /-! ## Axiom Coverage Summary
 

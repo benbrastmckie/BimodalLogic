@@ -54,7 +54,7 @@ namespace FormalSystem.Metalogic.SoundnessLemmas
 open FormalSystem.Syntax
 open FormalSystem.Semantics
 
-variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
+variable {F : TaskFrame}
 
 /-- Two-conjunct extraction through the doubly-negated encoding of `Formula.and`
 (`φ ∧ ψ = ¬(φ → ¬ψ)`). Classical; the same helper appears in `Metalogic/Soundness.lean`. -/
@@ -70,11 +70,11 @@ point.
 Stated for an arbitrary `ψ` so that the CO proof below never has to unfold the particular
 `Hφ → F(Hφ)` sitting under the triangle.
 -/
-theorem always_elim {F : ParamTaskFrame D} {M : TaskModel F}
-    {τ : WorldHistory F} {t : D} {ψ : Formula}
+theorem always_elim {M : TaskModel F}
+    {τ : WorldHistory F} {t : F.Duration} {ψ : Formula}
     (h : TruthAt M τ t (Formula.always ψ)) :
-    (∀ u : D, u < t → TruthAt M τ u ψ) ∧ TruthAt M τ t ψ ∧
-      (∀ v : D, t < v → TruthAt M τ v ψ) := by
+    (∀ u : F.Duration, u < t → TruthAt M τ u ψ) ∧ TruthAt M τ t ψ ∧
+      (∀ v : F.Duration, t < v → TruthAt M τ v ψ) := by
   simp only [Formula.always, Formula.and, Formula.neg, TruthAt, Truth.past_iff,
     Truth.future_iff] at h
   obtain ⟨h_past, h_rest⟩ := and_of_not_imp_not h
@@ -100,18 +100,18 @@ Hilbert-side companion is `FormalSystem.Theorems.DedekindDerived.co_derived`. Se
 `Formula.co` for the source citation and the operator-resolution warning.
 -/
 theorem co_valid (φ : Formula) : ValidDedekindDense (Formula.co φ) := by
-  -- `ValidDedekindDense` binds exactly twelve: the order, its five instances, the LUB
-  -- hypothesis, the frame, the model, the history, its totality, and the time.
-  intro D _ _ _ _ _ h_lub F M τ _h_sc t
+  -- `ValidDedekindDense` binds exactly seven: the frame, its density instance, the LUB
+  -- hypothesis, the model, the history, its totality, and the time.
+  intro F _ h_lub M τ _h_sc t
   simp only [Formula.co]
   intro h_tri h_H
   obtain ⟨-, h_mid, h_fut⟩ := always_elim h_tri
-  have hH : ∀ r : D, r < t → TruthAt M τ r φ := (Truth.past_iff φ).mp h_H
+  have hH : ∀ r : F.Duration, r < t → TruthAt M τ r φ := (Truth.past_iff φ).mp h_H
   rw [Truth.future_iff]
   intro v htv
   by_contra hnv
   -- `A` collects the points at or after `t` at which `Hφ` still holds.
-  set A : Set D := {u : D | t ≤ u ∧ ∀ r : D, r < u → TruthAt M τ r φ} with hA
+  set A : Set F.Duration := {u : F.Duration | t ≤ u ∧ ∀ r : F.Duration, r < u → TruthAt M τ r φ} with hA
   have htA : t ∈ A := ⟨le_refl t, hH⟩
   have hAbdd : BddAbove A := by
     refine ⟨v, ?_⟩

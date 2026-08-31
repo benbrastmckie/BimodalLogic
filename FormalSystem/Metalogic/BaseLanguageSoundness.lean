@@ -84,8 +84,7 @@ namespace FormalSystem.Semantics
 open FormalSystem.Syntax
 open FormalSystem.BaseLanguage
 
-variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
-  {F : ParamTaskFrame D}
+variable {F : TaskFrame}
 
 /--
 **The truth-transfer bridge.** A BL⁺ formula in the image of the translation is true exactly when
@@ -101,7 +100,7 @@ expression (including the domain conjunct — see `Semantics/BLTruth.lean` on De
 `box` are congruence under `tr`'s `rfl` push-through equations; `allPast` and `allFuture` are the
 only two cases with content, and `Truth.past_iff` / `Truth.future_iff` supply it.
 -/
-theorem truthAt_tr (M : TaskModel F) (φ : BLFormula) (τ : WorldHistory F) (t : D) :
+theorem truthAt_tr (M : TaskModel F) (φ : BLFormula) (τ : WorldHistory F) (t : F.Duration) :
     TruthAt M τ t (tr φ) ↔ BLTruthAt M τ t φ := by
   induction φ generalizing τ t with
   | atom p => exact Iff.rfl
@@ -122,7 +121,7 @@ The context-level form of the bridge: if every formula of a BL context is true, 
 of its translation is true. This is the side-condition discharger each of the four soundness
 compositions below calls.
 -/
-theorem truthAt_trCtx (M : TaskModel F) (τ : WorldHistory F) (t : D)
+theorem truthAt_trCtx (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     {Γ : BaseLanguage.Context} (h : ∀ ψ ∈ Γ, BLTruthAt M τ t ψ) :
     ∀ ψ ∈ trCtx Γ, TruthAt M τ t ψ := by
   intro ψ hψ
@@ -140,8 +139,8 @@ about BL.
 -/
 theorem blValid_iff_valid_tr (φ : BLFormula) : BLValid φ ↔ valid (tr φ) := by
   constructor
-  · intro h D _ _ _ _ F M τ hτ t; exact (truthAt_tr M φ τ t).mpr (h D F M τ hτ t)
-  · intro h D _ _ _ _ F M τ hτ t; exact (truthAt_tr M φ τ t).mp (h D F M τ hτ t)
+  · intro h F M τ hτ t; exact (truthAt_tr M φ τ t).mpr (h F M τ hτ t)
+  · intro h F M τ hτ t; exact (truthAt_tr M φ τ t).mp (h F M τ hτ t)
 
 end FormalSystem.Semantics
 
@@ -167,13 +166,12 @@ Composition of `Conservativity.translate` with `soundness`, across `truthAt_tr`.
 -/
 theorem bl_soundness (Γ : BaseLanguage.Context) (φ : BLFormula)
     (d : BaseLanguage.DerivationTree FrameClass.Base Γ φ)
-    (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
-    (F : ParamTaskFrame D) (M : TaskModel F)
-    (τ : WorldHistory F) (h_mem : τ.IsTotal) (t : D)
+    (F : TaskFrame) (M : TaskModel F)
+    (τ : WorldHistory F) (h_mem : τ.IsTotal) (t : F.Duration)
     (h_ctx : ∀ ψ ∈ Γ, BLTruthAt M τ t ψ) :
     BLTruthAt M τ t φ :=
   (truthAt_tr M φ τ t).mp
-    (soundness (trCtx Γ) (tr φ) (Conservativity.translate d) D F M τ h_mem t
+    (soundness (trCtx Γ) (tr φ) (Conservativity.translate d) F M τ h_mem t
       (truthAt_trCtx M τ t h_ctx))
 
 /--
@@ -182,14 +180,12 @@ theorem bl_soundness (Γ : BaseLanguage.Context) (φ : BLFormula)
 -/
 theorem bl_soundness_dense (Γ : BaseLanguage.Context) (φ : BLFormula)
     (d : BaseLanguage.DerivationTree FrameClass.Dense Γ φ)
-    (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
-    [DenselyOrdered D] [Nontrivial D]
-    (F : ParamTaskFrame D) (M : TaskModel F)
-    (τ : WorldHistory F) (h_mem : τ.IsTotal) (t : D)
+    (F : TaskFrame) [DenselyOrdered F.Duration] (M : TaskModel F)
+    (τ : WorldHistory F) (h_mem : τ.IsTotal) (t : F.Duration)
     (h_ctx : ∀ ψ ∈ Γ, BLTruthAt M τ t ψ) :
     BLTruthAt M τ t φ :=
   (truthAt_tr M φ τ t).mp
-    (soundness_dense (trCtx Γ) (tr φ) (Conservativity.translate d) D F M τ h_mem t
+    (soundness_dense (trCtx Γ) (tr φ) (Conservativity.translate d) F M τ h_mem t
       (truthAt_trCtx M τ t h_ctx))
 
 /--
@@ -198,14 +194,13 @@ theorem bl_soundness_dense (Γ : BaseLanguage.Context) (φ : BLFormula)
 -/
 theorem bl_soundness_discrete (Γ : BaseLanguage.Context) (φ : BLFormula)
     (d : BaseLanguage.DerivationTree FrameClass.Discrete Γ φ)
-    (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
-    [SuccOrder D] [PredOrder D] [IsSuccArchimedean D] [IsPredArchimedean D] [Nontrivial D]
-    (F : ParamTaskFrame D) (M : TaskModel F)
-    (τ : WorldHistory F) (h_mem : τ.IsTotal) (t : D)
+    (F : TaskFrame) [SuccOrder F.Duration] [PredOrder F.Duration]
+    [IsSuccArchimedean F.Duration] [IsPredArchimedean F.Duration] (M : TaskModel F)
+    (τ : WorldHistory F) (h_mem : τ.IsTotal) (t : F.Duration)
     (h_ctx : ∀ ψ ∈ Γ, BLTruthAt M τ t ψ) :
     BLTruthAt M τ t φ :=
   (truthAt_tr M φ τ t).mp
-    (soundness_discrete (trCtx Γ) (tr φ) (Conservativity.translate d) D F M τ h_mem t
+    (soundness_discrete (trCtx Γ) (tr φ) (Conservativity.translate d) F M τ h_mem t
       (truthAt_trCtx M τ t h_ctx))
 
 /--
@@ -219,15 +214,14 @@ The `[DenselyOrdered D]` binder is load-bearing, not decorative — see the modu
 -/
 theorem bl_soundness_dedekind (Γ : BaseLanguage.Context) (φ : BLFormula)
     (d : BaseLanguage.DerivationTree FrameClass.Dedekind Γ φ)
-    (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
-    [DenselyOrdered D] [Nontrivial D]
-    (h_lub : ∀ s : Set D, s.Nonempty → BddAbove s → ∃ x, IsLUB s x)
-    (F : ParamTaskFrame D) (M : TaskModel F)
-    (τ : WorldHistory F) (h_mem : τ.IsTotal) (t : D)
+    (F : TaskFrame) [DenselyOrdered F.Duration]
+    (h_lub : ∀ s : Set F.Duration, s.Nonempty → BddAbove s → ∃ x, IsLUB s x)
+    (M : TaskModel F)
+    (τ : WorldHistory F) (h_mem : τ.IsTotal) (t : F.Duration)
     (h_ctx : ∀ ψ ∈ Γ, BLTruthAt M τ t ψ) :
     BLTruthAt M τ t φ :=
   (truthAt_tr M φ τ t).mp
-    (soundness_dedekind (trCtx Γ) (tr φ) (Conservativity.translate d) D h_lub F M τ h_mem t
+    (soundness_dedekind (trCtx Γ) (tr φ) (Conservativity.translate d) F h_lub M τ h_mem t
       (truthAt_trCtx M τ t h_ctx))
 
 /-! ## Empty-context validity forms -/
@@ -235,24 +229,24 @@ theorem bl_soundness_dedekind (Γ : BaseLanguage.Context) (φ : BLFormula)
 /-- Empty-context form of `bl_soundness`: a BL theorem at `FrameClass.Base` is BL-valid. -/
 theorem bl_soundness_valid {φ : BLFormula}
     (d : BaseLanguage.DerivationTree FrameClass.Base [] φ) : BLValid φ :=
-  fun D _ _ _ _ F M τ h_mem t => bl_soundness [] φ d D F M τ h_mem t (by simp)
+  fun F M τ h_mem t => bl_soundness [] φ d F M τ h_mem t (by simp)
 
 /-- Empty-context form of `bl_soundness_dense`. -/
 theorem bl_soundness_dense_valid {φ : BLFormula}
     (d : BaseLanguage.DerivationTree FrameClass.Dense [] φ) : BLValidDense φ :=
-  fun D _ _ _ _ _ F M τ h_mem t => bl_soundness_dense [] φ d D F M τ h_mem t (by simp)
+  fun F _ M τ h_mem t => bl_soundness_dense [] φ d F M τ h_mem t (by simp)
 
 /-- Empty-context form of `bl_soundness_discrete`. -/
 theorem bl_soundness_discrete_valid {φ : BLFormula}
     (d : BaseLanguage.DerivationTree FrameClass.Discrete [] φ) : BLValidDiscrete φ :=
-  fun D _ _ _ _ _ _ _ _ F M τ h_mem t =>
-    bl_soundness_discrete [] φ d D F M τ h_mem t (by simp)
+  fun F _ _ _ _ M τ h_mem t =>
+    bl_soundness_discrete [] φ d F M τ h_mem t (by simp)
 
 /-- Empty-context form of `bl_soundness_dedekind`, at `BLValidDedekindDense`. -/
 theorem bl_soundness_dedekind_valid {φ : BLFormula}
     (d : BaseLanguage.DerivationTree FrameClass.Dedekind [] φ) : BLValidDedekindDense φ :=
-  fun D _ _ _ _ _ h_lub F M τ h_mem t =>
-    bl_soundness_dedekind [] φ d D h_lub F M τ h_mem t (by simp)
+  fun F _ h_lub M τ h_mem t =>
+    bl_soundness_dedekind [] φ d F h_lub M τ h_mem t (by simp)
 
 /-! ## Consistency
 
@@ -271,9 +265,10 @@ the bridge is invisible here because `tr BLFormula.bot` is `Formula.bot` definit
 theorem bl_not_derivable_nil_bot :
     ¬ BaseLanguage.Derivable FrameClass.Base ([] : BaseLanguage.Context) BLFormula.bot := by
   rintro ⟨d⟩
-  refine ParamTaskFrame.not_validOn_bot (D := Int) ParamTaskFrame.trivialFrame ?_
+  refine TaskFrame.not_validOn_bot (ParamTaskFrame.trivialFrame (D := Int)) ?_
   intro M τ x
-  exact bl_soundness [] BLFormula.bot d Int ParamTaskFrame.trivialFrame M τ.val τ.property x (by simp)
+  exact bl_soundness [] BLFormula.bot d (ParamTaskFrame.trivialFrame (D := Int)) M τ.val
+    τ.property x (by simp)
 
 /--
 **BL at `FrameClass.Discrete` is consistent**: `⊥` is not derivable from the empty context in the
@@ -285,8 +280,8 @@ The witness is again `trivialFrame` over `ℤ`, with the single total history su
 theorem bl_not_derivable_nil_bot_discrete :
     ¬ BaseLanguage.Derivable FrameClass.Discrete ([] : BaseLanguage.Context) BLFormula.bot := by
   rintro ⟨d⟩
-  obtain ⟨τ⟩ := ParamTaskFrame.hF_nonempty_of_frameAxioms (D := ℤ) ParamTaskFrame.trivialFrame
-  exact bl_soundness_discrete_valid d ℤ ParamTaskFrame.trivialFrame TaskModel.allFalse
+  obtain ⟨τ⟩ := TaskFrame.hF_nonempty_of_frameAxioms (ParamTaskFrame.trivialFrame (D := ℤ))
+  exact bl_soundness_discrete_valid d (ParamTaskFrame.trivialFrame (D := ℤ)) TaskModel.allFalse
     τ.val τ.property 0
 
 /-! ## Native spot checks
@@ -302,17 +297,17 @@ reading of `def:BL-semantics`'s box clause. -/
 
 /-- TK — the temporal distribution scheme `G(φ → ψ) → (Gφ → Gψ)`. -/
 example (φ ψ : BLFormula) : BLValid ((φ.imp ψ).allFuture.imp (φ.allFuture.imp ψ.allFuture)) := by
-  intro D _ _ _ _ F M τ _ t hk hf s hs
+  intro F M τ _ t hk hf s hs
   exact hk s hs (hf s hs)
 
 /-- T4 — temporal transitivity `Gφ → GGφ`. -/
 example (φ : BLFormula) : BLValid (φ.allFuture.imp φ.allFuture.allFuture) := by
-  intro D _ _ _ _ F M τ _ t h s hs r hr
+  intro F M τ _ t h s hs r hr
   exact h r (lt_trans hs hr)
 
 /-- MT — the modal T scheme `□φ → φ`. -/
 example (φ : BLFormula) : BLValid (φ.box.imp φ) := by
-  intro D _ _ _ _ F M τ hτ t h
+  intro F M τ hτ t h
   exact h τ hτ
 
 end FormalSystem.Metalogic

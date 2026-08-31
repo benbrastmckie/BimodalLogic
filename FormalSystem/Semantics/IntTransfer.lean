@@ -356,11 +356,12 @@ successor half.
 theorem validDiscrete_iff_validInt (φ : Formula) : ValidDiscrete φ ↔ ValidInt φ := by
   constructor
   · intro h F M τ hτ t
-    exact h ℤ F M τ hτ t
-  · intro h D _ _ _ _ _ _ _ _ F M τ hτ t
-    let e : D ≃+o ℤ := intIso
-    refine (truthAt_map e M φ τ (WorldHistory.map τ e) (aligned_map e τ) t).mpr ?_
-    exact h (ParamTaskFrame.map F e) (TaskModel.map M e) (WorldHistory.map τ e)
-      (isTotal_map e (aligned_map e τ) hτ) (e t)
+    exact h F M τ hτ t
+  · intro h F _ _ _ _ M τ hτ t
+    let e : F.Duration ≃+o ℤ := intIso
+    refine (truthAt_map (F := F.toParam) e M φ τ (WorldHistory.map τ e)
+      (aligned_map (F := F.toParam) e τ) t).mpr ?_
+    exact h (ParamTaskFrame.map F.toParam e) (TaskModel.map (F := F.toParam) M e)
+      (WorldHistory.map τ e) (isTotal_map e (aligned_map (F := F.toParam) e τ) hτ) (e t)
 
 end FormalSystem.Semantics

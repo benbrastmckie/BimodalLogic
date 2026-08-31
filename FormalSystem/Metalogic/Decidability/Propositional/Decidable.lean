@@ -199,7 +199,7 @@ theorem derivable_tautology (p : Formula) (hp : isPropositional p = true)
     rw [htruth_iff]
     simp [hv]
   obtain ⟨d⟩ := h
-  have htruth := FormalSystem.Metalogic.soundness [] p d Int
+  have htruth := FormalSystem.Metalogic.soundness [] p d
     (ParamTaskFrame.trivialFrame (D := Int)) (trivialModel v (formulaAtomsList p))
     (WorldHistory.trivial (D := Int))
     (fun _ => True.intro) (0 : Int) (fun ψ hψ => absurd hψ List.not_mem_nil)

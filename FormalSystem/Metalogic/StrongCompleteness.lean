@@ -169,11 +169,10 @@ here would make the matching soundness direction refutable. See the `ValidDedeki
 docstring for the primary-source placement of `Dedekind` above `Dense`.
 -/
 def SemanticConsequenceDedekindDense (Γ : Context) (φ : Formula) : Prop :=
-  ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [DenselyOrdered D]
-    [Nontrivial D]
-    (_ : ∀ s : Set D, s.Nonempty → BddAbove s → ∃ x, IsLUB s x)
-    (F : ParamTaskFrame D) (M : TaskModel F)
-    (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
+  ∀ (F : TaskFrame) [DenselyOrdered F.Duration]
+    (_ : ∀ s : Set F.Duration, s.Nonempty → BddAbove s → ∃ x, IsLUB s x)
+    (M : TaskModel F)
+    (τ : WorldHistory F) (_ : τ.IsTotal) (t : F.Duration),
     (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ
 
 /-! ## The semantic deduction theorem -/
@@ -186,9 +185,8 @@ This is pure list induction against the `Formula.imp` clause of `TruthAt`
 enters, which is why the lemma is stated at the bare `TaskModel` binder set and is reusable by
 the Base, Dense and Discrete instances below.
 -/
-theorem truthAt_foldr_imp {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
-    {F : ParamTaskFrame D} (M : TaskModel F)
-    (τ : WorldHistory F) (t : D) (Γ : Context) (φ : Formula) :
+theorem truthAt_foldr_imp {F : TaskFrame} (M : TaskModel F)
+    (τ : WorldHistory F) (t : F.Duration) (Γ : Context) (φ : Formula) :
     TruthAt M τ t (Γ.foldr Formula.imp φ) ↔
       ((∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ) := by
   induction Γ with
@@ -208,10 +206,10 @@ single-formula: it converts the arbitrary-`Γ` target into a `ValidDedekindDense
 theorem semantic_deduction_dedekind_dense (Γ : Context) (φ : Formula) :
     SemanticConsequenceDedekindDense Γ φ ↔ ValidDedekindDense (Γ.foldr Formula.imp φ) := by
   constructor
-  · intro h D _ _ _ _ _ h_lub F M τ hτ t
-    exact (truthAt_foldr_imp M τ t Γ φ).mpr (h D h_lub F M τ hτ t)
-  · intro h D _ _ _ _ _ h_lub F M τ hτ t
-    exact (truthAt_foldr_imp M τ t Γ φ).mp (h D h_lub F M τ hτ t)
+  · intro h F _ h_lub M τ hτ t
+    exact (truthAt_foldr_imp M τ t Γ φ).mpr (h F h_lub M τ hτ t)
+  · intro h F _ h_lub M τ hτ t
+    exact (truthAt_foldr_imp M τ t Γ φ).mp (h F h_lub M τ hτ t)
 
 /-! ## The proof-theoretic deduction theorem, in fold form -/
 
@@ -389,11 +387,12 @@ theorem compactBase_of_modelExistence (h : ModelExistenceBase) : CompactBase := 
     have hnv := hno _ hsub
     unfold valid at hnv
     push Not at hnv
-    obtain ⟨D, _, _, _, _, F, M, τ, hτ, t, hfalse⟩ := hnv
+    obtain ⟨F, M, τ, hτ, t, hfalse⟩ := hnv
     rw [truthAt_foldr_imp] at hfalse
     push Not at hfalse
     obtain ⟨hall, hnφ⟩ := hfalse
-    refine ⟨D, inferInstance, inferInstance, inferInstance, inferInstance, F, M, τ, hτ, t, ?_⟩
+    refine ⟨F.Duration, inferInstance, inferInstance, inferInstance, inferInstance,
+      F.toParam, M, τ, hτ, t, ?_⟩
     intro ψ hψ
     by_cases hg : ψ ∈ Γ
     · exact hall ψ (List.mem_filter.mpr ⟨hψ, decide_eq_true hg⟩)
@@ -435,12 +434,12 @@ theorem compactDense_of_modelExistenceDense (h : ModelExistenceDense) : CompactD
     have hnv := hno _ hsub
     unfold ValidDense at hnv
     push Not at hnv
-    obtain ⟨D, _, _, _, _, _, F, M, τ, hτ, t, hfalse⟩ := hnv
+    obtain ⟨F, _, M, τ, hτ, t, hfalse⟩ := hnv
     rw [truthAt_foldr_imp] at hfalse
     push Not at hfalse
     obtain ⟨hall, hnφ⟩ := hfalse
-    refine ⟨D, inferInstance, inferInstance, inferInstance, inferInstance, inferInstance,
-      F, M, τ, hτ, t, ?_⟩
+    refine ⟨F.Duration, inferInstance, inferInstance, inferInstance, inferInstance, inferInstance,
+      F.toParam, M, τ, hτ, t, ?_⟩
     intro ψ hψ
     by_cases hg : ψ ∈ Γ
     · exact hall ψ (List.mem_filter.mpr ⟨hψ, decide_eq_true hg⟩)
@@ -523,8 +522,8 @@ vacuous: its hypothesis is inhabited for every derivable pair `(Γ, φ)`.
 -/
 theorem soundness_dedekind_consequence (Γ : Context) (φ : Formula)
     (h : Derivable FrameClass.Dedekind Γ φ) : SemanticConsequenceDedekindDense Γ φ := by
-  intro D _ _ _ _ _ h_lub F M τ hτ t h_ctx
-  exact h.elim fun d => soundness_dedekind Γ φ d D h_lub F M τ hτ t h_ctx
+  intro F _ h_lub M τ hτ t h_ctx
+  exact h.elim fun d => soundness_dedekind Γ φ d F h_lub M τ hτ t h_ctx
 
 /--
 **Weak completeness — the headline result for the Dedekind class — as the `Γ = []` instance
@@ -630,10 +629,10 @@ lets `BXCanonical.completeness` be consumed as a single-formula engine.
 theorem semantic_deduction_base (Γ : Context) (φ : Formula) :
     SemanticConsequence Γ φ ↔ valid (Γ.foldr Formula.imp φ) := by
   constructor
-  · intro h D _ _ _ _ F M τ hτ t
-    exact (truthAt_foldr_imp M τ t Γ φ).mpr (h D F M τ hτ t)
-  · intro h D _ _ _ _ F M τ hτ t
-    exact (truthAt_foldr_imp M τ t Γ φ).mp (h D F M τ hτ t)
+  · intro h F M τ hτ t
+    exact (truthAt_foldr_imp M τ t Γ φ).mpr (h F M τ hτ t)
+  · intro h F M τ hτ t
+    exact (truthAt_foldr_imp M τ t Γ φ).mp (h F M τ hτ t)
 
 /--
 **Finite-context consequence completeness for `FrameClass.Base`, unconditional.**
@@ -666,8 +665,8 @@ pair `(Γ, φ)`.
 -/
 theorem soundness_base_consequence (Γ : Context) (φ : Formula)
     (h : Derivable FrameClass.Base Γ φ) : SemanticConsequence Γ φ := by
-  intro D _ _ _ _ F M τ hτ t h_ctx
-  exact h.elim fun d => soundness Γ φ d D F M τ hτ t h_ctx
+  intro F M τ hτ t h_ctx
+  exact h.elim fun d => soundness Γ φ d F M τ hτ t h_ctx
 
 /--
 **Weak completeness for `FrameClass.Base`, as the `Γ = []` instance of the consequence form.**
@@ -717,10 +716,8 @@ the general relation *is* the right one, because there "all carriers" is the cla
 Base section above.)
 -/
 def SemanticConsequenceDense (Γ : Context) (φ : Formula) : Prop :=
-  ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [DenselyOrdered D]
-    [Nontrivial D]
-    (F : ParamTaskFrame D) (M : TaskModel F)
-    (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
+  ∀ (F : TaskFrame) [DenselyOrdered F.Duration] (M : TaskModel F)
+    (τ : WorldHistory F) (_ : τ.IsTotal) (t : F.Duration),
     (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ
 
 /--
@@ -734,10 +731,10 @@ binder set, so the extra `[DenselyOrdered D]` binder simply rides along.
 theorem semantic_deduction_dense (Γ : Context) (φ : Formula) :
     SemanticConsequenceDense Γ φ ↔ ValidDense (Γ.foldr Formula.imp φ) := by
   constructor
-  · intro h D _ _ _ _ _ F M τ hτ t
-    exact (truthAt_foldr_imp M τ t Γ φ).mpr (h D F M τ hτ t)
-  · intro h D _ _ _ _ _ F M τ hτ t
-    exact (truthAt_foldr_imp M τ t Γ φ).mp (h D F M τ hτ t)
+  · intro h F _ M τ hτ t
+    exact (truthAt_foldr_imp M τ t Γ φ).mpr (h F M τ hτ t)
+  · intro h F _ M τ hτ t
+    exact (truthAt_foldr_imp M τ t Γ φ).mp (h F M τ hτ t)
 
 /--
 **Finite-context consequence completeness for `FrameClass.Dense`, unconditional.**
@@ -770,8 +767,8 @@ its hypothesis is inhabited for every derivable pair `(Γ, φ)`.
 -/
 theorem soundness_dense_consequence (Γ : Context) (φ : Formula)
     (h : Derivable FrameClass.Dense Γ φ) : SemanticConsequenceDense Γ φ := by
-  intro D _ _ _ _ _ F M τ hτ t h_ctx
-  exact h.elim fun d => soundness_dense Γ φ d D F M τ hτ t h_ctx
+  intro F _ M τ hτ t h_ctx
+  exact h.elim fun d => soundness_dense Γ φ d F M τ hτ t h_ctx
 
 /--
 **Weak completeness for `FrameClass.Dense`, as the `Γ = []` instance of the consequence form.**
@@ -826,10 +823,9 @@ perfectly available even though the infinite one is false — that is precisely 
 non-compactness means.
 -/
 def SemanticConsequenceDiscrete (Γ : Context) (φ : Formula) : Prop :=
-  ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [SuccOrder D] [PredOrder D]
-    [IsSuccArchimedean D] [IsPredArchimedean D] [Nontrivial D]
-    (F : ParamTaskFrame D) (M : TaskModel F)
-    (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
+  ∀ (F : TaskFrame) [SuccOrder F.Duration] [PredOrder F.Duration]
+    [IsSuccArchimedean F.Duration] [IsPredArchimedean F.Duration] (M : TaskModel F)
+    (τ : WorldHistory F) (_ : τ.IsTotal) (t : F.Duration),
     (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ
 
 /--
@@ -843,10 +839,10 @@ the deduction theorem it embodies is exactly what fails to extend to infinite pr
 theorem semantic_deduction_discrete (Γ : Context) (φ : Formula) :
     SemanticConsequenceDiscrete Γ φ ↔ ValidDiscrete (Γ.foldr Formula.imp φ) := by
   constructor
-  · intro h D _ _ _ _ _ _ _ _ F M τ hτ t
-    exact (truthAt_foldr_imp M τ t Γ φ).mpr (h D F M τ hτ t)
-  · intro h D _ _ _ _ _ _ _ _ F M τ hτ t
-    exact (truthAt_foldr_imp M τ t Γ φ).mp (h D F M τ hτ t)
+  · intro h F _ _ _ _ M τ hτ t
+    exact (truthAt_foldr_imp M τ t Γ φ).mpr (h F M τ hτ t)
+  · intro h F _ _ _ _ M τ hτ t
+    exact (truthAt_foldr_imp M τ t Γ φ).mp (h F M τ hτ t)
 
 /--
 **Finite-context consequence completeness for `FrameClass.Discrete`, unconditional.**
@@ -878,8 +874,8 @@ for every derivable pair `(Γ, φ)`.
 -/
 theorem soundness_discrete_consequence (Γ : Context) (φ : Formula)
     (h : Derivable FrameClass.Discrete Γ φ) : SemanticConsequenceDiscrete Γ φ := by
-  intro D _ _ _ _ _ _ _ _ F M τ hτ t h_ctx
-  exact h.elim fun d => soundness_discrete Γ φ d D F M τ hτ t h_ctx
+  intro F _ _ _ _ M τ hτ t h_ctx
+  exact h.elim fun d => soundness_discrete Γ φ d F M τ hτ t h_ctx
 
 /--
 **Weak completeness for `FrameClass.Discrete`, as the `Γ = []` instance of the consequence

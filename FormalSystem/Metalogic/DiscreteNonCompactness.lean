@@ -260,7 +260,7 @@ theorem discrete_consequence_not_compact : ¬ CompactDiscrete := by
   obtain ⟨L, hL, hvalid⟩ := hc _ _ hcons
   obtain ⟨D, _, _, _, _, _, _, _, _, F, M, τ, hτ, t, hsat⟩ :=
     archWitness_finitely_satisfiable p L hL
-  have hv := hvalid D F M τ hτ t
+  have hv := hvalid F M τ hτ t
   exact (truthAt_foldr_imp M τ t L Formula.bot).mp hv (fun ψ hψ => hsat ψ hψ)
 
 /-! ## Strong completeness for `FrameClass.Discrete` is refuted -/
@@ -290,7 +290,7 @@ theorem strongCompletenessDiscrete_refuted : ¬ StrongCompletenessDiscrete := by
   obtain ⟨L, hL, ⟨d⟩⟩ := hsc _ _ hcons
   obtain ⟨D, _, _, _, _, _, _, _, _, F, M, τ, hτ, t, hsat⟩ :=
     archWitness_finitely_satisfiable p L hL
-  exact soundness_discrete L Formula.bot d D F M τ hτ t (fun ψ hψ => hsat ψ hψ)
+  exact soundness_discrete L Formula.bot d F M τ hτ t (fun ψ hψ => hsat ψ hψ)
 
 #print axioms truthAt_next_iff
 #print axioms truthAt_next_iterate

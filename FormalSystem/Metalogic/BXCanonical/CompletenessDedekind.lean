@@ -592,7 +592,7 @@ theorem completeness_dedekind_engine (ψ : Formula) :
   have h_box_dense : Formula.box Chronicle.nextTop.neg ∈ M := dedekind_box_dense_mem hM_mcs
   obtain ⟨F, TM, τ, h_tot, t, h_not_true⟩ :=
     countermodel_dedekind_dense (by decide) M hM_mcs ψ h_neg_in h_box_dense
-  exact h_not_true (h_valid ℝ real_lub_of_bddAbove F TM τ h_tot t)
+  exact h_not_true (h_valid F real_lub_of_bddAbove TM τ h_tot t)
 
 /-! ## Axiom Audit
 

@@ -81,8 +81,7 @@ namespace FormalSystem.Semantics
 
 open FormalSystem.BaseLanguage
 
-variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
-  {F : ParamTaskFrame D}
+variable {F : TaskFrame}
 
 /--
 Truth of a base-language formula at a model-history-time triple.
@@ -96,17 +95,17 @@ The `box` clause recurses at a different history and the temporal clauses at a d
 the equation compiler handles both exactly as it already does for `TruthAt`, so no termination
 annotation is required.
 -/
-def BLTruthAt (M : TaskModel F) (τ : WorldHistory F) (t : D) : BLFormula → Prop
+def BLTruthAt (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration) : BLFormula → Prop
   | .atom p => ∃ (ht : τ.domain t), M.valuation (τ.states t ht) p
   | .bot => False
   | .imp φ ψ => BLTruthAt M τ t φ → BLTruthAt M τ t ψ
   | .box φ => ∀ (σ : WorldHistory F), σ.IsTotal → BLTruthAt M σ t φ
-  | .allPast φ => ∀ s : D, s < t → BLTruthAt M τ s φ
-  | .allFuture φ => ∀ s : D, t < s → BLTruthAt M τ s φ
+  | .allPast φ => ∀ s : F.Duration, s < t → BLTruthAt M τ s φ
+  | .allFuture φ => ∀ s : F.Duration, t < s → BLTruthAt M τ s φ
 
 namespace BLTruth
 
-variable {M : TaskModel F} {τ : WorldHistory F} {t : D}
+variable {M : TaskModel F} {τ : WorldHistory F} {t : F.Duration}
 
 /-! ### The primitive clauses -/
 
@@ -126,11 +125,11 @@ theorem box_iff (φ : BLFormula) :
 
 /-- Truth of `Hφ` (universal past): `φ` holds at every **strictly** past time. -/
 theorem past_iff (φ : BLFormula) :
-    BLTruthAt M τ t φ.allPast ↔ ∀ s : D, s < t → BLTruthAt M τ s φ := Iff.rfl
+    BLTruthAt M τ t φ.allPast ↔ ∀ s : F.Duration, s < t → BLTruthAt M τ s φ := Iff.rfl
 
 /-- Truth of `Gφ` (universal future): `φ` holds at every **strictly** future time. -/
 theorem future_iff (φ : BLFormula) :
-    BLTruthAt M τ t φ.allFuture ↔ ∀ s : D, t < s → BLTruthAt M τ s φ := Iff.rfl
+    BLTruthAt M τ t φ.allFuture ↔ ∀ s : F.Duration, t < s → BLTruthAt M τ s φ := Iff.rfl
 
 /-! ### The derived Boolean operators -/
 
@@ -170,7 +169,7 @@ re-deriving the classical step at every evaluation site. -/
 
 /-- Truth of `Pφ` (`¬H¬φ`): `φ` held at *some* strictly past time. -/
 @[simp] theorem somePast_iff (φ : BLFormula) :
-    BLTruthAt M τ t φ.somePast ↔ ∃ s : D, s < t ∧ BLTruthAt M τ s φ := by
+    BLTruthAt M τ t φ.somePast ↔ ∃ s : F.Duration, s < t ∧ BLTruthAt M τ s φ := by
   simp only [BLFormula.somePast, BLFormula.neg, BLTruthAt]
   constructor
   · intro h; by_contra hc; push Not at hc; exact h (fun s hs hφ => hc s hs hφ)
@@ -178,7 +177,7 @@ re-deriving the classical step at every evaluation site. -/
 
 /-- Truth of `Fφ` (`¬G¬φ`): `φ` holds at *some* strictly future time. -/
 @[simp] theorem someFuture_iff (φ : BLFormula) :
-    BLTruthAt M τ t φ.someFuture ↔ ∃ s : D, t < s ∧ BLTruthAt M τ s φ := by
+    BLTruthAt M τ t φ.someFuture ↔ ∃ s : F.Duration, t < s ∧ BLTruthAt M τ s φ := by
   simp only [BLFormula.someFuture, BLFormula.neg, BLTruthAt]
   constructor
   · intro h; by_contra hc; push Not at hc; exact h (fun s hs hφ => hc s hs hφ)
@@ -191,8 +190,8 @@ re-deriving the classical step at every evaluation site. -/
 The association mirrors `BLFormula.always`, hence `Formula.always`. -/
 @[simp] theorem always_iff (φ : BLFormula) :
     BLTruthAt M τ t φ.always ↔
-      (∀ s : D, s < t → BLTruthAt M τ s φ) ∧ BLTruthAt M τ t φ ∧
-        (∀ s : D, t < s → BLTruthAt M τ s φ) := by
+      (∀ s : F.Duration, s < t → BLTruthAt M τ s φ) ∧ BLTruthAt M τ t φ ∧
+        (∀ s : F.Duration, t < s → BLTruthAt M τ s φ) := by
   simp only [BLFormula.always, and_iff, past_iff, future_iff]
 
 end BLTruth
