@@ -11,10 +11,10 @@ next_project_number: 512
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,193,257,298,433,461,476,481,492,495,504,506,507,511 | -- | automation, dataset-enhancement, decidability, ... |
-| 2 | 178,231,282,296,463,493,502,508,509,510 | 193,298,433,461,492,507 | algebraic-representation, dataset-enhancement, decidability, ... |
-| 3 | 219,464,494,497 | 231,463,502,509 | algebraic-representation, dataset-enhancement, decidability, ... |
-| 4 | 465,498,499,500 | 464,492,497 | algebraic-representation, decidability |
+| 1 | 127,128,193,257,298,433,461,476,481,492,495,504,506,512,513 | -- | automation, dataset-enhancement, decidability, ... |
+| 2 | 178,231,282,296,463,493,502,507,511 | 193,298,433,461,492,512,513 | algebraic-representation, dataset-enhancement, decidability, ... |
+| 3 | 219,464,497,508,509,510 | 231,463,502,507 | algebraic-representation, dataset-enhancement, decidability, ... |
+| 4 | 465,494,498,499,500 | 464,492,497,509 | algebraic-representation, decidability, strong_completeness |
 | 5 | 125,428 | 465,498,499 | algebraic-representation, decidability |
 | 6 | 429,501 | 125,428 | algebraic-representation, decidability |
 | 7 | 410 | 429 | decidability |
@@ -85,7 +85,7 @@ next_project_number: 512
 ### Metalogic
 
 495 [NOT STARTED] — RESEARCH TASK, DELIBERATELY AGNOSTIC ABOUT THE VERDICT. Determine
-507 [PLANNED] — ROOT FIX for the metalogic systematicity front. Give the proof-si
+507 [RESEARCHED] — ROOT FIX for the metalogic systematicity front. Give the proof-si
   └─ 508 [NOT STARTED] — Collapse ~23 soundness theorems into ONE parameterized theorem pl
   └─ 509 [NOT STARTED] — Make the compactness / strong-completeness layer a FrameClass-ind
   └─ 510 [NOT STARTED] — Decide the fate of FormalSystem/FrameConditions/ (4 modules, 906 
@@ -101,16 +101,111 @@ next_project_number: 512
   └─ 493 [NOT STARTED] — Assemble the compactness result and collect strong completeness f
 494 [NOT STARTED] — NOW SEQUENCED BEHIND THE COMPACTNESS PARAMETERIZATION (see the RE
 
+### Semantics Foundations
+
+512 [NOT STARTED] — FOUNDATIONAL REFACTOR, prerequisite for the whole metalogic syste
+
+### Correspondence Theory
+
+513 [NOT STARTED] — RESEARCH TASK, gating the design of per-frame correspondence. Det
+
 ## Tasks
+
+### 513. Uniform frame faithfulness predicate
+- **Status**: [NOT STARTED]
+- **Task Type**: formal
+- **Topic**: correspondence theory
+- **Dependencies**: None
+
+**Description**: RESEARCH TASK, gating the design of per-frame correspondence. Determine whether a SINGLE, uniformly-defined non-degeneracy predicate on frames makes `minFrameClass` exact per-frame across all 8 non-Base axioms -- or whether no such uniform predicate exists.
+
+THE PROBLEM: bundling the duration into the frame (see the TaskFrame bundling task) makes `F |= ax <-> Sat (minFrameClass ax) F` WELL-FORMED, but it does not make it TRUE. `staticFrame` over Z validates the density axiom while its duration is not densely ordered -- machine-verified in specs/511_research_frame_correspondence_infrastructure/reports/02_probes.lean and 03_probes.lean. So degenerate frames sit strictly inside every frame class, and the exact correspondent for density is `FwdRec F`, not `Sat .Dense F`.
+
+TWO CANDIDATE DESIGNS, and this task must choose between them with evidence:
+(A) The correspondent stays a bare frame condition (`FwdRec F` for density). Exact and already proved, but `minFrameClass` is NOT exact -- there is a permanent gap populated by degenerate frames, and each axiom gets its own bespoke correspondent with no shared shape.
+(B) A non-degeneracy predicate `Faithful F` is attached to the frame notion so that, for faithful frames, `F |= ax <-> Sat (minFrameClass ax) F` holds uniformly. This is textbook per-frame correspondence AND minFrameClass exactness, and it is the design that makes results stack.
+
+CANDIDATE PREDICATE TO TEST FIRST: `Faithful F := F admits an aperiodic total history`. At D = Z this is equivalent to `not (FwdRec F)` by the determinism/periodicity theorem in report 03 (`Bridge.hist_periodic`, `Walk.periodic`). Density checks out at both ends: at Z, faithful implies not-FwdRec implies refutes density, and DenselyOrdered Z is false; at dense D, FwdRec is vacuous so density holds and DenselyOrdered D is true.
+
+THE TRAP, STATE IT PLAINLY: at D = Z this candidate is near-circular -- `Faithful` is defined as the negation of the very condition that is the density correspondent, so the biconditional is close to definitional for that one axiom. A predicate that only works for density is NOT a result. The actual deliverable is whether ONE definition of `Faithful`, fixed independently of any particular axiom, delivers the biconditional for all 8 non-Base axioms (density, dense_indicator, prior_UZ, prior_SZ, z1, prior_U_gap, prior_S_gap, sep). Note `sep` is already known to have no correspondent at all (Reynolds' long-line result, report 01 section 6.5), so it is the natural stress case -- determine what a uniform framework does with an axiom that cannot correspond.
+
+DO NOT RE-DERIVE: the admissible-set differentiation route is already refuted, exactly and not merely heuristically -- the admissible atom algebra along a history is P(D / ker sigma), complete and atomic, and for such algebras "separates points" is identical to "every subset admissible" (report 02 section 5). Do not propose it again. Report 03's `density_of_hist_periodic` (arbitrary D, every formula) is the reusable degenerate-frame lemma and should be the shared spine of whatever design wins.
+
+A NEGATIVE VERDICT IS A COMPLETE OUTCOME: if no uniform `Faithful` exists, say so with evidence and specify design (A) properly -- per-axiom correspondents with an explicit account of the degenerate-frame gap -- so the question is not reopened.
+
+INDEPENDENT OF THE REFACTOR: this question is mathematical, not encoding-dependent, so it can and should run in parallel with the TaskFrame bundling work rather than behind it.
+
+GROUNDING: specs/511_research_frame_correspondence_infrastructure/reports/02 and 03.
+
+---
+
+### 512. Bundle duration into taskframe
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: semantics foundations
+- **Dependencies**: None
+
+**Description**: FOUNDATIONAL REFACTOR, prerequisite for the whole metalogic systematicity front. Make the duration type a FIELD of TaskFrame rather than a PARAMETER, so that a frame carries its own temporal structure and every frame-class notion becomes a genuine property of a frame.
+
+ROOT CAUSE THIS FIXES: `TaskFrame D` takes `D` as a parameter, so no property of a single frame can mention its own duration structure. That single encoding choice forces the whole cascade: "dense" can only be predicated of `D`, so validity must quantify over `D`, so correspondence gets pushed up to the carrier level and cannot be stated in its textbook per-frame shape. The prior research reported this as a discovery about the semantics ("frame classes are carrier-type constraints") when it is an artifact of the encoding.
+
+TARGET SHAPE:
+  structure TaskFrame where
+    Duration : Type
+    [addCommGroup : AddCommGroup Duration]
+    [linearOrder : LinearOrder Duration]
+    [orderedAddMonoid : IsOrderedAddMonoid Duration]
+    [nontrivial : Nontrivial Duration]
+    WorldState : Type
+    TaskRel : WorldState -> Duration -> WorldState -> Prop
+    (existing frame axioms: comp, converse, serial, limit, spherical, nullity_identity)
+with instance projections so `F.Duration` carries its algebraic structure at use sites.
+
+WHY THE BUNDLED FORM AND NOT THE PARAMETERIZED ALTERNATIVE: a third option exists -- keep `TaskFrame D` and define `Sat : FrameClass -> TaskFrame D -> Prop` plus `ValidIn fc phi := forall {D} [insts] (F : TaskFrame D), Sat fc F -> F |= phi`. That is mathematically adequate for per-frame correspondence and far cheaper. It is deliberately REJECTED here in favour of bundling, for two reasons: (1) bundling makes Frame a first-class object, so frames with different durations can be quantified over in a single statement, enabling frame morphisms, bisimulation, disjoint unions, and a category of frames -- none of which the parameterized form can state; (2) bundling is the STRUCTURAL cure for the same disease the FrameClass-indexed-validity task treats symptomatically -- inlined typeclass binder lists that proliferate and silently diverge. The parameterized form leaves `{D} [AddCommGroup D] [LinearOrder D] ...` binder noise on every theorem, which is exactly the duplication that produced 15 hand-copied validity predicates.
+
+SCOPE: this is a whole-tree refactor. Every `TaskFrame D` use site, every `WorldHistory`/`TaskModel`/`TruthAt` signature, every soundness and canonical-model construction. Expect universe-polymorphism decisions and instance-resolution work. Existing named frames (staticFrame, trivialFrame, natFrame, clockFrame, transFrame if built) become bundled constructors.
+
+ACCEPTANCE: sorry-free, lake build green, check-module-invariants.sh passes, axiom profiles unchanged on the flagship theorems. No change to any theorem's mathematical content -- this is a restatement refactor, and any semantic drift is a defect.
+
+GROUNDING: specs/reviews/review-2026-08-31-metalogic-systematicity.md issues H1/M2; specs/511_research_frame_correspondence_infrastructure/reports/01,02,03 (S3 in report 01 section 2 is the artifact this task removes).
+
+---
 
 ### 511. Research frame correspondence infrastructure
 - **Status**: [RESEARCHED]
 - **Task Type**: formal
 - **Topic**: metalogic
-- **Dependencies**: None
+- **Dependencies**: Task 512, Task 513
 - **Research**: [511_research_frame_correspondence_infrastructure/reports/03_e2-periodicity.md]
 
-**Description**: RESEARCH TASK, DELIBERATELY AGNOSTIC ABOUT FEASIBILITY. Determine what frame-correspondence infrastructure this bimodal setting can support, and specify it. THE GAP IS TOTAL, NOT PARTIAL: there is NO result anywhere in the live tree of the form 'axiom X is valid on frame class C IF AND ONLY IF C satisfies condition Y'. A search for correspond|characteriz|definabl|Sahlqvist across live code returns only chronicleMonadic_truth_correspondence (a chronicle/monadic bridge, BXCanonical/Chronicle/ChronicleMonadicBridge.lean:413), SetMaximalConsistent.ultrafilter_correspondence (algebraic, Algebraic/UltrafilterMCS.lean:782), and the *Definable* family in WeakCanonical/EFGames/ -- which concerns DEFINABLE GAPS in the Kamp/Ehrenfeucht-Fraisse machinery, not axiom-frame correspondence. WHAT EXISTS IS THE SUFFICIENCY HALF ONLY: Axiom.minFrameClass declares the intended class per axiom (a definition, not a theorem); Metalogic/SoundnessLemmas/ proves each axiom valid on its class. The NECESSITY half -- that each frame condition is required, i.e. the axiom fails on some frame violating it -- is established nowhere systematically. The closest artifacts are the three ad hoc non-derivability countermodels in Metalogic/Independence/ (ClockFrame.lean, LoopingDuration.lean, CoNotPriorU.lean), which are per-axiom and not organized as correspondence. CONSEQUENCE: Axiom.minFrameClass is currently an ASSERTION about the axiom-class relation with one direction proven, and the tree cannot state 'TM+_d is the logic of dense task frames' as a theorem. SCOPE: (a) which of the 45 axiom constructors admit a correspondence argument at all; (b) whether Sahlqvist-style machinery transfers to task frames with Until/Since and an S5 modality, or whether a bespoke argument is needed per axiom layer -- DO NOT ASSUME IT TRANSFERS; (c) what the right general statement is here given that frame classes are carrier-type constraints (DenselyOrdered, SuccOrder, LUB) rather than relational conditions on a Kripke accessibility relation, which is the setting standard correspondence theory assumes; (d) whether the Independence/ countermodels generalize into the necessity half. A NEGATIVE OR HEAVILY-QUALIFIED VERDICT IS A COMPLETE OUTCOME -- if correspondence in the textbook sense does not apply to carrier-constraint frame classes, say so with evidence and specify whatever weaker characterization IS available, so the question is not reopened. SEQUENCING: run alongside the TM-completeness-characterization research task, which asks the adjacent question for the BaseLanguage fragment. DELIVERABLE: a report with a verdict and, if affirmative, a concrete construction specification. GROUNDING: specs/reviews/review-2026-08-31-metalogic-systematicity.md issue M2.
+**Description**: RESEARCH TASK, DELIBERATELY AGNOSTIC ABOUT FEASIBILITY. Determine what frame-correspondence infrastructure this bimodal setting can support, and specify it. THE GAP IS TOTAL, NOT PARTIAL: there is NO result anywhere in the live tree of the form 'axiom X is valid on frame class C IF AND ONLY IF C satisfies condition Y'. A search for correspond|characteriz|definabl|Sahlqvist across live code returns only chronicleMonadic_truth_correspondence (a chronicle/monadic bridge, BXCanonical/Chronicle/ChronicleMonadicBridge.lean:413), SetMaximalConsistent.ultrafilter_correspondence (algebraic, Algebraic/UltrafilterMCS.lean:782), and the *Definable* family in WeakCanonical/EFGames/ -- which concerns DEFINABLE GAPS in the Kamp/Ehrenfeucht-Fraisse machinery, not axiom-frame correspondence. WHAT EXISTS IS THE SUFFICIENCY HALF ONLY: Axiom.minFrameClass declares the intended class per axiom (a definition, not a theorem); Metalogic/SoundnessLemmas/ proves each axiom valid on its class. The NECESSITY half -- that each frame condition is required, i.e. the axiom fails on some frame violating it -- is established nowhere systematically. The closest artifacts are the three ad hoc non-derivability countermodels in Metalogic/Independence/ (ClockFrame.lean, LoopingDuration.lean, CoNotPriorU.lean), which are per-axiom and not organized as correspondence. CONSEQUENCE: Axiom.minFrameClass is currently an ASSERTION about the axiom-class relation with one direction proven, and the tree cannot state 'TM+_d is the logic of dense task frames' as a theorem. SCOPE: (a) which of the 45 axiom constructors admit a correspondence argument at all; (b) whether Sahlqvist-style machinery transfers to task frames with Until/Since and an S5 modality, or whether a bespoke argument is needed per axiom layer -- DO NOT ASSUME IT TRANSFERS; (c) what the right general statement is here given that frame classes are carrier-type constraints (DenselyOrdered, SuccOrder, LUB) rather than relational conditions on a Kripke accessibility relation, which is the setting standard correspondence theory assumes; (d) whether the Independence/ countermodels generalize into the necessity half. A NEGATIVE OR HEAVILY-QUALIFIED VERDICT IS A COMPLETE OUTCOME -- if correspondence in the textbook sense does not apply to carrier-constraint frame classes, say so with evidence and specify whatever weaker characterization IS available, so the question is not reopened. SEQUENCING: run alongside the TM-completeness-characterization research task, which asks the adjacent question for the BaseLanguage fragment. DELIVERABLE: a report with a verdict and, if affirmative, a concrete construction specification. GROUNDING: specs/reviews/review-2026-08-31-metalogic-systematicity.md issue M2.=== DIRECTION AMENDED (three research reports complete; construction spec partially retired) ===
+VERDICT REACHED AND MACHINE-VERIFIED across reports 01/02/03 (evidence: 02_probes.lean,
+03_probes.lean, both sorry-free):
+  - Carrier-only correspondence (`forall D F, F |= ax <-> Cond(D)`) is FALSE and mis-shaped -- it
+    quantifies over frames on the left and only over the carrier on the right.
+  - Per-frame correspondence in its textbook shape `F |= ax <-> C(F)` EXISTS and is proved for
+    density: `Corr.density_iff_fwdRec` (atomic, arbitrary D) and
+    `Bridge.density_schema_iff_fwdRec` (every formula, at D = Z).
+  - `FwdRec F` implies every total history is periodic (at D = Z), via determinism.
+  - The differentiation/refined-frame side-condition route is exactly trivial, not merely
+    near-trivial, and is refuted for good.
+
+RETIRED FROM THE CONSTRUCTION SPEC (report 02 section 9): Phase D (`transFrame` + Tier 1
+`ValidOn D density <-> DenselyOrdered D`) is CUT. It is duration validity -- the notion this
+project is rejecting -- and it was the only genuinely new proof work in the spec. Phase E1 was
+already deleted by report 03. What remains (Phases A, B', C, E2) is transcription of proofs that
+compile today, restated at frame level.
+
+DEPENDS ON: the TaskFrame duration-bundling refactor (correspondence must be stated per-frame on
+bundled frames, not per-carrier), and on the uniform frame-faithfulness research task, which
+decides whether the correspondent is a bare frame condition (`FwdRec`) or `Sat (minFrameClass ax)`
+under a uniform non-degeneracy hypothesis. Do not implement before that design question is settled
+-- the choice determines the shape of every per-axiom correspondence theorem that follows.
+
+STILL OPEN: E2' -- over a general non-dense D, does FwdRec still give full-schema density, with
+"periodic" weakened to shift-recurrence under a history-preserving order automorphism? Currently
+[paper], unverified; the counterexample is the sum of Z/nZ over Z x_lex Z. All exactness claims are
+scoped to D = Z and nowhere wider.
 
 ---
 
@@ -120,7 +215,13 @@ next_project_number: 512
 - **Topic**: metalogic
 - **Dependencies**: Task 507
 
-**Description**: Decide the fate of FormalSystem/FrameConditions/ (4 modules, 906 lines) -- currently orphaned code that also contains a half-built version of the validity parameterization. MEASURED STATE: consumers outside the directory itself number exactly ONE, the library aggregator FormalSystem/FormalSystem.lean:13. Nothing in Metalogic/, Semantics/, Theorems/, or Tests/ references any definition it exports. SILENT REGRESSION TO RECORD: archived task 58 logged 'Wire completeness to FrameConditions -- wiring is DONE: completeness_over_Int, discrete_completeness_fc, dovetailed_bundle'. All three identifiers are ABSENT from the entire live tree today; the wiring was removed and the claim never retracted. Its README separately states the live-importer count as 1 without drawing the conclusion. THREE THINGS IT CONTAINS: (a) FrameClass.lean marker typeclasses LinearTemporalFrame(:88), SerialFrame(:103), DenseTemporalFrame(:124), DiscreteTemporalFrame(:148), DedekindTemporalFrame(:182) -- the binder-list-as-predicate-on-D that the prerequisite parameterization needs, and which it should consume rather than re-invent; (b) Validity.lean's ValidOver/ValidLinear/ValidDenseFc/ValidDiscreteFc/ValidOverInt (:59,:79,:89,:100,:199), a FOURTH parallel validity vocabulary plus the bridge lemmas that exist only to translate to and from Semantics/Validity.lean; (c) Compatibility.lean's AxiomLinearCompatible/AxiomDenseCompatible/AxiomDiscreteCompatible (:85,:93,:102) with roughly 40 hand-written per-axiom instances that duplicate Axiom.minFrameClass -- whose own docstring calls itself 'the single source of truth for axiom-frame-class compatibility' and says it 'replaces the ad-hoc predicates isBase, isDenseCompatible, isDiscreteCompatible'. Both encodings are live. DELIVERABLE: an explicit verdict, executed. PROMOTE (marker typeclasses become the FrameClass interpretation, tree consumes them) or DELETE. Its README argues for staying separate on layering grounds, but that argument addresses placement, not zero consumers, and under the promote path the layering inverts anyway since the interpretation belongs beside Semantics/Validity.lean, below Metalogic/. THE AxiomCompatible INSTANCES SHOULD GO IN EITHER CASE -- minFrameClass supersedes them. A DELETE VERDICT IS A COMPLETE OUTCOME if the prerequisite task chose a different interpretation. ACCEPTANCE: no orphaned validity vocabulary remains; lake build green; check-module-invariants.sh C6 unreachable-module count updated and manifested. GROUNDING: specs/reviews/review-2026-08-31-metalogic-systematicity.md issue M1.
+**Description**: Decide the fate of FormalSystem/FrameConditions/ (4 modules, 906 lines) -- currently orphaned code that also contains a half-built version of the validity parameterization. MEASURED STATE: consumers outside the directory itself number exactly ONE, the library aggregator FormalSystem/FormalSystem.lean:13. Nothing in Metalogic/, Semantics/, Theorems/, or Tests/ references any definition it exports. SILENT REGRESSION TO RECORD: archived task 58 logged 'Wire completeness to FrameConditions -- wiring is DONE: completeness_over_Int, discrete_completeness_fc, dovetailed_bundle'. All three identifiers are ABSENT from the entire live tree today; the wiring was removed and the claim never retracted. Its README separately states the live-importer count as 1 without drawing the conclusion. THREE THINGS IT CONTAINS: (a) FrameClass.lean marker typeclasses LinearTemporalFrame(:88), SerialFrame(:103), DenseTemporalFrame(:124), DiscreteTemporalFrame(:148), DedekindTemporalFrame(:182) -- the binder-list-as-predicate-on-D that the prerequisite parameterization needs, and which it should consume rather than re-invent; (b) Validity.lean's ValidOver/ValidLinear/ValidDenseFc/ValidDiscreteFc/ValidOverInt (:59,:79,:89,:100,:199), a FOURTH parallel validity vocabulary plus the bridge lemmas that exist only to translate to and from Semantics/Validity.lean; (c) Compatibility.lean's AxiomLinearCompatible/AxiomDenseCompatible/AxiomDiscreteCompatible (:85,:93,:102) with roughly 40 hand-written per-axiom instances that duplicate Axiom.minFrameClass -- whose own docstring calls itself 'the single source of truth for axiom-frame-class compatibility' and says it 'replaces the ad-hoc predicates isBase, isDenseCompatible, isDiscreteCompatible'. Both encodings are live. DELIVERABLE: an explicit verdict, executed. PROMOTE (marker typeclasses become the FrameClass interpretation, tree consumes them) or DELETE. Its README argues for staying separate on layering grounds, but that argument addresses placement, not zero consumers, and under the promote path the layering inverts anyway since the interpretation belongs beside Semantics/Validity.lean, below Metalogic/. THE AxiomCompatible INSTANCES SHOULD GO IN EITHER CASE -- minFrameClass supersedes them. A DELETE VERDICT IS A COMPLETE OUTCOME if the prerequisite task chose a different interpretation. ACCEPTANCE: no orphaned validity vocabulary remains; lake build green; check-module-invariants.sh C6 unreachable-module count updated and manifested. GROUNDING: specs/reviews/review-2026-08-31-metalogic-systematicity.md issue M1.=== DIRECTION NOTE ===
+The FrameClass-indexed validity this task builds on is being defined at FRAME level, not carrier
+level: `FrameClass.Sat : FrameClass -> TaskFrame -> Prop` and
+`ValidIn fc phi := forall F : TaskFrame, fc.Sat F -> F |= phi`, on frames that carry their own
+duration type. Do not plan against the earlier carrier-quantified shape
+(`fc.Sat D -> ValidOver D phi`), which is superseded. This task sequences transitively behind the
+TaskFrame duration-bundling refactor via its dependency on the indexed-validity task.
 
 ---
 
@@ -130,7 +231,13 @@ next_project_number: 512
 - **Topic**: metalogic
 - **Dependencies**: Task 507
 
-**Description**: Make the compactness / strong-completeness layer a FrameClass-indexed family instead of three hand-copied rows with a missing fourth. THE ARCHITECTURE IS ALREADY RIGHT AND IS THE PLAN OF RECORD -- strong completeness derived from compactness plus weak completeness. Present and sorry-free: strongCompletenessBase_of_compact (StrongCompleteness.lean:314), strongCompletenessDense_of_compact (:340), compactBase_of_modelExistence (:378), compactDense_of_modelExistenceDense (:424), and the negative results discrete_consequence_not_compact (DiscreteNonCompactness.lean:250) and strongCompletenessDiscrete_refuted (:280). WHAT IS WRONG IS THE SHAPE, NOT THE MATHEMATICS. SetConsequence.lean defines the family once per class by hand: Base at :214,:222,:230,:245; Dense at :262,:269,:277,:291; Discrete at :315,:329,:342 (ModelExistenceDiscrete correctly absent, it is refuted); Dedekind ENTIRELY ABSENT. And the two strongCompleteness*_of_compact reductions are the same argument written twice. DELIVERABLE: (1) StrongCompleteness (fc), Compact (fc), SatisfiableSet (fc), ModelExistence (fc) as one indexed family over the interpretation landed by the prerequisite; (2) ONE strongCompleteness_of_compact (fc) replacing the two reductions; (3) ONE modelExistence_implies_compact (fc) replacing the two bridges; (4) the existing Base/Dense/Discrete results recovered as instantiations with identical statements and axiom profiles. WHY THIS SEQUENCES BEFORE THE DEDEKIND REFUTATION TASK: that task's Part 1 is specified as defining the missing vocabulary 'mirroring the Base/Dense/Discrete groups' -- a fourth hand copy of exactly what this task collapses. After this lands, its Part 1 becomes a single instantiation and only its genuinely hard Part 2 (a new non-compactness witness that cannot reuse archWitness, since the Dedekind binder list has no successor structure) remains. DOES NOT DISCHARGE ANYTHING: ModelExistenceBase/Dense stay unproven here; the ultraproduct chain owns that. This is a restructuring task, and the conditional results must stay exactly as strong as they are today. ACCEPTANCE: sorry-free, lake build green, every currently-provable result still provable with an unchanged axiom profile. GROUNDING: specs/reviews/review-2026-08-31-metalogic-systematicity.md issue H3.
+**Description**: Make the compactness / strong-completeness layer a FrameClass-indexed family instead of three hand-copied rows with a missing fourth. THE ARCHITECTURE IS ALREADY RIGHT AND IS THE PLAN OF RECORD -- strong completeness derived from compactness plus weak completeness. Present and sorry-free: strongCompletenessBase_of_compact (StrongCompleteness.lean:314), strongCompletenessDense_of_compact (:340), compactBase_of_modelExistence (:378), compactDense_of_modelExistenceDense (:424), and the negative results discrete_consequence_not_compact (DiscreteNonCompactness.lean:250) and strongCompletenessDiscrete_refuted (:280). WHAT IS WRONG IS THE SHAPE, NOT THE MATHEMATICS. SetConsequence.lean defines the family once per class by hand: Base at :214,:222,:230,:245; Dense at :262,:269,:277,:291; Discrete at :315,:329,:342 (ModelExistenceDiscrete correctly absent, it is refuted); Dedekind ENTIRELY ABSENT. And the two strongCompleteness*_of_compact reductions are the same argument written twice. DELIVERABLE: (1) StrongCompleteness (fc), Compact (fc), SatisfiableSet (fc), ModelExistence (fc) as one indexed family over the interpretation landed by the prerequisite; (2) ONE strongCompleteness_of_compact (fc) replacing the two reductions; (3) ONE modelExistence_implies_compact (fc) replacing the two bridges; (4) the existing Base/Dense/Discrete results recovered as instantiations with identical statements and axiom profiles. WHY THIS SEQUENCES BEFORE THE DEDEKIND REFUTATION TASK: that task's Part 1 is specified as defining the missing vocabulary 'mirroring the Base/Dense/Discrete groups' -- a fourth hand copy of exactly what this task collapses. After this lands, its Part 1 becomes a single instantiation and only its genuinely hard Part 2 (a new non-compactness witness that cannot reuse archWitness, since the Dedekind binder list has no successor structure) remains. DOES NOT DISCHARGE ANYTHING: ModelExistenceBase/Dense stay unproven here; the ultraproduct chain owns that. This is a restructuring task, and the conditional results must stay exactly as strong as they are today. ACCEPTANCE: sorry-free, lake build green, every currently-provable result still provable with an unchanged axiom profile. GROUNDING: specs/reviews/review-2026-08-31-metalogic-systematicity.md issue H3.=== DIRECTION NOTE ===
+The FrameClass-indexed validity this task builds on is being defined at FRAME level, not carrier
+level: `FrameClass.Sat : FrameClass -> TaskFrame -> Prop` and
+`ValidIn fc phi := forall F : TaskFrame, fc.Sat F -> F |= phi`, on frames that carry their own
+duration type. Do not plan against the earlier carrier-quantified shape
+(`fc.Sat D -> ValidOver D phi`), which is superseded. This task sequences transitively behind the
+TaskFrame duration-bundling refactor via its dependency on the indexed-validity task.
 
 ---
 
@@ -140,19 +247,53 @@ next_project_number: 512
 - **Topic**: metalogic
 - **Dependencies**: Task 507
 
-**Description**: Collapse ~23 soundness theorems into ONE parameterized theorem plus corollaries. CURRENT DUPLICATION, all instances of a single schema: Metalogic/Soundness.lean has soundness(:1100), soundness_dense(:1274), soundness_discrete(:1420), soundness_dedekind(:1947) plus three *_valid variants(:1205,:1368,:1928); Metalogic/StrongCompleteness.lean has soundness_{base,dense,discrete,dedekind}_consequence(:667,:771,:879,:524); FrameConditions/Soundness.lean has soundness_over, soundness_linear, soundness_dense, soundness_discrete, soundness_Int; Metalogic/BaseLanguageSoundness.lean has bl_soundness{,_dense,_discrete,_dedekind} plus four *_valid variants(:168-252). Metalogic/SoundnessLemmas/FrameClassVariants.lean (1041 lines) exists solely to carry per-frame-class variants of the axiom-validity lemmas. TARGET: one theorem, Derivable fc Gamma phi -> SetSemanticConsequence fc Gamma phi, by induction on the derivation, with the axiom case discharged from the Axiom.minFrameClass <= fc side condition already carried by DerivationTree's axiom constructor plus a per-axiom validity lemma. The existing theorems become one-line corollaries. BL SIDE COLLAPSES FOR FREE: blValid_iff_valid_tr (BaseLanguageSoundness.lean:141) already reduces BL validity to Formula validity through the translation tr, so BLValidOn fc phi := ValidOn fc (tr phi) subsumes all four BLValid* definitions (BLValidity.lean:77,102,115,132), the three blValid_implies_* bridges (:153,:157,:162), and all eight bl_soundness* theorems -- do NOT scope that as separate work. CONSTRAINT: preserve the soundness_dedekind target discipline -- it targets ValidDedekindDense, not ValidDedekind, and the docstring at Validity.lean:301 explains why retargeting is refutable. ACCEPTANCE: sorry-free, lake build green, axiom profiles preserved on all flagship soundness results, no theorem weakened. GROUNDING: specs/reviews/review-2026-08-31-metalogic-systematicity.md issue H2 and M3.
+**Description**: Collapse ~23 soundness theorems into ONE parameterized theorem plus corollaries. CURRENT DUPLICATION, all instances of a single schema: Metalogic/Soundness.lean has soundness(:1100), soundness_dense(:1274), soundness_discrete(:1420), soundness_dedekind(:1947) plus three *_valid variants(:1205,:1368,:1928); Metalogic/StrongCompleteness.lean has soundness_{base,dense,discrete,dedekind}_consequence(:667,:771,:879,:524); FrameConditions/Soundness.lean has soundness_over, soundness_linear, soundness_dense, soundness_discrete, soundness_Int; Metalogic/BaseLanguageSoundness.lean has bl_soundness{,_dense,_discrete,_dedekind} plus four *_valid variants(:168-252). Metalogic/SoundnessLemmas/FrameClassVariants.lean (1041 lines) exists solely to carry per-frame-class variants of the axiom-validity lemmas. TARGET: one theorem, Derivable fc Gamma phi -> SetSemanticConsequence fc Gamma phi, by induction on the derivation, with the axiom case discharged from the Axiom.minFrameClass <= fc side condition already carried by DerivationTree's axiom constructor plus a per-axiom validity lemma. The existing theorems become one-line corollaries. BL SIDE COLLAPSES FOR FREE: blValid_iff_valid_tr (BaseLanguageSoundness.lean:141) already reduces BL validity to Formula validity through the translation tr, so BLValidOn fc phi := ValidOn fc (tr phi) subsumes all four BLValid* definitions (BLValidity.lean:77,102,115,132), the three blValid_implies_* bridges (:153,:157,:162), and all eight bl_soundness* theorems -- do NOT scope that as separate work. CONSTRAINT: preserve the soundness_dedekind target discipline -- it targets ValidDedekindDense, not ValidDedekind, and the docstring at Validity.lean:301 explains why retargeting is refutable. ACCEPTANCE: sorry-free, lake build green, axiom profiles preserved on all flagship soundness results, no theorem weakened. GROUNDING: specs/reviews/review-2026-08-31-metalogic-systematicity.md issue H2 and M3.=== DIRECTION NOTE ===
+The FrameClass-indexed validity this task builds on is being defined at FRAME level, not carrier
+level: `FrameClass.Sat : FrameClass -> TaskFrame -> Prop` and
+`ValidIn fc phi := forall F : TaskFrame, fc.Sat F -> F |= phi`, on frames that carry their own
+duration type. Do not plan against the earlier carrier-quantified shape
+(`fc.Sat D -> ValidOver D phi`), which is superseded. This task sequences transitively behind the
+TaskFrame duration-bundling refactor via its dependency on the indexed-validity task.
 
 ---
 
 ### 507. Parameterize validity by frameclass
-- **Status**: [PLANNED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: metalogic
-- **Dependencies**: None
+- **Dependencies**: Task 512
 - **Research**: [507_parameterize_validity_by_frameclass/reports/01_frameclass-indexed-validity.md]
 - **Plan**: [507_parameterize_validity_by_frameclass/plans/01_frameclass-indexed-validity.md]
 
-**Description**: ROOT FIX for the metalogic systematicity front. Give the proof-side FrameClass tag a SEMANTIC interpretation, then define validity ONCE, indexed by it. THE ASYMMETRY: the proof side is already fully parameterized -- Derivable (fc : FrameClass) (ProofSystem/Derivable.lean:69), DerivationTree (fc : FrameClass) (ProofSystem/Derivation.lean:91), DerivationTree.lift along fc1 <= fc2 (Derivation.lean:184), PartialOrder FrameClass (ProofSystem/Axioms.lean:551), Axiom.minFrameClass as declared single source of truth (Axioms.lean:531ff). The semantic side has NONE of this: 15 hand-copied validity predicates with no fc index (5 in Semantics/Validity.lean:94,206,248,301,336; 4 in Semantics/BLValidity.lean:77,102,115,132; ValidInt in Semantics/IntTransfer.lean; 5 in FrameConditions/Validity.lean), plus 8 semantic-consequence variants. SMOKING GUN IN ONE FILE: Metalogic/SetConsequence.lean carries SetDerivable (fc : FrameClass) at :72 with ONE monotonicity lemma at :118, and directly beneath it SetSemanticConsequence{Base,Dense,Discrete,DedekindDense} at :79,:87,:97,:106 with FOUR copied monotonicity lemmas at :124,:130,:136,:144. Those four definitions are BYTE-IDENTICAL except for the typeclass binder line; their own docstrings cross-reference the Valid* whose binder list they copy. THE MISSING INGREDIENT ALREADY EXISTS: FrameConditions/FrameClass.lean defines marker typeclasses LinearTemporalFrame(:88), SerialFrame(:103), DenseTemporalFrame(:124), DiscreteTemporalFrame(:148), DedekindTemporalFrame(:182) -- exactly the binder-list-as-predicate-on-D that a FrameClass-indexed validity needs. That layer is orphaned (see the FrameConditions resolution task) and this task should consume it rather than invent a sixth vocabulary. DELIVERABLE: (1) a FrameClass -> carrier-constraint interpretation; (2) ValidOn (fc : FrameClass) (phi) and SetSemanticConsequence (fc) defined once; (3) ONE monotonicity lemma replacing valid_implies_valid_dense/_discrete/_validDedekind/_validDedekindDense (Validity.lean:349,356,364,371), pointing the same direction as DerivationTree.lift; (4) the existing 15 predicates retained as abbreviations or retired, with every call site migrated. HAZARD THIS CLOSES: the ValidDedekind docstring (Validity.lean:301) warns that retargeting soundness_dedekind to it yields a REFUTABLE theorem -- a trap that exists only because binder lists are inlined rather than derived from the frame class. ACCEPTANCE: sorry-free, lake build green, check-module-invariants.sh passes, axiom profiles unchanged on the flagship theorems. GROUNDING: specs/reviews/review-2026-08-31-metalogic-systematicity.md issue H1.
+**Description**: ROOT FIX for the metalogic systematicity front. Give the proof-side FrameClass tag a SEMANTIC interpretation, then define validity ONCE, indexed by it. THE ASYMMETRY: the proof side is already fully parameterized -- Derivable (fc : FrameClass) (ProofSystem/Derivable.lean:69), DerivationTree (fc : FrameClass) (ProofSystem/Derivation.lean:91), DerivationTree.lift along fc1 <= fc2 (Derivation.lean:184), PartialOrder FrameClass (ProofSystem/Axioms.lean:551), Axiom.minFrameClass as declared single source of truth (Axioms.lean:531ff). The semantic side has NONE of this: 15 hand-copied validity predicates with no fc index (5 in Semantics/Validity.lean:94,206,248,301,336; 4 in Semantics/BLValidity.lean:77,102,115,132; ValidInt in Semantics/IntTransfer.lean; 5 in FrameConditions/Validity.lean), plus 8 semantic-consequence variants. SMOKING GUN IN ONE FILE: Metalogic/SetConsequence.lean carries SetDerivable (fc : FrameClass) at :72 with ONE monotonicity lemma at :118, and directly beneath it SetSemanticConsequence{Base,Dense,Discrete,DedekindDense} at :79,:87,:97,:106 with FOUR copied monotonicity lemmas at :124,:130,:136,:144. Those four definitions are BYTE-IDENTICAL except for the typeclass binder line; their own docstrings cross-reference the Valid* whose binder list they copy. THE MISSING INGREDIENT ALREADY EXISTS: FrameConditions/FrameClass.lean defines marker typeclasses LinearTemporalFrame(:88), SerialFrame(:103), DenseTemporalFrame(:124), DiscreteTemporalFrame(:148), DedekindTemporalFrame(:182) -- exactly the binder-list-as-predicate-on-D that a FrameClass-indexed validity needs. That layer is orphaned (see the FrameConditions resolution task) and this task should consume it rather than invent a sixth vocabulary. DELIVERABLE: (1) a FrameClass -> carrier-constraint interpretation; (2) ValidOn (fc : FrameClass) (phi) and SetSemanticConsequence (fc) defined once; (3) ONE monotonicity lemma replacing valid_implies_valid_dense/_discrete/_validDedekind/_validDedekindDense (Validity.lean:349,356,364,371), pointing the same direction as DerivationTree.lift; (4) the existing 15 predicates retained as abbreviations or retired, with every call site migrated. HAZARD THIS CLOSES: the ValidDedekind docstring (Validity.lean:301) warns that retargeting soundness_dedekind to it yields a REFUTABLE theorem -- a trap that exists only because binder lists are inlined rather than derived from the frame class. ACCEPTANCE: sorry-free, lake build green, check-module-invariants.sh passes, axiom profiles unchanged on the flagship theorems. GROUNDING: specs/reviews/review-2026-08-31-metalogic-systematicity.md issue H1.=== DIRECTION AMENDED (supersedes the plan at plans/01_frameclass-indexed-validity.md) ===
+The existing plan is SUPERSEDED and must be revised before implementation. Its Phase 1 defines
+  FrameClass.Sat (fc : FrameClass) (D : Type) [insts] : Prop
+  ValidIn (fc) (phi) := forall (D : Type) [insts], fc.Sat D -> ValidOver D phi
+i.e. `Sat` is a predicate on the CARRIER TYPE and `ValidIn` is duration-quantified. That is
+duration validity, and it is explicitly NOT what this project wants. Landing it would harden the
+wrong notion into the tree's single validity definition.
+
+REQUIRED SHAPE INSTEAD -- frame validity, on bundled frames:
+  FrameClass.Sat : FrameClass -> TaskFrame -> Prop     (a predicate on FRAMES)
+  ValidIn (fc : FrameClass) (phi : Formula) : Prop := forall F : TaskFrame, fc.Sat F -> F |= phi
+This mirrors `Derivable fc` on the proof side exactly, which is the symmetry this task exists to
+restore.
+
+DEPENDS ON the TaskFrame duration-bundling refactor: `Sat` cannot be a predicate on frames until a
+frame carries its own duration. Sequence behind it.
+
+WHAT SURVIVES from the research report (reports/01_frameclass-indexed-validity.md): the verified
+correction that the FrameConditions marker typeclasses are NOT reusable (DiscreteTemporalFrame
+omits IsPredArchimedean, which would silently widen the discrete class under soundness_discrete);
+that Sat must be Prop-valued with an existential Discrete case because SuccOrder/PredOrder are
+data-carrying; the finding that FrameConditions/Validity.lean is nearly all dead code; the
+ValidInt/ValidOverInt definitional duplicate; and the recommendation to rename ValidDedekind to
+ValidComplete. All of that holds under the frame-level shape.
+
+WHAT CHANGES: the 92-site binder-list migration is substantially DISSOLVED rather than performed --
+bundling removes the inlined `[DenselyOrdered D]`-style binder lists at the root, which is the
+disease this task was treating symptomatically. Re-scope the migration against the post-refactor
+tree rather than against the counts in the current report.
 
 ---
 
