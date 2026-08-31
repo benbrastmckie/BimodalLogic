@@ -462,7 +462,57 @@ F4 idiom.
 
 ---
 
-### Phase 5: ℤ machinery — IntNormalForm and IntTransfer [NOT STARTED]
+### Phase 5: ℤ machinery — IntNormalForm and IntTransfer [BLOCKED]
+
+**BLOCKER** (Phase 5; Phases 6, 7, 10 and 12 inherit it unchanged):
+
+- **What failed**: the ℤ-specific machinery does not quantify over *a* frame — it quantifies over
+  **the frames whose duration type is `ℤ`**, written `(F : ParamTaskFrame ℤ)`, and then uses the
+  numeral `1` at that duration type (`ParamTaskFrame.step F w u := F.TaskRel w 1 u`,
+  `IntNormalForm.lean:175`). Bundling has no way to say that. `(F : TaskFrame)` says nothing about
+  the carrier, and `(F : TaskFrame) (hD : F.Duration = ℤ)` does not help: `hD` is a `Prop` and
+  `OfNat F.Duration 1` is *data*, so the equation cannot transport the instance.
+- **What was tried**:
+  1. `(F : TaskFrame) (hD : F.Duration = ℤ)`, then `F.TaskRel w 1 u` — **fails**:
+     `failed to synthesize OfNat F.Duration 1`. Reproduced in
+     `probes/06_fixed-duration-expressibility.lean`.
+  2. The F4 idiom that carried Phase 2 ("state the lemma at `Int`; discharge arithmetic outside
+     the frame application") — **does not apply**. That idiom presupposes the frame's duration is
+     *syntactically* `ℤ` at the use site, which is true of a coerced concrete frame
+     (`↑(P.toTaskFrame)`) and false of an abstract bundled frame variable. It is what made the
+     `Unfold.lean` / `TruthLemma.lean` / `PeriodicExtension.lean` fixes possible in Phase 2 and it
+     is unavailable here.
+  3. Casting per use site (`F.TaskRel w (hD ▸ (1 : ℤ)) u`) — elaborates, but it would have to be
+     applied at every numeral and every `omega` goal in ~350 occurrences, and each cast is a
+     statement change, not a restatement. That is drift, and the plan's own rule says stop.
+- **Why it's stuck**: this is not a proof-engineering obstacle, it is a **missing abstraction**.
+  Bundling makes the *general* notion of a frame expressible and, in the same move, makes the
+  *fibre* notion — "frames over a fixed duration type" — inexpressible. `ParamTaskFrame D` **is**
+  that fibre notion, which is why Phase 13's "delete `ParamTaskFrame`" cannot be executed as
+  written.
+- **What is needed** — an owner decision between (at least) these, before Phases 5-7, 10 and 12
+  can be re-planned:
+  1. **Keep `ParamTaskFrame D` permanently**, no longer as transitional scaffolding but as the
+     library's name for the fibre over `D`, with `TaskFrame.ofParam` as the canonical inclusion.
+     Cheapest by far: Phases 5-7, 10 and 12 shrink to nothing, because those files are already
+     correct as they stand and already interoperate with the bundled layer through the coercion.
+     Phase 13 loses its deletion step and gains a docstring recording the two-notion design.
+  2. **Reformulate the ℤ machinery over frame components** rather than over a frame
+     (`(W : Type) [Nonempty W] (R : W → ℤ → W → Prop) (axioms…)`), building the bundled frame at
+     the end. Faithful to "one frame type", but it is a redesign of ~350 occurrences, not a
+     restatement, and it re-derives `ParamTaskFrame ℤ` by hand at each site.
+  3. **Introduce a `FrameOver D` abstraction** carrying the carrier equation as data rather than
+     as a Prop, so instances transport. This is a new design object and belongs in its own task;
+     it is also close to what option 1 already gives for free.
+- **Prohibited workarounds**: no `sorry`, no `def X := True`, no per-site `▸` casting campaign
+  presented as a restatement.
+
+**Scale of the blocked surface**: 76 occurrences of `ParamTaskFrame {ℤ,Int,ℚ,ℝ}` /
+`ParamFiniteTaskFrame ℤ` across 20 live files, plus the four `TaskFrame Int` values in `Tests/`.
+
+**What is NOT blocked**: everything that quantifies over an abstract frame. Phases 1-4 landed on
+exactly that surface and are green, and Phase 8's consumer sites came with Phase 3.
+
 
 **Goal**: The ℤ normal-form and transfer machinery on bundled frames, using the F4 idiom from the
 first edit.
@@ -505,7 +555,12 @@ concrete frame is a scope signal, not something to absorb silently.
 
 ---
 
-### Phase 6: ℤ machinery — IntPresentation and FMP [NOT STARTED]
+### Phase 6: ℤ machinery — IntPresentation and FMP [BLOCKED]
+
+**BLOCKED by the Phase 5 blocker** (same cause, same decision needed): `IntPresentation`, the
+FMP files and `PeriodicExtension.lean` are all stated over `ParamTaskFrame ℤ` /
+`ParamFiniteTaskFrame ℤ`.
+
 
 **Goal**: `IntPresentation` and the finite-model-property machinery on bundled frames, under the
 same F4 phase contract as Phase 5.
@@ -539,7 +594,11 @@ at phase start.
 
 ---
 
-### Phase 7: ReynoldsBridge and the group-model countermodel base [NOT STARTED]
+### Phase 7: ReynoldsBridge and the group-model countermodel base [BLOCKED]
+
+**BLOCKED by the Phase 5 blocker.** `ReynoldsBridge.lean` is the largest ℤ-carried file in the
+tree (73 occurrences).
+
 
 **Goal**: The largest single ℤ-facing file migrated, plus the `ℚ ×ₗ ℤ` countermodel base.
 
@@ -573,22 +632,28 @@ rather than ending the phase red — record the split point in the commit and ma
 
 ---
 
-### Phase 8: Soundness layer [NOT STARTED]
+### Phase 8: Soundness layer [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: Soundness and its lemma files on bundled frames. Abstract frames only — F4 does not
 apply anywhere in this phase (probe R6).
 
 **Tasks**:
-- [ ] Migrate `Metalogic/Soundness.lean` (9) and `Metalogic/BaseLanguageSoundness.lean` (11).
-- [ ] Migrate `Metalogic/SoundnessLemmas/{Core,CoValidity}.lean` (3/1) and
-      `Metalogic/SetConsequence.lean` (7).
-- [ ] Migrate `Metalogic/StrongCompleteness.lean` (4) and
-      `Metalogic/DiscreteNonCompactness.lean` (7).
-- [ ] Migrate `Automation/PrefilterSoundness.lean` (4).
-- [ ] Introduce frame-class side conditions (`NoMaxOrder`, `NoMinOrder`, `DenselyOrdered`,
-      `SuccOrder`/`PredOrder`, `Archimedean`) as `haveI`-introduced Prop hypotheses on the frame
-      per research F6/(a), reserving statement-level instance binders for cases that will never
-      be a `FrameConditionFor` match arm.
+- [x] Migrate `Metalogic/Soundness.lean` (9) and `Metalogic/BaseLanguageSoundness.lean` (11).
+      *(landed with Phase 3 — see that phase's finding)*
+- [x] Migrate `Metalogic/SoundnessLemmas/CoValidity.lean` and `Metalogic/SetConsequence.lean` (7)
+      *(the four `SetSemanticConsequence*` relations and the three `Satisfiable*Set` predicates
+      all lose their carrier quantifier; their witnesses at `StrongCompleteness.lean` and
+      `DiscreteNonCompactness.lean` shrink correspondingly, which also removed the `F.toParam`
+      round-trips Phase 3 had needed there)*. `SoundnessLemmas/Core.lean`'s `IsValid D` is
+      excluded — see Reasoned Exclusions.
+- [x] Migrate `Metalogic/StrongCompleteness.lean` (4) and
+      `Metalogic/DiscreteNonCompactness.lean` (7) *(including `truthAt_foldr_imp`,
+      `truthAt_next_iff` and `truthAt_next_iterate`, which the plan did not enumerate)*.
+- [x] Migrate `Automation/PrefilterSoundness.lean` (4).
+- [x] *(deviation: altered — statement-level instance binders throughout, for the reason recorded
+      under Phase 3's identical item. `Separability.lean` needed no edit at all: its `Archimedean`
+      work is about duration **types** and carries no frame binder, so the Scope Hypothesis's
+      concern about it does not arise.)*
 
 **Timing**: 1.5 hours
 
@@ -608,8 +673,16 @@ that `Separability.lean` is in this phase's territory while `LoopingDuration.lea
 - `FormalSystem/Automation/PrefilterSoundness.lean`
 
 **Verification**:
-- Standing contract (1-7).
-- No proof body changed except for binder plumbing; report any that needed more.
+- Standing contract (1-7). `lake build` exits 0; `check-module-invariants.sh` ALL CHECKS PASSED.
+- No proof body changed except for binder plumbing. The one class of change beyond plumbing is
+  the `F.toParam` bridge into still-parameterized lemmas, which is an identity by `rfl`.
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| `SoundnessLemmas/{Core,DenseValidity,FrameClassVariants}.lean`'s `IsValid D` | `IsValid D φ` under an ambient class binder means "valid on the frames over a *fixed* `D`". Rewriting it in the bundled form is the H1 `Valid*` collapse, an explicit Non-Goal of this task; the honest alternative is the Phase 5 blocker's decision. Left parameterized and green; `Soundness.lean` reaches these lemmas across `F.toParam`. | `Soundness.lean`'s calls read `SoundnessLemmas.prior_UZ_is_valid φ F.toParam M τ h_mem t`. |
+| `SoundnessLemmas/Separability.lean` | Nothing to migrate: the file has zero `ParamTaskFrame` occurrences. Its `Archimedean`/LUB work is order theory on the duration **type**, with no frame binder anywhere. | `grep -c ParamTaskFrame` returns 0. |
 
 ---
 
@@ -652,7 +725,12 @@ or immediately above this territory; confirm each theorem's axiom profile indivi
 
 ---
 
-### Phase 10: Decidability remainder [NOT STARTED]
+### Phase 10: Decidability remainder [BLOCKED]
+
+**BLOCKED by the Phase 5 blocker** for the BiLasso half, which is uniformly over
+`ParamTaskFrame ℤ` through `IntPresentation.toTaskFrame`. The `Verified/Bridge/` half is
+abstract and is not blocked.
+
 
 **Goal**: BiLasso, the Verified bridge, and the remaining decidability files on bundled frames,
 reusing `FrameConditionFor` rather than inventing a parallel `Sat`.
@@ -738,7 +816,12 @@ completed in one run, split it at a section boundary and land the first half gre
 
 ---
 
-### Phase 12: Tests [NOT STARTED]
+### Phase 12: Tests [BLOCKED]
+
+**BLOCKED by the Phase 5 blocker**: all four test frames are `ParamTaskFrame Int`. The
+`SemanticBenchmark.lean` name defect (`TaskFrame.trivial_frame` does not exist) is independent of
+the blocker and can be fixed at any time.
+
 
 **Goal**: The test suite migrated and green; the `SemanticBenchmark.lean` name defect fixed.
 

@@ -77,38 +77,33 @@ def SetDerivable (fc : FrameClass) (Γ : Set Formula) (φ : Formula) : Prop :=
 /-- Set-based semantic consequence over `FrameClass.Base`. Binder list: `valid`
     (`Validity.lean:94`). -/
 def SetSemanticConsequenceBase (Γ : Set Formula) (φ : Formula) : Prop :=
-  ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
-    (F : ParamTaskFrame D) (M : TaskModel F)
-    (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
+  ∀ (F : TaskFrame) (M : TaskModel F)
+    (τ : WorldHistory F) (_ : τ.IsTotal) (t : F.Duration),
     (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ
 
 /-- Set-based semantic consequence over `FrameClass.Dense`. Binder list: `ValidDense`
     (`Validity.lean:206`). -/
 def SetSemanticConsequenceDense (Γ : Set Formula) (φ : Formula) : Prop :=
-  ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [DenselyOrdered D]
-    [Nontrivial D]
-    (F : ParamTaskFrame D) (M : TaskModel F)
-    (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
+  ∀ (F : TaskFrame) [DenselyOrdered F.Duration] (M : TaskModel F)
+    (τ : WorldHistory F) (_ : τ.IsTotal) (t : F.Duration),
     (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ
 
 /-- Set-based semantic consequence over `FrameClass.Discrete`. Binder list: `ValidDiscrete`
     (`Validity.lean:243`). Stated for completeness of the layer; strong completeness at this
     class is refuted by non-compactness. -/
 def SetSemanticConsequenceDiscrete (Γ : Set Formula) (φ : Formula) : Prop :=
-  ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [SuccOrder D] [PredOrder D]
-    [IsSuccArchimedean D] [IsPredArchimedean D] [Nontrivial D]
-    (F : ParamTaskFrame D) (M : TaskModel F)
-    (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
+  ∀ (F : TaskFrame) [SuccOrder F.Duration] [PredOrder F.Duration]
+    [IsSuccArchimedean F.Duration] [IsPredArchimedean F.Duration] (M : TaskModel F)
+    (τ : WorldHistory F) (_ : τ.IsTotal) (t : F.Duration),
     (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ
 
 /-- Set-based semantic consequence over dense Dedekind-complete carriers. Binder list:
     `ValidDedekindDense` (`Validity.lean:331`) — the `soundness_dedekind` target. Non-compact. -/
 def SetSemanticConsequenceDedekindDense (Γ : Set Formula) (φ : Formula) : Prop :=
-  ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [DenselyOrdered D]
-    [Nontrivial D]
-    (_ : ∀ s : Set D, s.Nonempty → BddAbove s → ∃ x, IsLUB s x)
-    (F : ParamTaskFrame D) (M : TaskModel F)
-    (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
+  ∀ (F : TaskFrame) [DenselyOrdered F.Duration]
+    (_ : ∀ s : Set F.Duration, s.Nonempty → BddAbove s → ∃ x, IsLUB s x)
+    (M : TaskModel F)
+    (τ : WorldHistory F) (_ : τ.IsTotal) (t : F.Duration),
     (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ
 
 /-! ## Monotonicity -/
@@ -123,29 +118,29 @@ theorem setDerivable_mono {fc : FrameClass} {Γ Δ : Set Formula} {φ : Formula}
 /-- Base set-consequence is monotone in the premise set. -/
 theorem setSemanticConsequenceBase_mono {Γ Δ : Set Formula} {φ : Formula}
     (h_sub : Γ ⊆ Δ) (h : SetSemanticConsequenceBase Γ φ) : SetSemanticConsequenceBase Δ φ := by
-  intro D _ _ _ _ F M τ hτ t h_all
-  exact h D F M τ hτ t (fun ψ hψ => h_all ψ (h_sub hψ))
+  intro F M τ hτ t h_all
+  exact h F M τ hτ t (fun ψ hψ => h_all ψ (h_sub hψ))
 
 /-- Dense set-consequence is monotone in the premise set. -/
 theorem setSemanticConsequenceDense_mono {Γ Δ : Set Formula} {φ : Formula}
     (h_sub : Γ ⊆ Δ) (h : SetSemanticConsequenceDense Γ φ) : SetSemanticConsequenceDense Δ φ := by
-  intro D _ _ _ _ _ F M τ hτ t h_all
-  exact h D F M τ hτ t (fun ψ hψ => h_all ψ (h_sub hψ))
+  intro F _ M τ hτ t h_all
+  exact h F M τ hτ t (fun ψ hψ => h_all ψ (h_sub hψ))
 
 /-- Discrete set-consequence is monotone in the premise set. -/
 theorem setSemanticConsequenceDiscrete_mono {Γ Δ : Set Formula} {φ : Formula}
     (h_sub : Γ ⊆ Δ) (h : SetSemanticConsequenceDiscrete Γ φ) :
     SetSemanticConsequenceDiscrete Δ φ := by
-  intro D _ _ _ _ _ _ _ _ F M τ hτ t h_all
-  exact h D F M τ hτ t (fun ψ hψ => h_all ψ (h_sub hψ))
+  intro F _ _ _ _ M τ hτ t h_all
+  exact h F M τ hτ t (fun ψ hψ => h_all ψ (h_sub hψ))
 
 /-- Dense Dedekind-complete set-consequence is monotone in the premise set. The
     least-upper-bound hypothesis is an explicit binder, so it is threaded to `h` by name. -/
 theorem setSemanticConsequenceDedekindDense_mono {Γ Δ : Set Formula} {φ : Formula}
     (h_sub : Γ ⊆ Δ) (h : SetSemanticConsequenceDedekindDense Γ φ) :
     SetSemanticConsequenceDedekindDense Δ φ := by
-  intro D _ _ _ _ _ hlub F M τ hτ t h_all
-  exact h D hlub F M τ hτ t (fun ψ hψ => h_all ψ (h_sub hψ))
+  intro F _ hlub M τ hτ t h_all
+  exact h F hlub M τ hτ t (fun ψ hψ => h_all ψ (h_sub hψ))
 
 /-! ## Finite restriction and agreement with the finite-context layer -/
 
@@ -228,10 +223,8 @@ def CompactBase : Prop :=
     generalised from a single formula to `∀ ψ ∈ Γ`; equivalently `SatisfiableDenseSet` with the
     `DenselyOrdered` binder dropped. -/
 def SatisfiableBaseSet (Γ : Set Formula) : Prop :=
-  ∃ (D : Type) (_ : AddCommGroup D) (_ : LinearOrder D) (_ : IsOrderedAddMonoid D)
-    (_ : Nontrivial D)
-    (F : ParamTaskFrame D) (M : TaskModel F)
-    (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
+  ∃ (F : TaskFrame) (M : TaskModel F)
+    (τ : WorldHistory F) (_ : τ.IsTotal) (t : F.Duration),
     ∀ ψ ∈ Γ, TruthAt M τ t ψ
 
 /-- The model-existence form, which is what an ultraproduct construction proves directly:
@@ -275,10 +268,8 @@ def CompactDense : Prop :=
     `ValidDense`'s binder position and the conclusion generalised from a single formula to
     `∀ ψ ∈ Γ`. -/
 def SatisfiableDenseSet (Γ : Set Formula) : Prop :=
-  ∃ (D : Type) (_ : AddCommGroup D) (_ : LinearOrder D) (_ : IsOrderedAddMonoid D)
-    (_ : DenselyOrdered D) (_ : Nontrivial D)
-    (F : ParamTaskFrame D) (M : TaskModel F)
-    (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
+  ∃ (F : TaskFrame) (_ : DenselyOrdered F.Duration) (M : TaskModel F)
+    (τ : WorldHistory F) (_ : τ.IsTotal) (t : F.Duration),
     ∀ ψ ∈ Γ, TruthAt M τ t ψ
 
 /-- The model-existence form, which is what an ultraproduct construction proves directly:
@@ -327,11 +318,10 @@ def StrongCompletenessDiscrete : Prop :=
     them: naming them and re-installing with `haveI` drops the value and breaks definitional
     equality with the instances baked into `F`'s and `M`'s types. -/
 def SatisfiableDiscreteSet (Γ : Set Formula) : Prop :=
-  ∃ (D : Type) (_ : AddCommGroup D) (_ : LinearOrder D) (_ : IsOrderedAddMonoid D)
-    (_ : SuccOrder D) (_ : PredOrder D) (_ : IsSuccArchimedean D) (_ : IsPredArchimedean D)
-    (_ : Nontrivial D)
-    (F : ParamTaskFrame D) (M : TaskModel F)
-    (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
+  ∃ (F : TaskFrame) (_ : SuccOrder F.Duration) (_ : PredOrder F.Duration)
+    (_ : IsSuccArchimedean F.Duration) (_ : IsPredArchimedean F.Duration)
+    (M : TaskModel F)
+    (τ : WorldHistory F) (_ : τ.IsTotal) (t : F.Duration),
     ∀ ψ ∈ Γ, TruthAt M τ t ψ
 
 /-- Semantic compactness of the Discrete consequence relation, in the same shape as

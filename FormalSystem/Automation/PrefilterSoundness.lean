@@ -79,9 +79,8 @@ Proof by structural induction on `φ`:
   `σ = τ` gives `TruthAt ... τ t a`, which contradicts the IH.
 -/
 theorem isUnsatBotTemporal_not_truth
-    {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
-    {F : ParamTaskFrame D} {M : TaskModel F}
-    {τ : WorldHistory F} (hτ : τ.IsTotal) {t : D}
+    {F : TaskFrame} {M : TaskModel F}
+    {τ : WorldHistory F} (hτ : τ.IsTotal) {t : F.Duration}
     {φ : Formula} (h : isUnsatBotTemporal φ = true) :
     ¬ TruthAt M τ t φ := by
   induction φ generalizing τ t with
@@ -116,9 +115,8 @@ If `G(¬event)` holds at time t, then `U(event, guard)` is false at time t.
 `U(event, guard)` requires `∃ s > t, event(s)`. These are contradictory.
 -/
 theorem unfulfillable_until_not_truth
-    {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
-    {F : ParamTaskFrame D} {M : TaskModel F}
-    {τ : WorldHistory F} {t : D}
+    {F : TaskFrame} {M : TaskModel F}
+    {τ : WorldHistory F} {t : F.Duration}
     {event guard : Formula}
     (h_g_neg : TruthAt M τ t (Formula.allFuture event.neg)) :
     ¬ TruthAt M τ t (Formula.untl guard event) := by
@@ -136,9 +134,8 @@ Symmetric past version of `unfulfillable_until_not_truth`.
 `S(event, guard)` requires `∃ s < t, event(s)`. These are contradictory.
 -/
 theorem unfulfillable_since_not_truth
-    {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
-    {F : ParamTaskFrame D} {M : TaskModel F}
-    {τ : WorldHistory F} {t : D}
+    {F : TaskFrame} {M : TaskModel F}
+    {τ : WorldHistory F} {t : F.Duration}
     {event guard : Formula}
     (h_h_neg : TruthAt M τ t (Formula.allPast event.neg)) :
     ¬ TruthAt M τ t (Formula.snce guard event) := by
@@ -164,9 +161,8 @@ TruthAt ... φ`, so if `antecedent` is true and `φ` is false, the implication
 is false.
 -/
 theorem false_consequent_not_truth
-    {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
-    {F : ParamTaskFrame D} {M : TaskModel F}
-    {τ : WorldHistory F} (hτ : τ.IsTotal) {t : D}
+    {F : TaskFrame} {M : TaskModel F}
+    {τ : WorldHistory F} (hτ : τ.IsTotal) {t : F.Duration}
     {antecedent consequent : Formula}
     (h_false : isUnsatBotTemporal consequent = true)
     (h_ante_true : TruthAt M τ t antecedent) :

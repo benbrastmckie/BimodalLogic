@@ -391,17 +391,16 @@ theorem compactBase_of_modelExistence (h : ModelExistenceBase) : CompactBase := 
     rw [truthAt_foldr_imp] at hfalse
     push Not at hfalse
     obtain ⟨hall, hnφ⟩ := hfalse
-    refine ⟨F.Duration, inferInstance, inferInstance, inferInstance, inferInstance,
-      F.toParam, M, τ, hτ, t, ?_⟩
+    refine ⟨F, M, τ, hτ, t, ?_⟩
     intro ψ hψ
     by_cases hg : ψ ∈ Γ
     · exact hall ψ (List.mem_filter.mpr ⟨hψ, decide_eq_true hg⟩)
     · rcases hL ψ hψ with rfl | hmem
       · exact fun hp => hnφ hp
       · exact absurd hmem hg
-  obtain ⟨D, _, _, _, _, F, M, τ, hτ, t, hsat⟩ := h _ hfin
+  obtain ⟨F, M, τ, hτ, t, hsat⟩ := h _ hfin
   exact hsat φ.neg (Set.mem_insert _ _)
-    (hcons D F M τ hτ t (fun ψ hψ => hsat ψ (Set.mem_insert_of_mem _ hψ)))
+    (hcons F M τ hτ t (fun ψ hψ => hsat ψ (Set.mem_insert_of_mem _ hψ)))
 
 /--
 **Model existence implies compactness, at the dense class.** The Dense mirror of
@@ -438,17 +437,16 @@ theorem compactDense_of_modelExistenceDense (h : ModelExistenceDense) : CompactD
     rw [truthAt_foldr_imp] at hfalse
     push Not at hfalse
     obtain ⟨hall, hnφ⟩ := hfalse
-    refine ⟨F.Duration, inferInstance, inferInstance, inferInstance, inferInstance, inferInstance,
-      F.toParam, M, τ, hτ, t, ?_⟩
+    refine ⟨F, inferInstance, M, τ, hτ, t, ?_⟩
     intro ψ hψ
     by_cases hg : ψ ∈ Γ
     · exact hall ψ (List.mem_filter.mpr ⟨hψ, decide_eq_true hg⟩)
     · rcases hL ψ hψ with rfl | hmem
       · exact fun hp => hnφ hp
       · exact absurd hmem hg
-  obtain ⟨D, _, _, _, _, _, F, M, τ, hτ, t, hsat⟩ := h _ hfin
+  obtain ⟨F, _, M, τ, hτ, t, hsat⟩ := h _ hfin
   exact hsat φ.neg (Set.mem_insert _ _)
-    (hcons D F M τ hτ t (fun ψ hψ => hsat ψ (Set.mem_insert_of_mem _ hψ)))
+    (hcons F M τ hτ t (fun ψ hψ => hsat ψ (Set.mem_insert_of_mem _ hψ)))
 
 /-! ## Consequence completeness for `FrameClass.Dedekind` -/
 

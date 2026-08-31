@@ -53,7 +53,7 @@ namespace FormalSystem.Metalogic
 
 open FormalSystem.Syntax FormalSystem.Semantics FormalSystem.ProofSystem
 
-variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
+variable {F : TaskFrame}
 
 /-! ## The next-step truth lemmas -/
 
@@ -62,8 +62,8 @@ variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Non
 
     Unfolding the `untl` clause of `TruthAt`, `TruthAt t (next φ)` reads
     `∃ s > t, φ(s) ∧ ∀ r ∈ (t, s), ⊥` — the empty-gap condition forces `s = Order.succ t`. -/
-theorem truthAt_next_iff [SuccOrder D] [NoMaxOrder D]
-    {F : ParamTaskFrame D} (M : TaskModel F) (τ : WorldHistory F) (t : D) (φ : Formula) :
+theorem truthAt_next_iff [SuccOrder F.Duration] [NoMaxOrder F.Duration]
+    (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration) (φ : Formula) :
     TruthAt M τ t (Formula.next φ) ↔ TruthAt M τ (Order.succ t) φ := by
   constructor
   · rintro ⟨s, hts, hs, hgap⟩
@@ -76,9 +76,9 @@ theorem truthAt_next_iff [SuccOrder D] [NoMaxOrder D]
       absurd hr (not_lt.mpr (Order.le_of_lt_succ hrs))⟩
 
 /-- Iterated form of `truthAt_next_iff`: `Xⁿ φ` at `t` is `φ` at the `n`-th successor of `t`. -/
-theorem truthAt_next_iterate [SuccOrder D] [NoMaxOrder D]
-    {F : ParamTaskFrame D} (M : TaskModel F) (τ : WorldHistory F) :
-    ∀ (n : ℕ) (t : D) (φ : Formula),
+theorem truthAt_next_iterate [SuccOrder F.Duration] [NoMaxOrder F.Duration]
+    (M : TaskModel F) (τ : WorldHistory F) :
+    ∀ (n : ℕ) (t : F.Duration) (φ : Formula),
       TruthAt M τ t (Formula.next^[n] φ) ↔ TruthAt M τ (Order.succ^[n] t) φ := by
   intro n
   induction n with
@@ -194,8 +194,8 @@ theorem succ_iterate_zero_int (n : ℕ) : Order.succ^[n] (0:ℤ) = (n : ℤ) := 
 theorem archWitness_finitely_satisfiable (p : Atom) (L : List Formula)
     (hL : ∀ ψ ∈ L, ψ ∈ archWitness p) : SatisfiableDiscreteSet {ψ | ψ ∈ L} := by
   classical
-  refine ⟨ℤ, inferInstance, inferInstance, inferInstance, inferInstance, inferInstance,
-    inferInstance, inferInstance, inferInstance, ParamTaskFrame.natFrame, zModel,
+  refine ⟨ParamTaskFrame.natFrame (D := ℤ), inferInstance, inferInstance, inferInstance,
+    inferInstance, zModel,
     zHistory ((L.map witIdx).sum : ℕ), zHistory_total _, 0, ?_⟩
   set N : ℕ := (L.map witIdx).sum with hNdef
   intro ψ hψ
@@ -227,8 +227,8 @@ theorem archWitness_finitely_satisfiable (p : Atom) (L : List Formula)
     the originals. Naming them and re-installing with `haveI` would drop the value and break
     definitional equality with the instances baked into `F`'s and `M`'s types. -/
 theorem archWitness_not_satisfiable (p : Atom) : ¬ SatisfiableDiscreteSet (archWitness p) := by
-  rintro ⟨D, _, _, _, _, _, _, _, _, F, M, τ, hτ, t, h⟩
-  haveI : NoMaxOrder D := inferInstance
+  rintro ⟨F, _, _, _, _, M, τ, hτ, t, h⟩
+  haveI : NoMaxOrder F.Duration := inferInstance
   have hF : TruthAt M τ t ((Formula.atom p).someFuture) := by
     apply h; simp [archWitness]
   obtain ⟨s, hts, hs, -⟩ := hF
@@ -252,13 +252,12 @@ theorem discrete_consequence_not_compact : ¬ CompactDiscrete := by
   classical
   set p : Atom := ⟨"p", none⟩ with hp
   have hcons : SetSemanticConsequenceDiscrete (archWitness p) Formula.bot := by
-    intro D _ _ _ _ _ _ _ _ F M τ hτ t hall
+    intro F _ _ _ _ M τ hτ t hall
     exact absurd
-      ⟨D, inferInstance, inferInstance, inferInstance, inferInstance, inferInstance,
-        inferInstance, inferInstance, inferInstance, F, M, τ, hτ, t, hall⟩
+      ⟨F, inferInstance, inferInstance, inferInstance, inferInstance, M, τ, hτ, t, hall⟩
       (archWitness_not_satisfiable p)
   obtain ⟨L, hL, hvalid⟩ := hc _ _ hcons
-  obtain ⟨D, _, _, _, _, _, _, _, _, F, M, τ, hτ, t, hsat⟩ :=
+  obtain ⟨F, _, _, _, _, M, τ, hτ, t, hsat⟩ :=
     archWitness_finitely_satisfiable p L hL
   have hv := hvalid F M τ hτ t
   exact (truthAt_foldr_imp M τ t L Formula.bot).mp hv (fun ψ hψ => hsat ψ hψ)
@@ -282,13 +281,12 @@ theorem strongCompletenessDiscrete_refuted : ¬ StrongCompletenessDiscrete := by
   classical
   set p : Atom := ⟨"p", none⟩ with hp
   have hcons : SetSemanticConsequenceDiscrete (archWitness p) Formula.bot := by
-    intro D _ _ _ _ _ _ _ _ F M τ hτ t hall
+    intro F _ _ _ _ M τ hτ t hall
     exact absurd
-      ⟨D, inferInstance, inferInstance, inferInstance, inferInstance, inferInstance,
-        inferInstance, inferInstance, inferInstance, F, M, τ, hτ, t, hall⟩
+      ⟨F, inferInstance, inferInstance, inferInstance, inferInstance, M, τ, hτ, t, hall⟩
       (archWitness_not_satisfiable p)
   obtain ⟨L, hL, ⟨d⟩⟩ := hsc _ _ hcons
-  obtain ⟨D, _, _, _, _, _, _, _, _, F, M, τ, hτ, t, hsat⟩ :=
+  obtain ⟨F, _, _, _, _, M, τ, hτ, t, hsat⟩ :=
     archWitness_finitely_satisfiable p L hL
   exact soundness_discrete L Formula.bot d F M τ hτ t (fun ψ hψ => hsat ψ hψ)
 
