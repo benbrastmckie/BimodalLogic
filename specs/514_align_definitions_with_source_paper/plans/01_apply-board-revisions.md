@@ -170,18 +170,18 @@ and record the delta.
 
 ---
 
-### Phase 3: Revise 513 and close 511 [NOT STARTED]
+### Phase 3: Revise 513 and close 511 [COMPLETED]
 
 **Goal**: 513 becomes the Galois-closure implementation task; 511 is closed terminal at
 researched with its absorption note on the board.
 
 **Tasks**:
-- [ ] **Replace** task 513's `description` entirely with the §4.3 "513 — replace description entirely" text (blockquote prefixes stripped, structure preserved including the DELIVERABLES (1)-(6), ACCEPTANCE, and GROUNDING paragraphs). This is a replacement, not an append.
-- [ ] Set 513's `dependencies` to `[512, 507]` (report: "Depends on 512 + 507"; parallel to 508/509).
-- [ ] Consider whether 513's `project_name`/slug should change: it must NOT — renaming the directory/slug of an existing task is out of scope and breaks artifact paths; the revised description itself states the new scope.
-- [ ] Append the §4.3 "511 — postflight note" text to 511's `description`, clearly marked as a board note (e.g. prefixed `=== BOARD NOTE (task 514 postflight) ===`). Status remains `researched` — do NOT transition 511 to any other status; the note is the terminal guard.
-- [ ] Verify: JSON validity; 513's description no longer contains the uniform-faithfulness framing ("Faithful predicate" as an open question) and does contain all six DELIVERABLES items and the EXPLICIT NON-GOALS paragraph; 511 status still `researched`; 513 deps `[512, 507]`.
-- [ ] Regenerate TODO.md; commit (`task 514 phase 3: revise 513 to galois-closure task, close 511`).
+- [x] **Replace** task 513's `description` entirely with the §4.3 "513 — replace description entirely" text (blockquote prefixes stripped, structure preserved including the DELIVERABLES (1)-(6), ACCEPTANCE, and GROUNDING paragraphs). This is a replacement, not an append. *(completed)*
+- [x] Set 513's `dependencies` to `[512, 507]` (report: "Depends on 512 + 507"; parallel to 508/509). *(completed)*
+- [x] Consider whether 513's `project_name`/slug should change: it must NOT — renaming the directory/slug of an existing task is out of scope and breaks artifact paths; the revised description itself states the new scope. *(completed: slug unchanged)*
+- [x] Append the §4.3 "511 — postflight note" text to 511's `description`, clearly marked as a board note (e.g. prefixed `=== BOARD NOTE (task 514 postflight) ===`). Status remains `researched` — do NOT transition 511 to any other status; the note is the terminal guard. *(completed)*
+- [x] Verify: JSON validity; 513's description no longer contains the uniform-faithfulness framing ("Faithful predicate" as an open question) and does contain all six DELIVERABLES items and the EXPLICIT NON-GOALS paragraph; 511 status still `researched`; 513 deps `[512, 507]`. *(completed: all six deliverables present, 511 researched)*
+- [x] Regenerate TODO.md; commit (`task 514 phase 3: revise 513 to galois-closure task, close 511`). *(completed)*
 
 **Timing**: 1 hour
 

@@ -12,10 +12,10 @@ next_project_number: 512
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
 | 1 | 127,128,193,257,298,433,461,476,481,492,495,504,506,514 | -- | automation, dataset-enhancement, decidability, ... |
-| 2 | 178,231,282,296,463,493,502,512,513 | 193,298,433,461,492,514 | algebraic-representation, dataset-enhancement, decidability, ... |
-| 3 | 219,464,497,507,511 | 231,463,502,512,513 | algebraic-representation, dataset-enhancement, decidability, ... |
-| 4 | 465,498,499,500,508,510 | 464,492,497,507 | algebraic-representation, decidability, metalogic |
-| 5 | 125,428,509 | 465,498,499,508 | algebraic-representation, decidability, metalogic |
+| 2 | 178,231,282,296,463,493,502,512 | 193,298,433,461,492,514 | algebraic-representation, dataset-enhancement, decidability, ... |
+| 3 | 219,464,497,507 | 231,463,502,512 | algebraic-representation, dataset-enhancement, decidability, ... |
+| 4 | 465,498,499,500,508,510,513 | 464,492,497,507 | algebraic-representation, decidability, metalogic, ... |
+| 5 | 125,428,509,511 | 465,498,499,508,513 | algebraic-representation, decidability, metalogic |
 | 6 | 429,494,501 | 125,428,509 | algebraic-representation, decidability, strong_completeness |
 | 7 | 410 | 429 | decidability |
 | 8 | 411 | 410 | decidability |
@@ -108,7 +108,7 @@ next_project_number: 512
 
 ### Correspondence Theory
 
-513 [NOT STARTED] — RESEARCH TASK, gating the design of per-frame correspondence. Det
+513 [NOT STARTED] — GALOIS-CLOSURE IMPLEMENTATION for the frame-class layer, replacin
 
 ## Tasks
 
@@ -164,27 +164,44 @@ DO NOT implement any Lean refactor under this task -- it produces the definition
 - **Status**: [NOT STARTED]
 - **Task Type**: formal
 - **Topic**: correspondence theory
-- **Dependencies**: Task 514
+- **Dependencies**: Task 512, Task 507
 
-**Description**: RESEARCH TASK, gating the design of per-frame correspondence. Determine whether a SINGLE, uniformly-defined non-degeneracy predicate on frames makes `minFrameClass` exact per-frame across all 8 non-Base axioms -- or whether no such uniform predicate exists.
+**Description**: GALOIS-CLOSURE IMPLEMENTATION for the frame-class layer, replacing the uniform-faithfulness
+question, which is ANSWERED and closed: no uniform Faithful predicate is needed for
+Dense/Discrete (class-level exactness already holds via indicator axioms) and none can exist
+for Complete (Reynolds: completeness is not characterizable by temporal formulas — the sep
+docstring in ProofSystem/Axioms.lean already quotes this; sep itself has no correspondent,
+511 report 01 §6.5). Design (A)-with-indicators is the design of record.
 
-THE PROBLEM: bundling the duration into the frame (see the TaskFrame bundling task) makes `F |= ax <-> Sat (minFrameClass ax) F` WELL-FORMED, but it does not make it TRUE. `staticFrame` over Z validates the density axiom while its duration is not densely ordered -- machine-verified in specs/511_research_frame_correspondence_infrastructure/reports/02_probes.lean and 03_probes.lean. So degenerate frames sit strictly inside every frame class, and the exact correspondent for density is `FwdRec F`, not `Sat .Dense F`.
+DELIVERABLES (all post-512, post-507; spec at
+specs/514_align_definitions_with_source_paper/reports/01 §3.3–3.4):
+(1) Semantics/Correspondence/Galois.lean: Th, Mod, antitonicity, closure operator,
+GaloisClosed — one definition pair, no per-class copies.
+(2) Indicator exactness: F.ValidOn ¬X⊤ ↔ DenselyOrdered F.Duration and the X⊤/discrete dual;
+corollaries Mod(Th(Sat .Dense)) = Sat .Dense and the paper-Discrete analogue; the
+Derivable-level X⊤-from-prior_UZ+serial_future lemma.
+(3) Per-axiom closure of the density schema: port 511's Corr.density_iff_fwdRec (atomic,
+arbitrary D) and Bridge.density_schema_iff_fwdRec (schema, D = Z) from the probe files into
+the tree over bundled frames, stated as Mod {density} = {F | FwdRec F} at Z.
+(4) Duration-level correspondence (T1) for DF/DN/CO in the paper's proven form —
+"(∀ F over D, F ⊨ ax) ↔ D is Discrete/Dense/Complete" — with the translation frame and the
+two-state permissive frame as (⇒) witnesses (app:discrete/app:dense/app:complete adjudication:
+report 01 §2.4).
+(5) Non-closure witnesses: generalize the static-frame time-invariance lemma to arbitrary D
+(03_probes density_of_hist_periodic is the pattern); derive staticFrame over Q ∈
+Mod(Axioms .Complete) \ Sat .Complete and staticFrame over Z ×ₗ Z ∈ Mod(Axioms .Discrete) \
+Z-time; sandwich corollaries Z-time ⊊ Mod(TM+_f) ⊆ paper-Discrete and R-time ⊊ Mod(TM+_c) ⊆
+Sat .Dense.
+(6) EXPLICIT NON-GOALS, recorded so the question is not reopened: closed-form
+characterizations of Mod(TM+_f) and Mod(TM+_c) are OPEN and not promised — evidence: no
+variable-free BL+ sentence separates Z from Z ×ₗ Z or Q from R, and sep has no correspondent.
 
-TWO CANDIDATE DESIGNS, and this task must choose between them with evidence:
-(A) The correspondent stays a bare frame condition (`FwdRec F` for density). Exact and already proved, but `minFrameClass` is NOT exact -- there is a permanent gap populated by degenerate frames, and each axiom gets its own bespoke correspondent with no shared shape.
-(B) A non-degeneracy predicate `Faithful F` is attached to the frame notion so that, for faithful frames, `F |= ax <-> Sat (minFrameClass ax) F` holds uniformly. This is textbook per-frame correspondence AND minFrameClass exactness, and it is the design that makes results stack.
-
-CANDIDATE PREDICATE TO TEST FIRST: `Faithful F := F admits an aperiodic total history`. At D = Z this is equivalent to `not (FwdRec F)` by the determinism/periodicity theorem in report 03 (`Bridge.hist_periodic`, `Walk.periodic`). Density checks out at both ends: at Z, faithful implies not-FwdRec implies refutes density, and DenselyOrdered Z is false; at dense D, FwdRec is vacuous so density holds and DenselyOrdered D is true.
-
-THE TRAP, STATE IT PLAINLY: at D = Z this candidate is near-circular -- `Faithful` is defined as the negation of the very condition that is the density correspondent, so the biconditional is close to definitional for that one axiom. A predicate that only works for density is NOT a result. The actual deliverable is whether ONE definition of `Faithful`, fixed independently of any particular axiom, delivers the biconditional for all 8 non-Base axioms (density, dense_indicator, prior_UZ, prior_SZ, z1, prior_U_gap, prior_S_gap, sep). Note `sep` is already known to have no correspondent at all (Reynolds' long-line result, report 01 section 6.5), so it is the natural stress case -- determine what a uniform framework does with an axiom that cannot correspond.
-
-DO NOT RE-DERIVE: the admissible-set differentiation route is already refuted, exactly and not merely heuristically -- the admissible atom algebra along a history is P(D / ker sigma), complete and atomic, and for such algebras "separates points" is identical to "every subset admissible" (report 02 section 5). Do not propose it again. Report 03's `density_of_hist_periodic` (arbitrary D, every formula) is the reusable degenerate-frame lemma and should be the shared spine of whatever design wins.
-
-A NEGATIVE VERDICT IS A COMPLETE OUTCOME: if no uniform `Faithful` exists, say so with evidence and specify design (A) properly -- per-axiom correspondents with an explicit account of the degenerate-frame gap -- so the question is not reopened.
-
-INDEPENDENT OF THE REFACTOR: this question is mathematical, not encoding-dependent, so it can and should run in parallel with the TaskFrame bundling work rather than behind it.
-
-GROUNDING: specs/511_research_frame_correspondence_infrastructure/reports/02 and 03.
+ACCEPTANCE: sorry-free, lake build green, every theorem above stated over bundled frames with
+Sat from 507, axiom profiles clean; the FwdRec port must not re-prove what the probes proved —
+transplant and restate. GROUNDING: possible_worlds.tex def:frame-properties, def:frame-validity,
+cor:tm-completeness, app:discrete/dense/complete;
+specs/514_align_definitions_with_source_paper/reports/01;
+specs/511_research_frame_correspondence_infrastructure/reports/01–03 + probes.
 
 ---
 
@@ -264,6 +281,11 @@ STILL OPEN: E2' -- over a general non-dense D, does FwdRec still give full-schem
 "periodic" weakened to shift-recurrence under a history-preserving order automorphism? Currently
 [paper], unverified; the counterexample is the sum of Z/nZ over Z x_lex Z. All exactness claims are
 scoped to D = Z and nowhere wider.
+
+=== BOARD NOTE (task 514 postflight) ===
+Research complete and absorbed: FwdRec and the Tier-1/T1 statements land under revised task
+513; probe files remain the evidence of record. Terminal at [RESEARCHED]; do not dispatch
+/plan 511.
 
 ---
 
