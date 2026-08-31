@@ -1,33 +1,34 @@
 {
-  "dispatch_seq": 5,
+  "dispatch_seq": 6,
   "task_number": 511,
   "phase": "research",
   "status": "researched",
   "session_id": "sess_1788198220_972012_511",
   "artifacts": [
     {
-      "path": "specs/511_research_frame_correspondence_infrastructure/reports/02_per-frame-correspondence-reassessment.md",
+      "path": "specs/511_research_frame_correspondence_infrastructure/reports/03_e2-periodicity.md",
       "type": "report",
-      "summary": "Second-pass report: verdict on the variation claim (TRUE, Lean-verified), corrected frame-valued Tier 0 with an exact proved biconditional for density, negative verdict on the differentiation route with the exact collapse reason, amendment list for report 01 including a rewritten non-goal #1, and a 5-phase construction spec"
+      "summary": "Third-pass single-question report closing report 02's open item E2 in the affirmative at D = Z: FwdRec forces every total history to be periodic, so FwdRec is the exact correspondent for the FULL density schema over Z; refutes the dispatch's lead (the full 2-shift is a legal frame, so the digraph reduction is faithful and limit is not the mechanism, but that frame fails FwdRec on the one-off walk); records a paper counterexample showing the periodicity conclusion is false over a general non-dense D, and opens E2-prime"
     },
     {
-      "path": "specs/511_research_frame_correspondence_infrastructure/reports/02_probes.lean",
+      "path": "specs/511_research_frame_correspondence_infrastructure/reports/03_probes.lean",
       "type": "report",
-      "summary": "Machine-checked Lean evidence file backing every verified claim in report 02; compiles under lake env lean with no sorry"
+      "summary": "Machine-checked Lean evidence for report 03: 646 lines, compiles under lake env lean with exit 0, no errors, no sorry, all headline results checked with #print axioms; contains freeFrame, freeFrame_bool_not_fwdRec, the walk theory (succ_unique, periodic), truthAt_add_hist_period, density_of_hist_periodic, and Bridge.density_schema_iff_fwdRec"
     }
   ],
-  "verdict": "affirmative",
+  "verdict": "e2_affirmative_at_int",
   "key_findings": [
-    "Validity varies across frames at fixed D: staticFrame validates density for all formulas over Z, natFrame refutes it (both Lean-verified)",
-    "natFrame over Z already realises every time-valuation, so transFrame is not needed for the discrete necessity engine",
-    "Exact per-frame biconditional proved over arbitrary D: F validates atomic density iff F is forward-recurrent at covering pairs",
-    "Densely-ordered D makes the condition vacuous, recovering soundness and making the correspondent uniform",
-    "Differentiation route fails at all three readings; per-history atom differentiation is exactly equal to full realisability because the admissible atom algebra is always P(D/ker sigma), complete and atomic",
-    "The splitting condition is TaskFrame.Interpolates, a frame axiom true of every task frame",
-    "Report 01 sections 2, 5.2, 6, 7 stand; section 3 O1's conclusion, O2, O3's conclusion, section 5.3's Tier-0 row, and non-goal #1 require amendment"
+    "E2 is TRUE at D = Z and proved: FwdRec F implies every total history of F is periodic (Bridge.hist_periodic), via the pure digraph theorem Walk.periodic",
+    "The load-bearing step is determinism, not finiteness: AllRec forces the one-step relation to have no state with two distinct walk-successors (Walk.succ_unique), by a minimal-closed-walk splicing argument that explains all of report 02's failed candidate digraphs at once",
+    "Full-schema exactness over Z is proved: F validates every instance of GG-phi to G-phi, phi ranging over all formulas, iff FwdRec F (Bridge.density_schema_iff_fwdRec)",
+    "The dispatch's lead is refuted: the full 2-shift IS a legal task frame (freeFrame Bool), so report 02 section 2's digraph reduction is faithful and limit is not the hidden ingredient - over a D with a least positive element limit is vacuous. The lead's walk is not a counterexample because FwdRec quantifies over ALL histories and the same frame admits a one-off visit",
+    "Report 02 section 9's Phase E1 is unnecessary and should be deleted: Truth.box_time_const (already in the tree) discharges the box case of a per-history periodicity induction, so no Formula.BoxFree predicate is needed and truthAt_add_hist_period holds for every formula over arbitrary D",
+    "Phase B's flagged import-direction question disappears: the new Phase B-prime needs only Semantics/Truth.lean, not Metalogic/Independence/LoopingDuration",
+    "CAVEAT (paper): the periodicity conclusion is FALSE over a general non-dense D - the frame with carrier the disjoint union of Z/nZ over D = Z lex-times Z is FwdRec but has a total history with no period; the density consequence appears to survive there by an order-automorphism argument, unproved"
   ],
   "open_items": [
-    "E2 (open): does FwdRec imply every total history is periodic over non-dense D? If yes, the biconditional upgrades from the atomic fragment to the full schema. Gated; a negative is a complete outcome."
+    "E2-prime (open, new): over an arbitrary non-dense D, is FwdRec still equivalent to full-schema density, with 'periodic' weakened to 'shift-recurrent under an order-automorphism of (D,<) preserving tau'? Report 03 section 4.1 sketches the route for one frame only.",
+    "The Z lex Z counterexample of report 03 section 4 is paper-only (~150 lines to formalise). Nothing in report 03 sections 1-3 depends on it; it functions only as a scope limit on the D = Z exactness claim."
   ],
   "next_command": "/plan 511"
 }
