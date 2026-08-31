@@ -334,7 +334,7 @@ order is the default and is always safe. Every `Depends on` claim below is check
 
 ---
 
-### Phase 0: Probe the fibration design [NOT STARTED]
+### Phase 0: Probe the fibration design [COMPLETED]
 
 **Goal**: Establish empirically, before any tree edit, that the target shape supports numerals at
 the ℤ fibre, `omega`/`Int` arithmetic at the ℤ fibre, loop-free instance resolution through the
@@ -347,24 +347,24 @@ and `omega` cannot be made to see an abstract `F.Duration` by any of `abbrev`, a
 or a propositional carrier equation.
 
 **Tasks**:
-- [ ] Write standalone probe files under `specs/512_bundle_duration_into_taskframe/probes/`
+- [x] Write standalone probe files under `specs/512_bundle_duration_into_taskframe/probes/`
       (next free sequence numbers, `07_`…), each runnable with `lake env lean <path>` and imported
       by nothing.
-- [ ] **(a) Numerals at the fibre — STOP GATE.** With `@[reducible] def intOrder : TemporalOrder :=
+- [x] **(a) Numerals at the fibre — STOP GATE.** With `@[reducible] def intOrder : TemporalOrder :=
       ⟨ℤ⟩` written with **literal fields**, check that the numerals `0` and `1` elaborate at
       `↑intOrder` — i.e. that `OfNat ↑intOrder 1` synthesizes at reducible transparency *through
       the `CoeSort` projection*. Probe both `F.TaskRel w 1 u` for `(F : FrameOver intOrder)` and a
       bare `(x : ↑intOrder) + 1`. Also probe the `TemporalOrder.of ℤ` spelling against the literal
       `⟨ℤ⟩` spelling and record which forms work, since the migration will write one of them ~76
       times.
-- [ ] **(b) `omega` and `Int` arithmetic at the fibre — STOP GATE.** At `(F : FrameOver intOrder)`,
+- [x] **(b) `omega` and `Int` arithmetic at the fibre — STOP GATE.** At `(F : FrameOver intOrder)`,
       check that (i) an `omega` goal over `↑intOrder`-typed hypotheses closes, or failing that
       (ii) that `ℤ`-typed binders fed to `F.TaskRel` unify and let `omega` see `ℤ` — the v01
       Phase 2 working form, expected to apply here precisely because it failed only for abstract
       bundled frames. Record which of (i)/(ii) holds; (ii) alone is a pass, (i) is a bonus.
       Reproduce at least one real shape from `IntNormalForm.lean` (e.g. `step F w u := F.TaskRel w 1 u`
       and an `iter`-style arithmetic step).
-- [ ] **(c) Instance resolution through the projections.** Check `attribute [instance]` on the four
+- [x] **(c) Instance resolution through the projections.** Check `attribute [instance]` on the four
       `TemporalOrder` projections creates no diamond and no loop: (i) at `↑intOrder`, where the
       projection instance and `Int`'s own instances both apply; (ii) at `↑D` for an **abstract**
       `(D : TemporalOrder)`; (iii) at `↑(TemporalOrder.of D)` under ambient
@@ -374,18 +374,18 @@ or a propositional carrier equation.
       `add_le_add_right`, `exists_pair_ne`, `sub_self`, and `exists_between` under a
       `[DenselyOrdered ↑D]` binder. Watch for synthesis blow-up as well as outright failure: record
       `set_option synthInstance.maxHeartbeats` behaviour.
-- [ ] **(d) The flat accessors preserve the landed surface.** Declare `TaskFrame` as the total
+- [x] **(d) The flat accessors preserve the landed surface.** Declare `TaskFrame` as the total
       space with `@[reducible]` delegating accessors for `WorldState`, `TaskRel`, `worldNonempty`,
       the six axiom fields, and one derived API member, and check that already-migrated spellings
       still elaborate unchanged: `F.WorldState`, `F.TaskRel w d u`, `(d : F.Duration)` in binder
       position via `CoeSort`, `F.spherical` consumed **definitionally** by a `PartialHistory.step`-
       shaped goal, and a `structure Foo (F : TaskFrame)` with a `F.WorldState` field. Take at least
       two statement shapes verbatim from files v01 already landed.
-- [ ] **(e) The fibre inclusion is the constructor.** Check `FrameOver.toTaskFrame (F : FrameOver D)
+- [x] **(e) The fibre inclusion is the constructor.** Check `FrameOver.toTaskFrame (F : FrameOver D)
       : TaskFrame := ⟨D, F⟩` elaborates, and that `(FrameOver.toTaskFrame F).Duration = D` and
       `(FrameOver.toTaskFrame F).toFibre = F` both close by `rfl`, and that
       `⟨G.Duration, G.toFibre⟩ = G` closes by `rfl` (structure eta — the total-space/Σ identity).
-- [ ] **(f) The transitional alias holds unmigrated code green.** With
+- [x] **(f) The transitional alias holds unmigrated code green.** With
       `@[reducible] def ParamTaskFrame (D : Type) [4 instances] : Type 1 := FrameOver (TemporalOrder.of D)`,
       check that generalized field notation resolves through the alias: `F.WorldState`,
       `F.TaskRel`, `F.spherical`, `F.comp` for `(F : ParamTaskFrame D)`, and that a
@@ -393,12 +393,38 @@ or a propositional carrier equation.
       record the pre-specified fallback (keep `ParamTaskFrame` a genuine `structure` with
       `@[reducible]` conversions both ways, one mechanical touch per downstream file at its own
       phase) and proceed — this is **not** a stop gate.
-- [ ] **STOP GATE**: if (a) or (b) fails, do **not** proceed to Phase 1. Write the phase as
+- [x] **STOP GATE**: if (a) or (b) fails, do **not** proceed to Phase 1. Write the phase as
       `[BLOCKED]`, record a structured blocker (what failed, what was tried, why it is stuck, what
       decision is needed) in the phase body exactly as v01's Phase 5 blocker is written, and
       escalate. The whole design needs rethinking and no migration work may start. Failure of (c)
       or (d) is also a stop — a diamond or a lost accessor surface invalidates the "preserve the
       green state" premise — but record it separately, since the remedies differ.
+
+
+#### Phase 0 Record — probe outcomes and the spellings later phases write against
+
+Probe files: `probes/07_temporal-order-shape.lean` (concerns (a), (c)),
+`probes/08_fibre-and-accessors.lean` (concerns (b), (d), (e), (f)). Both green under
+`lake env lean`. Tree untouched; `lake build` exits 0 and `check-module-invariants.sh` reports
+ALL CHECKS PASSED at the phase boundary.
+
+| Probe | Verdict | Recorded spelling / detail |
+|---|---|---|
+| **(a) numerals at the fibre** — STOP GATE | **PASS** | All three spellings work: literal-field `@[reducible] def intOrder : TemporalOrder := ⟨ℤ⟩`, `TemporalOrder.of ℤ`, and the inline `(⟨ℤ⟩ : TemporalOrder)`. `(↑intOrder : Type) = ℤ` by `rfl`; `(x : ↑intOrder) + 1`, `(1 : ↑intOrder) = 1`, `R w 1 u` and `R w (-1) u` at `R : W → ↑intOrder → W → Prop` all elaborate. `↑intOrder` and `ℤ` are interchangeable in term position (`(x : ↑intOrder) + (y : ℤ)` elaborates, and `(x : ↑intOrder) : ℤ` is accepted). **Migration writes the literal-field `intOrder`.** |
+| **(b) `omega`/`Int` arithmetic at the fibre** — STOP GATE | **PASS via (ii); (i) fails** | (i) `omega` on `↑intOrder`-**typed** hypotheses FAILS: `omega could not prove the goal: No usable constraints found`. (ii) `ℤ`-typed binders fed to `F.TaskRel` unify and `omega` sees `ℤ` — PASS. `IntNormalForm`'s real proofs (`step`, `taskRel_natCast_iff_iter`, `taskRel_eq_iter`, `iter_of_isStepPath`, `respects_of_isStepPath`) reproduce **verbatim** at `FrameOver intOrder`, `omega` calls intact and no `▸` added beyond the two the tree already has. |
+| **(b) recovery form**, when a duration binder must be `↑intOrder`-typed | recorded | `change (0 : ℤ) < x at h` — a genuine hypothesis **type change** — restores `omega`. A `show`/`have` **ascription** does not (v01 finding 3 again): `show (x : ℤ) + 1 ≤ (y : ℤ)` plus `have h' : (x : ℤ) < (y : ℤ) := h` still leaves `omega` with no usable constraint. Recorded as a commented reproduction in `probes/08`. |
+| **(c) instance resolution through the projections** | **PASS** | No diamond, no loop. `intOrder.addCommGroup = (inferInstance : AddCommGroup ℤ)` by `rfl`; `(TemporalOrder.of D).addCommGroup = (inferInstance : AddCommGroup D)` by `rfl` under ambient binders; `(↑(TemporalOrder.of D) : Type) = D` by `rfl`. `add_comm`, `le_total`, `add_le_add_right`, `exists_pair_ne`, `sub_self`, `abs_neg`, `abs_nonneg` all resolve at abstract `↑D`. Side conditions as statement-level binders work: `[DenselyOrdered ↑D]` → `exists_between`, `[Archimedean ↑D]` → `Archimedean.arch`. No synthesis blow-up: both `↑intOrder` and `↑(TemporalOrder.of D)` succeed under `set_option synthInstance.maxHeartbeats 2000`. |
+| **(d) flat accessors preserve the landed surface** | **PASS, with one shape correction** | `F.WorldState`, `F.TaskRel w d u`, `(d : F.Duration)` and `(x y : F.Duration)` in binder position via `CoeSort`, `Nonempty F.WorldState` by `inferInstance`, and the axiom fields consumed **definitionally** (`ParamTaskFrame.Spherical F.TaskRel := F.spherical`) all hold. `PartialHistory` (`:91`) and `WorldHistory` (`:100`, including `extends`) reproduce verbatim over the total space, as do `stateAt` and the derived `forward_comp` reached by generalized field notation. **Correction the implementation must honour**: the Prop-valued accessors must be `theorem`s, not `@[reducible] def`s — Lean rejects `@[reducible]` on a proof (`failed to set reducibility status, 'worldNonempty' is not a definition`), and the `defProp` linter rejects `def` for a Prop. This is harmless: proof irrelevance means only the *declared type* matters, and that type cites the recorded predicate at `F.TaskRel`, which is itself a `@[reducible] def`. So: `@[reducible] def` for `WorldState`/`TaskRel`, plain `instance` for `worldNonempty`, `theorem` for the six axiom accessors and the derived API. |
+| **(e) the fibre inclusion is the constructor** | **PASS** | `@[reducible] def FrameOver.toTaskFrame {D} (F : FrameOver D) : TaskFrame := ⟨D, F⟩`. `(F.toTaskFrame).Duration = D`, `(F.toTaskFrame).toFibre = F`, `(F.toTaskFrame).WorldState = F.WorldState`, `(F.toTaskFrame).TaskRel = F.TaskRel`, `(F.toTaskFrame).spherical = F.spherical` and the Σ-identity `⟨G.Duration, G.toFibre⟩ = G` all close by `rfl`. |
+| **(f) the transitional alias holds unmigrated code green** | **PASS** | `@[reducible] def ParamTaskFrame (D : Type) [4 instances] : Type 1 := FrameOver (TemporalOrder.of D)` carries generalized field notation (`F.WorldState`, `F.TaskRel`, `F.spherical`, `F.comp`, `F.serial`), the `Nonempty` instance, and structure parameterization (`structure Bar {D} [4] (F : ParamTaskFrame D)`). `ParamTaskFrame ℤ = FrameOver intOrder` by `rfl`, and a `FrameOver intOrder` is accepted where a `ParamTaskFrame ℤ` is expected. **The Phase 2 fallback is not needed.** |
+
+**Design consequence for the ℤ-fibre phases (7, 9, 10-Periodicity, 11, 15, 19)**: state every
+duration binder that arithmetic touches as `(d : ℤ)`, not as `(d : ↑intOrder)`. Both elaborate
+against `F.TaskRel`; only the former lets `omega` work. This is the Phase 7 contract's
+"(b)(ii) only" branch, and it is the branch that holds.
+
+**Baselines recorded at Phase 0**: `lake build` full clean rebuild wall time, and the four C2
+flagship axiom profiles, both quoted in the phase commit.
 
 **Timing**: 2 hours
 
@@ -432,23 +458,30 @@ with `ls specs/512_bundle_duration_into_taskframe/probes/`. No file under `Forma
 **Goal**: The library has a name for `def:temporal-order`. Purely additive; nothing consumes it yet.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Semantics/TemporalOrder.lean` declaring `structure TemporalOrder` in the
+- [x] Create `FormalSystem/Semantics/TemporalOrder.lean` declaring `structure TemporalOrder` in the
       target shape, the `CoeSort` instance, and the `attribute [instance]` block for the four
       projections — using exactly the spellings Phase 0 recorded as working.
-- [ ] Add `TemporalOrder.of (D : Type) [4 instances] : TemporalOrder`, `@[reducible]`, as the
+- [x] Add `TemporalOrder.of (D : Type) [4 instances] : TemporalOrder`, `@[reducible]`, as the
       transitional constructor the `ParamTaskFrame` alias needs. Mark it in its docstring as
       transitional-or-permanent pending Phase 20's review.
-- [ ] Declare the named temporal orders the tree actually needs, each `@[reducible]` and written
+- [x] Declare the named temporal orders the tree actually needs, each `@[reducible]` and written
       with **literal fields** (research R1/R3; Phase 0(a) confirms): `intOrder` (ℤ), `ratOrder` (ℚ),
       `realOrder` (ℝ), and the `ℚ ×ₗ ℤ` order used by `CountermodelBase.lean:85` and
-      `DiscreteCarrierProbe.lean:72`. Do not invent orders no site needs.
-- [ ] Write the module docstring citing `def:temporal-order` verbatim ("a nontrivial totally
+      `DiscreteCarrierProbe.lean:72`. Do not invent orders no site needs. *(deviation: altered — only
+      `intOrder` is declared here. `ratOrder`, `realOrder` and the `ℚ ×ₗ ℤ` order are deferred to
+      the phases that need them (13, 16), because declaring them in `Semantics/TemporalOrder.lean`
+      would pull `Mathlib.Data.Real.Basic` and the lexicographic-product algebra into a module
+      `TaskFrame.lean` imports, and therefore into the transitive import set of essentially every
+      module in the tree — a build-cost regression the plan's own risk table warns against, taken
+      for four constants with two consumers each. `intOrder` is in the core module because the ℤ
+      layer is pervasive and `Mathlib.Algebra.Order.Group.Int` is already cheap.)*
+- [x] Write the module docstring citing `def:temporal-order` verbatim ("a nontrivial totally
       ordered abelian group") and recording *why* the object is reified: the 4-binder list was the
       unnamed transcription of a paper object, and its absence is what made the fibre notion
       inexpressible. No task-number citation (C9).
-- [ ] Add the import to `FormalSystem/Semantics.lean` and a `## Submodules` docstring entry for the
+- [x] Add the import to `FormalSystem/Semantics.lean` and a `## Submodules` docstring entry for the
       new module (C5/C14).
-- [ ] Add in-file `example`s pinning the Phase 0 facts that later phases depend on: numerals at
+- [x] Add in-file `example`s pinning the Phase 0 facts that later phases depend on: numerals at
       `↑intOrder`, and instance recovery at `↑D` for abstract `D`. These are the regression guard
       for the design premise.
 
