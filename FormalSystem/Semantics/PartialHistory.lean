@@ -88,10 +88,9 @@ $X \subseteq D$ where $\tau(x) \Rightarrow_{y-x} \tau(y)$ for all times $x, y \i
 The paper's `\textit{world history}` is the **convex** special case of this structure; see
 `FormalSystem.Semantics.WorldHistory`.
 -/
-structure PartialHistory {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
-    (F : ParamTaskFrame D) where
+structure PartialHistory (F : TaskFrame) where
   /-- Domain predicate: which times are in the history, i.e. the paper's `X ⊆ D`. -/
-  domain : D → Prop
+  domain : F.Duration → Prop
   /--
   Nonemptiness of the domain, carried as **data** rather than as a side hypothesis.
 
@@ -101,7 +100,7 @@ structure PartialHistory {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedA
   -/
   nonempty_domain : ∃ t, domain t
   /-- State assignment: the paper's function `τ : X → W`. -/
-  states : (t : D) → domain t → F.WorldState
+  states : (t : F.Duration) → domain t → F.WorldState
   /--
   Task-respect, stated **unconditionally** — for *all* pairs of times in the domain, with no
   `s ≤ t` guard.
@@ -115,12 +114,12 @@ structure PartialHistory {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedA
   no sign proviso. The guarded form is derived as `respects_task_le`; `ofLe` converts a guarded
   proof into this field.
   -/
-  respects_task : ∀ (s t : D) (hs : domain s) (ht : domain t),
+  respects_task : ∀ (s t : F.Duration) (hs : domain s) (ht : domain t),
     F.TaskRel (states s hs) (t - s) (states t ht)
 
 namespace PartialHistory
 
-variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D] {F : ParamTaskFrame D}
+variable {F : TaskFrame}
 
 /--
 The guarded form of task-respect, **derived** from the unconditional field.
@@ -128,7 +127,7 @@ The guarded form of task-respect, **derived** from the unconditional field.
 This is the shape `WorldHistory.respects_task` has historically carried. It is a projection, not a
 weakening: the unconditional field simply ignores the `s ≤ t` hypothesis.
 -/
-theorem respects_task_le (τ : PartialHistory F) (s t : D) (hs : τ.domain s) (ht : τ.domain t)
+theorem respects_task_le (τ : PartialHistory F) (s t : F.Duration) (hs : τ.domain s) (ht : τ.domain t)
     (_hst : s ≤ t) : F.TaskRel (τ.states s hs) (t - s) (τ.states t ht) :=
   τ.respects_task s t hs ht
 
@@ -146,9 +145,9 @@ lemma-shaped constructor over the single `PartialHistory` structure, and it exis
 because the paper's own `%` comment at `def:world-history` says the negative-difference instances
 are *covered by the converse convention* rather than separately required.
 -/
-def ofLe (domain : D → Prop) (nonempty_domain : ∃ t, domain t)
-    (states : (t : D) → domain t → F.WorldState)
-    (respects_le : ∀ (s t : D) (hs : domain s) (ht : domain t),
+def ofLe (domain : F.Duration → Prop) (nonempty_domain : ∃ t, domain t)
+    (states : (t : F.Duration) → domain t → F.WorldState)
+    (respects_le : ∀ (s t : F.Duration) (hs : domain s) (ht : domain t),
       s ≤ t → F.TaskRel (states s hs) (t - s) (states t ht)) :
     PartialHistory F where
   domain := domain
@@ -173,7 +172,7 @@ Mathlib's `IsMax` or any order-theoretic maximality predicate. Maximality under 
 order appears only as an internal step en route to the Extension Theorem; totality is what
 validity quantifies over. See `specs/decisions/total-history-validity-decisions.md`, Decision A.
 -/
-def IsTotal (τ : PartialHistory F) : Prop := ∀ t : D, τ.domain t
+def IsTotal (τ : PartialHistory F) : Prop := ∀ t : F.Duration, τ.domain t
 
 /--
 The paper's **extension** relation on partial histories: `Extends σ τ` says that `σ` extends `τ`.
@@ -186,7 +185,7 @@ structure Extends (σ τ : PartialHistory F) : Prop where
   /-- Domain inclusion: `dom τ ⊆ dom σ`. -/
   subset : ∀ t, τ.domain t → σ.domain t
   /-- State agreement on the smaller domain: `τ(x) = σ(x)` for all `x ∈ dom τ`. -/
-  agree : ∀ (t : D) (ht : τ.domain t), σ.states t (subset t ht) = τ.states t ht
+  agree : ∀ (t : F.Duration) (ht : τ.domain t), σ.states t (subset t ht) = τ.states t ht
 
 /--
 Totality implies the nonemptiness field is derivable, with `0 : D` as the witness.
@@ -194,10 +193,9 @@ Totality implies the nonemptiness field is derivable, with `0 : D` as the witnes
 This is why nonemptiness costs nothing at a total construction site, and why carrying it as a
 field (this module's docstring, decision 1) is not a burden on the sites that matter.
 -/
-theorem total_nonempty (τ : PartialHistory F) (h : τ.IsTotal) : ∃ t : D, τ.domain t :=
+theorem total_nonempty (τ : PartialHistory F) (h : τ.IsTotal) : ∃ t : F.Duration, τ.domain t :=
   ⟨0, h 0⟩
 
-omit [LinearOrder D] [IsOrderedAddMonoid D] in
 /--
 Standalone form of `total_nonempty`, usable at a **construction** site — where the structure does
 not yet exist, so `total_nonempty` cannot be applied to it.
@@ -205,7 +203,8 @@ not yet exist, so `total_nonempty` cannot be applied to it.
 Typical use: a site with `domain := fun _ => True` discharges `nonempty_domain` by
 `nonempty_of_total (fun _ => trivial)`, or directly by `⟨0, trivial⟩`.
 -/
-theorem nonempty_of_total {dom : D → Prop} (h : ∀ t : D, dom t) : ∃ t : D, dom t :=
+theorem nonempty_of_total {D : Type} [AddCommGroup D] [Nontrivial D] {dom : D → Prop}
+    (h : ∀ t : D, dom t) : ∃ t : D, dom t :=
   ⟨0, h 0⟩
 
 end PartialHistory

@@ -97,8 +97,8 @@ exists (so the empty history is no longer a legal Lean `WorldHistory`), and the 
 layer exists as its own structure, since the paper's partial history requires nonemptiness
 WITHOUT convexity and therefore cannot be carved out by weakening this one.
 -/
-structure WorldHistory {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D] (F :
-      ParamTaskFrame D) extends PartialHistory F where
+structure WorldHistory (F :
+      TaskFrame) extends PartialHistory F where
   /--
   Convexity constraint: domain has no temporal gaps.
 
@@ -109,11 +109,11 @@ structure WorldHistory {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAdd
   partial history whose domain $X$ is \textit{convex}, so that $y \in X$ whenever
   $x, z \in X$ and $x < y < z$.").
   -/
-  convex : ∀ (x z : D), domain x → domain z → ∀ (y : D), x ≤ y → y ≤ z → domain y
+  convex : ∀ (x z : F.Duration), domain x → domain z → ∀ (y : F.Duration), x ≤ y → y ≤ z → domain y
 
 namespace WorldHistory
 
-variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D] {F : ParamTaskFrame D}
+variable {F : TaskFrame}
 
 /--
 Universal world history over all time (requires explicit reflexivity proof).
@@ -149,8 +149,8 @@ use the frame-specific constructors `universalTrivialFrame` or `universalNatFram
 - `w`: The constant world state for all times
 - `h_refl`: Proof that the frame is reflexive at state `w` for all durations
 -/
-def universal (F : ParamTaskFrame D) (w : F.WorldState)
-    (h_refl : ∀ d : D, F.TaskRel w d w) : WorldHistory F where
+def universal (F : TaskFrame) (w : F.WorldState)
+    (h_refl : ∀ d : F.Duration, F.TaskRel w d w) : WorldHistory F where
   domain := fun _ => True
   nonempty_domain := ⟨0, True.intro⟩
   convex := by
@@ -231,7 +231,7 @@ def universalNatFrame {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddM
 /--
 Get the state at a time (helper function that bundles membership proof).
 -/
-def stateAt (τ : WorldHistory F) (t : D) (h : τ.domain t) : F.WorldState :=
+def stateAt (τ : WorldHistory F) (t : F.Duration) (h : τ.domain t) : F.WorldState :=
   τ.states t h
 
 /-! ## Time-Shift Construction
@@ -259,7 +259,7 @@ so does the shifted history, because:
 1. Task relation only depends on duration (t - s), preserved under translation
 2. Convexity is preserved under translation by group structure
 -/
-def timeShift (σ : WorldHistory F) (Δ : D) : WorldHistory F where
+def timeShift (σ : WorldHistory F) (Δ : F.Duration) : WorldHistory F where
   domain := fun z => σ.domain (z + Δ)
   nonempty_domain := by
     obtain ⟨t, ht⟩ := σ.nonempty_domain
@@ -292,14 +292,14 @@ def timeShift (σ : WorldHistory F) (Δ : D) : WorldHistory F where
 Time-shift preserves domain membership (forward direction).
 If z is in the shifted domain, then z + Δ is in the original domain.
 -/
-theorem time_shift_domain_iff (σ : WorldHistory F) (Δ z : D) :
+theorem time_shift_domain_iff (σ : WorldHistory F) (Δ z : F.Duration) :
     (timeShift σ Δ).domain z ↔ σ.domain (z + Δ) := by
   rfl
 
 /--
 Inverse time-shift: shifting by -Δ undoes shifting by Δ on the domain.
 -/
-theorem time_shift_inverse_domain (σ : WorldHistory F) (Δ : D) (z : D) :
+theorem time_shift_inverse_domain (σ : WorldHistory F) (Δ : F.Duration) (z : F.Duration) :
     (timeShift (timeShift σ Δ) (-Δ)).domain z ↔ σ.domain z := by
   simp only [timeShift]
   constructor
@@ -320,7 +320,7 @@ States are equal when times are provably equal (proof irrelevance).
 This lemma allows us to transport states from one time to another when the times
 are equal. This is essential for dependent type reasoning in time-shift proofs.
 -/
-theorem states_eq_of_time_eq (σ : WorldHistory F) (t₁ t₂ : D)
+theorem states_eq_of_time_eq (σ : WorldHistory F) (t₁ t₂ : F.Duration)
     (h : t₁ = t₂) (ht₁ : σ.domain t₁) (ht₂ : σ.domain t₂) :
     σ.states t₁ ht₁ = σ.states t₂ ht₂ := by
   subst h
@@ -332,7 +332,7 @@ Double time-shift cancels: states at (timeShift (timeShift σ Δ) (-Δ)) equal s
 This is the key transport lemma for the box case of time_shift_preserves_truth.
 It shows that shifting by Δ and then by -Δ returns to the original states.
 -/
-theorem time_shift_time_shift_states (σ : WorldHistory F) (Δ : D) (t : D)
+theorem time_shift_time_shift_states (σ : WorldHistory F) (Δ : F.Duration) (t : F.Duration)
     (ht : σ.domain t)
     (ht' : (timeShift (timeShift σ Δ) (-Δ)).domain t) :
     (timeShift (timeShift σ Δ) (-Δ)).states t ht' = σ.states t ht := by
@@ -344,7 +344,7 @@ theorem time_shift_time_shift_states (σ : WorldHistory F) (Δ : D) (t : D)
 /--
 Extensionality lemma for timeShift: shifting by equal amounts gives equal histories.
 -/
-theorem time_shift_congr (σ : WorldHistory F) (Δ₁ Δ₂ : D) (h : Δ₁ = Δ₂) :
+theorem time_shift_congr (σ : WorldHistory F) (Δ₁ Δ₂ : F.Duration) (h : Δ₁ = Δ₂) :
     timeShift σ Δ₁ = timeShift σ Δ₂ := by
   subst h
   rfl
@@ -352,14 +352,14 @@ theorem time_shift_congr (σ : WorldHistory F) (Δ₁ Δ₂ : D) (h : Δ₁ = Δ
 /--
 Domain membership for timeShift by zero is equivalent to original domain.
 -/
-theorem time_shift_zero_domain_iff (σ : WorldHistory F) (z : D) :
+theorem time_shift_zero_domain_iff (σ : WorldHistory F) (z : F.Duration) :
     (timeShift σ 0).domain z ↔ σ.domain z := by
   simp only [timeShift, add_zero]
 
 /--
 Domain membership for double time-shift with opposite amounts equals original.
 -/
-theorem time_shift_time_shift_neg_domain_iff (σ : WorldHistory F) (Δ : D) (z : D) :
+theorem time_shift_time_shift_neg_domain_iff (σ : WorldHistory F) (Δ : F.Duration) (z : F.Duration) :
     (timeShift (timeShift σ Δ) (-Δ)).domain z ↔ σ.domain z := by
   simp only [timeShift]
   have h : z + -Δ + Δ = z := by
@@ -371,7 +371,7 @@ theorem time_shift_time_shift_neg_domain_iff (σ : WorldHistory F) (Δ : D) (z :
 /--
 States at double time-shift with opposite amounts equals original states.
 -/
-theorem time_shift_time_shift_neg_states (σ : WorldHistory F) (Δ : D) (t : D)
+theorem time_shift_time_shift_neg_states (σ : WorldHistory F) (Δ : F.Duration) (t : F.Duration)
     (ht : σ.domain t) (ht' : (timeShift (timeShift σ Δ) (-Δ)).domain t) :
     (timeShift (timeShift σ Δ) (-Δ)).states t ht' = σ.states t ht := by
   simp only [timeShift]
@@ -396,7 +396,8 @@ Group inverse reverses strict order: s < t ↔ -t < -s
 This order reversal is the algebraic foundation for temporal duality.
 When we swap Past and Future operators, the time domain reverses under group inverse.
 -/
-theorem neg_lt_neg_iff (s t : D) : s < t ↔ -t < -s := by
+theorem neg_lt_neg_iff {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+    (s t : D) : s < t ↔ -t < -s := by
   constructor
   · intro h
     -- s < t implies -t < -s
@@ -412,7 +413,8 @@ theorem neg_lt_neg_iff (s t : D) : s < t ↔ -t < -s := by
 /--
 Group inverse reverses non-strict order: s ≤ t ↔ -t ≤ -s
 -/
-theorem neg_le_neg_iff (s t : D) : s ≤ t ↔ -t ≤ -s := by
+theorem neg_le_neg_iff {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+    (s t : D) : s ≤ t ↔ -t ≤ -s := by
   constructor
   · intro h
     exact neg_le_neg h
@@ -422,18 +424,16 @@ theorem neg_le_neg_iff (s t : D) : s ≤ t ↔ -t ≤ -s := by
     rw [hs, ht]
     exact neg_le_neg h
 
-omit [LinearOrder D] [IsOrderedAddMonoid D] in
 /--
 Double negation is identity: -(-t) = t
 -/
-theorem neg_neg_eq (t : D) : -(-t) = t := by
+theorem neg_neg_eq {D : Type} [AddCommGroup D] (t : D) : -(-t) = t := by
   simp
 
-omit [LinearOrder D] [IsOrderedAddMonoid D] in
 /--
 Group inverse is injective: -s = -t ↔ s = t
 -/
-theorem neg_injective (s t : D) : -s = -t ↔ s = t := by
+theorem neg_injective {D : Type} [AddCommGroup D] (s t : D) : -s = -t ↔ s = t := by
   constructor
   · intro h
     have : -(-s) = -(-t) := by rw [h]
@@ -470,7 +470,7 @@ is what validity quantifies over.
 def IsTotal (τ : WorldHistory F) : Prop := τ.toPartialHistory.IsTotal
 
 /-- `WorldHistory.IsTotal` unfolds to the pointwise domain condition. -/
-theorem isTotal_iff (τ : WorldHistory F) : τ.IsTotal ↔ ∀ t : D, τ.domain t := Iff.rfl
+theorem isTotal_iff (τ : WorldHistory F) : τ.IsTotal ↔ ∀ t : F.Duration, τ.domain t := Iff.rfl
 
 /--
 Totality is preserved by time shift.
@@ -483,13 +483,13 @@ This is the lemma that carries the box case of time-shift preservation of truth.
 shift-preservation is strictly easier than it was under a designated shift-closed set of
 admissible histories, because there is no closure condition left to carry.
 -/
-theorem isTotal_timeShift {σ : WorldHistory F} (h : σ.IsTotal) (Δ : D) :
+theorem isTotal_timeShift {σ : WorldHistory F} (h : σ.IsTotal) (Δ : F.Duration) :
     (σ.timeShift Δ).IsTotal :=
   fun t => h (t + Δ)
 
 /-- A total world history's domain is nonempty (witness `0`), so `nonempty_domain` costs nothing
 at a total construction site. -/
-theorem total_nonempty {τ : WorldHistory F} (h : τ.IsTotal) : ∃ t : D, τ.domain t :=
+theorem total_nonempty {τ : WorldHistory F} (h : τ.IsTotal) : ∃ t : F.Duration, τ.domain t :=
   τ.toPartialHistory.total_nonempty h
 
 end WorldHistory
@@ -509,13 +509,14 @@ form `(τ : WorldHistory F) (hτ : τ.IsTotal)` is used instead.
 This is **not** a parallel validity notion or an alias: there is exactly one validity predicate,
 and `HF` is a bundled name for the same `IsTotal` predicate, bridged only by `.val` / `.property`.
 -/
-def ParamTaskFrame.HF {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
-    (F : ParamTaskFrame D) : Type _ :=
+def ParamTaskFrame.HF {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+    [Nontrivial D] (F : ParamTaskFrame D) : Type _ :=
   {τ : WorldHistory F // τ.IsTotal}
 
 namespace ParamTaskFrame.HF
 
-variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D] {F : ParamTaskFrame D}
+variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
+  {F : ParamTaskFrame D}
 
 /-- Time shift lifted to `H_F`, through `WorldHistory.isTotal_timeShift`. -/
 def timeShift (τ : F.HF) (Δ : D) : F.HF :=

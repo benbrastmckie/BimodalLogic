@@ -275,20 +275,40 @@ above; the fallback is pre-specified.
 
 ---
 
-### Phase 2: Semantics core structures [NOT STARTED]
+### Phase 2: Semantics core structures [COMPLETED]
 
 **Goal**: `PartialHistory`, `WorldHistory`, `TaskModel`, `Truth`, `FrameAxioms` take
 `(F : TaskFrame)` natively (probe M7 confirms all three structures re-parameterize natively).
 
 **Tasks**:
-- [ ] Migrate `PartialHistory.lean` (`structure PartialHistory` `:91`) and
+- [x] Migrate `PartialHistory.lean` (`structure PartialHistory` `:91`) and
       `PartialHistoryOrder.lean`.
-- [ ] Migrate `WorldHistory.lean` (`structure WorldHistory` `:100`).
-- [ ] Migrate `TaskModel.lean` (`structure TaskModel` `:49`).
-- [ ] Migrate `Truth.lean` (`def TruthAt` `:163`).
-- [ ] Migrate `FrameAxioms.lean` (32 occurrences).
-- [ ] Apply the Phase-1 compatibility mechanism at every unmigrated downstream call site so the
-      tree stays green; if mechanism (b), record the shim count.
+- [x] Migrate `WorldHistory.lean` (`structure WorldHistory` `:100`) *(deviation: altered — the
+      `ParamTaskFrame.HF` subtype at the end of the file is deliberately LEFT parameterized and
+      migrates with `Extension/`/`ShiftSet.lean` in Phase 4. Dot notation `F.HF` resolves by the
+      head constant of `F`'s type and does NOT go through the `CoeOut`, so migrating `HF` alone
+      breaks every unmigrated `F.HF` site; leaving it parameterized costs nothing because
+      `WorldHistory F` inside it coerces.)*
+- [x] Migrate `TaskModel.lean` (`structure TaskModel` `:49`) *(deviation: altered — `FiniteTaskModel`
+      is left over `ParamFiniteTaskFrame`; it migrates with the finite-frame constructions in
+      Phase 6.)*
+- [x] Migrate `Truth.lean` (`def TruthAt` `:163`).
+- [x] Migrate `FrameAxioms.lean` (32 occurrences) *(deviation: altered — only the
+      `namespace PartialHistory` half migrates; the `namespace ParamTaskFrame` half is bare-relation
+      apparatus with no frame binder and is untouched until Phase 13.)*
+- [x] Apply the Phase-1 compatibility mechanism at every unmigrated downstream call site so the
+      tree stays green; if mechanism (b), record the shim count. *(Mechanism (a): zero call-site
+      edits were needed across all 75 unmigrated files. Three files needed an unrelated kind of
+      edit — see the F4 note below — and no shim was introduced anywhere.)*
+- [x] *(deviation: added — the F4 hazard bites one phase earlier than the plan expected. Migrating
+      `TruthAt` moves the order relation on a ℤ-carried frame's times from `Int.instLT` to the
+      bundled frame's own projection instance, which `omega` does not recognize even though the
+      two are defeq. Three ℤ-facing files (`BiLasso/Unfold.lean`, `BiLasso/TruthLemma.lean`,
+      `Extension/PeriodicExtension.lean`) needed the F4 idiom applied now rather than in their own
+      phase. The working form is `@LT.lt ℤ _ a b` / `@LE.le ℤ _ a b` written explicitly: a plain
+      `(t : ℤ) < s` ascription is a no-op whenever `t` is itself frame-typed, so it silently
+      re-elaborates at the frame type and does not help. No mathematical content changed — every
+      restatement is an identity accepted by `defeq`.)*
 
 **Timing**: 2 hours
 

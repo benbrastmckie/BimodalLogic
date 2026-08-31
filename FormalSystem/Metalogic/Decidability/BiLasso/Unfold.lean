@@ -92,16 +92,35 @@ theorem truth_untl_succ (t : ℤ) (g e : Formula) :
         (TruthAt M τ (t + 1) g ∧ TruthAt M τ (t + 1) (Formula.untl g e)) := by
   constructor
   · rintro ⟨s, hts, hse, hguard⟩
-    rcases eq_or_lt_of_le (show t + 1 ≤ s by omega) with heq | hlt
+    have hts' : @LT.lt ℤ _ t s := hts
+    replace hguard : ∀ r : ℤ, @LT.lt ℤ _ t r → @LT.lt ℤ _ r s → TruthAt M τ r g := hguard
+    rcases eq_or_lt_of_le (show @LE.le ℤ _ (t + 1) s by omega) with heq | hlt
     · exact Or.inl (heq ▸ hse)
     · refine Or.inr ⟨hguard (t + 1) (by omega) hlt, s, hlt, hse, ?_⟩
-      exact fun r hr1 hr2 => hguard r (by omega) hr2
+      intro r hr1 hr2
+      have h1 : @LT.lt ℤ _ (t + 1) r := hr1
+      have h2 : @LT.lt ℤ _ r s := hr2
+      exact hguard r (by omega) h2
   · rintro (h | ⟨hg, s, hts, hse, hguard⟩)
-    · exact ⟨t + 1, by omega, h, fun r hr1 hr2 => absurd (show False by omega) not_false⟩
-    · refine ⟨s, by omega, hse, fun r hr1 hr2 => ?_⟩
-      rcases eq_or_lt_of_le (show t + 1 ≤ r by omega) with heq | hlt
-      · exact heq ▸ hg
-      · exact hguard r hlt hr2
+    · refine ⟨t + 1, ?_, h, ?_⟩
+      · show @LT.lt ℤ _ t (t + 1)
+        omega
+      · intro r hr1 hr2
+        have h1 : @LT.lt ℤ _ t r := hr1
+        have h2 : @LT.lt ℤ _ r (t + 1) := hr2
+        exact absurd (show False by omega) not_false
+    · have hts' : @LT.lt ℤ _ (t + 1) s := hts
+      replace hguard :
+          ∀ r : ℤ, @LT.lt ℤ _ (t + 1) r → @LT.lt ℤ _ r s → TruthAt M τ r g := hguard
+      refine ⟨s, ?_, hse, ?_⟩
+      · show @LT.lt ℤ _ t s
+        omega
+      · intro r hr1 hr2
+        have h1 : @LT.lt ℤ _ t r := hr1
+        have h2 : @LT.lt ℤ _ r s := hr2
+        rcases eq_or_lt_of_le (show @LE.le ℤ _ (t + 1) r by omega) with heq | hlt
+        · exact heq ▸ hg
+        · exact hguard r hlt h2
 
 /--
 **The exact one-step unfolding of `snce` over ℤ** — the leftward mirror of `truth_untl_succ`.
@@ -117,16 +136,35 @@ theorem truth_snce_pred (t : ℤ) (g e : Formula) :
         (TruthAt M τ (t - 1) g ∧ TruthAt M τ (t - 1) (Formula.snce g e)) := by
   constructor
   · rintro ⟨s, hst, hse, hguard⟩
-    rcases eq_or_lt_of_le (show s ≤ t - 1 by omega) with heq | hlt
+    have hst' : @LT.lt ℤ _ s t := hst
+    replace hguard : ∀ r : ℤ, @LT.lt ℤ _ s r → @LT.lt ℤ _ r t → TruthAt M τ r g := hguard
+    rcases eq_or_lt_of_le (show @LE.le ℤ _ s (t - 1) by omega) with heq | hlt
     · exact Or.inl (heq ▸ hse)
     · refine Or.inr ⟨hguard (t - 1) hlt (by omega), s, hlt, hse, ?_⟩
-      exact fun r hr1 hr2 => hguard r hr1 (by omega)
+      intro r hr1 hr2
+      have h1 : @LT.lt ℤ _ s r := hr1
+      have h2 : @LT.lt ℤ _ r (t - 1) := hr2
+      exact hguard r h1 (by omega)
   · rintro (h | ⟨hg, s, hst, hse, hguard⟩)
-    · exact ⟨t - 1, by omega, h, fun r hr1 hr2 => absurd (show False by omega) not_false⟩
-    · refine ⟨s, by omega, hse, fun r hr1 hr2 => ?_⟩
-      rcases eq_or_lt_of_le (show r ≤ t - 1 by omega) with heq | hlt
-      · exact heq ▸ hg
-      · exact hguard r hr1 hlt
+    · refine ⟨t - 1, ?_, h, ?_⟩
+      · show @LT.lt ℤ _ (t - 1) t
+        omega
+      · intro r hr1 hr2
+        have h1 : @LT.lt ℤ _ (t - 1) r := hr1
+        have h2 : @LT.lt ℤ _ r t := hr2
+        exact absurd (show False by omega) not_false
+    · have hst' : @LT.lt ℤ _ s (t - 1) := hst
+      replace hguard :
+          ∀ r : ℤ, @LT.lt ℤ _ s r → @LT.lt ℤ _ r (t - 1) → TruthAt M τ r g := hguard
+      refine ⟨s, ?_, hse, ?_⟩
+      · show @LT.lt ℤ _ s t
+        omega
+      · intro r hr1 hr2
+        have h1 : @LT.lt ℤ _ s r := hr1
+        have h2 : @LT.lt ℤ _ r t := hr2
+        rcases eq_or_lt_of_le (show @LE.le ℤ _ r (t - 1) by omega) with heq | hlt
+        · exact heq ▸ hg
+        · exact hguard r h1 hlt
 
 end Unfolding
 

@@ -69,7 +69,7 @@ namespace FormalSystem.Semantics
 
 namespace PartialHistory
 
-variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D] {F : ParamTaskFrame D}
+variable {F : TaskFrame}
 
 /-! ## The extension order -/
 
@@ -93,7 +93,7 @@ instance : Preorder (PartialHistory F) where
 theorem le_def {τ σ : PartialHistory F} : τ ≤ σ ↔ Extends σ τ := Iff.rfl
 
 /-- Domain inclusion, extracted from the order. -/
-theorem domain_mono {τ σ : PartialHistory F} (h : τ ≤ σ) {t : D} (ht : τ.domain t) :
+theorem domain_mono {τ σ : PartialHistory F} (h : τ ≤ σ) {t : F.Duration} (ht : τ.domain t) :
     σ.domain t :=
   (le_def.mp h).subset t ht
 
@@ -105,7 +105,7 @@ States are equal when the times are provably equal (dependent transport).
 Needed because `states` is dependent on a domain proof, so `rw`-ing a time equality inside a
 `states` application requires an explicit transport lemma.
 -/
-theorem states_eq_of_time_eq (τ : PartialHistory F) {t₁ t₂ : D} (h : t₁ = t₂)
+theorem states_eq_of_time_eq (τ : PartialHistory F) {t₁ t₂ : F.Duration} (h : t₁ = t₂)
     (h₁ : τ.domain t₁) (h₂ : τ.domain t₂) : τ.states t₁ h₁ = τ.states t₂ h₂ := by
   subst h; rfl
 
@@ -118,7 +118,7 @@ is `τ`'s domain at `z + Δ`.
 Unlike the world-history case there is no convexity obligation, and `nonempty_domain` transports
 by `t ↦ t - Δ`.
 -/
-def timeShift (τ : PartialHistory F) (Δ : D) : PartialHistory F where
+def timeShift (τ : PartialHistory F) (Δ : F.Duration) : PartialHistory F where
   domain := fun z => τ.domain (z + Δ)
   nonempty_domain := by
     obtain ⟨t, ht⟩ := τ.nonempty_domain
@@ -132,35 +132,35 @@ def timeShift (τ : PartialHistory F) (Δ : D) : PartialHistory F where
     exact τ.respects_task (s + Δ) (t + Δ) hs ht
 
 @[simp]
-theorem timeShift_domain (τ : PartialHistory F) (Δ z : D) :
+theorem timeShift_domain (τ : PartialHistory F) (Δ z : F.Duration) :
     (τ.timeShift Δ).domain z ↔ τ.domain (z + Δ) := Iff.rfl
 
 /-- The extension order is preserved by time shift. -/
-theorem timeShift_mono {τ σ : PartialHistory F} (Δ : D) (h : τ ≤ σ) :
+theorem timeShift_mono {τ σ : PartialHistory F} (Δ : F.Duration) (h : τ ≤ σ) :
     τ.timeShift Δ ≤ σ.timeShift Δ :=
   ⟨fun z hz => (le_def.mp h).subset (z + Δ) hz, fun z hz => (le_def.mp h).agree (z + Δ) hz⟩
 
 /-- Shifting by `Δ` and then by `-Δ` returns to the original time coordinate. -/
-theorem timeShift_timeShift_neg_domain_iff (τ : PartialHistory F) (Δ z : D) :
+theorem timeShift_timeShift_neg_domain_iff (τ : PartialHistory F) (Δ z : F.Duration) :
     ((τ.timeShift Δ).timeShift (-Δ)).domain z ↔ τ.domain z := by
   have h : z + -Δ + Δ = z := by rw [add_assoc, neg_add_cancel, add_zero]
   show τ.domain (z + -Δ + Δ) ↔ τ.domain z
   rw [h]
 
 /-- States are unchanged by shifting by `Δ` and then by `-Δ`. -/
-theorem timeShift_timeShift_neg_states (τ : PartialHistory F) (Δ z : D)
+theorem timeShift_timeShift_neg_states (τ : PartialHistory F) (Δ z : F.Duration)
     (h : ((τ.timeShift Δ).timeShift (-Δ)).domain z) (h' : τ.domain z) :
     ((τ.timeShift Δ).timeShift (-Δ)).states z h = τ.states z h' :=
   states_eq_of_time_eq τ (by rw [add_assoc, neg_add_cancel, add_zero]) h h'
 
 /-- First half of the shift/unshift pair: the double shift extends the original. -/
-theorem le_timeShift_timeShift_neg (τ : PartialHistory F) (Δ : D) :
+theorem le_timeShift_timeShift_neg (τ : PartialHistory F) (Δ : F.Duration) :
     τ ≤ (τ.timeShift Δ).timeShift (-Δ) :=
   ⟨fun t ht => (timeShift_timeShift_neg_domain_iff τ Δ t).mpr ht,
    fun t ht => timeShift_timeShift_neg_states τ Δ t _ ht⟩
 
 /-- Second half of the shift/unshift pair: the original extends the double shift. -/
-theorem timeShift_timeShift_neg_le (τ : PartialHistory F) (Δ : D) :
+theorem timeShift_timeShift_neg_le (τ : PartialHistory F) (Δ : F.Duration) :
     (τ.timeShift Δ).timeShift (-Δ) ≤ τ :=
   ⟨fun t ht => (timeShift_timeShift_neg_domain_iff τ Δ t).mp ht,
    fun t ht => (timeShift_timeShift_neg_states τ Δ t ht _).symm⟩
@@ -169,7 +169,7 @@ theorem timeShift_timeShift_neg_le (τ : PartialHistory F) (Δ : D) :
 
 /-- Any two members of a chain agree on their common domain. -/
 theorem chain_states_agree {c : Set (PartialHistory F)} (hc : IsChain (· ≤ ·) c)
-    {σ₁ σ₂ : PartialHistory F} (h1 : σ₁ ∈ c) (h2 : σ₂ ∈ c) (t : D)
+    {σ₁ σ₂ : PartialHistory F} (h1 : σ₁ ∈ c) (h2 : σ₂ ∈ c) (t : F.Duration)
     (ht1 : σ₁.domain t) (ht2 : σ₂.domain t) :
     σ₁.states t ht1 = σ₂.states t ht2 := by
   rcases hc.total h1 h2 with h | h

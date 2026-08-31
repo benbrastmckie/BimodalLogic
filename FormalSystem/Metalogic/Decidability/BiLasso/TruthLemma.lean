@@ -193,6 +193,7 @@ theorem truth_along_annot (hbx : BoxOracleSound P bx) (A : Annot P φ)
     constructor
     · -- the substantive direction: an inner induction on the distance to the witness
       rintro ⟨s, hts, hse, hguard⟩
+      have hts' : @LT.lt ℤ _ t s := hts
       exact untl_mem_label_of_witness A hloc hmem hg he (s - t).toNat t s
         (by omega) hts hse hguard
     · -- immediate: `Fulfilling` hands over the witness
@@ -207,6 +208,7 @@ theorem truth_along_annot (hbx : BoxOracleSound P bx) (A : Annot P φ)
     have he := ihe hec
     constructor
     · rintro ⟨s, hst, hse, hguard⟩
+      have hst' : @LT.lt ℤ _ s t := hst
       exact snce_mem_label_of_witness A hloc hmem hg he (t - s).toNat t s
         (by omega) hst hse hguard
     · intro hlab

@@ -426,9 +426,10 @@ theorem extend_periodic_of_finite_domain {F : ParamTaskFrame ℤ} [Finite F.Worl
   intro t ht
   have htD : t ∈ hfin.toFinset := by simpa using ht
   have hat : a ≤ t := hamin t htD
-  have htb : t ≤ b := by
+  have htb : @LE.le ℤ _ t b := by
     by_cases htA : t = a
-    · omega
+    · have htA' : @Eq ℤ t a := htA
+      omega
     · exact hbmax t (Finset.mem_erase.mpr ⟨htA, htD⟩)
   have hdom' : τ'.domain t := ⟨hat, htb⟩
   have h1 := hext.agree t hdom'

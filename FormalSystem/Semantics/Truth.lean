@@ -96,7 +96,7 @@ namespace FormalSystem.Semantics
 
 open FormalSystem.Syntax
 
-variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D] {F : ParamTaskFrame D}
+variable {F : TaskFrame}
 
 /--
 Truth of a formula at a model-history-time triple.
@@ -161,15 +161,15 @@ to the paper by a uniform argument swap of the definition and every call site. S
 box retarget.
 -/
 def TruthAt (M : TaskModel F)
-    (τ : WorldHistory F) (t : D) : Formula → Prop
+    (τ : WorldHistory F) (t : F.Duration) : Formula → Prop
   | Formula.atom p => ∃ (ht : τ.domain t), M.valuation (τ.states t ht) p
   | Formula.bot => False
   | Formula.imp φ ψ => TruthAt M τ t φ → TruthAt M τ t ψ
   | Formula.box φ => ∀ (σ : WorldHistory F), σ.IsTotal → TruthAt M σ t φ
-  | Formula.untl ψ φ => ∃ s : D, t < s ∧ TruthAt M τ s φ ∧
-      ∀ r : D, t < r → r < s → TruthAt M τ r ψ
-  | Formula.snce ψ φ => ∃ s : D, s < t ∧ TruthAt M τ s φ ∧
-      ∀ r : D, s < r → r < t → TruthAt M τ r ψ
+  | Formula.untl ψ φ => ∃ s : F.Duration, t < s ∧ TruthAt M τ s φ ∧
+      ∀ r : F.Duration, t < r → r < s → TruthAt M τ r ψ
+  | Formula.snce ψ φ => ∃ s : F.Duration, s < t ∧ TruthAt M τ s φ ∧
+      ∀ r : F.Duration, s < r → r < t → TruthAt M τ r ψ
 
 -- Note: We avoid defining a notation for TruthAt as it causes parsing conflicts
 -- with the validity notation in Validity.lean. Use TruthAt directly.
@@ -180,9 +180,8 @@ namespace Truth
 Bot (⊥) is false everywhere.
 -/
 theorem bot_false
-    {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
-    {F : ParamTaskFrame D} {M : TaskModel F} {τ : WorldHistory F}
-    {t : D} :
+    {F : TaskFrame} {M : TaskModel F} {τ : WorldHistory F}
+    {t : F.Duration} :
     ¬(TruthAt M τ t Formula.bot) := by
   intro h
   exact h
@@ -191,9 +190,8 @@ theorem bot_false
 Truth of implication is material conditional.
 -/
 theorem imp_iff
-    {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
-    {F : ParamTaskFrame D} {M : TaskModel F} {τ : WorldHistory F}
-    {t : D}
+    {F : TaskFrame} {M : TaskModel F} {τ : WorldHistory F}
+    {t : F.Duration}
     (φ ψ : Formula) :
     (TruthAt M τ t (φ.imp ψ)) ↔
       ((TruthAt M τ t φ) → (TruthAt M τ t ψ)) := by
@@ -204,9 +202,8 @@ Truth of atom at a time in the domain: true iff valuation says so at current sta
 For times outside domain, atoms are always false.
 -/
 theorem atom_iff_of_domain
-    {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
-    {F : ParamTaskFrame D} {M : TaskModel F} {τ : WorldHistory F}
-    {t : D} (ht : τ.domain t)
+    {F : TaskFrame} {M : TaskModel F} {τ : WorldHistory F}
+    {t : F.Duration} (ht : τ.domain t)
     (p : Atom) :
     (TruthAt M τ t (Formula.atom p)) ↔
       M.valuation (τ.states t ht) p := by
@@ -222,9 +219,8 @@ theorem atom_iff_of_domain
 Truth of atom at a time outside the domain is false.
 -/
 theorem atom_false_of_not_domain
-    {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
-    {F : ParamTaskFrame D} {M : TaskModel F} {τ : WorldHistory F}
-    {t : D} (ht : ¬τ.domain t)
+    {F : TaskFrame} {M : TaskModel F} {τ : WorldHistory F}
+    {t : F.Duration} (ht : ¬τ.domain t)
     (p : Atom) :
     ¬(TruthAt M τ t (Formula.atom p)) := by
   simp only [TruthAt]
@@ -239,9 +235,8 @@ Truth of box: formula true at every **total** history at the current time.
 is no carrier parameter to supply.
 -/
 theorem box_iff
-    {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
-    {F : ParamTaskFrame D} {M : TaskModel F} {τ : WorldHistory F}
-    {t : D}
+    {F : TaskFrame} {M : TaskModel F} {τ : WorldHistory F}
+    {t : F.Duration}
     (φ : Formula) :
     (TruthAt M τ t φ.box) ↔
       ∀ (σ : WorldHistory F), σ.IsTotal → (TruthAt M σ t φ) := by
@@ -252,9 +247,8 @@ Truth of someFuture: existential future operator.
 F(φ) = U(φ, ⊤) is true iff there exists a strictly future time where φ holds.
 -/
 @[simp] theorem some_future_iff
-    {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
-    {F : ParamTaskFrame D} {M : TaskModel F} {τ : WorldHistory F}
-    {t : D}
+    {F : TaskFrame} {M : TaskModel F} {τ : WorldHistory F}
+    {t : F.Duration}
     (φ : Formula) :
     TruthAt M τ t (Formula.someFuture φ) ↔
       ∃ s, t < s ∧ TruthAt M τ s φ := by
@@ -270,9 +264,8 @@ Truth of somePast: existential past operator.
 P(φ) = S(φ, ⊤) is true iff there exists a strictly past time where φ held.
 -/
 @[simp] theorem some_past_iff
-    {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
-    {F : ParamTaskFrame D} {M : TaskModel F} {τ : WorldHistory F}
-    {t : D}
+    {F : TaskFrame} {M : TaskModel F} {τ : WorldHistory F}
+    {t : F.Duration}
     (φ : Formula) :
     TruthAt M τ t (Formula.somePast φ) ↔
       ∃ s, s < t ∧ TruthAt M τ s φ := by
@@ -288,12 +281,11 @@ Truth of allFuture: universal future operator.
 G(φ) = ¬F(¬φ) is true iff φ holds at all strictly future times.
 -/
 @[simp] theorem future_iff
-    {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
-    {F : ParamTaskFrame D} {M : TaskModel F} {τ : WorldHistory F}
-    {t : D}
+    {F : TaskFrame} {M : TaskModel F} {τ : WorldHistory F}
+    {t : F.Duration}
     (φ : Formula) :
     TruthAt M τ t φ.allFuture ↔
-      ∀ (s : D), t < s → TruthAt M τ s φ := by
+      ∀ (s : F.Duration), t < s → TruthAt M τ s φ := by
   simp only [Formula.allFuture, Formula.neg, Formula.someFuture, Formula.top, TruthAt]
   constructor
   · intro h s hlt
@@ -307,12 +299,11 @@ Truth of allPast: universal past operator.
 H(φ) = ¬P(¬φ) is true iff φ holds at all strictly past times.
 -/
 @[simp] theorem past_iff
-    {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
-    {F : ParamTaskFrame D} {M : TaskModel F} {τ : WorldHistory F}
-    {t : D}
+    {F : TaskFrame} {M : TaskModel F} {τ : WorldHistory F}
+    {t : F.Duration}
     (φ : Formula) :
     TruthAt M τ t φ.allPast ↔
-      ∀ (s : D), s < t → TruthAt M τ s φ := by
+      ∀ (s : F.Duration), s < t → TruthAt M τ s φ := by
   simp only [Formula.allPast, Formula.neg, Formula.somePast, Formula.top, TruthAt]
   constructor
   · intro h s hlt
@@ -327,13 +318,12 @@ True iff there exists a strictly future time where ψ ∧ φ holds,
 with ψ holding at all intermediate times.
 -/
 @[simp] theorem strong_release_iff
-    {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
-    {F : ParamTaskFrame D} {M : TaskModel F} {τ : WorldHistory F}
-    {t : D}
+    {F : TaskFrame} {M : TaskModel F} {τ : WorldHistory F}
+    {t : F.Duration}
     (φ ψ : Formula) :
     TruthAt M τ t (Formula.strongRelease φ ψ) ↔
-      ∃ s : D, t < s ∧ TruthAt M τ s (Formula.and ψ φ) ∧
-        ∀ r : D, t < r → r < s → TruthAt M τ r ψ := by
+      ∃ s : F.Duration, t < s ∧ TruthAt M τ s (Formula.and ψ φ) ∧
+        ∀ r : F.Duration, t < r → r < s → TruthAt M τ r ψ := by
   simp [Formula.strongRelease, Formula.and, TruthAt]
 
 /--
@@ -342,13 +332,12 @@ True iff there exists a strictly past time where ψ ∧ φ held,
 with ψ holding at all intermediate times.
 -/
 @[simp] theorem strong_trigger_iff
-    {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
-    {F : ParamTaskFrame D} {M : TaskModel F} {τ : WorldHistory F}
-    {t : D}
+    {F : TaskFrame} {M : TaskModel F} {τ : WorldHistory F}
+    {t : F.Duration}
     (φ ψ : Formula) :
     TruthAt M τ t (Formula.strongTrigger φ ψ) ↔
-      ∃ s : D, s < t ∧ TruthAt M τ s (Formula.and ψ φ) ∧
-        ∀ r : D, s < r → r < t → TruthAt M τ r ψ := by
+      ∃ s : F.Duration, s < t ∧ TruthAt M τ s (Formula.and ψ φ) ∧
+        ∀ r : F.Duration, s < r → r < t → TruthAt M τ r ψ := by
   simp [Formula.strongTrigger, Formula.and, TruthAt]
 
 end Truth
@@ -375,7 +364,7 @@ Truth transport across equal histories.
 When two histories are equal, truth is preserved.
 -/
 theorem truth_history_eq (M : TaskModel F)
-    (τ₁ τ₂ : WorldHistory F) (t : D)
+    (τ₁ τ₂ : WorldHistory F) (t : F.Duration)
     (h_eq : τ₁ = τ₂) (φ : Formula) :
     TruthAt M τ₁ t φ ↔ TruthAt M τ₂ t φ := by
   cases h_eq
@@ -388,7 +377,7 @@ This is the key transport lemma for the box case of time_shift_preserves_truth.
 It allows us to transfer truth from (timeShift (timeShift σ Δ) (-Δ)) back to σ.
 -/
 theorem truth_double_shift_cancel (M : TaskModel F)
-    (σ : WorldHistory F) (Δ : D) (t : D)
+    (σ : WorldHistory F) (Δ : F.Duration) (t : F.Duration)
     (φ : Formula) :
     TruthAt M (WorldHistory.timeShift (WorldHistory.timeShift σ Δ) (-Δ)) t φ ↔
     TruthAt M σ t φ := by
@@ -459,7 +448,7 @@ definitionally `fun t => hρ (t + Δ)` — there is no closure condition left to
 statement is strictly stronger than the shift-closure-hypothesised version it replaces.
 -/
 theorem time_shift_preserves_truth (M : TaskModel F)
-    (σ : WorldHistory F) (x y : D)
+    (σ : WorldHistory F) (x y : F.Duration)
     (φ : Formula) :
     TruthAt M (WorldHistory.timeShift σ (y - x)) x φ ↔ TruthAt M σ y φ := by
   -- Proof by structural induction on φ
@@ -698,7 +687,7 @@ Corollary: For any history σ at time y, there exists a history at time x
 This is the key lemma for proving MF and TF axioms.
 -/
 theorem exists_shifted_history (M : TaskModel F)
-    (σ : WorldHistory F) (x y : D)
+    (σ : WorldHistory F) (x y : F.Duration)
     (φ : Formula) :
     TruthAt M σ y φ ↔
     TruthAt M (WorldHistory.timeShift σ (y - x)) x φ := by
@@ -742,7 +731,7 @@ clause: the set of total histories over a finite carrier is still uncountable, b
 *predicate* is constant on it, so a model has one finite set of box facts, computed once.
 -/
 theorem box_const (M : TaskModel F) (τ σ : WorldHistory F) (_hτ : τ.IsTotal) (_hσ : σ.IsTotal)
-    (t s : D) (φ : Formula) :
+    (t s : F.Duration) (φ : Formula) :
     TruthAt M τ t φ.box ↔ TruthAt M σ s φ.box := by
   simp only [TruthAt]
   constructor
@@ -754,7 +743,7 @@ theorem box_const (M : TaskModel F) (τ σ : WorldHistory F) (_hτ : τ.IsTotal)
       (h (WorldHistory.timeShift ρ (t - s)) (WorldHistory.isTotal_timeShift hρ (t - s)))
 
 /-- The time-only specialization of `box_const`, at a fixed history. -/
-theorem box_time_const (M : TaskModel F) (τ : WorldHistory F) (hτ : τ.IsTotal) (t s : D)
+theorem box_time_const (M : TaskModel F) (τ : WorldHistory F) (hτ : τ.IsTotal) (t s : F.Duration)
     (φ : Formula) : TruthAt M τ t φ.box ↔ TruthAt M τ s φ.box :=
   box_const M τ τ hτ hτ t s φ
 

@@ -164,8 +164,7 @@ end ParamTaskFrame
 
 namespace PartialHistory
 
-variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
-variable {F : ParamTaskFrame D}
+variable {F : TaskFrame}
 
 /--
 The time `t` is *paired* about the duration `z`: some other time in the domain lies on the
@@ -184,7 +183,7 @@ and above `z` then *every* `t ∈ X` is paired and `Constraints τ z` consists o
 `X` lies entirely on one side of `z` then no `t` is paired and `Constraints τ z` consists of
 fibers only.
 -/
-def IsPaired (τ : PartialHistory F) (z t : D) : Prop :=
+def IsPaired (τ : PartialHistory F) (z t : F.Duration) : Prop :=
   (t < z ∧ ∃ s, τ.domain s ∧ z < s) ∨ (z < t ∧ ∃ s, τ.domain s ∧ s < z)
 
 /--
@@ -207,24 +206,24 @@ The two clauses are the two disjuncts, in the paper's order:
 hypothesis at the use sites that need it, matching how the `x, y ≥ 0` segment proviso is carried
 by `IsSegment` rather than by `Seg`.
 -/
-def Constraints (τ : PartialHistory F) (z : D) : Set (Set F.WorldState) :=
-  {c | (∃ (t s : D) (ht : τ.domain t) (hs : τ.domain s), t < z ∧ z < s ∧
+def Constraints (τ : PartialHistory F) (z : F.Duration) : Set (Set F.WorldState) :=
+  {c | (∃ (t s : F.Duration) (ht : τ.domain t) (hs : τ.domain s), t < z ∧ z < s ∧
           c = ParamTaskFrame.Seg F.TaskRel (τ.states t ht) (τ.states s hs) (z - t) (s - z))
-     ∨ (∃ (t : D) (ht : τ.domain t), ¬ IsPaired τ z t ∧
+     ∨ (∃ (t : F.Duration) (ht : τ.domain t), ¬ IsPaired τ z t ∧
           c = ParamTaskFrame.Fib F.TaskRel (τ.states t ht) (z - t))}
 
 /-- Membership in `Constraints`, unfolded: a set is a constraint on `z` exactly when it is one of
 the two clauses of `def:constraints`. -/
-theorem mem_Constraints {τ : PartialHistory F} {z : D} {c : Set F.WorldState} :
+theorem mem_Constraints {τ : PartialHistory F} {z : F.Duration} {c : Set F.WorldState} :
     c ∈ Constraints τ z ↔
-      (∃ (t s : D) (ht : τ.domain t) (hs : τ.domain s), t < z ∧ z < s ∧
+      (∃ (t s : F.Duration) (ht : τ.domain t) (hs : τ.domain s), t < z ∧ z < s ∧
           c = ParamTaskFrame.Seg F.TaskRel (τ.states t ht) (τ.states s hs) (z - t) (s - z))
-     ∨ (∃ (t : D) (ht : τ.domain t), ¬ IsPaired τ z t ∧
+     ∨ (∃ (t : F.Duration) (ht : τ.domain t), ¬ IsPaired τ z t ∧
           c = ParamTaskFrame.Fib F.TaskRel (τ.states t ht) (z - t)) := Iff.rfl
 
 /-- Every segment member of `Constraints τ z` is a segment in the sense of `IsSegment`: the
 paper's `x, y ≥ 0` proviso is met because `t < z < s`. -/
-theorem isSegment_of_mem_Constraints_left {τ : PartialHistory F} {z t s : D}
+theorem isSegment_of_mem_Constraints_left {τ : PartialHistory F} {z t s : F.Duration}
     (ht : τ.domain t) (hs : τ.domain s) (htz : t < z) (hzs : z < s) :
     ParamTaskFrame.IsSegment F.TaskRel
       (ParamTaskFrame.Seg F.TaskRel (τ.states t ht) (τ.states s hs) (z - t) (s - z)) :=
@@ -233,7 +232,7 @@ theorem isSegment_of_mem_Constraints_left {τ : PartialHistory F} {z t s : D}
 
 /-- Every member of `Constraints τ z` is a fiber or a segment — the disjunction the *Spherical*
 axiom ranges over. The two classes stay separate. -/
-theorem isFiber_or_isSegment_of_mem_Constraints {τ : PartialHistory F} {z : D}
+theorem isFiber_or_isSegment_of_mem_Constraints {τ : PartialHistory F} {z : F.Duration}
     {c : Set F.WorldState} (hc : c ∈ Constraints τ z) :
     ParamTaskFrame.IsFiber F.TaskRel c ∨ ParamTaskFrame.IsSegment F.TaskRel c := by
   rcases hc with ⟨t, s, ht, hs, htz, hzs, rfl⟩ | ⟨t, ht, _, rfl⟩
