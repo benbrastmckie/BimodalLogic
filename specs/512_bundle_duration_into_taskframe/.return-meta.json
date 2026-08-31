@@ -1,31 +1,29 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/512_bundle_duration_into_taskframe/reports/01_bundle-duration-into-taskframe.md",
-      "summary": "Bundling TaskFrame's duration type: target shape verified to elaborate (Type 1, no universe change), ofParam/toParam bridge is a rfl-isomorphism enabling incremental migration, concrete-frame instance-transparency hazard characterised with a working idiom, 7-phase decomposition and scale measurements."
-    },
-    {
-      "type": "probe",
-      "path": "specs/512_bundle_duration_into_taskframe/reports/01_probes.lean",
-      "summary": "Green Lean probe: bundled structure elaboration, instance projections, bridge round-trip, concrete-frame diamond, downstream shape, cross-duration quantification, universe polymorphism."
-    },
-    {
-      "type": "probe",
-      "path": "specs/512_bundle_duration_into_taskframe/reports/02_probes.lean",
-      "summary": "Green Lean probe: four mitigations for the transparency hazard, the TemporalOrder Prop-mixin, native PartialHistory/WorldHistory/TaskModel re-parameterisation, FiniteTaskFrame, and a single FrameClass-indexed ValidIn."
-    },
-    {
-      "type": "probe",
-      "path": "specs/512_bundle_duration_into_taskframe/reports/03_probes.lean",
-      "summary": "Green Lean probe: exact reducible-vs-default transparency characterisation and the working idiom for concrete-integer frames."
+      "type": "plan",
+      "path": "specs/512_bundle_duration_into_taskframe/plans/01_bundle-duration-into-taskframe.md",
+      "summary": "13-phase incremental migration plan bundling Duration as a TaskFrame field behind a definitional ParamTaskFrame bridge, with lake build green at every phase boundary."
     }
   ],
+  "next_steps": "Run /implement 512 to execute the plan",
   "metadata": {
     "session_id": "sess_1788209220_633087_512",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 13,
+    "estimated_hours": 20,
+    "dependency_waves": [[1],[2],[3],[4],[5,8],[6,7],[9],[10],[11],[12],[13]]
+  },
+  "memory_candidates": [
+    {
+      "content": "Refactoring a widely-used Lean 4 structure from parameterized to bundled form (a type parameter becoming a field) is migratable incrementally rather than big-bang when the two forms are related by a definitional isomorphism: rename the old structure to Param<X>, declare the bundled X beside it, and bridge with ofParam/toParam, which round-trip by rfl in both directions via structure eta. Downstream files then migrate one import layer at a time with the build green at every step, and the bridge is deleted last. Two mechanics make this work in practice: (1) declare ofParam @[reducible] or as an abbrev, because typeclass synthesis runs at reducible transparency and a plain def in the chain stalls it, manufacturing a transitional instance diamond between the bundled projection and the ambient instance binder; (2) at CONCRETE carrier values the same transparency split means numerals cannot elaborate at F.Carrier and omega cannot recognize the type even though F.Carrier = Int is rfl at default transparency -- state concrete-carrier lemmas with explicit (d : Int) binders and discharge arithmetic outside the structure application. Abstract-carrier code is entirely unaffected.",
+      "category": "PATTERN",
+      "source_artifact": "specs/512_bundle_duration_into_taskframe/plans/01_bundle-duration-into-taskframe.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["lean4", "bundled-structure", "reducible-transparency", "incremental-refactor", "structure-eta", "typeclass-synthesis"]
+    }
+  ]
 }
