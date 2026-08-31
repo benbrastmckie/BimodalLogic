@@ -14,3 +14,10 @@ PASS: c4 spot-check sound (no valid<->invalid flips, coverage and decisiveness h
 [2026-08-24T18:05:36-07:00] === Step 4: c7 regeneration ===
 [2026-08-24T18:05:36-07:00] available memory: 17472MB
 [2026-08-24T18:05:36-07:00] backed up existing c7 (13749 records) to data/bmlogic-c7.jsonl.bak
+[2026-08-25T05:05:52-07:00] watchdog: peak RSS 1750MB
+[2026-08-25T05:05:56-07:00] c7 exit=0 records=1646512 (prior stall was 13749)
+[2026-08-25T05:05:56-07:00] === Label distribution ===
+valid:   49327
+invalid: 1378213
+timeout: 218972
+[2026-08-25T05:06:49-07:00] SUCCESS: c7 regenerated with 1646512 records, no stall at 13,750

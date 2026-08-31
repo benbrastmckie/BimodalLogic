@@ -1,0 +1,86 @@
+{
+  "status": "partial",
+  "task_number": 428,
+  "session_id": "sess_1785985023_6db86f",
+  "phase": "implement",
+  "plan_path": "specs/428_engine_totality_at_a_quantified_branch_budget/plans/04_ordtimesknown-strengthening-totality.md",
+  "continuation_path": "/home/benjamin/Projects/BimodalLogic/specs/428_engine_totality_at_a_quantified_branch_budget/handoffs/v4-phase-14-handoff-20260806.md",
+  "phases_completed": 17,
+  "phases_total": 17,
+  "plan_markers_verified": true,
+  "summary": "ALL 17 PHASES ARE NOW [COMPLETED] and the module is green, sorry-free and axiom-free, but the status is partial DELIBERATELY: the terminus carries four named residual hypotheses and two of the plan's premises did not survive contact with the source. LANDED: expandBranchWithFuel_isSome_of_measure -- the fuel induction, free of the unbranching restriction, over an abstract carried state, measure and invariant, with all four ExpansionResult shapes discharged and both split folds consumed exactly as the plan specified (expand_split_fold_isSome, expand_splitOrdered_fold_isSome, allocateFuelProportionally_ge, totalDifficulty_le, splitBudget_preserved). This is the piece Fuel.lean's MEASURED OBSTRUCTION note left open, and it mentions no branch cardinality, no known-time count and no mint potential, so it cannot smuggle in a fact about any of them. The concrete measure budgetPotential = 2(Tmax^2+1)*mintPotential + extensionAllowance + splitOrderedRank breaks the recorded circularity: the mint dimension pays for the rank rise at a mint, and extensionAllowance (the counting chain's links 2 and 3 turned into a per-state quantity) absorbs arm 3's branch shrinkage rather than re-opening it. Then buildTableauAt_isSome_of_budget -- THE TERMINUS -- with RunInvariant discharged inside via runInvariant_initial and absent from the statement, plus buildTableauAt_isSome_at_seed with the mint budget, time bound and branch budget all read off; the branching non-vacuity witness at T(p -> q), decided rather than asserted; and the do-not-re-attempt register, eight entries. FINDING 1: BudgetedTotality is FALSE as stated -- refuted at beta = 0 by budgetedTotality_beta_zero_false, because its beta-linear budget hypothesis degenerates to branchesUsed <= maxBranches while the engine's guard is strict -- and its fuel figure is SHORT. Phase 12's path_le_splitPathBound checks #extensions + #identifications, but fuel is spent by EVERY engine step including the ordered split's arms 1-2, and splitPathBound budgets only |U|+1 branch-growing steps where shrinkage refunds admit |U| + Tmax*|U| and each of up to 8|U| mints resets the ordered rank. The previous cycle's 'the figure fits, no divergence needed' is therefore WITHDRAWN: it compared the wrong quantity. The landed statements are at the derived mintAwareFuel, with splitAwareFuel_le_mintAwareFuel proving it ENLARGES rather than replaces the landed figure -- which is plan 02's own instruction for orderedRunBound. FINDING 2: the post-blocking '| some _ => none' arm was NOT eliminated by the blocking-aware certificate change; it is still textually present in buildTableauAt. What the change removed is the PERMANENT disagreement, not the arm. It is discharged by the named residual PostBlockingSettles, which also subsumes resolveOpenArm's none (armSettlement_of_postBlockingSettles), so the terminus carries one settlement residual rather than two -- and ArmSettlement alone is provably too weak, because resolveOpenArm tests findClosure satBr first and buildTableauAt does not. THE FOUR RESIDUALS, each a named def with an in-source docstring saying what would discharge it: MintPaysForTime (the open mathematical core -- the sigma-hit/time-reuse question the previous cycle handed forward, which did NOT discharge, PLUS a new obstruction found this cycle: 'not ruleMintsFreshLabel implies no new time' is FALSE, since densityRule and the active arms of untlNeg/snceNeg create times without being witness-guarded, which is exactly why expandOnceNoFresh tests the ordering length rather than the rule list); PostBlockingSettles; UniverseClosed (closure of U under the engine's steps AND under an identification's relabelling -- the second clause is genuinely new); and DifficultyBounded with beta >= 3 (the two coefficients splitAwareFuel already carries as an interface, blocked from being computed here because temporalCount/modalCount are private to Saturation.lean). None is the unbranching restriction renamed; all four ExpansionResult shapes remain admissible under every one of them. FINAL GATE, measured: lake build green repo-wide (2333 jobs, 3m24.678s wall / 17m7.636s user); 0 sorry, 0 axiom, 0 NoSplit, 0 task-number citations; #print axioms on the terminus exactly [propext, Classical.choice, Quot.sound]; Saturation.lean / Tableau.lean / Fuel.lean md5s all still match the plan's recorded baselines. MintBound.lean 3524 -> 4512 lines, purely additive, no landed declaration deleted, renamed or edited. No set_option was raised anywhere this cycle.",
+  "blockers": [],
+  "residuals": [
+    "MintPaysForTime -- the open mathematical core: the sigma-hit/time-reuse question, plus the new finding that densityRule and the active arms of untlNeg/snceNeg create times without being in ruleMintsFreshLabel",
+    "PostBlockingSettles -- the post-blocking pass leaves a blocking-aware saturated branch; covers both resolveOpenArm's none and buildTableauAt's",
+    "UniverseClosed -- closure of U under the engine's steps and under an identification's relabelling",
+    "DifficultyBounded with beta >= 3 -- the coefficients splitAwareFuel carries as an interface; blocked by Saturation.lean's private counting functions"
+  ],
+  "artifacts": [
+    "/home/benjamin/Projects/BimodalLogic/FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean",
+    "/home/benjamin/Projects/BimodalLogic/specs/428_engine_totality_at_a_quantified_branch_budget/plans/04_ordtimesknown-strengthening-totality.md",
+    "/home/benjamin/Projects/BimodalLogic/specs/428_engine_totality_at_a_quantified_branch_budget/summaries/04_ordtimesknown-strengthening-totality-summary.md",
+    "/home/benjamin/Projects/BimodalLogic/specs/428_engine_totality_at_a_quantified_branch_budget/handoffs/v4-phase-14-handoff-20260806.md",
+    "/home/benjamin/Projects/BimodalLogic/specs/428_engine_totality_at_a_quantified_branch_budget/scratch/13_fuel-induction.lean",
+    "/home/benjamin/Projects/BimodalLogic/specs/428_engine_totality_at_a_quantified_branch_budget/scratch/13c-concrete.lean",
+    "/home/benjamin/Projects/BimodalLogic/specs/428_engine_totality_at_a_quantified_branch_budget/scratch/14-terminus.lean"
+  ],
+  "modified_files": [
+    "FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean",
+    "specs/428_engine_totality_at_a_quantified_branch_budget/plans/04_ordtimesknown-strengthening-totality.md",
+    "specs/428_engine_totality_at_a_quantified_branch_budget/summaries/04_ordtimesknown-strengthening-totality-summary.md",
+    "specs/428_engine_totality_at_a_quantified_branch_budget/handoffs/v4-phase-14-handoff-20260806.md",
+    "specs/428_engine_totality_at_a_quantified_branch_budget/.orchestrator-handoff.json",
+    "specs/428_engine_totality_at_a_quantified_branch_budget/.return-meta.json",
+    "specs/428_engine_totality_at_a_quantified_branch_budget/scratch/13_fuel-induction.lean",
+    "specs/428_engine_totality_at_a_quantified_branch_budget/scratch/13b-omega-atoms.lean",
+    "specs/428_engine_totality_at_a_quantified_branch_budget/scratch/13c-concrete.lean",
+    "specs/428_engine_totality_at_a_quantified_branch_budget/scratch/14-terminus.lean"
+  ],
+  "phase_markers": {
+    "1": "COMPLETED",
+    "2": "COMPLETED",
+    "3": "COMPLETED",
+    "4": "COMPLETED",
+    "4.1": "COMPLETED",
+    "4.2": "COMPLETED",
+    "4.3": "COMPLETED",
+    "5": "COMPLETED",
+    "6": "COMPLETED",
+    "7": "COMPLETED",
+    "8": "COMPLETED",
+    "9": "COMPLETED",
+    "10": "COMPLETED",
+    "11": "COMPLETED",
+    "12": "COMPLETED",
+    "13": "COMPLETED",
+    "14": "COMPLETED"
+  },
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "nosplit_count": 0,
+    "task_reference_count": 0,
+    "build_passed": true,
+    "build_command": "lake build",
+    "build_scope": "full repo",
+    "build_jobs": 2333,
+    "build_wall_seconds": 205,
+    "build_wall": "3m24.678s",
+    "build_user_time": "17m7.636s",
+    "axiom_profile": "[propext, Classical.choice, Quot.sound]",
+    "frozen_files_md5_match": true,
+    "frozen_files_md5": {
+      "FormalSystem/Metalogic/Decidability/Saturation.lean": "ae47004e06e77f2846cc3e1dfa408382",
+      "FormalSystem/Metalogic/Decidability/Tableau.lean": "cfd82332c8e400ac97ab709ece5dfb4a",
+      "FormalSystem/Metalogic/Decidability/Verified/Termination/Fuel.lean": "8a395bd7117a682c1f8302a2ac5f0f1f"
+    }
+  },
+  "commits": [
+    "791a666ba task 428 phase 13.1: the fuel induction, over an abstract measure",
+    "1fac329aa task 428 phase 13: the measure, the derived figure, and the branching witness",
+    "4b936247e task 428 phase 14: the terminus at buildTableauAt, and the register"
+  ]
+}

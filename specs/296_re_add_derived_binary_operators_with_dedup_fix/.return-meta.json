@@ -1,0 +1,48 @@
+{
+  "status": "partial",
+  "requires_user_review": true,
+  "review_reason": "P1-P3 complete and build-green; P4 (fresh c4 generator acceptance test) and P5 deferred per orchestrator directive because P4 triggers a prohibitively slow ~264MB executable C rebuild requiring user approval.",
+  "started_at": "2026-07-14T00:00:00Z",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true,
+    "build_scope": "lake build Bimodal.Automation (1046 jobs, all downstream library modules); executables (lean_exe dataset_generator) intentionally not built (P4 deferred)"
+  },
+  "partial_progress": {
+    "stage": "phases_1_3_complete_p4_p5_deferred",
+    "details": "P1 (enumerator branches), P2 (Normalization representation layer), P3 (value-level census + cross-check) complete and committed, each green. P4/P5 deferred.",
+    "phases_completed": 3,
+    "phases_total": 5
+  },
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/296_re_add_derived_binary_operators_with_dedup_fix/summaries/01_derived-binary-operators-summary.md",
+      "summary": "P1-P3 implemented (enumerator re-add, Normalization representation layer, value-level census); P4/P5 deferred (slow C rebuild)"
+    },
+    {
+      "type": "source",
+      "path": "Theories/Bimodal/Automation/FormulaEnumerator.lean",
+      "summary": "Re-added 6 binary derived operator branches across enumExactHelper, sampleOne, sampleOneRandom, randomSubFormula, partitionCrossProduct; #guard membership at c3"
+    },
+    {
+      "type": "source",
+      "path": "Theories/Bimodal/Automation/Normalization.lean",
+      "summary": "4 EnrichedFormula constructors, fold recognition for all 6 binary ops, serialization, 4 unfold lemmas, #guard round-trip suite, value-level operator census with fold-tag cross-check"
+    }
+  ],
+  "modified_files": [
+    "Theories/Bimodal/Automation/FormulaEnumerator.lean",
+    "Theories/Bimodal/Automation/Normalization.lean"
+  ],
+  "metadata": {
+    "session_id": "sess_1784042369_262c14_296",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "compliance_check": "passed"
+  }
+}

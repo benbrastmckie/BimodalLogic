@@ -1,0 +1,24 @@
+{
+  "status": "partial",
+  "summary": "Task 296 P1-P3 implemented and build-green. Re-added the 6 derived binary temporal operators (release, weak_until, trigger, weak_since, strong_release, strong_trigger) to all enumeration paths (FormulaEnumerator.lean), completed the Normalization.lean representation layer (4 EnrichedFormula constructors, fold recognition, serialization, 4 unfold lemmas, #guard round-trip suite), and added a value-level operator census cross-checked against folded tags. Zero sorries, zero new axioms, zero vacuous defs. P4 (fresh c4 generator acceptance test) and P5 deferred: P4 triggers a slow ~264MB executable C rebuild requiring user approval.",
+  "phases_completed": 3,
+  "phases_total": 5,
+  "artifacts": [
+    {
+      "path": "specs/296_re_add_derived_binary_operators_with_dedup_fix/summaries/01_derived-binary-operators-summary.md",
+      "type": "summary",
+      "summary": "P1-P3 implemented (enumerator re-add, Normalization representation layer, value-level census); P4/P5 deferred (slow C rebuild)"
+    }
+  ],
+  "blockers": [],
+  "continuation_context": {
+    "handoff_path": "specs/296_re_add_derived_binary_operators_with_dedup_fix/.orchestrator-handoff.json",
+    "next_phase": "P4 c4 acceptance test (deferred, needs user approval for slow rebuild)"
+  },
+  "modified_files": [
+    "Theories/Bimodal/Automation/FormulaEnumerator.lean",
+    "Theories/Bimodal/Automation/Normalization.lean"
+  ],
+  "next_action_hint": "implement (P4 deferred)",
+  "session_id": "sess_1784042369_262c14_296"
+}

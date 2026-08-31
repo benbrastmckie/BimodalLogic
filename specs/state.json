@@ -9,42 +9,13 @@
     {
       "project_number": 506,
       "project_name": "fix_typst_display_defects_via_playwright_visual_loop",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "typst",
       "description": "Fix all outstanding display/layout defects in the compiled typst documents (typst/FormalFoundations.typ and typst/BimodalReference.typ) using a Playwright-driven visual check loop. Known defect: in <sec:representation> Definition 5.1 (TM+-algebra), the display equation listing the derived operators (F a := 1 ▷ a, G a := ¬F(¬a), P a := 1 ◁ a, H a := ¬P(¬a), Next a := 0 ▷ a, △a := H a ∧ a ∧ G a) is set as one unbreakable math line and overflows both the definition box and the page margins; it must be broken across lines (e.g. an aligned block or a two-row layout) so it fits within the text block. Approach: compile each document to PDF (and/or SVG/PNG pages via `typst compile --format png`), serve the output to a headless browser via the Playwright MCP tools, screenshot every page, and systematically inspect for overflowing display math, content escaping theorem/definition boxes, text running past margins, clipped tables, orphaned headings, broken cross-references or citation placeholders, and any other visual defect. Catalogue every finding with page number and source line, then plan and implement fixes in the .typ sources (line-breaking long equations, resizing tables, adjusting box widths, etc.), recompiling and re-screenshotting after each fix and repeating the full sweep until no display issues remain. Both documents must compile cleanly and scripts/typst-sync-check.sh must pass at the end. Do not change mathematical content — layout only",
       "topic": "publication-quality",
       "created": "2026-08-27T04:46:28Z",
-      "last_updated": "2026-08-27T04:46:28Z"
-    },
-    {
-      "project_number": 505,
-      "project_name": "revise_representation_section_to_ideal_development",
-      "status": "completed",
-      "task_type": "formal",
-      "description": "Revise <sec:representation> in typst/FormalFoundations.typ so that it presents the representation theorem for TM+ as it should be developed, not as the Lean tree currently approximates it: state the theorem (every TM+-algebra embeds, point-completely, into a product of complex algebras of shift-set flows, one per box-simple component, with the temporal order of each component discrete or dense according to the discreteness element), give its proof architecture (algebraic soundness, ultrafilter frame and Jonsson-Tarski reduct, component decomposition, model existence via weak completeness plus compactness over the elementary class of shift sets, saturation for one flow per component), and the per-class refinements (dense and base: point-complete; Z-time and R: only the weak SP-representation, by the non-compactness witnesses). Treat strict Since/Until and G/H as primitive and state positively that normality, transitivity, seriality, linearity and tense conjugacy are the only operator properties used, so the failure of the T-axioms for G/H is immaterial; drop the interior-operator framing. Remove everything not part of this theorem: the four-way distinction, the six-rung ladder and figure, the README-derived status prose, the sigmaQuot step, the descriptive-general-frame duality, the Sahlqvist table, the Spherical-diagnosed remark, Routes T and M, the gate remark, the Kamp remark, the Obstruction subsection, and the unsettled-items remark. No meta-commentary on the section or on the broader attempt; Lean status confined to #leansrc tags and at most one compact table. Update the abstract and the cross-references at lines 128, 340, 1005 and 1096, add the missing bibliography entries, and keep both typst documents compiling with scripts/typst-sync-check.sh passing. The research report in this task specifies the target section outline, the theorem statements, the cut list, and the style rules.",
-      "topic": "algebraic-representation",
-      "created": "2026-08-27T00:34:23Z",
-      "last_updated": "2026-08-27T01:21:51Z",
-      "session_id": "sess_1787791752_5c0441",
-      "next_artifact_number": 2,
-      "artifacts": [
-        {
-          "path": "specs/505_revise_representation_section_to_ideal_development/reports/01_representation-theorem-ideal-development.md",
-          "type": "report",
-          "summary": "Specifies the representation theorem for TM+ as it should be developed: point-complete embedding of every TM+-algebra into a product of complex algebras of shift-set flows (one per box-simple component, temporal order fixed by the discreteness element N1), six-step proof architecture (soundness, free algebra, Jonsson-Tarski reduct, component congruences, model existence via weak completeness plus Los compactness, saturation), per-class limits over Z-groups and divisible groups; answers that the T-axiom failure for strict G/H is immaterial and that Spherical is not an obstruction; prescribes the section outline, cut list, cross-reference edits, style rules, and bibliography additions."
-        },
-        {
-          "path": "specs/505_revise_representation_section_to_ideal_development/plans/01_representation-section-rewrite.md",
-          "type": "plan",
-          "summary": "Eight-phase plan for the representation-section rewrite."
-        },
-        {
-          "path": "specs/505_revise_representation_section_to_ideal_development/summaries/01_representation-section-rewrite-summary.md",
-          "type": "summary",
-          "summary": "Implementation summary for the 8-phase representation-section rewrite."
-        }
-      ],
-      "completion_summary": "Rewrote <sec:representation> in typst/FormalFoundations.typ from a five-part account of an unresolved obstruction into a positive statement and six-step proof of the representation theorem for TM+ (point-complete embedding into products of shift-set complex algebras, one per box-component), across four new subsections, four bibliography additions, and repaired cross-references. All 8 plan phases completed and verified; both typst documents compile and scripts/typst-sync-check.sh passes with 0 violations."
+      "last_updated": "2026-08-27T04:48:10Z",
+      "session_id": "sess_1787806065_4e3a93"
     },
     {
       "project_number": 504,
@@ -55,198 +26,6 @@
       "topic": "literature",
       "created": "2026-08-26T18:54:46Z",
       "last_updated": "2026-08-26T18:54:46Z"
-    },
-    {
-      "project_number": 503,
-      "project_name": "revise_representation_section_with_literature",
-      "status": "completed",
-      "task_type": "formal",
-      "description": "Review <sec:representation> (line 1151 and following) in /home/benjamin/Projects/BimodalLogic/typst/FormalFoundations.typ and /home/benjamin/Projects/BimodalLogic/FormalSystem/Metalogic/Algebraic/ to get a sense of where things stand, then review what literature sources are available already and which standard sources are missing in order to download and ingest these sources, then research these sources to gain a more complete understanding of standard representation theorems in modal logic in order to systematically revise <sec:representation> in /home/benjamin/Projects/BimodalLogic/typst/FormalFoundations.typ to provide a more careful and complete overview of what is intended, building up the elements that are needed towards achieving this result, and saying what remains honestly so I can contemplate the way forward",
-      "topic": "algebraic-representation",
-      "created": "2026-08-26T17:36:21Z",
-      "last_updated": "2026-08-27T00:05:32Z",
-      "session_id": "sess_1787787439_8e9fc8",
-      "artifacts": [
-        {
-          "path": "specs/503_revise_representation_section_with_literature/reports/01_representation-literature-research.md",
-          "type": "report",
-          "summary": "Literature-grounded research report on modal representation theorems for the bimodal TM system: corpus inventory and acquisition table, Jonsson-Tarski vs. topological duality analysis, Sahlqvist classification of TM's axioms, diagnosis of the Spherical obstruction as a discrete-vs-topological duality mismatch, a 12-element proposed structure for the revised section, and 9 risks."
-        },
-        {
-          "path": "specs/503_revise_representation_section_with_literature/plans/01_revise-representation-section.md",
-          "type": "plan",
-          "summary": "Six-phase sequential plan (8.5h) to rewrite <sec:representation> in typst/FormalFoundations.typ: ground-truth audit plus bibliography groundwork, ladder reframing, corrected algebraic-layer subsection, new duality/canonicity/obstruction-diagnosis subsection, honest per-class shift-set scoping, and full integration verification."
-        },
-        {
-          "path": "specs/503_revise_representation_section_with_literature/summaries/01_revise-representation-section-summary.md",
-          "type": "summary",
-          "summary": "All 6 phases completed: rewrote <sec:representation> in typst/FormalFoundations.typ with a four-way representation-theorem distinction, a six-rung ladder, corrected interior-operator and Jonsson-Tarski-attribution errors, a new duality/canonicity/Spherical-diagnosis subsection, and a per-frame-class shift-set scoping; added 6 bibliography entries; both typst documents compile and scripts/typst-sync-check.sh passes all 3 checks."
-        }
-      ],
-      "memory_candidates": [
-        {
-          "content": "literature-search.sh is FTS5-backed and AND-s every term: queries longer than 2-4 words reliably return zero hits. Always search the corpus with SHORT queries ('Jonsson Tarski', 'tense algebra', 'canonical extension'), never with a sentence.",
-          "category": "TECHNIQUE",
-          "source_artifact": "specs/503_revise_representation_section_with_literature/reports/01_representation-literature-research.md",
-          "confidence": 0.9,
-          "suggested_keywords": [
-            "literature-search",
-            "FTS5",
-            "corpus query",
-            "short query"
-          ]
-        },
-        {
-          "content": "The literature conversion quality gate rejects many otherwise-clean math PDFs on two marginal signals: 'sentence-boundary-glue' (whose benign journal-abbreviation class, e.g. 'Theor.Comp.Sci.', is deliberately unexempted) and zero-tolerance NUL/control characters (which for LaTeX-produced PDFs are almost always unmapped CMEX size-graded delimiters: 0x00/0x10/0x12 = '(' and 0x01/0x11/0x13 = ')', plus picture-environment line glyphs 0x02/0x0E/0x1B). The documented remedy of reconverting with LITERATURE_CONVERTER=fallback removes the genuine <sup>-span fusion corruption but not the delimiter glyphs. Workflow that works: convert with the fallback engine, inspect every gate hit individually, apply a determinate context-verified character repair, re-run literature_quality_gate.py directly, then install via literature-chunk.sh + a hand-written index.json entry carrying a conversion_note, and rebuild with literature-build-index.sh --global.",
-          "category": "WORKFLOW",
-          "source_artifact": "specs/503_revise_representation_section_with_literature/reports/01_representation-literature-research.md",
-          "confidence": 0.85,
-          "suggested_keywords": [
-            "literature-convert",
-            "quality gate",
-            "CMEX delimiters",
-            "literature-chunk",
-            "literature-build-index",
-            "conversion_note"
-          ]
-        },
-        {
-          "content": "Registering a global-corpus document into a repo's specs/literature-index.json is a plain JSON append: {doc_id, reason, added, source, citation_rule, optional fidelity}, then bump .updated. No script is required and literature-build-index.sh is only needed when chunk files change, not when sub-index metadata changes. The sub-index doc_id must match the global index entry's id, which for a chunked book is the per-section id (e.g. blackburn_2002_ch05_sec04), not the book-level id.",
-          "category": "PATTERN",
-          "source_artifact": "specs/503_revise_representation_section_with_literature/reports/01_representation-literature-research.md",
-          "confidence": 0.85,
-          "suggested_keywords": [
-            "literature-index",
-            "sub-index",
-            "doc_id",
-            "curation"
-          ]
-        }
-      ],
-      "completion_summary": "Rewrote <sec:representation> in typst/FormalFoundations.typ end to end across 6 sequential plan phases: replaced the section's single undifferentiated notion of a representation theorem with a four-way distinction and a six-rung ladder table/diagram, corrected two factual errors (the interior-operator claim about #allpast/#allfuture and the anachronistic Jonsson-Tarski ultrafilter-frame attribution), added a new subsection stating the Goldblatt/Esakia duality and diagnosing the Spherical obstruction as a compactness condition invisible to TM's similarity type, and re-scoped the shift-set target and its declared gate per frame class. Added 6 new BibTeX entries to typst/bibliography.bib, all cited. Both typst/FormalFoundations.typ and typst/BimodalReference.typ compile cleanly and scripts/typst-sync-check.sh passes all 3 checks (0 violations)."
-    },
-    {
-      "project_number": 489,
-      "project_name": "prove_baselanguage_soundness_base_and_extensions",
-      "status": "completed",
-      "task_type": "lean4",
-      "description": "Prove soundness for the BaseLanguage (BL) proof system -- the paper's TM -- establishing it at FrameClass.Base first and then extending to Dense, Discrete and Dedekind, mirroring Metalogic/Soundness.lean's Base-then-extensions structure. This gives thm:TM-soundness (possible_worlds.tex:4484) a direct Lean counterpart and retires a live over-claim: the paper asserts at four sites (:1661, :4311, :4484, :4494) that TM's soundness is formalized here, and only the TM+ half of each sentence is currently supported.\n\nTHE ROUTE IS COMPOSITION, NOT A SECOND SEMANTICS. def:BL-semantics (possible_worlds.tex:3566) defines a BL model as <W, D, =>, |.|> where <W, D, =>> IS A TASK FRAME -- the same structure TM+ uses -- with clauses for p, bot, ->, box, H and G identical to TM+'s clauses for those six connectives. And tr (BaseLanguage/Translation.lean:69) is a structural homomorphism on exactly those six primitives, every push-through equation rfl (:82-87).\n\nDELIVERABLE 1 -- FormalSystem/BaseLanguage/Semantics.lean: define BLTruthAt by recursion on BLFormula, transcribing def:BL-semantics clause for clause. The box clause quantifies over TOTAL world-histories (matching TruthAt, Semantics/Truth.lean:164, and H_F in the paper). Then BLValid, BLValidDense, BLValidDiscrete and BLValidDedekindDense mirroring Semantics/Validity.lean (:103, :206, :248, :336).\n\nDELIVERABLE 2 -- the truth-transfer bridge: TruthAt M tau x (tr phi) <-> BLTruthAt M tau x phi, by induction on phi. Four of the six cases are definitional. The allPast and allFuture cases are the only ones with content, because Formula.allFuture/allPast are DERIVED from untl/snce (Syntax/Formula.lean:167, :177) -- and they are already discharged by the existing @[simp] lemmas future_iff (Semantics/Truth.lean:287) and past_iff (:305), which state exactly the paper's G and H clauses.\n\nDELIVERABLE 3 -- four soundness theorems by composition: Metalogic.Conservativity.translate (already proved, already fc-parameterized) into soundness (Soundness.lean:1086), soundness_dense (:1260), soundness_discrete (:1406) and soundness_dedekind (:1933), then across the bridge. The Base-then-extensions structure is inherited free: BaseLanguage.Axiom.minFrameClass reuses ProofSystem.FrameClass and only df/dn/co are non-Base, so TM, TM_f, TM_d and TM_dc are four instantiations of one derivation type.\n\nDELIVERABLE 4 -- consistency corollaries mirroring not_derivable_nil_bot (Soundness.lean:1993).\n\nFORBIDDEN DESIGN, THE ONE TRAP: do NOT define BLTruthAt as TruthAt (tr phi). That makes the bridge trivially true and the soundness theorem vacuous as a claim about BL, leaving thm:TM-soundness still without a real counterpart. The semantics must be defined natively on BLFormula and the bridge PROVED.\n\nNOTE THE DEDEKIND ASYMMETRY: soundness_dedekind targets ValidDedekindDense, not ValidDedekind (Soundness.lean:1438-1454), because Dense <= Dedekind makes density and dense_indicator admissible and both are false on Z. The BL-side Dedekind statement must inherit that same target or it will be refutable.\n\nMODULE INVARIANT TO PRESERVE OR AMEND DELIBERATELY: BaseLanguage.lean and Formula.lean:48 currently state that nothing under FormalSystem/BaseLanguage/ imports anything from FormalSystem/Semantics/. Deliverable 1 breaks that invariant by design. Either place Semantics.lean outside BaseLanguage/ or amend the invariant explicitly in both docstrings -- do not leave it silently false.\n\nACCEPTANCE: all four soundness theorems and the bridge sorry-free, #print axioms exactly [propext, Classical.choice, Quot.sound], lake build green, and scripts/check-module-invariants.sh still ALL PASSED.",
-      "topic": "metalogic",
-      "created": "2026-08-26T01:33:14Z",
-      "last_updated": "2026-08-26T07:46:36Z",
-      "blocks_note": "carries D5 split out of task 488",
-      "session_id": "sess_1787724130_558d21_489",
-      "artifacts": [
-        {
-          "path": "specs/489_prove_baselanguage_soundness_base_and_extensions/reports/01_bl-soundness-by-composition.md",
-          "type": "report",
-          "summary": "Verified Lean source for all four deliverables, placement decision, gate-impact table, and the documentation-amendment list."
-        },
-        {
-          "path": "specs/489_prove_baselanguage_soundness_base_and_extensions/plans/01_bl-soundness-composition.md",
-          "type": "plan",
-          "summary": "Six-phase implementation plan with dependency waves, per-phase verification tiers, and four scope hypotheses."
-        },
-        {
-          "path": "specs/489_prove_baselanguage_soundness_base_and_extensions/summaries/01_bl-soundness-composition-summary.md",
-          "type": "summary",
-          "summary": "BL soundness by composition — implementation summary"
-        }
-      ],
-      "completion_summary": "The base language BL now has a native semantics and a soundness theorem. BLTruthAt is defined by six-clause recursion on BLFormula (never as TruthAt (tr phi)), the truth-transfer bridge truthAt_tr is proved by induction, and bl_soundness plus its dense, discrete and Dedekind siblings follow by composing Conservativity.translate with the four BL+ soundness theorems; the Dedekind statement targets BLValidDedekindDense. All seven headline results are sorry-free at exactly [propext, Classical.choice, Quot.sound], lake build is green, and scripts/check-module-invariants.sh reports ALL CHECKS PASSED on the tree merged with three concurrent sibling tasks."
-    },
-    {
-      "project_number": 488,
-      "project_name": "align_lean_code_and_docs_with_possible_worlds_paper",
-      "status": "completed",
-      "task_type": "lean4",
-      "description": "Review possible_worlds.tex (JPL paper) and align the Lean code and documentation such as README.md with the paper, identifying and fixing discrepancies so all claims are verified in the Lean codebase and reported accurately in the documentation",
-      "topic": "paper-refactor",
-      "created": "2026-08-25T23:24:50Z",
-      "last_updated": "2026-08-26T02:24:32Z",
-      "session_id": "sess_1787708128_a07716",
-      "researched": "2026-08-25T23:45:48Z",
-      "artifacts": [
-        {
-          "path": "specs/488_align_lean_code_and_docs_with_possible_worlds_paper/plans/02_paper-code-docs-alignment.md",
-          "type": "plan",
-          "summary": "14-phase, 14-hour plan covering the repo-side half of the 28-item paper/Lean/docs discrepancy inventory, with the read-only paper's items routed to an author memo."
-        },
-        {
-          "path": "specs/488_align_lean_code_and_docs_with_possible_worlds_paper/reports/02_author-memo.md",
-          "type": "report",
-          "summary": "Author-facing memo: D1-D5 as requested paper corrections, D6/D24/D25/D27 as owner decisions, each with verified paper lines and Lean counter-evidence."
-        },
-        {
-          "type": "report",
-          "path": "specs/488_align_lean_code_and_docs_with_possible_worlds_paper/reports/01_paper-code-docs-alignment.md",
-          "summary": "Research report: paper/code/docs alignment discrepancy inventory."
-        },
-        {
-          "type": "summary",
-          "path": "specs/488_align_lean_code_and_docs_with_possible_worlds_paper/summaries/03_paper-code-docs-alignment-summary.md",
-          "summary": "Realigned the Lean tree and its documentation with the JPL paper: record re-pinned, dangling anchors repaired, false docstring claims corrected, two write-time drift guards added."
-        }
-      ],
-      "memory_candidates": [
-        {
-          "content": "When planning a wide documentation/docstring alignment sweep driven by a discrepancy inventory (D1..Dn), cut phases by FILE TERRITORY, not by discrepancy ID. Discrepancy IDs cross-cut files (one .lean file often carries three unrelated IDs), so ID-grouped phases collide on the same file and cannot be parallelized. Territory-grouped phases have disjoint file sets and run in one wave. Two corollaries: (1) any sweep whose file set is only estimated (\"~20 other quote sites\") must be its own phase scheduled AFTER every file-scoped phase, so it can touch any file without conflict, and its first task is producing the concrete grep-derived list; (2) a single file with concurrent uncommitted working-tree changes must have exactly one designated entry-point phase that owns the reconciliation, with all other phases touching it sequenced behind that one.",
-          "category": "PATTERN",
-          "source_artifact": "specs/488_align_lean_code_and_docs_with_possible_worlds_paper/plans/02_paper-code-docs-alignment.md",
-          "confidence": 0.75,
-          "suggested_keywords": [
-            "phase-decomposition",
-            "file-territory",
-            "documentation-sweep",
-            "discrepancy-inventory",
-            "parallel-waves"
-          ]
-        }
-      ],
-      "plan_metadata": {
-        "phases": 13,
-        "total_effort_hours": 13,
-        "complexity": "complex",
-        "research_integrated": true,
-        "plan_version": 1,
-        "dependency_waves": [
-          [
-            1,
-            2,
-            3,
-            4
-          ],
-          [
-            5,
-            6
-          ],
-          [
-            7,
-            8,
-            9,
-            10
-          ],
-          [
-            11
-          ],
-          [
-            12
-          ],
-          [
-            13
-          ]
-        ],
-        "reports_integrated": [
-          {
-            "path": "specs/488_align_lean_code_and_docs_with_possible_worlds_paper/reports/01_paper-code-docs-alignment.md",
-            "integrated_in_plan_version": 1,
-            "integrated_date": "2026-08-25"
-          }
-        ],
-        "skeleton": false,
-        "follow_up_tasks": []
-      },
-      "completion_summary": "Re-baselined specs/paper-definitions-of-record.md against the paper's latest wave (4213 -> 4856 lines), taking scripts/check-paper-definitions.sh from exit 1 (32 drifted, 6 unresolvable) to exit 0, and corrected every false documentation and docstring claim the research report identified across README.md, FormalSystem/README.md, 20 Lean modules, and the typst manual. Added two mechanical guards so both classes of drift are caught at write time: C14's content scan was widened from markdown to Lean docstrings (immediately surfacing seven further stale axiom-count claims no gate had ever seen), and a new C15 asserts that every paper-anchor citation in live scope resolves against the pinned record. No Lean definition, proof, or declaration changed; lake build remains clean and sorry-free at 2493 jobs, and the paper itself was never edited."
     },
     {
       "project_number": 298,
@@ -1045,103 +824,6 @@
       "artifacts": []
     },
     {
-      "project_number": 483,
-      "project_name": "route1_restricted_applyrule_emitted_time_mem",
-      "status": "completed",
-      "task_type": "lean4",
-      "description": "Decide the OrdTimesKnown/UniverseClosedAt shape mismatch blocking task 481's Phases 6-7, by attempting Route 1 ONLY: a re-derivation of applyRule_emitted_time_mem (FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean) restricted to the rules reachable on a boxFree + untl/snce-free branch -- the same fragment task 481's section D4 already operates on. Route 1 is the cheaper of the two available options and is currently unattempted.\n\nStarting evidence for why Route 1 is believed cheap (from task 481's Phase 5 'what is needed' analysis, to be verified rather than re-derived from scratch): (1) on this fragment, the linearity stage yields .splitOrdered, and hence there is no unordered successor at all to reason about in that case; (2) the seriality stage emits at the trigger's own label, not a fresh one; (3) orderTrichotomy's fires guard demands a someFuture-shaped formula already on the branch (someFuture phi = untl top phi), which a boxFree/untl/snce-free branch structurally cannot carry. Together these three observations suggest that on this restricted fragment, the case analysis applyRule_emitted_time_mem performs may never reach the branch that actually needs OrdTimesKnown b ord -- but this has not been checked rule-by-rule and must be verified as real proof work, not assumed.\n\nOUT OF SCOPE -- do not start under this task: Route 2, an Ord-flavoured UniverseClosedAt and DifficultyBounded, cascading through roughly twenty theorem restatements down to buildTableauAt (the _at, _selfGuarded, and _fixed families). This is an interface redesign and is explicitly deferred pending the outcome of Route 1. Do not begin any part of it as part of this task, even if Route 1 fails.\n\nA negative result is a valid, complete deliverable. If the restricted re-derivation cannot be made to work -- i.e., if some rule reachable on the boxFree/untl/snce-free fragment genuinely still needs OrdTimesKnown b ord to prove applyRule_emitted_time_mem's conclusion -- record that finding with evidence (the specific rule, the specific configuration that requires the hypothesis, and why the fragment restriction does not exclude it) as a C9 register amendment. The C9 register in MintBound.lean currently stands at exactly 24 entries (task 481 amended entries 11 and 21 for the parent residual without adding a 25th); prefer amending an existing entry -- most likely 11 or 21, or the D4 boundary block's own dedicated boundary note -- over adding a 25th entry. Do not treat 'prove applyRule_emitted_time_mem restricted to this fragment' as the only acceptable outcome; a well-evidenced negative result closes this task exactly as completely as a positive one.\n\nSuccess condition: if Route 1 succeeds (the restricted re-derivation goes through without needing OrdTimesKnown b ord), continue by checking whether task 481's Phase 6 (universeClosedAt_signedUniverse_of_propositional and the terminus restatement) and Phase 7 (non-vacuity for that terminus) are now reachable as originally written in task 481's plan (specs/481_discharge_or_replace_unorderedsuccessorlabelclosed_residual/plans/01_sharpen-replace-labelclosed-residual.md). State explicitly, in this task's summary, whether Phases 6 and 7 are now reachable and, if so, whether landing them should happen as a resumption of task 481 or as a further follow-up task.\n\nContext on recent file state -- do not re-derive, and beware stale line numbers: MintBound.lean is now approximately 14,100+ lines. Task 481 landed a section C11 refutation family and a section D4 (commit ee0fe12a0); task 462 (now completed) landed a section D5 discharging MintPaysForTimeFixed at a nonempty universe under not (FrameClass.Dense <= fc) (commits 2dac7b35f..dc090921e). Any line numbers cited in task 481's plan, report, or summary predate task 462's D5 insertion and must be re-located by declaration name, not by line number. Read task 481's plan '#### Reasoned Exclusions' table and section D4's boundary block, plus reports/01_unorderedsuccessorlabelclosed-verdict.md and summaries/01_sharpen-replace-labelclosed-residual-summary.md, before starting.\n\nAcceptance criteria: lake build green; no regression to any check-module-invariants.sh check currently passing; either (a) the restricted re-derivation of applyRule_emitted_time_mem is proved and Phase 6/7 reachability is explicitly assessed and stated, or (b) a negative result is recorded as a C9 register amendment naming the precise rule and configuration that still requires OrdTimesKnown b ord on this fragment.",
-      "effort": "3-5 hours",
-      "parent_task": 481,
-      "topic": "decidability",
-      "dependencies": [],
-      "file_scope": [
-        "FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean"
-      ],
-      "created": "2026-08-25T19:28:37Z",
-      "last_updated": "2026-08-26T07:02:14Z",
-      "artifacts": [
-        {
-          "type": "report",
-          "path": "specs/481_discharge_or_replace_unorderedsuccessorlabelclosed_residual/reports/02_spawn-analysis.md",
-          "summary": "Spawn analysis from parent task"
-        },
-        {
-          "path": "specs/483_route1_restricted_applyrule_emitted_time_mem/plans/01_route1-restricted-time-sweep.md",
-          "type": "plan",
-          "summary": "Route 1 restricted re-derivation implementation plan"
-        },
-        {
-          "path": "specs/483_route1_restricted_applyrule_emitted_time_mem/summaries/01_route1-restricted-time-sweep-summary.md",
-          "type": "summary",
-          "summary": "Route 1 restricted re-derivation outcome"
-        }
-      ],
-      "session_id": "sess_1787724130_558d21_483",
-      "completion_summary": "Route 1 succeeded: applyRule_emitted_time_mem_of_untlSnceFree trades OrdTimesKnown for a branch-level untl/snce-freeness condition, propagated through a haux-free pick and engine step up to universeClosedAt_signedUniverse_of_propositional -- UniverseClosedAt at signedUniverse C L with no UnorderedSuccessorLabelClosed, no OrdTimesKnown and no frame-class hypothesis, the item task 481's Phase 5 recorded as not stateable. A second, independent obstruction was then found and decided: tableauClosed_untlSnceFree_false shows TableauClosed C and untlSnceFree on C are jointly unsatisfiable (TableauClosed.serialFuture forces the untl-headed someFuture top into C), so that composite and the three declarations sharing both hypotheses are vacuous, while everything carrying only the shape condition stands non-vacuously. C9 register entries 16 and 21 amended, register still at exactly 24 entries; lake build, lake build BimodalTest and check-module-invariants.sh all green."
-    },
-    {
-      "project_number": 490,
-      "project_name": "prove_model_existence_implies_compactness_bridge",
-      "status": "completed",
-      "task_type": "lean4",
-      "topic": "strong_completeness",
-      "effort": "3-5 hours",
-      "dependencies": [],
-      "description": "ROUTINE, UNBLOCKED TODAY. Close a silent second gap on the compactness route. FormalSystem/Metalogic/SetConsequence.lean states both ModelExistenceBase (:239-242) and CompactBase (:219-221), and the Dense siblings ModelExistenceDense (:283-286) and CompactDense (:263-265), but the implication ModelExistence -> Compact is NOT proved: the module docstrings at :234-238 and :278-282 say verbatim that 'that implication is future work and is not proved here'. The compactness programme is routinely described as having one gap (the model-existence theorem); it has two, and this is the cheap one. DELIVERABLE: theorems compactBase_of_modelExistence : ModelExistenceBase -> CompactBase and compactDense_of_modelExistenceDense : ModelExistenceDense -> CompactDense, in SetConsequence.lean or a sibling. ROUTE: contrapose through the Formula.neg clause of TruthAt plus the existing truthAt_foldr_imp (StrongCompleteness.lean:183); SetDerivable (:69) and the finite-restriction lemmas (:151, :156, :166, :174) are already available. ACCEPTANCE: both theorems sorry-free, #print axioms exactly [propext, Classical.choice, Quot.sound], lake build green. DO NOT attempt the model-existence theorem itself here -- that is the ultraproduct work and is separately tasked.",
-      "created": "2026-08-26T05:15:00Z",
-      "last_updated": "2026-08-26T07:35:49Z",
-      "session_id": "sess_1787724130_558d21_490",
-      "artifacts": [
-        {
-          "path": "specs/490_prove_model_existence_implies_compactness_bridge/reports/01_model-existence-compactness-bridge.md",
-          "type": "report",
-          "summary": "Verified proofs, mathematical route, placement analysis, tactic survey, and the docstring-update inventory."
-        },
-        {
-          "path": "specs/490_prove_model_existence_implies_compactness_bridge/plans/01_land-compactness-bridge-theorems.md",
-          "type": "plan",
-          "summary": "3-phase plan: land both verified bridge theorems, reconcile seven stale prose sites, run the full acceptance gate."
-        },
-        {
-          "path": "specs/490_prove_model_existence_implies_compactness_bridge/summaries/01_land-compactness-bridge-theorems-summary.md",
-          "type": "summary",
-          "summary": ""
-        }
-      ],
-      "completion_summary": "Landed compactBase_of_modelExistence : ModelExistenceBase -> CompactBase and compactDense_of_modelExistenceDense : ModelExistenceDense -> CompactDense in FormalSystem/Metalogic/StrongCompleteness.lean (not SetConsequence.lean, which would be an import cycle), both sorry-free and auditing to exactly [propext, Classical.choice, Quot.sound]. Reconciled the seven prose sites across three files that asserted the implication was unproved future work, including the two module docstrings named in the task brief. Full lake build green."
-    },
-    {
-      "project_number": 491,
-      "project_name": "select_dependent_ultraproduct_carrier_route",
-      "status": "completed",
-      "task_type": "lean4",
-      "topic": "strong_completeness",
-      "effort": "6-10 hours",
-      "dependencies": [],
-      "description": "RESEARCH TASK, UNBLOCKED TODAY. Decide how to build the ultraproduct carrier before any Los-lemma work starts. CONTEXT: task 424 PASSED the compactness feasibility gate and landed FormalSystem/Semantics/ShiftSet.lean (506 lines, sorry-free) with forward_repr (:263) and reverse_repr (:362). Its cancel condition did not fire: the one extra hypothesis needed, sep, is first-order over the two-sorted signature <Omega, D; <, +, 0, sh, (A_p)>, hence Los-preserved. THE PROBLEM (task 424's risk R1, its own largest named unknown): the index type is {L : List Formula // forall psi in L, psi in Gamma}, and the carriers D_L differ per finite subset, so the ultraproduct is DEPENDENT. Mathlib's ordered instances (Mathlib/Order/Filter/FilterProduct.lean:92, LinearOrder for Germ) live only on the NON-dependent Filter.Germ; the dependent Filter.Product (Mathlib/Order/Filter/Germ/Basic.lean:100) has no ordered-group instances. TWO ROUTES TO ADJUDICATE: (a) a bespoke quotient of (forall i, D i) with roughly 15 hand-supplied instances (AddCommGroup, LinearOrder, IsOrderedAddMonoid, Nontrivial, and the frame-class binders); (b) a carrier-normalization step that collapses the family to a single carrier first -- note task 475 (carrier_normalization_successor_archimedean_transfer, completed) may or may not supply reusable machinery, and whether it does is part of what this task must determine rather than assume. ALSO IN SCOPE: Mathlib build cost. Ultrafilter (Order/Filter/Ultrafilter/) is already built and free; Filter.Germ and FilterProduct are present in source but have NO oleans in this checkout, so importing them triggers a Mathlib build -- quantify it. DELIVERABLE: a research report naming the chosen route with evidence, the exact instance list route (a) would require, and a go/no-go on route (b). MUST NOT write the Los lemma.",
-      "created": "2026-08-26T05:15:00Z",
-      "last_updated": "2026-08-26T07:36:01Z",
-      "session_id": "sess_1787724130_558d21_491",
-      "artifacts": [
-        {
-          "path": "specs/491_select_dependent_ultraproduct_carrier_route/reports/01_dependent-ultraproduct-carrier-route.md",
-          "type": "report",
-          "summary": "Route selection with compiled evidence, the exact instance inventory, the route (b) no-go, and the measured Mathlib build cost."
-        },
-        {
-          "path": "specs/491_select_dependent_ultraproduct_carrier_route/plans/01_land-carrier-route-decision.md",
-          "type": "plan",
-          "summary": "2 phases, 1.75 hours, waves [[1],[2]]. Validator: PASS, 0 warnings."
-        },
-        {
-          "path": "specs/491_select_dependent_ultraproduct_carrier_route/summaries/01_land-carrier-route-decision-summary.md",
-          "type": "summary",
-          "summary": ""
-        }
-      ],
-      "completion_summary": "Promoted the verified route-(a) dependent ultraproduct carrier construction from a specs/ prototype to Tests/BimodalTest/Semantics/DependentUltraproductProbe.lean, imported from Tests/BimodalTest.lean so lake build now checks it: it compiles clean under the library's autoImplicit := false with 0 sorry, 0 new axioms, and axiom profiles exactly [propext, Classical.choice, Quot.sound] on all three probed declarations, with a declaration set identical to the prototype's. Recorded the selected route, the rejected route, and the probe's in-tree path in a new report section and in the successor task's state.json description. The Los lemma, the index-type ultrafilter, ShiftSet.sep, carrier_nonempty, and the valuation were all out of scope and none was attempted."
-    },
-    {
       "project_number": 492,
       "project_name": "build_shiftset_ultraproduct_and_los_lemma",
       "status": "not_started",
@@ -1198,37 +880,6 @@
       "description": "RESEARCH TASK, DELIBERATELY AGNOSTIC ABOUT THE VERDICT. Determine whether TM (the BaseLanguage proof system) is complete over task frames, and if not, characterize what it IS complete for. DO NOT ASSUME COMPLETENESS HOLDS; the evidence points the other way, and a machine-checked incompleteness result is a complete and valid outcome. EVIDENCE THAT IT MAY FAIL: (1) the paper's cor:tm-completeness (possible_worlds.tex:4657) carries completeness for the BL+ systems ONLY -- TM+, TM+_d, TM+_f, TM+_c -- and never claims it for TM. (2) Metalogic/Conservativity.lean's scope section states that the forward direction TM+ |- tr phi => TM |- phi is REFUTED at FrameClass.Base (the (Sp) witness) and at FrameClass.Discrete (the Z1 witness), with the TM+ half of the Discrete witness already machine-checked in-tree as z1_translate. THE SUBTLETY ANY DISPATCH MUST CONFRONT FIRST: since |-[Base] tr (Sp) is proved and TM+ is sound over all task frames, (Sp) is VALID ON EVERY TASK FRAME. So a refutation of TM |- Sp by soundness CANNOT use a task frame. It needs a structure outside the class on which TM remains sound precisely because it lacks the Until/Since expressive power to detect the violation. Identifying that broader class is the actual research content. SCOPE: (a) settle whether TM is complete over task frames; (b) if not, identify the class TM is sound and complete for; (c) determine whether the CEB and CEF refutations that Conservativity.lean currently only DOCUMENTS can now be machine-checked, given the BL-side semantics and soundness theorem delivered by the prerequisite task. Conservativity.lean's own 'What a machine-checked refutation would need' section names three missing pieces: a BL-side semantics, a BL-side soundness theorem, and the two countermodels (a two-fibre structure for CEB, Z x_lex Z for CEF); the prerequisite supplies the first two. HARD CONSTRAINT INHERITED FROM Conservativity.lean: do not state a forward-conservativity theorem and discharge it with sorry -- it is provably false at two frame classes, so that would be an unsound placeholder, not deferred debt.",
       "created": "2026-08-26T05:15:00Z",
       "last_updated": "2026-08-26T05:15:00Z"
-    },
-    {
-      "project_number": 496,
-      "project_name": "research_algebraic_stack_build_graph_wiring",
-      "status": "completed",
-      "task_type": "lean4",
-      "topic": "algebraic-representation",
-      "effort": "6-10 hours",
-      "dependencies": [],
-      "description": "RESEARCH TASK, UNBLOCKED TODAY. Decide whether the algebraic stack should be wired into the build graph, and settle the elaboration-conflict question before anything is built on top of it. THE FINDING: FormalSystem/Metalogic/Algebraic/ holds five sorry-free files, but only FlowFrame.lean (806 lines, 6 live importers) is reachable from the default target root FormalSystem.lean. BooleanStructure.lean (441), InteriorOperators.lean (176), LindenbaumQuotient.lean (393) and UltrafilterMCS.lean (1071) -- 2,081 lines, and exactly the part relevant to Jonsson-Tarski -- are ORPHANED: no live .lean file anywhere imports FormalSystem.Metalogic.Algebraic, verified by grep returning zero hits. The aggregator exists only to satisfy the C8 sibling-aggregator invariant (scripts/check-module-invariants.sh:418-449). They are LSP-checked and manifested under C6, but not verified by lake build. Stale oleans for deleted modules dated 2026-08-10 sit in .lake/build/, so build artifacts there are NOT evidence of reachability. THE RISK TO ADJUDICATE: Boneyard/UltrafilterFrame/README.md records that that subtree was archived on 2026-05-20 because of 'elaboration conflicts with BXCanonical completeness'. It is UNKNOWN whether those conflicts were specific to the Boneyard files or would also bite the currently-orphaned Algebraic/ stack if it were imported live. Determine this empirically before recommending. DELIVERABLE: a report recommending either (a) re-wire -- import the aggregator from a live module so lake build covers the stack, with measured build-time delta and any elaboration conflicts named; or (b) keep isolation-only and document it honestly. EITHER WAY, fix two overstatements in Algebraic/README.md: it claims 'this directory is not optional' and 'participates in the live proof' (true only of FlowFrame.lean), and it claims 'G and H are shown to be interior operators' when InteriorOperators.lean proves only H_monotone (:80) plus the box triple (:101, :112, :130) -- there is no G operator on the quotient at all.",
-      "created": "2026-08-26T05:15:00Z",
-      "last_updated": "2026-08-26T07:36:12Z",
-      "session_id": "sess_1787724130_558d21_496",
-      "artifacts": [
-        {
-          "path": "specs/496_research_algebraic_stack_build_graph_wiring/reports/01_algebraic-stack-build-graph-wiring.md",
-          "type": "report",
-          "summary": "Recommends re-wiring the Algebraic aggregator into Metalogic.lean; refutes the elaboration-conflict hazard empirically and specifies seven README/manifest corrections."
-        },
-        {
-          "path": "specs/496_research_algebraic_stack_build_graph_wiring/plans/01_wire-algebraic-stack-fix-readme.md",
-          "type": "plan",
-          "summary": "5-phase, 2.75-hour plan wiring the Algebraic aggregator into the build graph and correcting fourteen documentation claims across four READMEs."
-        },
-        {
-          "path": "specs/496_research_algebraic_stack_build_graph_wiring/summaries/01_wire-algebraic-stack-fix-readme-summary.md",
-          "type": "summary",
-          "summary": "Wiring result, measured build and invariant figures, all fourteen documentation corrections, three plan deviations, the concurrency record, and the out-of-scope observations carried forward."
-        }
-      ],
-      "completion_summary": "Implemented the research report's recommendation (a): one import line in FormalSystem/Metalogic.lean brings the Algebraic sibling aggregator and its four orphaned children (2,081 sorry-free lines) into the lake build closure, with the five now-stale scripts/module-invariants-manifest.txt entries deleted in the same atomic commit. Corrected eight overstatements in Algebraic/README.md (including the two the task named: the directory-wide 'not optional'/'participates in the live proof' claims, now scoped to FlowFrame.lean, and the false 'G and H are shown to be interior operators', replaced with the boxInterior/H_monotone facts), four in Metalogic/README.md, and recorded a scoped adjudication of the elaboration-conflict hazard in the Boneyard that stays in force for the two untested archived files. lake build rc=0 (2501 jobs, 0 errors) and check-module-invariants.sh rc=0 with ALL CHECKS PASSED."
     },
     {
       "project_number": 497,
@@ -1335,11 +986,11 @@
     "total": 42
   },
   "repository_health": {
-    "last_assessed": "2026-08-25T23:12:43Z",
+    "last_assessed": "2026-08-31T17:02:55Z",
     "todo_count": 5,
     "fixme_count": 0,
-    "build_errors": 0,
-    "status": "healthy"
+    "build_errors": 25,
+    "status": "critical"
   },
   "last_updated": "2026-08-13T06:31:40Z",
   "vault_count": 1,

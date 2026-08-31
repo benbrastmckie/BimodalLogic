@@ -1,0 +1,32 @@
+{
+  "status": "partial",
+  "phase": "implement",
+  "dispatch_seq": 5,
+  "summary": "PostBlockingSettles fc refuted at every frame class and every fuel, answering the residual docstring's open question in the negative. The plan's pre-declared output-branch repair was landed with its direction lemma and then rejected by the anti-weakening gate on decided evidence (labelFreeSaturatedExit_not_of_saturateBlocked_inr, postBlockingExitSettled_false, noUnblockedFreshWork_iff_of_labelFreeSaturatedExit). Under explicit orchestrator ruling, the narrowed repair PostBlockingSettlesRun fc fuel was then landed -- the residual restricted to a branch some expandBranchWithFuel call returned open, at that call's own fuel, the same narrowing ArmSettlement already uses. Its Phase 6 gate PASSED: buildTableauAt_isSome_of_settlesRun is the bridge the output-branch design could not build, eight terminus restatements land on it, and buildTableauAt_isSome_of_budget_of_run certifies each is a strengthening. Non-vacuity is proved for the pass doing real work and #guard_msgs-checked for the full antecedent on seed runs. C9 entries 22, 23 and 24.",
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/433_discharge_postblockingsettles_residual/summaries/01_postblockingsettles-summary.md",
+      "summary": "Implementation summary with the verdict record, the full plan-deviation list, and four named open follow-ons."
+    }
+  ],
+  "phases_completed": 8,
+  "phases_total": 8,
+  "plan_markers_verified": true,
+  "orchestrator_conditions_met": {
+    "1_phase6_is_the_gate": "PASSED — the narrowed predicate carries buildTableauAt_isSome_of_budget; landed as a result rather than recorded as insufficient.",
+    "2_direction_lemma": "MET — postBlockingSettlesRun_of_postBlockingSettles, machine-checked, with the direction named in words in its docstring: longer hypothesis list, weaker predicate, difference at the (ob, oOrd) quantifier, every restatement a strengthening.",
+    "3_non_vacuity": "MET, with the proof/measurement line drawn explicitly. The pass doing real work is PROVED at every frame class and every positive fuel (saturateBlocked_multBranch_one_run with multBranch_one_length_lt_multSettledBranch). The full antecedent is exhibited on seed runs by seven #guard_msgs-checked measurements; that half is a checked measurement, not a kernel proof, because expandBranchWithFuel does not reduce definitionally. Stated in-file and in register entry 24.",
+    "4_docstring_states_narrowing": "MET — PostBlockingSettlesRun's own docstring states the restriction, why the unrestricted form is refuted, and cross-references entries 22-24.",
+    "5_deviation_recorded_honestly": "MET — Phase 3's FALSE verdict stands as proved and is not retro-edited; the ruling is a note under it; Phases 5 and 6 carry deviation notes; both refuted things carry C9 entries with witnesses.",
+    "6_prohibitions": "MET — no sorry, no vacuous discharge, no frozen-file edit, no landed declaration altered, axioms within {propext, Classical.choice, Quot.sound}, full lake build green (2458 jobs)."
+  },
+  "blockers": [
+    "PostBlockingSettlesRun is CARRIED, not discharged. It is a hypothesis exactly as ArmSettlement is; whether it holds at the terminus's own fuel figure is open and nothing decides it in either direction. Register entry 24 exists so the narrowing is not mistaken for a proof. This is why the task closes PARTIAL.",
+    "Eight of the twenty-two terminus restatements landed (the four family roots and their four caller-facing seed forms). The remaining fourteen are _lengthBudget / signedUniverse substitutions, each a one-line application of its family root, with the recipe recorded in Phase 6's Reasoned Exclusions.",
+    "The seed-run half of the non-vacuity witness is a #guard_msgs-checked measurement rather than a kernel proof, because expandBranchWithFuel is compiled by well-founded recursion.",
+    "Across fourteen formula shapes, four frame classes and three fuel figures, buildTableauAt's own guard never fired -- the threaded tracker and the recomputed armTracker agreed everywhere -- so no probed run exercised the post-blocking arm. A fact about the probe's reach, not about the residual."
+  ],
+  "sorry_inventory": [],
+  "continuation_path": null
+}

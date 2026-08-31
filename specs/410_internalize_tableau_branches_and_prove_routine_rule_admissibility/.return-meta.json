@@ -1,0 +1,36 @@
+{
+  "task_number": 410,
+  "task_type": "lean4",
+  "status": "planned",
+  "agent_type": "planner-hard-agent",
+  "delegation_path": ["orchestrator", "plan", "planner-hard-agent"],
+  "session_id": "sess_1785362916_22a871_410",
+  "effort_flag": "hard",
+  "lit_flag": true,
+  "orchestrator_mode": true,
+  "started": "2026-07-29",
+  "completed": "2026-07-29",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/410_internalize_tableau_branches_and_prove_routine_rule_admissibility/plans/01_internalize-routine-admissibility.md",
+      "summary": "8-phase hard-mode implementation plan for Branch.internalize plus the 21 routine rule-admissibility lemmas. Passes validate-artifact.sh --strict with 0 warnings."
+    },
+    {
+      "type": "report",
+      "path": "specs/410_internalize_tableau_branches_and_prove_routine_rule_admissibility/reports/01_internalize-routine-admissibility.md",
+      "summary": "Hard-mode research input (Tier 3, H4-verified): verified 34-rule inventory, the 21/13/2 territory split, time-major flat-diamond design, five rule_admissible corrections, and the verified Barcan route."
+    }
+  ],
+  "plan_path": "specs/410_internalize_tableau_branches_and_prove_routine_rule_admissibility/plans/01_internalize-routine-admissibility.md",
+  "report_path": "specs/410_internalize_tableau_branches_and_prove_routine_rule_admissibility/reports/01_internalize-routine-admissibility.md",
+  "phase_count": 8,
+  "sub_phase_count": 14,
+  "estimated_hours": 30,
+  "postmortem_rules_count": 15,
+  "reference_grounding_tier": 3,
+  "planned_strategic_sorries": 0,
+  "skeleton": false,
+  "requires_user_review": false,
+  "next_steps": "Run /implement 410 --hard to execute Wave 1 (Phase 1 and Phase 2 own disjoint files and may be dispatched in parallel)."
+}

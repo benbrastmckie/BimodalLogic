@@ -1,0 +1,49 @@
+{
+  "status": "partial",
+  "requires_user_review": true,
+  "review_reason": "The narrowed repair PostBlockingSettlesRun is landed, carries the terminus (Phase 6 gate passed), and is neither refuted nor vacuous — but it is carried as a hypothesis, not discharged. Fourteen of the twenty-two terminus restatements are left as recorded mechanical substitutions, and the seed-run half of the non-vacuity witness is a #guard_msgs-checked measurement rather than a kernel proof.",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true
+  },
+  "partial_progress": {
+    "stage": "complete",
+    "details": "All 8 phases closed: 6 [COMPLETED], 2 [COMPLETED WITH EXCLUSIONS]. Phase 3's gate returned FALSE on the pre-declared output-branch repair (verdict stands as proved); Phase 6 landed the narrowed repair under an explicit orchestrator ruling and its gate PASSED; Phase 8 excluded by Phase 2's TRUE verdict.",
+    "phases_completed": 8,
+    "phases_total": 8
+  },
+  "modified_files": [
+    "FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean",
+    "specs/433_discharge_postblockingsettles_residual/plans/01_postblockingsettles-refute-or-prove.md",
+    "specs/433_discharge_postblockingsettles_residual/summaries/01_postblockingsettles-summary.md",
+    "specs/433_discharge_postblockingsettles_residual/handoffs/phase-1-handoff-20260818.md",
+    "specs/433_discharge_postblockingsettles_residual/handoffs/phase-2-handoff-20260818.md",
+    "specs/433_discharge_postblockingsettles_residual/handoffs/phase-4-handoff-20260818.md",
+    "specs/433_discharge_postblockingsettles_residual/handoffs/phase-5-handoff-20260818.md",
+    "specs/433_discharge_postblockingsettles_residual/handoffs/phase-6-handoff-20260818.md",
+    "specs/433_discharge_postblockingsettles_residual/handoffs/phase-7-handoff-20260818.md"
+  ],
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/433_discharge_postblockingsettles_residual/summaries/01_postblockingsettles-summary.md",
+      "summary": "PostBlockingSettles refuted at every frame class and every fuel; the output-branch repair landed, gated and rejected on decided evidence; the narrowed repair PostBlockingSettlesRun landed with its direction lemma, bridge, eight terminus restatements and a non-vacuity witness."
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Refuted `PostBlockingSettles fc` at every frame class, at the `fuel = 0` arm and at a nonzero one, and proved that fuel does not close the gap at any figure — answering the residual docstring's open question. Landed and then rejected the plan's pre-declared output-branch repair on decided evidence, and landed instead the narrowed repair `PostBlockingSettlesRun fc fuel` — the residual restricted to a branch some `expandBranchWithFuel` call returned open at that call's own fuel — with its direction lemma, the entry-point bridge `buildTableauAt_isSome_of_settlesRun`, eight terminus restatements including `buildTableauAt_isSome_of_budget_run`, a strengthening certificate, and a non-vacuity witness. C9 register entries 22, 23 and 24.",
+    "roadmap_items": []
+  },
+  "metadata": {
+    "session_id": "sess_1787081671_9332d7",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "compliance_check": "passed",
+    "blocked_phase": null,
+    "dispatch_seq": 5
+  }
+}

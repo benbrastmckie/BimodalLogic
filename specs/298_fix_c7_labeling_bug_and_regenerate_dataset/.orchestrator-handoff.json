@@ -1,0 +1,44 @@
+{
+  "status": "partial",
+  "dispatch_seq": 6,
+  "summary": "The c7 labeling bug is fixed and now empirically proven rather than merely build-verified: the generator passed record 13,750 -- the point that defeated 3/3 prior attempts -- and reached 124,235 records with RSS pinned flat at ~1.70GB across a 40-minute window, against an original failure signature of unbounded ~40MB/6s growth. The July compile blocker is gone permanently (Formula.c 162s, FormulaEnumerator.c 384s, both cached). One real build-blocking defect was found and fixed: a fourth FrameClass constructor (.Dedekind) had left frameClassName in DatasetExport.lean non-exhaustive. Phase 4's full regeneration is running unattended and needs ~9 more hours.",
+  "phases_completed": 3,
+  "phases_total": 4,
+  "blockers": [],
+  "continuation_context": {
+    "handoff_path": "specs/298_fix_c7_labeling_bug_and_regenerate_dataset/handoffs/phase-4-handoff-20260824.md",
+    "driver_script": "specs/298_fix_c7_labeling_bug_and_regenerate_dataset/run-c7-regen.sh",
+    "driver_log": "specs/298_fix_c7_labeling_bug_and_regenerate_dataset/logs/driver.log",
+    "remaining_work": "Phase 4 c7 labeling pass only. Launched 2026-08-24T18:05:36-07:00, ~8% done, expected completion ~2026-08-25T03:00-07:00. Fully automated in the detached driver (setsid nohup, survives session teardown).",
+    "reason": "Wall-clock only, not a defect and not the July compile blocker. The enumerator now emits 1,646,512 formulas at c7 versus ~77k in June, and throughput is ~50 formulas/sec. Per-formula work is bounded and memory is flat; there is simply 9 hours of it.",
+    "resume_instructions": "Poll driver_log. If it ends in 'SUCCESS:', Phase 4 is done -- mark Phase 4 and the task COMPLETED. If it ends in 'FAIL:', read the reason; the driver has already restored data/bmlogic-c7.jsonl and its _metadata.json from .bak. If the driver is alive (pgrep -af 'bin/dataset_generator'), wait. If it vanished with no terminal line, just re-launch it -- it is idempotent and every expensive artifact is cached. DO NOT re-open the diagnosis: the fix is proven. DO NOT restore the plan's IO.cancel-only design; task 343's cooperative abortRef supersedes it and is strictly stronger.",
+    "stale_baselines_warning": "Two baselines in the task description and plan are stale by ~525 FormalSystem commits and must NOT be read as regressions. (1) c4 is now 3,087 records, not 806 -- verified sound by set comparison: 802/806 coverage, ZERO valid<->invalid flips, timeout rate fell 14.9% to 4.2%. The exact-count gate was replaced with check-c4-spotcheck.py. (2) c7 will hold far more than the stated 77,272 target, which was surpassed at 18:33; expect ~1.4-1.5M records after dedup."
+  },
+  "next_action_hint": "Wait for the detached driver, then confirm logs/driver.log ends in a 'SUCCESS:' line with the final label distribution. Task 298 can be marked COMPLETED at that point; no further code changes are expected.",
+  "artifacts": [
+    {
+      "path": "specs/298_fix_c7_labeling_bug_and_regenerate_dataset/summaries/01_c7-labeling-bug-summary.md",
+      "type": "summary",
+      "summary": "Implementation summary: proven fix, build repair, c4 soundness gate, two stale baselines, deviations"
+    },
+    {
+      "path": "specs/298_fix_c7_labeling_bug_and_regenerate_dataset/handoffs/phase-4-handoff-20260824.md",
+      "type": "handoff",
+      "summary": "Phase 4 handoff: poll-the-driver instructions, measured evidence the bug is fixed, stale-baseline warnings"
+    },
+    {
+      "path": "specs/298_fix_c7_labeling_bug_and_regenerate_dataset/check-c4-spotcheck.py",
+      "type": "script",
+      "summary": "c4 soundness gate replacing the stale exact-record-count check"
+    }
+  ],
+  "modified_files": [
+    "FormalSystem/Automation/DatasetExport.lean",
+    "specs/298_fix_c7_labeling_bug_and_regenerate_dataset/check-c4-spotcheck.py",
+    "specs/298_fix_c7_labeling_bug_and_regenerate_dataset/run-c7-regen.sh",
+    "specs/298_fix_c7_labeling_bug_and_regenerate_dataset/plans/01_c7-labeling-bug.md",
+    "specs/298_fix_c7_labeling_bug_and_regenerate_dataset/summaries/01_c7-labeling-bug-summary.md",
+    "specs/298_fix_c7_labeling_bug_and_regenerate_dataset/handoffs/phase-4-handoff-20260824.md"
+  ],
+  "commits": ["b7bea9f62", "e40db1031"]
+}

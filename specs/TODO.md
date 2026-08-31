@@ -6,7 +6,7 @@ next_project_number: 507
 
 ## Task Order
 
-*Updated 2026-08-27. Generated from state.json dependency graph.*
+*Updated 2026-08-31. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
@@ -88,7 +88,7 @@ next_project_number: 507
 
 ### Publication Quality
 
-506 [NOT STARTED] — Fix all outstanding display/layout defects in the compiled typst 
+506 [RESEARCHING] — Fix all outstanding display/layout defects in the compiled typst 
 
 ### Strong Completeness
 
@@ -99,25 +99,12 @@ next_project_number: 507
 ## Tasks
 
 ### 506. Fix typst display defects via playwright visual loop
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: typst
 - **Topic**: publication-quality
 - **Dependencies**: None
 
 **Description**: Fix all outstanding display/layout defects in the compiled typst documents (typst/FormalFoundations.typ and typst/BimodalReference.typ) using a Playwright-driven visual check loop. Known defect: in <sec:representation> Definition 5.1 (TM+-algebra), the display equation listing the derived operators (F a := 1 ▷ a, G a := ¬F(¬a), P a := 1 ◁ a, H a := ¬P(¬a), Next a := 0 ▷ a, △a := H a ∧ a ∧ G a) is set as one unbreakable math line and overflows both the definition box and the page margins; it must be broken across lines (e.g. an aligned block or a two-row layout) so it fits within the text block. Approach: compile each document to PDF (and/or SVG/PNG pages via `typst compile --format png`), serve the output to a headless browser via the Playwright MCP tools, screenshot every page, and systematically inspect for overflowing display math, content escaping theorem/definition boxes, text running past margins, clipped tables, orphaned headings, broken cross-references or citation placeholders, and any other visual defect. Catalogue every finding with page number and source line, then plan and implement fixes in the .typ sources (line-breaking long equations, resizing tables, adjusting box widths, etc.), recompiling and re-screenshotting after each fix and repeating the full sweep until no display issues remain. Both documents must compile cleanly and scripts/typst-sync-check.sh must pass at the end. Do not change mathematical content — layout only
-
----
-
-### 505. Revise representation section to ideal development
-- **Status**: [COMPLETED]
-- **Task Type**: formal
-- **Topic**: algebraic-representation
-- **Dependencies**: None
-- **Research**: [505_revise_representation_section_to_ideal_development/reports/01_representation-theorem-ideal-development.md]
-- **Plan**: [505_revise_representation_section_to_ideal_development/plans/01_representation-section-rewrite.md]
-- **Summary**: [505_revise_representation_section_to_ideal_development/summaries/01_representation-section-rewrite-summary.md]
-
-**Description**: Revise <sec:representation> in typst/FormalFoundations.typ so that it presents the representation theorem for TM+ as it should be developed, not as the Lean tree currently approximates it: state the theorem (every TM+-algebra embeds, point-completely, into a product of complex algebras of shift-set flows, one per box-simple component, with the temporal order of each component discrete or dense according to the discreteness element), give its proof architecture (algebraic soundness, ultrafilter frame and Jonsson-Tarski reduct, component decomposition, model existence via weak completeness plus compactness over the elementary class of shift sets, saturation for one flow per component), and the per-class refinements (dense and base: point-complete; Z-time and R: only the weak SP-representation, by the non-compactness witnesses). Treat strict Since/Until and G/H as primitive and state positively that normality, transitivity, seriality, linearity and tense conjugacy are the only operator properties used, so the failure of the T-axioms for G/H is immaterial; drop the interior-operator framing. Remove everything not part of this theorem: the four-way distinction, the six-rung ladder and figure, the README-derived status prose, the sigmaQuot step, the descriptive-general-frame duality, the Sahlqvist table, the Spherical-diagnosed remark, Routes T and M, the gate remark, the Kamp remark, the Obstruction subsection, and the unsettled-items remark. No meta-commentary on the section or on the broader attempt; Lean status confined to #leansrc tags and at most one compact table. Update the abstract and the cross-references at lines 128, 340, 1005 and 1096, add the missing bibliography entries, and keep both typst documents compiling with scripts/typst-sync-check.sh passing. The research report in this task specifies the target section outline, the theorem statements, the cut list, and the style rules.
 
 ---
 
@@ -128,19 +115,6 @@ next_project_number: 507
 - **Dependencies**: None
 
 **Description**: Retry acquisition of the standard modal-representation sources that the representation-section literature research could not obtain because Semantic Scholar (literature-discover.sh Tier 3) was rate-limited (HTTP 429) for the whole session: Sambin & Vaccaro 1988 "Topology and duality in modal logic"; S. K. Thomason 1972 "Semantic analysis of tense logics" and 1975 "Categories of frames for modal logic"; Goldblatt 1976 "Metamathematics of modal logic" I-II; Fine 1975 "Some connections between elementary and modal logic"; Gehrke & Jonsson 2004 "Bounded distributive lattice expansions" (mscand.dk URLs 404; proxy gehrke_vosmaer_2011 already ingested); Gabbay & Shehtman "Products of modal logics I"; Marx & Venema 1997 "Multi-dimensional modal logic" (Zotero metadata only, no PDF). Use /literature "<title>" or literature-discover.sh once Tier 3 recovers (or after the S2_API_KEY / multi-provider fallback lands in the literature extension), ingest what is open-access or in Zotero, record paywalled items honestly as not acquired, and register every acquired doc in specs/literature-index.json with reason and citation_rule fields following the existing entries. Evidence and the full standard-sources checklist are in specs/503_revise_representation_section_with_literature/reports/01_representation-literature-research.md sections 2.2-2.3
-
----
-
-### 503. Revise representation section with literature
-- **Status**: [COMPLETED]
-- **Task Type**: formal
-- **Topic**: algebraic-representation
-- **Dependencies**: None
-- **Research**: [503_revise_representation_section_with_literature/reports/01_representation-literature-research.md]
-- **Plan**: [503_revise_representation_section_with_literature/plans/01_revise-representation-section.md]
-- **Summary**: [503_revise_representation_section_with_literature/summaries/01_revise-representation-section-summary.md]
-
-**Description**: Review <sec:representation> (line 1151 and following) in /home/benjamin/Projects/BimodalLogic/typst/FormalFoundations.typ and /home/benjamin/Projects/BimodalLogic/FormalSystem/Metalogic/Algebraic/ to get a sense of where things stand, then review what literature sources are available already and which standard sources are missing in order to download and ingest these sources, then research these sources to gain a more complete understanding of standard representation theorems in modal logic in order to systematically revise <sec:representation> in /home/benjamin/Projects/BimodalLogic/typst/FormalFoundations.typ to provide a more careful and complete overview of what is intended, building up the elements that are needed towards achieving this result, and saying what remains honestly so I can contemplate the way forward
 
 ---
 
@@ -230,20 +204,6 @@ DELIVERABLE: a grounding report answering, with citations to specific pages read
 
 ---
 
-### 496. Research algebraic stack build graph wiring
-- **Effort**: 6-10 hours
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: algebraic-representation
-- **Dependencies**: None
-- **Research**: [496_research_algebraic_stack_build_graph_wiring/reports/01_algebraic-stack-build-graph-wiring.md]
-- **Plan**: [496_research_algebraic_stack_build_graph_wiring/plans/01_wire-algebraic-stack-fix-readme.md]
-- **Summary**: [496_research_algebraic_stack_build_graph_wiring/summaries/01_wire-algebraic-stack-fix-readme-summary.md]
-
-**Description**: RESEARCH TASK, UNBLOCKED TODAY. Decide whether the algebraic stack should be wired into the build graph, and settle the elaboration-conflict question before anything is built on top of it. THE FINDING: FormalSystem/Metalogic/Algebraic/ holds five sorry-free files, but only FlowFrame.lean (806 lines, 6 live importers) is reachable from the default target root FormalSystem.lean. BooleanStructure.lean (441), InteriorOperators.lean (176), LindenbaumQuotient.lean (393) and UltrafilterMCS.lean (1071) -- 2,081 lines, and exactly the part relevant to Jonsson-Tarski -- are ORPHANED: no live .lean file anywhere imports FormalSystem.Metalogic.Algebraic, verified by grep returning zero hits. The aggregator exists only to satisfy the C8 sibling-aggregator invariant (scripts/check-module-invariants.sh:418-449). They are LSP-checked and manifested under C6, but not verified by lake build. Stale oleans for deleted modules dated 2026-08-10 sit in .lake/build/, so build artifacts there are NOT evidence of reachability. THE RISK TO ADJUDICATE: Boneyard/UltrafilterFrame/README.md records that that subtree was archived on 2026-05-20 because of 'elaboration conflicts with BXCanonical completeness'. It is UNKNOWN whether those conflicts were specific to the Boneyard files or would also bite the currently-orphaned Algebraic/ stack if it were imported live. Determine this empirically before recommending. DELIVERABLE: a report recommending either (a) re-wire -- import the aggregator from a live module so lake build covers the stack, with measured build-time delta and any elaboration conflicts named; or (b) keep isolation-only and document it honestly. EITHER WAY, fix two overstatements in Algebraic/README.md: it claims 'this directory is not optional' and 'participates in the live proof' (true only of FlowFrame.lean), and it claims 'G and H are shown to be interior operators' when InteriorOperators.lean proves only H_monotone (:80) plus the box triple (:101, :112, :130) -- there is no G operator on the quotient at all.
-
----
-
 ### 495. Determine tm completeness status over task frames
 - **Effort**: 12-20 hours
 - **Status**: [NOT STARTED]
@@ -285,106 +245,6 @@ DELIVERABLE: a grounding report answering, with citations to specific pages read
 - **Dependencies**: Task 491
 
 **Description**: HARD. Build the ultraproduct of shift sets and prove Los for TruthAt. This is steps S2 and S3 of the route task 424 authorized. S2: construct the ultraproduct over an ultrafilter on the index type {L : List Formula // forall psi in L, psi in Gamma}, using the carrier route selected by the preceding research task -- do not re-litigate that choice here. S3: the Los lemma for TruthAt, by induction on Formula, six cases (atom, bot, imp, box, untl, snce). Five are mechanical. The box case is the real content and carries task 424's risk R2: it needs a choice-function argument for the forward direction, because box quantifies over all total world-histories (TruthAt, Semantics/Truth.lean:164) rather than over a pointwise-definable family. ACCEPTANCE: sorry-free, lake build green, #print axioms recorded for the Los statement (Classical.choice is expected and acceptable here; sorryAx is not). SEQUENCING NOTE: ShiftSet.lean's forward_repr/reverse_repr is the representation this builds on, and it is also the representation the algebraic route should reuse -- see the reconciliation task, which should not be allowed to fork a second, parallel representation. CARRIER ROUTE (SETTLED -- do not re-litigate): route (a), a bespoke quotient of the Pi group (forall i, D i) by its eventually-zero AddSubgroup, with AddCommGroup inherited free from QuotientAddGroup.Quotient.addCommGroup and only LE, LinearOrder, IsOrderedAddMonoid, Nontrivial (plus DenselyOrdered on the Dense branch) supplied by hand -- 5 instances, 6 on Dense, not the ~15 the design doc estimated. The history carrier is the parallel Quotient of (forall i, Omega i) by eventual equality, with the shift action lifted through both and sh_zero/sh_add discharged. Route (b), carrier normalization first, is a NO-GO: the only normalization machinery in the tree (DurationClassification.lean intIso, IntTransfer.lean TaskFrame.map) is Discrete-only, and DiscreteNonCompactness.lean discrete_consequence_not_compact refutes compactness exactly at Discrete. Do NOT import Mathlib.Order.Filter.Germ or FilterProduct: Filter.Product carries only coeTC and Inhabited, and Mathlib.Order.Filter.Ultrafilter.Basic (already built) supplies everything the route needs. EVIDENCE, COMPILED AND UNDER A BUILD TARGET: Tests/BimodalTest/Semantics/DependentUltraproductProbe.lean, imported from Tests/BimodalTest.lean, carries the whole carrier construction sorry-free with axiom profile [propext, Classical.choice, Quot.sound]; its shiftSetOnUD is the live check that ShiftSet (UD phi D) elaborates and that the quotient lands in Type. FULL REASONING: specs/491_select_dependent_ultraproduct_carrier_route/reports/01_dependent-ultraproduct-carrier-route.md (section 9 is the decision record, section 5 lists what S2 still owes). The probe deliberately does NOT supply: the ultrafilter on the index type, ShiftSet.sep, carrier_nonempty, or the valuation A -- shiftSetOnUD takes the last three as hypotheses. Those are this task's work.
-
----
-
-### 491. Select dependent ultraproduct carrier route
-- **Effort**: 6-10 hours
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: strong_completeness
-- **Dependencies**: None
-- **Research**: [491_select_dependent_ultraproduct_carrier_route/reports/01_dependent-ultraproduct-carrier-route.md]
-- **Plan**: [491_select_dependent_ultraproduct_carrier_route/plans/01_land-carrier-route-decision.md]
-- **Summary**: [491_select_dependent_ultraproduct_carrier_route/summaries/01_land-carrier-route-decision-summary.md]
-
-**Description**: RESEARCH TASK, UNBLOCKED TODAY. Decide how to build the ultraproduct carrier before any Los-lemma work starts. CONTEXT: task 424 PASSED the compactness feasibility gate and landed FormalSystem/Semantics/ShiftSet.lean (506 lines, sorry-free) with forward_repr (:263) and reverse_repr (:362). Its cancel condition did not fire: the one extra hypothesis needed, sep, is first-order over the two-sorted signature <Omega, D; <, +, 0, sh, (A_p)>, hence Los-preserved. THE PROBLEM (task 424's risk R1, its own largest named unknown): the index type is {L : List Formula // forall psi in L, psi in Gamma}, and the carriers D_L differ per finite subset, so the ultraproduct is DEPENDENT. Mathlib's ordered instances (Mathlib/Order/Filter/FilterProduct.lean:92, LinearOrder for Germ) live only on the NON-dependent Filter.Germ; the dependent Filter.Product (Mathlib/Order/Filter/Germ/Basic.lean:100) has no ordered-group instances. TWO ROUTES TO ADJUDICATE: (a) a bespoke quotient of (forall i, D i) with roughly 15 hand-supplied instances (AddCommGroup, LinearOrder, IsOrderedAddMonoid, Nontrivial, and the frame-class binders); (b) a carrier-normalization step that collapses the family to a single carrier first -- note task 475 (carrier_normalization_successor_archimedean_transfer, completed) may or may not supply reusable machinery, and whether it does is part of what this task must determine rather than assume. ALSO IN SCOPE: Mathlib build cost. Ultrafilter (Order/Filter/Ultrafilter/) is already built and free; Filter.Germ and FilterProduct are present in source but have NO oleans in this checkout, so importing them triggers a Mathlib build -- quantify it. DELIVERABLE: a research report naming the chosen route with evidence, the exact instance list route (a) would require, and a go/no-go on route (b). MUST NOT write the Los lemma.
-
----
-
-### 490. Prove model existence implies compactness bridge
-- **Effort**: 3-5 hours
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: strong_completeness
-- **Dependencies**: None
-- **Research**: [490_prove_model_existence_implies_compactness_bridge/reports/01_model-existence-compactness-bridge.md]
-- **Plan**: [490_prove_model_existence_implies_compactness_bridge/plans/01_land-compactness-bridge-theorems.md]
-- **Summary**: [490_prove_model_existence_implies_compactness_bridge/summaries/01_land-compactness-bridge-theorems-summary.md]
-
-**Description**: ROUTINE, UNBLOCKED TODAY. Close a silent second gap on the compactness route. FormalSystem/Metalogic/SetConsequence.lean states both ModelExistenceBase (:239-242) and CompactBase (:219-221), and the Dense siblings ModelExistenceDense (:283-286) and CompactDense (:263-265), but the implication ModelExistence -> Compact is NOT proved: the module docstrings at :234-238 and :278-282 say verbatim that 'that implication is future work and is not proved here'. The compactness programme is routinely described as having one gap (the model-existence theorem); it has two, and this is the cheap one. DELIVERABLE: theorems compactBase_of_modelExistence : ModelExistenceBase -> CompactBase and compactDense_of_modelExistenceDense : ModelExistenceDense -> CompactDense, in SetConsequence.lean or a sibling. ROUTE: contrapose through the Formula.neg clause of TruthAt plus the existing truthAt_foldr_imp (StrongCompleteness.lean:183); SetDerivable (:69) and the finite-restriction lemmas (:151, :156, :166, :174) are already available. ACCEPTANCE: both theorems sorry-free, #print axioms exactly [propext, Classical.choice, Quot.sound], lake build green. DO NOT attempt the model-existence theorem itself here -- that is the ultraproduct work and is separately tasked.
-
----
-
-### 489. Prove baselanguage soundness base and extensions
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: metalogic
-- **Dependencies**: None
-- **Research**: [489_prove_baselanguage_soundness_base_and_extensions/reports/01_bl-soundness-by-composition.md]
-- **Plan**: [489_prove_baselanguage_soundness_base_and_extensions/plans/01_bl-soundness-composition.md]
-- **Summary**: [489_prove_baselanguage_soundness_base_and_extensions/summaries/01_bl-soundness-composition-summary.md]
-
-**Description**: Prove soundness for the BaseLanguage (BL) proof system -- the paper's TM -- establishing it at FrameClass.Base first and then extending to Dense, Discrete and Dedekind, mirroring Metalogic/Soundness.lean's Base-then-extensions structure. This gives thm:TM-soundness (possible_worlds.tex:4484) a direct Lean counterpart and retires a live over-claim: the paper asserts at four sites (:1661, :4311, :4484, :4494) that TM's soundness is formalized here, and only the TM+ half of each sentence is currently supported.
-
-THE ROUTE IS COMPOSITION, NOT A SECOND SEMANTICS. def:BL-semantics (possible_worlds.tex:3566) defines a BL model as <W, D, =>, |.|> where <W, D, =>> IS A TASK FRAME -- the same structure TM+ uses -- with clauses for p, bot, ->, box, H and G identical to TM+'s clauses for those six connectives. And tr (BaseLanguage/Translation.lean:69) is a structural homomorphism on exactly those six primitives, every push-through equation rfl (:82-87).
-
-DELIVERABLE 1 -- FormalSystem/BaseLanguage/Semantics.lean: define BLTruthAt by recursion on BLFormula, transcribing def:BL-semantics clause for clause. The box clause quantifies over TOTAL world-histories (matching TruthAt, Semantics/Truth.lean:164, and H_F in the paper). Then BLValid, BLValidDense, BLValidDiscrete and BLValidDedekindDense mirroring Semantics/Validity.lean (:103, :206, :248, :336).
-
-DELIVERABLE 2 -- the truth-transfer bridge: TruthAt M tau x (tr phi) <-> BLTruthAt M tau x phi, by induction on phi. Four of the six cases are definitional. The allPast and allFuture cases are the only ones with content, because Formula.allFuture/allPast are DERIVED from untl/snce (Syntax/Formula.lean:167, :177) -- and they are already discharged by the existing @[simp] lemmas future_iff (Semantics/Truth.lean:287) and past_iff (:305), which state exactly the paper's G and H clauses.
-
-DELIVERABLE 3 -- four soundness theorems by composition: Metalogic.Conservativity.translate (already proved, already fc-parameterized) into soundness (Soundness.lean:1086), soundness_dense (:1260), soundness_discrete (:1406) and soundness_dedekind (:1933), then across the bridge. The Base-then-extensions structure is inherited free: BaseLanguage.Axiom.minFrameClass reuses ProofSystem.FrameClass and only df/dn/co are non-Base, so TM, TM_f, TM_d and TM_dc are four instantiations of one derivation type.
-
-DELIVERABLE 4 -- consistency corollaries mirroring not_derivable_nil_bot (Soundness.lean:1993).
-
-FORBIDDEN DESIGN, THE ONE TRAP: do NOT define BLTruthAt as TruthAt (tr phi). That makes the bridge trivially true and the soundness theorem vacuous as a claim about BL, leaving thm:TM-soundness still without a real counterpart. The semantics must be defined natively on BLFormula and the bridge PROVED.
-
-NOTE THE DEDEKIND ASYMMETRY: soundness_dedekind targets ValidDedekindDense, not ValidDedekind (Soundness.lean:1438-1454), because Dense <= Dedekind makes density and dense_indicator admissible and both are false on Z. The BL-side Dedekind statement must inherit that same target or it will be refutable.
-
-MODULE INVARIANT TO PRESERVE OR AMEND DELIBERATELY: BaseLanguage.lean and Formula.lean:48 currently state that nothing under FormalSystem/BaseLanguage/ imports anything from FormalSystem/Semantics/. Deliverable 1 breaks that invariant by design. Either place Semantics.lean outside BaseLanguage/ or amend the invariant explicitly in both docstrings -- do not leave it silently false.
-
-ACCEPTANCE: all four soundness theorems and the bridge sorry-free, #print axioms exactly [propext, Classical.choice, Quot.sound], lake build green, and scripts/check-module-invariants.sh still ALL PASSED.
-
----
-
-### 488. Align lean code and docs with possible worlds paper
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: paper-refactor
-- **Dependencies**: None
-- **Plan**: [488_align_lean_code_and_docs_with_possible_worlds_paper/plans/02_paper-code-docs-alignment.md]
-- **Research**:
-  - [488_align_lean_code_and_docs_with_possible_worlds_paper/reports/02_author-memo.md]
-  - [488_align_lean_code_and_docs_with_possible_worlds_paper/reports/01_paper-code-docs-alignment.md]
-- **Summary**: [488_align_lean_code_and_docs_with_possible_worlds_paper/summaries/03_paper-code-docs-alignment-summary.md]
-
-**Description**: Review possible_worlds.tex (JPL paper) and align the Lean code and documentation such as README.md with the paper, identifying and fixing discrepancies so all claims are verified in the Lean codebase and reported accurately in the documentation
-
----
-
-### 483. Route1 restricted applyrule emitted time mem
-- **Effort**: 3-5 hours
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: decidability
-- **Dependencies**: None
-- **Research**: [481_discharge_or_replace_unorderedsuccessorlabelclosed_residual/reports/02_spawn-analysis.md]
-- **Plan**: [483_route1_restricted_applyrule_emitted_time_mem/plans/01_route1-restricted-time-sweep.md]
-- **Summary**: [483_route1_restricted_applyrule_emitted_time_mem/summaries/01_route1-restricted-time-sweep-summary.md]
-
-**Description**: Decide the OrdTimesKnown/UniverseClosedAt shape mismatch blocking task 481's Phases 6-7, by attempting Route 1 ONLY: a re-derivation of applyRule_emitted_time_mem (FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean) restricted to the rules reachable on a boxFree + untl/snce-free branch -- the same fragment task 481's section D4 already operates on. Route 1 is the cheaper of the two available options and is currently unattempted.
-
-Starting evidence for why Route 1 is believed cheap (from task 481's Phase 5 'what is needed' analysis, to be verified rather than re-derived from scratch): (1) on this fragment, the linearity stage yields .splitOrdered, and hence there is no unordered successor at all to reason about in that case; (2) the seriality stage emits at the trigger's own label, not a fresh one; (3) orderTrichotomy's fires guard demands a someFuture-shaped formula already on the branch (someFuture phi = untl top phi), which a boxFree/untl/snce-free branch structurally cannot carry. Together these three observations suggest that on this restricted fragment, the case analysis applyRule_emitted_time_mem performs may never reach the branch that actually needs OrdTimesKnown b ord -- but this has not been checked rule-by-rule and must be verified as real proof work, not assumed.
-
-OUT OF SCOPE -- do not start under this task: Route 2, an Ord-flavoured UniverseClosedAt and DifficultyBounded, cascading through roughly twenty theorem restatements down to buildTableauAt (the _at, _selfGuarded, and _fixed families). This is an interface redesign and is explicitly deferred pending the outcome of Route 1. Do not begin any part of it as part of this task, even if Route 1 fails.
-
-A negative result is a valid, complete deliverable. If the restricted re-derivation cannot be made to work -- i.e., if some rule reachable on the boxFree/untl/snce-free fragment genuinely still needs OrdTimesKnown b ord to prove applyRule_emitted_time_mem's conclusion -- record that finding with evidence (the specific rule, the specific configuration that requires the hypothesis, and why the fragment restriction does not exclude it) as a C9 register amendment. The C9 register in MintBound.lean currently stands at exactly 24 entries (task 481 amended entries 11 and 21 for the parent residual without adding a 25th); prefer amending an existing entry -- most likely 11 or 21, or the D4 boundary block's own dedicated boundary note -- over adding a 25th entry. Do not treat 'prove applyRule_emitted_time_mem restricted to this fragment' as the only acceptable outcome; a well-evidenced negative result closes this task exactly as completely as a positive one.
-
-Success condition: if Route 1 succeeds (the restricted re-derivation goes through without needing OrdTimesKnown b ord), continue by checking whether task 481's Phase 6 (universeClosedAt_signedUniverse_of_propositional and the terminus restatement) and Phase 7 (non-vacuity for that terminus) are now reachable as originally written in task 481's plan (specs/481_discharge_or_replace_unorderedsuccessorlabelclosed_residual/plans/01_sharpen-replace-labelclosed-residual.md). State explicitly, in this task's summary, whether Phases 6 and 7 are now reachable and, if so, whether landing them should happen as a resumption of task 481 or as a further follow-up task.
-
-Context on recent file state -- do not re-derive, and beware stale line numbers: MintBound.lean is now approximately 14,100+ lines. Task 481 landed a section C11 refutation family and a section D4 (commit ee0fe12a0); task 462 (now completed) landed a section D5 discharging MintPaysForTimeFixed at a nonempty universe under not (FrameClass.Dense <= fc) (commits 2dac7b35f..dc090921e). Any line numbers cited in task 481's plan, report, or summary predate task 462's D5 insertion and must be re-located by declaration name, not by line number. Read task 481's plan '#### Reasoned Exclusions' table and section D4's boundary block, plus reports/01_unorderedsuccessorlabelclosed-verdict.md and summaries/01_sharpen-replace-labelclosed-residual-summary.md, before starting.
-
-Acceptance criteria: lake build green; no regression to any check-module-invariants.sh check currently passing; either (a) the restricted re-derivation of applyRule_emitted_time_mem is proved and Phase 6/7 reachability is explicitly assessed and stated, or (b) a negative result is recorded as a C9 register amendment naming the precise rule and configuration that still requires OrdTimesKnown b ord on this fragment.
 
 ---
 

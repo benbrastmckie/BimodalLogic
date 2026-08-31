@@ -1,0 +1,111 @@
+{
+  "$schema": "orchestrator-handoff-v1",
+  "phase": "plan",
+  "status": "planned",
+  "summary": "Hard-mode plan written: 8 dispatch phases (14 green-commit substeps) covering Branch.internalize plus its root anchor, the positive-context monotonicity engine, the forest invariant, the corrected rule_admissible harness, and all 21 routine admissibility lemmas across four new task-owned files. Every phase carries a Verification Tier, a Scope Hypothesis, a named build gate, and a territory declaration. The Barcan step (the task's one Medium-likelihood risk) is deliberately front-loaded into Wave 1 so it surfaces before 17 downstream lemmas depend on it; its exhaustion protocol is a named boundary hand-off, never a sorry. No strategic sorries are planned.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/410_internalize_tableau_branches_and_prove_routine_rule_admissibility/plans/01_internalize-routine-admissibility.md",
+      "summary": "8-phase hard-mode implementation plan: Internalize.lean definitions and root anchor, TemporalAssets.lean (fConjG/pConjH, diamondToFutureDiamond, barcanDiamondG), monotonicity engine, forest invariant plus rule_admissible harness, and the 21 lemmas across Rules/{Propositional,Modal,Temporal}.lean. Passes validate-artifact.sh --strict."
+    },
+    {
+      "type": "report",
+      "path": "specs/410_internalize_tableau_branches_and_prove_routine_rule_admissibility/reports/01_internalize-routine-admissibility.md",
+      "summary": "Hard-mode research input (Tier 3, H4-verified): 34-rule verified inventory, the 21/13/2 territory split, time-major flat-diamond internalization design, five corrections to the rule_admissible shape, and the verified Barcan route."
+    }
+  ],
+  "blockers": [],
+  "next_action_hint": "implement",
+  "files_modified": [
+    "specs/410_internalize_tableau_branches_and_prove_routine_rule_admissibility/plans/01_internalize-routine-admissibility.md",
+    "specs/410_internalize_tableau_branches_and_prove_routine_rule_admissibility/.return-meta.json",
+    "specs/410_internalize_tableau_branches_and_prove_routine_rule_admissibility/.orchestrator-handoff.json"
+  ],
+  "decisions_made": [
+    "Time-major skeleton with a flat diamond per non-root world at each time node; the task charter's 'world labels via box/diamond nesting' text is corrected by research section 3.3 and is NOT implemented.",
+    "The U/S guard slot is taken in per-edge function form (guard : TimeIndex -> TimeIndex -> Formula) instantiated at fun _ _ => Formula.top, per risk R2, because 411's needs are not yet known and retrofitting the arity later would force 411 to reprove this task's tree-touching lemmas.",
+    "The rule_admissible harness lives in Verified/Internalize.lean, not Verified/Refutation/Core.lean, which belongs to 412 -- placing it there would be a territory collision.",
+    "Object-language assets (fConjG, pConjH, diamondToFutureDiamond, barcanDiamondG) go in a task-owned Verified/Refutation/Rules/TemporalAssets.lean rather than into FormalSystem/Theorems/; in particular the inline future_comp step in Perpetuity/Principles.lean is re-proved locally rather than hoisted, because Theorems/ is read-only for this task.",
+    "The Barcan phase is front-loaded into Wave 1 rather than placed last as the research report's tier ordering suggests, so its Medium-likelihood risk surfaces before 17 downstream lemmas depend on it.",
+    "applyRule_preserves_forest is narrowed from research section 3.5's all-21 form to generic addFuture/addPast preservation lemmas in Phase 4.1 plus four one-line instances in Phase 8, because only four of the 21 rules mutate the TimeOrdering at all (boxNeg/diamondPos mint a fresh world, not a fresh time). This keeps both phases inside the H8 bounded-unit test.",
+    "Sub-phases are nested at #### rather than ###, so the phase-accounting regex matches exactly 8 dispatch units; promoting them would double-count every grouped phase and distort the progress denominator.",
+    "No strategic sorries are planned (plan_metadata.skeleton = false). The R1 contingency for an exhausted Barcan derivation is a named boundary hand-off to 411 of the cross-world gProps/fNegProps sub-case of rules 15/17/18/20, with Phase 8 marked BLOCKED and Phases 3-7 completed in full -- explicitly not a sorry and explicitly not a silently reduced emission set."
+  ],
+  "dead_ends": [
+    "World-major internalization (one diamond per world containing that world's whole time tree): rejected, makes boxPos unprovable because it needs the false F(box psi) -> box psi. Do not revisit.",
+    "Report 02's rule_admissible shape (forall children in applyRule r sf b ord, ...): does not typecheck -- applyRule returns RuleResult x TimeOrdering and RuleResult has five constructors. Use the corrected shape in research section 4.",
+    "A general Formula context type for the monotonicity engine: dropped by the research report's own recommendation 1 after seeing that only four formers occur. Recurse over timeTree's structure instead.",
+    "Anything scoped against buildTableau_isSome: that theorem is false; a budget-parameterised replacement is another task's.",
+    "The retired PASSIVE arms of untlNeg/snceNeg, and sat_untl_neg / sat_snce_neg: deleted from the tree. Neither rule is in this task's scope at all."
+  ],
+  "phases_completed": 0,
+  "phases_total": 8,
+  "continuation_path": null,
+  "sorry_inventory": [],
+  "plan_markers_verified": true,
+  "plan_metadata": {
+    "phases": 8,
+    "total_effort_hours": 30,
+    "complexity": "complex",
+    "research_integrated": true,
+    "plan_version": 1,
+    "dependency_waves": [[1, 2], [3], [4], [5, 6, 7], [8]],
+    "reports_integrated": [
+      {
+        "path": "reports/01_internalize-routine-admissibility.md",
+        "integrated_in_plan_version": 1,
+        "integrated_date": "2026-07-29"
+      }
+    ],
+    "skeleton": false,
+    "follow_up_tasks": []
+  },
+  "hard_mode": {
+    "effort_flag": "hard",
+    "phase_sizing_h8": "8 dispatch phases at 200-450 lines of output each, inside the 100-500 budget; 14 nested green-commit substeps. Every phase names one verifiable unit with a concrete stopping condition -- Phase 2.3 (the Barcan derivation) states a two-route attempt budget rather than relying on its line estimate, because it is the one open-ended proof in the task.",
+    "postmortem_rules_count": 15,
+    "territory_files_exclusive": [
+      "FormalSystem/Metalogic/Decidability/Verified/Internalize.lean",
+      "FormalSystem/Metalogic/Decidability/Verified/Refutation/Rules/TemporalAssets.lean",
+      "FormalSystem/Metalogic/Decidability/Verified/Refutation/Rules/Propositional.lean",
+      "FormalSystem/Metalogic/Decidability/Verified/Refutation/Rules/Modal.lean",
+      "FormalSystem/Metalogic/Decidability/Verified/Refutation/Rules/Temporal.lean"
+    ],
+    "territory_files_shared_append_only": [
+      "FormalSystem/Metalogic/Decidability.lean"
+    ],
+    "territory_files_read_only": [
+      "FormalSystem/Metalogic/Decidability/Tableau.lean",
+      "FormalSystem/Metalogic/Decidability/SignedFormula.lean",
+      "FormalSystem/Metalogic/Decidability/Verified/RuleSpec.lean",
+      "FormalSystem/Theorems/**",
+      "FormalSystem/ProofSystem/**"
+    ],
+    "boundary_notes": [
+      "serialityRule and timeLinearity (rules 35-36) are 430's; both are provably outside allRulesForFC (RuleSpec.lean:337,342). No phase writes admissibility for them, and the .branchingOrdered arm stays a vacuous True.",
+      "Rules 22-34 (13 lemmas) are 411's, in Rules/{UntilSince,Trichotomy,Discrete,Dense,Dedekind}.lean. priorUZ/priorSZ stay 411's despite report 02 rating them routine (research section 2.2, contradiction C1); they are 411's two cheapest, not hard ones.",
+      "Refutation/Core.lean and Verified/Provable.lean are 412's. If a phase finds it would need one of these, it records a boundary note and stops rather than absorbing it.",
+      "The residual forest obligation after this task is exactly densityRule (411) and timeLinearity (430), named in Phase 4.1's docstring so neither owner can lose it."
+    ],
+    "regression_gate": "Baseline sorry count in the Decidability tree is 6 (Propositional/Decidable.lean 1, Correctness.lean 1, Verified/Termination/TimeTypeBound.lean 1, Verified/Bridge/IntTruth.lean 3). It must not increase. A new sorry in a pre-existing file is a regression, not a deferral.",
+    "build_gates": {
+      "per_phase": "lake build FormalSystem.Metalogic.Decidability",
+      "phase_close_and_task_close": "lake build",
+      "note": "A new module is only compiled once reachable from FormalSystem.lean, so the append-only import line in FormalSystem/Metalogic/Decidability.lean is part of whichever phase creates the file."
+    },
+    "planned_strategic_sorries": 0,
+    "literature": {
+      "directive": "SUBINDEX_PRESENT",
+      "grounding_tier": 3,
+      "chunks_read": 0,
+      "note": "Tier 3 (implementation-backed). The Burgess/Reynolds axioms are already transcribed into ProofSystem/Axioms.lean with per-constructor provenance docstrings, so this task works against those transcriptions and no paper is newly transcribed. No literature work was manufactured."
+    }
+  },
+  "validation": {
+    "validate_artifact_strict": "PASS (0 warnings)",
+    "phase_accounting_regex_matches": 8,
+    "per_phase_verification_tier": "present on all 8 phases and all 14 sub-phases",
+    "per_phase_scope_hypothesis": "present on all 8 phases and all 14 sub-phases"
+  }
+}

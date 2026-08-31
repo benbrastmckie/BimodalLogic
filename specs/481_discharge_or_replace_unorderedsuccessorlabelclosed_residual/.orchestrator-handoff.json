@@ -1,0 +1,48 @@
+{
+  "status": "partial",
+  "phase": "implement",
+  "dispatch_seq": 3,
+  "requires_user_review": true,
+  "review_reason": "Phases 6 and 7 BLOCKED on a settled shape mismatch: UniverseClosedAt's clause 1 quantifies ord freely and offers no OrdTimesKnown b ord, which every route through the time coordinate needs and which applyRule_emitted_time_mem_ordTimesKnown_needed proves non-removable. universeClosedAt_signedUniverse_of_propositional is therefore NOT STATEABLE, and Phase 6's terminus (routed through it) is unreachable. This is an explicitly sanctioned outcome for this task, not a failure -- Phases 1-2 alone were declared a complete deliverable and Phases 3-5 landed on top of them.",
+  "phases_completed": 5,
+  "phases_total": 7,
+  "blocked_phase": 6,
+  "summary": "Outcome (c) is COMPLETE: the residual is proved false at every nonempty finite L at every frame class (unorderedSuccessorLabelClosed_nonempty_false, unorderedSuccessorLabelClosedOrd_nonempty_false) and true at the empty label set (unorderedSuccessorLabelClosed_empty), pinning its satisfiability set to exactly the empty set; and since signedUniverse C EMPTY is itself empty, the nine hlab carriers are vacuous conditionals at every universe anyone cares about. Two false docstrings corrected and C9 entries 11 and 21 amended -- no 25th entry, register stands at 24. Outcome (b) landed most of the way: new section D4 carries the boxFree shape gate (closing both world-minting rules before any frame-class gate, so nothing carries a frame-class restriction), the world-subset machinery mirroring D3's time machinery, and the composite discharging clause 1 at signedUniverse C L from hypotheses that are ALL satisfiable -- strictly better than section C11's position, where the reduced antecedent was itself refutable. It stops one step short of a restated terminus. No carrier loses its hlab.",
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/481_discharge_or_replace_unorderedsuccessorlabelclosed_residual/summaries/01_sharpen-replace-labelclosed-residual-summary.md",
+      "summary": "Phases 1-5 landed; Phases 6-7 blocked with an evidenced obstruction, all twelve Scope Hypotheses resolved."
+    }
+  ],
+  "modified_files": [
+    "FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean",
+    "specs/481_discharge_or_replace_unorderedsuccessorlabelclosed_residual/plans/01_sharpen-replace-labelclosed-residual.md",
+    "specs/481_discharge_or_replace_unorderedsuccessorlabelclosed_residual/summaries/01_sharpen-replace-labelclosed-residual-summary.md"
+  ],
+  "citation_for_sibling_tasks": "FormalSystem.Metalogic.Decidability.unorderedSuccessorLabelClosed_nonempty_false : forall fc L, L.Nonempty -> not (UnorderedSuccessorLabelClosed fc L). Discharging hmint/MintPaysForTimeFixed at a nonempty universe does NOT unlock the nine signedUniverse carriers; hlab has to be REPLACED, and this task establishes that the replacement is harder than projected.",
+  "key_decisions": [
+    "Phase 1's fourteenth rfl fact was not restated: ruleMintsFreshLabel .boxNeg = true mentions neither witness nor label, so the in-file rm_bn was reused. Thirteen new facts, fourteen in the local simp set.",
+    "Phase 2's vacuity note deliberately did not forward-reference section D4, since at that point D4 did not exist and Phases 3-7 were optional. The pointer was added at the end via C9 entry 21.",
+    "Phase 5's signedUniverse consequence carries OrdTimesKnown b ord, following C11's unorderedSuccessor_confined_signedUniverse_of_freshLabelHeadroom rather than the _of_headroom original. Stated honestly rather than papered over.",
+    "universeClosedAt_signedUniverse_of_propositional was EXCLUDED rather than forced, with a Reasoned Exclusions table in the plan and a dedicated boundary block in the source file. No hypothesis was added to force the terminus through, since that would recreate exactly the unsatisfiable-residual failure mode this task exists to remove.",
+    "The first route past the obstruction (removing OrdTimesKnown on the propositional fragment) is recorded in-tree as UNATTEMPTED, deliberately distinguished from refuted, so a successor is not misled into thinking it was decided."
+  ],
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true,
+    "test_build_passed": true,
+    "module_invariants": "ALL CHECKS PASSED, identical to pre-task baseline",
+    "nine_carriers_byte_identical": true,
+    "frozen_files_untouched": true,
+    "register_entry_count": 24
+  },
+  "blockers": [
+    "Phase 6: universeClosedAt_signedUniverse_of_propositional is not stateable. UniverseClosedAt's clause 1 is forall b ord tr, (forall x in b, x in U) -> ... with ord universally quantified and unconstrained; every route through the time coordinate carries OrdTimesKnown b ord, inherited from applyRule_emitted_time_mem, where applyRule_emitted_time_mem_ordTimesKnown_needed proves it non-removable by deciding a configuration in which dropping it makes the statement false.",
+    "Phase 7: blocked transitively -- there is no Phase 6 terminus to establish non-vacuity for."
+  ],
+  "continuation_path": "One follow-up task, not two: decide the OrdTimesKnown/UniverseClosedAt shape mismatch. Route 1 -- a re-derivation of applyRule_emitted_time_mem restricted to the rules reachable on a boxFree + untl/snce-free branch -- is the cheaper option and is unattempted; on that fragment the linearity stage yields .splitOrdered and hence no unordered successor at all, the seriality stage emits at the trigger's own label, and orderTrichotomy's fires guard demands a someFuture-shaped formula the branch cannot carry (someFuture phi = untl top phi). If route 1 succeeds, Phases 6 and 7 of this plan become reachable as written. Route 2 -- an Ord-flavoured UniverseClosedAt and DifficultyBounded, cascading through roughly twenty theorem restatements down to buildTableauAt -- is an interface redesign and should not be started before route 1 is decided."
+}
