@@ -123,8 +123,6 @@ namespace PartialHistory
 
 open ParamTaskFrame
 
-variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
-
 /-! ## From totality to `WorldHistory` -/
 
 /--
@@ -140,8 +138,8 @@ This is what makes the last step of `thm:extension` immediate: once `lem:step` h
 maximal partial history to be total, no separate convexity argument is needed to view it as a
 world history.
 -/
-theorem total_isConvex {F : ParamTaskFrame D} {τ : PartialHistory F} (h : τ.IsTotal) :
-    ∀ (x z : D), τ.domain x → τ.domain z → ∀ (y : D), x ≤ y → y ≤ z → τ.domain y :=
+theorem total_isConvex {F : TaskFrame} {τ : PartialHistory F} (h : τ.IsTotal) :
+    ∀ (x z : F.Duration), τ.domain x → τ.domain z → ∀ (y : F.Duration), x ≤ y → y ≤ z → τ.domain y :=
   fun _ _ _ _ y _ _ => h y
 
 /--
@@ -150,16 +148,16 @@ Promotion of a **total** partial history to a `WorldHistory`, via `total_isConve
 The underlying `PartialHistory` is unchanged — this adds the `convex` field and nothing else, so
 `(τ.toWorldHistory h).toPartialHistory` is `τ` definitionally.
 -/
-def toWorldHistory {F : ParamTaskFrame D} (τ : PartialHistory F) (h : τ.IsTotal) : WorldHistory F where
+def toWorldHistory {F : TaskFrame} (τ : PartialHistory F) (h : τ.IsTotal) : WorldHistory F where
   toPartialHistory := τ
   convex := total_isConvex h
 
 @[simp]
-theorem toWorldHistory_toPartialHistory {F : ParamTaskFrame D} (τ : PartialHistory F) (h : τ.IsTotal) :
+theorem toWorldHistory_toPartialHistory {F : TaskFrame} (τ : PartialHistory F) (h : τ.IsTotal) :
     (τ.toWorldHistory h).toPartialHistory = τ := rfl
 
 /-- A promoted total partial history is a total *world* history. -/
-theorem isTotal_toWorldHistory {F : ParamTaskFrame D} (τ : PartialHistory F) (h : τ.IsTotal) :
+theorem isTotal_toWorldHistory {F : TaskFrame} (τ : PartialHistory F) (h : τ.IsTotal) :
     (τ.toWorldHistory h).IsTotal := h
 
 /-! ## Maximal implies total — where `lem:step` is spent -/
@@ -177,7 +175,7 @@ The four axioms are **`ParamTaskFrame` fields that `step` projects off `F` for i
 this theorem takes and forwards. Nothing here applies any of them; in particular this is not a
 second *Spherical* application site.
 -/
-theorem isTotal_of_isMax (F : ParamTaskFrame D) {τ : PartialHistory F} (hmax : IsMax τ) :
+theorem isTotal_of_isMax (F : TaskFrame) {τ : PartialHistory F} (hmax : IsMax τ) :
     τ.IsTotal := by
   intro z
   obtain ⟨σ, hext, hσz⟩ := step F τ z
@@ -207,7 +205,7 @@ result is a world history, and totality is exactly its `H_F` membership.
 **These two are the whole proof.** *Spherical* is not threaded in directly — `step`, which remains
 its sole application site, reads it off the frame as `F.spherical`.
 -/
-theorem extension (F : ParamTaskFrame D) (τ : PartialHistory F) :
+theorem extension (F : TaskFrame) (τ : PartialHistory F) :
     ∃ σ : F.HF, Extends σ.val.toPartialHistory τ := by
   obtain ⟨μ, hle, hmax⟩ := exists_maximal_extension τ
   have htot : μ.IsTotal := isTotal_of_isMax F hmax
@@ -225,7 +223,7 @@ This is the history `cor:occurrence` extends via `thm:extension`. The paper's fo
 argument, which reached an arbitrary time by time-shifting, is not used and must not be
 reintroduced — see this module's docstring.
 -/
-def point (F : ParamTaskFrame D) (w : F.WorldState) (x : D) : PartialHistory F where
+def point (F : TaskFrame) (w : F.WorldState) (x : F.Duration) : PartialHistory F where
   domain := fun t => t = x
   nonempty_domain := ⟨x, rfl⟩
   states := fun _ _ => w
@@ -236,7 +234,7 @@ def point (F : ParamTaskFrame D) (w : F.WorldState) (x : D) : PartialHistory F w
     simpa [sub_self] using (F.nullity_identity w w).mpr rfl
 
 @[simp]
-theorem point_states (F : ParamTaskFrame D) (w : F.WorldState) (x : D) (t : D)
+theorem point_states (F : TaskFrame) (w : F.WorldState) (x : F.Duration) (t : F.Duration)
     (ht : (point F w x).domain t) : (point F w x).states t ht = w := rfl
 
 /--
@@ -254,7 +252,7 @@ via `thm:extension`. The extension agrees with the one-point history at `x`, whi
 how the recorded source literally reads; the axioms reach `step` as the frame's own fields. See
 this module's docstring.
 -/
-theorem occurrence (F : ParamTaskFrame D) (w : F.WorldState) (x : D) :
+theorem occurrence (F : TaskFrame) (w : F.WorldState) (x : F.Duration) :
     ∃ τ : F.HF, τ.val.states x (τ.property x) = w := by
   obtain ⟨τ, hext⟩ := extension F (point F w x)
   exact ⟨τ, hext.agree x rfl⟩
@@ -270,7 +268,7 @@ holding a state passes it, and a caller holding none passes `F.nonempty.some`.
 `Semantics/Validity.lean`'s `hF_nonempty_of_frameAxioms` is the second case, and reads literally
 `PartialHistory.hF_nonempty F F.nonempty.some`.
 -/
-theorem hF_nonempty (F : ParamTaskFrame D) (w : F.WorldState) : Nonempty F.HF :=
+theorem hF_nonempty (F : TaskFrame) (w : F.WorldState) : Nonempty F.HF :=
   let ⟨τ, _⟩ := occurrence F w 0
   ⟨τ⟩
 

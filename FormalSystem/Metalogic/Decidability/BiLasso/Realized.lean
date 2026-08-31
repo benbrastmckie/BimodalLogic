@@ -202,7 +202,7 @@ theorem realizedStep_step {x y : PigeonState P φ} (h : RealizedStep P φ τ hτ
   obtain ⟨u, hx, hy⟩ := h
   subst hx; subst hy
   have hpath : IsStepPath P.toTaskFrame (fun t => τ.states t (hτ t)) :=
-    ParamTaskFrame.HF.isStepPath (F := P.toTaskFrame) ⟨τ, hτ⟩
+    TaskFrame.HF.isStepPath (F := P.toTaskFrame) ⟨τ, hτ⟩
   exact (P.isStepPath_iff _).mp hpath u
 
 /-! ## Coherence as an edge condition -/

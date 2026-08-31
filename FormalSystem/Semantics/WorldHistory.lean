@@ -509,22 +509,20 @@ form `(τ : WorldHistory F) (hτ : τ.IsTotal)` is used instead.
 This is **not** a parallel validity notion or an alias: there is exactly one validity predicate,
 and `HF` is a bundled name for the same `IsTotal` predicate, bridged only by `.val` / `.property`.
 -/
-def ParamTaskFrame.HF {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
-    [Nontrivial D] (F : ParamTaskFrame D) : Type _ :=
+def TaskFrame.HF (F : TaskFrame) : Type _ :=
   {τ : WorldHistory F // τ.IsTotal}
 
-namespace ParamTaskFrame.HF
+namespace TaskFrame.HF
 
-variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
-  {F : ParamTaskFrame D}
+variable {F : TaskFrame}
 
 /-- Time shift lifted to `H_F`, through `WorldHistory.isTotal_timeShift`. -/
-def timeShift (τ : F.HF) (Δ : D) : F.HF :=
+def timeShift (τ : F.HF) (Δ : F.Duration) : F.HF :=
   ⟨τ.val.timeShift Δ, WorldHistory.isTotal_timeShift τ.property Δ⟩
 
 @[simp]
-theorem timeShift_val (τ : F.HF) (Δ : D) : (τ.timeShift Δ).val = τ.val.timeShift Δ := rfl
+theorem timeShift_val (τ : F.HF) (Δ : F.Duration) : (τ.timeShift Δ).val = τ.val.timeShift Δ := rfl
 
-end ParamTaskFrame.HF
+end TaskFrame.HF
 
 end FormalSystem.Semantics

@@ -560,7 +560,7 @@ quantification over temporal types, whereas here `D` and `F` are both already gi
 -/
 def ParamTaskFrame.ValidOn {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
     (F : ParamTaskFrame D) (φ : Formula) : Prop :=
-  ∀ (M : TaskModel F) (τ : F.HF) (x : D), TruthAt M τ.val x φ
+  ∀ (M : TaskModel F) (τ : TaskFrame.HF F) (x : D), TruthAt M τ.val x φ
 
 namespace ParamTaskFrame
 
@@ -596,7 +596,7 @@ on — the four axioms and the carrier's nonemptiness — is a field of the fram
 This is a thin restatement of `PartialHistory.hF_nonempty`, kept here so the reason
 `not_validOn_bot` holds is legible next to the statement itself.
 -/
-theorem hF_nonempty_of_frameAxioms (F : ParamTaskFrame D) : Nonempty F.HF :=
+theorem hF_nonempty_of_frameAxioms (F : ParamTaskFrame D) : Nonempty (TaskFrame.HF F) :=
   PartialHistory.hF_nonempty F F.nonempty.some
 
 end ParamTaskFrame

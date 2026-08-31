@@ -87,8 +87,6 @@ namespace PartialHistory
 
 open ParamTaskFrame
 
-variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
-
 /--
 `lem:step`: the Step Lemma. Every partial history extends by one arbitrary duration.
 
@@ -118,7 +116,7 @@ The frame axioms are taken from the structure's own fields — `F.spherical` her
 theorem quantifies over a frame alone, with no axiom hypotheses. *Limit* reaches
 `lem:admissible` the same way, where it is needed for `lem:nullity` at `z` itself.
 -/
-theorem step (F : ParamTaskFrame D) (τ : PartialHistory F) (z : D) :
+theorem step (F : TaskFrame) (τ : PartialHistory F) (z : F.Duration) :
     ∃ σ : PartialHistory F, Extends σ τ ∧ σ.domain z := by
   by_cases hz : τ.domain z
   · -- `z` is already a domain time: `τ` itself is the extension, no axiom needed.

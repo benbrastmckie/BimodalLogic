@@ -1,6 +1,8 @@
 {
   "dispatch_seq": 3,
   "status": "in_progress",
-  "phases_completed": 0,
-  "phases_total": 13
+  "phases_completed": 2,
+  "phases_total": 13,
+  "last_green_commit": "69437fd65",
+  "notes": "Phases 1-2 complete and green. Mechanism (a) (CoeOut) adopted; shim ledger empty."
 }

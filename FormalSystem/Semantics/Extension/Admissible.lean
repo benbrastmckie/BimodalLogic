@@ -120,8 +120,7 @@ namespace PartialHistory
 
 open ParamTaskFrame
 
-variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
-variable {F : ParamTaskFrame D}
+variable {F : TaskFrame}
 
 /-!
 ### `lem:fibers`
@@ -152,9 +151,9 @@ intersection of its two endpoint fiber conditions). The left-to-right direction 
 directly, and a paired time is an endpoint of a straddling segment whose corresponding half is
 that same fiber condition.
 -/
-theorem fibers (τ : PartialHistory F) (z : D) (u : F.WorldState) :
+theorem fibers (τ : PartialHistory F) (z : F.Duration) (u : F.WorldState) :
     (∀ c ∈ Constraints τ z, u ∈ c)
-      ↔ ∀ (t : D) (ht : τ.domain t), F.TaskRel (τ.states t ht) (z - t) u := by
+      ↔ ∀ (t : F.Duration) (ht : τ.domain t), F.TaskRel (τ.states t ht) (z - t) u := by
   constructor
   · intro h t ht
     by_cases hp : IsPaired τ z t
@@ -180,7 +179,7 @@ theorem fibers (τ : PartialHistory F) (z : D) (u : F.WorldState) :
 -/
 
 /-- The domain of the one-point extension: the paper's `X ∪ {z}`. -/
-def adjoinDomain (τ : PartialHistory F) (z : D) : D → Prop := fun t => τ.domain t ∨ t = z
+def adjoinDomain (τ : PartialHistory F) (z : F.Duration) : F.Duration → Prop := fun t => τ.domain t ∨ t = z
 
 open Classical in
 /--
@@ -196,17 +195,17 @@ Classical case distinction on `τ.domain t` is what makes this `noncomputable`; 
 function precisely because of the paper's `z ∈ D \ X` proviso, which the results below carry as
 the explicit hypothesis `hz` wherever it is needed.
 -/
-noncomputable def adjoinFun (τ : PartialHistory F) (u : F.WorldState) (t : D) : F.WorldState :=
+noncomputable def adjoinFun (τ : PartialHistory F) (u : F.WorldState) (t : F.Duration) : F.WorldState :=
   if ht : τ.domain t then τ.states t ht else u
 
 /-- On the old domain, the one-point extension is `τ` itself. -/
-theorem adjoinFun_of_domain (τ : PartialHistory F) (u : F.WorldState) {t : D}
+theorem adjoinFun_of_domain (τ : PartialHistory F) (u : F.WorldState) {t : F.Duration}
     (ht : τ.domain t) : adjoinFun τ u t = τ.states t ht :=
   dif_pos ht
 
 /-- Off the old domain — i.e. at `z` itself, under the paper's `z ∈ D \ X` proviso — the
 one-point extension takes the new value `u`. -/
-theorem adjoinFun_of_not_domain (τ : PartialHistory F) (u : F.WorldState) {t : D}
+theorem adjoinFun_of_not_domain (τ : PartialHistory F) (u : F.WorldState) {t : F.Duration}
     (ht : ¬ τ.domain t) : adjoinFun τ u t = u :=
   dif_neg ht
 
@@ -221,8 +220,8 @@ so the condition below is the entire content of the phrase `lem:admissible` uses
 Note the condition is stated **unconditionally** over pairs, matching `PartialHistory.respects_task`;
 `adjoin` discharges that field with a proof of this predicate verbatim, with no `ofLe` detour.
 -/
-def AdjoinRespects (τ : PartialHistory F) (z : D) (u : F.WorldState) : Prop :=
-  ∀ (s t : D), adjoinDomain τ z s → adjoinDomain τ z t →
+def AdjoinRespects (τ : PartialHistory F) (z : F.Duration) (u : F.WorldState) : Prop :=
+  ∀ (s t : F.Duration), adjoinDomain τ z s → adjoinDomain τ z t →
     F.TaskRel (adjoinFun τ u s) (t - s) (adjoinFun τ u t)
 
 /--
@@ -235,7 +234,7 @@ nonemptiness field (the old domain is a subset of the new one), and the **uncond
 `lem:admissible` (`admissible` below) is what supplies that hypothesis from constraint
 membership, which is in turn what `lem:step` will obtain from *Spherical*.
 -/
-noncomputable def adjoin (τ : PartialHistory F) (z : D) (u : F.WorldState)
+noncomputable def adjoin (τ : PartialHistory F) (z : F.Duration) (u : F.WorldState)
     (h : AdjoinRespects τ z u) : PartialHistory F where
   domain := adjoinDomain τ z
   nonempty_domain := by
@@ -245,17 +244,17 @@ noncomputable def adjoin (τ : PartialHistory F) (z : D) (u : F.WorldState)
   respects_task := fun s t hs ht => h s t hs ht
 
 /-- The one-point extension extends `τ`, in the paper's sense (`def:world-history`'s `extends`). -/
-theorem adjoin_extends (τ : PartialHistory F) (z : D) (u : F.WorldState)
+theorem adjoin_extends (τ : PartialHistory F) (z : F.Duration) (u : F.WorldState)
     (h : AdjoinRespects τ z u) : Extends (adjoin τ z u h) τ where
   subset := fun _ ht => Or.inl ht
   agree := fun _ ht => adjoinFun_of_domain τ u ht
 
 /-- The new time is in the extended domain — the point of the construction. -/
-theorem adjoin_domain_self (τ : PartialHistory F) (z : D) (u : F.WorldState)
+theorem adjoin_domain_self (τ : PartialHistory F) (z : F.Duration) (u : F.WorldState)
     (h : AdjoinRespects τ z u) : (adjoin τ z u h).domain z := Or.inr rfl
 
 /-- At the new time, the extension takes the new value, under the paper's `z ∈ D \ X` proviso. -/
-theorem adjoin_states_self (τ : PartialHistory F) (z : D) (u : F.WorldState)
+theorem adjoin_states_self (τ : PartialHistory F) (z : F.Duration) (u : F.WorldState)
     (h : AdjoinRespects τ z u) (hz : ¬ τ.domain z) :
     (adjoin τ z u h).states z (adjoin_domain_self τ z u h) = u :=
   adjoinFun_of_not_domain τ u hz
@@ -291,7 +290,7 @@ holds without it.
 
 *Spherical* is not consumed.
 -/
-theorem admissible (τ : PartialHistory F) {z : D} (hz : ¬ τ.domain z) (u : F.WorldState) :
+theorem admissible (τ : PartialHistory F) {z : F.Duration} (hz : ¬ τ.domain z) (u : F.WorldState) :
     AdjoinRespects τ z u ↔ ∀ c ∈ Constraints τ z, u ∈ c := by
   rw [fibers]
   constructor

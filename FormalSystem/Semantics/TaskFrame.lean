@@ -1611,6 +1611,44 @@ instance instCoeOutParamTaskFrame {D : Type} [AddCommGroup D] [LinearOrder D]
     [IsOrderedAddMonoid D] [Nontrivial D] : CoeOut (ParamTaskFrame D) TaskFrame :=
   ⟨ofParam⟩
 
+/-!
+### The derived frame API, bundled
+
+The four results below are the bundled-frame spellings of `ParamTaskFrame.forward_comp`,
+`.interpolates`, `.nullity` and `.backward_comp`. Each has the same proof and the same content;
+they exist separately only because generalized field notation resolves `F.forward_comp` through
+the head constant of `F`'s type, which the `CoeOut` above does not reach.
+-/
+
+/-- **Composition on the positive cone — the `←` projection of the `comp` field.** -/
+theorem forward_comp (F : TaskFrame) (w u v : F.WorldState) (x y : F.Duration)
+    (hx : 0 ≤ x) (hy : 0 ≤ y) (h1 : F.TaskRel w x u) (h2 : F.TaskRel u y v) :
+    F.TaskRel w (x + y) v :=
+  ParamTaskFrame.forward_of_comp F.comp w u v x y hx hy h1 h2
+
+/-- **Interpolation — the `→` projection of the `comp` field**, as the bare-relation predicate
+of record. -/
+theorem interpolates (F : TaskFrame) : ParamTaskFrame.Interpolates F.TaskRel :=
+  ParamTaskFrame.interpolates_of_comp F.comp
+
+/-- Derived nullity: the zero-duration task is reflexive (`lem:nullity`). -/
+theorem nullity (F : TaskFrame) (w : F.WorldState) : F.TaskRel w 0 w :=
+  F.nullity_identity w w |>.mpr rfl
+
+/-- Derived backward compositionality, from `forward_comp` and `converse`. -/
+theorem backward_comp (F : TaskFrame) (w u v : F.WorldState) (x y : F.Duration)
+    (hx : x ≤ 0) (hy : y ≤ 0)
+    (h1 : F.TaskRel w x u) (h2 : F.TaskRel u y v) :
+    F.TaskRel w (x + y) v := by
+  have h1' : F.TaskRel u (-x) w := F.converse w x u |>.mp h1
+  have h2' : F.TaskRel v (-y) u := F.converse u y v |>.mp h2
+  have hx' : 0 ≤ -x := neg_nonneg.mpr hx
+  have hy' : 0 ≤ -y := neg_nonneg.mpr hy
+  have h3 : F.TaskRel v ((-y) + (-x)) w := F.forward_comp v u w (-y) (-x) hy' hx' h2' h1'
+  have h4 : -y + -x = -(x + y) := by simp [neg_add_rev, add_comm]
+  rw [h4] at h3
+  exact F.converse w (x + y) v |>.mpr h3
+
 end TaskFrame
 
 section BridgeChecks

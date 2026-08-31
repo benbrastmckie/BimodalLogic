@@ -82,7 +82,7 @@ theorem unroll_isStepPath (L : PlacedBiLasso P) : IsStepPath P.toTaskFrame L.unr
   isStepPath_shift L.lasso.unroll_isStepPath L.origin
 
 /-- The decoded path as an element of `H_F` — the form `TruthAt` consumes. -/
-def toHF (L : PlacedBiLasso P) : P.toTaskFrame.HF :=
+def toHF (L : PlacedBiLasso P) : TaskFrame.HF P.toTaskFrame :=
   ParamTaskFrame.HFofStepPath P.toTaskFrame L.unroll L.unroll_isStepPath
 
 @[simp]

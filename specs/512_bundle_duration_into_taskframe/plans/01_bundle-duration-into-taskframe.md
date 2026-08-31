@@ -368,18 +368,27 @@ before editing; if more than five surface, report rather than silently widening 
 
 ---
 
-### Phase 4: Extension layer and ShiftSet [NOT STARTED]
+### Phase 4: Extension layer and ShiftSet [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: `Semantics/Extension/` and `ShiftSet.lean` on bundled frames, with the Step Lemma's
 consumption of `F.spherical` remaining **definitional**.
 
 **Tasks**:
-- [ ] Migrate `Extension/{Admissible,Constraint,Extension,PeriodicExtension,Step}.lean`.
-- [ ] Verify the Step Lemma still consumes `F.spherical` definitionally (this is what the
+- [x] Migrate `Extension/{Admissible,Constraint,Extension,Step}.lean` *(deviation: altered —
+      `PeriodicExtension.lean` is excluded; see Reasoned Exclusions below.)*
+- [x] Verify the Step Lemma still consumes `F.spherical` definitionally (this is what the
       bundled definitional-content `example`s from Phase 1 protect); if it does not, stop and
-      report — that is drift, not a proof-engineering problem to work around.
-- [ ] Migrate `ShiftSet.lean` (including `ShiftSet.frame`, one of the 27 concrete frame values —
-      duration is a type variable here, so F4 does not apply).
+      report — that is drift, not a proof-engineering problem to work around. *(It does:
+      `PartialHistory.step` elaborates unchanged over `(F : TaskFrame)`, and the bundled
+      definitional-content `example`s in `TaskFrame.lean` close by `rfl`.)*
+- [x] Migrate `ShiftSet.lean` (including `ShiftSet.frame`, one of the 27 concrete frame values —
+      duration is a type variable here, so F4 does not apply). *(deviation: altered — the plan's
+      "F4 does not apply" is right about instance synthesis but wrong about `rw`: `hist`'s
+      `respects_task` proof rewrites under `S.frame.Duration`, which a plain `def` does not
+      unfold. `ShiftSet.frame` is now `@[reducible]`, which is the same mechanism the phase
+      contract already prescribes for concrete frame constants. `ShiftSet` itself stays
+      parameterized by a duration **type** — it is a carrier-level structure, not a frame — so
+      only its frame-facing lemmas took `F.Duration`.)*
 
 **Timing**: 1.5 hours
 
@@ -396,8 +405,15 @@ F4 idiom.
 - `FormalSystem/Semantics/ShiftSet.lean`
 
 **Verification**:
-- Standing contract (1-7).
+- Standing contract (1-7). `lake build` exits 0; `check-module-invariants.sh` ALL CHECKS PASSED.
 - Step Lemma proof unchanged in content; `F.spherical` used definitionally.
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| `Semantics/Extension/PeriodicExtension.lean` | The file is ℤ-specific, not abstract: it consumes `IntNormalForm`'s `HFofStepPath`/`IsStepPath`/`step`, every one of which is stated over `ParamTaskFrame ℤ` and is Phase 5 territory. Migrating its binders to `(F : TaskFrame)` makes those applications ill-typed, because the coercion only runs parameterized -> bundled. It migrates with `IntNormalForm.lean` in Phase 5. | Reverted to its Phase-2 state and left green; `lake build` and C6's compile-check of this (unreachable) module both pass. |
+| Ordering: Phase 4 ran **before** Phase 3 | Phase 3's dependency on Phase 2 is real, but Phase 4's stated dependency on Phase 3 is not: no file in `Semantics/Extension/` or `ShiftSet.lean` imports `Semantics/Validity.lean`. Phase 3 is the one phase whose migration cannot be held green by the coercion (see the Phase 3 note), so it was deferred rather than allowed to block a phase it does not actually gate. | `grep '^import' FormalSystem/Semantics/Extension/*.lean FormalSystem/Semantics/ShiftSet.lean` shows no `Validity` import. |
 
 ---
 

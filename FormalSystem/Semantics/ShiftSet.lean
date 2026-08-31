@@ -128,8 +128,8 @@ this library is built on. Consolidating the two into `Semantics/WorldHistory.lea
 retargeting `RegionFrame.lean` is a clean follow-up, kept out of this module's scope so that the
 scope stays honest.
 -/
-theorem wh_ext {F : ParamTaskFrame D} {σ τ : WorldHistory F} (hd : σ.domain = τ.domain)
-    (hs : ∀ (r : D) (h : σ.domain r) (h' : τ.domain r), σ.states r h = τ.states r h') :
+theorem wh_ext {F : TaskFrame} {σ τ : WorldHistory F} (hd : σ.domain = τ.domain)
+    (hs : ∀ (r : F.Duration) (h : σ.domain r) (h' : τ.domain r), σ.states r h = τ.states r h') :
     σ = τ := by
   obtain ⟨⟨d₁, n₁, s₁, t₁⟩, c₁⟩ := σ
   obtain ⟨⟨d₂, n₂, s₂, t₂⟩, c₂⟩ := τ
@@ -149,9 +149,10 @@ functionality plus the group action and require no shift-set axiom of their own 
 document's list, which was written against an earlier five-field `ParamTaskFrame` and named only the
 other four. The one field that is genuinely *not* free is `limit`; it is exactly `S.sep`.
 -/
-def frame (S : ShiftSet D) : ParamTaskFrame D where
+@[reducible] def frame (S : ShiftSet D) : TaskFrame where
+  Duration := D
   WorldState := S.Carrier
-  nonempty := S.carrier_nonempty
+  worldNonempty := S.carrier_nonempty
   TaskRel := fun w d u => u = S.sh w d
   nullity_identity := by intro w u; rw [S.sh_zero]; exact eq_comm
   comp := by
@@ -291,14 +292,14 @@ theorem forward_repr (S : ShiftSet D) (w : S.Carrier) (t : D) (φ : Formula) :
 /-! ## Reverse direction: the shift set induced by a task model -/
 
 /-- Time-shifting a history by `0` is the identity. -/
-theorem ts_zero {F : ParamTaskFrame D} (σ : WorldHistory F) :
+theorem ts_zero {F : TaskFrame} (σ : WorldHistory F) :
     WorldHistory.timeShift σ 0 = σ := by
   refine wh_ext (funext fun z => by simp [WorldHistory.timeShift]) ?_
   intro r h h'
   exact WorldHistory.states_eq_of_time_eq σ (r + 0) r (add_zero r) h h'
 
 /-- Time-shifting is additive. -/
-theorem ts_add {F : ParamTaskFrame D} (σ : WorldHistory F) (a b : D) :
+theorem ts_add {F : TaskFrame} (σ : WorldHistory F) (a b : F.Duration) :
     WorldHistory.timeShift (WorldHistory.timeShift σ a) b = WorldHistory.timeShift σ (a + b) := by
   refine wh_ext (funext fun z => ?_) ?_
   · show σ.domain ((z + b) + a) = σ.domain (z + (a + b))
@@ -318,8 +319,8 @@ lifts that to equality of histories.
 and the stronger free-action axiom is not: freeness is not dischargeable here at all — a
 constant total history is fixed by every shift.
 -/
-theorem rev_sep {F : ParamTaskFrame D} (σ τ : F.HF)
-    (h : ∀ x : D, 0 < x → ∃ y : D, |y| < x ∧ τ = σ.timeShift y) : τ = σ := by
+theorem rev_sep {F : TaskFrame} (σ τ : F.HF)
+    (h : ∀ x : F.Duration, 0 < x → ∃ y : F.Duration, |y| < x ∧ τ = σ.timeShift y) : τ = σ := by
   apply Subtype.ext
   refine wh_ext (funext fun z => propext ⟨fun _ => σ.property z, fun _ => τ.property z⟩) ?_
   intro t ht ht'
@@ -342,10 +343,10 @@ reads each atom off at time `0` of the history.
 `carrier_nonempty` is where `Classical.choice` enters the reverse direction, and its only
 entry point: `PartialHistory.hF_nonempty` is Zorn-based.
 -/
-def ofModel (F : ParamTaskFrame D) (M : TaskModel F) : ShiftSet D where
+def ofModel (F : TaskFrame) (M : TaskModel F) : ShiftSet F.Duration where
   Carrier := F.HF
-  carrier_nonempty := PartialHistory.hF_nonempty F F.nonempty.some
-  sh := ParamTaskFrame.HF.timeShift
+  carrier_nonempty := PartialHistory.hF_nonempty F F.worldNonempty.some
+  sh := TaskFrame.HF.timeShift
   sh_zero := by intro w; apply Subtype.ext; exact ts_zero w.val
   sh_add := by intro w a b; apply Subtype.ext; exact ts_add w.val a b
   sep := fun w u h => rev_sep w u h
@@ -359,13 +360,13 @@ Shift-set truth on `ofModel F M` is truth in `M`. The `atom` case is where
 *unconditional* — the shift-closure hypothesis it once carried is retired, not renamed) and
 `ParamTaskFrame.HF.timeShift_val` are consumed; every other case is a structural transport.
 -/
-theorem reverse_repr (F : ParamTaskFrame D) (M : TaskModel F) (τ : F.HF) (t : D)
+theorem reverse_repr (F : TaskFrame) (M : TaskModel F) (τ : F.HF) (t : F.Duration)
     (φ : Formula) :
     ShiftTruth (ShiftSet.ofModel F M) τ t φ ↔ TruthAt M τ.val t φ := by
   induction φ generalizing τ t with
   | atom p =>
-    show TruthAt M ((ParamTaskFrame.HF.timeShift τ t).val) 0 (Formula.atom p) ↔ _
-    rw [ParamTaskFrame.HF.timeShift_val]
+    show TruthAt M ((TaskFrame.HF.timeShift τ t).val) 0 (Formula.atom p) ↔ _
+    rw [TaskFrame.HF.timeShift_val]
     have := TimeShift.time_shift_preserves_truth M τ.val 0 t (Formula.atom p)
     rw [sub_zero] at this
     exact this

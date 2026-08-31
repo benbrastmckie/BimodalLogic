@@ -267,7 +267,8 @@ namespace ParamTaskFrame
 
 /-- The bare path underlying a total world history: totality makes the domain proof uniform, so
 the dependent `states` field collapses to a plain function `ℤ → WorldState`. -/
-def HF.path {F : ParamTaskFrame ℤ} (τ : F.HF) : ℤ → F.WorldState :=
+def _root_.FormalSystem.Semantics.TaskFrame.HF.path {F : ParamTaskFrame ℤ}
+    (τ : TaskFrame.HF F) : ℤ → F.WorldState :=
   fun t => τ.val.states t (τ.property t)
 
 /--
@@ -302,7 +303,8 @@ The total world history determined by a bi-infinite step-path. Every field is di
 adjacency: the domain is all of ℤ (so `nonempty_domain` and `convex` are trivial), and
 `respects_task` is `respects_of_isStepPath`.
 -/
-def HFofStepPath (F : ParamTaskFrame ℤ) (f : ℤ → F.WorldState) (h : IsStepPath F f) : F.HF :=
+def HFofStepPath (F : ParamTaskFrame ℤ) (f : ℤ → F.WorldState) (h : IsStepPath F f) :
+    TaskFrame.HF F :=
   ⟨{ domain := fun _ => True
      nonempty_domain := ⟨0, trivial⟩
      states := fun t _ => f t
@@ -314,7 +316,8 @@ theorem HFofStepPath_path (F : ParamTaskFrame ℤ) (f : ℤ → F.WorldState) (h
     (HFofStepPath F f h).path = f := rfl
 
 /-- Every total world history over ℤ is a bi-infinite step-path. -/
-theorem HF.isStepPath {F : ParamTaskFrame ℤ} (τ : F.HF) : IsStepPath F τ.path := by
+theorem _root_.FormalSystem.Semantics.TaskFrame.HF.isStepPath {F : ParamTaskFrame ℤ}
+    (τ : TaskFrame.HF F) : IsStepPath F τ.path := by
   intro n
   have := τ.val.respects_task n (n + 1) (τ.property n) (τ.property (n + 1))
   rwa [show n + 1 - n = (1 : ℤ) by omega] at this
@@ -328,7 +331,7 @@ all-pairs task-respect at consecutive times; the converse rebuilds the all-pairs
 adjacency alone, by `taskRel_eq_iter` and induction on the gap.
 -/
 theorem mem_HF_iff_adjacent (F : ParamTaskFrame ℤ) (f : ℤ → F.WorldState) :
-    (∃ τ : F.HF, τ.path = f) ↔ IsStepPath F f := by
+    (∃ τ : TaskFrame.HF F, τ.path = f) ↔ IsStepPath F f := by
   constructor
   · rintro ⟨τ, rfl⟩; exact τ.isStepPath
   · intro h; exact ⟨HFofStepPath F f h, rfl⟩
@@ -514,7 +517,7 @@ example (w u : Bool) :
 
 /-- …and the characterization then produces an actual member of `H_F` over that frame. -/
 example (W : Type) [Nonempty W] (w : W) :
-    ∃ τ : (ParamTaskFrame.staticFrame W (D := ℤ)).HF, τ.path = fun _ => w :=
+    ∃ τ : TaskFrame.HF (ParamTaskFrame.staticFrame W (D := ℤ)), τ.path = fun _ => w :=
   (ParamTaskFrame.mem_HF_iff_adjacent (ParamTaskFrame.staticFrame W (D := ℤ)) (fun _ => w)).mpr
     (fun _ => (ParamTaskFrame.staticFrame_rel_iff W (D := ℤ) w 1 w).mpr rfl)
 
