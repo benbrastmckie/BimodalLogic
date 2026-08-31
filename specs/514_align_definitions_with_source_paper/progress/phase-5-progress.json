@@ -1,0 +1,50 @@
+{
+  "phase": 5,
+  "phase_name": "Board verification against acceptance criteria",
+  "started_at": "2026-08-31T20:23:31Z",
+  "last_updated": "2026-08-31T20:24:32Z",
+  "objectives": [
+    {
+      "id": 1,
+      "description": "Verify front tasks cite paper definitions",
+      "status": "done",
+      "files_touched": []
+    },
+    {
+      "id": 2,
+      "description": "Verify dependency graph equals §4.4",
+      "status": "done",
+      "files_touched": []
+    },
+    {
+      "id": 3,
+      "description": "Verify no superseded shapes; 492-495 untouched",
+      "status": "done",
+      "files_touched": []
+    },
+    {
+      "id": 4,
+      "description": "Final jq empty + generate-todo agreement",
+      "status": "done",
+      "files_touched": []
+    },
+    {
+      "id": 5,
+      "description": "Record deliverable accounting in summary",
+      "status": "done",
+      "files_touched": [
+        "specs/514_align_definitions_with_source_paper/summaries/01_apply-board-revisions-summary.md"
+      ]
+    },
+    {
+      "id": 6,
+      "description": "Commit residuals",
+      "status": "done",
+      "files_touched": []
+    }
+  ],
+  "current_objective": 6,
+  "approaches_tried": [],
+  "deviations": [],
+  "handoff_count": 0
+}

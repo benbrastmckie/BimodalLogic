@@ -233,18 +233,18 @@ and record the extension in the provenance table.
 
 ---
 
-### Phase 5: Board verification against acceptance criteria [NOT STARTED]
+### Phase 5: Board verification against acceptance criteria [COMPLETED]
 
 **Goal**: The revised board satisfies acceptance criteria (4) and (5) of the task
 description, and the full deliverable set (1)-(5) is accounted for.
 
 **Tasks**:
-- [ ] Verify every task on the front (507-513) now cites the paper definition it targets: grep each description for its §4.3 grounding markers (`def:frame`, `cor:tm-completeness`, `def:soundness`, `def:frame-properties`, report path citations as applicable).
-- [ ] Verify the dependency graph equals §4.4 exactly: 512 <- [514]; 507 <- [514, 512]; 508 <- [507]; 509 <- [507, 508]; 510 <- [507]; 513 <- [512, 507]; 511 unchanged (terminal).
-- [ ] Verify no task asserts a superseded shape: 513 no longer poses the uniform-faithfulness question as open; 510 carries the DELETE pre-registration; no description still calls the ".Dedekind" naming conforming; confirm 492/493/494/495 descriptions were NOT modified (`git diff` over the task's commits touches only the seven front tasks).
-- [ ] Final `jq empty specs/state.json`; final `bash .claude/scripts/generate-todo.sh`; confirm TODO.md and state.json agree.
-- [ ] Record in the implementation summary: deliverables (1)-(3) live in the research report; (4)-(5) delivered by this board surgery; the 511-terminal-encoding note; the Phase 4 before/after script verdicts.
-- [ ] Commit any residuals (`task 514 phase 5: board verification`).
+- [x] Verify every task on the front (507-513) now cites the paper definition it targets: grep each description for its §4.3 grounding markers (`def:frame`, `cor:tm-completeness`, `def:soundness`, `def:frame-properties`, report path citations as applicable). *(completed: all markers found; 511's applicable marker is its board note)*
+- [x] Verify the dependency graph equals §4.4 exactly: 512 <- [514]; 507 <- [514, 512]; 508 <- [507]; 509 <- [507, 508]; 510 <- [507]; 513 <- [512, 507]; 511 unchanged (terminal). *(completed: exact match)*
+- [x] Verify no task asserts a superseded shape: 513 no longer poses the uniform-faithfulness question as open; 510 carries the DELETE pre-registration; no description still calls the ".Dedekind" naming conforming; confirm 492/493/494/495 descriptions were NOT modified (`git diff` over the task's commits touches only the seven front tasks). *(completed: 492-495 byte-identical to snapshot; commits touch only specs/**)*
+- [x] Final `jq empty specs/state.json`; final `bash .claude/scripts/generate-todo.sh`; confirm TODO.md and state.json agree. *(completed: regen is a no-op)*
+- [x] Record in the implementation summary: deliverables (1)-(3) live in the research report; (4)-(5) delivered by this board surgery; the 511-terminal-encoding note; the Phase 4 before/after script verdicts. *(completed: summaries/01_apply-board-revisions-summary.md)*
+- [x] Commit any residuals (`task 514 phase 5: board verification`). *(completed)*
 
 **Timing**: 0.75 hours
 
@@ -261,12 +261,12 @@ description, and the full deliverable set (1)-(5) is accounted for.
 
 ## Testing & Validation
 
-- [ ] `jq empty specs/state.json` after every state.json write (hard gate per phase).
-- [ ] Each injected §4.3 text diffs clean against its report source (modulo blockquote prefixes).
-- [ ] `bash .claude/scripts/generate-todo.sh` exits 0 and TODO.md reflects all seven front tasks' revised entries.
-- [ ] `bash scripts/check-paper-definitions.sh` verdict identical before/after Phase 4.
-- [ ] `git diff` across the task's commits touches only `specs/**` (no Lean, no `.claude/**`).
-- [ ] Dependency graph equals §4.4 build order of record.
+- [x] `jq empty specs/state.json` after every state.json write (hard gate per phase). *(completed)*
+- [x] Each injected §4.3 text diffs clean against its report source (modulo blockquote prefixes). *(completed)*
+- [x] `bash .claude/scripts/generate-todo.sh` exits 0 and TODO.md reflects all seven front tasks' revised entries. *(completed)*
+- [x] `bash scripts/check-paper-definitions.sh` verdict identical before/after Phase 4. *(completed)*
+- [x] `git diff` across the task's commits touches only `specs/**` (no Lean, no `.claude/**`). *(completed)*
+- [x] Dependency graph equals §4.4 build order of record. *(completed)*
 
 ## Artifacts & Outputs
 

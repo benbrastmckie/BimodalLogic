@@ -1,24 +1,34 @@
 {
-  "dispatch_seq": 2,
-  "task_number": 514,
-  "phase": "plan",
-  "status": "planned",
+  "status": "implemented",
+  "dispatch_seq": 3,
+  "phases_completed": 5,
+  "phases_total": 5,
   "session_id": "sess_1788206286_e33d62",
+  "agent_type": "general-implementation-agent",
+  "summary": "All 5 plan phases completed and committed per-phase. Board surgery applied: §4.3 amendments verbatim to 512/507/508/509/510, 513 replaced as Galois-closure task (deps [512, 507]), 509 deps [507, 508], 511 terminal at researched with board-note guard; §2.4 T1 reading note added to paper-definitions-of-record.md with byte-identical check-script verdict. Dependency graph equals §4.4; 492-495 untouched; commits touch only specs/**.",
   "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/514_align_definitions_with_source_paper/summaries/01_apply-board-revisions-summary.md",
+      "summary": "Implementation summary: board surgery, verification results, deliverable accounting, 511 terminal-encoding note."
+    },
     {
       "type": "plan",
       "path": "specs/514_align_definitions_with_source_paper/plans/01_apply-board-revisions.md",
-      "summary": "Five-phase board-surgery plan: apply report section 4.3 amendment texts to tasks 512/507/508/509/510, replace 513 with the Galois-closure implementation task, close 511 terminal at researched, set the 512->507->{508->509, 510, 513} build-order dependencies, and add the T1 reading note to paper-definitions-of-record.md; no Lean edits."
+      "summary": "Plan with all 5 phases marked [COMPLETED] and all checklist items checked off."
     }
   ],
-  "verdict": "planned_board_surgery_five_phases",
-  "key_findings": [
-    "Implementation is pure specs/** board surgery plus one documentation touch; the plan forbids Lean and .claude/** edits per the metatask scope constraint",
-    "Phases: (1) amend 512+507 descriptions, (2) amend 508/509/510 and set 509 deps to [507,508], (3) replace 513 description entirely with the Galois-closure task and append 511's board note keeping status researched, (4) add the section-2.4 T1 reading note to paper-definitions-of-record.md, (5) verify board against acceptance criteria 4 and 5",
-    "All section-4.3 texts are transcribed verbatim from the research report at implement time via jq --rawfile from temp files, never paraphrased or inlined in jq programs",
-    "Planning-time board check: all dependency edges already match the section-4.4 build order except 509 ([507] -> [507,508]) and 513 ([514] -> [512,507]); the four paper-definitions anchors (app:discrete/dense/complete, def:deterministic) already exist, so Phase 4 is a prose reading note only, verified by identical check-paper-definitions.sh verdicts before and after",
-    "511's terminal-at-researched close has no terminal encoding in the status state machine; the plan follows the report verbatim (status stays researched, appended board note is the guard) and records the tension for the summary"
-  ],
-  "open_items": [],
-  "next_command": "/implement 514"
+  "modified_files": [
+    "specs/state.json",
+    "specs/TODO.md",
+    "specs/paper-definitions-of-record.md",
+    "specs/514_align_definitions_with_source_paper/state-before-board-surgery.json",
+    "specs/514_align_definitions_with_source_paper/plans/01_apply-board-revisions.md",
+    "specs/514_align_definitions_with_source_paper/progress/phase-1-progress.json",
+    "specs/514_align_definitions_with_source_paper/progress/phase-2-progress.json",
+    "specs/514_align_definitions_with_source_paper/progress/phase-3-progress.json",
+    "specs/514_align_definitions_with_source_paper/progress/phase-4-progress.json",
+    "specs/514_align_definitions_with_source_paper/progress/phase-5-progress.json",
+    "specs/514_align_definitions_with_source_paper/summaries/01_apply-board-revisions-summary.md"
+  ]
 }

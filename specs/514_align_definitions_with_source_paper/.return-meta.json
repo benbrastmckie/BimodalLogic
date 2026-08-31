@@ -1,9 +1,43 @@
 {
-  "status": "in_progress",
+  "status": "implemented",
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/514_align_definitions_with_source_paper/summaries/01_apply-board-revisions-summary.md",
+      "summary": "Board surgery applying report §4.3 amendments to tasks 507-513, §4.4 build order, and the §2.4 T1 reading note."
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Applied the research report's §4.3 amendment texts verbatim to the task board: paper-grounding appends to 512/507/508/509/510, full Galois-closure replacement of 513 with deps [512, 507], 509 deps set to [507, 508], and 511 closed terminal at researched with a board-note guard. Added the §2.4 (T1) reading note to the three app:* anchors in specs/paper-definitions-of-record.md with a byte-identical check-paper-definitions.sh verdict before/after. No Lean or .claude/** files touched."
+  },
+  "modified_files": [
+    "specs/state.json",
+    "specs/TODO.md",
+    "specs/paper-definitions-of-record.md",
+    "specs/514_align_definitions_with_source_paper/state-before-board-surgery.json",
+    "specs/514_align_definitions_with_source_paper/plans/01_apply-board-revisions.md",
+    "specs/514_align_definitions_with_source_paper/progress/phase-1-progress.json",
+    "specs/514_align_definitions_with_source_paper/progress/phase-2-progress.json",
+    "specs/514_align_definitions_with_source_paper/progress/phase-3-progress.json",
+    "specs/514_align_definitions_with_source_paper/progress/phase-4-progress.json",
+    "specs/514_align_definitions_with_source_paper/progress/phase-5-progress.json",
+    "specs/514_align_definitions_with_source_paper/summaries/01_apply-board-revisions-summary.md"
+  ],
+  "memory_candidates": [
+    {
+      "content": "To transcribe long verbatim texts (blockquotes with unicode, quotes, newlines) from a markdown report into JSON string fields: extract the blockquote with awk stripping '^> ?' prefixes into a temp file, inject with jq --rawfile plus rtrimstr(\"\\n\"), then verify by extracting the field back out and diffing against the temp file. Never inline long strings in a jq program; validate with 'jq empty' after every write and snapshot the JSON file first as a rollback anchor.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/514_align_definitions_with_source_paper/summaries/01_apply-board-revisions-summary.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["jq", "rawfile", "verbatim-transcription", "state.json", "diff-back-verification", "blockquote"]
+    }
+  ],
   "metadata": {
     "session_id": "sess_1788206286_e33d62",
     "agent_type": "general-implementation-agent",
     "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "phases_completed": 5,
+    "phases_total": 5
   }
 }
