@@ -1,0 +1,16 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/507_parameterize_validity_by_frameclass/reports/01_frameclass-indexed-validity.md",
+      "summary": "FrameClass-indexed semantic validity: verified prototype (FrameClass.Sat, ValidIn, one monotonicity lemma, 8 bridges) compiling sorry-free, full 92-site call-site census, and a 6-phase decomposition with off-ramp."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1788198220_972012_507",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
