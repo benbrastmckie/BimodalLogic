@@ -103,7 +103,7 @@ next_project_number: 512
 
 ### Semantics Foundations
 
-514 [PLANNED] — METATASK, governing the entire metalogic systematicity front. Est
+514 [IMPLEMENTING] — METATASK, governing the entire metalogic systematicity front. Est
   └─ 512 [NOT STARTED] — FOUNDATIONAL REFACTOR, prerequisite for the whole metalogic syste
 
 ### Correspondence Theory
@@ -113,7 +113,7 @@ next_project_number: 512
 ## Tasks
 
 ### 514. Align definitions with source paper
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: formal
 - **Topic**: semantics foundations
 - **Dependencies**: None
@@ -217,6 +217,15 @@ SCOPE: this is a whole-tree refactor. Every `TaskFrame D` use site, every `World
 ACCEPTANCE: sorry-free, lake build green, check-module-invariants.sh passes, axiom profiles unchanged on the flagship theorems. No change to any theorem's mathematical content -- this is a restatement refactor, and any semantic drift is a defect.
 
 GROUNDING: specs/reviews/review-2026-08-31-metalogic-systematicity.md issues H1/M2; specs/511_research_frame_correspondence_infrastructure/reports/01,02,03 (S3 in report 01 section 2 is the artifact this task removes).
+
+=== PAPER GROUNDING (definitive) === def:frame reads verbatim: "A task frame is any F =
+<W, D, =>> where W is a nonempty set of world states, **D is a temporal order**, and => is a
+task relation…" — the duration is a COMPONENT of the frame. def:frame-properties predicates
+Discrete/Dense/Complete of the frame through its D-component; def:frame-validity is per-frame.
+This refactor is therefore conformance to the source of truth, not an encoding preference.
+Naming obligation carried by this task or 507 (whichever touches it first): the paper's third
+frame property is COMPLETE — the ValidDedekind*/FrameClass.Dedekind naming is non-conforming
+and is renamed under 507. See specs/514_align_definitions_with_source_paper/reports/01 §1.1.
 
 ---
 
@@ -343,6 +352,19 @@ WHAT CHANGES: the 92-site binder-list migration is substantially DISSOLVED rathe
 bundling removes the inlined `[DenselyOrdered D]`-style binder lists at the root, which is the
 disease this task was treating symptomatically. Re-scope the migration against the post-refactor
 tree rather than against the counts in the current report.
+
+=== PAPER GROUNDING AND NAMING === ValidIn fc is the paper's class-restricted consequence ⊨_C
+(cor:tm-completeness: "restricts def:logical-consequence to models over task frames in a class
+C"); TaskFrame.ValidOn is def:frame-validity and stays the single frame-level primitive.
+Sat interpretation of record: .Base ↦ True; .Dense ↦ DenselyOrdered F.Duration; .Discrete ↦
+∃ least positive duration WITH the successor-Archimedean refinement kept as a SEPARATE
+named predicate (the paper's def:TMplus-f narrows TM+_f's target to Z-time via Hölder — do not
+silently conflate the Discrete property with the Z-time class); rename FrameClass.Dedekind →
+FrameClass.Complete with Sat .Complete ↦ DenselyOrdered ∧ conditionally-complete (the paper's
+TM+_c target is the DENSE-AND-COMPLETE class, cor:tm-completeness; the bare Complete property
+of def:frame-properties admits Z as well — record both, one predicate each, no bridged
+duplicates). The prior recommendation "rename ValidDedekind to ValidComplete" is superseded by
+this class-level rename. See specs/514_align_definitions_with_source_paper/reports/01 §1.1, §3.3.
 
 ---
 

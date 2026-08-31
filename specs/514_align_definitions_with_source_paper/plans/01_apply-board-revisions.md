@@ -1,7 +1,7 @@
 # Implementation Plan: Task #514
 
 - **Task**: 514 - align_definitions_with_source_paper (METATASK)
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 4.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/514_align_definitions_with_source_paper/reports/01_definitional-review-and-closure.md
@@ -103,17 +103,17 @@ Phases within the same wave can execute in parallel. Note: Phases 1-3 all edit
 `specs/paper-definitions-of-record.md` and may run in parallel with them (in a single-agent
 run, execute in numeric order).
 
-### Phase 1: Amend foundation tasks 512 and 507 [NOT STARTED]
+### Phase 1: Amend foundation tasks 512 and 507 [COMPLETED]
 
 **Goal**: The two foundation tasks of the build order carry their paper-grounding amendments.
 
 **Tasks**:
-- [ ] Snapshot `specs/state.json` to `specs/514_align_definitions_with_source_paper/state-before-board-surgery.json` (rollback anchor).
-- [ ] Extract the "512 — append to description" block from report §4.3, strip the blockquote `> ` prefixes, write to a temp file, and append it (preceded by two newlines) to task 512's `description` in state.json via `jq --rawfile`.
-- [ ] Same for the "507 — append to description" block onto task 507's `description`.
-- [ ] Verify: `jq empty specs/state.json`; extract both descriptions and confirm each contains its full amendment text verbatim (diff against the temp files); confirm 512 deps `[514]` and 507 deps `[514, 512]` unchanged (already conform to §4.4).
-- [ ] Run `bash .claude/scripts/generate-todo.sh` and spot-check the two entries render.
-- [ ] Commit (`task 514 phase 1: amend foundation tasks 512 and 507`).
+- [x] Snapshot `specs/state.json` to `specs/514_align_definitions_with_source_paper/state-before-board-surgery.json` (rollback anchor). *(completed)*
+- [x] Extract the "512 — append to description" block from report §4.3, strip the blockquote `> ` prefixes, write to a temp file, and append it (preceded by two newlines) to task 512's `description` in state.json via `jq --rawfile`. *(completed)*
+- [x] Same for the "507 — append to description" block onto task 507's `description`. *(completed)*
+- [x] Verify: `jq empty specs/state.json`; extract both descriptions and confirm each contains its full amendment text verbatim (diff against the temp files); confirm 512 deps `[514]` and 507 deps `[514, 512]` unchanged (already conform to §4.4). *(completed)*
+- [x] Run `bash .claude/scripts/generate-todo.sh` and spot-check the two entries render. *(completed)*
+- [x] Commit (`task 514 phase 1: amend foundation tasks 512 and 507`). *(completed)*
 
 **Timing**: 1 hour
 
