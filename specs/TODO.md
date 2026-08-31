@@ -385,8 +385,9 @@ correction that the FrameConditions marker typeclasses are NOT reusable (Discret
 omits IsPredArchimedean, which would silently widen the discrete class under soundness_discrete);
 that Sat must be Prop-valued with an existential Discrete case because SuccOrder/PredOrder are
 data-carrying; the finding that FrameConditions/Validity.lean is nearly all dead code; the
-ValidInt/ValidOverInt definitional duplicate; and the recommendation to rename ValidDedekind to
-ValidComplete. All of that holds under the frame-level shape.
+ValidInt/ValidOverInt definitional duplicate. All of that holds under the frame-level shape.
+The report's further recommendation to rename ValidDedekind to ValidComplete is REJECTED — see
+the naming decision below.
 
 WHAT CHANGES: the 92-site binder-list migration is substantially DISSOLVED rather than performed --
 bundling removes the inlined `[DenselyOrdered D]`-style binder lists at the root, which is the
@@ -399,12 +400,18 @@ C"); TaskFrame.ValidOn is def:frame-validity and stays the single frame-level pr
 Sat interpretation of record: .Base ↦ True; .Dense ↦ DenselyOrdered F.Duration; .Discrete ↦
 ∃ least positive duration WITH the successor-Archimedean refinement kept as a SEPARATE
 named predicate (the paper's def:TMplus-f narrows TM+_f's target to Z-time via Hölder — do not
-silently conflate the Discrete property with the Z-time class); rename FrameClass.Dedekind →
-FrameClass.Complete with Sat .Complete ↦ DenselyOrdered ∧ conditionally-complete (the paper's
-TM+_c target is the DENSE-AND-COMPLETE class, cor:tm-completeness; the bare Complete property
-of def:frame-properties admits Z as well — record both, one predicate each, no bridged
-duplicates). The prior recommendation "rename ValidDedekind to ValidComplete" is superseded by
-this class-level rename. See specs/514_align_definitions_with_source_paper/reports/01 §1.1, §3.3.
+silently conflate the Discrete property with the Z-time class); KEEP the name FrameClass.Dedekind — do NOT rename it to .Complete, and
+do NOT rename ValidDedekind. The paper's def:frame-properties calls this class Complete, but
+"complete" is already load-bearing in this tree for PROOF-THEORETIC completeness (the
+completeness-theorem family), so FrameClass.Complete would collide with the tree's most
+prominent existing use of the word; "Dedekind complete" is the standard and unambiguous name
+for the least-upper-bound property this class actually denotes. This is a DELIBERATE,
+RECORDED deviation from paper naming — the ONLY naming deviation sanctioned on this front —
+and it must be documented at the definition site, citing def:frame-properties as the
+definition of record and naming the divergence explicitly. Sat .Dedekind ↦ DenselyOrdered ∧
+conditionally-complete (the paper's TM+_c target is the DENSE-AND-COMPLETE class,
+cor:tm-completeness; the bare Complete property of def:frame-properties admits Z as well —
+record both, one predicate each, no bridged duplicates). See specs/514_align_definitions_with_source_paper/reports/01 §1.1, §3.3.
 
 ---
 
