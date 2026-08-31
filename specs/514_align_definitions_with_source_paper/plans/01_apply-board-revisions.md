@@ -199,19 +199,19 @@ researched with its absorption note on the board.
 
 ---
 
-### Phase 4: Reading note in paper-definitions-of-record.md [NOT STARTED]
+### Phase 4: Reading note in paper-definitions-of-record.md [COMPLETED]
 
 **Goal**: The definitions-of-record file carries the §2.4 adjudication so future readers of
 the three `app:*` anchors see the (T0)-vs-(T1) reading of record, without disturbing the
 drift-detection machinery.
 
 **Tasks**:
-- [ ] Run `bash scripts/check-paper-definitions.sh` and record its verdict (before-state; a pre-existing case (b) is not a regression from this phase).
-- [ ] Confirm by grep that the `app:discrete`, `app:dense`, `app:complete`, and `def:deterministic` anchor entries already exist in `specs/paper-definitions-of-record.md` (verified present at planning time — lines ~999-1060).
-- [ ] Add a short reading-note subsection immediately after the three `app:*` anchor entries (one shared note, or one line per entry referencing it): the statements read as per-frame biconditionals (T0), whose (=>) direction is refuted by degenerate frames (staticFrame); the proofs prove and their closing sentences state the temporal-order-level biconditional (T1) `(forall F with order D, F validates ax) <-> D is X`, which is the reading of record for this repository. Cite report §2.4 by path. Place the note as prose OUTSIDE the ```latex blocks so no recorded per-anchor sha256 changes.
-- [ ] Do NOT re-pin the whole-file checksum sentinels (prose note is not a drift correction).
-- [ ] Re-run `bash scripts/check-paper-definitions.sh`; require a verdict identical to the before-state.
-- [ ] Commit (`task 514 phase 4: record T1 reading note on app anchors`).
+- [x] Run `bash scripts/check-paper-definitions.sh` and record its verdict (before-state; a pre-existing case (b) is not a regression from this phase). *(completed: pre-existing exit-1 verdict — def:time-shift-histories drift + 2 unresolved anchors — recorded as before-state)*
+- [x] Confirm by grep that the `app:discrete`, `app:dense`, `app:complete`, and `def:deterministic` anchor entries already exist in `specs/paper-definitions-of-record.md` (verified present at planning time — lines ~999-1060). *(completed: all four present)*
+- [x] Add a short reading-note subsection immediately after the three `app:*` anchor entries (one shared note, or one line per entry referencing it): the statements read as per-frame biconditionals (T0), whose (=>) direction is refuted by degenerate frames (staticFrame); the proofs prove and their closing sentences state the temporal-order-level biconditional (T1) `(forall F with order D, F validates ax) <-> D is X`, which is the reading of record for this repository. Cite report §2.4 by path. Place the note as prose OUTSIDE the ```latex blocks so no recorded per-anchor sha256 changes. *(completed: one shared note after app:complete)*
+- [x] Do NOT re-pin the whole-file checksum sentinels (prose note is not a drift correction). *(completed: no re-pin)*
+- [x] Re-run `bash scripts/check-paper-definitions.sh`; require a verdict identical to the before-state. *(completed: output byte-identical)*
+- [x] Commit (`task 514 phase 4: record T1 reading note on app anchors`). *(completed)*
 
 **Timing**: 0.75 hours
 

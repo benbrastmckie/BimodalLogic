@@ -1,0 +1,50 @@
+{
+  "phase": 4,
+  "phase_name": "Reading note in paper-definitions-of-record.md",
+  "started_at": "2026-08-31T20:21:13Z",
+  "last_updated": "2026-08-31T20:21:56Z",
+  "objectives": [
+    {
+      "id": 1,
+      "description": "Run check-paper-definitions.sh before-state",
+      "status": "done",
+      "files_touched": []
+    },
+    {
+      "id": 2,
+      "description": "Confirm app:* and def:deterministic anchors exist",
+      "status": "done",
+      "files_touched": []
+    },
+    {
+      "id": 3,
+      "description": "Add T1 reading-note prose outside latex blocks",
+      "status": "done",
+      "files_touched": [
+        "specs/paper-definitions-of-record.md"
+      ]
+    },
+    {
+      "id": 4,
+      "description": "No re-pin of checksum sentinels",
+      "status": "done",
+      "files_touched": []
+    },
+    {
+      "id": 5,
+      "description": "Re-run script, verdict identical",
+      "status": "done",
+      "files_touched": []
+    },
+    {
+      "id": 6,
+      "description": "Commit phase 4",
+      "status": "done",
+      "files_touched": []
+    }
+  ],
+  "current_objective": 6,
+  "approaches_tried": [],
+  "deviations": [],
+  "handoff_count": 0
+}

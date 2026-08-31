@@ -1023,6 +1023,27 @@ sha256: `4f8bb793ec8d762013c413327c05c50e691c6d54fefdcb0bedd3076b3b782bfe`
 ```
 sha256: `2fe5c5e879af2ae0e7ef1823d3c61b6d3608f21495525396b82a4350e349f168`
 
+#### Reading note (of record) on `app:discrete` / `app:dense` / `app:complete`
+
+The three statements above read as per-frame biconditionals — call this reading (T0):
+"$\F \vDash ax$ iff $\F$ is a Discrete/Dense/Complete task frame." The (⇒) direction of
+(T0) is **false** as stated: degenerate frames refute it (the tree's `staticFrame`, on which
+every history is constant, validates each axiom over orders that are not Discrete/Dense/
+Complete respectively). What the paper's appendix proofs actually prove — and what their
+closing sentences state — is the temporal-order-level biconditional (T1):
+
+> (∀ task frame $\F$ with temporal order $\D$, $\F \vDash ax$) iff $\D$ is
+> Discrete/Dense/Complete.
+
+**(T1) is the reading of record for this repository**: it is what the Lean tree formalizes.
+The (⇐) directions of (T0) are genuinely per-frame and are the per-class soundness facts the
+tree already carries. No non-degeneracy hypothesis is to be bolted onto (T0); class-level
+exactness is recovered by the indicator-axiom mechanism, not by patching these statements.
+Adjudication of record:
+`specs/514_align_definitions_with_source_paper/reports/01_definitional-review-and-closure.md`
+§2.4.
+
+
 ### `def:frame-properties` — Discrete/Dense/Complete/Deterministic frame-class predicates
 
 ```latex
