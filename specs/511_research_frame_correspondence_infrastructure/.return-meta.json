@@ -1,42 +1,31 @@
 {
-  "status": "researched",
+  "status": "implemented",
   "artifacts": [
     {
       "type": "report",
-      "path": "specs/511_research_frame_correspondence_infrastructure/reports/03_e2-periodicity.md",
-      "summary": "Third-pass report closing open item E2 in the affirmative at D = Z, with full-schema exactness for density proved and a paper caveat for general non-dense D"
+      "path": "specs/511_research_frame_correspondence_infrastructure/reports/01_frame-correspondence-infrastructure.md",
+      "summary": "Amended in place per report 02 §8: §3 O1-O3 corrected/rewritten, §5.3 Tier-0 row replaced with Tier 0', §7 strengthened, non-goal #1 rewritten verbatim, consistency sweep fix in §10(c)"
     },
     {
       "type": "report",
-      "path": "specs/511_research_frame_correspondence_infrastructure/reports/03_probes.lean",
-      "summary": "646-line Lean evidence file for report 03; compiles clean with no sorry, axioms limited to propext/Classical.choice/Quot.sound"
+      "path": "specs/511_research_frame_correspondence_infrastructure/reports/02_per-frame-correspondence-reassessment.md",
+      "summary": "Amended in place per report 03 §5.1: E2 status closed at D = Z (open as E2' for general D) in the executive summary and §6, Phase E1 deleted and Phase E2 gate re-aimed in §9, two §10 risk rows updated"
     }
   ],
-  "next_steps": "Run /plan 511 to create the implementation plan; report 03 supplies a Phase B-prime (replacing report 02's Phase B and deleting Phase E1) and a new Phase E2, both with proofs in hand",
+  "completion_data": {
+    "completion_summary": "Folded the amendments specified in report 02 §8 into report 01 (O1-O3, Tier-0 row -> Tier 0', §7, non-goal #1) and the amendments specified in report 03 §5.1 into report 02 (E2 closure at D = Z, Phase E1 deletion, Phase E2 gate re-aim to E2', two risk rows), adding amendment banners and inline [AMENDED -- see report 0N §M] markers throughout, plus a consistency sweep fixing two dangling blanket claims (report 01 executive framing of per-frame correspondence in §10(c))."
+  },
+  "modified_files": [
+    "specs/511_research_frame_correspondence_infrastructure/reports/01_frame-correspondence-infrastructure.md",
+    "specs/511_research_frame_correspondence_infrastructure/reports/02_per-frame-correspondence-reassessment.md"
+  ],
+  "memory_candidates": [],
   "metadata": {
-    "session_id": "sess_1788198220_972012_511",
-    "agent_type": "formal-research-agent",
+    "session_id": "sess_1788198220_amend511",
+    "agent_type": "general-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "formal-research-agent"],
-    "dispatch_seq": 6,
-    "domains_researched": ["logic", "math"],
-    "findings_count": 7,
-    "context_files_loaded": [
-      "specs/511_research_frame_correspondence_infrastructure/reports/02_per-frame-correspondence-reassessment.md",
-      "specs/511_research_frame_correspondence_infrastructure/reports/02_probes.lean",
-      "FormalSystem/Semantics/TaskFrame.lean",
-      "FormalSystem/Semantics/Truth.lean",
-      "FormalSystem/Semantics/WorldHistory.lean",
-      "FormalSystem/Semantics/PartialHistory.lean",
-      "FormalSystem/Metalogic/Independence/LoopingDuration.lean"
-    ],
-    "mathlib_lookups_performed": 0,
-    "lean_verification": {
-      "file": "specs/511_research_frame_correspondence_infrastructure/reports/03_probes.lean",
-      "lines": 646,
-      "compiles": true,
-      "sorry_count": 0,
-      "exit_code": 0
-    }
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "phases_completed": 2,
+    "phases_total": 2
   }
 }

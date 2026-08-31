@@ -8,6 +8,12 @@ theory)
 **Grounding**: `specs/reviews/review-2026-08-31-metalogic-systematicity.md` issue M2
 **Started / Completed**: 2026-08-31
 
+> **Amended in place — 2026-08-31.** Report `02_per-frame-correspondence-reassessment.md`
+> supersedes this report's §3 (obstructions O1–O3), the Tier-0 row of §5.3, and non-goal #1 (see
+> report 02 §8's amendment table). Everything else here stands. Evidence: `02_probes.lean` and
+> `03_probes.lean` (Lean, machine-checked, no `sorry`). Amended passages carry an inline
+> **[AMENDED — see report 02 §N]** marker.
+
 ---
 
 ## Executive Summary
@@ -143,14 +149,34 @@ Therefore the statement
 ∀ D F, (∀ M τ t, TruthAt M τ t (density φ)) ↔ DenselyOrdered D
 ```
 
-is **false**, and likewise for every schematic (atom-carrying) axiom. This is not a gap to be
-closed; it is a theorem in the wrong direction. Any future task must not attempt it.
+is **false**, and likewise for every schematic (atom-carrying) axiom.
+
+**[AMENDED — see report 02 §8, row "§3 O1"]** This computation is correct, and is now Lean-verified
+— for *all* `φ`, not only atoms (report 02 §1.2, `Static.truth_time_invariant`). But what it
+refutes is only the *carrier-only* candidate correspondent `Cond(D)`: the statement above
+quantifies over `F` on the left and only over `D` on the right, so it can never be satisfied by any
+condition that ignores `F`. It does **not** refute per-frame correspondence in its textbook shape
+`F ⊨ ax ↔ C(F)`, with `C` a condition on the frame's own structure — for `density` such a `C`
+exists, is exact, and is proved (`FwdRec`, report 02 §3). *(Removed here: "This is not a gap to be
+closed; it is a theorem in the wrong direction. Any future task must not attempt it." — retracted
+because it over-generalised the refutation to per-frame correspondence as such; see report 02 §5.3
+Tier 0′, below.)*
 
 ### O2. No relational parameter to correspond to
 
 Correspondence theory answers "which first-order condition on `R` does `φ` impose?". Here (S1)+(S2)
 mean there is no `R`: the modal relation is universal, and the temporal relation is `<` on `D`.
-`TaskRel` is the only free relation in a `TaskFrame`, and it is invisible to the language.
+`TaskRel` is the only free relation in a `TaskFrame`.
+
+**[AMENDED — see report 02 §8, row "§3 O2"]** The original conclusion here — that `TaskRel` "is
+invisible to the language" — is overstated and is refuted: `staticFrame` and `natFrame`, at the
+same `D = ℤ`, differ only in `WorldState`/`TaskRel` and differ in validity (report 02 §1,
+Lean-verified). The correct statement is a resolution limit, not invisibility: `TaskRel` is not an
+accessibility relation for any operator, so no modal-definability-of-`TaskRel` result and no
+Sahlqvist-style first-order correspondent in `TaskRel` exists in the classical sense — but the
+language *does* see `TaskRel`, through the induced quotients `D / ker σ` for `σ` ranging over `F`'s
+total histories. Two frames inducing the same family of quotient-plus-saturated-set data are
+indistinguishable by `□`-free formulas; that is the actual limit (report 02 §4.1).
 
 ### O3. Valuations are not free — this is a general-frame setting
 
@@ -172,6 +198,14 @@ docstring):
 
 and in `co_not_derives_prior_U_gap`'s docstring: "**Not** claimed, and in fact false: any
 *frame*-level statement."
+
+**[AMENDED — see report 02 §8, row "§3 O3"]** The diagnosis above — this is the general-frame
+setting — is right and is this report's most valuable observation; what does not follow is that
+correspondence therefore dies. Correspondence is instead *relativised to the admissible algebra*
+`Adm(F)`. Here that algebra turns out to be atomic-complete (report 02 §3.3: for a fixed total
+history `τ` with state map `σ`, the realisable atom sets are exactly `𝒫(D / ker σ)`), and being
+atomic-complete is what both makes the correspondent computable (`FwdRec`, report 02 §3.2) and
+kills the differentiation rescue that would otherwise be tried (report 02 §5).
 
 ---
 
@@ -271,9 +305,15 @@ the helper was built for precisely this and the frame was never written.
 
 ### 5.3 A three-tier taxonomy (use these names; they are not interchangeable)
 
+**[AMENDED — see report 02 §8, row "§5.3 Tier-0 row"]** The original Tier 0 row asserted
+`∀ D F, F ⊨ ax ↔ Cond(D)` — **PROVABLY FALSE** (§3, O1) — and is retracted as mis-shaped: it
+quantified over `F` on the left and only over `D` on the right, so no `D`-only condition could ever
+satisfy it. Replaced below by **Tier 0′**, the frame-valued statement, which is *not* provably
+false.
+
 | Tier | Statement | Status |
 |---|---|---|
-| **Tier 0** — per-frame correspondence | `∀ D F, F ⊨ ax ↔ Cond(D)` | **PROVABLY FALSE** (§3, O1). Do not attempt. |
+| **Tier 0′** — per-frame correspondence (frame-valued) | `∀ D F, F ⊨ ax ↔ C_ax(F)`, `C_ax` a condition on `F`'s own structure | **TRUE and proved for `density`** (atomic fragment; `C_density = FwdRec`, report 02 §3.2). Full-schema exactness gated on E2 (report 02 §6). |
 | **Tier 1** — duration-type correspondence | `∀ D, ValidOn D ax ↔ Cond(D)` | **The right statement.** Available for 5–7 of 8 (§6). |
 | **Tier 2** — `minFrameClass` exactness | finitely many `¬Valid_C(ax)` for `C ⋠ minFrameClass ax` | **Fully finite; recommended deliverable.** Follows from Tier 1 but is far cheaper. |
 | **Tier 3** — "logic of a class" | `Derivable fc Γ φ ↔ Valid_fc Γ φ` | Soundness + completeness. **Not correspondence.** Already the tree's programme. |
@@ -411,6 +451,13 @@ Prior-U — and a fatal defect for the necessity programme, which needs *maximal
 Building `quotFrame D p := D ⧸ ⟨p⟩` as a generalisation of `clockFrame` is a tempting but **wrong
 turn**: it inherits the periodicity ceiling and cannot touch `z1` (§6.3).
 
+**[AMENDED — see report 02 §8, row "§7"; strengthened]** This is no longer only an observation:
+`clockFrame` (and `staticFrame`, and any frame admitting a looping duration) *cannot in principle*
+refute density, full stop — `density_of_loopingDuration` proves `LoopingDuration F π → ∀ φ M τ,
+τ.IsTotal → ∀ t, TruthAt M τ t (GGφ → Gφ)` for **every** formula `φ`, over an arbitrary `D`
+(report 02 §6.1, via `staticFrame_looping`/`clockFrame_looping`). `quotFrame D p` is therefore not
+merely a tempting wrong turn for necessity purposes; it is provably incapable of the job.
+
 **Coverage today.** Of the eight non-`Base` axioms, `Independence/` refutes exactly **one**
 (`prior_U_gap`), at model level, over ℚ. `density`, `dense_indicator`, `prior_UZ`, `prior_SZ`,
 `z1`, `prior_S_gap`, `sep` are untouched. There is no non-dense frame and no non-discrete frame
@@ -544,12 +591,36 @@ justification. Do **not** attempt `sep`.
 
 ### Explicit non-goals — record these so the question is not reopened
 
-1. **No Tier 0 (per-frame) correspondence for any schematic axiom.** Refuted by `staticFrame`
-   (§3, O1).
+**[AMENDED — see report 02 §8, "Non-goal #1, rewritten"]**
+
+1. No *carrier-only* per-frame correspondence. The statement
+   `∀ D F, F ⊨ ax ↔ Cond(D)` is false for every schematic axiom, refuted by `staticFrame`
+   (§3, O1 — Lean-verified). It is also mis-shaped: it quantifies over frames on the left and over
+   the carrier type on the right. This rules out `DenselyOrdered D` — and any `D`-only property —
+   as a candidate correspondent.
+
+   It does **not** rule out per-frame correspondence in its textbook shape `F ⊨ ax ↔ C(F)`, with
+   `C` a condition on that frame's own structure. For `density` such a `C` exists, is exact, and is
+   proved: `FwdRec F` (report 02 §3). Validity genuinely varies across frames at fixed `D`
+   (`staticFrame ⊨ density`, `natFrame ⊭ density`, both over `ℤ`), so no single-frame argument can
+   close this question in either direction.
+
+   Also out of scope, and for a sharper reason than "it might collapse": **the
+   differentiated/refined/descriptive-frame side-condition route.** The admissible atom algebra
+   along any history is `𝒫(D / ker σ)` — complete and atomic — and for such algebras "separates
+   points" is *identical* to "every subset admissible". The side condition would be exactly the
+   trivialising hypothesis. See report 02 §5.
+
+   *(Removed here: the original non-goal #1, "No Tier 0 (per-frame) correspondence for any
+   schematic axiom. Refuted by `staticFrame` (§3, O1)." — retracted because it conflated
+   carrier-only correspondence with per-frame correspondence as such; see report 02 §1, §8.)*
+
 2. **No Sahlqvist algorithm, no Goldblatt–Thomason, no canonicity-via-correspondence.** §4.
 3. **No correspondent for `sep`.** §6.5, on Reynolds' own authority.
 4. **No `quotFrame D p` generalisation of `ClockFrame` for necessity purposes.** §7 — it inherits
-   the periodicity ceiling.
+   the periodicity ceiling. **[AMENDED — see report 02 §8; strengthened]** Now a proved
+   impossibility, not only an inherited-ceiling observation: `density_of_loopingDuration` (report
+   02 §6.1) shows any frame admitting a looping duration cannot refute density, for any formula.
 5. **Correspondence is not needed for "TM⁺_d is the logic of dense task frames".** §5.3, Tier 3.
 
 ---
@@ -585,8 +656,11 @@ free (they live on world states and are filtered through `TaskRel`-aligned histo
 Goldblatt–Thomason fails too, on closure grounds. One bespoke reduction, not per-layer arguments.
 
 **(c)** **Duration-type correspondence**: `∀ D, ValidOn D ax ↔ Cond(D)`, quantifying over all task
-frames on a fixed carrier `D`. Per-frame correspondence is *false*, not merely unavailable
-(`staticFrame` refutes it). The duration-type form is tractable because a single missing frame,
+frames on a fixed carrier `D`. Carrier-only per-frame correspondence is *false*, not merely
+unavailable (`staticFrame` refutes it). **[AMENDED — see report 02 §8, consistency sweep]**
+Frame-valued per-frame correspondence `F ⊨ ax ↔ C(F)` is not false; for `density` it is TRUE and
+proved (`FwdRec`, report 02 §3 — Tier 0′, §5.3 above). The duration-type form is tractable because
+a single missing frame,
 `transFrame D` (`W := D`, `TaskRel w x u := u = w + x`), realises **arbitrary** time-valuations, so
 the `□`-free fragment reduces to classical Until/Since-over-linear-orders — and every non-`Base`
 axiom is `□`-free.

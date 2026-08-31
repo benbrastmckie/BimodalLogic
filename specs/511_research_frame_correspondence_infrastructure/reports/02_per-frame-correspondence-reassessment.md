@@ -11,6 +11,12 @@ Everything else in report 01 stands, and two of its findings are strengthened.
 — 295 lines, compiles clean under `lake env lean`, no `sorry`, every result checked with
 `#print axioms` to depend only on `propext` / `Classical.choice` / `Quot.sound`.
 
+> **Amended in place — 2026-08-31.** Report `03_e2-periodicity.md` resolves open item E2 (at
+> `D = ℤ`) and supersedes this report's §6 discussion of E2, §9 Phase E, and two §10 risk rows
+> (see report 03 §5.1's amendment table). Everything else here stands. Evidence: `02_probes.lean`
+> and `03_probes.lean` (Lean, machine-checked, no `sorry`). Amended passages carry an inline
+> **[AMENDED — see report 03 §N]** marker.
+
 ---
 
 ## Executive Summary
@@ -72,6 +78,11 @@ for `density` exists, is exact, and is proved.**
    concretely, `P p` ("p has happened") manufactures a final segment from any atom set with a
    least element. Whether `FwdRec` nevertheless suffices for the full schema reduces to one clean
    lemma (§6, E2). Both possible answers leave the frame-valued framing intact.
+
+   **[AMENDED — see report 03 §5.1]** Resolved at `D = ℤ`: E2 is TRUE (report 03,
+   `Bridge.hist_periodic` / `Walk.periodic`), so `FwdRec` is the exact correspondent for the full
+   schema over `D = ℤ` (`Bridge.density_schema_iff_fwdRec`, report 03 §3.3). Over a general
+   non-dense `D` the question remains open, renamed **E2′** (report 03 §4.1).
 
 ---
 
@@ -400,15 +411,26 @@ This is **not** a refutation, because a task frame admitting that `σ` also admi
 (`R_n = R^n`) shape of `respects_task` means one cannot pick histories independently. Closing the
 gap is one lemma:
 
-> **[open, E2] Over a non-dense `D`: does `FwdRec F` imply that every total history of `F` is
-> periodic?** Equivalently, in the digraph picture of §2: if every bi-infinite walk in `(W, R)` is
-> forward-recurrent at every position, is every bi-infinite walk periodic?
+> **[CLOSED — E2, at `D = ℤ`; open as E2′ over a general non-dense `D`] Over a non-dense `D`: does
+> `FwdRec F` imply that every total history of `F` is periodic?** Equivalently, in the digraph
+> picture of §2: if every bi-infinite walk in `(W, R)` is forward-recurrent at every position, is
+> every bi-infinite walk periodic?
 
 Evidence for *yes*: every attempt to build a non-deterministic serial digraph all of whose walks
 are forward-recurrent produced a walk with a one-off visit (`{(a,a),(a,b),(b,a)}`, the golden-mean
 shift; `{(a,b),(b,a),(a,c),(c,a)}`; `W = ℕ` with resets). The frames that survive are precisely
 those whose `R` is a permutation with all orbits finite — the `staticFrame` / clock-frame /
-`F*` family. I could not turn this into a proof, and I could not refute it. **[open]**
+`F*` family.
+
+**[AMENDED — see report 03 §5.1]** This is now proved, at `D = ℤ`: `FwdRec F` implies every total
+history of `F` is periodic (report 03, `Bridge.hist_periodic`, via the digraph theorem
+`Walk.periodic`). *(Removed here: "I could not turn this into a proof, and I could not refute it."
+— superseded by the citation above.)* Over a general non-dense `D`, the periodicity conclusion is
+in fact **false** (report 03 §4, the `⊔ℤ/nℤ` frame over `ℤ ×ₗ ℤ`); the surviving open question there
+is renamed **E2′** (report 03 §4.1). The "frames that survive" characterisation above is also
+**confirmed and sharpened**: the load-bearing half is *determinism* of the one-step relation
+(`Walk.succ_unique`; frame-level `Bridge.hist_deterministic`), from which finiteness of orbits
+follows from a single recurrence (report 03 §2.1).
 
 **If E2 is true**, `FwdRec` is the exact correspondent for the whole schema, since periodicity of
 every history gives the positive half (§6.1 below). **If E2 is false**, the full-schema
@@ -416,6 +438,12 @@ correspondent is a strictly stronger recurrence condition — something in the n
 *uniform* recurrence (every state recurring with bounded gaps, in both directions) — which is still
 a per-frame structural condition, so the framing of §3 survives either way. Nothing in this report
 outside §6 depends on E2.
+
+**[AMENDED — see report 03 §5.1]** E2 is true, and the exact correspondent statement is confirmed
+**at `D = ℤ`**: `Bridge.density_schema_iff_fwdRec` (report 03 §3.3) proves `FwdRec` is exact for the
+full density schema over `D = ℤ`, both directions, machine-checked. This confirmation is scoped to
+`D = ℤ`; whether it extends to a general non-dense `D` is exactly the new open item **E2′**
+(report 03 §4.1).
 
 ### 6.1 The positive half of the full schema is already available — **[Lean]**
 
@@ -554,14 +582,22 @@ first.*
 
 ### Phase E — full-schema exactness (gated; a negative is a complete outcome)
 
-- **E1** (~60 lines, low risk): generalise `truthAt_add_period` to a **per-history** period for
-  `□`-free formulas. This closes `F*` and every all-orbits-finite frame. Requires a
-  `Formula.BoxFree` predicate (report 01 Phase 2 already scopes this).
-- **E2** (**open**, unbounded): `FwdRec F → every total history of F is periodic`, over non-dense
-  `D`. **Gate**: if E2 does not close within one dispatch, stop and record `density_iff_fwdRec` as
-  exact for the atomic fragment and `FwdRec` as *necessary* (proved) for the schema, with the
-  `P p` first-occurrence example (§6) as the documented reason the upgrade is not automatic. Do
-  not let E2 block Phases A–D, none of which depend on it.
+- **[DELETED — see report 03 §5.1, row "§9 Phase E1"]** *(originally: E1, ~60 lines, low risk:
+  generalise `truthAt_add_period` to a per-history period for `□`-free formulas, requiring a new
+  `Formula.BoxFree` predicate.)* Superseded: `truthAt_add_hist_period` together with the tree's
+  existing `Truth.box_time_const` already does this job, over an **arbitrary** `D` and for
+  **every** formula, with no `Formula.BoxFree` predicate needed (report 03 §3.2). Report 01
+  Phase 2's scoping of a `BoxFree` predicate is not required for this.
+- **E2** — **[AMENDED — see report 03 §5.1, row "§9 Phase E2 gate"]** Discharged at `D = ℤ`:
+  `FwdRec F → every total history of F is periodic` is now **proved** (report 03,
+  `Bridge.hist_periodic` / `Walk.periodic`), and full-schema exactness at `D = ℤ` is proved
+  (`Bridge.density_schema_iff_fwdRec`, report 03 §3.3). The gate is **not removed** — it is
+  re-aimed at **E2′** (report 03 §4.1): over a general non-dense `D`, does `FwdRec F` still give
+  full-schema density, with "periodic" weakened to "shift-recurrent under a history-preserving
+  order automorphism of `(D,<)`"? **Gate**: if E2′ does not close within one dispatch, stop and
+  record `density_iff_fwdRec`/`density_schema_iff_fwdRec` as exact at `D = ℤ` only, with the
+  general-`D` case left as the documented open item. Do not let E2′ block Phases A–D, none of
+  which depend on it.
 
 ### Sequencing note
 
@@ -574,8 +610,8 @@ report 01's Phases 3–5 are unchanged and still sequence behind M1 for the `Val
 
 | Risk | Assessment |
 |---|---|
-| **E2 is false** | The framing survives; the full-schema correspondent is a stronger recurrence condition. Phases A–D are unaffected. Explicitly gated. |
-| **Over-reading the atomic biconditional** | It is proved for `φ := atom p` only. Every claim about the *schema* in this report is either the sufficiency direction (proved, §6.1) or flagged open (E2). Do not let a plan state "density corresponds to `FwdRec`" without the atomic qualifier until E2 closes. |
+| **E2 is false** | **[AMENDED — see report 03 §5.1]** Retired at `D = ℤ`: E2 is proved TRUE there (report 03, `Bridge.hist_periodic`). Still live over a general non-dense `D`: periodicity itself is now known to **fail** there (report 03 §4, the `⊔ℤ/nℤ` frame over `ℤ ×ₗ ℤ`), so any use of the periodicity route outside `D = ℤ` must be scoped accordingly (open item **E2′**, report 03 §4.1). |
+| **Over-reading the atomic biconditional** | **[AMENDED — see report 03 §5.1]** Partially discharged. At `D = ℤ` the schema-level claim is now proved (`Bridge.density_schema_iff_fwdRec`, report 03 §3.3) and may be stated without the atomic qualifier. At every other `D` the qualifier stands unchanged: state only the atomic biconditional there. |
 | **`F*` is paper-only** | The differentiation counterexample of §5.1 is argued, not formalised. If a plan wants to *rely* on it, formalise `⊔_n ℤ/nℤ` (~80 lines, `spherical` via the singleton route). Nothing in §§1–4, 6–9 depends on it. |
 | **The `𝒫(D/ker σ)` characterisation is paper-only** | Argued in §3.3; its two endpoint instances (`staticFrame` → `{∅, D}`; `natFrame` over `ℤ` → `𝒫(ℤ)`) are Lean-verified. Formalising the general statement is ~30 lines and is worth doing if §5's collapse argument is to be cited as settled. |
 | **Import direction** | Phase B pulls `Metalogic/Independence/` into `FrameConditions/`. May want relocating. |
@@ -609,6 +645,8 @@ stands but its conclusion is over-broad; O2 is overstated (refuted); O3's conclu
 
 **(5) Construction spec** — §9. Phases A–C (~195 lines) exist as compiling Lean today. Phase D is
 report 01's `transFrame` unchanged. Phase E is gated and a negative there is a complete outcome.
+**[AMENDED — see report 03 §5.1]** Phase E1 is deleted (superseded, see §9 above); Phase E2 is
+discharged at `D = ℤ` and its gate is re-aimed at the narrower **E2′** (general non-dense `D`).
 
 ---
 
