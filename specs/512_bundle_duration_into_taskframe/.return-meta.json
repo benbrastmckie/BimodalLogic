@@ -1,53 +1,17 @@
 {
-  "status": "planned",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/512_bundle_duration_into_taskframe/plans/02_temporal-order-fibration.md",
-      "summary": "Plan v02: resolves the v01 fixed-duration-fibre blocker by reifying TemporalOrder (def:temporal-order), making FrameOver D the fibre and sole home of the frame axioms, and defining TaskFrame as the total space; 21 phases (0-20) opening with a STOP-gated design probe."
-    }
-  ],
-  "next_steps": "Run /implement 512 to execute the revised plan. Phase 0 is a STOP gate: if probe (a) numerals at the coerced intOrder or probe (b) omega/Int arithmetic at FrameOver intOrder fails, the phase must escalate a structured blocker rather than proceed.",
-  "metadata": {
-    "session_id": "sess_1788209220_633087_512",
-    "agent_type": "reviser-agent",
-    "delegation_path": ["orchestrator", "revise", "reviser-agent"],
-    "phase_count": 21,
-    "estimated_hours": 41,
-    "plan_version": 2,
-    "complexity": "complex",
-    "research_integrated": true,
-    "skeleton": false,
-    "follow_up_tasks": [],
-    "dependency_waves": [[0],[1],[2],[3],[4],[5,6],[7,12],[8,9,16,18],[10,11,17],[13,14],[15],[19],[20]],
-    "reports_integrated": [
-      "reports/01_bundle-duration-into-taskframe.md",
-      "summaries/01_bundle-duration-into-taskframe-summary.md",
-      "probes/04_coercion-and-transparency.lean",
-      "probes/05_omega-at-a-coerced-frame.lean",
-      "probes/06_fixed-duration-expressibility.lean"
-    ],
-    "revision_reason": "owner decision resolving the fixed-duration-fibre blocker via TemporalOrder reification and a total-space/fibre design",
-    "superseded_plan": "specs/512_bundle_duration_into_taskframe/plans/01_bundle-duration-into-taskframe.md",
-    "preserved_baseline_commit": "1d75b1d0e",
-    "head_at_revision": "949411db1",
-    "cross_task_observations": [
-      {
-        "task": 510,
-        "observation": "TemporalCarrier / FrameConditionFor at FormalSystem/Metalogic/Decidability/Verified/Bridge/Carrier.lean:110,126 carry exactly the four binders TemporalOrder now bundles, so under this design they may simply BE TemporalOrder, in which case task 510 shrinks to a merge. Flagged for the orchestrator only; plan Phase 14 records the observation and explicitly does NOT act on it.",
-        "action": "none - record only"
-      },
-      {
-        "task": 507,
-        "observation": "Ownership partition unchanged: 512 owns binders, 507 owns names. No Dedekind identifier is renamed in this task. The ParamTaskFrame.* -> TaskFrame.* predicate-namespace revert in Phase 2 is a restoration of the pre-512 name, not a naming decision.",
-        "action": "sequencing only"
-      }
-    ],
-    "scope_promoted_from_non_goal": "The TemporalOrder mixin (research F8) was an explicit Non-Goal of plan v01; it is CENTRAL to v02. Note the shape differs from F8's probe (Type-valued structure bundling the carrier, not a Prop-valued mixin over an ambient carrier), so F8's diamond-freeness result does not transfer and Phase 0 probe (c) re-establishes it.",
-    "stop_gate": "Phase 0 probes (a) numerals at the coerced literal-field intOrder and (b) omega/Int arithmetic at FrameOver intOrder are STOP gates; failure of either blocks all migration work and requires escalation with a structured blocker rather than a workaround."
+  "status": "in_progress",
+  "started_at": "2026-08-31T16:00:00Z",
+  "artifacts": [],
+  "partial_progress": {
+    "stage": "phase_1_complete",
+    "details": "Phase 0 STOP-GATE probes all PASS; Phase 1 TemporalOrder landed green.",
+    "phases_completed": 2,
+    "phases_total": 21
   },
-  "modified_files": [
-    "specs/512_bundle_duration_into_taskframe/plans/02_temporal-order-fibration.md",
-    "specs/512_bundle_duration_into_taskframe/.return-meta.json"
-  ]
+  "metadata": {
+    "session_id": "sess_1788209220_633087",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"]
+  }
 }

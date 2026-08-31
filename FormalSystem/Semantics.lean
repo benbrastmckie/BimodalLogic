@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
+import FormalSystem.Semantics.TemporalOrder
 import FormalSystem.Semantics.TaskFrame
 import FormalSystem.Semantics.IntNormalForm
 import FormalSystem.Semantics.PartialHistory
@@ -32,6 +33,10 @@ polymorphic over temporal types.
 
 ## Submodules
 
+- `TemporalOrder`: `def:temporal-order` reified — "a nontrivial totally ordered abelian
+  group" as a structure rather than an unnamed four-binder list, with `CoeSort` to its
+  carrier and the four algebra projections re-exported as instances; the object a frame's
+  duration component *is*, and the object the frame fibration is indexed by
 - `ParamTaskFrame`: Task frame structure `F = (W, T, ·)` with world states, temporal type,
   and task relation satisfying nullity and compositionality constraints
 - `IntNormalForm`: the ℤ-frame normal form — over `D = ℤ` a task frame is determined by its

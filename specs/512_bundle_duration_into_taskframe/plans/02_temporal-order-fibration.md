@@ -453,7 +453,7 @@ with `ls specs/512_bundle_duration_into_taskframe/probes/`. No file under `Forma
 
 ---
 
-### Phase 1: `TemporalOrder` lands [NOT STARTED]
+### Phase 1: `TemporalOrder` lands [COMPLETED]
 
 **Goal**: The library has a name for `def:temporal-order`. Purely additive; nothing consumes it yet.
 
