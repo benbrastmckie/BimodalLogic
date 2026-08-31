@@ -1,16 +1,31 @@
 {
-  "status": "researched",
+  "status": "planned",
+  "agent_type": "planner-agent",
+  "task_number": 507,
+  "task_type": "lean4",
+  "session_id": "sess_1788198220_972012_507",
+  "delegation_path": ["orchestrator", "plan", "planner-agent"],
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/507_parameterize_validity_by_frameclass/reports/01_frameclass-indexed-validity.md",
-      "summary": "FrameClass-indexed semantic validity: verified prototype (FrameClass.Sat, ValidIn, one monotonicity lemma, 8 bridges) compiling sorry-free, full 92-site call-site census, and a 6-phase decomposition with off-ramp."
+      "type": "plan",
+      "path": "specs/507_parameterize_validity_by_frameclass/plans/01_frameclass-indexed-validity.md",
+      "summary": "7-phase plan (10.5h) introducing FrameClass.Sat/ValidIn/SetSemanticConsequenceOn as a new Semantics module, collapsing 5 validity and 4 consequence monotonicity lemmas onto one each, retiring the dead FrameConditions/Validity.lean surface, renaming ValidDedekind to ValidComplete, and migrating the 92 call sites -- statements held fixed through Phase 5 to protect the C2/C14 axiom baselines."
     }
   ],
-  "metadata": {
-    "session_id": "sess_1788198220_972012_507",
-    "agent_type": "lean-research-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+  "phase_count": 7,
+  "estimated_hours": 10.5,
+  "dependency_waves": [[1], [2, 3], [4, 5], [6], [7]],
+  "complexity": "complex",
+  "research_integrated": true,
+  "plan_version": 1,
+  "memory_candidates": [
+    {
+      "content": "In a formalization repo, a layer of marker typeclasses that LOOKS like the 'binder list as a predicate' a parameterized definition needs is not safe to consume verbatim until each class's binder list is diffed field-by-field against the binder list of the predicate it is supposed to replace. In BimodalLogic task 507, FrameConditions/FrameClass.lean's DiscreteTemporalFrame omitted [IsPredArchimedean] that ValidDiscrete binds, and SerialFrame added [NoMaxOrder]/[NoMinOrder] -- consuming it would have silently WIDENED the carrier class under a soundness theorem while still compiling. The general rule: a binder-list mismatch between a marker class and its target predicate is a silent semantic change, not a type error, so it must be caught by diffing before adoption. The safe move is to define the interpretation fresh against the raw predicates the target already binds, so the migration is provably content-free. Corollary: constraints built from data-carrying classes (SuccOrder, PredOrder) cannot be marker classes at all -- they must be Prop-valued defs with existentials, both because instance-implicit binders discard the content that a monotonicity/antitonicity lemma needs to recover, and because destructuring them with haveI breaks definitional equality with instances baked into dependent types (use @-positional application instead).",
+      "category": "INSIGHT",
+      "source_artifact": "specs/507_parameterize_validity_by_frameclass/plans/01_frameclass-indexed-validity.md",
+      "confidence": 0.75,
+      "suggested_keywords": ["typeclass-binder-mismatch", "marker-typeclass", "lean4", "parameterized-validity", "silent-semantic-widening", "data-carrying-class"]
+    }
+  ],
+  "next_steps": "Run /implement 507 to execute the plan"
 }

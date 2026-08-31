@@ -85,11 +85,11 @@ next_project_number: 512
 ### Metalogic
 
 495 [NOT STARTED] — RESEARCH TASK, DELIBERATELY AGNOSTIC ABOUT THE VERDICT. Determine
-507 [RESEARCHED] — ROOT FIX for the metalogic systematicity front. Give the proof-si
+507 [PLANNED] — ROOT FIX for the metalogic systematicity front. Give the proof-si
   └─ 508 [NOT STARTED] — Collapse ~23 soundness theorems into ONE parameterized theorem pl
   └─ 509 [NOT STARTED] — Make the compactness / strong-completeness layer a FrameClass-ind
   └─ 510 [NOT STARTED] — Decide the fate of FormalSystem/FrameConditions/ (4 modules, 906 
-511 [RESEARCHED] — RESEARCH TASK, DELIBERATELY AGNOSTIC ABOUT FEASIBILITY. Determine
+511 [PLANNING] — RESEARCH TASK, DELIBERATELY AGNOSTIC ABOUT FEASIBILITY. Determine
 
 ### Publication Quality
 
@@ -104,7 +104,7 @@ next_project_number: 512
 ## Tasks
 
 ### 511. Research frame correspondence infrastructure
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: formal
 - **Topic**: metalogic
 - **Dependencies**: None
@@ -145,11 +145,12 @@ next_project_number: 512
 ---
 
 ### 507. Parameterize validity by frameclass
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: None
 - **Research**: [507_parameterize_validity_by_frameclass/reports/01_frameclass-indexed-validity.md]
+- **Plan**: [507_parameterize_validity_by_frameclass/plans/01_frameclass-indexed-validity.md]
 
 **Description**: ROOT FIX for the metalogic systematicity front. Give the proof-side FrameClass tag a SEMANTIC interpretation, then define validity ONCE, indexed by it. THE ASYMMETRY: the proof side is already fully parameterized -- Derivable (fc : FrameClass) (ProofSystem/Derivable.lean:69), DerivationTree (fc : FrameClass) (ProofSystem/Derivation.lean:91), DerivationTree.lift along fc1 <= fc2 (Derivation.lean:184), PartialOrder FrameClass (ProofSystem/Axioms.lean:551), Axiom.minFrameClass as declared single source of truth (Axioms.lean:531ff). The semantic side has NONE of this: 15 hand-copied validity predicates with no fc index (5 in Semantics/Validity.lean:94,206,248,301,336; 4 in Semantics/BLValidity.lean:77,102,115,132; ValidInt in Semantics/IntTransfer.lean; 5 in FrameConditions/Validity.lean), plus 8 semantic-consequence variants. SMOKING GUN IN ONE FILE: Metalogic/SetConsequence.lean carries SetDerivable (fc : FrameClass) at :72 with ONE monotonicity lemma at :118, and directly beneath it SetSemanticConsequence{Base,Dense,Discrete,DedekindDense} at :79,:87,:97,:106 with FOUR copied monotonicity lemmas at :124,:130,:136,:144. Those four definitions are BYTE-IDENTICAL except for the typeclass binder line; their own docstrings cross-reference the Valid* whose binder list they copy. THE MISSING INGREDIENT ALREADY EXISTS: FrameConditions/FrameClass.lean defines marker typeclasses LinearTemporalFrame(:88), SerialFrame(:103), DenseTemporalFrame(:124), DiscreteTemporalFrame(:148), DedekindTemporalFrame(:182) -- exactly the binder-list-as-predicate-on-D that a FrameClass-indexed validity needs. That layer is orphaned (see the FrameConditions resolution task) and this task should consume it rather than invent a sixth vocabulary. DELIVERABLE: (1) a FrameClass -> carrier-constraint interpretation; (2) ValidOn (fc : FrameClass) (phi) and SetSemanticConsequence (fc) defined once; (3) ONE monotonicity lemma replacing valid_implies_valid_dense/_discrete/_validDedekind/_validDedekindDense (Validity.lean:349,356,364,371), pointing the same direction as DerivationTree.lift; (4) the existing 15 predicates retained as abbreviations or retired, with every call site migrated. HAZARD THIS CLOSES: the ValidDedekind docstring (Validity.lean:301) warns that retargeting soundness_dedekind to it yields a REFUTABLE theorem -- a trap that exists only because binder lists are inlined rather than derived from the frame class. ACCEPTANCE: sorry-free, lake build green, check-module-invariants.sh passes, axiom profiles unchanged on the flagship theorems. GROUNDING: specs/reviews/review-2026-08-31-metalogic-systematicity.md issue H1.
 
