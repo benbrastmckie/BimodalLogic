@@ -103,7 +103,7 @@ next_project_number: 512
 
 ### Semantics Foundations
 
-514 [RESEARCHED] — METATASK, governing the entire metalogic systematicity front. Est
+514 [PLANNED] — METATASK, governing the entire metalogic systematicity front. Est
   └─ 512 [NOT STARTED] — FOUNDATIONAL REFACTOR, prerequisite for the whole metalogic syste
 
 ### Correspondence Theory
@@ -113,11 +113,12 @@ next_project_number: 512
 ## Tasks
 
 ### 514. Align definitions with source paper
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: formal
 - **Topic**: semantics foundations
 - **Dependencies**: None
 - **Research**: [514_align_definitions_with_source_paper/reports/01_definitional-review-and-closure.md]
+- **Plan**: [514_align_definitions_with_source_paper/plans/01_apply-board-revisions.md]
 
 **Description**: METATASK, governing the entire metalogic systematicity front. Establish the paper's definitions as the single source of truth, then systematically realign every task on this front to them.
 

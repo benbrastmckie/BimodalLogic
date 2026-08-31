@@ -1,21 +1,25 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/514_align_definitions_with_source_paper/reports/01_definitional-review-and-closure.md",
-      "summary": "Definitional review mapping all 28 paper definitions to the Lean tree; adjudicated app:dense verdict (resolution (a): the per-frame statement is over-strong, the proofs establish the temporal-order-level biconditional); Galois-closure table for all five frame classes including the correction that Sat .Dense IS Galois-closed via the NN indicator axiom; revised task board with verbatim amendment texts for tasks 507-513"
+      "type": "plan",
+      "path": "specs/514_align_definitions_with_source_paper/plans/01_apply-board-revisions.md",
+      "summary": "Five-phase board-surgery plan: apply report section 4.3 amendment texts to tasks 512/507/508/509/510, replace 513 with the Galois-closure implementation task, close 511 terminal at researched, set the 512->507->{508->509, 510, 513} build-order dependencies, and add the T1 reading note to paper-definitions-of-record.md; no Lean edits."
     }
   ],
-  "next_steps": "Run /plan 514 to plan the board-revision implementation (apply the verbatim amendment texts in report 01 section 4.3, close 511 as terminal-researched, replace 513's description)",
+  "next_steps": "Run /implement 514 to execute the plan",
   "metadata": {
     "session_id": "sess_1788206286_e33d62",
-    "agent_type": "formal-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "formal-research-agent"],
-    "domains_researched": ["logic", "math"],
-    "findings_count": 9,
-    "context_files_loaded": [],
-    "mathlib_lookups_performed": 0
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 4.5,
+    "dependency_waves": [[1, 4], [2], [3], [5]]
+  },
+  "memory_candidates": [],
+  "modified_files": [
+    "specs/514_align_definitions_with_source_paper/plans/01_apply-board-revisions.md"
+  ],
+  "errors": []
 }
