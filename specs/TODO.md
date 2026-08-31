@@ -13,10 +13,10 @@ next_project_number: 512
 |------|-------|------------|--------|
 | 1 | 127,128,193,257,298,433,461,476,481,492,495,504,506,512 | -- | automation, dataset-enhancement, decidability, ... |
 | 2 | 178,231,282,296,463,493,502,507 | 193,298,433,461,492,512 | algebraic-representation, dataset-enhancement, decidability, ... |
-| 3 | 219,464,497,508,510,513 | 231,463,502,507 | algebraic-representation, dataset-enhancement, decidability, ... |
-| 4 | 465,498,499,500,509,511 | 464,492,497,508,513 | algebraic-representation, decidability, metalogic |
-| 5 | 125,428,494 | 465,498,499,509 | algebraic-representation, decidability, strong_completeness |
-| 6 | 429,501 | 125,428 | algebraic-representation, decidability |
+| 3 | 219,464,497,510,513 | 231,463,502,507 | algebraic-representation, dataset-enhancement, decidability, ... |
+| 4 | 465,498,499,500,508 | 464,492,497,510 | algebraic-representation, decidability, metalogic |
+| 5 | 125,428,509 | 465,498,499,508 | algebraic-representation, decidability, metalogic |
+| 6 | 429,494,501 | 125,428,509 | algebraic-representation, decidability, strong_completeness |
 | 7 | 410 | 429 | decidability |
 | 8 | 411 | 410 | decidability |
 | 9 | 430 | 411 | decidability |
@@ -86,10 +86,9 @@ next_project_number: 512
 
 495 [NOT STARTED] — RESEARCH TASK, DELIBERATELY AGNOSTIC ABOUT THE VERDICT. Determine
 507 [RESEARCHED] — ROOT FIX for the metalogic systematicity front. Give the proof-si
-  └─ 508 [NOT STARTED] — Collapse ~23 soundness theorems into ONE parameterized theorem pl
-    └─ 509 [NOT STARTED] — Make the compactness / strong-completeness layer a FrameClass-ind
   └─ 510 [NOT STARTED] — Decide the fate of FormalSystem/FrameConditions/ (4 modules, 906 
-511 [RESEARCHED] — RESEARCH TASK, DELIBERATELY AGNOSTIC ABOUT FEASIBILITY. Determine
+    └─ 508 [NOT STARTED] — Collapse ~23 soundness theorems into ONE parameterized theorem pl
+      └─ 509 [NOT STARTED] — Make the compactness / strong-completeness layer a FrameClass-ind
 
 ### Publication Quality
 
@@ -162,7 +161,7 @@ DO NOT implement any Lean refactor under this task -- it produces the definition
 
 ### 513. Uniform frame faithfulness predicate
 - **Status**: [NOT STARTED]
-- **Task Type**: formal
+- **Task Type**: lean4
 - **Topic**: correspondence theory
 - **Dependencies**: Task 512, Task 507
 
@@ -247,7 +246,7 @@ and is renamed under 507. See specs/514_align_definitions_with_source_paper/repo
 ---
 
 ### 511. Research frame correspondence infrastructure
-- **Status**: [RESEARCHED]
+- **Status**: [EXPANDED]
 - **Task Type**: formal
 - **Topic**: metalogic
 - **Dependencies**: Task 514, Task 512, Task 513
@@ -338,7 +337,7 @@ specs/514_align_definitions_with_source_paper/reports/01 §1.2.
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: metalogic
-- **Dependencies**: Task 507
+- **Dependencies**: Task 507, Task 510
 
 **Description**: Collapse ~23 soundness theorems into ONE parameterized theorem plus corollaries. CURRENT DUPLICATION, all instances of a single schema: Metalogic/Soundness.lean has soundness(:1100), soundness_dense(:1274), soundness_discrete(:1420), soundness_dedekind(:1947) plus three *_valid variants(:1205,:1368,:1928); Metalogic/StrongCompleteness.lean has soundness_{base,dense,discrete,dedekind}_consequence(:667,:771,:879,:524); FrameConditions/Soundness.lean has soundness_over, soundness_linear, soundness_dense, soundness_discrete, soundness_Int; Metalogic/BaseLanguageSoundness.lean has bl_soundness{,_dense,_discrete,_dedekind} plus four *_valid variants(:168-252). Metalogic/SoundnessLemmas/FrameClassVariants.lean (1041 lines) exists solely to carry per-frame-class variants of the axiom-validity lemmas. TARGET: one theorem, Derivable fc Gamma phi -> SetSemanticConsequence fc Gamma phi, by induction on the derivation, with the axiom case discharged from the Axiom.minFrameClass <= fc side condition already carried by DerivationTree's axiom constructor plus a per-axiom validity lemma. The existing theorems become one-line corollaries. BL SIDE COLLAPSES FOR FREE: blValid_iff_valid_tr (BaseLanguageSoundness.lean:141) already reduces BL validity to Formula validity through the translation tr, so BLValidOn fc phi := ValidOn fc (tr phi) subsumes all four BLValid* definitions (BLValidity.lean:77,102,115,132), the three blValid_implies_* bridges (:153,:157,:162), and all eight bl_soundness* theorems -- do NOT scope that as separate work. CONSTRAINT: preserve the soundness_dedekind target discipline -- it targets ValidDedekindDense, not ValidDedekind, and the docstring at Validity.lean:301 explains why retargeting is refutable. ACCEPTANCE: sorry-free, lake build green, axiom profiles preserved on all flagship soundness results, no theorem weakened. GROUNDING: specs/reviews/review-2026-08-31-metalogic-systematicity.md issue H2 and M3.=== DIRECTION NOTE ===
 The FrameClass-indexed validity this task builds on is being defined at FRAME level, not carrier
