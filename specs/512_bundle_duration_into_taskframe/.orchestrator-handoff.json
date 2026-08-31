@@ -1,8 +1,38 @@
 {
   "dispatch_seq": 3,
-  "status": "in_progress",
-  "phases_completed": 2,
+  "status": "partial",
+  "requires_user_review": true,
+  "phases_completed": 5,
   "phases_total": 13,
-  "last_green_commit": "69437fd65",
-  "notes": "Phases 1-2 complete and green. Mechanism (a) (CoeOut) adopted; shim ledger empty."
+  "phases_completed_list": [
+    1,
+    2,
+    3,
+    4,
+    8
+  ],
+  "phases_blocked_list": [
+    5,
+    6,
+    7,
+    10,
+    12
+  ],
+  "phases_not_started_list": [
+    9,
+    11,
+    13
+  ],
+  "blocked_phase": 5,
+  "last_green_commit": "f81c82c49",
+  "build_green": true,
+  "module_invariants": "ALL CHECKS PASSED",
+  "blocker_summary": "Bundling makes 'the frames over a fixed duration type' inexpressible. The ℤ machinery quantifies over (F : ParamTaskFrame ℤ) and uses the numeral 1 at that duration type; (F : TaskFrame) (hD : F.Duration = ℤ) cannot supply OfNat F.Duration 1 because hD is a Prop and the instance is data. Reproduced in probes/06_fixed-duration-expressibility.lean. Phase 13's 'delete ParamTaskFrame' is therefore not executable as written.",
+  "decision_required": [
+    "Keep ParamTaskFrame D permanently as the fibre over D, with TaskFrame.ofParam as the canonical inclusion (cheapest: phases 5-7, 10, 12 shrink to nothing).",
+    "Reformulate the ℤ machinery over frame components (redesign of ~350 occurrences).",
+    "Introduce a FrameOver D abstraction carrying the carrier equation as data (new design object, own task)."
+  ],
+  "replan_note": "Phases 3 and 8 are one dependency component, not two: the Valid* family binds D explicitly inside the Prop, so migrating it breaks every consumer at once. Any re-plan should merge them.",
+  "next_steps": "Take the fixed-duration decision, then re-plan phases 5-7, 9-13 against it. Phases 9 and 11 are partly independent of the blocker and could be attempted first if the decision is delayed."
 }
