@@ -328,7 +328,8 @@ TaskFrame duration-bundling refactor via its dependency on the indexed-validity 
 === PAPER GROUNDING === Targets def:soundness / def:logical-consequence / cor:tm-completeness's
 ⊨_C and per-class strong/weak completeness roster (TM+ strong over all task frames; TM+_d
 strong over dense; TM+_f weak over Z-time; TM+_c weak over dense-and-complete). Class naming
-follows 507's rename (.Complete, not .Dedekind). See
+follows 507: the class keeps the name .Dedekind (the .Complete rename was rejected — "complete"
+is reserved in this tree for proof-theoretic completeness). See
 specs/514_align_definitions_with_source_paper/reports/01 §1.2.
 
 ---
@@ -350,7 +351,8 @@ TaskFrame duration-bundling refactor via its dependency on the indexed-validity 
 === PAPER GROUNDING === Targets def:soundness / def:logical-consequence / cor:tm-completeness's
 ⊨_C and per-class strong/weak completeness roster (TM+ strong over all task frames; TM+_d
 strong over dense; TM+_f weak over Z-time; TM+_c weak over dense-and-complete). Class naming
-follows 507's rename (.Complete, not .Dedekind). See
+follows 507: the class keeps the name .Dedekind (the .Complete rename was rejected — "complete"
+is reserved in this tree for proof-theoretic completeness). See
 specs/514_align_definitions_with_source_paper/reports/01 §1.2.
 
 ---
