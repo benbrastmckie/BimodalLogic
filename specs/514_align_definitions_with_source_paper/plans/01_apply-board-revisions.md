@@ -1,7 +1,7 @@
 # Implementation Plan: Task #514
 
 - **Task**: 514 - align_definitions_with_source_paper (METATASK)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 4.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/514_align_definitions_with_source_paper/reports/01_definitional-review-and-closure.md

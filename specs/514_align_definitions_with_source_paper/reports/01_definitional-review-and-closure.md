@@ -1,6 +1,13 @@
 # Research Report: Definitional Review, app:dense Verdict, Galois Closures, Task Realignment
 
 **Task**: 514 — align_definitions_with_source_paper (METATASK, metalogic systematicity front)
+- **Started**: TBD
+- **Completed**: TBD
+- **Effort**: TBD
+- **Dependencies**: TBD
+- **Sources/Inputs**: TBD
+- **Artifacts**: TBD
+- **Standards**: TBD
 **Task Type**: formal
 **Domains**: logic (temporal/modal correspondence, completeness), math (ordered abelian groups,
 Galois connections, order theory)

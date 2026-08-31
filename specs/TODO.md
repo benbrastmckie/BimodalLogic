@@ -11,12 +11,12 @@ next_project_number: 512
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,193,257,298,433,461,476,481,492,495,504,506,514 | -- | automation, dataset-enhancement, decidability, ... |
-| 2 | 178,231,282,296,463,493,502,512 | 193,298,433,461,492,514 | algebraic-representation, dataset-enhancement, decidability, ... |
-| 3 | 219,464,497,507 | 231,463,502,512 | algebraic-representation, dataset-enhancement, decidability, ... |
-| 4 | 465,498,499,500,508,510,513 | 464,492,497,507 | algebraic-representation, decidability, metalogic, ... |
-| 5 | 125,428,509,511 | 465,498,499,508,513 | algebraic-representation, decidability, metalogic |
-| 6 | 429,494,501 | 125,428,509 | algebraic-representation, decidability, strong_completeness |
+| 1 | 127,128,193,257,298,433,461,476,481,492,495,504,506,512 | -- | automation, dataset-enhancement, decidability, ... |
+| 2 | 178,231,282,296,463,493,502,507 | 193,298,433,461,492,512 | algebraic-representation, dataset-enhancement, decidability, ... |
+| 3 | 219,464,497,508,510,513 | 231,463,502,507 | algebraic-representation, dataset-enhancement, decidability, ... |
+| 4 | 465,498,499,500,509,511 | 464,492,497,508,513 | algebraic-representation, decidability, metalogic |
+| 5 | 125,428,494 | 465,498,499,509 | algebraic-representation, decidability, strong_completeness |
+| 6 | 429,501 | 125,428 | algebraic-representation, decidability |
 | 7 | 410 | 429 | decidability |
 | 8 | 411 | 410 | decidability |
 | 9 | 430 | 411 | decidability |
@@ -103,8 +103,7 @@ next_project_number: 512
 
 ### Semantics Foundations
 
-514 [IMPLEMENTING] — METATASK, governing the entire metalogic systematicity front. Est
-  └─ 512 [NOT STARTED] — FOUNDATIONAL REFACTOR, prerequisite for the whole metalogic syste
+512 [NOT STARTED] — FOUNDATIONAL REFACTOR, prerequisite for the whole metalogic syste
 
 ### Correspondence Theory
 
@@ -113,12 +112,13 @@ next_project_number: 512
 ## Tasks
 
 ### 514. Align definitions with source paper
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: formal
 - **Topic**: semantics foundations
 - **Dependencies**: None
 - **Research**: [514_align_definitions_with_source_paper/reports/01_definitional-review-and-closure.md]
 - **Plan**: [514_align_definitions_with_source_paper/plans/01_apply-board-revisions.md]
+- **Summary**: [514_align_definitions_with_source_paper/summaries/01_apply-board-revisions-summary.md]
 
 **Description**: METATASK, governing the entire metalogic systematicity front. Establish the paper's definitions as the single source of truth, then systematically realign every task on this front to them.
 
