@@ -48,7 +48,7 @@ open FormalSystem.Syntax
 open FormalSystem.Metalogic.Core
 open FormalSystem.ProofSystem
 
-variable {D : Type*} [Preorder D]
+variable {D : Type} [Preorder D]
 
 /-!
 ## Phase 1: Saturation Predicate and Supporting Infrastructure
@@ -374,7 +374,7 @@ A saturated BFMCS is a BFMCS together with a proof that it is modally saturated.
 
 This structure is useful because we can derive modal_backward from saturation.
 -/
-structure SaturatedBFMCS (D : Type*) [Preorder D] where
+structure SaturatedBFMCS (D : Type) [Preorder D] where
   /-- The underlying BFMCS -/
   bfmcs : BFMCS D
   /-- Proof of modal saturation -/

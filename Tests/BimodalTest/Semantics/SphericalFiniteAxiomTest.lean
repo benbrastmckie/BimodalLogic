@@ -12,7 +12,7 @@ import FormalSystem.Semantics.TaskFrame
 
 This module is **permanent evidence**, not a conventional test. It exists to answer, once and
 durably, a question that will otherwise be re-opened every time someone reads
-`TaskFrame.spherical_of_finite` and notices that it depends on `Classical.choice` while the
+`ParamTaskFrame.spherical_of_finite` and notices that it depends on `Classical.choice` while the
 paper corollary it transcribes (`cor:spherical-finite`, recorded verbatim in
 `specs/paper-definitions-of-record.md`) calls itself *choice-free*.
 
@@ -72,7 +72,7 @@ def wlemRel : Bool → Int → Bool → Prop :=
   fun w d u => (d = 0 ∧ w = u) ∨ (d = 3)
 
 /-- The zero-duration fiber of `wlemRel` is the singleton on its source. -/
-theorem Fib_wlemRel_zero (w : Bool) : TaskFrame.Fib wlemRel w 0 = {w} := by
+theorem Fib_wlemRel_zero (w : Bool) : ParamTaskFrame.Fib wlemRel w 0 = {w} := by
   ext u
   constructor
   · rintro (⟨-, h⟩ | h)
@@ -82,7 +82,7 @@ theorem Fib_wlemRel_zero (w : Bool) : TaskFrame.Fib wlemRel w 0 = {w} := by
     exact Or.inl ⟨rfl, rfl⟩
 
 /-- The duration-3 fiber of `wlemRel` is the whole carrier. -/
-theorem Fib_wlemRel_three (w : Bool) : TaskFrame.Fib wlemRel w 3 = Set.univ := by
+theorem Fib_wlemRel_three (w : Bool) : ParamTaskFrame.Fib wlemRel w 3 = Set.univ := by
   ext u
   constructor
   · intro _
@@ -123,7 +123,7 @@ the two sets. The two cross cases pair `{true}` (carrying `P`) with `{false}` (c
 and discharge by `absurd` on the two hypotheses directly: no case split on `P` is performed or
 needed, which is exactly why no classical principle is consumed here.
 -/
-theorem wlemFamily_directed (P : Prop) : TaskFrame.DirectedFamily (wlemFamily P) := by
+theorem wlemFamily_directed (P : Prop) : ParamTaskFrame.DirectedFamily (wlemFamily P) := by
   refine ⟨⟨Set.univ, univ_mem_wlemFamily P⟩, ?_⟩
   rintro S₁ (⟨rfl, h₁⟩ | ⟨rfl, h₁⟩ | rfl) S₂ (⟨rfl, h₂⟩ | ⟨rfl, h₂⟩ | rfl)
   -- {true}, {true}
@@ -152,7 +152,7 @@ disjunct always fires and `IsSegment` is never needed.
 -/
 theorem wlemFamily_fiber_nonempty (P : Prop) :
     ∀ s ∈ wlemFamily P,
-      (TaskFrame.IsFiber wlemRel s ∨ TaskFrame.IsSegment wlemRel s) ∧ s.Nonempty := by
+      (ParamTaskFrame.IsFiber wlemRel s ∨ ParamTaskFrame.IsSegment wlemRel s) ∧ s.Nonempty := by
   rintro s (⟨rfl, -⟩ | ⟨rfl, -⟩ | rfl)
   · exact ⟨Or.inl ⟨true, 0, (Fib_wlemRel_zero true).symm⟩, ⟨true, rfl⟩⟩
   · exact ⟨Or.inl ⟨false, 0, (Fib_wlemRel_zero false).symm⟩, ⟨false, rfl⟩⟩
@@ -163,12 +163,12 @@ theorem wlemFamily_fiber_nonempty (P : Prop) :
 /--
 **Weak excluded middle follows from *Spherical* on a finite carrier.**
 
-Given only `TaskFrame.Spherical wlemRel` — *Spherical* for one fixed relation on the
+Given only `ParamTaskFrame.Spherical wlemRel` — *Spherical* for one fixed relation on the
 two-element carrier `Bool` over `D = Int` — this derives `¬¬P ∨ ¬P` for an arbitrary `P`, using
 no classical tactic or term. Its own axiom profile is exactly `[propext, Quot.sound]`, pinned by
 a `#guard_msgs` block below.
 
-**Why this theorem exists.** `TaskFrame.spherical_of_finite` transcribes the paper corollary
+**Why this theorem exists.** `ParamTaskFrame.spherical_of_finite` transcribes the paper corollary
 `cor:spherical-finite`, which calls itself *choice-free*, yet the Lean proof depends on
 `Classical.choice`. That gap invites a future reader to treat "make `spherical_of_finite`
 choice-free" as an open piece of work and go hunting for a better proof. **The hunt is provably
@@ -192,7 +192,7 @@ see "The no-Zorn claim" below.
 `true = false`; if `b = false` then `P` cannot hold, symmetrically. Deciding which of the two
 sets the witness lies in is what the classical step in `spherical_of_finite` is buying.
 -/
-theorem wlem_of_spherical (hSph : TaskFrame.Spherical wlemRel) (P : Prop) : ¬¬P ∨ ¬P := by
+theorem wlem_of_spherical (hSph : ParamTaskFrame.Spherical wlemRel) (P : Prop) : ¬¬P ∨ ¬P := by
   obtain ⟨b, hb⟩ := hSph (wlemFamily P) (wlemFamily_directed P) (wlemFamily_fiber_nonempty P)
   have hb' : ∀ t ∈ wlemFamily P, b ∈ t := Set.mem_sInter.mp hb
   cases b with
@@ -226,9 +226,9 @@ deliberately separated from `spherical_of_finite` so that the classical step is 
 separation has leaked.
 -/
 
-/-- info: 'FormalSystem.Semantics.TaskFrame.sInter_nonempty_of_directed_of_minimal' does not depend on any axioms -/
+/-- info: 'FormalSystem.Semantics.ParamTaskFrame.sInter_nonempty_of_directed_of_minimal' does not depend on any axioms -/
 #guard_msgs in
-#print axioms FormalSystem.Semantics.TaskFrame.sInter_nonempty_of_directed_of_minimal
+#print axioms FormalSystem.Semantics.ParamTaskFrame.sInter_nonempty_of_directed_of_minimal
 
 /-! ### The full discharge
 
@@ -242,9 +242,9 @@ middle in Lean's intuitionistic core. Suspect a change in what `Spherical` *mean
 believing the profile.
 -/
 
-/-- info: 'FormalSystem.Semantics.TaskFrame.spherical_of_finite' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'FormalSystem.Semantics.ParamTaskFrame.spherical_of_finite' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms FormalSystem.Semantics.TaskFrame.spherical_of_finite
+#print axioms FormalSystem.Semantics.ParamTaskFrame.spherical_of_finite
 
 /-! ### The tripwire
 
@@ -255,7 +255,7 @@ it subsumes this helper's statement — which makes "simplify by routing the sub
 through the general lemma" a tempting and entirely wrong consolidation. It would regress this
 helper from `[propext]` to `[propext, Classical.choice, Quot.sound]`, and propagate that
 regression to the three `Unit`-carriered universal frames that consume it (`trivialFrame`,
-`intTimeFrame`, `genericTimeFrame`). `TaskFrame.spherical_of_finite`'s own docstring records the
+`intTimeFrame`, `genericTimeFrame`). `ParamTaskFrame.spherical_of_finite`'s own docstring records the
 prohibition in prose; this guard is what enforces it mechanically. If this block fails with
 `Classical.choice` in the actual output, the correct response is to revert the consolidation, not
 to update this expected text.
@@ -265,9 +265,9 @@ The two other shape-constrained helpers, `spherical_of_permissive` and `spherica
 guarded here: there is no choice-freedom left in them to protect.
 -/
 
-/-- info: 'FormalSystem.Semantics.TaskFrame.spherical_of_subsingleton' depends on axioms: [propext] -/
+/-- info: 'FormalSystem.Semantics.ParamTaskFrame.spherical_of_subsingleton' depends on axioms: [propext] -/
 #guard_msgs in
-#print axioms FormalSystem.Semantics.TaskFrame.spherical_of_subsingleton
+#print axioms FormalSystem.Semantics.ParamTaskFrame.spherical_of_subsingleton
 
 /-! ### The obstruction itself
 
@@ -310,7 +310,7 @@ because it is structural rather than observational:
   `FormalSystem/Semantics/PartialHistoryOrder.lean`, which is the module that imports
   `Mathlib.Order.Zorn`.
 - That module imports `FormalSystem.Semantics.PartialHistory`, which sits **downstream** of
-  `TaskFrame.lean`. The dependency therefore runs `TaskFrame ← PartialHistory ←
+  `TaskFrame.lean`. The dependency therefore runs `ParamTaskFrame ← PartialHistory ←
   PartialHistoryOrder`, so a dependency of `spherical_of_finite` on `exists_maximal_extension`
   would require an import cycle. It is not merely absent; it is unconstructible.
 

@@ -39,7 +39,7 @@ namespace FormalSystem.Metalogic.Independence
 open FormalSystem.Syntax
 open FormalSystem.Semantics
 
-variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
+variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
 
 /-! ## Looping durations -/
 
@@ -49,11 +49,11 @@ variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [No
 The clock frame's circumference `1` is one, and it is the only property of the clock frame that
 the `CO`-validity argument uses.
 -/
-def LoopingDuration (F : TaskFrame D) (π : D) : Prop :=
+def LoopingDuration (F : ParamTaskFrame D) (π : D) : Prop :=
   π ≠ 0 ∧ ∀ w u, F.TaskRel w π u ↔ u = w
 
 /-- The negation of a looping duration is a looping duration, by the converse convention. -/
-theorem LoopingDuration.neg {F : TaskFrame D} {π : D} (h : LoopingDuration F π) :
+theorem LoopingDuration.neg {F : ParamTaskFrame D} {π : D} (h : LoopingDuration F π) :
     LoopingDuration F (-π) := by
   refine ⟨neg_ne_zero.mpr h.1, fun w u => ?_⟩
   have hconv := F.converse w (-π) u
@@ -61,7 +61,7 @@ theorem LoopingDuration.neg {F : TaskFrame D} {π : D} (h : LoopingDuration F π
   exact hconv.trans ((h.2 u w).trans eq_comm)
 
 /-- A frame with a looping duration has a **positive** one. -/
-theorem LoopingDuration.exists_pos {F : TaskFrame D} {π : D} (h : LoopingDuration F π) :
+theorem LoopingDuration.exists_pos {F : ParamTaskFrame D} {π : D} (h : LoopingDuration F π) :
     ∃ p : D, 0 < p ∧ LoopingDuration F p := by
   rcases lt_trichotomy π 0 with hlt | heq | hgt
   · exact ⟨-π, neg_pos.mpr hlt, h.neg⟩
@@ -77,7 +77,7 @@ This is forced by `def:world-history`'s task-respect clause alone, applied at th
 times `(x, x + π)`: the clause hands over `τ(x) ⇒_π τ(x + π)`, and a looping duration relates a
 state only to itself.
 -/
-theorem states_add_of_looping {F : TaskFrame D} {π : D} (h : LoopingDuration F π)
+theorem states_add_of_looping {F : ParamTaskFrame D} {π : D} (h : LoopingDuration F π)
     (τ : WorldHistory F) (hτ : τ.IsTotal) (x : D) :
     τ.states (x + π) (hτ (x + π)) = τ.states x (hτ x) := by
   have hr := τ.respects_task x (x + π) (hτ x) (hτ (x + π))
@@ -95,7 +95,7 @@ stylistic choice: the `□` clause of `TruthAt` ranges over *all* total historie
 hypothesis has to be available at each of them, not only at the history the statement started
 with.
 -/
-theorem truthAt_add_period {F : TaskFrame D} (M : TaskModel F) {π : D}
+theorem truthAt_add_period {F : ParamTaskFrame D} (M : TaskModel F) {π : D}
     (h : LoopingDuration F π) :
     ∀ (φ : Formula) (τ : WorldHistory F), τ.IsTotal → ∀ t : D,
       (TruthAt M τ t φ ↔ TruthAt M τ (t + π) φ) := by
@@ -165,7 +165,7 @@ theorem truthAt_add_period {F : TaskFrame D} (M : TaskModel F) {π : D}
           exact (ihχ τ hτ r).mpr (hg (r + π) hrl hrr)
 
 /-- **Lemma B, iterated**: truth is invariant under any whole number of loops. -/
-theorem truthAt_add_nsmul {F : TaskFrame D} (M : TaskModel F) {π : D}
+theorem truthAt_add_nsmul {F : ParamTaskFrame D} (M : TaskModel F) {π : D}
     (h : LoopingDuration F π) (φ : Formula) (τ : WorldHistory F) (hτ : τ.IsTotal) (t : D) :
     ∀ n : ℕ, (TruthAt M τ t φ ↔ TruthAt M τ (t + n • π) φ) := by
   intro n
@@ -187,7 +187,7 @@ if `ψ` holds at every past time then it holds at every future time.
 Given a future point `s`, the Archimedean property supplies a whole number of loops carrying `s`
 strictly below `t`. `ψ` holds there because `Hψ` does, and Lemma B carries it back up to `s`.
 -/
-theorem allPast_imp_allFuture {F : TaskFrame D} [Archimedean D] (M : TaskModel F) {π : D}
+theorem allPast_imp_allFuture {F : ParamTaskFrame D} [Archimedean D] (M : TaskModel F) {π : D}
     (h : LoopingDuration F π) (ψ : Formula) (τ : WorldHistory F) (hτ : τ.IsTotal) (t : D)
     (hH : TruthAt M τ t ψ.allPast) : TruthAt M τ t ψ.allFuture := by
   obtain ⟨p, hp, hlp⟩ := h.exists_pos
@@ -211,7 +211,7 @@ theorem allPast_imp_allFuture {F : TaskFrame D} [Archimedean D] (M : TaskModel F
 The past mirror of Lemma C: `Gψ → Hψ`. Free from the same argument, and consumed by the
 `temporal_duality` closure of the `CO` derivation system.
 -/
-theorem allFuture_imp_allPast {F : TaskFrame D} [Archimedean D] (M : TaskModel F) {π : D}
+theorem allFuture_imp_allPast {F : ParamTaskFrame D} [Archimedean D] (M : TaskModel F) {π : D}
     (h : LoopingDuration F π) (ψ : Formula) (τ : WorldHistory F) (hτ : τ.IsTotal) (t : D)
     (hG : TruthAt M τ t ψ.allFuture) : TruthAt M τ t ψ.allPast := by
   obtain ⟨p, hp, hlp⟩ := h.exists_pos
@@ -235,7 +235,7 @@ theorem allFuture_imp_allPast {F : TaskFrame D} [Archimedean D] (M : TaskModel F
 `Formula.co ψ = △(Hψ → F(Hψ)) → (Hψ → Gψ)`, and the consequent is already valid here by
 Lemma C, so the antecedent is discarded.
 -/
-theorem co_true {F : TaskFrame D} [Archimedean D] (M : TaskModel F) {π : D}
+theorem co_true {F : ParamTaskFrame D} [Archimedean D] (M : TaskModel F) {π : D}
     (h : LoopingDuration F π) (ψ : Formula) (τ : WorldHistory F) (hτ : τ.IsTotal) (t : D) :
     TruthAt M τ t (Formula.co ψ) :=
   fun _ hH => allPast_imp_allFuture M h ψ τ hτ t hH

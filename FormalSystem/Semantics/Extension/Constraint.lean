@@ -50,7 +50,7 @@ source — is the citation source of record.
    left-to-right half of biconditional *Compositionality*: the history's own task-respect gives
    `τ(t) ⇒_{s-t} τ(s)`, and interpolating at `z` splits `s - t = (z - t) + (s - z)` into a point
    of `[τ(t), τ(s)]_{z-t}^{s-z}`.
-3. **`TaskFrame.forward_comp`** — *directedness*, via the two fiber-monotonicity lemmas below.
+3. **`ParamTaskFrame.forward_comp`** — *directedness*, via the two fiber-monotonicity lemmas below.
    This is the right-to-left (composition) half of the same biconditional axiom, so
    *Compositionality* is consumed in **both** directions by this one lemma.
 
@@ -81,8 +81,8 @@ That is the `fib_zero_subset_of_mem_Constraints` branch below.
 
 ## Implementation Notes
 
-- **No new definition is introduced.** Everything is stated with `TaskFrame.Fib`, `TaskFrame.Seg`,
-  `TaskFrame.DirectedFamily`, and `PartialHistory.Constraints` exactly as already transcribed.
+- **No new definition is introduced.** Everything is stated with `ParamTaskFrame.Fib`, `ParamTaskFrame.Seg`,
+  `ParamTaskFrame.DirectedFamily`, and `PartialHistory.Constraints` exactly as already transcribed.
 - **Fibers and segments stay two separate classes.** The case analysis below is driven by
   `Constraints`' own two clauses, never by a merged class.
 - **The `def:constraints` "otherwise" reading is consumed, not re-decided.** A fiber member's
@@ -95,10 +95,10 @@ namespace FormalSystem.Semantics
 
 namespace PartialHistory
 
-open TaskFrame
+open ParamTaskFrame
 
-variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
-variable {F : TaskFrame D}
+variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
+variable {F : ParamTaskFrame D}
 
 /-!
 ### Rewriting a constraint segment as a pair of fiber conditions
@@ -117,7 +117,7 @@ theorem seg_eq_inter_fib (τ : PartialHistory F) {z t s : D}
     (ht : τ.domain t) (hs : τ.domain s) :
     Seg F.TaskRel (τ.states t ht) (τ.states s hs) (z - t) (s - z)
       = Fib F.TaskRel (τ.states t ht) (z - t) ∩ Fib F.TaskRel (τ.states s hs) (z - s) := by
-  simp only [TaskFrame.Seg, neg_sub]
+  simp only [ParamTaskFrame.Seg, neg_sub]
 
 /-!
 ### Fiber monotonicity: constraints tighten as the domain time approaches `z`
@@ -127,7 +127,7 @@ theorem seg_eq_inter_fib (τ : PartialHistory F) {z t s : D}
 Below `z`, a later domain time imposes a tighter constraint: for `a ≤ b ≤ z` in the domain,
 `Fib(τ(b), z - b) ⊆ Fib(τ(a), z - a)`.
 
-This is *Compositionality*'s composition half (`TaskFrame.forward_comp`) applied to the history's
+This is *Compositionality*'s composition half (`ParamTaskFrame.forward_comp`) applied to the history's
 own task-respect step `τ(a) ⇒_{b-a} τ(b)`, with both durations `b - a` and `z - b` nonnegative so
 that the axiom's positive-cone proviso is met.
 -/
@@ -137,10 +137,10 @@ theorem fib_subset_fib_of_le_of_le {τ : PartialHistory F} {z a b : D}
   intro u hu
   have hcomp := F.forward_comp (τ.states a ha) (τ.states b hb) u (b - a) (z - b)
     (sub_nonneg.mpr hab) (sub_nonneg.mpr hbz) (τ.respects_task a b ha hb)
-    (TaskFrame.mem_Fib.mp hu)
+    (ParamTaskFrame.mem_Fib.mp hu)
   have heq : b - a + (z - b) = z - a := by abel
   rw [heq] at hcomp
-  exact TaskFrame.mem_Fib.mpr hcomp
+  exact ParamTaskFrame.mem_Fib.mpr hcomp
 
 /--
 Above `z`, an earlier domain time imposes a tighter constraint: for `z ≤ b ≤ a` in the domain,
@@ -148,14 +148,14 @@ Above `z`, an earlier domain time imposes a tighter constraint: for `z ≤ b ≤
 
 The mirror image of `fib_subset_fib_of_le_of_le`. Both fiber durations are now nonpositive, so
 the composition is performed on the reflected pair — `u ⇒_{b-z} τ(b)` and `τ(b) ⇒_{a-b} τ(a)` —
-and the converse convention (`TaskFrame.converse`) carries the result back.
+and the converse convention (`ParamTaskFrame.converse`) carries the result back.
 -/
 theorem fib_subset_fib_of_le_of_le' {τ : PartialHistory F} {z a b : D}
     (ha : τ.domain a) (hb : τ.domain b) (hba : b ≤ a) (hzb : z ≤ b) :
     Fib F.TaskRel (τ.states b hb) (z - b) ⊆ Fib F.TaskRel (τ.states a ha) (z - a) := by
   intro u hu
   have hu' : F.TaskRel u (b - z) (τ.states b hb) := by
-    have h := (F.converse (τ.states b hb) (z - b) u).mp (TaskFrame.mem_Fib.mp hu)
+    have h := (F.converse (τ.states b hb) (z - b) u).mp (ParamTaskFrame.mem_Fib.mp hu)
     rwa [neg_sub] at h
   have hcomp := F.forward_comp u (τ.states b hb) (τ.states a ha) (b - z) (a - b)
     (sub_nonneg.mpr hzb) (sub_nonneg.mpr hba) hu' (τ.respects_task b a hb ha)
@@ -163,7 +163,7 @@ theorem fib_subset_fib_of_le_of_le' {τ : PartialHistory F} {z a b : D}
   rw [heq] at hcomp
   have h := (F.converse u (a - z) (τ.states a ha)).mp hcomp
   rw [neg_sub] at h
-  exact TaskFrame.mem_Fib.mpr h
+  exact ParamTaskFrame.mem_Fib.mpr h
 
 /--
 When `z` is itself a domain time, its own zero-duration fiber is contained in the constraint
@@ -218,9 +218,9 @@ theorem nonempty_fib_of_serial {τ : PartialHistory F} {z t : D}
     (ht : τ.domain t) : (Fib F.TaskRel (τ.states t ht) (z - t)).Nonempty := by
   rcases le_total t z with h | h
   · obtain ⟨u, hu⟩ := (F.serial (τ.states t ht) (z - t) (sub_nonneg.mpr h)).1
-    exact ⟨u, TaskFrame.mem_Fib.mpr hu⟩
+    exact ⟨u, ParamTaskFrame.mem_Fib.mpr hu⟩
   · obtain ⟨v, hv⟩ := (F.serial (τ.states t ht) (t - z) (sub_nonneg.mpr h)).2
-    refine ⟨v, TaskFrame.mem_Fib.mpr ?_⟩
+    refine ⟨v, ParamTaskFrame.mem_Fib.mpr ?_⟩
     have h' := (F.converse v (t - z) (τ.states t ht)).mp hv
     rwa [neg_sub] at h'
 
@@ -380,7 +380,7 @@ each by deleting the corresponding hypothesis and observing the failure:
 - `hSer` (*Seriality*) — nonemptiness of the fiber members, via `nonempty_fib_of_serial`;
 - `hInt` (the interpolation half of *Compositionality*) — nonemptiness of the segment members,
   via `nonempty_seg_of_interpolates`;
-- `TaskFrame.forward_comp` (the composition half of *Compositionality*) — directedness, via the
+- `ParamTaskFrame.forward_comp` (the composition half of *Compositionality*) — directedness, via the
   fiber-monotonicity lemmas `fib_subset_fib_of_le_of_le` and `fib_subset_fib_of_le_of_le'`.
 
 *Compositionality* is therefore consumed in **both** of its directions here. *Spherical* is

@@ -21,7 +21,7 @@ test cases and verify that properties hold across a wide range of inputs.
 
 ## Test Modules
 
-- **Generators**: Type generators for Formula, Context, TaskFrame
+- **Generators**: Type generators for Formula, Context, ParamTaskFrame
 - **FormulaPropertyTest**: Formula transformation and invariant properties
 - **DerivationPropertyTest**: Derivation system structural properties
 - **SemanticPropertyTest**: Task frame and semantic properties

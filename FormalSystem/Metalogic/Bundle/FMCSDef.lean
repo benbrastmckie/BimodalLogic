@@ -78,7 +78,7 @@ open FormalSystem.Metalogic.Core
 ## FMCS Structure
 -/
 
-variable (D : Type*) [Preorder D]
+variable (D : Type) [Preorder D]
 
 /--
 A family of maximal consistent sets indexed by time, with temporal coherence.
@@ -120,7 +120,7 @@ structure FMCS (fc : FrameClass := FrameClass.Base) where
   -/
   backward_H : forall t t' phi, t' < t -> Formula.allPast phi ∈ mcs t -> phi ∈ mcs t'
 
-variable {D : Type*} [Preorder D]
+variable {D : Type} [Preorder D]
 
 -- Unused convenience definitions removed:
 -- FMCS.at, FMCS.consistent, FMCS.maximal, FMCS.forward_G_chain, FMCS.backward_H_chain,

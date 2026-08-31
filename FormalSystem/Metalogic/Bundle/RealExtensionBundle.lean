@@ -97,7 +97,7 @@ noncomputable def negBoxIntrospection {fc : FrameClass} (φ : Formula) :
 **Forward propagation of a boxed formula inside one family.** `□ψ` at an index carries to every
 strictly later index, by `temporalFutureDerived` (`□ψ → G(□ψ)`) and `forward_G`.
 -/
-theorem box_forward_in_fmcs {fc : FrameClass} {D : Type*} [Preorder D]
+theorem box_forward_in_fmcs {fc : FrameClass} {D : Type} [Preorder D]
     (f : FMCS (fc := fc) D) {a b : D} (hab : a < b) (ψ : Formula)
     (hbox : Formula.box ψ ∈ f.mcs a) : Formula.box ψ ∈ f.mcs b := by
   have hG : Formula.allFuture (Formula.box ψ) ∈ f.mcs a :=
@@ -114,7 +114,7 @@ backward-in-time direction does not need — and this system does not have — a
 principle. `LinearOrder` is used only for the trichotomy on the two indices, and both `Rat` and
 `ℝ` supply it.
 -/
-theorem box_stable_in_fmcs {fc : FrameClass} {D : Type*} [LinearOrder D]
+theorem box_stable_in_fmcs {fc : FrameClass} {D : Type} [LinearOrder D]
     (f : FMCS (fc := fc) D) (s t : D) (φ : Formula) :
     Formula.box φ ∈ f.mcs s ↔ Formula.box φ ∈ f.mcs t := by
   have up : ∀ a b : D, a < b → Formula.box φ ∈ f.mcs a → Formula.box φ ∈ f.mcs b :=

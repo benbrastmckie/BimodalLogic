@@ -71,8 +71,8 @@ open FormalSystem.Metalogic.Decidability
 
 section Invariance
 
-variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
-variable {F : TaskFrame D} {ι : Type*}
+variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
+variable {F : ParamTaskFrame D} {ι : Type*}
 
 /--
 Region invariance of `χ` at a single history: truth of `χ` in `τ` does not distinguish points of

@@ -43,11 +43,11 @@ which atomic propositions are true at each world state.
 
 This provides the complete semantic structure needed to evaluate formula truth.
 
-**Polymorphic Temporal Type**: TaskModel inherits temporal type parameter from TaskFrame,
+**Polymorphic Temporal Type**: TaskModel inherits temporal type parameter from ParamTaskFrame,
 ensuring valuation is independent of the specific temporal order used.
 -/
-structure TaskModel {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D] (F :
-      TaskFrame D) where
+structure TaskModel {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D] (F :
+      ParamTaskFrame D) where
   /--
   Valuation function: assigns truth values to atomic propositions at world states.
 
@@ -57,7 +57,7 @@ structure TaskModel {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMo
 
 namespace TaskModel
 
-variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D] {F : TaskFrame D}
+variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D] {F : ParamTaskFrame D}
 
 /--
 Simple model where all atoms are false everywhere.
@@ -88,13 +88,13 @@ end TaskModel
 This section defines finite task models, which are task models over finite task frames.
 -/
 
-open TaskFrame
+open ParamTaskFrame
 
 /--
 A finite task model is simply a task model over a finite task frame.
 This is defined as an abbreviation for convenience.
 -/
-abbrev FiniteTaskModel {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
-    (F : FiniteTaskFrame D) := TaskModel F.toTaskFrame
+abbrev FiniteTaskModel {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
+    (F : ParamFiniteTaskFrame D) := TaskModel F.toParamTaskFrame
 
 end FormalSystem.Semantics

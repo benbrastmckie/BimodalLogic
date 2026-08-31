@@ -26,7 +26,7 @@ A branch is a list of signed formulas carrying `Label`s — a `WorldIndex` and a
 *total* world history `τ` and a *time* `t : D`. So a branch is satisfied relative to three
 pieces of data:
 
-* a model `M` over a `TaskFrame D`;
+* a model `M` over a `ParamTaskFrame D`;
 * an interpretation `hist : WorldIndex → WorldHistory F` of the branch's world labels, landing
   on *total* histories — this is what makes `□` (which quantifies over totality) reach every
   branch world;
@@ -134,7 +134,7 @@ open FormalSystem.Semantics
 -/
 
 variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
-  {F : TaskFrame D}
+  {F : ParamTaskFrame D}
 
 /--
 A signed formula is satisfied by an interpretation when its sign matches the truth value the
@@ -384,7 +384,7 @@ fresh-*world* rules — never consume it; it is exactly the fresh-*time* produce
 -/
 def RuleSound (C : CarrierProp) (r : TableauRule) : Prop :=
   ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D],
-    C D → ∀ (F : TaskFrame D) (M : TaskModel F)
+    C D → ∀ (F : ParamTaskFrame D) (M : TaskModel F)
       (hist : WorldIndex → WorldHistory F) (tv : TimeIndex → D)
       (b : Branch) (sf : SignedFormula) (ord : TimeOrdering),
       sf ∈ b → SatState M hist tv b ord → OrdWithin b ord →
@@ -2409,7 +2409,7 @@ def carrierDiscrete : CarrierProp := fun D =>
 proofs below evaluate against, so this is now a plain re-export. It is kept as a named step so the
 three `.Discrete` call sites read the same as they did when a carrier transport was still needed;
 it disappears with `TruthAt`'s set parameter itself. -/
-theorem truthAt_of_isValid {F : TaskFrame D} {M : TaskModel F}
+theorem truthAt_of_isValid {F : ParamTaskFrame D} {M : TaskModel F}
     {φ : Formula} (h : SoundnessLemmas.IsValid D φ)
     (τ : WorldHistory F) (hτ : τ.IsTotal) (t : D) : TruthAt M τ t φ :=
   h F M τ hτ t

@@ -52,7 +52,7 @@ the same content; a reader going to the paper for it will not find it there.
 
 The recorded proof recipe for `lem:admissible` is: "Proof consumes `lem:nullity` (the zero loop at
 `z` itself) plus `lem:fibers`." Both halves appear literally below — `fibers` for the domain-time
-pairs, `TaskFrame.nullity_of_serial_limit` for the single `⟨z, z⟩` pair.
+pairs, `ParamTaskFrame.nullity_of_serial_limit` for the single `⟨z, z⟩` pair.
 
 ## Why `lem:fibers` carries no sign proviso, and why `respects_task` is unconditional
 
@@ -95,9 +95,9 @@ here:
 ## Implementation Notes
 
 - **`nullity_identity` is not consumed, and its open design question is not decided here.** The
-  existing `TaskFrame.nullity_identity` field is an *iff* (`TaskRel w 0 u ↔ w = u`), strictly
+  existing `ParamTaskFrame.nullity_identity` field is an *iff* (`TaskRel w 0 u ↔ w = u`), strictly
   stronger than the paper's derived `lem:nullity`, which asserts reflexivity only. `admissible`
-  consumes only the reflexivity half, and takes it from `TaskFrame.nullity_of_serial_limit`
+  consumes only the reflexivity half, and takes it from `ParamTaskFrame.nullity_of_serial_limit`
   (*Seriality* + *Limit*, choice-free) rather than from the field. Whether the field should be
   demoted to the reflexivity half, kept as an iff, or have its injectivity-at-zero content dropped
   is a joint question with the four-axiom frame-alignment work recorded in
@@ -118,10 +118,10 @@ namespace FormalSystem.Semantics
 
 namespace PartialHistory
 
-open TaskFrame
+open ParamTaskFrame
 
-variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
-variable {F : TaskFrame D}
+variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
+variable {F : ParamTaskFrame D}
 
 /-!
 ### `lem:fibers`
@@ -162,18 +162,18 @@ theorem fibers (τ : PartialHistory F) (z : D) (u : F.WorldState) :
       · -- `t < z < s`: the straddling segment's *left* fiber condition is the one wanted
         have hmem := h _ (mem_Constraints.mpr (Or.inl ⟨t, s, ht, hs, htz, hzs, rfl⟩))
         rw [seg_eq_inter_fib] at hmem
-        exact TaskFrame.mem_Fib.mp hmem.1
+        exact ParamTaskFrame.mem_Fib.mp hmem.1
       · -- `s < z < t`: the straddling segment's *right* fiber condition is the one wanted
         have hmem := h _ (mem_Constraints.mpr (Or.inl ⟨s, t, hs, ht, hsz, hzt, rfl⟩))
         rw [seg_eq_inter_fib] at hmem
-        exact TaskFrame.mem_Fib.mp hmem.2
+        exact ParamTaskFrame.mem_Fib.mp hmem.2
     · -- unpaired: `def:constraints`' "otherwise" clause contributes the fiber itself
-      exact TaskFrame.mem_Fib.mp (h _ (mem_Constraints.mpr (Or.inr ⟨t, ht, hp, rfl⟩)))
+      exact ParamTaskFrame.mem_Fib.mp (h _ (mem_Constraints.mpr (Or.inr ⟨t, ht, hp, rfl⟩)))
   · intro h c hc
     rcases hc with ⟨t, s, ht, hs, _, _, rfl⟩ | ⟨t, ht, _, rfl⟩
     · rw [seg_eq_inter_fib]
-      exact ⟨TaskFrame.mem_Fib.mpr (h t ht), TaskFrame.mem_Fib.mpr (h s hs)⟩
-    · exact TaskFrame.mem_Fib.mpr (h t ht)
+      exact ⟨ParamTaskFrame.mem_Fib.mpr (h t ht), ParamTaskFrame.mem_Fib.mpr (h s hs)⟩
+    · exact ParamTaskFrame.mem_Fib.mpr (h t ht)
 
 /-!
 ### The one-point extension `τ ∪ {⟨z, u⟩}`
@@ -278,12 +278,12 @@ every member of the constraints imposed on $z$."
 
 - both times in `X`: `τ`'s own `respects_task`, no axiom needed;
 - old time then `z`: the fiber condition at that time, i.e. `fibers`;
-- `z` then old time: the same fiber condition through the converse convention (`TaskFrame.converse`
+- `z` then old time: the same fiber condition through the converse convention (`ParamTaskFrame.converse`
   plus `neg_sub`), which is precisely the negative-difference instance `def:world-history`'s `%`
   comment covers;
 - `z` twice: `u ⇒₀ u`, which is `lem:nullity` — taken here from
-  `TaskFrame.nullity_of_serial_limit` (*Seriality* at `x = 0` plus *Limit*, choice-free), **not**
-  from the strictly stronger `TaskFrame.nullity_identity` field, whose design question stays open.
+  `ParamTaskFrame.nullity_of_serial_limit` (*Seriality* at `x = 0` plus *Limit*, choice-free), **not**
+  from the strictly stronger `ParamTaskFrame.nullity_identity` field, whose design question stays open.
 
 The hypothesis `hz : ¬ τ.domain z` is the paper's `z ∈ D \ X` and is genuinely load bearing in the
 left-to-right direction; see this module's docstring for why, and contrast `lem:constraint`, which
@@ -316,7 +316,7 @@ theorem admissible (τ : PartialHistory F) {z : D} (hz : ¬ τ.domain z) (u : F.
       obtain rfl : z = s := (Or.resolve_left hs hsd).symm
       obtain rfl : z = t := (Or.resolve_left ht htd).symm
       rw [adjoinFun_of_not_domain τ u hsd, sub_self]
-      exact TaskFrame.nullity_of_serial_limit F.serial F.limit u
+      exact ParamTaskFrame.nullity_of_serial_limit F.serial F.limit u
 
 end PartialHistory
 

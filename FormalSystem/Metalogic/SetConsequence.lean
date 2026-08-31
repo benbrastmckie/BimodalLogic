@@ -78,7 +78,7 @@ def SetDerivable (fc : FrameClass) (Γ : Set Formula) (φ : Formula) : Prop :=
     (`Validity.lean:94`). -/
 def SetSemanticConsequenceBase (Γ : Set Formula) (φ : Formula) : Prop :=
   ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
-    (F : TaskFrame D) (M : TaskModel F)
+    (F : ParamTaskFrame D) (M : TaskModel F)
     (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
     (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ
 
@@ -87,7 +87,7 @@ def SetSemanticConsequenceBase (Γ : Set Formula) (φ : Formula) : Prop :=
 def SetSemanticConsequenceDense (Γ : Set Formula) (φ : Formula) : Prop :=
   ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [DenselyOrdered D]
     [Nontrivial D]
-    (F : TaskFrame D) (M : TaskModel F)
+    (F : ParamTaskFrame D) (M : TaskModel F)
     (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
     (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ
 
@@ -97,7 +97,7 @@ def SetSemanticConsequenceDense (Γ : Set Formula) (φ : Formula) : Prop :=
 def SetSemanticConsequenceDiscrete (Γ : Set Formula) (φ : Formula) : Prop :=
   ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [SuccOrder D] [PredOrder D]
     [IsSuccArchimedean D] [IsPredArchimedean D] [Nontrivial D]
-    (F : TaskFrame D) (M : TaskModel F)
+    (F : ParamTaskFrame D) (M : TaskModel F)
     (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
     (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ
 
@@ -107,7 +107,7 @@ def SetSemanticConsequenceDedekindDense (Γ : Set Formula) (φ : Formula) : Prop
   ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [DenselyOrdered D]
     [Nontrivial D]
     (_ : ∀ s : Set D, s.Nonempty → BddAbove s → ∃ x, IsLUB s x)
-    (F : TaskFrame D) (M : TaskModel F)
+    (F : ParamTaskFrame D) (M : TaskModel F)
     (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
     (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ
 
@@ -230,7 +230,7 @@ def CompactBase : Prop :=
 def SatisfiableBaseSet (Γ : Set Formula) : Prop :=
   ∃ (D : Type) (_ : AddCommGroup D) (_ : LinearOrder D) (_ : IsOrderedAddMonoid D)
     (_ : Nontrivial D)
-    (F : TaskFrame D) (M : TaskModel F)
+    (F : ParamTaskFrame D) (M : TaskModel F)
     (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
     ∀ ψ ∈ Γ, TruthAt M τ t ψ
 
@@ -277,7 +277,7 @@ def CompactDense : Prop :=
 def SatisfiableDenseSet (Γ : Set Formula) : Prop :=
   ∃ (D : Type) (_ : AddCommGroup D) (_ : LinearOrder D) (_ : IsOrderedAddMonoid D)
     (_ : DenselyOrdered D) (_ : Nontrivial D)
-    (F : TaskFrame D) (M : TaskModel F)
+    (F : ParamTaskFrame D) (M : TaskModel F)
     (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
     ∀ ψ ∈ Γ, TruthAt M τ t ψ
 
@@ -330,7 +330,7 @@ def SatisfiableDiscreteSet (Γ : Set Formula) : Prop :=
   ∃ (D : Type) (_ : AddCommGroup D) (_ : LinearOrder D) (_ : IsOrderedAddMonoid D)
     (_ : SuccOrder D) (_ : PredOrder D) (_ : IsSuccArchimedean D) (_ : IsPredArchimedean D)
     (_ : Nontrivial D)
-    (F : TaskFrame D) (M : TaskModel F)
+    (F : ParamTaskFrame D) (M : TaskModel F)
     (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
     ∀ ψ ∈ Γ, TruthAt M τ t ψ
 

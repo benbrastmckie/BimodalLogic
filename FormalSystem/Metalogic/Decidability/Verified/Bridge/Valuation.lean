@@ -109,7 +109,7 @@ open FormalSystem.Metalogic.Decidability
 
 section Placed
 
-variable {ι : Type*} {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
+variable {ι : Type*} {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
 
 /-- The region code of a placed point. Its region is the singleton `{f i}`. -/
 def placedCode (f : ι → D) (i : ι) : Set ι × Set ι := regionCode f (f i)
@@ -143,7 +143,7 @@ end Placed
 
 section Valuation
 
-variable {ι : Type*} {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
+variable {ι : Type*} {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
 
 open Classical in
 /--
@@ -335,7 +335,7 @@ left-copy policy makes it false there, and the right-copy policy makes it false 
 
 section CopyRefuted
 
-variable {W ι : Type*} {D : Type*} [LinearOrder D]
+variable {W ι : Type*} {D : Type} [LinearOrder D]
 
 open Classical in
 /-- The **left-copy** gap policy: a gap takes the value of the greatest placed point below it, and

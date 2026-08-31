@@ -161,7 +161,7 @@ noncomputable instance FilteredWorld.finite (phi : Formula) :
 Bundle the filtered frame with its finiteness proof.
 -/
 
-variable (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
+variable (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
 
 /--
 The finite filtered task frame.
@@ -170,8 +170,8 @@ This bundles the refined filtered task frame with the proof
 that its world states are finite.
 -/
 noncomputable def FiniteFilteredTaskFrame [SuccOrder D] [NoMaxOrder D] (phi : Formula) :
-    FiniteTaskFrame D where
-  toTaskFrame := RefinedFilteredTaskFrame D phi
+    ParamFiniteTaskFrame D where
+  toParamTaskFrame := RefinedFilteredTaskFrame D phi
   finite_world := FilteredWorld.finite phi
 
 /--
@@ -183,25 +183,25 @@ theorem FiniteFilteredTaskFrame.worldState_eq [SuccOrder D] [NoMaxOrder D] (phi 
 
 /-! ### `FiniteFilteredTaskFrame` inherits the four axioms
 
-`FiniteTaskFrame` *extends* `TaskFrame` (`TaskFrame.lean`), so every field the frame structure
+`ParamFiniteTaskFrame` *extends* `ParamTaskFrame` (`TaskFrame.lean`), so every field the frame structure
 grows propagates to this construction. Its `toTaskFrame` is `RefinedFilteredTaskFrame D phi`
 definitionally, so each axiom fact is that frame's, unchanged — including the
 `[SuccOrder D] [NoMaxOrder D]` restriction *Limit* forces, which this frame inherits rather than
-imposes. It is the only live `FiniteTaskFrame` construction in the library. -/
+imposes. It is the only live `ParamFiniteTaskFrame` construction in the library. -/
 
 /-- The finite filtered frame's task relation is the refined filtered frame's, definitionally. -/
 theorem FiniteFilteredTaskFrame.taskRel_eq [SuccOrder D] [NoMaxOrder D] (phi : Formula) :
-    (FiniteFilteredTaskFrame D phi).toTaskFrame = RefinedFilteredTaskFrame D phi := rfl
+    (FiniteFilteredTaskFrame D phi).toParamTaskFrame = RefinedFilteredTaskFrame D phi := rfl
 
 /-- *Seriality* (`def:frame#Seriality`) for the finite filtered frame, inherited. -/
 theorem FiniteFilteredTaskFrame_serial [SuccOrder D] [NoMaxOrder D] (phi : Formula) :
-    TaskFrame.Serial (FiniteFilteredTaskFrame D phi).TaskRel :=
+    ParamTaskFrame.Serial (FiniteFilteredTaskFrame D phi).TaskRel :=
   RefinedFilteredTaskFrame_serial D phi
 
 /-- The interpolation half of *Compositionality* (`def:frame#Compositionality`) for the finite
 filtered frame, inherited. -/
 theorem FiniteFilteredTaskFrame_interpolates [SuccOrder D] [NoMaxOrder D] (phi : Formula) :
-    TaskFrame.Interpolates (FiniteFilteredTaskFrame D phi).TaskRel :=
+    ParamTaskFrame.Interpolates (FiniteFilteredTaskFrame D phi).TaskRel :=
   RefinedFilteredTaskFrame_interpolates D phi
 
 /-- *Limit* (`def:frame#Limit`) for the finite filtered frame, in the literal transcribed shape,
@@ -213,7 +213,7 @@ theorem FiniteFilteredTaskFrame_limit [SuccOrder D] [NoMaxOrder D] (phi : Formul
 
 /-- *Spherical* (`def:frame#Spherical`) for the finite filtered frame, inherited. -/
 theorem FiniteFilteredTaskFrame_spherical [SuccOrder D] [NoMaxOrder D] (phi : Formula) :
-    TaskFrame.Spherical (FiniteFilteredTaskFrame D phi).TaskRel :=
+    ParamTaskFrame.Spherical (FiniteFilteredTaskFrame D phi).TaskRel :=
   RefinedFilteredTaskFrame_spherical D phi
 
 /-!

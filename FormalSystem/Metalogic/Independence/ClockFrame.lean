@@ -38,7 +38,7 @@ This frame validates `Hψ → Gψ` for every `ψ`, which is not a principle of t
 the logic. That is expected and harmless: an independence witness is a model of the assumptions,
 not a model of the intended interpretation. Three points make the witness legitimate:
 
-* `clockFrame` is a genuine `TaskFrame ℚ`. Every one of `def:frame`'s four axioms —
+* `clockFrame` is a genuine `ParamTaskFrame ℚ`. Every one of `def:frame`'s four axioms —
   *Compositionality*, *Seriality*, *Limit*, *Spherical* — is discharged below, together with the
   converse convention and the iff-form zero-duration law the structure additionally carries.
 * Because it is a genuine frame over a densely ordered `ℚ`, every base and density axiom holds in
@@ -49,7 +49,7 @@ not a model of the intended interpretation. Three points make the witness legiti
 ## Contents
 
 * `ClockState` — the carrier `ℚ ⧸ AddSubgroup.zmultiples (1 : ℚ)`, with the projection `cmk`.
-* `clockFrame` — the `TaskFrame ℚ` above, with all seven obligations discharged.
+* `clockFrame` — the `ParamTaskFrame ℚ` above, with all seven obligations discharged.
 * `clockHistory` — the reference total history `t ↦ ⟦t⟧`, with `clockHistory_isTotal`.
 -/
 
@@ -108,7 +108,7 @@ def clockRel (w : ClockState) (x : ℚ) (u : ClockState) : Prop := u = w + cmk x
 
 /-- Every fiber of the clock relation is a subsingleton — the flow is deterministic. -/
 theorem clockRel_fib_subsingleton (w : ClockState) (x : ℚ) :
-    (TaskFrame.Fib clockRel w x).Subsingleton := by
+    (ParamTaskFrame.Fib clockRel w x).Subsingleton := by
   rintro u (rfl : u = _) u' (rfl : u' = _)
   rfl
 
@@ -152,10 +152,10 @@ theorem clockRel_limit :
 
 /-- *Spherical* (`def:frame#Spherical`) for the clock relation: every fiber is a singleton and
 every segment is an intersection of two fibers, so every nonempty member of a directed family is
-a singleton and `TaskFrame.sInter_nonempty_of_directed_of_univ_or_singleton` applies. -/
-theorem clockRel_spherical : TaskFrame.Spherical clockRel := by
+a singleton and `ParamTaskFrame.sInter_nonempty_of_directed_of_univ_or_singleton` applies. -/
+theorem clockRel_spherical : ParamTaskFrame.Spherical clockRel := by
   intro S hdir hmem
-  refine TaskFrame.sInter_nonempty_of_directed_of_univ_or_singleton hdir
+  refine ParamTaskFrame.sInter_nonempty_of_directed_of_univ_or_singleton hdir
     (fun s hs => (hmem s hs).2) (fun s hs => ?_)
   obtain ⟨hcl, hne⟩ := hmem s hs
   obtain ⟨a, ha⟩ := hne
@@ -167,10 +167,10 @@ theorem clockRel_spherical : TaskFrame.Spherical clockRel := by
 /--
 **The periodic clock frame.**
 
-`D = ℚ`, `W = ℚ ⧸ ℤ`, `w ⇒_x u :⟺ u = w + ⟦x⟧`. All seven `TaskFrame` obligations are discharged;
+`D = ℚ`, `W = ℚ ⧸ ℤ`, `w ⇒_x u :⟺ u = w + ⟦x⟧`. All seven `ParamTaskFrame` obligations are discharged;
 see this module's docstring for why the quotient (rather than the line) is the right carrier.
 -/
-def clockFrame : TaskFrame ℚ where
+def clockFrame : ParamTaskFrame ℚ where
   WorldState := ClockState
   nonempty := ⟨0⟩
   TaskRel := clockRel
@@ -179,7 +179,7 @@ def clockFrame : TaskFrame ℚ where
     constructor
     · rintro (rfl : u = _); simp [cmk_zero]
     · rintro rfl; show w = w + cmk 0; simp
-  comp := TaskFrame.comp_of
+  comp := ParamTaskFrame.comp_of
     (by
       rintro w v x y _ _ (hv : v = w + cmk (x + y))
       refine ⟨w + cmk x, rfl, ?_⟩
@@ -208,8 +208,8 @@ def clockFrame : TaskFrame ℚ where
 @[simp] theorem clockFrame_taskRel (w : ClockState) (x : ℚ) (u : ClockState) :
     clockFrame.TaskRel w x u ↔ u = w + cmk x := Iff.rfl
 
-/-- The clock frame is a `TaskFrame ℚ`: the sanity check the plan names. -/
-example : Nonempty (TaskFrame ℚ) := ⟨clockFrame⟩
+/-- The clock frame is a `ParamTaskFrame ℚ`: the sanity check the plan names. -/
+example : Nonempty (ParamTaskFrame ℚ) := ⟨clockFrame⟩
 
 /-! ## The reference history -/
 

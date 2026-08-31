@@ -82,7 +82,7 @@ example : LinearOrder (ℚ ×ₗ ℤ) := inferInstance
 example : IsOrderedAddMonoid (ℚ ×ₗ ℤ) := inferInstance
 example : Nontrivial (ℚ ×ₗ ℤ) := inferInstance
 
-noncomputable example : TaskFrame (ℚ ×ₗ ℤ) := multiFamTaskFrameGen (ℚ ×ₗ ℤ) Unit
+noncomputable example : ParamTaskFrame (ℚ ×ₗ ℤ) := multiFamTaskFrameGen (ℚ ×ₗ ℤ) Unit
 
 /-! ## Carrier arithmetic
 
@@ -144,7 +144,7 @@ theorem countermodel_discrete (A : Set Formula)
     (φ : Formula) (h_neg_in : φ.neg ∈ A)
     (h_box_discrete : Formula.box nextTop ∈ A) :
     ∃ (D : Type) (_ : AddCommGroup D) (_ : LinearOrder D) (_ : IsOrderedAddMonoid D)
-      (_ : Nontrivial D) (F : TaskFrame D) (TM : TaskModel F)
+      (_ : Nontrivial D) (F : ParamTaskFrame D) (TM : TaskModel F)
       (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
       ¬TruthAt TM τ t φ := by
   -- FamIdx: type of box-equivalent Base MCSes (one per S5 accessibility class)

@@ -122,7 +122,7 @@ The branch enters only in the next section, where `ι` is instantiated at `Branc
 
 section Regions
 
-variable {ι : Type*} {D : Type*} [LinearOrder D]
+variable {ι : Type*} {D : Type} [LinearOrder D]
 
 /--
 The *code* of `r` against the placement: which placed points lie strictly below `r`, and which lie
@@ -430,8 +430,8 @@ end BranchRegions
 
 section Invariance
 
-variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
-variable {F : TaskFrame D} {ι : Type*}
+variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
+variable {F : ParamTaskFrame D} {ι : Type*}
 
 /--
 A history is *region-constant* for the placement `f`: it cannot tell two points of one region

@@ -12,7 +12,7 @@ import FormalSystem.Semantics.Validity
 
 `Bridge/Interpolate.lean` ends with a total valuation on the carrier and the statement that truth
 is constant on each region cut out by the placement. This file supplies the objects that
-statement is about: a `TaskFrame` and a family of `WorldHistory`s, among them the *total* ones
+statement is about: a `ParamTaskFrame` and a family of `WorldHistory`s, among them the *total* ones
 that `valid` quantifies over.
 
 ## What `valid` demands, and the one constraint that is not negotiable
@@ -20,7 +20,7 @@ that `valid` quantifies over.
 `FormalSystem.Semantics.valid` reads
 
 ```
-∀ D, ∀ F : TaskFrame D, ∀ M, ∀ τ, τ.IsTotal → ∀ t, TruthAt M τ t φ
+∀ D, ∀ F : ParamTaskFrame D, ∀ M, ∀ τ, τ.IsTotal → ∀ t, TruthAt M τ t φ
 ```
 
 so refuting it means producing a **total** history. That is not a formality, and it decides the
@@ -129,8 +129,8 @@ the `regionHistory` family.
 -/
 
 /-- Two histories with the same domain and the same states are equal. -/
-theorem worldHistory_ext {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
-    {F : TaskFrame D} {σ τ : WorldHistory F} (hd : σ.domain = τ.domain)
+theorem worldHistory_ext {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
+    {F : ParamTaskFrame D} {σ τ : WorldHistory F} (hd : σ.domain = τ.domain)
     (hs : ∀ (r : D) (h : σ.domain r) (h' : τ.domain r), σ.states r h = τ.states r h') :
     σ = τ := by
   obtain ⟨⟨d₁, n₁, s₁, t₁⟩, c₁⟩ := σ
@@ -167,13 +167,13 @@ valuation rather than read off the history's states. `ι` and the placement `f` 
 parameters throughout this file so that the declarations below keep their shape.
 
 `[Nontrivial D]` is carried because `regionFrame_limit` requires it, via
-`TaskFrame.limit_of_shift` at `pos := Prod.snd`: over a trivial duration type `0 < x` is
+`ParamTaskFrame.limit_of_shift` at `pos := Prod.snd`: over a trivial duration type `0 < x` is
 unsatisfiable and *Limit* (`def:frame#Limit`) has nothing to conclude from. Every consumer
 elaborates at `ℤ`, `ℚ`, or `ℝ`, each of which supplies the instance.
 -/
 def regionFrame (W ι D : Type) [Nonempty W] [AddCommGroup D] [LinearOrder D]
     [IsOrderedAddMonoid D] [Nontrivial D] :
-    TaskFrame D where
+    ParamTaskFrame D where
   WorldState := W × D
   nonempty := inferInstance
   TaskRel := fun s d s' => s.1 = s'.1 ∧ s'.2 = s.2 + d
@@ -185,7 +185,7 @@ def regionFrame (W ι D : Type) [Nonempty W] [AddCommGroup D] [LinearOrder D]
       rw [h₂, add_zero]
     · rintro rfl
       exact ⟨rfl, (add_zero _).symm⟩
-  comp := TaskFrame.comp_of
+  comp := ParamTaskFrame.comp_of
     (by
       rintro s v x y _ _ ⟨h₁, h₂⟩
       refine ⟨(s.1, s.2 + x), ⟨rfl, rfl⟩, h₁, ?_⟩
@@ -198,16 +198,16 @@ def regionFrame (W ι D : Type) [Nonempty W] [AddCommGroup D] [LinearOrder D]
     ⟨⟨(s.1, s.2 + x), rfl, rfl⟩,
      ⟨(s.1, s.2 - x), rfl, by show s.2 = s.2 - x + x; abel⟩⟩
   limit :=
-    TaskFrame.limit_of_shift Prod.snd (fun _ _ _ h => h.2)
+    ParamTaskFrame.limit_of_shift Prod.snd (fun _ _ _ h => h.2)
       (fun s u h => Prod.ext h.1.symm (by rw [h.2, add_zero]))
   spherical := by
     intro S hdir hmem
-    refine TaskFrame.sInter_nonempty_of_directed_of_univ_or_singleton hdir
+    refine ParamTaskFrame.sInter_nonempty_of_directed_of_univ_or_singleton hdir
       (fun s hs => (hmem s hs).2) (fun s hs => ?_)
     obtain ⟨hcl, hne⟩ := hmem s hs
     obtain ⟨a, ha⟩ := hne
     have hfib : ∀ (t : W × D) (x : D),
-        (TaskFrame.Fib (fun (s : W × D) (d : D) (s' : W × D) =>
+        (ParamTaskFrame.Fib (fun (s : W × D) (d : D) (s' : W × D) =>
           s.1 = s'.1 ∧ s'.2 = s.2 + d) t x).Subsingleton := by
       rintro t x u ⟨hu₁, hu₂⟩ u' ⟨hu'₁, hu'₂⟩
       exact Prod.ext (hu₁.symm.trans hu'₁) (hu₂.trans hu'₂.symm)
@@ -232,7 +232,7 @@ theorem regionFrame_taskRel (W ι D : Type) [Nonempty W] [AddCommGroup D] [Linea
 
 The clock relation `s.1 = s'.1 ∧ s'.2 = s.2 + d` makes the duration of a transition recoverable
 from its endpoints, via the position function `Prod.snd`. That is exactly the deterministic-shift
-contract `TaskFrame.limit_of_shift` consumes, so *Limit* holds over **any** nontrivial duration
+contract `ParamTaskFrame.limit_of_shift` consumes, so *Limit* holds over **any** nontrivial duration
 type — dense included — and every fiber is a singleton, which discharges *Spherical*.
 
 This supersedes an earlier record flagging this frame as failing dense-polymorphically. That flag
@@ -247,7 +247,7 @@ falsification test the flag needed, and it fails to falsify. -/
 clock is deterministic, so `Fib R s x ⊆ {(s.1, s.2 + x)}`. -/
 theorem regionFrame_fib_subsingleton (W ι D : Type) [Nonempty W] [AddCommGroup D] [LinearOrder D]
     [IsOrderedAddMonoid D] [Nontrivial D] (s : W × D) (x : D) :
-    (TaskFrame.Fib (regionFrame W ι D).TaskRel s x).Subsingleton := by
+    (ParamTaskFrame.Fib (regionFrame W ι D).TaskRel s x).Subsingleton := by
   rintro u ⟨hu₁, hu₂⟩ u' ⟨hu'₁, hu'₂⟩
   exact Prod.ext (hu₁.symm.trans hu'₁) (hu₂.trans hu'₂.symm)
 
@@ -255,7 +255,7 @@ theorem regionFrame_fib_subsingleton (W ι D : Type) [Nonempty W] [AddCommGroup 
 for some $u, v \in W$") for `regionFrame`: the clock supplies the successor `(s.1, s.2 + x)` and
 the predecessor `(s.1, s.2 - x)`. -/
 theorem regionFrame_serial (W ι D : Type) [Nonempty W] [AddCommGroup D] [LinearOrder D]
-    [IsOrderedAddMonoid D] [Nontrivial D] : TaskFrame.Serial (regionFrame W ι D).TaskRel :=
+    [IsOrderedAddMonoid D] [Nontrivial D] : ParamTaskFrame.Serial (regionFrame W ι D).TaskRel :=
   fun s x _ =>
     ⟨⟨(s.1, s.2 + x), rfl, rfl⟩,
      ⟨(s.1, s.2 - x), rfl, by show s.2 = s.2 - x + x; abel⟩⟩
@@ -265,33 +265,33 @@ theorem regionFrame_serial (W ι D : Type) [Nonempty W] [AddCommGroup D] [Linear
 $u \in W$") for `regionFrame`: interpolate at the unique intermediate `(s.1, s.2 + x)`. -/
 theorem regionFrame_interpolates (W ι D : Type) [Nonempty W] [AddCommGroup D] [LinearOrder D]
     [IsOrderedAddMonoid D] [Nontrivial D] :
-    TaskFrame.Interpolates (regionFrame W ι D).TaskRel := by
+    ParamTaskFrame.Interpolates (regionFrame W ι D).TaskRel := by
   rintro s v x y _ _ ⟨h₁, h₂⟩
   refine ⟨(s.1, s.2 + x), ⟨rfl, rfl⟩, h₁, ?_⟩
   show v.2 = s.2 + x + y
   rw [h₂]; abel
 
 /-- *Limit* (`def:frame#Limit`, verbatim: "$\bigcap\limits_{x > 0} (w)_x = \set{w}$") for
-`regionFrame`, in the literal transcribed shape, via `TaskFrame.limit_of_shift` with
+`regionFrame`, in the literal transcribed shape, via `ParamTaskFrame.limit_of_shift` with
 `pos := Prod.snd`. `[Nontrivial D]` is the only hypothesis on `D` — the axiom holds over dense
 duration types as well as discrete ones. -/
 theorem regionFrame_limit (W ι D : Type) [Nonempty W] [AddCommGroup D] [LinearOrder D]
     [IsOrderedAddMonoid D] [Nontrivial D] :
     ∀ s u : W × D,
       (∀ x, 0 < x → ∃ y, |y| < x ∧ (regionFrame W ι D).TaskRel s y u) → u = s :=
-  TaskFrame.limit_of_shift Prod.snd (fun _ _ _ h => h.2)
+  ParamTaskFrame.limit_of_shift Prod.snd (fun _ _ _ h => h.2)
     (fun s u h => (((regionFrame W ι D).nullity_identity s u).mp h).symm)
 
 /-- *Spherical* (`def:frame#Spherical`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
 $\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments") for `regionFrame`:
 every fiber is a subsingleton and every segment is an intersection of fibers, so every nonempty
 member of a directed family is a singleton and
-`TaskFrame.sInter_nonempty_of_directed_of_univ_or_singleton` applies. -/
+`ParamTaskFrame.sInter_nonempty_of_directed_of_univ_or_singleton` applies. -/
 theorem regionFrame_spherical (W ι D : Type) [Nonempty W] [AddCommGroup D] [LinearOrder D]
     [IsOrderedAddMonoid D] [Nontrivial D] :
-    TaskFrame.Spherical (regionFrame W ι D).TaskRel := by
+    ParamTaskFrame.Spherical (regionFrame W ι D).TaskRel := by
   intro S hdir hmem
-  refine TaskFrame.sInter_nonempty_of_directed_of_univ_or_singleton hdir
+  refine ParamTaskFrame.sInter_nonempty_of_directed_of_univ_or_singleton hdir
     (fun s hs => (hmem s hs).2) (fun s hs => ?_)
   obtain ⟨hcl, hne⟩ := hmem s hs
   obtain ⟨a, ha⟩ := hne
@@ -420,7 +420,7 @@ quantifies over totality and totality is preserved by `timeShift` outright.
 
 section BoxUniversal
 
-variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D] {F : TaskFrame D}
+variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D] {F : ParamTaskFrame D}
 
 /--
 **Box is evaluation-point independent.** `box φ` holds at one point iff `φ` holds at *every*
@@ -566,9 +566,9 @@ theorem not_regionConstant_regionHistory_one :
   · constructor <;> intro _ <;> norm_num
 
 /-- The frame elaborates at each of the three dense carriers and at `ℤ`. -/
-example : Nonempty (TaskFrame ℚ) := ⟨regionFrame Unit (Fin 1) ℚ⟩
-example : Nonempty (TaskFrame ℝ) := ⟨regionFrame Unit (Fin 1) ℝ⟩
-example : Nonempty (TaskFrame ℤ) := ⟨regionFrame Unit (Fin 1) ℤ⟩
+example : Nonempty (ParamTaskFrame ℚ) := ⟨regionFrame Unit (Fin 1) ℚ⟩
+example : Nonempty (ParamTaskFrame ℝ) := ⟨regionFrame Unit (Fin 1) ℝ⟩
+example : Nonempty (ParamTaskFrame ℤ) := ⟨regionFrame Unit (Fin 1) ℤ⟩
 
 /-- The base histories are total at a concrete carrier, and totality is all `□` now asks of
 them. -/

@@ -786,7 +786,7 @@ decode to. The *data* of the certificate is computable throughout; what remains 
 *proofs about* it, and both remaining sources are incidental library facts about lists and
 numeric coercions rather than anything about frames, finiteness, or time.
 
-Contrast `TaskFrame.spherical_of_finite`, where the obstruction **is** logical and proved:
+Contrast `ParamTaskFrame.spherical_of_finite`, where the obstruction **is** logical and proved:
 `wlem_of_spherical` derives weak excluded middle from *Spherical* at the carrier `Bool` over
 `D = ℤ` from `[propext, Quot.sound]` alone, so a choice-free proof there would prove WLEM in
 Lean's intuitionistic core and cannot exist. Nothing of that kind is known here, and nothing of

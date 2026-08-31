@@ -58,7 +58,7 @@ a specific temporal type D rather than quantifying over all types.
 -/
 def ValidOver (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
     (φ : Formula) : Prop :=
-  ∀ (F : TaskFrame D) (M : TaskModel F)
+  ∀ (F : ParamTaskFrame D) (M : TaskModel F)
     (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
     TruthAt M τ t φ
 

@@ -36,7 +36,7 @@ precisely `TruthAt` transfer that a downstream Łoś lemma must be stated agains
 ## Four axioms in place of seven frame fields
 
 The `ShiftSet` structure carries exactly four axiom fields — `carrier_nonempty`, `sh_zero`,
-`sh_add`, `sep` — plus the valuation `A`. The live `TaskFrame`
+`sh_add`, `sep` — plus the valuation `A`. The live `ParamTaskFrame`
 (`FormalSystem/Semantics/TaskFrame.lean`) has **seven** fields, and `ShiftSet.frame` discharges
 all seven. Three of them are free consequences of the task relation being *functional*
 (`TaskRel w d u := u = sh w d`) together with the group action:
@@ -70,7 +70,7 @@ A **shift set** over the duration group `D`: a carrier `Ω` with a `D`-action `s
 valuation `A` on atoms.
 
 `D` is bound at `Type`, and deliberately **not** at a universe-polymorphic binder.
-`TaskFrame.WorldState : Type` and `Validity`'s `valid` binds `D : Type`, so a
+`ParamTaskFrame.WorldState : Type` and `Validity`'s `valid` binds `D : Type`, so a
 universe-polymorphic `D` here would land the reverse direction's carrier in a universe where the
 forward direction cannot consume it. `Carrier` is likewise `Type`.
 -/
@@ -78,7 +78,7 @@ structure ShiftSet (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMono
     [Nontrivial D] where
   /-- The carrier `Ω` of the shift set. -/
   Carrier : Type
-  /-- The carrier is nonempty (matching `TaskFrame.nonempty`). -/
+  /-- The carrier is nonempty (matching `ParamTaskFrame.nonempty`). -/
   carrier_nonempty : Nonempty Carrier
   /-- The shift action of a duration on a carrier point. -/
   sh : Carrier → D → Carrier
@@ -128,7 +128,7 @@ this library is built on. Consolidating the two into `Semantics/WorldHistory.lea
 retargeting `RegionFrame.lean` is a clean follow-up, kept out of this module's scope so that the
 scope stays honest.
 -/
-theorem wh_ext {F : TaskFrame D} {σ τ : WorldHistory F} (hd : σ.domain = τ.domain)
+theorem wh_ext {F : ParamTaskFrame D} {σ τ : WorldHistory F} (hd : σ.domain = τ.domain)
     (hs : ∀ (r : D) (h : σ.domain r) (h' : τ.domain r), σ.states r h = τ.states r h') :
     σ = τ := by
   obtain ⟨⟨d₁, n₁, s₁, t₁⟩, c₁⟩ := σ
@@ -143,13 +143,13 @@ theorem wh_ext {F : TaskFrame D} {σ τ : WorldHistory F} (hd : σ.domain = τ.d
 The task frame induced by a shift set, under the **functional** task relation
 `TaskRel w d u := (u = sh w d)`.
 
-All **seven** live `TaskFrame` fields are discharged here. Three come for free from
+All **seven** live `ParamTaskFrame` fields are discharged here. Three come for free from
 functionality plus the group action and require no shift-set axiom of their own — `serial`, the
 *interpolation* half of the biconditional `comp`, and `spherical` — correcting the design
-document's list, which was written against an earlier five-field `TaskFrame` and named only the
+document's list, which was written against an earlier five-field `ParamTaskFrame` and named only the
 other four. The one field that is genuinely *not* free is `limit`; it is exactly `S.sep`.
 -/
-def frame (S : ShiftSet D) : TaskFrame D where
+def frame (S : ShiftSet D) : ParamTaskFrame D where
   WorldState := S.Carrier
   nonempty := S.carrier_nonempty
   TaskRel := fun w d u => u = S.sh w d
@@ -185,8 +185,8 @@ def frame (S : ShiftSet D) : TaskFrame D where
     intro Sfam hdir hmem
     obtain ⟨s, hs⟩ := hdir.1
     obtain ⟨a, ha⟩ := (hmem s hs).2
-    have hsingle : ∀ (c : Set S.Carrier), (TaskFrame.IsFiber (fun w d u => u = S.sh w d) c ∨
-        TaskFrame.IsSegment (fun w d u => u = S.sh w d) c) → ∀ p ∈ c, ∀ q ∈ c, p = q := by
+    have hsingle : ∀ (c : Set S.Carrier), (ParamTaskFrame.IsFiber (fun w d u => u = S.sh w d) c ∨
+        ParamTaskFrame.IsSegment (fun w d u => u = S.sh w d) c) → ∀ p ∈ c, ∀ q ∈ c, p = q := by
       rintro c (⟨w, x, rfl⟩ | ⟨w, v, x, y, _, _, rfl⟩) p hp q hq
       · exact hp.trans hq.symm
       · exact hp.1.trans hq.1.symm
@@ -291,14 +291,14 @@ theorem forward_repr (S : ShiftSet D) (w : S.Carrier) (t : D) (φ : Formula) :
 /-! ## Reverse direction: the shift set induced by a task model -/
 
 /-- Time-shifting a history by `0` is the identity. -/
-theorem ts_zero {F : TaskFrame D} (σ : WorldHistory F) :
+theorem ts_zero {F : ParamTaskFrame D} (σ : WorldHistory F) :
     WorldHistory.timeShift σ 0 = σ := by
   refine wh_ext (funext fun z => by simp [WorldHistory.timeShift]) ?_
   intro r h h'
   exact WorldHistory.states_eq_of_time_eq σ (r + 0) r (add_zero r) h h'
 
 /-- Time-shifting is additive. -/
-theorem ts_add {F : TaskFrame D} (σ : WorldHistory F) (a b : D) :
+theorem ts_add {F : ParamTaskFrame D} (σ : WorldHistory F) (a b : D) :
     WorldHistory.timeShift (WorldHistory.timeShift σ a) b = WorldHistory.timeShift σ (a + b) := by
   refine wh_ext (funext fun z => ?_) ?_
   · show σ.domain ((z + b) + a) = σ.domain (z + (a + b))
@@ -318,7 +318,7 @@ lifts that to equality of histories.
 and the stronger free-action axiom is not: freeness is not dischargeable here at all — a
 constant total history is fixed by every shift.
 -/
-theorem rev_sep {F : TaskFrame D} (σ τ : F.HF)
+theorem rev_sep {F : ParamTaskFrame D} (σ τ : F.HF)
     (h : ∀ x : D, 0 < x → ∃ y : D, |y| < x ∧ τ = σ.timeShift y) : τ = σ := by
   apply Subtype.ext
   refine wh_ext (funext fun z => propext ⟨fun _ => σ.property z, fun _ => τ.property z⟩) ?_
@@ -342,10 +342,10 @@ reads each atom off at time `0` of the history.
 `carrier_nonempty` is where `Classical.choice` enters the reverse direction, and its only
 entry point: `PartialHistory.hF_nonempty` is Zorn-based.
 -/
-def ofModel (F : TaskFrame D) (M : TaskModel F) : ShiftSet D where
+def ofModel (F : ParamTaskFrame D) (M : TaskModel F) : ShiftSet D where
   Carrier := F.HF
   carrier_nonempty := PartialHistory.hF_nonempty F F.nonempty.some
-  sh := TaskFrame.HF.timeShift
+  sh := ParamTaskFrame.HF.timeShift
   sh_zero := by intro w; apply Subtype.ext; exact ts_zero w.val
   sh_add := by intro w a b; apply Subtype.ext; exact ts_add w.val a b
   sep := fun w u h => rev_sep w u h
@@ -357,15 +357,15 @@ def ofModel (F : TaskFrame D) (M : TaskModel F) : ShiftSet D where
 Shift-set truth on `ofModel F M` is truth in `M`. The `atom` case is where
 `TimeShift.time_shift_preserves_truth` (`FormalSystem/Semantics/Truth.lean`, which is
 *unconditional* — the shift-closure hypothesis it once carried is retired, not renamed) and
-`TaskFrame.HF.timeShift_val` are consumed; every other case is a structural transport.
+`ParamTaskFrame.HF.timeShift_val` are consumed; every other case is a structural transport.
 -/
-theorem reverse_repr (F : TaskFrame D) (M : TaskModel F) (τ : F.HF) (t : D)
+theorem reverse_repr (F : ParamTaskFrame D) (M : TaskModel F) (τ : F.HF) (t : D)
     (φ : Formula) :
     ShiftTruth (ShiftSet.ofModel F M) τ t φ ↔ TruthAt M τ.val t φ := by
   induction φ generalizing τ t with
   | atom p =>
-    show TruthAt M ((TaskFrame.HF.timeShift τ t).val) 0 (Formula.atom p) ↔ _
-    rw [TaskFrame.HF.timeShift_val]
+    show TruthAt M ((ParamTaskFrame.HF.timeShift τ t).val) 0 (Formula.atom p) ↔ _
+    rw [ParamTaskFrame.HF.timeShift_val]
     have := TimeShift.time_shift_preserves_truth M τ.val 0 t (Formula.atom p)
     rw [sub_zero] at this
     exact this
@@ -477,7 +477,7 @@ theorem qsh_add (w : ℚ ⧸ DyadicGroup) (a b : ℚ) : qsh (qsh w a) b = qsh w 
 
 This is what justifies `sep` being a field of `ShiftSet` rather than a lemma about it: there is
 a `ℚ`-action satisfying `sh_zero` and `sh_add` whose separation condition is false. Without the
-field, `ShiftSet.frame` could not discharge `TaskFrame.limit`, so `ShiftSet` without `sep` would
+field, `ShiftSet.frame` could not discharge `ParamTaskFrame.limit`, so `ShiftSet` without `sep` would
 not induce a task frame at all.
 -/
 theorem sep_not_derivable :

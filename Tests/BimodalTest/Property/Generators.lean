@@ -22,13 +22,13 @@ This module provides generators for property-based testing of Logos types.
 - `Arbitrary Formula`: Size-controlled recursive generator for formulas
 - `Shrinkable Formula`: Shrinking strategy for minimal counterexamples
 - `Arbitrary Context`: Generator for contexts (automatic via List)
-- `SampleableExt (TaskFrame Int)`: Generator for task frames with finite worlds
+- `SampleableExt (ParamTaskFrame Int)`: Generator for task frames with finite worlds
 
 ## Implementation Notes
 
 - Formula generation uses size control to prevent infinite recursion
 - Shrinking reduces formulas to simpler subformulas for better counterexamples
-- TaskFrame generation reuses the library's `natFrame` (satisfies all frame
+- ParamTaskFrame generation reuses the library's `natFrame` (satisfies all frame
   constraints by construction: `nullity_identity`, `forward_comp`, `converse`)
 - All generators follow Plausible framework conventions
 
@@ -128,7 +128,7 @@ instance : Shrinkable Formula := ⟨shrinkFormula⟩
 
 -- Note: Arbitrary instance for Context (List Formula) is automatic
 
-/-! ## TaskFrame Generators -/
+/-! ## ParamTaskFrame Generators -/
 
 /--
 Generate a small natural number (0-4) for world count.
@@ -140,15 +140,15 @@ def genSmallNat : Gen Nat := do
   return n.val
 
 /--
-SampleableExt instance for TaskFrame with integer time.
+SampleableExt instance for ParamTaskFrame with integer time.
 
 Reuses the library's `natFrame`, which satisfies all frame constraints
 (`nullity_identity`, `forward_comp`, `converse`) by construction. This is a
 simple generator suitable for basic property testing.
 -/
-instance : SampleableExt (TaskFrame Int) where
+instance : SampleableExt (ParamTaskFrame Int) where
   proxy := Unit
-  interp _ := TaskFrame.natFrame (D := Int)
+  interp _ := ParamTaskFrame.natFrame (D := Int)
 
 /-! ## TaskModel Generators (QUARANTINED — Task 365)
 
@@ -156,7 +156,7 @@ NOTE (Task 365): The `SampleableExt (TaskModel …)` instance and the
 `TaskModel`-valued generators below were quarantined. They relied on a
 `TaskModelProxy` proxy type that lacks the `Repr`/`Shrinkable` instances the
 current `SampleableExt` class requires, and on the removed `T`-parameter form of
-`TaskFrame.natFrame` and a `String`-typed valuation. No `Testable` consumer in
+`ParamTaskFrame.natFrame` and a `String`-typed valuation. No `Testable` consumer in
 the imported test suite quantifies over `TaskModel`, so these are not needed for
 the green build. They are commented out (never `sorry`-ed) to keep the module
 importable. Restoring them is tracked as a follow-up (see task summary).
@@ -165,7 +165,7 @@ structure TaskModelProxy where
   frameProxy : Unit
   valuationSeed : Nat
 
-instance : SampleableExt (TaskModel (TaskFrame.natFrame (D := Int))) where
+instance : SampleableExt (TaskModel (ParamTaskFrame.natFrame (D := Int))) where
   proxy := TaskModelProxy
   interp p :=
     { valuation := fun w s =>
@@ -174,14 +174,14 @@ instance : SampleableExt (TaskModel (TaskFrame.natFrame (D := Int))) where
     let seed ← Gen.choose Nat 0 1000 (by omega)
     return ⟨(), seed.val⟩⟩
 
-def genAllFalseModel : Gen (TaskModel (TaskFrame.natFrame (D := Int))) :=
+def genAllFalseModel : Gen (TaskModel (ParamTaskFrame.natFrame (D := Int))) :=
   pure { valuation := fun _ _ => False }
 
-def genAllTrueModel : Gen (TaskModel (TaskFrame.natFrame (D := Int))) :=
+def genAllTrueModel : Gen (TaskModel (ParamTaskFrame.natFrame (D := Int))) :=
   pure { valuation := fun _ _ => True }
 
 def genModelWithPattern (pattern : Nat → Atom → Bool) :
-    Gen (TaskModel (TaskFrame.natFrame (D := Int))) :=
+    Gen (TaskModel (ParamTaskFrame.natFrame (D := Int))) :=
   pure { valuation := fun w s => pattern w s }
 -/
 

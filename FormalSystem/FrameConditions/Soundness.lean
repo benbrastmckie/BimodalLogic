@@ -55,13 +55,13 @@ If `Γ ⊢ φ` (φ is derivable from Γ at FrameClass.Base), then for any model 
 if all formulas in Γ are true, then φ is true.
 
 **Why `FrameClass.Base` is essential here**: this is a thin `D`-parameterised wrapper around
-`Metalogic.soundness`, which is a `Base` theorem — the conclusion holds on *every* `TaskFrame D`
+`Metalogic.soundness`, which is a `Base` theorem — the conclusion holds on *every* `ParamTaskFrame D`
 with no order-theoretic side conditions, and that is exactly the class of derivations `Base`
 admits. The wider classes have their own wrappers (`soundness_dense`, `soundness_discrete`).
 -/
 theorem soundness_over (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     [Nontrivial D] (Γ : Context) (φ : Formula) (d : DerivationTree FrameClass.Base Γ φ) :
-    ∀ (F : TaskFrame D) (M : TaskModel F)
+    ∀ (F : ParamTaskFrame D) (M : TaskModel F)
       (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
       (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ :=
   fun F M τ h_mem t h_ctx =>
@@ -82,7 +82,7 @@ so widening the derivation's frame class would falsify the statement.
 theorem soundness_linear {Γ : Context} {φ : Formula} (d : DerivationTree FrameClass.Base Γ φ)
     (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     [Nontrivial D] [LinearTemporalFrame D] :
-    ∀ (F : TaskFrame D) (M : TaskModel F)
+    ∀ (F : ParamTaskFrame D) (M : TaskModel F)
       (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
       (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ :=
   soundness_over D Γ φ d
@@ -96,7 +96,7 @@ theorem soundness_dense {Γ : Context} {φ : Formula} (d : DerivationTree FrameC
     (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     [Nontrivial D] [NoMaxOrder D] [NoMinOrder D] [DenselyOrdered D]
     [DenseTemporalFrame D] :
-    ∀ (F : TaskFrame D) (M : TaskModel F)
+    ∀ (F : ParamTaskFrame D) (M : TaskModel F)
       (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
       (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ :=
   fun F M τ h_mem t h_ctx =>
@@ -112,7 +112,7 @@ theorem soundness_discrete {Γ : Context} {φ : Formula} (d : DerivationTree Fra
     [Nontrivial D] [NoMaxOrder D] [NoMinOrder D] [SuccOrder D] [PredOrder D]
     [IsSuccArchimedean D] [IsPredArchimedean D]
     [DiscreteTemporalFrame D] :
-    ∀ (F : TaskFrame D) (M : TaskModel F)
+    ∀ (F : ParamTaskFrame D) (M : TaskModel F)
       (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
       (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ :=
   fun F M τ h_mem t h_ctx =>
@@ -169,7 +169,7 @@ Soundness over Int (discrete integer time).
 This is the concrete instantiation of soundness for the standard discrete model.
 -/
 theorem soundness_Int {Γ : Context} {φ : Formula} (d : DerivationTree FrameClass.Discrete Γ φ) :
-    ∀ (F : TaskFrame Int) (M : TaskModel F)
+    ∀ (F : ParamTaskFrame Int) (M : TaskModel F)
       (τ : WorldHistory F) (_ : τ.IsTotal) (t : Int),
       (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ :=
   fun F M τ h_mem t h_ctx =>

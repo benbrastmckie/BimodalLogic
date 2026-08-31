@@ -22,7 +22,7 @@ the relationship in both directions.
 ## Contents
 
 * `Independence/ClockFrame.lean` — the periodic clock frame `D = ℚ`, `W = ℚ ⧸ ℤ`, with all
-  `TaskFrame` obligations discharged, and its reference total history.
+  `ParamTaskFrame` obligations discharged, and its reference total history.
 * `Independence/LoopingDuration.lean` — the reusable content: a frame carrying a *looping
   duration* has periodic histories, hence periodic truth, hence validates `Hψ → Gψ` and every
   instance of `CO`.

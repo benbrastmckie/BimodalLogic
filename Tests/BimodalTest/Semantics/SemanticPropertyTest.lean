@@ -24,7 +24,7 @@ Property-based tests for semantic properties of task frames and models.
 
 ## Implementation Notes
 
-TaskFrame properties (nullity, compositionality) are enforced by the
+ParamTaskFrame properties (nullity, compositionality) are enforced by the
 structure definition, so these tests verify the generators produce
 valid frames.
 
@@ -42,22 +42,22 @@ open FormalSystem.Semantics
 open BimodalTest.Property.Generators
 open Plausible
 
-/-! ## TaskFrame Properties -/
+/-! ## ParamTaskFrame Properties -/
 
 /-!
 Property: Frame nullity holds for all frames.
 
 For any frame F and world w, TaskRel w 0 w.
-This is enforced by the TaskFrame structure.
+This is enforced by the ParamTaskFrame structure.
 -/
-def frame_nullity_property (F : TaskFrame Int) (w : F.WorldState) :
+def frame_nullity_property (F : ParamTaskFrame Int) (w : F.WorldState) :
     F.TaskRel w 0 w :=
   F.nullity w
 
 /-!
 Test: Frame nullity (verifies generator produces valid frames).
 -/
-example : ∀ (F : TaskFrame Int) (w : F.WorldState), F.TaskRel w 0 w := by
+example : ∀ (F : ParamTaskFrame Int) (w : F.WorldState), F.TaskRel w 0 w := by
   intro F w
   exact F.nullity w
 
@@ -65,12 +65,12 @@ example : ∀ (F : TaskFrame Int) (w : F.WorldState), F.TaskRel w 0 w := by
 Property: Frame compositionality holds for all frames.
 
 If TaskRel w x u and TaskRel u y v, then TaskRel w (x+y) v.
-This is enforced by the TaskFrame structure.
+This is enforced by the ParamTaskFrame structure.
 -/
 -- NOTE (Task 365): `compositionality` was replaced by `forward_comp`, which is restricted to
 -- non-negative durations (`0 ≤ x`, `0 ≤ y`) — the unrestricted mixed-sign law is no longer a
 -- frame property. Added the non-negativity hypotheses to match the current structure.
-def frame_compositionality_property (F : TaskFrame Int)
+def frame_compositionality_property (F : ParamTaskFrame Int)
     (w u v : F.WorldState) (x y : Int) (hx : 0 ≤ x) (hy : 0 ≤ y)
     (h1 : F.TaskRel w x u) (h2 : F.TaskRel u y v) :
     F.TaskRel w (x + y) v :=
@@ -79,7 +79,7 @@ def frame_compositionality_property (F : TaskFrame Int)
 /-!
 Test: Frame compositionality (verifies generator produces valid frames).
 -/
-example : ∀ (F : TaskFrame Int) (w u v : F.WorldState) (x y : Int),
+example : ∀ (F : ParamTaskFrame Int) (w u v : F.WorldState) (x y : Int),
     0 ≤ x → 0 ≤ y → F.TaskRel w x u → F.TaskRel u y v → F.TaskRel w (x + y) v := by
   intro F w u v x y hx hy h1 h2
   exact F.forward_comp w u v x y hx hy h1 h2
@@ -89,14 +89,14 @@ example : ∀ (F : TaskFrame Int) (w u v : F.WorldState) (x y : Int),
 /-!
 Property: Trivial frame has Unit world states.
 -/
-example : (TaskFrame.trivialFrame (D := Int)).WorldState = Unit := by
+example : (ParamTaskFrame.trivialFrame (D := Int)).WorldState = Unit := by
   rfl
 
 /-!
 Property: Trivial frame task relation is always true.
 -/
 example (w u : Unit) (x : Int) :
-    (TaskFrame.trivialFrame (D := Int)).TaskRel w x u := by
+    (ParamTaskFrame.trivialFrame (D := Int)).TaskRel w x u := by
   trivial
 
 /-! ## Static Frame Properties -/
@@ -105,7 +105,7 @@ example (w u : Unit) (x : Int) :
 Property: Static frame task relation requires w = u, at every duration.
 -/
 example (W : Type) [Nonempty W] (w u : W) (x : Int) :
-    (TaskFrame.staticFrame W (D := Int)).TaskRel w x u ↔ w = u := by
+    (ParamTaskFrame.staticFrame W (D := Int)).TaskRel w x u ↔ w = u := by
   rfl
 
 /-! ## Nat Frame Properties -/
@@ -113,7 +113,7 @@ example (W : Type) [Nonempty W] (w u : W) (x : Int) :
 /-!
 Property: Nat frame has Nat world states.
 -/
-example : (TaskFrame.natFrame (D := Int)).WorldState = Nat := by
+example : (ParamTaskFrame.natFrame (D := Int)).WorldState = Nat := by
   rfl
 
 /-!
@@ -123,7 +123,7 @@ Property: Nat frame task relation is permissive.
 -- `x ≠ 0 ∨ w = u`, so it is NOT universally permissive (fails when `x = 0 ∧ w ≠ u`). The old
 -- unconditional-permissiveness claim is no longer true.
 -- example (w u : Nat) (x : Int) :
---     (TaskFrame.natFrame (D := Int)).TaskRel w x u := by
+--     (ParamTaskFrame.natFrame (D := Int)).TaskRel w x u := by
 --   trivial
 
 /-! ## Time Addition Properties -/
@@ -236,14 +236,14 @@ Property: All constructed frames satisfy nullity.
 This is a meta-property: any frame we can construct must satisfy nullity
 because it's required by the structure definition.
 -/
-example (F : TaskFrame Int) : ∀ w, F.TaskRel w 0 w := by
+example (F : ParamTaskFrame Int) : ∀ w, F.TaskRel w 0 w := by
   intro w
   exact F.nullity w
 
 /-!
 Property: All constructed frames satisfy compositionality.
 -/
-example (F : TaskFrame Int) :
+example (F : ParamTaskFrame Int) :
     ∀ w u v x y, 0 ≤ x → 0 ≤ y → F.TaskRel w x u → F.TaskRel u y v → F.TaskRel w (x + y) v := by
   intro w u v x y hx hy h1 h2
   exact F.forward_comp w u v x y hx hy h1 h2
@@ -255,7 +255,7 @@ Property: TaskModel valuation is well-defined for all worlds and atoms.
 
 The valuation function always returns a Prop (decidable truth value).
 -/
-example : ∀ (M : TaskModel (TaskFrame.natFrame (D := Int))) (w : Nat) (s : Atom),
+example : ∀ (M : TaskModel (ParamTaskFrame.natFrame (D := Int))) (w : Nat) (s : Atom),
     M.valuation w s ∨ ¬M.valuation w s := by
   intro M w s
   by_cases h : M.valuation w s
@@ -270,8 +270,8 @@ The frame of a generated model is natFrame.
 -- NOTE (Task 365): quarantined — `TaskModel` has no `.frame` projection (the frame is a
 -- structure parameter `F`, not a field), and the `where frame (M) := F` helper referenced an
 -- out-of-scope `F`. The property as stated is not expressible against the current `TaskModel`.
--- example : ∀ (M : TaskModel (TaskFrame.natFrame (D := Int))),
---     M.frame = TaskFrame.natFrame := by
+-- example : ∀ (M : TaskModel (ParamTaskFrame.natFrame (D := Int))),
+--     M.frame = ParamTaskFrame.natFrame := by
 --   intro M
 --   rfl
 
@@ -279,7 +279,7 @@ The frame of a generated model is natFrame.
 Property: All-false model has no atoms true.
 -/
 example : ∀ (w : Nat) (s : Atom),
-    ¬(TaskModel.allFalse (F := TaskFrame.natFrame (D := Int))).valuation w s := by
+    ¬(TaskModel.allFalse (F := ParamTaskFrame.natFrame (D := Int))).valuation w s := by
   intro w s
   exact id
 
@@ -287,7 +287,7 @@ example : ∀ (w : Nat) (s : Atom),
 Property: All-true model has all atoms true.
 -/
 example : ∀ (w : Nat) (s : Atom),
-    (TaskModel.allTrue (F := TaskFrame.natFrame (D := Int))).valuation w s := by
+    (TaskModel.allTrue (F := ParamTaskFrame.natFrame (D := Int))).valuation w s := by
   intro w s
   trivial
 
@@ -308,11 +308,11 @@ This is a fundamental semantic property.
 -- `SampleableExt` for the dependent, abstract world-state type. (The second also asserted the
 -- now-restricted mixed-sign compositionality law.) The corresponding closed proofs above cover
 -- these frame constraints.
--- #eval Testable.check (∀ (F : TaskFrame Int) (w : F.WorldState), F.TaskRel w 0 w) {
+-- #eval Testable.check (∀ (F : ParamTaskFrame Int) (w : F.WorldState), F.TaskRel w 0 w) {
 --   numInst := 200,
 --   maxSize := 25
 -- }
--- #eval Testable.check (∀ (F : TaskFrame Int) (w u v : F.WorldState) (x y : Int),
+-- #eval Testable.check (∀ (F : ParamTaskFrame Int) (w u v : F.WorldState) (x y : Int),
 --     F.TaskRel w x u → F.TaskRel u y v → F.TaskRel w (x + y) v) {
 --   numInst := 200,
 --   maxSize := 25

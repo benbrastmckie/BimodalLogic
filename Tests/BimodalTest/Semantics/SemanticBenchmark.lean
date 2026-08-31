@@ -47,7 +47,7 @@ Using trivial frame for deterministic benchmarking.
 -/
 
 /-- Benchmark frame: trivial frame with Int time -/
-def benchFrame : TaskFrame Int := TaskFrame.trivial_frame
+def benchFrame : ParamTaskFrame Int := ParamTaskFrame.trivial_frame
 
 /-- Benchmark model: "p" is true, all else false -/
 def benchModel : TaskModel benchFrame where

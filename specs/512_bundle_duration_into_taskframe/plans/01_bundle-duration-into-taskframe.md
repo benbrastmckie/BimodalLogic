@@ -1,7 +1,7 @@
 # Implementation Plan: Task #512
 
 - **Task**: 512 - bundle_duration_into_taskframe
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 20 hours
 - **Dependencies**: None blocking. Sequencing interaction with task 507 (Dedekind -> Complete
   rename in `Semantics/Validity.lean`); the batch sequences 512 strictly before 507, so the two
@@ -202,34 +202,48 @@ execution in the listed order is the default and is always safe.
 
 ---
 
-### Phase 1: Rename to ParamTaskFrame, declare bundled TaskFrame, establish the bridge [NOT STARTED]
+### Phase 1: Rename to ParamTaskFrame, declare bundled TaskFrame, establish the bridge [COMPLETED]
 
 **Goal**: The bundled `TaskFrame` exists in the target shape beside the renamed
 `ParamTaskFrame`, the bridge round-trips by `rfl`, the transitional compatibility mechanism is
 chosen and probed, and the tree is green with zero behavioural change.
 
 **Tasks**:
-- [ ] Mechanically rename the token `TaskFrame` -> `ParamTaskFrame` and `FiniteTaskFrame` ->
+- [x] Mechanically rename the token `TaskFrame` -> `ParamTaskFrame` and `FiniteTaskFrame` ->
       `ParamFiniteTaskFrame` across all live `.lean` files (81 files), **excluding**
       `FormalSystem/Boneyard/`. The rename carries the predicate namespace
       (`TaskFrame.Compositional`, `.Converse`, `.Serial`, `.Limit`, `.Spherical`,
       `.NullityIdentity`) to `ParamTaskFrame.*`; this is intended and is reversed in Phase 13.
-- [ ] In `FormalSystem/Semantics/TaskFrame.lean`, declare the bundled `structure TaskFrame` in the
+- [x] *(deviation: added — three mechanical steps the phase did not anticipate, all forced by the
+      rename rather than optional: (i) `import FormalSystem.Semantics.ParamTaskFrame` and
+      `Semantics/TaskFrame.lean` path references were rewritten back, since the module path is
+      unchanged; (ii) the `extends` parent projection `FiniteTaskFrame.toTaskFrame` became
+      `ParamFiniteTaskFrame.toParamTaskFrame`, updated at its 5 structure-projection sites and at
+      no user-defined `toTaskFrame` site; (iii) all 95 `D : Type*` binder sites were demoted to
+      `D : Type`, without which the `CoeOut` cannot fire across the universe boundary.)*
+- [x] In `FormalSystem/Semantics/TaskFrame.lean`, declare the bundled `structure TaskFrame` in the
       target shape (Overview), with `Duration : Type`, `WorldState : Type`, the four
       instance-implicit algebra fields, `worldNonempty`, `TaskRel`, and the six axiom fields
       citing the (now `ParamTaskFrame.`-namespaced) bare-relation predicates definitionally.
-- [ ] Declare bundled `structure FiniteTaskFrame` correspondingly (probe M8 confirms the shape).
-- [ ] Emit `attribute [instance] TaskFrame.addCommGroup TaskFrame.linearOrder
+- [x] Declare bundled `structure FiniteTaskFrame` correspondingly (probe M8 confirms the shape).
+- [x] Emit `attribute [instance] TaskFrame.addCommGroup TaskFrame.linearOrder
       TaskFrame.orderedAddMonoid TaskFrame.nontrivial TaskFrame.worldNonempty`.
-- [ ] Declare `@[reducible] def TaskFrame.ofParam` and `def TaskFrame.toParam`; prove both round
+- [x] Declare `@[reducible] def TaskFrame.ofParam` and `def TaskFrame.toParam`; prove both round
       trips by `rfl` and `(ofParam F).Duration = D` by `rfl` as in-file `example`s.
-- [ ] Resolve the transitional-compatibility decision ladder: probe option (a) `CoeOut`; if it
+- [x] Resolve the transitional-compatibility decision ladder: probe option (a) `CoeOut`; if it
       fires at explicit-argument positions, adopt it; otherwise adopt (b). Record the outcome in
       the phase commit message.
-- [ ] Probe that `(TaskFrame.ofParam F).addCommGroup` unifies with the ambient `[AddCommGroup D]`
+      *(outcome: **option (a) adopted**. `CoeOut (ParamTaskFrame D) TaskFrame` fires at explicit
+      argument positions of plain `def`s, of structure parameters, and with dependent following
+      arguments; `(ofParam F).addCommGroup = inferInstance` closes by `rfl` at reducible
+      transparency. Shim ledger is therefore empty by construction. One extra mechanical step was
+      required and is recorded as a deviation below: the coercion cannot cross a universe
+      boundary, so the 95 `D : Type*` binder sites were demoted to `D : Type` — which is the
+      target shape's own choice (research F2), not a workaround.)*
+- [x] Probe that `(TaskFrame.ofParam F).addCommGroup` unifies with the ambient `[AddCommGroup D]`
       binder at reducible transparency. If not, record `haveI` normalization as the per-site
       fallback.
-- [ ] Add the four definitional-content `example`s for the **bundled** form, mirroring
+- [x] Add the four definitional-content `example`s for the **bundled** form, mirroring
       `TaskFrame.lean:1501-1511`.
 
 **Timing**: 2 hours

@@ -57,7 +57,7 @@ open FormalSystem.Metalogic.Core
 ## BFMCS Structure Definition
 -/
 
-variable (D : Type*) [Preorder D]
+variable (D : Type) [Preorder D]
 
 /--
 A Bundle of Maximal Consistent Sets (BFMCS) is a collection of indexed MCS families
@@ -121,7 +121,7 @@ structure BFMCS (fc : FrameClass := FrameClass.Base) where
   /-- The evaluation family is in the bundle -/
   eval_family_mem : evalFamily ∈ families
 
-variable {D : Type*} [Preorder D]
+variable {D : Type} [Preorder D]
 
 /-!
 ## S5 Properties from Modal Coherence

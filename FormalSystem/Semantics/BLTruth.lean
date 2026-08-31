@@ -81,8 +81,8 @@ namespace FormalSystem.Semantics
 
 open FormalSystem.BaseLanguage
 
-variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
-  {F : TaskFrame D}
+variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
+  {F : ParamTaskFrame D}
 
 /--
 Truth of a base-language formula at a model-history-time triple.

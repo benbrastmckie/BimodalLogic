@@ -53,7 +53,7 @@ namespace FormalSystem.Metalogic
 
 open FormalSystem.Syntax FormalSystem.Semantics FormalSystem.ProofSystem
 
-variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
+variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
 
 /-! ## The next-step truth lemmas -/
 
@@ -63,7 +63,7 @@ variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [No
     Unfolding the `untl` clause of `TruthAt`, `TruthAt t (next φ)` reads
     `∃ s > t, φ(s) ∧ ∀ r ∈ (t, s), ⊥` — the empty-gap condition forces `s = Order.succ t`. -/
 theorem truthAt_next_iff [SuccOrder D] [NoMaxOrder D]
-    {F : TaskFrame D} (M : TaskModel F) (τ : WorldHistory F) (t : D) (φ : Formula) :
+    {F : ParamTaskFrame D} (M : TaskModel F) (τ : WorldHistory F) (t : D) (φ : Formula) :
     TruthAt M τ t (Formula.next φ) ↔ TruthAt M τ (Order.succ t) φ := by
   constructor
   · rintro ⟨s, hts, hs, hgap⟩
@@ -77,7 +77,7 @@ theorem truthAt_next_iff [SuccOrder D] [NoMaxOrder D]
 
 /-- Iterated form of `truthAt_next_iff`: `Xⁿ φ` at `t` is `φ` at the `n`-th successor of `t`. -/
 theorem truthAt_next_iterate [SuccOrder D] [NoMaxOrder D]
-    {F : TaskFrame D} (M : TaskModel F) (τ : WorldHistory F) :
+    {F : ParamTaskFrame D} (M : TaskModel F) (τ : WorldHistory F) :
     ∀ (n : ℕ) (t : D) (φ : Formula),
       TruthAt M τ t (Formula.next^[n] φ) ↔ TruthAt M τ (Order.succ^[n] t) φ := by
   intro n
@@ -138,7 +138,7 @@ theorem witIdx_neg_next_iterate (p : Atom) (n : ℕ) :
 
 /-! ## The `ℤ` model witnessing finite satisfiability
 
-`TaskFrame.natFrame` (`Semantics/TaskFrame.lean`) is the right frame off the shelf: its relation
+`ParamTaskFrame.natFrame` (`Semantics/TaskFrame.lean`) is the right frame off the shelf: its relation
 `TaskRel w d u := d ≠ 0 ∨ w = u` is permissive, so an **arbitrary** state function respects it —
 which is exactly what the non-constant history below needs. `WorldHistory.universalNatFrame` is
 constant-state and so cannot separate the times; `staticFrame` is worse still, its relation
@@ -146,11 +146,11 @@ forcing constant histories outright.
 -/
 
 /-- The history over `ℤ` whose world-state flips from `0` to `1` strictly after `N`. -/
-def zHistory (N : ℤ) : WorldHistory (TaskFrame.natFrame (D := ℤ)) where
+def zHistory (N : ℤ) : WorldHistory (ParamTaskFrame.natFrame (D := ℤ)) where
   domain := fun _ => True
   nonempty_domain := ⟨0, True.intro⟩
   convex := fun _ _ _ _ _ _ _ => True.intro
-  -- `TaskFrame.natFrame.WorldState` does not reduce far enough for numeral elaboration, so the
+  -- `ParamTaskFrame.natFrame.WorldState` does not reduce far enough for numeral elaboration, so the
   -- `ite` *body* carries the ascription. Ascribing an existing fvar instead does not work.
   states := fun t _ => (if N < t then 1 else 0 : Nat)
   respects_task := by
@@ -163,7 +163,7 @@ def zHistory (N : ℤ) : WorldHistory (TaskFrame.natFrame (D := ℤ)) where
 
     The **lambda binder** carries the `Nat` annotation; `fun w _ => (w : Nat) = 1` does not
     elaborate, since ascribing an existing fvar does not retarget numeral elaboration. -/
-def zModel : TaskModel (TaskFrame.natFrame (D := ℤ)) where
+def zModel : TaskModel (ParamTaskFrame.natFrame (D := ℤ)) where
   valuation := fun (w : Nat) _ => w = 1
 
 theorem zHistory_total (N : ℤ) : (zHistory N).IsTotal := fun _ => True.intro
@@ -195,7 +195,7 @@ theorem archWitness_finitely_satisfiable (p : Atom) (L : List Formula)
     (hL : ∀ ψ ∈ L, ψ ∈ archWitness p) : SatisfiableDiscreteSet {ψ | ψ ∈ L} := by
   classical
   refine ⟨ℤ, inferInstance, inferInstance, inferInstance, inferInstance, inferInstance,
-    inferInstance, inferInstance, inferInstance, TaskFrame.natFrame, zModel,
+    inferInstance, inferInstance, inferInstance, ParamTaskFrame.natFrame, zModel,
     zHistory ((L.map witIdx).sum : ℕ), zHistory_total _, 0, ?_⟩
   set N : ℕ := (L.map witIdx).sum with hNdef
   intro ψ hψ

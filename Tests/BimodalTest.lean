@@ -64,7 +64,7 @@ Comprehensive test suite for the Bimodal library, following the Mathlib pattern
 Tests mirror the Bimodal library structure:
 - `Syntax/` - Formula and Context tests
 - `ProofSystem/` - Axiom and Derivation tests
-- `Semantics/` - Truth and TaskFrame tests
+- `Semantics/` - Truth and ParamTaskFrame tests
 - `Metalogic/` - Soundness and Completeness tests
 - `Theorems/` - Specific theorem tests (Perpetuity, Modal axioms)
 - `Automation/` - Proof search and tactic tests

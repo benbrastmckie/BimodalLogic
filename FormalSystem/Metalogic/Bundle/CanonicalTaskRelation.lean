@@ -24,7 +24,7 @@ and negative n means backward steps.
 - `CanonicalTask_backward`: Nat-indexed backward chain via Succ
 - `CanonicalTask`: Int-indexed combined relation
 
-## Main Theorems (TaskFrame Axioms)
+## Main Theorems (ParamTaskFrame Axioms)
 
 - `CanonicalTask_nullity_identity`: CanonicalTask(u, 0, v) ↔ u = v
 - `CanonicalTask_forward_comp`: Chain concatenation for forward chains
@@ -307,7 +307,7 @@ lemma CanonicalTask_neg_succ_nat (u v : Set Formula) (k : Nat) :
 /-!
 ## Nullity Identity Axiom
 
-The first TaskFrame axiom: CanonicalTask(u, 0, v) ↔ u = v.
+The first ParamTaskFrame axiom: CanonicalTask(u, 0, v) ↔ u = v.
 Zero steps means staying at the same world.
 -/
 
@@ -342,7 +342,7 @@ theorem CanonicalTask_backward_zero (u v : Set Formula) :
 /--
 **Nullity Identity Axiom**: CanonicalTask(u, 0, v) ↔ u = v.
 
-This is the first of the three TaskFrame axioms. Zero steps means staying
+This is the first of the three ParamTaskFrame axioms. Zero steps means staying
 at the same world.
 -/
 @[simp]
@@ -355,7 +355,7 @@ theorem CanonicalTask_nullity_identity (u v : Set Formula) :
 /-!
 ## Forward Compositionality
 
-The second TaskFrame axiom: chain concatenation.
+The second ParamTaskFrame axiom: chain concatenation.
 If we can go from u to w in m steps, and from w to v in n steps,
 then we can go from u to v in m + n steps.
 -/
@@ -435,7 +435,7 @@ theorem CanonicalTask_forward_comp_int (u w v : Set Formula) (m n : Nat) :
 /-!
 ## Converse Theorem
 
-The third TaskFrame axiom: CanonicalTask(u, n, v) ↔ CanonicalTask(v, -n, u).
+The third ParamTaskFrame axiom: CanonicalTask(u, n, v) ↔ CanonicalTask(v, -n, u).
 
 The key insight is that forward chains from u to v in n steps correspond exactly
 to backward chains from v to u in n steps. The converse theorem then follows from
@@ -507,7 +507,7 @@ theorem CanonicalTask_forward_backward_flip (u v : Set Formula) (n : Nat) :
 /--
 **Converse Theorem**: CanonicalTask(u, n, v) ↔ CanonicalTask(v, -n, u).
 
-This is the third of the three TaskFrame axioms. Going from u to v in n steps
+This is the third of the three ParamTaskFrame axioms. Going from u to v in n steps
 is equivalent to going from v to u in -n steps.
 
 The proof works by case analysis on the sign of n:

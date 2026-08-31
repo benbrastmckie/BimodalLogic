@@ -19,7 +19,7 @@ propositional (`Formula.isPropositional p = true`, i.e. built only from `atom`/`
 The `true`-branch (`p` a tautology) uses `tautology_derivable` (`Kalmar.lean`) via the
 round-trip reification lemma. The `false`-branch (`p` not a tautology) uses a *semantic*
 falsity direction: a falsifying assignment `v` yields a countermodel on the trivial task
-frame (`TaskFrame.trivialFrame`, `Semantics/WorldHistory.lean`), and the EXISTING semantic
+frame (`ParamTaskFrame.trivialFrame`, `Semantics/WorldHistory.lean`), and the EXISTING semantic
 soundness theorem (`Metalogic/Soundness.lean`) rules out `|-! p` in that case. This is
 deliberately *not* the tableau decision procedure (`Metalogic/Decidability/DecisionProcedure`)
 — that procedure is classical-only (`Classical.em`) and unverified for this purpose; this
@@ -148,7 +148,7 @@ theorem reify_denote (p : Formula) (hp : isPropositional p = true) :
 /-- The trivial task model over `Int`, with atom valuation determined by a `Nat`-indexed
 `PropForm` assignment `v` composed with `findIdxAtom` against a fixed atom list. -/
 noncomputable def trivialModel (v : Nat → Bool) (atomList : List Atom) :
-    TaskModel (TaskFrame.trivialFrame (D := Int)) where
+    TaskModel (ParamTaskFrame.trivialFrame (D := Int)) where
   valuation := fun _ a => v (findIdxAtom a atomList) = true
 
 /-- The trivial-frame truth lemma: on the trivial model built from `v`/`atomList`, truth of a
@@ -200,7 +200,7 @@ theorem derivable_tautology (p : Formula) (hp : isPropositional p = true)
     simp [hv]
   obtain ⟨d⟩ := h
   have htruth := FormalSystem.Metalogic.soundness [] p d Int
-    (TaskFrame.trivialFrame (D := Int)) (trivialModel v (formulaAtomsList p))
+    (ParamTaskFrame.trivialFrame (D := Int)) (trivialModel v (formulaAtomsList p))
     (WorldHistory.trivial (D := Int))
     (fun _ => True.intro) (0 : Int) (fun ψ hψ => absurd hψ List.not_mem_nil)
   exact hnot_truth htruth

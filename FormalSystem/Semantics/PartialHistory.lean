@@ -40,7 +40,7 @@ this repository cites — never the paper file directly, and never by line numbe
 ## Two transcription decisions, both settled and recorded
 
 Both are recorded in `specs/decisions/total-history-validity-decisions.md` (Decision B) so that
-they are not re-litigated here or in the four-axiom `TaskFrame` alignment work.
+they are not re-litigated here or in the four-axiom `ParamTaskFrame` alignment work.
 
 1. **Nonemptiness is a field, not a side hypothesis.** The paper requires the domain `X` to be
    nonempty *for a partial history*. Carrying it as data is what makes the Extension Theorem's
@@ -49,7 +49,7 @@ they are not re-litigated here or in the four-axiom `TaskFrame` alignment work.
    guard. This is the form the Fiber and Admissibility lemmas consume, both of which are stated
    with no sign proviso. The paper's own `%` comment (quoted above) is the justification: the
    negative-difference instances are *covered by the converse convention*, i.e. by
-   `TaskFrame.converse`, so the unconditional statement is not a strengthening of the paper's
+   `ParamTaskFrame.converse`, so the unconditional statement is not a strengthening of the paper's
    requirement — it is the paper's requirement, read as written.
 
    The guarded form is *derived* here as `respects_task_le`, and `PartialHistory.ofLe` is a smart
@@ -88,8 +88,8 @@ $X \subseteq D$ where $\tau(x) \Rightarrow_{y-x} \tau(y)$ for all times $x, y \i
 The paper's `\textit{world history}` is the **convex** special case of this structure; see
 `FormalSystem.Semantics.WorldHistory`.
 -/
-structure PartialHistory {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
-    (F : TaskFrame D) where
+structure PartialHistory {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
+    (F : ParamTaskFrame D) where
   /-- Domain predicate: which times are in the history, i.e. the paper's `X ⊆ D`. -/
   domain : D → Prop
   /--
@@ -120,7 +120,7 @@ structure PartialHistory {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrdered
 
 namespace PartialHistory
 
-variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D] {F : TaskFrame D}
+variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D] {F : ParamTaskFrame D}
 
 /--
 The guarded form of task-respect, **derived** from the unconditional field.
@@ -136,7 +136,7 @@ theorem respects_task_le (τ : PartialHistory F) (s t : D) (hs : τ.domain s) (h
 Smart constructor: build a `PartialHistory` from a **guarded** task-respect proof.
 
 The unconditional `respects_task` field is discharged from the guarded proof plus
-`TaskFrame.converse`: when `t < s`, the guarded proof gives `TaskRel (states t) (s - t) (states s)`,
+`ParamTaskFrame.converse`: when `t < s`, the guarded proof gives `TaskRel (states t) (s - t) (states s)`,
 and the converse convention turns that into `TaskRel (states s) (-(s - t)) (states t)`, which is
 `TaskRel (states s) (t - s) (states t)` by `neg_sub`.
 

@@ -193,7 +193,7 @@ theorem realizedStep_datum (u : ℤ) :
 /--
 **A realised edge is adjacent in its state components.**
 
-The history is a bi-infinite step path of the presented frame (`TaskFrame.HF.isStepPath`), and
+The history is a bi-infinite step path of the presented frame (`ParamTaskFrame.HF.isStepPath`), and
 `IntPresentation.isStepPath_iff` reads that off as the adjacency matrix at consecutive times. This
 is what lets the extraction discharge a bi-lasso's `coherent` field from a walk in this graph.
 -/
@@ -202,7 +202,7 @@ theorem realizedStep_step {x y : PigeonState P φ} (h : RealizedStep P φ τ hτ
   obtain ⟨u, hx, hy⟩ := h
   subst hx; subst hy
   have hpath : IsStepPath P.toTaskFrame (fun t => τ.states t (hτ t)) :=
-    TaskFrame.HF.isStepPath (F := P.toTaskFrame) ⟨τ, hτ⟩
+    ParamTaskFrame.HF.isStepPath (F := P.toTaskFrame) ⟨τ, hτ⟩
   exact (P.isStepPath_iff _).mp hpath u
 
 /-! ## Coherence as an edge condition -/

@@ -1100,7 +1100,7 @@ The proof proceeds by induction on the derivation tree structure:
 theorem soundness (Γ : Context) (φ : Formula)
     (d : DerivationTree FrameClass.Base Γ φ)
     (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
-    [Nontrivial D] (F : TaskFrame D) (M : TaskModel F)
+    [Nontrivial D] (F : ParamTaskFrame D) (M : TaskModel F)
     (τ : WorldHistory F) (h_mem : τ.IsTotal) (t : D)
     (h_ctx : ∀ ψ ∈ Γ, TruthAt M τ t ψ) :
     TruthAt M τ t φ := by
@@ -1275,7 +1275,7 @@ theorem soundness_dense (Γ : Context) (φ : Formula)
     (d : DerivationTree FrameClass.Dense Γ φ)
     (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     [DenselyOrdered D] [Nontrivial D]
-    (F : TaskFrame D) (M : TaskModel F)
+    (F : ParamTaskFrame D) (M : TaskModel F)
     (τ : WorldHistory F) (h_mem : τ.IsTotal) (t : D)
     (h_ctx : ∀ ψ ∈ Γ, TruthAt M τ t ψ) :
     TruthAt M τ t φ := by
@@ -1421,7 +1421,7 @@ theorem soundness_discrete (Γ : Context) (φ : Formula)
     (d : DerivationTree FrameClass.Discrete Γ φ)
     (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     [SuccOrder D] [PredOrder D] [IsSuccArchimedean D] [IsPredArchimedean D] [Nontrivial D]
-    (F : TaskFrame D) (M : TaskModel F)
+    (F : ParamTaskFrame D) (M : TaskModel F)
     (τ : WorldHistory F) (h_mem : τ.IsTotal) (t : D)
     (h_ctx : ∀ ψ ∈ Γ, TruthAt M τ t ψ) :
     TruthAt M τ t φ := by
@@ -1949,7 +1949,7 @@ theorem soundness_dedekind (Γ : Context) (φ : Formula)
     (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     [DenselyOrdered D] [Nontrivial D]
     (h_lub : ∀ s : Set D, s.Nonempty → BddAbove s → ∃ x, IsLUB s x)
-    (F : TaskFrame D) (M : TaskModel F)
+    (F : ParamTaskFrame D) (M : TaskModel F)
     (τ : WorldHistory F) (h_mem : τ.IsTotal) (t : D)
     (h_ctx : ∀ ψ ∈ Γ, TruthAt M τ t ψ) :
     TruthAt M τ t φ := by
@@ -1992,7 +1992,7 @@ proposition by definition (`Consistent Γ := ¬ Derivable fc Γ ⊥`), because t
 
 The witness is `trivialFrame` over `Int` at its single world state. `soundness` turns a
 derivation of `⊥` from `[]` into `trivialFrame.ValidOn ⊥`, which
-`Semantics/Validity.lean`'s `TaskFrame.not_validOn_bot` refutes — that refutation is itself
+`Semantics/Validity.lean`'s `ParamTaskFrame.not_validOn_bot` refutes — that refutation is itself
 `cor:occurrence`'s closing clause (`H_F ≠ ∅`), so the frame axioms doing the work here are
 `trivialFrame`'s own fields.
 
@@ -2006,9 +2006,9 @@ and `Dedekind` have no corresponding consistency lemma in the tree yet.
 -/
 theorem not_derivable_nil_bot : ¬ Derivable FrameClass.Base ([] : Context) Formula.bot := by
   rintro ⟨d⟩
-  refine TaskFrame.not_validOn_bot (D := Int) TaskFrame.trivialFrame ?_
+  refine ParamTaskFrame.not_validOn_bot (D := Int) ParamTaskFrame.trivialFrame ?_
   intro M τ x
-  exact soundness [] Formula.bot d Int TaskFrame.trivialFrame M τ.val τ.property x
+  exact soundness [] Formula.bot d Int ParamTaskFrame.trivialFrame M τ.val τ.property x
     (by simp)
 
 /--
@@ -2034,9 +2034,9 @@ vacuous, since a `Discrete`-inconsistent system has no consistent sets at all.
 theorem not_derivable_nil_bot_discrete :
     ¬ Derivable FrameClass.Discrete ([] : Context) Formula.bot := by
   rintro ⟨d⟩
-  obtain ⟨τ⟩ := TaskFrame.hF_nonempty_of_frameAxioms (D := ℤ) TaskFrame.trivialFrame
+  obtain ⟨τ⟩ := ParamTaskFrame.hF_nonempty_of_frameAxioms (D := ℤ) ParamTaskFrame.trivialFrame
   exact Truth.bot_false
-    (FormalSystem.Metalogic.soundness_discrete_valid d ℤ TaskFrame.trivialFrame
+    (FormalSystem.Metalogic.soundness_discrete_valid d ℤ ParamTaskFrame.trivialFrame
       TaskModel.allFalse τ.val τ.property 0)
 
 end FormalSystem.Metalogic

@@ -84,8 +84,8 @@ namespace FormalSystem.Semantics
 open FormalSystem.Syntax
 open FormalSystem.BaseLanguage
 
-variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
-  {F : TaskFrame D}
+variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
+  {F : ParamTaskFrame D}
 
 /--
 **The truth-transfer bridge.** A BL⁺ formula in the image of the translation is true exactly when
@@ -168,7 +168,7 @@ Composition of `Conservativity.translate` with `soundness`, across `truthAt_tr`.
 theorem bl_soundness (Γ : BaseLanguage.Context) (φ : BLFormula)
     (d : BaseLanguage.DerivationTree FrameClass.Base Γ φ)
     (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
-    (F : TaskFrame D) (M : TaskModel F)
+    (F : ParamTaskFrame D) (M : TaskModel F)
     (τ : WorldHistory F) (h_mem : τ.IsTotal) (t : D)
     (h_ctx : ∀ ψ ∈ Γ, BLTruthAt M τ t ψ) :
     BLTruthAt M τ t φ :=
@@ -184,7 +184,7 @@ theorem bl_soundness_dense (Γ : BaseLanguage.Context) (φ : BLFormula)
     (d : BaseLanguage.DerivationTree FrameClass.Dense Γ φ)
     (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     [DenselyOrdered D] [Nontrivial D]
-    (F : TaskFrame D) (M : TaskModel F)
+    (F : ParamTaskFrame D) (M : TaskModel F)
     (τ : WorldHistory F) (h_mem : τ.IsTotal) (t : D)
     (h_ctx : ∀ ψ ∈ Γ, BLTruthAt M τ t ψ) :
     BLTruthAt M τ t φ :=
@@ -200,7 +200,7 @@ theorem bl_soundness_discrete (Γ : BaseLanguage.Context) (φ : BLFormula)
     (d : BaseLanguage.DerivationTree FrameClass.Discrete Γ φ)
     (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     [SuccOrder D] [PredOrder D] [IsSuccArchimedean D] [IsPredArchimedean D] [Nontrivial D]
-    (F : TaskFrame D) (M : TaskModel F)
+    (F : ParamTaskFrame D) (M : TaskModel F)
     (τ : WorldHistory F) (h_mem : τ.IsTotal) (t : D)
     (h_ctx : ∀ ψ ∈ Γ, BLTruthAt M τ t ψ) :
     BLTruthAt M τ t φ :=
@@ -222,7 +222,7 @@ theorem bl_soundness_dedekind (Γ : BaseLanguage.Context) (φ : BLFormula)
     (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     [DenselyOrdered D] [Nontrivial D]
     (h_lub : ∀ s : Set D, s.Nonempty → BddAbove s → ∃ x, IsLUB s x)
-    (F : TaskFrame D) (M : TaskModel F)
+    (F : ParamTaskFrame D) (M : TaskModel F)
     (τ : WorldHistory F) (h_mem : τ.IsTotal) (t : D)
     (h_ctx : ∀ ψ ∈ Γ, BLTruthAt M τ t ψ) :
     BLTruthAt M τ t φ :=
@@ -266,27 +266,27 @@ import-graph reason `not_derivable_nil_bot` records on the BL⁺ side. -/
 
 The witness is `trivialFrame` over `Int`, exactly as in `not_derivable_nil_bot`. The step across
 the bridge is invisible here because `tr BLFormula.bot` is `Formula.bot` definitionally, so
-`TaskFrame.not_validOn_bot` applies unchanged.
+`ParamTaskFrame.not_validOn_bot` applies unchanged.
 -/
 theorem bl_not_derivable_nil_bot :
     ¬ BaseLanguage.Derivable FrameClass.Base ([] : BaseLanguage.Context) BLFormula.bot := by
   rintro ⟨d⟩
-  refine TaskFrame.not_validOn_bot (D := Int) TaskFrame.trivialFrame ?_
+  refine ParamTaskFrame.not_validOn_bot (D := Int) ParamTaskFrame.trivialFrame ?_
   intro M τ x
-  exact bl_soundness [] BLFormula.bot d Int TaskFrame.trivialFrame M τ.val τ.property x (by simp)
+  exact bl_soundness [] BLFormula.bot d Int ParamTaskFrame.trivialFrame M τ.val τ.property x (by simp)
 
 /--
 **BL at `FrameClass.Discrete` is consistent**: `⊥` is not derivable from the empty context in the
 system extended by the discreteness axioms.
 
 The witness is again `trivialFrame` over `ℤ`, with the single total history supplied by
-`TaskFrame.hF_nonempty_of_frameAxioms` and the valuation by `TaskModel.allFalse`.
+`ParamTaskFrame.hF_nonempty_of_frameAxioms` and the valuation by `TaskModel.allFalse`.
 -/
 theorem bl_not_derivable_nil_bot_discrete :
     ¬ BaseLanguage.Derivable FrameClass.Discrete ([] : BaseLanguage.Context) BLFormula.bot := by
   rintro ⟨d⟩
-  obtain ⟨τ⟩ := TaskFrame.hF_nonempty_of_frameAxioms (D := ℤ) TaskFrame.trivialFrame
-  exact bl_soundness_discrete_valid d ℤ TaskFrame.trivialFrame TaskModel.allFalse
+  obtain ⟨τ⟩ := ParamTaskFrame.hF_nonempty_of_frameAxioms (D := ℤ) ParamTaskFrame.trivialFrame
+  exact bl_soundness_discrete_valid d ℤ ParamTaskFrame.trivialFrame TaskModel.allFalse
     τ.val τ.property 0
 
 /-! ## Native spot checks

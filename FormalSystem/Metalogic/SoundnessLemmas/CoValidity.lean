@@ -54,7 +54,7 @@ namespace FormalSystem.Metalogic.SoundnessLemmas
 open FormalSystem.Syntax
 open FormalSystem.Semantics
 
-variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
+variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
 
 /-- Two-conjunct extraction through the doubly-negated encoding of `Formula.and`
 (`φ ∧ ψ = ¬(φ → ¬ψ)`). Classical; the same helper appears in `Metalogic/Soundness.lean`. -/
@@ -70,7 +70,7 @@ point.
 Stated for an arbitrary `ψ` so that the CO proof below never has to unfold the particular
 `Hφ → F(Hφ)` sitting under the triangle.
 -/
-theorem always_elim {F : TaskFrame D} {M : TaskModel F}
+theorem always_elim {F : ParamTaskFrame D} {M : TaskModel F}
     {τ : WorldHistory F} {t : D} {ψ : Formula}
     (h : TruthAt M τ t (Formula.always ψ)) :
     (∀ u : D, u < t → TruthAt M τ u ψ) ∧ TruthAt M τ t ψ ∧

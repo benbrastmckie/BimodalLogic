@@ -14,7 +14,7 @@ import Mathlib.Order.Minimal
 import Mathlib.Data.Fintype.Powerset
 
 /-!
-# TaskFrame - Task Frame Structure for TM Semantics
+# ParamTaskFrame - Task Frame Structure for TM Semantics
 
 This module defines task frames, the fundamental semantic structures for bimodal logic TM.
 
@@ -84,13 +84,13 @@ here are now closed, and are recorded as closed rather than deleted, since both 
 
 - `W` nonempty (`def:frame`, verbatim: "$W$ is a nonempty set of world states";
   `def:task-relation`) is the `nonempty` field, discharged at every frame in the tree. Its
-  immediate payoff is that `TaskFrame.not_validOn_bot` (Semantics/Validity.lean) is now the bare
+  immediate payoff is that `ParamTaskFrame.not_validOn_bot` (Semantics/Validity.lean) is now the bare
   `¬ F.ValidOn ⊥`, with no world state taken as an argument.
 - `D` nontrivial (`def:temporal-order`) is `[Nontrivial D]`, now among the structure's own
-  binders and inherited by `FiniteTaskFrame`. `valid` and `SemanticConsequence`
+  binders and inherited by `ParamFiniteTaskFrame`. `valid` and `SemanticConsequence`
   (Semantics/Validity.lean) already carried it and still do — they bind `D` themselves, so
   theirs is not made redundant by the structure's; what the structure's binder removes is the
-  possibility of writing `TaskFrame D` at a trivial `D` at all.
+  possibility of writing `ParamTaskFrame D` at a trivial `D` at all.
 
 All four of `def:frame`'s axioms are now carried by the structure, so the former entries here
 for *Seriality*, *Limit*, *Spherical*, and the interpolation direction of *Compositionality*
@@ -104,36 +104,36 @@ routes are `limit_of_succOrder` and `limit_of_shift` below.
 
 ## Main Definitions
 
-- `TaskFrame D`: Structure with world states, times of type `D`, task relation, and constraints
-- `TaskFrame.nullity_identity`: Zero duration iff identity (`TaskRel w 0 u ↔ w = u`) —
+- `ParamTaskFrame D`: Structure with world states, times of type `D`, task relation, and constraints
+- `ParamTaskFrame.nullity_identity`: Zero duration iff identity (`TaskRel w 0 u ↔ w = u`) —
   stronger than the paper's derived `lem:nullity`; open design question, see its docstring
-- `TaskFrame.comp`: the paper's biconditional *Compositionality* (`0 ≤ x`, `0 ≤ y`), stated as
-  `TaskFrame.Compositional TaskRel`
-- `TaskFrame.serial`, `TaskFrame.limit`, `TaskFrame.spherical`: *Seriality*, *Limit*, and
-  *Spherical*, stated as `TaskFrame.Serial TaskRel`, *Limit*'s literal transcribed shape, and
-  `TaskFrame.Spherical TaskRel`
-- `TaskFrame.forward_comp`: the `←` (composition) half of `comp`, derived; its statement is
+- `ParamTaskFrame.comp`: the paper's biconditional *Compositionality* (`0 ≤ x`, `0 ≤ y`), stated as
+  `ParamTaskFrame.Compositional TaskRel`
+- `ParamTaskFrame.serial`, `ParamTaskFrame.limit`, `ParamTaskFrame.spherical`: *Seriality*, *Limit*, and
+  *Spherical*, stated as `ParamTaskFrame.Serial TaskRel`, *Limit*'s literal transcribed shape, and
+  `ParamTaskFrame.Spherical TaskRel`
+- `ParamTaskFrame.forward_comp`: the `←` (composition) half of `comp`, derived; its statement is
   verbatim that of the former field of the same name
-- `TaskFrame.interpolates`: the `→` (interpolation) half of `comp`, derived, definitionally
-  `TaskFrame.Interpolates TaskRel`
-- `TaskFrame.converse`: The definitional converse convention (`TaskRel w d u ↔ TaskRel u (-d) w`)
-- `TaskFrame.nullity`: Derived reflexivity theorem (`TaskRel w 0 w`, matching `lem:nullity`)
-- `TaskFrame.Fib`, `TaskFrame.cone`, `TaskFrame.Seg`, `TaskFrame.DirectedFamily`,
-  `TaskFrame.IsFiber`, `TaskFrame.IsSegment`: the `def:task-relation` / `def:directed`
+- `ParamTaskFrame.interpolates`: the `→` (interpolation) half of `comp`, derived, definitionally
+  `ParamTaskFrame.Interpolates TaskRel`
+- `ParamTaskFrame.converse`: The definitional converse convention (`TaskRel w d u ↔ TaskRel u (-d) w`)
+- `ParamTaskFrame.nullity`: Derived reflexivity theorem (`TaskRel w 0 w`, matching `lem:nullity`)
+- `ParamTaskFrame.Fib`, `ParamTaskFrame.cone`, `ParamTaskFrame.Seg`, `ParamTaskFrame.DirectedFamily`,
+  `ParamTaskFrame.IsFiber`, `ParamTaskFrame.IsSegment`: the `def:task-relation` / `def:directed`
   apparatus over a bare relation
-- `TaskFrame.Spherical`, `TaskFrame.Serial`, `TaskFrame.Interpolates`,
-  `TaskFrame.Compositional`: `def:frame`'s axioms as predicates over a bare relation, hosted
+- `ParamTaskFrame.Spherical`, `ParamTaskFrame.Serial`, `ParamTaskFrame.Interpolates`,
+  `ParamTaskFrame.Compositional`: `def:frame`'s axioms as predicates over a bare relation, hosted
   above the structure so that its fields cite them *definitionally* (a field's type may only
   mention earlier declarations). *Limit* is deliberately unnamed and used in its literal
   transcribed shape
 
 ## Main Results
 
-- `TaskFrame.limit_of_succOrder`: *Limit* is automatic over a discrete duration
+- `ParamTaskFrame.limit_of_succOrder`: *Limit* is automatic over a discrete duration
   type (`[SuccOrder D] [NoMaxOrder D]`)
-- `TaskFrame.limit_of_shift`: *Limit* is automatic for deterministic-shift frames
+- `ParamTaskFrame.limit_of_shift`: *Limit* is automatic for deterministic-shift frames
   over any nontrivial duration type, dense included
-- `TaskFrame.exists_uniform_radius_of_finite`: on a finite carrier, *Limit* upgrades to a
+- `ParamTaskFrame.exists_uniform_radius_of_finite`: on a finite carrier, *Limit* upgrades to a
   uniform positive radius around each state
 - Example task frames for testing and demonstrations (polymorphic over time type)
 
@@ -146,7 +146,7 @@ routes are `limit_of_succOrder` and `limit_of_shift` below.
   paper's reflexivity-only `lem:nullity`)
 - Compositionality: currently only the `←` (composition) half on the positive cone; the paper's
   axiom is a biconditional whose interpolation direction is not yet carried
-- Typeclass parameter convention: `(D : Type*)` explicit, ordered group instances implicit
+- Typeclass parameter convention: `(D : Type)` explicit, ordered group instances implicit
 
 ## References
 
@@ -163,22 +163,22 @@ namespace FormalSystem.Semantics
 ## The `def:frame` apparatus and axiom predicates
 
 The fiber/cone/segment/directed-family apparatus and three of `def:frame`'s four axioms are
-declared **before** the `TaskFrame` structure, not after it. That ordering is load bearing: a
+declared **before** the `ParamTaskFrame` structure, not after it. That ordering is load bearing: a
 structure field's type may only mention declarations that precede it, so these are the
 declarations the structure's axiom fields are stated from. Everything here is over a bare
 relation `R : W → D → W → Prop`, so nothing in this block depends on the structure.
 -/
 
-namespace TaskFrame
+namespace ParamTaskFrame
 
-variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
+variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
 
 /-!
 ### Fiber, cone, segment, and directed-family apparatus
 
 The supporting apparatus of the paper's frame definition (`def:frame`), stated — like the Limit
 discharge helpers above — against a bare relation `R : W → D → W → Prop` rather than a
-`TaskFrame` field, so the definitions apply verbatim to a frame's `TaskRel` whether or not the
+`ParamTaskFrame` field, so the definitions apply verbatim to a frame's `TaskRel` whether or not the
 corresponding axioms are carried as structure data. This apparatus is what makes the paper's
 *Spherical* axiom ("`⋂ 𝒮 ≠ ∅` for any `⊇`-directed family `𝒮` of nonempty fibers and segments")
 statable at all.
@@ -311,9 +311,9 @@ interpolation half of *Compositionality*; *Limit* is deliberately left unnamed a
 literal transcribed shape (see the discharge helpers `limit_of_succOrder` and `limit_of_shift`
 above).
 
-**These predicates are the sole form in which the axioms are available.** When the `TaskFrame`
-structure grows the corresponding fields, `TaskFrame.spherical` must be *definitionally*
-`Spherical TaskRel`, `TaskFrame.serial` definitionally `Serial TaskRel`, and the interpolation
+**These predicates are the sole form in which the axioms are available.** When the `ParamTaskFrame`
+structure grows the corresponding fields, `ParamTaskFrame.spherical` must be *definitionally*
+`Spherical TaskRel`, `ParamTaskFrame.serial` definitionally `Serial TaskRel`, and the interpolation
 half of biconditional *Compositionality* definitionally `Interpolates TaskRel`, **all as defined
 here**. Discharging a downstream hypothesis is then a mechanical substitution (`F.spherical`,
 `F.serial`, `F.interpolates`) with zero restatement. If a field lands whose statement differs,
@@ -326,7 +326,7 @@ sole application site the paper names, never an inert structure field.
 
 They are hosted in this module, rather than beside `Constraints` in `FrameAxioms.lean`, for a
 structural reason: a structure field's type may only mention declarations that precede it, so a
-predicate declared in a module that *imports* this one could never become a `TaskFrame` field.
+predicate declared in a module that *imports* this one could never become a `ParamTaskFrame` field.
 -/
 
 /--
@@ -356,7 +356,7 @@ Three points of the transcription, each load bearing:
 3. "$\bigcap \mathcal{S} \neq \emptyset$" is `(⋂₀ S).Nonempty`.
 
 This predicate is the sole form in which *Spherical* is available: it is what the Step Lemma's
-proof consumes at the one application site the paper names, and what a future `TaskFrame`
+proof consumes at the one application site the paper names, and what a future `ParamTaskFrame`
 spherical field must be definitionally equal to.
 -/
 def Spherical {W : Type} (R : W → D → W → Prop) : Prop :=
@@ -385,7 +385,7 @@ if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some $u \in W$."
 
 *Compositionality* is a **biconditional**, and both directions are load bearing. The
 right-to-left direction — composition — is already the existing structure field
-`TaskFrame.forward_comp`. This definition is the missing left-to-right direction: a task of
+`ParamTaskFrame.forward_comp`. This definition is the missing left-to-right direction: a task of
 duration `x + y` can be *interpolated* at every intermediate point. The full biconditional axiom
 is therefore `forward_comp ∧ Interpolates`.
 
@@ -409,8 +409,8 @@ itself rather than either half: unfolded, it is
 ```
 
 and its two halves are `Interpolates R` (the `→` direction, above) and the composition law that
-`TaskFrame.forward_comp` records (the `←` direction). Naming the conjunction as a predicate — in
-the same style as `Serial` and `Spherical` — is what lets the `TaskFrame` `comp` field be stated
+`ParamTaskFrame.forward_comp` records (the `←` direction). Naming the conjunction as a predicate — in
+the same style as `Serial` and `Spherical` — is what lets the `ParamTaskFrame` `comp` field be stated
 by *citation* rather than by restating the shape inline, and lets `comp_of` assemble it from the
 two halves without higher-order unification against an applied relation.
 
@@ -422,7 +422,7 @@ def Compositional {W : Type} (R : W → D → W → Prop) : Prop :=
 /--
 Assemble the biconditional *Compositionality* axiom from its two halves: the interpolation
 direction (`Interpolates`, the `→`) and the composition direction (the `←`, which is the shape
-`TaskFrame.forward_comp` has).
+`ParamTaskFrame.forward_comp` has).
 
 This is the citation route every construction site uses: a site supplies whichever
 `Interpolates` proof its relation class already has, together with the composition proof it
@@ -434,7 +434,7 @@ theorem comp_of {W : Type} {R : W → D → W → Prop} (hint : Interpolates R)
   fun w v x y hx hy =>
     ⟨hint w v x y hx hy, fun ⟨u, h1, h2⟩ => hfwd w u v x y hx hy h1 h2⟩
 
-/-- The composition (`←`) half of `Compositional`: the shape `TaskFrame.forward_comp` records. -/
+/-- The composition (`←`) half of `Compositional`: the shape `ParamTaskFrame.forward_comp` records. -/
 theorem forward_of_comp {W : Type} {R : W → D → W → Prop} (h : Compositional R) :
     ∀ w u v x y, 0 ≤ x → 0 ≤ y → R w x u → R u y v → R w (x + y) v :=
   fun w u v x y hx hy h1 h2 => (h w v x y hx hy).mpr ⟨u, h1, h2⟩
@@ -444,7 +444,7 @@ theorem interpolates_of_comp {W : Type} {R : W → D → W → Prop} (h : Compos
     Interpolates R :=
   fun w v x y hx hy hR => (h w v x y hx hy).mp hR
 
-end TaskFrame
+end ParamTaskFrame
 
 /--
 Task frame for bimodal logic TM.
@@ -490,7 +490,7 @@ is projected out as `forward_comp` and its left-to-right (interpolation) directi
 composition is not prohibited but inexpressible at the primitive level, since primitive
 durations are nonnegative.
 -/
-structure TaskFrame (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+structure ParamTaskFrame (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     [Nontrivial D] where
   /-- Type of world states -/
   WorldState : Type
@@ -501,11 +501,11 @@ structure TaskFrame (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMo
   *Seriality* quantifies existentially over `W` at every duration, and `cor:occurrence` builds a
   total history through a *given* world state. A frame with an empty carrier satisfies every one
   of the four axioms vacuously while validating `⊥`, which is exactly what
-  `Semantics/Validity.lean`'s `TaskFrame.not_validOn_bot` has to rule out — it did so by taking a
+  `Semantics/Validity.lean`'s `ParamTaskFrame.not_validOn_bot` has to rule out — it did so by taking a
   world state as an extra argument precisely because this field was absent.
 
   Carried as a field rather than as an instance binder on the structure: instance binders on
-  `TaskFrame` would have to be supplied at all 600-odd mentions of the type, whereas a field is
+  `ParamTaskFrame` would have to be supplied at all 600-odd mentions of the type, whereas a field is
   discharged once per frame at its construction site and read off as `F.nonempty` thereafter.
   -/
   nonempty : Nonempty WorldState
@@ -524,7 +524,7 @@ structure TaskFrame (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMo
 
   * **Reflexivity** (`w = u → TaskRel w 0 u`) is `lem:nullity`, derived choice-free from
     *Seriality* at `x = 0` plus *Limit*. It is already proved in this tree as
-    `TaskFrame.nullity_of_serial_limit` (`Semantics/FrameAxioms.lean`).
+    `ParamTaskFrame.nullity_of_serial_limit` (`Semantics/FrameAxioms.lean`).
   * **Injectivity-at-zero** (`TaskRel w 0 u → w = u`) follows from the `limit` field **alone**,
     by instantiating its cone witness at `y := 0`: for every `x > 0` we have `|0| < x` and
     `TaskRel w 0 u`, so `limit` forces `u = w`. *Seriality* is not needed for this half.
@@ -542,11 +542,11 @@ structure TaskFrame (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMo
     hLim w u fun x hx => ⟨0, by simpa using hx, h⟩
 
   theorem nullity_iff_of_serial_limit {W : Type} {R : W → D → W → Prop}
-      (hSer : TaskFrame.Serial R)
+      (hSer : ParamTaskFrame.Serial R)
       (hLim : ∀ w u, (∀ x : D, 0 < x → ∃ y, |y| < x ∧ R w y u) → u = w)
       (w u : W) : R w 0 u ↔ w = u :=
     ⟨fun h => (inj_at_zero_of_limit hLim w u h).symm,
-     fun h => h ▸ TaskFrame.nullity_of_serial_limit hSer hLim w⟩
+     fun h => h ▸ ParamTaskFrame.nullity_of_serial_limit hSer hLim w⟩
   ```
 
   **Consequences.** The Lean frame class
@@ -568,23 +568,23 @@ structure TaskFrame (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMo
   "$w \Rightarrow_{x + y} v$ if and only if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some
   $u \in W$").
 
-  Stated by citation as `TaskFrame.Compositional TaskRel`, never restated inline. Unfolded it is
+  Stated by citation as `ParamTaskFrame.Compositional TaskRel`, never restated inline. Unfolded it is
 
   ```
   ∀ w v x y, 0 ≤ x → 0 ≤ y → (TaskRel w (x + y) v ↔ ∃ u, TaskRel w x u ∧ TaskRel u y v)
   ```
 
   Both directions are load bearing. Its `←` (composition) half is projected back out as the
-  derived `TaskFrame.forward_comp`, which keeps its former statement verbatim, so every consumer
+  derived `ParamTaskFrame.forward_comp`, which keeps its former statement verbatim, so every consumer
   of the old field is untouched; its `→` (interpolation) half is projected out as
-  `TaskFrame.interpolates`, definitionally `TaskFrame.Interpolates TaskRel`.
+  `ParamTaskFrame.interpolates`, definitionally `ParamTaskFrame.Interpolates TaskRel`.
 
   The `0 ≤ x`, `0 ≤ y` hypotheses are how the paper's positive-cone domain restriction is
   expressed against the two-sided extended relation. Composition over negative durations is
   derived (`backward_comp`); mixed-sign composition is inexpressible at the primitive level
   rather than prohibited.
   -/
-  comp : TaskFrame.Compositional TaskRel
+  comp : ParamTaskFrame.Compositional TaskRel
   /--
   The paper's **definitional converse convention**, packaged as structure data.
 
@@ -604,17 +604,17 @@ structure TaskFrame (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMo
   /--
   **The paper's *Seriality* axiom** (`def:frame#Seriality`, verbatim: "$w \Rightarrow_x u$ and
   $v \Rightarrow_x w$ for some $u, v \in W$"), stated by citation as
-  `TaskFrame.Serial TaskRel` — the bare-relation predicate of record, never restated inline.
+  `ParamTaskFrame.Serial TaskRel` — the bare-relation predicate of record, never restated inline.
   Every state has an `x`-successor and an `x`-predecessor at every `x ≥ 0`.
   -/
-  serial : TaskFrame.Serial TaskRel
+  serial : ParamTaskFrame.Serial TaskRel
   /--
   **The paper's *Limit* axiom** (`def:frame#Limit`, verbatim:
   "$\bigcap\limits_{x > 0} (w)_x = \set{w}$"), in the literal transcribed shape: if `u` lies in
   every positive cone of `w`, then `u` is `w`.
 
-  This is exactly what `TaskFrame.limit_of_succOrder`, `TaskFrame.limit_of_shift`, and the
-  class helpers conclude, and exactly what `TaskFrame.nullity_of_serial_limit`
+  This is exactly what `ParamTaskFrame.limit_of_succOrder`, `ParamTaskFrame.limit_of_shift`, and the
+  class helpers conclude, and exactly what `ParamTaskFrame.nullity_of_serial_limit`
   (`Semantics/FrameAxioms.lean`) consumes to derive `lem:nullity`.
   -/
   limit : ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ TaskRel w y u) → u = w
@@ -622,18 +622,18 @@ structure TaskFrame (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMo
   **The paper's *Spherical* axiom** (`def:frame#Spherical`, verbatim:
   "$\bigcap \mathcal{S} \neq \emptyset$ for any $\supseteq$-directed family $\mathcal{S}$ of
   nonempty fibers
-  and segments"), stated by citation as `TaskFrame.Spherical TaskRel` — the bare-relation
+  and segments"), stated by citation as `ParamTaskFrame.Spherical TaskRel` — the bare-relation
   predicate of record, never restated inline.
 
   This field is the one the Step Lemma consumes (`Semantics/Extension/Step.lean`), which is why
-  it must be *literally* `TaskFrame.Spherical`: a restatement, however equivalent, would make
+  it must be *literally* `ParamTaskFrame.Spherical`: a restatement, however equivalent, would make
   that consumption fail to typecheck. Fibers and segments stay two separate classes.
   -/
-  spherical : TaskFrame.Spherical TaskRel
+  spherical : ParamTaskFrame.Spherical TaskRel
 
-namespace TaskFrame
+namespace ParamTaskFrame
 
-variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
+variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
 
 /--
 **Composition on the positive cone — the `←` projection of the `comp` field.**
@@ -646,7 +646,7 @@ full biconditional (`def:frame#Compositionality`). Its statement here is that fo
 verbatim, so every consumer applies it exactly as before; only its status changed, from
 postulate to projection.
 -/
-theorem forward_comp (F : TaskFrame D) (w u v : F.WorldState) (x y : D)
+theorem forward_comp (F : ParamTaskFrame D) (w u v : F.WorldState) (x y : D)
     (hx : 0 ≤ x) (hy : 0 ≤ y) (h1 : F.TaskRel w x u) (h2 : F.TaskRel u y v) :
     F.TaskRel w (x + y) v :=
   forward_of_comp F.comp w u v x y hx hy h1 h2
@@ -655,10 +655,10 @@ theorem forward_comp (F : TaskFrame D) (w u v : F.WorldState) (x y : D)
 **Interpolation — the `→` projection of the `comp` field**, as the bare-relation predicate of
 record (`def:frame#Compositionality`'s left-to-right direction).
 
-Definitionally `Interpolates F.TaskRel`: `example (F : TaskFrame D) : Interpolates F.TaskRel :=
+Definitionally `Interpolates F.TaskRel`: `example (F : ParamTaskFrame D) : Interpolates F.TaskRel :=
 F.interpolates` elaborates. This is the form the Step Lemma chain consumes.
 -/
-theorem interpolates (F : TaskFrame D) : Interpolates F.TaskRel :=
+theorem interpolates (F : ParamTaskFrame D) : Interpolates F.TaskRel :=
   interpolates_of_comp F.comp
 
 /--
@@ -666,7 +666,7 @@ Derived nullity: zero-duration task is reflexive.
 
 This follows from `nullity_identity`: `TaskRel w 0 w` iff `w = w`, and `w = w` is trivial.
 -/
-theorem nullity (F : TaskFrame D) (w : F.WorldState) : F.TaskRel w 0 w :=
+theorem nullity (F : ParamTaskFrame D) (w : F.WorldState) : F.TaskRel w 0 w :=
   F.nullity_identity w w |>.mpr rfl
 
 /--
@@ -676,7 +676,7 @@ From `forward_comp` and `converse`, we can derive compositionality for non-posit
 If `TaskRel w x u` with `x ≤ 0` and `TaskRel u y v` with `y ≤ 0`,
 then `TaskRel w (x + y) v`.
 -/
-theorem backward_comp (F : TaskFrame D) (w u v : F.WorldState) (x y : D)
+theorem backward_comp (F : ParamTaskFrame D) (w u v : F.WorldState) (x y : D)
     (hx : x ≤ 0) (hy : y ≤ 0)
     (h1 : F.TaskRel w x u) (h2 : F.TaskRel u y v) :
     F.TaskRel w (x + y) v := by
@@ -705,7 +705,7 @@ The paper's *Limit* axiom (`def:frame#Limit`, verbatim: "$\bigcap\limits_{x > 0}
 ```
 
 The two theorems below are the two reusable ways to discharge that obligation. They are stated
-against a bare relation `R : W → D → W → Prop` rather than against a `TaskFrame` field, so they
+against a bare relation `R : W → D → W → Prop` rather than against a `ParamTaskFrame` field, so they
 apply verbatim to a frame's `TaskRel` whether or not the axiom is carried as structure data.
 (An earlier paper wave folded Nullity into this axiom's name; the paper's current name is
 simply *Limit*, and the helpers are named accordingly.)
@@ -839,7 +839,7 @@ theorem exists_uniform_radius_of_finite [Nontrivial D] {W : Type} [Fintype W]
 /-!
 ## Reusable axiom-class discharge helpers
 
-Every live `TaskFrame` construction in this library whose relation is *not* a deterministic
+Every live `ParamTaskFrame` construction in this library whose relation is *not* a deterministic
 shift falls into one of three relation classes, and each class discharges `def:frame`'s four
 axioms once and for all:
 
@@ -1210,9 +1210,9 @@ Simple unit-based task frame for testing.
 World states are Unit (trivial), task relation is always true.
 This is the simplest possible task frame, polymorphic over temporal type `D`.
 -/
-def trivialFrame {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+def trivialFrame {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     [Nontrivial D] :
-    TaskFrame D where
+    ParamTaskFrame D where
   WorldState := Unit
   nonempty := inferInstanceAs (Nonempty Unit)
   TaskRel := fun _ _ _ => True
@@ -1273,9 +1273,9 @@ duration type `0 < x` is unsatisfiable, so *Limit*'s hypothesis is vacuous and t
 `u = w` cannot be reached. Every reference to this frame elaborates at `Int`, which supplies the
 instance.
 -/
-def staticFrame (W : Type) [Nonempty W] {D : Type*} [AddCommGroup D] [LinearOrder D]
+def staticFrame (W : Type) [Nonempty W] {D : Type} [AddCommGroup D] [LinearOrder D]
     [IsOrderedAddMonoid D] [Nontrivial D] :
-    TaskFrame D where
+    ParamTaskFrame D where
   WorldState := W
   nonempty := inferInstance
   TaskRel := fun w _ u => w = u
@@ -1343,9 +1343,9 @@ over a dense `D` the permissive relation puts every state in every cone of every
 *Limit* (`def:frame#Limit`) fails outright. Every reference to this frame outside
 `WorldHistory.universalNatFrame` elaborates at `Int`, which supplies both instances.
 -/
-def natFrame {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+def natFrame {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     [Nontrivial D] [SuccOrder D] [NoMaxOrder D] :
-    TaskFrame D where
+    ParamTaskFrame D where
   WorldState := Nat
   nonempty := inferInstanceAs (Nonempty Nat)
   TaskRel := fun w d u => d ≠ 0 ∨ w = u
@@ -1444,7 +1444,7 @@ theorem natFrame_spherical [SuccOrder D] [NoMaxOrder D] :
     Spherical (natFrame (D := D)).TaskRel :=
   spherical_of_permissive natFrame_rel_iff
 
-end TaskFrame
+end ParamTaskFrame
 
 /-!
 # Finite Task Frames and Models
@@ -1454,12 +1454,12 @@ These structures bundle the finiteness property for convenience in stating
 the Finite Model Property for TM logic.
 -/
 
-open TaskFrame
+open ParamTaskFrame
 
 /--
 A task frame with finitely many world states.
 
-This structure extends the basic `TaskFrame` with an explicit proof
+This structure extends the basic `ParamTaskFrame` with an explicit proof
 that the set of world states is finite. This is useful for stating
 the Finite Model Property and related results.
 
@@ -1469,23 +1469,194 @@ the Finite Model Property and related results.
 **Usage**: Used to package finite model constructions like `SemanticCanonicalFrame`
 into a standard format for the Finite Model Property.
 -/
-structure FiniteTaskFrame (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
-    [Nontrivial D] extends TaskFrame D where
+structure ParamFiniteTaskFrame (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+    [Nontrivial D] extends ParamTaskFrame D where
   /-- Proof that the set of world states is finite -/
   finite_world : Finite WorldState
 
-namespace FiniteTaskFrame
+namespace ParamFiniteTaskFrame
 
-variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
+variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
 
 /--
 Coercion from a finite task frame to its underlying task frame.
 This allows seamless use of existing definitions and theorems.
 -/
-instance : Coe (FiniteTaskFrame D) (TaskFrame D) where
-  coe F := F.toTaskFrame
+instance : Coe (ParamFiniteTaskFrame D) (ParamTaskFrame D) where
+  coe F := F.toParamTaskFrame
 
-end FiniteTaskFrame
+end ParamFiniteTaskFrame
+
+/-!
+# The bundled frame
+
+`def:frame` reads a task frame as `F = ⟨W, D, ⇒⟩`: the temporal order `D` is a *component* of
+the frame, on the same footing as the world-state carrier `W` and the task relation. The
+parameterized `ParamTaskFrame` above carries `D` as a type parameter instead, which is the
+deviation from the definition of record; `TaskFrame` below carries it as the field `Duration`,
+which is the conforming encoding.
+
+The consequence that motivates the change: a property of `D` alone cannot be predicated of a
+frame when `D` is an index, so density, discreteness and Dedekind completeness have to be
+quantified at the *carrier* rather than asserted of the frame. With `Duration` a field they are
+ordinary predicates on a `TaskFrame`.
+
+## The transitional bridge
+
+`ofParam` and `toParam` relate the two forms by a definitional isomorphism: both round trips
+hold by `rfl` (structure eta), and `(ofParam F).Duration` is `D` by `rfl`. That is what lets
+consumers migrate one import layer at a time with the build green throughout. The bridge, the
+`CoeOut` instance below and `ParamTaskFrame` itself are transitional scaffolding, removed once
+every consumer has crossed.
+
+`ofParam` is `@[reducible]` deliberately. Typeclass synthesis runs at *reducible* transparency;
+a plain `def` in the chain from a use site down to a `TaskFrame.mk` application stalls synthesis
+there, so `(ofParam F).addCommGroup` would fail to unify with the ambient `[AddCommGroup D]`
+binder even though the two are defeq at default transparency.
+-/
+
+/--
+**A task frame** `F = ⟨W, D, ⇒⟩` (`def:frame`), with the temporal order carried as the field
+`Duration`.
+
+The algebra of `Duration` — abelian group, linear order, order-compatible addition,
+nontriviality: `def:temporal-order`'s "nontrivial totally ordered abelian group" — is carried
+as instance-implicit *fields* rather than as instance binders on the structure, for the reason
+already recorded for `worldNonempty`: a binder must be supplied at every mention of the type,
+whereas a field is discharged once per frame at its construction site.
+
+Instance-implicit fields are in scope for the types of later fields, so the four axiom fields
+still cite the bare-relation predicates of record *definitionally* — see the definitional-content
+`example`s at the end of this module, which are what keep the frame and the Step Lemma chain
+from drifting apart.
+-/
+structure TaskFrame where
+  /-- The temporal order: the type of task durations (`def:temporal-order`). -/
+  Duration : Type
+  /-- `Duration` is an additive abelian group. -/
+  [addCommGroup : AddCommGroup Duration]
+  /-- `Duration` is linearly ordered. -/
+  [linearOrder : LinearOrder Duration]
+  /-- The order on `Duration` is compatible with addition. -/
+  [orderedAddMonoid : IsOrderedAddMonoid Duration]
+  /-- `Duration` is nontrivial: it has at least two elements. -/
+  [nontrivial : Nontrivial Duration]
+  /-- Type of world states. -/
+  WorldState : Type
+  /-- The world-state type is nonempty (`def:task-relation` reads `W` as a nonempty set). -/
+  [worldNonempty : Nonempty WorldState]
+  /-- Task relation: `TaskRel w x u` means `u` is reachable from `w` by a task of duration `x`. -/
+  TaskRel : WorldState → Duration → WorldState → Prop
+  /-- Zero-duration tasks relate exactly identical states (`lem:nullity`, plus its
+  injectivity-at-zero converse; both are derivable, and the field is retained for construction
+  ergonomics — see `ParamTaskFrame.nullity_identity`'s docstring). -/
+  nullity_identity : ∀ w u, TaskRel w 0 u ↔ w = u
+  /-- *Compositionality* (`def:frame#Compositionality`), whole, by citation. -/
+  comp : ParamTaskFrame.Compositional TaskRel
+  /-- The definitional converse convention (`def:task-relation`). -/
+  converse : ∀ w d u, TaskRel w d u ↔ TaskRel u (-d) w
+  /-- *Seriality* (`def:frame#Seriality`), by citation. -/
+  serial : ParamTaskFrame.Serial TaskRel
+  /-- *Limit* (`def:frame#Limit`), in the literal transcribed shape. -/
+  limit : ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ TaskRel w y u) → u = w
+  /-- *Spherical* (`def:frame#Spherical`), by citation. This is the field the Step Lemma
+  consumes, which is why it must be literally the recorded predicate. -/
+  spherical : ParamTaskFrame.Spherical TaskRel
+
+attribute [instance] TaskFrame.addCommGroup TaskFrame.linearOrder TaskFrame.orderedAddMonoid
+  TaskFrame.nontrivial TaskFrame.worldNonempty
+
+/--
+A bundled task frame with finitely many world states.
+-/
+structure FiniteTaskFrame extends TaskFrame where
+  /-- Proof that the set of world states is finite -/
+  finite_world : Finite WorldState
+
+namespace TaskFrame
+
+/--
+**Parameterized → bundled** (transitional).
+
+`@[reducible]` is load-bearing: see the section docstring above.
+-/
+@[reducible] def ofParam {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+    [Nontrivial D] (F : ParamTaskFrame D) : TaskFrame where
+  Duration := D
+  WorldState := F.WorldState
+  worldNonempty := F.nonempty
+  TaskRel := F.TaskRel
+  nullity_identity := F.nullity_identity
+  comp := F.comp
+  converse := F.converse
+  serial := F.serial
+  limit := F.limit
+  spherical := F.spherical
+
+/-- **Bundled → parameterized** (transitional). -/
+@[reducible] def toParam (F : TaskFrame) : ParamTaskFrame F.Duration where
+  WorldState := F.WorldState
+  nonempty := F.worldNonempty
+  TaskRel := F.TaskRel
+  nullity_identity := F.nullity_identity
+  comp := F.comp
+  converse := F.converse
+  serial := F.serial
+  limit := F.limit
+  spherical := F.spherical
+
+/-- Transitional coercion, so that a not-yet-migrated `ParamTaskFrame` value can still be
+handed to an already-migrated definition. Removed with the rest of the bridge. -/
+instance instCoeOutParamTaskFrame {D : Type} [AddCommGroup D] [LinearOrder D]
+    [IsOrderedAddMonoid D] [Nontrivial D] : CoeOut (ParamTaskFrame D) TaskFrame :=
+  ⟨ofParam⟩
+
+end TaskFrame
+
+section BridgeChecks
+
+variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
+
+-- The bridge is a definitional isomorphism: both round trips are `rfl` by structure eta.
+example (F : TaskFrame) : TaskFrame.ofParam F.toParam = F := rfl
+example (F : ParamTaskFrame D) : (TaskFrame.ofParam F).toParam = F := rfl
+example (F : ParamTaskFrame D) : (TaskFrame.ofParam F).Duration = D := rfl
+
+-- The exported algebra on a bundled frame's `Duration`.
+example (F : TaskFrame) (x y : F.Duration) : x + y = y + x := add_comm x y
+example (F : TaskFrame) (x y : F.Duration) : x ≤ y ∨ y ≤ x := le_total x y
+example (F : TaskFrame) : ∃ x y : F.Duration, x ≠ y := exists_pair_ne F.Duration
+example (F : TaskFrame) : Nonempty F.WorldState := inferInstance
+
+end BridgeChecks
+
+/-! ## The definitional-content checks, bundled form
+
+The same check as the parameterized one at the end of this module: each axiom field of the
+bundled `TaskFrame` is *literally* the recorded bare-relation predicate, so the Step Lemma's
+consumption of `spherical` stays definitional.
+-/
+
+section BundledDefinitionalContent
+
+example (F : TaskFrame) : ParamTaskFrame.Serial F.TaskRel := F.serial
+
+example (F : TaskFrame) : ParamTaskFrame.Spherical F.TaskRel := F.spherical
+
+example (F : TaskFrame) : ParamTaskFrame.Compositional F.TaskRel := F.comp
+
+example (F : TaskFrame) : ParamTaskFrame.Interpolates F.TaskRel :=
+  ParamTaskFrame.interpolates_of_comp F.comp
+
+example (F : TaskFrame) :
+    ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ F.TaskRel w y u) → u = w := F.limit
+
+example (F : FiniteTaskFrame) : ParamTaskFrame.Spherical F.TaskRel := by
+  haveI := F.finite_world
+  exact ParamTaskFrame.spherical_of_finite F.TaskRel
+
+end BundledDefinitionalContent
+
 
 /-! ## The definitional-content checks
 
@@ -1500,27 +1671,27 @@ the moment a field's statement were restated rather than cited.
 
 section DefinitionalContent
 
-variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
+variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
 
-example (F : TaskFrame D) : TaskFrame.Serial F.TaskRel := F.serial
+example (F : ParamTaskFrame D) : ParamTaskFrame.Serial F.TaskRel := F.serial
 
-example (F : TaskFrame D) : TaskFrame.Spherical F.TaskRel := F.spherical
+example (F : ParamTaskFrame D) : ParamTaskFrame.Spherical F.TaskRel := F.spherical
 
-example (F : TaskFrame D) : TaskFrame.Compositional F.TaskRel := F.comp
+example (F : ParamTaskFrame D) : ParamTaskFrame.Compositional F.TaskRel := F.comp
 
-example (F : TaskFrame D) : TaskFrame.Interpolates F.TaskRel := F.interpolates
+example (F : ParamTaskFrame D) : ParamTaskFrame.Interpolates F.TaskRel := F.interpolates
 
-example (F : TaskFrame D) :
+example (F : ParamTaskFrame D) :
     ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ F.TaskRel w y u) → u = w := F.limit
 
 /--
-`TaskFrame.spherical_of_finite` applies to a bundled `FiniteTaskFrame` — the shape every finite
+`ParamTaskFrame.spherical_of_finite` applies to a bundled `ParamFiniteTaskFrame` — the shape every finite
 construction actually has. `finite_world` is a plain *field*, not an instance, so the `haveI` is
 required at every such use site; that is what this check pins.
 -/
-example (F : FiniteTaskFrame D) : TaskFrame.Spherical F.TaskRel := by
+example (F : ParamFiniteTaskFrame D) : ParamTaskFrame.Spherical F.TaskRel := by
   haveI := F.finite_world
-  exact TaskFrame.spherical_of_finite F.TaskRel
+  exact ParamTaskFrame.spherical_of_finite F.TaskRel
 
 end DefinitionalContent
 

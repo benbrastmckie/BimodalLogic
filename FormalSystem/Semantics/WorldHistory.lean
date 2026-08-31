@@ -97,8 +97,8 @@ exists (so the empty history is no longer a legal Lean `WorldHistory`), and the 
 layer exists as its own structure, since the paper's partial history requires nonemptiness
 WITHOUT convexity and therefore cannot be carved out by weakening this one.
 -/
-structure WorldHistory {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D] (F :
-      TaskFrame D) extends PartialHistory F where
+structure WorldHistory {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D] (F :
+      ParamTaskFrame D) extends PartialHistory F where
   /--
   Convexity constraint: domain has no temporal gaps.
 
@@ -113,7 +113,7 @@ structure WorldHistory {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAd
 
 namespace WorldHistory
 
-variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D] {F : TaskFrame D}
+variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D] {F : ParamTaskFrame D}
 
 /--
 Universal world history over all time (requires explicit reflexivity proof).
@@ -149,7 +149,7 @@ use the frame-specific constructors `universalTrivialFrame` or `universalNatFram
 - `w`: The constant world state for all times
 - `h_refl`: Proof that the frame is reflexive at state `w` for all durations
 -/
-def universal (F : TaskFrame D) (w : F.WorldState)
+def universal (F : ParamTaskFrame D) (w : F.WorldState)
     (h_refl : ∀ d : D, F.TaskRel w d w) : WorldHistory F where
   domain := fun _ => True
   nonempty_domain := ⟨0, True.intro⟩
@@ -169,8 +169,8 @@ Trivial world history for the trivial frame.
 Since trivial frame's task relation is always true, this always works.
 The full domain is convex.
 -/
-def trivial {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D] :
-    WorldHistory (TaskFrame.trivialFrame (D := D)) where
+def trivial {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D] :
+    WorldHistory (ParamTaskFrame.trivialFrame (D := D)) where
   domain := fun _ => True
   nonempty_domain := ⟨0, True.intro⟩
   convex := by
@@ -190,9 +190,9 @@ This is a variant of `trivial` that allows specifying the constant state
 Since trivialFrame's task relation is always true, any constant history respects the task relation.
 The full domain is convex.
 -/
-def universalTrivialFrame {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
-    (w : (TaskFrame.trivialFrame (D := D)).WorldState) :
-    WorldHistory (TaskFrame.trivialFrame (D := D)) where
+def universalTrivialFrame {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
+    (w : (ParamTaskFrame.trivialFrame (D := D)).WorldState) :
+    WorldHistory (ParamTaskFrame.trivialFrame (D := D)) where
   domain := fun _ => True
   nonempty_domain := ⟨0, True.intro⟩
   convex := by
@@ -212,9 +212,9 @@ satisfies `respects_task` because `n = n` holds (right disjunct).
 This demonstrates that frames with `nullity_identity` admit constant histories
 as long as zero-duration relates identical states. The full domain is convex.
 -/
-def universalNatFrame {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
+def universalNatFrame {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
       [SuccOrder D] [NoMaxOrder D] (n : Nat) :
-    WorldHistory (TaskFrame.natFrame (D := D)) where
+    WorldHistory (ParamTaskFrame.natFrame (D := D)) where
   domain := fun _ => True
   nonempty_domain := ⟨0, True.intro⟩
   convex := by
@@ -449,7 +449,7 @@ theorem neg_injective (s t : D) : -s = -t ↔ s = t := by
 $\F$ is denoted $H_{\F}$."
 
 Totality is inherited from `PartialHistory.IsTotal`; `WorldHistory.IsTotal` below is the
-`WorldHistory`-level spelling of the same predicate, not a second notion. `TaskFrame.HF` bundles
+`WorldHistory`-level spelling of the same predicate, not a second notion. `ParamTaskFrame.HF` bundles
 it as a type, per Decision A of `specs/decisions/total-history-validity-decisions.md`: the
 predicate form is used wherever totality is a *hypothesis*, and the subtype form only where `H_F`
 is quantified over as an *object* in its own right.
@@ -509,13 +509,13 @@ form `(τ : WorldHistory F) (hτ : τ.IsTotal)` is used instead.
 This is **not** a parallel validity notion or an alias: there is exactly one validity predicate,
 and `HF` is a bundled name for the same `IsTotal` predicate, bridged only by `.val` / `.property`.
 -/
-def TaskFrame.HF {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
-    (F : TaskFrame D) : Type _ :=
+def ParamTaskFrame.HF {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
+    (F : ParamTaskFrame D) : Type _ :=
   {τ : WorldHistory F // τ.IsTotal}
 
-namespace TaskFrame.HF
+namespace ParamTaskFrame.HF
 
-variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D] {F : TaskFrame D}
+variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D] {F : ParamTaskFrame D}
 
 /-- Time shift lifted to `H_F`, through `WorldHistory.isTotal_timeShift`. -/
 def timeShift (τ : F.HF) (Δ : D) : F.HF :=
@@ -524,6 +524,6 @@ def timeShift (τ : F.HF) (Δ : D) : F.HF :=
 @[simp]
 theorem timeShift_val (τ : F.HF) (Δ : D) : (τ.timeShift Δ).val = τ.val.timeShift Δ := rfl
 
-end TaskFrame.HF
+end ParamTaskFrame.HF
 
 end FormalSystem.Semantics

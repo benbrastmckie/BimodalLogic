@@ -76,7 +76,7 @@ Uses `Type` (not `Type*`) to avoid universe-level issues in proofs, as `valid` d
 -/
 def BLValid (φ : BLFormula) : Prop :=
   ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
-    (F : TaskFrame D) (M : TaskModel F)
+    (F : ParamTaskFrame D) (M : TaskModel F)
     (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
     BLTruthAt M τ t φ
 
@@ -88,7 +88,7 @@ Binder-for-binder mirror of `Semantics.SemanticConsequence`.
 -/
 def BLSemanticConsequence (Γ : BaseLanguage.Context) (φ : BLFormula) : Prop :=
   ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
-    (F : TaskFrame D) (M : TaskModel F)
+    (F : ParamTaskFrame D) (M : TaskModel F)
     (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
     (∀ ψ ∈ Γ, BLTruthAt M τ t ψ) →
     BLTruthAt M τ t φ
@@ -102,7 +102,7 @@ Binder-for-binder mirror of `Semantics.ValidDense`.
 def BLValidDense (φ : BLFormula) : Prop :=
   ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [DenselyOrdered D]
     [Nontrivial D]
-    (F : TaskFrame D) (M : TaskModel F)
+    (F : ParamTaskFrame D) (M : TaskModel F)
     (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
     BLTruthAt M τ t φ
 
@@ -115,7 +115,7 @@ Binder-for-binder mirror of `Semantics.ValidDiscrete`.
 def BLValidDiscrete (φ : BLFormula) : Prop :=
   ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [SuccOrder D] [PredOrder D]
     [IsSuccArchimedean D] [IsPredArchimedean D] [Nontrivial D]
-    (F : TaskFrame D) (M : TaskModel F)
+    (F : ParamTaskFrame D) (M : TaskModel F)
     (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
     BLTruthAt M τ t φ
 
@@ -133,7 +133,7 @@ def BLValidDedekindDense (φ : BLFormula) : Prop :=
   ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [DenselyOrdered D]
     [Nontrivial D]
     (_ : ∀ s : Set D, s.Nonempty → BddAbove s → ∃ x, IsLUB s x)
-    (F : TaskFrame D) (M : TaskModel F)
+    (F : ParamTaskFrame D) (M : TaskModel F)
     (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
     BLTruthAt M τ t φ
 

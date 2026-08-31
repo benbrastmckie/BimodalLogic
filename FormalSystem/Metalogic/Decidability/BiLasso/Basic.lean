@@ -10,7 +10,7 @@ import FormalSystem.Metalogic.Decidability.IntPresentation
 # `BiLasso` — a Finitely Presented Bi-Infinite Ultimately-Periodic Step Path
 
 A decision procedure for a presented ℤ-frame cannot quantify over `H_F` directly: over ℤ that set
-is exactly the bi-infinite step-paths (`TaskFrame.mem_HF_iff_adjacent`), and there are uncountably
+is exactly the bi-infinite step-paths (`ParamTaskFrame.mem_HF_iff_adjacent`), and there are uncountably
 many. This module supplies the finite presentation such a procedure enumerates instead.
 
 A `BiLasso` is three lists of states — `back`, `mid`, `fwd` — decoded into a function
@@ -270,7 +270,7 @@ theorem unroll_isStepPath (L : BiLasso P) : IsStepPath P.toTaskFrame L.unroll :=
 
 /-- The decoded path as an element of `H_F` — the form `TruthAt` consumes. -/
 def toHF (L : BiLasso P) : P.toTaskFrame.HF :=
-  TaskFrame.HFofStepPath P.toTaskFrame L.unroll L.unroll_isStepPath
+  ParamTaskFrame.HFofStepPath P.toTaskFrame L.unroll L.unroll_isStepPath
 
 @[simp]
 theorem toHF_path (L : BiLasso P) : L.toHF.path = L.unroll := rfl

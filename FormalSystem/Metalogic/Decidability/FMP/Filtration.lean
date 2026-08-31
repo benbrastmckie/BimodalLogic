@@ -265,7 +265,7 @@ A more refined "smallest filtration" could be used for preserving
 additional frame properties (reflexivity, transitivity, etc.).
 -/
 
-variable (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
+variable (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
 
 /--
 Refined filtered task relation.
@@ -286,7 +286,7 @@ world sits in every cone of every other one (for any radius `x > 0` pick `y ≠ 
 and the paper's *Limit* axiom (`def:frame#Limit`, verbatim:
 "$\bigcap\limits_{x > 0} (w)_x = \set{w}$") collapses outright. Over a discrete `D` the axiom is
 restored, because `|y| < Order.succ 0` forces `y = 0` — this is exactly what
-`TaskFrame.limit_of_succOrder` proves. `TaskFrame.exists_uniform_radius_of_finite` records the
+`ParamTaskFrame.limit_of_succOrder` proves. `ParamTaskFrame.exists_uniform_radius_of_finite` records the
 same fact from the other side: a *finite* frame satisfying *Limit* over a dense duration type is
 temporally rigid, so the filtration and FMP frames cannot both be finite and dense-polymorphic.
 The restriction is therefore forced by the axiom rather than adopted for convenience.
@@ -296,7 +296,7 @@ and `filteredFiniteFrame` — is itself polymorphic in `D` and carries the same 
 elaborates at a dense duration type, and nothing outside `FMP/` refers to any of them.
 -/
 noncomputable def RefinedFilteredTaskFrame [SuccOrder D] [NoMaxOrder D]
-    (phi : Formula) : TaskFrame D where
+    (phi : Formula) : ParamTaskFrame D where
   WorldState := FilteredWorld phi
   nonempty := filteredWorld_nonempty phi
   TaskRel := refinedFilteredTaskRel D phi
@@ -309,8 +309,8 @@ noncomputable def RefinedFilteredTaskFrame [SuccOrder D] [NoMaxOrder D]
       exact h
     · intro h
       simp [h]
-  comp := TaskFrame.comp_of
-    (TaskFrame.interpolates_of_permissive fun w d u => by
+  comp := ParamTaskFrame.comp_of
+    (ParamTaskFrame.interpolates_of_permissive fun w d u => by
       by_cases hd : d = 0 <;> simp [refinedFilteredTaskRel, hd])
     (by
       intro w u v x y hx hy h_wu h_uv
@@ -337,11 +337,11 @@ noncomputable def RefinedFilteredTaskFrame [SuccOrder D] [NoMaxOrder D]
         simp only [hy0, ↓reduceIte] at h_uv
         exact h_wu.trans h_uv
       · simp [hxy])
-  serial := TaskFrame.serial_of_permissive fun w d u => by
+  serial := ParamTaskFrame.serial_of_permissive fun w d u => by
     by_cases hd : d = 0 <;> simp [refinedFilteredTaskRel, hd]
-  limit := TaskFrame.limit_of_permissive fun w d u => by
+  limit := ParamTaskFrame.limit_of_permissive fun w d u => by
     by_cases hd : d = 0 <;> simp [refinedFilteredTaskRel, hd]
-  spherical := TaskFrame.spherical_of_permissive fun w d u => by
+  spherical := ParamTaskFrame.spherical_of_permissive fun w d u => by
     by_cases hd : d = 0 <;> simp [refinedFilteredTaskRel, hd]
   converse := by
     intro w d u
@@ -379,15 +379,15 @@ theorem RefinedFilteredTaskFrame_rel_iff [SuccOrder D] [NoMaxOrder D] (phi : For
 /-- *Seriality* (`def:frame#Seriality`, verbatim: "$w \Rightarrow_x u$ and $v \Rightarrow_x w$
 for some $u, v \in W$") for the refined filtered frame, via the `w = u` disjunct. -/
 theorem RefinedFilteredTaskFrame_serial [SuccOrder D] [NoMaxOrder D] (phi : Formula) :
-    TaskFrame.Serial (RefinedFilteredTaskFrame D phi).TaskRel :=
-  TaskFrame.serial_of_permissive (RefinedFilteredTaskFrame_rel_iff D phi)
+    ParamTaskFrame.Serial (RefinedFilteredTaskFrame D phi).TaskRel :=
+  ParamTaskFrame.serial_of_permissive (RefinedFilteredTaskFrame_rel_iff D phi)
 
 /-- The interpolation half of *Compositionality* (`def:frame#Compositionality`, verbatim:
 "$w \Rightarrow_{x + y} v$ if and only if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some
 $u \in W$") for the refined filtered frame. -/
 theorem RefinedFilteredTaskFrame_interpolates [SuccOrder D] [NoMaxOrder D] (phi : Formula) :
-    TaskFrame.Interpolates (RefinedFilteredTaskFrame D phi).TaskRel :=
-  TaskFrame.interpolates_of_permissive (RefinedFilteredTaskFrame_rel_iff D phi)
+    ParamTaskFrame.Interpolates (RefinedFilteredTaskFrame D phi).TaskRel :=
+  ParamTaskFrame.interpolates_of_permissive (RefinedFilteredTaskFrame_rel_iff D phi)
 
 /-- *Limit* (`def:frame#Limit`, verbatim: "$\bigcap\limits_{x > 0} (w)_x = \set{w}$") for the
 refined filtered frame, in the literal transcribed shape. This is the axiom the frame's
@@ -395,7 +395,7 @@ refined filtered frame, in the literal transcribed shape. This is the axiom the 
 for why the restriction is not removable. -/
 theorem RefinedFilteredTaskFrame_limit [SuccOrder D] [NoMaxOrder D] (phi : Formula) :
     ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ (RefinedFilteredTaskFrame D phi).TaskRel w y u) → u = w :=
-  TaskFrame.limit_of_permissive (RefinedFilteredTaskFrame_rel_iff D phi)
+  ParamTaskFrame.limit_of_permissive (RefinedFilteredTaskFrame_rel_iff D phi)
 
 /-- *Spherical* (`def:frame#Spherical`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
 $\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments") for the refined
@@ -403,8 +403,8 @@ filtered frame: every nonempty fiber and segment is the whole carrier (above dur
 singleton (at zero), and a directed family cannot contain two distinct singletons. Unlike
 *Limit*, this needs no restriction on `D`. -/
 theorem RefinedFilteredTaskFrame_spherical [SuccOrder D] [NoMaxOrder D] (phi : Formula) :
-    TaskFrame.Spherical (RefinedFilteredTaskFrame D phi).TaskRel :=
-  TaskFrame.spherical_of_permissive (RefinedFilteredTaskFrame_rel_iff D phi)
+    ParamTaskFrame.Spherical (RefinedFilteredTaskFrame D phi).TaskRel :=
+  ParamTaskFrame.spherical_of_permissive (RefinedFilteredTaskFrame_rel_iff D phi)
 
 /-!
 ## Equivalence Class Representatives

@@ -17,18 +17,18 @@ and proves the fiber/segment classification lemmas that `def:constraints` suppor
 
 *Spherical*, *Seriality*, and the interpolation half of *Compositionality* are `Prop`-valued
 predicates over a **bare task relation** `R : W → D → W → Prop`, and are declared in
-`Semantics/TaskFrame.lean` **above** the `TaskFrame` structure — a structure field's type may
+`Semantics/TaskFrame.lean` **above** the `ParamTaskFrame` structure — a structure field's type may
 only mention earlier declarations, so that is where they must live for the fields to cite them.
 This module consumes them.
 
 ## The fields, and the invariant they were held to
 
-`TaskFrame` now carries all four of `def:frame`'s axioms: `comp` (the full biconditional
-*Compositionality*, as `TaskFrame.Compositional TaskRel`), `serial`, `limit`, and `spherical`.
+`ParamTaskFrame` now carries all four of `def:frame`'s axioms: `comp` (the full biconditional
+*Compositionality*, as `ParamTaskFrame.Compositional TaskRel`), `serial`, `limit`, and `spherical`.
 The hard invariant recorded in `specs/decisions/total-history-validity-decisions.md` (the
-four-axiom frame-alignment decision) was met: `TaskFrame.spherical` is *definitionally*
-`Spherical TaskRel`, `TaskFrame.serial` is definitionally `Serial TaskRel`, and the
-interpolation half of biconditional *Compositionality* is available as `TaskFrame.interpolates`,
+four-axiom frame-alignment decision) was met: `ParamTaskFrame.spherical` is *definitionally*
+`Spherical TaskRel`, `ParamTaskFrame.serial` is definitionally `Serial TaskRel`, and the
+interpolation half of biconditional *Compositionality* is available as `ParamTaskFrame.interpolates`,
 definitionally `Interpolates TaskRel`. Discharging a downstream hypothesis is therefore a
 mechanical substitution (`F.spherical`, `F.serial`, `F.interpolates`) with zero restatement; a
 field whose statement differed would make the results that consume these predicates stop
@@ -72,31 +72,31 @@ built from lives in `TaskFrame.lean`, transcribed there from `def:task-relation`
 
 ## Main Definitions
 
-- `TaskFrame.Spherical` — the *Spherical* axiom over a bare relation
-- `TaskFrame.Serial` — the *Seriality* axiom over a bare relation
-- `TaskFrame.Interpolates` — the interpolation (left-to-right) half of *Compositionality*
+- `ParamTaskFrame.Spherical` — the *Spherical* axiom over a bare relation
+- `ParamTaskFrame.Serial` — the *Seriality* axiom over a bare relation
+- `ParamTaskFrame.Interpolates` — the interpolation (left-to-right) half of *Compositionality*
 - `PartialHistory.IsPaired` — the "otherwise" side condition of `def:constraints`
 - `PartialHistory.Constraints` — `def:constraints`, the constraints imposed on a new duration
 
 ## Main Results
 
-- `TaskFrame.nullity_of_serial_limit` — `lem:nullity`, DERIVED (not an axiom) from *Seriality* at
+- `ParamTaskFrame.nullity_of_serial_limit` — `lem:nullity`, DERIVED (not an axiom) from *Seriality* at
   `x = 0` plus *Limit*, choice-free
 
 ## Implementation Notes
 
-- **No `TaskFrame` structure field is added or changed here.** Everything is stated over a bare
+- **No `ParamTaskFrame` structure field is added or changed here.** Everything is stated over a bare
   relation or over an existing frame's `TaskRel`.
 - **Fibers and segments are two separate classes.** A "fibers and segments" hypothesis is always
   the disjunction `IsFiber R s ∨ IsSegment R s`. The retired device by which a one-sided fiber
   counted among the segments must not reappear.
 - **Directedness is its own definition** (`def:directed`, transcribed as
-  `TaskFrame.DirectedFamily`), including the nonemptiness of the *family*; the nonemptiness of
+  `ParamTaskFrame.DirectedFamily`), including the nonemptiness of the *family*; the nonemptiness of
   its *members* is a separate conjunct in `Spherical`, exactly as the paper phrases it.
 - **`Limit` is deliberately not given a name here.** It is used only as a hypothesis of
   `nullity_of_serial_limit`, in the literal transcribed shape
   `∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ R w y u) → u = w`, which is precisely the conclusion of
-  `TaskFrame.limit_of_succOrder` and `TaskFrame.limit_of_shift`. Keeping the raw shape lets those
+  `ParamTaskFrame.limit_of_succOrder` and `ParamTaskFrame.limit_of_shift`. Keeping the raw shape lets those
   two existing discharge helpers be passed directly.
 - Segments are written in the paper's bracket form `[w, v]_x^y` only; the retired `\Seg`
   function-application notation is gone from the paper preamble and must not be reintroduced.
@@ -104,24 +104,24 @@ built from lives in `TaskFrame.lean`, transcribed there from `def:task-relation`
 
 namespace FormalSystem.Semantics
 
-namespace TaskFrame
+namespace ParamTaskFrame
 
-variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
+variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
 
 /-!
 ## Where `Spherical` / `Serial` / `Interpolates` live
 
 The three axiom predicates this module was originally written to host —
-`TaskFrame.Spherical`, `TaskFrame.Serial`, `TaskFrame.Interpolates` — now live in
+`ParamTaskFrame.Spherical`, `ParamTaskFrame.Serial`, `ParamTaskFrame.Interpolates` — now live in
 `FormalSystem/Semantics/TaskFrame.lean`, beside the `Fib` / `cone` / `Seg` / `DirectedFamily` /
 `IsFiber` / `IsSegment` apparatus they are built from. Their fully qualified names, statements,
-and namespace are unchanged (`FormalSystem.Semantics.TaskFrame.{Spherical,Serial,Interpolates}`),
+and namespace are unchanged (`FormalSystem.Semantics.ParamTaskFrame.{Spherical,Serial,Interpolates}`),
 so every consumer of this module sees them exactly as before.
 
-The relocation is forced by the invariant recorded above: the `TaskFrame` structure must be able
+The relocation is forced by the invariant recorded above: the `ParamTaskFrame` structure must be able
 to carry these predicates as fields *definitionally*, and a structure field's type can only
 mention declarations that precede it. A predicate declared in a module that imports
-`TaskFrame.lean` can never be a `TaskFrame` field. Hosting them beside the apparatus is what
+`TaskFrame.lean` can never be a `ParamTaskFrame` field. Hosting them beside the apparatus is what
 makes the fields statable without restating anything.
 -/
 
@@ -142,11 +142,11 @@ The argument is the paper's: *Seriality* at `x = 0` supplies some `u` with `w �
 
 The *Limit* hypothesis is taken in the literal transcribed shape
 `∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ R w y u) → u = w`, which is exactly what
-`TaskFrame.limit_of_succOrder` and `TaskFrame.limit_of_shift` conclude, so either may be passed
+`ParamTaskFrame.limit_of_succOrder` and `ParamTaskFrame.limit_of_shift` conclude, so either may be passed
 directly.
 
 Note this asserts **reflexivity only**, which is all `lem:nullity` asserts. The
-`TaskFrame.nullity_identity` field is an iff, and its other half — injectivity-at-zero,
+`ParamTaskFrame.nullity_identity` field is an iff, and its other half — injectivity-at-zero,
 `R w 0 u → u = w` — follows from the `limit` hypothesis **alone**, by instantiating the cone
 witness at `y := 0`. So the field is derivable from `serial` + `limit` together and is *not* a
 strengthening of the paper; see that field's own docstring in `TaskFrame.lean` for both
@@ -160,12 +160,12 @@ theorem nullity_of_serial_limit {W : Type} {R : W → D → W → Prop}
   have huw : u = w := hLim w u fun x hx => ⟨0, by simpa using hx, hu⟩
   exact huw ▸ hu
 
-end TaskFrame
+end ParamTaskFrame
 
 namespace PartialHistory
 
-variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
-variable {F : TaskFrame D}
+variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
+variable {F : ParamTaskFrame D}
 
 /--
 The time `t` is *paired* about the duration `z`: some other time in the domain lies on the
@@ -209,25 +209,25 @@ by `IsSegment` rather than by `Seg`.
 -/
 def Constraints (τ : PartialHistory F) (z : D) : Set (Set F.WorldState) :=
   {c | (∃ (t s : D) (ht : τ.domain t) (hs : τ.domain s), t < z ∧ z < s ∧
-          c = TaskFrame.Seg F.TaskRel (τ.states t ht) (τ.states s hs) (z - t) (s - z))
+          c = ParamTaskFrame.Seg F.TaskRel (τ.states t ht) (τ.states s hs) (z - t) (s - z))
      ∨ (∃ (t : D) (ht : τ.domain t), ¬ IsPaired τ z t ∧
-          c = TaskFrame.Fib F.TaskRel (τ.states t ht) (z - t))}
+          c = ParamTaskFrame.Fib F.TaskRel (τ.states t ht) (z - t))}
 
 /-- Membership in `Constraints`, unfolded: a set is a constraint on `z` exactly when it is one of
 the two clauses of `def:constraints`. -/
 theorem mem_Constraints {τ : PartialHistory F} {z : D} {c : Set F.WorldState} :
     c ∈ Constraints τ z ↔
       (∃ (t s : D) (ht : τ.domain t) (hs : τ.domain s), t < z ∧ z < s ∧
-          c = TaskFrame.Seg F.TaskRel (τ.states t ht) (τ.states s hs) (z - t) (s - z))
+          c = ParamTaskFrame.Seg F.TaskRel (τ.states t ht) (τ.states s hs) (z - t) (s - z))
      ∨ (∃ (t : D) (ht : τ.domain t), ¬ IsPaired τ z t ∧
-          c = TaskFrame.Fib F.TaskRel (τ.states t ht) (z - t)) := Iff.rfl
+          c = ParamTaskFrame.Fib F.TaskRel (τ.states t ht) (z - t)) := Iff.rfl
 
 /-- Every segment member of `Constraints τ z` is a segment in the sense of `IsSegment`: the
 paper's `x, y ≥ 0` proviso is met because `t < z < s`. -/
 theorem isSegment_of_mem_Constraints_left {τ : PartialHistory F} {z t s : D}
     (ht : τ.domain t) (hs : τ.domain s) (htz : t < z) (hzs : z < s) :
-    TaskFrame.IsSegment F.TaskRel
-      (TaskFrame.Seg F.TaskRel (τ.states t ht) (τ.states s hs) (z - t) (s - z)) :=
+    ParamTaskFrame.IsSegment F.TaskRel
+      (ParamTaskFrame.Seg F.TaskRel (τ.states t ht) (τ.states s hs) (z - t) (s - z)) :=
   ⟨τ.states t ht, τ.states s hs, z - t, s - z, le_of_lt (sub_pos.mpr htz),
     le_of_lt (sub_pos.mpr hzs), rfl⟩
 
@@ -235,7 +235,7 @@ theorem isSegment_of_mem_Constraints_left {τ : PartialHistory F} {z t s : D}
 axiom ranges over. The two classes stay separate. -/
 theorem isFiber_or_isSegment_of_mem_Constraints {τ : PartialHistory F} {z : D}
     {c : Set F.WorldState} (hc : c ∈ Constraints τ z) :
-    TaskFrame.IsFiber F.TaskRel c ∨ TaskFrame.IsSegment F.TaskRel c := by
+    ParamTaskFrame.IsFiber F.TaskRel c ∨ ParamTaskFrame.IsSegment F.TaskRel c := by
   rcases hc with ⟨t, s, ht, hs, htz, hzs, rfl⟩ | ⟨t, ht, _, rfl⟩
   · exact Or.inr (isSegment_of_mem_Constraints_left ht hs htz hzs)
   · exact Or.inl ⟨τ.states t ht, z - t, rfl⟩

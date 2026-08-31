@@ -828,7 +828,7 @@ theorem countermodel_dense (fc : FrameClass) (A : Set Formula)
     (φ : Formula) (h_neg_in : φ.neg ∈ A)
     (h_box_dense : Formula.box nextTop.neg ∈ A) :
     ∃ (D : Type) (_ : AddCommGroup D) (_ : LinearOrder D) (_ : IsOrderedAddMonoid D)
-      (_ : Nontrivial D) (F : TaskFrame D) (TM : TaskModel F)
+      (_ : Nontrivial D) (F : ParamTaskFrame D) (TM : TaskModel F)
       (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
       ¬TruthAt TM τ t φ := by
   have hfam₀ : rootedCantorFmcsDense fc A h_mcs h_box_dense 0 ∈

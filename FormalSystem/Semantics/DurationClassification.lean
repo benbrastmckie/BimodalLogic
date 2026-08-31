@@ -11,7 +11,7 @@ import FormalSystem.Semantics.TaskFrame
 /-!
 # Hölder Classification of Dedekind-Complete Duration Groups
 
-Pure order/group theory about the duration type `D` of a `TaskFrame`. Nothing here mentions
+Pure order/group theory about the duration type `D` of a `ParamTaskFrame`. Nothing here mentions
 formulas or truth; the point is to make the *sharp* Hölder picture citable from the `FrameClass`
 and `Validity` docstrings, instead of the vaguer "paradigmatically ℝ" prose those files used to
 carry.
@@ -19,7 +19,7 @@ carry.
 ## The binder convention
 
 Every lemma below takes the repository's standard duration binders — `AddCommGroup D`,
-`LinearOrder D`, `IsOrderedAddMonoid D` (see `TaskFrame`) — plus Dedekind completeness in the
+`LinearOrder D`, `IsOrderedAddMonoid D` (see `ParamTaskFrame`) — plus Dedekind completeness in the
 **explicit Prop-valued form** the semantics uses throughout:
 
   `h_lub : ∀ s : Set D, s.Nonempty → BddAbove s → ∃ x, IsLUB s x`
@@ -114,7 +114,7 @@ at `x + y`, so an order-only isomorphism cannot carry a frame across. The additi
 actually needed. `Semantics/IntNormalForm.lean`'s module docstring carries the full binder-fit
 finding for both Mathlib results.
 -/
-theorem archimedean_of_lub {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+theorem archimedean_of_lub {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     (h_lub : ∀ s : Set D, s.Nonempty → BddAbove s → ∃ x, IsLUB s x) : Archimedean D := by
   refine ⟨fun x y hy => ?_⟩
   by_contra hcon
@@ -146,7 +146,7 @@ This is the statement that makes `FrameClass.Dedekind`'s density binder substant
 decorative: without density the class would also admit `ℤ`, on which `Axiom.density` and
 `Axiom.dense_indicator` are both false.
 -/
-theorem complete_duration_discrete_or_dense {D : Type*} [AddCommGroup D] [LinearOrder D]
+theorem complete_duration_discrete_or_dense {D : Type} [AddCommGroup D] [LinearOrder D]
     [IsOrderedAddMonoid D]
     (h_lub : ∀ s : Set D, s.Nonempty → BddAbove s → ∃ x, IsLUB s x) :
     Nonempty (D ≃+o ℤ) ∨ DenselyOrdered D :=
@@ -162,7 +162,7 @@ instance from `archimedean_of_lub`. Together with `complete_duration_discrete_or
 makes the dichotomy exclusive, which is why `ValidDiscrete` and `ValidDedekindDense` carve up
 the complete case with nothing left over.
 -/
-theorem complete_not_dense_iso_int {D : Type*} [AddCommGroup D] [LinearOrder D]
+theorem complete_not_dense_iso_int {D : Type} [AddCommGroup D] [LinearOrder D]
     [IsOrderedAddMonoid D]
     (h_lub : ∀ s : Set D, s.Nonempty → BddAbove s → ∃ x, IsLUB s x)
     (h_not_dense : ¬ DenselyOrdered D) :
@@ -172,7 +172,7 @@ theorem complete_not_dense_iso_int {D : Type*} [AddCommGroup D] [LinearOrder D]
 
 section SuccessorBranch
 
-variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     [SuccOrder D] [Nontrivial D]
 
 /--

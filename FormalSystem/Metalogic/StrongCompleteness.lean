@@ -172,7 +172,7 @@ def SemanticConsequenceDedekindDense (Γ : Context) (φ : Formula) : Prop :=
   ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [DenselyOrdered D]
     [Nontrivial D]
     (_ : ∀ s : Set D, s.Nonempty → BddAbove s → ∃ x, IsLUB s x)
-    (F : TaskFrame D) (M : TaskModel F)
+    (F : ParamTaskFrame D) (M : TaskModel F)
     (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
     (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ
 
@@ -186,8 +186,8 @@ This is pure list induction against the `Formula.imp` clause of `TruthAt`
 enters, which is why the lemma is stated at the bare `TaskModel` binder set and is reusable by
 the Base, Dense and Discrete instances below.
 -/
-theorem truthAt_foldr_imp {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
-    {F : TaskFrame D} (M : TaskModel F)
+theorem truthAt_foldr_imp {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
+    {F : ParamTaskFrame D} (M : TaskModel F)
     (τ : WorldHistory F) (t : D) (Γ : Context) (φ : Formula) :
     TruthAt M τ t (Γ.foldr Formula.imp φ) ↔
       ((∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ) := by
@@ -719,7 +719,7 @@ Base section above.)
 def SemanticConsequenceDense (Γ : Context) (φ : Formula) : Prop :=
   ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [DenselyOrdered D]
     [Nontrivial D]
-    (F : TaskFrame D) (M : TaskModel F)
+    (F : ParamTaskFrame D) (M : TaskModel F)
     (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
     (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ
 
@@ -828,7 +828,7 @@ non-compactness means.
 def SemanticConsequenceDiscrete (Γ : Context) (φ : Formula) : Prop :=
   ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [SuccOrder D] [PredOrder D]
     [IsSuccArchimedean D] [IsPredArchimedean D] [Nontrivial D]
-    (F : TaskFrame D) (M : TaskModel F)
+    (F : ParamTaskFrame D) (M : TaskModel F)
     (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
     (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ
 

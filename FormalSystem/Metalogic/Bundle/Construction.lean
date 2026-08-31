@@ -34,7 +34,7 @@ open FormalSystem.Syntax
 open FormalSystem.ProofSystem
 open FormalSystem.Metalogic.Core
 
-variable {D : Type*} [Preorder D]
+variable {D : Type} [Preorder D]
 
 /-!
 ## Stage 1: Extending Context to MCS

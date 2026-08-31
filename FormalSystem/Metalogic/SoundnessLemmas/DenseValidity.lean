@@ -22,7 +22,7 @@ open FormalSystem.Syntax
 open FormalSystem.ProofSystem (Axiom DerivationTree FrameClass)
 open FormalSystem.Semantics
 
-variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
+variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
 
 /-! ## Axiom Swap Validity (Approach D: Derivation-Indexed Proof)
 

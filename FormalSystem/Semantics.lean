@@ -32,7 +32,7 @@ polymorphic over temporal types.
 
 ## Submodules
 
-- `TaskFrame`: Task frame structure `F = (W, T, ·)` with world states, temporal type,
+- `ParamTaskFrame`: Task frame structure `F = (W, T, ·)` with world states, temporal type,
   and task relation satisfying nullity and compositionality constraints
 - `IntNormalForm`: the ℤ-frame normal form — over `D = ℤ` a task frame is determined by its
   one-step relation `step w u := TaskRel w 1 u`, with `iter`/`iter_add` as the arithmetic core and
@@ -81,7 +81,7 @@ against `specs/paper-definitions-of-record.md`'s DANGLING entry, not a live `\la
   completeness implies Archimedean, and the discrete-or-dense dichotomy pinning the discrete
   branch to `ℤ`
 - `IntTransfer`: carrier normalization for the discrete branch -- a generic transport of
-  `TaskFrame`, `TaskModel`, `WorldHistory`, and `TruthAt` along any ordered-group isomorphism
+  `ParamTaskFrame`, `TaskModel`, `WorldHistory`, and `TruthAt` along any ordered-group isomorphism
   `e : D ≃+o E` (via the `HEq`-free `Aligned` relation rather than a history `Equiv`), composed
   with `DurationClassification`'s `intIso` to give `validDiscrete_iff_validInt`: quantifying over
   every discrete duration carrier is the same as quantifying over `ℤ` alone
@@ -92,7 +92,7 @@ The semantics follows the JPL paper "The Perpetuity Calculus of Agency":
 
 | Component | Paper Definition | Implementation |
 |-----------|------------------|----------------|
-| Task Frame | `F = (W, G, ·)` | `TaskFrame T` with `TaskRel` |
+| Task Frame | `F = (W, G, ·)` | `ParamTaskFrame T` with `TaskRel` |
 | Nullity | `w ∈ w · 0` | `nullity : ∀ w, TaskRel w 0 w` |
 | Compositionality | `u ∈ w·d, v ∈ u·e ⟹ v ∈ w·(d+e)` | `compositionality` constraint |
 | World History | `τ: X → W` convex | `WorldHistory F` with `convex` proof |
@@ -135,7 +135,7 @@ open FormalSystem.Syntax
 #check ([Formula.atomS "p"] ⊨ Formula.atomS "p" : Prop)  -- Valid
 
 -- Work with specific temporal type
-variable {F : TaskFrame Int} (M : TaskModel F) (τ : WorldHistory F)
+variable {F : ParamTaskFrame Int} (M : TaskModel F) (τ : WorldHistory F)
 variable (t : Int) (ht : τ.domain t)
 
 #check TruthAt M τ t ht (Formula.box (Formula.atomS "p"))

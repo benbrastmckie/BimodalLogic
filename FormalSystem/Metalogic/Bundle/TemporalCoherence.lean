@@ -45,7 +45,7 @@ open FormalSystem.Syntax
 open FormalSystem.Metalogic.Core
 open FormalSystem.ProofSystem
 
-variable {fc : FrameClass} {D : Type*} [Preorder D] [Zero D]
+variable {fc : FrameClass} {D : Type} [Preorder D] [Zero D]
 
 /-!
 ## Temporal Duality Infrastructure
@@ -155,7 +155,7 @@ The key properties are:
 These are the existential duals of forward_G and backward_H.
 Uses strict inequality (s > t, s < t) for strict semantics (aligned with Truth.lean).
 -/
-structure TemporalCoherentFamily (fc : FrameClass := FrameClass.Base) (D : Type*) [Preorder D]
+structure TemporalCoherentFamily (fc : FrameClass := FrameClass.Base) (D : Type) [Preorder D]
     [Zero D] extends FMCS (fc := fc) D where
   /-- Forward F coherence: F(phi) at t implies witness at some s > t (strict) -/
   forward_F : ∀ t : D, ∀ φ : Formula,
@@ -222,7 +222,7 @@ Temporal backward G with explicit forward_F hypothesis (no TemporalCoherentFamil
 This variant is used in the well-founded induction proof of forward_F, where we
 have forward_F for formulas of smaller size but not yet for all formulas.
 -/
-theorem temporal_backward_G_with_fwd_F {D : Type*} [Preorder D]
+theorem temporal_backward_G_with_fwd_F {D : Type} [Preorder D]
     (fam : FMCS (fc := fc) D) (t : D) (φ : Formula)
     (h_forward_F_neg : Formula.someFuture (Formula.neg φ) ∈ fam.mcs t →
       ∃ s : D, t < s ∧ (Formula.neg φ) ∈ fam.mcs s)
@@ -244,7 +244,7 @@ theorem temporal_backward_G_with_fwd_F {D : Type*} [Preorder D]
 Temporal backward H with explicit backward_P hypothesis.
 Symmetric dual of temporal_backward_G_with_fwd_F.
 -/
-theorem temporal_backward_H_with_bwd_P {D : Type*} [Preorder D]
+theorem temporal_backward_H_with_bwd_P {D : Type} [Preorder D]
     (fam : FMCS (fc := fc) D) (t : D) (φ : Formula)
     (h_backward_P_neg : Formula.somePast (Formula.neg φ) ∈ fam.mcs t →
       ∃ s : D, s < t ∧ (Formula.neg φ) ∈ fam.mcs s)
