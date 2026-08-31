@@ -1092,7 +1092,7 @@
     {
       "project_number": 512,
       "project_name": "bundle_duration_into_taskframe",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "description": "FOUNDATIONAL REFACTOR, prerequisite for the whole metalogic systematicity front. Make the duration type a FIELD of TaskFrame rather than a PARAMETER, so that a frame carries its own temporal structure and every frame-class notion becomes a genuine property of a frame.\n\nROOT CAUSE THIS FIXES: `TaskFrame D` takes `D` as a parameter, so no property of a single frame can mention its own duration structure. That single encoding choice forces the whole cascade: \"dense\" can only be predicated of `D`, so validity must quantify over `D`, so correspondence gets pushed up to the carrier level and cannot be stated in its textbook per-frame shape. The prior research reported this as a discovery about the semantics (\"frame classes are carrier-type constraints\") when it is an artifact of the encoding.\n\nTARGET SHAPE:\n  structure TaskFrame where\n    Duration : Type\n    [addCommGroup : AddCommGroup Duration]\n    [linearOrder : LinearOrder Duration]\n    [orderedAddMonoid : IsOrderedAddMonoid Duration]\n    [nontrivial : Nontrivial Duration]\n    WorldState : Type\n    TaskRel : WorldState -> Duration -> WorldState -> Prop\n    (existing frame axioms: comp, converse, serial, limit, spherical, nullity_identity)\nwith instance projections so `F.Duration` carries its algebraic structure at use sites.\n\nWHY THE BUNDLED FORM AND NOT THE PARAMETERIZED ALTERNATIVE: a third option exists -- keep `TaskFrame D` and define `Sat : FrameClass -> TaskFrame D -> Prop` plus `ValidIn fc phi := forall {D} [insts] (F : TaskFrame D), Sat fc F -> F |= phi`. That is mathematically adequate for per-frame correspondence and far cheaper. It is deliberately REJECTED here in favour of bundling, for two reasons: (1) bundling makes Frame a first-class object, so frames with different durations can be quantified over in a single statement, enabling frame morphisms, bisimulation, disjoint unions, and a category of frames -- none of which the parameterized form can state; (2) bundling is the STRUCTURAL cure for the same disease the FrameClass-indexed-validity task treats symptomatically -- inlined typeclass binder lists that proliferate and silently diverge. The parameterized form leaves `{D} [AddCommGroup D] [LinearOrder D] ...` binder noise on every theorem, which is exactly the duplication that produced 15 hand-copied validity predicates.\n\nSCOPE: this is a whole-tree refactor. Every `TaskFrame D` use site, every `WorldHistory`/`TaskModel`/`TruthAt` signature, every soundness and canonical-model construction. Expect universe-polymorphism decisions and instance-resolution work. Existing named frames (staticFrame, trivialFrame, natFrame, clockFrame, transFrame if built) become bundled constructors.\n\nACCEPTANCE: sorry-free, lake build green, check-module-invariants.sh passes, axiom profiles unchanged on the flagship theorems. No change to any theorem's mathematical content -- this is a restatement refactor, and any semantic drift is a defect.\n\nGROUNDING: specs/reviews/review-2026-08-31-metalogic-systematicity.md issues H1/M2; specs/511_research_frame_correspondence_infrastructure/reports/01,02,03 (S3 in report 01 section 2 is the artifact this task removes).\n\n=== PAPER GROUNDING (definitive) === def:frame reads verbatim: \"A task frame is any F =\n<W, D, =>> where W is a nonempty set of world states, **D is a temporal order**, and => is a\ntask relation…\" — the duration is a COMPONENT of the frame. def:frame-properties predicates\nDiscrete/Dense/Complete of the frame through its D-component; def:frame-validity is per-frame.\nThis refactor is therefore conformance to the source of truth, not an encoding preference.\nNaming obligation carried by this task or 507 (whichever touches it first): the paper's third\nframe property is COMPLETE — the ValidDedekind*/FrameClass.Dedekind naming is non-conforming\nand is renamed under 507. See specs/514_align_definitions_with_source_paper/reports/01 §1.1.",
       "topic": "semantics foundations",
@@ -1100,10 +1100,16 @@
       "dependencies": [
         514
       ],
-      "artifacts": [],
+      "artifacts": [
+        {
+          "path": "specs/512_bundle_duration_into_taskframe/reports/01_bundle-duration-into-taskframe.md",
+          "type": "report",
+          "summary": "Bundling TaskFrame's duration type: target shape verified to elaborate, ofParam/toParam bridge enables incremental migration, 7-phase decomposition and scale measurements."
+        }
+      ],
       "created": "2026-08-31T19:38:48Z",
-      "last_updated": "2026-08-31T19:55:41Z",
-      "session_id": "sess_1788198220_972012",
+      "last_updated": "2026-08-31T20:59:28Z",
+      "session_id": "sess_1788209220_633087_512",
       "file_scope": [
         "FormalSystem/Semantics/",
         "FormalSystem/Metalogic/",

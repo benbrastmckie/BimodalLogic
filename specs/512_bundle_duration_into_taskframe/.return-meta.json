@@ -1,0 +1,31 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/512_bundle_duration_into_taskframe/reports/01_bundle-duration-into-taskframe.md",
+      "summary": "Bundling TaskFrame's duration type: target shape verified to elaborate (Type 1, no universe change), ofParam/toParam bridge is a rfl-isomorphism enabling incremental migration, concrete-frame instance-transparency hazard characterised with a working idiom, 7-phase decomposition and scale measurements."
+    },
+    {
+      "type": "probe",
+      "path": "specs/512_bundle_duration_into_taskframe/reports/01_probes.lean",
+      "summary": "Green Lean probe: bundled structure elaboration, instance projections, bridge round-trip, concrete-frame diamond, downstream shape, cross-duration quantification, universe polymorphism."
+    },
+    {
+      "type": "probe",
+      "path": "specs/512_bundle_duration_into_taskframe/reports/02_probes.lean",
+      "summary": "Green Lean probe: four mitigations for the transparency hazard, the TemporalOrder Prop-mixin, native PartialHistory/WorldHistory/TaskModel re-parameterisation, FiniteTaskFrame, and a single FrameClass-indexed ValidIn."
+    },
+    {
+      "type": "probe",
+      "path": "specs/512_bundle_duration_into_taskframe/reports/03_probes.lean",
+      "summary": "Green Lean probe: exact reducible-vs-default transparency characterisation and the working idiom for concrete-integer frames."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1788209220_633087_512",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
