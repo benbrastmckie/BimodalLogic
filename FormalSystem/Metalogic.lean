@@ -8,6 +8,7 @@ Authors: Benjamin Brast-McKie
 import FormalSystem.Metalogic.Soundness
 import FormalSystem.Metalogic.StrongCompleteness
 import FormalSystem.Metalogic.DiscreteNonCompactness
+import FormalSystem.Metalogic.Compactness
 import FormalSystem.Metalogic.Decidability
 import FormalSystem.Metalogic.Independence
 import FormalSystem.Metalogic.BXCanonical

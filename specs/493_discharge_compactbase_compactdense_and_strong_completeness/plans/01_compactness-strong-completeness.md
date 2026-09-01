@@ -1,7 +1,7 @@
 # Implementation Plan: Discharge CompactBase/CompactDense and Collect Strong Completeness
 
 - **Task**: 493 - Discharge compactbase compactdense and strong completeness
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 7 hours
 - **Dependencies**: Task 490, Task 492 (both complete). Task 509 is sequenced BEHIND this task.
 - **Research Inputs**: specs/493_discharge_compactbase_compactdense_and_strong_completeness/reports/01_compactness-and-strong-completeness.md
@@ -120,7 +120,7 @@ stated in each phase.
 
 ---
 
-### Phase 1: Land the six theorems in FormalSystem/Metalogic/Compactness.lean [NOT STARTED]
+### Phase 1: Land the six theorems in FormalSystem/Metalogic/Compactness.lean [COMPLETED]
 
 **Goal**: The six verified theorems exist in the tree, reachable from the aggregator, with
 `lake build` green and their axiom profiles captured.
