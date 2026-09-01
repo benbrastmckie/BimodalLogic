@@ -296,7 +296,7 @@ neither side, so that the identity of the two questions is machine-pinned (repor
 
 ---
 
-### Phase 5: The (Sp) witness — validity and the TM⁺ half of CEB [NOT STARTED]
+### Phase 5: The (Sp) witness — validity and the TM⁺ half of CEB [COMPLETED]
 
 **Goal**: Prove `BLValid (Sp φ ψ)` from Lemma A's dichotomy plus Lemmas B and C, then derive
 `⊢[Base] tr (Sp φ ψ)` from `completeness` — the CEB analogue of `z1_translate`, obtained without
