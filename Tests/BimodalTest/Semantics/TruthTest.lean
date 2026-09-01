@@ -15,7 +15,7 @@ Tests for truth evaluation in task models.
 
 ## Temporal Type Note
 
-After the temporal generalization, ParamTaskFrame and WorldHistory now take a
+After the temporal generalization, the frame and WorldHistory now take a
 type parameter `T` with `LinearOrderedAddCommGroup` constraint. Tests use
 explicit `Int` annotations.
 -/
@@ -26,7 +26,7 @@ open FormalSystem.Syntax
 open FormalSystem.Semantics
 
 -- Helper: use trivial frame for testing (with explicit Int time)
-def testFrame : ParamTaskFrame Int := ParamTaskFrame.trivialFrame
+def testFrame : FrameOver intOrder := ParamTaskFrame.trivialFrame
 
 -- Helper: simple model where "p" is true, "q" is false
 def testModel : TaskModel testFrame where

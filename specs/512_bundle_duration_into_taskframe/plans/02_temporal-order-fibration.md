@@ -1795,20 +1795,47 @@ before assuming the deletion of `ValidOver` is cheap.
 
 ---
 
-### Phase 19: Tests [NOT STARTED]
+### Phase 19: Tests [COMPLETED]
 
 **Goal**: The test suite at the fibre and green, with v01's `SemanticBenchmark.lean` fix and its
 recorded decision both preserved.
 
 **Tasks**:
-- [ ] Migrate `Tests/BimodalTest/Semantics/{TaskFrameTest,SemanticPropertyTest,SphericalFiniteAxiomTest,TruthTest,DependentUltraproductProbe}.lean`,
+- [x] Migrate `Tests/BimodalTest/Semantics/{TaskFrameTest,SemanticPropertyTest,SphericalFiniteAxiomTest,TruthTest,DependentUltraproductProbe}.lean`,
       `Tests/BimodalTest/Property/Generators.lean`, `Tests/BimodalTest/Property.lean`,
-      `Tests/BimodalTest.lean`. All four test concrete frames are ℤ-carried and delegating — apply
-      the Phase 7 contract.
-- [ ] **Preserve v01's `SemanticBenchmark.lean` work**: the `:50` name fix (`TaskFrame.trivial_frame`
-      → `trivialFrame`) stays, and the decision **not** to wire the file into the test aggregator
-      stays — wiring it changes what is built and is out of scope for a restatement refactor.
-      Re-record the still-unimported status in the phase commit so it is not silently forgotten.
+      `Tests/BimodalTest.lean`. Every `ParamTaskFrame Int` ascription is now `FrameOver intOrder`.
+- [x] `SemanticBenchmark.lean`: the `:50` name is now genuinely `ParamTaskFrame.trivialFrame` and
+      the frame is `FrameOver intOrder`; the file stays **unimported** by the test aggregator, and
+      that decision is re-recorded in the phase commit.
+      *(deviation: altered — the plan's premise about this file is false, see the record.)*
+
+#### Phase 19 Record
+
+**Scope**: 81 occurrences claimed, **73** measured, of which the `ParamTaskFrame` *type
+ascriptions* number **11** (`TaskFrameTest` 2, `SemanticPropertyTest` 7, `TruthTest` 1,
+`Generators` 1, `SemanticBenchmark` 1). Everything else is a `ParamTaskFrame.{trivialFrame,
+staticFrame, natFrame, spherical_of_finite, spherical_of_subsingleton,
+sInter_nonempty_of_directed_of_minimal, *_of_permissive}` namespace reference or prose — Phase 20's.
+The plan's per-file numbers (`TaskFrameTest` 28, `SemanticPropertyTest` 22) count those references.
+
+**The Phase 17 dot-notation hazard recurred, exactly as predicted, at 7 sites.** `F.nullity` and
+`F.forward_comp` stop resolving once `F`'s declared type reads `FrameOver intOrder`, because
+generalized field notation dispatches on the declared type's syntactic head. Repaired by qualified
+application. Phase 20's namespace relocation is what makes the dot notation come back.
+
+**`SemanticBenchmark.lean` does not elaborate, and it did not before this task either.** The plan's
+verification item ("elaborates under `lake env lean` even though it is not imported") rests on a
+false premise: v01 renamed the *namespace* prefix (`TaskFrame.` → `ParamTaskFrame.`) but never
+fixed the member name, so `ParamTaskFrame.trivial_frame` was an unknown constant at HEAD. Checked
+against `92c26855e` (`task 180 phase 7`, the last pre-512 commit touching the file): it read
+`TaskFrame.trivial_frame` there, which was equally unknown. **The file has been stale since well
+before task 512.**
+
+This phase fixed the two things that are the fibration's business — the member name and the frame's
+type — and left the rest, which are not: the file also writes `Formula.atom_s` (the declaration is
+`atomS`) and compares an `Atom`-typed valuation argument against a `String` literal, at roughly 20
+sites. Rehabilitating a dead, unimported benchmark file is a content change, not a restatement, and
+is recorded here as a follow-up rather than smuggled into this task.
 
 **Timing**: 1.5 hours
 

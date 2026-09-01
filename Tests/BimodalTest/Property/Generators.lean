@@ -22,13 +22,13 @@ This module provides generators for property-based testing of Logos types.
 - `Arbitrary Formula`: Size-controlled recursive generator for formulas
 - `Shrinkable Formula`: Shrinking strategy for minimal counterexamples
 - `Arbitrary Context`: Generator for contexts (automatic via List)
-- `SampleableExt (ParamTaskFrame Int)`: Generator for task frames with finite worlds
+- `SampleableExt (FrameOver intOrder)`: Generator for task frames with finite worlds
 
 ## Implementation Notes
 
 - Formula generation uses size control to prevent infinite recursion
 - Shrinking reduces formulas to simpler subformulas for better counterexamples
-- ParamTaskFrame generation reuses the library's `natFrame` (satisfies all frame
+- Frame generation reuses the library's `natFrame` (satisfies all frame
   constraints by construction: `nullity_identity`, `forward_comp`, `converse`)
 - All generators follow Plausible framework conventions
 
@@ -128,7 +128,7 @@ instance : Shrinkable Formula := ⟨shrinkFormula⟩
 
 -- Note: Arbitrary instance for Context (List Formula) is automatic
 
-/-! ## ParamTaskFrame Generators -/
+/-! ## Frame Generators -/
 
 /--
 Generate a small natural number (0-4) for world count.
@@ -140,13 +140,13 @@ def genSmallNat : Gen Nat := do
   return n.val
 
 /--
-SampleableExt instance for ParamTaskFrame with integer time.
+SampleableExt instance for the fibre at the ℤ temporal order.
 
 Reuses the library's `natFrame`, which satisfies all frame constraints
 (`nullity_identity`, `forward_comp`, `converse`) by construction. This is a
 simple generator suitable for basic property testing.
 -/
-instance : SampleableExt (ParamTaskFrame Int) where
+instance : SampleableExt (FrameOver intOrder) where
   proxy := Unit
   interp _ := ParamTaskFrame.natFrame (D := Int)
 

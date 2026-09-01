@@ -10,13 +10,13 @@ import FormalSystem.Semantics.TaskFrame
 import FormalSystem.Examples.TemporalStructures
 
 /-!
-# ParamTaskFrame Tests
+# Frame Tests
 
 Tests for task frame structure and constraints.
 
 ## Temporal Type Note
 
-After the temporal generalization, ParamTaskFrame now takes a type parameter `T`
+After the temporal generalization, the frame is a fibre `FrameOver D` over a temporal order
 with `LinearOrderedAddCommGroup` constraint. Tests use explicit `Int` annotations
 to specify the temporal type.
 -/
@@ -62,10 +62,10 @@ example : (ParamTaskFrame.natFrame (D := Int)).TaskRel (0 : Nat) 10 (42 : Nat) :
 -- `FormalSystem.Semantics.intBoolFrame` (Examples/TemporalStructures.lean), where it is the
 -- canonical off-zero-universal two-state Z witness; this is now an alias, so every assertion
 -- below still exercises the same frame and the same relation, definitionally.
-def customFrame : ParamTaskFrame Int := FormalSystem.Examples.TemporalStructures.intBoolFrame
+def customFrame : FrameOver intOrder := FormalSystem.Examples.TemporalStructures.intBoolFrame
 
 -- Test: Custom frame satisfies properties
-example : customFrame.TaskRel true 0 true := customFrame.nullity true
+example : customFrame.TaskRel true 0 true := ParamTaskFrame.nullity customFrame true
 example : customFrame.TaskRel false 5 true := Or.inl (by decide)
 
 /-! ### `customFrame` discharges `def:frame`'s four axioms (permissive class) -/
@@ -100,8 +100,8 @@ theorem customFrame_spherical : TaskFrame.Spherical customFrame.TaskRel :=
 
 /-! ## Polymorphism Tests -/
 
--- Test: ParamTaskFrame can be instantiated with Int explicitly
-example : ParamTaskFrame Int := ParamTaskFrame.trivialFrame
+-- Test: the fibre can be instantiated at the ℤ temporal order explicitly
+example : FrameOver intOrder := ParamTaskFrame.trivialFrame
 
 -- Test: Nullity constraint works with explicit type
 theorem nullity_test_int : (ParamTaskFrame.trivialFrame (D := Int)).TaskRel () 0 () :=

@@ -24,7 +24,7 @@ Property-based tests for semantic properties of task frames and models.
 
 ## Implementation Notes
 
-ParamTaskFrame properties (nullity, compositionality) are enforced by the
+Frame properties (nullity, compositionality) are enforced by the
 structure definition, so these tests verify the generators produce
 valid frames.
 
@@ -42,47 +42,47 @@ open FormalSystem.Semantics
 open BimodalTest.Property.Generators
 open Plausible
 
-/-! ## ParamTaskFrame Properties -/
+/-! ## Frame Properties -/
 
 /-!
 Property: Frame nullity holds for all frames.
 
 For any frame F and world w, TaskRel w 0 w.
-This is enforced by the ParamTaskFrame structure.
+This is enforced by the `FrameOver` structure.
 -/
-def frame_nullity_property (F : ParamTaskFrame Int) (w : F.WorldState) :
+def frame_nullity_property (F : FrameOver intOrder) (w : F.WorldState) :
     F.TaskRel w 0 w :=
-  F.nullity w
+  ParamTaskFrame.nullity F w
 
 /-!
 Test: Frame nullity (verifies generator produces valid frames).
 -/
-example : ∀ (F : ParamTaskFrame Int) (w : F.WorldState), F.TaskRel w 0 w := by
+example : ∀ (F : FrameOver intOrder) (w : F.WorldState), F.TaskRel w 0 w := by
   intro F w
-  exact F.nullity w
+  exact ParamTaskFrame.nullity F w
 
 /-!
 Property: Frame compositionality holds for all frames.
 
 If TaskRel w x u and TaskRel u y v, then TaskRel w (x+y) v.
-This is enforced by the ParamTaskFrame structure.
+This is enforced by the `FrameOver` structure.
 -/
 -- NOTE (Task 365): `compositionality` was replaced by `forward_comp`, which is restricted to
 -- non-negative durations (`0 ≤ x`, `0 ≤ y`) — the unrestricted mixed-sign law is no longer a
 -- frame property. Added the non-negativity hypotheses to match the current structure.
-def frame_compositionality_property (F : ParamTaskFrame Int)
+def frame_compositionality_property (F : FrameOver intOrder)
     (w u v : F.WorldState) (x y : Int) (hx : 0 ≤ x) (hy : 0 ≤ y)
     (h1 : F.TaskRel w x u) (h2 : F.TaskRel u y v) :
     F.TaskRel w (x + y) v :=
-  F.forward_comp w u v x y hx hy h1 h2
+  ParamTaskFrame.forward_comp F w u v x y hx hy h1 h2
 
 /-!
 Test: Frame compositionality (verifies generator produces valid frames).
 -/
-example : ∀ (F : ParamTaskFrame Int) (w u v : F.WorldState) (x y : Int),
+example : ∀ (F : FrameOver intOrder) (w u v : F.WorldState) (x y : Int),
     0 ≤ x → 0 ≤ y → F.TaskRel w x u → F.TaskRel u y v → F.TaskRel w (x + y) v := by
   intro F w u v x y hx hy h1 h2
-  exact F.forward_comp w u v x y hx hy h1 h2
+  exact ParamTaskFrame.forward_comp F w u v x y hx hy h1 h2
 
 /-! ## Trivial Frame Properties -/
 
@@ -236,17 +236,17 @@ Property: All constructed frames satisfy nullity.
 This is a meta-property: any frame we can construct must satisfy nullity
 because it's required by the structure definition.
 -/
-example (F : ParamTaskFrame Int) : ∀ w, F.TaskRel w 0 w := by
+example (F : FrameOver intOrder) : ∀ w, F.TaskRel w 0 w := by
   intro w
-  exact F.nullity w
+  exact ParamTaskFrame.nullity F w
 
 /-!
 Property: All constructed frames satisfy compositionality.
 -/
-example (F : ParamTaskFrame Int) :
+example (F : FrameOver intOrder) :
     ∀ w u v x y, 0 ≤ x → 0 ≤ y → F.TaskRel w x u → F.TaskRel u y v → F.TaskRel w (x + y) v := by
   intro w u v x y hx hy h1 h2
-  exact F.forward_comp w u v x y hx hy h1 h2
+  exact ParamTaskFrame.forward_comp F w u v x y hx hy h1 h2
 
 /-! ## TaskModel Properties -/
 
@@ -308,11 +308,11 @@ This is a fundamental semantic property.
 -- `SampleableExt` for the dependent, abstract world-state type. (The second also asserted the
 -- now-restricted mixed-sign compositionality law.) The corresponding closed proofs above cover
 -- these frame constraints.
--- #eval Testable.check (∀ (F : ParamTaskFrame Int) (w : F.WorldState), F.TaskRel w 0 w) {
+-- #eval Testable.check (∀ (F : FrameOver intOrder) (w : F.WorldState), F.TaskRel w 0 w) {
 --   numInst := 200,
 --   maxSize := 25
 -- }
--- #eval Testable.check (∀ (F : ParamTaskFrame Int) (w u v : F.WorldState) (x y : Int),
+-- #eval Testable.check (∀ (F : FrameOver intOrder) (w u v : F.WorldState) (x y : Int),
 --     F.TaskRel w x u → F.TaskRel u y v → F.TaskRel w (x + y) v) {
 --   numInst := 200,
 --   maxSize := 25

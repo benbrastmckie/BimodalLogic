@@ -310,7 +310,7 @@ because it is structural rather than observational:
   `FormalSystem/Semantics/PartialHistoryOrder.lean`, which is the module that imports
   `Mathlib.Order.Zorn`.
 - That module imports `FormalSystem.Semantics.PartialHistory`, which sits **downstream** of
-  `TaskFrame.lean`. The dependency therefore runs `ParamTaskFrame ← PartialHistory ←
+  `TaskFrame.lean`. The dependency therefore runs `FrameOver ← PartialHistory ←
   PartialHistoryOrder`, so a dependency of `spherical_of_finite` on `exists_maximal_extension`
   would require an import cycle. It is not merely absent; it is unconstructible.
 
