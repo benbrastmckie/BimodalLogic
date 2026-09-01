@@ -13,13 +13,13 @@ import Mathlib.Data.Int.SuccPred
 
 Over `D = ℤ` a task frame is determined by a single relation: its **one-step** relation
 `step w u := TaskRel w 1 u`. This module establishes that determination in the decomposition
-direction — every `ParamTaskFrame ℤ` *is* the iterate of its own one-step relation — and supplies the
+direction — every `FrameOver intOrder` *is* the iterate of its own one-step relation — and supplies the
 arithmetic core (`iter`, `iter_add`) that the synthesis direction and the history-space
 characterization both consume.
 
 ## Why ℤ, and why this is the spine
 
-Three facts about `ParamTaskFrame ℤ` collapse the general theory to a graph-theoretic one:
+Three facts about `FrameOver intOrder` collapse the general theory to a graph-theoretic one:
 
 - `⇒₀` is the identity — carried directly by the `nullity_identity` field. (In the paper this is
   the ℤ-instance of *Limit*: `|y| < 1` forces `y = 0` over ℤ, so the intersection of the positive
@@ -36,18 +36,18 @@ synthesis from a bare bi-serial relation, and computable model checking — rest
 
 - `iter` — `n`-fold iteration of a binary relation, `iter R 0 = Eq` and
   `iter R (n+1) w u = ∃ v, iter R n w v ∧ R v u`
-- `ParamTaskFrame.step` — the one-step relation of a `ParamTaskFrame ℤ`
+- `FrameOver.step` — the one-step relation of a `FrameOver intOrder`
 - `IsStepPath` — a bi-infinite walk `f : ℤ → WorldState` stepping between consecutive times
 - `ParamTaskFrame.HF.path` — the bare path underlying a total world history
-- `ParamTaskFrame.HFofStepPath` — the total world history determined by a bi-infinite step-path
+- `FrameOver.HFofStepPath` — the total world history determined by a bi-infinite step-path
 
 ## Main Results
 
 - `iter_add` — `iter R (m + n)` factors as `iter R m` followed by `iter R n`
-- `ParamTaskFrame.taskRel_natCast_iff_iter` — the nonnegative core: `TaskRel w (n : ℤ) u ↔ step^n w u`
-- `ParamTaskFrame.taskRel_eq_iter` — the uniform two-sided characterization, valid at every `d : ℤ`
-- `ParamTaskFrame.mem_HF_iff_adjacent` — `H_F` over ℤ is exactly the set of bi-infinite step-paths
-- `ParamTaskFrame.isTotal_respects_iff_adjacent` — the predicate-on-histories form of the same fact
+- `FrameOver.taskRel_natCast_iff_iter` — the nonnegative core: `TaskRel w (n : ℤ) u ↔ step^n w u`
+- `FrameOver.taskRel_eq_iter` — the uniform two-sided characterization, valid at every `d : ℤ`
+- `FrameOver.mem_HF_iff_adjacent` — `H_F` over ℤ is exactly the set of bi-infinite step-paths
+- `FrameOver.isTotal_respects_iff_adjacent` — the predicate-on-histories form of the same fact
 
 ## The Mathlib succ-Archimedean-to-ℤ transfer: binder-fit finding
 
@@ -83,17 +83,17 @@ along that isomorphism, yielding `validDiscrete_iff_validInt : ValidDiscrete φ 
 ## What buying the right to work over ℤ is worth
 
 The transfer above is not bookkeeping for its own sake: it is what makes the frame axioms cheap.
-`ParamTaskFrame.ofStep` below discharges **all seven** `ParamTaskFrame` fields from a bare bi-serial relation
+`FrameOver.ofStep` below discharges **all seven** `ParamTaskFrame` fields from a bare bi-serial relation
 on a finite nonempty carrier, leaving exactly **one** genuine obligation — bi-seriality (`fwd` and
 `bwd`). Its docstring tabulates the source of every field. So for *any* relation over `ℤ` on a
 finite carrier, however non-permissive its shape, the four `def:frame` axioms cost one obligation
 and nothing else. `Decidability/IntPresentation.lean`'s `toTaskFrame` is literally
-`ParamTaskFrame.ofStep P.stepRel P.fwd P.bwd`, and pays exactly that.
+`FrameOver.ofStep P.stepRel P.fwd P.bwd`, and pays exactly that.
 
 This pricing is available **only over ℤ**, and the asymmetry is the whole reason the transfer is
 worth doing first. Two of the seven discharges are ℤ-specific: `limit` comes from
 `ParamTaskFrame.limit_of_succOrder`, which needs the successor structure, and `ofStep` itself is stated
-at `ParamTaskFrame ℤ`. A frame left polymorphic in `D` — such as `RefinedFilteredTaskFrame D` under
+at `FrameOver intOrder`. A frame left polymorphic in `D` — such as `RefinedFilteredTaskFrame D` under
 `Metalogic/Decidability/FMP/` — has neither, so each axiom must be re-discharged by hand for the
 particular relation at hand. Estimates that price re-discharging the frame axioms as a large,
 open-ended piece of work are measuring the `D`-polymorphic case; they do not transfer to the
@@ -120,7 +120,7 @@ order, so that it is reusable wherever a step relation appears.
 
 The recursion appends the new step on the **right**, which is what makes `iter_add`'s proof a
 direct induction on the second summand and matches the `Compositionality`-at-`y = 1` shape used by
-`ParamTaskFrame.taskRel_natCast_iff_iter`.
+`FrameOver.taskRel_natCast_iff_iter`.
 -/
 def iter {W : Type} (R : W → W → Prop) : ℕ → W → W → Prop
   | 0 => Eq
@@ -158,7 +158,7 @@ theorem iter_add {W : Type} (R : W → W → Prop) (m n : ℕ) (w u : W) :
     · rintro ⟨v, hv, z, hvz, hstep⟩
       exact ⟨z, (ih z).mpr ⟨v, hv, hvz⟩, hstep⟩
 
-namespace ParamTaskFrame
+namespace FrameOver
 
 open TaskFrame
 
@@ -174,10 +174,10 @@ Over ℤ this single relation determines the whole frame — see `taskRel_eq_ite
 what reduces the semantics of a finite-`WorldState` frame to reachability in a finite directed
 graph.
 -/
-def step (F : ParamTaskFrame ℤ) : F.WorldState → F.WorldState → Prop :=
+def step (F : FrameOver intOrder) : F.WorldState → F.WorldState → Prop :=
   fun w u => F.TaskRel w 1 u
 
-theorem step_def (F : ParamTaskFrame ℤ) (w u : F.WorldState) : F.step w u ↔ F.TaskRel w 1 u := Iff.rfl
+theorem step_def (F : FrameOver intOrder) (w u : F.WorldState) : F.step w u ↔ F.TaskRel w 1 u := Iff.rfl
 
 /--
 **The decomposition theorem, nonnegative core**: over ℤ, a task of natural-number duration `n` is
@@ -187,7 +187,7 @@ By induction on `n`. The base case is the `nullity_identity` field (`⇒₀` is 
 step case is the `comp` field — the paper's biconditional *Compositionality*
 (`def:frame#Compositionality`) — instantiated at `x = n`, `y = 1`, both nonnegative.
 -/
-theorem taskRel_natCast_iff_iter (F : ParamTaskFrame ℤ) (n : ℕ) (w u : F.WorldState) :
+theorem taskRel_natCast_iff_iter (F : FrameOver intOrder) (n : ℕ) (w u : F.WorldState) :
     F.TaskRel w (n : ℤ) u ↔ iter F.step n w u := by
   induction n generalizing u with
   | zero => simpa using F.nullity_identity w u
@@ -212,7 +212,7 @@ survives only inside the proof, where the negative half is discharged by the `co
 `Int.natAbs` is the right index on both sides because `(-d).natAbs = d.natAbs`: a backward task of
 duration `d < 0` is a forward `|d|`-step path traversed in the other direction.
 -/
-theorem taskRel_eq_iter (F : ParamTaskFrame ℤ) (w u : F.WorldState) (d : ℤ) :
+theorem taskRel_eq_iter (F : FrameOver intOrder) (w u : F.WorldState) (d : ℤ) :
     F.TaskRel w d u ↔
       (0 ≤ d → iter F.step d.natAbs w u) ∧ (d ≤ 0 → iter F.step d.natAbs u w) := by
   constructor
@@ -238,10 +238,10 @@ theorem taskRel_eq_iter (F : ParamTaskFrame ℤ) (w u : F.WorldState) (d : ℤ) 
 
 /-- The one-step relation is `taskRel_eq_iter` at `d = 1`: a sanity check that `step` really is
 the `d = 1` slice, stated so a reader can see the two presentations agree. -/
-theorem taskRel_one_iff_step (F : ParamTaskFrame ℤ) (w u : F.WorldState) :
+theorem taskRel_one_iff_step (F : FrameOver intOrder) (w u : F.WorldState) :
     F.TaskRel w 1 u ↔ F.step w u := Iff.rfl
 
-end ParamTaskFrame
+end FrameOver
 
 /-!
 ## `H_F` over ℤ is exactly the set of bi-infinite step-paths
@@ -262,16 +262,16 @@ downstream periodicity arguments have an obstruction-free carrier.
 A **bi-infinite step-path** in a frame over ℤ: a state at every integer time, with a one-step
 transition between consecutive times.
 -/
-def IsStepPath (F : ParamTaskFrame ℤ) (f : ℤ → F.WorldState) : Prop :=
+def IsStepPath (F : FrameOver intOrder) (f : ℤ → F.WorldState) : Prop :=
   ∀ n : ℤ, F.step (f n) (f (n + 1))
 
-namespace ParamTaskFrame
+namespace FrameOver
 
 open TaskFrame
 
 /-- The bare path underlying a total world history: totality makes the domain proof uniform, so
 the dependent `states` field collapses to a plain function `ℤ → WorldState`. -/
-def _root_.FormalSystem.Semantics.TaskFrame.HF.path {F : ParamTaskFrame ℤ}
+def _root_.FormalSystem.Semantics.TaskFrame.HF.path {F : FrameOver intOrder}
     (τ : TaskFrame.HF F) : ℤ → F.WorldState :=
   fun t => τ.val.states t (τ.property t)
 
@@ -281,7 +281,7 @@ Along a bi-infinite step-path, an `n`-step iterate connects a state to the state
 This is the induction that discharges the all-pairs `respects_task` obligation from adjacency
 alone; it is the technical heart of `mem_HF_iff_adjacent`'s converse direction.
 -/
-theorem iter_of_isStepPath {F : ParamTaskFrame ℤ} {f : ℤ → F.WorldState} (h : IsStepPath F f)
+theorem iter_of_isStepPath {F : FrameOver intOrder} {f : ℤ → F.WorldState} (h : IsStepPath F f)
     (n : ℕ) (s : ℤ) : iter F.step n (f s) (f (s + n)) := by
   induction n with
   | zero => simp
@@ -292,7 +292,7 @@ theorem iter_of_isStepPath {F : ParamTaskFrame ℤ} {f : ℤ → F.WorldState} (
     rwa [show ((n + 1 : ℕ) : ℤ) = (n : ℤ) + 1 by push_cast; rfl, hs]
 
 /-- A bi-infinite step-path satisfies the all-pairs task-respect obligation. -/
-theorem respects_of_isStepPath {F : ParamTaskFrame ℤ} {f : ℤ → F.WorldState} (h : IsStepPath F f)
+theorem respects_of_isStepPath {F : FrameOver intOrder} {f : ℤ → F.WorldState} (h : IsStepPath F f)
     (s t : ℤ) : F.TaskRel (f s) (t - s) (f t) := by
   refine (F.taskRel_eq_iter (f s) (f t) (t - s)).mpr ⟨fun hd => ?_, fun hd => ?_⟩
   · have hst : t = s + ((t - s).natAbs : ℤ) := by omega
@@ -307,7 +307,7 @@ The total world history determined by a bi-infinite step-path. Every field is di
 adjacency: the domain is all of ℤ (so `nonempty_domain` and `convex` are trivial), and
 `respects_task` is `respects_of_isStepPath`.
 -/
-def HFofStepPath (F : ParamTaskFrame ℤ) (f : ℤ → F.WorldState) (h : IsStepPath F f) :
+def HFofStepPath (F : FrameOver intOrder) (f : ℤ → F.WorldState) (h : IsStepPath F f) :
     TaskFrame.HF F :=
   ⟨{ domain := fun _ => True
      nonempty_domain := ⟨0, trivial⟩
@@ -316,11 +316,11 @@ def HFofStepPath (F : ParamTaskFrame ℤ) (f : ℤ → F.WorldState) (h : IsStep
      convex := fun _ _ _ _ _ _ _ => trivial }, fun _ => trivial⟩
 
 @[simp]
-theorem HFofStepPath_path (F : ParamTaskFrame ℤ) (f : ℤ → F.WorldState) (h : IsStepPath F f) :
+theorem HFofStepPath_path (F : FrameOver intOrder) (f : ℤ → F.WorldState) (h : IsStepPath F f) :
     (HFofStepPath F f h).path = f := rfl
 
 /-- Every total world history over ℤ is a bi-infinite step-path. -/
-theorem _root_.FormalSystem.Semantics.TaskFrame.HF.isStepPath {F : ParamTaskFrame ℤ}
+theorem _root_.FormalSystem.Semantics.TaskFrame.HF.isStepPath {F : FrameOver intOrder}
     (τ : TaskFrame.HF F) : IsStepPath F τ.path := by
   intro n
   have := τ.val.respects_task n (n + 1) (τ.property n) (τ.property (n + 1))
@@ -334,7 +334,7 @@ it steps between consecutive times. The forward direction instantiates `def:worl
 all-pairs task-respect at consecutive times; the converse rebuilds the all-pairs obligation from
 adjacency alone, by `taskRel_eq_iter` and induction on the gap.
 -/
-theorem mem_HF_iff_adjacent (F : ParamTaskFrame ℤ) (f : ℤ → F.WorldState) :
+theorem mem_HF_iff_adjacent (F : FrameOver intOrder) (f : ℤ → F.WorldState) :
     (∃ τ : TaskFrame.HF F, τ.path = f) ↔ IsStepPath F f := by
   constructor
   · rintro ⟨τ, rfl⟩; exact τ.isStepPath
@@ -346,7 +346,7 @@ total, task-respect at consecutive times is equivalent to task-respect at all pa
 direction is the substantive one — it is what lets a construction discharge `respects_task` from a
 single adjacency hypothesis.
 -/
-theorem isTotal_respects_iff_adjacent (F : ParamTaskFrame ℤ) (f : ℤ → F.WorldState) :
+theorem isTotal_respects_iff_adjacent (F : FrameOver intOrder) (f : ℤ → F.WorldState) :
     (∀ s t : ℤ, F.TaskRel (f s) (t - s) (f t)) ↔ IsStepPath F f := by
   constructor
   · intro h n
@@ -354,10 +354,10 @@ theorem isTotal_respects_iff_adjacent (F : ParamTaskFrame ℤ) (f : ℤ → F.Wo
     rwa [show n + 1 - n = (1 : ℤ) by omega] at this
   · intro h s t; exact respects_of_isStepPath h s t
 
-end ParamTaskFrame
+end FrameOver
 
 /-!
-## Frame synthesis: from a bi-serial one-step relation to a `ParamTaskFrame ℤ`
+## Frame synthesis: from a bi-serial one-step relation to a `FrameOver intOrder`
 
 The converse of the decomposition theorem. Six of the seven `ParamTaskFrame` fields come for free from
 the normal form; the seventh, *Seriality*, is a genuine hypothesis and cannot be dropped.
@@ -416,13 +416,13 @@ theorem exists_iter_bwd {W : Type} {R₁ : W → W → Prop} (bwd : ∀ w, ∃ v
     obtain ⟨w, hw⟩ := ih v
     exact ⟨w, v, hw, hv⟩
 
-namespace ParamTaskFrame
+namespace FrameOver
 
 open TaskFrame
 
 /--
 **Frame synthesis over ℤ**: a bi-serial relation on a finite nonempty carrier generates a
-`ParamTaskFrame ℤ`.
+`FrameOver intOrder`.
 
 The seven field discharges, and where each comes from:
 
@@ -442,7 +442,7 @@ that cost is accepted for `ofStep` specifically. It is **not** a licence to re-r
 relation *does* fit a choice-free class helper — see `spherical_of_finite`'s own docstring.
 -/
 def ofStep {W : Type} [Finite W] [Nonempty W] (R₁ : W → W → Prop)
-    (fwd : ∀ w, ∃ u, R₁ w u) (bwd : ∀ w, ∃ v, R₁ v w) : ParamTaskFrame ℤ where
+    (fwd : ∀ w, ∃ u, R₁ w u) (bwd : ∀ w, ∃ v, R₁ v w) : FrameOver intOrder where
   WorldState := W
   worldNonempty := inferInstance
   TaskRel := ofStepRel R₁
@@ -474,10 +474,10 @@ def ofStep {W : Type} [Finite W] [Nonempty W] (R₁ : W → W → Prop)
       exact ⟨u, (ofStepRel_of_nonneg hx w u).mpr hu⟩
     · obtain ⟨v, hv⟩ := exists_iter_bwd bwd x.natAbs w
       exact ⟨v, (ofStepRel_of_nonneg hx v w).mpr hv⟩
-  limit := limit_of_succOrder (fun w u => by
+  limit := ParamTaskFrame.limit_of_succOrder (fun w u => by
     rw [ofStepRel_of_nonneg (le_refl (0 : ℤ))]
     simp)
-  spherical := spherical_of_finite (ofStepRel R₁)
+  spherical := ParamTaskFrame.spherical_of_finite (ofStepRel R₁)
 
 @[simp]
 theorem ofStep_taskRel {W : Type} [Finite W] [Nonempty W] (R₁ : W → W → Prop)
@@ -492,7 +492,7 @@ theorem ofStep_step {W : Type} [Finite W] [Nonempty W] (R₁ : W → W → Prop)
   rw [ofStepRel_of_nonneg (zero_le_one : (0 : ℤ) ≤ 1)]
   exact iter_one R₁ w u
 
-end ParamTaskFrame
+end FrameOver
 
 /-!
 ### Worked instances
@@ -512,24 +512,24 @@ example (W : Type) [Nonempty W] (w : W) :
   intro _
   exact (ParamTaskFrame.staticFrame_rel_iff W (D := ℤ) w 1 w).mpr rfl
 
-/-- The two-state flip relation on `Bool` is bi-serial, so `ofStep` synthesizes a `ParamTaskFrame ℤ`
+/-- The two-state flip relation on `Bool` is bi-serial, so `ofStep` synthesizes a `FrameOver intOrder`
 from it: the canonical two-cycle, and the smallest frame on which a lasso argument has anything
 to bite on. -/
-def flipFrame : ParamTaskFrame ℤ :=
-  ParamTaskFrame.ofStep (fun w u : Bool => w ≠ u)
+def flipFrame : FrameOver intOrder :=
+  FrameOver.ofStep (fun w u : Bool => w ≠ u)
     (fun w => ⟨!w, by cases w <;> simp⟩) (fun w => ⟨!w, by cases w <;> simp⟩)
 
 /-- `ofStep` really does recover the relation it was given. -/
 example (w u : Bool) :
-    (ParamTaskFrame.ofStep (fun w u : Bool => w ≠ u)
+    (FrameOver.ofStep (fun w u : Bool => w ≠ u)
       (fun w => ⟨!w, by cases w <;> simp⟩) (fun w => ⟨!w, by cases w <;> simp⟩)).step w u
       ↔ w ≠ u :=
-  ParamTaskFrame.ofStep_step _ _ _ w u
+  FrameOver.ofStep_step _ _ _ w u
 
 /-- …and the characterization then produces an actual member of `H_F` over that frame. -/
 example (W : Type) [Nonempty W] (w : W) :
     ∃ τ : TaskFrame.HF (ParamTaskFrame.staticFrame W (D := ℤ)), τ.path = fun _ => w :=
-  (ParamTaskFrame.mem_HF_iff_adjacent (ParamTaskFrame.staticFrame W (D := ℤ)) (fun _ => w)).mpr
+  (FrameOver.mem_HF_iff_adjacent (ParamTaskFrame.staticFrame W (D := ℤ)) (fun _ => w)).mpr
     (fun _ => (ParamTaskFrame.staticFrame_rel_iff W (D := ℤ) w 1 w).mpr rfl)
 
 end WorkedInstances

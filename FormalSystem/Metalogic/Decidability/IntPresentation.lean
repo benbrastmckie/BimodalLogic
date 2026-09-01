@@ -17,7 +17,7 @@ and cannot drive `decide`. Every computation on a finite frame therefore needs a
 constructive presentation. This module supplies it.
 
 An `IntPresentation` is a finite directed graph on `Fin card` together with a `Bool`-valued
-valuation, and it maps into the semantics through the ℤ-frame normal form: `ParamTaskFrame.ofStep`
+valuation, and it maps into the semantics through the ℤ-frame normal form: `FrameOver.ofStep`
 (`Semantics/IntNormalForm.lean`) turns the bi-serial step relation into a `ParamTaskFrame ℤ` with all
 seven fields discharged, so nothing is re-discharged by hand here.
 
@@ -93,7 +93,7 @@ structure IntPresentation where
   /-- The valuation: which atoms hold at which state. -/
   val : Atom → Fin card → Bool
   /-- Forward seriality: every state has a successor. Not derivable — *Seriality* is free from
-  *Occurrence*, never from ℤ (see `ParamTaskFrame.ofStep`). -/
+  *Occurrence*, never from ℤ (see `FrameOver.ofStep`). -/
   fwd : ∀ w, ∃ u, step w u = true
   /-- Backward seriality: every state has a predecessor. -/
   bwd : ∀ w, ∃ v, step v w = true
@@ -124,7 +124,7 @@ of arbitrary shape, and *Limit* through `ParamTaskFrame.limit_of_succOrder`.
 
 **So bi-seriality is the sole frame obligation a presentation ever pays** — `fwd` and `bwd`,
 already fields of the structure. The definition below is literally
-`ParamTaskFrame.ofStep P.stepRel P.fwd P.bwd` and adds nothing: the four `def:frame` axioms cost one
+`FrameOver.ofStep P.stepRel P.fwd P.bwd` and adds nothing: the four `def:frame` axioms cost one
 obligation here, not four, however non-permissive the relation's shape. That pricing is specific to
 ℤ (`ofStep` is stated at `ParamTaskFrame ℤ`, and `limit_of_succOrder` needs the successor structure); a
 frame left polymorphic in its duration type pays each axiom by hand. See
@@ -132,7 +132,7 @@ frame left polymorphic in its duration type pays each axiom by hand. See
 contrast.
 -/
 def toTaskFrame : ParamTaskFrame ℤ :=
-  ParamTaskFrame.ofStep P.stepRel P.fwd P.bwd
+  FrameOver.ofStep P.stepRel P.fwd P.bwd
 
 /-- The presented frame, bundled with its finiteness. `finite_world` is filled *from* `Fin card`;
 it is never read back out to drive a computation. -/
@@ -146,11 +146,11 @@ theorem worldState_eq : P.toTaskFrame.WorldState = Fin P.card := rfl
 /-- The presented carrier has exactly `card` states, so `FMP/Periodicity.lean`'s
 `Nat.card`-shaped bounds read literally as `card` on a presentation. -/
 theorem card_worldState : Nat.card P.toTaskFrame.WorldState = P.card := by
-  simp [toTaskFrame, ParamTaskFrame.ofStep]
+  simp [toTaskFrame, FrameOver.ofStep]
 
 /-- The presented frame's one-step relation is the presentation's `step`. -/
 theorem step_iff (w u : Fin P.card) : P.toTaskFrame.step w u ↔ P.step w u = true :=
-  ParamTaskFrame.ofStep_step P.stepRel P.fwd P.bwd w u
+  FrameOver.ofStep_step P.stepRel P.fwd P.bwd w u
 
 /-- The presented frame's bi-infinite step-paths are exactly the walks in the adjacency matrix.
 Combined with `mem_HF_iff_adjacent`, this identifies `H_F` over a presentation with the

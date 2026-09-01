@@ -146,7 +146,7 @@ The construction is the one the informal argument describes. Seriality — taken
 `ParamTaskFrame.serial` at duration `1`, through `exists_iter_fwd` and `exists_iter_bwd` — supplies a
 successor and a predecessor at every state. Iterating them out of the two ends of the window gives
 two orbits; finiteness forces each to revisit a state (`exists_repeat_of_card_le`), which makes it
-periodic from that visit onward; and `ParamTaskFrame.HFofStepPath` turns the resulting bi-infinite walk
+periodic from that visit onward; and `FrameOver.HFofStepPath` turns the resulting bi-infinite walk
 into a genuine element of `H_F`, discharging the all-pairs task-respect obligation from adjacency
 alone.
 
@@ -238,7 +238,7 @@ theorem extend_periodic {F : ParamTaskFrame ℤ} [Finite F.WorldState]
         show (t + 1 - b).toNat = (t - b).toNat + 1 by omega,
         Function.iterate_succ_apply']
       exact hsc _
-  refine ⟨HFofStepPath F f hstep, ⟨fun _ _ => trivial, ?_⟩, ?_⟩
+  refine ⟨FrameOver.HFofStepPath F f hstep, ⟨fun _ _ => trivial, ?_⟩, ?_⟩
   · -- Agreement on the window is extension.
     intro t ht
     obtain ⟨h1, h2⟩ := (hdom t).mp ht

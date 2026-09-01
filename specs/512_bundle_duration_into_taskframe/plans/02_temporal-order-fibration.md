@@ -960,7 +960,7 @@ binder list did, and they must still be synthesized on the ultraproduct.
 
 ---
 
-### Phase 7: `IntNormalForm.lean` at the ℤ fibre [NOT STARTED]
+### Phase 7: `IntNormalForm.lean` at the ℤ fibre [COMPLETED]
 
 **Goal**: The first real fibre migration. `ParamTaskFrame ℤ` → `FrameOver intOrder` throughout the
 ℤ normal-form machinery, with numerals and `omega` working exactly as Phase 0(a)/(b) recorded.
@@ -975,12 +975,12 @@ and write order relations as the explicit `@LT.lt ℤ _ a b` / `@LE.le ℤ _ a b
 Never introduce a `▸` cast to make a numeral typecheck.
 
 **Tasks**:
-- [ ] Migrate `Semantics/IntNormalForm.lean` (53 occurrences at HEAD), including
+- [x] Migrate `Semantics/IntNormalForm.lean` (53 occurrences at HEAD), including
       `step F w u := F.TaskRel w 1 u` — the exact site the v01 blocker reproduced — and the
       `iter`/`iter_add` arithmetic core and `taskRel_eq_iter`.
-- [ ] Record in the commit, per construct, which form of the phase contract was needed. This is the
+- [x] Record in the commit, per construct, which form of the phase contract was needed. This is the
       reference the six later ℤ-fibre phases copy; getting it wrong here is expensive downstream.
-- [ ] Confirm that no goal anywhere in the file is left depending on `omega` seeing an abstract
+- [x] Confirm that no goal anywhere in the file is left depending on `omega` seeing an abstract
       duration type.
 
 **Timing**: 2 hours
@@ -996,6 +996,38 @@ before editing. An unexpected extra concrete frame is a scope signal.
 
 **Files to modify**:
 - `FormalSystem/Semantics/IntNormalForm.lean`
+
+#### Phase 7 Record — THE ℤ-FIBRE IDIOM, as it actually landed
+
+**Which branch of the phase contract was needed: neither recovery form.** The file's arithmetic
+binders were *already* written `(n : ℕ)`, `(d : ℤ)`, `(s t : ℤ)` — genuine `ℤ`, not frame-typed —
+because they are the *statement's* binders, not the frame's. Phase 0(b)(ii) is exactly that shape,
+so every `omega` in the file kept working with **zero** edits to any proof. `git diff` on this file
+adds **0** occurrences of `▸` and removes 0.
+
+**The recovery form is needed only where the binder comes from a frame axiom's own type** — as in
+Phase 2's `ofStep.comp`, where `TaskFrame.Compositional` hands you `0 ≤ x` at `↑intOrder` and
+`omega` drops it. That is the site class Phases 9, 10, 11, 15 and 19 should watch: not "the file
+mentions ℤ", but "the hypothesis was produced by a frame field rather than written by the author".
+
+What changed, mechanically:
+- `ParamTaskFrame ℤ` → `FrameOver intOrder` throughout, and the file's three
+  `namespace ParamTaskFrame` blocks → `namespace FrameOver`, so `F.step`, `F.taskRel_eq_iter`,
+  `F.HFofStepPath` and the rest still resolve by dot notation on a fibre-typed `F`.
+- 23 qualified renames across 5 files for the declarations that changed namespace
+  (`step`, `step_def`, `taskRel_eq_iter`, `taskRel_natCast_iff_iter`, `taskRel_one_iff_step`,
+  `ofStep`, `ofStep_step`, `ofStep_taskRel`, `HFofStepPath`, `HFofStepPath_path`,
+  `mem_HF_iff_adjacent`, `isTotal_respects_iff_adjacent`, `iter_of_isStepPath`,
+  `respects_of_isStepPath`, `IsStepPath`) — `IntPresentation.lean` 6, `IntNormalForm.lean` 13,
+  `BiLasso/{Basic,Extend}.lean` 3, `PeriodicExtension.lean` 1.
+- Two bare-relation helpers still living in `namespace ParamTaskFrame` in `TaskFrame.lean`
+  (`limit_of_succOrder`, `spherical_of_finite`) had to be qualified at their two use sites, since
+  they no longer sit in the enclosing namespace. They are Phase 20's to relocate.
+
+**C6 caught a third one.** `PeriodicExtension.lean` — unreachable-but-manifested, so not covered by
+`lake build` — had an unqualified `HFofStepPath` that resolved through the old namespace. Only the
+invariants gate's isolation compile saw it. That is now three for three: Phase 2 (`omega`), Phase 6
+(`BimodalTest`), Phase 7 (namespace resolution). A green `lake build` is not the gate.
 
 **Verification**:
 - Standing contract (1-9).
