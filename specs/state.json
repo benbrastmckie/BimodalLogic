@@ -4,17 +4,17 @@
     "total_tasks": 42,
     "last_sync": "2026-08-24T21:34:14Z"
   },
-  "next_project_number": 512,
+  "next_project_number": 515,
   "active_projects": [
     {
       "project_number": 506,
       "project_name": "fix_typst_display_defects_via_playwright_visual_loop",
-      "status": "researching",
+      "status": "not_started",
       "task_type": "typst",
       "description": "Fix all outstanding display/layout defects in the compiled typst documents (typst/FormalFoundations.typ and typst/BimodalReference.typ) using a Playwright-driven visual check loop. Known defect: in <sec:representation> Definition 5.1 (TM+-algebra), the display equation listing the derived operators (F a := 1 ▷ a, G a := ¬F(¬a), P a := 1 ◁ a, H a := ¬P(¬a), Next a := 0 ▷ a, △a := H a ∧ a ∧ G a) is set as one unbreakable math line and overflows both the definition box and the page margins; it must be broken across lines (e.g. an aligned block or a two-row layout) so it fits within the text block. Approach: compile each document to PDF (and/or SVG/PNG pages via `typst compile --format png`), serve the output to a headless browser via the Playwright MCP tools, screenshot every page, and systematically inspect for overflowing display math, content escaping theorem/definition boxes, text running past margins, clipped tables, orphaned headings, broken cross-references or citation placeholders, and any other visual defect. Catalogue every finding with page number and source line, then plan and implement fixes in the .typ sources (line-breaking long equations, resizing tables, adjusting box widths, etc.), recompiling and re-screenshotting after each fix and repeating the full sweep until no display issues remain. Both documents must compile cleanly and scripts/typst-sync-check.sh must pass at the end. Do not change mathematical content — layout only",
       "topic": "publication-quality",
       "created": "2026-08-27T04:46:28Z",
-      "last_updated": "2026-08-27T04:48:10Z",
+      "last_updated": "2026-09-01T06:06:56Z",
       "session_id": "sess_1787806065_4e3a93"
     },
     {
@@ -794,6 +794,11 @@
           "path": "specs/481_discharge_or_replace_unorderedsuccessorlabelclosed_residual/summaries/01_sharpen-replace-labelclosed-residual-summary.md",
           "type": "summary",
           "summary": "Phases 1-5 landed; Phases 6-7 blocked with an evidenced obstruction, all twelve Scope Hypotheses resolved."
+        },
+        {
+          "path": "specs/481_discharge_or_replace_unorderedsuccessorlabelclosed_residual/reports/02_spawn-analysis.md",
+          "type": "report",
+          "summary": "spawn analysis (backfilled by --sync)"
         }
       ],
       "session_id": "sess_1787685945_9ba72e",
@@ -1083,6 +1088,16 @@
           "path": "specs/511_research_frame_correspondence_infrastructure/reports/03_e2-periodicity.md",
           "type": "report",
           "summary": "E2 closed affirmatively at D=Z: FwdRec implies every total history is periodic (via determinism), giving full-schema exactness F |= GGphi->Gphi <-> FwdRec F for every formula. New open item E2' at wider D."
+        },
+        {
+          "path": "specs/511_research_frame_correspondence_infrastructure/reports/01_frame-correspondence-infrastructure.md",
+          "type": "report",
+          "summary": "frame correspondence infrastructure (backfilled by --sync)"
+        },
+        {
+          "path": "specs/511_research_frame_correspondence_infrastructure/reports/02_per-frame-correspondence-reassessment.md",
+          "type": "report",
+          "summary": "per frame correspondence reassessment (backfilled by --sync)"
         }
       ],
       "subtasks": [

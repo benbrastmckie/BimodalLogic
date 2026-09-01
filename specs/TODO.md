@@ -1,5 +1,5 @@
 ---
-next_project_number: 512
+next_project_number: 515
 ---
 
 # TODO
@@ -92,7 +92,7 @@ next_project_number: 512
 
 ### Publication Quality
 
-506 [RESEARCHING] — Fix all outstanding display/layout defects in the compiled typst 
+506 [NOT STARTED] — Fix all outstanding display/layout defects in the compiled typst 
 
 ### Strong Completeness
 
@@ -156,7 +156,10 @@ specs/511_research_frame_correspondence_infrastructure/reports/01–03 + probes.
 - **Task Type**: formal
 - **Topic**: metalogic
 - **Dependencies**: Task 514, Task 512, Task 513
-- **Research**: [511_research_frame_correspondence_infrastructure/reports/03_e2-periodicity.md]
+- **Research**:
+  - [511_research_frame_correspondence_infrastructure/reports/03_e2-periodicity.md]
+  - [511_research_frame_correspondence_infrastructure/reports/01_frame-correspondence-infrastructure.md]
+  - [511_research_frame_correspondence_infrastructure/reports/02_per-frame-correspondence-reassessment.md]
 
 **Description**: RESEARCH TASK, DELIBERATELY AGNOSTIC ABOUT FEASIBILITY. Determine what frame-correspondence infrastructure this bimodal setting can support, and specify it. THE GAP IS TOTAL, NOT PARTIAL: there is NO result anywhere in the live tree of the form 'axiom X is valid on frame class C IF AND ONLY IF C satisfies condition Y'. A search for correspond|characteriz|definabl|Sahlqvist across live code returns only chronicleMonadic_truth_correspondence (a chronicle/monadic bridge, BXCanonical/Chronicle/ChronicleMonadicBridge.lean:413), SetMaximalConsistent.ultrafilter_correspondence (algebraic, Algebraic/UltrafilterMCS.lean:782), and the *Definable* family in WeakCanonical/EFGames/ -- which concerns DEFINABLE GAPS in the Kamp/Ehrenfeucht-Fraisse machinery, not axiom-frame correspondence. WHAT EXISTS IS THE SUFFICIENCY HALF ONLY: Axiom.minFrameClass declares the intended class per axiom (a definition, not a theorem); Metalogic/SoundnessLemmas/ proves each axiom valid on its class. The NECESSITY half -- that each frame condition is required, i.e. the axiom fails on some frame violating it -- is established nowhere systematically. The closest artifacts are the three ad hoc non-derivability countermodels in Metalogic/Independence/ (ClockFrame.lean, LoopingDuration.lean, CoNotPriorU.lean), which are per-axiom and not organized as correspondence. CONSEQUENCE: Axiom.minFrameClass is currently an ASSERTION about the axiom-class relation with one direction proven, and the tree cannot state 'TM+_d is the logic of dense task frames' as a theorem. SCOPE: (a) which of the 45 axiom constructors admit a correspondence argument at all; (b) whether Sahlqvist-style machinery transfers to task frames with Until/Since and an S5 modality, or whether a bespoke argument is needed per axiom layer -- DO NOT ASSUME IT TRANSFERS; (c) what the right general statement is here given that frame classes are carrier-type constraints (DenselyOrdered, SuccOrder, LUB) rather than relational conditions on a Kripke accessibility relation, which is the setting standard correspondence theory assumes; (d) whether the Independence/ countermodels generalize into the necessity half. A NEGATIVE OR HEAVILY-QUALIFIED VERDICT IS A COMPLETE OUTCOME -- if correspondence in the textbook sense does not apply to carrier-constraint frame classes, say so with evidence and specify whatever weaker characterization IS available, so the question is not reopened. SEQUENCING: run alongside the TM-completeness-characterization research task, which asks the adjacent question for the BaseLanguage fragment. DELIVERABLE: a report with a verdict and, if affirmative, a concrete construction specification. GROUNDING: specs/reviews/review-2026-08-31-metalogic-systematicity.md issue M2.=== DIRECTION AMENDED (three research reports complete; construction spec partially retired) ===
 VERDICT REACHED AND MACHINE-VERIFIED across reports 01/02/03 (evidence: 02_probes.lean,
@@ -323,7 +326,7 @@ record both, one predicate each, no bridged duplicates). See specs/514_align_def
 ---
 
 ### 506. Fix typst display defects via playwright visual loop
-- **Status**: [RESEARCHING]
+- **Status**: [NOT STARTED]
 - **Task Type**: typst
 - **Topic**: publication-quality
 - **Dependencies**: None
@@ -504,7 +507,9 @@ PROVENANCE: specced by task 468's realignment (report `specs/468_realign_task_pr
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 434, Task 483
-- **Research**: [481_discharge_or_replace_unorderedsuccessorlabelclosed_residual/reports/01_unorderedsuccessorlabelclosed-verdict.md]
+- **Research**:
+  - [481_discharge_or_replace_unorderedsuccessorlabelclosed_residual/reports/01_unorderedsuccessorlabelclosed-verdict.md]
+  - [481_discharge_or_replace_unorderedsuccessorlabelclosed_residual/reports/02_spawn-analysis.md]
 - **Plan**: [481_discharge_or_replace_unorderedsuccessorlabelclosed_residual/plans/01_sharpen-replace-labelclosed-residual.md]
 - **Summary**: [481_discharge_or_replace_unorderedsuccessorlabelclosed_residual/summaries/01_sharpen-replace-labelclosed-residual-summary.md]
 
