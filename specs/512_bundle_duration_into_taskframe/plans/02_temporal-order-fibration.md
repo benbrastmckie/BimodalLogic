@@ -1724,26 +1724,55 @@ task above before any edit.
 
 ---
 
-### Phase 18: `FrameConditions/`, `ValidOver` deletion, and the aggregators [NOT STARTED]
+### Phase 18: `FrameConditions/`, `ValidOver` deletion, and the aggregators [COMPLETED]
 
 **Goal**: The orphaned frame-conditions directory migrated, `ValidOver` deleted, and every
 aggregator's docstring consistent with the new module set.
 
 **Tasks**:
-- [ ] Migrate `FormalSystem/FrameConditions/{FrameClass,Validity,Soundness,Compatibility}.lean`
-      (`Soundness.lean` 6 occurrences; the others near zero).
-- [ ] **Delete** `FrameConditions.ValidOver` (`Validity.lean:59`), subsumed by bundled
-      `TaskFrame.ValidOn` (research Recommendation 6; `511/reports/01` §S3). Repair its two bridges
-      to `valid` in place — v01 already crossed them over `F.Duration` / `F.toParam` and those
-      crossings become direct.
-- [ ] Note but do not act on `FrameConditions.LinearTemporalFrame` (`FrameClass.lean:88`), the
-      marker class research F8 identifies as "trying to be `TemporalOrder` and failing to be
-      adopted". Under this design it is redundant; its removal is 507/513 territory. Record the
-      observation.
-- [ ] Update the aggregators `FormalSystem/{Semantics,Metalogic}.lean`,
-      `FormalSystem/Metalogic/{Independence,Decidability}.lean`: the `## Submodules` prose still
-      describes `ParamTaskFrame` as "Task frame structure `F = (W, T, ·)`" and must describe the
-      fibration instead (C5/C14).
+- [x] Migrate `FormalSystem/FrameConditions/{FrameClass,Validity,Soundness,Compatibility}.lean`
+      (`Soundness.lean` 6, `Validity.lean` 1, the other two 0 — as estimated).
+- [x] **Deleted** `FrameConditions.ValidOver`, together with its `⊨[D] φ` notation.
+      *(deviation: altered — it was **not** orphaned, and that is the phase's main finding; see
+      the record. Deleting it forced restating `ValidLinear`, `ValidDenseFc`, `ValidDiscreteFc`,
+      the three `AxiomCompatible` classes and the three `axiom_*_valid_*` theorems over
+      `TaskFrame.ValidOn`, and renaming `ValidOverInt` → `ValidOnInt` and
+      `valid_over_Int_of_valid_discrete` → `valid_on_Int_of_valid_discrete`, whose old names named
+      a definition that no longer exists.)*
+- [x] Recorded, not acted on: `FrameConditions.LinearTemporalFrame` (`FrameClass.lean:88`) is
+      `class LinearTemporalFrame (D : Type) [AddCommGroup D] [LinearOrder D]
+      [IsOrderedAddMonoid D] : Prop` — three of `TemporalOrder`'s four components as binders and
+      no fields of its own. Research F8's reading ("trying to be `TemporalOrder` and failing to be
+      adopted") is confirmed by inspection. Removal is 507/513 territory; untouched here.
+- [x] Updated the aggregators `FormalSystem/{Semantics,Metalogic}.lean` and
+      `FormalSystem/Metalogic/{Independence,Decidability}.lean`. `Semantics.lean`'s `## Submodules`
+      entry now describes the fibration, and its paper-correspondence table maps `def:frame`'s
+      `F = (W, G, ·)` to `TaskFrame = Σ D : TemporalOrder, FrameOver D`.
+
+#### Phase 18 Record
+
+**`ValidOver` was not orphaned, and that changed the shape of the work.** Research review M1's
+claim that `FrameConditions/` has one consumer is true of the *directory*; it is not true of
+`ValidOver`, which had **15** uses across all three sibling modules — `ValidLinear`,
+`ValidDenseFc`, `ValidDiscreteFc`, `ValidOverInt`, the three `Axiom*Compatible` classes, the three
+`axiom_*_valid_*` theorems and six bridge lemmas. The plan's "repair its two bridges to `valid` in
+place" understates it by an order of magnitude.
+
+The deletion was carried out anyway, because the *reason* for it survives the recount: with the
+fibration in place, "valid over a fixed duration type" is `∀ (F : FrameOver D),
+F.toTaskFrame.ValidOn φ` — the fibre quantifier composed with the frame-relative validity of
+record. Keeping a second predicate for it would be a competing validity notion, which
+`Semantics/Validity.lean` explicitly argues against in `ValidOn`'s own docstring. Every use site
+was restated over `ValidOn` and every proof went through by exchanging the `(τ) (hτ : τ.IsTotal)`
+pair for `HF`'s `τ.val` / `τ.property` — **no new lemma was needed anywhere**, which is the
+drift test this plan sets.
+
+**Two forced renames.** `ValidOverInt` and `valid_over_Int_of_valid_discrete` became `ValidOnInt`
+and `valid_on_Int_of_valid_discrete`. These are not naming decisions of the kind 507 owns: the old
+names named `ValidOver`, and `ValidOver` no longer exists.
+
+**Verification**: `grep -rn "ValidOver" FormalSystem --include=*.lean | grep -v Boneyard` returns
+nothing, including prose. Green on the first build attempt.
 
 **Timing**: 1.5 hours
 

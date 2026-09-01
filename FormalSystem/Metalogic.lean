@@ -136,7 +136,7 @@ The `FrameClass.Dedekind` route has no case split. `Dense <= Dedekind`, so
 unconditionally: only the dense branch exists. Its countermodel is on the **reals**
 (`countermodel_dedekind_dense`), obtained by pushing the rational chronicle through Doets'
 theorem (Reynolds 1992, Section 8 Theorem 6) at the chronicle bridge and reading the resulting
-`R`-flowed monadic structure back as a `ParamTaskFrame R`.
+`R`-flowed monadic structure back as a value of the `R` fibre.
 
 ### Key Components
 

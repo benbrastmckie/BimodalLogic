@@ -15,7 +15,6 @@ different frame classes using the typeclass architecture.
 
 ## Main Definitions
 
-- `ValidOver D φ`: Formula φ is valid over temporal domain D
 - `ValidLinear`: Alias for validity over any LinearTemporalFrame
 - `ValidDenseFc`: Validity over DenseTemporalFrame (fc = frame condition)
 - `ValidDiscreteFc`: Validity over DiscreteTemporalFrame
@@ -24,7 +23,6 @@ different frame classes using the typeclass architecture.
 
 This module proves equivalence between the new parameterized validity
 and the existing definitions in `FormalSystem.Semantics.Validity`:
-- `valid_over_iff_valid`: `ValidOver D φ ↔ valid φ` (when D satisfies minimal constraints)
 - `valid_dense_fc_iff_valid_dense`: Connection to existing `ValidDense`
 - `valid_discrete_fc_iff_valid_discrete`: Connection to existing `ValidDiscrete`
 
@@ -47,25 +45,17 @@ namespace FormalSystem.FrameConditions
 open FormalSystem.Syntax
 open FormalSystem.Semantics
 
-/-! ## Parameterized Validity -/
+/-! ## Parameterized Validity
 
-/--
-A formula is valid over temporal domain D if it is true in all models
-at all times at every **total** history (`τ.IsTotal`, i.e. `τ ∈ H_F`).
-
-This is the parameterized version of `FormalSystem.Semantics.valid`, fixed to
-a specific temporal type D rather than quantifying over all types.
+**This module no longer declares its own fixed-carrier validity predicate.** Validity at a
+fixed temporal order is
+`∀ (F : FrameOver D), F.toTaskFrame.ValidOn φ` — the fibre quantifier composed with the frame-
+relative validity of record (`TaskFrame.ValidOn`, `Semantics/Validity.lean`). Before the
+fibration existed, "the frames over a fixed duration type" could not be said, so this module
+carried its own predicate to say it; now the fibre says it, and a second predicate would be a
+competing validity notion rather than an abbreviation. The frame-class predicates below are
+therefore stated directly over `ValidOn`.
 -/
-def ValidOver (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
-    (φ : Formula) : Prop :=
-  ∀ (F : ParamTaskFrame D) (M : TaskModel F)
-    (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
-    TruthAt M τ t φ
-
-/--
-Notation for parameterized validity: `⊨[D] φ` means `ValidOver D φ`.
--/
-notation:50 "⊨[" D "] " φ:50 => ValidOver D φ
 
 /-! ## Frame-Class Specific Validity -/
 
@@ -78,7 +68,7 @@ over all suitable D.
 -/
 def ValidLinear (φ : Formula) : Prop :=
   ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
-    [Nontrivial D] [LinearTemporalFrame D], ValidOver D φ
+    [Nontrivial D] [LinearTemporalFrame D] (F : FrameOver (TemporalOrder.of D)), F.toTaskFrame.ValidOn φ
 
 /--
 A formula is valid over dense temporal frames if it is valid over all
@@ -89,7 +79,7 @@ This corresponds to `ValidDense` but uses the typeclass constraint.
 def ValidDenseFc (φ : Formula) : Prop :=
   ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     [Nontrivial D] [NoMaxOrder D] [NoMinOrder D] [DenselyOrdered D]
-    [DenseTemporalFrame D], ValidOver D φ
+    [DenseTemporalFrame D] (F : FrameOver (TemporalOrder.of D)), F.toTaskFrame.ValidOn φ
 
 /--
 A formula is valid over discrete temporal frames if it is valid over all
@@ -100,29 +90,29 @@ This corresponds to `ValidDiscrete` but uses the typeclass constraint.
 def ValidDiscreteFc (φ : Formula) : Prop :=
   ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     [Nontrivial D] [NoMaxOrder D] [NoMinOrder D] [SuccOrder D] [PredOrder D] [IsSuccArchimedean D]
-    [DiscreteTemporalFrame D], ValidOver D φ
+    [DiscreteTemporalFrame D] (F : FrameOver (TemporalOrder.of D)), F.toTaskFrame.ValidOn φ
 
 /-! ## Equivalence with Existing Definitions -/
 
 /--
 Validity over any single type implies universal validity:
-if `ValidOver D φ` for all D, then `valid φ`.
+if every frame over every temporal order validates `φ`, then `valid φ`.
 
 This is immediate since `valid` quantifies over all D.
 -/
 theorem valid_of_forall_valid_over {φ : Formula}
-    (h : ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D], ValidOver D φ) :
+    (h : ∀ (D : TemporalOrder) (F : FrameOver D), F.toTaskFrame.ValidOn φ) :
     valid φ := by
   intro F M τ hτ t
-  exact h F.Duration F.toParam M τ hτ t
+  exact h F.Duration F.toFibre M ⟨τ, hτ⟩ t
 
 /--
 Universal validity implies validity over any specific type.
 -/
-theorem valid_over_of_valid {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
-    [Nontrivial D] {φ : Formula} (h : valid φ) : ValidOver D φ := by
-  intro F M τ hτ t
-  exact h F M τ hτ t
+theorem valid_over_of_valid {D : TemporalOrder} {φ : Formula} (h : valid φ)
+    (F : FrameOver D) : F.toTaskFrame.ValidOn φ := by
+  intro M τ t
+  exact h F M τ.val τ.property t
 
 /--
 Dense validity (typeclass version) implies existing `ValidDense`.
@@ -131,14 +121,14 @@ theorem valid_dense_of_valid_dense_fc {φ : Formula} (h : ValidDenseFc φ) : Val
   intro F _ M τ hτ t
   -- We need DenseTemporalFrame F.Duration, but it is constructible from the frame's own instances
   haveI : DenseTemporalFrame F.Duration := {}
-  exact h F.Duration F.toParam M τ hτ t
+  exact h F.Duration F.toFibre M ⟨τ, hτ⟩ t
 
 /--
 Existing `ValidDense` implies dense validity (typeclass version).
 -/
 theorem valid_dense_fc_of_valid_dense {φ : Formula} (h : ValidDense φ) : ValidDenseFc φ := by
-  intro D _ _ _ _ _ _ _ _ F M τ hτ t
-  exact h F M τ hτ t
+  intro D _ _ _ _ _ _ _ _ F M τ t
+  exact h F M τ.val τ.property t
 
 /--
 Dense validity equivalence: `ValidDenseFc φ ↔ ValidDense φ`.
@@ -161,8 +151,8 @@ typeclass-constrained types is sufficient for the weaker `ValidDiscrete`.
 -/
 theorem valid_discrete_fc_of_valid_discrete {φ : Formula} (h : ValidDiscrete φ) :
     ValidDiscreteFc φ := by
-  intro D _ _ _ _ _ _ _ _ _ _ F M τ hτ t
-  exact h F M τ hτ t
+  intro D _ _ _ _ _ _ _ _ _ _ F M τ t
+  exact h F M τ.val τ.property t
 
 /-! ## Relationship Between Frame Classes -/
 
@@ -170,40 +160,44 @@ theorem valid_discrete_fc_of_valid_discrete {φ : Formula} (h : ValidDiscrete φ
 Universal validity implies linear validity.
 -/
 theorem valid_linear_of_valid {φ : Formula} (h : valid φ) : ValidLinear φ := by
-  intro D _ _ _ _ _ F M τ hτ t
-  exact h F M τ hτ t
+  intro D _ _ _ _ _ F M τ t
+  exact h F M τ.val τ.property t
 
 /--
 Linear validity implies dense validity (base axioms are valid on dense frames).
 -/
 theorem valid_dense_fc_of_valid_linear {φ : Formula} (h : ValidLinear φ) : ValidDenseFc φ := by
-  intro D _ _ _ _ _ _ _ _ F M τ hτ t
+  intro D _ _ _ _ _ _ _ _ F M τ t
   -- DenseTemporalFrame extends SerialFrame which extends LinearTemporalFrame
   haveI : LinearTemporalFrame D := {}
-  exact h D F M τ hτ t
+  exact h D F M τ t
 
 /--
 Linear validity implies discrete validity (base axioms are valid on discrete frames).
 -/
 theorem valid_discrete_fc_of_valid_linear {φ : Formula} (h : ValidLinear φ) :
     ValidDiscreteFc φ := by
-  intro D _ _ _ _ _ _ _ _ _ _ F M τ hτ t
+  intro D _ _ _ _ _ _ _ _ _ _ F M τ t
   haveI : LinearTemporalFrame D := {}
-  exact h D F M τ hτ t
+  exact h D F M τ t
 
-/-! ## Validity over Int -/
-
-/--
-A formula is valid over Int (discrete integer time).
--/
-abbrev ValidOverInt (φ : Formula) : Prop := ValidOver Int φ
+/-! ## Validity at the `ℤ` fibre -/
 
 /--
-If a formula is discretely valid, it is valid over Int.
+A formula is valid at the `ℤ` fibre (discrete integer time): true on every frame over `intOrder`.
+
+Renamed as a forced consequence of deleting this module's fixed-carrier validity predicate:
+the old name referred to a definition that no longer exists.
 -/
-theorem valid_over_Int_of_valid_discrete {φ : Formula} (h : ValidDiscrete φ) :
-    ValidOverInt φ := by
-  intro F M τ hτ t
-  exact h F M τ hτ t
+abbrev ValidOnInt (φ : Formula) : Prop :=
+  ∀ (F : FrameOver intOrder), F.toTaskFrame.ValidOn φ
+
+/--
+If a formula is discretely valid, it is valid at the `ℤ` fibre.
+-/
+theorem valid_on_Int_of_valid_discrete {φ : Formula} (h : ValidDiscrete φ) :
+    ValidOnInt φ := by
+  intro F M τ t
+  exact h F M τ.val τ.property t
 
 end FormalSystem.FrameConditions

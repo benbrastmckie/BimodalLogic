@@ -85,7 +85,7 @@ theorem foo [AxiomLinearCompatible ax] : ... := ...
 class AxiomLinearCompatible {φ : Formula} (ax : Axiom φ) : Prop where
   /-- The axiom is valid over all linear temporal frames -/
   valid : ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
-            [Nontrivial D] [LinearTemporalFrame D], ValidOver D φ
+            [Nontrivial D] [LinearTemporalFrame D] (F : FrameOver (TemporalOrder.of D)), F.toTaskFrame.ValidOn φ
 
 /--
 Axiom compatible with dense temporal frames.
@@ -94,7 +94,7 @@ class AxiomDenseCompatible {φ : Formula} (ax : Axiom φ) : Prop where
   /-- The axiom is valid over all dense temporal frames -/
   valid : ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
             [Nontrivial D] [NoMaxOrder D] [NoMinOrder D] [DenselyOrdered D]
-            [DenseTemporalFrame D], ValidOver D φ
+            [DenseTemporalFrame D] (F : FrameOver (TemporalOrder.of D)), F.toTaskFrame.ValidOn φ
 
 /--
 Axiom compatible with discrete temporal frames.
@@ -104,7 +104,7 @@ class AxiomDiscreteCompatible {φ : Formula} (ax : Axiom φ) : Prop where
   valid : ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
             [Nontrivial D] [NoMaxOrder D] [NoMinOrder D] [SuccOrder D] [PredOrder D]
               [IsSuccArchimedean D]
-            [DiscreteTemporalFrame D], ValidOver D φ
+            [DiscreteTemporalFrame D] (F : FrameOver (TemporalOrder.of D)), F.toTaskFrame.ValidOn φ
 
 /-! ## Monotonicity: Linear → Dense/Discrete -/
 
