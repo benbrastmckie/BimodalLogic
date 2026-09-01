@@ -1,0 +1,35 @@
+{
+  "dispatch_seq": 10,
+  "status": "researched",
+  "phase": "research",
+  "task_number": 508,
+  "session_id": "sess_1788282938_f2ac03",
+  "summary": "Research complete for the soundness collapse. The full parameterized architecture was not merely designed but WRITTEN AND COMPILED sorry-free against the live tree, then removed from FormalSystem/ and preserved as a reference implementation under the task's reports/ directory. One theorem `soundness_in {fc} : DerivationTree fc Γ φ → fc.Sat F → TruthAt M τ t φ`, one uniform valid/swap recursion `derivable_valid_and_swap_validIn`, and two 45-case per-axiom leaf lemmas (`axiom_validIn_min`, `axiom_swap_validIn_min`) replace the family; all four existing Formula-side statements were recovered as verified one-line corollaries. Axiom profiles measured identical to the incumbents ([propext, Classical.choice, Quot.sound]). Baseline `lake build` green at 2564/2564.",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/508_parameterize_soundness_over_indexed_validity/reports/01_parameterized-soundness.md",
+      "summary": "Verified collapse design: corrected line citations, 23-to-corollary map, four-declaration architecture, BL-side and consequence-layer scope, downstream call-site inventory, 7-phase decomposition."
+    },
+    {
+      "type": "reference-implementation",
+      "path": "specs/508_parameterize_soundness_over_indexed_validity/reports/01_verified-reference-implementation.lean",
+      "summary": "239-line sorry-free Lean source that compiled against the live tree (lake build FormalSystem.Probe508, exit 0): both leaf lemmas, the uniform recursion, soundness_in, and all four corollaries."
+    }
+  ],
+  "blockers": [],
+  "notes": [
+    "BRIEF CORRECTION: every soundness line number in the task brief is stale. Verified: soundness:1152, soundness_dense:1329, soundness_discrete:1477, soundness_dedekind:2014, soundness_dense_valid:1256, soundness_discrete_valid:1421, soundness_dedekind_valid:1995; StrongCompleteness soundness_{base,dense,discrete,dedekind}_consequence at 676/781/891/530; BaseLanguageSoundness bl_soundness* at 201/215/229/249 and *_valid at 264/269/274/280.",
+    "BRIEF CORRECTION: FormalSystem/FrameConditions/ is confirmed absent; that row of review H2 is already resolved and out of scope. Residual references survive only in FormalSystem/Boneyard/, which is NOT compiled.",
+    "SCOPE CORRECTION: the BL-side DEFINITION collapse already landed under task 507, but NOT in the shape review M3 and the brief prescribe. The tree has BLValidIn fc := BLValidOnFrames fc.Sat (BLValidity.lean:107) defined natively over BLTruthAt, with a docstring at :81-86 explaining why it is deliberately not `ValidOn fc (tr φ)` (BLTruthAt is native per def:BL-semantics). Do NOT re-open that decision. Only the eight bl_soundness* theorems remain to collapse.",
+    "BLValidIn.of_forall_total and BLValidIn.apply_total do NOT exist — verified. Only BLValidOnFrames.mono (:141) and BLValidIn.mono (:147). The generic adapters must be added by mirroring Validity.lean:426-450. This is the only genuinely new code the BL side needs.",
+    "PRESERVE: bl_soundness_discrete_succ (BaseLanguageSoundness.lean:381) and bl_soundness_discrete_succ_valid (:413) and BLValidDiscreteSucc (BLValidity.lean:221) are NOT instances of the schema. No FrameClass.Sat variant bundles SuccOrder+PredOrder alone, and the theorem runs its own induction because soundness_discrete's binder bundle carries the very Archimedean instances it drops. Leave untouched.",
+    "UNDER-COUNTED DUPLICATION: axiom_locally_valid_general (FrameClassVariants.lean:393-682, ~290 lines, private) is a THIRD copy of base-axiom validity. It dies with the recursions that consume it. FrameClassVariants.lean shrinks from 1041 to roughly 500 lines rather than disappearing — axiom_swap_valid_general (:45) and the four prior_UZ/SZ/z1 discrete lemmas (:742,:782,:821,:883) are genuine content and must survive.",
+    "SECOND-ORDER OPPORTUNITY (planner decision): the list-context consequence layer is still four hand-written binder-list defs (SemanticConsequence Validity.lean:89, SemanticConsequenceDense StrongCompleteness.lean:729, SemanticConsequenceDiscrete :839, SemanticConsequenceDedekindDense :174) while task 507 already collapsed the Set layer onto SetSemanticConsequenceOn (SetConsequence.lean:98). Collapsing it makes the four soundness_*_consequence one-liners. If scoped out, record the decision explicitly.",
+    "HARD CONSTRAINT RE-CONFIRMED: soundness_dedekind targets ValidDedekindDense, never ValidDedekind. Sat .Dedekind = IsDedekind = IsDense AND IsComplete; ValidDedekind is ValidOnFrames TaskFrame.IsComplete (the bare clause, satisfied by ℤ). The verified corollary preserves the ValidDedekindDense binder bundle exactly.",
+    "IMPLEMENTATION TRAP found during verification: in axiom_swap_validIn_min, the density and dense_indicator arms must pass `trivial` (not `by decide`) as the h_fc argument to SoundnessLemmas.axiom_swap_valid. `by decide` fails with 'Expected type must not contain free variables' because the goal mentions (Axiom.density a0).minFrameClass.",
+    "PRE-EXISTING GATE FAILURES (not introduced here, not repaired here): check-module-invariants.sh C6 names 4 unreachable-and-unmanifested modules (SpWitness, TMCompletenessReduction, Z1Countermodel, LexCarrier); readme-lint.sh check 1 wants FormalSystem/Semantics/Ultraproduct/README.md. C14 axiom baselines and C15 paper anchors both PASS.",
+    "No foreign commits or foreign uncommitted source modifications were observed. Working-tree changes are confined to specs/, .claude-extensions.json, typst/generated/status.typ, and two untracked non-source files.",
+    "If the collapsed names are retained as corollaries (recommended), ZERO downstream call sites need editing. Full inventory in report section 8."
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/508_parameterize_soundness_over_indexed_validity/reports/01_parameterized-soundness.md",
+      "summary": "Verified design for collapsing ~23 soundness theorems onto one FrameClass-parameterized theorem, with corrected line citations, a full corollary map, and a 7-phase decomposition."
+    },
+    {
+      "type": "reference-implementation",
+      "path": "specs/508_parameterize_soundness_over_indexed_validity/reports/01_verified-reference-implementation.lean",
+      "summary": "239-line sorry-free Lean source that compiled against the live tree, containing both per-axiom leaf lemmas, the uniform recursion, soundness_in, and all four corollaries."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1788282938_f2ac03",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}

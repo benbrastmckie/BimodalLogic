@@ -1127,7 +1127,7 @@
     {
       "project_number": 508,
       "project_name": "parameterize_soundness_over_indexed_validity",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "topic": "metalogic",
       "priority": "high",
@@ -1137,13 +1137,21 @@
       ],
       "description": "Collapse ~23 soundness theorems into ONE parameterized theorem plus corollaries. CURRENT DUPLICATION, all instances of a single schema: Metalogic/Soundness.lean has soundness(:1100), soundness_dense(:1274), soundness_discrete(:1420), soundness_dedekind(:1947) plus three *_valid variants(:1205,:1368,:1928); Metalogic/StrongCompleteness.lean has soundness_{base,dense,discrete,dedekind}_consequence(:667,:771,:879,:524); FrameConditions/Soundness.lean has soundness_over, soundness_linear, soundness_dense, soundness_discrete, soundness_Int; Metalogic/BaseLanguageSoundness.lean has bl_soundness{,_dense,_discrete,_dedekind} plus four *_valid variants(:168-252). Metalogic/SoundnessLemmas/FrameClassVariants.lean (1041 lines) exists solely to carry per-frame-class variants of the axiom-validity lemmas. TARGET: one theorem, Derivable fc Gamma phi -> SetSemanticConsequence fc Gamma phi, by induction on the derivation, with the axiom case discharged from the Axiom.minFrameClass <= fc side condition already carried by DerivationTree's axiom constructor plus a per-axiom validity lemma. The existing theorems become one-line corollaries. BL SIDE COLLAPSES FOR FREE: blValid_iff_valid_tr (BaseLanguageSoundness.lean:141) already reduces BL validity to Formula validity through the translation tr, so BLValidOn fc phi := ValidOn fc (tr phi) subsumes all four BLValid* definitions (BLValidity.lean:77,102,115,132), the three blValid_implies_* bridges (:153,:157,:162), and all eight bl_soundness* theorems -- do NOT scope that as separate work. CONSTRAINT: preserve the soundness_dedekind target discipline -- it targets ValidDedekindDense, not ValidDedekind, and the docstring at Validity.lean:301 explains why retargeting is refutable. ACCEPTANCE: sorry-free, lake build green, axiom profiles preserved on all flagship soundness results, no theorem weakened. GROUNDING: specs/reviews/review-2026-08-31-metalogic-systematicity.md issue H2 and M3.=== DIRECTION NOTE ===\nThe FrameClass-indexed validity this task builds on is being defined at FRAME level, not carrier\nlevel: `FrameClass.Sat : FrameClass -> TaskFrame -> Prop` and\n`ValidIn fc phi := forall F : TaskFrame, fc.Sat F -> F |= phi`, on frames that carry their own\nduration type. Do not plan against the earlier carrier-quantified shape\n(`fc.Sat D -> ValidOver D phi`), which is superseded. This task sequences transitively behind the\nTaskFrame duration-bundling refactor via its dependency on the indexed-validity task.\n\n=== PAPER GROUNDING === Targets def:soundness / def:logical-consequence / cor:tm-completeness's\n⊨_C and per-class strong/weak completeness roster (TM+ strong over all task frames; TM+_d\nstrong over dense; TM+_f weak over Z-time; TM+_c weak over dense-and-complete). Class naming\nfollows 507: the class keeps the name .Dedekind (the .Complete rename was rejected — \"complete\"\nis reserved in this tree for proof-theoretic completeness). See\nspecs/514_align_definitions_with_source_paper/reports/01 §1.2.",
       "created": "2026-08-31T00:00:00Z",
-      "last_updated": "2026-08-31T19:39:46Z",
+      "last_updated": "2026-09-01T19:12:03Z",
       "file_scope": [
         "FormalSystem/Metalogic/Soundness.lean",
         "FormalSystem/Metalogic/SoundnessLemmas/",
         "FormalSystem/Metalogic/SoundnessLemmas.lean",
         "FormalSystem/Metalogic/BaseLanguageSoundness.lean",
         "FormalSystem/FrameConditions/"
+      ],
+      "session_id": "sess_1788282938_f2ac03_508",
+      "artifacts": [
+        {
+          "path": "specs/508_parameterize_soundness_over_indexed_validity/reports/01_parameterized-soundness.md",
+          "type": "report",
+          "summary": "Verified collapse design with compiled reference implementation, corrected citations, and 7-phase decomposition."
+        }
       ]
     },
     {
