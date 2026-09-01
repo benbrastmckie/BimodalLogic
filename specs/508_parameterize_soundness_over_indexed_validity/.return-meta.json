@@ -1,21 +1,24 @@
 {
-  "status": "researched",
+  "status": "planned",
+  "agent_type": "planner-agent",
+  "delegation_path": ["orchestrator", "plan", "planner-agent"],
+  "task_number": 508,
+  "task_type": "lean4",
+  "session_id": "sess_1788282938_f2ac03",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/508_parameterize_soundness_over_indexed_validity/reports/01_parameterized-soundness.md",
-      "summary": "Verified design for collapsing ~23 soundness theorems onto one FrameClass-parameterized theorem, with corrected line citations, a full corollary map, and a 7-phase decomposition."
-    },
-    {
-      "type": "reference-implementation",
-      "path": "specs/508_parameterize_soundness_over_indexed_validity/reports/01_verified-reference-implementation.lean",
-      "summary": "239-line sorry-free Lean source that compiled against the live tree, containing both per-axiom leaf lemmas, the uniform recursion, soundness_in, and all four corollaries."
+      "type": "plan",
+      "path": "specs/508_parameterize_soundness_over_indexed_validity/plans/01_soundness-in-parameterized-collapse.md",
+      "summary": "9-phase, 12-hour lean4 plan transplanting the verified 239-line soundness_in collapse: leaf lemmas, uniform recursion, Formula-side retarget, prune, BL side, list-consequence collapse, tree-wide acceptance."
     }
   ],
-  "metadata": {
-    "session_id": "sess_1788282938_f2ac03",
-    "agent_type": "lean-research-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+  "phase_count": 9,
+  "estimated_hours": 12,
+  "dependency_waves": [[1], [2], [3], [4, 6, 7], [5, 8], [9]],
+  "complexity": "complex",
+  "research_integrated": true,
+  "memory_candidates": [],
+  "blockers": [],
+  "next_steps": "Run /implement 508 to execute the plan",
+  "completed": "2026-09-01T12:20:00Z"
 }
