@@ -2,19 +2,20 @@
   "status": "partial",
   "started_at": "2026-08-31T16:00:00Z",
   "requires_user_review": false,
-  "review_reason": "Not a failure: the 21-phase plan is partially executed by design. Phases 0-4 are complete, green and committed; 5-20 remain. Every gate passes at the boundary.",
+  "review_reason": "Not a failure: the 21-phase plan is partially executed by design. Phases 0-8 are complete, green and committed; 9-20 remain. Every gate passes at every boundary.",
   "verification": {
     "verification_passed": true,
     "sorry_count": 0,
     "vacuous_count": 0,
     "axiom_count": 0,
     "build_passed": true,
+    "test_target_passed": true,
     "module_invariants": "ALL CHECKS PASSED"
   },
   "partial_progress": {
-    "stage": "phase_4_complete",
-    "details": "Phase 0 STOP-GATE passed on all six probes. Phases 1-4 landed: TemporalOrder reified, FrameOver is the fibre, TaskFrame is the total space, semantics core residue migrated. Resume at Phase 5.",
-    "phases_completed": 5,
+    "stage": "phase_8_complete",
+    "details": "Phase 0 STOP-GATE passed. Phases 1-8 landed: TemporalOrder reified, FrameOver is the fibre, TaskFrame is the total space, semantics core migrated, the Valid* layer and both v01 exclusions discharged, the Extension layer and ShiftSet off ParamTaskFrame, IntNormalForm at the ℤ fibre, and Phase 8's base-change verdict delivered. Resume at Phase 9.",
+    "phases_completed": 9,
     "phases_total": 21
   },
   "modified_files": [
@@ -26,6 +27,7 @@
     "FormalSystem/Semantics/TaskModel.lean",
     "FormalSystem/Semantics/PartialHistory.lean",
     "FormalSystem/Semantics/ShiftSet.lean",
+    "FormalSystem/Semantics/Validity.lean",
     "FormalSystem/Semantics/IntNormalForm.lean",
     "FormalSystem/Semantics/IntTransfer.lean",
     "FormalSystem/Semantics/Extension/Admissible.lean",
@@ -34,15 +36,23 @@
     "FormalSystem/Semantics/Extension/Step.lean",
     "FormalSystem/Semantics/Extension/PeriodicExtension.lean",
     "FormalSystem/Examples/TemporalStructures.lean",
+    "FormalSystem/Metalogic/Soundness.lean",
+    "FormalSystem/Metalogic/SoundnessLemmas/Core.lean",
+    "FormalSystem/Metalogic/SoundnessLemmas/DenseValidity.lean",
+    "FormalSystem/Metalogic/SoundnessLemmas/FrameClassVariants.lean",
     "FormalSystem/Metalogic/Algebraic/FlowFrame.lean",
     "FormalSystem/Metalogic/Independence/ClockFrame.lean",
     "FormalSystem/Metalogic/Decidability/IntPresentation.lean",
     "FormalSystem/Metalogic/Decidability/FMP/FiniteModel.lean",
     "FormalSystem/Metalogic/Decidability/FMP/Filtration.lean",
+    "FormalSystem/Metalogic/Decidability/BiLasso/Basic.lean",
+    "FormalSystem/Metalogic/Decidability/BiLasso/Extend.lean",
+    "FormalSystem/Metalogic/Decidability/Verified/Decidable.lean",
     "FormalSystem/Metalogic/Decidability/Verified/Bridge/RegionFrame.lean",
     "FormalSystem/Metalogic/WeakCanonical/IntegerModel/ReynoldsBridge.lean",
     "Tests/BimodalTest/Semantics/SphericalFiniteAxiomTest.lean",
     "Tests/BimodalTest/Semantics/TaskFrameTest.lean",
+    "Tests/BimodalTest/Semantics/DependentUltraproductProbe.lean",
     "specs/512_bundle_duration_into_taskframe/plans/02_temporal-order-fibration.md",
     "specs/512_bundle_duration_into_taskframe/probes/07_temporal-order-shape.lean",
     "specs/512_bundle_duration_into_taskframe/probes/08_fibre-and-accessors.lean"
@@ -61,7 +71,7 @@
     {
       "type": "plan",
       "path": "specs/512_bundle_duration_into_taskframe/plans/02_temporal-order-fibration.md",
-      "summary": "Plan v02 with Phases 0-4 marked COMPLETED, per-phase records, and inline deviation annotations."
+      "summary": "Plan v02 with Phases 0-8 marked COMPLETED, per-phase records including the Phase 8 base-change verdict, and inline deviation annotations."
     }
   ],
   "metadata": {
@@ -70,6 +80,7 @@
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
     "compliance_check": "passed",
-    "last_green_commit": "87f5425b8"
+    "last_green_commit": "fedd5b18f",
+    "dispatch_seq": 6
   }
 }

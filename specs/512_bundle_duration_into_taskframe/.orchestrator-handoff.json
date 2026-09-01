@@ -1,36 +1,35 @@
 {
-  "dispatch_seq": 5,
+  "dispatch_seq": 6,
   "status": "partial",
   "requires_user_review": false,
-  "phases_completed": 5,
+  "phases_completed": 9,
   "phases_total": 21,
-  "phases_completed_list": [0, 1, 2, 3, 4],
+  "phases_completed_list": [0, 1, 2, 3, 4, 5, 6, 7, 8],
   "phases_blocked_list": [],
-  "phases_not_started_list": [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
+  "phases_not_started_list": [9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
   "blocked_phase": null,
-  "last_green_commit": "87f5425b8",
+  "last_green_commit": "fedd5b18f",
   "build_green": true,
+  "test_target_green": true,
   "module_invariants": "ALL CHECKS PASSED",
   "axiom_profiles_unchanged": true,
   "sorry_count": 0,
-  "stop_gate_verdict": "PASS -- all six Phase 0 probes pass; the temporal-order fibration is sound and is now landed through Phase 4. No blocker.",
+  "phase_8_verdict": "ANSWERED. IntTransfer.lean is base change ONLY ALONG ISOMORPHISMS, and the restriction is forced: *Limit* uses map_lt_map_iff in BOTH directions (instantiates the hypothesis at `e x`, produces the witness as `e.symm n`), so a one-directional morphism has nothing to instantiate with. WorldHistory.comap, and through it truthAt_map's box case, consumes `e` forward. Nothing was added: no FrameOver.baseChange, no theory of temporal-order morphisms. A general base-change theory is NEW MATHEMATICS (requires re-proving Limit under a weaker hypothesis), not a refactor -- size it as new work.",
   "blocker_summary": null,
   "decision_required": [],
-  "next_steps": "Resume at Phase 5 (Validity, the BL layer, and the fixed-carrier validity predicates -- v01's merged 3+8 component, the phase v01 mis-sized). Waves 6-13 follow. Every ParamTaskFrame site still standing is held green by the reducible alias, so the tree is a coherent resting state at this boundary.",
+  "next_steps": "Resume at Phase 9 (PeriodicExtension.lean + IntPresentation.lean). Waves 9-13 follow. Every ParamTaskFrame site still standing is held green by the reducible alias, so the tree is a coherent resting state at this boundary.",
   "carry_forward": {
-    "omega_at_the_fibre": "omega recognizes the ATOMS at a ℤ-carried frame but NOT an ordering hypothesis whose ≤ routes through a TemporalOrder projection instance instead of Int.instLE. Recovery is `change (0 : ℤ) ≤ x at hx` -- a genuine hypothesis type change; a show/have ASCRIPTION is a no-op. Applied at IntNormalForm.lean:454 and PeriodicExtension.lean:170,175. Phases 7, 9, 10-Periodicity, 11, 15 and 19 should expect the same pattern.",
-    "duration_binders": "State every arithmetic-carrying duration binder as `(d : ℤ)`, never `(d : ↑intOrder)`. Both elaborate against F.TaskRel; only the former lets omega work.",
+    "omega_at_the_fibre": "SHARPENED BY PHASE 7. omega breaks only where the ordering hypothesis is PRODUCED BY A FRAME FIELD's own type (e.g. TaskFrame.Compositional hands you `0 ≤ x` at ↑intOrder) -- not merely because a file mentions ℤ. Where the binders are the statement's own (`(d : ℤ)`, `(n : ℕ)`), everything works untouched: IntNormalForm needed ZERO proof edits and added ZERO casts. Recovery, only for the frame-field case: `change (0 : ℤ) ≤ x at hx`. A show/have ASCRIPTION is a no-op. Applies to Phases 9, 10-Periodicity, 11, 15, 19.",
+    "temporalorder_vs_Z_inference": "Lean cannot invert `↑E ≟ ℤ` to recover `E := intOrder` -- `↑E` is not a pattern. Where a ℤ-typed object must meet a TemporalOrder-indexed one, ascribe at `↑intOrder` and pass `(D := ...) (E := intOrder)` explicitly. See validDiscrete_iff_validInt.",
+    "namespace_moves": "Migrating a `namespace ParamTaskFrame` block to `namespace FrameOver` breaks UNQUALIFIED references from other blocks that relied on the old namespace. Phase 7 hit this in PeriodicExtension (HFofStepPath) and in IntNormalForm itself (limit_of_succOrder, spherical_of_finite -- both still in namespace ParamTaskFrame in TaskFrame.lean, Phase 20's to relocate).",
+    "gate_is_load_bearing": "THREE times now the invariants gate caught what a green `lake build` did not: Phase 2 (C6 isolation compile of PeriodicExtension), Phase 6 (C1 `lake build BimodalTest` -- the default target excludes tests), Phase 7 (C6 again, namespace resolution). The per-phase build helper now builds BimodalTest alongside the library, but C6's isolation compile of unreachable-but-manifested modules has no substitute. Run the full gate every phase.",
     "prop_accessors": "TaskFrame's Prop-valued accessors are `theorem`s, not `@[reducible] def`s -- Lean rejects @[reducible] on a proof. Harmless by proof irrelevance.",
-    "c6_is_load_bearing": "PeriodicExtension.lean is unreachable-but-manifested, so `lake build` does not cover it; its breakage surfaced only under C6's isolation compile. Run the full invariants gate every phase, not just lake build.",
-    "named_temporal_orders": "Only `intOrder` is declared in Semantics/TemporalOrder.lean. ratOrder, realOrder and the ℚ ×ₗ ℤ order are deferred to the phases that consume them (13, 16), to keep Mathlib.Data.Real.Basic out of the transitive import set of every module.",
-    "lake_clean_warning": "Do NOT run `lake clean` -- in this Lake version it cleans the WORKSPACE including Mathlib. Recovery is `lake exe cache get` (~17 s, the ~/.cache/mathlib store is intact)."
+    "named_temporal_orders": "Only `intOrder` is in Semantics/TemporalOrder.lean. ratOrder, realOrder and the ℚ ×ₗ ℤ order are deferred to the phases that consume them (13, 16), to keep Mathlib.Data.Real.Basic out of every module's transitive imports.",
+    "lake_clean_warning": "Do NOT run `lake clean` -- it cleans the WORKSPACE including Mathlib. Recovery is `lake exe cache get` (~17 s)."
   },
   "cross_task_observations": {
-    "task_510": "Not yet reached (Phase 14 territory). TemporalCarrier/FrameConditionFor at Bridge/Carrier.lean:110,126 remains FLAG-ONLY and unexamined by this dispatch.",
-    "task_507": "No Dedekind identifier was renamed. The ParamTaskFrame.* -> TaskFrame.* predicate-namespace move is a restoration of the pre-512 name, verified against 7ecb341b9, not a naming decision."
+    "task_510": "Not yet reached (Phase 14 territory). TemporalCarrier/FrameConditionFor at Bridge/Carrier.lean:110,126 remains FLAG-ONLY and unexamined.",
+    "task_507": "No Dedekind identifier renamed, verified against the diff at Phase 5. The ParamTaskFrame.* -> TaskFrame.* predicate-namespace move is a restoration of the pre-512 name (verified against 7ecb341b9), not a naming decision."
   },
-  "baselines": {
-    "full_project_rebuild_seconds": 1043,
-    "flagship_axiom_profile": "[propext, Classical.choice, Quot.sound]"
-  }
+  "scope_hypothesis_accuracy": "Every confirmed count has been at or BELOW the plan's estimate, never above. Phase 5's predicted 17-file blast radius was 1. Phases 4 and 6 came in materially lower because Phase 2's namespace revert had already absorbed the citations. No phase has needed its pre-authorized split (5.1, 3.1)."
 }
