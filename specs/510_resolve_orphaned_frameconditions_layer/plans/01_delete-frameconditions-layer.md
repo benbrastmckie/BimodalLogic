@@ -229,7 +229,7 @@ be 0. If it is not, the section rewrite missed a name.
 
 ---
 
-### Phase 3: Repoint the 11 dangling `#leansrc` book pointers [NOT STARTED]
+### Phase 3: Repoint the 11 dangling `#leansrc` book pointers [COMPLETED]
 
 **Goal**: Repoint every `#leansrc` citation in `typst/FormalFoundations.typ` that names a
 `FrameConditions` module or symbol at its live replacement. No gate catches these — `#leansrc`
@@ -237,20 +237,37 @@ takes string arguments, so `typst-sync-check.sh` check 1 (which scans backticked
 validate them and they fail silently in the compiled book.
 
 **Tasks**:
-- [ ] Repoint `:420-422`: `#leansrc("FrameConditions", "DenseTemporalFrame")` →
+- [x] Repoint `:420-422`: `#leansrc("FrameConditions", "DenseTemporalFrame")` →
       `#leansrc("Semantics.FrameProperty", "TaskFrame.IsDense")`;
       `"DiscreteTemporalFrame"` → `"TaskFrame.IsSuccArchDiscrete"`;
       `"DedekindTemporalFrame"` → `"TaskFrame.IsDedekind"`.
-- [ ] Repoint `:621-624`: `#leansrc("FrameConditions", "soundness_linear")` →
+- [x] Repoint `:621-624`: `#leansrc("FrameConditions", "soundness_linear")` →
       `#leansrc("Metalogic.Soundness", "soundness")`; `"soundness_dense"` and
       `"soundness_discrete"` → the `Metalogic.Soundness` homonyms (`Metalogic/Soundness.lean:1329`
       and `:1477`); `"soundness_Int"` → `#leansrc("Metalogic.Soundness", "soundness_dedekind")`.
-- [ ] Repoint `:1252` and `:1255`: `#leansrc("FrameConditions.Soundness", "soundness_linear")` and
+      *(verified at the exact predicted lines 1329 / 1477)*
+- [x] Repoint `:1252` and `:1255`: `#leansrc("FrameConditions.Soundness", "soundness_linear")` and
       `…"soundness_Int"` → the corresponding `Metalogic.Soundness` targets.
-- [ ] For each repointed pair, verify the symbol exists in the named module by
+      *(deviation: altered — repointed at `Metalogic.BaseLanguageSoundness` /
+      `bl_soundness` and `bl_soundness_dedekind` instead of `Metalogic.Soundness`. Reason: this
+      block cites an *Algebraic soundness* proposition about TM⁺-algebras, i.e. the **base
+      language**, and its two sibling pointers at `:1253-1254` already name
+      `Metalogic.BaseLanguageSoundness`. Pointing half the quad at the full-language module would
+      have left the citation block incoherent. Both chosen symbols verified present at
+      `BaseLanguageSoundness.lean:200` and `:248`.)*
+- [x] For each repointed pair, verify the symbol exists in the named module by
       `grep -n '<symbol>' FormalSystem/<Module path>.lean` before accepting the edit. A repoint
       that does not resolve is the same defect, relocated.
-- [ ] Confirm `grep -n 'leansrc("FrameConditions' typst/FormalFoundations.typ` returns nothing.
+      *(all 11 verified by line number against the live `.lean` files)*
+- [x] Confirm `grep -n 'leansrc("FrameConditions' typst/FormalFoundations.typ` returns nothing.
+      *(0 occurrences of the string `FrameConditions` anywhere in the file)*
+- [x] *(added, not in plan)* Repaired the two adjacent pre-existing broken pointers at
+      `:1253-1254`, which named `Metalogic.BaseLanguageSoundness` with the full-language symbol
+      names `soundness_dense`/`soundness_discrete`; that module declares `bl_soundness_dense` /
+      `bl_soundness_discrete`. Fixing them was required for the quad to be coherent after the
+      `:1252`/`:1255` repoint above. 11 pointer rewrites in total.
+- [x] *(added)* `typst compile typst/BimodalReference.typ` exits 0 and `typst-sync-check.sh`
+      still PASSes at `TOTAL_VIOLATIONS=0` — this phase moved no counter, as predicted.
 
 **Timing**: 0.5 hours
 
@@ -265,6 +282,12 @@ validate them and they fail silently in the compiled book.
 `grep -c 'FrameConditions' typst/FormalFoundations.typ` before editing and expect 0 after; if the
 before-count is not 9 lines' worth, enumerate the full set rather than editing only the listed
 lines.
+
+**Measured**: the before-count was **9 lines carrying 9 pointers**, one per line — not 11
+pointers. The 9 lines are exactly the ones the report enumerated, so the line-level scope was
+correct and only the pointer tally was overstated. Total rewrites in this phase came to 11 anyway,
+because two adjacent already-broken non-`FrameConditions` pointers at `:1253-1254` had to be
+repaired for the citation quad to be coherent. After-count: 0.
 
 **Files to modify**:
 - `typst/FormalFoundations.typ` — `:420-422`, `:621-624`, `:1252`, `:1255`.

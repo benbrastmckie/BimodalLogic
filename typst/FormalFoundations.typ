@@ -417,9 +417,9 @@ Its logic is correspondingly S5, and @sec:objective-modality takes up what else,
   above has a least upper bound; and *Deterministic* if $w arrow.r.double.long_(x) u$ and
   $w arrow.r.double.long_(x) v$ imply $u = v$.#footnote[The first three constrain $#Dur$; the fourth constrains $arrow.r.double.long$.]
 ]
-#leansrc("FrameConditions", "DenseTemporalFrame")
-#leansrc("FrameConditions", "DiscreteTemporalFrame")
-#leansrc("FrameConditions", "DedekindTemporalFrame")
+#leansrc("Semantics.FrameProperty", "TaskFrame.IsDense")
+#leansrc("Semantics.FrameProperty", "TaskFrame.IsSuccArchDiscrete")
+#leansrc("Semantics.FrameProperty", "TaskFrame.IsDedekind")
 
 #definition("Validity and Consequence")[
   $#taskframe #satisfies phi.alt$ just in case $#model, tau, x #satisfies phi.alt$ for every model
@@ -618,10 +618,10 @@ op("Log")("Dense")$, which is a target rather than a result.
   If $tack.r phi.alt$ then $#satisfies phi.alt$, for TM and for each of its four frame-class
   extensions $op("TM")_f$, $op("TM")_d$, $op("TM")_c$, $op("TM")_(d c)$ over its own class.#footnote[The characteristic case is M5, $#satisfies diamond.stroked square.stroked phi.alt arrow.r square.stroked phi.alt$, which holds because $square.stroked$ quantifies over $H_(#taskframe)$ entire and so is insensitive to the possible world at which it is evaluated.]
 ]
-#leansrc("FrameConditions", "soundness_linear")
-#leansrc("FrameConditions", "soundness_dense")
-#leansrc("FrameConditions", "soundness_discrete")
-#leansrc("FrameConditions", "soundness_Int")
+#leansrc("Metalogic.Soundness", "soundness")
+#leansrc("Metalogic.Soundness", "soundness_dense")
+#leansrc("Metalogic.Soundness", "soundness_discrete")
+#leansrc("Metalogic.Soundness", "soundness_dedekind")
 
 The three frame properties that separate the extensions are each characterized by a single axiom.
 These correspondences are what make the extensions extensions *of a frame class* and not merely of
@@ -1249,10 +1249,10 @@ a point.
   $op("Cm")(S)$ is $square.stroked$-simple: $square.stroked X$ takes only the values $emptyset$ and
   $Omega$.
 ]
-#leansrc("FrameConditions.Soundness", "soundness_linear")
-#leansrc("Metalogic.BaseLanguageSoundness", "soundness_dense")
-#leansrc("Metalogic.BaseLanguageSoundness", "soundness_discrete")
-#leansrc("FrameConditions.Soundness", "soundness_Int")
+#leansrc("Metalogic.BaseLanguageSoundness", "bl_soundness")
+#leansrc("Metalogic.BaseLanguageSoundness", "bl_soundness_dense")
+#leansrc("Metalogic.BaseLanguageSoundness", "bl_soundness_discrete")
+#leansrc("Metalogic.BaseLanguageSoundness", "bl_soundness_dedekind")
 
 #lemma("Lindenbaum–Tarski")[
   The Lindenbaum algebra on a set $X$ of atoms is the free $op("TM")^+$-algebra on $X$, and its
