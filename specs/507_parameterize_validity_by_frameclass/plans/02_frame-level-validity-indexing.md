@@ -1,11 +1,11 @@
 # Implementation Plan: Task #507 (v2)
 
 - **Task**: 507 - Parameterize validity by FrameClass (frame-level shape)
-- **Status**: [IMPLEMENTING]
+- **Status**: COMPLETED
 - **Effort**: 12.5 hours
 - **Dependencies**: None (the TaskFrame duration-bundling refactor this direction depends on has ALREADY LANDED -- see "Blocker resolution, verified" below)
 - **Research Inputs**: `specs/507_parameterize_validity_by_frameclass/reports/01_frameclass-indexed-validity.md`
-- **Artifacts**: plans/02_frame-level-validity-indexing.md (this file)
+- **Artifacts**: plans/02_frame-level-validity-indexing.md (this file), summaries/01_frame-level-validity-indexing-summary.md
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean4
 - **Lean Intent**: false
@@ -707,29 +707,29 @@ Evidence. **A moved axiom baseline is a HARD STOP that triggers this off-ramp, n
 
 ---
 
-### Phase 9: Tree-wide acceptance [NOT STARTED]
+### Phase 9: Tree-wide acceptance [COMPLETED]
 
 **Goal**: The task's stated acceptance criteria demonstrated, not asserted.
 
 **Tasks**:
-- [ ] `lake build` from clean: green, zero errors.
-- [ ] Zero `sorry` in everything touched -- verify by content, never by line number.
-- [ ] `bash scripts/check-module-invariants.sh` (full, with build) passes: B0, C1-C15.
-- [ ] C2 axiom profiles for `BXCanonical.completeness`, `completeness_dense`,
+- [x] `lake build` from clean: green, zero errors. *(2508/2508 targets, zero `error:` lines; C1 also confirms `lake build BimodalTest` exits 0)*
+- [x] Zero `sorry` in everything touched -- verify by content, never by line number. *(C3 PASS: structural sorry inventory is ZERO across `FormalSystem/`; `lean-sorry-census.sh` over the touched territory reports `sorry_count: 0`)*
+- [x] `bash scripts/check-module-invariants.sh` (full, with build) passes: B0, C1-C15. *(exit 0, "ALL CHECKS PASSED")*
+- [x] C2 axiom profiles for `BXCanonical.completeness`, `completeness_dense`,
       `completeness_discrete` byte-identical to baseline; C14's `completeness_dedekind` and the
-      decidability soundness bridge likewise.
-- [ ] C14 docstring-count scan: no new or rewritten docstring asserts a stale axiom count.
-- [ ] C15: every paper anchor cited by a new docstring resolves against
-      `specs/paper-definitions-of-record.md`.
-- [ ] C9: zero task-number citations under `FormalSystem/` (per
+      decidability soundness bridge likewise. *(both PASS, byte-identical; the off-ramp was not triggered)*
+- [x] C14 docstring-count scan: no new or rewritten docstring asserts a stale axiom count.
+- [x] C15: every paper anchor cited by a new docstring resolves against
+      `specs/paper-definitions-of-record.md`. *(47 citations, all resolve)*
+- [x] C9: zero task-number citations under `FormalSystem/` (per
       `.claude/rules/no-task-references-in-deliverables.md` -- new docstrings must cite filenames
       and anchors, never task numbers).
-- [ ] Confirm the deliverables one by one against the tree: (1) the `Sat` interpretation exists;
+- [x] Confirm the deliverables one by one against the tree: (1) the `Sat` interpretation exists;
       (2) `ValidIn` and `SetSemanticConsequenceOn` are each defined exactly once; (3) one
       monotonicity lemma covers all five former validity bridges and all four former
       set-consequence copies; (4) each of the 15 legacy predicates is an abbreviation or gone, with
-      no orphaned call site.
-- [ ] Write the implementation summary to
+      no orphaned call site. *(all four confirmed by content — see the summary's "Deliverables, verified against the tree" table)*
+- [x] Write the implementation summary to
       `specs/507_parameterize_validity_by_frameclass/summaries/`.
 
 **Timing**: 1 hour
@@ -748,16 +748,16 @@ Evidence. **A moved axiom baseline is a HARD STOP that triggers this off-ramp, n
 
 ## Testing & Validation
 
-- [ ] `lake build` exits 0 at every phase boundary
-- [ ] `bash scripts/check-module-invariants.sh` exits 0 at every phase boundary
-- [ ] C2 axiom baselines byte-identical across the whole task (HARD STOP on divergence)
-- [ ] C14 axiom/sorry documented-count scan clean
-- [ ] C15 paper-anchor resolution clean for every new docstring
-- [ ] Zero `sorry`, asserted by content
-- [ ] Grep proves exactly one definition of `ValidIn` and one of `SetSemanticConsequenceOn`
-- [ ] Grep proves no surviving hand-written per-class monotonicity lemma body (aliases pointing at
+- [x] `lake build` exits 0 at every phase boundary
+- [x] `bash scripts/check-module-invariants.sh` exits 0 at every phase boundary
+- [x] C2 axiom baselines byte-identical across the whole task (HARD STOP on divergence)
+- [x] C14 axiom/sorry documented-count scan clean
+- [x] C15 paper-anchor resolution clean for every new docstring
+- [x] Zero `sorry`, asserted by content
+- [x] Grep proves exactly one definition of `ValidIn` and one of `SetSemanticConsequenceOn`
+- [x] Grep proves no surviving hand-written per-class monotonicity lemma body (aliases pointing at
       the one lemma are fine; copies are not)
-- [ ] `Tests/BimodalTest/TableauConformance.lean` compiles unchanged in statement
+- [x] `Tests/BimodalTest/TableauConformance.lean` compiles unchanged in statement
 
 ## Artifacts & Outputs
 
