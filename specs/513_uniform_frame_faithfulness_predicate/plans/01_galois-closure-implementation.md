@@ -1,7 +1,7 @@
 # Implementation Plan: Galois-closure implementation for the frame-class layer
 
 - **Task**: 513 - Uniform frame faithfulness predicate
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 18 hours (15 hours excluding the two optional phases 10-11)
 - **Dependencies**: Task 512, Task 507 (both landed)
 - **Research Inputs**: specs/513_uniform_frame_faithfulness_predicate/reports/01_galois-closure-implementation.md
@@ -152,7 +152,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Galois module [NOT STARTED]
+### Phase 1: Galois module [COMPLETED]
 
 **Goal**: `FormalSystem/Semantics/Correspondence/Galois.lean` exists, is registered, and carries
 the whole `Th`/`Mod` adjunction plus the reified axiom and schema sets.
@@ -258,7 +258,7 @@ one-line corollaries and docstrings. Confirm at implementation time; if any bico
 
 ---
 
-### Phase 3: `{fc}`-polymorphic `X⊤` at `.Discrete ≤ fc` [NOT STARTED]
+### Phase 3: `{fc}`-polymorphic `X⊤` at `.Discrete ≤ fc` [COMPLETED]
 
 **Goal**: The existing `succIndicator` is available at any `fc` with `FrameClass.Discrete ≤ fc`,
 with no duplicated proof and no call-site churn.

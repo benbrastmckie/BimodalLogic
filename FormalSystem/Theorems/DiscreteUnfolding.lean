@@ -28,8 +28,9 @@ are already derivable at `FrameClass.Base`, and `nextConj` is stated `{fc}`-poly
 
 ## Main results
 
-- `succIndicator` — `⊢[Discrete] X ⊤`, from `Axiom.serial_future` + `Axiom.prior_UZ` + guard
-  monotonicity. No new axiom.
+- `succIndicatorAt` — `⊢[fc] X ⊤` at every `fc` with `FrameClass.Discrete ≤ fc`, from
+  `Axiom.serial_future` + `Axiom.prior_UZ` + guard monotonicity. No new axiom.
+- `succIndicator` — `⊢[Discrete] X ⊤`, the `le_rfl` instantiation of `succIndicatorAt`.
 - `unfoldForward` / `unfoldBackward` — the `X (g ∧ U(e,g))` shape.
 - `nextConj` — `{fc}`-polymorphic: `X A ∧ X B → X (A ∧ B)`, the functionality of the successor.
 - `unfoldTableForward` / `unfoldTableBackward` — the `X g ∧ X U(e,g)` shape.
@@ -43,10 +44,13 @@ are already derivable at `FrameClass.Base`, and `nextConj` is stated `{fc}`-poly
 
 ## Why `FrameClass.Discrete` is essential here
 
-Every declaration below except `nextConj` is stated at `FrameClass.Discrete` rather than at a
-free `{fc}`, and the pin is not gratuitous. `succIndicator` derives `U(⊤,⊥)`, which is
-*refuted* at `FrameClass.Dense` by `Axiom.dense_indicator`; a `{fc}`-uniform version would
-therefore make the dense system inconsistent. `unfoldForward`, `unfoldTableForward` and
+Every declaration below except `nextConj` and `succIndicatorAt` is stated at
+`FrameClass.Discrete` rather than at a free `{fc}`, and the pin is not gratuitous.
+`succIndicator` derives `U(⊤,⊥)`, which is *refuted* at `FrameClass.Dense` by
+`Axiom.dense_indicator`; a `{fc}`-uniform version — one taking no hypothesis relating `fc` to
+`FrameClass.Discrete` — would therefore make the dense system inconsistent. `succIndicatorAt` is
+not that version: it carries the guard `h : FrameClass.Discrete ≤ fc`, which `FrameClass.Dense`
+does not satisfy, so generalizing along `h` preserves the argument rather than defeating it. `unfoldForward`, `unfoldTableForward` and
 `noBlockingTriple` all consume `succIndicator`. `unfoldBackward` and `unfoldTableBackward` are
 stated at `FrameClass.Base` because that is the *weakest* class at which they hold; they lift to
 any `fc` through `Combinators.baseThm`.
@@ -86,15 +90,32 @@ of this tree (its *negation* is `Axiom.dense_indicator`, at `FrameClass.Dense`).
 nonetheless *derivable* at `FrameClass.Discrete`, from `Axiom.serial_future`,
 `Axiom.prior_UZ` at `⊤`, and guard monotonicity. -/
 
-/-- **`⊢[Discrete] U(⊤, ⊥)`.** -/
-def succIndicator : ⊢[FrameClass.Discrete] Formula.next Formula.top := by
-  have h1 : ⊢[FrameClass.Discrete] Formula.someFuture Formula.top :=
+/-- **`⊢[fc] U(⊤, ⊥)` at every `fc` above `FrameClass.Discrete`.**
+
+The `{fc}`-*guarded* form of `succIndicator`. The guard `h : FrameClass.Discrete ≤ fc` is what
+makes the generalization safe: `Axiom.prior_UZ` is admissible only from `Discrete` upwards, and a
+guard-free `{fc}`-uniform version would derive `U(⊤,⊥)` at `FrameClass.Dense`, where
+`Axiom.dense_indicator` refutes it — see "Why `FrameClass.Discrete` is essential here" above.
+
+Only two of the three steps change relative to `succIndicator`: `Axiom.serial_future` sits at
+`FrameClass.Base` and lifts by `FrameClass.base_le`, `Axiom.prior_UZ` lifts by `h`, and the
+closing `guardMono` step is already `{fc}`-polymorphic. -/
+def succIndicatorAt {fc : FrameClass} (h : FrameClass.Discrete ≤ fc) :
+    ⊢[fc] Formula.next Formula.top := by
+  have h1 : ⊢[fc] Formula.someFuture Formula.top :=
     DerivationTree.modus_ponens _ Formula.top _
-      (DerivationTree.axiom _ _ Axiom.serial_future (by decide)) topThm
-  have h2 : ⊢[FrameClass.Discrete] Formula.untl Formula.top.neg Formula.top :=
+      (DerivationTree.axiom _ _ Axiom.serial_future (FrameClass.base_le fc)) topThm
+  have h2 : ⊢[fc] Formula.untl Formula.top.neg Formula.top :=
     DerivationTree.modus_ponens _ _ _
-      (DerivationTree.axiom _ _ (Axiom.prior_UZ Formula.top) (by decide)) h1
+      (DerivationTree.axiom _ _ (Axiom.prior_UZ Formula.top) h) h1
   exact guardMono [] Formula.top Formula.top.neg Formula.bot topNegImpBot h2
+
+/-- **`⊢[Discrete] U(⊤, ⊥)`.**
+
+The `le_rfl` instantiation of `succIndicatorAt`; the proof lives there and is not duplicated
+here. Kept as a declaration in its own right because every consumer below, and every consumer
+outside this file, works at `FrameClass.Discrete` itself. -/
+def succIndicator : ⊢[FrameClass.Discrete] Formula.next Formula.top := succIndicatorAt le_rfl
 
 /-! ## Result 2: the Z-exact one-step unfolding schema
 
