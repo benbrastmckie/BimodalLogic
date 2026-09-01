@@ -1,0 +1,40 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/495_determine_tm_completeness_status_over_task_frames/reports/01_tm-completeness-status.md",
+      "summary": "Research report settling TM's completeness status over task frames: verdict NEGATIVE, with a machine-checkable reduction (TM completeness at Base is equivalent to forward conservativity at Base), a first-principles reconstruction and validity proof of the (Sp) witness, a hand-verified Z1 countermodel at the non-Archimedean discrete carrier, and a row-dependent correction to Conservativity.lean's readiness claim."
+    }
+  ],
+  "next_steps": "Run /plan 495 to create an implementation plan. Recommended phase order: (1) land the Base/Discrete completeness-equals-forward-conservativity reduction; (2) land BLValid Sp plus the completeness route to the TM+ half of the CEB witness; (3) land bl_soundness_discrete_succ and the Q x_lex Z Z1 countermodel, completing the CEF refutation and the TM_f-over-Z-time incompleteness; (4) correct Conservativity.lean's docstring per report section 7.",
+  "metadata": {
+    "session_id": "sess_1788265374_c18aa8_495",
+    "agent_type": "formal-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "formal-research-agent"],
+    "domains_researched": ["logic", "math"],
+    "findings_count": 6,
+    "verdict": "TM is NOT complete over task frames",
+    "context_files_loaded": [],
+    "mathlib_lookups_performed": 0,
+    "sources_read": [
+      "FormalSystem/Metalogic/Conservativity.lean",
+      "FormalSystem/Metalogic/BaseLanguageSoundness.lean",
+      "FormalSystem/Semantics/BLTruth.lean",
+      "FormalSystem/Semantics/BLValidity.lean",
+      "FormalSystem/Semantics/Validity.lean",
+      "FormalSystem/Semantics/TemporalOrder.lean",
+      "FormalSystem/Semantics/TaskFrame.lean",
+      "FormalSystem/BaseLanguage/Formula.lean",
+      "FormalSystem/BaseLanguage/Axioms.lean",
+      "FormalSystem/BaseLanguage/Derivation.lean",
+      "FormalSystem/BaseLanguage/Translation.lean",
+      "FormalSystem/ProofSystem/Axioms.lean",
+      "FormalSystem/Metalogic/BXCanonical/Completeness.lean",
+      "FormalSystem/Metalogic/BXCanonical/DiscreteCarrierProbe.lean",
+      "FormalSystem/Metalogic/Algebraic/FlowFrame.lean",
+      "/home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex"
+    ]
+  }
+}

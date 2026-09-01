@@ -1,0 +1,27 @@
+{
+  "status": "researched",
+  "phase": "research",
+  "dispatch_seq": 2,
+  "summary": "VERDICT: TM is NOT complete over task frames. Established by a reduction that is machine-checkable with existing sorry-free tree results: given BXCanonical.completeness (TM+ weakly complete over all task frames) and blValid_iff_valid_tr, 'TM complete over task frames' and 'forward conservativity at Base' are the SAME proposition, so the refuted forward direction settles completeness. The task brief's subtlety (a refutation cannot use a task frame) applies to the Base row ONLY: at FrameClass.Discrete the refuting structure IS a task frame, since a lexicographic product of ordered abelian groups is an ordered abelian group, so Q x_lex Z / Z x_lex Z are legitimate TemporalOrders. Hand-verified the Z1 countermodel there over the tree's existing multiFamTaskFrameGen shift frame. CEF is therefore machine-checkable now, gated on ONE binder-weakened soundness theorem (bl_soundness_discrete_succ, dropping IsSuccArchimedean) whose only new mathematical content is the DF schema and its past-dual. CEB is NOT machine-checkable: BLTruthAt and bl_soundness are TaskFrame-bound and structurally cannot host it, and TM+ is unsound on the two-fibre class so the composition route is unavailable in principle -- the real prerequisite is a new frame notion plus a NATIVE BL soundness theorem, not a countermodel. Conservativity.lean's 'the missing prerequisite is now the countermodels alone' is too optimistic for the Base row and needs a row-dependent correction. NEW cheap result: (Sp) := box(DF phi) or box(DN psi) is BL-valid on every task frame for a purely order-theoretic reason (every nontrivial totally ordered abelian group is discrete or densely ordered), so the TM+ half of the CEB witness is obtainable NOW from completeness alone, with no TMP-NB/M5 derivation -- the CEB analogue of z1_translate. Also recorded: the un-boxed DF-or-DN is valid on every linear order, so the failure (Sp) detects is modal rigidity, not a temporal property.",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/495_determine_tm_completeness_status_over_task_frames/reports/01_tm-completeness-status.md",
+      "summary": "Research report: verdict, the completeness-equals-forward-conservativity reduction, first-principles (Sp) reconstruction with validity proof, hand-verified Z1 countermodel, per-row machine-checkability assessment, and three recommended in-tree corrections."
+    }
+  ],
+  "phases_completed": 1,
+  "phases_total": 1,
+  "blockers": [],
+  "sorry_inventory": [],
+  "hard_constraint_status": "HONOURED. No forward-conservativity theorem is proposed anywhere. The reduction is deliberately an equivalence between two unasserted Props and needs no sorry; its docstring should restate the prohibition, since it shows a second phrasing of the same forbidden claim.",
+  "next_action_hint": "plan",
+  "continuation_path": null,
+  "metadata": {
+    "session_id": "sess_1788265374_c18aa8_495",
+    "agent_type": "formal-research-agent",
+    "task_number": 495,
+    "task_type": "formal",
+    "domains_researched": ["logic", "math"]
+  }
+}
