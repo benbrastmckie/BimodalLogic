@@ -1,16 +1,27 @@
 {
-  "status": "researched",
+  "status": "planned",
+  "agent_type": "planner-agent",
+  "task_number": 510,
+  "session_id": "sess_1788282938_f2ac03",
+  "delegation_path": ["orchestrator", "plan", "planner-agent"],
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/510_resolve_orphaned_frameconditions_layer/reports/01_frameconditions-deletion.md",
-      "summary": "Confirms the DELETE verdict for FormalSystem/FrameConditions/ on re-measured evidence; corrects five stale premises in the brief and records four execution blockers including an already-red typst gate and a C11 Boneyard import break."
+      "type": "plan",
+      "path": "specs/510_resolve_orphaned_frameconditions_layer/plans/01_delete-frameconditions-layer.md",
+      "summary": "7-phase deletion plan for FormalSystem/FrameConditions/ (853 .lean lines, 6 paths), sequencing a green build baseline first, the typst prose rewrite before deletion, the C11 Boneyard waiver inside the deletion batch, and a final four-gate sweep."
     }
   ],
-  "metadata": {
-    "session_id": "sess_1788282938_f2ac03",
-    "agent_type": "lean-research-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+  "phase_count": 7,
+  "estimated_hours": 5.5,
+  "dependency_waves": [[1], [2, 3], [4], [5, 6], [7]],
+  "memory_candidates": [
+    {
+      "content": "When deleting a source directory in a repo whose documentation gates are TEXT-GREP based (e.g. typst-sync-check.sh check 1, which only requires a backticked identifier to occur somewhere in some .lean file), the gate can be passing for the wrong reason: retirement/deprecation PROSE inside the doomed files is itself what satisfies the grep. Deleting the files therefore converts currently-passing identifiers into new violations, so a naive 'delete then fix docs' order undercounts the damage. The correct sequencing is to rewrite the prose-side references FIRST, drive the text-grep gate to zero at pre-deletion HEAD, and only then delete -- which both pre-empts the trap and clears any inherited debt in the same paragraph. Corollary for reachability-based invariant checks: a gate that counts UNREACHABLE modules is unaffected by deleting a REACHABLE one, and adding a manifest entry for a just-deleted module actively fails such a gate. Verify which population an invariant counts before assuming a deletion moves it.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/510_resolve_orphaned_frameconditions_layer/plans/01_delete-frameconditions-layer.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["text-grep gate", "deletion sequencing", "module invariants", "reachable vs unreachable", "documentation sync check", "inherited gate debt"]
+    }
+  ],
+  "next_steps": "Run /implement 510 to execute the plan"
 }

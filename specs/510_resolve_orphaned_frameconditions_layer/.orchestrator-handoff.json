@@ -1,29 +1,32 @@
 {
-  "phase": "research",
-  "dispatch_seq": 3,
-  "status": "researched",
-  "summary": "DELETE verdict for FormalSystem/FrameConditions/ confirmed on re-measured evidence: zero code consumers outside the directory, no paper counterpart (def:frame-validity is per-frame), and a complete replacement in FrameClass.Sat/ValidIn. Five brief premises are stale and corrected, including that Validity.lean's parallel validity vocabulary was already deleted by commit e5a9ba40f and that the C6 acceptance criterion does not apply. Four execution blockers recorded: a C11 Boneyard import break, an already-red typst-sync-check gate, 11 ungated dangling book pointers, and two readme-lint link breaks.",
+  "phase": "plan",
+  "dispatch_seq": 5,
+  "status": "planned",
+  "summary": "7-phase plan written against the research report (not the stale brief). Ordering is the plan's main contribution: Phase 1 captures the green lake build baseline the research cycle could not (guarded + detached), Phase 2 rewrites typst/chapters/p2-frame-classes.typ BEFORE any deletion so typst-sync-check.sh reaches 0 violations at pre-deletion HEAD -- clearing the 2 inherited violations and pre-empting the 3-name text-grep trap -- Phase 3 repoints the 11 ungated #leansrc pointers, Phase 4 deletes the 6 paths + drops the FormalSystem.lean:13 import + appends the C11 Boneyard waiver as one atomic-batch commit, Phases 5-6 repair README/docs links and record the corrected archived-completeness finding, Phase 7 sweeps all four gates against the Phase 1 baseline. Estimated 5.5 hours.",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/510_resolve_orphaned_frameconditions_layer/reports/01_frameconditions-deletion.md",
-      "summary": "Deletion verdict, five corrections to the brief, four execution blockers, full delete/edit inventory, and gate baselines captured at b7ccf6702."
+      "type": "plan",
+      "path": "specs/510_resolve_orphaned_frameconditions_layer/plans/01_delete-frameconditions-layer.md",
+      "summary": "7-phase deletion plan with wave map [[1],[2,3],[4],[5,6],[7]], per-phase verification tiers, and Scope Hypothesis lines on all five count-asserting phases."
     }
   ],
-  "phases_completed": 1,
-  "phases_total": 1,
+  "phases_completed": 0,
+  "phases_total": 7,
   "blockers": [],
   "files_modified": [
-    "specs/510_resolve_orphaned_frameconditions_layer/reports/01_frameconditions-deletion.md",
+    "specs/510_resolve_orphaned_frameconditions_layer/plans/01_delete-frameconditions-layer.md",
     "specs/510_resolve_orphaned_frameconditions_layer/.return-meta.json",
     "specs/510_resolve_orphaned_frameconditions_layer/.orchestrator-handoff.json"
   ],
   "decisions_made": [
-    "DELETE confirmed; promotion ruled out on measurement (task 511 is [EXPANDED], its successor task 513 targets Semantics/Correspondence/Galois.lean, not FrameConditions/).",
-    "The Boneyard file StrictSemanticsLegacy/FrameConditions/Completeness.lean must be RETAINED and its dangling import waived in scripts/boneyard-import-waivers.txt, not deleted: it is the archived record of completeness_over_Int and discrete_completeness_fc.",
-    "No scripts/module-invariants-manifest.txt edit: FrameConditions is reachable, so C6 stays at 17 and adding an entry would fail C6.",
-    "lake build baseline NOT captured this cycle: the guarded build queued behind another session's in-flight build. The implementation cycle must capture a green baseline before deleting."
+    "Brief item (b) is NOT re-planned: the ValidOver/ValidLinear/ValidDenseFc/ValidDiscreteFc/ValidOverInt vocabulary was already deleted by e5a9ba40f. Only the 81-line Validity.lean file (two FrameOver D fibration bridges, zero consumers) is removed, as part of the whole-directory deletion.",
+    "The brief's C6 acceptance criterion is DROPPED and restated as A3: C6 must still pass at 17 unreachable modules with scripts/module-invariants-manifest.txt UNMODIFIED. Phase 4 carries an explicit MUST NOT against adding a manifest entry, and Phase 7 asserts an empty git diff on that path.",
+    "typst rewrite is sequenced BEFORE deletion (Phase 2 blocks Phase 4), not after. typst-sync-check.sh check 1 is a text grep over .lean files, so the retirement prose in the doomed files is what currently keeps ValidLinear/ValidDenseFc/ValidDiscreteFc passing; rewriting first drives the gate to 0 at pre-deletion HEAD and turns an inherited RED gate into a repair rather than a regression.",
+    "A4 is framed as a repair, not a hold: typst-sync-check.sh is already FAIL at HEAD with TOTAL_VIOLATIONS=2, so 'no regression' is not an acceptable exit -- the target is 0.",
+    "Phase 4 declares Commit Mode: atomic-batch. Every intermediate ordering of (delete files / drop import / add waiver) leaves the tree or C11 red, and the plan forbids widening the batch mid-flight if an unexpected importer appears.",
+    "The Boneyard file StrictSemanticsLegacy/FrameConditions/Completeness.lean is retained with an explicit MUST NOT against deleting it; its dangling import is waived in scripts/boneyard-import-waivers.txt (waived count 6 -> 7).",
+    "Phase 1 is a hard gate: if the lake build baseline is not green, the phase is marked [BLOCKED] and execution stops rather than deleting into a red tree."
   ],
-  "next_action_hint": "Dispatch /plan 510. The plan must (a) capture a green lake build baseline first, (b) schedule the typst/ rewrite and the C11 waiver in the same change as the deletion, and (c) restate acceptance criterion A3 per report section 2 (C4) and A4 per section 3 (B2).",
+  "next_action_hint": "Dispatch /implement 510. Phase 1 must complete (green guarded detached build + four gate baselines) before any other phase begins; Phase 4 must not begin before Phase 2 reaches TOTAL_VIOLATIONS=0.",
   "continuation_path": null
 }
