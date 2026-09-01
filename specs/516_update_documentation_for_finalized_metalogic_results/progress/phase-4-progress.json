@@ -1,0 +1,24 @@
+{
+  "phase": 4,
+  "phase_name": "Mirror both families into implementation-status.md",
+  "started_at": "2026-09-01T01:45:00Z",
+  "last_updated": "2026-09-01T02:00:00Z",
+  "objectives": [
+    {"id": 1, "description": "Add Correspondence row(s) to correct layer table", "status": "done", "files_touched": ["docs/project-info/implementation-status.md"]},
+    {"id": 2, "description": "Add Kamp row to Layer 2 table", "status": "done", "files_touched": ["docs/project-info/implementation-status.md"]},
+    {"id": 3, "description": "Extend Metalogic/Independence/ row notes", "status": "done", "files_touched": ["docs/project-info/implementation-status.md"]},
+    {"id": 4, "description": "Confirm no other row edited; verify diff scope, table column counts, C4/C3 checks", "status": "done", "files_touched": []}
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": [
+    {
+      "task_id": "4.1",
+      "description": "Add a row for Semantics/Correspondence/ to the Layer 2 table",
+      "type": "altered",
+      "reason": "Layer 2 table lists only Metalogic/* modules per the file's own directory-based layer taxonomy (Layer 1 header is literally '## Layer 1: Semantics'). Correspondence/ lives under FormalSystem/Semantics/, so it belongs in Layer 1's table, not Layer 2's -- exactly the carve-out the plan's own Scope Hypothesis anticipated. Also split into two per-file rows (Galois.lean, Indicator.lean) to match Layer 1 table's existing per-file row granularity, and included galoisClosed_of_indicator alongside the three named theorems.",
+      "annotation": "*(deviation: altered — placed as two per-file rows under Layer 1: Semantics, per the file's own layer taxonomy)*"
+    }
+  ]
+}

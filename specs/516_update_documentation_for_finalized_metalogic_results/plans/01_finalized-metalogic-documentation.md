@@ -310,23 +310,27 @@ editing; adjust the insertion point to the actual structure rather than forcing 
 
 ---
 
-### Phase 4: Mirror both families into `implementation-status.md` [NOT STARTED]
+### Phase 4: Mirror both families into `implementation-status.md` [COMPLETED]
 
 **Goal**: Add the two result families to `docs/project-info/implementation-status.md`'s Layer 2
 Metalogic table so the three status documents agree. Lowest-priority of the three writes per the
 research pass, and strictly additive.
 
 **Tasks**:
-- [ ] Add a row for `Semantics/Correspondence/` to the Layer 2 table (or the nearest correct
+- [x] Add a row for `Semantics/Correspondence/` to the Layer 2 table (or the nearest correct
       table if Correspondence belongs to a different layer — check the file's layer definitions
       first), status ✅, notes naming `galoisClosed_mod`, `galoisClosed_sat_dense`,
-      `galoisClosed_isDiscrete`.
-- [ ] Add a row for `Metalogic/WeakCanonical/Kamp/` naming `kampPriorExpressiveCompleteness` with
+      `galoisClosed_isDiscrete`. *(deviation: altered — placed as two per-file rows
+      (`Correspondence/Galois.lean`, `Correspondence/Indicator.lean`) under Layer 1: Semantics,
+      matching that table's own per-file granularity and the file's own directory-based layer
+      taxonomy (Layer 1 = `Semantics/*`, Layer 2 = `Metalogic/*`); also names
+      `galoisClosed_of_indicator`)*
+- [x] Add a row for `Metalogic/WeakCanonical/Kamp/` naming `kampPriorExpressiveCompleteness` with
       the Prior-structures qualifier (C2).
-- [ ] If the existing `Metalogic/Independence/` row ("Three independence results") does not already
+- [x] If the existing `Metalogic/Independence/` row ("Three independence results") does not already
       cover the two sandwich-witness negative results, extend its notes to name them, keeping the
       property explicit per C1. Do not renumber or restate the independence results themselves.
-- [ ] Confirm no other row was edited.
+- [x] Confirm no other row was edited.
 
 **Timing**: 0.5 hours
 

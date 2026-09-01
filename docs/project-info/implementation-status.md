@@ -48,6 +48,8 @@ Module-by-module implementation status for the Bimodal TM logic library.
 | `BLTruth.lean` | ✅ | `BLTruthAt`, native truth evaluation for the tense-primitive base language |
 | `Validity.lean` | ✅ | Semantic consequence |
 | `BLValidity.lean` | ✅ | The four base-language validity predicates plus `BLSemanticConsequence` |
+| `Correspondence/Galois.lean` | ✅ | `Th`/`Mod` Galois connection; `galoisClosed_mod` (axiomatizable = Galois-closed), `galoisClosed_of_indicator` (single-formula closure method) |
+| `Correspondence/Indicator.lean` | ✅ | `galoisClosed_sat_dense` and `galoisClosed_isDiscrete` (bare `TaskFrame.IsDiscrete` clause) -- the two positive Galois-closure results, via `validOn_nextTop_iff`/`validOn_nextTop_iff_isDiscrete` |
 
 **Features**:
 - Task frame structure (worlds, times, task relation)
@@ -69,7 +71,8 @@ Module-by-module implementation status for the Bimodal TM logic library.
 | `Metalogic/Compactness.lean` | ✅ | Discharges all six: `modelExistenceBase`/`modelExistenceDense` by ultraproduct, `compactBase`/`compactDense`, `strongCompletenessBase`/`strongCompletenessDense` -- all sorryAx-free |
 | `Metalogic/Conservativity.lean` | ✅ | TM/TM+ backward bridge |
 | `Metalogic/BaseLanguageSoundness.lean` | ✅ | BL soundness at Base/Dense/Discrete/Dedekind by composition; `truthAt_tr`, the validity forms, and `bl_not_derivable_nil_bot{,_discrete}` |
-| `Metalogic/Independence/` | ✅ | Three independence results |
+| `Metalogic/Independence/` | ✅ | Three independence results, including `sat_dedekind_ssubset_mod_axiomSet` (`Sat .Dedekind` not Galois-closed -- definability of the model class, distinct from the open Dedekind strong-completeness question above) and `sat_discrete_ssubset_mod_axiomSet` (`Sat .Discrete` not Galois-closed) |
+| `Metalogic/WeakCanonical/Kamp/` | ✅ | `kampPriorExpressiveCompleteness` -- `{U, S}` expressively complete relative to monadic first-order logic **for Prior structures**, sorry-free (`propext`, `Classical.choice`, `Quot.sound`); load-bearing via `uSExpressivelyCompleteOverPrior` |
 
 **Soundness** (✅):
 - Full soundness proof: `derivable Γ φ → SemanticConsequence Γ φ`, over all 45 axiom
