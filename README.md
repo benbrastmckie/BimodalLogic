@@ -132,7 +132,9 @@ The task semantics is developed in ["The Construction of Possible Worlds"](https
 the Reynolds/Doets discrete pipeline it carries the Dedekind/real route — `DenseModelSurgery/`
 (9 files) and `RealModel/` (7 files) — and `GroupModel/` (6 files), which hosts the discharged
 `countermodel_discrete` at the non-Archimedean discrete carrier `ℚ ×ₗ ℤ`. `Kamp/` (116 files) is
-the Kamp-style expressiveness development.
+the Kamp-style expressiveness development; its headline theorem,
+`kampPriorExpressiveCompleteness` (expressive completeness of `{U, S}` for Prior structures), is
+discharged sorry-free — see "Characterization and Definability" below.
 
 ---
 
@@ -216,6 +218,37 @@ there as *retired as vacuous*, because their names claimed a decidability result
   can be proved.
 - **Partial.** Proof extraction: `extractProof` (`Decidability/ProofExtraction.lean`) runs five
   strategies in order and returns `.incomplete` once all are exhausted.
+
+### Characterization and Definability
+
+`FormalSystem/Semantics/Correspondence/` (the `Th`/`Mod` Galois connection between sets of task
+frames and sets of formulas) and `FormalSystem/Metalogic/WeakCanonical/Kamp/` (expressive
+completeness) each contribute a **sorry-free** result family that does not fit the soundness/
+completeness table above.
+
+**Galois-closure and definability.** `galoisClosed_mod` is the organizing equivalence: a frame
+class is axiomatizable — the model class of some formula set — exactly when it is Galois-closed
+under `Th`/`Mod` (`Semantics/Correspondence/Galois.lean`). `galoisClosed_of_indicator` is the
+single mechanism by which closure is shown: exhibit one formula valid on precisely the class's
+members. Two positive results apply it: `galoisClosed_sat_dense` (`Sat .Dense` is Galois-closed)
+and `galoisClosed_isDiscrete` (`{F | F.IsDiscrete}`, the bare structural clause of
+`def:frame-properties` — **not** the narrower Hölder-to-ℤ class `FrameClass.Sat FrameClass.Discrete`
+— is Galois-closed), both via the indicator biconditionals `validOn_nextTop_iff` /
+`validOn_nextTop_iff_isDiscrete` (`Semantics/Correspondence/Indicator.lean`). Two negative results
+sandwich the corresponding narrowed classes instead: `sat_dedekind_ssubset_mod_axiomSet` proves
+that `Sat .Dedekind` is **not Galois-closed** — a statement about definability of the model
+class, a different property from Dedekind strong completeness (open — see the
+strong-completeness discussion above, which this result does not bear on either way) — and
+`sat_discrete_ssubset_mod_axiomSet` proves the analogous fact for `Sat .Discrete`
+(`Metalogic/Independence/RationalWitness.lean` and `Metalogic/Independence/LexIntWitness.lean`,
+respectively). Closed-form characterizations of `Mod (AxiomSet .Discrete)` and
+`Mod (AxiomSet .Dedekind)` remain open and are not promised.
+
+**Expressive completeness (Kamp, Prior structures).** `kampPriorExpressiveCompleteness`
+(`Metalogic/WeakCanonical/Kamp/KampPrior.lean`) is sorry-free (axioms: exactly `propext`,
+`Classical.choice`, `Quot.sound`) and shows that `{U, S}` is expressively complete relative to
+monadic first-order logic **for Prior structures** — not for TM, and not for all task frames.
+It is load-bearing for the live completeness chain via `uSExpressivelyCompleteOverPrior`.
 
 ---
 

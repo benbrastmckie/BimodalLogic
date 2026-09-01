@@ -251,7 +251,7 @@ partial mention already exists, extend it rather than adding a duplicate bullet.
 
 ---
 
-### Phase 3: Add the characterization subsection to `README.md` [NOT STARTED]
+### Phase 3: Add the characterization subsection to `README.md` [COMPLETED]
 
 **Goal**: Give `README.md` a "### Characterization and Definability" subsection under
 "## Metalogical Results", mirroring the Phase 2 ledger wording, and correct the one Project
@@ -259,22 +259,22 @@ Structure sentence that describes `Kamp/` without noting its headline theorem is
 the task's primary deliverable.
 
 **Tasks**:
-- [ ] Add `### Characterization and Definability` after the existing `### Decidability` subsection
+- [x] Add `### Characterization and Definability` after the existing `### Decidability` subsection
       and before the `---` preceding `## Documentation`, matching the surrounding sections'
       house style (bolded status word, theorem name in backticks, file path in backticks).
-- [ ] Write the Galois-closure paragraph: the organizing equivalence (`galoisClosed_mod`), the
+- [x] Write the Galois-closure paragraph: the organizing equivalence (`galoisClosed_mod`), the
       single-formula method (`galoisClosed_of_indicator`), the two positive results with their
       indicator biconditionals, and the two negative sandwich-witness results — each with the
       property named explicitly per C1, and with the `TaskFrame.IsDiscrete` qualifier per C2.
-- [ ] Write the Kamp paragraph: `kampPriorExpressiveCompleteness`, `{U, S}` expressively complete
+- [x] Write the Kamp paragraph: `kampPriorExpressiveCompleteness`, `{U, S}` expressively complete
       relative to monadic first-order logic **for Prior structures** (C2), sorry-free at the axiom
       set recorded in Phase 1, and load-bearing for `completeness` through
       `uSExpressivelyCompleteOverPrior`.
-- [ ] Close the subsection with the C5 open/not-promised disclaimer.
-- [ ] Update the Project Structure prose sentence that currently reads that `Kamp/` (116 files) "is
+- [x] Close the subsection with the C5 open/not-promised disclaimer.
+- [x] Update the Project Structure prose sentence that currently reads that `Kamp/` (116 files) "is
       the Kamp-style expressiveness development" so it also records that its headline theorem is
       discharged, citing the theorem name — one sentence, no restructuring of the tree diagram.
-- [ ] Re-read the whole "## Metalogical Results" section end to end and confirm no
+- [x] Re-read the whole "## Metalogical Results" section end to end and confirm no
       previously-existing sentence was altered.
 
 **Timing**: 1.25 hours
