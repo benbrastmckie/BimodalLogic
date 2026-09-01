@@ -635,30 +635,30 @@ are historical records and are correctly frozen).
 
 ---
 
-### Phase 6: Tree-wide acceptance [NOT STARTED]
+### Phase 6: Tree-wide acceptance [COMPLETED]
 
 **Goal**: Prove the three acceptance criteria — sorry-free, `lake build` green, every
 currently-provable result still provable with an **unchanged axiom profile** — and record the
 Dedekind handoff.
 
 **Tasks**:
-- [ ] Full `lake build` from clean, with **explicit targets**. Record the job count. A dropped
+- [x] Full `lake build` from clean, with **explicit targets**. Record the job count. A dropped
       job count or an implausibly fast green means re-run, not success.
-- [ ] `grep -rn "sorry" --include=*.lean FormalSystem/` — no new occurrence versus baseline.
-- [ ] Axiom audit: confirm every one of the following reports exactly
+- [x] `grep -rn "sorry" --include=*.lean FormalSystem/` — no new occurrence versus baseline.
+- [x] Axiom audit: confirm every one of the following reports exactly
       `[propext, Classical.choice, Quot.sound]`, matching the C14 baseline and `probe_509.lean`
       Part F: `compactBase`, `compactDense`, `strongCompletenessBase`, `strongCompletenessDense`,
       `modelExistenceBase`, `modelExistenceDense`, `compact_of_modelExistence`,
       `strongCompleteness_of_compact`, plus the six audited names in
       `DiscreteNonCompactness.lean:295-300`.
-- [ ] `scripts/check-module-invariants.sh` — compare against baseline. C6's four unmanifested
+- [x] `scripts/check-module-invariants.sh` — compare against baseline. C6's four unmanifested
       unreachable modules are the **recorded pre-existing exclusion**. A **C14 or C15 regression
       is this task's defect** and must be fixed here, not excluded.
-- [ ] `scripts/readme-lint.sh` — compare against baseline. The missing
+- [x] `scripts/readme-lint.sh` — compare against baseline. The missing
       `FormalSystem/Semantics/Ultraproduct/README.md` is the recorded pre-existing exclusion.
-- [ ] Confirm `probe_509b_negative_control.lean` is untouched. It is expected to fail; that is its
+- [x] Confirm `probe_509b_negative_control.lean` is untouched. It is expected to fail; that is its
       purpose.
-- [ ] Write the summary, including the downstream handoff block below verbatim.
+- [x] Write the summary, including the downstream handoff block below verbatim.
 
 **The Dedekind handoff (record in the summary).** The follow-on task's **Part 1 is four
 `abbrev`s and two one-line theorems**, not a fourth hand copy of a ten-declaration group. All six
@@ -700,6 +700,16 @@ shape is `⟨F, ⟨inst, hlub⟩, M, τ, hτ, t, h⟩`, compiled in `probe_509b_
 
 **Files to modify**:
 - `specs/509_parameterize_compactness_and_strong_completeness_family/summaries/01_frameclass-indexed-compactness-family-summary.md` (new)
+
+**Acceptance evidence recorded**: `lake build FormalSystem BimodalTest` green at **2566 jobs**
+with explicit targets; live-scope structural sorry inventory ZERO (C3); `^axiom ` count 8 at both
+`ac6080ae2` and HEAD; all twelve audited declarations at exactly
+`[propext, Classical.choice, Quot.sound]`. `check-module-invariants.sh` fails **only** C6, on the
+same four unmanifested unreachable modules recorded as the pre-existing exclusion — **C14 passes
+both halves and C15 passes**, so there is no regression in this task's defect scope.
+`readme-lint.sh` fails **only** on the recorded missing `Semantics/Ultraproduct/README.md`, with
+0 broken references. `probe_509b_negative_control.lean` is untouched (clean `git status`) and
+still fails, as intended.
 
 **Verification**:
 - All three acceptance criteria demonstrated with recorded command output, not asserted.
