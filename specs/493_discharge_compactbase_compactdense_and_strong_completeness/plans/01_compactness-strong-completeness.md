@@ -298,7 +298,7 @@ If the live list differs from the enumeration above, the enumeration is wrong, n
 
 ---
 
-### Phase 4: Paper-side record and author-memo retirement [NOT STARTED]
+### Phase 4: Paper-side record and author-memo retirement [COMPLETED]
 
 **Goal**: The live paper record reflects that only mismatch item (i) remains, and the archived
 author memo carries dated retirement notes rather than a rewritten history.

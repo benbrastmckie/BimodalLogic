@@ -1451,7 +1451,12 @@ axiom above, which is first-order.
   compactness over the relevant elementary class of shift sets (Łoś, Proposition Compactness). For
   the base class this is `completeness`; for the dense class, `completeness_dense`; for the
   discrete class, `completeness_discrete`; for the Dedekind class, `completeness_dedekind_engine`;
-  each instance of `StrongCompletenessBase`, `CompactBase`, and `ModelExistenceBase`. The
+  each instance of `StrongCompletenessBase`, `CompactBase`, and `ModelExistenceBase`. Those three
+  are not merely the statements the proof would need: for the base and dense classes all three
+  are theorems of the formalization, proved in `Metalogic.Compactness` by exactly this
+  ultraproduct route --- `modelExistenceBase` and `modelExistenceDense` build the ultraproduct
+  over the finite sublists of the premise set, and `compactBase`, `compactDense`,
+  `strongCompletenessBase` and `strongCompletenessDense` follow. The
   ultraproduct's duration group is the ultraproduct of the finite-stage groups, which is where the
   per-class clause comes from: an ultrapower of $ZZ$ is a $ZZ$-group, an ultrapower of $QQ$ or
   $RR$ is a divisible ordered abelian group.
