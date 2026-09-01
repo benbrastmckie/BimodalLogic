@@ -662,6 +662,21 @@ docstring prose rather than code. Confirm the code-only surface at phase start w
 `grep -rn --include=*.lean -E '(^|[^A-Za-z_.])valid[ ]+(φ|phi|ψ|psi|\(|\{)' FormalSystem/ Tests/`
 and triage prose out before sizing the work.
 
+#### Migration mechanism actually used (Phase 8)
+
+`valid` could not stay at its original position in `Semantics/Validity.lean` (above
+`TaskFrame.ValidOn`) once it became `ValidIn .Base`, since `ValidIn` is declared further down the
+same module. **Resolution: `valid`, its `⊨` notation, and the two theorems that mention it in code
+(`valid_iff_forall_validOn`, `validOn_of_valid`) were relocated downward** to sit immediately after
+`def ValidIn`, inside the `FrameClass`-indexed section where the predicate now belongs. Nothing
+moved between modules and no statement changed. `valid_iff_validIn_base` and
+`blValid_iff_blValidIn_base` collapse to `Iff.rfl` as a consequence.
+
+The call-site migration used `valid.of_forall_total` / `valid.apply` (and the BL mirrors), which
+discharge the `Sat .Base` argument — `True` — internally, so no call site writes `trivial`. The
+surface was mechanical and concentrated: goal sites take a one-line `refine valid.of_forall_total ?_`
+prefix, application sites take a `|>.apply` insertion.
+
 **Off-ramp (pre-declared)**: if the abbreviation churns proofs beyond this phase's budget or moves
 any C2/C14 axiom baseline, revert `valid` to its current standalone `def` and keep
 `valid_iff_validIn_base` (already proved in Phase 2) as the bridge. Record the outcome as
