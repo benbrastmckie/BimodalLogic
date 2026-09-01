@@ -405,6 +405,7 @@ On a densely ordered frame, `U(⊤,⊥)` at t requires s > t with empty (t,s),
 but `DenselyOrdered` provides r with t < r < s, contradiction. -/
 theorem dense_indicator_valid :
     ValidDense (Formula.untl Formula.bot (Formula.bot.imp Formula.bot)).neg := by
+  refine ValidDense.of_forall ?_
   intro F h_dense M τ _h_mem t
   simp only [Formula.neg, TruthAt]
   intro ⟨s, hts, _h_top, h_guard⟩
@@ -416,6 +417,7 @@ Under strict semantics: GGφ → Gφ requires DenselyOrdered. Given s > t,
 find r with t < r < s by density, then h_GG(r)(s) gives φ(s). -/
 theorem density_valid (φ : Formula) :
     ValidDense ((φ.allFuture.allFuture).imp φ.allFuture) := by
+  refine ValidDense.of_forall ?_
   intro F h_dense M τ _h_mem t
   simp only [TruthAt, Truth.future_iff]
   intro h_GG s hts
@@ -433,6 +435,7 @@ theorem discreteness_forward_valid (φ : Formula) :
     ValidDiscrete (Formula.and (Formula.bot.neg.someFuture)
       (Formula.and φ (Formula.allPast φ)) |>.imp
       (Formula.allPast φ).someFuture) := by
+  refine ValidDiscrete.of_forall ?_
   intro F _h_succ _h_pred _h_succ_arch _h_pred_arch M τ _h_mem t
   simp only [Formula.and, Formula.neg, TruthAt,
     Truth.some_future_iff, Truth.past_iff]
@@ -451,6 +454,7 @@ theorem discreteness_forward_valid (φ : Formula) :
 Under strict semantics: Gφ → Fφ requires NoMaxOrder. -/
 theorem seriality_future_valid (φ : Formula) :
     ValidDiscrete (φ.allFuture.imp φ.someFuture) := by
+  refine ValidDiscrete.of_forall ?_
   intro F _h_succ _h_pred _h_succ_arch _h_pred_arch M τ _h_mem t
   simp only [TruthAt, Truth.future_iff, Truth.some_future_iff]
   intro h_G
@@ -462,6 +466,7 @@ theorem seriality_future_valid (φ : Formula) :
 Under strict semantics: Hφ → Pφ requires NoMinOrder. -/
 theorem seriality_past_valid (φ : Formula) :
     ValidDiscrete (φ.allPast.imp φ.somePast) := by
+  refine ValidDiscrete.of_forall ?_
   intro F _h_succ _h_pred _h_succ_arch _h_pred_arch M τ _h_mem t
   simp only [TruthAt, Truth.past_iff, Truth.some_past_iff]
   intro h_H
@@ -847,12 +852,14 @@ theorem discrete_box_necessity_valid :
 If φ holds at some future time, there is a nearest future time where φ holds. -/
 theorem prior_UZ_valid (φ : Formula) :
     ValidDiscrete (φ.someFuture.imp (Formula.untl φ.neg φ)) := by
+  refine ValidDiscrete.of_forall ?_
   intro F _ _ _ _ M τ h_mem t
   exact SoundnessLemmas.prior_UZ_is_valid φ F.toFibre M τ h_mem t
 
 /-- Prior-SZ is valid on discrete orders: P(φ) → S(φ, ¬φ).
 If φ held at some past time, there is a nearest past time where φ held. -/
 theorem prior_SZ_valid (φ : Formula) : ValidDiscrete (φ.somePast.imp (Formula.snce φ.neg φ)) := by
+  refine ValidDiscrete.of_forall ?_
   intro F _ _ _ _ M τ h_mem t
   exact SoundnessLemmas.prior_SZ_is_valid φ F.toFibre M τ h_mem t
 
@@ -860,6 +867,7 @@ theorem prior_SZ_valid (φ : Formula) : ValidDiscrete (φ.somePast.imp (Formula.
 Backward induction from the Gφ witness using IsSuccArchimedean. -/
 theorem z1_valid (φ : Formula) : ValidDiscrete
     ((φ.allFuture.imp φ).allFuture.imp (φ.allFuture.someFuture.imp φ.allFuture)) := by
+  refine ValidDiscrete.of_forall ?_
   intro F _ _ _ _ M τ h_mem t
   exact SoundnessLemmas.z1_is_valid φ F.toFibre M τ h_mem t
 
@@ -1214,28 +1222,32 @@ theorem soundness_dense_valid {phi : Formula}
     -- From ValidDense (psi' → phi) and ValidDense psi', derive ValidDense phi
     have h1 := soundness_dense_valid d1
     have h2 := soundness_dense_valid d2
+    refine ValidDense.of_forall ?_
     intro F _ M tau h_mem t
-    have h1' := h1 F M tau h_mem t
-    have h2' := h2 F M tau h_mem t
+    have h1' := h1.apply F M tau h_mem t
+    have h2' := h2.apply F M tau h_mem t
     simp only [TruthAt] at h1'
     exact h1' h2'
   | .necessitation psi' d' =>
     -- ValidDense psi' → ValidDense (box psi')
     have h := soundness_dense_valid d'
+    refine ValidDense.of_forall ?_
     intro F _ M tau h_mem t
     simp only [TruthAt]
     intro sigma h_sigma_mem
-    exact h F M sigma h_sigma_mem t
+    exact h.apply F M sigma h_sigma_mem t
   | .temporal_necessitation psi' d' =>
     -- ValidDense psi' → ValidDense (allFuture psi')
     have h := soundness_dense_valid d'
+    refine ValidDense.of_forall ?_
     intro F _ M tau h_mem t
     simp only [Truth.future_iff]
     intro s _hts
-    exact h F M tau h_mem s
+    exact h.apply F M tau h_mem s
   | .temporal_duality psi' d' =>
     -- ValidDense psi' → ValidDense (swap psi')
     -- Use derivable_implies_swap_valid which gives IsValid, then convert
+    refine ValidDense.of_forall ?_
     intro F _ M tau h_mem t
     exact SoundnessLemmas.derivable_implies_swap_valid d' F.toFibre M tau h_mem t
   | .weakening Gamma' _ _ d' h_sub =>
@@ -1316,8 +1328,8 @@ theorem soundness_dense (Γ : Context) (φ : Formula)
     | discrete_propagate_fwd => exact discrete_propagate_fwd_valid F M τ h_mem t
     | discrete_propagate_bwd => exact discrete_propagate_bwd_valid F M τ h_mem t
     | discrete_box_necessity => exact discrete_box_necessity_valid F M τ h_mem t
-    | density φ => exact density_valid φ F M τ h_mem t
-    | dense_indicator => exact dense_indicator_valid F M τ h_mem t
+    | density φ => exact (density_valid φ).apply F M τ h_mem t
+    | dense_indicator => exact dense_indicator_valid.apply F M τ h_mem t
     | prior_UZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
     | prior_SZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
     | z1 _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
@@ -1372,25 +1384,29 @@ theorem soundness_discrete_valid {phi : Formula}
   | .modus_ponens _ psi' _ d1 d2 =>
     have h1 := soundness_discrete_valid d1
     have h2 := soundness_discrete_valid d2
+    refine ValidDiscrete.of_forall ?_
     intro F _ _ _ _ M tau h_mem t
-    have h1' := h1 F M tau h_mem t
-    have h2' := h2 F M tau h_mem t
+    have h1' := h1.apply F M tau h_mem t
+    have h2' := h2.apply F M tau h_mem t
     simp only [TruthAt] at h1'
     exact h1' h2'
   | .necessitation psi' d' =>
     have h := soundness_discrete_valid d'
+    refine ValidDiscrete.of_forall ?_
     intro F _ _ _ _ M tau h_mem t
     simp only [TruthAt]
     intro sigma h_sigma_mem
-    exact h F M sigma h_sigma_mem t
+    exact h.apply F M sigma h_sigma_mem t
   | .temporal_necessitation psi' d' =>
     have h := soundness_discrete_valid d'
+    refine ValidDiscrete.of_forall ?_
     intro F _ _ _ _ M tau h_mem t
     simp only [Truth.future_iff]
     intro s _hts
-    exact h F M tau h_mem s
+    exact h.apply F M tau h_mem s
   | .temporal_duality psi' d' =>
     -- Use discrete swap validity for derivations that may contain Prior-UZ/SZ
+    refine ValidDiscrete.of_forall ?_
     intro F _ _ _ _ M tau h_mem t
     exact SoundnessLemmas.derivable_implies_swap_valid_discrete d' F.toFibre M tau h_mem t
   | .weakening Gamma' _ _ d' h_sub =>
@@ -1423,7 +1439,7 @@ theorem soundness_discrete (Γ : Context) (φ : Formula)
     TruthAt M τ t φ := by
   induction d generalizing τ t with
   | «axiom» Γ' φ' h_ax h_fc =>
-    exact axiom_discrete_valid h_ax h_fc F M τ h_mem t
+    exact (axiom_discrete_valid h_ax h_fc).apply F M τ h_mem t
   | assumption Γ' φ' h_in =>
     exact h_ctx φ' h_in
   | modus_ponens Γ' φ' ψ' _ _ ih1 ih2 =>
@@ -1464,7 +1480,7 @@ validity. The `ValidDedekindDense` binder set is `ValidDense`'s plus an LUB hypo
 this is a pure weakening. -/
 private theorem validDedekindDense_of_validDense {φ : Formula} (h : ValidDense φ) :
     ValidDedekindDense φ :=
-  fun F _ _hlub M τ h_mem t => h F M τ h_mem t
+  ValidIn.mono (by decide) h
 
 /-! ### Semantic validity of the three Reynolds axioms
 
@@ -1515,6 +1531,7 @@ set is required here and must not be relaxed. -/
 theorem prior_U_gap_valid (φ : Formula) :
     ValidDedekindDense ((Formula.and (Formula.untl φ Formula.top) φ.neg.someFuture).imp
       (Formula.untl φ (Formula.or φ.neg (Formula.kPlus φ.neg)))) := by
+  refine ValidDedekindDense.of_forall ?_
   intro F _ h_lub M τ h_mem t h_ant
   simp only [TruthAt, Formula.and, Formula.neg, Formula.someFuture, Formula.top] at h_ant
   obtain ⟨h1, h2⟩ := and_of_not_imp_not h_ant
@@ -1564,6 +1581,7 @@ interval guard, because the `K⁻` interval now lies to the left of `s` rather t
 theorem prior_S_gap_valid (φ : Formula) :
     ValidDedekindDense ((Formula.and (Formula.snce φ Formula.top) φ.neg.somePast).imp
       (Formula.snce φ (Formula.or φ.neg (Formula.kMinus φ.neg)))) := by
+  refine ValidDedekindDense.of_forall ?_
   intro F _ h_lub M τ h_mem t h_ant
   simp only [TruthAt, Formula.and, Formula.neg, Formula.somePast, Formula.top] at h_ant
   obtain ⟨h1, h2⟩ := and_of_not_imp_not h_ant
@@ -1635,6 +1653,7 @@ theorem sep_valid (φ : Formula) :
     ValidDedekindDense ((Formula.and (Formula.kPlus φ)
         (Formula.kPlus (Formula.and φ (Formula.untl φ.neg φ))).neg).imp
         (Formula.kPlus (Formula.and (Formula.kPlus φ) (Formula.kMinus φ)))) := by
+  refine ValidDedekindDense.of_forall ?_
   intro F _ h_lub M τ h_mem t h_ant
   obtain ⟨Q, hQc, hQd⟩ := SoundnessLemmas.exists_countable_order_dense h_lub
   simp only [TruthAt, Formula.and, Formula.neg, Formula.kPlus, Formula.kMinus,
@@ -1701,6 +1720,7 @@ theorem sep_swap_valid (φ : Formula) :
     ValidDedekindDense (((Formula.and (Formula.kPlus φ)
         (Formula.kPlus (Formula.and φ (Formula.untl φ.neg φ))).neg).imp
         (Formula.kPlus (Formula.and (Formula.kPlus φ) (Formula.kMinus φ)))).swapTemporal) := by
+  refine ValidDedekindDense.of_forall ?_
   intro F _ h_lub M τ h_mem t h_ant
   obtain ⟨Q, hQc, hQd⟩ := SoundnessLemmas.exists_countable_order_dense h_lub
   simp only [Formula.and, Formula.neg, Formula.kPlus, Formula.kMinus, Formula.top,
@@ -1825,7 +1845,8 @@ theorem axiom_dedekind_swap_valid {φ : Formula} (h : Axiom φ)
     (h_fc : h.minFrameClass ≤ FrameClass.Dedekind) :
     ValidDedekindDense φ.swapTemporal := by
   by_cases hdense : h.minFrameClass ≤ FrameClass.Dense
-  · intro F _ _hlub M τ h_mem t
+  · refine ValidDedekindDense.of_forall ?_
+    intro F _ _hlub M τ h_mem t
     exact SoundnessLemmas.axiom_swap_valid (D := F.Duration) φ h hdense F.toFibre M τ h_mem t
   · cases h with
     | prior_U_gap ψ =>
@@ -1863,41 +1884,47 @@ theorem derivable_valid_and_swap_valid_dedekind {phi : Formula}
     have h1 := derivable_valid_and_swap_valid_dedekind d1
     have h2 := derivable_valid_and_swap_valid_dedekind d2
     constructor
-    · intro F _ hlub M tau h_mem t
-      have h1' := h1.1 F hlub M tau h_mem t
-      have h2' := h2.1 F hlub M tau h_mem t
+    · refine ValidDedekindDense.of_forall ?_
+      intro F _ hlub M tau h_mem t
+      have h1' := h1.1.apply F hlub M tau h_mem t
+      have h2' := h2.1.apply F hlub M tau h_mem t
       simp only [TruthAt] at h1'
       exact h1' h2'
-    · intro F _ hlub M tau h_mem t
-      have h1' := h1.2 F hlub M tau h_mem t
-      have h2' := h2.2 F hlub M tau h_mem t
+    · refine ValidDedekindDense.of_forall ?_
+      intro F _ hlub M tau h_mem t
+      have h1' := h1.2.apply F hlub M tau h_mem t
+      have h2' := h2.2.apply F hlub M tau h_mem t
       simp only [Formula.swapTemporal, TruthAt] at h1' ⊢
       exact h1' h2'
   | .necessitation psi' d' =>
     have h := derivable_valid_and_swap_valid_dedekind d'
     constructor
-    · intro F _ hlub M tau h_mem t
+    · refine ValidDedekindDense.of_forall ?_
+      intro F _ hlub M tau h_mem t
       simp only [TruthAt]
       intro sigma h_sigma_mem
-      exact h.1 F hlub M sigma h_sigma_mem t
-    · intro F _ hlub M tau h_mem t
+      exact h.1.apply F hlub M sigma h_sigma_mem t
+    · refine ValidDedekindDense.of_forall ?_
+      intro F _ hlub M tau h_mem t
       simp only [Formula.swapTemporal, TruthAt]
       intro sigma h_sigma_mem
-      exact h.2 F hlub M sigma h_sigma_mem t
+      exact h.2.apply F hlub M sigma h_sigma_mem t
   | .temporal_necessitation psi' d' =>
     have h := derivable_valid_and_swap_valid_dedekind d'
     constructor
-    · intro F _ hlub M tau h_mem t
+    · refine ValidDedekindDense.of_forall ?_
+      intro F _ hlub M tau h_mem t
       simp only [Truth.future_iff]
       intro s _hts
-      exact h.1 F hlub M tau h_mem s
-    · intro F _ hlub M tau h_mem t
+      exact h.1.apply F hlub M tau h_mem s
+    · refine ValidDedekindDense.of_forall ?_
+      intro F _ hlub M tau h_mem t
       simp only [Formula.allFuture, Formula.someFuture, Formula.swapTemporal,
         Formula.neg, Formula.top] at *
       simp only [TruthAt] at *
       intro hcontra
       obtain ⟨s, hts, hs, _⟩ := hcontra
-      exact hs (h.2 F hlub M tau h_mem s)
+      exact hs (h.2.apply F hlub M tau h_mem s)
   | .temporal_duality psi' d' =>
     have h := derivable_valid_and_swap_valid_dedekind d'
     refine ⟨h.2, ?_⟩
@@ -1950,7 +1977,7 @@ theorem soundness_dedekind (Γ : Context) (φ : Formula)
     TruthAt M τ t φ := by
   induction d generalizing τ t with
   | «axiom» Γ' φ' h_ax h_fc =>
-    exact axiom_dedekind_valid h_ax h_fc F h_lub M τ h_mem t
+    exact (axiom_dedekind_valid h_ax h_fc).apply F h_lub M τ h_mem t
   | assumption Γ' φ' h_in =>
     exact h_ctx φ' h_in
   | modus_ponens Γ' φ' ψ' _ _ ih1 ih2 =>
@@ -1967,7 +1994,7 @@ theorem soundness_dedekind (Γ : Context) (φ : Formula)
     intro s _hts
     exact ih τ h_mem s (by simp)
   | temporal_duality φ' d' _ih =>
-    exact (derivable_valid_and_swap_valid_dedekind d').2 F h_lub M τ h_mem t
+    exact ((derivable_valid_and_swap_valid_dedekind d').2).apply F h_lub M τ h_mem t
   | weakening Γ' Δ' φ' _ h_sub ih =>
     exact ih τ h_mem t (fun ψ h_in => h_ctx ψ (h_sub h_in))
 
@@ -2031,7 +2058,7 @@ theorem not_derivable_nil_bot_discrete :
   rintro ⟨d⟩
   obtain ⟨τ⟩ := TaskFrame.hF_nonempty_of_frameAxioms (FrameOver.trivialFrame (D := ℤ))
   exact Truth.bot_false
-    (FormalSystem.Metalogic.soundness_discrete_valid d (FrameOver.trivialFrame (D := ℤ))
+    ((FormalSystem.Metalogic.soundness_discrete_valid d).apply (FrameOver.trivialFrame (D := ℤ))
       TaskModel.allFalse τ.val τ.property 0)
 
 end FormalSystem.Metalogic

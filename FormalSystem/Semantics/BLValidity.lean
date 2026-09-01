@@ -91,28 +91,102 @@ def BLSemanticConsequence (Γ : BaseLanguage.Context) (φ : BLFormula) : Prop :=
     (∀ ψ ∈ Γ, BLTruthAt M τ t ψ) →
     BLTruthAt M τ t φ
 
-/--
-Validity over **dense** temporal orders: `BLValid` with `[DenselyOrdered D]` added to the binder
-list, capturing the frame condition for BL's density axiom `dn` (`GGφ → Gφ`).
+/-! ## `FrameClass`-indexed validity for the base language
 
-Binder-for-binder mirror of `Semantics.ValidDense`.
+The same two-layer shape `Semantics/Validity.lean` gives the full language, mirrored here against
+`BLTruthAt`. BL⁺ needs its own predicates because it has its own truth recursion — `BLTruthAt` is
+defined natively on `BLFormula`'s six constructors per `def:BL-semantics`, not via `untl`/`snce` —
+but it shares one and the same `FrameClass.Sat`, so the frame classes the two languages are
+indexed by are literally the same classes and not two parallel copies. -/
+
+/--
+`def:frame-validity` for the base language: `φ` is **valid over the frame `F`** iff it is true at
+every model over `F`, every possible world `τ ∈ H_F`, and every time `x ∈ D`.
+
+The BL mirror of `TaskFrame.ValidOn`, and in fact the more literal reading of the anchor, whose
+text is stated for "a well-formed sentence `φ` of `BL`". `TaskFrame.ValidOn` is the same clause
+applied to the full language's `Formula`. Both render the bundled `H_F` as `TaskFrame.HF`.
 -/
-def BLValidDense (φ : BLFormula) : Prop :=
-  ∀ (F : TaskFrame) [DenselyOrdered F.Duration] (M : TaskModel F)
-    (τ : WorldHistory F) (_ : τ.IsTotal) (t : F.Duration),
-    BLTruthAt M τ t φ
+def TaskFrame.BLValidOn (F : TaskFrame) (φ : BLFormula) : Prop :=
+  ∀ (M : TaskModel F) (τ : TaskFrame.HF F) (x : F.Duration), BLTruthAt M τ.val x φ
+
+/-- `φ` is valid on every frame satisfying `P`. The BL mirror of `Semantics.ValidOnFrames`, and
+for the same reason: indexing the primitive by a bare frame predicate rather than by a
+`FrameClass` tag is what lets one monotonicity lemma serve every bridge. -/
+def BLValidOnFrames (P : TaskFrame → Prop) (φ : BLFormula) : Prop :=
+  ∀ F : TaskFrame, P F → F.BLValidOn φ
+
+/-- `cor:tm-completeness`'s class-restricted consequence `⊨_C` for the base language. The BL
+mirror of `Semantics.ValidIn`, over the same `FrameClass.Sat`. -/
+def BLValidIn (fc : ProofSystem.FrameClass) (φ : BLFormula) : Prop :=
+  BLValidOnFrames fc.Sat φ
+
+/-- **The one monotonicity lemma for BL⁺**: `BLValidOnFrames` is antitone in its frame predicate.
+The BL mirror of `Semantics.ValidOnFrames.mono`. -/
+theorem BLValidOnFrames.mono {P Q : TaskFrame → Prop} {φ : BLFormula} (h : ∀ F, Q F → P F)
+    (hP : BLValidOnFrames P φ) : BLValidOnFrames Q φ :=
+  fun F hF => hP F (h F hF)
+
+/-- BL⁺ validity is monotone in the `FrameClass` order, pointing the same direction as
+`BaseLanguage.DerivationTree.lift`. The BL mirror of `Semantics.ValidIn.mono`. -/
+theorem BLValidIn.mono {fc₁ fc₂ : ProofSystem.FrameClass} {φ : BLFormula} (h : fc₁ ≤ fc₂)
+    (hv : BLValidIn fc₁ φ) : BLValidIn fc₂ φ :=
+  BLValidOnFrames.mono (fun _ => ProofSystem.FrameClass.Sat.anti h) hv
+
+/--
+Validity over **dense** temporal orders, capturing the frame condition for BL's density axiom
+`dn` (`GGφ → Gφ`).
+
+Binder-for-binder mirror of `Semantics.ValidDense`, and like it now an abbreviation: the frame
+constraint is `FrameClass.Sat .Dense`, i.e. `TaskFrame.IsDense`. The binder shape this definition
+used to have is recovered by `BLValidDense.of_forall` / `BLValidDense.apply`.
+-/
+def BLValidDense (φ : BLFormula) : Prop := BLValidIn ProofSystem.FrameClass.Dense φ
+
+/-- Introduce `BLValidDense` from the pre-abbreviation binder shape, with the density witness
+restored to the local context as an instance. -/
+theorem BLValidDense.of_forall {φ : BLFormula}
+    (h : ∀ (F : TaskFrame) [DenselyOrdered F.Duration] (M : TaskModel F)
+           (τ : WorldHistory F), τ.IsTotal → ∀ t : F.Duration, BLTruthAt M τ t φ) :
+    BLValidDense φ :=
+  fun F hF M τ t => @h F hF M τ.val τ.property t
+
+/-- Eliminate `BLValidDense` into the pre-abbreviation binder shape. -/
+theorem BLValidDense.apply {φ : BLFormula} (h : BLValidDense φ) (F : TaskFrame)
+    [inst : DenselyOrdered F.Duration] (M : TaskModel F) (τ : WorldHistory F)
+    (hτ : τ.IsTotal) (t : F.Duration) : BLTruthAt M τ t φ :=
+  h F inst M ⟨τ, hτ⟩ t
 
 /--
 Validity over **discrete** temporal orders: `BLValid` with successor and predecessor structure
 added to the binder list, capturing the frame condition for BL's discreteness axioms.
 
-Binder-for-binder mirror of `Semantics.ValidDiscrete`.
+Binder-for-binder mirror of `Semantics.ValidDiscrete`, and like it now an abbreviation: the frame
+constraint is `FrameClass.Sat .Discrete`, i.e. `TaskFrame.IsSuccArchDiscrete` — `def:TMplus-f`'s
+Hölder narrowing to ℤ-time. The binder shape this definition used to have is recovered by
+`BLValidDiscrete.of_forall` / `BLValidDiscrete.apply`.
 -/
-def BLValidDiscrete (φ : BLFormula) : Prop :=
-  ∀ (F : TaskFrame) [SuccOrder F.Duration] [PredOrder F.Duration]
-    [IsSuccArchimedean F.Duration] [IsPredArchimedean F.Duration] (M : TaskModel F)
-    (τ : WorldHistory F) (_ : τ.IsTotal) (t : F.Duration),
-    BLTruthAt M τ t φ
+def BLValidDiscrete (φ : BLFormula) : Prop := BLValidIn ProofSystem.FrameClass.Discrete φ
+
+/-- Introduce `BLValidDiscrete` from the pre-abbreviation four-instance binder shape. The
+existential `TaskFrame.IsSuccArchDiscrete` is destructured with `obtain` and its witnesses passed
+positionally with `@`, never through `haveI`. -/
+theorem BLValidDiscrete.of_forall {φ : BLFormula}
+    (h : ∀ (F : TaskFrame) [SuccOrder F.Duration] [PredOrder F.Duration]
+           [IsSuccArchimedean F.Duration] [IsPredArchimedean F.Duration] (M : TaskModel F)
+           (τ : WorldHistory F), τ.IsTotal → ∀ t : F.Duration, BLTruthAt M τ t φ) :
+    BLValidDiscrete φ := by
+  intro F hF M τ t
+  obtain ⟨so, po, hsa, hpa⟩ := hF
+  exact @h F so po hsa hpa M τ.val τ.property t
+
+/-- Eliminate `BLValidDiscrete` into the pre-abbreviation binder shape. -/
+theorem BLValidDiscrete.apply {φ : BLFormula} (h : BLValidDiscrete φ) (F : TaskFrame)
+    [so : SuccOrder F.Duration] [po : PredOrder F.Duration]
+    [hsa : IsSuccArchimedean F.Duration] [hpa : IsPredArchimedean F.Duration]
+    (M : TaskModel F) (τ : WorldHistory F) (hτ : τ.IsTotal) (t : F.Duration) :
+    BLTruthAt M τ t φ :=
+  h F ⟨so, po, hsa, hpa⟩ M ⟨τ, hτ⟩ t
 
 /--
 Validity over **dense Dedekind-complete** temporal orders: the least-upper-bound hypothesis
@@ -123,39 +197,65 @@ Binder-for-binder mirror of `Semantics.ValidDedekindDense`, and **this — not a
 docstring above gives the BL-native refutation of the density-free form: `Axiom.dn` is admissible
 at `FrameClass.Dedekind` and is false on `ℤ`, which satisfies every remaining binder. There is
 deliberately no `BLValidDedekind` in this file.
+
+Now an abbreviation: the frame constraint is `FrameClass.Sat .Dedekind`, i.e.
+`TaskFrame.IsDedekind`. The binder shape this definition used to have is recovered by
+`BLValidDedekindDense.of_forall` / `BLValidDedekindDense.apply`.
 -/
-def BLValidDedekindDense (φ : BLFormula) : Prop :=
-  ∀ (F : TaskFrame) [DenselyOrdered F.Duration]
-    (_ : ∀ s : Set F.Duration, s.Nonempty → BddAbove s → ∃ x, IsLUB s x)
-    (M : TaskModel F)
-    (τ : WorldHistory F) (_ : τ.IsTotal) (t : F.Duration),
-    BLTruthAt M τ t φ
+def BLValidDedekindDense (φ : BLFormula) : Prop := BLValidIn ProofSystem.FrameClass.Dedekind φ
+
+/-- Introduce `BLValidDedekindDense` from the pre-abbreviation binder shape. -/
+theorem BLValidDedekindDense.of_forall {φ : BLFormula}
+    (h : ∀ (F : TaskFrame) [DenselyOrdered F.Duration],
+           (∀ s : Set F.Duration, s.Nonempty → BddAbove s → ∃ x, IsLUB s x) →
+           ∀ (M : TaskModel F) (τ : WorldHistory F), τ.IsTotal →
+             ∀ t : F.Duration, BLTruthAt M τ t φ) :
+    BLValidDedekindDense φ :=
+  fun F hF M τ t => @h F hF.1 hF.2 M τ.val τ.property t
+
+/-- Eliminate `BLValidDedekindDense` into the pre-abbreviation binder shape. -/
+theorem BLValidDedekindDense.apply {φ : BLFormula} (h : BLValidDedekindDense φ) (F : TaskFrame)
+    [inst : DenselyOrdered F.Duration]
+    (hlub : ∀ s : Set F.Duration, s.Nonempty → BddAbove s → ∃ x, IsLUB s x)
+    (M : TaskModel F) (τ : WorldHistory F) (hτ : τ.IsTotal) (t : F.Duration) :
+    BLTruthAt M τ t φ :=
+  h F ⟨inst, hlub⟩ M ⟨τ, hτ⟩ t
 
 namespace BLValidity
 
 /-! ### Inclusion lemmas
 
-Mirrors of `Validity.valid_implies_valid_dense` and its siblings. Each simply discards the extra
-binders: `BLValid` already quantifies over every `D` meeting the weaker binder set.
+All three are now corollaries of the single `BLValidIn.mono`, routed through
+`blValid_iff_blValidIn_base` and `FrameClass.base_le`. Before the indexing they were three
+hand-written binder-discarding lambdas.
 
 Two members of the BL⁺ family have no mirror here, both for the same reason: they mention
 `ValidDedekind`, whose BL counterpart is deliberately not defined (see the module docstring).
 Those are `Validity.valid_implies_validDedekind` and
 `Validity.validDedekindDense_of_validDedekind`. -/
 
+/-- `BLValid` is `BLValidIn` at the unconstrained class: `Sat .Base` is `True`. The BL mirror of
+`Validity.valid_iff_validIn_base`. -/
+theorem blValid_iff_blValidIn_base (φ : BLFormula) :
+    BLValid φ ↔ BLValidIn ProofSystem.FrameClass.Base φ := by
+  constructor
+  · intro h F _ M τ x
+    exact h F M τ.val τ.property x
+  · intro h F M τ hτ t
+    exact h F trivial M ⟨τ, hτ⟩ t
+
 /-- Validity implies validity over dense orders. -/
 theorem blValid_implies_blValidDense {φ : BLFormula} (h : BLValid φ) : BLValidDense φ :=
-  fun F _ M τ hτ t => h F M τ hτ t
+  BLValidIn.mono (ProofSystem.FrameClass.base_le _) ((blValid_iff_blValidIn_base φ).mp h)
 
 /-- Validity implies validity over discrete orders. -/
 theorem blValid_implies_blValidDiscrete {φ : BLFormula} (h : BLValid φ) : BLValidDiscrete φ :=
-  fun F _ _ _ _ M τ hτ t => h F M τ hτ t
+  BLValidIn.mono (ProofSystem.FrameClass.base_le _) ((blValid_iff_blValidIn_base φ).mp h)
 
-/-- Validity implies validity over dense Dedekind-complete orders. The least-upper-bound
-hypothesis is simply discarded. -/
+/-- Validity implies validity over dense Dedekind-complete orders. -/
 theorem blValid_implies_blValidDedekindDense {φ : BLFormula} (h : BLValid φ) :
     BLValidDedekindDense φ :=
-  fun F _ _hlub M τ hτ t => h F M τ hτ t
+  BLValidIn.mono (ProofSystem.FrameClass.base_le _) ((blValid_iff_blValidIn_base φ).mp h)
 
 /-- Validity is consequence from the empty context. Mirrors
 `Validity.valid_iff_empty_consequence`. -/

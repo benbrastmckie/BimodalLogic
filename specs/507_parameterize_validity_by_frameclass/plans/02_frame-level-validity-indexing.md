@@ -408,7 +408,7 @@ recorded as a Reasoned Exclusion instead.
 
 ---
 
-### Phase 4: Redefine the `Semantics/` predicates on the new primitive [IN PROGRESS]
+### Phase 4: Redefine the `Semantics/` predicates on the new primitive [COMPLETED]
 
 **Goal**: `valid`'s four class-restricted siblings and the whole BL⁺ mirror become abbreviations
 over `ValidIn`/`ValidOnFrames`; the five hand-written monotonicity bridges collapse onto
@@ -416,27 +416,27 @@ over `ValidIn`/`ValidOnFrames`; the five hand-written monotonicity bridges colla
 NOT touched here (Phase 8).
 
 **Tasks**:
-- [ ] Redefine in `Semantics/Validity.lean`: `ValidDense := ValidIn .Dense`,
+- [x] Redefine in `Semantics/Validity.lean`: `ValidDense := ValidIn .Dense`,
       `ValidDiscrete := ValidIn .Discrete`, `ValidDedekindDense := ValidIn .Dedekind`,
       `ValidDedekind := ValidOnFrames TaskFrame.IsComplete`. Preserve each existing docstring's
       substantive content (the Hölder-dichotomy discussion, the `soundness_dedekind` hazard note,
       the Reynolds citation) -- these are load-bearing, not decoration.
-- [ ] Write the mandatory `ValidDedekind` mismatch docstring: it is NOT `ValidIn .Dedekind`; the
+- [x] Write the mandatory `ValidDedekind` mismatch docstring: it is NOT `ValidIn .Dedekind`; the
       `soundness_dedekind` target is `ValidDedekindDense`. Add the reciprocal pointer on
       `TaskFrame.IsComplete`. (Risks table, row 5 -- the phase does not close without both.)
-- [ ] Replace `valid_implies_valid_dense`, `valid_implies_valid_discrete`,
+- [x] Replace `valid_implies_valid_dense`, `valid_implies_valid_discrete`,
       `valid_implies_validDedekind`, `valid_implies_validDedekindDense`, and
       `validDedekindDense_of_validDedekind` with one-line corollaries of `ValidOnFrames.mono` /
       `ValidIn.mono`. Keep every existing name as a callable alias -- do not break call sites in
       this phase for the sake of deleting a name.
-- [ ] Mirror the same shape in `Semantics/BLValidity.lean`: `BLValidIn (fc) (φ : BLFormula)` (BL⁺
+- [x] Mirror the same shape in `Semantics/BLValidity.lean`: `BLValidIn (fc) (φ : BLFormula)` (BL⁺
       has its own `BLTruthAt`, so it needs its own indexed predicate over the same `Sat`),
       `BLValidDense`/`BLValidDiscrete`/`BLValidDedekindDense` as abbreviations, and the three
       `blValid_implies_*` lemmas collapsed onto one.
-- [ ] Migrate `Semantics/`-internal call sites: `IntTransfer.lean`, `DurationClassification.lean`,
+- [x] Migrate `Semantics/`-internal call sites: `IntTransfer.lean`, `DurationClassification.lean`,
       `IntNormalForm.lean`, `Extension/PeriodicExtension.lean`, and `Validity.lean`'s own remaining
       uses, using `of_forall_total` / `apply_total`.
-- [ ] Move `Validity.lean`'s class-restricted definitions to whichever module keeps the import
+- [x] Move `Validity.lean`'s class-restricted definitions to whichever module keeps the import
       graph acyclic (`FrameClassValidity.lean` is downstream of `Validity.lean`, so either relocate
       the four definitions into `FrameClassValidity.lean` and re-export, or move `ValidIn` upstream
       -- decide at implementation time and record the choice in the module docstring). **This is
@@ -508,23 +508,23 @@ at phase start; any additional file joins this phase rather than being deferred.
 
 ---
 
-### Phase 5: Migrate the soundness/completeness territory [IN PROGRESS]
+### Phase 5: Migrate the soundness/completeness territory [COMPLETED]
 
 **Goal**: `Metalogic/Soundness.lean`, `Metalogic/SoundnessLemmas/CoValidity.lean`, and
 `Metalogic/StrongCompleteness.lean` compile against the redefined predicates, with statements
 unchanged.
 
 **Tasks**:
-- [ ] Migrate `Metalogic/Soundness.lean` (the largest single surface) with `of_forall_total` /
+- [x] Migrate `Metalogic/Soundness.lean` (the largest single surface) with `of_forall_total` /
       `apply_total`; `soundness_dense`, `soundness_discrete`, `soundness_dedekind` and their
       `_valid` empty-context forms keep their exact statements.
-- [ ] Confirm `soundness_dedekind` still targets `ValidDedekindDense`, never `ValidDedekind` --
+- [x] Confirm `soundness_dedekind` still targets `ValidDedekindDense`, never `ValidDedekind` --
       and note in a comment that the new definition makes the wrong target structurally distinct
       (`ValidOnFrames IsComplete` vs `ValidIn .Dedekind`) rather than merely warned against.
-- [ ] Migrate `Metalogic/SoundnessLemmas/CoValidity.lean`.
-- [ ] Migrate `Metalogic/StrongCompleteness.lean`, including `completeness_dense`,
+- [x] Migrate `Metalogic/SoundnessLemmas/CoValidity.lean`.
+- [x] Migrate `Metalogic/StrongCompleteness.lean`, including `completeness_dense`,
       `completeness_discrete`, `completeness_dedekind`, and the `soundness_*_consequence` family.
-- [ ] Where a proof previously discharged an instance binder with `intro F _`, use the `obtain
+- [x] Where a proof previously discharged an instance binder with `intro F _`, use the `obtain
       ⟨…⟩` + positional `@` pattern for the `Sat .Discrete` existential -- **never `haveI`**.
 
 **Timing**: 2 hours
@@ -551,21 +551,21 @@ occurrences. Confirm the exact per-file counts at phase start with
 
 ---
 
-### Phase 6: Migrate the canonical-model, decidability, and remaining territory [IN PROGRESS]
+### Phase 6: Migrate the canonical-model, decidability, and remaining territory [COMPLETED]
 
 **Goal**: Every remaining consumer outside `Metalogic/SetConsequence.lean` compiles against the
 redefined predicates.
 
 **Tasks**:
-- [ ] Migrate `Metalogic/BXCanonical/Completeness.lean` and `BXCanonical/CompletenessDedekind.lean`.
-- [ ] Migrate `Metalogic/Decidability/`: `BiLasso/Assembly.lean`, `BiLasso/Check.lean`,
+- [x] Migrate `Metalogic/BXCanonical/Completeness.lean` and `BXCanonical/CompletenessDedekind.lean`. *(deviation: altered — `CompletenessDedekind.lean` was MISSED by the first implementation pass and left the tree red at `:597`; `completeness_dedekind_engine` applied `h_valid` in the pre-abbreviation binder shape, which no longer typechecks now that `ValidDedekindDense` is `ValidIn .Dedekind` and its frame hypothesis is the packed `TaskFrame.IsDedekind`. Repaired in the follow-up dispatch by routing the application through `ValidDedekindDense.apply`, the adapter Phase 4 already provides; the engine's axiom profile is `[propext, Classical.choice, Quot.sound]`, unchanged.)*
+- [x] Migrate `Metalogic/Decidability/`: `BiLasso/Assembly.lean`, `BiLasso/Check.lean`,
       `Correctness.lean`, `Tableau.lean`, `Verified/Decidable.lean`,
       `Verified/Bridge/{Carrier,DenseTruth,IntTruth}.lean`.
-- [ ] Migrate `Metalogic/WeakCanonical/PriorDefsDense.lean`,
+- [x] Migrate `Metalogic/WeakCanonical/PriorDefsDense.lean`,
       `WeakCanonical/DenseModelSurgery/Singletons.lean`, `Metalogic/DiscreteNonCompactness.lean`,
       `Theorems/DedekindDerived.lean`, `ProofSystem/Axioms.lean`'s docstring references, and
       `Tests/BimodalTest/TableauConformance.lean`.
-- [ ] Refresh `Metalogic.lean` and `Semantics.lean` docstring prose that describes the old
+- [x] Refresh `Metalogic.lean` and `Semantics.lean` docstring prose that describes the old
       per-class predicate family.
 
 **Timing**: 2 hours
@@ -591,26 +591,26 @@ command)
 
 ---
 
-### Phase 7: Collapse the set-consequence family [IN PROGRESS]
+### Phase 7: Collapse the set-consequence family [COMPLETED]
 
 **Goal**: The smoking gun closed. `SetSemanticConsequenceOn (fc)` defined once beside
 `SetDerivable (fc)`, with one monotonicity-in-`Γ` lemma and one monotonicity-in-`fc` lemma replacing
 the four byte-identical copies.
 
 **Tasks**:
-- [ ] Define `SetConsequenceOnFrames (P : TaskFrame → Prop) (Γ : Set Formula) (φ : Formula)` and
+- [x] Define `SetConsequenceOnFrames (P : TaskFrame → Prop) (Γ : Set Formula) (φ : Formula)` and
       `SetSemanticConsequenceOn (fc : FrameClass) (Γ) (φ) := SetConsequenceOnFrames fc.Sat Γ φ` in
       `Metalogic/SetConsequence.lean`, immediately beside `SetDerivable (fc)`.
-- [ ] Prove `setSemanticConsequenceOn_mono` (in `Γ`) -- the exact analogue of `setDerivable_mono`
+- [x] Prove `setSemanticConsequenceOn_mono` (in `Γ`) -- the exact analogue of `setDerivable_mono`
       -- and `setSemanticConsequenceOn_mono_fc` (in `fc`, via `Sat.anti`) -- the analogue of
       `DerivationTree.lift`.
-- [ ] Redefine `SetSemanticConsequenceBase/Dense/Discrete/DedekindDense` as abbreviations over
+- [x] Redefine `SetSemanticConsequenceBase/Dense/Discrete/DedekindDense` as abbreviations over
       `SetSemanticConsequenceOn`, replacing the four `*_mono` copies with corollaries of the one
       lemma while keeping every existing name callable.
-- [ ] Replace the stale line-number citations in those four docstrings ("Binder list: `valid`
+- [x] Replace the stale line-number citations in those four docstrings ("Binder list: `valid`
       (`Validity.lean:94`)" etc. -- all four now point at wrong lines) with a citation of the
       `Sat` interpretation instead. Cite by name, not by line number.
-- [ ] Migrate the file's own consumers and any external consumer of the four names.
+- [x] Migrate the file's own consumers and any external consumer of the four names.
 
 **Timing**: 1.5 hours
 

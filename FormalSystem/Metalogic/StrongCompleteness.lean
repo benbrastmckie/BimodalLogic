@@ -206,10 +206,12 @@ single-formula: it converts the arbitrary-`Γ` target into a `ValidDedekindDense
 theorem semantic_deduction_dedekind_dense (Γ : Context) (φ : Formula) :
     SemanticConsequenceDedekindDense Γ φ ↔ ValidDedekindDense (Γ.foldr Formula.imp φ) := by
   constructor
-  · intro h F _ h_lub M τ hτ t
+  · intro h
+    refine ValidDedekindDense.of_forall ?_
+    intro F _ h_lub M τ hτ t
     exact (truthAt_foldr_imp M τ t Γ φ).mpr (h F h_lub M τ hτ t)
   · intro h F _ h_lub M τ hτ t
-    exact (truthAt_foldr_imp M τ t Γ φ).mp (h F h_lub M τ hτ t)
+    exact (truthAt_foldr_imp M τ t Γ φ).mp (h.apply F h_lub M τ hτ t)
 
 /-! ## The proof-theoretic deduction theorem, in fold form -/
 
@@ -400,7 +402,7 @@ theorem compactBase_of_modelExistence (h : ModelExistenceBase) : CompactBase := 
       · exact absurd hmem hg
   obtain ⟨F, M, τ, hτ, t, hsat⟩ := h _ hfin
   exact hsat φ.neg (Set.mem_insert _ _)
-    (hcons F M τ hτ t (fun ψ hψ => hsat ψ (Set.mem_insert_of_mem _ hψ)))
+    (hcons.apply F M τ hτ t (fun ψ hψ => hsat ψ (Set.mem_insert_of_mem _ hψ)))
 
 /--
 **Model existence implies compactness, at the dense class.** The Dense mirror of
@@ -430,8 +432,7 @@ theorem compactDense_of_modelExistenceDense (h : ModelExistenceDense) : CompactD
     have hsub : ∀ ψ ∈ L.filter (fun ψ => decide (ψ ∈ Γ)), ψ ∈ Γ := by
       intro ψ hψ
       exact of_decide_eq_true (List.mem_filter.mp hψ).2
-    have hnv := hno _ hsub
-    unfold ValidDense at hnv
+    have hnv := ValidDense.of_not (hno _ hsub)
     push Not at hnv
     obtain ⟨F, _, M, τ, hτ, t, hfalse⟩ := hnv
     rw [truthAt_foldr_imp] at hfalse
@@ -446,7 +447,7 @@ theorem compactDense_of_modelExistenceDense (h : ModelExistenceDense) : CompactD
       · exact absurd hmem hg
   obtain ⟨F, _, M, τ, hτ, t, hsat⟩ := h _ hfin
   exact hsat φ.neg (Set.mem_insert _ _)
-    (hcons F M τ hτ t (fun ψ hψ => hsat ψ (Set.mem_insert_of_mem _ hψ)))
+    (hcons.apply F M τ hτ t (fun ψ hψ => hsat ψ (Set.mem_insert_of_mem _ hψ)))
 
 /-! ## Consequence completeness for `FrameClass.Dedekind` -/
 
@@ -729,10 +730,12 @@ binder set, so the extra `[DenselyOrdered D]` binder simply rides along.
 theorem semantic_deduction_dense (Γ : Context) (φ : Formula) :
     SemanticConsequenceDense Γ φ ↔ ValidDense (Γ.foldr Formula.imp φ) := by
   constructor
-  · intro h F _ M τ hτ t
+  · intro h
+    refine ValidDense.of_forall ?_
+    intro F _ M τ hτ t
     exact (truthAt_foldr_imp M τ t Γ φ).mpr (h F M τ hτ t)
   · intro h F _ M τ hτ t
-    exact (truthAt_foldr_imp M τ t Γ φ).mp (h F M τ hτ t)
+    exact (truthAt_foldr_imp M τ t Γ φ).mp (h.apply F M τ hτ t)
 
 /--
 **Finite-context consequence completeness for `FrameClass.Dense`, unconditional.**
@@ -837,10 +840,12 @@ the deduction theorem it embodies is exactly what fails to extend to infinite pr
 theorem semantic_deduction_discrete (Γ : Context) (φ : Formula) :
     SemanticConsequenceDiscrete Γ φ ↔ ValidDiscrete (Γ.foldr Formula.imp φ) := by
   constructor
-  · intro h F _ _ _ _ M τ hτ t
+  · intro h
+    refine ValidDiscrete.of_forall ?_
+    intro F _ _ _ _ M τ hτ t
     exact (truthAt_foldr_imp M τ t Γ φ).mpr (h F M τ hτ t)
   · intro h F _ _ _ _ M τ hτ t
-    exact (truthAt_foldr_imp M τ t Γ φ).mp (h F M τ hτ t)
+    exact (truthAt_foldr_imp M τ t Γ φ).mp (h.apply F M τ hτ t)
 
 /--
 **Finite-context consequence completeness for `FrameClass.Discrete`, unconditional.**

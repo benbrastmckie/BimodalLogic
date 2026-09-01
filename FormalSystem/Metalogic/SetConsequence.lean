@@ -72,39 +72,125 @@ proof system can support over `Set Formula`.
 def SetDerivable (fc : FrameClass) (Γ : Set Formula) (φ : Formula) : Prop :=
   ∃ L : List Formula, (∀ ψ ∈ L, ψ ∈ Γ) ∧ Derivable fc L φ
 
-/-! ## Per-class set-based semantic consequence -/
+/-! ## Set-based semantic consequence, defined once
 
-/-- Set-based semantic consequence over `FrameClass.Base`. Binder list: `valid`
-    (`Validity.lean:94`). -/
+`SetSemanticConsequenceOn fc` sits beside `SetDerivable fc` above and is indexed by the same
+`FrameClass` tag, which is the point: before this collapse there were four byte-identical
+definitions here, each carrying a hand-maintained binder list plus a docstring citing the
+`Semantics/Validity.lean` line its list was copied from. Three of those four line citations had
+since gone stale. The frame constraint is now read off the tag by `FrameClass.Sat`
+(`Semantics/FrameClassValidity.lean`), so there is nothing left to keep in sync.
+
+The four per-class names are retained as abbreviations — every existing call site still compiles
+against them — but each is now one line, and the four monotonicity-in-`Γ` copies below have
+collapsed onto `setConsequenceOnFrames_mono`. -/
+
+/-- Set-based semantic consequence over every frame satisfying `P`: the predicate-indexed
+primitive, mirroring `Semantics.ValidOnFrames`. -/
+def SetConsequenceOnFrames (P : TaskFrame → Prop) (Γ : Set Formula) (φ : Formula) : Prop :=
+  ∀ (F : TaskFrame), P F → ∀ (M : TaskModel F)
+    (τ : WorldHistory F) (_ : τ.IsTotal) (t : F.Duration),
+    (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ
+
+/-- `cor:tm-completeness`'s class-restricted consequence `Γ ⊨_C φ` at a possibly-infinite premise
+set: the semantic mirror of `SetDerivable fc` above, indexed by the same tag. -/
+def SetSemanticConsequenceOn (fc : FrameClass) (Γ : Set Formula) (φ : Formula) : Prop :=
+  SetConsequenceOnFrames fc.Sat Γ φ
+
+/-- Set-based semantic consequence over `FrameClass.Base` — the unconstrained class, since
+`Sat .Base` is `True`. -/
 def SetSemanticConsequenceBase (Γ : Set Formula) (φ : Formula) : Prop :=
-  ∀ (F : TaskFrame) (M : TaskModel F)
-    (τ : WorldHistory F) (_ : τ.IsTotal) (t : F.Duration),
-    (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ
+  SetSemanticConsequenceOn FrameClass.Base Γ φ
 
-/-- Set-based semantic consequence over `FrameClass.Dense`. Binder list: `ValidDense`
-    (`Validity.lean:206`). -/
+/-- Set-based semantic consequence over `FrameClass.Dense`. -/
 def SetSemanticConsequenceDense (Γ : Set Formula) (φ : Formula) : Prop :=
-  ∀ (F : TaskFrame) [DenselyOrdered F.Duration] (M : TaskModel F)
-    (τ : WorldHistory F) (_ : τ.IsTotal) (t : F.Duration),
-    (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ
+  SetSemanticConsequenceOn FrameClass.Dense Γ φ
 
-/-- Set-based semantic consequence over `FrameClass.Discrete`. Binder list: `ValidDiscrete`
-    (`Validity.lean:243`). Stated for completeness of the layer; strong completeness at this
-    class is refuted by non-compactness. -/
+/-- Set-based semantic consequence over `FrameClass.Discrete`. Stated for completeness of the
+layer; strong completeness at this class is refuted by non-compactness. -/
 def SetSemanticConsequenceDiscrete (Γ : Set Formula) (φ : Formula) : Prop :=
-  ∀ (F : TaskFrame) [SuccOrder F.Duration] [PredOrder F.Duration]
-    [IsSuccArchimedean F.Duration] [IsPredArchimedean F.Duration] (M : TaskModel F)
-    (τ : WorldHistory F) (_ : τ.IsTotal) (t : F.Duration),
-    (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ
+  SetSemanticConsequenceOn FrameClass.Discrete Γ φ
 
-/-- Set-based semantic consequence over dense Dedekind-complete carriers. Binder list:
-    `ValidDedekindDense` (`Validity.lean:331`) — the `soundness_dedekind` target. Non-compact. -/
+/-- Set-based semantic consequence over dense Dedekind-complete frames — the
+`soundness_dedekind` target class. Non-compact. -/
 def SetSemanticConsequenceDedekindDense (Γ : Set Formula) (φ : Formula) : Prop :=
-  ∀ (F : TaskFrame) [DenselyOrdered F.Duration]
-    (_ : ∀ s : Set F.Duration, s.Nonempty → BddAbove s → ∃ x, IsLUB s x)
-    (M : TaskModel F)
-    (τ : WorldHistory F) (_ : τ.IsTotal) (t : F.Duration),
-    (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ
+  SetSemanticConsequenceOn FrameClass.Dedekind Γ φ
+
+/-! ### Binder-shape adapters
+
+The pre-collapse binder shapes, restored. Each `of_forall` puts the frame condition back into the
+local context in the form typeclass resolution can see — `Sat .Dense F` is `TaskFrame.IsDense F`,
+whose head symbol is not `DenselyOrdered`, so a bare hypothesis of that type is invisible to
+instance search. The `.Discrete` adapter destructures `TaskFrame.IsSuccArchDiscrete` with `obtain`
+and passes its witnesses positionally with `@`, never through `haveI`. -/
+
+/-- Introduce `SetSemanticConsequenceBase` from its pre-collapse binder shape. -/
+theorem SetSemanticConsequenceBase.of_forall {Γ : Set Formula} {φ : Formula}
+    (h : ∀ (F : TaskFrame) (M : TaskModel F) (τ : WorldHistory F), τ.IsTotal →
+           ∀ t : F.Duration, (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ) :
+    SetSemanticConsequenceBase Γ φ :=
+  fun F _ M τ hτ t => h F M τ hτ t
+
+/-- Eliminate `SetSemanticConsequenceBase` into its pre-collapse binder shape. -/
+theorem SetSemanticConsequenceBase.apply {Γ : Set Formula} {φ : Formula}
+    (h : SetSemanticConsequenceBase Γ φ) (F : TaskFrame) (M : TaskModel F)
+    (τ : WorldHistory F) (hτ : τ.IsTotal) (t : F.Duration)
+    (hall : ∀ ψ ∈ Γ, TruthAt M τ t ψ) : TruthAt M τ t φ :=
+  h F trivial M τ hτ t hall
+
+/-- Introduce `SetSemanticConsequenceDense` from its pre-collapse binder shape. -/
+theorem SetSemanticConsequenceDense.of_forall {Γ : Set Formula} {φ : Formula}
+    (h : ∀ (F : TaskFrame) [DenselyOrdered F.Duration] (M : TaskModel F)
+           (τ : WorldHistory F), τ.IsTotal →
+           ∀ t : F.Duration, (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ) :
+    SetSemanticConsequenceDense Γ φ :=
+  fun F hF M τ hτ t => @h F hF M τ hτ t
+
+/-- Eliminate `SetSemanticConsequenceDense` into its pre-collapse binder shape. -/
+theorem SetSemanticConsequenceDense.apply {Γ : Set Formula} {φ : Formula}
+    (h : SetSemanticConsequenceDense Γ φ) (F : TaskFrame)
+    [inst : DenselyOrdered F.Duration] (M : TaskModel F)
+    (τ : WorldHistory F) (hτ : τ.IsTotal) (t : F.Duration)
+    (hall : ∀ ψ ∈ Γ, TruthAt M τ t ψ) : TruthAt M τ t φ :=
+  h F inst M τ hτ t hall
+
+/-- Introduce `SetSemanticConsequenceDiscrete` from its pre-collapse binder shape. -/
+theorem SetSemanticConsequenceDiscrete.of_forall {Γ : Set Formula} {φ : Formula}
+    (h : ∀ (F : TaskFrame) [SuccOrder F.Duration] [PredOrder F.Duration]
+           [IsSuccArchimedean F.Duration] [IsPredArchimedean F.Duration] (M : TaskModel F)
+           (τ : WorldHistory F), τ.IsTotal →
+           ∀ t : F.Duration, (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ) :
+    SetSemanticConsequenceDiscrete Γ φ := by
+  intro F hF M τ hτ t hall
+  obtain ⟨so, po, hsa, hpa⟩ := hF
+  exact @h F so po hsa hpa M τ hτ t hall
+
+/-- Eliminate `SetSemanticConsequenceDiscrete` into its pre-collapse binder shape. -/
+theorem SetSemanticConsequenceDiscrete.apply {Γ : Set Formula} {φ : Formula}
+    (h : SetSemanticConsequenceDiscrete Γ φ) (F : TaskFrame)
+    [so : SuccOrder F.Duration] [po : PredOrder F.Duration]
+    [hsa : IsSuccArchimedean F.Duration] [hpa : IsPredArchimedean F.Duration]
+    (M : TaskModel F) (τ : WorldHistory F) (hτ : τ.IsTotal) (t : F.Duration)
+    (hall : ∀ ψ ∈ Γ, TruthAt M τ t ψ) : TruthAt M τ t φ :=
+  h F ⟨so, po, hsa, hpa⟩ M τ hτ t hall
+
+/-- Introduce `SetSemanticConsequenceDedekindDense` from its pre-collapse binder shape. -/
+theorem SetSemanticConsequenceDedekindDense.of_forall {Γ : Set Formula} {φ : Formula}
+    (h : ∀ (F : TaskFrame) [DenselyOrdered F.Duration],
+           (∀ s : Set F.Duration, s.Nonempty → BddAbove s → ∃ x, IsLUB s x) →
+           ∀ (M : TaskModel F) (τ : WorldHistory F), τ.IsTotal →
+           ∀ t : F.Duration, (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ) :
+    SetSemanticConsequenceDedekindDense Γ φ :=
+  fun F hF M τ hτ t => @h F hF.1 hF.2 M τ hτ t
+
+/-- Eliminate `SetSemanticConsequenceDedekindDense` into its pre-collapse binder shape. -/
+theorem SetSemanticConsequenceDedekindDense.apply {Γ : Set Formula} {φ : Formula}
+    (h : SetSemanticConsequenceDedekindDense Γ φ) (F : TaskFrame)
+    [inst : DenselyOrdered F.Duration]
+    (hlub : ∀ s : Set F.Duration, s.Nonempty → BddAbove s → ∃ x, IsLUB s x)
+    (M : TaskModel F) (τ : WorldHistory F) (hτ : τ.IsTotal) (t : F.Duration)
+    (hall : ∀ ψ ∈ Γ, TruthAt M τ t ψ) : TruthAt M τ t φ :=
+  h F ⟨inst, hlub⟩ M τ hτ t hall
 
 /-! ## Monotonicity -/
 
@@ -115,32 +201,43 @@ theorem setDerivable_mono {fc : FrameClass} {Γ Δ : Set Formula} {φ : Formula}
   obtain ⟨L, hL, hd⟩ := h
   exact ⟨L, fun ψ hψ => h_sub (hL ψ hψ), hd⟩
 
+/-- **The one monotonicity-in-`Γ` lemma.** Set-consequence over any frame predicate is monotone
+in the premise set. The four per-class copies below are one-line corollaries; before the collapse
+each was a separate four-line proof differing only in how many binders its `intro` consumed. -/
+theorem setConsequenceOnFrames_mono {P : TaskFrame → Prop} {Γ Δ : Set Formula} {φ : Formula}
+    (h_sub : Γ ⊆ Δ) (h : SetConsequenceOnFrames P Γ φ) : SetConsequenceOnFrames P Δ φ := by
+  intro F hF M τ hτ t h_all
+  exact h F hF M τ hτ t (fun ψ hψ => h_all ψ (h_sub hψ))
+
+/-- **Monotonicity in the frame class**, the semantic analogue of `DerivationTree.lift`: a larger
+class tag denotes a more constrained collection of frames, so consequence climbs the order. The
+order-direction argument itself lives once, in `FrameClass.Sat.anti`. -/
+theorem setSemanticConsequenceOn_mono_fc {fc₁ fc₂ : FrameClass} {Γ : Set Formula} {φ : Formula}
+    (h_le : fc₁ ≤ fc₂) (h : SetSemanticConsequenceOn fc₁ Γ φ) :
+    SetSemanticConsequenceOn fc₂ Γ φ :=
+  fun F hF => h F (FrameClass.Sat.anti h_le hF)
+
 /-- Base set-consequence is monotone in the premise set. -/
 theorem setSemanticConsequenceBase_mono {Γ Δ : Set Formula} {φ : Formula}
-    (h_sub : Γ ⊆ Δ) (h : SetSemanticConsequenceBase Γ φ) : SetSemanticConsequenceBase Δ φ := by
-  intro F M τ hτ t h_all
-  exact h F M τ hτ t (fun ψ hψ => h_all ψ (h_sub hψ))
+    (h_sub : Γ ⊆ Δ) (h : SetSemanticConsequenceBase Γ φ) : SetSemanticConsequenceBase Δ φ :=
+  setConsequenceOnFrames_mono h_sub h
 
 /-- Dense set-consequence is monotone in the premise set. -/
 theorem setSemanticConsequenceDense_mono {Γ Δ : Set Formula} {φ : Formula}
-    (h_sub : Γ ⊆ Δ) (h : SetSemanticConsequenceDense Γ φ) : SetSemanticConsequenceDense Δ φ := by
-  intro F _ M τ hτ t h_all
-  exact h F M τ hτ t (fun ψ hψ => h_all ψ (h_sub hψ))
+    (h_sub : Γ ⊆ Δ) (h : SetSemanticConsequenceDense Γ φ) : SetSemanticConsequenceDense Δ φ :=
+  setConsequenceOnFrames_mono h_sub h
 
 /-- Discrete set-consequence is monotone in the premise set. -/
 theorem setSemanticConsequenceDiscrete_mono {Γ Δ : Set Formula} {φ : Formula}
     (h_sub : Γ ⊆ Δ) (h : SetSemanticConsequenceDiscrete Γ φ) :
-    SetSemanticConsequenceDiscrete Δ φ := by
-  intro F _ _ _ _ M τ hτ t h_all
-  exact h F M τ hτ t (fun ψ hψ => h_all ψ (h_sub hψ))
+    SetSemanticConsequenceDiscrete Δ φ :=
+  setConsequenceOnFrames_mono h_sub h
 
-/-- Dense Dedekind-complete set-consequence is monotone in the premise set. The
-    least-upper-bound hypothesis is an explicit binder, so it is threaded to `h` by name. -/
+/-- Dense Dedekind-complete set-consequence is monotone in the premise set. -/
 theorem setSemanticConsequenceDedekindDense_mono {Γ Δ : Set Formula} {φ : Formula}
     (h_sub : Γ ⊆ Δ) (h : SetSemanticConsequenceDedekindDense Γ φ) :
-    SetSemanticConsequenceDedekindDense Δ φ := by
-  intro F _ hlub M τ hτ t h_all
-  exact h F hlub M τ hτ t (fun ψ hψ => h_all ψ (h_sub hψ))
+    SetSemanticConsequenceDedekindDense Δ φ :=
+  setConsequenceOnFrames_mono h_sub h
 
 /-! ## Finite restriction and agreement with the finite-context layer -/
 

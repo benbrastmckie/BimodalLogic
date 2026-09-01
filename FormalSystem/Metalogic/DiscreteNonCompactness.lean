@@ -252,6 +252,7 @@ theorem discrete_consequence_not_compact : ¬ CompactDiscrete := by
   classical
   set p : Atom := ⟨"p", none⟩ with hp
   have hcons : SetSemanticConsequenceDiscrete (archWitness p) Formula.bot := by
+    refine SetSemanticConsequenceDiscrete.of_forall ?_
     intro F _ _ _ _ M τ hτ t hall
     exact absurd
       ⟨F, inferInstance, inferInstance, inferInstance, inferInstance, M, τ, hτ, t, hall⟩
@@ -259,7 +260,7 @@ theorem discrete_consequence_not_compact : ¬ CompactDiscrete := by
   obtain ⟨L, hL, hvalid⟩ := hc _ _ hcons
   obtain ⟨F, _, _, _, _, M, τ, hτ, t, hsat⟩ :=
     archWitness_finitely_satisfiable p L hL
-  have hv := hvalid F M τ hτ t
+  have hv := hvalid.apply F M τ hτ t
   exact (truthAt_foldr_imp M τ t L Formula.bot).mp hv (fun ψ hψ => hsat ψ hψ)
 
 /-! ## Strong completeness for `FrameClass.Discrete` is refuted -/
@@ -281,6 +282,7 @@ theorem strongCompletenessDiscrete_refuted : ¬ StrongCompletenessDiscrete := by
   classical
   set p : Atom := ⟨"p", none⟩ with hp
   have hcons : SetSemanticConsequenceDiscrete (archWitness p) Formula.bot := by
+    refine SetSemanticConsequenceDiscrete.of_forall ?_
     intro F _ _ _ _ M τ hτ t hall
     exact absurd
       ⟨F, inferInstance, inferInstance, inferInstance, inferInstance, M, τ, hτ, t, hall⟩

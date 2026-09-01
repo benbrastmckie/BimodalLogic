@@ -146,7 +146,7 @@ theorem axiom_dense_valid_fc {φ : Formula} (ax : Axiom φ)
     [DenseTemporalFrame D] :
     ∀ (F : FrameOver (TemporalOrder.of D)), F.toTaskFrame.ValidOn φ := by
   intro F M τ t
-  exact axiom_dense_valid ax h_fc F M τ.val τ.property t
+  exact (axiom_dense_valid ax h_fc).apply F M τ.val τ.property t
 
 /--
 Discrete-compatible axioms are valid on discrete temporal frames.
@@ -160,7 +160,7 @@ theorem axiom_discrete_valid_fc {φ : Formula} (ax : Axiom φ)
   intro F M τ t
   -- Use axiom_discrete_valid from Soundness.lean
   have h := axiom_discrete_valid ax h_fc
-  exact h F M τ.val τ.property t
+  exact h.apply F M τ.val τ.property t
 
 /-! ## Soundness over Int -/
 

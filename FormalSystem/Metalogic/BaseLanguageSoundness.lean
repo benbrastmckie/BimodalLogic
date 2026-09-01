@@ -234,18 +234,18 @@ theorem bl_soundness_valid {φ : BLFormula}
 /-- Empty-context form of `bl_soundness_dense`. -/
 theorem bl_soundness_dense_valid {φ : BLFormula}
     (d : BaseLanguage.DerivationTree FrameClass.Dense [] φ) : BLValidDense φ :=
-  fun F _ M τ h_mem t => bl_soundness_dense [] φ d F M τ h_mem t (by simp)
+  BLValidDense.of_forall fun F _ M τ h_mem t => bl_soundness_dense [] φ d F M τ h_mem t (by simp)
 
 /-- Empty-context form of `bl_soundness_discrete`. -/
 theorem bl_soundness_discrete_valid {φ : BLFormula}
     (d : BaseLanguage.DerivationTree FrameClass.Discrete [] φ) : BLValidDiscrete φ :=
-  fun F _ _ _ _ M τ h_mem t =>
+  BLValidDiscrete.of_forall fun F _ _ _ _ M τ h_mem t =>
     bl_soundness_discrete [] φ d F M τ h_mem t (by simp)
 
 /-- Empty-context form of `bl_soundness_dedekind`, at `BLValidDedekindDense`. -/
 theorem bl_soundness_dedekind_valid {φ : BLFormula}
     (d : BaseLanguage.DerivationTree FrameClass.Dedekind [] φ) : BLValidDedekindDense φ :=
-  fun F _ h_lub M τ h_mem t =>
+  BLValidDedekindDense.of_forall fun F _ h_lub M τ h_mem t =>
     bl_soundness_dedekind [] φ d F h_lub M τ h_mem t (by simp)
 
 /-! ## Consistency
@@ -281,7 +281,7 @@ theorem bl_not_derivable_nil_bot_discrete :
     ¬ BaseLanguage.Derivable FrameClass.Discrete ([] : BaseLanguage.Context) BLFormula.bot := by
   rintro ⟨d⟩
   obtain ⟨τ⟩ := TaskFrame.hF_nonempty_of_frameAxioms (FrameOver.trivialFrame (D := ℤ))
-  exact bl_soundness_discrete_valid d (FrameOver.trivialFrame (D := ℤ)) TaskModel.allFalse
+  exact (bl_soundness_discrete_valid d).apply (FrameOver.trivialFrame (D := ℤ)) TaskModel.allFalse
     τ.val τ.property 0
 
 /-! ## Native spot checks

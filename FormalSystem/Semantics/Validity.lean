@@ -423,12 +423,45 @@ densely ordered, at all total histories, and all times.
 This restricts `valid` to temporal types with `DenselyOrdered D`, capturing the
 frame condition for the density axiom DN: `F(phi) -> F(F(phi))`.
 
+**Now an abbreviation over `ValidIn`.** The frame constraint is no longer inlined here: it is
+`FrameClass.Sat .Dense`, which is `TaskFrame.IsDense`, `def:frame-properties`' Dense clause. The
+binder shape this definition used to have is recovered by `ValidDense.of_forall` /
+`ValidDense.apply`, which is what keeps the density witness available to typeclass resolution
+inside a migrated proof.
+
 **Notation**: `⊨_dense φ`
 -/
-def ValidDense (φ : Formula) : Prop :=
-  ∀ (F : TaskFrame) [DenselyOrdered F.Duration] (M : TaskModel F)
-    (τ : WorldHistory F) (_ : τ.IsTotal) (t : F.Duration),
-    TruthAt M τ t φ
+def ValidDense (φ : Formula) : Prop := ValidIn ProofSystem.FrameClass.Dense φ
+
+/-- Introduce `ValidDense` from the binder shape it carried before it became an abbreviation over
+`ValidIn`: an instance-implicit `[DenselyOrdered F.Duration]` and the unbundled history pair
+`(τ : WorldHistory F) (hτ : τ.IsTotal)`.
+
+The instance binder is the point. `Sat .Dense F` is `TaskFrame.IsDense F`, whose head symbol is
+`TaskFrame.IsDense` rather than `DenselyOrdered`, so a hypothesis of that type is invisible to
+typeclass resolution and every downstream `exists_between` would fail. Introducing the density
+witness through this adapter puts it back in the local context as an instance, which is what lets
+each migrated proof keep its body unchanged. -/
+theorem ValidDense.of_forall {φ : Formula}
+    (h : ∀ (F : TaskFrame) [DenselyOrdered F.Duration] (M : TaskModel F)
+           (τ : WorldHistory F), τ.IsTotal → ∀ t : F.Duration, TruthAt M τ t φ) :
+    ValidDense φ :=
+  fun F hF M τ t => @h F hF M τ.val τ.property t
+
+/-- Eliminate `ValidDense` into the pre-abbreviation binder shape. -/
+theorem ValidDense.apply {φ : Formula} (h : ValidDense φ) (F : TaskFrame)
+    [inst : DenselyOrdered F.Duration] (M : TaskModel F) (τ : WorldHistory F)
+    (hτ : τ.IsTotal) (t : F.Duration) : TruthAt M τ t φ :=
+  h F inst M ⟨τ, hτ⟩ t
+
+/-- The contrapositive of `ValidDense.of_forall`, in the shape a countermodel extraction wants:
+from a failure of `ValidDense` it hands back a failure of the pre-abbreviation ∀-statement, which
+`push Not` can then take apart. This replaces the `unfold ValidDense` that used to open the
+definition directly — there is no longer a binder list there to open. -/
+theorem ValidDense.of_not {φ : Formula} (h : ¬ ValidDense φ) :
+    ¬ ∀ (F : TaskFrame) [DenselyOrdered F.Duration] (M : TaskModel F)
+        (τ : WorldHistory F), τ.IsTotal → ∀ t : F.Duration, TruthAt M τ t φ :=
+  fun h' => h (ValidDense.of_forall h')
 
 /--
 A formula is valid over discrete temporal orders if it is true in all models where D
@@ -436,6 +469,13 @@ has successor and predecessor structure, at all total histories, and all times.
 
 This restricts `valid` to temporal types with `SuccOrder D` and `PredOrder D`,
 capturing the frame condition for the discreteness axioms DF/DP.
+
+**Now an abbreviation over `ValidIn`.** The frame constraint is `FrameClass.Sat .Discrete`, which
+is `TaskFrame.IsSuccArchDiscrete` — `def:TMplus-f`'s Hölder narrowing to ℤ-time, *not*
+`def:frame-properties`' bare Discrete clause. Recording the narrowing in the tag's interpretation
+rather than in a binder list here is what keeps `soundness_discrete` from silently widening its
+frame class. The binder shape this definition used to have is recovered by
+`ValidDiscrete.of_forall` / `ValidDiscrete.apply`.
 
 **Notation**: `⊨_discrete φ`
 
@@ -465,17 +505,60 @@ witness, and `intIso : D ≃+o ℤ` packages both into the additive transfer. Th
 closes this direction outright: establishing `ValidDiscrete φ` from a statement about ℤ-frames
 alone is now a single rewrite.
 -/
-def ValidDiscrete (φ : Formula) : Prop :=
-  ∀ (F : TaskFrame) [SuccOrder F.Duration] [PredOrder F.Duration]
-    [IsSuccArchimedean F.Duration] [IsPredArchimedean F.Duration]
-    (M : TaskModel F)
-    (τ : WorldHistory F) (_ : τ.IsTotal) (t : F.Duration),
-    TruthAt M τ t φ
+def ValidDiscrete (φ : Formula) : Prop := ValidIn ProofSystem.FrameClass.Discrete φ
+
+/-- Introduce `ValidDiscrete` from the four-instance binder shape it carried before it became an
+abbreviation over `ValidIn`.
+
+`Sat .Discrete F` is the existential `TaskFrame.IsSuccArchDiscrete F` — `SuccOrder` and `PredOrder`
+are data-carrying, so a `TaskFrame → Prop` cannot bind them as instances. This adapter destructures
+that existential with `obtain` and passes the witnesses **positionally with `@`**, never with
+`haveI`: routing them through the instance cache would break definitional equality against
+instances already fixed in the types of `F` and `M`. -/
+theorem ValidDiscrete.of_forall {φ : Formula}
+    (h : ∀ (F : TaskFrame) [SuccOrder F.Duration] [PredOrder F.Duration]
+           [IsSuccArchimedean F.Duration] [IsPredArchimedean F.Duration] (M : TaskModel F)
+           (τ : WorldHistory F), τ.IsTotal → ∀ t : F.Duration, TruthAt M τ t φ) :
+    ValidDiscrete φ := by
+  intro F hF M τ t
+  obtain ⟨so, po, hsa, hpa⟩ := hF
+  exact @h F so po hsa hpa M τ.val τ.property t
+
+/-- Eliminate `ValidDiscrete` into the pre-abbreviation binder shape. -/
+theorem ValidDiscrete.apply {φ : Formula} (h : ValidDiscrete φ) (F : TaskFrame)
+    [so : SuccOrder F.Duration] [po : PredOrder F.Duration]
+    [hsa : IsSuccArchimedean F.Duration] [hpa : IsPredArchimedean F.Duration]
+    (M : TaskModel F) (τ : WorldHistory F) (hτ : τ.IsTotal) (t : F.Duration) :
+    TruthAt M τ t φ :=
+  h F ⟨so, po, hsa, hpa⟩ M ⟨τ, hτ⟩ t
+
+/-- The contrapositive of `ValidDiscrete.of_forall`; see `ValidDense.of_not`. -/
+theorem ValidDiscrete.of_not {φ : Formula} (h : ¬ ValidDiscrete φ) :
+    ¬ ∀ (F : TaskFrame) [SuccOrder F.Duration] [PredOrder F.Duration]
+        [IsSuccArchimedean F.Duration] [IsPredArchimedean F.Duration] (M : TaskModel F)
+        (τ : WorldHistory F), τ.IsTotal → ∀ t : F.Duration, TruthAt M τ t φ :=
+  fun h' => h (ValidDiscrete.of_forall h')
 
 /--
+**Read this first: `ValidDedekind` is NOT `ValidIn .Dedekind`.** The shared word is misleading and
+the two denote different frame classes. `ValidDedekind` is `ValidOnFrames TaskFrame.IsComplete` —
+`def:frame-properties`' *bare* Complete clause, which `ℤ` satisfies. `ValidIn .Dedekind` is
+`ValidDedekindDense`, the dense-and-complete class, and **that** is the target of
+`soundness_dedekind`. The mismatch follows from a naming decision recorded in full at
+`TaskFrame.IsDedekind`: the paper calls the dense-and-complete class Complete, this tree calls it
+Dedekind, because "complete" is already load-bearing here for *proof-theoretic* completeness. The
+reciprocal pointer back to this predicate sits on `TaskFrame.IsComplete`
+(`Semantics/FrameProperty.lean`). Retargeting `soundness_dedekind` at this predicate yields a
+**refutable** theorem — see the paragraph on that below.
+
 A formula is valid over **Dedekind-complete** temporal orders if it is true in all models
 whose temporal type `D` has the least-upper-bound property, at all total histories, and all
 times.
+
+**Now an abbreviation, not a hand-written binder list.** The class is named once, as
+`TaskFrame.IsComplete`, and this predicate is `ValidOnFrames` at it. `ValidDedekind.of_forall` and
+`ValidDedekind.apply` adapt between this shape and the explicit-hypothesis shape the definition
+used to have.
 
 Dedekind completeness is expressed by the explicit Prop-valued hypothesis
 
@@ -508,27 +591,53 @@ in `FormalSystem/ProofSystem/Axioms.lean`), so `Axiom.density` (`GGφ → Gφ`) 
 `Axiom.dense_indicator` (`¬(⊥ U ⊤)`) are admissible in `DerivationTree FrameClass.Dedekind`.
 Both are FALSE on `ℤ`: for `density`, take `φ` true exactly at times `≥ t + 2`, so `GGφ` holds
 at `t` while `Gφ` fails; for `dense_indicator`, `⊥ U ⊤` is true on `ℤ` because every point has
-an immediate successor. Since `ℤ` also satisfies the binders above, a
+an immediate successor. Since `ℤ` also satisfies `TaskFrame.IsComplete`, a
 `soundness_dedekind : DerivationTree .Dedekind … → ValidDedekind` would be refutable.
 `soundness_dedekind` therefore targets `ValidDedekindDense`. This predicate is landed as the
 strictly weaker statement and as the target of the forgetful bridge from `valid`.
+
+**The trap is now structural rather than merely documented.** Before this predicate became an
+abbreviation, the wrong target differed from the right one by *one binder in an inlined list* —
+delete `[DenselyOrdered F.Duration]` and the refutable statement typechecks, with nothing but this
+docstring to say so. The two are now built from different frame predicates entirely
+(`ValidOnFrames TaskFrame.IsComplete` against `ValidIn .Dedekind`, i.e. `TaskFrame.IsDedekind`), so
+writing the refutable version requires naming a different predicate rather than dropping a binder.
 
 **Source.** Reynolds 1992 (printed p.169) observes that the Prior axioms enforce only a
 *definably* Dedekind-complete model: "there may be gaps in the order but ... you wouldn't know
 that just looking at the behaviour of temporal formulas". So no single axiom characterises this
 class; `Axiom.prior_U_gap` / `Axiom.prior_S_gap` / `Axiom.sep` are the definable-gap proxy.
 -/
-def ValidDedekind (φ : Formula) : Prop :=
-  ∀ (F : TaskFrame)
-    (_ : ∀ s : Set F.Duration, s.Nonempty → BddAbove s → ∃ x, IsLUB s x)
-    (M : TaskModel F)
-    (τ : WorldHistory F) (_ : τ.IsTotal) (t : F.Duration),
-    TruthAt M τ t φ
+def ValidDedekind (φ : Formula) : Prop := ValidOnFrames TaskFrame.IsComplete φ
+
+/-- Introduce `ValidDedekind` from the binder shape it carried before it became an abbreviation
+over `ValidOnFrames`: the least-upper-bound hypothesis as an explicit argument, and the unbundled
+history pair. -/
+theorem ValidDedekind.of_forall {φ : Formula}
+    (h : ∀ (F : TaskFrame),
+           (∀ s : Set F.Duration, s.Nonempty → BddAbove s → ∃ x, IsLUB s x) →
+           ∀ (M : TaskModel F) (τ : WorldHistory F), τ.IsTotal →
+             ∀ t : F.Duration, TruthAt M τ t φ) :
+    ValidDedekind φ :=
+  fun F hF M τ t => h F hF M τ.val τ.property t
+
+/-- Eliminate `ValidDedekind` into the pre-abbreviation binder shape. -/
+theorem ValidDedekind.apply {φ : Formula} (h : ValidDedekind φ) (F : TaskFrame)
+    (hlub : ∀ s : Set F.Duration, s.Nonempty → BddAbove s → ∃ x, IsLUB s x)
+    (M : TaskModel F) (τ : WorldHistory F) (hτ : τ.IsTotal) (t : F.Duration) :
+    TruthAt M τ t φ :=
+  h F hlub M ⟨τ, hτ⟩ t
 
 /--
-A formula is valid over **dense Dedekind-complete** temporal orders: `ValidDedekind` with
-`[DenselyOrdered D]` added to the binder list. This is the real-flow predicate, and sharply so:
-up to order-and-group isomorphism `ℝ` is the *only* nontrivial model, not merely a paradigm one.
+A formula is valid over **dense Dedekind-complete** temporal orders. This is the real-flow
+predicate, and sharply so: up to order-and-group isomorphism `ℝ` is the *only* nontrivial model,
+not merely a paradigm one.
+
+**This is `ValidIn .Dedekind`** — `FrameClass.Sat .Dedekind` is `TaskFrame.IsDedekind`, the
+conjunction of `def:frame-properties`' Dense and Complete clauses — and it is therefore the
+predicate the `.Dedekind` tag denotes, whatever its name may suggest about `ValidDedekind`. The
+binder shape this definition used to have is recovered by `ValidDedekindDense.of_forall` /
+`ValidDedekindDense.apply`.
 
 **Why the density binder is exactly the right cut.** By
 `FormalSystem.Semantics.complete_duration_discrete_or_dense`
@@ -553,27 +662,99 @@ p.168) includes in US/R "axioms for density and no end points: `K⁺⊤`, `K⁻�
 `K⁺⊤` is `¬(¬⊤ U ⊤)` in this tree's guard-first infix, which normalises (`¬⊤ ↝ ⊥`) to
 `¬(⊥ U ⊤)`, this tree's `Axiom.dense_indicator`.
 -/
-def ValidDedekindDense (φ : Formula) : Prop :=
-  ∀ (F : TaskFrame) [DenselyOrdered F.Duration]
-    (_ : ∀ s : Set F.Duration, s.Nonempty → BddAbove s → ∃ x, IsLUB s x)
-    (M : TaskModel F)
-    (τ : WorldHistory F) (_ : τ.IsTotal) (t : F.Duration),
-    TruthAt M τ t φ
+def ValidDedekindDense (φ : Formula) : Prop := ValidIn ProofSystem.FrameClass.Dedekind φ
+
+/-- Introduce `ValidDedekindDense` from the binder shape it carried before it became an
+abbreviation over `ValidIn`: an instance-implicit density binder, the least-upper-bound hypothesis
+as an explicit argument, and the unbundled history pair. -/
+theorem ValidDedekindDense.of_forall {φ : Formula}
+    (h : ∀ (F : TaskFrame) [DenselyOrdered F.Duration],
+           (∀ s : Set F.Duration, s.Nonempty → BddAbove s → ∃ x, IsLUB s x) →
+           ∀ (M : TaskModel F) (τ : WorldHistory F), τ.IsTotal →
+             ∀ t : F.Duration, TruthAt M τ t φ) :
+    ValidDedekindDense φ :=
+  fun F hF M τ t => @h F hF.1 hF.2 M τ.val τ.property t
+
+/-- Eliminate `ValidDedekindDense` into the pre-abbreviation binder shape. -/
+theorem ValidDedekindDense.apply {φ : Formula} (h : ValidDedekindDense φ) (F : TaskFrame)
+    [inst : DenselyOrdered F.Duration]
+    (hlub : ∀ s : Set F.Duration, s.Nonempty → BddAbove s → ∃ x, IsLUB s x)
+    (M : TaskModel F) (τ : WorldHistory F) (hτ : τ.IsTotal) (t : F.Duration) :
+    TruthAt M τ t φ :=
+  h F ⟨inst, hlub⟩ M ⟨τ, hτ⟩ t
+
+/-- The contrapositive of `ValidDedekindDense.of_forall`; see `ValidDense.of_not`. -/
+theorem ValidDedekindDense.of_not {φ : Formula} (h : ¬ ValidDedekindDense φ) :
+    ¬ ∀ (F : TaskFrame) [DenselyOrdered F.Duration],
+        (∀ s : Set F.Duration, s.Nonempty → BddAbove s → ∃ x, IsLUB s x) →
+        ∀ (M : TaskModel F) (τ : WorldHistory F), τ.IsTotal →
+          ∀ t : F.Duration, TruthAt M τ t φ :=
+  fun h' => h (ValidDedekindDense.of_forall h')
 
 namespace Validity
+
+/-! ### Equivalence with the `FrameClass`-indexed layer
+
+Each class-restricted predicate above, matched against its `ValidIn` counterpart. Four of the five
+are now `Iff.rfl`, because the predicate on the left *is* the one on the right by definition; they
+are kept as named lemmas so that a call site can cite the correspondence explicitly, and so that a
+future edit which pulls the two apart fails here rather than somewhere downstream.
+`valid_iff_validIn_base` is the one that still carries a proof: `valid` is not yet an abbreviation.
+
+Note the shape of the last one: `ValidDedekind` is **not** `ValidIn .Dedekind`. See its own
+docstring, and `TaskFrame.IsComplete`'s. -/
+
+/-- `valid` is `ValidIn` at the unconstrained class: `Sat .Base` is `True`, so the tag imposes
+nothing and the two quantify over the same frames. This is the symmetry claim
+`valid = ValidIn .Base` beside `Derivable .Base`. -/
+theorem valid_iff_validIn_base (φ : Formula) : valid φ ↔ ValidIn ProofSystem.FrameClass.Base φ := by
+  constructor
+  · intro h F _ M τ x
+    exact h F M τ.val τ.property x
+  · intro h F M τ hτ t
+    exact h F trivial M ⟨τ, hτ⟩ t
+
+/-- `ValidDense` is `ValidIn .Dense`: its `[DenselyOrdered F.Duration]` binder is exactly
+`TaskFrame.IsDense`, which is what `Sat .Dense` returns. -/
+theorem validDense_iff_validIn_dense (φ : Formula) :
+    ValidDense φ ↔ ValidIn ProofSystem.FrameClass.Dense φ := Iff.rfl
+
+/-- `ValidDiscrete` is `ValidIn .Discrete`: its four-instance binder bundle is exactly the
+existential `TaskFrame.IsSuccArchDiscrete` that `Sat .Discrete` returns.
+
+The forward direction destructures that existential and passes the witnesses **positionally with
+`@`**, never with `haveI`: `F`'s and `M`'s types already carry instances, and re-introducing
+`SuccOrder`/`PredOrder` through the instance cache would break definitional equality against them. -/
+theorem validDiscrete_iff_validIn_discrete (φ : Formula) :
+    ValidDiscrete φ ↔ ValidIn ProofSystem.FrameClass.Discrete φ := Iff.rfl
+
+/-- `ValidDedekindDense` is `ValidIn .Dedekind`: its density binder together with its
+least-upper-bound hypothesis is exactly the conjunction `TaskFrame.IsDedekind` that
+`Sat .Dedekind` returns. This is the `soundness_dedekind` target. -/
+theorem validDedekindDense_iff_validIn_dedekind (φ : Formula) :
+    ValidDedekindDense φ ↔ ValidIn ProofSystem.FrameClass.Dedekind φ := Iff.rfl
+
+/-- `ValidDedekind` is `ValidOnFrames TaskFrame.IsComplete` — and therefore **not** any `ValidIn`.
+
+`def:frame-properties`' bare Complete clause admits `ℤ`, and no `FrameClass` constructor denotes
+that class (`ProofSystem/Axioms.lean`'s `FrameClass` docstring says so explicitly: there is no
+axiom set here for `Th(ℤ) ∩ Th(ℝ)`). That this predicate still lands inside the collapse — with its
+bridge to `ValidDedekindDense` falling out of `ValidOnFrames.mono` like every other bridge — is the
+whole reason the primitive is indexed by a frame predicate rather than by a tag. -/
+theorem validDedekind_iff_validOnFrames_isComplete (φ : Formula) :
+    ValidDedekind φ ↔ ValidOnFrames TaskFrame.IsComplete φ := Iff.rfl
 
 /--
 Validity implies validity over dense orders: every valid formula is ValidDense.
 -/
-theorem valid_implies_valid_dense {φ : Formula} (h : valid φ) : ValidDense φ := by
-  intro F _ M τ hτ t
-  exact h F M τ hτ t
+theorem valid_implies_valid_dense {φ : Formula} (h : valid φ) : ValidDense φ :=
+  ValidIn.mono (ProofSystem.FrameClass.base_le _) ((valid_iff_validIn_base φ).mp h)
 
 /--
 Validity implies validity over discrete orders: every valid formula is ValidDiscrete.
 -/
 theorem valid_implies_valid_discrete {φ : Formula} (h : valid φ) : ValidDiscrete φ :=
-  fun F _ _ _ _ M τ hτ t => h F M τ hτ t
+  ValidIn.mono (ProofSystem.FrameClass.base_le _) ((valid_iff_validIn_base φ).mp h)
 
 /--
 Validity implies validity over Dedekind-complete orders: every valid formula is
@@ -581,14 +762,14 @@ Validity implies validity over Dedekind-complete orders: every valid formula is
 quantifies over every `D` satisfying the weaker binder set.
 -/
 theorem valid_implies_validDedekind {φ : Formula} (h : valid φ) : ValidDedekind φ :=
-  fun F h_lub M τ hτ t => h F M τ hτ t
+  ValidOnFrames.mono (fun _ _ => trivial) ((valid_iff_validIn_base φ).mp h)
 
 /--
 Validity implies validity over dense Dedekind-complete orders: every valid formula is
 `ValidDedekindDense`.
 -/
 theorem valid_implies_validDedekindDense {φ : Formula} (h : valid φ) : ValidDedekindDense φ :=
-  fun F _ h_lub M τ hτ t => h F M τ hτ t
+  ValidIn.mono (ProofSystem.FrameClass.base_le _) ((valid_iff_validIn_base φ).mp h)
 
 /--
 `ValidDedekind` is strictly stronger than `ValidDedekindDense`: adding the `DenselyOrdered`
@@ -601,7 +782,7 @@ proves the weaker `ValidDedekindDense`, and anything genuinely established at
 -/
 theorem validDedekindDense_of_validDedekind {φ : Formula} (h : ValidDedekind φ) :
     ValidDedekindDense φ :=
-  fun F _ h_lub M τ hτ t => h F h_lub M τ hτ t
+  ValidOnFrames.mono (fun _ => TaskFrame.isComplete_of_isDedekind) h
 
 /--
 Valid formulas are semantic consequences of empty context.
@@ -725,76 +906,6 @@ theorem valid_of_valid_box {φ : Formula} (h : valid (Formula.box φ)) :
     valid φ := by
   intro F M τ hτ t
   exact h F M τ hτ t τ hτ
-
-/-! ### Equivalence with the `FrameClass`-indexed layer
-
-Each hand-written predicate above, matched against its `ValidIn` counterpart. These are stated as
-theorems rather than asserted by making the predicates abbreviations, so that the agreement between
-an inlined binder list and the frame class its tag denotes is a proof obligation the build checks.
-
-Note the shape of the last one: `ValidDedekind` is **not** `ValidIn .Dedekind`. See its own
-docstring, and `TaskFrame.IsComplete`'s. -/
-
-/-- `valid` is `ValidIn` at the unconstrained class: `Sat .Base` is `True`, so the tag imposes
-nothing and the two quantify over the same frames. This is the symmetry claim
-`valid = ValidIn .Base` beside `Derivable .Base`. -/
-theorem valid_iff_validIn_base (φ : Formula) : valid φ ↔ ValidIn ProofSystem.FrameClass.Base φ := by
-  constructor
-  · intro h F _ M τ x
-    exact h F M τ.val τ.property x
-  · intro h F M τ hτ t
-    exact h F trivial M ⟨τ, hτ⟩ t
-
-/-- `ValidDense` is `ValidIn .Dense`: its `[DenselyOrdered F.Duration]` binder is exactly
-`TaskFrame.IsDense`, which is what `Sat .Dense` returns. -/
-theorem validDense_iff_validIn_dense (φ : Formula) :
-    ValidDense φ ↔ ValidIn ProofSystem.FrameClass.Dense φ := by
-  constructor
-  · intro h F hF M τ x
-    exact @h F hF M τ.val τ.property x
-  · intro h F inst M τ hτ t
-    exact h F inst M ⟨τ, hτ⟩ t
-
-/-- `ValidDiscrete` is `ValidIn .Discrete`: its four-instance binder bundle is exactly the
-existential `TaskFrame.IsSuccArchDiscrete` that `Sat .Discrete` returns.
-
-The forward direction destructures that existential and passes the witnesses **positionally with
-`@`**, never with `haveI`: `F`'s and `M`'s types already carry instances, and re-introducing
-`SuccOrder`/`PredOrder` through the instance cache would break definitional equality against them. -/
-theorem validDiscrete_iff_validIn_discrete (φ : Formula) :
-    ValidDiscrete φ ↔ ValidIn ProofSystem.FrameClass.Discrete φ := by
-  constructor
-  · intro h F hF M τ x
-    obtain ⟨so, po, hsa, hpa⟩ := hF
-    exact @h F so po hsa hpa M τ.val τ.property x
-  · intro h F so po hsa hpa M τ hτ t
-    exact h F ⟨so, po, hsa, hpa⟩ M ⟨τ, hτ⟩ t
-
-/-- `ValidDedekindDense` is `ValidIn .Dedekind`: its density binder together with its
-least-upper-bound hypothesis is exactly the conjunction `TaskFrame.IsDedekind` that
-`Sat .Dedekind` returns. This is the `soundness_dedekind` target. -/
-theorem validDedekindDense_iff_validIn_dedekind (φ : Formula) :
-    ValidDedekindDense φ ↔ ValidIn ProofSystem.FrameClass.Dedekind φ := by
-  constructor
-  · intro h F hF M τ x
-    exact @h F hF.1 hF.2 M τ.val τ.property x
-  · intro h F inst hlub M τ hτ t
-    exact h F ⟨inst, hlub⟩ M ⟨τ, hτ⟩ t
-
-/-- `ValidDedekind` is `ValidOnFrames TaskFrame.IsComplete` — and therefore **not** any `ValidIn`.
-
-`def:frame-properties`' bare Complete clause admits `ℤ`, and no `FrameClass` constructor denotes
-that class (`ProofSystem/Axioms.lean`'s `FrameClass` docstring says so explicitly: there is no
-axiom set here for `Th(ℤ) ∩ Th(ℝ)`). That this predicate still lands inside the collapse — with its
-bridge to `ValidDedekindDense` falling out of `ValidOnFrames.mono` like every other bridge — is the
-whole reason the primitive is indexed by a frame predicate rather than by a tag. -/
-theorem validDedekind_iff_validOnFrames_isComplete (φ : Formula) :
-    ValidDedekind φ ↔ ValidOnFrames TaskFrame.IsComplete φ := by
-  constructor
-  · intro h F hF M τ x
-    exact h F hF M τ.val τ.property x
-  · intro h F hlub M τ hτ t
-    exact h F hlub M ⟨τ, hτ⟩ t
 
 end Validity
 

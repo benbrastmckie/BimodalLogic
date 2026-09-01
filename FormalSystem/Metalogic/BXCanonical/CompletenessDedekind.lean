@@ -582,7 +582,11 @@ Contrapositive, four steps, no case split:
    `completeness` and `completeness_discrete` must discharge does not exist here.
 4. `countermodel_dedekind_dense` at `ℝ` produces the countermodel, with `by decide` discharging
    `FrameClass.Dedekind ≤ FrameClass.Dedekind` and `real_lub_of_bddAbove` discharging the
-   least-upper-bound binder of `ValidDedekindDense`.
+   least-upper-bound binder of `ValidDedekindDense`. That binder is reached through
+   `ValidDedekindDense.apply`, the adapter that reproduces the predicate's pre-abbreviation binder
+   shape: `ValidDedekindDense` is now `ValidIn FrameClass.Dedekind`, whose frame hypothesis is the
+   packed `TaskFrame.IsDedekind`, and the adapter is what keeps density an instance binder that
+   `DenselyOrdered ℝ` discharges by search.
 -/
 theorem completeness_dedekind_engine (ψ : Formula) :
     ValidDedekindDense ψ → Derivable FrameClass.Dedekind [] ψ := by
@@ -594,7 +598,7 @@ theorem completeness_dedekind_engine (ψ : Formula) :
   have h_box_dense : Formula.box Chronicle.nextTop.neg ∈ M := dedekind_box_dense_mem hM_mcs
   obtain ⟨F, TM, τ, h_tot, t, h_not_true⟩ :=
     countermodel_dedekind_dense (by decide) M hM_mcs ψ h_neg_in h_box_dense
-  exact h_not_true (h_valid F real_lub_of_bddAbove TM τ h_tot t)
+  exact h_not_true (h_valid.apply F.toTaskFrame real_lub_of_bddAbove TM τ h_tot t)
 
 /-! ## Axiom Audit
 
