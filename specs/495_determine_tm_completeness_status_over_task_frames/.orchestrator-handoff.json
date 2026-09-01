@@ -1,32 +1,29 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 5,
-  "summary": "Nine-phase plan (13.5h, complex) landing exactly the machine-checkable split the research report established, and stopping where the report showed the tree structurally cannot go. FIVE DELIVERABLES: (1) Phase 4 -- the reduction TMCompleteBase <-> ForwardBase plus its .Discrete mirror, stated as an equivalence between two UNASSERTED Props so the hard constraint is honoured and strengthened; requires one new mirror bridge lemma blValidDiscrete_iff_validDiscrete_tr. (2) Phase 5 -- BLValid (Sp phi psi) from a new order-theoretic dichotomy lemma, then sp_translate via blValid_iff_valid_tr + BXCanonical.completeness, giving CEB's TM+ half without any TMP-NB/M5 dependence. (3) Phase 6 -- bl_soundness_discrete_succ at [SuccOrder][PredOrder] only, proved by induction (NOT composition, since soundness_discrete carries the very binders being dropped); net new content is the DF lemma and its PredOrder past-dual. (4) Phase 7 -- the Z1 countermodel at Q x_lex Z over multiFamTaskFrameGen, closing CEF with both halves in-tree and refuting TM_f weak completeness over Z-time, stated as the negation of Phase 4's TMCompleteDiscrete so the phases visibly compose. (5) Phase 8 -- Conservativity.lean docstring corrected to be row-dependent, plus the two live-paper facts (def:TMplus-f's Holder pin to Z-time; the commented line 4614 giving the author's own OPEN verdict for TM_f over the full discrete class). CEB IS AN EXPLICIT NON-GOAL, on the report's evidence: a follow-up task for the native BL soundness layer is proposed in Phase 8 but not scheduled. Two supporting phases: Phase 1 (Lemma A dichotomy -- confirmed genuinely absent, since the tree's complete_duration_discrete_or_dense assumes lub) and Phase 2 (Prod.Lex Succ/Pred instances for the pinned Mathlib gap, with the report's bare-successor-hypothesis fallback documented as a plan-level contingency). Phase 9 is tree-wide acceptance including a hard-constraint grep. Plan validates PASS with 0 warnings.",
+  "status": "implemented",
+  "dispatch_seq": 2,
+  "summary": "All nine plan phases complete and committed. Landed: Lemma A (duration_dense_or_least_pos, Archimedean-free order dichotomy); SuccOrder/PredOrder instances for Q x_lex Z (LexCarrier.lean); DF/DN semantic lemmas and DF's PredOrder past-dual (BLSchemaValidity.lean); the TMCompleteBase/Discrete <-> ForwardBase/Discrete reduction as unasserted-Prop equivalences (TMCompletenessReduction.lean); the (Sp) validity witness and its TM+ translation with no appeal to TMP-NB/M5 (SpWitness.lean); bl_soundness_discrete_succ, the binder-weakened discrete BL soundness theorem proved directly by induction rather than composition (BaseLanguageSoundness.lean); the Z1 countermodel over Q x_lex Z closing CEF with both TM_f and TM+_f halves machine-checked, and refuting TM_f's weak completeness over Z-time (Z1Countermodel.lean); and Conservativity.lean's docstring corrected to be row-dependent (CEF closed with both halves; CEB's TM half remains unavailable in principle, not merely unbuilt). Every new declaration verified via lean_verify: axioms exactly [propext, Classical.choice, Quot.sound], no sorryAx. Full tree build green (2284 jobs, 0 errors). Hard constraint honoured throughout: no forward-conservativity theorem stated or sorry-ed anywhere; the only occurrences of that theorem's shape are inside pre-existing and newly-added docstring code fences (never an actual declaration).",
+  "phases_completed": 9,
+  "phases_total": 9,
   "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/495_determine_tm_completeness_status_over_task_frames/summaries/01_tm-completeness-formalization-summary.md",
+      "summary": "Full implementation summary: what changed, decisions, verification (axiom checks, hard-constraint audit, check-paper-definitions.sh), impacts, and the proposed (not created) CEB follow-up task."
+    },
     {
       "type": "plan",
       "path": "specs/495_determine_tm_completeness_status_over_task_frames/plans/01_tm-completeness-formalization.md",
-      "summary": "Nine-phase implementation plan: reduction, (Sp) witness, binder-weakened discrete BL soundness, Z1 countermodel, and Conservativity.lean prose correction."
+      "summary": "All nine phases marked [COMPLETED]; plan-level Status field updated to [COMPLETED]."
     }
   ],
-  "phases_completed": 0,
-  "phases_total": 9,
   "blockers": [],
-  "sorry_inventory": [],
-  "hard_constraint_status": "HONOURED. No forward-conservativity theorem is planned anywhere. Phase 4's reduction asserts neither side and needs no sorry. Phase 6's rollback clause explicitly instructs the implementer to mark the phase [BLOCKED] rather than discharge bl_soundness_discrete_succ with sorry, because a sorry there would propagate into Phase 7's not_bl_derivable_z1 and manufacture an unsound refutation -- precisely the failure mode the prohibition exists to prevent. Phase 9 includes a tree-wide grep for any sorry adjacent to a forward-shaped statement.",
-  "next_action_hint": "implement",
-  "continuation_path": null,
+  "plan_markers_verified": true,
   "metadata": {
-    "session_id": "sess_1788265374_c18aa8_495",
-    "agent_type": "planner-agent",
+    "session_id": "sess_1788282938_f2ac03",
+    "agent_type": "general-implementation-agent",
     "task_number": 495,
     "task_type": "formal",
-    "phase_count": 9,
-    "estimated_hours": 13.5,
-    "complexity": "complex",
-    "dependency_waves": [[1, 2, 4], [3], [5, 6], [7], [8], [9]],
-    "lean_deliverables": true,
-    "proposed_followup": "CEB native BL soundness layer: a frame notion outside TaskFrame, a native BLFormula truth definition over it, a native (non-composed) BL soundness theorem verifying all 11 TM axiom schemata directly plus MP/MN/temporal necessitation/TD via swap-strengthened induction, then the two-fibre instance and the (Sp) evaluation. Roughly the size of SoundnessLemmas/ on the BL+ side, though simpler because BL has no untl/snce."
+    "delegation_depth": 2,
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
   }
 }

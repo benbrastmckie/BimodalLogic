@@ -1,7 +1,7 @@
 # Implementation Plan: TM completeness status over task frames
 
 - **Task**: 495 - Determine TM completeness status over task frames
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 13.5 hours
 - **Dependencies**: None (all prerequisites are sorry-free in-tree results)
 - **Research Inputs**: `specs/495_determine_tm_completeness_status_over_task_frames/reports/01_tm-completeness-status.md`
@@ -446,7 +446,7 @@ carrier — the carrier's admissibility is independently witnessed in `DiscreteC
 
 ---
 
-### Phase 8: Documentation corrections and the CEB follow-up proposal [IN PROGRESS]
+### Phase 8: Documentation corrections and the CEB follow-up proposal [COMPLETED]
 
 **Goal**: Bring `Conservativity.lean`'s prose in line with what is now true, correcting the
 row-independent readiness claim the report found too optimistic (report §7).
@@ -500,7 +500,7 @@ row-independent readiness claim the report found too optimistic (report §7).
 
 ---
 
-### Phase 9: Tree-wide acceptance [NOT STARTED]
+### Phase 9: Tree-wide acceptance [COMPLETED]
 
 **Goal**: Confirm the whole tree is green, every new declaration is `sorryAx`-free, and the hard
 constraint was honoured.

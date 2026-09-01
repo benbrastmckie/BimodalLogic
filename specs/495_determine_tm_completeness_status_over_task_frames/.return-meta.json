@@ -1,5 +1,53 @@
 {
-  "status": "in_progress",
+  "status": "implemented",
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/495_determine_tm_completeness_status_over_task_frames/summaries/01_tm-completeness-formalization-summary.md",
+      "summary": "All nine plan phases landed: the completeness/conservativity reduction, the (Sp) validity witness, bl_soundness_discrete_succ, the Z1 countermodel over Q x_lex Z closing CEF with both halves machine-checked, and the Conservativity.lean docstring corrections."
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Landed the machine-checkable portion of the TM-incompleteness finding: TMCompleteBase/Discrete pinned as the same proposition as forward conservativity (unasserted), the (Sp) TM+ witness, a binder-weakened discrete BL soundness theorem, and the Z1 countermodel over Q x_lex Z closing CEF with both halves machine-checked -- refuting TM_f's weak completeness over Z-time."
+  },
+  "modified_files": [
+    "FormalSystem/Semantics/DurationClassification.lean",
+    "FormalSystem/Semantics/LexCarrier.lean",
+    "FormalSystem/Semantics/BLSchemaValidity.lean",
+    "FormalSystem/Semantics/BLValidity.lean",
+    "FormalSystem/Semantics/README.md",
+    "FormalSystem/Metalogic/TMCompletenessReduction.lean",
+    "FormalSystem/Metalogic/BaseLanguageSoundness.lean",
+    "FormalSystem/Metalogic/SpWitness.lean",
+    "FormalSystem/Metalogic/Z1Countermodel.lean",
+    "FormalSystem/Metalogic/Conservativity.lean",
+    "FormalSystem/Metalogic/README.md",
+    "specs/495_determine_tm_completeness_status_over_task_frames/plans/01_tm-completeness-formalization.md",
+    "specs/495_determine_tm_completeness_status_over_task_frames/summaries/01_tm-completeness-formalization-summary.md"
+  ],
+  "memory_candidates": [
+    {
+      "content": "Lean 4 / Mathlib: `rw`/`simp only [singleLemma]` on a goal involving `ofLex (toLex literalPair)` over a `Prod.Lex` (e.g. `Q x_lex Z`) frequently fails to fire even though the target equation is `rfl`-provable by construction (`ofLex_toLex`/`toLex_ofLex` are proved `:= rfl` in Mathlib). The robust fix is to close via `exact`/`show` term-mode, which performs full-defeq (default transparency, iota-reducing) unification, rather than `rw`'s reducible-transparency syntactic matching. Pattern: replace `rw [ofLex_toLex]; <tactic>` with `exact <term proving the reduced statement>` or `show <defeq-normalized goal>` immediately before a concrete closing tactic (`norm_num`, `le_refl`, etc.). `norm_num` itself does NOT reliably whnf-unfold through such definitional layers on its own -- give it an explicitly-typed sub-term (`show X by norm_num` or `(by norm_num : X)`) rather than relying on its internal preprocessing to discover X from an obscured goal.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/495_determine_tm_completeness_status_over_task_frames/summaries/01_tm-completeness-formalization-summary.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["Prod.Lex", "ofLex_toLex", "defeq-vs-syntactic-matching", "rw-fails-rfl-goal", "norm_num-limitations", "Lean4"]
+    },
+    {
+      "content": "When a target theorem is provably equivalent (via existing in-tree completeness/soundness results) to an already-forbidden claim, formalize the equivalence as an unasserted Prop-to-Prop iff rather than attempting either side. This both documents the connection for future readers and closes off a second phrasing a future dispatch might attempt in good faith. Concretely: `TMCompleteX <-> ForwardX` proved via `completeness` (backward) and `soundness` + a validity-translation bridge (forward), with neither `TMCompleteX` nor `ForwardX` ever appearing as the conclusion of a `theorem`.",
+      "category": "PATTERN",
+      "source_artifact": "specs/495_determine_tm_completeness_status_over_task_frames/summaries/01_tm-completeness-formalization-summary.md",
+      "confidence": 0.8,
+      "suggested_keywords": ["forbidden-claim-reduction", "unasserted-prop-equivalence", "sorry-prohibition", "reduction-theorem"]
+    },
+    {
+      "content": "For a soundness theorem's `temporal_duality` case that needs swap-validity of every axiom, if the axiom set splits into a large 'ordinary' class (falls to a strictly weaker frame class already having full soundness+TD available) plus a small number of extension axioms with genuinely new semantic content, the ordinary class's swap-validity is FREE: build `DerivationTree.temporal_duality axiom_leaf` (applying the TD proof rule to the bare axiom at its own minimal frame class) and feed that into the weaker frame class's own soundness_valid theorem. This avoids re-deriving a whole parallel swap-semantics induction (a `SoundnessLemmas`-sized file) when the axiom set is small; only the genuinely-new extension axioms need a dedicated semantic swap lemma.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/495_determine_tm_completeness_status_over_task_frames/summaries/01_tm-completeness-formalization-summary.md",
+      "confidence": 0.75,
+      "suggested_keywords": ["swap-validity", "temporal_duality-case", "proof-theoretic-shortcut", "TD-rule", "soundness-induction"]
+    }
+  ],
   "metadata": {
     "session_id": "sess_1788282938_f2ac03",
     "agent_type": "general-implementation-agent",
@@ -7,7 +55,7 @@
     "task_type": "formal",
     "delegation_depth": 2,
     "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
-    "phases_completed": 0,
+    "phases_completed": 9,
     "phases_total": 9
   }
 }
