@@ -359,30 +359,30 @@ notes.
 
 ---
 
-### Phase 5: Cross-document accuracy gate [NOT STARTED]
+### Phase 5: Cross-document accuracy gate [COMPLETED]
 
 **Goal**: Confirm the three documents now agree with each other and with the tree, that nothing
 previously accurate was changed, and that the tooling baseline is no worse than Phase 1's.
 
 **Tasks**:
-- [ ] Run `bash scripts/check-module-invariants.sh` in full (including `lake build`) and diff the
+- [x] Run `bash scripts/check-module-invariants.sh` in full (including `lake build`) and diff the
       pass/fail verdict set against the Phase 1 baseline. Any newly failing check is a regression
       this task must fix; C6's pre-existing failure is not.
-- [ ] Run `bash scripts/typst-status-counts.sh --json` and confirm every count is identical to
+- [x] Run `bash scripts/typst-status-counts.sh --json` and confirm every count is identical to
       Phase 1 — this task changed no count, so any drift means something unintended was edited.
-- [ ] Run `bash .claude/scripts/check-task-references.sh` and confirm no new violation in
+- [x] Run `bash .claude/scripts/check-task-references.sh` and confirm no new violation in
       `README.md`, `FormalSystem/Metalogic.lean`, or
       `docs/project-info/implementation-status.md` (C3). Pre-existing `docs/` violations elsewhere
       are out of scope and must not be "fixed" here.
-- [ ] Read the three added passages side by side and confirm they state the same facts with the
+- [x] Read the three added passages side by side and confirm they state the same facts with the
       same qualifiers — no document claims more than the ledger.
-- [ ] Explicit C1 audit: grep all three files for `Dedekind` and read every hit, confirming each
+- [x] Explicit C1 audit: grep all three files for `Dedekind` and read every hit, confirming each
       occurrence states either Galois-closedness of the model class or compactness of the
       consequence relation, and never lets one stand in for the other.
-- [ ] Explicit C2 audit: grep for `Kamp` and `expressive` and confirm every occurrence carries the
+- [x] Explicit C2 audit: grep for `Kamp` and `expressive` and confirm every occurrence carries the
       Prior-structures qualifier; grep for `IsDiscrete` and confirm the bare-structural-clause
       qualifier survives.
-- [ ] Review the full `git diff` for the task and confirm no hunk falls outside the additive scope
+- [x] Review the full `git diff` for the task and confirm no hunk falls outside the additive scope
       declared in Phases 2-4.
 
 **Timing**: 0.75 hours
