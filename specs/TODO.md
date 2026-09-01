@@ -11,10 +11,10 @@ next_project_number: 516
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,257,298,433,461,476,481,495,504,506,510,513 | -- | dataset-enhancement, decidability, frame-extensions, ... |
-| 2 | 231,282,296,463,502,508 | 298,433,461,510 | algebraic-representation, dataset-enhancement, decidability, ... |
-| 3 | 193,219,464,497,509 | 231,463,502,508 | algebraic-representation, automation, dataset-enhancement, ... |
-| 4 | 178,465,494,498,499,500 | 193,464,497,509 | algebraic-representation, decidability, formula-refactor, ... |
+| 1 | 127,128,257,298,433,461,476,481,495,504,506,508,513 | -- | dataset-enhancement, decidability, frame-extensions, ... |
+| 2 | 193,231,282,296,463,502,509 | 298,433,461,508 | algebraic-representation, automation, dataset-enhancement, ... |
+| 3 | 178,219,464,494,497 | 193,231,463,502,509 | algebraic-representation, dataset-enhancement, decidability, ... |
+| 4 | 465,498,499,500 | 464,497 | algebraic-representation, decidability |
 | 5 | 125,428 | 465,498,499 | algebraic-representation, decidability |
 | 6 | 429,501 | 125,428 | algebraic-representation, decidability |
 | 7 | 410 | 429 | decidability |
@@ -85,9 +85,8 @@ next_project_number: 516
 ### Metalogic
 
 495 [IMPLEMENTING] — RESEARCH TASK, DELIBERATELY AGNOSTIC ABOUT THE VERDICT. Determine
-510 [IMPLEMENTING] — Decide the fate of FormalSystem/FrameConditions/ (4 modules, 906 
-  └─ 508 [NOT STARTED] — Collapse ~23 soundness theorems into ONE parameterized theorem pl
-    └─ 509 [NOT STARTED] — Make the compactness / strong-completeness layer a FrameClass-ind
+508 [NOT STARTED] — Collapse ~23 soundness theorems into ONE parameterized theorem pl
+  └─ 509 [NOT STARTED] — Make the compactness / strong-completeness layer a FrameClass-ind
 
 ### Publication Quality
 
@@ -99,7 +98,7 @@ next_project_number: 516
 
 ### Correspondence Theory
 
-513 [PLANNED] — GALOIS-CLOSURE IMPLEMENTATION for the frame-class layer, replacin
+513 [BLOCKED] — GALOIS-CLOSURE IMPLEMENTATION for the frame-class layer, replacin
 
 ## Tasks
 
@@ -152,7 +151,7 @@ WHY THIS IS A TASK AND NOT AN AD-HOC FIX: it spans three files in a subsystem se
 ---
 
 ### 513. Uniform frame faithfulness predicate
-- **Status**: [PLANNED]
+- **Status**: [BLOCKED]
 - **Task Type**: lean4
 - **Topic**: correspondence theory
 - **Dependencies**: Task 512, Task 507
@@ -245,12 +244,13 @@ Research complete and absorbed: FwdRec and the Tier-1/T1 statements land under r
 ---
 
 ### 510. Resolve orphaned frameconditions layer
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: Task 507
 - **Research**: [510_resolve_orphaned_frameconditions_layer/reports/01_frameconditions-deletion.md]
 - **Plan**: [510_resolve_orphaned_frameconditions_layer/plans/01_delete-frameconditions-layer.md]
+- **Summary**: [510_resolve_orphaned_frameconditions_layer/summaries/01_delete-frameconditions-layer-summary.md]
 
 **Description**: Decide the fate of FormalSystem/FrameConditions/ (4 modules, 906 lines) -- currently orphaned code that also contains a half-built version of the validity parameterization. MEASURED STATE: consumers outside the directory itself number exactly ONE, the library aggregator FormalSystem/FormalSystem.lean:13. Nothing in Metalogic/, Semantics/, Theorems/, or Tests/ references any definition it exports. SILENT REGRESSION TO RECORD: archived task 58 logged 'Wire completeness to FrameConditions -- wiring is DONE: completeness_over_Int, discrete_completeness_fc, dovetailed_bundle'. All three identifiers are ABSENT from the entire live tree today; the wiring was removed and the claim never retracted. Its README separately states the live-importer count as 1 without drawing the conclusion. THREE THINGS IT CONTAINS: (a) FrameClass.lean marker typeclasses LinearTemporalFrame(:88), SerialFrame(:103), DenseTemporalFrame(:124), DiscreteTemporalFrame(:148), DedekindTemporalFrame(:182) -- the binder-list-as-predicate-on-D that the prerequisite parameterization needs, and which it should consume rather than re-invent; (b) Validity.lean's ValidOver/ValidLinear/ValidDenseFc/ValidDiscreteFc/ValidOverInt (:59,:79,:89,:100,:199), a FOURTH parallel validity vocabulary plus the bridge lemmas that exist only to translate to and from Semantics/Validity.lean; (c) Compatibility.lean's AxiomLinearCompatible/AxiomDenseCompatible/AxiomDiscreteCompatible (:85,:93,:102) with roughly 40 hand-written per-axiom instances that duplicate Axiom.minFrameClass -- whose own docstring calls itself 'the single source of truth for axiom-frame-class compatibility' and says it 'replaces the ad-hoc predicates isBase, isDenseCompatible, isDiscreteCompatible'. Both encodings are live. DELIVERABLE: an explicit verdict, executed. PROMOTE (marker typeclasses become the FrameClass interpretation, tree consumes them) or DELETE. Its README argues for staying separate on layering grounds, but that argument addresses placement, not zero consumers, and under the promote path the layering inverts anyway since the interpretation belongs beside Semantics/Validity.lean, below Metalogic/. THE AxiomCompatible INSTANCES SHOULD GO IN EITHER CASE -- minFrameClass supersedes them. A DELETE VERDICT IS A COMPLETE OUTCOME if the prerequisite task chose a different interpretation. ACCEPTANCE: no orphaned validity vocabulary remains; lake build green; check-module-invariants.sh C6 unreachable-module count updated and manifested. GROUNDING: specs/reviews/review-2026-08-31-metalogic-systematicity.md issue M1.=== DIRECTION NOTE ===
 The FrameClass-indexed validity this task builds on is being defined at FRAME level, not carrier
