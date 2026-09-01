@@ -342,11 +342,14 @@ atomic change, since every intermediate ordering of these edits leaves the tree 
       `run_in_background: true`) and confirm green.
       *(deviation: NOT green, and not attributable to this change. The build produced 9 errors, all
       of them in `FormalSystem/Metalogic/BaseLanguageSoundness.lean` — a file with zero
-      `FrameConditions` references whose failing lines lie inside an UNCOMMITTED +132-line block
-      added by a concurrent session (`git diff` hunk `@@ -278,0 +284,132 @@`, referencing
-      `swapBL_involution`, an identifier that does not exist at HEAD). Every other module in the
-      tree built. The Phase 1 baseline build was green before that block appeared. Re-run at
-      Phase 7.)*
+      `FrameConditions` references whose failing lines lay inside an UNCOMMITTED +132-line block
+      added by a concurrent session (`git diff` hunk `@@ -278,0 +284,132 @@`). The first error was
+      ``Unknown identifier `swapBL_involution` `` at `:357:26`; the cause was that the in-flight
+      block referenced the theorem **unqualified** while it is declared inside the `BLFormula`
+      namespace at `FormalSystem/BaseLanguage/Formula.lean:151` — a declaration that was present
+      all along, including at this task's own Phase 4 commit. Every other module in the tree built.
+      The Phase 1 baseline build was green before that block appeared. That session landed the
+      qualified call in `1c75e7101`, and Phase 7's re-run against the fixed tree is green.)*
 - [x] Run `bash scripts/check-module-invariants.sh --no-build` and confirm C8 and C11 pass; C11's
       waived count should rise from 6 to 7. *(C8 PASS; C11 PASS at 497 archived import lines,
       156 files, **7 waived** — exactly the predicted rise. C5 PASS. C4 1477 → 1469.)*

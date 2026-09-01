@@ -33,7 +33,12 @@
   "reasoned_exclusions": [
     {
       "item": "check-module-invariants.sh C6 left failing on 4 unmanifested unreachable modules",
-      "modules": ["FormalSystem.Metalogic.SpWitness", "FormalSystem.Metalogic.TMCompletenessReduction", "FormalSystem.Metalogic.Z1Countermodel", "FormalSystem.Semantics.LexCarrier"],
+      "modules": [
+        "FormalSystem.Metalogic.SpWitness",
+        "FormalSystem.Metalogic.TMCompletenessReduction",
+        "FormalSystem.Metalogic.Z1Countermodel",
+        "FormalSystem.Semantics.LexCarrier"
+      ],
       "reason": "Every one is a .lean file created by another in-flight task, not by this one. The failure predates this task (3 such modules at the Phase 1 baseline) and its membership churned between every run. Manifesting another task's module would claim its work, and the plan forbids any edit to this manifest as an explicit Non-Goal.",
       "evidence": "Baseline set was TMCompletenessReduction/BLSchemaValidity/LexCarrier; final set is SpWitness/TMCompletenessReduction/Z1Countermodel/LexCarrier. git diff 032a4f1da..HEAD -- scripts/module-invariants-manifest.txt is empty, and the manifested-unreachable count is 17 at both ends -- which is A3's actual content."
     },
@@ -44,7 +49,8 @@
     }
   ],
   "notes_for_orchestrator": [
-    "Phase 4's post-deletion build returned exit 1 with 9 errors, ALL in FormalSystem/Metalogic/BaseLanguageSoundness.lean, inside a then-uncommitted +132-line block added by a concurrent session and referencing swapBL_involution, an identifier that did not exist at HEAD. That file has zero FrameConditions references. The session subsequently committed a compiling state and Phase 7's re-run is green. No action needed.",
+    "CORRECTED ATTRIBUTION. Phase 4's post-deletion build returned exit 1 with 9 errors, ALL in FormalSystem/Metalogic/BaseLanguageSoundness.lean, inside a then-uncommitted +132-line block added by a concurrent session. My earlier characterization -- that it referenced 'swapBL_involution, an identifier that does not exist at HEAD' -- was WRONG and is retracted. The declaration exists at FormalSystem/BaseLanguage/Formula.lean:151 (documented at :36) and was present at HEAD throughout, including at this task's own Phase 4 commit 8ccb469e4. The actual defect was namespace qualification: the in-flight block referenced the theorem unqualified while it lives in the BLFormula namespace. That file has zero FrameConditions references either way, so ownership is unchanged -- it was task 495's code and was never mine to repair. Task 495 landed the qualified call in 1c75e7101.",
+    "A2 IS GREEN AND WAS VERIFIED AGAINST THE FIXED TREE -- no re-run is needed. Phase 7's build ran AFTER 1c75e7101 landed (that commit is an ancestor of both cc14fd3de 'task 510 phase 7' and 4163cc358 'task 510: complete implementation') and returned exit 0, 'Build completed successfully (2505 jobs)', zero error lines. The UNVERIFIED-PENDING-QUIESCENCE fallback is therefore not needed and was never used. The uncommitted task-495 items flagged as landing shortly (Conservativity.lean docstrings, two READMEs, the inert untracked Z1Countermodel.lean) did not affect it; task 495 has since committed them as 0e7e370b3.",
     "The plan's C6 warning was correct and was honoured: FrameConditions was REACHABLE, so no manifest entry was added. Adding one would have failed C6.",
     "Brief item (b), the ValidOver/ValidLinear/... vocabulary, was confirmed already deleted by e5a9ba40f and was not re-done, as instructed.",
     "Two adjacent pre-existing broken #leansrc pointers at typst/FormalFoundations.typ:1253-1254 were repaired alongside the planned repoints so the algebraic-soundness citation quad is coherent. This is the one place the implementation went slightly beyond the plan's enumerated scope; it is annotated as a deviation in both the plan and the summary.",

@@ -103,9 +103,12 @@ deliberately retained as the evidence for it, and its now-unsatisfiable
 Phase 4's post-deletion build returned exit 1 with 9 errors, **none of them attributable to this
 task**. All 9 were in `FormalSystem/Metalogic/BaseLanguageSoundness.lean`, a file with zero
 `FrameConditions` references, and they all lay inside a then-uncommitted +132-line block added by
-a concurrent session (referencing `swapBL_involution`, an identifier that did not exist at HEAD).
-Every other module in the tree built. That session subsequently committed a compiling state, and
-Phase 7's build was re-run against it.
+a concurrent session. The lead error was ``Unknown identifier `swapBL_involution` `` at `:357:26`,
+caused by that in-flight block referencing the theorem **unqualified**: it is declared in the
+`BLFormula` namespace at `FormalSystem/BaseLanguage/Formula.lean:151` and was present throughout,
+including at this task's own Phase 4 commit — so this was a namespace-qualification defect in
+that block, not a missing declaration. Every other module in the tree built. That session landed
+the qualified call in `1c75e7101`, and Phase 7's build was re-run against the fixed tree, green.
 
 ## Reasoned Exclusions
 
