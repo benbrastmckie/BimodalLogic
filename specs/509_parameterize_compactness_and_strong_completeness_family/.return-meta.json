@@ -1,31 +1,27 @@
 {
-  "status": "researched",
+  "status": "planned",
+  "agent_type": "planner-agent",
+  "task_number": 509,
+  "session_id": "sess_1788282938_f2ac03",
+  "delegation_path": ["orchestrator", "plan", "planner-agent"],
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/509_parameterize_compactness_and_strong_completeness_family/reports/01_frameclass-indexed-compactness-family.md",
-      "summary": "Compile-verified design for the FrameClass-indexed compactness / strong-completeness family: four indexed definitions, two collapsed theorems, a ten-row defeq audit, every call-site repair, and the follow-on Dedekind instantiation shape."
-    },
-    {
-      "type": "probe",
-      "path": "specs/509_parameterize_compactness_and_strong_completeness_family/reports/probe_509.lean",
-      "summary": "Green Lean probe: indexed family, defeq checks, both collapsed theorems, all instantiations, axiom profiles."
-    },
-    {
-      "type": "probe",
-      "path": "specs/509_parameterize_compactness_and_strong_completeness_family/reports/probe_509c.lean",
-      "summary": "Green Lean probe: verified repairs for both friction points plus the binder adapters."
-    },
-    {
-      "type": "probe",
-      "path": "specs/509_parameterize_compactness_and_strong_completeness_family/reports/probe_509b_negative_control.lean",
-      "summary": "Annotated negative control recording the exact call-site shapes that break and Lean's errors."
+      "type": "plan",
+      "path": "specs/509_parameterize_compactness_and_strong_completeness_family/plans/01_frameclass-indexed-compactness-family.md",
+      "summary": "6-phase, 5.25-hour plan collapsing the compactness/strong-completeness layer onto a FrameClass-indexed family by transplanting pre-compiled probe text."
     }
   ],
-  "metadata": {
-    "session_id": "sess_1788282938_f2ac03",
-    "agent_type": "lean-research-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+  "phase_count": 6,
+  "estimated_hours": 5.25,
+  "dependency_waves": 5,
+  "next_steps": "Run /implement 509 to execute the plan",
+  "memory_candidates": [
+    {
+      "content": "When a research report ships compiled probe files and declares a call-site inventory complete, independently re-grep for COMPILE-TIME consumers that are not term-position call sites -- specifically '#print axioms', '#check', and 'example' directives naming a declaration slated for deletion. In Lean 4 these are hard elaboration errors, not documentation nits, and they hide from a reviewer scanning for call sites because they read as audit boilerplate rather than as code. Task 509's research classified four theorems as having no consumer outside one module; three of them were named by live '#print axioms' directives 600 lines below their definitions in the same file. The general pattern: a declaration's compiled consumers include every position where its NAME elaborates, not only where it is APPLIED. Grep for the bare name and classify each hit as code-or-comment before trusting a deletion is safe.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/509_parameterize_compactness_and_strong_completeness_family/plans/01_frameclass-indexed-compactness-family.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["lean4", "print-axioms", "call-site-inventory", "deletion-safety", "anchor-verification", "compile-time-consumers"]
+    }
+  ]
 }

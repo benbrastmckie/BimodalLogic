@@ -1,42 +1,25 @@
 {
-  "dispatch_seq": 13,
-  "status": "researched",
+  "dispatch_seq": 14,
+  "status": "planned",
   "task_number": 509,
   "session_id": "sess_1788282938_f2ac03",
-  "agent_type": "lean-research-agent",
-  "summary": "Research complete and compile-verified. The FrameClass-indexed collapse of the compactness / strong-completeness family is de-risked by a green Lean probe: four indexed definitions (SatisfiableSet, ModelExistence, Compact, StrongCompleteness), one strongCompleteness_of_compact replacing two reductions, one compact_of_modelExistence replacing two bridges. 8 of the 10 per-class statements are recovered DEFEQ (rfl-checked), because task 507 already made valid/ValidDense/ValidDiscrete/ValidDedekindDense plain defs over ValidIn. Only SatisfiableBaseSet (gains an ExistsTrue slot) and SatisfiableDiscreteSet (IsSuccArchDiscrete bundles its four witnesses) shift shape, exactly as task 507 shifted valid, absorbed by binder adapters. All audited declarations report axioms [propext, Classical.choice, Quot.sound], matching the C14 baseline; sorryAx absent. Nothing is discharged: ModelExistenceBase/Dense keep their ultraproduct proofs, Discrete stays refuted, Dedekind stays unstated for the follow-on task.",
+  "agent_type": "planner-agent",
+  "summary": "Plan for task 509 written as a transplant from the three compiled probes, not a derivation. 6 phases, 5.25h, 5 dependency waves. Independent grep re-verification of every anchor confirmed the research's own citations but found three defects in its call-site inventory: (1) build-breaking -- StrongCompleteness.lean:1047-1049 carry live '#print axioms' directives on three of the four theorems being deleted, so the research's claim of no consumers outside Compactness.lean is wrong and deletion without rewriting that block is a hard elaboration error; (2) the prose surface naming the deleted theorems is 25 in-tree .lean docstring sites plus 8 documentation sites, not the 2 the research listed; (3) the stale SetConsequence.lean:NNN citation list spans architecture.md:823-829 (seven rows), not :824-826. Plan sequences redefinition (Phase 3) BEFORE theorem collapse (Phase 4) so the Base model-existence bridge applies directly with no throwaway transport theorem. Phase 3 is marked atomic-batch because the binder-shape change and its six call-site repairs cannot be split without a red tree. Tests/ confirmed to have zero consumers -- no test edits in this task, unlike 508's 118.",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/509_parameterize_compactness_and_strong_completeness_family/reports/01_frameclass-indexed-compactness-family.md",
-      "summary": "Verified anchors, corrected inventory, the four indexed definitions, a ten-row defeq audit, both collapsed theorems, a complete call-site change list with verified repairs, probe results, the follow-on Dedekind Part 1 shape, and a six-phase decomposition."
-    },
-    {
-      "type": "probe",
-      "path": "specs/509_parameterize_compactness_and_strong_completeness_family/reports/probe_509.lean",
-      "summary": "Compiles clean. The indexed family, ten defeq/equivalence checks, both collapsed theorems, Base/Dense/Discrete instantiations, and the free Dedekind row, with axiom profiles."
-    },
-    {
-      "type": "probe",
-      "path": "specs/509_parameterize_compactness_and_strong_completeness_family/reports/probe_509c.lean",
-      "summary": "Compiles clean. The verified one-line repair for each of the two friction points plus three SatisfiableSet binder adapters."
-    },
-    {
-      "type": "probe",
-      "path": "specs/509_parameterize_compactness_and_strong_completeness_family/reports/probe_509b_negative_control.lean",
-      "summary": "Negative control, annotated as expected-to-fail. Records verbatim the four call-site shapes that break and Lean's exact errors, plus the one case (modelExistenceBase with a single trivial) that succeeds."
+      "type": "plan",
+      "path": "specs/509_parameterize_compactness_and_strong_completeness_family/plans/01_frameclass-indexed-compactness-family.md",
+      "summary": "6-phase, 5.25-hour plan collapsing the compactness/strong-completeness layer onto a FrameClass-indexed family by transplanting pre-compiled probe text."
     }
   ],
   "blockers": [],
+  "next_steps": "Run /implement 509 to execute the plan",
+  "phase_count": 6,
+  "estimated_hours": 5.25,
+  "dependency_waves": 5,
   "notes": [
-    "One prerequisite lemma is missing tree-wide and must be added: ValidIn.of_not in FormalSystem/Semantics/Validity.lean, beside ValidIn.of_forall_total:494. The four per-class of_not lemmas exist; the generic one does not. This is the only edit outside Metalogic/.",
-    "Friction 1: SatisfiableDiscreteSet call sites at DiscreteNonCompactness.lean:197, :230, :258, :288 need one nesting pair each (or the SatisfiableSet.discrete_of_forall adapter route, which is more consistent with tasks 507/508).",
-    "Friction 2: Compactness.lean:113's bare inferInstance must be type-ascribed; Sat .Dense F unfolds to TaskFrame.IsDense F, whose head symbol is not DenselyOrdered, so instance search cannot see it. Compactness.lean:85 gains one trivial.",
-    "Follow-on Dedekind task's Part 1 becomes four abbrevs plus two one-line theorems, all already compiled in probe_509.lean Part E. Its Part 2 remains the only real work: the .Dedekind satisfiability slot is IsDense AND IsComplete, an And with no successor structure, so archWitness cannot be reused.",
-    "Documentation carrying already-stale SetConsequence.lean line citations that this task will move again: docs/user-guide/architecture.md:824-826, docs/reference/API_REFERENCE.md:704-706/:736/:738, docs/project-info/known-limitations.md:37, FormalSystem/Metalogic.lean:109-118/:158-175, FormalSystem/Semantics/Ultraproduct/Carrier.lean:15, FormalSystem/Metalogic/README.md:142/:147."
-  ],
-  "pre_existing_gate_failures": [
-    "scripts/check-module-invariants.sh C6: 4 unreachable live modules absent from scripts/module-invariants-manifest.txt (plus 2 manifested as known-broken).",
-    "scripts/readme-lint.sh check 1: MISSING FormalSystem/Semantics/Ultraproduct/README.md (4 .lean files); RESULT FAIL (1 missing README, 0 broken references)."
+    "Phase 0 of the plan carries three standing warnings: probe_509b_negative_control.lean is ANNOTATED EXPECTED-TO-FAIL and must not be repaired; lake-build-guard.sh build --timeout 1800 -- with an empty target list runs bare lake and exits 0 without building; the two pre-existing gate failures (check-module-invariants.sh C6, readme-lint.sh check 1) are pre-recorded reasoned exclusions while a C14/C15 regression would be this task's defect.",
+    "Eight of the ten per-class statements are rfl-recoveries, courtesy of task 507's valid := ValidIn .Base. The plan explicitly forbids proof work where rfl suffices.",
+    "The Dedekind handoff block is written into Phase 6 verbatim for the summary: Part 1 is four abbrevs plus two one-line theorems, all already compiled in probe_509.lean Part E; Part 2 stays hard because .Dedekind is IsDense AND IsComplete, an And with no successor structure for Order.succ^[n] to act on."
   ]
 }
