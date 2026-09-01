@@ -17,7 +17,7 @@ so this is new construction rather than a re-export.
 
 Everything here is stated against `Semantics/IntNormalForm.lean`'s `iter` and `IsStepPath`, the
 adjacency presentation `mem_HF_iff_adjacent` establishes, so the results apply to **any**
-`ParamTaskFrame ℤ` with finite `WorldState` and not only to one particular construction.
+`FrameOver intOrder` with finite `WorldState` and not only to one particular construction.
 
 ## The three results
 
@@ -119,7 +119,7 @@ theorem exists_repeat_of_card_lt {W : Type} [Finite W] (f : ℤ → W) (a : ℤ)
 
 /-- The pigeonhole, phrased on a bi-infinite step-path. The adjacency hypothesis is carried for
 the reader's benefit and is not consumed — a repeat is forced by finiteness alone. -/
-theorem exists_repeat_of_isStepPath {F : ParamTaskFrame ℤ} [Finite F.WorldState]
+theorem exists_repeat_of_isStepPath {F : FrameOver intOrder} [Finite F.WorldState]
     {f : ℤ → F.WorldState} (_h : IsStepPath F f) (a : ℤ) (n : ℕ)
     (hn : Nat.card F.WorldState < n) :
     ∃ i j : ℤ, a ≤ i ∧ i < j ∧ j ≤ a + n ∧ f i = f j :=
@@ -191,9 +191,9 @@ theorem exists_bounded_iter {W : Type} [Finite W] (R : W → W → Prop) (P : W 
     · obtain ⟨m, hmn, hm⟩ := exists_lt_iter_of_card_le R hn (by omega)
       exact ih m hmn u hm hu
 
-/-- The same bound, phrased for the one-step relation of a `ParamTaskFrame ℤ` with finite carrier —
+/-- The same bound, phrased for the one-step relation of a `FrameOver intOrder` with finite carrier —
 the form `mem_HF_iff_adjacent` hands to a search over a finite step-graph. -/
-theorem exists_bounded_iter_step (F : ParamTaskFrame ℤ) [Finite F.WorldState]
+theorem exists_bounded_iter_step (F : FrameOver intOrder) [Finite F.WorldState]
     (P : F.WorldState → Prop) (w : F.WorldState)
     (h : ∃ n u, iter F.step n w u ∧ P u) :
     ∃ n u, n < Nat.card F.WorldState ∧ iter F.step n w u ∧ P u :=

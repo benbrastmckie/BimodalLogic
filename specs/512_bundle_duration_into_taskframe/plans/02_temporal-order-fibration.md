@@ -1212,18 +1212,18 @@ transparency-level failure with a different fix.
 
 ---
 
-### Phase 10: The finite-model-property family [NOT STARTED]
+### Phase 10: The finite-model-property family [COMPLETED]
 
 **Goal**: `Decidability/FMP/` at the fibre, with the filtration constructions reindexed.
 
 **Tasks**:
-- [ ] Migrate `Metalogic/Decidability/FMP/{Filtration,FiniteModel,Periodicity,FMP}.lean`
+- [x] Migrate `Metalogic/Decidability/FMP/{Filtration,FiniteModel,Periodicity,FMP}.lean`
       (14/8/4/2 `ParamTaskFrame`, plus 3+2 `ParamFiniteTaskFrame`).
-- [ ] `FiniteFilteredTaskFrame` / `RefinedFilteredTaskFrame` / `filteredFiniteFrame` are
+- [x] `FiniteFilteredTaskFrame` / `RefinedFilteredTaskFrame` / `filteredFiniteFrame` are
       type-variable-carried, so the ℤ contract does not apply to them — they become
       `FiniteFrameOver D` values for an abstract `(D : TemporalOrder)`. `Periodicity.lean` is the
       ℤ-facing half; apply the Phase 7 contract there.
-- [ ] C2 checked explicitly: FMP sits immediately below the flagship completeness theorems.
+- [x] C2 checked explicitly: FMP sits immediately below the flagship completeness theorems.
 
 **Timing**: 2 hours
 
@@ -1234,10 +1234,31 @@ transparency-level failure with a different fix.
 **Scope Hypothesis**: 4 files, 28 `ParamTaskFrame` + 5 `ParamFiniteTaskFrame` occurrences, of which
 4 of the live `FiniteTaskFrame` values (research F5). Confirm the finite-frame inventory with
 `grep -rn "ParamFiniteTaskFrame\|FiniteFrameOver\|FiniteTaskFrame" FormalSystem/Metalogic/Decidability --include=*.lean`
-at phase start.
+at phase start. *(Re-measured, lower again: `Filtration` 10 not 14, `FiniteModel`
+1 + 3, `Periodicity` 4, `FMP` 0 + 2.)*
 
 **Files to modify**:
 - `FormalSystem/Metalogic/Decidability/FMP/{Filtration,FiniteModel,Periodicity,FMP}.lean`
+
+#### Phase 10 Record
+
+The cleanest phase so far: **all four files elaborated on the first attempt, and the full build had
+zero downstream breakage.** Nothing needed a second pass.
+
+The plan's classification held exactly. `FiniteFilteredTaskFrame`, `RefinedFilteredTaskFrame` and
+`filteredFiniteFrame` are type-variable-carried, so they became `FrameOver D` / `FiniteFrameOver D`
+values for an abstract `(D : TemporalOrder)` with `[SuccOrder ↑D]` and `[NoMaxOrder ↑D]` as
+carrier-level side conditions — 36 such binders moved, and the 16 now-automatic bundled binders were
+deleted. `BundledFilteredFrame`'s explicit four-binder list collapsed to `(D : TemporalOrder)`.
+
+`Periodicity.lean` is the ℤ-facing half and took `FrameOver intOrder`. **The Phase 7 contract
+predicted its behaviour correctly**: its `exists_repeat_of_isStepPath` and
+`exists_bounded_iter_step` bind their own `(n : ℕ)` / `(k : ℤ)`, not frame-produced durations, so no
+`omega` broke and **0 casts were added** — the third phase running where the sharpened prediction
+has been right.
+
+C2 verified explicitly at this boundary, as the phase requires: FMP sits immediately below the
+flagship completeness theorems and all four profiles are unchanged.
 
 **Verification**:
 - Standing contract (1-9), with C2 named explicitly in the phase commit.
