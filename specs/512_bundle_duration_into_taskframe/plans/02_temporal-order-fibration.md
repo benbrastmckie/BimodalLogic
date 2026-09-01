@@ -1479,27 +1479,32 @@ the flagship theorem locations against `scripts/check-module-invariants.sh:139-1
 
 ---
 
-### Phase 14: The decidability bridge [NOT STARTED]
+### Phase 14: The decidability bridge [COMPLETED]
 
 **Goal**: `Decidability/Verified/` and the remaining non-BiLasso decidability files migrated,
 reusing `FrameConditionFor` rather than inventing a parallel abstraction.
 
 **Tasks**:
-- [ ] Migrate `Metalogic/Decidability/Verified/Bridge/{Carrier,RegionFrame,TruthLemma,Interpolate}.lean`
-      (RegionFrame is the heavy one at 22 occurrences).
-- [ ] `FrameConditionFor fc D` (`Carrier.lean:110`) becomes `FrameConditionFor fc ↑D` for a
-      `(D : TemporalOrder)`, or a per-frame `FrameConditionFor fc ↑F.Duration`. **Reuse this
-      abstraction; do not write a parallel `FrameClass.Sat`** (research F9).
-- [ ] **Record, do not act on, the cross-task observation**: `class TemporalCarrier (fc) (D) [4 binders]`
+- [x] Migrate `Metalogic/Decidability/Verified/Bridge/{Carrier,RegionFrame,TruthLemma,Interpolate}.lean`
+      (`Carrier` 0, `RegionFrame` 16 not 22, `TruthLemma` 1, `Interpolate` 1).
+- [x] `FrameConditionFor` left exactly as it stands, over a raw `(D : Type) [LinearOrder D]`, and
+      reused unchanged. No parallel `Sat`-shaped definition was introduced — verified by
+      `grep -rn "class TemporalCarrier\|def FrameConditionFor"`, which returns the two
+      pre-existing declarations in `Carrier.lean` and nothing else. *(deviation: altered — no
+      `↑D` reindex was needed, because the frames in this territory kept their ambient carrier;
+      see the record below.)*
+- [x] **Recorded, not acted on, the cross-task observation**: `class TemporalCarrier (fc) (D) [4 binders]`
       (`Carrier.lean:126`) carries exactly the four binders `TemporalOrder` now bundles, so under
       this design `TemporalCarrier` may reduce to `(fc : FrameClass) (D : TemporalOrder)` plus its
       two genuine fields — which is task 510's territory and may shrink 510 to a merge. Write the
       observation into the phase commit and this plan's metadata. Do not restructure
       `TemporalCarrier` in this task beyond the binder restatement.
-- [ ] Migrate `Metalogic/Decidability/{CountermodelExtraction}.lean`,
-      `Metalogic/Decidability/Verified/Decidable.lean`,
-      `Metalogic/Decidability/Propositional/Decidable.lean`.
-- [ ] Leave the `.Dedekind` arm naming untouched (507 renames it).
+- [x] Migrate `Metalogic/Decidability/{CountermodelExtraction}.lean` (2, prose) and
+      `Metalogic/Decidability/Verified/Decidable.lean` (4). *(deviation: skipped —
+      `Propositional/Decidable.lean`'s 3 occurrences are all `ParamTaskFrame.trivialFrame`, a
+      namespace reference to a declaration whose relocation is Phase 20's task, not a
+      `ParamTaskFrame` type ascription. Nothing in that file is Phase 14's to change.)*
+- [x] Leave the `.Dedekind` arm naming untouched. No `Dedekind` identifier was touched.
 
 **Timing**: 2 hours
 
@@ -1517,6 +1522,31 @@ without a frame binder, so it may need only the `FrameConditionFor` reindex.
 - `FormalSystem/Metalogic/Decidability/Verified/Decidable.lean`
 - `FormalSystem/Metalogic/Decidability/Propositional/Decidable.lean`
 - `FormalSystem/Metalogic/Decidability/CountermodelExtraction.lean`
+
+#### Phase 14 Record
+
+**The carrier stays ambient in this territory, and here that is forced rather than chosen.** In
+`RegionFrame`, `TruthLemma`, `Interpolate` and `Verified/Decidable` the same `D` is used
+*simultaneously* as a frame's duration and as a bare type by `FrameConditionFor fc D`,
+`C D` (the frame-condition family at `Decidable.lean:260`, whose shape is
+`(D : Type) → [4 instances] → Prop`), `f : ι → D` and `[DenselyOrdered D]`. The plan directs
+`FrameConditionFor` to be reused as it stands, so promoting only the frame's binder to
+`(D : TemporalOrder)` would put a `TemporalOrder.of`/`↑` boundary in the middle of every one of
+those statements. `FrameOver (TemporalOrder.of D)` says the same thing with no boundary. This is
+the identical condition to Phase 12's `bundleFlowFrame` decision — the carrier is pinned by a
+neighbouring abstraction that deliberately stays raw.
+
+**The 510 observation, recorded and not acted on.** `class TemporalCarrier (fc : FrameClass)
+(D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]`
+(`Carrier.lean:126`) carries exactly the four binders `TemporalOrder` bundles. Under this design
+it could be `(fc : FrameClass) (D : TemporalOrder)` plus its two genuine fields — which may shrink
+task 510 to a merge. Not restructured here: 510 owns it.
+
+**Scope**: 25 occurrences measured across the seven files, against the plan's ~32.
+`RegionFrame` is 16, not 22. Of the 25, 8 are `ParamTaskFrame.limit_of_shift` /
+`ParamTaskFrame.sInter_nonempty_of_directed_of_univ_or_singleton` /
+`ParamTaskFrame.trivialFrame` namespace references, which are Phase 20's to relocate.
+`ParamTaskFrame` *type ascriptions* in this territory: 0 remaining.
 
 **Verification**:
 - Standing contract (1-9).

@@ -431,7 +431,7 @@ end BranchRegions
 section Invariance
 
 variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
-variable {F : ParamTaskFrame D} {ι : Type*}
+variable {F : FrameOver (TemporalOrder.of D)} {ι : Type*}
 
 /--
 A history is *region-constant* for the placement `f`: it cannot tell two points of one region

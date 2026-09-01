@@ -12,7 +12,7 @@ import FormalSystem.Semantics.Validity
 
 `Bridge/Interpolate.lean` ends with a total valuation on the carrier and the statement that truth
 is constant on each region cut out by the placement. This file supplies the objects that
-statement is about: a `ParamTaskFrame` and a family of `WorldHistory`s, among them the *total* ones
+statement is about: a frame and a family of `WorldHistory`s, among them the *total* ones
 that `valid` quantifies over.
 
 ## What `valid` demands, and the one constraint that is not negotiable
@@ -20,7 +20,7 @@ that `valid` quantifies over.
 `FormalSystem.Semantics.valid` reads
 
 ```
-∀ D, ∀ F : ParamTaskFrame D, ∀ M, ∀ τ, τ.IsTotal → ∀ t, TruthAt M τ t φ
+∀ D, ∀ F : FrameOver D, ∀ M, ∀ τ, τ.IsTotal → ∀ t, TruthAt M τ t φ
 ```
 
 so refuting it means producing a **total** history. That is not a formality, and it decides the
@@ -130,7 +130,7 @@ the `regionHistory` family.
 
 /-- Two histories with the same domain and the same states are equal. -/
 theorem worldHistory_ext {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
-    {F : ParamTaskFrame D} {σ τ : WorldHistory F} (hd : σ.domain = τ.domain)
+    {F : FrameOver (TemporalOrder.of D)} {σ τ : WorldHistory F} (hd : σ.domain = τ.domain)
     (hs : ∀ (r : D) (h : σ.domain r) (h' : τ.domain r), σ.states r h = τ.states r h') :
     σ = τ := by
   obtain ⟨⟨d₁, n₁, s₁, t₁⟩, c₁⟩ := σ
@@ -170,10 +170,15 @@ parameters throughout this file so that the declarations below keep their shape.
 `ParamTaskFrame.limit_of_shift` at `pos := Prod.snd`: over a trivial duration type `0 < x` is
 unsatisfiable and *Limit* (`def:frame#Limit`) has nothing to conclude from. Every consumer
 elaborates at `ℤ`, `ℚ`, or `ℝ`, each of which supplies the instance.
+
+The result is a value of the fibre over `TemporalOrder.of D` — `def:temporal-order`'s object at
+the carrier `D`. The carrier stays ambient here rather than becoming a `(D : TemporalOrder)`
+binder because the very same `D` is consumed as a bare type by `FrameConditionFor fc D` and by
+`TemporalCarrier` in `Carrier.lean`, which are deliberately left over raw carriers.
 -/
 def regionFrame (W ι D : Type) [Nonempty W] [AddCommGroup D] [LinearOrder D]
     [IsOrderedAddMonoid D] [Nontrivial D] :
-    ParamTaskFrame D where
+    FrameOver (TemporalOrder.of D) where
   WorldState := W × D
   worldNonempty := inferInstance
   TaskRel := fun s d s' => s.1 = s'.1 ∧ s'.2 = s.2 + d
@@ -420,7 +425,8 @@ quantifies over totality and totality is preserved by `timeShift` outright.
 
 section BoxUniversal
 
-variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D] {F : ParamTaskFrame D}
+variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
+variable {F : FrameOver (TemporalOrder.of D)}
 
 /--
 **Box is evaluation-point independent.** `box φ` holds at one point iff `φ` holds at *every*
@@ -566,9 +572,9 @@ theorem not_regionConstant_regionHistory_one :
   · constructor <;> intro _ <;> norm_num
 
 /-- The frame elaborates at each of the three dense carriers and at `ℤ`. -/
-example : Nonempty (ParamTaskFrame ℚ) := ⟨regionFrame Unit (Fin 1) ℚ⟩
-example : Nonempty (ParamTaskFrame ℝ) := ⟨regionFrame Unit (Fin 1) ℝ⟩
-example : Nonempty (ParamTaskFrame ℤ) := ⟨regionFrame Unit (Fin 1) ℤ⟩
+example : Nonempty (FrameOver (TemporalOrder.of ℚ)) := ⟨regionFrame Unit (Fin 1) ℚ⟩
+example : Nonempty (FrameOver (TemporalOrder.of ℝ)) := ⟨regionFrame Unit (Fin 1) ℝ⟩
+example : Nonempty (FrameOver (TemporalOrder.of ℤ)) := ⟨regionFrame Unit (Fin 1) ℤ⟩
 
 /-- The base histories are total at a concrete carrier, and totality is all `□` now asks of
 them. -/

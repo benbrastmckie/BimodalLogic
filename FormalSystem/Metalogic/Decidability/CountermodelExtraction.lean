@@ -31,7 +31,7 @@ the original formula, providing a witness for invalidity.
 
 2. **SemanticCountermodel** (Layer 1): Full finite model with worlds, times,
    temporal ordering, and valuation. Defined directly on the branch structure
-   to avoid universe level issues with the full ParamTaskFrame/WorldHistory stack.
+   to avoid universe level issues with the full FrameOver/WorldHistory stack.
 
 ## Where semantic correctness actually lives
 
@@ -159,7 +159,7 @@ A `SemanticCountermodel` captures the full finite model extracted from a
 saturated open branch: world states, time domain, temporal ordering, and
 atom valuation. This is the "Layer 1" (branch model) of the two-layer
 countermodel approach, defined directly on the branch structure to avoid
-universe level issues with the full `ParamTaskFrame`/`WorldHistory` stack.
+universe level issues with the full `FrameOver`/`WorldHistory` stack.
 -/
 
 /--
