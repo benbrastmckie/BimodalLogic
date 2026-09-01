@@ -418,13 +418,13 @@ building `Soundness.lean` plus its enumerated direct dependents
 
 ---
 
-### Phase 5: Prune the dead recursions and duplicate axiom-validity copies [NOT STARTED]
+### Phase 5: Prune the dead recursions and duplicate axiom-validity copies [COMPLETED]
 
 **Goal**: Remove the now-unreachable duplicate machinery from `FrameClassVariants.lean` and
 `DenseValidity.lean` without removing the genuine semantic content those files also carry.
 
 **Tasks**:
-- [ ] Before each deletion, grep the name across `FormalSystem/` and `Tests/` (excluding
+- [x] Before each deletion, grep the name across `FormalSystem/` and `Tests/` (excluding
       `Boneyard/`) and confirm zero remaining consumers. Delete from
       `SoundnessLemmas/FrameClassVariants.lean`:
   - `axiom_locally_valid_general`:393 (private, ~290 lines — the third full copy of base-axiom
@@ -432,15 +432,15 @@ building `Soundness.lean` plus its enumerated direct dependents
   - `derivable_valid_and_swap_valid_general`:683, `derivable_implies_swap_valid_general`:726
   - `axiom_swap_valid_discrete`:939 (private), `axiom_locally_valid_discrete`:972 (private)
   - `derivable_valid_and_swap_valid_discrete`:994, `derivable_implies_swap_valid_discrete`:1034
-- [ ] **MUST NOT delete** from that file: `axiom_swap_valid_general`:45 (~348 lines, consumed by
+- [x] **MUST NOT delete** from that file: `axiom_swap_valid_general`:45 (~348 lines, consumed by
       `axiom_swap_validIn_min`'s Base branch) and `prior_UZ_is_valid`:742 / `prior_SZ_is_valid`:782 /
       `z1_is_valid`:821 / `z1_past_is_valid`:883 (consumed by `axiom_swap_validIn_min`'s discrete
       arms). The file **shrinks to roughly 500 lines; it does not disappear** and stays imported
       from `SoundnessLemmas.lean:10`. No module-manifest change is required.
-- [ ] Delete from `SoundnessLemmas/DenseValidity.lean`: `derivable_valid_and_swap_valid`:1320,
+- [x] Delete from `SoundnessLemmas/DenseValidity.lean`: `derivable_valid_and_swap_valid`:1320,
       `derivable_locally_valid`:1362 (no call sites), `derivable_implies_swap_valid`:1369.
       **MUST NOT delete** `axiom_swap_valid`:296 — consumed by `axiom_swap_validIn_min`.
-- [ ] Update `FormalSystem/Metalogic/SoundnessLemmas/README.md`'s Modules table line counts to the
+- [x] Update `FormalSystem/Metalogic/SoundnessLemmas/README.md`'s Modules table line counts to the
       post-prune actuals. Note: that table is **already stale before this task** (it lists
       `FrameClassVariants.lean` at 971 and `DenseValidity.lean` at 1338; the files are currently
       1041 and 1375). Set both rows from a fresh `wc -l`, and check the other rows in the same pass.

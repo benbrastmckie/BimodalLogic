@@ -212,8 +212,9 @@ theorem swap_axiom_mf_valid (φ : Formula) :
 This section proves that each inference rule of the TM proof system preserves swap validity.
 If the premises have valid swapped forms, then the conclusion also has a valid swapped form.
 
-These lemmas are used in Phase 4 to prove the main theorem `derivable_implies_swap_valid`
-by induction on the derivation structure.
+These lemmas were the ingredients of this file's own swap-validity recursion, which
+`Metalogic/Soundness.lean`'s `derivable_valid_and_swap_validIn` superseded and replaced. They
+are retained because each states a rule-preservation fact in its own right.
 -/
 
 /--
@@ -1290,86 +1291,6 @@ theorem temporal_necessitation_preserves_local_valid {φ : Formula}
   simp only [Truth.future_iff]
   intro s _hts
   exact h F M τ h_mem s
-
-/-! ## Combined Soundness and Swap-Soundness
-
-The main theorem proving both local validity AND swap validity simultaneously
-for derivable formulas. Uses well-founded induction on derivation height to
-resolve the mutual dependency between validity and swap-validity in the
-temporal_duality case.
--/
-
-/--
-Combined soundness: derivability implies both validity and swap-validity.
-
-For any formula φ derivable from the empty context with a dense-compatible
-derivation, both φ and φ.swap are valid.
-
-**Key Insight**: The temporal_duality case has the following structure:
-- Derivation: `temporal_duality φ d` where d proves φ
-- Goal for validity: φ.swap is valid (since the formula index is φ.swap)
-- Goal for swap-validity: (φ.swap).swap = φ is valid
-
-The induction hypothesis `ih` provides both `IsValid D φ` and `IsValid D φ.swap`
-for the subderivation. We use:
-- `ih.2` (swap validity of φ) for the validity goal
-- `ih.1` (validity of φ) for the swap-validity goal, via the involution lemma
-
-This resolves the mutual recursion by proving both goals in a single pass.
--/
-theorem derivable_valid_and_swap_valid [DenselyOrdered ↑D]
-    {φ : Formula} (d : DerivationTree FrameClass.Dense [] φ) :
-    IsValid D φ ∧ IsValid D φ.swapTemporal := by
-  match d with
-  | .axiom _ _ h_ax h_fc => exact ⟨axiom_locally_valid h_ax h_fc, axiom_swap_valid _ h_ax h_fc⟩
-  | .assumption _ _ h_mem => exact absurd h_mem (Syntax.Context.not_mem_nil _)
-  | .modus_ponens _ ψ' _ d1 d2 =>
-    obtain ⟨h1_valid, h1_swap⟩ := derivable_valid_and_swap_valid d1
-    obtain ⟨h2_valid, h2_swap⟩ := derivable_valid_and_swap_valid d2
-    exact ⟨mp_preserves_valid h1_valid h2_valid, mp_preserves_swap_valid ψ' _ h1_swap h2_swap⟩
-  | .necessitation ψ' d' =>
-    obtain ⟨h_valid, h_swap⟩ := derivable_valid_and_swap_valid d'
-    exact ⟨necessitation_preserves_local_valid h_valid, modal_k_preserves_swap_valid ψ' h_swap⟩
-  | .temporal_necessitation ψ' d' =>
-    obtain ⟨h_valid, h_swap⟩ := derivable_valid_and_swap_valid d'
-    exact ⟨temporal_necessitation_preserves_local_valid h_valid,
-        temporal_k_preserves_swap_valid ψ' h_swap⟩
-  | .temporal_duality ψ' d' =>
-    obtain ⟨h_valid, h_swap⟩ := derivable_valid_and_swap_valid d'
-    constructor
-    · exact h_swap
-    · simp only [Formula.swap_temporal_involution]; exact h_valid
-  | .weakening Γ' _ _ d' h_sub =>
-    have h_eq : Γ' = [] := List.eq_nil_of_subset_nil h_sub
-    have h_height_eq : (h_eq ▸ d').height = d'.height := by subst h_eq; rfl
-    have h_term : (h_eq ▸ d').height < (DerivationTree.weakening Γ' [] _ d' h_sub).height := by
-      simp only [h_height_eq, DerivationTree.height]
-      omega
-    exact derivable_valid_and_swap_valid (h_eq ▸ d')
-termination_by d.height
-decreasing_by
-  all_goals first
-    | exact DerivationTree.mp_height_gt_left _ _
-    | exact DerivationTree.mp_height_gt_right _ _
-    | simp only [DerivationTree.height]; omega
-
-/-! ## Extracted Theorems
-
-Individual theorems extracted from the combined result for convenience.
--/
-
-/-- Derivability implies local validity (extracted from combined theorem). -/
-theorem derivable_locally_valid [DenselyOrdered ↑D]
-    {φ : Formula} (d : DerivationTree FrameClass.Dense [] φ) :
-    IsValid D φ :=
-  (derivable_valid_and_swap_valid d).1
-
-/-- Derivability implies swap validity (extracted from combined theorem).
-This is the theorem needed for the temporal_duality case in soundness_dense. -/
-theorem derivable_implies_swap_valid [DenselyOrdered ↑D]
-    {φ : Formula} (d : DerivationTree FrameClass.Dense [] φ) :
-    IsValid D φ.swapTemporal :=
-  (derivable_valid_and_swap_valid d).2
 
 
 end FormalSystem.Metalogic.SoundnessLemmas

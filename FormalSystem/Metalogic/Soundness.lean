@@ -89,11 +89,12 @@ The induction over `DerivationTree` is written **once**, in `soundness_in`, at a
    proves validity and swap-validity simultaneously, again at an arbitrary `fc`
 7. **`weakening`**: Monotonicity of semantic consequence
 
-The `temporal_duality` case is where the four per-class proofs used to diverge — Base through
-`SoundnessLemmas.derivable_implies_swap_valid_general`, Dense through
-`derivable_implies_swap_valid`, Discrete through `derivable_implies_swap_valid_discrete`,
-Dedekind through a fourth in-file recursion. Carrying the class as a parameter rather than
-baking it into the statement collapses all four into the one arm above.
+The `temporal_duality` case is where the four per-class proofs used to diverge, each reaching
+for its own swap-validity recursion — one in `SoundnessLemmas/FrameClassVariants.lean` for
+`.Base`, one there for `.Discrete`, one in `SoundnessLemmas/DenseValidity.lean` for `.Dense`,
+and a fourth written out in this file for `.Dedekind`. Carrying the class as a parameter rather
+than baking it into the statement collapses all four into the one arm above, and the four
+superseded recursions have been removed.
 
 There is no IRR rule in this proof system, and therefore no IRR case in this induction.
 Reynolds' IRR rule is mentioned in `ProofSystem/Axioms.lean` only bibliographically, in the title

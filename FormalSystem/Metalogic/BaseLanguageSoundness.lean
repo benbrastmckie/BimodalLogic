@@ -310,13 +310,14 @@ condition. -/
 Combined validity and swap-validity, on `[SuccOrder] [PredOrder]` frames (no Archimedean
 binders), for BL theorems (empty-context derivations) at `FrameClass.Discrete`. The companion
 `bl_soundness_discrete_succ`'s `temporal_duality` case needs exactly the swap half of this, as an
-external fact — mirroring `SoundnessLemmas/DenseValidity.lean`'s
-`derivable_valid_and_swap_valid_discrete` (the BL⁺ sibling this parallels), but over BL's own
-15-constructor `Axiom` rather than BL⁺'s 45.
+external fact — mirroring `Metalogic/Soundness.lean`'s `derivable_valid_and_swap_validIn` (the
+BL⁺ sibling this parallels), but over BL's own 15-constructor `Axiom` rather than BL⁺'s 45, and
+without the `FrameClass` parameter, since the binder-weakened `.Discrete` frames this is stated
+over are not a `FrameClass.Sat` variant.
 
 The `axiom` case's `by_cases hbase : h_ax.minFrameClass ≤ FrameClass.Base` split is the same
-device `SoundnessLemmas/DenseValidity.lean`'s `axiom_swap_valid_discrete` /
-`axiom_locally_valid_discrete` use: it separates the twelve instance-free (`.Base`-classed)
+device `Metalogic/Soundness.lean`'s `axiom_swap_validIn_min` uses: it separates the twelve
+instance-free (`.Base`-classed)
 axioms — whose validity **and swap-validity** both come for free via `bl_soundness_valid`
 composed with the `TD` proof rule — from the three that are not, without enumerating the twelve
 constructors by name.
