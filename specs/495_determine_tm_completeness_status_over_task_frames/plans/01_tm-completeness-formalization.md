@@ -338,7 +338,7 @@ the source's TMP-NB/M5 derivation (report §4.1, §6.2 closing paragraph).
 
 ---
 
-### Phase 6: `bl_soundness_discrete_succ` — the binder-weakened soundness theorem [NOT STARTED]
+### Phase 6: `bl_soundness_discrete_succ` — the binder-weakened soundness theorem [COMPLETED]
 
 **Goal**: Land BL soundness at `FrameClass.Discrete` under `[SuccOrder] [PredOrder]` only,
 dropping `IsSuccArchimedean`/`IsPredArchimedean` (report §6.1). This is the single missing
@@ -446,7 +446,7 @@ carrier — the carrier's admissibility is independently witnessed in `DiscreteC
 
 ---
 
-### Phase 8: Documentation corrections and the CEB follow-up proposal [NOT STARTED]
+### Phase 8: Documentation corrections and the CEB follow-up proposal [IN PROGRESS]
 
 **Goal**: Bring `Conservativity.lean`'s prose in line with what is now true, correcting the
 row-independent readiness claim the report found too optimistic (report §7).

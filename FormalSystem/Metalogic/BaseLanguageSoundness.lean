@@ -7,6 +7,7 @@ Authors: Benjamin Brast-McKie
 import FormalSystem.Metalogic.Soundness
 import FormalSystem.Metalogic.Conservativity
 import FormalSystem.Semantics.BLValidity
+import FormalSystem.Semantics.BLSchemaValidity
 
 /-!
 # Soundness for the base language BL, by composition
@@ -69,6 +70,10 @@ consistency lemma in the tree yet"), and the BL side inherits it exactly.
   four soundness theorems
 - `bl_soundness_valid`, `bl_soundness_dense_valid`, `bl_soundness_discrete_valid`,
   `bl_soundness_dedekind_valid` — their empty-context validity forms
+- `bl_soundness_discrete_succ`, `bl_soundness_discrete_succ_valid` — a **fifth** soundness
+  theorem, at `FrameClass.Discrete` with the two Archimedean binders dropped. Unlike the four
+  above, it is **not** a composition (`Soundness.soundness_discrete` itself carries the binders
+  being dropped); it is proved directly against `BLTruthAt`. See its own docstring section below.
 - `bl_not_derivable_nil_bot`, `bl_not_derivable_nil_bot_discrete` — consistency of BL at
   `FrameClass.Base` and `FrameClass.Discrete`
 
@@ -276,6 +281,138 @@ theorem bl_soundness_dedekind_valid {φ : BLFormula}
     (d : BaseLanguage.DerivationTree FrameClass.Dedekind [] φ) : BLValidDedekindDense φ :=
   BLValidDedekindDense.of_forall fun F _ h_lub M τ h_mem t =>
     bl_soundness_dedekind [] φ d F h_lub M τ h_mem t (by simp)
+
+/-! ## `bl_soundness_discrete_succ` — binder-weakened discrete BL soundness
+
+The single missing prerequisite for CEF (report §6.1): BL soundness at `FrameClass.Discrete`
+under `[SuccOrder] [PredOrder]` only, dropping `[IsSuccArchimedean] [IsPredArchimedean]`, so that
+it applies to the non-Archimedean carrier `ℚ ×ₗ ℤ` (`Semantics/LexCarrier.lean`) the CEF
+countermodel is built over.
+
+**This is not a composition.** Unlike `bl_soundness`/`bl_soundness_dense`/`bl_soundness_discrete`/
+`bl_soundness_dedekind` above, `bl_soundness_discrete_succ` cannot be obtained by translating and
+invoking `Soundness.soundness_discrete`, because that theorem's own binder bundle carries the very
+two Archimedean instances being dropped here. It is proved instead by induction on
+`BaseLanguage.DerivationTree FrameClass.Discrete`, directly against `BLTruthAt`.
+
+The only genuinely new semantic content is `Semantics.BLSchemaValidity`'s DF lemma
+(`df_valid_of_succOrder`) and its `PredOrder` past-dual (`swapBL_df_valid_of_predOrder`), needed
+respectively for the `df` axiom leaf and for the `temporal_duality` case's swap component.
+Every other axiom — the twelve with `minFrameClass = .Base` — is discharged **without any
+semantic argument at all**: `bl_derivable_valid_and_swap_valid_discreteSucc` re-derives each one
+(and its swap) proof-theoretically, by composing `bl_soundness_valid` with the `TD` rule itself
+(`⊢[Base] φ ⟹ ⊢[Base] φ.swapBL`), never touching `BLTruthAt` directly for those twelve. `dn`/`co`
+are eliminated structurally: `FrameClass.Dense` and `FrameClass.Dedekind` are each incomparable
+with `FrameClass.Discrete`, so their axiom leaves are unreachable under the `h_fc` side
+condition. -/
+
+/--
+Combined validity and swap-validity, on `[SuccOrder] [PredOrder]` frames (no Archimedean
+binders), for BL theorems (empty-context derivations) at `FrameClass.Discrete`. The companion
+`bl_soundness_discrete_succ`'s `temporal_duality` case needs exactly the swap half of this, as an
+external fact — mirroring `SoundnessLemmas/DenseValidity.lean`'s
+`derivable_valid_and_swap_valid_discrete` (the BL⁺ sibling this parallels), but over BL's own
+15-constructor `Axiom` rather than BL⁺'s 45.
+
+The `axiom` case's `by_cases hbase : h_ax.minFrameClass ≤ FrameClass.Base` split is the same
+device `SoundnessLemmas/DenseValidity.lean`'s `axiom_swap_valid_discrete` /
+`axiom_locally_valid_discrete` use: it separates the twelve instance-free (`.Base`-classed)
+axioms — whose validity **and swap-validity** both come for free via `bl_soundness_valid`
+composed with the `TD` proof rule — from the three that are not, without enumerating the twelve
+constructors by name.
+-/
+private theorem bl_derivable_valid_and_swap_valid_discreteSucc {φ : BLFormula}
+    (d : BaseLanguage.DerivationTree FrameClass.Discrete [] φ) :
+    BLValidDiscreteSucc φ ∧ BLValidDiscreteSucc φ.swapBL := by
+  match d with
+  | .axiom _ _ h_ax h_fc =>
+    by_cases hbase : h_ax.minFrameClass ≤ FrameClass.Base
+    · exact ⟨BLValidity.blValid_implies_blValidDiscreteSucc
+              (bl_soundness_valid (.axiom [] _ h_ax hbase)),
+             BLValidity.blValid_implies_blValidDiscreteSucc
+              (bl_soundness_valid (.temporal_duality _ (.axiom [] _ h_ax hbase)))⟩
+    · cases h_ax with
+      | df ψ =>
+          exact ⟨fun F _ _ M τ _hτ t => df_valid_of_succOrder M τ t ψ,
+                 fun F _ _ M τ _hτ t => swapBL_df_valid_of_predOrder M τ t ψ.swapBL⟩
+      | dn _ => exact absurd h_fc (show ¬ (FrameClass.Dense ≤ FrameClass.Discrete) by decide)
+      | co _ => exact absurd h_fc (show ¬ (FrameClass.Dedekind ≤ FrameClass.Discrete) by decide)
+      | _ => exact absurd trivial hbase
+  | .assumption _ _ h_mem => exact absurd h_mem (by simp)
+  | .modus_ponens _ ψ' _ d1 d2 =>
+    obtain ⟨h1_valid, h1_swap⟩ := bl_derivable_valid_and_swap_valid_discreteSucc d1
+    obtain ⟨h2_valid, h2_swap⟩ := bl_derivable_valid_and_swap_valid_discreteSucc d2
+    exact ⟨fun F _ _ M τ hτ t => h1_valid F M τ hτ t (h2_valid F M τ hτ t),
+           fun F _ _ M τ hτ t => h1_swap F M τ hτ t (h2_swap F M τ hτ t)⟩
+  | .necessitation _ d' =>
+    obtain ⟨h_valid, h_swap⟩ := bl_derivable_valid_and_swap_valid_discreteSucc d'
+    exact ⟨fun F _ _ M _τ _hτ t σ hσ => h_valid F M σ hσ t,
+           fun F _ _ M _τ _hτ t σ hσ => h_swap F M σ hσ t⟩
+  | .temporal_necessitation _ d' =>
+    obtain ⟨h_valid, h_swap⟩ := bl_derivable_valid_and_swap_valid_discreteSucc d'
+    exact ⟨fun F _ _ M τ hτ t s _hs => h_valid F M τ hτ s,
+           fun F _ _ M τ hτ t s _hs => h_swap F M τ hτ s⟩
+  | .temporal_duality _ d' =>
+    obtain ⟨h_valid, h_swap⟩ := bl_derivable_valid_and_swap_valid_discreteSucc d'
+    exact ⟨h_swap, by rw [BLFormula.swapBL_involution]; exact h_valid⟩
+  | .weakening Γ' _ _ d' h_sub =>
+    have h_eq : Γ' = [] := List.eq_nil_of_subset_nil h_sub
+    have h_height_eq : (h_eq ▸ d').height = d'.height := by subst h_eq; rfl
+    have h_term :
+        (h_eq ▸ d').height <
+          (BaseLanguage.DerivationTree.weakening Γ' [] _ d' h_sub).height := by
+      simp only [h_height_eq, BaseLanguage.DerivationTree.height]
+      omega
+    exact bl_derivable_valid_and_swap_valid_discreteSucc (h_eq ▸ d')
+termination_by d.height
+decreasing_by
+  all_goals (simp only [BaseLanguage.DerivationTree.height]; omega)
+
+/--
+**Soundness of BL at `FrameClass.Discrete`, binder-weakened.** A BL derivation of `φ` from `Γ`
+makes `φ` true at every model, **total** history and time at which every formula of `Γ` is true —
+on any `TaskFrame` carrying `[SuccOrder] [PredOrder]`, with **no** `IsSuccArchimedean` /
+`IsPredArchimedean` requirement.
+
+By induction on `d`, directly against `BLTruthAt` (see the module docstring above for why this
+cannot be a composition). The `axiom` case's `by_cases` split and the `temporal_duality` case's
+call into `bl_derivable_valid_and_swap_valid_discreteSucc` mirror that lemma's own proof exactly.
+-/
+theorem bl_soundness_discrete_succ (Γ : BaseLanguage.Context) (φ : BLFormula)
+    (d : BaseLanguage.DerivationTree FrameClass.Discrete Γ φ)
+    (F : TaskFrame) [SuccOrder F.Duration] [PredOrder F.Duration] (M : TaskModel F)
+    (τ : WorldHistory F) (h_mem : τ.IsTotal) (t : F.Duration)
+    (h_ctx : ∀ ψ ∈ Γ, BLTruthAt M τ t ψ) :
+    BLTruthAt M τ t φ := by
+  induction d generalizing τ t with
+  | «axiom» Γ' φ' h_ax h_fc =>
+    by_cases hbase : h_ax.minFrameClass ≤ FrameClass.Base
+    · exact (bl_soundness_valid (.axiom [] _ h_ax hbase)).apply F M τ h_mem t
+    · cases h_ax with
+      | df ψ => exact df_valid_of_succOrder M τ t ψ
+      | dn _ => exact absurd h_fc (show ¬ (FrameClass.Dense ≤ FrameClass.Discrete) by decide)
+      | co _ => exact absurd h_fc (show ¬ (FrameClass.Dedekind ≤ FrameClass.Discrete) by decide)
+      | _ => exact absurd trivial hbase
+  | assumption Γ' φ' h_in => exact h_ctx φ' h_in
+  | modus_ponens Γ' φ' ψ' d1 d2 ih1 ih2 =>
+    exact (ih1 τ h_mem t h_ctx) (ih2 τ h_mem t h_ctx)
+  | necessitation φ' d' ih =>
+    rw [BLTruth.box_iff]
+    intro σ hσ
+    exact ih σ hσ t (by simp)
+  | temporal_necessitation φ' d' ih =>
+    rw [BLTruth.future_iff]
+    intro s _hts
+    exact ih τ h_mem s (by simp)
+  | temporal_duality φ' d' _ih =>
+    exact (bl_derivable_valid_and_swap_valid_discreteSucc d').2 F M τ h_mem t
+  | weakening Γ' Δ' φ' d' h_sub ih =>
+    exact ih τ h_mem t (fun ψ h_in => h_ctx ψ (h_sub h_in))
+
+/-- Empty-context form of `bl_soundness_discrete_succ`. -/
+theorem bl_soundness_discrete_succ_valid {φ : BLFormula}
+    (d : BaseLanguage.DerivationTree FrameClass.Discrete [] φ) : BLValidDiscreteSucc φ :=
+  fun F so po M τ h_mem t => bl_soundness_discrete_succ [] φ d F M τ h_mem t (by simp)
 
 /-! ## Consistency
 

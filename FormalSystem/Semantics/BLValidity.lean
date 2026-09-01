@@ -204,6 +204,31 @@ theorem BLValidDiscrete.apply {φ : BLFormula} (h : BLValidDiscrete φ) (F : Tas
   h F ⟨so, po, hsa, hpa⟩ M ⟨τ, hτ⟩ t
 
 /--
+**`BLValidDiscrete` with the two Archimedean binders dropped.**
+
+Mirrors `BLValidDiscrete`'s pre-abbreviation four-instance binder shape exactly, minus
+`[IsSuccArchimedean F.Duration]` and `[IsPredArchimedean F.Duration]`. Unlike `BLValidDiscrete`,
+this is stated directly in the pre-abbreviation shape rather than as an abbreviation over
+`BLValidIn`: there is no `FrameClass.Sat` variant bundling `SuccOrder`+`PredOrder` alone
+(`TaskFrame.IsSuccArchDiscrete` bundles all four), so no `.of_forall`/`.apply` pair is needed —
+a value of this type already **is** the binder-shape statement.
+
+**Why this exists.** `Metalogic/BaseLanguageSoundness.lean`'s `bl_soundness_discrete_succ` is the
+single prerequisite CEF was missing (report §6.1): a discrete BL soundness theorem that does not
+assume Archimedean structure, so it applies to the non-Archimedean carrier `ℚ ×ₗ ℤ`
+(`Semantics/LexCarrier.lean`) that `Metalogic/Z1Countermodel.lean`'s countermodel is built over.
+-/
+def BLValidDiscreteSucc (φ : BLFormula) : Prop :=
+  ∀ (F : TaskFrame) [SuccOrder F.Duration] [PredOrder F.Duration] (M : TaskModel F)
+    (τ : WorldHistory F), τ.IsTotal → ∀ t : F.Duration, BLTruthAt M τ t φ
+
+/-- `BLValid` weakens to `BLValidDiscreteSucc`, mirroring `BLValidity.blValid_implies_blValidDiscrete`
+and its dense/Dedekind siblings. -/
+theorem BLValidity.blValid_implies_blValidDiscreteSucc {φ : BLFormula} (h : BLValid φ) :
+    BLValidDiscreteSucc φ :=
+  fun F _ _ M τ hτ t => h.apply F M τ hτ t
+
+/--
 Validity over **dense Dedekind-complete** temporal orders: the least-upper-bound hypothesis
 together with `[DenselyOrdered D]`.
 
