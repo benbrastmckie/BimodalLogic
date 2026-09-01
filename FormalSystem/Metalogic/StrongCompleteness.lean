@@ -120,7 +120,10 @@ short name in this tree is docstring prose rather than a call site.
 
 * `SemanticConsequence` (`Semantics/Validity.lean`) — reused unchanged as the base-class
   consequence relation; `SemanticConsequenceDense`, `SemanticConsequenceDiscrete` and
-  `SemanticConsequenceDedekindDense` are its class-restricted siblings.
+  `SemanticConsequenceDedekindDense` are its class-restricted siblings. All four are now
+  instances of one definition, `SemanticConsequenceIn fc` over `FrameClass.Sat`
+  (`Semantics/Validity.lean`), rather than four hand-written binder lists; each keeps its own
+  name, its own type, and a `.of_forall`/`.apply` pair recovering its pre-abbreviation shape.
 * `semantic_deduction_base` / `_dense` / `_discrete` / `_dedekind_dense`,
   `consequence_completeness_base` / `_dense` / `_discrete` / `_dedekind`,
   `soundness_base_consequence` / `soundness_dense_consequence` /
@@ -170,13 +173,38 @@ a different (and false) statement.
 `.Dedekind` derivation. Both are false on `ℤ`, which is Dedekind-complete, so dropping density
 here would make the matching soundness direction refutable. See the `ValidDedekindDense`
 docstring for the primary-source placement of `Dedekind` above `Dense`.
+
+**Where the binder guard now lives.** This definition used to reproduce `ValidDedekindDense`'s
+binder list by hand, and `soundness_dedekind_consequence` below was its guard: that theorem held
+only because the two lists were kept character-for-character in step, and would break if they
+drifted. The guard has not been dropped — it has moved somewhere it cannot drift. The class
+condition is `FrameClass.Sat .Dedekind` (`Semantics/FrameClassValidity.lean`), the *same*
+expression `ValidDedekindDense` and `soundness_in` are indexed by, so there is now one source of
+truth rather than two hand-copied lists. `soundness_dedekind_consequence` remains as the
+non-vacuity witness it also always was. The pre-abbreviation binder shape is recovered by
+`SemanticConsequenceDedekindDense.of_forall` / `.apply`.
 -/
 def SemanticConsequenceDedekindDense (Γ : Context) (φ : Formula) : Prop :=
-  ∀ (F : TaskFrame) [DenselyOrdered F.Duration]
-    (_ : ∀ s : Set F.Duration, s.Nonempty → BddAbove s → ∃ x, IsLUB s x)
-    (M : TaskModel F)
-    (τ : WorldHistory F) (_ : τ.IsTotal) (t : F.Duration),
-    (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ
+  SemanticConsequenceIn FrameClass.Dedekind Γ φ
+
+/-- Introduce `SemanticConsequenceDedekindDense` from its pre-abbreviation binder shape, with the
+density witness and the least-upper-bound hypothesis unpacked from the `Sat .Dedekind` pair. -/
+theorem SemanticConsequenceDedekindDense.of_forall {Γ : Context} {φ : Formula}
+    (h : ∀ (F : TaskFrame) [DenselyOrdered F.Duration],
+           (∀ s : Set F.Duration, s.Nonempty → BddAbove s → ∃ x, IsLUB s x) →
+           ∀ (M : TaskModel F) (τ : WorldHistory F), τ.IsTotal →
+           ∀ t : F.Duration, (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ) :
+    SemanticConsequenceDedekindDense Γ φ :=
+  fun F hF M τ hτ t => @h F hF.1 hF.2 M τ hτ t
+
+/-- Eliminate `SemanticConsequenceDedekindDense` into its pre-abbreviation binder shape. -/
+theorem SemanticConsequenceDedekindDense.apply {Γ : Context} {φ : Formula}
+    (h : SemanticConsequenceDedekindDense Γ φ) (F : TaskFrame)
+    [inst : DenselyOrdered F.Duration]
+    (hlub : ∀ s : Set F.Duration, s.Nonempty → BddAbove s → ∃ x, IsLUB s x)
+    (M : TaskModel F) (τ : WorldHistory F) (hτ : τ.IsTotal) (t : F.Duration)
+    (hall : ∀ ψ ∈ Γ, TruthAt M τ t ψ) : TruthAt M τ t φ :=
+  h F ⟨inst, hlub⟩ M τ hτ t hall
 
 /-! ## The semantic deduction theorem -/
 
@@ -212,8 +240,10 @@ theorem semantic_deduction_dedekind_dense (Γ : Context) (φ : Formula) :
   · intro h
     refine ValidDedekindDense.of_forall ?_
     intro F _ h_lub M τ hτ t
-    exact (truthAt_foldr_imp M τ t Γ φ).mpr (h F h_lub M τ hτ t)
-  · intro h F _ h_lub M τ hτ t
+    exact (truthAt_foldr_imp M τ t Γ φ).mpr (h.apply F h_lub M τ hτ t)
+  · intro h
+    refine SemanticConsequenceDedekindDense.of_forall ?_
+    intro F _ h_lub M τ hτ t
     exact (truthAt_foldr_imp M τ t Γ φ).mp (h.apply F h_lub M τ hτ t)
 
 /-! ## The proof-theoretic deduction theorem, in fold form -/
@@ -519,18 +549,21 @@ theorem consequence_completeness_dedekind_of_engine
 /--
 **Soundness, restated against `SemanticConsequenceDedekindDense`.**
 
-This is `soundness_dedekind` with its hypothesis-and-conclusion block folded into the
-definition, and it is the guard that keeps the completeness target honest: it holds *only*
-because the definition above reproduces that block verbatim. If a later edit weakens the
-consequence relation — say by dropping the `[DenselyOrdered D]` binder, or by quantifying over
-all carriers — this theorem breaks, and the build fails before a mis-stated completeness
-terminus can be proved against it. In particular it establishes that the terminus is not
-vacuous: its hypothesis is inhabited for every derivable pair `(Γ, φ)`.
+This is `soundness_in` at `.Dedekind`, read through the consequence relation: the definition
+above and `soundness_in` are indexed by the same `FrameClass.Sat .Dedekind`, so the two sides
+meet definitionally and the proof is one `intro`. It remains the guard that keeps the
+completeness target honest — if a later edit weakens the consequence relation, say by
+retargeting it to a class whose `Sat` drops the density conjunct, this theorem breaks and the
+build fails before a mis-stated completeness terminus can be proved against it. What changed is
+where the guard bites: it used to depend on this file reproducing `ValidDedekindDense`'s binder
+list character for character, and now depends on the one `FrameClass.Sat` both sides read. In
+particular it still establishes that the terminus is not vacuous: its hypothesis is inhabited
+for every derivable pair `(Γ, φ)`.
 -/
 theorem soundness_dedekind_consequence (Γ : Context) (φ : Formula)
     (h : Derivable FrameClass.Dedekind Γ φ) : SemanticConsequenceDedekindDense Γ φ := by
-  intro F _ h_lub M τ hτ t h_ctx
-  exact h.elim fun d => soundness_dedekind Γ φ d F h_lub M τ hτ t h_ctx
+  intro F hF M τ hτ t h_ctx
+  exact h.elim fun d => soundness_in Γ φ d F hF M τ hτ t h_ctx
 
 /--
 **Weak completeness — the headline result for the Dedekind class — as the `Γ = []` instance
@@ -639,8 +672,10 @@ theorem semantic_deduction_base (Γ : Context) (φ : Formula) :
   · intro h
     refine valid.of_forall_total ?_
     intro F M τ hτ t
-    exact (truthAt_foldr_imp M τ t Γ φ).mpr (h F M τ hτ t)
-  · intro h F M τ hτ t
+    exact (truthAt_foldr_imp M τ t Γ φ).mpr (h.apply F M τ hτ t)
+  · intro h
+    refine SemanticConsequence.of_forall ?_
+    intro F M τ hτ t
     exact (truthAt_foldr_imp M τ t Γ φ).mp (h.apply F M τ hτ t)
 
 /--
@@ -665,18 +700,19 @@ theorem consequence_completeness_base (Γ : Context) (φ : Formula)
 /--
 **Soundness, restated against `SemanticConsequence`.**
 
-This is `soundness` (`Metalogic/Soundness.lean:1080`) with its hypothesis-and-conclusion block
-folded into the definition. It is the guard that keeps the completeness target honest: it holds
-*only* because `SemanticConsequence` reproduces `valid`'s binder list verbatim. If a later edit
-weakens the consequence relation, this theorem breaks and the build fails before a mis-stated
-completeness terminus can be proved against it. In particular it establishes that
-`consequence_completeness_base` is not vacuous: its hypothesis is inhabited for every derivable
-pair `(Γ, φ)`.
+This is `soundness_in` at `.Base`, read through the consequence relation: `SemanticConsequence`
+is `SemanticConsequenceIn .Base` and `soundness_in` is indexed by the same `FrameClass.Sat`, so
+the two sides meet definitionally and the proof is one `intro`. It remains the guard that keeps
+the completeness target honest — if a later edit weakens the consequence relation, this theorem
+breaks and the build fails before a mis-stated completeness terminus can be proved against it —
+but the guard is now structural rather than a matter of two binder lists being kept in step. In
+particular it still establishes that `consequence_completeness_base` is not vacuous: its
+hypothesis is inhabited for every derivable pair `(Γ, φ)`.
 -/
 theorem soundness_base_consequence (Γ : Context) (φ : Formula)
     (h : Derivable FrameClass.Base Γ φ) : SemanticConsequence Γ φ := by
-  intro F M τ hτ t h_ctx
-  exact h.elim fun d => soundness Γ φ d F M τ hτ t h_ctx
+  intro F hF M τ hτ t h_ctx
+  exact h.elim fun d => soundness_in Γ φ d F hF M τ hτ t h_ctx
 
 /--
 **Weak completeness for `FrameClass.Base`, as the `Γ = []` instance of the consequence form.**
@@ -720,16 +756,37 @@ This is `SetSemanticConsequenceDense` (`SetConsequence.lean`) with `Γ : Set For
 vocabulary of the (open) strong completeness statement, this one is the finite-context relation
 that the theorems below actually discharge.
 
-**Why not `SemanticConsequence`.** The general relation quantifies over *all* carriers with no
-order-theoretic side conditions, so it cannot express consequence restricted to the dense class;
-a completeness theorem stated against it would be a different statement. (For `FrameClass.Base`
-the general relation *is* the right one, because there "all carriers" is the class — see the
-Base section above.)
+**Why not `SemanticConsequence`.** The general relation is `SemanticConsequenceIn` at `.Base`,
+whose `Sat` is `True`, so it imposes no order-theoretic side condition and cannot express
+consequence restricted to the dense class; a completeness theorem stated against it would be a
+different statement. (For `FrameClass.Base` the general relation *is* the right one, because
+there "all carriers" is the class — see the Base section above.)
+
+**Where the binder guard now lives.** As for `SemanticConsequenceDedekindDense` above: the
+hand-copied binder list has been replaced by `FrameClass.Sat .Dense`, the same expression
+`ValidDense` and `soundness_in` are indexed by, so the guard `soundness_dense_consequence` used
+to enforce by textual coincidence is now structural. The pre-abbreviation binder shape is
+recovered by `SemanticConsequenceDense.of_forall` / `.apply`.
 -/
 def SemanticConsequenceDense (Γ : Context) (φ : Formula) : Prop :=
-  ∀ (F : TaskFrame) [DenselyOrdered F.Duration] (M : TaskModel F)
-    (τ : WorldHistory F) (_ : τ.IsTotal) (t : F.Duration),
-    (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ
+  SemanticConsequenceIn FrameClass.Dense Γ φ
+
+/-- Introduce `SemanticConsequenceDense` from its pre-abbreviation binder shape, with the density
+witness restored to the local context as an instance. -/
+theorem SemanticConsequenceDense.of_forall {Γ : Context} {φ : Formula}
+    (h : ∀ (F : TaskFrame) [DenselyOrdered F.Duration] (M : TaskModel F)
+           (τ : WorldHistory F), τ.IsTotal →
+           ∀ t : F.Duration, (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ) :
+    SemanticConsequenceDense Γ φ :=
+  fun F hF M τ hτ t => @h F hF M τ hτ t
+
+/-- Eliminate `SemanticConsequenceDense` into its pre-abbreviation binder shape. -/
+theorem SemanticConsequenceDense.apply {Γ : Context} {φ : Formula}
+    (h : SemanticConsequenceDense Γ φ) (F : TaskFrame)
+    [inst : DenselyOrdered F.Duration] (M : TaskModel F)
+    (τ : WorldHistory F) (hτ : τ.IsTotal) (t : F.Duration)
+    (hall : ∀ ψ ∈ Γ, TruthAt M τ t ψ) : TruthAt M τ t φ :=
+  h F inst M τ hτ t hall
 
 /--
 **Semantic deduction theorem for the dense class.** Consequence from a finite context is
@@ -745,8 +802,10 @@ theorem semantic_deduction_dense (Γ : Context) (φ : Formula) :
   · intro h
     refine ValidDense.of_forall ?_
     intro F _ M τ hτ t
-    exact (truthAt_foldr_imp M τ t Γ φ).mpr (h F M τ hτ t)
-  · intro h F _ M τ hτ t
+    exact (truthAt_foldr_imp M τ t Γ φ).mpr (h.apply F M τ hτ t)
+  · intro h
+    refine SemanticConsequenceDense.of_forall ?_
+    intro F _ M τ hτ t
     exact (truthAt_foldr_imp M τ t Γ φ).mp (h.apply F M τ hτ t)
 
 /--
@@ -770,18 +829,20 @@ theorem consequence_completeness_dense (Γ : Context) (φ : Formula)
 /--
 **Soundness, restated against `SemanticConsequenceDense`.**
 
-This is `soundness_dense` (`Metalogic/Soundness.lean:1254`) with its hypothesis-and-conclusion
-block folded into the definition, and it is the guard that keeps the completeness target honest:
-it holds *only* because `SemanticConsequenceDense` reproduces `ValidDense`'s binder list
-verbatim. If a later edit weakens the relation — say by dropping `[DenselyOrdered D]` — this
-theorem breaks and the build fails before a mis-stated completeness terminus can be proved
-against it. In particular it establishes that `consequence_completeness_dense` is not vacuous:
-its hypothesis is inhabited for every derivable pair `(Γ, φ)`.
+This is `soundness_in` at `.Dense`, read through the consequence relation: the definition above
+and `soundness_in` are indexed by the same `FrameClass.Sat .Dense`, so the two sides meet
+definitionally and the proof is one `intro`. It remains the guard that keeps the completeness
+target honest — if a later edit weakens the relation, say by retargeting it to a class whose
+`Sat` does not imply `DenselyOrdered`, this theorem breaks and the build fails before a
+mis-stated completeness terminus can be proved against it — but the guard is now structural
+rather than a matter of two binder lists being kept in step. In particular it still establishes
+that `consequence_completeness_dense` is not vacuous: its hypothesis is inhabited for every
+derivable pair `(Γ, φ)`.
 -/
 theorem soundness_dense_consequence (Γ : Context) (φ : Formula)
     (h : Derivable FrameClass.Dense Γ φ) : SemanticConsequenceDense Γ φ := by
-  intro F _ M τ hτ t h_ctx
-  exact h.elim fun d => soundness_dense Γ φ d F M τ hτ t h_ctx
+  intro F hF M τ hτ t h_ctx
+  exact h.elim fun d => soundness_in Γ φ d F hF M τ hτ t h_ctx
 
 /--
 **Weak completeness for `FrameClass.Dense`, as the `Γ = []` instance of the consequence form.**
@@ -835,12 +896,40 @@ to `Γ : Context` and nothing else. The set form is the vocabulary the *refutati
 this one is the finite-context relation the theorems below discharge. The finite form is
 perfectly available even though the infinite one is false — that is precisely what
 non-compactness means.
+
+**Where the binder guard now lives.** As for the two classes above: the four-instance list is no
+longer reproduced here by hand but read off `FrameClass.Sat .Discrete`
+(`TaskFrame.IsSuccArchDiscrete`), the same expression `ValidDiscrete` and `soundness_in` are
+indexed by. `soundness_discrete_consequence`'s warning about dropping `[IsSuccArchimedean D]`
+still holds and is now enforced at that one definition rather than by keeping two lists in step.
+The pre-abbreviation binder shape is recovered by `SemanticConsequenceDiscrete.of_forall` /
+`.apply`.
 -/
 def SemanticConsequenceDiscrete (Γ : Context) (φ : Formula) : Prop :=
-  ∀ (F : TaskFrame) [SuccOrder F.Duration] [PredOrder F.Duration]
-    [IsSuccArchimedean F.Duration] [IsPredArchimedean F.Duration] (M : TaskModel F)
-    (τ : WorldHistory F) (_ : τ.IsTotal) (t : F.Duration),
-    (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ
+  SemanticConsequenceIn FrameClass.Discrete Γ φ
+
+/-- Introduce `SemanticConsequenceDiscrete` from its pre-abbreviation four-instance binder shape.
+The existential `TaskFrame.IsSuccArchDiscrete` is destructured with `obtain` and its witnesses
+passed positionally with `@`, never through `haveI`, which would break definitional equality
+against instances already baked into `F`'s type. -/
+theorem SemanticConsequenceDiscrete.of_forall {Γ : Context} {φ : Formula}
+    (h : ∀ (F : TaskFrame) [SuccOrder F.Duration] [PredOrder F.Duration]
+           [IsSuccArchimedean F.Duration] [IsPredArchimedean F.Duration] (M : TaskModel F)
+           (τ : WorldHistory F), τ.IsTotal →
+           ∀ t : F.Duration, (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ) :
+    SemanticConsequenceDiscrete Γ φ := by
+  intro F hF M τ hτ t hall
+  obtain ⟨so, po, hsa, hpa⟩ := hF
+  exact @h F so po hsa hpa M τ hτ t hall
+
+/-- Eliminate `SemanticConsequenceDiscrete` into its pre-abbreviation binder shape. -/
+theorem SemanticConsequenceDiscrete.apply {Γ : Context} {φ : Formula}
+    (h : SemanticConsequenceDiscrete Γ φ) (F : TaskFrame)
+    [so : SuccOrder F.Duration] [po : PredOrder F.Duration]
+    [hsa : IsSuccArchimedean F.Duration] [hpa : IsPredArchimedean F.Duration]
+    (M : TaskModel F) (τ : WorldHistory F) (hτ : τ.IsTotal) (t : F.Duration)
+    (hall : ∀ ψ ∈ Γ, TruthAt M τ t ψ) : TruthAt M τ t φ :=
+  h F ⟨so, po, hsa, hpa⟩ M τ hτ t hall
 
 /--
 **Semantic deduction theorem for the discrete class.** Consequence from a finite context is
@@ -856,8 +945,10 @@ theorem semantic_deduction_discrete (Γ : Context) (φ : Formula) :
   · intro h
     refine ValidDiscrete.of_forall ?_
     intro F _ _ _ _ M τ hτ t
-    exact (truthAt_foldr_imp M τ t Γ φ).mpr (h F M τ hτ t)
-  · intro h F _ _ _ _ M τ hτ t
+    exact (truthAt_foldr_imp M τ t Γ φ).mpr (h.apply F M τ hτ t)
+  · intro h
+    refine SemanticConsequenceDiscrete.of_forall ?_
+    intro F _ _ _ _ M τ hτ t
     exact (truthAt_foldr_imp M τ t Γ φ).mp (h.apply F M τ hτ t)
 
 /--
@@ -879,19 +970,20 @@ theorem consequence_completeness_discrete (Γ : Context) (φ : Formula)
 /--
 **Soundness, restated against `SemanticConsequenceDiscrete`.**
 
-This is `soundness_discrete` (`Metalogic/Soundness.lean:1400`) with its
-hypothesis-and-conclusion block folded into the definition, and it is the guard that keeps the
-completeness target honest: it holds *only* because `SemanticConsequenceDiscrete` reproduces
-`ValidDiscrete`'s binder list verbatim. If a later edit weakens the relation — say by dropping
-`[IsSuccArchimedean D]`, on which the non-compactness witness turns — this theorem breaks and
-the build fails before a mis-stated terminus can be proved against it. In particular it
-establishes that `consequence_completeness_discrete` is not vacuous: its hypothesis is inhabited
-for every derivable pair `(Γ, φ)`.
+This is `soundness_in` at `.Discrete`, read through the consequence relation: the definition
+above and `soundness_in` are indexed by the same `FrameClass.Sat .Discrete`, so the two sides
+meet definitionally and the proof is one `intro`. It remains the guard that keeps the
+completeness target honest — if a later edit weakens the relation, say by retargeting it to a
+class whose `Sat` drops `IsSuccArchimedean`, on which the non-compactness witness turns, this
+theorem breaks and the build fails before a mis-stated terminus can be proved against it — but
+the guard is now structural rather than a matter of two binder lists being kept in step. In
+particular it still establishes that `consequence_completeness_discrete` is not vacuous: its
+hypothesis is inhabited for every derivable pair `(Γ, φ)`.
 -/
 theorem soundness_discrete_consequence (Γ : Context) (φ : Formula)
     (h : Derivable FrameClass.Discrete Γ φ) : SemanticConsequenceDiscrete Γ φ := by
-  intro F _ _ _ _ M τ hτ t h_ctx
-  exact h.elim fun d => soundness_discrete Γ φ d F M τ hτ t h_ctx
+  intro F hF M τ hτ t h_ctx
+  exact h.elim fun d => soundness_in Γ φ d F hF M τ hτ t h_ctx
 
 /--
 **Weak completeness for `FrameClass.Discrete`, as the `Γ = []` instance of the consequence
@@ -926,6 +1018,31 @@ same footing and are counted separately from the fourteen above: each is likewis
 rather than a terminus, taking `ModelExistenceBase` / `ModelExistenceDense` as a hypothesis. The
 termini these three reduce to are audited where they are proved, in
 `Metalogic/Compactness.lean`. -/
+
+/-! ## Soundness at the `Set Formula` consequence layer
+
+The finite-context theorems above all take `Γ : Context`. `Metalogic/SetConsequence.lean` carries
+the `Γ : Set Formula` vocabulary that the strong-completeness statements are phrased in, but no
+soundness theorem was ever stated against it — the direction was only ever available by
+unfolding a set-derivation to its finite witness by hand at each site. `soundness_in` makes the
+statement a three-line corollary, so it is recorded once here.
+
+It lives in this module rather than in `SetConsequence.lean` for an import reason:
+`SetConsequence.lean` does not import `Metalogic/Soundness.lean`, and `Soundness.lean` does not
+import `SetConsequence.lean`. This file imports both. -/
+
+/-- **Soundness at the set-consequence layer**, at an arbitrary `FrameClass`. A set-derivation
+cites finitely many premises (`setDerivable_iff_exists_finite`); `soundness_in` discharges that
+finite context, and `setConsequenceOnFrames_mono` carries the conclusion from the cited premises
+back up to the whole of `Γ`. -/
+theorem soundness_setConsequence {fc : FrameClass} (Γ : Set Formula) (φ : Formula)
+    (h : SetDerivable fc Γ φ) : SetSemanticConsequenceOn fc Γ φ := by
+  obtain ⟨L, hL, hd⟩ := (setDerivable_iff_exists_finite Γ φ).mp h
+  refine setConsequenceOnFrames_mono (Γ := {ψ | ψ ∈ L}) (fun ψ hψ => hL ψ hψ) ?_
+  intro F hF M τ hτ t h_all
+  exact hd.elim fun d => soundness_in L φ d F hF M τ hτ t (fun ψ hψ => h_all ψ hψ)
+
+#print axioms soundness_setConsequence
 
 #print axioms strongCompletenessBase_of_compact
 #print axioms compactBase_of_modelExistence

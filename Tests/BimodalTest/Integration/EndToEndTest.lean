@@ -35,7 +35,7 @@ From the derivation of Modal T, we obtain its semantic validity.
 example : [] ⊨ ((Formula.atomS "p").box.imp (Formula.atomS "p")) := by
   let deriv : ⊢ ((Formula.atomS "p").box.imp (Formula.atomS "p")) :=
     DerivationTree.axiom [] _ (Axiom.modal_t (Formula.atomS "p")) trivial
-  exact soundness [] _ deriv
+  exact soundness_in [] _ deriv
 
 /--
 Integration Test 3: Verify validity directly.
@@ -60,7 +60,7 @@ example : True := by
 
   -- Step 2: Apply soundness
   let valid_from_soundness : [] ⊨ ((Formula.atomS "p").box.imp (Formula.atomS "p")) :=
-    soundness [] _ proof
+    soundness_in [] _ proof
 
   -- Step 3: Direct semantic validity
   let valid_direct : ⊨ ((Formula.atomS "p").box.imp (Formula.atomS "p")) :=
@@ -79,7 +79,7 @@ example (p q : Formula) : [p.imp q, p] ⊨ q := by
     DerivationTree.modus_ponens [p.imp q, p] p q
       (DerivationTree.assumption [p.imp q, p] (p.imp q) (List.Mem.head _))
       (DerivationTree.assumption [p.imp q, p] p (List.Mem.tail _ (List.Mem.head _)))
-  exact soundness [p.imp q, p] q deriv
+  exact soundness_in [p.imp q, p] q deriv
 
 /--
 Integration Test 6: Weakening with soundness.
@@ -94,6 +94,6 @@ example (p q : Formula) : [p, q] ⊨ p := by
     | head => exact List.Mem.head _
     | tail _ _ => contradiction
   let deriv' : [p, q] ⊢ p := DerivationTree.weakening [p] [p, q] p deriv h_sub
-  exact soundness [p, q] p deriv'
+  exact soundness_in [p, q] p deriv'
 
 end BimodalTest.Integration

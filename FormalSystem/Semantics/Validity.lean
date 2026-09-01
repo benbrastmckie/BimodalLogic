@@ -66,6 +66,32 @@ namespace FormalSystem.Semantics
 
 open FormalSystem.Syntax
 
+/-! ### The finite-context consequence layer, indexed by frame predicate and by `FrameClass`
+
+The two-layer shape `ValidOnFrames` / `ValidIn` gives validity, applied to consequence from a
+finite context: a predicate-indexed primitive, and a `FrameClass`-tagged abbreviation over it.
+`Metalogic/SetConsequence.lean` carries the `Γ : Set Formula` twin of this pair
+(`SetConsequenceOnFrames` / `SetSemanticConsequenceOn`). The two layers are deliberately distinct
+types — the set form is the vocabulary of the strong-completeness statements, this one is the
+finite-context relation the consequence theorems in `Metalogic/StrongCompleteness.lean` actually
+discharge. -/
+
+/-- Semantic consequence from a finite context, over every frame satisfying `P`: the
+predicate-indexed primitive, mirroring `ValidOnFrames`. Indexing by a bare frame predicate rather
+than by a `FrameClass` tag is what lets one definition serve every class. -/
+def ConsequenceOnFrames (P : TaskFrame → Prop) (Γ : Context) (φ : Formula) : Prop :=
+  ∀ (F : TaskFrame), P F → ∀ (M : TaskModel F)
+    (τ : WorldHistory F) (_ : τ.IsTotal) (t : F.Duration),
+    (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ
+
+/-- `cor:tm-completeness`'s class-restricted consequence `Γ ⊨_C φ` at a finite context: the
+mirror of `ValidIn`, over the same `FrameClass.Sat`. The four named consequence relations —
+`SemanticConsequence` here, and `SemanticConsequenceDense` / `SemanticConsequenceDiscrete` /
+`SemanticConsequenceDedekindDense` in `Metalogic/StrongCompleteness.lean` — are its four
+instances. -/
+def SemanticConsequenceIn (fc : ProofSystem.FrameClass) (Γ : Context) (φ : Formula) : Prop :=
+  ConsequenceOnFrames fc.Sat Γ φ
+
 /--
 Semantic consequence: `Γ ⊨ φ` means φ is true in all models where all of `Γ` are true,
 for every temporal type `D` satisfying `LinearOrderedAddCommGroup`.
@@ -84,18 +110,45 @@ This is that clause on the nose: "possible worlds tau in H_F" is `τ.IsTotal`, a
 quantification is over all `x ∈ D` (all times in the temporal order), not just times in
 `dom(τ)`. No admissible-history parameter, no shift-closure side condition.
 
+**`SemanticConsequence` is `SemanticConsequenceIn` at the unconstrained class**, exactly as
+`valid` is `ValidIn .Base`: `Sat FrameClass.Base` is `True`, so the tag attaches no frame
+condition and "all carriers" *is* the class. The pre-abbreviation binder shape is reachable
+through `SemanticConsequence.of_forall` / `.apply` below.
+
 Note: Uses `Type` (not `Type*`) to avoid universe level issues in proofs.
 -/
 def SemanticConsequence (Γ : Context) (φ : Formula) : Prop :=
-  ∀ (F : TaskFrame) (M : TaskModel F)
-    (τ : WorldHistory F) (_ : τ.IsTotal) (t : F.Duration),
-    (∀ ψ ∈ Γ, TruthAt M τ t ψ) →
-    TruthAt M τ t φ
+  SemanticConsequenceIn ProofSystem.FrameClass.Base Γ φ
 
 /--
 Notation for semantic consequence: `Γ ⊨ φ`.
 -/
 notation:50 Γ:50 " ⊨ " φ:50 => SemanticConsequence Γ φ
+
+/-! ### Binder-shape adapters
+
+The pre-collapse binder shapes, restored. `ConsequenceOnFrames` already quantifies over the
+unbundled `(τ : WorldHistory F) (_ : τ.IsTotal)` pair, so — unlike `ValidOnFrames`, which bundles
+the history into `TaskFrame.HF` — no history-shape adapter is needed at the generic layer. What
+each `of_forall` restores is the *frame condition*, putting it back into the local context in the
+form typeclass resolution can see: `Sat .Dense F` is `TaskFrame.IsDense F`, whose head symbol is
+not `DenselyOrdered`, so a bare hypothesis of that type is invisible to instance search. The three
+class-restricted pairs live beside their definitions in `Metalogic/StrongCompleteness.lean`. -/
+
+/-- Introduce `SemanticConsequence` from its pre-abbreviation binder shape; the `Sat .Base`
+argument (`True`) is discharged here rather than at each call site. -/
+theorem SemanticConsequence.of_forall {Γ : Context} {φ : Formula}
+    (h : ∀ (F : TaskFrame) (M : TaskModel F) (τ : WorldHistory F), τ.IsTotal →
+           ∀ t : F.Duration, (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ) :
+    SemanticConsequence Γ φ :=
+  fun F _ M τ hτ t => h F M τ hτ t
+
+/-- Eliminate `SemanticConsequence` into its pre-abbreviation binder shape. -/
+theorem SemanticConsequence.apply {Γ : Context} {φ : Formula}
+    (h : SemanticConsequence Γ φ) (F : TaskFrame) (M : TaskModel F)
+    (τ : WorldHistory F) (hτ : τ.IsTotal) (t : F.Duration)
+    (hall : ∀ ψ ∈ Γ, TruthAt M τ t ψ) : TruthAt M τ t φ :=
+  h F trivial M τ hτ t hall
 
 /--
 A context is satisfiable in temporal type `D` if there exists a model where all formulas
@@ -820,36 +873,40 @@ Valid formulas are semantic consequences of empty context.
 theorem valid_iff_empty_consequence (φ : Formula) :
     (⊨ φ) ↔ ([] ⊨ φ) := by
   constructor
-  · intro h F M τ hτ t _
+  · intro h
+    refine SemanticConsequence.of_forall ?_
+    intro F M τ hτ t _
     exact h.apply F M τ hτ t
   · intro h
     refine valid.of_forall_total ?_
     intro F M τ hτ t
-    exact h F M τ hτ t (by intro ψ hψ; exact absurd hψ List.not_mem_nil)
+    exact h.apply F M τ hτ t (by intro ψ hψ; exact absurd hψ List.not_mem_nil)
 
 /--
 Semantic consequence is monotonic: adding premises preserves consequences.
 -/
 theorem consequence_monotone {Γ Δ : Context} {φ : Formula} :
     Γ ⊆ Δ → (Γ ⊨ φ) → (Δ ⊨ φ) := by
-  intro h_sub h_cons F M τ hτ t h_delta
-  apply h_cons F M τ hτ t
-  intro ψ hψ
-  exact h_delta ψ (h_sub hψ)
+  intro h_sub h_cons
+  refine SemanticConsequence.of_forall ?_
+  intro F M τ hτ t h_delta
+  exact h_cons.apply F M τ hτ t (fun ψ hψ => h_delta ψ (h_sub hψ))
 
 /--
 If a formula is valid, it is a semantic consequence of any context.
 -/
 theorem valid_consequence (φ : Formula) (Γ : Context) :
     (⊨ φ) → (Γ ⊨ φ) :=
-  fun h F M τ hτ t _ => h.apply F M τ hτ t
+  fun h => SemanticConsequence.of_forall fun F M τ hτ t _ => h.apply F M τ hτ t
 
 /--
 Context with all formulas true implies each formula individually true.
 -/
 theorem consequence_of_member {Γ : Context} {φ : Formula} :
     φ ∈ Γ → (Γ ⊨ φ) := by
-  intro h F M τ hτ t h_all
+  intro h
+  refine SemanticConsequence.of_forall ?_
+  intro F M τ hτ t h_all
   exact h_all φ h
 
 /--
@@ -867,7 +924,7 @@ conclusion can use.
 -/
 theorem unsatisfiable_implies_all {Γ : Context} {φ : Formula} :
     (∀ D : TemporalOrder, ¬satisfiable D Γ) → (Γ ⊨ φ) :=
-  fun h_unsat F M τ hτ t h_all =>
+  fun h_unsat => SemanticConsequence.of_forall fun F M τ hτ t h_all =>
     absurd ⟨F.toFibre, M, τ, hτ, t, h_all⟩ (h_unsat F.Duration)
 
 /--

@@ -68,7 +68,7 @@ example : True := by
   let d : ⊢ φ := DerivationTree.axiom [] φ (Axiom.modal_future p) trivial
   
   -- Verify soundness
-  have v : [] ⊨ φ := soundness [] φ d
+  have v : [] ⊨ φ := soundness_in [] φ d
   
   -- Verify semantic validity directly
   have v_direct : ⊨ φ := modal_future_valid p
@@ -98,7 +98,7 @@ example : True := by
   
   -- Verify soundness
   have v : Γ ⊨ (p.allFuture.box) :=
-    soundness Γ (p.allFuture.box) d
+    soundness_in Γ (p.allFuture.box) d
   
   trivial
 
@@ -128,9 +128,9 @@ example : True := by
   
   -- Verify soundness at each step
   have v1 : Γ ⊨ (p.allFuture.box) :=
-    soundness Γ (p.allFuture.box) d1
+    soundness_in Γ (p.allFuture.box) d1
   have v2 : Γ ⊨ ((p.allFuture.allFuture).box) :=
-    soundness Γ ((p.allFuture.allFuture).box) d2
+    soundness_in Γ ((p.allFuture.allFuture).box) d2
   
   trivial
 
@@ -166,7 +166,7 @@ example : True := by
   
   -- Verify soundness
   have v : Γ ⊨ ((p.allFuture.box).box) :=
-    soundness Γ ((p.allFuture.box).box) d3
+    soundness_in Γ ((p.allFuture.box).box) d3
   
   trivial
 
@@ -191,10 +191,10 @@ example : True := by
   let d : ⊢ φ := temporalFutureDerived p
 
   -- Verify soundness
-  have v : [] ⊨ φ := soundness [] φ d
+  have v : [] ⊨ φ := soundness_in [] φ d
 
   -- Verify semantic validity (TF soundness inherited from MF + T + Modal 4)
-  have v_direct : [] ⊨ φ := soundness [] φ d
+  have v_direct : [] ⊨ φ := soundness_in [] φ d
   
   trivial
 
@@ -221,7 +221,7 @@ example : True := by
   
   -- Verify soundness
   have v : Γ ⊨ (p.box.allFuture) :=
-    soundness Γ (p.box.allFuture) d
+    soundness_in Γ (p.box.allFuture) d
   
   trivial
 
@@ -252,9 +252,9 @@ example : True := by
   
   -- Verify soundness at each step
   have v1 : Γ ⊨ (p.box.allFuture) :=
-    soundness Γ (p.box.allFuture) d1
+    soundness_in Γ (p.box.allFuture) d1
   have v2 : Γ ⊨ ((p.box.allFuture).allFuture) :=
-    soundness Γ ((p.box.allFuture).allFuture) d2
+    soundness_in Γ ((p.box.allFuture).allFuture) d2
   
   trivial
 
@@ -291,9 +291,9 @@ example : True := by
   
   -- Verify both paths are sound
   have v1 : Γ ⊨ (p.allFuture.box) :=
-    soundness Γ (p.allFuture.box) d1
+    soundness_in Γ (p.allFuture.box) d1
   have v2 : Γ ⊨ (p.box.allFuture) :=
-    soundness Γ (p.box.allFuture) d2
+    soundness_in Γ (p.box.allFuture) d2
   
   trivial
 
@@ -332,11 +332,11 @@ example : True := by
   
   -- Verify soundness at each step
   have v1 : Γ ⊨ (p.allFuture.box) :=
-    soundness Γ (p.allFuture.box) d1
+    soundness_in Γ (p.allFuture.box) d1
   have v2 : Γ ⊨ ((p.allFuture.box).allFuture) :=
-    soundness Γ ((p.allFuture.box).allFuture) d2
+    soundness_in Γ ((p.allFuture.box).allFuture) d2
   have v3 : Γ ⊨ (((p.allFuture.box).allFuture).allFuture) :=
-    soundness Γ (((p.allFuture.box).allFuture).allFuture) d3
+    soundness_in Γ (((p.allFuture.box).allFuture).allFuture) d3
   
   trivial
 
@@ -361,10 +361,10 @@ example : True := by
     DerivationTree.temporal_necessitation ((p.box.imp p).box) d2
   
   -- Verify soundness at each step
-  have v1 : [] ⊨ (p.box.imp p) := soundness [] (p.box.imp p) d1
-  have v2 : [] ⊨ ((p.box.imp p).box) := soundness [] ((p.box.imp p).box) d2
+  have v1 : [] ⊨ (p.box.imp p) := soundness_in [] (p.box.imp p) d1
+  have v2 : [] ⊨ ((p.box.imp p).box) := soundness_in [] ((p.box.imp p).box) d2
   have v3 : [] ⊨ (((p.box.imp p).box).allFuture) :=
-    soundness [] (((p.box.imp p).box).allFuture) d3
+    soundness_in [] (((p.box.imp p).box).allFuture) d3
   
   trivial
 
@@ -392,7 +392,7 @@ example : True := by
     DerivationTree.axiom [] φ (Axiom.modal_k_dist p.allFuture q.allFuture) trivial
   
   -- Verify soundness
-  have v : [] ⊨ φ := soundness [] φ d
+  have v : [] ⊨ φ := soundness_in [] φ d
   
   trivial
 
@@ -412,7 +412,7 @@ example : True := by
     FormalSystem.Theorems.TemporalDerived.temporalKDistDerived p.box q.box
   
   -- Verify soundness
-  have v : [] ⊨ φ := soundness [] φ d
+  have v : [] ⊨ φ := soundness_in [] φ d
   
   trivial
 
@@ -451,7 +451,7 @@ example : True := by
   
   -- Verify soundness
   have v : Γ ⊨ (((p.allFuture.box).allFuture).box) :=
-    soundness Γ (((p.allFuture.box).allFuture).box) d3
+    soundness_in Γ (((p.allFuture.box).allFuture).box) d3
   
   trivial
 
@@ -476,7 +476,7 @@ example : True := by
     DerivationTree.axiom (fc := FrameClass.Base) [] _ (Axiom.modal_future p) trivial
   
   have v : [] ⊨ (p.box.imp (p.allFuture.box)) :=
-    soundness [] _ d
+    soundness_in [] _ d
   
   -- Validity implies truth at all time-shifted models
   have _time_shift : [] ⊨ (p.box.imp (p.allFuture.box)) := v
@@ -496,7 +496,7 @@ example : True := by
     temporalFutureDerived p
   
   have v : [] ⊨ (p.box.imp (p.box.allFuture)) :=
-    soundness [] _ d
+    soundness_in [] _ d
   
   -- Validity implies truth at all time-shifted models
   have _time_shift : [] ⊨ (p.box.imp (p.box.allFuture)) := v

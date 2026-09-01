@@ -70,7 +70,7 @@ example : True := by
   let d : ⊢ φ := FormalSystem.Theorems.TemporalDerived.temporal4Derived p
   
   -- Verify soundness
-  have v : [] ⊨ φ := soundness [] φ d
+  have v : [] ⊨ φ := soundness_in [] φ d
   
   -- Verify semantic validity directly
   have v_direct : ⊨ φ := temp_4_valid p
@@ -101,7 +101,7 @@ example : True := by
   
   -- Verify soundness
   have v : Γ ⊨ p.allFuture.allFuture :=
-    soundness Γ p.allFuture.allFuture d
+    soundness_in Γ p.allFuture.allFuture d
   
   trivial
 
@@ -133,9 +133,9 @@ example : True := by
   
   -- Verify soundness at each step
   have v1 : Γ ⊨ p.allFuture.allFuture :=
-    soundness Γ p.allFuture.allFuture d1
+    soundness_in Γ p.allFuture.allFuture d1
   have v2 : Γ ⊨ p.allFuture.allFuture.allFuture :=
-    soundness Γ p.allFuture.allFuture.allFuture d2
+    soundness_in Γ p.allFuture.allFuture.allFuture d2
   
   trivial
 
@@ -160,7 +160,7 @@ example : True := by
   let d : ⊢ φ := DerivationTree.axiom [] φ (Axiom.connect_future p) trivial
   
   -- Verify soundness
-  have v : [] ⊨ φ := soundness [] φ d
+  have v : [] ⊨ φ := soundness_in [] φ d
   
   -- Verify semantic validity directly
   have v_direct : ⊨ φ := temp_a_valid p
@@ -190,7 +190,7 @@ example : True := by
   
   -- Verify soundness
   have v : Γ ⊨ (Formula.allFuture p.somePast) :=
-    soundness Γ (Formula.allFuture p.somePast) d
+    soundness_in Γ (Formula.allFuture p.somePast) d
   
   trivial
 
@@ -278,7 +278,7 @@ example : True := by
   let d : ⊢ φ := FormalSystem.Theorems.TemporalDerived.temporalKDistDerived p q
   
   -- Verify soundness
-  have v : [] ⊨ φ := soundness [] φ d
+  have v : [] ⊨ φ := soundness_in [] φ d
   
   -- Verify semantic validity directly
   have v_direct : ⊨ φ := temp_k_dist_valid p q
@@ -318,7 +318,7 @@ example : True := by
     DerivationTree.modus_ponens Γ p.allFuture q.allFuture d1 ass2
   
   -- Verify soundness
-  have v : Γ ⊨ q.allFuture := soundness Γ q.allFuture d2
+  have v : Γ ⊨ q.allFuture := soundness_in Γ q.allFuture d2
   
   trivial
 
@@ -347,7 +347,7 @@ example : True := by
   
   -- Verify soundness
   have v : [] ⊨ ((p.imp p).allFuture) :=
-    soundness [] ((p.imp p).allFuture) d2
+    soundness_in [] ((p.imp p).allFuture) d2
   
   trivial
 
@@ -372,11 +372,11 @@ example : True := by
     DerivationTree.temporal_necessitation ((p.box.imp p).allFuture) d2
   
   -- Verify soundness at each step
-  have v1 : [] ⊨ (p.box.imp p) := soundness [] (p.box.imp p) d1
+  have v1 : [] ⊨ (p.box.imp p) := soundness_in [] (p.box.imp p) d1
   have v2 : [] ⊨ ((p.box.imp p).allFuture) :=
-    soundness [] ((p.box.imp p).allFuture) d2
+    soundness_in [] ((p.box.imp p).allFuture) d2
   have v3 : [] ⊨ (((p.box.imp p).allFuture).allFuture) :=
-    soundness [] (((p.box.imp p).allFuture).allFuture) d3
+    soundness_in [] (((p.box.imp p).allFuture).allFuture) d3
   
   trivial
 
@@ -406,7 +406,7 @@ example : True := by
   
   -- Verify soundness
   have v : [] ⊨ ((p.allFuture.imp p.allFuture.allFuture).swapTemporal) :=
-    soundness [] _ d2
+    soundness_in [] _ d2
   
   trivial
 
@@ -428,7 +428,7 @@ example : True := by
   
   -- Verify soundness
   have v : [] ⊨ ((p.imp (Formula.allFuture p.somePast)).swapTemporal) :=
-    soundness [] _ d2
+    soundness_in [] _ d2
   
   trivial
 
@@ -490,7 +490,7 @@ example : True := by
   
   -- Verify soundness
   have v : Γ ⊨ (Formula.allFuture p.somePast) :=
-    soundness Γ (Formula.allFuture p.somePast) d
+    soundness_in Γ (Formula.allFuture p.somePast) d
   
   trivial
 

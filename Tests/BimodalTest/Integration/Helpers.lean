@@ -125,11 +125,11 @@ def mk_weakening_deriv (Γ Δ : Context) (φ : Formula)
 /-- Verify soundness of derivation -/
 def verify_soundness (Γ : Context) (φ : Formula) (d : DerivationTree FrameClass.Base Γ φ) :
     Γ ⊨ φ :=
-  soundness Γ φ d
+  soundness_in Γ φ d
 
 /-- Verify validity of theorem -/
 def verify_validity (φ : Formula) (d : DerivationTree FrameClass.Base [] φ) : ⊨ φ :=
-  Validity.valid_iff_empty_consequence φ |>.mpr (soundness [] φ d)
+  Validity.valid_iff_empty_consequence φ |>.mpr (soundness_in [] φ d)
 
 /-- Verify workflow: derivation → soundness → validity -/
 def verify_workflow (φ : Formula) (d : DerivationTree FrameClass.Base [] φ) : True := by

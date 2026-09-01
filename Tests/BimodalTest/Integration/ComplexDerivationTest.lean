@@ -92,10 +92,10 @@ example : True := by
       d3
   
   -- Verify soundness at each step
-  have v1 : Γ ⊨ q := soundness Γ q d1
-  have v2 : Γ ⊨ r := soundness Γ r d2
-  have v3 : Γ ⊨ s := soundness Γ s d3
-  have v4 : Γ ⊨ t := soundness Γ t d4
+  have v1 : Γ ⊨ q := soundness_in Γ q d1
+  have v2 : Γ ⊨ r := soundness_in Γ r d2
+  have v3 : Γ ⊨ s := soundness_in Γ s d3
+  have v4 : Γ ⊨ t := soundness_in Γ t d4
   
   trivial
 
@@ -137,7 +137,7 @@ example : True := by
     DerivationTree.modus_ponens Γ' p.box p d5 d4
   
   -- Verify soundness
-  have v : Γ' ⊨ p := soundness Γ' p d6
+  have v : Γ' ⊨ p := soundness_in Γ' p d6
   
   trivial
 
@@ -170,9 +170,9 @@ example : True := by
     DerivationTree.axiom (fc := FrameClass.Base) [] _ (Axiom.modal_t p) trivial
   
   -- Verify all are sound
-  have v1 : [] ⊨ (p.box.box.box.imp p.box.box) := soundness [] _ d1
-  have v2 : [] ⊨ (p.box.box.imp p.box) := soundness [] _ d2
-  have v3 : [] ⊨ (p.box.imp p) := soundness [] _ d3
+  have v1 : [] ⊨ (p.box.box.box.imp p.box.box) := soundness_in [] _ d1
+  have v2 : [] ⊨ (p.box.box.imp p.box) := soundness_in [] _ d2
+  have v3 : [] ⊨ (p.box.imp p) := soundness_in [] _ d3
   
   trivial
 
@@ -206,7 +206,7 @@ example : True := by
     DerivationTree.modus_ponens Γ p.box p ax3 d2
   
   -- Verify soundness
-  have v : Γ ⊨ p := soundness Γ p d3
+  have v : Γ ⊨ p := soundness_in Γ p d3
   
   trivial
 
@@ -234,7 +234,7 @@ example : True := by
     DerivationTree.modus_ponens Γ p.box.box p.box.box.box ax2 d1
   
   -- Verify soundness
-  have v : Γ ⊨ p.box.box.box := soundness Γ p.box.box.box d2
+  have v : Γ ⊨ p.box.box.box := soundness_in Γ p.box.box.box d2
   
   trivial
 
@@ -270,11 +270,11 @@ example : True := by
   -- Verify all are sound
   have v1 : [] ⊨ (p.allFuture.allFuture.allFuture.imp
                p.allFuture.allFuture.allFuture.allFuture) :=
-    soundness [] _ d1
+    soundness_in [] _ d1
   have v2 : [] ⊨ (p.allFuture.allFuture.imp p.allFuture.allFuture.allFuture) :=
-    soundness [] _ d2
+    soundness_in [] _ d2
   have v3 : [] ⊨ (p.allFuture.imp p.allFuture.allFuture) :=
-    soundness [] _ d3
+    soundness_in [] _ d3
   
   trivial
 
@@ -301,7 +301,7 @@ example : True := by
   
   -- Verify soundness
   have v : Γ ⊨ p.allFuture.allFuture.allFuture.allFuture :=
-    soundness Γ p.allFuture.allFuture.allFuture.allFuture d
+    soundness_in Γ p.allFuture.allFuture.allFuture.allFuture d
   
   trivial
 
@@ -331,7 +331,7 @@ example : True := by
     DerivationTree.modus_ponens Γ p.box (p.allFuture.box) ax ass
   
   -- Verify soundness
-  have v : Γ ⊨ (p.allFuture.box) := soundness Γ (p.allFuture.box) d
+  have v : Γ ⊨ (p.allFuture.box) := soundness_in Γ (p.allFuture.box) d
   
   trivial
 
@@ -361,7 +361,7 @@ example : True := by
   
   -- Verify soundness
   have v : Γ ⊨ ((p.allFuture.allFuture).box) :=
-    soundness Γ ((p.allFuture.allFuture).box) d2
+    soundness_in Γ ((p.allFuture.allFuture).box) d2
   
   trivial
 
@@ -405,9 +405,9 @@ example : True := by
     DerivationTree.weakening Γ2 Γ3 p d2 h2
   
   -- Verify soundness at each step
-  have v1 : Γ1 ⊨ p := soundness Γ1 p d1
-  have v2 : Γ2 ⊨ p := soundness Γ2 p d2
-  have v3 : Γ3 ⊨ p := soundness Γ3 p d3
+  have v1 : Γ1 ⊨ p := soundness_in Γ1 p d1
+  have v2 : Γ2 ⊨ p := soundness_in Γ2 p d2
+  have v3 : Γ3 ⊨ p := soundness_in Γ3 p d3
   
   trivial
 

@@ -526,32 +526,58 @@ may touch `BLValidOn`/`BLValidOnFrames`/`BLValidIn`'s definitions or the three p
 
 ---
 
-### Phase 7: Collapse the list-context consequence definitions [NOT STARTED]
+### Phase 7: Collapse the list-context consequence definitions [COMPLETED]
 
 **Goal**: Introduce `ConsequenceOnFrames` / `SemanticConsequenceIn` with adapters, retarget the four
 hand-written `SemanticConsequence*` binder-list defs onto it, and **rewrite** the four docstrings
 whose stated purpose was to act as the hand-copied binder guard.
 
 **Tasks**:
-- [ ] In `Semantics/Validity.lean`, add `ConsequenceOnFrames (P : TaskFrame → Prop) (Γ : Context)
+- [x] In `Semantics/Validity.lean`, add `ConsequenceOnFrames (P : TaskFrame → Prop) (Γ : Context)
       (φ : Formula)` and `SemanticConsequenceIn (fc : FrameClass) Γ φ := ConsequenceOnFrames fc.Sat
       Γ φ`, modelled on `SetConsequence.lean:91,98`.
-- [ ] Add `.of_forall_total` / `.apply_total` adapters at the generic layer plus the four per-class
+- [x] Add `.of_forall_total` / `.apply_total` adapters at the generic layer plus the four per-class
       `.of_forall` / `.apply` pairs, mirroring `SetConsequence.lean:129–197` **exactly**. For the
       `.Discrete` adapter use that file's `obtain`-and-`@` idiom; **never `haveI`**, which breaks
       definitional equality against instances baked into `F`'s type.
-- [ ] Retarget the four defs, statements-as-propositions unchanged:
+      *(deviation: altered — the **generic-layer** `.of_forall_total`/`.apply_total` pair was NOT
+      added, deliberately. `ConsequenceOnFrames` is already stated over the unbundled
+      `(τ : WorldHistory F) (_ : τ.IsTotal)` pair — unlike `ValidOnFrames`, which bundles the
+      history into `TaskFrame.HF` — so a generic history-shape adapter would be the identity
+      function. `SetConsequence.lean`, the mandated template, has no such pair either, for the
+      same reason. The four per-class pairs were added as specified.)*
+- [x] Retarget the four defs, statements-as-propositions unchanged:
       `SemanticConsequence` (`Validity.lean:89`), `SemanticConsequenceDedekindDense`
       (`StrongCompleteness.lean:174`), `SemanticConsequenceDense` (`:729`),
       `SemanticConsequenceDiscrete` (`:839`) → each `SemanticConsequenceIn <fc> Γ φ`.
-- [ ] **Rewrite (do not delete) the four docstrings.** Each currently justifies itself as a guard
+- [x] **Rewrite (do not delete) the four docstrings.** Each currently justifies itself as a guard
       that "reproduces that block verbatim" (e.g. `StrongCompleteness.lean:521-528`). The rewritten
       text must state that the guard has moved to `FrameClass.Sat` — one source of truth rather than
       a hand-copied list — and cite `FrameClassValidity.lean`'s `Sat` as the new anchor. This is
       budgeted work, not incidental: it is the cost of the in-scope decision recorded above.
-- [ ] Confirm the four defs remain *propositionally and definitionally* what they were, so no
+- [x] Confirm the four defs remain *propositionally and definitionally* what they were, so no
       existing proof over them needs editing. If any does, the edit belongs to this phase and must be
       listed in the commit.
+      *(deviation: altered — the Scope Hypothesis's "0 existing proofs requiring edits" is FALSE
+      and was the item the plan itself flagged as most likely wrong. The four defs remain
+      **propositionally** identical — machine-checked, see
+      `reports/03_consequence-collapse-equivalence-probe.lean`, which proves each collapsed
+      definition `↔` its pre-collapse binder list transcribed verbatim from `bee03a881` — but not
+      **definitionally**: `ConsequenceOnFrames` takes the frame condition as an explicit `P F`
+      argument where the hand-written lists took it as an instance binder (or, at `.Base`, not at
+      all). Edits required, all in this commit:
+      (a) five proofs inside `Validity.lean` (`valid_iff_empty_consequence`,
+      `consequence_monotone`, `valid_consequence`, `consequence_of_member`,
+      `unsatisfiable_implies_all`);
+      (b) the four `semantic_deduction_*` proofs in `StrongCompleteness.lean`;
+      (c) **118 call sites across 7 files of the test suite** — `Tests/BimodalTest/Integration/`'s
+      `Helpers`, `ProofSystemSemanticsTest`, `AutomationProofSystemTest`,
+      `TemporalIntegrationTest`, `BimodalIntegrationTest`, `ComplexDerivationTest`, `EndToEndTest`.
+      Every one was the same pattern: `soundness Γ φ d` read directly at type `Γ ⊨ φ`, relying on
+      the exact binder list. Each became `soundness_in Γ φ d`, which **is** that same term at the
+      parameterized level and is definitionally `SemanticConsequenceIn .Base Γ φ`. No test
+      assertion changed; the transformation is compiler-checked, since a changed proposition would
+      not elaborate. This was unbudgeted work not named in the plan's Files-to-modify list.)*
 
 **Timing**: 2 hours
 
@@ -579,21 +605,30 @@ four `SemanticConsequence*` names before starting.
 
 ---
 
-### Phase 8: Retarget the consequence theorems and close H2's literal form [NOT STARTED]
+### Phase 8: Retarget the consequence theorems and close H2's literal form [COMPLETED]
 
 **Goal**: Make the four `soundness_*_consequence` theorems one-liners over `soundness_in`, and add
 the `SetDerivable → SetSemanticConsequenceOn` theorem the review's H2 names as its target.
 
 **Tasks**:
-- [ ] Retarget bodies, statements unchanged: `soundness_dedekind_consequence`:530,
+- [x] Retarget bodies, statements unchanged: `soundness_dedekind_consequence`:530,
       `soundness_base_consequence`:676, `soundness_dense_consequence`:781,
       `soundness_discrete_consequence`:891 → each `fun … => soundness_in …` through the Phase 7
       adapters.
-- [ ] Add `soundness_setConsequence {fc} : SetDerivable fc Γ φ → SetSemanticConsequenceOn fc Γ φ`,
+- [x] Add `soundness_setConsequence {fc} : SetDerivable fc Γ φ → SetSemanticConsequenceOn fc Γ φ`,
       composed from `setDerivable_iff_exists_finite` (`SetConsequence.lean:247`), `soundness_in`, and
       `setConsequenceOnFrames_mono` (`:208`). No such theorem exists today; adding it closes review
       H2's stated form.
-- [ ] `#print axioms` on all four consequence theorems and the new one; diff against the Phase 1
+      *(deviation: altered — landed in `Metalogic/StrongCompleteness.lean`, not
+      `Metalogic/SetConsequence.lean`. Import direction forces it: `SetConsequence.lean` does not
+      import `Soundness.lean` and `Soundness.lean` does not import `SetConsequence.lean`;
+      `StrongCompleteness.lean` imports both. The plan anticipated this choice and asked for it to
+      be recorded.)*
+- [x] *(deviation: altered — Phases 7 and 8 are landed in ONE commit, not two. Phase 7's change to
+      the four definitions' binder shape necessarily breaks the four `soundness_*_consequence`
+      bodies that Phase 8 retargets, so Phase 7 has no independently green state. This is a
+      plan-structure finding: the two phases are one atomic change.)*
+- [x] `#print axioms` on all four consequence theorems and the new one; diff against the Phase 1
       baseline.
 
 **Timing**: 1.5 hours
