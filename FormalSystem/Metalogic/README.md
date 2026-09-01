@@ -133,7 +133,7 @@ Every subdirectory has exactly one **sibling** aggregator: `X.lean` sits *beside
 | `SoundnessLemmas.lean` | 34 | `SoundnessLemmas/` |
 | `WeakCanonical.lean` | 144 | `WeakCanonical/` |
 
-**Seven** loose files in `Metalogic/` are not aggregators — they have no same-named
+**Ten** loose files in `Metalogic/` are not aggregators — they have no same-named
 sibling directory:
 
 | Loose non-aggregator | Lines | Role |
@@ -142,9 +142,12 @@ sibling directory:
 | `StrongCompleteness.lean` | 943 | Strong/consequence completeness, including `completeness_dedekind`, and the compactness reductions |
 | `SetConsequence.lean` | 445 | Set-indexed consequence relation |
 | `DiscreteNonCompactness.lean` | 334 | Non-compactness of the discrete frame class |
-| `BaseLanguageSoundness.lean` | 345 | Soundness for the base language BL, by composing `Conservativity.translate` with `Soundness.lean` across the truth-transfer bridge `truthAt_tr` |
-| `Conservativity.lean` | 311 | Conservativity of the extension |
+| `BaseLanguageSoundness.lean` | 482 | Soundness for the base language BL, by composing `Conservativity.translate` with `Soundness.lean` across the truth-transfer bridge `truthAt_tr`; also `bl_soundness_discrete_succ`, the binder-weakened discrete soundness theorem proved directly by induction rather than by composition |
+| `Conservativity.lean` | 382 | Conservativity of the extension |
 | `Compactness.lean` | 166 | Compactness and strong completeness for Base and Dense, by ultraproduct model existence |
+| `TMCompletenessReduction.lean` | 155 | `TMCompleteBase ↔ ForwardBase` and its `.Discrete` mirror — an equivalence between two unasserted `Prop`s pinning "TM complete over task frames" and "forward conservativity" as the same claim |
+| `SpWitness.lean` | 128 | The `(Sp)` validity witness and its TM⁺ translation, the CEB row's TM⁺ half |
+| `Z1Countermodel.lean` | 194 | The `Z1` countermodel over `ℚ ×ₗ ℤ`, closing CEF with both halves machine-checked and refuting `TM_f`'s weak completeness over ℤ-time |
 
 Plus the directory's own root `Metalogic.lean` (226 lines), which sits one level up,
 beside `Metalogic/`.

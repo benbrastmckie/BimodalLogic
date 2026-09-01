@@ -395,7 +395,7 @@ assumed and the axiom-case table must be re-derived before proceeding.
 
 ---
 
-### Phase 7: The `Z1` countermodel and the two CEF deliverables [NOT STARTED]
+### Phase 7: The `Z1` countermodel and the two CEF deliverables [IN PROGRESS]
 
 **Goal**: Machine-check `¬ ⊢ᴮᴸ[Discrete] Z1 p` at the carrier `ℚ ×ₗ ℤ`, thereby closing CEF with
 both halves in-tree and refuting TM_f's weak completeness over ℤ-time (report §6.1).

@@ -47,7 +47,14 @@ false** at `fc := .Base` and `fc := .Discrete`. That is an unsound placeholder, 
 debt, and the repository's zero-debt policy forbids it. Do not state the theorem; do not state
 an approximation of it.
 
-## CEF / `FrameClass.Discrete` — refuted, and the TM⁺ half is machine-checked here
+**Cross-reference**: `Metalogic/TMCompletenessReduction.lean` pins "TM (resp. TM_f) is complete
+over task frames" as *the same proposition* as `forward` above, restricted to `fc := .Base`
+(resp. `.Discrete`) — its `tmCompleteBase_iff_forwardBase` / `tmCompleteDiscrete_iff_forwardDiscrete`
+are equivalences between two unasserted `Prop`s, proving neither side. A future dispatch
+attempting to prove TM-completeness directly is thereby attempting `forward` under a different
+name, and falls under this same prohibition.
+
+## CEF / `FrameClass.Discrete` — refuted, and **both halves are now machine-checked**
 
 `ProofSystem.Axiom.z1` (`ProofSystem/Axioms.lean`, `minFrameClass = .Discrete`) is
 
@@ -57,24 +64,26 @@ G(Gφ → φ) → (F(Gφ) → Gφ)
 
 built entirely from `allFuture`, `someFuture` and `imp`. Take the BL-side schema `Z1` below —
 the same formula with BL's *derived* `F` — and `z1_translate` proves
-`⊢[Discrete] tr (Z1 φ)` outright, in two lines: the axiom, plus the standing `F`-bridge.
+`⊢[Discrete] tr (Z1 φ)` outright, in two lines: the axiom, plus the standing `F`-bridge. That is
+the TM⁺_f half.
 
-So the TM⁺_f side of the witness is not a conjecture in this repository; it is a theorem
-below. What refutes the forward direction is the other half: `TM_f ⊢ Z1 φ` fails, because
-`TM_f = TM + DF` is sound over *every* discrete frame while `Z1` is unsound over
-non-Archimedean discrete orders such as `ℤ ×_lex ℤ`. That half needs a BL-side semantics and a
-BL-side soundness theorem — both of which now exist, in `FormalSystem/Semantics/BLTruth.lean` and
-`FormalSystem/Metalogic/BaseLanguageSoundness.lean` — together with the `ℤ ×_lex ℤ` countermodel,
-which does not (see "What a machine-checked refutation would need"). The refutation is therefore
-still *documented* rather than machine-checked, with its TM⁺ half proved; what has changed is
-only which prerequisite is missing.
+The other half — `TM_f ⊢ Z1 φ` fails, because `TM_f = TM + DF` is sound over *every* discrete
+frame while `Z1` is unsound over non-Archimedean discrete orders — is now **also** a theorem:
+`Metalogic/Z1Countermodel.lean`'s `not_bl_derivable_z1`, via `bl_soundness_discrete_succ`
+(`Metalogic/BaseLanguageSoundness.lean`, the binder-weakened discrete BL soundness theorem
+dropping the Archimedean instances) applied to a countermodel over `ℚ ×_lex ℤ`
+(`Semantics/LexCarrier.lean`), **not** `ℤ ×_lex ℤ` as an earlier draft of this section and the
+research report both suggested — `ℚ ×_lex ℤ` is the carrier `BXCanonical/DiscreteCarrierProbe.lean`
+already probes for the `FrameClass.Base` layer, so the two modules read as one story rather than
+introducing a second non-Archimedean carrier. **CEF is therefore refuted with both halves
+machine-checked**, not merely documented.
 
 **One correction to the research report.** The report asserted `z1 φ = tr (Z1 φ')` as a
 syntactic identity. It is not, and cannot be: `Formula.someFuture` is a top-level `untl`, and
 by `BaseLanguage.tr_ne_untl` nothing in the range of `tr` is a top-level `untl`. The bridge
 `BaseLanguage.notGNot_imp_F` closes the gap derivably instead — see `z1_translate`.
 
-## CEB / `FrameClass.Base` — refuted in the source, with both witnesses live here
+## CEB / `FrameClass.Base` — refuted in the source; TM⁺ half machine-checked, TM half not machine-checkable here
 
 The source's witness is `(Sp) := □φ_DF ∨ □ψ_DN`. Its TM⁺ derivation uses TMP-NB (`X⊤ → □X⊤`)
 and M5, and **both are available at `FrameClass.Base` in this repository**:
@@ -82,13 +91,53 @@ and M5, and **both are available at `FrameClass.Base` in this repository**:
 `ProofSystem.Axiom.modal_5_collapse` is M5, and neither is named in
 `ProofSystem.Axiom.minFrameClass`'s non-`Base` list, so both fall through its catch-all to
 `.Base`. The source's `(Sp)` derivation is thus available verbatim in `⊢[FrameClass.Base]`,
-given the repository's own `completeness_*` results for the two BL⁺-valid conditionals.
+given the repository's own `completeness_*` results for the two BL⁺-valid conditionals — but
+this repository does not reconstruct that TMP-NB/M5 derivation; instead `Metalogic/SpWitness.lean`
+reaches the same TM⁺ half by a different, and independently informative, route: `(Sp)` (its own
+reconstruction of the witness, since the source formula's own `\label` was deleted from the
+paper — see Provenance below) is BL-**valid** on every task frame for a purely order-theoretic
+reason (`SpWitness.blValid_sp`, from `Semantics/DurationClassification.lean`'s
+`duration_dense_or_least_pos` dichotomy), and composing with `BXCanonical.completeness` yields
+`⊢[Base] tr (Sp φ ψ)` (`SpWitness.sp_translate`) with **no appeal to TMP-NB or M5 at all**.
 
-As with CEF, the failing half — no instance of `(Sp)` is a TM-theorem, by soundness on a
+Unlike CEF, the failing half — no instance of `(Sp)` is a TM-theorem, by soundness on a
 disjoint two-fibre structure (a `ℤ`-fibre and an `ℝ`-fibre with `□` read globally over both) —
-needs a BL-side semantics and soundness theorem, which are now available
-(`FormalSystem/Semantics/BLTruth.lean`, `FormalSystem/Metalogic/BaseLanguageSoundness.lean`),
-plus the two-fibre countermodel itself, which is not.
+is **not** merely unbuilt but **unavailable in principle** with the tree's current semantics
+layer: `BLTruthAt`/`bl_soundness` are `TaskFrame`-bound, and `Metalogic/SpWitness.lean`'s own
+un-boxed sharpening (report §4.2) shows why a `TaskFrame`-level argument cannot reach the
+two-fibre case — `(Sp)`'s un-boxed dichotomy is valid on *every* strict linear order, so what a
+CEB countermodel needs is a structure where `□` sees *different* histories with
+differently-shaped time, which no single `TaskFrame` (one shared `Duration`) can express. Closing
+CEB needs a frame notion outside `TaskFrame` plus a *native* (non-composed) BL soundness theorem
+over it — proposed as a follow-up task, not attempted here (see Phase 8's completion note).
+
+## The Kripke-level answer to "what is TM complete for" (report §5(i)) — principled, unformalized
+
+Independently of the CEB/CEF/CED/CEC row analysis above, there is a standard modal-logic answer
+to what TM's Kripke frame class actually is: **S5 ⊗ Kt4.3 + MF**, complete by Sahlqvist
+canonicity. This is textbook material (the axioms MK/MT/M5/MF/TK/T4/TB/TA/TL are each Sahlqvist,
+and Sahlqvist's theorem gives canonicity, hence completeness, for their join), not a repository
+result: formalizing the Sahlqvist-canonicity argument itself is a large separate development
+(explicitly a Non-Goal of this plan) and is recorded here only as the principled answer's
+provenance, never as something this tree has machine-checked.
+
+## Two live-paper facts bearing on the discrete rows
+
+- **`def:TMplus-f`** (paper `\S sub:Extension`, live text) pins TM⁺_f's Hölder-classified
+  completeness class to `ℤ`-time precisely: "It follows by Hölder's theorem that a nontrivial
+  discrete Archimedean totally ordered abelian group is isomorphic to `ℤ`, and so the
+  successor-Archimedean discrete class to which `BX`_f and `TM⁺`_f are sound and complete is
+  exactly `ℤ`-time." This is what makes `Z1Countermodel.tmCompleteDiscrete_refuted` read as the
+  `TM_f`-vs-`TM⁺_f` completeness *gap*, rather than a weaker claim about some other class.
+- **A commented (non-live) line**, `possible_worlds.tex:4614` immediately below `def:TMplus-f`,
+  gives the author's own position in the author's own words: "`TM`_f, by contrast, is sound
+  over the full class of discrete frames, since **DF** is valid on every discrete order and not
+  only on `ℤ`-time; whether `TM`_f is complete over that broader class remains open, as
+  discussed at `cor:tm-completeness`." Cited as the author's stated position, flagged
+  explicitly as **commented out** and therefore not live text — the open verdict it records
+  matches this module's own CEF finding (`Z1Countermodel.tmCompleteDiscrete_refuted`) that
+  `TM_f` is not weakly complete over the *broader* (non-Archimedean) discrete class, only over
+  `ℤ`-time.
 
 ## CED / CEC — open
 
@@ -99,21 +148,43 @@ gap axioms) is separately **refuted** in
 `FormalSystem.Metalogic.Independence.CoNotPriorU`. "Open" here means open in the source, not
 merely unattempted here.
 
-## What a machine-checked refutation would need
+## What a machine-checked refutation would need — now row-dependent, not a single narrowing
 
-A BL-side semantics, a BL-side soundness theorem, and the two countermodels — the two-fibre
-structure for CEB and `ℤ ×_lex ℤ` for CEF. The first two now exist:
-`FormalSystem/Semantics/BLTruth.lean` defines `BLTruthAt` natively on `BLFormula` per
-`def:BL-semantics`, and `FormalSystem/Metalogic/BaseLanguageSoundness.lean` proves
-`bl_soundness` together with its dense, discrete and Dedekind siblings, by composing `translate`
-below with `Metalogic/Soundness.lean` across the truth-transfer bridge `truthAt_tr`.
+A BL-side semantics and a BL-side soundness theorem now exist tree-wide
+(`FormalSystem/Semantics/BLTruth.lean`'s `BLTruthAt`, and
+`FormalSystem/Metalogic/BaseLanguageSoundness.lean`'s `bl_soundness` family), but what each row
+still needs beyond that differs, and reading it as one shared "countermodels alone" gap is no
+longer accurate for either row:
 
-**The countermodels do not exist**, and building them is separate material: they would consume
-the non-Archimedean discrete carrier work, not this proof-theoretic bridge. So the missing
-prerequisite is now the countermodels alone. The **forward direction remains refuted** and must
-still not be stated or `sorry`-ed here — nothing about the arrival of a BL semantics softens
-that; this module's documentation records which prerequisite is still missing, and that has
-simply narrowed from three items to one.
+- **CEF (`FrameClass.Discrete`) — done, both halves machine-checked.** The missing prerequisite
+  was a *binder-weakened* BL soundness theorem — `bl_soundness_discrete_succ`
+  (`Metalogic/BaseLanguageSoundness.lean`), dropping `IsSuccArchimedean`/`IsPredArchimedean` so
+  it applies to a non-Archimedean carrier — plus the countermodel itself, assembled over
+  `multiFamTaskFrameGen` at the non-Archimedean discrete carrier `ℚ ×_lex ℤ`
+  (`Semantics/LexCarrier.lean`, `Metalogic/Z1Countermodel.lean`). **Both are now landed**: `z1_translate`
+  below is the TM⁺_f half, and `Z1Countermodel.not_bl_derivable_z1` is the TM_f half — the
+  refutation is machine-checked, not merely documented.
+- **CEB (`FrameClass.Base`) — still not machine-checkable in this tree, and not close.** The
+  missing prerequisite is a **frame notion outside `TaskFrame`** plus a **native** (non-composed)
+  BL soundness theorem over it. `BLTruthAt`/`bl_soundness` are `TaskFrame`-bound and cannot
+  supply this: `(Sp) := □(DF φ) ∨ □(DN ψ)` — the reconstructed witness, `Metalogic/SpWitness.lean`'s
+  `blValid_sp`/`sp_translate` — is BL-valid on *every* task frame (a theorem now, not a
+  conjecture), and TM⁺ is *unsound* on the two-fibre class the source's refutation needs, so the
+  `translate`-then-`soundness` composition this module supplies is unavailable **in principle**,
+  not merely unbuilt. See `Metalogic/SpWitness.lean`'s module docstring for the un-boxed
+  sharpening (report §4.2) that makes this precise: `□` is what turns the dichotomy into a
+  frame-uniform fact, and a CEB refutation needs a structure where different histories see
+  differently-shaped time.
+
+The **forward direction remains refuted** at both rows and must still not be stated or
+`sorry`-ed here — nothing about the CEF closure changes that; it closes CEF's specific
+row-refutation with a machine-checked witness, while leaving the general prohibition (this
+module's own `forward` schema, for every frame class) exactly as forbidden as before. See also
+`Metalogic/TMCompletenessReduction.lean`, whose `tmCompleteBase_iff_forwardBase` /
+`tmCompleteDiscrete_iff_forwardDiscrete` pin "TM (resp. TM_f) complete over task frames" as the
+*same proposition* as this module's forward-conservativity prohibition, at `.Base` and
+`.Discrete` respectively — so a future dispatch attempting TM-completeness directly is thereby
+attempting the forbidden claim, under a different name.
 
 ## Provenance of the source claim — historical, not a live anchor
 
