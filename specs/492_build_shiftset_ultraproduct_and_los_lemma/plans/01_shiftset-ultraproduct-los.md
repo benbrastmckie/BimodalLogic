@@ -335,7 +335,7 @@ noted as a partial-completion checkpoint, not as a parallel wave.
 - **Verification Tier:** full
 - **Commit Mode:** per-substep
 
-### Phase 3: Los.lean — the Łoś lemma for ShiftTruth (six cases) and for TruthAt [IN PROGRESS]
+### Phase 3: Los.lean — the Łoś lemma for ShiftTruth (six cases) and for TruthAt [COMPLETED]
 
 - **Goal:** Prove `los` (Łoś at `ShiftTruth`, by induction on `Formula`, all six cases) and
   `los_truthAt` (Łoś at `TruthAt`, by conjugating `los` with `ShiftSet.forward_repr`). This is
@@ -344,46 +344,46 @@ noted as a partial-completion checkpoint, not as a parallel wave.
   - `FormalSystem/Semantics/Ultraproduct/Los.lean` (new)
   - `FormalSystem/Semantics.lean` (one import line)
 - **Tasks:**
-  - [ ] Create `FormalSystem/Semantics/Ultraproduct/Los.lean`, namespace
+  - [x] Create `FormalSystem/Semantics/Ultraproduct/Los.lean`, namespace
         `FormalSystem.Semantics.Ultraproduct`, importing
         `FormalSystem.Semantics.Ultraproduct.ShiftSetProduct`. **Open `ShiftTruth` explicitly**:
         `open FormalSystem.Semantics.ShiftSet (ShiftTruth)` — risk R-NS. `open FormalSystem.
         Semantics` alone is not enough; `ShiftTruth` lives inside `namespace ShiftSet`
         (`ShiftSet.lean:114`, def at `:261`).
-  - [ ] State `los` with the **binder order from `prototype/UltraproductLos.lean:120-123`**:
+  - [x] State `los` with the **binder order from `prototype/UltraproductLos.lean:120-123`**:
         `(S : ∀ i, ShiftSet (T i)) (χ : Formula) : ∀ (f : ∀ i, (S i).Carrier) (x : ∀ i, ↑(T i)), …`.
         `χ` must come before `f` and `x`. An IH fixed at `f`, `x` closes none of `box`, `untl`,
         `snce`. Carry the docstring explaining this.
-  - [ ] Install the carrier `Nonempty` instance **before** `induction`:
+  - [x] Install the carrier `Nonempty` instance **before** `induction`:
         `haveI : ∀ i, Nonempty ((S i).Carrier) := fun i => (S i).carrier_nonempty`.
-  - [ ] `atom`: `intro f x; exact Iff.rfl`.
-  - [ ] `bot`: **not** `Iff.rfl` (risk R-NEBOT). Transcribe
+  - [x] `atom`: `intro f x; exact Iff.rfl`.
+  - [x] `bot`: **not** `Iff.rfl` (risk R-NEBOT). Transcribe
         `⟨fun h => h.elim, fun h => by obtain ⟨_, hi⟩ := h.exists; exact hi⟩` from `:127`.
-  - [ ] `imp`: use `exact (imp_congr (ihψ f x) (ihχ f x)).trans Ultrafilter.eventually_imp.symm`
+  - [x] `imp`: use `exact (imp_congr (ihψ f x) (ihχ f x)).trans Ultrafilter.eventually_imp.symm`
         (`:132`). **Do not** attempt `rw [show … from Iff.rfl]` — risk R-RW. Carry the inline
         comment recording why.
-  - [ ] `box` (`:133-145`): `→` by `by_contra`, then `Ultrafilter.eventually_not.mpr` +
+  - [x] `box` (`:133-145`): `→` by `by_contra`, then `Ultrafilter.eventually_not.mpr` +
         `not_forall.mp` + `exists_section` over `(S i).Carrier`, then `.and`/`.exists`. `←` by
         `omk_surjective` and the IH — no choice, no ultrafilter property.
-  - [ ] `untl` (`:146-171`): **two** `exists_section` calls, one per direction. `→` destructures
+  - [x] `untl` (`:146-171`): **two** `exists_section` calls, one per direction. `→` destructures
         `⟨s, hs, he, hg⟩`, recovers `σ` by `mk_surjective`, and proves the inner bounded `∀` by a
         nested `by_contra` whose chosen section `ρ` must satisfy **three** pointwise conditions at
         once (`x i < ρ i`, `ρ i < σ i`, and the negation) so that `mk ρ` lands strictly inside the
         open interval before `hg` applies. `←` extracts the witness section by `exists_section`,
         then handles the bounded `∀` by `mk_surjective` on the bound variable.
-  - [ ] `snce` (`:172-197`): the mirror of `untl` with the two order comparisons swapped.
-  - [ ] State and prove `los_truthAt` (`:205-211`) as the three-line term:
+  - [x] `snce` (`:172-197`): the mirror of `untl` with the two order comparisons swapped.
+  - [x] State and prove `los_truthAt` (`:205-211`) as the three-line term:
         `(ShiftSet.forward_repr _ _ _ _).trans ((los S χ f x).trans (eventually_congr
         (Eventually.of_forall fun i => (ShiftSet.forward_repr (S i) (f i) (x i) χ).symm)))`.
         Carry the docstring explaining that risk R2 is discharged by reuse: `forward_repr`'s own
         `box` case (`ShiftSet.lean:278`ff) already reconciles `TruthAt`'s quantifier over all
         total histories with `ShiftTruth`'s quantifier over the carrier, via `hist_isTotal`
         (`:226`) and `total_eq_orbit` (`:245`).
-  - [ ] Module docstring covering the routing decision (why not `TruthAt` directly) and the
+  - [x] Module docstring covering the routing decision (why not `TruthAt` directly) and the
         three-cases-need-choice correction.
-  - [ ] Add `import FormalSystem.Semantics.Ultraproduct.Los` to `FormalSystem/Semantics.lean`;
+  - [x] Add `import FormalSystem.Semantics.Ultraproduct.Los` to `FormalSystem/Semantics.lean`;
         extend the `## Submodules` list.
-  - [ ] Run `lake build`.
+  - [x] Run `lake build`.
 - **Verification criteria:**
   - `lake build` exits 0.
   - `grep -n 'sorry' FormalSystem/Semantics/Ultraproduct/Los.lean` returns nothing.

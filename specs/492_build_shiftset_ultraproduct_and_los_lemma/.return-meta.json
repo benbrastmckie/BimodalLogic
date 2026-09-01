@@ -3,39 +3,34 @@
   "agent_type": "lean-implementation-hard-agent",
   "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
   "task_number": 492,
-  "phase_number": 2,
-  "phases_completed": 2,
+  "phase_number": 3,
+  "phases_completed": 3,
   "phases_total": 4,
   "skeleton": false,
+  "requires_user_review": false,
+  "modified_files": [
+    "FormalSystem/Semantics/Ultraproduct/Los.lean",
+    "FormalSystem/Semantics.lean",
+    "specs/492_build_shiftset_ultraproduct_and_los_lemma/plans/01_shiftset-ultraproduct-los.md"
+  ],
   "sorry_inventory": [],
   "blockers": [],
-  "requires_user_review": false,
   "verification": {
     "sorry_count": 0,
     "vacuous_count": 0,
-    "axiom_count_new": 0,
+    "axiom_count": 0,
     "build_passed": true,
-    "build_jobs": 2505,
-    "axiom_profile_uSep": "[propext, Classical.choice, Quot.sound]",
-    "axiom_profile_uShiftSet": "[propext, Classical.choice, Quot.sound]",
-    "UT_reducibility": "Lean.ReducibilityStatus.reducible"
+    "build_jobs": 2506,
+    "axiom_profile_los": "[propext, Classical.choice, Quot.sound]",
+    "axiom_profile_los_truthAt": "[propext, Classical.choice, Quot.sound]",
+    "sorryAx_present": false
   },
-  "modified_files": [
-    "FormalSystem/Semantics/Ultraproduct/ShiftSetProduct.lean",
-    "FormalSystem/Semantics.lean"
-  ],
-  "artifacts": [
-    {
-      "type": "source",
-      "path": "FormalSystem/Semantics/Ultraproduct/ShiftSetProduct.lean",
-      "summary": "The ultraproduct temporal order UT, the sep field discharged on the ultraproduct (uSep), and uShiftSet discharging all seven ShiftSet fields with no hypotheses."
-    }
-  ],
+  "artifacts": [],
   "completion_data": {
-    "completion_summary": "Phase 2 of the ShiftSet ultraproduct plan is complete: FormalSystem/Semantics/Ultraproduct/ShiftSetProduct.lean transcribes UT, uSep and uShiftSet from the verified prototype, is imported from FormalSystem/Semantics.lean, and builds green sorry-free with the expected axiom profile."
+    "completion_summary": "Phase 3 of task 492: FormalSystem/Semantics/Ultraproduct/Los.lean created with `los` (Los's theorem at ShiftTruth, induction on Formula, all six constructors) and `los_truthAt` (the TruthAt form, obtained by conjugating `los` with ShiftSet.forward_repr), transcribed from the verified prototype. Wired into FormalSystem/Semantics.lean. Full lake build green at 2506 jobs; both declarations report the axiom profile [propext, Classical.choice, Quot.sound] with sorryAx absent."
   },
   "memory_candidates": [
-    "@[reducible] on a TemporalOrder.of wrapper is load-bearing for rw motive typing: a plain noncomputable def leaves (UT phi T).carrier unreduced and every rw over the carrier fails with an application type mismatch.",
-    "lake-build-guard.sh takes the full lake subcommand after --, i.e. `-- build TARGET`; a malformed `-- TARGET` prints 'unknown command' but still exits 0, so the exit code alone is not a build signal."
+    "lake-build-guard.sh shares an already-completed build's result: a scoped `-- build Module` run immediately followed by an unscoped `-- build` can return the SCOPED result with the scoped job count. Pass --no-share when the unscoped full-project build is the verification evidence.",
+    "A wait loop written as `until ! pgrep -f \"lake-build-guard.sh build\"; do sleep; done` never terminates: the waiting shell's own command line contains the pattern, so pgrep matches itself. Wait on the build PID with `kill -0 $pid` instead."
   ]
 }
