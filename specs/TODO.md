@@ -6,17 +6,17 @@ next_project_number: 512
 
 ## Task Order
 
-*Updated 2026-08-31. Generated from state.json dependency graph.*
+*Updated 2026-09-01. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,193,257,298,433,461,476,481,492,495,504,506,512 | -- | automation, dataset-enhancement, decidability, ... |
-| 2 | 178,231,282,296,463,493,502,507 | 193,298,433,461,492,512 | algebraic-representation, dataset-enhancement, decidability, ... |
-| 3 | 219,464,497,510,513 | 231,463,502,507 | algebraic-representation, dataset-enhancement, decidability, ... |
-| 4 | 465,498,499,500,508 | 464,492,497,510 | algebraic-representation, decidability, metalogic |
-| 5 | 125,428,509 | 465,498,499,508 | algebraic-representation, decidability, metalogic |
-| 6 | 429,494,501 | 125,428,509 | algebraic-representation, decidability, strong_completeness |
+| 1 | 127,128,193,257,298,433,461,476,481,492,495,504,506,507 | -- | automation, dataset-enhancement, decidability, ... |
+| 2 | 178,231,282,296,463,493,502,510,513 | 193,298,433,461,492,507 | algebraic-representation, dataset-enhancement, decidability, ... |
+| 3 | 219,464,497,508 | 231,463,502,510 | algebraic-representation, dataset-enhancement, decidability, ... |
+| 4 | 465,498,499,500,509 | 464,492,497,508 | algebraic-representation, decidability, metalogic |
+| 5 | 125,428,494 | 465,498,499,509 | algebraic-representation, decidability, strong_completeness |
+| 6 | 429,501 | 125,428 | algebraic-representation, decidability |
 | 7 | 410 | 429 | decidability |
 | 8 | 411 | 410 | decidability |
 | 9 | 430 | 411 | decidability |
@@ -99,10 +99,6 @@ next_project_number: 512
 492 [NOT STARTED] — HARD. Build the ultraproduct of shift sets and prove Los for Trut
   └─ 493 [NOT STARTED] — Assemble the compactness result and collect strong completeness f
 494 [NOT STARTED] — NOW SEQUENCED BEHIND THE COMPACTNESS PARAMETERIZATION (see the RE
-
-### Semantics Foundations
-
-512 [IMPLEMENTING] — FOUNDATIONAL REFACTOR, prerequisite for the whole metalogic syste
 
 ### Correspondence Theory
 
@@ -205,13 +201,13 @@ specs/511_research_frame_correspondence_infrastructure/reports/01–03 + probes.
 ---
 
 ### 512. Bundle duration into taskframe
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: semantics foundations
 - **Dependencies**: Task 514
 - **Research**: [512_bundle_duration_into_taskframe/reports/01_bundle-duration-into-taskframe.md]
-- **Summary**: [512_bundle_duration_into_taskframe/summaries/01_bundle-duration-into-taskframe-summary.md]
 - **Plan**: [512_bundle_duration_into_taskframe/plans/02_temporal-order-fibration.md]
+- **Summary**: [512_bundle_duration_into_taskframe/summaries/02_temporal-order-fibration-summary.md]
 
 **Description**: FOUNDATIONAL REFACTOR, prerequisite for the whole metalogic systematicity front. Make the duration type a FIELD of TaskFrame rather than a PARAMETER, so that a frame carries its own temporal structure and every frame-class notion becomes a genuine property of a frame.
 

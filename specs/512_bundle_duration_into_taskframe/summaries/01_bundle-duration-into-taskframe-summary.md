@@ -1,6 +1,11 @@
 # Implementation Summary: Task #512 — bundle the duration type into `TaskFrame`
 
 - **Task**: 512 - bundle_duration_into_taskframe
+- **Status**: TBD
+- **Started**: TBD
+- **Completed**: TBD
+- **Artifacts**: TBD
+- **Standards**: TBD
 - **Type**: lean4
 - **Plan**: `specs/512_bundle_duration_into_taskframe/plans/01_bundle-duration-into-taskframe.md`
 - **Research**: `specs/512_bundle_duration_into_taskframe/reports/01_bundle-duration-into-taskframe.md`

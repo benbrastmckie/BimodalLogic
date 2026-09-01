@@ -2,6 +2,11 @@
 
 **Plan of record**: `plans/02_temporal-order-fibration.md` (v02, 21 phases).
 **Status**: all 21 phases `[COMPLETED]`.
+- **Task**: TBD
+- **Started**: TBD
+- **Completed**: TBD
+- **Artifacts**: TBD
+- **Standards**: TBD
 **This dispatch** (`sess_1788235711_6acdbf`) closed phases **11–20**; phases 0–10 were closed in
 earlier dispatches.
 

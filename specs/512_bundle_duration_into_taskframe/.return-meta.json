@@ -144,6 +144,9 @@
       18,
       19,
       20
-    ]
+    ],
+    "cycles_used": 1,
+    "final_state": "completed",
+    "detected_defects": []
   }
 }

@@ -1,7 +1,7 @@
 # Implementation Plan: Task #512 (v02) — the temporal-order fibration
 
 - **Task**: 512 - bundle_duration_into_taskframe
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 41 hours
 - **Dependencies**: None blocking. Sequencing interaction with task 507 (Dedekind naming in
   `Semantics/Validity.lean` and `FrameClass`); the batch sequences 512 strictly before 507, so the
