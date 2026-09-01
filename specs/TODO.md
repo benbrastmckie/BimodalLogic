@@ -84,7 +84,7 @@ next_project_number: 516
 
 ### Metalogic
 
-509 [NOT STARTED] — Make the compactness / strong-completeness layer a FrameClass-ind
+509 [RESEARCHED] — Make the compactness / strong-completeness layer a FrameClass-ind
 
 ### Publication Quality
 
@@ -264,10 +264,11 @@ implementation discovers a concrete consumer, which its plan must record explici
 ---
 
 ### 509. Parameterize compactness and strong completeness family
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: Task 493, Task 507, Task 508
+- **Research**: [509_parameterize_compactness_and_strong_completeness_family/reports/01_frameclass-indexed-compactness-family.md]
 
 **Description**: Make the compactness / strong-completeness layer a FrameClass-indexed family instead of three hand-copied rows with a missing fourth. THE ARCHITECTURE IS ALREADY RIGHT AND IS THE PLAN OF RECORD -- strong completeness derived from compactness plus weak completeness. Present and sorry-free: strongCompletenessBase_of_compact (StrongCompleteness.lean:314), strongCompletenessDense_of_compact (:340), compactBase_of_modelExistence (:378), compactDense_of_modelExistenceDense (:424), and the negative results discrete_consequence_not_compact (DiscreteNonCompactness.lean:250) and strongCompletenessDiscrete_refuted (:280). WHAT IS WRONG IS THE SHAPE, NOT THE MATHEMATICS. SetConsequence.lean defines the family once per class by hand: Base at :214,:222,:230,:245; Dense at :262,:269,:277,:291; Discrete at :315,:329,:342 (ModelExistenceDiscrete correctly absent, it is refuted); Dedekind ENTIRELY ABSENT. And the two strongCompleteness*_of_compact reductions are the same argument written twice. DELIVERABLE: (1) StrongCompleteness (fc), Compact (fc), SatisfiableSet (fc), ModelExistence (fc) as one indexed family over the interpretation landed by the prerequisite; (2) ONE strongCompleteness_of_compact (fc) replacing the two reductions; (3) ONE modelExistence_implies_compact (fc) replacing the two bridges; (4) the existing Base/Dense/Discrete results recovered as instantiations with identical statements and axiom profiles. WHY THIS SEQUENCES BEFORE THE DEDEKIND REFUTATION TASK: that task's Part 1 is specified as defining the missing vocabulary 'mirroring the Base/Dense/Discrete groups' -- a fourth hand copy of exactly what this task collapses. After this lands, its Part 1 becomes a single instantiation and only its genuinely hard Part 2 (a new non-compactness witness that cannot reuse archWitness, since the Dedekind binder list has no successor structure) remains. DOES NOT DISCHARGE ANYTHING: ModelExistenceBase/Dense stay unproven here; the ultraproduct chain owns that. This is a restructuring task, and the conditional results must stay exactly as strong as they are today. ACCEPTANCE: sorry-free, lake build green, every currently-provable result still provable with an unchanged axiom profile. GROUNDING: specs/reviews/review-2026-08-31-metalogic-systematicity.md issue H3.=== DIRECTION NOTE ===
 The FrameClass-indexed validity this task builds on is being defined at FRAME level, not carrier

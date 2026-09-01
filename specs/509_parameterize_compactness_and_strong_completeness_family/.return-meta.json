@@ -1,0 +1,31 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/509_parameterize_compactness_and_strong_completeness_family/reports/01_frameclass-indexed-compactness-family.md",
+      "summary": "Compile-verified design for the FrameClass-indexed compactness / strong-completeness family: four indexed definitions, two collapsed theorems, a ten-row defeq audit, every call-site repair, and the follow-on Dedekind instantiation shape."
+    },
+    {
+      "type": "probe",
+      "path": "specs/509_parameterize_compactness_and_strong_completeness_family/reports/probe_509.lean",
+      "summary": "Green Lean probe: indexed family, defeq checks, both collapsed theorems, all instantiations, axiom profiles."
+    },
+    {
+      "type": "probe",
+      "path": "specs/509_parameterize_compactness_and_strong_completeness_family/reports/probe_509c.lean",
+      "summary": "Green Lean probe: verified repairs for both friction points plus the binder adapters."
+    },
+    {
+      "type": "probe",
+      "path": "specs/509_parameterize_compactness_and_strong_completeness_family/reports/probe_509b_negative_control.lean",
+      "summary": "Annotated negative control recording the exact call-site shapes that break and Lean's errors."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1788282938_f2ac03",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}

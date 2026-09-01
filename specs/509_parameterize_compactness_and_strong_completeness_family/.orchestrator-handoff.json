@@ -1,0 +1,42 @@
+{
+  "dispatch_seq": 13,
+  "status": "researched",
+  "task_number": 509,
+  "session_id": "sess_1788282938_f2ac03",
+  "agent_type": "lean-research-agent",
+  "summary": "Research complete and compile-verified. The FrameClass-indexed collapse of the compactness / strong-completeness family is de-risked by a green Lean probe: four indexed definitions (SatisfiableSet, ModelExistence, Compact, StrongCompleteness), one strongCompleteness_of_compact replacing two reductions, one compact_of_modelExistence replacing two bridges. 8 of the 10 per-class statements are recovered DEFEQ (rfl-checked), because task 507 already made valid/ValidDense/ValidDiscrete/ValidDedekindDense plain defs over ValidIn. Only SatisfiableBaseSet (gains an ExistsTrue slot) and SatisfiableDiscreteSet (IsSuccArchDiscrete bundles its four witnesses) shift shape, exactly as task 507 shifted valid, absorbed by binder adapters. All audited declarations report axioms [propext, Classical.choice, Quot.sound], matching the C14 baseline; sorryAx absent. Nothing is discharged: ModelExistenceBase/Dense keep their ultraproduct proofs, Discrete stays refuted, Dedekind stays unstated for the follow-on task.",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/509_parameterize_compactness_and_strong_completeness_family/reports/01_frameclass-indexed-compactness-family.md",
+      "summary": "Verified anchors, corrected inventory, the four indexed definitions, a ten-row defeq audit, both collapsed theorems, a complete call-site change list with verified repairs, probe results, the follow-on Dedekind Part 1 shape, and a six-phase decomposition."
+    },
+    {
+      "type": "probe",
+      "path": "specs/509_parameterize_compactness_and_strong_completeness_family/reports/probe_509.lean",
+      "summary": "Compiles clean. The indexed family, ten defeq/equivalence checks, both collapsed theorems, Base/Dense/Discrete instantiations, and the free Dedekind row, with axiom profiles."
+    },
+    {
+      "type": "probe",
+      "path": "specs/509_parameterize_compactness_and_strong_completeness_family/reports/probe_509c.lean",
+      "summary": "Compiles clean. The verified one-line repair for each of the two friction points plus three SatisfiableSet binder adapters."
+    },
+    {
+      "type": "probe",
+      "path": "specs/509_parameterize_compactness_and_strong_completeness_family/reports/probe_509b_negative_control.lean",
+      "summary": "Negative control, annotated as expected-to-fail. Records verbatim the four call-site shapes that break and Lean's exact errors, plus the one case (modelExistenceBase with a single trivial) that succeeds."
+    }
+  ],
+  "blockers": [],
+  "notes": [
+    "One prerequisite lemma is missing tree-wide and must be added: ValidIn.of_not in FormalSystem/Semantics/Validity.lean, beside ValidIn.of_forall_total:494. The four per-class of_not lemmas exist; the generic one does not. This is the only edit outside Metalogic/.",
+    "Friction 1: SatisfiableDiscreteSet call sites at DiscreteNonCompactness.lean:197, :230, :258, :288 need one nesting pair each (or the SatisfiableSet.discrete_of_forall adapter route, which is more consistent with tasks 507/508).",
+    "Friction 2: Compactness.lean:113's bare inferInstance must be type-ascribed; Sat .Dense F unfolds to TaskFrame.IsDense F, whose head symbol is not DenselyOrdered, so instance search cannot see it. Compactness.lean:85 gains one trivial.",
+    "Follow-on Dedekind task's Part 1 becomes four abbrevs plus two one-line theorems, all already compiled in probe_509.lean Part E. Its Part 2 remains the only real work: the .Dedekind satisfiability slot is IsDense AND IsComplete, an And with no successor structure, so archWitness cannot be reused.",
+    "Documentation carrying already-stale SetConsequence.lean line citations that this task will move again: docs/user-guide/architecture.md:824-826, docs/reference/API_REFERENCE.md:704-706/:736/:738, docs/project-info/known-limitations.md:37, FormalSystem/Metalogic.lean:109-118/:158-175, FormalSystem/Semantics/Ultraproduct/Carrier.lean:15, FormalSystem/Metalogic/README.md:142/:147."
+  ],
+  "pre_existing_gate_failures": [
+    "scripts/check-module-invariants.sh C6: 4 unreachable live modules absent from scripts/module-invariants-manifest.txt (plus 2 manifested as known-broken).",
+    "scripts/readme-lint.sh check 1: MISSING FormalSystem/Semantics/Ultraproduct/README.md (4 .lean files); RESULT FAIL (1 missing README, 0 broken references)."
+  ]
+}
