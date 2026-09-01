@@ -463,24 +463,24 @@ instance bundleFamilies_nonempty (B : BFMCS (fc := fc) D) :
 /-- The bundle flow frame: the generic flow frame `multiFamTaskFrameGen` at the index of the
 bundle's families. World states are pairs of a bundle family and a time; the task relation is
 the deterministic clock. -/
-noncomputable def bundleFlowFrame [Nontrivial D] (B : BFMCS (fc := fc) D) :
+noncomputable def bundleFlowFrame (B : BFMCS (fc := fc) D) :
     FrameOver (TemporalOrder.of D) :=
   multiFamTaskFrameGen (TemporalOrder.of D) {fam : FMCS (fc := fc) D // fam ∈ B.families}
 
 /-- The flow line of the bundle flow frame through family `fam` at offset `w₀`: the total
 history visiting `(fam, w₀ + t)` at each time `t`. -/
-noncomputable def bundleFlowHistory [Nontrivial D] {B : BFMCS (fc := fc) D}
+noncomputable def bundleFlowHistory {B : BFMCS (fc := fc) D}
     (fam : {fam : FMCS (fc := fc) D // fam ∈ B.families}) (w₀ : D) :
     WorldHistory (bundleFlowFrame B) :=
   multiFamHistoryGen fam w₀
 
 /-- The bundle flow model: an atom holds at `(fam, w)` exactly when it is in `fam`'s MCS at
 time `w`. -/
-noncomputable def bundleFlowModel [Nontrivial D] (B : BFMCS (fc := fc) D) : TaskModel (bundleFlowFrame B) where
+noncomputable def bundleFlowModel (B : BFMCS (fc := fc) D) : TaskModel (bundleFlowFrame B) where
   valuation := fun w p => Formula.atom p ∈ w.1.val.mcs w.2
 
 /-- Every flow line of the bundle flow frame is total (`def:world-history`: X = D). -/
-theorem bundleFlowHistory_total [Nontrivial D] {B : BFMCS (fc := fc) D}
+theorem bundleFlowHistory_total {B : BFMCS (fc := fc) D}
     (fam : {fam : FMCS (fc := fc) D // fam ∈ B.families}) (w₀ : D) :
     ∀ t, (bundleFlowHistory fam w₀).domain t :=
   fun _ => trivial
@@ -488,14 +488,14 @@ theorem bundleFlowHistory_total [Nontrivial D] {B : BFMCS (fc := fc) D}
 /-- Deterministic-shift conformance of the bundle flow frame: the duration of a transition is
 recoverable from the endpoint positions (`Prod.snd`). This is the position-function contract
 `TaskFrame.limit_of_shift` consumes. -/
-theorem bundleFlow_pos_shift [Nontrivial D] {B : BFMCS (fc := fc) D}
+theorem bundleFlow_pos_shift {B : BFMCS (fc := fc) D}
     {w u : (bundleFlowFrame B).WorldState} {y : D}
     (h : (bundleFlowFrame B).TaskRel w y u) : u.2 = w.2 + y :=
   h.2
 
 /-- Biconditional *Compositionality* (`def:frame#Compositionality`) at the bundle flow frame,
 by specialization of `multiFamGen_comp_iff`. -/
-theorem bundleFlow_comp_iff [Nontrivial D] {B : BFMCS (fc := fc) D}
+theorem bundleFlow_comp_iff {B : BFMCS (fc := fc) D}
     (w v : (bundleFlowFrame B).WorldState) (x y : D) :
     (bundleFlowFrame B).TaskRel w (x + y) v ↔
       ∃ u, (bundleFlowFrame B).TaskRel w x u ∧ (bundleFlowFrame B).TaskRel u y v :=
@@ -503,7 +503,7 @@ theorem bundleFlow_comp_iff [Nontrivial D] {B : BFMCS (fc := fc) D}
 
 /-- *Seriality* (`def:frame#Seriality`) at the bundle flow frame, by specialization of
 `multiFamGen_serial`. -/
-theorem bundleFlow_serial [Nontrivial D] {B : BFMCS (fc := fc) D}
+theorem bundleFlow_serial {B : BFMCS (fc := fc) D}
     (w : (bundleFlowFrame B).WorldState) (x : D) :
     (∃ u, (bundleFlowFrame B).TaskRel w x u) ∧
       (∃ v, (bundleFlowFrame B).TaskRel v x w) :=
@@ -511,14 +511,14 @@ theorem bundleFlow_serial [Nontrivial D] {B : BFMCS (fc := fc) D}
 
 /-- *Limit* (`def:frame#Limit`) at the bundle flow frame, by specialization of
 `multiFamGen_limit`. -/
-theorem bundleFlow_limit [Nontrivial D] {B : BFMCS (fc := fc) D} :
+theorem bundleFlow_limit {B : BFMCS (fc := fc) D} :
     ∀ w u : (bundleFlowFrame B).WorldState,
       (∀ x, 0 < x → ∃ y, |y| < x ∧ (bundleFlowFrame B).TaskRel w y u) → u = w :=
   multiFamGen_limit
 
 /-- *Spherical* (`def:frame#Spherical`) at the bundle flow frame, by specialization of
 `multiFamGen_spherical`. -/
-theorem bundleFlow_spherical [Nontrivial D] {B : BFMCS (fc := fc) D}
+theorem bundleFlow_spherical {B : BFMCS (fc := fc) D}
     (S : Set (Set (bundleFlowFrame B).WorldState))
     (hdir : TaskFrame.DirectedFamily S)
     (hne : ∀ s ∈ S, s.Nonempty)
@@ -530,7 +530,7 @@ theorem bundleFlow_spherical [Nontrivial D] {B : BFMCS (fc := fc) D}
 /-- The totality characterization at the bundle flow frame: every total history is a flow
 line through a bundle family. Together with `bundleFlowHistory_total`, this identifies the
 frame's total-history set H_F (`def:world-history`) with the bundle's flow-line family. -/
-theorem bundleFlow_total_eq [Nontrivial D] {B : BFMCS (fc := fc) D}
+theorem bundleFlow_total_eq {B : BFMCS (fc := fc) D}
     (σ : WorldHistory (bundleFlowFrame B)) (htot : ∀ t, σ.domain t) :
     ∃ fam w₀, σ = bundleFlowHistory fam w₀ :=
   multiFamGen_total_eq σ htot
@@ -546,7 +546,7 @@ world histories over $\F$ is denoted $H_{\F}$") **is** its set of flow lines.
 
 Immediate specialization of `multiFamGen_total_eq_range` at the bundle index, since
 `bundleFlowFrame` is `multiFamTaskFrameGen` at that index by definition. -/
-theorem bundleFlow_total_eq_range [Nontrivial D] (B : BFMCS (fc := fc) D) :
+theorem bundleFlow_total_eq_range (B : BFMCS (fc := fc) D) :
     {σ : WorldHistory (bundleFlowFrame B) | ∀ t, σ.domain t} =
       Set.range (fun (p : {fam : FMCS (fc := fc) D // fam ∈ B.families} × D) =>
         bundleFlowHistory p.1 p.2) :=
@@ -675,7 +675,7 @@ at all. -/
 bundle family's MCS at absolute time `w₀ + t` coincides with truth of `φ` at evaluation time
 `t` along the flow line through that family at offset `w₀`.
 -/
-theorem bundleFlow_truth_lemma [Nontrivial D] (B : BFMCS (fc := fc) D) (root : Formula)
+theorem bundleFlow_truth_lemma (B : BFMCS (fc := fc) D) (root : Formula)
     (_h_rtc : B.RestrictedTemporallyCoherent root)
     (h_buc : B.RestrictedBackwardUntilSinceCoherent root)
     (h_fuc : B.RestrictedForwardUntilSinceCoherent root) (φ : Formula)
@@ -800,7 +800,7 @@ theorem bundleFlow_truth_lemma [Nontrivial D] (B : BFMCS (fc := fc) D) (root : F
 `w₀`. This is the bundle-flow form of
 `fully_restricted_parametric_completeness_from_neg_membership`.
 -/
-theorem bundleFlow_completeness_from_neg_membership [Nontrivial D] (B : BFMCS (fc := fc) D) (root : Formula)
+theorem bundleFlow_completeness_from_neg_membership (B : BFMCS (fc := fc) D) (root : Formula)
     (h_rtc : B.RestrictedTemporallyCoherent root)
     (h_buc : B.RestrictedBackwardUntilSinceCoherent root)
     (h_fuc : B.RestrictedForwardUntilSinceCoherent root)
