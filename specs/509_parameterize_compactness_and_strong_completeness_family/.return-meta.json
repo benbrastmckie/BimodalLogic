@@ -1,27 +1,56 @@
 {
-  "status": "planned",
-  "agent_type": "planner-agent",
-  "task_number": 509,
-  "session_id": "sess_1788282938_f2ac03",
-  "delegation_path": ["orchestrator", "plan", "planner-agent"],
+  "status": "implemented",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 8,
+    "axiom_count_baseline": 8,
+    "build_passed": true,
+    "build_jobs": 2566,
+    "build_command": "bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build FormalSystem BimodalTest"
+  },
+  "modified_files": [
+    "FormalSystem/Semantics/Validity.lean",
+    "FormalSystem/Metalogic/SetConsequence.lean",
+    "FormalSystem/Metalogic/StrongCompleteness.lean",
+    "FormalSystem/Metalogic/Compactness.lean",
+    "FormalSystem/Metalogic/DiscreteNonCompactness.lean",
+    "FormalSystem/Metalogic.lean",
+    "FormalSystem/Metalogic/README.md",
+    "docs/user-guide/architecture.md",
+    "docs/reference/API_REFERENCE.md",
+    "docs/project-info/known-limitations.md",
+    "specs/509_parameterize_compactness_and_strong_completeness_family/plans/01_frameclass-indexed-compactness-family.md",
+    "specs/509_parameterize_compactness_and_strong_completeness_family/summaries/01_frameclass-indexed-compactness-family-summary.md"
+  ],
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/509_parameterize_compactness_and_strong_completeness_family/plans/01_frameclass-indexed-compactness-family.md",
-      "summary": "6-phase, 5.25-hour plan collapsing the compactness/strong-completeness layer onto a FrameClass-indexed family by transplanting pre-compiled probe text."
+      "type": "summary",
+      "path": "specs/509_parameterize_compactness_and_strong_completeness_family/summaries/01_frameclass-indexed-compactness-family-summary.md",
+      "summary": "The compactness and strong-completeness family collapsed onto a FrameClass-indexed definition, with the Dedekind handoff block recorded verbatim."
     }
   ],
-  "phase_count": 6,
-  "estimated_hours": 5.25,
-  "dependency_waves": 5,
-  "next_steps": "Run /implement 509 to execute the plan",
-  "memory_candidates": [
-    {
-      "content": "When a research report ships compiled probe files and declares a call-site inventory complete, independently re-grep for COMPILE-TIME consumers that are not term-position call sites -- specifically '#print axioms', '#check', and 'example' directives naming a declaration slated for deletion. In Lean 4 these are hard elaboration errors, not documentation nits, and they hide from a reviewer scanning for call sites because they read as audit boilerplate rather than as code. Task 509's research classified four theorems as having no consumer outside one module; three of them were named by live '#print axioms' directives 600 lines below their definitions in the same file. The general pattern: a declaration's compiled consumers include every position where its NAME elaborates, not only where it is APPLIED. Grep for the bare name and classify each hit as code-or-comment before trusting a deletion is safe.",
-      "category": "INSIGHT",
-      "source_artifact": "specs/509_parameterize_compactness_and_strong_completeness_family/plans/01_frameclass-indexed-compactness-family.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["lean4", "print-axioms", "call-site-inventory", "deletion-safety", "anchor-verification", "compile-time-consumers"]
-    }
-  ]
+  "completion_data": {
+    "completion_summary": "The satisfiability / model-existence / compactness / strong-completeness row is now one FrameClass-indexed family in Metalogic/SetConsequence.lean, with all eleven per-class names retained as instantiations whose statements are unchanged (eight recovered by rfl, since task 507 had already made the per-class validity predicates abbreviations over ValidIn). The four duplicated theorems collapsed to two FrameClass-generic ones, strongCompleteness_of_compact and compact_of_modelExistence, each keeping its engine/hypothesis parameter live, and the generic ValidIn.of_not was added to Semantics/Validity.lean. Nothing was discharged: lake build is green at 2566 jobs, the live tree is sorry-free, the axiom count is unchanged at 8, and all twelve audited declarations report exactly [propext, Classical.choice, Quot.sound].",
+    "roadmap_items": []
+  },
+  "metadata": {
+    "session_id": "sess_1788282938_f2ac03",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "compliance_check": "passed",
+    "dispatch_seq": 15,
+    "phases_completed": 6,
+    "phases_total": 6,
+    "gate_exclusions": [
+      "check-module-invariants.sh C6 (4 unmanifested unreachable modules) - pre-existing, reproduces identically; C14 both halves and C15 PASS",
+      "readme-lint.sh check 1 (missing FormalSystem/Semantics/Ultraproduct/README.md) - pre-existing, 0 broken references"
+    ],
+    "deviations": [
+      "Phase 4 commit boundary folded into Phase 3's declared atomic-batch (altered) - Phase 3's redefinition breaks the bodies of the theorems Phase 4 deletes; splitting would have required throwaway repairs the plan forbids. All tasks executed as written, in planned order.",
+      "strongCompletenessDiscrete_of_compact omitted (skipped) - under the plan item's own 'otherwise omit' clause."
+    ]
+  }
 }

@@ -1,25 +1,64 @@
 {
-  "dispatch_seq": 14,
-  "status": "planned",
+  "dispatch_seq": 15,
   "task_number": 509,
   "session_id": "sess_1788282938_f2ac03",
-  "agent_type": "planner-agent",
-  "summary": "Plan for task 509 written as a transplant from the three compiled probes, not a derivation. 6 phases, 5.25h, 5 dependency waves. Independent grep re-verification of every anchor confirmed the research's own citations but found three defects in its call-site inventory: (1) build-breaking -- StrongCompleteness.lean:1047-1049 carry live '#print axioms' directives on three of the four theorems being deleted, so the research's claim of no consumers outside Compactness.lean is wrong and deletion without rewriting that block is a hard elaboration error; (2) the prose surface naming the deleted theorems is 25 in-tree .lean docstring sites plus 8 documentation sites, not the 2 the research listed; (3) the stale SetConsequence.lean:NNN citation list spans architecture.md:823-829 (seven rows), not :824-826. Plan sequences redefinition (Phase 3) BEFORE theorem collapse (Phase 4) so the Base model-existence bridge applies directly with no throwaway transport theorem. Phase 3 is marked atomic-batch because the binder-shape change and its six call-site repairs cannot be split without a red tree. Tests/ confirmed to have zero consumers -- no test edits in this task, unlike 508's 118.",
+  "status": "implemented",
+  "summary": "The satisfiability / model-existence / compactness / strong-completeness row is now one FrameClass-indexed family (SatisfiableSet, ModelExistence, Compact, StrongCompleteness) in Metalogic/SetConsequence.lean, with four SatisfiableSet binder adapters including the .Dedekind one. All eleven per-class names are retained as instantiations with statements unchanged; eight were rfl-recoveries and no proof work was done where rfl sufficed. The four duplicated theorems collapsed to two fc-generic ones, strongCompleteness_of_compact and compact_of_modelExistence, both keeping their engine/hypothesis parameters. The generic ValidIn.of_not was added to Semantics/Validity.lean. lake build FormalSystem BimodalTest green at 2566 jobs, live scope sorry-free, axiom count unchanged at 8, and all twelve audited declarations at exactly [propext, Classical.choice, Quot.sound]. Nothing was discharged; every conditional result is exactly as strong as before.",
+  "phases_completed": 6,
+  "phases_total": 6,
+  "plan_markers_verified": true,
   "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/509_parameterize_compactness_and_strong_completeness_family/summaries/01_frameclass-indexed-compactness-family-summary.md",
+      "summary": "Implementation summary carrying the verbatim Dedekind handoff block, the acceptance evidence, and the two recorded plan deviations."
+    },
     {
       "type": "plan",
       "path": "specs/509_parameterize_compactness_and_strong_completeness_family/plans/01_frameclass-indexed-compactness-family.md",
-      "summary": "6-phase, 5.25-hour plan collapsing the compactness/strong-completeness layer onto a FrameClass-indexed family by transplanting pre-compiled probe text."
+      "summary": "All six phases marked [COMPLETED] with inline deviation annotations and both Scope Hypothesis outcomes recorded."
     }
   ],
   "blockers": [],
-  "next_steps": "Run /implement 509 to execute the plan",
-  "phase_count": 6,
-  "estimated_hours": 5.25,
-  "dependency_waves": 5,
+  "deviations": [
+    {
+      "phase": 4,
+      "kind": "altered",
+      "what": "Phase 4's commit boundary was folded into Phase 3's declared atomic-batch; both landed in one commit.",
+      "why": "Phase 3's redefinition of SatisfiableBaseSet/SatisfiableDenseSet breaks the bodies of the four theorems Phase 4 deletes (compactBase_of_modelExistence loses its tuple slot count; compactDense_of_modelExistenceDense's bare inferInstance goes invisible). Committing Phase 3 alone green would have required throwaway repairs to theorems deleted minutes later - the same throwaway-transport pattern the plan forbids for modelExistenceBase'. Every task in both phases was executed as written and in the planned order; only the commit boundary moved."
+    },
+    {
+      "phase": 4,
+      "kind": "skipped",
+      "what": "strongCompletenessDiscrete_of_compact was not added.",
+      "why": "Taken under the plan item's own 'otherwise omit rather than leave it unexplained' clause. Nothing consumes it, and the status it would record is already stated in strongCompleteness_of_compact's docstring, which names .Discrete as the class where the reduction is live but the antecedent refuted."
+    }
+  ],
+  "scope_hypothesis_outcomes": [
+    {
+      "phase": 3,
+      "outcome": "falsified",
+      "detail": "Four call sites beyond the enumerated six needed repair, all handled in-phase per the hypothesis's own instruction: DiscreteNonCompactness.lean:259 and :288 (obtain eliminations of archWitness_finitely_satisfiable, re-nested), :261 (hvalid.apply spelled out as ValidDiscrete.apply, since hc _ _ hcons now yields ValidIn .Discrete), and Compactness.lean:85 (choose gained one component for the absorbed Sat .Base slot). Also: the plan says 'ten' per-class names but its own table enumerates eleven; all eleven were redefined."
+    },
+    {
+      "phase": 2,
+      "outcome": "confirmed",
+      "detail": "Purely additive: 128 insertions, 0 deletions in SetConsequence.lean, full build green."
+    },
+    {
+      "phase": 5,
+      "outcome": "confirmed",
+      "detail": "The inventory's shape reproduced exactly; the closing grep returns zero hits for the four deleted names outside specs/. All four group-D sites were read and none needed editing."
+    }
+  ],
+  "pre_existing_exclusions": [
+    "check-module-invariants.sh C6: four unmanifested unreachable live modules (SpWitness, TMCompletenessReduction, Z1Countermodel, Semantics.LexCarrier). Reproduces identically; C14 (both halves) and C15 PASS, so there is no regression in this task's defect scope.",
+    "readme-lint.sh check 1: MISSING FormalSystem/Semantics/Ultraproduct/README.md. Reproduces identically; 0 broken references, no new failure.",
+    "FormalSystem/Metalogic/README.md recorded StrongCompleteness.lean at 943 lines against a live 1,060 - pre-existing staleness from task 508. Corrected to 1,002 while the file was open."
+  ],
   "notes": [
-    "Phase 0 of the plan carries three standing warnings: probe_509b_negative_control.lean is ANNOTATED EXPECTED-TO-FAIL and must not be repaired; lake-build-guard.sh build --timeout 1800 -- with an empty target list runs bare lake and exits 0 without building; the two pre-existing gate failures (check-module-invariants.sh C6, readme-lint.sh check 1) are pre-recorded reasoned exclusions while a C14/C15 regression would be this task's defect.",
-    "Eight of the ten per-class statements are rfl-recoveries, courtesy of task 507's valid := ValidIn .Base. The plan explicitly forbids proof work where rfl suffices.",
-    "The Dedekind handoff block is written into Phase 6 verbatim for the summary: Part 1 is four abbrevs plus two one-line theorems, all already compiled in probe_509.lean Part E; Part 2 stays hard because .Dedekind is IsDense AND IsComplete, an And with no successor structure for Order.succ^[n] to act on."
+    "probe_509b_negative_control.lean is untouched and still fails, as intended. git status on reports/ is clean.",
+    "No Tests/ edits were needed, as the planner predicted.",
+    "The Dedekind handoff block is recorded verbatim in the summary: the follow-on task's Part 1 is four abbrevs plus two one-line theorems, all already compiled in probe_509.lean Part E. Part 2 stays hard because the .Dedekind slot is IsDense AND IsComplete, with no successor structure for Order.succ^[n], so archWitness cannot be reused."
   ]
 }
