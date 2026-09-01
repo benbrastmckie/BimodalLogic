@@ -1,32 +1,56 @@
 {
-  "phase": "plan",
-  "dispatch_seq": 5,
-  "status": "planned",
-  "summary": "7-phase plan written against the research report (not the stale brief). Ordering is the plan's main contribution: Phase 1 captures the green lake build baseline the research cycle could not (guarded + detached), Phase 2 rewrites typst/chapters/p2-frame-classes.typ BEFORE any deletion so typst-sync-check.sh reaches 0 violations at pre-deletion HEAD -- clearing the 2 inherited violations and pre-empting the 3-name text-grep trap -- Phase 3 repoints the 11 ungated #leansrc pointers, Phase 4 deletes the 6 paths + drops the FormalSystem.lean:13 import + appends the C11 Boneyard waiver as one atomic-batch commit, Phases 5-6 repair README/docs links and record the corrected archived-completeness finding, Phase 7 sweeps all four gates against the Phase 1 baseline. Estimated 5.5 hours.",
+  "dispatch_seq": 7,
+  "status": "implemented",
+  "summary": "All 7 phases complete. Deleted the orphaned FormalSystem/FrameConditions/ layer -- 853 .lean lines across five modules plus a 98-line README -- dropped the single live import at FormalSystem/FormalSystem.lean:13, and repaired every documentation, book, and gate consequence. Final lake build GREEN (guarded + detached, exit 0, 2505 jobs, zero errors). typst-sync-check.sh REPAIRED from an inherited RED baseline of 2 violations to TOTAL_VIOLATIONS=0. readme-lint check 3 back to 0 broken references (3 links broke on deletion, all 3 repaired). C11 passes with the waived count at 7, up from 6, and scripts/module-invariants-manifest.txt is byte-identical across the entire task, as required. Two gate failures remain, both inherited from foreign territory and both present at the Phase 1 baseline; they are recorded as reasoned exclusions, not absorbed.",
+  "phases_completed": 7,
+  "phases_total": 7,
+  "plan_markers_verified": true,
+  "phase_markers": {
+    "1": "COMPLETED",
+    "2": "COMPLETED",
+    "3": "COMPLETED",
+    "4": "COMPLETED",
+    "5": "COMPLETED",
+    "6": "COMPLETED",
+    "7": "COMPLETED WITH EXCLUSIONS"
+  },
   "artifacts": [
+    "specs/510_resolve_orphaned_frameconditions_layer/plans/01_delete-frameconditions-layer.md",
+    "specs/510_resolve_orphaned_frameconditions_layer/baselines.txt",
+    "specs/510_resolve_orphaned_frameconditions_layer/summaries/01_delete-frameconditions-layer-summary.md",
+    "specs/510_resolve_orphaned_frameconditions_layer/.return-meta.json"
+  ],
+  "blockers": [],
+  "acceptance": {
+    "A1_no_orphaned_validity_vocabulary": "PASS",
+    "A2_lake_build_green": "PASS",
+    "A3_module_invariants_C6_at_17_no_manifest_edit": "PARTIAL",
+    "A4_typst_sync_check_zero_violations": "PASS",
+    "A5_readme_lint_exit_zero": "PARTIAL",
+    "A6_corrected_archived_completeness_finding_recorded": "PASS",
+    "A7_no_frameconditions_leansrc_pointers": "PASS"
+  },
+  "reasoned_exclusions": [
     {
-      "type": "plan",
-      "path": "specs/510_resolve_orphaned_frameconditions_layer/plans/01_delete-frameconditions-layer.md",
-      "summary": "7-phase deletion plan with wave map [[1],[2,3],[4],[5,6],[7]], per-phase verification tiers, and Scope Hypothesis lines on all five count-asserting phases."
+      "item": "check-module-invariants.sh C6 left failing on 4 unmanifested unreachable modules",
+      "modules": ["FormalSystem.Metalogic.SpWitness", "FormalSystem.Metalogic.TMCompletenessReduction", "FormalSystem.Metalogic.Z1Countermodel", "FormalSystem.Semantics.LexCarrier"],
+      "reason": "Every one is a .lean file created by another in-flight task, not by this one. The failure predates this task (3 such modules at the Phase 1 baseline) and its membership churned between every run. Manifesting another task's module would claim its work, and the plan forbids any edit to this manifest as an explicit Non-Goal.",
+      "evidence": "Baseline set was TMCompletenessReduction/BLSchemaValidity/LexCarrier; final set is SpWitness/TMCompletenessReduction/Z1Countermodel/LexCarrier. git diff 032a4f1da..HEAD -- scripts/module-invariants-manifest.txt is empty, and the manifested-unreachable count is 17 at both ends -- which is A3's actual content."
+    },
+    {
+      "item": "readme-lint.sh check 1 left failing on a missing FormalSystem/Semantics/Ultraproduct/README.md",
+      "reason": "That directory was created by committed foreign work that shipped without a README. It has no FrameConditions involvement, is present in the Phase 1 baseline capture, and is under active concurrent edit; writing the README would author another task's deliverable.",
+      "evidence": "git log -- FormalSystem/Semantics/Ultraproduct/ shows 0f1e50fd4, 9eb879519, dbad125e6. Check 3 -- the check this task's deletion actually endangered -- is repaired to 0 broken references."
     }
   ],
-  "phases_completed": 0,
-  "phases_total": 7,
-  "blockers": [],
-  "files_modified": [
-    "specs/510_resolve_orphaned_frameconditions_layer/plans/01_delete-frameconditions-layer.md",
-    "specs/510_resolve_orphaned_frameconditions_layer/.return-meta.json",
-    "specs/510_resolve_orphaned_frameconditions_layer/.orchestrator-handoff.json"
+  "notes_for_orchestrator": [
+    "Phase 4's post-deletion build returned exit 1 with 9 errors, ALL in FormalSystem/Metalogic/BaseLanguageSoundness.lean, inside a then-uncommitted +132-line block added by a concurrent session and referencing swapBL_involution, an identifier that did not exist at HEAD. That file has zero FrameConditions references. The session subsequently committed a compiling state and Phase 7's re-run is green. No action needed.",
+    "The plan's C6 warning was correct and was honoured: FrameConditions was REACHABLE, so no manifest entry was added. Adding one would have failed C6.",
+    "Brief item (b), the ValidOver/ValidLinear/... vocabulary, was confirmed already deleted by e5a9ba40f and was not re-done, as instructed.",
+    "Two adjacent pre-existing broken #leansrc pointers at typst/FormalFoundations.typ:1253-1254 were repaired alongside the planned repoints so the algebraic-soundness citation quad is coherent. This is the one place the implementation went slightly beyond the plan's enumerated scope; it is annotated as a deviation in both the plan and the summary.",
+    "37 further #leansrc (module, symbol) pairs in typst/FormalFoundations.typ do not resolve literally against the named module. Most appear to use an aggregator-module convention (e.g. Semantics for Semantics/TaskFrame.lean) rather than being broken, but some look genuinely stale (Metalogic.BXCanonical.Chronicle names a module that does not exist). This is pre-existing, unrelated to FrameConditions, and out of scope here -- it may be worth a task."
   ],
-  "decisions_made": [
-    "Brief item (b) is NOT re-planned: the ValidOver/ValidLinear/ValidDenseFc/ValidDiscreteFc/ValidOverInt vocabulary was already deleted by e5a9ba40f. Only the 81-line Validity.lean file (two FrameOver D fibration bridges, zero consumers) is removed, as part of the whole-directory deletion.",
-    "The brief's C6 acceptance criterion is DROPPED and restated as A3: C6 must still pass at 17 unreachable modules with scripts/module-invariants-manifest.txt UNMODIFIED. Phase 4 carries an explicit MUST NOT against adding a manifest entry, and Phase 7 asserts an empty git diff on that path.",
-    "typst rewrite is sequenced BEFORE deletion (Phase 2 blocks Phase 4), not after. typst-sync-check.sh check 1 is a text grep over .lean files, so the retirement prose in the doomed files is what currently keeps ValidLinear/ValidDenseFc/ValidDiscreteFc passing; rewriting first drives the gate to 0 at pre-deletion HEAD and turns an inherited RED gate into a repair rather than a regression.",
-    "A4 is framed as a repair, not a hold: typst-sync-check.sh is already FAIL at HEAD with TOTAL_VIOLATIONS=2, so 'no regression' is not an acceptable exit -- the target is 0.",
-    "Phase 4 declares Commit Mode: atomic-batch. Every intermediate ordering of (delete files / drop import / add waiver) leaves the tree or C11 red, and the plan forbids widening the batch mid-flight if an unexpected importer appears.",
-    "The Boneyard file StrictSemanticsLegacy/FrameConditions/Completeness.lean is retained with an explicit MUST NOT against deleting it; its dangling import is waived in scripts/boneyard-import-waivers.txt (waived count 6 -> 7).",
-    "Phase 1 is a hard gate: if the lake build baseline is not green, the phase is marked [BLOCKED] and execution stops rather than deleting into a red tree."
-  ],
-  "next_action_hint": "Dispatch /implement 510. Phase 1 must complete (green guarded detached build + four gate baselines) before any other phase begins; Phase 4 must not begin before Phase 2 reaches TOTAL_VIOLATIONS=0.",
-  "continuation_path": null
+  "session_id": "sess_1788282938_f2ac03",
+  "task_number": 510,
+  "task_type": "lean4"
 }

@@ -1,27 +1,94 @@
 {
-  "status": "planned",
-  "agent_type": "planner-agent",
-  "task_number": 510,
-  "session_id": "sess_1788282938_f2ac03",
-  "delegation_path": ["orchestrator", "plan", "planner-agent"],
+  "status": "implemented",
+  "started_at": "2026-09-01T17:30:00Z",
+  "completed_at": "2026-09-01T19:05:00Z",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 6,
+    "axiom_baseline": 6,
+    "build_passed": true,
+    "build_detail": "lake-build-guard.sh build --timeout 1800 -- build, detached: exit 0, 'Build completed successfully (2505 jobs)', zero error lines",
+    "gates": {
+      "typst_sync_check": "PASS (TOTAL_VIOLATIONS=0, MISMATCH_COUNT=0, MA_COUNT_MISMATCHES=0) -- repaired from a RED baseline of 2",
+      "check_module_invariants": "C4/C5/C8/C11 PASS (C11 at 7 waived, up from 6); C6 FAILS on 4 foreign unmanifested modules, an inherited failure recorded as a reasoned exclusion; module-invariants-manifest.txt byte-identical across the task",
+      "readme_lint": "check 3 PASS at 0 broken references (3 repaired); check 1 FAILS on an inherited missing FormalSystem/Semantics/Ultraproduct/README.md, recorded as a reasoned exclusion",
+      "check_task_references": "PASS (0 unexempted occurrences across 4 trees)",
+      "typst_compile": "PASS (typst compile typst/BimodalReference.typ exits 0)"
+    }
+  },
+  "phases_completed": 7,
+  "phases_total": 7,
+  "plan_markers_verified": true,
+  "modified_files": [
+    "FormalSystem/FrameConditions.lean",
+    "FormalSystem/FrameConditions/FrameClass.lean",
+    "FormalSystem/FrameConditions/Validity.lean",
+    "FormalSystem/FrameConditions/Soundness.lean",
+    "FormalSystem/FrameConditions/Compatibility.lean",
+    "FormalSystem/FrameConditions/README.md",
+    "FormalSystem/FormalSystem.lean",
+    "FormalSystem/Semantics/FrameProperty.lean",
+    "FormalSystem/README.md",
+    "FormalSystem/Metalogic/README.md",
+    "FormalSystem/Metalogic/SoundnessLemmas/README.md",
+    "FormalSystem/Boneyard/StrictSemanticsLegacy/README.md",
+    "scripts/boneyard-import-waivers.txt",
+    "README.md",
+    "docs/development/MODULE_ORGANIZATION.md",
+    "docs/user-guide/architecture.md",
+    "typst/FormalFoundations.typ",
+    "typst/SYNC-MAP.md",
+    "typst/chapters/p2-frame-classes.typ",
+    "typst/chapters/00-introduction.typ",
+    "typst/chapters/04-metalogic.typ",
+    "specs/510_resolve_orphaned_frameconditions_layer/baselines.txt",
+    "specs/510_resolve_orphaned_frameconditions_layer/plans/01_delete-frameconditions-layer.md",
+    "specs/510_resolve_orphaned_frameconditions_layer/summaries/01_delete-frameconditions-layer-summary.md"
+  ],
+  "deleted_files": [
+    "FormalSystem/FrameConditions.lean",
+    "FormalSystem/FrameConditions/FrameClass.lean",
+    "FormalSystem/FrameConditions/Validity.lean",
+    "FormalSystem/FrameConditions/Soundness.lean",
+    "FormalSystem/FrameConditions/Compatibility.lean",
+    "FormalSystem/FrameConditions/README.md"
+  ],
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/510_resolve_orphaned_frameconditions_layer/plans/01_delete-frameconditions-layer.md",
-      "summary": "7-phase deletion plan for FormalSystem/FrameConditions/ (853 .lean lines, 6 paths), sequencing a green build baseline first, the typst prose rewrite before deletion, the C11 Boneyard waiver inside the deletion batch, and a final four-gate sweep."
-    }
-  ],
-  "phase_count": 7,
-  "estimated_hours": 5.5,
-  "dependency_waves": [[1], [2, 3], [4], [5, 6], [7]],
-  "memory_candidates": [
+      "type": "summary",
+      "path": "specs/510_resolve_orphaned_frameconditions_layer/summaries/01_delete-frameconditions-layer-summary.md",
+      "summary": "Deleted the orphaned FrameConditions typeclass layer (853 .lean lines + README) and repaired every documentation, book and gate consequence."
+    },
     {
-      "content": "When deleting a source directory in a repo whose documentation gates are TEXT-GREP based (e.g. typst-sync-check.sh check 1, which only requires a backticked identifier to occur somewhere in some .lean file), the gate can be passing for the wrong reason: retirement/deprecation PROSE inside the doomed files is itself what satisfies the grep. Deleting the files therefore converts currently-passing identifiers into new violations, so a naive 'delete then fix docs' order undercounts the damage. The correct sequencing is to rewrite the prose-side references FIRST, drive the text-grep gate to zero at pre-deletion HEAD, and only then delete -- which both pre-empts the trap and clears any inherited debt in the same paragraph. Corollary for reachability-based invariant checks: a gate that counts UNREACHABLE modules is unaffected by deleting a REACHABLE one, and adding a manifest entry for a just-deleted module actively fails such a gate. Verify which population an invariant counts before assuming a deletion moves it.",
-      "category": "INSIGHT",
-      "source_artifact": "specs/510_resolve_orphaned_frameconditions_layer/plans/01_delete-frameconditions-layer.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["text-grep gate", "deletion sequencing", "module invariants", "reachable vs unreachable", "documentation sync check", "inherited gate debt"]
+      "type": "baseline",
+      "path": "specs/510_resolve_orphaned_frameconditions_layer/baselines.txt",
+      "summary": "Phase 1 verbatim gate capture at 29e8d5713, including the first-ever green lake build measurement."
     }
   ],
-  "next_steps": "Run /implement 510 to execute the plan"
+  "commits": [
+    "032a4f1da task 510 phase 1: capture green baselines",
+    "54b101541 task 510 phase 2: rewrite typst frame-class section onto live vocabulary",
+    "ed9d2de45 task 510 phase 3: repoint dangling #leansrc book pointers",
+    "8ccb469e4 task 510 phase 4: delete the FrameConditions layer",
+    "0185336f4 task 510 phase 5: repair stale FrameConditions documentation references",
+    "bb2b6e93e task 510 phase 6: record the corrected archived-completeness finding",
+    "task 510 phase 7: full gate sweep and acceptance verification"
+  ],
+  "completion_data": {
+    "completion_summary": "Deleted the orphaned FormalSystem/FrameConditions/ typeclass layer -- 853 .lean lines across five modules plus a 98-line README -- along with its single live import and every documentation, book, and gate consequence. The final lake build is green (2505 jobs), typst-sync-check.sh was repaired from an inherited RED baseline to TOTAL_VIOLATIONS=0, readme-lint check 3 is back to 0 broken references, and C11 passes with the new waiver at 7. The brief's archived-completeness finding was corrected and recorded durably: completeness_over_Int and discrete_completeness_fc were archived rather than deleted, and only the bare name dovetailed_bundle is genuinely absent.",
+    "roadmap_items": []
+  },
+  "requires_user_review": false,
+  "review_reason": "Two inherited gate failures remain, both foreign territory and both present at the Phase 1 baseline: check-module-invariants C6 (4 unmanifested unreachable modules created by other in-flight tasks) and readme-lint check 1 (missing FormalSystem/Semantics/Ultraproduct/README.md from committed foreign work). Neither is FrameConditions-related; both are documented as reasoned exclusions in the plan and summary. Repairing either would mean editing another task's territory.",
+  "metadata": {
+    "session_id": "sess_1788282938_f2ac03",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "compliance_check": "passed",
+    "task_number": 510,
+    "task_type": "lean4"
+  }
 }
