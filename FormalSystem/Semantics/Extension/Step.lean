@@ -36,9 +36,9 @@ The proof is a composition, not a re-derivation. Each of its three inputs is alr
 ### The frame-axiom-field invariant, discharged
 
 `step` once took *Spherical* as an explicit hypothesis binder `hSph`, against the day the
-`ParamTaskFrame` structure would carry the axioms as fields. **That day has come, and the invariant
-held.** `ParamTaskFrame.spherical` is definitionally `TaskFrame.Spherical TaskRel`,
-`ParamTaskFrame.serial` definitionally `TaskFrame.Serial TaskRel`, and `ParamTaskFrame.interpolates` —
+the frame structure would carry the axioms as fields. **That day has come, and the invariant
+held.** `FrameOver.spherical` is definitionally `TaskFrame.Spherical TaskRel`,
+`FrameOver.serial` definitionally `TaskFrame.Serial TaskRel`, and `FrameOver.interpolates` —
 the `→` projection of the biconditional `comp` field — definitionally
 `TaskFrame.Interpolates TaskRel`. `step` now applies `F.spherical` **directly**, with zero
 restatement and no hypothesis binder in sight.
@@ -85,7 +85,7 @@ namespace FormalSystem.Semantics
 
 namespace PartialHistory
 
-open ParamTaskFrame TaskFrame
+open TaskFrame
 
 /--
 `lem:step`: the Step Lemma. Every partial history extends by one arbitrary duration.

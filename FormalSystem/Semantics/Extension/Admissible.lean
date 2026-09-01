@@ -95,7 +95,7 @@ here:
 ## Implementation Notes
 
 - **`nullity_identity` is not consumed, and its open design question is not decided here.** The
-  existing `ParamTaskFrame.nullity_identity` field is an *iff* (`TaskRel w 0 u ↔ w = u`), strictly
+  existing `FrameOver.nullity_identity` field is an *iff* (`TaskRel w 0 u ↔ w = u`), strictly
   stronger than the paper's derived `lem:nullity`, which asserts reflexivity only. `admissible`
   consumes only the reflexivity half, and takes it from `TaskFrame.nullity_of_serial_limit`
   (*Seriality* + *Limit*, choice-free) rather than from the field. Whether the field should be
@@ -118,7 +118,7 @@ namespace FormalSystem.Semantics
 
 namespace PartialHistory
 
-open ParamTaskFrame TaskFrame
+open TaskFrame
 
 variable {F : TaskFrame}
 
@@ -277,12 +277,12 @@ every member of the constraints imposed on $z$."
 
 - both times in `X`: `τ`'s own `respects_task`, no axiom needed;
 - old time then `z`: the fiber condition at that time, i.e. `fibers`;
-- `z` then old time: the same fiber condition through the converse convention (`ParamTaskFrame.converse`
+- `z` then old time: the same fiber condition through the converse convention (`FrameOver.converse`
   plus `neg_sub`), which is precisely the negative-difference instance `def:world-history`'s `%`
   comment covers;
 - `z` twice: `u ⇒₀ u`, which is `lem:nullity` — taken here from
   `TaskFrame.nullity_of_serial_limit` (*Seriality* at `x = 0` plus *Limit*, choice-free), **not**
-  from the strictly stronger `ParamTaskFrame.nullity_identity` field, whose design question stays open.
+  from the strictly stronger `FrameOver.nullity_identity` field, whose design question stays open.
 
 The hypothesis `hz : ¬ τ.domain z` is the paper's `z ∈ D \ X` and is genuinely load bearing in the
 left-to-right direction; see this module's docstring for why, and contrast `lem:constraint`, which

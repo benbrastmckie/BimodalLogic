@@ -36,7 +36,7 @@ precisely `TruthAt` transfer that a downstream Łoś lemma must be stated agains
 ## Four axioms in place of seven frame fields
 
 The `ShiftSet` structure carries exactly four axiom fields — `carrier_nonempty`, `sh_zero`,
-`sh_add`, `sep` — plus the valuation `A`. The live `ParamTaskFrame`
+`sh_add`, `sep` — plus the valuation `A`. The live frame
 (`FormalSystem/Semantics/TaskFrame.lean`) has **seven** fields, and `ShiftSet.frame` discharges
 all seven. Three of them are free consequences of the task relation being *functional*
 (`TaskRel w d u := u = sh w d`) together with the group action:
@@ -69,19 +69,24 @@ open FormalSystem.Syntax
 A **shift set** over the duration group `D`: a carrier `Ω` with a `D`-action `sh` and a
 valuation `A` on atoms.
 
-`D` is bound at `Type`, and deliberately **not** at a universe-polymorphic binder.
-`ParamTaskFrame.WorldState : Type` and `Validity`'s `valid` binds `D : Type`, so a
-universe-polymorphic `D` here would land the reverse direction's carrier in a universe where the
-forward direction cannot consume it. `Carrier` is likewise `Type`.
+`D` is a `TemporalOrder` — the reified `def:temporal-order` — rather than a bare `Type` plus the
+four algebra binders hand-copied. That is what lets `ShiftSet.fibre` land in `FrameOver D`
+directly, with no `TemporalOrder.of` in the way, and what makes `ofModel`'s target
+`ShiftSet F.Duration` typecheck on the nose.
+
+The universe discipline the earlier binder shape recorded is preserved, not relaxed:
+`TemporalOrder.carrier : Type`, so `↑D : Type`, `WorldState : Type` and `Carrier : Type` all sit
+where they did. A universe-polymorphic duration here would still land the reverse direction's
+carrier where the forward direction could not consume it; nothing about this change opens that
+door.
 -/
-structure ShiftSet (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
-    [Nontrivial D] where
+structure ShiftSet (D : TemporalOrder) where
   /-- The carrier `Ω` of the shift set. -/
   Carrier : Type
-  /-- The carrier is nonempty (matching `ParamTaskFrame.nonempty`). -/
+  /-- The carrier is nonempty (matching `FrameOver.worldNonempty`). -/
   carrier_nonempty : Nonempty Carrier
   /-- The shift action of a duration on a carrier point. -/
-  sh : Carrier → D → Carrier
+  sh : Carrier → ↑D → Carrier
   /-- Shifting by `0` is the identity. -/
   sh_zero : ∀ w, sh w 0 = w
   /-- Shifting is additive: the action law. -/
@@ -108,14 +113,14 @@ structure ShiftSet (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMono
 
 namespace ShiftSet
 
-variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
+variable {D : TemporalOrder}
 
 /-- Shifting by `d` and then by `-d` returns to the start. -/
-theorem sh_neg (S : ShiftSet D) (w : S.Carrier) (d : D) : S.sh (S.sh w d) (-d) = w := by
+theorem sh_neg (S : ShiftSet D) (w : S.Carrier) (d : ↑D) : S.sh (S.sh w d) (-d) = w := by
   rw [S.sh_add, add_neg_cancel, S.sh_zero]
 
 /-- Shifting by `-d` and then by `d` returns to the start. -/
-theorem sh_neg' (S : ShiftSet D) (w : S.Carrier) (d : D) : S.sh (S.sh w (-d)) d = w := by
+theorem sh_neg' (S : ShiftSet D) (w : S.Carrier) (d : ↑D) : S.sh (S.sh w (-d)) d = w := by
   rw [S.sh_add, neg_add_cancel, S.sh_zero]
 
 /--
@@ -143,13 +148,13 @@ theorem wh_ext {F : TaskFrame} {σ τ : WorldHistory F} (hd : σ.domain = τ.dom
 The task frame induced by a shift set, under the **functional** task relation
 `TaskRel w d u := (u = sh w d)`.
 
-All **seven** live `ParamTaskFrame` fields are discharged here. Three come for free from
+All **seven** live `FrameOver` fields are discharged here. Three come for free from
 functionality plus the group action and require no shift-set axiom of their own — `serial`, the
 *interpolation* half of the biconditional `comp`, and `spherical` — correcting the design
-document's list, which was written against an earlier five-field `ParamTaskFrame` and named only the
+document's list, which was written against an earlier five-field frame structure and named only the
 other four. The one field that is genuinely *not* free is `limit`; it is exactly `S.sep`.
 -/
-@[reducible] def fibre (S : ShiftSet D) : FrameOver (TemporalOrder.of D) where
+@[reducible] def fibre (S : ShiftSet D) : FrameOver D where
   WorldState := S.Carrier
   worldNonempty := S.carrier_nonempty
   TaskRel := fun w d u => u = S.sh w d
@@ -253,7 +258,7 @@ The `box` clause quantifies over the **whole carrier**: there is no `Omega` para
 the current semantics, and `TruthAt`'s own `box` clause quantifies over all total histories of
 the frame, which under `ShiftSet.frame` are exactly the orbits (`total_eq_orbit`).
 -/
-def ShiftTruth (S : ShiftSet D) : S.Carrier → D → Formula → Prop
+def ShiftTruth (S : ShiftSet D) : S.Carrier → ↑D → Formula → Prop
   | w, t, Formula.atom p => S.A p (S.sh w t)
   | _, _, Formula.bot => False
   | w, t, Formula.imp φ ψ => ShiftTruth S w t φ → ShiftTruth S w t ψ
@@ -270,7 +275,7 @@ Truth in the task model induced by a shift set, evaluated along the orbit histor
 is shift-set truth at `w`. The `box` case is where `hist_isTotal` (left to right) and
 `total_eq_orbit` (right to left) are consumed; every other case is a structural transport.
 -/
-theorem forward_repr (S : ShiftSet D) (w : S.Carrier) (t : D) (φ : Formula) :
+theorem forward_repr (S : ShiftSet D) (w : S.Carrier) (t : ↑D) (φ : Formula) :
     TruthAt S.model (S.hist w) t φ ↔ ShiftTruth S w t φ := by
   induction φ generalizing w t with
   | atom p => exact ⟨fun ⟨_, h⟩ => h, fun h => ⟨trivial, h⟩⟩
@@ -367,7 +372,7 @@ def ofModel (F : TaskFrame) (M : TaskModel F) : ShiftSet F.Duration where
 Shift-set truth on `ofModel F M` is truth in `M`. The `atom` case is where
 `TimeShift.time_shift_preserves_truth` (`FormalSystem/Semantics/Truth.lean`, which is
 *unconditional* — the shift-closure hypothesis it once carried is retired, not renamed) and
-`ParamTaskFrame.HF.timeShift_val` are consumed; every other case is a structural transport.
+`TaskFrame.HF.timeShift_val` are consumed; every other case is a structural transport.
 -/
 theorem reverse_repr (F : TaskFrame) (M : TaskModel F) (τ : F.HF) (t : F.Duration)
     (φ : Formula) :
@@ -487,7 +492,7 @@ theorem qsh_add (w : ℚ ⧸ DyadicGroup) (a b : ℚ) : qsh (qsh w a) b = qsh w 
 
 This is what justifies `sep` being a field of `ShiftSet` rather than a lemma about it: there is
 a `ℚ`-action satisfying `sh_zero` and `sh_add` whose separation condition is false. Without the
-field, `ShiftSet.frame` could not discharge `ParamTaskFrame.limit`, so `ShiftSet` without `sep` would
+field, `ShiftSet.frame` could not discharge `FrameOver.limit`, so `ShiftSet` without `sep` would
 not induce a task frame at all.
 -/
 theorem sep_not_derivable :

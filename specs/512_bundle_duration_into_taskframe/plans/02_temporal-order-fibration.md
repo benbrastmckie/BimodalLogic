@@ -875,20 +875,20 @@ No split into 5.1 was needed.
 
 ---
 
-### Phase 6: Extension layer and `ShiftSet` [NOT STARTED]
+### Phase 6: Extension layer and `ShiftSet` [COMPLETED]
 
 **Goal**: `Semantics/Extension/` and `ShiftSet.lean` fully off the transitional alias, with the
 Step Lemma's consumption of `F.spherical` remaining **definitional**.
 
 **Tasks**:
-- [ ] Migrate `Extension/{Admissible,Constraint,Extension,Step}.lean` off `ParamTaskFrame`
+- [x] Migrate `Extension/{Admissible,Constraint,Extension,Step}.lean` off `ParamTaskFrame`
       (13/14/10/7 occurrences at HEAD). `PeriodicExtension.lean` is ℤ-specific and belongs to
       Phase 9; exclude it here and record the exclusion.
-- [ ] Migrate `ShiftSet.lean` (9). Preserve v01's finding that `ShiftSet.frame` must be
+- [x] Migrate `ShiftSet.lean` (9). Preserve v01's finding that `ShiftSet.frame` must be
       `@[reducible]` (its `hist` proof rewrites under `S.frame.Duration`), and that `ShiftSet`
       itself is a carrier-level structure — under the fibration it should be parameterized by a
       `TemporalOrder`, not by a bare duration type. Confirm which by reading the definition first.
-- [ ] Verify the Step Lemma still consumes `F.spherical` definitionally. If it does not, stop and
+- [x] Verify the Step Lemma still consumes `F.spherical` definitionally. If it does not, stop and
       report — that is drift, not a proof-engineering problem to work around.
 
 **Timing**: 1.5 hours
@@ -901,11 +901,52 @@ Step Lemma's consumption of `F.spherical` remaining **definitional**.
 (`Constraint` 14, `Admissible` 13, `Extension` 10, `ShiftSet` 9, `Step` 7). Confirm with
 `grep -rc`. This phase's independence from Phase 5 is a claim: confirm with
 `grep '^import' FormalSystem/Semantics/Extension/*.lean FormalSystem/Semantics/ShiftSet.lean`
-showing no `Validity` import (v01 verified this; re-verify, do not assume).
+showing no `Validity` import (v01 verified this; re-verify, do not assume). *(Re-verified: no `Validity`
+import in any of the five. Counts materially LOWER than the hypothesis — `Constraint` 5 not 14,
+`Admissible` 4 not 13, `Extension` 10, `Step` 4 not 7, `ShiftSet` 7 not 9 — because Phase 2's
+namespace revert had already converted the code citations; what remained was docstring prose plus
+the `open ParamTaskFrame` lines.)*
 
 **Files to modify**:
 - `FormalSystem/Semantics/Extension/{Admissible,Constraint,Extension,Step}.lean`
 - `FormalSystem/Semantics/ShiftSet.lean`
+
+#### Phase 6 Record
+
+**The Extension layer was already off `ParamTaskFrame` in substance.** Rather than assume it, the
+claim was *tested*: `open ParamTaskFrame TaskFrame` was narrowed to `open TaskFrame` in all four
+files and each was re-elaborated. All four still compile, which proves no name in them resolves
+through the `ParamTaskFrame` namespace. All five files now contain the string `ParamTaskFrame`
+zero times.
+
+**The Step Lemma is untouched.** `F.spherical` is still applied directly at
+`Extension/Step.lean:127`, and the file compiles — so the consumption is still definitional, which
+is the drift check this phase existed to make.
+
+**`ShiftSet` is re-parameterized by `TemporalOrder`** — the plan asked for this to be settled by
+reading the definition, and the reading settles it *for*:
+
+- `ShiftSet.fibre` now lands in `FrameOver D` instead of `FrameOver (TemporalOrder.of D)`, and
+  `ofModel`'s target `ShiftSet F.Duration` typechecks on the nose. That removes `TemporalOrder.of`
+  from two **permanent** (non-transitional) definitions — the transitional constructor should not
+  be load-bearing in code that outlives Phase 20.
+- The universe discipline the old docstring recorded is *preserved, not relaxed*:
+  `TemporalOrder.carrier : Type`, so `↑D : Type` and `Carrier : Type` sit exactly where they did.
+  The docstring now says so explicitly rather than justifying a bare-`Type` binder that no longer
+  exists.
+
+`Extension/PeriodicExtension.lean` stays excluded, per the phase's own Reasoned Exclusion; it is
+Phase 9's.
+
+**A miss worth recording.** The `ShiftSet` re-parameterization broke
+`Tests/BimodalTest/Semantics/DependentUltraproductProbe.lean`, and the phase build did **not**
+catch it: `lake build` builds the default target only, not `BimodalTest`. The invariants gate did
+catch it — `FAIL C1 lake build BimodalTest failed` — which is the second time this task that the
+gate caught something a green `lake build` did not (the first was C6's isolation compile of
+`PeriodicExtension.lean` in Phase 2). The per-phase build helper now builds `BimodalTest`
+alongside the library so the two agree. The probe's fix is `ShiftSet (TemporalOrder.of (UD φ D))`,
+which preserves what it measures: `TemporalOrder.of` demands exactly the four instances the old
+binder list did, and they must still be synthesized on the ultraproduct.
 
 **Verification**:
 - Standing contract (1-9).

@@ -27,7 +27,7 @@ those are Discrete-only and `FormalSystem/Metalogic/DiscreteNonCompactness.lean`
 
 ## What was measured
 
-The hypothesis this file was written to test is that the four instance binders `ShiftSet`
+The hypothesis this file was written to test is that the four instance binders a temporal order
 demands of its duration carrier — `AddCommGroup`, `LinearOrder`, `IsOrderedAddMonoid`,
 `Nontrivial`, plus `DenselyOrdered` on the Dense branch — can all be supplied by hand on the
 quotient of the Pi group `(∀ i, D i)` by its eventually-zero subgroup. **They can**, and the
@@ -39,7 +39,7 @@ the hand-supplied structure is `evZero`, `LE`, `LinearOrder`, `IsOrderedAddMonoi
 The measurement that is *only* a measurement while this file compiles is `shiftSetOnUD`. Its
 elaboration is the check that `ShiftSet (UD φ D)` is well-typed at all: every instance binder
 resolves, and — the part that is easy to assume and expensive to be wrong about — the quotient
-lands in `Type` rather than `Type 1`, which is what `ShiftSet`'s `(D : Type)` requires. That is a
+lands in `Type` rather than `Type 1`, which is what `ShiftSet`'s carrier requires. That is a
 compiler check, not an assertion, and it is the reason this construction sits under a build
 target instead of in prose.
 
@@ -261,12 +261,19 @@ theorem shU_add (sh : ∀ i, Ω i → D i → Ω i)
 quotient lands in `Type` (not `Type 1`), which is R3.
 -/
 
-/-- Packaging check: `ShiftSet` accepts `UD φ D` as its duration carrier. -/
+/-- Packaging check: `ShiftSet` accepts `UD φ D` as its duration carrier.
+
+`ShiftSet` is now indexed by a `TemporalOrder` rather than by a bare `Type` plus four instance
+binders, so the carrier is presented as `TemporalOrder.of (UD φ D)`. That does **not** weaken what
+this probe measures — `TemporalOrder.of` demands exactly the same four instances the old binder
+list did, and they must still be synthesized on the ultraproduct. If anything it sharpens the
+measurement: the check is now that the ultraproduct carrier can be *bundled as a temporal order*,
+which is the same fact stated as one object rather than four side conditions. -/
 def shiftSetOnUD [∀ i, Nontrivial (D i)] (Carrier : Type) (hne : Nonempty Carrier)
     (sh : Carrier → UD φ D → Carrier) (hz : ∀ w, sh w 0 = w)
     (hadd : ∀ w a b, sh (sh w a) b = sh w (a + b))
     (hsep : ∀ w u, (∀ x : UD φ D, 0 < x → ∃ y, |y| < x ∧ u = sh w y) → u = w)
-    (A : Atom → Carrier → Prop) : ShiftSet (UD φ D) where
+    (A : Atom → Carrier → Prop) : ShiftSet (TemporalOrder.of (UD φ D)) where
   Carrier := Carrier
   carrier_nonempty := hne
   sh := sh

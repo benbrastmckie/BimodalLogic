@@ -50,7 +50,7 @@ source — is the citation source of record.
 *Spherical* is **not** threaded into `extension`'s proof directly: it reaches `step` — which
 remains its sole application site — as the projection `F.spherical` off the frame, taken by `step`
 itself. Nothing in this module applies *Spherical*, *Seriality*, *Interpolation*, or *Limit* to
-anything; all four are `ParamTaskFrame` fields rather than hypothesis binders, so what this module
+anything; all four are `FrameOver` fields rather than hypothesis binders, so what this module
 passes along is the frame `F`, never the axioms.
 
 The maximal-to-total direction is isolated as `isTotal_of_isMax`, the converse companion to
@@ -61,7 +61,7 @@ partial history to a `WorldHistory`, and thence to an `F.HF` element, is immedia
 
 ## What the finite-carrier *Spherical* discharge costs, by contrast
 
-`ParamTaskFrame.spherical_of_finite` (`cor:spherical-finite`) is the only discharge route for an
+`TaskFrame.spherical_of_finite` (`cor:spherical-finite`) is the only discharge route for an
 **arbitrary** relation on a finite carrier; the other helpers — `spherical_of_subsingleton`,
 `spherical_of_permissive`, `spherical_of_eq` — each constrain the relation's shape instead. Its
 cost profile is the mirror image of `extension`'s. It costs **no Zorn**: it does not route through
@@ -79,29 +79,29 @@ on the record as `wlem_of_spherical` in
 `occurrence` below quantifies over a frame alone, with no axiom hypotheses — which is what the
 paper's own statement literally reads as. It once carried the axioms as explicit hypotheses,
 gated on the frame-axiom-field refactor recorded in `Step.lean`; that refactor has landed.
-`ParamTaskFrame` carries *Compositionality* (biconditional), *Seriality*, *Limit*, and *Spherical* as
+`FrameOver` carries *Compositionality* (biconditional), *Seriality*, *Limit*, and *Spherical* as
 structure data, each stated by citation of the bare-relation predicate rather than restated, so
 threading them through this chain is now a projection rather than a hypothesis — with zero
 restatement, exactly as the hypothesis-form discipline was designed to guarantee.
 
 The one argument the paper's ambient convention supplies silently is the world state, and the
-structure now carries it too: `ParamTaskFrame.nonempty` is a `Nonempty WorldState` field. `hF_nonempty`
+structure now carries it too: `FrameOver.worldNonempty` is a `Nonempty WorldState` field. `hF_nonempty`
 nonetheless continues to take `w` explicitly — **by choice, not by necessity** — so that a caller
 already holding a state passes it rather than discarding it, while a caller holding none passes
-`F.nonempty.some`.
+`F.worldNonempty.some`.
 
 ## The one-point partial history, and what is *not* in this chain
 
 `cor:occurrence`'s proof extends the one-point partial history `{⟨x, w⟩}` directly via
 `thm:extension`. That one-point history is `PartialHistory.point` below; its `respects_task`
-obligation reduces to `TaskRel w 0 w`, discharged by `ParamTaskFrame.nullity_identity`.
+obligation reduces to `TaskRel w 0 w`, discharged by `FrameOver.nullity_identity`.
 
 The paper's **former** translation argument — which derived occurrence at an arbitrary time by
 time-shifting a history witnessed at one time — is **gone from this chain and must not be
 reintroduced**. The anchors that carried it (`thm:occurrence`, `app:nonempty`) no longer exist;
 the paper merged them into the single, strictly stronger `cor:occurrence`, in which the time `x`
 is universally given rather than existentially witnessed. Time-shift machinery survives
-separately (`PartialHistory.timeShift`, `WorldHistory.timeShift`, `ParamTaskFrame.HF.timeShift`) but
+separately (`PartialHistory.timeShift`, `WorldHistory.timeShift`, `TaskFrame.HF.timeShift`) but
 plays no role here.
 
 ## Main Definitions
@@ -121,7 +121,7 @@ namespace FormalSystem.Semantics
 
 namespace PartialHistory
 
-open ParamTaskFrame TaskFrame
+open TaskFrame
 
 /-! ## From totality to `WorldHistory` -/
 
@@ -171,7 +171,7 @@ is spent. If some time `z` were missing from a maximal `τ`'s domain, `step` wou
 extending `τ` with `z` in its domain; maximality then forces `τ` to extend `σ` in turn, putting
 `z` back in `τ`'s domain — a contradiction.
 
-The four axioms are **`ParamTaskFrame` fields that `step` projects off `F` for itself**, not hypotheses
+The four axioms are **`FrameOver` fields that `step` projects off `F` for itself**, not hypotheses
 this theorem takes and forwards. Nothing here applies any of them; in particular this is not a
 second *Spherical* application site.
 -/
@@ -217,7 +217,7 @@ theorem extension (F : TaskFrame) (τ : PartialHistory F) :
 The **one-point** partial history `{⟨x, w⟩}`: the state `w` at the single time `x`.
 
 Its `respects_task` obligation is only ever the zero-duration instance `TaskRel w 0 w`, since both
-times in any instance are `x`; that is discharged by `ParamTaskFrame.nullity_identity`.
+times in any instance are `x`; that is discharged by `FrameOver.nullity_identity`.
 
 This is the history `cor:occurrence` extends via `thm:extension`. The paper's former translation
 argument, which reached an arbitrary time by time-shifting, is not used and must not be
@@ -262,11 +262,11 @@ theorem occurrence (F : TaskFrame) (w : F.WorldState) (x : F.Duration) :
 
 Recorded source (`cor:occurrence`, verbatim, closing clause): "…and so
 $H_{\F} \neq \emptyset$." This needs a world state to start from. The paper's ambient convention
-supplies one silently, and the frame now supplies one too — `ParamTaskFrame.nonempty` is a field — so
+supplies one silently, and the frame now supplies one too — `FrameOver.worldNonempty` is a field — so
 the explicit argument `w` is retained here **by choice, not by necessity**: a caller already
-holding a state passes it, and a caller holding none passes `F.nonempty.some`.
+holding a state passes it, and a caller holding none passes `F.worldNonempty.some`.
 `Semantics/Validity.lean`'s `hF_nonempty_of_frameAxioms` is the second case, and reads literally
-`PartialHistory.hF_nonempty F F.nonempty.some`.
+`PartialHistory.hF_nonempty F F.worldNonempty.some`.
 -/
 theorem hF_nonempty (F : TaskFrame) (w : F.WorldState) : Nonempty F.HF :=
   let ⟨τ, _⟩ := occurrence F w 0

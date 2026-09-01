@@ -50,7 +50,7 @@ source — is the citation source of record.
    left-to-right half of biconditional *Compositionality*: the history's own task-respect gives
    `τ(t) ⇒_{s-t} τ(s)`, and interpolating at `z` splits `s - t = (z - t) + (s - z)` into a point
    of `[τ(t), τ(s)]_{z-t}^{s-z}`.
-3. **`ParamTaskFrame.forward_comp`** — *directedness*, via the two fiber-monotonicity lemmas below.
+3. **`TaskFrame.forward_comp`** — *directedness*, via the two fiber-monotonicity lemmas below.
    This is the right-to-left (composition) half of the same biconditional axiom, so
    *Compositionality* is consumed in **both** directions by this one lemma.
 
@@ -95,7 +95,7 @@ namespace FormalSystem.Semantics
 
 namespace PartialHistory
 
-open ParamTaskFrame TaskFrame
+open TaskFrame
 
 variable {F : TaskFrame}
 
@@ -126,7 +126,7 @@ theorem seg_eq_inter_fib (τ : PartialHistory F) {z t s : F.Duration}
 Below `z`, a later domain time imposes a tighter constraint: for `a ≤ b ≤ z` in the domain,
 `Fib(τ(b), z - b) ⊆ Fib(τ(a), z - a)`.
 
-This is *Compositionality*'s composition half (`ParamTaskFrame.forward_comp`) applied to the history's
+This is *Compositionality*'s composition half (`TaskFrame.forward_comp`) applied to the history's
 own task-respect step `τ(a) ⇒_{b-a} τ(b)`, with both durations `b - a` and `z - b` nonnegative so
 that the axiom's positive-cone proviso is met.
 -/
@@ -147,7 +147,7 @@ Above `z`, an earlier domain time imposes a tighter constraint: for `z ≤ b ≤
 
 The mirror image of `fib_subset_fib_of_le_of_le`. Both fiber durations are now nonpositive, so
 the composition is performed on the reflected pair — `u ⇒_{b-z} τ(b)` and `τ(b) ⇒_{a-b} τ(a)` —
-and the converse convention (`ParamTaskFrame.converse`) carries the result back.
+and the converse convention (`FrameOver.converse`) carries the result back.
 -/
 theorem fib_subset_fib_of_le_of_le' {τ : PartialHistory F} {z a b : F.Duration}
     (ha : τ.domain a) (hb : τ.domain b) (hba : b ≤ a) (hzb : z ≤ b) :
@@ -379,7 +379,7 @@ each by deleting the corresponding hypothesis and observing the failure:
 - `hSer` (*Seriality*) — nonemptiness of the fiber members, via `nonempty_fib_of_serial`;
 - `hInt` (the interpolation half of *Compositionality*) — nonemptiness of the segment members,
   via `nonempty_seg_of_interpolates`;
-- `ParamTaskFrame.forward_comp` (the composition half of *Compositionality*) — directedness, via the
+- `TaskFrame.forward_comp` (the composition half of *Compositionality*) — directedness, via the
   fiber-monotonicity lemmas `fib_subset_fib_of_le_of_le` and `fib_subset_fib_of_le_of_le'`.
 
 *Compositionality* is therefore consumed in **both** of its directions here. *Spherical* is
