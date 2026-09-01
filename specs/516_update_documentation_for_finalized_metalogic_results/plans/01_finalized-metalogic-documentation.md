@@ -194,7 +194,7 @@ paraphrase.
 
 ---
 
-### Phase 2: Add both result families to the `Metalogic.lean` status ledger [NOT STARTED]
+### Phase 2: Add both result families to the `Metalogic.lean` status ledger [COMPLETED]
 
 **Goal**: Extend `FormalSystem/Metalogic.lean`'s "Publication-Ready Results" list with the
 Galois-closure/definability family and the Kamp expressive-completeness result, in the file's own
@@ -203,25 +203,25 @@ authoritative ledger the other two documents mirror, so it is authored first and
 settled here is what Phases 3 and 4 reuse.
 
 **Tasks**:
-- [ ] Locate the end of the "Publication-Ready Results" bullet list (currently terminating at the
+- [x] Locate the end of the "Publication-Ready Results" bullet list (currently terminating at the
       `**Decidability** (\`decide\`)` bullet, immediately before the `## Completeness Architecture`
       heading) and confirm the insertion point by reading the surrounding lines.
-- [ ] Add a `**Characterization / definability**` bullet naming `galoisClosed_mod` (axiomatizable
+- [x] Add a `**Characterization / definability**` bullet naming `galoisClosed_mod` (axiomatizable
       = Galois-closed), `galoisClosed_of_indicator` (single-formula method), and the two positive
       results `galoisClosed_sat_dense` / `galoisClosed_isDiscrete`, each with the status word the
       Phase 1 evidence file supports.
-- [ ] In the same bullet (or an adjacent sub-bullet), record the two negative results
+- [x] In the same bullet (or an adjacent sub-bullet), record the two negative results
       `sat_dedekind_ssubset_mod_axiomSet` and `sat_discrete_ssubset_mod_axiomSet`, stating the
       property as Galois-closedness of the model class. Apply C1: if this text sits near the
       existing Dedekind strong-completeness caveat, name the property in both so a reader cannot
       read one as bearing on the other.
-- [ ] Append the C5 disclaimer that closed-form characterizations of `Mod (AxiomSet .Discrete)`
+- [x] Append the C5 disclaimer that closed-form characterizations of `Mod (AxiomSet .Discrete)`
       and `Mod (AxiomSet .Dedekind)` remain open and are not promised.
-- [ ] Add a `**Expressive completeness (Kamp, Prior structures)**` bullet for
+- [x] Add a `**Expressive completeness (Kamp, Prior structures)**` bullet for
       `kampPriorExpressiveCompleteness`, with the axiom set recorded in Phase 1, the Prior-structures
       scope qualifier (C2), and the fact that it is load-bearing for the live completeness chain
       via `uSExpressivelyCompleteOverPrior`.
-- [ ] Re-read the added hunk to confirm every edit sits inside the `/-! ... -/` docstring block and
+- [x] Re-read the added hunk to confirm every edit sits inside the `/-! ... -/` docstring block and
       no delimiter was broken.
 
 **Timing**: 1 hour
