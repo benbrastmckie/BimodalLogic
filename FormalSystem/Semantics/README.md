@@ -21,6 +21,7 @@ Task frame semantics for TM bimodal logic.
 | PartialHistory.lean | Partial world-histories on convex subsets of the duration group |
 | PartialHistoryOrder.lean | The order structure on partial histories |
 | Extension/ | Extension of partial histories: `Admissible`, `Constraint`, `Extension`, `PeriodicExtension`, `Step` (5 files) |
+| Ultraproduct/ | The dependent ultraproduct of shift sets and Łoś's theorem: `Carrier`, `IndexFilter`, `ShiftSetProduct`, `Los` (4 files) |
 
 ## Key Definitions
 

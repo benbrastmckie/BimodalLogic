@@ -4,286 +4,68 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import FormalSystem.Semantics.ShiftSet
-import Mathlib.Order.Filter.Ultrafilter.Basic
+import FormalSystem.Semantics.Ultraproduct.IndexFilter
+import FormalSystem.Semantics.Ultraproduct.Los
 
 /-!
-# Dependent ultraproduct probe: can the *carrier* be built as a bespoke quotient?
+# Dependent ultraproduct: axiom-profile regression check
 
-`FormalSystem/Metalogic/SetConsequence.lean`'s `SatisfiableBaseSet` binds the duration carrier
-`D` existentially **per instance**, and `FormalSystem/Semantics/ShiftSet.lean`'s `structure
-ShiftSet` carries its history carrier as a *field*. So an ultraproduct indexed by the finite
-subsets of a set of formulas has a carrier family that genuinely varies with the index: it is a
-**dependent** ultraproduct on both sorts, not a power.
+**The carrier construction that used to live here has been promoted.** It now sits in
+`FormalSystem/Semantics/Ultraproduct/Carrier.lean` (the eventually-zero quotient `UD` and its
+order structure, the section quotient `UOmega`, and the shift `shU`), with
+`FormalSystem/Semantics/Ultraproduct/IndexFilter.lean` (imported here directly, since
+`Los.lean` does not depend on it),
+`FormalSystem/Semantics/Ultraproduct/ShiftSetProduct.lean`, and
+`FormalSystem/Semantics/Ultraproduct/Los.lean` completing it. This file no longer *builds*
+anything; it is a **consumer** of those modules, retained for the one job the promotion does not
+do on its own.
 
-That rules out Mathlib's ordered ultraproduct machinery. `Filter.Germ` and its
-`instLinearOrder` / `instIsOrderedAddMonoid` are stated for a *fixed* `β`; the dependent
-`Filter.Product` carries only `coeTC` and `Inhabited` — nothing an ordered carrier needs. The
-alternative considered was normalizing the family to a single carrier first, using
-`FormalSystem/Semantics/DurationClassification.lean`'s `intIso` and
-`FormalSystem/Semantics/IntTransfer.lean`'s frame `map`; that route is a dead end, because
-those are Discrete-only and `FormalSystem/Metalogic/DiscreteNonCompactness.lean`'s
-`discrete_consequence_not_compact` refutes compactness exactly at Discrete.
+## What is measured here
 
-## What was measured
+Two things, both of which are compiler checks rather than assertions:
 
-The hypothesis this file was written to test is that the four instance binders a temporal order
-demands of its duration carrier — `AddCommGroup`, `LinearOrder`, `IsOrderedAddMonoid`,
-`Nontrivial`, plus `DenselyOrdered` on the Dense branch — can all be supplied by hand on the
-quotient of the Pi group `(∀ i, D i)` by its eventually-zero subgroup. **They can**, and the
-count is smaller than a raw-setoid estimate suggests: quotienting by an `AddSubgroup` rather
-than by a bare `Setoid` makes `AddCommGroup` free (`QuotientAddGroup.Quotient.addCommGroup`), so
-the hand-supplied structure is `evZero`, `LE`, `LinearOrder`, `IsOrderedAddMonoid`, `Nontrivial`
-— five, six with `DenselyOrdered`.
+1. **The binder-list / universe check.** `uShiftSet φ S` elaborating at type
+   `ShiftSet (UT φ T)` is the check that `ShiftSet` accepts the ultraproduct as its duration
+   carrier: every instance binder `TemporalOrder.of` demands is synthesized on the quotient, and
+   — the part that is easy to assume and expensive to be wrong about — the quotient lands in
+   `Type` rather than `Type 1`, which is what `ShiftSet`'s `Carrier` field requires. This is the
+   same measurement the old `shiftSetOnUD` made, now stated against the real construction
+   instead of against a stand-in that took `sep`, `carrier_nonempty`, and the valuation as
+   hypotheses.
 
-The measurement that is *only* a measurement while this file compiles is `shiftSetOnUD`. Its
-elaboration is the check that `ShiftSet (UD φ D)` is well-typed at all: every instance binder
-resolves, and — the part that is easy to assume and expensive to be wrong about — the quotient
-lands in `Type` rather than `Type 1`, which is what `ShiftSet`'s carrier requires. That is a
-compiler check, not an assertion, and it is the reason this construction sits under a build
-target instead of in prose.
-
-The three `#print axioms` lines at the end pin the axiom profile to
-`[propext, Classical.choice, Quot.sound]`. `Classical.choice` enters through
-`toDecidableLE := Classical.decRel _` and the `choose` calls in the `Nontrivial` and
-`DenselyOrdered` instances — the same profile `ShiftSet.reverse_repr` already carries.
+2. **The axiom profile.** The `#print axioms` lines below pin `uShiftSet`, `los`, `los_truthAt`,
+   and `eventually_mem` to `[propext, Classical.choice, Quot.sound]`. `Classical.choice` enters
+   through `toDecidableLE := Classical.decRel _`, the `choose` calls in the `Nontrivial` and
+   `DenselyOrdered` instances, and `exists_section` — the same profile
+   `ShiftSet.reverse_repr` already carries. `sorryAx` must stay absent. Keeping these under a
+   build target is what makes the profile a regression check rather than a one-time observation.
 
 ## What is deliberately **not** here
 
-This is the carrier, and only the carrier. None of the following is attempted, and none should
-be added to this file:
-
-* the **Łoś lemma**, or any clause of it;
-* the **ultrafilter on the index type** — the index is the finite subsets of a formula set,
-  ordered by inclusion, and the filter is `Ultrafilter.of Filter.atTop`;
-* **`ShiftSet.sep`** on the ultraproduct — `shiftSetOnUD` takes it as a hypothesis (`hsep`)
-  rather than proving it, because its `∀x ∃y` alternation needs the same pointwise-choice
-  extraction as the modal case;
-* **`carrier_nonempty`** and the valuation `A` — both are hypotheses of `shiftSetOnUD` too.
-
-Those four belong to the ultraproduct-and-Łoś work that consumes this probe. Any declaration
-added here beyond the carrier construction itself is scope that has leaked out of that work and
-back into this one.
+No definition, no theorem, no instance. Anything that constructs is scope that belongs in
+`FormalSystem/Semantics/Ultraproduct/`; anything that proves belongs there too. If this file ever
+grows a `def` again, the promotion has been undone.
 -/
 
 set_option linter.unusedSectionVars false
 
-open Filter FormalSystem.Semantics FormalSystem.Syntax
+open FormalSystem.Semantics FormalSystem.Semantics.Ultraproduct
 
 namespace BimodalTest.DependentUltraproductProbe
 
-variable {I : Type} {φ : Ultrafilter I} {D : I → Type}
-  [∀ i, AddCommGroup (D i)] [∀ i, LinearOrder (D i)] [∀ i, IsOrderedAddMonoid (D i)]
+variable {I : Type} {φ : Ultrafilter I} {T : I → TemporalOrder}
 
-variable (φ D) in
-/-- The eventually-zero subgroup of the Pi group. -/
-def evZero : AddSubgroup (∀ i, D i) where
-  carrier := {f | ∀ᶠ i in φ, f i = 0}
-  zero_mem' := Eventually.of_forall fun _ => rfl
-  add_mem' := by
-    intro a b ha hb
-    exact hb.mp (ha.mono (fun i hia hib => by simp [hia, hib]))
-  neg_mem' := by
-    intro a ha
-    exact ha.mono (fun i hi => by simp [hi])
+/-! ### The binder-list and universe check -/
 
-@[simp] theorem mem_evZero {f : ∀ i, D i} : f ∈ evZero φ D ↔ ∀ᶠ i in φ, f i = 0 := Iff.rfl
+/-- `ShiftSet` accepts the ultraproduct temporal order as its duration carrier, with all seven
+fields discharged and no hypotheses. Elaborating this is the check; there is nothing to prove. -/
+noncomputable example (S : ∀ i, ShiftSet (T i)) : ShiftSet (UT φ T) := uShiftSet φ S
 
-variable (φ D) in
-/-- The dependent ultraproduct of the duration carriers. `AddCommGroup` is inherited. -/
-abbrev UD := (∀ i, D i) ⧸ evZero φ D
+/-! ### The axiom-profile regression check -/
 
-/-- Coercion of a section to its class. -/
-def mk (f : ∀ i, D i) : UD φ D := QuotientAddGroup.mk f
-
-theorem mk_eq_mk {f g : ∀ i, D i} : mk (φ := φ) f = mk g ↔ ∀ᶠ i in φ, f i = g i := by
-  rw [mk, mk, QuotientAddGroup.eq, mem_evZero]
-  constructor
-  · exact fun h => h.mono (fun i hi => by
-      have : -f i + g i = 0 := hi
-      exact neg_add_eq_zero.mp this)
-  · exact fun h => h.mono (fun i hi => by simp [hi])
-
-/-! ### The order — the only genuinely hand-supplied structure -/
-
-instance : LE (UD φ D) :=
-  ⟨fun a b => Quotient.liftOn₂' a b (fun f g => ∀ᶠ i in φ, f i ≤ g i) (by
-    intro f g f' g' hf hg
-    rw [QuotientAddGroup.leftRel_apply, mem_evZero] at hf hg
-    have hf' : ∀ᶠ i in φ, f i = f' i := hf.mono (fun i hi => neg_add_eq_zero.mp hi)
-    have hg' : ∀ᶠ i in φ, g i = g' i := hg.mono (fun i hi => neg_add_eq_zero.mp hi)
-    exact propext ⟨fun h => (hf'.and hg').mp (h.mono (fun i h1 h2 => h2.1 ▸ h2.2 ▸ h1)),
-      fun h => (hf'.and hg').mp (h.mono (fun i h1 h2 => h2.1 ▸ h2.2 ▸ h1))⟩)⟩
-
-theorem mk_le_mk {f g : ∀ i, D i} : mk (φ := φ) f ≤ mk g ↔ ∀ᶠ i in φ, f i ≤ g i := Iff.rfl
-
-open scoped Classical in
-noncomputable instance : LinearOrder (UD φ D) where
-  le_refl a := by
-    induction a using QuotientAddGroup.induction_on with
-    | H f => exact Eventually.of_forall fun _ => le_refl _
-  le_trans a b c := by
-    induction a using QuotientAddGroup.induction_on with
-    | H f =>
-      induction b using QuotientAddGroup.induction_on with
-      | H g =>
-        induction c using QuotientAddGroup.induction_on with
-        | H h =>
-          intro h1 h2
-          exact (mk_le_mk.mpr ((mk_le_mk.mp h2).mp ((mk_le_mk.mp h1).mono
-            (fun i hi hj => le_trans hi hj))) : _)
-  le_antisymm a b := by
-    induction a using QuotientAddGroup.induction_on with
-    | H f =>
-      induction b using QuotientAddGroup.induction_on with
-      | H g =>
-        intro h1 h2
-        exact mk_eq_mk.mpr ((mk_le_mk.mp h2).mp ((mk_le_mk.mp h1).mono
-          (fun i hi hj => le_antisymm hi hj)))
-  le_total a b := by
-    induction a using QuotientAddGroup.induction_on with
-    | H f =>
-      induction b using QuotientAddGroup.induction_on with
-      | H g =>
-        rcases φ.em (fun i => f i ≤ g i) with h | h
-        · exact Or.inl h
-        · exact Or.inr (h.mono (fun i hi => le_of_not_ge hi))
-  toDecidableLE := Classical.decRel _
-
-instance : IsOrderedAddMonoid (UD φ D) where
-  add_le_add_left a b := by
-    induction a using QuotientAddGroup.induction_on with
-    | H f =>
-      induction b using QuotientAddGroup.induction_on with
-      | H g =>
-        intro hab c
-        induction c using QuotientAddGroup.induction_on with
-        | H h => exact (mk_le_mk.mp hab).mono (fun i hi => by exact add_le_add_left hi _)
-
-/-! ### Strict order, `Nontrivial`, and the Dense-branch binder -/
-
-theorem not_eventually_false {p : I → Prop} (h : ∀ᶠ i in φ, p i) (h' : ∀ i, ¬ p i) : False := by
-  obtain ⟨i, hi⟩ := h.exists
-  exact h' i hi
-
-theorem mk_lt_mk {f g : ∀ i, D i} : mk (φ := φ) f < mk g ↔ ∀ᶠ i in φ, f i < g i := by
-  rw [lt_iff_le_not_ge]
-  constructor
-  · rintro ⟨_, h2⟩
-    rcases φ.em (fun i => g i ≤ f i) with h | h
-    · exact absurd (mk_le_mk.mpr h) h2
-    · exact h.mono (fun i hi => lt_of_not_ge hi)
-  · intro h
-    refine ⟨mk_le_mk.mpr (h.mono (fun i hi => le_of_lt hi)), ?_⟩
-    intro hle
-    exact not_eventually_false (h.and (mk_le_mk.mp hle)) (fun i hi => absurd hi.1 (not_lt_of_ge hi.2))
-
-instance [∀ i, Nontrivial (D i)] : Nontrivial (UD φ D) := by
-  refine ⟨mk (fun i => (exists_ne (0 : D i)).choose), mk 0, ?_⟩
-  intro h
-  exact not_eventually_false (mk_eq_mk.mp h)
-    (fun i => (exists_ne (0 : D i)).choose_spec)
-
-open scoped Classical in
-instance [∀ i, DenselyOrdered (D i)] : DenselyOrdered (UD φ D) := by
-  constructor
-  intro a b hab
-  induction a using QuotientAddGroup.induction_on with
-  | H f =>
-    induction b using QuotientAddGroup.induction_on with
-    | H g =>
-      have h : ∀ᶠ i in φ, f i < g i := mk_lt_mk.mp hab
-      refine ⟨mk (fun i => if hi : f i < g i then (exists_between hi).choose else f i), ?_, ?_⟩
-      · exact mk_lt_mk.mpr (h.mono (fun i hi => by
-          simp only [dif_pos hi]; exact (exists_between hi).choose_spec.1))
-      · exact mk_lt_mk.mpr (h.mono (fun i hi => by
-          simp only [dif_pos hi]; exact (exists_between hi).choose_spec.2))
-
-/-! ### The carrier ultraproduct and its shift action -/
-
-variable (φ) in
-/-- Eventual-equality setoid on a dependent family of carriers. -/
-def carrierSetoid (Ω : I → Type) : Setoid (∀ i, Ω i) where
-  r f g := ∀ᶠ i in φ, f i = g i
-  iseqv := ⟨fun _ => Eventually.of_forall fun _ => rfl, fun h => h.mono fun _ => Eq.symm,
-    fun h1 h2 => h2.mp (h1.mono fun _ a b => a.trans b)⟩
-
-variable (φ) in
-/-- The dependent ultraproduct of the carriers. -/
-def UOmega (Ω : I → Type) : Type := Quotient (carrierSetoid φ Ω)
-
-variable {Ω : I → Type}
-
-/-- Class of a section of the carrier family. -/
-def omk (f : ∀ i, Ω i) : UOmega φ Ω := Quotient.mk (carrierSetoid φ Ω) f
-
-theorem omk_eq_omk {f g : ∀ i, Ω i} : omk (φ := φ) f = omk g ↔ ∀ᶠ i in φ, f i = g i :=
-  ⟨fun h => @Quotient.exact _ (carrierSetoid φ Ω) _ _ h,
-   fun h => @Quotient.sound _ (carrierSetoid φ Ω) _ _ h⟩
-
-theorem omk_surjective (w : UOmega φ Ω) : ∃ f, omk (φ := φ) f = w :=
-  Quotient.exists_rep w
-
-/-- The pointwise shift action, lifted to the two ultraproducts. -/
-def shU (sh : ∀ i, Ω i → D i → Ω i) (w : UOmega φ Ω) (d : UD φ D) : UOmega φ Ω :=
-  Quotient.liftOn₂' w d (fun f x => omk (φ := φ) (fun i => sh i (f i) (x i))) (by
-    intro f x f' x' hf hx
-    have hf' : ∀ᶠ i in φ, f i = f' i := hf
-    rw [QuotientAddGroup.leftRel_apply, mem_evZero] at hx
-    have hx' : ∀ᶠ i in φ, x i = x' i := hx.mono (fun i hi => neg_add_eq_zero.mp hi)
-    exact omk_eq_omk.mpr ((hf'.and hx').mono (fun i hi => by rw [hi.1, hi.2])))
-
-@[simp] theorem shU_mk (sh : ∀ i, Ω i → D i → Ω i) (f : ∀ i, Ω i) (x : ∀ i, D i) :
-    shU (φ := φ) sh (omk f) (mk x) = omk (fun i => sh i (f i) (x i)) := rfl
-
-theorem shU_zero (sh : ∀ i, Ω i → D i → Ω i) (hz : ∀ i w, sh i w 0 = w) (w : UOmega φ Ω) :
-    shU (φ := φ) (D := D) sh w 0 = w := by
-  obtain ⟨f, rfl⟩ := omk_surjective w
-  show shU sh (omk f) (mk (0 : ∀ i, D i)) = omk f
-  rw [shU_mk]
-  exact omk_eq_omk.mpr (Eventually.of_forall fun i => hz i (f i))
-
-theorem shU_add (sh : ∀ i, Ω i → D i → Ω i)
-    (ha : ∀ i w a b, sh i (sh i w a) b = sh i w (a + b)) (w : UOmega φ Ω) (a b : UD φ D) :
-    shU (φ := φ) sh (shU sh w a) b = shU sh w (a + b) := by
-  obtain ⟨f, rfl⟩ := omk_surjective w
-  induction a using QuotientAddGroup.induction_on with
-  | H x =>
-    induction b using QuotientAddGroup.induction_on with
-    | H y =>
-      show shU sh (shU sh (omk f) (mk x)) (mk y) = shU sh (omk f) (mk x + mk y)
-      rw [shU_mk, shU_mk]
-      exact omk_eq_omk.mpr (Eventually.of_forall fun i => ha i (f i) (x i) (y i))
-
-/-! ### R3 and the binder-list check
-
-`ShiftSet (UD φ D)` elaborates: every one of the four instance binders resolves, and the
-quotient lands in `Type` (not `Type 1`), which is R3.
--/
-
-/-- Packaging check: `ShiftSet` accepts `UD φ D` as its duration carrier.
-
-`ShiftSet` is now indexed by a `TemporalOrder` rather than by a bare `Type` plus four instance
-binders, so the carrier is presented as `TemporalOrder.of (UD φ D)`. That does **not** weaken what
-this probe measures — `TemporalOrder.of` demands exactly the same four instances the old binder
-list did, and they must still be synthesized on the ultraproduct. If anything it sharpens the
-measurement: the check is now that the ultraproduct carrier can be *bundled as a temporal order*,
-which is the same fact stated as one object rather than four side conditions. -/
-def shiftSetOnUD [∀ i, Nontrivial (D i)] (Carrier : Type) (hne : Nonempty Carrier)
-    (sh : Carrier → UD φ D → Carrier) (hz : ∀ w, sh w 0 = w)
-    (hadd : ∀ w a b, sh (sh w a) b = sh w (a + b))
-    (hsep : ∀ w u, (∀ x : UD φ D, 0 < x → ∃ y, |y| < x ∧ u = sh w y) → u = w)
-    (A : Atom → Carrier → Prop) : ShiftSet (TemporalOrder.of (UD φ D)) where
-  Carrier := Carrier
-  carrier_nonempty := hne
-  sh := sh
-  sh_zero := hz
-  sh_add := hadd
-  sep := hsep
-  A := A
-
-#print axioms shiftSetOnUD
-#print axioms shU_add
-#print axioms BimodalTest.DependentUltraproductProbe.instDenselyOrderedUD
+#print axioms FormalSystem.Semantics.Ultraproduct.uShiftSet
+#print axioms FormalSystem.Semantics.Ultraproduct.los
+#print axioms FormalSystem.Semantics.Ultraproduct.los_truthAt
+#print axioms FormalSystem.Semantics.Ultraproduct.eventually_mem
 
 end BimodalTest.DependentUltraproductProbe
