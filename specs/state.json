@@ -1167,7 +1167,7 @@
     {
       "project_number": 509,
       "project_name": "parameterize_compactness_and_strong_completeness_family",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "topic": "metalogic",
       "priority": "high",
@@ -1178,7 +1178,7 @@
       ],
       "description": "Make the compactness / strong-completeness layer a FrameClass-indexed family instead of three hand-copied rows with a missing fourth. THE ARCHITECTURE IS ALREADY RIGHT AND IS THE PLAN OF RECORD -- strong completeness derived from compactness plus weak completeness. Present and sorry-free: strongCompletenessBase_of_compact (StrongCompleteness.lean:314), strongCompletenessDense_of_compact (:340), compactBase_of_modelExistence (:378), compactDense_of_modelExistenceDense (:424), and the negative results discrete_consequence_not_compact (DiscreteNonCompactness.lean:250) and strongCompletenessDiscrete_refuted (:280). WHAT IS WRONG IS THE SHAPE, NOT THE MATHEMATICS. SetConsequence.lean defines the family once per class by hand: Base at :214,:222,:230,:245; Dense at :262,:269,:277,:291; Discrete at :315,:329,:342 (ModelExistenceDiscrete correctly absent, it is refuted); Dedekind ENTIRELY ABSENT. And the two strongCompleteness*_of_compact reductions are the same argument written twice. DELIVERABLE: (1) StrongCompleteness (fc), Compact (fc), SatisfiableSet (fc), ModelExistence (fc) as one indexed family over the interpretation landed by the prerequisite; (2) ONE strongCompleteness_of_compact (fc) replacing the two reductions; (3) ONE modelExistence_implies_compact (fc) replacing the two bridges; (4) the existing Base/Dense/Discrete results recovered as instantiations with identical statements and axiom profiles. WHY THIS SEQUENCES BEFORE THE DEDEKIND REFUTATION TASK: that task's Part 1 is specified as defining the missing vocabulary 'mirroring the Base/Dense/Discrete groups' -- a fourth hand copy of exactly what this task collapses. After this lands, its Part 1 becomes a single instantiation and only its genuinely hard Part 2 (a new non-compactness witness that cannot reuse archWitness, since the Dedekind binder list has no successor structure) remains. DOES NOT DISCHARGE ANYTHING: ModelExistenceBase/Dense stay unproven here; the ultraproduct chain owns that. This is a restructuring task, and the conditional results must stay exactly as strong as they are today. ACCEPTANCE: sorry-free, lake build green, every currently-provable result still provable with an unchanged axiom profile. GROUNDING: specs/reviews/review-2026-08-31-metalogic-systematicity.md issue H3.=== DIRECTION NOTE ===\nThe FrameClass-indexed validity this task builds on is being defined at FRAME level, not carrier\nlevel: `FrameClass.Sat : FrameClass -> TaskFrame -> Prop` and\n`ValidIn fc phi := forall F : TaskFrame, fc.Sat F -> F |= phi`, on frames that carry their own\nduration type. Do not plan against the earlier carrier-quantified shape\n(`fc.Sat D -> ValidOver D phi`), which is superseded. This task sequences transitively behind the\nTaskFrame duration-bundling refactor via its dependency on the indexed-validity task.\n\n=== PAPER GROUNDING === Targets def:soundness / def:logical-consequence / cor:tm-completeness's\n⊨_C and per-class strong/weak completeness roster (TM+ strong over all task frames; TM+_d\nstrong over dense; TM+_f weak over Z-time; TM+_c weak over dense-and-complete). Class naming\nfollows 507: the class keeps the name .Dedekind (the .Complete rename was rejected — \"complete\"\nis reserved in this tree for proof-theoretic completeness). See\nspecs/514_align_definitions_with_source_paper/reports/01 §1.2.\n\n=== SEQUENCING EDGE ADDED (file-safety, not a mathematical dependency) ===\nThe 493 entry in dependencies[] is a SERIALIZATION edge, not a proof dependency. Both this task\nand 493 rewrite FormalSystem/Metalogic/StrongCompleteness.lean: 493 discharges the engine\nhypotheses of strongCompletenessBase_of_compact (:305) and strongCompletenessDense_of_compact\n(:331) in their existing shape, while this task restates that same file as a FrameClass-indexed\nfamily. With no edge between them, /orchestrate wave assignment would place them in the SAME\nwave (per commands/orchestrate.md: two tasks share a wave whenever no dependencies[] edge\nconnects them) and 493 declares no file_scope, so the in_batch collision detector cannot see the\noverlap. Order is 493 first: it lands the mathematical content, this task then reshapes it.\nDo not remove this edge as spurious.",
       "created": "2026-08-31T00:00:00Z",
-      "last_updated": "2026-09-01T20:19:32Z",
+      "last_updated": "2026-09-01T20:43:04Z",
       "file_scope": [
         "FormalSystem/Metalogic/StrongCompleteness.lean",
         "FormalSystem/Metalogic/SetConsequence.lean",
@@ -1195,6 +1195,11 @@
           "path": "specs/509_parameterize_compactness_and_strong_completeness_family/plans/01_frameclass-indexed-compactness-family.md",
           "type": "plan",
           "summary": "6-phase transplant plan for the FrameClass-indexed compactness family."
+        },
+        {
+          "path": "specs/509_parameterize_compactness_and_strong_completeness_family/summaries/01_frameclass-indexed-compactness-family-summary.md",
+          "type": "summary",
+          "summary": "Compactness/strong-completeness collapsed to one FrameClass-indexed family; Dedekind row complete."
         }
       ]
     },

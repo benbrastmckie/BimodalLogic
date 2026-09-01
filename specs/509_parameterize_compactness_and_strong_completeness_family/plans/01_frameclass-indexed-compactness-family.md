@@ -1,7 +1,7 @@
 # Implementation Plan: Task #509
 
 - **Task**: 509 - Parameterize the compactness and strong-completeness family by `FrameClass`
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 5.25 hours
 - **Dependencies**: None (tasks 507 and 508 are landed prerequisites)
 - **Research Inputs**: `specs/509_parameterize_compactness_and_strong_completeness_family/reports/01_frameclass-indexed-compactness-family.md` plus three probe files in the same directory
