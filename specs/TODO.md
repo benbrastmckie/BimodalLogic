@@ -14,7 +14,7 @@ next_project_number: 515
 | 1 | 127,128,193,257,298,433,461,476,481,492,495,504,506,507 | -- | automation, dataset-enhancement, decidability, ... |
 | 2 | 178,231,282,296,463,493,502,510,513 | 193,298,433,461,492,507 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 219,464,497,508 | 231,463,502,510 | algebraic-representation, dataset-enhancement, decidability, ... |
-| 4 | 465,498,499,500,509 | 464,492,497,508 | algebraic-representation, decidability, metalogic |
+| 4 | 465,498,499,500,509 | 464,492,493,497,508 | algebraic-representation, decidability, metalogic |
 | 5 | 125,428,494 | 465,498,499,509 | algebraic-representation, decidability, strong_completeness |
 | 6 | 429,501 | 125,428 | algebraic-representation, decidability |
 | 7 | 410 | 429 | decidability |
@@ -223,7 +223,7 @@ implementation discovers a concrete consumer, which its plan must record explici
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: metalogic
-- **Dependencies**: Task 507, Task 508
+- **Dependencies**: Task 493, Task 507, Task 508
 
 **Description**: Make the compactness / strong-completeness layer a FrameClass-indexed family instead of three hand-copied rows with a missing fourth. THE ARCHITECTURE IS ALREADY RIGHT AND IS THE PLAN OF RECORD -- strong completeness derived from compactness plus weak completeness. Present and sorry-free: strongCompletenessBase_of_compact (StrongCompleteness.lean:314), strongCompletenessDense_of_compact (:340), compactBase_of_modelExistence (:378), compactDense_of_modelExistenceDense (:424), and the negative results discrete_consequence_not_compact (DiscreteNonCompactness.lean:250) and strongCompletenessDiscrete_refuted (:280). WHAT IS WRONG IS THE SHAPE, NOT THE MATHEMATICS. SetConsequence.lean defines the family once per class by hand: Base at :214,:222,:230,:245; Dense at :262,:269,:277,:291; Discrete at :315,:329,:342 (ModelExistenceDiscrete correctly absent, it is refuted); Dedekind ENTIRELY ABSENT. And the two strongCompleteness*_of_compact reductions are the same argument written twice. DELIVERABLE: (1) StrongCompleteness (fc), Compact (fc), SatisfiableSet (fc), ModelExistence (fc) as one indexed family over the interpretation landed by the prerequisite; (2) ONE strongCompleteness_of_compact (fc) replacing the two reductions; (3) ONE modelExistence_implies_compact (fc) replacing the two bridges; (4) the existing Base/Dense/Discrete results recovered as instantiations with identical statements and axiom profiles. WHY THIS SEQUENCES BEFORE THE DEDEKIND REFUTATION TASK: that task's Part 1 is specified as defining the missing vocabulary 'mirroring the Base/Dense/Discrete groups' -- a fourth hand copy of exactly what this task collapses. After this lands, its Part 1 becomes a single instantiation and only its genuinely hard Part 2 (a new non-compactness witness that cannot reuse archWitness, since the Dedekind binder list has no successor structure) remains. DOES NOT DISCHARGE ANYTHING: ModelExistenceBase/Dense stay unproven here; the ultraproduct chain owns that. This is a restructuring task, and the conditional results must stay exactly as strong as they are today. ACCEPTANCE: sorry-free, lake build green, every currently-provable result still provable with an unchanged axiom profile. GROUNDING: specs/reviews/review-2026-08-31-metalogic-systematicity.md issue H3.=== DIRECTION NOTE ===
 The FrameClass-indexed validity this task builds on is being defined at FRAME level, not carrier
@@ -239,6 +239,17 @@ strong over dense; TM+_f weak over Z-time; TM+_c weak over dense-and-complete). 
 follows 507: the class keeps the name .Dedekind (the .Complete rename was rejected — "complete"
 is reserved in this tree for proof-theoretic completeness). See
 specs/514_align_definitions_with_source_paper/reports/01 §1.2.
+
+=== SEQUENCING EDGE ADDED (file-safety, not a mathematical dependency) ===
+The 493 entry in dependencies[] is a SERIALIZATION edge, not a proof dependency. Both this task
+and 493 rewrite FormalSystem/Metalogic/StrongCompleteness.lean: 493 discharges the engine
+hypotheses of strongCompletenessBase_of_compact (:305) and strongCompletenessDense_of_compact
+(:331) in their existing shape, while this task restates that same file as a FrameClass-indexed
+family. With no edge between them, /orchestrate wave assignment would place them in the SAME
+wave (per commands/orchestrate.md: two tasks share a wave whenever no dependencies[] edge
+connects them) and 493 declares no file_scope, so the in_batch collision detector cannot see the
+overlap. Order is 493 first: it lands the mathematical content, this task then reshapes it.
+Do not remove this edge as spurious.
 
 ---
 
@@ -447,7 +458,7 @@ DELIVERABLE: a grounding report answering, with citations to specific pages read
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: strong_completeness
-- **Dependencies**: Task 490, Task 509
+- **Dependencies**: Task 490, Task 493, Task 509
 
 **Description**: NOW SEQUENCED BEHIND THE COMPACTNESS PARAMETERIZATION (see the REVISED note at the end); still INDEPENDENT of the ultraproduct chain. Settle the fourth frame class negatively and complete the compactness picture. CURRENT STATE: there is NO CompactDedekind definition anywhere in the tree, no StrongCompletenessDedekind, no SatisfiableDedekindSet, and no refutation -- the Dedekind row of StrongCompleteness.lean's status ledger (:84-89) rests on the scope of Reynolds 1992 section 9 Theorem 7 alone. Meanwhile the paper (cor:tm-completeness, possible_worlds.tex:4657) asserts that strong completeness 'provably fails for Z-time as well as for the dense-and-complete class R where compactness fails' -- so this is a REFUTATION target, not a proof target. DELIVERABLE PART 1: define the missing vocabulary in SetConsequence.lean mirroring the Base/Dense/Discrete groups -- SetSemanticConsequenceDedekindDense already exists (:103); add StrongCompletenessDedekind, CompactDedekind, SatisfiableDedekindSet, ModelExistenceDedekind. PART 2: refute CompactDedekind and StrongCompletenessDedekind. CRITICAL CONSTRAINT: the Discrete witness does NOT port. archWitness (DiscreteNonCompactness.lean:102) and its unsatisfiability half (:229-242) turn entirely on Order.succ_le_of_lt and exists_succ_iterate, i.e. on [SuccOrder D] + [IsSuccArchimedean D]; the Dedekind binder list is DenselyOrdered plus LUB with no successor at all, and over R the operator Formula.next = untl bot phi is vacuous, so archWitness carries no contradiction. A NEW witness is required. Model DiscreteNonCompactness.lean's structure (finitely-satisfiable half, then unsatisfiable half) but not its witness. ACCEPTANCE: both refutations sorry-free and axiom-audited; the four-class compactness picture complete (Base/Dense open pending the ultraproduct chain, Discrete refuted, Dedekind refuted). === REVISED 2026-08-31 (review: metalogic systematicity) === PART 1 IS RESCOPED. Do NOT define StrongCompletenessDedekind/CompactDedekind/SatisfiableDedekindSet/ModelExistenceDedekind by mirroring the Base/Dense/Discrete groups -- that fourth hand copy is exactly what the compactness-parameterization prerequisite collapses. After that task lands, Part 1 is a SINGLE INSTANTIATION of the FrameClass-indexed family at FrameClass.Dedekind. PART 2 IS UNCHANGED and remains the real content: a new non-compactness witness, since archWitness does not port (it turns on SuccOrder/IsSuccArchimedean and the Dedekind binder list has no successor structure; over the reals Formula.next = untl bot phi is vacuous). Grounding: specs/reviews/review-2026-08-31-metalogic-systematicity.md issue H3.
 
