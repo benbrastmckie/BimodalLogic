@@ -1599,6 +1599,23 @@ component is `D`, and `(F.toTaskFrame).toFibre = F`, `(F.toTaskFrame).Duration =
 
 end FrameOver
 
+/--
+**A fibre value is usable wherever the total space is expected**, via the inclusion.
+
+`WorldHistory`, `TaskModel` and `TruthAt` are stated over `TaskFrame`, so every fibre-typed frame
+has to reach the total space to be used with them. Writing `.toTaskFrame` at each such site would
+be pure noise: the inclusion is the constructor and carries no content.
+
+This is the **permanent** form of the transitional `instCoeOutParamTaskFrame` below, and the
+reason that one can be deleted without a per-site campaign. It also covers the case that
+instance no longer can: for an *abstract* `(D : TemporalOrder)`, matching
+`ParamTaskFrame ?E ≡ FrameOver ⟨?E⟩` against `FrameOver D` needs structure eta on `D` at
+reducible transparency, which instance resolution does not perform. Both coercions produce the
+same term — `⟨D, F⟩` — so which one fires is never observable.
+-/
+instance instCoeOutFrameOver {D : TemporalOrder} : CoeOut (FrameOver D) TaskFrame :=
+  ⟨FrameOver.toTaskFrame⟩
+
 namespace FiniteFrameOver
 
 /-- The inclusion of a finite fibre into the finite total space — again the constructor. -/

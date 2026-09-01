@@ -41,7 +41,7 @@ Three substitutions carry the `ℤ` body to `ℚ ×ₗ ℤ`:
   hypothesis (discreteness of the flow comes from `□(nextTop)` alone), so the `(le_refl _)`
   argument disappears, and it delivers `goodGroupable` rather than `good`.
 * `multiFamTaskFrame` / `multiFamHistory` / `multiFam_total_eq` →
-  `multiFamTaskFrameGen (ℚ ×ₗ ℤ)` / `multiFamHistoryGen` / `multiFamGen_total_eq`
+  `multiFamTaskFrameGen (TemporalOrder.of (ℚ ×ₗ ℤ))` / `multiFamHistoryGen` / `multiFamGen_total_eq`
   (`Algebraic/FlowFrame.lean`).
 * `FrameClass.Discrete` → `FrameClass.Base` throughout. Every remaining step is already
   `{fc : FrameClass}`-generic; in particular `Axiom.modal_t` is a `.Base` axiom, so its
@@ -82,7 +82,7 @@ example : LinearOrder (ℚ ×ₗ ℤ) := inferInstance
 example : IsOrderedAddMonoid (ℚ ×ₗ ℤ) := inferInstance
 example : Nontrivial (ℚ ×ₗ ℤ) := inferInstance
 
-noncomputable example : ParamTaskFrame (ℚ ×ₗ ℤ) := multiFamTaskFrameGen (ℚ ×ₗ ℤ) Unit
+noncomputable example : ParamTaskFrame (ℚ ×ₗ ℤ) := multiFamTaskFrameGen (TemporalOrder.of (ℚ ×ₗ ℤ)) Unit
 
 /-! ## Carrier arithmetic
 
@@ -123,7 +123,7 @@ private theorem qz_exists_shift (w r : ℚ ×ₗ ℤ) : ∃ x : ℚ ×ₗ ℤ, w
 The Base-MCS discrete countermodel, at the non-Archimedean discrete carrier `ℚ ×ₗ ℤ`.
 
 For any **Base** MCS `A` containing `¬φ` and `□(nextTop)`, constructs a countermodel to `φ`
-on `ℚ ×ₗ ℤ`: `φ` fails at a point of a total history of `multiFamTaskFrameGen (ℚ ×ₗ ℤ) FamIdx`.
+on `ℚ ×ₗ ℤ`: `φ` fails at a point of a total history of `multiFamTaskFrameGen (TemporalOrder.of (ℚ ×ₗ ℤ)) FamIdx`.
 
 The construction is the multi-family flow-line model, one companion structure per
 box-equivalent MCS family, with `WorldState = FamIdx × (ℚ ×ₗ ℤ)`. Box quantification ranges
@@ -170,7 +170,7 @@ theorem countermodel_discrete (A : Set Formula)
     fun f => (h_fam_good f).choose_spec
   -- Build TaskModel: valuation at (f, x) evaluates Q_f's atom predicate at x.
   -- `QZStructure.interp` is stated at `ℚ ×ₗ ℤ`, so `w.2` types directly.
-  let TM : TaskModel (multiFamTaskFrameGen (ℚ ×ₗ ℤ) FamIdx) :=
+  let TM : TaskModel (multiFamTaskFrameGen (TemporalOrder.of (ℚ ×ₗ ℤ)) FamIdx) :=
     { valuation := fun w atom =>
         (getQ w.1).interp (mkAtomMapFwd φ (.atom atom)) w.2 }
   -- Get TemporalTruth(φ.neg) at root on limitdom, then transfer to the companion
@@ -192,7 +192,7 @@ theorem countermodel_discrete (A : Set Formula)
     -- Package the existential (four fewer instance slots than the Discrete original: no
     -- `SuccOrder`/`PredOrder`/`IsSuccArchimedean`/`IsPredArchimedean`).
     refine ⟨ℚ ×ₗ ℤ, inferInstance, inferInstance, inferInstance, inferInstance,
-      multiFamTaskFrameGen (ℚ ×ₗ ℤ) FamIdx, TM,
+      multiFamTaskFrameGen (TemporalOrder.of (ℚ ×ₗ ℤ)) FamIdx, TM,
       multiFamHistoryGen f₀ 0, multiFamHistoryGen_total f₀ 0,
       s₀, ?_⟩
     intro h_truth_phi
@@ -232,7 +232,7 @@ theorem countermodel_discrete (A : Set Formula)
           TemporalTruth ((getQ f').toOrdered sig) (mkAtomMapFwd φ) x ψ := by
         intro f' x
         have h_tot : (multiFamHistoryGen f' (x - t)).IsTotal :=
-          multiFamHistoryGen_total f' (x - t)
+          multiFamHistoryGen_total (D := TemporalOrder.of (ℚ ×ₗ ℤ)) f' (x - t)
         have h_ta := h_all (multiFamHistoryGen f' (x - t)) h_tot
         rw [ih h_sub_ψ f' (x - t) t] at h_ta
         rw [qz_sub_add_cancel] at h_ta

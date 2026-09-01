@@ -143,7 +143,7 @@ definitions consumed by `countermodel_discrete_reynolds_v2` are *definitionally*
 
 /-- `multiFamTaskFrame` is definitionally `multiFamTaskFrameGen ℤ`. -/
 theorem multiFamTaskFrameGen_int (FamIdx : Type) [Nonempty FamIdx] :
-    multiFamTaskFrameGen ℤ FamIdx = multiFamTaskFrame FamIdx := rfl
+    multiFamTaskFrameGen intOrder FamIdx = multiFamTaskFrame FamIdx := rfl
 
 /-- `multiFamHistory` is definitionally `multiFamHistoryGen` at `D := ℤ`. -/
 theorem multiFamHistoryGen_int {FamIdx : Type} [Nonempty FamIdx] (f : FamIdx) (w₀ : ℤ) :
@@ -152,7 +152,7 @@ theorem multiFamHistoryGen_int {FamIdx : Type} [Nonempty FamIdx] (f : FamIdx) (w
 /-- The `ℤ` frame's total-history set `H_F` (`def:world-history`) is definitionally the
 generic frame's at `D := ℤ`. -/
 theorem multiFamGen_total_int (FamIdx : Type) [Nonempty FamIdx] :
-    {σ : WorldHistory (multiFamTaskFrameGen ℤ FamIdx) | ∀ t, σ.domain t} =
+    {σ : WorldHistory (multiFamTaskFrameGen intOrder FamIdx) | ∀ t, σ.domain t} =
       {σ : WorldHistory (multiFamTaskFrame FamIdx) | ∀ t, σ.domain t} := rfl
 
 end MultiFamGen

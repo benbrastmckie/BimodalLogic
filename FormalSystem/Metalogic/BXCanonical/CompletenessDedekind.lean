@@ -302,7 +302,7 @@ the box-dense indicator `□(¬U(⊤,⊥))`, there is a task model **over the re
 
 The construction is the dense mirror of `countermodel_discrete_reynolds_v2`: one `ℝ`-flowed
 monadic structure per box-equivalence class of MCSs, assembled into the single task frame
-`multiFamTaskFrameGen ℝ FamIdx` whose world states are `FamIdx × ℝ`. Box quantification over
+`multiFamTaskFrameGen (TemporalOrder.of ℝ) FamIdx` whose world states are `FamIdx × ℝ`. Box quantification over
 the frame's total histories `H_F` — which comprises every family at every offset
 (`multiFamGen_total_eq_range`) — is what makes the modal dimension come
 out right, exactly as in the `ℤ` original: the monadic language never unfolds `□`, it reads it
@@ -343,7 +343,7 @@ theorem countermodel_dedekind_dense {fc : FrameClass} (hfc : FrameClass.Dedekind
   have h_k_equiv : ∀ f : FamIdx, KEquiv sig k (Mst f) ((Rf f).toOrdered sig) := fun f =>
     chronicleRealFlow_kEquiv hfc f.val f.property.1 f.property.2.1 φ k hk
   -- The task model: the valuation at `(f, x)` reads `R_f`'s atom predicate at `x`.
-  let TM : TaskModel (multiFamTaskFrameGen ℝ FamIdx) :=
+  let TM : TaskModel (multiFamTaskFrameGen (TemporalOrder.of ℝ) FamIdx) :=
     { valuation := fun w a => (Rf w.1).interp (mkAtomMapFwd φ (.atom a)) w.2 }
   -- Step 1 + root placement: `¬φ` is true at `0` in the chronicle bridge.
   have h_not_phi : ¬TemporalTruth (Mst f₀) (mkAtomMapFwd φ) (0 : Rat) φ := by
@@ -366,7 +366,7 @@ theorem countermodel_dedekind_dense {fc : FrameClass} (hfc : FrameClass.Dedekind
       TruthAt TM (multiFamHistoryGen f w₀) t ψ ↔
         TemporalTruth ((Rf f).toOrdered sig) (mkAtomMapFwd φ) (realFlowPoint (hR f) (w₀ + t))
           ψ by
-    refine ⟨multiFamTaskFrameGen ℝ FamIdx, TM, multiFamHistoryGen f₀ 0,
+    refine ⟨multiFamTaskFrameGen (TemporalOrder.of ℝ) FamIdx, TM, multiFamHistoryGen f₀ 0,
       multiFamHistoryGen_total f₀ 0, s₀.val, ?_⟩
     intro h_truth_phi
     have h_corr := (h_truth_corr φ (self_mem_subformulaClosure φ) f₀ 0 s₀.val).mp h_truth_phi
@@ -458,7 +458,7 @@ theorem countermodel_dedekind_dense {fc : FrameClass} (hfc : FrameClass.Dedekind
         have h_pt : ∀ x : ((Rf f').toOrdered sig).carrier,
             TemporalTruth ((Rf f').toOrdered sig) (mkAtomMapFwd φ) x ψ := by
           intro x
-          have h_tot := multiFamHistoryGen_total (D := ℝ) f' (x.val - t)
+          have h_tot := multiFamHistoryGen_total (D := TemporalOrder.of ℝ) f' (x.val - t)
           have h_ta := h_all _ h_tot
           rw [ih h_sub_ψ f' (x.val - t) t] at h_ta
           have h_eq : realFlowPoint (hR f') (x.val - t + t) = x :=

@@ -1321,16 +1321,63 @@ live one.
 
 ---
 
-### Phase 12: `FlowFrame.lean` and the canonical task relation [NOT STARTED]
+### Phase 12: `FlowFrame.lean` and the canonical task relation [COMPLETED]
 
 **Goal**: The abstract half of the canonical-construction layer off the transitional alias.
 
 **Tasks**:
-- [ ] Migrate `Metalogic/Algebraic/FlowFrame.lean` (31 occurrences), including `bundleFlowFrame`
-      — a type-variable-carried concrete frame, so it becomes a `FrameOver D` value for abstract
-      `(D : TemporalOrder)` and the ℤ contract does not apply.
-- [ ] Migrate `Metalogic/Bundle/CanonicalTaskRelation.lean` (6).
-- [ ] Do not rename `Dedekind`, even where the fibration makes a different word read more naturally.
+- [x] Migrate `Metalogic/Algebraic/FlowFrame.lean` (10 occurrences at HEAD, not 31 — see Scope
+      below), including `bundleFlowFrame`. *(deviation: altered — `bundleFlowFrame` became a
+      `FrameOver (TemporalOrder.of D)` value over an ambient carrier, NOT a `FrameOver D` value for
+      abstract `(D : TemporalOrder)`. Reason recorded below.)*
+- [x] Migrate `Metalogic/Bundle/CanonicalTaskRelation.lean` (6 — all docstring prose).
+- [x] Do not rename `Dedekind`. No `Dedekind` identifier was touched.
+
+#### Phase 12 Record
+
+**Scope discrepancy, reported not absorbed.** The plan's hypothesis was "2 files, 37
+`ParamTaskFrame` occurrences at HEAD". Measured at phase start: **16**, not 37 (`FlowFrame` 10,
+`CanonicalTaskRelation` 6), and of `FlowFrame`'s 10 only **2** were type ascriptions — the other 8
+are `ParamTaskFrame.limit_of_shift` namespace references (Phase 20's) and prose. All 6 in
+`CanonicalTaskRelation` were prose ("the first ParamTaskFrame axiom"), restated as
+"the first frame axiom (`def:frame`, a `FrameOver` field)". The 37 figure appears to predate the
+Phase-1 rename, like v01's 73 for `ReynoldsBridge`.
+
+The *edit* count was nonetheless larger than 2 files: 6 files, because the generic layer's binder
+change propagates to its call sites (below).
+
+**The `FlowFrameConformance` section went to `{D : TemporalOrder}`, as planned.**
+`multiFamTaskFrameGen (D : TemporalOrder) (FamIdx : Type) [Nonempty FamIdx] : FrameOver D`, and
+every `[Nontrivial D]` binder in the section is **gone** — nontriviality is now `D`'s own field.
+Because `D` was already an *explicit* argument, the call-site repair is mechanical rather than an
+inference problem: `multiFamTaskFrameGen ℤ` → `intOrder`, `ℝ` → `TemporalOrder.of ℝ`,
+`(ℚ ×ₗ ℤ)` → `TemporalOrder.of (ℚ ×ₗ ℤ)`, in `ChronicleMonadicBridge`, `CompletenessDedekind`,
+`CountermodelBase` and `ReynoldsBridge`. Phases 13/16, which own the `realOrder`/`ratOrder`
+declarations, should replace those four `TemporalOrder.of` spellings with the named orders.
+
+**`bundleFlowFrame` deliberately did NOT go to `{D : TemporalOrder}`, and this is a decision, not a
+deferral.** A bundle is `BFMCS (fc := fc) D` — indexed by a bare duration *type*, which is the
+Bundle layer's own interface and out of this task's scope to restate. Writing
+`bundleFlowFrame {D : TemporalOrder} (B : BFMCS (fc := fc) ↑D)` makes every call site's `?D`
+unsolvable: unification would have to invert `TemporalOrder.carrier ?D =?= Rat`, which it cannot,
+so all ~18 consumer sites (`Completeness`, `CompletenessDedekind`, `DiscreteCarrierProbe`,
+`ChronicleToCountermodelBasic`, `LimitMCS`) would have to name `(D := …)` explicitly. That is the
+per-site campaign standing contract item 8 forbids, in exchange for nothing: the ambient form
+`bundleFlowFrame (B : BFMCS (fc := fc) D) : FrameOver (TemporalOrder.of D)` says the same thing
+once, in the signature. `TemporalOrder.of` survives Phase 20 for exactly this reason, which Phase
+20's own task list already contemplates ("keep it if construction sites read better with it").
+
+**One addition to `Semantics/TaskFrame.lean`: `instCoeOutFrameOver`.** `WorldHistory`, `TaskModel`
+and `TruthAt` are stated over `TaskFrame`, so a fibre value has to reach the total space. Until now
+that was carried by the transitional `instCoeOutParamTaskFrame`, which works only when the fibre's
+temporal order is *syntactically* `⟨E⟩` for some carrier `E` — true at `intOrder` (reducible to
+`⟨ℤ⟩`), false for an abstract `(D : TemporalOrder)`, where matching needs structure eta on `D` at
+reducible transparency and instance resolution does not perform it. `instCoeOutFrameOver` is the
+permanent replacement and is what lets Phase 20 delete the transitional coercion without a per-site
+campaign. Both coercions produce the same term `⟨D, F⟩`, so which fires is not observable.
+
+**Cost note**: editing `Semantics/TaskFrame.lean` invalidates the whole tree. Later phases should
+batch any `TaskFrame.lean` change rather than iterating on it.
 
 **Timing**: 1.5 hours
 

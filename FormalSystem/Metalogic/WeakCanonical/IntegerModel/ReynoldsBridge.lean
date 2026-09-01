@@ -796,13 +796,13 @@ noncomputable def multiFamTaskFrame (FamIdx : Type) [Nonempty FamIdx] : FrameOve
 
 `multiFamTaskFrame FamIdx` and `multiFamTaskFrameGen ℤ FamIdx` (`FlowFrame.lean`) have the same
 carrier `FamIdx × ℤ` and the same task relation, and their remaining fields are `Prop`s, so the
-two frames are **definitionally equal** — `multiFamTaskFrame FamIdx = multiFamTaskFrameGen ℤ
-FamIdx` holds by `rfl`. The four axiom facts are therefore *derived* from the generic frame's,
+two frames are **definitionally equal** — `multiFamTaskFrame FamIdx = multiFamTaskFrameGen
+intOrder FamIdx` holds by `rfl`, both being values of the fibre `FrameOver intOrder`. The four axiom facts are therefore *derived* from the generic frame's,
 not re-proved: `multiFamTaskFrameGen_serial` and its siblings apply directly. -/
 
-/-- The `ℤ` multi-family frame is definitionally the generic flow frame at `ℤ`. -/
+/-- The `ℤ` multi-family frame is definitionally the generic flow frame at the `ℤ` fibre. -/
 theorem multiFamTaskFrame_eq_gen (FamIdx : Type) [Nonempty FamIdx] :
-    multiFamTaskFrame FamIdx = Algebraic.multiFamTaskFrameGen ℤ FamIdx := rfl
+    multiFamTaskFrame FamIdx = Algebraic.multiFamTaskFrameGen intOrder FamIdx := rfl
 
 /-- *Seriality* (`def:frame#Seriality`, verbatim: "$w \Rightarrow_x u$ and $v \Rightarrow_x w$
 for some $u, v \in W$") for `multiFamTaskFrame`, by specialization of
@@ -821,12 +821,12 @@ theorem multiFamTaskFrame_interpolates (FamIdx : Type) [Nonempty FamIdx] :
 
 /-- *Limit* (`def:frame#Limit`, verbatim: "$\bigcap\limits_{x > 0} (w)_x = \set{w}$") for
 `multiFamTaskFrame`, in the literal transcribed shape, by specialization of
-`multiFamTaskFrameGen_limit`. `ℤ` is nontrivial, so the generic lemma's `[Nontrivial D]` binder
-is discharged by instance search. -/
+`multiFamTaskFrameGen_limit` at `D := intOrder`. Nontriviality is `intOrder`'s own field, so
+nothing has to be synthesized for it. -/
 theorem multiFamTaskFrame_limit (FamIdx : Type) [Nonempty FamIdx] :
     ∀ w u : FamIdx × ℤ,
       (∀ x, 0 < x → ∃ y, |y| < x ∧ (multiFamTaskFrame FamIdx).TaskRel w y u) → u = w :=
-  Algebraic.multiFamTaskFrameGen_limit
+  Algebraic.multiFamTaskFrameGen_limit (D := intOrder)
 
 /-- *Spherical* (`def:frame#Spherical`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
 $\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments") for
