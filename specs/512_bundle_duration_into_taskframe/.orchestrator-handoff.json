@@ -1,38 +1,36 @@
 {
-  "dispatch_seq": 3,
+  "dispatch_seq": 5,
   "status": "partial",
-  "requires_user_review": true,
+  "requires_user_review": false,
   "phases_completed": 5,
-  "phases_total": 13,
-  "phases_completed_list": [
-    1,
-    2,
-    3,
-    4,
-    8
-  ],
-  "phases_blocked_list": [
-    5,
-    6,
-    7,
-    10,
-    12
-  ],
-  "phases_not_started_list": [
-    9,
-    11,
-    13
-  ],
-  "blocked_phase": 5,
-  "last_green_commit": "f81c82c49",
+  "phases_total": 21,
+  "phases_completed_list": [0, 1, 2, 3, 4],
+  "phases_blocked_list": [],
+  "phases_not_started_list": [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
+  "blocked_phase": null,
+  "last_green_commit": "87f5425b8",
   "build_green": true,
   "module_invariants": "ALL CHECKS PASSED",
-  "blocker_summary": "Bundling makes 'the frames over a fixed duration type' inexpressible. The ℤ machinery quantifies over (F : ParamTaskFrame ℤ) and uses the numeral 1 at that duration type; (F : TaskFrame) (hD : F.Duration = ℤ) cannot supply OfNat F.Duration 1 because hD is a Prop and the instance is data. Reproduced in probes/06_fixed-duration-expressibility.lean. Phase 13's 'delete ParamTaskFrame' is therefore not executable as written.",
-  "decision_required": [
-    "Keep ParamTaskFrame D permanently as the fibre over D, with TaskFrame.ofParam as the canonical inclusion (cheapest: phases 5-7, 10, 12 shrink to nothing).",
-    "Reformulate the ℤ machinery over frame components (redesign of ~350 occurrences).",
-    "Introduce a FrameOver D abstraction carrying the carrier equation as data (new design object, own task)."
-  ],
-  "replan_note": "Phases 3 and 8 are one dependency component, not two: the Valid* family binds D explicitly inside the Prop, so migrating it breaks every consumer at once. Any re-plan should merge them.",
-  "next_steps": "Take the fixed-duration decision, then re-plan phases 5-7, 9-13 against it. Phases 9 and 11 are partly independent of the blocker and could be attempted first if the decision is delayed."
+  "axiom_profiles_unchanged": true,
+  "sorry_count": 0,
+  "stop_gate_verdict": "PASS -- all six Phase 0 probes pass; the temporal-order fibration is sound and is now landed through Phase 4. No blocker.",
+  "blocker_summary": null,
+  "decision_required": [],
+  "next_steps": "Resume at Phase 5 (Validity, the BL layer, and the fixed-carrier validity predicates -- v01's merged 3+8 component, the phase v01 mis-sized). Waves 6-13 follow. Every ParamTaskFrame site still standing is held green by the reducible alias, so the tree is a coherent resting state at this boundary.",
+  "carry_forward": {
+    "omega_at_the_fibre": "omega recognizes the ATOMS at a ℤ-carried frame but NOT an ordering hypothesis whose ≤ routes through a TemporalOrder projection instance instead of Int.instLE. Recovery is `change (0 : ℤ) ≤ x at hx` -- a genuine hypothesis type change; a show/have ASCRIPTION is a no-op. Applied at IntNormalForm.lean:454 and PeriodicExtension.lean:170,175. Phases 7, 9, 10-Periodicity, 11, 15 and 19 should expect the same pattern.",
+    "duration_binders": "State every arithmetic-carrying duration binder as `(d : ℤ)`, never `(d : ↑intOrder)`. Both elaborate against F.TaskRel; only the former lets omega work.",
+    "prop_accessors": "TaskFrame's Prop-valued accessors are `theorem`s, not `@[reducible] def`s -- Lean rejects @[reducible] on a proof. Harmless by proof irrelevance.",
+    "c6_is_load_bearing": "PeriodicExtension.lean is unreachable-but-manifested, so `lake build` does not cover it; its breakage surfaced only under C6's isolation compile. Run the full invariants gate every phase, not just lake build.",
+    "named_temporal_orders": "Only `intOrder` is declared in Semantics/TemporalOrder.lean. ratOrder, realOrder and the ℚ ×ₗ ℤ order are deferred to the phases that consume them (13, 16), to keep Mathlib.Data.Real.Basic out of the transitive import set of every module.",
+    "lake_clean_warning": "Do NOT run `lake clean` -- in this Lake version it cleans the WORKSPACE including Mathlib. Recovery is `lake exe cache get` (~17 s, the ~/.cache/mathlib store is intact)."
+  },
+  "cross_task_observations": {
+    "task_510": "Not yet reached (Phase 14 territory). TemporalCarrier/FrameConditionFor at Bridge/Carrier.lean:110,126 remains FLAG-ONLY and unexamined by this dispatch.",
+    "task_507": "No Dedekind identifier was renamed. The ParamTaskFrame.* -> TaskFrame.* predicate-namespace move is a restoration of the pre-512 name, verified against 7ecb341b9, not a naming decision."
+  },
+  "baselines": {
+    "full_project_rebuild_seconds": 1043,
+    "flagship_axiom_profile": "[propext, Classical.choice, Quot.sound]"
+  }
 }

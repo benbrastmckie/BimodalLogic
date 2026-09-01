@@ -1,16 +1,75 @@
 {
   "status": "partial",
   "started_at": "2026-08-31T16:00:00Z",
+  "requires_user_review": false,
+  "review_reason": "Not a failure: the 21-phase plan is partially executed by design. Phases 0-4 are complete, green and committed; 5-20 remain. Every gate passes at the boundary.",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true,
+    "module_invariants": "ALL CHECKS PASSED"
+  },
   "partial_progress": {
     "stage": "phase_4_complete",
-    "details": "Phases 0-4 complete and green; 5-20 not started.",
+    "details": "Phase 0 STOP-GATE passed on all six probes. Phases 1-4 landed: TemporalOrder reified, FrameOver is the fibre, TaskFrame is the total space, semantics core residue migrated. Resume at Phase 5.",
     "phases_completed": 5,
     "phases_total": 21
   },
+  "modified_files": [
+    "FormalSystem/Semantics/TemporalOrder.lean",
+    "FormalSystem/Semantics/TaskFrame.lean",
+    "FormalSystem/Semantics.lean",
+    "FormalSystem/Semantics/FrameAxioms.lean",
+    "FormalSystem/Semantics/WorldHistory.lean",
+    "FormalSystem/Semantics/TaskModel.lean",
+    "FormalSystem/Semantics/PartialHistory.lean",
+    "FormalSystem/Semantics/ShiftSet.lean",
+    "FormalSystem/Semantics/IntNormalForm.lean",
+    "FormalSystem/Semantics/IntTransfer.lean",
+    "FormalSystem/Semantics/Extension/Admissible.lean",
+    "FormalSystem/Semantics/Extension/Constraint.lean",
+    "FormalSystem/Semantics/Extension/Extension.lean",
+    "FormalSystem/Semantics/Extension/Step.lean",
+    "FormalSystem/Semantics/Extension/PeriodicExtension.lean",
+    "FormalSystem/Examples/TemporalStructures.lean",
+    "FormalSystem/Metalogic/Algebraic/FlowFrame.lean",
+    "FormalSystem/Metalogic/Independence/ClockFrame.lean",
+    "FormalSystem/Metalogic/Decidability/IntPresentation.lean",
+    "FormalSystem/Metalogic/Decidability/FMP/FiniteModel.lean",
+    "FormalSystem/Metalogic/Decidability/FMP/Filtration.lean",
+    "FormalSystem/Metalogic/Decidability/Verified/Bridge/RegionFrame.lean",
+    "FormalSystem/Metalogic/WeakCanonical/IntegerModel/ReynoldsBridge.lean",
+    "Tests/BimodalTest/Semantics/SphericalFiniteAxiomTest.lean",
+    "Tests/BimodalTest/Semantics/TaskFrameTest.lean",
+    "specs/512_bundle_duration_into_taskframe/plans/02_temporal-order-fibration.md",
+    "specs/512_bundle_duration_into_taskframe/probes/07_temporal-order-shape.lean",
+    "specs/512_bundle_duration_into_taskframe/probes/08_fibre-and-accessors.lean"
+  ],
+  "artifacts": [
+    {
+      "type": "probe",
+      "path": "specs/512_bundle_duration_into_taskframe/probes/07_temporal-order-shape.lean",
+      "summary": "Phase 0 probes (a) numerals at the fibre and (c) instance resolution through the TemporalOrder projections."
+    },
+    {
+      "type": "probe",
+      "path": "specs/512_bundle_duration_into_taskframe/probes/08_fibre-and-accessors.lean",
+      "summary": "Phase 0 probes (b) omega at the ℤ fibre, (d) flat accessors, (e) the constructor inclusion, (f) the transitional alias."
+    },
+    {
+      "type": "plan",
+      "path": "specs/512_bundle_duration_into_taskframe/plans/02_temporal-order-fibration.md",
+      "summary": "Plan v02 with Phases 0-4 marked COMPLETED, per-phase records, and inline deviation annotations."
+    }
+  ],
   "metadata": {
     "session_id": "sess_1788209220_633087",
     "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"]
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "compliance_check": "passed",
+    "last_green_commit": "87f5425b8"
   }
 }
