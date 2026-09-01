@@ -1,5 +1,5 @@
 ---
-next_project_number: 517
+next_project_number: 518
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 517
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,193,257,298,433,461,476,481,494,504,506 | -- | automation, dataset-enhancement, decidability, ... |
+| 1 | 127,128,193,257,298,433,461,476,481,494,504,506,517 | -- | automation, dataset-enhancement, decidability, ... |
 | 2 | 178,231,282,296,463,502 | 193,298,433,461 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 219,464,497 | 231,463,502 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 465,498,499,500 | 464,497 | algebraic-representation, decidability |
@@ -86,11 +86,25 @@ next_project_number: 517
 
 506 [NOT STARTED] — Fix all outstanding display/layout defects in the compiled typst 
 
+### Semantics
+
+517 [NOT STARTED] — Rename the fourth task-frame axiom from Spherical to Saturation a
+
 ### Strong Completeness
 
 494 [NOT STARTED] — NOW SEQUENCED BEHIND THE COMPACTNESS PARAMETERIZATION (see the RE
 
 ## Tasks
+
+### 517. Rename spherical axiom to saturation
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: semantics
+- **Dependencies**: None
+
+**Description**: Rename the fourth task-frame axiom from Spherical to Saturation across the Lean codebase and documentation, matching the published paper. The paper (possible_worlds.tex) now names this axiom Saturation throughout; the repository still uses Spherical. Scope: the TaskFrame.Spherical predicate and the spherical field of FrameOver in FormalSystem/Semantics/TaskFrame.lean, roughly 30 downstream lemma and instance names (spherical_of_finite, spherical_of_permissive, spherical_of_subsingleton, wlem_of_spherical, multiFamGen_spherical, and the per-frame *_spherical witnesses), the Tests/BimodalTest/Semantics/SphericalFiniteAxiomTest.lean file name and its declarations, and prose in docs/reference/API_REFERENCE.md, docs/user-guide/architecture.md, the module READMEs under FormalSystem/, latex/subfiles/02-Semantics.tex, and the typst sources (FormalFoundations.typ, chapters/02-semantics.typ, notation/bimodal-notation.typ, SYNC-MAP.md, sync-check-whitelist.txt). Preserve the substantive ball-space claim, which remains accurate: Saturation is the condition S1d, strictly stronger than spherically complete (S1) -- so the term spherically complete must survive wherever it names that weaker standard condition, and only the axiom name itself changes. README.md line 80 has already been renamed and currently carries an interim note that the Lean sources still use the old name; remove that note as part of this work. Verify with lake build and scripts/check-module-invariants.sh.
+
+---
 
 ### 516. Update documentation for finalized metalogic results
 - **Status**: [COMPLETED]
