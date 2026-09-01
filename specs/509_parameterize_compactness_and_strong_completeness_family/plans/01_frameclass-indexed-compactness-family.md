@@ -232,7 +232,7 @@ makes outside `FormalSystem/Metalogic/`.
 
 ---
 
-### Phase 2: Add the indexed family and its binder adapters (additive only) [NOT STARTED]
+### Phase 2: Add the indexed family and its binder adapters (additive only) [COMPLETED]
 
 **Goal**: Introduce the four `FrameClass`-indexed definitions and the three `SatisfiableSet`
 binder adapters into `Metalogic/SetConsequence.lean` **without touching any existing
@@ -249,19 +249,19 @@ inlined binder list — that is the whole point of the collapse and what makes t
 free.
 
 **Tasks**:
-- [ ] Transplant the four definitions from `probe_509.lean` Part A into `SetConsequence.lean`,
+- [x] Transplant the four definitions from `probe_509.lean` Part A into `SetConsequence.lean`,
       placed after `SetSemanticConsequenceDedekindDense` (`:117`) and before the adapter block
       (`:128`): `SatisfiableSet`, `ModelExistence`, `Compact`, `StrongCompleteness`.
-- [ ] Write a docstring for each in the file's established idiom, stating explicitly for
+- [x] Write a docstring for each in the file's established idiom, stating explicitly for
       `Compact` and `StrongCompleteness` that the per-class names below are `rfl`-recoveries.
-- [ ] Transplant the three adapters from `probe_509c.lean` §C0 into the adapter block, after
+- [x] Transplant the three adapters from `probe_509c.lean` §C0 into the adapter block, after
       `SetSemanticConsequenceDedekindDense.apply` (`:188`): `SatisfiableSet.base_of_forall`,
       `SatisfiableSet.dense_of_forall`, `SatisfiableSet.discrete_of_forall`.
-- [ ] Add the Dedekind adapter `SatisfiableSet.dedekind_of_forall` from
+- [x] Add the Dedekind adapter `SatisfiableSet.dedekind_of_forall` from
       `probe_509b_negative_control.lean` §B6 (the §B6 block itself is one of the control file's
       *succeeding* fragments; take the code as written). Adding it here — rather than leaving it
       for the follow-on task — costs four lines and completes the adapter row.
-- [ ] Add, immediately below the four definitions, a `#check`-free comment block recording that
+- [x] Add, immediately below the four definitions, a `#check`-free comment block recording that
       `Compact .Base = CompactBase`, `Compact .Dense = CompactDense`,
       `Compact .Discrete = CompactDiscrete`, and the three `StrongCompleteness` counterparts, are
       all `rfl` — with the note that this is what task 507's `valid := ValidIn .Base` bought.

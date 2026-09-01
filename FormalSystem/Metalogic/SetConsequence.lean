@@ -117,6 +117,90 @@ def SetSemanticConsequenceDiscrete (Γ : Set Formula) (φ : Formula) : Prop :=
 def SetSemanticConsequenceDedekindDense (Γ : Set Formula) (φ : Formula) : Prop :=
   SetSemanticConsequenceOn FrameClass.Dedekind Γ φ
 
+/-! ## The `FrameClass`-indexed compactness family
+
+The satisfiability / model-existence / compactness / strong-completeness row, defined **once**
+and indexed by the same `FrameClass` tag that `SetDerivable` and `SetSemanticConsequenceOn`
+above already carry. Before this collapse each of the three live classes carried its own
+hand-written copy of the whole row, with the frame condition inlined into a hand-maintained
+binder list. The condition is now read off the tag by `FrameClass.Sat`
+(`Semantics/FrameClassValidity.lean`), so there is nothing left to keep in sync — and the
+`.Dedekind` row, absent from this layer entirely, becomes available by instantiation.
+
+Nothing here is proved or refuted; these are `Prop`-valued statements only. The per-class names
+further down are instantiations of these four, and each inherits its status from where it is
+discharged (Base and Dense: proved, in `Metalogic/Compactness.lean`; Discrete: refuted, in
+`Metalogic/DiscreteNonCompactness.lean`). -/
+
+/-- Satisfiability of a possibly-infinite set over the frames of `fc`: some frame satisfying
+`fc`, together with a model, a total history and a time, makes every member of `Γ` true at
+once. This is `FormulaSatisfiable` (`Validity.lean`) at `ValidIn fc`'s binder list, with the
+conclusion generalised from a single formula to `∀ ψ ∈ Γ`.
+
+The frame condition sits in an **anonymous** existential binder holding `fc.Sat F`. At
+`.Discrete` that is `TaskFrame.IsSuccArchDiscrete F` (`Semantics/FrameProperty.lean`), itself a
+four-component nested existential which the anonymous constructor does not unfold, so a
+destructuring pattern needs exactly one nesting pair there. The `SatisfiableSet.*_of_forall`
+adapters below restore the pre-collapse flat binder shape at introduction sites. -/
+def SatisfiableSet (fc : FrameClass) (Γ : Set Formula) : Prop :=
+  ∃ (F : TaskFrame) (_ : fc.Sat F) (M : TaskModel F)
+    (τ : WorldHistory F) (_ : τ.IsTotal) (t : F.Duration),
+    ∀ ψ ∈ Γ, TruthAt M τ t ψ
+
+/-- The model-existence form, which is what an ultraproduct construction proves directly: finite
+satisfiability of every finite sublist lifts to satisfiability of the whole set. Uniform in `fc`
+because `SatisfiableSet` is. `ModelExistence fc → Compact fc` is `compact_of_modelExistence`
+(`Metalogic/StrongCompleteness.lean`), which is stated once for all `fc` rather than once per
+class. -/
+def ModelExistence (fc : FrameClass) : Prop :=
+  ∀ Γ : Set Formula,
+    (∀ L : List Formula, (∀ ψ ∈ L, ψ ∈ Γ) → SatisfiableSet fc {ψ | ψ ∈ L}) →
+    SatisfiableSet fc Γ
+
+/-- Semantic compactness of the `fc` consequence relation, in the form the completeness
+derivation actually consumes: a set-consequence yields a *finite* premise list whose
+`foldr`-implication into the conclusion is `fc`-valid.
+
+`CompactBase`, `CompactDense` and `CompactDiscrete` below are this definition at a fixed tag,
+recovered by `rfl` — see the definitional-equality note after `StrongCompleteness`. -/
+def Compact (fc : FrameClass) : Prop :=
+  ∀ (Γ : Set Formula) (φ : Formula), SetSemanticConsequenceOn fc Γ φ →
+    ∃ L : List Formula, (∀ ψ ∈ L, ψ ∈ Γ) ∧ ValidIn fc (L.foldr Formula.imp φ)
+
+/-- **Strong completeness at `fc`** — the statement: `Γ ⊨_fc φ → Γ ⊢_fc φ` for a
+possibly-infinite `Γ : Set Formula`. The semantic mirror of `SetDerivable fc` closed under the
+consequence relation indexed by the same tag.
+
+`StrongCompletenessBase`, `StrongCompletenessDense` and `StrongCompletenessDiscrete` below are
+this definition at a fixed tag, recovered by `rfl`. -/
+def StrongCompleteness (fc : FrameClass) : Prop :=
+  ∀ (Γ : Set Formula) (φ : Formula),
+    SetSemanticConsequenceOn fc Γ φ → SetDerivable fc Γ φ
+
+/-! ### What the per-class recoveries cost
+
+Six of the ten per-class names below are recovered from these four definitions **on the nose**,
+by `rfl`:
+
+```
+Compact .Base = CompactBase                     StrongCompleteness .Base = StrongCompletenessBase
+Compact .Dense = CompactDense                   StrongCompleteness .Dense = StrongCompletenessDense
+Compact .Discrete = CompactDiscrete             StrongCompleteness .Discrete = StrongCompletenessDiscrete
+```
+
+and so are `SatisfiableSet .Dense = SatisfiableDenseSet` and
+`ModelExistence .Dense = ModelExistenceDense`, for eight in total. This is what
+`Semantics/Validity.lean`'s `valid := ValidIn .Base`, `ValidDense := ValidIn .Dense` and
+`ValidDiscrete := ValidIn .Discrete` bought: the per-class validity predicates are plain
+abbreviations over `ValidIn`, so `ValidIn fc (…)` at a literal tag *is* the per-class predicate,
+with no transport.
+
+The two exceptions are `SatisfiableBaseSet` and `SatisfiableDiscreteSet`, whose pre-collapse
+binder lists differ from `SatisfiableSet`'s by the frame-condition slot — `Sat .Base` is `True`,
+which the old Base list simply omitted, and `Sat .Discrete` nests its four class witnesses inside
+`TaskFrame.IsSuccArchDiscrete` where the old Discrete list held them flat. Both are *stated* as
+instantiations below; the pre-collapse shape is restored at call sites by the adapters. -/
+
 /-! ### Binder-shape adapters
 
 The pre-collapse binder shapes, restored. Each `of_forall` puts the frame condition back into the
@@ -192,6 +276,50 @@ theorem SetSemanticConsequenceDedekindDense.apply {Γ : Set Formula} {φ : Formu
     (M : TaskModel F) (τ : WorldHistory F) (hτ : τ.IsTotal) (t : F.Duration)
     (hall : ∀ ψ ∈ Γ, TruthAt M τ t ψ) : TruthAt M τ t φ :=
   h F ⟨inst, hlub⟩ M τ hτ t hall
+
+/-! ### `SatisfiableSet` binder-shape adapters
+
+The same service the `SetSemanticConsequence*.of_forall` adapters above perform, on the
+introduction side of `SatisfiableSet`. Each takes the pre-collapse binder shape — the frame
+condition as typeclass instances or as a plain hypothesis, in the position it occupied before
+the collapse — and packages it into the single `fc.Sat F` slot. The `.Dedekind` adapter is
+supplied here even though no `.Dedekind` name is stated in this layer yet: the row is complete,
+and the follow-on task inherits it rather than re-deriving it. -/
+
+/-- Introduce `SatisfiableSet FrameClass.Base` from its pre-collapse binder shape. `Sat .Base`
+is `True`, so the absorbed slot is discharged by `trivial`. -/
+theorem SatisfiableSet.base_of_forall {Γ : Set Formula} (F : TaskFrame) (M : TaskModel F)
+    (τ : WorldHistory F) (hτ : τ.IsTotal) (t : F.Duration) (h : ∀ ψ ∈ Γ, TruthAt M τ t ψ) :
+    SatisfiableSet FrameClass.Base Γ := ⟨F, trivial, M, τ, hτ, t, h⟩
+
+/-- Introduce `SatisfiableSet FrameClass.Dense` from its pre-collapse binder shape, taking the
+density witness as an instance argument. -/
+theorem SatisfiableSet.dense_of_forall {Γ : Set Formula} (F : TaskFrame)
+    [inst : DenselyOrdered F.Duration] (M : TaskModel F)
+    (τ : WorldHistory F) (hτ : τ.IsTotal) (t : F.Duration) (h : ∀ ψ ∈ Γ, TruthAt M τ t ψ) :
+    SatisfiableSet FrameClass.Dense Γ := ⟨F, inst, M, τ, hτ, t, h⟩
+
+/-- Introduce `SatisfiableSet FrameClass.Discrete` from its pre-collapse binder shape: the four
+class witnesses flat, as instance arguments, rather than nested inside
+`TaskFrame.IsSuccArchDiscrete`. This is the adapter that keeps a `refine ⟨F, inferInstance,
+inferInstance, inferInstance, inferInstance, M, …⟩` site reading as it did before the
+collapse. -/
+theorem SatisfiableSet.discrete_of_forall {Γ : Set Formula} (F : TaskFrame)
+    [so : SuccOrder F.Duration] [po : PredOrder F.Duration]
+    [hsa : IsSuccArchimedean F.Duration] [hpa : IsPredArchimedean F.Duration]
+    (M : TaskModel F) (τ : WorldHistory F) (hτ : τ.IsTotal) (t : F.Duration)
+    (h : ∀ ψ ∈ Γ, TruthAt M τ t ψ) :
+    SatisfiableSet FrameClass.Discrete Γ := ⟨F, ⟨so, po, hsa, hpa⟩, M, τ, hτ, t, h⟩
+
+/-- Introduce `SatisfiableSet FrameClass.Dedekind` from its pre-collapse binder shape. `Sat
+.Dedekind` is `TaskFrame.IsDedekind`, i.e. `IsDense ∧ IsComplete`, so the slot takes the density
+instance paired with the least-upper-bound hypothesis. -/
+theorem SatisfiableSet.dedekind_of_forall {Γ : Set Formula} (F : TaskFrame)
+    [inst : DenselyOrdered F.Duration]
+    (hlub : ∀ s : Set F.Duration, s.Nonempty → BddAbove s → ∃ x, IsLUB s x)
+    (M : TaskModel F) (τ : WorldHistory F) (hτ : τ.IsTotal) (t : F.Duration)
+    (h : ∀ ψ ∈ Γ, TruthAt M τ t ψ) :
+    SatisfiableSet FrameClass.Dedekind Γ := ⟨F, ⟨inst, hlub⟩, M, τ, hτ, t, h⟩
 
 /-! ## Monotonicity -/
 
