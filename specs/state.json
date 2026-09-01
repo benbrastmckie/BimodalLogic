@@ -9,12 +9,26 @@
     {
       "project_number": 516,
       "project_name": "update_documentation_for_finalized_metalogic_results",
-      "status": "not_started",
+      "status": "implementing",
       "task_type": "general",
       "description": "Update README.md and other relevant documentation to reflect the finalized completeness, soundness, compactness, and characterization results, maintaining accuracy without over-representing progress (task 494 remains outstanding)",
       "topic": "documentation",
       "created": "2026-09-01T20:49:37Z",
-      "last_updated": "2026-09-01T20:49:37Z"
+      "last_updated": "2026-09-01T21:17:17Z",
+      "session_id": "sess_1788296678_762598",
+      "artifacts": [
+        {
+          "path": "specs/516_update_documentation_for_finalized_metalogic_results/reports/01_finalized-metalogic-documentation.md",
+          "type": "report",
+          "summary": "Verifies metalogic claims against live build tooling; identifies characterization/definability results as the documentation gap."
+        },
+        {
+          "path": "specs/516_update_documentation_for_finalized_metalogic_results/plans/01_finalized-metalogic-documentation.md",
+          "type": "plan",
+          "summary": "5-phase documentation-accuracy plan adding Galois-closure/definability and Kamp expressive-completeness results to README.md, Metalogic.lean status ledger, and implementation-status.md, gated on a verify-first evidence phase."
+        }
+      ],
+      "next_artifact_number": 2
     },
     {
       "project_number": 515,

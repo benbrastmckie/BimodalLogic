@@ -92,15 +92,17 @@ next_project_number: 517
 
 ### Documentation
 
-516 [NOT STARTED] — Update README.md and other relevant documentation to reflect the 
+516 [IMPLEMENTING] — Update README.md and other relevant documentation to reflect the 
 
 ## Tasks
 
 ### 516. Update documentation for finalized metalogic results
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: general
 - **Topic**: documentation
 - **Dependencies**: None
+- **Research**: [516_update_documentation_for_finalized_metalogic_results/reports/01_finalized-metalogic-documentation.md]
+- **Plan**: [516_update_documentation_for_finalized_metalogic_results/plans/01_finalized-metalogic-documentation.md]
 
 **Description**: Update README.md and other relevant documentation to reflect the finalized completeness, soundness, compactness, and characterization results, maintaining accuracy without over-representing progress (task 494 remains outstanding)
 
