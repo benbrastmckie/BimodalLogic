@@ -32,6 +32,7 @@ import FormalSystem.Semantics.IntTransfer
 import FormalSystem.Semantics.Correspondence.Galois
 import FormalSystem.Semantics.Correspondence.Indicator
 import FormalSystem.Semantics.Correspondence.FwdRec
+import FormalSystem.Semantics.Correspondence.DurationFrames
 
 /-!
 # FormalSystem.Semantics - Task Frame Semantics

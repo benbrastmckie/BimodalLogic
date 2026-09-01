@@ -472,7 +472,7 @@ the tier must be raised to `full`.
 
 ---
 
-### Phase 7: (T1) witness frames — translation frame and permissive frame [NOT STARTED]
+### Phase 7: (T1) witness frames — translation frame and permissive frame [COMPLETED]
 
 **Goal**: Both (⇒) witness frames exist as bundled `FrameOver` values, with the two glue lemmas
 they need.
@@ -530,7 +530,7 @@ that and the tier's blind-spot exposure is unchanged (the final gate still runs 
 
 ---
 
-### Phase 8: (T1) duration-level biconditionals and the (T0) refutation record [NOT STARTED]
+### Phase 8: (T1) duration-level biconditionals and the (T0) refutation record [COMPLETED]
 
 **Goal**: The three duration-level correspondence statements for DF/DN/CO in the paper's proven
 (T1) form, with the (T0) refutation recorded beside them.
