@@ -1,0 +1,16 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/510_resolve_orphaned_frameconditions_layer/reports/01_frameconditions-deletion.md",
+      "summary": "Confirms the DELETE verdict for FormalSystem/FrameConditions/ on re-measured evidence; corrects five stale premises in the brief and records four execution blockers including an already-red typst gate and a C11 Boneyard import break."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1788282938_f2ac03",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}

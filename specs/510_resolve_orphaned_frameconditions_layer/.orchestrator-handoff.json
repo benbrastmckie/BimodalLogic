@@ -1,0 +1,29 @@
+{
+  "phase": "research",
+  "dispatch_seq": 3,
+  "status": "researched",
+  "summary": "DELETE verdict for FormalSystem/FrameConditions/ confirmed on re-measured evidence: zero code consumers outside the directory, no paper counterpart (def:frame-validity is per-frame), and a complete replacement in FrameClass.Sat/ValidIn. Five brief premises are stale and corrected, including that Validity.lean's parallel validity vocabulary was already deleted by commit e5a9ba40f and that the C6 acceptance criterion does not apply. Four execution blockers recorded: a C11 Boneyard import break, an already-red typst-sync-check gate, 11 ungated dangling book pointers, and two readme-lint link breaks.",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/510_resolve_orphaned_frameconditions_layer/reports/01_frameconditions-deletion.md",
+      "summary": "Deletion verdict, five corrections to the brief, four execution blockers, full delete/edit inventory, and gate baselines captured at b7ccf6702."
+    }
+  ],
+  "phases_completed": 1,
+  "phases_total": 1,
+  "blockers": [],
+  "files_modified": [
+    "specs/510_resolve_orphaned_frameconditions_layer/reports/01_frameconditions-deletion.md",
+    "specs/510_resolve_orphaned_frameconditions_layer/.return-meta.json",
+    "specs/510_resolve_orphaned_frameconditions_layer/.orchestrator-handoff.json"
+  ],
+  "decisions_made": [
+    "DELETE confirmed; promotion ruled out on measurement (task 511 is [EXPANDED], its successor task 513 targets Semantics/Correspondence/Galois.lean, not FrameConditions/).",
+    "The Boneyard file StrictSemanticsLegacy/FrameConditions/Completeness.lean must be RETAINED and its dangling import waived in scripts/boneyard-import-waivers.txt, not deleted: it is the archived record of completeness_over_Int and discrete_completeness_fc.",
+    "No scripts/module-invariants-manifest.txt edit: FrameConditions is reachable, so C6 stays at 17 and adding an entry would fail C6.",
+    "lake build baseline NOT captured this cycle: the guarded build queued behind another session's in-flight build. The implementation cycle must capture a green baseline before deleting."
+  ],
+  "next_action_hint": "Dispatch /plan 510. The plan must (a) capture a green lake build baseline first, (b) schedule the typst/ rewrite and the C11 waiver in the same change as the deletion, and (c) restate acceptance criterion A3 per report section 2 (C4) and A4 per section 3 (B2).",
+  "continuation_path": null
+}

@@ -84,8 +84,8 @@ next_project_number: 516
 
 ### Metalogic
 
-495 [PLANNED] — RESEARCH TASK, DELIBERATELY AGNOSTIC ABOUT THE VERDICT. Determine
-510 [NOT STARTED] — Decide the fate of FormalSystem/FrameConditions/ (4 modules, 906 
+495 [IMPLEMENTING] — RESEARCH TASK, DELIBERATELY AGNOSTIC ABOUT THE VERDICT. Determine
+510 [RESEARCHED] — Decide the fate of FormalSystem/FrameConditions/ (4 modules, 906 
   └─ 508 [NOT STARTED] — Collapse ~23 soundness theorems into ONE parameterized theorem pl
     └─ 509 [NOT STARTED] — Make the compactness / strong-completeness layer a FrameClass-ind
 
@@ -95,12 +95,12 @@ next_project_number: 516
 
 ### Strong Completeness
 
-493 [PLANNED] — Assemble the compactness result and collect strong completeness f
+493 [IMPLEMENTING] — Assemble the compactness result and collect strong completeness f
 494 [NOT STARTED] — NOW SEQUENCED BEHIND THE COMPACTNESS PARAMETERIZATION (see the RE
 
 ### Correspondence Theory
 
-513 [NOT STARTED] — GALOIS-CLOSURE IMPLEMENTATION for the frame-class layer, replacin
+513 [RESEARCHING] — GALOIS-CLOSURE IMPLEMENTATION for the frame-class layer, replacin
 
 ## Tasks
 
@@ -153,7 +153,7 @@ WHY THIS IS A TASK AND NOT AN AD-HOC FIX: it spans three files in a subsystem se
 ---
 
 ### 513. Uniform frame faithfulness predicate
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Topic**: correspondence theory
 - **Dependencies**: Task 512, Task 507
@@ -244,10 +244,11 @@ Research complete and absorbed: FwdRec and the Tier-1/T1 statements land under r
 ---
 
 ### 510. Resolve orphaned frameconditions layer
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: Task 507
+- **Research**: [510_resolve_orphaned_frameconditions_layer/reports/01_frameconditions-deletion.md]
 
 **Description**: Decide the fate of FormalSystem/FrameConditions/ (4 modules, 906 lines) -- currently orphaned code that also contains a half-built version of the validity parameterization. MEASURED STATE: consumers outside the directory itself number exactly ONE, the library aggregator FormalSystem/FormalSystem.lean:13. Nothing in Metalogic/, Semantics/, Theorems/, or Tests/ references any definition it exports. SILENT REGRESSION TO RECORD: archived task 58 logged 'Wire completeness to FrameConditions -- wiring is DONE: completeness_over_Int, discrete_completeness_fc, dovetailed_bundle'. All three identifiers are ABSENT from the entire live tree today; the wiring was removed and the claim never retracted. Its README separately states the live-importer count as 1 without drawing the conclusion. THREE THINGS IT CONTAINS: (a) FrameClass.lean marker typeclasses LinearTemporalFrame(:88), SerialFrame(:103), DenseTemporalFrame(:124), DiscreteTemporalFrame(:148), DedekindTemporalFrame(:182) -- the binder-list-as-predicate-on-D that the prerequisite parameterization needs, and which it should consume rather than re-invent; (b) Validity.lean's ValidOver/ValidLinear/ValidDenseFc/ValidDiscreteFc/ValidOverInt (:59,:79,:89,:100,:199), a FOURTH parallel validity vocabulary plus the bridge lemmas that exist only to translate to and from Semantics/Validity.lean; (c) Compatibility.lean's AxiomLinearCompatible/AxiomDenseCompatible/AxiomDiscreteCompatible (:85,:93,:102) with roughly 40 hand-written per-axiom instances that duplicate Axiom.minFrameClass -- whose own docstring calls itself 'the single source of truth for axiom-frame-class compatibility' and says it 'replaces the ad-hoc predicates isBase, isDenseCompatible, isDiscreteCompatible'. Both encodings are live. DELIVERABLE: an explicit verdict, executed. PROMOTE (marker typeclasses become the FrameClass interpretation, tree consumes them) or DELETE. Its README argues for staying separate on layering grounds, but that argument addresses placement, not zero consumers, and under the promote path the layering inverts anyway since the interpretation belongs beside Semantics/Validity.lean, below Metalogic/. THE AxiomCompatible INSTANCES SHOULD GO IN EITHER CASE -- minFrameClass supersedes them. A DELETE VERDICT IS A COMPLETE OUTCOME if the prerequisite task chose a different interpretation. ACCEPTANCE: no orphaned validity vocabulary remains; lake build green; check-module-invariants.sh C6 unreachable-module count updated and manifested. GROUNDING: specs/reviews/review-2026-08-31-metalogic-systematicity.md issue M1.=== DIRECTION NOTE ===
 The FrameClass-indexed validity this task builds on is being defined at FRAME level, not carrier
@@ -491,7 +492,7 @@ DELIVERABLE: a grounding report answering, with citations to specific pages read
 
 ### 495. Determine tm completeness status over task frames
 - **Effort**: 12-20 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: formal
 - **Topic**: metalogic
 - **Dependencies**: Task 489
@@ -515,7 +516,7 @@ DELIVERABLE: a grounding report answering, with citations to specific pages read
 
 ### 493. Discharge compactbase compactdense and strong completeness
 - **Effort**: 10-16 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: strong_completeness
 - **Dependencies**: Task 490, Task 492
