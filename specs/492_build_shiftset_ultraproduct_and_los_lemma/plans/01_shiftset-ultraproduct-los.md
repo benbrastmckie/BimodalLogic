@@ -284,7 +284,7 @@ noted as a partial-completion checkpoint, not as a parallel wave.
 - **Commit Mode:** per-substep — commit `Carrier.lean` + its import line when green, then
   `IndexFilter.lean` + its import line when green.
 
-### Phase 2: ShiftSetProduct.lean — UT, uSep, and the seven-field uShiftSet [IN PROGRESS]
+### Phase 2: ShiftSetProduct.lean — UT, uSep, and the seven-field uShiftSet [COMPLETED]
 
 - **Goal:** Build the ultraproduct temporal order and the ultraproduct shift set: `UT`, the `sep`
   field discharged on the ultraproduct (`uSep`), and `uShiftSet` with all seven `ShiftSet` fields
@@ -293,30 +293,30 @@ noted as a partial-completion checkpoint, not as a parallel wave.
   - `FormalSystem/Semantics/Ultraproduct/ShiftSetProduct.lean` (new)
   - `FormalSystem/Semantics.lean` (one import line)
 - **Tasks:**
-  - [ ] Create `FormalSystem/Semantics/Ultraproduct/ShiftSetProduct.lean`, namespace
+  - [x] Create `FormalSystem/Semantics/Ultraproduct/ShiftSetProduct.lean`, namespace
         `FormalSystem.Semantics.Ultraproduct`, importing
         `FormalSystem.Semantics.Ultraproduct.Carrier` and `FormalSystem.Semantics.ShiftSet`.
         Section variables `{I : Type} {φ : Ultrafilter I} {T : I → TemporalOrder}`.
-  - [ ] Transcribe `UT` from `prototype/UltraproductLos.lean:69`, **with `@[reducible]`** and with
+  - [x] Transcribe `UT` from `prototype/UltraproductLos.lean:69`, **with `@[reducible]`** and with
         the docstring recording why the attribute is load-bearing (risk R-RED). Note that
         `∀ i, AddCommGroup ↑(T i)` and the other three binders synthesize because
         `TemporalOrder`'s four projections are instances (`TemporalOrder.lean:91`) — no binder
         list is needed on `T`.
-  - [ ] Transcribe `uSep` from `:72-94` verbatim: `haveI : ∀ i, Nonempty ↑(T i) := fun i => ⟨0⟩`,
+  - [x] Transcribe `uSep` from `:72-94` verbatim: `haveI : ∀ i, Nonempty ↑(T i) := fun i => ⟨0⟩`,
         `omk_surjective` twice, `by_contra`, `Ultrafilter.eventually_not`, the `push_neg`
         contrapositive of `(S i).sep` (`ShiftSet.lean:110`), `exists_section` for the radius
         section, `rw [← mk_zero]`, `mk_surjective`, `rw [mk_abs]`, `rw [shU_mk]`, and
         `Eventually.exists` on the triple intersection.
-  - [ ] Transcribe `uShiftSet` from `:98-109`, all seven fields: `Carrier := UOmega φ (fun i =>
+  - [x] Transcribe `uShiftSet` from `:98-109`, all seven fields: `Carrier := UOmega φ (fun i =>
         (S i).Carrier)`, `carrier_nonempty` via `(S i).carrier_nonempty.some`, `sh := shU (fun i
         => (S i).sh)`, `sh_zero`, `sh_add`, `sep := uSep S`, and the `A` valuation with its
         `Quotient.liftOn` well-definedness obligation.
-  - [ ] Module docstring: what the module supplies and the explicit statement that `uShiftSet`
+  - [x] Module docstring: what the module supplies and the explicit statement that `uShiftSet`
         discharges all seven fields with no hypotheses (contrast the probe's `shiftSetOnUD`,
         which takes `carrier_nonempty`, `sep` and `A` as hypotheses).
-  - [ ] Add `import FormalSystem.Semantics.Ultraproduct.ShiftSetProduct` to
+  - [x] Add `import FormalSystem.Semantics.Ultraproduct.ShiftSetProduct` to
         `FormalSystem/Semantics.lean` after the Phase 1 imports; extend the `## Submodules` list.
-  - [ ] Run `lake build`.
+  - [x] Run `lake build`.
 - **Verification criteria:**
   - `lake build` exits 0.
   - `grep -n 'sorry' FormalSystem/Semantics/Ultraproduct/ShiftSetProduct.lean` returns nothing.

@@ -21,6 +21,7 @@ import FormalSystem.Semantics.BLTruth
 import FormalSystem.Semantics.ShiftSet
 import FormalSystem.Semantics.Ultraproduct.Carrier
 import FormalSystem.Semantics.Ultraproduct.IndexFilter
+import FormalSystem.Semantics.Ultraproduct.ShiftSetProduct
 import FormalSystem.Semantics.Validity
 import FormalSystem.Semantics.BLValidity
 import FormalSystem.Semantics.DurationClassification
@@ -103,6 +104,12 @@ against `specs/paper-definitions-of-record.md`'s DANGLING entry, not a live `\la
   index list. `Filter.atTop` is deliberately not used: `atTop_neBot` would demand a registered
   `Preorder` instance on a `List` subtype plus `IsDirectedOrder`, a global instance-graph
   commitment for a single use
+- `Ultraproduct.ShiftSetProduct`: the ultraproduct shift set -- `UT φ T`, the ultraproduct
+  temporal order (carrying `@[reducible]`, which is load-bearing for `rw` motive typing);
+  `uSep`, the `sep` field of `ShiftSet` discharged on the ultraproduct by contraposition plus a
+  globally chosen section; and `uShiftSet φ S`, which discharges **all seven** `ShiftSet` fields
+  from `S : ∀ i, ShiftSet (T i)` alone, with no hypotheses -- contrast the exploratory
+  `shiftSetOnUD`, which takes `carrier_nonempty`, `sep` and `A` as hypotheses
 - `IntTransfer`: carrier normalization for the discrete branch -- a generic transport of
   frames, `TaskModel`, `WorldHistory`, and `TruthAt` along any ordered-group isomorphism
   `e : D ≃+o E` (via the `HEq`-free `Aligned` relation rather than a history `Equiv`), composed
