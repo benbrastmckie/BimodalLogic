@@ -206,29 +206,29 @@ not 13, stop and reconcile against the report's Section 1 table rather than proc
 
 ---
 
-### Phase 2: Decidable.lean — 5 Class A binder deletions [NOT STARTED]
+### Phase 2: Decidable.lean — 5 Class A binder deletions [COMPLETED]
 
 **Goal**: Remove the redundant explicit `[Nontrivial D]` from all 5 declarations under the
 file-wide binder at `:136`, including the continuation-line site.
 
 **Tasks**:
-- [ ] Save a pristine copy to the scratchpad
-- [ ] Confirm the file-wide binder at `:136` still carries `[Nontrivial D]`
-- [ ] Confirm, by grep, that none of `exists_gt_self`, `exists_lt_self`,
+- [x] Save a pristine copy to the scratchpad
+- [x] Confirm the file-wide binder at `:136` still carries `[Nontrivial D]`
+- [x] Confirm, by grep, that none of `exists_gt_self`, `exists_lt_self`,
       `exists_gt_not_untl_disj`, `exists_lt_not_snce_disj`, `truthAt_sep` is referenced outside
       `Decidable.lean` (research found the group file-internal, `truthAt_sep` `private`, and the
       `:2168`/`:2178` uses in the order-independent named form `exists_gt_self (D := D) t`).
       If any external reference is found, raise the phase's tier to `interface` and enumerate the
       dependents before proceeding.
-- [ ] Working bottom-up, delete ` [Nontrivial D]`:
+- [x] Working bottom-up, delete ` [Nontrivial D]`:
       - `:2762` — the **continuation line** of the `:2761 truthAt_sep` declaration. It currently
         reads `    [DenselyOrdered D] [Nontrivial D]` and MUST be left as exactly
         `    [DenselyOrdered D]`. Do not delete the line.
       - `:2172 exists_lt_not_snce_disj`, `:2162 exists_gt_not_untl_disj`,
         `:2149 exists_lt_self`, `:2144 exists_gt_self` — binder on the declaration line
-- [ ] Review the diff: exactly 5 changed lines; confirm `:2762` retains `[DenselyOrdered D]`
-- [ ] Run `lake env lean` on the file and record counts
-- [ ] Commit on green
+- [x] Review the diff: exactly 5 changed lines; confirm `:2762` retains `[DenselyOrdered D]`
+- [x] Run `lake env lean` on the file and record counts
+- [x] Commit on green
 
 **Timing**: 0.3 hours
 
@@ -261,7 +261,7 @@ lines finds only 4 — the compiler diagnostic is the authority, not grep.
 
 ---
 
-### Phase 3: TruthLemma.lean — Class B ownership fix [NOT STARTED]
+### Phase 3: TruthLemma.lean — Class B ownership fix [IN PROGRESS]
 
 **Goal**: Collapse the `section Countermodel` duplication by deleting the `variable [Nontrivial D]`
 at `:351` and retargeting the `:348-350` comment to the surviving binder at `:346`, clearing all

@@ -2141,12 +2141,12 @@ description: negate the goal, and the resulting "`e` and `g` both hold everywher
 
 /-- A nontrivial ordered abelian group has no maximum. Consumed only to supply the probe time
 in `exists_gt_not_untl_disj`; see that lemma for why a probe is needed at all. -/
-theorem exists_gt_self [Nontrivial D] (t : D) : ∃ d : D, t < d := by
+theorem exists_gt_self (t : D) : ∃ d : D, t < d := by
   obtain ⟨c, hc⟩ := exists_ne (0 : D)
   exact ⟨t + |c|, lt_add_of_pos_right t (abs_pos.mpr hc)⟩
 
 /-- The past mirror: a nontrivial ordered abelian group has no minimum. -/
-theorem exists_lt_self [Nontrivial D] (t : D) : ∃ d : D, d < t := by
+theorem exists_lt_self (t : D) : ∃ d : D, d < t := by
   obtain ⟨c, hc⟩ := exists_ne (0 : D)
   exact ⟨t - |c|, sub_lt_self t (abs_pos.mpr hc)⟩
 
@@ -2159,7 +2159,7 @@ Note what this does **not** say: it gives a time of the prover's choosing, not o
 formula. That is the whole difference between the retired PASSIVE arm and the surviving ACTIVE
 one — the passive arm asserted the split at a time the *branch* named, `t'`, where it is false,
 since the guard failure `¬U(e,g)@t` licenses lies strictly inside `(t,t')`. -/
-theorem exists_gt_not_untl_disj [Nontrivial D] {M : TaskModel F}
+theorem exists_gt_not_untl_disj {M : TaskModel F}
     {τ : WorldHistory F} {t : D} {e g : Formula}
     (h : ¬ TruthAt M τ t (Formula.untl g e)) :
     ∃ d, t < d ∧ (¬ TruthAt M τ d e ∨ ¬ TruthAt M τ d g) := by
@@ -2169,7 +2169,7 @@ theorem exists_gt_not_untl_disj [Nontrivial D] {M : TaskModel F}
   exact h ⟨d₀, hd₀, (hcon d₀ hd₀).1, fun r hr1 _ => (hcon r hr1).2⟩
 
 /-- The past mirror of `exists_gt_not_untl_disj`. -/
-theorem exists_lt_not_snce_disj [Nontrivial D] {M : TaskModel F}
+theorem exists_lt_not_snce_disj {M : TaskModel F}
     {τ : WorldHistory F} {t : D} {e g : Formula}
     (h : ¬ TruthAt M τ t (Formula.snce g e)) :
     ∃ d, d < t ∧ (¬ TruthAt M τ d e ∨ ¬ TruthAt M τ d g) := by
@@ -2759,7 +2759,7 @@ the ψ-region just above `t`, dense in itself because no ψ-point above `t` begi
 and each `u` above `t` carries a ψ-free interval on one side, whose point of `Q` separates `S`
 below `u` from `S` above it. `sep_order` turns that into `False`. -/
 private theorem truthAt_sep {M : TaskModel F}
-    [DenselyOrdered D] [Nontrivial D]
+    [DenselyOrdered D]
     (h_lub : ∀ s : Set D, s.Nonempty → BddAbove s → ∃ x, IsLUB s x)
     {τ : WorldHistory F} {t : D} {ψ : Formula}
     (h_ant : TruthAt M τ t (Formula.and (Formula.kPlus ψ)
