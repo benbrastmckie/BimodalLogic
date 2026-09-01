@@ -1,0 +1,62 @@
+{
+  "status": "implemented",
+  "phases_completed": 4,
+  "phases_total": 4,
+  "modified_files": [
+    "FormalSystem/Metalogic/Algebraic/FlowFrame.lean",
+    "FormalSystem/Metalogic/Decidability/Verified/Decidable.lean",
+    "FormalSystem/Metalogic/Decidability/Verified/Bridge/TruthLemma.lean",
+    "specs/515_eliminate_overlapping_nontrivial_instance_warnings/plans/01_eliminate-overlapping-instance-binders.md",
+    "specs/515_eliminate_overlapping_nontrivial_instance_warnings/summaries/01_eliminate-overlapping-instance-binders-summary.md"
+  ],
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true,
+    "build_jobs": 2506,
+    "test_passed": true,
+    "overlapping_instances_before": 21,
+    "overlapping_instances_after": 0,
+    "unused_section_vars_before": 97,
+    "unused_section_vars_after": 83,
+    "total_warnings_before": 381,
+    "total_warnings_after": 346,
+    "errors": 0,
+    "new_warnings_comm13": 0,
+    "linter_suppressions": 0
+  },
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/515_eliminate_overlapping_nontrivial_instance_warnings/summaries/01_eliminate-overlapping-instance-binders-summary.md",
+      "summary": "Deleted 21 redundant [Nontrivial D] instance binders across three Metalogic files, driving the overlappingInstances warning count 21 -> 0 with no linter suppression and no new warning of any class."
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Eliminated all 21 linter.overlappingInstances warnings by deleting the redundant [Nontrivial D] binders: 13 declaration-line deletions in FlowFrame.lean, 5 in Decidable.lean (including the continuation-line site at :2762, where the sibling [DenselyOrdered D] was preserved), and one section-level variable line in TruthLemma.lean with its explanatory comment retargeted to the surviving :346 binder. Verified by a forced full lake build --no-share at exit 0 showing 'Build completed successfully (2506 jobs).', lake test at exit 0, and a set-theoretic comm -13 check over sorted warning text confirming no warning of any class was newly introduced; the paired unusedSectionVars count fell 97 -> 83 exactly as predicted. No linter was disabled and no sorry, admit, axiom, or native_decide was introduced.",
+    "roadmap_items": []
+  },
+  "commits": [
+    "2b9217336 task 515 phase 1: FlowFrame.lean — 13 Class A binder deletions",
+    "fc6a173e7 task 515 phase 2: Decidable.lean — 5 Class A binder deletions",
+    "9b776a655 task 515 phase 3: TruthLemma.lean — Class B ownership fix",
+    "9e20d18e9 task 515 phase 4: tree-wide acceptance"
+  ],
+  "metadata": {
+    "session_id": "sess_1788262971_5329aa",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
+    "compliance_check": "passed",
+    "deviations": [],
+    "cycles_used": 3,
+    "final_state": "completed",
+    "detected_defects": []
+  }
+}

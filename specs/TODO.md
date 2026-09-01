@@ -11,7 +11,7 @@ next_project_number: 516
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,193,257,298,433,461,476,481,493,495,504,506,507,515 | -- | automation, code-quality, dataset-enhancement, ... |
+| 1 | 127,128,193,257,298,433,461,476,481,493,495,504,506,507 | -- | automation, dataset-enhancement, decidability, ... |
 | 2 | 178,231,282,296,463,502,510,513 | 193,298,433,461,507 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 219,464,497,508 | 231,463,502,510 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 4 | 465,498,499,500,509 | 464,493,497,508 | algebraic-representation, decidability, metalogic |
@@ -41,10 +41,6 @@ next_project_number: 516
 ### Automation
 
 193 [NOT STARTED] — Apply validity-intro and truth-simp macros to the soundness layer
-
-### Code Quality
-
-515 [NOT STARTED] — Eliminate the 21 remaining "Overlapping instance parameters -- Th
 
 ### Dataset Enhancement
 
@@ -110,10 +106,13 @@ next_project_number: 516
 ## Tasks
 
 ### 515. Eliminate overlapping nontrivial instance warnings
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: code-quality
 - **Dependencies**: None
+- **Research**: [515_eliminate_overlapping_nontrivial_instance_warnings/reports/01_overlapping-nontrivial-instance-warnings.md]
+- **Plan**: [515_eliminate_overlapping_nontrivial_instance_warnings/plans/01_eliminate-overlapping-instance-binders.md]
+- **Summary**: [515_eliminate_overlapping_nontrivial_instance_warnings/summaries/01_eliminate-overlapping-instance-binders-summary.md]
 
 **Description**: Eliminate the 21 remaining "Overlapping instance parameters -- There are 2 [Nontrivial D] instances; one is sufficient" warnings across three Metalogic files. All 21 are the same linter class, but they split into two structurally DIFFERENT shapes and the second needs real judgment -- do not treat this as a uniform find-and-replace.
 

@@ -1,7 +1,7 @@
 # Implementation Plan: Eliminate the 21 overlapping `[Nontrivial D]` instance warnings
 
 - **Task**: 515 - Eliminate the 21 remaining "Overlapping instance parameters -- There are 2 [Nontrivial D] instances; one is sufficient" warnings across three Metalogic files
-- **Status**: COMPLETED
+- **Status**: [COMPLETED]
 - **Effort**: 2 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/515_eliminate_overlapping_nontrivial_instance_warnings/reports/01_overlapping-nontrivial-instance-warnings.md

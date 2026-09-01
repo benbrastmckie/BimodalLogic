@@ -3,6 +3,10 @@
 - **Task**: 515
 - **Plan**: `specs/515_eliminate_overlapping_nontrivial_instance_warnings/plans/01_eliminate-overlapping-instance-binders.md`
 - **Status**: COMPLETED — all 4 phases green
+- **Started**: TBD
+- **Completed**: TBD
+- **Artifacts**: TBD
+- **Standards**: TBD
 - **Type**: lean4
 
 ## What Changed
