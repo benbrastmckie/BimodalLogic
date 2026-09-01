@@ -292,7 +292,7 @@ additive phase cannot break a downstream module.
 
 ---
 
-### Phase 3: Redefine the ten per-class names as instantiations, and repair both friction points [NOT STARTED]
+### Phase 3: Redefine the ten per-class names as instantiations, and repair both friction points [IN PROGRESS]
 
 **Goal**: Turn the ten hand-written per-class definitions into instantiations of the Phase 2
 family, and land — in the same commit — the six call-site repairs that the two changed binder

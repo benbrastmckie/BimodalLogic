@@ -45,16 +45,17 @@ The construction, in outline:
 
 ## The capstone
 
-`compactBase` and `compactDense` are then immediate from the reductions
-`compactBase_of_modelExistence` and `compactDense_of_modelExistenceDense` in
-`FormalSystem/Metalogic/StrongCompleteness.lean`, and the two strong-completeness results follow
-from `strongCompletenessBase_of_compact` / `strongCompletenessDense_of_compact` by supplying the
-weak-completeness engines `completeness_base` and `completeness_dense` from that same module.
+`compactBase` and `compactDense` are then immediate from the single `FrameClass`-generic bridge
+`compact_of_modelExistence` in `FormalSystem/Metalogic/StrongCompleteness.lean`, and the two
+strong-completeness results follow from the single reduction `strongCompleteness_of_compact` by
+supplying the weak-completeness engines `completeness_base` and `completeness_dense` from that
+same module. Both were per-class duplicates before the `FrameClass`-indexing collapse; each is
+now one declaration, applied at two tags.
 
-Those two reductions remain **engine-generic**: the `engine` parameter is supplied at the call
-site here, not removed from the declaration. The reductions state, on their own, that
-compactness is the whole of the remaining gap between weak and strong completeness, and that
-statement is worth having independently of this module's instantiation of it.
+That reduction remains **engine-generic**: the `engine` parameter is supplied at the call site
+here, not removed from the declaration. It states, on its own, that compactness is the whole of
+the remaining gap between weak and strong completeness, and that statement is worth having
+independently of this module's instantiation of it.
 
 ## Status of the four `FrameClass` cases
 
@@ -81,8 +82,9 @@ satisfiability. `eventually_mem` puts each `ψ ∈ Γ` in eventually every index
 theorem modelExistenceBase : ModelExistenceBase := by
   classical
   intro Γ hfin
-  choose F M τ hτ t ht using fun (i : Idx Γ) => hfin i.val i.property
+  choose F _hF M τ hτ t ht using fun (i : Idx Γ) => hfin i.val i.property
   refine ⟨(uShiftSet (idxUF Γ) (fun i => ShiftSet.ofModel (F i) (M i))).frame,
+    trivial,
     (uShiftSet (idxUF Γ) (fun i => ShiftSet.ofModel (F i) (M i))).model,
     (uShiftSet (idxUF Γ) (fun i => ShiftSet.ofModel (F i) (M i))).hist
       (omk (fun i => (⟨τ i, hτ i⟩ : (F i).HF))),
@@ -98,11 +100,21 @@ theorem modelExistenceBase : ModelExistenceBase := by
 **Model existence for `FrameClass.Dense`.** As `modelExistenceBase`, with the density of the
 witness frame carried through the construction.
 
-`SatisfiableDenseSet` carries an extra `DenselyOrdered` binder per index, so `choose` extracts
-one more component. Reinstalling that family as an instance with `haveI` lets `inferInstance`
+`SatisfiableDenseSet` carries an extra frame-condition binder per index, so `choose` extracts
+one more component. Reinstalling that family as an instance with `haveI` lets instance synthesis
 find the ultraproduct's own `DenselyOrdered` instance; this installs a *new* instance family on
 the per-index durations rather than re-installing one already baked into a frame's type, which
 is why it is safe here.
+
+**Why the witness slot is type-ascribed.** Since `SatisfiableDenseSet` became
+`SatisfiableSet FrameClass.Dense`, that slot's type is `FrameClass.Sat .Dense F`, which unfolds
+to `TaskFrame.IsDense F` — a plain `def` whose head symbol is not `DenselyOrdered`. Instance
+synthesis reduces only at reducible transparency, so a **bare** `inferInstance` cannot see
+through it and fails with `type class instance expected`. Ascribing the expected type names
+`DenselyOrdered …` directly, synthesis succeeds there, and the result unifies with `Sat .Dense F`
+by ordinary definitional unfolding. This is the same invisibility already recorded on
+`SetSemanticConsequenceDense.of_forall` (`Metalogic/SetConsequence.lean`), and the reason the
+`SatisfiableSet.*_of_forall` adapters take their frame conditions as instance arguments.
 -/
 theorem modelExistenceDense : ModelExistenceDense := by
   classical
@@ -110,7 +122,8 @@ theorem modelExistenceDense : ModelExistenceDense := by
   choose F hd M τ hτ t ht using fun (i : Idx Γ) => hfin i.val i.property
   haveI : ∀ i, DenselyOrdered ((F i).Duration : Type) := hd
   refine ⟨(uShiftSet (idxUF Γ) (fun i => ShiftSet.ofModel (F i) (M i))).frame,
-    inferInstance,
+    (inferInstance : DenselyOrdered
+      (uShiftSet (idxUF Γ) (fun i => ShiftSet.ofModel (F i) (M i))).frame.Duration),
     (uShiftSet (idxUF Γ) (fun i => ShiftSet.ofModel (F i) (M i))).model,
     (uShiftSet (idxUF Γ) (fun i => ShiftSet.ofModel (F i) (M i))).hist
       (omk (fun i => (⟨τ i, hτ i⟩ : (F i).HF))),
@@ -122,31 +135,31 @@ theorem modelExistenceDense : ModelExistenceDense := by
   exact (ShiftSet.forward_repr _ _ _ ψ).mpr
     ((ShiftSet.reverse_repr (F i) (M i) ⟨τ i, hτ i⟩ (t i) ψ).mpr (ht i ψ hi))
 
-/-- **Compactness for `FrameClass.Base`**, from model existence via
-`compactBase_of_modelExistence`. -/
-theorem compactBase : CompactBase := compactBase_of_modelExistence modelExistenceBase
+/-- **Compactness for `FrameClass.Base`**, from model existence via the class-generic bridge
+`compact_of_modelExistence`. `ModelExistenceBase` *is* `ModelExistence .Base` and `CompactBase`
+*is* `Compact .Base`, definitionally, so the bridge applies with no transport. -/
+theorem compactBase : CompactBase := compact_of_modelExistence modelExistenceBase
 
-/-- **Compactness for `FrameClass.Dense`**, from model existence via
-`compactDense_of_modelExistenceDense`. -/
-theorem compactDense : CompactDense := compactDense_of_modelExistenceDense modelExistenceDense
+/-- **Compactness for `FrameClass.Dense`**, by the same route as `compactBase`. -/
+theorem compactDense : CompactDense := compact_of_modelExistence modelExistenceDense
 
 /--
 **Strong completeness for `FrameClass.Base`**, unconditionally: `Γ ⊨ φ → Γ ⊢ φ` for arbitrary
 `Γ : Set Formula`.
 
-Obtained from `strongCompletenessBase_of_compact` by supplying `compactBase` and the
-weak-completeness engine `completeness_base`. The reduction's `engine` parameter is instantiated
-here, not eliminated.
+Obtained from the class-generic reduction `strongCompleteness_of_compact` by supplying
+`compactBase` and the weak-completeness engine `completeness_base`. The reduction's `engine`
+parameter is instantiated here, not eliminated.
 -/
 theorem strongCompletenessBase : StrongCompletenessBase :=
-  strongCompletenessBase_of_compact compactBase completeness_base
+  strongCompleteness_of_compact compactBase completeness_base
 
 /--
 **Strong completeness for `FrameClass.Dense`**, unconditionally, by the same route as
 `strongCompletenessBase` with `compactDense` and `completeness_dense`.
 -/
 theorem strongCompletenessDense : StrongCompletenessDense :=
-  strongCompletenessDense_of_compact compactDense completeness_dense
+  strongCompleteness_of_compact compactDense completeness_dense
 
 /-! ### Axiom audit
 

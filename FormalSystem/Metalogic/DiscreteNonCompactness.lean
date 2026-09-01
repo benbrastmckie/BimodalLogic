@@ -194,9 +194,8 @@ theorem succ_iterate_zero_int (n : ℕ) : Order.succ^[n] (0:ℤ) = (n : ℤ) := 
 theorem archWitness_finitely_satisfiable (p : Atom) (L : List Formula)
     (hL : ∀ ψ ∈ L, ψ ∈ archWitness p) : SatisfiableDiscreteSet {ψ | ψ ∈ L} := by
   classical
-  refine ⟨FrameOver.natFrame (D := ℤ), inferInstance, inferInstance, inferInstance,
-    inferInstance, zModel,
-    zHistory ((L.map witIdx).sum : ℕ), zHistory_total _, 0, ?_⟩
+  refine SatisfiableSet.discrete_of_forall (FrameOver.natFrame (D := ℤ)) zModel
+    (zHistory ((L.map witIdx).sum : ℕ)) (zHistory_total _) 0 ?_
   set N : ℕ := (L.map witIdx).sum with hNdef
   intro ψ hψ
   have hmem := hL ψ hψ
@@ -227,7 +226,7 @@ theorem archWitness_finitely_satisfiable (p : Atom) (L : List Formula)
     the originals. Naming them and re-installing with `haveI` would drop the value and break
     definitional equality with the instances baked into `F`'s and `M`'s types. -/
 theorem archWitness_not_satisfiable (p : Atom) : ¬ SatisfiableDiscreteSet (archWitness p) := by
-  rintro ⟨F, _, _, _, _, M, τ, hτ, t, h⟩
+  rintro ⟨F, ⟨_, _, _, _⟩, M, τ, hτ, t, h⟩
   haveI : NoMaxOrder F.Duration := inferInstance
   have hF : TruthAt M τ t ((Formula.atom p).someFuture) := by
     apply h; simp [archWitness]
@@ -254,13 +253,12 @@ theorem discrete_consequence_not_compact : ¬ CompactDiscrete := by
   have hcons : SetSemanticConsequenceDiscrete (archWitness p) Formula.bot := by
     refine SetSemanticConsequenceDiscrete.of_forall ?_
     intro F _ _ _ _ M τ hτ t hall
-    exact absurd
-      ⟨F, inferInstance, inferInstance, inferInstance, inferInstance, M, τ, hτ, t, hall⟩
+    exact absurd (SatisfiableSet.discrete_of_forall F M τ hτ t hall)
       (archWitness_not_satisfiable p)
   obtain ⟨L, hL, hvalid⟩ := hc _ _ hcons
-  obtain ⟨F, _, _, _, _, M, τ, hτ, t, hsat⟩ :=
+  obtain ⟨F, ⟨_, _, _, _⟩, M, τ, hτ, t, hsat⟩ :=
     archWitness_finitely_satisfiable p L hL
-  have hv := hvalid.apply F M τ hτ t
+  have hv := ValidDiscrete.apply hvalid F M τ hτ t
   exact (truthAt_foldr_imp M τ t L Formula.bot).mp hv (fun ψ hψ => hsat ψ hψ)
 
 /-! ## Strong completeness for `FrameClass.Discrete` is refuted -/
@@ -284,11 +282,10 @@ theorem strongCompletenessDiscrete_refuted : ¬ StrongCompletenessDiscrete := by
   have hcons : SetSemanticConsequenceDiscrete (archWitness p) Formula.bot := by
     refine SetSemanticConsequenceDiscrete.of_forall ?_
     intro F _ _ _ _ M τ hτ t hall
-    exact absurd
-      ⟨F, inferInstance, inferInstance, inferInstance, inferInstance, M, τ, hτ, t, hall⟩
+    exact absurd (SatisfiableSet.discrete_of_forall F M τ hτ t hall)
       (archWitness_not_satisfiable p)
   obtain ⟨L, hL, ⟨d⟩⟩ := hsc _ _ hcons
-  obtain ⟨F, _, _, _, _, M, τ, hτ, t, hsat⟩ :=
+  obtain ⟨F, ⟨_, _, _, _⟩, M, τ, hτ, t, hsat⟩ :=
     archWitness_finitely_satisfiable p L hL
   exact soundness_discrete L Formula.bot d F M τ hτ t (fun ψ hψ => hsat ψ hψ)
 

@@ -435,27 +435,27 @@ as sharing a status.
     `SetSemanticConsequenceDense` and `FrameClass.Base` as the derivability target. Proved as
     `strongCompletenessBase` in `FormalSystem/Metalogic/Compactness.lean`; not proved here,
     which supplies vocabulary only. -/
-def StrongCompletenessBase : Prop :=
-  ∀ (Γ : Set Formula) (φ : Formula),
-    SetSemanticConsequenceBase Γ φ → SetDerivable FrameClass.Base Γ φ
+def StrongCompletenessBase : Prop := StrongCompleteness FrameClass.Base
 
 /-- Semantic compactness of the Base consequence relation, stated in the form the completeness
     derivation actually consumes: a set-consequence yields a *finite* premise list whose
     `foldr`-implication into the conclusion is valid. This is the whole of what
     `strongCompletenessBase_of_compact` needs beyond its engine; it is supplied by `compactBase`
     in `FormalSystem/Metalogic/Compactness.lean`. -/
-def CompactBase : Prop :=
-  ∀ (Γ : Set Formula) (φ : Formula), SetSemanticConsequenceBase Γ φ →
-    ∃ L : List Formula, (∀ ψ ∈ L, ψ ∈ Γ) ∧ valid (L.foldr Formula.imp φ)
+def CompactBase : Prop := Compact FrameClass.Base
 
-/-- Satisfiability of a possibly-infinite set over arbitrary carriers. This is
-    `FormulaSatisfiable` (`Validity.lean:190`) at `valid`'s binder list, with the conclusion
-    generalised from a single formula to `∀ ψ ∈ Γ`; equivalently `SatisfiableDenseSet` with the
-    `DenselyOrdered` binder dropped. -/
-def SatisfiableBaseSet (Γ : Set Formula) : Prop :=
-  ∃ (F : TaskFrame) (M : TaskModel F)
-    (τ : WorldHistory F) (_ : τ.IsTotal) (t : F.Duration),
-    ∀ ψ ∈ Γ, TruthAt M τ t ψ
+/-- Satisfiability of a possibly-infinite set over arbitrary carriers — `SatisfiableSet` at
+    `FrameClass.Base`. This is `FormulaSatisfiable` (`Validity.lean`) at `valid`'s binder list,
+    with the conclusion generalised from a single formula to `∀ ψ ∈ Γ`; equivalently
+    `SatisfiableDenseSet` with the `DenselyOrdered` binder dropped.
+
+    **One binder slot was absorbed by the collapse.** `SatisfiableSet` carries the frame
+    condition as an anonymous `fc.Sat F` binder, and `Sat .Base` is `True`, so this predicate
+    has one existential component more than its pre-collapse form did — a `∃ _ : True`. The two
+    forms are propositionally equivalent but not definitionally equal. An introduction site that
+    used to write `⟨F, M, τ, hτ, t, h⟩` should call `SatisfiableSet.base_of_forall`, which
+    discharges the slot with `trivial`; an elimination site adds one `_` to its pattern. -/
+def SatisfiableBaseSet (Γ : Set Formula) : Prop := SatisfiableSet FrameClass.Base Γ
 
 /-- The model-existence form, which is what an ultraproduct construction proves directly:
     finite satisfiability of every finite sublist lifts to satisfiability of the whole set.
@@ -467,10 +467,7 @@ def SatisfiableBaseSet (Γ : Set Formula) : Prop :=
     `ModelExistenceBase` itself is proved as `modelExistenceBase` in
     `FormalSystem/Metalogic/Compactness.lean`, by the ultraproduct construction this docstring
     anticipates. -/
-def ModelExistenceBase : Prop :=
-  ∀ Γ : Set Formula,
-    (∀ L : List Formula, (∀ ψ ∈ L, ψ ∈ Γ) → SatisfiableBaseSet {ψ | ψ ∈ L}) →
-    SatisfiableBaseSet Γ
+def ModelExistenceBase : Prop := ModelExistence FrameClass.Base
 
 /-! ## Strong completeness, compactness and model existence for `FrameClass.Dense`
 
@@ -486,25 +483,18 @@ collects the result.
     `FrameClass` (`ProofSystem/Axioms.lean:519`) has constructors `Base | Dense | Discrete |
     Dedekind`; there is no `.DedekindDense` constructor, and `FrameClass.Dense` is the correct
     target for the `SetSemanticConsequenceDense` relation. -/
-def StrongCompletenessDense : Prop :=
-  ∀ (Γ : Set Formula) (φ : Formula),
-    SetSemanticConsequenceDense Γ φ → SetDerivable FrameClass.Dense Γ φ
+def StrongCompletenessDense : Prop := StrongCompleteness FrameClass.Dense
 
 /-- Semantic compactness of the Dense consequence relation, stated in the form the
     completeness derivation actually consumes: a set-consequence yields a *finite* premise list
     whose `foldr`-implication into the conclusion is Dense-valid. -/
-def CompactDense : Prop :=
-  ∀ (Γ : Set Formula) (φ : Formula), SetSemanticConsequenceDense Γ φ →
-    ∃ L : List Formula, (∀ ψ ∈ L, ψ ∈ Γ) ∧ ValidDense (L.foldr Formula.imp φ)
+def CompactDense : Prop := Compact FrameClass.Dense
 
 /-- Satisfiability of a possibly-infinite set over dense carriers. This is
     `FormulaSatisfiable` (`Validity.lean:190`) with `(_ : DenselyOrdered D)` inserted in
     `ValidDense`'s binder position and the conclusion generalised from a single formula to
     `∀ ψ ∈ Γ`. -/
-def SatisfiableDenseSet (Γ : Set Formula) : Prop :=
-  ∃ (F : TaskFrame) (_ : DenselyOrdered F.Duration) (M : TaskModel F)
-    (τ : WorldHistory F) (_ : τ.IsTotal) (t : F.Duration),
-    ∀ ψ ∈ Γ, TruthAt M τ t ψ
+def SatisfiableDenseSet (Γ : Set Formula) : Prop := SatisfiableSet FrameClass.Dense Γ
 
 /-- The model-existence form, which is what an ultraproduct construction proves directly:
     finite satisfiability of every finite sublist lifts to satisfiability of the whole set.
@@ -515,10 +505,7 @@ def SatisfiableDenseSet (Γ : Set Formula) : Prop :=
     `ModelExistenceDense` itself is proved as `modelExistenceDense` in
     `FormalSystem/Metalogic/Compactness.lean`, by the ultraproduct construction this docstring
     anticipates. -/
-def ModelExistenceDense : Prop :=
-  ∀ Γ : Set Formula,
-    (∀ L : List Formula, (∀ ψ ∈ L, ψ ∈ Γ) → SatisfiableDenseSet {ψ | ψ ∈ L}) →
-    SatisfiableDenseSet Γ
+def ModelExistenceDense : Prop := ModelExistence FrameClass.Dense
 
 /-! ## Strong completeness, satisfiability and compactness for `FrameClass.Discrete`
 
@@ -540,34 +527,33 @@ in scope via `SetSemanticConsequenceDiscrete` above.
 
     **This statement is false.** See `strongCompletenessDiscrete_refuted`. It is stated here so
     that the refutation has something to name; it is not a reserved obligation. -/
-def StrongCompletenessDiscrete : Prop :=
-  ∀ (Γ : Set Formula) (φ : Formula),
-    SetSemanticConsequenceDiscrete Γ φ → SetDerivable FrameClass.Discrete Γ φ
+def StrongCompletenessDiscrete : Prop := StrongCompleteness FrameClass.Discrete
 
-/-- Satisfiability of a possibly-infinite set over discrete carriers. This is
-    `FormulaSatisfiable` (`Validity.lean:190`) with `ValidDiscrete`'s binder list
-    (`Validity.lean:243`) — `SuccOrder`, `PredOrder`, `IsSuccArchimedean`, `IsPredArchimedean`
-    — in place of `ValidDense`'s `DenselyOrdered`, and the conclusion generalised from a single
-    formula to `∀ ψ ∈ Γ`.
+/-- Satisfiability of a possibly-infinite set over discrete carriers — `SatisfiableSet` at
+    `FrameClass.Discrete`. This is `FormulaSatisfiable` (`Validity.lean`) with `ValidDiscrete`'s
+    binder list — `SuccOrder`, `PredOrder`, `IsSuccArchimedean`, `IsPredArchimedean` — in place
+    of `ValidDense`'s `DenselyOrdered`, and the conclusion generalised from a single formula to
+    `∀ ψ ∈ Γ`.
 
-    The five extra class binders are written as **anonymous** existential binders. When this
-    existential is destructured, use bare `_` names for them and let instance synthesis recover
-    them: naming them and re-installing with `haveI` drops the value and breaks definitional
-    equality with the instances baked into `F`'s and `M`'s types. -/
-def SatisfiableDiscreteSet (Γ : Set Formula) : Prop :=
-  ∃ (F : TaskFrame) (_ : SuccOrder F.Duration) (_ : PredOrder F.Duration)
-    (_ : IsSuccArchimedean F.Duration) (_ : IsPredArchimedean F.Duration)
-    (M : TaskModel F)
-    (τ : WorldHistory F) (_ : τ.IsTotal) (t : F.Duration),
-    ∀ ψ ∈ Γ, TruthAt M τ t ψ
+    **The four class binders re-nested under the collapse.** `Sat .Discrete` is
+    `TaskFrame.IsSuccArchDiscrete` (`Semantics/FrameProperty.lean`), a plain `def` wrapping
+    `∃ (_ : SuccOrder D) (_ : PredOrder D), _ ∧ _`, and the anonymous constructor does not unfold
+    it. So the flat ten-component tuple this predicate used to accept no longer elaborates: an
+    introduction site should call `SatisfiableSet.discrete_of_forall`, which takes the four
+    witnesses flat as instance arguments, and an elimination pattern needs exactly one nesting
+    pair, `⟨F, ⟨_, _, _, _⟩, M, τ, hτ, t, h⟩`.
+
+    Inside that nesting the four binders stay **anonymous**. When this existential is
+    destructured, use bare `_` names and let instance synthesis recover them: naming them and
+    re-installing with `haveI` drops the value and breaks definitional equality with the
+    instances baked into `F`'s and `M`'s types. -/
+def SatisfiableDiscreteSet (Γ : Set Formula) : Prop := SatisfiableSet FrameClass.Discrete Γ
 
 /-- Semantic compactness of the Discrete consequence relation, in the same shape as
     `CompactDense`: a set-consequence yields a *finite* premise list whose `foldr`-implication
     into the conclusion is Discrete-valid.
 
     **This statement is false.** See `discrete_consequence_not_compact`. -/
-def CompactDiscrete : Prop :=
-  ∀ (Γ : Set Formula) (φ : Formula), SetSemanticConsequenceDiscrete Γ φ →
-    ∃ L : List Formula, (∀ ψ ∈ L, ψ ∈ Γ) ∧ ValidDiscrete (L.foldr Formula.imp φ)
+def CompactDiscrete : Prop := Compact FrameClass.Discrete
 
 end FormalSystem.Metalogic

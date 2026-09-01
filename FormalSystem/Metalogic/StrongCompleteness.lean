@@ -305,32 +305,41 @@ theorem derivable_foldr_imp_iff {fc : FrameClass} (Γ : Context) (φ : Formula) 
 /-! ## Strong completeness for `FrameClass.Base` and `FrameClass.Dense`, modulo compactness -/
 
 /--
-**Strong completeness = compactness + weak completeness, at the base class.** The Base mirror of
-`strongCompletenessDense_of_compact` below, with `CompactBase` / `StrongCompletenessBase` /
-`valid` in place of their Dense counterparts and the `[DenselyOrdered D]` binder dropped. No new
-proof-theoretic machinery: compactness supplies a finite premise list and
-`derivable_foldr_imp_iff` turns the engine's empty-context derivation of the
+**Strong completeness = compactness + weak completeness**, at any frame class. No new
+proof-theoretic machinery, no `Γ`-relative Lindenbaum, no widened subformula root: the
+countermodel engine is used unchanged, as a single-formula engine, exactly as the engine contract
+above specifies. Compactness supplies a finite premise list; `derivable_foldr_imp_iff` — already
+proved, and already generic in `fc` — turns the engine's empty-context derivation of the
 `foldr`-implication back into a derivation from that list.
 
-Like its Dense sibling this theorem lives here rather than in
-`FormalSystem/Metalogic/SetConsequence.lean`, which supplies the vocabulary it is stated
-against, because `derivable_foldr_imp_iff` is owned by this module and this module imports that
-one. Stating it there would be an import cycle.
+Before the `FrameClass`-indexing collapse this was two byte-identical proofs, one at `.Base` and
+one at `.Dense`. Both are recovered by instantiation with no transport: `Compact .Base` *is*
+`CompactBase` and `StrongCompleteness .Base` *is* `StrongCompletenessBase`, definitionally
+(`Metalogic/SetConsequence.lean`), and likewise at `.Dense` and `.Discrete`.
+
+This theorem lives here rather than in `FormalSystem/Metalogic/SetConsequence.lean`, which
+supplies the `Compact` and `StrongCompleteness` vocabulary it is stated against, because
+`derivable_foldr_imp_iff` is owned by this module and this module imports that one. Stating it
+there would be an import cycle.
 
 **The `engine` hypothesis is live, deliberately.** `BXCanonical.completeness`
-(`BXCanonical/Completeness.lean:196`) has exactly this shape,
-`valid φ → Derivable FrameClass.Base [] φ`, and is sorry-free, so this hypothesis is
-dischargeable. It is nevertheless not discharged *here*: keeping the statement engine-generic
-records in the type that compactness is the whole of the gap between weak and strong
-completeness at this class. The engine is supplied at the call site, in
-`Metalogic/Compactness.lean`, where `strongCompletenessBase` instantiates this reduction with
-`compactBase` and `completeness_base`. The unconditional finite-context result is
-`consequence_completeness_base` below.
+(`BXCanonical/Completeness.lean`) has exactly the `.Base` shape,
+`valid φ → Derivable FrameClass.Base [] φ`, and `BXCanonical.completeness_dense` the `.Dense`
+one; both are sorry-free, so the hypothesis is dischargeable at either class. It is nevertheless
+not discharged *here*: keeping the statement engine-generic records in the type that compactness
+is the whole of the gap between weak and strong completeness. The engines are supplied at the
+call sites, in `Metalogic/Compactness.lean`, where `strongCompletenessBase` and
+`strongCompletenessDense` instantiate this reduction with `compactBase`/`completeness_base` and
+`compactDense`/`completeness_dense`. The unconditional finite-context results are
+`consequence_completeness_base` and `consequence_completeness_dense` below.
 
-**Status of `CompactBase`, and why the route is what it is.** `CompactBase` is **proved**, by
-`compactBase` in `Metalogic/Compactness.lean`, through an ultraproduct construction:
-an ultraproduct carrier, a Łoś lemma for `TruthAt`, and `ModelExistenceBase`, from which
-`compactBase_of_modelExistence` below derives `CompactBase`.
+**Status of the antecedent, per class, and why the route is what it is.** `CompactBase` and
+`CompactDense` are **proved**, by `compactBase` and `compactDense` in
+`Metalogic/Compactness.lean`, through an ultraproduct construction: an ultraproduct carrier, a
+Łoś lemma for `TruthAt`, and the model-existence statements, from which `compact_of_modelExistence`
+below derives compactness. `Compact .Discrete` is instead **refuted**
+(`Metalogic/DiscreteNonCompactness.lean`), so at that class this reduction is a live implication
+with a dead antecedent. The three statuses must not be collapsed into one.
 
 That the route runs through an ultraproduct rather than through this file's own machinery is
 forced, not incidental. The `BXCanonical` chronicle machinery **structurally cannot** be
@@ -344,37 +353,9 @@ infinite `Γ` needs coherence over `⋃_{ψ ∈ Γ} subformulaClosure ψ`, which
 has no single `root` to be relative to. That is why the ultraproduct route abandons the
 chronicle rather than extending it.
 -/
-theorem strongCompletenessBase_of_compact (hc : CompactBase)
-    (engine : ∀ ψ : Formula, valid ψ → Derivable FrameClass.Base [] ψ) :
-    StrongCompletenessBase := by
-  intro Γ φ h
-  obtain ⟨L, hL, hvalid⟩ := hc Γ φ h
-  exact ⟨L, hL, (derivable_foldr_imp_iff L φ).mpr (engine _ hvalid)⟩
-
-/--
-**Strong completeness = compactness + weak completeness.** No new proof-theoretic machinery, no
-`Γ`-relative Lindenbaum, no widened subformula root: the countermodel engine is used unchanged,
-as a single-formula engine, exactly as the engine contract above specifies. Compactness supplies
-a finite premise list; `derivable_foldr_imp_iff` — already proved, and already generic in `fc` —
-turns the engine's empty-context derivation of the `foldr`-implication back into a derivation
-from that list.
-
-This theorem lives here rather than in `FormalSystem/Metalogic/SetConsequence.lean`, which
-supplies the `CompactDense` and `StrongCompletenessDense` vocabulary it is stated against,
-because `derivable_foldr_imp_iff` is owned by this module and this module imports that one.
-Stating it there would be an import cycle.
-
-**The `engine` hypothesis is live.** `BXCanonical.completeness_dense`
-(`BXCanonical/Completeness.lean:256`) has exactly this shape,
-`ValidDense φ → Derivable FrameClass.Dense [] φ`. It is deliberately *not* consumed here: this
-statement is kept engine-generic, recording in the type that compactness is the whole of the gap
-between weak and strong completeness at this class. The engine is supplied at the call site, in
-`Metalogic/Compactness.lean`, where `strongCompletenessDense` instantiates this
-reduction with `compactDense` and `completeness_dense`.
--/
-theorem strongCompletenessDense_of_compact (hc : CompactDense)
-    (engine : ∀ ψ : Formula, ValidDense ψ → Derivable FrameClass.Dense [] ψ) :
-    StrongCompletenessDense := by
+theorem strongCompleteness_of_compact {fc : FrameClass} (hc : Compact fc)
+    (engine : ∀ ψ : Formula, ValidIn fc ψ → Derivable fc [] ψ) :
+    StrongCompleteness fc := by
   intro Γ φ h
   obtain ⟨L, hL, hvalid⟩ := hc Γ φ h
   exact ⟨L, hL, (derivable_foldr_imp_iff L φ).mpr (engine _ hvalid)⟩
@@ -382,110 +363,71 @@ theorem strongCompletenessDense_of_compact (hc : CompactDense)
 /-! ### Model existence implies compactness -/
 
 /--
-**Model existence implies compactness, at the base class.**
+**Model existence implies compactness**, at any frame class.
 
-The contraposition. Suppose `SetSemanticConsequenceBase Γ φ` but no finite `L ⊆ Γ` has
-`valid (L.foldr Formula.imp φ)`. Then every finite sublist of `insert φ.neg Γ` is satisfiable:
-filtering such a sublist down to its `Γ`-part feeds the contradiction hypothesis, and
-`truthAt_foldr_imp` above turns the resulting failure of validity into the conjunction of
-"every filtered premise is true here" and "`φ` is false here" — which together satisfy the whole
-sublist, since a member outside `Γ` can only be `φ.neg`. Model existence then supplies one
-configuration satisfying all of `Γ` *and* `φ.neg`, while the consequence hypothesis forces `φ`
-true there. Contradiction.
+The contraposition. Suppose `SetSemanticConsequenceOn fc Γ φ` but no finite `L ⊆ Γ` has
+`ValidIn fc (L.foldr Formula.imp φ)`. Then every finite sublist of `insert φ.neg Γ` is
+satisfiable over `fc`: filtering such a sublist down to its `Γ`-part feeds the contradiction
+hypothesis, and `truthAt_foldr_imp` above turns the resulting failure of validity into the
+conjunction of "every filtered premise is true here" and "`φ` is false here" — which together
+satisfy the whole sublist, since a member outside `Γ` can only be `φ.neg`. Model existence then
+supplies one configuration satisfying all of `Γ` *and* `φ.neg`, while the consequence hypothesis
+forces `φ` true there. Contradiction.
 
-Two mechanics worth recording. `Formula.neg φ` is `φ.imp ⊥` (`Syntax/Formula.lean`) and
+Three mechanics worth recording. `Formula.neg φ` is `φ.imp ⊥` (`Syntax/Formula.lean`) and
 `TruthAt M τ t ⊥` is `False` (`Semantics/Truth.lean`), so `TruthAt M τ t φ.neg` is
 *definitionally* `TruthAt M τ t φ → False`; no `truthAt_neg` lemma is needed or exists. And
 `Γ : Set Formula` carries no decidability, so `classical` is what makes the `List.filter` step
-available.
+available. Finally, the frame condition `hF : fc.Sat F` travels as an ordinary term: it is
+carried out of the failed validity by `ValidIn.of_not` (`Semantics/Validity.lean`), threaded back
+into the `SatisfiableSet` witness, and applied to `hcons` **directly, with no `.apply`
+adapter** — because `SetSemanticConsequenceOn fc` exposes `fc.Sat F` as an explicit argument.
+Each of the two hand-written bridges this replaces needed its own class-specific adapter at that
+step.
 
-Like the two strong-completeness reductions above, this theorem lives here rather than in
-`FormalSystem/Metalogic/SetConsequence.lean`, which supplies the `ModelExistenceBase` and
-`CompactBase` vocabulary it is stated against, because `truthAt_foldr_imp` is owned by this
-module and this module imports that one. Stating it there would be an import cycle.
+Before the collapse this was two proofs identical apart from the class tag. Both are recovered by
+instantiation, since `ModelExistenceBase` *is* `ModelExistence .Base` and `CompactBase` *is*
+`Compact .Base` by definition, and likewise at `.Dense`.
 
-**A reduction, not a terminus.** `ModelExistenceBase` is a hypothesis here, discharged
-elsewhere: `modelExistenceBase` (`Metalogic/Compactness.lean`) proves it by an
-ultraproduct construction, and `compactBase` in that same module is this theorem applied to it.
-What this theorem establishes on its own is that `CompactBase` is no *harder* than model
-existence — which is what concentrated the Base strong-completeness route into a single
-construction.
+Like the strong-completeness reduction above, this theorem lives here rather than in
+`FormalSystem/Metalogic/SetConsequence.lean`, which supplies the `ModelExistence` and `Compact`
+vocabulary it is stated against, because `truthAt_foldr_imp` is owned by this module and this
+module imports that one. Stating it there would be an import cycle.
+
+**A reduction, not a terminus.** `ModelExistence fc` is a hypothesis here, discharged elsewhere:
+`modelExistenceBase` and `modelExistenceDense` (`Metalogic/Compactness.lean`) prove it at `.Base`
+and `.Dense` by an ultraproduct construction, and `compactBase` / `compactDense` in that same
+module are this theorem applied to them. What this theorem establishes on its own is that
+compactness is no *harder* than model existence — which is what concentrated the Base and Dense
+strong-completeness routes into a single construction.
 -/
-theorem compactBase_of_modelExistence (h : ModelExistenceBase) : CompactBase := by
+theorem compact_of_modelExistence {fc : FrameClass} (h : ModelExistence fc) : Compact fc := by
   classical
   intro Γ φ hcons
   by_contra hno
   push Not at hno
   have hfin : ∀ L : List Formula, (∀ ψ ∈ L, ψ ∈ insert φ.neg Γ) →
-      SatisfiableBaseSet {ψ | ψ ∈ L} := by
+      SatisfiableSet fc {ψ | ψ ∈ L} := by
     intro L hL
     have hsub : ∀ ψ ∈ L.filter (fun ψ => decide (ψ ∈ Γ)), ψ ∈ Γ := by
       intro ψ hψ
       exact of_decide_eq_true (List.mem_filter.mp hψ).2
-    have hnv := hno _ hsub
-    have hnv' := valid.of_not hnv
-    push Not at hnv'
-    obtain ⟨F, M, τ, hτ, t, hfalse⟩ := hnv'
-    rw [truthAt_foldr_imp] at hfalse
-    push Not at hfalse
-    obtain ⟨hall, hnφ⟩ := hfalse
-    refine ⟨F, M, τ, hτ, t, ?_⟩
-    intro ψ hψ
-    by_cases hg : ψ ∈ Γ
-    · exact hall ψ (List.mem_filter.mpr ⟨hψ, decide_eq_true hg⟩)
-    · rcases hL ψ hψ with rfl | hmem
-      · exact fun hp => hnφ hp
-      · exact absurd hmem hg
-  obtain ⟨F, M, τ, hτ, t, hsat⟩ := h _ hfin
-  exact hsat φ.neg (Set.mem_insert _ _)
-    (hcons.apply F M τ hτ t (fun ψ hψ => hsat ψ (Set.mem_insert_of_mem _ hψ)))
-
-/--
-**Model existence implies compactness, at the dense class.** The Dense mirror of
-`compactBase_of_modelExistence` above, with `ModelExistenceDense` / `CompactDense` /
-`SatisfiableDenseSet` / `ValidDense` in place of their Base counterparts and the
-`[DenselyOrdered D]` binder carried through every configuration tuple. The argument is
-unchanged: contrapose, extend the premise set by `φ.neg`, filter each finite sublist down to its
-`Γ`-part, and use `truthAt_foldr_imp` to read the failure of validity as premise-satisfaction
-together with conclusion-failure.
-
-It lives here rather than in `FormalSystem/Metalogic/SetConsequence.lean` for the same
-import-cycle reason recorded on its Base sibling: `truthAt_foldr_imp` is owned by this module,
-and this module imports the one supplying the vocabulary.
-
-**A reduction, not a terminus.** `ModelExistenceDense` is a hypothesis here; this theorem only
-relocates the obligation onto it. It is discharged by `modelExistenceDense`
-(`Metalogic/Compactness.lean`), and `compactDense` in that same module is this
-theorem applied to it — which is what `strongCompletenessDense_of_compact` needs beyond its
-engine.
--/
-theorem compactDense_of_modelExistenceDense (h : ModelExistenceDense) : CompactDense := by
-  classical
-  intro Γ φ hcons
-  by_contra hno
-  push Not at hno
-  have hfin : ∀ L : List Formula, (∀ ψ ∈ L, ψ ∈ insert φ.neg Γ) →
-      SatisfiableDenseSet {ψ | ψ ∈ L} := by
-    intro L hL
-    have hsub : ∀ ψ ∈ L.filter (fun ψ => decide (ψ ∈ Γ)), ψ ∈ Γ := by
-      intro ψ hψ
-      exact of_decide_eq_true (List.mem_filter.mp hψ).2
-    have hnv := ValidDense.of_not (hno _ hsub)
+    have hnv := ValidIn.of_not (hno _ hsub)
     push Not at hnv
-    obtain ⟨F, _, M, τ, hτ, t, hfalse⟩ := hnv
+    obtain ⟨F, hF, M, τ, hτ, t, hfalse⟩ := hnv
     rw [truthAt_foldr_imp] at hfalse
     push Not at hfalse
     obtain ⟨hall, hnφ⟩ := hfalse
-    refine ⟨F, inferInstance, M, τ, hτ, t, ?_⟩
+    refine ⟨F, hF, M, τ, hτ, t, ?_⟩
     intro ψ hψ
     by_cases hg : ψ ∈ Γ
     · exact hall ψ (List.mem_filter.mpr ⟨hψ, decide_eq_true hg⟩)
     · rcases hL ψ hψ with rfl | hmem
       · exact fun hp => hnφ hp
       · exact absurd hmem hg
-  obtain ⟨F, _, M, τ, hτ, t, hsat⟩ := h _ hfin
+  obtain ⟨F, hF, M, τ, hτ, t, hsat⟩ := h _ hfin
   exact hsat φ.neg (Set.mem_insert _ _)
-    (hcons.apply F M τ hτ t (fun ψ hψ => hsat ψ (Set.mem_insert_of_mem _ hψ)))
+    (hcons F hF M τ hτ t (fun ψ hψ => hsat ψ (Set.mem_insert_of_mem _ hψ)))
 
 /-! ## Consequence completeness for `FrameClass.Dedekind` -/
 
@@ -1010,14 +952,15 @@ reuses `SemanticConsequence` rather than introducing a relation of its own, and 
 Dense and Discrete — are discharged with no `sorryAx` and no new axiom: exactly `propext`,
 `Classical.choice` and `Quot.sound`, the same set carried by the Dedekind terminus audited
 earlier in this file and by the three `BXCanonical` engines they consume.
-`strongCompletenessBase_of_compact` is audited alongside them; it is a reduction rather than a
-terminus, since it takes `CompactBase` as a hypothesis rather than proving it.
+`strongCompleteness_of_compact` is audited alongside them; it is a reduction rather than a
+terminus, since it takes `Compact fc` as a hypothesis rather than proving it. Before the
+`FrameClass`-indexing collapse there were two such reductions here, one per class; there is now
+one, generic in `fc`.
 
-`compactBase_of_modelExistence` and `compactDense_of_modelExistenceDense` are audited on the
-same footing and are counted separately from the fourteen above: each is likewise a reduction
-rather than a terminus, taking `ModelExistenceBase` / `ModelExistenceDense` as a hypothesis. The
-termini these three reduce to are audited where they are proved, in
-`Metalogic/Compactness.lean`. -/
+`compact_of_modelExistence` is audited on the same footing and is counted separately from the
+fourteen above: it is likewise a reduction rather than a terminus, taking `ModelExistence fc` as
+a hypothesis. It too replaces what were two per-class bridges. The termini these two reductions
+reduce to are audited where they are proved, in `Metalogic/Compactness.lean`. -/
 
 /-! ## Soundness at the `Set Formula` consequence layer
 
@@ -1044,9 +987,8 @@ theorem soundness_setConsequence {fc : FrameClass} (Γ : Set Formula) (φ : Form
 
 #print axioms soundness_setConsequence
 
-#print axioms strongCompletenessBase_of_compact
-#print axioms compactBase_of_modelExistence
-#print axioms compactDense_of_modelExistenceDense
+#print axioms strongCompleteness_of_compact
+#print axioms compact_of_modelExistence
 #print axioms consequence_completeness_base
 #print axioms completeness_base
 #print axioms soundness_base_consequence
