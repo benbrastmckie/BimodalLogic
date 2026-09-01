@@ -121,7 +121,7 @@ namespace FormalSystem.Semantics
 
 namespace PartialHistory
 
-open ParamTaskFrame
+open ParamTaskFrame TaskFrame
 
 /-! ## From totality to `WorldHistory` -/
 

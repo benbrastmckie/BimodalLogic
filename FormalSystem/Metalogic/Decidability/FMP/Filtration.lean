@@ -298,7 +298,7 @@ elaborates at a dense duration type, and nothing outside `FMP/` refers to any of
 noncomputable def RefinedFilteredTaskFrame [SuccOrder D] [NoMaxOrder D]
     (phi : Formula) : ParamTaskFrame D where
   WorldState := FilteredWorld phi
-  nonempty := filteredWorld_nonempty phi
+  worldNonempty := filteredWorld_nonempty phi
   TaskRel := refinedFilteredTaskRel D phi
   nullity_identity := by
     intro w u
@@ -309,7 +309,7 @@ noncomputable def RefinedFilteredTaskFrame [SuccOrder D] [NoMaxOrder D]
       exact h
     · intro h
       simp [h]
-  comp := ParamTaskFrame.comp_of
+  comp := TaskFrame.comp_of
     (ParamTaskFrame.interpolates_of_permissive fun w d u => by
       by_cases hd : d = 0 <;> simp [refinedFilteredTaskRel, hd])
     (by
@@ -379,14 +379,14 @@ theorem RefinedFilteredTaskFrame_rel_iff [SuccOrder D] [NoMaxOrder D] (phi : For
 /-- *Seriality* (`def:frame#Seriality`, verbatim: "$w \Rightarrow_x u$ and $v \Rightarrow_x w$
 for some $u, v \in W$") for the refined filtered frame, via the `w = u` disjunct. -/
 theorem RefinedFilteredTaskFrame_serial [SuccOrder D] [NoMaxOrder D] (phi : Formula) :
-    ParamTaskFrame.Serial (RefinedFilteredTaskFrame D phi).TaskRel :=
+    TaskFrame.Serial (RefinedFilteredTaskFrame D phi).TaskRel :=
   ParamTaskFrame.serial_of_permissive (RefinedFilteredTaskFrame_rel_iff D phi)
 
 /-- The interpolation half of *Compositionality* (`def:frame#Compositionality`, verbatim:
 "$w \Rightarrow_{x + y} v$ if and only if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some
 $u \in W$") for the refined filtered frame. -/
 theorem RefinedFilteredTaskFrame_interpolates [SuccOrder D] [NoMaxOrder D] (phi : Formula) :
-    ParamTaskFrame.Interpolates (RefinedFilteredTaskFrame D phi).TaskRel :=
+    TaskFrame.Interpolates (RefinedFilteredTaskFrame D phi).TaskRel :=
   ParamTaskFrame.interpolates_of_permissive (RefinedFilteredTaskFrame_rel_iff D phi)
 
 /-- *Limit* (`def:frame#Limit`, verbatim: "$\bigcap\limits_{x > 0} (w)_x = \set{w}$") for the
@@ -403,7 +403,7 @@ filtered frame: every nonempty fiber and segment is the whole carrier (above dur
 singleton (at zero), and a directed family cannot contain two distinct singletons. Unlike
 *Limit*, this needs no restriction on `D`. -/
 theorem RefinedFilteredTaskFrame_spherical [SuccOrder D] [NoMaxOrder D] (phi : Formula) :
-    ParamTaskFrame.Spherical (RefinedFilteredTaskFrame D phi).TaskRel :=
+    TaskFrame.Spherical (RefinedFilteredTaskFrame D phi).TaskRel :=
   ParamTaskFrame.spherical_of_permissive (RefinedFilteredTaskFrame_rel_iff D phi)
 
 /-!

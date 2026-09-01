@@ -72,7 +72,7 @@ def wlemRel : Bool → Int → Bool → Prop :=
   fun w d u => (d = 0 ∧ w = u) ∨ (d = 3)
 
 /-- The zero-duration fiber of `wlemRel` is the singleton on its source. -/
-theorem Fib_wlemRel_zero (w : Bool) : ParamTaskFrame.Fib wlemRel w 0 = {w} := by
+theorem Fib_wlemRel_zero (w : Bool) : TaskFrame.Fib wlemRel w 0 = {w} := by
   ext u
   constructor
   · rintro (⟨-, h⟩ | h)
@@ -82,7 +82,7 @@ theorem Fib_wlemRel_zero (w : Bool) : ParamTaskFrame.Fib wlemRel w 0 = {w} := by
     exact Or.inl ⟨rfl, rfl⟩
 
 /-- The duration-3 fiber of `wlemRel` is the whole carrier. -/
-theorem Fib_wlemRel_three (w : Bool) : ParamTaskFrame.Fib wlemRel w 3 = Set.univ := by
+theorem Fib_wlemRel_three (w : Bool) : TaskFrame.Fib wlemRel w 3 = Set.univ := by
   ext u
   constructor
   · intro _
@@ -123,7 +123,7 @@ the two sets. The two cross cases pair `{true}` (carrying `P`) with `{false}` (c
 and discharge by `absurd` on the two hypotheses directly: no case split on `P` is performed or
 needed, which is exactly why no classical principle is consumed here.
 -/
-theorem wlemFamily_directed (P : Prop) : ParamTaskFrame.DirectedFamily (wlemFamily P) := by
+theorem wlemFamily_directed (P : Prop) : TaskFrame.DirectedFamily (wlemFamily P) := by
   refine ⟨⟨Set.univ, univ_mem_wlemFamily P⟩, ?_⟩
   rintro S₁ (⟨rfl, h₁⟩ | ⟨rfl, h₁⟩ | rfl) S₂ (⟨rfl, h₂⟩ | ⟨rfl, h₂⟩ | rfl)
   -- {true}, {true}
@@ -152,7 +152,7 @@ disjunct always fires and `IsSegment` is never needed.
 -/
 theorem wlemFamily_fiber_nonempty (P : Prop) :
     ∀ s ∈ wlemFamily P,
-      (ParamTaskFrame.IsFiber wlemRel s ∨ ParamTaskFrame.IsSegment wlemRel s) ∧ s.Nonempty := by
+      (TaskFrame.IsFiber wlemRel s ∨ TaskFrame.IsSegment wlemRel s) ∧ s.Nonempty := by
   rintro s (⟨rfl, -⟩ | ⟨rfl, -⟩ | rfl)
   · exact ⟨Or.inl ⟨true, 0, (Fib_wlemRel_zero true).symm⟩, ⟨true, rfl⟩⟩
   · exact ⟨Or.inl ⟨false, 0, (Fib_wlemRel_zero false).symm⟩, ⟨false, rfl⟩⟩
@@ -163,7 +163,7 @@ theorem wlemFamily_fiber_nonempty (P : Prop) :
 /--
 **Weak excluded middle follows from *Spherical* on a finite carrier.**
 
-Given only `ParamTaskFrame.Spherical wlemRel` — *Spherical* for one fixed relation on the
+Given only `TaskFrame.Spherical wlemRel` — *Spherical* for one fixed relation on the
 two-element carrier `Bool` over `D = Int` — this derives `¬¬P ∨ ¬P` for an arbitrary `P`, using
 no classical tactic or term. Its own axiom profile is exactly `[propext, Quot.sound]`, pinned by
 a `#guard_msgs` block below.
@@ -192,7 +192,7 @@ see "The no-Zorn claim" below.
 `true = false`; if `b = false` then `P` cannot hold, symmetrically. Deciding which of the two
 sets the witness lies in is what the classical step in `spherical_of_finite` is buying.
 -/
-theorem wlem_of_spherical (hSph : ParamTaskFrame.Spherical wlemRel) (P : Prop) : ¬¬P ∨ ¬P := by
+theorem wlem_of_spherical (hSph : TaskFrame.Spherical wlemRel) (P : Prop) : ¬¬P ∨ ¬P := by
   obtain ⟨b, hb⟩ := hSph (wlemFamily P) (wlemFamily_directed P) (wlemFamily_fiber_nonempty P)
   have hb' : ∀ t ∈ wlemFamily P, b ∈ t := Set.mem_sInter.mp hb
   cases b with

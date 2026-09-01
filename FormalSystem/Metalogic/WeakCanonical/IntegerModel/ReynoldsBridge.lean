@@ -452,10 +452,10 @@ With this frame:
 /-- ParamTaskFrame with WorldState = ℤ. Task relation: u = w + d (deterministic). -/
 noncomputable def zTaskFrameV2 : ParamTaskFrame ℤ where
   WorldState := ℤ
-  nonempty := inferInstanceAs (Nonempty ℤ)
+  worldNonempty := inferInstanceAs (Nonempty ℤ)
   TaskRel w d u := u = w + d
   nullity_identity w u := by constructor <;> intro h <;> omega
-  comp := ParamTaskFrame.comp_of
+  comp := TaskFrame.comp_of
     (fun w v x y _ _ h => ⟨w + x, rfl, by omega⟩)
     (fun w u v x y _ _ h1 h2 => by rw [h2, h1, add_assoc])
   converse w d u := by constructor <;> intro h <;> omega
@@ -483,7 +483,7 @@ directly rather than derived. -/
 /-- Every fiber (`def:task-relation`, *Fiber* clause) of `zTaskFrameV2` is a subsingleton: the
 shift is deterministic, so `Fib R w x ⊆ {w + x}`. -/
 theorem zTaskFrameV2_fib_subsingleton (w x : ℤ) :
-    (ParamTaskFrame.Fib zTaskFrameV2.TaskRel w x).Subsingleton := by
+    (TaskFrame.Fib zTaskFrameV2.TaskRel w x).Subsingleton := by
   intro u hu u' hu'
   have h1 : u = w + x := hu
   have h2 : u' = w + x := hu'
@@ -491,7 +491,7 @@ theorem zTaskFrameV2_fib_subsingleton (w x : ℤ) :
 
 /-- *Seriality* (`def:frame#Seriality`, verbatim: "$w \Rightarrow_x u$ and $v \Rightarrow_x w$
 for some $u, v \in W$") for `zTaskFrameV2`: the shift supplies both `w + x` and `w - x`. -/
-theorem zTaskFrameV2_serial : ParamTaskFrame.Serial zTaskFrameV2.TaskRel := by
+theorem zTaskFrameV2_serial : TaskFrame.Serial zTaskFrameV2.TaskRel := by
   show ∀ (w : ℤ) (x : ℤ), 0 ≤ x → (∃ u : ℤ, u = w + x) ∧ (∃ v : ℤ, w = v + x)
   intro w x _
   exact ⟨⟨w + x, rfl⟩, ⟨w - x, by omega⟩⟩
@@ -499,7 +499,7 @@ theorem zTaskFrameV2_serial : ParamTaskFrame.Serial zTaskFrameV2.TaskRel := by
 /-- The interpolation half of *Compositionality* (`def:frame#Compositionality`, verbatim:
 "$w \Rightarrow_{x + y} v$ if and only if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some
 $u \in W$") for `zTaskFrameV2`: interpolate at the unique intermediate `w + x`. -/
-theorem zTaskFrameV2_interpolates : ParamTaskFrame.Interpolates zTaskFrameV2.TaskRel := by
+theorem zTaskFrameV2_interpolates : TaskFrame.Interpolates zTaskFrameV2.TaskRel := by
   show ∀ (w v : ℤ) (x y : ℤ), 0 ≤ x → 0 ≤ y → v = w + (x + y) →
     ∃ u : ℤ, u = w + x ∧ v = u + y
   intro w v x y _ _ h
@@ -519,7 +519,7 @@ theorem zTaskFrameV2_limit :
 $\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments") for `zTaskFrameV2`:
 every fiber is a singleton and every segment is an intersection of fibers, hence a subsingleton,
 so `Algebraic.sInter_nonempty_of_directed_subsingleton` applies. -/
-theorem zTaskFrameV2_spherical : ParamTaskFrame.Spherical zTaskFrameV2.TaskRel := by
+theorem zTaskFrameV2_spherical : TaskFrame.Spherical zTaskFrameV2.TaskRel := by
   intro S hdir hmem
   refine Algebraic.sInter_nonempty_of_directed_subsingleton hdir
     (fun s hs => (hmem s hs).2) (fun s hs => ?_)
@@ -766,13 +766,13 @@ paired with a position. The task relation is deterministic: stepping by `d` from
 `(f, z)` reaches `(f, z + d)` (same family, shifted position). -/
 noncomputable def multiFamTaskFrame (FamIdx : Type) [Nonempty FamIdx] : ParamTaskFrame ℤ where
   WorldState := FamIdx × ℤ
-  nonempty := inferInstance
+  worldNonempty := inferInstance
   TaskRel := fun p d q => p.1 = q.1 ∧ q.2 = p.2 + d
   nullity_identity := fun p q => by
     constructor
     · rintro ⟨h1, h2⟩; ext <;> [exact h1; omega]
     · rintro h; subst h; exact ⟨rfl, by omega⟩
-  comp := ParamTaskFrame.comp_of
+  comp := TaskFrame.comp_of
     (fun w v x y _ _ h => ⟨(w.1, w.2 + x), ⟨rfl, rfl⟩, h.1, by omega⟩)
     (fun _ _ _ _ _ _ _ ⟨h1, h2⟩ ⟨h3, h4⟩ => ⟨h1.trans h3, by omega⟩)
   converse := fun _ _ _ => by constructor <;> (rintro ⟨h1, h2⟩; exact ⟨h1.symm, by omega⟩)
@@ -808,7 +808,7 @@ theorem multiFamTaskFrame_eq_gen (FamIdx : Type) [Nonempty FamIdx] :
 for some $u, v \in W$") for `multiFamTaskFrame`, by specialization of
 `multiFamTaskFrameGen_serial`. -/
 theorem multiFamTaskFrame_serial (FamIdx : Type) [Nonempty FamIdx] :
-    ParamTaskFrame.Serial (multiFamTaskFrame FamIdx).TaskRel :=
+    TaskFrame.Serial (multiFamTaskFrame FamIdx).TaskRel :=
   Algebraic.multiFamTaskFrameGen_serial
 
 /-- The interpolation half of *Compositionality* (`def:frame#Compositionality`, verbatim:
@@ -816,7 +816,7 @@ theorem multiFamTaskFrame_serial (FamIdx : Type) [Nonempty FamIdx] :
 $u \in W$") for `multiFamTaskFrame`, by specialization of
 `multiFamTaskFrameGen_interpolates`. -/
 theorem multiFamTaskFrame_interpolates (FamIdx : Type) [Nonempty FamIdx] :
-    ParamTaskFrame.Interpolates (multiFamTaskFrame FamIdx).TaskRel :=
+    TaskFrame.Interpolates (multiFamTaskFrame FamIdx).TaskRel :=
   Algebraic.multiFamTaskFrameGen_interpolates
 
 /-- *Limit* (`def:frame#Limit`, verbatim: "$\bigcap\limits_{x > 0} (w)_x = \set{w}$") for
@@ -832,7 +832,7 @@ theorem multiFamTaskFrame_limit (FamIdx : Type) [Nonempty FamIdx] :
 $\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments") for
 `multiFamTaskFrame`, by specialization of `multiFamTaskFrameGen_spherical`. -/
 theorem multiFamTaskFrame_spherical (FamIdx : Type) [Nonempty FamIdx] :
-    ParamTaskFrame.Spherical (multiFamTaskFrame FamIdx).TaskRel :=
+    TaskFrame.Spherical (multiFamTaskFrame FamIdx).TaskRel :=
   Algebraic.multiFamTaskFrameGen_spherical
 
 /-- World history for the multi-family ParamTaskFrame, parameterized by a family index

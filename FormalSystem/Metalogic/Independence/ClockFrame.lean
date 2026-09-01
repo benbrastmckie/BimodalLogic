@@ -108,7 +108,7 @@ def clockRel (w : ClockState) (x : ℚ) (u : ClockState) : Prop := u = w + cmk x
 
 /-- Every fiber of the clock relation is a subsingleton — the flow is deterministic. -/
 theorem clockRel_fib_subsingleton (w : ClockState) (x : ℚ) :
-    (ParamTaskFrame.Fib clockRel w x).Subsingleton := by
+    (TaskFrame.Fib clockRel w x).Subsingleton := by
   rintro u (rfl : u = _) u' (rfl : u' = _)
   rfl
 
@@ -153,7 +153,7 @@ theorem clockRel_limit :
 /-- *Spherical* (`def:frame#Spherical`) for the clock relation: every fiber is a singleton and
 every segment is an intersection of two fibers, so every nonempty member of a directed family is
 a singleton and `ParamTaskFrame.sInter_nonempty_of_directed_of_univ_or_singleton` applies. -/
-theorem clockRel_spherical : ParamTaskFrame.Spherical clockRel := by
+theorem clockRel_spherical : TaskFrame.Spherical clockRel := by
   intro S hdir hmem
   refine ParamTaskFrame.sInter_nonempty_of_directed_of_univ_or_singleton hdir
     (fun s hs => (hmem s hs).2) (fun s hs => ?_)
@@ -172,14 +172,14 @@ see this module's docstring for why the quotient (rather than the line) is the r
 -/
 def clockFrame : ParamTaskFrame ℚ where
   WorldState := ClockState
-  nonempty := ⟨0⟩
+  worldNonempty := ⟨0⟩
   TaskRel := clockRel
   nullity_identity := by
     intro w u
     constructor
     · rintro (rfl : u = _); simp [cmk_zero]
     · rintro rfl; show w = w + cmk 0; simp
-  comp := ParamTaskFrame.comp_of
+  comp := TaskFrame.comp_of
     (by
       rintro w v x y _ _ (hv : v = w + cmk (x + y))
       refine ⟨w + cmk x, rfl, ?_⟩

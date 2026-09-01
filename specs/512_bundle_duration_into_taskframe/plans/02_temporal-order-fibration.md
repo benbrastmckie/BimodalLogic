@@ -508,38 +508,56 @@ before declaring them; a fifth carrier surfacing is a scope signal, not somethin
 
 ---
 
-### Phase 2: `FrameOver` lands as the fibre; `ParamTaskFrame` becomes transitional [NOT STARTED]
+### Phase 2: `FrameOver` lands as the fibre; `ParamTaskFrame` becomes transitional [COMPLETED]
 
 **Goal**: `FrameOver (D : TemporalOrder)` is the sole declaration site of the six frame axioms.
 `ParamTaskFrame` becomes a `@[reducible] def` alias for `FrameOver (TemporalOrder.of D)`, holding
 all 63 still-parameterized files green with no edits.
 
 **Tasks**:
-- [ ] Revert the bare-relation predicate namespace `ParamTaskFrame.{Compositional, Converse, Serial,
+- [x] Revert the bare-relation predicate namespace `ParamTaskFrame.{Compositional, Converse, Serial,
       Limit, Spherical, NullityIdentity, Interpolates}` to `TaskFrame.*` (v01 Phase 1's deliberate
       over-reach, reversed one phase earlier than v01 planned). Mechanical token rename across live
       files. Record explicitly in the commit that this is a *restoration of the pre-512 name*, not a
-      naming decision, and therefore not 507's territory.
-- [ ] Declare `structure FrameOver (D : TemporalOrder)` in `Semantics/TaskFrame.lean` with
+      naming decision, and therefore not 507's territory. *(deviation: altered — the revert covers the
+      whole bare-relation block, not only the named predicates: `Fib`, `mem_Fib`, `cone`,
+      `mem_cone`, `cone_mono`, `Seg`, `mem_Seg`, `DirectedFamily`, `IsFiber`, `IsSegment`,
+      `comp_of`, `forward_of_comp` and `interpolates_of_comp` sit in the same `namespace` block and
+      were `TaskFrame.*` pre-512 too (verified against `7ecb341b9:.../TaskFrame.lean:172-447`), so
+      splitting the block would strand half a namespace for Phase 20 to delete. 164 qualified
+      renames across 16 files. `Converse`, `Limit` and `NullityIdentity` from the plan's list do
+      not exist as declarations. Additionally `open TaskFrame` was added to the 7 remaining
+      `namespace ParamTaskFrame` blocks, and 6 `open ParamTaskFrame` lines widened to
+      `open ParamTaskFrame TaskFrame`, because the frame-level lemmas cite the predicates
+      unqualified.)*
+- [x] Declare `structure FrameOver (D : TemporalOrder)` in `Semantics/TaskFrame.lean` with
       `WorldState`, `worldNonempty`, `TaskRel : WorldState → D → WorldState → Prop`, and all six
       axiom fields citing the (now `TaskFrame.`-namespaced) bare-relation predicates
       **definitionally**.
-- [ ] Declare `structure FiniteFrameOver (D : TemporalOrder) extends FrameOver D` with
+- [x] Declare `structure FiniteFrameOver (D : TemporalOrder) extends FrameOver D` with
       `finite_world : Finite WorldState` (or the shape Phase 0 confirmed; probe M8's `FiniteTaskFrame`
       result is the precedent).
-- [ ] Replace `structure ParamTaskFrame` with
+- [x] Replace `structure ParamTaskFrame` with
       `@[reducible] def ParamTaskFrame (D : Type) [4 instances] : Type 1 := FrameOver (TemporalOrder.of D)`,
       and `ParamFiniteTaskFrame` correspondingly. Both are transitional and are deleted in Phase 20.
       If Phase 0(f) failed, take the recorded fallback instead: keep both as genuine structures with
       `@[reducible]` conversions, and note in the commit that every later phase now owes one extra
       mechanical touch per file.
-- [ ] Reconcile the field-name mismatch: today's `ParamTaskFrame` has `nonempty`, the bundled form
+- [x] Reconcile the field-name mismatch: today's `ParamTaskFrame` has `nonempty`, the bundled form
       has `worldNonempty`. Pick `worldNonempty` (the bundled name, already landed in 86 files) and
-      rename the ~N `\.nonempty` projection sites on frames. Enumerate them before editing.
-- [ ] Keep `TaskFrame` (still `Duration : Type` at this point) and its `ofParam`/`toParam`/`CoeOut`
+      rename the ~N `\.nonempty` projection sites on frames. Enumerate them before editing. *(completed: 14 frame sites — 3
+      `nonempty :=` in `TaskFrame.lean` plus its `ofParam`/`toParam`, 5 in
+      `Examples/TemporalStructures.lean`, 2 in `ReynoldsBridge.lean`, 1 each in `ClockFrame.lean`,
+      `IntNormalForm.lean`, `IntTransfer.lean`, `FlowFrame.lean`, `FMP/Filtration.lean` and
+      `Verified/Bridge/RegionFrame.lean`, plus the `F.nonempty` projection in
+      `PeriodicExtension.lean`. Enumerated by classifying every `^  nonempty :=` occurrence against
+      its enclosing declaration's target type: 13 further occurrences belong to unrelated
+      structures (`HintikkaRawChain`, `IsShuffleColouring`, `BFMCS`, …) and were left alone.
+      `toParamTaskFrame` → `toFrameOver` at its 4 sites.)*
+- [x] Keep `TaskFrame` (still `Duration : Type` at this point) and its `ofParam`/`toParam`/`CoeOut`
       working against the new `FrameOver`-backed `ParamTaskFrame`. This phase does **not** touch
       `TaskFrame`'s own definition — Phase 3 does.
-- [ ] Add in-file `example`s: the six axiom fields of `FrameOver` are the recorded predicates by
+- [x] Add in-file `example`s: the six axiom fields of `FrameOver` are the recorded predicates by
       `rfl`; `FrameOver (TemporalOrder.of D)` and the old `ParamTaskFrame D` field-for-field agree.
 
 **Timing**: 2 hours

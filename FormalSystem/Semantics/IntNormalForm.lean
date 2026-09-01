@@ -160,6 +160,8 @@ theorem iter_add {W : Type} (R : W → W → Prop) (m n : ℕ) (w u : W) :
 
 namespace ParamTaskFrame
 
+open TaskFrame
+
 /-!
 ## The one-step relation and the decomposition theorem
 -/
@@ -264,6 +266,8 @@ def IsStepPath (F : ParamTaskFrame ℤ) (f : ℤ → F.WorldState) : Prop :=
   ∀ n : ℤ, F.step (f n) (f (n + 1))
 
 namespace ParamTaskFrame
+
+open TaskFrame
 
 /-- The bare path underlying a total world history: totality makes the domain proof uniform, so
 the dependent `states` field collapses to a plain function `ℤ → WorldState`. -/
@@ -414,6 +418,8 @@ theorem exists_iter_bwd {W : Type} {R₁ : W → W → Prop} (bwd : ∀ w, ∃ v
 
 namespace ParamTaskFrame
 
+open TaskFrame
+
 /--
 **Frame synthesis over ℤ**: a bi-serial relation on a finite nonempty carrier generates a
 `ParamTaskFrame ℤ`.
@@ -438,12 +444,17 @@ relation *does* fit a choice-free class helper — see `spherical_of_finite`'s o
 def ofStep {W : Type} [Finite W] [Nonempty W] (R₁ : W → W → Prop)
     (fwd : ∀ w, ∃ u, R₁ w u) (bwd : ∀ w, ∃ v, R₁ v w) : ParamTaskFrame ℤ where
   WorldState := W
-  nonempty := inferInstance
+  worldNonempty := inferInstance
   TaskRel := ofStepRel R₁
   nullity_identity := fun w u => by
     rw [ofStepRel_of_nonneg (le_refl (0 : ℤ))]
     simp
   comp := fun w v x y hx hy => by
+    -- `hx`/`hy` arrive with their `≤` routed through the temporal order's projection instance,
+    -- which `omega` does not recognize as an `Int` ordering. `change` (not an ascription, which
+    -- is a no-op here) restates them at `ℤ` and restores `omega`.
+    change (0 : ℤ) ≤ x at hx
+    change (0 : ℤ) ≤ y at hy
     rw [ofStepRel_of_nonneg (add_nonneg hx hy)]
     have hnat : (x + y).natAbs = x.natAbs + y.natAbs := by omega
     rw [hnat, iter_add]

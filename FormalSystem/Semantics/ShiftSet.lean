@@ -186,8 +186,8 @@ other four. The one field that is genuinely *not* free is `limit`; it is exactly
     intro Sfam hdir hmem
     obtain ⟨s, hs⟩ := hdir.1
     obtain ⟨a, ha⟩ := (hmem s hs).2
-    have hsingle : ∀ (c : Set S.Carrier), (ParamTaskFrame.IsFiber (fun w d u => u = S.sh w d) c ∨
-        ParamTaskFrame.IsSegment (fun w d u => u = S.sh w d) c) → ∀ p ∈ c, ∀ q ∈ c, p = q := by
+    have hsingle : ∀ (c : Set S.Carrier), (TaskFrame.IsFiber (fun w d u => u = S.sh w d) c ∨
+        TaskFrame.IsSegment (fun w d u => u = S.sh w d) c) → ∀ p ∈ c, ∀ q ∈ c, p = q := by
       rintro c (⟨w, x, rfl⟩ | ⟨w, v, x, y, _, _, rfl⟩) p hp q hq
       · exact hp.trans hq.symm
       · exact hp.1.trans hq.1.symm

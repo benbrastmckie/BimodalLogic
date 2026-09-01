@@ -76,13 +76,13 @@ theorem customFrame_rel_iff :
 
 /-- *Seriality* (`def:frame#Seriality`, verbatim: "$w \Rightarrow_x u$ and $v \Rightarrow_x w$
 for some $u, v \in W$") for `customFrame`. -/
-theorem customFrame_serial : ParamTaskFrame.Serial customFrame.TaskRel :=
+theorem customFrame_serial : TaskFrame.Serial customFrame.TaskRel :=
   ParamTaskFrame.serial_of_permissive customFrame_rel_iff
 
 /-- The interpolation half of *Compositionality* (`def:frame#Compositionality`, verbatim:
 "$w \Rightarrow_{x + y} v$ if and only if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some
 $u \in W$") for `customFrame`. -/
-theorem customFrame_interpolates : ParamTaskFrame.Interpolates customFrame.TaskRel :=
+theorem customFrame_interpolates : TaskFrame.Interpolates customFrame.TaskRel :=
   ParamTaskFrame.interpolates_of_permissive customFrame_rel_iff
 
 /-- *Limit* (`def:frame#Limit`, verbatim: "$\bigcap\limits_{x > 0} (w)_x = \set{w}$") for
@@ -95,7 +95,7 @@ theorem customFrame_limit :
 
 /-- *Spherical* (`def:frame#Spherical`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
 $\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments") for `customFrame`. -/
-theorem customFrame_spherical : ParamTaskFrame.Spherical customFrame.TaskRel :=
+theorem customFrame_spherical : TaskFrame.Spherical customFrame.TaskRel :=
   ParamTaskFrame.spherical_of_permissive customFrame_rel_iff
 
 /-! ## Polymorphism Tests -/

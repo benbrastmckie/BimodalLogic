@@ -137,7 +137,7 @@ def toTaskFrame : ParamTaskFrame ℤ :=
 /-- The presented frame, bundled with its finiteness. `finite_world` is filled *from* `Fin card`;
 it is never read back out to drive a computation. -/
 def toFiniteFrame : ParamFiniteTaskFrame ℤ where
-  toParamTaskFrame := P.toTaskFrame
+  toFrameOver := P.toTaskFrame
   finite_world := inferInstanceAs (Finite (Fin P.card))
 
 /-- The presented frame's world states are `Fin card`, definitionally. -/

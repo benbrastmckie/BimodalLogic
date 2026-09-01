@@ -88,13 +88,13 @@ end TaskModel
 This section defines finite task models, which are task models over finite task frames.
 -/
 
-open ParamTaskFrame
+open ParamTaskFrame TaskFrame
 
 /--
 A finite task model is simply a task model over a finite task frame.
 This is defined as an abbreviation for convenience.
 -/
 abbrev FiniteTaskModel {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
-    (F : ParamFiniteTaskFrame D) := TaskModel F.toParamTaskFrame
+    (F : ParamFiniteTaskFrame D) := TaskModel F.toFrameOver
 
 end FormalSystem.Semantics

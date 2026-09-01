@@ -175,7 +175,7 @@ def regionFrame (W ι D : Type) [Nonempty W] [AddCommGroup D] [LinearOrder D]
     [IsOrderedAddMonoid D] [Nontrivial D] :
     ParamTaskFrame D where
   WorldState := W × D
-  nonempty := inferInstance
+  worldNonempty := inferInstance
   TaskRel := fun s d s' => s.1 = s'.1 ∧ s'.2 = s.2 + d
   nullity_identity := by
     intro s s'
@@ -185,7 +185,7 @@ def regionFrame (W ι D : Type) [Nonempty W] [AddCommGroup D] [LinearOrder D]
       rw [h₂, add_zero]
     · rintro rfl
       exact ⟨rfl, (add_zero _).symm⟩
-  comp := ParamTaskFrame.comp_of
+  comp := TaskFrame.comp_of
     (by
       rintro s v x y _ _ ⟨h₁, h₂⟩
       refine ⟨(s.1, s.2 + x), ⟨rfl, rfl⟩, h₁, ?_⟩
@@ -207,7 +207,7 @@ def regionFrame (W ι D : Type) [Nonempty W] [AddCommGroup D] [LinearOrder D]
     obtain ⟨hcl, hne⟩ := hmem s hs
     obtain ⟨a, ha⟩ := hne
     have hfib : ∀ (t : W × D) (x : D),
-        (ParamTaskFrame.Fib (fun (s : W × D) (d : D) (s' : W × D) =>
+        (TaskFrame.Fib (fun (s : W × D) (d : D) (s' : W × D) =>
           s.1 = s'.1 ∧ s'.2 = s.2 + d) t x).Subsingleton := by
       rintro t x u ⟨hu₁, hu₂⟩ u' ⟨hu'₁, hu'₂⟩
       exact Prod.ext (hu₁.symm.trans hu'₁) (hu₂.trans hu'₂.symm)
@@ -247,7 +247,7 @@ falsification test the flag needed, and it fails to falsify. -/
 clock is deterministic, so `Fib R s x ⊆ {(s.1, s.2 + x)}`. -/
 theorem regionFrame_fib_subsingleton (W ι D : Type) [Nonempty W] [AddCommGroup D] [LinearOrder D]
     [IsOrderedAddMonoid D] [Nontrivial D] (s : W × D) (x : D) :
-    (ParamTaskFrame.Fib (regionFrame W ι D).TaskRel s x).Subsingleton := by
+    (TaskFrame.Fib (regionFrame W ι D).TaskRel s x).Subsingleton := by
   rintro u ⟨hu₁, hu₂⟩ u' ⟨hu'₁, hu'₂⟩
   exact Prod.ext (hu₁.symm.trans hu'₁) (hu₂.trans hu'₂.symm)
 
@@ -255,7 +255,7 @@ theorem regionFrame_fib_subsingleton (W ι D : Type) [Nonempty W] [AddCommGroup 
 for some $u, v \in W$") for `regionFrame`: the clock supplies the successor `(s.1, s.2 + x)` and
 the predecessor `(s.1, s.2 - x)`. -/
 theorem regionFrame_serial (W ι D : Type) [Nonempty W] [AddCommGroup D] [LinearOrder D]
-    [IsOrderedAddMonoid D] [Nontrivial D] : ParamTaskFrame.Serial (regionFrame W ι D).TaskRel :=
+    [IsOrderedAddMonoid D] [Nontrivial D] : TaskFrame.Serial (regionFrame W ι D).TaskRel :=
   fun s x _ =>
     ⟨⟨(s.1, s.2 + x), rfl, rfl⟩,
      ⟨(s.1, s.2 - x), rfl, by show s.2 = s.2 - x + x; abel⟩⟩
@@ -265,7 +265,7 @@ theorem regionFrame_serial (W ι D : Type) [Nonempty W] [AddCommGroup D] [Linear
 $u \in W$") for `regionFrame`: interpolate at the unique intermediate `(s.1, s.2 + x)`. -/
 theorem regionFrame_interpolates (W ι D : Type) [Nonempty W] [AddCommGroup D] [LinearOrder D]
     [IsOrderedAddMonoid D] [Nontrivial D] :
-    ParamTaskFrame.Interpolates (regionFrame W ι D).TaskRel := by
+    TaskFrame.Interpolates (regionFrame W ι D).TaskRel := by
   rintro s v x y _ _ ⟨h₁, h₂⟩
   refine ⟨(s.1, s.2 + x), ⟨rfl, rfl⟩, h₁, ?_⟩
   show v.2 = s.2 + x + y
@@ -289,7 +289,7 @@ member of a directed family is a singleton and
 `ParamTaskFrame.sInter_nonempty_of_directed_of_univ_or_singleton` applies. -/
 theorem regionFrame_spherical (W ι D : Type) [Nonempty W] [AddCommGroup D] [LinearOrder D]
     [IsOrderedAddMonoid D] [Nontrivial D] :
-    ParamTaskFrame.Spherical (regionFrame W ι D).TaskRel := by
+    TaskFrame.Spherical (regionFrame W ι D).TaskRel := by
   intro S hdir hmem
   refine ParamTaskFrame.sInter_nonempty_of_directed_of_univ_or_singleton hdir
     (fun s hs => (hmem s hs).2) (fun s hs => ?_)

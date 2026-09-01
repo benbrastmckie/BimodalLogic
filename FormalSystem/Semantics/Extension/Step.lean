@@ -19,7 +19,7 @@ The proof is a composition, not a re-derivation. Each of its three inputs is alr
   hypotheses *Spherical* demands of a family: the constraints imposed on `z` form a **directed**
   family, and every member is **nonempty**. Membership in the fiber-or-segment classes is
   `PartialHistory.isFiber_or_isSegment_of_mem_Constraints`.
-- *Spherical* (`ParamTaskFrame.Spherical`, `FrameAxioms`) turns that family into a common member
+- *Spherical* (`TaskFrame.Spherical`, `FrameAxioms`) turns that family into a common member
   `u ∈ ⋂₀ Constraints τ z`.
 - `lem:admissible` (`PartialHistory.admissible`, `Extension.Admissible`) turns "belongs to every
   constraint" into the task-respect condition on the one-point extension, which
@@ -37,10 +37,10 @@ The proof is a composition, not a re-derivation. Each of its three inputs is alr
 
 `step` once took *Spherical* as an explicit hypothesis binder `hSph`, against the day the
 `ParamTaskFrame` structure would carry the axioms as fields. **That day has come, and the invariant
-held.** `ParamTaskFrame.spherical` is definitionally `ParamTaskFrame.Spherical TaskRel`,
-`ParamTaskFrame.serial` definitionally `ParamTaskFrame.Serial TaskRel`, and `ParamTaskFrame.interpolates` —
+held.** `ParamTaskFrame.spherical` is definitionally `TaskFrame.Spherical TaskRel`,
+`ParamTaskFrame.serial` definitionally `TaskFrame.Serial TaskRel`, and `ParamTaskFrame.interpolates` —
 the `→` projection of the biconditional `comp` field — definitionally
-`ParamTaskFrame.Interpolates TaskRel`. `step` now applies `F.spherical` **directly**, with zero
+`TaskFrame.Interpolates TaskRel`. `step` now applies `F.spherical` **directly**, with zero
 restatement and no hypothesis binder in sight.
 
 That is the acceptance test, and it is now permanent rather than pending: the fields are not
@@ -85,7 +85,7 @@ namespace FormalSystem.Semantics
 
 namespace PartialHistory
 
-open ParamTaskFrame
+open ParamTaskFrame TaskFrame
 
 /--
 `lem:step`: the Step Lemma. Every partial history extends by one arbitrary duration.
@@ -108,7 +108,7 @@ extension.
 
 **This is the sole *Spherical* application site.** `F.spherical` — the structure field itself —
 is consumed in the proof body below. It is not decoration: a field whose statement differed from
-`ParamTaskFrame.Spherical TaskRel` would make this proof fail to elaborate. See this module's
+`TaskFrame.Spherical TaskRel` would make this proof fail to elaborate. See this module's
 docstring for the frame-axiom-field invariant that discharges.
 
 The frame axioms are taken from the structure's own fields — `F.spherical` here, and

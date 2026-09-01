@@ -118,7 +118,7 @@ namespace FormalSystem.Semantics
 
 namespace PartialHistory
 
-open ParamTaskFrame
+open ParamTaskFrame TaskFrame
 
 variable {F : TaskFrame}
 
@@ -161,18 +161,18 @@ theorem fibers (τ : PartialHistory F) (z : F.Duration) (u : F.WorldState) :
       · -- `t < z < s`: the straddling segment's *left* fiber condition is the one wanted
         have hmem := h _ (mem_Constraints.mpr (Or.inl ⟨t, s, ht, hs, htz, hzs, rfl⟩))
         rw [seg_eq_inter_fib] at hmem
-        exact ParamTaskFrame.mem_Fib.mp hmem.1
+        exact TaskFrame.mem_Fib.mp hmem.1
       · -- `s < z < t`: the straddling segment's *right* fiber condition is the one wanted
         have hmem := h _ (mem_Constraints.mpr (Or.inl ⟨s, t, hs, ht, hsz, hzt, rfl⟩))
         rw [seg_eq_inter_fib] at hmem
-        exact ParamTaskFrame.mem_Fib.mp hmem.2
+        exact TaskFrame.mem_Fib.mp hmem.2
     · -- unpaired: `def:constraints`' "otherwise" clause contributes the fiber itself
-      exact ParamTaskFrame.mem_Fib.mp (h _ (mem_Constraints.mpr (Or.inr ⟨t, ht, hp, rfl⟩)))
+      exact TaskFrame.mem_Fib.mp (h _ (mem_Constraints.mpr (Or.inr ⟨t, ht, hp, rfl⟩)))
   · intro h c hc
     rcases hc with ⟨t, s, ht, hs, _, _, rfl⟩ | ⟨t, ht, _, rfl⟩
     · rw [seg_eq_inter_fib]
-      exact ⟨ParamTaskFrame.mem_Fib.mpr (h t ht), ParamTaskFrame.mem_Fib.mpr (h s hs)⟩
-    · exact ParamTaskFrame.mem_Fib.mpr (h t ht)
+      exact ⟨TaskFrame.mem_Fib.mpr (h t ht), TaskFrame.mem_Fib.mpr (h s hs)⟩
+    · exact TaskFrame.mem_Fib.mpr (h t ht)
 
 /-!
 ### The one-point extension `τ ∪ {⟨z, u⟩}`

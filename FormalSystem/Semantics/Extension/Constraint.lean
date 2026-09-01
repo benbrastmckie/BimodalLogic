@@ -81,8 +81,8 @@ That is the `fib_zero_subset_of_mem_Constraints` branch below.
 
 ## Implementation Notes
 
-- **No new definition is introduced.** Everything is stated with `ParamTaskFrame.Fib`, `ParamTaskFrame.Seg`,
-  `ParamTaskFrame.DirectedFamily`, and `PartialHistory.Constraints` exactly as already transcribed.
+- **No new definition is introduced.** Everything is stated with `TaskFrame.Fib`, `TaskFrame.Seg`,
+  `TaskFrame.DirectedFamily`, and `PartialHistory.Constraints` exactly as already transcribed.
 - **Fibers and segments stay two separate classes.** The case analysis below is driven by
   `Constraints`' own two clauses, never by a merged class.
 - **The `def:constraints` "otherwise" reading is consumed, not re-decided.** A fiber member's
@@ -95,7 +95,7 @@ namespace FormalSystem.Semantics
 
 namespace PartialHistory
 
-open ParamTaskFrame
+open ParamTaskFrame TaskFrame
 
 variable {F : TaskFrame}
 
@@ -116,7 +116,7 @@ theorem seg_eq_inter_fib (τ : PartialHistory F) {z t s : F.Duration}
     (ht : τ.domain t) (hs : τ.domain s) :
     Seg F.TaskRel (τ.states t ht) (τ.states s hs) (z - t) (s - z)
       = Fib F.TaskRel (τ.states t ht) (z - t) ∩ Fib F.TaskRel (τ.states s hs) (z - s) := by
-  simp only [ParamTaskFrame.Seg, neg_sub]
+  simp only [TaskFrame.Seg, neg_sub]
 
 /-!
 ### Fiber monotonicity: constraints tighten as the domain time approaches `z`
@@ -136,10 +136,10 @@ theorem fib_subset_fib_of_le_of_le {τ : PartialHistory F} {z a b : F.Duration}
   intro u hu
   have hcomp := F.forward_comp (τ.states a ha) (τ.states b hb) u (b - a) (z - b)
     (sub_nonneg.mpr hab) (sub_nonneg.mpr hbz) (τ.respects_task a b ha hb)
-    (ParamTaskFrame.mem_Fib.mp hu)
+    (TaskFrame.mem_Fib.mp hu)
   have heq : b - a + (z - b) = z - a := by abel
   rw [heq] at hcomp
-  exact ParamTaskFrame.mem_Fib.mpr hcomp
+  exact TaskFrame.mem_Fib.mpr hcomp
 
 /--
 Above `z`, an earlier domain time imposes a tighter constraint: for `z ≤ b ≤ a` in the domain,
@@ -154,7 +154,7 @@ theorem fib_subset_fib_of_le_of_le' {τ : PartialHistory F} {z a b : F.Duration}
     Fib F.TaskRel (τ.states b hb) (z - b) ⊆ Fib F.TaskRel (τ.states a ha) (z - a) := by
   intro u hu
   have hu' : F.TaskRel u (b - z) (τ.states b hb) := by
-    have h := (F.converse (τ.states b hb) (z - b) u).mp (ParamTaskFrame.mem_Fib.mp hu)
+    have h := (F.converse (τ.states b hb) (z - b) u).mp (TaskFrame.mem_Fib.mp hu)
     rwa [neg_sub] at h
   have hcomp := F.forward_comp u (τ.states b hb) (τ.states a ha) (b - z) (a - b)
     (sub_nonneg.mpr hzb) (sub_nonneg.mpr hba) hu' (τ.respects_task b a hb ha)
@@ -162,7 +162,7 @@ theorem fib_subset_fib_of_le_of_le' {τ : PartialHistory F} {z a b : F.Duration}
   rw [heq] at hcomp
   have h := (F.converse u (a - z) (τ.states a ha)).mp hcomp
   rw [neg_sub] at h
-  exact ParamTaskFrame.mem_Fib.mpr h
+  exact TaskFrame.mem_Fib.mpr h
 
 /--
 When `z` is itself a domain time, its own zero-duration fiber is contained in the constraint
@@ -217,9 +217,9 @@ theorem nonempty_fib_of_serial {τ : PartialHistory F} {z t : F.Duration}
     (ht : τ.domain t) : (Fib F.TaskRel (τ.states t ht) (z - t)).Nonempty := by
   rcases le_total t z with h | h
   · obtain ⟨u, hu⟩ := (F.serial (τ.states t ht) (z - t) (sub_nonneg.mpr h)).1
-    exact ⟨u, ParamTaskFrame.mem_Fib.mpr hu⟩
+    exact ⟨u, TaskFrame.mem_Fib.mpr hu⟩
   · obtain ⟨v, hv⟩ := (F.serial (τ.states t ht) (t - z) (sub_nonneg.mpr h)).2
-    refine ⟨v, ParamTaskFrame.mem_Fib.mpr ?_⟩
+    refine ⟨v, TaskFrame.mem_Fib.mpr ?_⟩
     have h' := (F.converse v (t - z) (τ.states t ht)).mp hv
     rwa [neg_sub] at h'
 

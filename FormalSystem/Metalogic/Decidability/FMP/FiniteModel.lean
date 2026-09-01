@@ -171,7 +171,7 @@ that its world states are finite.
 -/
 noncomputable def FiniteFilteredTaskFrame [SuccOrder D] [NoMaxOrder D] (phi : Formula) :
     ParamFiniteTaskFrame D where
-  toParamTaskFrame := RefinedFilteredTaskFrame D phi
+  toFrameOver := RefinedFilteredTaskFrame D phi
   finite_world := FilteredWorld.finite phi
 
 /--
@@ -191,17 +191,17 @@ imposes. It is the only live `ParamFiniteTaskFrame` construction in the library.
 
 /-- The finite filtered frame's task relation is the refined filtered frame's, definitionally. -/
 theorem FiniteFilteredTaskFrame.taskRel_eq [SuccOrder D] [NoMaxOrder D] (phi : Formula) :
-    (FiniteFilteredTaskFrame D phi).toParamTaskFrame = RefinedFilteredTaskFrame D phi := rfl
+    (FiniteFilteredTaskFrame D phi).toFrameOver = RefinedFilteredTaskFrame D phi := rfl
 
 /-- *Seriality* (`def:frame#Seriality`) for the finite filtered frame, inherited. -/
 theorem FiniteFilteredTaskFrame_serial [SuccOrder D] [NoMaxOrder D] (phi : Formula) :
-    ParamTaskFrame.Serial (FiniteFilteredTaskFrame D phi).TaskRel :=
+    TaskFrame.Serial (FiniteFilteredTaskFrame D phi).TaskRel :=
   RefinedFilteredTaskFrame_serial D phi
 
 /-- The interpolation half of *Compositionality* (`def:frame#Compositionality`) for the finite
 filtered frame, inherited. -/
 theorem FiniteFilteredTaskFrame_interpolates [SuccOrder D] [NoMaxOrder D] (phi : Formula) :
-    ParamTaskFrame.Interpolates (FiniteFilteredTaskFrame D phi).TaskRel :=
+    TaskFrame.Interpolates (FiniteFilteredTaskFrame D phi).TaskRel :=
   RefinedFilteredTaskFrame_interpolates D phi
 
 /-- *Limit* (`def:frame#Limit`) for the finite filtered frame, in the literal transcribed shape,
@@ -213,7 +213,7 @@ theorem FiniteFilteredTaskFrame_limit [SuccOrder D] [NoMaxOrder D] (phi : Formul
 
 /-- *Spherical* (`def:frame#Spherical`) for the finite filtered frame, inherited. -/
 theorem FiniteFilteredTaskFrame_spherical [SuccOrder D] [NoMaxOrder D] (phi : Formula) :
-    ParamTaskFrame.Spherical (FiniteFilteredTaskFrame D phi).TaskRel :=
+    TaskFrame.Spherical (FiniteFilteredTaskFrame D phi).TaskRel :=
   RefinedFilteredTaskFrame_spherical D phi
 
 /-!

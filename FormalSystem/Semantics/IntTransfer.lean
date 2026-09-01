@@ -81,13 +81,13 @@ pulling back along `e.symm`. Each of the seven fields is then the original field
 compatibility.
 
 The *Spherical* field is the cheapest of the interesting ones rather than the most expensive:
-under an ordered-group isomorphism the fiber and segment predicates (`ParamTaskFrame.Fib`,
-`ParamTaskFrame.Seg`) pick out the *identical* subsets of `WorldState`, so `F.spherical` is handed
+under an ordered-group isomorphism the fiber and segment predicates (`TaskFrame.Fib`,
+`TaskFrame.Seg`) pick out the *identical* subsets of `WorldState`, so `F.spherical` is handed
 back the **same** directed family. No directedness argument is reconstructed.
 -/
 def ParamTaskFrame.map (F : ParamTaskFrame D) (e : D ≃+o E) : ParamTaskFrame E where
   WorldState := F.WorldState
-  nonempty := F.nonempty
+  worldNonempty := F.worldNonempty
   TaskRel := fun w d u => F.TaskRel w (e.symm d) u
   nullity_identity := by
     intro w u
@@ -131,7 +131,7 @@ def ParamTaskFrame.map (F : ParamTaskFrame D) (e : D ≃+o E) : ParamTaskFrame E
     · refine Or.inr ⟨w, v, e.symm x, e.symm y, ?_, ?_, ?_⟩
       · simpa using (map_le_map_iff e.symm (a := 0) (b := x)).mpr hx
       · simpa using (map_le_map_iff e.symm (a := 0) (b := y)).mpr hy
-      · simp [ParamTaskFrame.Seg, ParamTaskFrame.Fib, map_neg]
+      · simp [TaskFrame.Seg, TaskFrame.Fib, map_neg]
 
 /--
 Transport a task model along `e`. The valuation is carried over verbatim: `ParamTaskFrame.map` leaves

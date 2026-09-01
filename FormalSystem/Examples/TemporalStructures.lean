@@ -77,10 +77,10 @@ Discrete time steps with integer arithmetic. WorldState is Unit (trivial).
 -/
 def intTimeFrame : ParamTaskFrame Int where
   WorldState := Unit
-  nonempty := inferInstanceAs (Nonempty Unit)
+  worldNonempty := inferInstanceAs (Nonempty Unit)
   TaskRel := fun _ _ _ => True
   nullity_identity := fun _ _ => ⟨fun _ => Subsingleton.elim _ _, fun _ => trivial⟩
-  comp := ParamTaskFrame.comp_of (ParamTaskFrame.interpolates_of_total fun _ _ _ => trivial)
+  comp := TaskFrame.comp_of (ParamTaskFrame.interpolates_of_total fun _ _ _ => trivial)
     fun _ _ _ _ _ _ _ _ _ => trivial
   converse := fun _ _ _ => ⟨fun _ => trivial, fun _ => trivial⟩
   serial := ParamTaskFrame.serial_of_total fun _ _ _ => trivial
@@ -91,13 +91,13 @@ def intTimeFrame : ParamTaskFrame Int where
 
 /-- *Seriality* (`def:frame#Seriality`, verbatim: "$w \Rightarrow_x u$ and $v \Rightarrow_x w$
 for some $u, v \in W$") for `intTimeFrame`: its relation is total. -/
-theorem intTimeFrame_serial : ParamTaskFrame.Serial intTimeFrame.TaskRel :=
+theorem intTimeFrame_serial : TaskFrame.Serial intTimeFrame.TaskRel :=
   ParamTaskFrame.serial_of_total fun _ _ _ => trivial
 
 /-- The interpolation half of *Compositionality* (`def:frame#Compositionality`, verbatim:
 "$w \Rightarrow_{x + y} v$ if and only if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some
 $u \in W$") for `intTimeFrame`: its relation is total. -/
-theorem intTimeFrame_interpolates : ParamTaskFrame.Interpolates intTimeFrame.TaskRel :=
+theorem intTimeFrame_interpolates : TaskFrame.Interpolates intTimeFrame.TaskRel :=
   ParamTaskFrame.interpolates_of_total fun _ _ _ => trivial
 
 /-- *Limit* (`def:frame#Limit`, verbatim: "$\bigcap\limits_{x > 0} (w)_x = \set{w}$") for
@@ -110,7 +110,7 @@ theorem intTimeFrame_limit :
 /-- *Spherical* (`def:frame#Spherical`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
 $\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments") for `intTimeFrame`:
 its carrier is `Unit`, so every nonempty subset is the whole carrier. -/
-theorem intTimeFrame_spherical : ParamTaskFrame.Spherical intTimeFrame.TaskRel := by
+theorem intTimeFrame_spherical : TaskFrame.Spherical intTimeFrame.TaskRel := by
   haveI : Subsingleton intTimeFrame.WorldState := inferInstanceAs (Subsingleton Unit)
   exact ParamTaskFrame.spherical_of_subsingleton
 
@@ -122,7 +122,7 @@ to satisfy nullity_identity while remaining permissive for non-zero durations.
 -/
 def intNatFrame : ParamTaskFrame Int where
   WorldState := Nat
-  nonempty := inferInstanceAs (Nonempty Nat)
+  worldNonempty := inferInstanceAs (Nonempty Nat)
   TaskRel := fun w d u => d ≠ 0 ∨ w = u
   nullity_identity := fun w u => by
     constructor
@@ -132,7 +132,7 @@ def intNatFrame : ParamTaskFrame Int where
       | inr h => exact h
     · intro h
       right; exact h
-  comp := ParamTaskFrame.comp_of (ParamTaskFrame.interpolates_of_permissive fun _ _ _ => Iff.rfl)
+  comp := TaskFrame.comp_of (ParamTaskFrame.interpolates_of_permissive fun _ _ _ => Iff.rfl)
     fun w u v x y hx hy h1 h2 => by
       cases h1 with
       | inl hxne =>
@@ -176,13 +176,13 @@ theorem intNatFrame_rel_iff :
 
 /-- *Seriality* (`def:frame#Seriality`, verbatim: "$w \Rightarrow_x u$ and $v \Rightarrow_x w$
 for some $u, v \in W$") for `intNatFrame`, via the `w = u` disjunct. -/
-theorem intNatFrame_serial : ParamTaskFrame.Serial intNatFrame.TaskRel :=
+theorem intNatFrame_serial : TaskFrame.Serial intNatFrame.TaskRel :=
   ParamTaskFrame.serial_of_permissive intNatFrame_rel_iff
 
 /-- The interpolation half of *Compositionality* (`def:frame#Compositionality`, verbatim:
 "$w \Rightarrow_{x + y} v$ if and only if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some
 $u \in W$") for `intNatFrame`. -/
-theorem intNatFrame_interpolates : ParamTaskFrame.Interpolates intNatFrame.TaskRel :=
+theorem intNatFrame_interpolates : TaskFrame.Interpolates intNatFrame.TaskRel :=
   ParamTaskFrame.interpolates_of_permissive intNatFrame_rel_iff
 
 /-- *Limit* (`def:frame#Limit`, verbatim: "$\bigcap\limits_{x > 0} (w)_x = \set{w}$") for
@@ -196,7 +196,7 @@ theorem intNatFrame_limit :
 /-- *Spherical* (`def:frame#Spherical`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
 $\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments") for `intNatFrame`:
 every nonempty fiber and segment is the whole carrier or a singleton. -/
-theorem intNatFrame_spherical : ParamTaskFrame.Spherical intNatFrame.TaskRel :=
+theorem intNatFrame_spherical : TaskFrame.Spherical intNatFrame.TaskRel :=
   ParamTaskFrame.spherical_of_permissive intNatFrame_rel_iff
 
 /--
@@ -224,7 +224,7 @@ and one is a frame-class predicate. `def:frame` is the source of record for all 
 -/
 def intBoolFrame : ParamTaskFrame Int where
   WorldState := Bool
-  nonempty := inferInstanceAs (Nonempty Bool)
+  worldNonempty := inferInstanceAs (Nonempty Bool)
   TaskRel := fun w d u => d ≠ 0 ∨ w = u
   nullity_identity := fun w u => by
     constructor
@@ -234,7 +234,7 @@ def intBoolFrame : ParamTaskFrame Int where
       | inr h => exact h
     · intro h
       right; exact h
-  comp := ParamTaskFrame.comp_of (ParamTaskFrame.interpolates_of_permissive fun _ _ _ => Iff.rfl)
+  comp := TaskFrame.comp_of (ParamTaskFrame.interpolates_of_permissive fun _ _ _ => Iff.rfl)
     fun w u v x y hx hy h1 h2 => by
       cases h1 with
       | inl hxne =>
@@ -276,13 +276,13 @@ theorem intBoolFrame_rel_iff :
 
 /-- *Seriality* (`def:frame#Seriality`, verbatim: "$w \Rightarrow_x u$ and $v \Rightarrow_x w$
 for some $u, v \in W$") for `intBoolFrame`, via the `w = u` disjunct. -/
-theorem intBoolFrame_serial : ParamTaskFrame.Serial intBoolFrame.TaskRel :=
+theorem intBoolFrame_serial : TaskFrame.Serial intBoolFrame.TaskRel :=
   ParamTaskFrame.serial_of_permissive intBoolFrame_rel_iff
 
 /-- The interpolation half of *Compositionality* (`def:frame#Compositionality`, verbatim:
 "$w \Rightarrow_{x + y} v$ if and only if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some
 $u \in W$") for `intBoolFrame`. -/
-theorem intBoolFrame_interpolates : ParamTaskFrame.Interpolates intBoolFrame.TaskRel :=
+theorem intBoolFrame_interpolates : TaskFrame.Interpolates intBoolFrame.TaskRel :=
   ParamTaskFrame.interpolates_of_permissive intBoolFrame_rel_iff
 
 /-- *Limit* (`def:frame#Limit`, verbatim: "$\bigcap\limits_{x > 0} (w)_x = \set{w}$") for
@@ -301,7 +301,7 @@ choice-free for this relation shape, while `spherical_of_finite` carries `Classi
 (unavoidably: weak excluded middle follows from `Spherical` at a finite carrier). Routing this
 frame through the finite lemma would be a pure axiom-profile regression with nothing gained.
 -/
-theorem intBoolFrame_spherical : ParamTaskFrame.Spherical intBoolFrame.TaskRel :=
+theorem intBoolFrame_spherical : TaskFrame.Spherical intBoolFrame.TaskRel :=
   ParamTaskFrame.spherical_of_permissive intBoolFrame_rel_iff
 
 /--
@@ -330,10 +330,10 @@ This demonstrates ProofChecker's polymorphic design. WorldState is Unit (trivial
 -/
 def genericTimeFrame : ParamTaskFrame D where
   WorldState := Unit
-  nonempty := inferInstanceAs (Nonempty Unit)
+  worldNonempty := inferInstanceAs (Nonempty Unit)
   TaskRel := fun _ _ _ => True
   nullity_identity := fun _ _ => ⟨fun _ => Subsingleton.elim _ _, fun _ => trivial⟩
-  comp := ParamTaskFrame.comp_of (ParamTaskFrame.interpolates_of_total fun _ _ _ => trivial)
+  comp := TaskFrame.comp_of (ParamTaskFrame.interpolates_of_total fun _ _ _ => trivial)
     fun _ _ _ _ _ _ _ _ _ => trivial
   converse := fun _ _ _ => ⟨fun _ => trivial, fun _ => trivial⟩
   serial := ParamTaskFrame.serial_of_total fun _ _ _ => trivial
@@ -344,13 +344,13 @@ def genericTimeFrame : ParamTaskFrame D where
 
 /-- *Seriality* (`def:frame#Seriality`, verbatim: "$w \Rightarrow_x u$ and $v \Rightarrow_x w$
 for some $u, v \in W$") for `genericTimeFrame`: its relation is total, at every `D`. -/
-theorem genericTimeFrame_serial : ParamTaskFrame.Serial (genericTimeFrame D).TaskRel :=
+theorem genericTimeFrame_serial : TaskFrame.Serial (genericTimeFrame D).TaskRel :=
   ParamTaskFrame.serial_of_total fun _ _ _ => trivial
 
 /-- The interpolation half of *Compositionality* (`def:frame#Compositionality`, verbatim:
 "$w \Rightarrow_{x + y} v$ if and only if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some
 $u \in W$") for `genericTimeFrame`: its relation is total, at every `D`. -/
-theorem genericTimeFrame_interpolates : ParamTaskFrame.Interpolates (genericTimeFrame D).TaskRel :=
+theorem genericTimeFrame_interpolates : TaskFrame.Interpolates (genericTimeFrame D).TaskRel :=
   ParamTaskFrame.interpolates_of_total fun _ _ _ => trivial
 
 /-- *Limit* (`def:frame#Limit`, verbatim: "$\bigcap\limits_{x > 0} (w)_x = \set{w}$") for
@@ -364,7 +364,7 @@ theorem genericTimeFrame_limit :
 /-- *Spherical* (`def:frame#Spherical`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
 $\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments") for
 `genericTimeFrame`: its carrier is `Unit`, so every nonempty subset is the whole carrier. -/
-theorem genericTimeFrame_spherical : ParamTaskFrame.Spherical (genericTimeFrame D).TaskRel := by
+theorem genericTimeFrame_spherical : TaskFrame.Spherical (genericTimeFrame D).TaskRel := by
   haveI : Subsingleton (genericTimeFrame D).WorldState := inferInstanceAs (Subsingleton Unit)
   exact ParamTaskFrame.spherical_of_subsingleton
 
@@ -379,7 +379,7 @@ state and *Limit* (`def:frame#Limit`) fails outright.
 -/
 def genericNatFrame [SuccOrder D] [NoMaxOrder D] : ParamTaskFrame D where
   WorldState := Nat
-  nonempty := inferInstanceAs (Nonempty Nat)
+  worldNonempty := inferInstanceAs (Nonempty Nat)
   TaskRel := fun w d u => d ≠ 0 ∨ w = u
   nullity_identity := fun w u => by
     constructor
@@ -389,7 +389,7 @@ def genericNatFrame [SuccOrder D] [NoMaxOrder D] : ParamTaskFrame D where
       | inr h => exact h
     · intro h
       right; exact h
-  comp := ParamTaskFrame.comp_of (ParamTaskFrame.interpolates_of_permissive fun _ _ _ => Iff.rfl)
+  comp := TaskFrame.comp_of (ParamTaskFrame.interpolates_of_permissive fun _ _ _ => Iff.rfl)
     fun w u v x y hx hy h1 h2 => by
       cases h1 with
       | inl hxne =>
@@ -434,14 +434,14 @@ theorem genericNatFrame_rel_iff [SuccOrder D] [NoMaxOrder D] :
 /-- *Seriality* (`def:frame#Seriality`, verbatim: "$w \Rightarrow_x u$ and $v \Rightarrow_x w$
 for some $u, v \in W$") for `genericNatFrame`, via the `w = u` disjunct. Holds at every `D`. -/
 theorem genericNatFrame_serial [SuccOrder D] [NoMaxOrder D] :
-    ParamTaskFrame.Serial (genericNatFrame D).TaskRel :=
+    TaskFrame.Serial (genericNatFrame D).TaskRel :=
   ParamTaskFrame.serial_of_permissive (genericNatFrame_rel_iff D)
 
 /-- The interpolation half of *Compositionality* (`def:frame#Compositionality`, verbatim:
 "$w \Rightarrow_{x + y} v$ if and only if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some
 $u \in W$") for `genericNatFrame`. Holds at every `D`. -/
 theorem genericNatFrame_interpolates [SuccOrder D] [NoMaxOrder D] :
-    ParamTaskFrame.Interpolates (genericNatFrame D).TaskRel :=
+    TaskFrame.Interpolates (genericNatFrame D).TaskRel :=
   ParamTaskFrame.interpolates_of_permissive (genericNatFrame_rel_iff D)
 
 /--
@@ -463,7 +463,7 @@ $\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments") for
 `genericNatFrame`: every nonempty fiber and segment is the whole carrier or a singleton, and a
 directed family cannot contain two distinct singletons. No restriction on `D` is needed. -/
 theorem genericNatFrame_spherical [SuccOrder D] [NoMaxOrder D] :
-    ParamTaskFrame.Spherical (genericNatFrame D).TaskRel :=
+    TaskFrame.Spherical (genericNatFrame D).TaskRel :=
   ParamTaskFrame.spherical_of_permissive (genericNatFrame_rel_iff D)
 
 /--

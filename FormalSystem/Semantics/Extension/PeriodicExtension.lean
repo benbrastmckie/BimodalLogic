@@ -132,6 +132,8 @@ private theorem iterate_periodic {W : Type} (g : W → W) (w : W) {m n : ℕ}
 
 namespace ParamTaskFrame
 
+open TaskFrame
+
 /--
 **Periodic extension over a finite carrier.**
 
@@ -160,17 +162,17 @@ theorem extend_periodic {F : ParamTaskFrame ℤ} [Finite F.WorldState]
         (∀ x : ℤ, n₁ ≤ x → σ.path (x + p₁) = σ.path x) ∧
         (∀ x : ℤ, x ≤ n₀ → σ.path (x - p₀) = σ.path x) := by
   classical
-  haveI : Inhabited F.WorldState := Classical.inhabited_of_nonempty F.nonempty
+  haveI : Inhabited F.WorldState := Classical.inhabited_of_nonempty F.worldNonempty
   -- Seriality at duration `1`, in both directions, through the iterate lemmas.
   have hser1 : ∀ w : F.WorldState, ∃ u, F.step w u := by
     intro w
     obtain ⟨u, hu⟩ :=
-      exists_iter_fwd (R₁ := F.step) (fun v => (F.serial v 1 (by omega)).1) 1 w
+      exists_iter_fwd (R₁ := F.step) (fun v => (F.serial v 1 zero_le_one).1) 1 w
     exact ⟨u, step_of_iter_one hu⟩
   have hser2 : ∀ w : F.WorldState, ∃ v, F.step v w := by
     intro w
     obtain ⟨v, hv⟩ :=
-      exists_iter_bwd (R₁ := F.step) (fun u => (F.serial u 1 (by omega)).2) 1 w
+      exists_iter_bwd (R₁ := F.step) (fun u => (F.serial u 1 zero_le_one).2) 1 w
     exact ⟨v, step_of_iter_one hv⟩
   set sc : F.WorldState → F.WorldState := fun w => Classical.choose (hser1 w) with hscdef
   set pr : F.WorldState → F.WorldState := fun w => Classical.choose (hser2 w) with hprdef
@@ -286,6 +288,8 @@ recorded as follow-up rather than quietly omitted.
 -/
 
 namespace ParamTaskFrame
+
+open TaskFrame
 
 /-- Adjacency along a window is an iterate between any two of its times. -/
 theorem iter_of_adjacent {F : ParamTaskFrame ℤ} (w : ℤ → F.WorldState) (a b : ℤ)
