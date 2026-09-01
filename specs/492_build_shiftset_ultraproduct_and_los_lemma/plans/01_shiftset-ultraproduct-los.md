@@ -335,7 +335,7 @@ noted as a partial-completion checkpoint, not as a parallel wave.
 - **Verification Tier:** full
 - **Commit Mode:** per-substep
 
-### Phase 3: Los.lean — the Łoś lemma for ShiftTruth (six cases) and for TruthAt [NOT STARTED]
+### Phase 3: Los.lean — the Łoś lemma for ShiftTruth (six cases) and for TruthAt [IN PROGRESS]
 
 - **Goal:** Prove `los` (Łoś at `ShiftTruth`, by induction on `Formula`, all six cases) and
   `los_truthAt` (Łoś at `TruthAt`, by conjugating `los` with `ShiftSet.forward_repr`). This is
