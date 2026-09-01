@@ -69,7 +69,7 @@ open FormalSystem.Syntax
 A formula is valid if it is true in all models, at all times, at every **total** history, for
 every temporal type `D` satisfying `LinearOrderedAddCommGroup`.
 
-Formally: for every temporal type `D`, every task frame `F : ParamTaskFrame D`, every model `M` over
+Formally: for every temporal type `D`, every task frame `F` over `D`, every model `M` over
 `F`, every history `τ` with `τ.IsTotal`, and every time `t : D`, the formula is true at
 `(M, τ, t)`.
 
@@ -152,11 +152,9 @@ For absolute satisfiability (exists in some type), use `∃ D, satisfiable D Γ`
 
 **Note**: Satisfiability quantifies over all times `t : D`, not just domain times.
 -/
-def satisfiable (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
-    [Nontrivial D] (Γ : Context) :
-    Prop :=
-  ∃ (F : ParamTaskFrame D) (M : TaskModel F)
-    (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
+def satisfiable (D : TemporalOrder) (Γ : Context) : Prop :=
+  ∃ (F : FrameOver D) (M : TaskModel F.toTaskFrame)
+    (τ : WorldHistory F.toTaskFrame) (_ : τ.IsTotal) (t : ↑D),
     ∀ φ ∈ Γ, TruthAt M τ t φ
 
 /--
@@ -166,8 +164,7 @@ Carries `Nontrivial` alongside the other structure binders so that `satisfiable`
 the "No paper anchor" note on `satisfiable`.
 -/
 def SatisfiableAbs (Γ : Context) : Prop :=
-  ∃ (D : Type) (_ : AddCommGroup D) (_ : LinearOrder D) (_ : IsOrderedAddMonoid D)
-    (_ : Nontrivial D), satisfiable D Γ
+  ∃ D : TemporalOrder, satisfiable D Γ
 
 /--
 A single formula is satisfiable if there exists a model where it is true at some point.
@@ -226,7 +223,7 @@ The binder bundle below is instantiated by `ℤ` with **no instance work whatsoe
   `[propext, Classical.choice, Quot.sound]`.
 - **Establishing** `ValidDiscrete φ` from a statement about `ℤ`-frames alone is the direction that
   needs work, because there the `∀ D` binder must be *discharged for an arbitrary* `D`, which
-  requires normalizing `D` to `ℤ` and transporting `ParamTaskFrame`, `TaskModel`, `WorldHistory`, and
+  requires normalizing `D` to `ℤ` and transporting the frame, `TaskModel`, `WorldHistory`, and
   `TruthAt` across the resulting isomorphism.
 
 `Semantics/IntNormalForm.lean`'s module docstring names the exact Mathlib route for that
@@ -427,22 +424,19 @@ type and the statement would be quantifying the antecedent over strictly more ty
 conclusion can use.
 -/
 theorem unsatisfiable_implies_all {Γ : Context} {φ : Formula} :
-    (∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D],
-      ¬satisfiable D Γ) →
-      (Γ ⊨ φ) :=
+    (∀ D : TemporalOrder, ¬satisfiable D Γ) → (Γ ⊨ φ) :=
   fun h_unsat F M τ hτ t h_all =>
-    absurd ⟨F.toParam, M, τ, hτ, t, h_all⟩ (h_unsat F.Duration)
+    absurd ⟨F.toFibre, M, τ, hτ, t, h_all⟩ (h_unsat F.Duration)
 
 /--
 Unsatisfiable context in a fixed temporal type implies consequence in that type.
 This is the type-specific version of explosion.
 -/
-theorem unsatisfiable_implies_all_fixed {D : Type} [AddCommGroup D] [LinearOrder D]
-    [IsOrderedAddMonoid D] [Nontrivial D]
+theorem unsatisfiable_implies_all_fixed {D : TemporalOrder}
     {Γ : Context} {φ : Formula} :
-    ¬satisfiable D Γ → ∀ (F : ParamTaskFrame D) (M : TaskModel F)
-      (τ : WorldHistory F) (_ : τ.IsTotal)
-      (t : D), (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ := by
+    ¬satisfiable D Γ → ∀ (F : FrameOver D) (M : TaskModel F.toTaskFrame)
+      (τ : WorldHistory F.toTaskFrame) (_ : τ.IsTotal)
+      (t : ↑D), (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ := by
   intro h_unsat F M τ hτ t h_all
   exfalso
   apply h_unsat
@@ -518,12 +512,12 @@ adds the notion that holds a single frame fixed.
 
 **No notation is introduced for `⊨_F`.** `Truth.lean` records that a `TruthAt` notation was
 dropped because it conflicts with the `⊨` validity notation in this file; a subscripted variant
-would sit in the same parser neighbourhood for no gain. The ASCII name `ParamTaskFrame.ValidOn` is
+would sit in the same parser neighbourhood for no gain. The ASCII name `TaskFrame.ValidOn` is
 used instead, and dot-notation (`F.ValidOn φ`) reads as the paper's `⊨_F φ` does.
 
 **This is not a parallel validity notion.** `valid_iff_forall_validOn` below proves the two are
 related by quantification over frames, so `ValidOn` is a specialization of the one validity
-predicate rather than a competitor to it — the same discipline `ParamTaskFrame.HF` follows with
+predicate rather than a competitor to it — the same discipline `TaskFrame.HF` follows with
 respect to `WorldHistory.IsTotal`.
 -/
 
@@ -565,7 +559,7 @@ exactly `cor:occurrence`'s closing clause — `H_F ≠ ∅` — so the frame axi
 here as hypotheses.
 
 **Wholly frame-intrinsic.** *Spherical*, *Seriality*, *Interpolation* and *Limit* are not
-arguments: `ParamTaskFrame` carries them as structure fields, and `cor:occurrence` reads them off the
+arguments: `FrameOver` carries them as structure fields, and `cor:occurrence` reads them off the
 frame. Neither is a world state: the carrier's nonemptiness is the `nonempty` field, so the
 statement is the bare `¬ F.ValidOn ⊥` with `F` its only argument, exactly as `def:frame`'s
 "nonempty set of world states" licenses.
@@ -597,8 +591,8 @@ namespace Validity
 Validity **is** validity on every frame: `⊨ φ` iff `φ` is valid over every frame of every
 temporal type.
 
-This is the theorem that keeps `ParamTaskFrame.ValidOn` from being a second, competing validity
-notion. `valid` (`def:logical-consequence`'s closing clause) and `ParamTaskFrame.ValidOn`
+This is the theorem that keeps `TaskFrame.ValidOn` from being a second, competing validity
+notion. `valid` (`def:logical-consequence`'s closing clause) and `TaskFrame.ValidOn`
 (`def:frame-validity`) differ only in *which* quantifiers are discharged: `valid` closes over the
 temporal type and the frame, `ValidOn` leaves both fixed. Stated as a theorem rather than
 introduced as an abbreviation, exactly so that the equivalence is a proof obligation the build

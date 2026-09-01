@@ -39,14 +39,13 @@ parameter and no shift-closure side condition: totality is trivially preserved b
 so time-shift invariance carries no side condition. `TruthAt`'s remaining set argument is inert
 and is supplied as `Set.univ`.
 -/
-def IsValid (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D] (φ : Formula) :
-    Prop :=
-  ∀ (F : ParamTaskFrame D) (M : TaskModel F)
-    (τ : WorldHistory F) (_hτ : τ.IsTotal) (t : D),
+def IsValid (D : TemporalOrder) (φ : Formula) : Prop :=
+  ∀ (F : FrameOver D) (M : TaskModel F.toTaskFrame)
+    (τ : WorldHistory F.toTaskFrame) (_hτ : τ.IsTotal) (t : ↑D),
     TruthAt M τ t φ
 
 -- Section variable for theorem signatures
-variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
+variable {D : TemporalOrder}
 
 /--
 Auxiliary lemma: If φ is valid, then for any specific tuple `(M, τ, hτ, t)` with `τ` total,
@@ -54,8 +53,8 @@ Auxiliary lemma: If φ is valid, then for any specific tuple `(M, τ, hτ, t)` w
 
 This is just the definition of validity, but stated as a lemma for clarity.
 -/
-theorem valid_at_triple {φ : Formula} (F : ParamTaskFrame D) (M : TaskModel F)
-    (τ : WorldHistory F) (_hτ : τ.IsTotal) (t : D) (h_valid : IsValid D φ) :
+theorem valid_at_triple {φ : Formula} (F : FrameOver D) (M : TaskModel F.toTaskFrame)
+    (τ : WorldHistory F.toTaskFrame) (_hτ : τ.IsTotal) (t : ↑D) (h_valid : IsValid D φ) :
     TruthAt M τ t φ := h_valid F M τ _hτ t
 
 /--
@@ -65,8 +64,8 @@ This lemma proves that applying swap twice to a formula preserves truth evaluati
 Required because TruthAt is defined by structural recursion, preventing direct use
 of the involution property φ.swap.swap = φ via substitution.
 -/
-theorem truth_at_swap_swap {F : ParamTaskFrame D} (M : TaskModel F)
-    (τ : WorldHistory F) (t : D) (φ : Formula) :
+theorem truth_at_swap_swap {F : FrameOver D} (M : TaskModel F.toTaskFrame)
+    (τ : WorldHistory F.toTaskFrame) (t : ↑D) (φ : Formula) :
     TruthAt M τ t φ.swapTemporal.swapTemporal ↔ TruthAt M τ t φ := by
   induction φ generalizing τ t with
   | atom p =>

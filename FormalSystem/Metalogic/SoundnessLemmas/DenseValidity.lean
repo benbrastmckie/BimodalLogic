@@ -22,7 +22,7 @@ open FormalSystem.Syntax
 open FormalSystem.ProofSystem (Axiom DerivationTree FrameClass)
 open FormalSystem.Semantics
 
-variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
+variable {D : TemporalOrder}
 
 /-! ## Axiom Swap Validity (Approach D: Derivation-Indexed Proof)
 
@@ -293,7 +293,7 @@ The proof handles each axiom case:
 - **modal_future (MF)**: Uses `time_shift_preserves_truth` to bridge times (TF now derived)
 -/
 
-theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) [DenselyOrdered D] [Nontrivial D]
+theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) [DenselyOrdered ↑D]
     (h_fc : h.minFrameClass ≤ FrameClass.Dense) : IsValid D φ.swapTemporal := by
   cases h with
   | prop_k ψ χ ρ =>
@@ -956,7 +956,7 @@ theorem axiom_P_since_equiv_valid (φ : Formula) :
 
 /-- Density axiom (DN) is locally valid on dense orders: `GGφ → Gφ` (Sahlqvist form).
 Under reflexive semantics, trivially valid via r = t. -/
-private theorem axiom_density_valid [DenselyOrdered D] (φ : Formula) :
+private theorem axiom_density_valid [DenselyOrdered ↑D] (φ : Formula) :
     IsValid D (φ.allFuture.allFuture.imp φ.allFuture) := by
   intro F M τ _hτ t
   simp only [TruthAt, Truth.future_iff]
@@ -966,7 +966,7 @@ private theorem axiom_density_valid [DenselyOrdered D] (φ : Formula) :
   exact h_GG r htr s hrs
 
 /-- All dense-compatible axioms are locally valid on dense orders. -/
-private theorem axiom_locally_valid [DenselyOrdered D] [Nontrivial D] {φ : Formula} (h : Axiom φ)
+private theorem axiom_locally_valid [DenselyOrdered ↑D] {φ : Formula} (h : Axiom φ)
     (h_fc : h.minFrameClass ≤ FrameClass.Dense) : IsValid D φ := by
   cases h with
   | prop_k φ ψ χ => exact axiom_prop_k_valid φ ψ χ
@@ -1317,7 +1317,7 @@ for the subderivation. We use:
 
 This resolves the mutual recursion by proving both goals in a single pass.
 -/
-theorem derivable_valid_and_swap_valid [DenselyOrdered D] [Nontrivial D]
+theorem derivable_valid_and_swap_valid [DenselyOrdered ↑D]
     {φ : Formula} (d : DerivationTree FrameClass.Dense [] φ) :
     IsValid D φ ∧ IsValid D φ.swapTemporal := by
   match d with
@@ -1359,14 +1359,14 @@ Individual theorems extracted from the combined result for convenience.
 -/
 
 /-- Derivability implies local validity (extracted from combined theorem). -/
-theorem derivable_locally_valid [DenselyOrdered D] [Nontrivial D]
+theorem derivable_locally_valid [DenselyOrdered ↑D]
     {φ : Formula} (d : DerivationTree FrameClass.Dense [] φ) :
     IsValid D φ :=
   (derivable_valid_and_swap_valid d).1
 
 /-- Derivability implies swap validity (extracted from combined theorem).
 This is the theorem needed for the temporal_duality case in soundness_dense. -/
-theorem derivable_implies_swap_valid [DenselyOrdered D] [Nontrivial D]
+theorem derivable_implies_swap_valid [DenselyOrdered ↑D]
     {φ : Formula} (d : DerivationTree FrameClass.Dense [] φ) :
     IsValid D φ.swapTemporal :=
   (derivable_valid_and_swap_valid d).2

@@ -2410,7 +2410,7 @@ proofs below evaluate against, so this is now a plain re-export. It is kept as a
 three `.Discrete` call sites read the same as they did when a carrier transport was still needed;
 it disappears with `TruthAt`'s set parameter itself. -/
 theorem truthAt_of_isValid {F : ParamTaskFrame D} {M : TaskModel F}
-    {φ : Formula} (h : SoundnessLemmas.IsValid D φ)
+    {φ : Formula} (h : SoundnessLemmas.IsValid (TemporalOrder.of D) φ)
     (τ : WorldHistory F) (hτ : τ.IsTotal) (t : D) : TruthAt M τ t φ :=
   h F M τ hτ t
 

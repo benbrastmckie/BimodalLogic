@@ -848,20 +848,20 @@ If φ holds at some future time, there is a nearest future time where φ holds. 
 theorem prior_UZ_valid (φ : Formula) :
     ValidDiscrete (φ.someFuture.imp (Formula.untl φ.neg φ)) := by
   intro F _ _ _ _ M τ h_mem t
-  exact SoundnessLemmas.prior_UZ_is_valid φ F.toParam M τ h_mem t
+  exact SoundnessLemmas.prior_UZ_is_valid φ F.toFibre M τ h_mem t
 
 /-- Prior-SZ is valid on discrete orders: P(φ) → S(φ, ¬φ).
 If φ held at some past time, there is a nearest past time where φ held. -/
 theorem prior_SZ_valid (φ : Formula) : ValidDiscrete (φ.somePast.imp (Formula.snce φ.neg φ)) := by
   intro F _ _ _ _ M τ h_mem t
-  exact SoundnessLemmas.prior_SZ_is_valid φ F.toParam M τ h_mem t
+  exact SoundnessLemmas.prior_SZ_is_valid φ F.toFibre M τ h_mem t
 
 /-- Z1 is valid on discrete orders: G(Gφ→φ) → (FGφ→Gφ).
 Backward induction from the Gφ witness using IsSuccArchimedean. -/
 theorem z1_valid (φ : Formula) : ValidDiscrete
     ((φ.allFuture.imp φ).allFuture.imp (φ.allFuture.someFuture.imp φ.allFuture)) := by
   intro F _ _ _ _ M τ h_mem t
-  exact SoundnessLemmas.z1_is_valid φ F.toParam M τ h_mem t
+  exact SoundnessLemmas.z1_is_valid φ F.toFibre M τ h_mem t
 
 /-- All base TM axioms (excluding density, discreteness, and seriality) are universally valid.
 With strict semantics, density requires DenselyOrdered, discreteness requires SuccOrder,
@@ -1171,7 +1171,7 @@ theorem soundness (Γ : Context) (φ : Formula)
   | temporal_duality φ' d' ih =>
     -- d' : ⊢ φ', goal is TruthAt ... φ'.swapTemporal
     -- Use general swap validity with dense-compatibility guard
-    exact SoundnessLemmas.derivable_implies_swap_valid_general d' F.toParam M τ h_mem t
+    exact SoundnessLemmas.derivable_implies_swap_valid_general d' F.toFibre M τ h_mem t
   | weakening Γ' Δ' φ' _ h_sub ih =>
     exact ih τ h_mem t (fun ψ h_in => h_ctx ψ (h_sub h_in))
 
@@ -1237,7 +1237,7 @@ theorem soundness_dense_valid {phi : Formula}
     -- ValidDense psi' → ValidDense (swap psi')
     -- Use derivable_implies_swap_valid which gives IsValid, then convert
     intro F _ M tau h_mem t
-    exact SoundnessLemmas.derivable_implies_swap_valid d' F.toParam M tau h_mem t
+    exact SoundnessLemmas.derivable_implies_swap_valid d' F.toFibre M tau h_mem t
   | .weakening Gamma' _ _ d' h_sub =>
     -- Since d : DerivationTree [] phi and Gamma' ⊆ [], we have Gamma' = []
     have h_eq : Gamma' = [] := List.eq_nil_of_subset_nil h_sub
@@ -1341,7 +1341,7 @@ theorem soundness_dense (Γ : Context) (φ : Formula)
     intro s _hts
     exact ih τ h_mem s (by simp)
   | temporal_duality φ' d' ih =>
-    exact SoundnessLemmas.derivable_implies_swap_valid d' F.toParam M τ h_mem t
+    exact SoundnessLemmas.derivable_implies_swap_valid d' F.toFibre M τ h_mem t
   | weakening Γ' Δ' φ' _ h_sub ih =>
     exact ih τ h_mem t (fun ψ h_in => h_ctx ψ (h_sub h_in))
 
@@ -1392,7 +1392,7 @@ theorem soundness_discrete_valid {phi : Formula}
   | .temporal_duality psi' d' =>
     -- Use discrete swap validity for derivations that may contain Prior-UZ/SZ
     intro F _ _ _ _ M tau h_mem t
-    exact SoundnessLemmas.derivable_implies_swap_valid_discrete d' F.toParam M tau h_mem t
+    exact SoundnessLemmas.derivable_implies_swap_valid_discrete d' F.toFibre M tau h_mem t
   | .weakening Gamma' _ _ d' h_sub =>
     have h_eq : Gamma' = [] := List.eq_nil_of_subset_nil h_sub
     have h_height_eq : (h_eq ▸ d').height = d'.height := by subst h_eq; rfl
@@ -1441,7 +1441,7 @@ theorem soundness_discrete (Γ : Context) (φ : Formula)
     exact ih τ h_mem s (by simp)
   | temporal_duality φ' d' ih =>
     -- Use discrete swap validity for derivations that may contain Prior-UZ/SZ
-    exact SoundnessLemmas.derivable_implies_swap_valid_discrete d' F.toParam M τ h_mem t
+    exact SoundnessLemmas.derivable_implies_swap_valid_discrete d' F.toFibre M τ h_mem t
   | weakening Γ' Δ' φ' _ h_sub ih =>
     exact ih τ h_mem t (fun ψ h_in => h_ctx ψ (h_sub h_in))
 
@@ -1826,7 +1826,7 @@ theorem axiom_dedekind_swap_valid {φ : Formula} (h : Axiom φ)
     ValidDedekindDense φ.swapTemporal := by
   by_cases hdense : h.minFrameClass ≤ FrameClass.Dense
   · intro F _ _hlub M τ h_mem t
-    exact SoundnessLemmas.axiom_swap_valid (D := F.Duration) φ h hdense F.toParam M τ h_mem t
+    exact SoundnessLemmas.axiom_swap_valid (D := F.Duration) φ h hdense F.toFibre M τ h_mem t
   · cases h with
     | prior_U_gap ψ =>
       -- `(prior_U_gap ψ).swapTemporal` is definitionally `prior_S_gap ψ.swapTemporal`.

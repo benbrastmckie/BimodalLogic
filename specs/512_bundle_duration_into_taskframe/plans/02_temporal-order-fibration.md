@@ -759,7 +759,7 @@ needed **zero** edits, confirmed by a clean build that touched none of them.
 
 ---
 
-### Phase 5: Validity, the BL layer, and the fixed-carrier validity predicates [NOT STARTED]
+### Phase 5: Validity, the BL layer, and the fixed-carrier validity predicates [COMPLETED]
 
 **Goal**: The `Valid*` family, `TaskFrame.ValidOn`, and — newly expressible under the fibration —
 the three fixed-carrier predicates v01 had to exclude, all restated. This is v01's Phases 3 and 8
@@ -771,30 +771,38 @@ and every consumer breaks at once — no coercion, no alias, and no accessor abs
 the blast radius at 17 files spanning what it had assigned to five different phases.
 
 **Tasks**:
-- [ ] `Semantics/Validity.lean`: the five `Valid*` predicates and `TaskFrame.ValidOn` are already on
+- [x] `Semantics/Validity.lean`: the five `Valid*` predicates and `TaskFrame.ValidOn` are already on
       bundled frames from v01; confirm they still elaborate under the total-space `TaskFrame` and
       repair the `∀ (D : Type) [4 instances]` remnants to `∀ (D : TemporalOrder)`.
-- [ ] Restate `satisfiable` / `SatisfiableAbs` (v01 exclusion 1) over `FrameOver D`. Under the
+- [x] Restate `satisfiable` / `SatisfiableAbs` (v01 exclusion 1) over `FrameOver D`. Under the
       fibration `satisfiable D Γ` — "satisfiable in a frame over a fixed `D`" — is expressible for
       the first time: `(D : TemporalOrder)` and `∀ F : FrameOver D`. This is a binder restatement,
       not the H1 collapse.
-- [ ] Restate `SoundnessLemmas/{Core,DenseValidity,FrameClassVariants}.lean`'s `IsValid D`
+- [x] Restate `SoundnessLemmas/{Core,DenseValidity,FrameClassVariants}.lean`'s `IsValid D`
       (v01 exclusion 2) over `FrameOver D`, with the frame-class side condition as a statement-level
       instance binder `[DenselyOrdered ↑D]` (v01's recorded choice, preserved). Remove the
       `F.toParam` round-trips `Soundness.lean` needed to reach these lemmas — they become direct
       applications at `F.toFibre`.
-- [ ] Keep `valid_iff_forall_validOn` as the tie between the two notions — statement shape may
+- [x] Keep `valid_iff_forall_validOn` as the tie between the two notions — statement shape may
       change, content may not.
-- [ ] Repair the consumer sites the `Validity.lean` edit breaks: `Soundness.lean`,
+- [x] Repair the consumer sites the `Validity.lean` edit breaks: `Soundness.lean`,
       `BaseLanguageSoundness.lean`, `SetConsequence.lean`, `StrongCompleteness.lean`,
       `DiscreteNonCompactness.lean`, `SoundnessLemmas/CoValidity.lean`,
       `Automation/PrefilterSoundness.lean`, plus whatever the build names. The fixes are mechanical
-      (`intro D _ _ _ _ F M τ hτ t` → `intro F M τ hτ t`; `h D F M τ hτ t` → `h F M τ hτ t`).
-- [ ] `BLValidity.lean`, `BLTruth.lean`, `DurationClassification.lean`: confirm; the last is
+      (`intro D _ _ _ _ F M τ hτ t` → `intro F M τ hτ t`; `h D F M τ hτ t` → `h F M τ hτ t`). *(deviation: altered — the predicted
+      consumer set did not break. `valid` and its four siblings had already been moved to bundled
+      frames by v01, so their `∀ (D : Type) [4 instances]` binders were gone before this phase
+      started; the only such binders left in `Validity.lean` were on `satisfiable`,
+      `SatisfiableAbs` and `unsatisfiable_implies_all{,_fixed}`, which have no live consumers
+      outside the file. Of the eight files the plan named, ZERO needed repair. The single
+      consumer the build did name was `Metalogic/Decidability/Verified/Decidable.lean`'s
+      `truthAt_of_isValid` — Phase 14 territory, forced early by the `IsValid` reindex, and fixed
+      by restating its hypothesis at `IsValid (TemporalOrder.of D) φ`, one line.)*
+- [x] `BLValidity.lean`, `BLTruth.lean`, `DurationClassification.lean`: confirm; the last is
       entirely about duration **types** and may need only its binders reindexed to `TemporalOrder`,
       or nothing at all.
-- [ ] Do **not** rename `Dedekind` anywhere. Do **not** collapse the `Valid*` family.
-- [ ] **Split authorization**: if the phase exceeds one agent run, split at the named boundary
+- [x] Do **not** rename `Dedekind` anywhere. Do **not** collapse the `Valid*` family.
+- [x] **Split authorization**: if the phase exceeds one agent run, split at the named boundary
       *`Validity.lean` + BL layer* (Phase 5) / *the consumer files* (Phase 5.1), land the first half
       green, mark 5 `[PARTIAL]` and record the resume point.
 
@@ -810,7 +818,11 @@ the blast radius at 17 files spanning what it had assigned to five different pha
 `DurationClassification.lean` 2 — but the *breakage* surface is the consumer set, not the
 `ParamTaskFrame` set. Take one build after the `Validity.lean` edit and let it enumerate the
 consumers before editing any of them; treat a count materially above 17 as a signal to split, not
-to absorb.
+to absorb. *(Confirmed: `Validity.lean` 9,
+`BaseLanguageSoundness.lean` 6, `DiscreteNonCompactness.lean` 5, `Soundness.lean` 4,
+`SoundnessLemmas/Core.lean` 3, `DurationClassification.lean` 2 — every count exactly as stated.
+The measured breakage surface was **1 file**, not 17: the accessor layer from Phase 3 plus v01's
+already-bundled `Valid*` family absorbed the rest.)*
 
 **Files to modify**:
 - `FormalSystem/Semantics/{Validity,BLValidity,BLTruth,DurationClassification}.lean`
@@ -818,6 +830,40 @@ to absorb.
 - `FormalSystem/Metalogic/SoundnessLemmas/{Core,CoValidity,DenseValidity,FrameClassVariants}.lean`
 - `FormalSystem/Automation/PrefilterSoundness.lean`
 - plus whatever the post-edit build names
+
+#### Phase 5 Record — v01's mis-sized phase, re-measured
+
+**The blast radius was 1 file, not 17.** The plan's premise — that `valid` and its four siblings
+carry explicit `∀ (D : Type) [4 instances]` binders inside a `Prop`, so every consumer breaks at
+once — was true of the *pre-512* tree, but v01 had already moved that family onto bundled frames.
+What remained carrying the loose binder list was only `satisfiable`, `SatisfiableAbs` and
+`unsatisfiable_implies_all{,_fixed}`, none of which has a live consumer outside `Validity.lean`.
+None of the eight consumer files the plan named needed repair.
+
+What was done:
+
+- **`satisfiable` is now the fibre predicate the fibration makes expressible for the first time**:
+  `satisfiable (D : TemporalOrder) (Γ : Context)` over `∃ F : FrameOver D`. This is v01 exclusion 1
+  discharged, and it is a binder restatement, not the H1 collapse — the `Valid*` family still has
+  exactly its five pre-task members (`valid`, `ValidDense`, `ValidDiscrete`, `ValidDedekind`,
+  `ValidDedekindDense`), none added, none merged. `SatisfiableAbs` collapses from a five-binder
+  existential to `∃ D : TemporalOrder, satisfiable D Γ`.
+- **`SoundnessLemmas.IsValid` is now over `FrameOver D` for `(D : TemporalOrder)`** — v01
+  exclusion 2 discharged. `Core.lean`, `DenseValidity.lean` and `FrameClassVariants.lean` had their
+  `variable {D : Type} [4 instances]` blocks collapsed to `variable {D : TemporalOrder}`, their
+  four bundled binders deleted as now-automatic, and their frame-class side conditions moved to the
+  carrier as `[DenselyOrdered ↑D]`, `[SuccOrder ↑D]`, `[IsSuccArchimedean ↑D]` and the rest —
+  exactly v01's recorded statement-level-instance-binder choice, preserved.
+- **The soundness-layer round-trips are gone**: `grep -rn "toParam" FormalSystem/Metalogic` returns
+  **0**. `Soundness.lean`'s nine `F.toParam` applications are now `F.toFibre`, i.e. the second
+  projection of the total space applied directly.
+- `valid_iff_forall_validOn` is untouched — same statement, same proof term, no new lemma.
+- No `Dedekind` identifier renamed (verified against the diff).
+
+`BLValidity.lean`, `BLTruth.lean` and `DurationClassification.lean` needed no change; the last is
+about duration *types* and its binders are not frame binders.
+
+No split into 5.1 was needed.
 
 **Verification**:
 - Standing contract (1-9).

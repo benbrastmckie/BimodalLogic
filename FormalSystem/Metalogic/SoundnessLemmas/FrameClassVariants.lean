@@ -20,12 +20,12 @@ open FormalSystem.Syntax
 open FormalSystem.ProofSystem (Axiom DerivationTree FrameClass)
 open FormalSystem.Semantics
 
-variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
+variable {D : TemporalOrder}
 
 /-! ## General (Frame-Class-Free) Versions
 
 All base axioms (those with `minFrameClass = .Base`) are valid on any linear order,
-without requiring `[DenselyOrdered D]` or `[Nontrivial D]`. These general versions
+without requiring `[DenselyOrdered ↑D]` or `[Nontrivial D]`. These general versions
 remove frame constraints from the swap/locally-valid lemmas, enabling soundness proofs
 for the base frame class without unnecessary hypotheses.
 
@@ -44,7 +44,7 @@ Widening it to an arbitrary `fc` would admit axioms whose swap-validity genuinel
 instances; `axiom_swap_valid_discrete` below is the wider case, and it does the split. -/
 theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) (h_fc :
       h.minFrameClass ≤ FrameClass.Base)
-    [Nontrivial D] : IsValid D φ.swapTemporal := by
+    : IsValid D φ.swapTemporal := by
   cases h with
   | prop_k ψ χ ρ =>
     intro F M τ _hτ t
@@ -390,7 +390,7 @@ theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) (h_fc :
 **Why `FrameClass.Base` is essential here**: as in `axiom_swap_valid_general`, the `h_fc` bound
 is the admissibility split that lets the conclusion hold instance-free. The `Discrete` widening
 is `axiom_locally_valid_discrete`, which case-splits on this very bound. -/
-private theorem axiom_locally_valid_general [Nontrivial D] {φ : Formula} (h : Axiom φ)
+private theorem axiom_locally_valid_general {φ : Formula} (h : Axiom φ)
     (h_fc : h.minFrameClass ≤ FrameClass.Base) : IsValid D φ := by
   cases h with
   | prop_k φ ψ χ => exact axiom_prop_k_valid φ ψ χ
@@ -671,7 +671,7 @@ private theorem axiom_locally_valid_general [Nontrivial D] {φ : Formula} (h : A
 
 /-- Combined soundness for base derivations without frame-class constraints:
 derivability implies both validity and swap-validity. Identical to
-`derivable_valid_and_swap_valid` but without `[DenselyOrdered D] [Nontrivial D]`.
+`derivable_valid_and_swap_valid` but without `[DenselyOrdered ↑D]`.
 
 This is possible because the BX axiom system has no density or discreteness extension
 axioms, so the proofs never actually use those constraints.
@@ -680,7 +680,7 @@ axioms, so the proofs never actually use those constraints.
 `Base`-admissible precisely so that its axiom leaves are covered by
 `axiom_locally_valid_general` / `axiom_swap_valid_general`. At a wider `fc` the axiom case
 would be unprovable without the corresponding frame instances on `D`. -/
-theorem derivable_valid_and_swap_valid_general [Nontrivial D]
+theorem derivable_valid_and_swap_valid_general
     {φ : Formula} (d : DerivationTree FrameClass.Base [] φ) :
     IsValid D φ ∧ IsValid D φ.swapTemporal := by
   match d with
@@ -723,7 +723,7 @@ This is the theorem needed for the temporal_duality case in dense soundness.
 **Why `FrameClass.Base` is essential here**: it is the second projection of
 `derivable_valid_and_swap_valid_general` and inherits that theorem's `Base` restriction
 verbatim. -/
-theorem derivable_implies_swap_valid_general [Nontrivial D]
+theorem derivable_implies_swap_valid_general
     {φ : Formula} (d : DerivationTree FrameClass.Base [] φ) :
     IsValid D φ.swapTemporal :=
   (derivable_valid_and_swap_valid_general d).2
@@ -740,7 +740,7 @@ constraint `h.minFrameClass ≤ .Discrete` structurally excludes the density axi
 The nearest future witness where φ holds satisfies Until with ¬φ as guard.
 Uses Nat.find for well-founded descent on the succ chain. -/
 theorem prior_UZ_is_valid
-    [SuccOrder D] [PredOrder D] [IsSuccArchimedean D] [IsPredArchimedean D] [Nontrivial D]
+    [SuccOrder ↑D] [PredOrder ↑D] [IsSuccArchimedean ↑D] [IsPredArchimedean ↑D]
     (φ : Formula) : IsValid D (φ.someFuture.imp (Formula.untl φ.neg φ)) := by
   intro F M τ _hτ t
   simp only [Formula.neg, TruthAt, Truth.some_future_iff]
@@ -780,7 +780,7 @@ theorem prior_UZ_is_valid
 /-- Prior-SZ is valid on discrete orders: P(φ) → S(φ, ¬φ).
 Mirror of prior_UZ_is_valid using pred chain and IsPredArchimedean. -/
 theorem prior_SZ_is_valid
-    [SuccOrder D] [PredOrder D] [IsSuccArchimedean D] [IsPredArchimedean D] [Nontrivial D]
+    [SuccOrder ↑D] [PredOrder ↑D] [IsSuccArchimedean ↑D] [IsPredArchimedean ↑D]
     (φ : Formula) : IsValid D (φ.somePast.imp (Formula.snce φ.neg φ)) := by
   intro F M τ _hτ t
   simp only [Formula.neg, TruthAt, Truth.some_past_iff]
@@ -819,7 +819,7 @@ theorem prior_SZ_is_valid
 /-- Z1 is valid on discrete orders: G(Gφ→φ) → (FGφ→Gφ).
 Backward induction from the Gφ witness using IsSuccArchimedean. -/
 theorem z1_is_valid
-    [SuccOrder D] [PredOrder D] [IsSuccArchimedean D] [IsPredArchimedean D] [Nontrivial D]
+    [SuccOrder ↑D] [PredOrder ↑D] [IsSuccArchimedean ↑D] [IsPredArchimedean ↑D]
     (φ : Formula) : IsValid D ((φ.allFuture.imp φ).allFuture.imp
         (φ.allFuture.someFuture.imp φ.allFuture)) := by
   intro F M τ _hτ t
@@ -881,7 +881,7 @@ theorem z1_is_valid
 /-- Z1 past dual is valid on discrete orders: H(Hφ→φ) → (PHφ→Hφ).
 Backward induction using IsPredArchimedean. -/
 theorem z1_past_is_valid
-    [SuccOrder D] [PredOrder D] [IsSuccArchimedean D] [IsPredArchimedean D] [Nontrivial D]
+    [SuccOrder ↑D] [PredOrder ↑D] [IsSuccArchimedean ↑D] [IsPredArchimedean ↑D]
     (φ : Formula) : IsValid D ((φ.allPast.imp φ).allPast.imp
         (φ.allPast.somePast.imp φ.allPast)) := by
   intro F M τ _hτ t
@@ -937,7 +937,7 @@ FrameClass.Base` is what separates the instance-free axioms from the three genui
 ones. It is a proof-internal split on axiom admissibility, not a pin on the statement, which is
 stated at `FrameClass.Discrete`. -/
 private theorem axiom_swap_valid_discrete
-    [SuccOrder D] [PredOrder D] [IsSuccArchimedean D] [IsPredArchimedean D] [Nontrivial D]
+    [SuccOrder ↑D] [PredOrder ↑D] [IsSuccArchimedean ↑D] [IsPredArchimedean ↑D]
     (φ : Formula) (h : Axiom φ) (h_fc : h.minFrameClass ≤ FrameClass.Discrete) :
     IsValid D φ.swapTemporal := by
   by_cases hbase : h.minFrameClass ≤ FrameClass.Base
@@ -970,7 +970,7 @@ delegates to `axiom_locally_valid_general`. For others, proves directly.
 the `by_cases` on `h.minFrameClass ≤ FrameClass.Base` separates the instance-free axioms from
 the three discrete ones. The statement itself is at `FrameClass.Discrete`. -/
 private theorem axiom_locally_valid_discrete
-    [SuccOrder D] [PredOrder D] [IsSuccArchimedean D] [IsPredArchimedean D] [Nontrivial D]
+    [SuccOrder ↑D] [PredOrder ↑D] [IsSuccArchimedean ↑D] [IsPredArchimedean ↑D]
     {φ : Formula} (h : Axiom φ) (h_fc : h.minFrameClass ≤ FrameClass.Discrete) :
     IsValid D φ := by
   by_cases hbase : h.minFrameClass ≤ FrameClass.Base
@@ -992,7 +992,7 @@ private theorem axiom_locally_valid_discrete
 /-- Combined soundness on discrete frames: derivability implies both validity
 and swap-validity on discrete orders. -/
 theorem derivable_valid_and_swap_valid_discrete
-    [SuccOrder D] [PredOrder D] [IsSuccArchimedean D] [IsPredArchimedean D] [Nontrivial D]
+    [SuccOrder ↑D] [PredOrder ↑D] [IsSuccArchimedean ↑D] [IsPredArchimedean ↑D]
     {φ : Formula} (d : DerivationTree FrameClass.Discrete [] φ) :
     IsValid D φ ∧ IsValid D φ.swapTemporal := by
   match d with
@@ -1032,7 +1032,7 @@ decreasing_by
 /-- Derivability implies swap validity on discrete frames.
 Used in soundness_discrete_valid and soundness_discrete temporal_duality cases. -/
 theorem derivable_implies_swap_valid_discrete
-    [SuccOrder D] [PredOrder D] [IsSuccArchimedean D] [IsPredArchimedean D] [Nontrivial D]
+    [SuccOrder ↑D] [PredOrder ↑D] [IsSuccArchimedean ↑D] [IsPredArchimedean ↑D]
     {φ : Formula} (d : DerivationTree FrameClass.Discrete [] φ) :
     IsValid D φ.swapTemporal :=
   (derivable_valid_and_swap_valid_discrete d).2
