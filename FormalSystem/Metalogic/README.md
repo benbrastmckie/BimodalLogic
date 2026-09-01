@@ -133,19 +133,20 @@ Every subdirectory has exactly one **sibling** aggregator: `X.lean` sits *beside
 | `SoundnessLemmas.lean` | 34 | `SoundnessLemmas/` |
 | `WeakCanonical.lean` | 144 | `WeakCanonical/` |
 
-**Six** loose files in `Metalogic/` are not aggregators — they have no same-named
+**Seven** loose files in `Metalogic/` are not aggregators — they have no same-named
 sibling directory:
 
 | Loose non-aggregator | Lines | Role |
 |----------------------|------:|------|
-| `Soundness.lean` | 2,042 | The soundness theorem itself |
-| `StrongCompleteness.lean` | 930 | Strong/consequence completeness, including `completeness_dedekind` |
-| `SetConsequence.lean` | 346 | Set-indexed consequence relation |
+| `Soundness.lean` | 2,108 | The soundness theorem itself |
+| `StrongCompleteness.lean` | 943 | Strong/consequence completeness, including `completeness_dedekind`, and the compactness reductions |
+| `SetConsequence.lean` | 445 | Set-indexed consequence relation |
 | `DiscreteNonCompactness.lean` | 334 | Non-compactness of the discrete frame class |
+| `BaseLanguageSoundness.lean` | 345 | Soundness for the base language BL, by composing `Conservativity.translate` with `Soundness.lean` across the truth-transfer bridge `truthAt_tr` |
 | `Conservativity.lean` | 311 | Conservativity of the extension |
-| `BaseLanguageSoundness.lean` | 318 | Soundness for the base language BL, by composing `Conservativity.translate` with `Soundness.lean` across the truth-transfer bridge `truthAt_tr` |
+| `Compactness.lean` | 166 | Compactness and strong completeness for Base and Dense, by ultraproduct model existence |
 
-Plus the directory's own root `Metalogic.lean` (218 lines), which sits one level up,
+Plus the directory's own root `Metalogic.lean` (226 lines), which sits one level up,
 beside `Metalogic/`.
 
 Two rules keep this safe:

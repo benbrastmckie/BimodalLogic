@@ -701,18 +701,42 @@ The set-based consequence layer, over possibly-infinite `Γ : Set Formula`.
 
 | Declaration | Line | What it is |
 |-------------|------|------------|
-| `StrongCompletenessBase` | 211 | The named strong-completeness obligation for Base |
-| `CompactBase` | 219 | Semantic compactness of the Base consequence relation (**open**) |
-| `StrongCompletenessDense` | 256 | The Dense obligation |
-| `CompactDense` | 263 | Semantic compactness for Dense (**open**) |
-| `not_setConsistent_of_setDerivable_bot` | 184 | Bridge from set-derivability of `⊥` to inconsistency |
+| `StrongCompletenessBase` | 306 | The strong-completeness statement for Base (**proved** in `Compactness.lean`) |
+| `CompactBase` | 314 | Semantic compactness of the Base consequence relation (**proved**) |
+| `ModelExistenceBase` | 335 | Finite satisfiability lifts to satisfiability, for Base (**proved**) |
+| `StrongCompletenessDense` | 352 | The Dense strong-completeness statement (**proved**) |
+| `CompactDense` | 359 | Semantic compactness for Dense (**proved**) |
+| `ModelExistenceDense` | 379 | The Dense model-existence statement (**proved**) |
+| `not_setConsistent_of_setDerivable_bot` | 280 | Bridge from set-derivability of `⊥` to inconsistency |
 
 Supporting definitions live in `FormalSystem/Metalogic/Core/MaximalConsistent.lean`:
 `SetConsistent` (`:96`, correctly finitary), `SetMaximalConsistent` (`:103`), and
 `set_lindenbaum` (`:303`).
 
 `strongCompletenessBase_of_compact` and `strongCompletenessDense_of_compact` reduce each
-strong-completeness statement to its compactness hypothesis alone.
+strong-completeness statement to its compactness hypothesis alone; `Compactness.lean` below
+discharges that hypothesis.
+
+---
+
+### Compactness (`FormalSystem.Metalogic.Compactness`)
+
+**Module**: `FormalSystem/Metalogic/Compactness.lean`
+
+Discharges the six Base and Dense statements of `SetConsequence.lean`. Model existence is
+proved by an ultraproduct, indexed by the finite sublists of the premise set, of the models its
+finite fragments already have; Łoś's theorem (`Semantics/Ultraproduct/Los.lean`) reads truth at
+the ultraproduct off eventual truth along that family. All six are sorryAx-free at exactly
+`[propext, Classical.choice, Quot.sound]`.
+
+| Declaration | Line | What it is |
+|-------------|------|------------|
+| `modelExistenceBase` | 81 | Model existence for Base, by ultraproduct |
+| `modelExistenceDense` | 107 | Model existence for Dense, density carried through the construction |
+| `compactBase` | 127 | `CompactBase`, via `compactBase_of_modelExistence` |
+| `compactDense` | 131 | `CompactDense`, via `compactDense_of_modelExistenceDense` |
+| `strongCompletenessBase` | 141 | `StrongCompletenessBase`, unconditionally |
+| `strongCompletenessDense` | 148 | `StrongCompletenessDense`, unconditionally |
 
 ---
 

@@ -294,7 +294,9 @@ The base language's **semantics** deliberately does not live here, so that the d
 * `FormalSystem.Metalogic.StrongCompleteness` -- `completeness_dedekind`, and the
   terminology discipline separating consequence completeness from strong completeness
 * `FormalSystem.Metalogic.SetConsequence` -- the set-based consequence layer;
-  `CompactBase` and `CompactDense` name the two open obligations
+  `CompactBase` and `CompactDense` state the two compactness properties
+* `FormalSystem.Metalogic.Compactness` -- their discharge, by an ultraproduct model-existence
+  construction, together with Base and Dense strong completeness
 * `FormalSystem.Metalogic.DiscreteNonCompactness` -- the machine refutation of Discrete
   strong completeness
 * `FormalSystem.Metalogic.Conservativity` -- the TM/TM⁺ backward bridge

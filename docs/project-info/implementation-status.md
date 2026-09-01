@@ -65,7 +65,8 @@ Module-by-module implementation status for the Bimodal TM logic library.
 | `Metalogic/StrongCompleteness.lean` | ✅ | `completeness_dedekind` (`:469`) and the four `consequence_completeness_*` theorems |
 | `Metalogic/Decidability/` | 🔶 | Decision procedure implemented; sound direction proved, completeness direction open |
 | `Metalogic/DiscreteNonCompactness.lean` | ✅ | Machine-refutes Discrete strong completeness |
-| `Metalogic/SetConsequence.lean` | ✅ | Set-based consequence layer; `CompactBase`/`CompactDense` named as open obligations |
+| `Metalogic/SetConsequence.lean` | ✅ | Set-based consequence layer; states `CompactBase`/`CompactDense` and their strong-completeness and model-existence siblings |
+| `Metalogic/Compactness.lean` | ✅ | Discharges all six: `modelExistenceBase`/`modelExistenceDense` by ultraproduct, `compactBase`/`compactDense`, `strongCompletenessBase`/`strongCompletenessDense` -- all sorryAx-free |
 | `Metalogic/Conservativity.lean` | ✅ | TM/TM+ backward bridge |
 | `Metalogic/BaseLanguageSoundness.lean` | ✅ | BL soundness at Base/Dense/Discrete/Dedekind by composition; `truthAt_tr`, the validity forms, and `bl_not_derivable_nil_bot{,_discrete}` |
 | `Metalogic/Independence/` | ✅ | Three independence results |

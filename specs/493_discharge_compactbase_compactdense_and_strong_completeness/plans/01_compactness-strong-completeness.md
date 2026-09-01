@@ -238,7 +238,7 @@ correctly describe Dedekind or Discrete.
 
 ---
 
-### Phase 3: Correct the documentation [IN PROGRESS]
+### Phase 3: Correct the documentation [COMPLETED]
 
 **Goal**: README and `docs/` no longer describe Base/Dense compactness or strong completeness as
 open, and the new module is documented.

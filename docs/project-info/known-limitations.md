@@ -29,22 +29,24 @@ consequence relation, so it is available exactly for the frame classes whose con
 relation is compact.
 
 The infinitary statement has **three distinct statuses** across the four frame classes, which
-`FormalSystem/Metalogic.lean:83-101` warns explicitly must not be collapsed into one:
+`FormalSystem/Metalogic.lean:98-116` warns explicitly must not be collapsed into one:
 
 | Frame class | Status of strong completeness | Anchor |
 |-------------|-------------------------------|--------|
 | `FrameClass.Discrete` | **Machine-refuted** | `DiscreteNonCompactness.lean:250` `discrete_consequence_not_compact`, `:280` `strongCompletenessDiscrete_refuted` |
-| `FrameClass.Base`, `FrameClass.Dense` | **Open** -- neither proved nor refuted | `SetConsequence.lean:219` `CompactBase`, `:263` `CompactDense`; `:211` `StrongCompletenessBase`, `:256` `StrongCompletenessDense` |
+| `FrameClass.Base`, `FrameClass.Dense` | **Proved** | `Compactness.lean` `strongCompletenessBase`, `strongCompletenessDense`, `compactBase`, `compactDense`; statements at `SetConsequence.lean:306` `StrongCompletenessBase`, `:314` `CompactBase`, `:352` `StrongCompletenessDense`, `:359` `CompactDense` |
 | `FrameClass.Dedekind` | **Unavailable on the primary source's own terms** -- unproved *and* unrefuted | `StrongCompleteness.lean:74-89` |
 
-For Base and Dense, neither class's binder list imposes Archimedean-ness, so the standard
-non-compactness counterexamples do not apply; whether the full task-frame consequence relation
-is in fact compact is an open research question for this development. The set-based MCS layer
-(`SetConsistent`, `SetMaximalConsistent`, `set_lindenbaum` in
-`FormalSystem/Metalogic/Core/MaximalConsistent.lean`) is already in place; the missing
-substantive piece is a model-existence theorem, which does not follow from the single-formula
-countermodel engines. `strongCompletenessBase_of_compact` and
-`strongCompletenessDense_of_compact` reduce each case to its compactness hypothesis alone.
+For Base and Dense the missing substantive piece was a model-existence theorem, which does not
+follow from the single-formula countermodel engines. It is now supplied by `modelExistenceBase`
+and `modelExistenceDense` (`FormalSystem/Metalogic/Compactness.lean`), which build a model of
+the whole premise set as an ultraproduct, indexed by the finite sublists of that set, of the
+models its finite fragments already have. `compactBase_of_modelExistence` and
+`compactDense_of_modelExistenceDense` turn those into compactness, and
+`strongCompletenessBase_of_compact` / `strongCompletenessDense_of_compact` combine compactness
+with the existing weak-completeness engines. Neither class's binder list imposes
+Archimedean-ness, which is why the Discrete non-compactness counterexample does not reach
+them.
 
 For Dedekind, Reynolds 1992 (Theorem 7, section 9) is *weak* completeness for the real-line
 axiomatisation, and the restriction there is genuine rather than an artefact of presentation.
@@ -58,14 +60,15 @@ sharing Discrete's would overstate the evidence.
 
 - All four weak completeness theorems, and their finite-context `consequence_completeness_*`
   companions, can be relied upon directly.
-- No statement of the form "`Γ ⊨ φ` implies `Γ ⊢ φ` for an arbitrary infinite `Γ`" is available
-  for any frame class. For Discrete it is false; for Base and Dense it is unsettled; for
-  Dedekind it is out of the primary source's scope.
+- The statement "`Γ ⊨ φ` implies `Γ ⊢ φ` for an arbitrary infinite `Γ`" is available for Base
+  and Dense (`strongCompletenessBase`, `strongCompletenessDense`). For Discrete it is false;
+  for Dedekind it is out of the primary source's scope, and neither proved nor refuted here.
 
 ### Workaround
 
-Work with finite premise sets, where the deduction theorem makes the finite-context results
-fully general:
+For Discrete and Dedekind, work with finite premise sets, where the deduction theorem makes the
+finite-context results fully general (Base and Dense need no workaround — use
+`strongCompletenessBase` / `strongCompletenessDense` directly):
 
 ```lean
 -- Consequence completeness at a finite Context is available for every class
@@ -74,9 +77,10 @@ fully general:
 
 ### Resolution
 
-Base and Dense are open research questions, tracked in the tree as the named obligations
-`CompactBase` and `CompactDense`. Discrete is settled negatively and needs no further work.
-Dedekind would require going beyond Reynolds's Theorem 7.
+Base and Dense are settled positively: `CompactBase` and `CompactDense` are discharged in
+`FormalSystem/Metalogic/Compactness.lean`, so no workaround is needed for those two classes.
+Discrete is settled negatively and needs no further work. Dedekind would require going beyond
+Reynolds's Theorem 7, and remains the one open case.
 
 ## Limitation 2: ProofSearch Has Build Issues (Resolved)
 
