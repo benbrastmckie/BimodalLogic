@@ -1,15 +1,127 @@
 {
-  "status": "in_progress",
-  "started_at": "2026-09-01T12:20:00Z",
-  "artifacts": [],
-  "partial_progress": {
-    "stage": "initializing",
-    "details": "Agent started, parsing delegation context"
+  "status": "implemented",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 8,
+    "build_passed": true,
+    "build_command": "bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build FormalSystem BimodalTest",
+    "build_jobs": 2565,
+    "axiom_profiles_checked": 35,
+    "axiom_profiles_matching_baseline": 35,
+    "signatures_compared": 63,
+    "signatures_changed": 0
   },
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/508_parameterize_soundness_over_indexed_validity/reports/02_anchor-and-callsite-inventory.md",
+      "summary": "Phase 1 ground truth: every declaration anchor re-verified by grep -n, full downstream consumer inventory, baseline axiom profiles and gate-script results."
+    },
+    {
+      "type": "report",
+      "path": "specs/508_parameterize_soundness_over_indexed_validity/reports/03_consequence-collapse-equivalence-probe.lean",
+      "summary": "Machine-checked proof that each collapsed SemanticConsequence* relation is propositionally identical to its pre-collapse binder list."
+    },
+    {
+      "type": "summary",
+      "path": "specs/508_parameterize_soundness_over_indexed_validity/summaries/01_soundness-in-parameterized-collapse-summary.md",
+      "summary": "Implementation summary: what landed, what was deleted, verification evidence, twelve recorded plan deviations, two reasoned exclusions."
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Collapsed the TM soundness family onto a single FrameClass-parameterized theorem soundness_in, with every existing public name retained as a one-line corollary at its own class's FrameClass.Sat witness. Extended the same move to the eight bl_soundness* theorems and to the four list-context SemanticConsequence* relations, and deleted twelve now-duplicate declarations (FrameClassVariants.lean 1041 to 591 lines, DenseValidity.lean 1375 to 1296). lake build FormalSystem BimodalTest is green at 2565 jobs, all 35 relevant axiom profiles are unchanged at [propext, Classical.choice, Quot.sound], 63 retained theorem signatures are byte-identical to the baseline, and no sorry or axiom was introduced.",
+    "roadmap_items": []
+  },
+  "modified_files": [
+    "FormalSystem/Metalogic/Soundness.lean",
+    "FormalSystem/Metalogic/StrongCompleteness.lean",
+    "FormalSystem/Metalogic/BaseLanguageSoundness.lean",
+    "FormalSystem/Metalogic/SoundnessLemmas/FrameClassVariants.lean",
+    "FormalSystem/Metalogic/SoundnessLemmas/DenseValidity.lean",
+    "FormalSystem/Metalogic/SoundnessLemmas/README.md",
+    "FormalSystem/Semantics/Validity.lean",
+    "FormalSystem/Semantics/BLValidity.lean",
+    "Tests/BimodalTest/Integration/Helpers.lean",
+    "Tests/BimodalTest/Integration/ProofSystemSemanticsTest.lean",
+    "Tests/BimodalTest/Integration/AutomationProofSystemTest.lean",
+    "Tests/BimodalTest/Integration/TemporalIntegrationTest.lean",
+    "Tests/BimodalTest/Integration/BimodalIntegrationTest.lean",
+    "Tests/BimodalTest/Integration/ComplexDerivationTest.lean",
+    "Tests/BimodalTest/Integration/EndToEndTest.lean",
+    "specs/508_parameterize_soundness_over_indexed_validity/plans/01_soundness-in-parameterized-collapse.md",
+    "specs/508_parameterize_soundness_over_indexed_validity/reports/02_anchor-and-callsite-inventory.md",
+    "specs/508_parameterize_soundness_over_indexed_validity/reports/03_consequence-collapse-equivalence-probe.lean",
+    "specs/508_parameterize_soundness_over_indexed_validity/summaries/01_soundness-in-parameterized-collapse-summary.md",
+    "specs/508_parameterize_soundness_over_indexed_validity/.orchestrator-handoff.json"
+  ],
+  "memory_candidates": [
+    {
+      "content": "lake-build-guard.sh passes everything after `--` straight to `lake`, so the subcommand must be repeated: `build --timeout 1800 -- build FormalSystem`. Writing `-- ` with nothing after it runs bare `lake`, prints help, and exits 0 without building -- an exit 0 that looks like a green build and is not.",
+      "category": "CONFIG",
+      "source_artifact": "specs/508_parameterize_soundness_over_indexed_validity/reports/02_anchor-and-callsite-inventory.md",
+      "confidence": 0.95,
+      "suggested_keywords": [
+        "lake-build-guard",
+        "lake build",
+        "lean",
+        "build verification",
+        "false green"
+      ]
+    },
+    {
+      "content": "The build guard's result-sharing can report `Build completed successfully` for an invocation whose current sources were never elaborated: a bare `-- build` returned exit 0 at 2270 jobs while modules under Metalogic/Decidability/Verified/ still needed rebuilding, as the next explicit `-- build FormalSystem BimodalTest` proved by re-elaborating them. Name build targets explicitly, and treat a job count lower than the previous green run as a signal to re-run.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/508_parameterize_soundness_over_indexed_validity/plans/01_soundness-in-parameterized-collapse.md",
+      "confidence": 0.85,
+      "suggested_keywords": [
+        "lake-build-guard",
+        "result sharing",
+        "stale build",
+        "lean",
+        "verification"
+      ]
+    },
+    {
+      "content": "Collapsing a Lean definition onto a FrameClass-indexed abbreviation is propositionally safe but not definitionally transparent: an explicit `P F` argument replaces what was an instance binder, so every call site that consumed the old binder list by direct application breaks. In BimodalLogic this surfaced as 118 test call sites where `soundness Γ φ d` was read directly at type `Γ ⊨ φ`. Budget for downstream call-site churn whenever a definition's binder *shape* changes, even when the proposition does not.",
+      "category": "PATTERN",
+      "source_artifact": "specs/508_parameterize_soundness_over_indexed_validity/summaries/01_soundness-in-parameterized-collapse-summary.md",
+      "confidence": 0.9,
+      "suggested_keywords": [
+        "lean",
+        "definitional equality",
+        "binder shape",
+        "abbreviation collapse",
+        "call-site churn"
+      ]
+    },
+    {
+      "content": "When collapsing N per-class proofs onto one parameterized theorem in Lean, the corollaries usually have to MOVE, not just change body: the parameterized theorem depends on leaf lemmas defined below the corollaries' original positions, and Lean requires declare-before-use. Verify statement preservation across the move by extracting each signature from git and diffing byte-for-byte, since a relocation diff otherwise looks like a rewrite.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/508_parameterize_soundness_over_indexed_validity/summaries/01_soundness-in-parameterized-collapse-summary.md",
+      "confidence": 0.85,
+      "suggested_keywords": [
+        "lean",
+        "declare before use",
+        "theorem relocation",
+        "signature preservation",
+        "refactoring"
+      ]
+    }
+  ],
   "metadata": {
     "session_id": "sess_1788282938_f2ac03",
     "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"]
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
+    "compliance_check": "passed",
+    "task_number": 508,
+    "dispatch_seq": 12,
+    "compliance_note": "The scripted spot-check reports axiom_swap_valid_discrete, of_forall_total and apply_total as MISSING; all three are extraction artifacts, not gaps. axiom_swap_valid_discrete appears in the Goals block only as a DELETION target, so its absence is the goal being met. of_forall_total/apply_total are dotted names (BLValidIn.of_forall_total, BLValidOnFrames.apply_total, ValidIn.of_forall_total, ValidIn.apply_total) that a '^theorem <name>' pattern cannot match; all four are present at BLValidity.lean:166,174,181,189 and Validity.lean:494,501. All twelve declarations the Goals block asks to exist were verified PRESENT."
   }
 }

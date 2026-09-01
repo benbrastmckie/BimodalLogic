@@ -1,28 +1,24 @@
 {
-  "dispatch_seq": 11,
-  "status": "planned",
-  "phase": "plan",
-  "task_number": 508,
-  "session_id": "sess_1788282938_f2ac03",
-  "summary": "9-phase transplant plan for the soundness collapse, built around the research's verified 239-line reference implementation rather than a re-derivation. Phases 1-4 land soundness_in and retarget the Formula side; 5 prunes the dead duplicate recursions; 6 collapses the BL side; 7-8 collapse the list-context consequence layer (adopted in scope per the team lead's decision); 9 gates tree-wide. All research anchors were independently re-verified against the working tree during planning. One defect found in the research's own phase sketch and corrected: its Phase 3 says to delete the four axiom_*_valid dispatchers, which would break four live consumers in LexIntWitness.lean and RationalWitness.lean; the plan retains all four as one-line corollaries.",
+  "dispatch_seq": 12,
+  "status": "implemented",
+  "summary": "Collapsed the soundness family onto one FrameClass-parameterized theorem soundness_in, plus the BL-language and list-context consequence layers. All 9 phases COMPLETED. lake build FormalSystem BimodalTest green (2565 jobs, exit 0, twice). All 35 relevant #print axioms profiles are exactly [propext, Classical.choice, Quot.sound]. 63 retained theorem signatures verified byte-identical against bee03a881; zero sorries introduced; axiom count unchanged at 8. Twelve duplicate declarations deleted; FrameClassVariants.lean 1041->591, DenseValidity.lean 1375->1296.",
+  "phases_completed": 9,
+  "phases_total": 9,
+  "plan_markers_verified": true,
   "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/508_parameterize_soundness_over_indexed_validity/plans/01_soundness-in-parameterized-collapse.md",
-      "summary": "9-phase, 12-hour lean4 implementation plan transplanting the verified soundness_in collapse, with the consequence-layer collapse in scope and the two pre-existing gate failures pre-recorded as reasoned exclusions."
-    }
+    "specs/508_parameterize_soundness_over_indexed_validity/reports/02_anchor-and-callsite-inventory.md",
+    "specs/508_parameterize_soundness_over_indexed_validity/reports/03_consequence-collapse-equivalence-probe.lean",
+    "specs/508_parameterize_soundness_over_indexed_validity/summaries/01_soundness-in-parameterized-collapse-summary.md",
+    "specs/508_parameterize_soundness_over_indexed_validity/plans/01_soundness-in-parameterized-collapse.md"
   ],
   "blockers": [],
-  "notes": [
-    "PLANNING-TIME CORRECTION to the research's own Sec.10 phase sketch: its phase 3 instructs deleting the four axiom_*_valid dispatchers, contradicting its own Sec.8 promise of zero downstream edits. Verified live consumers: LexIntWitness.lean:182 (axiom_valid), :233 (axiom_discrete_valid), RationalWitness.lean:126 (axiom_dense_valid), :172 (axiom_dedekind_valid). Plan Phase 4 retains all four as one-line corollaries over axiom_validIn and deletes only their 45-arm bodies. axiom_dedekind_swap_valid and derivable_valid_and_swap_valid_dedekind were separately confirmed to have zero consumers outside Soundness.lean and are genuinely deletable.",
-    "ANCHOR RE-VERIFICATION: every line number in the research report was independently re-confirmed by grep -n during planning and all matched exactly (soundness:1152, _dense:1329, _discrete:1477, _dedekind:2014; *_valid 1256/1421/1995; axiom_*_valid 925/979/1040/1819; consequence 530/676/781/891; bl_soundness 201/215/229/249; FrameClassVariants 45/393/683/726/742/782/821/883/939/972/994/1034; DenseValidity 296/1320/1362/1369; BLValidity 102/107/141/147). BLValidIn.of_forall_total/.apply_total confirmed absent. Plan Phase 1 re-verifies anyway and records any delta.",
-    "OPEN DECISION RESOLVED: list-context consequence layer is IN SCOPE (Phases 7-8), per the team lead's adoption of the research recommendation. The cost is named explicitly in the plan: four docstrings at Validity.lean:89 and StrongCompleteness.lean:174/729/839 justify themselves as a hand-copied binder guard and must be REWRITTEN, not deleted. The rollback path marks Phases 7-8 [COMPLETED WITH EXCLUSIONS] and requires the Set/List asymmetry be recorded explicitly if cut.",
-    "BRIEF DIVERGENCE HONORED: the plan does NOT pursue the brief's BLValidOn fc phi := ValidOn fc (tr phi) route. BLValidIn fc := BLValidOnFrames fc.Sat (BLValidity.lean:107) landed under task 507 native over BLTruthAt with an anchored docstring at :81-86 arguing against the tr route. Review M3's definitional half is recorded as DISCHARGED; only the eight bl_soundness* theorems are in scope (Phase 6).",
-    "PRESERVED ASSETS enumerated as MUST NOT in the plan: bl_soundness_discrete_succ{,_valid} and BLValidDiscreteSucc (not schema instances); axiom_swap_valid_general and the four prior_UZ/SZ/z1 lemmas in FrameClassVariants.lean (genuine content -- the file shrinks to ~500 lines rather than disappearing); DenseValidity's axiom_swap_valid:296; the soundness_dedekind ValidDedekindDense target discipline; FormalSystem/Boneyard/** (not compiled).",
-    "IMPLEMENTATION TRAP carried forward into Phase 2's task list: the density and dense_indicator arms of axiom_swap_validIn_min must pass `trivial`, never `by decide`, as the h_fc argument to SoundnessLemmas.axiom_swap_valid.",
-    "PRE-EXISTING GATE FAILURES pre-recorded as reasoned exclusions in Phase 9 and in Testing & Validation, not absorbed: check-module-invariants.sh C6 (SpWitness, TMCompletenessReduction, Z1Countermodel, LexCarrier unmanifested) and readme-lint.sh check 1 (missing Semantics/Ultraproduct/README.md). C14 and C15 must PASS; a regression in either is this task's defect.",
-    "FOUND DURING PLANNING (minor, folded into Phase 5): SoundnessLemmas/README.md's Modules table is ALREADY stale before this task -- it lists FrameClassVariants.lean at 971 and DenseValidity.lean at 1338, while the files are currently 1041 and 1375. Phase 5 sets both from a fresh wc -l and checks the other rows in the same pass.",
-    "No roadmap_path was supplied in the delegation context, so no roadmap phases were added and specs/ROADMAP.md was not modified. A read-only grep confirms its soundness entries (:109,:111,:128,:260) concern the tableau/decision-engine side, not this Hilbert-system family.",
-    "Plan validates clean: .claude/scripts/validate-artifact.sh ... plan => [PASS] 0 warnings. All 9 phase headings conform; all 9 carry Goal/Timing/Depends on/Verification Tier/Scope Hypothesis. Wave table is consistent with the per-phase Depends on fields."
+  "reasoned_exclusions": [
+    "check-module-invariants.sh C6: four unreachable-and-unmanifested modules (SpWitness, TMCompletenessReduction, Z1Countermodel, LexCarrier) belonging to other tasks. Pre-existing, identical at baseline and Phase 9. C14 and C15 both still PASS.",
+    "readme-lint.sh check 1: missing FormalSystem/Semantics/Ultraproduct/README.md. Pre-existing, identical at baseline and Phase 9."
+  ],
+  "notable": [
+    "Phase 7 required 118 test call-site edits across 7 files under Tests/BimodalTest/Integration/ (soundness -> soundness_in at a Gamma-turnstile-phi typed position). The plan's zero-downstream-edits promise held for the nine FormalSystem consumer modules but not for the test suite. Every edit is compiler-checked and no test assertion changed.",
+    "Phases 7 and 8 landed in one commit: Phase 7 has no independently green state because its definition change necessarily breaks the four bodies Phase 8 retargets.",
+    "The build guard's result-sharing can report 'Build completed successfully' for an invocation whose sources were never elaborated. A bare '-- build' with no target returned exit 0 at 2270 jobs while Decidability/Verified modules still needed rebuilding. Name targets explicitly."
   ]
 }

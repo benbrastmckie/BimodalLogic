@@ -655,36 +655,42 @@ Confirm by `git diff` showing no signature-line changes on the four, and by a fu
 
 ---
 
-### Phase 9: Tree-wide acceptance [NOT STARTED]
+### Phase 9: Tree-wide acceptance [COMPLETED]
 
 **Goal**: Gate the completed collapse against the task's acceptance criteria and report the two
 known pre-existing failures as reasoned exclusions rather than absorbing them.
 
 **Tasks**:
-- [ ] Full `lake build` from clean; record module count and compare against the Phase 1 baseline
-      (2564 at research time).
-- [ ] Repo-wide `sorry` count; must equal the Phase 1 baseline (target: unchanged, and zero
+- [x] Full `lake build` from clean; record module count and compare against the Phase 1 baseline
+      (2564 at research time). *(deviation: altered — run as
+      `lake-build-guard.sh build --timeout 1800 -- build FormalSystem BimodalTest`, naming the
+      targets explicitly. Result: exit 0, **2565 jobs**, green twice consecutively. A bare
+      `-- build` with no target was found to report a stale shared result — see the Reasoned
+      Exclusions note below. Not run from clean: a from-clean rebuild of this tree is many hours,
+      and the incremental build is sound here because every module downstream of the eight edited
+      files was re-elaborated in this run.)*
+- [x] Repo-wide `sorry` count; must equal the Phase 1 baseline (target: unchanged, and zero
       introduced by this task).
-- [ ] `#print axioms` audit across every flagship result recorded in Phase 1; every profile must
+- [x] `#print axioms` audit across every flagship result recorded in Phase 1; every profile must
       match the baseline exactly. Any widening is a task failure, not a note.
-- [ ] Confirm no theorem was weakened: `git diff` over the whole task shows **no change to any
+- [x] Confirm no theorem was weakened: `git diff` over the whole task shows **no change to any
       retained theorem's statement**, only to bodies, plus the enumerated deletions.
-- [ ] Confirm zero downstream call-site edits: `git diff --stat` must show no modification to
+- [x] Confirm zero downstream call-site edits: `git diff --stat` must show no modification to
       `TMCompletenessReduction.lean`, `DiscreteNonCompactness.lean`, `Z1Countermodel.lean`,
       `Independence/CoNotPriorU.lean`, `Independence/LexIntWitness.lean`,
       `Independence/RationalWitness.lean`.
-- [ ] Run `scripts/check-module-invariants.sh`. **C6 is expected to FAIL** on four
+- [x] Run `scripts/check-module-invariants.sh`. **C6 is expected to FAIL** on four
       unreachable-and-unmanifested modules from other tasks (`FormalSystem.Metalogic.SpWitness`,
       `FormalSystem.Metalogic.TMCompletenessReduction`, `FormalSystem.Metalogic.Z1Countermodel`,
       `FormalSystem.Semantics.LexCarrier`). **Pre-existing — record as a reasoned exclusion, do not
       repair.** C14 (axiom baselines) and C15 (paper anchors) must PASS; if either regresses, that
       *is* this task's defect.
-- [ ] Run `scripts/readme-lint.sh`. **Check 1 is expected to FAIL** on the missing
+- [x] Run `scripts/readme-lint.sh`. **Check 1 is expected to FAIL** on the missing
       `FormalSystem/Semantics/Ultraproduct/README.md`. **Pre-existing — record as a reasoned
       exclusion, do not repair.** Any *new* README failure introduced by Phase 5's edits is this
       task's defect and must be fixed.
-- [ ] Confirm `FormalSystem/Boneyard/**` is unmodified.
-- [ ] Write `#### Reasoned Exclusions` under this phase enumerating the two pre-existing failures
+- [x] Confirm `FormalSystem/Boneyard/**` is unmodified.
+- [x] Write `#### Reasoned Exclusions` under this phase enumerating the two pre-existing failures
       with their evidence, and (only if Phases 7–8 were cut) the recorded Set/List consequence-layer
       asymmetry.
 
@@ -714,6 +720,26 @@ requiring its own evidence before exclusion.
   exclusions.
 
 ---
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| `check-module-invariants.sh` C6 — 4 unreachable-and-unmanifested modules (`FormalSystem.Metalogic.SpWitness`, `FormalSystem.Metalogic.TMCompletenessReduction`, `FormalSystem.Metalogic.Z1Countermodel`, `FormalSystem.Semantics.LexCarrier`) | Pre-existing; the modules belong to other tasks and none is touched by this one. Repairing them would mean editing the module manifest on another task's behalf. | Recorded failing with the identical four-module list at the Phase 1 baseline (`reports/02_anchor-and-callsite-inventory.md` §6) and again at Phase 9. `git diff --name-only bee03a881..HEAD` shows none of the four files changed. C14 and C15 both still PASS, so no axiom-baseline or paper-anchor regression hides behind the C6 failure. |
+| `readme-lint.sh` check 1 — missing `FormalSystem/Semantics/Ultraproduct/README.md` | Pre-existing; `Semantics/Ultraproduct/` is untouched by this task. | Recorded failing identically at the Phase 1 baseline (§6) and at Phase 9: "Missing READMEs: 1, Broken file references: 0" both times, with the same informational counts (112 files not listed, 6 missing dates). The one README this task *did* edit, `Metalogic/SoundnessLemmas/README.md`, introduces no new failure. |
+| `check-module-invariants.sh` C9D — 138 task-number citations under `docs/` | Pre-existing, informational-only (`not yet enforced`, gated behind `ENFORCE_C9_DOCS=1`), and outside this task's file scope. | Identical count and identical per-file breakdown at baseline and at Phase 9. |
+
+The Set/List consequence-layer asymmetry contingency did **not** trigger: Phases 7 and 8 were
+completed in full, so both layers are now collapsed onto a `FrameClass`-indexed relation
+(`SetSemanticConsequenceOn` at the set layer, `SemanticConsequenceIn` at the list layer). Nothing
+was descoped.
+
+One finding worth carrying forward beyond this task: the build guard's result-sharing can report
+`Build completed successfully` for an invocation whose sources were never elaborated. A bare
+`lake-build-guard.sh build --timeout 1800 -- build` (no target) returned exit 0 at 2270 jobs while
+modules under `Metalogic/Decidability/Verified/` still needed rebuilding, as the next explicit
+`-- build FormalSystem BimodalTest` proved by re-elaborating them. Name the targets, and treat a
+job count lower than the previous green run as a signal to re-run rather than as a pass.
 
 ## Testing & Validation
 
