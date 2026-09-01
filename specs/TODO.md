@@ -106,55 +106,6 @@ next_project_number: 512
 
 ## Tasks
 
-### 514. Align definitions with source paper
-- **Status**: [COMPLETED]
-- **Task Type**: formal
-- **Topic**: semantics foundations
-- **Dependencies**: None
-- **Research**: [514_align_definitions_with_source_paper/reports/01_definitional-review-and-closure.md]
-- **Plan**: [514_align_definitions_with_source_paper/plans/01_apply-board-revisions.md]
-- **Summary**: [514_align_definitions_with_source_paper/summaries/01_apply-board-revisions-summary.md]
-
-**Description**: METATASK, governing the entire metalogic systematicity front. Establish the paper's definitions as the single source of truth, then systematically realign every task on this front to them.
-
-SOURCE OF TRUTH: /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex (4893 lines). Its definitions are the most correct and current statement of the system and OVERRIDE both the Lean tree's current encoding and every prior research report where they conflict. Read it FIRST; revise tasks only after.
-
-=== PHASE 1: DEFINITIONAL REVIEW (do this before touching any task) ===
-Extract and record the paper's definitions verbatim, at minimum: def:temporal-order(:2779), def:task-relation(:2783), def:directed(:2811), def:frame(:2841), def:deterministic(:2875), def:task-topology(:2879), def:world-history(:2963), def:constraints(:3036), def:BL-semantics(:3603), def:time-shift-histories(:3620), def:frame-properties(:3731), def:frame-validity(:3744), def:BLplus-language(:3755), def:BLplus-semantics(:3767), def:BLplus-defined(:3782), def:logical-consequence(:4351), def:derivability(:4356), def:soundness(:4360), def:S5(:4555), def:BX(:4573), def:TMplus-f(:4622), def:TMplus-d(:4642), def:TMplus-c(:4659), def:TMplus(:4682). Also def:order-automorphism(:2568), def:time-shifted(:2576), def:abundant(:2611), def:bisimulation(:2286), and the category-theoretic layer def:interval-site(:3245), def:behavior-presheaf(:3270), def:path-category(:3423), def:conduche(:3443) -- the last four may have NO counterpart in the Lean tree at all; determine whether they are load-bearing or presentational.
-
-TWO FINDINGS ALREADY ESTABLISHED, to be confirmed not rediscovered:
-
-(1) THE PAPER ALREADY HAS THE SHAPE THIS FRONT WANTS. def:frame-properties reads "A task frame F = <W, D, =>> is Discrete/Dense/Complete", i.e. the duration type is a COMPONENT OF THE FRAME and the frame classes are properties OF A FRAME. def:frame-validity reads "valid over a task frame F", quantifying over models, possible worlds in H_F, and times. This is frame validity, per frame. The Lean tree's `TaskFrame (D : Type)` parameterization is a DEVIATION from the paper, and it is the deviation that forced carrier-level frame classes and duration-quantified validity throughout the tree. Note also the paper's class is called COMPLETE, not Dedekind -- the tree's `ValidDedekind` naming is non-conforming.
-
-(2) AN APPARENT CONFLICT BETWEEN THE PAPER AND MACHINE-CHECKED LEAN, WHICH THIS TASK MUST ADJUDICATE AND WHICH GATES EVERYTHING DOWNSTREAM. The paper's app:dense(:3923) asserts `F |= FFphi -> Fphi iff F is a Dense task frame`; app:discrete(:3842) and app:complete(:4003) assert the analogous biconditionals. But specs/511_research_frame_correspondence_infrastructure/reports/02_probes.lean and 03_probes.lean PROVE, sorry-free, that `staticFrame` over Z validates the density axiom for every formula while Z is not densely ordered, and that `staticFrame` satisfies every def:frame axiom. Under either reading of the paper's Future operator (box or diamond) the axiom holds on staticFrame, because all its total histories are constant and truth is therefore time-invariant. So the (<=) direction of app:dense is fine and the (=>) direction appears REFUTED.
-
-Four candidate resolutions; determine which holds, with evidence:
-  (a) The paper's theorem is as stated and is wrong in the (=>) direction, needing a non-degeneracy hypothesis or a restriction of the frame class.
-  (b) The paper's def:frame is STRICTER than the Lean encoding and already excludes staticFrame (check Directedness def:directed, Sphericality, the task topology def:task-topology, and any condition on H_F).
-  (c) The Lean `staticFrame` is not a faithful formalization of a paper task frame.
-  (d) The paper's characterization is implicitly relativized (e.g. to abundant frames, def:abundant, or to frames satisfying def:constraints) in a way the theorem statement does not make explicit.
-RELEVANT PRIOR ART IN THE PAPER ITSELF: a commented-out cor:no-characterization(:4282) argues via app:drift that no store/recall-free sentence set characterizes the Deterministic frames, using the same degenerate-frame technique. The author has met this phenomenon; determine whether it was considered for Dense/Discrete/Complete.
-
-=== PHASE 2: THE GALOIS CLOSURE (research, then implement as appropriate) ===
-Treat this as central, not incidental. Define the antitone Galois connection between sets of frames and sets of sentences: Th(K) = sentences valid on every frame in K, Mod(S) = frames validating every sentence in S. Then Mod . Th is a closure operator and the whole front reduces to statements about it:
-  - correspondence for an axiom ax  ==  computing Mod{ax}
-  - soundness                        ==  Sat fc SUBSET Mod(Axioms fc)
-  - minFrameClass exactness          ==  Sat fc is Galois-CLOSED
-Already proved in the tree's probe files: Mod{density-schema} = {F | FwdRec F} at D = Z (and the atomic version at arbitrary D), Sat .Dense SUBSET {F | FwdRec F}, and the inclusion is STRICT via staticFrame. So `Sat .Dense` is NOT Galois-closed, and the honest theorem characterizes the closure rather than asserting exactness.
-DELIVERABLE FOR THIS PHASE: characterize the Galois closure of EACH frame class (Discrete, Dense, Complete, and Base), decide which of those characterizations belong in the Lean tree, and specify them. If a closure is not computable in closed form, say so with evidence.
-This subsumes and REPLACES the framing of the uniform-faithfulness research task: the question is not to find a non-degeneracy predicate that patches a mismatch, it is to compute a closure. Revise or fold that task accordingly.
-
-=== PHASE 3: TASK REALIGNMENT (only after Phases 1-2) ===
-Revise every task on this front so that it targets the paper's definitions, and create new tasks only where a genuine gap exists. Tasks currently in scope: the TaskFrame duration-bundling refactor, FrameClass-indexed validity, soundness parameterization, compactness/strong-completeness family, the orphaned FrameConditions layer, frame-correspondence research, and uniform frame faithfulness. For each: keep, revise, merge, or abandon, with a stated reason.
-
-GOVERNING PRINCIPLE, applies to every decision in Phase 3: avoid needless definitions. Prefer ONE definition used many ways over several definitions bridged by lemmas. The disease being treated is real and measured -- 15 hand-copied validity predicates, 8 semantic-consequence variants, ~23 soundness theorems that are instances of one schema, four byte-identical monotonicity lemmas in a single file. Every new definition this front introduces must earn its place; where the paper has one notion, the tree should have one notion with the same name. Results must stack: a later theorem should follow from earlier ones by instantiation or by order/closure reasoning, not by re-proof.
-
-ACCEPTANCE: (1) a definitional review report mapping every paper definition to its Lean counterpart, naming every divergence; (2) an adjudicated verdict on the app:dense conflict with evidence; (3) a Galois-closure specification per frame class; (4) a revised task board where every task on this front cites the paper definition it targets, with dependencies reflecting the true build order; (5) no task left asserting a superseded shape.
-
-DO NOT implement any Lean refactor under this task -- it produces the definitional review, the verdict, the closure specification, and the revised board. Implementation belongs to the tasks it revises or creates.
-
----
-
 ### 513. Uniform frame faithfulness predicate
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
@@ -197,50 +148,6 @@ transplant and restate. GROUNDING: possible_worlds.tex def:frame-properties, def
 cor:tm-completeness, app:discrete/dense/complete;
 specs/514_align_definitions_with_source_paper/reports/01;
 specs/511_research_frame_correspondence_infrastructure/reports/01–03 + probes.
-
----
-
-### 512. Bundle duration into taskframe
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: semantics foundations
-- **Dependencies**: Task 514
-- **Research**: [512_bundle_duration_into_taskframe/reports/01_bundle-duration-into-taskframe.md]
-- **Plan**: [512_bundle_duration_into_taskframe/plans/02_temporal-order-fibration.md]
-- **Summary**: [512_bundle_duration_into_taskframe/summaries/02_temporal-order-fibration-summary.md]
-
-**Description**: FOUNDATIONAL REFACTOR, prerequisite for the whole metalogic systematicity front. Make the duration type a FIELD of TaskFrame rather than a PARAMETER, so that a frame carries its own temporal structure and every frame-class notion becomes a genuine property of a frame.
-
-ROOT CAUSE THIS FIXES: `TaskFrame D` takes `D` as a parameter, so no property of a single frame can mention its own duration structure. That single encoding choice forces the whole cascade: "dense" can only be predicated of `D`, so validity must quantify over `D`, so correspondence gets pushed up to the carrier level and cannot be stated in its textbook per-frame shape. The prior research reported this as a discovery about the semantics ("frame classes are carrier-type constraints") when it is an artifact of the encoding.
-
-TARGET SHAPE:
-  structure TaskFrame where
-    Duration : Type
-    [addCommGroup : AddCommGroup Duration]
-    [linearOrder : LinearOrder Duration]
-    [orderedAddMonoid : IsOrderedAddMonoid Duration]
-    [nontrivial : Nontrivial Duration]
-    WorldState : Type
-    TaskRel : WorldState -> Duration -> WorldState -> Prop
-    (existing frame axioms: comp, converse, serial, limit, spherical, nullity_identity)
-with instance projections so `F.Duration` carries its algebraic structure at use sites.
-
-WHY THE BUNDLED FORM AND NOT THE PARAMETERIZED ALTERNATIVE: a third option exists -- keep `TaskFrame D` and define `Sat : FrameClass -> TaskFrame D -> Prop` plus `ValidIn fc phi := forall {D} [insts] (F : TaskFrame D), Sat fc F -> F |= phi`. That is mathematically adequate for per-frame correspondence and far cheaper. It is deliberately REJECTED here in favour of bundling, for two reasons: (1) bundling makes Frame a first-class object, so frames with different durations can be quantified over in a single statement, enabling frame morphisms, bisimulation, disjoint unions, and a category of frames -- none of which the parameterized form can state; (2) bundling is the STRUCTURAL cure for the same disease the FrameClass-indexed-validity task treats symptomatically -- inlined typeclass binder lists that proliferate and silently diverge. The parameterized form leaves `{D} [AddCommGroup D] [LinearOrder D] ...` binder noise on every theorem, which is exactly the duplication that produced 15 hand-copied validity predicates.
-
-SCOPE: this is a whole-tree refactor. Every `TaskFrame D` use site, every `WorldHistory`/`TaskModel`/`TruthAt` signature, every soundness and canonical-model construction. Expect universe-polymorphism decisions and instance-resolution work. Existing named frames (staticFrame, trivialFrame, natFrame, clockFrame, transFrame if built) become bundled constructors.
-
-ACCEPTANCE: sorry-free, lake build green, check-module-invariants.sh passes, axiom profiles unchanged on the flagship theorems. No change to any theorem's mathematical content -- this is a restatement refactor, and any semantic drift is a defect.
-
-GROUNDING: specs/reviews/review-2026-08-31-metalogic-systematicity.md issues H1/M2; specs/511_research_frame_correspondence_infrastructure/reports/01,02,03 (S3 in report 01 section 2 is the artifact this task removes).
-
-=== PAPER GROUNDING (definitive) === def:frame reads verbatim: "A task frame is any F =
-<W, D, =>> where W is a nonempty set of world states, **D is a temporal order**, and => is a
-task relation…" — the duration is a COMPONENT of the frame. def:frame-properties predicates
-Discrete/Dense/Complete of the frame through its D-component; def:frame-validity is per-frame.
-This refactor is therefore conformance to the source of truth, not an encoding preference.
-Naming obligation carried by this task or 507 (whichever touches it first): the paper's third
-frame property is COMPLETE — the ValidDedekind*/FrameClass.Dedekind naming is non-conforming
-and is renamed under 507. See specs/514_align_definitions_with_source_paper/reports/01 §1.1.
 
 ---
 
