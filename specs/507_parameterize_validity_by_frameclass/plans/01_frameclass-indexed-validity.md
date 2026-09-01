@@ -1,5 +1,13 @@
 # Implementation Plan: Task #507
 
+> **SUPERSEDED -- DO NOT FOLLOW.** Replaced by `plans/02_frame-level-validity-indexing.md`.
+> This version's Phase 1 defines `FrameClass.Sat` as a predicate on the duration CARRIER TYPE
+> and a duration-quantified `ValidIn`. That is duration validity, which is explicitly not the
+> notion this project wants; landing it would harden the wrong notion into the tree's single
+> validity definition. The replacement defines `Sat : FrameClass -> TaskFrame -> Prop` on
+> bundled frames, mirroring `Derivable fc`. Retained for its risk inventory and effort
+> calibration only.
+
 - **Task**: 507 - Parameterize validity by FrameClass (ROOT FIX for metalogic systematicity H1)
 - **Status**: [NOT STARTED]
 - **Effort**: 10.5 hours

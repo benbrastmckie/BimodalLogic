@@ -3,16 +3,17 @@
   "task_number": 507,
   "stage": "plan",
   "status": "planned",
-  "session_id": "sess_1788198220_972012_507",
+  "session_id": "sess_1788265374_c18aa8_507",
   "artifacts": [
     {
       "type": "plan",
-      "path": "specs/507_parameterize_validity_by_frameclass/plans/01_frameclass-indexed-validity.md",
-      "summary": "7-phase FrameClass-indexed validity plan; Phases 1-4 satisfy all four deliverables, Phases 5-7 are consolidation with explicit off-ramps."
+      "path": "specs/507_parameterize_validity_by_frameclass/plans/02_frame-level-validity-indexing.md",
+      "summary": "Plan v2 (supersedes v1): frame-level FrameClass.Sat/ValidIn on bundled TaskFrames; 9 phases, 12.5h; Phases 1-4 satisfy all four deliverables, Phases 5-8 are call-site migration with a pre-declared off-ramp on Phase 8, Phase 9 is the tree-wide acceptance gate."
     }
   ],
-  "phase_count": 7,
-  "estimated_hours": 10.5,
-  "dependency_waves": [[1], [2, 3], [4, 5], [6], [7]],
-  "next_steps": "Run /implement 507 to execute the plan"
+  "phase_count": 9,
+  "estimated_hours": 12.5,
+  "dependency_waves": [[1, 3], [2], [4], [5, 6, 7], [8], [9]],
+  "blockers": [],
+  "next_steps": "Run /implement 507 to execute plans/02_frame-level-validity-indexing.md. The superseded plans/01_frameclass-indexed-validity.md must NOT be followed."
 }
