@@ -1,7 +1,7 @@
 # Implementation Plan: Task #508
 
 - **Task**: 508 - Parameterize soundness over indexed validity
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 12 hours
 - **Dependencies**: Task 507 (landed), Task 510
 - **Research Inputs**:
@@ -177,15 +177,16 @@ valid and avoids `lake` contention — the waves record what *may* run in parall
 
 ---
 
-### Phase 1: Anchor re-verification and downstream call-site inventory [NOT STARTED]
+### Phase 1: Anchor re-verification and downstream call-site inventory [COMPLETED]
 
 **Goal**: Establish the ground truth this whole plan is written against — every declaration anchor,
 every downstream consumer, and the baseline axiom profile — before a single source byte changes.
 
 **Tasks**:
-- [ ] Confirm baseline: `lake build` green, record module count; record `git rev-parse HEAD`.
-- [ ] Re-verify by `grep -n` (locate by declaration name; record actual line numbers and any delta
-      from the values below):
+- [x] Confirm baseline: `lake build` green, record module count; record `git rev-parse HEAD`.
+- [x] Re-verify by `grep -n` (locate by declaration name; record actual line numbers and any delta
+      from the values below): *(2 of ~45 anchors moved: `ValidOnFrames.of_forall_total` 426 -> 428,
+      `ValidOnFrames.apply_total` 433 -> 435; all others exact. Recorded in the inventory.)*
   - `Metalogic/Soundness.lean`: `soundness`:1152, `soundness_dense`:1329, `soundness_discrete`:1477,
     `soundness_dedekind`:2014; `soundness_dense_valid`:1256, `soundness_discrete_valid`:1421,
     `soundness_dedekind_valid`:1995; `axiom_valid`:925, `axiom_dense_valid`:979,
@@ -215,19 +216,19 @@ every downstream consumer, and the baseline axiom profile — before a single so
     `.apply_total` are **absent**
   - `Metalogic/SetConsequence.lean`: `SetConsequenceOnFrames`:91, `SetSemanticConsequenceOn`:98,
     adapters `:129–197`, `setConsequenceOnFrames_mono`:208, `setDerivable_iff_exists_finite`:247
-- [ ] Re-run the downstream consumer inventory with a single grep over `FormalSystem/` and `Tests/`,
+- [x] Re-run the downstream consumer inventory with a single grep over `FormalSystem/` and `Tests/`,
       excluding `FormalSystem/Boneyard/`, for every name this task retargets or deletes. Confirm the
       research's §8 table and the planning-time correction: the four `axiom_*_valid` have live
       consumers (`LexIntWitness.lean:182,233`, `RationalWitness.lean:126,172`) and must be retained;
       `axiom_dedekind_swap_valid` and `derivable_valid_and_swap_valid_dedekind` have none outside
       `Soundness.lean`.
-- [ ] Record baseline `#print axioms` for: `soundness`, `soundness_dense`, `soundness_discrete`,
+- [x] Record baseline `#print axioms` for: `soundness`, `soundness_dense`, `soundness_discrete`,
       `soundness_dedekind`, `soundness_dense_valid`, `soundness_discrete_valid`,
       `soundness_dedekind_valid`, `bl_soundness{,_dense,_discrete,_dedekind}`,
       `soundness_{base,dense,discrete,dedekind}_consequence`. Expected:
       `[propext, Classical.choice, Quot.sound]`.
-- [ ] Record baseline repo-wide `sorry` count.
-- [ ] Write all of the above to
+- [x] Record baseline repo-wide `sorry` count.
+- [x] Write all of the above to
       `specs/508_parameterize_soundness_over_indexed_validity/reports/02_anchor-and-callsite-inventory.md`.
 
 **Timing**: 0.75 hours
