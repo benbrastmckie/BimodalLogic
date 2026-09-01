@@ -503,6 +503,19 @@ theorem ValidIn.apply_total {fc : ProofSystem.FrameClass} {φ : Formula} (h : Va
     (hτ : τ.IsTotal) (t : F.Duration) : TruthAt M τ t φ :=
   ValidOnFrames.apply_total h F hF M τ hτ t
 
+/-- The contrapositive of `ValidIn.of_forall_total`, in the shape a countermodel extraction
+wants: from a failure of `ValidIn fc` it hands back a failure of the unbundled ∀-statement,
+which `push Not` can then take apart.
+
+This is the generic form of the four per-class contrapositives `valid.of_not`,
+`ValidDense.of_not`, `ValidDiscrete.of_not` and `ValidDedekindDense.of_not` in this file: each of
+those is this lemma at a fixed tag, with `fc.Sat F` unfolded to that class's frame condition,
+exactly as `ValidIn.of_forall_total` is `ValidOnFrames.of_forall_total` at a `FrameClass` tag. -/
+theorem ValidIn.of_not {fc : ProofSystem.FrameClass} {φ : Formula} (h : ¬ ValidIn fc φ) :
+    ¬ ∀ (F : TaskFrame), fc.Sat F → ∀ (M : TaskModel F) (τ : WorldHistory F),
+        τ.IsTotal → ∀ t : F.Duration, TruthAt M τ t φ :=
+  fun h' => h (ValidIn.of_forall_total h')
+
 /--
 A formula is valid over dense temporal orders if it is true in all models where D is
 densely ordered, at all total histories, and all times.

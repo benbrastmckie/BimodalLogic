@@ -1,7 +1,7 @@
 # Implementation Plan: Task #509
 
 - **Task**: 509 - Parameterize the compactness and strong-completeness family by `FrameClass`
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 5.25 hours
 - **Dependencies**: None (tasks 507 and 508 are landed prerequisites)
 - **Research Inputs**: `specs/509_parameterize_compactness_and_strong_completeness_family/reports/01_frameclass-indexed-compactness-family.md` plus three probe files in the same directory
@@ -189,7 +189,7 @@ probe only so the probe needs no tree edit. Redefining first makes `ModelExisten
 
 ---
 
-### Phase 1: Add the generic `ValidIn.of_not` [NOT STARTED]
+### Phase 1: Add the generic `ValidIn.of_not` [COMPLETED]
 
 **Goal**: Supply the one prerequisite that is missing tree-wide, so Phase 4's
 `compact_of_modelExistence` has its contrapositive available.
@@ -201,9 +201,9 @@ probe only so the probe needs no tree edit. Redefining first makes `ModelExisten
 makes outside `FormalSystem/Metalogic/`.
 
 **Tasks**:
-- [ ] Read `FormalSystem/Semantics/Validity.lean:481-510` to confirm the surrounding adapter
+- [x] Read `FormalSystem/Semantics/Validity.lean:481-510` to confirm the surrounding adapter
       block's shape and docstring idiom.
-- [ ] Add `ValidIn.of_not` immediately after `ValidIn.apply_total` (currently ending `:504`),
+- [x] Add `ValidIn.of_not` immediately after `ValidIn.apply_total` (currently ending `:504`),
       transplanted from `probe_509.lean` Part D (there named `ValidIn_of_not`; **rename to the
       dotted `ValidIn.of_not`** to match the file's namespace convention):
       ```lean
@@ -212,7 +212,7 @@ makes outside `FormalSystem/Metalogic/`.
               τ.IsTotal → ∀ t : F.Duration, TruthAt M τ t φ :=
         fun h' => h (ValidIn.of_forall_total h')
       ```
-- [ ] Give it a docstring in the file's established idiom, cross-referencing the four per-class
+- [x] Give it a docstring in the file's established idiom, cross-referencing the four per-class
       `of_not` lemmas as its instantiations (mirroring how `ValidIn.of_forall_total`'s docstring
       relates to `ValidOnFrames.of_forall_total`).
 
