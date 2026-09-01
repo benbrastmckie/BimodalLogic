@@ -449,7 +449,7 @@ theorem neg_injective {D : Type} [AddCommGroup D] (s t : D) : -s = -t ↔ s = t 
 $\F$ is denoted $H_{\F}$."
 
 Totality is inherited from `PartialHistory.IsTotal`; `WorldHistory.IsTotal` below is the
-`WorldHistory`-level spelling of the same predicate, not a second notion. `ParamTaskFrame.HF` bundles
+`WorldHistory`-level spelling of the same predicate, not a second notion. `TaskFrame.HF` bundles
 it as a type, per Decision A of `specs/decisions/total-history-validity-decisions.md`: the
 predicate form is used wherever totality is a *hypothesis*, and the subtype form only where `H_F`
 is quantified over as an *object* in its own right.
@@ -524,5 +524,22 @@ def timeShift (τ : F.HF) (Δ : F.Duration) : F.HF :=
 theorem timeShift_val (τ : F.HF) (Δ : F.Duration) : (τ.timeShift Δ).val = τ.val.timeShift Δ := rfl
 
 end TaskFrame.HF
+
+/--
+`H_F` at the **fibre**, so that `F.HF` resolves for a fibre-typed frame as well as for a
+total-space one.
+
+Generalized field notation resolves by the head constant of `F`'s type and never consults a
+coercion, so both spellings have to exist wherever both are used. Note the direction of the
+delegation: `WorldHistory` is declared over the total space, so `TaskFrame.HF` is the primitive
+and this is the delegating spelling — the reverse of what the plan anticipated, and forced by the
+existing layering rather than chosen.
+-/
+@[reducible] def FrameOver.HF {D : TemporalOrder} (F : FrameOver D) : Type _ :=
+  F.toTaskFrame.HF
+
+/-- The two spellings are the same type, definitionally. -/
+example {D : TemporalOrder} (F : FrameOver D) : F.HF = F.toTaskFrame.HF := rfl
+
 
 end FormalSystem.Semantics

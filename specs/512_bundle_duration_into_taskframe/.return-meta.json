@@ -1,11 +1,10 @@
 {
-  "status": "in_progress",
+  "status": "partial",
   "started_at": "2026-08-31T16:00:00Z",
-  "artifacts": [],
   "partial_progress": {
-    "stage": "phase_3_complete",
-    "details": "Phases 0-3 complete and green. TaskFrame is the total space of the fibration.",
-    "phases_completed": 4,
+    "stage": "phase_4_complete",
+    "details": "Phases 0-4 complete and green; 5-20 not started.",
+    "phases_completed": 5,
     "phases_total": 21
   },
   "metadata": {

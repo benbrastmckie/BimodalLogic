@@ -684,24 +684,29 @@ No split into 3.1 was needed.
 
 ---
 
-### Phase 4: Semantics core residue [NOT STARTED]
+### Phase 4: Semantics core residue [COMPLETED]
 
 **Goal**: The parts of the semantics core v01 deliberately left parameterized are restated at the
 fibre or bundled, as each one's role dictates.
 
 **Tasks**:
-- [ ] `WorldHistory.lean`: `ParamTaskFrame.HF` — v01 left it parameterized because dot notation
+- [x] `WorldHistory.lean`: `ParamTaskFrame.HF` — v01 left it parameterized because dot notation
       does not coerce. Restate as `FrameOver.HF` **and** `TaskFrame.HF`, the latter delegating, so
-      both `F.HF` spellings resolve (v01 finding 2).
-- [ ] `TaskModel.lean`: `FiniteTaskModel`, left over `ParamFiniteTaskFrame`. Restate over
+      both `F.HF` spellings resolve (v01 finding 2). *(deviation: altered — the delegation runs the
+      other way. `WorldHistory` is declared over the total space, so `TaskFrame.HF` is the
+      primitive and `@[reducible] def FrameOver.HF (F) := F.toTaskFrame.HF` is the delegating
+      spelling. Both `F.HF` spellings resolve, which is the requirement; the direction is forced
+      by the existing layering, not chosen. `ParamTaskFrame.HF` no longer existed — v01 Phase 4
+      had already moved it to `TaskFrame.HF`.)*
+- [x] `TaskModel.lean`: `FiniteTaskModel`, left over `ParamFiniteTaskFrame`. Restate over
       `FiniteFrameOver D` / bundled `FiniteTaskFrame` as its consumers require.
-- [ ] `FrameAxioms.lean`: the `namespace ParamTaskFrame` half (bare-relation apparatus with no
+- [x] `FrameAxioms.lean`: the `namespace ParamTaskFrame` half (bare-relation apparatus with no
       frame binder), 28 occurrences. Move it to the restored `TaskFrame.*` namespace or to
       `FrameOver` as each item's binders dictate.
-- [ ] `PartialHistory.lean`, `PartialHistoryOrder.lean`, `Truth.lean`: residual
+- [x] `PartialHistory.lean`, `PartialHistoryOrder.lean`, `Truth.lean`: residual
       `ParamTaskFrame`/`TaskFrame` mentions only; confirm nothing is left needing the transitional
       alias in this layer.
-- [ ] Re-examine the three v01 F4-idiom sites in this layer's reach and record whether the
+- [x] Re-examine the three v01 F4-idiom sites in this layer's reach and record whether the
       explicit `@LT.lt ℤ _` forms can relax now that the ℤ layer will be at a fixed fibre. Relaxing
       is optional and must not be allowed to grow the phase.
 
@@ -713,12 +718,39 @@ fibre or bundled, as each one's role dictates.
 
 **Scope Hypothesis**: 6 files, with `ParamTaskFrame` counts at HEAD of `FrameAxioms.lean` 28,
 `WorldHistory.lean` 5, `TaskModel.lean` 3, `PartialHistory.lean` 3, `Truth.lean` 0,
-`PartialHistoryOrder.lean` 0. Confirm with `grep -rc` at phase start. Downstream call-site surface
+`PartialHistoryOrder.lean` 0. Confirm with `grep -rc` at phase start. *(Confirmed, and materially LOWER
+than the hypothesis: `FrameAxioms.lean` 15 not 28, `TaskModel.lean` 2 not 3, the rest as stated.
+The difference is Phase 2's namespace revert, which had already converted the
+`ParamTaskFrame.{Spherical,Serial,Interpolates,…}` citations these files carry. Of the remainder
+the only* code *items were `FrameAxioms.lean`'s `namespace ParamTaskFrame` block and
+`WorldHistory.lean`'s three `ParamTaskFrame.{trivialFrame,natFrame}` helper histories; everything
+else was docstring prose.)* Downstream call-site surface
 is 55 files mentioning `WorldHistory`, 47 `TaskModel`, 68 `TruthAt` (research report scale table);
 under the accessors these need no edit — confirm by building without touching them.
 
 **Files to modify**:
 - `FormalSystem/Semantics/{PartialHistory,PartialHistoryOrder,WorldHistory,TaskModel,Truth,FrameAxioms}.lean`
+
+#### Phase 4 Record
+
+- `FrameAxioms.lean`'s `namespace ParamTaskFrame` block held exactly one declaration,
+  `nullity_of_serial_limit`, stated over a bare relation with no frame binder. Moved to
+  `namespace TaskFrame` — the same pre-512 restoration Phase 2 performed on the apparatus block —
+  and its 8 qualified references renamed across `TaskFrame.lean` and `Extension/Admissible.lean`.
+- `FrameOver.HF` added beside `TaskFrame.HF`, with an `example` pinning that the two are the same
+  type by `rfl`. This is what `PeriodicExtension.lean`'s `∃ σ : TaskFrame.HF F` at a fibre-typed
+  `F` will need once Phase 20 removes the `CoeOut` that currently carries it.
+- `FiniteTaskModel` restated over `FiniteFrameOver D` for `(D : TemporalOrder)`, with
+  `FiniteTaskFrame.Model` as the bundled spelling. It has no consumers in the tree today; both
+  spellings exist so Phase 10's filtration constructions can pick either.
+- `PartialHistory.lean`, `PartialHistoryOrder.lean` and `Truth.lean` needed no code change,
+  confirmed by building without touching them. `PartialHistory.lean` is now free of the string
+  `ParamTaskFrame` entirely.
+- The three v01 F4-idiom sites are not in this layer's reach; re-examination stays with Phases 9
+  and 15, which own those files.
+
+Downstream call-site surface — 55 files mentioning `WorldHistory`, 47 `TaskModel`, 68 `TruthAt` —
+needed **zero** edits, confirmed by a clean build that touched none of them.
 
 **Verification**:
 - Standing contract (1-9).

@@ -17,18 +17,18 @@ and proves the fiber/segment classification lemmas that `def:constraints` suppor
 
 *Spherical*, *Seriality*, and the interpolation half of *Compositionality* are `Prop`-valued
 predicates over a **bare task relation** `R : W → D → W → Prop`, and are declared in
-`Semantics/TaskFrame.lean` **above** the `ParamTaskFrame` structure — a structure field's type may
+`Semantics/TaskFrame.lean` **above** the `FrameOver` structure — a structure field's type may
 only mention earlier declarations, so that is where they must live for the fields to cite them.
 This module consumes them.
 
 ## The fields, and the invariant they were held to
 
-`ParamTaskFrame` now carries all four of `def:frame`'s axioms: `comp` (the full biconditional
+`FrameOver` now carries all four of `def:frame`'s axioms: `comp` (the full biconditional
 *Compositionality*, as `TaskFrame.Compositional TaskRel`), `serial`, `limit`, and `spherical`.
 The hard invariant recorded in `specs/decisions/total-history-validity-decisions.md` (the
-four-axiom frame-alignment decision) was met: `ParamTaskFrame.spherical` is *definitionally*
-`Spherical TaskRel`, `ParamTaskFrame.serial` is definitionally `Serial TaskRel`, and the
-interpolation half of biconditional *Compositionality* is available as `ParamTaskFrame.interpolates`,
+four-axiom frame-alignment decision) was met: `FrameOver.spherical` is *definitionally*
+`Spherical TaskRel`, `FrameOver.serial` is definitionally `Serial TaskRel`, and the
+interpolation half of biconditional *Compositionality* is available as `FrameOver.interpolates`,
 definitionally `Interpolates TaskRel`. Discharging a downstream hypothesis is therefore a
 mechanical substitution (`F.spherical`, `F.serial`, `F.interpolates`) with zero restatement; a
 field whose statement differed would make the results that consume these predicates stop
@@ -80,12 +80,12 @@ built from lives in `TaskFrame.lean`, transcribed there from `def:task-relation`
 
 ## Main Results
 
-- `ParamTaskFrame.nullity_of_serial_limit` — `lem:nullity`, DERIVED (not an axiom) from *Seriality* at
+- `TaskFrame.nullity_of_serial_limit` — `lem:nullity`, DERIVED (not an axiom) from *Seriality* at
   `x = 0` plus *Limit*, choice-free
 
 ## Implementation Notes
 
-- **No `ParamTaskFrame` structure field is added or changed here.** Everything is stated over a bare
+- **No `FrameOver` structure field is added or changed here.** Everything is stated over a bare
   relation or over an existing frame's `TaskRel`.
 - **Fibers and segments are two separate classes.** A "fibers and segments" hypothesis is always
   the disjunction `IsFiber R s ∨ IsSegment R s`. The retired device by which a one-sided fiber
@@ -104,9 +104,7 @@ built from lives in `TaskFrame.lean`, transcribed there from `def:task-relation`
 
 namespace FormalSystem.Semantics
 
-namespace ParamTaskFrame
-
-open TaskFrame
+namespace TaskFrame
 
 variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
 
@@ -117,13 +115,13 @@ The three axiom predicates this module was originally written to host —
 `TaskFrame.Spherical`, `TaskFrame.Serial`, `TaskFrame.Interpolates` — now live in
 `FormalSystem/Semantics/TaskFrame.lean`, beside the `Fib` / `cone` / `Seg` / `DirectedFamily` /
 `IsFiber` / `IsSegment` apparatus they are built from. Their fully qualified names, statements,
-and namespace are unchanged (`FormalSystem.Semantics.ParamTaskFrame.{Spherical,Serial,Interpolates}`),
+and namespace are unchanged (`FormalSystem.Semantics.TaskFrame.{Spherical,Serial,Interpolates}`),
 so every consumer of this module sees them exactly as before.
 
-The relocation is forced by the invariant recorded above: the `ParamTaskFrame` structure must be able
+The relocation is forced by the invariant recorded above: the `FrameOver` structure must be able
 to carry these predicates as fields *definitionally*, and a structure field's type can only
 mention declarations that precede it. A predicate declared in a module that imports
-`TaskFrame.lean` can never be a `ParamTaskFrame` field. Hosting them beside the apparatus is what
+`TaskFrame.lean` can never be a `FrameOver` field. Hosting them beside the apparatus is what
 makes the fields statable without restating anything.
 -/
 
@@ -148,7 +146,7 @@ The *Limit* hypothesis is taken in the literal transcribed shape
 directly.
 
 Note this asserts **reflexivity only**, which is all `lem:nullity` asserts. The
-`ParamTaskFrame.nullity_identity` field is an iff, and its other half — injectivity-at-zero,
+`FrameOver.nullity_identity` field is an iff, and its other half — injectivity-at-zero,
 `R w 0 u → u = w` — follows from the `limit` hypothesis **alone**, by instantiating the cone
 witness at `y := 0`. So the field is derivable from `serial` + `limit` together and is *not* a
 strengthening of the paper; see that field's own docstring in `TaskFrame.lean` for both
@@ -162,7 +160,7 @@ theorem nullity_of_serial_limit {W : Type} {R : W → D → W → Prop}
   have huw : u = w := hLim w u fun x hx => ⟨0, by simpa using hx, hu⟩
   exact huw ▸ hu
 
-end ParamTaskFrame
+end TaskFrame
 
 namespace PartialHistory
 

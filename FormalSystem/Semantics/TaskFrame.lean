@@ -534,7 +534,7 @@ structure FrameOver (D : TemporalOrder) where
 
   * **Reflexivity** (`w = u → TaskRel w 0 u`) is `lem:nullity`, derived choice-free from
     *Seriality* at `x = 0` plus *Limit*. It is already proved in this tree as
-    `ParamTaskFrame.nullity_of_serial_limit` (`Semantics/FrameAxioms.lean`).
+    `TaskFrame.nullity_of_serial_limit` (`Semantics/FrameAxioms.lean`).
   * **Injectivity-at-zero** (`TaskRel w 0 u → w = u`) follows from the `limit` field **alone**,
     by instantiating its cone witness at `y := 0`: for every `x > 0` we have `|0| < x` and
     `TaskRel w 0 u`, so `limit` forces `u = w`. *Seriality* is not needed for this half.
@@ -556,7 +556,7 @@ structure FrameOver (D : TemporalOrder) where
       (hLim : ∀ w u, (∀ x : D, 0 < x → ∃ y, |y| < x ∧ R w y u) → u = w)
       (w u : W) : R w 0 u ↔ w = u :=
     ⟨fun h => (inj_at_zero_of_limit hLim w u h).symm,
-     fun h => h ▸ ParamTaskFrame.nullity_of_serial_limit hSer hLim w⟩
+     fun h => h ▸ TaskFrame.nullity_of_serial_limit hSer hLim w⟩
   ```
 
   **Consequences.** The Lean frame class
@@ -624,7 +624,7 @@ structure FrameOver (D : TemporalOrder) where
   every positive cone of `w`, then `u` is `w`.
 
   This is exactly what `ParamTaskFrame.limit_of_succOrder`, `ParamTaskFrame.limit_of_shift`, and the
-  class helpers conclude, and exactly what `ParamTaskFrame.nullity_of_serial_limit`
+  class helpers conclude, and exactly what `TaskFrame.nullity_of_serial_limit`
   (`Semantics/FrameAxioms.lean`) consumes to derive `lem:nullity`.
   -/
   limit : ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ TaskRel w y u) → u = w

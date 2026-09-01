@@ -52,7 +52,7 @@ the same content; a reader going to the paper for it will not find it there.
 
 The recorded proof recipe for `lem:admissible` is: "Proof consumes `lem:nullity` (the zero loop at
 `z` itself) plus `lem:fibers`." Both halves appear literally below — `fibers` for the domain-time
-pairs, `ParamTaskFrame.nullity_of_serial_limit` for the single `⟨z, z⟩` pair.
+pairs, `TaskFrame.nullity_of_serial_limit` for the single `⟨z, z⟩` pair.
 
 ## Why `lem:fibers` carries no sign proviso, and why `respects_task` is unconditional
 
@@ -97,7 +97,7 @@ here:
 - **`nullity_identity` is not consumed, and its open design question is not decided here.** The
   existing `ParamTaskFrame.nullity_identity` field is an *iff* (`TaskRel w 0 u ↔ w = u`), strictly
   stronger than the paper's derived `lem:nullity`, which asserts reflexivity only. `admissible`
-  consumes only the reflexivity half, and takes it from `ParamTaskFrame.nullity_of_serial_limit`
+  consumes only the reflexivity half, and takes it from `TaskFrame.nullity_of_serial_limit`
   (*Seriality* + *Limit*, choice-free) rather than from the field. Whether the field should be
   demoted to the reflexivity half, kept as an iff, or have its injectivity-at-zero content dropped
   is a joint question with the four-axiom frame-alignment work recorded in
@@ -281,7 +281,7 @@ every member of the constraints imposed on $z$."
   plus `neg_sub`), which is precisely the negative-difference instance `def:world-history`'s `%`
   comment covers;
 - `z` twice: `u ⇒₀ u`, which is `lem:nullity` — taken here from
-  `ParamTaskFrame.nullity_of_serial_limit` (*Seriality* at `x = 0` plus *Limit*, choice-free), **not**
+  `TaskFrame.nullity_of_serial_limit` (*Seriality* at `x = 0` plus *Limit*, choice-free), **not**
   from the strictly stronger `ParamTaskFrame.nullity_identity` field, whose design question stays open.
 
 The hypothesis `hz : ¬ τ.domain z` is the paper's `z ∈ D \ X` and is genuinely load bearing in the
@@ -315,7 +315,7 @@ theorem admissible (τ : PartialHistory F) {z : F.Duration} (hz : ¬ τ.domain z
       obtain rfl : z = s := (Or.resolve_left hs hsd).symm
       obtain rfl : z = t := (Or.resolve_left ht htd).symm
       rw [adjoinFun_of_not_domain τ u hsd, sub_self]
-      exact ParamTaskFrame.nullity_of_serial_limit F.serial F.limit u
+      exact TaskFrame.nullity_of_serial_limit F.serial F.limit u
 
 end PartialHistory
 

@@ -43,7 +43,7 @@ which atomic propositions are true at each world state.
 
 This provides the complete semantic structure needed to evaluate formula truth.
 
-**Polymorphic Temporal Type**: TaskModel inherits temporal type parameter from ParamTaskFrame,
+**Polymorphic Temporal Type**: TaskModel inherits its temporal order from the frame it is over,
 ensuring valuation is independent of the specific temporal order used.
 -/
 structure TaskModel (F :
@@ -94,7 +94,10 @@ open ParamTaskFrame TaskFrame
 A finite task model is simply a task model over a finite task frame.
 This is defined as an abbreviation for convenience.
 -/
-abbrev FiniteTaskModel {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
-    (F : ParamFiniteTaskFrame D) := TaskModel F.toFrameOver
+abbrev FiniteTaskModel {D : TemporalOrder} (F : FiniteFrameOver D) :=
+  TaskModel F.toFrameOver.toTaskFrame
+
+/-- The bundled spelling, over the finite total space. -/
+abbrev FiniteTaskFrame.Model (F : FiniteTaskFrame) := TaskModel F.toTaskFrame
 
 end FormalSystem.Semantics

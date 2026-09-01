@@ -40,7 +40,7 @@ this repository cites — never the paper file directly, and never by line numbe
 ## Two transcription decisions, both settled and recorded
 
 Both are recorded in `specs/decisions/total-history-validity-decisions.md` (Decision B) so that
-they are not re-litigated here or in the four-axiom `ParamTaskFrame` alignment work.
+they are not re-litigated here or in the four-axiom frame alignment work.
 
 1. **Nonemptiness is a field, not a side hypothesis.** The paper requires the domain `X` to be
    nonempty *for a partial history*. Carrying it as data is what makes the Extension Theorem's
@@ -49,7 +49,7 @@ they are not re-litigated here or in the four-axiom `ParamTaskFrame` alignment w
    guard. This is the form the Fiber and Admissibility lemmas consume, both of which are stated
    with no sign proviso. The paper's own `%` comment (quoted above) is the justification: the
    negative-difference instances are *covered by the converse convention*, i.e. by
-   `ParamTaskFrame.converse`, so the unconditional statement is not a strengthening of the paper's
+   `FrameOver.converse`, so the unconditional statement is not a strengthening of the paper's
    requirement — it is the paper's requirement, read as written.
 
    The guarded form is *derived* here as `respects_task_le`, and `PartialHistory.ofLe` is a smart
@@ -135,7 +135,7 @@ theorem respects_task_le (τ : PartialHistory F) (s t : F.Duration) (hs : τ.dom
 Smart constructor: build a `PartialHistory` from a **guarded** task-respect proof.
 
 The unconditional `respects_task` field is discharged from the guarded proof plus
-`ParamTaskFrame.converse`: when `t < s`, the guarded proof gives `TaskRel (states t) (s - t) (states s)`,
+`FrameOver.converse`: when `t < s`, the guarded proof gives `TaskRel (states t) (s - t) (states s)`,
 and the converse convention turns that into `TaskRel (states s) (-(s - t)) (states t)`, which is
 `TaskRel (states s) (t - s) (states t)` by `neg_sub`.
 
