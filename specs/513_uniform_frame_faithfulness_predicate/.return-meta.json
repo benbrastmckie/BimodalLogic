@@ -1,29 +1,71 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "started_at": "2026-09-01T17:45:00Z",
+  "completed_at": "2026-09-01T13:15:00Z",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true,
+    "full_build_jobs": 2514,
+    "test_passed": true,
+    "test_jobs": 2564,
+    "module_invariants": "C6 pre-existing failure only (4 unreachable modules from earlier tasks: Metalogic.SpWitness, Metalogic.TMCompletenessReduction, Metalogic.Z1Countermodel, Semantics.LexCarrier); all other check groups pass, including C3 zero-sorry and C2/C14 axiom baselines",
+    "readme_lint": "check 1 pre-existing failure only (FormalSystem/Semantics/Ultraproduct/README.md); the Correspondence/ README this task introduced was written, and the three new Independence/ modules were added to that README's inventory"
+  },
+  "modified_files": [
+    "FormalSystem/Semantics/Correspondence/Galois.lean",
+    "FormalSystem/Semantics/Correspondence/Indicator.lean",
+    "FormalSystem/Semantics/Correspondence/DurationFrames.lean",
+    "FormalSystem/Semantics/Correspondence/FwdRec.lean",
+    "FormalSystem/Semantics/Correspondence/FwdRecPeriodicity.lean",
+    "FormalSystem/Semantics/Correspondence/FwdRecBridge.lean",
+    "FormalSystem/Semantics/Correspondence/README.md",
+    "FormalSystem/Metalogic/Independence/StaticFrame.lean",
+    "FormalSystem/Metalogic/Independence/RationalWitness.lean",
+    "FormalSystem/Metalogic/Independence/LexIntWitness.lean",
+    "FormalSystem/Metalogic/Independence/README.md",
+    "FormalSystem/Metalogic/Independence.lean",
+    "FormalSystem/Semantics.lean",
+    "FormalSystem/Semantics/README.md",
+    "FormalSystem/Theorems/DiscreteUnfolding.lean",
+    "FormalSystem/Theorems.lean",
+    "specs/513_uniform_frame_faithfulness_predicate/plans/01_galois-closure-implementation.md",
+    "specs/513_uniform_frame_faithfulness_predicate/summaries/01_galois-closure-implementation-summary.md"
+  ],
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/513_uniform_frame_faithfulness_predicate/plans/01_galois-closure-implementation.md",
-      "summary": "Eleven-phase plan for the frame-class Galois-closure layer, three dependency waves, two phases optional."
+      "type": "summary",
+      "path": "specs/513_uniform_frame_faithfulness_predicate/summaries/01_galois-closure-implementation-summary.md",
+      "summary": "Th/Mod Galois layer, indicator exactness, both non-closure witnesses with their sandwiches, the three (T1) correspondence theorems, and the FwdRec correspondence at both strengths."
     }
   ],
-  "next_steps": "Run /implement 513 to execute the plan",
+  "completion_data": {
+    "completion_summary": "Built the frame-class Galois-closure layer: the Th/Mod adjunction with the indicator mechanism factored once, indicator exactness for the dense and paper-Discrete classes with both closure corollaries, the static-frame constant-truth calculus and the two non-closure witnesses (staticFrame over Q and over Z x_l Z) with both AxiomSet sandwiches, the three (T1) duration-level correspondence theorems for DF/DN/CO with their witness frames and the (T0) refutation on record, and the forward-recurrence correspondent of the density schema at both strengths (atomic at arbitrary D, full schema at Z). All 11 plan phases completed including the two optional ones; sorry-free, no new axioms, full lake build and lake test green.",
+    "roadmap_items": []
+  },
+  "partial_progress": {
+    "stage": "complete",
+    "details": "All 11 phases [COMPLETED] in the plan file, including optional phases 10 and 11.",
+    "phases_completed": 11,
+    "phases_total": 11
+  },
   "metadata": {
     "session_id": "sess_1788282938_f2ac03",
-    "agent_type": "planner-agent",
+    "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 11,
-    "estimated_hours": 18,
-    "dependency_waves": [[1, 3, 4, 7, 9], [2, 10], [5, 6, 8, 11]]
-  },
-  "memory_candidates": [
-    {
-      "content": "When planning from a research report that says 'this lemma must be written' or 'add this new declaration', grep the live tree for the proposed name and for its proof route's helper lemmas BEFORE writing the phase. In the BimodalLogic Galois-closure planning, two of the research report's nine phase anchors were already in the tree: the proposed 12-line 'nextTopThm' was verbatim the existing Theorems/DiscreteUnfolding.lean succIndicator (same serial_future + prior_UZ + guardMono route), and the proposed 'nextTop' abbreviation duplicated both Formula.next Formula.top at the Syntax layer and two existing Metalogic-local copies. Following the report verbatim would have added duplicates to a formalization tree where duplicate spellings of the same formula are a known recurring defect. The correction is cheap at plan time (generalize in place; reuse the Syntax-level spelling) and expensive at implement time. Research reports that probe constructions with lean_run_code in a scratch buffer are especially prone to this: a snippet compiles standalone precisely because it does not import the module that already defines the symbol.",
-      "category": "WORKFLOW",
-      "source_artifact": "specs/513_uniform_frame_faithfulness_predicate/plans/01_galois-closure-implementation.md",
-      "confidence": 0.75,
-      "suggested_keywords": ["plan-verification", "research-report-anchors", "duplicate-declarations", "lean4", "grep-before-planning", "lean_run_code"]
-    }
-  ]
+    "dispatch_seq": 9,
+    "compliance_check": "passed",
+    "commits": [
+      "36863aa28 task 513 phases 1,3",
+      "00c079f50 task 513 phase 4",
+      "8f9c3b857 task 513 phase 2",
+      "8c974a356 task 513 phases 5,6,9",
+      "5c9ca34e2 task 513 phases 7,8",
+      "1e694cbfb task 513 phase 10",
+      "754b8f98e task 513 phase 11",
+      "ae45edf11 task 513 README inventories"
+    ]
+  }
 }

@@ -1,13 +1,67 @@
 {
-  "dispatch_seq": 6,
-  "status": "planned",
-  "summary": "Eleven-phase implementation plan written for the frame-class Galois-closure layer, in three dependency waves (wave 1: phases 1,3,4,7,9; wave 2: 2,10; wave 3: 5,6,8,11). The research report's nine-phase decomposition was adopted with three structural changes. (a) Phase 3 GENERALIZES the existing Theorems/DiscreteUnfolding.lean:90 succIndicator in place rather than adding the report's proposed new nextTopThm -- the existing declaration is already the same serial_future + prior_UZ + guardMono derivation of X-top, so the report's phase would have duplicated it; the plan specifies redefining succIndicator as the le_rfl instantiation of a new guarded succIndicatorAt so the two in-file call sites are untouched. (b) No new nextTop is defined: Formula.next Formula.top is the Syntax-level spelling and two Metalogic-local copies already exist; the plan forbids a third and fences the pre-existing duplication out of scope. (c) The report's phase 7 (~350 lines) and phase 9 (~450 lines) each exceeded one agent run, so they are split into 7/8 and 10/11 respectively. All three dispatch corrections are carried into every phase (Dedekind not Complete; IsDiscrete not Sat .Discrete for the paper-Discrete corollary; pre-512 FrameOver/worldNonempty rename pass), the AxiomSet design decision is recorded as closed with a hard stop-and-report-a-blocker contract if any phase reaches for a single-frame swapTemporal closure lemma, and deliverable (6)'s non-goals are preserved verbatim. The Walk/MinCyc apparatus is scoped as optional phases 10-11 so phases 1-9 land the rest of the task without it. Validator passes --strict with 0 warnings.",
+  "dispatch_seq": 9,
+  "task_number": 513,
+  "session_id": "sess_1788282938_f2ac03",
+  "status": "implemented",
+  "summary": "All 11 plan phases completed, including the two OPTIONAL ones (10 and 11). Seven new Lean modules (Semantics/Correspondence/{Galois,Indicator,DurationFrames,FwdRec,FwdRecPeriodicity,FwdRecBridge} and Metalogic/Independence/{StaticFrame,RationalWitness,LexIntWitness}) plus two in-place edits (Theorems/DiscreteUnfolding.lean's succIndicator generalized to succIndicatorAt; Theorems.lean's summary line). ~2450 lines of Lean, sorry-free, no new axioms, every headline result profiling as [propext, Classical.choice, Quot.sound]. Delivered: the Th/Mod adjunction with galoisClosed_of_indicator factored exactly once; indicator exactness (IND-D, IND-F, the guarded IsDiscrete form) and both closure corollaries; the static-frame constant-truth untl/snce calculus at arbitrary D; both non-closure witnesses (staticFrame over Q for Dedekind, over Z x_l Z for Discrete) with both AxiomSet sandwiches, the Discrete upper bound obtained semantically and independently of the Derivable-level route; the three (T1) correspondence theorems for DF/DN/CO over the translation and permissive witness frames, with the (T0) refutation recorded; and the FwdRec correspondence at both strengths, atomic at arbitrary D and full-schema at Z via the Walk/MinCyc apparatus. The concurrency contract held: FormalSystem/ was mine alone for the whole run, every phase was committed as it went green with targeted pathspecs, and no git add -A or commit -a was used.",
+  "phases_completed": 11,
+  "phases_total": 11,
+  "plan_markers_verified": true,
+  "plan_marker_state": "All 11 phase headings are [COMPLETED]. Four checklist items carry inline *(deviation: altered ...)* annotations, in phases 2, 6, 10 and 11; each is reproduced in the summary's Plan Deviations section.",
   "artifacts": [
+    "specs/513_uniform_frame_faithfulness_predicate/summaries/01_galois-closure-implementation-summary.md"
+  ],
+  "modified_files": [
+    "FormalSystem/Semantics/Correspondence/Galois.lean",
+    "FormalSystem/Semantics/Correspondence/Indicator.lean",
+    "FormalSystem/Semantics/Correspondence/DurationFrames.lean",
+    "FormalSystem/Semantics/Correspondence/FwdRec.lean",
+    "FormalSystem/Semantics/Correspondence/FwdRecPeriodicity.lean",
+    "FormalSystem/Semantics/Correspondence/FwdRecBridge.lean",
+    "FormalSystem/Semantics/Correspondence/README.md",
+    "FormalSystem/Metalogic/Independence/StaticFrame.lean",
+    "FormalSystem/Metalogic/Independence/RationalWitness.lean",
+    "FormalSystem/Metalogic/Independence/LexIntWitness.lean",
+    "FormalSystem/Metalogic/Independence/README.md",
+    "FormalSystem/Metalogic/Independence.lean",
+    "FormalSystem/Semantics.lean",
+    "FormalSystem/Semantics/README.md",
+    "FormalSystem/Theorems/DiscreteUnfolding.lean",
+    "FormalSystem/Theorems.lean",
+    "specs/513_uniform_frame_faithfulness_predicate/plans/01_galois-closure-implementation.md",
+    "specs/513_uniform_frame_faithfulness_predicate/summaries/01_galois-closure-implementation-summary.md"
+  ],
+  "verification": {
+    "lake_build": "green, 2514 jobs (forced --no-share full build), 0 errors, 0 warnings on any touched file",
+    "lake_test": "green, 2564 jobs, 0 errors",
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "new_axioms": 0,
+    "axiom_profiles": "every headline result [propext, Classical.choice, Quot.sound]; galoisClosed_mod and galoisClosed_of_indicator need only [propext, Quot.sound]",
+    "check_module_invariants": "C6 fails on 4 pre-existing unreachable modules only; all other groups pass",
+    "readme_lint": "check 1 fails on the pre-existing Ultraproduct README only"
+  },
+  "blockers": [],
+  "reasoned_exclusions": [
     {
-      "type": "plan",
-      "path": "specs/513_uniform_frame_faithfulness_predicate/plans/01_galois-closure-implementation.md",
-      "summary": "Eleven-phase plan, 18 hours (15 excluding the two optional phases), three dependency waves."
+      "item": "check-module-invariants.sh C6 (unmanifested unreachable modules)",
+      "reason": "Pre-existing and named as not-mine in the dispatch. The four modules listed (Metalogic.SpWitness, Metalogic.TMCompletenessReduction, Metalogic.Z1Countermodel, Semantics.LexCarrier) all come from earlier tasks; none of this task's seven new modules appears, since every one is registered in an aggregator.",
+      "evidence": "Final run at ae45edf11 names exactly those four and nothing else."
+    },
+    {
+      "item": "readme-lint.sh check 1 (missing FormalSystem/Semantics/Ultraproduct/README.md)",
+      "reason": "Pre-existing and named as not-mine in the dispatch. The one new check-1 entry this task would have introduced, FormalSystem/Semantics/Correspondence/README.md, was written rather than excluded, and the three new Independence/ modules were added to that directory's README inventory so check 2 reports none of this task's files.",
+      "evidence": "readme-lint.sh after commit ae45edf11 reports Ultraproduct alone under check 1."
     }
   ],
-  "blockers": []
+  "commits": [
+    "36863aa28 task 513 phases 1,3: Th/Mod Galois connection module; succIndicatorAt generalization",
+    "00c079f50 task 513 phase 4: static-frame time-invariance and constant-truth untl/snce calculus",
+    "8f9c3b857 task 513 phase 2: indicator exactness for dense and paper-Discrete, both closure corollaries",
+    "8c974a356 task 513 phases 5,6,9: rational and lex-int non-closure witnesses, both sandwiches, FwdRec atomic correspondence",
+    "5c9ca34e2 task 513 phases 7,8: translation and permissive witness frames, three (T1) correspondence biconditionals",
+    "1e694cbfb task 513 phase 10: Walk/MinCyc periodicity apparatus and per-history truth periodicity",
+    "754b8f98e task 513 phase 11: FwdRec schema half at Z and Mod densitySchema on the Z fibre",
+    "ae45edf11 task 513: README inventories for the Correspondence layer and the two new Independence witnesses"
+  ]
 }
