@@ -1,35 +1,38 @@
 {
-  "dispatch_seq": 6,
-  "status": "partial",
-  "requires_user_review": false,
-  "phases_completed": 9,
+  "dispatch_seq": 1,
+  "status": "implemented",
+  "summary": "All 21 phases of plans/02_temporal-order-fibration.md are now [COMPLETED]; this dispatch closed phases 11-20. The temporal-order fibration is fully landed and the transitional layer is deleted: TemporalOrder reifies def:temporal-order, FrameOver D is the fibre and the sole declaration site of the frame axioms, TaskFrame is the total space Sigma (D : TemporalOrder), FrameOver D. ParamTaskFrame, ParamFiniteTaskFrame, ofParam, toParam, instCoeOutParamTaskFrame and FrameConditions.ValidOver are gone tree-wide, prose included. Verification at completion: lake build 0 (isolated full rebuild 327 s against a 403 s baseline), lake build BimodalTest 0, check-module-invariants.sh ALL CHECKS PASSED, zero structural sorry, no new axioms, no cast introduced, and all four C2 flagship axiom profiles unchanged at [propext, Classical.choice, Quot.sound].",
+  "phases_completed": 21,
   "phases_total": 21,
-  "phases_completed_list": [0, 1, 2, 3, 4, 5, 6, 7, 8],
-  "phases_blocked_list": [],
-  "phases_not_started_list": [9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
-  "blocked_phase": null,
-  "last_green_commit": "fedd5b18f",
-  "build_green": true,
-  "test_target_green": true,
-  "module_invariants": "ALL CHECKS PASSED",
-  "axiom_profiles_unchanged": true,
-  "sorry_count": 0,
-  "phase_8_verdict": "ANSWERED. IntTransfer.lean is base change ONLY ALONG ISOMORPHISMS, and the restriction is forced: *Limit* uses map_lt_map_iff in BOTH directions (instantiates the hypothesis at `e x`, produces the witness as `e.symm n`), so a one-directional morphism has nothing to instantiate with. WorldHistory.comap, and through it truthAt_map's box case, consumes `e` forward. Nothing was added: no FrameOver.baseChange, no theory of temporal-order morphisms. A general base-change theory is NEW MATHEMATICS (requires re-proving Limit under a weaker hypothesis), not a refactor -- size it as new work.",
-  "blocker_summary": null,
-  "decision_required": [],
-  "next_steps": "Resume at Phase 9 (PeriodicExtension.lean + IntPresentation.lean). Waves 9-13 follow. Every ParamTaskFrame site still standing is held green by the reducible alias, so the tree is a coherent resting state at this boundary.",
-  "carry_forward": {
-    "omega_at_the_fibre": "SHARPENED BY PHASE 7. omega breaks only where the ordering hypothesis is PRODUCED BY A FRAME FIELD's own type (e.g. TaskFrame.Compositional hands you `0 ≤ x` at ↑intOrder) -- not merely because a file mentions ℤ. Where the binders are the statement's own (`(d : ℤ)`, `(n : ℕ)`), everything works untouched: IntNormalForm needed ZERO proof edits and added ZERO casts. Recovery, only for the frame-field case: `change (0 : ℤ) ≤ x at hx`. A show/have ASCRIPTION is a no-op. Applies to Phases 9, 10-Periodicity, 11, 15, 19.",
-    "temporalorder_vs_Z_inference": "Lean cannot invert `↑E ≟ ℤ` to recover `E := intOrder` -- `↑E` is not a pattern. Where a ℤ-typed object must meet a TemporalOrder-indexed one, ascribe at `↑intOrder` and pass `(D := ...) (E := intOrder)` explicitly. See validDiscrete_iff_validInt.",
-    "namespace_moves": "Migrating a `namespace ParamTaskFrame` block to `namespace FrameOver` breaks UNQUALIFIED references from other blocks that relied on the old namespace. Phase 7 hit this in PeriodicExtension (HFofStepPath) and in IntNormalForm itself (limit_of_succOrder, spherical_of_finite -- both still in namespace ParamTaskFrame in TaskFrame.lean, Phase 20's to relocate).",
-    "gate_is_load_bearing": "THREE times now the invariants gate caught what a green `lake build` did not: Phase 2 (C6 isolation compile of PeriodicExtension), Phase 6 (C1 `lake build BimodalTest` -- the default target excludes tests), Phase 7 (C6 again, namespace resolution). The per-phase build helper now builds BimodalTest alongside the library, but C6's isolation compile of unreachable-but-manifested modules has no substitute. Run the full gate every phase.",
-    "prop_accessors": "TaskFrame's Prop-valued accessors are `theorem`s, not `@[reducible] def`s -- Lean rejects @[reducible] on a proof. Harmless by proof irrelevance.",
-    "named_temporal_orders": "Only `intOrder` is in Semantics/TemporalOrder.lean. ratOrder, realOrder and the ℚ ×ₗ ℤ order are deferred to the phases that consume them (13, 16), to keep Mathlib.Data.Real.Basic out of every module's transitive imports.",
-    "lake_clean_warning": "Do NOT run `lake clean` -- it cleans the WORKSPACE including Mathlib. Recovery is `lake exe cache get` (~17 s)."
+  "blockers": [],
+  "requires_user_review": true,
+  "review_reason": "Three decisions departed from the plan's literal text (TemporalOrder.of retained for pinned carriers; realOrder/ratOrder not declared and referred to 507; ValidOver's deletion cascaded to 15 sites rather than 2, forcing two renames). Each is documented in the corresponding Phase Record. Per .claude/rules/plan-compliance.md these are surfaced for review rather than treated as routine annotations.",
+  "artifacts": [
+    "specs/512_bundle_duration_into_taskframe/plans/02_temporal-order-fibration.md",
+    "specs/512_bundle_duration_into_taskframe/summaries/02_temporal-order-fibration-summary.md",
+    "specs/512_bundle_duration_into_taskframe/handoffs/phase-11-handoff-20260831.md",
+    "specs/512_bundle_duration_into_taskframe/handoffs/phase-12-handoff-20260831.md",
+    "specs/512_bundle_duration_into_taskframe/handoffs/phase-13-handoff-20260831.md",
+    "specs/512_bundle_duration_into_taskframe/handoffs/phase-14-handoff-20260831.md",
+    "specs/512_bundle_duration_into_taskframe/handoffs/phase-15-handoff-20260831.md",
+    "specs/512_bundle_duration_into_taskframe/handoffs/phase-16-handoff-20260831.md",
+    "specs/512_bundle_duration_into_taskframe/handoffs/phase-17-handoff-20260831.md",
+    "specs/512_bundle_duration_into_taskframe/handoffs/phase-18-handoff-20260831.md",
+    "specs/512_bundle_duration_into_taskframe/handoffs/phase-19-handoff-20260831.md",
+    "specs/512_bundle_duration_into_taskframe/handoffs/phase-20-handoff-20260831.md"
+  ],
+  "downstream_notes": {
+    "507": "Owns names. Decide realOrder/ratOrder (a single home must be Semantics/TemporalOrder.lean, which needs a new tree-wide Mathlib import; probed: <Rat> does not elaborate there today). FrameConditions.LinearTemporalFrame is redundant under this design. Two renames already landed: ValidOverInt -> ValidOnInt, valid_over_Int_of_valid_discrete -> valid_on_Int_of_valid_discrete. Under the fibration, exists D, exists F : FrameOver D IS exists F : TaskFrame, which is what ValidDiscrete consumes.",
+    "510": "TemporalCarrier (Decidability/Verified/Bridge/Carrier.lean:126) carries exactly TemporalOrder's four components as binders and has two genuine fields; it may reduce to (fc : FrameClass) (D : TemporalOrder) plus those fields, possibly shrinking 510 to a merge. Recorded, not acted on.",
+    "513": "Phase 8's NEGATIVE verdict stands: IntTransfer.lean is base change along isomorphisms only, and the restriction is forced -- Limit uses map_lt_map_iff in both directions. No general base-change theory was added; size that honestly."
   },
-  "cross_task_observations": {
-    "task_510": "Not yet reached (Phase 14 territory). TemporalCarrier/FrameConditionFor at Bridge/Carrier.lean:110,126 remains FLAG-ONLY and unexamined.",
-    "task_507": "No Dedekind identifier renamed, verified against the diff at Phase 5. The ParamTaskFrame.* -> TaskFrame.* predicate-namespace move is a restoration of the pre-512 name (verified against 7ecb341b9), not a naming decision."
-  },
-  "scope_hypothesis_accuracy": "Every confirmed count has been at or BELOW the plan's estimate, never above. Phase 5's predicted 17-file blast radius was 1. Phases 4 and 6 came in materially lower because Phase 2's namespace revert had already absorbed the citations. No phase has needed its pre-authorized split (5.1, 3.1)."
+  "follow_ups_out_of_scope": [
+    "scripts/check-paper-definitions.sh exits 1 on SOURCE-PAPER drift (new def:time-shift-histories; def:frame#Spherical and cor:spherical-finite anchors moved). Task 512 touched no typst/, latex/ or specs/paper-definitions-of-record.md file. C15 passes on all 46 anchors.",
+    "Tests/BimodalTest/Semantics/SemanticBenchmark.lean does not elaborate and has not since before task 512 (verified against 92c26855e): it writes Formula.atom_s (declaration is atomS) and compares an Atom-typed valuation argument to a String literal at ~20 sites. Unimported, so lake build does not cover it.",
+    "docs/ carries pre-existing staleness unrelated to the fibration (LinearOrderedAddCommGroup, ConvexSet T, String-valued valuations). The passages stating the frame's shape were rewritten; the rest was left."
+  ],
+  "metadata": {
+    "session_id": "sess_1788235711_6acdbf",
+    "agent_type": "lean-implementation-agent"
+  }
 }

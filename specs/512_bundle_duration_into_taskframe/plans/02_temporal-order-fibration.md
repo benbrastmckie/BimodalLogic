@@ -1989,25 +1989,29 @@ signal that documentation drifted during the migration rather than as a number t
 
 ## Testing & Validation
 
-- [ ] `lake build` exits 0 at every phase boundary and at task completion.
-- [ ] `bash scripts/check-module-invariants.sh` reports ALL CHECKS PASSED at task completion (full
-      run, with build).
-- [ ] **C2**: `#print axioms` for `FormalSystem.Metalogic.BXCanonical.{completeness,
-      completeness_dense, completeness_discrete}` and
-      `FormalSystem.Metalogic.BXCanonical.Chronicle.countermodel_dense` each equal
-      `[propext, Classical.choice, Quot.sound]` — checked **per phase**, not only at the end, and
-      individually (not via the aggregate gate output) in Phase 13.
-- [ ] **C3**: zero structural `sorry` at every phase boundary. No strategic sorries are planned;
-      `plan_metadata.skeleton` is `false`.
-- [ ] **C9**: no task-number citation anywhere under `FormalSystem/`.
-- [ ] **C14/C15**: documented axiom/sorry counts consistent across `docs/`, `README.md` and Lean
-      docstrings; every paper anchor resolves, `def:temporal-order` included.
-- [ ] The definitional-content `example`s close by `rfl` at **both** `FrameOver` and `TaskFrame`.
-- [ ] The Σ-identity `⟨F.Duration, F.toFibre⟩ = F` closes by `rfl`.
-- [ ] `grep -rn "ParamTaskFrame\|ofParam\|toParam" FormalSystem Tests --include=*.lean | grep -v Boneyard`
-      returns nothing after Phase 20.
-- [ ] No `▸` cast was introduced anywhere to make a numeral or an arithmetic goal typecheck.
-- [ ] `lake build` wall time at Phase 20 within 25% of the Phase 0 baseline.
+- [x] `lake build` exits 0 at every phase boundary and at task completion.
+- [x] `bash scripts/check-module-invariants.sh` reports **ALL CHECKS PASSED** at task completion
+      (full run, with build).
+- [x] **C2**: all four flagship profiles equal `[propext, Classical.choice, Quot.sound]`, checked
+      at every phase boundary and individually (not via the aggregate gate) in Phase 13.
+- [x] **C3**: zero structural `sorry` at every phase boundary; the invariants gate's own
+      inventory reports zero. No strategic sorry was landed.
+- [x] **C9**: passes — zero task-number citations under `FormalSystem/`.
+- [x] **C14/C15**: C14 passes (no stale axiom/sorry counts; the decidability-soundness and
+      Dedekind-completeness baselines match). C15 passes: all 46 paper anchors resolve,
+      `def:temporal-order` included.
+- [x] The definitional-content `example`s close by `rfl` at **both** `FrameOver` and `TaskFrame`
+      (`DefinitionalContent` and `FibreDefinitionalContent` sections, `TaskFrame.lean`).
+- [x] The Σ-identity `⟨F.Duration, F.toFibre⟩ = F` closes by `rfl` (`TotalSpaceIdentity` section),
+      as do `(F.toTaskFrame).toFibre = F` and `(F.toTaskFrame).Duration = D`.
+- [x] `grep -rn "ParamTaskFrame\|ParamFiniteTaskFrame\|ofParam\|toParam" FormalSystem Tests`
+      returns **nothing** after Phase 20, prose included. Same for `ValidOver`.
+- [x] **No `▸` cast was introduced anywhere.** Across the whole task's diff, `git diff | grep '^+'`
+      finds exactly one added line containing `▸`, and it is the docstring sentence that forbids
+      them ("never a `▸` cast"). Removed: zero.
+- [x] `lake build` wall time: **327 s** on an isolated full rebuild against a 403 s baseline —
+      19 % *below*, not above. (A concurrent-load run of the same tree measured 514 s; see the
+      Phase 20 Record on why a single unisolated timing proves nothing either way.)
 
 ## Artifacts & Outputs
 
