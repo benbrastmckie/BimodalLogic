@@ -69,7 +69,9 @@ example : Nontrivial (ℚ ×ₗ ℤ) := inferInstance
 
 /-! ### The bundle flow machinery elaborates at `ℚ ×ₗ ℤ` -/
 
-noncomputable example (B : BFMCS (fc := fc) (ℚ ×ₗ ℤ)) : ParamTaskFrame (ℚ ×ₗ ℤ) := bundleFlowFrame B
+noncomputable example (B : BFMCS (fc := fc) (ℚ ×ₗ ℤ)) :
+    FrameOver (TemporalOrder.of (ℚ ×ₗ ℤ)) :=
+  bundleFlowFrame B
 
 noncomputable example (B : BFMCS (fc := fc) (ℚ ×ₗ ℤ)) : TaskModel (bundleFlowFrame B) :=
   bundleFlowModel B

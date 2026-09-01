@@ -72,8 +72,9 @@ open FormalSystem.Metalogic.Algebraic
 
 variable {fc : FrameClass}
 
-/-- The bundle flow frame elaborates at `D := ℝ`. -/
-noncomputable example (B : BFMCS (fc := fc) ℝ) : ParamTaskFrame ℝ := bundleFlowFrame B
+/-- The bundle flow frame elaborates at the `ℝ` fibre. -/
+noncomputable example (B : BFMCS (fc := fc) ℝ) : FrameOver (TemporalOrder.of ℝ) :=
+  bundleFlowFrame B
 
 /-- The bundle flow model elaborates at `D := ℝ`. -/
 noncomputable example (B : BFMCS (fc := fc) ℝ) : TaskModel (bundleFlowFrame B) :=
@@ -178,7 +179,8 @@ each lives:
    sentences of quantifier depth at most `k`"* — `Chronicle.chronicleRealFlow` and
    `chronicleRealFlow_kEquiv`, Doets' theorem (§8 Theorem 6) at the chronicle bridge.
 5. The table transfer `R ⊨ ∃t α(t)` from `M ⊨ ∃t α(t)`, and the read-back of the `ℝ`-flowed
-   monadic structure as a `ParamTaskFrame ℝ` — this section.
+   monadic structure as a value of the `ℝ` fibre `FrameOver (TemporalOrder.of ℝ)` — this
+   section.
 
 **On the table `α(t)`.** Step 5's *"table"* of a formula and its quantifier depth is **not**
 introduced here: the tree already has it, as `table` / `table_correctness` /
@@ -318,7 +320,7 @@ theorem countermodel_dedekind_dense {fc : FrameClass} (hfc : FrameClass.Dedekind
     (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
     (φ : Formula) (h_neg_in : φ.neg ∈ A)
     (h_box_dense : Formula.box Chronicle.nextTop.neg ∈ A) :
-    ∃ (F : ParamTaskFrame ℝ) (TM : TaskModel F)
+    ∃ (F : FrameOver (TemporalOrder.of ℝ)) (TM : TaskModel F)
       (τ : WorldHistory F) (_ : τ.IsTotal) (t : ℝ),
       ¬TruthAt TM τ t φ := by
   classical

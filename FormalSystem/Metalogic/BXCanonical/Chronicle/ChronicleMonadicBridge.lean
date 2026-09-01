@@ -70,23 +70,22 @@ Phase 15's first task is a gate: are `mkSigFrom`, `Formula.predFormulas`,
 **Answer: they are independent. Discreteness is baked only into
 `countermodel_discrete_reynolds_v2`'s statement, not into the encoding.** Evidence:
 
-* `ParamTaskFrame` (`Semantics/TaskFrame.lean:99`) is parameterized by
-  `(D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]` and by nothing
-  else. `WorldHistory` and `WorldHistory.timeShift` carry the same three
-  instances and no successor structure.
+* `FrameOver` (`Semantics/TaskFrame.lean`) is indexed by a single `(D : TemporalOrder)` and by
+  nothing else — `def:temporal-order`'s four algebraic components are `D`'s own fields.
+  `WorldHistory` and `WorldHistory.timeShift` see the same `D` and no successor structure.
 * `Formula.predFormulas` (`Syntax/Formula.lean`) is a purely syntactic recursion on
   `Formula` with no temporal parameter at all, and `mkSigFrom φ`
   (`WeakCanonical/Transfer.lean:134`) is `Finset.cons Formula.bot φ.predFormulas _`. No
   order structure occurs in either.
-* `multiFamTaskFrame FamIdx : ParamTaskFrame ℤ` (`ReynoldsBridge.lean:671`) has
+* `multiFamTaskFrame FamIdx : FrameOver intOrder` (`ReynoldsBridge.lean`) has
   `WorldState := FamIdx × ℤ` and `TaskRel p d q := p.1 = q.1 ∧ q.2 = p.2 + d`, in which
   `ℤ` occurs only as the carrier and `+` only as its group operation; likewise
   `multiFamHistory` and the totality characterization `multiFam_total_eq_range`.
 
 The generic re-statements (`multiFamTaskFrameGen` and siblings, hosted in
 `Metalogic/Algebraic/FlowFrame.lean`) *discharge* the gate
-rather than merely asserting it: they typecheck over an arbitrary
-`[AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]`, and the `ℤ` originals are
+rather than merely asserting it: they typecheck at an arbitrary `(D : TemporalOrder)`, and the
+`ℤ` originals are
 recovered as definitional specializations (`multiFamTaskFrameGen_int` and siblings). The
 `ℤ` originals are left byte-identical; `countermodel_discrete_reynolds_v2` still consumes
 them. Phase 30 consumes the generic versions at `D := ℝ`.

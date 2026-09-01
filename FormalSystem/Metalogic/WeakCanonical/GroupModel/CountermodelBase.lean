@@ -82,7 +82,8 @@ example : LinearOrder (ℚ ×ₗ ℤ) := inferInstance
 example : IsOrderedAddMonoid (ℚ ×ₗ ℤ) := inferInstance
 example : Nontrivial (ℚ ×ₗ ℤ) := inferInstance
 
-noncomputable example : ParamTaskFrame (ℚ ×ₗ ℤ) := multiFamTaskFrameGen (TemporalOrder.of (ℚ ×ₗ ℤ)) Unit
+noncomputable example : FrameOver (TemporalOrder.of (ℚ ×ₗ ℤ)) :=
+  multiFamTaskFrameGen (TemporalOrder.of (ℚ ×ₗ ℤ)) Unit
 
 /-! ## Carrier arithmetic
 
@@ -143,9 +144,8 @@ theorem countermodel_discrete (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (φ : Formula) (h_neg_in : φ.neg ∈ A)
     (h_box_discrete : Formula.box nextTop ∈ A) :
-    ∃ (D : Type) (_ : AddCommGroup D) (_ : LinearOrder D) (_ : IsOrderedAddMonoid D)
-      (_ : Nontrivial D) (F : ParamTaskFrame D) (TM : TaskModel F)
-      (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
+    ∃ (F : TaskFrame) (TM : TaskModel F)
+      (τ : WorldHistory F) (_ : τ.IsTotal) (t : ↑F.Duration),
       ¬TruthAt TM τ t φ := by
   -- FamIdx: type of box-equivalent Base MCSes (one per S5 accessibility class)
   let FamIdx := {N : Set Formula // SetMaximalConsistent (fc := FrameClass.Base) N ∧
@@ -191,8 +191,7 @@ theorem countermodel_discrete (A : Set Formula)
         TemporalTruth ((getQ f).toOrdered sig) (mkAtomMapFwd φ) (w₀ + t) ψ by
     -- Package the existential (four fewer instance slots than the Discrete original: no
     -- `SuccOrder`/`PredOrder`/`IsSuccArchimedean`/`IsPredArchimedean`).
-    refine ⟨ℚ ×ₗ ℤ, inferInstance, inferInstance, inferInstance, inferInstance,
-      multiFamTaskFrameGen (TemporalOrder.of (ℚ ×ₗ ℤ)) FamIdx, TM,
+    refine ⟨(multiFamTaskFrameGen (TemporalOrder.of (ℚ ×ₗ ℤ)) FamIdx).toTaskFrame, TM,
       multiFamHistoryGen f₀ 0, multiFamHistoryGen_total f₀ 0,
       s₀, ?_⟩
     intro h_truth_phi

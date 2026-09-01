@@ -827,15 +827,13 @@ theorem countermodel_dense (fc : FrameClass) (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) A)
     (φ : Formula) (h_neg_in : φ.neg ∈ A)
     (h_box_dense : Formula.box nextTop.neg ∈ A) :
-    ∃ (D : Type) (_ : AddCommGroup D) (_ : LinearOrder D) (_ : IsOrderedAddMonoid D)
-      (_ : Nontrivial D) (F : ParamTaskFrame D) (TM : TaskModel F)
-      (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
+    ∃ (F : TaskFrame) (TM : TaskModel F)
+      (τ : WorldHistory F) (_ : τ.IsTotal) (t : ↑F.Duration),
       ¬TruthAt TM τ t φ := by
   have hfam₀ : rootedCantorFmcsDense fc A h_mcs h_box_dense 0 ∈
       (cantorBfmcsDense fc A h_mcs h_box_dense).families :=
     ⟨A, h_mcs, h_box_dense, 0, fun _ => Iff.rfl, rfl⟩
-  refine ⟨Rat, inferInstance, inferInstance, inferInstance, inferInstance,
-    Algebraic.bundleFlowFrame (cantorBfmcsDense fc A h_mcs h_box_dense),
+  refine ⟨(Algebraic.bundleFlowFrame (cantorBfmcsDense fc A h_mcs h_box_dense)).toTaskFrame,
     Algebraic.bundleFlowModel (cantorBfmcsDense fc A h_mcs h_box_dense),
     Algebraic.bundleFlowHistory ⟨rootedCantorFmcsDense fc A h_mcs h_box_dense 0, hfam₀⟩ 0,
     Algebraic.bundleFlowHistory_total _ _,

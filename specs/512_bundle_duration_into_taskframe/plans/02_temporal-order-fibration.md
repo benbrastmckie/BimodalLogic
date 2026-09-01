@@ -1399,22 +1399,63 @@ before assuming the ℤ contract is unnecessary.
 
 ---
 
-### Phase 13: BXCanonical, Chronicle, and the countermodel bases [NOT STARTED]
+### Phase 13: BXCanonical, Chronicle, and the countermodel bases [COMPLETED]
 
 **Goal**: The flagship-theorem territory migrated. Highest drift risk in the plan.
 
 **Tasks**:
-- [ ] Migrate `Metalogic/BXCanonical/{Completeness,CompletenessDedekind,DiscreteCarrierProbe}.lean`
-      (1/3/1). `CompletenessDedekind.lean:76` carries the single `ℝ` frame and
-      `DiscreteCarrierProbe.lean:72` a `ℚ ×ₗ ℤ` frame — both become `FrameOver realOrder` /
-      `FrameOver` at the `ℚ ×ₗ ℤ` order declared in Phase 1.
-- [ ] Migrate `Metalogic/BXCanonical/Chronicle/{ChronicleMonadicBridge,MCSMixedCase,ChronicleToCountermodelBasic}.lean`
+- [x] Migrate `Metalogic/BXCanonical/{Completeness,CompletenessDedekind,DiscreteCarrierProbe}.lean`
+      (1/3/1). *(deviation: altered — the `ℝ` and `ℚ ×ₗ ℤ` fibres are spelled
+      `FrameOver (TemporalOrder.of ℝ)` / `FrameOver (TemporalOrder.of (ℚ ×ₗ ℤ))`, not
+      `FrameOver realOrder`. `realOrder`/`ratOrder` were NOT declared; reason below.)*
+- [x] Migrate `Metalogic/BXCanonical/Chronicle/{ChronicleMonadicBridge,MCSMixedCase,ChronicleToCountermodelBasic}.lean`
       (2/1/1).
-- [ ] Migrate `Metalogic/WeakCanonical/GroupModel/CountermodelBase.lean` (2; the second
-      `ℚ ×ₗ ℤ` frame at `:85`). Its arithmetic is not `omega`-discharged, so the relevant half of
-      the ℤ contract is the explicit-binder half, not the `omega` half.
-- [ ] Verify each of the four flagship theorems' axiom profiles **individually** with
-      `#print axioms`, not by relying on the aggregate gate output.
+- [x] Migrate `Metalogic/WeakCanonical/GroupModel/CountermodelBase.lean` (2).
+- [x] Verify each of the four flagship theorems' axiom profiles **individually** with
+      `#print axioms`. All four: `[propext, Classical.choice, Quot.sound]`.
+
+#### Phase 13 Record
+
+**The Σ-collapse landed, and it is the phase's real content.** Three theorems
+(`Chronicle.countermodel_dense`, `Chronicle.countermodelChronicleMixed`,
+`WeakCanonical.countermodel_discrete`) stated their conclusion as
+
+```lean
+∃ (D : Type) (_ : AddCommGroup D) (_ : LinearOrder D) (_ : IsOrderedAddMonoid D)
+  (_ : Nontrivial D) (F : ParamTaskFrame D) (TM : TaskModel F) …
+```
+
+— five existential slots spent saying "there is a temporal order". Under the fibration that is
+literally `∃ (F : TaskFrame)`, by the Σ-identity `⟨F.Duration, F.toFibre⟩ = F`. All three now read
+
+```lean
+∃ (F : TaskFrame) (TM : TaskModel F) (τ : WorldHistory F) (_ : τ.IsTotal) (t : ↑F.Duration) …
+```
+
+and their consumers lose five `_` slots from the `obtain` pattern. This is the same collapse Phase
+11 performed on `countermodel_discrete_reynolds_v2`, and it is the shape research finding 7 named:
+`∃ D, ∃ F : FrameOver D` **is** `∃ F : TaskFrame`.
+
+**Why `realOrder`/`ratOrder` were not declared — a placement finding, not a deferral by
+preference.** A *single* `ratOrder` must be visible to both `BXCanonical/Completeness.lean` and
+`Independence/ClockFrame.lean` (Phase 16), or the two declarations collide in
+`FormalSystem/Metalogic.lean`, which imports both. Those two files have no common ancestor below
+`FormalSystem/Semantics/`, so the only legal single home is `Semantics/TemporalOrder.lean` — and
+that module currently **cannot** state `⟨Rat⟩`: probed directly, `⟨Rat⟩ : TemporalOrder` fails with
+`failed to synthesize AddCommGroup Rat`. Declaring `ratOrder` there therefore means adding a
+`Mathlib.Data.Rat.*` import to a module in the transitive closure of all ~2500 modules in the
+tree; `realOrder` would add `Mathlib.Data.Real.Basic` on the same terms. That is a whole-tree
+build-cost decision, and it is exactly the import-hygiene concern for which Phase 1 deferred these
+declarations in the first place.
+
+**Recommendation to Phase 20** (which must edit `Semantics/TaskFrame.lean` anyway, and so pays the
+full rebuild regardless): decide `realOrder`/`ratOrder` there, together with `TemporalOrder.of`'s
+fate, and measure the wall-time delta against the Phase 0 baseline in the same run. Until then
+`TemporalOrder.of ℝ` / `TemporalOrder.of Rat` / `TemporalOrder.of (ℚ ×ₗ ℤ)` are the spellings in
+use, and they are `@[reducible]`, so they are the same fibres by every test that matters.
+
+**No drift.** `ParamTaskFrame` count across the seven files: 11 → **0**. Every flagship profile
+checked individually, not from the aggregate gate.
 
 **Timing**: 2 hours
 

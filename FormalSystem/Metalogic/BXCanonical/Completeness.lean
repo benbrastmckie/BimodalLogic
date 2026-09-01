@@ -136,7 +136,7 @@ theorem countermodel_dense_enriched {fc : FrameClass} (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) A)
     (φ : Formula) (h_neg_in : φ.neg ∈ A)
     (h_box_dense : Formula.box Chronicle.nextTop.neg ∈ A) :
-    ∃ (F : ParamTaskFrame Rat) (TM : TaskModel F)
+    ∃ (F : FrameOver (TemporalOrder.of Rat)) (TM : TaskModel F)
       (τ : WorldHistory F) (_ : τ.IsTotal) (t : Rat),
       ¬TruthAt TM τ t φ := by
   let bfmcs := Chronicle.cantorBfmcsDense fc A h_mcs h_box_dense
@@ -224,7 +224,7 @@ theorem completeness (φ : Formula) :
     rcases SetMaximalConsistent.negation_complete hM_mcs
       (Formula.box Chronicle.nextTop) with h_box_discrete | h_not_box_discrete
     · -- Purely discrete case: □(U(T,bot)) ∈ M — all box-equivalent MCS's are discrete
-      obtain ⟨D, _, _, _, _, F, TM, τ, h_tot, t, h_not_true⟩ :=
+      obtain ⟨F, TM, τ, h_tot, t, h_not_true⟩ :=
         WeakCanonical.countermodel_discrete M hM_mcs φ h_neg_in h_box_discrete
       exact h_not_true (h_valid F TM τ h_tot t)
     · -- Mixed case: ¬□(F'T) ∧ ¬□(U(T,bot)) ∈ M — eliminated by structural axiom
