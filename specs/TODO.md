@@ -1,5 +1,5 @@
 ---
-next_project_number: 515
+next_project_number: 516
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 515
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,193,257,298,433,461,476,481,493,495,504,506,507 | -- | automation, dataset-enhancement, decidability, ... |
+| 1 | 127,128,193,257,298,433,461,476,481,493,495,504,506,507,515 | -- | automation, code-quality, dataset-enhancement, ... |
 | 2 | 178,231,282,296,463,502,510,513 | 193,298,433,461,507 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 219,464,497,508 | 231,463,502,510 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 4 | 465,498,499,500,509 | 464,493,497,508 | algebraic-representation, decidability, metalogic |
@@ -41,6 +41,10 @@ next_project_number: 515
 ### Automation
 
 193 [NOT STARTED] — Apply validity-intro and truth-simp macros to the soundness layer
+
+### Code Quality
+
+515 [NOT STARTED] — Eliminate the 21 remaining "Overlapping instance parameters -- Th
 
 ### Dataset Enhancement
 
@@ -104,6 +108,51 @@ next_project_number: 515
 513 [NOT STARTED] — GALOIS-CLOSURE IMPLEMENTATION for the frame-class layer, replacin
 
 ## Tasks
+
+### 515. Eliminate overlapping nontrivial instance warnings
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: code-quality
+- **Dependencies**: None
+
+**Description**: Eliminate the 21 remaining "Overlapping instance parameters -- There are 2 [Nontrivial D] instances; one is sufficient" warnings across three Metalogic files. All 21 are the same linter class, but they split into two structurally DIFFERENT shapes and the second needs real judgment -- do not treat this as a uniform find-and-replace.
+
+PRECEDENT, ALREADY DONE (do not redo): the same warning class was fixed in FormalSystem/Semantics/TaskFrame.lean at 9 sites in commit e73dcb62f -- limit_of_shift, exists_uniform_radius_of_finite, exists_pos_of_nontrivial, limit_of_eq, staticFrame_rel_iff, staticFrame_serial, staticFrame_interpolates, staticFrame_limit, staticFrame_spherical. There the fix was mechanical: each theorem re-declared [Nontrivial D] explicitly while the enclosing section variable blocks (:783, :1308) already bound it; deleting the explicit binder sufficed. Result: 9 -> 0 overlapping warnings, 0 errors, and unused-section-variable warnings also dropped 30 -> 20 because the section binder became genuinely used. Full lake build green, 2506 jobs. Use that commit as the reference pattern for CLASS A below.
+
+AUTHORITATIVE SITE LIST. Do not re-derive by grepping for the binder text -- 4 of the 21 sites carry no explicit [Nontrivial D] on the flagged line and a text grep will miss them. Get the list from the compiler: `lake env lean <file>` and read the "Overlapping instance parameters" diagnostics.
+
+CLASS A -- MECHANICAL (17 sites). An explicit [Nontrivial D] on the declaration duplicates an enclosing section variable binder. Same fix as TaskFrame: delete the explicit binder only.
+  FormalSystem/Metalogic/Algebraic/FlowFrame.lean (section binder at :449) -- 13 sites:
+    :466 bundleFlowFrame, :472 bundleFlowHistory, :479 bundleFlowModel, :483 bundleFlowHistory_total,
+    :491 bundleFlow_pos_shift, :498 bundleFlow_comp_iff, :506 bundleFlow_serial, :514 bundleFlow_limit,
+    :521 bundleFlow_spherical, :533 bundleFlow_total_eq, :549 bundleFlow_total_eq_range,
+    :678 bundleFlow_truth_lemma, :803 bundleFlow_completeness_from_neg_membership
+  FormalSystem/Metalogic/Decidability/Verified/Decidable.lean (section binder at :136) -- 4 sites:
+    :2144 exists_gt_self, :2149 exists_lt_self, :2162 exists_gt_not_untl_disj, :2172 exists_lt_not_snce_disj
+
+CLASS B -- NOT MECHANICAL (4 sites), THE REAL CONTENT OF THIS TASK. These have NO explicit [Nontrivial D] on the flagged line. The duplication arises from nested/shadowing section variable blocks, so the fix is a decision about which block should own the instance -- not a deletion.
+  FormalSystem/Metalogic/Decidability/Verified/Bridge/TruthLemma.lean -- :364 RegionValued, :374 atomRegionInvariant_regionHistory, :389 interpInvariantAt_regionHistory.
+    Structure: an outer `variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]` at :74, then `section Countermodel` at :343 whose :345 RE-DECLARES `{D : Type}` (shadowing the outer D) and whose :351 binds [Nontrivial D] again. Both get auto-included.
+  FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:2761 truthAt_sep -- [Nontrivial D] sits on a CONTINUATION line (:2762, alongside [DenselyOrdered D]) under the :136 section binder, so it is a Class A shape hiding from a single-line grep, but confirm that before treating it as one.
+
+BINDING CONSTRAINT ON CLASS B: a careless fix here can silently change WHICH `D` a theorem quantifies over, inside the decidability bridge. Establish, before editing, whether the shadowing at TruthLemma:345 is deliberate (the Countermodel section genuinely working over a different D) or accidental. If deliberate, the outer binder must not simply be deleted. State the finding explicitly in the plan and justify the chosen owner of the instance; do not infer it from the fact that the build stays green, since both arrangements may well compile.
+
+PROHIBITIONS:
+- Do NOT use `set_option linter.overlappingInstances false`, at any scope. The duplicate is what gets removed, never the warning.
+- Do NOT restructure section variable blocks beyond what removing the duplication requires.
+- Do NOT modify FormalSystem/Semantics/TaskFrame.lean; it is already fixed and verified.
+- Do NOT touch FormalSystem/Semantics/Ultraproduct/** or ShiftSet.lean.
+
+ACCEPTANCE:
+- `lake env lean` on each of the three files reports 0 "Overlapping instance parameters" diagnostics; tree-wide the count goes 21 -> 0.
+- Full `lake build` exits 0 with no new errors and no new warnings of any other class. Note the guard shares completed results: force a genuine full build and confirm the job count (~2506), because a scoped result can replay and present as a full pass.
+- `lake test` green.
+- No `sorry`, `admit`, or `native_decide` introduced; no linter disabled anywhere (`grep -rn overlappingInstances FormalSystem/` returns nothing).
+- The plan records, per Class B site, which variable block owns [Nontrivial D] and why.
+
+WHY THIS IS A TASK AND NOT AN AD-HOC FIX: it spans three files in a subsystem separate from where it was discovered, contains four sites needing genuine judgment about binder ownership in the decidability bridge, and each verification round costs a full multi-minute rebuild. It surfaced incidentally during unrelated ultraproduct work; it is pre-existing and unrelated to that work.
+
+---
 
 ### 513. Uniform frame faithfulness predicate
 - **Status**: [NOT STARTED]
