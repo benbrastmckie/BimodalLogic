@@ -261,34 +261,34 @@ lines finds only 4 — the compiler diagnostic is the authority, not grep.
 
 ---
 
-### Phase 3: TruthLemma.lean — Class B ownership fix [IN PROGRESS]
+### Phase 3: TruthLemma.lean — Class B ownership fix [COMPLETED]
 
 **Goal**: Collapse the `section Countermodel` duplication by deleting the `variable [Nontrivial D]`
 at `:351` and retargeting the `:348-350` comment to the surviving binder at `:346`, clearing all
 3 Class B sites.
 
 **Tasks**:
-- [ ] Save a pristine copy to the scratchpad
-- [ ] Re-confirm the section structure before editing: `end Invariance` at `:335` precedes
+- [x] Save a pristine copy to the scratchpad
+- [x] Re-confirm the section structure before editing: `end Invariance` at `:335` precedes
       `section Countermodel` at `:343`, so the `:74` binder is out of scope and `:345`'s
       `{D : Type}` is the section's only introduction of `D`. Record this confirmation in the
       phase notes — it is the finding that makes this a two-line edit rather than a scope
       analysis.
-- [ ] Delete line `:351` (`variable [Nontrivial D]`)
-- [ ] Replace the comment at `:348-350` with wording that documents the `:346` binder,
+- [x] Delete line `:351` (`variable [Nontrivial D]`)
+- [x] Replace the comment at `:348-350` with wording that documents the `:346` binder,
       preserving every claim the original made:
       ```lean
       -- `regionFrame` carries `[Nontrivial D]` (its *Limit* lemma needs it), which is why the binder
       -- above declares it in its own right rather than recovering it from `[NoMaxOrder D]`: the `omit`
       -- clauses below drop the density instances and must not take nontriviality with them.
       ```
-- [ ] Confirm `:346` still reads `  [IsOrderedAddMonoid D] [Nontrivial D]` — it is untouched
-- [ ] Confirm the `omit` clause (formerly `:368`) still lists exactly
+- [x] Confirm `:346` still reads `  [IsOrderedAddMonoid D] [Nontrivial D]` — it is untouched
+- [x] Confirm the `omit` clause (formerly `:368`) still lists exactly
       `[Fintype ι] [DenselyOrdered D] [NoMaxOrder D] [NoMinOrder D]` and does **not** mention
       `Nontrivial D`
-- [ ] Run `lake env lean` on the file and record counts
-- [ ] Build the one-hop dependent `FormalSystem/Metalogic/Decidability/Verified/Bridge/Valuation.lean`
-- [ ] Commit on green
+- [x] Run `lake env lean` on the file and record counts
+- [x] Build the one-hop dependent `FormalSystem/Metalogic/Decidability/Verified/Bridge/Valuation.lean`
+- [x] Commit on green
 
 **Timing**: 0.4 hours
 

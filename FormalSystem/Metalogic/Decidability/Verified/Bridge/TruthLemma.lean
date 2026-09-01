@@ -345,10 +345,9 @@ section Countermodel
 variable {W ι : Type} [Nonempty W] {D : Type} [AddCommGroup D] [LinearOrder D]
   [IsOrderedAddMonoid D] [Nontrivial D]
 variable [Fintype ι] [DenselyOrdered D] [NoMaxOrder D] [NoMinOrder D]
--- `regionFrame` carries `[Nontrivial D]` (its *Limit* lemma needs it). It is declared here in its
--- own right rather than being recovered from `[NoMaxOrder D]`, so that the `omit` clauses below
--- can still drop the density instances.
-variable [Nontrivial D]
+-- `regionFrame` carries `[Nontrivial D]` (its *Limit* lemma needs it), which is why the binder
+-- above declares it in its own right rather than recovering it from `[NoMaxOrder D]`: the `omit`
+-- clauses below drop the density instances and must not take nontriviality with them.
 
 /--
 **The region condition on the valuation.** `regionFrame`'s states are `(world, time)` pairs, and a
