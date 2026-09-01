@@ -843,7 +843,7 @@ This is the shape of every flow-style frame — carriers of the form `Index × D
 advances the second component by the duration — so it is the discharge route for the bundled
 flow frames as well as the multi-family bridge frames.
 -/
-theorem limit_of_shift [Nontrivial D] {W : Type} (pos : W → D)
+theorem limit_of_shift {W : Type} (pos : W → D)
     {R : W → D → W → Prop}
     (hshift : ∀ w y u, R w y u → pos u = pos w + y)
     (hzero : ∀ w u, R w 0 u → u = w) :
@@ -894,7 +894,7 @@ anywhere in this library; the infrastructure, not the one-line proof, is the cos
 gives a machine-checked consequence of *Limit* in the same cost bracket, is topology-free,
 and has direct bearing on the finite-model constructions.
 -/
-theorem exists_uniform_radius_of_finite [Nontrivial D] {W : Type} [Fintype W]
+theorem exists_uniform_radius_of_finite {W : Type} [Fintype W]
     (R : W → D → W → Prop)
     (hlim : ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ R w y u) → u = w)
     (w : W) : ∃ x : D, 0 < x ∧ ∀ u y, |y| < x → R w y u → u = w := by
@@ -954,7 +954,7 @@ The paper mandates a nontrivial duration group (`def:frame`), and this is the on
 that mandate the *Limit* arguments actually use: without a positive radius the *Limit* hypothesis
 is vacuous and the axiom is unprovable.
 -/
-theorem exists_pos_of_nontrivial [Nontrivial D] : ∃ x : D, 0 < x := by
+theorem exists_pos_of_nontrivial : ∃ x : D, 0 < x := by
   obtain ⟨a, ha⟩ := exists_ne (0 : D)
   rcases lt_or_gt_of_ne ha with hlt | hgt
   · exact ⟨-a, neg_pos.mpr hlt⟩
@@ -1263,7 +1263,7 @@ theorem interpolates_of_eq {W : Type} {R : W → D → W → Prop}
 single positive radius already forces `u = w`. `[Nontrivial D]` is what supplies that radius, and
 is not removable — over a trivial duration group the *Limit* hypothesis is vacuous.
 -/
-theorem limit_of_eq [Nontrivial D] {W : Type} {R : W → D → W → Prop}
+theorem limit_of_eq {W : Type} {R : W → D → W → Prop}
     (hR : ∀ w d u, R w d u ↔ w = u) :
     ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ R w y u) → u = w := by
   intro w u h
@@ -1395,7 +1395,7 @@ def staticFrame (W : Type) [Nonempty W] {D : Type} [AddCommGroup D] [LinearOrder
 The static frame's relation is the equality class: `TaskRel w x u` holds exactly when `w = u`,
 at every duration. This is the class-membership witness Helper C's lemmas consume.
 -/
-theorem staticFrame_rel_iff [Nontrivial D] (W : Type) [Nonempty W] :
+theorem staticFrame_rel_iff (W : Type) [Nonempty W] :
     ∀ w d u, (staticFrame W (D := D)).TaskRel w d u ↔ w = u := fun _ _ _ => Iff.rfl
 
 /--
@@ -1408,20 +1408,20 @@ conjunction, so that it is citable verbatim for the frame's *Seriality* field. T
 `x ≥ 0` proviso is `Serial`'s own hypothesis and is simply unused here, since the witness works
 at every duration.
 -/
-theorem staticFrame_serial [Nontrivial D] (W : Type) [Nonempty W] :
+theorem staticFrame_serial (W : Type) [Nonempty W] :
     Serial (staticFrame W (D := D)).TaskRel :=
   serial_of_eq (staticFrame_rel_iff W)
 
 /-- The interpolation half of *Compositionality* (`def:frame#Compositionality`, verbatim:
 "$w \Rightarrow_{x + y} v$ if and only if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some
 $u \in W$") for `staticFrame`: interpolate through `w` itself. -/
-theorem staticFrame_interpolates [Nontrivial D] (W : Type) [Nonempty W] :
+theorem staticFrame_interpolates (W : Type) [Nonempty W] :
     Interpolates (staticFrame W (D := D)).TaskRel :=
   interpolates_of_eq (staticFrame_rel_iff W)
 
 /-- *Limit* (`def:frame#Limit`, verbatim: "$\bigcap\limits_{x > 0} (w)_x = \set{w}$") for
 `staticFrame`, in the literal transcribed shape: only `w` is reachable from `w` at all. -/
-theorem staticFrame_limit [Nontrivial D] (W : Type) [Nonempty W] :
+theorem staticFrame_limit (W : Type) [Nonempty W] :
     ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ (staticFrame W (D := D)).TaskRel w y u) → u = w :=
   limit_of_eq (staticFrame_rel_iff W)
 
@@ -1429,7 +1429,7 @@ theorem staticFrame_limit [Nontrivial D] (W : Type) [Nonempty W] :
 $\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments") for `staticFrame`:
 every nonempty
 fiber and segment is the same singleton along a directed family. -/
-theorem staticFrame_spherical [Nontrivial D] (W : Type) [Nonempty W] :
+theorem staticFrame_spherical (W : Type) [Nonempty W] :
     Spherical (staticFrame W (D := D)).TaskRel :=
   spherical_of_eq (staticFrame_rel_iff W)
 
