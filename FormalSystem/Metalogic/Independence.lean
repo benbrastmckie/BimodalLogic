@@ -8,6 +8,8 @@ import FormalSystem.Metalogic.Independence.ClockFrame
 import FormalSystem.Metalogic.Independence.LoopingDuration
 import FormalSystem.Metalogic.Independence.CoNotPriorU
 import FormalSystem.Metalogic.Independence.StaticFrame
+import FormalSystem.Metalogic.Independence.RationalWitness
+import FormalSystem.Metalogic.Independence.LexIntWitness
 
 /-!
 # Independence results
@@ -32,6 +34,11 @@ the relationship in both directions.
 * `Independence/StaticFrame.lean` — the static frame at an arbitrary duration group: full
   time-invariance from `LoopingDuration`, and the constant-truth `untl`/`snce` calculus that
   turns every later axiom check into a rewrite.
+* `Independence/RationalWitness.lean` — `rat_not_complete`, the static frame over `ℚ` as a member
+  of `Mod (AxiomSet .Dedekind)` outside `Sat .Dedekind`, and the Dedekind sandwich.
+* `Independence/LexIntWitness.lean` — the discrete, non-Archimedean carrier `ℤ ×ₗ ℤ`, the static
+  frame over it as a member of `Mod (AxiomSet .Discrete)` outside `Sat .Discrete`, and the
+  Discrete sandwich with its semantic upper bound.
 
 ## The method
 

@@ -360,7 +360,7 @@ same proof skeleton with the order reversed, record why before writing a second 
 
 ---
 
-### Phase 5: Witness (a) — `staticFrame` over ℚ, and the Dedekind sandwich [NOT STARTED]
+### Phase 5: Witness (a) — `staticFrame` over ℚ, and the Dedekind sandwich [COMPLETED]
 
 **Goal**: `staticFrame ℚ ∈ Mod (AxiomSet .Dedekind) \ Sat .Dedekind`, and
 `Sat .Dedekind ⊊ Mod (AxiomSet .Dedekind) ⊆ Sat .Dense`.
@@ -411,7 +411,7 @@ calculus is not being used and the phase should stop and re-read report §4.2.
 
 ---
 
-### Phase 6: Witness (b) — `staticFrame` over ℤ ×ₗ ℤ, and the Discrete sandwich [NOT STARTED]
+### Phase 6: Witness (b) — `staticFrame` over ℤ ×ₗ ℤ, and the Discrete sandwich [COMPLETED]
 
 **Goal**: `staticFrame (ℤ ×ₗ ℤ) ∈ Mod (AxiomSet .Discrete) \ Sat .Discrete`, and
 `Sat .Discrete ⊊ Mod (AxiomSet .Discrete) ⊆ {F | F.IsDiscrete}`.
@@ -427,7 +427,13 @@ calculus is not being used and the phase should stop and re-read report §4.2.
       `IsSuccArchDiscrete D → Nonempty (D ≃+o ℤ)`, refuted by the non-Archimedean fact.
       **Do not attempt to refute the `∃ (_ : SuccOrder D)` existential directly** even though
       `Subsingleton (SuccOrder (ℤ ×ₗ ℤ))` is an instance — the `intIso` route is shorter and uses
-      tree assets.
+      tree assets. *(deviation: altered — the refutation goes through
+      `DurationClassification.archimedean_of_succ`, the lemma `intIso` itself consumes and which
+      sits in the same file, rather than through `intIso`. Reason: `intIso` yields a `≃+o ℤ`, and
+      converting that into `Archimedean D` would need an Archimedean-transfer-along-`≃+o` lemma
+      that Mathlib does not carry; `archimedean_of_succ` delivers `Archimedean D` from the same
+      two components of the existential in one step. The prohibited route — refuting the
+      `∃ (_ : SuccOrder D)` existential via `Subsingleton (SuccOrder _)` — was not used.)*
 - [ ] Membership in `Mod (AxiomSet .Discrete)` through the phase 4 calculus: discreteness gives
       `b(U(ψ,φ)) = b(φ)`, hence `b(Fφ) = b(Gφ) = b(φ)`; `prior_UZ` (`Fφ → U(¬φ,φ)`) reduces to
       `b(φ) → b(φ)`, `prior_SZ` dually; `z1` is `static_validates_z1` from phase 4. Base axioms
@@ -568,7 +574,7 @@ than overrunning.
 
 ---
 
-### Phase 9: FwdRec port — atomic half at arbitrary `D` [NOT STARTED]
+### Phase 9: FwdRec port — atomic half at arbitrary `D` [COMPLETED]
 
 **Goal**: `TaskFrame.FwdRec` defined over bundled frames, the `ValidOn` bridge, and the atomic
 correspondence at arbitrary `D`.

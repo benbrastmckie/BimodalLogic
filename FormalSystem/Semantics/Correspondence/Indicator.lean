@@ -73,10 +73,8 @@ theorem validOn_neg_nextTop_iff (F : TaskFrame) :
   · intro h
     refine ⟨fun {a b} hab => ?_⟩
     by_contra hno
-    push_neg at hno
     obtain ⟨τ⟩ := TaskFrame.hF_nonempty_of_frameAxioms F
-    refine h TaskModel.allFalse τ a ⟨b, hab, fun hb => hb, fun r hr1 hr2 => ?_⟩
-    exact absurd hr2 (not_lt.mpr (hno r hr1))
+    exact h TaskModel.allFalse τ a ⟨b, hab, fun hb => hb, fun r hr1 hr2 => hno ⟨r, hr1, hr2⟩⟩
   · intro hd M τ t hc
     obtain ⟨s, hts, _, hg⟩ := hc
     obtain ⟨c, hc1, hc2⟩ := hd.dense t s hts
