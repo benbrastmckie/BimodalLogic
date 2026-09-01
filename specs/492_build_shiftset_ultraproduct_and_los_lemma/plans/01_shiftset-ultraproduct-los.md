@@ -284,7 +284,7 @@ noted as a partial-completion checkpoint, not as a parallel wave.
 - **Commit Mode:** per-substep — commit `Carrier.lean` + its import line when green, then
   `IndexFilter.lean` + its import line when green.
 
-### Phase 2: ShiftSetProduct.lean — UT, uSep, and the seven-field uShiftSet [NOT STARTED]
+### Phase 2: ShiftSetProduct.lean — UT, uSep, and the seven-field uShiftSet [IN PROGRESS]
 
 - **Goal:** Build the ultraproduct temporal order and the ultraproduct shift set: `UT`, the `sep`
   field discharged on the ultraproduct (`uSep`), and `uShiftSet` with all seven `ShiftSet` fields

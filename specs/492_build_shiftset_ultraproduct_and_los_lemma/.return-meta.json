@@ -1,7 +1,11 @@
 {
   "status": "implemented",
   "agent_type": "lean-implementation-hard-agent",
-  "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
+  "delegation_path": [
+    "orchestrator",
+    "implement",
+    "lean-implementation-hard-agent"
+  ],
   "task_number": 492,
   "task_dir": "specs/492_build_shiftset_ultraproduct_and_los_lemma",
   "phase_number": 1,
@@ -9,7 +13,7 @@
   "phases_total": 4,
   "skeleton": false,
   "requires_user_review": false,
-  "summary": "Phase 1 of task 492: created FormalSystem/Semantics/Ultraproduct/ with Carrier.lean and IndexFilter.lean, transcribed verbatim from the two verified prototypes and the in-tree probe, wired both into FormalSystem/Semantics.lean, and established the first green full lake build under lean_lib FormalSystem's autoImplicit := false. Risk R-BUILD is closed.",
+  "summary": "Phase 1 of task 492: created FormalSystem/Semantics/Ultraproduct/ with Carrier.lean and IndexFilter.lean, transcribed verbatim from the two verified prototypes and the in-tree probe, wired both into FormalSystem/Semantics.lean, and established the first green full lake build under lean_lib FormalSystem's autoImplicit := false. Risk R-BUILD is closed. The flagged `2 [Nontrivial D] instances` overlappingInstances warning was investigated and is pre-existing at FormalSystem/Semantics/TaskFrame.lean:846/:897/:957, outside this phase's file territory; neither new module emits any diagnostic.",
   "artifacts": [
     {
       "type": "source",
@@ -42,17 +46,51 @@
     "build_passed": true,
     "build_jobs": 2504,
     "axiom_profiles": {
-      "FormalSystem.Semantics.Ultraproduct.eventually_mem": ["propext", "Classical.choice", "Quot.sound"],
-      "FormalSystem.Semantics.Ultraproduct.exists_section": ["propext", "Classical.choice", "Quot.sound"],
-      "FormalSystem.Semantics.Ultraproduct.mk_abs": ["propext", "Classical.choice", "Quot.sound"],
-      "FormalSystem.Semantics.Ultraproduct.shU_add": ["propext", "Classical.choice", "Quot.sound"]
-    }
+      "FormalSystem.Semantics.Ultraproduct.eventually_mem": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "FormalSystem.Semantics.Ultraproduct.exists_section": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "FormalSystem.Semantics.Ultraproduct.mk_abs": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "FormalSystem.Semantics.Ultraproduct.shU_add": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "warnings_from_new_modules": 0,
+    "build_reverified_after_investigation": true
   },
   "completion_data": {
     "completion_summary": "Phase 1 delivered both leaf modules of the ultraproduct construction sorry-free and green under a full lake build, closing risk R-BUILD before any dependent phase is attempted. No autoImplicit fallout occurred: the five newly promoted support lemmas elaborated unchanged under lean_lib FormalSystem's options, confirming the planner's partial pre-mitigation. shiftSetOnUD was deliberately left in the probe for Phase 4."
   },
   "memory_candidates": [
     "A verified-prototype-to-module transcription can be a zero-fix promotion when the source already compiles under a lean_lib carrying identical leanOptions -- checking option parity between the probe's library and the target library before dispatch predicted the outcome exactly.",
-    "lake-build-guard.sh build takes the full lake subcommand after `--`: `-- build TARGET`, not `-- TARGET`. Passing a bare target yields `error: unknown command '<target>'` while the guard still exits 0, so a caller that trusts the exit code alone will read a failed build as a pass."
-  ]
+    "lake-build-guard.sh build takes the full lake subcommand after `--`: `-- build TARGET`, not `-- TARGET`. Passing a bare target yields `error: unknown command '<target>'` while the guard still exits 0, so a caller that trusts the exit code alone will read a failed build as a pass.",
+    "When a build warning is flagged against new work, check whether Lake reported the emitting module as 'Replayed' rather than 'Built': a replayed module's diagnostics come from cache and its build inputs are unchanged, which combined with a clean `git status` on that file is sufficient to attribute the warning to pre-existing code."
+  ],
+  "overlapping_instances_finding": {
+    "linter": "linter.overlappingInstances",
+    "text": "There are 2 `[Nontrivial D]` instances; one is sufficient.",
+    "case": "pre-existing, outside Phase 1 territory",
+    "origin": [
+      "FormalSystem/Semantics/TaskFrame.lean:846:8 (limit_of_shift)",
+      "FormalSystem/Semantics/TaskFrame.lean:897:8 (exists_uniform_radius_of_finite)",
+      "FormalSystem/Semantics/TaskFrame.lean:957:8 (exists_pos_of_nontrivial)"
+    ],
+    "root_cause": "The section variable block at FormalSystem/Semantics/TaskFrame.lean:783 already binds [Nontrivial D], and each of the three theorems re-declares [Nontrivial D] explicitly in its own signature. The duplicate is entirely within TaskFrame.lean.",
+    "suggested_fix": "Drop the redundant explicit [Nontrivial D] binder from the three theorem signatures at TaskFrame.lean:846, :897, :957; the section binder at :783 already supplies it. NOT applied here -- out of Phase 1 territory.",
+    "not_attributable_to_this_phase": "TaskFrame.lean is untouched by commits 72e7bd9e3 and b642bca4c, its working tree is clean, and it was last modified by 63d4254b2 (2026-08-31, task 512 phase 20). It is upstream of the two new modules (Ultraproduct/* import TemporalOrder; TaskFrame does not import them), so its build inputs are unchanged -- Lake reported it as 'Replayed' from cache, not rebuilt.",
+    "new_modules_clean": "Grepping the full build capture for 'Ultraproduct' returns exactly two lines, both successful builds with no warning or error: IndexFilter (822ms) and Carrier (1.1s). Carrier.lean's only Nontrivial declaration is `instance [forall i, Nontrivial (D i)] : Nontrivial (UD phi D)`; its section variable block binds AddCommGroup, LinearOrder and IsOrderedAddMonoid only, with no Nontrivial, so no duplication is possible there.",
+    "linter_disabled": false
+  }
 }
