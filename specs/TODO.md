@@ -84,8 +84,8 @@ next_project_number: 516
 
 ### Metalogic
 
-495 [RESEARCHED] — RESEARCH TASK, DELIBERATELY AGNOSTIC ABOUT THE VERDICT. Determine
-507 [PLANNED] — ROOT FIX for the metalogic systematicity front. Give the proof-si
+495 [PLANNING] — RESEARCH TASK, DELIBERATELY AGNOSTIC ABOUT THE VERDICT. Determine
+507 [IMPLEMENTING] — ROOT FIX for the metalogic systematicity front. Give the proof-si
   └─ 510 [NOT STARTED] — Decide the fate of FormalSystem/FrameConditions/ (4 modules, 906 
     └─ 508 [NOT STARTED] — Collapse ~23 soundness theorems into ONE parameterized theorem pl
       └─ 509 [NOT STARTED] — Make the compactness / strong-completeness layer a FrameClass-ind
@@ -96,7 +96,7 @@ next_project_number: 516
 
 ### Strong Completeness
 
-493 [RESEARCHED] — Assemble the compactness result and collect strong completeness f
+493 [PLANNED] — Assemble the compactness result and collect strong completeness f
 494 [NOT STARTED] — NOW SEQUENCED BEHIND THE COMPACTNESS PARAMETERIZATION (see the RE
 
 ### Correspondence Theory
@@ -324,7 +324,7 @@ specs/514_align_definitions_with_source_paper/reports/01 §1.2.
 ---
 
 ### 507. Parameterize validity by frameclass
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: Task 514, Task 512
@@ -491,7 +491,7 @@ DELIVERABLE: a grounding report answering, with citations to specific pages read
 
 ### 495. Determine tm completeness status over task frames
 - **Effort**: 12-20 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: formal
 - **Topic**: metalogic
 - **Dependencies**: Task 489
@@ -514,11 +514,12 @@ DELIVERABLE: a grounding report answering, with citations to specific pages read
 
 ### 493. Discharge compactbase compactdense and strong completeness
 - **Effort**: 10-16 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: strong_completeness
 - **Dependencies**: Task 490, Task 492
 - **Research**: [493_discharge_compactbase_compactdense_and_strong_completeness/reports/01_compactness-and-strong-completeness.md]
+- **Plan**: [493_discharge_compactbase_compactdense_and_strong_completeness/plans/01_compactness-strong-completeness.md]
 
 **Description**: Assemble the compactness result and collect strong completeness for Base and Dense. Steps S4 and S5 of task 424's authorized route. S4: from the Los lemma, prove ModelExistenceBase and ModelExistenceDense (every finitely-satisfiable Gamma is satisfiable), then compose with the ModelExistence -> Compact bridge to obtain CompactBase and CompactDense. S5: feed those into strongCompletenessBase_of_compact (StrongCompleteness.lean:305) and strongCompletenessDense_of_compact (:331), which are already proved as reductions, and DISCHARGE their engine hypotheses -- deliberately left live so that compactness was isolated as the whole remaining obligation. The engines are BXCanonical.completeness (BXCanonical/Completeness.lean:196) for Base and BXCanonical.completeness_dense (:256) for Dense, both sorry-free and both of exactly the required type. WHY THIS MATTERS BEYOND THE TREE: the paper's cor:tm-completeness rows 1 and 2 assert strong completeness for TM+ and TM+_d and attribute them to this repository, where they are currently CONDITIONAL on unproved hypotheses. This task is what makes the paper's own headline claim true; task 488's author memo records the mismatch as a live paper-side correction until then. ACCEPTANCE: StrongCompletenessBase and StrongCompletenessDense proved unconditionally, sorry-free, axiom-audited; the author-memo item retired.
 

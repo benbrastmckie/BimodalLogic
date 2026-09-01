@@ -1,16 +1,15 @@
 {
-  "status": "researched",
-  "phase": "research",
-  "dispatch_seq": 1,
-  "summary": "Research complete. The full S4+S5 chain is already machine-verified: a probe compiling modelExistenceBase, modelExistenceDense, compactBase, compactDense, strongCompletenessBase and strongCompletenessDense against the built library exits 0 with all six at [propext, Classical.choice, Quot.sound] and no sorryAx. Remaining work is placement, ~35 now-false status-claim corrections across Lean docstrings/docs/paper record, and gate wiring.",
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 4,
+  "summary": "Plan created: 5 phases, ~7h. Phase 1 lands the six already-verified theorems in a new FormalSystem/Metalogic/Compactness.lean (three imports: StrongCompleteness, Ultraproduct.Los, Ultraproduct.IndexFilter) and wires it into FormalSystem/Metalogic.lean. Phases 2-4 run in parallel over disjoint territories: Lean docstrings (~23 sites, preserving and reframing the StrongCompleteness.lean:294-308 chronicle-obstruction argument), 7 documentation files, and the paper-side record plus dated author-memo D1/D2 retirement notes. Phase 5 enlarges C14_BASELINE with strongCompletenessBase/strongCompletenessDense and runs the acceptance sweep. Hard constraint carried into Phase 1 and Phase 5: the *_of_compact reductions keep their engine parameters (task 509's work surface); module-invariants-manifest.txt gains no entry.",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/493_discharge_compactbase_compactdense_and_strong_completeness/reports/01_compactness-and-strong-completeness.md",
-      "summary": "Verified proofs, placement recommendation (new FormalSystem/Metalogic/Compactness.lean), status-claim correction inventory, gate wiring, 5-phase decomposition."
+      "type": "plan",
+      "path": "specs/493_discharge_compactbase_compactdense_and_strong_completeness/plans/01_compactness-strong-completeness.md"
     }
   ],
   "phases_completed": 0,
-  "phases_total": 0,
+  "phases_total": 5,
   "blockers": []
 }

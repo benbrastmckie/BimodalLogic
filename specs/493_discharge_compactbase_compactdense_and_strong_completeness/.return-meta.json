@@ -1,16 +1,29 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/493_discharge_compactbase_compactdense_and_strong_completeness/reports/01_compactness-and-strong-completeness.md",
-      "summary": "Verified end-to-end Lean proofs of modelExistenceBase/Dense, compactBase/Dense and strongCompletenessBase/Dense (all six sorry-free at [propext, Classical.choice, Quot.sound]), plus placement recommendation, a ~35-site status-claim correction inventory, and gate wiring."
+      "type": "plan",
+      "path": "specs/493_discharge_compactbase_compactdense_and_strong_completeness/plans/01_compactness-strong-completeness.md",
+      "summary": "Five-phase plan landing six already-verified theorems in a new FormalSystem/Metalogic/Compactness.lean, sweeping ~35 now-false status claims across Lean docstrings, docs, and the paper record, and enlarging C14's axiom baseline."
     }
   ],
+  "next_steps": "Run /implement 493 to execute the plan",
   "metadata": {
     "session_id": "sess_1788265374_c18aa8_493",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 7,
+    "dependency_waves": [[1], [2, 3, 4], [5]]
+  },
+  "memory_candidates": [
+    {
+      "content": "When a research probe compiles a formal-verification task's full target set sorry-free before planning begins, the task reclassifies from proof-search to placement-plus-prose-correction, and the plan's critical path and dominant risk both move. The proof phase collapses to ~1.5h of verbatim transcription with a very low failure probability, while the prose sweep across docstrings, docs, and paper records becomes the bulk of the effort and the only real risk (a missed now-false status claim). Plan accordingly: one small proof phase gating parallel disjoint-territory prose phases, closed by a tree-wide re-grep sweep whose output is captured as acceptance evidence rather than trusting a plan-time site enumeration.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/493_discharge_compactbase_compactdense_and_strong_completeness/plans/01_compactness-strong-completeness.md",
+      "confidence": 0.75,
+      "suggested_keywords": ["verified-probe", "task-reclassification", "prose-sweep", "phase-decomposition", "lean4", "status-claims"]
+    }
+  ]
 }

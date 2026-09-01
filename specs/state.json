@@ -907,7 +907,7 @@
     {
       "project_number": 493,
       "project_name": "discharge_compactbase_compactdense_and_strong_completeness",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "topic": "strong_completeness",
       "effort": "10-16 hours",
@@ -917,7 +917,7 @@
       ],
       "description": "Assemble the compactness result and collect strong completeness for Base and Dense. Steps S4 and S5 of task 424's authorized route. S4: from the Los lemma, prove ModelExistenceBase and ModelExistenceDense (every finitely-satisfiable Gamma is satisfiable), then compose with the ModelExistence -> Compact bridge to obtain CompactBase and CompactDense. S5: feed those into strongCompletenessBase_of_compact (StrongCompleteness.lean:305) and strongCompletenessDense_of_compact (:331), which are already proved as reductions, and DISCHARGE their engine hypotheses -- deliberately left live so that compactness was isolated as the whole remaining obligation. The engines are BXCanonical.completeness (BXCanonical/Completeness.lean:196) for Base and BXCanonical.completeness_dense (:256) for Dense, both sorry-free and both of exactly the required type. WHY THIS MATTERS BEYOND THE TREE: the paper's cor:tm-completeness rows 1 and 2 assert strong completeness for TM+ and TM+_d and attribute them to this repository, where they are currently CONDITIONAL on unproved hypotheses. This task is what makes the paper's own headline claim true; task 488's author memo records the mismatch as a live paper-side correction until then. ACCEPTANCE: StrongCompletenessBase and StrongCompletenessDense proved unconditionally, sorry-free, axiom-audited; the author-memo item retired.",
       "created": "2026-08-26T05:15:00Z",
-      "last_updated": "2026-09-01T12:36:09Z",
+      "last_updated": "2026-09-01T13:15:27Z",
       "file_scope": [
         "FormalSystem/Metalogic/StrongCompleteness.lean"
       ],
@@ -927,6 +927,11 @@
           "path": "specs/493_discharge_compactbase_compactdense_and_strong_completeness/reports/01_compactness-and-strong-completeness.md",
           "type": "report",
           "summary": "Verified proofs, placement recommendation (new FormalSystem/Metalogic/Compactness.lean), status-claim correction inventory, gate wiring, 5-phase decomposition."
+        },
+        {
+          "path": "specs/493_discharge_compactbase_compactdense_and_strong_completeness/plans/01_compactness-strong-completeness.md",
+          "type": "plan",
+          "summary": ""
         }
       ]
     },
@@ -954,7 +959,7 @@
     {
       "project_number": 495,
       "project_name": "determine_tm_completeness_status_over_task_frames",
-      "status": "researched",
+      "status": "planning",
       "task_type": "formal",
       "topic": "metalogic",
       "effort": "12-20 hours",
@@ -963,7 +968,7 @@
       ],
       "description": "RESEARCH TASK, DELIBERATELY AGNOSTIC ABOUT THE VERDICT. Determine whether TM (the BaseLanguage proof system) is complete over task frames, and if not, characterize what it IS complete for. DO NOT ASSUME COMPLETENESS HOLDS; the evidence points the other way, and a machine-checked incompleteness result is a complete and valid outcome. EVIDENCE THAT IT MAY FAIL: (1) the paper's cor:tm-completeness (possible_worlds.tex:4657) carries completeness for the BL+ systems ONLY -- TM+, TM+_d, TM+_f, TM+_c -- and never claims it for TM. (2) Metalogic/Conservativity.lean's scope section states that the forward direction TM+ |- tr phi => TM |- phi is REFUTED at FrameClass.Base (the (Sp) witness) and at FrameClass.Discrete (the Z1 witness), with the TM+ half of the Discrete witness already machine-checked in-tree as z1_translate. THE SUBTLETY ANY DISPATCH MUST CONFRONT FIRST: since |-[Base] tr (Sp) is proved and TM+ is sound over all task frames, (Sp) is VALID ON EVERY TASK FRAME. So a refutation of TM |- Sp by soundness CANNOT use a task frame. It needs a structure outside the class on which TM remains sound precisely because it lacks the Until/Since expressive power to detect the violation. Identifying that broader class is the actual research content. SCOPE: (a) settle whether TM is complete over task frames; (b) if not, identify the class TM is sound and complete for; (c) determine whether the CEB and CEF refutations that Conservativity.lean currently only DOCUMENTS can now be machine-checked, given the BL-side semantics and soundness theorem delivered by the prerequisite task. Conservativity.lean's own 'What a machine-checked refutation would need' section names three missing pieces: a BL-side semantics, a BL-side soundness theorem, and the two countermodels (a two-fibre structure for CEB, Z x_lex Z for CEF); the prerequisite supplies the first two. HARD CONSTRAINT INHERITED FROM Conservativity.lean: do not state a forward-conservativity theorem and discharge it with sorry -- it is provably false at two frame classes, so that would be an unsound placeholder, not deferred debt.",
       "created": "2026-08-26T05:15:00Z",
-      "last_updated": "2026-09-01T12:36:21Z",
+      "last_updated": "2026-09-01T12:37:35Z",
       "session_id": "sess_1788265374_c18aa8_495",
       "artifacts": [
         {
@@ -1062,7 +1067,7 @@
     {
       "project_number": 507,
       "project_name": "parameterize_validity_by_frameclass",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "topic": "metalogic",
       "priority": "high",
@@ -1072,7 +1077,7 @@
       ],
       "description": "ROOT FIX for the metalogic systematicity front. Give the proof-side FrameClass tag a SEMANTIC interpretation, then define validity ONCE, indexed by it. THE ASYMMETRY: the proof side is already fully parameterized -- Derivable (fc : FrameClass) (ProofSystem/Derivable.lean:69), DerivationTree (fc : FrameClass) (ProofSystem/Derivation.lean:91), DerivationTree.lift along fc1 <= fc2 (Derivation.lean:184), PartialOrder FrameClass (ProofSystem/Axioms.lean:551), Axiom.minFrameClass as declared single source of truth (Axioms.lean:531ff). The semantic side has NONE of this: 15 hand-copied validity predicates with no fc index (5 in Semantics/Validity.lean:94,206,248,301,336; 4 in Semantics/BLValidity.lean:77,102,115,132; ValidInt in Semantics/IntTransfer.lean; 5 in FrameConditions/Validity.lean), plus 8 semantic-consequence variants. SMOKING GUN IN ONE FILE: Metalogic/SetConsequence.lean carries SetDerivable (fc : FrameClass) at :72 with ONE monotonicity lemma at :118, and directly beneath it SetSemanticConsequence{Base,Dense,Discrete,DedekindDense} at :79,:87,:97,:106 with FOUR copied monotonicity lemmas at :124,:130,:136,:144. Those four definitions are BYTE-IDENTICAL except for the typeclass binder line; their own docstrings cross-reference the Valid* whose binder list they copy. THE MISSING INGREDIENT ALREADY EXISTS: FrameConditions/FrameClass.lean defines marker typeclasses LinearTemporalFrame(:88), SerialFrame(:103), DenseTemporalFrame(:124), DiscreteTemporalFrame(:148), DedekindTemporalFrame(:182) -- exactly the binder-list-as-predicate-on-D that a FrameClass-indexed validity needs. That layer is orphaned (see the FrameConditions resolution task) and this task should consume it rather than invent a sixth vocabulary. DELIVERABLE: (1) a FrameClass -> carrier-constraint interpretation; (2) ValidOn (fc : FrameClass) (phi) and SetSemanticConsequence (fc) defined once; (3) ONE monotonicity lemma replacing valid_implies_valid_dense/_discrete/_validDedekind/_validDedekindDense (Validity.lean:349,356,364,371), pointing the same direction as DerivationTree.lift; (4) the existing 15 predicates retained as abbreviations or retired, with every call site migrated. HAZARD THIS CLOSES: the ValidDedekind docstring (Validity.lean:301) warns that retargeting soundness_dedekind to it yields a REFUTABLE theorem -- a trap that exists only because binder lists are inlined rather than derived from the frame class. ACCEPTANCE: sorry-free, lake build green, check-module-invariants.sh passes, axiom profiles unchanged on the flagship theorems. GROUNDING: specs/reviews/review-2026-08-31-metalogic-systematicity.md issue H1.=== DIRECTION AMENDED (supersedes the plan at plans/01_frameclass-indexed-validity.md) ===\nThe existing plan is SUPERSEDED and must be revised before implementation. Its Phase 1 defines\n  FrameClass.Sat (fc : FrameClass) (D : Type) [insts] : Prop\n  ValidIn (fc) (phi) := forall (D : Type) [insts], fc.Sat D -> ValidOver D phi\ni.e. `Sat` is a predicate on the CARRIER TYPE and `ValidIn` is duration-quantified. That is\nduration validity, and it is explicitly NOT what this project wants. Landing it would harden the\nwrong notion into the tree's single validity definition.\n\nREQUIRED SHAPE INSTEAD -- frame validity, on bundled frames:\n  FrameClass.Sat : FrameClass -> TaskFrame -> Prop     (a predicate on FRAMES)\n  ValidIn (fc : FrameClass) (phi : Formula) : Prop := forall F : TaskFrame, fc.Sat F -> F |= phi\nThis mirrors `Derivable fc` on the proof side exactly, which is the symmetry this task exists to\nrestore.\n\nDEPENDS ON the TaskFrame duration-bundling refactor: `Sat` cannot be a predicate on frames until a\nframe carries its own duration. Sequence behind it.\n\nWHAT SURVIVES from the research report (reports/01_frameclass-indexed-validity.md): the verified\ncorrection that the FrameConditions marker typeclasses are NOT reusable (DiscreteTemporalFrame\nomits IsPredArchimedean, which would silently widen the discrete class under soundness_discrete);\nthat Sat must be Prop-valued with an existential Discrete case because SuccOrder/PredOrder are\ndata-carrying; the finding that FrameConditions/Validity.lean is nearly all dead code; the\nValidInt/ValidOverInt definitional duplicate. All of that holds under the frame-level shape.\nThe report's further recommendation to rename ValidDedekind to ValidComplete is REJECTED — see\nthe naming decision below.\n\nWHAT CHANGES: the 92-site binder-list migration is substantially DISSOLVED rather than performed --\nbundling removes the inlined `[DenselyOrdered D]`-style binder lists at the root, which is the\ndisease this task was treating symptomatically. Re-scope the migration against the post-refactor\ntree rather than against the counts in the current report.\n\n=== PAPER GROUNDING AND NAMING === ValidIn fc is the paper's class-restricted consequence ⊨_C\n(cor:tm-completeness: \"restricts def:logical-consequence to models over task frames in a class\nC\"); TaskFrame.ValidOn is def:frame-validity and stays the single frame-level primitive.\nSat interpretation of record: .Base ↦ True; .Dense ↦ DenselyOrdered F.Duration; .Discrete ↦\n∃ least positive duration WITH the successor-Archimedean refinement kept as a SEPARATE\nnamed predicate (the paper's def:TMplus-f narrows TM+_f's target to Z-time via Hölder — do not\nsilently conflate the Discrete property with the Z-time class); KEEP the name FrameClass.Dedekind — do NOT rename it to .Complete, and\ndo NOT rename ValidDedekind. The paper's def:frame-properties calls this class Complete, but\n\"complete\" is already load-bearing in this tree for PROOF-THEORETIC completeness (the\ncompleteness-theorem family), so FrameClass.Complete would collide with the tree's most\nprominent existing use of the word; \"Dedekind complete\" is the standard and unambiguous name\nfor the least-upper-bound property this class actually denotes. This is a DELIBERATE,\nRECORDED deviation from paper naming — the ONLY naming deviation sanctioned on this front —\nand it must be documented at the definition site, citing def:frame-properties as the\ndefinition of record and naming the divergence explicitly. Sat .Dedekind ↦ DenselyOrdered ∧\nconditionally-complete (the paper's TM+_c target is the DENSE-AND-COMPLETE class,\ncor:tm-completeness; the bare Complete property of def:frame-properties admits Z as well —\nrecord both, one predicate each, no bridged duplicates). See specs/514_align_definitions_with_source_paper/reports/01 §1.1, §3.3.",
       "created": "2026-08-31T00:00:00Z",
-      "last_updated": "2026-09-01T12:36:33Z",
+      "last_updated": "2026-09-01T12:37:41Z",
       "session_id": "sess_1788265374_c18aa8_507",
       "artifacts": [
         {
