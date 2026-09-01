@@ -1,0 +1,13 @@
+{
+  "dispatch_seq": 4,
+  "status": "researched",
+  "summary": "Research complete for the Galois-closure implementation. All eight construction risks were probed against the live tree with lean_run_code; seven compiled sorry-free (Galois module, IND-D/IND-F indicator exactness, Derivable X-top at .Discrete, static-frame time-invariance at arbitrary D plus the constant-truth untl calculus, the full translation frame, rational incompleteness, and the Z-lex-Z instance/non-Archimedean facts). Two corrections to the dispatch premises are recorded: FrameClass.Complete does not exist (507 deliberately kept .Dedekind and documented the deviation), and the probe files are pre-512 so the port is a FrameOver/worldNonempty rename pass. One genuine design decision is flagged: Mod of an axiom-instance set vs Mod of a theorem set, where the theorem reading needs a single-frame ValidOn closure under temporal_duality that does not exist and should not be attempted. A nine-phase decomposition is given, each phase anchored to an already-compiled lemma.",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/513_uniform_frame_faithfulness_predicate/reports/01_galois-closure-implementation.md",
+      "summary": "Verified feasibility study and phase decomposition for the frame-class Galois closure layer."
+    }
+  ],
+  "blockers": []
+}

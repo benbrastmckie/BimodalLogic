@@ -85,7 +85,7 @@ next_project_number: 516
 ### Metalogic
 
 495 [IMPLEMENTING] — RESEARCH TASK, DELIBERATELY AGNOSTIC ABOUT THE VERDICT. Determine
-510 [RESEARCHED] — Decide the fate of FormalSystem/FrameConditions/ (4 modules, 906 
+510 [PLANNING] — Decide the fate of FormalSystem/FrameConditions/ (4 modules, 906 
   └─ 508 [NOT STARTED] — Collapse ~23 soundness theorems into ONE parameterized theorem pl
     └─ 509 [NOT STARTED] — Make the compactness / strong-completeness layer a FrameClass-ind
 
@@ -100,7 +100,7 @@ next_project_number: 516
 
 ### Correspondence Theory
 
-513 [RESEARCHING] — GALOIS-CLOSURE IMPLEMENTATION for the frame-class layer, replacin
+513 [RESEARCHED] — GALOIS-CLOSURE IMPLEMENTATION for the frame-class layer, replacin
 
 ## Tasks
 
@@ -153,10 +153,11 @@ WHY THIS IS A TASK AND NOT AN AD-HOC FIX: it spans three files in a subsystem se
 ---
 
 ### 513. Uniform frame faithfulness predicate
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: correspondence theory
 - **Dependencies**: Task 512, Task 507
+- **Research**: [513_uniform_frame_faithfulness_predicate/reports/01_galois-closure-implementation.md]
 
 **Description**: GALOIS-CLOSURE IMPLEMENTATION for the frame-class layer, replacing the uniform-faithfulness
 question, which is ANSWERED and closed: no uniform Faithful predicate is needed for
@@ -244,7 +245,7 @@ Research complete and absorbed: FwdRec and the Tier-1/T1 statements land under r
 ---
 
 ### 510. Resolve orphaned frameconditions layer
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: Task 507
