@@ -30,6 +30,7 @@ import FormalSystem.Semantics.BLValidity
 import FormalSystem.Semantics.DurationClassification
 import FormalSystem.Semantics.IntTransfer
 import FormalSystem.Semantics.Correspondence.Galois
+import FormalSystem.Semantics.Correspondence.Indicator
 
 /-!
 # FormalSystem.Semantics - Task Frame Semantics

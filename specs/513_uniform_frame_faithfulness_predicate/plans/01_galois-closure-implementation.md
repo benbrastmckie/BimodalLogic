@@ -203,7 +203,7 @@ proceeding.
 
 ---
 
-### Phase 2: Indicator exactness and the two closure corollaries [IN PROGRESS]
+### Phase 2: Indicator exactness and the two closure corollaries [COMPLETED]
 
 **Goal**: The `¬X⊤`/`X⊤` indicator biconditionals, and `Sat .Dense` and `{F | F.IsDiscrete}` shown
 Galois-closed as one-liners over `galoisClosed_of_indicator`.
@@ -254,7 +254,12 @@ one-line corollaries and docstrings. Confirm at implementation time; if any bico
 - `Axiom.dense_indicator`'s `minFrameClass` is `.Dense` by `rfl` (spot-check, since the
   corollary's framing depends on it).
 - `grep -n "Sat FrameClass.Discrete\|Sat .Discrete" FormalSystem/Semantics/Correspondence/Indicator.lean`
-  returns nothing — the paper-Discrete corollary must not be stated over the ℤ-time narrowing.
+  returns nothing in *statement* position — the paper-Discrete corollary must not be stated over
+  the ℤ-time narrowing. *(deviation: altered — the literal grep cannot return zero hits, because
+  this same phase's task list requires the corollary's docstring to name `Sat .Discrete`
+  explicitly as the class it is NOT. The check was applied to statement position only; verified
+  by inspection that both closure corollaries are stated over `Sat FrameClass.Dense` and
+  `{F | F.IsDiscrete}` respectively.)*
 
 ---
 
