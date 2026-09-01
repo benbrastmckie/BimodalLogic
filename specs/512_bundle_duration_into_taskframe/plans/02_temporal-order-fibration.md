@@ -1,7 +1,7 @@
 # Implementation Plan: Task #512 (v02) — the temporal-order fibration
 
 - **Task**: 512 - bundle_duration_into_taskframe
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 41 hours
 - **Dependencies**: None blocking. Sequencing interaction with task 507 (Dedekind naming in
   `Semantics/Validity.lean` and `FrameClass`); the batch sequences 512 strictly before 507, so the
@@ -1265,16 +1265,42 @@ flagship completeness theorems and all four profiles are unchanged.
 
 ---
 
-### Phase 11: `ReynoldsBridge.lean` [NOT STARTED]
+### Phase 11: `ReynoldsBridge.lean` [COMPLETED]
 
 **Goal**: The largest ℤ-facing file in the tree migrated to the fibre.
 
 **Tasks**:
-- [ ] Migrate `Metalogic/WeakCanonical/IntegerModel/ReynoldsBridge.lean` (22 `ParamTaskFrame`
+- [x] Migrate `Metalogic/WeakCanonical/IntegerModel/ReynoldsBridge.lean` (22 `ParamTaskFrame`
       occurrences at HEAD across 1352 lines) under the Phase 7 contract.
-- [ ] **Split authorization**: if the file cannot be completed in one agent run, split at a named
-      section boundary, land the first half green, mark the phase `[PARTIAL]` and record the split
-      point in the commit. Do not end the phase red.
+      *(deviation: altered — the blast radius was 2 files, not 1. Restating
+      `countermodel_discrete_reynolds_v2`'s existential at the fibre changes its shape, and its one
+      consumer, `BXCanonical/Completeness.lean`, had to be repaired in the same phase.)*
+- [x] **Split authorization**: not exercised — the file completed in one run. *(deviation: skipped —
+      no split needed.)*
+
+#### Phase 11 Record — the `IsSuccArchimedean` instance-supply hazard
+
+`countermodel_discrete_reynolds_v2`'s existential dropped its four ALGEBRA binders (they are now the
+frame's `Duration` field) and kept its four CARRIER side conditions
+(`SuccOrder`/`PredOrder`/`IsSuccArchimedean`/`IsPredArchimedean` at `↑F.Duration`), which
+`ValidDiscrete` consumes as *instance* binders.
+
+The obvious repair — `obtain ⟨F, hsucc, hpred, hsuccArch, hpredArch, …⟩` then
+`haveI := hsucc; …; haveI := hsuccArch` — **fails**, and the failure is instructive:
+`IsSuccArchimedean α` is indexed by its `SuccOrder α` argument, so `hsuccArch : @IsSuccArchimedean _ _ hsucc`.
+A `haveI`-introduced copy of `hsucc` is a *fresh opaque fvar* (`haveI` forgets the body), so
+synthesis picks the copy for the `SuccOrder` slot and then cannot match `hsuccArch`, which is
+indexed by the original. The error surfaces as `failed to synthesize IsSuccArchimedean F.Duration.carrier`.
+
+The sanctioned repair is explicit `@`-application:
+`@h_valid_discrete F hsucc hpred hsuccArch hpredArch TM τ h_tot t`. (`letI` would also work, since it
+keeps the body transparent; `@` was chosen because it names the four arguments at the site and needs
+no comment to be read correctly.) **This is the site class for every later phase that destructures an
+existential carrying order-indexed side conditions** — Phases 13 and 16 both do.
+
+The remaining `ParamTaskFrame` tokens in this file (5) are all references to the bare-relation helper
+`ParamTaskFrame.limit_of_shift`, which still lives in that namespace in `TaskFrame.lean`. Relocating
+it to `TaskFrame.*` is Phase 20's task, not this one.
 
 **Timing**: 2.5 hours
 

@@ -42,7 +42,7 @@ that used to live in `WeakCanonical/Transfer.lean`.
 - `limitdom_semantic_prior_UZ/SZ`: semantic Prior-UZ/SZ for the chronicle structure
 - `limitdom_is_good`: the chronicle structure is `good` (k-equiv to Z-interval)
 - `countermodel_discrete_reynolds_v2`: multi-family Z-interval countermodel on ℤ
-- `multiFamTaskFrame`: ParamTaskFrame with WorldState = FamIdx × ℤ
+- `multiFamTaskFrame`: a `FrameOver intOrder` with WorldState = FamIdx × ℤ
 - `toCarrier`: unbounded Z-interval carrier injection
 - `predFormulas_operator_depth_le`: operator depth bound for predFormulas elements
 
@@ -439,7 +439,7 @@ theorem effectiveFormula_id_neg (φ : Formula) :
 
 /-! ### Z-Interval Countermodel Infrastructure (WorldState = ℤ)
 
-A ParamTaskFrame with `WorldState = ℤ` where the state at each time IS the time itself
+A `FrameOver intOrder` with `WorldState = ℤ` where the state at each time IS the time itself
 (plus an offset). This allows position-dependent atom valuation, which is necessary
 because atom predicates on the Z-interval are not constant in general.
 
@@ -449,8 +449,8 @@ With this frame:
 - Box quantification ranges over all offsets, giving S5 semantics
 -/
 
-/-- ParamTaskFrame with WorldState = ℤ. Task relation: u = w + d (deterministic). -/
-noncomputable def zTaskFrameV2 : ParamTaskFrame ℤ where
+/-- A `FrameOver intOrder` with WorldState = ℤ. Task relation: u = w + d (deterministic). -/
+noncomputable def zTaskFrameV2 : FrameOver intOrder where
   WorldState := ℤ
   worldNonempty := inferInstanceAs (Nonempty ℤ)
   TaskRel w d u := u = w + d
@@ -761,10 +761,10 @@ noncomputable def toCarrier {sig : MonadicSignature} [Fintype sig.preds] [Decida
     (h_lo : Z.lo = none) (h_hi : Z.hi = none) (z : ℤ) : Z.intervalCarrier :=
   ⟨z, by rw [h_lo, h_hi]; exact ⟨trivial, trivial⟩⟩
 
-/-- ParamTaskFrame with `WorldState = FamIdx × ℤ`. Each world state is a family index
+/-- A `FrameOver intOrder` with `WorldState = FamIdx × ℤ`. Each world state is a family index
 paired with a position. The task relation is deterministic: stepping by `d` from
 `(f, z)` reaches `(f, z + d)` (same family, shifted position). -/
-noncomputable def multiFamTaskFrame (FamIdx : Type) [Nonempty FamIdx] : ParamTaskFrame ℤ where
+noncomputable def multiFamTaskFrame (FamIdx : Type) [Nonempty FamIdx] : FrameOver intOrder where
   WorldState := FamIdx × ℤ
   worldNonempty := inferInstance
   TaskRel := fun p d q => p.1 = q.1 ∧ q.2 = p.2 + d
@@ -835,7 +835,7 @@ theorem multiFamTaskFrame_spherical (FamIdx : Type) [Nonempty FamIdx] :
     TaskFrame.Spherical (multiFamTaskFrame FamIdx).TaskRel :=
   Algebraic.multiFamTaskFrameGen_spherical
 
-/-- World history for the multi-family ParamTaskFrame, parameterized by a family index
+/-- World history for the multi-family frame, parameterized by a family index
 and a base offset. The history visits states `(f, w₀ + t)` at each time `t`. -/
 noncomputable def multiFamHistory {FamIdx : Type} [Nonempty FamIdx] (f : FamIdx) (w₀ : ℤ) :
     WorldHistory (multiFamTaskFrame FamIdx) where
@@ -938,11 +938,9 @@ theorem countermodel_discrete_reynolds_v2
     (h_mcs : SetMaximalConsistent (fc := FrameClass.Discrete) A)
     (φ : Formula) (h_neg_in : φ.neg ∈ A)
     (h_box_discrete : Formula.box nextTop ∈ A) :
-    ∃ (D : Type) (_ : AddCommGroup D) (_ : LinearOrder D) (_ : IsOrderedAddMonoid D)
-      (_ : Nontrivial D) (_ : SuccOrder D) (_ : PredOrder D)
-      (_ : IsSuccArchimedean D) (_ : IsPredArchimedean D)
-      (F : ParamTaskFrame D) (TM : TaskModel F)
-      (τ : WorldHistory F) (_ : τ.IsTotal) (t : D),
+    ∃ (F : TaskFrame) (_ : SuccOrder ↑F.Duration) (_ : PredOrder ↑F.Duration)
+      (_ : IsSuccArchimedean ↑F.Duration) (_ : IsPredArchimedean ↑F.Duration)
+      (TM : TaskModel F) (τ : WorldHistory F) (_ : τ.IsTotal) (t : ↑F.Duration),
       ¬TruthAt TM τ t φ := by
   -- === Multi-Family Z-Interval Approach (bypasses chronicle_gap_contradiction) ===
   --
@@ -1005,9 +1003,8 @@ theorem countermodel_discrete_reynolds_v2
         TemporalTruth ((getZ f).toOrdered sig) (mkAtomMapFwd φ)
           (toCarrier (h_lo f) (h_hi f) (w₀ + t)) ψ by
     -- Package the existential
-    refine ⟨ℤ, inferInstance, inferInstance, inferInstance, inferInstance,
-      inferInstance, inferInstance, inferInstance, inferInstance,
-      multiFamTaskFrame FamIdx, TM,
+    refine ⟨(multiFamTaskFrame FamIdx).toTaskFrame,
+      inferInstance, inferInstance, inferInstance, inferInstance, TM,
       multiFamHistory f₀ 0, multiFamHistory_total f₀ 0,
       s₀.val, ?_⟩
     intro h_truth_phi
