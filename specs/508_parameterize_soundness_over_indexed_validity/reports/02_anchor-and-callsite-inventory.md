@@ -8,7 +8,25 @@
 
 ## 1. Baseline build
 
-`bash .claude/scripts/lake-build-guard.sh build --timeout 1800 --` → **exit 0** (green).
+**Correction to a first attempt, recorded rather than quietly fixed.** The first baseline
+invocation was written as `lake-build-guard.sh build --timeout 1800 --` with nothing after the
+`--`. The guard runs `lake "$@"` on the post-`--` arguments, so that call ran bare `lake`, printed
+its help, and exited 0 without building anything. Its exit 0 was therefore *not* evidence of a
+green tree. The correct shape repeats the subcommand after the separator:
+
+```
+bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build [MODULE]
+```
+
+Baseline evidence as actually established:
+- The whole `.lake/build/lib/lean/` tree carries oleans written at the task-507 completion build,
+  and every `#print axioms` probe in §4 below elaborated against those oleans without error —
+  which requires the imported modules to have compiled.
+- The first correctly-shaped build (`-- build FormalSystem.Metalogic.Soundness`, run at the start
+  of Phase 2) reported `Build completed successfully (1008 jobs)`, exit 0, replaying 1007 upstream
+  modules from cache without a single error.
+
+Phase 9's full-tree `-- build` is the definitive green check.
 
 Live `.lean` file counts (`find`, Boneyard excluded): 433 under `FormalSystem/`, 54 under
 `Tests/` — matching `check-module-invariants.sh` C7's own 488/433/54 census.

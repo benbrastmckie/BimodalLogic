@@ -257,26 +257,26 @@ names). Both are hypotheses inherited from research plus planning-time spot chec
 
 ---
 
-### Phase 2: Transplant the two leaf lemmas [NOT STARTED]
+### Phase 2: Transplant the two leaf lemmas [COMPLETED]
 
 **Goal**: Land `axiom_validIn_min` and `axiom_swap_validIn_min` in `Metalogic/Soundness.lean`,
 purely additively, with every incumbent still present and the build still green.
 
 **Tasks**:
-- [ ] Copy `axiom_validIn_min` **verbatim** from
+- [x] Copy `axiom_validIn_min` **verbatim** from
       `reports/01_verified-reference-implementation.lean:11–58` (45 arms, each a one-line `exact`
       against an existing `*_valid` lemma) into `Soundness.lean` immediately after `sep_swap_valid`.
-- [ ] Copy `axiom_swap_validIn_min` **verbatim** from the same file, `:60–90`, directly below it.
-- [ ] Preserve the two naming traps the reference already handles: `serial_future ↦
+- [x] Copy `axiom_swap_validIn_min` **verbatim** from the same file, `:60–90`, directly below it.
+- [x] Preserve the two naming traps the reference already handles: `serial_future ↦
       serial_future_axiom_valid`, `serial_past ↦ serial_past_axiom_valid`.
-- [ ] **Preserve `trivial` (NOT `by decide`)** as the `h_fc` argument to
+- [x] **Preserve `trivial` (NOT `by decide`)** as the `h_fc` argument to
       `SoundnessLemmas.axiom_swap_valid` in the `density` and `dense_indicator` arms. `by decide`
       fails with *"Expected type must not contain free variables"* because the goal mentions
       `(Axiom.density a0).minFrameClass`. This was hit and fixed once already.
-- [ ] Strip the `Probe508` namespace wrapper; place the declarations inside the module's existing
+- [x] Strip the `Probe508` namespace wrapper; place the declarations inside the module's existing
       namespace so the `open`s in the reference file are unnecessary. Adjust qualification only as
       the elaborator demands.
-- [ ] Do not delete, rename, or edit any incumbent declaration in this phase.
+- [x] Do not delete, rename, or edit any incumbent declaration in this phase.
 
 **Timing**: 1 hour
 

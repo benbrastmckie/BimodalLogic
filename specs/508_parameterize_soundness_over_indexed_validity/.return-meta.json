@@ -1,24 +1,15 @@
 {
-  "status": "planned",
-  "agent_type": "planner-agent",
-  "delegation_path": ["orchestrator", "plan", "planner-agent"],
-  "task_number": 508,
-  "task_type": "lean4",
-  "session_id": "sess_1788282938_f2ac03",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/508_parameterize_soundness_over_indexed_validity/plans/01_soundness-in-parameterized-collapse.md",
-      "summary": "9-phase, 12-hour lean4 plan transplanting the verified 239-line soundness_in collapse: leaf lemmas, uniform recursion, Formula-side retarget, prune, BL side, list-consequence collapse, tree-wide acceptance."
-    }
-  ],
-  "phase_count": 9,
-  "estimated_hours": 12,
-  "dependency_waves": [[1], [2], [3], [4, 6, 7], [5, 8], [9]],
-  "complexity": "complex",
-  "research_integrated": true,
-  "memory_candidates": [],
-  "blockers": [],
-  "next_steps": "Run /implement 508 to execute the plan",
-  "completed": "2026-09-01T12:20:00Z"
+  "status": "in_progress",
+  "started_at": "2026-09-01T12:20:00Z",
+  "artifacts": [],
+  "partial_progress": {
+    "stage": "initializing",
+    "details": "Agent started, parsing delegation context"
+  },
+  "metadata": {
+    "session_id": "sess_1788282938_f2ac03",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"]
+  }
 }

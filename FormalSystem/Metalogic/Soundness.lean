@@ -1808,6 +1808,98 @@ theorem sep_swap_valid (φ : Formula) :
       rintro ⟨v, huv, -, hw⟩
       exact hns ⟨v, huv, fun w huw hwv => hw w huw hwv⟩
 
+/-! ## The `FrameClass`-parameterized soundness family
+
+Everything below is indexed by an arbitrary `fc : FrameClass` rather than by one of the four
+named classes. The per-class theorems further down are corollaries of `soundness_in`, obtained by
+supplying the class's `FrameClass.Sat` witness; they keep their original statements, so no call
+site changes.
+
+The two `*_min` leaf lemmas below state each axiom's validity at *its own* `minFrameClass`, which
+is where the per-axiom validity lemmas already live. `ValidIn.mono` then lifts them to any wider
+`fc`, which is what replaces the four hand-written 45-arm dispatchers. -/
+
+/-- Uniform per-axiom validity at the axiom's own minimum frame class. -/
+theorem axiom_validIn_min {φ : Formula} (ax : Axiom φ) : ValidIn ax.minFrameClass φ := by
+  cases ax with
+  | prop_k a0 a1 a2 => exact prop_k_valid a0 a1 a2
+  | prop_s a0 a1 => exact prop_s_valid a0 a1
+  | modal_t a0 => exact modal_t_valid a0
+  | modal_4 a0 => exact modal_4_valid a0
+  | modal_b a0 => exact modal_b_valid a0
+  | modal_5_collapse a0 => exact modal_5_collapse_valid a0
+  | ex_falso a0 => exact ex_falso_valid a0
+  | peirce a0 a1 => exact peirce_valid a0 a1
+  | modal_k_dist a0 a1 => exact modal_k_dist_valid a0 a1
+  | serial_future => exact serial_future_axiom_valid
+  | serial_past => exact serial_past_axiom_valid
+  | left_mono_until_G a0 a1 a2 => exact left_mono_until_G_valid a0 a1 a2
+  | left_mono_since_H a0 a1 a2 => exact left_mono_since_H_valid a0 a1 a2
+  | right_mono_until a0 a1 a2 => exact right_mono_until_valid a0 a1 a2
+  | right_mono_since a0 a1 a2 => exact right_mono_since_valid a0 a1 a2
+  | connect_future a0 => exact connect_future_valid a0
+  | connect_past a0 => exact connect_past_valid a0
+  | enrichment_until a0 a1 a2 => exact enrichment_until_valid a0 a1 a2
+  | enrichment_since a0 a1 a2 => exact enrichment_since_valid a0 a1 a2
+  | self_accum_until a0 a1 => exact self_accum_until_valid a0 a1
+  | self_accum_since a0 a1 => exact self_accum_since_valid a0 a1
+  | absorb_until a0 a1 => exact absorb_until_valid a0 a1
+  | absorb_since a0 a1 => exact absorb_since_valid a0 a1
+  | linear_until a0 a1 a2 a3 => exact linear_until_valid a0 a1 a2 a3
+  | linear_since a0 a1 a2 a3 => exact linear_since_valid a0 a1 a2 a3
+  | until_F a0 a1 => exact until_F_valid a0 a1
+  | since_P a0 a1 => exact since_P_valid a0 a1
+  | temp_linearity a0 a1 => exact temp_linearity_valid a0 a1
+  | temp_linearity_past a0 a1 => exact temp_linearity_past_valid a0 a1
+  | F_until_equiv a0 => exact F_until_equiv_valid a0
+  | P_since_equiv a0 => exact P_since_equiv_valid a0
+  | modal_future a0 => exact modal_future_valid a0
+  | discrete_symm_fwd => exact discrete_symm_fwd_valid
+  | discrete_symm_bwd => exact discrete_symm_bwd_valid
+  | discrete_propagate_fwd => exact discrete_propagate_fwd_valid
+  | discrete_propagate_bwd => exact discrete_propagate_bwd_valid
+  | discrete_box_necessity => exact discrete_box_necessity_valid
+  | density a0 => exact density_valid a0
+  | dense_indicator => exact dense_indicator_valid
+  | prior_UZ a0 => exact prior_UZ_valid a0
+  | prior_SZ a0 => exact prior_SZ_valid a0
+  | z1 a0 => exact z1_valid a0
+  | prior_U_gap a0 => exact prior_U_gap_valid a0
+  | prior_S_gap a0 => exact prior_S_gap_valid a0
+  | sep a0 => exact sep_valid a0
+
+/-- Uniform per-axiom swap-validity at the axiom's own minimum frame class. -/
+theorem axiom_swap_validIn_min {φ : Formula} (ax : Axiom φ) :
+    ValidIn ax.minFrameClass φ.swapTemporal := by
+  by_cases hbase : ax.minFrameClass ≤ FrameClass.Base
+  · have heq : ax.minFrameClass = FrameClass.Base :=
+      le_antisymm hbase (FrameClass.base_le _)
+    rw [heq]
+    exact ValidIn.of_forall_total fun F _ M τ hτ t =>
+      SoundnessLemmas.axiom_swap_valid_general (D := F.Duration) φ ax hbase F.toFibre M τ hτ t
+  · cases ax with
+    | density a0 =>
+      exact ValidDense.of_forall fun F _ M τ hτ t =>
+        SoundnessLemmas.axiom_swap_valid (D := F.Duration) _ (Axiom.density a0) trivial
+          F.toFibre M τ hτ t
+    | dense_indicator =>
+      exact ValidDense.of_forall fun F _ M τ hτ t =>
+        SoundnessLemmas.axiom_swap_valid (D := F.Duration) _ Axiom.dense_indicator trivial
+          F.toFibre M τ hτ t
+    | prior_UZ a0 =>
+      exact ValidDiscrete.of_forall fun F _ _ _ _ M τ hτ t =>
+        SoundnessLemmas.prior_SZ_is_valid (D := F.Duration) a0.swapTemporal F.toFibre M τ hτ t
+    | prior_SZ a0 =>
+      exact ValidDiscrete.of_forall fun F _ _ _ _ M τ hτ t =>
+        SoundnessLemmas.prior_UZ_is_valid (D := F.Duration) a0.swapTemporal F.toFibre M τ hτ t
+    | z1 a0 =>
+      exact ValidDiscrete.of_forall fun F _ _ _ _ M τ hτ t =>
+        SoundnessLemmas.z1_past_is_valid (D := F.Duration) a0.swapTemporal F.toFibre M τ hτ t
+    | prior_U_gap a0 => exact prior_S_gap_valid a0.swapTemporal
+    | prior_S_gap a0 => exact prior_U_gap_valid a0.swapTemporal
+    | sep a0 => exact sep_swap_valid a0
+    | _ => exact absurd trivial hbase
+
 /-- All Dedekind-compatible axioms are valid on dense Dedekind-complete frames.
 
 Dispatch: the 37 Base axioms route through `valid_implies_validDedekindDense`; the 2 Dense
