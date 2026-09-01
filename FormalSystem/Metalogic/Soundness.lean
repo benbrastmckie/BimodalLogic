@@ -139,6 +139,7 @@ private theorem and_of_not_imp_not {P Q : Prop} (h : (P → Q → False) → Fal
 /-- Propositional K axiom is valid. -/
 theorem prop_k_valid (φ ψ χ : Formula) :
     ⊨ ((φ.imp (ψ.imp χ)).imp ((φ.imp ψ).imp (φ.imp χ))) := by
+  refine valid.of_forall_total ?_
   intro F M τ _h_mem t
   simp only [TruthAt]
   intro h1 h2 h_phi
@@ -146,6 +147,7 @@ theorem prop_k_valid (φ ψ χ : Formula) :
 
 /-- Propositional S axiom is valid. -/
 theorem prop_s_valid (φ ψ : Formula) : ⊨ (φ.imp (ψ.imp φ)) := by
+  refine valid.of_forall_total ?_
   intro F M τ _h_mem t
   simp only [TruthAt]
   intro h_phi _
@@ -153,6 +155,7 @@ theorem prop_s_valid (φ ψ : Formula) : ⊨ (φ.imp (ψ.imp φ)) := by
 
 /-- Modal T axiom is valid: `⊨ □φ → φ`. -/
 theorem modal_t_valid (φ : Formula) : ⊨ (φ.box.imp φ) := by
+  refine valid.of_forall_total ?_
   intro F M τ h_mem t
   simp only [TruthAt]
   intro h_box
@@ -160,6 +163,7 @@ theorem modal_t_valid (φ : Formula) : ⊨ (φ.box.imp φ) := by
 
 /-- Modal 4 axiom is valid: `⊨ □φ → □□φ`. -/
 theorem modal_4_valid (φ : Formula) : ⊨ ((φ.box).imp (φ.box.box)) := by
+  refine valid.of_forall_total ?_
   intro F M τ _h_mem t
   simp only [TruthAt]
   intro h_box σ h_σ_mem ρ h_ρ_mem
@@ -167,6 +171,7 @@ theorem modal_4_valid (φ : Formula) : ⊨ ((φ.box).imp (φ.box.box)) := by
 
 /-- Modal B axiom is valid: `⊨ φ → □◇φ`. -/
 theorem modal_b_valid (φ : Formula) : ⊨ (φ.imp (φ.diamond.box)) := by
+  refine valid.of_forall_total ?_
   intro F M τ h_mem t
   simp only [Formula.diamond, Formula.neg]
   simp only [TruthAt]
@@ -175,6 +180,7 @@ theorem modal_b_valid (φ : Formula) : ⊨ (φ.imp (φ.diamond.box)) := by
 
 /-- Modal 5 Collapse axiom is valid: `⊨ ◇□φ → □φ`. -/
 theorem modal_5_collapse_valid (φ : Formula) : ⊨ (φ.box.diamond.imp φ.box) := by
+  refine valid.of_forall_total ?_
   intro F M τ _h_mem t
   simp only [Formula.diamond, Formula.neg]
   simp only [TruthAt]
@@ -186,6 +192,7 @@ theorem modal_5_collapse_valid (φ : Formula) : ⊨ (φ.box.diamond.imp φ.box) 
 
 /-- EFQ axiom is valid: `⊨ ⊥ → φ`. -/
 theorem ex_falso_valid (φ : Formula) : ⊨ (Formula.bot.imp φ) := by
+  refine valid.of_forall_total ?_
   intro F M τ _h_mem t
   simp only [TruthAt]
   intro h_bot
@@ -194,6 +201,7 @@ theorem ex_falso_valid (φ : Formula) : ⊨ (Formula.bot.imp φ) := by
 
 /-- Peirce's Law is valid: `⊨ ((φ → ψ) → φ) → φ`. -/
 theorem peirce_valid (φ ψ : Formula) : ⊨ (((φ.imp ψ).imp φ).imp φ) := by
+  refine valid.of_forall_total ?_
   intro F M τ _h_mem t
   simp only [TruthAt]
   intro h_peirce
@@ -209,6 +217,7 @@ theorem peirce_valid (φ ψ : Formula) : ⊨ (((φ.imp ψ).imp φ).imp φ) := by
 /-- Modal K Distribution axiom is valid: `⊨ □(φ → ψ) → (□φ → □ψ)`. -/
 theorem modal_k_dist_valid (φ ψ : Formula) :
     ⊨ ((φ.imp ψ).box.imp (φ.box.imp ψ.box)) := by
+  refine valid.of_forall_total ?_
   intro F M τ _h_mem t
   simp only [TruthAt]
   intro h_box_imp h_box_phi σ h_σ_mem
@@ -217,6 +226,7 @@ theorem modal_k_dist_valid (φ ψ : Formula) :
 /-- Temporal K Distribution axiom is valid: `⊨ F(φ → ψ) → (Fφ → Fψ)`. -/
 theorem temp_k_dist_valid (φ ψ : Formula) :
     ⊨ ((φ.imp ψ).allFuture.imp (φ.allFuture.imp ψ.allFuture)) := by
+  refine valid.of_forall_total ?_
   intro F M τ _h_mem t
   simp only [TruthAt, Truth.future_iff]
   intro h_future_imp h_future_phi s hts
@@ -225,6 +235,7 @@ theorem temp_k_dist_valid (φ ψ : Formula) :
 /-- Temporal 4 axiom is valid: `⊨ Gφ → GGφ`.
 Under strict semantics, uses transitivity of <. -/
 theorem temp_4_valid (φ : Formula) : ⊨ ((φ.allFuture).imp (φ.allFuture.allFuture)) := by
+  refine valid.of_forall_total ?_
   intro F M τ _h_mem t
   simp only [TruthAt, Truth.future_iff]
   intro h_future s hts r hsr
@@ -234,6 +245,7 @@ theorem temp_4_valid (φ : Formula) : ⊨ ((φ.allFuture).imp (φ.allFuture.allF
 For any time t in a nontrivial ordered group, there exists s > t. -/
 theorem serial_future_axiom_valid :
     ⊨ ((Formula.bot.imp Formula.bot).imp (Formula.someFuture (Formula.bot.imp Formula.bot))) := by
+  refine valid.of_forall_total ?_
   intro F M τ _h_mem t
   simp only [TruthAt, Truth.some_future_iff]
   intro _h_top
@@ -244,6 +256,7 @@ theorem serial_future_axiom_valid :
 For any time t in a nontrivial ordered group, there exists s < t. -/
 theorem serial_past_axiom_valid :
     ⊨ ((Formula.bot.imp Formula.bot).imp (Formula.somePast (Formula.bot.imp Formula.bot))) := by
+  refine valid.of_forall_total ?_
   intro F M τ _h_mem t
   simp only [TruthAt, Truth.some_past_iff]
   intro _h_top
@@ -253,6 +266,7 @@ theorem serial_past_axiom_valid :
 /-- Temporal A axiom is valid: `⊨ φ → G(Pφ)`.
 Under strict semantics: if φ at t, then for all s > t, there exists r < s with φ(r) (namely, t). -/
 theorem temp_a_valid (φ : Formula) : ⊨ (φ.imp (Formula.allFuture φ.somePast)) := by
+  refine valid.of_forall_total ?_
   intro F M τ _h_mem t
   simp only [TruthAt, Truth.future_iff, Truth.some_past_iff]
   intro h_phi s hts
@@ -264,6 +278,7 @@ The goal G(Hφ) requires: ∀ s > t, ∀ r < s, φ(r).
 This is implied by the △φ hypothesis which covers all times. -/
 theorem temp_l_valid (φ : Formula) :
     ⊨ (φ.always.imp (Formula.allFuture (Formula.allPast φ))) := by
+  refine valid.of_forall_total ?_
   intro F M τ _h_mem t
   simp only [TruthAt, Truth.future_iff, Truth.past_iff]
   intro h_always s _hts r hrs
@@ -287,6 +302,7 @@ theorem temp_l_valid (φ : Formula) :
 /-- MF axiom validity: `□φ → □(Fφ)` is valid. Time-shift invariance carries no side condition:
 totality of the shifted history is `WorldHistory.isTotal_timeShift`. -/
 theorem modal_future_valid (φ : Formula) : ⊨ ((φ.box).imp ((φ.allFuture).box)) := by
+  refine valid.of_forall_total ?_
   intro F M τ _h_mem t
   simp only [TruthAt, Truth.future_iff]
   intro h_box_phi σ h_σ_mem s hts
@@ -298,6 +314,7 @@ theorem modal_future_valid (φ : Formula) : ⊨ ((φ.box).imp ((φ.allFuture).bo
 /-- Temporal A Dual axiom is valid: `⊨ φ → H(Fφ)`.
 Under strict semantics: if φ at t, then for all s < t, there exists r > s with φ(r) (namely, t). -/
 theorem temp_a_dual_valid (φ : Formula) : ⊨ (φ.imp (Formula.allPast φ.someFuture)) := by
+  refine valid.of_forall_total ?_
   intro F M τ _h_mem t
   simp only [TruthAt, Truth.past_iff, Truth.some_future_iff]
   intro h_phi s hst
@@ -314,6 +331,7 @@ theorem temp_linearity_valid (φ ψ : Formula) :
       (Formula.or (Formula.someFuture (Formula.and φ ψ))
         (Formula.or (Formula.someFuture (Formula.and φ (Formula.someFuture ψ)))
           (Formula.someFuture (Formula.and (Formula.someFuture φ) ψ))))) := by
+  refine valid.of_forall_total ?_
   intro F M τ _h_mem t
   simp only [Formula.and, Formula.or, Formula.neg, TruthAt,
     Truth.some_future_iff]
@@ -352,6 +370,7 @@ theorem temp_linearity_past_valid (φ ψ : Formula) :
       (Formula.or (Formula.somePast (Formula.and φ ψ))
         (Formula.or (Formula.somePast (Formula.and φ (Formula.somePast ψ)))
           (Formula.somePast (Formula.and (Formula.somePast φ) ψ))))) := by
+  refine valid.of_forall_total ?_
   intro F M τ _h_mem t
   simp only [Formula.and, Formula.or, Formula.neg, TruthAt,
     Truth.some_past_iff]
@@ -386,6 +405,7 @@ If F(φ) holds at t, there exists s ≥ t with φ(s). Take this s as the Until w
 The guard ⊤ is trivially satisfied on (t, s). -/
 theorem F_until_equiv_valid (φ : Formula) :
     ⊨ ((Formula.someFuture φ).imp (Formula.untl (Formula.bot.imp Formula.bot) φ)) := by
+  refine valid.of_forall_total ?_
   intro F M τ _h_mem t
   simp only [TruthAt, Truth.some_future_iff]
   intro ⟨s, hts, h_φs⟩
@@ -395,6 +415,7 @@ theorem F_until_equiv_valid (φ : Formula) :
 `P(φ) → S(φ, ⊤)` is valid. Past dual of F-Until equivalence. -/
 theorem P_since_equiv_valid (φ : Formula) :
     ⊨ ((Formula.somePast φ).imp (Formula.snce (Formula.bot.imp Formula.bot) φ)) := by
+  refine valid.of_forall_total ?_
   intro F M τ _h_mem t
   simp only [TruthAt, Truth.some_past_iff]
   intro ⟨s, hst, h_φs⟩
@@ -498,6 +519,7 @@ Under open guard (t,s): G(φ→χ) gives (φ→χ) at all r > t, covering guard 
 No pointwise condition at t needed since the guard is the open interval (t,s). -/
 theorem left_mono_until_G_valid (φ χ ψ : Formula) :
     ⊨ ((φ.imp χ).allFuture.imp ((Formula.untl φ ψ).imp (Formula.untl χ ψ))) := by
+  refine valid.of_forall_total ?_
   intro F M τ _h_mem t
   simp only [TruthAt, Truth.future_iff]
   intro h_G ⟨s, hts, h_event, h_guard⟩
@@ -508,6 +530,7 @@ Under open guard (s,t): H(φ→χ) gives (φ→χ) at all r < t, covering guard 
 No pointwise condition at t needed since the guard is the open interval (s,t). -/
 theorem left_mono_since_H_valid (φ χ ψ : Formula) :
     ⊨ ((φ.imp χ).allPast.imp ((Formula.snce φ ψ).imp (Formula.snce χ ψ))) := by
+  refine valid.of_forall_total ?_
   intro F M τ _h_mem t
   simp only [TruthAt, Truth.past_iff]
   intro h_H ⟨s, hst, h_event, h_guard⟩
@@ -517,6 +540,7 @@ theorem left_mono_since_H_valid (φ χ ψ : Formula) :
 Same witness s; φ(s) and (φ → ψ)(s) give ψ(s). Guard is unchanged. -/
 theorem right_mono_until_valid (φ ψ χ : Formula) :
     ⊨ ((φ.imp ψ).allFuture.imp ((Formula.untl χ φ).imp (Formula.untl χ ψ))) := by
+  refine valid.of_forall_total ?_
   intro F M τ _h_mem t
   simp only [TruthAt, Truth.future_iff]
   intro h_G ⟨s, hts, h_φs, h_guard⟩
@@ -525,6 +549,7 @@ theorem right_mono_until_valid (φ ψ χ : Formula) :
 /-- BX3': Right monotonicity of Since: `H(φ → ψ) → ((χ S φ) → (χ S ψ))`. -/
 theorem right_mono_since_valid (φ ψ χ : Formula) :
     ⊨ ((φ.imp ψ).allPast.imp ((Formula.snce χ φ).imp (Formula.snce χ ψ))) := by
+  refine valid.of_forall_total ?_
   intro F M τ _h_mem t
   simp only [TruthAt, Truth.past_iff]
   intro h_H ⟨s, hst, h_φs, h_guard⟩
@@ -535,6 +560,7 @@ If φ holds now, then at all future times, P(φ) holds.
 Proof: for any s ≥ t, P(φ)(s) = ¬H(¬φ)(s) = ¬∀w ≤ s.¬φ(w). Take w = t: t ≤ s, φ(t). -/
 theorem connect_future_valid (φ : Formula) :
     ⊨ (φ.imp (φ.somePast.allFuture)) := by
+  refine valid.of_forall_total ?_
   intro F M τ _h_mem t
   simp only [TruthAt, Truth.future_iff, Truth.some_past_iff]
   intro h_φt s hts
@@ -545,6 +571,7 @@ If φ holds now, then at all past times, F(φ) holds.
 Proof: for any s ≤ t, F(φ)(s) = ¬G(¬φ)(s) = ¬∀w ≥ s.¬φ(w). Take w = t: t ≥ s, φ(t). -/
 theorem connect_past_valid (φ : Formula) :
     ⊨ (φ.imp (φ.someFuture.allPast)) := by
+  refine valid.of_forall_total ?_
   intro F M τ _h_mem t
   simp only [TruthAt, Truth.past_iff, Truth.some_future_iff]
   intro h_φt s hst
@@ -560,6 +587,7 @@ Valid under open guard (t,s): given p(t) and untl(φ, ψ) at t with witness s > 
 theorem enrichment_until_valid (φ ψ p : Formula) :
     ⊨ (Formula.and p (Formula.untl φ ψ) |>.imp
       (Formula.untl φ (Formula.and ψ (Formula.snce φ p)))) := by
+  refine valid.of_forall_total ?_
   intro F M τ _h_mem t
   simp only [Formula.and, Formula.neg, TruthAt]
   intro h_conj
@@ -579,6 +607,7 @@ Mirror of enrichment_until for the Since direction. -/
 theorem enrichment_since_valid (φ ψ p : Formula) :
     ⊨ (Formula.and p (Formula.snce φ ψ) |>.imp
       (Formula.snce φ (Formula.and ψ (Formula.untl φ p)))) := by
+  refine valid.of_forall_total ?_
   intro F M τ _h_mem t
   simp only [Formula.and, Formula.neg, TruthAt]
   intro h_conj
@@ -600,6 +629,7 @@ Guard at r ∈ (t, s): need φ(r) ∧ (φ U ψ)(r).
 theorem self_accum_until_valid (φ ψ : Formula) :
     ⊨ ((Formula.untl φ ψ).imp
       (Formula.untl (Formula.and φ (Formula.untl φ ψ)) ψ)) := by
+  refine valid.of_forall_total ?_
   intro F M τ _h_mem t
   simp only [Formula.and, Formula.neg, TruthAt]
   intro ⟨s, hts, h_ψs, h_guard⟩
@@ -610,6 +640,7 @@ theorem self_accum_until_valid (φ ψ : Formula) :
 theorem self_accum_since_valid (φ ψ : Formula) :
     ⊨ ((Formula.snce φ ψ).imp
       (Formula.snce (Formula.and φ (Formula.snce φ ψ)) ψ)) := by
+  refine valid.of_forall_total ?_
   intro F M τ _h_mem t
   simp only [Formula.and, Formula.neg, TruthAt]
   intro ⟨s, hst, h_ψs, h_guard⟩
@@ -618,6 +649,7 @@ theorem self_accum_since_valid (φ ψ : Formula) :
 
 theorem absorb_until_valid (φ ψ : Formula) :
     ⊨ ((Formula.untl φ (Formula.and φ (Formula.untl φ ψ))).imp (Formula.untl φ ψ)) := by
+  refine valid.of_forall_total ?_
   intro F M τ _h_mem t
   simp only [Formula.and, Formula.neg, TruthAt]
   intro ⟨s₁, hts₁, h_conj, h_guard₁⟩
@@ -639,6 +671,7 @@ theorem absorb_until_valid (φ ψ : Formula) :
 /-- BX6': Absorption of Since: `(φ S (φ ∧ (φ S ψ))) → (φ S ψ)`. -/
 theorem absorb_since_valid (φ ψ : Formula) :
     ⊨ ((Formula.snce φ (Formula.and φ (Formula.snce φ ψ))).imp (Formula.snce φ ψ)) := by
+  refine valid.of_forall_total ?_
   intro F M τ _h_mem t
   simp only [Formula.and, Formula.neg, TruthAt]
   intro ⟨s₁, hs₁t, h_conj, h_guard₁⟩
@@ -668,6 +701,7 @@ theorem linear_until_valid (φ ψ χ θ : Formula) :
           (Formula.untl (Formula.and φ χ) (Formula.and ψ θ))
           (Formula.untl (Formula.and φ χ) (Formula.and ψ χ)))
         (Formula.untl (Formula.and φ χ) (Formula.and φ θ)))) := by
+  refine valid.of_forall_total ?_
   intro F M τ _h_mem t
   simp only [Formula.and, Formula.or, Formula.neg, TruthAt]
   intro h_conj
@@ -704,6 +738,7 @@ theorem linear_since_valid (φ ψ χ θ : Formula) :
           (Formula.snce (Formula.and φ χ) (Formula.and ψ θ))
           (Formula.snce (Formula.and φ χ) (Formula.and ψ χ)))
         (Formula.snce (Formula.and φ χ) (Formula.and φ θ)))) := by
+  refine valid.of_forall_total ?_
   intro F M τ _h_mem t
   simp only [Formula.and, Formula.or, Formula.neg, TruthAt]
   intro h_conj
@@ -739,6 +774,7 @@ theorem linear_since_valid (φ ψ χ θ : Formula) :
 F(ψ) = ¬G(¬ψ). Under reflexive Until, witness s ≥ t gives ψ(s), so ¬∀u≥t.¬ψ(u). -/
 theorem until_F_valid (φ ψ : Formula) :
     ⊨ ((Formula.untl φ ψ).imp (Formula.someFuture ψ)) := by
+  refine valid.of_forall_total ?_
   intro F M τ _h_mem t
   simp only [TruthAt, Truth.some_future_iff]
   intro ⟨s, hts, h_ψs, _⟩
@@ -748,6 +784,7 @@ theorem until_F_valid (φ ψ : Formula) :
 P(ψ) = ¬H(¬ψ). Under reflexive Since, witness s ≤ t gives ψ(s), so ¬∀u≤t.¬ψ(u). -/
 theorem since_P_valid (φ ψ : Formula) :
     ⊨ ((Formula.snce φ ψ).imp (Formula.somePast ψ)) := by
+  refine valid.of_forall_total ?_
   intro F M τ _h_mem t
   simp only [TruthAt, Truth.some_past_iff]
   intro ⟨s, hst, h_ψs, _⟩
@@ -770,6 +807,7 @@ If there is a gap (t, s) with s > t, then (t-(s-t), t) is also empty by translat
 theorem discrete_symm_fwd_valid :
     ⊨ ((Formula.untl Formula.bot (Formula.bot.imp Formula.bot)).imp
       (Formula.snce Formula.bot (Formula.bot.imp Formula.bot))) := by
+  refine valid.of_forall_total ?_
   intro F M τ _h_mem t
   simp only [TruthAt]
   intro ⟨s, hts, _h_top_s, h_guard⟩
@@ -788,6 +826,7 @@ If there is a gap (r, t) with r < t, then (t, t+(t-r)) is also empty by translat
 theorem discrete_symm_bwd_valid :
     ⊨ ((Formula.snce Formula.bot (Formula.bot.imp Formula.bot)).imp
       (Formula.untl Formula.bot (Formula.bot.imp Formula.bot))) := by
+  refine valid.of_forall_total ?_
   intro F M τ _h_mem t
   simp only [TruthAt]
   intro ⟨r, hrt, _h_top_r, h_guard⟩
@@ -806,6 +845,7 @@ If there is a gap (t, s), then for any u > t, (u, u+(s-t)) is also empty. -/
 theorem discrete_propagate_fwd_valid :
     ⊨ ((Formula.untl Formula.bot (Formula.bot.imp Formula.bot)).imp
       (Formula.allFuture (Formula.untl Formula.bot (Formula.bot.imp Formula.bot)))) := by
+  refine valid.of_forall_total ?_
   intro F M τ _h_mem t
   simp only [TruthAt, Truth.future_iff]
   intro ⟨s, hts, _h_top_s, h_guard⟩ u _htu
@@ -824,6 +864,7 @@ If there is a gap (t, s), then for any u < t, (u, u+(s-t)) is also empty. -/
 theorem discrete_propagate_bwd_valid :
     ⊨ ((Formula.untl Formula.bot (Formula.bot.imp Formula.bot)).imp
       (Formula.allPast (Formula.untl Formula.bot (Formula.bot.imp Formula.bot)))) := by
+  refine valid.of_forall_total ?_
   intro F M τ _h_mem t
   simp only [TruthAt, Truth.past_iff]
   intro ⟨s, hts, _h_top_s, h_guard⟩ u _hut
@@ -843,6 +884,7 @@ the same gap exists (truth of U(⊤,⊥) depends only on D's order, not on τ). 
 theorem discrete_box_necessity_valid :
     ⊨ ((Formula.untl Formula.bot (Formula.bot.imp Formula.bot)).imp
       (Formula.box (Formula.untl Formula.bot (Formula.bot.imp Formula.bot)))) := by
+  refine valid.of_forall_total ?_
   intro F M τ _h_mem t
   simp only [TruthAt]
   intro ⟨s, hts, _h_top_s, h_guard⟩ σ _h_σ_mem
@@ -1068,10 +1110,11 @@ This is semantic: if φ holds at all (M, τ, hτ, t), then for any model at any 
 □φ holds because we quantify over all total histories, and φ holds at all of them.
 -/
 theorem necessitation_preserves_valid {φ : Formula} (h : ⊨ φ) : ⊨ (Formula.box φ) := by
+  refine valid.of_forall_total ?_
   intro F M τ h_mem t
   simp only [TruthAt]
   intro σ h_σ_mem
-  exact h F M σ h_σ_mem t
+  exact h |>.apply F M σ h_σ_mem t
 
 /--
 Temporal necessitation preserves validity: if φ is universally valid, then Gφ is universally valid.
@@ -1080,10 +1123,11 @@ This is semantic: if φ holds at all (M, τ, hτ, t), then at any time s ≥ t, 
 -/
 theorem temporal_necessitation_preserves_valid {φ : Formula} (h : ⊨ φ) : ⊨
     (Formula.allFuture φ) := by
+  refine valid.of_forall_total ?_
   intro F M τ h_mem t
   simp only [Truth.future_iff]
   intro s _hts
-  exact h F M τ h_mem s
+  exact h |>.apply F M τ h_mem s
 
 /--
 **Soundness Theorem (Base)**: Derivability in the base system implies semantic consequence.
@@ -1115,43 +1159,43 @@ theorem soundness (Γ : Context) (φ : Formula)
   | «axiom» Γ' φ' h_ax h_fc =>
     -- All base axioms are universally valid; density/discrete excluded by h_fc
     cases h_ax with
-    | prop_k φ ψ χ => exact prop_k_valid φ ψ χ F M τ h_mem t
-    | prop_s φ ψ => exact prop_s_valid φ ψ F M τ h_mem t
-    | modal_t ψ => exact modal_t_valid ψ F M τ h_mem t
-    | modal_4 ψ => exact modal_4_valid ψ F M τ h_mem t
-    | modal_b ψ => exact modal_b_valid ψ F M τ h_mem t
-    | modal_5_collapse ψ => exact modal_5_collapse_valid ψ F M τ h_mem t
-    | ex_falso ψ => exact ex_falso_valid ψ F M τ h_mem t
-    | peirce φ ψ => exact peirce_valid φ ψ F M τ h_mem t
-    | modal_k_dist φ ψ => exact modal_k_dist_valid φ ψ F M τ h_mem t
-    | serial_future => exact serial_future_axiom_valid F M τ h_mem t
-    | serial_past => exact serial_past_axiom_valid F M τ h_mem t
-    | left_mono_until_G φ χ ψ => exact left_mono_until_G_valid φ χ ψ F M τ h_mem t
-    | left_mono_since_H φ χ ψ => exact left_mono_since_H_valid φ χ ψ F M τ h_mem t
-    | right_mono_until φ ψ χ => exact right_mono_until_valid φ ψ χ F M τ h_mem t
-    | right_mono_since φ ψ χ => exact right_mono_since_valid φ ψ χ F M τ h_mem t
-    | connect_future φ => exact connect_future_valid φ F M τ h_mem t
-    | connect_past φ => exact connect_past_valid φ F M τ h_mem t
-    | enrichment_until φ ψ p => exact enrichment_until_valid φ ψ p F M τ h_mem t
-    | enrichment_since φ ψ p => exact enrichment_since_valid φ ψ p F M τ h_mem t
-    | self_accum_until φ ψ => exact self_accum_until_valid φ ψ F M τ h_mem t
-    | self_accum_since φ ψ => exact self_accum_since_valid φ ψ F M τ h_mem t
-    | absorb_until φ ψ => exact absorb_until_valid φ ψ F M τ h_mem t
-    | absorb_since φ ψ => exact absorb_since_valid φ ψ F M τ h_mem t
-    | linear_until φ ψ χ θ => exact linear_until_valid φ ψ χ θ F M τ h_mem t
-    | linear_since φ ψ χ θ => exact linear_since_valid φ ψ χ θ F M τ h_mem t
-    | until_F φ ψ => exact until_F_valid φ ψ F M τ h_mem t
-    | since_P φ ψ => exact since_P_valid φ ψ F M τ h_mem t
-    | temp_linearity φ ψ => exact temp_linearity_valid φ ψ F M τ h_mem t
-    | temp_linearity_past φ ψ => exact temp_linearity_past_valid φ ψ F M τ h_mem t
-    | F_until_equiv φ => exact F_until_equiv_valid φ F M τ h_mem t
-    | P_since_equiv φ => exact P_since_equiv_valid φ F M τ h_mem t
-    | modal_future ψ => exact modal_future_valid ψ F M τ h_mem t
-    | discrete_symm_fwd => exact discrete_symm_fwd_valid F M τ h_mem t
-    | discrete_symm_bwd => exact discrete_symm_bwd_valid F M τ h_mem t
-    | discrete_propagate_fwd => exact discrete_propagate_fwd_valid F M τ h_mem t
-    | discrete_propagate_bwd => exact discrete_propagate_bwd_valid F M τ h_mem t
-    | discrete_box_necessity => exact discrete_box_necessity_valid F M τ h_mem t
+    | prop_k φ ψ χ => exact prop_k_valid φ ψ χ |>.apply F M τ h_mem t
+    | prop_s φ ψ => exact prop_s_valid φ ψ |>.apply F M τ h_mem t
+    | modal_t ψ => exact modal_t_valid ψ |>.apply F M τ h_mem t
+    | modal_4 ψ => exact modal_4_valid ψ |>.apply F M τ h_mem t
+    | modal_b ψ => exact modal_b_valid ψ |>.apply F M τ h_mem t
+    | modal_5_collapse ψ => exact modal_5_collapse_valid ψ |>.apply F M τ h_mem t
+    | ex_falso ψ => exact ex_falso_valid ψ |>.apply F M τ h_mem t
+    | peirce φ ψ => exact peirce_valid φ ψ |>.apply F M τ h_mem t
+    | modal_k_dist φ ψ => exact modal_k_dist_valid φ ψ |>.apply F M τ h_mem t
+    | serial_future => exact serial_future_axiom_valid |>.apply F M τ h_mem t
+    | serial_past => exact serial_past_axiom_valid |>.apply F M τ h_mem t
+    | left_mono_until_G φ χ ψ => exact left_mono_until_G_valid φ χ ψ |>.apply F M τ h_mem t
+    | left_mono_since_H φ χ ψ => exact left_mono_since_H_valid φ χ ψ |>.apply F M τ h_mem t
+    | right_mono_until φ ψ χ => exact right_mono_until_valid φ ψ χ |>.apply F M τ h_mem t
+    | right_mono_since φ ψ χ => exact right_mono_since_valid φ ψ χ |>.apply F M τ h_mem t
+    | connect_future φ => exact connect_future_valid φ |>.apply F M τ h_mem t
+    | connect_past φ => exact connect_past_valid φ |>.apply F M τ h_mem t
+    | enrichment_until φ ψ p => exact enrichment_until_valid φ ψ p |>.apply F M τ h_mem t
+    | enrichment_since φ ψ p => exact enrichment_since_valid φ ψ p |>.apply F M τ h_mem t
+    | self_accum_until φ ψ => exact self_accum_until_valid φ ψ |>.apply F M τ h_mem t
+    | self_accum_since φ ψ => exact self_accum_since_valid φ ψ |>.apply F M τ h_mem t
+    | absorb_until φ ψ => exact absorb_until_valid φ ψ |>.apply F M τ h_mem t
+    | absorb_since φ ψ => exact absorb_since_valid φ ψ |>.apply F M τ h_mem t
+    | linear_until φ ψ χ θ => exact linear_until_valid φ ψ χ θ |>.apply F M τ h_mem t
+    | linear_since φ ψ χ θ => exact linear_since_valid φ ψ χ θ |>.apply F M τ h_mem t
+    | until_F φ ψ => exact until_F_valid φ ψ |>.apply F M τ h_mem t
+    | since_P φ ψ => exact since_P_valid φ ψ |>.apply F M τ h_mem t
+    | temp_linearity φ ψ => exact temp_linearity_valid φ ψ |>.apply F M τ h_mem t
+    | temp_linearity_past φ ψ => exact temp_linearity_past_valid φ ψ |>.apply F M τ h_mem t
+    | F_until_equiv φ => exact F_until_equiv_valid φ |>.apply F M τ h_mem t
+    | P_since_equiv φ => exact P_since_equiv_valid φ |>.apply F M τ h_mem t
+    | modal_future ψ => exact modal_future_valid ψ |>.apply F M τ h_mem t
+    | discrete_symm_fwd => exact discrete_symm_fwd_valid |>.apply F M τ h_mem t
+    | discrete_symm_bwd => exact discrete_symm_bwd_valid |>.apply F M τ h_mem t
+    | discrete_propagate_fwd => exact discrete_propagate_fwd_valid |>.apply F M τ h_mem t
+    | discrete_propagate_bwd => exact discrete_propagate_bwd_valid |>.apply F M τ h_mem t
+    | discrete_box_necessity => exact discrete_box_necessity_valid |>.apply F M τ h_mem t
     | density _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
     | dense_indicator => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
     | prior_UZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
@@ -1291,43 +1335,43 @@ theorem soundness_dense (Γ : Context) (φ : Formula)
   induction d generalizing τ t with
   | «axiom» Γ' φ' h_ax h_fc =>
     cases h_ax with
-    | prop_k φ ψ χ => exact prop_k_valid φ ψ χ F M τ h_mem t
-    | prop_s φ ψ => exact prop_s_valid φ ψ F M τ h_mem t
-    | modal_t ψ => exact modal_t_valid ψ F M τ h_mem t
-    | modal_4 ψ => exact modal_4_valid ψ F M τ h_mem t
-    | modal_b ψ => exact modal_b_valid ψ F M τ h_mem t
-    | modal_5_collapse ψ => exact modal_5_collapse_valid ψ F M τ h_mem t
-    | ex_falso ψ => exact ex_falso_valid ψ F M τ h_mem t
-    | peirce φ ψ => exact peirce_valid φ ψ F M τ h_mem t
-    | modal_k_dist φ ψ => exact modal_k_dist_valid φ ψ F M τ h_mem t
-    | serial_future => exact serial_future_axiom_valid F M τ h_mem t
-    | serial_past => exact serial_past_axiom_valid F M τ h_mem t
-    | left_mono_until_G φ χ ψ => exact left_mono_until_G_valid φ χ ψ F M τ h_mem t
-    | left_mono_since_H φ χ ψ => exact left_mono_since_H_valid φ χ ψ F M τ h_mem t
-    | right_mono_until φ ψ χ => exact right_mono_until_valid φ ψ χ F M τ h_mem t
-    | right_mono_since φ ψ χ => exact right_mono_since_valid φ ψ χ F M τ h_mem t
-    | connect_future φ => exact connect_future_valid φ F M τ h_mem t
-    | connect_past φ => exact connect_past_valid φ F M τ h_mem t
-    | enrichment_until φ ψ p => exact enrichment_until_valid φ ψ p F M τ h_mem t
-    | enrichment_since φ ψ p => exact enrichment_since_valid φ ψ p F M τ h_mem t
-    | self_accum_until φ ψ => exact self_accum_until_valid φ ψ F M τ h_mem t
-    | self_accum_since φ ψ => exact self_accum_since_valid φ ψ F M τ h_mem t
-    | absorb_until φ ψ => exact absorb_until_valid φ ψ F M τ h_mem t
-    | absorb_since φ ψ => exact absorb_since_valid φ ψ F M τ h_mem t
-    | linear_until φ ψ χ θ => exact linear_until_valid φ ψ χ θ F M τ h_mem t
-    | linear_since φ ψ χ θ => exact linear_since_valid φ ψ χ θ F M τ h_mem t
-    | until_F φ ψ => exact until_F_valid φ ψ F M τ h_mem t
-    | since_P φ ψ => exact since_P_valid φ ψ F M τ h_mem t
-    | temp_linearity φ ψ => exact temp_linearity_valid φ ψ F M τ h_mem t
-    | temp_linearity_past φ ψ => exact temp_linearity_past_valid φ ψ F M τ h_mem t
-    | F_until_equiv φ => exact F_until_equiv_valid φ F M τ h_mem t
-    | P_since_equiv φ => exact P_since_equiv_valid φ F M τ h_mem t
-    | modal_future ψ => exact modal_future_valid ψ F M τ h_mem t
-    | discrete_symm_fwd => exact discrete_symm_fwd_valid F M τ h_mem t
-    | discrete_symm_bwd => exact discrete_symm_bwd_valid F M τ h_mem t
-    | discrete_propagate_fwd => exact discrete_propagate_fwd_valid F M τ h_mem t
-    | discrete_propagate_bwd => exact discrete_propagate_bwd_valid F M τ h_mem t
-    | discrete_box_necessity => exact discrete_box_necessity_valid F M τ h_mem t
+    | prop_k φ ψ χ => exact prop_k_valid φ ψ χ |>.apply F M τ h_mem t
+    | prop_s φ ψ => exact prop_s_valid φ ψ |>.apply F M τ h_mem t
+    | modal_t ψ => exact modal_t_valid ψ |>.apply F M τ h_mem t
+    | modal_4 ψ => exact modal_4_valid ψ |>.apply F M τ h_mem t
+    | modal_b ψ => exact modal_b_valid ψ |>.apply F M τ h_mem t
+    | modal_5_collapse ψ => exact modal_5_collapse_valid ψ |>.apply F M τ h_mem t
+    | ex_falso ψ => exact ex_falso_valid ψ |>.apply F M τ h_mem t
+    | peirce φ ψ => exact peirce_valid φ ψ |>.apply F M τ h_mem t
+    | modal_k_dist φ ψ => exact modal_k_dist_valid φ ψ |>.apply F M τ h_mem t
+    | serial_future => exact serial_future_axiom_valid |>.apply F M τ h_mem t
+    | serial_past => exact serial_past_axiom_valid |>.apply F M τ h_mem t
+    | left_mono_until_G φ χ ψ => exact left_mono_until_G_valid φ χ ψ |>.apply F M τ h_mem t
+    | left_mono_since_H φ χ ψ => exact left_mono_since_H_valid φ χ ψ |>.apply F M τ h_mem t
+    | right_mono_until φ ψ χ => exact right_mono_until_valid φ ψ χ |>.apply F M τ h_mem t
+    | right_mono_since φ ψ χ => exact right_mono_since_valid φ ψ χ |>.apply F M τ h_mem t
+    | connect_future φ => exact connect_future_valid φ |>.apply F M τ h_mem t
+    | connect_past φ => exact connect_past_valid φ |>.apply F M τ h_mem t
+    | enrichment_until φ ψ p => exact enrichment_until_valid φ ψ p |>.apply F M τ h_mem t
+    | enrichment_since φ ψ p => exact enrichment_since_valid φ ψ p |>.apply F M τ h_mem t
+    | self_accum_until φ ψ => exact self_accum_until_valid φ ψ |>.apply F M τ h_mem t
+    | self_accum_since φ ψ => exact self_accum_since_valid φ ψ |>.apply F M τ h_mem t
+    | absorb_until φ ψ => exact absorb_until_valid φ ψ |>.apply F M τ h_mem t
+    | absorb_since φ ψ => exact absorb_since_valid φ ψ |>.apply F M τ h_mem t
+    | linear_until φ ψ χ θ => exact linear_until_valid φ ψ χ θ |>.apply F M τ h_mem t
+    | linear_since φ ψ χ θ => exact linear_since_valid φ ψ χ θ |>.apply F M τ h_mem t
+    | until_F φ ψ => exact until_F_valid φ ψ |>.apply F M τ h_mem t
+    | since_P φ ψ => exact since_P_valid φ ψ |>.apply F M τ h_mem t
+    | temp_linearity φ ψ => exact temp_linearity_valid φ ψ |>.apply F M τ h_mem t
+    | temp_linearity_past φ ψ => exact temp_linearity_past_valid φ ψ |>.apply F M τ h_mem t
+    | F_until_equiv φ => exact F_until_equiv_valid φ |>.apply F M τ h_mem t
+    | P_since_equiv φ => exact P_since_equiv_valid φ |>.apply F M τ h_mem t
+    | modal_future ψ => exact modal_future_valid ψ |>.apply F M τ h_mem t
+    | discrete_symm_fwd => exact discrete_symm_fwd_valid |>.apply F M τ h_mem t
+    | discrete_symm_bwd => exact discrete_symm_bwd_valid |>.apply F M τ h_mem t
+    | discrete_propagate_fwd => exact discrete_propagate_fwd_valid |>.apply F M τ h_mem t
+    | discrete_propagate_bwd => exact discrete_propagate_bwd_valid |>.apply F M τ h_mem t
+    | discrete_box_necessity => exact discrete_box_necessity_valid |>.apply F M τ h_mem t
     | density φ => exact (density_valid φ).apply F M τ h_mem t
     | dense_indicator => exact dense_indicator_valid.apply F M τ h_mem t
     | prior_UZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])

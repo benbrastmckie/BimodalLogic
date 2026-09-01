@@ -387,9 +387,9 @@ theorem compactBase_of_modelExistence (h : ModelExistenceBase) : CompactBase := 
       intro ψ hψ
       exact of_decide_eq_true (List.mem_filter.mp hψ).2
     have hnv := hno _ hsub
-    unfold valid at hnv
-    push Not at hnv
-    obtain ⟨F, M, τ, hτ, t, hfalse⟩ := hnv
+    have hnv' := valid.of_not hnv
+    push Not at hnv'
+    obtain ⟨F, M, τ, hτ, t, hfalse⟩ := hnv'
     rw [truthAt_foldr_imp] at hfalse
     push Not at hfalse
     obtain ⟨hall, hnφ⟩ := hfalse
@@ -628,10 +628,12 @@ lets `BXCanonical.completeness` be consumed as a single-formula engine.
 theorem semantic_deduction_base (Γ : Context) (φ : Formula) :
     SemanticConsequence Γ φ ↔ valid (Γ.foldr Formula.imp φ) := by
   constructor
-  · intro h F M τ hτ t
+  · intro h
+    refine valid.of_forall_total ?_
+    intro F M τ hτ t
     exact (truthAt_foldr_imp M τ t Γ φ).mpr (h F M τ hτ t)
   · intro h F M τ hτ t
-    exact (truthAt_foldr_imp M τ t Γ φ).mp (h F M τ hτ t)
+    exact (truthAt_foldr_imp M τ t Γ φ).mp (h.apply F M τ hτ t)
 
 /--
 **Finite-context consequence completeness for `FrameClass.Base`, unconditional.**

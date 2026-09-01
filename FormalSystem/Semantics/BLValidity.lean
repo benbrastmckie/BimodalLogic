@@ -66,20 +66,6 @@ namespace FormalSystem.Semantics
 open FormalSystem.BaseLanguage
 
 /--
-A base-language formula is **valid** if it is true in all models, at all times, at every
-**total** history, for every temporal type `D` satisfying the ordered-group binder set.
-
-Binder-for-binder mirror of `Semantics.valid`; see `def:logical-consequence`, whose "possible
-worlds tau in H_F" are the total histories that `τ.IsTotal` picks out.
-
-Uses `Type` (not `Type*`) to avoid universe-level issues in proofs, as `valid` does.
--/
-def BLValid (φ : BLFormula) : Prop :=
-  ∀ (F : TaskFrame) (M : TaskModel F)
-    (τ : WorldHistory F) (_ : τ.IsTotal) (t : F.Duration),
-    BLTruthAt M τ t φ
-
-/--
 Semantic consequence in the base language: `φ` is true at every model, **total** history and time
 at which every formula of `Γ` is true.
 
@@ -120,6 +106,35 @@ def BLValidOnFrames (P : TaskFrame → Prop) (φ : BLFormula) : Prop :=
 mirror of `Semantics.ValidIn`, over the same `FrameClass.Sat`. -/
 def BLValidIn (fc : ProofSystem.FrameClass) (φ : BLFormula) : Prop :=
   BLValidOnFrames fc.Sat φ
+
+/--
+A base-language formula is **valid** if it is true in all models, at all times, at every
+**total** history, for every temporal type `D` satisfying the ordered-group binder set.
+
+Binder-for-binder mirror of `Semantics.valid`; see `def:logical-consequence`, whose "possible
+worlds tau in H_F" are the total histories that `τ.IsTotal` picks out.
+
+Uses `Type` (not `Type*`) to avoid universe-level issues in proofs, as `valid` does.
+
+**`BLValid` is `BLValidIn` at the unconstrained class**, exactly as `valid` is `ValidIn .Base`:
+`Sat FrameClass.Base` is `True`, so the tag attaches no frame condition. The pre-abbreviation
+binder shape is reachable through `BLValid.of_forall_total` / `BLValid.apply` below.
+-/
+def BLValid (φ : BLFormula) : Prop :=
+  BLValidIn ProofSystem.FrameClass.Base φ
+
+/-- Introduce `BLValid` from its pre-abbreviation binder shape; the `Sat .Base` argument (`True`)
+is discharged here rather than at each call site. The BL mirror of `valid.of_forall_total`. -/
+theorem BLValid.of_forall_total {φ : BLFormula}
+    (h : ∀ (F : TaskFrame) (M : TaskModel F) (τ : WorldHistory F),
+           τ.IsTotal → ∀ t : F.Duration, BLTruthAt M τ t φ) :
+    BLValid φ :=
+  fun F _ M τ t => h F M τ.val τ.property t
+
+/-- Eliminate `BLValid` into its pre-abbreviation binder shape. The BL mirror of `valid.apply`. -/
+theorem BLValid.apply {φ : BLFormula} (h : BLValid φ) (F : TaskFrame) (M : TaskModel F)
+    (τ : WorldHistory F) (hτ : τ.IsTotal) (t : F.Duration) : BLTruthAt M τ t φ :=
+  h F trivial M ⟨τ, hτ⟩ t
 
 /-- **The one monotonicity lemma for BL⁺**: `BLValidOnFrames` is antitone in its frame predicate.
 The BL mirror of `Semantics.ValidOnFrames.mono`. -/
@@ -237,12 +252,7 @@ Those are `Validity.valid_implies_validDedekind` and
 /-- `BLValid` is `BLValidIn` at the unconstrained class: `Sat .Base` is `True`. The BL mirror of
 `Validity.valid_iff_validIn_base`. -/
 theorem blValid_iff_blValidIn_base (φ : BLFormula) :
-    BLValid φ ↔ BLValidIn ProofSystem.FrameClass.Base φ := by
-  constructor
-  · intro h F _ M τ x
-    exact h F M τ.val τ.property x
-  · intro h F M τ hτ t
-    exact h F trivial M ⟨τ, hτ⟩ t
+    BLValid φ ↔ BLValidIn ProofSystem.FrameClass.Base φ := Iff.rfl
 
 /-- Validity implies validity over dense orders. -/
 theorem blValid_implies_blValidDense {φ : BLFormula} (h : BLValid φ) : BLValidDense φ :=
@@ -263,8 +273,10 @@ theorem blValid_iff_empty_consequence (φ : BLFormula) :
     BLValid φ ↔ BLSemanticConsequence [] φ := by
   constructor
   · intro h F M τ hτ t _
-    exact h F M τ hτ t
-  · intro h F M τ hτ t
+    exact h.apply F M τ hτ t
+  · intro h
+    refine BLValid.of_forall_total ?_
+    intro F M τ hτ t
     exact h F M τ hτ t (by intro ψ hψ; exact absurd hψ List.not_mem_nil)
 
 end BLValidity

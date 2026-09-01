@@ -219,14 +219,14 @@ theorem completeness (φ : Formula) :
   · -- Dense case: □(F'T) ∈ M — countermodel on Rat (countermodel_dense_enriched)
     obtain ⟨F, TM, τ, h_tot, t, h_not_true⟩ :=
       countermodel_dense_enriched M hM_mcs φ h_neg_in h_box_dense
-    exact h_not_true (h_valid F TM τ h_tot t)
+    exact h_not_true (h_valid.apply F TM τ h_tot t)
   · -- Non-dense: ¬□(F'T) ∈ M. Sub-split on □(U(T,bot)).
     rcases SetMaximalConsistent.negation_complete hM_mcs
       (Formula.box Chronicle.nextTop) with h_box_discrete | h_not_box_discrete
     · -- Purely discrete case: □(U(T,bot)) ∈ M — all box-equivalent MCS's are discrete
       obtain ⟨F, TM, τ, h_tot, t, h_not_true⟩ :=
         WeakCanonical.countermodel_discrete M hM_mcs φ h_neg_in h_box_discrete
-      exact h_not_true (h_valid F TM τ h_tot t)
+      exact h_not_true (h_valid.apply F TM τ h_tot t)
     · -- Mixed case: ¬□(F'T) ∧ ¬□(U(T,bot)) ∈ M — eliminated by structural axiom
       exact False.elim (Chronicle.mcs_mixed_case_absurd FrameClass.Base M hM_mcs
         h_not_box_dense h_not_box_discrete)

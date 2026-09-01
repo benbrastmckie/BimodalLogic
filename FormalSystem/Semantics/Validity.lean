@@ -67,42 +67,6 @@ namespace FormalSystem.Semantics
 open FormalSystem.Syntax
 
 /--
-A formula is valid if it is true in all models, at all times, at every **total** history, for
-every temporal type `D` satisfying `LinearOrderedAddCommGroup`.
-
-Formally: for every temporal type `D`, every task frame `F` over `D`, every model `M` over
-`F`, every history `τ` with `τ.IsTotal`, and every time `t : D`, the formula is true at
-`(M, τ, t)`.
-
-**Definition of record — `def:logical-consequence`**, verbatim:
-
-> A conclusion phi is a *logical consequence* of a set of premises Gamma --- written
-> Gamma |= phi --- just in case for all models M, possible worlds tau in H_F, and times x in D,
-> if M,tau,x |= gamma for all premises gamma in Gamma, then M,tau,x |= phi. A sentence phi is
-> *valid* just in case |= phi.
-
-The "possible worlds tau in H_F" of that clause are the frame's **total** histories, which is
-what `τ.IsTotal` says. There is no admissible-history parameter and no shift-closure side
-condition: a shift-closure hypothesis is unnecessary in the statement of validity because
-totality is trivially preserved by `timeShift` (`WorldHistory.isTotal_timeShift`), so time-shift
-invariance carries no side condition to quantify over. `TruthAt` takes no set argument.
-
-Validity also quantifies over all `x ∈ D` (all times in the temporal order), not just times in
-`dom(τ)` — for a total history those coincide.
-
-Note: Uses `Type` (not `Type*`) to avoid universe level issues in proofs.
--/
-def valid (φ : Formula) : Prop :=
-  ∀ (F : TaskFrame) (M : TaskModel F)
-    (τ : WorldHistory F) (_ : τ.IsTotal) (t : F.Duration),
-    TruthAt M τ t φ
-
-/--
-Notation for validity: `⊨ φ` means `valid φ`.
--/
-notation:50 "⊨ " φ:50 => valid φ
-
-/--
 Semantic consequence: `Γ ⊨ φ` means φ is true in all models where all of `Γ` are true,
 for every temporal type `D` satisfying `LinearOrderedAddCommGroup`.
 
@@ -274,41 +238,6 @@ theorem hF_nonempty_of_frameAxioms (F : TaskFrame) : Nonempty (TaskFrame.HF F) :
 
 end TaskFrame
 
-namespace Validity
-
-/--
-Validity **is** validity on every frame: `⊨ φ` iff `φ` is valid over every frame of every
-temporal type.
-
-This is the theorem that keeps `TaskFrame.ValidOn` from being a second, competing validity
-notion. `valid` (`def:logical-consequence`'s closing clause) and `TaskFrame.ValidOn`
-(`def:frame-validity`) differ only in *which* quantifiers are discharged: `valid` closes over the
-temporal type and the frame, `ValidOn` leaves both fixed. Stated as a theorem rather than
-introduced as an abbreviation, exactly so that the equivalence is a proof obligation the build
-checks and not a definitional identity asserted by fiat.
-
-Both directions are the `.val`/`.property` bridge between `F.HF` and the predicate form
-`(τ : WorldHistory F) (hτ : τ.IsTotal)` that `valid` uses — the two spellings of one and the same
-`IsTotal` predicate, per `WorldHistory.lean`'s encoding note. No mathematical content is added in
-either direction; that is the point of the statement.
--/
-theorem valid_iff_forall_validOn (φ : Formula) :
-    valid φ ↔ ∀ (F : TaskFrame), F.ValidOn φ := by
-  constructor
-  · intro h F M τ x
-    exact h F M τ.val τ.property x
-  · intro h F M τ hτ x
-    exact h F M ⟨τ, hτ⟩ x
-
-/--
-The forward half of `valid_iff_forall_validOn`, in the direction that gets used: a valid formula
-is valid over any particular frame.
--/
-theorem validOn_of_valid {φ : Formula} (h : valid φ) (F : TaskFrame) : F.ValidOn φ :=
-  (valid_iff_forall_validOn φ).mp h F
-
-end Validity
-
 /-! ## `FrameClass`-indexed validity
 
 The proof side is parameterized by `ProofSystem.FrameClass` throughout — `Derivable fc`,
@@ -354,6 +283,111 @@ all — it is `FrameClass.Sat fc`, which is where the interpretation of each tag
 -/
 def ValidIn (fc : ProofSystem.FrameClass) (φ : Formula) : Prop :=
   ValidOnFrames fc.Sat φ
+
+/--
+A formula is valid if it is true in all models, at all times, at every **total** history, for
+every temporal type `D` satisfying `LinearOrderedAddCommGroup`.
+
+Formally: for every temporal type `D`, every task frame `F` over `D`, every model `M` over
+`F`, every history `τ` with `τ.IsTotal`, and every time `t : D`, the formula is true at
+`(M, τ, t)`.
+
+**Definition of record — `def:logical-consequence`**, verbatim:
+
+> A conclusion phi is a *logical consequence* of a set of premises Gamma --- written
+> Gamma |= phi --- just in case for all models M, possible worlds tau in H_F, and times x in D,
+> if M,tau,x |= gamma for all premises gamma in Gamma, then M,tau,x |= phi. A sentence phi is
+> *valid* just in case |= phi.
+
+The "possible worlds tau in H_F" of that clause are the frame's **total** histories, which is
+what `τ.IsTotal` says. There is no admissible-history parameter and no shift-closure side
+condition: a shift-closure hypothesis is unnecessary in the statement of validity because
+totality is trivially preserved by `timeShift` (`WorldHistory.isTotal_timeShift`), so time-shift
+invariance carries no side condition to quantify over. `TruthAt` takes no set argument.
+
+Validity also quantifies over all `x ∈ D` (all times in the temporal order), not just times in
+`dom(τ)` — for a total history those coincide.
+
+Note: Uses `Type` (not `Type*`) to avoid universe level issues in proofs.
+
+**`valid` is `ValidIn` at the unconstrained class.** The binder list above is no longer written
+out here: `Sat FrameClass.Base` is `True`, so `ValidIn .Base` quantifies over every task frame
+with no frame condition attached, which is exactly what `def:logical-consequence`'s closing
+clause asks for. This completes the symmetry the `FrameClass` index exists to express — `valid`
+stands to `Derivable .Base` as `ValidIn fc` stands to `Derivable fc`, with the class tag carried
+in the same place on both sides.
+
+The pre-abbreviation binder shape — `∀ (F) (M) (τ : WorldHistory F), τ.IsTotal → ∀ t` — is
+reachable through `valid.of_forall_total` and `valid.apply` below, which discharge the `True`
+argument so that no call site has to write `trivial`.
+-/
+def valid (φ : Formula) : Prop :=
+  ValidIn ProofSystem.FrameClass.Base φ
+
+/--
+Notation for validity: `⊨ φ` means `valid φ`.
+-/
+notation:50 "⊨ " φ:50 => valid φ
+
+/-- Introduce `valid` from the binder shape it carried before it became an abbreviation over
+`ValidIn`. The `.Base` class imposes no frame condition, so this is `ValidIn.of_forall_total`
+with the `Sat .Base` argument (`True`) discharged here rather than at each call site. -/
+theorem valid.of_forall_total {φ : Formula}
+    (h : ∀ (F : TaskFrame) (M : TaskModel F) (τ : WorldHistory F),
+           τ.IsTotal → ∀ t : F.Duration, TruthAt M τ t φ) :
+    valid φ :=
+  fun F _ M τ t => h F M τ.val τ.property t
+
+/-- Eliminate `valid` into the pre-abbreviation binder shape; the `Sat .Base` argument is
+discharged here, not at the call site. -/
+theorem valid.apply {φ : Formula} (h : valid φ) (F : TaskFrame) (M : TaskModel F)
+    (τ : WorldHistory F) (hτ : τ.IsTotal) (t : F.Duration) : TruthAt M τ t φ :=
+  h F trivial M ⟨τ, hτ⟩ t
+
+/-- The contrapositive of `valid.of_forall_total`, in the shape a countermodel extraction wants:
+from a failure of `valid` it hands back a failure of the pre-abbreviation ∀-statement, which
+`push Not` can then take apart. This replaces the `unfold valid` that used to open the definition
+directly — there is no longer a binder list there to open. The `.Base` mirror of
+`ValidDense.of_not`. -/
+theorem valid.of_not {φ : Formula} (h : ¬ valid φ) :
+    ¬ ∀ (F : TaskFrame) (M : TaskModel F) (τ : WorldHistory F),
+        τ.IsTotal → ∀ t : F.Duration, TruthAt M τ t φ :=
+  fun h' => h (valid.of_forall_total h')
+
+namespace Validity
+
+/--
+Validity **is** validity on every frame: `⊨ φ` iff `φ` is valid over every frame of every
+temporal type.
+
+This is the theorem that keeps `TaskFrame.ValidOn` from being a second, competing validity
+notion. `valid` (`def:logical-consequence`'s closing clause) and `TaskFrame.ValidOn`
+(`def:frame-validity`) differ only in *which* quantifiers are discharged: `valid` closes over the
+temporal type and the frame, `ValidOn` leaves both fixed. Stated as a theorem rather than
+introduced as an abbreviation, exactly so that the equivalence is a proof obligation the build
+checks and not a definitional identity asserted by fiat.
+
+Both directions are the `.val`/`.property` bridge between `F.HF` and the predicate form
+`(τ : WorldHistory F) (hτ : τ.IsTotal)` that `valid` uses — the two spellings of one and the same
+`IsTotal` predicate, per `WorldHistory.lean`'s encoding note. No mathematical content is added in
+either direction; that is the point of the statement.
+-/
+theorem valid_iff_forall_validOn (φ : Formula) :
+    valid φ ↔ ∀ (F : TaskFrame), F.ValidOn φ := by
+  constructor
+  · intro h F M τ x
+    exact h F trivial M τ x
+  · intro h F _ M τ x
+    exact h F M τ x
+
+/--
+The forward half of `valid_iff_forall_validOn`, in the direction that gets used: a valid formula
+is valid over any particular frame.
+-/
+theorem validOn_of_valid {φ : Formula} (h : valid φ) (F : TaskFrame) : F.ValidOn φ :=
+  (valid_iff_forall_validOn φ).mp h F
+
+end Validity
 
 /--
 **The one monotonicity lemma.** `ValidOnFrames` is antitone in its frame predicate: shrinking the
@@ -707,12 +741,8 @@ docstring, and `TaskFrame.IsComplete`'s. -/
 /-- `valid` is `ValidIn` at the unconstrained class: `Sat .Base` is `True`, so the tag imposes
 nothing and the two quantify over the same frames. This is the symmetry claim
 `valid = ValidIn .Base` beside `Derivable .Base`. -/
-theorem valid_iff_validIn_base (φ : Formula) : valid φ ↔ ValidIn ProofSystem.FrameClass.Base φ := by
-  constructor
-  · intro h F _ M τ x
-    exact h F M τ.val τ.property x
-  · intro h F M τ hτ t
-    exact h F trivial M ⟨τ, hτ⟩ t
+theorem valid_iff_validIn_base (φ : Formula) :
+    valid φ ↔ ValidIn ProofSystem.FrameClass.Base φ := Iff.rfl
 
 /-- `ValidDense` is `ValidIn .Dense`: its `[DenselyOrdered F.Duration]` binder is exactly
 `TaskFrame.IsDense`, which is what `Sat .Dense` returns. -/
@@ -791,8 +821,10 @@ theorem valid_iff_empty_consequence (φ : Formula) :
     (⊨ φ) ↔ ([] ⊨ φ) := by
   constructor
   · intro h F M τ hτ t _
-    exact h F M τ hτ t
-  · intro h F M τ hτ t
+    exact h.apply F M τ hτ t
+  · intro h
+    refine valid.of_forall_total ?_
+    intro F M τ hτ t
     exact h F M τ hτ t (by intro ψ hψ; exact absurd hψ List.not_mem_nil)
 
 /--
@@ -810,7 +842,7 @@ If a formula is valid, it is a semantic consequence of any context.
 -/
 theorem valid_consequence (φ : Formula) (Γ : Context) :
     (⊨ φ) → (Γ ⊨ φ) :=
-  fun h F M τ hτ t _ => h F M τ hτ t
+  fun h F M τ hτ t _ => h.apply F M τ hτ t
 
 /--
 Context with all formulas true implies each formula individually true.
@@ -904,8 +936,9 @@ closed it by construction: no new mathematical content was needed, only the corr
 -/
 theorem valid_of_valid_box {φ : Formula} (h : valid (Formula.box φ)) :
     valid φ := by
+  refine valid.of_forall_total ?_
   intro F M τ hτ t
-  exact h F M τ hτ t τ hτ
+  exact h.apply F M τ hτ t τ hτ
 
 end Validity
 

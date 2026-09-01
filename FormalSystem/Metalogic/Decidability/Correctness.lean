@@ -62,6 +62,7 @@ This follows immediately from the `soundness` theorem with empty context,
 where the context hypothesis is vacuously satisfied.
 -/
 theorem decide_sound (φ : Formula) (d : ⊢ φ) : ⊨ φ := by
+  refine valid.of_forall_total ?_
   intro F M τ h_mem t
   exact soundness [] φ d F M τ h_mem t (by simp)
 

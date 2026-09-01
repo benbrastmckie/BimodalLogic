@@ -134,7 +134,7 @@ theorem axiom_base_valid_linear {φ : Formula} (ax : Axiom φ)
     [Nontrivial D] [LinearTemporalFrame D] :
     ∀ (F : FrameOver (TemporalOrder.of D)), F.toTaskFrame.ValidOn φ := by
   intro F M τ t
-  exact axiom_valid ax h_fc F M τ.val τ.property t
+  exact (axiom_valid ax h_fc).apply F M τ.val τ.property t
 
 /--
 Dense-compatible axioms are valid on dense temporal frames.

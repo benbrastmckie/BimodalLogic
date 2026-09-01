@@ -633,21 +633,34 @@ at most three files. Confirm with
 
 ---
 
-### Phase 8: `valid := ValidIn .Base`, with off-ramp [NOT STARTED]
+### Phase 8: `valid := ValidIn .Base`, with off-ramp [COMPLETED]
 
 **Goal**: The last of the 15 predicates joins the family, completing the symmetry claim
 `valid = ValidIn .Base` beside `Derivable .Base`.
 
 **Tasks**:
-- [ ] Redefine `valid φ := ValidIn .Base φ` in `Semantics/Validity.lean`, preserving the
+- [x] Redefine `valid φ := ValidIn .Base φ` in `Semantics/Validity.lean`, preserving the
       `def:logical-consequence` docstring verbatim and adding the `Sat .Base = True` note.
-- [ ] Keep the `⊨` notation bound to `valid`.
-- [ ] Migrate every `valid` call site with `of_forall_total` / `apply_total`. The `True` argument
+- [x] Keep the `⊨` notation bound to `valid`.
+- [x] Migrate every `valid` call site with `of_forall_total` / `apply_total`. The `True` argument
       at `.Base` is discharged by `trivial`; if that reads badly at scale, add a `.Base`-specialized
-      `valid.apply` / `valid.of_forall_total` pair rather than repeating `trivial`.
-- [ ] Likewise `BLValid := BLValidIn .Base`.
-- [ ] Re-run the full gate after each file, not only at the end -- `valid` sits under every C2 and
-      C14 flagship theorem.
+      `valid.apply` / `valid.of_forall_total` pair rather than repeating `trivial`. *(deviation: altered — the `.Base`-specialized pair was taken (no call site writes `trivial`), and a third adapter `valid.of_not` was added beyond the plan's two. `StrongCompleteness.lean`'s `compactBase_of_modelExistence` opened the predicate with `unfold valid; push Not`, which no longer reaches a binder list; `valid.of_not` restores the contrapositive shape, exactly mirroring the `ValidDense.of_not` precedent Phase 4 established.)*
+- [x] Likewise `BLValid := BLValidIn .Base`.
+- [x] Re-run the full gate after each file, not only at the end -- `valid` sits under every C2 and
+      C14 flagship theorem. *(deviation: altered — the gate was run per build, not per file. The first Phase 8 build left four modules red: `FrameConditions/Soundness.lean`, `Metalogic/BaseLanguageSoundness.lean`, `Metalogic/Decidability/Correctness.lean`, `Metalogic/StrongCompleteness.lean` — call sites the initial pass missed. All four were repaired in this dispatch; see the completion note below.)*
+
+#### Call sites missed by the first pass, repaired here
+
+The initial Phase 8 edit pass migrated `Validity.lean`, `BLValidity.lean`, `Soundness.lean`,
+`FrameConditions/Validity.lean`, `BXCanonical/Completeness.lean` and `Bridge/IntTruth.lean`, but
+was interrupted before its build ran. That build found four remaining files:
+
+| File | Site | Repair |
+|------|------|--------|
+| `FrameConditions/Soundness.lean` | `axiom_base_valid_linear` applied `axiom_valid` in the pre-abbreviation shape | `(axiom_valid ax h_fc).apply …` — matching its already-migrated sibling `axiom_dense_valid_fc` |
+| `Metalogic/Decidability/Correctness.lean` | `decide_sound` opened the `⊨` goal with a bare `intro` | `refine valid.of_forall_total ?_` prefix |
+| `Metalogic/BaseLanguageSoundness.lean` | `blValid_iff_valid_tr` (both directions), `bl_soundness_valid`, and the three BL⁺ `example` scripts | `valid.of_forall_total` / `BLValid.of_forall_total` prefixes, `.apply` on the hypotheses |
+| `Metalogic/StrongCompleteness.lean` | `compactBase_of_modelExistence`'s `unfold valid`; `semantic_deduction_base` (both directions) | `valid.of_not` for the contrapositive; `of_forall_total` / `.apply` for the deduction theorem |
 
 **Timing**: 2 hours
 

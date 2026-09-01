@@ -139,8 +139,14 @@ about BL.
 -/
 theorem blValid_iff_valid_tr (φ : BLFormula) : BLValid φ ↔ valid (tr φ) := by
   constructor
-  · intro h F M τ hτ t; exact (truthAt_tr M φ τ t).mpr (h F M τ hτ t)
-  · intro h F M τ hτ t; exact (truthAt_tr M φ τ t).mp (h F M τ hτ t)
+  · intro h
+    refine valid.of_forall_total ?_
+    intro F M τ hτ t
+    exact (truthAt_tr M φ τ t).mpr (h.apply F M τ hτ t)
+  · intro h
+    refine BLValid.of_forall_total ?_
+    intro F M τ hτ t
+    exact (truthAt_tr M φ τ t).mp (h.apply F M τ hτ t)
 
 end FormalSystem.Semantics
 
@@ -229,7 +235,7 @@ theorem bl_soundness_dedekind (Γ : BaseLanguage.Context) (φ : BLFormula)
 /-- Empty-context form of `bl_soundness`: a BL theorem at `FrameClass.Base` is BL-valid. -/
 theorem bl_soundness_valid {φ : BLFormula}
     (d : BaseLanguage.DerivationTree FrameClass.Base [] φ) : BLValid φ :=
-  fun F M τ h_mem t => bl_soundness [] φ d F M τ h_mem t (by simp)
+  BLValid.of_forall_total fun F M τ h_mem t => bl_soundness [] φ d F M τ h_mem t (by simp)
 
 /-- Empty-context form of `bl_soundness_dense`. -/
 theorem bl_soundness_dense_valid {φ : BLFormula}
@@ -297,16 +303,19 @@ reading of `def:BL-semantics`'s box clause. -/
 
 /-- TK — the temporal distribution scheme `G(φ → ψ) → (Gφ → Gψ)`. -/
 example (φ ψ : BLFormula) : BLValid ((φ.imp ψ).allFuture.imp (φ.allFuture.imp ψ.allFuture)) := by
+  refine BLValid.of_forall_total ?_
   intro F M τ _ t hk hf s hs
   exact hk s hs (hf s hs)
 
 /-- T4 — temporal transitivity `Gφ → GGφ`. -/
 example (φ : BLFormula) : BLValid (φ.allFuture.imp φ.allFuture.allFuture) := by
+  refine BLValid.of_forall_total ?_
   intro F M τ _ t h s hs r hr
   exact h r (lt_trans hs hr)
 
 /-- MT — the modal T scheme `□φ → φ`. -/
 example (φ : BLFormula) : BLValid (φ.box.imp φ) := by
+  refine BLValid.of_forall_total ?_
   intro F M τ hτ t h
   exact h τ hτ
 

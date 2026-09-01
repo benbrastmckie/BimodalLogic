@@ -66,6 +66,7 @@ with a fibre element.
 theorem valid_of_forall_valid_over {φ : Formula}
     (h : ∀ (D : TemporalOrder) (F : FrameOver D), F.toTaskFrame.ValidOn φ) :
     valid φ := by
+  refine Semantics.valid.of_forall_total ?_
   intro F M τ hτ t
   exact h F.Duration F.toFibre M ⟨τ, hτ⟩ t
 
@@ -75,6 +76,6 @@ Universal validity implies validity over any specific fibre.
 theorem valid_over_of_valid {D : TemporalOrder} {φ : Formula} (h : valid φ)
     (F : FrameOver D) : F.toTaskFrame.ValidOn φ := by
   intro M τ t
-  exact h F M τ.val τ.property t
+  exact h.apply F M τ.val τ.property t
 
 end FormalSystem.FrameConditions
