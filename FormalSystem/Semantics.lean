@@ -19,6 +19,8 @@ import FormalSystem.Semantics.TaskModel
 import FormalSystem.Semantics.Truth
 import FormalSystem.Semantics.BLTruth
 import FormalSystem.Semantics.ShiftSet
+import FormalSystem.Semantics.Ultraproduct.Carrier
+import FormalSystem.Semantics.Ultraproduct.IndexFilter
 import FormalSystem.Semantics.Validity
 import FormalSystem.Semantics.BLValidity
 import FormalSystem.Semantics.DurationClassification
@@ -88,6 +90,19 @@ against `specs/paper-definitions-of-record.md`'s DANGLING entry, not a live `\la
 - `DurationClassification`: Hölder classification of Dedekind-complete duration groups --
   completeness implies Archimedean, and the discrete-or-dense dichotomy pinning the discrete
   branch to `ℤ`
+- `Ultraproduct.Carrier`: the dependent ultraproduct carrier -- `UD φ D`, the quotient of the Pi
+  group `(∀ i, D i)` by its eventually-zero `AddSubgroup`, carrying the four instances a
+  `TemporalOrder` demands plus `DenselyOrdered` on the Dense branch; `UOmega φ Ω`, the same
+  construction on the history-carrier family; and the lifted shift action `shU` with its
+  `sh_zero`/`sh_add` laws. Mathlib's `Filter.Germ` is stated for a fixed `β` and the dependent
+  `Filter.Product` carries only `coeTC` and `Inhabited`, so neither applies; this quotient is
+  built by hand
+- `Ultraproduct.IndexFilter`: the ultrafilter on the index type -- `Idx Γ`, the finite sublists
+  of `Γ`; `tailFilter`, the up-set filter built directly from its three fields; `idxUF`, its
+  `Ultrafilter.of`; and `eventually_mem`, the property that every `ψ ∈ Γ` is eventually in the
+  index list. `Filter.atTop` is deliberately not used: `atTop_neBot` would demand a registered
+  `Preorder` instance on a `List` subtype plus `IsDirectedOrder`, a global instance-graph
+  commitment for a single use
 - `IntTransfer`: carrier normalization for the discrete branch -- a generic transport of
   frames, `TaskModel`, `WorldHistory`, and `TruthAt` along any ordered-group isomorphism
   `e : D ≃+o E` (via the `HEq`-free `Aligned` relation rather than a history `Equiv`), composed
