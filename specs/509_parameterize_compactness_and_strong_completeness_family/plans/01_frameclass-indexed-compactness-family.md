@@ -292,7 +292,7 @@ additive phase cannot break a downstream module.
 
 ---
 
-### Phase 3: Redefine the ten per-class names as instantiations, and repair both friction points [IN PROGRESS]
+### Phase 3: Redefine the ten per-class names as instantiations, and repair both friction points [COMPLETED]
 
 **Goal**: Turn the ten hand-written per-class definitions into instantiations of the Phase 2
 family, and land — in the same commit — the six call-site repairs that the two changed binder
@@ -337,19 +337,19 @@ invisible. This is the *same* invisibility already documented on
 unchanged (`probe_509c.lean` §C4).
 
 **Tasks**:
-- [ ] In `SetConsequence.lean`, replace the six `rfl`-recoverable definitions with
+- [x] In `SetConsequence.lean`, replace the six `rfl`-recoverable definitions with
       instantiations: `StrongCompletenessBase/Dense/Discrete := StrongCompleteness FrameClass.X`,
       `CompactBase/Dense/Discrete := Compact FrameClass.X`. Statements are unchanged on the nose.
-- [ ] Replace `ModelExistenceBase:342` and `ModelExistenceDense:390` with
+- [x] Replace `ModelExistenceBase:342` and `ModelExistenceDense:390` with
       `ModelExistence FrameClass.Base` / `ModelExistence FrameClass.Dense`.
-- [ ] Replace `SatisfiableBaseSet:327`, `SatisfiableDenseSet:376`, `SatisfiableDiscreteSet:429`
+- [x] Replace `SatisfiableBaseSet:327`, `SatisfiableDenseSet:376`, `SatisfiableDiscreteSet:429`
       with `SatisfiableSet FrameClass.X`. Preserve each docstring's mathematical content; add one
       sentence to the Base and Discrete docstrings recording the absorbed binder slot and naming
       the adapter that restores the old shape.
-- [ ] `Compactness.lean:85` — add `trivial` in second position of the `refine ⟨frame, model,
+- [x] `Compactness.lean:85` — add `trivial` in second position of the `refine ⟨frame, model,
       hist, …⟩` tuple, for the `Sat .Base` slot. The rest of the ultraproduct proof is verbatim
       (`probe_509b_negative_control.lean` §B4 compiles it clean).
-- [ ] `Compactness.lean:113` — replace bare `inferInstance` with the ascribed form from
+- [x] `Compactness.lean:113` — replace bare `inferInstance` with the ascribed form from
       `probe_509c.lean` §C3:
       ```lean
           (inferInstance : DenselyOrdered
@@ -357,15 +357,15 @@ unchanged (`probe_509c.lean` §C4).
       ```
       and extend the `modelExistenceDense` docstring (`:100-106`) to record *why* the ascription
       is needed, cross-referencing the `SetSemanticConsequenceDense.of_forall` precedent.
-- [ ] `DiscreteNonCompactness.lean:197` (inside `archWitness_finitely_satisfiable:194`) — route
+- [x] `DiscreteNonCompactness.lean:197` (inside `archWitness_finitely_satisfiable:194`) — route
       the `refine ⟨FrameOver.natFrame (D := ℤ), inferInstance ×4, zModel, …⟩` through
       `SatisfiableSet.discrete_of_forall`, per `probe_509c.lean` §C1'.
-- [ ] `DiscreteNonCompactness.lean:230` (inside `archWitness_not_satisfiable:229`) — re-nest the
+- [x] `DiscreteNonCompactness.lean:230` (inside `archWitness_not_satisfiable:229`) — re-nest the
       `rintro`: `rintro ⟨F, ⟨_, _, _, _⟩, M, τ, hτ, t, h⟩`, per `probe_509c.lean` §C2.
-- [ ] `DiscreteNonCompactness.lean:258` and `:288` — the two `absurd ⟨…⟩` tuples inside
+- [x] `DiscreteNonCompactness.lean:258` and `:288` — the two `absurd ⟨…⟩` tuples inside
       `discrete_consequence_not_compact:250` and `strongCompletenessDiscrete_refuted:280`. Route
       through the adapter, or insert one nesting pair; both verified.
-- [ ] Do **not** touch `discrete_consequence_not_compact`'s or
+- [x] Do **not** touch `discrete_consequence_not_compact`'s or
       `strongCompletenessDiscrete_refuted`'s *statements*. Their `CompactDiscrete` /
       `StrongCompletenessDiscrete` targets are defeq; only the internal tuples move.
 
@@ -380,7 +380,21 @@ separated without leaving the tree red between commits.
 
 **Scope Hypothesis**: Exactly six call sites need repair — `Compactness.lean:85`, `:113`, and
 `DiscreteNonCompactness.lean:197`, `:230`, `:258`, `:288` — and no other site in the tree consumes
-the two changed binder shapes. Confirm before editing with
+the two changed binder shapes.
+
+**Scope Hypothesis — outcome: FALSIFIED. Four further sites found and repaired in this phase**,
+per this hypothesis's own "repair it in this phase rather than deferring" instruction:
+
+| Site | What broke | Repair |
+|---|---|---|
+| `DiscreteNonCompactness.lean:261`, `:291` | the two `obtain ⟨F, _, _, _, _, M, …⟩` *eliminations* of `archWitness_finitely_satisfiable`; the plan enumerated only introduction sites | one nesting pair each, `⟨F, ⟨_, _, _, _⟩, M, …⟩` |
+| `DiscreteNonCompactness.lean:263` | `hvalid.apply` — `hc _ _ hcons` now yields `ValidIn .Discrete φ`, not `ValidDiscrete φ`, so dot notation resolves on `ValidIn`, which has no `.apply` | spelled out as `ValidDiscrete.apply hvalid F M τ hτ t`; the argument is accepted by defeq |
+| `Compactness.lean:84` | `choose F M τ hτ t ht` — `SatisfiableBaseSet` gained the `∃ _ : True` slot, so `choose` must bind one more component | `choose F _hF M τ hτ t ht` |
+
+Also recorded: this phase's heading and the plan's prose say **ten** per-class names, but the
+phase's own table enumerates **eleven** (3 `StrongCompleteness*` + 3 `Compact*` + 3
+`Satisfiable*Set` + 2 `ModelExistence*`). All eleven were redefined; "ten" is an arithmetic slip
+in the plan, not a descoping. Confirm before editing with
 `grep -rn "SatisfiableBaseSet\|SatisfiableDenseSet\|SatisfiableDiscreteSet" --include=*.lean
 FormalSystem/ Tests/` (expected: `SetConsequence.lean` definitions, `DiscreteNonCompactness.lean`
 uses, `Compactness.lean` uses, one prose mention at `Semantics/Ultraproduct/Carrier.lean:15`, and
@@ -406,7 +420,7 @@ than deferring.
 
 ---
 
-### Phase 4: Collapse the four theorems into two, and rewire the axiom-audit block [NOT STARTED]
+### Phase 4: Collapse the four theorems into two, and rewire the axiom-audit block [COMPLETED]
 
 **Goal**: Replace the two duplicated reductions and the two duplicated bridges with one of each,
 rewire their four call sites, and — critically — rewrite the `#print axioms` block that names
@@ -432,42 +446,56 @@ sites are `Compactness.lean:127,131,142,149`), so prefer outright replacement ov
 one-line corollaries.
 
 **Tasks**:
-- [ ] Replace `strongCompletenessBase_of_compact:347` and `strongCompletenessDense_of_compact:375`
+- [x] Replace `strongCompletenessBase_of_compact:347` and `strongCompletenessDense_of_compact:375`
       with the single `strongCompleteness_of_compact`, transplanted from `probe_509.lean` Part C.
       **Keep the `engine` parameter** — it came from task 493 and stays live by explicit
       instruction.
-- [ ] Replace `compactBase_of_modelExistence:414` and `compactDense_of_modelExistenceDense:462`
+- [x] Replace `compactBase_of_modelExistence:414` and `compactDense_of_modelExistenceDense:462`
       with the single `compact_of_modelExistence`, transplanted from `probe_509.lean` Part D.
       Substitute `ValidIn.of_not` (Phase 1) for the probe's local `ValidIn_of_not`.
-- [ ] Merge the two theorems' docstrings into one each, preserving the mathematical content of
+- [x] Merge the two theorems' docstrings into one each, preserving the mathematical content of
       the originals — including the note at the current `:459` about what the Dense reduction
       needs beyond its engine.
-- [ ] Rewire `Compactness.lean:127` and `:131`:
+- [x] Rewire `Compactness.lean:127` and `:131`:
       `theorem compactBase : CompactBase := compact_of_modelExistence modelExistenceBase` and the
       `.Dense` counterpart. After Phase 3 these apply directly, with **no transport theorem** —
       `probe_509.lean`'s `modelExistenceBase'` exists only so the probe needed no tree edit and
       must **not** be transplanted.
-- [ ] Rewire `Compactness.lean:142` and `:149` to
+- [x] Rewire `Compactness.lean:142` and `:149` to
       `strongCompleteness_of_compact compactBase completeness_base` and the `.Dense` counterpart.
-- [ ] **Rewrite `StrongCompleteness.lean:1047-1049`** — the three `#print axioms` directives on
+- [x] **Rewrite `StrongCompleteness.lean:1047-1049`** — the three `#print axioms` directives on
       deleted names. Replace with `#print axioms strongCompleteness_of_compact` and
       `#print axioms compact_of_modelExistence`. *(This is Defect 1 above; skipping it is a hard
       build break, not a documentation nit.)*
-- [ ] Update the audit prose at `StrongCompleteness.lean:1005-1021`, which narrates
+- [x] Update the audit prose at `StrongCompleteness.lean:1005-1021`, which narrates
       "`strongCompletenessBase_of_compact` is audited alongside them" and
       "`compactBase_of_modelExistence` and `compactDense_of_modelExistenceDense` are audited on
       the same footing ... counted separately from the fourteen above". Three reductions become
       two; the counts and names both move.
-- [ ] Optionally add `strongCompletenessDiscrete_of_compact` (`probe_509.lean` Part E) — the
+- [x] Optionally add `strongCompletenessDiscrete_of_compact` (`probe_509.lean` Part E) — the
       Discrete reduction still applies; only its antecedent is unavailable *and refuted*. Include
       it only if it earns a docstring explaining that it is a live reduction with a dead
-      antecedent; otherwise omit rather than leave it unexplained.
+      antecedent; otherwise omit rather than leave it unexplained. *(deviation: skipped —
+      omitted under this item's own "otherwise omit" clause. Nothing consumes it, and the
+      Discrete status it would record is already stated in `strongCompleteness_of_compact`'s
+      docstring, which names `.Discrete` as the class where the reduction is live but the
+      antecedent refuted.)*
 
 **Timing**: 1 hour
 
 **Depends on**: 1, 3
 
 **Verification Tier**: full
+
+**Commit Mode**: *(deviation: altered — folded into Phase 3's `atomic-batch` and committed with
+it as one unit.)* Phase 3's redefinition of `SatisfiableBaseSet` / `SatisfiableDenseSet` breaks
+the bodies of the four theorems Phase 4 deletes: `compactBase_of_modelExistence`'s
+`refine ⟨F, M, τ, hτ, t, ?_⟩` loses its slot count and `compactDense_of_modelExistenceDense`'s
+bare `inferInstance` goes invisible for the reason recorded under friction point 2. Committing
+Phase 3 alone green would have required throwaway repairs to two theorems deleted minutes later
+— the same throwaway-transport pattern this plan forbids for `modelExistenceBase'`. Every task
+in both phases was executed as written and in the planned order (redefinition first, then
+theorem collapse); only the commit boundary moved.
 
 **Scope Hypothesis**: Four Lean call sites (`Compactness.lean:127,131,142,149`) and three
 `#print axioms` lines are the complete set of *compiled* consumers of the deleted names; the
