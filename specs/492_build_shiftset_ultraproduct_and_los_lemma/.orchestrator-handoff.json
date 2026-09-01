@@ -1,0 +1,24 @@
+{
+  "dispatch_seq": 1,
+  "status": "researched",
+  "summary": "S2+S3 settled and machine-verified: the ultraproduct ShiftSet (all 7 fields incl. sep), Los for ShiftTruth (6 cases), Los for TruthAt via forward_repr, and the index ultrafilter all compiled sorry-free with axiom profile [propext, Classical.choice, Quot.sound]; R2 discharged by routing through ShiftTruth rather than TruthAt.",
+  "artifacts": [
+    {
+      "path": "specs/492_build_shiftset_ultraproduct_and_los_lemma/reports/01_shiftset-ultraproduct-and-los.md",
+      "type": "report",
+      "summary": "Research report: probe-provides vs S2-owes inventory, index ultrafilter construction, Los statement shapes, the three choice-function arguments, concrete 4-module file layout, 4 recorded elaboration traps, and the Adversarial Self-Verification claim table."
+    },
+    {
+      "path": "specs/492_build_shiftset_ultraproduct_and_los_lemma/prototype/UltraproductLos.lean",
+      "type": "prototype",
+      "summary": "Verified 216-line prototype: exists_section, mk_surjective, mk_zero/mk_max/mk_abs, UT, uSep, uShiftSet, los, los_truthAt. Transcription target for the implementation."
+    },
+    {
+      "path": "specs/492_build_shiftset_ultraproduct_and_los_lemma/prototype/IndexFilter.lean",
+      "type": "prototype",
+      "summary": "Verified 62-line prototype: hand-built tailFilter on the index type, NeBot, idxUF, eventually_mem. Avoids Filter.atTop and any Preorder instance on the List subtype."
+    }
+  ],
+  "blockers": [],
+  "next_action_hint": "plan"
+}
