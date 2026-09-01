@@ -99,7 +99,7 @@ next_project_number: 516
 
 ### Correspondence Theory
 
-513 [PLANNING] — GALOIS-CLOSURE IMPLEMENTATION for the frame-class layer, replacin
+513 [PLANNED] — GALOIS-CLOSURE IMPLEMENTATION for the frame-class layer, replacin
 
 ## Tasks
 
@@ -152,11 +152,12 @@ WHY THIS IS A TASK AND NOT AN AD-HOC FIX: it spans three files in a subsystem se
 ---
 
 ### 513. Uniform frame faithfulness predicate
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: correspondence theory
 - **Dependencies**: Task 512, Task 507
 - **Research**: [513_uniform_frame_faithfulness_predicate/reports/01_galois-closure-implementation.md]
+- **Plan**: [513_uniform_frame_faithfulness_predicate/plans/01_galois-closure-implementation.md]
 
 **Description**: GALOIS-CLOSURE IMPLEMENTATION for the frame-class layer, replacing the uniform-faithfulness
 question, which is ANSWERED and closed: no uniform Faithful predicate is needed for

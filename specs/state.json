@@ -1232,7 +1232,7 @@
     {
       "project_number": 513,
       "project_name": "uniform_frame_faithfulness_predicate",
-      "status": "planning",
+      "status": "planned",
       "task_type": "lean4",
       "description": "GALOIS-CLOSURE IMPLEMENTATION for the frame-class layer, replacing the uniform-faithfulness\nquestion, which is ANSWERED and closed: no uniform Faithful predicate is needed for\nDense/Discrete (class-level exactness already holds via indicator axioms) and none can exist\nfor Complete (Reynolds: completeness is not characterizable by temporal formulas — the sep\ndocstring in ProofSystem/Axioms.lean already quotes this; sep itself has no correspondent,\n511 report 01 §6.5). Design (A)-with-indicators is the design of record.\n\nDELIVERABLES (all post-512, post-507; spec at\nspecs/514_align_definitions_with_source_paper/reports/01 §3.3–3.4):\n(1) Semantics/Correspondence/Galois.lean: Th, Mod, antitonicity, closure operator,\nGaloisClosed — one definition pair, no per-class copies.\n(2) Indicator exactness: F.ValidOn ¬X⊤ ↔ DenselyOrdered F.Duration and the X⊤/discrete dual;\ncorollaries Mod(Th(Sat .Dense)) = Sat .Dense and the paper-Discrete analogue; the\nDerivable-level X⊤-from-prior_UZ+serial_future lemma.\n(3) Per-axiom closure of the density schema: port 511's Corr.density_iff_fwdRec (atomic,\narbitrary D) and Bridge.density_schema_iff_fwdRec (schema, D = Z) from the probe files into\nthe tree over bundled frames, stated as Mod {density} = {F | FwdRec F} at Z.\n(4) Duration-level correspondence (T1) for DF/DN/CO in the paper's proven form —\n\"(∀ F over D, F ⊨ ax) ↔ D is Discrete/Dense/Complete\" — with the translation frame and the\ntwo-state permissive frame as (⇒) witnesses (app:discrete/app:dense/app:complete adjudication:\nreport 01 §2.4).\n(5) Non-closure witnesses: generalize the static-frame time-invariance lemma to arbitrary D\n(03_probes density_of_hist_periodic is the pattern); derive staticFrame over Q ∈\nMod(Axioms .Complete) \\ Sat .Complete and staticFrame over Z ×ₗ Z ∈ Mod(Axioms .Discrete) \\\nZ-time; sandwich corollaries Z-time ⊊ Mod(TM+_f) ⊆ paper-Discrete and R-time ⊊ Mod(TM+_c) ⊆\nSat .Dense.\n(6) EXPLICIT NON-GOALS, recorded so the question is not reopened: closed-form\ncharacterizations of Mod(TM+_f) and Mod(TM+_c) are OPEN and not promised — evidence: no\nvariable-free BL+ sentence separates Z from Z ×ₗ Z or Q from R, and sep has no correspondent.\n\nACCEPTANCE: sorry-free, lake build green, every theorem above stated over bundled frames with\nSat from 507, axiom profiles clean; the FwdRec port must not re-prove what the probes proved —\ntransplant and restate. GROUNDING: possible_worlds.tex def:frame-properties, def:frame-validity,\ncor:tm-completeness, app:discrete/dense/complete;\nspecs/514_align_definitions_with_source_paper/reports/01;\nspecs/511_research_frame_correspondence_infrastructure/reports/01–03 + probes.",
       "topic": "correspondence theory",
@@ -1246,10 +1246,15 @@
           "path": "specs/513_uniform_frame_faithfulness_predicate/reports/01_galois-closure-implementation.md",
           "type": "report",
           "summary": "Verified feasibility study and phase decomposition for the frame-class Galois closure layer."
+        },
+        {
+          "path": "specs/513_uniform_frame_faithfulness_predicate/plans/01_galois-closure-implementation.md",
+          "type": "plan",
+          "summary": "11-phase Galois closure implementation plan, three dependency waves, two optional phases."
         }
       ],
       "created": "2026-08-31T19:38:48Z",
-      "last_updated": "2026-09-01T17:33:23Z",
+      "last_updated": "2026-09-01T17:41:05Z",
       "session_id": "sess_1788282938_f2ac03_513",
       "file_scope": [
         "FormalSystem/Semantics/Correspondence/"
