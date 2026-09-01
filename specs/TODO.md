@@ -11,16 +11,16 @@ next_project_number: 516
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,193,257,298,433,461,476,481,493,495,504,506,507 | -- | automation, dataset-enhancement, decidability, ... |
-| 2 | 178,231,282,296,463,502,510,513 | 193,298,433,461,507 | algebraic-representation, dataset-enhancement, decidability, ... |
+| 1 | 127,128,257,298,433,461,476,481,493,495,504,506,507 | -- | dataset-enhancement, decidability, frame-extensions, ... |
+| 2 | 231,282,296,463,502,510,513 | 298,433,461,507 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 219,464,497,508 | 231,463,502,510 | algebraic-representation, dataset-enhancement, decidability, ... |
-| 4 | 465,498,499,500,509 | 464,493,497,508 | algebraic-representation, decidability, metalogic |
-| 5 | 125,428,494 | 465,498,499,509 | algebraic-representation, decidability, strong_completeness |
+| 4 | 193,465,498,499,500,509 | 464,493,497,508 | algebraic-representation, automation, decidability, ... |
+| 5 | 125,178,428,494 | 193,465,498,499,509 | algebraic-representation, decidability, formula-refactor, ... |
 | 6 | 429,501 | 125,428 | algebraic-representation, decidability |
 | 7 | 410 | 429 | decidability |
 | 8 | 411 | 410 | decidability |
 | 9 | 430 | 411 | decidability |
-| 10 | 177,412 | 193,430 | decidability, formula-refactor |
+| 10 | 177,412 | 193,430,494,513 | decidability, formula-refactor |
 | 11 | 482 | 412 | decidability |
 
 **Grouped by Topic** (indented = depends on parent):
@@ -84,8 +84,8 @@ next_project_number: 516
 
 ### Metalogic
 
-495 [NOT STARTED] — RESEARCH TASK, DELIBERATELY AGNOSTIC ABOUT THE VERDICT. Determine
-507 [RESEARCHED] — ROOT FIX for the metalogic systematicity front. Give the proof-si
+495 [RESEARCHED] — RESEARCH TASK, DELIBERATELY AGNOSTIC ABOUT THE VERDICT. Determine
+507 [PLANNED] — ROOT FIX for the metalogic systematicity front. Give the proof-si
   └─ 510 [NOT STARTED] — Decide the fate of FormalSystem/FrameConditions/ (4 modules, 906 
     └─ 508 [NOT STARTED] — Collapse ~23 soundness theorems into ONE parameterized theorem pl
       └─ 509 [NOT STARTED] — Make the compactness / strong-completeness layer a FrameClass-ind
@@ -96,7 +96,7 @@ next_project_number: 516
 
 ### Strong Completeness
 
-493 [NOT STARTED] — Assemble the compactness result and collect strong completeness f
+493 [RESEARCHED] — Assemble the compactness result and collect strong completeness f
 494 [NOT STARTED] — NOW SEQUENCED BEHIND THE COMPACTNESS PARAMETERIZATION (see the RE
 
 ### Correspondence Theory
@@ -324,12 +324,12 @@ specs/514_align_definitions_with_source_paper/reports/01 §1.2.
 ---
 
 ### 507. Parameterize validity by frameclass
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: Task 514, Task 512
 - **Research**: [507_parameterize_validity_by_frameclass/reports/01_frameclass-indexed-validity.md]
-- **Plan**: [507_parameterize_validity_by_frameclass/plans/01_frameclass-indexed-validity.md]
+- **Plan**: [507_parameterize_validity_by_frameclass/plans/02_frame-level-validity-indexing.md]
 
 **Description**: ROOT FIX for the metalogic systematicity front. Give the proof-side FrameClass tag a SEMANTIC interpretation, then define validity ONCE, indexed by it. THE ASYMMETRY: the proof side is already fully parameterized -- Derivable (fc : FrameClass) (ProofSystem/Derivable.lean:69), DerivationTree (fc : FrameClass) (ProofSystem/Derivation.lean:91), DerivationTree.lift along fc1 <= fc2 (Derivation.lean:184), PartialOrder FrameClass (ProofSystem/Axioms.lean:551), Axiom.minFrameClass as declared single source of truth (Axioms.lean:531ff). The semantic side has NONE of this: 15 hand-copied validity predicates with no fc index (5 in Semantics/Validity.lean:94,206,248,301,336; 4 in Semantics/BLValidity.lean:77,102,115,132; ValidInt in Semantics/IntTransfer.lean; 5 in FrameConditions/Validity.lean), plus 8 semantic-consequence variants. SMOKING GUN IN ONE FILE: Metalogic/SetConsequence.lean carries SetDerivable (fc : FrameClass) at :72 with ONE monotonicity lemma at :118, and directly beneath it SetSemanticConsequence{Base,Dense,Discrete,DedekindDense} at :79,:87,:97,:106 with FOUR copied monotonicity lemmas at :124,:130,:136,:144. Those four definitions are BYTE-IDENTICAL except for the typeclass binder line; their own docstrings cross-reference the Valid* whose binder list they copy. THE MISSING INGREDIENT ALREADY EXISTS: FrameConditions/FrameClass.lean defines marker typeclasses LinearTemporalFrame(:88), SerialFrame(:103), DenseTemporalFrame(:124), DiscreteTemporalFrame(:148), DedekindTemporalFrame(:182) -- exactly the binder-list-as-predicate-on-D that a FrameClass-indexed validity needs. That layer is orphaned (see the FrameConditions resolution task) and this task should consume it rather than invent a sixth vocabulary. DELIVERABLE: (1) a FrameClass -> carrier-constraint interpretation; (2) ValidOn (fc : FrameClass) (phi) and SetSemanticConsequence (fc) defined once; (3) ONE monotonicity lemma replacing valid_implies_valid_dense/_discrete/_validDedekind/_validDedekindDense (Validity.lean:349,356,364,371), pointing the same direction as DerivationTree.lift; (4) the existing 15 predicates retained as abbreviations or retired, with every call site migrated. HAZARD THIS CLOSES: the ValidDedekind docstring (Validity.lean:301) warns that retargeting soundness_dedekind to it yields a REFUTABLE theorem -- a trap that exists only because binder lists are inlined rather than derived from the frame class. ACCEPTANCE: sorry-free, lake build green, check-module-invariants.sh passes, axiom profiles unchanged on the flagship theorems. GROUNDING: specs/reviews/review-2026-08-31-metalogic-systematicity.md issue H1.=== DIRECTION AMENDED (supersedes the plan at plans/01_frameclass-indexed-validity.md) ===
 The existing plan is SUPERSEDED and must be revised before implementation. Its Phase 1 defines
@@ -491,10 +491,11 @@ DELIVERABLE: a grounding report answering, with citations to specific pages read
 
 ### 495. Determine tm completeness status over task frames
 - **Effort**: 12-20 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: formal
 - **Topic**: metalogic
 - **Dependencies**: Task 489
+- **Research**: [495_determine_tm_completeness_status_over_task_frames/reports/01_tm-completeness-status.md]
 
 **Description**: RESEARCH TASK, DELIBERATELY AGNOSTIC ABOUT THE VERDICT. Determine whether TM (the BaseLanguage proof system) is complete over task frames, and if not, characterize what it IS complete for. DO NOT ASSUME COMPLETENESS HOLDS; the evidence points the other way, and a machine-checked incompleteness result is a complete and valid outcome. EVIDENCE THAT IT MAY FAIL: (1) the paper's cor:tm-completeness (possible_worlds.tex:4657) carries completeness for the BL+ systems ONLY -- TM+, TM+_d, TM+_f, TM+_c -- and never claims it for TM. (2) Metalogic/Conservativity.lean's scope section states that the forward direction TM+ |- tr phi => TM |- phi is REFUTED at FrameClass.Base (the (Sp) witness) and at FrameClass.Discrete (the Z1 witness), with the TM+ half of the Discrete witness already machine-checked in-tree as z1_translate. THE SUBTLETY ANY DISPATCH MUST CONFRONT FIRST: since |-[Base] tr (Sp) is proved and TM+ is sound over all task frames, (Sp) is VALID ON EVERY TASK FRAME. So a refutation of TM |- Sp by soundness CANNOT use a task frame. It needs a structure outside the class on which TM remains sound precisely because it lacks the Until/Since expressive power to detect the violation. Identifying that broader class is the actual research content. SCOPE: (a) settle whether TM is complete over task frames; (b) if not, identify the class TM is sound and complete for; (c) determine whether the CEB and CEF refutations that Conservativity.lean currently only DOCUMENTS can now be machine-checked, given the BL-side semantics and soundness theorem delivered by the prerequisite task. Conservativity.lean's own 'What a machine-checked refutation would need' section names three missing pieces: a BL-side semantics, a BL-side soundness theorem, and the two countermodels (a two-fibre structure for CEB, Z x_lex Z for CEF); the prerequisite supplies the first two. HARD CONSTRAINT INHERITED FROM Conservativity.lean: do not state a forward-conservativity theorem and discharge it with sorry -- it is provably false at two frame classes, so that would be an unsound placeholder, not deferred debt.
 
@@ -513,10 +514,11 @@ DELIVERABLE: a grounding report answering, with citations to specific pages read
 
 ### 493. Discharge compactbase compactdense and strong completeness
 - **Effort**: 10-16 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: strong_completeness
 - **Dependencies**: Task 490, Task 492
+- **Research**: [493_discharge_compactbase_compactdense_and_strong_completeness/reports/01_compactness-and-strong-completeness.md]
 
 **Description**: Assemble the compactness result and collect strong completeness for Base and Dense. Steps S4 and S5 of task 424's authorized route. S4: from the Los lemma, prove ModelExistenceBase and ModelExistenceDense (every finitely-satisfiable Gamma is satisfiable), then compose with the ModelExistence -> Compact bridge to obtain CompactBase and CompactDense. S5: feed those into strongCompletenessBase_of_compact (StrongCompleteness.lean:305) and strongCompletenessDense_of_compact (:331), which are already proved as reductions, and DISCHARGE their engine hypotheses -- deliberately left live so that compactness was isolated as the whole remaining obligation. The engines are BXCanonical.completeness (BXCanonical/Completeness.lean:196) for Base and BXCanonical.completeness_dense (:256) for Dense, both sorry-free and both of exactly the required type. WHY THIS MATTERS BEYOND THE TREE: the paper's cor:tm-completeness rows 1 and 2 assert strong completeness for TM+ and TM+_d and attribute them to this repository, where they are currently CONDITIONAL on unproved hypotheses. This task is what makes the paper's own headline claim true; task 488's author memo records the mismatch as a live paper-side correction until then. ACCEPTANCE: StrongCompletenessBase and StrongCompletenessDense proved unconditionally, sorry-free, axiom-audited; the author-memo item retired.
 
@@ -1151,7 +1153,7 @@ without depending on agent-system context at all.
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: automation
-- **Dependencies**: Task 165, Task 402, Task 448, Task 470
+- **Dependencies**: Task 165, Task 402, Task 448, Task 470, Task 508
 - **Research**: [193_codebase_tactic_refactor/reports/01_codebase-refactor-seed.md]
 
 **Description**: Apply validity-intro and truth-simp macros to the soundness layer.
@@ -1213,7 +1215,7 @@ decidability example remains gated on the decidability/tableau front (410-465,
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: formula-refactor
-- **Dependencies**: Task 131, Task 193, Task 402, Task 426, Task 428, Task 429, Task 430, Task 432, Task 433, Task 434, Task 440, Task 441, Task 448
+- **Dependencies**: Task 131, Task 193, Task 402, Task 426, Task 428, Task 429, Task 430, Task 432, Task 433, Task 434, Task 440, Task 441, Task 448, Task 494, Task 510, Task 513
 
 **Description**: Update README.md, docs/, and FormalSystem/ module-level docstrings to their final post-refactor state, once the decidability chain (426, 428, 429, 430, 432, 433, 434) lands. This is the final polish pass, distinct from and run after task 472's already-completed immediate correction pass. Explicitly excludes: every item task 472 already corrected (the Decidability.lean Status block, Verified/README.md, FMP/README.md, DecisionProcedure.lean's decideAuto docstring, Verified/Decidable.lean's Status docstring, WeakCanonical.lean, RealModel/ShuffleReal.lean, Soundness.lean, PriorExpressivenessDense.lean) and the two Kamp files task 473 already swept (Kamp/EANegationClosure.lean, NfMultiAnchorBridge/NavigatedSpine.lean). This task's residual content is: re-auditing all touched documentation for drift accumulated during the decidability chain's landing (472/473 audited a snapshot; the chain's remaining tasks will touch further files after 472/473 ran), and the Axiom Reference update the charter names as part of 177's original scope.
 

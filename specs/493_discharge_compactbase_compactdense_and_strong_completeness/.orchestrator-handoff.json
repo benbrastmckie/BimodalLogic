@@ -1,0 +1,16 @@
+{
+  "status": "researched",
+  "phase": "research",
+  "dispatch_seq": 1,
+  "summary": "Research complete. The full S4+S5 chain is already machine-verified: a probe compiling modelExistenceBase, modelExistenceDense, compactBase, compactDense, strongCompletenessBase and strongCompletenessDense against the built library exits 0 with all six at [propext, Classical.choice, Quot.sound] and no sorryAx. Remaining work is placement, ~35 now-false status-claim corrections across Lean docstrings/docs/paper record, and gate wiring.",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/493_discharge_compactbase_compactdense_and_strong_completeness/reports/01_compactness-and-strong-completeness.md",
+      "summary": "Verified proofs, placement recommendation (new FormalSystem/Metalogic/Compactness.lean), status-claim correction inventory, gate wiring, 5-phase decomposition."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 0,
+  "blockers": []
+}
