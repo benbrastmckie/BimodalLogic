@@ -388,39 +388,59 @@ repaired in Phase 5 with the other stale references.
 
 ---
 
-### Phase 5: Repair documentation references and broken relative links [NOT STARTED]
+### Phase 5: Repair documentation references and broken relative links [COMPLETED]
 
 **Goal**: Remove every stale `FrameConditions` reference from README and docs trees and restore
 `readme-lint.sh` check 3 to green.
 
 **Tasks**:
-- [ ] `FormalSystem/README.md`: remove the four inventory rows at `:228` (file table),
+- [x] `FormalSystem/README.md`: remove the four inventory rows at `:228` (file table),
       `:247` (module table), `:280` (subdirectory table — this row also carries a relative link
       to `FrameConditions/README.md`), and `:329` (completeness status table).
-- [ ] `FormalSystem/Metalogic/README.md`: delete the whole `## Position of FrameConditions/`
+      *(all four removed)*
+- [x] `FormalSystem/Metalogic/README.md`: delete the whole `## Position of FrameConditions/`
       section (`:288-295`), which includes the broken `../FrameConditions/README.md` link at
       `:295` and a dead `Bimodal.` namespace prefix at `:292` (the project namespace is
-      `FormalSystem.`).
-- [ ] `FormalSystem/Metalogic/SoundnessLemmas/README.md`: fix `:27` — the "Imports from …
+      `FormalSystem.`). *(section deleted entire)*
+- [x] `FormalSystem/Metalogic/SoundnessLemmas/README.md`: fix `:27` — the "Imports from …
       `Bimodal.FrameConditions`" claim is **false** (no file under `SoundnessLemmas/` imports it,
       verified against all five files' import lines) and the `Bimodal.` prefix is dead; and
       remove the broken `../../FrameConditions/README.md` link at `:33`.
-- [ ] `README.md:113`: remove the `FrameConditions/` tree-diagram row.
-- [ ] `docs/development/MODULE_ORGANIZATION.md`: remove the `:20` aggregator row and the `:29`
+      *(re-verified independently: the six import lines across the five files name only
+      `SoundnessLemmas.Core`, `SoundnessLemmas.DenseValidity`, `Semantics.Truth`,
+      `Semantics.Validity`, `ProofSystem.Derivation`, `ProofSystem.Axioms` and Mathlib
+      order/Archimedean modules. The Dependencies block was rewritten to that actual list under
+      the live `FormalSystem.` prefix, rather than merely deleting the false clause.)*
+- [x] `README.md:113`: remove the `FrameConditions/` tree-diagram row.
+- [x] `docs/development/MODULE_ORGANIZATION.md`: remove the `:20` aggregator row and the `:29`
       directory row.
-- [ ] `docs/user-guide/architecture.md:1105`: remove the tree row.
-- [ ] `typst/SYNC-MAP.md`: fix `:195` (frame-condition semantics location) and `:358-359`
+- [x] `docs/user-guide/architecture.md:1105`: remove the tree row. *(actual line `:1113`)*
+- [x] `typst/SYNC-MAP.md`: fix `:195` (frame-condition semantics location) and `:358-359`
       (claim-verification entry 1, which is about a file that will no longer exist).
-- [ ] `typst/chapters/00-introduction.typ:158`: remove the `FrameConditions/` directory-listing
+      *(`:195` repointed at `FrameClass.Sat` / `TaskFrame.Is*` / `ValidIn`; the claim-verification
+      entry rewritten to preserve the historical finding — that the `FrameClass` inductive was
+      never in the deleted directory — while stating the layer is now gone.)*
+- [x] `typst/chapters/00-introduction.typ:158`: remove the `FrameConditions/` directory-listing
       bullet.
-- [ ] `typst/chapters/04-metalogic.typ:41`: rewrite the clause claiming frame-condition semantics
+- [x] `typst/chapters/04-metalogic.typ:41`: rewrite the clause claiming frame-condition semantics
       "is developed in the top-level `FrameConditions/` directory" to point at
       `Semantics/FrameProperty.lean` and `Semantics/FrameClassValidity.lean`.
-- [ ] Run `bash scripts/readme-lint.sh` and confirm checks 1 and 3 (the exit-code-affecting ones)
-      pass.
-- [ ] Run `bash scripts/check-module-invariants.sh --no-build` and confirm C5 (module-shaped
-      markdown paths resolve) passes.
-- [ ] Run `bash scripts/typst-sync-check.sh` and confirm it is still at 0 violations.
+- [x] *(added, not in plan)* `FormalSystem/Semantics/FrameProperty.lean:105`: the docstring
+      recording the widening defect said "the same defect the `FrameConditions/` marker-typeclass
+      layer **carries**", present tense, pointing at a directory this task deletes. Rewritten to
+      past tense with the directory name dropped. This is the only `.lean` file outside the
+      deleted directory that mentioned the layer, and it is a docstring-only change.
+- [x] Run `bash scripts/readme-lint.sh` and confirm checks 1 and 3 (the exit-code-affecting ones)
+      pass. *(deviation: check 3 **restored to 0 broken references** — the phase's stated goal —
+      but check 1 still fails on a **missing `FormalSystem/Semantics/Ultraproduct/README.md`**.
+      That directory was created by committed foreign work (`0f1e50fd4`, `9eb879519`,
+      `dbad125e6`) and shipped without a README; the failure is present in the Phase 1 baseline,
+      has no FrameConditions involvement, and is another task's territory, so it is recorded
+      rather than absorbed. See the summary's Reasoned Exclusions.)*
+- [x] Run `bash scripts/check-module-invariants.sh --no-build` and confirm C5 (module-shaped
+      markdown paths) passes. *(C5 PASS; C12 and C13 also PASS)*
+- [x] Run `bash scripts/typst-sync-check.sh` and confirm it is still at 0 violations.
+      *(PASS, `TOTAL_VIOLATIONS=0`; `typst compile` of the book also still exits 0)*
 
 **Timing**: 1.0 hours
 
@@ -436,6 +456,11 @@ found a likely **third** at `FormalSystem/README.md:280`
 (`[FrameConditions/](FrameConditions/README.md)`). Confirm the actual count by running
 `bash scripts/readme-lint.sh` immediately after Phase 4 and reading check 3's output, then repair
 exactly the set it names — do not assume either 2 or 3.
+
+**Measured**: **3**, and the plan's suspicion was correct. Immediately after Phase 4, check 3
+named exactly `FormalSystem/Metalogic/README.md -> ../FrameConditions/README.md`,
+`FormalSystem/Metalogic/SoundnessLemmas/README.md -> ../../FrameConditions/README.md`, and
+`FormalSystem/README.md -> FrameConditions/README.md`. All three repaired; check 3 is back to 0.
 
 **Files to modify**:
 - `FormalSystem/README.md`, `FormalSystem/Metalogic/README.md`,

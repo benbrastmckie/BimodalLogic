@@ -1110,7 +1110,6 @@ FormalSystem/                              # Main source directory
 ├── Automation/
 │   ├── Tactics/                           # Custom tactics
 │   └── ProofSearch/                       # Automated proof search
-├── FrameConditions/                       # Frame condition definitions
 ├── Examples/                              # Pedagogical examples
 └── Boneyard/                              # Archived material (excluded from all invariants)
 

@@ -155,7 +155,6 @@ The Lean 4 implementation is in the `FormalSystem/` directory:
 - `Syntax/` -- Defines the formula language with 6 primitive constructors (atoms, $bot$, implication, $square.stroked$, Since, Until) and derived operators.
 - `ProofSystem/` -- The Burgess-Xu (BX) axiom system: #axiom-count axiom constructors in 9 layers and #rule-count inference rules forming a Hilbert-style proof system, parameterized by frame class (Base/Dense/Discrete/Dedekind).
 - `Semantics/` -- Task frames model possible worlds; world histories model time (partial, then convex/world, then total -- @sec:world-histories); strict (irreflexive) truth conditions define meaning; `Extension/` runs the existence machinery (Constraint Lemma through the Extension Theorem) as a machine-checked chain.
-- `FrameConditions/` -- Frame-class semantics (dense, discrete) and per-class validity.
 - `Metalogic/` -- Soundness for all four frame classes (Base, Dense, Discrete, Dedekind), the deduction theorem and Lindenbaum lemma, the canonical-model machinery carrying the completeness theorems of @sec:metalogic, and the tableau-based decision procedure.
 - `Theorems/` -- Perpetuity principles (P1--P6), modal and propositional theorem libraries, and derived temporal axioms.
 - `Automation/`, `Examples/` -- Proof tactics, the training-data pipeline, and worked examples, covered in Part II.

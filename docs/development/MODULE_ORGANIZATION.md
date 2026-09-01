@@ -17,7 +17,6 @@ BimodalLogic/
 │   ├── Metalogic.lean          # Aggregates Metalogic/
 │   ├── Theorems.lean           # Aggregates Theorems/
 │   ├── Automation.lean         # Aggregates Automation/
-│   ├── FrameConditions.lean    # Aggregates FrameConditions/
 │   ├── Examples.lean           # Aggregates Examples/
 │   ├── Syntax/                 # Formula types, atoms, contexts, subformulas
 │   ├── ProofSystem/            # Axioms, derivation trees, inference rules
@@ -26,7 +25,6 @@ BimodalLogic/
 │   ├── Metalogic/              # Soundness, completeness, decidability, independence
 │   ├── Theorems/               # Derived theorems (perpetuity, combinators, propositional)
 │   ├── Automation/             # Proof tactics, search, dataset generation
-│   ├── FrameConditions/        # Frame condition characterizations
 │   ├── Examples/               # Pedagogical examples
 │   └── Boneyard/               # Archived work (excluded from every invariant check)
 ├── Tests/

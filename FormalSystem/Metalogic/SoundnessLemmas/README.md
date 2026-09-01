@@ -24,13 +24,14 @@ lemmas for the Dense and Discrete frame classes.
 
 ## Dependencies
 
-- **Imports from**: `Bimodal.Semantics`, `Bimodal.ProofSystem`, `Bimodal.FrameConditions`
-- **Imported by**: `Bimodal.Metalogic.Soundness`
+- **Imports from**: `FormalSystem.Semantics.Truth`, `FormalSystem.Semantics.Validity`,
+  `FormalSystem.ProofSystem.Derivation`, `FormalSystem.ProofSystem.Axioms`, and Mathlib's
+  order/Archimedean modules
+- **Imported by**: `FormalSystem.Metalogic.Soundness`
 
 ## Related Documentation
 
 - [Metalogic README](../README.md)
-- [FrameConditions README](../../FrameConditions/README.md)
 - [Soundness.lean](../Soundness.lean)
 
 ---

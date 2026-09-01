@@ -101,8 +101,8 @@ exactly `ℤ`-time."
 for.** `Axiom.prior_UZ`, `Axiom.prior_SZ` and `Axiom.z1` all carry `.Discrete` as their
 `minFrameClass`, and by the sentence above they are sound over `ℤ`-time rather than over every
 frame satisfying `def:frame-properties`' bare Discrete clause. Interpreting `FrameClass.Discrete`
-by `IsDiscrete` would silently widen the class under `soundness_discrete` — the same defect the
-`FrameConditions/` marker-typeclass layer carries.
+by `IsDiscrete` would silently widen the class under `soundness_discrete` — the defect that the
+retired marker-typeclass frame-condition layer carried, and part of why that layer was removed.
 
 **Existential, not instance binders, and deliberately so.** `SuccOrder` and `PredOrder` are
 data-carrying structures, so a `TaskFrame → Prop` cannot take them as instance arguments; the

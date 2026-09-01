@@ -110,7 +110,6 @@ The task semantics is developed in ["The Construction of Possible Worlds"](https
 │   ├── Syntax/                   # Formula types, atoms, contexts
 │   ├── ProofSystem/              # Axioms (45 constructors, nine layers), derivation trees
 │   ├── Semantics/                # TemporalOrder, FrameOver, TaskFrame, WorldHistory, TaskModel, validity
-│   ├── FrameConditions/          # Dense/Discrete/Dedekind frame classes and their soundness
 │   ├── Metalogic/                # Soundness, completeness, decidability
 │   │   ├── Core/                 # MCS theory, deduction theorem
 │   │   ├── Bundle/               # BFMCS construction

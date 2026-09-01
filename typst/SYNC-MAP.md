@@ -192,8 +192,11 @@ the archived `Boneyard/SoundnessVariants/` wrappers, entire `Theorems/` tree (in
 
 `FrameClass` inductive (`ProofSystem/Axioms.lean:422-426`): `Base`, `Dense`,
 `Discrete`, partially ordered with Base ≤ Dense, Base ≤ Discrete (Dense, Discrete
-incomparable). Frame-condition semantics in top-level `FormalSystem/FrameConditions/`
-(FrameClass.lean, Validity.lean, Soundness.lean, Compatibility.lean).
+incomparable). What each tag denotes semantically is `FrameClass.Sat`
+(`Semantics/FrameClassValidity.lean`); the frame properties it maps onto are
+`TaskFrame.IsDense`, `TaskFrame.IsSuccArchDiscrete` and `TaskFrame.IsDedekind`
+(`Semantics/FrameProperty.lean`), and class-relative validity is `ValidIn`
+(`Semantics/Validity.lean`).
 
 ## Claim Verification Table (Phase 1)
 
@@ -355,9 +358,11 @@ elsewhere in the repository during Phase 5, see the Phase-5 handoff's transient-
 present at the first-revision baseline; introduced by over-attribution in that revision's own
 drafting, caught by per-result re-verification against live source rather than assumed):
 
-1. `FrameConditions/FrameClass.lean` does not contain the `FrameClass` inductive or its
-   partial order (those are in `ProofSystem/Axioms.lean:422-442`); `FrameConditions/
-   FrameClass.lean` is a separate typeclass hierarchy. See `chapters/p2-frame-classes.typ`.
+1. The `FrameClass` inductive and its partial order live in `ProofSystem/Axioms.lean:422-442`.
+   The now-deleted top-level frame-condition directory held a *separate* marker-typeclass
+   hierarchy that was frequently mistaken for them; that layer has since been removed and
+   `chapters/p2-frame-classes.typ` now describes the live interpretation
+   (`FrameClass.Sat`, `ValidIn`, `TaskFrame.Is*`) instead.
 2. `Metalogic/ConservativeExtension/`'s only theorem, `lift_derivation_qfree`, is a
    fresh-atom naming lemma supporting the irreflexivity argument, not a formalization of
    the paper's base-language-vs-Until/Since-extended-language conservativity as an earlier

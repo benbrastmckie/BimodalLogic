@@ -225,7 +225,6 @@ invariant check allowlists it by name (check C8).
 | `Automation.lean` | 102 | Re-export for Automation submodule |
 | `BaseLanguage.lean` | 34 | Re-export for BaseLanguage submodule |
 | `Examples.lean` | 33 | Re-export for Examples submodule |
-| `FrameConditions.lean` | 68 | Re-export for FrameConditions submodule |
 | `Metalogic.lean` | 199 | Re-export for Metalogic submodule |
 | `ProofSystem.lean` | 88 | Re-export for ProofSystem submodule |
 | `Semantics.lean` | 137 | Re-export for Semantics submodule |
@@ -244,7 +243,6 @@ invariant check allowlists it by name (check C8).
 | Module | File | Description |
 |--------|------|-------------|
 | Semantics | `Semantics.lean` | Task frame structure, world histories, truth evaluation |
-| FrameConditions | `FrameConditions.lean` | Frame classes, soundness certificates |
 
 ### Layer 2 — Metalogic
 
@@ -277,7 +275,6 @@ invariant check allowlists it by name (check C8).
 | [Syntax/](Syntax/README.md) | Yes | Formula types and proof contexts |
 | [ProofSystem/](ProofSystem/README.md) | Yes | Axioms and derivation trees |
 | [Semantics/](Semantics/README.md) | Yes | Task frame semantics |
-| [FrameConditions/](FrameConditions/README.md) | Yes | Frame classes and soundness |
 | [Metalogic/](Metalogic/README.md) | Yes | Soundness, completeness, decidability |
 | [Theorems/](Theorems/README.md) | Yes | Derived theorems |
 | [Automation/](Automation/README.md) | Yes | Proof tactics and ML pipeline |
@@ -326,7 +323,6 @@ lake env lean FormalSystem/ProofSystem/Axioms.lean
 | 0 | Syntax | Complete |
 | 0 | ProofSystem | Complete (45 axiom constructors, 7 rules) |
 | 1 | Semantics | Complete (TaskFrame, TaskModel, Truth) |
-| 1 | FrameConditions | Complete (Base, Dense, Discrete, Dedekind soundness) |
 | 2 | Metalogic | Soundness, weak and finite-context completeness, and the deduction theorem for all four frame classes; decidability **sound direction only** |
 | 3 | Theorems | Complete (P1-P6 perpetuity principles, S4/S5 modal) |
 | 4 | Automation | Complete (tactics); ML pipeline active |

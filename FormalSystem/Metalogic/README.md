@@ -286,15 +286,6 @@ it in the file.
 
 Sorries inside the archive are archived dead ends, not open obligations.
 
-## Position of `FrameConditions/`
-
-`FrameConditions/` is a sibling of `Metalogic/`, not part of it, and this is settled
-on measured evidence rather than preference: **zero** files under `Metalogic/` import
-`Bimodal.FrameConditions`, while `FrameConditions/` imports
-`Bimodal.Metalogic.Soundness`. It is a typeclass API layer sitting strictly *above*
-Metalogic; merging it inward would invert the dependency direction and manufacture a
-new cycle. See [`../FrameConditions/README.md`](../FrameConditions/README.md).
-
 ## A Known Layering Wrinkle
 
 Four files under `Decidability/` import from `Automation/`:
