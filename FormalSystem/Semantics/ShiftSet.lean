@@ -149,8 +149,7 @@ functionality plus the group action and require no shift-set axiom of their own 
 document's list, which was written against an earlier five-field `ParamTaskFrame` and named only the
 other four. The one field that is genuinely *not* free is `limit`; it is exactly `S.sep`.
 -/
-@[reducible] def frame (S : ShiftSet D) : TaskFrame where
-  Duration := D
+@[reducible] def fibre (S : ShiftSet D) : FrameOver (TemporalOrder.of D) where
   WorldState := S.Carrier
   worldNonempty := S.carrier_nonempty
   TaskRel := fun w d u => u = S.sh w d
@@ -196,6 +195,16 @@ other four. The one field that is genuinely *not* free is `limit`; it is exactly
     obtain ⟨b, hb⟩ := (hmem S' hS').2
     rw [hsingle s (hmem s hs).1 a ha b (hsub hb).1]
     exact (hsub hb).2
+
+/--
+The task frame induced by a shift set: its fibre, included into the total space.
+
+The inclusion is the constructor `⟨TemporalOrder.of D, S.fibre⟩`, so `S.frame.toFibre` is
+`S.fibre` and `S.frame.WorldState` is `S.Carrier`, both by `rfl`. `@[reducible]` is preserved
+from the pre-fibration definition and is load bearing: `hist`'s `respects_task` proof rewrites
+under `S.frame.Duration`.
+-/
+@[reducible] def frame (S : ShiftSet D) : TaskFrame := S.fibre.toTaskFrame
 
 /-- The induced **total** history through `w`: the shift orbit `t ↦ sh w t`. -/
 def hist (S : ShiftSet D) (w : S.Carrier) : WorldHistory S.frame where

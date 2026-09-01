@@ -3,9 +3,9 @@
   "started_at": "2026-08-31T16:00:00Z",
   "artifacts": [],
   "partial_progress": {
-    "stage": "phase_2_complete",
-    "details": "Phases 0, 1, 2 complete and green. FrameOver is the fibre; ParamTaskFrame is a reducible alias.",
-    "phases_completed": 3,
+    "stage": "phase_3_complete",
+    "details": "Phases 0-3 complete and green. TaskFrame is the total space of the fibration.",
+    "phases_completed": 4,
     "phases_total": 21
   },
   "metadata": {

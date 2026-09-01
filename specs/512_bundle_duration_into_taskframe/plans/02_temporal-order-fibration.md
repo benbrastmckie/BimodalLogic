@@ -592,38 +592,38 @@ widen the phase.
 
 ---
 
-### Phase 3: `TaskFrame` becomes the total space [NOT STARTED]
+### Phase 3: `TaskFrame` becomes the total space [COMPLETED]
 
 **Goal**: `TaskFrame` is `⟨Duration : TemporalOrder, toFibre : FrameOver Duration⟩`, the inclusion
 is the constructor, and every one of v01's 86 landed files still compiles — most of them untouched.
 
 **Tasks**:
-- [ ] Redefine `structure TaskFrame` as the total space. Delete the four algebra fields and the
+- [x] Redefine `structure TaskFrame` as the total space. Delete the four algebra fields and the
       `WorldState`/`worldNonempty`/`TaskRel`/six-axiom fields from it; they now live in `FrameOver`.
-- [ ] Declare the `@[reducible]` delegating accessors in `namespace TaskFrame`: `WorldState`,
+- [x] Declare the `@[reducible]` delegating accessors in `namespace TaskFrame`: `WorldState`,
       `worldNonempty` (as an `instance`), `TaskRel`, `nullity_identity`, `comp`, `converse`,
       `serial`, `limit`, `spherical`. Use the exact spellings Phase 0(d) confirmed.
-- [ ] Re-express the bundled derived API (`forward_comp`, `interpolates`, `nullity`,
+- [x] Re-express the bundled derived API (`forward_comp`, `interpolates`, `nullity`,
       `backward_comp`) over the accessors, with the same proofs. Where a fibre-level twin is the
       better home, declare it on `FrameOver` and let `TaskFrame`'s be the delegating spelling —
       generalized field notation never crosses between them, so both spellings must exist wherever
       both are used.
-- [ ] Declare `@[reducible] def FrameOver.toTaskFrame {D : TemporalOrder} (F : FrameOver D) :
+- [x] Declare `@[reducible] def FrameOver.toTaskFrame {D : TemporalOrder} (F : FrameOver D) :
       TaskFrame := ⟨D, F⟩` as the **canonical inclusion**, with a docstring recording that it is
       definitionally the constructor and that this is what replaces v01's `CoeOut` device.
-- [ ] Redefine `FiniteTaskFrame` in the corresponding total-space shape over `FiniteFrameOver`,
+- [x] Redefine `FiniteTaskFrame` in the corresponding total-space shape over `FiniteFrameOver`,
       preserving whatever projection name its ~5 structure-projection sites use. Enumerate those
       sites before editing.
-- [ ] Re-express `TaskFrame.ofParam` / `.toParam` / `instCoeOutParamTaskFrame` against the new
+- [x] Re-express `TaskFrame.ofParam` / `.toParam` / `instCoeOutParamTaskFrame` against the new
       shape (`ofParam F` is now literally `⟨TemporalOrder.of D, F⟩`). They stay only as
       scaffolding for `ParamTaskFrame`, and die with it in Phase 20.
-- [ ] Move the four definitional-content `example`s (v01's `TaskFrame.lean:1501-1511` descendants)
+- [x] Move the four definitional-content `example`s (v01's `TaskFrame.lean:1501-1511` descendants)
       to their correct home: state them at `FrameOver`, where the axiom fields now live, and keep a
       bundled spelling of each so the Step Lemma's consumption of `F.spherical` stays pinned at
       **both** levels.
-- [ ] Add `example`s pinning the Σ-identity: `⟨F.Duration, F.toFibre⟩ = F` by `rfl`, and the
+- [x] Add `example`s pinning the Σ-identity: `⟨F.Duration, F.toFibre⟩ = F` by `rfl`, and the
       `toTaskFrame` round-trip facts from Phase 0(e).
-- [ ] Repair whatever of the 86 landed files the accessors do **not** cover. Expected surface:
+- [x] Repair whatever of the 86 landed files the accessors do **not** cover. Expected surface:
       concrete-frame *construction* sites (field syntax `{ Duration := ℤ, WorldState := … }` must
       become `⟨intOrder, { WorldState := … }⟩`), and any site using `F.Duration` other than in a
       type position. Enumerate before editing; if the remainder exceeds one agent run, split at a
@@ -651,6 +651,29 @@ is the exact failure mode v01's Phase 3 exhibited.
 - `FormalSystem/Semantics/TaskFrame.lean` — the total-space redefinition, accessors, inclusion,
   derived API, `example`s, transitional bridge re-expression
 - The bundled concrete-frame construction sites the build names
+
+#### Phase 3 Record — the blast radius, measured
+
+`TaskFrame` is now `⟨Duration : TemporalOrder, toFibre : FrameOver Duration⟩`. The accessors are
+`@[reducible] def` for `WorldState`/`TaskRel`, a plain `instance` for `worldNonempty`, and
+`theorem`s for the six axioms plus the derived API — the shape correction Phase 0(d) recorded.
+
+**Edit surface outside `TaskFrame.lean`: one file.** The plan budgeted for "the bundled
+concrete-frame construction sites" and pre-authorized a 3/3.1 split above ~6 files. The build named
+exactly one: `Semantics/ShiftSet.lean`'s `ShiftSet.frame`, which built a `TaskFrame` with flat
+field syntax (`Duration := D`, `WorldState := …`, and the six axioms). All 86 files v01 landed on
+`(F : TaskFrame)` — `PartialHistory`, `WorldHistory`, `TaskModel`, `Truth`, `H_F`, the
+`Extension/` layer, the whole `Valid*` family and the soundness layer — compiled **untouched**,
+which is the "preserve the green state" premise holding in practice rather than in probe.
+
+`ShiftSet` was repaired by **splitting the definition rather than reindenting it**: the seven
+field bodies moved verbatim into `ShiftSet.fibre : FrameOver (TemporalOrder.of D)`, and
+`ShiftSet.frame : TaskFrame := S.fibre.toTaskFrame` is the inclusion. Not one proof changed, and
+the `@[reducible]` that `hist`'s `respects_task` rewrite depends on is preserved on both. This
+also front-loads what Phase 6 wants from `ShiftSet` anyway — a fibre-level value — without
+touching its `D : Type` parameterization, which stays Phase 6's decision.
+
+No split into 3.1 was needed.
 
 **Verification**:
 - Standing contract (1-9).

@@ -1572,78 +1572,125 @@ from drifting apart.
 -/
 structure TaskFrame where
   /-- The temporal order: the type of task durations (`def:temporal-order`). -/
-  Duration : Type
-  /-- `Duration` is an additive abelian group. -/
-  [addCommGroup : AddCommGroup Duration]
-  /-- `Duration` is linearly ordered. -/
-  [linearOrder : LinearOrder Duration]
-  /-- The order on `Duration` is compatible with addition. -/
-  [orderedAddMonoid : IsOrderedAddMonoid Duration]
-  /-- `Duration` is nontrivial: it has at least two elements. -/
-  [nontrivial : Nontrivial Duration]
-  /-- Type of world states. -/
-  WorldState : Type
-  /-- The world-state type is nonempty (`def:task-relation` reads `W` as a nonempty set). -/
-  [worldNonempty : Nonempty WorldState]
-  /-- Task relation: `TaskRel w x u` means `u` is reachable from `w` by a task of duration `x`. -/
-  TaskRel : WorldState → Duration → WorldState → Prop
-  /-- Zero-duration tasks relate exactly identical states (`lem:nullity`, plus its
-  injectivity-at-zero converse; both are derivable, and the field is retained for construction
-  ergonomics — see `ParamTaskFrame.nullity_identity`'s docstring). -/
-  nullity_identity : ∀ w u, TaskRel w 0 u ↔ w = u
-  /-- *Compositionality* (`def:frame#Compositionality`), whole, by citation. -/
-  comp : TaskFrame.Compositional TaskRel
-  /-- The definitional converse convention (`def:task-relation`). -/
-  converse : ∀ w d u, TaskRel w d u ↔ TaskRel u (-d) w
-  /-- *Seriality* (`def:frame#Seriality`), by citation. -/
-  serial : TaskFrame.Serial TaskRel
-  /-- *Limit* (`def:frame#Limit`), in the literal transcribed shape. -/
-  limit : ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ TaskRel w y u) → u = w
-  /-- *Spherical* (`def:frame#Spherical`), by citation. This is the field the Step Lemma
-  consumes, which is why it must be literally the recorded predicate. -/
-  spherical : TaskFrame.Spherical TaskRel
-
-attribute [instance] TaskFrame.addCommGroup TaskFrame.linearOrder TaskFrame.orderedAddMonoid
-  TaskFrame.nontrivial TaskFrame.worldNonempty
+  Duration : TemporalOrder
+  /-- The frame's world states, task relation and axioms, over that temporal order. -/
+  toFibre : FrameOver Duration
 
 /--
-A bundled task frame with finitely many world states.
+A bundled task frame with finitely many world states — the total space of the *finite* fibration.
 -/
-structure FiniteTaskFrame extends TaskFrame where
-  /-- Proof that the set of world states is finite -/
-  finite_world : Finite WorldState
+structure FiniteTaskFrame where
+  /-- The temporal order (`def:temporal-order`). -/
+  Duration : TemporalOrder
+  /-- The finite fibre over that temporal order. -/
+  toFibre : FiniteFrameOver Duration
+
+namespace FrameOver
+
+/--
+**The canonical inclusion of a fibre into the total space.**
+
+This is the constructor. `FrameOver D → TaskFrame` needs no coercion, no transport and no
+universe crossing: a frame over `D` *is* the second component of a total-space frame whose first
+component is `D`, and `(F.toTaskFrame).toFibre = F`, `(F.toTaskFrame).Duration = D` and
+`⟨G.Duration, G.toFibre⟩ = G` all hold by `rfl`.
+-/
+@[reducible] def toTaskFrame {D : TemporalOrder} (F : FrameOver D) : TaskFrame := ⟨D, F⟩
+
+end FrameOver
+
+namespace FiniteFrameOver
+
+/-- The inclusion of a finite fibre into the finite total space — again the constructor. -/
+@[reducible] def toFiniteTaskFrame {D : TemporalOrder} (F : FiniteFrameOver D) :
+    FiniteTaskFrame := ⟨D, F⟩
+
+end FiniteFrameOver
+
+namespace TaskFrame
+
+/-!
+### The flat surface, preserved
+
+`TaskFrame`'s fields are `Duration` and `toFibre`, but every consumer in the tree writes
+`F.WorldState`, `F.TaskRel w d u` and `F.spherical`. Generalized field notation resolves by the
+head constant of `F`'s type and never consults a coercion, so those spellings are kept alive as
+**delegating accessors** rather than by asking several hundred sites to write `F.toFibre.…`.
+
+The data accessors are `@[reducible]`, which is what keeps `F.WorldState` transparent to
+unification and to instance synthesis. The Prop-valued ones are `theorem`s: Lean rejects
+`@[reducible]` on a proof, and by proof irrelevance nothing is lost — what a consumer needs is
+that the *declared type* is literally the recorded bare-relation predicate at `F.TaskRel`, which
+it is, so the Step Lemma's consumption of `F.spherical` stays definitional at both levels.
+-/
+
+/-- The frame's type of world states. -/
+@[reducible] def WorldState (F : TaskFrame) : Type := F.toFibre.WorldState
+
+/-- The world-state type is nonempty (`def:task-relation` reads `W` as a nonempty set). -/
+instance worldNonempty (F : TaskFrame) : Nonempty F.WorldState := F.toFibre.worldNonempty
+
+/-- Task relation: `TaskRel w x u` means `u` is reachable from `w` by a task of duration `x`. -/
+@[reducible] def TaskRel (F : TaskFrame) : F.WorldState → F.Duration → F.WorldState → Prop :=
+  F.toFibre.TaskRel
+
+/-- Zero-duration tasks relate exactly identical states (`lem:nullity` plus its
+injectivity-at-zero converse). -/
+theorem nullity_identity (F : TaskFrame) : ∀ w u, F.TaskRel w 0 u ↔ w = u :=
+  F.toFibre.nullity_identity
+
+/-- *Compositionality* (`def:frame#Compositionality`), whole, by citation. -/
+theorem comp (F : TaskFrame) : TaskFrame.Compositional F.TaskRel := F.toFibre.comp
+
+/-- The definitional converse convention (`def:task-relation`). -/
+theorem converse (F : TaskFrame) : ∀ w d u, F.TaskRel w d u ↔ F.TaskRel u (-d) w :=
+  F.toFibre.converse
+
+/-- *Seriality* (`def:frame#Seriality`), by citation. -/
+theorem serial (F : TaskFrame) : TaskFrame.Serial F.TaskRel := F.toFibre.serial
+
+/-- *Limit* (`def:frame#Limit`), in the literal transcribed shape. -/
+theorem limit (F : TaskFrame) :
+    ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ F.TaskRel w y u) → u = w := F.toFibre.limit
+
+/-- *Spherical* (`def:frame#Spherical`), by citation. This is the field the Step Lemma consumes,
+which is why it must be literally the recorded predicate. -/
+theorem spherical (F : TaskFrame) : TaskFrame.Spherical F.TaskRel := F.toFibre.spherical
+
+end TaskFrame
+
+namespace FiniteTaskFrame
+
+/-- A finite total-space frame is a total-space frame. -/
+@[reducible] def toTaskFrame (F : FiniteTaskFrame) : TaskFrame := ⟨F.Duration, F.toFibre.toFrameOver⟩
+
+/-- The frame's type of world states. -/
+@[reducible] def WorldState (F : FiniteTaskFrame) : Type := F.toFibre.toFrameOver.WorldState
+
+/-- The task relation. -/
+@[reducible] def TaskRel (F : FiniteTaskFrame) : F.WorldState → F.Duration → F.WorldState → Prop :=
+  F.toFibre.toFrameOver.TaskRel
+
+/-- The set of world states is finite. -/
+theorem finite_world (F : FiniteTaskFrame) : Finite F.WorldState := F.toFibre.finite_world
+
+end FiniteTaskFrame
 
 namespace TaskFrame
 
 /--
 **Parameterized → bundled** (transitional).
 
-`@[reducible]` is load-bearing: see the section docstring above.
+Under the fibration this is literally the constructor at the bundled temporal order:
+`ofParam F` is `⟨TemporalOrder.of D, F⟩`. `@[reducible]` is load-bearing — see the section
+docstring above.
 -/
 @[reducible] def ofParam {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
-    [Nontrivial D] (F : ParamTaskFrame D) : TaskFrame where
-  Duration := D
-  WorldState := F.WorldState
-  worldNonempty := F.worldNonempty
-  TaskRel := F.TaskRel
-  nullity_identity := F.nullity_identity
-  comp := F.comp
-  converse := F.converse
-  serial := F.serial
-  limit := F.limit
-  spherical := F.spherical
+    [Nontrivial D] (F : ParamTaskFrame D) : TaskFrame := ⟨TemporalOrder.of D, F⟩
 
-/-- **Bundled → parameterized** (transitional). -/
-@[reducible] def toParam (F : TaskFrame) : ParamTaskFrame F.Duration where
-  WorldState := F.WorldState
-  worldNonempty := F.worldNonempty
-  TaskRel := F.TaskRel
-  nullity_identity := F.nullity_identity
-  comp := F.comp
-  converse := F.converse
-  serial := F.serial
-  limit := F.limit
-  spherical := F.spherical
+/-- **Bundled → parameterized** (transitional). Under the fibration this is the second
+projection, `F.toFibre`, at the frame's own temporal order. -/
+@[reducible] def toParam (F : TaskFrame) : FrameOver F.Duration := F.toFibre
 
 /-- Transitional coercion, so that a not-yet-migrated `ParamTaskFrame` value can still be
 handed to an already-migrated definition. Removed with the rest of the bridge. -/
@@ -1707,6 +1754,38 @@ example (F : TaskFrame) : ∃ x y : F.Duration, x ≠ y := exists_pair_ne F.Dura
 example (F : TaskFrame) : Nonempty F.WorldState := inferInstance
 
 end BridgeChecks
+
+/-! ## The total-space identity
+
+`TaskFrame` is `Σ (D : TemporalOrder), FrameOver D`, and structure eta makes that an identity
+rather than an isomorphism-up-to-transport: the pair of a frame's two projections *is* the frame,
+by `rfl`. The inclusion of a fibre is the constructor, so its round-trip facts are `rfl` too.
+This is what replaces v01's `CoeOut` device, and it is why there is no shim ledger in this
+refactor.
+-/
+
+section TotalSpaceIdentity
+
+example (F : TaskFrame) : (⟨F.Duration, F.toFibre⟩ : TaskFrame) = F := rfl
+
+example {D : TemporalOrder} (F : FrameOver D) : (FrameOver.toTaskFrame F).Duration = D := rfl
+example {D : TemporalOrder} (F : FrameOver D) : (FrameOver.toTaskFrame F).toFibre = F := rfl
+example {D : TemporalOrder} (F : FrameOver D) :
+    (FrameOver.toTaskFrame F).WorldState = F.WorldState := rfl
+example {D : TemporalOrder} (F : FrameOver D) :
+    (FrameOver.toTaskFrame F).TaskRel = F.TaskRel := rfl
+
+/-- The flat accessors are the fibre's fields, definitionally -- which is what keeps the already
+migrated files' spellings (`F.WorldState`, `F.TaskRel w d u`, `F.spherical`) meaning exactly what
+they meant before. -/
+example (F : TaskFrame) : F.WorldState = F.toFibre.WorldState := rfl
+example (F : TaskFrame) : F.TaskRel = F.toFibre.TaskRel := rfl
+
+/-- A finite total-space frame forgets to a total-space frame by the same constructor. -/
+example (F : FiniteTaskFrame) : F.toTaskFrame.Duration = F.Duration := rfl
+example (F : FiniteTaskFrame) : F.toTaskFrame.WorldState = F.WorldState := rfl
+
+end TotalSpaceIdentity
 
 /-! ## The definitional-content checks, bundled form
 
