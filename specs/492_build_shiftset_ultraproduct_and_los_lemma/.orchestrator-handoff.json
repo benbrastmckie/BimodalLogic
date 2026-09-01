@@ -1,24 +1,21 @@
 {
-  "dispatch_seq": 1,
-  "status": "researched",
-  "summary": "S2+S3 settled and machine-verified: the ultraproduct ShiftSet (all 7 fields incl. sep), Los for ShiftTruth (6 cases), Los for TruthAt via forward_repr, and the index ultrafilter all compiled sorry-free with axiom profile [propext, Classical.choice, Quot.sound]; R2 discharged by routing through ShiftTruth rather than TruthAt.",
+  "dispatch_seq": 2,
+  "phase": "plan",
+  "status": "planned",
+  "summary": "Hard-mode 4-phase implementation plan written for task 492: promote the two verified sorry-free prototypes (UltraproductLos.lean, IndexFilter.lean) into four modules under FormalSystem/Semantics/Ultraproduct/, wired incrementally into the FormalSystem/Semantics.lean aggregator with a green lake build gating every phase. Transcription, not discovery.",
   "artifacts": [
     {
-      "path": "specs/492_build_shiftset_ultraproduct_and_los_lemma/reports/01_shiftset-ultraproduct-and-los.md",
-      "type": "report",
-      "summary": "Research report: probe-provides vs S2-owes inventory, index ultrafilter construction, Los statement shapes, the three choice-function arguments, concrete 4-module file layout, 4 recorded elaboration traps, and the Adversarial Self-Verification claim table."
-    },
-    {
-      "path": "specs/492_build_shiftset_ultraproduct_and_los_lemma/prototype/UltraproductLos.lean",
-      "type": "prototype",
-      "summary": "Verified 216-line prototype: exists_section, mk_surjective, mk_zero/mk_max/mk_abs, UT, uSep, uShiftSet, los, los_truthAt. Transcription target for the implementation."
-    },
-    {
-      "path": "specs/492_build_shiftset_ultraproduct_and_los_lemma/prototype/IndexFilter.lean",
-      "type": "prototype",
-      "summary": "Verified 62-line prototype: hand-built tailFilter on the index type, NeBot, idxUF, eventually_mem. Avoids Filter.atTop and any Preorder instance on the List subtype."
+      "type": "plan",
+      "path": "specs/492_build_shiftset_ultraproduct_and_los_lemma/plans/01_shiftset-ultraproduct-los.md",
+      "summary": "4-phase transcription plan: Phase 1 Carrier.lean + IndexFilter.lean + first green lake build; Phase 2 ShiftSetProduct.lean (UT, uSep, uShiftSet); Phase 3 Los.lean (los, los_truthAt); Phase 4 retire the probe to a consumer and record #print axioms acceptance evidence."
     }
   ],
+  "phases_total": 4,
+  "phases_completed": 0,
   "blockers": [],
-  "next_action_hint": "plan"
+  "plan_markers_verified": true,
+  "skeleton": false,
+  "sorry_inventory": [],
+  "continuation_path": null,
+  "next_action_hint": "implement"
 }

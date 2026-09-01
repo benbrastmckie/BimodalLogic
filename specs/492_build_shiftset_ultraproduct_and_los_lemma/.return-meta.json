@@ -1,69 +1,34 @@
 {
-  "status": "researched",
-  "agent_type": "lean-research-hard-agent",
-  "delegation_path": [
-    "orchestrator",
-    "research",
-    "lean-research-hard-agent"
-  ],
+  "status": "planned",
+  "agent_type": "planner-hard-agent",
+  "delegation_path": ["orchestrator", "plan", "planner-hard-agent"],
   "task_number": 492,
-  "findings_count": 9,
-  "adversarial_verification_triggered": true,
+  "task_type": "lean4",
+  "phase_count": 4,
+  "estimated_hours": 7,
+  "postmortem_rules_count": 9,
+  "plan_metadata": {
+    "phases": 4,
+    "total_effort_hours": 7,
+    "complexity": "complex",
+    "research_integrated": true,
+    "plan_version": 1,
+    "dependency_waves": [[1], [2], [3], [4]],
+    "reports_integrated": [
+      {
+        "path": "reports/01_shiftset-ultraproduct-and-los.md",
+        "integrated_in_plan_version": 1,
+        "integrated_date": "2026-08-31"
+      }
+    ],
+    "skeleton": false,
+    "follow_up_tasks": []
+  },
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/492_build_shiftset_ultraproduct_and_los_lemma/reports/01_shiftset-ultraproduct-and-los.md",
-      "summary": "S2+S3 fully verified: the ultraproduct ShiftSet (all 7 fields incl. sep), Los for ShiftTruth (6 cases), Los for TruthAt via forward_repr, and the index ultrafilter -- all compiled sorry-free with axiom profile [propext, Classical.choice, Quot.sound]. Includes file layout, 4 recorded elaboration traps, and a correction to the brief's case-difficulty estimate."
-    },
-    {
-      "type": "prototype",
-      "path": "specs/492_build_shiftset_ultraproduct_and_los_lemma/prototype/UltraproductLos.lean",
-      "summary": "Verified 216-line prototype: exists_section, mk_surjective, mk_zero/max/abs, UT, uSep, uShiftSet, los, los_truthAt."
-    },
-    {
-      "type": "prototype",
-      "path": "specs/492_build_shiftset_ultraproduct_and_los_lemma/prototype/IndexFilter.lean",
-      "summary": "Verified 62-line prototype: hand-built tailFilter on the index type, NeBot, idxUF, eventually_mem."
+      "type": "plan",
+      "path": "specs/492_build_shiftset_ultraproduct_and_los_lemma/plans/01_shiftset-ultraproduct-los.md",
+      "summary": "4-phase hard-mode transcription plan promoting the verified ultraproduct/Los prototypes into FormalSystem/Semantics/Ultraproduct/, wired to a green lake build."
     }
-  ],
-  "memory_candidates": [
-    {
-      "title": "Route a Los lemma through a first-order truth predicate, not the modal one",
-      "body": "When a modal truth predicate quantifies over a non-pointwise-definable family (e.g. TruthAt's box over all total world-histories), do not prove Los for it directly. If the tree already has a representation theorem to an equivalent predicate whose box quantifies over a carrier sort (ShiftTruth over S.Carrier), prove Los there and conjugate by the representation theorem. The hard choice-function argument disappears because it was already discharged inside the representation theorem.",
-      "keywords": [
-        "lean4",
-        "ultraproduct",
-        "los",
-        "modal logic",
-        "representation theorem"
-      ]
-    },
-    {
-      "title": "Eventual-existential choice needs a junk value, so Classical.skolem does not apply",
-      "body": "Extracting a global section from `\u2200\u1da0 i in phi, \u2203 v, P i v` is NOT Classical.skolem or Classical.axiomOfChoice: those need a total `\u2200 i, \u2203 v`. The section must be total, so off-filter indices need Classical.arbitrary and the family needs a [\u2200 i, Nonempty (Omega i)] binder. Pattern: `fun i => if hi : \u2203 v, P i v then hi.choose else Classical.arbitrary _`, then `h.mono (fun i hi => by simp only [dif_pos hi]; exact hi.choose_spec)`.",
-      "keywords": [
-        "lean4",
-        "filter",
-        "ultrafilter",
-        "choice",
-        "Classical.arbitrary"
-      ]
-    },
-    {
-      "title": "@[reducible] on a bundled-structure constructor is load-bearing for rw motive typing",
-      "body": "A `noncomputable def X : TemporalOrder := TemporalOrder.of Y` blocks `rw` inside proofs whose goals mention `(X ...).carrier`: the projection will not reduce to Y at motive-typing transparency and rw fails with 'Application type mismatch ... expected to have type (X ...).carrier'. Mark such definitions @[reducible]. Separately, rw through a plain (semireducible) structure-valued def's fields fails the same way; use Iff.trans / exact, which check at default transparency.",
-      "keywords": [
-        "lean4",
-        "reducible",
-        "rw",
-        "transparency",
-        "bundled structures"
-      ]
-    }
-  ],
-  "next_steps": "Run /plan 492 to create implementation plan",
-  "session_id": "sess_1788244020_f09481",
-  "task_type": "lean4",
-  "effort_flag": "hard",
-  "orchestrator_mode": true
+  ]
 }
