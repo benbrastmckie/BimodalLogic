@@ -84,7 +84,7 @@ next_project_number: 516
 
 ### Metalogic
 
-495 [PLANNING] — RESEARCH TASK, DELIBERATELY AGNOSTIC ABOUT THE VERDICT. Determine
+495 [PLANNED] — RESEARCH TASK, DELIBERATELY AGNOSTIC ABOUT THE VERDICT. Determine
 507 [IMPLEMENTING] — ROOT FIX for the metalogic systematicity front. Give the proof-si
   └─ 510 [NOT STARTED] — Decide the fate of FormalSystem/FrameConditions/ (4 modules, 906 
     └─ 508 [NOT STARTED] — Collapse ~23 soundness theorems into ONE parameterized theorem pl
@@ -491,11 +491,12 @@ DELIVERABLE: a grounding report answering, with citations to specific pages read
 
 ### 495. Determine tm completeness status over task frames
 - **Effort**: 12-20 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Task Type**: formal
 - **Topic**: metalogic
 - **Dependencies**: Task 489
 - **Research**: [495_determine_tm_completeness_status_over_task_frames/reports/01_tm-completeness-status.md]
+- **Plan**: [495_determine_tm_completeness_status_over_task_frames/plans/01_tm-completeness-formalization.md]
 
 **Description**: RESEARCH TASK, DELIBERATELY AGNOSTIC ABOUT THE VERDICT. Determine whether TM (the BaseLanguage proof system) is complete over task frames, and if not, characterize what it IS complete for. DO NOT ASSUME COMPLETENESS HOLDS; the evidence points the other way, and a machine-checked incompleteness result is a complete and valid outcome. EVIDENCE THAT IT MAY FAIL: (1) the paper's cor:tm-completeness (possible_worlds.tex:4657) carries completeness for the BL+ systems ONLY -- TM+, TM+_d, TM+_f, TM+_c -- and never claims it for TM. (2) Metalogic/Conservativity.lean's scope section states that the forward direction TM+ |- tr phi => TM |- phi is REFUTED at FrameClass.Base (the (Sp) witness) and at FrameClass.Discrete (the Z1 witness), with the TM+ half of the Discrete witness already machine-checked in-tree as z1_translate. THE SUBTLETY ANY DISPATCH MUST CONFRONT FIRST: since |-[Base] tr (Sp) is proved and TM+ is sound over all task frames, (Sp) is VALID ON EVERY TASK FRAME. So a refutation of TM |- Sp by soundness CANNOT use a task frame. It needs a structure outside the class on which TM remains sound precisely because it lacks the Until/Since expressive power to detect the violation. Identifying that broader class is the actual research content. SCOPE: (a) settle whether TM is complete over task frames; (b) if not, identify the class TM is sound and complete for; (c) determine whether the CEB and CEF refutations that Conservativity.lean currently only DOCUMENTS can now be machine-checked, given the BL-side semantics and soundness theorem delivered by the prerequisite task. Conservativity.lean's own 'What a machine-checked refutation would need' section names three missing pieces: a BL-side semantics, a BL-side soundness theorem, and the two countermodels (a two-fibre structure for CEB, Z x_lex Z for CEF); the prerequisite supplies the first two. HARD CONSTRAINT INHERITED FROM Conservativity.lean: do not state a forward-conservativity theorem and discharge it with sorry -- it is provably false at two frame classes, so that would be an unsound placeholder, not deferred debt.
 
