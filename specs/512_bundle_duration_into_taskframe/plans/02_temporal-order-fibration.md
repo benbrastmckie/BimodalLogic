@@ -1556,17 +1556,31 @@ task 510 to a merge. Not restructured here: 510 owns it.
 
 ---
 
-### Phase 15: BiLasso [NOT STARTED]
+### Phase 15: BiLasso [COMPLETED]
 
 **Goal**: The 14-file BiLasso directory at the ℤ fibre.
 
 **Tasks**:
-- [ ] Migrate `Metalogic/Decidability/BiLasso/*.lean` — `Basic, Agreement, Annotation, Assembly,
-      BoxOracle, Check, Extend, Extraction, GoodCycle, Orbit, Realized, SmallModel, TruthLemma,
-      Unfold`. The directory is uniformly ℤ through `IntPresentation.toTaskFrame`, so the Phase 7
-      contract and Phase 9's naming decision both apply.
-- [ ] Re-examine v01's `@LT.lt ℤ _` restatements in `Unfold.lean` and `TruthLemma.lean`: the
-      duration is at a fixed fibre again, so they may relax. Optional.
+- [x] Migrate `Metalogic/Decidability/BiLasso/*.lean`. The scope hypothesis was right and its
+      warning was right: the migration surface is the `IntPresentation` interface, not per-file
+      binders. **Two** type ascriptions in the whole 14-file directory — `Unfold.lean:72` and
+      `Extend.lean:54`, both `ParamTaskFrame ℤ` → `FrameOver intOrder`. The other two occurrences
+      are prose naming `ParamTaskFrame.HF.isStepPath` and `ParamTaskFrame.spherical_of_finite`.
+- [x] Re-examined the `@LT.lt ℤ _` restatements. *(deviation: skipped — they do NOT relax, and the
+      reason is Phase 7's own finding. `omega` reads the *syntactic* type of a hypothesis. At
+      `F : FrameOver intOrder` the hypotheses that reach these sites are produced by the frame's
+      own fields and so arrive typed `↑intOrder`, not `ℤ`; `↑intOrder` reduces to `ℤ` but `omega`
+      does not reduce. The restatements are load-bearing, and removing them would be a proof
+      rewrite, not a restatement. Left in place.)*
+
+#### Phase 15 Record
+
+Nothing to manufacture here, and the plan explicitly asked for that to be reported rather than
+padded: 14 files, 4 `ParamTaskFrame` tokens, 2 real edits. The directory reaches its ℤ frames
+*through* `IntPresentation`, which Phase 9 already migrated, so the interface carried the whole
+directory across. `ParamTaskFrame.HF.isStepPath` was corrected to `TaskFrame.HF.isStepPath` in
+prose (the declaration already moved); `ParamTaskFrame.spherical_of_finite` is a live namespace
+reference and stays until Phase 20 relocates it.
 
 **Timing**: 2 hours
 

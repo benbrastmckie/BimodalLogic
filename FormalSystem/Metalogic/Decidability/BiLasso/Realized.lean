@@ -193,7 +193,7 @@ theorem realizedStep_datum (u : ℤ) :
 /--
 **A realised edge is adjacent in its state components.**
 
-The history is a bi-infinite step path of the presented frame (`ParamTaskFrame.HF.isStepPath`), and
+The history is a bi-infinite step path of the presented frame (`TaskFrame.HF.isStepPath`), and
 `IntPresentation.isStepPath_iff` reads that off as the adjacency matrix at consecutive times. This
 is what lets the extraction discharge a bi-lasso's `coherent` field from a walk in this graph.
 -/

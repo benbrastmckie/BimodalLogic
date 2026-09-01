@@ -51,7 +51,7 @@ open FormalSystem.Semantics
 bi-infinite step path. This is what lets a `BiLasso`, whose decoding is anchored at lasso time
 `0`, be re-based at an arbitrary absolute time without re-doing any adjacency reasoning.
 -/
-theorem isStepPath_shift {F : ParamTaskFrame ℤ} {f : ℤ → F.WorldState} (h : IsStepPath F f) (k : ℤ) :
+theorem isStepPath_shift {F : FrameOver intOrder} {f : ℤ → F.WorldState} (h : IsStepPath F f) (k : ℤ) :
     IsStepPath F (fun t => f (t - k)) := by
   intro n
   have := h (n - k)

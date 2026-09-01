@@ -69,7 +69,7 @@ open FormalSystem.Semantics
 
 section Unfolding
 
-variable {F : ParamTaskFrame ℤ} {M : TaskModel F} {τ : WorldHistory F}
+variable {F : FrameOver intOrder} {M : TaskModel F} {τ : WorldHistory F}
 
 /--
 **The exact one-step unfolding of `untl` over ℤ.**
