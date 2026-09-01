@@ -361,7 +361,7 @@ been verified against this plan's writing time.
 
 ---
 
-### Phase 5: Gate wiring and acceptance [NOT STARTED]
+### Phase 5: Gate wiring and acceptance [COMPLETED]
 
 **Goal**: The axiom audit is a standing gate, every check is green, and the acceptance evidence is
 captured literally.

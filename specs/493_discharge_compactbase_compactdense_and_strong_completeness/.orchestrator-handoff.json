@@ -1,15 +1,21 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 4,
-  "summary": "Plan created: 5 phases, ~7h. Phase 1 lands the six already-verified theorems in a new FormalSystem/Metalogic/Compactness.lean (three imports: StrongCompleteness, Ultraproduct.Los, Ultraproduct.IndexFilter) and wires it into FormalSystem/Metalogic.lean. Phases 2-4 run in parallel over disjoint territories: Lean docstrings (~23 sites, preserving and reframing the StrongCompleteness.lean:294-308 chronicle-obstruction argument), 7 documentation files, and the paper-side record plus dated author-memo D1/D2 retirement notes. Phase 5 enlarges C14_BASELINE with strongCompletenessBase/strongCompletenessDense and runs the acceptance sweep. Hard constraint carried into Phase 1 and Phase 5: the *_of_compact reductions keep their engine parameters (task 509's work surface); module-invariants-manifest.txt gains no entry.",
+  "status": "implemented",
+  "phase": "implement",
+  "dispatch_seq": 1,
+  "summary": "All 5 phases complete. FormalSystem/Metalogic/Compactness.lean (new, 166 lines) proves modelExistenceBase, modelExistenceDense, compactBase, compactDense, strongCompletenessBase and strongCompletenessDense unconditionally, sorry-free, each at exactly [propext, Classical.choice, Quot.sound]; lake build exit 0. The research probe compiled verbatim, so no proof search was needed. Prose swept across three Lean modules, seven documentation files, the paper definitions-of-record row (item (ii) resolved, item (i) left live), four dated notes in the archived author memo, and typst/FormalFoundations.typ; the three-way status taxonomy collapsed to two-way in lockstep across all four mirrors, and StrongCompleteness.lean's chronicle-obstruction argument was reframed rather than deleted. C14's axiom baseline enlarged with both strong-completeness theorems and passes. Hard constraints honored: both *_of_compact reductions keep their engine parameters (task 509's work surface, StrongCompleteness.lean:318 and :346) and module-invariants-manifest.txt is unmodified.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/493_discharge_compactbase_compactdense_and_strong_completeness/plans/01_compactness-strong-completeness.md"
+      "type": "summary",
+      "path": "specs/493_discharge_compactbase_compactdense_and_strong_completeness/summaries/01_compactness-strong-completeness-summary.md"
     }
   ],
-  "phases_completed": 0,
+  "phases_completed": 5,
   "phases_total": 5,
-  "blockers": []
+  "blockers": [],
+  "plan_markers_verified": true,
+  "notes": [
+    "C6 fails on three unreachable modules (TMCompletenessReduction.lean, BLSchemaValidity.lean, LexCarrier.lean) -- all untracked files created by CONCURRENT sessions during this implementation, not by this task. FormalSystem.Metalogic.Compactness is not among them; it is reachable via Metalogic.lean as designed.",
+    "readme-lint.sh and typst-sync-check.sh both exit 1 on pre-existing findings in files this task did not touch. Neither names anything this task introduced.",
+    "The author memo lives under specs/archive/, excluded by .gitignore:73, so its four dated notes are on disk but in no commit."
+  ]
 }

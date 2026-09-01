@@ -764,10 +764,14 @@ else
   note "the tree is the authority: C3 asserts zero sorries, Axiom.minFrameClass gives 45 axioms"
 fi
 
-# (ii) #print axioms for the two theorems C2 does not cover.
+# (ii) #print axioms for the theorems C2 does not cover.
+# The C14BASE and C14LEAN heredocs below are compared by exact string equality, so they must
+# list the same declarations in the same order. Edit them together, appending to both.
 read -r -d '' C14_BASELINE <<'C14BASE'
 'FormalSystem.Metalogic.Decidability.sound_of_isValid' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.completeness_dedekind' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.strongCompletenessBase' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.strongCompletenessDense' depends on axioms: [propext, Classical.choice, Quot.sound]
 C14BASE
 
 if [ "$RUN_BUILD" -eq 1 ]; then
@@ -776,13 +780,15 @@ if [ "$RUN_BUILD" -eq 1 ]; then
 import FormalSystem
 #print axioms FormalSystem.Metalogic.Decidability.sound_of_isValid
 #print axioms FormalSystem.Metalogic.completeness_dedekind
+#print axioms FormalSystem.Metalogic.strongCompletenessBase
+#print axioms FormalSystem.Metalogic.strongCompletenessDense
 C14LEAN
   C14_OUT=$(lake env lean "$C14_SRC" 2>&1 \
     | sed -e ':a' -e '$!N' -e 's/\n / /' -e 'ta' -e 'P' -e 'D' \
     | grep 'depends on axioms')
   rm -f "$C14_SRC"
   if [ "$C14_OUT" = "$C14_BASELINE" ]; then
-    pass C14 "decidability soundness and Dedekind completeness match their axiom baseline"
+    pass C14 "decidability soundness, Dedekind completeness and Base/Dense strong completeness match their axiom baseline"
     while IFS= read -r l; do note "$l"; done <<<"$C14_OUT"
   else
     C14_FAIL=1
