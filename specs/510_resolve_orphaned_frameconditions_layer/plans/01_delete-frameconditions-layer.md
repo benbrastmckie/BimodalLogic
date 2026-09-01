@@ -477,14 +477,14 @@ named exactly `FormalSystem/Metalogic/README.md -> ../FrameConditions/README.md`
 
 ---
 
-### Phase 6: Record the corrected archived-completeness finding [NOT STARTED]
+### Phase 6: Record the corrected archived-completeness finding [COMPLETED]
 
 **Goal**: Satisfy acceptance criterion A6 by recording the *corrected* form of the silent
 regression (report C5) in a durable location, replacing the brief's inaccurate "all three
 identifiers are ABSENT" framing.
 
 **Tasks**:
-- [ ] Add a short note to `FormalSystem/Boneyard/StrictSemanticsLegacy/README.md`, beside its
+- [x] Add a short note to `FormalSystem/Boneyard/StrictSemanticsLegacy/README.md`, beside its
       existing `FrameConditions/Completeness.lean` entry, stating: the completeness wiring was
       **archived, not removed**; `completeness_over_Int` and `discrete_completeness_fc` survive in
       that archived file and are unreachable from every Lake target root, so no build compiles
@@ -492,11 +492,18 @@ identifiers are ABSENT" framing.
       absent tree-wide. Also note that the file's `FormalSystem.FrameConditions.Compatibility`
       import is permanently waived in `scripts/boneyard-import-waivers.txt` because the target was
       deleted.
-- [ ] Write the same corrected finding into the task's implementation summary under
+      *(deviation: altered — the `dovetailed_bundle` clause was sharpened after independent
+      re-measurement. No declaration of that **exact** name exists anywhere, which is what the
+      report meant; but the archived file does declare `dovetailed_bundle_to_bfmcs` (`:433`) and
+      `dovetailed_bundle_validity_implies_provability` (`:474`), so a flat "absent tree-wide"
+      would have been falsified by the first grep a reader ran. The note states the bare name is
+      gone and the prefix is not.)*
+- [x] Write the same corrected finding into the task's implementation summary under
       `specs/510_resolve_orphaned_frameconditions_layer/summaries/`.
-- [ ] **MUST NOT** cite task numbers in `FormalSystem/Boneyard/StrictSemanticsLegacy/README.md`
+- [x] **MUST NOT** cite task numbers in `FormalSystem/Boneyard/StrictSemanticsLegacy/README.md`
       or any other non-`specs/` file (see `.claude/rules/no-task-references-in-deliverables.md`);
       cite the file path and the identifiers instead.
+      *(`check-task-references.sh` PASSes: 0 unexempted occurrences across 4 trees)*
 
 **Timing**: 0.5 hours
 

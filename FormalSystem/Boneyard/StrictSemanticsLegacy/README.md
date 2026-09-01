@@ -25,6 +25,34 @@ See `ROAD_MAP.md` in the repository root for the current trajectory.
 - `Bundle/SuccChainFMCS.lean` (18 sorries) -- Successor chain FMCS construction
 - `FrameConditions/Completeness.lean` (54 sorries) -- Frame condition completeness wiring
 
+#### The frame-condition completeness wiring was archived, not removed
+
+A standing claim elsewhere in this repository's history recorded that the frame-condition
+completeness wiring was *done*, naming `completeness_over_Int`, `discrete_completeness_fc` and
+`dovetailed_bundle`, and a later reading concluded that all three had been deleted. Neither
+framing is accurate. The measured state:
+
+- `completeness_over_Int` (`FrameConditions/Completeness.lean:530`) and
+  `discrete_completeness_fc` (`:549`) both **still exist**, here, in this archive. They were
+  moved, not deleted.
+- Being archived, they are unreachable from every Lake target root, so no build elaborates them
+  and neither theorem is compile-checked. Any live claim that the wiring "is done" is therefore
+  false *of the live tree*, even though the source text is still on disk.
+- `dovetailed_bundle` has no declaration of that exact name anywhere in the repository. What this
+  file does declare are `dovetailed_bundle_to_bfmcs` (`:433`) and
+  `dovetailed_bundle_validity_implies_provability` (`:474`); the bare name is genuinely gone, the
+  prefix is not.
+
+This file's `import FormalSystem.FrameConditions.Compatibility` (`:1`) is permanently waived in
+`scripts/boneyard-import-waivers.txt`. The typeclass-based frame-condition layer it imported was
+deleted from the live tree -- it was a carrier-typeclass re-encoding of the frame classes with no
+consumer outside its own directory, superseded by `Semantics/FrameClassValidity.lean`'s
+`FrameClass.Sat`, `Semantics/Validity.lean`'s `ValidIn`, and `Semantics/FrameProperty.lean`'s
+`TaskFrame.IsDense` / `TaskFrame.IsSuccArchDiscrete` / `TaskFrame.IsDedekind`. No file of that
+name exists on disk any more, so the import cannot be repointed; reviving the deleted layer is an
+explicit non-goal. This file is retained precisely because it is the evidence for the correction
+above.
+
 ### Dependent Files (2 files, 4 sorries)
 - `Algebraic/RestrictedTruthLemma.lean` (1 sorry) -- Restricted truth lemma
 - `Bundle/CanonicalConstruction.lean` (3 sorries) -- Canonical construction using SuccChain
