@@ -1,7 +1,7 @@
 # Implementation Plan: Build the ShiftSet Ultraproduct and the Łoś Lemma
 
 - **Task**: 492 - Build shiftset ultraproduct and Łoś lemma
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 7 hours
 - **Dependencies**: 491 (carrier route selection — settled, closed)
 - **Research Inputs**: `specs/492_build_shiftset_ultraproduct_and_los_lemma/reports/01_shiftset-ultraproduct-and-los.md`
@@ -212,7 +212,7 @@ are no parallel opportunities. Phase 1 contains two mutually independent files (
 and `IndexFilter.lean`) which a single dispatch writes in either order; that independence is
 noted as a partial-completion checkpoint, not as a parallel wave.
 
-### Phase 1: Ultraproduct leaf modules (Carrier.lean, IndexFilter.lean) wired to a green lake build [NOT STARTED]
+### Phase 1: Ultraproduct leaf modules (Carrier.lean, IndexFilter.lean) wired to a green lake build [COMPLETED]
 
 - **Goal:** Create `FormalSystem/Semantics/Ultraproduct/` holding the two leaf modules that
   depend on nothing else in this task, wire both into the aggregator, and establish the first
@@ -223,11 +223,11 @@ noted as a partial-completion checkpoint, not as a parallel wave.
   - `FormalSystem/Semantics/Ultraproduct/IndexFilter.lean` (new)
   - `FormalSystem/Semantics.lean` (add two import lines after `:21`)
 - **Tasks:**
-  - [ ] Create `FormalSystem/Semantics/Ultraproduct/Carrier.lean` with the standard copyright
+  - [x] Create `FormalSystem/Semantics/Ultraproduct/Carrier.lean` with the standard copyright
         header, namespace `FormalSystem.Semantics.Ultraproduct`, imports
         `FormalSystem.Semantics.TemporalOrder`, `Mathlib.GroupTheory.QuotientGroup.Basic`,
         `Mathlib.Order.Filter.Ultrafilter.Basic`, and `set_option linter.unusedSectionVars false`.
-  - [ ] Promote, verbatim, the 16 carrier declarations from
+  - [x] Promote, verbatim, the 16 carrier declarations from
         `Tests/BimodalTest/Semantics/DependentUltraproductProbe.lean`: `evZero` (`:80`),
         `mem_evZero` (`:90`), `UD` (`:94`), `mk` (`:97`), `mk_eq_mk` (`:99`), the `LE` instance
         (`:109`), `mk_le_mk` (`:118`), the `LinearOrder` instance (`:121`), the
@@ -238,27 +238,27 @@ noted as a partial-completion checkpoint, not as a parallel wave.
         Keep the section `variable` block `{I : Type} {φ : Ultrafilter I} {D : I → Type}` with the
         three instance binders. Do **not** promote `shiftSetOnUD` (it stays in the probe until
         Phase 4 retargets it).
-  - [ ] Add the five new support lemmas from `prototype/UltraproductLos.lean`: `exists_section`
+  - [x] Add the five new support lemmas from `prototype/UltraproductLos.lean`: `exists_section`
         (`:28`), `mk_surjective` (`:34`), `mk_zero` (`:43`), `mk_max` (`:45`), `mk_abs` (`:55`).
         `mk_zero`/`mk_max`/`mk_abs` need the `Order` section's `[∀ i, LinearOrder (D i)]` and
         `[∀ i, IsOrderedAddMonoid (D i)]` binders.
-  - [ ] Create `FormalSystem/Semantics/Ultraproduct/IndexFilter.lean` with the copyright header,
+  - [x] Create `FormalSystem/Semantics/Ultraproduct/IndexFilter.lean` with the copyright header,
         namespace `FormalSystem.Semantics.Ultraproduct`, import
         `Mathlib.Order.Filter.Ultrafilter.Basic` only, and promote verbatim `Idx` (`:20`),
         `tailFilter` (`:23`), `mem_tailFilter` (`:40`), `tailFilter_neBot` (`:43`), `idxUF`
         (`:51`), `eventually_mem` (`:55`) from `prototype/IndexFilter.lean`. Keep the generic
         `universe u` / `variable {α : Type u}` form.
-  - [ ] Write a module docstring for each file to this tree's standard (see
+  - [x] Write a module docstring for each file to this tree's standard (see
         `FormalSystem/Semantics/ShiftSet.lean:1-61` for the register): what the module is, what it
         is not, and — for `IndexFilter.lean` — why `Filter.atTop` was rejected.
-  - [ ] Add to `FormalSystem/Semantics.lean` immediately after line 21
+  - [x] Add to `FormalSystem/Semantics.lean` immediately after line 21
         (`import FormalSystem.Semantics.ShiftSet`):
         `import FormalSystem.Semantics.Ultraproduct.Carrier` and
         `import FormalSystem.Semantics.Ultraproduct.IndexFilter`. Add matching entries to the
         aggregator's `## Submodules` docstring list.
-  - [ ] Run `lake build`. Fix any `autoImplicit := false` fallout by naming the implicit binder
+  - [x] Run `lake build`. Fix any `autoImplicit := false` fallout by naming the implicit binder
         explicitly — never by weakening the library options and never by editing `lakefile.lean`.
-  - [ ] Grep the two new files for `sorry`; expect zero hits.
+  - [x] Grep the two new files for `sorry`; expect zero hits.
 - **Verification criteria:**
   - `lake build` exits 0 with no errors. (Standing gate for every phase.)
   - `grep -rn 'sorry' FormalSystem/Semantics/Ultraproduct/` returns nothing.
