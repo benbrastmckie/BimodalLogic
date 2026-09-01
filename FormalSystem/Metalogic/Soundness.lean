@@ -1900,6 +1900,121 @@ theorem axiom_swap_validIn_min {φ : Formula} (ax : Axiom φ) :
     | sep a0 => exact sep_swap_valid a0
     | _ => exact absurd trivial hbase
 
+theorem axiom_validIn {φ : Formula} {fc : FrameClass} (ax : Axiom φ)
+    (h_fc : ax.minFrameClass ≤ fc) : ValidIn fc φ :=
+  ValidIn.mono h_fc (axiom_validIn_min ax)
+
+theorem axiom_swap_validIn {φ : Formula} {fc : FrameClass} (ax : Axiom φ)
+    (h_fc : ax.minFrameClass ≤ fc) : ValidIn fc φ.swapTemporal :=
+  ValidIn.mono h_fc (axiom_swap_validIn_min ax)
+
+/-- The uniform combined valid/swap-valid recursion at an arbitrary `fc`. -/
+theorem derivable_valid_and_swap_validIn {fc : FrameClass} {φ : Formula}
+    (d : DerivationTree fc [] φ) : ValidIn fc φ ∧ ValidIn fc φ.swapTemporal := by
+  match d with
+  | .axiom _ _ h_ax h_fc =>
+    exact ⟨axiom_validIn h_ax h_fc, axiom_swap_validIn h_ax h_fc⟩
+  | .assumption _ _ h_mem =>
+    exact absurd h_mem (Syntax.Context.not_mem_nil _)
+  | .modus_ponens _ psi' _ d1 d2 =>
+    have h1 := derivable_valid_and_swap_validIn d1
+    have h2 := derivable_valid_and_swap_validIn d2
+    constructor
+    · refine ValidIn.of_forall_total ?_
+      intro F hF M tau h_mem t
+      have h1' := h1.1.apply_total F hF M tau h_mem t
+      have h2' := h2.1.apply_total F hF M tau h_mem t
+      simp only [TruthAt] at h1'
+      exact h1' h2'
+    · refine ValidIn.of_forall_total ?_
+      intro F hF M tau h_mem t
+      have h1' := h1.2.apply_total F hF M tau h_mem t
+      have h2' := h2.2.apply_total F hF M tau h_mem t
+      simp only [Formula.swapTemporal, TruthAt] at h1' ⊢
+      exact h1' h2'
+  | .necessitation psi' d' =>
+    have h := derivable_valid_and_swap_validIn d'
+    constructor
+    · refine ValidIn.of_forall_total ?_
+      intro F hF M tau h_mem t
+      simp only [TruthAt]
+      intro sigma h_sigma_mem
+      exact h.1.apply_total F hF M sigma h_sigma_mem t
+    · refine ValidIn.of_forall_total ?_
+      intro F hF M tau h_mem t
+      simp only [Formula.swapTemporal, TruthAt]
+      intro sigma h_sigma_mem
+      exact h.2.apply_total F hF M sigma h_sigma_mem t
+  | .temporal_necessitation psi' d' =>
+    have h := derivable_valid_and_swap_validIn d'
+    constructor
+    · refine ValidIn.of_forall_total ?_
+      intro F hF M tau h_mem t
+      simp only [Truth.future_iff]
+      intro s _hts
+      exact h.1.apply_total F hF M tau h_mem s
+    · refine ValidIn.of_forall_total ?_
+      intro F hF M tau h_mem t
+      simp only [Formula.allFuture, Formula.someFuture, Formula.swapTemporal,
+        Formula.neg, Formula.top] at *
+      simp only [TruthAt] at *
+      intro hcontra
+      obtain ⟨s, hts, hs, _⟩ := hcontra
+      exact hs (h.2.apply_total F hF M tau h_mem s)
+  | .temporal_duality psi' d' =>
+    have h := derivable_valid_and_swap_validIn d'
+    refine ⟨h.2, ?_⟩
+    rw [Formula.swap_temporal_involution]
+    exact h.1
+  | .weakening Gamma' _ _ d' h_sub =>
+    have h_eq : Gamma' = [] := List.eq_nil_of_subset_nil h_sub
+    have h_height_eq : (h_eq ▸ d').height = d'.height := by subst h_eq; rfl
+    have h_term : (h_eq ▸ d').height < (DerivationTree.weakening Gamma' [] _ d' h_sub).height := by
+      simp only [h_height_eq, DerivationTree.height]
+      omega
+    exact derivable_valid_and_swap_validIn (h_eq ▸ d')
+termination_by d.height
+decreasing_by
+  all_goals first
+    | exact DerivationTree.mp_height_gt_left _ _
+    | exact DerivationTree.mp_height_gt_right _ _
+    | simp only [DerivationTree.height]; omega
+
+/-- **The single parameterized soundness theorem.** -/
+theorem soundness_in {fc : FrameClass} (Γ : Context) (φ : Formula)
+    (d : DerivationTree fc Γ φ)
+    (F : TaskFrame) (hF : fc.Sat F) (M : TaskModel F)
+    (τ : WorldHistory F) (h_mem : τ.IsTotal) (t : F.Duration)
+    (h_ctx : ∀ ψ ∈ Γ, TruthAt M τ t ψ) :
+    TruthAt M τ t φ := by
+  induction d generalizing τ t with
+  | «axiom» Γ' φ' h_ax h_fc =>
+    exact (axiom_validIn h_ax h_fc).apply_total F hF M τ h_mem t
+  | assumption Γ' φ' h_in => exact h_ctx φ' h_in
+  | modus_ponens Γ' φ' ψ' _ _ ih1 ih2 =>
+    have h1 := ih1 τ h_mem t h_ctx
+    have h2 := ih2 τ h_mem t h_ctx
+    simp only [TruthAt] at h1
+    exact h1 h2
+  | necessitation φ' _ ih =>
+    simp only [TruthAt]
+    intro σ h_σ_mem
+    exact ih σ h_σ_mem t (by simp)
+  | temporal_necessitation φ' _ ih =>
+    simp only [Truth.future_iff]
+    intro s _hts
+    exact ih τ h_mem s (by simp)
+  | temporal_duality φ' d' _ih =>
+    exact ((derivable_valid_and_swap_validIn d').2).apply_total F hF M τ h_mem t
+  | weakening Γ' Δ' φ' _ h_sub ih =>
+    exact ih τ h_mem t (fun ψ h_in => h_ctx ψ (h_sub h_in))
+
+
+/-- Empty-context validity form, uniform. -/
+theorem soundness_validIn {fc : FrameClass} {φ : Formula}
+    (d : DerivationTree fc [] φ) : ValidIn fc φ :=
+  (derivable_valid_and_swap_validIn d).1
+
 /-- All Dedekind-compatible axioms are valid on dense Dedekind-complete frames.
 
 Dispatch: the 37 Base axioms route through `valid_implies_validDedekindDense`; the 2 Dense

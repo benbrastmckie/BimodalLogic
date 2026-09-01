@@ -301,27 +301,27 @@ FormalSystem.Metalogic.Soundness` succeeding with the incumbents untouched.
 
 ---
 
-### Phase 3: Transplant the uniform recursion and `soundness_in` [NOT STARTED]
+### Phase 3: Transplant the uniform recursion and `soundness_in` [COMPLETED]
 
 **Goal**: Land the four remaining core declarations — still purely additive, incumbents untouched.
 This phase carries the collapse's one genuine technical risk, and that risk is already retired by
 the verified artifact.
 
 **Tasks**:
-- [ ] Copy verbatim from `reports/01_verified-reference-implementation.lean`:
+- [x] Copy verbatim from `reports/01_verified-reference-implementation.lean`:
   - `axiom_validIn` (`:92–94`) and `axiom_swap_validIn` (`:96–98`) — each `ValidIn.mono h_fc (…_min ax)`
   - `derivable_valid_and_swap_validIn` (`:100–170`), **including the `termination_by d.height` and
     `decreasing_by` block verbatim**
   - `soundness_in` (`:172–201`)
   - `soundness_validIn` (`:234–237`)
-- [ ] **Do not re-derive or "simplify" the `temporal_duality` arm.** It is
+- [x] **Do not re-derive or "simplify" the `temporal_duality` arm.** It is
       `((derivable_valid_and_swap_validIn d').2).apply_total F hF M τ h_mem t`. This is the single
       point where the four incumbent proofs diverge (Base via
       `derivable_implies_swap_valid_general`, Dense via `derivable_implies_swap_valid`, Discrete via
       `derivable_implies_swap_valid_discrete`, Dedekind via
       `derivable_valid_and_swap_valid_dedekind`); the uniform recursion is what makes it one arm and
       it has compiled. Copy it.
-- [ ] Leave every incumbent declaration in place; the build must stay green with both the old and
+- [x] Leave every incumbent declaration in place; the build must stay green with both the old and
       new architecture present.
 
 **Timing**: 1 hour
