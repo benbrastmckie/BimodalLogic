@@ -63,6 +63,8 @@ consistency lemma in the tree yet"), and the BL side inherits it exactly.
 
 - `truthAt_tr` — the bridge: `TruthAt M τ t (tr φ) ↔ BLTruthAt M τ t φ`
 - `truthAt_trCtx`, `blValid_iff_valid_tr` — its context-level and validity-level corollaries
+- `blValidDiscrete_iff_validDiscrete_tr` — the `.Discrete` mirror of `blValid_iff_valid_tr`,
+  consumed by `Metalogic/TMCompletenessReduction.lean`
 - `bl_soundness`, `bl_soundness_dense`, `bl_soundness_discrete`, `bl_soundness_dedekind` — the
   four soundness theorems
 - `bl_soundness_valid`, `bl_soundness_dense_valid`, `bl_soundness_discrete_valid`,
@@ -146,6 +148,27 @@ theorem blValid_iff_valid_tr (φ : BLFormula) : BLValid φ ↔ valid (tr φ) := 
   · intro h
     refine BLValid.of_forall_total ?_
     intro F M τ hτ t
+    exact (truthAt_tr M φ τ t).mp (h.apply F M τ hτ t)
+
+/--
+The **`.Discrete` mirror** of `blValid_iff_valid_tr`: BL validity over the discrete frame class
+is `TruthAt`-equivalent to `ValidDiscrete` of the translation, with the four
+`SuccOrder`/`PredOrder`/`IsSuccArchimedean`/`IsPredArchimedean` instance binders threaded through
+exactly as `BLValidDiscrete.of_forall`/`.apply` and `ValidDiscrete.of_forall`/`.apply` carry them.
+Same two-branch `constructor` proof as `blValid_iff_valid_tr`, off `truthAt_tr`.
+
+Consumed by `Metalogic/TMCompletenessReduction.lean`'s `tmCompleteDiscrete_iff_forwardDiscrete`.
+-/
+theorem blValidDiscrete_iff_validDiscrete_tr (φ : BLFormula) :
+    BLValidDiscrete φ ↔ ValidDiscrete (tr φ) := by
+  constructor
+  · intro h
+    refine ValidDiscrete.of_forall ?_
+    intro F so po hsa hpa M τ hτ t
+    exact (truthAt_tr M φ τ t).mpr (h.apply F M τ hτ t)
+  · intro h
+    refine BLValidDiscrete.of_forall ?_
+    intro F so po hsa hpa M τ hτ t
     exact (truthAt_tr M φ τ t).mp (h.apply F M τ hτ t)
 
 end FormalSystem.Semantics

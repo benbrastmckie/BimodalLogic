@@ -73,6 +73,14 @@ than resolved by moving the helper, which would drag `Metalogic` proofs into a r
   successor-side companion to `archimedean_of_lub`).
 - `intIso`: the packaged additive transfer `D ≃+o ℤ` for a nontrivial successor-Archimedean
   duration group; consumed by `Semantics/IntTransfer.lean`'s `validDiscrete_iff_validInt`.
+- `duration_dense_or_least_pos`: **the order-theoretic dichotomy with no lub hypothesis and no
+  Archimedean hypothesis at all** — every nontrivial totally ordered abelian group is either
+  densely ordered or has a least strictly positive element. This is *not* a corollary of
+  `complete_duration_discrete_or_dense` above: that theorem assumes the least-upper-bound
+  property (Dedekind completeness), which this one must not, since it is the pivot of the (Sp)
+  validity argument on an arbitrary `TaskFrame.Duration` — no completeness is available there.
+  It is also not `isLeast_pos_succ_zero`, which assumes `[SuccOrder D]` outright rather than
+  deriving the least-positive witness from bare linearity.
 -/
 
 namespace FormalSystem.Semantics
@@ -255,5 +263,40 @@ noncomputable def intIso [IsSuccArchimedean D] : D ≃+o ℤ :=
     (isLeast_pos_succ_zero (D := D))
 
 end SuccessorBranch
+
+section Dichotomy
+
+/--
+**Lemma A (report §4.1): the order-theoretic dichotomy.**
+
+Every nontrivial totally ordered abelian group is either densely ordered, or has a least
+strictly positive element. No least-upper-bound hypothesis, no Archimedean hypothesis — this is
+deliberately weaker in its assumptions than `complete_duration_discrete_or_dense` and
+`isLeast_pos_succ_zero` above, and is what lets the (Sp) validity argument
+(`Metalogic/SpWitness.lean`) apply to an arbitrary `TaskFrame.Duration` rather than only to a
+Dedekind-complete or successor-structured one.
+
+**Proof idea**: if `D` is not densely ordered, some `a < b` has nothing strictly between them;
+set `d := b - a`. Then `0 < d` (from `a < b`), and `d` is a lower bound for the positive cone: if
+`0 < c < d` then `a < a + c < b`, contradicting the no-witness-between property of `a`, `b`.
+-/
+theorem duration_dense_or_least_pos {D : Type} [AddCommGroup D] [LinearOrder D]
+    [IsOrderedAddMonoid D] [Nontrivial D] :
+    DenselyOrdered D ∨ ∃ d : D, IsLeast {x : D | 0 < x} d := by
+  by_cases hd : ∀ a b : D, a < b → ∃ c, a < c ∧ c < b
+  · exact Or.inl ⟨hd⟩
+  · right
+    push_neg at hd
+    obtain ⟨a, b, hab, hc⟩ := hd
+    refine ⟨b - a, sub_pos.mpr hab, ?_⟩
+    intro c hc'
+    by_contra hlt
+    push_neg at hlt
+    have h1 : a < a + c := lt_add_of_pos_right a hc'
+    have h2 : c + a < b := lt_sub_iff_add_lt.mp hlt
+    have h3 : a + c < b := by rw [add_comm]; exact h2
+    exact absurd h3 (not_lt.mpr (hc (a + c) h1))
+
+end Dichotomy
 
 end FormalSystem.Semantics

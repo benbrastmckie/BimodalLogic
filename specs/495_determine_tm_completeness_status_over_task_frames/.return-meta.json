@@ -1,37 +1,13 @@
 {
-  "status": "planned",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/495_determine_tm_completeness_status_over_task_frames/plans/01_tm-completeness-formalization.md",
-      "summary": "Nine-phase, 13.5-hour plan landing the machine-checkable portion of the TM-incompleteness verdict: the completeness/conservativity reduction, the (Sp) validity witness, the binder-weakened discrete BL soundness theorem, the Z1 countermodel closing CEF, and the Conservativity.lean prose correction."
-    }
-  ],
-  "next_steps": "Run /implement 495 to execute the plan",
+  "status": "in_progress",
   "metadata": {
-    "session_id": "sess_1788265374_c18aa8_495",
-    "agent_type": "planner-agent",
+    "session_id": "sess_1788282938_f2ac03",
+    "agent_type": "general-implementation-agent",
     "task_number": 495,
     "task_type": "formal",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 9,
-    "estimated_hours": 13.5,
-    "dependency_waves": [[1, 2, 4], [3], [5, 6], [7], [8], [9]],
-    "complexity": "complex",
-    "hard_constraint_status": "HONOURED. No forward-conservativity theorem is planned. Phase 4's reduction is an equivalence between two unasserted Props and needs no sorry; Phase 6's rollback clause explicitly forbids discharging the soundness theorem with sorry rather than blocking, because a sorry there would propagate into Phase 7 and manufacture an unsound refutation.",
-    "scope_split_respected": "CEB is an explicit Non-Goal per report section 6.2 (BLTruthAt/bl_soundness are TaskFrame-bound; TM+ is unsound on the two-fibre class, so the composition route is unavailable in principle). Phase 8 proposes a follow-up task for the native BL soundness layer but does not schedule it."
-  },
-  "modified_files": [
-    "specs/495_determine_tm_completeness_status_over_task_frames/plans/01_tm-completeness-formalization.md"
-  ],
-  "memory_candidates": [
-    {
-      "content": "When a formalization target is blocked, check first whether the target is logically EQUIVALENT to a proposition the tree already records as refuted, rather than attacking it directly. In BimodalLogic, 'TM complete over task frames' turned out to be the same proposition as 'forward conservativity at FrameClass.Base' -- a two-line composition of existing sorry-free results (a completeness theorem in one direction, a soundness theorem plus a truth-transfer bridge in the other). The general pattern: a completeness theorem for a system S over a class C, composed with a soundness theorem and a translation-transfer bridge, collapses 'S-completeness' and 'conservativity of an extension over S' into one Prop. Landing that equivalence as a theorem between two UNASSERTED Props is safe under a no-sorry-on-the-refuted-claim constraint -- it asserts neither side -- and it strengthens the constraint by exposing a second phrasing of the forbidden claim that a future dispatch might otherwise attempt in good faith.",
-      "category": "PATTERN",
-      "source_artifact": "specs/495_determine_tm_completeness_status_over_task_frames/plans/01_tm-completeness-formalization.md",
-      "confidence": 0.82,
-      "suggested_keywords": ["completeness-conservativity-reduction", "unasserted-prop-equivalence", "sorry-prohibition", "soundness-completeness-composition", "translation-bridge", "blocked-target-reframing"]
-    }
-  ]
+    "delegation_depth": 2,
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "phases_completed": 0,
+    "phases_total": 9
+  }
 }

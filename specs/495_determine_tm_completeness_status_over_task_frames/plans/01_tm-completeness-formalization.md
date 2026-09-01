@@ -1,7 +1,7 @@
 # Implementation Plan: TM completeness status over task frames
 
 - **Task**: 495 - Determine TM completeness status over task frames
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 13.5 hours
 - **Dependencies**: None (all prerequisites are sorry-free in-tree results)
 - **Research Inputs**: `specs/495_determine_tm_completeness_status_over_task_frames/reports/01_tm-completeness-status.md`
@@ -133,7 +133,7 @@ owns a new `Metalogic/SpWitness.lean`, Phase 6 owns `Semantics/BLValidity.lean` 
 
 ---
 
-### Phase 1: Lemma A — the order-theoretic dichotomy [NOT STARTED]
+### Phase 1: Lemma A — the order-theoretic dichotomy [COMPLETED]
 
 **Goal**: Prove that every nontrivial totally ordered abelian group is either densely ordered or
 has a least strictly positive element, with no least-upper-bound and no Archimedean hypothesis.
@@ -167,7 +167,7 @@ This is the pivot of the whole (Sp) argument (report §4.1, Lemma A).
 
 ---
 
-### Phase 2: `Prod.Lex` successor/predecessor infrastructure at `ℚ ×ₗ ℤ` [NOT STARTED]
+### Phase 2: `Prod.Lex` successor/predecessor infrastructure at `ℚ ×ₗ ℤ` [COMPLETED]
 
 **Goal**: Supply the `SuccOrder` and `PredOrder` instances the pinned Mathlib lacks for
 `Prod.Lex`, so the CEF countermodel carrier can discharge `bl_soundness_discrete_succ`'s binders
@@ -210,7 +210,7 @@ instance), recording the switch in the phase completion note.
 
 ---
 
-### Phase 3: DF and DN semantic lemmas, and their past-duals [NOT STARTED]
+### Phase 3: DF and DN semantic lemmas, and their past-duals [COMPLETED]
 
 **Goal**: Prove the four semantic facts that Phases 5 and 6 both consume — the shared
 mathematical core of this task (report §4.1 Lemmas B and C, plus §6.1's past-dual obligation).
@@ -252,7 +252,7 @@ mathematical core of this task (report §4.1 Lemmas B and C, plus §6.1's past-d
 
 ---
 
-### Phase 4: The completeness/conservativity reduction [NOT STARTED]
+### Phase 4: The completeness/conservativity reduction [COMPLETED]
 
 **Goal**: Land `TMCompleteBase ↔ ForwardBase` and its `.Discrete` mirror as theorems, asserting
 neither side, so that the identity of the two questions is machine-pinned (report §3, §7 item 3).
