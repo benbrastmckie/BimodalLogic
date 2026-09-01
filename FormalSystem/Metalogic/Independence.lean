@@ -7,6 +7,7 @@ Authors: Benjamin Brast-McKie
 import FormalSystem.Metalogic.Independence.ClockFrame
 import FormalSystem.Metalogic.Independence.LoopingDuration
 import FormalSystem.Metalogic.Independence.CoNotPriorU
+import FormalSystem.Metalogic.Independence.StaticFrame
 
 /-!
 # Independence results
@@ -28,6 +29,9 @@ the relationship in both directions.
   instance of `CO`.
 * `Independence/CoNotPriorU.lean` — the symmetric irrational arc valuation, the refutation of
   `Axiom.prior_U_gap` in that model, and the two independence statements.
+* `Independence/StaticFrame.lean` — the static frame at an arbitrary duration group: full
+  time-invariance from `LoopingDuration`, and the constant-truth `untl`/`snce` calculus that
+  turns every later axiom check into a rewrite.
 
 ## The method
 

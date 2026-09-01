@@ -203,7 +203,7 @@ proceeding.
 
 ---
 
-### Phase 2: Indicator exactness and the two closure corollaries [NOT STARTED]
+### Phase 2: Indicator exactness and the two closure corollaries [IN PROGRESS]
 
 **Goal**: The `¬X⊤`/`X⊤` indicator biconditionals, and `Sat .Dense` and `{F | F.IsDiscrete}` shown
 Galois-closed as one-liners over `galoisClosed_of_indicator`.
@@ -306,7 +306,7 @@ outside `DiscreteUnfolding.lean` appears, enumerate it and widen the dependent s
 
 ---
 
-### Phase 4: Static-frame kit and the constant-truth `untl` calculus [NOT STARTED]
+### Phase 4: Static-frame kit and the constant-truth `untl` calculus [COMPLETED]
 
 **Goal**: Static-frame time-invariance at arbitrary `D`, and the constant-truth calculus that
 turns every later axiom check into a rewrite.
