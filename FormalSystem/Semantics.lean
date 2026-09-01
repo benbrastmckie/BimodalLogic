@@ -6,6 +6,7 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.Semantics.TemporalOrder
 import FormalSystem.Semantics.TaskFrame
+import FormalSystem.Semantics.FrameProperty
 import FormalSystem.Semantics.IntNormalForm
 import FormalSystem.Semantics.PartialHistory
 import FormalSystem.Semantics.PartialHistoryOrder
@@ -46,6 +47,12 @@ polymorphic over temporal types.
   it. `FrameOver D` is the fibre over a fixed temporal order and the sole declaration site of
   the six frame axioms; `TaskFrame`'s flat surface (`F.WorldState`, `F.TaskRel`, `F.spherical`)
   is preserved by delegating accessors
+- `FrameProperty`: `def:frame-properties` as predicates on a *frame* — `TaskFrame.IsDense`,
+  `IsDiscrete`, `IsComplete`, plus the two narrowings the tree's soundness targets actually need
+  (`IsSuccArchDiscrete`, `def:TMplus-f`'s Hölder narrowing to ℤ-time; `IsDedekind`,
+  dense-and-complete). Possible as ordinary predicates because `TaskFrame` carries `Duration` as a
+  field rather than as an index. Records the `Dedekind`-not-`Complete` naming deviation at its
+  definition site
 - `IntNormalForm`: the ℤ-frame normal form — over `D = ℤ` a task frame is determined by its
   one-step relation `step w u := TaskRel w 1 u`, with `iter`/`iter_add` as the arithmetic core and
   `taskRel_eq_iter` as the decomposition theorem; also records the binder-fit finding for the two

@@ -1,7 +1,7 @@
 # Implementation Plan: Task #507 (v2)
 
 - **Task**: 507 - Parameterize validity by FrameClass (frame-level shape)
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 12.5 hours
 - **Dependencies**: None (the TaskFrame duration-bundling refactor this direction depends on has ALREADY LANDED -- see "Blocker resolution, verified" below)
 - **Research Inputs**: `specs/507_parameterize_validity_by_frameclass/reports/01_frameclass-indexed-validity.md`
@@ -259,35 +259,35 @@ owns `Metalogic/SetConsequence.lean` alone.
 
 ---
 
-### Phase 1: Frame properties from `def:frame-properties` [NOT STARTED]
+### Phase 1: Frame properties from `def:frame-properties` [COMPLETED]
 
 **Goal**: A new module holding every frame-level property predicate this task needs, each grounded
 in a pinned paper anchor, with the `Dedekind`-vs-`Complete` naming deviation recorded at the
 definition site. No consumer yet.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Semantics/FrameProperty.lean`, importing `FormalSystem.Semantics.Validity`.
-- [ ] Define `TaskFrame.IsDense (F : TaskFrame) : Prop := DenselyOrdered F.Duration`, citing
+- [x] Create `FormalSystem/Semantics/FrameProperty.lean`, importing `FormalSystem.Semantics.Validity`. *(deviation: altered — imports `FormalSystem.Semantics.TaskFrame` instead, placing the module UPSTREAM of `Validity.lean`. The five predicates are about frames, not validity, and need nothing from `Validity.lean`; upstream placement is what makes the Phase 4 "move `ValidIn` upstream" resolution available. See the Phase 4 deviation log entry.)*
+- [x] Define `TaskFrame.IsDense (F : TaskFrame) : Prop := DenselyOrdered F.Duration`, citing
       `def:frame-properties`' Dense clause.
-- [ ] Define `TaskFrame.IsDiscrete (F : TaskFrame) : Prop` as `def:frame-properties`' Discrete
+- [x] Define `TaskFrame.IsDiscrete (F : TaskFrame) : Prop` as `def:frame-properties`' Discrete
       clause verbatim (`∀ x, (∃ y, x < y) → ∃ y', IsLeast {z | x < z} y'`, or the equivalent
       least-positive-element form -- state which and why in the docstring).
-- [ ] Define `TaskFrame.IsSuccArchDiscrete (F : TaskFrame) : Prop` as the existential over the
+- [x] Define `TaskFrame.IsSuccArchDiscrete (F : TaskFrame) : Prop` as the existential over the
       binder bundle `ValidDiscrete` currently carries: `∃ (_ : SuccOrder F.Duration)
       (_ : PredOrder F.Duration), IsSuccArchimedean F.Duration ∧ IsPredArchimedean F.Duration`.
       Docstring must cite `def:TMplus-f`'s Hölder sentence and state that this, not `IsDiscrete`,
       is what `FrameClass.Discrete` admits axioms for.
-- [ ] Define `TaskFrame.IsComplete (F : TaskFrame) : Prop :=
+- [x] Define `TaskFrame.IsComplete (F : TaskFrame) : Prop :=
       ∀ s : Set F.Duration, s.Nonempty → BddAbove s → ∃ x, IsLUB s x`, citing
       `def:frame-properties`' Complete clause. Docstring must note that `ℤ` satisfies it and point
       at `IsDedekind`.
-- [ ] Define `TaskFrame.IsDedekind (F : TaskFrame) : Prop := F.IsDense ∧ F.IsComplete`, citing
+- [x] Define `TaskFrame.IsDedekind (F : TaskFrame) : Prop := F.IsDense ∧ F.IsComplete`, citing
       `def:frame-properties` + `cor:tm-completeness`'s TM⁺_c clause, and carrying the **recorded
       naming deviation**: paper says Complete, this tree says Dedekind, because "complete" is
       load-bearing for proof-theoretic completeness here.
-- [ ] Prove `TaskFrame.isDense_of_isDedekind` and `TaskFrame.isComplete_of_isDedekind`
+- [x] Prove `TaskFrame.isDense_of_isDedekind` and `TaskFrame.isComplete_of_isDedekind`
       (`And.left`/`And.right` -- named so downstream sites cite a lemma, not a projection).
-- [ ] Add the module to the `FormalSystem/Semantics.lean` aggregator (C8 convention).
+- [x] Add the module to the `FormalSystem/Semantics.lean` aggregator (C8 convention).
 
 **Timing**: 1.5 hours
 
