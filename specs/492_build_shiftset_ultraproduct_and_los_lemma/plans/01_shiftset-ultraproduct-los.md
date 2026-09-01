@@ -407,7 +407,7 @@ noted as a partial-completion checkpoint, not as a parallel wave.
 - **Commit Mode:** per-substep — `los` is committable green on its own, before `los_truthAt` is
   added.
 
-### Phase 4: Retire the probe to a consumer and record the acceptance evidence [NOT STARTED]
+### Phase 4: Retire the probe to a consumer and record the acceptance evidence [COMPLETED]
 
 - **Goal:** Eliminate the second carrier construction from the tree by reducing
   `DependentUltraproductProbe.lean` to a consumer of the promoted modules, and record the full
@@ -418,26 +418,29 @@ noted as a partial-completion checkpoint, not as a parallel wave.
     enumerates submodules — check first; skip with a note if it does not)
   - `specs/492_build_shiftset_ultraproduct_and_los_lemma/summaries/01_shiftset-ultraproduct-los-summary.md` (new)
 - **Tasks:**
-  - [ ] Replace the probe's body: keep the copyright header, retarget the module docstring to say
+  - [x] Replace the probe's body: keep the copyright header, retarget the module docstring to say
         the carrier construction has been promoted to
         `FormalSystem/Semantics/Ultraproduct/Carrier.lean` and that this file is now the
         axiom-profile regression check. Replace `import FormalSystem.Semantics.ShiftSet` +
         `Mathlib.Order.Filter.Ultrafilter.Basic` with
-        `import FormalSystem.Semantics.Ultraproduct.Los`.
-  - [ ] Delete the 16 promoted declarations from the probe. Retarget `shiftSetOnUD` (`:262`) at
+        `import FormalSystem.Semantics.Ultraproduct.Los`. *(deviation: altered —
+        `import FormalSystem.Semantics.Ultraproduct.IndexFilter` added alongside it; `Los.lean`
+        does not transitively reach `IndexFilter.lean`, so `#print axioms eventually_mem` failed
+        with `unknownIdentifier` under the `Los`-only import.)*
+  - [x] Delete the 16 promoted declarations from the probe. Retarget `shiftSetOnUD` (`:262`) at
         `uShiftSet` — i.e. replace it with an elaboration check that `uShiftSet φ S :
         ShiftSet (UT φ T)` type-checks, which is the same measurement (`ShiftSet` accepts the
         ultraproduct carrier, and the quotient lands in `Type` not `Type 1`) now stated against
         the real construction rather than a hypothesis-laden stand-in.
-  - [ ] Keep the `#print axioms` lines, retargeted at `uShiftSet`, `los`, `los_truthAt`, and
+  - [x] Keep the `#print axioms` lines, retargeted at `uShiftSet`, `los`, `los_truthAt`, and
         `eventually_mem`, so the axiom-profile regression check survives under a build target.
-  - [ ] Confirm `Tests/BimodalTest.lean:17`'s `import BimodalTest.Semantics.
+  - [x] Confirm `Tests/BimodalTest.lean:17`'s `import BimodalTest.Semantics.
         DependentUltraproductProbe` is untouched and still resolves.
-  - [ ] Run `lake build` and `lake test`.
-  - [ ] Verify the tree holds exactly one carrier construction:
+  - [x] Run `lake build` and `lake test`.
+  - [x] Verify the tree holds exactly one carrier construction:
         `grep -rn 'def evZero\|abbrev UD\|def carrierSetoid\|def UOmega' FormalSystem/ Tests/`
         must report hits only in `FormalSystem/Semantics/Ultraproduct/Carrier.lean`.
-  - [ ] Write the implementation summary at
+  - [x] Write the implementation summary at
         `specs/492_.../summaries/01_shiftset-ultraproduct-los-summary.md`, pasting the literal
         `#print axioms` output for `los_truthAt`, `los`, `uShiftSet`, `uSep`, and
         `eventually_mem`, plus the `lake build` result and a `sorry` count of zero.
@@ -462,20 +465,23 @@ noted as a partial-completion checkpoint, not as a parallel wave.
 
 ## Testing & Validation
 
-- [ ] `lake build` green after every phase (standing gate, `Verification Tier: full` throughout).
-- [ ] `lake test` green after Phase 4.
-- [ ] `grep -rn 'sorry\|sorryAx\|admit' FormalSystem/Semantics/Ultraproduct/` returns nothing.
-- [ ] `#print axioms FormalSystem.Semantics.Ultraproduct.los_truthAt` reports
+- [x] `lake build` green after every phase (standing gate, `Verification Tier: full` throughout).
+- [x] `lake test` green after Phase 4.
+- [x] `grep -rn 'sorry\|sorryAx\|admit' FormalSystem/Semantics/Ultraproduct/` returns nothing.
+      *(deviation: two hits remain, both prose inside module docstrings recording that `sorryAx`
+      is absent — `Los.lean:43`, `ShiftSetProduct.lean:55`. No `sorry`/`admit` term exists; the
+      five clean `#print axioms` profiles are the compiler's confirmation.)*
+- [x] `#print axioms FormalSystem.Semantics.Ultraproduct.los_truthAt` reports
       `[propext, Classical.choice, Quot.sound]` — `Classical.choice` acceptable, `sorryAx` absent.
       This is the task's named acceptance criterion; the literal output is pasted into the
       implementation summary.
-- [ ] Same axiom check for `los`, `uShiftSet`, `uSep`, `eventually_mem`.
-- [ ] `#check @FormalSystem.Semantics.Ultraproduct.los_truthAt` matches report §3.2's `TruthAt`
+- [x] Same axiom check for `los`, `uShiftSet`, `uSep`, `eventually_mem`.
+- [x] `#check @FormalSystem.Semantics.Ultraproduct.los_truthAt` matches report §3.2's `TruthAt`
       statement shape.
-- [ ] `#check @FormalSystem.Semantics.Ultraproduct.uShiftSet` takes no hypotheses beyond
+- [x] `#check @FormalSystem.Semantics.Ultraproduct.uShiftSet` takes no hypotheses beyond
       `S : ∀ i, ShiftSet (T i)`.
-- [ ] Single-carrier-construction check (Phase 4 verification criteria).
-- [ ] No file under `.claude/**` was written; no change to `lakefile.lean`; no change to
+- [x] Single-carrier-construction check (Phase 4 verification criteria).
+- [x] No file under `.claude/**` was written; no change to `lakefile.lean`; no change to
       `FormalSystem/Semantics/ShiftSet.lean`.
 
 ## Artifacts & Outputs

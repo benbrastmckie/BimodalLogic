@@ -1,17 +1,23 @@
 {
   "status": "implemented",
   "skeleton": false,
-  "dispatch_seq": 5,
-  "summary": "Phase 3 complete. Created FormalSystem/Semantics/Ultraproduct/Los.lean (162 lines, 2 declarations) transcribed from the verified prototype prototype/UltraproductLos.lean:111-211, and wired it into FormalSystem/Semantics.lean (one import line plus an Ultraproduct.Los submodule bullet). `los` proves Los's theorem at ShiftTruth by induction on Formula with all six constructors handled (atom, bot, imp, box, untl, snce); the binder order (S) (chi) : forall f x is preserved so the induction hypotheses are quantified over all carrier and duration sections. `los_truthAt` is the three-line term conjugating `los` with ShiftSet.forward_repr on both sides, discharging risk R2 by reuse rather than a fresh choice argument over total histories. ACCEPTANCE CRITERION MET -- literal `lake env lean` output: 'FormalSystem.Semantics.Ultraproduct.los' depends on axioms: [propext, Classical.choice, Quot.sound] / 'FormalSystem.Semantics.Ultraproduct.los_truthAt' depends on axioms: [propext, Classical.choice, Quot.sound]. sorryAx absent. #check @los_truthAt confirms the TruthAt form: forall {I} {phi : Ultrafilter I} {T : I -> TemporalOrder} (S : (i : I) -> ShiftSet (T i)) (f : (i : I) -> (S i).Carrier) (x : (i : I) -> (T i).carrier) (chi : Formula), TruthAt (uShiftSet phi S).model ((uShiftSet phi S).hist (omk f)) (mk x) chi <-> forall-eventually (i : I) in phi, TruthAt (S i).model ((S i).hist (f i)) (x i) chi. Full unscoped `lake build` (run with --no-share to defeat guard result sharing): 'Build completed successfully (2506 jobs).', exit 0, zero error lines. sorry census over FormalSystem/Semantics/Ultraproduct/: sorry_count 0. Vacuous-definition count and `axiom` declaration count unchanged from the pre-phase baseline (the only greps that hit are pre-existing prose in comments and one pre-existing Examples/ `trivial` proof, neither touched). ShiftSet.lean, TaskFrame.lean, lakefile.lean, the prototypes, and the Phase 1-2 modules were not modified; shiftSetOnUD was not promoted (Phase 4's job).",
-  "phases_completed": 3,
+  "dispatch_seq": 6,
+  "summary": "Phase 4 complete; task 492 done, 4 of 4 phases. The dependent ultraproduct of shift sets and Los's theorem are built sorry-free in FormalSystem/Semantics/Ultraproduct/ (Carrier.lean, IndexFilter.lean, ShiftSetProduct.lean, Los.lean), all wired into FormalSystem/Semantics.lean. Phase 4 retired the second carrier construction: Tests/BimodalTest/Semantics/DependentUltraproductProbe.lean shrank from 289 to 69 lines and now defines nothing -- it is a consumer of the promoted modules, keeping the binder-list/universe elaboration check (noncomputable example (S : forall i, ShiftSet (T i)) : ShiftSet (UT phi T) := uShiftSet phi S) and the #print axioms regression check under a build target. Acceptance evidence, literal: 'FormalSystem.Semantics.Ultraproduct.los_truthAt' depends on axioms: [propext, Classical.choice, Quot.sound] -- sorryAx absent. Same profile for los, uShiftSet, uSep, eventually_mem. Full `lake build` (--no-share): Build completed successfully (2506 jobs), exit 0, zero error lines. `lake test`: 2556/2556, exit 0. Single-carrier grep reports hits only in FormalSystem/Semantics/Ultraproduct/Carrier.lean.",
+  "phases_completed": 4,
   "phases_total": 4,
   "sorry_inventory": [],
   "blockers": [],
+  "continuation_path": null,
+  "continuation_context": null,
   "modified_files": [
+    "FormalSystem/Semantics/Ultraproduct/Carrier.lean",
+    "FormalSystem/Semantics/Ultraproduct/IndexFilter.lean",
+    "FormalSystem/Semantics/Ultraproduct/ShiftSetProduct.lean",
     "FormalSystem/Semantics/Ultraproduct/Los.lean",
     "FormalSystem/Semantics.lean",
-    "specs/492_build_shiftset_ultraproduct_and_los_lemma/plans/01_shiftset-ultraproduct-los.md"
-  ],
-  "continuation_path": null,
-  "continuation_context": null
+    "FormalSystem/Semantics/README.md",
+    "Tests/BimodalTest/Semantics/DependentUltraproductProbe.lean",
+    "specs/492_build_shiftset_ultraproduct_and_los_lemma/plans/01_shiftset-ultraproduct-los.md",
+    "specs/492_build_shiftset_ultraproduct_and_los_lemma/summaries/01_shiftset-ultraproduct-los-summary.md"
+  ]
 }
