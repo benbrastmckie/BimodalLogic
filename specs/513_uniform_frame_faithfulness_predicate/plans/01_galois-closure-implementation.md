@@ -617,7 +617,7 @@ continuing.
 
 ---
 
-### Phase 10: OPTIONAL — `Walk`/`MinCyc` periodicity apparatus at ℤ [NOT STARTED]
+### Phase 10: OPTIONAL — `Walk`/`MinCyc` periodicity apparatus at ℤ [COMPLETED]
 
 **Goal**: The periodicity machinery `03_probes.lean` Probe H needs, ported into the tree.
 
@@ -628,9 +628,13 @@ deliver the rest of the task without it. If phases 10-11 do not land, close them
 `[NOT STARTED]` and note the descope in the task summary.
 
 **Tasks**:
-- [ ] Append to `FormalSystem/Semantics/Correspondence/FwdRec.lean`, or split into
+- [x] Append to `FormalSystem/Semantics/Correspondence/FwdRec.lean`, or split into
       `FormalSystem/Semantics/Correspondence/FwdRecPeriodicity.lean` if the file grows past a
       comfortable size (implementer's call; register the new module if split).
+      *(deviation: altered — split into `FwdRecPeriodicity.lean`, as the phase permits;
+      registered in `FormalSystem/Semantics.lean`. Phase 11's bridge went into a further module
+      `FwdRecBridge.lean`, also registered, so the `ℤ`-only layer is separated from the
+      arbitrary-`D` periodicity layer at the module boundary.)*
 - [ ] Port `03_probes.lean` Probe H: walks in a digraph, `MinCyc`, `succ_unique`, `periodic`,
       and `truthAt_add_hist_period` (per-history periods, which is what distinguishes this from
       phase 4's uniform-period `staticFrame` case). Apply the pre-512 rename pass.
@@ -658,7 +662,7 @@ than overrunning one agent run.
 
 ---
 
-### Phase 11: OPTIONAL — FwdRec schema half at ℤ and `Mod densitySchema` [NOT STARTED]
+### Phase 11: OPTIONAL — FwdRec schema half at ℤ and `Mod densitySchema` [COMPLETED]
 
 **Goal**: `Bridge.density_schema_iff_fwdRec` in the tree, and the deliverable-(3) statement
 `Mod densitySchema = {F | F.FwdRec}` at ℤ.
