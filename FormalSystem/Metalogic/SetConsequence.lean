@@ -17,9 +17,17 @@ This module supplies the **vocabulary** for consequence from a possibly-infinite
 `Γ : Set Formula`: the finitary derivability relation `SetDerivable`, the four per-class
 set-based semantic consequence predicates, the basic lemmas relating them to the finite-context
 (`Γ : Context`) layer, and the statements — not the proofs — of strong completeness,
-compactness, satisfiability and model existence for `FrameClass.Base` and `FrameClass.Dense`,
-together with the strong-completeness, satisfiability and compactness statements for
-`FrameClass.Discrete`.
+compactness, satisfiability and model existence.
+
+**Those four statements are now one `FrameClass`-indexed family**, `SatisfiableSet`,
+`ModelExistence`, `Compact` and `StrongCompleteness`, each taking the class tag as a parameter
+and reading its frame condition off it through `FrameClass.Sat`. The per-class names this module
+used to define by hand — `StrongCompletenessBase` / `CompactBase` / `SatisfiableBaseSet` /
+`ModelExistenceBase`, their Dense siblings, and the three Discrete ones — are retained, with
+their statements unchanged, as instantiations of that family. The `.Dedekind` row is available
+by the same instantiation and is deliberately **left unstated here**: naming it is the follow-on
+task's business, together with the non-compactness witness it would need, which cannot reuse the
+Discrete one.
 
 It is vocabulary only. **No compactness result is proved or refuted here.** `CompactBase`,
 `ModelExistenceBase`, `CompactDense` and `ModelExistenceDense` are `Prop`-valued definitions
@@ -51,12 +59,12 @@ one negatively.
 
 `FormalSystem/Metalogic/StrongCompleteness.lean` imports this module. Because that module owns
 the `foldr`-implication bridge between finite-context and empty-context derivability, and the
-pointwise currying lemma `truthAt_foldr_imp` with it, four *theorems* stated in this module's
-vocabulary live there rather than here: the two strong-completeness reductions
-`strongCompletenessBase_of_compact` and `strongCompletenessDense_of_compact`, and the two
-model-existence-to-compactness bridges `compactBase_of_modelExistence` and
-`compactDense_of_modelExistenceDense`. Placing any of them in this module would be an import
-cycle; the reason is the same in all four cases.
+pointwise currying lemma `truthAt_foldr_imp` with it, two *theorems* stated in this module's
+vocabulary live there rather than here: the strong-completeness reduction
+`strongCompleteness_of_compact` and the model-existence-to-compactness bridge
+`compact_of_modelExistence`. Both are generic in the `FrameClass`, so between them they carry
+what used to be four per-class theorems. Placing either in this module would be an import
+cycle; the reason is the same in both cases.
 -/
 
 namespace FormalSystem.Metalogic
@@ -416,9 +424,9 @@ These four definitions are **statements**, exactly as their Dense siblings below
 them is discharged in this module; all four are discharged in
 `Metalogic/Compactness.lean`. `CompactBase` was for a long time the entire remaining
 obligation for Base strong completeness — the single-formula engine hypothesis of
-`strongCompletenessBase_of_compact` (`StrongCompleteness.lean`) being independently
-dischargeable at `BXCanonical.completeness`, and kept live there precisely so that `CompactBase`
-was isolated as the whole of what remained. `compactBase` now supplies it, and
+`strongCompleteness_of_compact` (`StrongCompleteness.lean`) being independently dischargeable at
+`BXCanonical.completeness`, and kept live there precisely so that `CompactBase` was isolated as
+the whole of what remained. `compactBase` now supplies it, and
 `strongCompletenessBase` collects the result.
 
 Each definition is its Dense sibling with `SetSemanticConsequenceBase` / `valid` in place of
@@ -440,8 +448,8 @@ def StrongCompletenessBase : Prop := StrongCompleteness FrameClass.Base
 /-- Semantic compactness of the Base consequence relation, stated in the form the completeness
     derivation actually consumes: a set-consequence yields a *finite* premise list whose
     `foldr`-implication into the conclusion is valid. This is the whole of what
-    `strongCompletenessBase_of_compact` needs beyond its engine; it is supplied by `compactBase`
-    in `FormalSystem/Metalogic/Compactness.lean`. -/
+    `strongCompleteness_of_compact` needs beyond its engine at this class; it is supplied by
+    `compactBase` in `FormalSystem/Metalogic/Compactness.lean`. -/
 def CompactBase : Prop := Compact FrameClass.Base
 
 /-- Satisfiability of a possibly-infinite set over arbitrary carriers — `SatisfiableSet` at
@@ -460,8 +468,8 @@ def SatisfiableBaseSet (Γ : Set Formula) : Prop := SatisfiableSet FrameClass.Ba
 /-- The model-existence form, which is what an ultraproduct construction proves directly:
     finite satisfiability of every finite sublist lifts to satisfiability of the whole set.
     `ModelExistenceBase → CompactBase` is a contraposition through the `Formula.neg` clause of
-    `TruthAt` together with `truthAt_foldr_imp`, and it **is proved** — as
-    `compactBase_of_modelExistence` in `FormalSystem/Metalogic/StrongCompleteness.lean`. It is
+    `TruthAt` together with `truthAt_foldr_imp`, and it **is proved** — as the `.Base` instance
+    of `compact_of_modelExistence` in `FormalSystem/Metalogic/StrongCompleteness.lean`. It is
     not proved *here* for the import-cycle reason recorded under `## Downstream` above:
     `truthAt_foldr_imp` is owned by that module, and that module imports this one.
     `ModelExistenceBase` itself is proved as `modelExistenceBase` in
@@ -474,7 +482,7 @@ def ModelExistenceBase : Prop := ModelExistence FrameClass.Base
 These four definitions are **statements**. None of them is discharged in this module; all four
 are discharged in `Metalogic/Compactness.lean`. `CompactDense` was for a long time the
 entire remaining obligation for Dense strong completeness (the single-formula engine hypothesis
-being independently dischargeable — see the note on `strongCompletenessDense_of_compact` in
+being independently dischargeable — see the note on `strongCompleteness_of_compact` in
 `StrongCompleteness.lean`); `compactDense` now supplies it, and `strongCompletenessDense`
 collects the result.
 -/
@@ -500,7 +508,8 @@ def SatisfiableDenseSet (Γ : Set Formula) : Prop := SatisfiableSet FrameClass.D
     finite satisfiability of every finite sublist lifts to satisfiability of the whole set.
     `ModelExistenceDense → CompactDense` is a contraposition through the `Formula.neg` clause of
     `TruthAt` together with `truthAt_foldr_imp` (`StrongCompleteness.lean`), and it **is
-    proved** — as `compactDense_of_modelExistenceDense` in that same module. It is not proved
+    proved** — as the `.Dense` instance of `compact_of_modelExistence` in that same module. It is
+    not proved
     *here* for the import-cycle reason recorded under `## Downstream` above.
     `ModelExistenceDense` itself is proved as `modelExistenceDense` in
     `FormalSystem/Metalogic/Compactness.lean`, by the ultraproduct construction this docstring

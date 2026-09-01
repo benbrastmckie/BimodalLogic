@@ -132,13 +132,13 @@ short name in this tree is docstring prose rather than a call site.
 * `SemanticConsequenceDedekindDense` — semantic consequence over dense Dedekind-complete
   frames; the hypothesis-and-conclusion shape of `soundness_dedekind` packaged as a definition.
 * `truthAt_foldr_imp` — the pointwise currying lemma relating a context to its `imp`-fold.
-* `strongCompletenessBase_of_compact` / `strongCompletenessDense_of_compact` — strong
-  completeness from compactness plus a single-formula engine, and
-  `compactBase_of_modelExistence` / `compactDense_of_modelExistenceDense` — compactness from
-  model existence, contraposed through the `Formula.neg` clause of `TruthAt` and
-  `truthAt_foldr_imp`. All four are reductions: their `Compact*` and `ModelExistence*`
-  hypotheses are stated in `SetConsequence.lean` and discharged in
-  `Metalogic/Compactness.lean`, which instantiates all four reductions.
+* `strongCompleteness_of_compact` — strong completeness from compactness plus a single-formula
+  engine, and `compact_of_modelExistence` — compactness from model existence, contraposed through
+  the `Formula.neg` clause of `TruthAt` and `truthAt_foldr_imp`. Both are **generic in the
+  `FrameClass`**, and each replaced a pair of per-class duplicates. Both are reductions: their
+  `Compact fc` and `ModelExistence fc` hypotheses are stated in `SetConsequence.lean` and
+  discharged, at `.Base` and `.Dense`, in `Metalogic/Compactness.lean`, which instantiates each
+  reduction twice.
 * `semantic_deduction_dedekind_dense` — the semantic deduction theorem for that relation.
 * `derivable_foldr_imp_iff` — its proof-theoretic counterpart, generic in the frame class.
 * `consequence_completeness_dedekind_of_engine` — finite-context consequence completeness,
@@ -597,7 +597,7 @@ duplicate of a definition that already owns the `Γ ⊨ φ` notation.
 Genuine strong completeness over `Set Formula` premise sets remains open for this class; the
 vocabulary for it is `StrongCompletenessBase` / `CompactBase` in
 `FormalSystem/Metalogic/SetConsequence.lean`, and the one theorem about it is
-`strongCompletenessBase_of_compact` above. Nothing in this section is strong completeness:
+`strongCompleteness_of_compact` above, at `fc := .Base`. Nothing in this section is strong completeness:
 `Context` is `List Formula`. -/
 
 /--
@@ -680,7 +680,7 @@ Genuine strong completeness over `Set Formula` premise sets **holds** for this c
 `StrongCompletenessDense` and `CompactDense` (`FormalSystem/Metalogic/SetConsequence.lean`) are
 discharged by `strongCompletenessDense` and `compactDense` in
 `FormalSystem/Metalogic/Compactness.lean`, the first of them by instantiating the
-`strongCompletenessDense_of_compact` reduction above. Nothing in *this* section is strong
+`strongCompleteness_of_compact` reduction above at `fc := .Dense`. Nothing in *this* section is strong
 completeness: `Context` is `List Formula`. -/
 
 /--
@@ -761,7 +761,7 @@ consumed directly.
 this statement is inter-derivable with weak completeness through the deduction theorem. The
 infinitary statement over `Γ : Set Formula` is `StrongCompletenessDense`, which is **proved**
 for this class, as `strongCompletenessDense` in `Metalogic/Compactness.lean` — reached
-only through `CompactDense`, via `strongCompletenessDense_of_compact`.
+only through `CompactDense`, via `strongCompleteness_of_compact` at `fc := .Dense`.
 -/
 theorem consequence_completeness_dense (Γ : Context) (φ : Formula)
     (h : SemanticConsequenceDense Γ φ) : Derivable FrameClass.Dense Γ φ :=

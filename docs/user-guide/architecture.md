@@ -820,18 +820,26 @@ distinction between consequence completeness and *strong* completeness is made p
 | `SetConsistent` | `Core/MaximalConsistent.lean:96` | Consistency of a possibly-infinite set, **finitary**: no finite sublist derives `⊥` |
 | `SetMaximalConsistent` | `Core/MaximalConsistent.lean:103` | Maximality of such a set |
 | `set_lindenbaum` | `Core/MaximalConsistent.lean:303` | Every `SetConsistent` set extends to a `SetMaximalConsistent` one |
-| `not_setConsistent_of_setDerivable_bot` | `SetConsequence.lean:280` | The bridge from set-derivability of `⊥` back to inconsistency |
-| `StrongCompletenessBase` | `SetConsequence.lean:306` | The strong-completeness statement for Base -- **proved**, as `Compactness.lean`'s `strongCompletenessBase` |
-| `CompactBase` | `SetConsequence.lean:314` | Semantic compactness of the Base consequence relation -- **proved**, as `compactBase` |
-| `ModelExistenceBase` | `SetConsequence.lean:335` | Finite satisfiability lifts to satisfiability -- **proved**, as `modelExistenceBase` |
-| `StrongCompletenessDense` | `SetConsequence.lean:352` | The Dense statement -- **proved**, as `strongCompletenessDense` |
-| `CompactDense` | `SetConsequence.lean:359` | Semantic compactness for Dense -- **proved**, as `compactDense` |
-| `ModelExistenceDense` | `SetConsequence.lean:379` | The Dense model-existence statement -- **proved**, as `modelExistenceDense` |
+| `not_setConsistent_of_setDerivable_bot` | `SetConsequence.lean:416` | The bridge from set-derivability of `⊥` back to inconsistency |
+| `SatisfiableSet` | `SetConsequence.lean:153` | Satisfiability of a premise set over the frames of a class -- the `FrameClass`-indexed primitive |
+| `ModelExistence` | `SetConsequence.lean:163` | Finite satisfiability lifts to satisfiability, at a class |
+| `Compact` | `SetConsequence.lean:174` | Semantic compactness of a class's consequence relation |
+| `StrongCompleteness` | `SetConsequence.lean:184` | The strong-completeness statement, at a class |
+| `StrongCompletenessBase` | `SetConsequence.lean:446` | `StrongCompleteness .Base` -- **proved**, as `Compactness.lean`'s `strongCompletenessBase` |
+| `CompactBase` | `SetConsequence.lean:453` | `Compact .Base` -- **proved**, as `compactBase` |
+| `ModelExistenceBase` | `SetConsequence.lean:478` | `ModelExistence .Base` -- **proved**, as `modelExistenceBase` |
+| `StrongCompletenessDense` | `SetConsequence.lean:494` | `StrongCompleteness .Dense` -- **proved**, as `strongCompletenessDense` |
+| `CompactDense` | `SetConsequence.lean:499` | `Compact .Dense` -- **proved**, as `compactDense` |
+| `ModelExistenceDense` | `SetConsequence.lean:517` | `ModelExistence .Dense` -- **proved**, as `modelExistenceDense` |
 
-Two reductions sit on top: `strongCompletenessBase_of_compact` and
-`strongCompletenessDense_of_compact` reduce each strong-completeness statement to its
-compactness hypothesis alone. `FormalSystem/Metalogic/Compactness.lean` discharges that
-hypothesis and instantiates both, so Base and Dense strong completeness hold unconditionally.
+The four statements are one `FrameClass`-indexed family; the per-class names are instantiations
+of it, with their statements unchanged. `.Dedekind` is available by the same instantiation but
+is deliberately left unstated.
+
+One reduction sits on top, generic in the class: `strongCompleteness_of_compact` reduces the
+strong-completeness statement to its compactness hypothesis alone.
+`FormalSystem/Metalogic/Compactness.lean` discharges that hypothesis and instantiates the
+reduction at both classes, so Base and Dense strong completeness hold unconditionally.
 The construction runs through model existence: given a finitely satisfiable `Γ`, index the
 finite sublists of `Γ`, take an ultrafilter on that index type for which each `ψ ∈ Γ` is
 eventually a member, and build the ultraproduct of the models the finite fragments already

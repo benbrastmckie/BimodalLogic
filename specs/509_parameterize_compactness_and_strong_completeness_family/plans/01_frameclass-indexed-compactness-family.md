@@ -522,7 +522,7 @@ or term position is a compiled consumer and belongs in this phase, not Phase 5.
 
 ---
 
-### Phase 5: Documentation and docstring sweep [NOT STARTED]
+### Phase 5: Documentation and docstring sweep [COMPLETED]
 
 **Goal**: Clear every stale reference. This surface is **substantially larger than research §5
 reported** (Defects 2 and 3); the inventory below is greped from the live tree and is the one to
@@ -564,16 +564,16 @@ exists — but its binder description may now be one slot short, so read it).
 staleness from task 508, not caused by this task, but correct it while the file is open.
 
 **Tasks**:
-- [ ] Sweep group A: rewrite each `.lean` docstring reference; convert "the two reductions" /
+- [x] Sweep group A: rewrite each `.lean` docstring reference; convert "the two reductions" /
       "the two bridges" narration to the singular.
-- [ ] Sweep group B: update the three documentation files.
-- [ ] Sweep group C: re-derive every `SetConsequence.lean:NNN` citation by grep **after** Phases
+- [x] Sweep group B: update the three documentation files.
+- [x] Sweep group C: re-derive every `SetConsequence.lean:NNN` citation by grep **after** Phases
       2-4 have settled the file, then write the corrected values.
-- [ ] Read group D's four sites; edit only where a claim became false. Record which were checked
+- [x] Read group D's four sites; edit only where a claim became false. Record which were checked
       and left alone.
-- [ ] Recompute and correct all `FormalSystem/Metalogic/README.md` line counts for the four files
+- [x] Recompute and correct all `FormalSystem/Metalogic/README.md` line counts for the four files
       this task touched.
-- [ ] Add to `FormalSystem/Metalogic/SetConsequence.lean`'s module docstring a short note that
+- [x] Add to `FormalSystem/Metalogic/SetConsequence.lean`'s module docstring a short note that
       the family is now `FrameClass`-indexed, and that the Dedekind row is available by
       instantiation but deliberately unstated pending the follow-on task.
 
@@ -584,7 +584,30 @@ staleness from task 508, not caused by this task, but correct it while the file 
 **Verification Tier**: interface
 
 **Scope Hypothesis**: The inventory above claims 25 in-tree docstring sites, 8 documentation
-sites naming deleted theorems, 11 stale-citation sites, and 4 name-only sites. Confirm at
+sites naming deleted theorems, 11 stale-citation sites, and 4 name-only sites.
+
+**Scope Hypothesis — outcome: CONFIRMED in kind, and the closing grep is clean.** Re-running the
+two greps at implementation time reproduced the inventory's *shape* exactly: the four deleted
+names survived only in `Metalogic.lean`, `StrongCompleteness.lean`, `Compactness.lean` and
+`SetConsequence.lean` in-tree, and in `API_REFERENCE.md`, `architecture.md` and
+`known-limitations.md` under `docs/`. All were rewritten. The closing grep
+(`--include=*.lean --include=*.md`, excluding `specs/` and `.lake/`) now returns **zero** hits
+outside `specs/`; every remaining occurrence is in a frozen task artifact or review, which this
+phase correctly does not touch.
+
+Group D outcome — all four sites read, **none edited**, because no claim became false:
+
+| Site | Claim | Still true? |
+|---|---|---|
+| `README.md:164` | "this tree contains no `CompactDedekind` definition and no refuting theorem" | Yes — `.Dedekind` is deliberately left unstated |
+| `docs/project-info/implementation-status.md:68-69` | `SetConsequence.lean` "states `CompactBase`/`CompactDense` and their siblings" | Yes — they are still stated, now as instantiations |
+| `docs/development/MODULE_ORGANIZATION.md:294-295` | "`CompactBase` and `CompactDense` state the two compactness properties" | Yes |
+| `FormalSystem/Semantics/Ultraproduct/Carrier.lean:15` | "`SatisfiableBaseSet` binds the duration carrier existentially per instance" | Yes — the frame-condition slot was added beside that binder, not in place of it |
+
+Line-count corrections applied in `FormalSystem/Metalogic/README.md`: `StrongCompleteness.lean`
+943 -> 1,002 (the 943 was pre-existing staleness from task 508, not caused here),
+`SetConsequence.lean` 445 -> 568, `DiscreteNonCompactness.lean` 334 -> 331, `Compactness.lean`
+166 -> 179, root `Metalogic.lean` 226 -> 227. Confirm at
 implementation time by re-running the two greps that produced it —
 `grep -rn "strongCompletenessBase_of_compact\|strongCompletenessDense_of_compact\|
 compactBase_of_modelExistence\|compactDense_of_modelExistenceDense" --include=*.lean --include=*.md

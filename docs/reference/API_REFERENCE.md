@@ -701,21 +701,36 @@ The set-based consequence layer, over possibly-infinite `Γ : Set Formula`.
 
 | Declaration | Line | What it is |
 |-------------|------|------------|
-| `StrongCompletenessBase` | 306 | The strong-completeness statement for Base (**proved** in `Compactness.lean`) |
-| `CompactBase` | 314 | Semantic compactness of the Base consequence relation (**proved**) |
-| `ModelExistenceBase` | 335 | Finite satisfiability lifts to satisfiability, for Base (**proved**) |
-| `StrongCompletenessDense` | 352 | The Dense strong-completeness statement (**proved**) |
-| `CompactDense` | 359 | Semantic compactness for Dense (**proved**) |
-| `ModelExistenceDense` | 379 | The Dense model-existence statement (**proved**) |
-| `not_setConsistent_of_setDerivable_bot` | 280 | Bridge from set-derivability of `⊥` to inconsistency |
+| `SatisfiableSet` | 153 | Satisfiability of a premise set over the frames of `fc` |
+| `ModelExistence` | 163 | Finite satisfiability lifts to satisfiability, at `fc` |
+| `Compact` | 174 | Semantic compactness of the `fc` consequence relation |
+| `StrongCompleteness` | 184 | The strong-completeness statement, at `fc` |
+| `SatisfiableSet.base_of_forall` / `.dense_of_forall` / `.discrete_of_forall` / `.dedekind_of_forall` | 299 / 305 / 315 / 325 | Binder-shape adapters restoring the pre-collapse introduction shape |
+| `StrongCompletenessBase` | 446 | `StrongCompleteness .Base` (**proved** in `Compactness.lean`) |
+| `CompactBase` | 453 | `Compact .Base` (**proved**) |
+| `SatisfiableBaseSet` | 466 | `SatisfiableSet .Base` |
+| `ModelExistenceBase` | 478 | `ModelExistence .Base` (**proved**) |
+| `StrongCompletenessDense` | 494 | `StrongCompleteness .Dense` (**proved**) |
+| `CompactDense` | 499 | `Compact .Dense` (**proved**) |
+| `SatisfiableDenseSet` | 505 | `SatisfiableSet .Dense` |
+| `ModelExistenceDense` | 517 | `ModelExistence .Dense` (**proved**) |
+| `StrongCompletenessDiscrete` | 539 | `StrongCompleteness .Discrete` (**refuted**) |
+| `SatisfiableDiscreteSet` | 559 | `SatisfiableSet .Discrete` |
+| `CompactDiscrete` | 566 | `Compact .Discrete` (**refuted**) |
+| `not_setConsistent_of_setDerivable_bot` | 416 | Bridge from set-derivability of `⊥` to inconsistency |
+
+The satisfiability / model-existence / compactness / strong-completeness row is a single
+`FrameClass`-indexed family; every per-class name above is an instantiation of it, with its
+statement unchanged. `.Dedekind` is reachable by the same instantiation and is deliberately left
+unstated.
 
 Supporting definitions live in `FormalSystem/Metalogic/Core/MaximalConsistent.lean`:
 `SetConsistent` (`:96`, correctly finitary), `SetMaximalConsistent` (`:103`), and
 `set_lindenbaum` (`:303`).
 
-`strongCompletenessBase_of_compact` and `strongCompletenessDense_of_compact` reduce each
-strong-completeness statement to its compactness hypothesis alone; `Compactness.lean` below
-discharges that hypothesis.
+`strongCompleteness_of_compact` (`StrongCompleteness.lean`) reduces the strong-completeness
+statement to its compactness hypothesis alone, at any class; `Compactness.lean` below discharges
+that hypothesis at `.Base` and `.Dense`.
 
 ---
 
@@ -731,12 +746,12 @@ the ultraproduct off eventual truth along that family. All six are sorryAx-free 
 
 | Declaration | Line | What it is |
 |-------------|------|------------|
-| `modelExistenceBase` | 81 | Model existence for Base, by ultraproduct |
-| `modelExistenceDense` | 107 | Model existence for Dense, density carried through the construction |
-| `compactBase` | 127 | `CompactBase`, via `compactBase_of_modelExistence` |
-| `compactDense` | 131 | `CompactDense`, via `compactDense_of_modelExistenceDense` |
-| `strongCompletenessBase` | 141 | `StrongCompletenessBase`, unconditionally |
-| `strongCompletenessDense` | 148 | `StrongCompletenessDense`, unconditionally |
+| `modelExistenceBase` | 82 | Model existence for Base, by ultraproduct |
+| `modelExistenceDense` | 119 | Model existence for Dense, density carried through the construction |
+| `compactBase` | 141 | `CompactBase`, via `compact_of_modelExistence` |
+| `compactDense` | 144 | `CompactDense`, via `compact_of_modelExistence` |
+| `strongCompletenessBase` | 154 | `StrongCompletenessBase`, unconditionally |
+| `strongCompletenessDense` | 161 | `StrongCompletenessDense`, unconditionally |
 
 ---
 

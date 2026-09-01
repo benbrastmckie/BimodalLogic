@@ -34,17 +34,17 @@ The infinitary statement has **three distinct statuses** across the four frame c
 | Frame class | Status of strong completeness | Anchor |
 |-------------|-------------------------------|--------|
 | `FrameClass.Discrete` | **Machine-refuted** | `DiscreteNonCompactness.lean:250` `discrete_consequence_not_compact`, `:280` `strongCompletenessDiscrete_refuted` |
-| `FrameClass.Base`, `FrameClass.Dense` | **Proved** | `Compactness.lean` `strongCompletenessBase`, `strongCompletenessDense`, `compactBase`, `compactDense`; statements at `SetConsequence.lean:306` `StrongCompletenessBase`, `:314` `CompactBase`, `:352` `StrongCompletenessDense`, `:359` `CompactDense` |
+| `FrameClass.Base`, `FrameClass.Dense` | **Proved** | `Compactness.lean` `strongCompletenessBase`, `strongCompletenessDense`, `compactBase`, `compactDense`; statements at `SetConsequence.lean:446` `StrongCompletenessBase`, `:453` `CompactBase`, `:494` `StrongCompletenessDense`, `:499` `CompactDense` |
 | `FrameClass.Dedekind` | **Unavailable on the primary source's own terms** -- unproved *and* unrefuted | `StrongCompleteness.lean:74-89` |
 
 For Base and Dense the missing substantive piece was a model-existence theorem, which does not
 follow from the single-formula countermodel engines. It is now supplied by `modelExistenceBase`
 and `modelExistenceDense` (`FormalSystem/Metalogic/Compactness.lean`), which build a model of
 the whole premise set as an ultraproduct, indexed by the finite sublists of that set, of the
-models its finite fragments already have. `compactBase_of_modelExistence` and
-`compactDense_of_modelExistenceDense` turn those into compactness, and
-`strongCompletenessBase_of_compact` / `strongCompletenessDense_of_compact` combine compactness
-with the existing weak-completeness engines. Neither class's binder list imposes
+models its finite fragments already have. `compact_of_modelExistence` turns those into
+compactness, and `strongCompleteness_of_compact` combines compactness with the existing
+weak-completeness engines; both are single, `FrameClass`-generic reductions, instantiated once
+per class rather than written out per class. Neither class's binder list imposes
 Archimedean-ness, which is why the Discrete non-compactness counterexample does not reach
 them.
 
