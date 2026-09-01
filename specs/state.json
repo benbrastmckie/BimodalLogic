@@ -4,8 +4,18 @@
     "total_tasks": 42,
     "last_sync": "2026-08-24T21:34:14Z"
   },
-  "next_project_number": 516,
+  "next_project_number": 517,
   "active_projects": [
+    {
+      "project_number": 516,
+      "project_name": "update_documentation_for_finalized_metalogic_results",
+      "status": "not_started",
+      "task_type": "general",
+      "description": "Update README.md and other relevant documentation to reflect the finalized completeness, soundness, compactness, and characterization results, maintaining accuracy without over-representing progress (task 494 remains outstanding)",
+      "topic": "documentation",
+      "created": "2026-09-01T20:49:37Z",
+      "last_updated": "2026-09-01T20:49:37Z"
+    },
     {
       "project_number": 515,
       "project_name": "eliminate_overlapping_nontrivial_instance_warnings",
@@ -1368,7 +1378,8 @@
     "sorry-elimination",
     "strong_completeness",
     "tableau-training",
-    "toolchain"
+    "toolchain",
+    "documentation"
   ],
   "active_goal": "Systematize the metalogic: index validity, soundness, and compactness by FrameClass, then discharge strong completeness for Base and Dense via the ultraproduct chain."
 }

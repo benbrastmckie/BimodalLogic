@@ -1,5 +1,5 @@
 ---
-next_project_number: 516
+next_project_number: 517
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 516
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,193,257,298,433,461,476,481,494,504,506 | -- | automation, dataset-enhancement, decidability, ... |
+| 1 | 127,128,193,257,298,433,461,476,481,494,504,506,516 | -- | automation, dataset-enhancement, decidability, ... |
 | 2 | 178,231,282,296,463,502 | 193,298,433,461 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 219,464,497 | 231,463,502 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 465,498,499,500 | 464,497 | algebraic-representation, decidability |
@@ -90,7 +90,21 @@ next_project_number: 516
 
 494 [NOT STARTED] — NOW SEQUENCED BEHIND THE COMPACTNESS PARAMETERIZATION (see the RE
 
+### Documentation
+
+516 [NOT STARTED] — Update README.md and other relevant documentation to reflect the 
+
 ## Tasks
+
+### 516. Update documentation for finalized metalogic results
+- **Status**: [NOT STARTED]
+- **Task Type**: general
+- **Topic**: documentation
+- **Dependencies**: None
+
+**Description**: Update README.md and other relevant documentation to reflect the finalized completeness, soundness, compactness, and characterization results, maintaining accuracy without over-representing progress (task 494 remains outstanding)
+
+---
 
 ### 515. Eliminate overlapping nontrivial instance warnings
 - **Status**: [COMPLETED]
