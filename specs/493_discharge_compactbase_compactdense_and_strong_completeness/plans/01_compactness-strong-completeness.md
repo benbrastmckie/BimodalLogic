@@ -182,7 +182,7 @@ plus a one-line import in `FormalSystem/Metalogic.lean`. Confirm at implementati
 
 ---
 
-### Phase 2: Correct the in-tree Lean docstrings [NOT STARTED]
+### Phase 2: Correct the in-tree Lean docstrings [COMPLETED]
 
 **Goal**: No Lean docstring in `FormalSystem/` asserts these six are open, and the status
 taxonomy reads consistently two-way across every mirror.
@@ -238,7 +238,7 @@ correctly describe Dedekind or Discrete.
 
 ---
 
-### Phase 3: Correct the documentation [NOT STARTED]
+### Phase 3: Correct the documentation [IN PROGRESS]
 
 **Goal**: README and `docs/` no longer describe Base/Dense compactness or strong completeness as
 open, and the new module is documented.

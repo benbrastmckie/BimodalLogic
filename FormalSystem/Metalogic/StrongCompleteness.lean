@@ -81,12 +81,14 @@ it is easy to get backwards: the engine never sees a context. It is fed the sing
   the finite-context form `consequence_completeness_dedekind` as its deduction-theorem
   companion — not a "strong" theorem, and nothing in this module purports otherwise.
 
-**Three distinct statuses, which must not be collapsed.** Base and Dense are **open** (neither
-proved nor refuted; `CompactBase`/`CompactDense` name the obligations). Discrete is
-**machine-refuted** (`discrete_consequence_not_compact`, `strongCompletenessDiscrete_refuted`).
-Dedekind is **unavailable on Reynolds's terms** — unproved, with no refutation in the tree.
+**Three distinct statuses, which must not be collapsed.** Base and Dense are **proved**
+(`compactBase`/`compactDense` and `strongCompletenessBase`/`strongCompletenessDense`, in
+`Metalogic/Compactness.lean`). Discrete is **machine-refuted**
+(`discrete_consequence_not_compact`, `strongCompletenessDiscrete_refuted`). Dedekind is
+**unavailable on Reynolds's terms** — unproved, with no refutation in the tree.
 `SetConsequence.lean` already models this discipline for Dense versus Discrete; the Dedekind
-case is the third status, and reading it as sharing Discrete's would overstate the evidence.
+case is the third status, and reading it as sharing either of the other two would misstate the
+evidence.
 
 ## Axiomatisability of the real-line temporal logic
 
@@ -132,7 +134,8 @@ short name in this tree is docstring prose rather than a call site.
   `compactBase_of_modelExistence` / `compactDense_of_modelExistenceDense` — compactness from
   model existence, contraposed through the `Formula.neg` clause of `TruthAt` and
   `truthAt_foldr_imp`. All four are reductions: their `Compact*` and `ModelExistence*`
-  hypotheses are open obligations stated in `SetConsequence.lean`.
+  hypotheses are stated in `SetConsequence.lean` and discharged in
+  `Metalogic/Compactness.lean`, which instantiates all four reductions.
 * `semantic_deduction_dedekind_dense` — the semantic deduction theorem for that relation.
 * `derivable_foldr_imp_iff` — its proof-theoretic counterpart, generic in the frame class.
 * `consequence_completeness_dedekind_of_engine` — finite-context consequence completeness,
@@ -286,30 +289,30 @@ one. Stating it there would be an import cycle.
 
 **The `engine` hypothesis is live, deliberately.** `BXCanonical.completeness`
 (`BXCanonical/Completeness.lean:196`) has exactly this shape,
-`valid φ → Derivable FrameClass.Base [] φ`, and is sorry-free — so unlike at the time the Dense
-version was written, this hypothesis is *now* dischargeable. It is nevertheless not discharged:
-keeping the statement engine-generic isolates `CompactBase` as **the entire** remaining
-obligation for Base strong completeness, which is the fact worth recording in the type. The
-unconditional finite-context result is `consequence_completeness_base` below; nothing is lost by
-leaving `engine` open here.
+`valid φ → Derivable FrameClass.Base [] φ`, and is sorry-free, so this hypothesis is
+dischargeable. It is nevertheless not discharged *here*: keeping the statement engine-generic
+records in the type that compactness is the whole of the gap between weak and strong
+completeness at this class. The engine is supplied at the call site, in
+`Metalogic/Compactness.lean`, where `strongCompletenessBase` instantiates this reduction with
+`compactBase` and `completeness_base`. The unconditional finite-context result is
+`consequence_completeness_base` below.
 
-**Status of `CompactBase`.** Open — neither proved nor refuted. The gate on the bespoke
-ultraproduct route that would settle it is passed, but the route itself is a separate,
-multi-phase piece of work that is deliberately not attempted in this file: it needs an
-ultraproduct carrier, a Łoś lemma for `TruthAt`, and `ModelExistenceBase`. The last link of that
-chain is no longer outstanding — `compactBase_of_modelExistence` below derives `CompactBase`
-from `ModelExistenceBase` — so `CompactBase` is now open exactly and only because
-`ModelExistenceBase` is.
-The existing `BXCanonical` chronicle machinery **structurally cannot** be extended to reach it,
-because every countermodel there routes through `bundleFlow_completeness_from_neg_membership`
-(`Metalogic/Algebraic/FlowFrame.lean:791`), whose three coherence hypotheses —
-`BFMCS.RestrictedTemporallyCoherent`, `…RestrictedBackwardUntilSinceCoherent`,
-`…RestrictedForwardUntilSinceCoherent` — are all relative to a single `root : Formula` and
-quantify over `deferralClosure root`, while the engine additionally demands
-`φ ∈ subformulaClosure root`. Both closures are `Finset Formula`-valued. An infinite `Γ` would
-need coherence over `⋃_{ψ ∈ Γ} subformulaClosure ψ`, which is not a `Finset` and has no single
-`root` to be relative to. That is why the route abandons the chronicle rather than extending
-it.
+**Status of `CompactBase`, and why the route is what it is.** `CompactBase` is **proved**, by
+`compactBase` in `Metalogic/Compactness.lean`, through an ultraproduct construction:
+an ultraproduct carrier, a Łoś lemma for `TruthAt`, and `ModelExistenceBase`, from which
+`compactBase_of_modelExistence` below derives `CompactBase`.
+
+That the route runs through an ultraproduct rather than through this file's own machinery is
+forced, not incidental. The `BXCanonical` chronicle machinery **structurally cannot** be
+extended to reach `CompactBase`, because every countermodel there routes through
+`bundleFlow_completeness_from_neg_membership` (`Metalogic/Algebraic/FlowFrame.lean:791`), whose
+three coherence hypotheses — `BFMCS.RestrictedTemporallyCoherent`,
+`…RestrictedBackwardUntilSinceCoherent`, `…RestrictedForwardUntilSinceCoherent` — are all
+relative to a single `root : Formula` and quantify over `deferralClosure root`, while the engine
+additionally demands `φ ∈ subformulaClosure root`. Both closures are `Finset Formula`-valued. An
+infinite `Γ` needs coherence over `⋃_{ψ ∈ Γ} subformulaClosure ψ`, which is not a `Finset` and
+has no single `root` to be relative to. That is why the ultraproduct route abandons the
+chronicle rather than extending it.
 -/
 theorem strongCompletenessBase_of_compact (hc : CompactBase)
     (engine : ∀ ψ : Formula, valid ψ → Derivable FrameClass.Base [] ψ) :
@@ -334,8 +337,10 @@ Stating it there would be an import cycle.
 **The `engine` hypothesis is live.** `BXCanonical.completeness_dense`
 (`BXCanonical/Completeness.lean:256`) has exactly this shape,
 `ValidDense φ → Derivable FrameClass.Dense [] φ`. It is deliberately *not* consumed here: this
-statement is kept engine-generic, so `CompactDense` is the whole of the remaining obligation for
-Dense strong completeness.
+statement is kept engine-generic, recording in the type that compactness is the whole of the gap
+between weak and strong completeness at this class. The engine is supplied at the call site, in
+`Metalogic/Compactness.lean`, where `strongCompletenessDense` instantiates this
+reduction with `compactDense` and `completeness_dense`.
 -/
 theorem strongCompletenessDense_of_compact (hc : CompactDense)
     (engine : ∀ ψ : Formula, ValidDense ψ → Derivable FrameClass.Dense [] ψ) :
@@ -369,11 +374,12 @@ Like the two strong-completeness reductions above, this theorem lives here rathe
 `CompactBase` vocabulary it is stated against, because `truthAt_foldr_imp` is owned by this
 module and this module imports that one. Stating it there would be an import cycle.
 
-**A reduction, not a terminus.** `ModelExistenceBase` is itself an **open obligation** — the
-ultraproduct construction that would discharge it is not attempted anywhere in this tree — so
-`CompactBase` stays open. What this theorem establishes is that `CompactBase` is no *harder*
-than model existence, and that the remaining work on the Base strong-completeness route is
-concentrated in a single place.
+**A reduction, not a terminus.** `ModelExistenceBase` is a hypothesis here, discharged
+elsewhere: `modelExistenceBase` (`Metalogic/Compactness.lean`) proves it by an
+ultraproduct construction, and `compactBase` in that same module is this theorem applied to it.
+What this theorem establishes on its own is that `CompactBase` is no *harder* than model
+existence — which is what concentrated the Base strong-completeness route into a single
+construction.
 -/
 theorem compactBase_of_modelExistence (h : ModelExistenceBase) : CompactBase := by
   classical
@@ -417,9 +423,11 @@ It lives here rather than in `FormalSystem/Metalogic/SetConsequence.lean` for th
 import-cycle reason recorded on its Base sibling: `truthAt_foldr_imp` is owned by this module,
 and this module imports the one supplying the vocabulary.
 
-**A reduction, not a terminus.** `ModelExistenceDense` is an **open obligation**, so
-`CompactDense` — which is the whole of what `strongCompletenessDense_of_compact` still needs —
-stays open too; this theorem only relocates that obligation.
+**A reduction, not a terminus.** `ModelExistenceDense` is a hypothesis here; this theorem only
+relocates the obligation onto it. It is discharged by `modelExistenceDense`
+(`Metalogic/Compactness.lean`), and `compactDense` in that same module is this
+theorem applied to it — which is what `strongCompletenessDense_of_compact` needs beyond its
+engine.
 -/
 theorem compactDense_of_modelExistenceDense (h : ModelExistenceDense) : CompactDense := by
   classical
@@ -645,8 +653,9 @@ consumed directly.
 **This is not strong completeness.** `Context := List Formula`, so every `Γ` here is finite and
 this statement is inter-derivable with weak completeness through the deduction theorem. The
 infinitary statement over `Γ : Set Formula` is `StrongCompletenessBase`
-(`SetConsequence.lean`), which is **open** for this class — neither proved nor refuted — and is
-not reached by anything in this file.
+(`SetConsequence.lean`), which is **proved** for this class, as `strongCompletenessBase` in
+`Metalogic/Compactness.lean` — but it is not reached by anything in this file, which
+supplies only the reduction it is built from.
 -/
 theorem consequence_completeness_base (Γ : Context) (φ : Formula)
     (h : SemanticConsequence Γ φ) : Derivable FrameClass.Base Γ φ :=
@@ -689,11 +698,12 @@ carrier (`[DenselyOrdered D]`), so the general `SemanticConsequence` relation wo
 different — and for a completeness statement, false — claim; a class-specific relation is
 required, and `SemanticConsequenceDense` supplies it.
 
-Genuine strong completeness over `Set Formula` premise sets remains **open** for this class:
-`StrongCompletenessDense` and `CompactDense` (`FormalSystem/Metalogic/SetConsequence.lean`) name
-open obligations, and `strongCompletenessDense_of_compact` above isolates `CompactDense` as the
-whole of what remains. Nothing in this section is strong completeness: `Context` is
-`List Formula`. -/
+Genuine strong completeness over `Set Formula` premise sets **holds** for this class:
+`StrongCompletenessDense` and `CompactDense` (`FormalSystem/Metalogic/SetConsequence.lean`) are
+discharged by `strongCompletenessDense` and `compactDense` in
+`FormalSystem/Metalogic/Compactness.lean`, the first of them by instantiating the
+`strongCompletenessDense_of_compact` reduction above. Nothing in *this* section is strong
+completeness: `Context` is `List Formula`. -/
 
 /--
 Semantic consequence over densely ordered carriers.
@@ -748,9 +758,9 @@ consumed directly.
 
 **This is not strong completeness.** `Context := List Formula`, so every `Γ` here is finite and
 this statement is inter-derivable with weak completeness through the deduction theorem. The
-infinitary statement over `Γ : Set Formula` is `StrongCompletenessDense`, which is **open** for
-this class — neither proved nor refuted — and is reached only through `CompactDense`, via
-`strongCompletenessDense_of_compact`.
+infinitary statement over `Γ : Set Formula` is `StrongCompletenessDense`, which is **proved**
+for this class, as `strongCompletenessDense` in `Metalogic/Compactness.lean` — reached
+only through `CompactDense`, via `strongCompletenessDense_of_compact`.
 -/
 theorem consequence_completeness_dense (Γ : Context) (φ : Formula)
     (h : SemanticConsequenceDense Γ φ) : Derivable FrameClass.Dense Γ φ :=
@@ -807,8 +817,9 @@ unsatisfiable over every Archimedean discrete carrier, since `ValidDiscrete` req
 `IsSuccArchimedean`/`IsPredArchimedean`.
 
 Discrete is the one class in this development where "machine-refuted" is the earned phrasing:
-Base and Dense are **open**, and Dedekind is **unavailable on its primary source's own terms**
-(Reynolds 1992 Theorem 7 is weak-only). Those three statuses must not be collapsed into one. -/
+Base and Dense are **proved** (`Metalogic/Compactness.lean`), and Dedekind is
+**unavailable on its primary source's own terms** (Reynolds 1992 Theorem 7 is weak-only). Those
+three statuses must not be collapsed into one. -/
 
 /--
 Semantic consequence over discrete carriers.
@@ -908,12 +919,13 @@ Dense and Discrete — are discharged with no `sorryAx` and no new axiom: exactl
 `Classical.choice` and `Quot.sound`, the same set carried by the Dedekind terminus audited
 earlier in this file and by the three `BXCanonical` engines they consume.
 `strongCompletenessBase_of_compact` is audited alongside them; it is a reduction rather than a
-terminus, since its `CompactBase` hypothesis is an open obligation.
+terminus, since it takes `CompactBase` as a hypothesis rather than proving it.
 
 `compactBase_of_modelExistence` and `compactDense_of_modelExistenceDense` are audited on the
 same footing and are counted separately from the fourteen above: each is likewise a reduction
-rather than a terminus, since its `ModelExistenceBase` / `ModelExistenceDense` hypothesis is an
-open obligation. -/
+rather than a terminus, taking `ModelExistenceBase` / `ModelExistenceDense` as a hypothesis. The
+termini these three reduce to are audited where they are proved, in
+`Metalogic/Compactness.lean`. -/
 
 #print axioms strongCompletenessBase_of_compact
 #print axioms compactBase_of_modelExistence

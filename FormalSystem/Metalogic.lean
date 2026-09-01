@@ -104,11 +104,14 @@ temporal analogs (G phi -> phi, H phi -> phi) are NOT valid under irreflexive se
 
   * `FrameClass.Discrete` — **machine-refuted**. `discrete_consequence_not_compact` and
     `strongCompletenessDiscrete_refuted` (entry below) settle it negatively.
-  * `FrameClass.Base` and `FrameClass.Dense` — **open**. Neither proved nor refuted;
-    `CompactBase`/`CompactDense` and `StrongCompletenessBase`/`StrongCompletenessDense`
-    (`Metalogic/SetConsequence.lean`) name the obligations, and
-    `strongCompletenessBase_of_compact`/`strongCompletenessDense_of_compact` reduce each to its
-    compactness hypothesis alone.
+  * `FrameClass.Base` and `FrameClass.Dense` — **proved**. `strongCompletenessBase` and
+    `strongCompletenessDense` (`Metalogic/Compactness.lean`) inhabit the
+    `StrongCompletenessBase`/`StrongCompletenessDense` statements of
+    `Metalogic/SetConsequence.lean`, obtained by instantiating the reductions
+    `strongCompletenessBase_of_compact`/`strongCompletenessDense_of_compact` with `compactBase`/
+    `compactDense` and the weak-completeness engines. Compactness itself comes from
+    `modelExistenceBase`/`modelExistenceDense` by an ultraproduct construction over the finite
+    sublists of the premise set.
   * `FrameClass.Dedekind` — **unavailable on the primary source's own terms**. Reynolds 1992
     Theorem 7 is weak-only, and this tree contains no `CompactDedekind` definition and no
     refuting theorem, so the class is *unproved* rather than refuted.
@@ -154,17 +157,21 @@ theorem (Reynolds 1992, Section 8 Theorem 6) at the chronicle bridge and reading
   (`consequence_completeness_dedekind`, `completeness_dedekind`); plus the strong-completeness
   programme, the two compactness reductions `strongCompletenessBase_of_compact` and
   `strongCompletenessDense_of_compact` (each keeping its single-formula `engine` hypothesis
-  live so that compactness is isolated as the whole remaining obligation), the two
+  live, so that the reduction records compactness as the whole of the gap between weak and
+  strong completeness; the engine is supplied at the call site in `Compactness.lean`), the two
   model-existence bridges `compactBase_of_modelExistence` and
-  `compactDense_of_modelExistenceDense` (which discharge `CompactBase` / `CompactDense` from
-  the corresponding model-existence statements, relocating the remaining obligation onto
-  `ModelExistenceBase` / `ModelExistenceDense`), and the non-compactness obstruction that
+  `compactDense_of_modelExistenceDense` (which derive `CompactBase` / `CompactDense` from
+  the corresponding model-existence statements), and the non-compactness obstruction that
   bounds the Discrete class
+- **Compactness.lean**: the discharge of the Base and Dense strong-completeness programme —
+  `modelExistenceBase` and `modelExistenceDense` by an ultraproduct over the finite sublists of
+  the premise set, `compactBase` and `compactDense` through the two bridges above, and
+  `strongCompletenessBase` and `strongCompletenessDense` by instantiating the two reductions
 - **SetConsequence.lean**: the `Γ : Set Formula` vocabulary the strong-completeness statements
   are phrased in — `SetDerivable`, the four per-class set consequence relations, and the
-  `Prop`-valued names for the open Base and Dense obligations (`StrongCompletenessBase`,
-  `CompactBase`, `SatisfiableBaseSet`, `ModelExistenceBase` and their Dense siblings) together
-  with the refuted Discrete ones
+  `Prop`-valued names for the Base and Dense statements (`StrongCompletenessBase`,
+  `CompactBase`, `SatisfiableBaseSet`, `ModelExistenceBase` and their Dense siblings), proved in
+  `Compactness.lean`, together with the refuted Discrete ones
 - **DiscreteNonCompactness.lean**: the machine-checked discharge of one of those obstructions —
   the `{F p} ∪ {¬Xⁿ p}` witness, the first semantic characterisation of `Formula.next`
   (`truthAt_next_iff`), and the two refutations `discrete_consequence_not_compact` and

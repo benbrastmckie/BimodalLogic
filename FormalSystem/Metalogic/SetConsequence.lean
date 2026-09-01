@@ -21,15 +21,16 @@ compactness, satisfiability and model existence for `FrameClass.Base` and `Frame
 together with the strong-completeness, satisfiability and compactness statements for
 `FrameClass.Discrete`.
 
-It is vocabulary only. **No compactness result is proved or refuted here**, and no existing
-proof gap anywhere in the tree is closed by this module. `CompactBase`, `ModelExistenceBase`,
-`CompactDense` and `ModelExistenceDense` are `Prop`-valued definitions that name **open
-obligations**; discharging them is future work. `CompactDiscrete` and
-`StrongCompletenessDiscrete` are different in kind: they are not open but **refuted**, in
+It is vocabulary only. **No compactness result is proved or refuted here.** `CompactBase`,
+`ModelExistenceBase`, `CompactDense` and `ModelExistenceDense` are `Prop`-valued definitions
+stated here and **discharged elsewhere**: all four are proved in
+`Metalogic/Compactness.lean`, by `compactBase`, `modelExistenceBase`, `compactDense` and
+`modelExistenceDense`, via an ultraproduct construction. `CompactDiscrete` and
+`StrongCompletenessDiscrete` are different in kind: they are not proved but **refuted**, in
 `Metalogic/DiscreteNonCompactness.lean`, by `discrete_consequence_not_compact` and
 `strongCompletenessDiscrete_refuted`. The Base/Dense statements and the Discrete ones must not
-be read as sharing a status — the Base and Dense questions are unsettled, the Discrete one is
-settled negatively.
+be read as sharing a status — the Base and Dense questions are settled positively, the Discrete
+one negatively.
 
 ## Design
 
@@ -283,34 +284,38 @@ theorem not_setConsistent_of_setDerivable_bot {fc : FrameClass} {Γ : Set Formul
 
 /-! ## Strong completeness, compactness and model existence for `FrameClass.Base`
 
-These four definitions are **statements, not results**, exactly as their Dense siblings below
-are. None of them is discharged in this module, and `CompactBase` in particular is the entire
-remaining obligation for Base strong completeness: the single-formula engine hypothesis of
-`strongCompletenessBase_of_compact` (`StrongCompleteness.lean`) is already dischargeable at
-`BXCanonical.completeness`, and is kept live there precisely so that `CompactBase` is isolated
-as the whole of what remains.
+These four definitions are **statements**, exactly as their Dense siblings below are. None of
+them is discharged in this module; all four are discharged in
+`Metalogic/Compactness.lean`. `CompactBase` was for a long time the entire remaining
+obligation for Base strong completeness — the single-formula engine hypothesis of
+`strongCompletenessBase_of_compact` (`StrongCompleteness.lean`) being independently
+dischargeable at `BXCanonical.completeness`, and kept live there precisely so that `CompactBase`
+was isolated as the whole of what remained. `compactBase` now supplies it, and
+`strongCompletenessBase` collects the result.
 
 Each definition is its Dense sibling with `SetSemanticConsequenceBase` / `valid` in place of
 `SetSemanticConsequenceDense` / `ValidDense` and the `[DenselyOrdered D]` binder dropped —
 there is no third axis of variation.
 
-Base's status is **open**, the same status as Dense and distinct from both Discrete (refuted,
+Base's status is **proved**, the same status as Dense and distinct from both Discrete (refuted,
 below) and Dedekind (unavailable on its primary source's own terms). The three must not be read
 as sharing a status.
 -/
 
-/-- **Strong completeness for `FrameClass.Base`** — the reserved statement, an **open
-    obligation**. The `StrongCompletenessDense` statement with `SetSemanticConsequenceBase` in
-    place of `SetSemanticConsequenceDense` and `FrameClass.Base` as the derivability target.
-    Neither proved nor refuted here or anywhere in this tree. -/
+/-- **Strong completeness for `FrameClass.Base`** — the statement. The
+    `StrongCompletenessDense` statement with `SetSemanticConsequenceBase` in place of
+    `SetSemanticConsequenceDense` and `FrameClass.Base` as the derivability target. Proved as
+    `strongCompletenessBase` in `FormalSystem/Metalogic/Compactness.lean`; not proved here,
+    which supplies vocabulary only. -/
 def StrongCompletenessBase : Prop :=
   ∀ (Γ : Set Formula) (φ : Formula),
     SetSemanticConsequenceBase Γ φ → SetDerivable FrameClass.Base Γ φ
 
 /-- Semantic compactness of the Base consequence relation, stated in the form the completeness
     derivation actually consumes: a set-consequence yields a *finite* premise list whose
-    `foldr`-implication into the conclusion is valid. An **open obligation** — this is the whole
-    of what `strongCompletenessBase_of_compact` still needs. -/
+    `foldr`-implication into the conclusion is valid. This is the whole of what
+    `strongCompletenessBase_of_compact` needs beyond its engine; it is supplied by `compactBase`
+    in `FormalSystem/Metalogic/Compactness.lean`. -/
 def CompactBase : Prop :=
   ∀ (Γ : Set Formula) (φ : Formula), SetSemanticConsequenceBase Γ φ →
     ∃ L : List Formula, (∀ ψ ∈ L, ψ ∈ Γ) ∧ valid (L.foldr Formula.imp φ)
@@ -331,7 +336,9 @@ def SatisfiableBaseSet (Γ : Set Formula) : Prop :=
     `compactBase_of_modelExistence` in `FormalSystem/Metalogic/StrongCompleteness.lean`. It is
     not proved *here* for the import-cycle reason recorded under `## Downstream` above:
     `truthAt_foldr_imp` is owned by that module, and that module imports this one.
-    `ModelExistenceBase` itself is undischarged — an **open obligation**. -/
+    `ModelExistenceBase` itself is proved as `modelExistenceBase` in
+    `FormalSystem/Metalogic/Compactness.lean`, by the ultraproduct construction this docstring
+    anticipates. -/
 def ModelExistenceBase : Prop :=
   ∀ Γ : Set Formula,
     (∀ L : List Formula, (∀ ψ ∈ L, ψ ∈ Γ) → SatisfiableBaseSet {ψ | ψ ∈ L}) →
@@ -339,10 +346,12 @@ def ModelExistenceBase : Prop :=
 
 /-! ## Strong completeness, compactness and model existence for `FrameClass.Dense`
 
-These four definitions are **statements, not results**. None of them is discharged in this
-module, and `CompactDense` in particular is the entire remaining obligation for Dense strong
-completeness (the single-formula engine hypothesis is already dischargeable — see the note on
-`strongCompletenessDense_of_compact` in `StrongCompleteness.lean`).
+These four definitions are **statements**. None of them is discharged in this module; all four
+are discharged in `Metalogic/Compactness.lean`. `CompactDense` was for a long time the
+entire remaining obligation for Dense strong completeness (the single-formula engine hypothesis
+being independently dischargeable — see the note on `strongCompletenessDense_of_compact` in
+`StrongCompleteness.lean`); `compactDense` now supplies it, and `strongCompletenessDense`
+collects the result.
 -/
 
 /-- **Strong completeness for `FrameClass.Dense`** — the reserved statement. Note that
@@ -374,8 +383,10 @@ def SatisfiableDenseSet (Γ : Set Formula) : Prop :=
     `ModelExistenceDense → CompactDense` is a contraposition through the `Formula.neg` clause of
     `TruthAt` together with `truthAt_foldr_imp` (`StrongCompleteness.lean`), and it **is
     proved** — as `compactDense_of_modelExistenceDense` in that same module. It is not proved
-    *here* for the import-cycle reason recorded under `## Downstream` above. `ModelExistenceDense`
-    itself is undischarged — an **open obligation**. -/
+    *here* for the import-cycle reason recorded under `## Downstream` above.
+    `ModelExistenceDense` itself is proved as `modelExistenceDense` in
+    `FormalSystem/Metalogic/Compactness.lean`, by the ultraproduct construction this docstring
+    anticipates. -/
 def ModelExistenceDense : Prop :=
   ∀ Γ : Set Formula,
     (∀ L : List Formula, (∀ ψ ∈ L, ψ ∈ Γ) → SatisfiableDenseSet {ψ | ψ ∈ L}) →
@@ -383,9 +394,10 @@ def ModelExistenceDense : Prop :=
 
 /-! ## Strong completeness, satisfiability and compactness for `FrameClass.Discrete`
 
-These three definitions are **statements, not results** — but unlike their Dense counterparts
-above they do not name open obligations. Both `CompactDiscrete` and `StrongCompletenessDiscrete`
-are *refuted* downstream in `Metalogic/DiscreteNonCompactness.lean`, by
+These three definitions are **statements, not results** — and unlike their Base and Dense
+counterparts above they are settled *negatively*. Both `CompactDiscrete` and
+`StrongCompletenessDiscrete` are *refuted* downstream in
+`Metalogic/DiscreteNonCompactness.lean`, by
 `discrete_consequence_not_compact` and `strongCompletenessDiscrete_refuted` respectively, which
 exhibit the premise set `{F p} ∪ {¬Xⁿ p : n ∈ ℕ}` as finitely satisfiable over `ℤ` yet
 unsatisfiable over every Archimedean discrete carrier. Nothing about those refutations is
