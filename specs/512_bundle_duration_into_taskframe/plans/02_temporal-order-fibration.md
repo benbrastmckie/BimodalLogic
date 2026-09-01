@@ -1036,7 +1036,7 @@ invariants gate's isolation compile saw it. That is now three for three: Phase 2
 
 ---
 
-### Phase 8: `IntTransfer.lean`, and the base-change hypothesis [NOT STARTED]
+### Phase 8: `IntTransfer.lean`, and the base-change hypothesis [COMPLETED]
 
 **Goal**: `IntTransfer.lean` at the fibre, and an answer to the question of whether it is already
 base change along a temporal-order morphism.
@@ -1053,15 +1053,15 @@ either outcome, and do not let the general construction grow beyond what the fil
 content already proves — a *new* theory of temporal-order morphisms is out of scope.
 
 **Tasks**:
-- [ ] Read `Semantics/IntTransfer.lean` end to end and record the verdict on the hypothesis, with
+- [x] Read `Semantics/IntTransfer.lean` end to end and record the verdict on the hypothesis, with
       evidence (which declarations are instances of base change and which are not).
-- [ ] Migrate the file to the fibre: `ParamTaskFrame D` → `FrameOver D` with `(D : TemporalOrder)`,
+- [x] Migrate the file to the fibre: `ParamTaskFrame D` → `FrameOver D` with `(D : TemporalOrder)`,
       and `≃+o` transport reindexed accordingly. Note that `ValidInt` (`:336`) and
       `validDiscrete_iff_validInt` (`:356`) tie this file to Phase 5's `Valid*` work.
-- [ ] If the hypothesis holds: introduce the named construction, restate the existing declarations
+- [x] If the hypothesis holds: introduce the named construction, restate the existing declarations
       as its instances, and confirm every downstream consumer still closes with the same proof.
       Content may not change — this is a renaming of an existing construction, not a generalization.
-- [ ] If it does not hold: record why, migrate mechanically, and add nothing.
+- [x] If it does not hold: record why, migrate mechanically, and add nothing.
 
 **Timing**: 2 hours
 
@@ -1076,6 +1076,57 @@ verdict either way, and a phase that ends without one is incomplete.
 
 **Files to modify**:
 - `FormalSystem/Semantics/IntTransfer.lean`
+
+#### Phase 8 VERDICT — is `IntTransfer.lean` already base change along a temporal-order morphism?
+
+**Verdict: only along ISOMORPHISMS — and that restriction is forced, not incidental. No general
+base-change construction is hiding here, and none was introduced.**
+
+*Where the suspicion is right.* `FrameOver.map F e` leaves `WorldState` alone and precomposes
+`TaskRel`'s duration argument with `e.symm`. As a construction that **is** reindexing — base change
+along `e.symm : ↑E → ↑D`, carrying the fibre over `D` to the fibre over `E`. The fibration
+vocabulary does name something already present.
+
+*Where it is wrong, with declaration-level evidence.* The construction does not survive weakening
+`e` to a one-directional morphism, and the obstruction localizes to a single axiom. From the field
+proofs of `FrameOver.map`:
+
+| field | what the proof uses | what it needs of `e` |
+|---|---|---|
+| `nullity_identity`, `converse` | `map_zero`, `map_neg` | a group hom |
+| `comp`, `serial`, `spherical` | `map_le_map_iff e.symm` (`.mpr` direction) | `e.symm` order-reflecting |
+| **`limit`** | `map_lt_map_iff e` **and** `map_lt_map_iff e.symm` | **both directions** |
+
+***Limit* is the axiom that forces the isomorphism.** Its hypothesis is instantiated at `e x` —
+pushing a duration *forward* — while its witness is produced as `e.symm n`, pulling one *back*. A
+base change along a `g : ↑E → ↑D` with no inverse has nothing to instantiate the hypothesis with.
+This is not a proof artifact: *Limit* asserts that every positive cone shrinks to a point, and a
+non-surjective reindexing can omit exactly the small durations that witness it.
+
+Everything downstream inherits the restriction. `WorldHistory.comap` — and through it the `box`
+case of `truthAt_map`, the only case that touches it — consumes `e` **forward**. So `truthAt_map`
+is an equivalence of fibres induced by an isomorphism of bases, not a functorial action of a
+morphism.
+
+*Action taken, per the plan's instruction not to let the construction outgrow what the file
+proves.* The file was migrated to the fibre and **nothing was added**. No `FrameOver.baseChange`,
+no theory of temporal-order morphisms. What the module contains, now said in its own docstring, is
+that **the fibres over isomorphic temporal orders are equivalent** — at the frame (`map`), model
+(`TaskModel.map`), history (`map`/`comap`/`Aligned`) and truth (`truthAt_map`) levels.
+
+*Consequence for downstream scope.* A general base-change theory is **new mathematics**, not a
+refactor: it would require re-proving *Limit* under whatever weaker hypothesis turns out to
+suffice. Recorded here so 507/513 can size it as new work rather than expecting Phase 8 to have
+delivered it.
+
+**One migration detail worth carrying.** `validDiscrete_iff_validInt` needed its transport
+ascribed at `↑intOrder` rather than at `ℤ` (`let e : ↑F.Duration ≃+o ↑intOrder := intIso`), plus
+explicit `(D := F.Duration) (E := intOrder)`: Lean cannot invert `↑E ≟ ℤ` to recover
+`E := intOrder`, since `↑E` is not a pattern. Expect the same wherever a ℤ-typed object has to
+meet a `TemporalOrder`-indexed one.
+
+`#print axioms FormalSystem.Semantics.validDiscrete_iff_validInt` =
+`[propext, Classical.choice, Quot.sound]` — unchanged, as the phase requires.
 
 **Verification**:
 - Standing contract (1-9).

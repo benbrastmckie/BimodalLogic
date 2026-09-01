@@ -39,7 +39,7 @@ not even have the same type until the domain equation is transported — and the
 into `HEq` wrangling.
 
 The `Prop`-valued relation `Aligned` avoids this entirely. `Aligned.st` is a **non-dependent**
-equation between two `F.WorldState` terms, because `(ParamTaskFrame.map F e).WorldState` is
+equation between two `F.WorldState` terms, because `(FrameOver.map F e).WorldState` is
 *definitionally* `F.WorldState`. Its one genuine transport is discharged by the tree's existing
 `WorldHistory.states_eq_of_time_eq`. Do not replace `Aligned` with an `Equiv`.
 
@@ -56,7 +56,7 @@ Two measured failures, recorded so a future editor does not re-hit them:
 
 ## Main results
 
-- `ParamTaskFrame.map`: transport a task frame along `e : D ≃+o E`, all seven fields.
+- `FrameOver.map`: transport a task frame along `e : D ≃+o E`, all seven fields.
 - `TaskModel.map`, `WorldHistory.map`, `WorldHistory.comap`: the model and history transports.
 - `Aligned`, `aligned_map`, `aligned_comap`, `isTotal_map`: the `HEq`-free correspondence
   between a history and its transport.
@@ -69,11 +69,49 @@ namespace FormalSystem.Semantics
 
 open FormalSystem.Syntax
 
-variable {D E : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
-    [AddCommGroup E] [LinearOrder E] [IsOrderedAddMonoid E] [Nontrivial E]
+variable {D E : TemporalOrder}
+
+/-!
+## Is this base change along a temporal-order morphism?
+
+**Verdict: only along isomorphisms, and that restriction is forced — not incidental.**
+
+`FrameOver.map F e` *is* reindexing: it leaves `WorldState` alone and precomposes `TaskRel`'s
+duration argument with `e.symm`, so as a construction it is base change along `e.symm : ↑E → ↑D`,
+carrying the fibre over `D` to the fibre over `E`. To that extent the suspicion is correct and the
+fibration language names something already here.
+
+But the construction does **not** generalize to a one-directional morphism, and the obstruction is
+identifiable to a single axiom. Read the field proofs:
+
+| field | what it uses | needs |
+|---|---|---|
+| `nullity_identity`, `converse` | `map_zero`, `map_neg` | a group hom |
+| `comp`, `serial`, `spherical` | `map_le_map_iff e.symm` in the `.mpr` direction | `e.symm` order-reflecting |
+| **`limit`** | `map_lt_map_iff e` **and** `map_lt_map_iff e.symm` | **both directions** |
+
+*Limit* is the one that forces it. Its hypothesis is instantiated at `e x` — pushing a duration
+*forward* — while its witness is produced as `e.symm n`, pulling one *back*. A base change along a
+morphism `g : ↑E → ↑D` with no inverse has nothing to instantiate the hypothesis with. Nor is this
+an artifact of the proof: *Limit* says every positive cone shrinks to a point, and a
+non-surjective reindexing can omit precisely the small durations that witness it.
+
+Everything downstream inherits the restriction. `WorldHistory.comap`, and through it the `box`
+case of `truthAt_map`, consume `e` in the *forward* direction, so the truth-transfer theorem is an
+equivalence of fibres induced by an isomorphism of bases, not a functorial action of a morphism.
+
+**Consequence for scope.** There is no general `FrameOver.baseChange` hiding in this file waiting
+to be named, and introducing one would require new mathematics — a genuine theory of
+temporal-order morphisms, with *Limit* re-proved under whatever weaker hypothesis turns out to
+suffice. That is out of scope here and is recorded as a finding, not a deferral: what this module
+contains is the statement that **the fibres over isomorphic temporal orders are equivalent**, at
+the frame (`map`), model (`TaskModel.map`), history (`map`/`comap`/`Aligned`) and truth
+(`truthAt_map`) levels. The declarations below are migrated to the fibre and otherwise left
+exactly as they were.
+-/
 
 /--
-Transport a task frame along an ordered-group isomorphism of duration types.
+Transport a task frame along an ordered-group isomorphism of temporal orders.
 
 The world states are carried over unchanged — only the duration index of `TaskRel` moves, by
 pulling back along `e.symm`. Each of the seven fields is then the original field composed with
@@ -85,7 +123,7 @@ under an ordered-group isomorphism the fiber and segment predicates (`TaskFrame.
 `TaskFrame.Seg`) pick out the *identical* subsets of `WorldState`, so `F.spherical` is handed
 back the **same** directed family. No directedness argument is reconstructed.
 -/
-def ParamTaskFrame.map (F : ParamTaskFrame D) (e : D ≃+o E) : ParamTaskFrame E where
+def FrameOver.map (F : FrameOver D) (e : ↑D ≃+o ↑E) : FrameOver E where
   WorldState := F.WorldState
   worldNonempty := F.worldNonempty
   TaskRel := fun w d u => F.TaskRel w (e.symm d) u
@@ -94,9 +132,9 @@ def ParamTaskFrame.map (F : ParamTaskFrame D) (e : D ≃+o E) : ParamTaskFrame E
     simpa using F.nullity_identity w u
   comp := by
     intro w v x y hx hy
-    have hx' : (0 : D) ≤ e.symm x := by
+    have hx' : (0 : ↑D) ≤ e.symm x := by
       simpa using (map_le_map_iff e.symm (a := 0) (b := x)).mpr hx
-    have hy' : (0 : D) ≤ e.symm y := by
+    have hy' : (0 : ↑D) ≤ e.symm y := by
       simpa using (map_le_map_iff e.symm (a := 0) (b := y)).mpr hy
     have := F.comp w v (e.symm x) (e.symm y) hx' hy'
     simpa [map_add] using this
@@ -105,7 +143,7 @@ def ParamTaskFrame.map (F : ParamTaskFrame D) (e : D ≃+o E) : ParamTaskFrame E
     simpa [map_neg] using F.converse w (e.symm d) u
   serial := by
     intro w x hx
-    have hx' : (0 : D) ≤ e.symm x := by
+    have hx' : (0 : ↑D) ≤ e.symm x := by
       simpa using (map_le_map_iff e.symm (a := 0) (b := x)).mpr hx
     exact F.serial w (e.symm x) hx'
   limit := by
@@ -134,18 +172,18 @@ def ParamTaskFrame.map (F : ParamTaskFrame D) (e : D ≃+o E) : ParamTaskFrame E
       · simp [TaskFrame.Seg, TaskFrame.Fib, map_neg]
 
 /--
-Transport a task model along `e`. The valuation is carried over verbatim: `ParamTaskFrame.map` leaves
+Transport a task model along `e`. The valuation is carried over verbatim: `FrameOver.map` leaves
 `WorldState` unchanged, so `M.valuation` already has the right type.
 -/
-def TaskModel.map {F : ParamTaskFrame D} (M : TaskModel F) (e : D ≃+o E) :
-    TaskModel (ParamTaskFrame.map F e) where
+def TaskModel.map {F : FrameOver D} (M : TaskModel F.toTaskFrame) (e : ↑D ≃+o ↑E) :
+    TaskModel (FrameOver.map F e).toTaskFrame where
   valuation := M.valuation
 
 /--
 Push a history forward along `e`: the domain and states are reindexed by `e.symm`.
 -/
-def WorldHistory.map {F : ParamTaskFrame D} (τ : WorldHistory F) (e : D ≃+o E) :
-    WorldHistory (ParamTaskFrame.map F e) where
+def WorldHistory.map {F : FrameOver D} (τ : WorldHistory F.toTaskFrame) (e : ↑D ≃+o ↑E) :
+    WorldHistory (FrameOver.map F e).toTaskFrame where
   domain := fun n => τ.domain (e.symm n)
   nonempty_domain := by
     obtain ⟨t, ht⟩ := τ.nonempty_domain
@@ -165,43 +203,43 @@ def WorldHistory.map {F : ParamTaskFrame D} (τ : WorldHistory F) (e : D ≃+o E
 Two histories over corresponding frames agree pointwise under `e`.
 
 **Why a relation and not an `Equiv`.** The obvious alternative — an equivalence
-`WorldHistory F ≃ WorldHistory (ParamTaskFrame.map F e)` — does not survive contact with the `states`
+`WorldHistory F ≃ WorldHistory (FrameOver.map F e).toTaskFrame` — does not survive contact with the `states`
 field, which is *dependent*: it is indexed by a proof of `domain`. Round-tripping `map` and
 `comap` therefore forces a dependent structure equality and degenerates into `HEq` wrangling.
 
-`Aligned` sidesteps this. Because `(ParamTaskFrame.map F e).WorldState` is **definitionally**
+`Aligned` sidesteps this. Because `(FrameOver.map F e).WorldState` is **definitionally**
 `F.WorldState`, the field `st` is an ordinary non-dependent equation between two `F.WorldState`
 terms, and its only genuine transport (in `aligned_comap`) is discharged by the tree's existing
 `WorldHistory.states_eq_of_time_eq`. No `HEq` appears anywhere in this module; an `HEq` showing
 up is the signal that the forbidden `Equiv` route was taken.
 -/
-structure Aligned {F : ParamTaskFrame D} (e : D ≃+o E)
-    (σ : WorldHistory F) (σ' : WorldHistory (ParamTaskFrame.map F e)) : Prop where
+structure Aligned {F : FrameOver D} (e : ↑D ≃+o ↑E)
+    (σ : WorldHistory F.toTaskFrame) (σ' : WorldHistory (FrameOver.map F e).toTaskFrame) : Prop where
   /-- The two domains correspond under `e.symm`. -/
   dom : ∀ n, σ'.domain n ↔ σ.domain (e.symm n)
   /-- The two state assignments agree at corresponding times. -/
-  st : ∀ (n : E) (h' : σ'.domain n) (h : σ.domain (e.symm n)),
+  st : ∀ (n : ↑E) (h' : σ'.domain n) (h : σ.domain (e.symm n)),
         σ'.states n h' = σ.states (e.symm n) h
 
 /-- A history is aligned with its own forward transport, definitionally. -/
-theorem aligned_map {F : ParamTaskFrame D} (e : D ≃+o E) (τ : WorldHistory F) :
+theorem aligned_map {F : FrameOver D} (e : ↑D ≃+o ↑E) (τ : WorldHistory F.toTaskFrame) :
     Aligned e τ (WorldHistory.map τ e) :=
   ⟨fun _ => Iff.rfl, fun _ _ _ => rfl⟩
 
 /-- Totality transfers across an alignment. -/
-theorem isTotal_map {F : ParamTaskFrame D} (e : D ≃+o E) {σ : WorldHistory F}
-    {σ' : WorldHistory (ParamTaskFrame.map F e)} (ha : Aligned e σ σ') (h : σ.IsTotal) :
+theorem isTotal_map {F : FrameOver D} (e : ↑D ≃+o ↑E) {σ : WorldHistory F.toTaskFrame}
+    {σ' : WorldHistory (FrameOver.map F e).toTaskFrame} (ha : Aligned e σ σ') (h : σ.IsTotal) :
     σ'.IsTotal := fun n => (ha.dom n).mpr (h _)
 
 /--
 Pull a history back along `e` from the transported frame to the original.
 
 This is the direction `truthAt_map`'s `box` case needs: `□` quantifies over histories of the
-*ambient* frame, so the forward direction is handed a `WorldHistory (ParamTaskFrame.map F e)` and must
+*ambient* frame, so the forward direction is handed a `WorldHistory (FrameOver.map F e).toTaskFrame` and must
 produce a `WorldHistory F`.
 -/
-def WorldHistory.comap {F : ParamTaskFrame D} (e : D ≃+o E)
-    (σ' : WorldHistory (ParamTaskFrame.map F e)) : WorldHistory F where
+def WorldHistory.comap {F : FrameOver D} (e : ↑D ≃+o ↑E)
+    (σ' : WorldHistory (FrameOver.map F e).toTaskFrame) : WorldHistory F.toTaskFrame where
   domain := fun t => σ'.domain (e t)
   nonempty_domain := by
     obtain ⟨n, hn⟩ := σ'.nonempty_domain
@@ -210,11 +248,11 @@ def WorldHistory.comap {F : ParamTaskFrame D} (e : D ≃+o E)
   respects_task := by
     intro s t hs ht
     have := σ'.respects_task (e s) (e t) hs ht
-    have h2 : (ParamTaskFrame.map F e).TaskRel (σ'.states (e s) hs) (e t - e s) (σ'.states (e t) ht) :=
+    have h2 : (FrameOver.map F e).TaskRel (σ'.states (e s) hs) (e t - e s) (σ'.states (e t) ht) :=
       this
     show F.TaskRel _ (t - s) _
     have : e.symm (e t - e s) = t - s := by simp [map_sub]
-    simpa [ParamTaskFrame.map, this] using h2
+    simpa [FrameOver.map, this] using h2
   convex := by
     intro x z hx hz y hxy hyz
     exact σ'.convex (e x) (e z) hx hz (e y)
@@ -227,8 +265,8 @@ Unlike `aligned_map` this is not definitional: the domain and state equations si
 `e (e.symm n)` rather than `n`. The `dom` half is `simp`; the `st` half is exactly what the
 tree's existing `WorldHistory.states_eq_of_time_eq` is for, and no new transport lemma is needed.
 -/
-theorem aligned_comap {F : ParamTaskFrame D} (e : D ≃+o E)
-    (σ' : WorldHistory (ParamTaskFrame.map F e)) : Aligned e (WorldHistory.comap e σ') σ' := by
+theorem aligned_comap {F : FrameOver D} (e : ↑D ≃+o ↑E)
+    (σ' : WorldHistory (FrameOver.map F e).toTaskFrame) : Aligned e (WorldHistory.comap e σ') σ' := by
   constructor
   · intro n
     show σ'.domain n ↔ σ'.domain (e (e.symm n))
@@ -251,9 +289,9 @@ Trap, recorded: in the `box` forward case, `(WorldHistory.comap e ρ').domain s`
 `ρ'.domain (e s)` **definitionally**, and `simpa` normalizes past it and fails. The bare term
 `fun s => hρ' (e s)` is the proof.
 -/
-theorem truthAt_map {F : ParamTaskFrame D} (e : D ≃+o E) (M : TaskModel F) (φ : Formula) :
-    ∀ (σ : WorldHistory F) (σ' : WorldHistory (ParamTaskFrame.map F e)), Aligned e σ σ' →
-      ∀ t : D, (TruthAt M σ t φ ↔ TruthAt (TaskModel.map M e) σ' (e t) φ) := by
+theorem truthAt_map {F : FrameOver D} (e : ↑D ≃+o ↑E) (M : TaskModel F.toTaskFrame) (φ : Formula) :
+    ∀ (σ : WorldHistory F.toTaskFrame) (σ' : WorldHistory (FrameOver.map F e).toTaskFrame), Aligned e σ σ' →
+      ∀ t : ↑D, (TruthAt M σ t φ ↔ TruthAt (TaskModel.map M e) σ' (e t) φ) := by
   induction φ with
   | atom p =>
     intro σ σ' ha t
@@ -334,7 +372,7 @@ eight instance binders of `ValidDiscrete` vanish here: `ℤ` supplies every one 
 Mathlib with no instance work.
 -/
 def ValidInt (φ : Formula) : Prop :=
-  ∀ (F : ParamTaskFrame ℤ) (M : TaskModel F) (τ : WorldHistory F) (_ : τ.IsTotal) (t : ℤ),
+  ∀ (F : FrameOver intOrder) (M : TaskModel F.toTaskFrame) (τ : WorldHistory F.toTaskFrame) (_ : τ.IsTotal) (t : ℤ),
     TruthAt M τ t φ
 
 /--
@@ -345,7 +383,7 @@ The forward direction is a single instantiation: `ℤ` discharges the whole `Val
 bundle, so `h ℤ F M τ hτ t` is the proof.
 
 The reverse direction is where the work is. Given an arbitrary discrete carrier `D`,
-`DurationClassification.lean`'s `intIso : D ≃+o ℤ` normalizes it, `ParamTaskFrame.map` /
+`DurationClassification.lean`'s `intIso : D ≃+o ℤ` normalizes it, `FrameOver.map` /
 `TaskModel.map` / `WorldHistory.map` carry the model across, `isTotal_map` carries totality, and
 `truthAt_map` carries truth back. Note the transfer must be an *additive* order isomorphism:
 durations add, so the order-only `orderIsoIntOfLinearSuccPredArch` could not be used here.
@@ -358,10 +396,15 @@ theorem validDiscrete_iff_validInt (φ : Formula) : ValidDiscrete φ ↔ ValidIn
   · intro h F M τ hτ t
     exact h F M τ hτ t
   · intro h F _ _ _ _ M τ hτ t
-    let e : F.Duration ≃+o ℤ := intIso
-    refine (truthAt_map (F := F.toParam) e M φ τ (WorldHistory.map τ e)
-      (aligned_map (F := F.toParam) e τ) t).mpr ?_
-    exact h (ParamTaskFrame.map F.toParam e) (TaskModel.map (F := F.toParam) M e)
-      (WorldHistory.map τ e) (isTotal_map e (aligned_map (F := F.toParam) e τ) hτ) (e t)
+    -- Ascribe the target at `↑intOrder`, not at `ℤ`: the transport's `E` is a `TemporalOrder`,
+    -- and Lean cannot invert `↑E ≟ ℤ` to recover `E := intOrder` on its own.
+    let e : ↑F.Duration ≃+o ↑intOrder := intIso
+    refine (truthAt_map (D := F.Duration) (E := intOrder) (F := F.toFibre) e M φ τ
+      (WorldHistory.map τ e) (aligned_map (D := F.Duration) (E := intOrder) (F := F.toFibre) e τ)
+      t).mpr ?_
+    exact h (FrameOver.map F.toFibre e) (TaskModel.map (F := F.toFibre) M e)
+      (WorldHistory.map τ e)
+      (isTotal_map (D := F.Duration) (E := intOrder) e
+        (aligned_map (D := F.Duration) (E := intOrder) (F := F.toFibre) e τ) hτ) (e t)
 
 end FormalSystem.Semantics
