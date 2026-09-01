@@ -38,7 +38,7 @@ synthesis from a bare bi-serial relation, and computable model checking — rest
   `iter R (n+1) w u = ∃ v, iter R n w v ∧ R v u`
 - `FrameOver.step` — the one-step relation of a `FrameOver intOrder`
 - `IsStepPath` — a bi-infinite walk `f : ℤ → WorldState` stepping between consecutive times
-- `ParamTaskFrame.HF.path` — the bare path underlying a total world history
+- `TaskFrame.HF.path` — the bare path underlying a total world history
 - `FrameOver.HFofStepPath` — the total world history determined by a bi-infinite step-path
 
 ## Main Results
@@ -77,13 +77,13 @@ That route has since been taken. `Semantics/DurationClassification.lean` carries
 `archimedean_of_lub` for the Dedekind-complete branch and now also the discrete branch's
 successor-based analogue: `archimedean_of_succ` (the `Archimedean D` instance),
 `isLeast_pos_succ_zero` (the witness), and `intIso : D ≃+o ℤ` packaging both.
-`Semantics/IntTransfer.lean` transports `ParamTaskFrame`, `TaskModel`, `WorldHistory`, and `TruthAt`
+`Semantics/IntTransfer.lean` transports the frame, `TaskModel`, `WorldHistory`, and `TruthAt`
 along that isomorphism, yielding `validDiscrete_iff_validInt : ValidDiscrete φ ↔ ValidInt φ`.
 
 ## What buying the right to work over ℤ is worth
 
 The transfer above is not bookkeeping for its own sake: it is what makes the frame axioms cheap.
-`FrameOver.ofStep` below discharges **all seven** `ParamTaskFrame` fields from a bare bi-serial relation
+`FrameOver.ofStep` below discharges **all seven** `FrameOver` fields from a bare bi-serial relation
 on a finite nonempty carrier, leaving exactly **one** genuine obligation — bi-seriality (`fwd` and
 `bwd`). Its docstring tabulates the source of every field. So for *any* relation over `ℤ` on a
 finite carrier, however non-permissive its shape, the four `def:frame` axioms cost one obligation
@@ -92,7 +92,7 @@ and nothing else. `Decidability/IntPresentation.lean`'s `toTaskFrame` is literal
 
 This pricing is available **only over ℤ**, and the asymmetry is the whole reason the transfer is
 worth doing first. Two of the seven discharges are ℤ-specific: `limit` comes from
-`ParamTaskFrame.limit_of_succOrder`, which needs the successor structure, and `ofStep` itself is stated
+`TaskFrame.limit_of_succOrder`, which needs the successor structure, and `ofStep` itself is stated
 at `FrameOver intOrder`. A frame left polymorphic in `D` — such as `RefinedFilteredTaskFrame D` under
 `Metalogic/Decidability/FMP/` — has neither, so each axiom must be re-discharged by hand for the
 particular relation at hand. Estimates that price re-discharging the frame axioms as a large,
@@ -101,7 +101,7 @@ open-ended piece of work are measuring the `D`-polymorphic case; they do not tra
 
 ## References
 
-* `Semantics/TaskFrame.lean` — the `ParamTaskFrame` structure and its four axiom fields
+* `Semantics/TaskFrame.lean` — the `FrameOver` structure and its four axiom fields
 * `Semantics/DurationClassification.lean` — the Hölder discrete-or-dense dichotomy
 -/
 
@@ -200,7 +200,7 @@ theorem taskRel_natCast_iff_iter (F : FrameOver intOrder) (n : ℕ) (w u : F.Wor
            fun ⟨v, h1, h2⟩ => ⟨v, (ih v).mpr h1, h2⟩⟩
 
 /--
-**The decomposition theorem**: over ℤ, an arbitrary `ParamTaskFrame` is determined by its one-step
+**The decomposition theorem**: over ℤ, an arbitrary frame is determined by its one-step
 relation, at *every* duration — negative durations included.
 
 The statement is uniform rather than case-split: the two conjuncts are each guarded by a sign
@@ -359,7 +359,7 @@ end FrameOver
 /-!
 ## Frame synthesis: from a bi-serial one-step relation to a `FrameOver intOrder`
 
-The converse of the decomposition theorem. Six of the seven `ParamTaskFrame` fields come for free from
+The converse of the decomposition theorem. Six of the seven `FrameOver` fields come for free from
 the normal form; the seventh, *Seriality*, is a genuine hypothesis and cannot be dropped.
 
 **Seriality is free from *Occurrence*, never from ℤ.** It is tempting to think finiteness or
@@ -433,8 +433,8 @@ The seven field discharges, and where each comes from:
 | `comp` | free — `iter_add`, which is the paper's biconditional *Compositionality* whole |
 | `converse` | free — `ofStepRel` is symmetric in its two sign-guarded conjuncts by construction |
 | `serial` | **the one genuine obligation**: exactly `fwd` and `bwd` (see the section note above) |
-| `limit` | `ParamTaskFrame.limit_of_succOrder` — ℤ is a `SuccOrder`, so *Limit* is automatic |
-| `spherical` | `ParamTaskFrame.spherical_of_finite` — the carrier is finite |
+| `limit` | `TaskFrame.limit_of_succOrder` — ℤ is a `SuccOrder`, so *Limit* is automatic |
+| `spherical` | `TaskFrame.spherical_of_finite` — the carrier is finite |
 
 `spherical_of_finite` is the *only* applicable route here, because `R₁` is arbitrary in shape and
 every other `Spherical` helper constrains the relation's shape. It costs `Classical.choice`, and
@@ -474,10 +474,10 @@ def ofStep {W : Type} [Finite W] [Nonempty W] (R₁ : W → W → Prop)
       exact ⟨u, (ofStepRel_of_nonneg hx w u).mpr hu⟩
     · obtain ⟨v, hv⟩ := exists_iter_bwd bwd x.natAbs w
       exact ⟨v, (ofStepRel_of_nonneg hx v w).mpr hv⟩
-  limit := ParamTaskFrame.limit_of_succOrder (fun w u => by
+  limit := TaskFrame.limit_of_succOrder (fun w u => by
     rw [ofStepRel_of_nonneg (le_refl (0 : ℤ))]
     simp)
-  spherical := ParamTaskFrame.spherical_of_finite (ofStepRel R₁)
+  spherical := TaskFrame.spherical_of_finite (ofStepRel R₁)
 
 @[simp]
 theorem ofStep_taskRel {W : Type} [Finite W] [Nonempty W] (R₁ : W → W → Prop)
@@ -508,9 +508,9 @@ section WorkedInstances
 /-- `staticFrame W` over ℤ relates a state only to itself, so its step relation is equality and
 its bi-infinite step-paths are exactly the constant paths. -/
 example (W : Type) [Nonempty W] (w : W) :
-    IsStepPath (ParamTaskFrame.staticFrame W (D := ℤ)) (fun _ => w) := by
+    IsStepPath (FrameOver.staticFrame W (D := ℤ)) (fun _ => w) := by
   intro _
-  exact (ParamTaskFrame.staticFrame_rel_iff W (D := ℤ) w 1 w).mpr rfl
+  exact (FrameOver.staticFrame_rel_iff W (D := ℤ) w 1 w).mpr rfl
 
 /-- The two-state flip relation on `Bool` is bi-serial, so `ofStep` synthesizes a `FrameOver intOrder`
 from it: the canonical two-cycle, and the smallest frame on which a lasso argument has anything
@@ -528,9 +528,9 @@ example (w u : Bool) :
 
 /-- …and the characterization then produces an actual member of `H_F` over that frame. -/
 example (W : Type) [Nonempty W] (w : W) :
-    ∃ τ : TaskFrame.HF (ParamTaskFrame.staticFrame W (D := ℤ)), τ.path = fun _ => w :=
-  (FrameOver.mem_HF_iff_adjacent (ParamTaskFrame.staticFrame W (D := ℤ)) (fun _ => w)).mpr
-    (fun _ => (ParamTaskFrame.staticFrame_rel_iff W (D := ℤ) w 1 w).mpr rfl)
+    ∃ τ : TaskFrame.HF (FrameOver.staticFrame W (D := ℤ)), τ.path = fun _ => w :=
+  (FrameOver.mem_HF_iff_adjacent (FrameOver.staticFrame W (D := ℤ)) (fun _ => w)).mpr
+    (fun _ => (FrameOver.staticFrame_rel_iff W (D := ℤ) w 1 w).mpr rfl)
 
 end WorkedInstances
 

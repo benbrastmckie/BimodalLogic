@@ -293,7 +293,7 @@ Properties that hold for ALL values:
 #test ∀ φ : Formula, φ.complexity ≥ 1
 
 -- Frame nullity
-#test ∀ (F : TaskFrame Int) (w : F.WorldState), F.TaskRel w 0 w
+#test ∀ (F : FrameOver intOrder) (w : F.WorldState), F.TaskRel w 0 w
 ```
 
 ### 2. Algebraic Properties
@@ -685,7 +685,7 @@ example : ∀ (M : TaskModel (TaskFrame.natFrame (T := Int))) (w : Nat),
   intro M w
   exact M.frame.nullity w
   where
-    frame (M : TaskModel F) : TaskFrame Int := F
+    frame (M : TaskModel F) : FrameOver intOrder := F
 ```
 
 ---

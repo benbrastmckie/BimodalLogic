@@ -79,7 +79,7 @@ A **task frame** `F = (W, D, R)` consists of a **nonempty** set `W` of world-sta
 - ***Limit*** — `⋂_{x > 0} (w)_x = {w}`, where `(w)_x` is the cone of states reachable from `w` within duration `x`.
 - ***Spherical*** — `⋂ 𝒮 ≠ ∅` for every `⊇`-directed family `𝒮` of nonempty fibers and segments. In ball-space terms this is the condition `S₁ᵈ`, which is *strictly stronger* than "spherically complete" (`S₁`).
 
-Nullity (`w ⇒_0 w`) is **not** an axiom: it is derived, choice-free, from *Seriality* at `x = 0` together with *Limit*. In Lean, `structure TaskFrame` (`FormalSystem/Semantics/TaskFrame.lean`) additionally carries `converse` and `nullity_identity` as fields. Neither adds content — `converse` packages the converse convention, which a two-sided Lean relation cannot express in its type, and `nullity_identity` is derivable from `serial` and `limit`. Both are retained for construction ergonomics, so the Lean frame class is extensionally exactly the paper's.
+Nullity (`w ⇒_0 w`) is **not** an axiom: it is derived, choice-free, from *Seriality* at `x = 0` together with *Limit*. In Lean, `structure FrameOver` (`FormalSystem/Semantics/TaskFrame.lean`) — the fibre over a temporal order, of which `TaskFrame` is the total space — additionally carries `converse` and `nullity_identity` as fields. Neither adds content — `converse` packages the converse convention, which a two-sided Lean relation cannot express in its type, and `nullity_identity` is derivable from `serial` and `limit`. Both are retained for construction ergonomics, so the Lean frame class is extensionally exactly the paper's.
 
 A **world-history** `τ` in a task frame `F` is a function `τ : X → W` from a convex subset `X ⊆ D` to world states that respects the task relation: for all times `x, y ∈ X` with `x ≤ y`, we have `τ(x) ⇒_{y-x} τ(y)`.
 
@@ -109,7 +109,7 @@ The task semantics is developed in ["The Construction of Possible Worlds"](https
 │   ├── BaseLanguage/             # shared base-language definitions
 │   ├── Syntax/                   # Formula types, atoms, contexts
 │   ├── ProofSystem/              # Axioms (45 constructors, nine layers), derivation trees
-│   ├── Semantics/                # TaskFrame, WorldHistory, TaskModel, validity predicates
+│   ├── Semantics/                # TemporalOrder, FrameOver, TaskFrame, WorldHistory, TaskModel, validity
 │   ├── FrameConditions/          # Dense/Discrete/Dedekind frame classes and their soundness
 │   ├── Metalogic/                # Soundness, completeness, decidability
 │   │   ├── Core/                 # MCS theory, deduction theorem

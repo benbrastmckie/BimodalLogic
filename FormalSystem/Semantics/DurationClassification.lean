@@ -11,7 +11,7 @@ import FormalSystem.Semantics.TaskFrame
 /-!
 # Hölder Classification of Dedekind-Complete Duration Groups
 
-Pure order/group theory about the duration type `D` of a `ParamTaskFrame`. Nothing here mentions
+Pure order/group theory about the carrier `D` of a frame's temporal order. Nothing here mentions
 formulas or truth; the point is to make the *sharp* Hölder picture citable from the `FrameClass`
 and `Validity` docstrings, instead of the vaguer "paradigmatically ℝ" prose those files used to
 carry.
@@ -19,7 +19,7 @@ carry.
 ## The binder convention
 
 Every lemma below takes the repository's standard duration binders — `AddCommGroup D`,
-`LinearOrder D`, `IsOrderedAddMonoid D` (see `ParamTaskFrame`) — plus Dedekind completeness in the
+`LinearOrder D`, `IsOrderedAddMonoid D` (see `TemporalOrder`) — plus Dedekind completeness in the
 **explicit Prop-valued form** the semantics uses throughout:
 
   `h_lub : ∀ s : Set D, s.Nonempty → BddAbove s → ∃ x, IsLUB s x`

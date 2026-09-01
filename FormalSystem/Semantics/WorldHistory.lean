@@ -170,7 +170,7 @@ Since trivial frame's task relation is always true, this always works.
 The full domain is convex.
 -/
 def trivial {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D] :
-    WorldHistory (ParamTaskFrame.trivialFrame (D := D)) where
+    WorldHistory (FrameOver.trivialFrame (D := D)) where
   domain := fun _ => True
   nonempty_domain := ⟨0, True.intro⟩
   convex := by
@@ -191,8 +191,8 @@ Since trivialFrame's task relation is always true, any constant history respects
 The full domain is convex.
 -/
 def universalTrivialFrame {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
-    (w : (ParamTaskFrame.trivialFrame (D := D)).WorldState) :
-    WorldHistory (ParamTaskFrame.trivialFrame (D := D)) where
+    (w : (FrameOver.trivialFrame (D := D)).WorldState) :
+    WorldHistory (FrameOver.trivialFrame (D := D)) where
   domain := fun _ => True
   nonempty_domain := ⟨0, True.intro⟩
   convex := by
@@ -214,7 +214,7 @@ as long as zero-duration relates identical states. The full domain is convex.
 -/
 def universalNatFrame {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
       [SuccOrder D] [NoMaxOrder D] (n : Nat) :
-    WorldHistory (ParamTaskFrame.natFrame (D := D)) where
+    WorldHistory (FrameOver.natFrame (D := D)) where
   domain := fun _ => True
   nonempty_domain := ⟨0, True.intro⟩
   convex := by

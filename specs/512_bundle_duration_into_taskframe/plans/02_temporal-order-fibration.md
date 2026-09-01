@@ -1858,30 +1858,108 @@ before deciding which files the build actually covers.
 
 ---
 
-### Phase 20: Delete the transitional layer; documentation [NOT STARTED]
+### Phase 20: Delete the transitional layer; documentation [COMPLETED]
 
 **Goal**: `ParamTaskFrame` and the whole transitional layer are gone; the documentation records the
 fibration and its `def:frame` / `def:temporal-order` conformance argument.
 
 **Tasks**:
-- [ ] Confirm no live reference remains:
-      `grep -rn "ParamTaskFrame\|ParamFiniteTaskFrame\|ofParam\|toParam" FormalSystem Tests --include=*.lean | grep -v Boneyard`
-      must return only the declarations about to be deleted.
-- [ ] Delete `ParamTaskFrame`, `ParamFiniteTaskFrame`, `TaskFrame.ofParam`, `TaskFrame.toParam`,
-      and `instCoeOutParamTaskFrame`.
-- [ ] Decide `TemporalOrder.of`'s fate: keep it if construction sites read better with it, delete it
-      if every site now writes literal fields. Record the decision either way.
-- [ ] Rewrite the `TaskFrame.lean` module docstring to record the fibration: `TaskFrame` is the
-      total space of `TaskFrame → TemporalOrder`, `FrameOver D` is its fibre, `def:frame`'s
-      `⟨W, 𝔇, ⇒⟩` unfolds as it does in the paper, and `def:frame-properties` is now predicable of
-      a frame through its `Duration` component. Keep every paper anchor resolving (C15):
-      `def:frame`, `def:frame#{Compositionality,Seriality,Limit,Spherical}`, `def:temporal-order`,
-      `def:task-relation`, `def:directed`, `lem:nullity`. No task-number citation (C9).
-- [ ] Update the 15 markdown files under `docs/` plus `README.md` that mention `TaskFrame`, so C14's
-      documented counts and C12/C13's links stay correct.
-- [ ] Leave `FormalSystem/Boneyard/` untouched; add C11 waivers only if the gate demands them.
-- [ ] Run the **full** `bash scripts/check-module-invariants.sh` (no `--no-build`) and
-      `bash scripts/check-paper-definitions.sh`.
+- [x] Confirmed: the grep returns **nothing** across `FormalSystem` and `Tests`, prose included.
+- [x] Deleted `ParamTaskFrame`, `ParamFiniteTaskFrame`, `TaskFrame.ofParam`, `TaskFrame.toParam`,
+      and `instCoeOutParamTaskFrame`. `FrameOver.toTaskFrame` + `instCoeOutFrameOver` (Phase 12)
+      are the permanent replacements, and `FiniteFrameOver` gained the `Coe` to `FrameOver` that
+      `ParamFiniteTaskFrame` used to carry.
+- [x] **`TemporalOrder.of` is KEPT**, and its docstring now records why on evidence rather than as
+      a preference: wherever a neighbouring abstraction this task does not restate (`BFMCS`,
+      `FrameConditionFor`, `TemporalCarrier`, the frame-condition family `C : (D : Type) → … →
+      Prop`) consumes the same `D` as a bare type, the frame is a `FrameOver (TemporalOrder.of D)`.
+      Promoting only the frame's binder there would make `?D` uninferable at every call site,
+      because unification cannot invert `TemporalOrder.carrier ?D =?= Rat`.
+- [x] Rewrote the `TaskFrame.lean` module docstring: a new `## The fibration` section with the
+      three-declaration table (`TemporalOrder` / `FrameOver` / `TaskFrame`), the `rfl`-level
+      total-space identity, why the order is a component and not a parameter, the preserved flat
+      surface, and the `TemporalOrder.of` case. `## Implementation Notes` rewritten (its bullets
+      about "type parameter `D`" and "only the `←` half of Compositionality" were stale).
+      C15 passes: all 46 paper anchors resolve.
+- [x] Updated `README.md`, `docs/user-guide/architecture.md`, `docs/reference/API_REFERENCE.md`
+      and `docs/development/PROPERTY_TESTING_GUIDE.md`. *(deviation: altered — the plan's premise
+      that the docs needed a `ParamTaskFrame` sweep is false; see the record.)*
+- [x] `FormalSystem/Boneyard/` untouched; no new C11 waiver needed (C11 passes with its existing 6).
+- [x] Ran the full `check-module-invariants.sh` (no `--no-build`): **ALL CHECKS PASSED**.
+      `check-paper-definitions.sh` exits 1 on *paper* drift unrelated to this task; see the record.
+
+#### Phase 20 Record
+
+**The transitional layer is gone.** `grep -rn "ParamTaskFrame\|ParamFiniteTaskFrame\|ofParam\|toParam"`
+over `FormalSystem` and `Tests` returns nothing — not a declaration, not a prose mention.
+
+**The real content of this phase was the namespace relocation, not the deletion.** The
+`namespace ParamTaskFrame` block held 44 declarations of two different kinds, and deleting the
+alias forced them apart along the line the design draws:
+
+- **21 fibre-level declarations** → `namespace FrameOver`: the four derived frame results
+  (`forward_comp`, `interpolates`, `nullity`, `backward_comp`, restated over
+  `{D : TemporalOrder} (F : FrameOver D)`) and the three frame constants `trivialFrame`,
+  `staticFrame`, `natFrame` with their axiom lemmas.
+- **23 bare-relation discharge helpers** → `namespace TaskFrame`, beside the bare-relation
+  predicates of record they conclude (`Serial`, `Interpolates`, `Spherical`). Each is stated over
+  `{R : W → D → W → Prop}` and never touches a frame field, which is exactly why it belongs there
+  and not in the fibre namespace. This is the plan's Goal "the bare-relation predicate namespace
+  is restored to `TaskFrame.*`", discharged.
+
+That relocation is what **restores dot notation tree-wide**: the qualified calls Phases 17 and 19
+had to introduce (`FrameOver.nullity F w` and friends, 9 sites) are back to `F.nullity w`.
+
+**One rename bug worth recording**, because it is a trap in any bulk namespace migration: applying
+the rename map by longest-prefix-unaware string replacement turned
+`ParamTaskFrame.interpolates_of_total` into `FrameOver.interpolates_of_total`, because
+`interpolates` is a prefix of `interpolates_of_total` and mapped to a different target namespace.
+Caught by the build at 12 sites across 3 files. A rename map whose keys are prefixes of one another
+must be applied longest-key-first.
+
+**The docs premise was false, in the other direction from Phase 19's.** The plan expected a
+`ParamTaskFrame` sweep across 15 markdown files. Measured: **zero** occurrences of
+`ParamTaskFrame`, `ParamFiniteTaskFrame` or `ValidOver` anywhere under `docs/` or in `README.md` —
+the documentation never adopted v01's rename. What it does carry is *older* staleness: `docs/`
+still describes `structure TaskFrame (T : Type*) [LinearOrderedAddCommGroup T]` with a two-axiom
+field list, a `ConvexSet T` history domain and a `String → Set F.WorldState` valuation, none of
+which has matched the tree for a long time. The four passages that state the **frame's shape**
+were rewritten to the fibration (that is this task's obligation); the rest of the pre-existing
+doc drift was left and is reported as a follow-up rather than absorbed.
+
+**`check-paper-definitions.sh` exits 1, and it is not this task's doing.** It reports a NEW
+definition in the live paper (`def:time-shift-histories`) and two recorded anchors it can no
+longer resolve (`def:frame#Spherical`, `cor:spherical-finite`) because the paper's environment
+structure moved. This task touched no `typst/`, `latex/` or `specs/paper-definitions-of-record.md`
+file — confirmed by `git diff --name-only` over the whole dispatch — and C15, which checks that
+the *tree's* citations resolve against the record, passes on all 46 anchors. This is source-paper
+drift and belongs to whoever re-pins the record.
+
+**Build wall time: no regression, and the measurement itself is the finding.** Two full rebuilds
+of the 2 502-module tree were timed at the end of this phase:
+
+| Run | Wall time | Conditions |
+|-----|-----------|------------|
+| first | 514 s (8 m 34 s) | other verification jobs running concurrently on the same machine |
+| second | **327 s (5 m 27 s)** | nothing else running |
+
+The recorded baseline is 403 s (v01 Phase 1). The clean run is **19 % below** baseline; the
+contaminated one was 27 % above it. The spread between two runs of the *same tree* is larger than
+the distance from either to the baseline, which is the actual lesson: a single unisolated
+`lake build` timing is not evidence about the projection layer's cost in either direction. The
+accessors and `TemporalOrder.of` are `@[reducible]`, which is what keeps synthesis from stalling
+and unfolding cheap, and the clean number is consistent with that. **No investigation is
+warranted; the plan's 25 % threshold is not tripped by the isolated measurement.** Anyone
+re-measuring should isolate the run, and should not compare against a baseline taken twenty
+phases and one new module ago without doing the same.
+
+**`realOrder` / `ratOrder` were NOT introduced, and that is now a settled recommendation rather
+than a deferral.** See the Phase 13 Record for the mechanics: a single `ratOrder` must live in
+`Semantics/TemporalOrder.lean` to be visible to both `BXCanonical` and `Independence`, and that
+module cannot state `⟨Rat⟩` without a new Mathlib import in the transitive closure of all ~2500
+modules — with the wall-time question above still open, that is not a cost to take on inside a
+restatement refactor. `TemporalOrder.of ℝ` / `of ℚ` / `of (ℚ ×ₗ ℤ)` are reducible and behave
+identically. **This is a naming decision, and 507 owns names.**
 
 **Timing**: 2 hours
 

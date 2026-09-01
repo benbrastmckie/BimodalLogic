@@ -12,7 +12,7 @@ import FormalSystem.Semantics.TaskFrame
 
 This module is **permanent evidence**, not a conventional test. It exists to answer, once and
 durably, a question that will otherwise be re-opened every time someone reads
-`ParamTaskFrame.spherical_of_finite` and notices that it depends on `Classical.choice` while the
+`TaskFrame.spherical_of_finite` and notices that it depends on `Classical.choice` while the
 paper corollary it transcribes (`cor:spherical-finite`, recorded verbatim in
 `specs/paper-definitions-of-record.md`) calls itself *choice-free*.
 
@@ -168,7 +168,7 @@ two-element carrier `Bool` over `D = Int` — this derives `¬¬P ∨ ¬P` for a
 no classical tactic or term. Its own axiom profile is exactly `[propext, Quot.sound]`, pinned by
 a `#guard_msgs` block below.
 
-**Why this theorem exists.** `ParamTaskFrame.spherical_of_finite` transcribes the paper corollary
+**Why this theorem exists.** `TaskFrame.spherical_of_finite` transcribes the paper corollary
 `cor:spherical-finite`, which calls itself *choice-free*, yet the Lean proof depends on
 `Classical.choice`. That gap invites a future reader to treat "make `spherical_of_finite`
 choice-free" as an open piece of work and go hunting for a better proof. **The hunt is provably
@@ -226,9 +226,9 @@ deliberately separated from `spherical_of_finite` so that the classical step is 
 separation has leaked.
 -/
 
-/-- info: 'FormalSystem.Semantics.ParamTaskFrame.sInter_nonempty_of_directed_of_minimal' does not depend on any axioms -/
+/-- info: 'FormalSystem.Semantics.TaskFrame.sInter_nonempty_of_directed_of_minimal' does not depend on any axioms -/
 #guard_msgs in
-#print axioms FormalSystem.Semantics.ParamTaskFrame.sInter_nonempty_of_directed_of_minimal
+#print axioms FormalSystem.Semantics.TaskFrame.sInter_nonempty_of_directed_of_minimal
 
 /-! ### The full discharge
 
@@ -242,9 +242,9 @@ middle in Lean's intuitionistic core. Suspect a change in what `Spherical` *mean
 believing the profile.
 -/
 
-/-- info: 'FormalSystem.Semantics.ParamTaskFrame.spherical_of_finite' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'FormalSystem.Semantics.TaskFrame.spherical_of_finite' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms FormalSystem.Semantics.ParamTaskFrame.spherical_of_finite
+#print axioms FormalSystem.Semantics.TaskFrame.spherical_of_finite
 
 /-! ### The tripwire
 
@@ -255,7 +255,7 @@ it subsumes this helper's statement — which makes "simplify by routing the sub
 through the general lemma" a tempting and entirely wrong consolidation. It would regress this
 helper from `[propext]` to `[propext, Classical.choice, Quot.sound]`, and propagate that
 regression to the three `Unit`-carriered universal frames that consume it (`trivialFrame`,
-`intTimeFrame`, `genericTimeFrame`). `ParamTaskFrame.spherical_of_finite`'s own docstring records the
+`intTimeFrame`, `genericTimeFrame`). `TaskFrame.spherical_of_finite`'s own docstring records the
 prohibition in prose; this guard is what enforces it mechanically. If this block fails with
 `Classical.choice` in the actual output, the correct response is to revert the consolidation, not
 to update this expected text.
@@ -265,9 +265,9 @@ The two other shape-constrained helpers, `spherical_of_permissive` and `spherica
 guarded here: there is no choice-freedom left in them to protect.
 -/
 
-/-- info: 'FormalSystem.Semantics.ParamTaskFrame.spherical_of_subsingleton' depends on axioms: [propext] -/
+/-- info: 'FormalSystem.Semantics.TaskFrame.spherical_of_subsingleton' depends on axioms: [propext] -/
 #guard_msgs in
-#print axioms FormalSystem.Semantics.ParamTaskFrame.spherical_of_subsingleton
+#print axioms FormalSystem.Semantics.TaskFrame.spherical_of_subsingleton
 
 /-! ### The obstruction itself
 

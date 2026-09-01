@@ -37,7 +37,7 @@ relation satisfying the following for $x, y \geq 0$":
 - *Seriality* (`def:frame#Seriality`, verbatim): "$w \Rightarrow_x u$ and
   $v \Rightarrow_x w$ for some $u, v \in W$" — `multiFamGen_serial`, via the clock.
 - *Limit* (`def:frame#Limit`, verbatim): "$\bigcap\limits_{x > 0} (w)_x = \set{w}$" —
-  `multiFamGen_limit`, via `ParamTaskFrame.limit_of_shift` with `pos := Prod.snd`.
+  `multiFamGen_limit`, via `TaskFrame.limit_of_shift` with `pos := Prod.snd`.
 - *Spherical* (`def:frame#Spherical`, verbatim): "$\bigcap \mathcal{S} \neq \emptyset$ for
   any $\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments" —
   `multiFamGen_spherical`, via `sInter_nonempty_of_directed_subsingleton`: determinism makes
@@ -145,7 +145,7 @@ The generic form of `multiFamTaskFrame` (`ReynoldsBridge.lean`); the task relati
 deterministic, stepping by `d` from `(f, x)` to `(f, x + d)`.
 
 Nontriviality is no longer a binder here: it is a *field* of `D` (`def:temporal-order` mandates
-it), which is what `multiFamTaskFrameGen_limit` needs via `ParamTaskFrame.limit_of_shift` — over a
+it), which is what `multiFamTaskFrameGen_limit` needs via `TaskFrame.limit_of_shift` — over a
 trivial duration type `0 < x` is unsatisfiable and *Limit* (`def:frame#Limit`) has no content to
 conclude from. Every consumer elaborates at `intOrder`, or at the temporal order of `ℚ` or `ℝ`,
 each of which supplies it at its construction site rather than at every mention. -/
@@ -174,7 +174,7 @@ noncomputable def multiFamTaskFrameGen (D : TemporalOrder) (FamIdx : Type) [None
   serial := fun w x _ =>
     ⟨⟨(w.1, w.2 + x), rfl, rfl⟩, ⟨(w.1, w.2 - x), rfl, by show w.2 = w.2 - x + x; abel⟩⟩
   limit :=
-    ParamTaskFrame.limit_of_shift Prod.snd (fun _ _ _ h => h.2)
+    TaskFrame.limit_of_shift Prod.snd (fun _ _ _ h => h.2)
       (fun w u h => Prod.ext h.1.symm (by rw [h.2, add_zero]))
   spherical := by
     intro S hdir hmem
@@ -284,13 +284,13 @@ theorem multiFamGen_serial {FamIdx : Type} [Nonempty FamIdx] (w : FamIdx × ↑D
   ⟨⟨(w.1, w.2 + x), rfl, rfl⟩, ⟨(w.1, w.2 - x), rfl, by show w.2 = w.2 - x + x; abel⟩⟩
 
 /-- *Limit* (`def:frame#Limit`) for the generic flow frame, discharged by
-`ParamTaskFrame.limit_of_shift` with position function `Prod.snd`: the clock relation makes the
+`TaskFrame.limit_of_shift` with position function `Prod.snd`: the clock relation makes the
 duration of a transition recoverable from its endpoints. Nontriviality is required, and is
 supplied by `D`'s own field — `def:temporal-order` mandates it. -/
 theorem multiFamGen_limit {FamIdx : Type} [Nonempty FamIdx] :
     ∀ w u : FamIdx × ↑D,
       (∀ x, 0 < x → ∃ y, |y| < x ∧ (multiFamTaskFrameGen D FamIdx).TaskRel w y u) → u = w :=
-  ParamTaskFrame.limit_of_shift Prod.snd
+  TaskFrame.limit_of_shift Prod.snd
     (fun _ _ _ h => h.2)
     (fun w u h => (((multiFamTaskFrameGen D FamIdx).nullity_identity w u).mp h).symm)
 
@@ -433,7 +433,7 @@ appears here.
 
 The carrier `{fam // fam ∈ B.families} × D` with position function `Prod.snd` and
 `TaskRel w y u → u.2 = w.2 + y` (`bundleFlow_pos_shift`) is the deterministic-shift shape
-`ParamTaskFrame.limit_of_shift` consumes.
+`TaskFrame.limit_of_shift` consumes.
 
 **Why this section keeps an ambient carrier while `FlowFrameConformance` above does not.** A
 bundle `BFMCS (fc := fc) D` is indexed by a bare duration *type* — that is the Bundle layer's
@@ -487,7 +487,7 @@ theorem bundleFlowHistory_total [Nontrivial D] {B : BFMCS (fc := fc) D}
 
 /-- Deterministic-shift conformance of the bundle flow frame: the duration of a transition is
 recoverable from the endpoint positions (`Prod.snd`). This is the position-function contract
-`ParamTaskFrame.limit_of_shift` consumes. -/
+`TaskFrame.limit_of_shift` consumes. -/
 theorem bundleFlow_pos_shift [Nontrivial D] {B : BFMCS (fc := fc) D}
     {w u : (bundleFlowFrame B).WorldState} {y : D}
     (h : (bundleFlowFrame B).TaskRel w y u) : u.2 = w.2 + y :=

@@ -28,33 +28,33 @@ open FormalSystem.Semantics
 /-! ## trivialFrame Tests (using Int time) -/
 
 -- Test: trivialFrame satisfies nullity
-example : (ParamTaskFrame.trivialFrame (D := Int)).TaskRel () 0 () :=
-  (ParamTaskFrame.trivialFrame (D := Int)).nullity ()
+example : (FrameOver.trivialFrame (D := Int)).TaskRel () 0 () :=
+  (FrameOver.trivialFrame (D := Int)).nullity ()
 
 -- Test: trivialFrame satisfies compositionality (task relation is always true)
-example : (ParamTaskFrame.trivialFrame (D := Int)).TaskRel () 5 () := trivial
+example : (FrameOver.trivialFrame (D := Int)).TaskRel () 5 () := trivial
 
 -- Test: trivialFrame with negative duration
-example : (ParamTaskFrame.trivialFrame (D := Int)).TaskRel () (-3) () := trivial
+example : (FrameOver.trivialFrame (D := Int)).TaskRel () (-3) () := trivial
 
 /-! ## staticFrame Tests -/
 
 -- Test: staticFrame satisfies nullity (with explicit type annotation)
-example : (ParamTaskFrame.staticFrame Nat (D := Int)).TaskRel (3 : Nat) 0 (3 : Nat) :=
-  (ParamTaskFrame.staticFrame Nat (D := Int)).nullity (3 : Nat)
+example : (FrameOver.staticFrame Nat (D := Int)).TaskRel (3 : Nat) 0 (3 : Nat) :=
+  (FrameOver.staticFrame Nat (D := Int)).nullity (3 : Nat)
 
 -- Test: staticFrame is reflexive at every duration (the Seriality witness), unlike the
 -- former zero-duration-only identity frame it replaces
-example : (ParamTaskFrame.staticFrame Nat (D := Int)).TaskRel (3 : Nat) 7 (3 : Nat) := rfl
+example : (FrameOver.staticFrame Nat (D := Int)).TaskRel (3 : Nat) 7 (3 : Nat) := rfl
 
 /-! ## natFrame Tests (using Int time) -/
 
 -- Test: natFrame satisfies nullity
-example : (ParamTaskFrame.natFrame (D := Int)).TaskRel (5 : Nat) 0 (5 : Nat) :=
-  (ParamTaskFrame.natFrame (D := Int)).nullity (5 : Nat)
+example : (FrameOver.natFrame (D := Int)).TaskRel (5 : Nat) 0 (5 : Nat) :=
+  (FrameOver.natFrame (D := Int)).nullity (5 : Nat)
 
 -- Test: natFrame with non-zero duration (task relation always true)
-example : (ParamTaskFrame.natFrame (D := Int)).TaskRel (0 : Nat) 10 (42 : Nat) := Or.inl (by decide)
+example : (FrameOver.natFrame (D := Int)).TaskRel (0 : Nat) 10 (42 : Nat) := Or.inl (by decide)
 
 /-! ## Custom Frame Tests -/
 
@@ -65,7 +65,7 @@ example : (ParamTaskFrame.natFrame (D := Int)).TaskRel (0 : Nat) 10 (42 : Nat) :
 def customFrame : FrameOver intOrder := FormalSystem.Examples.TemporalStructures.intBoolFrame
 
 -- Test: Custom frame satisfies properties
-example : customFrame.TaskRel true 0 true := ParamTaskFrame.nullity customFrame true
+example : customFrame.TaskRel true 0 true := customFrame.nullity true
 example : customFrame.TaskRel false 5 true := Or.inl (by decide)
 
 /-! ### `customFrame` discharges `def:frame`'s four axioms (permissive class) -/
@@ -77,13 +77,13 @@ theorem customFrame_rel_iff :
 /-- *Seriality* (`def:frame#Seriality`, verbatim: "$w \Rightarrow_x u$ and $v \Rightarrow_x w$
 for some $u, v \in W$") for `customFrame`. -/
 theorem customFrame_serial : TaskFrame.Serial customFrame.TaskRel :=
-  ParamTaskFrame.serial_of_permissive customFrame_rel_iff
+  TaskFrame.serial_of_permissive customFrame_rel_iff
 
 /-- The interpolation half of *Compositionality* (`def:frame#Compositionality`, verbatim:
 "$w \Rightarrow_{x + y} v$ if and only if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some
 $u \in W$") for `customFrame`. -/
 theorem customFrame_interpolates : TaskFrame.Interpolates customFrame.TaskRel :=
-  ParamTaskFrame.interpolates_of_permissive customFrame_rel_iff
+  TaskFrame.interpolates_of_permissive customFrame_rel_iff
 
 /-- *Limit* (`def:frame#Limit`, verbatim: "$\bigcap\limits_{x > 0} (w)_x = \set{w}$") for
 `customFrame`, in the literal transcribed shape. The duration type is `Int`, which supplies the
@@ -91,28 +91,28 @@ theorem customFrame_interpolates : TaskFrame.Interpolates customFrame.TaskRel :=
 required here. -/
 theorem customFrame_limit :
     ∀ w u, (∀ x : Int, 0 < x → ∃ y, |y| < x ∧ customFrame.TaskRel w y u) → u = w :=
-  ParamTaskFrame.limit_of_permissive customFrame_rel_iff
+  TaskFrame.limit_of_permissive customFrame_rel_iff
 
 /-- *Spherical* (`def:frame#Spherical`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
 $\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments") for `customFrame`. -/
 theorem customFrame_spherical : TaskFrame.Spherical customFrame.TaskRel :=
-  ParamTaskFrame.spherical_of_permissive customFrame_rel_iff
+  TaskFrame.spherical_of_permissive customFrame_rel_iff
 
 /-! ## Polymorphism Tests -/
 
 -- Test: the fibre can be instantiated at the ℤ temporal order explicitly
-example : FrameOver intOrder := ParamTaskFrame.trivialFrame
+example : FrameOver intOrder := FrameOver.trivialFrame
 
 -- Test: Nullity constraint works with explicit type
-theorem nullity_test_int : (ParamTaskFrame.trivialFrame (D := Int)).TaskRel () 0 () :=
-  ParamTaskFrame.trivialFrame.nullity ()
+theorem nullity_test_int : (FrameOver.trivialFrame (D := Int)).TaskRel () 0 () :=
+  FrameOver.trivialFrame.nullity ()
 
 -- Test: Compositionality with Int time (1 + 2 = 3)
 theorem compositionality_test_int :
-    (ParamTaskFrame.trivialFrame (D := Int)).TaskRel () 3 () := by
+    (FrameOver.trivialFrame (D := Int)).TaskRel () 3 () := by
   -- trivial_frame's TaskRel is `True`; forward_comp now also requires 0 ≤ x, 0 ≤ y
-  exact (ParamTaskFrame.trivialFrame (D := Int)).forward_comp () () () 1 2 (by decide) (by decide)
-    ((ParamTaskFrame.trivialFrame (D := Int)).nullity ())
-    ((ParamTaskFrame.trivialFrame (D := Int)).nullity ())
+  exact (FrameOver.trivialFrame (D := Int)).forward_comp () () () 1 2 (by decide) (by decide)
+    ((FrameOver.trivialFrame (D := Int)).nullity ())
+    ((FrameOver.trivialFrame (D := Int)).nullity ())
 
 end BimodalTest.Semantics

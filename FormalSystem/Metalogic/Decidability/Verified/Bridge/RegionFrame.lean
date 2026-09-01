@@ -167,7 +167,7 @@ valuation rather than read off the history's states. `ι` and the placement `f` 
 parameters throughout this file so that the declarations below keep their shape.
 
 `[Nontrivial D]` is carried because `regionFrame_limit` requires it, via
-`ParamTaskFrame.limit_of_shift` at `pos := Prod.snd`: over a trivial duration type `0 < x` is
+`TaskFrame.limit_of_shift` at `pos := Prod.snd`: over a trivial duration type `0 < x` is
 unsatisfiable and *Limit* (`def:frame#Limit`) has nothing to conclude from. Every consumer
 elaborates at `ℤ`, `ℚ`, or `ℝ`, each of which supplies the instance.
 
@@ -203,11 +203,11 @@ def regionFrame (W ι D : Type) [Nonempty W] [AddCommGroup D] [LinearOrder D]
     ⟨⟨(s.1, s.2 + x), rfl, rfl⟩,
      ⟨(s.1, s.2 - x), rfl, by show s.2 = s.2 - x + x; abel⟩⟩
   limit :=
-    ParamTaskFrame.limit_of_shift Prod.snd (fun _ _ _ h => h.2)
+    TaskFrame.limit_of_shift Prod.snd (fun _ _ _ h => h.2)
       (fun s u h => Prod.ext h.1.symm (by rw [h.2, add_zero]))
   spherical := by
     intro S hdir hmem
-    refine ParamTaskFrame.sInter_nonempty_of_directed_of_univ_or_singleton hdir
+    refine TaskFrame.sInter_nonempty_of_directed_of_univ_or_singleton hdir
       (fun s hs => (hmem s hs).2) (fun s hs => ?_)
     obtain ⟨hcl, hne⟩ := hmem s hs
     obtain ⟨a, ha⟩ := hne
@@ -237,7 +237,7 @@ theorem regionFrame_taskRel (W ι D : Type) [Nonempty W] [AddCommGroup D] [Linea
 
 The clock relation `s.1 = s'.1 ∧ s'.2 = s.2 + d` makes the duration of a transition recoverable
 from its endpoints, via the position function `Prod.snd`. That is exactly the deterministic-shift
-contract `ParamTaskFrame.limit_of_shift` consumes, so *Limit* holds over **any** nontrivial duration
+contract `TaskFrame.limit_of_shift` consumes, so *Limit* holds over **any** nontrivial duration
 type — dense included — and every fiber is a singleton, which discharges *Spherical*.
 
 This supersedes an earlier record flagging this frame as failing dense-polymorphically. That flag
@@ -277,26 +277,26 @@ theorem regionFrame_interpolates (W ι D : Type) [Nonempty W] [AddCommGroup D] [
   rw [h₂]; abel
 
 /-- *Limit* (`def:frame#Limit`, verbatim: "$\bigcap\limits_{x > 0} (w)_x = \set{w}$") for
-`regionFrame`, in the literal transcribed shape, via `ParamTaskFrame.limit_of_shift` with
+`regionFrame`, in the literal transcribed shape, via `TaskFrame.limit_of_shift` with
 `pos := Prod.snd`. `[Nontrivial D]` is the only hypothesis on `D` — the axiom holds over dense
 duration types as well as discrete ones. -/
 theorem regionFrame_limit (W ι D : Type) [Nonempty W] [AddCommGroup D] [LinearOrder D]
     [IsOrderedAddMonoid D] [Nontrivial D] :
     ∀ s u : W × D,
       (∀ x, 0 < x → ∃ y, |y| < x ∧ (regionFrame W ι D).TaskRel s y u) → u = s :=
-  ParamTaskFrame.limit_of_shift Prod.snd (fun _ _ _ h => h.2)
+  TaskFrame.limit_of_shift Prod.snd (fun _ _ _ h => h.2)
     (fun s u h => (((regionFrame W ι D).nullity_identity s u).mp h).symm)
 
 /-- *Spherical* (`def:frame#Spherical`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
 $\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments") for `regionFrame`:
 every fiber is a subsingleton and every segment is an intersection of fibers, so every nonempty
 member of a directed family is a singleton and
-`ParamTaskFrame.sInter_nonempty_of_directed_of_univ_or_singleton` applies. -/
+`TaskFrame.sInter_nonempty_of_directed_of_univ_or_singleton` applies. -/
 theorem regionFrame_spherical (W ι D : Type) [Nonempty W] [AddCommGroup D] [LinearOrder D]
     [IsOrderedAddMonoid D] [Nontrivial D] :
     TaskFrame.Spherical (regionFrame W ι D).TaskRel := by
   intro S hdir hmem
-  refine ParamTaskFrame.sInter_nonempty_of_directed_of_univ_or_singleton hdir
+  refine TaskFrame.sInter_nonempty_of_directed_of_univ_or_singleton hdir
     (fun s hs => (hmem s hs).2) (fun s hs => ?_)
   obtain ⟨hcl, hne⟩ := hmem s hs
   obtain ⟨a, ha⟩ := hne

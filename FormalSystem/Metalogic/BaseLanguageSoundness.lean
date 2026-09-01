@@ -260,14 +260,14 @@ import-graph reason `not_derivable_nil_bot` records on the BL⁺ side. -/
 
 The witness is `trivialFrame` over `Int`, exactly as in `not_derivable_nil_bot`. The step across
 the bridge is invisible here because `tr BLFormula.bot` is `Formula.bot` definitionally, so
-`ParamTaskFrame.not_validOn_bot` applies unchanged.
+`TaskFrame.not_validOn_bot` applies unchanged.
 -/
 theorem bl_not_derivable_nil_bot :
     ¬ BaseLanguage.Derivable FrameClass.Base ([] : BaseLanguage.Context) BLFormula.bot := by
   rintro ⟨d⟩
-  refine TaskFrame.not_validOn_bot (ParamTaskFrame.trivialFrame (D := Int)) ?_
+  refine TaskFrame.not_validOn_bot (FrameOver.trivialFrame (D := Int)) ?_
   intro M τ x
-  exact bl_soundness [] BLFormula.bot d (ParamTaskFrame.trivialFrame (D := Int)) M τ.val
+  exact bl_soundness [] BLFormula.bot d (FrameOver.trivialFrame (D := Int)) M τ.val
     τ.property x (by simp)
 
 /--
@@ -275,13 +275,13 @@ theorem bl_not_derivable_nil_bot :
 system extended by the discreteness axioms.
 
 The witness is again `trivialFrame` over `ℤ`, with the single total history supplied by
-`ParamTaskFrame.hF_nonempty_of_frameAxioms` and the valuation by `TaskModel.allFalse`.
+`TaskFrame.hF_nonempty_of_frameAxioms` and the valuation by `TaskModel.allFalse`.
 -/
 theorem bl_not_derivable_nil_bot_discrete :
     ¬ BaseLanguage.Derivable FrameClass.Discrete ([] : BaseLanguage.Context) BLFormula.bot := by
   rintro ⟨d⟩
-  obtain ⟨τ⟩ := TaskFrame.hF_nonempty_of_frameAxioms (ParamTaskFrame.trivialFrame (D := ℤ))
-  exact bl_soundness_discrete_valid d (ParamTaskFrame.trivialFrame (D := ℤ)) TaskModel.allFalse
+  obtain ⟨τ⟩ := TaskFrame.hF_nonempty_of_frameAxioms (FrameOver.trivialFrame (D := ℤ))
+  exact bl_soundness_discrete_valid d (FrameOver.trivialFrame (D := ℤ)) TaskModel.allFalse
     τ.val τ.property 0
 
 /-! ## Native spot checks

@@ -88,7 +88,7 @@ end TaskModel
 This section defines finite task models, which are task models over finite task frames.
 -/
 
-open ParamTaskFrame TaskFrame
+open FrameOver TaskFrame
 
 /--
 A finite task model is simply a task model over a finite task frame.

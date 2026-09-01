@@ -152,10 +152,10 @@ theorem clockRel_limit :
 
 /-- *Spherical* (`def:frame#Spherical`) for the clock relation: every fiber is a singleton and
 every segment is an intersection of two fibers, so every nonempty member of a directed family is
-a singleton and `ParamTaskFrame.sInter_nonempty_of_directed_of_univ_or_singleton` applies. -/
+a singleton and `TaskFrame.sInter_nonempty_of_directed_of_univ_or_singleton` applies. -/
 theorem clockRel_spherical : TaskFrame.Spherical clockRel := by
   intro S hdir hmem
-  refine ParamTaskFrame.sInter_nonempty_of_directed_of_univ_or_singleton hdir
+  refine TaskFrame.sInter_nonempty_of_directed_of_univ_or_singleton hdir
     (fun s hs => (hmem s hs).2) (fun s hs => ?_)
   obtain ⟨hcl, hne⟩ := hmem s hs
   obtain ⟨a, ha⟩ := hne

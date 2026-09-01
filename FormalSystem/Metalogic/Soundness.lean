@@ -2001,9 +2001,9 @@ and `Dedekind` have no corresponding consistency lemma in the tree yet.
 -/
 theorem not_derivable_nil_bot : ¬ Derivable FrameClass.Base ([] : Context) Formula.bot := by
   rintro ⟨d⟩
-  refine TaskFrame.not_validOn_bot (ParamTaskFrame.trivialFrame (D := Int)) ?_
+  refine TaskFrame.not_validOn_bot (FrameOver.trivialFrame (D := Int)) ?_
   intro M τ x
-  exact soundness [] Formula.bot d (ParamTaskFrame.trivialFrame (D := Int)) M τ.val τ.property x
+  exact soundness [] Formula.bot d (FrameOver.trivialFrame (D := Int)) M τ.val τ.property x
     (by simp)
 
 /--
@@ -2029,9 +2029,9 @@ vacuous, since a `Discrete`-inconsistent system has no consistent sets at all.
 theorem not_derivable_nil_bot_discrete :
     ¬ Derivable FrameClass.Discrete ([] : Context) Formula.bot := by
   rintro ⟨d⟩
-  obtain ⟨τ⟩ := TaskFrame.hF_nonempty_of_frameAxioms (ParamTaskFrame.trivialFrame (D := ℤ))
+  obtain ⟨τ⟩ := TaskFrame.hF_nonempty_of_frameAxioms (FrameOver.trivialFrame (D := ℤ))
   exact Truth.bot_false
-    (FormalSystem.Metalogic.soundness_discrete_valid d (ParamTaskFrame.trivialFrame (D := ℤ))
+    (FormalSystem.Metalogic.soundness_discrete_valid d (FrameOver.trivialFrame (D := ℤ))
       TaskModel.allFalse τ.val τ.property 0)
 
 end FormalSystem.Metalogic

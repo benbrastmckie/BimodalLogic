@@ -101,10 +101,14 @@ namespace TemporalOrder
 fail to unify with the ambient `[AddCommGroup D]` binder even though the two are defeq at default
 transparency.
 
-This is the constructor the transitional `ParamTaskFrame` alias is written against while the
-migration to `FrameOver` is in flight. Whether it also earns a permanent place — some
-construction sites may read better with it than with a literal `⟨D⟩` — is settled at the end of
-the migration, when the transitional layer is deleted.
+**Kept permanently, on evidence.** This was written for the migration's transitional alias, which
+is now gone, but it earns its own place: wherever a frame's duration carrier is pinned to a
+bare `Type` by a neighbouring abstraction — `BFMCS` in the bundle layer, `FrameConditionFor`,
+`TemporalCarrier` and the frame-condition family `C : (D : Type) → … → Prop` in the decidability
+bridge — the frame is a value of `FrameOver (TemporalOrder.of D)`. Promoting only the frame's
+binder to `(D : TemporalOrder)` at those sites would leave every caller naming `(D := …)`
+explicitly, because unification cannot invert `TemporalOrder.carrier ?D =?= Rat`. Stating the
+order once in the signature is the better trade.
 -/
 @[reducible] def of (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     [Nontrivial D] : TemporalOrder := ⟨D⟩

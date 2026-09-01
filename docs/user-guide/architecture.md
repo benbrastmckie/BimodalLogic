@@ -460,24 +460,37 @@ group T = ⟨T, +, ≤⟩". Standard instances include:
 
 #### Task Frame Structure
 
+The temporal order is a **component of the frame**, not a type parameter — `def:frame` reads
+`F = ⟨W, 𝔇, ⇒⟩`. Two structures express that: `FrameOver D` is the *fibre* over a fixed temporal
+order and the sole declaration site of the frame axioms, and `TaskFrame` is the *total space*,
+definitionally `Σ (D : TemporalOrder), FrameOver D`.
+
 ```lean
--- Layer 1: Task frame for bimodal logic TM (polymorphic over temporal type T)
-structure TaskFrame (T : Type*) [LinearOrderedAddCommGroup T] where
-  WorldState : Type                                          -- Set of world states (W)
-  TaskRel : WorldState → T → WorldState → Prop              -- Task relation (⇒)
+-- def:temporal-order, reified: a nontrivial totally ordered abelian group, as one object
+structure TemporalOrder where
+  carrier : Type
+  [addCommGroup : AddCommGroup carrier] [linearOrder : LinearOrder carrier]
+  [isOrderedAddMonoid : IsOrderedAddMonoid carrier] [nontrivial : Nontrivial carrier]
 
-  -- Task relation constraints
-  nullity : ∀ w, TaskRel w 0 w                              -- w ⇒₀ w (0 from typeclass)
-  compositionality : ∀ w u v x y,
-    TaskRel w x u → TaskRel u y v → TaskRel w (x + y) v   -- w ⇒ₓ u ∧ u ⇒ᵧ v → w ⇒ₓ₊ᵧ v
+-- The fibre: frames over a FIXED temporal order. The frame axioms live here, once.
+structure FrameOver (D : TemporalOrder) where
+  WorldState : Type                                  -- Set of world states (W)
+  TaskRel : WorldState → D → WorldState → Prop      -- Task relation (⇒)
+  nullity_identity, comp, converse, serial, limit, spherical : ...
 
--- Notation for task relation
-notation w " ⇒[" x "] " v => TaskFrame.TaskRel w x v
+-- The total space: the temporal order is the field `Duration`
+structure TaskFrame where
+  Duration : TemporalOrder
+  toFibre  : FrameOver Duration
 
--- Example: Instantiate with Int for discrete time
-#check TaskFrame Int           -- TaskFrame using integer time
-#check @TaskFrame.trivialFrame Int _  -- Trivial frame with Int time
+-- Example: the fibre at the integers
+#check FrameOver intOrder            -- frames whose duration order is ℤ
+#check (FrameOver.trivialFrame : FrameOver (TemporalOrder.of Int))
 ```
+
+Because `Duration` is a field, a property of the temporal order alone is an ordinary predicate on
+a frame — which is what makes `def:frame-properties` (Discrete / Dense / Complete) sayable of a
+frame rather than only of a carrier.
 
 #### World Histories
 
@@ -485,11 +498,11 @@ A **world history** (possible world) is a function from a convex set of times to
 
 ```lean
 -- World history over task frame F (polymorphic over T)
-structure WorldHistory {T : Type*} [LinearOrderedAddCommGroup T] (F : TaskFrame T) where
-  domain : T → Prop                                          -- Domain predicate X ⊆ T
+structure WorldHistory (F : TaskFrame) where
+  domain : F.Duration → Prop                                          -- Domain predicate X ⊆ T
   convex : ∀ x z, domain x → domain z →
     ∀ y, x ≤ y → y ≤ z → domain y                           -- X is convex (no temporal gaps)
-  states : (t : T) → domain t → F.WorldState                 -- τ : X → W
+  states : (t : F.Duration) → domain t → F.WorldState        -- τ : X → W
   respects_task : ∀ s t (hs : domain s) (ht : domain t),
     s ≤ t → F.TaskRel (states s hs) (t - s) (states t ht)  -- τ(s) ⇒_{t-s} τ(t)
 
@@ -501,12 +514,12 @@ notation τ "(" t ")" => WorldHistory.states τ t
 
 ```lean
 -- Layer 1: Task model extending task frame with valuation (polymorphic over T)
-structure TaskModel {T : Type*} [LinearOrderedAddCommGroup T] (F : TaskFrame T) where
+structure TaskModel (F : TaskFrame) where
   valuation : F.WorldState → String → Prop                   -- Which propositions hold at each state
 
 -- Truth at model-history-time triple (polymorphic over T)
-def TruthAt {T : Type*} [LinearOrderedAddCommGroup T] {F : TaskFrame T}
-    (M : TaskModel F) (τ : WorldHistory F) (t : T) (ht : τ.domain t) : Formula → Prop
+def TruthAt {F : TaskFrame}
+    (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration) (ht : τ.domain t) : Formula → Prop
   | Formula.atom p =>
       M.valuation (τ.states t ht) p                          -- Atomic truth
   | Formula.bot =>
@@ -526,7 +539,7 @@ def TruthAt {T : Type*} [LinearOrderedAddCommGroup T] {F : TaskFrame T}
 notation M ", " τ ", " t " ⊨ " φ => TruthAt M τ t φ
 
 -- Time-shift invariance (critical theorem for temporal reasoning)
-theorem time_shift_preserves_truth {T : Type*} [LinearOrderedAddCommGroup T] {F : TaskFrame T}
+theorem time_shift_preserves_truth {F : TaskFrame}
     (M : TaskModel F) (τ : WorldHistory F) (t : T) (Δ : T) (φ : Formula)
     (ht : τ.domain t) (ht' : (timeShift τ Δ).domain (t + Δ)) :
   TruthAt M τ t ht φ ↔ TruthAt M (timeShift τ Δ) (t + Δ) ht' φ := by sorry

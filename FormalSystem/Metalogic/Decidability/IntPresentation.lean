@@ -18,7 +18,7 @@ constructive presentation. This module supplies it.
 
 An `IntPresentation` is a finite directed graph on `Fin card` together with a `Bool`-valued
 valuation, and it maps into the semantics through the ℤ-frame normal form: `FrameOver.ofStep`
-(`Semantics/IntNormalForm.lean`) turns the bi-serial step relation into a `ParamTaskFrame ℤ` with all
+(`Semantics/IntNormalForm.lean`) turns the bi-serial step relation into a `FrameOver intOrder` with all
 seven fields discharged, so nothing is re-discharged by hand here.
 
 ## Main Definitions
@@ -43,7 +43,7 @@ decision; that direction is the whole point of the presentation.
 ## `card_pos` is not optional
 
 The structure carries `card_pos : 0 < card` in addition to the fields the design sketch names.
-It cannot be dropped. `ParamTaskFrame` has a mandatory `nonempty : Nonempty WorldState` field
+It cannot be dropped. `FrameOver` has a mandatory `nonempty : Nonempty WorldState` field
 (`def:task-relation` reads `W` as a *nonempty* set of world states), and `Fin 0` is empty, so
 `toFiniteFibre` would not elaborate without it. `fwd`/`bwd` do not rescue the situation: at
 `card = 0` both are vacuously true, so the empty presentation would otherwise be legal and
@@ -85,7 +85,7 @@ coherent successor and `fwd`/`bwd` below are not free.
 structure IntPresentation where
   /-- Number of world states. -/
   card : ℕ
-  /-- The carrier is nonempty — forced by `ParamTaskFrame`'s `nonempty` field; see the module
+  /-- The carrier is nonempty — forced by `FrameOver`'s `nonempty` field; see the module
   docstring. -/
   card_pos : 0 < card
   /-- The one-step relation, as a decidable adjacency matrix. -/
@@ -116,17 +116,17 @@ instance : DecidablePred fun p : Fin P.card × Fin P.card => P.stepRel p.1 p.2 :
   fun p => decEq (P.step p.1 p.2) true
 
 /--
-The `ParamTaskFrame ℤ` the presentation presents, built through the normal form's `ofStep`.
+The `FrameOver intOrder` the presentation presents, built through the normal form's `ofStep`.
 
-All seven `ParamTaskFrame` fields come from `ofStep`; none is re-discharged here. In particular
-*Spherical* goes through `ParamTaskFrame.spherical_of_finite`, the only route applicable to a relation
-of arbitrary shape, and *Limit* through `ParamTaskFrame.limit_of_succOrder`.
+All seven `FrameOver` fields come from `ofStep`; none is re-discharged here. In particular
+*Spherical* goes through `TaskFrame.spherical_of_finite`, the only route applicable to a relation
+of arbitrary shape, and *Limit* through `TaskFrame.limit_of_succOrder`.
 
 **So bi-seriality is the sole frame obligation a presentation ever pays** — `fwd` and `bwd`,
 already fields of the structure. The definition below is literally
 `FrameOver.ofStep P.stepRel P.fwd P.bwd` and adds nothing: the four `def:frame` axioms cost one
 obligation here, not four, however non-permissive the relation's shape. That pricing is specific to
-ℤ (`ofStep` is stated at `ParamTaskFrame ℤ`, and `limit_of_succOrder` needs the successor structure); a
+ℤ (`ofStep` is stated at `FrameOver intOrder`, and `limit_of_succOrder` needs the successor structure); a
 frame left polymorphic in its duration type pays each axiom by hand. See
 `Semantics/IntNormalForm.lean` for the seven-field source table and the ℤ-versus-polymorphic
 contrast.
@@ -217,7 +217,7 @@ example : flipPresentation.step (0 : Fin 2) (0 : Fin 2) = false := by decide
 example : Nat.card flipPresentation.toTaskFrame.WorldState = 2 :=
   flipPresentation.card_worldState
 
-/-- The presentation's frame elaborates as a `ParamFiniteTaskFrame ℤ`. -/
+/-- The presentation's frame elaborates as a `FiniteFrameOver intOrder`. -/
 example : FiniteFrameOver intOrder := flipPresentation.toFiniteFibre
 
 end WorkedInstance

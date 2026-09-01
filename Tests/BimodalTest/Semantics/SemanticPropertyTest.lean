@@ -52,14 +52,14 @@ This is enforced by the `FrameOver` structure.
 -/
 def frame_nullity_property (F : FrameOver intOrder) (w : F.WorldState) :
     F.TaskRel w 0 w :=
-  ParamTaskFrame.nullity F w
+  F.nullity w
 
 /-!
 Test: Frame nullity (verifies generator produces valid frames).
 -/
 example : ∀ (F : FrameOver intOrder) (w : F.WorldState), F.TaskRel w 0 w := by
   intro F w
-  exact ParamTaskFrame.nullity F w
+  exact F.nullity w
 
 /-!
 Property: Frame compositionality holds for all frames.
@@ -74,7 +74,7 @@ def frame_compositionality_property (F : FrameOver intOrder)
     (w u v : F.WorldState) (x y : Int) (hx : 0 ≤ x) (hy : 0 ≤ y)
     (h1 : F.TaskRel w x u) (h2 : F.TaskRel u y v) :
     F.TaskRel w (x + y) v :=
-  ParamTaskFrame.forward_comp F w u v x y hx hy h1 h2
+  F.forward_comp w u v x y hx hy h1 h2
 
 /-!
 Test: Frame compositionality (verifies generator produces valid frames).
@@ -82,21 +82,21 @@ Test: Frame compositionality (verifies generator produces valid frames).
 example : ∀ (F : FrameOver intOrder) (w u v : F.WorldState) (x y : Int),
     0 ≤ x → 0 ≤ y → F.TaskRel w x u → F.TaskRel u y v → F.TaskRel w (x + y) v := by
   intro F w u v x y hx hy h1 h2
-  exact ParamTaskFrame.forward_comp F w u v x y hx hy h1 h2
+  exact F.forward_comp w u v x y hx hy h1 h2
 
 /-! ## Trivial Frame Properties -/
 
 /-!
 Property: Trivial frame has Unit world states.
 -/
-example : (ParamTaskFrame.trivialFrame (D := Int)).WorldState = Unit := by
+example : (FrameOver.trivialFrame (D := Int)).WorldState = Unit := by
   rfl
 
 /-!
 Property: Trivial frame task relation is always true.
 -/
 example (w u : Unit) (x : Int) :
-    (ParamTaskFrame.trivialFrame (D := Int)).TaskRel w x u := by
+    (FrameOver.trivialFrame (D := Int)).TaskRel w x u := by
   trivial
 
 /-! ## Static Frame Properties -/
@@ -105,7 +105,7 @@ example (w u : Unit) (x : Int) :
 Property: Static frame task relation requires w = u, at every duration.
 -/
 example (W : Type) [Nonempty W] (w u : W) (x : Int) :
-    (ParamTaskFrame.staticFrame W (D := Int)).TaskRel w x u ↔ w = u := by
+    (FrameOver.staticFrame W (D := Int)).TaskRel w x u ↔ w = u := by
   rfl
 
 /-! ## Nat Frame Properties -/
@@ -113,7 +113,7 @@ example (W : Type) [Nonempty W] (w u : W) (x : Int) :
 /-!
 Property: Nat frame has Nat world states.
 -/
-example : (ParamTaskFrame.natFrame (D := Int)).WorldState = Nat := by
+example : (FrameOver.natFrame (D := Int)).WorldState = Nat := by
   rfl
 
 /-!
@@ -123,7 +123,7 @@ Property: Nat frame task relation is permissive.
 -- `x ≠ 0 ∨ w = u`, so it is NOT universally permissive (fails when `x = 0 ∧ w ≠ u`). The old
 -- unconditional-permissiveness claim is no longer true.
 -- example (w u : Nat) (x : Int) :
---     (ParamTaskFrame.natFrame (D := Int)).TaskRel w x u := by
+--     (FrameOver.natFrame (D := Int)).TaskRel w x u := by
 --   trivial
 
 /-! ## Time Addition Properties -/
@@ -238,7 +238,7 @@ because it's required by the structure definition.
 -/
 example (F : FrameOver intOrder) : ∀ w, F.TaskRel w 0 w := by
   intro w
-  exact ParamTaskFrame.nullity F w
+  exact F.nullity w
 
 /-!
 Property: All constructed frames satisfy compositionality.
@@ -246,7 +246,7 @@ Property: All constructed frames satisfy compositionality.
 example (F : FrameOver intOrder) :
     ∀ w u v x y, 0 ≤ x → 0 ≤ y → F.TaskRel w x u → F.TaskRel u y v → F.TaskRel w (x + y) v := by
   intro w u v x y hx hy h1 h2
-  exact ParamTaskFrame.forward_comp F w u v x y hx hy h1 h2
+  exact F.forward_comp w u v x y hx hy h1 h2
 
 /-! ## TaskModel Properties -/
 
@@ -255,7 +255,7 @@ Property: TaskModel valuation is well-defined for all worlds and atoms.
 
 The valuation function always returns a Prop (decidable truth value).
 -/
-example : ∀ (M : TaskModel (ParamTaskFrame.natFrame (D := Int))) (w : Nat) (s : Atom),
+example : ∀ (M : TaskModel (FrameOver.natFrame (D := Int))) (w : Nat) (s : Atom),
     M.valuation w s ∨ ¬M.valuation w s := by
   intro M w s
   by_cases h : M.valuation w s
@@ -270,8 +270,8 @@ The frame of a generated model is natFrame.
 -- NOTE (Task 365): quarantined — `TaskModel` has no `.frame` projection (the frame is a
 -- structure parameter `F`, not a field), and the `where frame (M) := F` helper referenced an
 -- out-of-scope `F`. The property as stated is not expressible against the current `TaskModel`.
--- example : ∀ (M : TaskModel (ParamTaskFrame.natFrame (D := Int))),
---     M.frame = ParamTaskFrame.natFrame := by
+-- example : ∀ (M : TaskModel (FrameOver.natFrame (D := Int))),
+--     M.frame = FrameOver.natFrame := by
 --   intro M
 --   rfl
 
@@ -279,7 +279,7 @@ The frame of a generated model is natFrame.
 Property: All-false model has no atoms true.
 -/
 example : ∀ (w : Nat) (s : Atom),
-    ¬(TaskModel.allFalse (F := ParamTaskFrame.natFrame (D := Int))).valuation w s := by
+    ¬(TaskModel.allFalse (F := FrameOver.natFrame (D := Int))).valuation w s := by
   intro w s
   exact id
 
@@ -287,7 +287,7 @@ example : ∀ (w : Nat) (s : Atom),
 Property: All-true model has all atoms true.
 -/
 example : ∀ (w : Nat) (s : Atom),
-    (TaskModel.allTrue (F := ParamTaskFrame.natFrame (D := Int))).valuation w s := by
+    (TaskModel.allTrue (F := FrameOver.natFrame (D := Int))).valuation w s := by
   intro w s
   trivial
 

@@ -15,9 +15,47 @@ import Mathlib.Data.Fintype.Powerset
 import FormalSystem.Semantics.TemporalOrder
 
 /-!
-# ParamTaskFrame - Task Frame Structure for TM Semantics
+# TaskFrame — the frame fibration: `TemporalOrder`, `FrameOver`, and the total space
 
 This module defines task frames, the fundamental semantic structures for bimodal logic TM.
+
+## The fibration
+
+`def:frame` reads a frame as `𝔉 = ⟨W, 𝔇, ⇒⟩`: a nonempty set of world states, **a temporal
+order**, and a task relation. The temporal order is a *component*, on the same footing as the
+other two. This module encodes that as a fibration, in three declarations:
+
+| Lean | Paper | Role |
+|------|-------|------|
+| `TemporalOrder` (`Semantics/TemporalOrder.lean`) | `def:temporal-order` | the object `𝔇` — "a nontrivial totally ordered abelian group", reified |
+| `FrameOver D` | frames at a fixed `𝔇` | the **fibre**; the sole declaration site of the six frame fields |
+| `TaskFrame` | `𝔉 = ⟨W, 𝔇, ⇒⟩` | the **total space**, `Σ (D : TemporalOrder), FrameOver D` |
+
+`FrameOver.toTaskFrame` is the inclusion of a fibre into the total space, and it is literally the
+constructor: `⟨D, F⟩`. Structure eta makes the projection an identity rather than an isomorphism
+up to transport — `⟨G.Duration, G.toFibre⟩ = G`, `(F.toTaskFrame).toFibre = F` and
+`(F.toTaskFrame).Duration = D` all hold by `rfl`, pinned as `example`s at the end of this module.
+`instCoeOutFrameOver` lets a fibre value be handed to `WorldHistory`, `TaskModel` and `TruthAt`,
+which are stated over the total space.
+
+**Why a component and not a type parameter.** A property of the temporal order alone cannot be
+*predicated of a frame* while the order is an index; it can only be quantified at the carrier.
+With `Duration` a field, `def:frame-properties`' Discrete / Dense / Complete are ordinary
+predicates on a `TaskFrame`, through its `Duration` component, exactly as the paper states them.
+Conversely the fibre is what makes "the frames over a fixed temporal order" sayable at all — a
+propositional carrier equation cannot carry it, because the equation is a `Prop` while
+`OfNat F.Duration 1` is data, so no numeral elaborates under it. `FrameOver intOrder` has both:
+numerals elaborate, and the order is fixed.
+
+`TaskFrame`'s flat surface is preserved: `F.WorldState`, `F.TaskRel`, `F.spherical` and the rest
+are delegating accessors on the total space, `@[reducible]` where the value is data and
+`theorem`s where it is a `Prop` (Lean refuses `@[reducible]` on a proof; proof irrelevance makes
+that costless).
+
+Where a frame's duration carrier is pinned to a bare `Type` by a neighbouring abstraction this
+module does not own — `BFMCS` in the bundle layer, `FrameConditionFor` and `TemporalCarrier` in
+the decidability bridge — the frame is written `FrameOver (TemporalOrder.of D)`. That is the
+same fibre, named through `TemporalOrder.of`, and it is why that constructor is permanent.
 
 ## Paper Specification Reference
 
@@ -85,13 +123,13 @@ here are now closed, and are recorded as closed rather than deleted, since both 
 
 - `W` nonempty (`def:frame`, verbatim: "$W$ is a nonempty set of world states";
   `def:task-relation`) is the `nonempty` field, discharged at every frame in the tree. Its
-  immediate payoff is that `ParamTaskFrame.not_validOn_bot` (Semantics/Validity.lean) is now the bare
+  immediate payoff is that `TaskFrame.not_validOn_bot` (Semantics/Validity.lean) is now the bare
   `¬ F.ValidOn ⊥`, with no world state taken as an argument.
 - `D` nontrivial (`def:temporal-order`) is `[Nontrivial D]`, now among the structure's own
-  binders and inherited by `ParamFiniteTaskFrame`. `valid` and `SemanticConsequence`
+  binders and inherited by `FiniteFrameOver`. `valid` and `SemanticConsequence`
   (Semantics/Validity.lean) already carried it and still do — they bind `D` themselves, so
   theirs is not made redundant by the structure's; what the structure's binder removes is the
-  possibility of writing `ParamTaskFrame D` at a trivial `D` at all.
+  possibility of writing a frame over a trivial duration order at all.
 
 All four of `def:frame`'s axioms are now carried by the structure, so the former entries here
 for *Seriality*, *Limit*, *Spherical*, and the interpolation direction of *Compositionality*
@@ -105,20 +143,23 @@ routes are `limit_of_succOrder` and `limit_of_shift` below.
 
 ## Main Definitions
 
-- `ParamTaskFrame D`: Structure with world states, times of type `D`, task relation, and constraints
-- `ParamTaskFrame.nullity_identity`: Zero duration iff identity (`TaskRel w 0 u ↔ w = u`) —
+- `FrameOver D`: the fibre over a temporal order — world states, task relation, and the six
+  frame axioms; the sole declaration site of the axioms
+- `TaskFrame`: the total space, `Σ (D : TemporalOrder), FrameOver D`, with `Duration` and
+  `toFibre` as its two fields
+- `FrameOver.nullity_identity`: Zero duration iff identity (`TaskRel w 0 u ↔ w = u`) —
   stronger than the paper's derived `lem:nullity`; open design question, see its docstring
-- `ParamTaskFrame.comp`: the paper's biconditional *Compositionality* (`0 ≤ x`, `0 ≤ y`), stated as
+- `FrameOver.comp`: the paper's biconditional *Compositionality* (`0 ≤ x`, `0 ≤ y`), stated as
   `TaskFrame.Compositional TaskRel`
-- `ParamTaskFrame.serial`, `ParamTaskFrame.limit`, `ParamTaskFrame.spherical`: *Seriality*, *Limit*, and
+- `FrameOver.serial`, `FrameOver.limit`, `FrameOver.spherical`: *Seriality*, *Limit*, and
   *Spherical*, stated as `TaskFrame.Serial TaskRel`, *Limit*'s literal transcribed shape, and
   `TaskFrame.Spherical TaskRel`
-- `ParamTaskFrame.forward_comp`: the `←` (composition) half of `comp`, derived; its statement is
+- `FrameOver.forward_comp`: the `←` (composition) half of `comp`, derived; its statement is
   verbatim that of the former field of the same name
-- `ParamTaskFrame.interpolates`: the `→` (interpolation) half of `comp`, derived, definitionally
+- `FrameOver.interpolates`: the `→` (interpolation) half of `comp`, derived, definitionally
   `TaskFrame.Interpolates TaskRel`
-- `ParamTaskFrame.converse`: The definitional converse convention (`TaskRel w d u ↔ TaskRel u (-d) w`)
-- `ParamTaskFrame.nullity`: Derived reflexivity theorem (`TaskRel w 0 w`, matching `lem:nullity`)
+- `FrameOver.converse`: The definitional converse convention (`TaskRel w d u ↔ TaskRel u (-d) w`)
+- `FrameOver.nullity`: Derived reflexivity theorem (`TaskRel w 0 w`, matching `lem:nullity`)
 - `TaskFrame.Fib`, `TaskFrame.cone`, `TaskFrame.Seg`, `TaskFrame.DirectedFamily`,
   `TaskFrame.IsFiber`, `TaskFrame.IsSegment`: the `def:task-relation` / `def:directed`
   apparatus over a bare relation
@@ -130,24 +171,32 @@ routes are `limit_of_succOrder` and `limit_of_shift` below.
 
 ## Main Results
 
-- `ParamTaskFrame.limit_of_succOrder`: *Limit* is automatic over a discrete duration
+- `TaskFrame.limit_of_succOrder`: *Limit* is automatic over a discrete duration
   type (`[SuccOrder D] [NoMaxOrder D]`)
-- `ParamTaskFrame.limit_of_shift`: *Limit* is automatic for deterministic-shift frames
+- `TaskFrame.limit_of_shift`: *Limit* is automatic for deterministic-shift frames
   over any nontrivial duration type, dense included
-- `ParamTaskFrame.exists_uniform_radius_of_finite`: on a finite carrier, *Limit* upgrades to a
+- `TaskFrame.exists_uniform_radius_of_finite`: on a finite carrier, *Limit* upgrades to a
   uniform positive radius around each state
 - Example task frames for testing and demonstrations (polymorphic over time type)
 
 ## Implementation Notes
 
-- Type parameter `D` represents temporal duration with ordered additive group structure
+- `(D : TemporalOrder)` is one binder, not a carrier plus four algebraic instance binders; the
+  four `def:temporal-order` components are `D`'s own fields, re-exported as instances, so `↑D`
+  carries them with no ceremony
 - Task relation `TaskRel w x u` means: world state `u` is reachable from `w` by task
   of duration `x`
 - Nullity: zero-duration task is identity, stated as an iff (open design question against the
   paper's reflexivity-only `lem:nullity`)
-- Compositionality: currently only the `←` (composition) half on the positive cone; the paper's
-  axiom is a biconditional whose interpolation direction is not yet carried
-- Typeclass parameter convention: `(D : Type)` explicit, ordered group instances implicit
+- Compositionality is carried whole, as the paper's biconditional on the positive cone; its two
+  halves are the derived `FrameOver.forward_comp` and `FrameOver.interpolates`
+- Genuine side conditions on the carrier — `[SuccOrder ↑D]`, `[DenselyOrdered ↑D]`,
+  `[Archimedean ↑D]` — remain ordinary instance binders. Only `def:temporal-order`'s own four
+  components stopped being binders
+- `omega` reads the *syntactic* type of a hypothesis and does not see through the `TemporalOrder`
+  carrier coercion, so arithmetic-carrying binders at the `ℤ` fibre are written `(d : ℤ)`, and
+  where a hypothesis is produced by a frame field's own type the recovery form is an explicit
+  restatement (`@LT.lt ℤ _ a b`), never a `▸` cast
 
 ## References
 
@@ -179,7 +228,7 @@ variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Non
 
 The supporting apparatus of the paper's frame definition (`def:frame`), stated — like the Limit
 discharge helpers above — against a bare relation `R : W → D → W → Prop` rather than a
-`ParamTaskFrame` field, so the definitions apply verbatim to a frame's `TaskRel` whether or not the
+`FrameOver` field, so the definitions apply verbatim to a frame's `TaskRel` whether or not the
 corresponding axioms are carried as structure data. This apparatus is what makes the paper's
 *Spherical* axiom ("`⋂ 𝒮 ≠ ∅` for any `⊇`-directed family `𝒮` of nonempty fibers and segments")
 statable at all.
@@ -312,9 +361,9 @@ interpolation half of *Compositionality*; *Limit* is deliberately left unnamed a
 literal transcribed shape (see the discharge helpers `limit_of_succOrder` and `limit_of_shift`
 above).
 
-**These predicates are the sole form in which the axioms are available.** When the `ParamTaskFrame`
-structure grows the corresponding fields, `ParamTaskFrame.spherical` must be *definitionally*
-`Spherical TaskRel`, `ParamTaskFrame.serial` definitionally `Serial TaskRel`, and the interpolation
+**These predicates are the sole form in which the axioms are available.** Where the `FrameOver`
+structure carries the corresponding fields, `FrameOver.spherical` must be *definitionally*
+`Spherical TaskRel`, `FrameOver.serial` definitionally `Serial TaskRel`, and the interpolation
 half of biconditional *Compositionality* definitionally `Interpolates TaskRel`, **all as defined
 here**. Discharging a downstream hypothesis is then a mechanical substitution (`F.spherical`,
 `F.serial`, `F.interpolates`) with zero restatement. If a field lands whose statement differs,
@@ -327,7 +376,7 @@ sole application site the paper names, never an inert structure field.
 
 They are hosted in this module, rather than beside `Constraints` in `FrameAxioms.lean`, for a
 structural reason: a structure field's type may only mention declarations that precede it, so a
-predicate declared in a module that *imports* this one could never become a `ParamTaskFrame` field.
+predicate declared in a module that *imports* this one could never become a `FrameOver` field.
 -/
 
 /--
@@ -357,8 +406,8 @@ Three points of the transcription, each load bearing:
 3. "$\bigcap \mathcal{S} \neq \emptyset$" is `(⋂₀ S).Nonempty`.
 
 This predicate is the sole form in which *Spherical* is available: it is what the Step Lemma's
-proof consumes at the one application site the paper names, and what a future `ParamTaskFrame`
-spherical field must be definitionally equal to.
+proof consumes at the one application site the paper names, and what the `FrameOver`
+spherical field is definitionally equal to.
 -/
 def Spherical {W : Type} (R : W → D → W → Prop) : Prop :=
   ∀ S : Set (Set W), DirectedFamily S →
@@ -386,7 +435,7 @@ if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some $u \in W$."
 
 *Compositionality* is a **biconditional**, and both directions are load bearing. The
 right-to-left direction — composition — is already the existing structure field
-`ParamTaskFrame.forward_comp`. This definition is the missing left-to-right direction: a task of
+`FrameOver.forward_comp`. This definition is the missing left-to-right direction: a task of
 duration `x + y` can be *interpolated* at every intermediate point. The full biconditional axiom
 is therefore `forward_comp ∧ Interpolates`.
 
@@ -410,8 +459,8 @@ itself rather than either half: unfolded, it is
 ```
 
 and its two halves are `Interpolates R` (the `→` direction, above) and the composition law that
-`ParamTaskFrame.forward_comp` records (the `←` direction). Naming the conjunction as a predicate — in
-the same style as `Serial` and `Spherical` — is what lets the `ParamTaskFrame` `comp` field be stated
+`FrameOver.forward_comp` records (the `←` direction). Naming the conjunction as a predicate — in
+the same style as `Serial` and `Spherical` — is what lets the `FrameOver` `comp` field be stated
 by *citation* rather than by restating the shape inline, and lets `comp_of` assemble it from the
 two halves without higher-order unification against an applied relation.
 
@@ -423,7 +472,7 @@ def Compositional {W : Type} (R : W → D → W → Prop) : Prop :=
 /--
 Assemble the biconditional *Compositionality* axiom from its two halves: the interpolation
 direction (`Interpolates`, the `→`) and the composition direction (the `←`, which is the shape
-`ParamTaskFrame.forward_comp` has).
+`FrameOver.forward_comp` has).
 
 This is the citation route every construction site uses: a site supplies whichever
 `Interpolates` proof its relation class already has, together with the composition proof it
@@ -435,7 +484,7 @@ theorem comp_of {W : Type} {R : W → D → W → Prop} (hint : Interpolates R)
   fun w v x y hx hy =>
     ⟨hint w v x y hx hy, fun ⟨u, h1, h2⟩ => hfwd w u v x y hx hy h1 h2⟩
 
-/-- The composition (`←`) half of `Compositional`: the shape `ParamTaskFrame.forward_comp` records. -/
+/-- The composition (`←`) half of `Compositional`: the shape `FrameOver.forward_comp` records. -/
 theorem forward_of_comp {W : Type} {R : W → D → W → Prop} (h : Compositional R) :
     ∀ w u v x y, 0 ≤ x → 0 ≤ y → R w x u → R u y v → R w (x + y) v :=
   fun w u v x y hx hy h1 h2 => (h w v x y hx hy).mpr ⟨u, h1, h2⟩
@@ -585,9 +634,9 @@ structure FrameOver (D : TemporalOrder) where
   ```
 
   Both directions are load bearing. Its `←` (composition) half is projected back out as the
-  derived `ParamTaskFrame.forward_comp`, which keeps its former statement verbatim, so every consumer
+  derived `FrameOver.forward_comp`, which keeps its former statement verbatim, so every consumer
   of the old field is untouched; its `→` (interpolation) half is projected out as
-  `ParamTaskFrame.interpolates`, definitionally `TaskFrame.Interpolates TaskRel`.
+  `FrameOver.interpolates`, definitionally `TaskFrame.Interpolates TaskRel`.
 
   The `0 ≤ x`, `0 ≤ y` hypotheses are how the paper's positive-cone domain restriction is
   expressed against the two-sided extended relation. Composition over negative durations is
@@ -623,7 +672,7 @@ structure FrameOver (D : TemporalOrder) where
   "$\bigcap\limits_{x > 0} (w)_x = \set{w}$"), in the literal transcribed shape: if `u` lies in
   every positive cone of `w`, then `u` is `w`.
 
-  This is exactly what `ParamTaskFrame.limit_of_succOrder`, `ParamTaskFrame.limit_of_shift`, and the
+  This is exactly what `TaskFrame.limit_of_succOrder`, `TaskFrame.limit_of_shift`, and the
   class helpers conclude, and exactly what `TaskFrame.nullity_of_serial_limit`
   (`Semantics/FrameAxioms.lean`) consumes to derive `lem:nullity`.
   -/
@@ -654,28 +703,11 @@ structure FiniteFrameOver (D : TemporalOrder) extends FrameOver D where
   /-- The set of world states is finite. -/
   finite_world : Finite WorldState
 
-/--
-**Transitional**: the parameterized spelling of a fibre, kept while the tree migrates from
-`ParamTaskFrame D` to `FrameOver D`.
-
-`ParamTaskFrame D` is *definitionally* `FrameOver (TemporalOrder.of D)` — not a separate
-structure and not a coercion — so a file that still writes the parameterized binder list and a
-file already written at the fibre interoperate with no bridge at all. `@[reducible]` is what
-makes generalized field notation (`F.WorldState`, `F.TaskRel`, `F.spherical`) resolve through
-the alias, and what keeps instance synthesis from stalling at `↑(TemporalOrder.of D)`.
-
-This declaration, `ParamFiniteTaskFrame`, `TaskFrame.ofParam`, `TaskFrame.toParam` and the
-`CoeOut` instance are scaffolding with a scheduled end: they are deleted once every consumer is
-written at the fibre.
--/
-@[reducible] def ParamTaskFrame (D : Type) [AddCommGroup D] [LinearOrder D]
-    [IsOrderedAddMonoid D] [Nontrivial D] : Type 1 := FrameOver (TemporalOrder.of D)
-
-namespace ParamTaskFrame
+namespace FrameOver
 
 open TaskFrame
 
-variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
+variable {D : TemporalOrder}
 
 /--
 **Composition on the positive cone — the `←` projection of the `comp` field.**
@@ -688,7 +720,7 @@ full biconditional (`def:frame#Compositionality`). Its statement here is that fo
 verbatim, so every consumer applies it exactly as before; only its status changed, from
 postulate to projection.
 -/
-theorem forward_comp (F : ParamTaskFrame D) (w u v : F.WorldState) (x y : D)
+theorem forward_comp (F : FrameOver D) (w u v : F.WorldState) (x y : ↑D)
     (hx : 0 ≤ x) (hy : 0 ≤ y) (h1 : F.TaskRel w x u) (h2 : F.TaskRel u y v) :
     F.TaskRel w (x + y) v :=
   forward_of_comp F.comp w u v x y hx hy h1 h2
@@ -697,10 +729,10 @@ theorem forward_comp (F : ParamTaskFrame D) (w u v : F.WorldState) (x y : D)
 **Interpolation — the `→` projection of the `comp` field**, as the bare-relation predicate of
 record (`def:frame#Compositionality`'s left-to-right direction).
 
-Definitionally `Interpolates F.TaskRel`: `example (F : ParamTaskFrame D) : Interpolates F.TaskRel :=
+Definitionally `Interpolates F.TaskRel`: `example (F : FrameOver D) : Interpolates F.TaskRel :=
 F.interpolates` elaborates. This is the form the Step Lemma chain consumes.
 -/
-theorem interpolates (F : ParamTaskFrame D) : Interpolates F.TaskRel :=
+theorem interpolates (F : FrameOver D) : Interpolates F.TaskRel :=
   interpolates_of_comp F.comp
 
 /--
@@ -708,7 +740,7 @@ Derived nullity: zero-duration task is reflexive.
 
 This follows from `nullity_identity`: `TaskRel w 0 w` iff `w = w`, and `w = w` is trivial.
 -/
-theorem nullity (F : ParamTaskFrame D) (w : F.WorldState) : F.TaskRel w 0 w :=
+theorem nullity (F : FrameOver D) (w : F.WorldState) : F.TaskRel w 0 w :=
   F.nullity_identity w w |>.mpr rfl
 
 /--
@@ -718,7 +750,7 @@ From `forward_comp` and `converse`, we can derive compositionality for non-posit
 If `TaskRel w x u` with `x ≤ 0` and `TaskRel u y v` with `y ≤ 0`,
 then `TaskRel w (x + y) v`.
 -/
-theorem backward_comp (F : ParamTaskFrame D) (w u v : F.WorldState) (x y : D)
+theorem backward_comp (F : FrameOver D) (w u v : F.WorldState) (x y : ↑D)
     (hx : x ≤ 0) (hy : y ≤ 0)
     (h1 : F.TaskRel w x u) (h2 : F.TaskRel u y v) :
     F.TaskRel w (x + y) v := by
@@ -736,6 +768,20 @@ theorem backward_comp (F : ParamTaskFrame D) (w u v : F.WorldState) (x y : D)
   rw [h4] at h3
   exact F.converse w (x + y) v |>.mpr h3
 
+end FrameOver
+
+/-! ## Bare-relation discharge helpers
+
+Everything below is stated against a bare relation `R : W → D → W → Prop` over an ambient
+carrier, never against a frame field, so it applies to any relation whether or not a frame
+carries it. That is why it belongs in `TaskFrame` beside the bare-relation predicates of record
+(`Serial`, `Interpolates`, `Spherical`) rather than in the fibre namespace.
+-/
+
+namespace TaskFrame
+
+variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
+
 /-!
 ### Limit discharge helpers
 
@@ -747,7 +793,7 @@ The paper's *Limit* axiom (`def:frame#Limit`, verbatim: "$\bigcap\limits_{x > 0}
 ```
 
 The two theorems below are the two reusable ways to discharge that obligation. They are stated
-against a bare relation `R : W → D → W → Prop` rather than against a `ParamTaskFrame` field, so they
+against a bare relation `R : W → D → W → Prop` rather than against a `FrameOver` field, so they
 apply verbatim to a frame's `TaskRel` whether or not the axiom is carried as structure data.
 (An earlier paper wave folded Nullity into this axiom's name; the paper's current name is
 simply *Limit*, and the helpers are named accordingly.)
@@ -881,7 +927,7 @@ theorem exists_uniform_radius_of_finite [Nontrivial D] {W : Type} [Fintype W]
 /-!
 ## Reusable axiom-class discharge helpers
 
-Every live `ParamTaskFrame` construction in this library whose relation is *not* a deterministic
+Every live frame construction in this library whose relation is *not* a deterministic
 shift falls into one of three relation classes, and each class discharges `def:frame`'s four
 axioms once and for all:
 
@@ -1246,6 +1292,21 @@ theorem spherical_of_eq {W : Type} {R : W → D → W → Prop}
     refine Or.inr ⟨c, ?_⟩
     rw [Seg, hwc, hvc, Fib_eq_singleton hR c x, Fib_eq_singleton hR c (-y), Set.inter_self]
 
+end TaskFrame
+
+/-! ## Frame constants
+
+Three small frames used throughout the tree and the test suite, each a value of the fibre over
+the temporal order of an ambient carrier `D`. They live in `FrameOver` so that dot notation on
+a fibre-typed frame reaches them.
+-/
+
+namespace FrameOver
+
+open TaskFrame
+
+variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
+
 /--
 Simple unit-based task frame for testing.
 
@@ -1254,7 +1315,7 @@ This is the simplest possible task frame, polymorphic over temporal type `D`.
 -/
 def trivialFrame {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     [Nontrivial D] :
-    ParamTaskFrame D where
+    FrameOver (TemporalOrder.of D) where
   WorldState := Unit
   worldNonempty := inferInstanceAs (Nonempty Unit)
   TaskRel := fun _ _ _ => True
@@ -1317,7 +1378,7 @@ instance.
 -/
 def staticFrame (W : Type) [Nonempty W] {D : Type} [AddCommGroup D] [LinearOrder D]
     [IsOrderedAddMonoid D] [Nontrivial D] :
-    ParamTaskFrame D where
+    FrameOver (TemporalOrder.of D) where
   WorldState := W
   worldNonempty := inferInstance
   TaskRel := fun w _ u => w = u
@@ -1387,7 +1448,7 @@ over a dense `D` the permissive relation puts every state in every cone of every
 -/
 def natFrame {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     [Nontrivial D] [SuccOrder D] [NoMaxOrder D] :
-    ParamTaskFrame D where
+    FrameOver (TemporalOrder.of D) where
   WorldState := Nat
   worldNonempty := inferInstanceAs (Nonempty Nat)
   TaskRel := fun w d u => d ≠ 0 ∨ w = u
@@ -1486,7 +1547,7 @@ theorem natFrame_spherical [SuccOrder D] [NoMaxOrder D] :
     Spherical (natFrame (D := D)).TaskRel :=
   spherical_of_permissive natFrame_rel_iff
 
-end ParamTaskFrame
+end FrameOver
 
 /-!
 # Finite Task Frames and Models
@@ -1496,63 +1557,37 @@ These structures bundle the finiteness property for convenience in stating
 the Finite Model Property for TM logic.
 -/
 
-open ParamTaskFrame TaskFrame
+open FrameOver TaskFrame
+
+namespace FiniteFrameOver
+
+variable {D : TemporalOrder}
 
 /--
-A task frame with finitely many world states.
-
-This structure extends the basic `ParamTaskFrame` with an explicit proof
-that the set of world states is finite. This is useful for stating
-the Finite Model Property and related results.
-
-**Type Parameters**:
-- `D`: Temporal duration type with ordered additive group structure
-
-**Usage**: Used to package finite model constructions like `SemanticCanonicalFrame`
-into a standard format for the Finite Model Property.
+A finite fibre is a fibre: the parent projection, as a coercion, so that every definition and
+theorem stated over `FrameOver` applies to a `FiniteFrameOver` with no restatement.
 -/
-@[reducible] def ParamFiniteTaskFrame (D : Type) [AddCommGroup D] [LinearOrder D]
-    [IsOrderedAddMonoid D] [Nontrivial D] : Type 1 := FiniteFrameOver (TemporalOrder.of D)
-
-namespace ParamFiniteTaskFrame
-
-variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
-
-/--
-Coercion from a finite task frame to its underlying task frame.
-This allows seamless use of existing definitions and theorems.
--/
-instance : Coe (ParamFiniteTaskFrame D) (ParamTaskFrame D) where
+instance : Coe (FiniteFrameOver D) (FrameOver D) where
   coe F := F.toFrameOver
 
-end ParamFiniteTaskFrame
+end FiniteFrameOver
 
 /-!
 # The bundled frame
 
-`def:frame` reads a task frame as `F = ⟨W, D, ⇒⟩`: the temporal order `D` is a *component* of
-the frame, on the same footing as the world-state carrier `W` and the task relation. The
-parameterized `ParamTaskFrame` above carries `D` as a type parameter instead, which is the
-deviation from the definition of record; `TaskFrame` below carries it as the field `Duration`,
-which is the conforming encoding.
+`def:frame` reads a task frame as `F = ⟨W, 𝔇, ⇒⟩`: the temporal order is a *component* of the
+frame, on the same footing as the world-state carrier and the task relation. `TaskFrame` carries
+it as the field `Duration`, so the encoding unfolds exactly as the paper writes it, and
+`FrameOver D` above is the fibre over a fixed such component.
 
-The consequence that motivates the change: a property of `D` alone cannot be predicated of a
-frame when `D` is an index, so density, discreteness and Dedekind completeness have to be
-quantified at the *carrier* rather than asserted of the frame. With `Duration` a field they are
-ordinary predicates on a `TaskFrame`.
+The consequence that motivates the shape: a property of the temporal order alone cannot be
+predicated of a frame while the order is an *index*, so density, discreteness and Dedekind
+completeness would have to be quantified at the carrier rather than asserted of the frame. With
+`Duration` a field they are ordinary predicates on a `TaskFrame` — `def:frame-properties` reads
+as the paper states it.
 
-## The transitional bridge
-
-`ofParam` and `toParam` relate the two forms by a definitional isomorphism: both round trips
-hold by `rfl` (structure eta), and `(ofParam F).Duration` is `D` by `rfl`. That is what lets
-consumers migrate one import layer at a time with the build green throughout. The bridge, the
-`CoeOut` instance below and `ParamTaskFrame` itself are transitional scaffolding, removed once
-every consumer has crossed.
-
-`ofParam` is `@[reducible]` deliberately. Typeclass synthesis runs at *reducible* transparency;
-a plain `def` in the chain from a use site down to a `TaskFrame.mk` application stalls synthesis
-there, so `(ofParam F).addCommGroup` would fail to unify with the ambient `[AddCommGroup D]`
-binder even though the two are defeq at default transparency.
+The transitional aliases and bridge definitions that carried the migration have been removed;
+`FrameOver.toTaskFrame` and `instCoeOutFrameOver` are their permanent replacements.
 -/
 
 /--
@@ -1606,10 +1641,10 @@ end FrameOver
 has to reach the total space to be used with them. Writing `.toTaskFrame` at each such site would
 be pure noise: the inclusion is the constructor and carries no content.
 
-This is the **permanent** form of the transitional `instCoeOutParamTaskFrame` below, and the
+This was introduced as the permanent replacement for the migration's transitional `CoeOut`, and the
 reason that one can be deleted without a per-site campaign. It also covers the case that
 instance no longer can: for an *abstract* `(D : TemporalOrder)`, matching
-`ParamTaskFrame ?E ≡ FrameOver ⟨?E⟩` against `FrameOver D` needs structure eta on `D` at
+a `FrameOver ⟨?E⟩`-shaped instance against `FrameOver D` needs structure eta on `D` at
 reducible transparency, which instance resolution does not perform. Both coercions produce the
 same term — `⟨D, F⟩` — so which one fires is never observable.
 -/
@@ -1695,30 +1730,10 @@ end FiniteTaskFrame
 
 namespace TaskFrame
 
-/--
-**Parameterized → bundled** (transitional).
-
-Under the fibration this is literally the constructor at the bundled temporal order:
-`ofParam F` is `⟨TemporalOrder.of D, F⟩`. `@[reducible]` is load-bearing — see the section
-docstring above.
--/
-@[reducible] def ofParam {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
-    [Nontrivial D] (F : ParamTaskFrame D) : TaskFrame := ⟨TemporalOrder.of D, F⟩
-
-/-- **Bundled → parameterized** (transitional). Under the fibration this is the second
-projection, `F.toFibre`, at the frame's own temporal order. -/
-@[reducible] def toParam (F : TaskFrame) : FrameOver F.Duration := F.toFibre
-
-/-- Transitional coercion, so that a not-yet-migrated `ParamTaskFrame` value can still be
-handed to an already-migrated definition. Removed with the rest of the bridge. -/
-instance instCoeOutParamTaskFrame {D : Type} [AddCommGroup D] [LinearOrder D]
-    [IsOrderedAddMonoid D] [Nontrivial D] : CoeOut (ParamTaskFrame D) TaskFrame :=
-  ⟨ofParam⟩
-
 /-!
 ### The derived frame API, bundled
 
-The four results below are the bundled-frame spellings of `ParamTaskFrame.forward_comp`,
+The four results below are the bundled-frame spellings of `FrameOver.forward_comp`,
 `.interpolates`, `.nullity` and `.backward_comp`. Each has the same proof and the same content;
 they exist separately only because generalized field notation resolves `F.forward_comp` through
 the head constant of `F`'s type, which the `CoeOut` above does not reach.
@@ -1759,10 +1774,10 @@ section BridgeChecks
 
 variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
 
--- The bridge is a definitional isomorphism: both round trips are `rfl` by structure eta.
-example (F : TaskFrame) : TaskFrame.ofParam F.toParam = F := rfl
-example (F : ParamTaskFrame D) : (TaskFrame.ofParam F).toParam = F := rfl
-example (F : ParamTaskFrame D) : (TaskFrame.ofParam F).Duration = D := rfl
+-- The inclusion is a definitional isomorphism: both round trips are `rfl` by structure eta.
+example (F : TaskFrame) : F.toFibre.toTaskFrame = F := rfl
+example {E : TemporalOrder} (F : FrameOver E) : F.toTaskFrame.toFibre = F := rfl
+example {E : TemporalOrder} (F : FrameOver E) : F.toTaskFrame.Duration = E := rfl
 
 -- The exported algebra on a bundled frame's `Duration`.
 example (F : TaskFrame) (x y : F.Duration) : x + y = y + x := add_comm x y
@@ -1827,7 +1842,7 @@ example (F : TaskFrame) :
 
 example (F : FiniteTaskFrame) : TaskFrame.Spherical F.TaskRel := by
   haveI := F.finite_world
-  exact ParamTaskFrame.spherical_of_finite F.TaskRel
+  exact TaskFrame.spherical_of_finite F.TaskRel
 
 end BundledDefinitionalContent
 
@@ -1847,33 +1862,33 @@ section DefinitionalContent
 
 variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
 
-example (F : ParamTaskFrame D) : TaskFrame.Serial F.TaskRel := F.serial
+example {E : TemporalOrder} (F : FrameOver E) : TaskFrame.Serial F.TaskRel := F.serial
 
-example (F : ParamTaskFrame D) : TaskFrame.Spherical F.TaskRel := F.spherical
+example {E : TemporalOrder} (F : FrameOver E) : TaskFrame.Spherical F.TaskRel := F.spherical
 
-example (F : ParamTaskFrame D) : TaskFrame.Compositional F.TaskRel := F.comp
+example {E : TemporalOrder} (F : FrameOver E) : TaskFrame.Compositional F.TaskRel := F.comp
 
-example (F : ParamTaskFrame D) : TaskFrame.Interpolates F.TaskRel := F.interpolates
+example {E : TemporalOrder} (F : FrameOver E) : TaskFrame.Interpolates F.TaskRel := F.interpolates
 
-example (F : ParamTaskFrame D) :
+example {E : TemporalOrder} (F : FrameOver E) :
     ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ F.TaskRel w y u) → u = w := F.limit
 
 /--
-`ParamTaskFrame.spherical_of_finite` applies to a bundled `ParamFiniteTaskFrame` — the shape every finite
+`TaskFrame.spherical_of_finite` applies to a bundled `FiniteFrameOver` — the shape every finite
 construction actually has. `finite_world` is a plain *field*, not an instance, so the `haveI` is
 required at every such use site; that is what this check pins.
 -/
-example (F : ParamFiniteTaskFrame D) : TaskFrame.Spherical F.TaskRel := by
+example {E : TemporalOrder} (F : FiniteFrameOver E) : TaskFrame.Spherical F.TaskRel := by
   haveI := F.finite_world
-  exact ParamTaskFrame.spherical_of_finite F.TaskRel
+  exact TaskFrame.spherical_of_finite F.TaskRel
 
 end DefinitionalContent
 
 /-! ## The fibre's definitional content
 
-The same check at `FrameOver`, which is now the sole declaration site of the frame axioms: each
-axiom field is *literally* the recorded bare-relation predicate, and the parameterized spelling is
-the fibre at the bundled temporal order — definitionally, not by a coercion.
+The same check at `FrameOver`, which is the sole declaration site of the frame axioms: each axiom
+field is *literally* the recorded bare-relation predicate, and a frame written over an ambient
+carrier through `TemporalOrder.of` is the same fibre — definitionally, not by a coercion.
 -/
 
 section FibreDefinitionalContent
@@ -1889,19 +1904,17 @@ example (F : FrameOver D) :
     ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ F.TaskRel w y u) → u = w := F.limit
 example (F : FrameOver D) : Nonempty F.WorldState := inferInstance
 
-/-- The transitional alias is the fibre at the bundled temporal order, definitionally. -/
+/-- An ambient carrier and its four algebra binders name a fibre through `TemporalOrder.of`, and
+that is the only spelling a frame over an ambient carrier now needs. -/
 example (E : Type) [AddCommGroup E] [LinearOrder E] [IsOrderedAddMonoid E] [Nontrivial E] :
-    ParamTaskFrame E = FrameOver (TemporalOrder.of E) := rfl
+    (↑(TemporalOrder.of E) : Type) = E := rfl
 
-/-- And at the integers it is the fibre over `intOrder`, so numerals elaborate at it. -/
-example : ParamTaskFrame ℤ = FrameOver intOrder := rfl
-example (F : ParamTaskFrame ℤ) (w u : F.WorldState) : Prop := F.TaskRel w 1 u
+/-- At the integers the fibre is `FrameOver intOrder`, and numerals elaborate at it. -/
+example : TemporalOrder.of ℤ = intOrder := rfl
+example (F : FrameOver intOrder) (w u : F.WorldState) : Prop := F.TaskRel w 1 u
 
-/-- `FiniteFrameOver` sits over `FrameOver` by its parent projection, and `ParamFiniteTaskFrame`
-is its bundled-temporal-order spelling. -/
+/-- `FiniteFrameOver` sits over `FrameOver` by its parent projection. -/
 example (F : FiniteFrameOver D) : FrameOver D := F.toFrameOver
-example (E : Type) [AddCommGroup E] [LinearOrder E] [IsOrderedAddMonoid E] [Nontrivial E] :
-    ParamFiniteTaskFrame E = FiniteFrameOver (TemporalOrder.of E) := rfl
 
 end FibreDefinitionalContent
 

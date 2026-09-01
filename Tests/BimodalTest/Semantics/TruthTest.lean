@@ -26,7 +26,7 @@ open FormalSystem.Syntax
 open FormalSystem.Semantics
 
 -- Helper: use trivial frame for testing (with explicit Int time)
-def testFrame : FrameOver intOrder := ParamTaskFrame.trivialFrame
+def testFrame : FrameOver intOrder := FrameOver.trivialFrame
 
 -- Helper: simple model where "p" is true, "q" is false
 def testModel : TaskModel testFrame where

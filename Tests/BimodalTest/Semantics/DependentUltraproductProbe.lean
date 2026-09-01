@@ -21,7 +21,7 @@ That rules out Mathlib's ordered ultraproduct machinery. `Filter.Germ` and its
 `Filter.Product` carries only `coeTC` and `Inhabited` — nothing an ordered carrier needs. The
 alternative considered was normalizing the family to a single carrier first, using
 `FormalSystem/Semantics/DurationClassification.lean`'s `intIso` and
-`FormalSystem/Semantics/IntTransfer.lean`'s `ParamTaskFrame.map`; that route is a dead end, because
+`FormalSystem/Semantics/IntTransfer.lean`'s frame `map`; that route is a dead end, because
 those are Discrete-only and `FormalSystem/Metalogic/DiscreteNonCompactness.lean`'s
 `discrete_consequence_not_compact` refutes compactness exactly at Discrete.
 

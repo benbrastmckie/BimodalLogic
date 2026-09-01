@@ -128,21 +128,36 @@ Task frame structure for TM semantics, defining the fundamental semantic structu
 #### Structure Definition
 
 ```lean
-structure TaskFrame (T : Type*) [LinearOrderedAddCommGroup T] where
+-- `def:temporal-order`, reified as an object
+structure TemporalOrder where
+  carrier : Type
+  [addCommGroup : AddCommGroup carrier] [linearOrder : LinearOrder carrier]
+  [isOrderedAddMonoid : IsOrderedAddMonoid carrier] [nontrivial : Nontrivial carrier]
+
+-- The fibre over a fixed temporal order: the sole declaration site of the frame axioms
+structure FrameOver (D : TemporalOrder) where
   WorldState : Type
-  TaskRel : WorldState → T → WorldState → Prop
-  nullity : ∀ w, TaskRel w 0 w
-  compositionality : ∀ w u v x y, TaskRel w x u → TaskRel u y v → TaskRel w (x + y) v
+  TaskRel : WorldState → D → WorldState → Prop
+  nullity_identity, comp, converse, serial, limit, spherical : ...
+
+-- The total space of the fibration, `Σ (D : TemporalOrder), FrameOver D`
+structure TaskFrame where
+  Duration : TemporalOrder
+  toFibre  : FrameOver Duration
 ```
 
-**Type Parameters**:
-- `T`: Temporal duration type with totally ordered abelian group structure
+**Fields of `TaskFrame`**:
+- `Duration`: the frame's temporal order — a *component*, per `def:frame`'s `F = ⟨W, 𝔇, ⇒⟩`
+- `toFibre`: the frame over that order
 
-**Fields**:
+**Fields of `FrameOver`** (reachable on a `TaskFrame` through delegating accessors, so
+`F.WorldState`, `F.TaskRel` and `F.spherical` all read as before):
 - `WorldState`: Type of world states
 - `TaskRel w x u`: World state `u` is reachable from `w` by task of duration `x`
-- `nullity`: Zero-duration task is identity (reflexivity)
-- `compositionality`: Tasks compose with time addition (transitivity)
+- `nullity_identity`: zero-duration task relates a state only to itself
+- `comp`: biconditional *Compositionality* on the positive cone
+- `converse`, `serial`, `limit`, `spherical`: the converse convention and `def:frame`'s
+  *Seriality*, *Limit* and *Spherical*
 
 **Paper Alignment**: Matches the JPL paper definition (app:TaskSemantics, def:frame,
 possible_worlds.tex:2423-2451; body statement at possible_worlds.tex:908-926).
@@ -158,7 +173,7 @@ Task models extending task frames with valuation functions for propositional ato
 #### Structure Definition
 
 ```lean
-structure TaskModel (F : TaskFrame T) where
+structure TaskModel (F : TaskFrame) where
   valuation : String → Set F.WorldState
 ```
 
@@ -176,9 +191,9 @@ World histories representing functions from convex time intervals to world state
 #### Structure Definition
 
 ```lean
-structure WorldHistory (F : TaskFrame T) where
-  domain : ConvexSet T
-  history : ∀ t ∈ domain, F.WorldState
+structure WorldHistory (F : TaskFrame) where
+  domain : F.Duration → Prop
+  states : (t : F.Duration) → domain t → F.WorldState
   task_coherence : ∀ t s ∈ domain, F.TaskRel (history t) (s - t) (history s)
 ```
 
@@ -852,7 +867,7 @@ import FormalSystem.Semantics
 open FormalSystem.Semantics
 
 -- Define a task frame
-def example_frame : TaskFrame Int := {
+def example_frame : FrameOver intOrder := {
   WorldState := Nat
   TaskRel := fun w x u => u = w + x.natAbs
   nullity := by simp

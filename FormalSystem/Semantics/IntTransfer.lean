@@ -20,7 +20,7 @@ one carrier, `ℤ`, already decides it. The headline result is
   `validDiscrete_iff_validInt : ValidDiscrete φ ↔ ValidInt φ`
 
 and the machinery that gets there is a generic transport of the whole semantic stack —
-`ParamTaskFrame`, `TaskModel`, `WorldHistory`, `TruthAt` — along an arbitrary ordered-group
+the frame, `TaskModel`, `WorldHistory`, `TruthAt` — along an arbitrary ordered-group
 isomorphism `e : D ≃+o E`. The isomorphism that specializes it to `ℤ` is
 `DurationClassification.lean`'s `intIso`.
 

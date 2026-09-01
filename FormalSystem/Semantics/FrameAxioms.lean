@@ -96,7 +96,7 @@ built from lives in `TaskFrame.lean`, transcribed there from `def:task-relation`
 - **`Limit` is deliberately not given a name here.** It is used only as a hypothesis of
   `nullity_of_serial_limit`, in the literal transcribed shape
   `∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ R w y u) → u = w`, which is precisely the conclusion of
-  `ParamTaskFrame.limit_of_succOrder` and `ParamTaskFrame.limit_of_shift`. Keeping the raw shape lets those
+  `TaskFrame.limit_of_succOrder` and `TaskFrame.limit_of_shift`. Keeping the raw shape lets those
   two existing discharge helpers be passed directly.
 - Segments are written in the paper's bracket form `[w, v]_x^y` only; the retired `\Seg`
   function-application notation is gone from the paper preamble and must not be reintroduced.
@@ -142,7 +142,7 @@ The argument is the paper's: *Seriality* at `x = 0` supplies some `u` with `w �
 
 The *Limit* hypothesis is taken in the literal transcribed shape
 `∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ R w y u) → u = w`, which is exactly what
-`ParamTaskFrame.limit_of_succOrder` and `ParamTaskFrame.limit_of_shift` conclude, so either may be passed
+`TaskFrame.limit_of_succOrder` and `TaskFrame.limit_of_shift` conclude, so either may be passed
 directly.
 
 Note this asserts **reflexivity only**, which is all `lem:nullity` asserts. The

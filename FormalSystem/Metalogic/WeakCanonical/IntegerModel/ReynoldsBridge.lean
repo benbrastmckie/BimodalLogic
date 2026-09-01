@@ -460,7 +460,7 @@ noncomputable def zTaskFrameV2 : FrameOver intOrder where
     (fun w u v x y _ _ h1 h2 => by rw [h2, h1, add_assoc])
   converse w d u := by constructor <;> intro h <;> omega
   serial := fun w x _ => ⟨⟨w + x, rfl⟩, ⟨w - x, by omega⟩⟩
-  limit := ParamTaskFrame.limit_of_shift id (fun _ _ _ h => h) (fun _ _ h => by omega)
+  limit := TaskFrame.limit_of_shift id (fun _ _ _ h => h) (fun _ _ h => by omega)
   spherical := by
     intro S hdir hmem
     refine Algebraic.sInter_nonempty_of_directed_subsingleton hdir (fun s hs => (hmem s hs).2)
@@ -475,7 +475,7 @@ noncomputable def zTaskFrameV2 : FrameOver intOrder where
 /-! ### `zTaskFrameV2` discharges `def:frame`'s four axioms (deterministic shift at `ℤ`)
 
 The relation `u = w + d` is a deterministic shift whose position function is the identity, so
-*Limit* is `ParamTaskFrame.limit_of_shift` with `pos := id` and every fiber is the singleton
+*Limit* is `TaskFrame.limit_of_shift` with `pos := id` and every fiber is the singleton
 `{w + x}`. Unlike `multiFamTaskFrame` below, this frame's carrier is `ℤ` itself rather than a
 product, so it is **not** an instance of `multiFamTaskFrameGen` and its four facts are proved
 directly rather than derived. -/
@@ -506,11 +506,11 @@ theorem zTaskFrameV2_interpolates : TaskFrame.Interpolates zTaskFrameV2.TaskRel 
   exact ⟨w + x, rfl, by omega⟩
 
 /-- *Limit* (`def:frame#Limit`, verbatim: "$\bigcap\limits_{x > 0} (w)_x = \set{w}$") for
-`zTaskFrameV2`, in the literal transcribed shape, via `ParamTaskFrame.limit_of_shift` with the
+`zTaskFrameV2`, in the literal transcribed shape, via `TaskFrame.limit_of_shift` with the
 identity position function. -/
 theorem zTaskFrameV2_limit :
     ∀ w u : ℤ, (∀ x, 0 < x → ∃ y, |y| < x ∧ zTaskFrameV2.TaskRel w y u) → u = w := by
-  refine ParamTaskFrame.limit_of_shift id (fun _ _ _ h => h) ?_
+  refine TaskFrame.limit_of_shift id (fun _ _ _ h => h) ?_
   show ∀ (w u : ℤ), u = w + 0 → u = w
   intro w u h
   omega
@@ -779,7 +779,7 @@ noncomputable def multiFamTaskFrame (FamIdx : Type) [Nonempty FamIdx] : FrameOve
   serial := fun w x _ =>
     ⟨⟨(w.1, w.2 + x), rfl, rfl⟩, ⟨(w.1, w.2 - x), rfl, by omega⟩⟩
   limit :=
-    ParamTaskFrame.limit_of_shift Prod.snd (fun _ _ _ h => h.2)
+    TaskFrame.limit_of_shift Prod.snd (fun _ _ _ h => h.2)
       (fun w u h => Prod.ext h.1.symm (by omega))
   spherical := by
     intro S hdir hmem

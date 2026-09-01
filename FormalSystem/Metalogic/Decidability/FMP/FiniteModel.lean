@@ -183,7 +183,7 @@ theorem FiniteFilteredTaskFrame.worldState_eq [SuccOrder ↑D] [NoMaxOrder ↑D]
 
 /-! ### `FiniteFilteredTaskFrame` inherits the four axioms
 
-`FiniteFrameOver` *extends* `ParamTaskFrame` (`TaskFrame.lean`), so every field the frame structure
+`FiniteFrameOver` *extends* `FrameOver` (`TaskFrame.lean`), so every field the frame structure
 grows propagates to this construction. Its `toTaskFrame` is `RefinedFilteredTaskFrame D phi`
 definitionally, so each axiom fact is that frame's, unchanged — including the
 `[SuccOrder ↑D] [NoMaxOrder ↑D]` restriction *Limit* forces, which this frame inherits rather than

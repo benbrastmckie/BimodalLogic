@@ -148,7 +148,7 @@ simple generator suitable for basic property testing.
 -/
 instance : SampleableExt (FrameOver intOrder) where
   proxy := Unit
-  interp _ := ParamTaskFrame.natFrame (D := Int)
+  interp _ := FrameOver.natFrame (D := Int)
 
 /-! ## TaskModel Generators (QUARANTINED — Task 365)
 
@@ -156,7 +156,7 @@ NOTE (Task 365): The `SampleableExt (TaskModel …)` instance and the
 `TaskModel`-valued generators below were quarantined. They relied on a
 `TaskModelProxy` proxy type that lacks the `Repr`/`Shrinkable` instances the
 current `SampleableExt` class requires, and on the removed `T`-parameter form of
-`ParamTaskFrame.natFrame` and a `String`-typed valuation. No `Testable` consumer in
+`FrameOver.natFrame` and a `String`-typed valuation. No `Testable` consumer in
 the imported test suite quantifies over `TaskModel`, so these are not needed for
 the green build. They are commented out (never `sorry`-ed) to keep the module
 importable. Restoring them is tracked as a follow-up (see task summary).
@@ -165,7 +165,7 @@ structure TaskModelProxy where
   frameProxy : Unit
   valuationSeed : Nat
 
-instance : SampleableExt (TaskModel (ParamTaskFrame.natFrame (D := Int))) where
+instance : SampleableExt (TaskModel (FrameOver.natFrame (D := Int))) where
   proxy := TaskModelProxy
   interp p :=
     { valuation := fun w s =>
@@ -174,14 +174,14 @@ instance : SampleableExt (TaskModel (ParamTaskFrame.natFrame (D := Int))) where
     let seed ← Gen.choose Nat 0 1000 (by omega)
     return ⟨(), seed.val⟩⟩
 
-def genAllFalseModel : Gen (TaskModel (ParamTaskFrame.natFrame (D := Int))) :=
+def genAllFalseModel : Gen (TaskModel (FrameOver.natFrame (D := Int))) :=
   pure { valuation := fun _ _ => False }
 
-def genAllTrueModel : Gen (TaskModel (ParamTaskFrame.natFrame (D := Int))) :=
+def genAllTrueModel : Gen (TaskModel (FrameOver.natFrame (D := Int))) :=
   pure { valuation := fun _ _ => True }
 
 def genModelWithPattern (pattern : Nat → Atom → Bool) :
-    Gen (TaskModel (ParamTaskFrame.natFrame (D := Int))) :=
+    Gen (TaskModel (FrameOver.natFrame (D := Int))) :=
   pure { valuation := fun w s => pattern w s }
 -/
 
