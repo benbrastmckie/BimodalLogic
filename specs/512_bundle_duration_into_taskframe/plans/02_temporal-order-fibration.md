@@ -1653,26 +1653,54 @@ a bare type. Nothing in `Independence/` does the latter, so all three files conv
 
 ---
 
-### Phase 17: `Examples/TemporalStructures.lean` — the concrete-frame zoo [NOT STARTED]
+### Phase 17: `Examples/TemporalStructures.lean` — the concrete-frame zoo [COMPLETED]
 
 **Goal**: The single largest concentration of concrete frame values migrated to fibre values plus
 inclusions.
 
 **Tasks**:
-- [ ] Enumerate the file's frame constants **first**
-      (`grep -n "def .*Frame\|abbrev .*Frame" FormalSystem/Examples/TemporalStructures.lean`) and
-      classify each as type-variable-carried or concretely-carried before editing a single one.
-- [ ] Migrate: `trivialFrame`, `staticFrame`, `natFrame`, `genericTimeFrame`, `genericNatFrame`,
-      `flipFrame`, `intTimeFrame`, `intNatFrame`, `intBoolFrame`, `multiFamTaskFrame*`,
-      `regionFrame` and the rest. Type-variable-carried ones become `FrameOver D` values for
-      abstract `(D : TemporalOrder)`; ℤ-carried ones become `FrameOver intOrder` values written with
-      **literal fields** and `@[reducible]` (research R1/R3 — this is the form numerals need).
-- [ ] Preserve every constant's existing name; consumers across the tree and `Tests/` use them.
-- [ ] `def:frame-properties` is cited by this file (per `specs/paper-definitions-of-record.md`);
-      keep the citation resolving and update the prose where the fibration changes what the
-      encoding says (C15).
-- [ ] **Split authorization**: if the file cannot be completed in one agent run, split at a named
-      section boundary, land the first half green, mark `[PARTIAL]`, record the resume point.
+- [x] Enumerated the file's frame constants first and classified each.
+- [x] Migrated the five frame constants this file actually declares: `intTimeFrame`,
+      `intNatFrame`, `intBoolFrame` → `FrameOver intOrder`; `genericTimeFrame`, `genericNatFrame`
+      → `FrameOver D` at `(D : TemporalOrder)`, with `[SuccOrder ↑D] [NoMaxOrder ↑D]` retained as
+      genuine carrier side conditions. *(deviation: altered — no `@[reducible]` was added to any
+      of the three ℤ frames. R1/R3's requirement is that the *temporal order* be a reducible,
+      literal-field constant, which `intOrder` already is; the frames themselves are consumed as
+      values, never as types whose numerals must elaborate, and marking a `where`-built structure
+      reducible would change elaboration for no benefit. Verified by building every consumer,
+      including `Tests/`.)*
+- [x] Preserved every constant's existing name.
+- [x] C15: the `def:frame-properties` citation still resolves (invariants gate C15 passed:
+      all 46 paper anchors resolve).
+- [x] **Split authorization**: not exercised — the file completed in one run.
+      *(deviation: skipped.)*
+
+#### Phase 17 Record
+
+**Scope discrepancy, and it is the largest in the plan.** The hypothesis was "550 lines, 70
+`ParamTaskFrame` occurrences, the majority of research F5's 27 live concrete frame values".
+Measured: **55** occurrences, of which **5** are type ascriptions. The remaining 50 are
+`ParamTaskFrame.{interpolates_of_total, serial_of_total, limit_of_subsingleton,
+spherical_of_subsingleton, interpolates_of_permissive, serial_of_permissive,
+limit_of_permissive, spherical_of_permissive, nullity, forward_comp, spherical_of_finite}` —
+*discharge-helper* namespace references, whose relocation is Phase 20's. And the file declares
+**five** frames, not the plan's list of eleven: `trivialFrame`, `staticFrame`, `natFrame`,
+`flipFrame`, `multiFamTaskFrame*` and `regionFrame` are not in this file at all (they live in
+`Semantics/WorldHistory.lean`, `ReynoldsBridge.lean` and `RegionFrame.lean`, and Phases 11, 14
+and 20 own them). The plan's frame list was inherited from research F5's *tree-wide* inventory
+and mis-attributed to this file.
+
+**One real hazard, and it generalizes.** `intTimeFrame.forward_comp` stopped resolving. Generalized
+field notation dispatches on the **syntactic head of the declared type**, so while the type read
+`ParamTaskFrame Int` the dot notation found `ParamTaskFrame.forward_comp`; at `FrameOver intOrder`
+it looks for `FrameOver.forward_comp`, which does not exist. Repair is a qualified application
+(`ParamTaskFrame.forward_comp intTimeFrame …`), exactly as Phase 7 recorded for the 23 renames it
+had to do. **Phase 20 must relocate the whole `namespace ParamTaskFrame` derived-lemma block
+(`forward_comp`, `interpolates`, `nullity`, `backward_comp`, the `*_of_total`/`*_of_permissive`/
+`*_of_subsingleton`/`*_of_finite` discharge helpers, `limit_of_shift`, `limit_of_succOrder`,
+`spherical_of_finite`, `sInter_nonempty_of_directed_of_univ_or_singleton`, `trivialFrame`,
+`HF.isStepPath`) into `FrameOver`/`TaskFrame`** — that relocation is what restores dot notation
+tree-wide and is the single largest remaining piece of work in this plan.
 
 **Timing**: 2 hours
 

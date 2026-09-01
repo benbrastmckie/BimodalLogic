@@ -13,7 +13,7 @@ import FormalSystem.Semantics.WorldHistory
 # Temporal Structures - Example Frame Instantiations
 
 This module provides examples demonstrating the use of different temporal types
-with ProofChecker's generalized semantics. The polymorphic `ParamTaskFrame T` and
+with ProofChecker's generalized semantics. The fibre `FrameOver D` and
 `WorldHistory F` structures can be instantiated with various temporal types.
 
 ## Paper Alignment
@@ -24,7 +24,7 @@ abelian group $\D = \tuple{D, +, 0, \leq}$ with \textit{positive cone}
 $D^+ \coloneq \set{x \in D : x \geq 0}$." ProofChecker implements the ordered abelian group
 via the unbundled typeclasses `[AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]`; the
 paper's nontriviality requirement is supplied at the sites that need it rather than by the
-`ParamTaskFrame` structure (see TaskFrame.lean's known-gaps list).
+`FrameOver` structure (see TaskFrame.lean's known-gaps list).
 
 ## Example Temporal Types
 
@@ -56,7 +56,7 @@ includes:
 
 ## References
 
-* [TaskFrame.lean](../ProofChecker/Semantics/TaskFrame.lean) - ParamTaskFrame definition
+* [TaskFrame.lean](../ProofChecker/Semantics/TaskFrame.lean) - FrameOver definition
 * [WorldHistory.lean](../ProofChecker/Semantics/WorldHistory.lean) - WorldHistory definition
 * JPL Paper anchors `def:temporal-order` (temporal structure, quoted verbatim above) and
   `def:frame` (frame definition; see TaskFrame.lean's module docstring for the verbatim
@@ -75,7 +75,7 @@ Standard integer time task frame.
 This is the default temporal structure used in most temporal logic applications.
 Discrete time steps with integer arithmetic. WorldState is Unit (trivial).
 -/
-def intTimeFrame : ParamTaskFrame Int where
+def intTimeFrame : FrameOver intOrder where
   WorldState := Unit
   worldNonempty := inferInstanceAs (Nonempty Unit)
   TaskRel := fun _ _ _ => True
@@ -120,7 +120,7 @@ Integer time task frame with natural number world states.
 A slightly more complex frame with `Nat` world states. Task relation is `d ≠ 0 ∨ w = u`
 to satisfy nullity_identity while remaining permissive for non-zero durations.
 -/
-def intNatFrame : ParamTaskFrame Int where
+def intNatFrame : FrameOver intOrder where
   WorldState := Nat
   worldNonempty := inferInstanceAs (Nonempty Nat)
   TaskRel := fun w d u => d ≠ 0 ∨ w = u
@@ -222,7 +222,7 @@ own since it was split out of `def:frame-properties` — which now carries only 
 and *Complete*. None of the three is an axiom-discharge source: two are correspondence theorems
 and one is a frame-class predicate. `def:frame` is the source of record for all four discharges.
 -/
-def intBoolFrame : ParamTaskFrame Int where
+def intBoolFrame : FrameOver intOrder where
   WorldState := Bool
   worldNonempty := inferInstanceAs (Nonempty Bool)
   TaskRel := fun w d u => d ≠ 0 ∨ w = u
@@ -320,15 +320,15 @@ def intTimeHistory : WorldHistory intTimeFrame where
 
 section Polymorphic
 
-variable (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
+variable (D : TemporalOrder)
 
 /--
 Generic polymorphic task frame.
 
-Works with any temporal type `D` that has ordered additive group instances.
-This demonstrates ProofChecker's polymorphic design. WorldState is Unit (trivial).
+Works at any temporal order `D` (`def:temporal-order`) — one binder, not a carrier plus four
+algebraic side conditions. WorldState is Unit (trivial).
 -/
-def genericTimeFrame : ParamTaskFrame D where
+def genericTimeFrame : FrameOver D where
   WorldState := Unit
   worldNonempty := inferInstanceAs (Nonempty Unit)
   TaskRel := fun _ _ _ => True
@@ -357,7 +357,7 @@ theorem genericTimeFrame_interpolates : TaskFrame.Interpolates (genericTimeFrame
 `genericTimeFrame`, in the literal transcribed shape. Its carrier is `Unit`, so the axiom holds
 over **any** duration type, dense included — no restriction on `D` is needed. -/
 theorem genericTimeFrame_limit :
-    ∀ w u, (∀ x : D, 0 < x → ∃ y, |y| < x ∧ (genericTimeFrame D).TaskRel w y u) → u = w := by
+    ∀ w u, (∀ x : ↑D, 0 < x → ∃ y, |y| < x ∧ (genericTimeFrame D).TaskRel w y u) → u = w := by
   haveI : Subsingleton (genericTimeFrame D).WorldState := inferInstanceAs (Subsingleton Unit)
   exact ParamTaskFrame.limit_of_subsingleton
 
@@ -373,11 +373,13 @@ Generic polymorphic task frame with natural number world states.
 
 Task relation is `d ≠ 0 ∨ w = u` to satisfy nullity_identity.
 
-The `[SuccOrder D] [NoMaxOrder D]` binders are carried because `genericNatFrame_limit` requires
+The `[SuccOrder ↑D] [NoMaxOrder ↑D]` binders are carried because `genericNatFrame_limit` requires
 them: over a dense `D` the permissive relation puts every state in every cone of every other
-state and *Limit* (`def:frame#Limit`) fails outright.
+state and *Limit* (`def:frame#Limit`) fails outright. They are genuine side conditions on the
+carrier, so they stay binders — unlike `def:temporal-order`'s four components, which are now
+`D`'s own fields.
 -/
-def genericNatFrame [SuccOrder D] [NoMaxOrder D] : ParamTaskFrame D where
+def genericNatFrame [SuccOrder ↑D] [NoMaxOrder ↑D] : FrameOver D where
   WorldState := Nat
   worldNonempty := inferInstanceAs (Nonempty Nat)
   TaskRel := fun w d u => d ≠ 0 ∨ w = u
@@ -455,7 +457,7 @@ with `|y| < x`), and *Limit* fails outright. The frame has no consumers anywhere
 `FormalSystem/` or `Tests/`, so acquiring the binders was free.
 -/
 theorem genericNatFrame_limit [SuccOrder D] [NoMaxOrder D] :
-    ∀ w u, (∀ x : D, 0 < x → ∃ y, |y| < x ∧ (genericNatFrame D).TaskRel w y u) → u = w :=
+    ∀ w u, (∀ x : ↑D, 0 < x → ∃ y, |y| < x ∧ (genericNatFrame D).TaskRel w y u) → u = w :=
   ParamTaskFrame.limit_of_permissive (genericNatFrame_rel_iff D)
 
 /-- *Spherical* (`def:frame#Spherical`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
@@ -485,12 +487,12 @@ end Polymorphic
 /--
 Demonstrates that the same frame definition works with explicit Int.
 -/
-example : (genericTimeFrame Int).WorldState = Unit := rfl
+example : (genericTimeFrame intOrder).WorldState = Unit := rfl
 
 /--
 Demonstrates that generic and specific Int frames have the same task relation behavior.
 -/
-example : (genericTimeFrame Int).TaskRel = intTimeFrame.TaskRel := rfl
+example : (genericTimeFrame intOrder).TaskRel = intTimeFrame.TaskRel := rfl
 
 /-! ## Properties -/
 
@@ -503,8 +505,7 @@ theorem int_nullity_example : intTimeFrame.TaskRel () 0 () :=
 /--
 Generic time satisfies the nullity constraint (polymorphic proof, derived from nullity_identity).
 -/
-theorem generic_nullity_example (D : Type) [AddCommGroup D] [LinearOrder D]
-    [IsOrderedAddMonoid D] [Nontrivial D] :
+theorem generic_nullity_example (D : TemporalOrder) :
     (genericTimeFrame D).TaskRel () 0 () :=
   ParamTaskFrame.nullity (genericTimeFrame D) ()
 
@@ -514,7 +515,7 @@ Integer time forward compositionality example: 1 + 2 = 3 duration composition.
 theorem int_compositionality_example :
     intTimeFrame.TaskRel () 3 () := by
   change intTimeFrame.TaskRel () (1 + 2) ()
-  exact intTimeFrame.forward_comp () () () 1 2
+  exact ParamTaskFrame.forward_comp intTimeFrame () () () 1 2
     (by omega : 0 ≤ (1 : Int))
     (by omega : 0 ≤ (2 : Int))
     (ParamTaskFrame.nullity intTimeFrame ())
@@ -526,10 +527,10 @@ Generic forward compositionality theorem (polymorphic).
 For any temporal type `D` and non-negative durations `x` and `y`, tasks compose
 to a task of duration `x + y`.
 -/
-theorem generic_compositionality (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
-    (x y : D) (hx : 0 ≤ x) (hy : 0 ≤ y) :
+theorem generic_compositionality (D : TemporalOrder)
+    (x y : ↑D) (hx : 0 ≤ x) (hy : 0 ≤ y) :
     (genericTimeFrame D).TaskRel () (x + y) () :=
-  (genericTimeFrame D).forward_comp () () () x y hx hy
+  ParamTaskFrame.forward_comp (genericTimeFrame D) () () () x y hx hy
     (ParamTaskFrame.nullity (genericTimeFrame D) ())
     (ParamTaskFrame.nullity (genericTimeFrame D) ())
 
@@ -543,8 +544,7 @@ theorem int_domain_universal (t : Int) : intTimeHistory.domain t := trivial
 /--
 Generic histories have universal domains (polymorphic).
 -/
-theorem generic_domain_universal (D : Type) [AddCommGroup D] [LinearOrder D]
-    [IsOrderedAddMonoid D] [Nontrivial D] (t : D) :
+theorem generic_domain_universal (D : TemporalOrder) (t : ↑D) :
     (genericTimeHistory D).domain t := trivial
 
 end FormalSystem.Examples.TemporalStructures
