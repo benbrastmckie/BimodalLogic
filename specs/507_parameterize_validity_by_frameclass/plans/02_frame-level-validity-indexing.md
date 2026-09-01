@@ -312,34 +312,34 @@ after.
 
 ---
 
-### Phase 2: `FrameClass.Sat`, `ValidOnFrames`, `ValidIn`, and the one monotonicity lemma [NOT STARTED]
+### Phase 2: `FrameClass.Sat`, `ValidOnFrames`, `ValidIn`, and the one monotonicity lemma [COMPLETED]
 
 **Goal**: The FrameClass-indexed layer exists and is proved equivalent to every legacy predicate,
 without any legacy definition changing yet. This is the phase that lands the migration lever.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Semantics/FrameClassValidity.lean`, importing
+- [x] Create `FormalSystem/Semantics/FrameClassValidity.lean`, importing
       `FormalSystem.Semantics.FrameProperty` + `FormalSystem.ProofSystem.Axioms`. Module docstring
       must state why this seam (`Semantics → ProofSystem.Axioms`) is confined to one module, and
       record the verified acyclicity (`Axioms.lean` imports only `Syntax.Formula`).
-- [ ] Define `FrameClass.Sat : FrameClass → TaskFrame → Prop` per the table in "The `Sat`
+- [x] Define `FrameClass.Sat : FrameClass → TaskFrame → Prop` per the table in "The `Sat`
       interpretation of record" above, with the per-constructor anchors in the docstring.
-- [ ] Prove `FrameClass.Sat.anti {fc₁ fc₂} (h : fc₁ ≤ fc₂) {F} : fc₂.Sat F → fc₁.Sat F`
+- [x] Prove `FrameClass.Sat.anti {fc₁ fc₂} (h : fc₁ ≤ fc₂) {F} : fc₂.Sat F → fc₁.Sat F`
       (case split on both constructors; `decide` discharges the closed order goals).
-- [ ] Define `ValidOnFrames (P : TaskFrame → Prop) (φ : Formula) : Prop := ∀ F, P F → F.ValidOn φ`.
-- [ ] Define `ValidIn (fc : FrameClass) (φ : Formula) : Prop := ValidOnFrames fc.Sat φ`.
-- [ ] Prove `ValidOnFrames.mono` (antitone in the predicate) -- **the one monotonicity lemma**.
-- [ ] Prove `ValidIn.mono : fc₁ ≤ fc₂ → ValidIn fc₁ φ → ValidIn fc₂ φ` as its corollary via
+- [x] Define `ValidOnFrames (P : TaskFrame → Prop) (φ : Formula) : Prop := ∀ F, P F → F.ValidOn φ`. *(deviation: altered — declared in `Semantics/Validity.lean`, not in `FrameClassValidity.lean`. `ValidOnFrames` is defined through `TaskFrame.ValidOn`, which lives in `Validity.lean`; see the Phase 4 structural-decision entry.)*
+- [x] Define `ValidIn (fc : FrameClass) (φ : Formula) : Prop := ValidOnFrames fc.Sat φ`. *(deviation: altered — declared in `Semantics/Validity.lean`; see the Phase 4 structural-decision entry.)*
+- [x] Prove `ValidOnFrames.mono` (antitone in the predicate) -- **the one monotonicity lemma**.
+- [x] Prove `ValidIn.mono : fc₁ ≤ fc₂ → ValidIn fc₁ φ → ValidIn fc₂ φ` as its corollary via
       `Sat.anti`. Docstring must name `DerivationTree.lift` (`ProofSystem/Derivation.lean:184`) as
       the proof-side lemma it mirrors.
-- [ ] Prove the migration lever: `ValidOnFrames.of_forall_total` and `ValidOnFrames.apply_total`
+- [x] Prove the migration lever: `ValidOnFrames.of_forall_total` and `ValidOnFrames.apply_total`
       (see "The migration lever" above), routed through `valid_iff_forall_validOn`'s `.val`/
       `.property` bridge.
-- [ ] Prove the five equivalence bridges, legacy on the left, with legacy definitions still
+- [x] Prove the five equivalence bridges, legacy on the left, with legacy definitions still
       untouched: `valid φ ↔ ValidIn .Base φ`, `ValidDense φ ↔ ValidIn .Dense φ`,
       `ValidDiscrete φ ↔ ValidIn .Discrete φ`, `ValidDedekindDense φ ↔ ValidIn .Dedekind φ`,
       `ValidDedekind φ ↔ ValidOnFrames TaskFrame.IsComplete φ`.
-- [ ] Add the module to the `FormalSystem/Semantics.lean` aggregator.
+- [x] Add the module to the `FormalSystem/Semantics.lean` aggregator.
 
 **Timing**: 2 hours
 
@@ -366,25 +366,25 @@ build itself.
 
 ---
 
-### Phase 3: Retire the dead `FrameConditions` validity surface and the `ValidInt` duplicate [NOT STARTED]
+### Phase 3: Retire the dead `FrameConditions` validity surface and the `ValidInt` duplicate [COMPLETED]
 
 **Goal**: Delete the five `FrameConditions` validity predicates and their bridge lemmas -- all
 verified to have zero live consumers -- and collapse the `ValidInt`/`ValidOnInt` definitional
 duplicate onto `ValidInt`.
 
 **Tasks**:
-- [ ] Re-confirm zero live consumers before deleting anything (see Scope Hypothesis).
-- [ ] Delete `ValidLinear`, `ValidDenseFc`, `ValidDiscreteFc`, `ValidOnInt` and the bridge lemmas
+- [x] Re-confirm zero live consumers before deleting anything (see Scope Hypothesis).
+- [x] Delete `ValidLinear`, `ValidDenseFc`, `ValidDiscreteFc`, `ValidOnInt` and the bridge lemmas
       that mention only them (`valid_dense_of_valid_dense_fc`, `valid_dense_fc_of_valid_dense`,
       `valid_dense_fc_iff_valid_dense`, `valid_discrete_fc_of_valid_discrete`,
       `valid_linear_of_valid`, `valid_dense_fc_of_valid_linear`, `valid_discrete_fc_of_valid_linear`,
       `valid_on_Int_of_valid_discrete`) from `FormalSystem/FrameConditions/Validity.lean`.
-- [ ] Keep whatever in that file has a live consumer (`ValidOver`, `valid_of_forall_valid_over`,
-      `valid_over_of_valid` if still referenced) -- confirm per-declaration, do not delete by file.
-- [ ] If the file empties out, delete it and its import from `FormalSystem/FrameConditions.lean`;
+- [x] Keep whatever in that file has a live consumer (`ValidOver`, `valid_of_forall_valid_over`,
+      `valid_over_of_valid` if still referenced) -- confirm per-declaration, do not delete by file. *(deviation: altered — `ValidOver` does not exist in the tree; it had already been removed. `valid_of_forall_valid_over` and `valid_over_of_valid` were kept: they have zero consumers today but are fibration bridges, not part of the dead frame-class surface, so they were retained rather than retired with it.)*
+- [x] If the file empties out, delete it and its import from `FormalSystem/FrameConditions.lean`;
       otherwise leave a module docstring recording what was retired and why.
-- [ ] Update the `FrameConditions.lean` aggregator prose that names the deleted predicates.
-- [ ] Retarget any consumer of `ValidOnInt` onto `Semantics.ValidInt` (`Semantics/IntTransfer.lean:374`).
+- [x] Update the `FrameConditions.lean` aggregator prose that names the deleted predicates.
+- [x] Retarget any consumer of `ValidOnInt` onto `Semantics.ValidInt` (`Semantics/IntTransfer.lean:374`). *(deviation: skipped — `ValidOnInt` had zero consumers, so there was nothing to retarget. One unrelated fallout WAS repaired: `FrameConditions/Soundness.lean` had been getting `LinearTemporalFrame`/`DenseTemporalFrame`/`DiscreteTemporalFrame` transitively through `FrameConditions/Validity.lean`'s import of `FrameConditions/FrameClass.lean`, which this phase removed; the import is now declared directly where it is used.)*
 
 **Timing**: 1 hour
 

@@ -7,6 +7,7 @@ Authors: Benjamin Brast-McKie
 import FormalSystem.Semantics.TemporalOrder
 import FormalSystem.Semantics.TaskFrame
 import FormalSystem.Semantics.FrameProperty
+import FormalSystem.Semantics.FrameClassValidity
 import FormalSystem.Semantics.IntNormalForm
 import FormalSystem.Semantics.PartialHistory
 import FormalSystem.Semantics.PartialHistoryOrder
@@ -53,6 +54,10 @@ polymorphic over temporal types.
   dense-and-complete). Possible as ordinary predicates because `TaskFrame` carries `Duration` as a
   field rather than as an index. Records the `Dedekind`-not-`Complete` naming deviation at its
   definition site
+- `FrameClassValidity`: the semantic interpretation of `ProofSystem.FrameClass` —
+  `FrameClass.Sat : FrameClass → TaskFrame → Prop` and its antitonicity `Sat.anti`. The **only**
+  module under `Semantics/` importing anything from `ProofSystem/`; the seam is confined here
+  because `Sat` is the single point at which a proof-side tag acquires a semantic meaning
 - `IntNormalForm`: the ℤ-frame normal form — over `D = ℤ` a task frame is determined by its
   one-step relation `step w u := TaskRel w 1 u`, with `iter`/`iter_add` as the arithmetic core and
   `taskRel_eq_iter` as the decomposition theorem; also records the binder-fit finding for the two

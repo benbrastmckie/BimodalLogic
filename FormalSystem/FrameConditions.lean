@@ -22,8 +22,13 @@ The frame conditions module provides:
 1. **Typeclass hierarchy**: `LinearTemporalFrame`, `SerialFrame`, `DenseTemporalFrame`,
    `DiscreteTemporalFrame` - marker typeclasses bundling the Mathlib constraints
    required for temporal frame validity
-2. **Frame-class validity**: `ValidLinear` / `ValidDenseFc` / `ValidDiscreteFc`, each stated
-   directly over the fibre `FrameOver D` and `TaskFrame.ValidOn`
+2. **Validity bridges**: `valid_of_forall_valid_over` / `valid_over_of_valid`, relating
+   `Semantics.valid` to `TaskFrame.ValidOn` quantified over a fibre `FrameOver D`. The
+   frame-class validity predicates this directory used to carry (`ValidLinear`, `ValidDenseFc`,
+   `ValidDiscreteFc`, `ValidOnInt`) were retired: they had zero live consumers, and their
+   hand-maintained marker-typeclass binder lists did not match the predicates they mirrored. Their
+   replacement is `Semantics.ValidIn`, indexed by `ProofSystem.FrameClass` — see
+   `FrameConditions/Validity.lean`'s module docstring for the full record
 3. **Parameterized soundness**: Soundness theorems using typeclass constraints
 4. **Axiom compatibility**: `AxiomCompatible` typeclass relating axioms to frame classes
 
@@ -38,7 +43,7 @@ FrameConditions/
 └── README.md             -- Layering evidence and the FrameClass disambiguation
 ```
 
-Four modules, 816 lines. There is no `Completeness.lean` here; completeness lives
+Four modules. There is no `Completeness.lean` here; completeness lives
 under `Metalogic/`, and this directory consumes it rather than providing it.
 
 ## Position in the Layering
@@ -57,8 +62,8 @@ import FormalSystem.FrameConditions
 -- Use frame-class validity
 open FormalSystem.FrameConditions
 
--- Check if a formula is valid at the discrete integer fibre
-example : ValidOnInt φ ↔ ... := ...
+-- Bridge universal validity to validity over a chosen fibre
+example (h : valid φ) (F : FrameOver D) : F.toTaskFrame.ValidOn φ := valid_over_of_valid h F
 
 -- Get soundness via typeclass
 example [DiscreteTemporalFrame D] : soundness_discrete D := ...
