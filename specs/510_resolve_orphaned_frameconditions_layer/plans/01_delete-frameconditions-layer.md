@@ -1,7 +1,7 @@
 # Implementation Plan: Delete the orphaned `FormalSystem/FrameConditions/` layer
 
 - **Task**: 510 - Resolve orphaned FrameConditions layer
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 5.5 hours
 - **Dependencies**: 507 (satisfied — `[COMPLETED]` at `b7ccf6702`)
 - **Research Inputs**: `specs/510_resolve_orphaned_frameconditions_layer/reports/01_frameconditions-deletion.md`
@@ -526,29 +526,60 @@ identifiers are ABSENT" framing.
 
 ---
 
-### Phase 7: Full gate sweep and acceptance verification [NOT STARTED]
+### Phase 7: Full gate sweep and acceptance verification [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: Run the complete gate set against the finished tree, compare every result against the
 Phase 1 baseline, and confirm each restated acceptance criterion.
 
 **Tasks**:
-- [ ] Run the detached, guarded whole-project build and confirm green
+- [x] Run the detached, guarded whole-project build and confirm green
       (`bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build`,
       `run_in_background: true`).
-- [ ] Run `bash scripts/check-module-invariants.sh --no-build` and confirm ALL CHECKS PASSED.
+      *(**GREEN**: exit 0, "Build completed successfully (2505 jobs)", zero error lines. The
+      concurrent session whose uncommitted work reddened the Phase 4 build had landed a compiling
+      state by this point.)*
+- [x] Run `bash scripts/check-module-invariants.sh --no-build` and confirm ALL CHECKS PASSED.
       Assert specifically: **C6 still reports 17 unreachable live modules with
       `scripts/module-invariants-manifest.txt` unmodified** (`git diff --stat` on that path must
       be empty); C11 passes with the waived count at 7; C5 and C8 pass.
-- [ ] Record the C7 informational shift against the Phase 1 baseline. The report predicts live
+      *(deviation: ALL CHECKS did **not** pass. The three assertions this task is responsible for
+      all hold — **C11 PASS at 7 waived**, **C5 PASS**, **C8 PASS**, the manifested-unreachable
+      count is still **17**, and `git diff --stat 032a4f1da..HEAD -- scripts/module-invariants-manifest.txt`
+      is **empty**. The C6 *check* nonetheless fails, on 4 unreachable modules that are all files
+      created by other in-flight tasks: `Metalogic.SpWitness`, `Metalogic.TMCompletenessReduction`,
+      `Metalogic.Z1Countermodel`, `Semantics.LexCarrier`. The failure predates this task (3 such
+      modules at the Phase 1 baseline) and its membership churned between every run, which is the
+      signature of concurrent sessions rather than a stable defect. Recorded, not absorbed.)*
+- [x] Record the C7 informational shift against the Phase 1 baseline. The report predicts live
       `.lean` 479 → 474, `FormalSystem` 424 → 419, `(loose)` 10 → 9, and the `FrameConditions`
       row removed. C7 is never asserted as a gate — record the actual numbers and note any
       divergence rather than treating the prediction as a pass criterion.
-- [ ] Run `bash scripts/typst-sync-check.sh` and confirm PASS with `TOTAL_VIOLATIONS=0` — an
+      *(actual: 482 → 479 live, 427 → 424 `FormalSystem`, `(loose)` 10 → 9, `FrameConditions` row
+      removed. Only `(loose)` matched the prediction exactly; the others diverge because the
+      report's *baseline* was 3 files stale, not because its arithmetic was wrong. This task's own
+      contribution is exactly -5 `.lean` files. Full table in the summary.)*
+- [x] Run `bash scripts/typst-sync-check.sh` and confirm PASS with `TOTAL_VIOLATIONS=0` — an
       improvement over the RED baseline, not merely a no-regression.
-- [ ] Run `bash scripts/readme-lint.sh` and confirm exit 0.
-- [ ] Confirm the deleted paths are absent and the Boneyard file is present:
+      *(**PASS**, all 3 checks green: `TOTAL_VIOLATIONS=0`, `MISMATCH_COUNT=0`,
+      `MA_COUNT_MISMATCHES=0`. Repaired from `TOTAL_VIOLATIONS=2`.)*
+- [x] Run `bash scripts/readme-lint.sh` and confirm exit 0.
+      *(deviation: exit 1. **Check 3 — the check this task put at risk — is at 0 broken
+      references**, all three breaks repaired. Check 1 still fails on the single inherited missing
+      `FormalSystem/Semantics/Ultraproduct/README.md`, present at the Phase 1 baseline and owned by
+      another task. Recorded, not absorbed.)*
+- [x] Confirm the deleted paths are absent and the Boneyard file is present:
       `test ! -e FormalSystem/FrameConditions.lean && test ! -d FormalSystem/FrameConditions && test -f FormalSystem/Boneyard/StrictSemanticsLegacy/FrameConditions/Completeness.lean`.
-- [ ] Write the baseline-vs-final comparison table into the implementation summary.
+      *(PASS)*
+- [x] Write the baseline-vs-final comparison table into the implementation summary.
+- [x] *(added)* Sorry/axiom/vacuous-definition census: 0 sorries and 0 vacuous definitions in the
+      files this task modified; live non-Boneyard `axiom` count unchanged at 6.
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| `check-module-invariants.sh` C6 left failing on 4 unmanifested unreachable modules | All four are `.lean` files created by other in-flight tasks. Manifesting another task's module would claim its work and pre-empt its own accounting. The plan additionally forbids any edit to this manifest as a Non-Goal | Baseline set was `TMCompletenessReduction`, `BLSchemaValidity`, `LexCarrier`; final set is `SpWitness`, `TMCompletenessReduction`, `Z1Countermodel`, `LexCarrier` — the membership churned across all three runs. `git diff 032a4f1da..HEAD -- scripts/module-invariants-manifest.txt` is empty and the manifested-unreachable count is 17 at both ends |
+| `readme-lint.sh` check 1 left failing on a missing `FormalSystem/Semantics/Ultraproduct/README.md` | The directory was created by *committed* foreign work that shipped without a README; it is not a `FrameConditions` consequence, and it is under active concurrent edit. Writing that README would author another task's deliverable | `git log -- FormalSystem/Semantics/Ultraproduct/` → `0f1e50fd4`, `9eb879519`, `dbad125e6`. The failure is recorded verbatim in `baselines.txt` before this task modified anything. Check 3, the check the deletion actually endangered, is repaired to 0 |
 
 **Timing**: 0.75 hours
 
@@ -562,6 +593,11 @@ Phase 1 baseline, and confirm each restated acceptance criterion.
 facts. Confirm by direct comparison of the Phase 1 and Phase 7 C7 lines; a divergence is a
 finding to record in the summary, not a gate failure, because C7 is informational.
 
+**Measured**: 482 → 479 live `.lean`, 427 → 424 `FormalSystem`, 54 → 54 Tests, `(loose)` 10 → 9,
+`FrameConditions` row (4) removed. Only the `(loose)` prediction landed. The divergence is a stale
+report *baseline*, not bad arithmetic: the tree already held 482/427 at Phase 1. Recorded in the
+summary as a finding.
+
 **Files to modify**:
 - `specs/510_resolve_orphaned_frameconditions_layer/summaries/01_delete-frameconditions-layer-summary.md`
 
@@ -574,27 +610,33 @@ finding to record in the summary, not a gate failure, because C7 is informationa
 
 ## Testing & Validation
 
-- [ ] **A1** — No orphaned validity vocabulary remains. Largely pre-satisfied by `e5a9ba40f`
+- [x] **A1** — No orphaned validity vocabulary remains. Largely pre-satisfied by `e5a9ba40f`
       (report C2); this task finishes it by deleting the two remaining `FrameOver D` fibration
       bridges along with their file. Verify: zero `ValidOver`/`ValidLinear`/`ValidDenseFc`/
       `ValidDiscreteFc`/`ValidOverInt` occurrences tree-wide outside `specs/` and `Boneyard/`.
-- [ ] **A2** — `lake build` green, measured via a detached guarded build both at Phase 1
+- [x] **A2** — `lake build` green, measured via a detached guarded build both at Phase 1
       (baseline) and Phase 7 (final).
-- [ ] **A3 (restated per report C4)** — `check-module-invariants.sh` green with
+- [~] **A3 (restated per report C4)** — `check-module-invariants.sh` green with
       **C6 still passing at 17 unreachable modules and no manifest edit**. The brief's original
       "C6 unreachable-module count updated and manifested" criterion **does not apply and would
       fail if attempted**; `FrameConditions` is reachable, so deleting it cannot change the
       unreachable count. C7's informational inventory is the thing that shifts, and it is never
       asserted. Live risks are C11 (Phase 4 waiver), C5, and C8.
-- [ ] **A4 (restated per report B2)** — `typst-sync-check.sh` PASS with `TOTAL_VIOLATIONS=0`.
+- [x] **A4 (restated per report B2)** — `typst-sync-check.sh` PASS with `TOTAL_VIOLATIONS=0`.
       This is a *repair*, not a hold: the gate is already RED at HEAD with 2 violations inherited
       from the `e5a9ba40f` trim, and a naive deletion would take it to ~13.
-- [ ] **A5** — `readme-lint.sh` exits 0 with every broken relative link repaired.
-- [ ] **A6 (restated per report C5)** — The silent regression is recorded in its corrected form:
+- [~] **A5** — `readme-lint.sh` exits 0 with every broken relative link repaired.
+- [x] **A6 (restated per report C5)** — The silent regression is recorded in its corrected form:
       archived, not deleted; `completeness_over_Int` and `discrete_completeness_fc` survive in the
       Boneyard; only `dovetailed_bundle` is gone outright.
-- [ ] **A7** — No `#leansrc` pointer in `typst/FormalFoundations.typ` names a `FrameConditions`
+- [x] **A7** — No `#leansrc` pointer in `typst/FormalFoundations.typ` names a `FrameConditions`
       module or symbol, and every repointed target verified present in the live tree.
+
+**Acceptance verdicts** (`[x]` met, `[~]` met in substance with a recorded exclusion): A1, A2,
+A4, A6, A7 PASS. **A3 PARTIAL** — the 17-unreachable count and the untouched manifest both hold
+and C5/C8/C11 pass, but the C6 *check* fails on 4 foreign modules. **A5 PARTIAL** — all three
+broken relative links repaired and check 3 back to 0, but check 1 still fails on an inherited
+missing README. Both exclusions are evidenced in Phase 7's `#### Reasoned Exclusions` table.
 
 ## Artifacts & Outputs
 
