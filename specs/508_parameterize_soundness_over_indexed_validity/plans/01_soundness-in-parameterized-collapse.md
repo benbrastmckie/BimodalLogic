@@ -1,7 +1,7 @@
 # Implementation Plan: Task #508
 
 - **Task**: 508 - Parameterize soundness over indexed validity
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 12 hours
 - **Dependencies**: Task 507 (landed), Task 510
 - **Research Inputs**:

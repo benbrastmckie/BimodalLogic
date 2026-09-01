@@ -11,9 +11,9 @@ next_project_number: 516
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,257,298,433,461,476,481,504,506,508 | -- | dataset-enhancement, decidability, frame-extensions, ... |
-| 2 | 193,231,282,296,463,502,509 | 298,433,461,508 | algebraic-representation, automation, dataset-enhancement, ... |
-| 3 | 178,219,464,494,497 | 193,231,463,502,509 | algebraic-representation, dataset-enhancement, decidability, ... |
+| 1 | 127,128,193,257,298,433,461,476,481,504,506,509 | -- | automation, dataset-enhancement, decidability, ... |
+| 2 | 178,231,282,296,463,494,502 | 193,298,433,461,509 | algebraic-representation, dataset-enhancement, decidability, ... |
+| 3 | 219,464,497 | 231,463,502 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 465,498,499,500 | 464,497 | algebraic-representation, decidability |
 | 5 | 125,428 | 465,498,499 | algebraic-representation, decidability |
 | 6 | 429,501 | 125,428 | algebraic-representation, decidability |
@@ -84,8 +84,7 @@ next_project_number: 516
 
 ### Metalogic
 
-508 [PLANNED] — Collapse ~23 soundness theorems into ONE parameterized theorem pl
-  └─ 509 [NOT STARTED] — Make the compactness / strong-completeness layer a FrameClass-ind
+509 [NOT STARTED] — Make the compactness / strong-completeness layer a FrameClass-ind
 
 ### Publication Quality
 
@@ -299,12 +298,13 @@ Do not remove this edge as spurious.
 ---
 
 ### 508. Parameterize soundness over indexed validity
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: Task 507, Task 510
 - **Research**: [508_parameterize_soundness_over_indexed_validity/reports/01_parameterized-soundness.md]
 - **Plan**: [508_parameterize_soundness_over_indexed_validity/plans/01_soundness-in-parameterized-collapse.md]
+- **Summary**: [508_parameterize_soundness_over_indexed_validity/summaries/01_soundness-in-parameterized-collapse-summary.md]
 
 **Description**: Collapse ~23 soundness theorems into ONE parameterized theorem plus corollaries. CURRENT DUPLICATION, all instances of a single schema: Metalogic/Soundness.lean has soundness(:1100), soundness_dense(:1274), soundness_discrete(:1420), soundness_dedekind(:1947) plus three *_valid variants(:1205,:1368,:1928); Metalogic/StrongCompleteness.lean has soundness_{base,dense,discrete,dedekind}_consequence(:667,:771,:879,:524); FrameConditions/Soundness.lean has soundness_over, soundness_linear, soundness_dense, soundness_discrete, soundness_Int; Metalogic/BaseLanguageSoundness.lean has bl_soundness{,_dense,_discrete,_dedekind} plus four *_valid variants(:168-252). Metalogic/SoundnessLemmas/FrameClassVariants.lean (1041 lines) exists solely to carry per-frame-class variants of the axiom-validity lemmas. TARGET: one theorem, Derivable fc Gamma phi -> SetSemanticConsequence fc Gamma phi, by induction on the derivation, with the axiom case discharged from the Axiom.minFrameClass <= fc side condition already carried by DerivationTree's axiom constructor plus a per-axiom validity lemma. The existing theorems become one-line corollaries. BL SIDE COLLAPSES FOR FREE: blValid_iff_valid_tr (BaseLanguageSoundness.lean:141) already reduces BL validity to Formula validity through the translation tr, so BLValidOn fc phi := ValidOn fc (tr phi) subsumes all four BLValid* definitions (BLValidity.lean:77,102,115,132), the three blValid_implies_* bridges (:153,:157,:162), and all eight bl_soundness* theorems -- do NOT scope that as separate work. CONSTRAINT: preserve the soundness_dedekind target discipline -- it targets ValidDedekindDense, not ValidDedekind, and the docstring at Validity.lean:301 explains why retargeting is refutable. ACCEPTANCE: sorry-free, lake build green, axiom profiles preserved on all flagship soundness results, no theorem weakened. GROUNDING: specs/reviews/review-2026-08-31-metalogic-systematicity.md issue H2 and M3.=== DIRECTION NOTE ===
 The FrameClass-indexed validity this task builds on is being defined at FRAME level, not carrier
