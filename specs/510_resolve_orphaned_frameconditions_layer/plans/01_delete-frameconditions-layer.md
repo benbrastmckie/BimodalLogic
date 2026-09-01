@@ -163,7 +163,7 @@ the baseline file and reconciled in Phase 7's comparison rather than silently ab
 
 ---
 
-### Phase 2: Rewrite the typst frame-class section and clear inherited sync debt [NOT STARTED]
+### Phase 2: Rewrite the typst frame-class section and clear inherited sync debt [COMPLETED]
 
 **Goal**: Rewrite `typst/chapters/p2-frame-classes.typ`'s frame-condition prose onto the live
 `FrameClass.Sat` / `ValidIn` / `TaskFrame.Is*` vocabulary, taking `typst-sync-check.sh` from its
@@ -171,7 +171,7 @@ current RED state to 0 violations **before** any deletion happens — which also
 B2 trap in which deletion would convert three currently-passing names into new violations.
 
 **Tasks**:
-- [ ] Delete or rewrite the `== Semantic Frame-Condition Typeclasses` section
+- [x] Delete or rewrite the `== Semantic Frame-Condition Typeclasses` section
       (`typst/chapters/p2-frame-classes.typ`, around `:91-99`). Its four bullets name
       `LinearTemporalFrame`, `SerialFrame`, `DenseTemporalFrame`, `DiscreteTemporalFrame`, and
       its closing paragraphs name `ValidOver`, `ValidLinear`, `ValidDenseFc`, `ValidDiscreteFc`,
@@ -180,17 +180,27 @@ B2 trap in which deletion would convert three currently-passing names into new v
       Phase 4. Replace with prose grounded on `FrameClass.Sat` (`Semantics/FrameClassValidity.lean`),
       `ValidIn` (`Semantics/Validity.lean`), and `TaskFrame.IsDense` / `TaskFrame.IsSuccArchDiscrete`
       / `TaskFrame.IsDedekind` (`Semantics/FrameProperty.lean`).
-- [ ] Fix the *Monotonicity* paragraph (around `:151-153`): drop the bridge-level
+      *(rewritten as `== Interpreting the Frame-Class Tags Semantically`)*
+- [x] Fix the *Monotonicity* paragraph (around `:151-153`): drop the bridge-level
       `soundness_linear` / `FrameConditions/Soundness.lean` clause; keep the
       `Metalogic/Soundness.lean` sentence, which is already correct.
-- [ ] Delete the `// CONFIRM(lean): FrameConditions/Soundness.lean carries a Dedekind-class bridge
+      *(altered: the dropped clause is replaced by `ValidIn.mono`, the live carrier of the same
+      claim, rather than left with no semantic witness at all)*
+- [x] Delete the `// CONFIRM(lean): FrameConditions/Soundness.lean carries a Dedekind-class bridge
       theorem…` comment — it asks a question about a file that will not exist.
-- [ ] Fix the *Frame Properties* paragraph (around `:160`) that says the properties "correspond to
+- [x] Fix the *Frame Properties* paragraph (around `:160`) that says the properties "correspond to
       the `DiscreteTemporalFrame`/`DenseTemporalFrame` typeclasses above": repoint at
       `TaskFrame.IsSuccArchDiscrete` / `TaskFrame.IsDense`.
-- [ ] Verify each replacement backticked identifier actually resolves — check 1 requires the name
+- [x] Verify each replacement backticked identifier actually resolves — check 1 requires the name
       to occur in some live `.lean` file, so confirm with `grep -rn` before relying on it.
-- [ ] Run `bash scripts/typst-sync-check.sh` and confirm `TOTAL_VIOLATIONS=0` and overall PASS.
+- [x] Run `bash scripts/typst-sync-check.sh` and confirm `TOTAL_VIOLATIONS=0` and overall PASS.
+      *(PASS, all 3 checks green, 574 candidates)*
+- [x] *(added, not in plan)* Two further stale names outside the plan's enumerated line ranges
+      would have become violations after deletion and were repaired in the same pass: the
+      `SerialFrame` bundle reference at `:109` (repointed at `TemporalOrder`) and the file's
+      own `Lean name ground truth:` header comment at `:4-5`.
+- [x] *(added)* `typst compile typst/BimodalReference.typ` exits 0 — the rewrite does not break
+      the book build.
 
 **Timing**: 1.0 hours
 
