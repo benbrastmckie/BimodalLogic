@@ -1,7 +1,7 @@
 # Implementation Plan: Task #507 (v2)
 
 - **Task**: 507 - Parameterize validity by FrameClass (frame-level shape)
-- **Status**: COMPLETED
+- **Status**: [COMPLETED]
 - **Effort**: 12.5 hours
 - **Dependencies**: None (the TaskFrame duration-bundling refactor this direction depends on has ALREADY LANDED -- see "Blocker resolution, verified" below)
 - **Research Inputs**: `specs/507_parameterize_validity_by_frameclass/reports/01_frameclass-indexed-validity.md`

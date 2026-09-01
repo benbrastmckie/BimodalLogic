@@ -11,11 +11,11 @@ next_project_number: 516
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,257,298,433,461,476,481,493,495,504,506,507 | -- | dataset-enhancement, decidability, frame-extensions, ... |
-| 2 | 231,282,296,463,502,510,513 | 298,433,461,507 | algebraic-representation, dataset-enhancement, decidability, ... |
-| 3 | 219,464,497,508 | 231,463,502,510 | algebraic-representation, dataset-enhancement, decidability, ... |
-| 4 | 193,465,498,499,500,509 | 464,493,497,508 | algebraic-representation, automation, decidability, ... |
-| 5 | 125,178,428,494 | 193,465,498,499,509 | algebraic-representation, decidability, formula-refactor, ... |
+| 1 | 127,128,257,298,433,461,476,481,493,495,504,506,510,513 | -- | dataset-enhancement, decidability, frame-extensions, ... |
+| 2 | 231,282,296,463,502,508 | 298,433,461,510 | algebraic-representation, dataset-enhancement, decidability, ... |
+| 3 | 193,219,464,497,509 | 231,463,493,502,508 | algebraic-representation, automation, dataset-enhancement, ... |
+| 4 | 178,465,494,498,499,500 | 193,464,497,509 | algebraic-representation, decidability, formula-refactor, ... |
+| 5 | 125,428 | 465,498,499 | algebraic-representation, decidability |
 | 6 | 429,501 | 125,428 | algebraic-representation, decidability |
 | 7 | 410 | 429 | decidability |
 | 8 | 411 | 410 | decidability |
@@ -85,10 +85,9 @@ next_project_number: 516
 ### Metalogic
 
 495 [PLANNED] — RESEARCH TASK, DELIBERATELY AGNOSTIC ABOUT THE VERDICT. Determine
-507 [IMPLEMENTING] — ROOT FIX for the metalogic systematicity front. Give the proof-si
-  └─ 510 [NOT STARTED] — Decide the fate of FormalSystem/FrameConditions/ (4 modules, 906 
-    └─ 508 [NOT STARTED] — Collapse ~23 soundness theorems into ONE parameterized theorem pl
-      └─ 509 [NOT STARTED] — Make the compactness / strong-completeness layer a FrameClass-ind
+510 [NOT STARTED] — Decide the fate of FormalSystem/FrameConditions/ (4 modules, 906 
+  └─ 508 [NOT STARTED] — Collapse ~23 soundness theorems into ONE parameterized theorem pl
+    └─ 509 [NOT STARTED] — Make the compactness / strong-completeness layer a FrameClass-ind
 
 ### Publication Quality
 
@@ -324,12 +323,13 @@ specs/514_align_definitions_with_source_paper/reports/01 §1.2.
 ---
 
 ### 507. Parameterize validity by frameclass
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: Task 514, Task 512
 - **Research**: [507_parameterize_validity_by_frameclass/reports/01_frameclass-indexed-validity.md]
 - **Plan**: [507_parameterize_validity_by_frameclass/plans/02_frame-level-validity-indexing.md]
+- **Summary**: [507_parameterize_validity_by_frameclass/summaries/01_frame-level-validity-indexing-summary.md]
 
 **Description**: ROOT FIX for the metalogic systematicity front. Give the proof-side FrameClass tag a SEMANTIC interpretation, then define validity ONCE, indexed by it. THE ASYMMETRY: the proof side is already fully parameterized -- Derivable (fc : FrameClass) (ProofSystem/Derivable.lean:69), DerivationTree (fc : FrameClass) (ProofSystem/Derivation.lean:91), DerivationTree.lift along fc1 <= fc2 (Derivation.lean:184), PartialOrder FrameClass (ProofSystem/Axioms.lean:551), Axiom.minFrameClass as declared single source of truth (Axioms.lean:531ff). The semantic side has NONE of this: 15 hand-copied validity predicates with no fc index (5 in Semantics/Validity.lean:94,206,248,301,336; 4 in Semantics/BLValidity.lean:77,102,115,132; ValidInt in Semantics/IntTransfer.lean; 5 in FrameConditions/Validity.lean), plus 8 semantic-consequence variants. SMOKING GUN IN ONE FILE: Metalogic/SetConsequence.lean carries SetDerivable (fc : FrameClass) at :72 with ONE monotonicity lemma at :118, and directly beneath it SetSemanticConsequence{Base,Dense,Discrete,DedekindDense} at :79,:87,:97,:106 with FOUR copied monotonicity lemmas at :124,:130,:136,:144. Those four definitions are BYTE-IDENTICAL except for the typeclass binder line; their own docstrings cross-reference the Valid* whose binder list they copy. THE MISSING INGREDIENT ALREADY EXISTS: FrameConditions/FrameClass.lean defines marker typeclasses LinearTemporalFrame(:88), SerialFrame(:103), DenseTemporalFrame(:124), DiscreteTemporalFrame(:148), DedekindTemporalFrame(:182) -- exactly the binder-list-as-predicate-on-D that a FrameClass-indexed validity needs. That layer is orphaned (see the FrameConditions resolution task) and this task should consume it rather than invent a sixth vocabulary. DELIVERABLE: (1) a FrameClass -> carrier-constraint interpretation; (2) ValidOn (fc : FrameClass) (phi) and SetSemanticConsequence (fc) defined once; (3) ONE monotonicity lemma replacing valid_implies_valid_dense/_discrete/_validDedekind/_validDedekindDense (Validity.lean:349,356,364,371), pointing the same direction as DerivationTree.lift; (4) the existing 15 predicates retained as abbreviations or retired, with every call site migrated. HAZARD THIS CLOSES: the ValidDedekind docstring (Validity.lean:301) warns that retargeting soundness_dedekind to it yields a REFUTABLE theorem -- a trap that exists only because binder lists are inlined rather than derived from the frame class. ACCEPTANCE: sorry-free, lake build green, check-module-invariants.sh passes, axiom profiles unchanged on the flagship theorems. GROUNDING: specs/reviews/review-2026-08-31-metalogic-systematicity.md issue H1.=== DIRECTION AMENDED (supersedes the plan at plans/01_frameclass-indexed-validity.md) ===
 The existing plan is SUPERSEDED and must be revised before implementation. Its Phase 1 defines

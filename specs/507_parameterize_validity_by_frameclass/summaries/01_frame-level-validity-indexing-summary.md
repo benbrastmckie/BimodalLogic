@@ -3,6 +3,10 @@
 - **Task**: 507 - Parameterize validity by FrameClass
 - **Plan**: `specs/507_parameterize_validity_by_frameclass/plans/02_frame-level-validity-indexing.md` (v2; supersedes v1)
 - **Status**: COMPLETED — 9/9 phases
+- **Started**: TBD
+- **Completed**: TBD
+- **Artifacts**: TBD
+- **Standards**: TBD
 - **Type**: lean4
 
 ## What was built
