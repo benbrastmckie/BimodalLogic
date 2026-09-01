@@ -1,7 +1,7 @@
 # Implementation Plan: Delete the orphaned `FormalSystem/FrameConditions/` layer
 
 - **Task**: 510 - Resolve orphaned FrameConditions layer
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 5.5 hours
 - **Dependencies**: 507 (satisfied — `[COMPLETED]` at `b7ccf6702`)
 - **Research Inputs**: `specs/510_resolve_orphaned_frameconditions_layer/reports/01_frameconditions-deletion.md`
@@ -108,29 +108,34 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Capture green baselines [NOT STARTED]
+### Phase 1: Capture green baselines [COMPLETED]
 
 **Goal**: Establish the pre-change measurements the rest of the task is attributed against —
 above all a green `lake build`, which the research cycle could not capture because its guarded
 build queued behind another session's in-flight build.
 
 **Tasks**:
-- [ ] Record the starting commit SHA (`git rev-parse HEAD`) into a baseline scratch file under
-      the task directory.
-- [ ] Run a **detached, guarded** whole-project build and wait for it to complete:
+- [x] Record the starting commit SHA (`git rev-parse HEAD`) into a baseline scratch file under
+      the task directory. *(29e8d5713; written to `baselines.txt`)*
+- [x] Run a **detached, guarded** whole-project build and wait for it to complete:
       `Bash(run_in_background: true)` with
       `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build`.
       Per `context/project/lean4/operations/long-builds.md`, both obligations (detach AND guard)
       are mandatory; a foreground `lake build` will livelock. If the guard reports an in-flight
       build held by another session, wait and retry rather than bypassing the guard.
-- [ ] Confirm the build is **green**. If it is not green at HEAD, STOP and mark the phase
+- [x] Confirm the build is **green**. If it is not green at HEAD, STOP and mark the phase
       `[BLOCKED]` — deleting into a red tree destroys attribution.
-- [ ] Run and record `bash scripts/check-module-invariants.sh --no-build`, capturing the C4, C6,
-      C7, and C11 lines verbatim.
-- [ ] Run and record `bash scripts/typst-sync-check.sh`, capturing `TOTAL_VIOLATIONS` and the
-      identity of each violation.
-- [ ] Run and record `bash scripts/readme-lint.sh`, capturing its check-1 and check-3 results
-      (the two exit-code-affecting checks).
+      *(GREEN: "Build completed successfully (2509 jobs)", exit 0. Hard gate satisfied.)*
+- [x] Run and record `bash scripts/check-module-invariants.sh --no-build`, capturing the C4, C6,
+      C7, and C11 lines verbatim. *(deviation: C6 FAILS at baseline — 3 unmanifested unreachable
+      modules, all of them foreign untracked/uncommitted files owned by concurrent sessions
+      (tasks 493/495/513), not FrameConditions. Recorded, not repaired.)*
+- [x] Run and record `bash scripts/typst-sync-check.sh`, capturing `TOTAL_VIOLATIONS` and the
+      identity of each violation. *(TOTAL_VIOLATIONS=2, exactly as hypothesised)*
+- [x] Run and record `bash scripts/readme-lint.sh`, capturing its check-1 and check-3 results
+      (the two exit-code-affecting checks). *(deviation: check 1 FAILS at baseline with 1 missing
+      README at `FormalSystem/Semantics/Ultraproduct/`, inherited from committed foreign work.
+      Check 3 is at 0 broken references — green — and is the check this task puts at risk.)*
 
 **Timing**: 0.75 hours (mostly build wait; passive progress checks per `long-builds.md` are fine
 while waiting).

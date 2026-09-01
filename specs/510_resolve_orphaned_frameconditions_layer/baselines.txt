@@ -1,0 +1,84 @@
+# Phase 1 baseline capture -- task 510
+# Captured before any source modification.
+
+HEAD_SHA = 29e8d571381b52d18269e84307dc74ef9770ed19
+
+## IMPORTANT: working tree was NOT clean at capture time.
+
+Concurrent in-flight sessions (tasks 493/495/513) had uncommitted work present:
+  M FormalSystem/Metalogic/BaseLanguageSoundness.lean
+  M FormalSystem/Semantics/DurationClassification.lean
+  M typst/FormalFoundations.typ
+  ?? FormalSystem/Metalogic/TMCompletenessReduction.lean
+  ?? FormalSystem/Semantics/BLSchemaValidity.lean
+Every divergence from the plan's Scope Hypothesis below traces to these foreign edits.
+
+---------------------------------------------------------------------------
+## 1. lake build  -- GREEN  (measured for the first time; the hard gate)
+---------------------------------------------------------------------------
+Command: bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build
+         (detached via run_in_background, guarded, per long-builds.md)
+Result:  "Build completed successfully (2509 jobs)."  exit 0
+Phase 1's hard gate is SATISFIED. Deletion may proceed.
+
+---------------------------------------------------------------------------
+## 2. scripts/check-module-invariants.sh --no-build  -- FAIL (exit 1)
+---------------------------------------------------------------------------
+PASS  C4   all 1477 FormalSystem/BimodalTest import lines resolve
+PASS  C5   all module-shaped paths in 1323 markdown files resolve (4 allowlisted)
+FAIL  C6   3 unreachable live module(s) absent from scripts/module-invariants-manifest.txt
+            FormalSystem.Metalogic.TMCompletenessReduction
+            FormalSystem.Semantics.BLSchemaValidity
+            FormalSystem.Semantics.LexCarrier
+INFO  C7   482 live .lean files (427 FormalSystem / 54 Tests); 462 reachable, 20 unreachable
+            (loose) 10 | Automation 34 | BaseLanguage 5 | Examples 2 | FrameConditions 4
+            Metalogic 317 | ProofSystem 4 | Semantics 28 | Syntax 8 | Theorems 15
+PASS  C8   every FormalSystem/ and Metalogic/ subdirectory has exactly one sibling aggregator
+PASS  C11  all 497 archived import lines in 156 archived file(s) resolve (6 waived)
+
+DIVERGENCE FROM SCOPE HYPOTHESIS (plan Phase 1):
+  hypothesised C4 = 1472 import lines      actual 1477  (+5, foreign new files)
+  hypothesised C6 = 17 unreachable, all manifested, PASS
+                    actual: C6 FAILS. 20 unreachable = the 17 manifested + 3 unmanifested,
+                    and all 3 unmanifested are foreign uncommitted/untracked modules owned by
+                    other in-flight sessions. NOT caused by, and NOT repairable by, this task.
+                    Adding manifest entries for them is out of scope and would be territory
+                    theft; adding one for FrameConditions would fail C6 (plan Non-Goal).
+  hypothesised C7 = 479 live (424 FS / 54 tests), 462 reachable / 17 unreachable
+                    actual  = 482 live (427 FS / 54 tests), 462 reachable / 20 unreachable
+                    delta of exactly +3 = the three foreign modules.
+  C11 = 497 archived import lines / 156 files / 6 waived  -- CONFIRMED as hypothesised.
+  C8 PASS, C5 PASS -- CONFIRMED as hypothesised.
+
+---------------------------------------------------------------------------
+## 3. scripts/typst-sync-check.sh  -- FAIL (exit 1)
+---------------------------------------------------------------------------
+== Check 1: backtick name resolution ==
+VIOLATION: `ValidOver`    -- not found in any live *.lean  (typst/chapters/p2-frame-classes.typ)
+VIOLATION: `ValidOverInt` -- not found in any live *.lean  (typst/chapters/p2-frame-classes.typ)
+TOTAL_VIOLATIONS=2
+MISMATCH_COUNT=0
+MA_COUNT_MISMATCHES=0
+typst-sync-check.sh: FAIL
+
+CONFIRMED exactly as hypothesised: 2 violations, both `ValidOver`/`ValidOverInt`, both in
+typst/chapters/p2-frame-classes.typ, inherited from the e5a9ba40f trim.
+
+---------------------------------------------------------------------------
+## 4. scripts/readme-lint.sh  -- FAIL (exit 1)
+---------------------------------------------------------------------------
+Check 1 (Missing READMEs):        1
+    MISSING: FormalSystem/Semantics/Ultraproduct/README.md (4 .lean files)
+Check 3 (Broken file references): 0        <-- ALREADY GREEN at baseline
+Check 2 (informational):          115 files not listed
+Check 4 (informational):          7 missing 'Last verified' dates
+RESULT: FAIL (1 missing READMEs, 0 broken references)
+
+ATTRIBUTION of the check-1 failure: FormalSystem/Semantics/Ultraproduct/ was created by
+COMMITTED work from another task (0f1e50fd4 / 9eb879519 / dbad125e6) and shipped without a
+README. It is pre-existing, foreign-territory debt with no FrameConditions involvement, and
+that directory is under active concurrent edit. This task does not repair it; see the summary's
+Reasoned Exclusions.
+
+Check 3 is the check this task actually puts at risk (deleting FrameConditions/README.md
+dangles relative links into it) and is the check Phase 5 must hold at 0.
