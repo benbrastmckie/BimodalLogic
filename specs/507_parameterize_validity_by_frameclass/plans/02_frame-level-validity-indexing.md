@@ -408,7 +408,7 @@ recorded as a Reasoned Exclusion instead.
 
 ---
 
-### Phase 4: Redefine the `Semantics/` predicates on the new primitive [NOT STARTED]
+### Phase 4: Redefine the `Semantics/` predicates on the new primitive [IN PROGRESS]
 
 **Goal**: `valid`'s four class-restricted siblings and the whole BL⁺ mirror become abbreviations
 over `ValidIn`/`ValidOnFrames`; the five hand-written monotonicity bridges collapse onto
@@ -443,6 +443,46 @@ NOT touched here (Phase 8).
       the one structural decision left open by this plan**; both resolutions are acceptable, an
       import cycle is not.
 
+#### Structural decision of record (Phase 4's open task)
+
+`FrameClassValidity.lean` is downstream of `Validity.lean`, so `ValidIn` and `Validity.lean`'s
+class-restricted predicates could not both stay where the plan left them. **Resolution taken: move
+`ValidIn` upstream.** Concretely:
+
+- `Semantics/FrameProperty.lean` imports `Semantics.TaskFrame` (not `Semantics.Validity`), placing
+  the five frame predicates *upstream* of `Validity.lean`. They are properties of frames and need
+  no validity notion, so nothing is lost.
+- `Semantics/FrameClassValidity.lean` imports `FrameProperty` + `ProofSystem.Axioms` and holds
+  `FrameClass.Sat` and `Sat.anti` only. It remains the sole module under `Semantics/` that imports
+  anything from `ProofSystem/`, which is the containment property the plan asked for.
+- `Semantics/Validity.lean` imports `FrameClassValidity` and declares `ValidOnFrames`, `ValidIn`,
+  `ValidOnFrames.mono`, `ValidIn.mono`, the lever pair, and the four class-restricted predicates —
+  all in the module where `TaskFrame.ValidOn` already lives. The frame-relative-validity section
+  was relocated upward within `Validity.lean` so that `ValidOn` precedes `ValidOnFrames`; no
+  declaration was moved between modules.
+
+**Why this rather than relocating the four predicates into `FrameClassValidity.lean`:** both
+resolutions are acyclic and both were acceptable per the plan, but the relocation would have forced
+a new `import FormalSystem.Semantics.FrameClassValidity` line into each of the ~27 files that
+consume `ValidDense`/`ValidDiscrete`/`ValidDedekind`/`ValidDedekindDense` today, for no gain in
+layering — the `Semantics → ProofSystem.Axioms` edge exists either way, and is confined to one
+module either way. Verified acyclic: no file under `FormalSystem/ProofSystem/` imports
+`FormalSystem.Semantics` or any submodule, and `ProofSystem/Axioms.lean` imports only
+`FormalSystem.Syntax.Formula`.
+
+#### Migration mechanism actually used
+
+The plan's generic lever (`ValidOnFrames.of_forall_total` / `.apply_total`) is present as
+specified, but the migration is carried out through **per-class adapters** — `ValidDense.of_forall`
+/ `.apply` and siblings — whose hypothesis type reproduces each predicate's pre-abbreviation binder
+list *verbatim*, instance binders included. This is what makes each call site a one-line prefix
+rather than a proof rewrite, and it is what avoids the `haveI` hazard the Risks table names: a
+hypothesis of type `TaskFrame.IsDense F` has head symbol `TaskFrame.IsDense`, so typeclass
+resolution cannot see the `DenselyOrdered` inside it, and every downstream `exists_between` would
+fail. Introducing the witness through an adapter whose binder is written `[DenselyOrdered F.Duration]`
+puts it back where instance search finds it, with no `haveI` anywhere. A contrapositive form
+(`.of_not`) was added for the one site that used to open the definition with `unfold`.
+
 **Timing**: 2 hours
 
 **Depends on**: 2
@@ -468,7 +508,7 @@ at phase start; any additional file joins this phase rather than being deferred.
 
 ---
 
-### Phase 5: Migrate the soundness/completeness territory [NOT STARTED]
+### Phase 5: Migrate the soundness/completeness territory [IN PROGRESS]
 
 **Goal**: `Metalogic/Soundness.lean`, `Metalogic/SoundnessLemmas/CoValidity.lean`, and
 `Metalogic/StrongCompleteness.lean` compile against the redefined predicates, with statements
@@ -511,7 +551,7 @@ occurrences. Confirm the exact per-file counts at phase start with
 
 ---
 
-### Phase 6: Migrate the canonical-model, decidability, and remaining territory [NOT STARTED]
+### Phase 6: Migrate the canonical-model, decidability, and remaining territory [IN PROGRESS]
 
 **Goal**: Every remaining consumer outside `Metalogic/SetConsequence.lean` compiles against the
 redefined predicates.
@@ -551,7 +591,7 @@ command)
 
 ---
 
-### Phase 7: Collapse the set-consequence family [NOT STARTED]
+### Phase 7: Collapse the set-consequence family [IN PROGRESS]
 
 **Goal**: The smoking gun closed. `SetSemanticConsequenceOn (fc)` defined once beside
 `SetDerivable (fc)`, with one monotonicity-in-`Γ` lemma and one monotonicity-in-`fc` lemma replacing

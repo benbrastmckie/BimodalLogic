@@ -1,37 +1,35 @@
 {
-  "status": "planned",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/507_parameterize_validity_by_frameclass/plans/02_frame-level-validity-indexing.md",
-      "summary": "9-phase plan (12.5h) landing frame-level FrameClass.Sat/ValidIn on bundled TaskFrames, one ValidOnFrames.mono replacing five validity bridges and four set-consequence copies, the dead FrameConditions surface retired, and all 15 legacy predicates migrated to abbreviations."
-    }
+  "status": "in_progress",
+  "partial_progress": {
+    "stage": "phases_4_7_migration",
+    "details": "Phases 1-3 committed green. Phases 4-7 edits applied; tree-wide build verification in progress.",
+    "phases_completed": 3,
+    "phases_total": 9
+  },
+  "modified_files": [
+    "FormalSystem/Semantics/FrameProperty.lean",
+    "FormalSystem/Semantics/FrameClassValidity.lean",
+    "FormalSystem/Semantics/Validity.lean",
+    "FormalSystem/Semantics/BLValidity.lean",
+    "FormalSystem/Semantics/IntTransfer.lean",
+    "FormalSystem/Semantics.lean",
+    "FormalSystem/FrameConditions/Validity.lean",
+    "FormalSystem/FrameConditions/Soundness.lean",
+    "FormalSystem/FrameConditions.lean",
+    "FormalSystem/Metalogic/Soundness.lean",
+    "FormalSystem/Metalogic/SoundnessLemmas/CoValidity.lean",
+    "FormalSystem/Metalogic/StrongCompleteness.lean",
+    "FormalSystem/Metalogic/SetConsequence.lean",
+    "FormalSystem/Metalogic/DiscreteNonCompactness.lean",
+    "FormalSystem/Metalogic/BaseLanguageSoundness.lean",
+    "FormalSystem/Metalogic/BXCanonical/Completeness.lean",
+    "FormalSystem/Metalogic/Decidability/BiLasso/Assembly.lean",
+    "FormalSystem/Metalogic/Decidability/Verified/Bridge/DenseTruth.lean",
+    "FormalSystem/Metalogic/Decidability/Verified/Bridge/IntTruth.lean"
   ],
-  "phase_count": 9,
-  "estimated_hours": 12.5,
-  "dependency_waves": [[1, 3], [2], [4], [5, 6, 7], [8], [9]],
-  "complexity": "complex",
-  "research_integrated": true,
-  "plan_version": 2,
-  "supersedes": "specs/507_parameterize_validity_by_frameclass/plans/01_frameclass-indexed-validity.md",
-  "blocker_status": "resolved",
-  "blocker_note": "The TaskFrame duration-bundling refactor this direction depends on has ALREADY LANDED. Verified by reading FormalSystem/Semantics/TaskFrame.lean:1608 (structure TaskFrame carries Duration : TemporalOrder as a field) and FormalSystem/Semantics/TemporalOrder.lean:76. No blocker is declared and no bundling phase is sequenced.",
-  "memory_candidates": [
-    {
-      "content": "When a formalization tree parameterizes its proof side by a tag (Derivable fc, DerivationTree fc, lift along fc1 <= fc2) but not its semantic side, the fix is NOT to add one indexed predicate per tag constructor. Define TWO layers: a primitive that takes an arbitrary predicate on the bundled object (ValidOnFrames (P : TaskFrame -> Prop) phi := forall F, P F -> F.ValidOn phi) and the tag-indexed one as its instance (ValidIn fc := ValidOnFrames fc.Sat). The payoff is that ONE antitone-in-P monotonicity lemma then covers both the tag-ordered bridges AND the off-family predicates that have no tag at all -- in BimodalLogic task 507 the bare-Complete predicate ValidDedekind has no FrameClass member (no axiom set for Th(Z) cap Th(R) exists), so a tag-only design would have left it and its bridge lemma hand-written outside the collapse. The tag-level mono lemma is then a two-line corollary via an antitonicity lemma on the tag interpretation itself (Sat.anti : fc1 <= fc2 -> Sat fc2 F -> Sat fc1 F), which is where the order-direction reasoning lives exactly once: a LARGER class tag means a MORE constrained frame class, so semantic monotonicity points the same direction as the proof-side lift.",
-      "category": "PATTERN",
-      "source_artifact": "specs/507_parameterize_validity_by_frameclass/plans/02_frame-level-validity-indexing.md",
-      "confidence": 0.8,
-      "suggested_keywords": ["parameterized-validity", "monotonicity-collapse", "frameclass-indexing", "lean4", "predicate-primitive", "antitone-interpretation"]
-    }
-  ],
-  "next_steps": "Run /implement 507 to execute the plan",
   "metadata": {
-    "session_id": "sess_1788265374_c18aa8_507",
-    "agent_type": "planner-agent",
-    "task_number": 507,
-    "task_type": "lean4",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+    "session_id": "sess_1788265374_c18aa8",
+    "agent_type": "lean-implementation-agent",
+    "task_number": 507
   }
 }
