@@ -1,7 +1,7 @@
 # Implementation Plan: Build the ShiftSet Ultraproduct and the Łoś Lemma
 
 - **Task**: 492 - Build shiftset ultraproduct and Łoś lemma
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 7 hours
 - **Dependencies**: 491 (carrier route selection — settled, closed)
 - **Research Inputs**: `specs/492_build_shiftset_ultraproduct_and_los_lemma/reports/01_shiftset-ultraproduct-and-los.md`

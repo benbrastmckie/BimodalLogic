@@ -1,7 +1,11 @@
 {
   "status": "implemented",
   "agent_type": "lean-implementation-hard-agent",
-  "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
+  "delegation_path": [
+    "orchestrator",
+    "implement",
+    "lean-implementation-hard-agent"
+  ],
   "task_number": 492,
   "phase_number": 4,
   "phases_completed": 4,
@@ -47,5 +51,43 @@
     "A Lean `example` that applies a `noncomputable def` must itself be `noncomputable`, or elaboration fails with `dependsOnNoncomputable` -- a pure type-check `example` is still compiled.",
     "Transitive imports are not a substitute for checking: a leaf module (IndexFilter.lean) that nothing in the main dependency chain imports must be imported directly, even when a downstream module of the same namespace is already imported.",
     "lake-build-guard.sh shares completed results between callers; --no-share is required for an authoritative full build, and the job count (2506 vs a smaller scoped number) is the check that a full build actually ran."
-  ]
+  ],
+  "metadata": {
+    "cycles_used": 6,
+    "final_state": "completed",
+    "detected_defects": [
+      {
+        "class": "HOOK_REGEX_BOUNDARY_DEFECT",
+        "attributed_path": "agent-system/extensions/core/skills/skill-orchestrate-hard/SKILL.md",
+        "detecting_site": "skill-orchestrate-hard/SKILL.md:stage-4-h4-gate",
+        "detail": "H4 gate: numbered heading defeats literal check; table-shape ERE backslash-b inert under ugrep 7.8.4",
+        "record_result": "evt_1788245094839_eybEyC",
+        "recorded_at": "2026-09-01T06:44:54Z"
+      },
+      {
+        "class": "OFF_SCHEMA_STATUS",
+        "attributed_path": "agent-system/extensions/lean/scripts/lake-build-guard.sh",
+        "detecting_site": "lake-build-guard.sh:argv-passthrough",
+        "detail": "guard exits 0 on malformed lake subcommand; failed build reads as pass to an exit-code-only caller",
+        "record_result": "evt_1788246598349_q1AwUZ",
+        "recorded_at": "2026-09-01T07:09:58Z"
+      },
+      {
+        "class": "HANDOFF_STALE_OR_ABSENT",
+        "attributed_path": "agent-system/extensions/core/skills/skill-orchestrate-hard/SKILL.md",
+        "detecting_site": "skill-orchestrate-hard/SKILL.md:stage-5-dispatch-seq-mismatch",
+        "detail": "Phase 1 predecessor late-write (seq 3) landed inside Phase 2 dispatch window; newer mtime would pass mtime-only gate",
+        "record_result": "evt_1788246742189_Fodegl",
+        "recorded_at": "2026-09-01T07:12:22Z"
+      },
+      {
+        "class": "OFF_SCHEMA_STATUS",
+        "attributed_path": "agent-system/extensions/lean/scripts/lake-build-guard.sh",
+        "detecting_site": "lake-build-guard.sh:result-sharing",
+        "detail": "shared scoped-build result presented as full build (1364 vs genuine 2506 jobs); --no-share required",
+        "record_result": "evt_1788260467365_9bSvdb",
+        "recorded_at": "2026-09-01T11:01:07Z"
+      }
+    ]
+  }
 }
