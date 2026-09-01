@@ -1,7 +1,7 @@
 # Implementation Plan: Eliminate the 21 overlapping `[Nontrivial D]` instance warnings
 
 - **Task**: 515 - Eliminate the 21 remaining "Overlapping instance parameters -- There are 2 [Nontrivial D] instances; one is sufficient" warnings across three Metalogic files
-- **Status**: [IMPLEMENTING]
+- **Status**: COMPLETED
 - **Effort**: 2 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/515_eliminate_overlapping_nontrivial_instance_warnings/reports/01_overlapping-nontrivial-instance-warnings.md
@@ -327,36 +327,36 @@ ownership before editing.
 
 ---
 
-### Phase 4: Tree-wide acceptance [NOT STARTED]
+### Phase 4: Tree-wide acceptance [COMPLETED]
 
 **Goal**: Prove the acceptance criteria on a genuine forced full build plus test run, and
 demonstrate that no warning of any class was newly introduced anywhere in the tree.
 
 **Tasks**:
-- [ ] Run the forced full build detached
+- [x] Run the forced full build detached
       (`Bash(run_in_background: true)`, per `context/project/lean4/operations/long-builds.md`):
       `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 --no-share -- build`
       Capture the full log to a scratchpad file.
-- [ ] **Confirm the job count explicitly** — the log must contain
+- [x] **Confirm the job count explicitly** — the log must contain
       `Build completed successfully (2506 jobs).` A pass without a confirmed full job count does
       not close this phase, because the guard replays a completed result when the fingerprint
       matches and a scoped result can present as a full pass. `--no-share` is what forces the
       real thing.
-- [ ] Run `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 --no-share -- test`;
+- [x] Run `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 --no-share -- test`;
       require exit 0
-- [ ] Count from the build log: `Overlapping instance parameters` = 0;
+- [x] Count from the build log: `Overlapping instance parameters` = 0;
       `automatically included section variable` = 83; total `warning:` lines = 346;
       `error:` = 0; `declaration uses 'sorry'` = 0
-- [ ] **Set-theoretic no-new-warning check** (not a count comparison): sort the full warning text
+- [x] **Set-theoretic no-new-warning check** (not a count comparison): sort the full warning text
       of the new build, sort a baseline warning list, and require `comm -13 baseline new` to be
       empty. If no baseline log is on hand, produce one by reverting all three files from the
       scratchpad copies via `cp` (never `git checkout --`), building, then restoring the edits.
       A count-only comparison is not sufficient — it cannot distinguish a cleared warning from a
       substituted one.
-- [ ] `grep -rn overlappingInstances FormalSystem/` returns nothing
-- [ ] `grep -rn "sorry\|admit\|native_decide" FormalSystem/` has not grown against baseline
-- [ ] `git status --porcelain` shows only the three intended files
-- [ ] Commit
+- [x] `grep -rn overlappingInstances FormalSystem/` returns nothing
+- [x] `grep -rn "sorry\|admit\|native_decide" FormalSystem/` has not grown against baseline
+- [x] `git status --porcelain` shows only the three intended files
+- [x] Commit
 
 **Timing**: 0.9 hours (dominated by two full builds)
 
@@ -384,16 +384,16 @@ re-run.
 
 ## Testing & Validation
 
-- [ ] `lake env lean FormalSystem/Metalogic/Algebraic/FlowFrame.lean` — 0 overlapping, 0 errors
-- [ ] `lake env lean FormalSystem/Metalogic/Decidability/Verified/Decidable.lean` — 0 overlapping,
+- [x] `lake env lean FormalSystem/Metalogic/Algebraic/FlowFrame.lean` — 0 overlapping, 0 errors
+- [x] `lake env lean FormalSystem/Metalogic/Decidability/Verified/Decidable.lean` — 0 overlapping,
       0 errors
-- [ ] `lake env lean FormalSystem/Metalogic/Decidability/Verified/Bridge/TruthLemma.lean` — 0
+- [x] `lake env lean FormalSystem/Metalogic/Decidability/Verified/Bridge/TruthLemma.lean` — 0
       overlapping, 0 errors
-- [ ] Forced full `lake build` (`--no-share`) exit 0, job count 2506 confirmed in the log
-- [ ] `lake test` exit 0
-- [ ] `grep -rn overlappingInstances FormalSystem/` returns nothing
-- [ ] `sorry`/`admit`/`native_decide` counts unchanged from baseline
-- [ ] `comm -13` over sorted baseline/new warning text is empty
+- [x] Forced full `lake build` (`--no-share`) exit 0, job count 2506 confirmed in the log
+- [x] `lake test` exit 0
+- [x] `grep -rn overlappingInstances FormalSystem/` returns nothing
+- [x] `sorry`/`admit`/`native_decide` counts unchanged from baseline
+- [x] `comm -13` over sorted baseline/new warning text is empty
 
 ## Artifacts & Outputs
 
