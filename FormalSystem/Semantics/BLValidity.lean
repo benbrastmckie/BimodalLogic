@@ -148,6 +148,49 @@ theorem BLValidIn.mono {fc₁ fc₂ : ProofSystem.FrameClass} {φ : BLFormula} (
     (hv : BLValidIn fc₁ φ) : BLValidIn fc₂ φ :=
   BLValidOnFrames.mono (fun _ => ProofSystem.FrameClass.Sat.anti h) hv
 
+/-! ### Binder-shape adapters for the generic layer
+
+The BL mirrors of `Semantics.ValidOnFrames.of_forall_total` / `.apply_total` and their
+`FrameClass`-tagged forms. `BLValidOnFrames` is stated over the bundled `(τ : TaskFrame.HF F)`;
+every proof that consumes or produces it works with the unbundled pair
+`(τ : WorldHistory F) (hτ : τ.IsTotal)`. The two spellings are not definitionally equal, so these
+four are the shape adapters, exactly as on the full-language side: a goal site becomes
+`refine BLValidIn.of_forall_total ?_; intro F hF M τ hτ t`, and a hypothesis site becomes
+`h.apply_total F hF M τ hτ t`.
+
+Unlike the per-class `.of_forall`/`.apply` pairs further down, these are generic in the frame
+predicate, which is what lets one pair serve every class at once. -/
+
+/-- Introduce `BLValidOnFrames` from the unbundled `(τ : WorldHistory F) (hτ : τ.IsTotal)` shape.
+The BL mirror of `Semantics.ValidOnFrames.of_forall_total`. -/
+theorem BLValidOnFrames.of_forall_total {P : TaskFrame → Prop} {φ : BLFormula}
+    (h : ∀ (F : TaskFrame), P F → ∀ (M : TaskModel F) (τ : WorldHistory F),
+           τ.IsTotal → ∀ t : F.Duration, BLTruthAt M τ t φ) :
+    BLValidOnFrames P φ :=
+  fun F hF M τ t => h F hF M τ.val τ.property t
+
+/-- Eliminate `BLValidOnFrames` into the unbundled `(τ : WorldHistory F) (hτ : τ.IsTotal)` shape.
+The BL mirror of `Semantics.ValidOnFrames.apply_total`. -/
+theorem BLValidOnFrames.apply_total {P : TaskFrame → Prop} {φ : BLFormula}
+    (h : BLValidOnFrames P φ) (F : TaskFrame) (hF : P F) (M : TaskModel F)
+    (τ : WorldHistory F) (hτ : τ.IsTotal) (t : F.Duration) : BLTruthAt M τ t φ :=
+  h F hF M ⟨τ, hτ⟩ t
+
+/-- `BLValidOnFrames.of_forall_total` at a `FrameClass` tag. The BL mirror of
+`Semantics.ValidIn.of_forall_total`. -/
+theorem BLValidIn.of_forall_total {fc : ProofSystem.FrameClass} {φ : BLFormula}
+    (h : ∀ (F : TaskFrame), fc.Sat F → ∀ (M : TaskModel F) (τ : WorldHistory F),
+           τ.IsTotal → ∀ t : F.Duration, BLTruthAt M τ t φ) :
+    BLValidIn fc φ :=
+  BLValidOnFrames.of_forall_total h
+
+/-- `BLValidOnFrames.apply_total` at a `FrameClass` tag. The BL mirror of
+`Semantics.ValidIn.apply_total`. -/
+theorem BLValidIn.apply_total {fc : ProofSystem.FrameClass} {φ : BLFormula}
+    (h : BLValidIn fc φ) (F : TaskFrame) (hF : fc.Sat F) (M : TaskModel F)
+    (τ : WorldHistory F) (hτ : τ.IsTotal) (t : F.Duration) : BLTruthAt M τ t φ :=
+  BLValidOnFrames.apply_total h F hF M τ hτ t
+
 /--
 Validity over **dense** temporal orders, capturing the frame condition for BL's density axiom
 `dn` (`GGφ → Gφ`).

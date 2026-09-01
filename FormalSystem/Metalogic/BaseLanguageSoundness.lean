@@ -185,18 +185,46 @@ open FormalSystem.ProofSystem
 open FormalSystem.BaseLanguage
 open FormalSystem.Semantics
 
-/-! ## The four soundness theorems
+/-! ## Soundness of BL, parameterized by `FrameClass`
 
-Each is a single expression: translate the BL derivation, apply the corresponding BL⁺ soundness
-theorem, and cross the bridge. The binder bundle of each matches its BL⁺ source exactly —
-including `soundness_dedekind`'s `h_lub`, which is threaded through in the same position, between
-`D` and `F`. -/
+`bl_soundness_in` is the whole of it: translate the BL derivation, apply
+`Metalogic/Soundness.lean`'s `soundness_in` at the same class, and cross the truth-transfer
+bridge back into BL's native semantics. Nothing in that composition mentions a particular class —
+`Conservativity.translate` is already `fc`-polymorphic, and neither `truthAt_tr` nor
+`truthAt_trCtx` carries a frame condition — so the four named theorems below are instances of it,
+each supplying its class's `FrameClass.Sat` witness and keeping its original statement exactly. -/
+
+/--
+**Soundness of BL at an arbitrary `FrameClass`.** A BL derivation of `φ` from `Γ` at `fc` makes
+`φ` true at every model, **total** history and time over any frame satisfying `fc`, at which every
+formula of `Γ` is true.
+
+Composition of `Conservativity.translate` with `soundness_in`, across `truthAt_tr`.
+-/
+theorem bl_soundness_in {fc : FrameClass} (Γ : BaseLanguage.Context) (φ : BLFormula)
+    (d : BaseLanguage.DerivationTree fc Γ φ)
+    (F : TaskFrame) (hF : fc.Sat F) (M : TaskModel F)
+    (τ : WorldHistory F) (h_mem : τ.IsTotal) (t : F.Duration)
+    (h_ctx : ∀ ψ ∈ Γ, BLTruthAt M τ t ψ) :
+    BLTruthAt M τ t φ :=
+  (truthAt_tr M φ τ t).mp
+    (soundness_in (trCtx Γ) (tr φ) (Conservativity.translate d) F hF M τ h_mem t
+      (truthAt_trCtx M τ t h_ctx))
+
+/-- Empty-context form of `bl_soundness_in`: a BL theorem at `fc` is `BLValidIn fc`. The four
+`bl_soundness*_valid` theorems below are its instances. -/
+theorem bl_soundness_validIn {fc : FrameClass} {φ : BLFormula}
+    (d : BaseLanguage.DerivationTree fc [] φ) : BLValidIn fc φ :=
+  BLValidIn.of_forall_total fun F hF M τ h_mem t =>
+    bl_soundness_in [] φ d F hF M τ h_mem t (by simp)
+
+/-! ### The four per-class instances -/
 
 /--
 **Soundness of BL at `FrameClass.Base`.** A BL derivation of `φ` from `Γ` makes `φ` true at every
 model, **total** history and time at which every formula of `Γ` is true.
 
-Composition of `Conservativity.translate` with `soundness`, across `truthAt_tr`.
+`bl_soundness_in` at `fc = .Base`; `Sat .Base` is `True`, so the witness is `trivial`.
 -/
 theorem bl_soundness (Γ : BaseLanguage.Context) (φ : BLFormula)
     (d : BaseLanguage.DerivationTree FrameClass.Base Γ φ)
@@ -204,13 +232,12 @@ theorem bl_soundness (Γ : BaseLanguage.Context) (φ : BLFormula)
     (τ : WorldHistory F) (h_mem : τ.IsTotal) (t : F.Duration)
     (h_ctx : ∀ ψ ∈ Γ, BLTruthAt M τ t ψ) :
     BLTruthAt M τ t φ :=
-  (truthAt_tr M φ τ t).mp
-    (soundness (trCtx Γ) (tr φ) (Conservativity.translate d) F M τ h_mem t
-      (truthAt_trCtx M τ t h_ctx))
+  bl_soundness_in Γ φ d F trivial M τ h_mem t h_ctx
 
 /--
-**Soundness of BL at `FrameClass.Dense`.** Composition of `Conservativity.translate` with
-`soundness_dense`, across `truthAt_tr`; the binder bundle is `soundness_dense`'s.
+**Soundness of BL at `FrameClass.Dense`.** `bl_soundness_in` at `fc = .Dense`, with the
+`[DenselyOrdered D]` instance supplied as the `Sat .Dense` witness; the binder bundle is
+`soundness_dense`'s.
 -/
 theorem bl_soundness_dense (Γ : BaseLanguage.Context) (φ : BLFormula)
     (d : BaseLanguage.DerivationTree FrameClass.Dense Γ φ)
@@ -218,13 +245,12 @@ theorem bl_soundness_dense (Γ : BaseLanguage.Context) (φ : BLFormula)
     (τ : WorldHistory F) (h_mem : τ.IsTotal) (t : F.Duration)
     (h_ctx : ∀ ψ ∈ Γ, BLTruthAt M τ t ψ) :
     BLTruthAt M τ t φ :=
-  (truthAt_tr M φ τ t).mp
-    (soundness_dense (trCtx Γ) (tr φ) (Conservativity.translate d) F M τ h_mem t
-      (truthAt_trCtx M τ t h_ctx))
+  bl_soundness_in Γ φ d F ‹DenselyOrdered F.Duration› M τ h_mem t h_ctx
 
 /--
-**Soundness of BL at `FrameClass.Discrete`.** Composition of `Conservativity.translate` with
-`soundness_discrete`, across `truthAt_tr`; the binder bundle is `soundness_discrete`'s.
+**Soundness of BL at `FrameClass.Discrete`.** `bl_soundness_in` at `fc = .Discrete`, with the
+four order instances bundled into the `Sat .Discrete` witness; the binder bundle is
+`soundness_discrete`'s.
 -/
 theorem bl_soundness_discrete (Γ : BaseLanguage.Context) (φ : BLFormula)
     (d : BaseLanguage.DerivationTree FrameClass.Discrete Γ φ)
@@ -233,15 +259,16 @@ theorem bl_soundness_discrete (Γ : BaseLanguage.Context) (φ : BLFormula)
     (τ : WorldHistory F) (h_mem : τ.IsTotal) (t : F.Duration)
     (h_ctx : ∀ ψ ∈ Γ, BLTruthAt M τ t ψ) :
     BLTruthAt M τ t φ :=
-  (truthAt_tr M φ τ t).mp
-    (soundness_discrete (trCtx Γ) (tr φ) (Conservativity.translate d) F M τ h_mem t
-      (truthAt_trCtx M τ t h_ctx))
+  bl_soundness_in Γ φ d F
+    ⟨‹SuccOrder F.Duration›, ‹PredOrder F.Duration›,
+      ‹IsSuccArchimedean F.Duration›, ‹IsPredArchimedean F.Duration›⟩
+    M τ h_mem t h_ctx
 
 /--
-**Soundness of BL at `FrameClass.Dedekind`.** Composition of `Conservativity.translate` with
-`soundness_dedekind`, across `truthAt_tr`; the binder bundle is `soundness_dedekind`'s, including
-the `[DenselyOrdered D]` binder and the least-upper-bound hypothesis `h_lub` in its original
-position.
+**Soundness of BL at `FrameClass.Dedekind`.** `bl_soundness_in` at `fc = .Dedekind`, with the
+density instance and `h_lub` paired into the `Sat .Dedekind` witness; the binder bundle is
+`soundness_dedekind`'s, including the `[DenselyOrdered D]` binder and the least-upper-bound
+hypothesis `h_lub` in its original position.
 
 The `[DenselyOrdered D]` binder is load-bearing, not decorative — see the module docstring and
 `Semantics/BLValidity.lean`.
@@ -254,33 +281,29 @@ theorem bl_soundness_dedekind (Γ : BaseLanguage.Context) (φ : BLFormula)
     (τ : WorldHistory F) (h_mem : τ.IsTotal) (t : F.Duration)
     (h_ctx : ∀ ψ ∈ Γ, BLTruthAt M τ t ψ) :
     BLTruthAt M τ t φ :=
-  (truthAt_tr M φ τ t).mp
-    (soundness_dedekind (trCtx Γ) (tr φ) (Conservativity.translate d) F h_lub M τ h_mem t
-      (truthAt_trCtx M τ t h_ctx))
+  bl_soundness_in Γ φ d F ⟨‹DenselyOrdered F.Duration›, h_lub⟩ M τ h_mem t h_ctx
 
 /-! ## Empty-context validity forms -/
 
 /-- Empty-context form of `bl_soundness`: a BL theorem at `FrameClass.Base` is BL-valid. -/
 theorem bl_soundness_valid {φ : BLFormula}
     (d : BaseLanguage.DerivationTree FrameClass.Base [] φ) : BLValid φ :=
-  BLValid.of_forall_total fun F M τ h_mem t => bl_soundness [] φ d F M τ h_mem t (by simp)
+  bl_soundness_validIn d
 
 /-- Empty-context form of `bl_soundness_dense`. -/
 theorem bl_soundness_dense_valid {φ : BLFormula}
     (d : BaseLanguage.DerivationTree FrameClass.Dense [] φ) : BLValidDense φ :=
-  BLValidDense.of_forall fun F _ M τ h_mem t => bl_soundness_dense [] φ d F M τ h_mem t (by simp)
+  bl_soundness_validIn d
 
 /-- Empty-context form of `bl_soundness_discrete`. -/
 theorem bl_soundness_discrete_valid {φ : BLFormula}
     (d : BaseLanguage.DerivationTree FrameClass.Discrete [] φ) : BLValidDiscrete φ :=
-  BLValidDiscrete.of_forall fun F _ _ _ _ M τ h_mem t =>
-    bl_soundness_discrete [] φ d F M τ h_mem t (by simp)
+  bl_soundness_validIn d
 
 /-- Empty-context form of `bl_soundness_dedekind`, at `BLValidDedekindDense`. -/
 theorem bl_soundness_dedekind_valid {φ : BLFormula}
     (d : BaseLanguage.DerivationTree FrameClass.Dedekind [] φ) : BLValidDedekindDense φ :=
-  BLValidDedekindDense.of_forall fun F _ h_lub M τ h_mem t =>
-    bl_soundness_dedekind [] φ d F h_lub M τ h_mem t (by simp)
+  bl_soundness_validIn d
 
 /-! ## `bl_soundness_discrete_succ` — binder-weakened discrete BL soundness
 

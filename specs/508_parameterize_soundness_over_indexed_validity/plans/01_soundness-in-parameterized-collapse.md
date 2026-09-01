@@ -471,31 +471,31 @@ names are still present and still referenced from `axiom_swap_validIn_min`.
 
 ---
 
-### Phase 6: BL-side collapse [NOT STARTED]
+### Phase 6: BL-side collapse [COMPLETED]
 
 **Goal**: Add the missing generic BL adapters, introduce `bl_soundness_in` / `bl_soundness_validIn`,
 and retarget the eight `bl_soundness*` theorems — while leaving the `BLValidIn` *definition* and the
 `discrete_succ` pair entirely alone.
 
 **Tasks**:
-- [ ] Add to `Semantics/BLValidity.lean`, mirroring `Validity.lean:426–450` exactly:
+- [x] Add to `Semantics/BLValidity.lean`, mirroring `Validity.lean:426–450` exactly:
       `BLValidOnFrames.of_forall_total`, `BLValidOnFrames.apply_total`, `BLValidIn.of_forall_total`,
       `BLValidIn.apply_total`. These are confirmed absent today (only the `.mono` pair at `:141,:147`
       exists). This is the sole genuinely new code on the BL side.
-- [ ] **MUST NOT** change `BLValidOn`:96, `BLValidOnFrames`:102, or `BLValidIn`:107. The
+- [x] **MUST NOT** change `BLValidOn`:96, `BLValidOnFrames`:102, or `BLValidIn`:107. The
       native-over-`BLTruthAt` shape landed under task 507 with a docstring at `:81-86` arguing
       explicitly against the brief's `ValidOn fc (tr φ)` route. Review M3's definitional half is
       discharged.
-- [ ] Add `bl_soundness_in` to `Metalogic/BaseLanguageSoundness.lean`, per the research's §5 body:
+- [x] Add `bl_soundness_in` to `Metalogic/BaseLanguageSoundness.lean`, per the research's §5 body:
       `(truthAt_tr M φ τ t).mp (soundness_in (trCtx Γ) (tr φ) (Conservativity.translate d) F hF M τ
       h_mem t (truthAt_trCtx M τ t h_ctx))`. `Conservativity.translate` is already `fc`-polymorphic;
       `truthAt_tr`:110 and `truthAt_trCtx`:131 carry no frame condition.
-- [ ] Add `bl_soundness_validIn {fc} : BaseLanguage.DerivationTree fc [] φ → BLValidIn fc φ` via
+- [x] Add `bl_soundness_validIn {fc} : BaseLanguage.DerivationTree fc [] φ → BLValidIn fc φ` via
       the new `BLValidIn.of_forall_total`.
-- [ ] Retarget bodies, statements unchanged: `bl_soundness`:201 (`… trivial …`), `_dense`:215
+- [x] Retarget bodies, statements unchanged: `bl_soundness`:201 (`… trivial …`), `_dense`:215
       (`… inst …`), `_discrete`:229 (`… ⟨so,po,hsa,hpa⟩ …`), `_dedekind`:249 (`… ⟨inst,h_lub⟩ …`);
       `bl_soundness{,_dense,_discrete,_dedekind}_valid`:264/269/274/280 → `bl_soundness_validIn d`.
-- [ ] **PRESERVE UNTOUCHED**: `bl_soundness_discrete_succ`:381,
+- [x] **PRESERVE UNTOUCHED**: `bl_soundness_discrete_succ`:381,
       `bl_soundness_discrete_succ_valid`:413, `BLValidDiscreteSucc` (`BLValidity.lean:221`). These
       are not schema instances — no `FrameClass.Sat` variant bundles `SuccOrder`+`PredOrder` alone,
       and the theorem runs its own induction because `soundness_discrete`'s binder bundle carries the
