@@ -10,7 +10,6 @@ import FormalSystem.ProofSystem
 import FormalSystem.BaseLanguage
 import FormalSystem.Semantics
 import FormalSystem.Metalogic
-import FormalSystem.FrameConditions
 import FormalSystem.Theorems
 import FormalSystem.Automation
 import FormalSystem.Examples
@@ -42,10 +41,6 @@ validity
   predate the migration and were deliberately left untouched (they have no `.ilean` artifacts
   and no imports from active code, so a position-anchored rewrite structurally could not reach
   them). See `Boneyard/README.md` before grepping either tree for identifier usage
-- `FormalSystem.FrameConditions`: Typeclass-based frame condition architecture (4 modules)
-  - `LinearTemporalFrame`, `SerialFrame`, `DenseTemporalFrame`, `DiscreteTemporalFrame`
-  - Parameterized validity and soundness, plus axiom compatibility typeclasses
-  - Sits strictly above `Metalogic`, which it consumes; see `FrameConditions/README.md`
 - `FormalSystem.Theorems`: Derived theorems (Combinators, Propositional, ModalS5, ModalS4,
   Perpetuity, GeneralizedNecessitation, TemporalDerived, ContextualProofs)
 - `FormalSystem.Automation`: Proof tactics (modal_search, temporal_search), native proof search,
@@ -93,7 +88,6 @@ import FormalSystem.Theorems
 * [ProofSystem.lean](ProofSystem.lean) - Axioms and derivation
 * [Semantics.lean](Semantics.lean) - Task frame semantics
 * [Metalogic.lean](Metalogic.lean) - Soundness, completeness, decidability
-* [FrameConditions.lean](FrameConditions.lean) - Typeclass-based frame conditions
 * [Theorems.lean](Theorems.lean) - Derived theorems (6 modules)
 * [Automation.lean](Automation.lean) - Proof tactics
 * [Examples.lean](Examples.lean) - Pedagogical examples

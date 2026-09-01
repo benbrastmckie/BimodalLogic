@@ -37,3 +37,16 @@ FormalSystem.Metalogic.Algebraic.RestrictedParametricTruthLemma
 # nothing in it identifies which of the four the import once named. Picking one
 # would invent history, so the line is waived rather than guessed.
 FormalSystem.Metalogic.Completeness
+
+# Deleted in the commit that removed the typeclass-based frame-condition layer
+# (FormalSystem/FrameConditions.lean plus FrameConditions/{FrameClass,Validity,
+# Soundness,Compatibility}.lean and the directory README). The layer was a
+# carrier-typeclass re-encoding of the frame classes with no paper counterpart
+# and no live consumer outside its own directory; its replacements are
+# Semantics/FrameClassValidity.lean's FrameClass.Sat, Semantics/Validity.lean's
+# ValidIn, and Semantics/FrameProperty.lean's TaskFrame.IsDense /
+# IsSuccArchDiscrete / IsDedekind. The archived consumer below predates that
+# deletion and records the approach as it stood; reviving the deleted module is
+# an explicit non-goal. No file of this name exists anywhere on disk, so there
+# is no unique target to repoint the import at.
+FormalSystem.FrameConditions.Compatibility

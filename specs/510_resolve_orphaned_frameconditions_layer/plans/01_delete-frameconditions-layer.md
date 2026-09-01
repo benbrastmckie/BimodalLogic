@@ -299,14 +299,14 @@ repaired for the citation quad to be coherent. After-count: 0.
 
 ---
 
-### Phase 4: Delete the layer, drop the aggregator import, waive the C11 import [NOT STARTED]
+### Phase 4: Delete the layer, drop the aggregator import, waive the C11 import [COMPLETED]
 
 **Goal**: Remove all six `FrameConditions` paths, drop the single live import from
 `FormalSystem/FormalSystem.lean`, and waive the resulting dangling Boneyard import — as one
 atomic change, since every intermediate ordering of these edits leaves the tree or a gate red.
 
 **Tasks**:
-- [ ] Delete the six paths (via `git rm`):
+- [x] Delete the six paths (via `git rm`):
       `FormalSystem/FrameConditions.lean` (74),
       `FormalSystem/FrameConditions/FrameClass.lean` (292),
       `FormalSystem/FrameConditions/Validity.lean` (81),
@@ -314,28 +314,43 @@ atomic change, since every intermediate ordering of these edits leaves the tree 
       `FormalSystem/FrameConditions/Compatibility.lean` (199),
       `FormalSystem/FrameConditions/README.md` (98).
       The directory and its sibling aggregator MUST go together or C8 fails.
-- [ ] Edit `FormalSystem/FormalSystem.lean`: remove the `import FormalSystem.FrameConditions` at
+      *(all six line counts confirmed exactly; 853 `.lean` lines + 98 README = 951 total)*
+- [x] Edit `FormalSystem/FormalSystem.lean`: remove the `import FormalSystem.FrameConditions` at
       `:13`; remove the `:45-48` docstring entry ("Typeclass-based frame condition architecture
       (4 modules)" and its "Sits strictly above `Metalogic`" sub-bullet referencing
       `FrameConditions/README.md`); remove the `:96` module-index link line.
-- [ ] Append to `scripts/boneyard-import-waivers.txt` a new commented block naming the deletion
+      *(all three removed; zero `FrameConditions` occurrences remain in the file)*
+- [x] Append to `scripts/boneyard-import-waivers.txt` a new commented block naming the deletion
       commit, following the existing `ParametricCanonical` block's shape, with the single entry
       `FormalSystem.FrameConditions.Compatibility`. The comment must state that the module was
       deleted outright and that reviving it is an explicit non-goal — this is that file's
       documented category, and its guard ("prove there is no unique target file on disk") is
       satisfied because after this deletion no such file exists.
-- [ ] **MUST NOT** delete `FormalSystem/Boneyard/StrictSemanticsLegacy/FrameConditions/Completeness.lean`.
+      *(deviation: altered — the block names the deletion by *description* rather than by SHA,
+      because the waiver has to be committed in the same atomic batch as the deletion and the
+      batch's own SHA does not exist until after the file is written. The guard was discharged
+      explicitly: no file of that name exists anywhere on disk after the deletion.)*
+- [x] **MUST NOT** delete `FormalSystem/Boneyard/StrictSemanticsLegacy/FrameConditions/Completeness.lean`.
       It is retained as the archived record of `completeness_over_Int` (`:530`) and
-      `discrete_completeness_fc` (`:549`).
-- [ ] **MUST NOT** add any entry to `scripts/module-invariants-manifest.txt`. C6 counts
+      `discrete_completeness_fc` (`:549`). *(retained and verified present)*
+- [x] **MUST NOT** add any entry to `scripts/module-invariants-manifest.txt`. C6 counts
       unreachable modules; `FrameConditions` is reachable, so C6 is unaffected and a manifest
       entry naming a now-nonexistent module would fail C6.
-- [ ] Run the detached, guarded whole-project build
+      *(`git diff --stat` on that path is empty — untouched)*
+- [x] Run the detached, guarded whole-project build
       (`bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build`,
       `run_in_background: true`) and confirm green.
-- [ ] Run `bash scripts/check-module-invariants.sh --no-build` and confirm C8 and C11 pass; C11's
-      waived count should rise from 6 to 7.
-- [ ] Commit once, with the whole batch staged together.
+      *(deviation: NOT green, and not attributable to this change. The build produced 9 errors, all
+      of them in `FormalSystem/Metalogic/BaseLanguageSoundness.lean` — a file with zero
+      `FrameConditions` references whose failing lines lie inside an UNCOMMITTED +132-line block
+      added by a concurrent session (`git diff` hunk `@@ -278,0 +284,132 @@`, referencing
+      `swapBL_involution`, an identifier that does not exist at HEAD). Every other module in the
+      tree built. The Phase 1 baseline build was green before that block appeared. Re-run at
+      Phase 7.)*
+- [x] Run `bash scripts/check-module-invariants.sh --no-build` and confirm C8 and C11 pass; C11's
+      waived count should rise from 6 to 7. *(C8 PASS; C11 PASS at 497 archived import lines,
+      156 files, **7 waived** — exactly the predicted rise. C5 PASS. C4 1477 → 1469.)*
+- [x] Commit once, with the whole batch staged together.
 
 **Timing**: 1.0 hours
 
@@ -351,6 +366,12 @@ atomic change, since every intermediate ordering of these edits leaves the tree 
 four intra-aggregator imports, the three intra-directory imports, `FormalSystem.lean:13`, and the
 single Boneyard line. Any additional live importer invalidates the atomic-batch scope and the
 phase must stop and re-plan rather than widen the batch mid-flight.
+
+**Measured**: CONFIRMED exactly. 10 import lines total — 4 intra-aggregator, 3 intra-directory,
+1 self-import inside the aggregator's own docstring example, `FormalSystem/FormalSystem.lean:13`,
+and the single Boneyard line. **No additional live importer.** One unplanned non-import mention
+was found, a docstring cross-reference at `FormalSystem/Semantics/FrameProperty.lean:105`; it is
+repaired in Phase 5 with the other stale references.
 
 **Files to modify**:
 - `FormalSystem/FrameConditions.lean` — delete
