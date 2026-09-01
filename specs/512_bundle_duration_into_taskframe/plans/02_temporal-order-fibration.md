@@ -1604,18 +1604,35 @@ cheaper than its file count suggests — report that rather than manufacturing w
 
 ---
 
-### Phase 16: Independence [NOT STARTED]
+### Phase 16: Independence [COMPLETED]
 
 **Goal**: The independence-results files migrated, including the single `ℚ` concrete frame.
 
 **Tasks**:
-- [ ] Migrate `Metalogic/Independence/{ClockFrame,LoopingDuration,CoNotPriorU}.lean` (11/9/2).
-      `ClockFrame.lean:173` is the single `ℚ` concrete frame — it becomes a `FrameOver ratOrder`
-      value; the explicit-binder half of the ℤ contract applies, the `omega` half does not.
-- [ ] `LoopingDuration.lean` carries 3 of the 4 `Archimedean` binder sites (research F6); those are
-      side conditions on the carrier and become `[Archimedean ↑D]`.
-- [ ] Update `FormalSystem/Metalogic/Independence.lean` (aggregator) if its docstring names the
-      structure.
+- [x] Migrate `Metalogic/Independence/{ClockFrame,LoopingDuration,CoNotPriorU}.lean` (8/9/2 at
+      HEAD, not 11/9/2). `clockFrame` is now a `FrameOver (TemporalOrder.of ℚ)` value.
+      *(deviation: altered — `FrameOver (TemporalOrder.of ℚ)`, not `FrameOver ratOrder`; the
+      `ratOrder` placement finding is recorded in the Phase 13 Record.)*
+- [x] `LoopingDuration.lean`'s `Archimedean` sites are now `[Archimedean ↑D]`. Confirmed count:
+      **3** instance binders tree-wide, all in this file (research F6 asserted 4; the fourth
+      appears to have been a prose mention). Its whole `variable` block collapsed from
+      `{D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]` to
+      `{D : TemporalOrder}` — four binders to one, at nine declarations.
+- [x] `FormalSystem/Metalogic/Independence.lean` docstring updated.
+
+#### Phase 16 Record
+
+**This is the first phase where the design's headline benefit is visible as a diff.**
+`LoopingDuration.lean` and `CoNotPriorU.lean`'s `Connectives` section each carried the full
+four-binder list; both are now one binder. `[Archimedean D]` became `[Archimedean ↑D]` exactly as
+the plan predicted — a genuine side condition on the carrier stays a binder, while the four
+`def:temporal-order` components do not.
+
+The criterion separating this phase from Phases 12/14 is worth stating once: `D` becomes a
+`(D : TemporalOrder)` binder wherever it is used **only** as a duration order; it stays an ambient
+carrier with `FrameOver (TemporalOrder.of D)` wherever a neighbouring abstraction that this task
+does not restate (`BFMCS`, `FrameConditionFor`, `C D`, `TemporalCarrier`) consumes the same `D` as
+a bare type. Nothing in `Independence/` does the latter, so all three files converted.
 
 **Timing**: 1.5 hours
 

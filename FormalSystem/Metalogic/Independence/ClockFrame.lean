@@ -38,7 +38,7 @@ This frame validates `Hψ → Gψ` for every `ψ`, which is not a principle of t
 the logic. That is expected and harmless: an independence witness is a model of the assumptions,
 not a model of the intended interpretation. Three points make the witness legitimate:
 
-* `clockFrame` is a genuine `ParamTaskFrame ℚ`. Every one of `def:frame`'s four axioms —
+* `clockFrame` is a genuine value of the `ℚ` fibre, `FrameOver (TemporalOrder.of ℚ)`. Every one of `def:frame`'s four axioms —
   *Compositionality*, *Seriality*, *Limit*, *Spherical* — is discharged below, together with the
   converse convention and the iff-form zero-duration law the structure additionally carries.
 * Because it is a genuine frame over a densely ordered `ℚ`, every base and density axiom holds in
@@ -49,7 +49,7 @@ not a model of the intended interpretation. Three points make the witness legiti
 ## Contents
 
 * `ClockState` — the carrier `ℚ ⧸ AddSubgroup.zmultiples (1 : ℚ)`, with the projection `cmk`.
-* `clockFrame` — the `ParamTaskFrame ℚ` above, with all seven obligations discharged.
+* `clockFrame` — the `FrameOver (TemporalOrder.of ℚ)` above, with all seven obligations discharged.
 * `clockHistory` — the reference total history `t ↦ ⟦t⟧`, with `clockHistory_isTotal`.
 -/
 
@@ -167,10 +167,15 @@ theorem clockRel_spherical : TaskFrame.Spherical clockRel := by
 /--
 **The periodic clock frame.**
 
-`D = ℚ`, `W = ℚ ⧸ ℤ`, `w ⇒_x u :⟺ u = w + ⟦x⟧`. All seven `ParamTaskFrame` obligations are discharged;
+`D = ℚ`, `W = ℚ ⧸ ℤ`, `w ⇒_x u :⟺ u = w + ⟦x⟧`. All seven `FrameOver` obligations are discharged;
 see this module's docstring for why the quotient (rather than the line) is the right carrier.
+
+The temporal order is written `TemporalOrder.of ℚ` rather than a named `ratOrder`: a single
+`ratOrder` would have to live in `Semantics/TemporalOrder.lean` to be visible both here and in
+`BXCanonical`, and that module cannot state `⟨Rat⟩` without a new tree-wide Mathlib import. The
+naming decision is deferred to the phase that deletes the transitional layer.
 -/
-def clockFrame : ParamTaskFrame ℚ where
+def clockFrame : FrameOver (TemporalOrder.of ℚ) where
   WorldState := ClockState
   worldNonempty := ⟨0⟩
   TaskRel := clockRel
@@ -208,8 +213,8 @@ def clockFrame : ParamTaskFrame ℚ where
 @[simp] theorem clockFrame_taskRel (w : ClockState) (x : ℚ) (u : ClockState) :
     clockFrame.TaskRel w x u ↔ u = w + cmk x := Iff.rfl
 
-/-- The clock frame is a `ParamTaskFrame ℚ`: the sanity check the plan names. -/
-example : Nonempty (ParamTaskFrame ℚ) := ⟨clockFrame⟩
+/-- The clock frame inhabits the `ℚ` fibre: the sanity check the plan names. -/
+example : Nonempty (FrameOver (TemporalOrder.of ℚ)) := ⟨clockFrame⟩
 
 /-! ## The reference history -/
 

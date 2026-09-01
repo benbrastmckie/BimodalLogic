@@ -170,8 +170,8 @@ module carries no characterization theorems for them, so the three needed here a
 
 section Connectives
 
-variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
-  {F : ParamTaskFrame D} {M : TaskModel F} {τ : WorldHistory F} {t : D}
+variable {D : TemporalOrder}
+  {F : FrameOver D} {M : TaskModel F} {τ : WorldHistory F} {t : ↑D}
 
 /-- `⊤` is true everywhere. -/
 theorem truth_top : TruthAt M τ t Formula.top := fun h => h
@@ -344,8 +344,8 @@ break this, and must not be substituted.
 -/
 
 /-- Transporting a history's state assignment along an equality of times. -/
-theorem states_congr {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
-    [Nontrivial D] {F : ParamTaskFrame D} {τ : WorldHistory F} {a b : D} (h : a = b)
+theorem states_congr {D : TemporalOrder}
+    {F : FrameOver D} {τ : WorldHistory F} {a b : ↑D} (h : a = b)
     (ha : τ.domain a) (hb : τ.domain b) : τ.states a ha = τ.states b hb := by
   subst h; rfl
 
