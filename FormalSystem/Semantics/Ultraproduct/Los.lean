@@ -142,4 +142,21 @@ theorem los (S : ∀ i, ShiftSet (T i)) (χ : Formula) :
       exact (ihψ f ρ).mpr (((mk_lt_mk.mp hr1).and ((mk_lt_mk.mp hr2).and hσ)).mono
         (fun i hi => hi.2.2.2.2 (ρ i) hi.1 hi.2.1))
 
+/-! ## Łoś at `TruthAt` -/
+
+/-- **Łoś's theorem for `TruthAt`** — `los` conjugated by `ShiftSet.forward_repr` on both sides.
+
+This is the statement the task asked for. It is obtained WITHOUT any choice-function argument
+over total world-histories: `forward_repr`'s own `box` case already reconciles `TruthAt`'s
+quantifier over all total histories with `ShiftTruth`'s quantifier over the carrier, via
+`hist_isTotal` (`Semantics/ShiftSet.lean:226`) and `total_eq_orbit` (`:245`). Attacking `TruthAt`
+directly would re-open that argument on the ultraproduct; conjugating discharges it by reuse. -/
+theorem los_truthAt (S : ∀ i, ShiftSet (T i)) (f : ∀ i, (S i).Carrier) (x : ∀ i, ↑(T i))
+    (χ : Formula) :
+    TruthAt (uShiftSet φ S).model ((uShiftSet φ S).hist (omk f)) (mk x) χ ↔
+      ∀ᶠ i in φ, TruthAt (S i).model ((S i).hist (f i)) (x i) χ :=
+  (ShiftSet.forward_repr _ _ _ _).trans ((los S χ f x).trans
+    (eventually_congr (Eventually.of_forall fun i =>
+      (ShiftSet.forward_repr (S i) (f i) (x i) χ).symm)))
+
 end FormalSystem.Semantics.Ultraproduct

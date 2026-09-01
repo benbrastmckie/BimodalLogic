@@ -22,6 +22,7 @@ import FormalSystem.Semantics.ShiftSet
 import FormalSystem.Semantics.Ultraproduct.Carrier
 import FormalSystem.Semantics.Ultraproduct.IndexFilter
 import FormalSystem.Semantics.Ultraproduct.ShiftSetProduct
+import FormalSystem.Semantics.Ultraproduct.Los
 import FormalSystem.Semantics.Validity
 import FormalSystem.Semantics.BLValidity
 import FormalSystem.Semantics.DurationClassification
@@ -110,6 +111,13 @@ against `specs/paper-definitions-of-record.md`'s DANGLING entry, not a live `\la
   globally chosen section; and `uShiftSet φ S`, which discharges **all seven** `ShiftSet` fields
   from `S : ∀ i, ShiftSet (T i)` alone, with no hypotheses -- contrast the exploratory
   `shiftSetOnUD`, which takes `carrier_nonempty`, `sep` and `A` as hypotheses
+- `Ultraproduct.Los`: Łoś's theorem for the ultraproduct shift set -- `los`, the fundamental
+  theorem at `ShiftTruth` by induction on `Formula` (the `box`, `untl` and `snce` cases each
+  extract a global section with `exists_section`; only `atom`, `bot` and `imp` are mechanical),
+  and `los_truthAt`, the same statement at `TruthAt` obtained by conjugating `los` with
+  `ShiftSet.forward_repr` on both sides. Łoś is deliberately not attacked at `TruthAt` directly:
+  `ShiftTruth`'s `box` clause quantifies over the carrier the ultraproduct quotients, while
+  `TruthAt`'s quantifies over total world histories, and `forward_repr` already reconciles the two
 - `IntTransfer`: carrier normalization for the discrete branch -- a generic transport of
   frames, `TaskModel`, `WorldHistory`, and `TruthAt` along any ordered-group isomorphism
   `e : D ≃+o E` (via the `HEq`-free `Aligned` relation rather than a history `Equiv`), composed
