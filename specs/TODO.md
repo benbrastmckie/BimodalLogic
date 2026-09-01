@@ -11,9 +11,9 @@ next_project_number: 516
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,257,298,433,461,476,481,493,495,504,506,510,513 | -- | dataset-enhancement, decidability, frame-extensions, ... |
+| 1 | 127,128,257,298,433,461,476,481,495,504,506,510,513 | -- | dataset-enhancement, decidability, frame-extensions, ... |
 | 2 | 231,282,296,463,502,508 | 298,433,461,510 | algebraic-representation, dataset-enhancement, decidability, ... |
-| 3 | 193,219,464,497,509 | 231,463,493,502,508 | algebraic-representation, automation, dataset-enhancement, ... |
+| 3 | 193,219,464,497,509 | 231,463,502,508 | algebraic-representation, automation, dataset-enhancement, ... |
 | 4 | 178,465,494,498,499,500 | 193,464,497,509 | algebraic-representation, decidability, formula-refactor, ... |
 | 5 | 125,428 | 465,498,499 | algebraic-representation, decidability |
 | 6 | 429,501 | 125,428 | algebraic-representation, decidability |
@@ -85,7 +85,7 @@ next_project_number: 516
 ### Metalogic
 
 495 [IMPLEMENTING] — RESEARCH TASK, DELIBERATELY AGNOSTIC ABOUT THE VERDICT. Determine
-510 [PLANNED] — Decide the fate of FormalSystem/FrameConditions/ (4 modules, 906 
+510 [IMPLEMENTING] — Decide the fate of FormalSystem/FrameConditions/ (4 modules, 906 
   └─ 508 [NOT STARTED] — Collapse ~23 soundness theorems into ONE parameterized theorem pl
     └─ 509 [NOT STARTED] — Make the compactness / strong-completeness layer a FrameClass-ind
 
@@ -95,7 +95,6 @@ next_project_number: 516
 
 ### Strong Completeness
 
-493 [IMPLEMENTING] — Assemble the compactness result and collect strong completeness f
 494 [NOT STARTED] — NOW SEQUENCED BEHIND THE COMPACTNESS PARAMETERIZATION (see the RE
 
 ### Correspondence Theory
@@ -245,7 +244,7 @@ Research complete and absorbed: FwdRec and the Tier-1/T1 statements land under r
 ---
 
 ### 510. Resolve orphaned frameconditions layer
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: Task 507
@@ -518,12 +517,13 @@ DELIVERABLE: a grounding report answering, with citations to specific pages read
 
 ### 493. Discharge compactbase compactdense and strong completeness
 - **Effort**: 10-16 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: strong_completeness
 - **Dependencies**: Task 490, Task 492
 - **Research**: [493_discharge_compactbase_compactdense_and_strong_completeness/reports/01_compactness-and-strong-completeness.md]
 - **Plan**: [493_discharge_compactbase_compactdense_and_strong_completeness/plans/01_compactness-strong-completeness.md]
+- **Summary**: [493_discharge_compactbase_compactdense_and_strong_completeness/summaries/01_compactness-strong-completeness-summary.md]
 
 **Description**: Assemble the compactness result and collect strong completeness for Base and Dense. Steps S4 and S5 of task 424's authorized route. S4: from the Los lemma, prove ModelExistenceBase and ModelExistenceDense (every finitely-satisfiable Gamma is satisfiable), then compose with the ModelExistence -> Compact bridge to obtain CompactBase and CompactDense. S5: feed those into strongCompletenessBase_of_compact (StrongCompleteness.lean:305) and strongCompletenessDense_of_compact (:331), which are already proved as reductions, and DISCHARGE their engine hypotheses -- deliberately left live so that compactness was isolated as the whole remaining obligation. The engines are BXCanonical.completeness (BXCanonical/Completeness.lean:196) for Base and BXCanonical.completeness_dense (:256) for Dense, both sorry-free and both of exactly the required type. WHY THIS MATTERS BEYOND THE TREE: the paper's cor:tm-completeness rows 1 and 2 assert strong completeness for TM+ and TM+_d and attribute them to this repository, where they are currently CONDITIONAL on unproved hypotheses. This task is what makes the paper's own headline claim true; task 488's author memo records the mismatch as a live paper-side correction until then. ACCEPTANCE: StrongCompletenessBase and StrongCompletenessDense proved unconditionally, sorry-free, axiom-audited; the author-memo item retired.
 

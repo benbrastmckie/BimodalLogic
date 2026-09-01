@@ -907,7 +907,7 @@
     {
       "project_number": 493,
       "project_name": "discharge_compactbase_compactdense_and_strong_completeness",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "topic": "strong_completeness",
       "effort": "10-16 hours",
@@ -917,7 +917,7 @@
       ],
       "description": "Assemble the compactness result and collect strong completeness for Base and Dense. Steps S4 and S5 of task 424's authorized route. S4: from the Los lemma, prove ModelExistenceBase and ModelExistenceDense (every finitely-satisfiable Gamma is satisfiable), then compose with the ModelExistence -> Compact bridge to obtain CompactBase and CompactDense. S5: feed those into strongCompletenessBase_of_compact (StrongCompleteness.lean:305) and strongCompletenessDense_of_compact (:331), which are already proved as reductions, and DISCHARGE their engine hypotheses -- deliberately left live so that compactness was isolated as the whole remaining obligation. The engines are BXCanonical.completeness (BXCanonical/Completeness.lean:196) for Base and BXCanonical.completeness_dense (:256) for Dense, both sorry-free and both of exactly the required type. WHY THIS MATTERS BEYOND THE TREE: the paper's cor:tm-completeness rows 1 and 2 assert strong completeness for TM+ and TM+_d and attribute them to this repository, where they are currently CONDITIONAL on unproved hypotheses. This task is what makes the paper's own headline claim true; task 488's author memo records the mismatch as a live paper-side correction until then. ACCEPTANCE: StrongCompletenessBase and StrongCompletenessDense proved unconditionally, sorry-free, axiom-audited; the author-memo item retired.",
       "created": "2026-08-26T05:15:00Z",
-      "last_updated": "2026-09-01T17:16:28Z",
+      "last_updated": "2026-09-01T17:38:37Z",
       "file_scope": [
         "FormalSystem/Metalogic/StrongCompleteness.lean"
       ],
@@ -932,7 +932,16 @@
           "path": "specs/493_discharge_compactbase_compactdense_and_strong_completeness/plans/01_compactness-strong-completeness.md",
           "type": "plan",
           "summary": ""
+        },
+        {
+          "path": "specs/493_discharge_compactbase_compactdense_and_strong_completeness/summaries/01_compactness-strong-completeness-summary.md",
+          "type": "summary",
+          "summary": "Compactness and strong completeness discharged over base and dense frame classes."
         }
+      ],
+      "completion_summary": "CompactBase, CompactDense, ModelExistenceBase, ModelExistenceDense, StrongCompletenessBase and StrongCompletenessDense are now proved unconditionally in the new FormalSystem/Metalogic/Compactness.lean, by an ultraproduct model-existence construction over the finite sublists of the premise set. All six are sorry-free at exactly [propext, Classical.choice, Quot.sound], and the axiom audit is now a standing C14 gate rather than a one-off observation. Roughly 30 now-false status claims across Lean docstrings, documentation, the paper record and the archived author memo were corrected, collapsing the three-way status taxonomy to two-way.",
+      "roadmap_items": [
+        "ROADMAP.md Phase 1 Leg B (genuine Set Formula strong completeness for Base/Dense) is closed."
       ]
     },
     {
@@ -1156,7 +1165,7 @@
     {
       "project_number": 510,
       "project_name": "resolve_orphaned_frameconditions_layer",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "topic": "metalogic",
       "priority": "medium",
@@ -1165,7 +1174,7 @@
       ],
       "description": "Decide the fate of FormalSystem/FrameConditions/ (4 modules, 906 lines) -- currently orphaned code that also contains a half-built version of the validity parameterization. MEASURED STATE: consumers outside the directory itself number exactly ONE, the library aggregator FormalSystem/FormalSystem.lean:13. Nothing in Metalogic/, Semantics/, Theorems/, or Tests/ references any definition it exports. SILENT REGRESSION TO RECORD: archived task 58 logged 'Wire completeness to FrameConditions -- wiring is DONE: completeness_over_Int, discrete_completeness_fc, dovetailed_bundle'. All three identifiers are ABSENT from the entire live tree today; the wiring was removed and the claim never retracted. Its README separately states the live-importer count as 1 without drawing the conclusion. THREE THINGS IT CONTAINS: (a) FrameClass.lean marker typeclasses LinearTemporalFrame(:88), SerialFrame(:103), DenseTemporalFrame(:124), DiscreteTemporalFrame(:148), DedekindTemporalFrame(:182) -- the binder-list-as-predicate-on-D that the prerequisite parameterization needs, and which it should consume rather than re-invent; (b) Validity.lean's ValidOver/ValidLinear/ValidDenseFc/ValidDiscreteFc/ValidOverInt (:59,:79,:89,:100,:199), a FOURTH parallel validity vocabulary plus the bridge lemmas that exist only to translate to and from Semantics/Validity.lean; (c) Compatibility.lean's AxiomLinearCompatible/AxiomDenseCompatible/AxiomDiscreteCompatible (:85,:93,:102) with roughly 40 hand-written per-axiom instances that duplicate Axiom.minFrameClass -- whose own docstring calls itself 'the single source of truth for axiom-frame-class compatibility' and says it 'replaces the ad-hoc predicates isBase, isDenseCompatible, isDiscreteCompatible'. Both encodings are live. DELIVERABLE: an explicit verdict, executed. PROMOTE (marker typeclasses become the FrameClass interpretation, tree consumes them) or DELETE. Its README argues for staying separate on layering grounds, but that argument addresses placement, not zero consumers, and under the promote path the layering inverts anyway since the interpretation belongs beside Semantics/Validity.lean, below Metalogic/. THE AxiomCompatible INSTANCES SHOULD GO IN EITHER CASE -- minFrameClass supersedes them. A DELETE VERDICT IS A COMPLETE OUTCOME if the prerequisite task chose a different interpretation. ACCEPTANCE: no orphaned validity vocabulary remains; lake build green; check-module-invariants.sh C6 unreachable-module count updated and manifested. GROUNDING: specs/reviews/review-2026-08-31-metalogic-systematicity.md issue M1.=== DIRECTION NOTE ===\nThe FrameClass-indexed validity this task builds on is being defined at FRAME level, not carrier\nlevel: `FrameClass.Sat : FrameClass -> TaskFrame -> Prop` and\n`ValidIn fc phi := forall F : TaskFrame, fc.Sat F -> F |= phi`, on frames that carry their own\nduration type. Do not plan against the earlier carrier-quantified shape\n(`fc.Sat D -> ValidOver D phi`), which is superseded. This task sequences transitively behind the\nTaskFrame duration-bundling refactor via its dependency on the indexed-validity task.\n\n=== VERDICT PRE-REGISTERED BY TASK 514 RESEARCH === DELETE. Under the frame-level Sat of 507\nthe carrier-typeclass layer has no role and no paper counterpart (the paper has no\ncarrier-level validity notion at all — def:frame-validity is per-frame, ⊨_C is per-class).\nExecute as deletion + C6 manifest update; promotion is off the table unless 507's\nimplementation discovers a concrete consumer, which its plan must record explicitly if so.",
       "created": "2026-08-31T00:00:00Z",
-      "last_updated": "2026-09-01T17:34:09Z",
+      "last_updated": "2026-09-01T17:34:24Z",
       "file_scope": [
         "FormalSystem/FrameConditions/"
       ],
