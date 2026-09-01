@@ -221,7 +221,7 @@ Every `t : ℤ` reduces into the `coherent` window: times `≤ -2` reduce modulo
 `[-|back|-1, -1)`, times `≥ |mid|` reduce modulo `|fwd|` into `[|mid|, |mid|+|fwd|)`, and the
 remaining `t ∈ [-1, |mid|)` are in the window already.
 -/
-theorem unroll_isStepPath (L : BiLasso P) : IsStepPath P.toTaskFrame L.unroll := by
+theorem unroll_isStepPath (L : BiLasso P) : IsStepPath P.toFibre L.unroll := by
   have hb := length_pos_int P L.back_ne
   have hf := length_pos_int P L.fwd_ne
   have hm : (0 : ℤ) ≤ (L.mid.length : ℤ) := Int.natCast_nonneg _
@@ -270,7 +270,7 @@ theorem unroll_isStepPath (L : BiLasso P) : IsStepPath P.toTaskFrame L.unroll :=
 
 /-- The decoded path as an element of `H_F` — the form `TruthAt` consumes. -/
 def toHF (L : BiLasso P) : TaskFrame.HF P.toTaskFrame :=
-  FrameOver.HFofStepPath P.toTaskFrame L.unroll L.unroll_isStepPath
+  FrameOver.HFofStepPath P.toFibre L.unroll L.unroll_isStepPath
 
 @[simp]
 theorem toHF_path (L : BiLasso P) : L.toHF.path = L.unroll := rfl

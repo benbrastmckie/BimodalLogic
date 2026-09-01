@@ -78,12 +78,12 @@ theorem unroll_def (L : PlacedBiLasso P) (t : ℤ) :
     L.unroll t = L.lasso.unroll (t - L.origin) := rfl
 
 /-- **The re-based decoding is a step path of the presented frame.** -/
-theorem unroll_isStepPath (L : PlacedBiLasso P) : IsStepPath P.toTaskFrame L.unroll :=
+theorem unroll_isStepPath (L : PlacedBiLasso P) : IsStepPath P.toFibre L.unroll :=
   isStepPath_shift L.lasso.unroll_isStepPath L.origin
 
 /-- The decoded path as an element of `H_F` — the form `TruthAt` consumes. -/
 def toHF (L : PlacedBiLasso P) : TaskFrame.HF P.toTaskFrame :=
-  FrameOver.HFofStepPath P.toTaskFrame L.unroll L.unroll_isStepPath
+  FrameOver.HFofStepPath P.toFibre L.unroll L.unroll_isStepPath
 
 @[simp]
 theorem toHF_path (L : PlacedBiLasso P) : L.toHF.path = L.unroll := rfl

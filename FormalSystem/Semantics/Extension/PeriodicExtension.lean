@@ -27,7 +27,7 @@ module neither imports nor mentions in any proof.
 ## No seriality hypothesis, and that is deliberate
 
 The informal statement of this result says "with a serial relation". No such hypothesis appears
-below, because *Seriality* is already a **field** of `ParamTaskFrame`: `ParamTaskFrame.serial` instantiated
+below, because *Seriality* is already a **field** of `FrameOver`: `FrameOver.serial` instantiated
 at duration `x = 1` yields forward and backward one-step seriality at once, which is exactly what
 `exists_iter_fwd` and `exists_iter_bwd` consume. Adding a hypothesis would duplicate a field and
 diverge from the frame-intrinsic discipline the extension results are written in. Read the absence
@@ -81,7 +81,7 @@ where that is.
 
 - `FormalSystem.Semantics.exists_repeat_of_card_le` — pigeonhole on a window of `Nat.card W`
   consecutive times
-- `ParamTaskFrame.extend_periodic` — the extension theorem for a finite carrier over ℤ, with both
+- `FrameOver.extend_periodic` — the extension theorem for a finite carrier over ℤ, with both
   periods bounded by `Nat.card`
 -/
 
@@ -92,7 +92,7 @@ namespace FormalSystem.Semantics
 
 A window of `Nat.card W + 1` consecutive times — that is, of `Nat.card W` *steps* — already
 repeats a state, so the repeat's span is at most `Nat.card W`. This is the threshold the periods
-in `ParamTaskFrame.extend_periodic` are bounded by, and it is one tighter than the strict-inequality
+in `FrameOver.extend_periodic` are bounded by, and it is one tighter than the strict-inequality
 form of the same pigeonhole gives, which yields a span of `Nat.card W + 1`. Adjacency plays no
 role in either; the statement is about a bare function on ℤ, and saying so keeps it reusable.
 -/
@@ -130,7 +130,7 @@ private theorem iterate_periodic {W : Type} (g : W → W) (w : W) {m n : ℕ}
   rw [show m + d + (n - m) = d + n by omega, show m + d = d + m by omega,
     Function.iterate_add_apply, Function.iterate_add_apply, h]
 
-namespace ParamTaskFrame
+namespace FrameOver
 
 open TaskFrame
 
@@ -143,7 +143,7 @@ world states: some `n₁` past which the world repeats with period `p₁`, and s
 it repeats with period `p₀`.
 
 The construction is the one the informal argument describes. Seriality — taken from
-`ParamTaskFrame.serial` at duration `1`, through `exists_iter_fwd` and `exists_iter_bwd` — supplies a
+`FrameOver.serial` at duration `1`, through `exists_iter_fwd` and `exists_iter_bwd` — supplies a
 successor and a predecessor at every state. Iterating them out of the two ends of the window gives
 two orbits; finiteness forces each to revisit a state (`exists_repeat_of_card_le`), which makes it
 periodic from that visit onward; and `FrameOver.HFofStepPath` turns the resulting bi-infinite walk
@@ -153,8 +153,8 @@ alone.
 No `IntPresentation` appears here, and none can: see this module's docstring on why the effective
 counterpart is a separate theorem rather than a corollary.
 -/
-theorem extend_periodic {F : ParamTaskFrame ℤ} [Finite F.WorldState]
-    (τ : PartialHistory F) (a b : ℤ) (hab : a ≤ b)
+theorem extend_periodic {F : FrameOver intOrder} [Finite F.WorldState]
+    (τ : PartialHistory F.toTaskFrame) (a b : ℤ) (hab : a ≤ b)
     (hdom : ∀ t : ℤ, τ.domain t ↔ a ≤ t ∧ t ≤ b) :
     ∃ σ : TaskFrame.HF F, PartialHistory.Extends σ.val.toPartialHistory τ ∧
       ∃ n₀ p₀ n₁ p₁ : ℤ, 0 < p₀ ∧ 0 < p₁ ∧
@@ -265,7 +265,7 @@ theorem extend_periodic {F : ParamTaskFrame ℤ} [Finite F.WorldState]
       show (a - (x - (j₀ - i₀))).toNat = (a - x).toNat + (j₀.toNat - i₀.toNat) by omega]
     exact iterate_periodic pr (g a) heq₀ (by omega) (by omega)
 
-end ParamTaskFrame
+end FrameOver
 
 /-!
 ## The gapped case
@@ -277,7 +277,7 @@ so has no holes; the statement below drops convexity and asks only that the doma
 The extra work is entirely bookkeeping: order the domain, and between each consecutive pair fill
 the gap with an explicit path of exactly the right length, which `respects_task` plus
 `taskRel_eq_iter` plus `exists_path_of_iter` supply. Once the holes are filled the domain is an
-interval and `ParamTaskFrame.extend_periodic` finishes the job.
+interval and `FrameOver.extend_periodic` finishes the job.
 
 **This is delivered at the frame level only.** There is no gapped counterpart on the effective,
 certificate-bearing side, and there cannot be one built this way: `exists_path_of_iter` yields a
@@ -287,12 +287,12 @@ search over a presentation's adjacency matrix — real work, deliberately out of
 recorded as follow-up rather than quietly omitted.
 -/
 
-namespace ParamTaskFrame
+namespace FrameOver
 
 open TaskFrame
 
 /-- Adjacency along a window is an iterate between any two of its times. -/
-theorem iter_of_adjacent {F : ParamTaskFrame ℤ} (w : ℤ → F.WorldState) (a b : ℤ)
+theorem iter_of_adjacent {F : FrameOver intOrder} (w : ℤ → F.WorldState) (a b : ℤ)
     (hw : ∀ t : ℤ, a ≤ t → t < b → F.step (w t) (w (t + 1))) :
     ∀ (n : ℕ) (s : ℤ), a ≤ s → s + (n : ℤ) ≤ b → iter F.step n (w s) (w (s + (n : ℤ))) := by
   intro n
@@ -305,7 +305,7 @@ theorem iter_of_adjacent {F : ParamTaskFrame ℤ} (w : ℤ → F.WorldState) (a 
     exact ⟨w (s + (n : ℤ)), ih s hs (by omega), hw (s + (n : ℤ)) (by omega) (by omega)⟩
 
 /-- Adjacency along a window discharges the guarded task-respect obligation on that window. -/
-theorem taskRel_of_adjacent {F : ParamTaskFrame ℤ} (w : ℤ → F.WorldState) (a b : ℤ)
+theorem taskRel_of_adjacent {F : FrameOver intOrder} (w : ℤ → F.WorldState) (a b : ℤ)
     (hw : ∀ t : ℤ, a ≤ t → t < b → F.step (w t) (w (t + 1)))
     (s t : ℤ) (hs : a ≤ s) (hst : s ≤ t) (htb : t ≤ b) :
     F.TaskRel (w s) (t - s) (w t) := by
@@ -322,7 +322,7 @@ up to some `M` bounding `S`, agreeing with the history at `a` and at every membe
 The induction is on `S.card`, peeling off the largest member and joining it to the previous
 frontier with an explicit path of exactly the right length.
 -/
-theorem exists_filler {F : ParamTaskFrame ℤ} (τ : PartialHistory F) (a : ℤ) (ha : τ.domain a) :
+theorem exists_filler {F : FrameOver intOrder} (τ : PartialHistory F.toTaskFrame) (a : ℤ) (ha : τ.domain a) :
     ∀ (n : ℕ) (S : Finset ℤ), S.card = n → (∀ t ∈ S, a < t) → (∀ t ∈ S, τ.domain t) →
       ∃ (M : ℤ) (w : ℤ → F.WorldState),
         (∀ t ∈ S, t ≤ M) ∧ a ≤ M ∧ (M = a ∨ M ∈ S) ∧
@@ -398,8 +398,8 @@ The `convex` hypothesis of the contiguous case is dropped: the domain need only 
 conclusion is unchanged — a possible world extending the given history, ultimately periodic in
 both directions with both periods bounded by the number of world states.
 -/
-theorem extend_periodic_of_finite_domain {F : ParamTaskFrame ℤ} [Finite F.WorldState]
-    (τ : PartialHistory F) (hfin : {t : ℤ | τ.domain t}.Finite) :
+theorem extend_periodic_of_finite_domain {F : FrameOver intOrder} [Finite F.WorldState]
+    (τ : PartialHistory F.toTaskFrame) (hfin : {t : ℤ | τ.domain t}.Finite) :
     ∃ σ : TaskFrame.HF F, PartialHistory.Extends σ.val.toPartialHistory τ ∧
       ∃ n₀ p₀ n₁ p₁ : ℤ, 0 < p₀ ∧ 0 < p₁ ∧
         p₀ ≤ (Nat.card F.WorldState : ℤ) ∧ p₁ ≤ (Nat.card F.WorldState : ℤ) ∧
@@ -444,6 +444,6 @@ theorem extend_periodic_of_finite_domain {F : ParamTaskFrame ℤ} [Finite F.Worl
     · exact hwag t ht (Finset.mem_erase.mpr ⟨htA, htD⟩)
   rw [h1, h2, h3]
 
-end ParamTaskFrame
+end FrameOver
 
 end FormalSystem.Semantics

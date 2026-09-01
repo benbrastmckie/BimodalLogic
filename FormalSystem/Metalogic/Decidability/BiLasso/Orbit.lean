@@ -807,7 +807,7 @@ theorem extend_periodic (P : IntPresentation) (win : List (Fin P.card)) (hne : w
       P.step (win.getD k default) (win.getD (k + 1) default) = true)
     (origin : ℤ) :
     ∃ L : PlacedBiLasso P,
-      IsStepPath P.toTaskFrame L.unroll ∧
+      IsStepPath P.toFibre L.unroll ∧
       (∀ k : ℕ, k < win.length → L.unroll (origin + (k : ℤ)) = win.getD k default) ∧
       0 < L.lasso.back.length ∧ L.lasso.back.length ≤ P.card ∧
       0 < L.lasso.fwd.length ∧ L.lasso.fwd.length ≤ P.card ∧
@@ -859,7 +859,7 @@ theorem extend_periodic_of_icc (P : IntPresentation)
     (τ : FormalSystem.Semantics.PartialHistory P.toTaskFrame) (a b : ℤ) (hab : a ≤ b)
     (hdom : ∀ t : ℤ, τ.domain t ↔ a ≤ t ∧ t ≤ b) :
     ∃ L : PlacedBiLasso P,
-      IsStepPath P.toTaskFrame L.unroll ∧
+      IsStepPath P.toFibre L.unroll ∧
       (∀ (t : ℤ) (ht : τ.domain t), L.unroll t = τ.states t ht) ∧
       0 < L.lasso.back.length ∧ L.lasso.back.length ≤ P.card ∧
       0 < L.lasso.fwd.length ∧ L.lasso.fwd.length ≤ P.card ∧
@@ -888,8 +888,8 @@ theorem extend_periodic_of_icc (P : IntPresentation)
     have hs1 : τ.domain (s + 1) := (hdom (s + 1)).mpr ⟨by omega, by omega⟩
     have hrel := τ.respects_task s (s + 1) hs hs1
     rw [show s + 1 - s = (1 : ℤ) by omega] at hrel
-    have hstep : P.toTaskFrame.step (τ.states s hs) (τ.states (s + 1) hs1) :=
-      (P.toTaskFrame.taskRel_one_iff_step _ _).mp hrel
+    have hstep : P.toFibre.step (τ.states s hs) (τ.states (s + 1) hs1) :=
+      (P.toFibre.taskRel_one_iff_step _ _).mp hrel
     have hb := (P.step_iff _ _).mp hstep
     simpa [hf, hs, hs1] using hb
   have hadj : ∀ k : ℕ, k + 1 < win.length →

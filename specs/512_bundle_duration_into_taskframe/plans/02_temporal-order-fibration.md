@@ -1137,21 +1137,21 @@ meet a `TemporalOrder`-indexed one.
 
 ---
 
-### Phase 9: `PeriodicExtension.lean` and `IntPresentation.lean` [NOT STARTED]
+### Phase 9: `PeriodicExtension.lean` and `IntPresentation.lean` [COMPLETED]
 
 **Goal**: The two remaining direct ℤ-fibre consumers of `IntNormalForm` migrated.
 
 **Tasks**:
-- [ ] Migrate `Semantics/Extension/PeriodicExtension.lean` (15 occurrences), excluded from Phase 6.
+- [x] Migrate `Semantics/Extension/PeriodicExtension.lean` (15 occurrences), excluded from Phase 6.
       Re-examine v01's `@LT.lt ℤ _` restatements here: the duration is at a fixed fibre again, so
       some may relax. Optional; do not grow the phase.
-- [ ] Migrate `Metalogic/Decidability/IntPresentation.lean` (22 `ParamTaskFrame` + 6
+- [x] Migrate `Metalogic/Decidability/IntPresentation.lean` (22 `ParamTaskFrame` + 6
       `ParamFiniteTaskFrame`), including `IntPresentation.toTaskFrame` and
       `IntPresentation.toFiniteFrame` — two ℤ-carried concrete frames. Under the fibration these
       naturally become `FrameOver intOrder` / `FiniteFrameOver intOrder` values, with the inclusion
       into `TaskFrame` available as `.toTaskFrame` where a total-space value is wanted. Preserve the
       existing names if their consumers use them.
-- [ ] Apply the Phase 7 contract verbatim.
+- [x] Apply the Phase 7 contract verbatim.
 
 **Timing**: 2 hours
 
@@ -1162,11 +1162,49 @@ meet a `TemporalOrder`-indexed one.
 **Scope Hypothesis**: 2 files, 37 `ParamTaskFrame` + 6 `ParamFiniteTaskFrame` occurrences at HEAD.
 `IntPresentation.toTaskFrame`'s name will now be ambiguous between "the fibre value" and "the total-
 space value"; decide the naming *before* editing and record the decision, since ~14 BiLasso files
-consume it in Phase 15.
+consume it in Phase 15. *(Counts re-measured: `PeriodicExtension` 14 not 15,
+`IntPresentation` 9 `ParamTaskFrame` + 6 `ParamFiniteTaskFrame`, not 22 + 6 — Phase 7's renames had
+already absorbed part of it. DECISION MADE AND IMPLEMENTED, see the Phase 9 Record below.)*
 
 **Files to modify**:
 - `FormalSystem/Semantics/Extension/PeriodicExtension.lean`
 - `FormalSystem/Metalogic/Decidability/IntPresentation.lean`
+
+#### Phase 9 Record — the `IntPresentation` naming decision, and a transparency finding
+
+**THE NAMING DECISION.** Settled by counting the consumers before editing, as the plan required.
+`toTaskFrame` previously *named* a total-space value but *was* a fibre value
+(`ParamTaskFrame ℤ = FrameOver intOrder`). Of the **40** `P.toTaskFrame` occurrences across the 13
+BiLasso files, exactly **two** are fibre-level; the other 38 sit in total-space positions
+(`WorldHistory`, `TaskModel`, `PartialHistory`). So the split is:
+
+- `IntPresentation.toFibre : FrameOver intOrder` — the fibre value, carrying the old body.
+- `IntPresentation.toTaskFrame : TaskFrame := P.toFibre.toTaskFrame` — the total-space value,
+  keeping the name that 38 of 40 sites already want.
+- Likewise `toFiniteFibre` / `toFiniteFrame`.
+
+The payoff is not cosmetic: those 38 sites previously reached `TaskFrame` through the transitional
+`CoeOut`, and now reach it through the **constructor**. Phase 20 can delete the coercion without
+touching BiLasso. **Phase 15's expected work drops accordingly** — the naming migration it was
+budgeted for is done, and the remaining BiLasso surface is 7 fibre-level call sites, all fixed here
+(`Basic` 2, `Orbit` 3, `Extend` 2, `Realized` 1 — `IsStepPath`, `HFofStepPath`, `.step`,
+`.taskRel_one_iff_step`, `HF.isStepPath`).
+
+**A TRANSPARENCY FINDING, new and worth carrying.** `toTaskFrame` and `toFibre` must be
+`@[reducible]`. As plain `def`s, `↑P.toTaskFrame.Duration` does not reduce to `ℤ` at *reducible*
+transparency — which is where instance synthesis and `rw` matching run — and `TruthLemma.lean`
+fails with `HSub P.toTaskFrame.Duration.carrier ℤ ?m` plus a `rw` that cannot find its pattern.
+This is the same reason `ShiftSet.frame` carries `@[reducible]`, recorded there by v01; it now has
+a second instance and a sharper statement: **any presentation-level frame constant that downstream
+code writes `(t : ℤ)` binders against must be `@[reducible]`.**
+
+Note the shape: this is *not* the `omega`-through-a-projection-instance issue. Phase 7's prediction
+held — no `omega` broke in either file, and **0 casts were added**. This is a distinct,
+transparency-level failure with a different fix.
+
+**C6 caught a fourth one.** `BiLasso/Orbit.lean` (unreachable-but-manifested) had
+`P.toTaskFrame.taskRel_one_iff_step`, a fibre-level projection invisible to `lake build`, and
+`Agreement.lean` failed downstream of it. Four for four now.
 
 **Verification**:
 - Standing contract (1-9).
