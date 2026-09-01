@@ -46,9 +46,10 @@ task semantic models. The MF and TF axioms use time-shift invariance
 - `temp_a_valid`: Temporal A axiom is valid
 - `temp_l_valid`: TL axiom is valid (uses always definition)
 - `modal_future_valid`: MF axiom is valid (via time-shift invariance)
-- `axiom_valid`: Base axioms are universally valid
-- `axiom_dense_valid`: Dense-compatible axioms are valid on dense frames
-- `axiom_discrete_valid`: Discrete-compatible axioms are valid on discrete frames
+- `axiom_validIn`: every axiom is valid at any frame class its `minFrameClass` sits below
+- `soundness_in`: **the** soundness theorem, parameterized by `FrameClass`
+- `axiom_valid`, `axiom_dense_valid`, `axiom_discrete_valid`, `axiom_dedekind_valid`: the four
+  per-class instances of `axiom_validIn`
 
 ## Implementation Notes
 
@@ -56,7 +57,9 @@ task semantic models. The MF and TF axioms use time-shift invariance
 - Base axiom validity lemmas: prop_k, prop_s, ex_falso, peirce, MT, M4, MB, M5_collapse,
   MK_dist, TK_dist, T4, TA, TL, MF, TF, linearity (universally valid)
 - Frame-class axiom validity: density (ValidDense), discreteness_forward (ValidDiscrete)
-- axiom_valid, axiom_dense_valid, axiom_discrete_valid (combined validators)
+- `axiom_validIn_min` (one arm per axiom constructor, each at that axiom's own
+  `minFrameClass`), lifted by `ValidIn.mono` to `axiom_validIn` at an arbitrary class; the four
+  `axiom_*_valid` names are one-line instances of it
 
 **Key Techniques**:
 - Time-shift invariance (MF, TF): Uses `WorldHistory.timeShift` and
@@ -74,31 +77,45 @@ as `Set.univ`.
 
 ## Full Derivation Soundness
 
-The theorem `soundness : (Γ ⊢ φ) → (Γ ⊨ φ)` is an induction over `DerivationTree`, which has
-exactly seven constructors (`ProofSystem/Derivation.lean`). One case each:
-1. **`axiom`**: `axiom_valid`, `axiom_dense_valid`, `axiom_discrete_valid`
+The induction over `DerivationTree` is written **once**, in `soundness_in`, at an arbitrary
+`fc : FrameClass`. `DerivationTree` has exactly seven constructors
+(`ProofSystem/Derivation.lean`). One case each:
+1. **`axiom`**: `axiom_validIn`, at whatever `fc` the derivation is indexed by
 2. **`assumption`**: the formula is in `Γ`, so the context hypothesis supplies it directly
 3. **`modus_ponens`**: If `Γ ⊨ φ → ψ` and `Γ ⊨ φ` then `Γ ⊨ ψ` (semantic by definition)
 4. **`necessitation`**: If `⊨ φ` then `⊨ □φ` (follows from S5 universal accessibility)
 5. **`temporal_necessitation`**: If `⊨ φ` then `⊨ Gφ` (follows from temporal quantification)
-6. **`temporal_duality`**: `derivable_implies_swap_valid` in SoundnessLemmas.lean
+6. **`temporal_duality`**: `derivable_valid_and_swap_validIn`, the companion recursion that
+   proves validity and swap-validity simultaneously, again at an arbitrary `fc`
 7. **`weakening`**: Monotonicity of semantic consequence
+
+The `temporal_duality` case is where the four per-class proofs used to diverge — Base through
+`SoundnessLemmas.derivable_implies_swap_valid_general`, Dense through
+`derivable_implies_swap_valid`, Discrete through `derivable_implies_swap_valid_discrete`,
+Dedekind through a fourth in-file recursion. Carrying the class as a parameter rather than
+baking it into the statement collapses all four into the one arm above.
 
 There is no IRR rule in this proof system, and therefore no IRR case in this induction.
 Reynolds' IRR rule is mentioned in `ProofSystem/Axioms.lean` only bibliographically, in the title
 of his 1992 paper.
 
 **Frame-Class Architecture**:
-Soundness is organized by frame class because axioms require different frame conditions:
-- `soundness`: For dense-compatible derivations on arbitrary frames (sorry-free)
-- `soundness_dense`: For dense-compatible derivations on dense frames (sorry-free)
-- `soundness_discrete`: For all derivations on discrete frames (sorry-free)
+There is one soundness proof, `soundness_in`, indexed by `fc : FrameClass`. The named theorems
+are its instances and keep their original statements exactly:
+- `soundness`: derivations at `.Base`, on arbitrary frames
+- `soundness_dense`: derivations at `.Dense`, on densely ordered frames
+- `soundness_discrete`: derivations at `.Discrete`, on discrete frames
+- `soundness_dedekind`: derivations at `.Dedekind`, on dense Dedekind-complete frames
 
-All soundness theorems are sorry-free. The discrete soundness theorem uses
-`derivable_implies_swap_valid_discrete` from SoundnessLemmas.lean, which
-proves Prior-UZ/SZ validity via well-founded descent on succ/pred chains.
-Prior-UZ/SZ are excluded from dense derivations by the `h.minFrameClass ≤ .Dense` constraint
-(their `minFrameClass = .Discrete` is incomparable with `.Dense`).
+Each supplies its class's `FrameClass.Sat` witness and nothing else: `trivial` at `.Base`, the
+`DenselyOrdered` instance at `.Dense`, the four order instances at `.Discrete`, and the
+density-plus-least-upper-bound pair at `.Dedekind`. All are sorry-free.
+
+The class index is what keeps the axiom sets apart. Prior-UZ/SZ are excluded from dense
+derivations by the `h.minFrameClass ≤ .Dense` gate on the axiom rule, their
+`minFrameClass = .Discrete` being incomparable with `.Dense`; their validity on discrete frames
+comes from `SoundnessLemmas`' well-founded descent on succ/pred chains, reached through
+`axiom_validIn`.
 
 ## Soundness for the base language BL
 
@@ -913,194 +930,11 @@ theorem z1_valid (φ : Formula) : ValidDiscrete
   intro F _ _ _ _ M τ h_mem t
   exact SoundnessLemmas.z1_is_valid φ F.toFibre M τ h_mem t
 
-/-- All base TM axioms (excluding density, discreteness, and seriality) are universally valid.
-With strict semantics, density requires DenselyOrdered, discreteness requires SuccOrder,
-and seriality requires NoMaxOrder/NoMinOrder, so they are handled separately.
+/-! ## Validity-preserving forms of the two necessitation rules
 
-**Why `FrameClass.Base` is essential here**: the conclusion is unconditional validity `⊨ φ`,
-which is exactly the class of axioms admissible at `Base`. Generalising `h_fc` to
-`h.minFrameClass ≤ fc` would be false — a `Dense` or `Discrete` axiom is valid only on frames
-satisfying that class's condition, which is what `axiom_dense_valid` /
-`axiom_discrete_valid` state instead. -/
-theorem axiom_valid {φ : Formula} (h : Axiom φ) (h_fc : h.minFrameClass ≤ FrameClass.Base) : ⊨
-    φ := by
-  cases h with
-  | prop_k φ ψ χ => exact prop_k_valid φ ψ χ
-  | prop_s φ ψ => exact prop_s_valid φ ψ
-  | modal_t ψ => exact modal_t_valid ψ
-  | modal_4 ψ => exact modal_4_valid ψ
-  | modal_b ψ => exact modal_b_valid ψ
-  | modal_5_collapse ψ => exact modal_5_collapse_valid ψ
-  | ex_falso ψ => exact ex_falso_valid ψ
-  | peirce φ ψ => exact peirce_valid φ ψ
-  | modal_k_dist φ ψ => exact modal_k_dist_valid φ ψ
-  -- NOTE: temp_k_dist and temp_4 removed as axiom constructors
-  | serial_future => exact serial_future_axiom_valid
-  | serial_past => exact serial_past_axiom_valid
-  | left_mono_until_G φ χ ψ => exact left_mono_until_G_valid φ χ ψ
-  | left_mono_since_H φ χ ψ => exact left_mono_since_H_valid φ χ ψ
-  | right_mono_until φ ψ χ => exact right_mono_until_valid φ ψ χ
-  | right_mono_since φ ψ χ => exact right_mono_since_valid φ ψ χ
-  | connect_future _ => exact connect_future_valid _
-  | connect_past _ => exact connect_past_valid _
-  | enrichment_until φ ψ p => exact enrichment_until_valid φ ψ p
-  | enrichment_since φ ψ p => exact enrichment_since_valid φ ψ p
-  | self_accum_until φ ψ => exact self_accum_until_valid φ ψ
-  | self_accum_since φ ψ => exact self_accum_since_valid φ ψ
-  | absorb_until φ ψ => exact absorb_until_valid φ ψ
-  | absorb_since φ ψ => exact absorb_since_valid φ ψ
-  | linear_until _ _ _ _ => exact linear_until_valid _ _ _ _
-  | linear_since _ _ _ _ => exact linear_since_valid _ _ _ _
-  | until_F φ ψ => exact until_F_valid φ ψ
-  | since_P φ ψ => exact since_P_valid φ ψ
-  | temp_linearity φ ψ => exact temp_linearity_valid φ ψ
-  | temp_linearity_past φ ψ => exact temp_linearity_past_valid φ ψ
-  | F_until_equiv φ => exact F_until_equiv_valid φ
-  | P_since_equiv φ => exact P_since_equiv_valid φ
-  | modal_future ψ => exact modal_future_valid ψ
-  | discrete_symm_fwd => exact discrete_symm_fwd_valid
-  | discrete_symm_bwd => exact discrete_symm_bwd_valid
-  | discrete_propagate_fwd => exact discrete_propagate_fwd_valid
-  | discrete_propagate_bwd => exact discrete_propagate_bwd_valid
-  | discrete_box_necessity => exact discrete_box_necessity_valid
-  | density _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
-  | dense_indicator => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
-  | prior_UZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
-  | prior_SZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
-  | z1 _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
-  -- Reynolds Dedekind axioms: eliminated by frame-class incomparability.
-  | prior_U_gap _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
-  | prior_S_gap _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
-  | sep _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
-
-/-- All dense-compatible axioms are valid on densely ordered frames.
-This covers all base axioms (universally valid, hence valid on dense frames) plus the density axiom.
-Note: Under strict semantics, seriality axioms require NoMaxOrder/NoMinOrder (via Nontrivial). -/
-theorem axiom_dense_valid {φ : Formula} (h : Axiom φ) (h_fc : h.minFrameClass ≤ FrameClass.Dense) :
-    ValidDense φ := by
-  cases h with
-  | prop_k φ ψ χ => exact Validity.valid_implies_valid_dense (prop_k_valid φ ψ χ)
-  | prop_s φ ψ => exact Validity.valid_implies_valid_dense (prop_s_valid φ ψ)
-  | modal_t ψ => exact Validity.valid_implies_valid_dense (modal_t_valid ψ)
-  | modal_4 ψ => exact Validity.valid_implies_valid_dense (modal_4_valid ψ)
-  | modal_b ψ => exact Validity.valid_implies_valid_dense (modal_b_valid ψ)
-  | modal_5_collapse ψ => exact Validity.valid_implies_valid_dense (modal_5_collapse_valid ψ)
-  | ex_falso ψ => exact Validity.valid_implies_valid_dense (ex_falso_valid ψ)
-  | peirce φ ψ => exact Validity.valid_implies_valid_dense (peirce_valid φ ψ)
-  | modal_k_dist φ ψ => exact Validity.valid_implies_valid_dense (modal_k_dist_valid φ ψ)
-  | serial_future => exact Validity.valid_implies_valid_dense serial_future_axiom_valid
-  | serial_past => exact Validity.valid_implies_valid_dense serial_past_axiom_valid
-  | left_mono_until_G φ χ ψ =>
-    exact Validity.valid_implies_valid_dense (left_mono_until_G_valid φ χ ψ)
-  | left_mono_since_H φ χ ψ =>
-    exact Validity.valid_implies_valid_dense (left_mono_since_H_valid φ χ ψ)
-  | right_mono_until φ ψ χ =>
-    exact Validity.valid_implies_valid_dense (right_mono_until_valid φ ψ χ)
-  | right_mono_since φ ψ χ =>
-    exact Validity.valid_implies_valid_dense (right_mono_since_valid φ ψ χ)
-  | connect_future _ => exact Validity.valid_implies_valid_dense (connect_future_valid _)
-  | connect_past _ => exact Validity.valid_implies_valid_dense (connect_past_valid _)
-  | enrichment_until φ ψ p =>
-    exact Validity.valid_implies_valid_dense (enrichment_until_valid φ ψ p)
-  | enrichment_since φ ψ p =>
-    exact Validity.valid_implies_valid_dense (enrichment_since_valid φ ψ p)
-  | self_accum_until φ ψ => exact Validity.valid_implies_valid_dense (self_accum_until_valid φ ψ)
-  | self_accum_since φ ψ => exact Validity.valid_implies_valid_dense (self_accum_since_valid φ ψ)
-  | absorb_until φ ψ => exact Validity.valid_implies_valid_dense (absorb_until_valid φ ψ)
-  | absorb_since φ ψ => exact Validity.valid_implies_valid_dense (absorb_since_valid φ ψ)
-  | linear_until _ _ _ _ => exact Validity.valid_implies_valid_dense (linear_until_valid _ _ _ _)
-  | linear_since _ _ _ _ => exact Validity.valid_implies_valid_dense (linear_since_valid _ _ _ _)
-  | until_F φ ψ => exact Validity.valid_implies_valid_dense (until_F_valid φ ψ)
-  | since_P φ ψ => exact Validity.valid_implies_valid_dense (since_P_valid φ ψ)
-  | temp_linearity φ ψ => exact Validity.valid_implies_valid_dense (temp_linearity_valid φ ψ)
-  | temp_linearity_past φ ψ =>
-    exact Validity.valid_implies_valid_dense (temp_linearity_past_valid φ ψ)
-  | F_until_equiv φ => exact Validity.valid_implies_valid_dense (F_until_equiv_valid φ)
-  | P_since_equiv φ => exact Validity.valid_implies_valid_dense (P_since_equiv_valid φ)
-  | modal_future ψ => exact Validity.valid_implies_valid_dense (modal_future_valid ψ)
-  | discrete_symm_fwd => exact Validity.valid_implies_valid_dense discrete_symm_fwd_valid
-  | discrete_symm_bwd => exact Validity.valid_implies_valid_dense discrete_symm_bwd_valid
-  | discrete_propagate_fwd => exact Validity.valid_implies_valid_dense discrete_propagate_fwd_valid
-  | discrete_propagate_bwd => exact Validity.valid_implies_valid_dense discrete_propagate_bwd_valid
-  | discrete_box_necessity => exact Validity.valid_implies_valid_dense discrete_box_necessity_valid
-  | density φ => exact density_valid φ
-  | dense_indicator => exact dense_indicator_valid
-  | prior_UZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
-  | prior_SZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
-  | z1 _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
-  -- Reynolds Dedekind axioms: eliminated by frame-class incomparability.
-  | prior_U_gap _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
-  | prior_S_gap _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
-  | sep _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
-
-/-- All discrete-compatible axioms are valid on discrete frames.
-This covers all base axioms (universally valid, hence valid on discrete frames) plus discreteness.
-Under strict semantics, seriality requires NoMaxOrder/NoMinOrder (from SuccOrder/PredOrder +
-Nontrivial). -/
-theorem axiom_discrete_valid {φ : Formula} (h : Axiom φ) (h_fc :
-      h.minFrameClass ≤ FrameClass.Discrete) :
-    ValidDiscrete φ := by
-  cases h with
-  | prop_k φ ψ χ => exact Validity.valid_implies_valid_discrete (prop_k_valid φ ψ χ)
-  | prop_s φ ψ => exact Validity.valid_implies_valid_discrete (prop_s_valid φ ψ)
-  | modal_t ψ => exact Validity.valid_implies_valid_discrete (modal_t_valid ψ)
-  | modal_4 ψ => exact Validity.valid_implies_valid_discrete (modal_4_valid ψ)
-  | modal_b ψ => exact Validity.valid_implies_valid_discrete (modal_b_valid ψ)
-  | modal_5_collapse ψ => exact Validity.valid_implies_valid_discrete (modal_5_collapse_valid ψ)
-  | ex_falso ψ => exact Validity.valid_implies_valid_discrete (ex_falso_valid ψ)
-  | peirce φ ψ => exact Validity.valid_implies_valid_discrete (peirce_valid φ ψ)
-  | modal_k_dist φ ψ => exact Validity.valid_implies_valid_discrete (modal_k_dist_valid φ ψ)
-  | serial_future => exact Validity.valid_implies_valid_discrete serial_future_axiom_valid
-  | serial_past => exact Validity.valid_implies_valid_discrete serial_past_axiom_valid
-  | left_mono_until_G φ χ ψ =>
-    exact Validity.valid_implies_valid_discrete (left_mono_until_G_valid φ χ ψ)
-  | left_mono_since_H φ χ ψ =>
-    exact Validity.valid_implies_valid_discrete (left_mono_since_H_valid φ χ ψ)
-  | right_mono_until φ ψ χ =>
-    exact Validity.valid_implies_valid_discrete (right_mono_until_valid φ ψ χ)
-  | right_mono_since φ ψ χ =>
-    exact Validity.valid_implies_valid_discrete (right_mono_since_valid φ ψ χ)
-  | connect_future _ => exact Validity.valid_implies_valid_discrete (connect_future_valid _)
-  | connect_past _ => exact Validity.valid_implies_valid_discrete (connect_past_valid _)
-  | enrichment_until φ ψ p =>
-    exact Validity.valid_implies_valid_discrete (enrichment_until_valid φ ψ p)
-  | enrichment_since φ ψ p =>
-    exact Validity.valid_implies_valid_discrete (enrichment_since_valid φ ψ p)
-  | self_accum_until φ ψ => exact Validity.valid_implies_valid_discrete (self_accum_until_valid φ ψ)
-  | self_accum_since φ ψ => exact Validity.valid_implies_valid_discrete (self_accum_since_valid φ ψ)
-  | absorb_until φ ψ => exact Validity.valid_implies_valid_discrete (absorb_until_valid φ ψ)
-  | absorb_since φ ψ => exact Validity.valid_implies_valid_discrete (absorb_since_valid φ ψ)
-  | linear_until _ _ _ _ => exact Validity.valid_implies_valid_discrete (linear_until_valid _ _ _ _)
-  | linear_since _ _ _ _ => exact Validity.valid_implies_valid_discrete (linear_since_valid _ _ _ _)
-  | until_F φ ψ => exact Validity.valid_implies_valid_discrete (until_F_valid φ ψ)
-  | since_P φ ψ => exact Validity.valid_implies_valid_discrete (since_P_valid φ ψ)
-  | temp_linearity φ ψ => exact Validity.valid_implies_valid_discrete (temp_linearity_valid φ ψ)
-  | temp_linearity_past φ ψ =>
-    exact Validity.valid_implies_valid_discrete (temp_linearity_past_valid φ ψ)
-  | F_until_equiv φ => exact Validity.valid_implies_valid_discrete (F_until_equiv_valid φ)
-  | P_since_equiv φ => exact Validity.valid_implies_valid_discrete (P_since_equiv_valid φ)
-  | modal_future ψ => exact Validity.valid_implies_valid_discrete (modal_future_valid ψ)
-  | discrete_symm_fwd => exact Validity.valid_implies_valid_discrete discrete_symm_fwd_valid
-  | discrete_symm_bwd => exact Validity.valid_implies_valid_discrete discrete_symm_bwd_valid
-  | discrete_propagate_fwd =>
-    exact Validity.valid_implies_valid_discrete discrete_propagate_fwd_valid
-  | discrete_propagate_bwd =>
-    exact Validity.valid_implies_valid_discrete discrete_propagate_bwd_valid
-  | discrete_box_necessity =>
-    exact Validity.valid_implies_valid_discrete discrete_box_necessity_valid
-  | density _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
-  | dense_indicator => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
-  | prior_UZ φ => exact prior_UZ_valid φ
-  | prior_SZ φ => exact prior_SZ_valid φ
-  | z1 φ => exact z1_valid φ
-  -- Reynolds Dedekind axioms: eliminated by frame-class incomparability.
-  | prior_U_gap _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
-  | prior_S_gap _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
-  | sep _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
-
-/-! ## Full Derivation Soundness
-
-The main soundness theorem showing derivability implies semantic consequence.
+Semantic counterparts of the `necessitation` and `temporal_necessitation` rules, stated at
+`.Base`. `soundness_in` reaches those two constructors through its own induction hypothesis and
+does not consume these; they are kept as the free-standing semantic facts they state.
 -/
 
 /--
@@ -1129,382 +963,6 @@ theorem temporal_necessitation_preserves_valid {φ : Formula} (h : ⊨ φ) : ⊨
   intro s _hts
   exact h |>.apply F M τ h_mem s
 
-/--
-**Soundness Theorem (Base)**: Derivability in the base system implies semantic consequence.
-
-If `Γ ⊢[Base] φ`, then `Γ ⊨ φ`.
-The `FrameClass.Base` parameter on `DerivationTree` structurally excludes axioms with
-`minFrameClass > Base` (density, Prior-UZ/SZ, z1) via the `h_fc` gate on the axiom rule.
-
-The proof proceeds by induction on the derivation tree structure:
-- **Axiom**: Use the axiom validity theorems (incompatible axioms excluded by `h_fc`)
-- **Assumption**: If φ ∈ Γ and all of Γ holds, then φ holds
-- **Modus ponens**: If Γ ⊨ φ → ψ and Γ ⊨ φ, then Γ ⊨ ψ
-- **Necessitation**: Uses `necessitation_preserves_valid`
-- **Temporal necessitation**: Uses `temporal_necessitation_preserves_valid`
-- **Temporal duality**: Uses `SoundnessLemmas.derivable_implies_swap_valid_general`
-- **Weakening**: Monotonicity of semantic consequence
-
-**Note**: Prior-UZ/SZ and z1 are excluded structurally — their `minFrameClass` is
-`Discrete`, which is incomparable to `Base` in the partial order. Use
-`soundness_discrete` for derivations containing these axioms.
--/
-theorem soundness (Γ : Context) (φ : Formula)
-    (d : DerivationTree FrameClass.Base Γ φ)
-    (F : TaskFrame) (M : TaskModel F)
-    (τ : WorldHistory F) (h_mem : τ.IsTotal) (t : F.Duration)
-    (h_ctx : ∀ ψ ∈ Γ, TruthAt M τ t ψ) :
-    TruthAt M τ t φ := by
-  induction d generalizing τ t with
-  | «axiom» Γ' φ' h_ax h_fc =>
-    -- All base axioms are universally valid; density/discrete excluded by h_fc
-    cases h_ax with
-    | prop_k φ ψ χ => exact prop_k_valid φ ψ χ |>.apply F M τ h_mem t
-    | prop_s φ ψ => exact prop_s_valid φ ψ |>.apply F M τ h_mem t
-    | modal_t ψ => exact modal_t_valid ψ |>.apply F M τ h_mem t
-    | modal_4 ψ => exact modal_4_valid ψ |>.apply F M τ h_mem t
-    | modal_b ψ => exact modal_b_valid ψ |>.apply F M τ h_mem t
-    | modal_5_collapse ψ => exact modal_5_collapse_valid ψ |>.apply F M τ h_mem t
-    | ex_falso ψ => exact ex_falso_valid ψ |>.apply F M τ h_mem t
-    | peirce φ ψ => exact peirce_valid φ ψ |>.apply F M τ h_mem t
-    | modal_k_dist φ ψ => exact modal_k_dist_valid φ ψ |>.apply F M τ h_mem t
-    | serial_future => exact serial_future_axiom_valid |>.apply F M τ h_mem t
-    | serial_past => exact serial_past_axiom_valid |>.apply F M τ h_mem t
-    | left_mono_until_G φ χ ψ => exact left_mono_until_G_valid φ χ ψ |>.apply F M τ h_mem t
-    | left_mono_since_H φ χ ψ => exact left_mono_since_H_valid φ χ ψ |>.apply F M τ h_mem t
-    | right_mono_until φ ψ χ => exact right_mono_until_valid φ ψ χ |>.apply F M τ h_mem t
-    | right_mono_since φ ψ χ => exact right_mono_since_valid φ ψ χ |>.apply F M τ h_mem t
-    | connect_future φ => exact connect_future_valid φ |>.apply F M τ h_mem t
-    | connect_past φ => exact connect_past_valid φ |>.apply F M τ h_mem t
-    | enrichment_until φ ψ p => exact enrichment_until_valid φ ψ p |>.apply F M τ h_mem t
-    | enrichment_since φ ψ p => exact enrichment_since_valid φ ψ p |>.apply F M τ h_mem t
-    | self_accum_until φ ψ => exact self_accum_until_valid φ ψ |>.apply F M τ h_mem t
-    | self_accum_since φ ψ => exact self_accum_since_valid φ ψ |>.apply F M τ h_mem t
-    | absorb_until φ ψ => exact absorb_until_valid φ ψ |>.apply F M τ h_mem t
-    | absorb_since φ ψ => exact absorb_since_valid φ ψ |>.apply F M τ h_mem t
-    | linear_until φ ψ χ θ => exact linear_until_valid φ ψ χ θ |>.apply F M τ h_mem t
-    | linear_since φ ψ χ θ => exact linear_since_valid φ ψ χ θ |>.apply F M τ h_mem t
-    | until_F φ ψ => exact until_F_valid φ ψ |>.apply F M τ h_mem t
-    | since_P φ ψ => exact since_P_valid φ ψ |>.apply F M τ h_mem t
-    | temp_linearity φ ψ => exact temp_linearity_valid φ ψ |>.apply F M τ h_mem t
-    | temp_linearity_past φ ψ => exact temp_linearity_past_valid φ ψ |>.apply F M τ h_mem t
-    | F_until_equiv φ => exact F_until_equiv_valid φ |>.apply F M τ h_mem t
-    | P_since_equiv φ => exact P_since_equiv_valid φ |>.apply F M τ h_mem t
-    | modal_future ψ => exact modal_future_valid ψ |>.apply F M τ h_mem t
-    | discrete_symm_fwd => exact discrete_symm_fwd_valid |>.apply F M τ h_mem t
-    | discrete_symm_bwd => exact discrete_symm_bwd_valid |>.apply F M τ h_mem t
-    | discrete_propagate_fwd => exact discrete_propagate_fwd_valid |>.apply F M τ h_mem t
-    | discrete_propagate_bwd => exact discrete_propagate_bwd_valid |>.apply F M τ h_mem t
-    | discrete_box_necessity => exact discrete_box_necessity_valid |>.apply F M τ h_mem t
-    | density _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
-    | dense_indicator => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
-    | prior_UZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
-    | prior_SZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
-    | z1 _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
-    -- Reynolds Dedekind axioms: eliminated by frame-class incomparability.
-    | prior_U_gap _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
-    | prior_S_gap _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
-    | sep _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
-  | assumption Γ' φ' h_in =>
-    exact h_ctx φ' h_in
-  | modus_ponens Γ' φ' ψ' _ _ ih1 ih2 =>
-    have h1 := ih1 τ h_mem t h_ctx
-    have h2 := ih2 τ h_mem t h_ctx
-    simp only [TruthAt] at h1
-    exact h1 h2
-  | necessitation φ' _ ih =>
-    simp only [TruthAt]
-    intro σ h_σ_mem
-    exact ih σ h_σ_mem t (by simp)
-  | temporal_necessitation φ' _ ih =>
-    simp only [Truth.future_iff]
-    intro s _hts
-    exact ih τ h_mem s (by simp)
-  | temporal_duality φ' d' ih =>
-    -- d' : ⊢ φ', goal is TruthAt ... φ'.swapTemporal
-    -- Use general swap validity with dense-compatibility guard
-    exact SoundnessLemmas.derivable_implies_swap_valid_general d' F.toFibre M τ h_mem t
-  | weakening Γ' Δ' φ' _ h_sub ih =>
-    exact ih τ h_mem t (fun ψ h_in => h_ctx ψ (h_sub h_in))
-
-/-! ## Frame-Class-Restricted Soundness Theorems
-
-These theorems provide soundness for specific frame classes, resolving the limitation
-that the general soundness theorem cannot handle extension axioms without frame constraints.
--/
-
-/--
-**Soundness Dense Valid**: Derivability from empty context implies dense validity.
-
-This theorem proves `ValidDense phi` for dense-compatible derivations from empty context. The
-empty context is what makes the statement universally quantified over frames, models, histories
-and times, which is what the two necessitation cases need of their premise.
-
-**Key Insight**: the induction hypothesis at each step provides `ValidDense` for the premises,
-which is the universally quantified form the `necessitation` and `temporal_necessitation` cases
-consume — an empty-context `ValidDense` statement, unlike a `TruthAt` statement at a fixed
-history and time, is already closed over all frames, models, histories and times.
-
-`ValidDense` quantifies over the frame's **total** histories, so no domain-membership side
-condition arises and there is nothing here to case-split on. This theorem is sorry-free, as are
-`soundness`, `soundness_dense` and `soundness_discrete`.
-
-It is defined before `soundness_dense` so that it is available to any later result needing the
-empty-context universal form; `soundness_dense` itself runs its own induction and reaches the
-necessitation cases through its induction hypothesis.
--/
-theorem soundness_dense_valid {phi : Formula}
-    (d : DerivationTree FrameClass.Dense [] phi) : ValidDense phi := by
-  match d with
-  | .axiom _ _ h_ax h_fc =>
-    -- All dense-compatible axioms are ValidDense
-    exact axiom_dense_valid h_ax h_fc
-  | .assumption _ _ h_mem =>
-    -- Empty context has no assumptions
-    exact absurd h_mem (Syntax.Context.not_mem_nil _)
-  | .modus_ponens _ psi' _ d1 d2 =>
-    -- From ValidDense (psi' → phi) and ValidDense psi', derive ValidDense phi
-    have h1 := soundness_dense_valid d1
-    have h2 := soundness_dense_valid d2
-    refine ValidDense.of_forall ?_
-    intro F _ M tau h_mem t
-    have h1' := h1.apply F M tau h_mem t
-    have h2' := h2.apply F M tau h_mem t
-    simp only [TruthAt] at h1'
-    exact h1' h2'
-  | .necessitation psi' d' =>
-    -- ValidDense psi' → ValidDense (box psi')
-    have h := soundness_dense_valid d'
-    refine ValidDense.of_forall ?_
-    intro F _ M tau h_mem t
-    simp only [TruthAt]
-    intro sigma h_sigma_mem
-    exact h.apply F M sigma h_sigma_mem t
-  | .temporal_necessitation psi' d' =>
-    -- ValidDense psi' → ValidDense (allFuture psi')
-    have h := soundness_dense_valid d'
-    refine ValidDense.of_forall ?_
-    intro F _ M tau h_mem t
-    simp only [Truth.future_iff]
-    intro s _hts
-    exact h.apply F M tau h_mem s
-  | .temporal_duality psi' d' =>
-    -- ValidDense psi' → ValidDense (swap psi')
-    -- Use derivable_implies_swap_valid which gives IsValid, then convert
-    refine ValidDense.of_forall ?_
-    intro F _ M tau h_mem t
-    exact SoundnessLemmas.derivable_implies_swap_valid d' F.toFibre M tau h_mem t
-  | .weakening Gamma' _ _ d' h_sub =>
-    -- Since d : DerivationTree [] phi and Gamma' ⊆ [], we have Gamma' = []
-    have h_eq : Gamma' = [] := List.eq_nil_of_subset_nil h_sub
-    have h_height_eq : (h_eq ▸ d').height = d'.height := by subst h_eq; rfl
-    have h_term : (h_eq ▸ d').height < (DerivationTree.weakening Gamma' [] _ d' h_sub).height := by
-      simp only [h_height_eq, DerivationTree.height]
-      omega
-    exact soundness_dense_valid (h_eq ▸ d')
-termination_by d.height
-decreasing_by
-  all_goals first
-    | exact DerivationTree.mp_height_gt_left _ _
-    | exact DerivationTree.mp_height_gt_right _ _
-    | simp only [DerivationTree.height]; omega
-
-/--
-**Soundness for Dense Frames**: Derivability implies semantic consequence on dense frames.
-
-If `Γ ⊢ φ` with a dense-compatible derivation, then `Γ ⊨_dense φ`.
-
-**Frame Constraints**:
-- `[DenselyOrdered D]`: Required for density axiom (GGφ → Gφ)
-- `[Nontrivial D]`: Required for seriality axioms (provides NoMaxOrder/NoMinOrder)
-
-**Frame Class Constraint** (`fc = .Dense`):
-The `DerivationTree .Dense` parameterization structurally ensures no discrete-specific axioms
-(prior_UZ, prior_SZ, z1) appear in the derivation, since their `minFrameClass = .Discrete`
-is incomparable with `.Dense`.
-
-**Constructor coverage**: this induction cases on all seven `DerivationTree` constructors and no
-others. There is no IRR rule in the proof system, so no IRR case appears here.
--/
-theorem soundness_dense (Γ : Context) (φ : Formula)
-    (d : DerivationTree FrameClass.Dense Γ φ)
-    (F : TaskFrame) [DenselyOrdered F.Duration] (M : TaskModel F)
-    (τ : WorldHistory F) (h_mem : τ.IsTotal) (t : F.Duration)
-    (h_ctx : ∀ ψ ∈ Γ, TruthAt M τ t ψ) :
-    TruthAt M τ t φ := by
-  induction d generalizing τ t with
-  | «axiom» Γ' φ' h_ax h_fc =>
-    cases h_ax with
-    | prop_k φ ψ χ => exact prop_k_valid φ ψ χ |>.apply F M τ h_mem t
-    | prop_s φ ψ => exact prop_s_valid φ ψ |>.apply F M τ h_mem t
-    | modal_t ψ => exact modal_t_valid ψ |>.apply F M τ h_mem t
-    | modal_4 ψ => exact modal_4_valid ψ |>.apply F M τ h_mem t
-    | modal_b ψ => exact modal_b_valid ψ |>.apply F M τ h_mem t
-    | modal_5_collapse ψ => exact modal_5_collapse_valid ψ |>.apply F M τ h_mem t
-    | ex_falso ψ => exact ex_falso_valid ψ |>.apply F M τ h_mem t
-    | peirce φ ψ => exact peirce_valid φ ψ |>.apply F M τ h_mem t
-    | modal_k_dist φ ψ => exact modal_k_dist_valid φ ψ |>.apply F M τ h_mem t
-    | serial_future => exact serial_future_axiom_valid |>.apply F M τ h_mem t
-    | serial_past => exact serial_past_axiom_valid |>.apply F M τ h_mem t
-    | left_mono_until_G φ χ ψ => exact left_mono_until_G_valid φ χ ψ |>.apply F M τ h_mem t
-    | left_mono_since_H φ χ ψ => exact left_mono_since_H_valid φ χ ψ |>.apply F M τ h_mem t
-    | right_mono_until φ ψ χ => exact right_mono_until_valid φ ψ χ |>.apply F M τ h_mem t
-    | right_mono_since φ ψ χ => exact right_mono_since_valid φ ψ χ |>.apply F M τ h_mem t
-    | connect_future φ => exact connect_future_valid φ |>.apply F M τ h_mem t
-    | connect_past φ => exact connect_past_valid φ |>.apply F M τ h_mem t
-    | enrichment_until φ ψ p => exact enrichment_until_valid φ ψ p |>.apply F M τ h_mem t
-    | enrichment_since φ ψ p => exact enrichment_since_valid φ ψ p |>.apply F M τ h_mem t
-    | self_accum_until φ ψ => exact self_accum_until_valid φ ψ |>.apply F M τ h_mem t
-    | self_accum_since φ ψ => exact self_accum_since_valid φ ψ |>.apply F M τ h_mem t
-    | absorb_until φ ψ => exact absorb_until_valid φ ψ |>.apply F M τ h_mem t
-    | absorb_since φ ψ => exact absorb_since_valid φ ψ |>.apply F M τ h_mem t
-    | linear_until φ ψ χ θ => exact linear_until_valid φ ψ χ θ |>.apply F M τ h_mem t
-    | linear_since φ ψ χ θ => exact linear_since_valid φ ψ χ θ |>.apply F M τ h_mem t
-    | until_F φ ψ => exact until_F_valid φ ψ |>.apply F M τ h_mem t
-    | since_P φ ψ => exact since_P_valid φ ψ |>.apply F M τ h_mem t
-    | temp_linearity φ ψ => exact temp_linearity_valid φ ψ |>.apply F M τ h_mem t
-    | temp_linearity_past φ ψ => exact temp_linearity_past_valid φ ψ |>.apply F M τ h_mem t
-    | F_until_equiv φ => exact F_until_equiv_valid φ |>.apply F M τ h_mem t
-    | P_since_equiv φ => exact P_since_equiv_valid φ |>.apply F M τ h_mem t
-    | modal_future ψ => exact modal_future_valid ψ |>.apply F M τ h_mem t
-    | discrete_symm_fwd => exact discrete_symm_fwd_valid |>.apply F M τ h_mem t
-    | discrete_symm_bwd => exact discrete_symm_bwd_valid |>.apply F M τ h_mem t
-    | discrete_propagate_fwd => exact discrete_propagate_fwd_valid |>.apply F M τ h_mem t
-    | discrete_propagate_bwd => exact discrete_propagate_bwd_valid |>.apply F M τ h_mem t
-    | discrete_box_necessity => exact discrete_box_necessity_valid |>.apply F M τ h_mem t
-    | density φ => exact (density_valid φ).apply F M τ h_mem t
-    | dense_indicator => exact dense_indicator_valid.apply F M τ h_mem t
-    | prior_UZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
-    | prior_SZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
-    | z1 _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
-    -- Reynolds Dedekind axioms: eliminated by frame-class incomparability.
-    | prior_U_gap _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
-    | prior_S_gap _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
-    | sep _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
-  | assumption Γ' φ' h_in =>
-    exact h_ctx φ' h_in
-  | modus_ponens Γ' φ' ψ' _ _ ih1 ih2 =>
-    have h1 := ih1 τ h_mem t h_ctx
-    have h2 := ih2 τ h_mem t h_ctx
-    simp only [TruthAt] at h1
-    exact h1 h2
-  | necessitation φ' _ ih =>
-    simp only [TruthAt]
-    intro σ h_σ_mem
-    exact ih σ h_σ_mem t (by simp)
-  | temporal_necessitation φ' _ ih =>
-    simp only [Truth.future_iff]
-    intro s _hts
-    exact ih τ h_mem s (by simp)
-  | temporal_duality φ' d' ih =>
-    exact SoundnessLemmas.derivable_implies_swap_valid d' F.toFibre M τ h_mem t
-  | weakening Γ' Δ' φ' _ h_sub ih =>
-    exact ih τ h_mem t (fun ψ h_in => h_ctx ψ (h_sub h_in))
-
-/-! ## Discrete Frame Soundness Theorems
-
-Analogous to `soundness_dense_valid` and `soundness_dense` above, these theorems
-provide soundness for discrete-compatible derivations on discrete frame types.
--/
-
-/--
-**Soundness Discrete Valid**: Derivability from empty context implies discrete validity.
-
-For discrete-compatible derivations from empty context, the derived formula is
-valid on all discrete frames.
-
-**Note on temporal_duality**: The temporal_duality case uses
-`derivable_implies_swap_valid_general` from SoundnessLemmas.lean, which proves
-swap-validity without frame-class constraints. No separate discrete version is
-needed because the BX axiom system has no frame-class extension axioms.
--/
-theorem soundness_discrete_valid {phi : Formula}
-    (d : DerivationTree FrameClass.Discrete [] phi) : ValidDiscrete phi := by
-  match d with
-  | .axiom _ _ h_ax h_fc =>
-    exact axiom_discrete_valid h_ax h_fc
-  | .assumption _ _ h_mem =>
-    exact absurd h_mem (Syntax.Context.not_mem_nil _)
-  | .modus_ponens _ psi' _ d1 d2 =>
-    have h1 := soundness_discrete_valid d1
-    have h2 := soundness_discrete_valid d2
-    refine ValidDiscrete.of_forall ?_
-    intro F _ _ _ _ M tau h_mem t
-    have h1' := h1.apply F M tau h_mem t
-    have h2' := h2.apply F M tau h_mem t
-    simp only [TruthAt] at h1'
-    exact h1' h2'
-  | .necessitation psi' d' =>
-    have h := soundness_discrete_valid d'
-    refine ValidDiscrete.of_forall ?_
-    intro F _ _ _ _ M tau h_mem t
-    simp only [TruthAt]
-    intro sigma h_sigma_mem
-    exact h.apply F M sigma h_sigma_mem t
-  | .temporal_necessitation psi' d' =>
-    have h := soundness_discrete_valid d'
-    refine ValidDiscrete.of_forall ?_
-    intro F _ _ _ _ M tau h_mem t
-    simp only [Truth.future_iff]
-    intro s _hts
-    exact h.apply F M tau h_mem s
-  | .temporal_duality psi' d' =>
-    -- Use discrete swap validity for derivations that may contain Prior-UZ/SZ
-    refine ValidDiscrete.of_forall ?_
-    intro F _ _ _ _ M tau h_mem t
-    exact SoundnessLemmas.derivable_implies_swap_valid_discrete d' F.toFibre M tau h_mem t
-  | .weakening Gamma' _ _ d' h_sub =>
-    have h_eq : Gamma' = [] := List.eq_nil_of_subset_nil h_sub
-    have h_height_eq : (h_eq ▸ d').height = d'.height := by subst h_eq; rfl
-    have h_term : (h_eq ▸ d').height < (DerivationTree.weakening Gamma' [] _ d' h_sub).height := by
-      simp only [h_height_eq, DerivationTree.height]
-      omega
-    exact soundness_discrete_valid (h_eq ▸ d')
-termination_by d.height
-decreasing_by
-  all_goals first
-    | exact DerivationTree.mp_height_gt_left _ _
-    | exact DerivationTree.mp_height_gt_right _ _
-    | simp only [DerivationTree.height]; omega
-
-/--
-**Soundness for Discrete Frames**: Derivability implies semantic consequence on discrete frames.
-
-This is the discrete analogue of `soundness_dense`. Given a discrete-compatible
-derivation `Γ ⊢ φ`, if all formulas in `Γ` are true at some configuration on a
-discrete frame, then `φ` is also true there.
--/
-theorem soundness_discrete (Γ : Context) (φ : Formula)
-    (d : DerivationTree FrameClass.Discrete Γ φ)
-    (F : TaskFrame) [SuccOrder F.Duration] [PredOrder F.Duration]
-    [IsSuccArchimedean F.Duration] [IsPredArchimedean F.Duration] (M : TaskModel F)
-    (τ : WorldHistory F) (h_mem : τ.IsTotal) (t : F.Duration)
-    (h_ctx : ∀ ψ ∈ Γ, TruthAt M τ t ψ) :
-    TruthAt M τ t φ := by
-  induction d generalizing τ t with
-  | «axiom» Γ' φ' h_ax h_fc =>
-    exact (axiom_discrete_valid h_ax h_fc).apply F M τ h_mem t
-  | assumption Γ' φ' h_in =>
-    exact h_ctx φ' h_in
-  | modus_ponens Γ' φ' ψ' _ _ ih1 ih2 =>
-    have h1 := ih1 τ h_mem t h_ctx
-    have h2 := ih2 τ h_mem t h_ctx
-    simp only [TruthAt] at h1
-    exact h1 h2
-  | necessitation φ' _ ih =>
-    simp only [TruthAt]
-    intro σ h_σ_mem
-    exact ih σ h_σ_mem t (by simp)
-  | temporal_necessitation φ' _ ih =>
-    simp only [Truth.future_iff]
-    intro s _hts
-    exact ih τ h_mem s (by simp)
-  | temporal_duality φ' d' ih =>
-    -- Use discrete swap validity for derivations that may contain Prior-UZ/SZ
-    exact SoundnessLemmas.derivable_implies_swap_valid_discrete d' F.toFibre M τ h_mem t
-  | weakening Γ' Δ' φ' _ h_sub ih =>
-    exact ih τ h_mem t (fun ψ h_in => h_ctx ψ (h_sub h_in))
-
 /-! ## Dedekind Frame Soundness Theorems
 
 Soundness for `FrameClass.Dedekind`: Reynolds' axiomatization US/R for real flow.
@@ -1519,13 +977,6 @@ a `.Dedekind` derivation. Both are FALSE on `ℤ` -- for `density`, take `φ` tr
 `soundness_dedekind` targeting `ValidDedekind` would be **refutable**. Do not "simplify" it.
 -/
 
-/-- Forgetting the least-upper-bound hypothesis: dense validity implies dense Dedekind
-validity. The `ValidDedekindDense` binder set is `ValidDense`'s plus an LUB hypothesis, so
-this is a pure weakening. -/
-private theorem validDedekindDense_of_validDense {φ : Formula} (h : ValidDense φ) :
-    ValidDedekindDense φ :=
-  ValidIn.mono (by decide) h
-
 /-! ### Semantic validity of the three Reynolds axioms
 
 `prior_U_gap` and `prior_S_gap` are each other's temporal dual definitionally, so the two Prior
@@ -1533,8 +984,10 @@ lemmas below cover both directions. Sep's dual is by contrast a genuinely separa
 fact and so carries its own `sep_swap_valid`; that pair is stated as two lemmas because they are
 two obligations, consumed at different call sites.
 
-The Dedekind soundness chain is now sorry-free end to end: both Prior gap lemmas, both Sep
-lemmas, both dispatchers, and both soundness theorems covering all 45 axiom constructors.
+The Dedekind soundness chain is sorry-free end to end: both Prior gap lemmas, both Sep lemmas,
+and — since the collapse onto `soundness_in` — the single `axiom_validIn_min` /
+`axiom_swap_validIn_min` pair below, whose arms cover all 45 axiom constructors once rather
+than once per frame class.
 -/
 
 /-- A greatest lower bound from a least-upper-bound hypothesis: `inf B` is recovered as the
@@ -1750,8 +1203,8 @@ gets its own lemma, matching the tree's `swap_axiom_*_valid` convention in
 `SoundnessLemmas/DenseValidity.lean` (nine instances, none bundled with its unswapped partner).
 
 Stated separately from `sep_valid` rather than folded into a conjunction with it: the two are
-consumed at different call sites (`axiom_dedekind_valid` and `axiom_dedekind_swap_valid`), and a
-conjunction would misreport two independent obligations as one.
+consumed at different call sites (`axiom_validIn_min`'s `sep` arm and `axiom_swap_validIn_min`'s),
+and a conjunction would misreport two independent obligations as one.
 
 The proof reuses the forward order-theoretic core rather than mirroring it by hand:
 `SoundnessLemmas.sep_order_mirror` is `SoundnessLemmas.sep_order` instantiated at `Dᵒᵈ`, so the
@@ -2015,185 +1468,178 @@ theorem soundness_validIn {fc : FrameClass} {φ : Formula}
     (d : DerivationTree fc [] φ) : ValidIn fc φ :=
   (derivable_valid_and_swap_validIn d).1
 
+/-! ## Per-class corollaries of `soundness_in`
+
+Every theorem below keeps the exact statement it had before the collapse; only its proof
+changed, from a hand-written induction (or a 45-arm axiom dispatch) to a single application of
+`soundness_in` / `soundness_validIn` / `axiom_validIn` at the class in question. The class
+condition each one used to carry as a binder list is now supplied as that class's
+`FrameClass.Sat` witness: `trivial` at `.Base`, the `DenselyOrdered` instance at `.Dense`, the
+four order instances at `.Discrete`, and the density-plus-LUB pair at `.Dedekind`.
+
+They are gathered here, after the parameterized family, because they now depend on it. The
+per-axiom validity lemmas they used to dispatch over are unchanged and still live above.
+-/
+
+/-- All base TM axioms (excluding density, discreteness, and seriality) are universally valid.
+With strict semantics, density requires DenselyOrdered, discreteness requires SuccOrder,
+and seriality requires NoMaxOrder/NoMinOrder, so they are handled separately.
+
+**Why `FrameClass.Base` is essential here**: the conclusion is unconditional validity `⊨ φ`,
+which is exactly the class of axioms admissible at `Base`. Generalising `h_fc` to
+`h.minFrameClass ≤ fc` would be false — a `Dense` or `Discrete` axiom is valid only on frames
+satisfying that class's condition, which is what `axiom_dense_valid` /
+`axiom_discrete_valid` state instead. -/
+theorem axiom_valid {φ : Formula} (h : Axiom φ) (h_fc : h.minFrameClass ≤ FrameClass.Base) : ⊨
+    φ := by
+  exact axiom_validIn h h_fc
+
+/-- All dense-compatible axioms are valid on densely ordered frames.
+This covers all base axioms (universally valid, hence valid on dense frames) plus the density axiom.
+Note: Under strict semantics, seriality axioms require NoMaxOrder/NoMinOrder (via Nontrivial). -/
+theorem axiom_dense_valid {φ : Formula} (h : Axiom φ) (h_fc : h.minFrameClass ≤ FrameClass.Dense) :
+    ValidDense φ := by
+  exact axiom_validIn h h_fc
+
+/-- All discrete-compatible axioms are valid on discrete frames.
+This covers all base axioms (universally valid, hence valid on discrete frames) plus discreteness.
+Under strict semantics, seriality requires NoMaxOrder/NoMinOrder (from SuccOrder/PredOrder +
+Nontrivial). -/
+theorem axiom_discrete_valid {φ : Formula} (h : Axiom φ) (h_fc :
+      h.minFrameClass ≤ FrameClass.Discrete) :
+    ValidDiscrete φ := by
+  exact axiom_validIn h h_fc
+
+/--
+**Soundness Theorem (Base)**: Derivability in the base system implies semantic consequence.
+
+If `Γ ⊢[Base] φ`, then `Γ ⊨ φ`.
+The `FrameClass.Base` parameter on `DerivationTree` structurally excludes axioms with
+`minFrameClass > Base` (density, Prior-UZ/SZ, z1) via the `h_fc` gate on the axiom rule.
+
+This is `soundness_in` at `fc = .Base`. `Sat .Base` is `True`, so the only argument the
+instance supplies beyond the shared ones is `trivial`; the induction over `DerivationTree` that
+used to be written out here lives in `soundness_in` and is shared with the three other classes.
+
+**Note**: Prior-UZ/SZ and z1 are excluded structurally — their `minFrameClass` is
+`Discrete`, which is incomparable to `Base` in the partial order. Use
+`soundness_discrete` for derivations containing these axioms.
+-/
+theorem soundness (Γ : Context) (φ : Formula)
+    (d : DerivationTree FrameClass.Base Γ φ)
+    (F : TaskFrame) (M : TaskModel F)
+    (τ : WorldHistory F) (h_mem : τ.IsTotal) (t : F.Duration)
+    (h_ctx : ∀ ψ ∈ Γ, TruthAt M τ t ψ) :
+    TruthAt M τ t φ := by
+  exact soundness_in Γ φ d F trivial M τ h_mem t h_ctx
+
+/-! ### Dense-frame instances
+
+The frame condition each of these carries is the same one `FrameClass.Sat .Dense` names; it is
+supplied to `soundness_in` as that witness rather than re-derived.
+-/
+
+/--
+**Soundness Dense Valid**: Derivability from empty context implies dense validity.
+
+This theorem proves `ValidDense phi` for dense-compatible derivations from empty context. The
+empty context is what makes the statement universally quantified over frames, models, histories
+and times, which is what the two necessitation cases need of their premise.
+
+**Key Insight** (now discharged once, generically): the recursion at each step needs
+`ValidDense` for the premises, the universally quantified form the `necessitation` and
+`temporal_necessitation` cases consume — an empty-context `ValidDense` statement, unlike a
+`TruthAt` statement at a fixed history and time, is already closed over all frames, models,
+histories and times. That recursion is `derivable_valid_and_swap_validIn`, written once at an
+arbitrary `fc`; this theorem is `soundness_validIn` at `.Dense`.
+
+`ValidDense` quantifies over the frame's **total** histories, so no domain-membership side
+condition arises and there is nothing here to case-split on. This theorem is sorry-free, as are
+`soundness`, `soundness_dense` and `soundness_discrete`.
+-/
+theorem soundness_dense_valid {phi : Formula}
+    (d : DerivationTree FrameClass.Dense [] phi) : ValidDense phi := by
+  exact soundness_validIn d
+
+/--
+**Soundness for Dense Frames**: Derivability implies semantic consequence on dense frames.
+
+If `Γ ⊢ φ` with a dense-compatible derivation, then `Γ ⊨_dense φ`.
+
+**Frame Constraints**:
+- `[DenselyOrdered D]`: Required for density axiom (GGφ → Gφ)
+- `[Nontrivial D]`: Required for seriality axioms (provides NoMaxOrder/NoMinOrder)
+
+**Frame Class Constraint** (`fc = .Dense`):
+The `DerivationTree .Dense` parameterization structurally ensures no discrete-specific axioms
+(prior_UZ, prior_SZ, z1) appear in the derivation, since their `minFrameClass = .Discrete`
+is incomparable with `.Dense`.
+
+**Constructor coverage**: this induction cases on all seven `DerivationTree` constructors and no
+others. There is no IRR rule in the proof system, so no IRR case appears here.
+-/
+theorem soundness_dense (Γ : Context) (φ : Formula)
+    (d : DerivationTree FrameClass.Dense Γ φ)
+    (F : TaskFrame) [DenselyOrdered F.Duration] (M : TaskModel F)
+    (τ : WorldHistory F) (h_mem : τ.IsTotal) (t : F.Duration)
+    (h_ctx : ∀ ψ ∈ Γ, TruthAt M τ t ψ) :
+    TruthAt M τ t φ := by
+  exact soundness_in Γ φ d F ‹DenselyOrdered F.Duration› M τ h_mem t h_ctx
+
+/-! ### Discrete-frame instances
+
+Analogous to the dense pair above, at `FrameClass.Sat .Discrete` — the bundle of `SuccOrder`,
+`PredOrder`, `IsSuccArchimedean` and `IsPredArchimedean` these theorems take as instances.
+-/
+
+/--
+**Soundness Discrete Valid**: Derivability from empty context implies discrete validity.
+
+For discrete-compatible derivations from empty context, the derived formula is
+valid on all discrete frames.
+
+**Note on temporal_duality**: this is `soundness_validIn` at `.Discrete`. The
+`temporal_duality` case is handled inside `derivable_valid_and_swap_validIn`, which carries
+validity and swap-validity together at an arbitrary `fc`; the discrete swap facts it needs
+(Prior-SZ for Prior-UZ and vice versa, `z1_past` for `z1`) enter through
+`axiom_swap_validIn_min`'s discrete arms.
+-/
+theorem soundness_discrete_valid {phi : Formula}
+    (d : DerivationTree FrameClass.Discrete [] phi) : ValidDiscrete phi := by
+  exact soundness_validIn d
+
+/--
+**Soundness for Discrete Frames**: Derivability implies semantic consequence on discrete frames.
+
+This is the discrete analogue of `soundness_dense`. Given a discrete-compatible
+derivation `Γ ⊢ φ`, if all formulas in `Γ` are true at some configuration on a
+discrete frame, then `φ` is also true there.
+-/
+theorem soundness_discrete (Γ : Context) (φ : Formula)
+    (d : DerivationTree FrameClass.Discrete Γ φ)
+    (F : TaskFrame) [SuccOrder F.Duration] [PredOrder F.Duration]
+    [IsSuccArchimedean F.Duration] [IsPredArchimedean F.Duration] (M : TaskModel F)
+    (τ : WorldHistory F) (h_mem : τ.IsTotal) (t : F.Duration)
+    (h_ctx : ∀ ψ ∈ Γ, TruthAt M τ t ψ) :
+    TruthAt M τ t φ := by
+  exact soundness_in Γ φ d F
+    ⟨‹SuccOrder F.Duration›, ‹PredOrder F.Duration›,
+      ‹IsSuccArchimedean F.Duration›, ‹IsPredArchimedean F.Duration›⟩
+    M τ h_mem t h_ctx
+
 /-- All Dedekind-compatible axioms are valid on dense Dedekind-complete frames.
 
-Dispatch: the 37 Base axioms route through `valid_implies_validDedekindDense`; the 2 Dense
-axioms (`density`, `dense_indicator`) are admissible here because `Dense ≤ Dedekind`, and are
-valid because the binder set carries `DenselyOrdered`; the 3 Discrete axioms are eliminated by
-`Discrete ≰ Dedekind`; the 3 Reynolds axioms route to the validity lemmas above.
+`axiom_validIn` at `.Dedekind`. The dispatch it used to write out by hand is now
+`axiom_validIn_min` plus `ValidIn.mono`: each axiom is proved valid once, at its own
+`minFrameClass`, and monotonicity carries it to `.Dedekind`. The 3 Discrete axioms are still
+eliminated, now by `ValidIn.mono`'s `h_fc` hypothesis being unsatisfiable at
+`Discrete ≰ Dedekind`, rather than by three explicit `absurd` arms.
 
 This theorem is itself sorry-free. -/
 theorem axiom_dedekind_valid {φ : Formula} (h : Axiom φ)
     (h_fc : h.minFrameClass ≤ FrameClass.Dedekind) :
     ValidDedekindDense φ := by
-  cases h with
-  | prop_k φ ψ χ => exact Validity.valid_implies_validDedekindDense (prop_k_valid φ ψ χ)
-  | prop_s φ ψ => exact Validity.valid_implies_validDedekindDense (prop_s_valid φ ψ)
-  | modal_t ψ => exact Validity.valid_implies_validDedekindDense (modal_t_valid ψ)
-  | modal_4 ψ => exact Validity.valid_implies_validDedekindDense (modal_4_valid ψ)
-  | modal_b ψ => exact Validity.valid_implies_validDedekindDense (modal_b_valid ψ)
-  | modal_5_collapse ψ => exact Validity.valid_implies_validDedekindDense (modal_5_collapse_valid ψ)
-  | ex_falso ψ => exact Validity.valid_implies_validDedekindDense (ex_falso_valid ψ)
-  | peirce φ ψ => exact Validity.valid_implies_validDedekindDense (peirce_valid φ ψ)
-  | modal_k_dist φ ψ => exact Validity.valid_implies_validDedekindDense (modal_k_dist_valid φ ψ)
-  | serial_future => exact Validity.valid_implies_validDedekindDense serial_future_axiom_valid
-  | serial_past => exact Validity.valid_implies_validDedekindDense serial_past_axiom_valid
-  | left_mono_until_G φ χ ψ =>
-    exact Validity.valid_implies_validDedekindDense (left_mono_until_G_valid φ χ ψ)
-  | left_mono_since_H φ χ ψ =>
-    exact Validity.valid_implies_validDedekindDense (left_mono_since_H_valid φ χ ψ)
-  | right_mono_until φ ψ χ =>
-    exact Validity.valid_implies_validDedekindDense (right_mono_until_valid φ ψ χ)
-  | right_mono_since φ ψ χ =>
-    exact Validity.valid_implies_validDedekindDense (right_mono_since_valid φ ψ χ)
-  | connect_future _ => exact Validity.valid_implies_validDedekindDense (connect_future_valid _)
-  | connect_past _ => exact Validity.valid_implies_validDedekindDense (connect_past_valid _)
-  | enrichment_until φ ψ p =>
-    exact Validity.valid_implies_validDedekindDense (enrichment_until_valid φ ψ p)
-  | enrichment_since φ ψ p =>
-    exact Validity.valid_implies_validDedekindDense (enrichment_since_valid φ ψ p)
-  | self_accum_until φ ψ => exact Validity.valid_implies_validDedekindDense (self_accum_until_valid φ ψ)
-  | self_accum_since φ ψ => exact Validity.valid_implies_validDedekindDense (self_accum_since_valid φ ψ)
-  | absorb_until φ ψ => exact Validity.valid_implies_validDedekindDense (absorb_until_valid φ ψ)
-  | absorb_since φ ψ => exact Validity.valid_implies_validDedekindDense (absorb_since_valid φ ψ)
-  | linear_until _ _ _ _ => exact Validity.valid_implies_validDedekindDense (linear_until_valid _ _ _ _)
-  | linear_since _ _ _ _ => exact Validity.valid_implies_validDedekindDense (linear_since_valid _ _ _ _)
-  | until_F φ ψ => exact Validity.valid_implies_validDedekindDense (until_F_valid φ ψ)
-  | since_P φ ψ => exact Validity.valid_implies_validDedekindDense (since_P_valid φ ψ)
-  | temp_linearity φ ψ => exact Validity.valid_implies_validDedekindDense (temp_linearity_valid φ ψ)
-  | temp_linearity_past φ ψ =>
-    exact Validity.valid_implies_validDedekindDense (temp_linearity_past_valid φ ψ)
-  | F_until_equiv φ => exact Validity.valid_implies_validDedekindDense (F_until_equiv_valid φ)
-  | P_since_equiv φ => exact Validity.valid_implies_validDedekindDense (P_since_equiv_valid φ)
-  | modal_future ψ => exact Validity.valid_implies_validDedekindDense (modal_future_valid ψ)
-  | discrete_symm_fwd => exact Validity.valid_implies_validDedekindDense discrete_symm_fwd_valid
-  | discrete_symm_bwd => exact Validity.valid_implies_validDedekindDense discrete_symm_bwd_valid
-  | discrete_propagate_fwd =>
-    exact Validity.valid_implies_validDedekindDense discrete_propagate_fwd_valid
-  | discrete_propagate_bwd =>
-    exact Validity.valid_implies_validDedekindDense discrete_propagate_bwd_valid
-  | discrete_box_necessity =>
-    exact Validity.valid_implies_validDedekindDense discrete_box_necessity_valid
-  | density φ => exact validDedekindDense_of_validDense (density_valid φ)
-  | dense_indicator => exact validDedekindDense_of_validDense dense_indicator_valid
-  -- Discrete axioms: eliminated by frame-class incomparability (`Discrete ≰ Dedekind`).
-  | prior_UZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
-  | prior_SZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
-  | z1 _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
-  -- The three Reynolds Dedekind axioms, each with its own validity lemma above.
-  | prior_U_gap φ => exact prior_U_gap_valid φ
-  | prior_S_gap φ => exact prior_S_gap_valid φ
-  | sep φ => exact sep_valid φ
-
-/-- Swap-validity for Dedekind-compatible axioms, needed by the `temporal_duality` case.
-
-Base and Dense axioms delegate to `SoundnessLemmas.axiom_swap_valid`, which is already proved
-for every axiom with `minFrameClass ≤ .Dense` on densely ordered frames. The three Reynolds
-axioms are handled by duality: `swapTemporal` carries `prior_U_gap` to `prior_S_gap` (and back)
-definitionally, so those two reuse each other; Sep's dual has its own lemma,
-`sep_swap_valid`. -/
-theorem axiom_dedekind_swap_valid {φ : Formula} (h : Axiom φ)
-    (h_fc : h.minFrameClass ≤ FrameClass.Dedekind) :
-    ValidDedekindDense φ.swapTemporal := by
-  by_cases hdense : h.minFrameClass ≤ FrameClass.Dense
-  · refine ValidDedekindDense.of_forall ?_
-    intro F _ _hlub M τ h_mem t
-    exact SoundnessLemmas.axiom_swap_valid (D := F.Duration) φ h hdense F.toFibre M τ h_mem t
-  · cases h with
-    | prior_U_gap ψ =>
-      -- `(prior_U_gap ψ).swapTemporal` is definitionally `prior_S_gap ψ.swapTemporal`.
-      exact prior_S_gap_valid ψ.swapTemporal
-    | prior_S_gap ψ =>
-      exact prior_U_gap_valid ψ.swapTemporal
-    | sep ψ => exact sep_swap_valid ψ
-    -- Discrete axioms: `Discrete ≰ Dedekind`, so `h_fc` is absurd. They need explicit arms
-    -- rather than the catch-all below, which discharges via `trivial : minFrameClass ≤ Dense`
-    -- and so only covers the Base and Dense constructors.
-    | prior_UZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
-    | prior_SZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
-    | z1 _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
-    | _ => exact absurd trivial hdense
-
-/--
-**Soundness Dedekind Valid**: Derivability from the empty context implies validity on dense
-Dedekind-complete frames.
-
-Patterned on `soundness_discrete_valid`. The `temporal_duality` case uses
-`axiom_dedekind_swap_valid` through a mutual recursion-free route: swap-validity of a whole
-derivation follows from swap-validity of its axioms plus the structural rules, which is what
-`derivable_valid_and_swap_valid_dedekind` below establishes.
--/
-theorem derivable_valid_and_swap_valid_dedekind {phi : Formula}
-    (d : DerivationTree FrameClass.Dedekind [] phi) :
-    ValidDedekindDense phi ∧ ValidDedekindDense phi.swapTemporal := by
-  match d with
-  | .axiom _ _ h_ax h_fc =>
-    exact ⟨axiom_dedekind_valid h_ax h_fc, axiom_dedekind_swap_valid h_ax h_fc⟩
-  | .assumption _ _ h_mem =>
-    exact absurd h_mem (Syntax.Context.not_mem_nil _)
-  | .modus_ponens _ psi' _ d1 d2 =>
-    have h1 := derivable_valid_and_swap_valid_dedekind d1
-    have h2 := derivable_valid_and_swap_valid_dedekind d2
-    constructor
-    · refine ValidDedekindDense.of_forall ?_
-      intro F _ hlub M tau h_mem t
-      have h1' := h1.1.apply F hlub M tau h_mem t
-      have h2' := h2.1.apply F hlub M tau h_mem t
-      simp only [TruthAt] at h1'
-      exact h1' h2'
-    · refine ValidDedekindDense.of_forall ?_
-      intro F _ hlub M tau h_mem t
-      have h1' := h1.2.apply F hlub M tau h_mem t
-      have h2' := h2.2.apply F hlub M tau h_mem t
-      simp only [Formula.swapTemporal, TruthAt] at h1' ⊢
-      exact h1' h2'
-  | .necessitation psi' d' =>
-    have h := derivable_valid_and_swap_valid_dedekind d'
-    constructor
-    · refine ValidDedekindDense.of_forall ?_
-      intro F _ hlub M tau h_mem t
-      simp only [TruthAt]
-      intro sigma h_sigma_mem
-      exact h.1.apply F hlub M sigma h_sigma_mem t
-    · refine ValidDedekindDense.of_forall ?_
-      intro F _ hlub M tau h_mem t
-      simp only [Formula.swapTemporal, TruthAt]
-      intro sigma h_sigma_mem
-      exact h.2.apply F hlub M sigma h_sigma_mem t
-  | .temporal_necessitation psi' d' =>
-    have h := derivable_valid_and_swap_valid_dedekind d'
-    constructor
-    · refine ValidDedekindDense.of_forall ?_
-      intro F _ hlub M tau h_mem t
-      simp only [Truth.future_iff]
-      intro s _hts
-      exact h.1.apply F hlub M tau h_mem s
-    · refine ValidDedekindDense.of_forall ?_
-      intro F _ hlub M tau h_mem t
-      simp only [Formula.allFuture, Formula.someFuture, Formula.swapTemporal,
-        Formula.neg, Formula.top] at *
-      simp only [TruthAt] at *
-      intro hcontra
-      obtain ⟨s, hts, hs, _⟩ := hcontra
-      exact hs (h.2.apply F hlub M tau h_mem s)
-  | .temporal_duality psi' d' =>
-    have h := derivable_valid_and_swap_valid_dedekind d'
-    refine ⟨h.2, ?_⟩
-    rw [Formula.swap_temporal_involution]
-    exact h.1
-  | .weakening Gamma' _ _ d' h_sub =>
-    have h_eq : Gamma' = [] := List.eq_nil_of_subset_nil h_sub
-    have h_height_eq : (h_eq ▸ d').height = d'.height := by subst h_eq; rfl
-    have h_term : (h_eq ▸ d').height < (DerivationTree.weakening Gamma' [] _ d' h_sub).height := by
-      simp only [h_height_eq, DerivationTree.height]
-      omega
-    exact derivable_valid_and_swap_valid_dedekind (h_eq ▸ d')
-termination_by d.height
-decreasing_by
-  all_goals first
-    | exact DerivationTree.mp_height_gt_left _ _
-    | exact DerivationTree.mp_height_gt_right _ _
-    | simp only [DerivationTree.height]; omega
+  exact axiom_validIn h h_fc
 
 /--
 **Soundness Dedekind Valid**: Derivability from the empty context implies validity on dense
@@ -2201,7 +1647,7 @@ Dedekind-complete frames.
 -/
 theorem soundness_dedekind_valid {phi : Formula}
     (d : DerivationTree FrameClass.Dedekind [] phi) : ValidDedekindDense phi :=
-  (derivable_valid_and_swap_valid_dedekind d).1
+  soundness_validIn d
 
 /--
 **Soundness for Dedekind Frames**: Derivability implies semantic consequence on dense
@@ -2226,28 +1672,7 @@ theorem soundness_dedekind (Γ : Context) (φ : Formula)
     (τ : WorldHistory F) (h_mem : τ.IsTotal) (t : F.Duration)
     (h_ctx : ∀ ψ ∈ Γ, TruthAt M τ t ψ) :
     TruthAt M τ t φ := by
-  induction d generalizing τ t with
-  | «axiom» Γ' φ' h_ax h_fc =>
-    exact (axiom_dedekind_valid h_ax h_fc).apply F h_lub M τ h_mem t
-  | assumption Γ' φ' h_in =>
-    exact h_ctx φ' h_in
-  | modus_ponens Γ' φ' ψ' _ _ ih1 ih2 =>
-    have h1 := ih1 τ h_mem t h_ctx
-    have h2 := ih2 τ h_mem t h_ctx
-    simp only [TruthAt] at h1
-    exact h1 h2
-  | necessitation φ' _ ih =>
-    simp only [TruthAt]
-    intro σ h_σ_mem
-    exact ih σ h_σ_mem t (by simp)
-  | temporal_necessitation φ' _ ih =>
-    simp only [Truth.future_iff]
-    intro s _hts
-    exact ih τ h_mem s (by simp)
-  | temporal_duality φ' d' _ih =>
-    exact ((derivable_valid_and_swap_valid_dedekind d').2).apply F h_lub M τ h_mem t
-  | weakening Γ' Δ' φ' _ h_sub ih =>
-    exact ih τ h_mem t (fun ψ h_in => h_ctx ψ (h_sub h_in))
+  exact soundness_in Γ φ d F ⟨‹DenselyOrdered F.Duration›, h_lub⟩ M τ h_mem t h_ctx
 
 /-! ## Consistency of the Base System
 

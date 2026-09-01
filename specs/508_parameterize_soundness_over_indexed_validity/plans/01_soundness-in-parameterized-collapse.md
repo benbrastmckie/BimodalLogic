@@ -346,14 +346,14 @@ the verified artifact.
 
 ---
 
-### Phase 4: Retarget the `Formula`-side theorems onto `soundness_in` [NOT STARTED]
+### Phase 4: Retarget the `Formula`-side theorems onto `soundness_in` [COMPLETED]
 
 **Goal**: Replace the bodies of the four soundness headliners, the three `*_valid` forms, and the
 four `axiom_*_valid` dispatchers with one-line corollaries; delete only the two names confirmed to
 have no consumers.
 
 **Tasks**:
-- [ ] Retarget bodies, **statements unchanged**:
+- [x] Retarget bodies, **statements unchanged**:
   - `soundness`:1152 → `soundness_in Γ φ d F trivial M τ h_mem t h_ctx`
   - `soundness_dense`:1329 → `… F inst M …`
   - `soundness_discrete`:1477 → `… F ⟨so, po, hsa, hpa⟩ M …`
@@ -363,17 +363,33 @@ have no consumers.
     → `soundness_validIn d`
   - Reference bodies: `reports/01_verified-reference-implementation.lean:203–237`
     (`soundness'`/`soundness_dense'`/`soundness_discrete'`/`soundness_dedekind'`/`soundness_validIn`).
-- [ ] **RETAIN and retarget** all four `axiom_*_valid` — they have live consumers (see the
+- [x] **RETAIN and retarget** all four `axiom_*_valid` — they have live consumers (see the
       Correction section):
   - `axiom_valid`:925, `axiom_dense_valid`:979, `axiom_discrete_valid`:1040,
     `axiom_dedekind_valid`:1819 → each becomes `axiom_validIn h h_fc`, deleting only its 45-arm
     dispatch body.
-- [ ] Delete `axiom_dedekind_swap_valid`:1888 and `derivable_valid_and_swap_valid_dedekind`:1919
+    *(deviation: altered — the eleven corollaries had to be RELOCATED to sit after the
+    parameterized family. Lean requires declarations before use, and `axiom_validIn_min` consumes
+    `sep_valid` / `sep_swap_valid` / the two `prior_*_gap_valid` lemmas, which are defined below
+    the incumbents' original positions. The block therefore cannot move up, so the corollaries
+    moved down into a new `/-! ## Per-class corollaries of `soundness_in` -/` section. Statements
+    verified byte-identical across the move; instance binders were left anonymous and are read
+    with `‹_›` rather than renamed, so no signature line changed.)*
+- [x] Delete `axiom_dedekind_swap_valid`:1888 and `derivable_valid_and_swap_valid_dedekind`:1919
       **only after** re-grepping to confirm no consumer outside `Soundness.lean` (Phase 1 inventory
       says none). If either turns out to have a consumer, retain it as a corollary instead
       (`axiom_swap_validIn h h_fc` / `derivable_valid_and_swap_validIn d`) and record the change.
-- [ ] Run `#print axioms` on all four headliners and the three `*_valid` forms; diff against the
+- [x] Run `#print axioms` on all four headliners and the three `*_valid` forms; diff against the
       Phase 1 baseline. Any widening is a stop-and-fix, not a note.
+- [x] *(deviation: altered — one unplanned deletion. `validDedekindDense_of_validDense`, a
+      `private` helper whose only consumer was `axiom_dedekind_valid`'s deleted 45-arm body, was
+      orphaned by the collapse and removed. Confirmed consumer-free by grep before removal.)*
+- [x] *(deviation: altered — six docstrings that described proof structure the collapse removed
+      were rewritten rather than left to state a falsehood: the module header's "Main Results",
+      "Implementation Notes", "Full Derivation Soundness" and "Frame-Class Architecture" blocks,
+      the `soundness` / `soundness_dense_valid` / `soundness_discrete_valid` /
+      `axiom_dedekind_valid` docstrings, the Reynolds section header, and one stale
+      `axiom_dedekind_swap_valid` citation in `sep_swap_valid`'s docstring.)*
 
 **Timing**: 1.5 hours
 
