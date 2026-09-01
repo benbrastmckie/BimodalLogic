@@ -33,6 +33,7 @@ import FormalSystem.Semantics.Correspondence.Galois
 import FormalSystem.Semantics.Correspondence.Indicator
 import FormalSystem.Semantics.Correspondence.FwdRec
 import FormalSystem.Semantics.Correspondence.DurationFrames
+import FormalSystem.Semantics.Correspondence.FwdRecPeriodicity
 
 /-!
 # FormalSystem.Semantics - Task Frame Semantics
