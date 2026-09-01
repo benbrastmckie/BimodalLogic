@@ -1,7 +1,7 @@
 # Implementation Plan: Galois-closure implementation for the frame-class layer
 
 - **Task**: 513 - Uniform frame faithfulness predicate
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 18 hours (15 hours excluding the two optional phases 10-11)
 - **Dependencies**: Task 512, Task 507 (both landed)
 - **Research Inputs**: specs/513_uniform_frame_faithfulness_predicate/reports/01_galois-closure-implementation.md

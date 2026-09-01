@@ -11,7 +11,7 @@ next_project_number: 516
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,257,298,433,461,476,481,504,506,508,513 | -- | dataset-enhancement, decidability, frame-extensions, ... |
+| 1 | 127,128,257,298,433,461,476,481,504,506,508 | -- | dataset-enhancement, decidability, frame-extensions, ... |
 | 2 | 193,231,282,296,463,502,509 | 298,433,461,508 | algebraic-representation, automation, dataset-enhancement, ... |
 | 3 | 178,219,464,494,497 | 193,231,463,502,509 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 4 | 465,498,499,500 | 464,497 | algebraic-representation, decidability |
@@ -20,7 +20,7 @@ next_project_number: 516
 | 7 | 410 | 429 | decidability |
 | 8 | 411 | 410 | decidability |
 | 9 | 430 | 411 | decidability |
-| 10 | 177,412 | 193,430,494,513 | decidability, formula-refactor |
+| 10 | 177,412 | 193,430,494 | decidability, formula-refactor |
 | 11 | 482 | 412 | decidability |
 
 **Grouped by Topic** (indented = depends on parent):
@@ -95,10 +95,6 @@ next_project_number: 516
 
 494 [NOT STARTED] — NOW SEQUENCED BEHIND THE COMPACTNESS PARAMETERIZATION (see the RE
 
-### Correspondence Theory
-
-513 [BLOCKED] — GALOIS-CLOSURE IMPLEMENTATION for the frame-class layer, replacin
-
 ## Tasks
 
 ### 515. Eliminate overlapping nontrivial instance warnings
@@ -150,12 +146,13 @@ WHY THIS IS A TASK AND NOT AN AD-HOC FIX: it spans three files in a subsystem se
 ---
 
 ### 513. Uniform frame faithfulness predicate
-- **Status**: [BLOCKED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: correspondence theory
 - **Dependencies**: Task 512, Task 507
 - **Research**: [513_uniform_frame_faithfulness_predicate/reports/01_galois-closure-implementation.md]
 - **Plan**: [513_uniform_frame_faithfulness_predicate/plans/01_galois-closure-implementation.md]
+- **Summary**: [513_uniform_frame_faithfulness_predicate/summaries/01_galois-closure-implementation-summary.md]
 
 **Description**: GALOIS-CLOSURE IMPLEMENTATION for the frame-class layer, replacing the uniform-faithfulness
 question, which is ANSWERED and closed: no uniform Faithful predicate is needed for
