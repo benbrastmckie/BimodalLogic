@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
+import FormalSystem.Metalogic.SoundnessLemmas.DiscreteOrder
 import FormalSystem.ProofSystem.Derivation
 import FormalSystem.Semantics.Validity
 import Mathlib.Order.SuccPred.Basic
@@ -776,7 +777,9 @@ constraint `h.minFrameClass ≤ .Discrete` structurally excludes the density axi
 
 /-- Prior-UZ is valid on discrete orders: F(φ) → U(φ, ¬φ).
 The nearest future witness where φ holds satisfies Until with ¬φ as guard.
-Uses Nat.find for well-founded descent on the succ chain. -/
+
+The order content is `DiscreteOrder.exists_nearest_gt`, at `P := fun x => TruthAt M τ x φ`;
+nothing about `Formula` enters it. -/
 theorem prior_UZ_valid (φ : Formula) :
     ValidDiscrete (φ.someFuture.imp (Formula.untl φ.neg φ)) := by
   refine ValidIn.of_forall_total ?_
@@ -784,40 +787,14 @@ theorem prior_UZ_valid (φ : Formula) :
   sat_intro hF
   simp only [Formula.neg, TruthAt, Truth.some_future_iff]
   intro ⟨s, hts, hs⟩
-  obtain ⟨n, hn⟩ := (Order.succ_le_of_lt hts).exists_succ_iterate
-  have hn1 : Order.succ^[n + 1] t = s := by
-    simp only [Function.iterate_succ, Function.comp_apply]; exact hn
-  classical
-  have h_ex : ∃ k, TruthAt M τ (Order.succ^[k + 1] t) φ := ⟨n, hn1 ▸ hs⟩
-  let k₀ := Nat.find h_ex
-  have hk₀ : TruthAt M τ (Order.succ^[k₀ + 1] t) φ := Nat.find_spec h_ex
-  have hk₀_min : ∀ m < k₀, ¬TruthAt M τ (Order.succ^[m + 1] t) φ :=
-    fun m hm => Nat.find_min h_ex hm
-  have h_iter_mono : Monotone (fun i => Order.succ^[i] t) :=
-    Order.succ_mono.monotone_iterate_of_le_map (Order.le_succ t)
-  have h_not_max : ¬IsMax t := hts.not_isMax
-  refine ⟨Order.succ^[k₀ + 1] t, ?_, hk₀, ?_⟩
-  · -- t < succ^[k₀+1] t: from t < succ t ≤ succ^[k₀+1] t
-    have h1 := h_iter_mono (Nat.one_le_iff_ne_zero.mpr (Nat.succ_ne_zero k₀))
-    simp only at h1
-    exact lt_of_lt_of_le (Order.lt_succ_of_not_isMax h_not_max) h1
-  · -- ∀ r, t < r → r < succ^[k₀+1] t → ¬ TruthAt r φ
-    intro r htr hrs
-    obtain ⟨j, hj⟩ := (Order.succ_le_of_lt htr).exists_succ_iterate
-    have hj1 : Order.succ^[j + 1] t = r := by
-      simp only [Function.iterate_succ, Function.comp_apply]; exact hj
-    have hj_lt : j < k₀ := by
-      by_contra h_ge
-      push Not at h_ge
-      have h_le := h_iter_mono (show k₀ + 1 ≤ j + 1 by omega)
-      simp only at h_le
-      rw [hj1] at h_le
-      exact absurd hrs (not_lt.mpr h_le)
-    rw [← hj1]
-    exact hk₀_min j hj_lt
+  exact exists_nearest_gt (P := fun x => TruthAt M τ x φ) hts hs
 
 /-- Prior-SZ is valid on discrete orders: P(φ) → S(φ, ¬φ).
-Mirror of prior_UZ_valid using pred chain and IsPredArchimedean. -/
+
+The past dual of `prior_UZ_valid`, and not a hand-written mirror of it: the order content is
+`DiscreteOrder.exists_nearest_lt`, which is itself `exists_nearest_gt` instantiated at `Dᵒᵈ`.
+The dualisation is of the *carrier*, exactly as `Separability.sep_order_mirror` does; no
+`Formula`-level dualisation is involved or possible. -/
 theorem prior_SZ_valid (φ : Formula) :
     ValidDiscrete (φ.somePast.imp (Formula.snce φ.neg φ)) := by
   refine ValidIn.of_forall_total ?_
@@ -825,39 +802,12 @@ theorem prior_SZ_valid (φ : Formula) :
   sat_intro hF
   simp only [Formula.neg, TruthAt, Truth.some_past_iff]
   intro ⟨s, hst, hs⟩
-  obtain ⟨n, hn⟩ := (Order.le_pred_of_lt hst).exists_pred_iterate
-  have hn1 : Order.pred^[n + 1] t = s := by
-    simp only [Function.iterate_succ, Function.comp_apply]; exact hn
-  classical
-  have h_ex : ∃ k, TruthAt M τ (Order.pred^[k + 1] t) φ := ⟨n, hn1 ▸ hs⟩
-  let k₀ := Nat.find h_ex
-  have hk₀ : TruthAt M τ (Order.pred^[k₀ + 1] t) φ := Nat.find_spec h_ex
-  have hk₀_min : ∀ m < k₀, ¬TruthAt M τ (Order.pred^[m + 1] t) φ :=
-    fun m hm => Nat.find_min h_ex hm
-  have h_iter_anti : Antitone (fun i => Order.pred^[i] t) :=
-    Order.pred_mono.antitone_iterate_of_map_le (Order.pred_le t)
-  have h_not_min : ¬IsMin t := hst.not_isMin
-  refine ⟨Order.pred^[k₀ + 1] t, ?_, hk₀, ?_⟩
-  · -- pred^[k₀+1] t < t: from pred^[k₀+1] t ≤ pred t < t
-    have h1 := h_iter_anti (Nat.one_le_iff_ne_zero.mpr (Nat.succ_ne_zero k₀))
-    simp only at h1
-    exact lt_of_le_of_lt h1 (Order.pred_lt_of_not_isMin h_not_min)
-  · intro r hrs hrt
-    obtain ⟨j, hj⟩ := (Order.le_pred_of_lt hrt).exists_pred_iterate
-    have hj1 : Order.pred^[j + 1] t = r := by
-      simp only [Function.iterate_succ, Function.comp_apply]; exact hj
-    have hj_lt : j < k₀ := by
-      by_contra h_ge
-      push Not at h_ge
-      have h_le := h_iter_anti (show k₀ + 1 ≤ j + 1 by omega)
-      simp only at h_le
-      rw [hj1] at h_le
-      exact absurd hrs (not_lt.mpr h_le)
-    rw [← hj1]
-    exact hk₀_min j hj_lt
+  exact exists_nearest_lt (P := fun x => TruthAt M τ x φ) hst hs
 
 /-- Z1 is valid on discrete orders: G(Gφ→φ) → (FGφ→Gφ).
-Backward induction from the Gφ witness using IsSuccArchimedean. -/
+
+The order content is `DiscreteOrder.forall_gt_of_succ_step` — backward induction along the
+`succ` chain from the `Gφ` witness — at `P := fun x => TruthAt M τ x φ`. -/
 theorem z1_valid (φ : Formula) :
     ValidDiscrete ((φ.allFuture.imp φ).allFuture.imp
       (φ.allFuture.someFuture.imp φ.allFuture)) := by
@@ -866,61 +816,13 @@ theorem z1_valid (φ : Formula) :
   sat_intro hF
   simp only [TruthAt, Truth.future_iff, Truth.some_future_iff]
   intro h_GGpIp ⟨s₀, hts₀, hs₀⟩
-  obtain ⟨n₀, hn₀⟩ := (Order.succ_le_of_lt hts₀).exists_succ_iterate
-  have hn₀_eq : Order.succ^[n₀ + 1] t = s₀ := by
-    change Order.succ^[n₀] (Order.succ t) = s₀; exact hn₀
-  have h_iter_mono : Monotone (fun i => Order.succ^[i] t) :=
-    Order.succ_mono.monotone_iterate_of_le_map (Order.le_succ t)
-  have h_not_max : ¬IsMax t := hts₀.not_isMax
-  -- Helper: TruthAt s φ for any s > t (the main goal, proved assuming backward induction)
-  -- We prove: ∀ s > t, TruthAt s φ, using backward induction from s₀.
-  -- Strategy: for any s > t, obtain n with succ^[n](succ(t)) = s, then dispatch:
-  --   n ≤ n₀: backward induction (h_descend below)
-  --   n > n₀: either s₀ is max (so s = s₀, use h_GGpIp), or s > s₀ (use hs₀)
-  have h_above_s0 : ∀ s, s₀ ≤ s → TruthAt M τ s φ := by
-    intro s hs
-    rcases eq_or_lt_of_le hs with rfl | hlt
-    · exact h_GGpIp s₀ hts₀ hs₀
-    · exact hs₀ s hlt
-  -- Backward induction: TruthAt (succ^[k+1](t)) φ for all k, using Nat.strong_induction_on
-  -- on the "distance from top" n₀ - k (= 0 when k ≥ n₀).
-  have h_all_iterates : ∀ k, TruthAt M τ (Order.succ^[k + 1] t) φ := by
-    -- Prove ∀ k ≤ n₀ by strong induction on n₀ - k
-    suffices h_le : ∀ k, k ≤ n₀ → TruthAt M τ (Order.succ^[k + 1] t) φ by
-      intro k
-      by_cases hk : k ≤ n₀
-      · exact h_le k hk
-      · exact h_above_s0 _ (hn₀_eq ▸ h_iter_mono (by omega : n₀ + 1 ≤ k + 1))
-    -- Strong induction: prove for k assuming it holds for all k' with k < k' ≤ n₀
-    have : ∀ d, d ≤ n₀ → ∀ k, n₀ - k = d → k ≤ n₀ →
-        TruthAt M τ (Order.succ^[k + 1] t) φ := by
-      intro d
-      induction d using Nat.strong_induction_on with
-      | _ d ih =>
-        intro hd k hk hkn
-        apply h_GGpIp
-        · exact lt_of_lt_of_le (Order.lt_succ_of_not_isMax h_not_max)
-            (h_iter_mono (by omega : 1 ≤ k + 1))
-        · -- Need: ∀ r > succ^[k+1](t), TruthAt r φ
-          intro r hr
-          obtain ⟨j, hj⟩ := (Order.succ_le_of_lt hr).exists_succ_iterate
-          have hj_eq : Order.succ^[j + 1] (Order.succ^[k + 1] t) = r := by
-            change Order.succ^[j] (Order.succ (Order.succ^[k + 1] t)) = r; exact hj
-          rw [← hj_eq, ← Function.iterate_add_apply,
-              show j + 1 + (k + 1) = (k + j + 1) + 1 from by omega]
-          by_cases h_le : k + j + 1 ≤ n₀
-          · exact ih (n₀ - (k + j + 1)) (by omega) (by omega) (k + j + 1) rfl h_le
-          · exact h_above_s0 _ (hn₀_eq ▸ h_iter_mono (by omega : n₀ + 1 ≤ (k + j + 1) + 1))
-    intro k hk
-    exact this (n₀ - k) (by omega) k rfl hk
-  -- Main goal
-  intro s hts
-  obtain ⟨m, hm⟩ := (Order.succ_le_of_lt hts).exists_succ_iterate
-  have hm_eq : Order.succ^[m] (Order.succ t) = s := hm
-  exact (show Order.succ^[m + 1] t = s from hm_eq) ▸ h_all_iterates m
+  exact forall_gt_of_succ_step (P := fun x => TruthAt M τ x φ) h_GGpIp hts₀ hs₀
 
 /-- Z1 past dual is valid on discrete orders: H(Hφ→φ) → (PHφ→Hφ).
-Backward induction using IsPredArchimedean. -/
+
+The past dual of `z1_valid`, obtained the same way: the order content is
+`DiscreteOrder.forall_lt_of_pred_step`, which is `forall_gt_of_succ_step` instantiated at `Dᵒᵈ`.
+No hand-mirrored strong induction over `Order.pred` remains. -/
 theorem z1_past_valid (φ : Formula) :
     ValidDiscrete ((φ.allPast.imp φ).allPast.imp
       (φ.allPast.somePast.imp φ.allPast)) := by
@@ -929,47 +831,7 @@ theorem z1_past_valid (φ : Formula) :
   sat_intro hF
   simp only [TruthAt, Truth.past_iff, Truth.some_past_iff]
   intro h_HHpIp ⟨s₀, hs₀t, hs₀⟩
-  obtain ⟨n₀, hn₀⟩ := (Order.le_pred_of_lt hs₀t).exists_pred_iterate
-  have hn₀_eq : Order.pred^[n₀ + 1] t = s₀ := by
-    change Order.pred^[n₀] (Order.pred t) = s₀; exact hn₀
-  have h_iter_anti : Antitone (fun i => Order.pred^[i] t) :=
-    Order.pred_mono.antitone_iterate_of_map_le (Order.pred_le t)
-  have h_not_min : ¬IsMin t := hs₀t.not_isMin
-  have h_below_s0 : ∀ u, u ≤ s₀ → TruthAt M τ u φ := by
-    intro u hu
-    rcases eq_or_lt_of_le hu with rfl | hlt
-    · exact h_HHpIp _ hs₀t hs₀
-    · exact hs₀ u hlt
-  have h_all_iterates : ∀ k, TruthAt M τ (Order.pred^[k + 1] t) φ := by
-    suffices h_le : ∀ k, k ≤ n₀ → TruthAt M τ (Order.pred^[k + 1] t) φ by
-      intro k
-      by_cases hk : k ≤ n₀
-      · exact h_le k hk
-      · exact h_below_s0 _ (hn₀_eq ▸ h_iter_anti (by omega : n₀ + 1 ≤ k + 1))
-    have : ∀ d, d ≤ n₀ → ∀ k, n₀ - k = d → k ≤ n₀ →
-        TruthAt M τ (Order.pred^[k + 1] t) φ := by
-      intro d
-      induction d using Nat.strong_induction_on with
-      | _ d ih =>
-        intro hd k hk hkn
-        apply h_HHpIp
-        · exact lt_of_le_of_lt (h_iter_anti (by omega : 1 ≤ k + 1))
-            (Order.pred_lt_of_not_isMin h_not_min)
-        · intro r hr
-          obtain ⟨j, hj⟩ := (Order.le_pred_of_lt hr).exists_pred_iterate
-          have hj_eq : Order.pred^[j + 1] (Order.pred^[k + 1] t) = r := by
-            change Order.pred^[j] (Order.pred (Order.pred^[k + 1] t)) = r; exact hj
-          rw [← hj_eq, ← Function.iterate_add_apply,
-              show j + 1 + (k + 1) = (k + j + 1) + 1 from by omega]
-          by_cases h_le : k + j + 1 ≤ n₀
-          · exact ih (n₀ - (k + j + 1)) (by omega) (by omega) (k + j + 1) rfl h_le
-          · exact h_below_s0 _ (hn₀_eq ▸ h_iter_anti (by omega : n₀ + 1 ≤ (k + j + 1) + 1))
-    intro k hk
-    exact this (n₀ - k) (by omega) k rfl hk
-  intro s hst
-  obtain ⟨m, hm⟩ := (Order.le_pred_of_lt hst).exists_pred_iterate
-  have hm_eq : Order.pred^[m] (Order.pred t) = s := hm
-  exact (show Order.pred^[m + 1] t = s from hm_eq) ▸ h_all_iterates m
+  exact forall_lt_of_pred_step (P := fun x => TruthAt M τ x φ) h_HHpIp hs₀t hs₀
 
 
 end FormalSystem.Metalogic.SoundnessLemmas
