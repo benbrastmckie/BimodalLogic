@@ -1,7 +1,7 @@
 # Implementation Plan: Task #532
 
 - **Task**: 532 - Audit and resolve the partial-vs-total WorldHistory faithfulness gap
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 7 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/532_worldhistory_extension_faithfulness_audit/reports/01_worldhistory-extension-faithfulness-audit.md; verified experiment specs/532_worldhistory_extension_faithfulness_audit/reports/TruthCorr-experiment.lean.txt
@@ -132,21 +132,21 @@ Phases within the same wave can execute in parallel. Phases 1 and 4 touch disjoi
 (`Truth.lean` vs `IntTransfer.lean`). Phase 5 is serialised after 2 and 3 because it edits
 `Truth.lean` and `WorldHistory.lean` docstrings and must see the final code.
 
-### Phase 1: Land `TruthCorr` and derive `truthAt_of_truthIso` from it [NOT STARTED]
+### Phase 1: Land `TruthCorr` and derive `truthAt_of_truthIso` from it [COMPLETED]
 
 **Goal**: The relational generic transport exists in `Truth.lean`, is placed where the
 `TimeShift` section can consume it, and `TruthIso` becomes a derived special case with
 `truthAt_of_truthIso`'s statement unchanged and its own induction deleted.
 
 **Tasks**:
-- [ ] In `FormalSystem/Semantics/Truth.lean`, insert a new section
+- [x] In `FormalSystem/Semantics/Truth.lean`, insert a new section
       `/-! ## Truth correspondences — the generic relational transport -/` **between**
       `end Truth` (the end of the `truth_norm` block, ~l.548) and
       `/-! ## Time-Shift Preservation` (~l.550). Port from the experiment file:
       `structure TruthCorr` (fields `dur`, `Rel`, `atom`, `total_fwd`, `total_bwd`) and
       `Truth.truthAt_of_truthCorr` (the ~45-line six-case induction, written against
       `imp_iff`/`box_iff`/`untl_iff`/`snce_iff`).
-- [ ] Docstring `TruthCorr` field-by-field against the paper, citing by `\label` **name only**
+- [x] Docstring `TruthCorr` field-by-field against the paper, citing by `\label` **name only**
       (no verbatim quotes of unpinned anchors): `Rel` = the relation of
       `def:time-shift-histories` read on arbitrary histories; `total_fwd`/`total_bwd` =
       `app:auto_existence` in the two directions the `□` case of
@@ -155,22 +155,24 @@ Phases within the same wave can execute in parallel. Phases 1 and 4 touch disjoi
       why a relation and not an `Equiv`: the paper's proof uses existence in both directions and
       never injectivity or round-trip cancellation, and an `Equiv` on `WorldHistory` would hit the
       dependent-`states` `HEq` trap `IntTransfer.lean` documents.
-- [ ] Docstring `truthAt_of_truthCorr` as the one generic induction; note it is the
+- [x] Docstring `truthAt_of_truthCorr` as the one generic induction; note it is the
       `truthAt_of_truthIso` body with `I.hist.surjective` replaced by `I.total_bwd`/`I.total_fwd`.
-- [ ] In the existing `## Truth isomorphisms — the generic transport` section (~l.1001): add
+- [x] In the existing `## Truth isomorphisms — the generic transport` section (~l.1001): add
       `def TruthIso.toCorr` (port verbatim: `Rel := fun σ σ' => ∃ hσ hσ', I.hist ⟨σ,hσ⟩ = ⟨σ',hσ'⟩`)
       and **replace the body** of `Truth.truthAt_of_truthIso` with the one-line
       `truthAt_of_truthCorr (TruthIso.toCorr I) φ τ.val (I.hist τ).val ⟨τ.property, (I.hist τ).property, rfl⟩ t`.
       The theorem's statement must remain byte-identical.
-- [ ] Rewrite that section's prose docstring: `TruthIso` is now the total-only, bijective special
+- [x] Rewrite that section's prose docstring: `TruthIso` is now the total-only, bijective special
       case of `TruthCorr`; keep the "why `atom` is quantified over all histories" paragraph (it is
       still true and `FwdRecPeriodicity` cites it); retire the "Why `hist` is an honest
       equivalence and not a map" framing in favour of "the paper needs existence both ways;
       `TruthCorr` asks for exactly that, and an `Equiv` supplies it".
-- [ ] Leave `TruthAntiIso` and `truthAt_of_truthAntiIso` untouched.
-- [ ] `lake build`; confirm `LoopingDuration.lean` (consumer of `truthAt_of_truthIso`) still
+- [x] Leave `TruthAntiIso` and `truthAt_of_truthAntiIso` untouched. *(deviation: altered — code untouched; one docstring sentence in `truthAt_of_truthAntiIso` now names `truthAt_of_truthCorr` as its twin, since the `truthAt_of_truthIso` induction it referred to no longer exists)*
+- [x] `lake build`; confirm `LoopingDuration.lean` (consumer of `truthAt_of_truthIso`) still
       compiles unchanged; run `lean_verify` / `#print axioms` on `Truth.truthAt_of_truthCorr`
       (expected `propext`, `Quot.sound`) and `Truth.truthAt_of_truthIso` (unchanged set).
+
+**Phase record**: `induction φ` code sites before = {`timeShift_preserves_truth`, `truthAt_atomFree_history_indep`, `truthAt_of_truthIso`, `truthAt_of_truthAntiIso`}; after = {`truthAt_of_truthCorr`, `timeShift_preserves_truth`, `truthAt_atomFree_history_indep`, `truthAt_of_truthAntiIso`} (four each, one-for-one). Axioms: `truthAt_of_truthCorr`, `truthAt_of_truthIso`, `TruthIso.toCorr` all `[propext, Quot.sound]`. Full `lake build` 2520 jobs exit 0; `check-module-invariants.sh` ALL CHECKS PASSED (C15: 48 anchors). `truthAt_of_truthIso` header byte-identical to HEAD.
 
 **Timing**: 1.5 hours
 

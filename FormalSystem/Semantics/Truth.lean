@@ -547,6 +547,132 @@ attribute [truth_norm] TruthAt bot_false imp_iff box_iff some_future_iff some_pa
 
 end Truth
 
+/-! ## Truth correspondences — the generic relational transport
+
+`TruthCorr` is the data of a truth-preserving correspondence between two task models, and
+`Truth.truthAt_of_truthCorr` is the one `induction φ` that discharges it. This is the paper's own
+proof shape. `lem:history-time-shift-preservation` — its `□` case in particular — never uses a
+bijection between histories: it uses a *relation* between them (`def:time-shift-histories`),
+atomic agreement on related pairs, and the existence of a related possible world in each
+direction (`app:auto_existence`). `TruthCorr` asks for exactly those three things and nothing
+more.
+
+### Why a relation and not an `Equiv`
+
+The paper's proof consumes existence in both directions and never injectivity or round-trip
+cancellation, so an equivalence would be strictly more data than the induction spends. More
+importantly, an `Equiv` on `WorldHistory` itself is a trap: `states` is indexed by a proof of
+`domain`, so round-tripping two history transports forces a dependent structure equality and
+degenerates into `HEq` — the failure `IntTransfer.lean`'s "Design decision: `Aligned`, not
+`Equiv`" section records. A `Prop`-valued `Rel` on arbitrary histories has no round trip to
+cancel. Every instance in the tree (`TruthIso.toCorr`, `TimeShift.shiftCorr`,
+`IntTransfer`'s `alignedCorr`) states its relation on arbitrary `WorldHistory`s, which is what
+lets `TimeShift.timeShift_preserves_truth` and `IntTransfer.truthAt_map` keep their
+arbitrary-history statements while being derived from a single induction.
+
+`TruthIso` (below, after the time-shift section) is the total-only, bijective special case:
+`TruthIso.toCorr` reads an equivalence `F.HF ≃ F'.HF` as the relation "`hist` sends the one to
+the other", and `truthAt_of_truthIso` is `truthAt_of_truthCorr` at that instance.
+-/
+
+/--
+**A truth correspondence between two task models.**
+
+Field by field against the paper:
+- `dur`: times reindex by an order isomorphism — order preservation is what `untl`/`snce` need.
+- `Rel`: the correspondence relation on **arbitrary** histories — the relation of
+  `def:time-shift-histories`, read on histories rather than only on possible worlds.
+- `atom`: atomic truth agrees at every related pair — the base case of
+  `lem:history-time-shift-preservation`. Because `TruthAt`'s atom clause carries the domain
+  conjunct, this field absorbs the domain transport as well. It is quantified over every related
+  pair, not one distinguished history, because the `□` case applies the induction hypothesis at a
+  pair the caller did not choose.
+- `total_fwd` / `total_bwd`: every possible world on either side is related to some possible
+  world on the other — `app:auto_existence` in the two directions the `□` case of
+  `lem:history-time-shift-preservation` uses.
+-/
+structure TruthCorr {F F' : TaskFrame} (M : TaskModel F) (M' : TaskModel F') where
+  /-- Times reindex by an order isomorphism. -/
+  dur : F.Duration ≃o F'.Duration
+  /-- The correspondence relation, on arbitrary histories. -/
+  Rel : WorldHistory F → WorldHistory F' → Prop
+  /-- Atomic truth, domain conjunct included, agrees at every related pair. -/
+  atom : ∀ σ σ', Rel σ σ' → ∀ (t : F.Duration) (p : Atom),
+    TruthAt M σ t (Formula.atom p) ↔ TruthAt M' σ' (dur t) (Formula.atom p)
+  /-- Every total history of `F` is related to some total history of `F'`. -/
+  total_fwd : ∀ σ : WorldHistory F, σ.IsTotal → ∃ σ', σ'.IsTotal ∧ Rel σ σ'
+  /-- Every total history of `F'` is related to some total history of `F`. -/
+  total_bwd : ∀ σ' : WorldHistory F', σ'.IsTotal → ∃ σ, σ.IsTotal ∧ Rel σ σ'
+
+namespace Truth
+
+/--
+**The generic truth transport, relational form.**
+
+One `induction φ` over `Formula`'s six constructors, discharging every transport a `TruthCorr`
+can express. Every order-preserving truth transport in `Semantics/` is an instance of it
+(`truthAt_of_truthIso`, `TimeShift.timeShift_preserves_truth`, `IntTransfer.truthAt_map`); the
+only other generic induction is the time-reversal twin `truthAt_of_truthAntiIso`.
+
+The body is the former `truthAt_of_truthIso` induction with `I.hist.surjective` in the `□` case
+replaced by `I.total_bwd` (forward direction) and `I.total_fwd` (backward direction) — the two
+halves of `app:auto_existence`. The `untl` and `snce` cases spend `dur`'s surjectivity on the
+guard's bounded quantifier and `OrderIso.lt_iff_lt` in both directions on the bounds. Written
+against the `truth_norm` characterisation lemmas (`imp_iff`, `box_iff`, `untl_iff`, `snce_iff`)
+rather than `simp only [TruthAt]`, which is what keeps it short.
+-/
+theorem truthAt_of_truthCorr {F F' : TaskFrame} {M : TaskModel F} {M' : TaskModel F'}
+    (I : TruthCorr M M') (φ : Formula) :
+    ∀ (σ : WorldHistory F) (σ' : WorldHistory F'), I.Rel σ σ' →
+      ∀ t : F.Duration, TruthAt M σ t φ ↔ TruthAt M' σ' (I.dur t) φ := by
+  induction φ with
+  | atom p => intro σ σ' h t; exact I.atom σ σ' h t p
+  | bot => intro σ σ' _ t; exact Iff.rfl
+  | imp φ ψ ihφ ihψ =>
+      intro σ σ' h t
+      simp only [imp_iff]
+      rw [ihφ σ σ' h t, ihψ σ σ' h t]
+  | box φ ih =>
+      intro σ σ' _ t
+      simp only [box_iff]
+      constructor
+      · intro h ρ' hρ'
+        obtain ⟨ρ, hρ, hR⟩ := I.total_bwd ρ' hρ'
+        exact (ih ρ ρ' hR t).mp (h ρ hρ)
+      · intro h ρ hρ
+        obtain ⟨ρ', hρ', hR⟩ := I.total_fwd ρ hρ
+        exact (ih ρ ρ' hR t).mpr (h ρ' hρ')
+  | untl ψ φ ihψ ihφ =>
+      intro σ σ' h t
+      simp only [untl_iff]
+      constructor
+      · rintro ⟨s, hts, hs, hmin⟩
+        refine ⟨I.dur s, I.dur.lt_iff_lt.mpr hts, (ihφ σ σ' h s).mp hs, ?_⟩
+        intro r' h1 h2
+        obtain ⟨r, rfl⟩ := I.dur.surjective r'
+        exact (ihψ σ σ' h r).mp (hmin r (I.dur.lt_iff_lt.mp h1) (I.dur.lt_iff_lt.mp h2))
+      · rintro ⟨s', hts', hs', hmin'⟩
+        obtain ⟨s, rfl⟩ := I.dur.surjective s'
+        refine ⟨s, I.dur.lt_iff_lt.mp hts', (ihφ σ σ' h s).mpr hs', ?_⟩
+        intro r h1 h2
+        exact (ihψ σ σ' h r).mpr (hmin' (I.dur r) (I.dur.lt_iff_lt.mpr h1) (I.dur.lt_iff_lt.mpr h2))
+  | snce ψ φ ihψ ihφ =>
+      intro σ σ' h t
+      simp only [snce_iff]
+      constructor
+      · rintro ⟨s, hst, hs, hmin⟩
+        refine ⟨I.dur s, I.dur.lt_iff_lt.mpr hst, (ihφ σ σ' h s).mp hs, ?_⟩
+        intro r' h1 h2
+        obtain ⟨r, rfl⟩ := I.dur.surjective r'
+        exact (ihψ σ σ' h r).mp (hmin r (I.dur.lt_iff_lt.mp h1) (I.dur.lt_iff_lt.mp h2))
+      · rintro ⟨s', hst', hs', hmin'⟩
+        obtain ⟨s, rfl⟩ := I.dur.surjective s'
+        refine ⟨s, I.dur.lt_iff_lt.mp hst', (ihφ σ σ' h s).mpr hs', ?_⟩
+        intro r h1 h2
+        exact (ihψ σ σ' h r).mpr (hmin' (I.dur r) (I.dur.lt_iff_lt.mpr h1) (I.dur.lt_iff_lt.mpr h2))
+
+end Truth
+
 /-! ## Time-Shift Preservation
 
 These lemmas establish that truth is preserved under time-shift transformations.
@@ -998,30 +1124,31 @@ theorem truthAt_gap_iff_cogap (M : TaskModel F) (τ : WorldHistory F) (t : F.Dur
 
 end Truth
 
-/-! ## Truth isomorphisms — the generic transport
+/-! ## Truth isomorphisms — the bijective special case
 
-Five hand-written `induction φ` transport proofs used to sit across `Semantics/` and
-`Independence/`, each ~70-230 lines, each re-running the same six-constructor case analysis to
-say that some particular reindexing of times and histories preserves truth. `TruthIso` is the
-data such a reindexing consists of, and `truthAt_of_truthIso` is the induction, run once.
+`TruthIso` is the total-only, bijective special case of `TruthCorr`: times reindex by an order
+isomorphism and **total** histories reindex by an equivalence `F.HF ≃ F'.HF`. It is the packaging
+`Independence/LoopingDuration.lean`'s duration reindexings naturally come in, and it is kept as a
+structure in its own right for them. It is not a second induction: `TruthIso.toCorr` reads
+`hist` as the relation "`hist` sends the one to the other", and `truthAt_of_truthIso` is
+`truthAt_of_truthCorr` at that instance.
 
-### Why `hist` is an honest equivalence and not a map
+### Why `hist` is an equivalence
 
-`TruthAt`'s `box` clause quantifies over **all** total histories of the frame. Transporting it
-therefore needs both directions: the forward direction of `↔` must produce, for an arbitrary
-total history of `F'`, a total history of `F` to feed the hypothesis. A one-way
-`F.HF → F'.HF` cannot do that, and the hand-written proofs paid for the gap with bespoke
-round-trip cancellation lemmas (`TimeShift.truth_double_shift_cancel` was exactly such a lemma,
-existing only to serve `timeShift_preserves_truth`'s box case). With `hist : F.HF ≃ F'.HF` the
-round trip is `Equiv.surjective` and the bespoke lemmas become deletable.
+The paper needs existence in both directions (`app:auto_existence`): the `□` case of the
+transport must produce, for an arbitrary possible world of `F'`, a possible world of `F` to feed
+the hypothesis, and conversely. `TruthCorr.total_fwd`/`total_bwd` ask for exactly that, and an
+`Equiv` supplies it — the map itself in one direction, `Equiv.surjective` in the other. Nothing
+finer than the two existence facts is spent, which is why the relational `TruthCorr` is the
+primitive and this structure the special case.
 
 ### Why `atom` is quantified over all histories
 
-For the same reason: the `atom` field has to hold at every `τ : F.HF`, not at one distinguished
-history, because the `box` case applies the induction hypothesis at a history the caller did not
-choose. A per-history atom hypothesis would not survive the box case — which is precisely why
+The `atom` field has to hold at every `τ : F.HF`, not at one distinguished history, because the
+`box` case applies the induction hypothesis at a history the caller did not choose. A per-history
+atom hypothesis would not survive the box case — which is precisely why
 `Correspondence/FwdRecPeriodicity.truthAt_add_hist_period` is **not** an instance of this
-structure and keeps its own induction; see its docstring.
+structure, nor of `TruthCorr`, and keeps its own induction; see its docstring.
 -/
 
 /--
@@ -1029,8 +1156,9 @@ structure and keeps its own induction; see its docstring.
 
 `dur` reindexes times by an order isomorphism, `hist` reindexes total histories by an
 equivalence, and `atom` says the two models agree on atomic truth under that reindexing. The
-three together are exactly what `truthAt_of_truthIso`'s six cases consume: `dur`'s order
-preservation for `untl`/`snce`, `hist`'s surjectivity for `box`, and `atom` for `atom`.
+three together are exactly what `TruthIso.toCorr` needs to build a `TruthCorr`: `dur` is
+passed through, `hist` and its surjectivity supply `total_fwd`/`total_bwd`, and `atom` supplies
+`atom` (with `atom_iff_of_domain` discharging the domain conjunct on both sides).
 -/
 structure TruthIso {F F' : TaskFrame} (M : TaskModel F) (M' : TaskModel F') where
   /-- Times reindex by an order isomorphism — order preservation is what `untl`/`snce` need. -/
@@ -1042,69 +1170,43 @@ structure TruthIso {F F' : TaskFrame} (M : TaskModel F) (M' : TaskModel F') wher
     M.valuation (τ.val.states t (τ.property t)) p ↔
       M'.valuation ((hist τ).val.states (dur t) ((hist τ).property (dur t))) p
 
+/--
+**A `TruthIso` is a `TruthCorr`.** The relation is "`hist` sends the one total history to the
+other": `Rel σ σ'` holds when both are total and `hist ⟨σ, _⟩ = ⟨σ', _⟩`. `total_fwd` is `hist`
+itself, `total_bwd` is `hist.surjective`, and `atom` is the structure's `atom` field with the
+domain conjunct on each side discharged by `atom_iff_of_domain` from totality.
+-/
+def TruthIso.toCorr {F F' : TaskFrame} {M : TaskModel F} {M' : TaskModel F'}
+    (I : TruthIso M M') : TruthCorr M M' where
+  dur := I.dur
+  Rel := fun σ σ' => ∃ (hσ : σ.IsTotal) (hσ' : σ'.IsTotal), I.hist ⟨σ, hσ⟩ = ⟨σ', hσ'⟩
+  atom := by
+    rintro σ σ' ⟨hσ, hσ', heq⟩ t p
+    rw [Truth.atom_iff_of_domain (hσ t) p, Truth.atom_iff_of_domain (hσ' (I.dur t)) p]
+    have := I.atom ⟨σ, hσ⟩ t p
+    rw [heq] at this
+    exact this
+  total_fwd := fun σ hσ => ⟨(I.hist ⟨σ, hσ⟩).val, (I.hist ⟨σ, hσ⟩).property, hσ, _, rfl⟩
+  total_bwd := by
+    intro σ' hσ'
+    obtain ⟨⟨τ, hτ⟩, h⟩ := I.hist.surjective ⟨σ', hσ'⟩
+    exact ⟨τ, hτ, hτ, hσ', h⟩
+
 namespace Truth
 
 /--
-**The generic truth transport.**
+**Truth transport along a `TruthIso`.**
 
-One `induction φ` over `Formula`'s six constructors, discharging every transport a `TruthIso`
-can express. The body is written against the `truth_norm` characterisation lemmas
-(`Automation/TruthNormAttr.lean`) — `imp_iff`, `box_iff`, `untl_iff`, `snce_iff` — rather than
-`simp only [TruthAt]`, which is what keeps it short.
-
-The `box` case is where `hist` being an equivalence is spent: `I.hist.surjective` produces the
-`F`-side history the hypothesis needs from an arbitrary `F'`-side one, with no round-trip
-cancellation lemma. The `untl` and `snce` cases spend `dur`'s surjectivity the same way on the
-guard's bounded quantifier, and `OrderIso.lt_iff_lt` in both directions on the bounds.
+`truthAt_of_truthCorr` at the instance `TruthIso.toCorr`: the related pair is
+`(τ.val, (I.hist τ).val)`, witnessed by `rfl`. The six-case induction lives in
+`truthAt_of_truthCorr`; nothing is re-run here. Statement unchanged from the days it carried its
+own induction, so every consumer (`Independence/LoopingDuration.lean`) is untouched.
 -/
 theorem truthAt_of_truthIso {F F' : TaskFrame} {M : TaskModel F} {M' : TaskModel F'}
     (I : TruthIso M M') (φ : Formula) (τ : F.HF) (t : F.Duration) :
-    TruthAt M τ.val t φ ↔ TruthAt M' (I.hist τ).val (I.dur t) φ := by
-  induction φ generalizing τ t with
-  | atom p =>
-      rw [atom_iff_of_domain (τ.property t) p,
-        atom_iff_of_domain ((I.hist τ).property (I.dur t)) p]
-      exact I.atom τ t p
-  | bot => simp
-  | imp φ ψ ihφ ihψ =>
-      simp only [imp_iff]
-      rw [ihφ τ t, ihψ τ t]
-  | box φ ih =>
-      simp only [box_iff]
-      constructor
-      · intro h σ' hσ'
-        obtain ⟨τ', hτ'⟩ := I.hist.surjective ⟨σ', hσ'⟩
-        have key := (ih τ' t).mp (h _ τ'.property)
-        rw [hτ'] at key
-        exact key
-      · intro h σ hσ
-        exact (ih ⟨σ, hσ⟩ t).mpr (h _ (I.hist ⟨σ, hσ⟩).property)
-  | untl ψ φ ihψ ihφ =>
-      simp only [untl_iff]
-      constructor
-      · rintro ⟨s, hts, hs, hmin⟩
-        refine ⟨I.dur s, I.dur.lt_iff_lt.mpr hts, (ihφ τ s).mp hs, ?_⟩
-        intro r' h1 h2
-        obtain ⟨r, rfl⟩ := I.dur.surjective r'
-        exact (ihψ τ r).mp (hmin r (I.dur.lt_iff_lt.mp h1) (I.dur.lt_iff_lt.mp h2))
-      · rintro ⟨s', hts', hs', hmin'⟩
-        obtain ⟨s, rfl⟩ := I.dur.surjective s'
-        refine ⟨s, I.dur.lt_iff_lt.mp hts', (ihφ τ s).mpr hs', ?_⟩
-        intro r h1 h2
-        exact (ihψ τ r).mpr (hmin' (I.dur r) (I.dur.lt_iff_lt.mpr h1) (I.dur.lt_iff_lt.mpr h2))
-  | snce ψ φ ihψ ihφ =>
-      simp only [snce_iff]
-      constructor
-      · rintro ⟨s, hst, hs, hmin⟩
-        refine ⟨I.dur s, I.dur.lt_iff_lt.mpr hst, (ihφ τ s).mp hs, ?_⟩
-        intro r' h1 h2
-        obtain ⟨r, rfl⟩ := I.dur.surjective r'
-        exact (ihψ τ r).mp (hmin r (I.dur.lt_iff_lt.mp h1) (I.dur.lt_iff_lt.mp h2))
-      · rintro ⟨s', hst', hs', hmin'⟩
-        obtain ⟨s, rfl⟩ := I.dur.surjective s'
-        refine ⟨s, I.dur.lt_iff_lt.mp hst', (ihφ τ s).mpr hs', ?_⟩
-        intro r h1 h2
-        exact (ihψ τ r).mpr (hmin' (I.dur r) (I.dur.lt_iff_lt.mpr h1) (I.dur.lt_iff_lt.mpr h2))
+    TruthAt M τ.val t φ ↔ TruthAt M' (I.hist τ).val (I.dur t) φ :=
+  truthAt_of_truthCorr (TruthIso.toCorr I) φ τ.val (I.hist τ).val
+    ⟨τ.property, (I.hist τ).property, rfl⟩ t
 
 end Truth
 
@@ -1150,7 +1252,8 @@ namespace Truth
 /--
 **The generic truth transport across an anti-isomorphism.**
 
-The order-preserving twin of `truthAt_of_truthIso`, concluding at `φ.swapTemporal`. Its `atom`,
+The order-reversing twin of `truthAt_of_truthCorr` (at the `TruthIso` instance), concluding at
+`φ.swapTemporal`. Its `atom`,
 `bot`, `imp` and `box` cases are the same arguments, since `swapTemporal` is the identity on the
 first two and structural on the second two; only `untl` and `snce` differ, and they differ by
 exchanging places and reading every bound through `dur_rev` instead of `OrderIso.lt_iff_lt`.
