@@ -218,6 +218,25 @@ whose head symbol is not `DenselyOrdered`, so a bare hypothesis of that type is 
 instance search. The `.Discrete` adapter destructures `TaskFrame.IsSuccArchDiscrete` with `obtain`
 and passes its witnesses positionally with `@`, never through `haveI`. -/
 
+/-- Introduce `SetSemanticConsequenceOn` at an arbitrary tag from the frame-condition-explicit
+binder shape. The body is `h`: `SetConsequenceOnFrames` already quantifies over the unbundled
+`(τ : WorldHistory F) (_ : τ.IsTotal)` pair. Generic replacement for the four class-specific
+`SetSemanticConsequence*.of_forall` adapters below. -/
+theorem SetSemanticConsequenceOn.of_forall_total {fc : FrameClass} {Γ : Set Formula}
+    {φ : Formula}
+    (h : ∀ (F : TaskFrame), fc.Sat F → ∀ (M : TaskModel F) (τ : WorldHistory F),
+           τ.IsTotal → ∀ t : F.Duration, (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ) :
+    SetSemanticConsequenceOn fc Γ φ :=
+  h
+
+/-- Eliminate `SetSemanticConsequenceOn` at an arbitrary tag into the frame-condition-explicit
+binder shape. Generic replacement for the four class-specific `.apply` adapters below. -/
+theorem SetSemanticConsequenceOn.apply_total {fc : FrameClass} {Γ : Set Formula} {φ : Formula}
+    (h : SetSemanticConsequenceOn fc Γ φ) (F : TaskFrame) (hF : fc.Sat F) (M : TaskModel F)
+    (τ : WorldHistory F) (hτ : τ.IsTotal) (t : F.Duration)
+    (hΓ : ∀ ψ ∈ Γ, TruthAt M τ t ψ) : TruthAt M τ t φ :=
+  h F hF M τ hτ t hΓ
+
 /-- Introduce `SetSemanticConsequenceBase` from its pre-collapse binder shape. -/
 theorem SetSemanticConsequenceBase.of_forall {Γ : Set Formula} {φ : Formula}
     (h : ∀ (F : TaskFrame) (M : TaskModel F) (τ : WorldHistory F), τ.IsTotal →
@@ -295,6 +314,16 @@ the collapse — and packages it into the single `fc.Sat F` slot. The `.Dedekind
 the `.Dedekind` names stated at the end of this module (`SatisfiableDedekindSet` and its three
 siblings), and is what `Metalogic/DedekindNonCompactness.lean` uses at both of its introduction
 sites. -/
+
+/-- Introduce `SatisfiableSet` at an arbitrary tag from a witness frame, its frame condition, and
+a model/history/time at which every member of `Γ` is true. Generic replacement for the four
+`SatisfiableSet.*_of_forall` adapters below: each of those is this lemma at a fixed tag with
+`fc.Sat F` unfolded to that class's frame condition, which is the only thing that made four
+copies look necessary. -/
+theorem SatisfiableSet.of_forall {fc : FrameClass} {Γ : Set Formula} (F : TaskFrame)
+    (hF : fc.Sat F) (M : TaskModel F) (τ : WorldHistory F) (hτ : τ.IsTotal) (t : F.Duration)
+    (h : ∀ ψ ∈ Γ, TruthAt M τ t ψ) : SatisfiableSet fc Γ :=
+  ⟨F, hF, M, τ, hτ, t, h⟩
 
 /-- Introduce `SatisfiableSet FrameClass.Base` from its pre-collapse binder shape. `Sat .Base`
 is `True`, so the absorbed slot is discharged by `trivial`. -/

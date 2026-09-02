@@ -150,6 +150,29 @@ theorem SemanticConsequence.apply {Γ : Context} {φ : Formula}
     (hall : ∀ ψ ∈ Γ, TruthAt M τ t ψ) : TruthAt M τ t φ :=
   h F trivial M τ hτ t hall
 
+/-- Introduce `SemanticConsequenceIn` at an arbitrary tag from the frame-condition-explicit
+binder shape. The body is `h` — `ConsequenceOnFrames` already quantifies over the unbundled
+`(τ : WorldHistory F) (_ : τ.IsTotal)` pair, so nothing has to be reshaped.
+
+**This is why the per-class consequence adapters are boilerplate.** The three pairs in
+`Metalogic/StrongCompleteness.lean` (`SemanticConsequenceDense`, `SemanticConsequenceDiscrete`,
+`SemanticConsequenceDedekindDense`) were each this lemma at a fixed tag with `fc.Sat F` unfolded
+to that class's frame condition; a site now writes the tag instead of picking a name. -/
+theorem SemanticConsequenceIn.of_forall_total {fc : ProofSystem.FrameClass} {Γ : Context}
+    {φ : Formula}
+    (h : ∀ (F : TaskFrame), fc.Sat F → ∀ (M : TaskModel F) (τ : WorldHistory F),
+           τ.IsTotal → ∀ t : F.Duration, (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ) :
+    SemanticConsequenceIn fc Γ φ :=
+  h
+
+/-- Eliminate `SemanticConsequenceIn` at an arbitrary tag into the frame-condition-explicit
+binder shape. The generic replacement for the three class-specific `.apply` adapters. -/
+theorem SemanticConsequenceIn.apply_total {fc : ProofSystem.FrameClass} {Γ : Context}
+    {φ : Formula} (h : SemanticConsequenceIn fc Γ φ) (F : TaskFrame) (hF : fc.Sat F)
+    (M : TaskModel F) (τ : WorldHistory F) (hτ : τ.IsTotal) (t : F.Duration)
+    (hΓ : ∀ ψ ∈ Γ, TruthAt M τ t ψ) : TruthAt M τ t φ :=
+  h F hF M τ hτ t hΓ
+
 /--
 A context is satisfiable in temporal type `D` if there exists a model where all formulas
 in the context are true.
@@ -517,6 +540,19 @@ theorem ValidIn.apply_total {fc : ProofSystem.FrameClass} {φ : Formula} (h : Va
     (F : TaskFrame) (hF : fc.Sat F) (M : TaskModel F) (τ : WorldHistory F)
     (hτ : τ.IsTotal) (t : F.Duration) : TruthAt M τ t φ :=
   ValidOnFrames.apply_total h F hF M τ hτ t
+
+/-- The contrapositive of `ValidOnFrames.of_forall_total`, at a bare frame predicate: from a
+failure of `ValidOnFrames P` it hands back a failure of the unbundled ∀-statement, which
+`push Not` can then take apart.
+
+This is `ValidIn.of_not` one layer down, and it is the missing third of the `ValidOnFrames`
+triple. It matters because `ValidComplete` is `ValidOnFrames TaskFrame.IsComplete` — a bare
+predicate that no `FrameClass` tag denotes — so the `ValidOnFrames` triple *is* that predicate's
+whole adapter family, and no class-specific declaration has to exist for it. -/
+theorem ValidOnFrames.of_not {P : TaskFrame → Prop} {φ : Formula} (h : ¬ ValidOnFrames P φ) :
+    ¬ ∀ (F : TaskFrame), P F → ∀ (M : TaskModel F) (τ : WorldHistory F),
+        τ.IsTotal → ∀ t : F.Duration, TruthAt M τ t φ :=
+  fun h' => h (ValidOnFrames.of_forall_total h')
 
 /-- The contrapositive of `ValidIn.of_forall_total`, in the shape a countermodel extraction
 wants: from a failure of `ValidIn fc` it hands back a failure of the unbundled ∀-statement,
