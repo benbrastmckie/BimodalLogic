@@ -50,6 +50,32 @@ the implication from `IsSuccArchDiscrete` to `IsDiscrete` recorded on the former
 does not, and the deviation is recorded at each definition site below rather than left implicit.
 See `TaskFrame.IsDedekind`.
 
+## Why `IsDense` is an `abbrev`
+
+`IsDense` is declared `abbrev` (i.e. `@[reducible] def`) rather than `def`, and that is
+load-bearing rather than cosmetic. Lean's instance-cache registration whnfs a candidate
+hypothesis at *reducible* transparency only, so a single non-reducible `def` anywhere in the
+chain `FrameClass.Sat .Dense F ⇝ TaskFrame.IsDense F ⇝ DenselyOrdered F.Duration` stops
+`h : Sat .Dense F` from ever reaching the local instance cache, no matter how the hypothesis is
+introduced. `FrameClass.Sat` carries `@[reducible]` for the same reason; see its docstring in
+`Semantics/FrameClassValidity.lean`. `IsComplete` and `IsDedekind` need no such change: they are
+consumed by `obtain`/`rcases`, which whnf at *default* transparency.
+
+## Frame properties as instance-resolvable classes: scope of the fix
+
+Making the density chain reducible is the whole of what "frame properties resolve as instances"
+buys here, and it is deliberately narrow. The strong form — restating each frame property as a
+`class` with an `instance [F.IsDedekind] : F.IsDense` bridge — is *impossible* for
+`IsSuccArchDiscrete`: a `Prop`-valued structure cannot project the `Type`-valued `SuccOrder`
+field it must carry (the same reason `Nonempty` has no `.val`). The narrow fix nevertheless
+achieves the goal it was proposed for, namely that instance resolution carries the
+Dense/Dedekind inclusion at a `Sat` hypothesis.
+
+One consequence that does **not** follow: the eight `by decide` regression examples elsewhere in
+the tree are *not* made redundant by this. `FrameClass.Sat.anti`'s `decide` branch discharges
+seven absurd order hypotheses and is still required and still cheap. Do not delete them on the
+theory that instance resolution now covers them.
+
 ## References
 
 * [TaskFrame.lean](TaskFrame.lean) — the bundled frame whose `Duration` field makes these
@@ -68,7 +94,7 @@ That is Mathlib's `DenselyOrdered` on the frame's duration carrier on the nose, 
 recorded by naming that class rather than by restating its body — `DenselyOrdered.dense` is the
 recorded sentence.
 -/
-def TaskFrame.IsDense (F : TaskFrame) : Prop := DenselyOrdered F.Duration
+abbrev TaskFrame.IsDense (F : TaskFrame) : Prop := DenselyOrdered F.Duration
 
 /--
 `def:frame-properties`, Discrete clause, verbatim: a task frame is **Discrete** "if for any

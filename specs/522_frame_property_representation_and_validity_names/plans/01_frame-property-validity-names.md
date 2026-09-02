@@ -1,7 +1,7 @@
 # Implementation Plan: Frame property representation and validity names
 
 - **Task**: 522 - Frame property representation and validity names
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 17.5 hours
 - **Dependencies**: 518, 519, 521 (all landed; 519's `DenseValidity.lean` deletion and 521's truth
   simp-normal form are preconditions and are satisfied)
@@ -145,27 +145,43 @@ Phase 5 owns `Metalogic/SoundnessLemmas/`; Phase 6 owns `Metalogic/StrongComplet
 
 ---
 
-### Phase 1: Representation fix and Plan A/B decision [NOT STARTED]
+### Phase 1: Representation fix and Plan A/B decision [COMPLETED]
 
 **Goal**: Make `Sat fc F` transparent to instance search at reducible transparency, and settle D1
 against a real full build before any call site is touched.
 
 **Tasks**:
-- [ ] Change `TaskFrame.IsDense` (`FrameProperty.lean:71`) from `def` to `abbrev`, preserving the
+- [x] Change `TaskFrame.IsDense` (`FrameProperty.lean:71`) from `def` to `abbrev`, preserving the
       existing `def:frame-properties` docstring verbatim.
-- [ ] Add `@[reducible]` to `FrameClass.Sat` (`FrameClassValidity.lean:110`).
-- [ ] Confirm by inspection that `IsComplete` and `IsDedekind` need **no** change: `rcases`/`obtain`
+- [x] Add `@[reducible]` to `FrameClass.Sat` (`FrameClassValidity.lean:110`).
+- [x] Confirm by inspection that `IsComplete` and `IsDedekind` need **no** change: `rcases`/`obtain`
       whnfs at *default* transparency, so `obtain ⟨_, hF⟩ := hF` still lands the density instance.
-- [ ] Add a short note to `FrameClassValidity.lean`'s `Sat` docstring recording that reducibility is
+- [x] Add a short note to `FrameClassValidity.lean`'s `Sat` docstring recording that reducibility is
       load-bearing for instance-cache registration (`isClass?` whnfs at reducible transparency) and
       that a single non-reducible `def` anywhere in the chain
       `Sat .Dense F ⇝ IsDense F ⇝ DenselyOrdered ↑F.Duration` blocks it.
-- [ ] Record decision D7 once in `FrameProperty.lean`: G-05's goal is met by this narrow fix; the
+- [x] Record decision D7 once in `FrameProperty.lean`: G-05's goal is met by this narrow fix; the
       eight `by decide` regression examples stay because `FrameClass.Sat.anti`'s `decide` branch is
       still required and still cheap.
-- [ ] Run the full build (detached + guarded). If green: Plan A stands. If red: revert
+- [x] Run the full build (detached + guarded). If green: Plan A stands. If red: revert
       `@[reducible]`, keep `abbrev IsDense`, record Plan B in the phase completion note, and
       propagate the Plan B `sat_intro` variant into Phase 2.
+      *(deviation: altered — the plan's literal guard invocation `lake-build-guard.sh build
+      --timeout 1800 -- lake build` exits 77 without building, because build mode requires a
+      recognised **lake subcommand** as the first wrapped argument, not the `lake` binary. Every
+      build in this task uses `-- build` instead. Recorded here once; applies to all phases.)*
+
+**PHASE 1 COMPLETION NOTE — Plan A is in force.** The full guarded detached build with both
+`abbrev TaskFrame.IsDense` and `@[reducible] FrameClass.Sat` applied exited 0 with no errors, so
+D1 resolves to Plan A. Phase 2's `sat_intro` therefore uses the Plan A variant (no
+`haveI : DenselyOrdered _` branch). Plan B was not needed and was not exercised.
+
+**Scope Hypothesis outcome (drift reported, not forced).** `grep -rn 'FrameClass\.Sat'
+FormalSystem/ Tests/ | wc -l` returns **58**, not the asserted 77; the broader `\bSat\b` grep
+returns 161. The 77 figure did not reproduce and was not used. The load-bearing half of the
+hypothesis *did* hold: `grep -rn 'simp \[.*FrameClass\.Sat\|unfold FrameClass\.Sat'
+FormalSystem/ Tests/` is **empty**, so no site depends on `Sat` being opaque and the
+`@[reducible]` risk profile is as the plan assumed.
 
 **Timing**: 1.5 hours (build wall-clock dominates)
 

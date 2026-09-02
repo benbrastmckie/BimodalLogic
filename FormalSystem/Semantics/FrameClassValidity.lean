@@ -108,7 +108,19 @@ Per-constructor anchors:
   The dense-and-complete narrowing is what `cor:tm-completeness`'s TM⁺_c clause names and what
   keeps soundness at this tag from being refutable. See the naming deviation recorded at
   `TaskFrame.IsDedekind`: the paper calls this property Complete, this tree calls it Dedekind.
+
+## Reducibility is load-bearing
+
+`Sat` carries `@[reducible]` deliberately. Lean registers a hypothesis in the local instance
+cache only if `isClass?` can see a class head after whnf at *reducible* transparency, so a single
+non-reducible `def` anywhere in the chain
+`Sat .Dense F ⇝ TaskFrame.IsDense F ⇝ DenselyOrdered ↑F.Duration` blocks registration outright —
+`Sat` sits *above* `IsDense` in that chain, so making `IsDense` an `abbrev` alone is not enough.
+Both links must be reducible together. Removing this attribute silently regresses every
+`sat_intro`/`Sat`-hypothesis site from "instance found" to "instance not found", with no error at
+this declaration.
 -/
+@[reducible]
 def FrameClass.Sat : FrameClass → TaskFrame → Prop
   | .Base, _ => True
   | .Dense, F => F.IsDense
