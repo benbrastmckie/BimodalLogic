@@ -1,7 +1,7 @@
 # Implementation Plan: Bundle Retirement and Cycle Breaking
 
 - **Task**: 520 - Bundle retirement and cycle breaking
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 7.5 hours
 - **Dependencies**: Task 518
 - **Research Inputs**: specs/520_bundle_retirement_and_cycle_breaking/reports/01_bundle-retirement-cycle-breaking.md
@@ -566,7 +566,7 @@ lines are removed. Confirm against the Phase 1 record; then close the loop with
 
 ---
 
-### Phase 5: Documentation coherence and final gate [NOT STARTED]
+### Phase 5: Documentation coherence and final gate [COMPLETED]
 
 **Goal**: Bring the documents that describe `Metalogic/` and the archive as a whole back into
 agreement with the tree, discharge the remaining live-tree docstring defect, and make the
@@ -576,7 +576,7 @@ cycle-count acceptance criterion mechanically checkable.
 the move that breaks it, so no phase boundary is left with a red C5.
 
 **Tasks**:
-- [ ] `FormalSystem/Metalogic/README.md`:
+- [x] `FormalSystem/Metalogic/README.md`:
       - ASCII diagram at `:50,54` -- remove the `Core/ <-> Bundle/` back-edge.
       - Change "There are exactly **two** directory-level cycles" to one.
       - **Correct the stale Cycle 1 edge counts before deleting Cycle 2.** The file records
@@ -584,36 +584,49 @@ the move that breaks it, so no phase boundary is left with a red C5.
         measured today they are **9 and 6**, with `Chronicle/ChronicleMonadicBridge.lean` alone
         contributing 6 forward edges the README never mentions. Re-enumerate from the tree.
       - Delete the Cycle 2 section at `:93-99`.
+      *(deviation: altered -- the diagram back-edge, the "two cycles" wording and the Cycle 2
+      block moved to Phase 4: `:98` is a C5-resolvable module-shaped path, so leaving it would
+      have left the Phase 4 boundary red. The remaining items in this bullet were done here.
+      Three further stale rows unrelated to this task were also corrected under the
+      "reconcile every count" instruction: `Independence/` 3 -> 6 files, `SoundnessLemmas/`
+      5 -> 3, and the top-line 314 -> 315.)*
       - Rewrite the declined-regroup paragraph at `:115-118`, which records breaking this cycle as
         "touches 9 files" for a different, abandoned plan (relocating `Basic.lean` itself).
       - Update the `Bundle.lean | 52` aggregator row at `:128` and the `Bundle/ | 15 | 6,106`
         inventory row at `:183` -- the row is also wrong today (actual 6,073, not 6,106); recount
         rather than subtracting from the stale figure.
-- [ ] `FormalSystem/Boneyard/README.md`:
+- [x] `FormalSystem/Boneyard/README.md`:
       - Update the counts table: +6 files, +1 subdirectory, and the measured line delta. **Recount
         the moved lines rather than using 2,735**: Phase 2 removed ~289 lines from
         `CanonicalTaskRelation.lean` and Phase 3 removed 7 declarations from `ModalSaturation.lean`
         before either moved.
-      - **Add a carve-out to the CONVENTION WARNING at `:7`.** The banner asserts every file in the
+      - **Add a carve-out to the CONVENTION WARNING at `:7`.**
+        *(deviation: altered -- the carve-out states 14 occurrences across 12 lines in **2**
+        files, `SuccRelation.lean` 12 and `CanonicalFrame.lean` 2. `CanonicalTaskRelation.lean`'s
+        2 travelled to the live `IteratedTemporal.lean` in Phase 2 and never reached the archive.)* The banner asserts every file in the
         tree is event-first and predates the guard-first migration. `BundleDeadHalf/` is the first
         exception: its files are guard-first, with 14 `untl`/`snce` occurrences
         (`SuccRelation.lean` 10, `CanonicalFrame.lean` 2, `CanonicalTaskRelation.lean` 2). Name the
         directory explicitly and say its contents need **no** argument swap on resurrection --
         applying the banner's swap instruction to them would silently invert their meaning, which is
         exactly the failure mode the banner exists to prevent.
-- [ ] `FormalSystem/Metalogic/Algebraic/UltrafilterMCS.lean:26`: delete the false claim "Contains
+- [x] `FormalSystem/Metalogic/Algebraic/UltrafilterMCS.lean:26`: delete the false claim "Contains
       sorries pending MCS helper lemmas." The file has zero `sorry` occurrences and C3 asserts zero
       tree-wide; C14 misses it because it scans numeric counts, not this phrasing. **This is a
       declared deviation from the stated file scope** -- `Metalogic/Algebraic/` was not listed, but
       the task WORK names the file, it is a one-line prose fix, and it collides with no file task
       519 owns.
-- [ ] Add `scripts/check-metalogic-cycles.sh`: enumerate directory-level import edges within
+- [x] Add `scripts/check-metalogic-cycles.sh`: enumerate directory-level import edges within
       `FormalSystem/Metalogic/`, excluding sibling aggregators as edge *sources* (an aggregator
       importing its own directory is a convention artifact, not a design cycle), and assert the
       cycle count equals 1. This makes "cycles = 1" mechanically verifiable instead of argued --
       research Open Decision 5. Keep it standalone (catalogued as a utility script); do not wire it
       into `check-module-invariants.sh` in this task.
-- [ ] Run the full gate and reconcile every count in the touched READMEs against its output.
+      *(deviation: altered -- catalogued in `docs/development/MODULE_INVARIANTS.md`, not in
+      `.claude/docs/reference/utility-scripts-inventory.md`. That path is gitignored here
+      (`.gitignore:85`) and its `agent-system/extensions/**` source store is not present in this
+      repository, so a hand-authored entry would be discarded by the next deploy.)*
+- [x] Run the full gate and reconcile every count in the touched READMEs against its output.
 
 **Timing**: 1 hour
 

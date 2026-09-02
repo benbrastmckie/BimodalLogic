@@ -3,8 +3,8 @@
 Soundness, completeness, and decidability for the bimodal logic TM, combining S5
 modality with linear temporal logic.
 
-This directory is the largest thing in the repository: **314 live `.lean` files**
-(227,081 lines), of which 179 sit under `WeakCanonical/` alone. Every count below excludes the
+This directory is the largest thing in the repository: **315 live `.lean` files**
+(226,146 lines), of which 179 sit under `WeakCanonical/` alone. Every count below excludes the
 archive — see [Counting Live Files](#counting-live-files).
 
 ## Counting Live Files
@@ -47,16 +47,20 @@ so all three participate in the live proof:
 Beneath all three sits a genuinely layered core:
 
 ```
-        Core/  ──18 edges──►  Bundle/
-
-                Bundle/
+                 Core/
+                   ▲
+                   │ 9 import lines, one way only
                    │
+                Bundle/
+                   ▲
         ┌──────────┼──────────┐
-        ▼          ▼          ▼
+        │          │          │
    Algebraic/  BXCanonical/  WeakCanonical/
                    ▲   │
                    │   ▼
               (mutual — see below)
+
+   arrows point from importer to imported
 ```
 
 ## Why There Is No Physical Regroup
@@ -73,26 +77,44 @@ regenerated from the tree rather than copied from any report, and
 There used to be a second, `Bundle` ↔ `Core`. It is gone: `Core/RestrictedMCS/Basic.lean` was
 the sole reverse edge, and it now reaches the iterated-temporal syntax it needed through
 `Syntax/SubformulaClosure/IteratedTemporal.lean` instead of through
-`Bundle/CanonicalTaskRelation.lean`. `Bundle → Core` remains, one-directionally.
+`Bundle/CanonicalTaskRelation.lean`. `Bundle → Core` remains, one-directionally, at 9 import
+lines across 5 files — down from 18 across 10, because six of `Bundle/`'s fifteen modules were
+retired to [`Boneyard/BundleDeadHalf/`](../Boneyard/BundleDeadHalf/README.md) in the same change.
 
 ### The cycle: `BXCanonical` ↔ `WeakCanonical`
 
 ```
-BXCanonical → WeakCanonical  (2 import lines)
+BXCanonical → WeakCanonical  (9 import lines)
+  BXCanonical/Chronicle/ChronicleMonadicBridge.lean
+      → FormalSystem.Metalogic.WeakCanonical.IntegerModel.ReynoldsBridge
+      → FormalSystem.Metalogic.WeakCanonical.Kamp.KPlusFaithful
+      → FormalSystem.Metalogic.WeakCanonical.PriorDefsDense
+      → FormalSystem.Metalogic.WeakCanonical.PriorExpressivenessDense
+      → FormalSystem.Metalogic.WeakCanonical.Table
+      → FormalSystem.Metalogic.WeakCanonical.Transfer
   BXCanonical/Chronicle/ChronicleToCountermodel.lean
       → FormalSystem.Metalogic.WeakCanonical.IntegerModel.GoodStructuresModelSurgery
   BXCanonical/Completeness.lean
       → FormalSystem.Metalogic.WeakCanonical
+  BXCanonical/CompletenessDedekind.lean
+      → FormalSystem.Metalogic.WeakCanonical.RealModel.ChronicleRealFlow
 
-WeakCanonical → BXCanonical  (4 import lines)
+WeakCanonical → BXCanonical  (5 import lines)
   WeakCanonical/ChronicleExtraction.lean
       → FormalSystem.Metalogic.BXCanonical.Chronicle.ChronicleConstruction
       → FormalSystem.Metalogic.BXCanonical.Chronicle.ChronicleToCountermodelBasic
+  WeakCanonical/DenseModelSurgery/ChronicleInstance.lean
+      → FormalSystem.Metalogic.BXCanonical.Chronicle.ChronicleMonadicBridge
   WeakCanonical/ReflexiveCanonical.lean
       → FormalSystem.Metalogic.BXCanonical.OrderedSeedConsistency
   WeakCanonical/Transfer.lean
       → FormalSystem.Metalogic.BXCanonical.Chronicle.ChronicleToCountermodel
 ```
+
+The figures above were 2 and 4 until this pass; `ChronicleMonadicBridge.lean` alone contributes
+six forward edges the earlier enumeration never mentioned. Regenerate them with
+`bash scripts/check-metalogic-cycles.sh`, which prints exactly this list and asserts the cycle
+count is 1.
 
 Nesting either of that pair inside the other produces a directory whose contents import upward
 out of it — which is not a hierarchy. Lean permits the cycle because it exists only at
@@ -108,10 +130,14 @@ risk in the repository, and a half-updated move leaving dangling imports is wors
 than no move at all. The deliverable is therefore a correct map plus a standardized
 aggregator convention, not a physical relocation.
 
-Breaking cycle 2 was also measured, not assumed: relocating the sole `Core → Bundle`
-edge (`Core/RestrictedMCS/Basic.lean`) needs only 2 import-line edits, but touches
-9 files, 5 of them markdown. That exceeded the agreed file-count threshold, so it was
-skipped and recorded rather than half-done.
+The `Bundle` ↔ `Core` cycle was broken, and the measurement that once said not to is
+superseded. That measurement costed a *different* plan — relocating `Core/RestrictedMCS/Basic.lean`
+itself, at 9 files touched, 5 of them markdown — and it was declined on that basis. What was
+actually done instead moves the dependency, not the dependent: the 29 pure-syntax iterated-`F`/`P`
+declarations `Basic.lean` needed were relocated to
+`Syntax/SubformulaClosure/IteratedTemporal.lean`, where nothing about them mentions MCSs,
+derivability or frame classes, and the `Core → Bundle` import line was deleted. The reverse edge
+had exactly one source, so one relocation removed the whole cycle.
 
 ## Aggregator Convention
 
@@ -121,12 +147,12 @@ Every subdirectory has exactly one **sibling** aggregator: `X.lean` sits *beside
 | Aggregator | Lines | Aggregates |
 |------------|------:|-----------|
 | `Algebraic.lean` | 40 | `Algebraic/` |
-| `Bundle.lean` | 52 | `Bundle/` |
+| `Bundle.lean` | 47 | `Bundle/` |
 | `BXCanonical.lean` | 43 | `BXCanonical/` |
 | `Core.lean` | 37 | `Core/` |
 | `Decidability.lean` | 168 | `Decidability/` |
-| `Independence.lean` | 46 | `Independence/` |
-| `SoundnessLemmas.lean` | 34 | `SoundnessLemmas/` |
+| `Independence.lean` | 57 | `Independence/` |
+| `SoundnessLemmas.lean` | 32 | `SoundnessLemmas/` |
 | `WeakCanonical.lean` | 144 | `WeakCanonical/` |
 
 **Ten** loose files in `Metalogic/` are not aggregators — they have no same-named
@@ -175,16 +201,18 @@ invariant check allowlists it by name (check C8; the allowlist entry is the inne
 
 | Directory | Files | Lines | Role |
 |-----------|------:|------:|------|
-| [`Algebraic/`](Algebraic/README.md) | 5 | 2,887 | Quotient algebra, ultrafilter/MCS correspondence, flow-frame countermodel engine |
-| [`Bundle/`](Bundle/README.md) | 15 | 6,106 | Canonical frame from bundled families of MCSs |
-| [`BXCanonical/`](BXCanonical/README.md) | 28 | 23,256 | Chronicle completeness route; the wired entry point |
-| [`Core/`](Core/README.md) | 4 | 2,050 | MCS machinery shared by all three routes |
-| [`Decidability/`](Decidability/README.md) | 62 | 52,132 | Tableau decision procedure and countermodel extraction |
-| `Independence/` | 3 | 1,097 | Axiom-independence models |
-| [`SoundnessLemmas/`](SoundnessLemmas/README.md) | 5 | 3,016 | Per-axiom validity lemmas feeding `Soundness.lean` |
-| [`WeakCanonical/`](WeakCanonical/README.md) | 179 | 132,177 | Kamp/Reynolds route, including all of `Kamp/` |
+| [`Algebraic/`](Algebraic/README.md) | 5 | 2,899 | Quotient algebra, ultrafilter/MCS correspondence, flow-frame countermodel engine |
+| [`Bundle/`](Bundle/README.md) | 9 | 3,299 | Bundled families of MCSs and their coherence conditions |
+| [`BXCanonical/`](BXCanonical/README.md) | 28 | 23,271 | Chronicle completeness route; the wired entry point |
+| [`Core/`](Core/README.md) | 4 | 2,101 | MCS machinery shared by all three routes |
+| [`Decidability/`](Decidability/README.md) | 62 | 52,690 | Tableau decision procedure and countermodel extraction |
+| `Independence/` | 6 | 1,883 | Axiom-independence models |
+| [`SoundnessLemmas/`](SoundnessLemmas/README.md) | 3 | 1,457 | Per-axiom validity lemmas feeding `Soundness.lean` |
+| [`WeakCanonical/`](WeakCanonical/README.md) | 179 | 132,175 | Kamp/Reynolds route, including all of `Kamp/` |
 
-The eight directories total 314 files, matching C7's `Metalogic 314` rollup.
+The eight directories total 296 files. C7's `Metalogic 315` rollup is 19 higher because it also
+counts the loose modules sitting directly in `Metalogic/` — the sibling aggregators plus
+`Soundness.lean`, `Compactness.lean`, `StrongCompleteness.lean` and the rest.
 
 ### Inside `BXCanonical/`
 

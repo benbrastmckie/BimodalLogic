@@ -181,6 +181,23 @@ line.
 - Whenever you need a live file count — use C7's output rather than an ad-hoc `find`,
   which will get the Boneyard exclusion wrong
 
+## Sibling scripts, not part of this harness
+
+`scripts/check-metalogic-cycles.sh` is a standalone structural check with its own exit code,
+deliberately not wired into `check-module-invariants.sh`. It enumerates the directory-level import
+edges inside `FormalSystem/Metalogic/` — excluding sibling aggregators as edge *sources*, since an
+aggregator importing its own directory is a convention artifact rather than a design cycle — and
+asserts the cycle count is exactly **1**, the documented `BXCanonical` <-> `WeakCanonical` pair:
+
+```bash
+bash scripts/check-metalogic-cycles.sh   # prints every edge in the cycle; exit 1 on any other count
+```
+
+It exists because that count used to be prose in
+[`FormalSystem/Metalogic/README.md`](../../FormalSystem/Metalogic/README.md), re-derived by hand
+whenever someone needed to trust it, and it went stale. Zero cycles is a failure too, not a pass:
+the pair is expected to be present, so its disappearance is a finding.
+
 ## Related Documentation
 
 - [Metalogic architecture map](../../FormalSystem/Metalogic/README.md)

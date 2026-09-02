@@ -8,7 +8,7 @@ dead-end approaches, and potential future consultation.
 
 **`Formula.untl` and `Formula.snce` in the live tree take the GUARD first and the EVENT
 second.** Every file in this directory predates that change and reads them the **other way
-round** — event first, guard second.
+round** — event first, guard second, with one named exception below.
 
 Nothing here was migrated, deliberately. This tree is not compiled: no built `.olean` lies under
 any `Boneyard` path, no live module imports one, and `lakefile.lean`'s `lean_lib FormalSystem`
@@ -23,6 +23,16 @@ compiles and silently means something different. Cross-check the result against
 `FormalSystem/Syntax/Formula.lean`'s constructor docstrings and
 `FormalSystem/Semantics/Truth.lean`'s clauses, and note that the prefix rendering `U(event, guard)`
 emitted by `Formula.prettyPrint` is still event-first and is *not* the constructor order.
+
+### The one exception: `BundleDeadHalf/`
+
+[`BundleDeadHalf/`](BundleDeadHalf/README.md) is **guard-first**, like the live tree, and needs
+**no** argument swap on resurrection. Its six modules were live-tree files at the moment they were
+archived, long after the migration, so they already read the current way round. They carry 14
+`untl`/`snce` occurrences across 12 lines in 2 files — `SuccRelation.lean` 12, `CanonicalFrame.lean`
+2. Applying the banner's swap to them would silently invert their meaning while still compiling,
+which is exactly the failure the banner exists to prevent. Check a directory's own README before
+swapping anything.
 
 See `specs/decisions/untl-snce-argument-order.md` for the full record.
 
@@ -42,9 +52,9 @@ links here rather than restating them.**
 
 | Quantity | Value |
 |----------|------:|
-| Archived `.lean` files | 156 |
-| Archived lines | 88,275 |
-| Top-level subdirectories | 35 |
+| Archived `.lean` files | 162 |
+| Archived lines | 90,535 |
+| Top-level subdirectories | 36 |
 | Archive directories in the repository | 1 |
 
 Those figures are a snapshot; the **live** source is the invariant script, which recomputes them

@@ -21,7 +21,7 @@ and maximal consistent sets.
 
 ## Status
 
-Phase 5 of the algebraic completeness theorem. Contains sorries pending MCS helper lemmas.
+Phase 5 of the algebraic completeness theorem.
 -/
 
 namespace FormalSystem.Metalogic.Algebraic.UltrafilterMCS
