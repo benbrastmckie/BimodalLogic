@@ -1,5 +1,5 @@
 import FormalSystem.Metalogic.Bundle.TemporalCoherence
-import FormalSystem.Metalogic.Bundle.SuccRelation
+import FormalSystem.Boneyard.BundleDeadHalf.SuccRelation
 import FormalSystem.Theorems.TemporalDerived
 
 /-!

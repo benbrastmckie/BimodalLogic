@@ -3,7 +3,7 @@ import FormalSystem.Boneyard.StrictSemanticsLegacy.Algebraic.UltrafilterChain
 import FormalSystem.Metalogic.Algebraic.ParametricTruthLemma
 import FormalSystem.Metalogic.Algebraic.ParametricCompleteness
 import FormalSystem.Metalogic.Bundle.TemporalCoherence
-import FormalSystem.Metalogic.Bundle.CanonicalFrame
+import FormalSystem.Boneyard.BundleDeadHalf.CanonicalFrame
 
 /-!
 ARCHIVED (Boneyard) — never compiled. Archived material; see the Boneyard README inventory.

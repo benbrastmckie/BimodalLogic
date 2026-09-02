@@ -2,7 +2,7 @@ import FormalSystem.FrameConditions.Compatibility
 import FormalSystem.Boneyard.StrictSemanticsLegacy.DiscreteCompleteness
 import FormalSystem.Boneyard.StrictSemanticsLegacy.Algebraic.UltrafilterChain
 import FormalSystem.Boneyard.StrictSemanticsLegacy.Algebraic.RestrictedTruthLemma
-import FormalSystem.Metalogic.Bundle.UntilSinceCoherence
+import FormalSystem.Boneyard.BundleDeadHalf.UntilSinceCoherence
 -- NOTE: DovetailedChain is deprecated in favor of DeterministicFMCS (see DovetailedChain.lean header)
 import FormalSystem.Boneyard.StrictSemanticsLegacy.Algebraic.DovetailedChain
 

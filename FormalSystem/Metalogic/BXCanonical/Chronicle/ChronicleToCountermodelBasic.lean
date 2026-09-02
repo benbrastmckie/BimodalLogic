@@ -6,7 +6,6 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.Metalogic.BXCanonical.Chronicle.ChronicleConstruction
 import FormalSystem.Metalogic.BXCanonical.CanonicalModel
-import FormalSystem.Metalogic.Bundle.UntilSinceCoherence
 import FormalSystem.Metalogic.Algebraic.FlowFrame
 import FormalSystem.Theorems.ModalDerived
 import Mathlib.Algebra.Order.Ring.Rat

@@ -5,7 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Metalogic.Bundle.BFMCS
-import FormalSystem.Metalogic.Bundle.ModalSaturation
+import FormalSystem.Boneyard.BundleDeadHalf.ModalSaturation
 import FormalSystem.Metalogic.Core.MaximalConsistent
 import FormalSystem.Metalogic.Core.MCSProperties
 import FormalSystem.Metalogic.Core.DeductionTheorem

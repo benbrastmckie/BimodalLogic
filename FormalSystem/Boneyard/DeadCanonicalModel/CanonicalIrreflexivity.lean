@@ -1,7 +1,7 @@
-import FormalSystem.Metalogic.Bundle.CanonicalFrame
+import FormalSystem.Boneyard.BundleDeadHalf.CanonicalFrame
 import FormalSystem.Metalogic.Bundle.WitnessSeed
-import FormalSystem.Metalogic.Bundle.SuccRelation
-import FormalSystem.Metalogic.Bundle.CanonicalTaskRelation
+import FormalSystem.Boneyard.BundleDeadHalf.SuccRelation
+import FormalSystem.Boneyard.BundleDeadHalf.CanonicalTaskRelation
 import FormalSystem.Metalogic.Core.MCSProperties
 import FormalSystem.Metalogic.Core.MaximalConsistent
 import FormalSystem.Theorems.Propositional.Core

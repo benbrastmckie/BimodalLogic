@@ -1,7 +1,7 @@
 import FormalSystem.Boneyard.ChainCompleteness.Bundle.SimplifiedChain
 import FormalSystem.Theorems.Propositional.Core
-import FormalSystem.Metalogic.Bundle.CanonicalTaskRelation
-import FormalSystem.Metalogic.Bundle.SuccRelation
+import FormalSystem.Boneyard.BundleDeadHalf.CanonicalTaskRelation
+import FormalSystem.Boneyard.BundleDeadHalf.SuccRelation
 import FormalSystem.Boneyard.ChainCompleteness.Bundle.TargetedChain
 import FormalSystem.Metalogic.Bundle.TemporalCoherence
 import FormalSystem.Metalogic.Bundle.FMCSDef

@@ -5,7 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Metalogic.Bundle.TemporalContent
-import FormalSystem.Metalogic.Bundle.CanonicalFrame
+import FormalSystem.Boneyard.BundleDeadHalf.CanonicalFrame
 import FormalSystem.Metalogic.Bundle.WitnessSeed
 import FormalSystem.Metalogic.Core.MCSProperties
 

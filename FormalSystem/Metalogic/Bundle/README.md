@@ -15,7 +15,7 @@ transitive preorder**.
 - All BFMCS completeness infrastructure is `SORRY-FREE (sorryAx-free; axioms: exactly propext,
   Classical.choice, Quot.sound)` — never "axiom-free", which would misdescribe the three
   Lean-level axioms every result here depends on
-- CanonicalFrame, CanonicalTaskRelation, Construction proven without adding any frame axiom
+- The whole directory is proven without adding any frame axiom
 - `canonicalR_reflexive` proven via T-axiom (reflexive preorder)
 - Per-construction strictness pattern for local irreflexivity proofs
 - Removed inconsistent `existsTask_irreflexive_axiom`
@@ -43,29 +43,34 @@ soundness (derivability implies standard-validity), we get a full characterizati
 ```
 Bundle/
   FMCSDef.lean               # FMCS type definition
-  FMCS.lean                  # Temporal MCS families with coherence
   BFMCS.lean                 # Bundle structure with modal coherence
+  LimitMCS.lean              # Limit set of a Rat-indexed family at a real point
+  LimitMCSCoherence.lean     # forward_G/backward_H across the rational/limit case matrix
+  RealExtension.lean         # Rat-to-R extension of a family by rational selection
+  RealExtensionBundle.lean   # The real bundle over a rational bundle
   TemporalCoherence.lean     # Temporal coherence conditions
   TemporalContent.lean       # Temporal content tracking (g/h/f/p/u/s content)
-  ModalSaturation.lean       # Modal saturation for multi-family construction
   WitnessSeed.lean           # Witness seed infrastructure
-  CanonicalFrame.lean        # Canonical frame definition
-  CanonicalTaskRelation.lean # Canonical task relation
-  CanonicalIrreflexivity.lean# Irreflexivity proofs
-  SuccRelation.lean          # Immediate successor relation (Succ)
-  SuccExistence.lean         # Successor existence construction
-  UntilSinceCoherence.lean   # Until/Since coherence conditions
-  Construction.lean          # Building BFMCS from consistent context
   README.md                  # This file
 ```
+
+The canonical-frame half of this directory -- `CanonicalFrame.lean`,
+`CanonicalTaskRelation.lean`, `SuccRelation.lean`, `Construction.lean`,
+`UntilSinceCoherence.lean` and `ModalSaturation.lean` -- was retired to
+[`Boneyard/BundleDeadHalf/`](../../Boneyard/BundleDeadHalf/README.md), whose README records what
+each was and why it died. Nothing in the live tree imported them once the `Core -> Bundle`
+directory import cycle was broken. Their pure-syntax and derivation-tree content did not go with
+them: the iterated-`F`/`P` machinery is now
+`Syntax/SubformulaClosure/IteratedTemporal.lean`, and the object-level modal theorems are
+`Theorems/ModalDerived.lean`.
 
 ## Main Theorems
 
 | Theorem | Type | Status | File |
 |---------|------|--------|------|
-| Canonical frame | Canonical frame definition | **SORRY-FREE** | CanonicalFrame.lean |
-| Canonical task relation | Task relation on canonical frame | **SORRY-FREE** | CanonicalTaskRelation.lean |
-| Modal coherence | Box phi -> phi at all families | **SORRY-FREE** | Construction.lean |
+| `BFMCS.reflexivity` / `BFMCS.transitivity` | S5 modal coherence of the bundle | **SORRY-FREE** | BFMCS.lean |
+| `temporal_backward_G` / `temporal_backward_H` | Backward temporal coherence for the truth lemma | **SORRY-FREE** | TemporalCoherence.lean |
+| `BFMCS.toRealBundle_restricted_temporally_coherent` | Transport of restricted coherence to the real bundle | **SORRY-FREE** | RealExtensionBundle.lean |
 
 ### Sorry Status
 
@@ -139,8 +144,8 @@ Any derivable formula is valid in all models (standard or BFMCS).
 ### Import for Completeness Results
 
 ```lean
-import FormalSystem.Metalogic.Bundle.Construction
-import FormalSystem.Metalogic.Bundle.CanonicalFrame
+import FormalSystem.Metalogic.Bundle.RealExtensionBundle
+import FormalSystem.Metalogic.Bundle.TemporalCoherence
 
 -- Main infrastructure for BFMCS completeness
 ```
@@ -150,7 +155,7 @@ import FormalSystem.Metalogic.Bundle.CanonicalFrame
 ```lean
 import FormalSystem.Metalogic.Bundle.BFMCS
 import FormalSystem.Metalogic.Bundle.FMCSDef
-import FormalSystem.Metalogic.Bundle.CanonicalFrame
+import FormalSystem.Metalogic.Bundle.WitnessSeed
 
 -- For working with BFMCS structures directly
 ```
@@ -168,10 +173,11 @@ import FormalSystem.Metalogic.Bundle.CanonicalFrame
 
 ## Future Work
 
-1. **Prove classical tautologies**: Derive DNE and related lemmas from the proof system
+1. **Consolidate the derived object-level theorems**: `Theorems/ModalDerived.lean` now holds
+   the DNE, S5-introspection and `connect_past` helpers this directory used to declare inline
 2. **Multi-family saturation**: Generalize singleFamilyBFMCS to full multi-family construction
 3. **Compactness via BFMCS**: Potentially restore infinitary strong completeness using BFMCS
 
 ---
 
-*Last updated: 2026-03-23 (removal of `existsTask_irreflexive_axiom`)*
+*Last updated: 2026-09-02 (retirement of the canonical-frame half to `Boneyard/BundleDeadHalf/`)*

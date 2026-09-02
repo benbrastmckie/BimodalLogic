@@ -430,21 +430,21 @@ across live files -- expect zero hits after the phase.
 
 ---
 
-### Phase 4: Retire the dead set and re-point the archive [NOT STARTED]
+### Phase 4: Retire the dead set and re-point the archive [COMPLETED]
 
 **Goal**: Move the 6 dead modules to `FormalSystem/Boneyard/BundleDeadHalf/`, delete the live
 imports that named them, and keep C11 green by re-pointing all 28 archived import lines.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Boneyard/BundleDeadHalf/` and `git mv` into it:
+- [x] Create `FormalSystem/Boneyard/BundleDeadHalf/` and `git mv` into it:
       `CanonicalFrame.lean`, `Construction.lean`, `UntilSinceCoherence.lean`,
       `CanonicalTaskRelation.lean`, `SuccRelation.lean`, `ModalSaturation.lean`.
-- [ ] Re-point the **5 intra-set** import lines to the new
+- [x] Re-point the **5 intra-set** import lines to the new
       `FormalSystem.Boneyard.BundleDeadHalf.<Module>` paths: `Construction.lean:8` (ModalSaturation),
       `UntilSinceCoherence.lean:8` (SuccRelation), `CanonicalTaskRelation.lean:7,8` (SuccRelation,
       CanonicalFrame), `SuccRelation.lean:8` (CanonicalFrame). Their imports of *surviving* Bundle
       and Core modules still resolve and stay as they are.
-- [ ] Re-point the **23 external archived** import lines across 14 archived files:
+- [x] Re-point the **23 external archived** import lines across 14 archived files:
       - `Bundle.CanonicalFrame` (6): `SorriedDeclExcisions/BundleUntilSinceStep.lean:8`,
         `DeadCanonicalModel/CanonicalIrreflexivity.lean:1`,
         `SorriedDeclExcisions/SingletonSorriedDecls.lean:6`,
@@ -468,23 +468,27 @@ imports that named them, and keep C11 green by re-pointing all 28 archived impor
       - `Bundle.ModalSaturation` (1): `StrictSemanticsLegacy/Algebraic/UltrafilterChain.lean:6`
       Do **not** reach for `scripts/boneyard-import-waivers.txt`: a waiver is for an import with no
       unique target, and every one of these has one.
-- [ ] Delete `FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodelBasic.lean:9`
+      *(deviation: altered -- the 23 external lines sit in **18** archived files, not 14. The
+      plan's own enumeration lists 23 entries over 18 distinct paths; `CanonicalIrreflevity`
+      appears 3x and `DRMChain`/`ResolvingChain`/`SuccExistence` 2x each, which is where the
+      14 came from. No waiver was added.)*
+- [x] Delete `FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodelBasic.lean:9`
       (`import ...Bundle.UntilSinceCoherence`) outright. The measured closure delta is one
       substantive module (`Bundle.SuccRelation`), which the file does not use -- its only `Succ`
       match is `:1139`, a docstring about `Order.SuccPred`. `TemporalCoherence` and
       `Theorems.TemporalDerived` are already reachable via `ChronicleConstruction`/`CanonicalModel`,
       so the description's "import TemporalCoherence and SuccRelation directly" over-corrects on
       both counts.
-- [ ] Delete `FormalSystem/Metalogic/BXCanonical/Frame.lean:11`
+- [x] Delete `FormalSystem/Metalogic/BXCanonical/Frame.lean:11`
       (`import ...Bundle.CanonicalFrame`) -- unused; `:223` and `:235` re-prove the same content as
       `bx_forward_witness`/`bx_backward_witness`.
-- [ ] `FormalSystem/Metalogic/Bundle.lean`: delete the 6 imports of the retired modules **and** the
+- [x] `FormalSystem/Metalogic/Bundle.lean`: delete the 6 imports of the retired modules **and** the
       duplicate `import FormalSystem.Metalogic.Bundle.FMCSDef` (declared at both `:11` and `:12`).
-- [ ] `scripts/module-invariants-manifest.txt`: delete the pre-existing
+- [x] `scripts/module-invariants-manifest.txt`: delete the pre-existing
       `FormalSystem.Metalogic.Bundle.Construction` line and both temporary entries added in Phases 2
       and 3. C6 fails on a manifest entry naming a nonexistent module, so all three deletions are
       mandatory in this phase.
-- [ ] Write `FormalSystem/Boneyard/BundleDeadHalf/README.md` recording: what each of the 6 modules
+- [x] Write `FormalSystem/Boneyard/BundleDeadHalf/README.md` recording: what each of the 6 modules
       was, why it died (the `Core -> Bundle` cycle break and its cascade), the retirement date, and
       three specific notes --
       (a) the `SuccRelation.lean:434-541` proof diary is preserved as archived, and `h_p_step` is a
@@ -499,10 +503,10 @@ imports that named them, and keep C11 green by re-pointing all 28 archived impor
       recorded here rather than fixed in place;
       (d) **these files are GUARD-FIRST** and are the exception to the archive-wide EVENT-FIRST
       banner (see Phase 5).
-- [ ] Note in the README that `Boneyard/StrictSemanticsLegacy/Bundle/SuccChainFMCS.lean:2990` calls
+- [x] Note in the README that `Boneyard/StrictSemanticsLegacy/Bundle/SuccChainFMCS.lean:2990` calls
       `FormalSystem.Metalogic.Bundle.iter_F_f_nesting_depth` by fully-qualified name, which went
       stale in Phase 2. C11 checks imports, not identifiers, so no gate fails; the record is the fix.
-- [ ] **Regenerate `FormalSystem/Metalogic/Bundle/README.md` in this phase, not a later one.** The
+- [x] **Regenerate `FormalSystem/Metalogic/Bundle/README.md` in this phase, not a later one.** The
       move breaks it, so the move repairs it -- this is what keeps C5 green at the phase boundary:
       - **Fix the C5-load-bearing usage blocks `:142-143` and `:151-153`.** They contain the
         module-shaped paths `FormalSystem.Metalogic.Bundle.Construction` and `...CanonicalFrame`;
@@ -514,6 +518,14 @@ imports that named them, and keep C11 green by re-pointing all 28 archived impor
         `RealExtensionBundle.lean`). Rebuild it from the 9 surviving modules.
       - Rebuild the Main Theorems table `:66-68` -- two of its three rows point at retired files.
       - Update `:18` and `:171`, which also reference retired material.
+      *(deviation: altered -- `Metalogic/README.md`'s Cycle 2 section had to be deleted in this
+      phase too, not Phase 5. `:98` names `FormalSystem.Metalogic.Bundle.CanonicalTaskRelation`,
+      a module-shaped path C5 resolves, so the move reddened C5 there as well as in
+      `Bundle/README.md`. The diagram back-edge, the "two cycles" wording and the Cycle 2 block
+      are therefore Phase 4 work; the remaining `Metalogic/README.md` items (Cycle 1 edge counts,
+      aggregator row, inventory row, declined-regroup paragraph) stay in Phase 5.
+      `docs/architecture/BFMCS_ARCHITECTURE.md:165,168,297` broke C12 for the same reason --
+      slash-shaped paths to three retired modules -- and were re-pointed here.)*
 
 **Timing**: 2.5 hours
 
@@ -544,8 +556,11 @@ lines are removed. Confirm against the Phase 1 record; then close the loop with
 - `bash scripts/check-module-invariants.sh` reports **ALL CHECKS PASSED** -- C5 included. The
   `Bundle/README.md` regeneration is in this phase precisely so this boundary is green; a C5
   failure here means a module-shaped path was missed, not that the fix is owed to a later phase.
-- C11 is the sharp check: the archived-import-line total should be unchanged from the Phase 1
-  baseline (lines are re-pointed, not added or removed) with the waived count unchanged.
+- C11 is the sharp check. **The plan's prediction here was wrong and the measured behaviour is
+  correct**: the total is not unchanged. It went 497 -> 527 because the six moved files bring
+  their own 30 import lines into the archived population, which the "lines are re-pointed, not
+  added or removed" reasoning overlooked. All 527 resolve, the waived count is unchanged at 7,
+  and the archived-file count went 156 -> 162.
 - C2 axiom output byte-identical to the Phase 1 baseline.
 - `ls FormalSystem/Metalogic/Bundle/` shows exactly the 9 survivors.
 

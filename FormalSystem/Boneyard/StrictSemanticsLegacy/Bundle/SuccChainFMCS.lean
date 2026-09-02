@@ -1,5 +1,5 @@
 import FormalSystem.Boneyard.BundleSuccessorSeed.SuccExistence
-import FormalSystem.Metalogic.Bundle.CanonicalTaskRelation
+import FormalSystem.Boneyard.BundleDeadHalf.CanonicalTaskRelation
 import FormalSystem.Metalogic.Bundle.FMCSDef
 import FormalSystem.Metalogic.Bundle.TemporalCoherence
 import FormalSystem.Boneyard.RestrictedMCSDeferral.Deferral

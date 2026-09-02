@@ -5,20 +5,13 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Metalogic.Bundle.BFMCS
-import FormalSystem.Metalogic.Bundle.CanonicalFrame
-import FormalSystem.Metalogic.Bundle.CanonicalTaskRelation
-import FormalSystem.Metalogic.Bundle.Construction
-import FormalSystem.Metalogic.Bundle.FMCSDef
 import FormalSystem.Metalogic.Bundle.FMCSDef
 import FormalSystem.Metalogic.Bundle.LimitMCS
 import FormalSystem.Metalogic.Bundle.LimitMCSCoherence
-import FormalSystem.Metalogic.Bundle.ModalSaturation
 import FormalSystem.Metalogic.Bundle.RealExtension
 import FormalSystem.Metalogic.Bundle.RealExtensionBundle
-import FormalSystem.Metalogic.Bundle.SuccRelation
 import FormalSystem.Metalogic.Bundle.TemporalCoherence
 import FormalSystem.Metalogic.Bundle.TemporalContent
-import FormalSystem.Metalogic.Bundle.UntilSinceCoherence
 import FormalSystem.Metalogic.Bundle.WitnessSeed
 
 /-!
@@ -36,17 +29,19 @@ establishes the coherence conditions the truth lemma needs.
 - `RealExtension` — the `Rat`-to-`ℝ` extension of a family by rational selection
 - `RealExtensionBundle` — the real bundle over a rational bundle, box time-stability, and the
   transport of restricted temporal coherence
-- `CanonicalFrame`, `CanonicalTaskRelation`, `SuccRelation` — the frame and its relations
-- `Construction`, `WitnessSeed` — building bundles from a seed
-- `ModalSaturation`, `TemporalCoherence`, `TemporalContent`, `UntilSinceCoherence` —
-  the saturation and coherence properties
+- `WitnessSeed` — witness seeds and their consistency, used to build bundles
+- `TemporalCoherence`, `TemporalContent` — the coherence properties and the g/h/f/p content maps
+
+The canonical-frame half of this directory — `CanonicalFrame`, `CanonicalTaskRelation`,
+`SuccRelation`, `Construction`, `UntilSinceCoherence` and `ModalSaturation` — was retired to
+`Boneyard/BundleDeadHalf/`.
 
 ## Position in the Layering
 
-`Bundle` sits above `Core` (18 import edges into it) and beneath `Algebraic`,
-`BXCanonical` and `WeakCanonical`. The single reverse edge — `Core/RestrictedMCS/Basic.lean`
-importing `Bundle.CanonicalTaskRelation` — makes `Core`/`Bundle` a directory-level
-cycle; see `Metalogic/README.md`.
+`Bundle` sits above `Core` and beneath `Algebraic`, `BXCanonical` and `WeakCanonical`. There is
+no longer a reverse edge: `Core/RestrictedMCS/Basic.lean` reaches the iterated-temporal syntax it
+needs through `Syntax/SubformulaClosure/IteratedTemporal.lean`, so `Core`/`Bundle` is no longer a
+directory-level cycle. See `Metalogic/README.md`.
 
 This aggregator imports concrete leaf modules only.
 -/

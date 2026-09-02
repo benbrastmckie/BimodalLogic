@@ -3,7 +3,7 @@ import FormalSystem.Metalogic.Algebraic.UltrafilterMCS
 import FormalSystem.Metalogic.Algebraic.ParametricTruthLemma
 import FormalSystem.Metalogic.Bundle.TemporalCoherence
 import FormalSystem.Metalogic.Bundle.BFMCS
-import FormalSystem.Metalogic.Bundle.ModalSaturation
+import FormalSystem.Boneyard.BundleDeadHalf.ModalSaturation
 import FormalSystem.Boneyard.StrictSemanticsLegacy.Bundle.SuccChainFMCS
 import FormalSystem.Theorems.Perpetuity
 import FormalSystem.Theorems.TemporalDerived

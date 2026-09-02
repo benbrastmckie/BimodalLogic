@@ -4,9 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import FormalSystem.Metalogic.Bundle.SuccRelation
+import FormalSystem.Boneyard.BundleDeadHalf.SuccRelation
 import FormalSystem.Metalogic.Bundle.WitnessSeed
-import FormalSystem.Metalogic.Bundle.Construction
+import FormalSystem.Boneyard.BundleDeadHalf.Construction
 import FormalSystem.Metalogic.Bundle.TemporalContent
 import FormalSystem.Metalogic.Bundle.TemporalCoherence
 import FormalSystem.Metalogic.Core.MCSProperties

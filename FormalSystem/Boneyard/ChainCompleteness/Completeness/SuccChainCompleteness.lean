@@ -1,5 +1,5 @@
 import FormalSystem.Boneyard.ChainCompleteness.Bundle.SuccChainTruth
-import FormalSystem.Metalogic.Bundle.Construction
+import FormalSystem.Boneyard.BundleDeadHalf.Construction
 import FormalSystem.Metalogic.Core.MaximalConsistent
 import FormalSystem.Semantics.Validity
 

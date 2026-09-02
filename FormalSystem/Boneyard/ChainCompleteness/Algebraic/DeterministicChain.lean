@@ -2,7 +2,7 @@ import FormalSystem.Metalogic.Bundle.TemporalContent
 import FormalSystem.Metalogic.Bundle.FMCSDef
 import FormalSystem.Metalogic.Core.MCSProperties
 import FormalSystem.Metalogic.Core.MaximalConsistent
-import FormalSystem.Metalogic.Bundle.SuccRelation
+import FormalSystem.Boneyard.BundleDeadHalf.SuccRelation
 import FormalSystem.Syntax.Formula
 import FormalSystem.ProofSystem.Axioms
 import FormalSystem.ProofSystem.Derivation

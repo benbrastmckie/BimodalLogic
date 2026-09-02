@@ -1,5 +1,5 @@
 import FormalSystem.Metalogic.Bundle.BFMCS
-import FormalSystem.Metalogic.Bundle.CanonicalFrame
+import FormalSystem.Boneyard.BundleDeadHalf.CanonicalFrame
 import FormalSystem.Metalogic.Bundle.TemporalCoherence
 import FormalSystem.Boneyard.StrictSemanticsLegacy.Bundle.SuccChainFMCS
 import FormalSystem.Boneyard.StrictSemanticsLegacy.Algebraic.RestrictedTruthLemma

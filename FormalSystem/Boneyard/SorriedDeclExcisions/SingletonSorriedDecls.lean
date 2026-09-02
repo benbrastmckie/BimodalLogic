@@ -3,7 +3,7 @@ import FormalSystem.Metalogic.Core.MaximalConsistent
 import FormalSystem.Metalogic.Core.MCSProperties
 import FormalSystem.Metalogic.Bundle.TemporalContent
 import FormalSystem.Metalogic.Bundle.WitnessSeed
-import FormalSystem.Metalogic.Bundle.CanonicalFrame
+import FormalSystem.Boneyard.BundleDeadHalf.CanonicalFrame
 import FormalSystem.Syntax.Formula
 import FormalSystem.Theorems.GeneralizedNecessitation
 import FormalSystem.Metalogic.BXCanonical.Chronicle.ChronicleToCountermodelBasic

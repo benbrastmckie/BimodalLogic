@@ -1,7 +1,7 @@
 import FormalSystem.Metalogic.BXCanonical.OrderedSeedConsistency
 import FormalSystem.Metalogic.BXCanonical.CanonicalModel
 -- import FormalSystem.Metalogic.BXCanonical.Quasimodel.OracleStep  -- archived; no longer compiled
-import FormalSystem.Metalogic.Bundle.UntilSinceCoherence
+import FormalSystem.Boneyard.BundleDeadHalf.UntilSinceCoherence
 import FormalSystem.Metalogic.Algebraic.ParametricCompleteness
 import FormalSystem.Metalogic.Algebraic.RestrictedParametricTruthLemma
 

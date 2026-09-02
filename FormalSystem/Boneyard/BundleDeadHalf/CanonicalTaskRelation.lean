@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import FormalSystem.Metalogic.Bundle.SuccRelation
-import FormalSystem.Metalogic.Bundle.CanonicalFrame
+import FormalSystem.Boneyard.BundleDeadHalf.SuccRelation
+import FormalSystem.Boneyard.BundleDeadHalf.CanonicalFrame
 import FormalSystem.Metalogic.Core.MCSProperties
 import FormalSystem.Syntax.SubformulaClosure.TemporalFormulas
 import FormalSystem.Syntax.SubformulaClosure.IteratedTemporal

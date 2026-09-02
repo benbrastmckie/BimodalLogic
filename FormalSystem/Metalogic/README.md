@@ -48,8 +48,6 @@ Beneath all three sits a genuinely layered core:
 
 ```
         Core/  ──18 edges──►  Bundle/
-          ▲                      │
-          └────── 1 edge ────────┘
 
                 Bundle/
                    │
@@ -67,11 +65,17 @@ A natural instinct is to nest the three routes under a `Completeness/` parent, o
 nest one inside another. **Measurement rules both out.** This is a decision, not an
 oversight.
 
-There are exactly **two** directory-level cycles in `Metalogic/`. Both are enumerated
+There is exactly **one** directory-level cycle in `Metalogic/`. It is enumerated
 edge-by-edge, file-and-line, in the measurement output this document is drawn from —
-regenerated from the tree rather than copied from any report.
+regenerated from the tree rather than copied from any report, and
+`scripts/check-metalogic-cycles.sh` asserts the count mechanically.
 
-### Cycle 1: `BXCanonical` ↔ `WeakCanonical`
+There used to be a second, `Bundle` ↔ `Core`. It is gone: `Core/RestrictedMCS/Basic.lean` was
+the sole reverse edge, and it now reaches the iterated-temporal syntax it needed through
+`Syntax/SubformulaClosure/IteratedTemporal.lean` instead of through
+`Bundle/CanonicalTaskRelation.lean`. `Bundle → Core` remains, one-directionally.
+
+### The cycle: `BXCanonical` ↔ `WeakCanonical`
 
 ```
 BXCanonical → WeakCanonical  (2 import lines)
@@ -90,16 +94,8 @@ WeakCanonical → BXCanonical  (4 import lines)
       → FormalSystem.Metalogic.BXCanonical.Chronicle.ChronicleToCountermodel
 ```
 
-### Cycle 2: `Bundle` ↔ `Core`
-
-```
-Bundle → Core  (18 import lines across 10 files)
-Core  → Bundle (1 import line)
-  Core/RestrictedMCS/Basic.lean → FormalSystem.Metalogic.Bundle.CanonicalTaskRelation
-```
-
-Nesting either pair produces a directory whose contents import upward out of it —
-which is not a hierarchy. Lean permits these cycles because they exist only at
+Nesting either of that pair inside the other produces a directory whose contents import upward
+out of it — which is not a hierarchy. Lean permits the cycle because it exists only at
 *directory* granularity; the module-level dependency graph is acyclic, which is why
 the build works at all. Directory structure simply cannot express a mutual dependency.
 
