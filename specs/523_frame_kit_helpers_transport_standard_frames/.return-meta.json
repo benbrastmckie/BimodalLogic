@@ -1,17 +1,36 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/523_frame_kit_helpers_transport_standard_frames/reports/01_frame-kit-helpers-transport-standard-frames.md",
-      "summary": "Verifies all nine work items against the live tree, supplies verified-compiling text for Helper D and the Helper B completion, corrects ~20 stale figures (Spherical is now Saturation; C-05 already landed; A-06 pairs are at 780/821 and 861/924, 184 lines), and shows the 'exactly one induction phi' acceptance criterion is unachievable because truthAt_add_hist_period's period is per-history."
+      "type": "plan",
+      "path": "specs/523_frame_kit_helpers_transport_standard_frames/plans/01_frame-kit-helpers-transport.md",
+      "summary": "14-phase, 22.5-hour lean4 consolidation plan across 8 dependency waves: Saturation Helper D, Helper B completion, ofTotal, the TruthIso transport chain, Z-dictionary import, LexCarrier generalisation, order-dual cores, dead-lemma deletion, and the Frames/Standard.lean index."
     }
   ],
   "metadata": {
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"],
-    "build_status": "green (2517 jobs, exit 0)",
-    "stale_figures_found": 20
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 14,
+    "estimated_hours": 22.5,
+    "dependency_waves": [[1, 2, 3], [4, 5], [6, 7], [8, 9], [10], [11, 12], [13], [14]],
+    "complexity": "complex",
+    "research_integrated": true,
+    "plan_version": 1,
+    "report_corrections_encoded": 5,
+    "hard_constraints_encoded": 2,
+    "acceptance_criterion_restated": "exactly one induction-phi truth transport -> at most two",
+    "descoped_work_items": ["C-05 (already landed by task 521)"],
+    "validator": "validate-artifact.sh plan --strict: PASS, 0 warnings"
+  },
+  "memory_candidates": [
+    {
+      "content": "In this repo, a consolidation target protected by a #guard_msgs-gated `#print axioms` block is specified by its axiom profile, not just its statement. Tests/BimodalTest/Semantics/SaturationFiniteAxiomTest.lean pins four such profiles and its own prose names the wrong consolidation ('route the subsingleton case through the general lemma'). When planning a helper that subsumes such a site, the helper must be ADDITIVE: added beside the guarded lemma, never routed through it, and never routed through a helper whose `classical`/`by_cases` opening drags in Classical.choice. A direct proof can be both shorter and strictly cleaner axiomatically than reuse -- measured here: saturation_of_fib_subsingleton is [propext]-only, while the existing univ_or_singleton route is Classical.choice-dependent. Generalisation: when a test pins a non-functional property (axiom profile, allocation count, elaboration time), treat DRY consolidation as constrained by that property, and verify the profile rather than the build.",
+      "category": "PATTERN",
+      "source_artifact": "specs/523_frame_kit_helpers_transport_standard_frames/plans/01_frame-kit-helpers-transport.md",
+      "confidence": 0.8,
+      "suggested_keywords": ["guard_msgs", "print axioms", "additive helper", "lean consolidation", "axiom profile", "propext"]
+    }
+  ],
+  "next_steps": "Run /implement 523 to execute the plan"
 }
