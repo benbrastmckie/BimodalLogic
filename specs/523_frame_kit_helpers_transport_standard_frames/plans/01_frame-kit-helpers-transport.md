@@ -406,7 +406,7 @@ shape `(d ≠ 0 ∨ w = u)` across `FormalSystem/` before editing.
 
 ---
 
-### Phase 5: `ofTotal` and the six total-history sites [NOT STARTED]
+### Phase 5: `ofTotal` and the six total-history sites [COMPLETED]
 
 **Goal**: Introduce `WorldHistory.ofTotal` / `TaskFrame.HF.ofTotal` with a `@[simp] ofTotal_states`
 lemma and collapse the six `Semantics/` boilerplate sites.
@@ -445,10 +445,14 @@ before editing; if any diverges on a fourth field, exclude it and say so.
 - Guarded detached build exits 0
 - `simp` alone closes at least one previously hand-written domain bridge (demonstrate in a call site)
 - Zero remaining `domain := fun _ => True` literals in `Semantics/` outside `ofTotal` itself
+  *(deviation: altered — this bullet contradicts the phase's own fourth task, which lists
+  `DurationFrames:178,264` among the twelve follow-on sites and says "Do **not** migrate them in
+  this phase". The task list governs: the only two literals left in `Semantics/` are exactly
+  those two, plus `ofTotal`'s own.)*
 
 ---
 
-### Phase 6: Dead `WorldHistory` lemmas and `Function.Periodic` [NOT STARTED]
+### Phase 6: Dead `WorldHistory` lemmas and `Function.Periodic` [COMPLETED]
 
 **Goal**: Delete eight dead lemmas and express `per_period` as `Function.Periodic`.
 

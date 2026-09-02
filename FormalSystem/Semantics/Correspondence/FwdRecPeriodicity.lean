@@ -6,6 +6,7 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.Semantics.Correspondence.FwdRec
 import Mathlib.Algebra.Order.Group.Int
+import Mathlib.Algebra.Ring.Periodic
 import Mathlib.Data.Int.SuccPred
 import Mathlib.Tactic.Ring
 import Mathlib.Tactic.Linarith
@@ -40,6 +41,24 @@ histories are periodic validates the **whole** density schema, at an arbitrary d
 The `ℤ` restriction enters only when `Semantics/Correspondence/FwdRecBridge.lean` derives that
 periodicity hypothesis from `TaskFrame.FwdRec`.
 
+## The Mathlib survey for `Walk` / `MinCyc` is **negative**, and is recorded so it is not re-run
+
+`Walk` and `MinCyc` look like they should be Mathlib abstractions. They are not, and the search
+has already been done; do not restructure them onto any of the following:
+
+- `SimpleGraph.Walk` — finite, indexed by a list of edges, and *undirected*; a bi-infinite
+  `ℤ`-indexed path in a directed relation is not an instance of it.
+- `Quiver.Path` — also finite and indexed from a fixed source; no bi-infinite form.
+- `Relation.ReflTransGen` — a reachability *predicate*, not a path object, so it cannot carry the
+  per-index data (`walk : ℤ → W`) that `succ_unique` and `det` reason about.
+- `Function.minimalPeriod` / `IsPeriodicPt` — about iterates of an endofunction `f : α → α`. The
+  digraph here is a *relation*, not a function; that it turns out to be deterministic along walks
+  is the conclusion (`succ_unique`), not a hypothesis available at the definition site.
+
+What *is* taken from Mathlib is `Function.Periodic`: `per_period`, `MinCyc.perd` and `periodic`'s
+conclusion are all stated in it below, so the periodicity vocabulary is shared even though the
+walk vocabulary cannot be.
+
 ## Provenance
 
 Transcribed from `specs/511_research_frame_correspondence_infrastructure/reports/03_probes.lean`
@@ -49,7 +68,7 @@ bundled `TaskFrame`s.
 
 ## Main results
 
-* `Walk.periodic` — `AllRec` forces every walk to be periodic
+* `Walk.periodic` — `AllRec` forces every walk to be `Function.Periodic`
 * `Walk.succ_unique`, `Walk.det` — the determinism that periodicity rests on
 * `truthAt_add_hist_period` — truth periodicity from a per-history period
 * `density_of_hist_periodic` — periodic histories validate the full density schema
@@ -103,7 +122,9 @@ theorem per_base (σ : ℤ → W) (m : ℤ) : per σ m 0 = σ 0 := by
   show σ (0 % m) = σ 0
   rw [Int.zero_emod]
 
-theorem per_period (σ : ℤ → W) (m n : ℤ) : per σ m (n + m) = per σ m n := by
+/-- `per σ m` is `m`-periodic, in Mathlib's `Function.Periodic` vocabulary. -/
+theorem per_period (σ : ℤ → W) (m : ℤ) : Function.Periodic (per σ m) m := by
+  intro n
   show σ ((n + m) % m) = σ (n % m)
   rw [Int.add_emod_right]
 
@@ -118,7 +139,7 @@ structure MinCyc (R : W → W → Prop) (x : W) where
   walk : ℤ → W
   isWalk : IsWalk R walk
   base : walk 0 = x
-  perd : ∀ n : ℤ, walk (n + len) = walk n
+  perd : Function.Periodic walk len
   minimal : ∀ m : ℤ, 0 < m → m < len → ∀ ρ : ℤ → W, IsWalk R ρ → ρ 0 = x → ρ m ≠ x
 
 theorem exists_minCyc (hH : AllRec R) {σ : ℤ → W} (hσ : IsWalk R σ) {x : W} (hx : σ 0 = x) :
@@ -134,7 +155,7 @@ theorem exists_minCyc (hH : AllRec R) {σ : ℤ → W} (hσ : IsWalk R σ) {x : 
   refine ⟨{ len := (Nat.find hP : ℤ), pos := hlZ, walk := per ρ (Nat.find hP : ℤ),
             isWalk := per_isWalk hρ hlZ (by rw [hρl, hρ0]),
             base := by rw [per_base]; exact hρ0,
-            perd := fun n => per_period ρ _ n,
+            perd := per_period ρ _,
             minimal := ?_ }⟩
   intro m hm0 hmlt ν hν hν0 hcon
   have hlt : m.toNat < Nat.find hP := by omega
@@ -325,7 +346,7 @@ theorem det (hH : AllRec R) {σ ρ : ℤ → W} (hσ : IsWalk R σ) (hρ : IsWal
 position, then every bi-infinite walk is periodic.
 -/
 theorem periodic (hH : AllRec R) {σ : ℤ → W} (hσ : IsWalk R σ) :
-    ∃ π : ℤ, 0 < π ∧ ∀ n : ℤ, σ (n + π) = σ n := by
+    ∃ π : ℤ, 0 < π ∧ Function.Periodic σ π := by
   obtain ⟨m, hm, hmv⟩ := hH σ hσ 0
   refine ⟨m, hm, ?_⟩
   intro n
