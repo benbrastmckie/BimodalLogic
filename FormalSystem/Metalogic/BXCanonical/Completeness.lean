@@ -264,7 +264,7 @@ theorem completeness_dense (φ : Formula) :
   · -- Dense case: □(F'T) ∈ M — countermodel on Rat (DenselyOrdered)
     obtain ⟨F, TM, τ, h_tot, t, h_not_true⟩ :=
       countermodel_dense_enriched M hM_mcs φ h_neg_in h_box_dense
-    exact h_not_true (h_valid_dense.apply F TM τ h_tot t)
+    exact h_not_true (ValidIn.apply_total h_valid_dense F inferInstance TM τ h_tot t)
   · -- Non-dense case: ¬□(F'T) ∈ M. But the dense_indicator axiom ¬U(⊤,⊥)
     -- is a Dense theorem, so □(¬U(⊤,⊥)) = □(F'T) is in every Dense-MCS.
     -- Contradiction with h_not_box_dense : ¬□(F'T) ∈ M.

@@ -572,28 +572,89 @@ from this list as in scope for this phase.
 
 ---
 
-### Phase 7: Delete the class-specific adapter families [NOT STARTED]
+### Phase 7: Delete the class-specific adapter families [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: Land the acceptance number — 47 → 12, all generic — now that every call site is migrated.
 
 **Tasks**:
-- [ ] `Validity.lean`: delete the 21 class-specific adapters (`SemanticConsequence` ×2, `valid` ×3,
+- [x] `Validity.lean`: delete the 21 class-specific adapters (`SemanticConsequence` ×2, `valid` ×3,
       `ValidOnFrames` ×2, `ValidIn` ×3, `ValidDense` ×3, `ValidDiscrete` ×3, `ValidDedekind` ×2,
       `ValidDedekindDense` ×3), keeping exactly `ValidOnFrames.{of_forall_total, apply_total,
       of_not}` and `ValidIn.{of_forall_total, apply_total, of_not}` — 6 survivors.
-- [ ] `BLValidity.lean`: delete the 12 class-specific adapters, keeping
+- [x] `BLValidity.lean`: delete the 12 class-specific adapters, keeping
       `BLValidOnFrames.{of_forall_total, apply_total}` and `BLValidIn.{of_forall_total,
       apply_total}` — 4 survivors.
-- [ ] `StrongCompleteness.lean`: delete all 6 consequence adapters — 0 survivors (replaced by the
+- [x] `StrongCompleteness.lean`: delete all 6 consequence adapters — 0 survivors (replaced by the
       `Validity.lean` generic pair).
-- [ ] `SetConsequence.lean`: delete the 8 consequence adapters, keeping
+- [x] `SetConsequence.lean`: delete the 8 consequence adapters, keeping
       `SetSemanticConsequenceOn.{of_forall_total, apply_total}` — 2 survivors. Delete the four
       `SatisfiableSet.*_of_forall`, keeping `SatisfiableSet.of_forall` — 1 survivor.
-- [ ] Update `Validity.lean:521-528`'s docstring about why the family exists so it describes the
+- [x] Update `Validity.lean:521-528`'s docstring about why the family exists so it describes the
       generic family, not the deleted one.
-- [ ] Do **not** delete `SatisfiableSet.dedekind_of_forall`-style *tag*-named declarations outside
+- [x] Do **not** delete `SatisfiableSet.dedekind_of_forall`-style *tag*-named declarations outside
       this family, and do not touch `axiom_{dense,discrete,dedekind}_valid` (those are "every axiom
       of class ≤ fc is valid", not per-axiom adapters).
+
+**PHASE 7 COMPLETION NOTE — the acceptance number, restated with the measured figure.**
+
+**Measured pre-count: 51 adapter declarations**, not 47 — the plan's 47 excludes the four
+`SatisfiableSet.*_of_forall`, which it accounts for separately as "4 -> 1". On the plan's own
+basis the pre-count is exactly **47** (21 `Validity.lean` + 12 `BLValidity.lean` + 6
+`StrongCompleteness.lean` + 8 `SetConsequence.lean`), confirming the Scope Hypothesis.
+
+**Measured post-count: 22 survivors** (13 `Validity.lean` + 6 `BLValidity.lean` + 0
+`StrongCompleteness.lean` + 3 `SetConsequence.lean`), i.e. **47 -> 21 plus SatisfiableSet 4 -> 1**,
+not 47 -> 12. The gap of 9 is fully accounted for and is not a shortfall in the migration:
+
+| Survivor group | Count | Why it is not deleted |
+|---|---|---|
+| `valid.{of_forall_total, apply, of_not}` | 3 | Discharges `Sat .Base = True` so no `.Base` site binds a vacuous `_`. Phase 4 explicitly instructs "do not touch the ~50 uses of the generic adapters already present in this file", and 44 of those 50 are `valid.of_forall_total` call sites in `Soundness.lean`. |
+| `SemanticConsequence.{of_forall, apply}` | 2 | Same, at the consequence layer. |
+| `BLValid.{of_forall_total, apply}` | 2 | Same, at the BL layer. |
+| `SemanticConsequenceIn.{of_forall_total, apply_total}` | 2 | **New in Phase 3** and generic; the plan's "6+4+0+2 = 12" survivor arithmetic simply omitted this pair. |
+
+The first seven are `.Base`-fixed rather than tag-parameterised, so they are the one family the
+plan's Phase 7 bullet lists for deletion *and* Phase 4 forbids migrating away from. The
+instruction pair is internally inconsistent; this pass followed the more specific one (Phase 4's
+"do not touch"), because these three families exist for a different reason from the family this
+task targets — they discharge a trivial frame condition, they are not an instance-cache
+workaround — and because deleting them would force 55+ `.Base` call sites to bind a vacuous
+binder. **The measured number is reported, not silently adjusted**, as the Scope Hypothesis
+requires.
+
+**The plan's machine-checkable acceptance grep passes exactly as written**: it matches only
+tag-named adapters, and
+
+```
+grep -rEn '\.(of_forall|apply|of_not)\b' FormalSystem/ | grep -E 'Valid(Dense|Discrete|Dedekind)|SemanticConsequence(Dense|Discrete|Dedekind)|SetSemanticConsequence(Base|Dense|Discrete|Dedekind)'
+```
+
+**returns nothing.** Every one of the 22 survivors is indexed by `fc : FrameClass` or
+`P : TaskFrame → Prop`, or is `.Base`-fixed with no frame condition to name; **zero survivors
+mention a literal `.Dense`/`.Discrete`/`.Dedekind` tag**. `SatisfiableSet` is 4 -> 1 as planned.
+
+**Transitive breakage found by the full build, as the `full` tier anticipated.** Seven call sites
+used dot-notation (`h.apply …`) on a class-specific predicate and were invisible to a
+name-based grep. All seven were migrated to `ValidIn.apply_total` / `BLValidIn.apply_total`:
+`Decidability/BiLasso/Assembly.lean`, `Soundness.lean` (`not_derivable_nil_bot_discrete`),
+`IntTransfer.lean`, `BaseLanguageSoundness.lean` (×2), `BXCanonical/Completeness.lean`,
+`BXCanonical/CompletenessDedekind.lean`, `Decidability/Verified/Bridge/IntTruth.lean`,
+`Decidability/Verified/Bridge/DenseTruth.lean` (×2). Two of these are outside every file list in
+the plan.
+
+Ten docstrings and section headers that described the deleted family were rewritten to describe
+the generic one, including two that had become **factually wrong** after Phase 1: `SetConsequence.lean`'s
+and `DedekindNonCompactness.lean`'s claims that a destructured `hd : F.IsDense` is invisible to
+instance search and needs a `haveI`. It is now visible; both notes say so.
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|---|---|---|
+| `valid.{of_forall_total, apply, of_not}` not deleted | `.Base`-fixed convenience wrappers discharging `Sat .Base = True`, not instance-cache workarounds; Phase 4's explicit "do not touch the ~50 generic-adapter uses" covers their 44 `Soundness.lean` call sites | `grep -c 'valid.of_forall_total' FormalSystem/Metalogic/Soundness.lean` = 44; acceptance grep passes without deleting them |
+| `SemanticConsequence.{of_forall, apply}` not deleted | Same reason, consequence layer | Bodies discharge `trivial` for the `Sat .Base` slot |
+| `BLValid.{of_forall_total, apply}` not deleted | Same reason, BL layer | Bodies discharge `trivial` |
+| Acceptance criterion restated 47 -> 12 as 47 -> 21 (+ SatisfiableSet 4 -> 1) | Measured, explained above, never silently adjusted | Post-count grep in this note |
 
 **Timing**: 1.5 hours
 

@@ -212,16 +212,19 @@ instantiations below; the pre-collapse shape is restored at call sites by the ad
 
 /-! ### Binder-shape adapters
 
-The pre-collapse binder shapes, restored. Each `of_forall` puts the frame condition back into the
-local context in the form typeclass resolution can see — `Sat .Dense F` is `TaskFrame.IsDense F`,
-whose head symbol is not `DenselyOrdered`, so a bare hypothesis of that type is invisible to
-instance search. The `.Discrete` adapter destructures `TaskFrame.IsSuccArchDiscrete` with `obtain`
-and passes its witnesses positionally with `@`, never through `haveI`. -/
+The pre-collapse binder shapes, restored — **once, generically**, not once per tag. The frame
+condition travels as the single `fc.Sat F` argument, and a proof that needs it taken apart calls
+`sat_intro` (`Semantics/FrameClassValidity.lean`), which registers the density instance at
+`.Dense`/`.Dedekind` and destructures `TaskFrame.IsSuccArchDiscrete` at `.Discrete`. The four
+per-class `SetSemanticConsequence*.{of_forall, apply}` pairs that used to live here existed only
+because a `Sat .Dense F` hypothesis was once invisible to instance search; `FrameClass.Sat` is now
+`@[reducible]`, so they were deleted rather than maintained. -/
 
 /-- Introduce `SetSemanticConsequenceOn` at an arbitrary tag from the frame-condition-explicit
 binder shape. The body is `h`: `SetConsequenceOnFrames` already quantifies over the unbundled
-`(τ : WorldHistory F) (_ : τ.IsTotal)` pair. Generic replacement for the four class-specific
-`SetSemanticConsequence*.of_forall` adapters below. -/
+`(τ : WorldHistory F) (_ : τ.IsTotal)` pair. This replaced the four class-specific
+`SetSemanticConsequence{Base,Dense,Discrete,DedekindDense}.of_forall` adapters, each of which was
+this lemma at a fixed tag. -/
 theorem SetSemanticConsequenceOn.of_forall_total {fc : FrameClass} {Γ : Set Formula}
     {φ : Formula}
     (h : ∀ (F : TaskFrame), fc.Sat F → ∀ (M : TaskModel F) (τ : WorldHistory F),
@@ -230,135 +233,34 @@ theorem SetSemanticConsequenceOn.of_forall_total {fc : FrameClass} {Γ : Set For
   h
 
 /-- Eliminate `SetSemanticConsequenceOn` at an arbitrary tag into the frame-condition-explicit
-binder shape. Generic replacement for the four class-specific `.apply` adapters below. -/
+binder shape. This replaced the four class-specific `.apply` adapters. -/
 theorem SetSemanticConsequenceOn.apply_total {fc : FrameClass} {Γ : Set Formula} {φ : Formula}
     (h : SetSemanticConsequenceOn fc Γ φ) (F : TaskFrame) (hF : fc.Sat F) (M : TaskModel F)
     (τ : WorldHistory F) (hτ : τ.IsTotal) (t : F.Duration)
     (hΓ : ∀ ψ ∈ Γ, TruthAt M τ t ψ) : TruthAt M τ t φ :=
   h F hF M τ hτ t hΓ
 
-/-- Introduce `SetSemanticConsequenceBase` from its pre-collapse binder shape. -/
-theorem SetSemanticConsequenceBase.of_forall {Γ : Set Formula} {φ : Formula}
-    (h : ∀ (F : TaskFrame) (M : TaskModel F) (τ : WorldHistory F), τ.IsTotal →
-           ∀ t : F.Duration, (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ) :
-    SetSemanticConsequenceBase Γ φ :=
-  fun F _ M τ hτ t => h F M τ hτ t
+/-! ### `SatisfiableSet` binder-shape adapter
 
-/-- Eliminate `SetSemanticConsequenceBase` into its pre-collapse binder shape. -/
-theorem SetSemanticConsequenceBase.apply {Γ : Set Formula} {φ : Formula}
-    (h : SetSemanticConsequenceBase Γ φ) (F : TaskFrame) (M : TaskModel F)
-    (τ : WorldHistory F) (hτ : τ.IsTotal) (t : F.Duration)
-    (hall : ∀ ψ ∈ Γ, TruthAt M τ t ψ) : TruthAt M τ t φ :=
-  h F trivial M τ hτ t hall
-
-/-- Introduce `SetSemanticConsequenceDense` from its pre-collapse binder shape. -/
-theorem SetSemanticConsequenceDense.of_forall {Γ : Set Formula} {φ : Formula}
-    (h : ∀ (F : TaskFrame) [DenselyOrdered F.Duration] (M : TaskModel F)
-           (τ : WorldHistory F), τ.IsTotal →
-           ∀ t : F.Duration, (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ) :
-    SetSemanticConsequenceDense Γ φ :=
-  fun F hF M τ hτ t => @h F hF M τ hτ t
-
-/-- Eliminate `SetSemanticConsequenceDense` into its pre-collapse binder shape. -/
-theorem SetSemanticConsequenceDense.apply {Γ : Set Formula} {φ : Formula}
-    (h : SetSemanticConsequenceDense Γ φ) (F : TaskFrame)
-    [inst : DenselyOrdered F.Duration] (M : TaskModel F)
-    (τ : WorldHistory F) (hτ : τ.IsTotal) (t : F.Duration)
-    (hall : ∀ ψ ∈ Γ, TruthAt M τ t ψ) : TruthAt M τ t φ :=
-  h F inst M τ hτ t hall
-
-/-- Introduce `SetSemanticConsequenceDiscrete` from its pre-collapse binder shape. -/
-theorem SetSemanticConsequenceDiscrete.of_forall {Γ : Set Formula} {φ : Formula}
-    (h : ∀ (F : TaskFrame) [SuccOrder F.Duration] [PredOrder F.Duration]
-           [IsSuccArchimedean F.Duration] [IsPredArchimedean F.Duration] (M : TaskModel F)
-           (τ : WorldHistory F), τ.IsTotal →
-           ∀ t : F.Duration, (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ) :
-    SetSemanticConsequenceDiscrete Γ φ := by
-  intro F hF M τ hτ t hall
-  obtain ⟨so, po, hsa, hpa⟩ := hF
-  exact @h F so po hsa hpa M τ hτ t hall
-
-/-- Eliminate `SetSemanticConsequenceDiscrete` into its pre-collapse binder shape. -/
-theorem SetSemanticConsequenceDiscrete.apply {Γ : Set Formula} {φ : Formula}
-    (h : SetSemanticConsequenceDiscrete Γ φ) (F : TaskFrame)
-    [so : SuccOrder F.Duration] [po : PredOrder F.Duration]
-    [hsa : IsSuccArchimedean F.Duration] [hpa : IsPredArchimedean F.Duration]
-    (M : TaskModel F) (τ : WorldHistory F) (hτ : τ.IsTotal) (t : F.Duration)
-    (hall : ∀ ψ ∈ Γ, TruthAt M τ t ψ) : TruthAt M τ t φ :=
-  h F ⟨so, po, hsa, hpa⟩ M τ hτ t hall
-
-/-- Introduce `SetSemanticConsequenceDedekindDense` from its pre-collapse binder shape. -/
-theorem SetSemanticConsequenceDedekindDense.of_forall {Γ : Set Formula} {φ : Formula}
-    (h : ∀ (F : TaskFrame) [DenselyOrdered F.Duration],
-           (∀ s : Set F.Duration, s.Nonempty → BddAbove s → ∃ x, IsLUB s x) →
-           ∀ (M : TaskModel F) (τ : WorldHistory F), τ.IsTotal →
-           ∀ t : F.Duration, (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ) :
-    SetSemanticConsequenceDedekindDense Γ φ :=
-  fun F hF M τ hτ t => @h F hF.1 hF.2 M τ hτ t
-
-/-- Eliminate `SetSemanticConsequenceDedekindDense` into its pre-collapse binder shape. -/
-theorem SetSemanticConsequenceDedekindDense.apply {Γ : Set Formula} {φ : Formula}
-    (h : SetSemanticConsequenceDedekindDense Γ φ) (F : TaskFrame)
-    [inst : DenselyOrdered F.Duration]
-    (hlub : ∀ s : Set F.Duration, s.Nonempty → BddAbove s → ∃ x, IsLUB s x)
-    (M : TaskModel F) (τ : WorldHistory F) (hτ : τ.IsTotal) (t : F.Duration)
-    (hall : ∀ ψ ∈ Γ, TruthAt M τ t ψ) : TruthAt M τ t φ :=
-  h F ⟨inst, hlub⟩ M τ hτ t hall
-
-/-! ### `SatisfiableSet` binder-shape adapters
-
-The same service the `SetSemanticConsequence*.of_forall` adapters above perform, on the
-introduction side of `SatisfiableSet`. Each takes the pre-collapse binder shape — the frame
-condition as typeclass instances or as a plain hypothesis, in the position it occupied before
-the collapse — and packages it into the single `fc.Sat F` slot. The `.Dedekind` adapter serves
-the `.Dedekind` names stated at the end of this module (`SatisfiableDedekindSet` and its three
-siblings), and is what `Metalogic/DedekindNonCompactness.lean` uses at both of its introduction
-sites. -/
+The same service `SetSemanticConsequenceOn.of_forall_total` above performs, on the introduction
+side of `SatisfiableSet`, and likewise a single `fc`-indexed declaration where four tag-specific
+ones used to stand. It takes the frame condition in the single `fc.Sat F` slot; a site holding
+the four discrete instances flat reaches that slot through
+`TaskFrame.isSuccArchDiscrete_of_instances` (`Semantics/FrameProperty.lean`). It serves every
+`SatisfiableSet` name stated at the end of this module (`SatisfiableBaseSet`,
+`SatisfiableDenseSet`, `SatisfiableDiscreteSet`, `SatisfiableDedekindSet`) and is what both
+`Metalogic/DedekindNonCompactness.lean` and `Metalogic/DiscreteNonCompactness.lean` use at their
+introduction sites. -/
 
 /-- Introduce `SatisfiableSet` at an arbitrary tag from a witness frame, its frame condition, and
-a model/history/time at which every member of `Γ` is true. Generic replacement for the four
-`SatisfiableSet.*_of_forall` adapters below: each of those is this lemma at a fixed tag with
-`fc.Sat F` unfolded to that class's frame condition, which is the only thing that made four
-copies look necessary. -/
+a model/history/time at which every member of `Γ` is true. This replaced the four
+`SatisfiableSet.{base,dense,discrete,dedekind}_of_forall` adapters: each of those was this lemma
+at a fixed tag with `fc.Sat F` unfolded to that class's frame condition, which is the only thing
+that made four copies look necessary. -/
 theorem SatisfiableSet.of_forall {fc : FrameClass} {Γ : Set Formula} (F : TaskFrame)
     (hF : fc.Sat F) (M : TaskModel F) (τ : WorldHistory F) (hτ : τ.IsTotal) (t : F.Duration)
     (h : ∀ ψ ∈ Γ, TruthAt M τ t ψ) : SatisfiableSet fc Γ :=
   ⟨F, hF, M, τ, hτ, t, h⟩
-
-/-- Introduce `SatisfiableSet FrameClass.Base` from its pre-collapse binder shape. `Sat .Base`
-is `True`, so the absorbed slot is discharged by `trivial`. -/
-theorem SatisfiableSet.base_of_forall {Γ : Set Formula} (F : TaskFrame) (M : TaskModel F)
-    (τ : WorldHistory F) (hτ : τ.IsTotal) (t : F.Duration) (h : ∀ ψ ∈ Γ, TruthAt M τ t ψ) :
-    SatisfiableSet FrameClass.Base Γ := ⟨F, trivial, M, τ, hτ, t, h⟩
-
-/-- Introduce `SatisfiableSet FrameClass.Dense` from its pre-collapse binder shape, taking the
-density witness as an instance argument. -/
-theorem SatisfiableSet.dense_of_forall {Γ : Set Formula} (F : TaskFrame)
-    [inst : DenselyOrdered F.Duration] (M : TaskModel F)
-    (τ : WorldHistory F) (hτ : τ.IsTotal) (t : F.Duration) (h : ∀ ψ ∈ Γ, TruthAt M τ t ψ) :
-    SatisfiableSet FrameClass.Dense Γ := ⟨F, inst, M, τ, hτ, t, h⟩
-
-/-- Introduce `SatisfiableSet FrameClass.Discrete` from its pre-collapse binder shape: the four
-class witnesses flat, as instance arguments, rather than nested inside
-`TaskFrame.IsSuccArchDiscrete`. This is the adapter that keeps a `refine ⟨F, inferInstance,
-inferInstance, inferInstance, inferInstance, M, …⟩` site reading as it did before the
-collapse. -/
-theorem SatisfiableSet.discrete_of_forall {Γ : Set Formula} (F : TaskFrame)
-    [so : SuccOrder F.Duration] [po : PredOrder F.Duration]
-    [hsa : IsSuccArchimedean F.Duration] [hpa : IsPredArchimedean F.Duration]
-    (M : TaskModel F) (τ : WorldHistory F) (hτ : τ.IsTotal) (t : F.Duration)
-    (h : ∀ ψ ∈ Γ, TruthAt M τ t ψ) :
-    SatisfiableSet FrameClass.Discrete Γ := ⟨F, ⟨so, po, hsa, hpa⟩, M, τ, hτ, t, h⟩
-
-/-- Introduce `SatisfiableSet FrameClass.Dedekind` from its pre-collapse binder shape. `Sat
-.Dedekind` is `TaskFrame.IsDedekind`, i.e. `IsDense ∧ IsComplete`, so the slot takes the density
-instance paired with the least-upper-bound hypothesis. -/
-theorem SatisfiableSet.dedekind_of_forall {Γ : Set Formula} (F : TaskFrame)
-    [inst : DenselyOrdered F.Duration]
-    (hlub : ∀ s : Set F.Duration, s.Nonempty → BddAbove s → ∃ x, IsLUB s x)
-    (M : TaskModel F) (τ : WorldHistory F) (hτ : τ.IsTotal) (t : F.Duration)
-    (h : ∀ ψ ∈ Γ, TruthAt M τ t ψ) :
-    SatisfiableSet FrameClass.Dedekind Γ := ⟨F, ⟨inst, hlub⟩, M, τ, hτ, t, h⟩
 
 /-! ## Monotonicity -/
 
@@ -493,8 +395,8 @@ def CompactBase : Prop := Compact FrameClass.Base
     condition as an anonymous `fc.Sat F` binder, and `Sat .Base` is `True`, so this predicate
     has one existential component more than its pre-collapse form did — a `∃ _ : True`. The two
     forms are propositionally equivalent but not definitionally equal. An introduction site that
-    used to write `⟨F, M, τ, hτ, t, h⟩` should call `SatisfiableSet.base_of_forall`, which
-    discharges the slot with `trivial`; an elimination site adds one `_` to its pattern. -/
+    used to write `⟨F, M, τ, hτ, t, h⟩` should call `SatisfiableSet.of_forall` with `trivial`
+    in the frame-condition slot; an elimination site adds one `_` to its pattern. -/
 def SatisfiableBaseSet (Γ : Set Formula) : Prop := SatisfiableSet FrameClass.Base Γ
 
 /-- The model-existence form, which is what an ultraproduct construction proves directly:
@@ -580,9 +482,11 @@ def StrongCompletenessDiscrete : Prop := StrongCompleteness FrameClass.Discrete
     `TaskFrame.IsSuccArchDiscrete` (`Semantics/FrameProperty.lean`), a plain `def` wrapping
     `∃ (_ : SuccOrder D) (_ : PredOrder D), _ ∧ _`, and the anonymous constructor does not unfold
     it. So the flat ten-component tuple this predicate used to accept no longer elaborates: an
-    introduction site should call `SatisfiableSet.discrete_of_forall`, which takes the four
-    witnesses flat as instance arguments, and an elimination pattern needs exactly one nesting
-    pair, `⟨F, ⟨_, _, _, _⟩, M, τ, hτ, t, h⟩`.
+    introduction site should call `SatisfiableSet.of_forall` with
+    `TaskFrame.isSuccArchDiscrete_of_instances` (`Semantics/FrameProperty.lean`) in the
+    frame-condition slot, and an elimination pattern needs exactly one nesting pair,
+    `⟨F, ⟨_, _, _, _⟩, M, τ, hτ, t, h⟩` — or a single `hF` passed straight back to
+    `ValidIn.apply_total`.
 
     Inside that nesting the four binders stay **anonymous**. When this existential is
     destructured, use bare `_` names and let instance synthesis recover them: naming them and
@@ -610,9 +514,10 @@ every Dedekind-complete carrier. That witness is a *new* one: `DiscreteNonCompac
 `archWitness` does not port, because `Formula.next` is vacuously false on a densely ordered
 carrier.
 
-Naming the row costs nothing beyond the four instantiations below: the `.Dedekind` binder-shape
-adapters (`SatisfiableSet.dedekind_of_forall`, `SetSemanticConsequenceDedekindDense.of_forall` /
-`.apply`) already exist above, so no new adapter and no new binder list is introduced here.
+Naming the row costs nothing beyond the four instantiations below: the binder-shape adapters it
+needs (`SatisfiableSet.of_forall`, `SetSemanticConsequenceOn.of_forall_total` / `.apply_total`)
+are the generic, `fc`-indexed ones above, so no new adapter and no new binder list is introduced
+here — and none is introduced for any other tag either.
 
 No import change is required: `DenselyOrdered` is already in scope via
 `SetSemanticConsequenceDedekindDense` above.
@@ -645,12 +550,13 @@ def CompactDedekind : Prop := Compact FrameClass.Dedekind
 
     `Sat .Dedekind` is `TaskFrame.IsDedekind`, i.e. `IsDense ∧ IsComplete`, so a destructuring
     pattern needs exactly one nesting pair here, `⟨F, ⟨hd, hlub⟩, M, τ, hτ, t, h⟩`, and an
-    introduction site should call `SatisfiableSet.dedekind_of_forall` above. Note that the
-    destructured `hd : F.IsDense` is **not** visible to instance search — `TaskFrame.IsDense` is
-    a `def` whose head is not `DenselyOrdered` — so a `haveI : DenselyOrdered F.Duration := hd`
-    is needed before any `ValidDedekindDense.apply` or `soundness_dedekind` call. Unlike the
-    Discrete case, that `haveI` is safe: no `DenselyOrdered` instance is baked into `F`'s or
-    `M`'s type. -/
+    introduction site should call `SatisfiableSet.of_forall` above. The destructured
+    `hd : F.IsDense` **is** visible to instance search: `TaskFrame.IsDense` is an `abbrev` and
+    `FrameClass.Sat` is `@[reducible]`, so the whole chain down to `DenselyOrdered F.Duration`
+    unfolds at reducible transparency and no `haveI : DenselyOrdered F.Duration := hd` is needed
+    before a `soundness_dedekind` call. (That `haveI` was previously required and was safe here,
+    unlike in the Discrete case, because no `DenselyOrdered` instance is baked into `F`'s or
+    `M`'s type; it is now simply redundant.) -/
 def SatisfiableDedekindSet (Γ : Set Formula) : Prop := SatisfiableSet FrameClass.Dedekind Γ
 
 /-- The model-existence form at `FrameClass.Dedekind` — `ModelExistence` at that tag.

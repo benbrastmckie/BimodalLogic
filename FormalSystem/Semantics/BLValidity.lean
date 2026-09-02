@@ -197,23 +197,11 @@ Validity over **dense** temporal orders, capturing the frame condition for BL's 
 
 Binder-for-binder mirror of `Semantics.ValidDense`, and like it now an abbreviation: the frame
 constraint is `FrameClass.Sat .Dense`, i.e. `TaskFrame.IsDense`. The binder shape this definition
-used to have is recovered by `BLValidDense.of_forall` / `BLValidDense.apply`.
+used to have is recovered by the generic `BLValidIn.of_forall_total` /
+`BLValidIn.apply_total`; the density witness reaches typeclass resolution
+directly, because `FrameClass.Sat` is `@[reducible]` and `TaskFrame.IsDense` is an `abbrev`.
 -/
 def BLValidDense (φ : BLFormula) : Prop := BLValidIn ProofSystem.FrameClass.Dense φ
-
-/-- Introduce `BLValidDense` from the pre-abbreviation binder shape, with the density witness
-restored to the local context as an instance. -/
-theorem BLValidDense.of_forall {φ : BLFormula}
-    (h : ∀ (F : TaskFrame) [DenselyOrdered F.Duration] (M : TaskModel F)
-           (τ : WorldHistory F), τ.IsTotal → ∀ t : F.Duration, BLTruthAt M τ t φ) :
-    BLValidDense φ :=
-  fun F hF M τ t => @h F hF M τ.val τ.property t
-
-/-- Eliminate `BLValidDense` into the pre-abbreviation binder shape. -/
-theorem BLValidDense.apply {φ : BLFormula} (h : BLValidDense φ) (F : TaskFrame)
-    [inst : DenselyOrdered F.Duration] (M : TaskModel F) (τ : WorldHistory F)
-    (hτ : τ.IsTotal) (t : F.Duration) : BLTruthAt M τ t φ :=
-  h F inst M ⟨τ, hτ⟩ t
 
 /--
 Validity over **discrete** temporal orders: `BLValid` with successor and predecessor structure
@@ -221,30 +209,11 @@ added to the binder list, capturing the frame condition for BL's discreteness ax
 
 Binder-for-binder mirror of `Semantics.ValidDiscrete`, and like it now an abbreviation: the frame
 constraint is `FrameClass.Sat .Discrete`, i.e. `TaskFrame.IsSuccArchDiscrete` — `def:TMplus-f`'s
-Hölder narrowing to ℤ-time. The binder shape this definition used to have is recovered by
-`BLValidDiscrete.of_forall` / `BLValidDiscrete.apply`.
+Hölder narrowing to ℤ-time. The binder shape this definition used to have is recovered by the generic `BLValidIn.of_forall_total` /
+`BLValidIn.apply_total` followed by
+`sat_intro`, which destructures the `IsSuccArchDiscrete` existential into the four instances.
 -/
 def BLValidDiscrete (φ : BLFormula) : Prop := BLValidIn ProofSystem.FrameClass.Discrete φ
-
-/-- Introduce `BLValidDiscrete` from the pre-abbreviation four-instance binder shape. The
-existential `TaskFrame.IsSuccArchDiscrete` is destructured with `obtain` and its witnesses passed
-positionally with `@`, never through `haveI`. -/
-theorem BLValidDiscrete.of_forall {φ : BLFormula}
-    (h : ∀ (F : TaskFrame) [SuccOrder F.Duration] [PredOrder F.Duration]
-           [IsSuccArchimedean F.Duration] [IsPredArchimedean F.Duration] (M : TaskModel F)
-           (τ : WorldHistory F), τ.IsTotal → ∀ t : F.Duration, BLTruthAt M τ t φ) :
-    BLValidDiscrete φ := by
-  intro F hF M τ t
-  obtain ⟨so, po, hsa, hpa⟩ := hF
-  exact @h F so po hsa hpa M τ.val τ.property t
-
-/-- Eliminate `BLValidDiscrete` into the pre-abbreviation binder shape. -/
-theorem BLValidDiscrete.apply {φ : BLFormula} (h : BLValidDiscrete φ) (F : TaskFrame)
-    [so : SuccOrder F.Duration] [po : PredOrder F.Duration]
-    [hsa : IsSuccArchimedean F.Duration] [hpa : IsPredArchimedean F.Duration]
-    (M : TaskModel F) (τ : WorldHistory F) (hτ : τ.IsTotal) (t : F.Duration) :
-    BLTruthAt M τ t φ :=
-  h F ⟨so, po, hsa, hpa⟩ M ⟨τ, hτ⟩ t
 
 /--
 **`BLValidDiscrete` with the two Archimedean binders dropped.**
@@ -282,27 +251,12 @@ at `FrameClass.Dedekind` and is false on `ℤ`, which satisfies every remaining 
 deliberately no `BLValidDedekind` in this file.
 
 Now an abbreviation: the frame constraint is `FrameClass.Sat .Dedekind`, i.e.
-`TaskFrame.IsDedekind`. The binder shape this definition used to have is recovered by
-`BLValidDedekindDense.of_forall` / `BLValidDedekindDense.apply`.
+`TaskFrame.IsDedekind`. The binder shape this definition used to have is recovered by the generic `BLValidIn.of_forall_total` /
+`BLValidIn.apply_total` followed by
+`sat_intro`, which splits `IsDedekind` into the density instance and the least-upper-bound
+hypothesis.
 -/
 def BLValidDedekindDense (φ : BLFormula) : Prop := BLValidIn ProofSystem.FrameClass.Dedekind φ
-
-/-- Introduce `BLValidDedekindDense` from the pre-abbreviation binder shape. -/
-theorem BLValidDedekindDense.of_forall {φ : BLFormula}
-    (h : ∀ (F : TaskFrame) [DenselyOrdered F.Duration],
-           (∀ s : Set F.Duration, s.Nonempty → BddAbove s → ∃ x, IsLUB s x) →
-           ∀ (M : TaskModel F) (τ : WorldHistory F), τ.IsTotal →
-             ∀ t : F.Duration, BLTruthAt M τ t φ) :
-    BLValidDedekindDense φ :=
-  fun F hF M τ t => @h F hF.1 hF.2 M τ.val τ.property t
-
-/-- Eliminate `BLValidDedekindDense` into the pre-abbreviation binder shape. -/
-theorem BLValidDedekindDense.apply {φ : BLFormula} (h : BLValidDedekindDense φ) (F : TaskFrame)
-    [inst : DenselyOrdered F.Duration]
-    (hlub : ∀ s : Set F.Duration, s.Nonempty → BddAbove s → ∃ x, IsLUB s x)
-    (M : TaskModel F) (τ : WorldHistory F) (hτ : τ.IsTotal) (t : F.Duration) :
-    BLTruthAt M τ t φ :=
-  h F ⟨inst, hlub⟩ M ⟨τ, hτ⟩ t
 
 namespace BLValidity
 

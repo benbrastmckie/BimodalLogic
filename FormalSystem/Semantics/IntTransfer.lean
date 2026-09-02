@@ -394,7 +394,8 @@ successor half.
 theorem validDiscrete_iff_validInt (φ : Formula) : ValidDiscrete φ ↔ ValidInt φ := by
   constructor
   · intro h F M τ hτ t
-    exact h.apply F.toTaskFrame M τ hτ t
+    exact ValidIn.apply_total h F.toTaskFrame
+      (TaskFrame.isSuccArchDiscrete_of_instances _) M τ hτ t
   · intro h
     refine ValidIn.of_forall_total ?_
     intro F hF M τ hτ t

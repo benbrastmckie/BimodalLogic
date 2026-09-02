@@ -114,9 +114,10 @@ to `TaskFrame.IsDense F` — a plain `def` whose head symbol is not `DenselyOrde
 synthesis reduces only at reducible transparency, so a **bare** `inferInstance` cannot see
 through it and fails with `type class instance expected`. Ascribing the expected type names
 `DenselyOrdered …` directly, synthesis succeeds there, and the result unifies with `Sat .Dense F`
-by ordinary definitional unfolding. This is the same invisibility already recorded on
-`SetSemanticConsequenceDense.of_forall` (`Metalogic/SetConsequence.lean`), and the reason the
-`SatisfiableSet.*_of_forall` adapters take their frame conditions as instance arguments.
+by ordinary definitional unfolding. The type ascription is what makes the *bare*
+`inferInstance` unnecessary; `SatisfiableSet.of_forall` (`Metalogic/SetConsequence.lean`) takes
+the frame condition as a plain `fc.Sat F` argument, so nothing downstream needs it as an instance
+binder.
 -/
 theorem modelExistenceDense : ModelExistenceDense := by
   classical

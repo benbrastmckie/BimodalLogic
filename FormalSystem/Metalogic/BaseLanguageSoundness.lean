@@ -158,8 +158,9 @@ theorem blValid_iff_valid_tr (φ : BLFormula) : BLValid φ ↔ valid (tr φ) := 
 /--
 The **`.Discrete` mirror** of `blValid_iff_valid_tr`: BL validity over the discrete frame class
 is `TruthAt`-equivalent to `ValidDiscrete` of the translation, with the four
-`SuccOrder`/`PredOrder`/`IsSuccArchimedean`/`IsPredArchimedean` instance binders recovered by
-`sat_intro` from the single `Sat .Discrete F` hypothesis the generic adapters carry.
+`SuccOrder`/`PredOrder`/`IsSuccArchimedean`/`IsPredArchimedean` frame condition travelling as
+the single packed `Sat .Discrete F` hypothesis that the generic adapters carry on both sides, so
+neither direction has to open it.
 Same two-branch `constructor` proof as `blValid_iff_valid_tr`, off `truthAt_tr`.
 
 Consumed by `Metalogic/TMCompletenessReduction.lean`'s `tmCompleteDiscrete_iff_forwardDiscrete`.
@@ -170,13 +171,11 @@ theorem blValidDiscrete_iff_validDiscrete_tr (φ : BLFormula) :
   · intro h
     refine ValidIn.of_forall_total ?_
     intro F hF M τ hτ t
-    sat_intro hF
-    exact (truthAt_tr M φ τ t).mpr (h.apply F M τ hτ t)
+    exact (truthAt_tr M φ τ t).mpr (BLValidIn.apply_total h F hF M τ hτ t)
   · intro h
     refine BLValidIn.of_forall_total ?_
     intro F hF M τ hτ t
-    sat_intro hF
-    exact (truthAt_tr M φ τ t).mp (h.apply F M τ hτ t)
+    exact (truthAt_tr M φ τ t).mp (ValidIn.apply_total h F hF M τ hτ t)
 
 end FormalSystem.Semantics
 
@@ -473,8 +472,8 @@ theorem bl_not_derivable_nil_bot_discrete :
     ¬ BaseLanguage.Derivable FrameClass.Discrete ([] : BaseLanguage.Context) BLFormula.bot := by
   rintro ⟨d⟩
   obtain ⟨τ⟩ := TaskFrame.hF_nonempty_of_frameAxioms (FrameOver.trivialFrame (D := ℤ))
-  exact (bl_soundness_discrete_valid d).apply (FrameOver.trivialFrame (D := ℤ)) TaskModel.allFalse
-    τ.val τ.property 0
+  exact BLValidIn.apply_total (bl_soundness_discrete_valid d) (FrameOver.trivialFrame (D := ℤ))
+    (TaskFrame.isSuccArchDiscrete_of_instances _) TaskModel.allFalse τ.val τ.property 0
 
 /-! ## Native spot checks
 

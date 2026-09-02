@@ -1598,7 +1598,9 @@ theorem not_derivable_nil_bot_discrete :
   rintro ⟨d⟩
   obtain ⟨τ⟩ := TaskFrame.hF_nonempty_of_frameAxioms (FrameOver.trivialFrame (D := ℤ))
   exact Truth.bot_false
-    ((FormalSystem.Metalogic.soundness_discrete_valid d).apply (FrameOver.trivialFrame (D := ℤ))
+    (Semantics.ValidIn.apply_total (FormalSystem.Metalogic.soundness_discrete_valid d)
+      (FrameOver.trivialFrame (D := ℤ))
+      (Semantics.TaskFrame.isSuccArchDiscrete_of_instances _)
       TaskModel.allFalse τ.val τ.property 0)
 
 end FormalSystem.Metalogic

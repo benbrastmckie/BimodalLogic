@@ -411,11 +411,13 @@ theorem dedWitness_finitely_satisfiable (q : Atom) (L : List Formula)
 `L.foldr imp ⊥` Dedekind-valid. But `dedWitness_finitely_satisfiable` makes that same `L` true
 at a point of the `ℝ` model, and `truthAt_foldr_imp` turns the two into `False`.
 
-The `haveI : DenselyOrdered F.Duration := hd` is required: `TaskFrame.IsDense` is a `def` whose
-head is not `DenselyOrdered`, so the destructured `hd` is invisible to instance search and
-`ValidDedekindDense.apply`'s instance binder cannot be filled. Unlike the Discrete case the
-`haveI` is safe here — no `DenselyOrdered` instance is baked into `F`'s or `M`'s type, so there
-is no definitional equality to break.
+The `haveI : DenselyOrdered F.Duration := hd` is no longer required: `TaskFrame.IsDense` is an
+`abbrev` and `FrameClass.Sat` is `@[reducible]`, so the destructured `hd` is visible to instance
+search on its own, and `ValidIn.apply_total` takes the frame condition as the single packed
+`⟨hd, hlub⟩` argument rather than as an instance binder. It is retained only because
+`soundness_dedekind`, further down, still states its density hypothesis as an instance binder;
+it is safe here, as it always was, because no `DenselyOrdered` instance is baked into `F`'s or
+`M`'s type, so there is no definitional equality to break.
 
 Sorry-free at exactly `[propext, Classical.choice, Quot.sound]`; see the axiom audit below. -/
 theorem dedekind_consequence_not_compact : ¬ CompactDedekind := by

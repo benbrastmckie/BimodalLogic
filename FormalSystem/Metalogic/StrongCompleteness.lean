@@ -200,30 +200,12 @@ drifted. The guard has not been dropped — it has moved somewhere it cannot dri
 condition is `FrameClass.Sat .Dedekind` (`Semantics/FrameClassValidity.lean`), the *same*
 expression `ValidDedekindDense` and `soundness_in` are indexed by, so there is now one source of
 truth rather than two hand-copied lists. `soundness_dedekind_consequence` remains as the
-non-vacuity witness it also always was. The pre-abbreviation binder shape is recovered by
-`SemanticConsequenceDedekindDense.of_forall` / `.apply`.
+non-vacuity witness it also always was. The pre-abbreviation binder shape is recovered by the
+generic `SemanticConsequenceIn.of_forall_total` / `.apply_total` (`Semantics/Validity.lean`), followed by `sat_intro` where the
+proof consumes the frame condition.
 -/
 def SemanticConsequenceDedekindDense (Γ : Context) (φ : Formula) : Prop :=
   SemanticConsequenceIn FrameClass.Dedekind Γ φ
-
-/-- Introduce `SemanticConsequenceDedekindDense` from its pre-abbreviation binder shape, with the
-density witness and the least-upper-bound hypothesis unpacked from the `Sat .Dedekind` pair. -/
-theorem SemanticConsequenceDedekindDense.of_forall {Γ : Context} {φ : Formula}
-    (h : ∀ (F : TaskFrame) [DenselyOrdered F.Duration],
-           (∀ s : Set F.Duration, s.Nonempty → BddAbove s → ∃ x, IsLUB s x) →
-           ∀ (M : TaskModel F) (τ : WorldHistory F), τ.IsTotal →
-           ∀ t : F.Duration, (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ) :
-    SemanticConsequenceDedekindDense Γ φ :=
-  fun F hF M τ hτ t => @h F hF.1 hF.2 M τ hτ t
-
-/-- Eliminate `SemanticConsequenceDedekindDense` into its pre-abbreviation binder shape. -/
-theorem SemanticConsequenceDedekindDense.apply {Γ : Context} {φ : Formula}
-    (h : SemanticConsequenceDedekindDense Γ φ) (F : TaskFrame)
-    [inst : DenselyOrdered F.Duration]
-    (hlub : ∀ s : Set F.Duration, s.Nonempty → BddAbove s → ∃ x, IsLUB s x)
-    (M : TaskModel F) (τ : WorldHistory F) (hτ : τ.IsTotal) (t : F.Duration)
-    (hall : ∀ ψ ∈ Γ, TruthAt M τ t ψ) : TruthAt M τ t φ :=
-  h F ⟨inst, hlub⟩ M τ hτ t hall
 
 /-! ## The semantic deduction theorem -/
 
@@ -729,28 +711,11 @@ there "all carriers" is the class — see the Base section above.)
 **Where the binder guard now lives.** As for `SemanticConsequenceDedekindDense` above: the
 hand-copied binder list has been replaced by `FrameClass.Sat .Dense`, the same expression
 `ValidDense` and `soundness_in` are indexed by, so the guard `soundness_dense_consequence` used
-to enforce by textual coincidence is now structural. The pre-abbreviation binder shape is
-recovered by `SemanticConsequenceDense.of_forall` / `.apply`.
+to enforce by textual coincidence is now structural. The pre-abbreviation binder shape is recovered by the
+generic `SemanticConsequenceIn.of_forall_total` / `.apply_total` (`Semantics/Validity.lean`).
 -/
 def SemanticConsequenceDense (Γ : Context) (φ : Formula) : Prop :=
   SemanticConsequenceIn FrameClass.Dense Γ φ
-
-/-- Introduce `SemanticConsequenceDense` from its pre-abbreviation binder shape, with the density
-witness restored to the local context as an instance. -/
-theorem SemanticConsequenceDense.of_forall {Γ : Context} {φ : Formula}
-    (h : ∀ (F : TaskFrame) [DenselyOrdered F.Duration] (M : TaskModel F)
-           (τ : WorldHistory F), τ.IsTotal →
-           ∀ t : F.Duration, (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ) :
-    SemanticConsequenceDense Γ φ :=
-  fun F hF M τ hτ t => @h F hF M τ hτ t
-
-/-- Eliminate `SemanticConsequenceDense` into its pre-abbreviation binder shape. -/
-theorem SemanticConsequenceDense.apply {Γ : Context} {φ : Formula}
-    (h : SemanticConsequenceDense Γ φ) (F : TaskFrame)
-    [inst : DenselyOrdered F.Duration] (M : TaskModel F)
-    (τ : WorldHistory F) (hτ : τ.IsTotal) (t : F.Duration)
-    (hall : ∀ ψ ∈ Γ, TruthAt M τ t ψ) : TruthAt M τ t φ :=
-  h F inst M τ hτ t hall
 
 /--
 **Semantic deduction theorem for the dense class.** Consequence from a finite context is
@@ -869,34 +834,11 @@ longer reproduced here by hand but read off `FrameClass.Sat .Discrete`
 (`TaskFrame.IsSuccArchDiscrete`), the same expression `ValidDiscrete` and `soundness_in` are
 indexed by. `soundness_discrete_consequence`'s warning about dropping `[IsSuccArchimedean D]`
 still holds and is now enforced at that one definition rather than by keeping two lists in step.
-The pre-abbreviation binder shape is recovered by `SemanticConsequenceDiscrete.of_forall` /
-`.apply`.
+The pre-abbreviation binder shape is recovered by the
+generic `SemanticConsequenceIn.of_forall_total` / `.apply_total` (`Semantics/Validity.lean`), followed by `sat_intro`.
 -/
 def SemanticConsequenceDiscrete (Γ : Context) (φ : Formula) : Prop :=
   SemanticConsequenceIn FrameClass.Discrete Γ φ
-
-/-- Introduce `SemanticConsequenceDiscrete` from its pre-abbreviation four-instance binder shape.
-The existential `TaskFrame.IsSuccArchDiscrete` is destructured with `obtain` and its witnesses
-passed positionally with `@`, never through `haveI`, which would break definitional equality
-against instances already baked into `F`'s type. -/
-theorem SemanticConsequenceDiscrete.of_forall {Γ : Context} {φ : Formula}
-    (h : ∀ (F : TaskFrame) [SuccOrder F.Duration] [PredOrder F.Duration]
-           [IsSuccArchimedean F.Duration] [IsPredArchimedean F.Duration] (M : TaskModel F)
-           (τ : WorldHistory F), τ.IsTotal →
-           ∀ t : F.Duration, (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ) :
-    SemanticConsequenceDiscrete Γ φ := by
-  intro F hF M τ hτ t hall
-  obtain ⟨so, po, hsa, hpa⟩ := hF
-  exact @h F so po hsa hpa M τ hτ t hall
-
-/-- Eliminate `SemanticConsequenceDiscrete` into its pre-abbreviation binder shape. -/
-theorem SemanticConsequenceDiscrete.apply {Γ : Context} {φ : Formula}
-    (h : SemanticConsequenceDiscrete Γ φ) (F : TaskFrame)
-    [so : SuccOrder F.Duration] [po : PredOrder F.Duration]
-    [hsa : IsSuccArchimedean F.Duration] [hpa : IsPredArchimedean F.Duration]
-    (M : TaskModel F) (τ : WorldHistory F) (hτ : τ.IsTotal) (t : F.Duration)
-    (hall : ∀ ψ ∈ Γ, TruthAt M τ t ψ) : TruthAt M τ t φ :=
-  h F ⟨so, po, hsa, hpa⟩ M τ hτ t hall
 
 /--
 **Semantic deduction theorem for the discrete class.** Consequence from a finite context is

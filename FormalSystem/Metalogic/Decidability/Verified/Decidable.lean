@@ -2405,14 +2405,14 @@ def carrierDiscrete : CarrierProp := fun D =>
 /-- Land a `ValidDiscrete` conclusion where the rule-soundness proofs need it.
 
 `ValidDiscrete` states truth at the inert carrier `Set.univ`, which is exactly what the
-rule-soundness proofs below evaluate against, so this is `ValidDiscrete.apply` at the frame this
-tree carries. It is kept as a named step so the three `.Discrete` call sites read the same as they
+rule-soundness proofs below evaluate against, so this is `ValidIn.apply_total` at `.Discrete` and
+at the frame this tree carries. It is kept as a named step so the three `.Discrete` call sites read the same as they
 did when a carrier transport was still needed; it disappears with `TruthAt`'s set parameter
 itself.
 
 The four discreteness instances are bound on `D` and handed to `FrameClass.Discrete.Sat`
-**positionally**, exactly as `ValidDiscrete.of_forall` and `ValidDiscrete.apply` do: `SuccOrder`
-and `PredOrder` are data, so routing them back through instance synthesis at
+**positionally**, exactly as `TaskFrame.isSuccArchDiscrete_of_instances` and `sat_intro` do:
+`SuccOrder` and `PredOrder` are data, so routing them back through instance synthesis at
 `F.toTaskFrame.Duration.carrier` breaks against the instances the three call sites have already
 fixed on `D` with `letI`. -/
 theorem truthAt_of_validDiscrete {F : FrameOver (TemporalOrder.of D)} {M : TaskModel F}
