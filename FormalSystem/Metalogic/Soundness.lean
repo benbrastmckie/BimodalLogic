@@ -91,7 +91,7 @@ The induction over `DerivationTree` is written **once**, in `soundness_in`, at a
 
 The `temporal_duality` case is where the four per-class proofs used to diverge, each reaching
 for its own swap-validity recursion — one in `SoundnessLemmas/FrameClassVariants.lean` for
-`.Base`, one there for `.Discrete`, one in `SoundnessLemmas/DenseValidity.lean` for `.Dense`,
+`.Base`, one there for `.Discrete`, a third for `.Dense` in a dense-specific module of its own,
 and a fourth written out in this file for `.Dedekind`. Carrying the class as a parameter rather
 than baking it into the statement collapses all four into the one arm above, and the four
 superseded recursions have been removed.
@@ -1188,7 +1188,7 @@ definitionally (verified by `rfl`), so those two lemmas cover each other's swap 
 self-covering under the swap: `(sep φ).swapTemporal` exchanges `K⁺`/`K⁻` and `U`/`S`, and the
 result is NOT an instance of `Axiom.sep`. It is therefore a genuinely separate semantic fact and
 gets its own lemma, matching the tree's `swap_axiom_*_valid` convention in
-`SoundnessLemmas/DenseValidity.lean` (nine instances, none bundled with its unswapped partner).
+`SoundnessLemmas/FrameClassVariants.lean` (none bundled with its unswapped partner).
 
 Stated separately from `sep_valid` rather than folded into a conjunction with it: the two are
 consumed at different call sites (`axiom_validIn_min`'s `sep` arm and `axiom_swap_validIn_min`'s),

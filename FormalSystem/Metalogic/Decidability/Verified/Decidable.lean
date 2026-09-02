@@ -2376,7 +2376,7 @@ duplicated Mathlib.
 
 **On the import edge.** `FormalSystem.Metalogic.Soundness` remains refused, and this is *not*
 that edge. `FrameClassVariants` is a different module with a different import closure —
-`FrameClassVariants → DenseValidity → Core → {Semantics.Truth, ProofSystem.Derivation,
+`FrameClassVariants → Core → {Semantics.Truth, ProofSystem.Derivation,
 ProofSystem.Axioms}` — and nothing anywhere in it imports `Decidability`, so there is no cycle.
 The cost is a heavier build edge, not a cycle.
 

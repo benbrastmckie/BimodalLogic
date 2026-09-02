@@ -288,7 +288,7 @@ a third consumer exists, extract a third lemma rather than proceeding.
 
 ---
 
-### Phase 4: Transplant the survivors and delete `DenseValidity.lean` [NOT STARTED]
+### Phase 4: Transplant the survivors and delete `DenseValidity.lean` [COMPLETED]
 
 **Goal**: Move the eight surviving declarations into their sole consumer and remove the file and
 its import edges.

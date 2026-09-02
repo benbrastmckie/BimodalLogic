@@ -6,8 +6,8 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.Metalogic.SoundnessLemmas.CoValidity
 import FormalSystem.Metalogic.SoundnessLemmas.Core
-import FormalSystem.Metalogic.SoundnessLemmas.DenseValidity
 import FormalSystem.Metalogic.SoundnessLemmas.FrameClassVariants
+import FormalSystem.Metalogic.SoundnessLemmas.Separability
 
 /-!
 # Metalogic.SoundnessLemmas: Per-Axiom Validity Lemmas
@@ -20,9 +20,9 @@ theorem; keeping them separate stops that file from growing without bound.
 
 - `CoValidity` — `co_valid`, the semantic validity of the paper's CO principle (not a
   soundness case: CO is derived here, not primitive)
-- `Core` — validity lemmas for the base axiom schemas
-- `DenseValidity` — validity lemmas specific to the dense frame class
-- `FrameClassVariants` — validity across the frame-class variants
+- `Core` — the local `IsValid` definition the per-axiom lemmas are stated at
+- `FrameClassVariants` — per-axiom validity and swap-validity across the frame-class variants
+- `Separability` — the order-theoretic input to Reynolds' separability axiom
 
 ## Position in the Layering
 
