@@ -327,18 +327,13 @@ Generic polymorphic task frame.
 
 Works at any temporal order `D` (`def:temporal-order`) — one binder, not a carrier plus four
 algebraic side conditions. WorldState is Unit (trivial).
+
+**This is `TaskFrame.lean`'s `FrameOver.trivialFrame`, not a second copy of it.** The two were
+byte-identical field for field; `TemporalOrder.of ↑D` is `D` by `rfl` (structure eta on
+`TemporalOrder`), so the constant transports across the binder shapes with no coercion. The
+`genericTimeFrame_*` axiom lemmas below are retained as the citable names at this binder shape.
 -/
-def genericTimeFrame : FrameOver D where
-  WorldState := Unit
-  worldNonempty := inferInstanceAs (Nonempty Unit)
-  TaskRel := fun _ _ _ => True
-  nullity_identity := fun _ _ => ⟨fun _ => Subsingleton.elim _ _, fun _ => trivial⟩
-  comp := TaskFrame.comp_of (TaskFrame.interpolates_of_total fun _ _ _ => trivial)
-    fun _ _ _ _ _ _ _ _ _ => trivial
-  converse := fun _ _ _ => ⟨fun _ => trivial, fun _ => trivial⟩
-  serial := TaskFrame.serial_of_total fun _ _ _ => trivial
-  limit := TaskFrame.limit_of_subsingleton
-  saturation := TaskFrame.saturation_of_subsingleton
+abbrev genericTimeFrame : FrameOver D := FrameOver.trivialFrame (D := ↑D)
 
 /-! ### `genericTimeFrame` discharges `def:frame`'s four axioms (total class) -/
 
@@ -378,54 +373,13 @@ them: over a dense `D` the permissive relation puts every state in every cone of
 state and *Limit* (`def:frame#Limit`) fails outright. They are genuine side conditions on the
 carrier, so they stay binders — unlike `def:temporal-order`'s four components, which are now
 `D`'s own fields.
+
+**This is `TaskFrame.lean`'s `FrameOver.natFrame`, not a second copy of it.** The two were
+byte-identical field for field, both discharging the permissive class; `TemporalOrder.of ↑D` is
+`D` by `rfl`, so the constant transports across the binder shapes with no coercion.
 -/
-def genericNatFrame [SuccOrder ↑D] [NoMaxOrder ↑D] : FrameOver D where
-  WorldState := Nat
-  worldNonempty := inferInstanceAs (Nonempty Nat)
-  TaskRel := fun w d u => d ≠ 0 ∨ w = u
-  nullity_identity := fun w u => by
-    constructor
-    · intro h
-      cases h with
-      | inl h => exact absurd rfl h
-      | inr h => exact h
-    · intro h
-      right; exact h
-  comp := TaskFrame.comp_of (TaskFrame.interpolates_of_permissive fun _ _ _ => Iff.rfl)
-    fun w u v x y hx hy h1 h2 => by
-      cases h1 with
-      | inl hxne =>
-        left
-        intro heq
-        have hy_eq : y = -x := (neg_eq_of_add_eq_zero_right heq).symm
-        have h1 : 0 ≤ -x := hy_eq ▸ hy
-        have h2 : x ≤ 0 := neg_nonneg.mp h1
-        have h3 : x = 0 := le_antisymm h2 hx
-        exact hxne h3
-      | inr hw =>
-        cases h2 with
-        | inl hyne =>
-          left
-          intro heq
-          have hx_eq : x = -y := (neg_eq_of_add_eq_zero_left heq).symm
-          have h1 : 0 ≤ -y := hx_eq ▸ hx
-          have h2 : y ≤ 0 := neg_nonneg.mp h1
-          have h3 : y = 0 := le_antisymm h2 hy
-          exact hyne h3
-        | inr hu => right; exact hw.trans hu
-  serial := TaskFrame.serial_of_permissive fun _ _ _ => Iff.rfl
-  limit := TaskFrame.limit_of_permissive fun _ _ _ => Iff.rfl
-  saturation := TaskFrame.saturation_of_permissive fun _ _ _ => Iff.rfl
-  converse := fun w d u => by
-    constructor
-    · intro h
-      cases h with
-      | inl hd => left; simp [hd]
-      | inr heq => right; exact heq.symm
-    · intro h
-      cases h with
-      | inl hnd => left; simp only [ne_eq, neg_eq_zero] at hnd; exact hnd
-      | inr heq => right; exact heq.symm
+abbrev genericNatFrame [SuccOrder ↑D] [NoMaxOrder ↑D] : FrameOver D :=
+  FrameOver.natFrame (D := ↑D)
 
 /-! ### `genericNatFrame` discharges `def:frame`'s four axioms (permissive class) -/
 

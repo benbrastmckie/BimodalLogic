@@ -1174,6 +1174,63 @@ theorem interpolates_of_permissive {W : Type} {R : W → D → W → Prop}
     · exact ⟨w, (hR w x w).mpr (Or.inr rfl), (hR w y v).mpr (Or.inl hy)⟩
   · exact ⟨w, (hR w x w).mpr (Or.inr rfl), (hR w y v).mpr (Or.inr hwv)⟩
 
+omit [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D] in
+/--
+*Nullity* for a permissive relation: `R w 0 u ↔ w = u`. The `d ≠ 0` disjunct is unavailable at
+`d = 0`, so only `w = u` survives.
+-/
+theorem nullity_identity_of_permissive {W : Type} {R : W → D → W → Prop}
+    (hR : ∀ w d u, R w d u ↔ (d ≠ 0 ∨ w = u)) : ∀ w u, R w 0 u ↔ w = u := by
+  intro w u
+  rw [hR]
+  simp
+
+omit [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D] in
+/--
+*Converse* for a permissive relation: the defining condition `d ≠ 0 ∨ w = u` is symmetric under
+`d ↦ -d` together with `w ↔ u`, since `-d = 0 ↔ d = 0`.
+-/
+theorem converse_of_permissive {W : Type} {R : W → D → W → Prop}
+    (hR : ∀ w d u, R w d u ↔ (d ≠ 0 ∨ w = u)) : ∀ w d u, R w d u ↔ R u (-d) w := by
+  intro w d u
+  rw [hR, hR]
+  simp only [ne_eq, neg_eq_zero]
+  exact ⟨fun h => h.imp id Eq.symm, fun h => h.imp id Eq.symm⟩
+
+omit [Nontrivial D] in
+/--
+The composition half of *Compositionality* for a permissive relation.
+
+**The sign argument is written with `neg_nonneg` and `le_antisymm` deliberately.** `linarith` is
+not available in this module's import closure and a `linarith` version fails to elaborate; do not
+"simplify" this to `linarith` at review time. If both legs are nonnegative and their sum is zero,
+each is zero — which is what turns "the first leg has nonzero duration" into "the composite does".
+-/
+theorem forward_comp_of_permissive {W : Type} {R : W → D → W → Prop}
+    (hR : ∀ w d u, R w d u ↔ (d ≠ 0 ∨ w = u)) :
+    ∀ w u v x y, 0 ≤ x → 0 ≤ y → R w x u → R u y v → R w (x + y) v := by
+  intro w u v x y hx hy h1 h2
+  rw [hR] at h1 h2 ⊢
+  rcases h1 with hxne | hwu
+  · refine Or.inl fun heq => hxne (le_antisymm ?_ hx)
+    have hy_eq : y = -x := (neg_eq_of_add_eq_zero_right heq).symm
+    exact neg_nonneg.mp (hy_eq ▸ hy)
+  · rcases h2 with hyne | huv
+    · refine Or.inl fun heq => hyne (le_antisymm ?_ hy)
+      have hx_eq : x = -y := (neg_eq_of_add_eq_zero_left heq).symm
+      exact neg_nonneg.mp (hx_eq ▸ hx)
+    · exact Or.inr (hwu.trans huv)
+
+/--
+*Compositionality* for a permissive relation, as the biconditional field of record.
+
+`[Nontrivial D]` is **needed** here and is not removable: it is inherited through
+`interpolates_of_permissive`. The other three lemmas of this family `omit` it.
+-/
+theorem comp_of_permissive {W : Type} {R : W → D → W → Prop}
+    (hR : ∀ w d u, R w d u ↔ (d ≠ 0 ∨ w = u)) : Compositional R :=
+  comp_of (interpolates_of_permissive hR) (forward_comp_of_permissive hR)
+
 /--
 *Limit* for a permissive relation over a discrete duration type.
 
@@ -1511,54 +1568,13 @@ def natFrame {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
   WorldState := Nat
   worldNonempty := inferInstanceAs (Nonempty Nat)
   TaskRel := fun w d u => d ≠ 0 ∨ w = u
-  nullity_identity := fun w u => by
-    constructor
-    · intro h
-      cases h with
-      | inl h => exact absurd rfl h
-      | inr h => exact h
-    · intro h
-      right; exact h
-  comp := comp_of (interpolates_of_permissive fun _ _ _ => Iff.rfl)
-    fun w u v x y hx hy h1 h2 => by
-      -- Need: x + y ≠ 0 ∨ w = v
-      -- Key fact: if 0 ≤ x and 0 ≤ y and x + y = 0, then x = 0 and y = 0
-      cases h1 with
-      | inl hxne =>
-        -- x ≠ 0 but 0 ≤ x, so x > 0. If x + y = 0 then y = -x < 0, contradicting 0 ≤ y
-        left
-        intro heq
-        -- From x + y = 0: y = -x
-        have hy_eq : y = -x := (neg_eq_of_add_eq_zero_right heq).symm
-        have h1 : 0 ≤ -x := hy_eq ▸ hy
-        have h2 : x ≤ 0 := neg_nonneg.mp h1
-        have h3 : x = 0 := le_antisymm h2 hx
-        exact hxne h3
-      | inr hw =>
-        cases h2 with
-        | inl hyne =>
-          left
-          intro heq
-          -- From x + y = 0: x = -y
-          have hx_eq : x = -y := (neg_eq_of_add_eq_zero_left heq).symm
-          have h1 : 0 ≤ -y := hx_eq ▸ hx
-          have h2 : y ≤ 0 := neg_nonneg.mp h1
-          have h3 : y = 0 := le_antisymm h2 hy
-          exact hyne h3
-        | inr hu => right; exact hw.trans hu
+  -- All six axiom fields are one-line citations of Helper B (`*_of_permissive`).
+  nullity_identity := nullity_identity_of_permissive fun _ _ _ => Iff.rfl
+  comp := comp_of_permissive fun _ _ _ => Iff.rfl
   serial := serial_of_permissive fun _ _ _ => Iff.rfl
   limit := limit_of_permissive fun _ _ _ => Iff.rfl
   saturation := saturation_of_permissive fun _ _ _ => Iff.rfl
-  converse := fun w d u => by
-    constructor
-    · intro h
-      cases h with
-      | inl hd => left; simp [hd]
-      | inr heq => right; exact heq.symm
-    · intro h
-      cases h with
-      | inl hnd => left; simp only [ne_eq, neg_eq_zero] at hnd; exact hnd
-      | inr heq => right; exact heq.symm
+  converse := converse_of_permissive fun _ _ _ => Iff.rfl
 
 /-! #### `natFrame` discharges `def:frame`'s four axioms (permissive class, Helper B) -/
 

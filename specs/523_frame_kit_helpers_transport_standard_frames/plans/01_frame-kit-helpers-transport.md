@@ -262,7 +262,7 @@ adjusting scope. Expected net: 93 → ~10 at the sites, +26 for Helper D, −12 
 
 ---
 
-### Phase 2: Z step-path dictionary — import instead of duplicate [NOT STARTED]
+### Phase 2: Z step-path dictionary — import instead of duplicate [COMPLETED]
 
 **Goal**: Delete `FwdRecBridge.lean`'s re-derivation of the Z step-path dictionary and import
 `IntNormalForm` instead.
@@ -276,9 +276,12 @@ adjusting scope. Expected net: 93 → ~10 at the sites, +26 for Helper D, −12 
       `Bridge.taskRel_diff` `:82-92` (= `respects_of_isStepPath` `:294-303`), `Bridge.ofWalk` +
       `ofWalk_isTotal` `:94-104` (= `HFofStepPath` `:305-316`), and `Bridge.hist_isWalk` `:106-112`
       (= `TaskFrame.HF.isStepPath` `:322-327`), retargeting each consumer.
-- [ ] Retarget `Bridge.taskRel_nat` `:64-78` — the one genuinely different lemma — at
+- [x] Retarget `Bridge.taskRel_nat` `:64-78` — the one genuinely different lemma — at
       `taskRel_natCast_iff_iter` `:182-200` + `iter_of_isStepPath` `:284-292`, which cover the same
-      ground more generally.
+      ground more generally. *(deviation: altered — its only consumer was `Bridge.taskRel_diff`,
+      itself deleted in this phase, so retargeting resolved to deletion: `respects_of_isStepPath`
+      already routes through `taskRel_eq_iter` + `iter_of_isStepPath` internally, and no site
+      needs the `Walk`-side `taskRel_nat` spelling.)*
 - [ ] Add `isWalk_iff_isStepPath` as **`Iff.rfl`**: `Walk.IsWalk R σ := ∀ n : ℤ, R (σ n) (σ (n+1))`
       (`FwdRecPeriodicity:69`) and `IsStepPath F f := ∀ n : ℤ, F.step (f n) (f (n+1))`
       (`IntNormalForm:265-266`) both unfold to `∀ n : ℤ, F.TaskRel (σ n) 1 (σ (n+1))` once `step` is
@@ -306,7 +309,7 @@ redundant, ~52 lines out and ~8 in (net ≈ **−45**). Confirm by diffing each 
 
 ---
 
-### Phase 3: `SoundnessLemmas/DiscreteOrder.lean` and the order-dual cores [NOT STARTED]
+### Phase 3: `SoundnessLemmas/DiscreteOrder.lean` and the order-dual cores [COMPLETED]
 
 **Goal**: Extract the order reasoning out of the four hand-mirrored `FrameClassVariants.lean` proofs
 into abstract-`P` cores, then obtain the two past-side validities by instantiating at `Dᵒᵈ`.
@@ -357,7 +360,7 @@ file before editing.
 
 ---
 
-### Phase 4: Helper B completion and permissive-frame one-liners [NOT STARTED]
+### Phase 4: Helper B completion and permissive-frame one-liners [COMPLETED]
 
 **Goal**: Complete the Helper B family so every permissive-frame axiom is discharged by a one-line
 citation.

@@ -205,36 +205,10 @@ def permissiveFrame (D : TemporalOrder) (so : SuccOrder ↑D) (nm : NoMaxOrder �
   { WorldState := Bool
     worldNonempty := inferInstance
     TaskRel := fun w d u => d ≠ 0 ∨ w = u
-    nullity_identity := by
-      intro w u
-      constructor
-      · rintro (h | h)
-        · exact absurd rfl h
-        · exact h
-      · intro h; exact Or.inr h
-    comp := TaskFrame.comp_of (TaskFrame.interpolates_of_permissive fun _ _ _ => Iff.rfl)
-      (by
-        intro w u v x y hx hy h1 h2
-        rcases h1 with hxne | hw
-        · refine Or.inl fun heq => ?_
-          have hy_eq : y = -x := (neg_eq_of_add_eq_zero_right heq).symm
-          have h1' : 0 ≤ -x := hy_eq ▸ hy
-          exact hxne (le_antisymm (neg_nonneg.mp h1') hx)
-        · rcases h2 with hyne | hu
-          · refine Or.inl fun heq => ?_
-            have hx_eq : x = -y := (neg_eq_of_add_eq_zero_left heq).symm
-            have h1' : 0 ≤ -y := hx_eq ▸ hx
-            exact hyne (le_antisymm (neg_nonneg.mp h1') hy)
-          · exact Or.inr (hw.trans hu))
-    converse := by
-      intro w d u
-      constructor
-      · rintro (hd | heq)
-        · exact Or.inl (by simpa using hd)
-        · exact Or.inr heq.symm
-      · rintro (hd | heq)
-        · exact Or.inl (by simpa using hd)
-        · exact Or.inr heq.symm
+    -- All six axiom fields are one-line citations of Helper B (`*_of_permissive`).
+    nullity_identity := TaskFrame.nullity_identity_of_permissive fun _ _ _ => Iff.rfl
+    comp := TaskFrame.comp_of_permissive fun _ _ _ => Iff.rfl
+    converse := TaskFrame.converse_of_permissive fun _ _ _ => Iff.rfl
     serial := TaskFrame.serial_of_permissive fun _ _ _ => Iff.rfl
     limit := TaskFrame.limit_of_permissive fun _ _ _ => Iff.rfl
     saturation := TaskFrame.saturation_of_permissive fun _ _ _ => Iff.rfl }
