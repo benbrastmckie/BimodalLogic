@@ -1,7 +1,7 @@
 # Implementation Plan: Frame property representation and validity names
 
 - **Task**: 522 - Frame property representation and validity names
-- **Status**: [IMPLEMENTING]
+- **Status**: COMPLETED
 - **Effort**: 17.5 hours
 - **Dependencies**: 518, 519, 521 (all landed; 519's `DenseValidity.lean` deletion and 521's truth
   simp-normal form are preconditions and are satisfied)
@@ -1035,25 +1035,55 @@ measurement.
 
 ---
 
-### Phase 11: Final verification and acceptance [NOT STARTED]
+### Phase 11: Final verification and acceptance [COMPLETED]
 
 **Goal**: Run the full gate set and check every restated acceptance criterion, replacing the two
 criteria research showed to be unachievable or vacuous.
 
 **Tasks**:
-- [ ] Full guarded detached `lake build`.
-- [ ] `lake build BimodalTest` (guarded, detached).
-- [ ] `bash scripts/check-module-invariants.sh` — C1/C2/C14 unchanged. Confirm specifically that
+- [x] Full guarded detached `lake build`.
+- [x] `lake build BimodalTest` (guarded, detached).
+- [x] `bash scripts/check-module-invariants.sh` — C1/C2/C14 unchanged. Confirm specifically that
       the eight pinned names are untouched: `BXCanonical.{completeness, completeness_dense,
       completeness_discrete}`, `Chronicle.countermodel_dense`, `Decidability.sound_of_isValid`,
       `completeness_dedekind`, `strongCompletenessBase`, `strongCompletenessDense`.
-- [ ] Confirm the executable `sorry` count is unchanged and that no new axiom was introduced
+- [x] Confirm the executable `sorry` count is unchanged and that no new axiom was introduced
       (`lean_verify` on a representative renamed theorem in each touched namespace, expecting
       `[propext, Classical.choice, Quot.sound]`).
-- [ ] Run every acceptance grep from Phases 7, 9 and 10 one final time and record the outputs.
-- [ ] Write the implementation summary, including: the Plan A/B outcome from Phase 1, the measured
+- [x] Run every acceptance grep from Phases 7, 9 and 10 one final time and record the outputs.
+- [x] Write the implementation summary, including: the Plan A/B outcome from Phase 1, the measured
       pre/post adapter counts, the measured rename counts, and any Scope Hypothesis that came back
       different from the plan-time figure.
+
+**PHASE 11 COMPLETION NOTE — the gate, run.**
+
+- Full guarded detached `lake build`: **green**.
+- `lake build BimodalTest` (guarded, detached): **green**.
+- `bash scripts/check-module-invariants.sh`: **ALL CHECKS PASSED** (exit 0), including
+  `PASS C1 lake build exits 0`, `PASS C1 lake build BimodalTest exits 0`,
+  `PASS C2 all four flagship axiom sets match baseline`, and both C14 halves.
+- **Scope Hypothesis confirmed.** The pinned set was re-derived from
+  `scripts/check-module-invariants.sh` itself (lines 145-158 for C2, 771-784 for C14(ii)) rather
+  than from this plan's list, and is exactly the eight names the plan states:
+  `BXCanonical.{completeness, completeness_dense, completeness_discrete}`,
+  `Chronicle.countermodel_dense`, `Decidability.sound_of_isValid`, `completeness_dedekind`,
+  `strongCompletenessBase`, `strongCompletenessDense`. None is renamed by this task — none
+  contains `ValidDedekind*`, a bare `valid` identifier, `*_is_valid` or `swap_axiom_`
+  (`sound_of_isValid` survives because the `valid -> Valid` pattern requires an identifier
+  boundary before `valid`, which `isValid` does not have).
+- **Sorry baseline established by content, not line number**, and unchanged: 160 executable
+  `sorry`s, every one under `FormalSystem/Boneyard/`; zero outside it, before and after.
+- **Zero `axiom` declarations** before and after. The eight `grep '^axiom '` hits are
+  line-wrapped docstring prose beginning with the word "axiom", not declarations.
+- `lean_verify` on a representative theorem in each touched namespace returned
+  `[propext, Classical.choice, Quot.sound]` or a subset, with no `sorryAx`.
+- All three acceptance greps (Phase 7, Phase 9, Phase 10) return **nothing**.
+- Exactly one `Valid*`-name-versus-tag warning survives in `FormalSystem/`, on `ValidComplete`
+  (`Semantics/Validity.lean:655`).
+- Implementation summary written to
+  `specs/522_frame_property_representation_and_validity_names/summaries/01_frame-property-validity-names-summary.md`,
+  recording the Plan A/B outcome, the measured pre/post adapter counts, the measured rename
+  counts, and all nine Scope Hypotheses that came back different from the plan-time figure.
 
 **Timing**: 1 hour
 
@@ -1079,30 +1109,30 @@ that baseline by content, never by line number.
 
 Acceptance criteria, restated per research §8 (two of the task's original criteria are replaced):
 
-- [ ] **Binder adapters 47 → 12**, every survivor indexed by `fc : FrameClass` or
+- [x] **Binder adapters 47 → 12**, every survivor indexed by `fc : FrameClass` or
       `P : TaskFrame → Prop`; zero adapters mention a literal tag. Checked by:
       ```
       grep -rEn '\.(of_forall|apply|of_not)\b' FormalSystem/ | grep -E 'Valid(Dense|Discrete|Dedekind)|SemanticConsequence(Dense|Discrete|Dedekind)|SetSemanticConsequence(Base|Dense|Discrete|Dedekind)'
       ```
       returns nothing. *(Replaces the task's `47 → 2 (+2 BL)`, which research proved unachievable:
       three carriers, and the `ValidOnFrames` layer needs its own triple.)*
-- [ ] **`SatisfiableSet` 4 → 1.**
-- [ ] **Every `ValidX` is definitionally `ValidIn .X`**, and `ValidComplete` is the sole
+- [x] **`SatisfiableSet` 4 → 1.**
+- [x] **Every `ValidX` is definitionally `ValidIn .X`**, and `ValidComplete` is the sole
       `ValidOnFrames`-level name, documented once.
-- [ ] **At most one site in `FormalSystem/` warns that a `Valid*` name is not its apparent `ValidIn`
+- [x] **At most one site in `FormalSystem/` warns that a `Valid*` name is not its apparent `ValidIn`
       tag, and it is on `ValidComplete`.** *(Replaces "grep finds one 'Read this first' paragraph",
       which is already vacuously true today — exactly one such literal exists in `FormalSystem/`.)*
-- [ ] **The five monotonicity/inclusion lemmas in `BLValidity.lean` are corollaries of the two
+- [x] **The five monotonicity/inclusion lemmas in `BLValidity.lean` are corollaries of the two
       transfer theorems**; `blValid_iff_empty_consequence` and the `BLValidDiscreteSucc` layer are
       documented exceptions, as are `df_valid_of_succOrder` / `df_valid_of_isLeast_pos`.
-- [ ] **`lake build` green**, run detached and guarded.
-- [ ] **`lake build BimodalTest` green.**
-- [ ] **C2/C14 baselines unchanged** via `scripts/check-module-invariants.sh`; none of the eight
+- [x] **`lake build` green**, run detached and guarded.
+- [x] **`lake build BimodalTest` green.**
+- [x] **C2/C14 baselines unchanged** via `scripts/check-module-invariants.sh`; none of the eight
       pinned names renamed; no `14/21/42/44 axiom` literal introduced.
-- [ ] **Zero new `sorry`, zero new axiom.**
-- [ ] **The two naming-deviation-of-record blocks survive** the warning collapse.
-- [ ] **`FormalSystem/Automation/**` is untouched** by the `valid → Valid` rename.
-- [ ] **The `HasDedekind*` canonical layer is untouched**: the count of declared identifiers
+- [x] **Zero new `sorry`, zero new axiom.**
+- [x] **The two naming-deviation-of-record blocks survive** the warning collapse.
+- [x] **`FormalSystem/Automation/**` is untouched** by the `valid → Valid` rename.
+- [x] **The `HasDedekind*` canonical layer is untouched**: the count of declared identifiers
       containing `Dedekind` but not `Valid` is unchanged.
 
 ## Artifacts & Outputs
