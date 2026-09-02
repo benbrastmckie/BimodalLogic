@@ -6,7 +6,11 @@ Task frame semantics for TM bimodal logic.
 
 | File | Description |
 |------|-------------|
-| TaskFrame.lean | Task frame structure (worlds, times, accessibility) |
+| TemporalOrder.lean | `TemporalOrder` — a nontrivial totally ordered abelian group, `def:temporal-order`'s object, bundled with its four algebraic instances; `intOrder` |
+| TaskFrame.lean | Task frame structure (worlds, times, accessibility), the fibre/total-space pair, the class-helper families A-D, and the frame constants |
+| Frames/ | The standard-frame index: `Standard` (1 file) — home of `translationFrame` and `permissiveFrame`, and the linked census of every other standard frame |
+| FrameProperty.lean | Frame properties as predicates on `TaskFrame`, and the `FrameClass` ordering they induce |
+| FrameClassValidity.lean | `FrameClass.Sat` and the `sat_intro` binder adapters: validity relative to a frame class |
 | IntNormalForm.lean | The ℤ-frame normal form: over `D = ℤ` a frame is its one-step relation |
 | TaskModel.lean | Task models with valuation functions |
 | WorldHistory.lean | World histories for temporal evaluation |
@@ -17,7 +21,7 @@ Task frame semantics for TM bimodal logic.
 | BLValidity.lean | `BLValid`, `BLSemanticConsequence`, `BLValidDense`, `BLValidDiscrete`, `BLValidDiscreteSucc`, `BLValidDedekind` — binder-for-binder base-language mirrors of Validity.lean |
 | BLSchemaValidity.lean | DF/DN semantic lemmas (Lemmas B/C) and DF's `PredOrder` past-dual, consumed by `Metalogic/SpWitness.lean` and `bl_soundness_discrete_succ` |
 | DurationClassification.lean | Classification of Dedekind-complete duration groups: discrete (`≃+o ℤ`) or densely ordered; also `duration_dense_or_least_pos`, the Archimedean-free order dichotomy |
-| LexCarrier.lean | `SuccOrder`/`PredOrder` instances for `ℚ ×ₗ ℤ`, the non-Archimedean discrete carrier the CEF countermodel is built over |
+| LexCarrier.lean | `LexInt`: `SuccOrder`/`PredOrder` instances, `isLeast_pos`, and the three non-Archimedean theorems for `α ×ₗ ℤ` at an arbitrary ordered abelian group `α` — instantiated at `ℚ` for the CEF countermodel and at `ℤ` for the `Sat .Discrete` separation |
 | FrameAxioms.lean | The frame axioms (nullity, compositionality, reflection) as standalone statements |
 | IntTransfer.lean | Transfer of ℤ-frame facts across the normal form |
 | PartialHistory.lean | Partial world-histories on convex subsets of the duration group |

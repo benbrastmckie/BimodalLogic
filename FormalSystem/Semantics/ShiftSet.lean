@@ -356,7 +356,7 @@ def ofModel (F : TaskFrame) (M : TaskModel F) : ShiftSet F.Duration where
 **REVERSE DIRECTION of the representation theorem, with its truth correspondence.**
 
 Shift-set truth on `ofModel F M` is truth in `M`. The `atom` case is where
-`TimeShift.time_shift_preserves_truth` (`FormalSystem/Semantics/Truth.lean`, which is
+`TimeShift.timeShift_preserves_truth` (`FormalSystem/Semantics/Truth.lean`, which is
 *unconditional* — the shift-closure hypothesis it once carried is retired, not renamed) and
 `TaskFrame.HF.timeShift_val` are consumed; every other case is a structural transport.
 -/
@@ -367,7 +367,7 @@ theorem reverse_repr (F : TaskFrame) (M : TaskModel F) (τ : F.HF) (t : F.Durati
   | atom p =>
     show TruthAt M ((TaskFrame.HF.timeShift τ t).val) 0 (Formula.atom p) ↔ _
     rw [TaskFrame.HF.timeShift_val]
-    have := TimeShift.time_shift_preserves_truth M τ.val 0 t (Formula.atom p)
+    have := TimeShift.timeShift_preserves_truth M τ.val 0 t (Formula.atom p)
     rw [sub_zero] at this
     exact this
   | bot => exact Iff.rfl

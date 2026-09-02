@@ -27,7 +27,7 @@ exhibits a total history whose closure formula `prev⁵ w` has truth set exactly
 at `0` recurs at no earlier time.
 
 **Shifting the history does not rescue anchoring**, and it is worth saying why, because it looks
-as though it should. `Semantics.TimeShift.time_shift_preserves_truth` (`Semantics/Truth.lean`)
+as though it should. `Semantics.TimeShift.timeShift_preserves_truth` (`Semantics/Truth.lean`)
 moves truth along a time shift, and `WorldHistory.timeShift` of a total history is total. But the
 decision procedure enumerates *lassos*, not histories: `timeShift τ i` is a perfectly good total
 history and is simply not the `unroll` of any enumerated `BiLasso` whose origin sits where the

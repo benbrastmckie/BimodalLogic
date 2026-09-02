@@ -98,7 +98,7 @@ P(swap φ)`.
 The swapped form states: if swap φ holds at all total histories at time t, then for all total
 histories σ at time t, P(swap φ) holds at σ (i.e., swap φ holds at all times s < t in σ).
 
-**Proof Strategy**: Use `time_shift_preserves_truth` to bridge from time t to time s < t.
+**Proof Strategy**: Use `timeShift_preserves_truth` to bridge from time t to time s < t.
 Totality of the shifted history is `WorldHistory.isTotal_timeShift`; no shift-closure side
 condition is required.
 -/
@@ -113,7 +113,7 @@ theorem mf_swap_valid (φ : Formula) :
   have h_at_shifted :=
     h_box_swap (WorldHistory.timeShift σ (s - t))
       (WorldHistory.isTotal_timeShift h_σ_mem (s - t))
-  exact (TimeShift.time_shift_preserves_truth M σ t s φ.swapTemporal).mp h_at_shifted
+  exact (TimeShift.timeShift_preserves_truth M σ t s φ.swapTemporal).mp h_at_shifted
 
 /-- Propositional K swaps to itself at swapped subformulas: swap distributes over `imp`, and
 `TruthAt` at an implication is definitionally an arrow, so this is the K combinator. -/

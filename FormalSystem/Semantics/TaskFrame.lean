@@ -1882,14 +1882,38 @@ theorem backward_comp (F : TaskFrame) (w u v : F.WorldState) (x y : F.Duration)
 
 end TaskFrame
 
-section BridgeChecks
+/-! ## The round trip, and the total-space identity
 
-variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
+`TaskFrame` is `Σ (D : TemporalOrder), FrameOver D`, and structure eta makes that an *identity*
+rather than an isomorphism-up-to-transport: the pair of a frame's two projections **is** the
+frame, by `rfl`, and the inclusion of a fibre is the constructor, so both round trips are `rfl`
+too. This is what replaces v01's `CoeOut` device, and it is why there is no shim ledger in this
+refactor. The block below is that identity mechanized, together with the exported algebra on a
+bundled frame's `Duration`.
+
+Merged from two sections — `BridgeChecks` and `TotalSpaceIdentity` — that checked the same round
+trip from its two ends.
+-/
+
+section RoundTripIdentity
 
 -- The inclusion is a definitional isomorphism: both round trips are `rfl` by structure eta.
 example (F : TaskFrame) : F.toFibre.toTaskFrame = F := rfl
+example (F : TaskFrame) : (⟨F.Duration, F.toFibre⟩ : TaskFrame) = F := rfl
 example {E : TemporalOrder} (F : FrameOver E) : F.toTaskFrame.toFibre = F := rfl
 example {E : TemporalOrder} (F : FrameOver E) : F.toTaskFrame.Duration = E := rfl
+example {E : TemporalOrder} (F : FrameOver E) : F.toTaskFrame.WorldState = F.WorldState := rfl
+example {E : TemporalOrder} (F : FrameOver E) : F.toTaskFrame.TaskRel = F.TaskRel := rfl
+
+-- The flat accessors are the fibre's fields, definitionally -- which is what keeps the migrated
+-- files' spellings (`F.WorldState`, `F.TaskRel w d u`, `F.saturation`) meaning exactly what they
+-- meant before, and what keeps the Step Lemma's consumption of `saturation` definitional.
+example (F : TaskFrame) : F.WorldState = F.toFibre.WorldState := rfl
+example (F : TaskFrame) : F.TaskRel = F.toFibre.TaskRel := rfl
+
+-- A finite total-space frame forgets to a total-space frame by the same constructor.
+example (F : FiniteTaskFrame) : F.toTaskFrame.Duration = F.Duration := rfl
+example (F : FiniteTaskFrame) : F.toTaskFrame.WorldState = F.WorldState := rfl
 
 -- The exported algebra on a bundled frame's `Duration`.
 example (F : TaskFrame) (x y : F.Duration) : x + y = y + x := add_comm x y
@@ -1897,137 +1921,66 @@ example (F : TaskFrame) (x y : F.Duration) : x ≤ y ∨ y ≤ x := le_total x y
 example (F : TaskFrame) : ∃ x y : F.Duration, x ≠ y := exists_pair_ne F.Duration
 example (F : TaskFrame) : Nonempty F.WorldState := inferInstance
 
-end BridgeChecks
+end RoundTripIdentity
 
-/-! ## The total-space identity
+/-! ## The definitional-content checks, at all three ambient shapes
 
-`TaskFrame` is `Σ (D : TemporalOrder), FrameOver D`, and structure eta makes that an identity
-rather than an isomorphism-up-to-transport: the pair of a frame's two projections *is* the frame,
-by `rfl`. The inclusion of a fibre is the constructor, so its round-trip facts are `rfl` too.
-This is what replaces v01's `CoeOut` device, and it is why there is no shim ledger in this
-refactor.
--/
-
-section TotalSpaceIdentity
-
-example (F : TaskFrame) : (⟨F.Duration, F.toFibre⟩ : TaskFrame) = F := rfl
-
-example {D : TemporalOrder} (F : FrameOver D) : (FrameOver.toTaskFrame F).Duration = D := rfl
-example {D : TemporalOrder} (F : FrameOver D) : (FrameOver.toTaskFrame F).toFibre = F := rfl
-example {D : TemporalOrder} (F : FrameOver D) :
-    (FrameOver.toTaskFrame F).WorldState = F.WorldState := rfl
-example {D : TemporalOrder} (F : FrameOver D) :
-    (FrameOver.toTaskFrame F).TaskRel = F.TaskRel := rfl
-
-/-- The flat accessors are the fibre's fields, definitionally -- which is what keeps the already
-migrated files' spellings (`F.WorldState`, `F.TaskRel w d u`, `F.saturation`) meaning exactly what
-they meant before. -/
-example (F : TaskFrame) : F.WorldState = F.toFibre.WorldState := rfl
-example (F : TaskFrame) : F.TaskRel = F.toFibre.TaskRel := rfl
-
-/-- A finite total-space frame forgets to a total-space frame by the same constructor. -/
-example (F : FiniteTaskFrame) : F.toTaskFrame.Duration = F.Duration := rfl
-example (F : FiniteTaskFrame) : F.toTaskFrame.WorldState = F.WorldState := rfl
-
-end TotalSpaceIdentity
-
-/-! ## The definitional-content checks, bundled form
-
-The same check as the parameterized one at the end of this module: each axiom field of the
-bundled `TaskFrame` is *literally* the recorded bare-relation predicate, so the Step Lemma's
-consumption of `saturation` stays definitional.
--/
-
-section BundledDefinitionalContent
-
-example (F : TaskFrame) : TaskFrame.Serial F.TaskRel := F.serial
-
-example (F : TaskFrame) : TaskFrame.Saturation F.TaskRel := F.saturation
-
-example (F : TaskFrame) : TaskFrame.Compositional F.TaskRel := F.comp
-
-example (F : TaskFrame) : TaskFrame.Interpolates F.TaskRel :=
-  TaskFrame.interpolates_of_comp F.comp
-
-example (F : TaskFrame) :
-    ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ F.TaskRel w y u) → u = w := F.limit
-
-example (F : FiniteTaskFrame) : TaskFrame.Saturation F.TaskRel := by
-  haveI := F.finite_world
-  exact TaskFrame.saturation_of_finite F.TaskRel
-
-end BundledDefinitionalContent
-
-
-/-! ## The definitional-content checks
-
-The Cross-Task Acceptance Criterion for the four axiom fields is that each is *literally* the
-recorded bare-relation predicate, never an equivalent restatement — because the Step Lemma
+The Cross-Task Acceptance Criterion for the axiom fields is that each is *literally* the recorded
+bare-relation predicate, never an equivalent restatement — because the Step Lemma
 (`Semantics/Extension/Step.lean`) consumes the predicates, and an inert field that merely
-implied them would let the frame and the chain drift apart silently.
+*implied* them would let the frame and the chain drift apart silently. Each `example` below
+elaborates by citation alone, and would fail the moment a field's statement were restated.
 
-These four `example`s are that check, mechanized: each elaborates by `rfl` alone, and would fail
-the moment a field's statement were restated rather than cited.
+The check is run once per shape a frame is written in — the bundled `TaskFrame`, the fibre
+`FrameOver D` (the sole declaration site of the axioms), and the two finite forms — plus the
+`TemporalOrder.of` identity that lets a frame over an ambient carrier be the same fibre.
+
+Merged from three sections — `BundledDefinitionalContent`, `DefinitionalContent` and
+`FibreDefinitionalContent` — that repeated the same four checks once per shape.
 -/
 
 section DefinitionalContent
 
-variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
-
-example {E : TemporalOrder} (F : FrameOver E) : TaskFrame.Serial F.TaskRel := F.serial
-
-example {E : TemporalOrder} (F : FrameOver E) : TaskFrame.Saturation F.TaskRel := F.saturation
-
-example {E : TemporalOrder} (F : FrameOver E) : TaskFrame.Compositional F.TaskRel := F.comp
-
-example {E : TemporalOrder} (F : FrameOver E) : TaskFrame.Interpolates F.TaskRel := F.interpolates
-
-example {E : TemporalOrder} (F : FrameOver E) :
-    ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ F.TaskRel w y u) → u = w := F.limit
-
-/--
-`TaskFrame.saturation_of_finite` applies to a bundled `FiniteFrameOver` — the shape every finite
-construction actually has. `finite_world` is a plain *field*, not an instance, so the `haveI` is
-required at every such use site; that is what this check pins.
--/
-example {E : TemporalOrder} (F : FiniteFrameOver E) : TaskFrame.Saturation F.TaskRel := by
-  haveI := F.finite_world
-  exact TaskFrame.saturation_of_finite F.TaskRel
-
-end DefinitionalContent
-
-/-! ## The fibre's definitional content
-
-The same check at `FrameOver`, which is the sole declaration site of the frame axioms: each axiom
-field is *literally* the recorded bare-relation predicate, and a frame written over an ambient
-carrier through `TemporalOrder.of` is the same fibre — definitionally, not by a coercion.
--/
-
-section FibreDefinitionalContent
-
 variable {D : TemporalOrder}
 
+-- (a) The bundled total-space frame.
+example (F : TaskFrame) : TaskFrame.Serial F.TaskRel := F.serial
+example (F : TaskFrame) : TaskFrame.Saturation F.TaskRel := F.saturation
+example (F : TaskFrame) : TaskFrame.Compositional F.TaskRel := F.comp
+example (F : TaskFrame) : TaskFrame.Interpolates F.TaskRel :=
+  TaskFrame.interpolates_of_comp F.comp
+example (F : TaskFrame) :
+    ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ F.TaskRel w y u) → u = w := F.limit
+
+-- (b) The fibre.
 example (F : FrameOver D) : TaskFrame.Serial F.TaskRel := F.serial
 example (F : FrameOver D) : TaskFrame.Saturation F.TaskRel := F.saturation
 example (F : FrameOver D) : TaskFrame.Compositional F.TaskRel := F.comp
-example (F : FrameOver D) : TaskFrame.Interpolates F.TaskRel :=
-  TaskFrame.interpolates_of_comp F.comp
+example (F : FrameOver D) : TaskFrame.Interpolates F.TaskRel := F.interpolates
 example (F : FrameOver D) :
     ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ F.TaskRel w y u) → u = w := F.limit
 example (F : FrameOver D) : Nonempty F.WorldState := inferInstance
 
-/-- An ambient carrier and its four algebra binders name a fibre through `TemporalOrder.of`, and
-that is the only spelling a frame over an ambient carrier now needs. -/
+-- (c) The two finite shapes. `finite_world` is a plain *field*, not an instance, so the `haveI`
+-- is required at every use site of `saturation_of_finite`; that is what these two pin.
+example (F : FiniteTaskFrame) : TaskFrame.Saturation F.TaskRel := by
+  haveI := F.finite_world
+  exact TaskFrame.saturation_of_finite F.TaskRel
+
+example (F : FiniteFrameOver D) : TaskFrame.Saturation F.TaskRel := by
+  haveI := F.finite_world
+  exact TaskFrame.saturation_of_finite F.TaskRel
+
+example (F : FiniteFrameOver D) : FrameOver D := F.toFrameOver
+
+-- (d) A frame written over an ambient carrier names the same fibre through `TemporalOrder.of`,
+-- definitionally and not by a coercion; at the integers the fibre is `FrameOver intOrder`, and
+-- numerals elaborate at it.
 example (E : Type) [AddCommGroup E] [LinearOrder E] [IsOrderedAddMonoid E] [Nontrivial E] :
     (↑(TemporalOrder.of E) : Type) = E := rfl
-
-/-- At the integers the fibre is `FrameOver intOrder`, and numerals elaborate at it. -/
 example : TemporalOrder.of ℤ = intOrder := rfl
 example (F : FrameOver intOrder) (w u : F.WorldState) : Prop := F.TaskRel w 1 u
 
-/-- `FiniteFrameOver` sits over `FrameOver` by its parent projection. -/
-example (F : FiniteFrameOver D) : FrameOver D := F.toFrameOver
-
-end FibreDefinitionalContent
+end DefinitionalContent
 
 end FormalSystem.Semantics

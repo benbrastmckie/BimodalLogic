@@ -672,7 +672,7 @@ theorem asDiamond?_eq_some {φ ψ : Formula} (h : asDiamond? φ = some ψ) :
 holds at every *later* time of any one total history.
 
 The witness is the shifted history `τ ⊕ (s - t)`, total by `WorldHistory.isTotal_timeShift`, at
-which truth at `t` is truth at `s` in `τ` (`TimeShift.time_shift_preserves_truth`). This is the
+which truth at `t` is truth at `s` in `τ` (`TimeShift.timeShift_preserves_truth`). This is the
 point form of `Metalogic.Soundness.modal_future_valid`, which states the same fact as the validity
 of `□A → □(GA)`; it is derived here from the same primitive rather than imported, so that the
 decidability tree acquires no import edge into the soundness tree.
@@ -686,7 +686,7 @@ theorem truthAt_allFuture_of_box {M : TaskModel F}
     TruthAt M τ t ψ.allFuture := by
   rw [Truth.future_iff]
   intro s _
-  exact (TimeShift.time_shift_preserves_truth M τ t s ψ).mp
+  exact (TimeShift.timeShift_preserves_truth M τ t s ψ).mp
     (h (WorldHistory.timeShift τ (s - t)) (WorldHistory.isTotal_timeShift hτ (s - t)))
 
 /-- **Totality carries `□` into `H`.** The past mirror of `truthAt_allFuture_of_box`; the
@@ -698,7 +698,7 @@ theorem truthAt_allPast_of_box {M : TaskModel F}
     TruthAt M τ t ψ.allPast := by
   rw [Truth.past_iff]
   intro s _
-  exact (TimeShift.time_shift_preserves_truth M τ t s ψ).mp
+  exact (TimeShift.timeShift_preserves_truth M τ t s ψ).mp
     (h (WorldHistory.timeShift τ (s - t)) (WorldHistory.isTotal_timeShift hτ (s - t)))
 
 /-- `T(□A) → T(A)` at every known world, same time. Persistent: the source stays. -/
@@ -1554,7 +1554,7 @@ theorem forall_truthAt_time_invariant {M : TaskModel F}
     {t s : D} {ψ : Formula}
     (h : ∀ σ : WorldHistory F, σ.IsTotal → TruthAt M σ t ψ) :
     ∀ σ : WorldHistory F, σ.IsTotal → TruthAt M σ s ψ := fun τ hτ =>
-  (TimeShift.time_shift_preserves_truth M τ t s ψ).mp
+  (TimeShift.timeShift_preserves_truth M τ t s ψ).mp
     (h (WorldHistory.timeShift τ (s - t)) (WorldHistory.isTotal_timeShift hτ (s - t)))
 
 /-- Everything `boxDiamondPersistence` emits is satisfied at the fresh time by the *same* history

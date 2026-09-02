@@ -63,7 +63,7 @@ task semantic models. The MF and TF axioms use time-shift invariance
 
 **Key Techniques**:
 - Time-shift invariance (MF, TF): Uses `WorldHistory.timeShift` and
-  `TimeShift.time_shift_preserves_truth` to relate truth at different times
+  `TimeShift.timeShift_preserves_truth` to relate truth at different times
 - Classical logic helpers for conjunction extraction (TL)
 - Derivation-indexed induction for temporal duality soundness
 
@@ -304,7 +304,7 @@ theorem modal_future_valid (φ : Formula) : ⊨ ((φ.box).imp ((φ.allFuture).bo
   have h_phi_at_shifted :=
     h_box_phi (WorldHistory.timeShift σ (s - t))
       (WorldHistory.isTotal_timeShift h_σ_mem (s - t))
-  exact (TimeShift.time_shift_preserves_truth M σ t s φ).mp h_phi_at_shifted
+  exact (TimeShift.timeShift_preserves_truth M σ t s φ).mp h_phi_at_shifted
 
 /-- Temporal A Dual axiom is valid: `⊨ φ → H(Fφ)`.
 Under strict semantics: if φ at t, then for all s < t, there exists r > s with φ(r) (namely, t). -/

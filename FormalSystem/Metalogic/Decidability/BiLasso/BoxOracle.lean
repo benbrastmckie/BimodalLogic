@@ -198,7 +198,7 @@ Proved by induction on a bound for the modal depth. At each formula the argument
 
 The `←` direction of the specification is where the **time shift** is spent, and it is not
 optional: `BoxOracleSound` is anchored at time `0`, while the windowed enumeration finds its
-refuting witness at a position `i`. `time_shift_preserves_truth` together with
+refuting witness at a position `i`. `timeShift_preserves_truth` together with
 `WorldHistory.isTotal_timeShift` moves the witness to `0`, which is exactly the obligation the
 windowed shape of `exists_annot_of_truth` pushes downstream.
 -/
@@ -246,7 +246,7 @@ theorem boxOracle_sound (P : IntPresentation) : BoxOracleSound P (boxOracle P) :
       have htr : TruthAt P.toModel A.lasso.toHF.val i (Formula.neg χ) :=
         (truth_along_annot_at hbxs A hloc hful i (Formula.neg χ)
           (self_mem_subformulaClosure _)).mpr hlab
-      have hshift := (TimeShift.time_shift_preserves_truth P.toModel A.lasso.toHF.val 0 i
+      have hshift := (TimeShift.timeShift_preserves_truth P.toModel A.lasso.toHF.val 0 i
         (Formula.neg χ))
       rw [sub_zero] at hshift
       have hgood := hall (WorldHistory.timeShift A.lasso.toHF.val i)

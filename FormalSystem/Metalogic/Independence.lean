@@ -17,10 +17,18 @@ import FormalSystem.Metalogic.Independence.LexIntWitness
 Underivability results, established by exhibiting a model of the assumptions in which the target
 formula fails.
 
-The one result carried here is that the paper's `CO` principle does not derive Reynolds'
-`Axiom.prior_U_gap` over the dense base. The converse direction — Reynolds' triple *does* derive
-`CO` — is `FormalSystem.Theorems.DedekindDerived.co_derived`, so the two files together settle
-the relationship in both directions.
+Three results are carried here, over six modules — the opening sentence of this docstring used to
+say "the one result carried here", which stopped being true two witnesses ago:
+
+1. The paper's `CO` principle does not derive Reynolds' `Axiom.prior_U_gap` over the dense base.
+   The converse direction — Reynolds' triple *does* derive `CO` — is
+   `FormalSystem.Theorems.DedekindDerived.co_derived`, so the two settle the relationship in both
+   directions.
+2. `Sat .Dedekind ⊊ Mod (AxiomSet .Dedekind)`, witnessed by the static frame over `ℚ`.
+3. `Sat .Discrete ⊊ Mod (AxiomSet .Discrete)`, witnessed by the static frame over `ℤ ×ₗ ℤ`.
+
+Results 2 and 3 are the two halves of the finding that the frame-class *narrowings* are not
+Galois-closed, in contrast with the paper's bare classes.
 
 ## Contents
 

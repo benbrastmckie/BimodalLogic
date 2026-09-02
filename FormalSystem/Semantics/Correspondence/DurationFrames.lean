@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Semantics.Correspondence.Indicator
+import FormalSystem.Semantics.Frames.Standard
 import FormalSystem.Semantics.DurationClassification
 
 /-!
@@ -94,61 +95,11 @@ Combined with `Semantics.duration_dense_or_least_pos`, this is exactly the `Succ
     exact ⟨fun h => lt_of_lt_of_le (isLeast_succ_of_isLeast_pos hp a).1 h,
       fun h => (isLeast_succ_of_isLeast_pos hp a).2 h⟩)
 
-/-! ## The translation frame -/
+/-! ## The translation frame's history and model
 
-/-- Every fibre of the translation relation is a singleton: the flow is deterministic. -/
-theorem translationRel_fib_subsingleton {D : TemporalOrder} (w x : ↑D) :
-    (TaskFrame.Fib (fun (w : ↑D) (x : ↑D) (u : ↑D) => u = w + x) w x).Subsingleton := by
-  rintro u (rfl : u = _) u' (rfl : u' = _)
-  rfl
-
-/--
-**The translation frame over `D`**: world states are durations, and `w ⇒_x u` exactly when
-`u = w + x`.
-
-The seven `FrameOver` obligations: *Nullity* and *Converse* are group arithmetic;
-*Compositionality* interpolates through `w + x`; *Seriality* has `w + x` and `w - x` as the two
-witnesses; *Limit* is `TaskFrame.limit_of_shift` at the identity position function; and
-*Saturation* is Helper D (`TaskFrame.saturation_of_fib_subsingleton`) applied to
-`translationRel_fib_subsingleton`, the translation relation being deterministic.
+`translationFrame` itself now lives in `Semantics/Frames/Standard.lean`; only the reference
+history and the set-indexed model stay here, where the correspondence theorems below use them.
 -/
-def translationFrame (D : TemporalOrder) : FrameOver D where
-  WorldState := ↑D
-  worldNonempty := ⟨0⟩
-  TaskRel := fun w x u => u = w + x
-  nullity_identity := by
-    intro w u
-    constructor
-    · intro h; rw [h, add_zero]
-    · intro h; rw [← h, add_zero]
-  comp := TaskFrame.comp_of
-    (by
-      intro w v x y _ _ h
-      refine ⟨w + x, rfl, ?_⟩
-      show v = w + x + y
-      rw [show v = w + (x + y) from h]
-      abel)
-    (by
-      intro w u v x y _ _ h1 h2
-      show v = w + (x + y)
-      rw [show v = u + y from h2, show u = w + x from h1]
-      abel)
-  converse := by
-    intro w d u
-    constructor
-    · intro h; show w = u + -d; rw [show u = w + d from h]; abel
-    · intro h; show u = w + d; rw [show w = u + -d from h]; abel
-  serial := by
-    intro w x _
-    refine ⟨⟨w + x, rfl⟩, ⟨w - x, ?_⟩⟩
-    show w = w - x + x
-    abel
-  limit := TaskFrame.limit_of_shift (D := ↑D) (fun w => w) (fun _ _ _ h => h)
-    (by intro w u h; rw [show u = w + 0 from h, add_zero])
-  saturation := TaskFrame.saturation_of_fib_subsingleton translationRel_fib_subsingleton
-
-@[simp] theorem translationFrame_taskRel {D : TemporalOrder} (w x u : ↑D) :
-    (translationFrame D).TaskRel w x u ↔ u = w + x := Iff.rfl
 
 /--
 The translation frame's **reference history**: the identity assignment `t ↦ t`, total.
@@ -180,36 +131,11 @@ def translationModel (D : TemporalOrder) (A : Set ↑D) :
     TruthAt (translationModel D A) (translationHist D) t (Formula.atom p) ↔ t ∈ A :=
   ⟨fun ⟨_, hv⟩ => hv, fun h => ⟨trivial, h⟩⟩
 
-/-! ## The permissive frame -/
+/-! ## The permissive frame's history and model
 
-/--
-**The two-state permissive frame over `D`**: `W = Bool`, and `w ⇒_d u` at every nonzero `d`.
-
-Every state assignment is a legal history, so this frame realizes arbitrary time-valuations —
-including the one-off "blip" that refutes the density schema over a non-dense carrier. It is
-`03_probes.lean`'s `freeFrame` at `W = Bool`, ported to the bundled shape.
-
-The `SuccOrder`/`NoMaxOrder` arguments are explicit rather than instance-implicit, and are
-supplied at the use site from the failure of density; see the module docstring.
+`permissiveFrame` itself now lives in `Semantics/Frames/Standard.lean`; only the history and
+model constructions stay here.
 -/
-def permissiveFrame (D : TemporalOrder) (so : SuccOrder ↑D) (nm : NoMaxOrder ↑D) :
-    FrameOver D :=
-  letI := so
-  letI := nm
-  { WorldState := Bool
-    worldNonempty := inferInstance
-    TaskRel := fun w d u => d ≠ 0 ∨ w = u
-    -- All six axiom fields are one-line citations of Helper B (`*_of_permissive`).
-    nullity_identity := TaskFrame.nullity_identity_of_permissive fun _ _ _ => Iff.rfl
-    comp := TaskFrame.comp_of_permissive fun _ _ _ => Iff.rfl
-    converse := TaskFrame.converse_of_permissive fun _ _ _ => Iff.rfl
-    serial := TaskFrame.serial_of_permissive fun _ _ _ => Iff.rfl
-    limit := TaskFrame.limit_of_permissive fun _ _ _ => Iff.rfl
-    saturation := TaskFrame.saturation_of_permissive fun _ _ _ => Iff.rfl }
-
-@[simp] theorem permissiveFrame_taskRel {D : TemporalOrder} (so : SuccOrder ↑D)
-    (nm : NoMaxOrder ↑D) (w : Bool) (d : ↑D) (u : Bool) :
-    (permissiveFrame D so nm).TaskRel w d u ↔ (d ≠ 0 ∨ w = u) := Iff.rfl
 
 /--
 The permissive frame realizes **any** assignment of world states to times as a total history:

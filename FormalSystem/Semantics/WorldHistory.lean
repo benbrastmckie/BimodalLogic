@@ -328,7 +328,7 @@ theorem states_eq_of_time_eq (σ : WorldHistory F) (t₁ t₂ : F.Duration)
 /--
 Extensionality lemma for timeShift: shifting by equal amounts gives equal histories.
 -/
-theorem time_shift_congr (σ : WorldHistory F) (Δ₁ Δ₂ : F.Duration) (h : Δ₁ = Δ₂) :
+theorem timeShift_congr (σ : WorldHistory F) (Δ₁ Δ₂ : F.Duration) (h : Δ₁ = Δ₂) :
     timeShift σ Δ₁ = timeShift σ Δ₂ := by
   subst h
   rfl

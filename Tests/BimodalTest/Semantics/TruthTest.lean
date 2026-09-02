@@ -41,11 +41,13 @@ example : ¬(TruthAt testModel testHistory (0 : Int) Formula.bot) := by
 
 -- Test: Atom truth depends on valuation (p is true)
 example : (TruthAt testModel testHistory (0 : Int) (Formula.atomS "p")) := by
-  simp [TruthAt, testModel, testHistory, WorldHistory.trivial, Formula.atomS, Atom.mkBase]
+  simp [TruthAt, testModel, testHistory, WorldHistory.trivial, WorldHistory.ofTotal,
+    Formula.atomS, Atom.mkBase]
 
 -- Test: Atom truth depends on valuation (q is false)
 example : ¬(TruthAt testModel testHistory (0 : Int) (Formula.atomS "q")) := by
-  simp [TruthAt, testModel, testHistory, WorldHistory.trivial, Formula.atomS, Atom.mkBase]
+  simp [TruthAt, testModel, testHistory, WorldHistory.trivial, WorldHistory.ofTotal,
+    Formula.atomS, Atom.mkBase]
 
 -- Test: Implication basic behavior
 -- p → p is true
@@ -65,6 +67,7 @@ example : (TruthAt testModel testHistory (0 : Int) Formula.bot.neg) := by
 -- Test: TruthAt works with explicit Int type
 theorem truth_at_int_example :
     TruthAt testModel testHistory (0 : Int) (Formula.atomS "p") := by
-  simp [TruthAt, testModel, testHistory, WorldHistory.trivial, Formula.atomS, Atom.mkBase]
+  simp [TruthAt, testModel, testHistory, WorldHistory.trivial, WorldHistory.ofTotal,
+    Formula.atomS, Atom.mkBase]
 
 end BimodalTest.Semantics

@@ -595,7 +595,7 @@ shifted history's membership in the quantifier's range is `WorldHistory.isTotal_
 definitionally `fun t => hρ (t + Δ)` — there is no closure condition left to assume, so this
 statement is strictly stronger than the shift-closure-hypothesised version it replaces.
 -/
-theorem time_shift_preserves_truth (M : TaskModel F)
+theorem timeShift_preserves_truth (M : TaskModel F)
     (σ : WorldHistory F) (x y : F.Duration)
     (φ : Formula) :
     TruthAt M (WorldHistory.timeShift σ (y - x)) x φ ↔ TruthAt M σ y φ := by
@@ -655,7 +655,7 @@ theorem time_shift_preserves_truth (M : TaskModel F)
       -- which is exactly this direction. No double-shift round trip is needed: the older proof
       -- instantiated at `(timeShift ρ (x - y), x, y)` instead and then had to cancel the
       -- resulting double shift, which is the sole reason `truth_double_shift_cancel` and the two
-      -- `time_shift_time_shift_neg_*` lemmas existed.
+      -- `timeShift_timeShift_neg_*` lemmas existed (both now deleted).
       exact (ih ρ y x).mp h1
   | untl ψ φ ih_ψ ih_φ =>
     -- Until (guard-first): untl(guard=ψ, event=φ)
@@ -683,7 +683,7 @@ theorem time_shift_preserves_truth (M : TaskModel F)
         have h_hist_eq :
           WorldHistory.timeShift σ ((s + (y - x)) - s) =
           WorldHistory.timeShift σ (y - x) := by
-          exact WorldHistory.time_shift_congr σ ((s + (y - x)) - s) (y - x) h_shift_eq2
+          exact WorldHistory.timeShift_congr σ ((s + (y - x)) - s) (y - x) h_shift_eq2
         have h_conv := (truth_history_eq M _ _ s h_hist_eq.symm φ).mp h_event_s
         exact (ih_φ σ s (s + (y - x))).mp h_conv
       · -- guard: ∀ r, y < r → r < s + (y - x) → ψ(σ, r)
@@ -701,7 +701,7 @@ theorem time_shift_preserves_truth (M : TaskModel F)
         have h_hist_eq :
           WorldHistory.timeShift σ (r - (r - (y - x))) =
           WorldHistory.timeShift σ (y - x) := by
-          exact WorldHistory.time_shift_congr σ (r - (r - (y - x))) (y - x) h_shift_eq
+          exact WorldHistory.timeShift_congr σ (r - (r - (y - x))) (y - x) h_shift_eq
         have h_conv := (truth_history_eq M _ _ (r - (y - x)) h_hist_eq.symm ψ).mp h_grd
         exact (ih_ψ σ (r - (y - x)) r).mp h_conv
     · -- (←) original at y → shifted at x
@@ -717,7 +717,7 @@ theorem time_shift_preserves_truth (M : TaskModel F)
         have h_hist_eq :
           WorldHistory.timeShift σ (s - (s - (y - x))) =
           WorldHistory.timeShift σ (y - x) := by
-          exact WorldHistory.time_shift_congr σ (s - (s - (y - x))) (y - x) h_shift_eq
+          exact WorldHistory.timeShift_congr σ (s - (s - (y - x))) (y - x) h_shift_eq
         have h_conv := (ih_φ σ (s - (y - x)) s).mpr h_event_s
         exact (truth_history_eq M _ _ (s - (y - x)) h_hist_eq φ).mp h_conv
       · -- guard: ∀ r', x < r' → r' < s - (y - x) → ψ(shifted σ, r')
@@ -740,7 +740,7 @@ theorem time_shift_preserves_truth (M : TaskModel F)
         have h_hist_eq :
           WorldHistory.timeShift σ ((r' + (y - x)) - r') =
           WorldHistory.timeShift σ (y - x) := by
-          exact WorldHistory.time_shift_congr σ ((r' + (y - x)) - r')
+          exact WorldHistory.timeShift_congr σ ((r' + (y - x)) - r')
             (y - x) h_shift_eq
         have h_conv := (ih_ψ σ r' (r' + (y - x))).mpr h_grd
         exact (truth_history_eq M _ _ r' h_hist_eq ψ).mp h_conv
@@ -766,7 +766,7 @@ theorem time_shift_preserves_truth (M : TaskModel F)
         have h_hist_eq :
           WorldHistory.timeShift σ ((s + (y - x)) - s) =
           WorldHistory.timeShift σ (y - x) := by
-          exact WorldHistory.time_shift_congr σ ((s + (y - x)) - s)
+          exact WorldHistory.timeShift_congr σ ((s + (y - x)) - s)
             (y - x) h_shift_eq
         have h_conv := (truth_history_eq M _ _ s h_hist_eq.symm φ).mp h_event_s
         exact (ih_φ σ s (s + (y - x))).mp h_conv
@@ -785,7 +785,7 @@ theorem time_shift_preserves_truth (M : TaskModel F)
         have h_hist_eq :
           WorldHistory.timeShift σ (r - (r - (y - x))) =
           WorldHistory.timeShift σ (y - x) := by
-          exact WorldHistory.time_shift_congr σ (r - (r - (y - x))) (y - x) h_shift_eq
+          exact WorldHistory.timeShift_congr σ (r - (r - (y - x))) (y - x) h_shift_eq
         have h_conv := (truth_history_eq M _ _ (r - (y - x)) h_hist_eq.symm ψ).mp h_grd
         exact (ih_ψ σ (r - (y - x)) r).mp h_conv
     · -- (←) original at y → shifted at x
@@ -801,7 +801,7 @@ theorem time_shift_preserves_truth (M : TaskModel F)
         have h_hist_eq :
           WorldHistory.timeShift σ (s - (s - (y - x))) =
           WorldHistory.timeShift σ (y - x) := by
-          exact WorldHistory.time_shift_congr σ (s - (s - (y - x))) (y - x) h_shift_eq
+          exact WorldHistory.timeShift_congr σ (s - (s - (y - x))) (y - x) h_shift_eq
         have h_conv := (ih_φ σ (s - (y - x)) s).mpr h_event_s
         exact (truth_history_eq M _ _ (s - (y - x)) h_hist_eq φ).mp h_conv
       · -- guard: ∀ r', s - (y - x) < r' → r' < x → ψ(shifted σ, r')
@@ -819,7 +819,7 @@ theorem time_shift_preserves_truth (M : TaskModel F)
         have h_hist_eq :
           WorldHistory.timeShift σ ((r' + (y - x)) - r') =
           WorldHistory.timeShift σ (y - x) := by
-          exact WorldHistory.time_shift_congr σ ((r' + (y - x)) - r')
+          exact WorldHistory.timeShift_congr σ ((r' + (y - x)) - r')
             (y - x) h_shift_eq
         have h_conv := (ih_ψ σ r' (r' + (y - x))).mpr h_grd
         exact (truth_history_eq M _ _ r' h_hist_eq ψ).mp h_conv
@@ -835,7 +835,7 @@ theorem exists_shifted_history (M : TaskModel F)
     (φ : Formula) :
     TruthAt M σ y φ ↔
     TruthAt M (WorldHistory.timeShift σ (y - x)) x φ := by
-  exact (time_shift_preserves_truth M σ x y φ).symm
+  exact (timeShift_preserves_truth M σ x y φ).symm
 
 end TimeShift
 
@@ -849,7 +849,7 @@ relation that makes its truth value depend on neither the history nor the time �
 a fact about the model alone.
 
 This block is placed after `TimeShift` rather than beside the other `Truth` clause lemmas because
-its proof consumes `TimeShift.time_shift_preserves_truth`, which is declared there.
+its proof consumes `TimeShift.timeShift_preserves_truth`, which is declared there.
 -/
 
 /--
@@ -864,7 +864,7 @@ is over-engineered in the proof:
 - **Time-independence is the substantive half**, and it is exactly time-homogeneity: given a total
   `ρ` at which `φ` is wanted at `s`, the `(s - t)`-shift of `ρ` is total
   (`WorldHistory.isTotal_timeShift`) and is covered by the hypothesis at `t`, and
-  `TimeShift.time_shift_preserves_truth` transports the result back.
+  `TimeShift.timeShift_preserves_truth` transports the result back.
 
 The `IsTotal` hypotheses on `τ` and `σ` are stated because that is the setting the result is used
 in, but they are **not consumed**: the statement holds for arbitrary histories, precisely because
@@ -880,10 +880,10 @@ theorem box_const (M : TaskModel F) (τ σ : WorldHistory F) (_hτ : τ.IsTotal)
   simp only [TruthAt]
   constructor
   · intro h ρ hρ
-    exact (TimeShift.time_shift_preserves_truth M ρ t s φ).mp
+    exact (TimeShift.timeShift_preserves_truth M ρ t s φ).mp
       (h (WorldHistory.timeShift ρ (s - t)) (WorldHistory.isTotal_timeShift hρ (s - t)))
   · intro h ρ hρ
-    exact (TimeShift.time_shift_preserves_truth M ρ s t φ).mp
+    exact (TimeShift.timeShift_preserves_truth M ρ s t φ).mp
       (h (WorldHistory.timeShift ρ (t - s)) (WorldHistory.isTotal_timeShift hρ (t - s)))
 
 /-- The time-only specialization of `box_const`, at a fixed history. -/
@@ -1012,7 +1012,7 @@ therefore needs both directions: the forward direction of `↔` must produce, fo
 total history of `F'`, a total history of `F` to feed the hypothesis. A one-way
 `F.HF → F'.HF` cannot do that, and the hand-written proofs paid for the gap with bespoke
 round-trip cancellation lemmas (`TimeShift.truth_double_shift_cancel` was exactly such a lemma,
-existing only to serve `time_shift_preserves_truth`'s box case). With `hist : F.HF ≃ F'.HF` the
+existing only to serve `timeShift_preserves_truth`'s box case). With `hist : F.HF ≃ F'.HF` the
 round trip is `Equiv.surjective` and the bespoke lemmas become deletable.
 
 ### Why `atom` is quantified over all histories

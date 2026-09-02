@@ -90,7 +90,7 @@ only ever a normalisation, and the pinned origin is exactly what makes that norm
 unavailable.
 
 Shifting the *history* does not rescue anchoring, even though
-`Semantics.TimeShift.time_shift_preserves_truth` moves truth along a shift: the enumeration ranges
+`Semantics.TimeShift.timeShift_preserves_truth` moves truth along a shift: the enumeration ranges
 over lassos, not histories, and the shift of an annotation's history is not the decoding of any
 enumerated lasso.
 

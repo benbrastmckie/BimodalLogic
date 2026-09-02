@@ -100,7 +100,7 @@ theorem shifted_truth_lemma
 The `shifted_truth_lemma` extends the canonical truth lemma to work with a shift-closed
 Omega, which is required for connecting to standard validity definitions. The key insight
 is that `box_persistent` (Box phi persists to all times via the TF axiom) enables the
-box case to handle time-shifted histories via `time_shift_preserves_truth`.
+box case to handle time-shifted histories via `timeShift_preserves_truth`.
 
 Ported from earlier Int-indexed representation.
 
@@ -352,7 +352,7 @@ def ShiftClosedCanonicalOmega (B : BFMCS Int) : Set (WorldHistory CanonicalTaskF
 equals shifting by delta + delta'.
 
 This is the key lemma for proving shift-closure. -/
-private theorem time_shift_to_history_compose
+private theorem timeShift_to_history_compose
     (fam : FMCS Int)
     (delta delta' : Int) :
     WorldHistory.time_shift (WorldHistory.time_shift (to_history fam) delta) delta' =
@@ -369,7 +369,7 @@ private theorem time_shift_to_history_compose
   rw [h_time_eq t]
 
 /-- A canonical history equals its time-shift by 0. -/
-private theorem to_history_eq_time_shift_zero (fam : FMCS Int) :
+private theorem to_history_eq_timeShift_zero (fam : FMCS Int) :
     to_history fam = WorldHistory.time_shift (to_history fam) 0 := by
   simp only [WorldHistory.time_shift, to_history, add_zero]
 
@@ -380,7 +380,7 @@ theorem shiftClosedCanonicalOmega_is_shift_closed (B : BFMCS Int) :
   obtain ⟨fam, hfam, delta, h_eq⟩ := h_mem
   refine ⟨fam, hfam, delta + Δ', ?_⟩
   subst h_eq
-  exact time_shift_to_history_compose fam delta Δ'
+  exact timeShift_to_history_compose fam delta Δ'
 
 /-- Every canonical history is in the shift-closed canonical Omega (take delta = 0). -/
 theorem canonicalOmega_subset_shiftClosed (B : BFMCS Int) :
@@ -389,7 +389,7 @@ theorem canonicalOmega_subset_shiftClosed (B : BFMCS Int) :
   obtain ⟨fam, hfam, h_eq⟩ := h_mem
   refine ⟨fam, hfam, 0, ?_⟩
   subst h_eq
-  exact to_history_eq_time_shift_zero fam
+  exact to_history_eq_timeShift_zero fam
 
 /-!
 ## Box Persistence
@@ -671,7 +671,7 @@ enabling the completeness proof: it relates MCS membership to truth in the canon
 model with a shift-closed set of histories.
 
 The proof follows the same structure as `canonical_truth_lemma` but handles
-the box case differently, using `box_persistent` and `time_shift_preserves_truth`
+the box case differently, using `box_persistent` and `timeShift_preserves_truth`
 to handle shifted canonical histories.
 
 **Port from**: earlier Int-indexed representation (lines 438-553)
@@ -681,7 +681,7 @@ to handle shifted canonical histories.
 Shifted truth lemma: MCS membership iff truth at the canonical model with
 shift-closed canonical Omega. The box forward case uses `box_persistent` to
 show that Box phi persists to all times, enabling truth at shifted histories
-via `time_shift_preserves_truth`.
+via `timeShift_preserves_truth`.
 -/
 theorem shifted_truth_lemma (B : BFMCS Int)
     (h_tc : B.temporally_coherent)
@@ -754,17 +754,17 @@ theorem shifted_truth_lemma (B : BFMCS Int)
         B.modal_forward fam hfam ψ (t + delta) h_box_shifted fam' hfam'
       -- By IH at (fam', hfam', t + delta): truth_at ... (to_history fam') (t + delta) ψ
       have h_truth_canon := (ih fam' hfam' (t + delta)).mp h_ψ_fam'
-      -- By time_shift_preserves_truth with shift-closed Omega:
+      -- By timeShift_preserves_truth with shift-closed Omega:
       -- truth_at ... (time_shift (to_history fam') delta) t ψ ↔ truth_at ... (to_history fam') (t + delta) ψ
-      have h_preserve := TimeShift.time_shift_preserves_truth
+      have h_preserve := TimeShift.timeShift_preserves_truth
         CanonicalTaskModel (ShiftClosedCanonicalOmega B)
         (shiftClosedCanonicalOmega_is_shift_closed B) (to_history fam')
         t (t + delta) ψ
-      -- time_shift_preserves_truth: truth_at ... (time_shift σ (y - x)) x φ ↔ truth_at ... σ y φ
+      -- timeShift_preserves_truth: truth_at ... (time_shift σ (y - x)) x φ ↔ truth_at ... σ y φ
       -- With x = t, y = t + delta: (t+delta) - t = delta
       have h_delta : (t + delta) - t = delta := by omega
       rw [h_σ_eq]
-      rw [WorldHistory.time_shift_congr (to_history fam') ((t + delta) - t) delta h_delta] at h_preserve
+      rw [WorldHistory.timeShift_congr (to_history fam') ((t + delta) - t) delta h_delta] at h_preserve
       exact h_preserve.mpr h_truth_canon
     · -- Backward: (∀ σ ∈ ShiftClosedCanonicalOmega B, truth_at ... σ t ψ) → Box ψ ∈ fam.mcs t
       intro h_all_σ
@@ -937,13 +937,13 @@ theorem restricted_shifted_truth_lemma (B : BFMCS Int)
       have h_ψ_fam' : ψ ∈ fam'.mcs (t + delta) :=
         B.modal_forward fam hfam ψ (t + delta) h_box_shifted fam' hfam'
       have h_truth_canon := (ih h_ψ_sub fam' hfam' (t + delta)).mp h_ψ_fam'
-      have h_preserve := TimeShift.time_shift_preserves_truth
+      have h_preserve := TimeShift.timeShift_preserves_truth
         CanonicalTaskModel (ShiftClosedCanonicalOmega B)
         (shiftClosedCanonicalOmega_is_shift_closed B) (to_history fam')
         t (t + delta) ψ
       have h_delta : (t + delta) - t = delta := by omega
       rw [h_σ_eq]
-      rw [WorldHistory.time_shift_congr (to_history fam') ((t + delta) - t) delta h_delta] at h_preserve
+      rw [WorldHistory.timeShift_congr (to_history fam') ((t + delta) - t) delta h_delta] at h_preserve
       exact h_preserve.mpr h_truth_canon
     · -- Backward: (∀ σ ∈ ShiftClosedCanonicalOmega B, truth_at ... σ t ψ) → Box ψ ∈ fam.mcs t
       intro h_all_σ

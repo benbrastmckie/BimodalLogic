@@ -50,7 +50,7 @@ use. Determinism removes that need, and with it the designated set.
 
 ### Consequence 2: `□` is the universal modality
 
-`time_shift_preserves_truth` turns the fixed-time universal into a universal over times as well,
+`timeShift_preserves_truth` turns the fixed-time universal into a universal over times as well,
 with no closure side condition — totality is preserved by `timeShift` outright:
 
 ```
@@ -421,7 +421,7 @@ total history and *every* time.
 
 The forward direction shifts an arbitrary `(σ, y)` back to `x` — legal because totality is
 preserved by `timeShift` (`WorldHistory.isTotal_timeShift`), with no side condition on the
-carrier — and reads the result off `time_shift_preserves_truth`. Shift-closure is no longer a
+carrier — and reads the result off `timeShift_preserves_truth`. Shift-closure is no longer a
 hypothesis anywhere: the box clause quantifies over totality, and totality is shift-stable
 outright.
 -/
@@ -432,7 +432,7 @@ theorem truthAt_box_iff (M : TaskModel F)
   simp only [TruthAt]
   constructor
   · intro h σ hσ y
-    exact (TimeShift.time_shift_preserves_truth M σ x y φ).mp
+    exact (TimeShift.timeShift_preserves_truth M σ x y φ).mp
       (h _ (WorldHistory.isTotal_timeShift hσ (y - x)))
   · intro h σ hσ
     exact h σ hσ x
@@ -473,7 +473,7 @@ theorem truthAt_regionHistory_offset (M : TaskModel (regionFrame W ι D)) (f : �
     (w : W) (Δ r : D) (φ : Formula) :
     TruthAt M (regionHistory f w Δ) r φ ↔
       TruthAt M (regionHistory f w (0 : D)) (r + Δ) φ := by
-  have h := TimeShift.time_shift_preserves_truth M
+  have h := TimeShift.timeShift_preserves_truth M
     (regionHistory f w (0 : D)) r (r + Δ) φ
   rw [add_sub_cancel_left] at h
   rw [regionHistory_eq_timeShift]
