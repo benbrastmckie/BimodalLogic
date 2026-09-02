@@ -9,11 +9,10 @@ import FormalSystem.ProofSystem.Derivation
 import FormalSystem.ProofSystem.Axioms
 
 /-!
-# Core Validity Definitions and Swap Infrastructure for Soundness Proofs
+# Core Validity Definitions for Soundness Proofs
 
-Core definitions and lemmas shared across all frame-class variants of the soundness
-proof. Contains the local `IsValid` definition and the `truth_at_swap_swap` involution
-lemma.
+The local `IsValid` definition, shared across all frame-class variants of the
+soundness proof.
 -/
 
 namespace FormalSystem.Metalogic.SoundnessLemmas
@@ -43,65 +42,5 @@ def IsValid (D : TemporalOrder) (φ : Formula) : Prop :=
   ∀ (F : FrameOver D) (M : TaskModel F.toTaskFrame)
     (τ : WorldHistory F.toTaskFrame) (_hτ : τ.IsTotal) (t : ↑D),
     TruthAt M τ t φ
-
--- Section variable for theorem signatures
-variable {D : TemporalOrder}
-
-/--
-Auxiliary lemma: If φ is valid, then for any specific tuple `(M, τ, hτ, t)` with `τ` total,
-φ is true at that tuple.
-
-This is just the definition of validity, but stated as a lemma for clarity.
--/
-theorem valid_at_triple {φ : Formula} (F : FrameOver D) (M : TaskModel F.toTaskFrame)
-    (τ : WorldHistory F.toTaskFrame) (_hτ : τ.IsTotal) (t : ↑D) (h_valid : IsValid D φ) :
-    TruthAt M τ t φ := h_valid F M τ _hτ t
-
-/--
-Helper lemma: TruthAt is invariant under double swap.
-
-This lemma proves that applying swap twice to a formula preserves truth evaluation.
-Required because TruthAt is defined by structural recursion, preventing direct use
-of the involution property φ.swap.swap = φ via substitution.
--/
-theorem truth_at_swap_swap {F : FrameOver D} (M : TaskModel F.toTaskFrame)
-    (τ : WorldHistory F.toTaskFrame) (t : ↑D) (φ : Formula) :
-    TruthAt M τ t φ.swapTemporal.swapTemporal ↔ TruthAt M τ t φ := by
-  induction φ generalizing τ t with
-  | atom p =>
-    -- Atom case: swap doesn't change atoms
-    simp only [Formula.swapTemporal, TruthAt]
-  | bot =>
-    -- Bot case: swap doesn't change bot
-    simp only [Formula.swapTemporal, TruthAt]
-  | imp φ ψ ih_φ ih_ψ =>
-    -- Implication case: (φ.swap.swap -> ψ.swap.swap) <-> (φ -> ψ)
-    simp only [Formula.swapTemporal, TruthAt]
-    constructor <;> intro h <;> intro h_φ
-    · exact (ih_ψ τ t).mp (h ((ih_φ τ t).mpr h_φ))
-    · exact (ih_ψ τ t).mpr (h ((ih_φ τ t).mp h_φ))
-  | box φ ih =>
-    -- Box case: box(φ.swap.swap) <-> box φ
-    simp only [Formula.swapTemporal, TruthAt]
-    constructor <;> intro h σ h_σ_mem
-    · exact (ih σ t).mp (h σ h_σ_mem)
-    · exact (ih σ t).mpr (h σ h_σ_mem)
-  | untl ψ φ ih_ψ ih_φ =>
-    -- Until swaps to Since and back (guard-first: untl(guard=ψ, event=φ))
-    simp only [Formula.swapTemporal, TruthAt]
-    constructor
-    · intro ⟨s, h_le, h_event, h_guard⟩
-      exact ⟨s, h_le, (ih_φ τ s).mp h_event, fun r hr1 hr2 => (ih_ψ τ r).mp (h_guard r hr1 hr2)⟩
-    · intro ⟨s, h_le, h_event, h_guard⟩
-      exact ⟨s, h_le, (ih_φ τ s).mpr h_event, fun r hr1 hr2 => (ih_ψ τ r).mpr (h_guard r hr1 hr2)⟩
-  | snce ψ φ ih_ψ ih_φ =>
-    -- Since swaps to Until and back (guard-first: snce(guard=ψ, event=φ))
-    simp only [Formula.swapTemporal, TruthAt]
-    constructor
-    · intro ⟨s, h_le, h_event, h_guard⟩
-      exact ⟨s, h_le, (ih_φ τ s).mp h_event, fun r hr1 hr2 => (ih_ψ τ r).mp (h_guard r hr1 hr2)⟩
-    · intro ⟨s, h_le, h_event, h_guard⟩
-      exact ⟨s, h_le, (ih_φ τ s).mpr h_event, fun r hr1 hr2 => (ih_ψ τ r).mpr (h_guard r hr1 hr2)⟩
-
 
 end FormalSystem.Metalogic.SoundnessLemmas

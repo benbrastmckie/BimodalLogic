@@ -1,7 +1,7 @@
 # Implementation Plan: SoundnessLemmas Consolidation and Dead-Code Deletion
 
 - **Task**: 519 - WAVE 1 (deletion): retire the soundness machinery the FrameClass refactor superseded
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 13 hours
 - **Dependencies**: None (does not wait on siblings 521 or 522; 522 depends on this task)
 - **Research Inputs**: `specs/519_soundnesslemmas_consolidation_delete_dead/reports/01_soundnesslemmas-dead-code-reachability.md`
@@ -156,7 +156,7 @@ independent.
 
 ---
 
-### Phase 1: Delete the already-dead ranges [NOT STARTED]
+### Phase 1: Delete the already-dead ranges [COMPLETED]
 
 **Goal**: Remove every declaration under `SoundnessLemmas/` that is already unreachable today,
 before any restructuring, so every later phase works against a smaller file.
