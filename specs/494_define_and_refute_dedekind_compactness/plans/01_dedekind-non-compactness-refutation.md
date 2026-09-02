@@ -1,7 +1,7 @@
 # Implementation Plan: Task #494
 
 - **Task**: 494 - define_and_refute_dedekind_compactness
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 6 hours
 - **Dependencies**: None outstanding (the compactness parameterization prerequisite has landed — the `FrameClass`-indexed family is live in `SetConsequence.lean`)
 - **Research Inputs**: `specs/494_define_and_refute_dedekind_compactness/reports/01_dedekind-noncompactness-witness.md`
@@ -158,35 +158,35 @@ all write the same new module, and Phase 5's doc claims are only made true by Ph
 
 ---
 
-### Phase 1: Part 1 — the four Dedekind instantiations [NOT STARTED]
+### Phase 1: Part 1 — the four Dedekind instantiations [COMPLETED]
 
 **Goal**: Name `StrongCompletenessDedekind`, `CompactDedekind`, `SatisfiableDedekindSet` and
 `ModelExistenceDedekind` as single instantiations of the `FrameClass`-indexed family, and repair
 the two `SetConsequence.lean` claims that naming them immediately falsifies.
 
 **Tasks**:
-- [ ] Add the four defs to `SetConsequence.lean`, beside the Discrete block (which ends the file
+- [x] Add the four defs to `SetConsequence.lean`, beside the Discrete block (which ends the file
       at `StrongCompletenessDiscrete` / `SatisfiableDiscreteSet` / `CompactDiscrete`, before
       `end FormalSystem.Metalogic`):
       `def StrongCompletenessDedekind : Prop := StrongCompleteness FrameClass.Dedekind`
       `def CompactDedekind : Prop := Compact FrameClass.Dedekind`
       `def SatisfiableDedekindSet (Γ : Set Formula) : Prop := SatisfiableSet FrameClass.Dedekind Γ`
       `def ModelExistenceDedekind : Prop := ModelExistence FrameClass.Dedekind`
-- [ ] Give each a docstring in the house style of the Discrete block. Mark
+- [x] Give each a docstring in the house style of the Discrete block. Mark
       `StrongCompletenessDedekind` and `CompactDedekind` as **false**, citing
       `strongCompletenessDedekind_refuted` / `dedekind_consequence_not_compact` as forward
       references. Note that `ModelExistenceDedekind` is vocabulary only — nothing is proved
       about it here.
-- [ ] Fix `SetConsequence.lean:22-30`: replace "The `.Dedekind` row is available by the same
+- [x] Fix `SetConsequence.lean:22-30`: replace "The `.Dedekind` row is available by the same
       instantiation and is deliberately **left unstated here**: naming it is the follow-on
       task's business…" with the fact that all four rows are now named here.
-- [ ] Fix `SetConsequence.lean:322-324`: `dedekind_of_forall`'s docstring says the adapter was
+- [x] Fix `SetConsequence.lean:322-324`: `dedekind_of_forall`'s docstring says the adapter was
       supplied "even though no `.Dedekind` name is stated in this layer yet" — drop the "yet"
       clause and point at the names now above it.
-- [ ] Leave `SetConsequence.lean:436-438` ("Dedekind (unavailable on its primary source's own
+- [x] Leave `SetConsequence.lean:436-438` ("Dedekind (unavailable on its primary source's own
       terms)") **untouched** — it is still literally true until Phase 4 lands. It is reconciled
       in Phase 5.
-- [ ] `lake build` green.
+- [x] `lake build` green. *(2514 jobs, exit 0)*
 
 **Timing**: 0.75 hours
 
@@ -194,7 +194,7 @@ the two `SetConsequence.lean` claims that naming them immediately falsifies.
 
 **Verification Tier**: local
 
-**Scope Hypothesis**: asserts "four one-line `def`s, no new adapter, no new binder list".
+**Scope Hypothesis** *(confirmed at implementation time: four one-line `def`s elaborated with no additional hypotheses; no new adapter, no new binder list)*: asserts "four one-line `def`s, no new adapter, no new binder list".
 Confirm at implementation time by checking that each `def` elaborates with no additional
 hypotheses and that `SatisfiableSet.dedekind_of_forall` (`:325`) and
 `SetSemanticConsequenceDedekindDense.of_forall` (`:271`) are used unchanged in Phase 3/4. If any

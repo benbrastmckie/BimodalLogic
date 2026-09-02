@@ -24,10 +24,11 @@ compactness, satisfiability and model existence.
 and reading its frame condition off it through `FrameClass.Sat`. The per-class names this module
 used to define by hand — `StrongCompletenessBase` / `CompactBase` / `SatisfiableBaseSet` /
 `ModelExistenceBase`, their Dense siblings, and the three Discrete ones — are retained, with
-their statements unchanged, as instantiations of that family. The `.Dedekind` row is available
-by the same instantiation and is deliberately **left unstated here**: naming it is the follow-on
-task's business, together with the non-compactness witness it would need, which cannot reuse the
-Discrete one.
+their statements unchanged, as instantiations of that family. **The `.Dedekind` row is now named
+here too**, by the same instantiation: `StrongCompletenessDedekind`, `CompactDedekind`,
+`SatisfiableDedekindSet` and `ModelExistenceDedekind` at the end of this module. All four rows of
+the family are therefore stated in this layer; none of the four required a new adapter or a new
+binder list.
 
 It is vocabulary only. **No compactness result is proved or refuted here.** `CompactBase`,
 `ModelExistenceBase`, `CompactDense` and `ModelExistenceDense` are `Prop`-valued definitions
@@ -290,9 +291,10 @@ theorem SetSemanticConsequenceDedekindDense.apply {Γ : Set Formula} {φ : Formu
 The same service the `SetSemanticConsequence*.of_forall` adapters above perform, on the
 introduction side of `SatisfiableSet`. Each takes the pre-collapse binder shape — the frame
 condition as typeclass instances or as a plain hypothesis, in the position it occupied before
-the collapse — and packages it into the single `fc.Sat F` slot. The `.Dedekind` adapter is
-supplied here even though no `.Dedekind` name is stated in this layer yet: the row is complete,
-and the follow-on task inherits it rather than re-deriving it. -/
+the collapse — and packages it into the single `fc.Sat F` slot. The `.Dedekind` adapter serves
+the `.Dedekind` names stated at the end of this module (`SatisfiableDedekindSet` and its three
+siblings), and is what `Metalogic/DedekindNonCompactness.lean` uses at both of its introduction
+sites. -/
 
 /-- Introduce `SatisfiableSet FrameClass.Base` from its pre-collapse binder shape. `Sat .Base`
 is `True`, so the absorbed slot is discharged by `trivial`. -/
@@ -564,5 +566,72 @@ def SatisfiableDiscreteSet (Γ : Set Formula) : Prop := SatisfiableSet FrameClas
 
     **This statement is false.** See `discrete_consequence_not_compact`. -/
 def CompactDiscrete : Prop := Compact FrameClass.Discrete
+
+/-! ## Strong completeness, compactness, satisfiability and model existence for
+`FrameClass.Dedekind`
+
+The fourth and last row of the `FrameClass`-indexed family, completing the table. Like the
+Discrete block above, these are **statements, not results**, and two of them are settled
+*negatively*: `CompactDedekind` and `StrongCompletenessDedekind` are *refuted* downstream in
+`Metalogic/DedekindNonCompactness.lean`, by `dedekind_consequence_not_compact` and
+`strongCompletenessDedekind_refuted` respectively, which exhibit the premise set
+`{G(⊤ S ¬q), F(G ¬q)} ∪ {Xqⁿ⊤ : n ∈ ℕ}` as finitely satisfiable over `ℝ` yet unsatisfiable over
+every Dedekind-complete carrier. That witness is a *new* one: `DiscreteNonCompactness.lean`'s
+`archWitness` does not port, because `Formula.next` is vacuously false on a densely ordered
+carrier.
+
+Naming the row costs nothing beyond the four instantiations below: the `.Dedekind` binder-shape
+adapters (`SatisfiableSet.dedekind_of_forall`, `SetSemanticConsequenceDedekindDense.of_forall` /
+`.apply`) already exist above, so no new adapter and no new binder list is introduced here.
+
+No import change is required: `DenselyOrdered` is already in scope via
+`SetSemanticConsequenceDedekindDense` above.
+-/
+
+/-- **Strong completeness for `FrameClass.Dedekind`** — the `StrongCompletenessDense` statement
+    with `SetSemanticConsequenceDedekindDense` in place of `SetSemanticConsequenceDense` and
+    `FrameClass.Dedekind` as the derivability target.
+
+    **This statement is false.** See `strongCompletenessDedekind_refuted` in
+    `Metalogic/DedekindNonCompactness.lean`. It is stated here so that the refutation has
+    something to name; it is not a reserved obligation. Reynolds 1992 §9 Theorem 7 remains
+    correctly cited elsewhere as the *weak* completeness result for this class — the refutation
+    does not contradict it, it explains why only weak completeness is available. -/
+def StrongCompletenessDedekind : Prop := StrongCompleteness FrameClass.Dedekind
+
+/-- Semantic compactness of the Dedekind consequence relation, in the same shape as
+    `CompactDense`: a set-consequence yields a *finite* premise list whose `foldr`-implication
+    into the conclusion is Dedekind-valid.
+
+    **This statement is false.** See `dedekind_consequence_not_compact` in
+    `Metalogic/DedekindNonCompactness.lean`. -/
+def CompactDedekind : Prop := Compact FrameClass.Dedekind
+
+/-- Satisfiability of a possibly-infinite set over Dedekind-complete dense carriers —
+    `SatisfiableSet` at `FrameClass.Dedekind`. This is `FormulaSatisfiable` (`Validity.lean`)
+    with `ValidDedekindDense`'s binder list — `[DenselyOrdered D]` together with the
+    least-upper-bound hypothesis — in place of `ValidDense`'s `DenselyOrdered` alone, and the
+    conclusion generalised from a single formula to `∀ ψ ∈ Γ`.
+
+    `Sat .Dedekind` is `TaskFrame.IsDedekind`, i.e. `IsDense ∧ IsComplete`, so a destructuring
+    pattern needs exactly one nesting pair here, `⟨F, ⟨hd, hlub⟩, M, τ, hτ, t, h⟩`, and an
+    introduction site should call `SatisfiableSet.dedekind_of_forall` above. Note that the
+    destructured `hd : F.IsDense` is **not** visible to instance search — `TaskFrame.IsDense` is
+    a `def` whose head is not `DenselyOrdered` — so a `haveI : DenselyOrdered F.Duration := hd`
+    is needed before any `ValidDedekindDense.apply` or `soundness_dedekind` call. Unlike the
+    Discrete case, that `haveI` is safe: no `DenselyOrdered` instance is baked into `F`'s or
+    `M`'s type. -/
+def SatisfiableDedekindSet (Γ : Set Formula) : Prop := SatisfiableSet FrameClass.Dedekind Γ
+
+/-- The model-existence form at `FrameClass.Dedekind` — `ModelExistence` at that tag.
+
+    **Vocabulary only: nothing is proved or refuted about this statement anywhere in the tree.**
+    It is stated so that the Dedekind row of the family is complete and symmetric with the other
+    three. Note that it is *not* an open question of the same kind as the Base/Dense model
+    existence results were: `ModelExistence fc → Compact fc` is `compact_of_modelExistence`
+    (`Metalogic/StrongCompleteness.lean`), and `CompactDedekind` is refuted, so
+    `ModelExistenceDedekind` is refutable as an immediate corollary. That corollary is simply
+    not drawn here. -/
+def ModelExistenceDedekind : Prop := ModelExistence FrameClass.Dedekind
 
 end FormalSystem.Metalogic
