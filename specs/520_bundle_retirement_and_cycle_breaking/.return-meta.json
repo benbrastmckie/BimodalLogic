@@ -1,16 +1,30 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/520_bundle_retirement_and_cycle_breaking/reports/01_bundle-retirement-cycle-breaking.md",
-      "summary": "Verified Bundle/ dead-code and Core/Bundle cycle claims: dead set is 5 files/2214 lines (not 3/611), extraction block is 29 declarations in 3 ranges (not 24 in 2), and negBoxToBoxNegBox resolves to the BXCanonical copy; includes 4-phase ordering and C5/C6/C11 gate obligations."
+      "type": "plan",
+      "path": "specs/520_bundle_retirement_and_cycle_breaking/plans/01_bundle-retirement-cycle-breaking.md",
+      "summary": "Five-phase plan to break the Core<->Bundle cycle, migrate the live ModalSaturation helpers, retire a six-file dead set to the archive, and restore documentation coherence."
     }
   ],
+  "next_steps": "Run /implement 520 to execute the plan",
   "metadata": {
     "session_id": "sess_1788332773_c2fa9f_520",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 8,
+    "dependency_waves": [[1], [2, 3], [4], [5]]
+  },
+  "memory_candidates": [
+    {
+      "content": "When a plan retires live-tree Lean modules into FormalSystem/Boneyard/, check the archive's tree-wide convention banner before moving. Boneyard/README.md asserts every archived file is EVENT-FIRST (predating the guard-first untl/snce migration) and instructs anyone resurrecting a file to swap both arguments. Files retired from the live tree today are guard-first, so moving them in without a named per-directory carve-out makes the banner silently false in exactly the way it warns about -- applying its swap instruction to them inverts their meaning while still compiling. Verify with `grep -c 'untl\\|snce'` on each retiring file; a nonzero count obliges the carve-out. This class of defect is invisible to check-module-invariants.sh: C11 checks that archived imports resolve, never the semantics of archived content.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/520_bundle_retirement_and_cycle_breaking/plans/01_bundle-retirement-cycle-breaking.md",
+      "confidence": 0.75,
+      "suggested_keywords": ["boneyard", "archive-retirement", "untl-snce", "guard-first", "convention-banner", "lean-module-retirement"]
+    }
+  ],
+  "modified_files": []
 }

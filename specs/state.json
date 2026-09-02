@@ -1488,7 +1488,7 @@
     {
       "project_number": 520,
       "project_name": "bundle_retirement_and_cycle_breaking",
-      "status": "planning",
+      "status": "planned",
       "task_type": "lean4",
       "topic": "metalogic",
       "priority": "medium",
@@ -1505,15 +1505,21 @@
         "FormalSystem/Metalogic/BXCanonical/Frame.lean",
         "FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodelBasic.lean",
         "FormalSystem/Metalogic/README.md",
-        "FormalSystem/Boneyard/"
+        "FormalSystem/Boneyard/",
+        "FormalSystem/Metalogic/Algebraic/UltrafilterMCS.lean"
       ],
       "created": "2026-09-02T03:30:31Z",
-      "last_updated": "2026-09-02T13:43:12Z",
+      "last_updated": "2026-09-02T13:54:29Z",
       "artifacts": [
         {
           "path": "specs/520_bundle_retirement_and_cycle_breaking/reports/01_bundle-retirement-cycle-breaking.md",
           "type": "report",
           "summary": "Bundle retirement and Core/Bundle cycle-breaking research: verified dead-code cascade, exact import surgery, ModalSaturation consumer matrix, 4-phase ordering, gate obligations."
+        },
+        {
+          "path": "specs/520_bundle_retirement_and_cycle_breaking/plans/01_bundle-retirement-cycle-breaking.md",
+          "type": "plan",
+          "summary": "Five-phase implementation plan, 8 hours, waves [[1],[2,3],[4],[5]]."
         }
       ],
       "session_id": "sess_1788332773_c2fa9f_520"
