@@ -103,7 +103,7 @@ here:
   is a joint question with the four-axiom frame-alignment work recorded in
   `specs/decisions/total-history-validity-decisions.md`; nothing here forecloses any of those
   options, because nothing here depends on the field.
-- ***Spherical* is not consumed here either.** It is applied only at `lem:step`, the sole
+- ***Saturation* is not consumed here either.** It is applied only at `lem:step`, the sole
   application site the paper names. This module supplies that application its *other* input —
   the certificate that a state common to all the constraints yields a genuine extension.
 - **`adjoinFun` is `noncomputable`.** Deciding `τ.domain t` to choose between `τ(t)` and `u`
@@ -232,7 +232,7 @@ nonemptiness field (the old domain is a subset of the new one), and the **uncond
 `respects_task` from the `AdjoinRespects` hypothesis directly.
 
 `lem:admissible` (`admissible` below) is what supplies that hypothesis from constraint
-membership, which is in turn what `lem:step` will obtain from *Spherical*.
+membership, which is in turn what `lem:step` will obtain from *Saturation*.
 -/
 noncomputable def adjoin (τ : PartialHistory F) (z : F.Duration) (u : F.WorldState)
     (h : AdjoinRespects τ z u) : PartialHistory F where
@@ -288,7 +288,7 @@ The hypothesis `hz : ¬ τ.domain z` is the paper's `z ∈ D \ X` and is genuine
 left-to-right direction; see this module's docstring for why, and contrast `lem:constraint`, which
 holds without it.
 
-*Spherical* is not consumed.
+*Saturation* is not consumed.
 -/
 theorem admissible (τ : PartialHistory F) {z : F.Duration} (hz : ¬ τ.domain z) (u : F.WorldState) :
     AdjoinRespects τ z u ↔ ∀ c ∈ Constraints τ z, u ∈ c := by

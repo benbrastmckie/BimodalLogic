@@ -365,7 +365,7 @@ the normal form; the seventh, *Seriality*, is a genuine hypothesis and cannot be
 **Seriality is free from *Occurrence*, never from ℤ.** It is tempting to think finiteness or
 discreteness rescues it. They do not: the relation `R w d u := (d = 0)` on `W = Unit` over `D = ℤ`
 satisfies `nullity_identity`, *Compositionality*, the converse convention, *Limit*, and
-*Spherical*, and fails *Seriality* — on a one-element carrier. `ofStep` therefore takes forward and
+*Saturation*, and fails *Seriality* — on a one-element carrier. `ofStep` therefore takes forward and
 backward seriality of `R₁` as hypotheses (`fwd`, `bwd`), and they are exactly bi-seriality of the
 one-step relation. Do not attempt to derive them.
 -/
@@ -434,12 +434,12 @@ The seven field discharges, and where each comes from:
 | `converse` | free — `ofStepRel` is symmetric in its two sign-guarded conjuncts by construction |
 | `serial` | **the one genuine obligation**: exactly `fwd` and `bwd` (see the section note above) |
 | `limit` | `TaskFrame.limit_of_succOrder` — ℤ is a `SuccOrder`, so *Limit* is automatic |
-| `spherical` | `TaskFrame.spherical_of_finite` — the carrier is finite |
+| `saturation` | `TaskFrame.saturation_of_finite` — the carrier is finite |
 
-`spherical_of_finite` is the *only* applicable route here, because `R₁` is arbitrary in shape and
-every other `Spherical` helper constrains the relation's shape. It costs `Classical.choice`, and
+`saturation_of_finite` is the *only* applicable route here, because `R₁` is arbitrary in shape and
+every other `Saturation` helper constrains the relation's shape. It costs `Classical.choice`, and
 that cost is accepted for `ofStep` specifically. It is **not** a licence to re-route a frame whose
-relation *does* fit a choice-free class helper — see `spherical_of_finite`'s own docstring.
+relation *does* fit a choice-free class helper — see `saturation_of_finite`'s own docstring.
 -/
 def ofStep {W : Type} [Finite W] [Nonempty W] (R₁ : W → W → Prop)
     (fwd : ∀ w, ∃ u, R₁ w u) (bwd : ∀ w, ∃ v, R₁ v w) : FrameOver intOrder where
@@ -477,7 +477,7 @@ def ofStep {W : Type} [Finite W] [Nonempty W] (R₁ : W → W → Prop)
   limit := TaskFrame.limit_of_succOrder (fun w u => by
     rw [ofStepRel_of_nonneg (le_refl (0 : ℤ))]
     simp)
-  spherical := TaskFrame.spherical_of_finite (ofStepRel R₁)
+  saturation := TaskFrame.saturation_of_finite (ofStepRel R₁)
 
 @[simp]
 theorem ofStep_taskRel {W : Type} [Finite W] [Nonempty W] (R₁ : W → W → Prop)

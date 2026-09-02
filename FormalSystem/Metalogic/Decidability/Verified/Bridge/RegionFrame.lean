@@ -205,7 +205,7 @@ def regionFrame (W ι D : Type) [Nonempty W] [AddCommGroup D] [LinearOrder D]
   limit :=
     TaskFrame.limit_of_shift Prod.snd (fun _ _ _ h => h.2)
       (fun s u h => Prod.ext h.1.symm (by rw [h.2, add_zero]))
-  spherical := by
+  saturation := by
     intro S hdir hmem
     refine TaskFrame.sInter_nonempty_of_directed_of_univ_or_singleton hdir
       (fun s hs => (hmem s hs).2) (fun s hs => ?_)
@@ -238,7 +238,7 @@ theorem regionFrame_taskRel (W ι D : Type) [Nonempty W] [AddCommGroup D] [Linea
 The clock relation `s.1 = s'.1 ∧ s'.2 = s.2 + d` makes the duration of a transition recoverable
 from its endpoints, via the position function `Prod.snd`. That is exactly the deterministic-shift
 contract `TaskFrame.limit_of_shift` consumes, so *Limit* holds over **any** nontrivial duration
-type — dense included — and every fiber is a singleton, which discharges *Spherical*.
+type — dense included — and every fiber is a singleton, which discharges *Saturation*.
 
 This supersedes an earlier record flagging this frame as failing dense-polymorphically. That flag
 was accurate against the frame's **former** relation, the maximally-permissive
@@ -287,14 +287,14 @@ theorem regionFrame_limit (W ι D : Type) [Nonempty W] [AddCommGroup D] [LinearO
   TaskFrame.limit_of_shift Prod.snd (fun _ _ _ h => h.2)
     (fun s u h => (((regionFrame W ι D).nullity_identity s u).mp h).symm)
 
-/-- *Spherical* (`def:frame#Spherical`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
+/-- *Saturation* (`def:frame#Saturation`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
 $\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments") for `regionFrame`:
 every fiber is a subsingleton and every segment is an intersection of fibers, so every nonempty
 member of a directed family is a singleton and
 `TaskFrame.sInter_nonempty_of_directed_of_univ_or_singleton` applies. -/
-theorem regionFrame_spherical (W ι D : Type) [Nonempty W] [AddCommGroup D] [LinearOrder D]
+theorem regionFrame_saturation (W ι D : Type) [Nonempty W] [AddCommGroup D] [LinearOrder D]
     [IsOrderedAddMonoid D] [Nontrivial D] :
-    TaskFrame.Spherical (regionFrame W ι D).TaskRel := by
+    TaskFrame.Saturation (regionFrame W ι D).TaskRel := by
   intro S hdir hmem
   refine TaskFrame.sInter_nonempty_of_directed_of_univ_or_singleton hdir
     (fun s hs => (hmem s hs).2) (fun s hs => ?_)

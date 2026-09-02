@@ -93,10 +93,10 @@ theorem customFrame_limit :
     ∀ w u, (∀ x : Int, 0 < x → ∃ y, |y| < x ∧ customFrame.TaskRel w y u) → u = w :=
   TaskFrame.limit_of_permissive customFrame_rel_iff
 
-/-- *Spherical* (`def:frame#Spherical`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
+/-- *Saturation* (`def:frame#Saturation`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
 $\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments") for `customFrame`. -/
-theorem customFrame_spherical : TaskFrame.Spherical customFrame.TaskRel :=
-  TaskFrame.spherical_of_permissive customFrame_rel_iff
+theorem customFrame_saturation : TaskFrame.Saturation customFrame.TaskRel :=
+  TaskFrame.saturation_of_permissive customFrame_rel_iff
 
 /-! ## Polymorphism Tests -/
 

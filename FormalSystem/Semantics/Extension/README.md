@@ -10,7 +10,7 @@ in a plain fiber, which yields a one-point extension (`Admissible.lean`); one ar
 can therefore be added (`Step.lean`); and Zorn's lemma over the extension order produces a
 maximal, hence total, element (`Extension.lean`).
 
-`Step.lean` is **the only place in the development where the Spherical axiom is consumed**.
+`Step.lean` is **the only place in the development where the Saturation axiom is consumed**.
 
 `PeriodicExtension.lean` is a constructive alternative over `ℤ`-time with a finite carrier,
 where Zorn's lemma is more than is needed: a bounded history has two orbits leaving it, and
@@ -24,14 +24,14 @@ over a finite carrier both must eventually repeat.
 | `Constraint.lean` | 398 | `lem:constraint` — the constraints a partial history imposes on a new duration form a *directed* family of *nonempty* sets. That is the whole of the lemma; the admissibility characterization is split out into `Admissible.lean`. |
 | `Extension.lean` | 272 | `thm:extension` and `cor:occurrence` — every partial history is extended by some total world history, and every world state occurs at any prescribed time in some total world history. |
 | `PeriodicExtension.lean` | 444 | A constructive alternative over `ℤ`-time with a finite carrier: a bounded history's two departing orbits must repeat, giving a periodic total extension without Zorn's lemma. |
-| `Step.lean` | 136 | `lem:step` — the Step Lemma: every partial history extends by one arbitrary duration. The join point of the chain, and the sole *Spherical* application site. |
+| `Step.lean` | 136 | `lem:step` — the Step Lemma: every partial history extends by one arbitrary duration. The join point of the chain, and the sole *Saturation* application site. |
 
 ## Key Results
 
 - `thm:extension` (`Extension.lean`) — the Extension Theorem.
 - `cor:occurrence` (`Extension.lean`) — every world state occurs at any prescribed time in some
   total world history.
-- `lem:step` (`Step.lean`) — the one-duration extension, and the only consumer of *Spherical*.
+- `lem:step` (`Step.lean`) — the one-duration extension, and the only consumer of *Saturation*.
 
 ## Dependencies
 

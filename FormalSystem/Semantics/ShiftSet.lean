@@ -43,7 +43,7 @@ all seven. Three of them are free consequences of the task relation being *funct
 
 - `serial` — witnessed by `sh w x` and `sh w (-x)`;
 - the **interpolation** half of the biconditional `comp` — witnessed, uniquely, by `sh w x`;
-- `spherical` — under a functional relation every fiber and every segment is a singleton or
+- `saturation` — under a functional relation every fiber and every segment is a singleton or
   empty, so a directed family of nonempty ones is a family of copies of one singleton and its
   intersection is that singleton. No frame-theoretic machinery, and no Zorn.
 
@@ -150,7 +150,7 @@ The task frame induced by a shift set, under the **functional** task relation
 
 All **seven** live `FrameOver` fields are discharged here. Three come for free from
 functionality plus the group action and require no shift-set axiom of their own — `serial`, the
-*interpolation* half of the biconditional `comp`, and `spherical` — correcting the design
+*interpolation* half of the biconditional `comp`, and `saturation` — correcting the design
 document's list, which was written against an earlier five-field frame structure and named only the
 other four. The one field that is genuinely *not* free is `limit`; it is exactly `S.sep`.
 -/
@@ -183,7 +183,7 @@ other four. The one field that is genuinely *not* free is `limit`; it is exactly
     show w = S.sh (S.sh w (-x)) x
     rw [S.sh_neg']
   limit := S.sep
-  spherical := by
+  saturation := by
     -- Under a functional task relation `Fib R w x` is a singleton and `Seg R w v x y` is a
     -- singleton or empty. Directedness then forces every member of the family to be that same
     -- singleton, so `⋂₀ S` is it, and is nonempty. No frame machinery, no Zorn.

@@ -85,7 +85,7 @@ def intTimeFrame : FrameOver intOrder where
   converse := fun _ _ _ => ⟨fun _ => trivial, fun _ => trivial⟩
   serial := TaskFrame.serial_of_total fun _ _ _ => trivial
   limit := TaskFrame.limit_of_subsingleton
-  spherical := TaskFrame.spherical_of_subsingleton
+  saturation := TaskFrame.saturation_of_subsingleton
 
 /-! ### `intTimeFrame` discharges `def:frame`'s four axioms (total class) -/
 
@@ -107,12 +107,12 @@ theorem intTimeFrame_limit :
   haveI : Subsingleton intTimeFrame.WorldState := inferInstanceAs (Subsingleton Unit)
   exact TaskFrame.limit_of_subsingleton
 
-/-- *Spherical* (`def:frame#Spherical`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
+/-- *Saturation* (`def:frame#Saturation`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
 $\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments") for `intTimeFrame`:
 its carrier is `Unit`, so every nonempty subset is the whole carrier. -/
-theorem intTimeFrame_spherical : TaskFrame.Spherical intTimeFrame.TaskRel := by
+theorem intTimeFrame_saturation : TaskFrame.Saturation intTimeFrame.TaskRel := by
   haveI : Subsingleton intTimeFrame.WorldState := inferInstanceAs (Subsingleton Unit)
-  exact TaskFrame.spherical_of_subsingleton
+  exact TaskFrame.saturation_of_subsingleton
 
 /--
 Integer time task frame with natural number world states.
@@ -156,7 +156,7 @@ def intNatFrame : FrameOver intOrder where
         | inr hu => right; exact hw.trans hu
   serial := TaskFrame.serial_of_permissive fun _ _ _ => Iff.rfl
   limit := TaskFrame.limit_of_permissive fun _ _ _ => Iff.rfl
-  spherical := TaskFrame.spherical_of_permissive fun _ _ _ => Iff.rfl
+  saturation := TaskFrame.saturation_of_permissive fun _ _ _ => Iff.rfl
   converse := fun w d u => by
     constructor
     · intro h
@@ -193,11 +193,11 @@ theorem intNatFrame_limit :
     ∀ w u, (∀ x : Int, 0 < x → ∃ y, |y| < x ∧ intNatFrame.TaskRel w y u) → u = w :=
   TaskFrame.limit_of_permissive intNatFrame_rel_iff
 
-/-- *Spherical* (`def:frame#Spherical`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
+/-- *Saturation* (`def:frame#Saturation`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
 $\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments") for `intNatFrame`:
 every nonempty fiber and segment is the whole carrier or a singleton. -/
-theorem intNatFrame_spherical : TaskFrame.Spherical intNatFrame.TaskRel :=
-  TaskFrame.spherical_of_permissive intNatFrame_rel_iff
+theorem intNatFrame_saturation : TaskFrame.Saturation intNatFrame.TaskRel :=
+  TaskFrame.saturation_of_permissive intNatFrame_rel_iff
 
 /--
 **The canonical off-zero-universal two-state ℤ frame.**
@@ -256,7 +256,7 @@ def intBoolFrame : FrameOver intOrder where
         | inr hu => right; exact hw.trans hu
   serial := TaskFrame.serial_of_permissive fun _ _ _ => Iff.rfl
   limit := TaskFrame.limit_of_permissive fun _ _ _ => Iff.rfl
-  spherical := TaskFrame.spherical_of_permissive fun _ _ _ => Iff.rfl
+  saturation := TaskFrame.saturation_of_permissive fun _ _ _ => Iff.rfl
   converse := fun w d u => by
     constructor
     · intro h
@@ -292,17 +292,17 @@ theorem intBoolFrame_limit :
   TaskFrame.limit_of_permissive intBoolFrame_rel_iff
 
 /--
-*Spherical* (`def:frame#Spherical`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
+*Saturation* (`def:frame#Saturation`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
 $\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments") for `intBoolFrame`.
 
-**The discharge route matters.** `Bool` is finite, so `TaskFrame.spherical_of_finite` would also
-apply — but it is *not* used here, and must not be substituted. `spherical_of_permissive` is
-choice-free for this relation shape, while `spherical_of_finite` carries `Classical.choice`
-(unavoidably: weak excluded middle follows from `Spherical` at a finite carrier). Routing this
+**The discharge route matters.** `Bool` is finite, so `TaskFrame.saturation_of_finite` would also
+apply — but it is *not* used here, and must not be substituted. `saturation_of_permissive` is
+choice-free for this relation shape, while `saturation_of_finite` carries `Classical.choice`
+(unavoidably: weak excluded middle follows from `Saturation` at a finite carrier). Routing this
 frame through the finite lemma would be a pure axiom-profile regression with nothing gained.
 -/
-theorem intBoolFrame_spherical : TaskFrame.Spherical intBoolFrame.TaskRel :=
-  TaskFrame.spherical_of_permissive intBoolFrame_rel_iff
+theorem intBoolFrame_saturation : TaskFrame.Saturation intBoolFrame.TaskRel :=
+  TaskFrame.saturation_of_permissive intBoolFrame_rel_iff
 
 /--
 Integer time world history with universal domain.
@@ -338,7 +338,7 @@ def genericTimeFrame : FrameOver D where
   converse := fun _ _ _ => ⟨fun _ => trivial, fun _ => trivial⟩
   serial := TaskFrame.serial_of_total fun _ _ _ => trivial
   limit := TaskFrame.limit_of_subsingleton
-  spherical := TaskFrame.spherical_of_subsingleton
+  saturation := TaskFrame.saturation_of_subsingleton
 
 /-! ### `genericTimeFrame` discharges `def:frame`'s four axioms (total class) -/
 
@@ -361,12 +361,12 @@ theorem genericTimeFrame_limit :
   haveI : Subsingleton (genericTimeFrame D).WorldState := inferInstanceAs (Subsingleton Unit)
   exact TaskFrame.limit_of_subsingleton
 
-/-- *Spherical* (`def:frame#Spherical`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
+/-- *Saturation* (`def:frame#Saturation`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
 $\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments") for
 `genericTimeFrame`: its carrier is `Unit`, so every nonempty subset is the whole carrier. -/
-theorem genericTimeFrame_spherical : TaskFrame.Spherical (genericTimeFrame D).TaskRel := by
+theorem genericTimeFrame_saturation : TaskFrame.Saturation (genericTimeFrame D).TaskRel := by
   haveI : Subsingleton (genericTimeFrame D).WorldState := inferInstanceAs (Subsingleton Unit)
-  exact TaskFrame.spherical_of_subsingleton
+  exact TaskFrame.saturation_of_subsingleton
 
 /--
 Generic polymorphic task frame with natural number world states.
@@ -415,7 +415,7 @@ def genericNatFrame [SuccOrder ↑D] [NoMaxOrder ↑D] : FrameOver D where
         | inr hu => right; exact hw.trans hu
   serial := TaskFrame.serial_of_permissive fun _ _ _ => Iff.rfl
   limit := TaskFrame.limit_of_permissive fun _ _ _ => Iff.rfl
-  spherical := TaskFrame.spherical_of_permissive fun _ _ _ => Iff.rfl
+  saturation := TaskFrame.saturation_of_permissive fun _ _ _ => Iff.rfl
   converse := fun w d u => by
     constructor
     · intro h
@@ -460,13 +460,13 @@ theorem genericNatFrame_limit [SuccOrder D] [NoMaxOrder D] :
     ∀ w u, (∀ x : ↑D, 0 < x → ∃ y, |y| < x ∧ (genericNatFrame D).TaskRel w y u) → u = w :=
   TaskFrame.limit_of_permissive (genericNatFrame_rel_iff D)
 
-/-- *Spherical* (`def:frame#Spherical`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
+/-- *Saturation* (`def:frame#Saturation`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
 $\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments") for
 `genericNatFrame`: every nonempty fiber and segment is the whole carrier or a singleton, and a
 directed family cannot contain two distinct singletons. No restriction on `D` is needed. -/
-theorem genericNatFrame_spherical [SuccOrder D] [NoMaxOrder D] :
-    TaskFrame.Spherical (genericNatFrame D).TaskRel :=
-  TaskFrame.spherical_of_permissive (genericNatFrame_rel_iff D)
+theorem genericNatFrame_saturation [SuccOrder D] [NoMaxOrder D] :
+    TaskFrame.Saturation (genericNatFrame D).TaskRel :=
+  TaskFrame.saturation_of_permissive (genericNatFrame_rel_iff D)
 
 /--
 Generic polymorphic world history with universal domain.

@@ -119,14 +119,14 @@ Any converse operation written explicitly in this book uses a superscript invers
   + *Compositionality*: $w arrow.r.double.long_(x+y) v$ if and only if $w arrow.r.double.long_x u$ and $u arrow.r.double.long_y v$ for some $u in W$.
   + *Seriality*: $w arrow.r.double.long_x u$ and $v arrow.r.double.long_x w$ for some $u, v in W$.
   + *Limit*: $inter.big_(x > 0) (w)_x = {w}$.
-  + *Spherical*: $inter.big S eq.not emptyset$ for any $supset.eq$-directed family $S$ of nonempty fibers and segments.
+  + *Saturation*: $inter.big S eq.not emptyset$ for any $supset.eq$-directed family $S$ of nonempty fibers and segments.
 ]#footnote[Compositionality is a *biconditional*, load bearing in both directions.]#footnote[The basic cones $(w)_x$ for $w in W$ and $x > 0$ form the basis of a topology on the world states, and that topology is separated: it is *T1* (each singleton ${w}$ is closed) and hence *R0* (topological indistinguishability is symmetric). Separation is exactly what *Limit* delivers topologically --- no world state other than $w$ lies in every cone around $w$.]
 
 *Compositionality* ensures that executing tasks sequentially yields results consistent with a single task of combined duration, in both directions.
 *Seriality* ensures every world state has a successor and a predecessor at every nonnegative duration.
 *Limit* ensures that shrinking the duration bound around $w$ pins down $w$ uniquely --- no other world state lies in every cone around it.
-*Spherical* is what makes the extension machinery of @sec:world-histories go through: it guarantees that a $supset.eq$-directed family of nonempty fibers and segments --- the constraints a new time imposes on a partial history, kept as two separate classes, never conflated --- has a common point.
-Fibers and segments range over *two separate classes* in *Spherical*; the retired device by which fibers were folded into a one-sided case of segments is not current notation.
+*Saturation* is what makes the extension machinery of @sec:world-histories go through: it guarantees that a $supset.eq$-directed family of nonempty fibers and segments --- the constraints a new time imposes on a partial history, kept as two separate classes, never conflated --- has a common point.
+Fibers and segments range over *two separate classes* in *Saturation*; the retired device by which fibers were folded into a one-sided case of segments is not current notation.
 
 Nullity is conspicuously absent from this list because it is not an axiom:
 
@@ -144,7 +144,7 @@ The proof is choice-free and short: instantiate *Seriality* at $x = 0$ to get so
   Stating it as a fifth axiom would therefore not strengthen the theory, only lengthen the definition.
 ]
 
-The Lean structure `TaskFrame` (`Semantics/TaskFrame.lean`) packages this presentation field-for-field, and the correspondence is one of *agreement*, not divergence: the primitive `TaskRel` relation carries #leanComp, the biconditional *Compositionality* in full (of which the composition, i.e. $arrow.l$, direction is projected out separately as #leanForwardComp, restricted to $x, y gt.eq 0$ exactly as the frame definition states it); #leanConverse packages the *converse convention* as structure data, since a two-sided Lean relation cannot carry the convention in its type, so the pair (two-sided `TaskRel`, #leanConverse) *is* the extended relation over a primitive relation on $D^+$, constraining rather than adding to it; #leanSerial is *Seriality* verbatim, stated by citation as `TaskFrame.Serial TaskRel`; #leanLimit is *Limit* verbatim, in the literal transcribed shape; and #leanSpherical is *Spherical* verbatim, stated by citation as `TaskFrame.Spherical TaskRel` so that fibers and segments remain two separate classes, exactly as the directed-family and frame definitions require --- this field is what the Step Lemma of @sec:world-histories consumes.
+The Lean structure `TaskFrame` (`Semantics/TaskFrame.lean`) packages this presentation field-for-field, and the correspondence is one of *agreement*, not divergence: the primitive `TaskRel` relation carries #leanComp, the biconditional *Compositionality* in full (of which the composition, i.e. $arrow.l$, direction is projected out separately as #leanForwardComp, restricted to $x, y gt.eq 0$ exactly as the frame definition states it); #leanConverse packages the *converse convention* as structure data, since a two-sided Lean relation cannot carry the convention in its type, so the pair (two-sided `TaskRel`, #leanConverse) *is* the extended relation over a primitive relation on $D^+$, constraining rather than adding to it; #leanSerial is *Seriality* verbatim, stated by citation as `TaskFrame.Serial TaskRel`; #leanLimit is *Limit* verbatim, in the literal transcribed shape; and #leanSaturation is *Saturation* verbatim, stated by citation as `TaskFrame.Saturation TaskRel` so that fibers and segments remain two separate classes, exactly as the directed-family and frame definitions require --- this field is what the Step Lemma of @sec:world-histories consumes.
 #leanNullityDerived (`TaskRel w 0 w`) is *derived* from these fields via #leanNullityIdentity, matching Nullity's derived status above.
 
 A design fact of the mechanization worth recording: #leanNullityIdentity is stated as an *iff* ($w arrow.r.double.long_0 u arrow.l.r.double w = u$), which is strictly stronger than Nullity's reflexivity-only conclusion --- it additionally asserts injectivity at zero duration.
@@ -216,7 +216,7 @@ Only the total tier is what the semantics of @sec:truth quantifies over.
   ]
 ]
 
-Not every partial history is total, and it is not obvious that a frame has *any* total world histories at all --- the existence of $H_(cal(F))$ needs an argument, and this is exactly where *Spherical* earns its place among the frame axioms.
+Not every partial history is total, and it is not obvious that a frame has *any* total world histories at all --- the existence of $H_(cal(F))$ needs an argument, and this is exactly where *Saturation* earns its place among the frame axioms.
 
 #definition("Constraints on a New Time")[
   For a partial history $tau$ with domain $"dom"$ and a duration $z in.not "dom"$, the *constraints on* $z$ are the segments $[tau(t), tau(s)]_(z-t)^(s-z)$ for times $t, s : D$ with $"dom"(t)$, $"dom"(s)$, and $t < z < s$ when both hold, and the fibers $"Fib"(tau(t), z-t)$ for $t$ with $"dom"(t)$ otherwise.
@@ -230,7 +230,7 @@ Not every partial history is total, and it is not obvious that a frame has *any*
 
 #lemma("Step Lemma")[
   Every partial history extends to a partial history on $"dom" union {z}$ for any duration $z in D$.
-]#footnote[The sole application site of *Spherical* in the whole existence chain. Load bearing for the discrete case: when the constraint family has a $subset.eq$-least member, that member already contains a candidate and *Spherical* is not needed.]
+]#footnote[The sole application site of *Saturation* in the whole existence chain. Load bearing for the discrete case: when the constraint family has a $subset.eq$-least member, that member already contains a candidate and *Saturation* is not needed.]
 // CONFIRM(paper): lem:step states this lemma
 
 #theorem("Extension Theorem")[
@@ -244,17 +244,17 @@ Not every partial history is total, and it is not obvious that a frame has *any*
 ]#footnote[Proved by extending the one-point partial history ${(x, w)}$ via the Extension Theorem.]
 // CONFIRM(paper): cor:occurrence states this corollary
 
-*Spherical* is genuinely needed for the Step Lemma in general, but it comes for free when the world-state carrier is finite:
+*Saturation* is genuinely needed for the Step Lemma in general, but it comes for free when the world-state carrier is finite:
 
-#corollary("Spherical for Finite Carriers")[
-  Every frame $cal(F) = (W, D, arrow.r.double.long)$ with finite $W$ satisfies *Spherical*, choice-free.
+#corollary("Saturation for Finite Carriers")[
+  Every frame $cal(F) = (W, D, arrow.r.double.long)$ with finite $W$ satisfies *Saturation*, choice-free.
 ]
-// CONFIRM(paper): cor:spherical-finite states this corollary
+// CONFIRM(paper): cor:saturation-finite states this corollary
 
 #remark("What the Finite-Carrier Discharge Does and Does Not Give")[
-  *Spherical* earns its place among the frame axioms because, without it, nothing guarantees a $supset.eq$-directed family of nonempty fibers and segments has a common point --- and the Step Lemma needs exactly that common point to extend a partial history by one more duration.
-  The finite-carrier corollary above discharges *Spherical* choice-free whenever $W$ is finite, which covers every worked example and every finite countermodel this book constructs.
-  It does *not* discharge *Spherical* for infinite-$W$ frames: those still need the axiom in full.
+  *Saturation* earns its place among the frame axioms because, without it, nothing guarantees a $supset.eq$-directed family of nonempty fibers and segments has a common point --- and the Step Lemma needs exactly that common point to extend a partial history by one more duration.
+  The finite-carrier corollary above discharges *Saturation* choice-free whenever $W$ is finite, which covers every worked example and every finite countermodel this book constructs.
+  It does *not* discharge *Saturation* for infinite-$W$ frames: those still need the axiom in full.
 ]
 
 The Lean formalization runs this exact chain. `PartialHistory` and `WorldHistory` (`Semantics/PartialHistory.lean`, `Semantics/WorldHistory.lean`) implement the two-tier structure, with `WorldHistory` extending `PartialHistory` by a single `convex` field, and `WorldHistory.IsTotal` as the totality predicate identifying membership in $H_(cal(F))$.

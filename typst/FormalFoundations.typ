@@ -216,7 +216,7 @@ its absence from $#BL$ is what produces the split validity of @sec:dichotomy.
     + *Seriality*: $w arrow.r.double.long_(x) u$ and $v arrow.r.double.long_(x) w$ for some
       $u, v in #worldstate$.
     + *Limit*: $inter.big_(x > 0) (w)_x = {w}$.
-    + *Spherical*: $inter.big cal(S) eq.not emptyset$ for any $supset.eq$-directed family $cal(S)$
+    + *Saturation*: $inter.big cal(S) eq.not emptyset$ for any $supset.eq$-directed family $cal(S)$
       of nonempty fibers and segments.
   ]
 ]
@@ -306,12 +306,12 @@ below: two of the three results in @sec:histories are theorems of ZFC.
 ]
 #proof[
   If $z in X$, then $tau$ extends itself. Otherwise the constraints imposed on $z$ form a directed
-  family of nonempty fibers and segments by *Directedness*, so *Spherical* provides some
+  family of nonempty fibers and segments by *Directedness*, so *Saturation* provides some
   $u in #worldstate$ belonging to every member, whence $tau union {(z,u)}$ is a partial history on
   $X union {z}$ extending $tau$ by *Admissibility*. When the family has a $subset.eq$-least
   member --- as the nesting argument inside *Directedness* provides whenever $X$ contains an
   assignment nearest to $z$ on each side it occupies --- that member already supplies a candidate
-  and *Spherical* is not needed.
+  and *Saturation* is not needed.
 ]
 
 #theorem("Extension")[
@@ -334,10 +334,10 @@ below: two of the three results in @sec:histories are theorems of ZFC.
 ]
 #leansrc("Semantics.PartialHistory", "occurrence")
 
-The Step Lemma above is the sole application site of *Spherical*, and Extension is the sole
-consumer of the Step Lemma; every appeal to *Spherical* in the semantics passes through this one
-point.#footnote[*Spherical* is not needed when the $supset.eq$-directed family has a $subset.eq$-least member, and on a finite carrier it holds outright and choice-free.] Extension and Occurrence are theorems of ZFC, in contrast with Nullity. That
-localization is what lets the deterministic frames of @sec:representation discharge *Spherical*
+The Step Lemma above is the sole application site of *Saturation*, and Extension is the sole
+consumer of the Step Lemma; every appeal to *Saturation* in the semantics passes through this one
+point.#footnote[*Saturation* is not needed when the $supset.eq$-directed family has a $subset.eq$-least member, and on a finite carrier it holds outright and choice-free.] Extension and Occurrence are theorems of ZFC, in contrast with Nullity. That
+localization is what lets the deterministic frames of @sec:representation discharge *Saturation*
 outright: every fiber and segment there is a singleton or empty, so the one point at this
 application site is already forced.
 
@@ -376,8 +376,8 @@ The cones are a basis for a topology on world states, and that topology is separ
   Extension, is a question about the order of the theory and not about its content: the two
   definitions agree extensionally, by Extension.
   They differ in what must be assumed at the outset.
-  The restriction definition makes $H_(#taskframe)$ prior and hides the appeal to *Spherical*
-  inside the existence of the objects it quantifies over; the order taken here keeps *Spherical*
+  The restriction definition makes $H_(#taskframe)$ prior and hides the appeal to *Saturation*
+  inside the existence of the objects it quantifies over; the order taken here keeps *Saturation*
   visible at the single site where it is used.
 ]
 
@@ -707,7 +707,7 @@ Two further remarks bound what the four results above claim. First, the axiom re
 are Lean's, and Lean's single `Classical.choice` axiom yields excluded middle and choice
 jointly, so an axiom report cannot express the paper's finer distinction between a choice-free
 argument and a ZFC one; where that distinction matters it is drawn on the paper side, as in
-@sec:histories.#footnote[The development has separately machine-checked that *Spherical* on a finite carrier implies weak excluded middle, so no `Classical.choice`-free Lean proof of Extension could exist even in the finite case.] Second, *strong* completeness --- consequence from a possibly infinite premise
+@sec:histories.#footnote[The development has separately machine-checked that *Saturation* on a finite carrier implies weak excluded middle, so no `Classical.choice`-free Lean proof of Extension could exist even in the finite case.] Second, *strong* completeness --- consequence from a possibly infinite premise
 set --- is the aim for $op("TM")^+$ and $op("TM")^+_d$, with no known obstruction over the base and
 dense classes; it *provably fails* for $ZZ$-time and for $RR$, where compactness fails. Nothing is
 asserted about compactness of the full discrete class in either direction.
@@ -893,10 +893,10 @@ to the family itself.
 ]
 #leansrc("Metalogic.Algebraic", "multiFamTaskFrameGen")
 The construction is generic in $D$: it is performed once and instantiated at $QQ$, at $ZZ$, and at
-$RR$ by the three branches below. Its frame axioms are discharged separately, and *Spherical* is
+$RR$ by the three branches below. Its frame axioms are discharged separately, and *Saturation* is
 discharged by a *third* pattern, distinct from the two of @sec:histories. The induced task relation
 is deterministic, so its fibers are subsingletons, and a $supset.eq$-directed family of nonempty subsingletons
-has nonempty intersection outright.#footnote[`multiFamGen_spherical`, via the reusable helper `sInter_nonempty_of_directed_subsingleton`. The argument sees only the shape of the fibers, so it applies to every deterministic frame. Contrast the finite-carrier discharge (`cor:spherical-finite`) and the Zorn route through the Step Lemma (`thm:extension`); this third pattern is what @sec:representation returns to.]
+has nonempty intersection outright.#footnote[`multiFamGen_saturation`, via the reusable helper `sInter_nonempty_of_directed_subsingleton`. The argument sees only the shape of the fibers, so it applies to every deterministic frame. Contrast the finite-carrier discharge (`cor:saturation-finite`) and the Zorn route through the Step Lemma (`thm:extension`); this third pattern is what @sec:representation returns to.]
 
 == The Dense Branch
 
@@ -1340,7 +1340,7 @@ the full similarity type.
 
 The frame induced by a shift set is deterministic --- its task relation is functional, since
 $u = "sh"(w,d)$ determines $u$ from $w$ and $d$ --- so *Compositionality*, *Seriality*, and
-*Nullity* hold outright on it, and *Spherical* holds because every fiber and every segment is a
+*Nullity* hold outright on it, and *Saturation* holds because every fiber and every segment is a
 singleton or empty, a directed family of singletons having its one member as intersection; this is
 the third of the three discharge patterns of @sec:construction. *Limit* is exactly the separation
 axiom above, which is first-order.
@@ -1507,8 +1507,8 @@ axiom above, which is first-order.
   $R_F [U] = inter.big {eta(a) : #allfuture a in U}$ is closed --- the family directed and with
   the finite intersection property; compactness of $op("Uf")(A)$ gives a point in the
   intersection.
-  This is *Spherical*'s role played by Stone compactness on the algebra side; on the flow itself
-  *Spherical* is trivial, as noted above. For $#Nxt top = 1$ the chronicle is forced one step at a
+  This is *Saturation*'s role played by Stone compactness on the algebra side; on the flow itself
+  *Saturation* is trivial, as noted above. For $#Nxt top = 1$ the chronicle is forced one step at a
   time, and a promise not kept in finitely many steps needs a witness at infinite distance, which
   is why the discrete components of the Representation theorem are represented over $ZZ$-groups
   rather than over $ZZ$ itself.

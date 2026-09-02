@@ -119,5 +119,5 @@
 #let leanConverse = raw("converse")
 #let leanSerial = raw("serial")
 #let leanLimit = raw("limit")
-#let leanSpherical = raw("spherical")
+#let leanSaturation = raw("saturation")
 #let leanNullityDerived = raw("nullity")  // derived theorem, not a field: TaskRel w 0 w

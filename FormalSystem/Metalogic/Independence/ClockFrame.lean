@@ -39,7 +39,7 @@ the logic. That is expected and harmless: an independence witness is a model of 
 not a model of the intended interpretation. Three points make the witness legitimate:
 
 * `clockFrame` is a genuine value of the `ℚ` fibre, `FrameOver (TemporalOrder.of ℚ)`. Every one of `def:frame`'s four axioms —
-  *Compositionality*, *Seriality*, *Limit*, *Spherical* — is discharged below, together with the
+  *Compositionality*, *Seriality*, *Limit*, *Saturation* — is discharged below, together with the
   converse convention and the iff-form zero-duration law the structure additionally carries.
 * Because it is a genuine frame over a densely ordered `ℚ`, every base and density axiom holds in
   every model on it, for free, by `soundness_dense`. Nothing has to be checked by hand.
@@ -150,10 +150,10 @@ theorem clockRel_limit :
     exact absurd (key |y₀| hpos (le_of_lt hy₀)) (lt_irrefl _)
   rw [hu, hy₀zero, cmk_zero, add_zero]
 
-/-- *Spherical* (`def:frame#Spherical`) for the clock relation: every fiber is a singleton and
+/-- *Saturation* (`def:frame#Saturation`) for the clock relation: every fiber is a singleton and
 every segment is an intersection of two fibers, so every nonempty member of a directed family is
 a singleton and `TaskFrame.sInter_nonempty_of_directed_of_univ_or_singleton` applies. -/
-theorem clockRel_spherical : TaskFrame.Spherical clockRel := by
+theorem clockRel_saturation : TaskFrame.Saturation clockRel := by
   intro S hdir hmem
   refine TaskFrame.sInter_nonempty_of_directed_of_univ_or_singleton hdir
     (fun s hs => (hmem s hs).2) (fun s hs => ?_)
@@ -206,7 +206,7 @@ def clockFrame : FrameOver (TemporalOrder.of ℚ) where
   serial := fun w x _ =>
     ⟨⟨w + cmk x, rfl⟩, ⟨w - cmk x, by show w = w - cmk x + cmk x; abel⟩⟩
   limit := clockRel_limit
-  spherical := clockRel_spherical
+  saturation := clockRel_saturation
 
 @[simp] theorem clockFrame_worldState : clockFrame.WorldState = ClockState := rfl
 

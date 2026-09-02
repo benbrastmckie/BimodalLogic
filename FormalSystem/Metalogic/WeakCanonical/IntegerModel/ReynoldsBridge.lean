@@ -461,7 +461,7 @@ noncomputable def zTaskFrameV2 : FrameOver intOrder where
   converse w d u := by constructor <;> intro h <;> omega
   serial := fun w x _ => ⟨⟨w + x, rfl⟩, ⟨w - x, by omega⟩⟩
   limit := TaskFrame.limit_of_shift id (fun _ _ _ h => h) (fun _ _ h => by omega)
-  spherical := by
+  saturation := by
     intro S hdir hmem
     refine Algebraic.sInter_nonempty_of_directed_subsingleton hdir (fun s hs => (hmem s hs).2)
       fun s hs => ?_
@@ -515,11 +515,11 @@ theorem zTaskFrameV2_limit :
   intro w u h
   omega
 
-/-- *Spherical* (`def:frame#Spherical`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
+/-- *Saturation* (`def:frame#Saturation`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
 $\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments") for `zTaskFrameV2`:
 every fiber is a singleton and every segment is an intersection of fibers, hence a subsingleton,
 so `Algebraic.sInter_nonempty_of_directed_subsingleton` applies. -/
-theorem zTaskFrameV2_spherical : TaskFrame.Spherical zTaskFrameV2.TaskRel := by
+theorem zTaskFrameV2_saturation : TaskFrame.Saturation zTaskFrameV2.TaskRel := by
   intro S hdir hmem
   refine Algebraic.sInter_nonempty_of_directed_subsingleton hdir
     (fun s hs => (hmem s hs).2) (fun s hs => ?_)
@@ -781,7 +781,7 @@ noncomputable def multiFamTaskFrame (FamIdx : Type) [Nonempty FamIdx] : FrameOve
   limit :=
     TaskFrame.limit_of_shift Prod.snd (fun _ _ _ h => h.2)
       (fun w u h => Prod.ext h.1.symm (by omega))
-  spherical := by
+  saturation := by
     intro S hdir hmem
     refine Algebraic.sInter_nonempty_of_directed_subsingleton hdir (fun s hs => (hmem s hs).2)
       fun s hs => ?_
@@ -828,12 +828,12 @@ theorem multiFamTaskFrame_limit (FamIdx : Type) [Nonempty FamIdx] :
       (∀ x, 0 < x → ∃ y, |y| < x ∧ (multiFamTaskFrame FamIdx).TaskRel w y u) → u = w :=
   Algebraic.multiFamTaskFrameGen_limit (D := intOrder)
 
-/-- *Spherical* (`def:frame#Spherical`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
+/-- *Saturation* (`def:frame#Saturation`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
 $\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments") for
-`multiFamTaskFrame`, by specialization of `multiFamTaskFrameGen_spherical`. -/
-theorem multiFamTaskFrame_spherical (FamIdx : Type) [Nonempty FamIdx] :
-    TaskFrame.Spherical (multiFamTaskFrame FamIdx).TaskRel :=
-  Algebraic.multiFamTaskFrameGen_spherical
+`multiFamTaskFrame`, by specialization of `multiFamTaskFrameGen_saturation`. -/
+theorem multiFamTaskFrame_saturation (FamIdx : Type) [Nonempty FamIdx] :
+    TaskFrame.Saturation (multiFamTaskFrame FamIdx).TaskRel :=
+  Algebraic.multiFamTaskFrameGen_saturation
 
 /-- World history for the multi-family frame, parameterized by a family index
 and a base offset. The history visits states `(f, w₀ + t)` at each time `t`. -/

@@ -87,7 +87,7 @@ identifiable to a single axiom. Read the field proofs:
 | field | what it uses | needs |
 |---|---|---|
 | `nullity_identity`, `converse` | `map_zero`, `map_neg` | a group hom |
-| `comp`, `serial`, `spherical` | `map_le_map_iff e.symm` in the `.mpr` direction | `e.symm` order-reflecting |
+| `comp`, `serial`, `saturation` | `map_le_map_iff e.symm` in the `.mpr` direction | `e.symm` order-reflecting |
 | **`limit`** | `map_lt_map_iff e` **and** `map_lt_map_iff e.symm` | **both directions** |
 
 *Limit* is the one that forces it. Its hypothesis is instantiated at `e x` — pushing a duration
@@ -118,9 +118,9 @@ pulling back along `e.symm`. Each of the seven fields is then the original field
 `e.symm`, with `map_add`/`map_neg`/`map_sub` and `map_le_map_iff`/`map_lt_map_iff` supplying the
 compatibility.
 
-The *Spherical* field is the cheapest of the interesting ones rather than the most expensive:
+The *Saturation* field is the cheapest of the interesting ones rather than the most expensive:
 under an ordered-group isomorphism the fiber and segment predicates (`TaskFrame.Fib`,
-`TaskFrame.Seg`) pick out the *identical* subsets of `WorldState`, so `F.spherical` is handed
+`TaskFrame.Seg`) pick out the *identical* subsets of `WorldState`, so `F.saturation` is handed
 back the **same** directed family. No directedness argument is reconstructed.
 -/
 def FrameOver.map (F : FrameOver D) (e : ↑D ≃+o ↑E) : FrameOver E where
@@ -156,11 +156,11 @@ def FrameOver.map (F : FrameOver D) (e : ↑D ≃+o ↑E) : FrameOver E where
     rw [this]
     have := (map_lt_map_iff e.symm (a := |n|) (b := e x)).mpr hn
     simpa using this
-  spherical := by
-    -- `F.spherical` is handed the *identical* directed family: `Seg`/`Fib` under `e` pick out
+  saturation := by
+    -- `F.saturation` is handed the *identical* directed family: `Seg`/`Fib` under `e` pick out
     -- the same subsets of `F.WorldState`, so only the duration witnesses need translating.
     intro S hS hmem
-    refine F.spherical S hS ?_
+    refine F.saturation S hS ?_
     intro s hs
     obtain ⟨hfs, hne⟩ := hmem s hs
     refine ⟨?_, hne⟩

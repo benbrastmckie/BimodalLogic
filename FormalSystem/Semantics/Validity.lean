@@ -264,7 +264,7 @@ empty, and `F.ValidOn ⊥` would be a theorem rather than a refutation. What rul
 exactly `cor:occurrence`'s closing clause — `H_F ≠ ∅` — so the frame axioms it consumes appear
 here as hypotheses.
 
-**Wholly frame-intrinsic.** *Spherical*, *Seriality*, *Interpolation* and *Limit* are not
+**Wholly frame-intrinsic.** *Saturation*, *Seriality*, *Interpolation* and *Limit* are not
 arguments: `FrameOver` carries them as structure fields, and `cor:occurrence` reads them off the
 frame. Neither is a world state: the carrier's nonemptiness is the `nonempty` field, so the
 statement is the bare `¬ F.ValidOn ⊥` with `F` its only argument, exactly as `def:frame`'s

@@ -15,7 +15,7 @@ and proves the fiber/segment classification lemmas that `def:constraints` suppor
 
 ## Where the axiom predicates live
 
-*Spherical*, *Seriality*, and the interpolation half of *Compositionality* are `Prop`-valued
+*Saturation*, *Seriality*, and the interpolation half of *Compositionality* are `Prop`-valued
 predicates over a **bare task relation** `R : W → D → W → Prop`, and are declared in
 `Semantics/TaskFrame.lean` **above** the `FrameOver` structure — a structure field's type may
 only mention earlier declarations, so that is where they must live for the fields to cite them.
@@ -24,13 +24,13 @@ This module consumes them.
 ## The fields, and the invariant they were held to
 
 `FrameOver` now carries all four of `def:frame`'s axioms: `comp` (the full biconditional
-*Compositionality*, as `TaskFrame.Compositional TaskRel`), `serial`, `limit`, and `spherical`.
+*Compositionality*, as `TaskFrame.Compositional TaskRel`), `serial`, `limit`, and `saturation`.
 The hard invariant recorded in `specs/decisions/total-history-validity-decisions.md` (the
-four-axiom frame-alignment decision) was met: `FrameOver.spherical` is *definitionally*
-`Spherical TaskRel`, `FrameOver.serial` is definitionally `Serial TaskRel`, and the
+four-axiom frame-alignment decision) was met: `FrameOver.saturation` is *definitionally*
+`Saturation TaskRel`, `FrameOver.serial` is definitionally `Serial TaskRel`, and the
 interpolation half of biconditional *Compositionality* is available as `FrameOver.interpolates`,
 definitionally `Interpolates TaskRel`. Discharging a downstream hypothesis is therefore a
-mechanical substitution (`F.spherical`, `F.serial`, `F.interpolates`) with zero restatement; a
+mechanical substitution (`F.saturation`, `F.serial`, `F.interpolates`) with zero restatement; a
 field whose statement differed would make the results that consume these predicates stop
 typechecking, and that compilation failure *is* the acceptance test.
 
@@ -38,7 +38,7 @@ The bare-relation form is retained alongside the fields on purpose: results that
 axiom take exactly that axiom as an explicit hypothesis, and remain applicable to a relation
 that is not (yet) packaged as a frame.
 
-*Spherical* in particular must be literally the hypothesis the Step Lemma's proof consumes at the
+*Saturation* in particular must be literally the hypothesis the Step Lemma's proof consumes at the
 sole application site the paper names, never an inert structure field.
 
 ## Paper Specification Reference
@@ -51,12 +51,12 @@ paper source — is the citation source of record.
 - *Seriality* (`def:frame#Seriality`, verbatim): "$w \Rightarrow_x u$ and $v \Rightarrow_x w$ for
   some $u, v \in W$."
 - *Limit* (`def:frame#Limit`, verbatim): "$\bigcap\limits_{x > 0} (w)_x = \set{w}$."
-- *Spherical* (`def:frame#Spherical`, verbatim): "$\bigcap \mathcal{S} \neq \emptyset$ for any
+- *Saturation* (`def:frame#Saturation`, verbatim): "$\bigcap \mathcal{S} \neq \emptyset$ for any
   $\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments."
 - `def:directed`, the `$\supseteq$` clause (verbatim): "\item[\bf $\mathbf{\supseteq}$-Directed:]
   just in case $S \subseteq S_1 \cap S_2$ for some $S \in \mathcal{S}$ whenever
   $S_1, S_2 \in \mathcal{S}$." The paper split `def:directed` into a `$\supseteq$-Directed` and a
-  `$\subseteq$-Directed` clause; *Spherical*, and hence `DirectedFamily`, consumes the
+  `$\subseteq$-Directed` clause; *Saturation*, and hence `DirectedFamily`, consumes the
   `$\supseteq$` half only. The enclosing definition still opens "A nonempty family of sets
   $\mathcal{S}$ is:", which is where the family's own nonemptiness comes from."
 - `lem:nullity` (verbatim): "$w \Rightarrow_0 w$ for every world state $w \in W$ in every task
@@ -72,7 +72,7 @@ built from lives in `TaskFrame.lean`, transcribed there from `def:task-relation`
 
 ## Main Definitions
 
-- `TaskFrame.Spherical` — the *Spherical* axiom over a bare relation
+- `TaskFrame.Saturation` — the *Saturation* axiom over a bare relation
 - `TaskFrame.Serial` — the *Seriality* axiom over a bare relation
 - `TaskFrame.Interpolates` — the interpolation (left-to-right) half of *Compositionality*
 - `PartialHistory.IsPaired` — the "otherwise" side condition of `def:constraints`
@@ -92,7 +92,7 @@ built from lives in `TaskFrame.lean`, transcribed there from `def:task-relation`
   counted among the segments must not reappear.
 - **Directedness is its own definition** (`def:directed`, transcribed as
   `TaskFrame.DirectedFamily`), including the nonemptiness of the *family*; the nonemptiness of
-  its *members* is a separate conjunct in `Spherical`, exactly as the paper phrases it.
+  its *members* is a separate conjunct in `Saturation`, exactly as the paper phrases it.
 - **`Limit` is deliberately not given a name here.** It is used only as a hypothesis of
   `nullity_of_serial_limit`, in the literal transcribed shape
   `∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ R w y u) → u = w`, which is precisely the conclusion of
@@ -109,13 +109,13 @@ namespace TaskFrame
 variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
 
 /-!
-## Where `Spherical` / `Serial` / `Interpolates` live
+## Where `Saturation` / `Serial` / `Interpolates` live
 
 The three axiom predicates this module was originally written to host —
-`TaskFrame.Spherical`, `TaskFrame.Serial`, `TaskFrame.Interpolates` — now live in
+`TaskFrame.Saturation`, `TaskFrame.Serial`, `TaskFrame.Interpolates` — now live in
 `FormalSystem/Semantics/TaskFrame.lean`, beside the `Fib` / `cone` / `Seg` / `DirectedFamily` /
 `IsFiber` / `IsSegment` apparatus they are built from. Their fully qualified names, statements,
-and namespace are unchanged (`FormalSystem.Semantics.TaskFrame.{Spherical,Serial,Interpolates}`),
+and namespace are unchanged (`FormalSystem.Semantics.TaskFrame.{Saturation,Serial,Interpolates}`),
 so every consumer of this module sees them exactly as before.
 
 The relocation is forced by the invariant recorded above: the `FrameOver` structure must be able
@@ -132,7 +132,7 @@ Recorded source (`lem:nullity`, verbatim): "$w \Rightarrow_0 w$ for every world 
 in every task frame $\F = \tuple{W, \D, \Rightarrow}$."
 
 **Nullity is DERIVED, not an axiom.** `def:frame` has exactly four axioms — *Compositionality*,
-*Seriality*, *Limit*, *Spherical* — and Nullity is not among them. This theorem is the
+*Seriality*, *Limit*, *Saturation* — and Nullity is not among them. This theorem is the
 derivation, from *Seriality* at `x = 0` plus *Limit*, and it is **choice-free**, in contrast with
 the Extension Theorem's appeal to Zorn's lemma.
 
@@ -230,7 +230,7 @@ theorem isSegment_of_mem_Constraints_left {τ : PartialHistory F} {z t s : F.Dur
   ⟨τ.states t ht, τ.states s hs, z - t, s - z, le_of_lt (sub_pos.mpr htz),
     le_of_lt (sub_pos.mpr hzs), rfl⟩
 
-/-- Every member of `Constraints τ z` is a fiber or a segment — the disjunction the *Spherical*
+/-- Every member of `Constraints τ z` is a fiber or a segment — the disjunction the *Saturation*
 axiom ranges over. The two classes stay separate. -/
 theorem isFiber_or_isSegment_of_mem_Constraints {τ : PartialHistory F} {z : F.Duration}
     {c : Set F.WorldState} (hc : c ∈ Constraints τ z) :

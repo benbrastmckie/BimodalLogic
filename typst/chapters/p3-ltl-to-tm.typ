@@ -64,7 +64,7 @@ The future-only convention of LTL is principled, not an oversight: over discrete
 == Translating LTL into TM
 
 The convention deltas above compose into a systematic translation.
-An LTL trace -- an $omega$-sequence of states -- embeds into the task-frame setting as a history over the duration group $ZZ$ with convex domain ${ x : x gt.eq 0 }$, realized in the frame whose task relation is trivial: the identity at duration $0$ and the total relation at every other duration (this relation satisfies the *Compositionality*, *Seriality*, *Limit*, and *Spherical* frame axioms outright).
+An LTL trace -- an $omega$-sequence of states -- embeds into the task-frame setting as a history over the duration group $ZZ$ with convex domain ${ x : x gt.eq 0 }$, realized in the frame whose task relation is trivial: the identity at duration $0$ and the total relation at every other duration (this relation satisfies the *Compositionality*, *Seriality*, *Limit*, and *Saturation* frame axioms outright).
 Position $i$ of the trace becomes time $i$ of the history, and atoms are false at times outside the domain, matching the semantics chapter's convention.
 On formulas, each non-strict LTL operator has a strict *TM* rendering:
 

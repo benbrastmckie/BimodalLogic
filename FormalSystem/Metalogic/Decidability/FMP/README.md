@@ -68,9 +68,9 @@ frame: the left side varies freely with `τ` while the right side is fixed by `�
 Connecting these results to `TruthAt` requires first building a genuine filtered *task relation* on
 `FilteredWorld φ` — one derived from the MCS structure — and re-discharging all four axioms for it.
 That is open, and it is a filtration-construction problem, not a truth-lemma problem. Note that the
-permissive route to *Spherical* and *Limit* is exactly what a non-universal relation would lose;
-`TaskFrame.spherical_of_finite` (`Semantics/TaskFrame.lean`) is the replacement route for
-*Spherical* at a finite carrier, and is already in place.
+permissive route to *Saturation* and *Limit* is exactly what a non-universal relation would lose;
+`TaskFrame.saturation_of_finite` (`Semantics/TaskFrame.lean`) is the replacement route for
+*Saturation* at a finite carrier, and is already in place.
 
 ### "Rebuild the filtration" is not a refactor of this directory
 

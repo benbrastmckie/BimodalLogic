@@ -19,7 +19,7 @@ The chain, in order, is
 
 `def:constraints` → `lem:constraint` → `lem:fibers` (RETIRED anchor; see below) → `lem:admissible`
 → `lem:step` (the sole
-*Spherical* application site) → `thm:extension` (Zorn) → `cor:occurrence`.
+*Saturation* application site) → `thm:extension` (Zorn) → `cor:occurrence`.
 
 ## Paper Specification Reference
 
@@ -29,13 +29,13 @@ source — is the citation source of record.
 - `thm:extension` (verbatim): "Every partial history $\tau : X \to W$ over a task frame
   $\F = \tuple{W, \D, \Rightarrow}$ is extended by some total world history $\sigma \in H_{\F}$."
   Its footnote (verbatim): "The proof appeals to Zorn's lemma, and so the derivation of
-  \textit{Occurrence} from \textit{Seriality} and \textit{Spherical} in
+  \textit{Occurrence} from \textit{Seriality} and \textit{Saturation} in
   \textbf{\ref{cor:occurrence}} is a theorem of ZFC, in contrast with the derivation of the zero
-  loops in \textbf{\ref{lem:nullity}} and the derivation of \textit{Spherical} for finite $W$ in
-  \textbf{\ref{cor:spherical-finite}}, both of which are choice-free."
+  loops in \textbf{\ref{lem:nullity}} and the derivation of \textit{Saturation} for finite $W$ in
+  \textbf{\ref{cor:saturation-finite}}, both of which are choice-free."
   The footnote **no longer says "and hence to the axiom of choice"**; the paper restructured it to
   say the derivation is a theorem of ZFC, and widened the choice-free contrast class to include
-  `cor:spherical-finite`. The earlier wording must not be reintroduced.
+  `cor:saturation-finite`. The earlier wording must not be reintroduced.
 - `cor:occurrence` (verbatim): "For any task frame $\F = \tuple{W, \D, \Rightarrow}$, world state
   $w \in W$, and time $x \in D$, there is a total world history $\tau \in H_{\F}$ where
   $\tau(x) = w$, and so $H_{\F} \neq \emptyset$."
@@ -47,9 +47,9 @@ source — is the citation source of record.
 1. `PartialHistory.exists_maximal_extension` (the extension order's Zorn instance), and
 2. `PartialHistory.step` (`lem:step`).
 
-*Spherical* is **not** threaded into `extension`'s proof directly: it reaches `step` — which
-remains its sole application site — as the projection `F.spherical` off the frame, taken by `step`
-itself. Nothing in this module applies *Spherical*, *Seriality*, *Interpolation*, or *Limit* to
+*Saturation* is **not** threaded into `extension`'s proof directly: it reaches `step` — which
+remains its sole application site — as the projection `F.saturation` off the frame, taken by `step`
+itself. Nothing in this module applies *Saturation*, *Seriality*, *Interpolation*, or *Limit* to
 anything; all four are `FrameOver` fields rather than hypothesis binders, so what this module
 passes along is the frame `F`, never the axioms.
 
@@ -59,27 +59,27 @@ maximality plus the ability to extend by one arbitrary duration forces the domai
 `D`. Totality then yields convexity for free (`total_isConvex`), so the promotion of the maximal
 partial history to a `WorldHistory`, and thence to an `F.HF` element, is immediate.
 
-## What the finite-carrier *Spherical* discharge costs, by contrast
+## What the finite-carrier *Saturation* discharge costs, by contrast
 
-`TaskFrame.spherical_of_finite` (`cor:spherical-finite`) is the only discharge route for an
-**arbitrary** relation on a finite carrier; the other helpers — `spherical_of_subsingleton`,
-`spherical_of_permissive`, `spherical_of_eq` — each constrain the relation's shape instead. Its
+`TaskFrame.saturation_of_finite` (`cor:saturation-finite`) is the only discharge route for an
+**arbitrary** relation on a finite carrier; the other helpers — `saturation_of_subsingleton`,
+`saturation_of_permissive`, `saturation_of_eq` — each constrain the relation's shape instead. Its
 cost profile is the mirror image of `extension`'s. It costs **no Zorn**: it does not route through
 `PartialHistory.exists_maximal_extension`, which is exactly what `thm:extension` above spends. It
 does unavoidably cost `Classical.choice`.
 
 "Unavoidably" is a proved obstruction rather than a guess: weak excluded middle is derivable from
-*Spherical* at the finite carrier `Bool` over `D = Int`, so a `Classical.choice`-free proof of that
+*Saturation* at the finite carrier `Bool` over `D = Int`, so a `Classical.choice`-free proof of that
 route would prove WLEM in Lean's intuitionistic core, where it is not derivable. That derivation is
-on the record as `wlem_of_spherical` in
-`Tests/BimodalTest/Semantics/SphericalFiniteAxiomTest.lean`.
+on the record as `wlem_of_saturation` in
+`Tests/BimodalTest/Semantics/SaturationFiniteAxiomTest.lean`.
 
 ## `cor:occurrence` is landed in **frame-intrinsic** form
 
 `occurrence` below quantifies over a frame alone, with no axiom hypotheses — which is what the
 paper's own statement literally reads as. It once carried the axioms as explicit hypotheses,
 gated on the frame-axiom-field refactor recorded in `Step.lean`; that refactor has landed.
-`FrameOver` carries *Compositionality* (biconditional), *Seriality*, *Limit*, and *Spherical* as
+`FrameOver` carries *Compositionality* (biconditional), *Seriality*, *Limit*, and *Saturation* as
 structure data, each stated by citation of the bare-relation predicate rather than restated, so
 threading them through this chain is now a projection rather than a hypothesis — with zero
 restatement, exactly as the hypothesis-form discipline was designed to guarantee.
@@ -173,7 +173,7 @@ extending `τ` with `z` in its domain; maximality then forces `τ` to extend `σ
 
 The four axioms are **`FrameOver` fields that `step` projects off `F` for itself**, not hypotheses
 this theorem takes and forwards. Nothing here applies any of them; in particular this is not a
-second *Spherical* application site.
+second *Saturation* application site.
 -/
 theorem isTotal_of_isMax (F : TaskFrame) {τ : PartialHistory F} (hmax : IsMax τ) :
     τ.IsTotal := by
@@ -192,18 +192,18 @@ frame $\F = \tuple{W, \D, \Rightarrow}$ is extended by some total world history
 $\sigma \in H_{\F}$."
 
 Recorded footnote of the source (verbatim): "The proof appeals to Zorn's lemma, and so the
-derivation of \textit{Occurrence} from \textit{Seriality} and \textit{Spherical} in
+derivation of \textit{Occurrence} from \textit{Seriality} and \textit{Saturation} in
 \textbf{\ref{cor:occurrence}} is a theorem of ZFC, in contrast with the derivation of the zero
-loops in \textbf{\ref{lem:nullity}} and the derivation of \textit{Spherical} for finite $W$ in
-\textbf{\ref{cor:spherical-finite}}, both of which are choice-free."
+loops in \textbf{\ref{lem:nullity}} and the derivation of \textit{Saturation} for finite $W$ in
+\textbf{\ref{cor:saturation-finite}}, both of which are choice-free."
 
 **Proof recipe, exactly as recorded**: Zorn's lemma over the extension order
 (`exists_maximal_extension`) produces a maximal extension; `lem:step` forces that maximal partial
 history to be total (`isTotal_of_isMax`); totality yields convexity (`total_isConvex`), so the
 result is a world history, and totality is exactly its `H_F` membership.
 
-**These two are the whole proof.** *Spherical* is not threaded in directly — `step`, which remains
-its sole application site, reads it off the frame as `F.spherical`.
+**These two are the whole proof.** *Saturation* is not threaded in directly — `step`, which remains
+its sole application site, reads it off the frame as `F.saturation`.
 -/
 theorem extension (F : TaskFrame) (τ : PartialHistory F) :
     ∃ σ : F.HF, Extends σ.val.toPartialHistory τ := by

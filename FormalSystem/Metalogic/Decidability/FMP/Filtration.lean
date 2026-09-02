@@ -341,7 +341,7 @@ noncomputable def RefinedFilteredTaskFrame [SuccOrder ↑D] [NoMaxOrder ↑D]
     by_cases hd : d = 0 <;> simp [refinedFilteredTaskRel, hd]
   limit := TaskFrame.limit_of_permissive fun w d u => by
     by_cases hd : d = 0 <;> simp [refinedFilteredTaskRel, hd]
-  spherical := TaskFrame.spherical_of_permissive fun w d u => by
+  saturation := TaskFrame.saturation_of_permissive fun w d u => by
     by_cases hd : d = 0 <;> simp [refinedFilteredTaskRel, hd]
   converse := by
     intro w d u
@@ -365,7 +365,7 @@ noncomputable def RefinedFilteredTaskFrame [SuccOrder ↑D] [NoMaxOrder ↑D]
 `refinedFilteredTaskRel` — `if d = 0 then w = u else True` — is the *permissive* relation class
 of `TaskFrame.lean`'s Helper B, spelled with an `if` rather than a disjunction. Once that is
 recorded (`RefinedFilteredTaskFrame_rel_iff`), all four axioms follow from the reusable helpers:
-*Seriality*, interpolation, and *Spherical* unconditionally, and *Limit* from this frame's
+*Seriality*, interpolation, and *Saturation* unconditionally, and *Limit* from this frame's
 `[SuccOrder ↑D] [NoMaxOrder ↑D]` restriction. -/
 
 /-- The refined filtered relation is the permissive class: the `if`-form
@@ -397,14 +397,14 @@ theorem RefinedFilteredTaskFrame_limit [SuccOrder ↑D] [NoMaxOrder ↑D] (phi :
     ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ (RefinedFilteredTaskFrame D phi).TaskRel w y u) → u = w :=
   TaskFrame.limit_of_permissive (RefinedFilteredTaskFrame_rel_iff D phi)
 
-/-- *Spherical* (`def:frame#Spherical`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
+/-- *Saturation* (`def:frame#Saturation`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
 $\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments") for the refined
 filtered frame: every nonempty fiber and segment is the whole carrier (above duration zero) or a
 singleton (at zero), and a directed family cannot contain two distinct singletons. Unlike
 *Limit*, this needs no restriction on `D`. -/
-theorem RefinedFilteredTaskFrame_spherical [SuccOrder ↑D] [NoMaxOrder ↑D] (phi : Formula) :
-    TaskFrame.Spherical (RefinedFilteredTaskFrame D phi).TaskRel :=
-  TaskFrame.spherical_of_permissive (RefinedFilteredTaskFrame_rel_iff D phi)
+theorem RefinedFilteredTaskFrame_saturation [SuccOrder ↑D] [NoMaxOrder ↑D] (phi : Formula) :
+    TaskFrame.Saturation (RefinedFilteredTaskFrame D phi).TaskRel :=
+  TaskFrame.saturation_of_permissive (RefinedFilteredTaskFrame_rel_iff D phi)
 
 /-!
 ## Equivalence Class Representatives

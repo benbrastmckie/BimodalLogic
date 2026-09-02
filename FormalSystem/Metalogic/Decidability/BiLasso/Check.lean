@@ -63,9 +63,9 @@ data. Its measured axiom set is nonetheless `[propext, Classical.choice, Quot.so
 `check_correct`'s: `Classical.choice` sits in the proofs *about* the data, never in the data, which
 is exactly why computability survives it.
 
-Nor can that be repaired. `wlem_of_spherical`
-(`Tests/BimodalTest/Semantics/SphericalFiniteAxiomTest.lean`) derives weak excluded middle from
-`Spherical R` at the finite carrier `Bool` over `D = ℤ`, from `[propext, Quot.sound]` alone. So
+Nor can that be repaired. `wlem_of_saturation`
+(`Tests/BimodalTest/Semantics/SaturationFiniteAxiomTest.lean`) derives weak excluded middle from
+`Saturation R` at the finite carrier `Bool` over `D = ℤ`, from `[propext, Quot.sound]` alone. So
 **no** finite-carrier frame with an arbitrarily shaped relation can be choice-free, on any route.
 The cost is already paid by `IntPresentation.toTaskFrame` and is not a new one — but it does mean
 no plan should promise a choice-free decidability result.

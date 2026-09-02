@@ -77,7 +77,7 @@ A **task frame** `F = (W, D, R)` consists of a **nonempty** set `W` of world-sta
 - ***Compositionality*** — `w ⇒_{x+y} v` **if and only if** `w ⇒_x u` and `u ⇒_y v` for some `u ∈ W`. Both directions are load bearing: the `←` half composes, the `→` half interpolates.
 - ***Seriality*** — for every `w` and every `x ≥ 0` there are `u, v ∈ W` with `w ⇒_x u` and `v ⇒_x w`.
 - ***Limit*** — `⋂_{x > 0} (w)_x = {w}`, where `(w)_x` is the cone of states reachable from `w` within duration `x`.
-- ***Saturation*** — `⋂ 𝒮 ≠ ∅` for every `⊇`-directed family `𝒮` of nonempty fibers and segments. In ball-space terms this is the condition `S₁ᵈ`, which is *strictly stronger* than "spherically complete" (`S₁`). The Lean sources still carry this axiom under its former name *Spherical* (`TaskFrame.Spherical`, the `spherical` field of `FrameOver`); renaming them to match is pending.
+- ***Saturation*** — `⋂ 𝒮 ≠ ∅` for every `⊇`-directed family `𝒮` of nonempty fibers and segments. In ball-space terms this is the condition `S₁ᵈ`, which is *strictly stronger* than "spherically complete" (`S₁`).
 
 Nullity (`w ⇒_0 w`) is **not** an axiom: it is derived, choice-free, from *Seriality* at `x = 0` together with *Limit*. In Lean, `structure FrameOver` (`FormalSystem/Semantics/TaskFrame.lean`) — the fibre over a temporal order, of which `TaskFrame` is the total space — additionally carries `converse` and `nullity_identity` as fields. Neither adds content — `converse` packages the converse convention, which a two-sided Lean relation cannot express in its type, and `nullity_identity` is derivable from `serial` and `limit`. Both are retained for construction ergonomics, so the Lean frame class is extensionally exactly the paper's.
 

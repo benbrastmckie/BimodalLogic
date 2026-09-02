@@ -52,7 +52,7 @@ polymorphic over temporal types.
 - `TaskFrame`: the total space of the frame fibration — a `Duration : TemporalOrder` paired
   with a `FrameOver Duration`, so `def:frame`'s `⟨W, 𝔇, ⇒⟩` unfolds exactly as the paper writes
   it. `FrameOver D` is the fibre over a fixed temporal order and the sole declaration site of
-  the six frame axioms; `TaskFrame`'s flat surface (`F.WorldState`, `F.TaskRel`, `F.spherical`)
+  the six frame axioms; `TaskFrame`'s flat surface (`F.WorldState`, `F.TaskRel`, `F.saturation`)
   is preserved by delegating accessors
 - `FrameProperty`: `def:frame-properties` as predicates on a *frame* — `TaskFrame.IsDense`,
   `IsDiscrete`, `IsComplete`, plus the two narrowings the tree's soundness targets actually need
@@ -71,7 +71,7 @@ polymorphic over temporal types.
 - `PartialHistory`: The paper's partial-history layer (`def:world-history`) — task-respecting
   state assignments on a *nonempty* time set, with no convexity requirement; carries the
   totality predicate `IsTotal` and the extension relation `Extends`
-- `FrameAxioms`: *Spherical*, *Seriality*, and the interpolation half of *Compositionality* as
+- `FrameAxioms`: *Saturation*, *Seriality*, and the interpolation half of *Compositionality* as
   hypothesis-form `Prop`s over a bare task relation (`def:frame`), the derived `lem:nullity`,
   and `def:constraints` — the constraints a partial history imposes on a new duration
 - `Extension.Constraint`: `lem:constraint` — the constraints imposed on a new duration form a
@@ -87,8 +87,8 @@ against `specs/paper-definitions-of-record.md`'s DANGLING entry, not a live `\la
 `Semantics/Extension/Admissible.lean`'s header for the full note.
 
 - `Extension.Step`: `lem:step` — every partial history extends by one arbitrary duration; the
-  join of `lem:constraint`, *Spherical*, and `lem:admissible`, and **the sole application site of
-  the *Spherical* axiom** in the development
+  join of `lem:constraint`, *Saturation*, and `lem:admissible`, and **the sole application site of
+  the *Saturation* axiom** in the development
 - `Extension.Extension`: `thm:extension` — every partial history is extended by some total world
   history, proved from Zorn over the extension order plus `lem:step` and nothing else — and
   `cor:occurrence` in **hypothesis form**: every world state occurs at any prescribed time in some

@@ -45,9 +45,9 @@ All five declarations measure `[propext, Classical.choice, Quot.sound]`.
 
 The resulting `Decidable` instance **computes** — it carries no `Classical.dec` in its data — but
 that is not choice-freedom, and no choice-freedom is claimed. The two are different properties and
-only the first holds here. `wlem_of_spherical`
-(`Tests/BimodalTest/Semantics/SphericalFiniteAxiomTest.lean`) derives weak excluded middle from
-`Spherical R` at the finite carrier `Bool` over ℤ using `[propext, Quot.sound]` alone, so no
+only the first holds here. `wlem_of_saturation`
+(`Tests/BimodalTest/Semantics/SaturationFiniteAxiomTest.lean`) derives weak excluded middle from
+`Saturation R` at the finite carrier `Bool` over ℤ using `[propext, Quot.sound]` alone, so no
 finite-carrier route to this result can be choice-free.
 -/
 

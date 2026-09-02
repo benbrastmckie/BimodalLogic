@@ -382,7 +382,7 @@ each by deleting the corresponding hypothesis and observing the failure:
 - `TaskFrame.forward_comp` (the composition half of *Compositionality*) — directedness, via the
   fiber-monotonicity lemmas `fib_subset_fib_of_le_of_le` and `fib_subset_fib_of_le_of_le'`.
 
-*Compositionality* is therefore consumed in **both** of its directions here. *Spherical* is
+*Compositionality* is therefore consumed in **both** of its directions here. *Saturation* is
 **not** consumed: it is applied only at `lem:step`, the sole application site the paper names, and
 this lemma is precisely what supplies that application its directed-family-of-nonempty-sets
 hypothesis. *Limit* is not consumed either.

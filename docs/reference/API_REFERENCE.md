@@ -138,7 +138,7 @@ structure TemporalOrder where
 structure FrameOver (D : TemporalOrder) where
   WorldState : Type
   TaskRel : WorldState → D → WorldState → Prop
-  nullity_identity, comp, converse, serial, limit, spherical : ...
+  nullity_identity, comp, converse, serial, limit, saturation : ...
 
 -- The total space of the fibration, `Σ (D : TemporalOrder), FrameOver D`
 structure TaskFrame where
@@ -151,13 +151,13 @@ structure TaskFrame where
 - `toFibre`: the frame over that order
 
 **Fields of `FrameOver`** (reachable on a `TaskFrame` through delegating accessors, so
-`F.WorldState`, `F.TaskRel` and `F.spherical` all read as before):
+`F.WorldState`, `F.TaskRel` and `F.saturation` all read as before):
 - `WorldState`: Type of world states
 - `TaskRel w x u`: World state `u` is reachable from `w` by task of duration `x`
 - `nullity_identity`: zero-duration task relates a state only to itself
 - `comp`: biconditional *Compositionality* on the positive cone
-- `converse`, `serial`, `limit`, `spherical`: the converse convention and `def:frame`'s
-  *Seriality*, *Limit* and *Spherical*
+- `converse`, `serial`, `limit`, `saturation`: the converse convention and `def:frame`'s
+  *Seriality*, *Limit* and *Saturation*
 
 **Paper Alignment**: Matches the JPL paper definition (app:TaskSemantics, def:frame,
 possible_worlds.tex:2423-2451; body statement at possible_worlds.tex:908-926).

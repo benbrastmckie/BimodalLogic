@@ -56,9 +56,9 @@ app:discrete
 thm:BLplus-NextPrevious
 
 # --- External paper corollary label, not formalized in Lean (paper-side
-# result only -- cor:spherical-finite is outside the 26 anchors tracked by
+# result only -- cor:saturation-finite is outside the 26 anchors tracked by
 # specs/paper-definitions-of-record.md and has no Lean counterpart) ---
-cor:spherical-finite
+cor:saturation-finite
 
 # --- External paper language-definition label (def:BLplus-language names
 # the BL^+ language's constructor signature paper-side; no single matching
@@ -77,7 +77,7 @@ cor:tm-decidability
 # Reports" entry). These are paper-side \label/\aitem anchors tracked in
 # specs/paper-definitions-of-record.md's coverage extension for this report;
 # they have no matching Lean identifier to grep, exactly the same category
-# as def:BLplus-language and cor:spherical-finite above. ---
+# as def:BLplus-language and cor:saturation-finite above. ---
 def:S5
 def:BX
 def:BL-model

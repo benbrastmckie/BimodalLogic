@@ -47,7 +47,7 @@ propositional carrier equation cannot carry it, because the equation is a `Prop`
 `OfNat F.Duration 1` is data, so no numeral elaborates under it. `FrameOver intOrder` has both:
 numerals elaborate, and the order is fixed.
 
-`TaskFrame`'s flat surface is preserved: `F.WorldState`, `F.TaskRel`, `F.spherical` and the rest
+`TaskFrame`'s flat surface is preserved: `F.WorldState`, `F.TaskRel`, `F.saturation` and the rest
 are delegating accessors on the total space, `@[reducible]` where the value is data and
 `theorem`s where it is a `Prop` (Lean refuses `@[reducible]` on a proof; proof irrelevance makes
 that costless).
@@ -71,7 +71,7 @@ $x, y \geq 0$") with exactly FOUR axioms:
 - *Seriality* (`def:frame#Seriality`, verbatim): "$w \Rightarrow_x u$ and $v \Rightarrow_x w$
   for some $u, v \in W$."
 - *Limit* (`def:frame#Limit`, verbatim): "$\bigcap\limits_{x > 0} (w)_x = \set{w}$."
-- *Spherical* (`def:frame#Spherical`, verbatim): "$\bigcap \mathcal{S} \neq \emptyset$ for any
+- *Saturation* (`def:frame#Saturation`, verbatim): "$\bigcap \mathcal{S} \neq \emptyset$ for any
   $\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments."
 
 Nullity is NOT an axiom. The paper's `lem:nullity` (verbatim: "$w \Rightarrow_0 w$ for every
@@ -107,7 +107,7 @@ This allows for various temporal structures:
   (composition) half is projected back out as the derived `forward_comp`, whose statement is
   unchanged from when it was a field; its `→` (interpolation) half is projected out as
   `interpolates`, definitionally `Interpolates TaskRel`.
-- `serial`, `limit`, and `spherical` carry the paper's other three axioms, each stated by
+- `serial`, `limit`, and `saturation` carry the paper's other three axioms, each stated by
   citation of the corresponding bare-relation predicate (or, for *Limit*, its literal
   transcribed shape) rather than restated inline.
 - `nullity_identity` is an iff, strictly STRONGER than the paper's derived `lem:nullity`
@@ -132,9 +132,9 @@ here are now closed, and are recorded as closed rather than deleted, since both 
   possibility of writing a frame over a trivial duration order at all.
 
 All four of `def:frame`'s axioms are now carried by the structure, so the former entries here
-for *Seriality*, *Limit*, *Spherical*, and the interpolation direction of *Compositionality*
-are retired rather than restated: they are the `serial`, `limit`, `spherical`, and `comp`
-fields. The apparatus that makes *Spherical* statable — `Fib`, `cone`, `Seg`,
+for *Seriality*, *Limit*, *Saturation*, and the interpolation direction of *Compositionality*
+are retired rather than restated: they are the `serial`, `limit`, `saturation`, and `comp`
+fields. The apparatus that makes *Saturation* statable — `Fib`, `cone`, `Seg`,
 `DirectedFamily`, `IsFiber`, `IsSegment` — is defined below the module header and above the
 structure, and is consumed by it. *Limit*'s transcription against the extended relation is
 `∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ TaskRel w y u) → u = w`; the `⊇` half of the paper's
@@ -151,9 +151,9 @@ routes are `limit_of_succOrder` and `limit_of_shift` below.
   stronger than the paper's derived `lem:nullity`; open design question, see its docstring
 - `FrameOver.comp`: the paper's biconditional *Compositionality* (`0 ≤ x`, `0 ≤ y`), stated as
   `TaskFrame.Compositional TaskRel`
-- `FrameOver.serial`, `FrameOver.limit`, `FrameOver.spherical`: *Seriality*, *Limit*, and
-  *Spherical*, stated as `TaskFrame.Serial TaskRel`, *Limit*'s literal transcribed shape, and
-  `TaskFrame.Spherical TaskRel`
+- `FrameOver.serial`, `FrameOver.limit`, `FrameOver.saturation`: *Seriality*, *Limit*, and
+  *Saturation*, stated as `TaskFrame.Serial TaskRel`, *Limit*'s literal transcribed shape, and
+  `TaskFrame.Saturation TaskRel`
 - `FrameOver.forward_comp`: the `←` (composition) half of `comp`, derived; its statement is
   verbatim that of the former field of the same name
 - `FrameOver.interpolates`: the `→` (interpolation) half of `comp`, derived, definitionally
@@ -163,7 +163,7 @@ routes are `limit_of_succOrder` and `limit_of_shift` below.
 - `TaskFrame.Fib`, `TaskFrame.cone`, `TaskFrame.Seg`, `TaskFrame.DirectedFamily`,
   `TaskFrame.IsFiber`, `TaskFrame.IsSegment`: the `def:task-relation` / `def:directed`
   apparatus over a bare relation
-- `TaskFrame.Spherical`, `TaskFrame.Serial`, `TaskFrame.Interpolates`,
+- `TaskFrame.Saturation`, `TaskFrame.Serial`, `TaskFrame.Interpolates`,
   `TaskFrame.Compositional`: `def:frame`'s axioms as predicates over a bare relation, hosted
   above the structure so that its fields cite them *definitionally* (a field's type may only
   mention earlier declarations). *Limit* is deliberately unnamed and used in its literal
@@ -202,7 +202,7 @@ routes are `limit_of_succOrder` and `limit_of_shift` below.
 
 * [architecture.md](../../../docs/user-guide/architecture.md) - Task semantics specification
 * JPL Paper anchors `def:frame` (with sub-anchors `def:frame#Compositionality`,
-  `def:frame#Seriality`, `def:frame#Limit`, `def:frame#Spherical`), `def:task-relation`,
+  `def:frame#Seriality`, `def:frame#Limit`, `def:frame#Saturation`), `def:task-relation`,
   `def:directed`, `def:temporal-order`, and `lem:nullity` — cited by `\label` anchor with
   verbatim quotes above, never by raw line number
 -/
@@ -230,7 +230,7 @@ The supporting apparatus of the paper's frame definition (`def:frame`), stated �
 discharge helpers above — against a bare relation `R : W → D → W → Prop` rather than a
 `FrameOver` field, so the definitions apply verbatim to a frame's `TaskRel` whether or not the
 corresponding axioms are carried as structure data. This apparatus is what makes the paper's
-*Spherical* axiom ("`⋂ 𝒮 ≠ ∅` for any `⊇`-directed family `𝒮` of nonempty fibers and segments")
+*Saturation* axiom ("`⋂ 𝒮 ≠ ∅` for any `⊇`-directed family `𝒮` of nonempty fibers and segments")
 statable at all.
 
 Recorded source, `def:task-relation` (verbatim):
@@ -322,20 +322,20 @@ $S \in \mathcal{S}$ whenever $S_1, S_2 \in \mathcal{S}$."
 **The paper splits `def:directed` in two.** Its enclosing sentence reads "A nonempty family of
 sets $\mathcal{S}$ is:", followed by a `$\supseteq$-Directed` clause and a
 `$\subseteq$-Directed` clause (`$S_1, S_2 \subseteq S$ for some $S \in \mathcal{S}$`). This
-definition transcribes the **`$\supseteq$` clause only**, because that is the one *Spherical*
+definition transcribes the **`$\supseteq$` clause only**, because that is the one *Saturation*
 consumes. An earlier revision quoted an undifferentiated "\textit{directed}", from before the
 split; the mathematics is unchanged but the unqualified word is now ambiguous and must not be
 reintroduced.
 
 The nonemptiness of the family is part of the definition (it comes from the enclosing "A nonempty
 family of sets"); the nonemptiness of its *members* is a separate hypothesis wherever
-*Spherical*-shaped statements need it.
+*Saturation*-shaped statements need it.
 -/
 def DirectedFamily {W : Type} (S : Set (Set W)) : Prop :=
   S.Nonempty ∧ ∀ S₁ ∈ S, ∀ S₂ ∈ S, ∃ S' ∈ S, S' ⊆ S₁ ∩ S₂
 
 /--
-`s` is a fiber of the relation `R`: one of the two separate classes of sets the *Spherical*
+`s` is a fiber of the relation `R`: one of the two separate classes of sets the *Saturation*
 axiom (`def:frame`) ranges over. Fibers exist at every duration `x ∈ D`, matching
 `def:task-relation`'s proviso-free *Fiber* clause.
 -/
@@ -345,7 +345,7 @@ def IsFiber {W : Type} (R : W → D → W → Prop) (s : Set W) : Prop :=
 /--
 `s` is a segment of the relation `R` with nonnegative endpoint offsets, per
 `def:task-relation`'s *Segment* clause ("where `x, y ≥ 0`"): the second of the two separate
-classes of sets the *Spherical* axiom (`def:frame`) ranges over. A one-sided fiber does not
+classes of sets the *Saturation* axiom (`def:frame`) ranges over. A one-sided fiber does not
 count as a segment — the two classes are kept separate, and a "fibers and segments" hypothesis
 is the disjunction `IsFiber R s ∨ IsSegment R s`.
 -/
@@ -356,22 +356,22 @@ def IsSegment {W : Type} (R : W → D → W → Prop) (s : Set W) : Prop :=
 ## The frame axioms in bare-relation form
 
 `def:frame`'s four axioms, stated as `Prop`-valued predicates over a bare task relation
-`R : W → D → W → Prop`. Three of them live here — *Spherical*, *Seriality*, and the
+`R : W → D → W → Prop`. Three of them live here — *Saturation*, *Seriality*, and the
 interpolation half of *Compositionality*; *Limit* is deliberately left unnamed and used in its
 literal transcribed shape (see the discharge helpers `limit_of_succOrder` and `limit_of_shift`
 above).
 
 **These predicates are the sole form in which the axioms are available.** Where the `FrameOver`
-structure carries the corresponding fields, `FrameOver.spherical` must be *definitionally*
-`Spherical TaskRel`, `FrameOver.serial` definitionally `Serial TaskRel`, and the interpolation
+structure carries the corresponding fields, `FrameOver.saturation` must be *definitionally*
+`Saturation TaskRel`, `FrameOver.serial` definitionally `Serial TaskRel`, and the interpolation
 half of biconditional *Compositionality* definitionally `Interpolates TaskRel`, **all as defined
-here**. Discharging a downstream hypothesis is then a mechanical substitution (`F.spherical`,
+here**. Discharging a downstream hypothesis is then a mechanical substitution (`F.saturation`,
 `F.serial`, `F.interpolates`) with zero restatement. If a field lands whose statement differs,
 the results that consume these predicates stop typechecking — and that compilation failure *is*
 the acceptance test. That invariant is recorded in
 `specs/decisions/total-history-validity-decisions.md` (the four-axiom frame-alignment decision).
 
-*Spherical* in particular must be literally the hypothesis the Step Lemma's proof consumes at the
+*Saturation* in particular must be literally the hypothesis the Step Lemma's proof consumes at the
 sole application site the paper names, never an inert structure field.
 
 They are hosted in this module, rather than beside `Constraints` in `FrameAxioms.lean`, for a
@@ -380,23 +380,23 @@ predicate declared in a module that *imports* this one could never become a `Fra
 -/
 
 /--
-The *Spherical* axiom, over a bare task relation.
+The *Saturation* axiom, over a bare task relation.
 
-Recorded source (`def:frame#Spherical`, verbatim): "$\bigcap \mathcal{S} \neq \emptyset$ for any
+Recorded source (`def:frame#Saturation`, verbatim): "$\bigcap \mathcal{S} \neq \emptyset$ for any
 $\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments."
 
 **Where this sits in the ball-space hierarchy.** The paper attaches a footnote to this axiom
 (quoted from `def:frame`): the nonempty fibers and segments form a *ball space* on `W` in the
-sense of Ćmiel, Kuhlmann and Kuhlmann, and *Spherical* is the **downward-directed-intersection
+sense of Ćmiel, Kuhlmann and Kuhlmann, and *Saturation* is the **downward-directed-intersection
 condition $\mathbf{S}_1^d$** of that hierarchy — "the nest condition $\mathbf{S}_1$ with a
 $\supseteq$-directed system of balls in place of a nest". It is therefore **strictly stronger**
 than the standard *spherically complete* condition, which is $\mathbf{S}_1$ itself. The name
-"Spherical" is not a synonym for "spherically complete"; reading it as one understates the axiom.
+"Saturation" is not a synonym for "spherically complete"; reading it as one understates the axiom.
 
 Three points of the transcription, each load bearing:
 
 1. *Directed* is `def:directed`, transcribed as `DirectedFamily`. The paper split `def:directed`
-   into a `$\supseteq$-Directed` and a `$\subseteq$-Directed` clause; *Spherical* consumes the
+   into a `$\supseteq$-Directed` and a `$\subseteq$-Directed` clause; *Saturation* consumes the
    `$\supseteq$` half — "$S \subseteq S_1 \cap S_2$ for some $S \in \mathcal{S}$ whenever
    $S_1, S_2 \in \mathcal{S}$" — which is what `DirectedFamily` transcribes, and which already
    carries the nonemptiness of the family `S`.
@@ -405,11 +405,16 @@ Three points of the transcription, each load bearing:
    segments are **two separate classes**; a one-sided fiber does not count as a segment.
 3. "$\bigcap \mathcal{S} \neq \emptyset$" is `(⋂₀ S).Nonempty`.
 
-This predicate is the sole form in which *Spherical* is available: it is what the Step Lemma's
+This predicate is the sole form in which *Saturation* is available: it is what the Step Lemma's
 proof consumes at the one application site the paper names, and what the `FrameOver`
-spherical field is definitionally equal to.
+saturation field is definitionally equal to.
+
+**Unrelated to tableau saturation.** `FormalSystem/Metalogic/Decidability/Saturation.lean` uses
+"saturation" in the proof-theoretic sense — closure of a tableau branch under its expansion
+rules. That module declares no `Saturation` namespace, so the two names never collide; the
+overlap is terminological only.
 -/
-def Spherical {W : Type} (R : W → D → W → Prop) : Prop :=
+def Saturation {W : Type} (R : W → D → W → Prop) : Prop :=
   ∀ S : Set (Set W), DirectedFamily S →
     (∀ s ∈ S, (IsFiber R s ∨ IsSegment R s) ∧ s.Nonempty) → (⋂₀ S).Nonempty
 
@@ -460,7 +465,7 @@ itself rather than either half: unfolded, it is
 
 and its two halves are `Interpolates R` (the `→` direction, above) and the composition law that
 `FrameOver.forward_comp` records (the `←` direction). Naming the conjunction as a predicate — in
-the same style as `Serial` and `Spherical` — is what lets the `FrameOver` `comp` field be stated
+the same style as `Serial` and `Saturation` — is what lets the `FrameOver` `comp` field be stated
 by *citation* rather than by restating the shape inline, and lets `comp_of` assemble it from the
 two halves without higher-order unification against an applied relation.
 
@@ -510,7 +515,7 @@ A frame over `D` consists of:
 - nullity identity: a zero-duration task is the identity (`w = u`),
 - compositionality: tasks compose, and interpolate, on the positive cone,
 - the converse convention, `TaskRel w d u ↔ TaskRel u (-d) w`,
-- seriality, limit and sphericality.
+- seriality, limit and saturation.
 
 The task relation `TaskRel w x u` means: starting from world state `w`, executing a task of
 duration `x` can result in world state `u`.
@@ -522,9 +527,9 @@ duration as an opaque field: `(F : TaskFrame) (h : F.Duration = ℤ)` cannot sup
 `TemporalOrder` says the same thing with the numerals intact.
 
 **Paper Alignment**: The paper's `def:frame` carries exactly FOUR axioms — *Compositionality*
-(a biconditional), *Seriality*, *Limit*, *Spherical* — and no Nullity axiom (`lem:nullity` is
+(a biconditional), *Seriality*, *Limit*, *Saturation* — and no Nullity axiom (`lem:nullity` is
 derived, reflexivity only). This structure carries **all four**, as `comp`, `serial`, `limit`,
-and `spherical`, each by citation of a bare-relation predicate rather than by inline
+and `saturation`, each by citation of a bare-relation predicate rather than by inline
 restatement. It additionally carries the converse convention (`converse`) and an iff-form
 zero-duration law (`nullity_identity`) that is strictly stronger than the paper's derived
 `lem:nullity`. What remains absent is structural rather than axiomatic — see the module
@@ -609,7 +614,7 @@ structure FrameOver (D : TemporalOrder) where
   ```
 
   **Consequences.** The Lean frame class
-  `{nullity_identity, comp, converse, serial, limit, spherical}` and the paper's four `def:frame`
+  `{nullity_identity, comp, converse, serial, limit, saturation}` and the paper's four `def:frame`
   axioms plus nonempty `W` plus the converse convention are **inter-derivable**: the Lean class
   adds no content the paper lacks, and imposes no constraint the paper does not. In particular
   the `⊇` half of *Limit*'s `⋂_{x>0}(w)_x = {w}` — that `w` itself lies in every positive cone —
@@ -678,17 +683,17 @@ structure FrameOver (D : TemporalOrder) where
   -/
   limit : ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ TaskRel w y u) → u = w
   /--
-  **The paper's *Spherical* axiom** (`def:frame#Spherical`, verbatim:
+  **The paper's *Saturation* axiom** (`def:frame#Saturation`, verbatim:
   "$\bigcap \mathcal{S} \neq \emptyset$ for any $\supseteq$-directed family $\mathcal{S}$ of
   nonempty fibers
-  and segments"), stated by citation as `TaskFrame.Spherical TaskRel` — the bare-relation
+  and segments"), stated by citation as `TaskFrame.Saturation TaskRel` — the bare-relation
   predicate of record, never restated inline.
 
   This field is the one the Step Lemma consumes (`Semantics/Extension/Step.lean`), which is why
-  it must be *literally* `TaskFrame.Spherical`: a restatement, however equivalent, would make
+  it must be *literally* `TaskFrame.Saturation`: a restatement, however equivalent, would make
   that consumption fail to typecheck. Fibers and segments stay two separate classes.
   -/
-  spherical : TaskFrame.Spherical TaskRel
+  saturation : TaskFrame.Saturation TaskRel
 
 attribute [instance] FrameOver.worldNonempty
 
@@ -775,7 +780,7 @@ end FrameOver
 Everything below is stated against a bare relation `R : W → D → W → Prop` over an ambient
 carrier, never against a frame field, so it applies to any relation whether or not a frame
 carries it. That is why it belongs in `TaskFrame` beside the bare-relation predicates of record
-(`Serial`, `Interpolates`, `Spherical`) rather than in the fibre namespace.
+(`Serial`, `Interpolates`, `Saturation`) rather than in the fibre namespace.
 -/
 
 namespace TaskFrame
@@ -941,7 +946,7 @@ The fourth class, deterministic shift, is already served by `limit_of_shift` abo
 
 Each helper takes the class membership as an `Iff` hypothesis rather than matching a literal
 lambda, so a site discharges it with `fun _ _ _ => Iff.rfl` and no defeq-unfolding risk. Every
-conclusion is *syntactically* `Serial R` / `Interpolates R` / `Spherical R`, or the literal
+conclusion is *syntactically* `Serial R` / `Interpolates R` / `Saturation R`, or the literal
 transcribed *Limit* shape `∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ R w y u) → u = w` that
 `limit_of_succOrder` and `limit_of_shift` conclude and `nullity_of_serial_limit` consumes — never
 a restatement.
@@ -961,7 +966,7 @@ theorem exists_pos_of_nontrivial : ∃ x : D, 0 < x := by
   · exact ⟨a, hgt⟩
 
 /--
-The *Spherical* core argument for every relation whose nonempty fibers and segments are each
+The *Saturation* core argument for every relation whose nonempty fibers and segments are each
 either the whole carrier or a singleton.
 
 Recorded source (`def:directed`, verbatim): "A nonempty family of sets $\mathcal{S}$ is
@@ -997,11 +1002,11 @@ theorem sInter_nonempty_of_directed_of_univ_or_singleton {W : Type} {S : Set (Se
     · exact absurd ⟨t, ht, b, hb⟩ hsing
 
 /--
-The *Spherical* core argument for a directed family that has a `⊆`-minimal member: **the paper's
+The *Saturation* core argument for a directed family that has a `⊆`-minimal member: **the paper's
 actual mathematical content, in fully constructive form**.
 
-Recorded source (`cor:spherical-finite`, via `specs/paper-definitions-of-record.md`, verbatim:
-"Every task frame $\F = \tuple{W, \D, \Rightarrow}$ with finite $W$ satisfies \textit{Spherical},
+Recorded source (`cor:saturation-finite`, via `specs/paper-definitions-of-record.md`, verbatim:
+"Every task frame $\F = \tuple{W, \D, \Rightarrow}$ with finite $W$ satisfies \textit{Saturation},
 choice-free."), whose argument is: directedness upgrades a `⊆`-minimal member to a `⊆`-*least*
 member, and a least member is both nonempty and equal to the intersection.
 
@@ -1011,9 +1016,9 @@ Given a minimal `Sstar` and any other member `T`, directedness supplies `S' ∈ 
 hypothesis — lies in `⋂₀ S`.
 
 **This lemma depends on no axioms at all** (not even `propext`), which is the sense in which the
-paper's choice-free claim survives transcription. The classical content of `cor:spherical-finite`
+paper's choice-free claim survives transcription. The classical content of `cor:saturation-finite`
 lives entirely in *producing* the minimal member from finiteness, which is what
-`spherical_of_finite` below adds on top. Separating the two is deliberate: it puts the
+`saturation_of_finite` below adds on top. Separating the two is deliberate: it puts the
 constructive core on the record independently of the classical step, and it makes the lemma
 reusable at any carrier where a minimal member is available by other means.
 
@@ -1037,10 +1042,10 @@ theorem sInter_nonempty_of_directed_of_minimal {W : Type} {S : Set (Set W)}
 
 omit [IsOrderedAddMonoid D] in
 /--
-**Every relation on a finite carrier satisfies *Spherical***.
+**Every relation on a finite carrier satisfies *Saturation***.
 
-Recorded source (`cor:spherical-finite`, via `specs/paper-definitions-of-record.md`, verbatim:
-"Every task frame $\F = \tuple{W, \D, \Rightarrow}$ with finite $W$ satisfies \textit{Spherical},
+Recorded source (`cor:saturation-finite`, via `specs/paper-definitions-of-record.md`, verbatim:
+"Every task frame $\F = \tuple{W, \D, \Rightarrow}$ with finite $W$ satisfies \textit{Saturation},
 choice-free."). Since `Set W` is well-founded under `<` when `W` is finite, a directed family has
 a `⊆`-minimal member; `sInter_nonempty_of_directed_of_minimal` above then closes the goal.
 
@@ -1055,7 +1060,7 @@ choice, *given classical logic*. Lean's `Classical.choice` is a different object
 axiom from which Lean derives **both** excluded middle (via Diaconescu) and AC — so
 `#print axioms` has no vocabulary in which to state the paper's distinction. Worse, the
 `Classical.choice`-free version is not merely hard but **impossible**: weak excluded middle
-(`¬¬P ∨ ¬P`) is derivable from `Spherical R` at the finite carrier `Bool` over `D = Int`, using
+(`¬¬P ∨ ¬P`) is derivable from `Saturation R` at the finite carrier `Bool` over `D = Int`, using
 `R w d u := (d = 0 ∧ w = u) ∨ (d = 3)`, from `[propext, Quot.sound]` alone. A choice-free proof of
 this lemma would therefore prove WLEM in Lean's intuitionistic core, where it is not derivable.
 This is a mismatch between the paper's metatheory and Lean's axiom accounting, not a defect in
@@ -1063,15 +1068,15 @@ either. What *is* preserved, and what the corollary is actually for, is the abse
 this proof does not route through `PartialHistory.exists_maximal_extension`, in deliberate
 contrast with `thm:extension`, which does.
 
-**Do not re-derive the existing class helpers from this lemma.** `spherical_of_subsingleton`
-depends on exactly `[propext]`; routing it (or `spherical_of_permissive`, or `spherical_of_eq`)
+**Do not re-derive the existing class helpers from this lemma.** `saturation_of_subsingleton`
+depends on exactly `[propext]`; routing it (or `saturation_of_permissive`, or `saturation_of_eq`)
 through this lemma would regress it to `Classical.choice` and propagate that regression to the
 three `Unit`-carriered universal frames that consume it. This lemma is an **additional** route for
 relations of arbitrary shape — the case no existing helper covers, since each of those constrains
 the relation's shape — never a consolidation of them.
 -/
-theorem spherical_of_finite {W : Type} [Finite W] (R : W → D → W → Prop) :
-    Spherical R := by
+theorem saturation_of_finite {W : Type} [Finite W] (R : W → D → W → Prop) :
+    Saturation R := by
   intro S hdir hmem
   obtain ⟨hne, hd⟩ := hdir
   obtain ⟨Sstar, hStarMem, hStarMin⟩ :=
@@ -1109,14 +1114,14 @@ theorem limit_of_subsingleton {W : Type} [Subsingleton W] {R : W → D → W →
 
 omit [IsOrderedAddMonoid D] in
 /--
-*Spherical* (`def:frame#Spherical`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
+*Saturation* (`def:frame#Saturation`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
 $\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments") on a subsingleton
 carrier: every
 nonempty subset is the whole carrier, so the intersection of a nonempty family of nonempty sets
 is nonempty. Independent of the relation.
 -/
-theorem spherical_of_subsingleton {W : Type} [Subsingleton W] {R : W → D → W → Prop} :
-    Spherical R := by
+theorem saturation_of_subsingleton {W : Type} [Subsingleton W] {R : W → D → W → Prop} :
+    Saturation R := by
   intro S hdir hmem
   obtain ⟨s₀, hs₀⟩ := hdir.1
   obtain ⟨a, ha⟩ := (hmem s₀ hs₀).2
@@ -1224,12 +1229,12 @@ theorem univ_or_singleton_of_permissive {W : Type} {R : W → D → W → Prop}
 
 omit [IsOrderedAddMonoid D] in
 /--
-*Spherical* for a permissive relation: its nonempty fibers and segments are each the whole
+*Saturation* for a permissive relation: its nonempty fibers and segments are each the whole
 carrier or a singleton, so the directed-family argument
 `sInter_nonempty_of_directed_of_univ_or_singleton` applies. No restriction on `D` is needed.
 -/
-theorem spherical_of_permissive {W : Type} {R : W → D → W → Prop}
-    (hR : ∀ w d u, R w d u ↔ (d ≠ 0 ∨ w = u)) : Spherical R := by
+theorem saturation_of_permissive {W : Type} {R : W → D → W → Prop}
+    (hR : ∀ w d u, R w d u ↔ (d ≠ 0 ∨ w = u)) : Saturation R := by
   intro S hdir hmem
   exact sInter_nonempty_of_directed_of_univ_or_singleton hdir (fun s hs => (hmem s hs).2)
     (fun s hs => univ_or_singleton_of_permissive hR (hmem s hs).1 (hmem s hs).2)
@@ -1273,12 +1278,12 @@ theorem limit_of_eq {W : Type} {R : W → D → W → Prop}
 
 omit [IsOrderedAddMonoid D] in
 /--
-*Spherical* for an equality relation: every fiber is a singleton and every segment is an
+*Saturation* for an equality relation: every fiber is a singleton and every segment is an
 intersection of two singletons, so every nonempty member of a directed family is a singleton and
 `sInter_nonempty_of_directed_of_univ_or_singleton` applies.
 -/
-theorem spherical_of_eq {W : Type} {R : W → D → W → Prop}
-    (hR : ∀ w d u, R w d u ↔ w = u) : Spherical R := by
+theorem saturation_of_eq {W : Type} {R : W → D → W → Prop}
+    (hR : ∀ w d u, R w d u ↔ w = u) : Saturation R := by
   intro S hdir hmem
   refine sInter_nonempty_of_directed_of_univ_or_singleton hdir (fun s hs => (hmem s hs).2)
     (fun s hs => ?_)
@@ -1324,7 +1329,7 @@ def trivialFrame {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid
   converse := fun _ _ _ => ⟨fun _ => trivial, fun _ => trivial⟩
   serial := serial_of_total fun _ _ _ => trivial
   limit := limit_of_subsingleton
-  spherical := spherical_of_subsingleton
+  saturation := saturation_of_subsingleton
 
 /-! #### `trivialFrame` discharges `def:frame`'s four axioms (total class, Helper A) -/
 
@@ -1346,13 +1351,13 @@ theorem trivialFrame_limit :
   haveI : Subsingleton (trivialFrame (D := D)).WorldState := inferInstanceAs (Subsingleton Unit)
   exact limit_of_subsingleton
 
-/-- *Spherical* (`def:frame#Spherical`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
+/-- *Saturation* (`def:frame#Saturation`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
 $\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments") for `trivialFrame`:
 its carrier
 is `Unit`, so every nonempty subset is the whole carrier. -/
-theorem trivialFrame_spherical : Spherical (trivialFrame (D := D)).TaskRel := by
+theorem trivialFrame_saturation : Saturation (trivialFrame (D := D)).TaskRel := by
   haveI : Subsingleton (trivialFrame (D := D)).WorldState := inferInstanceAs (Subsingleton Unit)
-  exact spherical_of_subsingleton
+  exact saturation_of_subsingleton
 
 /--
 Static task frame: every world state is related to itself, and only itself, at every duration.
@@ -1367,7 +1372,7 @@ This frame replaces the former zero-duration-only identity frame
 $u, v \in W$") over every nontrivial duration type: at any `x > 0` no successor existed. The
 static relation satisfies all four recorded axioms of `def:frame` — *Compositionality* in both
 directions (interpolate through `w` itself), *Seriality* (`staticFrame_serial` below),
-*Limit* (only `w` is reachable from `w` at all), and *Spherical* (every nonempty fiber and
+*Limit* (only `w` is reachable from `w` at all), and *Saturation* (every nonempty fiber and
 segment is the same singleton along a directed family) — as well as every field of the current
 structure.
 
@@ -1387,7 +1392,7 @@ def staticFrame (W : Type) [Nonempty W] {D : Type} [AddCommGroup D] [LinearOrder
   converse := fun _ _ _ => ⟨Eq.symm, Eq.symm⟩
   serial := serial_of_eq fun _ _ _ => Iff.rfl
   limit := limit_of_eq fun _ _ _ => Iff.rfl
-  spherical := spherical_of_eq fun _ _ _ => Iff.rfl
+  saturation := saturation_of_eq fun _ _ _ => Iff.rfl
 
 /-! #### `staticFrame` discharges `def:frame`'s four axioms (equality class, Helper C) -/
 
@@ -1425,13 +1430,13 @@ theorem staticFrame_limit (W : Type) [Nonempty W] :
     ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ (staticFrame W (D := D)).TaskRel w y u) → u = w :=
   limit_of_eq (staticFrame_rel_iff W)
 
-/-- *Spherical* (`def:frame#Spherical`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
+/-- *Saturation* (`def:frame#Saturation`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
 $\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments") for `staticFrame`:
 every nonempty
 fiber and segment is the same singleton along a directed family. -/
-theorem staticFrame_spherical (W : Type) [Nonempty W] :
-    Spherical (staticFrame W (D := D)).TaskRel :=
-  spherical_of_eq (staticFrame_rel_iff W)
+theorem staticFrame_saturation (W : Type) [Nonempty W] :
+    Saturation (staticFrame W (D := D)).TaskRel :=
+  saturation_of_eq (staticFrame_rel_iff W)
 
 /--
 Natural number based task frame.
@@ -1489,7 +1494,7 @@ def natFrame {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
         | inr hu => right; exact hw.trans hu
   serial := serial_of_permissive fun _ _ _ => Iff.rfl
   limit := limit_of_permissive fun _ _ _ => Iff.rfl
-  spherical := spherical_of_permissive fun _ _ _ => Iff.rfl
+  saturation := saturation_of_permissive fun _ _ _ => Iff.rfl
   converse := fun w d u => by
     constructor
     · intro h
@@ -1538,14 +1543,14 @@ theorem natFrame_limit [SuccOrder D] [NoMaxOrder D] :
     ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ (natFrame (D := D)).TaskRel w y u) → u = w :=
   limit_of_permissive natFrame_rel_iff
 
-/-- *Spherical* (`def:frame#Spherical`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
+/-- *Saturation* (`def:frame#Saturation`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
 $\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments") for `natFrame`:
 every nonempty
 fiber and segment is the whole carrier or a singleton, and a directed family cannot contain two
 distinct singletons. No restriction on `D` is needed. -/
-theorem natFrame_spherical [SuccOrder D] [NoMaxOrder D] :
-    Spherical (natFrame (D := D)).TaskRel :=
-  spherical_of_permissive natFrame_rel_iff
+theorem natFrame_saturation [SuccOrder D] [NoMaxOrder D] :
+    Saturation (natFrame (D := D)).TaskRel :=
+  saturation_of_permissive natFrame_rel_iff
 
 end FrameOver
 
@@ -1665,7 +1670,7 @@ namespace TaskFrame
 ### The flat surface, preserved
 
 `TaskFrame`'s fields are `Duration` and `toFibre`, but every consumer in the tree writes
-`F.WorldState`, `F.TaskRel w d u` and `F.spherical`. Generalized field notation resolves by the
+`F.WorldState`, `F.TaskRel w d u` and `F.saturation`. Generalized field notation resolves by the
 head constant of `F`'s type and never consults a coercion, so those spellings are kept alive as
 **delegating accessors** rather than by asking several hundred sites to write `F.toFibre.…`.
 
@@ -1673,7 +1678,7 @@ The data accessors are `@[reducible]`, which is what keeps `F.WorldState` transp
 unification and to instance synthesis. The Prop-valued ones are `theorem`s: Lean rejects
 `@[reducible]` on a proof, and by proof irrelevance nothing is lost — what a consumer needs is
 that the *declared type* is literally the recorded bare-relation predicate at `F.TaskRel`, which
-it is, so the Step Lemma's consumption of `F.spherical` stays definitional at both levels.
+it is, so the Step Lemma's consumption of `F.saturation` stays definitional at both levels.
 -/
 
 /-- The frame's type of world states. -/
@@ -1705,9 +1710,9 @@ theorem serial (F : TaskFrame) : TaskFrame.Serial F.TaskRel := F.toFibre.serial
 theorem limit (F : TaskFrame) :
     ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ F.TaskRel w y u) → u = w := F.toFibre.limit
 
-/-- *Spherical* (`def:frame#Spherical`), by citation. This is the field the Step Lemma consumes,
+/-- *Saturation* (`def:frame#Saturation`), by citation. This is the field the Step Lemma consumes,
 which is why it must be literally the recorded predicate. -/
-theorem spherical (F : TaskFrame) : TaskFrame.Spherical F.TaskRel := F.toFibre.spherical
+theorem saturation (F : TaskFrame) : TaskFrame.Saturation F.TaskRel := F.toFibre.saturation
 
 end TaskFrame
 
@@ -1808,7 +1813,7 @@ example {D : TemporalOrder} (F : FrameOver D) :
     (FrameOver.toTaskFrame F).TaskRel = F.TaskRel := rfl
 
 /-- The flat accessors are the fibre's fields, definitionally -- which is what keeps the already
-migrated files' spellings (`F.WorldState`, `F.TaskRel w d u`, `F.spherical`) meaning exactly what
+migrated files' spellings (`F.WorldState`, `F.TaskRel w d u`, `F.saturation`) meaning exactly what
 they meant before. -/
 example (F : TaskFrame) : F.WorldState = F.toFibre.WorldState := rfl
 example (F : TaskFrame) : F.TaskRel = F.toFibre.TaskRel := rfl
@@ -1823,14 +1828,14 @@ end TotalSpaceIdentity
 
 The same check as the parameterized one at the end of this module: each axiom field of the
 bundled `TaskFrame` is *literally* the recorded bare-relation predicate, so the Step Lemma's
-consumption of `spherical` stays definitional.
+consumption of `saturation` stays definitional.
 -/
 
 section BundledDefinitionalContent
 
 example (F : TaskFrame) : TaskFrame.Serial F.TaskRel := F.serial
 
-example (F : TaskFrame) : TaskFrame.Spherical F.TaskRel := F.spherical
+example (F : TaskFrame) : TaskFrame.Saturation F.TaskRel := F.saturation
 
 example (F : TaskFrame) : TaskFrame.Compositional F.TaskRel := F.comp
 
@@ -1840,9 +1845,9 @@ example (F : TaskFrame) : TaskFrame.Interpolates F.TaskRel :=
 example (F : TaskFrame) :
     ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ F.TaskRel w y u) → u = w := F.limit
 
-example (F : FiniteTaskFrame) : TaskFrame.Spherical F.TaskRel := by
+example (F : FiniteTaskFrame) : TaskFrame.Saturation F.TaskRel := by
   haveI := F.finite_world
-  exact TaskFrame.spherical_of_finite F.TaskRel
+  exact TaskFrame.saturation_of_finite F.TaskRel
 
 end BundledDefinitionalContent
 
@@ -1864,7 +1869,7 @@ variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Non
 
 example {E : TemporalOrder} (F : FrameOver E) : TaskFrame.Serial F.TaskRel := F.serial
 
-example {E : TemporalOrder} (F : FrameOver E) : TaskFrame.Spherical F.TaskRel := F.spherical
+example {E : TemporalOrder} (F : FrameOver E) : TaskFrame.Saturation F.TaskRel := F.saturation
 
 example {E : TemporalOrder} (F : FrameOver E) : TaskFrame.Compositional F.TaskRel := F.comp
 
@@ -1874,13 +1879,13 @@ example {E : TemporalOrder} (F : FrameOver E) :
     ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ F.TaskRel w y u) → u = w := F.limit
 
 /--
-`TaskFrame.spherical_of_finite` applies to a bundled `FiniteFrameOver` — the shape every finite
+`TaskFrame.saturation_of_finite` applies to a bundled `FiniteFrameOver` — the shape every finite
 construction actually has. `finite_world` is a plain *field*, not an instance, so the `haveI` is
 required at every such use site; that is what this check pins.
 -/
-example {E : TemporalOrder} (F : FiniteFrameOver E) : TaskFrame.Spherical F.TaskRel := by
+example {E : TemporalOrder} (F : FiniteFrameOver E) : TaskFrame.Saturation F.TaskRel := by
   haveI := F.finite_world
-  exact TaskFrame.spherical_of_finite F.TaskRel
+  exact TaskFrame.saturation_of_finite F.TaskRel
 
 end DefinitionalContent
 
@@ -1896,7 +1901,7 @@ section FibreDefinitionalContent
 variable {D : TemporalOrder}
 
 example (F : FrameOver D) : TaskFrame.Serial F.TaskRel := F.serial
-example (F : FrameOver D) : TaskFrame.Spherical F.TaskRel := F.spherical
+example (F : FrameOver D) : TaskFrame.Saturation F.TaskRel := F.saturation
 example (F : FrameOver D) : TaskFrame.Compositional F.TaskRel := F.comp
 example (F : FrameOver D) : TaskFrame.Interpolates F.TaskRel :=
   TaskFrame.interpolates_of_comp F.comp

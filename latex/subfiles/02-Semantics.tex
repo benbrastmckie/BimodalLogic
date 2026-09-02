@@ -67,14 +67,14 @@ A nonempty family of sets $\mathcal{S}$ is \textbf{directed} just in case $S \su
 \end{definition}
 
 % Restates the JPL paper's \label{def:frame}: exactly FOUR axioms (Compositionality,
-% Seriality, Limit, Spherical). Nullity is NOT an axiom -- it is the derived \ref{lem:nullity}
+% Seriality, Limit, Saturation). Nullity is NOT an axiom -- it is the derived \ref{lem:nullity}
 % below. Verbatim axiom text (sub-anchors def:frame#Compositionality, def:frame#Seriality,
-% def:frame#Limit, def:frame#Spherical):
+% def:frame#Limit, def:frame#Saturation):
 %   "\item[\it Compositionality:] $w \Rightarrow_{x + y} v$ if and only if $w \Rightarrow_x u$
 %    and $u \Rightarrow_y v$ for some $u \in W$."
 %   "\item[\it Seriality:] $w \Rightarrow_x u$ and $v \Rightarrow_x w$ for some $u, v \in W$."
 %   "\item[\it Limit:] $\bigcap\limits_{x > 0} (w)_x = \set{w}$."
-%   "\item[\it Spherical:] $\bigcap \mathcal{S} \neq \emptyset$ for any directed family
+%   "\item[\it Saturation:] $\bigcap \mathcal{S} \neq \emptyset$ for any directed family
 %    $\mathcal{S}$ of nonempty fibers and segments."
 \begin{definition}[Task Frame]\label{def:frame}
 A \textbf{task frame} is any structure $\taskframe = (\worldstate, \D, {\taskto{}})$ where $\worldstate$ is a nonempty set of world states, $\D = (D, +, 0, \leq)$ is a nontrivial totally ordered abelian group, and ${\taskto{}}$ is a task relation satisfying the following for $x, y \geq 0$:
@@ -82,7 +82,7 @@ A \textbf{task frame} is any structure $\taskframe = (\worldstate, \D, {\taskto{
   \item[\emph{Compositionality}:] $w \taskto{x+y} v$ if and only if $w \taskto{x} u$ and $u \taskto{y} v$ for some $u \in \worldstate$.
   \item[\emph{Seriality}:] $w \taskto{x} u$ and $v \taskto{x} w$ for some $u, v \in \worldstate$.
   \item[\emph{Limit}:] $\bigcap_{x > 0} \taskcone{w}{x} = \{w\}$.
-  \item[\emph{Spherical}:] $\bigcap \mathcal{S} \neq \emptyset$ for any directed family $\mathcal{S}$ of nonempty fibers and segments.
+  \item[\emph{Saturation}:] $\bigcap \mathcal{S} \neq \emptyset$ for any directed family $\mathcal{S}$ of nonempty fibers and segments.
 \end{itemize}
 \end{definition}
 
@@ -93,7 +93,7 @@ Read left to right, it asserts interpolation: every task of duration $x + y$ pas
 Both directions are load-bearing; in particular the interpolation direction is used directly in the proofs about constraint families of fibers and segments.
 \emph{Seriality} provides, at every nonnegative duration, both a successor and a predecessor for every world state, so no world state is a temporal dead end in either direction.
 \emph{Limit} excludes world states that are distinct from $w$ and yet reachable from $w$ within arbitrarily small durations; equivalently, $w$ is the only world state lying in every cone around $w$.
-\emph{Spherical} is a directed-intersection condition: any directed family drawn from the nonempty fibers and segments has a common element.
+\emph{Saturation} is a directed-intersection condition: any directed family drawn from the nonempty fibers and segments has a common element.
 It supplies the candidate world state needed to extend a partial history to one further time, and is consumed exactly at that step of the extension argument for world histories.
 
 % Restates the JPL paper's derived \label{lem:nullity} (Nullity is a lemma, not an axiom).

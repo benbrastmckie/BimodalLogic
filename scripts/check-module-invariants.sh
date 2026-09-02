@@ -839,7 +839,7 @@ if [ ! -f "$C15_RECORD" ]; then
 else
   C15_KNOWN=$(mktemp)
   # (a) manifest rows: anchor_id is field 1; strip the `#SubAnchor` suffix so that
-  # `def:frame#Spherical` registers its parent `def:frame` too.
+  # `def:frame#Saturation` registers its parent `def:frame` too.
   sed -n '/<!-- MANIFEST:BEGIN -->/,/<!-- MANIFEST:END -->/p' "$C15_RECORD" \
     | grep -v '<!--' | grep -v '^```' | grep -v '^#' | grep -v '^[[:space:]]*$' \
     | cut -d'|' -f1 | sed 's/#.*//' >> "$C15_KNOWN"

@@ -211,10 +211,10 @@ theorem FiniteFilteredTaskFrame_limit [SuccOrder ↑D] [NoMaxOrder ↑D] (phi : 
       (∀ x, 0 < x → ∃ y, |y| < x ∧ (FiniteFilteredTaskFrame D phi).TaskRel w y u) → u = w :=
   RefinedFilteredTaskFrame_limit D phi
 
-/-- *Spherical* (`def:frame#Spherical`) for the finite filtered frame, inherited. -/
-theorem FiniteFilteredTaskFrame_spherical [SuccOrder ↑D] [NoMaxOrder ↑D] (phi : Formula) :
-    TaskFrame.Spherical (FiniteFilteredTaskFrame D phi).TaskRel :=
-  RefinedFilteredTaskFrame_spherical D phi
+/-- *Saturation* (`def:frame#Saturation`) for the finite filtered frame, inherited. -/
+theorem FiniteFilteredTaskFrame_saturation [SuccOrder ↑D] [NoMaxOrder ↑D] (phi : Formula) :
+    TaskFrame.Saturation (FiniteFilteredTaskFrame D phi).TaskRel :=
+  RefinedFilteredTaskFrame_saturation D phi
 
 /-!
 ## Summary

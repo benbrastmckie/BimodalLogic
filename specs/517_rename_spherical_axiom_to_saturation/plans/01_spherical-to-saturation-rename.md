@@ -188,7 +188,7 @@ moved and Phase 2's post-condition must be re-derived before editing.
 
 ---
 
-### Phase 2: Apply the complete rename and verify with one full build [NOT STARTED]
+### Phase 2: Apply the complete rename and verify with one full build [COMPLETED]
 
 **Goal**: Land the entire rename — substitution, irregular token, file rename, hand edits,
 MANIFEST rows — as one atomic change, assert the mechanical post-condition, then run exactly one
@@ -196,28 +196,28 @@ detached guarded build plus the full gate set, and commit once.
 
 **Tasks**:
 
-- [ ] **2.1 Irregular token first.** `sed -i 's/[Ss]phericality/saturation/g'
+- [x] **2.1 Irregular token first.** `sed -i 's/[Ss]phericality/saturation/g'
       FormalSystem/Semantics/TaskFrame.lean` — turns "seriality, limit and sphericality" (line
       513) into "seriality, limit and saturation". This MUST precede the global pass, which would
       otherwise produce `saturationity`.
-- [ ] **2.2 Protect the KEEP set.** `sed -i 's/spherically/SPHLYSENTINEL/g' $(cat /tmp/517-files.txt)`
+- [x] **2.2 Protect the KEEP set.** `sed -i 's/spherically/SPHLYSENTINEL/g' $(cat /tmp/517-files.txt)`
       — 3 sites (`TaskFrame.lean:393`, `:394`, `README.md:80`).
-- [ ] **2.3 Global substitution.**
+- [x] **2.3 Global substitution.**
       `sed -i -e 's/Spherical/Saturation/g' -e 's/spherical/saturation/g' $(cat /tmp/517-files.txt)`.
       This one pass covers the 26 identifiers, all 21 `spherical := …` field-assignment sites, the
       5 compile-checked `#guard_msgs` expected-output strings, the typst macro `leanSpherical` and
       its `raw("spherical")` body, the `SphericalFiniteAxiomTest` module name at all 5 citation
       sites (including the build-breaking `Tests/BimodalTest.lean:15` import and the C12-gated
       `BiLasso/README.md:56` path), the whitelist entries, and both paper anchors.
-- [ ] **2.4 Restore the KEEP set.** `sed -i 's/SPHLYSENTINEL/spherically/g' $(cat /tmp/517-files.txt)`.
+- [x] **2.4 Restore the KEEP set.** `sed -i 's/SPHLYSENTINEL/spherically/g' $(cat /tmp/517-files.txt)`.
       After this, `TaskFrame.lean:394` reads
       `"Saturation" is not a synonym for "spherically complete"; reading it as one understates the axiom.`
       — the one line carrying both partitions, resolved without a hand edit.
-- [ ] **2.5 Rename the test file.**
+- [x] **2.5 Rename the test file.**
       `git mv Tests/BimodalTest/Semantics/SphericalFiniteAxiomTest.lean Tests/BimodalTest/Semantics/SaturationFiniteAxiomTest.lean`.
       Do this *after* the substitution, since the file list was captured under the old path.
       `lakefile.lean` uses ``roots := #[`BimodalTest]``, so no lakefile edit is needed.
-- [ ] **2.6 Update the two MANIFEST rows** in `specs/paper-definitions-of-record.md` (between the
+- [x] **2.6 Update the two MANIFEST rows** in `specs/paper-definitions-of-record.md` (between the
       `<!-- MANIFEST:BEGIN -->` / `<!-- MANIFEST:END -->` sentinels; this file is outside the
       substitution set because `specs/` is excluded). Both checksums below were re-derived
       independently via `check-paper-definitions.sh --resolve` against the live paper while this
@@ -233,15 +233,15 @@ detached guarded build plus the full gate set, and commit once.
       tables at ~line 452, the quoted footnote at ~line 495, the resolved-text block at
       ~1078–1081) is a **historical record of what the paper said at the time** — rewriting it
       would falsify the record. The `KNOWN-ANCHORS` block was checked and contains neither anchor.
-- [ ] **2.7 Hand-edit `README.md:80`.** Delete the interim sentence outright — after substitution
+- [x] **2.7 Hand-edit `README.md:80`.** Delete the interim sentence outright — after substitution
       it reads *"The Lean sources still carry this axiom under its former name *Saturation*
       (`TaskFrame.Saturation`, the `saturation` field of `FrameOver`); renaming them to match is
       pending."* Deleting it drops README from 4 occurrences to 1 (the KEEP occurrence).
-- [ ] **2.8 Add the homonym disambiguation.** One line in the renamed `TaskFrame.Saturation`
+- [x] **2.8 Add the homonym disambiguation.** One line in the renamed `TaskFrame.Saturation`
       docstring (around `TaskFrame.lean:412`) noting that this is unrelated to the tableau
       saturation of `FormalSystem/Metalogic/Decidability/Saturation.lean`. That module declares no
       `Saturation` namespace, so this is a reader aid, not a conflict fix.
-- [ ] **2.9 Assert the post-condition** — this is the substitute for a 444-site manual audit and
+- [x] **2.9 Assert the post-condition** — this is the substitute for a 444-site manual audit and *(deviation: altered — assertions C (`SPHLYSENTINEL`) and D (`saturationity`) need the `grep -v "^specs/"` exclusion assertion A already carries; unexcluded they return 2 and 8, every hit being this plan's and the Phase 1 handoff's own prose naming the tokens. With the exclusion applied all six assertions hold.)*
       is a hard gate on proceeding:
       ```bash
       git grep -io "spherical" -- . | grep -v "^specs/" | wc -l    # MUST be exactly 3
@@ -251,7 +251,7 @@ detached guarded build plus the full gate set, and commit once.
       git grep -in "spherical" -- Tests/                           # MUST be empty (#guard_msgs safety)
       git grep -o  "cor:spherical-finite\|def:frame#Spherical" -- . | grep -v "^specs/" | wc -l  # MUST be 0
       ```
-- [ ] **2.10 One detached, guarded build.** Run under `Bash(run_in_background: true)`:
+- [x] **2.10 One detached, guarded build.** Run under `Bash(run_in_background: true)`: *(deviation: altered — the `--timeout 7200` lock-wait budget was used as written, but the rebuild measured **345 s** (2521 jobs), not the multi-thousand-second full re-elaboration the figure anticipated. The 7200 hypothesis is disconfirmed on the low side; 1800 would have been ample. Detachment was still required — 345 s exceeds the 120 s default foreground cap.)*
       ```bash
       bash .claude/scripts/lake-build-guard.sh build --timeout 7200 -- build
       ```
@@ -260,14 +260,14 @@ detached guarded build plus the full gate set, and commit once.
       a silent false pass. The timeout is raised from the report's 1800 because that figure was
       calibrated on a fully-cached 13 s build; this edit invalidates `TaskFrame.lean` and forces a
       full re-elaboration of ~646 modules.
-- [ ] **2.11 Run the gate set** once the build exits 0:
+- [x] **2.11 Run the gate set** once the build exits 0:
       - `bash scripts/check-module-invariants.sh` — MUST exit 0. C15 must still report every
         anchor resolving; this is where a missed MANIFEST row surfaces.
       - `bash scripts/typst-sync-check.sh` — MUST show `TOTAL_VIOLATIONS=2`, the same two aesop
         entries as the Phase 1 baseline and no others.
       - `bash scripts/check-paper-definitions.sh` — still exit 1, but the unresolvable count MUST
         drop from 2 to 0 and the drifted count MUST remain 10 (no new drift introduced).
-- [ ] **2.12 Review and commit once.** `git status --short` against `/tmp/517-files.txt` plus the
+- [x] **2.12 Review and commit once.** `git status --short` against `/tmp/517-files.txt` plus the
       two expected extras (`specs/paper-definitions-of-record.md`, the `git mv` rename pair);
       `git diff --staged` reviewed; then a single commit. Stage the specific paths — never
       `git add -A`.

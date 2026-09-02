@@ -18,7 +18,7 @@ frames and the order-theoretic glue the second of them needs; the biconditionals
 stated below them.
 
 * **The translation frame** `translationFrame D` — `W = D`, `w ⇒_x u ⟺ u = w + x`. Deterministic,
-  so its fibres are singletons and the *Spherical* argument is `ClockFrame.clockRel_spherical`'s;
+  so its fibres are singletons and the *Saturation* argument is `ClockFrame.clockRel_saturation`'s;
   *Limit* is `TaskFrame.limit_of_shift` at the identity position function, whose docstring names
   exactly this flow-style shape as its intended use. Serves `app:discrete` and `app:complete`,
   because its total histories realize an arbitrary set of times as the truth set of an atom.
@@ -115,7 +115,7 @@ theorem translationRel_fib_subsingleton {D : TemporalOrder} (w x : ↑D) :
 The seven `FrameOver` obligations: *Nullity* and *Converse* are group arithmetic;
 *Compositionality* interpolates through `w + x`; *Seriality* has `w + x` and `w - x` as the two
 witnesses; *Limit* is `TaskFrame.limit_of_shift` at the identity position function; and
-*Spherical* copies `ClockFrame.clockRel_spherical`'s argument, which transfers because the
+*Saturation* copies `ClockFrame.clockRel_saturation`'s argument, which transfers because the
 translation relation is deterministic and so has singleton fibres exactly as the clock relation
 does.
 -/
@@ -152,7 +152,7 @@ def translationFrame (D : TemporalOrder) : FrameOver D where
     abel
   limit := TaskFrame.limit_of_shift (D := ↑D) (fun w => w) (fun _ _ _ h => h)
     (by intro w u h; rw [show u = w + 0 from h, add_zero])
-  spherical := by
+  saturation := by
     intro S hdir hmem
     refine TaskFrame.sInter_nonempty_of_directed_of_univ_or_singleton hdir
       (fun s hs => (hmem s hs).2) (fun s hs => ?_)
@@ -248,7 +248,7 @@ def permissiveFrame (D : TemporalOrder) (so : SuccOrder ↑D) (nm : NoMaxOrder �
         · exact Or.inr heq.symm
     serial := TaskFrame.serial_of_permissive fun _ _ _ => Iff.rfl
     limit := TaskFrame.limit_of_permissive fun _ _ _ => Iff.rfl
-    spherical := TaskFrame.spherical_of_permissive fun _ _ _ => Iff.rfl }
+    saturation := TaskFrame.saturation_of_permissive fun _ _ _ => Iff.rfl }
 
 @[simp] theorem permissiveFrame_taskRel {D : TemporalOrder} (so : SuccOrder ↑D)
     (nm : NoMaxOrder ↑D) (w : Bool) (d : ↑D) (u : Bool) :

@@ -415,7 +415,7 @@ breakdown):
   (Typst math for the open `valid_iff_allClosed` bridge); `⊥ U φ` (a rejected-construction
   illustration, not a citation); `thm:ConservativeExtension` and `cor:tm-decidability`
   (deliberate negative-resolution / untracked-anchor citations, same category as the
-  already-whitelisted `thm:BLplus-NextPrevious`); `cor:spherical-finite` and
+  already-whitelisted `thm:BLplus-NextPrevious`); `cor:saturation-finite` and
   `def:BLplus-language` (external paper labels with no Lean counterpart to grep).
 - *Reformatted instead of whitelisted* (1, per the task's stated preference): `and True` in
   `p2-decidability-practice.typ` — dropped the backticks entirely rather than whitelisting a
@@ -432,7 +432,7 @@ and-discrete / forward-open-for-dense-and-complete status; decidability of *TM* 
 extensions is open, not FMP-established; there are four frame classes (Base, Dense, Discrete,
 Dedekind), not three, with `Dedekind` sitting strictly above `Dense`; and `02-semantics.typ`'s
 task-frame axiomatization was brought up to the paper's current four-axiom `def:frame`
-(Compositionality, Seriality, Limit, Spherical) with Nullity restated as a derived lemma. The
+(Compositionality, Seriality, Limit, Saturation) with Nullity restated as a derived lemma. The
 expository mandate added a motivated introduction, six reader-stumble remarks, and five cetz
 diagrams (the two-fibre `Z`/`R` countermodel witnessing (DD) foremost among them).
 

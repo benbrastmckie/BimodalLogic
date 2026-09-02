@@ -38,9 +38,9 @@ relation satisfying the following for $x, y \geq 0$":
   $v \Rightarrow_x w$ for some $u, v \in W$" — `multiFamGen_serial`, via the clock.
 - *Limit* (`def:frame#Limit`, verbatim): "$\bigcap\limits_{x > 0} (w)_x = \set{w}$" —
   `multiFamGen_limit`, via `TaskFrame.limit_of_shift` with `pos := Prod.snd`.
-- *Spherical* (`def:frame#Spherical`, verbatim): "$\bigcap \mathcal{S} \neq \emptyset$ for
+- *Saturation* (`def:frame#Saturation`, verbatim): "$\bigcap \mathcal{S} \neq \emptyset$ for
   any $\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments" —
-  `multiFamGen_spherical`, via `sInter_nonempty_of_directed_subsingleton`: determinism makes
+  `multiFamGen_saturation`, via `sInter_nonempty_of_directed_subsingleton`: determinism makes
   every fiber a singleton and every segment a subsingleton.
 
 **Fiber/segment apparatus (`def:task-relation`)** and **directed families (`def:directed`)**
@@ -61,18 +61,18 @@ converse convention, and `mem_Seg`. It is not paper text and must not be cited a
 ## Main Results
 
 - `sInter_nonempty_of_directed_subsingleton`: a directed family of nonempty subsingleton
-  sets has nonempty intersection (the generic *Spherical* discharge helper, reusable for
+  sets has nonempty intersection (the generic *Saturation* discharge helper, reusable for
   every deterministic frame)
 - `taskRel_add_iff_seg_nonempty`: the derived segment identity
 - `multiFamGen_comp_iff` / `multiFamGen_comp_iff_of_nonneg`: biconditional
   *Compositionality* (strong all-durations form, plus the positive-cone projection)
 - `multiFamGen_serial`: *Seriality*
 - `multiFamGen_limit`: *Limit* (requires `[Nontrivial D]`, as `def:temporal-order` mandates)
-- `multiFamGen_spherical`: *Spherical*
+- `multiFamGen_saturation`: *Saturation*
 - `multiFamGen_total_eq`: the totality characterization (every total history is a flow line)
-- `multiFamTaskFrameGen_serial` / `_interpolates` / `_limit` / `_spherical`: the same four
+- `multiFamTaskFrameGen_serial` / `_interpolates` / `_limit` / `_saturation`: the same four
   axioms restated in the bare-relation predicates of record (`TaskFrame.Serial`,
-  `TaskFrame.Interpolates`, `TaskFrame.Spherical`, and *Limit*'s literal transcribed shape), so
+  `TaskFrame.Interpolates`, `TaskFrame.Saturation`, and *Limit*'s literal transcribed shape), so
   they are citable verbatim when the frame structure grows the corresponding fields
 
 ## `bundleFlowFrame` is a specialization, not a construction site
@@ -91,7 +91,7 @@ construction site in any inventory of sites that owe the structure a field.
 * [ChronicleMonadicBridge.lean](../BXCanonical/Chronicle/ChronicleMonadicBridge.lean) -
   the generic flow frame `multiFamTaskFrameGen` / `multiFamHistoryGen`
 * JPL Paper anchors `def:frame` (sub-anchors `def:frame#Compositionality`,
-  `def:frame#Seriality`, `def:frame#Limit`, `def:frame#Spherical`), `def:task-relation`,
+  `def:frame#Seriality`, `def:frame#Limit`, `def:frame#Saturation`), `def:task-relation`,
   `def:directed`, `def:world-history` — cited by `\label` anchor, never by line number
 -/
 
@@ -103,9 +103,9 @@ open FormalSystem.Semantics
 open FormalSystem.Metalogic.Core
 open FormalSystem.Metalogic.Bundle
 
-/-! ## The generic Spherical helper
+/-! ## The generic Saturation helper
 
-Determinism-shaped discharge of `def:frame#Spherical`: in a frame whose fibers are all
+Determinism-shaped discharge of `def:frame#Saturation`: in a frame whose fibers are all
 subsingletons, every set the axiom ranges over is a nonempty subsingleton, and a directed
 family of nonempty subsingletons has nonempty intersection. Stated for an arbitrary carrier
 `W`, with no relation in sight, so it is reusable verbatim for every deterministic frame. -/
@@ -176,7 +176,7 @@ noncomputable def multiFamTaskFrameGen (D : TemporalOrder) (FamIdx : Type) [None
   limit :=
     TaskFrame.limit_of_shift Prod.snd (fun _ _ _ h => h.2)
       (fun w u h => Prod.ext h.1.symm (by rw [h.2, add_zero]))
-  spherical := by
+  saturation := by
     intro S hdir hmem
     refine sInter_nonempty_of_directed_subsingleton hdir (fun s hs => (hmem s hs).2)
       fun s hs => ?_
@@ -301,11 +301,11 @@ theorem multiFamGen_fib_subsingleton {FamIdx : Type} [Nonempty FamIdx] (w : FamI
   rintro u ⟨hu₁, hu₂⟩ u' ⟨hu'₁, hu'₂⟩
   exact Prod.ext (hu₁.symm.trans hu'₁) (hu₂.trans hu'₂.symm)
 
-/-- *Spherical* (`def:frame#Spherical`) for the generic flow frame: every fiber is a
+/-- *Saturation* (`def:frame#Saturation`) for the generic flow frame: every fiber is a
 singleton and every segment is an intersection of fibers, hence a subsingleton, so a
 directed family (`def:directed`) of nonempty fibers and segments meets the hypotheses of
 `sInter_nonempty_of_directed_subsingleton`. -/
-theorem multiFamGen_spherical {FamIdx : Type} [Nonempty FamIdx] (S : Set (Set (FamIdx × ↑D)))
+theorem multiFamGen_saturation {FamIdx : Type} [Nonempty FamIdx] (S : Set (Set (FamIdx × ↑D)))
     (hdir : TaskFrame.DirectedFamily S)
     (hne : ∀ s ∈ S, s.Nonempty)
     (hfs : ∀ s ∈ S, TaskFrame.IsFiber (multiFamTaskFrameGen D FamIdx).TaskRel s ∨
@@ -320,7 +320,7 @@ theorem multiFamGen_spherical {FamIdx : Type} [Nonempty FamIdx] (S : Set (Set (F
 
 The four lemmas above are stated pointwise, in the shapes their own proofs produce. The four
 below restate exactly the same content in `TaskFrame.Serial` / `TaskFrame.Interpolates` /
-`TaskFrame.Spherical` — the bare-relation predicates of record (`TaskFrame.lean`) — so that they
+`TaskFrame.Saturation` — the bare-relation predicates of record (`TaskFrame.lean`) — so that they
 are citable verbatim when the frame structure grows the corresponding fields. *Limit* needs no
 restatement: `multiFamGen_limit` is already in the literal transcribed shape. Nothing here is a
 new argument; each is a repackaging of the lemma directly above it. -/
@@ -350,14 +350,14 @@ theorem multiFamTaskFrameGen_limit {FamIdx : Type} [Nonempty FamIdx] :
       (∀ x, 0 < x → ∃ y, |y| < x ∧ (multiFamTaskFrameGen D FamIdx).TaskRel w y u) → u = w :=
   multiFamGen_limit
 
-/-- *Spherical* (`def:frame#Spherical`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
+/-- *Saturation* (`def:frame#Saturation`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
 $\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments") for the generic flow
-frame, as the predicate of record. Repackages `multiFamGen_spherical`, splitting `Spherical`'s
+frame, as the predicate of record. Repackages `multiFamGen_saturation`, splitting `Saturation`'s
 single per-member conjunction into that lemma's two separate hypotheses. -/
-theorem multiFamTaskFrameGen_spherical {FamIdx : Type} [Nonempty FamIdx] :
-    TaskFrame.Spherical (multiFamTaskFrameGen D FamIdx).TaskRel :=
+theorem multiFamTaskFrameGen_saturation {FamIdx : Type} [Nonempty FamIdx] :
+    TaskFrame.Saturation (multiFamTaskFrameGen D FamIdx).TaskRel :=
   fun S hdir hmem =>
-    multiFamGen_spherical S hdir (fun s hs => (hmem s hs).2) (fun s hs => (hmem s hs).1)
+    multiFamGen_saturation S hdir (fun s hs => (hmem s hs).2) (fun s hs => (hmem s hs).1)
 
 /-! ## The totality characterization
 
@@ -516,16 +516,16 @@ theorem bundleFlow_limit {B : BFMCS (fc := fc) D} :
       (∀ x, 0 < x → ∃ y, |y| < x ∧ (bundleFlowFrame B).TaskRel w y u) → u = w :=
   multiFamGen_limit
 
-/-- *Spherical* (`def:frame#Spherical`) at the bundle flow frame, by specialization of
-`multiFamGen_spherical`. -/
-theorem bundleFlow_spherical {B : BFMCS (fc := fc) D}
+/-- *Saturation* (`def:frame#Saturation`) at the bundle flow frame, by specialization of
+`multiFamGen_saturation`. -/
+theorem bundleFlow_saturation {B : BFMCS (fc := fc) D}
     (S : Set (Set (bundleFlowFrame B).WorldState))
     (hdir : TaskFrame.DirectedFamily S)
     (hne : ∀ s ∈ S, s.Nonempty)
     (hfs : ∀ s ∈ S, TaskFrame.IsFiber (bundleFlowFrame B).TaskRel s ∨
       TaskFrame.IsSegment (bundleFlowFrame B).TaskRel s) :
     (⋂₀ S).Nonempty :=
-  multiFamGen_spherical S hdir hne hfs
+  multiFamGen_saturation S hdir hne hfs
 
 /-- The totality characterization at the bundle flow frame: every total history is a flow
 line through a bundle family. Together with `bundleFlowHistory_total`, this identifies the

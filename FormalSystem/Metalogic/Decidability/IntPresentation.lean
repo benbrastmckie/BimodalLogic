@@ -119,7 +119,7 @@ instance : DecidablePred fun p : Fin P.card × Fin P.card => P.stepRel p.1 p.2 :
 The `FrameOver intOrder` the presentation presents, built through the normal form's `ofStep`.
 
 All seven `FrameOver` fields come from `ofStep`; none is re-discharged here. In particular
-*Spherical* goes through `TaskFrame.spherical_of_finite`, the only route applicable to a relation
+*Saturation* goes through `TaskFrame.saturation_of_finite`, the only route applicable to a relation
 of arbitrary shape, and *Limit* through `TaskFrame.limit_of_succOrder`.
 
 **So bi-seriality is the sole frame obligation a presentation ever pays** — `fwd` and `bwd`,

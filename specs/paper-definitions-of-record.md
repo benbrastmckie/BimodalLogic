@@ -1316,7 +1316,7 @@ def:frame|env|-|-|294733a3cb5d65a1c048d850689e6d78e7a29c8b78cc8fed5d35b3ce361858
 def:frame#Compositionality|item|def:frame|Compositionality|35905314d686a1676dfda8d4c7d092de8c3335104c0510e7069d6656a4ac87e3
 def:frame#Seriality|item|def:frame|Seriality|afffcd074afce7442d2c02108f49e70c128de3d4d7ccac41833f95e2ae3cd952
 def:frame#Limit|item|def:frame|Limit|6acfdc8df119a71d24d863399f6e6d3aff9a507e920c8a57e9427df94224b369
-def:frame#Spherical|item|def:frame|Spherical|92b407bc45ab62ce5bac22982c67e2555efb4a990ddf8e61fd7f1b45840bcf60
+def:frame#Saturation|item|def:frame|Saturation|c293e9f830a2e1f0154d1ee7be2c7a121a7aa0ec4476266637e4fffaff345c60
 lem:nullity|env|-|-|94ed018343635a8ef6671daef07eaa72da1cb49fd11043fb3aa9b391a2c9c973
 def:world-history|env|-|-|3d4679bdb4828aad40f6a0d8deb6ff5af09fa52d2181100cfe159f2a23303a15
 thm:extension|env|-|-|1140d4819b9b0030275f249c60b7cb2fb15da97f9d07df2196d6e06508f65e38
@@ -1351,7 +1351,7 @@ app:dense|env|-|-|4f8bb793ec8d762013c413327c05c50e691c6d54fefdcb0bedd3076b3b782b
 app:complete|env|-|-|2fe5c5e879af2ae0e7ef1823d3c61b6d3608f21495525396b82a4350e349f168
 def:frame-properties|env|-|-|7820dd2fdaada72ff505787f47c049f63c24362cf25e48b7677724d850275086
 def:deterministic|env|-|-|3baae0ee62cee6a0bd81b18951efb3cd5d1097a017f9c60ccd2d8b87e4a3e175
-cor:spherical-finite|env|-|-|26ed8ff4c8b01f1dde980e075bc2e0bd45571951be82160bb184d59227b9f7b3
+cor:saturation-finite|env|-|-|6456eb11cb2adf8b06c929c3f6b5d19dc581f9ba7a33af8a28e61ec675567d74
 cor:tm-completeness|env|-|-|04255c86b60567dd33a9cc708351dc02af254f798f4e82663e60b83b6f41847d
 def:id|env|-|-|1a608153e9b78659db2bfc13b2c11c024dceb0acde9cfaa8b900345cda2af238
 def:strongest|env|-|-|57786b2c8758c3c7ea80ac7a80464b331ea77ff9b8c804a032504394bc800369
