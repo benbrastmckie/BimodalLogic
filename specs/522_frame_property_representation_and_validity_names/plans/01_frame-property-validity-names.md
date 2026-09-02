@@ -691,28 +691,28 @@ explained — never silently adjusted.
 
 ---
 
-### Phase 8: BL transfer theorems and corollary rewrites [NOT STARTED]
+### Phase 8: BL transfer theorems and corollary rewrites [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: One transfer theorem per BL validity layer, with the BL lemma layer derived as
 corollaries — and the two genuine exceptions recorded as exceptions rather than quietly skipped.
 
 **Tasks**:
-- [ ] Add to `BaseLanguageSoundness.lean` (which already imports `Semantics.BLValidity` and,
+- [x] Add to `BaseLanguageSoundness.lean` (which already imports `Semantics.BLValidity` and,
       transitively, `Semantics.Validity`, so placement is free):
       - `blValidIn_iff_validIn_tr (fc : FrameClass) (φ : BLFormula) : BLValidIn fc φ ↔ ValidIn fc (tr φ)`
       - `blValidOnFrames_iff_validOnFrames_tr (P : TaskFrame → Prop) (φ : BLFormula)`
       Both proved by `constructor` + two `truthAt_tr` applications.
-- [ ] Document why the **second** theorem is required and not redundant: `BLValidOnFrames.mono`
+- [x] Document why the **second** theorem is required and not redundant: `BLValidOnFrames.mono`
       quantifies over a bare `P : TaskFrame → Prop`, which for arbitrary `P` is no tag's `Sat` —
       the same asymmetry that puts `ValidComplete` outside the `ValidIn` family. This mirrors
       `Validity.lean`'s own `ValidOnFrames.mono` / `ValidIn.mono` split.
-- [ ] Rewrite as one-line corollaries: `BLValidIn.mono`, `BLValidOnFrames.mono`,
+- [x] Rewrite as one-line corollaries: `BLValidIn.mono`, `BLValidOnFrames.mono`,
       `blValid_implies_blValidDense`, `blValid_implies_blValidDiscrete`,
       `blValid_implies_blValidDedekindDense`, `blValid_iff_valid_tr`,
       `blValidDiscrete_iff_validDiscrete_tr`.
-- [ ] Derive `BLSchemaValidity.dn_valid_of_denselyOrdered` from `density_valid` transported —
+- [x] Derive `BLSchemaValidity.dn_valid_of_denselyOrdered` from `density_valid` transported —
       verified safe, since `tr_imp` and `tr_allFuture` are both `rfl`.
-- [ ] Record as **documented exceptions**, and do not attempt to remove:
+- [x] Record as **documented exceptions**, and do not attempt to remove:
       `blValid_iff_empty_consequence` (`BLSemanticConsequence` is an orthogonal `Prop` shape —
       unbundled `τ`, no `FrameClass`, no `tr`); `blValid_implies_blValidDiscreteSucc`
       (`BLValidDiscreteSucc` is not any `BLValidIn`; no `Sat` variant bundles just
@@ -720,11 +720,41 @@ corollaries — and the two genuine exceptions recorded as exceptions rather tha
       (`tr φ.someFuture = (Formula.allFuture (tr φ).neg).neg` is a different constructor tree from
       `Formula.someFuture (tr φ)` — the documented "`tr` is exact only on `□, G, H, →, ⊥`" boundary,
       `tr_someFuture_ne`).
-- [ ] Preserve the BL-native `example`s at `BaseLanguageSoundness.lean:489-503` (TK, T4, MT proved
+- [x] Preserve the BL-native `example`s at `BaseLanguageSoundness.lean:489-503` (TK, T4, MT proved
       directly against `BLTruthAt`) unweakened: the transfer theorems are corollaries of the
       *theorem* `truthAt_tr`, not of a definitional identity, so those examples remain load-bearing
       as a guard against `BLTruthAt` being redefined as `TruthAt ∘ tr`. Add a one-line note saying
       exactly that, so a future reader does not delete them as now-redundant.
+
+**PHASE 8 COMPLETION NOTE.** Scope Hypothesis **confirmed exactly**: `BLValidity.lean` was 352
+lines with 9 `def`s and 20 theorems before Phase 7; it is now 306 lines with 9 `def`s and 14
+theorems (Phase 7 removed six adapter declarations, no `def`).
+
+Both transfer theorems landed in `BaseLanguageSoundness.lean` and both intended corollaries are
+now one tactic-free line each:
+
+- `blValidOnFrames_iff_validOnFrames_tr (P : TaskFrame → Prop)` — two `truthAt_tr` applications
+  under `constructor`, with the required "why not redundant" note: `BLValidOnFrames.mono`
+  quantifies over an arbitrary `P`, and for arbitrary `P` there is no `fc` with `P = fc.Sat`.
+- `blValidIn_iff_validIn_tr (fc : FrameClass)` — `:= blValidOnFrames_iff_validOnFrames_tr fc.Sat φ`.
+- `blValid_iff_valid_tr := blValidIn_iff_validIn_tr .Base φ` (was an 8-line two-branch script).
+- `blValidDiscrete_iff_validDiscrete_tr := blValidIn_iff_validIn_tr .Discrete φ` (same).
+
+The `:489-503` BL-native `example`s are **byte-identical** and gained the note the plan asks for,
+stating explicitly that the transfer theorems are corollaries of the *theorem* `truthAt_tr` rather
+than of a definitional identity, so the examples remain the guard against `BLTruthAt` being
+redefined as `TruthAt ∘ tr`.
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|---|---|---|
+| `BLValidIn.mono`, `BLValidOnFrames.mono`, `blValid_implies_blValidDense`, `…Discrete`, `…DedekindDense` not rewritten as corollaries of the transfer theorems | **Import direction makes it impossible.** All five live in `Semantics/BLValidity.lean`, which is *imported by* `Metalogic/BaseLanguageSoundness.lean` where the transfer theorems must live (they need `truthAt_tr` and `tr`). A downstream theorem cannot be an upstream one's proof. | `head -12 FormalSystem/Metalogic/BaseLanguageSoundness.lean` shows `import FormalSystem.Semantics.BLValidity` |
+| — and they need no rewrite anyway | All five are **already** one-line corollaries of `BLValidIn.mono` / `BLValidOnFrames.mono`, which is the collapse the plan was reaching for. | `BLValidOnFrames.mono := fun F hF => hP F (h F hF)`; each `blValid_implies_*` is a single `BLValidIn.mono (FrameClass.base_le _) …` application |
+| `BLSchemaValidity.dn_valid_of_denselyOrdered` not derived from `density_valid` transported | Same layering objection, in the other direction: `Semantics/BLSchemaValidity.lean` imports only `BLTruth` and `DurationClassification`. Transporting `density_valid` would make `Semantics/` import `Metalogic/Soundness.lean`, inverting the development's layering to replace a five-line self-contained proof. The plan's own instruction was "if the file is confirmed to hold it; otherwise report and skip" — the file holds it; the *derivation* is what is skipped, and the reason is now recorded on the theorem. | `grep import FormalSystem/Semantics/BLSchemaValidity.lean` |
+| `blValid_iff_empty_consequence` kept | Documented exception, now annotated in source: `BLSemanticConsequence` is an orthogonal `Prop` shape — unbundled `τ`, no `FrameClass`, no `tr`. | Annotation added at its docstring |
+| `blValid_implies_blValidDiscreteSucc` and the `BLValidDiscreteSucc` layer kept | Documented exception, now annotated in source: `BLValidDiscreteSucc` is not any `BLValidIn fc`; no `Sat` variant bundles just `SuccOrder` + `PredOrder`. | Annotation added at its docstring |
+| `df_valid_of_succOrder` / `df_valid_of_isLeast_pos` kept | Documented exception, now annotated in source: `tr φ.someFuture = (Formula.allFuture (tr φ).neg).neg` is a different constructor tree from `Formula.someFuture (tr φ)` — the recorded `tr_someFuture_ne` boundary. | Annotation added at `df_valid_of_succOrder` |
 
 **Timing**: 1.5 hours
 

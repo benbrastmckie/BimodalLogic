@@ -235,7 +235,16 @@ def BLValidDiscreteSucc (φ : BLFormula) : Prop :=
     (τ : WorldHistory F), τ.IsTotal → ∀ t : F.Duration, BLTruthAt M τ t φ
 
 /-- `BLValid` weakens to `BLValidDiscreteSucc`, mirroring `BLValidity.blValid_implies_blValidDiscrete`
-and its dense/Dedekind siblings. -/
+and its dense/Dedekind siblings.
+
+**Documented exception to the transfer-theorem collapse.** Its three siblings are corollaries of
+`BLValidIn.mono`, and every BL/BL⁺ equivalence in `Metalogic/BaseLanguageSoundness.lean` is a
+corollary of `blValidIn_iff_validIn_tr`. This one is neither, and cannot be made either:
+`BLValidDiscreteSucc` is **not** any `BLValidIn fc` — no `FrameClass.Sat` variant bundles just
+`SuccOrder` + `PredOrder` without the two Archimedean conditions, which is exactly the weakening
+`bl_soundness_discrete_succ` needs for the non-Archimedean carrier `ℚ ×ₗ ℤ`. Adding such a tag to
+`FrameClass` to make this a corollary would widen the proof side's class lattice to serve a
+semantic convenience. Leave it as a direct lambda. -/
 theorem BLValidity.blValid_implies_blValidDiscreteSucc {φ : BLFormula} (h : BLValid φ) :
     BLValidDiscreteSucc φ :=
   fun F _ _ M τ hτ t => h.apply F M τ hτ t
@@ -290,7 +299,13 @@ theorem blValid_implies_blValidDedekindDense {φ : BLFormula} (h : BLValid φ) :
   BLValidIn.mono (ProofSystem.FrameClass.base_le _) ((blValid_iff_blValidIn_base φ).mp h)
 
 /-- Validity is consequence from the empty context. Mirrors
-`Validity.valid_iff_empty_consequence`. -/
+`Validity.valid_iff_empty_consequence`.
+
+**Documented exception to the transfer-theorem collapse.** `BLSemanticConsequence` is an
+orthogonal `Prop` shape, not a `BLValidIn` at any tag: it takes the history `τ` unbundled, carries
+no `FrameClass` index, and mentions no `tr`. So neither
+`blValidOnFrames_iff_validOnFrames_tr` nor `blValidIn_iff_validIn_tr`
+(`Metalogic/BaseLanguageSoundness.lean`) can prove it, and this two-branch script stays. -/
 theorem blValid_iff_empty_consequence (φ : BLFormula) :
     BLValid φ ↔ BLSemanticConsequence [] φ := by
   constructor

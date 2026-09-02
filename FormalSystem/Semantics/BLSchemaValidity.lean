@@ -80,6 +80,14 @@ theorem df_valid_of_isLeast_pos {d : F.Duration} (hd : IsLeast {x : F.Duration |
 **Lemma B, `SuccOrder` form.** The same conclusion under `[SuccOrder F.Duration]`, obtained from
 the least-positive form via `DurationClassification.isLeast_pos_succ_zero` — `Order.succ 0` is a
 least strictly positive element, so this is a corollary rather than a second direct proof.
+
+**Documented exception: neither this nor `df_valid_of_isLeast_pos` can be replaced by transporting
+a BL⁺ theorem across `tr`.** `tr` is exact only on `□, G, H, →, ⊥`; on `someFuture` it is not.
+`tr φ.someFuture` is `(Formula.allFuture (tr φ).neg).neg`, a different constructor tree from
+`Formula.someFuture (tr φ)` — recorded by proof as `tr_someFuture_ne`
+(`BaseLanguage/Translation.lean`). Both DF statements have `F⊤` and `F(Hφ)` in them, so the
+transfer theorems in `Metalogic/BaseLanguageSoundness.lean` do not reach them, and both proofs
+stay native. Do not delete either as a duplicate of a BL⁺ result.
 -/
 theorem df_valid_of_succOrder [SuccOrder F.Duration] [Nontrivial F.Duration]
     (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration) (φ : BLFormula) :
@@ -92,6 +100,14 @@ theorem df_valid_of_succOrder [SuccOrder F.Duration] [Nontrivial F.Duration]
 /--
 **Lemma C.** If `F.Duration` is densely ordered, DN — `GGφ → Gφ` — is true at every model,
 history and time.
+
+**Kept as a direct proof, deliberately.** DN mentions only `G` and `→`, on which `tr` *is* exact,
+so this statement is in principle `Metalogic/Soundness.lean`'s `density_valid` transported across
+`blValidOnFrames_iff_validOnFrames_tr`. It is not derived that way, because the transport would
+require `Semantics/BLSchemaValidity.lean` to import `Metalogic/Soundness.lean` — inverting the
+`Semantics/` → `Metalogic/` layering that the whole development rests on, to replace a five-line
+self-contained proof. The two statements agree; that they are proved independently is a feature
+here, not duplication to be collapsed.
 
 Given `GGφ` at `t` and `t < s`, density supplies `t < r < s`; apply `GGφ` at `r` (giving `Gφ` at
 `r`) then at `s`.

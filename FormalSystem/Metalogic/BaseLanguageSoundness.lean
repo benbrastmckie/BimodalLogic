@@ -135,8 +135,52 @@ theorem truthAt_trCtx (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
   obtain ⟨χ, hχ, rfl⟩ := List.mem_map.mp hψ
   exact (truthAt_tr M χ τ t).mpr (h χ hχ)
 
+/-! ### The two transfer theorems
+
+One per BL validity layer, and the whole of the BL/BL⁺ validity bridge. Everything else in this
+section is a corollary of one of them at a fixed predicate or tag.
+-/
+
 /--
-The validity-level bridge.
+**Transfer at a bare frame predicate.** BL validity over the frames satisfying `P` is BL⁺ validity
+of the translation over the same frames.
+
+**Why this one is required and is not redundant given the tag-indexed form below.**
+`BLValidOnFrames` — and its monotonicity lemma `BLValidOnFrames.mono` — quantifies over an
+arbitrary `P : TaskFrame → Prop`, and for arbitrary `P` there is no `fc` with `P = fc.Sat`: only
+four predicates out of all of `TaskFrame → Prop` are named by a tag. This is the same asymmetry
+that puts `ValidComplete` (`ValidOnFrames TaskFrame.IsComplete`) outside the `ValidIn` family, and
+it is why `Semantics/Validity.lean` carries a `ValidOnFrames.mono` / `ValidIn.mono` split rather
+than one lemma. The tag-indexed theorem below is this one at `fc.Sat`; the reverse derivation does
+not exist.
+
+A **corollary of `truthAt_tr`, not a definitional identity** — see `blValid_iff_valid_tr` below on
+why that distinction is load-bearing.
+-/
+theorem blValidOnFrames_iff_validOnFrames_tr (P : TaskFrame → Prop) (φ : BLFormula) :
+    BLValidOnFrames P φ ↔ ValidOnFrames P (tr φ) := by
+  constructor
+  · intro h
+    refine ValidOnFrames.of_forall_total ?_
+    intro F hF M τ hτ t
+    exact (truthAt_tr M φ τ t).mpr (BLValidOnFrames.apply_total h F hF M τ hτ t)
+  · intro h
+    refine BLValidOnFrames.of_forall_total ?_
+    intro F hF M τ hτ t
+    exact (truthAt_tr M φ τ t).mp (ValidOnFrames.apply_total h F hF M τ hτ t)
+
+/--
+**Transfer at a `FrameClass` tag.** `blValidOnFrames_iff_validOnFrames_tr` at `fc.Sat`, which is
+what `BLValidIn` and `ValidIn` are both defined as. Every named BL/BL⁺ validity equivalence in
+this development is this theorem at a literal tag.
+-/
+theorem blValidIn_iff_validIn_tr (fc : ProofSystem.FrameClass) (φ : BLFormula) :
+    BLValidIn fc φ ↔ ValidIn fc (tr φ) :=
+  blValidOnFrames_iff_validOnFrames_tr fc.Sat φ
+
+/--
+The validity-level bridge, at the unconstrained class: `blValidIn_iff_validIn_tr` at
+`.Base`, where `BLValid` and `valid` respectively are.
 
 This is a **corollary of `truthAt_tr`, not the definition of `BLValid`**. `BLValid` is defined
 against the native `BLTruthAt`; stating this equivalence as a theorem is what keeps the
@@ -144,38 +188,21 @@ distinction visible, since defining BL truth as `TruthAt ∘ tr` would make it h
 would make every BL soundness theorem below a restatement of its BL⁺ source rather than a claim
 about BL.
 -/
-theorem blValid_iff_valid_tr (φ : BLFormula) : BLValid φ ↔ valid (tr φ) := by
-  constructor
-  · intro h
-    refine valid.of_forall_total ?_
-    intro F M τ hτ t
-    exact (truthAt_tr M φ τ t).mpr (h.apply F M τ hτ t)
-  · intro h
-    refine BLValid.of_forall_total ?_
-    intro F M τ hτ t
-    exact (truthAt_tr M φ τ t).mp (h.apply F M τ hτ t)
+theorem blValid_iff_valid_tr (φ : BLFormula) : BLValid φ ↔ valid (tr φ) :=
+  blValidIn_iff_validIn_tr ProofSystem.FrameClass.Base φ
 
 /--
 The **`.Discrete` mirror** of `blValid_iff_valid_tr`: BL validity over the discrete frame class
 is `TruthAt`-equivalent to `ValidDiscrete` of the translation, with the four
 `SuccOrder`/`PredOrder`/`IsSuccArchimedean`/`IsPredArchimedean` frame condition travelling as
-the single packed `Sat .Discrete F` hypothesis that the generic adapters carry on both sides, so
-neither direction has to open it.
-Same two-branch `constructor` proof as `blValid_iff_valid_tr`, off `truthAt_tr`.
+the single packed `Sat .Discrete F` hypothesis, so neither direction has to open it. Like
+`blValid_iff_valid_tr`, a one-line corollary of `blValidIn_iff_validIn_tr`.
 
 Consumed by `Metalogic/TMCompletenessReduction.lean`'s `tmCompleteDiscrete_iff_forwardDiscrete`.
 -/
 theorem blValidDiscrete_iff_validDiscrete_tr (φ : BLFormula) :
-    BLValidDiscrete φ ↔ ValidDiscrete (tr φ) := by
-  constructor
-  · intro h
-    refine ValidIn.of_forall_total ?_
-    intro F hF M τ hτ t
-    exact (truthAt_tr M φ τ t).mpr (BLValidIn.apply_total h F hF M τ hτ t)
-  · intro h
-    refine BLValidIn.of_forall_total ?_
-    intro F hF M τ hτ t
-    exact (truthAt_tr M φ τ t).mp (ValidIn.apply_total h F hF M τ hτ t)
+    BLValidDiscrete φ ↔ ValidDiscrete (tr φ) :=
+  blValidIn_iff_validIn_tr ProofSystem.FrameClass.Discrete φ
 
 end FormalSystem.Semantics
 
@@ -482,6 +509,13 @@ They are not consumed by anything above — their job is to stand as evidence th
 carries content on its own, independently of the composition, and they are the guard against
 `BLTruthAt` ever being redefined as `TruthAt ∘ tr` (under which these scripts would not go through
 as written).
+
+**Do not delete these as redundant now that `blValidOnFrames_iff_validOnFrames_tr` and
+`blValidIn_iff_validIn_tr` exist.** Those two are corollaries of the *theorem* `truthAt_tr`, not
+of a definitional identity, so they presuppose exactly what these examples independently witness:
+that `BLTruthAt` is a separate definition which happens to agree with `TruthAt ∘ tr`. If BL truth
+were ever redefined as the composite, the transfer theorems would become `Iff.rfl` and would stop
+carrying any information — and these three examples are what would fail first and say so.
 
 `MT` is the informative one: it closes because `τ` is *itself* total, which is precisely the `H_F`
 reading of `def:BL-semantics`'s box clause. -/
