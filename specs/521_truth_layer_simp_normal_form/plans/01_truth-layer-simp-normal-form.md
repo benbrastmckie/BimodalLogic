@@ -1,7 +1,7 @@
 # Implementation Plan: Truth Layer Simp Normal Form
 
 - **Task**: 521 - Truth layer simp normal form
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 13.5 hours
 - **Dependencies**: Task 517 (landed), Task 518 (landed, verified), Task 519 (landed)
 - **Research Inputs**: specs/521_truth_layer_simp_normal_form/reports/01_truth-layer-simp-normal-form.md
@@ -184,7 +184,7 @@ Phases 8 and 9 both edit `Soundness.lean` and are therefore deliberately sequent
 
 ---
 
-### Phase 1: Baseline capture and simp-set registration [NOT STARTED]
+### Phase 1: Baseline capture and simp-set registration [COMPLETED]
 
 - **Goal:** Freeze the "before" measurement that the restated acceptance criterion is scored
   against, and declare the two named simp sets plus the `truth_simp` macro. Purely additive;
@@ -207,7 +207,10 @@ Phases 8 and 9 both edit `Soundness.lean` and are therefore deliberately sequent
         `Formula.swap_temporal_*` lemmas).
   - [ ] Add `macro "truth_simp" loc?:(location)? : tactic => `(tactic| simp only [truth_norm] $(loc?)?)`
         in the same module. If it fails to elaborate there, move the macro alone to `Truth.lean`
-        in Phase 2 and record the move (see Risks).
+        in Phase 2 and record the move (see Risks). *(deviation: altered — the bare `(location)?`
+        parser category is not in scope under `import Lean` alone; the macro was written as
+        `loc?:(Lean.Parser.Tactic.location)?` and elaborates in its declaring module. No move
+        was needed.)*
   - [ ] **Do not modify `NormalizationAttr.lean`.** The research recommended amending its
         "It must not acquire any other content." sentence to host these two sets; the user's scope
         decision supersedes that recommendation. A separate module honours the instruction as

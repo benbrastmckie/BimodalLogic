@@ -1,0 +1,258 @@
+FormalSystem/Metalogic/StrongCompleteness.lean:243:  | nil => simp
+FormalSystem/Metalogic/DedekindNonCompactness.lean:144:  | zero => simp [qAlpha, qDepth, Formula.top]
+FormalSystem/Metalogic/DedekindNonCompactness.lean:219:  have hgap := truthAt_qGap M τ t q (h _ (by simp [dedWitness]))
+FormalSystem/Metalogic/DedekindNonCompactness.lean:220:  obtain ⟨x, htx, hx⟩ := truthAt_qBound M τ t q (h _ (by simp [dedWitness]))
+FormalSystem/Metalogic/DedekindNonCompactness.lean:301:  sh_zero := by intro w; simp
+FormalSystem/Metalogic/DedekindNonCompactness.lean:323:  simp [ShiftSet.ShiftTruth]
+FormalSystem/Metalogic/Independence/LoopingDuration.lean:173:  | zero => simp
+FormalSystem/Metalogic/SoundnessLemmas/FrameClassVariants.lean:750:  | density _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
+FormalSystem/Metalogic/SoundnessLemmas/FrameClassVariants.lean:751:  | dense_indicator => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
+FormalSystem/Metalogic/SoundnessLemmas/FrameClassVariants.lean:752:  | prior_UZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
+FormalSystem/Metalogic/SoundnessLemmas/FrameClassVariants.lean:753:  | prior_SZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
+FormalSystem/Metalogic/SoundnessLemmas/FrameClassVariants.lean:754:  | z1 _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
+FormalSystem/Metalogic/SoundnessLemmas/FrameClassVariants.lean:757:  | prior_U_gap _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
+FormalSystem/Metalogic/SoundnessLemmas/FrameClassVariants.lean:758:  | prior_S_gap _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
+FormalSystem/Metalogic/SoundnessLemmas/FrameClassVariants.lean:759:  | sep _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
+FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodelBasic.lean:644:      simp [OrderIso.apply_symm_apply] at h1
+FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodelBasic.lean:660:      simp [OrderIso.apply_symm_apply] at h1
+FormalSystem/Metalogic/Algebraic/FlowFrame.lean:626:    simp [Formula.swapTemporal, Formula.swap_temporal_involution]
+FormalSystem/Metalogic/Algebraic/FlowFrame.lean:721:            (by simp [h_neg_imp])
+FormalSystem/Metalogic/Algebraic/FlowFrame.lean:727:            (by simp [h_neg_imp])
+FormalSystem/Metalogic/DiscreteNonCompactness.lean:85:  | zero => intro t φ; simp
+FormalSystem/Metalogic/DiscreteNonCompactness.lean:132:  | zero => simp [nextDepth]
+FormalSystem/Metalogic/DiscreteNonCompactness.lean:133:  | succ k ih => rw [Function.iterate_succ_apply']; simp [Formula.next, nextDepth, ih]
+FormalSystem/Metalogic/DiscreteNonCompactness.lean:137:  simp [Formula.neg, witIdx, nextDepth_next_iterate]
+FormalSystem/Metalogic/DiscreteNonCompactness.lean:177:    simp [hc] at h
+FormalSystem/Metalogic/DiscreteNonCompactness.lean:183:  | zero => simp
+FormalSystem/Metalogic/DiscreteNonCompactness.lean:184:  | succ k ih => rw [Function.iterate_succ_apply', ih]; simp [Order.succ_eq_add_one]
+FormalSystem/Metalogic/DiscreteNonCompactness.lean:232:    apply h; simp [archWitness]
+FormalSystem/Metalogic/WeakCanonical/IntegerModel/ReynoldsBridge.lean:575:    simp [nonempty_sent, MonadicFormula.quantifierDepth]; omega
+FormalSystem/Metalogic/WeakCanonical/IntegerModel/ReynoldsBridge.lean:586:    simp [has_max_sent, MonadicFormula.quantifierDepth]; omega
+FormalSystem/Metalogic/WeakCanonical/IntegerModel/ReynoldsBridge.lean:597:    simp [has_min_sent, MonadicFormula.quantifierDepth]; omega
+FormalSystem/Metalogic/WeakCanonical/IntegerModel/ReynoldsBridge.lean:613:      | none => simp [Option.elim]
+FormalSystem/Metalogic/WeakCanonical/IntegerModel/ReynoldsBridge.lean:618:        simp [Option.elim] at h1 h2; omega
+FormalSystem/Metalogic/WeakCanonical/IntegerModel/ReynoldsBridge.lean:620:    · rw [h_hi_eq]; simp [Option.elim]
+FormalSystem/Metalogic/WeakCanonical/IntegerModel/ReynoldsBridge.lean:631:      rw [h_hi_none]; simp [Option.elim]
+FormalSystem/Metalogic/WeakCanonical/IntegerModel/ReynoldsBridge.lean:633:    · rw [h_lo_eq]; simp [Option.elim]
+FormalSystem/Metalogic/WeakCanonical/IntegerModel/ReynoldsBridge.lean:638:  · rw [h_lo_none]; simp [Option.elim]
+FormalSystem/Metalogic/WeakCanonical/IntegerModel/ReynoldsBridge.lean:639:  · rw [h_hi_none]; simp [Option.elim]
+FormalSystem/Metalogic/WeakCanonical/IntegerModel/ReynoldsBridge.lean:719:    intro f hf; simp [Formula.predFormulas] at hf
+FormalSystem/Metalogic/WeakCanonical/Table.lean:149:  | not α ih => simp [MonadicFormula.lift, MonadicFormula.quantifierDepth, ih]
+FormalSystem/Metalogic/WeakCanonical/Table.lean:150:  | and α β ihα ihβ => simp [MonadicFormula.lift, MonadicFormula.quantifierDepth, ihα, ihβ]
+FormalSystem/Metalogic/WeakCanonical/Table.lean:151:  | all α ih => simp [MonadicFormula.lift, MonadicFormula.quantifierDepth, ih]
+FormalSystem/Metalogic/WeakCanonical/Table.lean:152:  | ex α ih => simp [MonadicFormula.lift, MonadicFormula.quantifierDepth, ih]
+FormalSystem/Metalogic/WeakCanonical/Table.lean:161:  | atom _ => simp [table, MonadicFormula.quantifierDepth, operatorDepth]
+FormalSystem/Metalogic/WeakCanonical/Table.lean:162:  | bot => simp [table, MonadicFormula.quantifierDepth, operatorDepth]
+FormalSystem/Metalogic/WeakCanonical/Table.lean:166:  | box _ => simp [table, MonadicFormula.quantifierDepth, operatorDepth]
+FormalSystem/Metalogic/WeakCanonical/Table.lean:208:  funext i; refine Fin.cases ?_ ?_ i <;> simp [Fin.cons, insertEnv]
+FormalSystem/Metalogic/WeakCanonical/Table.lean:226:      add_tsub_cancel_right, Fin.eta, dite_eq_ite]); refine Fin.cases ?_ ?_ j <;> simp
+FormalSystem/Metalogic/Decidability/FMP/FMP.lean:93:        · simp [hx_eq]
+FormalSystem/Metalogic/Decidability/FMP/FMP.lean:119:        simp [this]
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:222:in practice a one-line `by simp [applyRule, …]` — and reduce `SatResult` to the obligation the
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:361:  simp [TimeOrdering.empty] at hp
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:415:  split at h <;> simp_all
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:421:  split at h <;> simp_all
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:426:  split at h <;> simp_all
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:446:  case neg => simp [applyRule, SatResult]
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:449:    | none => simp [applyRule, hA, SatResult]
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:460:        (by simp [applyRule, hA]) ⟨hist, tv, hst.append ?_⟩
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:472:  case pos => simp [applyRule, SatResult]
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:475:    | none => simp [applyRule, hA, SatResult]
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:486:          (ord := ord) (by simp [applyRule, hA])
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:493:          (ord := ord) (by simp [applyRule, hA])
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:505:  case neg => simp [applyRule, SatResult]
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:508:    | none => simp [applyRule, hA, SatResult]
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:516:          (ord := ord) (by simp [applyRule, hA])
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:523:          (ord := ord) (by simp [applyRule, hA])
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:535:  case pos => simp [applyRule, SatResult]
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:538:    | none => simp [applyRule, hA, SatResult]
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:548:        (by simp [applyRule, hA]) ⟨hist, tv, hst.append ?_⟩
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:560:  case neg => cases φ <;> simp [applyRule, SatResult]
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:568:          (ord := ord) (by simp [applyRule])
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:575:          (ord := ord) (by simp [applyRule])
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:581:    | _ => simp [applyRule, SatResult]
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:588:  case pos => cases φ <;> simp [applyRule, SatResult]
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:598:        (by simp [applyRule]) ⟨hist, tv, hst.append ?_⟩
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:604:    | _ => simp [applyRule, SatResult]
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:611:  case neg => simp [applyRule, SatResult]
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:614:    | none => simp [applyRule, hA, SatResult]
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:620:        (by simp [applyRule, hA]) ⟨hist, tv, hst.append ?_⟩
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:631:  case pos => simp [applyRule, SatResult]
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:634:    | none => simp [applyRule, hA, SatResult]
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:642:        (by simp [applyRule, hA]) ⟨hist, tv, hst.append ?_⟩
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:668:  split at h <;> simp_all
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:709:  case neg => cases φ <;> simp [applyRule, SatResult]
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:727:    | _ => simp [applyRule, SatResult]
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:735:  case pos => simp [applyRule, SatResult]
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:738:    | none => simp [applyRule, hA, SatResult]
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:765:  case neg => cases φ <;> simp [applyRule, SatResult]
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:786:    | _ => simp [applyRule, SatResult]
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:830:    cases hbs : bsf.sign <;> cases hbf : bsf.formula <;> simp_all
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:886:  case pos => cases φ <;> simp [applyRule, SatResult]
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:910:    | _ => simp [applyRule, SatResult]
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:919:  case neg => simp [applyRule, SatResult]
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:922:    | none => simp [applyRule, hA, SatResult]
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:1044:  · simp at hv
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:1058:  · simp at hv
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:1093:  · simp at hv
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:1158:  have h1 : tv t < tv b.nextTime := h (t, b.nextTime) (by simp [TimeOrdering.addFuture])
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:1159:  have h2 : tv b.nextTime < tv t := h (b.nextTime, t) (by simp [TimeOrdering.addFuture])
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:1169:  have h1 : tv b.nextTime < tv t := h (b.nextTime, t) (by simp [TimeOrdering.addPast])
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:1170:  have h2 : tv t < tv b.nextTime := h (t, b.nextTime) (by simp [TimeOrdering.addPast])
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:1267:  split at h <;> simp_all [Formula.someFuture, Formula.top]
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:1273:  split at h <;> simp_all [Formula.somePast, Formula.top]
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:1339:  case pos => simp [applyRule, SatResult]
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:1342:    | none => simp [applyRule, hA, SatResult]
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:1365:  case pos => simp [applyRule, SatResult]
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:1368:    | none => simp [applyRule, hA, SatResult]
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:1448:  case neg => simp [applyRule, SatResult]
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:1467:          | neg => rw [hsx] at hxeq; simp at hxeq
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:1475:          · simp at hxeq
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:1676:  have hsign : gsf.sign = .pos := by split at hpred <;> simp_all
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:1714:  have hsign : gsf.sign = .pos := by split at hpred <;> simp_all
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:1749:  have hsign : fsf.sign = .neg := by split at hpred <;> simp_all
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:1783:  have hsign : hsf.sign = .pos := by split at hpred <;> simp_all
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:1817:  have hsign : psf.sign = .neg := by split at hpred <;> simp_all
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:1911:  case neg => simp [applyRule, SatResult]
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:1914:    | none => simp [applyRule, hA, SatResult]
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:1943:  case neg => simp [applyRule, SatResult]
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:1946:    | none => simp [applyRule, hA, SatResult]
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:2004:  split at h <;> simp_all
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:2010:  split at h <;> simp_all
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:2035:  case neg => simp [applyRule, SatResult]
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:2038:    | none => simp [applyRule, hA, SatResult]
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:2072:  case neg => simp [applyRule, SatResult]
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:2075:    | none => simp [applyRule, hA, SatResult]
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:2440:  case neg => simp [applyRule, SatResult]
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:2443:    | none => simp [applyRule, hA, SatResult]
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:2473:  case neg => simp [applyRule, SatResult]
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:2476:    | none => simp [applyRule, hA, SatResult]
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:2507:  case neg => simp [applyRule, SatResult]
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:2679:  case neg => simp [applyRule, SatResult]
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:2682:    | none => simp [applyRule, hA, SatResult]
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:2715:  case neg => simp [applyRule, SatResult]
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:2718:    | none => simp [applyRule, hA, SatResult]
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:2825:  case neg => simp [applyRule, SatResult]
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:2828:    | none => simp [applyRule, hA, SatResult]
+FormalSystem/Metalogic/Decidability/Verified/Bridge/RegionLabel.lean:204:  exact ⟨_, h, by simp [hrk]⟩
+FormalSystem/Metalogic/Decidability/Verified/Bridge/RegionLabel.lean:210:  exact ⟨_, h, by simp [hrk]⟩
+FormalSystem/Metalogic/Decidability/Verified/Bridge/RegionLabel.lean:216:  exact ⟨_, h, by simp [hrk]⟩
+FormalSystem/Metalogic/Decidability/Verified/Bridge/RegionLabel.lean:222:  exact ⟨_, h, by simp [hrk]⟩
+FormalSystem/Metalogic/Decidability/Verified/Bridge/RegionLabel.lean:277:  exact fun hc => by simp [hc] at h2
+FormalSystem/Metalogic/Decidability/Verified/Bridge/RegionLabel.lean:286:  | cons x xs => simp [regionLabel, hcs]
+FormalSystem/Metalogic/Decidability/Verified/Bridge/DenseTruth.lean:127:  simp [Finset.univ, Fintype.elems, Finset.card, Finset.filter, Multiset.filter]
+FormalSystem/Metalogic/Decidability/Verified/Bridge/Valuation.lean:634:  refine ⟨by simp [refuteBoxBranch], ?_⟩
+FormalSystem/Metalogic/Decidability/Verified/Bridge/Valuation.lean:650:    exact Or.inr (Or.inr ⟨⟨0, 0⟩, by simp [refuteBoxBranch]⟩)
+FormalSystem/Metalogic/Decidability/Verified/Bridge/IntTruth.lean:137:    simp at hmem
+FormalSystem/Metalogic/Decidability/Verified/Bridge/IntTruth.lean:148:  simp [normWorld, hw]
+FormalSystem/Metalogic/Decidability/Verified/Bridge/IntTruth.lean:154:  | cons x xs => simp [anchorWorld, hb]
+FormalSystem/Metalogic/Decidability/Verified/Bridge/IntTruth.lean:159:  · simp [normWorld, hw]
+FormalSystem/Metalogic/Decidability/Verified/Bridge/TemporalSaturation.lean:67:  simp [strictBefore, h]
+FormalSystem/Metalogic/Decidability/Verified/Bridge/TemporalSaturation.lean:80:  · simp at hv
+FormalSystem/Metalogic/Decidability/Verified/Bridge/TemporalSaturation.lean:131:    have h := hExp .someFuturePos (by simp [allRulesForFC, allRules, denseRules, discreteRules])
+FormalSystem/Metalogic/Decidability/Verified/Bridge/TemporalSaturation.lean:142:      simp [isApplicable, asSomeFuture?, Formula.top, applyRule, ruleMintsFreshLabel,
+FormalSystem/Metalogic/Decidability/Verified/Bridge/TemporalSaturation.lean:153:        simp [trivialEventWitnessed, hne] at htriv
+FormalSystem/Metalogic/Decidability/Verified/Bridge/TemporalSaturation.lean:156:        | nil => simp [trivialEventWitnessed, hfl] at htriv
+FormalSystem/Metalogic/Decidability/Verified/Bridge/TemporalSaturation.lean:159:  · have hg' : (guard == Formula.top) = false := by simp [hg]
+FormalSystem/Metalogic/Decidability/Verified/Bridge/TemporalSaturation.lean:160:    have h := hExp .untlPos (by simp [allRulesForFC, allRules, denseRules, discreteRules])
+FormalSystem/Metalogic/Decidability/Verified/Bridge/TemporalSaturation.lean:164:        = false := by simp [trivialEventWitnessed, hg']
+FormalSystem/Metalogic/Decidability/Verified/Bridge/TemporalSaturation.lean:171:      exact absurd h (by simp [hc, htriv])
+FormalSystem/Metalogic/Decidability/Verified/Bridge/TemporalSaturation.lean:204:    have h := hExp .somePastPos (by simp [allRulesForFC, allRules, denseRules, discreteRules])
+FormalSystem/Metalogic/Decidability/Verified/Bridge/TemporalSaturation.lean:215:      simp [isApplicable, asSomePast?, Formula.top, applyRule, ruleMintsFreshLabel,
+FormalSystem/Metalogic/Decidability/Verified/Bridge/TemporalSaturation.lean:226:        simp [trivialEventWitnessed, hne] at htriv
+FormalSystem/Metalogic/Decidability/Verified/Bridge/TemporalSaturation.lean:229:        | nil => simp [trivialEventWitnessed, hpl] at htriv
+FormalSystem/Metalogic/Decidability/Verified/Bridge/TemporalSaturation.lean:232:  · have hg' : (guard == Formula.top) = false := by simp [hg]
+FormalSystem/Metalogic/Decidability/Verified/Bridge/TemporalSaturation.lean:233:    have h := hExp .sncePos (by simp [allRulesForFC, allRules, denseRules, discreteRules])
+FormalSystem/Metalogic/Decidability/Verified/Bridge/TemporalSaturation.lean:236:        = false := by simp [trivialEventWitnessed, hg']
+FormalSystem/Metalogic/Decidability/Verified/Bridge/TemporalSaturation.lean:243:      exact absurd h (by simp [hc, htriv])
+FormalSystem/Metalogic/Decidability/CountermodelExtraction.lean:289:  | none => simp [h] at hBot
+FormalSystem/Metalogic/Decidability/CountermodelExtraction.lean:290:  | some r => simp [h] at hOpen
+FormalSystem/Metalogic/Decidability/CountermodelExtraction.lean:311:    simp [hNegAt]
+FormalSystem/Metalogic/Decidability/CountermodelExtraction.lean:315:  | some r => simp [hb] at hOpen
+FormalSystem/Metalogic/Decidability/CountermodelExtraction.lean:320:    | some r => simp [hc] at hOpen
+FormalSystem/Metalogic/Decidability/CountermodelExtraction.lean:321:    | none => simp [hc] at hContra
+FormalSystem/Metalogic/Decidability/CountermodelExtraction.lean:375:    cases hc : Branch.hasPosAt b (.atom p) ⟨w, t⟩ <;> simp_all
+FormalSystem/Metalogic/Decidability/CountermodelExtraction.lean:403:  simp
+FormalSystem/Metalogic/Decidability/CountermodelExtraction.lean:451:  have h := hExp .impNeg (by simp [allRulesForFC, allRules, denseRules, discreteRules])
+FormalSystem/Metalogic/Decidability/CountermodelExtraction.lean:477:  have hBoxPos := hExp (.boxPos) (by simp [allRulesForFC, allRules, denseRules, discreteRules])
+FormalSystem/Metalogic/Decidability/CountermodelExtraction.lean:492:      exact ⟨w', hw', by simp [SignedFormula.pos, hNotContains]⟩
+FormalSystem/Metalogic/Decidability/CountermodelExtraction.lean:498:    simp [hfm] at hBoxPos
+FormalSystem/Metalogic/Decidability/CountermodelExtraction.lean:514:  have h := hExp .boxNeg (by simp [allRulesForFC, allRules, denseRules, discreteRules])
+FormalSystem/Metalogic/Decidability/CountermodelExtraction.lean:569:    have h := hExp .someFuturePos (by simp [allRulesForFC, allRules, denseRules, discreteRules])
+FormalSystem/Metalogic/Decidability/CountermodelExtraction.lean:580:      simp [isApplicable, asSomeFuture?, Formula.top, applyRule, ruleMintsFreshLabel,
+FormalSystem/Metalogic/Decidability/CountermodelExtraction.lean:590:        simp [trivialEventWitnessed, hne] at htriv
+FormalSystem/Metalogic/Decidability/CountermodelExtraction.lean:592:        simp [trivialEventWitnessed, hnil] at htriv
+FormalSystem/Metalogic/Decidability/CountermodelExtraction.lean:594:    have hg' : (guard == Formula.top) = false := by simp [hg]
+FormalSystem/Metalogic/Decidability/CountermodelExtraction.lean:595:    have h := hExp .untlPos (by simp [allRulesForFC, allRules, denseRules, discreteRules])
+FormalSystem/Metalogic/Decidability/CountermodelExtraction.lean:600:        = false := by simp [trivialEventWitnessed, hg']
+FormalSystem/Metalogic/Decidability/CountermodelExtraction.lean:607:      exact absurd h (by simp [hc, htriv])
+FormalSystem/Metalogic/Decidability/CountermodelExtraction.lean:638:    have h := hExp .somePastPos (by simp [allRulesForFC, allRules, denseRules, discreteRules])
+FormalSystem/Metalogic/Decidability/CountermodelExtraction.lean:649:      simp [isApplicable, asSomePast?, Formula.top, applyRule, ruleMintsFreshLabel,
+FormalSystem/Metalogic/Decidability/CountermodelExtraction.lean:659:        simp [trivialEventWitnessed, hne] at htriv
+FormalSystem/Metalogic/Decidability/CountermodelExtraction.lean:661:        simp [trivialEventWitnessed, hnil] at htriv
+FormalSystem/Metalogic/Decidability/CountermodelExtraction.lean:662:  · have hg' : (guard == Formula.top) = false := by simp [hg]
+FormalSystem/Metalogic/Decidability/CountermodelExtraction.lean:663:    have h := hExp .sncePos (by simp [allRulesForFC, allRules, denseRules, discreteRules])
+FormalSystem/Metalogic/Decidability/CountermodelExtraction.lean:666:        = false := by simp [trivialEventWitnessed, hg']
+FormalSystem/Metalogic/Decidability/CountermodelExtraction.lean:673:      exact absurd h (by simp [hc, htriv])
+FormalSystem/Metalogic/Decidability/CountermodelExtraction.lean:705:    (by simp [allRulesForFC, allRules, denseRules, discreteRules])
+FormalSystem/Metalogic/Decidability/CountermodelExtraction.lean:723:    | .persistent fs => rw [hm] at hSFNeg; simp at hSFNeg
+FormalSystem/Metalogic/Decidability/CountermodelExtraction.lean:736:    simp [SignedFormula.neg, hNotContains]
+FormalSystem/Metalogic/Decidability/CountermodelExtraction.lean:753:  simp [hNE] at hNA
+FormalSystem/Metalogic/Decidability/CountermodelExtraction.lean:775:    (by simp [allRulesForFC, allRules, denseRules, discreteRules])
+FormalSystem/Metalogic/Decidability/CountermodelExtraction.lean:790:    | .persistent fs => rw [hm] at hSPNeg; simp at hSPNeg
+FormalSystem/Metalogic/Decidability/CountermodelExtraction.lean:801:    simp [SignedFormula.neg, hNotContains]
+FormalSystem/Metalogic/Decidability/CountermodelExtraction.lean:817:  simp [hNE] at hNA
+FormalSystem/Metalogic/Decidability/BiLasso/Annotation.lean:248:      simp
+FormalSystem/Metalogic/Decidability/BiLasso/Annotation.lean:251:    intro L hL; exact hsub L (by simp [hL])
+FormalSystem/Metalogic/Decidability/BiLasso/Annotation.lean:253:    intro L hL; exact hsub L (by simp [hL])
+FormalSystem/Metalogic/Decidability/BiLasso/Annotation.lean:255:    intro L hL; exact hsub L (by simp [hL])
+FormalSystem/Metalogic/Decidability/BiLasso/Extraction.lean:88:  | some a => simp
+FormalSystem/Metalogic/Decidability/BiLasso/Extraction.lean:95:  simp
+FormalSystem/Metalogic/Decidability/BiLasso/Extraction.lean:99:    ((List.range n).map g).length = n := by simp
+FormalSystem/Metalogic/Decidability/BiLasso/Extraction.lean:387:  have hwA0 : wA 0 = xb := by rw [hwA]; simp
+FormalSystem/Metalogic/Decidability/BiLasso/Extraction.lean:450:    intro hnil; rw [hnil] at hbDlen; simp at hbDlen; omega
+FormalSystem/Metalogic/Decidability/BiLasso/Extraction.lean:452:    intro hnil; rw [hnil] at hfDlen; simp at hfDlen; omega
+FormalSystem/Metalogic/Decidability/BiLasso/Extraction.lean:474:    rw [hnil] at hl; simp at hl; omega
+FormalSystem/Metalogic/Decidability/BiLasso/Extraction.lean:478:    rw [hnil] at hl; simp at hl; omega
+FormalSystem/Metalogic/Decidability/BiLasso/Extend.lean:116:  simp [unroll_def, BiLasso.unroll, BiLasso.unrollOf, h1, h2]
+FormalSystem/Metalogic/Decidability/BiLasso/Basic.lean:175:  simp [unroll, unrollOf, ht]
+FormalSystem/Metalogic/Decidability/BiLasso/Basic.lean:182:  simp [unroll, unrollOf, h0, not_lt.mpr ht]
+FormalSystem/Metalogic/Decidability/BiLasso/Basic.lean:296:  back_ne := by simp
+FormalSystem/Metalogic/Decidability/BiLasso/Basic.lean:297:  fwd_ne := by simp
+FormalSystem/Metalogic/Decidability/BiLasso/BoxOracle.lean:214:    simp
+FormalSystem/Metalogic/Decidability/BiLasso/BoxOracle.lean:265:      simp
+FormalSystem/Metalogic/Decidability/Propositional/Decidable.lean:64:        simp [findIdxAtom]
+FormalSystem/Metalogic/Decidability/Propositional/Decidable.lean:103:  simp [formulaAtomsList]
+FormalSystem/Metalogic/Decidability/Propositional/Decidable.lean:121:      have ha : a ∈ atomList := hsub a (by simp [formulaAtomsList])
+FormalSystem/Metalogic/Decidability/Propositional/Decidable.lean:135:      simp [reifyWith, hφeq, hψeq]
+FormalSystem/Metalogic/Decidability/Propositional/Decidable.lean:136:  | box φ _ => intro hprop _; simp [isPropositional] at hprop
+FormalSystem/Metalogic/Decidability/Propositional/Decidable.lean:137:  | untl ψ φ _ _ => intro hprop _; simp [isPropositional] at hprop
+FormalSystem/Metalogic/Decidability/Propositional/Decidable.lean:138:  | snce ψ φ _ _ => intro hprop _; simp [isPropositional] at hprop
+FormalSystem/Metalogic/Decidability/Propositional/Decidable.lean:166:      simp [FormalSystem.Semantics.TruthAt, WorldHistory.trivial, trivialModel, reifyWith
+FormalSystem/Metalogic/Decidability/Propositional/Decidable.lean:170:      simp [FormalSystem.Semantics.TruthAt, reifyWith]
+FormalSystem/Metalogic/Decidability/Propositional/Decidable.lean:179:      cases (reifyWith atomList φ).eval v <;> cases (reifyWith atomList ψ).eval v <;> simp
+FormalSystem/Metalogic/Decidability/Propositional/Decidable.lean:180:  | box φ _ => intro hprop; simp [isPropositional] at hprop
+FormalSystem/Metalogic/Decidability/Propositional/Decidable.lean:181:  | untl ψ φ _ _ => intro hprop; simp [isPropositional] at hprop
+FormalSystem/Metalogic/Decidability/Propositional/Decidable.lean:182:  | snce ψ φ _ _ => intro hprop; simp [isPropositional] at hprop
+FormalSystem/Metalogic/Decidability/Propositional/Decidable.lean:200:    simp [hv]
+FormalSystem/Automation/PrefilterSoundness.lean:100:  | atom _ => simp [isUnsatBotTemporal] at h
+FormalSystem/Automation/PrefilterSoundness.lean:101:  | imp _ _ => simp [isUnsatBotTemporal] at h
+FormalSystem/BaseLanguage/Formula.lean:152:  induction φ <;> simp_all [swapBL]
+FormalSystem/Semantics/Truth.lean:327:  simp [Formula.strongRelease, Formula.and, TruthAt]
+FormalSystem/Semantics/Truth.lean:341:  simp [Formula.strongTrigger, Formula.and, TruthAt]
+FormalSystem/Semantics/Correspondence/FwdRecPeriodicity.lean:149:  | zero => simp
+FormalSystem/Semantics/IntNormalForm.lean:152:  | zero => simp
+FormalSystem/Semantics/IntNormalForm.lean:287:  | zero => simp
+FormalSystem/Semantics/IntNormalForm.lean:451:    simp
+FormalSystem/Semantics/TaskFrame.lean:772:  have h4 : -y + -x = -(x + y) := by simp [neg_add_rev, add_comm]
+FormalSystem/Semantics/TaskFrame.lean:1140:  ext u; simp [Fib, hR, eq_comm]
+FormalSystem/Semantics/TaskFrame.lean:1147:  ext u; simp [Fib, hR, hx]
+FormalSystem/Semantics/TaskFrame.lean:1248:  ext u; simp [Fib, hR, eq_comm]
+FormalSystem/Semantics/TaskFrame.lean:1502:      | inl hd => left; simp [hd]
+FormalSystem/Semantics/TaskFrame.lean:1772:  have h4 : -y + -x = -(x + y) := by simp [neg_add_rev, add_comm]
+FormalSystem/Semantics/IntTransfer.lean:172:      · simp [TaskFrame.Seg, TaskFrame.Fib, map_neg]
+FormalSystem/Semantics/IntTransfer.lean:254:    have : e.symm (e t - e s) = t - s := by simp [map_sub]
+FormalSystem/Semantics/IntTransfer.lean:273:    simp
+FormalSystem/Semantics/ShiftSet.lean:311:  refine wh_ext (funext fun z => by simp [WorldHistory.timeShift]) ?_
+FormalSystem/Semantics/ShiftSet.lean:485:theorem qsh_zero (w : ℚ ⧸ DyadicGroup) : qsh w 0 = w := by simp [qsh]
+FormalSystem/Semantics/ShiftSet.lean:488:  simp [qsh, add_assoc]

@@ -1,0 +1,86 @@
+== (B) per-file 'simp only [...TruthAt...]' counts ==
+FormalSystem/Semantics/Truth.lean                              19
+FormalSystem/Semantics/BLTruth.lean                            5
+FormalSystem/Metalogic/Soundness.lean                          67
+FormalSystem/Metalogic/SoundnessLemmas/CoValidity.lean         1
+FormalSystem/Semantics/Correspondence/DurationFrames.lean      0
+FormalSystem/Metalogic/DedekindNonCompactness.lean             0
+FormalSystem/Metalogic/Independence/CoNotPriorU.lean           0
+FormalSystem/Metalogic/DiscreteNonCompactness.lean             0
+tree-wide live: 199
+
+== (A) eleven named declarations: length + TruthAt sites ==
+temp_l_valid                   start=297    lines=23    sites=2
+temp_linearity_valid           start=347    lines=34    sites=1
+discreteness_forward_valid     start=473    lines=19    sites=1
+enrichment_until_valid         start=605    lines=17    sites=1
+enrichment_since_valid         start=625    lines=17    sites=1
+absorb_until_valid             start=668    lines=21    sites=1
+absorb_since_valid             start=690    lines=19    sites=1
+linear_until_valid             start=715    lines=37    sites=1
+linear_since_valid             start=752    lines=39    sites=1
+prior_U_gap_valid              start=1010   lines=36    sites=2
+prior_S_gap_valid              start=1060   lines=36    sites=2
+TOTAL lines=298 sites=14
+
+== bare simp/simp_all/aesop audit (files mentioning TruthAt) ==
+258
+
+== duplicate helpers ==
+FormalSystem/Metalogic/Soundness.lean:153:private theorem and_of_not_imp_not {P Q : Prop} (h : (P → Q → False) → False) : P ∧ Q :=
+FormalSystem/Metalogic/Soundness.lean:310:    and_of_not_imp_not h_always
+FormalSystem/Metalogic/Soundness.lean:313:    and_of_not_imp_not h_middle
+FormalSystem/Metalogic/Soundness.lean:482:  have h1 := and_of_not_imp_not h_conj
+FormalSystem/Metalogic/Soundness.lean:484:  have h2 := and_of_not_imp_not h_phi_and_H
+FormalSystem/Metalogic/Soundness.lean:1016:  obtain ⟨h1, h2⟩ := and_of_not_imp_not h_ant
+FormalSystem/Metalogic/Soundness.lean:1066:  obtain ⟨h1, h2⟩ := and_of_not_imp_not h_ant
+FormalSystem/Metalogic/Soundness.lean:1140:  obtain ⟨h1, h2⟩ := and_of_not_imp_not h_ant
+FormalSystem/Metalogic/Soundness.lean:1207:  obtain ⟨h1, h2⟩ := and_of_not_imp_not h_ant
+FormalSystem/Metalogic/DedekindNonCompactness.lean:155:`truth_and_iff` exists at `Semantics/Correspondence/DurationFrames.lean:299`; importing that
+FormalSystem/Metalogic/DedekindNonCompactness.lean:158:theorem truth_and_iff' (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration) (A B : Formula) :
+FormalSystem/Metalogic/DedekindNonCompactness.lean:173:    obtain ⟨h1, h2⟩ := (truth_and_iff' M τ s _ _).mp hs
+FormalSystem/Metalogic/DedekindNonCompactness.lean:176:    exact ⟨s, hts, (truth_and_iff' M τ s _ _).mpr ⟨hq, hφ⟩, fun r h1 h2 hqr => hgap r h1 h2 hqr⟩
+FormalSystem/Metalogic/Independence/CoNotPriorU.lean:180:theorem truth_and_iff (A B : Formula) :
+FormalSystem/Metalogic/Independence/CoNotPriorU.lean:246:  (truth_and_iff _ _).mpr ⟨untl_top_atom_true a, someFuture_neg_atom_true a⟩
+FormalSystem/Metalogic/SoundnessLemmas/CoValidity.lean:47:- `always_elim`: the three conjuncts of `△ψ` at a point, as a usable triple.
+FormalSystem/Metalogic/SoundnessLemmas/CoValidity.lean:60:private theorem and_of_not_imp_not {P Q : Prop} (h : (P → Q → False) → False) : P ∧ Q :=
+FormalSystem/Metalogic/SoundnessLemmas/CoValidity.lean:72:theorem always_elim {M : TaskModel F}
+FormalSystem/Metalogic/SoundnessLemmas/CoValidity.lean:79:  obtain ⟨h_past, h_rest⟩ := and_of_not_imp_not h
+FormalSystem/Metalogic/SoundnessLemmas/CoValidity.lean:80:  obtain ⟨h_now, h_fut⟩ := and_of_not_imp_not h_rest
+FormalSystem/Metalogic/SoundnessLemmas/CoValidity.lean:108:  obtain ⟨-, h_mid, h_fut⟩ := always_elim h_tri
+FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorBracket.lean:77:private theorem temporal_truth_and_iff {sig : MonadicSignature} [Fintype sig.preds]
+FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorBracket.lean:674:    have hL' := (temporal_truth_and_iff M atomMap z0 d.2.endpointLeft.formula pL).mp hL
+FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorBracket.lean:675:    have hR' := (temporal_truth_and_iff M atomMap z1 d.2.endpointRight.formula pR).mp hR
+FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorBracket.lean:679:      (temporal_truth_and_iff M atomMap z0 d.2.endpointLeft.formula pL).mpr ⟨hL, hpL⟩,
+FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorBracket.lean:680:      (temporal_truth_and_iff M atomMap z1 d.2.endpointRight.formula pR).mpr ⟨hR, hpR⟩,
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:2570:private theorem and_of_not_imp_not' {P Q : Prop} (h : (P → Q → False) → False) : P ∧ Q :=
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:2602:  obtain ⟨h1, h2⟩ := and_of_not_imp_not' h_ant
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:2642:  obtain ⟨h1, h2⟩ := and_of_not_imp_not' h_ant
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:2779:  obtain ⟨h1, h2⟩ := and_of_not_imp_not' h_ant
+FormalSystem/Semantics/Correspondence/DurationFrames.lean:298:theorem truth_and_iff {F : TaskFrame} (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+FormalSystem/Semantics/Correspondence/DurationFrames.lean:309:theorem truth_always_of_forall {F : TaskFrame} (M : TaskModel F) (τ : WorldHistory F)
+FormalSystem/Semantics/Correspondence/DurationFrames.lean:312:  rw [Formula.always, truth_and_iff]
+FormalSystem/Semantics/Correspondence/DurationFrames.lean:314:  rw [truth_and_iff]
+FormalSystem/Semantics/Correspondence/DurationFrames.lean:318:theorem truth_of_always {F : TaskFrame} (M : TaskModel F) (τ : WorldHistory F) (ψ : Formula)
+FormalSystem/Semantics/Correspondence/DurationFrames.lean:321:  rw [Formula.always, truth_and_iff] at h
+FormalSystem/Semantics/Correspondence/DurationFrames.lean:323:  rw [truth_and_iff] at hrest
+FormalSystem/Semantics/Correspondence/DurationFrames.lean:432:      rw [truth_and_iff, truth_and_iff]
+FormalSystem/Semantics/Correspondence/DurationFrames.lean:454:    rw [truth_and_iff, truth_and_iff] at hant
+FormalSystem/Semantics/Correspondence/DurationFrames.lean:526:      (truth_always_of_forall M τ.val _ halways s₀) hHs₀
+FormalSystem/Semantics/Correspondence/DurationFrames.lean:556:    have hstep := truth_of_always M τ.val _ halways m
+
+== Scope Hypothesis confirmation (Phase 1) ==
+Plan-asserted vs measured:
+  Soundness.lean sites          67  -> 67   CONFIRMED
+  CoValidity.lean sites          1  ->  1   CONFIRMED
+  Truth.lean sites              19  -> 19   CONFIRMED
+  BLTruth.lean sites             5  ->  5   CONFIRMED
+  other four scoped files        0  ->  0   CONFIRMED
+  tree-wide live sites         199  -> 199  CONFIRMED
+  eleven named decls: sites     14  -> 14   CONFIRMED  (metric (A) target stays <=2)
+  eleven named decls: lines    366  -> 298  DIFFERS (measurement boundary; before/after
+                                            uses the same harness, so the ratio is sound)
+  bare simp/simp_all/aesop      48  -> 258  DIFFERS -- see baseline-audit.txt.
+    The plan's regex over every file mentioning TruthAt yields 258 lines, not 48.
+    258 is a superset of 48, so it remains a valid upper bound on Phase 3 blast radius:
+    any Phase 3 build failure will be ON this list. Recorded, not silently accepted.
