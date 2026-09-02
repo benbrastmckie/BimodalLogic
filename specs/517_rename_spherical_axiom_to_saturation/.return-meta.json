@@ -1,16 +1,38 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
       "type": "report",
       "path": "specs/517_rename_spherical_axiom_to_saturation/reports/01_spherical-to-saturation-occurrence-inventory.md",
       "summary": "Verified 444-occurrence inventory across 40 non-specs files partitioned 441 rename / 3 keep, with the 26-identifier Lean rename map, the paper-anchor decisions (def:frame#Saturation, cor:saturation-finite) with pre-computed checksums, gate couplings (C15, typst-sync-check, #guard_msgs), and measured baselines."
+    },
+    {
+      "type": "plan",
+      "path": "specs/517_rename_spherical_axiom_to_saturation/plans/01_spherical-to-saturation-rename.md",
+      "summary": "Three-phase plan (baseline capture, one atomic sentinel-guarded rename verified by a single detached guarded build, documentation coherence) for renaming the fourth task-frame axiom Spherical to Saturation across 40 files."
     }
   ],
+  "next_steps": "Run /implement 517 to execute the plan",
   "metadata": {
     "session_id": "sess_1788324209_de679d_517",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 3,
+    "estimated_hours": 3.5,
+    "dependency_waves": [[1], [2], [3]]
+  },
+  "memory_candidates": [
+    {
+      "content": "Planning a tree-wide rename in a Lean 4 repo: when the renamed symbol lives in a root module that essentially every other module transitively imports (e.g. FormalSystem/Semantics/TaskFrame.lean, ~646 dependents), Lean's whole-file-hash invalidation makes EVERY verification build a full rebuild -- including a docstring-only touch. Do not decompose into N phases each ending in a build; plan one atomic edit followed by one detached guarded build, and split checkpoints by COMMIT rather than by build. Second reusable move: when a rename has a semantic carve-out ('rename the axiom name, keep the weaker standard condition'), first measure whether the keep-set collapses to a single distinguishable token. If it does, the partition becomes a sentinel-guarded global substitution with a mechanical post-condition (grep count == N) instead of hundreds of per-occurrence judgment calls -- the post-condition, not the inventory, is then the gate, so it catches a miscount in the plan's own figures. Third: irregular derivations of the stem (sphericality -> saturation, not saturationity) must be handled in a dedicated pass BEFORE the global substitution.",
+      "category": "PATTERN",
+      "source_artifact": "specs/517_rename_spherical_axiom_to_saturation/plans/01_spherical-to-saturation-rename.md",
+      "confidence": 0.8,
+      "suggested_keywords": ["lean4-rename", "full-rebuild-invalidation", "atomic-batch-commit", "sentinel-guarded-substitution", "mechanical-post-condition", "plan-phase-sizing"]
+    }
+  ],
+  "modified_files": [
+    "specs/517_rename_spherical_axiom_to_saturation/plans/01_spherical-to-saturation-rename.md",
+    "specs/517_rename_spherical_axiom_to_saturation/.return-meta.json"
+  ]
 }
