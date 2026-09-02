@@ -84,7 +84,7 @@ next_project_number: 532
 
 ### Metalogic
 
-518 [NOT STARTED] — WAVE 0 HOTFIX for the metalogic consolidation programme (specs/re
+518 [RESEARCHED] — WAVE 0 HOTFIX for the metalogic consolidation programme (specs/re
   └─ 519 [NOT STARTED] — WAVE 1 (deletion). Retire the soundness machinery that the FrameC
     └─ 521 [NOT STARTED] — WAVE 2 (core utilities). Give the primary language's truth relati
       └─ 522 [NOT STARTED] — WAVE 2 (core utilities). Fix the one representation choice that c
@@ -243,10 +243,11 @@ next_project_number: 532
 ---
 
 ### 518. Metalogic hotfix simp loop unbuilt modules
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: None
+- **Research**: [518_metalogic_hotfix_simp_loop_unbuilt_modules/reports/01_wave-0-hotfix-verification.md]
 
 **Description**: WAVE 0 HOTFIX for the metalogic consolidation programme (specs/reviews/review-2026-09-01-lean-engineering.md, Critical findings C1-C6; territory detail in specs/reviews/2026-09-01-lean-engineering/{D-tactics,B-completeness,E-docs,F-canonical}.md). Six small, independent edits; land them all before any other task in the programme. (1) SIMP LOOP (D-01, validated): FormalSystem/Automation/Normalization.lean registers 21 @[simp] unfold lemmas (:69-161) and 10 @[simp] fold lemmas (:800-834) that are exact rfl inverses in the GLOBAL simp set; plain `simp` on `a.neg = a.neg` hits maximum recursion depth in 43 modules and for every `import FormalSystem` consumer. Fix: `register_simp_attr formula_unfold` / `formula_fold`, retag both families, redefine modalNorm/modalNormAt/modalNormAll/modalFold as `simp only [formula_unfold]` etc., add a regression `example (a : Formula) : a.neg = a.neg := by simp` to Tests/BimodalTest/Automation/. (2) UNBUILT MODULES (B-08, C-19; C6 currently FAILS): Metalogic/SpWitness.lean, Metalogic/TMCompletenessReduction.lean, Metalogic/Z1Countermodel.lean and Semantics/LexCarrier.lean are unreachable from every Lake root and absent from scripts/module-invariants-manifest.txt, so `lake build` never compiles Z1Countermodel.tmCompleteDiscrete_refuted, the machine-checked CEF half that Conservativity.lean:159-166 cites. Fix: import Z1Countermodel and SpWitness from FormalSystem/Metalogic.lean; add LexCarrier and BLSchemaValidity to FormalSystem/Semantics.lean; confirm `bash scripts/check-module-invariants.sh` passes C6. (3) README.md:167 and :240-241 say Dedekind strong completeness is 'not stated ... no CompactDedekind definition and no refuting theorem'; SetConsequence.lean:601,609 define both and DedekindNonCompactness.lean:431,459 refute both. Rewrite to match Metalogic.lean:116-120 (E-01). (4) typst/FormalFoundations.typ:697,701,993,999-1004,1543 report `completeness` as carrying sorryAx and claim one live structural sorry in WeakCanonical/Transfer.lean; C2 pins completeness at propext/Classical.choice/Quot.sound, C3 asserts zero, and countermodel_discrete is proved at WeakCanonical/GroupModel/CountermodelBase.lean:143. Correct all five sites (E-02). (5) FormalSystem/README.md:51-58,68-69 and FormalSystem/Syntax/README.md:19 present all_past/all_future as Formula constructors and omit untl/snce; the constructors are atom, bot, imp, box, untl, snce (Syntax/Formula.lean:78-106). Replace both tables with a link to the correct top-level README.md:33-69 version (E-03). (6) CYCLE (F-03): Bundle/LimitMCS.lean:8 imports Algebraic.FlowFrame solely for the orphan `fc_theorem_true_in_bundle_flow_model` (:461-473, zero consumers), creating an undocumented Bundle<->Algebraic directory cycle that Metalogic/README.md:88 denies. Delete the orphan and the import; correct README.md:88 to 'three cycles' or, after deletion, 'two'. (7) D-13: AesopRules.lean's 18 attributes sit in Aesop's DEFAULT rule set despite the file's deprecation notice; wrap them in `declare_aesop_rule_sets [TMLogic]` + `(rule_sets := [TMLogic])`. ACCEPTANCE: lake build green; check-module-invariants.sh ALL PASS; the simp regression example compiles; grep confirms the five doc sites and README.md:167 corrected.
 
