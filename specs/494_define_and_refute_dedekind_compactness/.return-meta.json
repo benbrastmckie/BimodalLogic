@@ -1,15 +1,59 @@
 {
-  "status": "in_progress",
+  "status": "implemented",
   "started_at": "2026-09-01T00:00:00Z",
-  "artifacts": [],
-  "partial_progress": {
-    "stage": "initializing",
-    "details": "Agent started, parsing delegation context"
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true,
+    "build_jobs": 2515,
+    "axiom_audit": {
+      "dedWitness_not_satisfiable": "[propext, Classical.choice, Quot.sound]",
+      "dedWitness_finitely_satisfiable": "[propext, Classical.choice, Quot.sound]",
+      "dedekind_consequence_not_compact": "[propext, Classical.choice, Quot.sound]",
+      "strongCompletenessDedekind_refuted": "[propext, Classical.choice, Quot.sound]",
+      "dedWitness_core": "[propext, Classical.choice, Quot.sound]",
+      "qDepth_qAlpha": "[propext, Quot.sound]"
+    }
+  },
+  "modified_files": [
+    "FormalSystem/Metalogic/DedekindNonCompactness.lean",
+    "FormalSystem/Metalogic/SetConsequence.lean",
+    "FormalSystem/Metalogic.lean",
+    "FormalSystem/Metalogic/StrongCompleteness.lean",
+    "FormalSystem/Metalogic/Compactness.lean",
+    "FormalSystem/Metalogic/README.md",
+    "specs/494_define_and_refute_dedekind_compactness/plans/01_dedekind-non-compactness-refutation.md",
+    "specs/494_define_and_refute_dedekind_compactness/summaries/01_dedekind-non-compactness-summary.md",
+    "specs/494_define_and_refute_dedekind_compactness/handoffs/"
+  ],
+  "commits": [
+    "012e3c888 task 494 phase 1: Part 1 — the four Dedekind instantiations",
+    "e695e10fd task 494 phase 2: New module and the unsatisfiability half",
+    "f74428f55 task 494 phase 3: The R model and the finite-satisfiability half",
+    "e5b55f5f4 task 494 phase 4: The two refutations, axiom audit, and sorry check",
+    "2a40f3ad1 task 494 phase 5: Documentation reconciliation"
+  ],
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/494_define_and_refute_dedekind_compactness/summaries/01_dedekind-non-compactness-summary.md",
+      "summary": "Dedekind non-compactness refuted in tree: new witness module, four .Dedekind instantiations, and full documentation reconciliation."
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Settled FrameClass.Dedekind negatively. Added the four .Dedekind instantiations of the FrameClass-indexed compactness family to SetConsequence.lean, and a new 516-line module FormalSystem/Metalogic/DedekindNonCompactness.lean carrying the witness {G(T S -q), F(G -q)} u {Xq^n T : n in N} — finitely satisfiable over an R ShiftSet model, unsatisfiable over every Dedekind-complete frame — which refutes CompactDedekind (dedekind_consequence_not_compact) and StrongCompletenessDedekind (strongCompletenessDedekind_refuted), both sorry-free at exactly [propext, Classical.choice, Quot.sound]. Reconciled 15 documentation hunks across five files that previously asserted the tree contained no Dedekind refutation.",
+    "roadmap_items": []
   },
   "metadata": {
     "session_id": "sess_1788308014_451fe6",
     "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"]
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "compliance_check": "passed",
+    "phases_completed": 5,
+    "phases_total": 5,
+    "deviations": 6
   }
 }

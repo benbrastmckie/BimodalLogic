@@ -1,0 +1,40 @@
+{
+  "task_number": 494,
+  "dispatch_seq": 3,
+  "session_id": "sess_1788308014_451fe6",
+  "phase": "implement",
+  "status": "implemented",
+  "phases_completed": 5,
+  "phases_total": 5,
+  "build_passed": true,
+  "sorry_count": 0,
+  "new_axioms": 0,
+  "acceptance_criteria": {
+    "both_refutations_sorry_free": true,
+    "axiom_audit_reported": true,
+    "build_green_every_phase": true,
+    "documentation_reconciled": true,
+    "discrete_module_untouched": true
+  },
+  "commit_scope": [
+    "FormalSystem/Metalogic/DedekindNonCompactness.lean",
+    "FormalSystem/Metalogic/SetConsequence.lean",
+    "FormalSystem/Metalogic.lean",
+    "FormalSystem/Metalogic/StrongCompleteness.lean",
+    "FormalSystem/Metalogic/Compactness.lean",
+    "FormalSystem/Metalogic/README.md",
+    "specs/494_define_and_refute_dedekind_compactness/"
+  ],
+  "already_committed": true,
+  "head_commit": "2a40f3ad1",
+  "artifacts": {
+    "summary": "specs/494_define_and_refute_dedekind_compactness/summaries/01_dedekind-non-compactness-summary.md",
+    "plan": "specs/494_define_and_refute_dedekind_compactness/plans/01_dedekind-non-compactness-refutation.md"
+  },
+  "notes": [
+    "All five phases committed individually; working tree clean of FormalSystem/ and task-dir changes.",
+    "Six plan deviations, all recorded in the summary's Plan Deviations section; none is a descope.",
+    "Plan's Phase 5 site list was an undercount: StrongCompleteness.lean:515 was surfaced by the baseline grep and reconciled.",
+    "ROADMAP.md:96-97 ('Dedekind: Reynolds 1992 Theorem 7 is weak-only') is now falsified by dedekind_consequence_not_compact, but ROADMAP.md is out of this plan's scope and was deliberately NOT modified."
+  ]
+}
