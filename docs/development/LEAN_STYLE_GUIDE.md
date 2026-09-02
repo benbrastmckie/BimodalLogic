@@ -912,18 +912,18 @@ When proving properties about formulas, distinguish between syntactic and semant
 - Validity, satisfiability, truth in models
 - May not preserve under transformations
 - Require semantic analysis and counterexample testing
-- Example: `IsValid` (Validity.lean)
+- Example: `ValidIn` (Semantics/Validity.lean)
 
 **Key Lesson**: The involution property `φ.swap.swap = φ` (syntactic) does NOT imply
-`IsValid φ.swap ↔ IsValid φ` (semantic) because swap exchanges past and future
+`ValidIn fc φ.swap ↔ ValidIn fc φ` (semantic) because swap exchanges past and future
 quantification, which are not equivalent in general models.
 
 **Counterexample**: φ = allPast(atom "p") in a model where p is true at all future times
-but false at some past time. Then IsValid φ.swap holds (p always true in future) but
-IsValid φ does not (p not always true in past).
+but false at some past time. Then `ValidIn fc φ.swap` holds (p always true in future) but
+`ValidIn fc φ` does not (p not always true in past).
 
 **Derivable vs Valid**: Properties true for derivable formulas may be false for arbitrary
-valid formulas. The theorem `IsValid φ.swap → IsValid φ` is false for arbitrary formulas
+valid formulas. The theorem `ValidIn fc φ.swap → ValidIn fc φ` is false for arbitrary formulas
 but true for derivable formulas (due to temporal_duality rule). Always check whether a
 theorem requires derivability as a precondition.
 

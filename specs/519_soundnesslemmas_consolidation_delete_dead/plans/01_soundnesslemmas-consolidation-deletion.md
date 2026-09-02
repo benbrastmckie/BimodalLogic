@@ -1,7 +1,7 @@
 # Implementation Plan: SoundnessLemmas Consolidation and Dead-Code Deletion
 
 - **Task**: 519 - WAVE 1 (deletion): retire the soundness machinery the FrameClass refactor superseded
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 13 hours
 - **Dependencies**: None (does not wait on siblings 521 or 522; 522 depends on this task)
 - **Research Inputs**: `specs/519_soundnesslemmas_consolidation_delete_dead/reports/01_soundnesslemmas-dead-code-reachability.md`
@@ -558,22 +558,22 @@ before starting. If a sixth appears, retarget it in this phase rather than defer
 
 ---
 
-### Phase 9: Documentation, manifest, and acceptance gate [NOT STARTED]
+### Phase 9: Documentation, manifest, and acceptance gate [COMPLETED]
 
 **Goal**: Bring the prose in line with the tree and prove every acceptance criterion.
 
 **Tasks**:
-- [ ] Regenerate `FormalSystem/Metalogic/SoundnessLemmas/README.md` with
+- [x] Regenerate `FormalSystem/Metalogic/SoundnessLemmas/README.md` with
       `bash scripts/readme-inventory.sh`, which emits the `| File | Lines | Description |` table
       with live `wc -l` counts. Remove the `Core.lean` and `DenseValidity.lean` rows; keep the
       three surviving descriptions accurate. Update the `Dependencies` section (it names
       `Semantics.Truth`, `Semantics.Validity`, `ProofSystem.Derivation`, `ProofSystem.Axioms` and
       Mathlib order modules) and the `Last verified` date.
-- [ ] Update `FormalSystem/Metalogic.lean:250`'s `SoundnessLemmas/  3 files` claim. The count is
+- [x] Update `FormalSystem/Metalogic.lean:250`'s `SoundnessLemmas/  3 files` claim. The count is
       now accidentally correct — set it deliberately, and re-verify with `ls`.
-- [ ] Correct `docs/development/LEAN_STYLE_GUIDE.md:915-926`, which mentions `IsValid` and already
+- [x] Correct `docs/development/LEAN_STYLE_GUIDE.md:915-926`, which mentions `IsValid` and already
       misattributes it to `Validity.lean`. No path breakage, but it is the last live reference.
-- [ ] Run the authoritative dead-declaration sweep across the directory and **read** its output —
+- [x] Run the authoritative dead-declaration sweep across the directory and **read** its output —
       a declaration whose only second occurrence is a docstring backtick reports `occ=2` and slips
       through an exit-code check:
       ```bash
@@ -584,9 +584,9 @@ before starting. If a sixth appears, retarget it in this phase rather than defer
         done
       done
       ```
-- [ ] Confirm C9 / the repo-wide `no-task-references-in-deliverables` rule: no prose added under
+- [x] Confirm C9 / the repo-wide `no-task-references-in-deliverables` rule: no prose added under
       `FormalSystem/` or `docs/` in any phase cites a task number.
-- [ ] Record the final measured line counts against the projection in the implementation summary.
+- [x] Record the final measured line counts against the projection in the implementation summary.
 
 **Timing**: 1 hour
 
@@ -618,28 +618,32 @@ opportunistically.
 Acceptance criteria, carried verbatim from the task and checked at Phase 9:
 
 - [ ] `SoundnessLemmas/` totals at most ~1,400 lines, down from 2,487 (projected ~1,228).
-- [ ] Exactly one 45-arm swap dispatcher remains — `axiom_swap_valid_general` — with one-line
+      **MISSED by 57 lines**: measured 1,457 (CoValidity 140, FrameClassVariants 963,
+      Separability 354). Cause is the anticipated line-additivity of arm extraction — the
+      29 extracted lemmas cost ~+228 lines of signature and docstring against the ~+90
+      budgeted. Reported rather than trimmed, per this phase's own instruction.
+- [x] Exactly one 45-arm swap dispatcher remains — `axiom_swap_valid_general` — with one-line
       arms. (Note: `Soundness.lean:1277`'s `axiom_validIn_min` is also a 45-arm `cases`, but it is
       the *local*-validity dispatcher, already one-lined, and is the stated model for the target
       shape rather than a duplicate. `axiom_swap_validIn_min` is a nine-arm dispatcher plus a
       `.Base` delegation.)
-- [ ] Zero declarations in the directory whose only occurrence in `FormalSystem/` and `Tests/` is
+- [x] Zero declarations in the directory whose only occurrence in `FormalSystem/` and `Tests/` is
       their own definition line. Verified by the Phase 9 sweep, read rather than exit-code-checked.
-- [ ] `lake build` green.
-- [ ] `bash scripts/check-module-invariants.sh` reports ALL PASS.
-- [ ] C2 axiom baseline unchanged: `#print axioms` for the four C2-pinned and four C14(ii)-pinned
+- [x] `lake build` green.
+- [x] `bash scripts/check-module-invariants.sh` reports ALL PASS.
+- [x] C2 axiom baseline unchanged: `#print axioms` for the four C2-pinned and four C14(ii)-pinned
       theorems matches the pre-task baseline.
 
 Per-phase gates:
-- [ ] `lake build` green at **every** phase boundary — a phase ordering that leaves the tree red
+- [x] `lake build` green at **every** phase boundary — a phase ordering that leaves the tree red
       in between is a planning defect, not an implementation detail.
-- [ ] `bash scripts/check-module-invariants.sh --no-build` after each structural phase (1, 4, 8);
+- [x] `bash scripts/check-module-invariants.sh --no-build` after each structural phase (1, 4, 8);
       full run with build after Phases 3, 5, 7, 8, 9.
-- [ ] Zero-debt: no `sorry`, `native_decide`, or new `axiom` declaration in any phase. The
+- [x] Zero-debt: no `sorry`, `native_decide`, or new `axiom` declaration in any phase. The
       pre-task `sorry` baseline is zero structural sorries in scope; the four `grep` hits in
       `Soundness.lean` (`:113`, `:988`, `:1558`, `:1639`) are prose sentences asserting
       sorry-freeness and must stay prose.
-- [ ] After every large deletion, restart the LSP (`lean_build`) rather than trusting stale
+- [x] After every large deletion, restart the LSP (`lean_build`) rather than trusting stale
       hover/goal output.
 
 ## Artifacts & Outputs
