@@ -299,4 +299,32 @@ theorem duration_dense_or_least_pos {D : Type} [AddCommGroup D] [LinearOrder D]
 
 end Dichotomy
 
+/-! ### The prose implications of `TaskFrame.lean`, machine-checked
+
+`Semantics/TaskFrame.lean` asserts in prose (on `limit_of_succOrder`) that `NoMaxOrder D` "is not
+an extra burden in practice, because `[AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+[Nontrivial D]` already implies it by instance search", and that the repo's standard discrete
+binder bundle "therefore subsumes both hypotheses". Both claims are discharged below by
+`inferInstance`, so a future change to the duration-carrier binder bundle that invalidates either
+one fails here rather than silently in a downstream proof.
+
+The two frame-level statements are a bonus rather than a restatement of the prose: they pin that
+`NoMaxOrder`/`NoMinOrder` never have to appear as *hypotheses* at a `TaskFrame`, because the
+frame's `Duration` field already carries the bundle that implies them. -/
+
+/-- The `TemporalOrder` binder bundle implies `NoMaxOrder` by instance search alone. -/
+example (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D] :
+    NoMaxOrder D := inferInstance
+
+/-- `NoMaxOrder` is never a hypothesis at a frame: the `Duration` field supplies it. -/
+example (F : TaskFrame) : NoMaxOrder F.Duration := inferInstance
+
+/-- `NoMinOrder` is never a hypothesis at a frame either. -/
+example (F : TaskFrame) : NoMinOrder F.Duration := inferInstance
+
+/-- The standard discrete binder bundle subsumes `[SuccOrder]` + `[NoMaxOrder]`. -/
+example (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
+    [SuccOrder D] [PredOrder D] [IsSuccArchimedean D] [IsPredArchimedean D] :
+    NoMaxOrder D := inferInstance
+
 end FormalSystem.Semantics

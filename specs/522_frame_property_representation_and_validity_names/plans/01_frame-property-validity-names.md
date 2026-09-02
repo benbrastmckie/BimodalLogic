@@ -211,37 +211,60 @@ second grep changes the risk profile of `@[reducible]` and must be reported befo
 
 ---
 
-### Phase 2: `sat_intro`, the `IsSuccArchDiscrete` bridge, and the prose-implication examples [NOT STARTED]
+### Phase 2: `sat_intro`, the `IsSuccArchDiscrete` bridge, and the prose-implication examples [COMPLETED]
 
 **Goal**: Give every `Sat` consumer one uniform tactic and one instance-level bridge, and
 machine-check the two implications currently asserted only in prose.
 
 **Tasks**:
-- [ ] Add `sat_intro` beside `Sat` in `FrameClassValidity.lean` (decision D6), in the variant
+- [x] Add `sat_intro` beside `Sat` in `FrameClassValidity.lean` (decision D6), in the variant
       selected by Phase 1:
       - Plan A: `first | obtain ⟨_, _, _, _⟩ := $h | obtain ⟨_, $h:ident⟩ := $h | skip`
       - Plan B: same, with `| (haveI : DenselyOrdered _ := $h)` before `| skip`
-- [ ] Do **not** include a `clear $h` alternative — `clear` succeeds on any unused hypothesis and
+- [x] Do **not** include a `clear $h` alternative — `clear` succeeds on any unused hypothesis and
       would fire at `.Discrete`/`.Dedekind`, silently discarding the frame condition.
-- [ ] Pass the caller's own `$h` back as the `.Dedekind` binder name so the completeness hypothesis
+- [x] Pass the caller's own `$h` back as the `.Dedekind` binder name so the completeness hypothesis
       stays accessible under the caller's spelling (macro hygiene would hide a macro-invented name).
-- [ ] Document on the macro that it must destructure with `obtain` and must **never** re-introduce
+- [x] Document on the macro that it must destructure with `obtain` and must **never** re-introduce
       an instance with `have`/`haveI`/`letI` in the `.Discrete` case: `IsSuccArchimedean α [Preorder
       α] [SuccOrder α]` is indexed by the `SuccOrder` instance, so a fresh opaque local shadows the
       obtained witness and unification fails. This is the mechanism behind the existing
       "`@`, never `haveI`" warnings at `Validity.lean:627-631` and `:835-839`.
-- [ ] Decide once and record: omit `sat_intro` at `.Base`/`.Dense` sites (preferred) versus a local
+- [x] Decide once and record: omit `sat_intro` at `.Base`/`.Dense` sites (preferred) versus a local
       `set_option linter.unusedTactic false`. Apply the choice uniformly in Phases 4-6.
-- [ ] Add to `FrameProperty.lean`: `TaskFrame.isSuccArchDiscrete_of_instances` (`:= ⟨_, _, ‹_›, ‹_›⟩`)
+- [x] Add to `FrameProperty.lean`: `TaskFrame.isSuccArchDiscrete_of_instances` (`:= ⟨_, _, ‹_›, ‹_›⟩`)
       and `TaskFrame.IsSuccArchDiscrete.elim` (`obtain ⟨_, _, _, _⟩ := h; exact k`).
-- [ ] Update the `IsSuccArchDiscrete` docstring to record decision D2: the definition stays an
+- [x] Update the `IsSuccArchDiscrete` docstring to record decision D2: the definition stays an
       existential; a `Prop`-valued structure cannot project the `Type`-valued `SuccOrder` field
       (same reason `Nonempty` has no `.val`), so there are and can be no named accessors — use
       `.elim` or `obtain`.
-- [ ] Add the four `example`s of research §2.6 to `Semantics/DurationClassification.lean` beside
+- [x] Add the four `example`s of research §2.6 to `Semantics/DurationClassification.lean` beside
       `noMaxOrder_of_duration`'s pointer: `NoMaxOrder` from the `TemporalOrder` bundle, the two
       frame-level `NoMaxOrder`/`NoMinOrder F.Duration` bonuses, and the discrete-bundle form. Each
       is `inferInstance`. Reference `TaskFrame.lean:815-821` as the prose these discharge.
+
+**PHASE 2 COMPLETION NOTE.** Scope Hypothesis confirmed exactly: all four §2.6 `example`s
+elaborate as bare `inferInstance`, and both bridge lemmas elaborate against the *unchanged*
+`IsSuccArchDiscrete` (`isSuccArchDiscrete_of_instances := ⟨‹_›, ‹_›, ‹_›, ‹_›⟩`;
+`IsSuccArchDiscrete.elim` by `obtain` + `exact k`). Nothing needed more than the asserted proof.
+
+`sat_intro` was exercised at all four tags in a scratch file (deleted after checking):
+`.Base` no-op; `.Dense` reaches `exists_between` with no destructuring; `.Discrete` reaches
+`Order.succ`/`Order.le_succ` through the four obtained instances; `.Dedekind` yields the density
+instance *and* keeps the completeness conjunct bound under the caller's own name.
+
+**`linter.unusedTactic` decision, recorded once and applied uniformly in Phases 4-6**: omit
+`sat_intro` at `.Base` and `.Dense` sites rather than set `set_option linter.unusedTactic false`
+locally. Measured: at `.Dense` the linter reports `'sat_intro hF' tactic does nothing`; at
+`.Base` it does not fire, but the tactic is equally pointless there. The decision is recorded in
+the macro's own docstring so a future call site does not have to rediscover it.
+
+**Deviation (altered)**: the plan sites the four `example`s "beside `noMaxOrder_of_duration`'s
+pointer" in `DurationClassification.lean`. `noMaxOrder_of_duration` actually lives in
+`Semantics/Correspondence/DurationFrames.lean` and `DurationClassification.lean` carries no
+pointer to it, so the examples were placed at the end of `DurationClassification.lean` (the file
+the plan names) under their own `/-! ### -/` heading citing `TaskFrame.lean`'s prose, which is
+what the task actually asked to machine-check.
 
 **Timing**: 1.5 hours
 
@@ -271,28 +294,38 @@ Confirm by elaborating each one before writing the surrounding docstrings; if an
 
 ---
 
-### Phase 3: Generic adapters up (purely additive) [NOT STARTED]
+### Phase 3: Generic adapters up (purely additive) [COMPLETED]
 
 **Goal**: Create every generic adapter the migration will delegate to, before deleting anything.
 This phase adds only; nothing is removed and no existing signature changes.
 
 **Tasks**:
-- [ ] Add `ValidOnFrames.of_not {P : TaskFrame → Prop}` to `Validity.lean`. This is C-09's missing
+- [x] Add `ValidOnFrames.of_not {P : TaskFrame → Prop}` to `Validity.lean`. This is C-09's missing
       `.of_not` generalised: `ValidComplete`'s whole triple then *is* the `ValidOnFrames` triple at
       `IsComplete`, and C-09 is satisfied with zero new class-specific declarations.
-- [ ] Add `SemanticConsequenceIn.of_forall_total` and `SemanticConsequenceIn.apply_total` to
+- [x] Add `SemanticConsequenceIn.of_forall_total` and `SemanticConsequenceIn.apply_total` to
       `Validity.lean` (bodies `:= h` and `:= h F hF M τ hτ t hΓ` respectively).
-- [ ] Add `SetSemanticConsequenceOn.of_forall_total` and `SetSemanticConsequenceOn.apply_total` to
+- [x] Add `SetSemanticConsequenceOn.of_forall_total` and `SetSemanticConsequenceOn.apply_total` to
       `SetConsequence.lean` (same bodies).
-- [ ] Add `SatisfiableSet.of_forall {fc : FrameClass}` to `SetConsequence.lean`
+- [x] Add `SatisfiableSet.of_forall {fc : FrameClass}` to `SetConsequence.lean`
       (`:= ⟨F, hF, M, τ, hτ, t, h⟩`).
-- [ ] Audit that the pre-existing generic triples are complete: `ValidOnFrames.{of_forall_total,
+- [x] Audit that the pre-existing generic triples are complete: `ValidOnFrames.{of_forall_total,
       apply_total}`, `ValidIn.{of_forall_total, apply_total, of_not}`,
       `BLValidOnFrames.{of_forall_total, apply_total}`, `BLValidIn.{of_forall_total, apply_total}`.
       Add only what is genuinely missing.
-- [ ] Do **not** add BL `.of_not` twins — no BL countermodel site needs them today.
-- [ ] Docstring each new adapter with the one-line reason it exists (the class-specific family it
+- [x] Do **not** add BL `.of_not` twins — no BL countermodel site needs them today.
+- [x] Docstring each new adapter with the one-line reason it exists (the class-specific family it
       replaces), so the deletion in Phase 7 reads as a redirection rather than a loss.
+
+**PHASE 3 COMPLETION NOTE.** Scope Hypothesis confirmed: all four consequence adapters elaborate
+with the literal asserted body — `SemanticConsequenceIn.of_forall_total := h`,
+`SetSemanticConsequenceOn.of_forall_total := h`, and the two `apply_total` as the direct
+application `h F hF M τ hτ t hΓ`. Nothing needed more than `h`, so the "pure boilerplate" claim
+for the 14 class-specific consequence adapters holds as stated. The audit of the pre-existing
+generic triples found nothing missing beyond `ValidOnFrames.of_not`: `ValidOnFrames.{of_forall_total,
+apply_total}`, `ValidIn.{of_forall_total, apply_total, of_not}`, `BLValidOnFrames.{of_forall_total,
+apply_total}` and `BLValidIn.{of_forall_total, apply_total}` are all already present. Six new
+declarations in total, insertions only, no existing signature touched.
 
 **Timing**: 1 hour
 

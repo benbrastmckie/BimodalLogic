@@ -137,6 +137,16 @@ consumers destructure it with `obtain` and pass the witnesses positionally with 
 `haveI`, which breaks definitional equality against instances already baked into the types of `F`
 and its models.
 
+**There are, and can be, no named accessors — this form is final.** The obvious-looking
+alternative, `structure TaskFrame.IsSuccArchDiscrete (F : TaskFrame) : Prop where [succ :
+SuccOrder F.Duration] …`, does not compile: a `Prop`-valued structure cannot project a
+`Type`-valued field, for exactly the reason `Nonempty` has no `.val`. An `inductive` reformulation
+does compile but buys only `⟨⟩`-introduction and has no projections either, so it changes a
+`def:TMplus-f`-citing definition for nothing. The existential therefore stays, and the two bridge
+lemmas below — `isSuccArchDiscrete_of_instances` and `IsSuccArchDiscrete.elim` — are the
+introduction and elimination interface in place of accessors. Use `.elim` or `obtain`; do not
+expect a `.succ` field to appear later.
+
 This predicate implies `IsDiscrete` (a successor order supplies the least strict upper bound at
 every point), but that implication is not proved here: nothing in the tree consumes it, and the
 two predicates are kept independent so that neither definition is stated in terms of the other.
@@ -198,6 +208,23 @@ dense-and-complete conjunction is renamed.
 def TaskFrame.IsDedekind (F : TaskFrame) : Prop := F.IsDense ∧ F.IsComplete
 
 namespace TaskFrame
+
+/-- Introduce `IsSuccArchDiscrete` from the four instances it existentially quantifies, so that a
+site holding them as instance binders does not have to write the nested anonymous constructor. -/
+theorem isSuccArchDiscrete_of_instances (F : TaskFrame)
+    [SuccOrder F.Duration] [PredOrder F.Duration]
+    [IsSuccArchimedean F.Duration] [IsPredArchimedean F.Duration] :
+    F.IsSuccArchDiscrete :=
+  ⟨‹_›, ‹_›, ‹_›, ‹_›⟩
+
+/-- Eliminate `IsSuccArchDiscrete` by running a continuation under its four instances. This is the
+substitute for the projections the definition cannot have (see its docstring): the witnesses reach
+the continuation through the instance cache rather than through named accessors. -/
+theorem IsSuccArchDiscrete.elim {F : TaskFrame} {motive : Prop} (h : F.IsSuccArchDiscrete)
+    (k : ∀ [SuccOrder F.Duration] [PredOrder F.Duration] [IsSuccArchimedean F.Duration]
+           [IsPredArchimedean F.Duration], motive) : motive := by
+  obtain ⟨_, _, _, _⟩ := h
+  exact k
 
 /-- A dense-and-complete frame is dense. Named so that downstream sites cite a lemma rather than
 an anonymous `And` projection. -/

@@ -128,6 +128,55 @@ def FrameClass.Sat : FrameClass → TaskFrame → Prop
   | .Dedekind, F => F.IsDedekind
 
 /--
+`sat_intro h` normalises a `FrameClass.Sat fc F` hypothesis named `h` into whatever the tag
+`fc` actually needs, uniformly across all four tags, so that no call site has to write a
+positional `@`-application or a tag-specific destructuring pattern.
+
+Per tag, with `Sat` reducible (see the docstring above):
+
+* `.Base` — `Sat .Base F` is `True`; nothing to do, the `skip` branch fires.
+* `.Dense` — `Sat .Dense F` is `TaskFrame.IsDense F` is `DenselyOrdered ↑F.Duration`, and the
+  whole reducible chain exists so that `intro h` alone already registers `h` in the local
+  instance cache. The `skip` branch fires and `exists_between` is available.
+* `.Discrete` — `Sat .Discrete F` is `TaskFrame.IsSuccArchDiscrete F`, a four-component
+  existential; `obtain ⟨_, _, _, _⟩` lands `SuccOrder`, `PredOrder`, `IsSuccArchimedean` and
+  `IsPredArchimedean` in the instance cache.
+* `.Dedekind` — `Sat .Dedekind F` is `TaskFrame.IsDedekind F`, i.e. `IsDense F ∧ IsComplete F`;
+  `obtain ⟨_, h⟩` registers the density instance and rebinds the *completeness* conjunct under
+  the caller's own name `h`, so it stays reachable under the spelling the caller wrote.
+
+**Two constraints on this macro, both load-bearing.**
+
+1. It must destructure with `obtain`, and must **never** re-introduce an instance with
+   `have`/`haveI`/`letI` in the `.Discrete` case. `IsSuccArchimedean α [Preorder α] [SuccOrder α]`
+   is *indexed by* the `SuccOrder` instance, so a fresh opaque local introduced by `haveI` shadows
+   the obtained `SuccOrder` witness and the `IsSuccArchimedean` hypothesis then mentions a
+   different instance than the goal does — unification fails, with an error that points nowhere
+   near the cause. This is the mechanism behind the "use `@`, never `haveI`" warnings recorded in
+   `Semantics/Validity.lean`.
+2. There is deliberately no `clear $h` alternative. `clear` succeeds on *any* unused hypothesis,
+   so a `clear` branch would fire at `.Discrete`/`.Dedekind` whenever the preceding branches were
+   reordered or failed, silently discarding the frame condition instead of using it.
+
+The caller's `h` is passed back explicitly (rather than the macro inventing a name) because macro
+hygiene would otherwise make a macro-introduced binder inaccessible at the call site.
+
+**Where to write it, and where not to.** At `.Discrete` and `.Dedekind` it does real work and is
+required. At `.Base` and `.Dense` it reduces to `skip` — the frame condition is either `True` or
+already an instance the moment it is `intro`ed — and `linter.unusedTactic` reports
+`'sat_intro h' tactic does nothing` at `.Dense`. The convention adopted across this development is
+therefore to **omit `sat_intro` at `.Base` and `.Dense` sites** rather than to silence the linter
+locally; writing it there buys nothing and costs a warning. It is still safe to write at a
+*generic* `fc`, where it degrades to `skip`.
+-/
+macro "sat_intro " h:ident : tactic =>
+  `(tactic|
+    first
+      | obtain ⟨_, _, _, _⟩ := $h
+      | obtain ⟨_, $h:ident⟩ := $h
+      | skip)
+
+/--
 `Sat` is **antitone** in the `FrameClass` order: a larger class tag denotes a *more constrained*
 collection of frames, so climbing the order shrinks the frame class.
 
