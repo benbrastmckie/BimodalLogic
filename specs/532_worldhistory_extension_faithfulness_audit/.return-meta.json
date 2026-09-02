@@ -1,21 +1,29 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/532_worldhistory_extension_faithfulness_audit/reports/01_worldhistory-extension-faithfulness-audit.md",
-      "summary": "Audit of partial/total WorldHistory fidelity vs thm:extension; prior reasoning confirmed correct but off-target (paper defines truth only on H_F); decision: relational TruthCorr transport (paper's own shape) derives timeShift_preserves_truth and truthAt_map unchanged, machine-checked; 30-item divergence table incl. 10-anchor record drift."
-    },
+      "type": "plan",
+      "path": "specs/532_worldhistory_extension_faithfulness_audit/plans/01_truthcorr-relational-transport.md",
+      "summary": "Six-phase plan (4 waves, 7h): land relational TruthCorr in Truth.lean and derive timeShift_preserves_truth, truthAt_map, and truthAt_of_truthIso from it with statements unchanged; re-pin the 10 drifted paper-definition anchors; docstring hygiene (by-label citations, convex wording, H_F quotes); closure gates and induction ledger."
+    }
+  ],
+  "next_steps": "Run /implement 532 to execute the plan",
+  "memory_candidates": [
     {
-      "type": "experiment",
-      "path": "specs/532_worldhistory_extension_faithfulness_audit/reports/TruthCorr-experiment.lean.txt",
-      "summary": "Compiling Lean experiment (zero sorry) defining TruthCorr and deriving timeShift_preserves_truth, truthAt_map, and truthAt_of_truthIso from it."
+      "content": "When a generic transport lemma must range over a dependently-typed structure (e.g. Lean WorldHistory with `states` indexed by a domain proof), package the transport as a Prop-valued RELATION with existence clauses in both directions (Rel, total_fwd, total_bwd) rather than an Equiv on the structure. The Equiv route forces a dependent structure equality and degenerates into HEq; the relational route needs only pointwise agreement plus a `states_eq_of_time_eq`-style congruence and matches how the source paper proves the box case (existence forward + existence backward + IH at a related pair). Concretely in BimodalLogic: `TruthCorr` (dur : order-iso, Rel, atom, total_fwd, total_bwd) derives timeShift_preserves_truth, IntTransfer.truthAt_map, and truthAt_of_truthIso unchanged, while `TruthIso.hist : HF ≃ HF'` could reach only total histories. Applies whenever a bijective packaging is stronger than what the mathematical proof consumes.",
+      "category": "PATTERN",
+      "source_artifact": "specs/532_worldhistory_extension_faithfulness_audit/plans/01_truthcorr-relational-transport.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["relational-transport", "TruthCorr", "HEq-trap", "Equiv-vs-relation", "dependent-structure", "truth-transport"]
     }
   ],
   "metadata": {
     "session_id": "team-lead-532",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 6,
+    "estimated_hours": 7,
+    "dependency_waves": [[1, 4], [2, 3], [5], [6]]
   }
 }

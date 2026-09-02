@@ -9,21 +9,42 @@
     {
       "project_number": 532,
       "project_name": "worldhistory_extension_faithfulness_audit",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "description": "Audit and resolve the partial-vs-total WorldHistory faithfulness gap in the Lean semantics against the paper's extension theorem. ANCHOR SOURCE: /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex -- thm:extension (line 3155, in the Appendix beginning line 1789), which states that every partial history tau : X -> W over a task frame F is extended by some total world history sigma in H_F (proved via Zorn's lemma over partial histories ordered by extension, appealing to lem:step and def:world-history), together with its corollary cor:occurrence. Read this alongside the supporting discussion in sec:Construction (line 933), where possible worlds are defined as functions from durations to world states, and the supporting definitions and lemmas in the Appendix (def:frame, def:world-history, def:frame-properties, lem:step, lem:nullity, cor:saturation-finite, and the surrounding partial-history material). TRIGGERING QUESTION: the frame-kit transport work left one phase blocked on a quantifier mismatch. Truth.time_shift_preserves_truth (FormalSystem/Semantics/Truth.lean) and IntTransfer.truthAt_map (FormalSystem/Semantics/IntTransfer.lean) both quantify over an ARBITRARY WorldHistory with no totality hypothesis, while the TruthIso structure carries hist : F.HF equiv F'.HF and transports only TOTAL histories. The prior implementation dispatch argued that an arbitrary history cannot be reduced to a total one, because TruthAt's atom clause is an existential over the history's domain, so a partial history makes atoms false off its domain and no total history reproduces that truth-value profile -- extension in the paper's sense preserves the history but not necessarily the truth-value profile of the partial one. Determine whether that reasoning is correct, and whether thm:extension and its supporting apparatus license a different resolution. DELIVERABLE: decide between (a) widening TruthIso to a WorldHistory-level equivalence, which would unblock both transports, and (b) accepting the remaining hand-written six-case inductions -- with the decision grounded in what the paper actually proves, not in what is convenient in Lean. BROADER SCOPE: the goal is that the Lean codebase be fully faithful and aligned with the paper in BOTH content and convention. Audit how FormalSystem/Semantics/ (WorldHistory.lean, TaskFrame.lean, Truth.lean, IntTransfer.lean) represents the partial/total history distinction, whether the paper's extension theorem is stated or available in Lean at all, and whether naming and structural conventions track def:world-history and def:frame. Report every divergence found, including places where the Lean development is stronger, weaker, or differently quantified than the paper. CAUTION: an earlier research report's section 4.3 recorded time_shift_preserves_truth as \"derivable from a uniform TruthIso? yes\", which is now known to be an error -- do not treat that report as authoritative on this point.",
       "topic": "semantics",
       "created": "2026-09-02T22:29:10Z",
-      "last_updated": "2026-09-02T22:51:42Z",
+      "last_updated": "2026-09-02T23:01:32Z",
       "session_id": "sess_1788388902_211d42",
       "artifacts": [
         {
           "path": "specs/532_worldhistory_extension_faithfulness_audit/reports/01_worldhistory-extension-faithfulness-audit.md",
           "type": "report",
           "summary": "Audit of partial/total WorldHistory fidelity vs thm:extension; decision: relational TruthCorr transport derives timeShift_preserves_truth and truthAt_map unchanged, machine-checked; 30-item divergence table."
+        },
+        {
+          "path": "specs/532_worldhistory_extension_faithfulness_audit/plans/01_truthcorr-relational-transport.md",
+          "type": "plan",
+          "summary": "Six-phase plan (4 waves): land relational TruthCorr and derive timeShift_preserves_truth, truthAt_map, truthAt_of_truthIso unchanged; re-pin 10 drifted paper anchors; docstring hygiene; closure gates."
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "memory_candidates": [
+        {
+          "content": "When a generic transport lemma must range over a dependently-typed structure (e.g. Lean WorldHistory with `states` indexed by a domain proof), package the transport as a Prop-valued RELATION with existence clauses in both directions (Rel, total_fwd, total_bwd) rather than an Equiv on the structure. The Equiv route forces a dependent structure equality and degenerates into HEq; the relational route needs only pointwise agreement plus a `states_eq_of_time_eq`-style congruence and matches how the source paper proves the box case (existence forward + existence backward + IH at a related pair). Concretely in BimodalLogic: `TruthCorr` (dur : order-iso, Rel, atom, total_fwd, total_bwd) derives timeShift_preserves_truth, IntTransfer.truthAt_map, and truthAt_of_truthIso unchanged, while `TruthIso.hist : HF ≃ HF'` could reach only total histories. Applies whenever a bijective packaging is stronger than what the mathematical proof consumes.",
+          "category": "PATTERN",
+          "source_artifact": "specs/532_worldhistory_extension_faithfulness_audit/plans/01_truthcorr-relational-transport.md",
+          "confidence": 0.85,
+          "suggested_keywords": [
+            "relational-transport",
+            "TruthCorr",
+            "HEq-trap",
+            "Equiv-vs-relation",
+            "dependent-structure",
+            "truth-transport"
+          ]
+        }
+      ]
     },
     {
       "project_number": 517,
