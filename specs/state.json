@@ -1454,7 +1454,7 @@
     {
       "project_number": 519,
       "project_name": "soundnesslemmas_consolidation_delete_dead",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "topic": "metalogic",
       "priority": "high",
@@ -1470,7 +1470,7 @@
         "FormalSystem/Metalogic/Decidability/Verified/Decidable.lean"
       ],
       "created": "2026-09-02T03:30:31Z",
-      "last_updated": "2026-09-02T13:55:43Z",
+      "last_updated": "2026-09-02T14:20:54Z",
       "artifacts": [
         {
           "path": "specs/519_soundnesslemmas_consolidation_delete_dead/reports/01_soundnesslemmas-dead-code-reachability.md",
@@ -1481,6 +1481,11 @@
           "path": "specs/519_soundnesslemmas_consolidation_delete_dead/plans/01_soundnesslemmas-consolidation-deletion.md",
           "type": "plan",
           "summary": "Nine phases, ~13h, waves [[1,2],[3],[4],[5],[6],[7],[8],[9]]; lake build green at every phase boundary."
+        },
+        {
+          "path": "specs/519_soundnesslemmas_consolidation_delete_dead/summaries/01_soundnesslemmas-consolidation-summary.md",
+          "type": "summary",
+          "summary": "SoundnessLemmas/ reduced 2487 -> 1457 lines across 5 -> 3 files; duplicate swap dispatcher and local IsValid notion retired."
         }
       ],
       "session_id": "sess_1788332773_c2fa9f_519"

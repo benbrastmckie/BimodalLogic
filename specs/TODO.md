@@ -11,14 +11,14 @@ next_project_number: 532
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,257,298,433,461,476,481,504,506,519,520 | -- | dataset-enhancement, decidability, frame-extensions, ... |
-| 2 | 231,282,296,463,502,521 | 298,433,461,519 | algebraic-representation, dataset-enhancement, decidability, ... |
-| 3 | 219,464,522,526 | 231,463,520,521 | dataset-enhancement, decidability, metalogic |
-| 4 | 193,465,523,524,527,528 | 464,522,526 | automation, decidability, metalogic |
-| 5 | 178,428,497,525,529,530 | 193,465,502,520,523,524,528 | algebraic-representation, decidability, formula-refactor, ... |
-| 6 | 429,498,499,500,531 | 428,497,529,530 | algebraic-representation, decidability, metalogic |
-| 7 | 125,410 | 429,498,499 | algebraic-representation, decidability |
-| 8 | 411,501 | 125,410 | algebraic-representation, decidability |
+| 1 | 127,128,257,298,433,461,476,481,504,506,520,521 | -- | dataset-enhancement, decidability, frame-extensions, ... |
+| 2 | 231,282,296,463,502,522,526 | 298,433,461,520,521 | algebraic-representation, dataset-enhancement, decidability, ... |
+| 3 | 193,219,464,523,524,527,528 | 231,463,522,526 | automation, dataset-enhancement, decidability, ... |
+| 4 | 178,465,497,525,529,530 | 193,464,502,520,523,524,528 | algebraic-representation, decidability, formula-refactor, ... |
+| 5 | 428,498,499,500,531 | 465,497,529,530 | algebraic-representation, decidability, metalogic |
+| 6 | 125,429 | 428,498,499 | algebraic-representation, decidability |
+| 7 | 410,501 | 125,429 | algebraic-representation, decidability |
+| 8 | 411 | 410 | decidability |
 | 9 | 430 | 411 | decidability |
 | 10 | 177,412 | 193,430,530 | decidability, formula-refactor |
 | 11 | 482 | 412 | decidability |
@@ -84,22 +84,21 @@ next_project_number: 532
 
 ### Metalogic
 
-519 [IMPLEMENTING] — WAVE 1 (deletion). Retire the soundness machinery that the FrameC
-  └─ 521 [NOT STARTED] — WAVE 2 (core utilities). Give the primary language's truth relati
-    └─ 522 [NOT STARTED] — WAVE 2 (core utilities). Fix the one representation choice that c
-      └─ 523 [NOT STARTED] — WAVE 2 (core utilities). Complete the task-frame construction kit
-        └─ 525 [NOT STARTED] — WAVE 3 (theorem layer). Put the frame-class Galois layer on Mathl
-        └─ 529 [NOT STARTED] — WAVE 5 (publication infrastructure). Turn on the two automated si
-          └─ 531 [NOT STARTED] — WAVE 5 (publication infrastructure). Publish the API documentatio
-      └─ 524 [NOT STARTED] — WAVE 3 (theorem layer). Finish the FrameClass collapse at the THE
-        └─ 530 [NOT STARTED] — WAVE 5 (publication infrastructure). Make status and counts machi
-          └─ 531 [NOT STARTED] — WAVE 5 (publication infrastructure). Publish the API documentatio (see above)
-    └─ 526 [NOT STARTED] — WAVE 3 (theorem layer). Consolidate the maximal-consistent-set AP
-      └─ 527 [NOT STARTED] — WAVE 4 (canonical-model infrastructure). Replace textual future/p
-      └─ 528 [NOT STARTED] — WAVE 4 (algebraic infrastructure). Modernise Metalogic/Algebraic/
 520 [PLANNED] — WAVE 1 (deletion). Retire the dead half of Metalogic/Bundle/ and 
+  └─ 526 [NOT STARTED] — WAVE 3 (theorem layer). Consolidate the maximal-consistent-set AP
+    └─ 527 [NOT STARTED] — WAVE 4 (canonical-model infrastructure). Replace textual future/p
+    └─ 528 [NOT STARTED] — WAVE 4 (algebraic infrastructure). Modernise Metalogic/Algebraic/
+  └─ 529 [NOT STARTED] — WAVE 5 (publication infrastructure). Turn on the two automated si
+    └─ 531 [NOT STARTED] — WAVE 5 (publication infrastructure). Publish the API documentatio
+521 [NOT STARTED] — WAVE 2 (core utilities). Give the primary language's truth relati
+  └─ 522 [NOT STARTED] — WAVE 2 (core utilities). Fix the one representation choice that c
+    └─ 523 [NOT STARTED] — WAVE 2 (core utilities). Complete the task-frame construction kit
+      └─ 525 [NOT STARTED] — WAVE 3 (theorem layer). Put the frame-class Galois layer on Mathl
+      └─ 529 [NOT STARTED] — WAVE 5 (publication infrastructure). Turn on the two automated si (see above)
+    └─ 524 [NOT STARTED] — WAVE 3 (theorem layer). Finish the FrameClass collapse at the THE
+      └─ 530 [NOT STARTED] — WAVE 5 (publication infrastructure). Make status and counts machi
+        └─ 531 [NOT STARTED] — WAVE 5 (publication infrastructure). Publish the API documentatio (see above)
   └─ 526 [NOT STARTED] — WAVE 3 (theorem layer). Consolidate the maximal-consistent-set AP (see above)
-  └─ 529 [NOT STARTED] — WAVE 5 (publication infrastructure). Turn on the two automated si (see above)
 
 ### Publication Quality
 
@@ -230,12 +229,13 @@ next_project_number: 532
 ---
 
 ### 519. Soundnesslemmas consolidation delete dead
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: Task 518
 - **Research**: [519_soundnesslemmas_consolidation_delete_dead/reports/01_soundnesslemmas-dead-code-reachability.md]
 - **Plan**: [519_soundnesslemmas_consolidation_delete_dead/plans/01_soundnesslemmas-consolidation-deletion.md]
+- **Summary**: [519_soundnesslemmas_consolidation_delete_dead/summaries/01_soundnesslemmas-consolidation-summary.md]
 
 **Description**: WAVE 1 (deletion). Retire the soundness machinery that the FrameClass refactor superseded but left compiling. Findings A-01, A-02, A-08, A-09, D-03, D-04, D-05, D-09, D-11 in specs/reviews/2026-09-01-lean-engineering/{A-soundness,D-tactics}.md; Critical C6 and High H1 in the review. MEASURED STATE: FormalSystem/Metalogic/SoundnessLemmas/DenseValidity.lean carries 615 of 1,297 lines (47%) that are transitively unreachable -- axiom_locally_valid (:970, 298 lines, private, zero references), swap_axiom_{t4,ta,tl}_valid (:98-169), the four *_preserves_swap_valid lemmas (:228-279), eleven axiom_*_valid local-validity helpers (:717-874) consumed only by the dead dispatcher, axiom_density_valid (:960), and three *_preserves_* lemmas (:1268-1297); its own docstring at :215-217 records the supersession. Two 45-arm swap dispatchers, axiom_swap_valid (DenseValidity.lean:297, 416 lines) and axiom_swap_valid_general (FrameClassVariants.lean:46, 348 lines), share 321 byte-identical lines, and Soundness.lean:1337,1341 reach into the Dense one for exactly two arms (density, dense_indicator). SoundnessLemmas/Core.lean:42's IsValid D is a second monomorphic validity notion whose stated justification (circularity, universe levels) has expired -- CoValidity.lean and Separability.lean already import Semantics.Validity -- and forces .toFibre + (D := F.Duration) shims at Soundness.lean:913-935 and :1326-1356. exists_isGLB_of_lub is duplicated at Soundness.lean:1000 and Separability.lean:48 with a docstring apologising for the copy. and_of_not_imp_not is defined five times (Soundness.lean:153, DenseValidity.lean:826 and :280, CoValidity.lean:61, Decidability/Verified/Decidable.lean:2563). WORK: delete the eight dead ranges; move the four live survivors (axiom_temp_linearity_valid :875, axiom_temp_linearity_past_valid :907, axiom_F_until_equiv_valid :940, axiom_P_since_equiv_valid :950) into FrameClassVariants.lean; delete axiom_swap_valid, replacing its two live arms with `density_swap_valid` and `dense_indicator_swap_valid` beside sep_swap_valid (Soundness.lean:1217); make every arm of the surviving dispatcher a one-line `exact <ctor>_swap_valid` (the shape axiom_validIn_min at Soundness.lean:1277 already has), extracting per-constructor lemmas where they are inlined and dropping the no-op `simp only [Formula.swapTemporal, TruthAt]` lines before `intro` (D-09, validated); restate FrameClassVariants' five theorems at ValidIn/ValidDiscrete and delete IsValid and Core.lean; un-private Separability.exists_isGLB_of_lub and delete the Soundness.lean copy; keep ONE and_of_not_imp_not (it mostly disappears once task 521 lands Truth.and_iff). Add Separability to the SoundnessLemmas.lean aggregator (it is omitted today, A-10) and regenerate SoundnessLemmas/README.md. ACCEPTANCE: SoundnessLemmas/ at most ~1,400 lines (from 2,487); exactly one 45-arm swap dispatcher with one-line arms; zero declarations in the directory with only their own occurrence in the tree; lake build green; check-module-invariants.sh ALL PASS; C2 axiom baseline unchanged.
 
