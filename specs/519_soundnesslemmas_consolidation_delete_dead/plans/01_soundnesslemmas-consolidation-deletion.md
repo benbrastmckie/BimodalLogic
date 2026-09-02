@@ -342,7 +342,7 @@ post-Phase-3 `DenseValidity.lean`, and confirm the import sites with
 
 ---
 
-### Phase 5: Restate the `.Base` layer at `ValidIn FrameClass.Base` [NOT STARTED]
+### Phase 5: Restate the `.Base` layer at `ValidIn FrameClass.Base` [COMPLETED]
 
 **Goal**: Move `axiom_swap_valid_general` and the eight transplanted survivors off the local
 `IsValid` notion, **before** arm extraction, so the ~29 lemmas Phases 6-7 create are born in
@@ -350,22 +350,27 @@ their final form and never need restating. This is the benign half of the `IsVal
 (see "Planner Deviation" in the Overview); the hazardous half is Phase 8.
 
 **Tasks**:
-- [ ] Restate `axiom_swap_valid_general` from `IsValid D φ.swapTemporal` to
-      `ValidIn FrameClass.Base φ.swapTemporal`. Open with
-      `refine ValidIn.of_forall_total ?_ ; intro F _ M τ _hτ t` **before** the `cases h with`, so
-      each arm's body loses its own `intro F M τ _hτ t` line and is otherwise unchanged. The
-      `fc.Sat F` argument is discarded — `Soundness.lean:1331` already passes it as `_`.
-- [ ] Restate the eight transplanted survivors at `ValidIn FrameClass.Base` the same way, so the
+- [x] Restate `axiom_swap_valid_general` from `IsValid D φ.swapTemporal` to
+      `ValidIn FrameClass.Base φ.swapTemporal`. *(deviation: altered — the opening is applied
+      **inside each arm**, not before the `cases h with`. Opening before `cases` leaves every arm
+      at `TruthAt M τ t …`, which makes the four one-line delegating arms
+      (`exact swap_axiom_mt_valid ψ`) and every lemma Phases 6-7 extract fail to elaborate, since
+      those are `ValidIn` statements, not `TruthAt` ones — it contradicts the same phase's next
+      task and the plan's one-line-arm acceptance criterion. Each of the 29 inlined arms therefore
+      has its `intro F M τ _hτ t` replaced by `refine ValidIn.of_forall_total ?_` +
+      `intro F _ M τ _hτ t`; those two lines then move wholesale into the extracted lemmas in
+      Phases 6-7, so no arm keeps them. The `fc.Sat F` argument is discarded as planned.)*
+- [x] Restate the eight transplanted survivors at `ValidIn FrameClass.Base` the same way, so the
       delegating arms (`| modal_t ψ => exact swap_axiom_mt_valid ψ` and the four two-line
       temp-linearity/equiv arms) keep working unchanged.
-- [ ] Simplify `Soundness.lean`'s `axiom_swap_validIn_min` `.Base` branch: the
+- [x] Simplify `Soundness.lean`'s `axiom_swap_validIn_min` `.Base` branch: the
       `ValidIn.of_forall_total fun F _ M τ hτ t => SoundnessLemmas.axiom_swap_valid_general
       (D := F.Duration) φ ax hbase F.toFibre M τ hτ t` shim collapses to
       `exact axiom_swap_valid_general φ ax hbase`.
-- [ ] Do **not** touch the four discrete theorems (`prior_UZ_is_valid`, `prior_SZ_is_valid`,
+- [x] Do **not** touch the four discrete theorems (`prior_UZ_is_valid`, `prior_SZ_is_valid`,
       `z1_is_valid`, `z1_past_is_valid`) — they stay at `IsValid D` until Phase 8. `Core.lean`
       therefore still has live consumers at the end of this phase, and must not be deleted here.
-- [ ] Do not "extract a `_swap_valid` wrapper" for the four two-line delegating arms
+- [x] Do not "extract a `_swap_valid` wrapper" for the four two-line delegating arms
       (`temp_linearity`, `temp_linearity_past`, `F_until_equiv`, `P_since_equiv`). Their existing
       shape — delegating to the local-validity survivor at swapped arguments — is already correct;
       a wrapper would be pure noise.

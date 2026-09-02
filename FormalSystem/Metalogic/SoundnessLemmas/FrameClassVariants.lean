@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Metalogic.SoundnessLemmas.Core
+import FormalSystem.Semantics.Validity
 import Mathlib.Order.SuccPred.Basic
 import Mathlib.Order.SuccPred.Archimedean
 
@@ -47,8 +48,9 @@ and MT is valid, this is immediate.
 At any triple (M, τ, t), if box φ.swap holds, then φ.swap holds at (M, τ, t) specifically.
 -/
 theorem swap_axiom_mt_valid (φ : Formula) :
-    IsValid D ((Formula.box φ).imp φ).swapTemporal := by
-  intro F M τ h_mem t
+    ValidIn FrameClass.Base ((Formula.box φ).imp φ).swapTemporal := by
+  refine ValidIn.of_forall_total ?_
+  intro F _ M τ h_mem t
   simp only [Formula.swapTemporal, TruthAt]
   intro h_box_swap_φ
   exact h_box_swap_φ τ h_mem
@@ -64,8 +66,9 @@ This is still M4, just applied to swapped formula.
 holds at all total histories at t (trivially, as this is a global property).
 -/
 theorem swap_axiom_m4_valid (φ : Formula) :
-    IsValid D ((Formula.box φ).imp (Formula.box (Formula.box φ))).swapTemporal := by
-  intro F M τ _hτ t
+    ValidIn FrameClass.Base ((Formula.box φ).imp (Formula.box (Formula.box φ))).swapTemporal := by
+  refine ValidIn.of_forall_total ?_
+  intro F _ M τ _hτ t
   simp only [Formula.swapTemporal, TruthAt]
   intro h_box_swap_φ σ h_σ_mem ρ h_ρ_mem
   exact h_box_swap_φ ρ h_ρ_mem
@@ -81,8 +84,9 @@ at σ.
 The diamond means "there exists some total history where it holds". We have τ witnessing this.
 -/
 theorem swap_axiom_mb_valid (φ : Formula) :
-    IsValid D (φ.imp (Formula.box φ.diamond)).swapTemporal := by
-  intro F M τ h_mem t
+    ValidIn FrameClass.Base (φ.imp (Formula.box φ.diamond)).swapTemporal := by
+  refine ValidIn.of_forall_total ?_
+  intro F _ M τ h_mem t
   simp only [Formula.swapTemporal, Formula.diamond, Formula.neg]
   simp only [TruthAt]
   intro h_swap_φ σ _h_σ_mem h_all_not
@@ -100,8 +104,10 @@ Totality of the shifted history is `WorldHistory.isTotal_timeShift`; no shift-cl
 condition is required.
 -/
 theorem swap_axiom_mf_valid (φ : Formula) :
-    IsValid D ((Formula.box φ).imp (Formula.box (Formula.allFuture φ))).swapTemporal := by
-  intro F M τ _hτ t
+    ValidIn FrameClass.Base
+      ((Formula.box φ).imp (Formula.box (Formula.allFuture φ))).swapTemporal := by
+  refine ValidIn.of_forall_total ?_
+  intro F _ M τ _hτ t
   simp only [Formula.swap_temporal_all_future, Formula.swapTemporal]
   simp only [TruthAt, Truth.past_iff]
   intro h_box_swap σ h_σ_mem s h_s_lt_t
@@ -110,11 +116,10 @@ theorem swap_axiom_mf_valid (φ : Formula) :
       (WorldHistory.isTotal_timeShift h_σ_mem (s - t))
   exact (TimeShift.time_shift_preserves_truth M σ t s φ.swapTemporal).mp h_at_shifted
 
-/-! ## Per-Axiom Local Validity
+/-! ## Per-Axiom Validity of the Unswapped Schemas
 
-Validity of the unswapped axiom schemas, stated at the local `IsValid` definition so that this
-module stays independent of `Metalogic/Soundness.lean`. The swap arms below consume these at
-swapped arguments, which is why the temporal-linearity and until/since pairs come in both
+Validity of the unswapped axiom schemas at `FrameClass.Base`. The swap arms below consume these
+at swapped arguments, which is why the temporal-linearity and until/since pairs come in both
 future- and past-directed forms.
 -/
 
@@ -127,11 +132,12 @@ s1 > t for φ and s2 > t for ψ, either s1 < s2 (take r = s1, giving F(φ ∧ F(
 s1 = s2 (giving F(φ ∧ ψ)), or s2 < s1 (take r = s2, giving F(F(φ) ∧ ψ)).
 -/
 theorem axiom_temp_linearity_valid (φ ψ : Formula) :
-    IsValid D (Formula.and (Formula.someFuture φ) (Formula.someFuture ψ) |>.imp
+    ValidIn FrameClass.Base (Formula.and (Formula.someFuture φ) (Formula.someFuture ψ) |>.imp
       (Formula.or (Formula.someFuture (Formula.and φ ψ))
         (Formula.or (Formula.someFuture (Formula.and φ (Formula.someFuture ψ)))
           (Formula.someFuture (Formula.and (Formula.someFuture φ) ψ))))) := by
-  intro F M τ _hτ t
+  refine ValidIn.of_forall_total ?_
+  intro F _ M τ _hτ t
   simp only [Formula.and, Formula.or, Formula.neg, TruthAt,
     Truth.some_future_iff]
   intro h_conj
@@ -159,11 +165,12 @@ theorem axiom_temp_linearity_valid (φ ψ : Formula) :
 `P(φ) ∧ P(ψ) → P(φ ∧ ψ) ∨ P(φ ∧ P(ψ)) ∨ P(P(φ) ∧ ψ)` is locally valid.
 Mirror of `axiom_temp_linearity_valid` for the past direction. -/
 theorem axiom_temp_linearity_past_valid (φ ψ : Formula) :
-    IsValid D (Formula.and (Formula.somePast φ) (Formula.somePast ψ) |>.imp
+    ValidIn FrameClass.Base (Formula.and (Formula.somePast φ) (Formula.somePast ψ) |>.imp
       (Formula.or (Formula.somePast (Formula.and φ ψ))
         (Formula.or (Formula.somePast (Formula.and φ (Formula.somePast ψ)))
           (Formula.somePast (Formula.and (Formula.somePast φ) ψ))))) := by
-  intro F M τ _hτ t
+  refine ValidIn.of_forall_total ?_
+  intro F _ M τ _hτ t
   simp only [Formula.and, Formula.or, Formula.neg, TruthAt,
     Truth.some_past_iff]
   intro h_conj
@@ -192,9 +199,10 @@ theorem axiom_temp_linearity_past_valid (φ ψ : Formula) :
 If there exists s ≥ t with φ(s), then ⊤ U φ holds at t (take witness s, guard ⊤ = ¬⊥ is trivially
 satisfied). -/
 theorem axiom_F_until_equiv_valid (φ : Formula) :
-    IsValid D ((Formula.someFuture φ).imp
+    ValidIn FrameClass.Base ((Formula.someFuture φ).imp
       (Formula.untl (Formula.bot.imp Formula.bot) φ)) := by
-  intro F M τ _hτ t
+  refine ValidIn.of_forall_total ?_
+  intro F _ M τ _hτ t
   simp only [TruthAt, Truth.some_future_iff]
   intro ⟨s, hts, h_φs⟩
   exact ⟨s, hts, h_φs, fun _ _ _ hf => absurd hf not_false⟩
@@ -202,9 +210,10 @@ theorem axiom_F_until_equiv_valid (φ : Formula) :
 /-- P-Since equivalence axiom validity (BX12'):
 `P(φ) → (⊤ S φ)` is locally valid. Past dual of F-Until equivalence. -/
 theorem axiom_P_since_equiv_valid (φ : Formula) :
-    IsValid D ((Formula.somePast φ).imp
+    ValidIn FrameClass.Base ((Formula.somePast φ).imp
       (Formula.snce (Formula.bot.imp Formula.bot) φ)) := by
-  intro F M τ _hτ t
+  refine ValidIn.of_forall_total ?_
+  intro F _ M τ _hτ t
   simp only [TruthAt, Truth.some_past_iff]
   intro ⟨s, hst, h_φs⟩
   exact ⟨s, hst, h_φs, fun _ _ _ hf => absurd hf not_false⟩
@@ -232,15 +241,17 @@ instances. The wider case is `Metalogic/Soundness.lean`'s `axiom_swap_validIn_mi
 that split once for every class and consumes this lemma as its `.Base` branch. -/
 theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) (h_fc :
       h.minFrameClass ≤ FrameClass.Base)
-    : IsValid D φ.swapTemporal := by
+    : ValidIn FrameClass.Base φ.swapTemporal := by
   cases h with
   | prop_k ψ χ ρ =>
-    intro F M τ _hτ t
+    refine ValidIn.of_forall_total ?_
+    intro F _ M τ _hτ t
     simp only [Formula.swapTemporal, TruthAt]
     intro h_abc h_ab h_a
     exact h_abc h_a (h_ab h_a)
   | prop_s ψ χ =>
-    intro F M τ _hτ t
+    refine ValidIn.of_forall_total ?_
+    intro F _ M τ _hτ t
     simp only [Formula.swapTemporal, TruthAt]
     intro h_a _
     exact h_a
@@ -248,7 +259,8 @@ theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) (h_fc :
   | modal_4 ψ => exact swap_axiom_m4_valid ψ
   | modal_b ψ => exact swap_axiom_mb_valid ψ
   | modal_5_collapse ψ =>
-    intro F M τ _hτ t
+    refine ValidIn.of_forall_total ?_
+    intro F _ M τ _hτ t
     simp only [Formula.swapTemporal, Formula.diamond, Formula.neg]
     simp only [TruthAt]
     intro h_diamond_box σ h_σ_mem
@@ -258,13 +270,15 @@ theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) (h_fc :
     have h_psi_at_sigma := h_box_at_rho σ h_σ_mem
     exact h_not_psi h_psi_at_sigma
   | ex_falso ψ =>
-    intro F M τ _hτ t
+    refine ValidIn.of_forall_total ?_
+    intro F _ M τ _hτ t
     simp only [Formula.swapTemporal, TruthAt]
     intro h_bot
     exfalso
     exact h_bot
   | peirce ψ χ =>
-    intro F M τ _hτ t
+    refine ValidIn.of_forall_total ?_
+    intro F _ M τ _hτ t
     simp only [Formula.swapTemporal, TruthAt]
     intro h_peirce
     by_cases h : TruthAt M τ t ψ.swapTemporal
@@ -276,13 +290,15 @@ theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) (h_fc :
         exact h h_psi
       exact h_peirce h_imp
   | modal_k_dist ψ χ =>
-    intro F M τ _hτ t
+    refine ValidIn.of_forall_total ?_
+    intro F _ M τ _hτ t
     simp only [Formula.swapTemporal, TruthAt]
     intro h_box_imp h_box_psi σ h_σ_mem
     exact h_box_imp σ h_σ_mem (h_box_psi σ h_σ_mem)
   | serial_future =>
     -- swap of serial_future (⊤ → F⊤) is (⊤ → P⊤), need exists_lt
-    intro F M τ _hτ t
+    refine ValidIn.of_forall_total ?_
+    intro F _ M τ _hτ t
     simp only [Formula.swap_temporal_some_future, Formula.swapTemporal]
     simp only [TruthAt, Truth.some_past_iff]
     intro _
@@ -290,7 +306,8 @@ theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) (h_fc :
     exact ⟨s, hst, fun h => h⟩
   | serial_past =>
     -- swap of serial_past (⊤ → P⊤) is (⊤ → F⊤), need exists_gt
-    intro F M τ _hτ t
+    refine ValidIn.of_forall_total ?_
+    intro F _ M τ _hτ t
     simp only [Formula.swap_temporal_some_past, Formula.swapTemporal]
     simp only [TruthAt, Truth.some_future_iff]
     intro _
@@ -298,35 +315,40 @@ theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) (h_fc :
     exact ⟨s, hts, fun h => h⟩
   | left_mono_until_G φ χ ψ =>
     -- Swap of left_mono_until_G: H(φ'→χ') → snce(φ',ψ') → snce(χ',ψ')
-    intro F M τ _hτ t
+    refine ValidIn.of_forall_total ?_
+    intro F _ M τ _hτ t
     simp only [Formula.swap_temporal_all_future, Formula.swapTemporal]
     simp only [TruthAt, Truth.past_iff]
     intro h_H ⟨s, hst, h_ψs, h_guard⟩
     exact ⟨s, hst, h_ψs, fun r hsr hrt => h_H r hrt (h_guard r hsr hrt)⟩
   | left_mono_since_H φ χ ψ =>
     -- Swap of left_mono_since_H: G(φ'→χ') → untl(φ',ψ') → untl(χ',ψ')
-    intro F M τ _hτ t
+    refine ValidIn.of_forall_total ?_
+    intro F _ M τ _hτ t
     simp only [Formula.swap_temporal_all_past, Formula.swapTemporal]
     simp only [TruthAt, Truth.future_iff]
     intro h_G ⟨s, hts, h_ψs, h_guard⟩
     exact ⟨s, hts, h_ψs, fun r htr hrs => h_G r htr (h_guard r htr hrs)⟩
   | right_mono_until φ ψ χ =>
     -- swap: H(φ'→χ') → (φ' S ψ') → (χ' S ψ')
-    intro F M τ _hτ t
+    refine ValidIn.of_forall_total ?_
+    intro F _ M τ _hτ t
     simp only [Formula.swap_temporal_all_future, Formula.swapTemporal]
     simp only [TruthAt, Truth.past_iff]
     intro h_H ⟨s, hst, h_φs, h_guard⟩
     exact ⟨s, hst, h_H s hst h_φs, h_guard⟩
   | right_mono_since φ ψ χ =>
     -- swap: G(φ'→χ') → (φ' U ψ') → (χ' U ψ')
-    intro F M τ _hτ t
+    refine ValidIn.of_forall_total ?_
+    intro F _ M τ _hτ t
     simp only [Formula.swap_temporal_all_past, Formula.swapTemporal]
     simp only [TruthAt, Truth.future_iff]
     intro h_G ⟨s, hts, h_φs, h_guard⟩
     exact ⟨s, hts, h_G s hts h_φs, h_guard⟩
   | connect_future φ =>
     -- connect_future: φ → G(P(φ)), swap: swap(φ) → H(F(swap(φ)))
-    intro F M τ _hτ t
+    refine ValidIn.of_forall_total ?_
+    intro F _ M τ _hτ t
     simp only [Formula.swap_temporal_some_past, Formula.swap_temporal_all_future,
       Formula.swapTemporal]
     simp only [TruthAt, Truth.past_iff, Truth.some_future_iff]
@@ -334,7 +356,8 @@ theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) (h_fc :
     exact ⟨t, hst, h_φt⟩
   | connect_past φ =>
     -- connect_past: φ → H(F(φ)), swap: swap(φ) → G(P(swap(φ)))
-    intro F M τ _hτ t
+    refine ValidIn.of_forall_total ?_
+    intro F _ M τ _hτ t
     simp only [Formula.swap_temporal_some_future, Formula.swap_temporal_all_past,
       Formula.swapTemporal]
     simp only [TruthAt, Truth.future_iff, Truth.some_past_iff]
@@ -342,7 +365,8 @@ theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) (h_fc :
     exact ⟨t, hts, h_φt⟩
   | enrichment_until φ ψ p =>
     -- Swap of enrichment_until: p ∧ snce(φ', ψ') → snce(φ', ψ' ∧ untl(φ', p))
-    intro F M τ _hτ t
+    refine ValidIn.of_forall_total ?_
+    intro F _ M τ _hτ t
     simp only [Formula.swapTemporal, Formula.and, Formula.neg, TruthAt]
     intro h_conj
     have h_pt : TruthAt M τ t p.swapTemporal := by
@@ -356,7 +380,8 @@ theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) (h_fc :
     exact h_imp h_ψs ⟨t, hst, h_pt, fun r hsr hrt => h_guard r hsr hrt⟩
   | enrichment_since φ ψ p =>
     -- Swap of enrichment_since: p ∧ untl(φ', ψ') → untl(φ', ψ' ∧ snce(φ', p))
-    intro F M τ _hτ t
+    refine ValidIn.of_forall_total ?_
+    intro F _ M τ _hτ t
     simp only [Formula.swapTemporal, Formula.and, Formula.neg, TruthAt]
     intro h_conj
     have h_pt : TruthAt M τ t p.swapTemporal := by
@@ -370,7 +395,8 @@ theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) (h_fc :
     exact h_imp h_ψs ⟨t, hts, h_pt, fun r htr hrs => h_guard r htr hrs⟩
   | self_accum_until φ ψ =>
     -- Swap: (φ' S ψ') → ((φ' ∧ (φ' S ψ')) S ψ')
-    intro F M τ _hτ t
+    refine ValidIn.of_forall_total ?_
+    intro F _ M τ _hτ t
     simp only [Formula.swapTemporal, Formula.and, Formula.neg, TruthAt]
     intro ⟨s, hst, h_ψs, h_guard⟩
     refine ⟨s, hst, h_ψs, fun r hsr hrt h_imp => ?_⟩
@@ -378,7 +404,8 @@ theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) (h_fc :
         h_guard q hsq (lt_trans hqr hrt)⟩
   | self_accum_since φ ψ =>
     -- Swap: (φ' U ψ') → ((φ' ∧ (φ' U ψ')) U ψ')
-    intro F M τ _hτ t
+    refine ValidIn.of_forall_total ?_
+    intro F _ M τ _hτ t
     simp only [Formula.swapTemporal, Formula.and, Formula.neg, TruthAt]
     intro ⟨s, hts, h_ψs, h_guard⟩
     refine ⟨s, hts, h_ψs, fun r htr hrs h_imp => ?_⟩
@@ -386,7 +413,8 @@ theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) (h_fc :
         h_guard q (lt_trans htr hrq) hqs⟩
   | absorb_until φ ψ =>
     -- Swap: (φ' S (φ' ∧ (φ' S ψ'))) → (φ' S ψ')
-    intro F M τ _hτ t
+    refine ValidIn.of_forall_total ?_
+    intro F _ M τ _hτ t
     simp only [Formula.swapTemporal, Formula.and, Formula.neg, TruthAt]
     intro ⟨s₁, hs₁t, h_conj, h_guard₁⟩
     have h_φs₁_and_since : TruthAt M τ s₁ φ.swapTemporal ∧
@@ -403,7 +431,8 @@ theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) (h_fc :
     · exact h_guard₁ q h_gt hqt
   | absorb_since φ ψ =>
     -- Swap: (φ' U (φ' ∧ (φ' U ψ'))) → (φ' U ψ')
-    intro F M τ _hτ t
+    refine ValidIn.of_forall_total ?_
+    intro F _ M τ _hτ t
     simp only [Formula.swapTemporal, Formula.and, Formula.neg, TruthAt]
     intro ⟨s₁, hts₁, h_conj, h_guard₁⟩
     have h_φs₁_and_until : TruthAt M τ s₁ φ.swapTemporal ∧
@@ -420,7 +449,8 @@ theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) (h_fc :
     · exact h_guard₂ q h_gt hqs₂
   | linear_until φ ψ χ θ =>
     -- Swap: Since-based linearity with swapped subformulas
-    intro F M τ _hτ t
+    refine ValidIn.of_forall_total ?_
+    intro F _ M τ _hτ t
     simp only [Formula.swapTemporal, Formula.and, Formula.or, Formula.neg, TruthAt]
     intro h_conj
     have h_both : (∃ s, s < t ∧ TruthAt M τ s ψ.swapTemporal ∧
@@ -449,7 +479,8 @@ theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) (h_fc :
       · exact h_imp (h_guard₁ r hs₁r hrt) (h_guard₂ r (lt_trans h_gt hs₁r) hrt)
   | linear_since φ ψ χ θ =>
     -- Swap: Until-based linearity with swapped subformulas
-    intro F M τ _hτ t
+    refine ValidIn.of_forall_total ?_
+    intro F _ M τ _hτ t
     simp only [Formula.swapTemporal, Formula.and, Formula.or, Formula.neg, TruthAt]
     intro h_conj
     have h_both : (∃ s, t < s ∧ TruthAt M τ s ψ.swapTemporal ∧
@@ -481,14 +512,16 @@ theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) (h_fc :
   -- open-guard refactor)
   | until_F φ ψ =>
     -- swap of ((φ U ψ) → F(ψ)) is ((φ' S ψ') → P(ψ'))
-    intro F M τ _hτ t
+    refine ValidIn.of_forall_total ?_
+    intro F _ M τ _hτ t
     simp only [Formula.swap_temporal_some_future, Formula.swapTemporal]
     simp only [TruthAt, Truth.some_past_iff]
     intro ⟨s, hst, h_ψs, _h_guard⟩
     exact ⟨s, hst, h_ψs⟩
   | since_P φ ψ =>
     -- swap of ((φ S ψ) → P(ψ)) is ((φ' U ψ') → F(ψ'))
-    intro F M τ _hτ t
+    refine ValidIn.of_forall_total ?_
+    intro F _ M τ _hτ t
     simp only [Formula.swap_temporal_some_past, Formula.swapTemporal]
     simp only [TruthAt, Truth.some_future_iff]
     intro ⟨s, hts, h_ψs, _h_guard⟩
@@ -505,7 +538,8 @@ theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) (h_fc :
   -- open-guard refactor)
   | modal_future ψ => exact swap_axiom_mf_valid ψ
   | discrete_symm_fwd =>
-    intro F M τ _hτ t
+    refine ValidIn.of_forall_total ?_
+    intro F _ M τ _hτ t
     simp only [Formula.swapTemporal, TruthAt]
     intro ⟨r, hrt, _h_top_r, h_guard⟩
     refine ⟨t + (t - r), lt_add_of_pos_right t (sub_pos.mpr hrt), fun h => h, fun c htc hcs => ?_⟩
@@ -517,7 +551,8 @@ theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) (h_fc :
       exact sub_lt_sub_right hcs _
     exact h_guard (c - (t - r)) h1 h2
   | discrete_symm_bwd =>
-    intro F M τ _hτ t
+    refine ValidIn.of_forall_total ?_
+    intro F _ M τ _hτ t
     simp only [Formula.swapTemporal, TruthAt]
     intro ⟨s, hts, _h_top_s, h_guard⟩
     refine ⟨t - (s - t), sub_lt_self t (sub_pos.mpr hts), fun h => h, fun c hrc hct => ?_⟩
@@ -529,7 +564,8 @@ theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) (h_fc :
         _ = s := by rw [add_comm, sub_add_cancel]
     exact h_guard (c + (s - t)) h1 h2
   | discrete_propagate_fwd =>
-    intro F M τ _hτ t
+    refine ValidIn.of_forall_total ?_
+    intro F _ M τ _hτ t
     simp only [Formula.swap_temporal_all_future, Formula.swapTemporal]
     simp only [TruthAt, Truth.past_iff]
     intro ⟨r, hrt, _h_top_r, h_guard⟩ u _hut
@@ -543,7 +579,8 @@ theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) (h_fc :
       exact add_lt_add_left hcu (t - u)
     exact h_guard (c + (t - u)) h1 h2
   | discrete_propagate_bwd =>
-    intro F M τ _hτ t
+    refine ValidIn.of_forall_total ?_
+    intro F _ M τ _hτ t
     simp only [Formula.swap_temporal_all_past, Formula.swapTemporal]
     simp only [TruthAt, Truth.future_iff]
     intro ⟨r, hrt, _h_top_r, h_guard⟩ u _htu
@@ -558,7 +595,8 @@ theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) (h_fc :
     exact h_guard (c + (t - u)) h1 h2
   | discrete_box_necessity =>
     -- swap(U(T,bot) -> □(U(T,bot))) = S(T,bot) -> □(S(T,bot))
-    intro F M τ _hτ t
+    refine ValidIn.of_forall_total ?_
+    intro F _ M τ _hτ t
     simp only [Formula.swapTemporal, TruthAt]
     intro ⟨r, hrt, _h_top_r, h_guard⟩ σ _h_σ_mem
     exact ⟨r, hrt, fun h => h, h_guard⟩

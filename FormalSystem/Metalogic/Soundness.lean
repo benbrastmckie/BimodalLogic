@@ -1346,8 +1346,7 @@ theorem axiom_swap_validIn_min {φ : Formula} (ax : Axiom φ) :
   · have heq : ax.minFrameClass = FrameClass.Base :=
       le_antisymm hbase (FrameClass.base_le _)
     rw [heq]
-    exact ValidIn.of_forall_total fun F _ M τ hτ t =>
-      SoundnessLemmas.axiom_swap_valid_general (D := F.Duration) φ ax hbase F.toFibre M τ hτ t
+    exact SoundnessLemmas.axiom_swap_valid_general φ ax hbase
   · cases ax with
     | density a0 => exact density_swap_valid a0
     | dense_indicator => exact dense_indicator_swap_valid
