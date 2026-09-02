@@ -11,15 +11,15 @@ next_project_number: 532
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,257,298,433,461,476,481,504,506,518 | -- | dataset-enhancement, decidability, frame-extensions, ... |
-| 2 | 231,282,296,463,502,517,519,520 | 298,433,461,518 | algebraic-representation, dataset-enhancement, decidability, ... |
-| 3 | 219,464,521 | 231,463,517,519 | dataset-enhancement, decidability, metalogic |
-| 4 | 465,522,526 | 464,520,521 | decidability, metalogic |
-| 5 | 193,428,523,524,527,528 | 465,522,526 | automation, decidability, metalogic |
-| 6 | 178,429,497,525,529,530 | 193,428,502,520,523,524,528 | algebraic-representation, decidability, formula-refactor, ... |
-| 7 | 410,498,499,500,531 | 429,497,529,530 | algebraic-representation, decidability, metalogic |
-| 8 | 125,411 | 410,498,499 | algebraic-representation, decidability |
-| 9 | 430,501 | 125,411 | algebraic-representation, decidability |
+| 1 | 127,128,257,298,433,461,476,481,504,506,517,519,520 | -- | dataset-enhancement, decidability, frame-extensions, ... |
+| 2 | 231,282,296,463,502,521 | 298,433,461,517,519 | algebraic-representation, dataset-enhancement, decidability, ... |
+| 3 | 219,464,522,526 | 231,463,520,521 | dataset-enhancement, decidability, metalogic |
+| 4 | 193,465,523,524,527,528 | 464,522,526 | automation, decidability, metalogic |
+| 5 | 178,428,497,525,529,530 | 193,465,502,520,523,524,528 | algebraic-representation, decidability, formula-refactor, ... |
+| 6 | 429,498,499,500,531 | 428,497,529,530 | algebraic-representation, decidability, metalogic |
+| 7 | 125,410 | 429,498,499 | algebraic-representation, decidability |
+| 8 | 411,501 | 125,410 | algebraic-representation, decidability |
+| 9 | 430 | 411 | decidability |
 | 10 | 177,412 | 193,430,530 | decidability, formula-refactor |
 | 11 | 482 | 412 | decidability |
 
@@ -84,23 +84,22 @@ next_project_number: 532
 
 ### Metalogic
 
-518 [PLANNED] — WAVE 0 HOTFIX for the metalogic consolidation programme (specs/re
-  └─ 519 [NOT STARTED] — WAVE 1 (deletion). Retire the soundness machinery that the FrameC
-    └─ 521 [NOT STARTED] — WAVE 2 (core utilities). Give the primary language's truth relati
-      └─ 522 [NOT STARTED] — WAVE 2 (core utilities). Fix the one representation choice that c
-        └─ 523 [NOT STARTED] — WAVE 2 (core utilities). Complete the task-frame construction kit
-          └─ 525 [NOT STARTED] — WAVE 3 (theorem layer). Put the frame-class Galois layer on Mathl
-          └─ 529 [NOT STARTED] — WAVE 5 (publication infrastructure). Turn on the two automated si
-            └─ 531 [NOT STARTED] — WAVE 5 (publication infrastructure). Publish the API documentatio
-        └─ 524 [NOT STARTED] — WAVE 3 (theorem layer). Finish the FrameClass collapse at the THE
-          └─ 530 [NOT STARTED] — WAVE 5 (publication infrastructure). Make status and counts machi
-            └─ 531 [NOT STARTED] — WAVE 5 (publication infrastructure). Publish the API documentatio (see above)
-      └─ 526 [NOT STARTED] — WAVE 3 (theorem layer). Consolidate the maximal-consistent-set AP
-        └─ 527 [NOT STARTED] — WAVE 4 (canonical-model infrastructure). Replace textual future/p
-        └─ 528 [NOT STARTED] — WAVE 4 (algebraic infrastructure). Modernise Metalogic/Algebraic/
-  └─ 520 [NOT STARTED] — WAVE 1 (deletion). Retire the dead half of Metalogic/Bundle/ and 
-    └─ 526 [NOT STARTED] — WAVE 3 (theorem layer). Consolidate the maximal-consistent-set AP (see above)
-    └─ 529 [NOT STARTED] — WAVE 5 (publication infrastructure). Turn on the two automated si (see above)
+519 [NOT STARTED] — WAVE 1 (deletion). Retire the soundness machinery that the FrameC
+  └─ 521 [NOT STARTED] — WAVE 2 (core utilities). Give the primary language's truth relati
+    └─ 522 [NOT STARTED] — WAVE 2 (core utilities). Fix the one representation choice that c
+      └─ 523 [NOT STARTED] — WAVE 2 (core utilities). Complete the task-frame construction kit
+        └─ 525 [NOT STARTED] — WAVE 3 (theorem layer). Put the frame-class Galois layer on Mathl
+        └─ 529 [NOT STARTED] — WAVE 5 (publication infrastructure). Turn on the two automated si
+          └─ 531 [NOT STARTED] — WAVE 5 (publication infrastructure). Publish the API documentatio
+      └─ 524 [NOT STARTED] — WAVE 3 (theorem layer). Finish the FrameClass collapse at the THE
+        └─ 530 [NOT STARTED] — WAVE 5 (publication infrastructure). Make status and counts machi
+          └─ 531 [NOT STARTED] — WAVE 5 (publication infrastructure). Publish the API documentatio (see above)
+    └─ 526 [NOT STARTED] — WAVE 3 (theorem layer). Consolidate the maximal-consistent-set AP
+      └─ 527 [NOT STARTED] — WAVE 4 (canonical-model infrastructure). Replace textual future/p
+      └─ 528 [NOT STARTED] — WAVE 4 (algebraic infrastructure). Modernise Metalogic/Algebraic/
+520 [NOT STARTED] — WAVE 1 (deletion). Retire the dead half of Metalogic/Bundle/ and 
+  └─ 526 [NOT STARTED] — WAVE 3 (theorem layer). Consolidate the maximal-consistent-set AP (see above)
+  └─ 529 [NOT STARTED] — WAVE 5 (publication infrastructure). Turn on the two automated si (see above)
 
 ### Publication Quality
 
@@ -243,12 +242,13 @@ next_project_number: 532
 ---
 
 ### 518. Metalogic hotfix simp loop unbuilt modules
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: None
 - **Research**: [518_metalogic_hotfix_simp_loop_unbuilt_modules/reports/01_wave-0-hotfix-verification.md]
 - **Plan**: [518_metalogic_hotfix_simp_loop_unbuilt_modules/plans/01_wave-0-hotfix-execution.md]
+- **Summary**: [518_metalogic_hotfix_simp_loop_unbuilt_modules/summaries/01_wave-0-hotfix-summary.md]
 
 **Description**: WAVE 0 HOTFIX for the metalogic consolidation programme (specs/reviews/review-2026-09-01-lean-engineering.md, Critical findings C1-C6; territory detail in specs/reviews/2026-09-01-lean-engineering/{D-tactics,B-completeness,E-docs,F-canonical}.md). Six small, independent edits; land them all before any other task in the programme. (1) SIMP LOOP (D-01, validated): FormalSystem/Automation/Normalization.lean registers 21 @[simp] unfold lemmas (:69-161) and 10 @[simp] fold lemmas (:800-834) that are exact rfl inverses in the GLOBAL simp set; plain `simp` on `a.neg = a.neg` hits maximum recursion depth in 43 modules and for every `import FormalSystem` consumer. Fix: `register_simp_attr formula_unfold` / `formula_fold`, retag both families, redefine modalNorm/modalNormAt/modalNormAll/modalFold as `simp only [formula_unfold]` etc., add a regression `example (a : Formula) : a.neg = a.neg := by simp` to Tests/BimodalTest/Automation/. (2) UNBUILT MODULES (B-08, C-19; C6 currently FAILS): Metalogic/SpWitness.lean, Metalogic/TMCompletenessReduction.lean, Metalogic/Z1Countermodel.lean and Semantics/LexCarrier.lean are unreachable from every Lake root and absent from scripts/module-invariants-manifest.txt, so `lake build` never compiles Z1Countermodel.tmCompleteDiscrete_refuted, the machine-checked CEF half that Conservativity.lean:159-166 cites. Fix: import Z1Countermodel and SpWitness from FormalSystem/Metalogic.lean; add LexCarrier and BLSchemaValidity to FormalSystem/Semantics.lean; confirm `bash scripts/check-module-invariants.sh` passes C6. (3) README.md:167 and :240-241 say Dedekind strong completeness is 'not stated ... no CompactDedekind definition and no refuting theorem'; SetConsequence.lean:601,609 define both and DedekindNonCompactness.lean:431,459 refute both. Rewrite to match Metalogic.lean:116-120 (E-01). (4) typst/FormalFoundations.typ:697,701,993,999-1004,1543 report `completeness` as carrying sorryAx and claim one live structural sorry in WeakCanonical/Transfer.lean; C2 pins completeness at propext/Classical.choice/Quot.sound, C3 asserts zero, and countermodel_discrete is proved at WeakCanonical/GroupModel/CountermodelBase.lean:143. Correct all five sites (E-02). (5) FormalSystem/README.md:51-58,68-69 and FormalSystem/Syntax/README.md:19 present all_past/all_future as Formula constructors and omit untl/snce; the constructors are atom, bot, imp, box, untl, snce (Syntax/Formula.lean:78-106). Replace both tables with a link to the correct top-level README.md:33-69 version (E-03). (6) CYCLE (F-03): Bundle/LimitMCS.lean:8 imports Algebraic.FlowFrame solely for the orphan `fc_theorem_true_in_bundle_flow_model` (:461-473, zero consumers), creating an undocumented Bundle<->Algebraic directory cycle that Metalogic/README.md:88 denies. Delete the orphan and the import; correct README.md:88 to 'three cycles' or, after deletion, 'two'. (7) D-13: AesopRules.lean's 18 attributes sit in Aesop's DEFAULT rule set despite the file's deprecation notice; wrap them in `declare_aesop_rule_sets [TMLogic]` + `(rule_sets := [TMLogic])`. ACCEPTANCE: lake build green; check-module-invariants.sh ALL PASS; the simp regression example compiles; grep confirms the five doc sites and README.md:167 corrected.
 

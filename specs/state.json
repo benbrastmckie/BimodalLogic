@@ -1393,7 +1393,7 @@
     {
       "project_number": 518,
       "project_name": "metalogic_hotfix_simp_loop_unbuilt_modules",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "topic": "metalogic",
       "priority": "high",
@@ -1412,7 +1412,7 @@
         "scripts/module-invariants-manifest.txt"
       ],
       "created": "2026-09-02T03:30:31Z",
-      "last_updated": "2026-09-02T04:58:14Z",
+      "last_updated": "2026-09-02T05:21:49Z",
       "artifacts": [
         {
           "path": "specs/518_metalogic_hotfix_simp_loop_unbuilt_modules/reports/01_wave-0-hotfix-verification.md",
@@ -1423,9 +1423,15 @@
           "path": "specs/518_metalogic_hotfix_simp_loop_unbuilt_modules/plans/01_wave-0-hotfix-execution.md",
           "type": "plan",
           "summary": "Eight-phase Wave 0 hotfix plan covering the simp loop, C6 unreachable modules, the Bundle/Algebraic cycle, four documentation fronts, and a final acceptance gate."
+        },
+        {
+          "path": "specs/518_metalogic_hotfix_simp_loop_unbuilt_modules/summaries/01_wave-0-hotfix-summary.md",
+          "type": "summary",
+          "summary": "Wave 0 hotfix: simp loop fixed via dedicated formula_unfold/formula_fold simp sets, C6 flipped to PASS by wiring four unreachable modules in, Bundle<->Algebraic cycle broken, four documentation fronts corrected, and AesopRules moved into a dedicated TMLogic rule set."
         }
       ],
-      "session_id": "sess_1788324209_de679d_518"
+      "session_id": "sess_1788324209_de679d_518",
+      "completion_summary": "All eight phases of the Wave 0 hotfix landed on a green tree. Invariant check C6 flipped FAIL -> PASS and scripts/check-module-invariants.sh now reports ALL CHECKS PASSED (baseline: all-pass-except-C6); plain simp terminates on Formula goals again after the 31 unfold/fold lemmas moved into dedicated formula_unfold/formula_fold simp sets; the Bundle <-> Algebraic directory cycle is gone; AesopRules' 21 rules moved out of Aesop's default rule set into a dedicated TMLogic set; and four drifted documentation fronts (README Dedekind status, Formula constructor tables, typst sorryAx claims, the AesopRules docstring) now agree with machine-checked fact. lake build and lake build BimodalTest are both at exit 0, with no sorry, no new axiom, and no vacuous definition introduced."
     },
     {
       "project_number": 519,
