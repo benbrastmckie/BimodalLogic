@@ -485,7 +485,7 @@ line-**additive** (+~3 lines per lemma) — a line increase here is expected, no
 
 ---
 
-### Phase 8: Retire `IsValid` and delete `Core.lean` [NOT STARTED]
+### Phase 8: Retire `IsValid` and delete `Core.lean` [IN PROGRESS]
 
 **Goal**: Restate the four discrete theorems at `ValidDiscrete`, retarget the one out-of-directory
 consumer, and delete the local validity notion and its module. **This is the highest-risk phase

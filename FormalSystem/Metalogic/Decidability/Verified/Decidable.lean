@@ -2376,8 +2376,7 @@ duplicated Mathlib.
 
 **On the import edge.** `FormalSystem.Metalogic.Soundness` remains refused, and this is *not*
 that edge. `FrameClassVariants` is a different module with a different import closure —
-`FrameClassVariants → Core → {Semantics.Truth, ProofSystem.Derivation,
-ProofSystem.Axioms}` — and nothing anywhere in it imports `Decidability`, so there is no cycle.
+`FrameClassVariants → {Semantics.Validity, ProofSystem.Derivation, ProofSystem.Axioms}` — and nothing anywhere in it imports `Decidability`, so there is no cycle.
 The cost is a heavier build edge, not a cycle.
 
 **Why `carrierDiscrete` is an `Exists` and not a conjunction of classes.** `CarrierProp` returns
@@ -2403,16 +2402,24 @@ Existentially quantified because `SuccOrder`/`PredOrder` are data; see the secti
 def carrierDiscrete : CarrierProp := fun D =>
   ∃ (hs : SuccOrder D) (hp : PredOrder D), @IsSuccArchimedean D _ hs ∧ @IsPredArchimedean D _ hp
 
-/-- Land a `SoundnessLemmas.IsValid` conclusion where the rule-soundness proofs need it.
+/-- Land a `ValidDiscrete` conclusion where the rule-soundness proofs need it.
 
-`IsValid` states truth at the inert carrier `Set.univ`, which is exactly what the rule-soundness
-proofs below evaluate against, so this is now a plain re-export. It is kept as a named step so the
-three `.Discrete` call sites read the same as they did when a carrier transport was still needed;
-it disappears with `TruthAt`'s set parameter itself. -/
-theorem truthAt_of_isValid {F : FrameOver (TemporalOrder.of D)} {M : TaskModel F}
-    {φ : Formula} (h : SoundnessLemmas.IsValid (TemporalOrder.of D) φ)
+`ValidDiscrete` states truth at the inert carrier `Set.univ`, which is exactly what the
+rule-soundness proofs below evaluate against, so this is `ValidDiscrete.apply` at the frame this
+tree carries. It is kept as a named step so the three `.Discrete` call sites read the same as they
+did when a carrier transport was still needed; it disappears with `TruthAt`'s set parameter
+itself.
+
+The four discreteness instances are bound on `D` and handed to `FrameClass.Discrete.Sat`
+**positionally**, exactly as `ValidDiscrete.of_forall` and `ValidDiscrete.apply` do: `SuccOrder`
+and `PredOrder` are data, so routing them back through instance synthesis at
+`F.toTaskFrame.Duration.carrier` breaks against the instances the three call sites have already
+fixed on `D` with `letI`. -/
+theorem truthAt_of_validDiscrete {F : FrameOver (TemporalOrder.of D)} {M : TaskModel F}
+    {φ : Formula} [so : SuccOrder D] [po : PredOrder D]
+    [hsa : IsSuccArchimedean D] [hpa : IsPredArchimedean D] (h : ValidDiscrete φ)
     (τ : WorldHistory F) (hτ : τ.IsTotal) (t : D) : TruthAt M τ t φ :=
-  h F M τ hτ t
+  h F.toTaskFrame ⟨so, po, hsa, hpa⟩ M ⟨τ, hτ⟩ t
 
 /-- `T(F ψ)` gives `T(U(ψ, ¬ψ))` at the **same** label — the consequent of Prior-UZ, whose
 antecedent is the source formula. On a discrete order `F ψ` has a *nearest* `ψ`-point, and `¬ψ`
@@ -2446,7 +2453,7 @@ theorem ruleSound_priorUZ : RuleSound carrierDiscrete .priorUZ := by
         rw [List.mem_singleton] at hc
         subst hc
         simpa [SatAt, SignedFormula.pos] using
-          truthAt_of_isValid (SoundnessLemmas.prior_UZ_is_valid ψ) (hist l.world)
+          truthAt_of_validDiscrete (SoundnessLemmas.prior_UZ_is_valid ψ) (hist l.world)
             (hst.histTotal l.world) (tv l.time) hsrc
 
 /-- `T(P ψ)` gives `T(S(ψ, ¬ψ))` at the same label — Prior-SZ, the exact time reversal of
@@ -2479,7 +2486,7 @@ theorem ruleSound_priorSZ : RuleSound carrierDiscrete .priorSZ := by
         rw [List.mem_singleton] at hc
         subst hc
         simpa [SatAt, SignedFormula.pos] using
-          truthAt_of_isValid (SoundnessLemmas.prior_SZ_is_valid ψ) (hist l.world)
+          truthAt_of_validDiscrete (SoundnessLemmas.prior_SZ_is_valid ψ) (hist l.world)
             (hst.histTotal l.world) (tv l.time) hsrc
 
 /-- `T(G(Gφ → φ))` together with `T(F(Gφ))` at the same label gives `T(Gφ)` there — Z1, the
@@ -2529,7 +2536,7 @@ theorem ruleSound_z1Rule : RuleSound carrierDiscrete .z1Rule := by
       rw [List.mem_singleton] at hc
       subst hc
       simpa [SatAt, SignedFormula.pos] using
-        truthAt_of_isValid (SoundnessLemmas.z1_is_valid inner) (hist l.world)
+        truthAt_of_validDiscrete (SoundnessLemmas.z1_is_valid inner) (hist l.world)
           (hst.histTotal l.world) (tv l.time) hsrc hfgs
 
 /-!

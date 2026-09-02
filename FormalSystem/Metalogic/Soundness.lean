@@ -911,25 +911,19 @@ theorem discrete_box_necessity_valid :
 /-- Prior-UZ is valid on discrete orders: F(φ) → U(φ, ¬φ).
 If φ holds at some future time, there is a nearest future time where φ holds. -/
 theorem prior_UZ_valid (φ : Formula) :
-    ValidDiscrete (φ.someFuture.imp (Formula.untl φ.neg φ)) := by
-  refine ValidDiscrete.of_forall ?_
-  intro F _ _ _ _ M τ h_mem t
-  exact SoundnessLemmas.prior_UZ_is_valid φ F.toFibre M τ h_mem t
+    ValidDiscrete (φ.someFuture.imp (Formula.untl φ.neg φ)) :=
+  SoundnessLemmas.prior_UZ_is_valid φ
 
 /-- Prior-SZ is valid on discrete orders: P(φ) → S(φ, ¬φ).
 If φ held at some past time, there is a nearest past time where φ held. -/
-theorem prior_SZ_valid (φ : Formula) : ValidDiscrete (φ.somePast.imp (Formula.snce φ.neg φ)) := by
-  refine ValidDiscrete.of_forall ?_
-  intro F _ _ _ _ M τ h_mem t
-  exact SoundnessLemmas.prior_SZ_is_valid φ F.toFibre M τ h_mem t
+theorem prior_SZ_valid (φ : Formula) : ValidDiscrete (φ.somePast.imp (Formula.snce φ.neg φ)) :=
+  SoundnessLemmas.prior_SZ_is_valid φ
 
 /-- Z1 is valid on discrete orders: G(Gφ→φ) → (FGφ→Gφ).
 Backward induction from the Gφ witness using IsSuccArchimedean. -/
 theorem z1_valid (φ : Formula) : ValidDiscrete
-    ((φ.allFuture.imp φ).allFuture.imp (φ.allFuture.someFuture.imp φ.allFuture)) := by
-  refine ValidDiscrete.of_forall ?_
-  intro F _ _ _ _ M τ h_mem t
-  exact SoundnessLemmas.z1_is_valid φ F.toFibre M τ h_mem t
+    ((φ.allFuture.imp φ).allFuture.imp (φ.allFuture.someFuture.imp φ.allFuture)) :=
+  SoundnessLemmas.z1_is_valid φ
 
 /-! ## Validity-preserving forms of the two necessitation rules
 
@@ -1350,15 +1344,9 @@ theorem axiom_swap_validIn_min {φ : Formula} (ax : Axiom φ) :
   · cases ax with
     | density a0 => exact density_swap_valid a0
     | dense_indicator => exact dense_indicator_swap_valid
-    | prior_UZ a0 =>
-      exact ValidDiscrete.of_forall fun F _ _ _ _ M τ hτ t =>
-        SoundnessLemmas.prior_SZ_is_valid (D := F.Duration) a0.swapTemporal F.toFibre M τ hτ t
-    | prior_SZ a0 =>
-      exact ValidDiscrete.of_forall fun F _ _ _ _ M τ hτ t =>
-        SoundnessLemmas.prior_UZ_is_valid (D := F.Duration) a0.swapTemporal F.toFibre M τ hτ t
-    | z1 a0 =>
-      exact ValidDiscrete.of_forall fun F _ _ _ _ M τ hτ t =>
-        SoundnessLemmas.z1_past_is_valid (D := F.Duration) a0.swapTemporal F.toFibre M τ hτ t
+    | prior_UZ a0 => exact SoundnessLemmas.prior_SZ_is_valid a0.swapTemporal
+    | prior_SZ a0 => exact SoundnessLemmas.prior_UZ_is_valid a0.swapTemporal
+    | z1 a0 => exact SoundnessLemmas.z1_past_is_valid a0.swapTemporal
     | prior_U_gap a0 => exact prior_S_gap_valid a0.swapTemporal
     | prior_S_gap a0 => exact prior_U_gap_valid a0.swapTemporal
     | sep a0 => exact sep_swap_valid a0

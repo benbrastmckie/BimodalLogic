@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import FormalSystem.Metalogic.SoundnessLemmas.Core
+import FormalSystem.ProofSystem.Derivation
 import FormalSystem.Semantics.Validity
 import Mathlib.Order.SuccPred.Basic
 import Mathlib.Order.SuccPred.Archimedean
@@ -23,8 +23,6 @@ namespace FormalSystem.Metalogic.SoundnessLemmas
 open FormalSystem.Syntax
 open FormalSystem.ProofSystem (Axiom DerivationTree FrameClass)
 open FormalSystem.Semantics
-
-variable {D : TemporalOrder}
 
 /-! ## Per-Axiom Swap Validity
 
@@ -771,10 +769,10 @@ constraint `h.minFrameClass ≤ .Discrete` structurally excludes the density axi
 /-- Prior-UZ is valid on discrete orders: F(φ) → U(φ, ¬φ).
 The nearest future witness where φ holds satisfies Until with ¬φ as guard.
 Uses Nat.find for well-founded descent on the succ chain. -/
-theorem prior_UZ_is_valid
-    [SuccOrder ↑D] [PredOrder ↑D] [IsSuccArchimedean ↑D] [IsPredArchimedean ↑D]
-    (φ : Formula) : IsValid D (φ.someFuture.imp (Formula.untl φ.neg φ)) := by
-  intro F M τ _hτ t
+theorem prior_UZ_is_valid (φ : Formula) :
+    ValidDiscrete (φ.someFuture.imp (Formula.untl φ.neg φ)) := by
+  refine ValidDiscrete.of_forall ?_
+  intro F _ _ _ _ M τ _hτ t
   simp only [Formula.neg, TruthAt, Truth.some_future_iff]
   intro ⟨s, hts, hs⟩
   obtain ⟨n, hn⟩ := (Order.succ_le_of_lt hts).exists_succ_iterate
@@ -811,10 +809,10 @@ theorem prior_UZ_is_valid
 
 /-- Prior-SZ is valid on discrete orders: P(φ) → S(φ, ¬φ).
 Mirror of prior_UZ_is_valid using pred chain and IsPredArchimedean. -/
-theorem prior_SZ_is_valid
-    [SuccOrder ↑D] [PredOrder ↑D] [IsSuccArchimedean ↑D] [IsPredArchimedean ↑D]
-    (φ : Formula) : IsValid D (φ.somePast.imp (Formula.snce φ.neg φ)) := by
-  intro F M τ _hτ t
+theorem prior_SZ_is_valid (φ : Formula) :
+    ValidDiscrete (φ.somePast.imp (Formula.snce φ.neg φ)) := by
+  refine ValidDiscrete.of_forall ?_
+  intro F _ _ _ _ M τ _hτ t
   simp only [Formula.neg, TruthAt, Truth.some_past_iff]
   intro ⟨s, hst, hs⟩
   obtain ⟨n, hn⟩ := (Order.le_pred_of_lt hst).exists_pred_iterate
@@ -850,11 +848,11 @@ theorem prior_SZ_is_valid
 
 /-- Z1 is valid on discrete orders: G(Gφ→φ) → (FGφ→Gφ).
 Backward induction from the Gφ witness using IsSuccArchimedean. -/
-theorem z1_is_valid
-    [SuccOrder ↑D] [PredOrder ↑D] [IsSuccArchimedean ↑D] [IsPredArchimedean ↑D]
-    (φ : Formula) : IsValid D ((φ.allFuture.imp φ).allFuture.imp
-        (φ.allFuture.someFuture.imp φ.allFuture)) := by
-  intro F M τ _hτ t
+theorem z1_is_valid (φ : Formula) :
+    ValidDiscrete ((φ.allFuture.imp φ).allFuture.imp
+      (φ.allFuture.someFuture.imp φ.allFuture)) := by
+  refine ValidDiscrete.of_forall ?_
+  intro F _ _ _ _ M τ _hτ t
   simp only [TruthAt, Truth.future_iff, Truth.some_future_iff]
   intro h_GGpIp ⟨s₀, hts₀, hs₀⟩
   obtain ⟨n₀, hn₀⟩ := (Order.succ_le_of_lt hts₀).exists_succ_iterate
@@ -912,11 +910,11 @@ theorem z1_is_valid
 
 /-- Z1 past dual is valid on discrete orders: H(Hφ→φ) → (PHφ→Hφ).
 Backward induction using IsPredArchimedean. -/
-theorem z1_past_is_valid
-    [SuccOrder ↑D] [PredOrder ↑D] [IsSuccArchimedean ↑D] [IsPredArchimedean ↑D]
-    (φ : Formula) : IsValid D ((φ.allPast.imp φ).allPast.imp
-        (φ.allPast.somePast.imp φ.allPast)) := by
-  intro F M τ _hτ t
+theorem z1_past_is_valid (φ : Formula) :
+    ValidDiscrete ((φ.allPast.imp φ).allPast.imp
+      (φ.allPast.somePast.imp φ.allPast)) := by
+  refine ValidDiscrete.of_forall ?_
+  intro F _ _ _ _ M τ _hτ t
   simp only [TruthAt, Truth.past_iff, Truth.some_past_iff]
   intro h_HHpIp ⟨s₀, hs₀t, hs₀⟩
   obtain ⟨n₀, hn₀⟩ := (Order.le_pred_of_lt hs₀t).exists_pred_iterate
