@@ -140,8 +140,9 @@ sibling directory:
 |----------------------|------:|------|
 | `Soundness.lean` | 2,108 | The soundness theorem itself |
 | `StrongCompleteness.lean` | 1,002 | Strong/consequence completeness, including `completeness_dedekind`, and the two `FrameClass`-generic compactness reductions `strongCompleteness_of_compact` and `compact_of_modelExistence` |
-| `SetConsequence.lean` | 568 | Set-indexed consequence relation, and the `FrameClass`-indexed satisfiability / model-existence / compactness / strong-completeness family |
+| `SetConsequence.lean` | 638 | Set-indexed consequence relation, and the `FrameClass`-indexed satisfiability / model-existence / compactness / strong-completeness family, instantiated at all four class tags including the `.Dedekind` row (`CompactDedekind`, `StrongCompletenessDedekind`, `SatisfiableDedekindSet`, `ModelExistenceDedekind`) |
 | `DiscreteNonCompactness.lean` | 331 | Non-compactness of the discrete frame class |
+| `DedekindNonCompactness.lean` | 516 | Non-compactness of the Dedekind frame class — the `{G(⊤ S ¬q), F(G ¬q)} ∪ {Xqⁿ⊤}` witness, finitely satisfiable over `ℝ` and unsatisfiable over every Dedekind-complete carrier, refuting `CompactDedekind` and `StrongCompletenessDedekind` |
 | `BaseLanguageSoundness.lean` | 482 | Soundness for the base language BL, by composing `Conservativity.translate` with `Soundness.lean` across the truth-transfer bridge `truthAt_tr`; also `bl_soundness_discrete_succ`, the binder-weakened discrete soundness theorem proved directly by induction rather than by composition |
 | `Conservativity.lean` | 382 | Conservativity of the extension |
 | `Compactness.lean` | 179 | Compactness and strong completeness for Base and Dense, by ultraproduct model existence |

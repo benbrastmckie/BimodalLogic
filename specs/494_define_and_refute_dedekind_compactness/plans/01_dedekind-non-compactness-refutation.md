@@ -1,7 +1,7 @@
 # Implementation Plan: Task #494
 
 - **Task**: 494 - define_and_refute_dedekind_compactness
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 6 hours
 - **Dependencies**: None outstanding (the compactness parameterization prerequisite has landed — the `FrameClass`-indexed family is live in `SetConsequence.lean`)
 - **Research Inputs**: `specs/494_define_and_refute_dedekind_compactness/reports/01_dedekind-noncompactness-witness.md`
@@ -377,71 +377,71 @@ recorded literally rather than rounded up.
 
 ---
 
-### Phase 5: Documentation reconciliation [NOT STARTED]
+### Phase 5: Documentation reconciliation [COMPLETED]
 
 **Goal**: No passage in `FormalSystem/` may still assert that the tree contains no Dedekind
 refutation. This is documentation debt the preceding phases create, and it is the difference
 between a correct tree and a tree that contradicts its own theorems.
 
 **Tasks** — the sites research §8 enumerated:
-- [ ] `Metalogic/StrongCompleteness.lean:73-83` — the Dedekind row of the status ledger ("What
+- [x] `Metalogic/StrongCompleteness.lean:73-83` — the Dedekind row of the status ledger ("What
       this tree does **not** contain is a refutation…"). Rewrite to the Discrete row's shape,
       naming `dedekind_consequence_not_compact` and `strongCompletenessDedekind_refuted` and the
       new module. Preserve the Reynolds 1992 §9 Thm 7 citation as the *weak* completeness result
       — the refutation does not contradict it; it explains why only weak completeness is
       available.
-- [ ] `Metalogic/StrongCompleteness.lean:84-90` — "Three distinct statuses, which must not be
+- [x] `Metalogic/StrongCompleteness.lean:84-90` — "Three distinct statuses, which must not be
       collapsed." There are now **two**: Base/Dense proved, Discrete/Dedekind refuted. Rewrite
       the paragraph, including its closing sentence about `SetConsequence.lean` modelling the
       discipline.
-- [ ] `Metalogic/StrongCompleteness.lean:823` — second copy of the same claim ("Discrete is the
+- [x] `Metalogic/StrongCompleteness.lean:823` — second copy of the same claim ("Discrete is the
       one class in this development where 'machine-refuted' is the earned phrasing… Those three
       statuses must not be collapsed into one"). Discrete is no longer the *one* such class.
-- [ ] `Metalogic/SetConsequence.lean:436-438` — "Dedekind (unavailable on its primary source's
+- [x] `Metalogic/SetConsequence.lean:436-438` — "Dedekind (unavailable on its primary source's
       own terms). The three must not be read as sharing a status." (Left deliberately untouched
       in Phase 1; now false.)
-- [ ] `Metalogic/SetConsequence.lean:22-30` and `:322-324` — **already discharged in Phase 1**;
+- [x] `Metalogic/SetConsequence.lean:22-30` and `:322-324` — **already discharged in Phase 1**;
       re-read to confirm they were not reverted, then check this item off.
-- [ ] `Metalogic.lean:10` — **already discharged in Phase 2** (the import). Re-read to confirm.
-- [ ] `Metalogic.lean:197` — extend the `DiscreteNonCompactness.lean` module bullet with its
+- [x] `Metalogic.lean:10` — **already discharged in Phase 2** (the import). Re-read to confirm.
+- [x] `Metalogic.lean:197` — extend the `DiscreteNonCompactness.lean` module bullet with its
       Dedekind sibling: the `{G(⊤ S ¬q), F(G ¬q)} ∪ {Xqⁿ⊤}` witness and the two refutations.
 
 **Tasks** — three further sites found during planning that research §8 **missed**:
-- [ ] `Metalogic/StrongCompleteness.lean:460-463` — a third copy inside the numbered-list
+- [x] `Metalogic/StrongCompleteness.lean:460-463` — a third copy inside the numbered-list
       docstring ("At `FrameClass.Dedekind` it is **unavailable on the primary source's own
       terms** and nothing stronger… this tree contains no `CompactDedekind` definition and no
       refuting theorem for the class. Saying that the Dedekind consequence relation 'is not
       compact' would assert more than has been checked here"). Every clause of this is now
       false.
-- [ ] `Metalogic/StrongCompleteness.lean:543` — a fourth copy, in
+- [x] `Metalogic/StrongCompleteness.lean:543` — a fourth copy, in
       `consequence_completeness_dedekind`'s docstring ("*unproved*, with no refutation in this
       tree, in contrast to `FrameClass.Discrete` where it is machine-refuted"). The contrast has
       collapsed; rewrite so the sentence still correctly says this theorem is *not* strong
       completeness.
-- [ ] `Metalogic/Compactness.lean:65` — "`FrameClass.Dedekind` — unavailable on its primary
+- [x] `Metalogic/Compactness.lean:65` — "`FrameClass.Dedekind` — unavailable on its primary
       source's own terms; see `FormalSystem/Metalogic.lean`." in the "Status of the four
       `FrameClass` cases" list.
-- [ ] `Metalogic.lean:115-116` — "**unavailable on the primary source's own terms**… this tree
+- [x] `Metalogic.lean:115-116` — "**unavailable on the primary source's own terms**… this tree
       contains no `CompactDedekind` definition and no refuting theorem, so the class is
       *unproved* rather than refuted."
 
 **Tasks** — the README (research §9 marked this **unverified**; planning confirmed it needs work):
-- [ ] `FormalSystem/Metalogic/README.md:144` — add a `DedekindNonCompactness.lean` row to the
+- [x] `FormalSystem/Metalogic/README.md:144` — add a `DedekindNonCompactness.lean` row to the
       "Loose non-aggregator" table, beside the `DiscreteNonCompactness.lean` row, with its line
       count and role.
-- [ ] `FormalSystem/Metalogic/README.md:143` — update `SetConsequence.lean`'s line count (568
+- [x] `FormalSystem/Metalogic/README.md:143` — update `SetConsequence.lean`'s line count (568
       before Phase 1) and extend its role text to mention the `.Dedekind` instantiations.
-- [ ] Check `FormalSystem/Semantics/README.md` for a Dedekind status claim. Planning found only
+- [x] Check `FormalSystem/Semantics/README.md` for a Dedekind status claim. *(confirmed: `:17` and `:19` are unrelated to compactness status — **no change needed**)* Planning found only
       unrelated mentions (`:17`, `:19`); confirm and record "no change needed" rather than
       silently skipping.
 
 **Closing sweep**:
-- [ ] Re-run the detector below and confirm every remaining hit is either a *correct* statement
+- [x] Re-run the detector below and confirm every remaining hit is either a *correct* statement
       about weak completeness / `ValidDedekind` refutability, or has been rewritten:
       ```
       grep -rn "CompactDedekind\|no refutation\|left unstated\|unavailable on the primary source\|unavailable on its primary source\|unavailable on Reynolds" FormalSystem/ --include=*.lean --include=*.md
       ```
-- [ ] `lake build` green (Lean docstrings elaborate — a malformed `/--` breaks the build).
+- [x] `lake build` green (Lean docstrings elaborate — a malformed `/--` breaks the build).
 
 **Timing**: 1.25 hours
 
@@ -449,7 +449,7 @@ between a correct tree and a tree that contradicts its own theorems.
 
 **Verification Tier**: local
 
-**Scope Hypothesis**: this phase asserts a site count. Research §8 claimed **six**; planning
+**Scope Hypothesis** *(confirmed undercount, again)*: the plan enumerated **5** `StrongCompleteness.lean` hunks; the baseline grep surfaced a **6th** at `:515` (`completeness_dedekind_of_engine`'s docstring), which was reconciled with the rest. Baseline grep: 18 hits, 11 asserting no Dedekind refutation exists; post-edit grep: 13 hits, every one either a reference to the now-real name `CompactDedekind` or the single deliberate historical note at `StrongCompleteness.lean:107`. This phase asserts a site count. Research §8 claimed **six**; planning
 found the detector grep above returning **13 hits across 4 `.lean` files**, plus 2 README hunks —
 so §8 is a confirmed undercount and the enumerated list here (10 `.lean` hunks + 2 README + 1
 README check) is itself only a hypothesis. Confirm at implementation time by running the grep
@@ -475,18 +475,18 @@ authoritative and add any newly-surfaced site to the list.
 
 ## Testing & Validation
 
-- [ ] `lake build` green at the close of **every** phase — no phase may leave the tree red
-- [ ] Zero `sorry` / `sorryAx` in `DedekindNonCompactness.lean` and `SetConsequence.lean`
-- [ ] `#print axioms dedWitness_not_satisfiable` = `[propext, Classical.choice, Quot.sound]`
-- [ ] `#print axioms dedWitness_finitely_satisfiable` = `[propext, Classical.choice, Quot.sound]`
-- [ ] `#print axioms dedekind_consequence_not_compact` = `[propext, Classical.choice, Quot.sound]`
-- [ ] `#print axioms strongCompletenessDedekind_refuted` = `[propext, Classical.choice, Quot.sound]`
-- [ ] All four Part 1 names resolve: `CompactDedekind`, `StrongCompletenessDedekind`,
+- [x] `lake build` green at the close of **every** phase — no phase may leave the tree red
+- [x] Zero `sorry` / `sorryAx` in `DedekindNonCompactness.lean` and `SetConsequence.lean`
+- [x] `#print axioms dedWitness_not_satisfiable` = `[propext, Classical.choice, Quot.sound]`
+- [x] `#print axioms dedWitness_finitely_satisfiable` = `[propext, Classical.choice, Quot.sound]`
+- [x] `#print axioms dedekind_consequence_not_compact` = `[propext, Classical.choice, Quot.sound]`
+- [x] `#print axioms strongCompletenessDedekind_refuted` = `[propext, Classical.choice, Quot.sound]`
+- [x] All four Part 1 names resolve: `CompactDedekind`, `StrongCompletenessDedekind`,
       `SatisfiableDedekindSet`, `ModelExistenceDedekind`
-- [ ] `DiscreteNonCompactness.lean` is byte-identical to its pre-task state
+- [x] `DiscreteNonCompactness.lean` is byte-identical to its pre-task state
       (`git diff --stat` shows no change to it)
-- [ ] The detector grep in Phase 5 shows no surviving "no Dedekind refutation" claim
-- [ ] No new build warnings attributable to the new module
+- [x] The detector grep in Phase 5 shows no surviving "no Dedekind refutation" claim
+- [x] No new build warnings attributable to the new module
 
 ## Artifacts & Outputs
 
@@ -517,3 +517,14 @@ never a destructive reset on a dirty tree (see `.claude/rules/git-workflow.md`).
 - **If `#print axioms` shows an unexpected axiom**: do not weaken the acceptance criterion. Trace
   the offending declaration, and if the extra axiom is genuinely unavoidable, record it as a
   deviation in the summary rather than silently accepting it.
+
+#### Sites actually reconciled
+
+| File | Hunks |
+|------|-------|
+| `Metalogic/StrongCompleteness.lean` | 6 (`:73-83`, `:84-90`, `:460-463`, **`:515` — not in the plan's list**, `:543`, `:823`) |
+| `Metalogic/SetConsequence.lean` | 3 (module docstring + adapter block, both in Phase 1; `:436-438` here) |
+| `Metalogic.lean` | 3 (import in Phase 2; `:115-117` and the two module bullets at `:190`/`:197` here) |
+| `Metalogic/Compactness.lean` | 1 (`:65`) |
+| `Metalogic/README.md` | 2 (new `DedekindNonCompactness.lean` row at 516 lines; `SetConsequence.lean` count 568 → 638) |
+| `Semantics/README.md` | 0 — checked, no change needed |

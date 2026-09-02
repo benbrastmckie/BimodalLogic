@@ -62,8 +62,10 @@ independently of this module's instantiation of it.
 * `FrameClass.Discrete` — compactness and strong completeness are **refuted**, in
   `FormalSystem/Metalogic/DiscreteNonCompactness.lean`.
 * `FrameClass.Base` and `FrameClass.Dense` — **proved**, here.
-* `FrameClass.Dedekind` — unavailable on its primary source's own terms; see
-  `FormalSystem/Metalogic.lean`.
+* `FrameClass.Dedekind` — compactness and strong completeness are **refuted** too, in
+  `FormalSystem/Metalogic/DedekindNonCompactness.lean`, by a different witness (`archWitness`
+  does not port: `Formula.next` is vacuous on a densely ordered carrier). Reynolds 1992
+  Theorem 7 remains the *weak* completeness result for the class.
 -/
 
 open Filter FormalSystem.Syntax FormalSystem.Semantics

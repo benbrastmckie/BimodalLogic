@@ -70,25 +70,44 @@ it is easy to get backwards: the engine never sees a context. It is fed the sing
   conclusions are `discrete_consequence_not_compact` (refuting `CompactDiscrete`) and
   `strongCompletenessDiscrete_refuted` (refuting `StrongCompletenessDiscrete`). All are
   sorry-free at exactly `[propext, Classical.choice, Quot.sound]`.
-* **`FrameClass.Dedekind`**: strong completeness is **unavailable on the primary source's own
-  terms**, which is a weaker and more accurate claim than the one Discrete supports. Reynolds
-  1992 (Theorem 7, §9, printed p.189) is *weak* completeness for the real-line axiomatisation,
-  and the restriction there is genuine rather than an artefact of presentation. What this tree
-  does **not** contain is a refutation: there is no `CompactDedekind` definition and no theorem
-  refuting compactness for this class, so "the Dedekind consequence relation is not compact"
-  is at present a claim resting on the source's own scope, not a machine-checked fact. The
-  headline result for this class is therefore weak completeness, `completeness_dedekind`, with
-  the finite-context form `consequence_completeness_dedekind` as its deduction-theorem
-  companion — not a "strong" theorem, and nothing in this module purports otherwise.
+* **`FrameClass.Dedekind`**: strong completeness is **refuted**, on the same footing as
+  Discrete. Reynolds 1992 (Theorem 7, §9, printed p.189) is *weak* completeness for the
+  real-line axiomatisation, and the restriction there is genuine rather than an artefact of
+  presentation — this class now says *why*. The `FrameClass.Dedekind` set-based consequence
+  relation is not compact: the premise set `{G(⊤ S ¬q), F(G ¬q)} ∪ {Xqⁿ⊤ : n ∈ ℕ}`, where
+  `Xq φ = untl ¬q (q ∧ φ)`, is finitely satisfiable over `ℝ` (put `q` at the integers `1, …, N`)
+  yet unsatisfiable over every Dedekind-complete carrier: the `q`-points climb without bound
+  below a supremum that the "isolated from below" clause forbids.
 
-**Three distinct statuses, which must not be collapsed.** Base and Dense are **proved**
+  This argument is machine-checked in `FormalSystem/Metalogic/DedekindNonCompactness.lean`: the
+  witness set is `dedWitness`, its two halves are `dedWitness_finitely_satisfiable` and
+  `dedWitness_not_satisfiable`, and the conclusions are `dedekind_consequence_not_compact`
+  (refuting `CompactDedekind`) and `strongCompletenessDedekind_refuted` (refuting
+  `StrongCompletenessDedekind`). All are sorry-free at exactly
+  `[propext, Classical.choice, Quot.sound]`.
+
+  Note that `archWitness` does **not** port to this class: `Formula.next` is vacuously false on
+  a densely ordered carrier, and a densely ordered type with no maximum admits no `SuccOrder`, so
+  the Discrete route is not merely inconvenient here but unavailable. The headline *positive*
+  result for this class therefore remains weak completeness, `completeness_dedekind`, with the
+  finite-context form `consequence_completeness_dedekind` as its deduction-theorem companion —
+  not a "strong" theorem, and nothing in this module purports otherwise. The refutation does not
+  contradict Reynolds's theorem; it accounts for its scope.
+
+**Two distinct statuses, which must not be collapsed.** Base and Dense are **proved**
 (`compactBase`/`compactDense` and `strongCompletenessBase`/`strongCompletenessDense`, in
-`Metalogic/Compactness.lean`). Discrete is **machine-refuted**
-(`discrete_consequence_not_compact`, `strongCompletenessDiscrete_refuted`). Dedekind is
-**unavailable on Reynolds's terms** — unproved, with no refutation in the tree.
-`SetConsequence.lean` already models this discipline for Dense versus Discrete; the Dedekind
-case is the third status, and reading it as sharing either of the other two would misstate the
-evidence.
+`Metalogic/Compactness.lean`). Discrete and Dedekind are both **machine-refuted** —
+`discrete_consequence_not_compact` / `strongCompletenessDiscrete_refuted` in
+`Metalogic/DiscreteNonCompactness.lean`, and `dedekind_consequence_not_compact` /
+`strongCompletenessDedekind_refuted` in `Metalogic/DedekindNonCompactness.lean` — by two
+*different* witnesses, for the reason given above. `SetConsequence.lean` models this discipline
+across all four rows of the `FrameClass` family; reading a proved class as sharing the refuted
+classes' status, or the reverse, would misstate the evidence.
+
+The third status this section used to record — "unavailable on the primary source's own terms",
+unproved but unrefuted — no longer applies to any class in the table. It was the honest reading
+while the Dedekind witness was missing; it is superseded, not softened, by
+`dedekind_consequence_not_compact`.
 
 ## Axiomatisability of the real-line temporal logic
 
@@ -457,11 +476,12 @@ completeness — `Γ ⊨ φ → Γ ⊢ φ` for an arbitrary, possibly infinite `
      `discrete_consequence_not_compact` refutes `CompactDiscrete` and
      `strongCompletenessDiscrete_refuted` refutes `StrongCompletenessDiscrete`, both in
      `Metalogic/DiscreteNonCompactness.lean`, both sorry-free.
-   * At `FrameClass.Dedekind` it is **unavailable on the primary source's own terms** and
-     nothing stronger. Reynolds 1992 Theorem 7 is weak-only, and this tree contains no
-     `CompactDedekind` definition and no refuting theorem for the class. Saying that the
-     Dedekind consequence relation "is not compact" would assert more than has been checked
-     here; the honest statement is that no route to it is known and none is attempted.
+   * At `FrameClass.Dedekind` the infinitary statement is **machine-refuted** as well:
+     `dedekind_consequence_not_compact` refutes `CompactDedekind` and
+     `strongCompletenessDedekind_refuted` refutes `StrongCompletenessDedekind`, both in
+     `Metalogic/DedekindNonCompactness.lean`, both sorry-free. The two refutations use
+     *different* witnesses — `archWitness` is built from `Formula.next`, which is vacuously
+     false on a densely ordered carrier — so the parallel is one of status, not of proof.
 3. *The infinitary statement is not even expressible in this tree.* `Context := List Formula`
    (`Syntax/Context.lean`) is the premise type of `Derivable`, `DerivationTree`, and
    `SemanticConsequenceDedekindDense` alike, so there is no `Γ : Set Formula` to quantify over
@@ -512,9 +532,10 @@ theorem soundness_dedekind_consequence (Γ : Context) (φ : Formula)
 of the consequence form.**
 
 Weak completeness is the strongest completeness statement available for `FrameClass.Dedekind`:
-the genuine strong (infinite-premise) form is unavailable on the primary source's own terms and
-no route to it is known — but note that, unlike at `FrameClass.Discrete`, it is *unproved*
-rather than refuted (see the module docstring). Recorded here so that the weak form has exactly
+the genuine strong (infinite-premise) form is **refuted**, by
+`strongCompletenessDedekind_refuted` in `Metalogic/DedekindNonCompactness.lean` — the same
+status as at `FrameClass.Discrete`, reached by a different witness (see the module docstring).
+Recorded here so that the weak form has exactly
 one proof in the tree, and that proof is a corollary rather than a parallel construction —
 proving it independently would duplicate the countermodel engine; this declaration makes that
 redundancy visible in the type.
@@ -540,9 +561,9 @@ neither carries a proof of its own beyond naming the engine. -/
 p.189. The engine hypothesis is discharged; everything the docstring of the `_of_engine` form
 says about what this statement is and is not carries over verbatim, including the three facts
 held apart there. In particular this is **not** strong completeness: the infinitary statement is
-unavailable for this class on the primary source's own terms — *unproved*, with no refutation
-in this tree, in contrast to `FrameClass.Discrete` where it is machine-refuted — and
-`Context := List Formula` cannot express it in any case.
+*machine-refuted* for this class, by `strongCompletenessDedekind_refuted`
+(`Metalogic/DedekindNonCompactness.lean`) — the same status `FrameClass.Discrete` has, though
+reached by a different witness — and `Context := List Formula` cannot express it in any case.
 -/
 theorem consequence_completeness_dedekind (Γ : Context) (φ : Formula)
     (h : SemanticConsequenceDedekindDense Γ φ) : Derivable FrameClass.Dedekind Γ φ :=
@@ -819,10 +840,12 @@ is a genuine next-step operator on discrete orders — which is finitely satisfi
 unsatisfiable over every Archimedean discrete carrier, since `ValidDiscrete` requires
 `IsSuccArchimedean`/`IsPredArchimedean`.
 
-Discrete is the one class in this development where "machine-refuted" is the earned phrasing:
-Base and Dense are **proved** (`Metalogic/Compactness.lean`), and Dedekind is
-**unavailable on its primary source's own terms** (Reynolds 1992 Theorem 7 is weak-only). Those
-three statuses must not be collapsed into one. -/
+Discrete is no longer the only class where "machine-refuted" is the earned phrasing: Base and
+Dense are **proved** (`Metalogic/Compactness.lean`), while Dedekind is refuted too, by a
+different witness, in `Metalogic/DedekindNonCompactness.lean`
+(`dedekind_consequence_not_compact`, `strongCompletenessDedekind_refuted`). Reynolds 1992
+Theorem 7 remains correctly cited as the *weak* completeness result for that class. The two
+remaining statuses — proved, refuted — must not be collapsed into one. -/
 
 /--
 Semantic consequence over discrete carriers.

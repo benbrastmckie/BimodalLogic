@@ -113,9 +113,11 @@ temporal analogs (G phi -> phi, H phi -> phi) are NOT valid under irreflexive se
     `compactDense` and the weak-completeness engines. Compactness itself comes from
     `modelExistenceBase`/`modelExistenceDense` by an ultraproduct construction over the finite
     sublists of the premise set.
-  * `FrameClass.Dedekind` — **unavailable on the primary source's own terms**. Reynolds 1992
-    Theorem 7 is weak-only, and this tree contains no `CompactDedekind` definition and no
-    refuting theorem, so the class is *unproved* rather than refuted.
+  * `FrameClass.Dedekind` — **refuted**, like Discrete. Reynolds 1992 Theorem 7 is weak-only,
+    and this tree now explains why: `CompactDedekind` and `StrongCompletenessDedekind` are
+    stated in `Metalogic/SetConsequence.lean` and refuted in
+    `Metalogic/DedekindNonCompactness.lean` by `dedekind_consequence_not_compact` and
+    `strongCompletenessDedekind_refuted`.
 - **Non-compactness (discrete)** (`discrete_consequence_not_compact`): SORRY-FREE (sorryAx-free;
   axioms: exactly `propext`, `Classical.choice`, `Quot.sound`). The `FrameClass.Discrete`
   set-based consequence relation is **not** compact: the premise set `{F p} ∪ {¬Xⁿ p : n ∈ ℕ}`
@@ -194,11 +196,17 @@ theorem (Reynolds 1992, Section 8 Theorem 6) at the chronicle bridge and reading
   `StrongCompleteness`, whose per-class instantiations are the `Prop`-valued names for the Base
   and Dense statements (`StrongCompletenessBase`, `CompactBase`, `SatisfiableBaseSet`,
   `ModelExistenceBase` and their Dense siblings), proved in `Compactness.lean`, together with
-  the refuted Discrete ones
+  the refuted Discrete and Dedekind ones
 - **DiscreteNonCompactness.lean**: the machine-checked discharge of one of those obstructions —
   the `{F p} ∪ {¬Xⁿ p}` witness, the first semantic characterisation of `Formula.next`
   (`truthAt_next_iff`), and the two refutations `discrete_consequence_not_compact` and
   `strongCompletenessDiscrete_refuted`
+- **DedekindNonCompactness.lean**: its Dedekind sibling, and the discharge of the last remaining
+  obstruction — the `{G(⊤ S ¬q), F(G ¬q)} ∪ {Xqⁿ⊤ : n ∈ ℕ}` witness (`dedWitness`, with
+  `Xq φ = untl ¬q (q ∧ φ)`), finitely satisfiable over `ℝ` and unsatisfiable over every
+  Dedekind-complete carrier, and the two refutations `dedekind_consequence_not_compact` and
+  `strongCompletenessDedekind_refuted`. `archWitness` does not port: `Formula.next` is vacuously
+  false on a densely ordered carrier, so the witness is genuinely new
 - **Bundle/**: BFMCS infrastructure (shared by all paths)
 
 ## Axiom Dependencies

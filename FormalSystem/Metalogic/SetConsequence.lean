@@ -435,9 +435,10 @@ Each definition is its Dense sibling with `SetSemanticConsequenceBase` / `valid`
 `SetSemanticConsequenceDense` / `ValidDense` and the `[DenselyOrdered D]` binder dropped —
 there is no third axis of variation.
 
-Base's status is **proved**, the same status as Dense and distinct from both Discrete (refuted,
-below) and Dedekind (unavailable on its primary source's own terms). The three must not be read
-as sharing a status.
+Base's status is **proved**, the same status as Dense and distinct from both Discrete and
+Dedekind, which are refuted below (in `Metalogic/DiscreteNonCompactness.lean` and
+`Metalogic/DedekindNonCompactness.lean` respectively). Proved and refuted must not be read as
+sharing a status.
 -/
 
 /-- **Strong completeness for `FrameClass.Base`** — the statement. The
