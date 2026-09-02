@@ -576,63 +576,6 @@ theorem truth_history_eq (M : TaskModel F)
   rfl
 
 /--
-Truth at double time-shift with opposite amounts equals truth at original history.
-
-This is the key transport lemma for the box case of time_shift_preserves_truth.
-It allows us to transfer truth from (timeShift (timeShift σ Δ) (-Δ)) back to σ.
--/
-theorem truth_double_shift_cancel (M : TaskModel F)
-    (σ : WorldHistory F) (Δ : F.Duration) (t : F.Duration)
-    (φ : Formula) :
-    TruthAt M (WorldHistory.timeShift (WorldHistory.timeShift σ Δ) (-Δ)) t φ ↔
-    TruthAt M σ t φ := by
-  induction φ generalizing t with
-  | atom p =>
-    simp only [TruthAt]
-    -- Both sides check domain membership and get the same state
-    -- Domain equivalence: double-shift domain at t iff σ.domain t
-    constructor
-    · intro ⟨ht', h⟩
-      have ht : σ.domain t := (WorldHistory.time_shift_time_shift_neg_domain_iff σ Δ t).mp ht'
-      have h_eq := WorldHistory.time_shift_time_shift_neg_states σ Δ t ht ht'
-      exact ⟨ht, by rw [← h_eq]; exact h⟩
-    · intro ⟨ht, h⟩
-      have ht' : (WorldHistory.timeShift (WorldHistory.timeShift σ Δ) (-Δ)).domain t :=
-        (WorldHistory.time_shift_time_shift_neg_domain_iff σ Δ t).mpr ht
-      have h_eq := WorldHistory.time_shift_time_shift_neg_states σ Δ t ht ht'
-      exact ⟨ht', by rw [h_eq]; exact h⟩
-  | bot =>
-    simp only [TruthAt]
-  | imp ψ χ ih_ψ ih_χ =>
-    simp only [TruthAt]
-    constructor
-    · intro h h_ψ
-      have h_ψ' := (ih_ψ t).mpr h_ψ
-      exact (ih_χ t).mp (h h_ψ')
-    · intro h h_ψ'
-      have h_ψ := (ih_ψ t).mp h_ψ'
-      exact (ih_χ t).mpr (h h_ψ)
-  | box ψ ih =>
-    simp only [TruthAt]
-    -- Box quantifies over the total histories at time t, independent of the current history.
-    -- Both sides quantify over the same `IsTotal` predicate, so this is definitionally closed
-    -- and leaves no residual goal.
-  | untl ψ φ ih_ψ ih_φ =>
-    simp only [TruthAt]
-    constructor
-    · intro ⟨s, h_le, h_event, h_guard⟩
-      exact ⟨s, h_le, (ih_φ s).mp h_event, fun r hr1 hr2 => (ih_ψ r).mp (h_guard r hr1 hr2)⟩
-    · intro ⟨s, h_le, h_event, h_guard⟩
-      exact ⟨s, h_le, (ih_φ s).mpr h_event, fun r hr1 hr2 => (ih_ψ r).mpr (h_guard r hr1 hr2)⟩
-  | snce ψ φ ih_ψ ih_φ =>
-    simp only [TruthAt]
-    constructor
-    · intro ⟨s, h_le, h_event, h_guard⟩
-      exact ⟨s, h_le, (ih_φ s).mp h_event, fun r hr1 hr2 => (ih_ψ r).mp (h_guard r hr1 hr2)⟩
-    · intro ⟨s, h_le, h_event, h_guard⟩
-      exact ⟨s, h_le, (ih_φ s).mpr h_event, fun r hr1 hr2 => (ih_ψ r).mpr (h_guard r hr1 hr2)⟩
-
-/--
 Time-shift preserves truth of formulas.
 
 If σ is a history and Δ = y - x, then truth at (σ, y) equals truth at (timeShift σ Δ, x).
@@ -706,18 +649,14 @@ theorem time_shift_preserves_truth (M : TaskModel F)
       have h_shifted_tot : (WorldHistory.timeShift ρ (x - y)).IsTotal :=
         WorldHistory.isTotal_timeShift h_rho_tot (x - y)
       have h1 := h_box_y (WorldHistory.timeShift ρ (x - y)) h_shifted_tot
-      -- Apply IH with timeShift ρ (x - y) instead of σ
-      have h2 := (ih (WorldHistory.timeShift ρ (x - y)) x y).mpr h1
-      -- h2 : TruthAt M (timeShift (timeShift ρ (x-y)) (y-x)) x ψ
-      -- Need: TruthAt M ρ x ψ
-      have h_cancel : y - x = -(x - y) := (neg_sub x y).symm
-      have h_hist_eq :
-        WorldHistory.timeShift (WorldHistory.timeShift ρ (x - y)) (y - x) =
-        WorldHistory.timeShift (WorldHistory.timeShift ρ (x - y)) (-(x - y)) := by
-        exact WorldHistory.time_shift_congr
-          (WorldHistory.timeShift ρ (x - y)) (y - x) (-(x - y)) h_cancel
-      have h2' := (truth_history_eq M _ _ x h_hist_eq ψ).mp h2
-      exact (truth_double_shift_cancel M ρ (x - y) x ψ).mp h2'
+      -- The induction hypothesis is generalized over `σ`, `x` and `y`, so instantiating it at
+      -- `(ρ, y, x)` -- times SWAPPED -- reads
+      -- `TruthAt M (timeShift ρ (x - y)) y ψ ↔ TruthAt M ρ x ψ`,
+      -- which is exactly this direction. No double-shift round trip is needed: the older proof
+      -- instantiated at `(timeShift ρ (x - y), x, y)` instead and then had to cancel the
+      -- resulting double shift, which is the sole reason `truth_double_shift_cancel` and the two
+      -- `time_shift_time_shift_neg_*` lemmas existed.
+      exact (ih ρ y x).mp h1
   | untl ψ φ ih_ψ ih_φ =>
     -- Until (guard-first): untl(guard=ψ, event=φ)
     -- ∃ s > t, φ(s) ∧ ∀ r ∈ (t,s), ψ(r)

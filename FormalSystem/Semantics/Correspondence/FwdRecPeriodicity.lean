@@ -373,6 +373,22 @@ end Walk
 reaches into other histories. Here the `□` case is discharged instead by `Truth.box_time_const` —
 a boxed formula's truth value is a constant of the model — so a period belonging to `τ` alone
 suffices, and no `BoxFree` restriction is needed.
+
+**Why this keeps its own `induction φ` and is not a `Semantics.TruthIso` instance.**
+
+`Truth.truthAt_of_truthIso` subsumes every truth transport whose reindexing is uniform across
+histories, and `truthAt_add_period` above is now one of its instances. This theorem is **not**,
+and cannot be made one without weakening it. `TruthIso.atom` is quantified over *every* total
+history — it has to be, because `TruthAt`'s `□` clause ranges over all of them and the generic
+induction must have its hypothesis available at each. This theorem's hypothesis `hper` is about
+**one** history `τ`. Supplying a `TruthIso` would therefore mean strengthening `hper` to a
+frame-uniform period, which is exactly `truthAt_add_period`'s hypothesis and strictly stronger
+than what this statement assumes — and its consumer supplies only the per-history form, obtained
+from `Walk.periodic` at a single walk.
+
+The distinction is not incidental to the packaging: it is the same one the paragraph above
+records, seen from the other side. A per-history period survives here **only** because the `□`
+case never touches the induction hypothesis.
 -/
 theorem truthAt_add_hist_period {F : TaskFrame} (M : TaskModel F)
     (τ : WorldHistory F) (hτ : τ.IsTotal) {π : F.Duration}

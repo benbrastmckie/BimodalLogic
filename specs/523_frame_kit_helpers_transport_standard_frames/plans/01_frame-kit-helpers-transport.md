@@ -643,7 +643,59 @@ transports untouched.
 
 ---
 
-### Phase 10: Derive the shift and period transports; delete `truth_double_shift_cancel` [NOT STARTED]
+### Phase 10: Derive the shift and period transports; delete `truth_double_shift_cancel` [BLOCKED]
+
+**BLOCKER** (Phase 10):
+- **What failed**: the phase's first task — "Derive `Truth.time_shift_preserves_truth` as an
+  instance". It is not derivable from the `TruthIso` structure Phase 9 landed, and no
+  rearrangement of `dur`/`hist` fixes it.
+- **What was tried**: (a) `dur := (· + (y − x))`, `hist := timeShift · Δ` as the plan specifies;
+  (b) the mirror assignment `dur := (· − Δ)`, `hist := timeShift · Δ` with inverse
+  `timeShift · (−Δ)`, which does produce the right shape *for total histories*; (c) reading the
+  proof to check whether the general case could be recovered from the total case plus a short
+  argument.
+- **Why it's stuck**: **a quantifier mismatch the report and this plan both missed.**
+  `time_shift_preserves_truth` is stated for an **arbitrary** `σ : WorldHistory F` —
+  `∀ (σ : WorldHistory F) (x y : F.Duration) (φ : Formula), TruthAt M (σ.timeShift (y − x)) x φ ↔
+  TruthAt M σ y φ` — with no totality hypothesis anywhere. `TruthIso.hist` is an
+  `F.HF ≃ F'.HF`, so `truthAt_of_truthIso` transports **total** histories only, and its
+  conclusion is a statement about `τ : F.HF`. Deriving the general statement from it would
+  require reducing an arbitrary history to a total one, which is impossible: a non-total history
+  makes atoms *false* outside its domain (`TruthAt`'s `atom` clause is `∃ ht : τ.domain t, …`),
+  and no total history reproduces that. The `atom`, `imp`, `untl` and `snce` cases of the general
+  induction genuinely depend on `σ`; only `box` does not. The report's §4.3 table records this
+  transport as "derivable from a uniform `TruthIso`? **yes**", which is the error.
+  For contrast, the phase's *second* target `LoopingDuration.truthAt_add_period` carries
+  `τ.IsTotal` explicitly and **is** derivable; it has been derived.
+- **What is needed**: a decision between two options, which is a **planning** decision and not an
+  implementation one. (1) Widen `TruthIso` with a general-history layer — `hist` becomes a
+  `WorldHistory F ≃ WorldHistory F'` plus a totality-preservation field and a domain-transport
+  field, with the `F.HF` form derived from it. This subsumes the current structure and would
+  also unblock Phase 12's `IntTransfer.truthAt_map`, which has the *same* arbitrary-history
+  quantification. (2) Accept that `time_shift_preserves_truth` and `truthAt_map` keep their own
+  inductions, and restate the acceptance criterion as "at most four".
+  Option (1) is the better deal — it converts Phase 12's documented fallback into a second win —
+  but it changes the structure Phase 9 landed and specified, so it is not a change to make
+  silently inside an implementation dispatch.
+- **Prohibited workarounds**: no `sorry`, no vacuous placeholder, and **no weakening of
+  `time_shift_preserves_truth`'s statement** to the total-history case to force the derivation
+  through. Its `σ` is genuinely general and its consumers are entitled to that.
+
+**Landed in this phase despite the blocker** (all green, all committed):
+- `LoopingDuration.truthAt_add_period` derived from `loopingTruthIso`: 68 lines → 12.
+- `Truth.truth_double_shift_cancel` **deleted**, and with it
+  `WorldHistory.time_shift_time_shift_neg_domain_iff` and `time_shift_time_shift_neg_states`
+  (its only consumers). This is the phase's deletion bonus, and it turned out **not** to need
+  the `TruthIso` derivation at all: `time_shift_preserves_truth`'s `box` case was instantiating
+  its own induction hypothesis at `(timeShift ρ (x − y), x, y)` and then cancelling the
+  resulting double shift, where instantiating at `(ρ, y, x)` — the same IH, times swapped —
+  gives the goal directly. Three lemmas and ~75 lines gone for a one-line change.
+- `truthAt_add_hist_period`'s docstring cross-reference explaining why it is not an instance.
+
+**Not done**: the `time_shift_preserves_truth` derivation. It keeps its own `induction φ`, so
+`Semantics/` + `Independence/` currently carry **three** truth-transport inductions
+(`truthAt_of_truthIso`, `time_shift_preserves_truth`, `truthAt_add_hist_period`) rather than the
+criterion's two.
 
 **Goal**: Reduce the two largest transports to instances and collect the deletion bonus.
 

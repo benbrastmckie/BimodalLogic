@@ -88,81 +88,43 @@ theorem states_add_of_looping {F : FrameOver D} {π : ↑D} (h : LoopingDuration
 /-! ## Lemma B — truth periodicity -/
 
 /--
+**The looping-duration truth isomorphism.**
+
+`dur` is translation by `π`, `hist` is the identity on `H_F` — a looping duration reindexes
+times, not histories — and `atom` is `states_add_of_looping`. Everything else about Lemma B is
+`Truth.truthAt_of_truthIso`'s six-case induction, run once and shared.
+
+The period must be **frame-uniform** (`LoopingDuration F π` is a property of the frame, not of a
+history) and that is not an artefact of this packaging: `TruthIso.atom` is quantified over every
+total history because `TruthAt`'s `box` clause is. Contrast
+`Semantics.Correspondence.FwdRecPeriodicity.truthAt_add_hist_period`, whose period belongs to one
+history and which therefore cannot be an instance of this structure; its own docstring records
+why.
+-/
+noncomputable def loopingTruthIso {F : FrameOver D} (M : TaskModel F) {π : ↑D}
+    (h : LoopingDuration F π) : TruthIso M M where
+  dur := OrderIso.addRight π
+  hist := Equiv.refl _
+  atom := fun τ t p => by
+    show M.valuation (τ.val.states t (τ.property t)) p ↔
+      M.valuation (τ.val.states (t + π) (τ.property (t + π))) p
+    rw [states_add_of_looping h τ.val τ.property t]
+
+/--
 **Lemma B.** Truth is `π`-periodic in time, for every formula, at every total history.
 
-The statement quantifies over the history **inside** the induction. That is essential and not a
-stylistic choice: the `□` clause of `TruthAt` ranges over *all* total histories, so the induction
-hypothesis has to be available at each of them, not only at the history the statement started
-with.
+An instantiation of `Truth.truthAt_of_truthIso` at `loopingTruthIso`, replacing the 68-line
+hand-written six-case induction this used to carry. The statement is unchanged, including its
+quantification of the history **inside** the theorem — which is essential and not stylistic,
+since the `□` clause of `TruthAt` ranges over all total histories and the induction hypothesis
+has to be available at each of them. That requirement is now discharged once, inside
+`truthAt_of_truthIso`, rather than restated here.
 -/
 theorem truthAt_add_period {F : FrameOver D} (M : TaskModel F) {π : ↑D}
     (h : LoopingDuration F π) :
     ∀ (φ : Formula) (τ : WorldHistory F), τ.IsTotal → ∀ t : ↑D,
-      (TruthAt M τ t φ ↔ TruthAt M τ (t + π) φ) := by
-  intro φ
-  induction φ with
-  | atom p =>
-      intro τ hτ t
-      simp only [TruthAt]
-      constructor
-      · rintro ⟨_, hv⟩
-        exact ⟨hτ _, by rw [states_add_of_looping h τ hτ t]; exact hv⟩
-      · rintro ⟨_, hv⟩
-        exact ⟨hτ _, by rw [← states_add_of_looping h τ hτ t]; exact hv⟩
-  | bot => intro _ _ _; exact Iff.rfl
-  | imp ψ χ ihψ ihχ =>
-      intro τ hτ t
-      simp only [TruthAt]
-      constructor
-      · intro hi hψ; exact (ihχ τ hτ t).mp (hi ((ihψ τ hτ t).mpr hψ))
-      · intro hi hψ; exact (ihχ τ hτ t).mpr (hi ((ihψ τ hτ t).mp hψ))
-  | box ψ ih =>
-      intro τ hτ t
-      simp only [TruthAt]
-      exact ⟨fun hb σ hσ => (ih σ hσ t).mp (hb σ hσ),
-             fun hb σ hσ => (ih σ hσ t).mpr (hb σ hσ)⟩
-  | untl χ ψ ihχ ihψ =>
-      intro τ hτ t
-      simp only [TruthAt]
-      constructor
-      · rintro ⟨s, hs, hev, hg⟩
-        refine ⟨s + π, (add_lt_add_iff_right π).mpr hs, (ihψ τ hτ s).mp hev, ?_⟩
-        intro r hr1 hr2
-        have hrl : t < r - π := lt_sub_iff_add_lt.mpr hr1
-        have hrr : r - π < s := sub_lt_iff_lt_add.mpr hr2
-        have hkey := (ihχ τ hτ (r - π)).mp (hg (r - π) hrl hrr)
-        rwa [sub_add_cancel] at hkey
-      · rintro ⟨s, hs, hev, hg⟩
-        have hs' : t < s - π := lt_sub_iff_add_lt.mpr hs
-        refine ⟨s - π, hs', ?_, ?_⟩
-        · exact (ihψ τ hτ (s - π)).mpr (by rwa [sub_add_cancel])
-        · intro r hr1 hr2
-          have hrl : t + π < r + π := (add_lt_add_iff_right π).mpr hr1
-          have hrr : r + π < s := by
-            have := (add_lt_add_iff_right π).mpr hr2
-            rwa [sub_add_cancel] at this
-          exact (ihχ τ hτ r).mpr (hg (r + π) hrl hrr)
-  | snce χ ψ ihχ ihψ =>
-      intro τ hτ t
-      simp only [TruthAt]
-      constructor
-      · rintro ⟨s, hs, hev, hg⟩
-        refine ⟨s + π, (add_lt_add_iff_right π).mpr hs, (ihψ τ hτ s).mp hev, ?_⟩
-        intro r hr1 hr2
-        have hrl : s < r - π := lt_sub_iff_add_lt.mpr hr1
-        have hrr : r - π < t := sub_lt_iff_lt_add.mpr hr2
-        have hkey := (ihχ τ hτ (r - π)).mp (hg (r - π) hrl hrr)
-        rwa [sub_add_cancel] at hkey
-      · rintro ⟨s, hs, hev, hg⟩
-        have hs' : s - π < t := sub_lt_iff_lt_add.mpr hs
-        refine ⟨s - π, hs', ?_, ?_⟩
-        · exact (ihψ τ hτ (s - π)).mpr (by rwa [sub_add_cancel])
-        · intro r hr1 hr2
-          have hrl : s < r + π := by
-            have := (add_lt_add_iff_right π).mpr hr1
-            rwa [sub_add_cancel] at this
-          have hrr : r + π < t + π := (add_lt_add_iff_right π).mpr hr2
-          exact (ihχ τ hτ r).mpr (hg (r + π) hrl hrr)
+      (TruthAt M τ t φ ↔ TruthAt M τ (t + π) φ) :=
+  fun φ τ hτ t => Truth.truthAt_of_truthIso (loopingTruthIso M h) φ ⟨τ, hτ⟩ t
 
 /-- **Lemma B, iterated**: truth is invariant under any whole number of loops. -/
 theorem truthAt_add_nsmul {F : FrameOver D} (M : TaskModel F) {π : ↑D}

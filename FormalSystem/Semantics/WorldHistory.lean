@@ -333,29 +333,6 @@ theorem time_shift_congr (σ : WorldHistory F) (Δ₁ Δ₂ : F.Duration) (h : �
   subst h
   rfl
 
-/--
-Domain membership for double time-shift with opposite amounts equals original.
--/
-theorem time_shift_time_shift_neg_domain_iff (σ : WorldHistory F) (Δ : F.Duration) (z : F.Duration) :
-    (timeShift (timeShift σ Δ) (-Δ)).domain z ↔ σ.domain z := by
-  simp only [timeShift]
-  have h : z + -Δ + Δ = z := by
-    rw [add_assoc, neg_add_cancel, add_zero]
-  constructor
-  · intro hd; rw [h] at hd; exact hd
-  · intro hd; rw [h]; exact hd
-
-/--
-States at double time-shift with opposite amounts equals original states.
--/
-theorem time_shift_time_shift_neg_states (σ : WorldHistory F) (Δ : F.Duration) (t : F.Duration)
-    (ht : σ.domain t) (ht' : (timeShift (timeShift σ Δ) (-Δ)).domain t) :
-    (timeShift (timeShift σ Δ) (-Δ)).states t ht' = σ.states t ht := by
-  simp only [timeShift]
-  have h_eq : t + -Δ + Δ = t := by
-    rw [add_assoc, neg_add_cancel, add_zero]
-  exact states_eq_of_time_eq σ (t + -Δ + Δ) t h_eq _ ht
-
 /-! ## Totality and `H_F`
 
 `def:world-history`, verbatim: "A world history is \textit{total}--- equivalently, a
