@@ -309,11 +309,7 @@ adjacency: the domain is all of ℤ (so `nonempty_domain` and `convex` are trivi
 -/
 def HFofStepPath (F : FrameOver intOrder) (f : ℤ → F.WorldState) (h : IsStepPath F f) :
     TaskFrame.HF F :=
-  ⟨{ domain := fun _ => True
-     nonempty_domain := ⟨0, trivial⟩
-     states := fun t _ => f t
-     respects_task := fun s t _ _ => respects_of_isStepPath h s t
-     convex := fun _ _ _ _ _ _ _ => trivial }, fun _ => trivial⟩
+  TaskFrame.HF.ofTotal F.toTaskFrame f (respects_of_isStepPath h)
 
 @[simp]
 theorem HFofStepPath_path (F : FrameOver intOrder) (f : ℤ → F.WorldState) (h : IsStepPath F f) :

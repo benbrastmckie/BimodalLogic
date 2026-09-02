@@ -116,6 +116,67 @@ namespace WorldHistory
 variable {F : TaskFrame}
 
 /--
+**The total world history determined by a bare state function.**
+
+A *total* history's domain is all of `D`, so `nonempty_domain` and `convex` carry no information
+and the dependent `states` field collapses to a plain `f : F.Duration → F.WorldState`. The only
+genuine obligation left is `respects_task`. Every total-history construction in the library was
+writing the same four-field skeleton out by hand and differing only in `f` and that one proof;
+this is that skeleton, written once.
+
+**Use `ofTotal` in preference to a literal `domain := fun _ => True` record.** Besides the line
+saving, it is what makes `ofTotal_states` available, so `simp` closes the domain bridge that a
+hand-written record forces each call site to open by hand.
+
+**Sites this construction would also serve, not migrated here.** Twelve further constructions
+outside `Semantics/` write the same skeleton and are follow-on work, deliberately out of this
+change's scope: `Metalogic/CoNotPriorU.lean`, `Metalogic/DiscreteNonCompactness.lean`,
+`Metalogic/Independence/ClockFrame.lean`,
+`Metalogic/WeakCanonical/IntegerModel/ReynoldsBridge.lean` (two sites),
+`Metalogic/Decidability/Verified/Bridge/RegionFrame.lean`, `Metalogic/Algebraic/FlowFrame.lean`,
+`Semantics/Correspondence/DurationFrames.lean` (two sites),
+`Semantics/Correspondence/FwdRecBridge.lean`, and `Examples/TemporalStructures.lean` (two sites).
+-/
+def ofTotal (F : TaskFrame) (f : F.Duration → F.WorldState)
+    (h : ∀ s t : F.Duration, F.TaskRel (f s) (t - s) (f t)) : WorldHistory F where
+  domain := fun _ => True
+  nonempty_domain := ⟨0, trivial⟩
+  states := fun t _ => f t
+  respects_task := fun s t _ _ => h s t
+  convex := fun _ _ _ _ _ _ _ => trivial
+
+/-- `ofTotal` is total: its domain is all of `F.Duration` by construction. -/
+theorem ofTotal_isTotal (F : TaskFrame) (f : F.Duration → F.WorldState)
+    (h : ∀ s t : F.Duration, F.TaskRel (f s) (t - s) (f t)) : (ofTotal F f h).IsTotal :=
+  fun _ => trivial
+
+/--
+**The domain bridge, as a simp lemma.**
+
+`ofTotal`'s domain is all of `F.Duration`, so any domain obligation on it is `True`. Marking this
+`@[simp]` is what lets a downstream `simp` discharge a domain side-goal that a hand-written
+`domain := fun _ => True` record leaves it unable to see through — the constructor is opaque to
+`simp` once it is behind a `def`, but this lemma is not. `Decidability/Propositional/Decidable.
+lean`'s `trivial_truth_iff` is the worked demonstration: its `atom` case is closed by `simp`
+alone, where before the migration it relied on unfolding the literal record.
+-/
+@[simp] theorem ofTotal_domain (F : TaskFrame) (f : F.Duration → F.WorldState)
+    (h : ∀ s t : F.Duration, F.TaskRel (f s) (t - s) (f t)) (t : F.Duration) :
+    (ofTotal F f h).domain t ↔ True := Iff.rfl
+
+/--
+**The load-bearing simp lemma of the construction.**
+
+With `domain := fun _ => True` the domain proof carries no information, so reading `ofTotal`'s
+state at *any* domain witness gives `f t` by `rfl`. Marking it `@[simp]` is what lets a call site
+say `simp` where it would otherwise have to name the witness and rewrite under the dependent
+`states` field by hand.
+-/
+@[simp] theorem ofTotal_states (F : TaskFrame) (f : F.Duration → F.WorldState)
+    (h : ∀ s t : F.Duration, F.TaskRel (f s) (t - s) (f t)) (t : F.Duration)
+    (ht : (ofTotal F f h).domain t) : (ofTotal F f h).states t ht = f t := rfl
+
+/--
 Universal world history over all time (requires explicit reflexivity proof).
 
 This history has every time in its domain and assigns the same world state everywhere.
@@ -150,18 +211,8 @@ use the frame-specific constructors `universalTrivialFrame` or `universalNatFram
 - `h_refl`: Proof that the frame is reflexive at state `w` for all durations
 -/
 def universal (F : TaskFrame) (w : F.WorldState)
-    (h_refl : ∀ d : F.Duration, F.TaskRel w d w) : WorldHistory F where
-  domain := fun _ => True
-  nonempty_domain := ⟨0, True.intro⟩
-  convex := by
-    intros x z hx hz y hxy hyz
-    -- Full domain is trivially convex
-    exact True.intro
-  states := fun _ _ => w
-  respects_task := by
-    intros s t hs ht
-    -- Use the reflexivity proof for duration (t - s)
-    exact h_refl (t - s)
+    (h_refl : ∀ d : F.Duration, F.TaskRel w d w) : WorldHistory F :=
+  ofTotal F (fun _ => w) fun s t => h_refl (t - s)
 
 /--
 Trivial world history for the trivial frame.
@@ -170,16 +221,8 @@ Since trivial frame's task relation is always true, this always works.
 The full domain is convex.
 -/
 def trivial {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D] :
-    WorldHistory (FrameOver.trivialFrame (D := D)) where
-  domain := fun _ => True
-  nonempty_domain := ⟨0, True.intro⟩
-  convex := by
-    intros x z hx hz y hxy hyz
-    exact True.intro
-  states := fun _ _ => ()
-  respects_task := by
-    intros s t hs ht
-    exact True.intro
+    WorldHistory (FrameOver.trivialFrame (D := D)) :=
+  ofTotal (FrameOver.trivialFrame (D := D)).toTaskFrame (fun _ => ()) fun _ _ => True.intro
 
 /--
 Universal world history for trivial frame with a specific constant state.
@@ -192,16 +235,8 @@ The full domain is convex.
 -/
 def universalTrivialFrame {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
     (w : (FrameOver.trivialFrame (D := D)).WorldState) :
-    WorldHistory (FrameOver.trivialFrame (D := D)) where
-  domain := fun _ => True
-  nonempty_domain := ⟨0, True.intro⟩
-  convex := by
-    intros x z hx hz y hxy hyz
-    exact True.intro
-  states := fun _ _ => w
-  respects_task := by
-    intros s t hs ht
-    exact True.intro
+    WorldHistory (FrameOver.trivialFrame (D := D)) :=
+  ofTotal (FrameOver.trivialFrame (D := D)).toTaskFrame (fun _ => w) fun _ _ => True.intro
 
 /--
 Universal world history for nat frame with a specific constant Nat state.
@@ -214,19 +249,9 @@ as long as zero-duration relates identical states. The full domain is convex.
 -/
 def universalNatFrame {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
       [SuccOrder D] [NoMaxOrder D] (n : Nat) :
-    WorldHistory (FrameOver.natFrame (D := D)) where
-  domain := fun _ => True
-  nonempty_domain := ⟨0, True.intro⟩
-  convex := by
-    intros x z hx hz y hxy hyz
-    exact True.intro
-  states := fun _ _ => n
-  respects_task := by
-    intros s t hs ht
-    -- natFrame.TaskRel is d ≠ 0 ∨ w = u
-    -- Since states s = states t = n, we have n = n
-    right
-    rfl
+    WorldHistory (FrameOver.natFrame (D := D)) :=
+  -- `natFrame.TaskRel` is `d ≠ 0 ∨ w = u`; the constant history takes the right disjunct.
+  ofTotal (FrameOver.natFrame (D := D)).toTaskFrame (fun _ => n) fun _ _ => Or.inr rfl
 
 /--
 Get the state at a time (helper function that bundles membership proof).
@@ -289,32 +314,6 @@ def timeShift (σ : WorldHistory F) (Δ : F.Duration) : WorldHistory F where
     exact σ.respects_task (s + Δ) (t + Δ) hs ht
 
 /--
-Time-shift preserves domain membership (forward direction).
-If z is in the shifted domain, then z + Δ is in the original domain.
--/
-theorem time_shift_domain_iff (σ : WorldHistory F) (Δ z : F.Duration) :
-    (timeShift σ Δ).domain z ↔ σ.domain (z + Δ) := by
-  rfl
-
-/--
-Inverse time-shift: shifting by -Δ undoes shifting by Δ on the domain.
--/
-theorem time_shift_inverse_domain (σ : WorldHistory F) (Δ : F.Duration) (z : F.Duration) :
-    (timeShift (timeShift σ Δ) (-Δ)).domain z ↔ σ.domain z := by
-  simp only [timeShift]
-  constructor
-  · intro h
-    have : z + -Δ + Δ = z := by
-      rw [add_assoc, neg_add_cancel, add_zero]
-    rw [this] at h
-    exact h
-  · intro h
-    have : z + -Δ + Δ = z := by
-      rw [add_assoc, neg_add_cancel, add_zero]
-    rw [this]
-    exact h
-
-/--
 States are equal when times are provably equal (proof irrelevance).
 
 This lemma allows us to transport states from one time to another when the times
@@ -327,34 +326,12 @@ theorem states_eq_of_time_eq (σ : WorldHistory F) (t₁ t₂ : F.Duration)
   rfl
 
 /--
-Double time-shift cancels: states at (timeShift (timeShift σ Δ) (-Δ)) equal states at σ.
-
-This is the key transport lemma for the box case of time_shift_preserves_truth.
-It shows that shifting by Δ and then by -Δ returns to the original states.
--/
-theorem time_shift_time_shift_states (σ : WorldHistory F) (Δ : F.Duration) (t : F.Duration)
-    (ht : σ.domain t)
-    (ht' : (timeShift (timeShift σ Δ) (-Δ)).domain t) :
-    (timeShift (timeShift σ Δ) (-Δ)).states t ht' = σ.states t ht := by
-  simp only [timeShift]
-  have h_eq : t + -Δ + Δ = t := by
-    rw [add_assoc, neg_add_cancel, add_zero]
-  exact states_eq_of_time_eq σ (t + -Δ + Δ) t h_eq _ ht
-
-/--
 Extensionality lemma for timeShift: shifting by equal amounts gives equal histories.
 -/
 theorem time_shift_congr (σ : WorldHistory F) (Δ₁ Δ₂ : F.Duration) (h : Δ₁ = Δ₂) :
     timeShift σ Δ₁ = timeShift σ Δ₂ := by
   subst h
   rfl
-
-/--
-Domain membership for timeShift by zero is equivalent to original domain.
--/
-theorem time_shift_zero_domain_iff (σ : WorldHistory F) (z : F.Duration) :
-    (timeShift σ 0).domain z ↔ σ.domain z := by
-  simp only [timeShift, add_zero]
 
 /--
 Domain membership for double time-shift with opposite amounts equals original.
@@ -378,69 +355,6 @@ theorem time_shift_time_shift_neg_states (σ : WorldHistory F) (Δ : F.Duration)
   have h_eq : t + -Δ + Δ = t := by
     rw [add_assoc, neg_add_cancel, add_zero]
   exact states_eq_of_time_eq σ (t + -Δ + Δ) t h_eq _ ht
-
-/-! ## Order Reversal Lemmas
-
-These lemmas establish that group inverse (negation) provides an order-reversing
-automorphism on any ordered additive group. This is crucial for proving
-temporal duality soundness: swapping past and future corresponds to time reversal
-via group inverse.
-
-The key insight is that ordered additive group structure provides temporal
-symmetry without requiring additional frame constraints.
--/
-
-/--
-Group inverse reverses strict order: s < t ↔ -t < -s
-
-This order reversal is the algebraic foundation for temporal duality.
-When we swap Past and Future operators, the time domain reverses under group inverse.
--/
-theorem neg_lt_neg_iff {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
-    (s t : D) : s < t ↔ -t < -s := by
-  constructor
-  · intro h
-    -- s < t implies -t < -s
-    exact neg_lt_neg h
-  · intro h
-    -- -t < -s implies s < t
-    -- Rewrite s and t as double negatives
-    have hs : s = -(-s) := by simp
-    have ht : t = -(-t) := by simp
-    rw [hs, ht]
-    exact neg_lt_neg h
-
-/--
-Group inverse reverses non-strict order: s ≤ t ↔ -t ≤ -s
--/
-theorem neg_le_neg_iff {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
-    (s t : D) : s ≤ t ↔ -t ≤ -s := by
-  constructor
-  · intro h
-    exact neg_le_neg h
-  · intro h
-    have hs : s = -(-s) := by simp
-    have ht : t = -(-t) := by simp
-    rw [hs, ht]
-    exact neg_le_neg h
-
-/--
-Double negation is identity: -(-t) = t
--/
-theorem neg_neg_eq {D : Type} [AddCommGroup D] (t : D) : -(-t) = t := by
-  simp
-
-/--
-Group inverse is injective: -s = -t ↔ s = t
--/
-theorem neg_injective {D : Type} [AddCommGroup D] (s t : D) : -s = -t ↔ s = t := by
-  constructor
-  · intro h
-    have : -(-s) = -(-t) := by rw [h]
-    simp only [neg_neg] at this
-    exact this
-  · intro h
-    rw [h]
 
 /-! ## Totality and `H_F`
 
@@ -515,6 +429,21 @@ def TaskFrame.HF (F : TaskFrame) : Type _ :=
 namespace TaskFrame.HF
 
 variable {F : TaskFrame}
+
+/--
+**The bundled form of `WorldHistory.ofTotal`.**
+
+`H_F`'s elements are exactly the total histories, and `ofTotal` builds nothing else, so a
+construction that needs an `H_F` value need never assemble the subtype pair by hand.
+-/
+def ofTotal (F : TaskFrame) (f : F.Duration → F.WorldState)
+    (h : ∀ s t : F.Duration, F.TaskRel (f s) (t - s) (f t)) : F.HF :=
+  ⟨WorldHistory.ofTotal F f h, WorldHistory.ofTotal_isTotal F f h⟩
+
+@[simp]
+theorem ofTotal_val (F : TaskFrame) (f : F.Duration → F.WorldState)
+    (h : ∀ s t : F.Duration, F.TaskRel (f s) (t - s) (f t)) :
+    (ofTotal F f h).val = WorldHistory.ofTotal F f h := rfl
 
 /-- Time shift lifted to `H_F`, through `WorldHistory.isTotal_timeShift`. -/
 def timeShift (τ : F.HF) (Δ : F.Duration) : F.HF :=

@@ -199,15 +199,11 @@ under `S.frame.Duration`.
 @[reducible] def frame (S : ShiftSet D) : TaskFrame := S.fibre.toTaskFrame
 
 /-- The induced **total** history through `w`: the shift orbit `t ↦ sh w t`. -/
-def hist (S : ShiftSet D) (w : S.Carrier) : WorldHistory S.frame where
-  domain := fun _ => True
-  nonempty_domain := ⟨0, trivial⟩
-  states := fun t _ => S.sh w t
-  respects_task := by
-    intro s t _ _
+def hist (S : ShiftSet D) (w : S.Carrier) : WorldHistory S.frame :=
+  WorldHistory.ofTotal S.frame (fun t => S.sh w t) <| by
+    intro s t
     show S.sh w t = S.sh (S.sh w s) (t - s)
     rw [S.sh_add, add_sub_cancel]
-  convex := by intros; trivial
 
 /-- The orbit history through `w` is total: its domain is all of `D`. -/
 theorem hist_isTotal (S : ShiftSet D) (w : S.Carrier) : (S.hist w).IsTotal := fun _ => trivial
@@ -265,7 +261,10 @@ is shift-set truth at `w`. The `box` case is where `hist_isTotal` (left to right
 theorem forward_repr (S : ShiftSet D) (w : S.Carrier) (t : ↑D) (φ : Formula) :
     TruthAt S.model (S.hist w) t φ ↔ ShiftTruth S w t φ := by
   induction φ generalizing w t with
-  | atom p => exact ⟨fun ⟨_, h⟩ => h, fun h => ⟨trivial, h⟩⟩
+  -- The atom case's domain-and-states bridge is now closed by `simp` alone: unfolding `hist`
+  -- exposes `WorldHistory.ofTotal`, and `ofTotal_domain` / `ofTotal_states` do the rest. Before
+  -- the `ofTotal` migration this had to be written out as `⟨fun ⟨_, h⟩ => h, fun h => ⟨trivial, h⟩⟩`.
+  | atom p => simp [ShiftSet.hist, ShiftSet.model, ShiftSet.ShiftTruth, TruthAt]
   | bot => exact Iff.rfl
   | imp ψ χ ihψ ihχ =>
     exact ⟨fun h hψ => (ihχ w t).mp (h ((ihψ w t).mpr hψ)),
