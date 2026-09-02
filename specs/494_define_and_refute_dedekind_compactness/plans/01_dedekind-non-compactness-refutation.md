@@ -212,38 +212,38 @@ contradict the rescoping premise of this task.
 
 ---
 
-### Phase 2: New module and the unsatisfiability half [NOT STARTED]
+### Phase 2: New module and the unsatisfiability half [COMPLETED]
 
 **Goal**: Create `FormalSystem/Metalogic/DedekindNonCompactness.lean` with the witness
 vocabulary, its semantic characterisation lemmas, and the unsatisfiability half — the part that
 uses completeness only. Wire the module into the build closure.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/DedekindNonCompactness.lean` with the project file header
+- [x] Create `FormalSystem/Metalogic/DedekindNonCompactness.lean` with the project file header
       (copyright block, matching `DiscreteNonCompactness.lean:1-5`),
       `import FormalSystem.Metalogic.StrongCompleteness`, the `open` line and
       `namespace FormalSystem.Metalogic`.
-- [ ] Write a module docstring in `DiscreteNonCompactness.lean`'s shape: the witness, why
+- [x] Write a module docstring in `DiscreteNonCompactness.lean`'s shape: the witness, why
       `archWitness` does not port (`Formula.next` is vacuous on a densely ordered carrier; the
       `[SuccOrder]`/`[IsSuccArchimedean]` route is unavailable and *cannot* be made available —
       a densely ordered type with no maximum admits no `SuccOrder`), and the two halves.
-- [ ] Transcribe the witness vocabulary from research §7: `qNext`, `qAlpha`, `qGap`, `qBound`,
+- [x] Transcribe the witness vocabulary from research §7: `qNext`, `qAlpha`, `qGap`, `qBound`,
       `dedWitness`, `qDepth`, and `qDepth_qAlpha`.
-- [ ] Transcribe `truth_and_iff'` (local; `Truth.lean` supplies no unfolding lemma for
+- [x] Transcribe `truth_and_iff'` (local; `Truth.lean` supplies no unfolding lemma for
       `Formula.and`). Research §4 notes an identical `truth_and_iff` exists at
       `Semantics/Correspondence/DurationFrames.lean:299` and that importing it is legal —
       **use the three-line local copy** to avoid widening the import closure, and say so in a
       comment.
-- [ ] Transcribe `truthAt_qNext_iff`, `truthAt_qGap`, `truthAt_qBound`.
-- [ ] Transcribe `dedWitness_core` and `dedWitness_not_satisfiable`.
-- [ ] Apply the generality decision above: docstring `dedWitness_core` as the
+- [x] Transcribe `truthAt_qNext_iff`, `truthAt_qGap`, `truthAt_qBound`.
+- [x] Transcribe `dedWitness_core` and `dedWitness_not_satisfiable`.
+- [x] Apply the generality decision above *(deviation: altered — the bounded `(hlub : F.IsComplete)` refinement SUCCEEDED on the first attempt; the `private example ... := rfl` is retained in the file as the record rather than deleted, since it documents the definitional identity the named binder relies on)*: docstring `dedWitness_core` as the
       `TaskFrame.IsComplete` statement (density unused; ℤ covered), and attempt the one bounded
       `(hlub : F.IsComplete)` refinement described in that section.
-- [ ] Add `import FormalSystem.Metalogic.DedekindNonCompactness` to `FormalSystem/Metalogic.lean`
+- [x] Add `import FormalSystem.Metalogic.DedekindNonCompactness` to `FormalSystem/Metalogic.lean`
       beside the `DiscreteNonCompactness` import at `:10`. **This is required in this phase**:
       `lakefile.lean` declares `roots := #[FormalSystem]`, not a source glob, so an unimported
       module is never compiled by `lake build`.
-- [ ] `lake build` green.
+- [x] `lake build` green. *(2515 jobs, exit 0; job count rose from 2514, confirming the module entered the build closure)*
 
 **Timing**: 1.5 hours
 
