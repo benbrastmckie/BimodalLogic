@@ -1,0 +1,17 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/523_frame_kit_helpers_transport_standard_frames/reports/01_frame-kit-helpers-transport-standard-frames.md",
+      "summary": "Verifies all nine work items against the live tree, supplies verified-compiling text for Helper D and the Helper B completion, corrects ~20 stale figures (Spherical is now Saturation; C-05 already landed; A-06 pairs are at 780/821 and 861/924, 184 lines), and shows the 'exactly one induction phi' acceptance criterion is unachievable because truthAt_add_hist_period's period is per-history."
+    }
+  ],
+  "metadata": {
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"],
+    "build_status": "green (2517 jobs, exit 0)",
+    "stale_figures_found": 20
+  }
+}

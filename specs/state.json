@@ -1633,7 +1633,7 @@
     {
       "project_number": 523,
       "project_name": "frame_kit_helpers_transport_standard_frames",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "topic": "metalogic",
       "priority": "medium",
@@ -1664,9 +1664,15 @@
         "FormalSystem/Examples/TemporalStructures.lean"
       ],
       "created": "2026-09-02T03:30:31Z",
-      "last_updated": "2026-09-02T04:37:44Z",
-      "artifacts": [],
-      "session_id": "sess_1788317385_2ae65c"
+      "last_updated": "2026-09-02T19:02:37Z",
+      "artifacts": [
+        {
+          "path": "specs/523_frame_kit_helpers_transport_standard_frames/reports/01_frame-kit-helpers-transport-standard-frames.md",
+          "type": "report",
+          "summary": "Verifies all nine work items against the live tree, supplies verified-compiling text for Helper D and the Helper B completion, corrects ~20 stale figures (Spherical is now Saturation; C-05 already landed; A-06 pairs are at 780/821 and 861/924, 184 lines), and shows the 'exactly one induction phi' acceptance criterion is unachievable because truthAt_add_hist_period's period is per-history."
+        }
+      ],
+      "session_id": "sess_1788366935_b56865_523"
     },
     {
       "project_number": 524,
