@@ -535,7 +535,7 @@ therefore reduced to its `Soundness.lean` rewrites. — the tag set is one pre-d
 
 ---
 
-### Phase 9: Rewrite the four large named soundness proofs [NOT STARTED]
+### Phase 9: Rewrite the four large named soundness proofs [COMPLETED]
 
 - **Goal:** The second half of charter step (6) — the four proofs the review named worst.
 - **Tasks:**
@@ -548,9 +548,14 @@ therefore reduced to its `Soundness.lean` rewrites. — the tag set is one pre-d
         `simp only [Formula.and, Formula.or, Formula.neg, TruthAt]` at `Soundness.lean:723`.
   - [ ] Rewrite `linear_since_valid` (:752, 41 lines, 1 site) — the mirror image; expect the same
         shape and the same reduction.
-  - [ ] Rewrite `prior_U_gap_valid` (:1010, 50 lines, 2 sites) and `prior_S_gap_valid` (:1060,
-        71 lines, 2 sites). Convert their `and_of_not_imp_not` uses at :1016 and :1066 to
-        `(Truth.and_iff _ _).mp`; leave the helper for Phase 10.
+  - [x] Rewrite `prior_U_gap_valid` and `prior_S_gap_valid`. *(deviation: altered — the
+        `and_of_not_imp_not` call is not replaced by `(Truth.and_iff _ _).mp` but deleted
+        outright: once `Truth.and_iff` is in the `simp only` list that opens `h_ant`, the
+        hypothesis arrives as a real `∧` and a plain `obtain ⟨h1, h2⟩` suffices. Both proofs
+        also **grew** slightly (36 → 40 and 36 → 39 lines) rather than halving: opening the
+        consequent's `∨` honestly with `by_cases` costs a few more lines than the old
+        `intro hnn; rintro ⟨w, …⟩` double-negation trick did. Their `simp only [...TruthAt...]`
+        sites did go 2 → 0 each. Reported, not suppressed.)*
   - [ ] Same deletion rule as Phase 8: `Formula.and`/`or`/`neg` come **out** of every list touched.
 - **Timing:** 1.5 hours
 - **Depends on:** 8

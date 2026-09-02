@@ -648,33 +648,18 @@ theorem linear_until_valid (φ ψ χ θ : Formula) :
         (Formula.untl (Formula.and φ χ) (Formula.and φ θ)))) := by
   refine valid.of_forall_total ?_
   intro F M τ _h_mem t
-  simp only [Formula.and, Formula.or, Formula.neg, TruthAt]
-  intro h_conj
-  -- Extract both Until hypotheses from the conjunction encoding
-  have h_both : (∃ s, t < s ∧ TruthAt M τ s ψ ∧
-      ∀ r, t < r → r < s → TruthAt M τ r φ) ∧
-    (∃ s, t < s ∧ TruthAt M τ s θ ∧
-      ∀ r, t < r → r < s → TruthAt M τ r χ) := by
-    constructor
-    · by_contra h; exact h_conj (fun h1 _ => h h1)
-    · by_contra h; exact h_conj (fun _ h2 => h h2)
-  obtain ⟨⟨s₁, hts₁, h_ψs₁, h_guard₁⟩, s₂, hts₂, h_θs₂, h_guard₂⟩ := h_both
+  simp only [Truth.imp_iff, Truth.and_iff, Truth.or_iff, Truth.untl_iff]
+  rintro ⟨⟨s₁, hts₁, h_ψs₁, h_guard₁⟩, s₂, hts₂, h_θs₂, h_guard₂⟩
   rcases lt_trichotomy s₁ s₂ with h_lt | h_eq | h_gt
   · -- s₁ < s₂: second disjunct with witness s₁ (ψ(s₁) ∧ χ(s₁))
-    intro h_neg; exfalso; apply h_neg; intro _
-    refine ⟨s₁, hts₁, ?_, fun r htr hrs h_imp => ?_⟩
-    · intro h_neg; exact h_neg h_ψs₁ (h_guard₂ s₁ hts₁ h_lt)
-    · exact h_imp (h_guard₁ r htr hrs) (h_guard₂ r htr (lt_trans hrs h_lt))
+    exact .inl (.inr ⟨s₁, hts₁, ⟨h_ψs₁, h_guard₂ s₁ hts₁ h_lt⟩,
+      fun r htr hrs => ⟨h_guard₁ r htr hrs, h_guard₂ r htr (lt_trans hrs h_lt)⟩⟩)
   · -- s₁ = s₂: first disjunct with witness s₁ (ψ(s₁) ∧ θ(s₁))
-    intro h_outer; exfalso; apply h_outer; intro h_inner; exfalso; apply h_inner
-    refine ⟨s₁, hts₁, ?_, fun r htr hrs h_imp => ?_⟩
-    · intro h_neg; exact h_neg h_ψs₁ (h_eq ▸ h_θs₂)
-    · exact h_imp (h_guard₁ r htr hrs) (h_guard₂ r htr (h_eq ▸ hrs))
+    exact .inl (.inl ⟨s₁, hts₁, ⟨h_ψs₁, h_eq ▸ h_θs₂⟩,
+      fun r htr hrs => ⟨h_guard₁ r htr hrs, h_guard₂ r htr (h_eq ▸ hrs)⟩⟩)
   · -- s₂ < s₁: third disjunct with witness s₂ (φ(s₂) ∧ θ(s₂))
-    intro _
-    refine ⟨s₂, hts₂, ?_, fun r htr hrs h_imp => ?_⟩
-    · intro h_neg; exact h_neg (h_guard₁ s₂ hts₂ h_gt) h_θs₂
-    · exact h_imp (h_guard₁ r htr (lt_trans hrs h_gt)) (h_guard₂ r htr hrs)
+    exact .inr ⟨s₂, hts₂, ⟨h_guard₁ s₂ hts₂ h_gt, h_θs₂⟩,
+      fun r htr hrs => ⟨h_guard₁ r htr (lt_trans hrs h_gt), h_guard₂ r htr hrs⟩⟩
 
 theorem linear_since_valid (φ ψ χ θ : Formula) :
     ⊨ (Formula.and (Formula.snce φ ψ) (Formula.snce χ θ)
@@ -685,35 +670,18 @@ theorem linear_since_valid (φ ψ χ θ : Formula) :
         (Formula.snce (Formula.and φ χ) (Formula.and φ θ)))) := by
   refine valid.of_forall_total ?_
   intro F M τ _h_mem t
-  simp only [Formula.and, Formula.or, Formula.neg, TruthAt]
-  intro h_conj
-  have h_both : (∃ s, s < t ∧ TruthAt M τ s ψ ∧
-      ∀ r, s < r → r < t → TruthAt M τ r φ) ∧
-    (∃ s, s < t ∧ TruthAt M τ s θ ∧
-      ∀ r, s < r → r < t → TruthAt M τ r χ) := by
-    constructor
-    · by_contra h; exact h_conj (fun h1 _ => h h1)
-    · by_contra h; exact h_conj (fun _ h2 => h h2)
-  obtain ⟨⟨s₁, hs₁t, h_ψs₁, h_guard₁⟩, s₂, hs₂t, h_θs₂, h_guard₂⟩ := h_both
+  simp only [Truth.imp_iff, Truth.and_iff, Truth.or_iff, Truth.snce_iff]
+  rintro ⟨⟨s₁, hs₁t, h_ψs₁, h_guard₁⟩, s₂, hs₂t, h_θs₂, h_guard₂⟩
   rcases lt_trichotomy s₁ s₂ with h_lt | h_eq | h_gt
   · -- s₁ < s₂ < t: third disjunct (φ∧χ) S (φ∧θ) with witness s₂
-    -- Goal: (((D₁→F)→D₂)→F) → D₃. For D₃, just intro and prove D₃.
-    intro _
-    refine ⟨s₂, hs₂t, ?_, fun r hs₂r hrt h_imp => ?_⟩
-    · intro h_neg; exact h_neg (h_guard₁ s₂ h_lt hs₂t) h_θs₂
-    · exact h_imp (h_guard₁ r (lt_trans h_lt hs₂r) hrt) (h_guard₂ r hs₂r hrt)
+    exact .inr ⟨s₂, hs₂t, ⟨h_guard₁ s₂ h_lt hs₂t, h_θs₂⟩,
+      fun r hs₂r hrt => ⟨h_guard₁ r (lt_trans h_lt hs₂r) hrt, h_guard₂ r hs₂r hrt⟩⟩
   · -- s₁ = s₂: first disjunct (φ∧χ) S (ψ∧θ) with witness s₁
-    -- Goal: (((D₁→F)→D₂)→F) → D₃. For D₁: intro h; exfalso; apply h; intro h2; exfalso; apply h2
-    intro h_outer; exfalso; apply h_outer; intro h_inner; exfalso; apply h_inner
-    refine ⟨s₁, hs₁t, ?_, fun r hs₁r hrt h_imp => ?_⟩
-    · intro h_neg; exact h_neg h_ψs₁ (h_eq ▸ h_θs₂)
-    · exact h_imp (h_guard₁ r hs₁r hrt) (h_guard₂ r (h_eq ▸ hs₁r) hrt)
+    exact .inl (.inl ⟨s₁, hs₁t, ⟨h_ψs₁, h_eq ▸ h_θs₂⟩,
+      fun r hs₁r hrt => ⟨h_guard₁ r hs₁r hrt, h_guard₂ r (h_eq ▸ hs₁r) hrt⟩⟩)
   · -- s₂ < s₁ < t: second disjunct (φ∧χ) S (ψ∧χ) with witness s₁
-    -- Goal: (((D₁→F)→D₂)→F) → D₃. For D₂: intro h; exfalso; apply h; intro _; prove D₂
-    intro h_outer; exfalso; apply h_outer; intro _
-    refine ⟨s₁, hs₁t, ?_, fun r hs₁r hrt h_imp => ?_⟩
-    · intro h_neg; exact h_neg h_ψs₁ (h_guard₂ s₁ h_gt hs₁t)
-    · exact h_imp (h_guard₁ r hs₁r hrt) (h_guard₂ r (lt_trans h_gt hs₁r) hrt)
+    exact .inl (.inr ⟨s₁, hs₁t, ⟨h_ψs₁, h_guard₂ s₁ h_gt hs₁t⟩,
+      fun r hs₁r hrt => ⟨h_guard₁ r hs₁r hrt, h_guard₂ r (lt_trans h_gt hs₁r) hrt⟩⟩)
 
 /-- BX10: Until implies eventuality: `(φ U ψ) → F(ψ)`.
 F(ψ) = ¬G(¬ψ). Under reflexive Until, witness s ≥ t gives ψ(s), so ¬∀u≥t.¬ψ(u). -/
@@ -897,10 +865,11 @@ theorem prior_U_gap_valid (φ : Formula) :
       (Formula.untl φ (Formula.or φ.neg (Formula.kPlus φ.neg)))) := by
   refine ValidDedekindDense.of_forall ?_
   intro F _ h_lub M τ h_mem t h_ant
-  simp only [TruthAt, Formula.and, Formula.neg, Formula.someFuture, Formula.top] at h_ant
-  obtain ⟨h1, h2⟩ := and_of_not_imp_not h_ant
+  simp only [Truth.and_iff, Truth.untl_iff, Truth.top_true, Truth.some_future_iff,
+    Truth.neg_iff] at h_ant
+  obtain ⟨h1, h2⟩ := h_ant
   obtain ⟨s0, hts0, -, hp0⟩ := h1
-  obtain ⟨v, htv, hnpv, -⟩ := h2
+  obtain ⟨v, htv, hnpv⟩ := h2
   set A : Set F.Duration := {u : F.Duration | t < u ∧ ∀ r : F.Duration, t < r → r < u → TruthAt M τ r φ} with hA
   have hs0A : s0 ∈ A := ⟨hts0, hp0⟩
   have hAbdd : BddAbove A := by
@@ -914,19 +883,22 @@ theorem prior_U_gap_valid (φ : Formula) :
     intro r htr hrs
     obtain ⟨u, huA, hru, -⟩ := hs.exists_between hrs
     exact huA.2 r htr hru
-  simp only [TruthAt, Formula.or, Formula.neg, Formula.kPlus, Formula.top]
+  simp only [Truth.untl_iff, Truth.or_iff, Truth.neg_iff, Truth.kPlus_iff]
   refine ⟨s, hts, ?_, hguard⟩
-  intro hnn
-  rintro ⟨w, hsw, -, hw⟩
-  have hps : TruthAt M τ s φ := Classical.byContradiction hnn
-  have hwA : w ∈ A := by
-    refine ⟨lt_trans hts hsw, ?_⟩
-    intro r htr hrw
-    rcases lt_trichotomy r s with h | h | h
-    · exact hguard r htr h
-    · exact h ▸ hps
-    · exact Classical.byContradiction (hw r h hrw)
-  exact absurd (hs.1 hwA) (not_le_of_gt hsw)
+  -- The event is now a genuine disjunction, so the two cases split directly.
+  by_cases hps : TruthAt M τ s φ
+  · refine .inr fun w hsw => ?_
+    by_contra hw
+    push Not at hw
+    have hwA : w ∈ A := by
+      refine ⟨lt_trans hts hsw, ?_⟩
+      intro r htr hrw
+      rcases lt_trichotomy r s with h | h | h
+      · exact hguard r htr h
+      · exact h ▸ hps
+      · exact hw r h hrw
+    exact absurd (hs.1 hwA) (not_le_of_gt hsw)
+  · exact .inl hps
 
 /-- **Prior-S gap axiom validity**: `S(⊤,φ) ∧ P(¬φ) → S(¬φ ∨ K⁻(¬φ), φ)`, the past dual.
 
@@ -947,10 +919,11 @@ theorem prior_S_gap_valid (φ : Formula) :
       (Formula.snce φ (Formula.or φ.neg (Formula.kMinus φ.neg)))) := by
   refine ValidDedekindDense.of_forall ?_
   intro F _ h_lub M τ h_mem t h_ant
-  simp only [TruthAt, Formula.and, Formula.neg, Formula.somePast, Formula.top] at h_ant
-  obtain ⟨h1, h2⟩ := and_of_not_imp_not h_ant
+  simp only [Truth.and_iff, Truth.snce_iff, Truth.top_true, Truth.some_past_iff,
+    Truth.neg_iff] at h_ant
+  obtain ⟨h1, h2⟩ := h_ant
   obtain ⟨s0, hs0t, -, hp0⟩ := h1
-  obtain ⟨v, hvt, hnpv, -⟩ := h2
+  obtain ⟨v, hvt, hnpv⟩ := h2
   set B : Set F.Duration := {u : F.Duration | u < t ∧ ∀ r : F.Duration, u < r → r < t → TruthAt M τ r φ} with hB
   have hs0B : s0 ∈ B := ⟨hs0t, hp0⟩
   have hBbdd : BddBelow B := by
@@ -964,19 +937,21 @@ theorem prior_S_gap_valid (φ : Formula) :
     intro r hsr hrt
     obtain ⟨u, huB, -, hur⟩ := hs.exists_between hsr
     exact huB.2 r hur hrt
-  simp only [TruthAt, Formula.or, Formula.neg, Formula.kMinus, Formula.top]
+  simp only [Truth.snce_iff, Truth.or_iff, Truth.neg_iff, Truth.kMinus_iff]
   refine ⟨s, hst, ?_, hguard⟩
-  intro hnn
-  rintro ⟨w, hws, -, hw⟩
-  have hps : TruthAt M τ s φ := Classical.byContradiction hnn
-  have hwB : w ∈ B := by
-    refine ⟨lt_trans hws hst, ?_⟩
-    intro r hwr hrt
-    rcases lt_trichotomy r s with h | h | h
-    · exact Classical.byContradiction (hw r hwr h)
-    · exact h ▸ hps
-    · exact hguard r h hrt
-  exact absurd (hs.1 hwB) (not_le_of_gt hws)
+  by_cases hps : TruthAt M τ s φ
+  · refine .inr fun w hws => ?_
+    by_contra hw
+    push Not at hw
+    have hwB : w ∈ B := by
+      refine ⟨lt_trans hws hst, ?_⟩
+      intro r hwr hrt
+      rcases lt_trichotomy r s with h | h | h
+      · exact hw r hwr h
+      · exact h ▸ hps
+      · exact hguard r h hrt
+    exact absurd (hs.1 hwB) (not_le_of_gt hws)
+  · exact .inl hps
 
 /-- **Sep axiom validity**: `K⁺φ ∧ ¬K⁺(φ ∧ U(φ,¬φ)) → K⁺(K⁺φ ∧ K⁻φ)` is valid on real flow.
 
