@@ -1677,7 +1677,23 @@
           "summary": "14-phase, 22.5-hour lean4 consolidation plan across 8 dependency waves: Saturation Helper D, Helper B completion, ofTotal, the TruthIso transport chain, Z-dictionary import, LexCarrier generalisation, order-dual cores, dead-lemma deletion, and the Frames/Standard.lean index."
         }
       ],
-      "session_id": "sess_1788366935_b56865_523"
+      "session_id": "sess_1788366935_b56865_523",
+      "memory_candidates": [
+        {
+          "content": "In this repo, a consolidation target protected by a #guard_msgs-gated `#print axioms` block is specified by its axiom profile, not just its statement. Tests/BimodalTest/Semantics/SaturationFiniteAxiomTest.lean pins four such profiles and its own prose names the wrong consolidation ('route the subsingleton case through the general lemma'). When planning a helper that subsumes such a site, the helper must be ADDITIVE: added beside the guarded lemma, never routed through it, and never routed through a helper whose `classical`/`by_cases` opening drags in Classical.choice. A direct proof can be both shorter and strictly cleaner axiomatically than reuse -- measured here: saturation_of_fib_subsingleton is [propext]-only, while the existing univ_or_singleton route is Classical.choice-dependent. Generalisation: when a test pins a non-functional property (axiom profile, allocation count, elaboration time), treat DRY consolidation as constrained by that property, and verify the profile rather than the build.",
+          "category": "PATTERN",
+          "source_artifact": "specs/523_frame_kit_helpers_transport_standard_frames/plans/01_frame-kit-helpers-transport.md",
+          "confidence": 0.8,
+          "suggested_keywords": [
+            "guard_msgs",
+            "print axioms",
+            "additive helper",
+            "lean consolidation",
+            "axiom profile",
+            "propext"
+          ]
+        }
+      ]
     },
     {
       "project_number": 524,
