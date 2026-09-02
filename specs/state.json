@@ -1555,7 +1555,12 @@
         "FormalSystem/Metalogic/DiscreteNonCompactness.lean",
         "FormalSystem/Metalogic/Independence/CoNotPriorU.lean",
         "FormalSystem/Metalogic/SoundnessLemmas/CoValidity.lean",
-        "FormalSystem/Metalogic/Soundness.lean"
+        "FormalSystem/Metalogic/Soundness.lean",
+        "FormalSystem/Automation/TruthNormAttr.lean",
+        "FormalSystem/Syntax/Formula.lean",
+        "FormalSystem/Semantics/Validity.lean",
+        "FormalSystem/Semantics/Correspondence/FwdRec.lean",
+        "FormalSystem/Semantics/Correspondence/FwdRecBridge.lean"
       ],
       "created": "2026-09-02T03:30:31Z",
       "last_updated": "2026-09-02T15:14:51Z",

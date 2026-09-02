@@ -144,7 +144,7 @@ deliberate, minimal deviation, not scope creep:
 
 | Phase | File outside scope | Edit | Why unavoidable |
 |---|---|---|---|
-| 1 | `FormalSystem/Automation/NormalizationAttr.lean` | 2 `register_simp_attr` + `truth_simp` macro + docstring amendment | `register_simp_attr` is unusable in its declaring compilation unit; this module exists for exactly that and is the only upstream host. |
+| 1 | `FormalSystem/Automation/TruthNormAttr.lean` (**new file**) | 2 `register_simp_attr` + the `truth_simp` macro | `register_simp_attr` is unusable in its own compilation unit, so the declarations must live in a separate module that `Truth.lean` imports — but that constraint forces "a separate module", not "*that* module". A sibling in `FormalSystem/Automation/` follows the pattern `NormalizationAttr.lean` already established (its own "Why this is a separate module" docstring documents the identical constraint) and honours that file's "It must not acquire any other content" instruction instead of amending it. |
 | 2 | `FormalSystem/Syntax/Formula.lean` | 1 import + 7 `@[swap_norm]` tags | The eleven `swap_temporal_*` lemmas live there (`:681-758`); tagging in the declaring file is what guarantees set membership at every use site. |
 | 5 | `Semantics/Validity.lean`, `Correspondence/FwdRec.lean`, `Correspondence/FwdRecBridge.lean` | move `validOn_iff_total`, update 3 references | Charter step (3) explicitly asks for this move; source and destination are both outside the eight files by construction. |
 
@@ -157,8 +157,9 @@ deliberate, minimal deviation, not scope creep:
 | Adding lemma names to the widely-opened `Truth` namespace causes downstream ambiguity | M | L | Phase 2 is `interface` tier; close it on a full `lake build`, not on a single-module check. |
 | `CoValidity.lean` breaks silently | M | **H** | `FormalSystem.Metalogic.SoundnessLemmas.CoValidity` is in `scripts/module-invariants-manifest.txt` as a known-unreachable module: **plain `lake build` never compiles it.** Any phase touching it MUST additionally run `check-module-invariants.sh` (or `lake env lean` on the module) before claiming green. Phases 4 and 10 carry this. |
 | Sweep edits add the new names without removing `Formula.and`/`or`/`neg` | H | M | Verified no-op (§3.5 of the report). Every rewrite phase's checklist states the deletion explicitly, and the reduction metric (A) will not move if it is skipped. |
-| `swap_norm` tagging forces a `Syntax → Automation` import edge | M | L | `NormalizationAttr.lean` imports only `Lean`, so no cycle is possible. Confirm with `check-module-invariants.sh` (C4) in the same phase. Fallback: tag from `Automation/Normalization.lean` (which already imports both) instead, and confirm the tagging module is transitively reachable from the use sites. |
-| The `truth_simp` macro fails to elaborate in its declaring module | L | M | The macro body is syntax, resolved at expansion, so co-locating it with `register_simp_attr` should work. If it errors with `Unknown identifier truth_norm`, move the macro alone into `Truth.lean` (which imports `NormalizationAttr` from Phase 2) and record the move. |
+| `swap_norm` tagging forces a `Syntax → Automation` import edge | M | L | `TruthNormAttr.lean` imports only `Lean` (same as `NormalizationAttr.lean`), so no cycle is possible. Confirm with `check-module-invariants.sh` (C4) in the same phase. Fallback: tag the swap lemmas from a module that already imports both `TruthNormAttr` and `Syntax/Formula.lean` — `Semantics/Truth.lean` after Phase 2 qualifies — and confirm that tagging module is transitively reachable from every use site, since simp-set membership is an environment extension. |
+| The new module is judged unreachable by C6 | L | L | `TruthNormAttr.lean` is imported by `Truth.lean` and `Syntax/Formula.lean` in Phase 2, both deeply reachable from the Lake roots, so it enters the build graph and must **not** be added to `scripts/module-invariants-manifest.txt`. Phase 2's verification confirms this. Between Phase 1 and Phase 2 the module has no importer; if C6 objects at the Phase 1 boundary, land the Phase 2 imports rather than manifesting it. |
+| The `truth_simp` macro fails to elaborate in its declaring module | L | M | The macro body is syntax, resolved at expansion, so co-locating it with `register_simp_attr` should work. If it errors with `Unknown identifier truth_norm`, move the macro alone into `Truth.lean` (which imports `TruthNormAttr` from Phase 2) and record the move. |
 | `discrete_symm_fwd/bwd` need a dual `truthAt_cogap` the researcher did not prove | M | M | Phase 7 budgets it. If it does not land inside the phase, leave those two proofs unchanged and record a `#### Reasoned Exclusions` entry — they are not among the eleven named proofs and metric (A) does not depend on them. |
 | Concurrent task 520 conflicts | L | L | 520's territory (`Metalogic/Bundle/`, `Metalogic/Core/RestrictedMCS/`, `Syntax.lean`, `Syntax/SubformulaClosure/`) is disjoint. Note `Syntax.lean` ≠ `Syntax/Formula.lean`; the Phase 2 deviation does not collide. |
 
@@ -194,17 +195,26 @@ Phases 8 and 9 both edit `Soundness.lean` and are therefore deliberately sequent
         restricted to the eleven named declarations; the 48-line bare-simp audit list
         (`grep -rnE "(^|[[:space:]])(simp|simp_all|aesop)([[:space:]]|$|\[)"` over every live file
         that mentions `TruthAt`); the current line count of each of the eleven named declarations.
-  - [ ] In `FormalSystem/Automation/NormalizationAttr.lean`, add
-        `register_simp_attr truth_norm` (docstring: the `TruthAt` equations plus every `Truth.*`
-        characterization lemma) and `register_simp_attr swap_norm` (the eleven
+  - [ ] Create `FormalSystem/Automation/TruthNormAttr.lean` — a new sibling of
+        `NormalizationAttr.lean`, with the standard copyright header, `import Lean` and nothing
+        else. Its module docstring states the same compilation-unit constraint
+        `NormalizationAttr.lean` documents (`register_simp_attr` expands to an `initialize` block;
+        neither the attribute nor the simp-set identifier is usable in the module that declares
+        it), records that this is a *second* declaration module rather than an extension of the
+        first, and carries the same "attribute and simp-set declarations only" invariant.
+  - [ ] In it, add `register_simp_attr truth_norm` (docstring: the `TruthAt` equations plus every
+        `Truth.*` characterization lemma) and `register_simp_attr swap_norm` (the eleven
         `Formula.swap_temporal_*` lemmas).
   - [ ] Add `macro "truth_simp" loc?:(location)? : tactic => `(tactic| simp only [truth_norm] $(loc?)?)`
         in the same module. If it fails to elaborate there, move the macro alone to `Truth.lean`
         in Phase 2 and record the move (see Risks).
-  - [ ] Amend that module's docstring sentence "It must not acquire any other content." to state
-        the module's real invariant: **attribute and simp-set declarations only, no lemmas**. The
-        research flags that leaving the sentence as-is makes the two new declarations violate an
-        explicit in-file instruction.
+  - [ ] **Do not modify `NormalizationAttr.lean`.** The research recommended amending its
+        "It must not acquire any other content." sentence to host these two sets; the user's scope
+        decision supersedes that recommendation. A separate module honours the instruction as
+        written and needs no amendment.
+  - [ ] Do **not** add the new module to `scripts/module-invariants-manifest.txt`. It gains
+        importers in Phase 2 and is reachable thereafter; C6 fails on an entry naming a reachable
+        module.
 - **Timing:** 0.75 hours
 - **Depends on:** none
 - **Verification Tier:** local
@@ -215,9 +225,10 @@ Phases 8 and 9 both edit `Soundness.lean` and are therefore deliberately sequent
   `baseline.txt`. If any differs, the confirmed value supersedes and metric (A)'s ≤2 target is
   recomputed as `ceil(0.2 * confirmed baseline)`.
 - **Files to modify:**
-  - `FormalSystem/Automation/NormalizationAttr.lean` — two `register_simp_attr`, the `truth_simp`
-    macro, docstring amendment (**outside the eight-file scope — flagged deviation**)
+  - `FormalSystem/Automation/TruthNormAttr.lean` — **new file**: two `register_simp_attr` and the
+    `truth_simp` macro (**outside the eight-file scope — flagged deviation**)
   - `specs/521_truth_layer_simp_normal_form/baseline.txt` — new
+  - Not modified: `FormalSystem/Automation/NormalizationAttr.lean`
 - **Verification:**
   - `lake build` green.
   - `baseline.txt` exists and its numbers are reproducible by the commands it records.
@@ -231,7 +242,7 @@ Phases 8 and 9 both edit `Soundness.lean` and are therefore deliberately sequent
   form in the module docstring. Purely additive: no attribute in this phase reaches the default
   simp set, so no existing proof can change behaviour.
 - **Tasks:**
-  - [ ] Add `import FormalSystem.Automation.NormalizationAttr` to `FormalSystem/Semantics/Truth.lean`.
+  - [ ] Add `import FormalSystem.Automation.TruthNormAttr` to `FormalSystem/Semantics/Truth.lean`.
   - [ ] In `namespace Truth` (`Truth.lean:177-343`), add, all **untagged** for now:
 
         | Lemma | Normal form (RHS) | Proof shape (verified by the researcher) |
@@ -255,7 +266,7 @@ Phases 8 and 9 both edit `Soundness.lean` and are therefore deliberately sequent
   - [ ] Tag every lemma in the table plus `bot_false`, `imp_iff`, `box_iff`, `future_iff`,
         `past_iff`, `some_future_iff`, `some_past_iff`, `strong_release_iff`, `strong_trigger_iff`
         and the `TruthAt` equations with `@[truth_norm]`.
-  - [ ] In `FormalSystem/Syntax/Formula.lean`, add `import FormalSystem.Automation.NormalizationAttr`
+  - [ ] In `FormalSystem/Syntax/Formula.lean`, add `import FormalSystem.Automation.TruthNormAttr`
         and tag the seven not-already-`@[simp]` `swap_temporal_*` lemmas (`involution` :681,
         `diamond` :703, `neg` :713, `next` :742, `prev` :747, `strong_release` :752,
         `strong_trigger` :758) with `@[swap_norm]`; also add `@[swap_norm]` to the four already
@@ -611,7 +622,7 @@ Phases 8 and 9 both edit `Soundness.lean` and are therefore deliberately sequent
 - `specs/521_truth_layer_simp_normal_form/summaries/NN_truth-layer-simp-normal-form-summary.md`
   including the before/after measurement table and the scored acceptance criterion
 - Modified: the eight scoped Lean files, plus the four flagged out-of-scope files
-  (`Automation/NormalizationAttr.lean`, `Syntax/Formula.lean`, `Semantics/Validity.lean`,
+  (new `Automation/TruthNormAttr.lean`, `Syntax/Formula.lean`, `Semantics/Validity.lean`,
   `Correspondence/FwdRec.lean`, `Correspondence/FwdRecBridge.lean`)
 
 ## Rollback/Contingency
