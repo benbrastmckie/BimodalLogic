@@ -1,16 +1,40 @@
 {
-  "status": "researched",
+  "status": "planned",
+  "agent_type": "planner-agent",
+  "task_number": 521,
+  "session_id": "sess_1788332773_c2fa9f_521",
+  "delegation_path": ["orchestrator", "plan", "planner-agent"],
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/521_truth_layer_simp_normal_form/reports/01_truth-layer-simp-normal-form.md",
-      "summary": "Re-measures every charter figure against commit 2bd4dfba2, establishes and empirically verifies a confluent/terminating @[simp] normal form for TruthAt, and reports three charter defects: non-confluent dual always forms, an unreachable 80% acceptance gate, and the inertness of @[simp] at simp-only call sites."
+      "type": "plan",
+      "path": "specs/521_truth_layer_simp_normal_form/plans/01_truth-layer-simp-normal-form.md",
+      "summary": "Ten-phase plan for the TruthAt simp normal form: enabling attribute/simp-set work up front, then the call-site rewrites that carry the effort, with the acceptance gate restated to the charted scope."
     }
   ],
-  "metadata": {
-    "session_id": "sess_1788332773_c2fa9f_521",
-    "agent_type": "lean-research-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+  "phase_count": 10,
+  "estimated_hours": 13.5,
+  "dependency_waves": [[1, 5], [2], [3], [4, 7], [6, 8], [9], [10]],
+  "decisions_applied": [
+    "Acceptance gate restated per orchestrator decision 1: >=80% reduction WITHIN the eleven named declarations (baseline 14 -> <=2), plus an absolute per-file before/after table with Soundness.lean 67 -> <=50 and CoValidity.lean 1 -> 0. No edits planned to FrameClassVariants.lean or Decidable.lean.",
+    "Only the collected forall-s always form carries @[simp] (decision 2); always_iff_tri exists untagged.",
+    "strong_release_iff/strong_trigger_iff keep their attribute (decision 3).",
+    "and_of_not_imp_not consolidated in Soundness.lean and CoValidity.lean only; the Decidable.lean:2570 copy explicitly survives out of scope and is named in the plan.",
+    "Decidable.truthAt_and is NOT planned for deletion (introduction lemma, out of scope)."
+  ],
+  "scope_deviations_flagged": [
+    "FormalSystem/Automation/NormalizationAttr.lean (Phase 1): hosts register_simp_attr truth_norm/swap_norm plus the truth_simp macro; its 'must not acquire any other content' sentence is amended.",
+    "FormalSystem/Syntax/Formula.lean (Phase 2): one import plus eleven @[swap_norm] tags; the swap_temporal_* lemmas live there.",
+    "Semantics/Validity.lean, Correspondence/FwdRec.lean, Correspondence/FwdRecBridge.lean (Phase 5): the validOn_iff_total move required by charter step (3)."
+  ],
+  "notes": "Phase 3 is the only globally disruptive phase, isolated and declared atomic-batch with the researcher's confluence/termination evidence as its safety argument. Newly established planning fact: FormalSystem.Metalogic.SoundnessLemmas.CoValidity is a manifested known-unreachable module, so plain 'lake build' never compiles it -- every phase touching it must also run check-module-invariants.sh or the break is silent.",
+  "memory_candidates": [
+    {
+      "content": "In a Lean 4 codebase, adding @[simp] characterization lemmas does NOT improve existing proofs when those proofs use 'simp only [...]', which consults only its named lemmas. Worse, ADDING the new characterization lemma names to an existing 'simp only' list without REMOVING the syntax-unfolding lemmas (e.g. Formula.and/or/neg, which unfold a derived operator to its primitive encoding) is a verified no-op: simp rewrites subterms bottom-up, so the unfolder fires on the argument before the head-matching characterization lemma can apply, and the goal is left in the old pathological shape. The corollary for planning: a task framed as 'add an @[simp] API' is really a call-site rewrite task that the attribute merely enables, and the attribute work should be sized as a small enabling phase while the bulk of effort goes to rewriting call sites. A second, independent hazard in the same family: registering two @[simp] lemmas with identical LHS and different RHS makes the normal form an artifact of declaration order and silently strands every proof written against the loser -- pick exactly one normal form per head symbol.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/521_truth_layer_simp_normal_form/plans/01_truth-layer-simp-normal-form.md",
+      "confidence": 0.88,
+      "suggested_keywords": ["lean4", "simp-only", "simp-normal-form", "attribute-tagging", "call-site-rewrite", "confluence"]
+    }
+  ],
+  "next_steps": "Run /implement 521 to execute the plan"
 }

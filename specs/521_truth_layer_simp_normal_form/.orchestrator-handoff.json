@@ -1,23 +1,17 @@
 {
   "task_number": 521,
-  "phase": "research",
-  "status": "researched",
-  "dispatch_seq": 7,
+  "phase": "plan",
+  "status": "planned",
+  "dispatch_seq": 8,
   "session_id": "sess_1788332773_c2fa9f_521",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/521_truth_layer_simp_normal_form/reports/01_truth-layer-simp-normal-form.md",
-      "summary": "Truth-layer simp normal form research: re-measurement, verified lemma set, three charter defects, 7-phase ordering."
+      "type": "plan",
+      "path": "specs/521_truth_layer_simp_normal_form/plans/01_truth-layer-simp-normal-form.md",
+      "summary": "Ten phases, 13.5h, seven dependency waves. Enabling attribute/simp-set work up front; the bulk of effort is call-site rewrites."
     }
   ],
   "blockers": [],
-  "decisions_required": [
-    "Choose ONE always normal form: the collected forall-s form is recommended; registering both @[simp] is verified non-confluent.",
-    "Restate the >=80% simp-site reduction gate (max 30% under the stated scope) or widen the file scope.",
-    "Confirm untl_iff/snce_iff are added to step (1); the normal form is incomplete without them.",
-    "Confirm strong_release_iff/strong_trigger_iff keep @[simp] rather than being dropped or deleted.",
-    "Approve amending NormalizationAttr.lean's 'must not acquire any other content' sentence to host truth_norm/swap_norm."
-  ],
-  "notes": "READ-ONLY dispatch: no source file modified, no lake build started. Task 518 prerequisite confirmed complete. No foreign modifications observed in the eight scoped files; task 520's edits are disjoint. Soundness.lean line numbers proved NOT stale (drift <=5 lines); only the DenseValidity.lean:302 anchor is void and it was re-established live at Soundness.lean:723."
+  "decisions_required": [],
+  "notes": "All three orchestrator decisions applied and restated in the plan. Acceptance gate rewritten to the charted scope: (A) >=80% reduction within the eleven named declarations, baseline 14 -> <=2; (B) absolute per-file before/after table, Soundness.lean 67 -> <=50, CoValidity.lean 1 -> 0, with Truth.lean's expected RISE (19 -> ~25) reported rather than suppressed. Three scope deviations flagged in a dedicated plan table: NormalizationAttr.lean (register_simp_attr host), Syntax/Formula.lean (swap_norm tags on the eleven swap_temporal_* lemmas), and the validOn_iff_total move across Validity/FwdRec/FwdRecBridge. Phase 3 is the sole globally disruptive phase, isolated, atomic-batch, with the researcher's 48-line bare-simp audit list as its blast radius and the confluence/termination probes as its safety argument. New planning-time finding: SoundnessLemmas.CoValidity is manifested known-unreachable, so lake build never compiles it -- check-module-invariants.sh is mandatory on Phases 4 and 10."
 }
