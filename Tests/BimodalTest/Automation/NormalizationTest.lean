@@ -252,4 +252,30 @@ No timeouts, confirming zero performance regression from normalization.
   return s!"Benchmark: {sample.length} formulas decided (valid={counts.1}, invalid={counts.2.1}, \
       timeout={counts.2.2})"
 
+/-!
+## Section 8: Global simp set regression
+
+`Formula`'s unfold and fold lemmas are exact `rfl` inverses of each other. While both families
+carried `@[simp]`, plain `simp` rewrote in a cycle and every `Formula` goal failed with
+`maximum recursion depth has been reached`. They now live in the dedicated `formula_unfold` /
+`formula_fold` simp sets declared in `FormalSystem/Automation/NormalizationAttr.lean`, so plain
+`simp` terminates again and each family is still reachable on demand.
+
+`Formula` is in scope here via the file-level `open FormalSystem.Syntax` above — `open
+FormalSystem` alone does not bring it in.
+-/
+
+section SimpLoopRegression
+
+-- Plain `simp` terminates on a `Formula` goal (previously: maximum recursion depth).
+example (a : Formula) : a.neg = a.neg := by simp
+
+-- Both dedicated simp sets resolve across the module boundary. A silent `Unknown attribute`
+-- or `Unknown identifier` here would mean the NormalizationAttr module split did not take.
+example (a : Formula) : a.neg = a.imp Formula.bot := by simp only [formula_unfold]
+
+example (a : Formula) : a.imp Formula.bot = a.neg := by simp only [formula_fold]
+
+end SimpLoopRegression
+
 end BimodalTest.Automation.NormalizationTest

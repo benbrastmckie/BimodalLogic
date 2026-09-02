@@ -407,13 +407,13 @@ rather than reaching for a manifest edit.
 
 ---
 
-### Phase 6: Move the 31 normalization lemmas out of the global simp set [NOT STARTED]
+### Phase 6: Move the 31 normalization lemmas out of the global simp set [COMPLETED]
 
 **Goal**: Plain `simp` terminates on `Formula` goals. `example (a : Formula) : a.neg = a.neg := by
 simp` compiles instead of failing with `maximum recursion depth has been reached`.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Automation/NormalizationAttr.lean` containing **only** the standard
+- [x] Create `FormalSystem/Automation/NormalizationAttr.lean` containing **only** the standard
       copyright header, `import Lean`, and two `register_simp_attr` declarations for
       `formula_unfold` and `formula_fold`. This separate module is **required**, not stylistic:
       `register_simp_attr` parses in `Normalization.lean` but the attribute it declares is not
@@ -422,25 +422,36 @@ simp` compiles instead of failing with `maximum recursion depth has been reached
       `simp only [formula_unfold]` and `simp only [formula_fold]` work. `register_simp_attr`
       appears nowhere in this repo or in the pinned Mathlib, so there is no in-tree precedent —
       re-probe if the two-module form does not compile first try.
-- [ ] Add `import FormalSystem.Automation.NormalizationAttr` to
+- [x] *(deviation: altered — the new module carries a module docstring and per-attribute
+      docstrings in addition to the header, `import Lean` and the two `register_simp_attr` lines.
+      The plan said "**only**" those three; the docstrings record *why* the module has to exist
+      separately, which is the single fact a future reader is most likely to undo by mistake.
+      No other content was added.)*
+- [x] *(deviation: added — three now-false docstring sites in `Normalization.lean` were corrected
+      in the same change, on the same "do not leave the file self-contradicting" reasoning the
+      plan applies to `AesopRules.lean:50-53` in Phase 7: `:21` "15 `_unfold` simp lemmas" -> "21
+      `_unfold` lemmas ... tagged `@[formula_unfold]`", `:30` "Fold-direction simp lemmas" -> "10
+      `_fold` lemmas ... tagged `@[formula_fold]`", and `:169` "Plain macro approach (no
+      `registerSimpAttr` infrastructure needed)", which the change makes exactly backwards.)*
+- [x] Add `import FormalSystem.Automation.NormalizationAttr` to
       `FormalSystem/Automation/Normalization.lean`.
-- [ ] Retag the 21 unfold lemmas (`@[simp]` -> `@[formula_unfold]`) at `:69, 72, 75, 78, 83, 87,
+- [x] Retag the 21 unfold lemmas (`@[simp]` -> `@[formula_unfold]`) at `:69, 72, 75, 78, 83, 87,
       91, 95, 99, 105, 109, 115, 120, 127, 133, 139, 143, 149, 153, 157, 161`, section
       `UnfoldLemmas` (`:67`-`:164`).
-- [ ] Retag the 10 fold lemmas (`@[simp]` -> `@[formula_fold]`) at `:800, 803, 806, 810, 814, 818,
+- [x] Retag the 10 fold lemmas (`@[simp]` -> `@[formula_fold]`) at `:800, 803, 806, 810, 814, 818,
       822, 826, 830, 834`, section `FoldLemmas` (`:798`-`:837`).
-- [ ] Leave `normalizeFormula_id`'s `@[simp]` at `:1218` **untouched** — it is the 32nd `@[simp]`
+- [x] Leave `normalizeFormula_id`'s `@[simp]` at `:1218` **untouched** — it is the 32nd `@[simp]`
       and is not part of the loop.
-- [ ] Rewrite `modalNorm` (`:178`), `modalNormAt` (`:206`), and `modalNormAll` (`:220`): each
+- [x] Rewrite `modalNorm` (`:178`), `modalNormAt` (`:206`), and `modalNormAll` (`:220`): each
       enumerates the same 21 unfold lemmas by name; replace the whole list with `[formula_unfold]`.
-- [ ] **Keep `modalFold` (`:845`) on the `←`-form.** It uses `← *_unfold` (reverse rewriting), not
+- [x] **Keep `modalFold` (`:845`) on the `←`-form.** It uses `← *_unfold` (reverse rewriting), not
       the `*_fold` family. Replacing it with `simp only [formula_fold]` is a real behavioural
       change: six of its entries (`weak_future`, `weak_past`, `always`, `sometimes`,
       `strong_release`, `strong_trigger`) have `← _unfold` forms but no `_fold` lemma. Tagging the
       `*_fold` family is purely to evict it from the global simp set.
-- [ ] Leave `propNorm` (`:188`), `modalOpNorm` (`:192`), and `temporalNorm` (`:198`) unchanged —
+- [x] Leave `propNorm` (`:188`), `modalOpNorm` (`:192`), and `temporalNorm` (`:198`) unchanged —
       they use explicit sub-lists and must keep naming lemmas individually.
-- [ ] Add the regression `example` to the existing
+- [x] Add the regression `example` to the existing
       `Tests/BimodalTest/Automation/NormalizationTest.lean` (255 lines, already imports
       `FormalSystem.Automation.Normalization` and is already wired into `Tests/BimodalTest.lean`).
       Do not create a new test file. The example must `open FormalSystem.Syntax` — `open
@@ -461,12 +472,16 @@ Pre-declared file set for the batch: `FormalSystem/Automation/NormalizationAttr.
 red — retagged lemmas reference an attribute whose declaring module is not yet imported — and MUST
 NOT be committed. The batch lands as one green commit.
 
-**Scope Hypothesis**: **31** tags move (21 unfold + 10 fold), **1** `@[simp]`
-(`normalizeFormula_id`) stays, **3** macros are rewritten to `[formula_unfold]`, **1** macro
-(`modalFold`) is retagged-around but not rewritten, and **3** macros are untouched. Confirm the
-tag count at implementation time with `grep -c '@\[simp\]'
-FormalSystem/Automation/Normalization.lean` before (expect 32) and after (expect 1). If the before
-count is not 32, re-enumerate the sections rather than trusting the line list above.
+**Scope Hypothesis**: **CONFIRMED at implementation time, every number exact.**
+`grep -c '@\[simp\]' FormalSystem/Automation/Normalization.lean` was **32** before and is **1**
+after; `grep -c '@\[formula_unfold\]'` is **21** and `grep -c '@\[formula_fold\]'` is **10**.
+The 21 unfold and 10 fold line numbers in the plan's task list matched the file exactly (each
+asserted to start with `@[simp] ` before rewriting). `normalizeFormula_id` at `:1218` kept its
+`@[simp]`. Three macros (`modalNorm`, `modalNormAt`, `modalNormAll`) collapsed to
+`simp only [formula_unfold]`; `modalFold` kept its `←`-form; `propNorm`, `modalOpNorm` and
+`temporalNorm` are byte-identical. Original hypothesis: **31** tags move (21 unfold + 10 fold),
+**1** `@[simp]` (`normalizeFormula_id`) stays, **3** macros are rewritten to `[formula_unfold]`,
+**1** macro (`modalFold`) is retagged-around but not rewritten, and **3** macros are untouched.
 
 **Files to modify**:
 - `FormalSystem/Automation/NormalizationAttr.lean` - **new**; `import Lean` plus two

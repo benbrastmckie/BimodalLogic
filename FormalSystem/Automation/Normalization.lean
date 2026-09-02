@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
+import FormalSystem.Automation.NormalizationAttr
 import FormalSystem.Syntax.Formula
 
 /-!
@@ -18,7 +19,7 @@ via greedy pattern matching.
 ## Main Definitions
 
 ### Unfold Direction (Phase 1)
-- 15 `_unfold` simp lemmas (all `rfl`) organized by dependency level
+- 21 `_unfold` lemmas (all `rfl`) organized by dependency level, tagged `@[formula_unfold]`
 - `modalNorm` macro: full normalization to primitives
 - `propNorm`, `modalOpNorm`, `temporalNorm`: selective variant macros
 - `modalNormAt`, `modalNormAll`: hypothesis-targeting variants
@@ -27,7 +28,7 @@ via greedy pattern matching.
 - `EnrichedFormula`: ADT with 21 constructors (6 primitive + 15 enriched)
 - `Formula.foldFormula`: greedy bottom-up fold from primitives to enriched
 - `EnrichedFormula.toPrimitive`: inverse direction (enriched to primitives)
-- Fold-direction simp lemmas for unambiguous patterns
+- 10 `_fold` lemmas for unambiguous patterns, tagged `@[formula_fold]`
 - `modalFold` macro: fold primitives back to derived operators
 
 ### Serialization (Phase 4)
@@ -66,99 +67,99 @@ section UnfoldLemmas
 /-! ### Level 1: Direct primitives (depend only on atom, bot, imp, box, untl, snce) -/
 
 /-- Unfold negation: `neg φ = imp φ bot` -/
-@[simp] theorem neg_unfold (φ : Formula) : φ.neg = φ.imp bot := rfl
+@[formula_unfold] theorem neg_unfold (φ : Formula) : φ.neg = φ.imp bot := rfl
 
 /-- Unfold top: `top = imp bot bot` -/
-@[simp] theorem top_unfold : Formula.top = bot.imp bot := rfl
+@[formula_unfold] theorem top_unfold : Formula.top = bot.imp bot := rfl
 
 /-- Unfold next: `next φ = bot.untl φ` -/
-@[simp] theorem next_unfold (φ : Formula) : φ.next = bot.untl φ := rfl
+@[formula_unfold] theorem next_unfold (φ : Formula) : φ.next = bot.untl φ := rfl
 
 /-- Unfold prev: `prev φ = bot.snce φ` -/
-@[simp] theorem prev_unfold (φ : Formula) : φ.prev = bot.snce φ := rfl
+@[formula_unfold] theorem prev_unfold (φ : Formula) : φ.prev = bot.snce φ := rfl
 
 /-! ### Level 2: Depend on Level 1 operators -/
 
 /-- Unfold conjunction: `and φ ψ = (φ.imp (ψ.imp bot)).imp bot` -/
-@[simp] theorem and_unfold (φ ψ : Formula) :
+@[formula_unfold] theorem and_unfold (φ ψ : Formula) :
     φ.and ψ = (φ.imp (ψ.imp bot)).imp bot := rfl
 
 /-- Unfold disjunction: `or φ ψ = (φ.imp bot).imp ψ` -/
-@[simp] theorem or_unfold (φ ψ : Formula) :
+@[formula_unfold] theorem or_unfold (φ ψ : Formula) :
     φ.or ψ = (φ.imp bot).imp ψ := rfl
 
 /-- Unfold diamond: `diamond φ = (φ.imp bot).box.imp bot` -/
-@[simp] theorem diamond_unfold (φ : Formula) :
+@[formula_unfold] theorem diamond_unfold (φ : Formula) :
     φ.diamond = (φ.imp bot).box.imp bot := rfl
 
 /-- Unfold someFuture: `someFuture φ = (bot.imp bot).untl φ` -/
-@[simp] theorem some_future_unfold (φ : Formula) :
+@[formula_unfold] theorem some_future_unfold (φ : Formula) :
     φ.someFuture = (bot.imp bot).untl φ := rfl
 
 /-- Unfold somePast: `somePast φ = (bot.imp bot).snce φ` -/
-@[simp] theorem some_past_unfold (φ : Formula) :
+@[formula_unfold] theorem some_past_unfold (φ : Formula) :
     φ.somePast = (bot.imp bot).snce φ := rfl
 
 /-! ### Level 3: Depend on Level 2 operators -/
 
 /-- Unfold allFuture: `allFuture φ = ((bot.imp bot).untl (φ.imp bot)).imp bot` -/
-@[simp] theorem all_future_unfold (φ : Formula) :
+@[formula_unfold] theorem all_future_unfold (φ : Formula) :
     φ.allFuture = ((bot.imp bot).untl (φ.imp bot)).imp bot := rfl
 
 /-- Unfold allPast: `allPast φ = ((bot.imp bot).snce (φ.imp bot)).imp bot` -/
-@[simp] theorem all_past_unfold (φ : Formula) :
+@[formula_unfold] theorem all_past_unfold (φ : Formula) :
     φ.allPast = ((bot.imp bot).snce (φ.imp bot)).imp bot := rfl
 
 /-! ### Level 4: Depend on Level 3 operators -/
 
 /-- Unfold weakFuture: `weakFuture φ = and φ (allFuture φ)` expanded to primitives -/
-@[simp] theorem weak_future_unfold (φ : Formula) :
+@[formula_unfold] theorem weak_future_unfold (φ : Formula) :
     φ.weakFuture =
       (φ.imp ((((bot.imp bot).untl (φ.imp bot)).imp bot).imp bot)).imp bot := rfl
 
 /-- Unfold weakPast: `weakPast φ = and φ (allPast φ)` expanded to primitives -/
-@[simp] theorem weak_past_unfold (φ : Formula) :
+@[formula_unfold] theorem weak_past_unfold (φ : Formula) :
     φ.weakPast =
       (φ.imp ((((bot.imp bot).snce (φ.imp bot)).imp bot).imp bot)).imp bot := rfl
 
 /-! ### Level 5: Depend on Level 4 operators -/
 
 /-- Unfold always: `always φ = and (allPast φ) (and φ (allFuture φ))` -/
-@[simp] theorem always_unfold (φ : Formula) :
+@[formula_unfold] theorem always_unfold (φ : Formula) :
     φ.always = φ.allPast.and (φ.and φ.allFuture) := rfl
 
 /-! ### Level 6: Depend on Level 5 operators -/
 
 /-- Unfold sometimes: `sometimes φ = neg (always (neg φ))` -/
-@[simp] theorem sometimes_unfold (φ : Formula) :
+@[formula_unfold] theorem sometimes_unfold (φ : Formula) :
     φ.sometimes = φ.neg.always.neg := rfl
 
 /-! ### Level 7: Strong Release and Strong Trigger (depend on Level 2 operators) -/
 
 /-- Unfold strongRelease: `strongRelease φ ψ = untl ψ (and ψ φ)` -/
-@[simp] theorem strong_release_unfold (φ ψ : Formula) :
+@[formula_unfold] theorem strong_release_unfold (φ ψ : Formula) :
     Formula.strongRelease φ ψ = Formula.untl ψ (Formula.and ψ φ) := rfl
 
 /-- Unfold strongTrigger: `strongTrigger φ ψ = snce ψ (and ψ φ)` -/
-@[simp] theorem strong_trigger_unfold (φ ψ : Formula) :
+@[formula_unfold] theorem strong_trigger_unfold (φ ψ : Formula) :
     Formula.strongTrigger φ ψ = Formula.snce ψ (Formula.and ψ φ) := rfl
 
 /-! ### Level 8: Release, Weak Until, Trigger, Weak Since (depend on Level 2/3 operators) -/
 
 /-- Unfold release: `release φ ψ = neg (untl (neg φ) (neg ψ))` -/
-@[simp] theorem release_unfold (φ ψ : Formula) :
+@[formula_unfold] theorem release_unfold (φ ψ : Formula) :
     Formula.release φ ψ = ((ψ.neg.untl φ.neg).neg) := rfl
 
 /-- Unfold weakUntil: `weakUntil φ ψ = or (untl φ ψ) (allFuture ψ)` -/
-@[simp] theorem weak_until_unfold (φ ψ : Formula) :
+@[formula_unfold] theorem weak_until_unfold (φ ψ : Formula) :
     Formula.weakUntil φ ψ = ((ψ.untl φ).or ψ.allFuture) := rfl
 
 /-- Unfold trigger: `trigger φ ψ = neg (snce (neg φ) (neg ψ))` -/
-@[simp] theorem trigger_unfold (φ ψ : Formula) :
+@[formula_unfold] theorem trigger_unfold (φ ψ : Formula) :
     Formula.trigger φ ψ = ((ψ.neg.snce φ.neg).neg) := rfl
 
 /-- Unfold weakSince: `weakSince φ ψ = or (snce φ ψ) (allPast ψ)` -/
-@[simp] theorem weak_since_unfold (φ ψ : Formula) :
+@[formula_unfold] theorem weak_since_unfold (φ ψ : Formula) :
     Formula.weakSince φ ψ = ((ψ.snce φ).or ψ.allPast) := rfl
 
 end UnfoldLemmas
@@ -166,7 +167,16 @@ end UnfoldLemmas
 /-!
 ## Phase 1: Normalization Tactics
 
-Plain macro approach (no `registerSimpAttr` infrastructure needed).
+The macros below dispatch on the `formula_unfold` simp set declared in
+`FormalSystem/Automation/NormalizationAttr.lean`, so adding an unfold lemma to the section above
+extends `modalNorm`/`modalNormAt`/`modalNormAll` automatically.
+
+`propNorm`, `modalOpNorm` and `temporalNorm` deliberately keep naming their lemmas individually:
+each is a *proper sub-list* of the unfold family, so `[formula_unfold]` would over-normalize.
+
+Neither family is in the **default** simp set. The two are exact `rfl` inverses of each other, so
+tagging both `@[simp]` made plain `simp` rewrite in a cycle until it hit `maximum recursion
+depth` on any `Formula` goal. See `NormalizationAttr.lean` for the full account.
 -/
 
 section NormTactics
@@ -176,14 +186,7 @@ Full normalization to primitives: unfolds all 15 derived operators.
 Reduces any formula to a combination of `atom`, `bot`, `imp`, `box`, `untl`, `snce`.
 -/
 macro "modalNorm" : tactic =>
-  `(tactic| simp only [
-    neg_unfold, top_unfold, next_unfold, prev_unfold,
-    and_unfold, or_unfold, diamond_unfold, some_future_unfold, some_past_unfold,
-    all_future_unfold, all_past_unfold,
-    weak_future_unfold, weak_past_unfold,
-    always_unfold, sometimes_unfold,
-    strong_release_unfold, strong_trigger_unfold,
-    release_unfold, weak_until_unfold, trigger_unfold, weak_since_unfold])
+  `(tactic| simp only [formula_unfold])
 
 /-- Propositional normalization only: unfolds neg, top, and, or. -/
 macro "propNorm" : tactic =>
@@ -207,25 +210,11 @@ macro "temporalNorm" : tactic =>
 syntax "modalNormAt" ident : tactic
 macro_rules
   | `(tactic| modalNormAt $h) =>
-    `(tactic| (simp only [
-      neg_unfold, top_unfold, next_unfold, prev_unfold,
-      and_unfold, or_unfold, diamond_unfold, some_future_unfold, some_past_unfold,
-      all_future_unfold, all_past_unfold,
-      weak_future_unfold, weak_past_unfold,
-      always_unfold, sometimes_unfold,
-      strong_release_unfold, strong_trigger_unfold,
-      release_unfold, weak_until_unfold, trigger_unfold, weak_since_unfold] at $h:ident))
+    `(tactic| (simp only [formula_unfold] at $h:ident))
 
 /-- Normalize all hypotheses and the goal. -/
 macro "modalNormAll" : tactic =>
-  `(tactic| simp only [
-    neg_unfold, top_unfold, next_unfold, prev_unfold,
-    and_unfold, or_unfold, diamond_unfold, some_future_unfold, some_past_unfold,
-    all_future_unfold, all_past_unfold,
-    weak_future_unfold, weak_past_unfold,
-    always_unfold, sometimes_unfold,
-    strong_release_unfold, strong_trigger_unfold,
-    release_unfold, weak_until_unfold, trigger_unfold, weak_since_unfold] at *)
+  `(tactic| simp only [formula_unfold] at *)
 
 end NormTactics
 
@@ -797,41 +786,41 @@ These are the reverse of the unfold lemmas. Only unambiguous patterns get fold l
 section FoldLemmas
 
 /-- Fold negation: `φ.imp bot = neg φ` -/
-@[simp] theorem neg_fold (φ : Formula) : φ.imp bot = neg φ := rfl
+@[formula_fold] theorem neg_fold (φ : Formula) : φ.imp bot = neg φ := rfl
 
 /-- Fold top: `bot.imp bot = top` -/
-@[simp] theorem top_fold : bot.imp bot = Formula.top := rfl
+@[formula_fold] theorem top_fold : bot.imp bot = Formula.top := rfl
 
 /-- Fold conjunction: `(φ.imp (ψ.neg)).neg = and φ ψ` -/
-@[simp] theorem and_fold (φ ψ : Formula) :
+@[formula_fold] theorem and_fold (φ ψ : Formula) :
     (φ.imp (ψ.imp bot)).imp bot = Formula.and φ ψ := rfl
 
 /-- Fold diamond: `(φ.neg.box).neg = diamond φ` -/
-@[simp] theorem diamond_fold (φ : Formula) :
+@[formula_fold] theorem diamond_fold (φ : Formula) :
     ((φ.imp bot).box).imp bot = diamond φ := rfl
 
 /-- Fold someFuture: `(bot.imp bot).untl φ = someFuture φ` -/
-@[simp] theorem some_future_fold (φ : Formula) :
+@[formula_fold] theorem some_future_fold (φ : Formula) :
     (bot.imp bot).untl φ = someFuture φ := rfl
 
 /-- Fold somePast: `(bot.imp bot).snce φ = somePast φ` -/
-@[simp] theorem some_past_fold (φ : Formula) :
+@[formula_fold] theorem some_past_fold (φ : Formula) :
     (bot.imp bot).snce φ = somePast φ := rfl
 
 /-- Fold next: `bot.untl φ = next φ` -/
-@[simp] theorem next_fold (φ : Formula) :
+@[formula_fold] theorem next_fold (φ : Formula) :
     bot.untl φ = next φ := rfl
 
 /-- Fold prev: `bot.snce φ = prev φ` -/
-@[simp] theorem prev_fold (φ : Formula) :
+@[formula_fold] theorem prev_fold (φ : Formula) :
     bot.snce φ = prev φ := rfl
 
 /-- Fold allFuture: `(φ.neg.someFuture).neg = allFuture φ` -/
-@[simp] theorem all_future_fold (φ : Formula) :
+@[formula_fold] theorem all_future_fold (φ : Formula) :
     ((bot.imp bot).untl (φ.imp bot)).imp bot = allFuture φ := rfl
 
 /-- Fold allPast: `(φ.neg.somePast).neg = allPast φ` -/
-@[simp] theorem all_past_fold (φ : Formula) :
+@[formula_fold] theorem all_past_fold (φ : Formula) :
     ((bot.imp bot).snce (φ.imp bot)).imp bot = allPast φ := rfl
 
 end FoldLemmas
