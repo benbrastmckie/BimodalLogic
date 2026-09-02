@@ -1,7 +1,7 @@
 # Implementation Plan: Task #518
 
 - **Task**: 518 - Wave 0 hotfix: simp loop, unbuilt modules, drifted documentation
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 5.25 hours
 - **Dependencies**: None (this task is the blocker for 517, 519, 520, 521, 522, 523, 529)
 - **Research Inputs**: specs/518_metalogic_hotfix_simp_loop_unbuilt_modules/reports/01_wave-0-hotfix-verification.md
@@ -135,13 +135,13 @@ constraint, and recording it as a dependency would misstate what actually blocks
 
 ---
 
-### Phase 1: Correct README Dedekind strong-completeness status [NOT STARTED]
+### Phase 1: Correct README Dedekind strong-completeness status [COMPLETED]
 
 **Goal**: `README.md` stops describing Dedekind strong completeness as "not stated" / "open" when
 `Metalogic/DedekindNonCompactness.lean` refutes it sorry-free.
 
 **Tasks**:
-- [ ] Rewrite `README.md:167` — replace "**not stated**, and unavailable on the primary source's
+- [x] Rewrite `README.md:167` — replace "**not stated**, and unavailable on the primary source's
       own terms … so the class is *unproved* rather than refuted" with a **refuted** claim naming
       `strongCompletenessDedekind_refuted` (`DedekindNonCompactness.lean:459`) and
       `dedekind_consequence_not_compact` (`:431`), matching the pattern of the Discrete bullet
@@ -150,10 +150,10 @@ constraint, and recording it as a dependency would misstate what actually blocks
       refuting theorem" assertion, which is false — `SetConsequence.lean` defines
       `StrongCompletenessDedekind` (`:601`) and `CompactDedekind` (`:609`), both with docstrings
       already saying "This statement is false".
-- [ ] Rewrite `README.md:239-240` — "a different property from Dedekind strong completeness (open
+- [x] Rewrite `README.md:239-240` — "a different property from Dedekind strong completeness (open
       — see the strong-completeness discussion above…)" becomes "refuted", keeping the
       forward-reference intact now that it points at a corrected paragraph.
-- [ ] Cross-check the corrected wording against `FormalSystem/Metalogic.lean:116-120`, which is
+- [x] Cross-check the corrected wording against `FormalSystem/Metalogic.lean:116-120`, which is
       already right ("`FrameClass.Dedekind` — **refuted**, like Discrete"), and do not introduce a
       third phrasing.
 

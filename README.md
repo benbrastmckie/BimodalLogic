@@ -164,7 +164,7 @@ The metalogic is organized around a base axiom system with three extensions: Den
 
 - **Discrete** — **refuted**. `strongCompletenessDiscrete_refuted` and its companion `discrete_consequence_not_compact` (`Metalogic/DiscreteNonCompactness.lean`) settle it negatively.
 - **Base** and **Dense** — **proved**. `strongCompletenessBase` and `strongCompletenessDense` (`Metalogic/Compactness.lean`) inhabit the `StrongCompletenessBase`/`StrongCompletenessDense` statements of `Metalogic/SetConsequence.lean`, via `compactBase`/`compactDense` and the corresponding model-existence theorems, proved by an ultraproduct over the finite sublists of the premise set.
-- **Dedekind** — **not stated**, and unavailable on the primary source's own terms. Reynolds 1992 Theorem 7 is weak-only, and this tree contains no `CompactDedekind` definition and no refuting theorem, so the class is *unproved* rather than refuted.
+- **Dedekind** — **refuted**, like Discrete. `strongCompletenessDedekind_refuted` and its companion `dedekind_consequence_not_compact` (`Metalogic/DedekindNonCompactness.lean`) settle it negatively; `StrongCompletenessDedekind` and `CompactDedekind` are stated in `Metalogic/SetConsequence.lean` so the refutations have something to name, and both docstrings there already record that the statements are false. Reynolds 1992 Theorem 7 is weak-only, and the refutation is why: it does not contradict Reynolds, it explains why only weak completeness is available for this class.
 
 Soundness and completeness for the Dedekind class are both stated against the *dense* Dedekind validity predicate `ValidDedekindDense`, not the density-free `ValidDedekind`: `density` and `dense_indicator` are admissible in a Dedekind derivation and both are false on ℤ (`FormalSystem/ProofSystem/Axioms.lean`).
 
@@ -237,7 +237,7 @@ and `galoisClosed_isDiscrete` (`{F | F.IsDiscrete}`, the bare structural clause 
 `validOn_nextTop_iff_isDiscrete` (`Semantics/Correspondence/Indicator.lean`). Two negative results
 sandwich the corresponding narrowed classes instead: `sat_dedekind_ssubset_mod_axiomSet` proves
 that `Sat .Dedekind` is **not Galois-closed** — a statement about definability of the model
-class, a different property from Dedekind strong completeness (open — see the
+class, a different property from Dedekind strong completeness (refuted — see the
 strong-completeness discussion above, which this result does not bear on either way) — and
 `sat_discrete_ssubset_mod_axiomSet` proves the analogous fact for `Sat .Discrete`
 (`Metalogic/Independence/RationalWitness.lean` and `Metalogic/Independence/LexIntWitness.lean`,
