@@ -1,7 +1,7 @@
 # Implementation Plan: Bundle Retirement and Cycle Breaking
 
 - **Task**: 520 - Bundle retirement and cycle breaking
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 7.5 hours
 - **Dependencies**: Task 518
 - **Research Inputs**: specs/520_bundle_retirement_and_cycle_breaking/reports/01_bundle-retirement-cycle-breaking.md
@@ -164,23 +164,23 @@ Phases within the same wave can execute in parallel. Phases 2 and 3 are file-dis
 
 ---
 
-### Phase 1: Capture the baseline and confirm the revised scope [NOT STARTED]
+### Phase 1: Capture the baseline and confirm the revised scope [COMPLETED]
 
 **Goal**: Record the pre-edit gate state so "C2 baseline unchanged" and "ALL PASS" are verifiable
 claims at the end, and confirm at implementation time every count this plan asserts.
 
 **Tasks**:
-- [ ] Run `bash scripts/check-module-invariants.sh` (full, with build) and save the complete output
+- [x] Run `bash scripts/check-module-invariants.sh` (full, with build) and save the complete output
       to `specs/520_bundle_retirement_and_cycle_breaking/summaries/00_baseline.md`. Record
       verbatim: the four C2 axiom lines, the C4 import-line total, the C7 live/reachable/unreachable
       counts, and the C11 archived-import-line and waived counts.
-- [ ] Confirm the extraction block: `CanonicalTaskRelation.lean` ranges `:59-196` (13 decls),
+- [x] Confirm the extraction block: `CanonicalTaskRelation.lean` ranges `:59-196` (13 decls),
       `:557-561` (1 decl, `iter_F_succ_eq`), `:699-844` (15 decls) = 29. Record the exact
       declaration names in the baseline file.
-- [ ] Confirm purity of the block: grep the three ranges for `SetMaximalConsistent`,
+- [x] Confirm purity of the block: grep the three ranges for `SetMaximalConsistent`,
       `MaximalConsistent`, `Succ`, `GContent`, `FContent`, `HContent`, `PContent`, `FrameClass`,
       `Derivable`, `Consistent`, `Provable` -- expect zero hits.
-- [ ] Confirm the `ModalSaturation` consumer matrix: 9 consumer modules, and 2 unqualified
+- [x] Confirm the `ModalSaturation` consumer matrix: 9 consumer modules, and 2 unqualified
       `SetMaximalConsistent.contrapositive` sites (`CanonicalModel.lean:839`,
       `CompletenessDedekind.lean:477`). Record file:line for **every** reference.
       **Settle the fully-qualified count here.** The report's prose says 7 such references, but its
@@ -189,18 +189,19 @@ claims at the end, and confirm at implementation time every count this plan asse
       `FormalSystem.Metalogic.Bundle.<name>` reference must be rewritten, not merely re-imported,
       so the enumeration is what matters, not the total. Produce it by grepping the live tree for
       `FormalSystem\.Metalogic\.Bundle\.(dneTheorem|boxDneTheorem|modal5CollapseTheorem|axiom5NegativeIntrospection|negBoxToBoxNegBox|SetMaximalConsistent)` and record every hit.
-- [ ] Re-confirm the saturation layer is fully dead (see "Corrections" above): tree-wide grep for
+- [x] Re-confirm the saturation layer is fully dead (see "Corrections" above): tree-wide grep for
       `SaturatedBFMCS|IsModallySaturated|needs_modal_witness|saturated_modal_backward|diamond_eq|diamond_excludes_box_neg|diamond_and_not_psi_implies_neg|diamond_implies_psi_consistent|dniTheorem`
       across live `FormalSystem/` and `Tests/`, excluding `Bundle/ModalSaturation.lean`. **Expect
       zero.** A nonzero result invalidates the 6th retirement and must be reported before Phase 3
       proceeds.
-- [ ] Confirm the archived import inventory: 22 lines naming the 5 original dead files plus 1
+- [x] Confirm the archived import inventory: 22 lines naming the 5 original dead files plus 1
       naming `ModalSaturation` (`StrictSemanticsLegacy/Algebraic/UltrafilterChain.lean:6`) = 23
       external, plus 5 intra-set lines (`Construction:8`, `UntilSinceCoherence:8`,
       `CanonicalTaskRelation:7,8`, `SuccRelation:8`) = **28 total**. Record each as file:line.
-- [ ] Confirm each of the 9 `Bundle/` survivors has a live importer outside `Bundle.lean`.
-- [ ] Count the `untl`/`snce` occurrences in the retiring files (expected 14: SuccRelation 10,
+- [x] Confirm each of the 9 `Bundle/` survivors has a live importer outside `Bundle.lean`.
+- [x] Count the `untl`/`snce` occurrences in the retiring files (expected 14: SuccRelation 10,
       CanonicalFrame 2, CanonicalTaskRelation 2) for the Phase 5 banner carve-out.
+      *(deviation: altered -- measured 16, not 14; SuccRelation has 12 not 10. Phase 5 uses 16.)*
 
 **Timing**: 0.5 hours
 
