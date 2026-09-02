@@ -1,16 +1,164 @@
 {
-  "status": "in_progress",
-  "started_at": "2026-09-01T00:00:00Z",
-  "artifacts": [],
-  "modified_files": [],
+  "status": "implemented",
+  "started_at": "2026-09-01T21:50:00Z",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 9,
+    "axiom_count_baseline": 9,
+    "build_passed": true,
+    "notes": "lake build exit 0 (2521 jobs); lake build BimodalTest exit 0 (2572 jobs); bash scripts/check-module-invariants.sh reports ALL CHECKS PASSED, with C6 flipped FAIL -> PASS and no other check regressing from the HEAD (92b154ab2) all-pass-except-C6 baseline. Zero sorry/admit in every modified .lean file; C3 reports a ZERO structural sorry inventory across FormalSystem/. The two repo-wide vacuous-pattern grep hits (Examples/TemporalStructures.lean:542, Tests/BimodalTest/Semantics/SemanticBenchmark.lean:60) are pre-existing, untouched, and not vacuous - each discharges a domain predicate that genuinely reduces to True. '^axiom ' occurrence count in FormalSystem/ is 9 before and 9 after."
+  },
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/518_metalogic_hotfix_simp_loop_unbuilt_modules/summaries/01_wave-0-hotfix-summary.md",
+      "summary": "Wave 0 hotfix: simp loop fixed via dedicated formula_unfold/formula_fold simp sets, C6 flipped to PASS by wiring four unreachable modules in, Bundle<->Algebraic cycle broken, four documentation fronts corrected, and AesopRules moved into a dedicated TMLogic rule set."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/518_metalogic_hotfix_simp_loop_unbuilt_modules/handoffs/phase-1-handoff-20260901.md",
+      "summary": "Phase 1: README Dedekind strong-completeness status."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/518_metalogic_hotfix_simp_loop_unbuilt_modules/handoffs/phase-2-handoff-20260901.md",
+      "summary": "Phase 2: Formula constructor tables; scope hypothesis refuted, third site found."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/518_metalogic_hotfix_simp_loop_unbuilt_modules/handoffs/phase-3-handoff-20260901.md",
+      "summary": "Phase 3: six typst sorryAx regions; typst compile and typst-sync-check both green."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/518_metalogic_hotfix_simp_loop_unbuilt_modules/handoffs/phase-4-handoff-20260901.md",
+      "summary": "Phase 4: Bundle -> Algebraic orphan and import deleted."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/518_metalogic_hotfix_simp_loop_unbuilt_modules/handoffs/phase-5-handoff-20260901.md",
+      "summary": "Phase 5: four modules wired in; C6 FAIL -> PASS, script now ALL CHECKS PASSED."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/518_metalogic_hotfix_simp_loop_unbuilt_modules/handoffs/phase-6-handoff-20260901.md",
+      "summary": "Phase 6: 31 lemmas out of the global simp set; atomic batch, no fallback needed."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/518_metalogic_hotfix_simp_loop_unbuilt_modules/handoffs/phase-7-handoff-20260901.md",
+      "summary": "Phase 7: TMLogic Aesop rule set; probe confirmed the import-boundary caveat applies."
+    }
+  ],
+  "modified_files": [
+    "README.md",
+    "FormalSystem/README.md",
+    "FormalSystem/Syntax/README.md",
+    "FormalSystem/Metalogic/Core/README.md",
+    "typst/FormalFoundations.typ",
+    "FormalSystem/Metalogic/Bundle/LimitMCS.lean",
+    "FormalSystem/Metalogic.lean",
+    "FormalSystem/Automation/Normalization.lean",
+    "FormalSystem/Automation/NormalizationAttr.lean",
+    "FormalSystem/Automation/AesopRules.lean",
+    "FormalSystem/Automation/AesopRuleSet.lean",
+    "Tests/BimodalTest/Automation/NormalizationTest.lean",
+    "specs/518_metalogic_hotfix_simp_loop_unbuilt_modules/plans/01_wave-0-hotfix-execution.md",
+    "specs/518_metalogic_hotfix_simp_loop_unbuilt_modules/summaries/01_wave-0-hotfix-summary.md",
+    "specs/518_metalogic_hotfix_simp_loop_unbuilt_modules/handoffs/phase-1-handoff-20260901.md",
+    "specs/518_metalogic_hotfix_simp_loop_unbuilt_modules/handoffs/phase-2-handoff-20260901.md",
+    "specs/518_metalogic_hotfix_simp_loop_unbuilt_modules/handoffs/phase-3-handoff-20260901.md",
+    "specs/518_metalogic_hotfix_simp_loop_unbuilt_modules/handoffs/phase-4-handoff-20260901.md",
+    "specs/518_metalogic_hotfix_simp_loop_unbuilt_modules/handoffs/phase-5-handoff-20260901.md",
+    "specs/518_metalogic_hotfix_simp_loop_unbuilt_modules/handoffs/phase-6-handoff-20260901.md",
+    "specs/518_metalogic_hotfix_simp_loop_unbuilt_modules/handoffs/phase-7-handoff-20260901.md"
+  ],
+  "completion_data": {
+    "completion_summary": "All eight phases of the Wave 0 hotfix landed on a green tree. Invariant check C6 flipped FAIL -> PASS and scripts/check-module-invariants.sh now reports ALL CHECKS PASSED (baseline: all-pass-except-C6); plain simp terminates on Formula goals again after the 31 unfold/fold lemmas moved into dedicated formula_unfold/formula_fold simp sets; the Bundle <-> Algebraic directory cycle is gone; AesopRules' 21 rules moved out of Aesop's default rule set into a dedicated TMLogic set; and four drifted documentation fronts (README Dedekind status, Formula constructor tables, typst sorryAx claims, the AesopRules docstring) now agree with machine-checked fact. lake build and lake build BimodalTest are both at exit 0, with no sorry, no new axiom, and no vacuous definition introduced.",
+    "roadmap_items": []
+  },
   "partial_progress": {
-    "stage": "initializing",
-    "details": "Baseline recorded: lake build green at HEAD, check-module-invariants.sh all PASS except C6 (4 unreachable live modules). Beginning Phase 1."
+    "stage": "complete",
+    "details": "Phases 1-8 all COMPLETED. Seven of eight Scope Hypotheses confirmed at implementation time; Phase 2's was refuted (7 files, not 2) and the plan's hypothesis block was rewritten in place to record the measured outcome and the per-file reasoning for what was fixed vs deliberately left alone.",
+    "phases_completed": 8,
+    "phases_total": 8
   },
   "metadata": {
     "session_id": "sess_1788324209_de679d",
     "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"]
-  }
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
+    "compliance_check": "passed",
+    "commit_shas": [
+      "c5366b9e5 task 518 phase 1: correct README Dedekind strong-completeness status",
+      "83ba115d9 task 518 phase 2: correct the Formula constructor tables",
+      "c85ec566e task 518 phase 3: correct the typst sorryAx claims",
+      "f37185803 task 518 phase 4: delete the Bundle -> Algebraic orphan and its import",
+      "1ec9a0ea5 task 518 phase 5: wire the four unreachable modules into the build graph",
+      "14b17a907 task 518 phase 6: move the 31 normalization lemmas out of the global simp set",
+      "85b2927a4 task 518 phase 7: declare a dedicated Aesop rule set for AesopRules"
+    ]
+  },
+  "memory_candidates": [
+    {
+      "content": "Lean 4: both `register_simp_attr` (simp sets) and `declare_aesop_rule_sets` (Aesop rule sets) declare something that is NOT usable in the compilation unit that declares it. Tagging a lemma with the new simp attribute in the declaring file fails with `Unknown attribute`; using the new Aesop rule set there fails with `no such rule set: 'X'`, and Aesop's error text says outright \"Declared rule sets are not visible in the current file; they only become visible once you import the declaring file.\" Both therefore need a dedicated upstream module - this is why Mathlib puts every rule set in its own `Init.lean`-style file. Measured on Lean v4.33.0-rc1.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/518_metalogic_hotfix_simp_loop_unbuilt_modules/summaries/01_wave-0-hotfix-summary.md",
+      "confidence": 0.95,
+      "suggested_keywords": [
+        "lean4",
+        "register_simp_attr",
+        "declare_aesop_rule_sets",
+        "simp-set",
+        "aesop",
+        "import-boundary",
+        "module-split"
+      ]
+    },
+    {
+      "content": "A `simp` lemma family and its exact `rfl` inverse family must never both carry `@[simp]`: plain `simp` then rewrites in a cycle and every goal over that type dies with `maximum recursion depth has been reached`. The fix is to move both families into named simp sets (`register_simp_attr`) so each is reachable on demand via `simp only [set_name]` but neither is in the default set. Diagnostic: a `@[simp] theorem foo_unfold : X = Y := rfl` paired with `@[simp] theorem foo_fold : Y = X := rfl`.",
+      "category": "PATTERN",
+      "source_artifact": "specs/518_metalogic_hotfix_simp_loop_unbuilt_modules/summaries/01_wave-0-hotfix-summary.md",
+      "confidence": 0.9,
+      "suggested_keywords": [
+        "lean4",
+        "simp",
+        "simp-loop",
+        "maximum-recursion-depth",
+        "rfl-inverse",
+        "fold-unfold"
+      ]
+    },
+    {
+      "content": "`lake-build-guard.sh` refuses an empty wrapped-command vector at exit 77 rather than running a build. The correct invocation names the lake subcommand after `--`: `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build` (or `-- build BimodalTest`), not `... --timeout 1800 --`. The refusal is deliberate: passthrough without prior validation would report a success exit code for work that never ran.",
+      "category": "CONFIG",
+      "source_artifact": "specs/518_metalogic_hotfix_simp_loop_unbuilt_modules/summaries/01_wave-0-hotfix-summary.md",
+      "confidence": 0.85,
+      "suggested_keywords": [
+        "lake-build-guard",
+        "lean4",
+        "lake-build",
+        "exit-77",
+        "build-invocation"
+      ]
+    },
+    {
+      "content": "A plan's Scope Hypothesis grep can over-match and produce a verification criterion that cannot be satisfied. Concrete case: a repo-wide grep for dead `Formula` constructor names (`all_past`, `all_future`, ...) also matched 37 live constructors of a *different* inductive type (`EnrichedFormula`) that happened to use the same snake_case names. Before treating grep hits as defects, check what type each identifier belongs to; before recording a grep as a verification criterion, run it once and confirm it discriminates.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/518_metalogic_hotfix_simp_loop_unbuilt_modules/summaries/01_wave-0-hotfix-summary.md",
+      "confidence": 0.8,
+      "suggested_keywords": [
+        "scope-hypothesis",
+        "grep-verification",
+        "false-positive",
+        "plan-verification"
+      ]
+    }
+  ]
 }

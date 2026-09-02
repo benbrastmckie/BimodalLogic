@@ -1,7 +1,7 @@
 # Implementation Plan: Task #518
 
 - **Task**: 518 - Wave 0 hotfix: simp loop, unbuilt modules, drifted documentation
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 5.25 hours
 - **Dependencies**: None (this task is the blocker for 517, 519, 520, 521, 522, 523, 529)
 - **Research Inputs**: specs/518_metalogic_hotfix_simp_loop_unbuilt_modules/reports/01_wave-0-hotfix-verification.md
@@ -603,22 +603,22 @@ require retagging (10 + 7 + 4), not the 18 the task description asserted.
 
 ---
 
-### Phase 8: Final acceptance gate [NOT STARTED]
+### Phase 8: Final acceptance gate [COMPLETED]
 
 **Goal**: Prove the whole hotfix against the stated acceptance criteria in one pass, on the
 combined tree rather than seven times on seven partial trees.
 
 **Tasks**:
-- [ ] `lake build` — exit 0.
-- [ ] `lake build BimodalTest` — exit 0.
-- [ ] `bash scripts/check-module-invariants.sh` — **C6 PASS**, and every other check still passing.
+- [x] `lake build` — exit 0.
+- [x] `lake build BimodalTest` — exit 0.
+- [x] `bash scripts/check-module-invariants.sh` — **C6 PASS**, and every other check still passing.
       Compare explicitly against the recorded `HEAD` baseline (all-pass except C6); a check that
       was passing and now fails is a regression this hotfix caused, not pre-existing noise.
-- [ ] The `simp` regression `example` in
+- [x] The `simp` regression `example` in
       `Tests/BimodalTest/Automation/NormalizationTest.lean` compiles.
-- [ ] `grep` confirmation sweep across all four doc fronts: the two `README.md` Dedekind sites, the
+- [x] `grep` confirmation sweep across all four doc fronts: the two `README.md` Dedekind sites, the
       three constructor-table sites, the six typst regions, and the `AesopRules.lean` docstring.
-- [ ] Record which Non-Goals were deliberately left undone (the two `Semantics.lean` hygiene
+- [x] Record which Non-Goals were deliberately left undone (the two `Semantics.lean` hygiene
       additions, the two `push_neg` deprecations, the cycle-enumerating invariant check) so the
       downstream tasks in the programme inherit an accurate picture.
 
@@ -632,25 +632,67 @@ combined tree rather than seven times on seven partial trees.
 - None (verification only)
 
 **Verification**:
-- All five acceptance checks above pass simultaneously on one tree
+- All five acceptance checks above pass simultaneously on one tree — **CONFIRMED**:
+
+| Check | Baseline at `HEAD` (`92b154ab2`) | Final |
+|---|---|---|
+| `lake build` | exit 0 (2515 jobs) | **exit 0 (2521 jobs)** |
+| `lake build BimodalTest` | exit 0 | **exit 0** (invariant check C1) |
+| `check-module-invariants.sh` | `1 CHECK GROUP(S) FAILED` | **`ALL CHECKS PASSED`** |
+| C6 | FAIL — 4 unreachable live modules unmanifested | **PASS — 0** |
+| C1, C2, C3, C4, C5, C8, C9, C10, C11, C12, C13, C14, C15, B0 | PASS | **PASS** (no regression) |
+| `example (a : Formula) : a.neg = a.neg := by simp` | `maximum recursion depth has been reached` | **compiles** |
+| C7 reachable / unreachable | 468 / 21 | 474 / 17 |
+
+- Zero `sorry` or `admit` in any modified `.lean` file; C3 reports a ZERO structural sorry
+  inventory across `FormalSystem/` (Boneyard excluded), unchanged from baseline.
+- Zero vacuous definitions introduced. The two pattern hits repo-wide
+  (`Examples/TemporalStructures.lean:542`, `Tests/.../SemanticBenchmark.lean:60`) are pre-existing,
+  untouched, and not vacuous: each discharges a domain predicate that genuinely reduces to `True`.
+- `^axiom ` occurrence count in `FormalSystem/` is **9 before and 9 after** — no axiom added.
+- Grep sweep, all four doc fronts: `README.md` has zero "not stated" / "unproved rather than
+  refuted" hits and `:167` now reads "**refuted**, like Discrete"; zero dead snake_case identifiers
+  remain in any `.md` deliverable, and `Syntax/README.md` names `untl`/`snce`;
+  `typst/FormalFoundations.typ` has zero "dead code" hits and no `sorryAx` attributed to
+  `completeness` or the base class; `fc_theorem_true_in_bundle_flow_model` and
+  `Algebraic.FlowFrame` are both gone from `LimitMCS.lean`; `AesopRules.lean` has zero "DEFAULT
+  rule set" hits; `Normalization.lean` has exactly one real `@[simp]` (`normalizeFormula_id`).
+
+**Non-Goals confirmed left undone** (so the downstream programme inherits an accurate picture):
+the two `Semantics.lean` hygiene additions (`LexCarrier`, `BLSchemaValidity`); the two `push_neg`
+deprecations at `Z1Countermodel.lean:101` and `:148`, now visible in the main build; the
+cycle-enumerating invariant check; the six missing `_fold` lemmas. Surfaced during execution and
+also left undone: the two known-broken benchmark modules (`SemanticBenchmark.lean`,
+`DerivationBenchmark.lean`) still reference dead `Formula.all_future` / `Formula.all_past`
+identifiers, which is why C6 manifests them as not-compile-checked.
 
 ---
 
 ## Testing & Validation
 
-- [ ] `lake build` exits 0 (green at `HEAD`, so any failure is attributable)
-- [ ] `lake build BimodalTest` exits 0 (green at `HEAD`)
-- [ ] `bash scripts/check-module-invariants.sh`: C6 flips FAIL -> PASS; C3, C12, C13, C14 and every
-      other check remain PASS
-- [ ] `example (a : Formula) : a.neg = a.neg := by simp` compiles in
+- [x] `lake build` exits 0 (green at `HEAD`, so any failure is attributable) — 2521 jobs
+- [x] `lake build BimodalTest` exits 0 (green at `HEAD`) — 2572 jobs; also invariant check C1
+- [x] `bash scripts/check-module-invariants.sh`: C6 flips FAIL -> PASS; C3, C12, C13, C14 and every
+      other check remain PASS — script now reports `ALL CHECKS PASSED`
+- [x] `example (a : Formula) : a.neg = a.neg := by simp` compiles in
       `Tests/BimodalTest/Automation/NormalizationTest.lean` with `open FormalSystem.Syntax`
-- [ ] `simp only [formula_unfold]` and `simp only [formula_fold]` both resolve
-- [ ] `grep -rn -E 'all_past|all_future|some_past|some_future' --include='*.md' --include='*.lean' . | grep -v '^./specs/'`
-      returns nothing
-- [ ] `grep -n 'sorryAx' typst/FormalFoundations.typ` attributes no `sorryAx` to `completeness`
-- [ ] `grep -n -iE 'dedekind.*(open|not stated)' README.md` returns nothing
-- [ ] `grep -n 'fc_theorem_true_in_bundle_flow_model' -r --include='*.lean' .` returns nothing
-- [ ] `grep -n 'DEFAULT rule set' FormalSystem/Automation/AesopRules.lean` returns nothing
+- [x] `simp only [formula_unfold]` and `simp only [formula_fold]` both resolve
+- [x] `grep -rn -E 'all_past|all_future|some_past|some_future' --include='*.md' --include='*.lean' . | grep -v '^./specs/'`
+      returns nothing *(deviation: **cannot be met by this grep**, and this was measured rather
+      than assumed. Restricted to `--include='*.md'` it returns nothing, which closes E-03's
+      documentation scope. Over `*.lean` it still matches 46 lines that are not defects: 37 are
+      live constructors of a **different** type, `EnrichedFormula`
+      (`Automation/Normalization.lean:344-350`); 9 are in the two benchmark modules C6 already
+      manifests as known-broken, whose repair is a code change outside a documentation hotfix; 2
+      are comments in `FormulaTest.lean`. See the Phase 2 Scope Hypothesis.)*
+- [x] `grep -n 'sorryAx' typst/FormalFoundations.typ` attributes no `sorryAx` to `completeness`
+- [x] `grep -n -iE 'dedekind.*(open|not stated)' README.md` returns nothing *(deviation: two
+      `open` hits remain at `:198` and `:245`. Both are genuinely open questions unrelated to
+      strong-completeness status — whether the paper's BX_c should carry the density axioms, and
+      closed-form characterizations of `Mod (AxiomSet .Dedekind)` — and both are correctly
+      stated. The `not stated` half of the pattern returns nothing.)*
+- [x] `grep -n 'fc_theorem_true_in_bundle_flow_model' -r --include='*.lean' .` returns nothing
+- [x] `grep -n 'DEFAULT rule set' FormalSystem/Automation/AesopRules.lean` returns nothing
 
 ## Artifacts & Outputs
 

@@ -1,0 +1,95 @@
+{
+  "dispatch_seq": 3,
+  "task_number": 518,
+  "session_id": "sess_1788324209_de679d",
+  "status": "implemented",
+  "phase": "implement",
+  "phases_completed": 8,
+  "phases_total": 8,
+  "blocked_phase": null,
+  "requires_user_review": false,
+  "acceptance": {
+    "lake_build": "exit 0 (2521 jobs)",
+    "lake_build_bimodaltest": "exit 0 (2572 jobs; also invariant check C1)",
+    "check_module_invariants": "ALL CHECKS PASSED",
+    "C6": "FAIL -> PASS (4 unmanifested unreachable live modules -> 0)",
+    "simp_regression_example": "compiles (baseline: maximum recursion depth has been reached)",
+    "doc_grep_sweep": "all four fronts confirmed"
+  },
+  "modified_files": [
+    "README.md",
+    "FormalSystem/README.md",
+    "FormalSystem/Syntax/README.md",
+    "FormalSystem/Metalogic/Core/README.md",
+    "typst/FormalFoundations.typ",
+    "FormalSystem/Metalogic/Bundle/LimitMCS.lean",
+    "FormalSystem/Metalogic.lean",
+    "FormalSystem/Automation/Normalization.lean",
+    "FormalSystem/Automation/NormalizationAttr.lean",
+    "FormalSystem/Automation/AesopRules.lean",
+    "FormalSystem/Automation/AesopRuleSet.lean",
+    "Tests/BimodalTest/Automation/NormalizationTest.lean",
+    "specs/518_metalogic_hotfix_simp_loop_unbuilt_modules/plans/01_wave-0-hotfix-execution.md",
+    "specs/518_metalogic_hotfix_simp_loop_unbuilt_modules/summaries/01_wave-0-hotfix-summary.md",
+    "specs/518_metalogic_hotfix_simp_loop_unbuilt_modules/handoffs/phase-1-handoff-20260901.md",
+    "specs/518_metalogic_hotfix_simp_loop_unbuilt_modules/handoffs/phase-2-handoff-20260901.md",
+    "specs/518_metalogic_hotfix_simp_loop_unbuilt_modules/handoffs/phase-3-handoff-20260901.md",
+    "specs/518_metalogic_hotfix_simp_loop_unbuilt_modules/handoffs/phase-4-handoff-20260901.md",
+    "specs/518_metalogic_hotfix_simp_loop_unbuilt_modules/handoffs/phase-5-handoff-20260901.md",
+    "specs/518_metalogic_hotfix_simp_loop_unbuilt_modules/handoffs/phase-6-handoff-20260901.md",
+    "specs/518_metalogic_hotfix_simp_loop_unbuilt_modules/handoffs/phase-7-handoff-20260901.md"
+  ],
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/518_metalogic_hotfix_simp_loop_unbuilt_modules/summaries/01_wave-0-hotfix-summary.md",
+      "summary": "Wave 0 hotfix: simp loop fixed via dedicated formula_unfold/formula_fold simp sets, C6 flipped to PASS by wiring four unreachable modules in, Bundle<->Algebraic cycle broken, four documentation fronts corrected, and AesopRules moved into a dedicated TMLogic rule set."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/518_metalogic_hotfix_simp_loop_unbuilt_modules/handoffs/phase-1-handoff-20260901.md",
+      "summary": "Phase 1: README Dedekind strong-completeness status."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/518_metalogic_hotfix_simp_loop_unbuilt_modules/handoffs/phase-2-handoff-20260901.md",
+      "summary": "Phase 2: Formula constructor tables; scope hypothesis refuted, third site found."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/518_metalogic_hotfix_simp_loop_unbuilt_modules/handoffs/phase-3-handoff-20260901.md",
+      "summary": "Phase 3: six typst sorryAx regions; typst compile and typst-sync-check both green."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/518_metalogic_hotfix_simp_loop_unbuilt_modules/handoffs/phase-4-handoff-20260901.md",
+      "summary": "Phase 4: Bundle -> Algebraic orphan and import deleted."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/518_metalogic_hotfix_simp_loop_unbuilt_modules/handoffs/phase-5-handoff-20260901.md",
+      "summary": "Phase 5: four modules wired in; C6 FAIL -> PASS, script now ALL CHECKS PASSED."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/518_metalogic_hotfix_simp_loop_unbuilt_modules/handoffs/phase-6-handoff-20260901.md",
+      "summary": "Phase 6: 31 lemmas out of the global simp set; atomic batch, no fallback needed."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/518_metalogic_hotfix_simp_loop_unbuilt_modules/handoffs/phase-7-handoff-20260901.md",
+      "summary": "Phase 7: TMLogic Aesop rule set; probe confirmed the import-boundary caveat applies."
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "All eight phases of the Wave 0 hotfix landed on a green tree. Invariant check C6 flipped FAIL -> PASS and scripts/check-module-invariants.sh now reports ALL CHECKS PASSED (baseline: all-pass-except-C6); plain simp terminates on Formula goals again after the 31 unfold/fold lemmas moved into dedicated formula_unfold/formula_fold simp sets; the Bundle <-> Algebraic directory cycle is gone; AesopRules' 21 rules moved out of Aesop's default rule set into a dedicated TMLogic set; and four drifted documentation fronts (README Dedekind status, Formula constructor tables, typst sorryAx claims, the AesopRules docstring) now agree with machine-checked fact. lake build and lake build BimodalTest are both at exit 0, with no sorry, no new axiom, and no vacuous definition introduced.",
+    "roadmap_items": []
+  },
+  "next_steps": "Task 518 is the Wave 0 blocker for 517, 519, 520, 521, 522, 523 and 529; all seven are now unblocked. Commit the final summary + plan + metadata, then dispatch the downstream wave.",
+  "notes": [
+    "Seven of eight Scope Hypotheses confirmed at implementation time; Phase 2's was refuted (7 files, not 2). A third drifted doc site, FormalSystem/Metalogic/Core/README.md:114,118, was found and fixed; the other four grep hits are not defects and were deliberately left alone.",
+    "Phase 7's mandatory probe found that the register_simp_attr import-boundary caveat DOES apply to declare_aesop_rule_sets, so the plan's pre-declared conditional second module (FormalSystem/Automation/AesopRuleSet.lean) was needed. Pre-declaring it in the atomic batch meant no re-scoping.",
+    "Neither contingency fallback was used: the two-module register_simp_attr layout compiled first try, and the Aesop retag needed no revert.",
+    "Non-Goals left undone, deliberately: the two Semantics.lean hygiene additions (LexCarrier, BLSchemaValidity); the two push_neg deprecations at Z1Countermodel.lean:101 and :148 now visible in the main build; the cycle-enumerating invariant check; the six missing _fold lemmas. Additionally surfaced and left undone: the two known-broken benchmark modules (SemanticBenchmark.lean, DerivationBenchmark.lean) still reference dead Formula.all_future / Formula.all_past identifiers, which is why C6 manifests them as not-compile-checked."
+  ]
+}
