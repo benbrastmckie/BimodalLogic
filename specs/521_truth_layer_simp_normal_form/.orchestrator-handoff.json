@@ -1,17 +1,46 @@
 {
+  "dispatch_seq": 9,
   "task_number": 521,
-  "phase": "plan",
-  "status": "planned",
-  "dispatch_seq": 8,
-  "session_id": "sess_1788332773_c2fa9f_521",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/521_truth_layer_simp_normal_form/plans/01_truth-layer-simp-normal-form.md",
-      "summary": "Ten phases, 13.5h, seven dependency waves. Enabling attribute/simp-set work up front; the bulk of effort is call-site rewrites."
-    }
+  "task_type": "lean4",
+  "session_id": "sess_1788332773_c2fa9f",
+  "status": "implemented",
+  "phases_completed": 10,
+  "phases_total": 10,
+  "blocked_phase": null,
+  "requires_user_review": false,
+  "build_passed": true,
+  "build_jobs": 2517,
+  "module_invariants": "ALL CHECKS PASSED",
+  "c2_axiom_baseline": "unchanged",
+  "acceptance_met": true,
+  "acceptance_detail": {
+    "A_named_declaration_sites": "14 -> 0 (target <=2) MET",
+    "B_soundness_lean": "67 -> 48 (target <=50) MET",
+    "B_covalidity_lean": "1 -> 0 (target 0) MET",
+    "truth_lean_expected_rise": "19 -> 28 REPORTED, not suppressed",
+    "half_length_subcriterion": "NOT MET for 2 of 11 (prior_U_gap_valid 36->40, prior_S_gap_valid 36->39); aggregate 298 -> 200 lines. Reported in the summary."
+  },
+  "commits": [
+    "9cd75e280 task 521 phase 1: baseline capture and simp-set registration",
+    "ecfc839dd task 521 phase 2: untagged Truth API and named simp-set tags (also closes phase 5)",
+    "b0dc8aee7 task 521 phase 3: register the @[simp] attributes (also lands phase 7's Truth.lean lemmas)",
+    "59da2e639 task 521 phase 7: A-17 uniformity block, and phase 8: seven smaller soundness proofs",
+    "0a978bc9b task 521 phase 9: rewrite the four large named soundness proofs",
+    "b179e094e task 521 phase 4: consolidate the duplicate truth helpers",
+    "a6458fe64 task 521 phase 6: atom-truth lemmas and the rw [show ... from rfl] idiom",
+    "5e80a4fa4 task 521 phase 10: and_of_not_imp_not consolidation and final measurement"
   ],
-  "blockers": [],
-  "decisions_required": [],
-  "notes": "All three orchestrator decisions applied and restated in the plan. Acceptance gate rewritten to the charted scope: (A) >=80% reduction within the eleven named declarations, baseline 14 -> <=2; (B) absolute per-file before/after table, Soundness.lean 67 -> <=50, CoValidity.lean 1 -> 0, with Truth.lean's expected RISE (19 -> ~25) reported rather than suppressed. Three scope deviations flagged in a dedicated plan table: a NEW module Automation/TruthNormAttr.lean as the register_simp_attr host (NormalizationAttr.lean left untouched, so its 'must not acquire any other content' instruction is honoured as written rather than amended -- this diverges from the research report's own section-3.7 recommendation and the plan says so), Syntax/Formula.lean (swap_norm tags on the eleven swap_temporal_* lemmas), and the validOn_iff_total move across Validity/FwdRec/FwdRecBridge. Phase 3 is the sole globally disruptive phase, isolated, atomic-batch, with the researcher's 48-line bare-simp audit list as its blast radius and the confluence/termination probes as its safety argument. New planning-time finding: SoundnessLemmas.CoValidity is manifested known-unreachable, so lake build never compiles it -- check-module-invariants.sh is mandatory on Phases 4 and 10. The new module must NOT be manifested as unreachable: it gains importers in Phase 2 and C6 fails on an entry naming a reachable module."
+  "summary_path": "specs/521_truth_layer_simp_normal_form/summaries/01_truth-layer-simp-normal-form-summary.md",
+  "return_meta_path": "specs/521_truth_layer_simp_normal_form/.return-meta.json",
+  "settled_decisions_honored": {
+    "new_module_not_NormalizationAttr": true,
+    "not_added_to_module_invariants_manifest": true,
+    "restated_acceptance_gate_used": true,
+    "no_edits_to_FrameClassVariants_or_Decidable": true,
+    "exactly_one_tagged_always_form": true,
+    "strong_release_trigger_iff_keep_attribute": true,
+    "check_module_invariants_run_at_phases_4_and_10": true
+  },
+  "foreign_activity_observed": false,
+  "notes": "No foreign modifications, foreign commits, or foreign lake build observed under FormalSystem/. Two out-of-scope survivors named explicitly in the summary: Decidable.lean:2570 and_of_not_imp_not' (3 call sites) and Decidable.truthAt_and at :1408."
 }

@@ -1,15 +1,65 @@
 {
-  "status": "in_progress",
+  "status": "implemented",
   "started_at": "2026-09-02T00:00:00Z",
-  "artifacts": [],
-  "partial_progress": {
-    "stage": "initializing",
-    "details": "Agent started, parsing delegation context"
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true,
+    "module_invariants": "ALL CHECKS PASSED",
+    "c2_axiom_baseline": "unchanged: [propext, Classical.choice, Quot.sound] for all four flagship theorems",
+    "notes": "sorry_count 0: the five 'sorry' string hits in touched files are docstring prose asserting sorry-freeness, count unchanged from baseline commit bd7027208. vacuous_count 0: the single ':= trivial' grep hit at Examples/TemporalStructures.lean:542 is pre-existing and untouched (verified present at bd7027208)."
+  },
+  "acceptance": {
+    "metric_A_named_declaration_sites": {"baseline": 14, "final": 0, "target": "<=2", "met": true},
+    "metric_B_soundness_lean": {"baseline": 67, "final": 48, "target": "<=50", "met": true},
+    "metric_B_covalidity_lean": {"baseline": 1, "final": 0, "target": 0, "met": true},
+    "truth_lean_expected_rise": {"baseline": 19, "final": 28, "reported": true},
+    "tree_wide_live_sites": {"baseline": 199, "final": 188},
+    "named_declaration_lengths": {"baseline": 298, "final": 200, "ratio": "67%"},
+    "half_length_subcriterion_met": false,
+    "half_length_note": "NOT met and reported in the summary: prior_U_gap_valid 36->40 and prior_S_gap_valid 36->39 GREW, because opening the consequent's disjunction honestly with by_cases costs more lines than the old double-negation trick. Only temp_l_valid (30%) and temp_linearity_valid (41%) clear 50% outright; the other seven land in the 50-70% band because 3-6 lines of irreducible signature per declaration cannot be shortened by a proof rewrite. All eleven reached 0 TruthAt sites."
+  },
+  "phases": {"completed": 10, "total": 10, "blocked": 0, "exclusions": 0},
+  "modified_files": [
+    "FormalSystem/Automation/TruthNormAttr.lean",
+    "FormalSystem/Semantics/Truth.lean",
+    "FormalSystem/Syntax/Formula.lean",
+    "FormalSystem/Semantics/Validity.lean",
+    "FormalSystem/Semantics/Correspondence/FwdRec.lean",
+    "FormalSystem/Semantics/Correspondence/FwdRecBridge.lean",
+    "FormalSystem/Semantics/Correspondence/DurationFrames.lean",
+    "FormalSystem/Metalogic/Soundness.lean",
+    "FormalSystem/Metalogic/SoundnessLemmas/CoValidity.lean",
+    "FormalSystem/Metalogic/DedekindNonCompactness.lean",
+    "FormalSystem/Metalogic/Independence/CoNotPriorU.lean",
+    "FormalSystem/Metalogic/DiscreteNonCompactness.lean",
+    "specs/521_truth_layer_simp_normal_form/plans/01_truth-layer-simp-normal-form.md",
+    "specs/521_truth_layer_simp_normal_form/summaries/01_truth-layer-simp-normal-form-summary.md",
+    "specs/521_truth_layer_simp_normal_form/baseline.txt",
+    "specs/521_truth_layer_simp_normal_form/baseline-audit.txt",
+    "specs/521_truth_layer_simp_normal_form/final.txt",
+    "specs/521_truth_layer_simp_normal_form/measure.sh",
+    "specs/521_truth_layer_simp_normal_form/handoffs/phase-2-handoff-20260902.md"
+  ],
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/521_truth_layer_simp_normal_form/summaries/01_truth-layer-simp-normal-form-summary.md",
+      "summary": "TruthAt gains its @[simp] characterization API and named simp sets; the eleven named soundness proofs are rewritten against it, taking their TruthAt simp-only sites 14 -> 0."
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Built the @[simp] characterization API for FormalSystem/Semantics/Truth.lean's TruthAt relation that its base-language mirror BLTruth.lean already had, hosted the truth_norm and swap_norm simp sets in a new FormalSystem/Automation/TruthNormAttr.lean, and rewrote the call sites the API makes rewritable. Metric (A) simp only [...TruthAt...] sites inside the eleven named soundness declarations went 14 -> 0 against a <=2 target, and metric (B) took Soundness.lean 67 -> 48 (target <=50) and CoValidity.lean 1 -> 0; Truth.lean's own count rose 19 -> 28 as expected, since those sites are the characterization proofs themselves. All three private truth_and_iff copies and both in-scope and_of_not_imp_not copies are deleted with their call sites converted, lake build is green at 2517 jobs, check-module-invariants.sh reports ALL CHECKS PASSED, and the C2 axiom baseline is unchanged.",
+    "roadmap_items": []
   },
   "metadata": {
     "session_id": "sess_1788332773_c2fa9f",
     "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"]
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "compliance_check": "passed",
+    "dispatch_seq": 9
   }
 }
