@@ -84,7 +84,7 @@ next_project_number: 532
 
 ### Metalogic
 
-519 [PLANNED] — WAVE 1 (deletion). Retire the soundness machinery that the FrameC
+519 [IMPLEMENTING] — WAVE 1 (deletion). Retire the soundness machinery that the FrameC
   └─ 521 [NOT STARTED] — WAVE 2 (core utilities). Give the primary language's truth relati
     └─ 522 [NOT STARTED] — WAVE 2 (core utilities). Fix the one representation choice that c
       └─ 523 [NOT STARTED] — WAVE 2 (core utilities). Complete the task-frame construction kit
@@ -230,7 +230,7 @@ next_project_number: 532
 ---
 
 ### 519. Soundnesslemmas consolidation delete dead
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: Task 518

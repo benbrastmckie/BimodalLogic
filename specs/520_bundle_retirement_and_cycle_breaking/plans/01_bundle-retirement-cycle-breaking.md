@@ -2,7 +2,7 @@
 
 - **Task**: 520 - Bundle retirement and cycle breaking
 - **Status**: [NOT STARTED]
-- **Effort**: 8 hours
+- **Effort**: 7.5 hours
 - **Dependencies**: Task 518
 - **Research Inputs**: specs/520_bundle_retirement_and_cycle_breaking/reports/01_bundle-retirement-cycle-breaking.md
 - **Artifacts**: plans/01_bundle-retirement-cycle-breaking.md (this file)
@@ -180,10 +180,15 @@ claims at the end, and confirm at implementation time every count this plan asse
 - [ ] Confirm purity of the block: grep the three ranges for `SetMaximalConsistent`,
       `MaximalConsistent`, `Succ`, `GContent`, `FContent`, `HContent`, `PContent`, `FrameClass`,
       `Derivable`, `Consistent`, `Provable` -- expect zero hits.
-- [ ] Confirm the `ModalSaturation` consumer matrix: 9 consumer modules, 7 references written
-      fully-qualified as `FormalSystem.Metalogic.Bundle.<name>`, 2 unqualified
+- [ ] Confirm the `ModalSaturation` consumer matrix: 9 consumer modules, and 2 unqualified
       `SetMaximalConsistent.contrapositive` sites (`CanonicalModel.lean:839`,
-      `CompletenessDedekind.lean:477`). Record file:line for each.
+      `CompletenessDedekind.lean:477`). Record file:line for **every** reference.
+      **Settle the fully-qualified count here.** The report's prose says 7 such references, but its
+      own consumer matrix marks 5 modules "fully qualified" carrying 9 references between them,
+      plus one "mixed" module -- the two numbers do not reconcile. Every hand-written
+      `FormalSystem.Metalogic.Bundle.<name>` reference must be rewritten, not merely re-imported,
+      so the enumeration is what matters, not the total. Produce it by grepping the live tree for
+      `FormalSystem\.Metalogic\.Bundle\.(dneTheorem|boxDneTheorem|modal5CollapseTheorem|axiom5NegativeIntrospection|negBoxToBoxNegBox|SetMaximalConsistent)` and record every hit.
 - [ ] Re-confirm the saturation layer is fully dead (see "Corrections" above): tree-wide grep for
       `SaturatedBFMCS|IsModallySaturated|needs_modal_witness|saturated_modal_backward|diamond_eq|diamond_excludes_box_neg|diamond_and_not_psi_implies_neg|diamond_implies_psi_consistent|dniTheorem`
       across live `FormalSystem/` and `Tests/`, excluding `Bundle/ModalSaturation.lean`. **Expect
@@ -338,8 +343,9 @@ re-point all 9 consumer modules, leaving `ModalSaturation.lean` holding only dea
       - `WeakCanonical/IntegerModel/ReynoldsBridge.lean` -- `:1119`, `:1118` (fully qualified)
       - `BXCanonical/Chronicle/ChronicleTypes.lean` -- `axiom5NegativeIntrospection` `:224` (fully qualified)
       - `BXCanonical/Chronicle/MCSMixedCase.lean` -- `neg_box_implies_box_neg_box` `:58` (unqualified)
-- [ ] Rewrite the **7 fully-qualified** `FormalSystem.Metalogic.Bundle.<name>` references by hand --
-      re-importing alone does not fix them.
+- [ ] Rewrite **every** hand-written fully-qualified `FormalSystem.Metalogic.Bundle.<name>`
+      reference, per the enumeration Phase 1 produced -- re-importing alone does not fix them. Use
+      the enumeration, not the report's unreconciled count of 7.
 - [ ] At `CanonicalModel.lean:839` and `CompletenessDedekind.lean:477`, add
       `open FormalSystem.Metalogic.Core` (or requalify): neither file currently opens the
       destination namespace for the unqualified `SetMaximalConsistent.contrapositive`. No call site
@@ -370,9 +376,11 @@ re-point all 9 consumer modules, leaving `ModalSaturation.lean` holding only dea
 
 **Commit Mode**: atomic-batch
 
-**Scope Hypothesis**: Asserts 7 declarations move, 9 consumer modules are re-pointed, 7 references
-are fully-qualified rewrites, 2 sites need an added `open`, and `dniTheorem` is dead. Confirm
-against the Phase 1 record, then close the loop with a tree-wide grep for
+**Scope Hypothesis**: Asserts 7 declarations move, 9 consumer modules are re-pointed, 2 sites need
+an added `open`, and `dniTheorem` is dead. The count of fully-qualified rewrites is deliberately
+**not** asserted -- the report's prose (7) and its own matrix (9 across 5 modules plus a mixed
+sixth) disagree, so Phase 1's enumeration is authoritative. Confirm against the Phase 1 record,
+then close the loop with a tree-wide grep for
 `FormalSystem.Metalogic.Bundle.(dneTheorem|boxDneTheorem|modal5CollapseTheorem|axiom5NegativeIntrospection|negBoxToBoxNegBox|contrapositive|neg_box_implies_box_neg_box)`
 across live files -- expect zero hits after the phase.
 
@@ -511,17 +519,16 @@ lines are removed. Confirm against the Phase 1 record; then close the loop with
 - `FormalSystem/Metalogic/BXCanonical/Frame.lean` - delete `:11`
 - `FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodelBasic.lean` - delete `:9`
 - 14 files under `FormalSystem/Boneyard/` - 23 import-line re-points
+- `FormalSystem/Metalogic/Bundle/README.md` - C5 usage blocks, architecture block, Main Theorems table, `:18`, `:171`
 - `scripts/module-invariants-manifest.txt` - delete 3 entries
 
 **Verification**:
 - `lake build` green.
-- `bash scripts/check-module-invariants.sh`: C4, C6, C7, C11 all PASS. C11 is the sharp one -- the
-  archived-import-line total should be unchanged from the Phase 1 baseline (lines are re-pointed,
-  not added or removed) with the waived count unchanged.
-- **C5 is expected to FAIL here**, on `Bundle/README.md:142-143,151-153`, which contain
-  `FormalSystem.Metalogic.Bundle.Construction` and `...CanonicalFrame` in usage blocks. This is
-  scheduled, not a surprise: Phase 5 fixes it. Record the failure and proceed. If any *other* C5
-  path fails, that is unscheduled and must be investigated.
+- `bash scripts/check-module-invariants.sh` reports **ALL CHECKS PASSED** -- C5 included. The
+  `Bundle/README.md` regeneration is in this phase precisely so this boundary is green; a C5
+  failure here means a module-shaped path was missed, not that the fix is owed to a later phase.
+- C11 is the sharp check: the archived-import-line total should be unchanged from the Phase 1
+  baseline (lines are re-pointed, not added or removed) with the waived count unchanged.
 - C2 axiom output byte-identical to the Phase 1 baseline.
 - `ls FormalSystem/Metalogic/Bundle/` shows exactly the 9 survivors.
 
@@ -529,20 +536,14 @@ lines are removed. Confirm against the Phase 1 record; then close the loop with
 
 ### Phase 5: Documentation coherence and final gate [NOT STARTED]
 
-**Goal**: Bring every document that describes the changed structure back into agreement with the
-tree, discharge the remaining live-tree docstring defect, and make the cycle-count acceptance
-criterion mechanically checkable.
+**Goal**: Bring the documents that describe `Metalogic/` and the archive as a whole back into
+agreement with the tree, discharge the remaining live-tree docstring defect, and make the
+cycle-count acceptance criterion mechanically checkable.
+
+`Bundle/README.md` is deliberately **not** in this phase: it is regenerated in Phase 4, alongside
+the move that breaks it, so no phase boundary is left with a red C5.
 
 **Tasks**:
-- [ ] `FormalSystem/Metalogic/Bundle/README.md`:
-      - Regenerate the architecture block `:44-60`. It currently lists three files that do not
-        exist (`FMCS.lean:46`, `CanonicalIrreflexivity.lean:54`, `SuccExistence.lean:56`) **and
-        omits four that do** (`LimitMCS.lean`, `LimitMCSCoherence.lean`, `RealExtension.lean`,
-        `RealExtensionBundle.lean`). Rebuild it from the 9 surviving modules.
-      - Rebuild the Main Theorems table `:66-68` -- two of its three rows point at retired files.
-      - **Fix the C5-load-bearing usage blocks `:142-143` and `:151-153`.** These are the C5 failure
-        Phase 4 scheduled; they are not cosmetic.
-      - Update `:18` and `:171`, which also reference retired material.
 - [ ] `FormalSystem/Metalogic/README.md`:
       - ASCII diagram at `:50,54` -- remove the `Core/ <-> Bundle/` back-edge.
       - Change "There are exactly **two** directory-level cycles" to one.
@@ -582,7 +583,7 @@ criterion mechanically checkable.
       into `check-module-invariants.sh` in this task.
 - [ ] Run the full gate and reconcile every count in the touched READMEs against its output.
 
-**Timing**: 1.5 hours
+**Timing**: 1 hour
 
 **Depends on**: 4
 
@@ -595,7 +596,6 @@ by recounting from the tree at implementation time; every figure written into a 
 from a command run in this phase, not from this plan.
 
 **Files to modify**:
-- `FormalSystem/Metalogic/Bundle/README.md` - architecture block, Main Theorems table, C5 usage blocks, `:18`, `:171`
 - `FormalSystem/Metalogic/README.md` - diagram, cycle count, Cycle 1 edge list, delete Cycle 2, aggregator row, inventory row, declined-regroup paragraph
 - `FormalSystem/Boneyard/README.md` - counts table, EVENT-FIRST banner carve-out
 - `FormalSystem/Metalogic/Algebraic/UltrafilterMCS.lean` - `:26` false sorry claim
@@ -613,9 +613,9 @@ from a command run in this phase, not from this plan.
 ## Testing & Validation
 
 - [ ] `lake build` green at every phase boundary (Phases 2, 3, 4, 5).
-- [ ] `bash scripts/check-module-invariants.sh` ALL CHECKS PASSED at the end of Phases 2, 3 and 5.
-      At the end of Phase 4 a single scheduled C5 failure on `Bundle/README.md` is expected and
-      recorded; every other check passes.
+- [ ] `bash scripts/check-module-invariants.sh` ALL CHECKS PASSED at the end of **every** phase,
+      C5 included. No phase boundary is permitted to leave a check red: `Bundle/README.md` is
+      regenerated inside Phase 4, the phase whose move would otherwise break it.
 - [ ] C2: the four flagship axiom lines byte-identical to the Phase 1 baseline at the end of every
       phase. Divergence is a HARD STOP, never a re-baselining.
 - [ ] C3 unaffected: zero structural sorries before and after; nothing here introduces one.

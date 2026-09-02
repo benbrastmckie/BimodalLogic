@@ -4,7 +4,7 @@
     {
       "type": "plan",
       "path": "specs/520_bundle_retirement_and_cycle_breaking/plans/01_bundle-retirement-cycle-breaking.md",
-      "summary": "Five-phase plan to break the Core<->Bundle cycle, migrate the live ModalSaturation helpers, retire a six-file dead set to the archive, and restore documentation coherence."
+      "summary": "Five-phase plan implementing the user's full-cascade scope decision: break the Core<->Bundle cycle, migrate the live ModalSaturation helpers, retire a six-file dead set to the archive, and restore documentation coherence."
     }
   ],
   "next_steps": "Run /implement 520 to execute the plan",
@@ -12,10 +12,28 @@
     "session_id": "sess_1788332773_c2fa9f_520",
     "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "delegation_path": [
+      "orchestrator",
+      "plan",
+      "planner-agent"
+    ],
     "phase_count": 5,
-    "estimated_hours": 8,
-    "dependency_waves": [[1], [2, 3], [4], [5]]
+    "estimated_hours": 7.5,
+    "dependency_waves": [
+      [
+        1
+      ],
+      [
+        2,
+        3
+      ],
+      [
+        4
+      ],
+      [
+        5
+      ]
+    ]
   },
   "memory_candidates": [
     {
@@ -23,7 +41,14 @@
       "category": "INSIGHT",
       "source_artifact": "specs/520_bundle_retirement_and_cycle_breaking/plans/01_bundle-retirement-cycle-breaking.md",
       "confidence": 0.75,
-      "suggested_keywords": ["boneyard", "archive-retirement", "untl-snce", "guard-first", "convention-banner", "lean-module-retirement"]
+      "suggested_keywords": [
+        "boneyard",
+        "archive-retirement",
+        "untl-snce",
+        "guard-first",
+        "convention-banner",
+        "lean-module-retirement"
+      ]
     }
   ],
   "modified_files": []

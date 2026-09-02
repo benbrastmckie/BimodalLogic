@@ -1,12 +1,12 @@
 {
   "status": "planned",
   "dispatch_seq": 4,
-  "summary": "Five-phase plan built on the research report's measurements, not the task description's. Scope grew again during planning: the saturation layer is entirely dead (the report's SaturatedBFMCS/FlowFrame consumer is a false positive on TaskFrame.Saturation), so ModalSaturation.lean retires whole as a sixth dead file -- 6 files / 2,735 lines. Also caught: archiving these guard-first files falsifies Boneyard/README.md's tree-wide EVENT-FIRST banner (14 untl/snce occurrences), which the report does not mention. Phases: baseline capture; cycle break via IteratedTemporal.lean; ModalSaturation migration; retirement plus 28 archived-import re-points; documentation coherence. Phases 2 and 3 are parallel.",
+  "summary": "Plan revised to the user's scope decision: full cascade retirement, acceptance criterion over literal WORK list. Planning-time re-measurement adds a sixth file beyond the user's five -- ModalSaturation.lean retires whole, because the report's SaturatedBFMCS/FlowFrame consumer is a false positive on TaskFrame.Saturation and the file's remaining 11 declarations have no live consumer once its 7 helpers migrate. That sixth retirement follows from the same principle the user chose, and the plan flags the alternative (manifest it, relax the criterion) rather than assuming. Also caught: archiving these guard-first files falsifies Boneyard/README.md's tree-wide EVENT-FIRST banner (14 untl/snce occurrences). Five phases, 7.5 hours: baseline capture; cycle break via IteratedTemporal.lean; ModalSaturation migration; retirement plus 28 archived-import re-points plus Bundle/README.md regeneration; documentation coherence and final gate. Phases 2 and 3 are parallel.",
   "artifacts": [
     {
       "type": "plan",
       "path": "specs/520_bundle_retirement_and_cycle_breaking/plans/01_bundle-retirement-cycle-breaking.md",
-      "summary": "Five-phase implementation plan, 8 hours, waves [[1],[2,3],[4],[5]]."
+      "summary": "Five-phase implementation plan, 7.5 hours, waves [[1],[2,3],[4],[5]]; validate-artifact.sh --strict passes."
     }
   ],
   "phases_completed": 0,
@@ -15,16 +15,19 @@
   "next_action_hint": "implement",
   "files_modified": [],
   "decisions_made": [
-    "Retirement covers 6 files, not the report's 5 or the description's 3: ModalSaturation.lean's live helpers all migrate and its remaining 11 declarations are dead (re-measured; the report's FlowFrame consumer for SaturatedBFMCS does not exist)",
-    "The SuccRelation diary-deletion and F-21 docstring WORK items are unreachable as written under a 6-file retirement; discharged by recording them in the archive README rather than editing a file in the same phase it is archived",
-    "UltrafilterMCS.lean:26 included despite Metalogic/Algebraic/ being outside the stated file scope -- declared explicitly as a scope deviation",
+    "User scope decision implemented: full cascade retirement, acceptance criterion wins over the literal WORK list",
+    "Retirement covers 6 files, not the decision's 5: ModalSaturation.lean's live helpers all migrate and its remaining 11 declarations are dead (re-measured; the report's FlowFrame consumer for SaturatedBFMCS does not exist). Retired under the same principle the user chose; the alternative (manifest it and relax the criterion) is flagged in the plan for the user to overrule",
+    "REVISED per team-lead direction: Bundle/README.md is now regenerated inside Phase 4, the phase that moves the files, replacing the earlier design that accepted a scheduled C5 failure at the Phase 4 boundary. Every phase boundary is now ALL CHECKS PASSED",
+    "28 archived import lines re-pointed, not 22: 23 external (the 22 for the five-file set plus one naming ModalSaturation) and 5 intra-set lines among the moved files themselves",
+    "The report's count of fully-qualified references is unreconciled -- its prose says 7, its own matrix shows 9 across 5 modules plus a mixed sixth. The plan asserts no number and makes Phase 1's grep enumeration authoritative",
     "SetMaximalConsistent.* lemmas go to Metalogic/Core/MCSProperties.lean, not Theorems/ModalDerived.lean, to avoid widening the existing Theorems<->Metalogic edge",
     "Theorems/ModalDerived.lean uses namespace FormalSystem.Theorems.ModalDerived per the sibling convention, so unqualified consumer call sites need an added open",
     "Phases 3 and 4 declared Commit Mode atomic-batch -- their intermediate per-file states are necessarily red and must not be committed",
     "Temporary module-invariants-manifest entries added in Phases 2 and 3 and deleted in Phase 4, since C6 fails both on unmanifested unreachable modules and on entries naming nonexistent ones",
-    "Phase 4 schedules an expected C5 failure on Bundle/README.md rather than pretending the gate is green there"
+    "SuccRelation diary-deletion and F-21 docstring WORK items are unreachable under a cascade retirement; discharged by recording them in the archive README rather than editing a file in the phase that archives it"
   ],
   "dead_ends": [
-    "Splitting the ModalSaturation migration into green sub-phases: the Bundle and Theorems.ModalDerived copies would be simultaneously in scope under identical names, so no green intermediate exists -- hence the atomic-batch declaration"
+    "Splitting the ModalSaturation migration into green sub-phases: the Bundle and Theorems.ModalDerived copies would be simultaneously in scope under identical names, so no green intermediate exists -- hence the atomic-batch declaration",
+    "Deferring the Bundle/README.md C5 fix to a documentation phase: rejected on team-lead direction, since it leaves the Phase 4 boundary with a red gate"
   ]
 }

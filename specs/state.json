@@ -1454,7 +1454,7 @@
     {
       "project_number": 519,
       "project_name": "soundnesslemmas_consolidation_delete_dead",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "topic": "metalogic",
       "priority": "high",
@@ -1470,7 +1470,7 @@
         "FormalSystem/Metalogic/Decidability/Verified/Decidable.lean"
       ],
       "created": "2026-09-02T03:30:31Z",
-      "last_updated": "2026-09-02T13:53:15Z",
+      "last_updated": "2026-09-02T13:55:43Z",
       "artifacts": [
         {
           "path": "specs/519_soundnesslemmas_consolidation_delete_dead/reports/01_soundnesslemmas-dead-code-reachability.md",
