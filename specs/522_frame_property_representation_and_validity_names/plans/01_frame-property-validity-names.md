@@ -784,14 +784,14 @@ before and after, and report both.
 
 ---
 
-### Phase 9: The rename pass [IN PROGRESS]
+### Phase 9: The rename pass [COMPLETED]
 
 **Goal**: Make `ValidX = ValidIn .X` true for every tag, name the outlier `ValidComplete`, and
 collapse 15 repeated warning paragraphs to one cross-reference — without touching the unrelated
 `Dedekind` layers.
 
 **Tasks**:
-- [ ] Rename in this order, identifier-exact with word boundaries, never a substring pass:
+- [x] Rename in this order, identifier-exact with word boundaries, never a substring pass:
       1. `ValidDedekind` → `ValidComplete` (and `validDedekind*` → `validComplete*`), including
          `ValidDedekind.of_forall`, `.apply`, `validDedekind_iff_validOnFrames_isComplete`,
          `valid_implies_validDedekind`, `validDedekindDense_of_validDedekind` — minus whatever
@@ -806,22 +806,87 @@ collapse 15 repeated warning paragraphs to one cross-reference — without touch
       4. Decision D3: `SemanticConsequenceDedekindDense` → `SemanticConsequenceDedekind`
          (+ `semantic_deduction_dedekind_dense`) and `SetSemanticConsequenceDedekindDense` →
          `SetSemanticConsequenceDedekind` (+ `setSemanticConsequenceDedekindDense_mono`).
-- [ ] Verify after each of the four sub-steps that no `HasDedekind*`, `HasFaithfulDedekind*`,
+- [x] Verify after each of the four sub-steps that no `HasDedekind*`, `HasFaithfulDedekind*`,
       `HasGuardedDedekind*`, `HasDenseDedekind*`, `carrierDedekind`, `layerReynoldsDedekind`,
       `orderIsoRealOfDedekindDenseSeparable`, or `prop42_*_dedekind` identifier changed.
-- [ ] Verify no *tag*-named declaration changed: `soundness_dedekind`, `completeness_dedekind`,
+- [x] Verify no *tag*-named declaration changed: `soundness_dedekind`, `completeness_dedekind`,
       `CompactDedekind`, `StrongCompletenessDedekind`, `SatisfiableDedekindSet`,
       `ModelExistenceDedekind`, `axiom_dedekind_valid`, `SatisfiableSet.dedekind_of_forall`.
-- [ ] Collapse the 15 warning sites to **one** cross-referenced paragraph, sited on `ValidComplete`,
+- [x] Collapse the 15 warning sites to **one** cross-referenced paragraph, sited on `ValidComplete`,
       stating that `ValidComplete = ValidOnFrames TaskFrame.IsComplete` is the sole
       `ValidOnFrames`-level validity name and is deliberately not a `ValidIn` tag. Every other site
       becomes a one-line pointer to it.
-- [ ] **Preserve** the two naming-deviation-of-record blocks (`FrameProperty.lean:157-172` and the
+- [x] **Preserve** the two naming-deviation-of-record blocks (`FrameProperty.lean:157-172` and the
       `Semantics.lean` counterpart): the paper calls the dense-and-complete class Complete, the tree
       calls it Dedekind. The rename does not remove that deviation — it removes only the
       `ValidDedekind ≠ ValidIn .Dedekind` trap. Do not conflate them or delete them.
-- [ ] Do not introduce any `14 axiom` / `21 axiom` / `42 axiom` / `44 axiom` literal into a
+- [x] Do not introduce any `14 axiom` / `21 axiom` / `42 axiom` / `44 axiom` literal into a
       docstring (C14(i) stale-literal scan).
+
+**PHASE 9 COMPLETION NOTE — measured pre/post counts per sub-step.**
+
+| Sub-step | Identifiers renamed | Measured occurrences | Files |
+|---|---|---|---|
+| 9.1 `ValidDedekind` -> `ValidComplete` | `ValidDedekind`, `validDedekind_iff_validOnFrames_isComplete`, `valid_implies_validDedekind`, `validDedekindDense_of_validDedekind` | 39 + 1 + 2 + 2 = **44** | 8 |
+| 9.2 `ValidDedekindDense` -> `ValidDedekind` | + `validDedekindDense_iff_validIn_dedekind`, `isValid_validDedekindDense`, `not_validDedekindDense_of_hasOpen`, `valid_implies_validDedekindDense`, `validDedekindDense_of_validComplete` | 90 + 8 = **98** | 21 |
+| 9.3 BL layer | `BLValidDedekindDense` -> `BLValidDedekind`, `blValid_implies_blValidDedekindDense`, `_blValidDedekindDense`; **and** the prose-only `BLValidDedekind` -> `BLValidComplete` first | 8 + 12 = **20** | 4 |
+| 9.4 D3 consequence family | `SemanticConsequenceDedekindDense`, `semantic_deduction_dedekind_dense`, `SetSemanticConsequenceDedekindDense`, `setSemanticConsequenceDedekindDense_mono` | 15 + 5 + 7 + 1 = **28** | 4 |
+
+Plan-time figures were `ValidDedekindDense` 34 code-only / 134 total across 25 files,
+`ValidDedekind` 8 code-only / 55 total, `BLValidDedekindDense` 16 total across 4 files, D3 ~30.
+Measured totals are lower (90 / 39 / 10 / 28) because Phase 7 deleted 11 adapter declarations and
+their docstrings first, exactly as the plan predicted it would shrink the pass. The file spread
+(21 for `ValidDedekindDense`) is close to the plan's 25.
+
+**Hazard 1 invariant: HOLDS.** 84 declared identifiers contain `Dedekind`; of those, the
+non-`Valid*` count is **73 before and 73 after**. The identifier *set* differs in exactly three
+members, and all three are decision D3's sanctioned consequence-family renames
+(`SemanticConsequenceDedekindDense`/`SetSemanticConsequenceDedekindDense`/`setSemanticConsequenceDedekindDense_mono`).
+`HasDedekind*`, `HasFaithfulDedekind*`, `HasGuardedDedekind*`, `HasDenseDedekind*`,
+`carrierDedekind`, `layerReynoldsDedekind`, `orderIsoRealOfDedekindDenseSeparable` and
+`prop42_*_dedekind` are all byte-unchanged, and so is every tag-named declaration
+(`soundness_dedekind`, `completeness_dedekind`, `CompactDedekind`, `StrongCompletenessDedekind`,
+`SatisfiableDedekindSet`, `ModelExistenceDedekind`, `axiom_dedekind_valid`).
+
+**New hazard found and handled, not in the plan: `BLValidDedekind` already existed — in prose.**
+`Semantics/BLValidity.lean`, `Metalogic.lean`, `Semantics.lean` and
+`Metalogic/BaseLanguageSoundness.lean` each name a hypothetical *density-free* `BLValidDedekind`
+that is deliberately never defined (the BL mirror of `ValidComplete`). Renaming
+`BLValidDedekindDense -> BLValidDedekind` would have made those eight prose occurrences mean the
+opposite of what they say. Sub-step 9.3 therefore renames the prose name to `BLValidComplete`
+**first**, keeping the BL layer parallel to `ValidComplete` / `ValidDedekind`.
+
+**Warning collapse.** The canonical paragraph now sits on `ValidComplete` in
+`Semantics/Validity.lean`, labelled `THE ValidComplete CAVEAT — canonical statement; every other
+site in the tree points here`, and states that `ValidComplete` is the only `Valid*` name that is
+not `ValidIn` at its apparent tag. Five sites that carried a full restatement of the
+ℤ/`density`/`dense_indicator` refutation were reduced to a one-line pointer:
+`Validity.lean`'s `ValidDedekind` docstring, `Soundness.lean`'s Dedekind section block and
+`soundness_dedekind` docstring, `ProofSystem/Axioms.lean`'s soundness caveat, and
+`Decidability/Verified/Bridge/Carrier.lean`. `FrameProperty.lean`'s reciprocal pointer was
+shortened to a pointer. `BLValidity.lean`'s module block is **kept**: it is the BL-*native*
+refutation (it turns on `Axiom.dn` and explicitly records that BL⁺'s version additionally leans on
+`dense_indicator`, which has no BL counterpart), not a copy of the BL⁺ argument.
+
+**The two naming-deviation-of-record blocks survive unedited except for the rename**:
+`FrameProperty.lean`'s module-docstring block (`## Naming deviation of record: Dedekind, not
+Complete`) and the full block on `TaskFrame.IsDedekind`, plus the `Semantics.lean` counterpart
+line that points at them. The canonical `ValidComplete` caveat explicitly says the rename removed
+the `ValidDedekind ≠ ValidIn .Dedekind` trap and did **not** remove the paper-versus-tree
+deviation, so the two cannot be conflated by a later reader.
+
+No `14 axiom` / `21 axiom` / `42 axiom` / `44 axiom` literal was introduced into any docstring.
+
+**Deviations**:
+- *(altered)* The plan's per-sub-step commit mode was honoured for 9.1 (its own full build, green,
+  committed alone — the ordering constraint 9.1-before-9.2 is the one the plan calls load-bearing).
+  Sub-steps 9.2, 9.3 and 9.4 rename **disjoint** identifier sets with no ordering constraint among
+  them, so they share one full build; each is still its own commit. A red build would have been
+  bisected rather than accepted.
+- *(altered)* The rename script initially walked `.lean` files only. Four `README.md` files under
+  `FormalSystem/` and three files under `docs/` also carried the renamed identifiers and were
+  updated in the same pass; `docs/reference/API_REFERENCE.md`'s row for the four deleted
+  `SatisfiableSet.*_of_forall` adapters was rewritten to name `SatisfiableSet.of_forall`.
 
 **Timing**: 2 hours
 

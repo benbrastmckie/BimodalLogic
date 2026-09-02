@@ -31,7 +31,7 @@ It imports `Algebraic.FlowFrame` for the generic flow-frame countermodel engine.
 - `completeness_dense` (`Completeness.lean`): every validly dense formula is derivable in TM Dense
 - `completeness_discrete`: every validly discrete formula is derivable in TM Discrete
 - The Dedekind route (`CompletenessDedekind.lean`, 607 lines): the real-flow construction behind
-  `completeness_dedekind`, stated against `ValidDedekindDense`
+  `completeness_dedekind`, stated against `ValidDedekind`
 - `TruthLemma.lean` supplies the MCS-membership characterizations the model assembly consumes:
   `bot_not_in_mcs`, `imp_iff_mcs`, `G_iff_mcs`, `H_iff_mcs`, `box_iff_mcs`, `F_from_witness`,
   `P_from_witness`, `until_forward_mcs`, `since_forward_mcs`

@@ -895,12 +895,12 @@ its models are exactly `{ℤ, ℝ}` up to order-and-group isomorphism, and its t
 covered separately and exhaustively: the complete-but-discrete branch is exactly `ℤ` and is
 handled by `Discrete`; the dense branch is `Dedekind`. But their *intersection* is not itself a
 frame class, and adding one would require an axiom set for `Th(ℤ) ∩ Th(ℝ)` that this tree does
-not have. `ValidDedekind` exists as a predicate matching the TM⁺_c binder set, but is
+not have. `ValidComplete` exists as a predicate matching the TM⁺_c binder set, but is
 deliberately not a soundness target.
 
 **Soundness caveat.** Because `density` and `dense_indicator` are admissible at `Dedekind` and
 both are false on `ℤ` (which is nonetheless conditionally complete), the soundness theorem for
-that class targets the *dense* Dedekind predicate `ValidDedekindDense`, not `ValidDedekind`.
+that class targets the *dense* Dedekind predicate `ValidDedekind`, not `ValidComplete`.
 
 ### 4.2c Dedekind completeness and the real line
 
@@ -912,7 +912,7 @@ weak completeness theorem, and the one that reaches the real line:
 | `completeness_dedekind` | `StrongCompleteness.lean:469` |
 | `consequence_completeness_dedekind` | `StrongCompleteness.lean:450` |
 
-The semantic target is `ValidDedekindDense`, whose binder list is a linearly ordered
+The semantic target is `ValidDedekind`, whose binder list is a linearly ordered
 `AddCommGroup` that is densely ordered, nontrivial, and Dedekind complete (every nonempty
 bounded-above set has a least upper bound). Provenance is Reynolds 1992, section 9 Theorem 7 --
 a *weak* completeness result for the real-line axiomatisation. The construction route runs

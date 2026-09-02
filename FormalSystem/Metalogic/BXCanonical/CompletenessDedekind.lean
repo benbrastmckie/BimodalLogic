@@ -26,20 +26,20 @@ is available is definable gap-freeness, a consequence of Prior-U, and it is used
 temporal formula is at stake.
 
 The Dedekind-completeness side condition that the *semantic* target needs is supplied instead
-by the carrier: `ValidDedekindDense` (see `FormalSystem/Semantics/Validity.lean`) carries the
+by the carrier: `ValidDedekind` (see `FormalSystem/Semantics/Validity.lean`) carries the
 least-upper-bound property as an explicit `Prop` hypothesis, and `real_lub_of_bddAbove` below
 discharges it for `ℝ` from Mathlib's conditionally complete linear order instance. There is
 therefore no order-theoretic bridge to build.
 
 ## Contents
 
-* `real_lub_of_bddAbove` — `ℝ` discharges the lub hypothesis of `ValidDedekindDense`.
+* `real_lub_of_bddAbove` — `ℝ` discharges the lub hypothesis of `ValidDedekind`.
 * `dedekind_box_dense_mem` — every `FrameClass.Dedekind`-MCS contains `□(¬U(⊤,⊥))`.
 * `chronicle_eval_family_zero_eq_root` — the root placement: the chronicle bundle's evaluation
   family takes the value `A` at time `0`.
 * `countermodel_dedekind_dense` — Reynolds §9 Theorem 7's countermodel, on `ℝ`.
 * `completeness_dedekind_engine` — the single-formula completeness engine for
-  `ValidDedekindDense`, which `StrongCompleteness.lean` instantiates into the unconditional
+  `ValidDedekind`, which `StrongCompleteness.lean` instantiates into the unconditional
   terminus.
 
 The `example`s in the "Carrier probe" section are compile-time checks, not exports: they record
@@ -106,13 +106,13 @@ noncomputable example (B : BFMCS (fc := fc) ℝ) (root : Formula)
 
 end CarrierProbe
 
-/-! ## `ℝ` discharges the `ValidDedekindDense` binders
+/-! ## `ℝ` discharges the `ValidDedekind` binders
 
 `AddCommGroup`, `LinearOrder`, `IsOrderedAddMonoid`, `DenselyOrdered` and `Nontrivial` are all
-found by instance search. The remaining binder of `ValidDedekindDense`
+found by instance search. The remaining binder of `ValidDedekind`
 (`FormalSystem/Semantics/Validity.lean`) is an explicit `Prop`, so it needs a named lemma. -/
 
-/-- Instance-search check for the five class binders of `ValidDedekindDense` at `D := ℝ`. -/
+/-- Instance-search check for the five class binders of `ValidDedekind` at `D := ℝ`. -/
 noncomputable example : AddCommGroup ℝ := inferInstance
 
 noncomputable example : LinearOrder ℝ := inferInstance
@@ -124,10 +124,10 @@ noncomputable example : DenselyOrdered ℝ := inferInstance
 noncomputable example : Nontrivial ℝ := inferInstance
 
 /--
-The least-upper-bound hypothesis of `ValidDedekindDense` holds on `ℝ`.
+The least-upper-bound hypothesis of `ValidDedekind` holds on `ℝ`.
 
-This is the explicit `Prop` binder at the head of `ValidDedekindDense`; every application of a
-`ValidDedekindDense` hypothesis at the real carrier discharges it with this lemma. The content
+This is the explicit `Prop` binder at the head of `ValidDedekind`; every application of a
+`ValidDedekind` hypothesis at the real carrier discharges it with this lemma. The content
 is Mathlib's `ConditionallyCompleteLinearOrder ℝ` instance: `sSup s` is a least upper bound of
 any nonempty bounded-above `s`.
 -/
@@ -314,7 +314,7 @@ instead.
 
 Note the hypothesis list: `hfc` and the chronicle's own three. No Dedekind-completeness side
 condition appears, because none is needed — the carrier is `ℝ`, and the lub property that
-`ValidDedekindDense` demands of the *semantic* side is discharged separately by
+`ValidDedekind` demands of the *semantic* side is discharged separately by
 `real_lub_of_bddAbove`.
 -/
 theorem countermodel_dedekind_dense {fc : FrameClass} (hfc : FrameClass.Dedekind ≤ fc)
@@ -571,7 +571,7 @@ and it is the deduction theorem that makes the finite-context form fall out of i
 second construction. -/
 
 /--
-**The single-formula completeness engine for `ValidDedekindDense`** — Reynolds §9 Theorem 7.
+**The single-formula completeness engine for `ValidDedekind`** — Reynolds §9 Theorem 7.
 
 Contrapositive, four steps, no case split:
 
@@ -583,13 +583,13 @@ Contrapositive, four steps, no case split:
    `completeness` and `completeness_discrete` must discharge does not exist here.
 4. `countermodel_dedekind_dense` at `ℝ` produces the countermodel, with `by decide` discharging
    `FrameClass.Dedekind ≤ FrameClass.Dedekind` and `real_lub_of_bddAbove` discharging the
-   least-upper-bound binder of `ValidDedekindDense`. That binder is reached through the generic
-   `ValidIn.apply_total`: `ValidDedekindDense` is `ValidIn FrameClass.Dedekind`, whose frame
+   least-upper-bound binder of `ValidDedekind`. That binder is reached through the generic
+   `ValidIn.apply_total`: `ValidDedekind` is `ValidIn FrameClass.Dedekind`, whose frame
    hypothesis is the packed `TaskFrame.IsDedekind`, supplied as `⟨inferInstance, hlub⟩` — density
    is found by search because `IsDense` is an `abbrev` and `Sat` is `@[reducible]`.
 -/
 theorem completeness_dedekind_engine (ψ : Formula) :
-    ValidDedekindDense ψ → Derivable FrameClass.Dedekind [] ψ := by
+    ValidDedekind ψ → Derivable FrameClass.Dedekind [] ψ := by
   intro h_valid
   by_contra h_not_deriv
   have h_cons := neg_consistent_of_not_derivable (fc := FrameClass.Dedekind) ψ h_not_deriv

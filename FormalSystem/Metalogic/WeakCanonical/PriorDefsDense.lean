@@ -85,7 +85,7 @@ at a dense flow, and the dense siblings must be built beside them rather than by
 
 Dedekind completeness of the flow is threaded as an explicit `Prop` (`FlowGLB` / `FlowLUB`) rather
 than as a typeclass, matching the treatment of the least-upper-bound property in
-`Semantics/Validity.lean`'s `ValidDedekindDense` and `real_lub_of_bddAbove`
+`Semantics/Validity.lean`'s `ValidDedekind` and `real_lub_of_bddAbove`
 (`BXCanonical/CompletenessDedekind.lean:127`).
 
 Completeness of the flow is a *sufficient* condition here, not a necessary one: the countable dense
@@ -151,7 +151,7 @@ abbrev SemanticPriorS {sig : MonadicSignature}
 
 /-! ## Flow completeness as an explicit hypothesis
 
-Stated as a `Prop` on the structure's own order, in the idiom of `ValidDedekindDense`
+Stated as a `Prop` on the structure's own order, in the idiom of `ValidDedekind`
 (`Semantics/Validity.lean:255`) and `real_lub_of_bddAbove`
 (`BXCanonical/CompletenessDedekind.lean:127`), so that no typeclass has to be transported along
 `OrderedMonadicStructure.carrierOrder`. -/

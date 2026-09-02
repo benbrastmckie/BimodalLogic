@@ -105,8 +105,8 @@ against `specs/paper-definitions-of-record.md`'s DANGLING entry, not a live `\la
   derived-operator characterization lemmas
 - `Validity`: Semantic validity `⊨ φ` and consequence `Γ ⊨ φ` quantifying over all temporal types
 - `BLValidity`: the base-language mirrors — `BLValid`, `BLSemanticConsequence`, `BLValidDense`,
-  `BLValidDiscrete` and `BLValidDedekindDense`, binder for binder against `BLTruthAt`; there is
-  deliberately no density-free `BLValidDedekind`, which would be refutable
+  `BLValidDiscrete` and `BLValidDedekind`, binder for binder against `BLTruthAt`; there is
+  deliberately no density-free `BLValidComplete`, which would be refutable
 - `DurationClassification`: Hölder classification of Dedekind-complete duration groups --
   completeness implies Archimedean, and the discrete-or-dense dichotomy pinning the discrete
   branch to `ℤ`

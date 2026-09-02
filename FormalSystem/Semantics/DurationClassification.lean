@@ -37,12 +37,12 @@ repository actually cares about:
 
 * the discrete branch is *exactly* `ℤ` (not merely "ℤ-like"), which is `FrameClass.Discrete` /
   `ValidDiscrete`;
-* the dense branch is the real flow, which is `FrameClass.Dedekind` / `ValidDedekindDense`.
+* the dense branch is the real flow, which is `FrameClass.Dedekind` / `ValidDedekind`.
 
 ## What is deliberately *not* proved here
 
 The packaged statement "a **nontrivial dense** Dedekind-complete ordered abelian group is
-`≃+o ℝ`". It is true, and it is what would license calling `ValidDedekindDense` the real-flow
+`≃+o ℝ`". It is true, and it is what would license calling `ValidDedekind` the real-flow
 predicate outright rather than up to the composition below, but it is a ~100-200 line
 order-topology development with no Mathlib equivalent. The composition path, recorded here so
 the omission is a scoped decision rather than a gap:
@@ -167,7 +167,7 @@ densely ordered is order-and-group isomorphic to the integers.
 
 Via `LinearOrderedAddCommGroup.discrete_iff_not_denselyOrdered`, again with the `Archimedean`
 instance from `archimedean_of_lub`. Together with `complete_duration_discrete_or_dense` this
-makes the dichotomy exclusive, which is why `ValidDiscrete` and `ValidDedekindDense` carve up
+makes the dichotomy exclusive, which is why `ValidDiscrete` and `ValidDedekind` carve up
 the complete case with nothing left over.
 -/
 theorem complete_not_dense_iso_int {D : Type} [AddCommGroup D] [LinearOrder D]

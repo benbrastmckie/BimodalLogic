@@ -50,8 +50,8 @@ one negatively.
 * Each `SetSemanticConsequence*` predicate is the corresponding validity predicate's binder list
   taken verbatim from `FormalSystem/Semantics/Validity.lean`, with the premise hypothesis
   `(∀ ψ ∈ Γ, TruthAt M τ t ψ)` inserted before the conclusion — the same surgery that
-  `SemanticConsequenceDedekindDense` (`StrongCompleteness.lean:129`) performs on
-  `ValidDedekindDense`. `Γ : Set Formula` rather than `Γ : Context` is the only difference from
+  `SemanticConsequenceDedekind` (`StrongCompleteness.lean:129`) performs on
+  `ValidDedekind`. `Γ : Set Formula` rather than `Γ : Context` is the only difference from
   those finite-context forms; `∀ ψ ∈ Γ` elaborates identically for `Set` and `List`.
 * Nothing here imports `FormalSystem/Metalogic/BXCanonical/`. The set layer is vocabulary; the
   chronicle machinery is a countermodel engine, and the two are deliberately kept unentangled.
@@ -123,7 +123,7 @@ def SetSemanticConsequenceDiscrete (Γ : Set Formula) (φ : Formula) : Prop :=
 
 /-- Set-based semantic consequence over dense Dedekind-complete frames — the
 `soundness_dedekind` target class. Non-compact. -/
-def SetSemanticConsequenceDedekindDense (Γ : Set Formula) (φ : Formula) : Prop :=
+def SetSemanticConsequenceDedekind (Γ : Set Formula) (φ : Formula) : Prop :=
   SetSemanticConsequenceOn FrameClass.Dedekind Γ φ
 
 /-! ## The `FrameClass`-indexed compactness family
@@ -304,9 +304,9 @@ theorem setSemanticConsequenceDiscrete_mono {Γ Δ : Set Formula} {φ : Formula}
   setConsequenceOnFrames_mono h_sub h
 
 /-- Dense Dedekind-complete set-consequence is monotone in the premise set. -/
-theorem setSemanticConsequenceDedekindDense_mono {Γ Δ : Set Formula} {φ : Formula}
-    (h_sub : Γ ⊆ Δ) (h : SetSemanticConsequenceDedekindDense Γ φ) :
-    SetSemanticConsequenceDedekindDense Δ φ :=
+theorem setSemanticConsequenceDedekind_mono {Γ Δ : Set Formula} {φ : Formula}
+    (h_sub : Γ ⊆ Δ) (h : SetSemanticConsequenceDedekind Γ φ) :
+    SetSemanticConsequenceDedekind Δ φ :=
   setConsequenceOnFrames_mono h_sub h
 
 /-! ## Finite restriction and agreement with the finite-context layer -/
@@ -520,11 +520,11 @@ are the generic, `fc`-indexed ones above, so no new adapter and no new binder li
 here — and none is introduced for any other tag either.
 
 No import change is required: `DenselyOrdered` is already in scope via
-`SetSemanticConsequenceDedekindDense` above.
+`SetSemanticConsequenceDedekind` above.
 -/
 
 /-- **Strong completeness for `FrameClass.Dedekind`** — the `StrongCompletenessDense` statement
-    with `SetSemanticConsequenceDedekindDense` in place of `SetSemanticConsequenceDense` and
+    with `SetSemanticConsequenceDedekind` in place of `SetSemanticConsequenceDense` and
     `FrameClass.Dedekind` as the derivability target.
 
     **This statement is false.** See `strongCompletenessDedekind_refuted` in
@@ -544,7 +544,7 @@ def CompactDedekind : Prop := Compact FrameClass.Dedekind
 
 /-- Satisfiability of a possibly-infinite set over Dedekind-complete dense carriers —
     `SatisfiableSet` at `FrameClass.Dedekind`. This is `FormulaSatisfiable` (`Validity.lean`)
-    with `ValidDedekindDense`'s binder list — `[DenselyOrdered D]` together with the
+    with `ValidDedekind`'s binder list — `[DenselyOrdered D]` together with the
     least-upper-bound hypothesis — in place of `ValidDense`'s `DenselyOrdered` alone, and the
     conclusion generalised from a single formula to `∀ ψ ∈ Γ`.
 

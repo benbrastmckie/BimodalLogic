@@ -33,7 +33,7 @@ different semantic target (`FormalSystem/Semantics/Validity.lean`):
 | `.Base` | `⊨ φ` (`valid`, all linear TM frames) | ℚ |
 | `.Dense` | `ValidDense φ` | ℚ |
 | `.Discrete` | `ValidDiscrete φ` | ℤ |
-| `.Dedekind` | `ValidDedekindDense φ` (dense *and* conditionally complete) | ℝ |
+| `.Dedekind` | `ValidDedekind φ` (dense *and* conditionally complete) | ℝ |
 
 Consequently the same formula can legitimately carry different targets in different
 tables: `F p → F F p` is invalid over an arbitrary linear order and over ℤ, but valid
@@ -126,8 +126,8 @@ The four W rows are now re-recorded, with the attribution stated below rather th
   - P0 pre-guard: `C4 Fp->FFp         CLOSED   target=CLOSED          density: a time strictly between t and the witness`
   - current: `(matches the pinned value — the guard repaired this row; left as recorded)`
 * C4 row 3
-  - pinned: `C4 Fp->FFp         OPEN     target=CLOSED  [DEFECT] ValidDedekindDense includes density`
-  - P0 pre-guard: `C4 Fp->FFp         CLOSED   target=CLOSED          ValidDedekindDense includes density`
+  - pinned: `C4 Fp->FFp         OPEN     target=CLOSED  [DEFECT] ValidDedekind includes density`
+  - P0 pre-guard: `C4 Fp->FFp         CLOSED   target=CLOSED          ValidDedekind includes density`
   - current: `(matches the pinned value — the guard repaired this row; left as recorded)`
 * W1 — `orderProbe (nt (an (F (G p)) (F (nt p)))) FrameClass.Base linearityFuel`
   - pinned: `info: total=true knownTimes=[9, 5, 3, 4, 8, 1, 6, 2, 0] constraints=[(6, 1), (9, 3), (9, 5), (8, 9), (1, 8), (6, 8), (2, 6), (3, 5), (4, 0), (0, 3)...`
@@ -477,10 +477,10 @@ def dedekindExtraRows : List Row :=
     , target := "CLOSED", note := "sep; discharged by the sepRule rule" }
   ]
 
-/-- `.Dedekind`, scored against `ValidDedekindDense φ` — dense *and* conditionally
+/-- `.Dedekind`, scored against `ValidDedekind φ` — dense *and* conditionally
 complete, which is why the density probe targets CLOSED here as it does at `.Dense`. -/
 def dedekindRows : List Row :=
-  controlRows ++ [densityProbe "CLOSED" "ValidDedekindDense includes density"]
+  controlRows ++ [densityProbe "CLOSED" "ValidDedekind includes density"]
     ++ serialityRows ++ seriesRows ++ counterexampleRows ++ untilSinceRows
     ++ dedekindExtraRows
 
@@ -587,7 +587,7 @@ info: C1 p->p            CLOSED   target=CLOSED          propositional tautology
 C2 p               OPEN     target=OPEN            atom is satisfiable and not valid
 C3 Gp->p           OPEN     target=OPEN            G is strict: t is not in its own future
 C5 K_G             CLOSED   target=CLOSED          K axiom for G
-C4 Fp->FFp         OPEN     target=CLOSED  [DEFECT] ValidDedekindDense includes density
+C4 Fp->FFp         OPEN     target=CLOSED  [DEFECT] ValidDedekind includes density
 S1 F-top           CLOSED   target=CLOSED          serial_future; serialityRule creates the required successor
 S2 not-G-bot       CLOSED   target=CLOSED          dual of S1
 S3 Gp->Fp          CLOSED   target=CLOSED          seriality turns the universal into an existential

@@ -424,7 +424,7 @@ theorem dedekind_consequence_not_compact : ¬ CompactDedekind := by
   intro hc
   classical
   set q : Atom := ⟨"q", none⟩ with hq
-  have hcons : SetSemanticConsequenceDedekindDense (dedWitness q) Formula.bot := by
+  have hcons : SetSemanticConsequenceDedekind (dedWitness q) Formula.bot := by
     refine SetSemanticConsequenceOn.of_forall_total ?_
     intro F hF M τ hτ t hall
     exact absurd (SatisfiableSet.of_forall F hF M τ hτ t hall)
@@ -452,7 +452,7 @@ theorem strongCompletenessDedekind_refuted : ¬ StrongCompletenessDedekind := by
   intro hsc
   classical
   set q : Atom := ⟨"q", none⟩ with hq
-  have hcons : SetSemanticConsequenceDedekindDense (dedWitness q) Formula.bot := by
+  have hcons : SetSemanticConsequenceDedekind (dedWitness q) Formula.bot := by
     refine SetSemanticConsequenceOn.of_forall_total ?_
     intro F hF M τ hτ t hall
     exact absurd (SatisfiableSet.of_forall F hF M τ hτ t hall)

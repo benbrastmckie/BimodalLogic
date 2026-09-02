@@ -61,8 +61,8 @@ temporal analogs (G phi -> phi, H phi -> phi) are NOT valid under irreflexive se
   `BLFormula`, not `TruthAt ∘ tr` — and obtained by composing `Conservativity.translate` with the
   four theorems above across the truth-transfer bridge `Semantics.truthAt_tr`, which is proved by
   induction in `Metalogic/BaseLanguageSoundness.lean`. `bl_soundness_dedekind` carries
-  `ValidDedekindDense`'s binder set and its validity form concludes at `BLValidDedekindDense`,
-  inheriting `soundness_dedekind`'s target; a density-free `BLValidDedekind` is deliberately not
+  `ValidDedekind`'s binder set and its validity form concludes at `BLValidDedekind`,
+  inheriting `soundness_dedekind`'s target; a density-free `BLValidComplete` is deliberately not
   defined because it would be refutable
 - **Completeness** (`completeness`): SORRY-FREE (sorryAx-free; axioms: exactly `propext`,
   `Classical.choice`, `Quot.sound`). Its Base-frame discrete branch,
@@ -75,7 +75,7 @@ temporal analogs (G phi -> phi, H phi -> phi) are NOT valid under irreflexive se
   exactly `propext`, `Classical.choice`, `Quot.sound`)
 - **Completeness (Dedekind)** (`completeness_dedekind`): SORRY-FREE (sorryAx-free; axioms:
   exactly `propext`, `Classical.choice`, `Quot.sound`). Weak completeness for
-  `FrameClass.Dedekind` against `ValidDedekindDense`, on the real line. It is a corollary of
+  `FrameClass.Dedekind` against `ValidDedekind`, on the real line. It is a corollary of
   the consequence form below, not an independent construction.
 - **Consequence completeness (Dedekind)** (`consequence_completeness_dedekind`): SORRY-FREE
   (sorryAx-free; axioms: exactly `propext`, `Classical.choice`, `Quot.sound`). Finite-context

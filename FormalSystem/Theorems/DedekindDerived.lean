@@ -366,7 +366,7 @@ modal and temporal necessitation, and temporal duality
 (`co_not_derives_prior_U_gap_schema`). See the module docstring.
 
 **Semantic cross-check.** `FormalSystem.Metalogic.SoundnessLemmas.co_valid` proves
-`ValidDedekindDense (Formula.co φ)` by an independent least-upper-bound argument, so soundness
+`ValidDedekind (Formula.co φ)` by an independent least-upper-bound argument, so soundness
 applied to this derivation lands on a statement already established semantically.
 -/
 noncomputable def co_derived {fc : FrameClass} (h_fc : FrameClass.Dedekind ≤ fc)

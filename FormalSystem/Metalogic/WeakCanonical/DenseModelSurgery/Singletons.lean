@@ -93,7 +93,7 @@ exactly one place — `classLeftEndFormula` — and nowhere else in this module.
 
 Reynolds' §7 has two halves. **Lemma 10** (Sep's validity over real flows, printed p.183) is
 **not re-derived here**: `sep_valid` (`Soundness.lean:1601`) is landed and already stated at
-`ValidDedekindDense`. This module consumes `Axiom.sep`'s *derivability* side — the semantic
+`ValidDedekind`. This module consumes `Axiom.sep`'s *derivability* side — the semantic
 reading of the axiom scheme at a structure — exactly as Phase 16 does for Prior-U and Prior-S.
 
 `Axiom.sep` (`ProofSystem/Axioms.lean:420`) is stated with `Formula.kPlus` / `Formula.kMinus`.

@@ -162,9 +162,9 @@ theorem isValid_validDiscrete (φ : Formula) (fc : FrameClass) (h : isValid φ f
 /--
 Frame-class-relativized form of `isValid_sound` for Dedekind-complete dense frames.
 -/
-theorem isValid_validDedekindDense (φ : Formula) (fc : FrameClass) (h : isValid φ fc = true) :
-    ValidDedekindDense φ :=
-  Validity.valid_implies_validDedekindDense (isValid_sound φ fc h)
+theorem isValid_validDedekind (φ : Formula) (fc : FrameClass) (h : isValid φ fc = true) :
+    ValidDedekind φ :=
+  Validity.valid_implies_validDedekind (isValid_sound φ fc h)
 
 /--
 `sound_of_isValid` at the `decideBlocking` entry point, which is independently maintained and has

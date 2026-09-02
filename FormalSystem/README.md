@@ -166,8 +166,8 @@ Because `Dense ≤ Dedekind`, a Dedekind derivation admits the two density axiom
   on top of `density` and `dense_indicator`
 - **Soundness**: `soundness_dedekind` in [Soundness.lean](Metalogic/Soundness.lean)
 - **Completeness**: `completeness_dedekind` in [StrongCompleteness.lean](Metalogic/StrongCompleteness.lean)
-- **Binder caveat**: both results are stated against `ValidDedekindDense`, *not* the density-free
-  `ValidDedekind`. `density` and `dense_indicator` are admissible at `.Dedekind` and both are false
+- **Binder caveat**: both results are stated against `ValidDedekind`, *not* the density-free
+  `ValidComplete`. `density` and `dense_indicator` are admissible at `.Dedekind` and both are false
   on ℤ, which is nonetheless conditionally complete.
 - **Frame**: `DenselyOrdered D` plus Dedekind completeness
 

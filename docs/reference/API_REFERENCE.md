@@ -705,7 +705,7 @@ The set-based consequence layer, over possibly-infinite `Γ : Set Formula`.
 | `ModelExistence` | 163 | Finite satisfiability lifts to satisfiability, at `fc` |
 | `Compact` | 174 | Semantic compactness of the `fc` consequence relation |
 | `StrongCompleteness` | 184 | The strong-completeness statement, at `fc` |
-| `SatisfiableSet.base_of_forall` / `.dense_of_forall` / `.discrete_of_forall` / `.dedekind_of_forall` | 299 / 305 / 315 / 325 | Binder-shape adapters restoring the pre-collapse introduction shape |
+| `SatisfiableSet.of_forall` | 260 | The single `fc`-indexed binder-shape adapter restoring the pre-collapse introduction shape (replaced the four tag-specific `base`/`dense`/`discrete`/`dedekind` copies) |
 | `StrongCompletenessBase` | 446 | `StrongCompleteness .Base` (**proved** in `Compactness.lean`) |
 | `CompactBase` | 453 | `Compact .Base` (**proved**) |
 | `SatisfiableBaseSet` | 466 | `SatisfiableSet .Base` |
@@ -823,14 +823,14 @@ directional; the converse edge is permitted and is what these three modules use:
 | File | What it carries |
 |------|-----------------|
 | `Semantics/BLTruth.lean` | `BLTruthAt`, a native six-clause recursion on `BLFormula` per `def:BL-semantics` -- **not** `TruthAt ∘ tr` -- plus the `BLTruth.*` characterization lemmas |
-| `Semantics/BLValidity.lean` | `BLValid`, `BLSemanticConsequence`, `BLValidDense`, `BLValidDiscrete`, `BLValidDedekindDense`; no density-free `BLValidDedekind`, which would be refutable |
+| `Semantics/BLValidity.lean` | `BLValid`, `BLSemanticConsequence`, `BLValidDense`, `BLValidDiscrete`, `BLValidDedekind`; no density-free `BLValidComplete`, which would be refutable |
 | `Metalogic/BaseLanguageSoundness.lean` | `truthAt_tr` (the bridge, proved by induction), `bl_soundness{,_dense,_discrete,_dedekind}` and their validity forms, and `bl_not_derivable_nil_bot{,_discrete}` |
 
 | Result | What it says |
 |--------|--------------|
 | `truthAt_tr` | `TruthAt M τ t (tr φ) ↔ BLTruthAt M τ t φ` |
 | `bl_soundness` | A BL derivation at `FrameClass.Base` makes its conclusion true wherever its context is |
-| `bl_soundness_dense` / `_discrete` / `_dedekind` | The same at the three extensions; the Dedekind one carries `ValidDedekindDense`'s binder set |
+| `bl_soundness_dense` / `_discrete` / `_dedekind` | The same at the three extensions; the Dedekind one carries `ValidDedekind`'s binder set |
 | `bl_not_derivable_nil_bot` / `_discrete` | BL is consistent at `FrameClass.Base` and `FrameClass.Discrete` |
 
 All are sorry-free at `[propext, Classical.choice, Quot.sound]`. They are obtained by composing

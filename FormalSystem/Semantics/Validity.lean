@@ -87,7 +87,7 @@ def ConsequenceOnFrames (P : TaskFrame → Prop) (Γ : Context) (φ : Formula) :
 /-- `cor:tm-completeness`'s class-restricted consequence `Γ ⊨_C φ` at a finite context: the
 mirror of `ValidIn`, over the same `FrameClass.Sat`. The four named consequence relations —
 `SemanticConsequence` here, and `SemanticConsequenceDense` / `SemanticConsequenceDiscrete` /
-`SemanticConsequenceDedekindDense` in `Metalogic/StrongCompleteness.lean` — are its four
+`SemanticConsequenceDedekind` in `Metalogic/StrongCompleteness.lean` — are its four
 instances. -/
 def SemanticConsequenceIn (fc : ProofSystem.FrameClass) (Γ : Context) (φ : Formula) : Prop :=
   ConsequenceOnFrames fc.Sat Γ φ
@@ -156,7 +156,7 @@ binder shape. The body is `h` — `ConsequenceOnFrames` already quantifies over 
 
 **This is why the per-class consequence adapters were boilerplate.** The three pairs that used
 to live in `Metalogic/StrongCompleteness.lean` (`SemanticConsequenceDense`,
-`SemanticConsequenceDiscrete`, `SemanticConsequenceDedekindDense`) were each this lemma at a fixed
+`SemanticConsequenceDiscrete`, `SemanticConsequenceDedekind`) were each this lemma at a fixed
 tag with `fc.Sat F` unfolded to that class's frame condition; they are deleted, and a site now
 writes the tag instead of picking a name. -/
 theorem SemanticConsequenceIn.of_forall_total {fc : ProofSystem.FrameClass} {Γ : Context}
@@ -351,7 +351,7 @@ monotonicity lemma cover every validity bridge in the tree. `ValidComplete` is
 `ValidOnFrames TaskFrame.IsComplete`, `def:frame-properties`' bare Complete clause, and no
 `FrameClass` constructor denotes that class (see the `FrameClass` docstring in
 `ProofSystem/Axioms.lean`), so it cannot be `ValidIn`-anything. Against a tag-only primitive it,
-and the bridge from it to `ValidDedekindDense`, would have to stay hand-written outside the
+and the bridge from it to `ValidDedekind`, would have to stay hand-written outside the
 collapse.
 -/
 
@@ -486,7 +486,7 @@ end Validity
 class of frames quantified over can only preserve validity.
 
 Every validity bridge in the tree is a corollary of this one statement — the four `valid`-to-
-class-restricted bridges, the `ValidComplete`-to-`ValidDedekindDense` bridge, and `ValidIn.mono`
+class-restricted bridges, the `ValidComplete`-to-`ValidDedekind` bridge, and `ValidIn.mono`
 below. Before this lemma each was written out by hand against its own inlined binder list.
 -/
 theorem ValidOnFrames.mono {P Q : TaskFrame → Prop} {φ : Formula} (h : ∀ F, Q F → P F)
@@ -652,16 +652,36 @@ alone is now a single rewrite.
 def ValidDiscrete (φ : Formula) : Prop := ValidIn ProofSystem.FrameClass.Discrete φ
 
 /--
-**Read this first: `ValidComplete` is NOT `ValidIn .Dedekind`.** The shared word is misleading and
-the two denote different frame classes. `ValidComplete` is `ValidOnFrames TaskFrame.IsComplete` —
-`def:frame-properties`' *bare* Complete clause, which `ℤ` satisfies. `ValidIn .Dedekind` is
-`ValidDedekindDense`, the dense-and-complete class, and **that** is the target of
-`soundness_dedekind`. The mismatch follows from a naming decision recorded in full at
-`TaskFrame.IsDedekind`: the paper calls the dense-and-complete class Complete, this tree calls it
-Dedekind, because "complete" is already load-bearing here for *proof-theoretic* completeness. The
-reciprocal pointer back to this predicate sits on `TaskFrame.IsComplete`
-(`Semantics/FrameProperty.lean`). Retargeting `soundness_dedekind` at this predicate yields a
-**refutable** theorem — see the paragraph on that below.
+**THE `ValidComplete` CAVEAT — canonical statement; every other site in the tree points here.**
+
+`ValidComplete` is the **only** `Valid*` name in this development that is not `ValidIn` at the
+tag its name suggests, and this paragraph is the only place that fact is argued. Every other
+module that needs it carries a one-line pointer to here rather than a copy of the argument; if
+you are about to write a second copy, write a pointer instead.
+
+Since the rename pass, `ValidDense = ValidIn .Dense`, `ValidDiscrete = ValidIn .Discrete`,
+`ValidDedekind = ValidIn .Dedekind` and `valid = ValidIn .Base` all hold definitionally. This
+predicate is the sole exception: it is `ValidOnFrames TaskFrame.IsComplete` —
+`def:frame-properties`' *bare* Complete clause, which `ℤ` satisfies — and it is deliberately not
+a `ValidIn` tag, because no `FrameClass` constructor denotes the bare Complete class (see the
+`FrameClass` docstring in `ProofSystem/Axioms.lean`).
+
+**Do not retarget `soundness_dedekind` at it.** `FrameClass.Dedekind` sits strictly above
+`FrameClass.Dense`, so `Axiom.density` (`GGφ → Gφ`) and `Axiom.dense_indicator` (`¬(⊥ U ⊤)`) are
+admissible in a `.Dedekind` derivation. Both are FALSE on `ℤ`: for `density`, take `φ` true
+exactly at times `≥ t + 2`, so `GGφ` holds at `t` while `Gφ` fails; for `dense_indicator`,
+`⊥ U ⊤` is true on `ℤ` because every point has an immediate successor. `ℤ` satisfies every binder
+of this predicate (Mathlib gives it a `ConditionallyCompleteLinearOrder`), so a
+`soundness_dedekind : DerivationTree .Dedekind … → ValidComplete` would be **refutable**.
+`soundness_dedekind` targets `ValidDedekind`; this predicate is landed as the strictly weaker
+statement and as the target of the forgetful bridge from `valid`.
+
+**Why the name still reads oddly, and why that is recorded rather than fixed.** The paper calls
+the dense-and-complete class Complete; this tree calls it Dedekind, because "complete" is already
+load-bearing here for *proof-theoretic* completeness. That naming deviation of record is stated
+in full at `TaskFrame.IsDedekind` (`Semantics/FrameProperty.lean`) and is a *different* thing from
+the trap this paragraph closes: the rename removed `ValidDedekind ≠ ValidIn .Dedekind`, it did not
+remove the paper-versus-tree deviation, which stands.
 
 A formula is valid over **Dedekind-complete** temporal orders if it is true in all models
 whose temporal type `D` has the least-upper-bound property, at all total histories, and all
@@ -686,7 +706,7 @@ risk.
 Mathlib `ConditionallyCompleteLinearOrder` instance
 (`Mathlib/Data/Int/ConditionallyCompleteOrder.lean`), so `ℤ` satisfies every binder of
 `ValidComplete`. Including density here would silently narrow the predicate to real flow
-alone; the density-carrying variant is the separate `ValidDedekindDense` below.
+alone; the density-carrying variant is the separate `ValidDedekind` below.
 
 That "ℤ satisfies every binder" observation is not an isolated curiosity: it is the **discrete
 branch of the Hölder dichotomy**. By `FormalSystem.Semantics.complete_duration_discrete_or_dense`
@@ -706,7 +726,7 @@ Both are FALSE on `ℤ`: for `density`, take `φ` true exactly at times `≥ t +
 at `t` while `Gφ` fails; for `dense_indicator`, `⊥ U ⊤` is true on `ℤ` because every point has
 an immediate successor. Since `ℤ` also satisfies `TaskFrame.IsComplete`, a
 `soundness_dedekind : DerivationTree .Dedekind … → ValidComplete` would be refutable.
-`soundness_dedekind` therefore targets `ValidDedekindDense`. This predicate is landed as the
+`soundness_dedekind` therefore targets `ValidDedekind`. This predicate is landed as the
 strictly weaker statement and as the target of the forgetful bridge from `valid`.
 
 **The trap is now structural rather than merely documented.** Before this predicate became an
@@ -746,19 +766,15 @@ which is why `ℤ` is excluded here even though it satisfies every binder of `Va
 does not carry; the composition path and the reason it is out of scope are recorded in the
 `DurationClassification` module docstring.)
 
-**This is the target of `soundness_dedekind`**, not `ValidComplete`. The reason is spelled out
-in the `ValidComplete` docstring above and is worth restating, because the weaker-looking
-predicate is the wrong one: `FrameClass.Dedekind` lies above `FrameClass.Dense`, so `density`
-and `dense_indicator` are admissible in a `.Dedekind` derivation, and both are false on `ℤ` —
-which is Dedekind-complete. Do not "simplify" `soundness_dedekind` to target `ValidComplete`;
-the result would be refutable.
+**This is the target of `soundness_dedekind`**, not `ValidComplete`, and retargeting it at the
+weaker predicate yields a refutable theorem. See the `ValidComplete` caveat in `Semantics/Validity.lean` — the one place the `ValidComplete` / `ValidDedekind` distinction is argued in full.
 
 The placement of `Dedekind` above `Dense` is itself primary-source: Reynolds 1992 (printed
 p.168) includes in US/R "axioms for density and no end points: `K⁺⊤`, `K⁻⊤`, `F⊤`, `P⊤`", and
 `K⁺⊤` is `¬(¬⊤ U ⊤)` in this tree's guard-first infix, which normalises (`¬⊤ ↝ ⊥`) to
 `¬(⊥ U ⊤)`, this tree's `Axiom.dense_indicator`.
 -/
-def ValidDedekindDense (φ : Formula) : Prop := ValidIn ProofSystem.FrameClass.Dedekind φ
+def ValidDedekind (φ : Formula) : Prop := ValidIn ProofSystem.FrameClass.Dedekind φ
 
 namespace Validity
 
@@ -793,18 +809,18 @@ The forward direction destructures that existential and passes the witnesses **p
 theorem validDiscrete_iff_validIn_discrete (φ : Formula) :
     ValidDiscrete φ ↔ ValidIn ProofSystem.FrameClass.Discrete φ := Iff.rfl
 
-/-- `ValidDedekindDense` is `ValidIn .Dedekind`: its density binder together with its
+/-- `ValidDedekind` is `ValidIn .Dedekind`: its density binder together with its
 least-upper-bound hypothesis is exactly the conjunction `TaskFrame.IsDedekind` that
 `Sat .Dedekind` returns. This is the `soundness_dedekind` target. -/
-theorem validDedekindDense_iff_validIn_dedekind (φ : Formula) :
-    ValidDedekindDense φ ↔ ValidIn ProofSystem.FrameClass.Dedekind φ := Iff.rfl
+theorem validDedekind_iff_validIn_dedekind (φ : Formula) :
+    ValidDedekind φ ↔ ValidIn ProofSystem.FrameClass.Dedekind φ := Iff.rfl
 
 /-- `ValidComplete` is `ValidOnFrames TaskFrame.IsComplete` — and therefore **not** any `ValidIn`.
 
 `def:frame-properties`' bare Complete clause admits `ℤ`, and no `FrameClass` constructor denotes
 that class (`ProofSystem/Axioms.lean`'s `FrameClass` docstring says so explicitly: there is no
 axiom set here for `Th(ℤ) ∩ Th(ℝ)`). That this predicate still lands inside the collapse — with its
-bridge to `ValidDedekindDense` falling out of `ValidOnFrames.mono` like every other bridge — is the
+bridge to `ValidDedekind` falling out of `ValidOnFrames.mono` like every other bridge — is the
 whole reason the primitive is indexed by a frame predicate rather than by a tag. -/
 theorem validComplete_iff_validOnFrames_isComplete (φ : Formula) :
     ValidComplete φ ↔ ValidOnFrames TaskFrame.IsComplete φ := Iff.rfl
@@ -831,22 +847,22 @@ theorem valid_implies_validComplete {φ : Formula} (h : valid φ) : ValidComplet
 
 /--
 Validity implies validity over dense Dedekind-complete orders: every valid formula is
-`ValidDedekindDense`.
+`ValidDedekind`.
 -/
-theorem valid_implies_validDedekindDense {φ : Formula} (h : valid φ) : ValidDedekindDense φ :=
+theorem valid_implies_validDedekind {φ : Formula} (h : valid φ) : ValidDedekind φ :=
   ValidIn.mono (ProofSystem.FrameClass.base_le _) ((valid_iff_validIn_base φ).mp h)
 
 /--
-`ValidComplete` is strictly stronger than `ValidDedekindDense`: adding the `DenselyOrdered`
+`ValidComplete` is strictly stronger than `ValidDedekind`: adding the `DenselyOrdered`
 binder restricts the class of temporal types quantified over, so validity on all
 Dedekind-complete orders entails validity on the dense ones.
 
 This is the bridge that makes the SETTLED soundness target coherent: `soundness_dedekind`
-proves the weaker `ValidDedekindDense`, and anything genuinely established at
+proves the weaker `ValidDedekind`, and anything genuinely established at
 `ValidComplete` can be transported into it via this lemma.
 -/
-theorem validDedekindDense_of_validComplete {φ : Formula} (h : ValidComplete φ) :
-    ValidDedekindDense φ :=
+theorem validDedekind_of_validComplete {φ : Formula} (h : ValidComplete φ) :
+    ValidDedekind φ :=
   ValidOnFrames.mono (fun _ => TaskFrame.isComplete_of_isDedekind) h
 
 /--

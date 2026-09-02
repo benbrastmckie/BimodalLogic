@@ -811,14 +811,7 @@ theorem temporal_necessitation_preserves_valid {φ : Formula} (h : ⊨ φ) : ⊨
 
 Soundness for `FrameClass.Dedekind`: Reynolds' axiomatization US/R for real flow.
 
-**The target is `ValidDedekindDense`, NOT `ValidComplete`, and that is deliberate.**
-`FrameClass.Dedekind` sits strictly above `FrameClass.Dense` (see the `FrameClass` docstring
-in `ProofSystem/Axioms.lean`), so `Axiom.density` and `Axiom.dense_indicator` are admissible in
-a `.Dedekind` derivation. Both are FALSE on `ℤ` -- for `density`, take `φ` true exactly at times
-`≥ t + 2`, so `GGφ` holds at `t` while `Gφ` fails; for `dense_indicator`, `U(⊤,⊥)` is true on
-`ℤ` because every point has an immediate successor. And `ℤ` satisfies every binder of
-`ValidComplete` (Mathlib gives it a `ConditionallyCompleteLinearOrder` instance). So a
-`soundness_dedekind` targeting `ValidComplete` would be **refutable**. Do not "simplify" it.
+**The target is `ValidDedekind`, NOT `ValidComplete`, and that is deliberate.** See the `ValidComplete` caveat in `Semantics/Validity.lean` — the one place the `ValidComplete` / `ValidDedekind` distinction is argued in full.
 -/
 
 /-! ### Semantic validity of the three Reynolds axioms
@@ -854,10 +847,10 @@ Note that the proof consumes only the least-upper-bound hypothesis and the linea
 no `DenselyOrdered`, `Nontrivial`, `AddCommGroup`, `IsOrderedAddMonoid`, or shift-closure
 assumption, so both Prior gap axioms are in fact valid on every Dedekind-complete linear order.
 The `DenselyOrdered` binder is present for consistency with the rest of the chain, not because
-the mathematics needs it; see the `ValidDedekindDense` discussion above for why the weaker binder
+the mathematics needs it; see the `ValidDedekind` discussion above for why the weaker binder
 set is required here and must not be relaxed. -/
 theorem prior_U_gap_valid (φ : Formula) :
-    ValidDedekindDense ((Formula.and (Formula.untl φ Formula.top) φ.neg.someFuture).imp
+    ValidDedekind ((Formula.and (Formula.untl φ Formula.top) φ.neg.someFuture).imp
       (Formula.untl φ (Formula.or φ.neg (Formula.kPlus φ.neg)))) := by
   refine ValidIn.of_forall_total ?_
   intro F h_lub M τ _hτ t h_ant
@@ -912,7 +905,7 @@ The trichotomy branches in the final step run in the mirror order to the Prior-U
 between `w` and `t`, the case `r < s` is handled by the refuting witness and `s < r` by the
 interval guard, because the `K⁻` interval now lies to the left of `s` rather than the right. -/
 theorem prior_S_gap_valid (φ : Formula) :
-    ValidDedekindDense ((Formula.and (Formula.snce φ Formula.top) φ.neg.somePast).imp
+    ValidDedekind ((Formula.and (Formula.snce φ Formula.top) φ.neg.somePast).imp
       (Formula.snce φ (Formula.or φ.neg (Formula.kMinus φ.neg)))) := by
   refine ValidIn.of_forall_total ?_
   intro F h_lub M τ _hτ t h_ant
@@ -958,7 +951,7 @@ section 7 and defer proving its validity in ℝ until lemma 10 there" -- so the 
 argument below is his §7 lemma 10.
 
 **The separability input.** Sep is FALSE on an arbitrary densely ordered Dedekind-complete linear
-order: the lexicographic square `[0,1] ×ₗₑₓ [0,1]` refutes it. The `ValidDedekindDense` algebraic
+order: the lexicographic square `[0,1] ×ₗₑₓ [0,1]` refutes it. The `ValidDedekind` algebraic
 binders are therefore load-bearing here, in sharp contrast to the two Prior gap lemmas above,
 which consume only the linear order and the least-upper-bound hypothesis. `AddCommGroup`,
 `IsOrderedAddMonoid`, `DenselyOrdered` and `Nontrivial` together with the LUB hypothesis force
@@ -987,7 +980,7 @@ development absent from this tree) and would drag `Cardinal` into the soundness 
 reader comparing this proof against Reynolds §7 should expect no `S ≅ ℚ` step and find
 `nested_core` in its place. -/
 theorem sep_valid (φ : Formula) :
-    ValidDedekindDense ((Formula.and (Formula.kPlus φ)
+    ValidDedekind ((Formula.and (Formula.kPlus φ)
         (Formula.kPlus (Formula.and φ (Formula.untl φ.neg φ))).neg).imp
         (Formula.kPlus (Formula.and (Formula.kPlus φ) (Formula.kMinus φ)))) := by
   refine ValidIn.of_forall_total ?_
@@ -1057,7 +1050,7 @@ hence through `neg` and `and`, exchanges `U`/`S` and fixes `top`; so the swapped
 past mirror with `ψ := φ.swapTemporal`, and a single `simp only` performs the whole unfolding.
 See `sep_valid` for the separability input and the recorded fidelity deviation from Reynolds. -/
 theorem sep_swap_valid (φ : Formula) :
-    ValidDedekindDense (((Formula.and (Formula.kPlus φ)
+    ValidDedekind (((Formula.and (Formula.kPlus φ)
         (Formula.kPlus (Formula.and φ (Formula.untl φ.neg φ))).neg).imp
         (Formula.kPlus (Formula.and (Formula.kPlus φ) (Formula.kMinus φ)))).swapTemporal) := by
   refine ValidIn.of_forall_total ?_
@@ -1502,7 +1495,7 @@ eliminated, now by `ValidIn.mono`'s `h_fc` hypothesis being unsatisfiable at
 This theorem is itself sorry-free. -/
 theorem axiom_dedekind_valid {φ : Formula} (h : Axiom φ)
     (h_fc : h.minFrameClass ≤ FrameClass.Dedekind) :
-    ValidDedekindDense φ := by
+    ValidDedekind φ := by
   exact axiom_validIn h h_fc
 
 /--
@@ -1510,7 +1503,7 @@ theorem axiom_dedekind_valid {φ : Formula} (h : Axiom φ)
 Dedekind-complete frames.
 -/
 theorem soundness_dedekind_valid {phi : Formula}
-    (d : DerivationTree FrameClass.Dedekind [] phi) : ValidDedekindDense phi :=
+    (d : DerivationTree FrameClass.Dedekind [] phi) : ValidDedekind phi :=
   soundness_validIn d
 
 /--
@@ -1521,12 +1514,8 @@ This is the Dedekind analogue of `soundness_dense` and `soundness_discrete`. Giv
 Dedekind-compatible derivation `Γ ⊢ φ`, if all formulas in `Γ` are true at some configuration
 on a dense Dedekind-complete frame, then `φ` is also true there.
 
-**The conclusion is stated over the `ValidDedekindDense` binder set, NOT `ValidComplete`.**
-`FrameClass.Dedekind` lies above `FrameClass.Dense`, so `Axiom.density` and
-`Axiom.dense_indicator` are admissible in `d`; both are false on `ℤ`, and `ℤ` is
-Dedekind-complete (Mathlib's `ConditionallyCompleteLinearOrder ℤ`). Dropping the
-`[DenselyOrdered D]` binder here would therefore make this theorem refutable. See the section
-docstring above and `Semantics/Validity.lean`.
+**The conclusion is stated over the `ValidDedekind` binder set, NOT `ValidComplete`**; dropping
+the `[DenselyOrdered D]` binder here would make this theorem refutable. See the `ValidComplete` caveat in `Semantics/Validity.lean` — the one place the `ValidComplete` / `ValidDedekind` distinction is argued in full.
 -/
 theorem soundness_dedekind (Γ : Context) (φ : Formula)
     (d : DerivationTree FrameClass.Dedekind Γ φ)

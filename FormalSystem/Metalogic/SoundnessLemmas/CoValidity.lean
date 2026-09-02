@@ -16,7 +16,7 @@ extension of the base tense logic:
 
 with `△` the *temporal* triangle `△ψ = Hψ ∧ ψ ∧ Gψ` (`Formula.always`). This module proves
 that every CO instance is valid on dense Dedekind-complete flows, i.e.
-`co_valid : ValidDedekindDense (Formula.co φ)`.
+`co_valid : ValidDedekind (Formula.co φ)`.
 
 ## Why this file exists
 
@@ -44,7 +44,7 @@ so `s' ∈ A` sits above its own supremum. Contradiction.
 
 ## Main results
 
-- `co_valid`: `ValidDedekindDense (Formula.co φ)`.
+- `co_valid`: `ValidDedekind (Formula.co φ)`.
 -/
 
 namespace FormalSystem.Metalogic.SoundnessLemmas
@@ -64,7 +64,7 @@ order. The proof uses no `DenselyOrdered`, no `Nontrivial`, no `AddCommGroup` /
 `IsOrderedAddMonoid` structure, and no shift-closure assumption — exactly as with the two Prior
 gap lemmas (see the note preceding `prior_U_gap_valid` in `Metalogic/Soundness.lean`). CO is
 thus valid on *every* Dedekind-complete linear order, `ℤ` included. The `DenselyOrdered` binder
-is carried here only for chain consistency with the rest of the `ValidDedekindDense` chain, not
+is carried here only for chain consistency with the rest of the `ValidDedekind` chain, not
 because the mathematics needs it.
 
 **Status of CO in this repository.** CO is a derived object, not a primitive: the official
@@ -72,7 +72,7 @@ Dedekind-class basis remains `Axiom.prior_U_gap` / `Axiom.prior_S_gap` / `Axiom.
 Hilbert-side companion is `FormalSystem.Theorems.DedekindDerived.co_derived`. See
 `Formula.co` for the source citation and the operator-resolution warning.
 -/
-theorem co_valid (φ : Formula) : ValidDedekindDense (Formula.co φ) := by
+theorem co_valid (φ : Formula) : ValidDedekind (Formula.co φ) := by
   -- `ValidIn.of_forall_total` restores the frame-condition-explicit binder shape; `sat_intro`
   -- then splits `Sat .Dedekind F` into the density instance and the LUB hypothesis, keeping the
   -- latter under the caller's own name.

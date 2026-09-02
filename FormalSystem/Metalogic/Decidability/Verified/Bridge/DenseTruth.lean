@@ -663,20 +663,20 @@ theorem not_validDense_of_hasOpen (hV : branchOrderValid b ord = true)
 /-! ### Headline result, at `ℝ` -/
 
 /--
-**`not_validDedekindDense_of_hasOpen`.** The same branch refutes `ValidDedekindDense χ`, the
+**`not_validDedekind_of_hasOpen`.** The same branch refutes `ValidDedekind χ`, the
 countermodel being carried by `ℝ`.
 
 This is the real-flow result, and it is the one `soundness_dedekind` targets. The extra binder
-`ValidDedekindDense` carries over `ValidDense` is the least-upper-bound property, discharged for
+`ValidDedekind` carries over `ValidDense` is the least-upper-bound property, discharged for
 `ℝ` by `isLUB_csSup`; nothing in the truth lemma consumes it.
 -/
-theorem not_validDedekindDense_of_hasOpen (hV : branchOrderValid b ord = true)
+theorem not_validDedekind_of_hasOpen (hV : branchOrderValid b ord = true)
     (fc : ProofSystem.FrameClass)
     (hSat : findUnexpanded b (timeOrd := ord) = none) (hOpen : findClosure b fc = none)
     (hTot : timeOrderTotal b ord = true) (hBA : boxAnchoredCheck b = true)
     (hCheck : regionLabelCheck b ord = true) (hTW : temporalWitnessCheck b ord = true)
     {χ : Formula} {l₀ : Label} (hw₀ : l₀.world ∈ b.knownWorlds)
-    (hroot : (⟨.neg, χ, l₀⟩ : SignedFormula) ∈ b) : ¬ ValidDedekindDense χ := by
+    (hroot : (⟨.neg, χ, l₀⟩ : SignedFormula) ∈ b) : ¬ ValidDedekind χ := by
   intro hval
   obtain ⟨t, ht⟩ := exists_countermodel_dense ℝ strictMono_intCast_real hV fc hSat hOpen hTot hBA
     hCheck hTW hw₀ hroot

@@ -41,7 +41,7 @@ records both splits and the paper sentences that force them.
 
 **Naming deviation of record.** `def:frame-properties` calls the dense-and-complete class
 **Complete**; this tree calls it `Dedekind`, in `FrameClass.Dedekind`, `TaskFrame.IsDedekind` and
-`ValidDedekindDense` alike. That divergence from the definition of record is deliberate — "complete"
+`ValidDedekind` alike. That divergence from the definition of record is deliberate — "complete"
 is already load-bearing here for *proof-theoretic* completeness — and is recorded in full at
 `TaskFrame.IsDedekind`'s definition site.
 
@@ -61,7 +61,7 @@ every `DerivationTree`/`Derivable` signature that names them; that is deliberate
 
 **Why `Sat` lives here and `ValidIn` does not.** `ValidIn` is defined through `TaskFrame.ValidOn`
 (`def:frame-validity`), which is declared in `Semantics/Validity.lean`; and `Validity.lean`'s own
-class-restricted predicates (`ValidDense`, `ValidDiscrete`, `ValidComplete`, `ValidDedekindDense`)
+class-restricted predicates (`ValidDense`, `ValidDiscrete`, `ValidComplete`, `ValidDedekind`)
 are in turn defined as instances of `ValidIn`/`ValidOnFrames`. Those two facts cannot both be
 satisfied with `ValidIn` downstream of `Validity.lean`. Of the two acceptable resolutions, this
 tree takes the second: `Sat` — which is about frames alone and needs no validity notion — stays in

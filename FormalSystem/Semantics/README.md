@@ -14,7 +14,7 @@ Task frame semantics for TM bimodal logic.
 | BLTruth.lean | `BLTruthAt` — the same truth relation for the tense-primitive base language, by native six-clause recursion on `BLFormula` per `def:BL-semantics` (not `TruthAt ∘ tr`) |
 | ShiftSet.lean | Shift-set representation theorem: task models ↔ shift sets, both directions with truth correspondence |
 | Validity.lean | Validity and semantic consequence |
-| BLValidity.lean | `BLValid`, `BLSemanticConsequence`, `BLValidDense`, `BLValidDiscrete`, `BLValidDiscreteSucc`, `BLValidDedekindDense` — binder-for-binder base-language mirrors of Validity.lean |
+| BLValidity.lean | `BLValid`, `BLSemanticConsequence`, `BLValidDense`, `BLValidDiscrete`, `BLValidDiscreteSucc`, `BLValidDedekind` — binder-for-binder base-language mirrors of Validity.lean |
 | BLSchemaValidity.lean | DF/DN semantic lemmas (Lemmas B/C) and DF's `PredOrder` past-dual, consumed by `Metalogic/SpWitness.lean` and `bl_soundness_discrete_succ` |
 | DurationClassification.lean | Classification of Dedekind-complete duration groups: discrete (`≃+o ℤ`) or densely ordered; also `duration_dense_or_least_pos`, the Archimedean-free order dichotomy |
 | LexCarrier.lean | `SuccOrder`/`PredOrder` instances for `ℚ ×ₗ ℤ`, the non-Archimedean discrete carrier the CEF countermodel is built over |

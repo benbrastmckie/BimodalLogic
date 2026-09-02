@@ -1637,7 +1637,7 @@ Dedekind-specific rules (R6), included only when fc >= .Dedekind.
 The tableau counterparts of `Axiom.prior_U_gap`, `Axiom.prior_S_gap` and `Axiom.sep`
 (`Axioms.lean:377,387,398`) — the three axioms whose gap/separation content no other rule
 touches, and the reason `Discrete ≰ Dedekind` is the correct gating rather than a defect:
-the Dedekind terminus consumes `ValidDedekindDense`, so its arm is base + dense + dedekind
+the Dedekind terminus consumes `ValidDedekind`, so its arm is base + dense + dedekind
 and never includes the Discrete rules.
 -/
 def dedekindRules : List TableauRule := [

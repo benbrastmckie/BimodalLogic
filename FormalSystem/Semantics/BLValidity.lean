@@ -15,16 +15,16 @@ native `BLTruthAt` of `Semantics/BLTruth.lean`.
 
 Each predicate here is a **binder-for-binder mirror** of its counterpart in
 `Semantics/Validity.lean`: `BLValid` of `valid`, `BLValidDense` of `ValidDense`,
-`BLValidDiscrete` of `ValidDiscrete`, `BLValidDedekindDense` of `ValidDedekindDense`, and
+`BLValidDiscrete` of `ValidDiscrete`, `BLValidDedekind` of `ValidDedekind`, and
 `BLSemanticConsequence` of `SemanticConsequence`. Nothing changes but `Formula ↦ BLFormula` and
 `TruthAt ↦ BLTruthAt`; in particular the histories quantified over are the **total** ones
 (`τ.IsTotal`, the predicate form of `H_F`), matching `def:logical-consequence`, and `Type` rather
 than `Type*` is used throughout for the same universe reason recorded on `valid`.
 
-## The Dedekind asymmetry — read this before adding a `BLValidDedekind`
+## The Dedekind asymmetry — read this before adding a `BLValidComplete`
 
-There is deliberately **no** density-free `BLValidDedekind`, and the soundness theorem for
-`FrameClass.Dedekind` targets `BLValidDedekindDense`. A density-free target would be
+There is deliberately **no** density-free `BLValidComplete`, and the soundness theorem for
+`FrameClass.Dedekind` targets `BLValidDedekind`. A density-free target would be
 **refutable**, and on the BL side one axiom suffices to refute it:
 
 - `(BaseLanguage.Axiom.dn φ).minFrameClass = FrameClass.Dense` and
@@ -33,7 +33,7 @@ There is deliberately **no** density-free `BLValidDedekind`, and the soundness t
   admissible in any `FrameClass.Dedekind` BL derivation.
 - `dn` is false on `ℤ`: take `φ` true exactly at the times `≥ t + 2`. Then `GGφ` holds at `t`
   while `Gφ` fails at `t`, because `t + 1` is strictly future and `φ` is false there.
-- `ℤ` satisfies every binder of a density-free `BLValidDedekind` — it is Dedekind-complete
+- `ℤ` satisfies every binder of a density-free `BLValidComplete` — it is Dedekind-complete
   (Mathlib's `ConditionallyCompleteLinearOrder ℤ`) — so the refutation lands.
 
 Adding `[DenselyOrdered D]` deletes exactly the `ℤ` branch of the Hölder dichotomy and nothing
@@ -46,11 +46,11 @@ since BL has no `untl`. Do not "simplify" the target.
 
 - `BLValid`, `BLSemanticConsequence` — validity and consequence over the `FrameClass.Base` binder
   set
-- `BLValidDense`, `BLValidDiscrete`, `BLValidDedekindDense` — the three extension binder sets
+- `BLValidDense`, `BLValidDiscrete`, `BLValidDedekind` — the three extension binder sets
 
 ## Main Results
 
-- `BLValidity.blValid_implies_blValidDense`, `…_blValidDiscrete`, `…_blValidDedekindDense` — the
+- `BLValidity.blValid_implies_blValidDense`, `…_blValidDiscrete`, `…_blValidDedekind` — the
   inclusion lemmas mirroring `Validity.valid_implies_valid_dense` and its siblings
 - `BLValidity.blValid_iff_empty_consequence` — validity is consequence from the empty context
 
@@ -253,11 +253,11 @@ theorem BLValidity.blValid_implies_blValidDiscreteSucc {φ : BLFormula} (h : BLV
 Validity over **dense Dedekind-complete** temporal orders: the least-upper-bound hypothesis
 together with `[DenselyOrdered D]`.
 
-Binder-for-binder mirror of `Semantics.ValidDedekindDense`, and **this — not a density-free
-`BLValidDedekind` — is the target of the `FrameClass.Dedekind` soundness theorem.** The module
+Binder-for-binder mirror of `Semantics.ValidDedekind`, and **this — not a density-free
+`BLValidComplete` — is the target of the `FrameClass.Dedekind` soundness theorem.** The module
 docstring above gives the BL-native refutation of the density-free form: `Axiom.dn` is admissible
 at `FrameClass.Dedekind` and is false on `ℤ`, which satisfies every remaining binder. There is
-deliberately no `BLValidDedekind` in this file.
+deliberately no `BLValidComplete` in this file.
 
 Now an abbreviation: the frame constraint is `FrameClass.Sat .Dedekind`, i.e.
 `TaskFrame.IsDedekind`. The binder shape this definition used to have is recovered by the generic `BLValidIn.of_forall_total` /
@@ -265,7 +265,7 @@ Now an abbreviation: the frame constraint is `FrameClass.Sat .Dedekind`, i.e.
 `sat_intro`, which splits `IsDedekind` into the density instance and the least-upper-bound
 hypothesis.
 -/
-def BLValidDedekindDense (φ : BLFormula) : Prop := BLValidIn ProofSystem.FrameClass.Dedekind φ
+def BLValidDedekind (φ : BLFormula) : Prop := BLValidIn ProofSystem.FrameClass.Dedekind φ
 
 namespace BLValidity
 
@@ -278,7 +278,7 @@ hand-written binder-discarding lambdas.
 Two members of the BL⁺ family have no mirror here, both for the same reason: they mention
 `ValidComplete`, whose BL counterpart is deliberately not defined (see the module docstring).
 Those are `Validity.valid_implies_validComplete` and
-`Validity.validDedekindDense_of_validComplete`. -/
+`Validity.validDedekind_of_validComplete`. -/
 
 /-- `BLValid` is `BLValidIn` at the unconstrained class: `Sat .Base` is `True`. The BL mirror of
 `Validity.valid_iff_validIn_base`. -/
@@ -294,8 +294,8 @@ theorem blValid_implies_blValidDiscrete {φ : BLFormula} (h : BLValid φ) : BLVa
   BLValidIn.mono (ProofSystem.FrameClass.base_le _) ((blValid_iff_blValidIn_base φ).mp h)
 
 /-- Validity implies validity over dense Dedekind-complete orders. -/
-theorem blValid_implies_blValidDedekindDense {φ : BLFormula} (h : BLValid φ) :
-    BLValidDedekindDense φ :=
+theorem blValid_implies_blValidDedekind {φ : BLFormula} (h : BLValid φ) :
+    BLValidDedekind φ :=
   BLValidIn.mono (ProofSystem.FrameClass.base_le _) ((blValid_iff_blValidIn_base φ).mp h)
 
 /-- Validity is consequence from the empty context. Mirrors

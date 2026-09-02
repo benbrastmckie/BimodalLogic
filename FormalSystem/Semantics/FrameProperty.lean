@@ -169,11 +169,8 @@ flow; by `Semantics.complete_duration_discrete_or_dense` its models are `{ℤ, �
 order-and-group isomorphism. The dense-and-complete narrowing is `TaskFrame.IsDedekind`.
 
 **Reciprocal pointer for `ValidComplete`.** `Semantics/Validity.lean`'s `ValidComplete` is
-`ValidOnFrames TaskFrame.IsComplete` — this bare clause — and is therefore *not*
-`ValidIn FrameClass.Dedekind`, which is the dense-and-complete `IsDedekind` below. The two read as
-if they matched and do not; `ValidComplete`'s own docstring states the mismatch from the other
-side. The soundness target for `FrameClass.Dedekind` is `ValidDedekindDense`, never
-`ValidComplete`.
+`ValidOnFrames` at *this* bare clause, not at `IsDedekind` below, and is the one `Valid*` name
+that is not `ValidIn` at its apparent tag. See the `ValidComplete` caveat in `Semantics/Validity.lean` — the one place the `ValidComplete` / `ValidDedekind` distinction is argued in full.
 -/
 def TaskFrame.IsComplete (F : TaskFrame) : Prop :=
   ∀ s : Set F.Duration, s.Nonempty → BddAbove s → ∃ x, IsLUB s x
@@ -200,7 +197,7 @@ already load-bearing here for *proof-theoretic* completeness — `completeness`,
 pair would collide with the tree's most-cited word at exactly the point where the two senses meet.
 "Dedekind complete" is the standard and unambiguous name for the order-theoretic property, so it
 is what the dense-and-complete class is called here, in `FrameClass.Dedekind`, and in
-`ValidDedekindDense`.
+`ValidDedekind`.
 
 Note that the bare Complete clause above *does* keep the paper's name (`IsComplete`); only the
 dense-and-complete conjunction is renamed.

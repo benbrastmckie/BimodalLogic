@@ -49,8 +49,8 @@ because paired temporal operators (G/H, F/P, Until/Since) each generate separate
 All four `FrameClass` values are axiomatized here. `FrameClass.Dedekind` — Reynolds'
 definable-gap axioms on top of the two density axioms — carries `soundness_dedekind`
 (`../Metalogic/Soundness.lean`) and `completeness_dedekind`
-(`../Metalogic/StrongCompleteness.lean`), both stated against `ValidDedekindDense` rather than
-the density-free `ValidDedekind`, because `density` and `dense_indicator` are admissible at
+(`../Metalogic/StrongCompleteness.lean`), both stated against `ValidDedekind` rather than
+the density-free `ValidComplete`, because `density` and `dense_indicator` are admissible at
 `.Dedekind` and both are false on ℤ.
 
 ### Inference Rules (`DerivationTree`)

@@ -66,8 +66,8 @@ theorems**, not axioms -- they are `temporalKDistDerived` and `temporal4Derived`
 | Dedekind (3) | `prior_U_gap`, `prior_S_gap`, `sep` | dense + Dedekind-complete |
 
 The Dedekind layer is Reynolds's definable-gap axiom set (Reynolds 1992, printed p.168). Its
-soundness target is the *dense* Dedekind predicate `ValidDedekindDense`, not the density-free
-`ValidDedekind`, because `density` and `dense_indicator` are admissible at `.Dedekind` and both
+soundness target is the *dense* Dedekind predicate `ValidDedekind`, not the density-free
+`ValidComplete`, because `density` and `dense_indicator` are admissible at `.Dedekind` and both
 are false on ℤ. See `FormalSystem/ProofSystem/Axioms.lean:461-517` for the full argument.
 
 ## Propositional Axioms

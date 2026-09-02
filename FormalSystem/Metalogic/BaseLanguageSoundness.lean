@@ -45,8 +45,8 @@ valid by unfolding `BLTruthAt`'s clauses and nothing else.
 
 ## The Dedekind target
 
-`bl_soundness_dedekind` concludes at `BLValidDedekindDense`, **not** at a density-free
-`BLValidDedekind` — which is deliberately not defined. `Semantics/BLValidity.lean`'s module
+`bl_soundness_dedekind` concludes at `BLValidDedekind`, **not** at a density-free
+`BLValidComplete` — which is deliberately not defined. `Semantics/BLValidity.lean`'s module
 docstring gives the BL-native refutation: `Axiom.dn` is admissible at `FrameClass.Dedekind` and is
 false on `ℤ`, which satisfies every remaining binder. This mirrors `soundness_dedekind`'s own
 target on the BL⁺ side.
@@ -328,9 +328,9 @@ theorem bl_soundness_discrete_valid {φ : BLFormula}
     (d : BaseLanguage.DerivationTree FrameClass.Discrete [] φ) : BLValidDiscrete φ :=
   bl_soundness_validIn d
 
-/-- Empty-context form of `bl_soundness_dedekind`, at `BLValidDedekindDense`. -/
+/-- Empty-context form of `bl_soundness_dedekind`, at `BLValidDedekind`. -/
 theorem bl_soundness_dedekind_valid {φ : BLFormula}
-    (d : BaseLanguage.DerivationTree FrameClass.Dedekind [] φ) : BLValidDedekindDense φ :=
+    (d : BaseLanguage.DerivationTree FrameClass.Dedekind [] φ) : BLValidDedekind φ :=
   bl_soundness_validIn d
 
 /-! ## `bl_soundness_discrete_succ` — binder-weakened discrete BL soundness

@@ -139,7 +139,7 @@ short name in this tree is docstring prose rather than a call site.
 
 * `SemanticConsequence` (`Semantics/Validity.lean`) — reused unchanged as the base-class
   consequence relation; `SemanticConsequenceDense`, `SemanticConsequenceDiscrete` and
-  `SemanticConsequenceDedekindDense` are its class-restricted siblings. All four are now
+  `SemanticConsequenceDedekind` are its class-restricted siblings. All four are now
   instances of one definition, `SemanticConsequenceIn fc` over `FrameClass.Sat`
   (`Semantics/Validity.lean`), rather than four hand-written binder lists; each keeps its own
   name, its own type, and a `.of_forall`/`.apply` pair recovering its pre-abbreviation shape.
@@ -148,7 +148,7 @@ short name in this tree is docstring prose rather than a call site.
   `soundness_base_consequence` / `soundness_dense_consequence` /
   `soundness_discrete_consequence` / `soundness_dedekind_consequence`, and the weak corollaries
   `completeness_base` / `_dense` / `_discrete` / `_dedekind` — the per-class layer.
-* `SemanticConsequenceDedekindDense` — semantic consequence over dense Dedekind-complete
+* `SemanticConsequenceDedekind` — semantic consequence over dense Dedekind-complete
   frames; the hypothesis-and-conclusion shape of `soundness_dedekind` packaged as a definition.
 * `truthAt_foldr_imp` — the pointwise currying lemma relating a context to its `imp`-fold.
 * `strongCompleteness_of_compact` — strong completeness from compactness plus a single-formula
@@ -158,7 +158,7 @@ short name in this tree is docstring prose rather than a call site.
   `Compact fc` and `ModelExistence fc` hypotheses are stated in `SetConsequence.lean` and
   discharged, at `.Base` and `.Dense`, in `Metalogic/Compactness.lean`, which instantiates each
   reduction twice.
-* `semantic_deduction_dedekind_dense` — the semantic deduction theorem for that relation.
+* `semantic_deduction_dedekind` — the semantic deduction theorem for that relation.
 * `derivable_foldr_imp_iff` — its proof-theoretic counterpart, generic in the frame class.
 * `consequence_completeness_dedekind_of_engine` — finite-context consequence completeness,
   stated against a single-formula completeness engine supplied as a hypothesis.
@@ -176,7 +176,7 @@ open FormalSystem.Syntax FormalSystem.Semantics FormalSystem.ProofSystem
 /--
 Semantic consequence over dense, Dedekind-complete ordered carriers.
 
-The binder list is that of `ValidDedekindDense` (`Semantics/Validity.lean`) verbatim, with the
+The binder list is that of `ValidDedekind` (`Semantics/Validity.lean`) verbatim, with the
 context hypothesis `∀ ψ ∈ Γ, TruthAt M τ t ψ` inserted before the conclusion. It is
 therefore exactly the hypothesis-and-conclusion shape of `soundness_dedekind`
 (`Metalogic/Soundness.lean`), packaged as a definition so that the completeness converse can be
@@ -190,21 +190,21 @@ a different (and false) statement.
 **Why the `[DenselyOrdered D]` binder stays.** `FrameClass.Dedekind` lies above
 `FrameClass.Dense`, so `Axiom.density` and `Axiom.dense_indicator` are admissible in a
 `.Dedekind` derivation. Both are false on `ℤ`, which is Dedekind-complete, so dropping density
-here would make the matching soundness direction refutable. See the `ValidDedekindDense`
+here would make the matching soundness direction refutable. See the `ValidDedekind`
 docstring for the primary-source placement of `Dedekind` above `Dense`.
 
-**Where the binder guard now lives.** This definition used to reproduce `ValidDedekindDense`'s
+**Where the binder guard now lives.** This definition used to reproduce `ValidDedekind`'s
 binder list by hand, and `soundness_dedekind_consequence` below was its guard: that theorem held
 only because the two lists were kept character-for-character in step, and would break if they
 drifted. The guard has not been dropped — it has moved somewhere it cannot drift. The class
 condition is `FrameClass.Sat .Dedekind` (`Semantics/FrameClassValidity.lean`), the *same*
-expression `ValidDedekindDense` and `soundness_in` are indexed by, so there is now one source of
+expression `ValidDedekind` and `soundness_in` are indexed by, so there is now one source of
 truth rather than two hand-copied lists. `soundness_dedekind_consequence` remains as the
 non-vacuity witness it also always was. The pre-abbreviation binder shape is recovered by the
 generic `SemanticConsequenceIn.of_forall_total` / `.apply_total` (`Semantics/Validity.lean`), followed by `sat_intro` where the
 proof consumes the frame condition.
 -/
-def SemanticConsequenceDedekindDense (Γ : Context) (φ : Formula) : Prop :=
+def SemanticConsequenceDedekind (Γ : Context) (φ : Formula) : Prop :=
   SemanticConsequenceIn FrameClass.Dedekind Γ φ
 
 /-! ## The semantic deduction theorem -/
@@ -233,10 +233,10 @@ validity of the corresponding iterated implication.
 
 Both directions are `truthAt_foldr_imp` transported across the shared binder list; no
 frame-condition reasoning is involved. This is the lemma that lets the completeness engine be
-single-formula: it converts the arbitrary-`Γ` target into a `ValidDedekindDense` input.
+single-formula: it converts the arbitrary-`Γ` target into a `ValidDedekind` input.
 -/
-theorem semantic_deduction_dedekind_dense (Γ : Context) (φ : Formula) :
-    SemanticConsequenceDedekindDense Γ φ ↔ ValidDedekindDense (Γ.foldr Formula.imp φ) := by
+theorem semantic_deduction_dedekind (Γ : Context) (φ : Formula) :
+    SemanticConsequenceDedekind Γ φ ↔ ValidDedekind (Γ.foldr Formula.imp φ) := by
   constructor
   · intro h
     refine ValidIn.of_forall_total ?_
@@ -437,7 +437,7 @@ theorem compact_of_modelExistence {fc : FrameClass} (h : ModelExistence fc) : Co
 **Finite-context consequence completeness over dense Dedekind-complete frames, modulo the
 engine.**
 
-Given a single-formula completeness engine for `ValidDedekindDense`, semantic consequence from
+Given a single-formula completeness engine for `ValidDedekind`, semantic consequence from
 an arbitrary finite context is derivable at `FrameClass.Dedekind`.
 
 **This is *not* strong completeness, and the gap is not one of degree.** Infinitary strong
@@ -467,7 +467,7 @@ completeness — `Γ ⊨ φ → Γ ⊢ φ` for an arbitrary, possibly infinite `
      false on a densely ordered carrier — so the parallel is one of status, not of proof.
 3. *The infinitary statement is not even expressible in this tree.* `Context := List Formula`
    (`Syntax/Context.lean`) is the premise type of `Derivable`, `DerivationTree`, and
-   `SemanticConsequenceDedekindDense` alike, so there is no `Γ : Set Formula` to quantify over
+   `SemanticConsequenceDedekind` alike, so there is no `Γ : Set Formula` to quantify over
    without first introducing a set-based derivability relation
    (`∃ L : List Formula, (∀ ψ ∈ L, ψ ∈ Γ) ∧ Derivable fc L φ`) that no declaration in this
    development defines. Reading this theorem as "strong completeness" therefore mistakes a
@@ -485,14 +485,14 @@ the headline result for this class — is the `Γ := []` instance (via
 `derivable_foldr_imp_iff`); the weak form is never proved separately.
 -/
 theorem consequence_completeness_dedekind_of_engine
-    (engine : ∀ ψ : Formula, ValidDedekindDense ψ → Derivable FrameClass.Dedekind [] ψ)
-    (Γ : Context) (φ : Formula) (h : SemanticConsequenceDedekindDense Γ φ) :
+    (engine : ∀ ψ : Formula, ValidDedekind ψ → Derivable FrameClass.Dedekind [] ψ)
+    (Γ : Context) (φ : Formula) (h : SemanticConsequenceDedekind Γ φ) :
     Derivable FrameClass.Dedekind Γ φ :=
   (derivable_foldr_imp_iff Γ φ).mpr
-    (engine _ ((semantic_deduction_dedekind_dense Γ φ).mp h))
+    (engine _ ((semantic_deduction_dedekind Γ φ).mp h))
 
 /--
-**Soundness, restated against `SemanticConsequenceDedekindDense`.**
+**Soundness, restated against `SemanticConsequenceDedekind`.**
 
 This is `soundness_in` at `.Dedekind`, read through the consequence relation: the definition
 above and `soundness_in` are indexed by the same `FrameClass.Sat .Dedekind`, so the two sides
@@ -500,13 +500,13 @@ meet definitionally and the proof is one `intro`. It remains the guard that keep
 completeness target honest — if a later edit weakens the consequence relation, say by
 retargeting it to a class whose `Sat` drops the density conjunct, this theorem breaks and the
 build fails before a mis-stated completeness terminus can be proved against it. What changed is
-where the guard bites: it used to depend on this file reproducing `ValidDedekindDense`'s binder
+where the guard bites: it used to depend on this file reproducing `ValidDedekind`'s binder
 list character for character, and now depends on the one `FrameClass.Sat` both sides read. In
 particular it still establishes that the terminus is not vacuous: its hypothesis is inhabited
 for every derivable pair `(Γ, φ)`.
 -/
 theorem soundness_dedekind_consequence (Γ : Context) (φ : Formula)
-    (h : Derivable FrameClass.Dedekind Γ φ) : SemanticConsequenceDedekindDense Γ φ := by
+    (h : Derivable FrameClass.Dedekind Γ φ) : SemanticConsequenceDedekind Γ φ := by
   intro F hF M τ hτ t h_ctx
   exact h.elim fun d => soundness_in Γ φ d F hF M τ hτ t h_ctx
 
@@ -524,10 +524,10 @@ proving it independently would duplicate the countermodel engine; this declarati
 redundancy visible in the type.
 -/
 theorem completeness_dedekind_of_engine
-    (engine : ∀ ψ : Formula, ValidDedekindDense ψ → Derivable FrameClass.Dedekind [] ψ)
-    (φ : Formula) (h : ValidDedekindDense φ) : Derivable FrameClass.Dedekind [] φ :=
+    (engine : ∀ ψ : Formula, ValidDedekind ψ → Derivable FrameClass.Dedekind [] ψ)
+    (φ : Formula) (h : ValidDedekind φ) : Derivable FrameClass.Dedekind [] φ :=
   consequence_completeness_dedekind_of_engine engine [] φ
-    ((semantic_deduction_dedekind_dense [] φ).mpr (by simpa using h))
+    ((semantic_deduction_dedekind [] φ).mpr (by simpa using h))
 
 /-! ## The unconditional terminus
 
@@ -549,7 +549,7 @@ held apart there. In particular this is **not** strong completeness: the infinit
 reached by a different witness — and `Context := List Formula` cannot express it in any case.
 -/
 theorem consequence_completeness_dedekind (Γ : Context) (φ : Formula)
-    (h : SemanticConsequenceDedekindDense Γ φ) : Derivable FrameClass.Dedekind Γ φ :=
+    (h : SemanticConsequenceDedekind Γ φ) : Derivable FrameClass.Dedekind Γ φ :=
   consequence_completeness_dedekind_of_engine
     FormalSystem.Metalogic.BXCanonical.completeness_dedekind_engine Γ φ h
 
@@ -567,10 +567,10 @@ countermodel construction. Proving it separately would duplicate
 This agrees definitionally with `completeness_dedekind_of_engine` at the same engine; the
 `_of_engine` form is retained unmodified as the pinned interface.
 -/
-theorem completeness_dedekind (φ : Formula) (h : ValidDedekindDense φ) :
+theorem completeness_dedekind (φ : Formula) (h : ValidDedekind φ) :
     Derivable FrameClass.Dedekind [] φ :=
   consequence_completeness_dedekind [] φ
-    ((semantic_deduction_dedekind_dense [] φ).mpr (by simpa using h))
+    ((semantic_deduction_dedekind [] φ).mpr (by simpa using h))
 
 /-! ### Axiom audit for the terminus
 
@@ -593,7 +593,7 @@ context hypothesis `∀ ψ ∈ Γ, TruthAt M τ t ψ` inserted before the conclu
 surgery the other three classes perform on their own validity predicates. It quantifies over
 *all* carriers `D` with no order-theoretic side conditions, and for `FrameClass.Base` "all
 carriers" **is** the class, so the general relation expresses base-class consequence exactly.
-The `SemanticConsequenceDedekindDense` docstring's warning against the general relation is
+The `SemanticConsequenceDedekind` docstring's warning against the general relation is
 correct for Dedekind, Dense and Discrete — each of which restricts the carrier — and
 inapplicable here. Introducing a `SemanticConsequenceBase` synonym would be a gratuitous defeq
 duplicate of a definition that already owns the `Γ ⊨ φ` notation.
@@ -692,7 +692,7 @@ Semantic consequence over densely ordered carriers.
 
 The binder list is that of `ValidDense` (`Semantics/Validity.lean`) verbatim, with the context
 hypothesis `∀ ψ ∈ Γ, TruthAt M τ t ψ` inserted before the conclusion — the same surgery
-`SemanticConsequenceDedekindDense` performs on `ValidDedekindDense`. It is therefore exactly
+`SemanticConsequenceDedekind` performs on `ValidDedekind`. It is therefore exactly
 the hypothesis-and-conclusion shape of `soundness_dense` (`Metalogic/Soundness.lean:1254`),
 packaged as a definition so that the completeness converse can be stated against the same
 relation.
@@ -708,7 +708,7 @@ consequence restricted to the dense class; a completeness theorem stated against
 different statement. (For `FrameClass.Base` the general relation *is* the right one, because
 there "all carriers" is the class — see the Base section above.)
 
-**Where the binder guard now lives.** As for `SemanticConsequenceDedekindDense` above: the
+**Where the binder guard now lives.** As for `SemanticConsequenceDedekind` above: the
 hand-copied binder list has been replaced by `FrameClass.Sat .Dense`, the same expression
 `ValidDense` and `soundness_in` are indexed by, so the guard `soundness_dense_consequence` used
 to enforce by textual coincidence is now structural. The pre-abbreviation binder shape is recovered by the
