@@ -361,15 +361,17 @@ theorem completeness_discrete (φ : Formula) :
         FormalSystem.Metalogic.WeakCanonical.countermodel_discrete_reynolds_v2
           M hM_mcs φ h_neg_in h_box_discrete
       -- The four CARRIER side conditions arrive as ordinary hypotheses out of the existential;
-      -- `ValidDiscrete.apply` takes them as instance binders, so they are supplied explicitly. The
-      -- four ALGEBRA binders the tuple used to carry are gone -- they are the `TemporalOrder` the
-      -- frame now has as its `Duration` field.
+      -- `ValidIn.apply_total` takes the frame condition as the single `Sat .Discrete F` slot, so
+      -- the four are packaged back into the existential they came from. The four ALGEBRA binders
+      -- the tuple used to carry are gone -- they are the `TemporalOrder` the frame now has as its
+      -- `Duration` field.
       --
-      -- `@`-application rather than `haveI`: `IsSuccArchimedean` is indexed by its `SuccOrder`
-      -- argument, so a `haveI`-introduced *copy* of `hsucc` is a fresh opaque fvar that
-      -- `hsuccArch`'s type does not mention, and synthesis then fails to match the two.
+      -- The witnesses are passed positionally inside the anonymous constructor rather than
+      -- through `haveI`: `IsSuccArchimedean` is indexed by its `SuccOrder` argument, so a
+      -- `haveI`-introduced *copy* of `hsucc` is a fresh opaque fvar that `hsuccArch`'s type does
+      -- not mention, and synthesis then fails to match the two.
       exact h_not_true
-        (@ValidDiscrete.apply _ h_valid_discrete F hsucc hpred hsuccArch hpredArch TM τ h_tot t)
+        (ValidIn.apply_total h_valid_discrete F ⟨hsucc, hpred, hsuccArch, hpredArch⟩ TM τ h_tot t)
     · -- Mixed case: ¬□(F'T) ∧ ¬□(U(T,bot)) ∈ M — eliminated by structural axiom
       exact False.elim (Chronicle.mcs_mixed_case_absurd FrameClass.Discrete M hM_mcs
           h_not_box_dense h_not_box_discrete)

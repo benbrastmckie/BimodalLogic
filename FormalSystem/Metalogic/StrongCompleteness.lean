@@ -257,13 +257,14 @@ theorem semantic_deduction_dedekind_dense (Γ : Context) (φ : Formula) :
     SemanticConsequenceDedekindDense Γ φ ↔ ValidDedekindDense (Γ.foldr Formula.imp φ) := by
   constructor
   · intro h
-    refine ValidDedekindDense.of_forall ?_
-    intro F _ h_lub M τ hτ t
-    exact (truthAt_foldr_imp M τ t Γ φ).mpr (h.apply F h_lub M τ hτ t)
+    refine ValidIn.of_forall_total ?_
+    intro F hF M τ hτ t
+    exact (truthAt_foldr_imp M τ t Γ φ).mpr
+      (SemanticConsequenceIn.apply_total h F hF M τ hτ t)
   · intro h
-    refine SemanticConsequenceDedekindDense.of_forall ?_
-    intro F _ h_lub M τ hτ t
-    exact (truthAt_foldr_imp M τ t Γ φ).mp (h.apply F h_lub M τ hτ t)
+    refine SemanticConsequenceIn.of_forall_total ?_
+    intro F hF M τ hτ t
+    exact (truthAt_foldr_imp M τ t Γ φ).mp (ValidIn.apply_total h F hF M τ hτ t)
 
 /-! ## The proof-theoretic deduction theorem, in fold form -/
 
@@ -763,13 +764,14 @@ theorem semantic_deduction_dense (Γ : Context) (φ : Formula) :
     SemanticConsequenceDense Γ φ ↔ ValidDense (Γ.foldr Formula.imp φ) := by
   constructor
   · intro h
-    refine ValidDense.of_forall ?_
-    intro F _ M τ hτ t
-    exact (truthAt_foldr_imp M τ t Γ φ).mpr (h.apply F M τ hτ t)
+    refine ValidIn.of_forall_total ?_
+    intro F hF M τ hτ t
+    exact (truthAt_foldr_imp M τ t Γ φ).mpr
+      (SemanticConsequenceIn.apply_total h F hF M τ hτ t)
   · intro h
-    refine SemanticConsequenceDense.of_forall ?_
-    intro F _ M τ hτ t
-    exact (truthAt_foldr_imp M τ t Γ φ).mp (h.apply F M τ hτ t)
+    refine SemanticConsequenceIn.of_forall_total ?_
+    intro F hF M τ hτ t
+    exact (truthAt_foldr_imp M τ t Γ φ).mp (ValidIn.apply_total h F hF M τ hτ t)
 
 /--
 **Finite-context consequence completeness for `FrameClass.Dense`, unconditional.**
@@ -908,13 +910,14 @@ theorem semantic_deduction_discrete (Γ : Context) (φ : Formula) :
     SemanticConsequenceDiscrete Γ φ ↔ ValidDiscrete (Γ.foldr Formula.imp φ) := by
   constructor
   · intro h
-    refine ValidDiscrete.of_forall ?_
-    intro F _ _ _ _ M τ hτ t
-    exact (truthAt_foldr_imp M τ t Γ φ).mpr (h.apply F M τ hτ t)
+    refine ValidIn.of_forall_total ?_
+    intro F hF M τ hτ t
+    exact (truthAt_foldr_imp M τ t Γ φ).mpr
+      (SemanticConsequenceIn.apply_total h F hF M τ hτ t)
   · intro h
-    refine SemanticConsequenceDiscrete.of_forall ?_
-    intro F _ _ _ _ M τ hτ t
-    exact (truthAt_foldr_imp M τ t Γ φ).mp (h.apply F M τ hτ t)
+    refine SemanticConsequenceIn.of_forall_total ?_
+    intro F hF M τ hτ t
+    exact (truthAt_foldr_imp M τ t Γ φ).mp (ValidIn.apply_total h F hF M τ hτ t)
 
 /--
 **Finite-context consequence completeness for `FrameClass.Discrete`, unconditional.**

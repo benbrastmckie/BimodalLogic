@@ -480,26 +480,60 @@ must not be acted on.
 
 ---
 
-### Phase 6: Migrate the consequence sites and the scattered singles [NOT STARTED]
+### Phase 6: Migrate the consequence sites and the scattered singles [COMPLETED]
 
 **Goal**: Move the finite-context and set-premise consequence call sites onto the generic
 consequence adapters added in Phase 3, and clear the remaining one- and two-site files.
 
 **Tasks**:
-- [ ] `StrongCompleteness.lean`: migrate the 12 consequence-adapter call sites to
+- [x] `StrongCompleteness.lean`: migrate the 12 consequence-adapter call sites to
       `SemanticConsequenceIn.{of_forall_total, apply_total}`, the 3 class-specific validity sites to
       the generic pair, and normalise the intro-chains in the same per-proof edits.
-- [ ] `SetConsequence.lean`: migrate the 9 consequence-adapter call sites to
+- [x] `SetConsequence.lean`: migrate the 9 consequence-adapter call sites to
       `SetSemanticConsequenceOn.{of_forall_total, apply_total}`, and the
       `SatisfiableSet.{base,dense,discrete,dedekind}_of_forall` uses to `SatisfiableSet.of_forall`.
       Where a site's inner `⟨so, po, hsa, hpa⟩` is destructuring `IsSuccArchDiscrete`, replace it
       with `TaskFrame.isSuccArchDiscrete_of_instances` / `.elim` from Phase 2.
-- [ ] Clear the scattered single- and double-site files: `Metalogic/DedekindNonCompactness.lean`,
+- [x] Clear the scattered single- and double-site files: `Metalogic/DedekindNonCompactness.lean`,
       `Metalogic/DiscreteNonCompactness.lean`, `Metalogic/Compactness.lean`,
       `Metalogic/Decidability/Verified/Decidable.lean`, `Metalogic/BXCanonical/Completeness.lean`,
       `Metalogic/BXCanonical/CompletenessDedekind.lean`, `Semantics/IntTransfer.lean`,
       `Metalogic/BaseLanguageSoundness.lean`.
-- [ ] Do not delete any adapter declaration; deletion is Phase 7.
+- [x] Do not delete any adapter declaration; deletion is Phase 7.
+
+**PHASE 6 COMPLETION NOTE — measured counts, several materially different from the plan.** The
+repo-wide confirming grep was run before editing. Real *call sites* (declaration lines and
+docstring mentions excluded) are:
+
+| File | Plan asserted | Measured call sites |
+|------|---------------|---------------------|
+| `StrongCompleteness.lean` | 12 consequence + 3 validity | **3 consequence + 3 validity = 6** |
+| `SetConsequence.lean` | 9 consequence + 1 validity | **0** (declarations and docstrings only) |
+| `DedekindNonCompactness.lean` | 2 consequence + 2 other | **4** (2 `SetSemanticConsequenceDedekindDense.of_forall`, 3 `SatisfiableSet.dedekind_of_forall`, 1 `ValidDedekindDense.apply`) |
+| `DiscreteNonCompactness.lean` | 2 consequence + 1 validity | **6** (2 consequence, 3 `SatisfiableSet.discrete_of_forall`, 1 `ValidDiscrete.apply`) |
+| `Compactness.lean` | 1 | **0** (one docstring mention) |
+| `Decidability/Verified/Decidable.lean` | 2 | **0** (two docstring mentions) |
+| `BXCanonical/Completeness.lean` | 2 | **1** |
+| `BXCanonical/CompletenessDedekind.lean` | 1 | **0** (one docstring mention) |
+| `IntTransfer.lean` | 1 | **1** |
+| `BaseLanguageSoundness.lean` | 3 | **2** (one `ValidDiscrete`, one `BLValidDiscrete`) |
+
+The plan's "~34 external class-adapter sites" is therefore **21 real call sites**; the gap is
+entirely declaration lines and prose mentions the plan-time grep did not separate out. The
+docstring mentions in `Compactness.lean`, `Decidable.lean`, `CompletenessDedekind.lean` and
+`SetConsequence.lean` are left for Phase 7, where the names they cite actually disappear.
+
+The confirming grep named no file absent from the plan's list, so no extra file was pulled into
+scope.
+
+Two Phase-2 instruments were used as the plan directs: `TaskFrame.isSuccArchDiscrete_of_instances`
+replaces the inner `⟨so, po, hsa, hpa⟩` at `DiscreteNonCompactness.lean`'s `SatisfiableSet`
+introduction, and `sat_intro` recovers the four instances at the three `.Discrete` proof sites
+(`IntTransfer.lean`, and both branches of `BaseLanguageSoundness.lean`'s
+`blValidDiscrete_iff_validDiscrete_tr`). The `BXCanonical/Completeness.lean` site went the other
+way — the four witnesses arrive as ordinary hypotheses out of an existential, so they are
+re-packaged into the single `Sat .Discrete F` slot inside an anonymous constructor rather than
+passed positionally with `@`.
 
 **Timing**: 2 hours
 

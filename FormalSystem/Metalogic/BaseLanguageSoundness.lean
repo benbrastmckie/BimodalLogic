@@ -158,8 +158,8 @@ theorem blValid_iff_valid_tr (φ : BLFormula) : BLValid φ ↔ valid (tr φ) := 
 /--
 The **`.Discrete` mirror** of `blValid_iff_valid_tr`: BL validity over the discrete frame class
 is `TruthAt`-equivalent to `ValidDiscrete` of the translation, with the four
-`SuccOrder`/`PredOrder`/`IsSuccArchimedean`/`IsPredArchimedean` instance binders threaded through
-exactly as `BLValidDiscrete.of_forall`/`.apply` and `ValidDiscrete.of_forall`/`.apply` carry them.
+`SuccOrder`/`PredOrder`/`IsSuccArchimedean`/`IsPredArchimedean` instance binders recovered by
+`sat_intro` from the single `Sat .Discrete F` hypothesis the generic adapters carry.
 Same two-branch `constructor` proof as `blValid_iff_valid_tr`, off `truthAt_tr`.
 
 Consumed by `Metalogic/TMCompletenessReduction.lean`'s `tmCompleteDiscrete_iff_forwardDiscrete`.
@@ -168,12 +168,14 @@ theorem blValidDiscrete_iff_validDiscrete_tr (φ : BLFormula) :
     BLValidDiscrete φ ↔ ValidDiscrete (tr φ) := by
   constructor
   · intro h
-    refine ValidDiscrete.of_forall ?_
-    intro F so po hsa hpa M τ hτ t
+    refine ValidIn.of_forall_total ?_
+    intro F hF M τ hτ t
+    sat_intro hF
     exact (truthAt_tr M φ τ t).mpr (h.apply F M τ hτ t)
   · intro h
-    refine BLValidDiscrete.of_forall ?_
-    intro F so po hsa hpa M τ hτ t
+    refine BLValidIn.of_forall_total ?_
+    intro F hF M τ hτ t
+    sat_intro hF
     exact (truthAt_tr M φ τ t).mp (h.apply F M τ hτ t)
 
 end FormalSystem.Semantics

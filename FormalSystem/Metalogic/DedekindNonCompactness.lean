@@ -384,8 +384,8 @@ theorem dedWitness_finitely_satisfiable (q : Atom) (L : List Formula)
     (hL : ∀ ψ ∈ L, ψ ∈ dedWitness q) : SatisfiableDedekindSet {ψ | ψ ∈ L} := by
   classical
   set N : ℕ := (L.map qDepth).sum with hNdef
-  refine SatisfiableSet.dedekind_of_forall (rShift q N).frame
-    (fun _ hne hbd => Real.exists_isLUB hne hbd) (rM q N) (rH q N)
+  refine SatisfiableSet.of_forall (fc := FrameClass.Dedekind) (rShift q N).frame
+    ⟨inferInstance, fun _ hne hbd => Real.exists_isLUB hne hbd⟩ (rM q N) (rH q N)
     (ShiftSet.hist_isTotal _ _) 0 ?_
   intro ψ hψ
   have hmem := hL ψ hψ
@@ -423,14 +423,14 @@ theorem dedekind_consequence_not_compact : ¬ CompactDedekind := by
   classical
   set q : Atom := ⟨"q", none⟩ with hq
   have hcons : SetSemanticConsequenceDedekindDense (dedWitness q) Formula.bot := by
-    refine SetSemanticConsequenceDedekindDense.of_forall ?_
-    intro F _ hlub M τ hτ t hall
-    exact absurd (SatisfiableSet.dedekind_of_forall F hlub M τ hτ t hall)
+    refine SetSemanticConsequenceOn.of_forall_total ?_
+    intro F hF M τ hτ t hall
+    exact absurd (SatisfiableSet.of_forall F hF M τ hτ t hall)
       (dedWitness_not_satisfiable q)
   obtain ⟨L, hL, hvalid⟩ := hc _ _ hcons
   obtain ⟨F, ⟨hd, hlub⟩, M, τ, hτ, t, hsat⟩ := dedWitness_finitely_satisfiable q L hL
   haveI : DenselyOrdered F.Duration := hd
-  have hv := ValidDedekindDense.apply hvalid F hlub M τ hτ t
+  have hv := ValidIn.apply_total hvalid F ⟨hd, hlub⟩ M τ hτ t
   exact (truthAt_foldr_imp M τ t L Formula.bot).mp hv (fun ψ hψ => hsat ψ hψ)
 
 /-- **Strong completeness fails for `FrameClass.Dedekind`.** Refutes
@@ -451,9 +451,9 @@ theorem strongCompletenessDedekind_refuted : ¬ StrongCompletenessDedekind := by
   classical
   set q : Atom := ⟨"q", none⟩ with hq
   have hcons : SetSemanticConsequenceDedekindDense (dedWitness q) Formula.bot := by
-    refine SetSemanticConsequenceDedekindDense.of_forall ?_
-    intro F _ hlub M τ hτ t hall
-    exact absurd (SatisfiableSet.dedekind_of_forall F hlub M τ hτ t hall)
+    refine SetSemanticConsequenceOn.of_forall_total ?_
+    intro F hF M τ hτ t hall
+    exact absurd (SatisfiableSet.of_forall F hF M τ hτ t hall)
       (dedWitness_not_satisfiable q)
   obtain ⟨L, hL, ⟨d⟩⟩ := hsc _ _ hcons
   obtain ⟨F, ⟨hd, hlub⟩, M, τ, hτ, t, hsat⟩ := dedWitness_finitely_satisfiable q L hL

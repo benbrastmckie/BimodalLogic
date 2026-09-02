@@ -194,7 +194,8 @@ theorem succ_iterate_zero_int (n : ℕ) : Order.succ^[n] (0:ℤ) = (n : ℤ) := 
 theorem archWitness_finitely_satisfiable (p : Atom) (L : List Formula)
     (hL : ∀ ψ ∈ L, ψ ∈ archWitness p) : SatisfiableDiscreteSet {ψ | ψ ∈ L} := by
   classical
-  refine SatisfiableSet.discrete_of_forall (FrameOver.natFrame (D := ℤ)) zModel
+  refine SatisfiableSet.of_forall (fc := FrameClass.Discrete) (FrameOver.natFrame (D := ℤ))
+    (TaskFrame.isSuccArchDiscrete_of_instances _) zModel
     (zHistory ((L.map witIdx).sum : ℕ)) (zHistory_total _) 0 ?_
   set N : ℕ := (L.map witIdx).sum with hNdef
   intro ψ hψ
@@ -251,14 +252,14 @@ theorem discrete_consequence_not_compact : ¬ CompactDiscrete := by
   classical
   set p : Atom := ⟨"p", none⟩ with hp
   have hcons : SetSemanticConsequenceDiscrete (archWitness p) Formula.bot := by
-    refine SetSemanticConsequenceDiscrete.of_forall ?_
-    intro F _ _ _ _ M τ hτ t hall
-    exact absurd (SatisfiableSet.discrete_of_forall F M τ hτ t hall)
+    refine SetSemanticConsequenceOn.of_forall_total ?_
+    intro F hF M τ hτ t hall
+    exact absurd (SatisfiableSet.of_forall F hF M τ hτ t hall)
       (archWitness_not_satisfiable p)
   obtain ⟨L, hL, hvalid⟩ := hc _ _ hcons
-  obtain ⟨F, ⟨_, _, _, _⟩, M, τ, hτ, t, hsat⟩ :=
+  obtain ⟨F, hF, M, τ, hτ, t, hsat⟩ :=
     archWitness_finitely_satisfiable p L hL
-  have hv := ValidDiscrete.apply hvalid F M τ hτ t
+  have hv := ValidIn.apply_total hvalid F hF M τ hτ t
   exact (truthAt_foldr_imp M τ t L Formula.bot).mp hv (fun ψ hψ => hsat ψ hψ)
 
 /-! ## Strong completeness for `FrameClass.Discrete` is refuted -/
@@ -280,9 +281,9 @@ theorem strongCompletenessDiscrete_refuted : ¬ StrongCompletenessDiscrete := by
   classical
   set p : Atom := ⟨"p", none⟩ with hp
   have hcons : SetSemanticConsequenceDiscrete (archWitness p) Formula.bot := by
-    refine SetSemanticConsequenceDiscrete.of_forall ?_
-    intro F _ _ _ _ M τ hτ t hall
-    exact absurd (SatisfiableSet.discrete_of_forall F M τ hτ t hall)
+    refine SetSemanticConsequenceOn.of_forall_total ?_
+    intro F hF M τ hτ t hall
+    exact absurd (SatisfiableSet.of_forall F hF M τ hτ t hall)
       (archWitness_not_satisfiable p)
   obtain ⟨L, hL, ⟨d⟩⟩ := hsc _ _ hcons
   obtain ⟨F, ⟨_, _, _, _⟩, M, τ, hτ, t, hsat⟩ :=

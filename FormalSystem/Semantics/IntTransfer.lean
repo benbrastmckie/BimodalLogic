@@ -396,8 +396,9 @@ theorem validDiscrete_iff_validInt (φ : Formula) : ValidDiscrete φ ↔ ValidIn
   · intro h F M τ hτ t
     exact h.apply F.toTaskFrame M τ hτ t
   · intro h
-    refine ValidDiscrete.of_forall ?_
-    intro F _ _ _ _ M τ hτ t
+    refine ValidIn.of_forall_total ?_
+    intro F hF M τ hτ t
+    sat_intro hF
     -- Ascribe the target at `↑intOrder`, not at `ℤ`: the transport's `E` is a `TemporalOrder`,
     -- and Lean cannot invert `↑E ≟ ℤ` to recover `E := intOrder` on its own.
     let e : ↑F.Duration ≃+o ↑intOrder := intIso
