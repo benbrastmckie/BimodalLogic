@@ -30,7 +30,7 @@ different semantic target (`FormalSystem/Semantics/Validity.lean`):
 
 | `FrameClass` | Semantic target | Carrier the bridge will use |
 |---|---|---|
-| `.Base` | `⊨ φ` (`valid`, all linear TM frames) | ℚ |
+| `.Base` | `⊨ φ` (`Valid`, all linear TM frames) | ℚ |
 | `.Dense` | `ValidDense φ` | ℚ |
 | `.Discrete` | `ValidDiscrete φ` | ℤ |
 | `.Dedekind` | `ValidDedekind φ` (dense *and* conditionally complete) | ℝ |

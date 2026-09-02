@@ -20,7 +20,7 @@ form of the claim that this carrier is admissible for the `FrameClass.Base` laye
 
 ## Why this carrier
 
-`FrameClass.Base` imposes no Archimedean-ness: `valid` (`FormalSystem/Semantics/Validity.lean`)
+`FrameClass.Base` imposes no Archimedean-ness: `Valid` (`FormalSystem/Semantics/Validity.lean`)
 binds exactly `AddCommGroup`, `LinearOrder`, `IsOrderedAddMonoid` and `Nontrivial`. `ℚ ×ₗ ℤ`
 discharges all four while being discretely ordered, with successor `(q, n) ↦ (q, n + 1)`, so it
 validates `nextTop` everywhere without being Archimedean.

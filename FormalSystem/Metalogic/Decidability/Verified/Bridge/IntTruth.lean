@@ -909,7 +909,7 @@ end Model
 
 /-! ## The `ℤ` instantiation
 
-`valid` (`Semantics/Validity.lean`) quantifies over every carrier, so **one** carrier refutes it,
+`Valid` (`Semantics/Validity.lean`) quantifies over every carrier, so **one** carrier refutes it,
 and `ℤ` under `finiteOrderEmbInt` is the one whose interior gaps are empty. The placement is
 instantiated **directly**, not through `exists_monotone_placement`: that returns an existential
 and discards the contiguity, which is the only thing `ℤ` has going for it.
@@ -1026,7 +1026,7 @@ both are true at every point of the `ℤ` countermodel regardless.
 
 /--
 **`not_valid_of_hasOpen`, at `ℤ`.** A saturated open branch denying `χ` at one of its labels
-refutes `valid χ`.
+refutes `Valid χ`.
 
 The countermodel is `normModel b ord (intPlace b ord hV)` over `regionFrame WorldIndex
 (BranchTime b) ℤ`, and the base history of
@@ -1038,7 +1038,7 @@ theorem not_valid_of_hasOpen_int (hV : branchOrderValid b ord = true)
     (hTot : timeOrderTotal b ord = true) (hBA : boxAnchoredCheck b = true)
     (hCheck : regionLabelCheck b ord = true) (hTW : temporalWitnessCheck b ord = true)
     {χ : Formula} {l₀ : Label} (hw₀ : l₀.world ∈ b.knownWorlds)
-    (hroot : (⟨.neg, χ, l₀⟩ : SignedFormula) ∈ b) : ¬ valid χ := by
+    (hroot : (⟨.neg, χ, l₀⟩ : SignedFormula) ∈ b) : ¬ Valid χ := by
   intro hval
   set f := intPlace b ord hV with hf_def
   have hf : Function.Injective f := intPlace_injective hV

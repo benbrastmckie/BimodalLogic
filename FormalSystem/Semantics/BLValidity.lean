@@ -14,12 +14,12 @@ Validity and semantic consequence for the tense-primitive base language BL, stat
 native `BLTruthAt` of `Semantics/BLTruth.lean`.
 
 Each predicate here is a **binder-for-binder mirror** of its counterpart in
-`Semantics/Validity.lean`: `BLValid` of `valid`, `BLValidDense` of `ValidDense`,
+`Semantics/Validity.lean`: `BLValid` of `Valid`, `BLValidDense` of `ValidDense`,
 `BLValidDiscrete` of `ValidDiscrete`, `BLValidDedekind` of `ValidDedekind`, and
 `BLSemanticConsequence` of `SemanticConsequence`. Nothing changes but `Formula ↦ BLFormula` and
 `TruthAt ↦ BLTruthAt`; in particular the histories quantified over are the **total** ones
 (`τ.IsTotal`, the predicate form of `H_F`), matching `def:logical-consequence`, and `Type` rather
-than `Type*` is used throughout for the same universe reason recorded on `valid`.
+than `Type*` is used throughout for the same universe reason recorded on `Valid`.
 
 ## The Dedekind asymmetry — read this before adding a `BLValidComplete`
 
@@ -111,12 +111,12 @@ def BLValidIn (fc : ProofSystem.FrameClass) (φ : BLFormula) : Prop :=
 A base-language formula is **valid** if it is true in all models, at all times, at every
 **total** history, for every temporal type `D` satisfying the ordered-group binder set.
 
-Binder-for-binder mirror of `Semantics.valid`; see `def:logical-consequence`, whose "possible
+Binder-for-binder mirror of `Semantics.Valid`; see `def:logical-consequence`, whose "possible
 worlds tau in H_F" are the total histories that `τ.IsTotal` picks out.
 
-Uses `Type` (not `Type*`) to avoid universe-level issues in proofs, as `valid` does.
+Uses `Type` (not `Type*`) to avoid universe-level issues in proofs, as `Valid` does.
 
-**`BLValid` is `BLValidIn` at the unconstrained class**, exactly as `valid` is `ValidIn .Base`:
+**`BLValid` is `BLValidIn` at the unconstrained class**, exactly as `Valid` is `ValidIn .Base`:
 `Sat FrameClass.Base` is `True`, so the tag attaches no frame condition. The pre-abbreviation
 binder shape is reachable through `BLValid.of_forall_total` / `BLValid.apply` below.
 -/
@@ -124,14 +124,14 @@ def BLValid (φ : BLFormula) : Prop :=
   BLValidIn ProofSystem.FrameClass.Base φ
 
 /-- Introduce `BLValid` from its pre-abbreviation binder shape; the `Sat .Base` argument (`True`)
-is discharged here rather than at each call site. The BL mirror of `valid.of_forall_total`. -/
+is discharged here rather than at each call site. The BL mirror of `Valid.of_forall_total`. -/
 theorem BLValid.of_forall_total {φ : BLFormula}
     (h : ∀ (F : TaskFrame) (M : TaskModel F) (τ : WorldHistory F),
            τ.IsTotal → ∀ t : F.Duration, BLTruthAt M τ t φ) :
     BLValid φ :=
   fun F _ M τ t => h F M τ.val τ.property t
 
-/-- Eliminate `BLValid` into its pre-abbreviation binder shape. The BL mirror of `valid.apply`. -/
+/-- Eliminate `BLValid` into its pre-abbreviation binder shape. The BL mirror of `Valid.apply`. -/
 theorem BLValid.apply {φ : BLFormula} (h : BLValid φ) (F : TaskFrame) (M : TaskModel F)
     (τ : WorldHistory F) (hτ : τ.IsTotal) (t : F.Duration) : BLTruthAt M τ t φ :=
   h F trivial M ⟨τ, hτ⟩ t

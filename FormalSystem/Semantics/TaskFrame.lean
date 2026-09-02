@@ -126,7 +126,7 @@ here are now closed, and are recorded as closed rather than deleted, since both 
   immediate payoff is that `TaskFrame.not_validOn_bot` (Semantics/Validity.lean) is now the bare
   `¬ F.ValidOn ⊥`, with no world state taken as an argument.
 - `D` nontrivial (`def:temporal-order`) is `[Nontrivial D]`, now among the structure's own
-  binders and inherited by `FiniteFrameOver`. `valid` and `SemanticConsequence`
+  binders and inherited by `FiniteFrameOver`. `Valid` and `SemanticConsequence`
   (Semantics/Validity.lean) already carried it and still do — they bind `D` themselves, so
   theirs is not made redundant by the structure's; what the structure's binder removes is the
   possibility of writing a frame over a trivial duration order at all.

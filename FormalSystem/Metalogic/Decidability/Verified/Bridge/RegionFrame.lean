@@ -13,11 +13,11 @@ import FormalSystem.Semantics.Validity
 `Bridge/Interpolate.lean` ends with a total valuation on the carrier and the statement that truth
 is constant on each region cut out by the placement. This file supplies the objects that
 statement is about: a frame and a family of `WorldHistory`s, among them the *total* ones
-that `valid` quantifies over.
+that `Valid` quantifies over.
 
-## What `valid` demands, and the one constraint that is not negotiable
+## What `Valid` demands, and the one constraint that is not negotiable
 
-`FormalSystem.Semantics.valid` reads
+`FormalSystem.Semantics.Valid` reads
 
 ```
 ∀ D, ∀ F : FrameOver D, ∀ M, ∀ τ, τ.IsTotal → ∀ t, TruthAt M τ t φ

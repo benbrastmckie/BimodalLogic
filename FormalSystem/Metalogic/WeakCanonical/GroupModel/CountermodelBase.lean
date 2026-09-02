@@ -72,7 +72,7 @@ open FormalSystem.Metalogic.Algebraic
 
 /-! ## Carrier gate
 
-The four instances `valid` (`Semantics/Validity.lean`) binds its duration type under, plus the
+The four instances `Valid` (`Semantics/Validity.lean`) binds its duration type under, plus the
 elaboration of the generic flow frame at this carrier. Mirrors the gates at
 `GroupModel/GoodGroupable.lean` and `BXCanonical/DiscreteCarrierProbe.lean`; these lines make
 *"`ℚ ×ₗ ℤ` is an admissible duration type for the flow-frame construction"* a compile-time

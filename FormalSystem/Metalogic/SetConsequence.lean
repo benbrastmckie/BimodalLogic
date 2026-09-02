@@ -362,7 +362,7 @@ obligation for Base strong completeness — the single-formula engine hypothesis
 the whole of what remained. `compactBase` now supplies it, and
 `strongCompletenessBase` collects the result.
 
-Each definition is its Dense sibling with `SetSemanticConsequenceBase` / `valid` in place of
+Each definition is its Dense sibling with `SetSemanticConsequenceBase` / `Valid` in place of
 `SetSemanticConsequenceDense` / `ValidDense` and the `[DenselyOrdered D]` binder dropped —
 there is no third axis of variation.
 
@@ -387,7 +387,7 @@ def StrongCompletenessBase : Prop := StrongCompleteness FrameClass.Base
 def CompactBase : Prop := Compact FrameClass.Base
 
 /-- Satisfiability of a possibly-infinite set over arbitrary carriers — `SatisfiableSet` at
-    `FrameClass.Base`. This is `FormulaSatisfiable` (`Validity.lean`) at `valid`'s binder list,
+    `FrameClass.Base`. This is `FormulaSatisfiable` (`Validity.lean`) at `Valid`'s binder list,
     with the conclusion generalised from a single formula to `∀ ψ ∈ Γ`; equivalently
     `SatisfiableDenseSet` with the `DenselyOrdered` binder dropped.
 

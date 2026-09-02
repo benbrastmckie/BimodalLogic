@@ -129,7 +129,7 @@ This is the single canonical dense countermodel used by both `completeness` and
 `completeness_dense`. The countermodel lives on the bundle flow frame
 (`Metalogic/Algebraic/FlowFrame.lean`), and the witness history is exhibited by its
 **totality** (`bundleFlowHistory_total`) — `def:world-history`'s `H_F` — matching the
-`def:BL-semantics` box clause and the totality binder of `valid`/`ValidDense` directly, with
+`def:BL-semantics` box clause and the totality binder of `Valid`/`ValidDense` directly, with
 no admissible-history set and no shift-closure side condition.
 -/
 theorem countermodel_dense_enriched {fc : FrameClass} (A : Set Formula)
@@ -188,13 +188,13 @@ condition, so that carrier is admissible. The dense and mixed branches are sorry
 For the frame-class-specific results, see `completeness_dense` and `completeness_discrete`.
 
 **Why `FrameClass.Base` is essential here**: completeness is a per-frame-class fact — it pairs a
-validity notion with the axiom set that captures it. `valid φ` (validity over *all* linear
+validity notion with the axiom set that captures it. `Valid φ` (validity over *all* linear
 temporal frames) is matched by the `Base` axiom set specifically; the dense and discrete
 notions have their own statements (`completeness_dense`, `completeness_discrete`) against
 `ValidDense` / `ValidDiscrete`. There is no `{fc}`-uniform statement to generalise to.
 -/
 theorem completeness (φ : Formula) :
-    valid φ → Derivable FrameClass.Base [] φ := by
+    Valid φ → Derivable FrameClass.Base [] φ := by
   -- Contrapositive: assume not derivable, show not valid
   by_contra h
   push Not at h

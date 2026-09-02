@@ -153,7 +153,7 @@ The semantics follows the JPL paper "The Perpetuity Calculus of Agency":
 | Compositionality | `u ∈ w·d, v ∈ u·e ⟹ v ∈ w·(d+e)` | `compositionality` constraint |
 | World History | `τ: X → W` convex | `WorldHistory F` with `convex` proof |
 | Truth | `M,τ,x ⊨ φ` | `TruthAt M τ t ht φ` |
-| Validity | True in all models | `valid φ` (polymorphic over `T`) |
+| Validity | True in all models | `Valid φ` (polymorphic over `T`) |
 
 ## Temporal Polymorphism
 

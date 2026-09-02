@@ -926,35 +926,83 @@ unchanged after the pass — that invariant is the real guard against Hazard 1.
 
 ---
 
-### Phase 10: The naming pass [IN PROGRESS]
+### Phase 10: The naming pass [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: One spelling for axiom-validity lemmas, and `Valid` for the base validity predicate —
 without creating same-named theorems across sibling namespaces or breaking `Automation`.
 
 **Tasks**:
-- [ ] `swap_axiom_<axiom>_valid` ×4 (`mt`, `m4`, `mb`, `mf`, in `FrameClassVariants.lean`) →
+- [x] `swap_axiom_<axiom>_valid` ×4 (`mt`, `m4`, `mb`, `mf`, in `FrameClassVariants.lean`) →
       `<axiom>_swap_valid`. Verified no collisions.
-- [ ] `<axiom>_is_valid` ×4 (`prior_UZ`, `prior_SZ`, `z1`, `z1_past`) → `<axiom>_valid`, and
+- [x] `<axiom>_is_valid` ×4 (`prior_UZ`, `prior_SZ`, `z1`, `z1_past`) → `<axiom>_valid`, and
       `axiom_<axiom>_valid` ×4 (`temp_linearity`, `temp_linearity_past`, `F_until_equiv`,
       `P_since_equiv`) → `<axiom>_valid`, all inside `namespace FormalSystem.Metalogic.SoundnessLemmas`.
-- [ ] Apply decision D4 in the same edit, because the naive rename silently creates ambiguity:
+- [x] Apply decision D4 in the same edit, because the naive rename silently creates ambiguity:
       - Delete the three one-line re-export wrappers `Metalogic.{prior_UZ_valid, prior_SZ_valid,
         z1_valid}` in `Soundness.lean` and replace them with
         `export SoundnessLemmas (prior_UZ_valid prior_SZ_valid z1_valid)`.
       - For the four `axiom_*` renames, add a one-line docstring on each stating it is the
         `ValidIn .Base` form of the `⊨`-shaped `Metalogic.<axiom>_valid` (the two are equated by
         `valid_iff_validIn_base`).
-- [ ] Do **not** rename `axiom_{dense,discrete,dedekind}_valid` — these are class-level "every axiom
+- [x] Do **not** rename `axiom_{dense,discrete,dedekind}_valid` — these are class-level "every axiom
       of class ≤ fc is valid" lemmas, not per-axiom lemmas.
-- [ ] Do **not** rename the `<X>_valid_of_<hypothesis>` family in `BLSchemaValidity.lean` — they are
+- [x] Do **not** rename the `<X>_valid_of_<hypothesis>` family in `BLSchemaValidity.lean` — they are
       BL semantic lemmas at a hypothesis, and Phase 8 established that two of them cannot be
       transported away. `co_valid` is already in the target shape; leave it.
-- [ ] `valid → Valid` (decision D5): rename outright with no deprecation alias, **excluding
+- [x] `valid → Valid` (decision D5): rename outright with no deprecation alias, **excluding
       `FormalSystem/Automation/**`** (`FormulaLabel.valid` and the
       `DatasetValidator`/`ProofFirstBenchmark`/`DatasetExporter` fields are a different identifier).
       The `⊨` notation is unaffected.
-- [ ] Sequence `valid → Valid` last: Phase 7 already deleted `valid.of_forall_total`, so the site
+- [x] Sequence `valid → Valid` last: Phase 7 already deleted `valid.of_forall_total`, so the site
       count drops from ~106 to ~35.
+
+**PHASE 10 COMPLETION NOTE — measured counts.**
+
+**10.1 + 10.2 (one build, because they cannot be separated).** The `<axiom>_is_valid ->
+<axiom>_valid` rename creates `SoundnessLemmas.prior_UZ_valid` etc., which collide with the very
+wrappers D4 deletes, so the rename and the D4 wrapper deletion are one edit by necessity, not by
+choice. Measured occurrences: `swap_axiom_{mt,m4,mb,mf}_valid` 2 each (8);
+`prior_UZ_is_valid` 6, `prior_SZ_is_valid` 4, `z1_is_valid` 4, `z1_past_is_valid` 2;
+`axiom_temp_linearity_valid` 3, `axiom_temp_linearity_past_valid` 2, `axiom_F_until_equiv_valid` 2,
+`axiom_P_since_equiv_valid` 2 — 35 occurrences across 3 files. `grep -rn 'swap_axiom_\|_is_valid\b'
+FormalSystem/` **returns nothing**. Every external use site was already namespace-qualified
+(`SoundnessLemmas.X`), so no ambiguity was introduced. The three `Metalogic` wrappers became
+`export SoundnessLemmas (prior_UZ_valid prior_SZ_valid z1_valid)` under a short section docstring
+recording why. The four `axiom_*` renames each gained the D4 one-line note that they are the
+`ValidIn .Base` form of the `⊨`-shaped `Metalogic.<axiom>_valid`, equated by
+`Validity.valid_iff_validIn_base`.
+
+**10.3 `valid -> Valid`.** Scope Hypothesis **materially wrong, and the correction matters.**
+
+- Plan-time figure: "~106 code-only occurrences, ~18 of them `Automation`'s, ~55 deleted by
+  Phase 7, leaving ~35."
+- Measured with a comment-stripped scan (block comments, docstrings and `--` lines removed,
+  offsets preserved): **169 code-only occurrences in 22 files**, of which **77 are the semantic
+  predicate**. Phase 7 deleted no `valid.*` adapter (see the Phase 7 note), so the predicted
+  drop never happened.
+- **`Automation/**` is not the only unrelated `valid`.** At least four further unrelated
+  identifiers spell `valid` outside `Automation`: `DecisionProcedure.DecisionResult.valid` (a
+  constructor, used across `Metalogic/Decidability/**` — 46 occurrences in `Saturation.lean`
+  alone, 14 in `DecisionProcedure.lean`), `MergePair.valid` (`WeakCanonical/Kamp/**`, 12), a
+  `valid : Bool` structure field in `Tests/.../DerivationBenchmark.lean`, and `have valid :` /
+  `let valid :` local binders in two integration tests. A pass excluding only `Automation/**`,
+  as the plan directs, would have corrupted all of them.
+
+The rename was therefore run against an explicit **nine-file allowlist** of the modules where the
+bare identifier denotes `Semantics.valid`, with one further line-level exclusion
+(`Decidability/Correctness.lean:103`, a `| valid proof =>` constructor pattern). 77 code sites
+renamed; a separate pass rewrote 72 backticked docstring references across 18 files.
+`grep -rn '\bvalid\b' FormalSystem/Automation/` is **byte-unchanged** (`git diff --stat
+FormalSystem/Automation/` is empty). The `⊨` notation is unaffected; only its right-hand side
+moved from `valid φ` to `Valid φ`.
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|---|---|---|
+| Verification bullet "No theorem name is declared in both `FormalSystem.Metalogic` and `FormalSystem.Metalogic.SoundnessLemmas`" not satisfied for four names | It conflicts with decision D4 in the same plan, which *prescribes* the sibling-namespace pair for `temp_linearity_valid`, `temp_linearity_past_valid`, `F_until_equiv_valid`, `P_since_equiv_valid` and mitigates it with a docstring rather than a deletion. The `Metalogic` members are genuine `⊨`-shaped theorems, not wrappers, so there is nothing to delete. D4 is in the binding Decisions table; the verification bullet is the stale half. | `Soundness.lean:324` (`⊨`-shaped) vs `FrameClassVariants.lean:596` (`ValidIn .Base`-shaped); no ambiguity arises, because `SoundnessLemmas` is inner to `Metalogic` and `FrameClassVariants.lean` does not import `Soundness.lean` |
+| `valid -> Valid` not applied to `Metalogic/Decidability/**`, `WeakCanonical/Kamp/**`, `Decidability.lean`, or three `Tests/` files | Their `valid` is an unrelated identifier (constructor / def / field / local binder). The plan's exclusion list named only `Automation/**`. | Comment-stripped scan output recorded above; 92 residual code-only `valid` occurrences remain, every one of them one of these unrelated identifiers |
+| Lemma names of the form `valid_*` / `*_valid` left lowercase | D5 renames the *predicate*, not the snake_case lemma-name convention; `valid_iff_validIn_base`, `valid_implies_validDedekind`, `sep_valid` etc. follow the tree's existing lemma-naming style. | Unchanged in the diff |
 
 **Timing**: 2 hours
 

@@ -9,7 +9,7 @@ import FormalSystem.Metalogic.Decidability.Verified.Bridge.RegionLabel
 /-!
 # The `ℤ` placement is contiguous, so its interior gaps are empty
 
-`valid` (`Semantics/Validity.lean`) quantifies over every carrier, so **one** carrier refutes it.
+`Valid` (`Semantics/Validity.lean`) quantifies over every carrier, so **one** carrier refutes it.
 `ℤ` is the cheap one, and this file says why: `finOrderEmbInt` (`Bridge/Embed.lean`) is the
 `Nat`-cast, so `finiteOrderEmbInt` places a finite order of `n` elements at exactly
 `0, 1, …, n-1` — a **contiguous** block. Between consecutive placed points of a contiguous `ℤ`

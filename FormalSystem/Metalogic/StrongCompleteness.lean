@@ -326,7 +326,7 @@ there would be an import cycle.
 
 **The `engine` hypothesis is live, deliberately.** `BXCanonical.completeness`
 (`BXCanonical/Completeness.lean`) has exactly the `.Base` shape,
-`valid φ → Derivable FrameClass.Base [] φ`, and `BXCanonical.completeness_dense` the `.Dense`
+`Valid φ → Derivable FrameClass.Base [] φ`, and `BXCanonical.completeness_dense` the `.Dense`
 one; both are sorry-free, so the hypothesis is dischargeable at either class. It is nevertheless
 not discharged *here*: keeping the statement engine-generic records in the type that compactness
 is the whole of the gap between weak and strong completeness. The engines are supplied at the
@@ -588,7 +588,7 @@ Dedekind section above: a semantic deduction theorem, the consequence terminus, 
 soundness guard, and weak completeness as the `Γ = []` corollary.
 
 **Base reuses `SemanticConsequence`; there is no `SemanticConsequenceBase` synonym.**
-`SemanticConsequence` (`Semantics/Validity.lean`) is `valid`'s binder list verbatim with the
+`SemanticConsequence` (`Semantics/Validity.lean`) is `Valid`'s binder list verbatim with the
 context hypothesis `∀ ψ ∈ Γ, TruthAt M τ t ψ` inserted before the conclusion — precisely the
 surgery the other three classes perform on their own validity predicates. It quantifies over
 *all* carriers `D` with no order-theoretic side conditions, and for `FrameClass.Base` "all
@@ -608,15 +608,15 @@ vocabulary for it is `StrongCompletenessBase` / `CompactBase` in
 **Semantic deduction theorem for the base class.** Consequence from a finite context is
 validity of the corresponding iterated implication.
 
-Both directions are `truthAt_foldr_imp` transported across the shared binder list of `valid`
+Both directions are `truthAt_foldr_imp` transported across the shared binder list of `Valid`
 and `SemanticConsequence`; no frame-condition reasoning is involved. This is the lemma that
 lets `BXCanonical.completeness` be consumed as a single-formula engine.
 -/
 theorem semantic_deduction_base (Γ : Context) (φ : Formula) :
-    SemanticConsequence Γ φ ↔ valid (Γ.foldr Formula.imp φ) := by
+    SemanticConsequence Γ φ ↔ Valid (Γ.foldr Formula.imp φ) := by
   constructor
   · intro h
-    refine valid.of_forall_total ?_
+    refine Valid.of_forall_total ?_
     intro F M τ hτ t
     exact (truthAt_foldr_imp M τ t Γ φ).mpr (h.apply F M τ hτ t)
   · intro h
@@ -628,7 +628,7 @@ theorem semantic_deduction_base (Γ : Context) (φ : Formula) :
 **Finite-context consequence completeness for `FrameClass.Base`, unconditional.**
 
 `BXCanonical.completeness` (`BXCanonical/Completeness.lean:196`) already exists as the
-single-formula engine for `valid`, so there is no `_of_engine` layer here: the engine is
+single-formula engine for `Valid`, so there is no `_of_engine` layer here: the engine is
 consumed directly.
 
 **This is not strong completeness.** `Context := List Formula`, so every `Γ` here is finite and
@@ -668,7 +668,7 @@ directions; recorded here so that the base class carries the same four-layer sha
 three, and so that the weak form is visibly a corollary rather than a parallel construction.
 The vacuous `∀ ψ ∈ [], _` premise binder is discharged by `simpa`.
 -/
-theorem completeness_base (φ : Formula) (h : valid φ) : Derivable FrameClass.Base [] φ :=
+theorem completeness_base (φ : Formula) (h : Valid φ) : Derivable FrameClass.Base [] φ :=
   consequence_completeness_base [] φ
     ((semantic_deduction_base [] φ).mpr (by simpa using h))
 

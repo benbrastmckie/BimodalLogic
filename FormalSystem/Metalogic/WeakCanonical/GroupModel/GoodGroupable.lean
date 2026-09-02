@@ -102,7 +102,7 @@ to be dodged for such a definition to be non-vacuous.
 
 ## Carrier gate
 
-The four `example … := inferInstance` lines are not decoration. `FormalSystem.Semantics.valid`
+The four `example … := inferInstance` lines are not decoration. `FormalSystem.Semantics.Valid`
 (`Validity.lean:94`) binds its duration type under exactly `AddCommGroup`, `LinearOrder`,
 `IsOrderedAddMonoid` and `Nontrivial`, and `SemanticConsequence` binds the same four. The four
 gate lines make *"`ℚ ×ₗ ℤ` is an admissible duration type"* a compile-time invariant of this
@@ -118,7 +118,7 @@ namespace FormalSystem.Metalogic.WeakCanonical
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.Core
 
-/-! ## Carrier gate: `ℚ ×ₗ ℤ` satisfies the four `valid`/`SemanticConsequence` binders. -/
+/-! ## Carrier gate: `ℚ ×ₗ ℤ` satisfies the four `Valid`/`SemanticConsequence` binders. -/
 
 example : AddCommGroup (ℚ ×ₗ ℤ) := inferInstance
 example : LinearOrder (ℚ ×ₗ ℤ) := inferInstance

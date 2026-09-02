@@ -65,7 +65,7 @@ satisfied. The model `M` is *not* re-chosen by any rule.
 
 ## `CarrierProp`
 
-`valid`, `ValidDense`, `ValidDiscrete` and `ValidDedekind` differ only in the side
+`Valid`, `ValidDense`, `ValidDiscrete` and `ValidDedekind` differ only in the side
 conditions they impose on the temporal carrier `D`. `RuleSound` is therefore indexed by a
 `CarrierProp` — a property of the carrier — so that the frame-class-gated rules can be stated
 with the extra hypothesis they need and the base rules can be stated without one.

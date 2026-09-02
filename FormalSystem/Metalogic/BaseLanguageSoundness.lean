@@ -180,7 +180,7 @@ theorem blValidIn_iff_validIn_tr (fc : ProofSystem.FrameClass) (φ : BLFormula) 
 
 /--
 The validity-level bridge, at the unconstrained class: `blValidIn_iff_validIn_tr` at
-`.Base`, where `BLValid` and `valid` respectively are.
+`.Base`, where `BLValid` and `Valid` respectively are.
 
 This is a **corollary of `truthAt_tr`, not the definition of `BLValid`**. `BLValid` is defined
 against the native `BLTruthAt`; stating this equivalence as a theorem is what keeps the
@@ -188,7 +188,7 @@ distinction visible, since defining BL truth as `TruthAt ∘ tr` would make it h
 would make every BL soundness theorem below a restatement of its BL⁺ source rather than a claim
 about BL.
 -/
-theorem blValid_iff_valid_tr (φ : BLFormula) : BLValid φ ↔ valid (tr φ) :=
+theorem blValid_iff_valid_tr (φ : BLFormula) : BLValid φ ↔ Valid (tr φ) :=
   blValidIn_iff_validIn_tr ProofSystem.FrameClass.Base φ
 
 /--

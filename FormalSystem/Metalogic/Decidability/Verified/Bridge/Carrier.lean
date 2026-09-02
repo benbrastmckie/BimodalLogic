@@ -44,11 +44,11 @@ dependent.
 
 ## Correspondence with `Semantics/Validity.lean`
 
-Each arm reproduces exactly the extra binders its validity predicate adds to `valid`:
+Each arm reproduces exactly the extra binders its validity predicate adds to `Valid`:
 
 | `fc` | predicate | extra binders reproduced |
 |---|---|---|
-| `.Base` | `valid` | none |
+| `.Base` | `Valid` | none |
 | `.Dense` | `ValidDense` | `[DenselyOrdered D]` |
 | `.Discrete` | `ValidDiscrete` | `[SuccOrder D] [PredOrder D] [IsSuccArchimedean D] [IsPredArchimedean D]` |
 | `.Dedekind` | `ValidDedekind` | `[DenselyOrdered D]` and the explicit lub `Prop` binder |
@@ -141,9 +141,9 @@ instance : TemporalCarrier FrameClass.Dense ℚ where
 
 /--
 `.Base` is also carried by `ℤ`, and this instance is what makes the `ℤ` milestone available to
-`valid` and not only to `ValidDiscrete`.
+`Valid` and not only to `ValidDiscrete`.
 
-`valid` (`Semantics/Validity.lean`) quantifies over *every* carrier, so **one** carrier refutes
+`Valid` (`Semantics/Validity.lean`) quantifies over *every* carrier, so **one** carrier refutes
 it — and `ℤ` is the easy one, because `finOrderEmbInt` (`Bridge/Embed.lean`) is the `Nat`-cast
 and therefore places `n` branch times *contiguously* at `0, …, n-1`. A contiguous `ℤ` placement
 has no integers strictly between consecutive placed points, so its interior gap regions are

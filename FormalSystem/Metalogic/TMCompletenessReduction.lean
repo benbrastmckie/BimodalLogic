@@ -39,7 +39,7 @@ where `BXCanonical.completeness` — TM⁺'s completeness over *all* task frames
 row 1, machine-checked in this tree — actually does the work: it is the step that turns a
 BL-valid formula into a `⊢[Base] tr φ` derivation, which `ForwardBase` then pulls back across the
 translation. The **forward** direction (`TMCompleteBase → ForwardBase`) is the easier composition,
-routing `⊢[Base] tr φ` through TM⁺'s own soundness to `valid (tr φ)`, then across
+routing `⊢[Base] tr φ` through TM⁺'s own soundness to `Valid (tr φ)`, then across
 `blValid_iff_valid_tr` to `BLValid φ`.
 
 ## Main Definitions
@@ -93,11 +93,11 @@ def ForwardBase : Prop :=
 **The reduction.** `TMCompleteBase` and `ForwardBase` are the same proposition.
 
 Forward (`TMCompleteBase → ForwardBase`): given `⊢[Base] tr φ`, TM⁺'s own `soundness` gives
-`valid (tr φ)`, and `blValid_iff_valid_tr` crosses to `BLValid φ`; apply `TMCompleteBase` to get
+`Valid (tr φ)`, and `blValid_iff_valid_tr` crosses to `BLValid φ`; apply `TMCompleteBase` to get
 `⊢ᴮᴸ[Base] φ`.
 
 Backward (`ForwardBase → TMCompleteBase`): given `BLValid φ`, `blValid_iff_valid_tr` gives
-`valid (tr φ)`, and `BXCanonical.completeness` — TM⁺'s completeness over *all* task frames —
+`Valid (tr φ)`, and `BXCanonical.completeness` — TM⁺'s completeness over *all* task frames —
 gives `⊢[Base] tr φ`; apply `ForwardBase` to get `⊢ᴮᴸ[Base] φ`. This direction is where
 TM⁺'s completeness does the actual work; see the module docstring.
 -/
@@ -107,7 +107,7 @@ theorem tmCompleteBase_iff_forwardBase : TMCompleteBase ↔ ForwardBase := by
     apply hcomplete φ
     rw [blValid_iff_valid_tr]
     obtain ⟨d⟩ := h
-    exact valid.of_forall_total fun F M τ hτ t =>
+    exact Valid.of_forall_total fun F M τ hτ t =>
       soundness [] (tr φ) d F M τ hτ t (by simp)
   · intro hforward φ hvalid
     apply hforward φ

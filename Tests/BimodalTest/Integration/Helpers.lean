@@ -146,7 +146,7 @@ def assert_derivable (Γ : Context) (φ : Formula) : Prop :=
 
 /-- Assert formula is valid -/
 def assert_valid (φ : Formula) : Prop :=
-  valid φ
+  Valid φ
 
 /-- Assert soundness holds -/
 def assert_sound (Γ : Context) (φ : Formula) (d : DerivationTree FrameClass.Base Γ φ) : Prop :=
