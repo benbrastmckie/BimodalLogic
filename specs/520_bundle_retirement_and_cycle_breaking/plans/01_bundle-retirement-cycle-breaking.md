@@ -201,7 +201,11 @@ claims at the end, and confirm at implementation time every count this plan asse
 - [x] Confirm each of the 9 `Bundle/` survivors has a live importer outside `Bundle.lean`.
 - [x] Count the `untl`/`snce` occurrences in the retiring files (expected 14: SuccRelation 10,
       CanonicalFrame 2, CanonicalTaskRelation 2) for the Phase 5 banner carve-out.
-      *(deviation: altered -- measured 16, not 14; SuccRelation has 12 not 10. Phase 5 uses 16.)*
+      *(deviation: altered -- the plan's per-file figures are lines, mine were occurrences.
+      `SuccRelation.lean` has 12 occurrences on 10 lines; `CanonicalTaskRelation.lean`'s 2 sit
+      inside the relocated block and moved to the live `IteratedTemporal.lean` in Phase 2, so they
+      never reach the archive. What travels: 14 occurrences / 12 lines / 2 files. The plan's
+      total of 14 stands; only the split changed.)*
 
 **Timing**: 0.5 hours
 
@@ -300,29 +304,29 @@ means the purity claim was wrong and must be reported); and grepping `Basic.lean
 
 ---
 
-### Phase 3: Migrate the live ModalSaturation helpers [NOT STARTED]
+### Phase 3: Migrate the live ModalSaturation helpers [COMPLETED]
 
 **Goal**: Move the 7 live helpers out of `Bundle/ModalSaturation.lean` to their correct homes and
 re-point all 9 consumer modules, leaving `ModalSaturation.lean` holding only dead declarations.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Theorems/ModalDerived.lean`, `namespace FormalSystem.Theorems.ModalDerived`
+- [x] Create `FormalSystem/Theorems/ModalDerived.lean`, `namespace FormalSystem.Theorems.ModalDerived`
       (matching the sibling convention in `Theorems/`: `ModalS4`, `ModalS5`, `TemporalDerived`,
       `DedekindDerived` all use `FormalSystem.Theorems.<Module>`). Imports:
       `FormalSystem.Theorems.Propositional.Connectives` plus whatever `Syntax`/`ProofSystem` the
       moved bodies need. **No `Metalogic` import** -- adding one would widen the pre-existing
       `Theorems <-> Metalogic` cycle as a side effect.
-- [ ] Move verbatim into it, from `Bundle/ModalSaturation.lean`: `dneTheorem` (`:229`),
+- [x] Move verbatim into it, from `Bundle/ModalSaturation.lean`: `dneTheorem` (`:229`),
       `boxDneTheorem` (`:262`), `modal5CollapseTheorem` (`:404`), `axiom5NegativeIntrospection`
       (`:422`), `negBoxToBoxNegBox` (`:502`). Note `negBoxToBoxNegBox` moves as an internal
       dependency of `neg_box_implies_box_neg_box`, **not** as a public helper -- it has zero live
       cross-file consumers, every live call site resolving to the independent
       `BXCanonical/Frame.lean:578` proof.
-- [ ] Move verbatim into it, as consolidation: `gDneTheorem` and `hDneTheorem`
+- [x] Move verbatim into it, as consolidation: `gDneTheorem` and `hDneTheorem`
       (`Bundle/TemporalCoherence.lean:66,82`) and `pastTempA` (`Bundle/WitnessSeed.lean:567`). All
       three are file-local today with zero cross-file consumers; both host files already import
       `Theorems.*`, so no new directory edge appears.
-- [ ] Move `SetMaximalConsistent.contrapositive` (`:281`) and
+- [x] Move `SetMaximalConsistent.contrapositive` (`:281`) and
       `SetMaximalConsistent.neg_box_implies_box_neg_box` (`:511`) into
       `FormalSystem/Metalogic/Core/MCSProperties.lean`, **not** into `Theorems/ModalDerived.lean`.
       They need `theorem_in_mcs` (`Core/MaximalConsistent.lean:491`) and
@@ -331,9 +335,9 @@ re-point all 9 consumer modules, leaving `ModalSaturation.lean` holding only dea
       imports `Theorems.TemporalDerived`, so adding `import FormalSystem.Theorems.ModalDerived`
       introduces no cycle: the chain `ModalDerived -> Propositional.Connectives ->
       Propositional.Core -> Core.DeductionTheorem` never returns to `MCSProperties`.
-- [ ] Delete all 7 declarations from their source files.
-- [ ] Add `import FormalSystem.Theorems.ModalDerived` to `FormalSystem/Theorems.lean`.
-- [ ] Re-point the 9 consumers, adding `import FormalSystem.Theorems.ModalDerived` (and/or the
+- [x] Delete all 7 declarations from their source files.
+- [x] Add `import FormalSystem.Theorems.ModalDerived` to `FormalSystem/Theorems.lean`.
+- [x] Re-point the 9 consumers, adding `import FormalSystem.Theorems.ModalDerived` (and/or the
       `MCSProperties` import where absent) and fixing references:
       - `Bundle/TemporalCoherence.lean` -- `dneTheorem` at `:68,84,108,126,138` (unqualified)
       - `BXCanonical/CanonicalModel.lean` -- `boxDneTheorem` `:840`, `SMC.contrapositive` `:839` (unqualified)
@@ -344,25 +348,37 @@ re-point all 9 consumer modules, leaving `ModalSaturation.lean` holding only dea
       - `WeakCanonical/IntegerModel/ReynoldsBridge.lean` -- `:1119`, `:1118` (fully qualified)
       - `BXCanonical/Chronicle/ChronicleTypes.lean` -- `axiom5NegativeIntrospection` `:224` (fully qualified)
       - `BXCanonical/Chronicle/MCSMixedCase.lean` -- `neg_box_implies_box_neg_box` `:58` (unqualified)
-- [ ] Rewrite **every** hand-written fully-qualified `FormalSystem.Metalogic.Bundle.<name>`
+- [x] Rewrite **every** hand-written fully-qualified `FormalSystem.Metalogic.Bundle.<name>`
       reference, per the enumeration Phase 1 produced -- re-importing alone does not fix them. Use
       the enumeration, not the report's unreconciled count of 7.
-- [ ] At `CanonicalModel.lean:839` and `CompletenessDedekind.lean:477`, add
+- [x] At `CanonicalModel.lean:839` and `CompletenessDedekind.lean:477`, add
       `open FormalSystem.Metalogic.Core` (or requalify): neither file currently opens the
       destination namespace for the unqualified `SetMaximalConsistent.contrapositive`. No call site
       uses generalized field notation (`h.contrapositive`), so no dot-notation resolution is at risk.
-- [ ] Consumers referencing the derivation-tree helpers unqualified need
+      *(deviation: skipped -- both files already carry `open FormalSystem.Metalogic.Core`
+      (`CanonicalModel.lean:33`, `CompletenessDedekind.lean:58`), so the unqualified references
+      resolve at the new home with no edit. `Chronicle/MCSMixedCase.lean:58` is the same case and
+      needed no edit either.)*
+- [x] Consumers referencing the derivation-tree helpers unqualified need
       `open FormalSystem.Theorems.ModalDerived` (or requalification) -- the new namespace is
       `Theorems.ModalDerived`, not bare `Theorems`.
-- [ ] Fix the `pastTempA` docstring at its new home: the body is
+      *(deviation: altered -- every cross-file reference was fully qualified as
+      `FormalSystem.Theorems.ModalDerived.<name>` instead, including the previously unqualified
+      `CanonicalModel.lean:840`. Only the two files that host unqualified uses of `dneTheorem`
+      internally (`Bundle/TemporalCoherence.lean`, `Bundle/ModalSaturation.lean`) got the `open`.)*
+- [x] Fix the `pastTempA` docstring at its new home: the body is
       `DerivationTree.axiom [] _ (Axiom.connect_past psi) trivial`, a **direct axiom application**,
       not a derivation. `temp_a` is not an `Axiom` constructor (`ProofSystem/Axioms.lean:174` has
       `connect_past`); it survives only as a tactic-facing string in `Automation/` and tests. The
       nonexistent name appears **three** times in `WitnessSeed.lean` (`:561`, `:565-566`, `:573`) --
       correct all three, not just the one the description names.
-- [ ] `dniTheorem` (`:238`) has zero references anywhere, internal or external. Do **not** move it;
+      *(deviation: altered -- measured **four** `temp_a` lines in `WitnessSeed.lean`
+      (`:561`, `:565`, `:566`, `:572`), not three. `:565-566` is `pastTempA`'s own docstring and
+      travelled with the declaration, rewritten at its new home; `:561` and `:572` were corrected
+      in place to name `Axiom.connect_future` / `Axiom.connect_past`.)*
+- [x] `dniTheorem` (`:238`) has zero references anywhere, internal or external. Do **not** move it;
       it retires with the file in Phase 4.
-- [ ] Add `FormalSystem.Metalogic.Bundle.ModalSaturation` to
+- [x] Add `FormalSystem.Metalogic.Bundle.ModalSaturation` to
       `scripts/module-invariants-manifest.txt` under a comment marking it **temporary, deleted in
       Phase 4**. Its live importers after this phase are `Bundle.lean` (unreachable aggregator) and
       `Bundle/Construction.lean` (itself unreachable and manifested), so it becomes unreachable.

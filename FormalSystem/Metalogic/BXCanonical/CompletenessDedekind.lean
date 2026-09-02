@@ -6,6 +6,7 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.Metalogic.BXCanonical.Completeness
 import FormalSystem.Metalogic.WeakCanonical.RealModel.ChronicleRealFlow
+import FormalSystem.Theorems.ModalDerived
 import Mathlib.Algebra.Order.Archimedean.Real.Basic
 
 /-!
@@ -475,7 +476,7 @@ theorem countermodel_dedekind_dense {fc : FrameClass} (hfc : FrameClass.Dedekind
           (SetMaximalConsistent.negation_complete h_mcs (Formula.box ψ)).resolve_left h_not_box
         have h_diamond_neg : (Formula.neg ψ).diamond ∈ A :=
           SetMaximalConsistent.contrapositive h_mcs
-            (liftBase fc (FormalSystem.Metalogic.Bundle.boxDneTheorem ψ)) h_neg_box
+            (liftBase fc (FormalSystem.Theorems.ModalDerived.boxDneTheorem ψ)) h_neg_box
         obtain ⟨v, h_v_mcs, h_v_equiv, h_neg_ψ_v⟩ :=
           bx_modal_witness_fc h_mcs (Formula.neg ψ) h_diamond_neg
         have h_box_dense_v : Formula.box Chronicle.nextTop.neg ∈ v :=

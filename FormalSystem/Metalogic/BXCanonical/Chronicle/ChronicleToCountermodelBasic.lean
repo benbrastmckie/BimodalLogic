@@ -8,6 +8,7 @@ import FormalSystem.Metalogic.BXCanonical.Chronicle.ChronicleConstruction
 import FormalSystem.Metalogic.BXCanonical.CanonicalModel
 import FormalSystem.Metalogic.Bundle.UntilSinceCoherence
 import FormalSystem.Metalogic.Algebraic.FlowFrame
+import FormalSystem.Theorems.ModalDerived
 import Mathlib.Algebra.Order.Ring.Rat
 import Mathlib.Algebra.Order.Archimedean.Basic
 import Mathlib.Order.CountableDenseLinearOrder
@@ -584,8 +585,8 @@ noncomputable def cantorBfmcsDense (fc : FrameClass) (A : Set Formula)
       · exact h
     -- ◇(¬φ) ∈ A
     have h_diamond_neg : (Formula.neg φ).diamond ∈ A :=
-      FormalSystem.Metalogic.Bundle.SetMaximalConsistent.contrapositive h_mcs
-        (liftBase fc (FormalSystem.Metalogic.Bundle.boxDneTheorem φ)) h_neg_box
+      FormalSystem.Metalogic.Core.SetMaximalConsistent.contrapositive h_mcs
+        (liftBase fc (FormalSystem.Theorems.ModalDerived.boxDneTheorem φ)) h_neg_box
     -- Modal witness: v box-equivalent to A with ¬φ ∈ v (fc-parameterized)
     obtain ⟨v, h_v_mcs, h_equiv, h_neg_phi_v⟩ := bx_modal_witness_fc h_mcs (Formula.neg φ)
         h_diamond_neg

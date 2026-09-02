@@ -6,6 +6,7 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.Metalogic.Core.DeductionTheorem
 import FormalSystem.Metalogic.Core.MaximalConsistent
+import FormalSystem.Theorems.ModalDerived
 import FormalSystem.Theorems.TemporalDerived
 
 /-!
@@ -373,5 +374,57 @@ theorem SetMaximalConsistent.neg_excludes {fc : FrameClass} {S : Set Formula}
     (phi : Formula) (h_neg : phi.neg ∈ S) : phi ∉ S := by
   intro h_phi
   exact set_consistent_not_both h_mcs.1 phi h_phi h_neg
+
+/--
+Contraposition helper: if ⊢ A → B and B → ⊥ ∈ S, then A → ⊥ ∈ S (for MCS S).
+
+This is used to transfer implications contrapositively through MCS membership.
+-/
+lemma SetMaximalConsistent.contrapositive {fc : FrameClass} {S : Set Formula}
+    (h_mcs : SetMaximalConsistent (fc := fc) S)
+    {A B : Formula} (h_impl : DerivationTree fc [] (A.imp B)) (h_negB : B.neg ∈ S) : A.neg ∈ S := by
+  -- We have ⊢ A → B and ¬B ∈ S
+  -- We want ¬A ∈ S, i.e., (A → ⊥) ∈ S
+
+  -- From ⊢ A → B, we can derive ⊢ ¬B → ¬A
+  -- This is: (B → ⊥) → (A → ⊥)
+
+  -- Proof: Assume ¬B (i.e., B → ⊥). Assume A. Then B by A → B. Then ⊥ by B → ⊥.
+  -- Context: A :: [B.neg] = [A, B.neg] (deductionTheorem expects formula at head)
+  -- Then by deduction for A: [B.neg] ⊢ A → ⊥ = A.neg
+  -- Then by deduction for B.neg: [] ⊢ B.neg → A.neg
+  have h1 : DerivationTree fc [A, B.neg] A :=
+    DerivationTree.assumption _ A (by simp)
+  have h2 : DerivationTree fc [A, B.neg] (A.imp B) :=
+    DerivationTree.weakening [] _ _ h_impl (by intro x hx; exact False.elim (List.not_mem_nil hx))
+  have h3 : DerivationTree fc [A, B.neg] B :=
+    DerivationTree.modus_ponens _ A B h2 h1
+  have h4 : DerivationTree fc [A, B.neg] B.neg :=
+    DerivationTree.assumption _ B.neg (by simp)
+  have h5 : DerivationTree fc [A, B.neg] Formula.bot :=
+    DerivationTree.modus_ponens _ B Formula.bot h4 h3
+  have h6 : DerivationTree fc [B.neg] A.neg :=
+    FormalSystem.Metalogic.Core.deductionTheorem [B.neg] A Formula.bot h5
+  have h7 : DerivationTree fc [] (B.neg.imp A.neg) :=
+    FormalSystem.Metalogic.Core.deductionTheorem [] B.neg A.neg h6
+  -- Now ⊢ ¬B → ¬A is in S (as a theorem)
+  have h_thm_in_S : B.neg.imp A.neg ∈ S := theorem_in_mcs h_mcs h7
+  -- And ¬B ∈ S, so ¬A ∈ S by MCS implication property
+  exact SetMaximalConsistent.implication_property h_mcs h_thm_in_S h_negB
+
+/--
+If ¬□φ is in an MCS, then □(¬□φ) is also in that MCS.
+
+This follows from axiom 5 and deductive closure of MCS.
+-/
+lemma SetMaximalConsistent.neg_box_implies_box_neg_box {fc : FrameClass} {S : Set Formula}
+    (h_mcs : SetMaximalConsistent (fc := fc) S)
+    (phi : Formula) (h_neg_box : (Formula.box phi).neg ∈ S) :
+    Formula.box (Formula.box phi).neg ∈ S := by
+  have h_ax5 : DerivationTree fc [] ((Formula.box phi).neg.imp
+      (Formula.box (Formula.box phi).neg)) :=
+    (FormalSystem.Theorems.ModalDerived.negBoxToBoxNegBox phi).lift (by cases fc <;> trivial)
+  have h_ax5_in := theorem_in_mcs h_mcs h_ax5
+  exact SetMaximalConsistent.implication_property h_mcs h_ax5_in h_neg_box
 
 end FormalSystem.Metalogic.Core

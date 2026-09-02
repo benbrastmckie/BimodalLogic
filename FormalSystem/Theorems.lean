@@ -8,6 +8,7 @@ import FormalSystem.Theorems.Combinators
 import FormalSystem.Theorems.Propositional.Core
 import FormalSystem.Theorems.Propositional.Connectives
 import FormalSystem.Theorems.Propositional.Reasoning
+import FormalSystem.Theorems.ModalDerived
 import FormalSystem.Theorems.ModalS5
 import FormalSystem.Theorems.ModalS4
 import FormalSystem.Theorems.Perpetuity

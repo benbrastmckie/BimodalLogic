@@ -6,6 +6,7 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.Metalogic.BXCanonical.Chronicle.ChronicleToCountermodelBasic
 import FormalSystem.Metalogic.WeakCanonical.IntegerModel.GoodStructuresModelSurgery
+import FormalSystem.Theorems.ModalDerived
 
 /-!
 # Chronicle-to-Countermodel Integration (Gap Elimination and Discrete Pipeline)
@@ -1156,8 +1157,8 @@ noncomputable def cantorBfmcsDiscrete (fc : FrameClass) (A : Set Formula)
       · exact absurd h h_not_box
       · exact h
     have h_diamond_neg : (Formula.neg φ).diamond ∈ A :=
-      FormalSystem.Metalogic.Bundle.SetMaximalConsistent.contrapositive h_mcs
-        (liftBase fc (FormalSystem.Metalogic.Bundle.boxDneTheorem φ)) h_neg_box
+      FormalSystem.Metalogic.Core.SetMaximalConsistent.contrapositive h_mcs
+        (liftBase fc (FormalSystem.Theorems.ModalDerived.boxDneTheorem φ)) h_neg_box
     obtain ⟨v, h_v_mcs, h_equiv, h_neg_phi_v⟩ := bx_modal_witness_fc h_mcs (Formula.neg φ)
         h_diamond_neg
     have h_box_discrete_v : Formula.box nextTop ∈ v :=

@@ -5,12 +5,12 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Metalogic.Bundle.BFMCS
-import FormalSystem.Metalogic.Bundle.ModalSaturation
 import FormalSystem.Metalogic.Core.MaximalConsistent
 import FormalSystem.Metalogic.Core.MCSProperties
 import FormalSystem.Syntax.Formula
 import FormalSystem.Syntax.SubformulaClosure.TemporalFormulas
 import FormalSystem.Theorems.GeneralizedNecessitation
+import FormalSystem.Theorems.ModalDerived
 
 /-!
 # Temporal Coherence Core
@@ -44,6 +44,7 @@ namespace FormalSystem.Metalogic.Bundle
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.Core
 open FormalSystem.ProofSystem
+open FormalSystem.Theorems.ModalDerived
 
 variable {fc : FrameClass} {D : Type} [Preorder D] [Zero D]
 
@@ -53,41 +54,6 @@ variable {fc : FrameClass} {D : Type} [Preorder D] [Zero D]
 These lemmas establish the transformation from neg(G phi) to F(neg phi) in MCS context,
 enabling the contraposition argument for temporal backward proofs.
 -/
-
-/--
-G distributes over double negation elimination: G(neg(neg phi)) -> G(phi)
-
-**Proof Strategy**:
-1. dneTheorem: neg(neg phi) -> phi
-2. temporal_necessitation: G(neg(neg phi) -> phi)
-3. temp_k_dist: G(A -> B) -> (G(A) -> G(B))
-4. modus_ponens
--/
-noncomputable def gDneTheorem (phi : Formula) :
-    [] ⊢ (Formula.allFuture (Formula.neg (Formula.neg phi))).imp (Formula.allFuture phi) := by
-  have h_dne : [] ⊢ (Formula.neg (Formula.neg phi)).imp phi := dneTheorem phi
-  have h_G_dne : [] ⊢ Formula.allFuture ((Formula.neg (Formula.neg phi)).imp phi) :=
-    DerivationTree.temporal_necessitation _ h_dne
-  have h_K : [] ⊢ (Formula.allFuture ((Formula.neg (Formula.neg phi)).imp phi)).imp
-               ((Formula.allFuture (Formula.neg (Formula.neg phi))).imp
-                   (Formula.allFuture phi)) :=
-    FormalSystem.Theorems.TemporalDerived.temporalKDistDerived (Formula.neg (Formula.neg phi)) phi
-  exact DerivationTree.modus_ponens [] _ _ h_K h_G_dne
-
-/--
-H distributes over double negation elimination: H(neg(neg phi)) -> H(phi)
-
-Past analog of gDneTheorem.
--/
-noncomputable def hDneTheorem (phi : Formula) :
-    [] ⊢ (Formula.allPast (Formula.neg (Formula.neg phi))).imp (Formula.allPast phi) := by
-  have h_dne : [] ⊢ (Formula.neg (Formula.neg phi)).imp phi := dneTheorem phi
-  have h_H_dne : [] ⊢ Formula.allPast ((Formula.neg (Formula.neg phi)).imp phi) :=
-    FormalSystem.Theorems.pastNecessitation _ h_dne
-  have h_K : [] ⊢ (Formula.allPast ((Formula.neg (Formula.neg phi)).imp phi)).imp
-               ((Formula.allPast (Formula.neg (Formula.neg phi))).imp (Formula.allPast phi)) :=
-    FormalSystem.Theorems.pastKDist _ _
-  exact DerivationTree.modus_ponens [] _ _ h_K h_H_dne
 
 /--
 Transform neg(G phi) membership to F(neg phi) membership in an MCS.

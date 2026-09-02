@@ -12,6 +12,7 @@ import FormalSystem.Theorems.GeneralizedNecessitation
 import FormalSystem.Theorems.Combinators
 import FormalSystem.Theorems.Perpetuity
 import FormalSystem.Theorems.TemporalDerived
+import FormalSystem.Theorems.ModalDerived
 
 /-!
 # Witness Seed Definitions and Consistency
@@ -558,18 +559,12 @@ theorem since_witness_seed_consistent (M : Set Formula)
 ## GContent/HContent Duality
 
 These theorems establish that GContent ⊆ implies HContent reverse, and vice versa.
-They use the axioms temp_a (φ → G(P(φ))) and its past dual (φ → H(F(φ))),
+They use the axioms `connect_future` (φ → G(P(φ))) and `connect_past` (φ → H(F(φ))),
 which are still valid with irreflexive semantics.
 -/
 
-/-- Past analog of axiom temp_a: ⊢ φ → H(F(φ)).
-Derived from temp_a via temporal duality. -/
-noncomputable def pastTempA (psi : Formula) :
-    [] ⊢ psi.imp psi.someFuture.allPast :=
-  DerivationTree.axiom [] _ (Axiom.connect_past psi) trivial
-
 /-- If GContent(M) ⊆ M', then HContent(M') ⊆ M.
-Uses temp_a: φ → G(P(φ)). -/
+Uses `Axiom.connect_future`: φ → G(P(φ)). -/
 theorem g_content_subset_implies_h_content_reverse
     (M M' : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M)
         (h_mcs' : SetMaximalConsistent (fc := FrameClass.Base) M')
@@ -598,7 +593,7 @@ theorem g_content_subset_implies_h_content_reverse
   exact some_past_all_past_neg_absurd h_mcs' (Formula.neg phi) h_P_neg_M' h_H_nn
 
 /-- If HContent(M) ⊆ M', then GContent(M') ⊆ M.
-Uses pastTempA: φ → H(F(φ)). -/
+Uses `ModalDerived.pastTempA` (the `Axiom.connect_past` instance): φ → H(F(φ)). -/
 theorem h_content_subset_implies_g_content_reverse
     (M M' : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M)
         (h_mcs' : SetMaximalConsistent (fc := FrameClass.Base) M')
@@ -612,7 +607,7 @@ theorem h_content_subset_implies_g_content_reverse
     · exact absurd h h_not_phi
     · exact h
   have h_pta : [] ⊢ (Formula.neg phi).imp (Formula.neg phi).someFuture.allPast :=
-    pastTempA (Formula.neg phi)
+    FormalSystem.Theorems.ModalDerived.pastTempA (Formula.neg phi)
   have h_H_F_neg : (Formula.neg phi).someFuture.allPast ∈ M :=
     SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_pta) h_neg_phi
   have h_F_neg_M' : (Formula.neg phi).someFuture ∈ M' := h_HC h_H_F_neg

@@ -6,6 +6,7 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.Metalogic.WeakCanonical.Transfer
 import FormalSystem.Metalogic.WeakCanonical.IntegerModel.NoGapsDiscreteProof
+import FormalSystem.Theorems.ModalDerived
 
 /-!
 # Reynolds K-Equivalence Bridge: Strategy B
@@ -1115,8 +1116,8 @@ theorem countermodel_discrete_reynolds_v2
         have h_neg_box : (Formula.box ψ).neg ∈ A :=
           (SetMaximalConsistent.negation_complete h_mcs (Formula.box ψ)).resolve_left h_not_box
         have h_diamond_neg : (Formula.neg ψ).diamond ∈ A :=
-          FormalSystem.Metalogic.Bundle.SetMaximalConsistent.contrapositive h_mcs
-            (liftBase FrameClass.Discrete (FormalSystem.Metalogic.Bundle.boxDneTheorem ψ)) h_neg_box
+          FormalSystem.Metalogic.Core.SetMaximalConsistent.contrapositive h_mcs
+            (liftBase FrameClass.Discrete (FormalSystem.Theorems.ModalDerived.boxDneTheorem ψ)) h_neg_box
         obtain ⟨v, h_v_mcs, h_v_equiv, h_neg_ψ_v⟩ :=
           bx_modal_witness_fc h_mcs (Formula.neg ψ) h_diamond_neg
         -- v is box-equiv to A, so □(nextTop) ∈ v

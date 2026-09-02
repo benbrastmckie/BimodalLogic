@@ -9,6 +9,7 @@ import FormalSystem.Metalogic.BXCanonical.TruthLemma
 import FormalSystem.Metalogic.Bundle.FMCSDef
 import FormalSystem.Metalogic.BXCanonical.Chronicle.ChronicleTypes
 import FormalSystem.Metalogic.Bundle.BFMCS
+import FormalSystem.Theorems.ModalDerived
 
 /-!
 # BXCanonical Canonical Model Construction
@@ -837,7 +838,7 @@ noncomputable def henkinBfmcs (fc : FrameClass) (A : Set Formula)
       · exact h
     have h_diamond_neg : (Formula.neg φ).diamond ∈ A :=
       SetMaximalConsistent.contrapositive h_mcs
-        (Chronicle.liftBase fc (boxDneTheorem φ)) h_neg_box
+        (Chronicle.liftBase fc (FormalSystem.Theorems.ModalDerived.boxDneTheorem φ)) h_neg_box
     obtain ⟨v, h_v_mcs, h_equiv, h_neg_phi_v⟩ := Chronicle.bx_modal_witness_fc h_mcs
         (Formula.neg φ) h_diamond_neg
     have h_fam_v_mem : shiftedBxFmcsFc v h_v_mcs t ∈

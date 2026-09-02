@@ -8,8 +8,8 @@ import FormalSystem.Metalogic.Core.MaximalConsistent
 import FormalSystem.Metalogic.Core.MCSProperties
 import FormalSystem.Metalogic.Bundle.TemporalContent
 import FormalSystem.Metalogic.BXCanonical.Frame
+import FormalSystem.Theorems.ModalDerived
 import FormalSystem.Theorems.GeneralizedNecessitation
-import FormalSystem.Metalogic.Bundle.ModalSaturation
 import Mathlib.Data.Rat.Defs
 
 /-!
@@ -221,7 +221,7 @@ theorem bx_modal_witness_fc {fc : FrameClass} {A : Set Formula}
         · exact h
       have h_m5 : DerivationTree fc [] ((Formula.box χ).neg.imp
           (Formula.box (Formula.box χ).neg)) :=
-        liftBase fc (FormalSystem.Metalogic.Bundle.axiom5NegativeIntrospection χ)
+        liftBase fc (FormalSystem.Theorems.ModalDerived.axiom5NegativeIntrospection χ)
       have h_box_neg_box := SetMaximalConsistent.implication_property h_mcs
         (theorem_in_mcs h_mcs h_m5) h_neg_box
       have h_neg_box_M : (Formula.box χ).neg ∈ M := h_bc_sub h_box_neg_box

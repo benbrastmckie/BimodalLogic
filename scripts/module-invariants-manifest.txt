@@ -54,6 +54,12 @@ FormalSystem.Metalogic.SoundnessLemmas.CoValidity
 # aggregator, so it is unreachable until phase 4 archives it. DELETE this line in that phase.
 FormalSystem.Metalogic.Bundle.CanonicalTaskRelation
 
+# TEMPORARY (task 520, phase 3 -> deleted in phase 4). Its seven live helpers migrated to
+# Theorems/ModalDerived.lean and Core/MCSProperties.lean, leaving only the dead saturation
+# layer. Its remaining importers are the unreachable Bundle.lean aggregator and the
+# already-manifested Bundle.Construction, so it is unreachable until phase 4 archives it.
+FormalSystem.Metalogic.Bundle.ModalSaturation
+
 # A genuine orphan: no importer anywhere in the live tree, aggregator or otherwise. Its
 # sibling aggregator `Kamp/NfMultiAnchorBridge.lean` IS reachable (imported by
 # `Kamp/KampPrior.lean`) and does import `NfMultiAnchorBridge.OuterGate` -- but not this
