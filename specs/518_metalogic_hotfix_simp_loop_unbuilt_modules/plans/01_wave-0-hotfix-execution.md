@@ -303,22 +303,22 @@ above as a seventh region needing judgment rather than assuming the list is clos
 
 ---
 
-### Phase 4: Delete the Bundle -> Algebraic orphan and its import [NOT STARTED]
+### Phase 4: Delete the Bundle -> Algebraic orphan and its import [COMPLETED]
 
 **Goal**: The `Bundle <-> Algebraic` directory-level import cycle is gone, restoring
 `Metalogic/README.md:70`'s "exactly two cycles" statement and the `Algebraic/`-below-`Bundle/`
 layering diagram to accuracy.
 
 **Tasks**:
-- [ ] Confirm `fc_theorem_true_in_bundle_flow_model` (`Bundle/LimitMCS.lean:461-473`) still has
+- [x] Confirm `fc_theorem_true_in_bundle_flow_model` (`Bundle/LimitMCS.lean:461-473`) still has
       zero consumers: `grep -rn 'fc_theorem_true_in_bundle_flow_model' --include='*.lean' .`
       must return only its own declaration site.
-- [ ] Confirm it is still the only declaration in the file touching `FlowFrame`:
+- [x] Confirm it is still the only declaration in the file touching `FlowFrame`:
       `grep -n 'bundleFlow' FormalSystem/Metalogic/Bundle/LimitMCS.lean` must return only `:452`,
       `:470`, `:471` — all inside that declaration and its docstring.
-- [ ] Delete the declaration (and its docstring).
-- [ ] Delete `import FormalSystem.Metalogic.Algebraic.FlowFrame` at `LimitMCS.lean:8`.
-- [ ] Do **not** edit `FormalSystem/Metalogic/README.md` — it already reads "exactly two", and this
+- [x] Delete the declaration (and its docstring).
+- [x] Delete `import FormalSystem.Metalogic.Algebraic.FlowFrame` at `LimitMCS.lean:8`.
+- [x] Do **not** edit `FormalSystem/Metalogic/README.md` — it already reads "exactly two", and this
       deletion is what makes that true.
 
 **Timing**: 0.5 hours
@@ -327,8 +327,13 @@ layering diagram to accuracy.
 
 **Verification Tier**: full
 
-**Scope Hypothesis**: This is a clean **two-hunk** change (one declaration, one import) in one
-file, with **zero** consumers of the deleted symbol. Confirm both counts with the two `grep`s in
+**Scope Hypothesis**: **CONFIRMED at implementation time.** `grep -rn
+'fc_theorem_true_in_bundle_flow_model' --include='*.lean' .` returned only the declaration site
+(`LimitMCS.lean:461`); `grep -n 'bundleFlow' LimitMCS.lean` returned only `:452`, `:470`, `:471`,
+all inside that declaration and its docstring. The applied diff is 33 deleted lines in one file
+(the `import` at `:8`, plus `:441-472`: the `/-! ## ... -/` section header, the two now-unused
+`open` lines, the docstring, and the declaration). Original hypothesis: a clean **two-hunk**
+change (one declaration, one import) in one file, with **zero** consumers of the deleted symbol. Confirm both counts with the two `grep`s in
 the first two tasks above **before** deleting; if either returns more than expected, stop and
 re-scope rather than deleting.
 
