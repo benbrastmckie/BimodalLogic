@@ -354,27 +354,49 @@ must be reported.
 
 ---
 
-### Phase 4: Migrate `Metalogic/Soundness.lean` [IN PROGRESS]
+### Phase 4: Migrate `Metalogic/Soundness.lean` [COMPLETED]
 
 **Goal**: Move `Soundness.lean` off the class-specific adapters and onto the generic ones, folding
 the intro-chain normalisation into the *same* per-proof edit.
 
 **Tasks**:
-- [ ] Replace each class-specific adapter use with its generic counterpart at the appropriate tag.
-- [ ] In the same edit per proof, normalise the intro chain to `intro F hF M τ _hτ t` followed by
+- [x] Replace each class-specific adapter use with its generic counterpart at the appropriate tag.
+- [x] In the same edit per proof, normalise the intro chain to `intro F hF M τ _hτ t` followed by
       `sat_intro hF` where a frame condition is consumed, and to the `_hτ` spelling where not.
-- [ ] Collapse the `.Discrete` sites that currently read
+- [x] Collapse the `.Discrete` sites that currently read
       `intro F _h_succ _h_pred _h_succ_arch _h_pred_arch M τ _h_mem t` and
       `intro F so po hsa hpa M τ hτ t`, and the `intro F _ _ _ _ M τ _hτ t` forms, to
       `intro F hF M τ _hτ t; sat_intro hF`.
-- [ ] Rename `_h_mem → _hτ` (mechanically safe: always the validity leftover, always
+- [x] Rename `_h_mem → _hτ` (mechanically safe: always the validity leftover, always
       underscore-prefixed, line-local).
-- [ ] For any chain binding a **live** `h_mem`, edit the proof individually and update body
+- [x] For any chain binding a **live** `h_mem`, edit the proof individually and update body
       references. Never `sed` `h_mem`.
-- [ ] Apply the Phase 2 `linter.unusedTactic` decision at `.Base`/`.Dense` sites.
-- [ ] Do not touch the ~50 uses of the *generic* adapters already present in this file — those sites
+- [x] Apply the Phase 2 `linter.unusedTactic` decision at `.Base`/`.Dense` sites.
+- [x] Do not touch the ~50 uses of the *generic* adapters already present in this file — those sites
       do not change.
-- [ ] Do not delete any adapter declaration in this phase; deletion is Phase 7.
+- [x] Do not delete any adapter declaration in this phase; deletion is Phase 7.
+
+**PHASE 4 COMPLETION NOTE — measured counts.** Scope Hypothesis **confirmed on both figures**:
+`Soundness.lean` holds exactly **11** class-specific adapter call sites (4 `ValidDense.of_forall`,
+3 `ValidDiscrete.of_forall`, 4 `ValidDedekindDense.of_forall`) and exactly **61** `intro F`
+chains. All 11 are migrated to `ValidIn.of_forall_total`; zero class-specific adapter references
+remain in the file. The 61 chains are unchanged in count and now use only the normalised
+spellings — the enumerating grep for a non-normalised survivor returns nothing.
+
+The 50 *generic* adapter uses already in the file (44 `valid.of_forall_total`, 6
+`ValidIn.of_forall_total`) were left alone, per this phase's explicit instruction. See the Phase 7
+note for the consequence of that for the 47 -> 12 arithmetic.
+
+**Deviation (altered): the six `intro F hF M tau h_mem t` ASCII chains are in this file, not
+under `SoundnessLemmas/`.** The plan assigns them to Phase 5; the confirming grep puts all six in
+`Soundness.lean` (`derivable_valid_and_swap_validIn`, lines 1234-1267) and none under
+`SoundnessLemmas/`. They were fixed here instead, per-proof, with all six live body references
+moved with the binder. Phase 5's corresponding task is annotated as satisfied here.
+
+Four further chains bound a **live** `h_mem` (`modal_t_valid`, `modal_b_valid`,
+`necessitation_preserves_valid`, `temporal_necessitation_preserves_valid`): each was edited
+individually with its body references updated, never by `sed`. The 40 `_h_mem` leftovers were
+renamed mechanically, as the plan permits.
 
 **Timing**: 2 hours
 
@@ -403,21 +425,37 @@ means the plan's per-phase split needs revisiting before Phase 5/6 start.
 
 ---
 
-### Phase 5: Migrate `Metalogic/SoundnessLemmas/` [IN PROGRESS]
+### Phase 5: Migrate `Metalogic/SoundnessLemmas/` [COMPLETED]
 
 **Goal**: Same migration for the `SoundnessLemmas/` territory — the second-largest intro-chain
 concentration.
 
 **Tasks**:
-- [ ] Migrate the class-specific adapter uses in `SoundnessLemmas/FrameClassVariants.lean` and
+- [x] Migrate the class-specific adapter uses in `SoundnessLemmas/FrameClassVariants.lean` and
       `SoundnessLemmas/CoValidity.lean` to the generic adapters.
-- [ ] Fold in the intro-chain normalisation per proof, as in Phase 4.
-- [ ] Fold in the ASCII `tau → τ` fix at the `intro F hF M tau h_mem t` sites (these bind a *live*
+- [x] Fold in the intro-chain normalisation per proof, as in Phase 4.
+- [x] Fold in the ASCII `tau → τ` fix at the `intro F hF M tau h_mem t` sites (these bind a *live*
       `h_mem`, so each needs body references updated individually).
-- [ ] Leave `SoundnessLemmas/Separability.lean` and `README.md` alone unless they hold class-adapter
+- [x] Leave `SoundnessLemmas/Separability.lean` and `README.md` alone unless they hold class-adapter
       uses; if they do, migrate those and say so.
-- [ ] Do not touch the ~37 generic-adapter uses already in `FrameClassVariants.lean`.
-- [ ] Do not delete any adapter declaration; deletion is Phase 7.
+- [x] Do not touch the ~37 generic-adapter uses already in `FrameClassVariants.lean`.
+- [x] Do not delete any adapter declaration; deletion is Phase 7.
+
+**PHASE 5 COMPLETION NOTE — measured counts.** Scope Hypothesis partly confirmed, one figure
+drifted: `FrameClassVariants.lean` holds **4** class-adapter sites (confirmed) and **41** `intro F`
+chains (confirmed); `CoValidity.lean` holds **1** class-adapter call site, not the asserted 2 —
+the second grep hit was a docstring mention on the comment line above the call, and was rewritten
+with it. `intro F hF M tau h_mem t` occurs **6x** tree-wide as asserted, but all six are in
+`Metalogic/Soundness.lean`, so they were handled in Phase 4 (see its note) rather than here; no
+`tau` binder remains in any edited chain in either territory.
+
+`SoundnessLemmas/Separability.lean` and `SoundnessLemmas/README.md` hold no class-adapter use and
+were left untouched, as the plan directs. The 37 generic-adapter uses in `FrameClassVariants.lean`
+were not touched. Two chains binding a live `h_mem` were edited per-proof with their body
+references updated individually.
+
+`SoundnessLemmas/DenseValidity.lean` is confirmed absent; no instruction anchored on it was acted
+on.
 
 **Timing**: 1.5 hours
 
