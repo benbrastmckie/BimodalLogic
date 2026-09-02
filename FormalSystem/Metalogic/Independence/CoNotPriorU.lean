@@ -117,7 +117,7 @@ open intervals `(n - α, n + α)` over the integers. -/
 def ArcTime (t : ℚ) : Prop := ∃ n : ℤ, |(t : ℝ) - (n : ℝ)| < arcRadius
 
 /-- The arc characterization along `clockHistory`. -/
-theorem clock_atom_truth (a : Atom) (t : ℚ) :
+@[simp] theorem clock_atom_truth (a : Atom) (t : ℚ) :
     TruthAt clockModel clockHistory t (Formula.atom a) ↔ ArcTime t := by
   constructor
   · rintro ⟨_, hq⟩

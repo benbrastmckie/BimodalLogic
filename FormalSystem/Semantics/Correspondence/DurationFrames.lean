@@ -193,7 +193,7 @@ def translationModel (D : TemporalOrder) (A : Set ↑D) :
   valuation := fun w _ => w ∈ A
 
 /-- Truth of an atom along `translationHist` is membership in `A`, at every time. -/
-theorem translationModel_atom (D : TemporalOrder) (A : Set ↑D) (p : Atom) (t : ↑D) :
+@[simp] theorem translationModel_atom (D : TemporalOrder) (A : Set ↑D) (p : Atom) (t : ↑D) :
     TruthAt (translationModel D A) (translationHist D) t (Formula.atom p) ↔ t ∈ A :=
   ⟨fun ⟨_, hv⟩ => hv, fun h => ⟨trivial, h⟩⟩
 
@@ -284,7 +284,7 @@ def permissiveModel (D : TemporalOrder) (so : SuccOrder ↑D) (nm : NoMaxOrder �
   valuation := fun w _ => w = true
 
 /-- Truth of an atom along `permissiveHist D so nm f` is `f t = true`, at every time. -/
-theorem permissiveModel_atom (D : TemporalOrder) (so : SuccOrder ↑D) (nm : NoMaxOrder ↑D)
+@[simp] theorem permissiveModel_atom (D : TemporalOrder) (so : SuccOrder ↑D) (nm : NoMaxOrder ↑D)
     (f : ↑D → Bool) (p : Atom) (t : ↑D) :
     TruthAt (permissiveModel D so nm) (permissiveHist D so nm f) t (Formula.atom p) ↔ f t = true :=
   ⟨fun ⟨_, hv⟩ => hv, fun h => ⟨trivial, h⟩⟩
@@ -344,7 +344,7 @@ theorem validOn_dn_iff_denselyOrdered (D : TemporalOrder) :
         intro s has
         rw [Truth.future_iff]
         intro r hsr
-        rw [show τ.val = permissiveHist D so nm f from rfl, permissiveModel_atom]
+        simp only [hτ, permissiveModel_atom]
         have hsp : ¬ (s < a + p) := hcov s has
         have : a + p < r := lt_of_le_of_lt (not_lt.mp hsp) hsr
         simp only [hf, decide_eq_true_eq]
@@ -353,7 +353,7 @@ theorem validOn_dn_iff_denselyOrdered (D : TemporalOrder) :
         (permissiveModel D so nm) τ a hgg
       rw [Truth.future_iff] at hg
       have hbad := hg (a + p) hap
-      rw [show τ.val = permissiveHist D so nm f from rfl, permissiveModel_atom] at hbad
+      simp only [hτ, permissiveModel_atom] at hbad
       simp only [hf, decide_eq_true_eq] at hbad
       exact hbad rfl
   · intro hd F φ M τ t hgg
@@ -395,9 +395,9 @@ theorem validOn_df_iff_isDiscrete (D : TemporalOrder) :
       refine ⟨⟨?_, ?_⟩, ?_⟩
       · rw [Truth.past_iff]
         intro s hs
-        rw [show τ.val = translationHist D from rfl, translationModel_atom]
+        simp only [hτ, translationModel_atom]
         exact le_of_lt hs
-      · rw [show τ.val = translationHist D from rfl, translationModel_atom]
+      · simp only [hτ, translationModel_atom]
         exact le_refl x
       · rw [Truth.some_future_iff]
         obtain ⟨y, hy⟩ := hex
@@ -410,7 +410,7 @@ theorem validOn_df_iff_isDiscrete (D : TemporalOrder) :
     by_contra hlt
     have hzv : z < v := not_le.mp hlt
     have := hHv z hzv
-    rw [show τ.val = translationHist D from rfl, translationModel_atom] at this
+    simp only [hτ, translationModel_atom] at this
     exact absurd (hz : x < z) (not_lt.mpr this)
   · intro hdisc F φ M τ t hant
     rw [Truth.and_iff, Truth.and_iff] at hant
@@ -462,9 +462,10 @@ theorem validOn_co_iff_isComplete (D : TemporalOrder) :
       constructor
       · intro hu r hr
         have := hu r hr
-        rwa [show τ.val = translationHist D from rfl, hM, translationModel_atom] at this
+        simp only [hτ, hM, translationModel_atom] at this
+        exact this
       · intro hu r hr
-        rw [show τ.val = translationHist D from rfl, hM, translationModel_atom]
+        simp only [hτ, hM, translationModel_atom]
         exact hu r hr
     -- `s₀ ∈ S` witnesses `Hφ` at `s₀`.
     have hHs₀ : TruthAt M τ.val s₀ (Formula.atom corrAtom).allPast :=
@@ -493,7 +494,7 @@ theorem validOn_co_iff_isComplete (D : TemporalOrder) :
       · exact hlt
       · exact absurd ⟨b, hb, fun c hc => heq ▸ hc hs₀⟩ hno
     have hbA := hco b hs₀b
-    rw [show τ.val = translationHist D from rfl, hM, translationModel_atom] at hbA
+    simp only [hτ, hM, translationModel_atom] at hbA
     obtain ⟨w, hw, hbw⟩ := hbA
     exact absurd (hb hw) (not_le.mpr hbw)
   · intro hcomp F φ M τ t halways hH

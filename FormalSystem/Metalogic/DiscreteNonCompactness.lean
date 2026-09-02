@@ -168,7 +168,7 @@ def zModel : TaskModel (FrameOver.natFrame (D := ℤ)) where
 
 theorem zHistory_total (N : ℤ) : (zHistory N).IsTotal := fun _ => True.intro
 
-theorem zTruth_atom (N : ℤ) (p : Atom) (t : ℤ) :
+@[simp] theorem zTruth_atom (N : ℤ) (p : Atom) (t : ℤ) :
     TruthAt zModel (zHistory N) t (Formula.atom p) ↔ N < t := by
   constructor
   · rintro ⟨_, h⟩

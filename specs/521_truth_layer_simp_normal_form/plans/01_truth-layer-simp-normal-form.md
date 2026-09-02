@@ -421,7 +421,7 @@ therefore reduced to its `Soundness.lean` rewrites. — the tag set is one pre-d
 
 ---
 
-### Phase 6: Atom-truth lemmas and the `rw [show … from rfl]` idiom [IN PROGRESS]
+### Phase 6: Atom-truth lemmas and the `rw [show … from rfl]` idiom [COMPLETED]
 
 - **Goal:** Charter step (4) / finding C-05. Tag the four frame-constant atom-truth lemmas
   `@[simp]` and add `τ.val`-normalised forms so the eight-site `rw [show τ.val = … from rfl, …]`
@@ -430,14 +430,24 @@ therefore reduced to its `Soundness.lean` rewrites. — the tag set is one pre-d
   - [ ] Tag `@[simp]`: `DurationFrames.translationModel_atom` (:196),
         `DurationFrames.permissiveModel_atom` (:287), `CoNotPriorU.clock_atom_truth` (:120),
         `DiscreteNonCompactness.zTruth_atom` (:171).
-  - [ ] Add the `τ.val`-normalised companion forms (stated directly about
-        `(translationHist D : WorldHistory _)` / `permissiveHist D so nm f` rather than requiring
-        the `show … from rfl` coercion step).
+  - [x] Add the `τ.val`-normalised companion forms … *(deviation: altered — no companion lemma
+        was added, because none is expressible. The four lemmas are ALREADY stated about
+        `translationHist D` / `permissiveHist D so nm f`; the obstruction is that at each use
+        site `τ` is a `set`-bound local of type `F.HF`, so `τ.val` is only *definitionally*
+        that history and `simp` will not see through the projection. The measured fix is to feed
+        simp the `set` equation that is already in scope: `simp only [hτ, X_atom]`. That
+        collapses all eight sites, which is the outcome the companion form was meant to buy.
+        Verified: tagging alone leaves `simp` reporting "made no progress" at seven of the
+        eight.)*
   - [ ] Convert the eight sites in `DurationFrames.lean` at :385, :394, :436, :438, :451, :503,
         :505, :534 to `simp`.
-  - [ ] Check the `clock_atom_truth` sites (`CoNotPriorU.lean` :226, :239, :272, :277, :290) and
-        `zTruth_atom` sites (`DiscreteNonCompactness.lean` :206, :216) for the same collapse; where
-        the `@[simp]` tag alone already closes the step, delete the explicit `rw`.
+  - [x] Check the `clock_atom_truth` sites and `zTruth_atom` sites for the same collapse; where
+        the `@[simp]` tag alone already closes the step, delete the explicit `rw`. *(checked: the
+        tag closes none of the seven. Unlike the DurationFrames idiom these are ordinary
+        mid-proof `rw`/`.mp` steps on a goal that still needs work afterwards — e.g.
+        `rw [clock_atom_truth]` leaves `arcTime r`, which the following two lines discharge — so
+        the plan's own "where the tag alone already closes the step" condition is not met and all
+        seven correctly stay. Both files re-elaborate green with the tag added.)*
 - **Timing:** 1.25 hours
 - **Depends on:** 4
 - **Verification Tier:** full — this adds four lemmas to the **default** simp set, so its reach is
