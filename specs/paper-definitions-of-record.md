@@ -46,6 +46,43 @@ re-derives every hash below directly from the live paper file on every run.
 <!-- FILE_CHECKSUM: 5d700a2f05999bb697ab55e16f5a26732cbf7453dbb7d909d21fb67c70da7644 -->
 <!-- LINE_COUNT: 4856 -->
 
+### Rename absorption (2026-09-02): `Spherical` → `Saturation`
+
+The paper renamed its fourth task-frame axiom from *Spherical* to *Saturation*, moving both
+anchors that named it. Two MANIFEST rows were re-keyed to follow:
+
+| Old anchor | New anchor | New checksum |
+|---|---|---|
+| `def:frame#Spherical` | `def:frame#Saturation` | `c293e9f830a2e1f0154d1ee7be2c7a121a7aa0ec4476266637e4fffaff345c60` |
+| `cor:spherical-finite` | `cor:saturation-finite` | `6456eb11cb2adf8b06c929c3f6b5d19dc581f9ba7a33af8a28e61ec675567d74` |
+
+Both checksums were resolved against the live paper via `check-paper-definitions.sh --resolve`
+before the rows were written, and independently a second time during implementation; the two
+derivations agree. The repository's 441 corresponding occurrences were renamed in the same wave.
+
+**This is a rename absorption, not a drift correction, and the distinction is load-bearing here.**
+The anchors did not merely change text — their *keys* moved, which is why they showed up as
+`could not be resolved` rather than as drift. Re-keying the rows takes
+`check-paper-definitions.sh` from **2 unresolvable to 0**. It does *not* touch the 10 drifted
+anchors (`def:task-relation`, `def:directed`, `def:frame`, `def:frame#Compositionality`,
+`def:frame#Seriality`, `def:frame#Limit`, `def:world-history`, `thm:extension`,
+`def:BLplus-defined`, `def:time-shift-histories`), whose drifted set is byte-identical before and
+after this absorption. At least two of those are substantive rather than cosmetic
+(`def:time-shift-histories` dropped its explicit translation function; `def:BLplus-defined`
+changed item emphasis) and warrant a paper-reconciliation pass of their own.
+
+Per the dirty-pin convention above, the whole-file checksum sentinels are **not** re-pinned: no
+drift correction was absorbed here, only a key migration.
+
+**Deliberately left alone.** The prose of this file is a historical record of what the paper said
+at the time, so rewriting it would falsify the record. The drift table at
+`def:frame#Spherical`, the footnote quoted under `thm:extension`, the resolved-text block under
+`cor:spherical-finite`, and the earlier coverage-extension narratives all keep the old name and
+should. One item is a judgment call rather than quoted text: the entry heading ``def:directed``
+— directed family (used by Spherical)`` is this record's own navigation, not paper text, and
+still says *Spherical*. It was left unchanged because it falls outside this absorption's declared
+scope, and is flagged here so a later pass can decide it deliberately.
+
 ### Drift correction and coverage extension (2026-08-17): the target-state-revision re-pin
 
 Absorbed as one re-pin during the reference-manual target-state revision:

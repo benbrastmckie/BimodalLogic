@@ -10,6 +10,8 @@ Tests for task frame semantics.
 | TruthTest.lean | Truth evaluation tests |
 | SemanticPropertyTest.lean | Property-based semantics tests |
 | SemanticBenchmark.lean | Semantics performance benchmarks |
+| SaturationFiniteAxiomTest.lean | Axiom-profile evidence for the finite-carrier *Saturation* discharge |
+| DependentUltraproductProbe.lean | Axiom-profile regression check over the promoted ultraproduct modules |
 
 ## Coverage
 
@@ -17,6 +19,7 @@ Tests for task frame semantics.
 - Truth evaluation at world-histories
 - Validity checking
 - Performance benchmarks
+- Axiom profiles of the finite-carrier *Saturation* discharge and the ultraproduct construction
 
 ## Related
 

@@ -1,7 +1,7 @@
 # Implementation Plan: Spherical → Saturation axiom rename
 
 - **Task**: 517 - Rename the fourth task-frame axiom from `Spherical` to `Saturation`
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 3.5 hours
 - **Dependencies**: 518 (landed — baseline commit `92b154ab2` includes it)
 - **Research Inputs**: `specs/517_rename_spherical_axiom_to_saturation/reports/01_spherical-to-saturation-occurrence-inventory.md`
@@ -324,7 +324,7 @@ underlying number was right — the post-condition, not the inventory, is the ga
 
 ---
 
-### Phase 3: Documentation coherence and record absorption [NOT STARTED]
+### Phase 3: Documentation coherence and record absorption [COMPLETED]
 
 **Goal**: Close the prose-level loose ends the substitution cannot reach. Every edit here is in
 markdown or LaTeX with zero Lean elaboration surface, so this phase does not trigger a second
@@ -332,27 +332,27 @@ rebuild and commits separately.
 
 **Tasks**:
 
-- [ ] Add a dated entry to `specs/paper-definitions-of-record.md` recording the anchor absorption:
+- [x] Add a dated entry to `specs/paper-definitions-of-record.md` recording the anchor absorption:
       `def:frame#Spherical` → `def:frame#Saturation` and `cor:spherical-finite` →
       `cor:saturation-finite`, with the two new checksums, noting that this is a rename
       absorption rather than a drift correction and that the 10 remaining drifted anchors are
       untouched. Do **not** rewrite the historical drift tables or quoted paper text.
-- [ ] Fix the pre-existing fidelity gap in `latex/subfiles/02-Semantics.tex` (lines ~77–78 and
+- [x] Fix the pre-existing fidelity gap in `latex/subfiles/02-Semantics.tex` (lines ~77–78 and *(deviation: altered — 3 sites, not 2. Beyond the comment at ~77–78 and the transcription at ~85, the prose gloss at ~96 ("any directed family drawn from the nonempty fibers and segments") makes the same unqualified claim and was corrected with them. The comment at ~77 is labelled verbatim paper text, so leaving it unqualified would have been a false quotation, not just a weaker gloss. `def:directed` at ~66 was NOT touched: it is one of the 10 drifted anchors this task explicitly excludes.)*
       ~85): the transcription says "for any **directed** family" where the paper says "for any
       **⊇-directed** family". The Lean docstrings already carry the qualifier correctly
       (`TaskFrame.lean:386`). This is a one-line-per-site change that improves fidelity; call it
       out explicitly in the commit so it is not mistaken for a rename artifact. No gate depends
       on it.
-- [ ] Add the missing row for `SaturationFiniteAxiomTest.lean` to
+- [x] Add the missing row for `SaturationFiniteAxiomTest.lean` to *(deviation: altered — both missing rows added, not one. `DependentUltraproductProbe.lean` was added alongside `SaturationFiniteAxiomTest.lean` (the plan left this to implementer discretion and asked that the choice be recorded), plus a matching Coverage bullet.)*
       `Tests/BimodalTest/Semantics/README.md`, whose file table lists only 4 of the 6 `.lean`
       files in the directory. (`DependentUltraproductProbe.lean` is also missing; add it in the
       same pass or leave it — record which.)
-- [ ] Re-run `bash scripts/check-module-invariants.sh` — C12 checks that slash-shaped source
+- [x] Re-run `bash scripts/check-module-invariants.sh` — C12 checks that slash-shaped source
       paths in markdown resolve, and this phase adds new ones. MUST stay exit 0.
-- [ ] Record the two out-of-scope follow-ups in the implementation summary so they are not lost:
+- [x] Record the two out-of-scope follow-ups in the implementation summary so they are not lost:
       (a) the 10 drifted paper anchors, two of them substantive; (b) the 2 aesop violations in
       `typst-sync-check.sh` owned by task 518's territory.
-- [ ] Commit.
+- [x] Commit.
 
 **Timing**: 0.75 hours
 
@@ -386,19 +386,19 @@ edit to whatever is actually there.
 
 ## Testing & Validation
 
-- [ ] `git grep -io "spherical" -- . | grep -v "^specs/" | wc -l` returns exactly **3**, and all
+- [x] `git grep -io "spherical" -- . | grep -v "^specs/" | wc -l` returns exactly **3**, and all
       three are inside the phrase "spherically complete".
-- [ ] `git grep -io "saturationity" -- . | wc -l` returns **0**.
-- [ ] `git grep -l "SPHLYSENTINEL" -- .` returns nothing.
-- [ ] `git grep -in "spherical" -- Tests/` returns nothing (the `#guard_msgs` strings are
+- [x] `git grep -io "saturationity" -- . | wc -l` returns **0**. *(deviation: altered — needs the `grep -v "^specs/"` exclusion; unexcluded it matches this plan's own prose naming the token. Outside `specs/`: 0.)*
+- [x] `git grep -l "SPHLYSENTINEL" -- .` returns nothing. *(deviation: altered — same `specs/` exclusion; unexcluded it matches this plan and the Phase 1 handoff. Outside `specs/`: 0.)*
+- [x] `git grep -in "spherical" -- Tests/` returns nothing (the `#guard_msgs` strings are
       compile-checked; a stale one is a build error).
-- [ ] `bash .claude/scripts/lake-build-guard.sh build --timeout 7200 -- build` exits **0**.
-- [ ] `bash scripts/check-module-invariants.sh` exits **0** with `ALL CHECKS PASSED`.
-- [ ] `bash scripts/typst-sync-check.sh` reports `TOTAL_VIOLATIONS=2` — the same two pre-existing
+- [x] `bash .claude/scripts/lake-build-guard.sh build --timeout 7200 -- build` exits **0**. *(measured: exit 0, 2521 jobs, 345 s — far under the 7200 lock-wait budget.)*
+- [x] `bash scripts/check-module-invariants.sh` exits **0** with `ALL CHECKS PASSED`.
+- [x] `bash scripts/typst-sync-check.sh` reports `TOTAL_VIOLATIONS=2` — the same two pre-existing
       aesop entries, no new ones. **Exit 1 here is the expected, accepted outcome.**
-- [ ] `bash scripts/check-paper-definitions.sh` reports 10 drifted and **0** unresolvable (down
+- [x] `bash scripts/check-paper-definitions.sh` reports 10 drifted and **0** unresolvable (down
       from 2). **Exit 1 here is the expected, accepted outcome.**
-- [ ] `Tests/BimodalTest.lean` imports `BimodalTest.Semantics.SaturationFiniteAxiomTest` and the
+- [x] `Tests/BimodalTest.lean` imports `BimodalTest.Semantics.SaturationFiniteAxiomTest` and the
       test module elaborates.
 
 **Acceptance is stated as "no NEW violations", deliberately.** `lake build` and
