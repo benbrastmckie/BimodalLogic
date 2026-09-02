@@ -229,7 +229,7 @@ namespace Truth
 /--
 Bot (⊥) is false everywhere.
 -/
-theorem bot_false
+@[simp] theorem bot_false
     {F : TaskFrame} {M : TaskModel F} {τ : WorldHistory F}
     {t : F.Duration} :
     ¬(TruthAt M τ t Formula.bot) := by
@@ -239,7 +239,7 @@ theorem bot_false
 /--
 Truth of implication is material conditional.
 -/
-theorem imp_iff
+@[simp] theorem imp_iff
     {F : TaskFrame} {M : TaskModel F} {τ : WorldHistory F}
     {t : F.Duration}
     (φ ψ : Formula) :
@@ -284,7 +284,7 @@ Truth of box: formula true at every **total** history at the current time.
 σ ∈ H_F". The quantifier's range is `WorldHistory.IsTotal`, taken directly from the frame; there
 is no carrier parameter to supply.
 -/
-theorem box_iff
+@[simp] theorem box_iff
     {F : TaskFrame} {M : TaskModel F} {τ : WorldHistory F}
     {t : F.Duration}
     (φ : Formula) :
@@ -399,18 +399,18 @@ with `simp only [Formula.and, Formula.neg, TruthAt]` and finish with `tauto`. Th
 this family retires. -/
 
 /-- Truth of `¬φ`. -/
-@[truth_norm] theorem neg_iff
+@[simp, truth_norm] theorem neg_iff
     {F : TaskFrame} {M : TaskModel F} {τ : WorldHistory F} {t : F.Duration}
     (φ : Formula) :
     TruthAt M τ t φ.neg ↔ ¬ TruthAt M τ t φ := Iff.rfl
 
 /-- `⊤` is true everywhere. -/
-@[truth_norm] theorem top_true
+@[simp, truth_norm] theorem top_true
     {F : TaskFrame} {M : TaskModel F} {τ : WorldHistory F} {t : F.Duration} :
     TruthAt M τ t Formula.top := id
 
 /-- Truth of `φ ∧ ψ`. Classical: `and` is the double-negated implication. -/
-@[truth_norm] theorem and_iff
+@[simp, truth_norm] theorem and_iff
     {F : TaskFrame} {M : TaskModel F} {τ : WorldHistory F} {t : F.Duration}
     (φ ψ : Formula) :
     TruthAt M τ t (φ.and ψ) ↔ (TruthAt M τ t φ ∧ TruthAt M τ t ψ) := by
@@ -418,7 +418,7 @@ this family retires. -/
   tauto
 
 /-- Truth of `φ ∨ ψ`. Classical: `or` is `¬φ → ψ`. -/
-@[truth_norm] theorem or_iff
+@[simp, truth_norm] theorem or_iff
     {F : TaskFrame} {M : TaskModel F} {τ : WorldHistory F} {t : F.Duration}
     (φ ψ : Formula) :
     TruthAt M τ t (φ.or ψ) ↔ (TruthAt M τ t φ ∨ TruthAt M τ t ψ) := by
@@ -427,7 +427,7 @@ this family retires. -/
 
 /-- Truth of `◇φ` (`¬□¬φ`): `φ` holds at *some* total history at the current time. The classical
 `¬∀¬ ↔ ∃` step over `box_iff`. -/
-@[truth_norm] theorem diamond_iff
+@[simp, truth_norm] theorem diamond_iff
     {F : TaskFrame} {M : TaskModel F} {τ : WorldHistory F} {t : F.Duration}
     (φ : Formula) :
     TruthAt M τ t φ.diamond ↔ ∃ σ : WorldHistory F, σ.IsTotal ∧ TruthAt M σ t φ := by
@@ -445,7 +445,7 @@ have nothing to reduce it. These two are what keep the family complete on the pr
 are guard-first / event-second, matching `TruthAt`. -/
 
 /-- Truth of `ψ U φ` (guard `ψ`, event `φ`): the `untl` clause of `TruthAt`, as a biconditional. -/
-@[truth_norm] theorem untl_iff
+@[simp, truth_norm] theorem untl_iff
     {F : TaskFrame} {M : TaskModel F} {τ : WorldHistory F} {t : F.Duration}
     (ψ φ : Formula) :
     TruthAt M τ t (Formula.untl ψ φ) ↔
@@ -453,7 +453,7 @@ are guard-first / event-second, matching `TruthAt`. -/
         ∀ r : F.Duration, t < r → r < s → TruthAt M τ r ψ := Iff.rfl
 
 /-- Truth of `ψ S φ` (guard `ψ`, event `φ`): the `snce` clause of `TruthAt`, as a biconditional. -/
-@[truth_norm] theorem snce_iff
+@[simp, truth_norm] theorem snce_iff
     {F : TaskFrame} {M : TaskModel F} {τ : WorldHistory F} {t : F.Duration}
     (ψ φ : Formula) :
     TruthAt M τ t (Formula.snce ψ φ) ↔
@@ -487,7 +487,7 @@ theorem always_iff_tri
 
 Collapsing the three strict cases into one unrestricted `∀ s` is what removes the hand-rolled
 `lt_trichotomy` case split that every `always` elimination otherwise has to perform. -/
-@[truth_norm] theorem always_iff
+@[simp, truth_norm] theorem always_iff
     {F : TaskFrame} {M : TaskModel F} {τ : WorldHistory F} {t : F.Duration}
     (φ : Formula) :
     TruthAt M τ t φ.always ↔ ∀ s : F.Duration, TruthAt M τ s φ := by
@@ -505,7 +505,7 @@ Collapsing the three strict cases into one unrestricted `∀ s` is what removes 
 
 /-- Truth of `K⁺φ` (`¬(¬φ U ⊤)`): between the present and every strictly future time there is an
 intermediate time at which `φ` holds. -/
-@[truth_norm] theorem kPlus_iff
+@[simp, truth_norm] theorem kPlus_iff
     {F : TaskFrame} {M : TaskModel F} {τ : WorldHistory F} {t : F.Duration}
     (φ : Formula) :
     TruthAt M τ t φ.kPlus ↔
@@ -521,7 +521,7 @@ intermediate time at which `φ` holds. -/
     exact hall r h1 h2 hr
 
 /-- Truth of `K⁻φ` (`¬(¬φ S ⊤)`): the past dual of `kPlus_iff`. -/
-@[truth_norm] theorem kMinus_iff
+@[simp, truth_norm] theorem kMinus_iff
     {F : TaskFrame} {M : TaskModel F} {τ : WorldHistory F} {t : F.Duration}
     (φ : Formula) :
     TruthAt M τ t φ.kMinus ↔
@@ -951,6 +951,111 @@ theorem box_const (M : TaskModel F) (τ σ : WorldHistory F) (_hτ : τ.IsTotal)
 theorem box_time_const (M : TaskModel F) (τ : WorldHistory F) (hτ : τ.IsTotal) (t s : F.Duration)
     (φ : Formula) : TruthAt M τ t φ.box ↔ TruthAt M τ s φ.box :=
   box_const M τ τ hτ hτ t s φ
+
+/-! ## A-17: history-independence and the gap formula
+
+The four uniformity axioms and the discrete box-necessity axiom all say the same thing twice
+over: the formula they quantify is *atom-free*, so its truth cannot depend on the history at all,
+and the particular atom-free formula they use — `⊥ U (⊥ → ⊥)` — says only that the temporal order
+has a gap immediately above the point, which is a statement about `F.Duration` and nothing else.
+Both facts are proved once here, so the soundness proofs that consume them collapse to one term
+each instead of re-deriving the translation argument five times over. -/
+
+/-- **Truth of an atom-free formula does not depend on the history.**
+
+The `box` case is where this is not merely an induction bookkeeping step: `def:BL-semantics`'s box
+clause quantifies over *all* total histories and does not mention `τ`, so the two sides are
+definitionally equal there and the induction hypothesis is not needed. Every other case is
+congruence. The atom case is vacuous — `(Formula.atom p).atoms = {p} ≠ ∅`. -/
+theorem truthAt_atomFree_history_indep (M : TaskModel F) :
+    ∀ (φ : Formula), φ.atoms = ∅ →
+      ∀ (τ σ : WorldHistory F) (t : F.Duration), TruthAt M τ t φ ↔ TruthAt M σ t φ := by
+  intro φ
+  induction φ with
+  | atom p => intro h; simp only [Formula.atoms, Finset.singleton_ne_empty] at h
+  | bot => intro _ _ _ _; exact Iff.rfl
+  | imp φ ψ ihφ ihψ =>
+      intro h τ σ t
+      simp only [Formula.atoms, Finset.union_eq_empty] at h
+      exact imp_congr (ihφ h.1 τ σ t) (ihψ h.2 τ σ t)
+  | box φ _ => intro _ _ _ _; exact Iff.rfl
+  | untl ψ φ ihψ ihφ =>
+      intro h τ σ t
+      simp only [Formula.atoms, Finset.union_eq_empty] at h
+      exact exists_congr fun s => and_congr_right fun _ =>
+        and_congr (ihφ h.1 τ σ s)
+          (forall_congr' fun r => imp_congr_right fun _ => imp_congr_right fun _ => ihψ h.2 τ σ r)
+  | snce ψ φ ihψ ihφ =>
+      intro h τ σ t
+      simp only [Formula.atoms, Finset.union_eq_empty] at h
+      exact exists_congr fun s => and_congr_right fun _ =>
+        and_congr (ihφ h.1 τ σ s)
+          (forall_congr' fun r => imp_congr_right fun _ => imp_congr_right fun _ => ihψ h.2 τ σ r)
+
+/-- The **gap formula** `⊥ U (⊥ → ⊥)`, characterized: there is a point strictly above `t` with
+nothing strictly between. The right-hand side mentions neither `M` nor `τ` — that is the entire
+content of the uniformity block, isolated. -/
+theorem truthAt_gap (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration) :
+    TruthAt M τ t (Formula.untl Formula.bot (Formula.bot.imp Formula.bot)) ↔
+      ∃ s : F.Duration, t < s ∧ ∀ r : F.Duration, t < r → r < s → False := by
+  simp only [TruthAt]
+  constructor
+  · rintro ⟨s, hts, -, hguard⟩; exact ⟨s, hts, hguard⟩
+  · rintro ⟨s, hts, hguard⟩; exact ⟨s, hts, id, hguard⟩
+
+/-- The past dual of `truthAt_gap`: `⊥ S (⊥ → ⊥)` says there is a point strictly below `t` with
+nothing strictly between. -/
+theorem truthAt_cogap (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration) :
+    TruthAt M τ t (Formula.snce Formula.bot (Formula.bot.imp Formula.bot)) ↔
+      ∃ s : F.Duration, s < t ∧ ∀ r : F.Duration, s < r → r < t → False := by
+  simp only [TruthAt]
+  constructor
+  · rintro ⟨s, hst, -, hguard⟩; exact ⟨s, hst, hguard⟩
+  · rintro ⟨s, hst, hguard⟩; exact ⟨s, hst, id, hguard⟩
+
+/-- **Gaps translate.** A gap immediately above `t` is a gap immediately above every point: shift
+the witness by `u - t` and shift any intruder back. Translation invariance of `<` on the duration
+group is the whole argument, which is why the statement mentions no history and no model. -/
+theorem truthAt_gap_shift (M : TaskModel F) (τ : WorldHistory F) (t u : F.Duration)
+    (h : TruthAt M τ t (Formula.untl Formula.bot (Formula.bot.imp Formula.bot))) :
+    TruthAt M τ u (Formula.untl Formula.bot (Formula.bot.imp Formula.bot)) := by
+  rw [truthAt_gap] at h ⊢
+  obtain ⟨s, hts, hguard⟩ := h
+  refine ⟨u + (s - t), lt_add_of_pos_right u (sub_pos.mpr hts), fun c huc hcs => ?_⟩
+  have h1 : t < c - (u - t) := by
+    conv_lhs => rw [(sub_sub_cancel u t).symm]
+    exact sub_lt_sub_right huc _
+  have h2 : c - (u - t) < s := by
+    conv_rhs => rw [show s = u + (s - t) - (u - t) from by rw [add_sub_sub_cancel, sub_add_cancel]]
+    exact sub_lt_sub_right hcs _
+  exact hguard (c - (u - t)) h1 h2
+
+/-- **A gap above is a gap below.** The mirror of `truthAt_gap_shift`: reflect the witness through
+`t`. Together with `truthAt_cogap_iff_gap` this is what makes the two `discrete_symm_*` axioms one
+term each. -/
+theorem truthAt_gap_iff_cogap (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration) :
+    TruthAt M τ t (Formula.untl Formula.bot (Formula.bot.imp Formula.bot)) ↔
+      TruthAt M τ t (Formula.snce Formula.bot (Formula.bot.imp Formula.bot)) := by
+  rw [truthAt_gap, truthAt_cogap]
+  constructor
+  · rintro ⟨s, hts, hguard⟩
+    refine ⟨t - (s - t), sub_lt_self t (sub_pos.mpr hts), fun c hrc hct => ?_⟩
+    have h1 : t < c + (s - t) :=
+      calc t = t - (s - t) + (s - t) := (sub_add_cancel t (s - t)).symm
+        _ < c + (s - t) := add_lt_add_left hrc (s - t)
+    have h2 : c + (s - t) < s :=
+      calc c + (s - t) < t + (s - t) := add_lt_add_left hct (s - t)
+        _ = s := by rw [add_comm, sub_add_cancel]
+    exact hguard (c + (s - t)) h1 h2
+  · rintro ⟨r, hrt, hguard⟩
+    refine ⟨t + (t - r), lt_add_of_pos_right t (sub_pos.mpr hrt), fun c htc hcs => ?_⟩
+    have h1 : r < c - (t - r) := by
+      conv_lhs => rw [(sub_sub_cancel t r).symm]
+      exact sub_lt_sub_right htc _
+    have h2 : c - (t - r) < t := by
+      conv_rhs => rw [(add_sub_cancel_right t (t - r)).symm]
+      exact sub_lt_sub_right hcs _
+    exact hguard (c - (t - r)) h1 h2
 
 end Truth
 

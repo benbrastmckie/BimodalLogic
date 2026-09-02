@@ -300,7 +300,7 @@ Phases 8 and 9 both edit `Soundness.lean` and are therefore deliberately sequent
 
 ---
 
-### Phase 3: Register the `@[simp]` attributes [NOT STARTED]
+### Phase 3: Register the `@[simp]` attributes [COMPLETED]
 
 - **Goal:** The one globally disruptive change, isolated. Move the normal form into the default
   simp set and repair anything it reddens.
@@ -320,12 +320,23 @@ Phases 8 and 9 both edit `Soundness.lean` and are therefore deliberately sequent
         `neg (someFuture (neg φ))` / `allFuture φ` convergence and its past dual; `untl top φ` vs
         `someFuture φ`; `bot.imp bot` → `True`; `untl bot (bot.imp bot)`; and the nesting
         termination case `always (always (and φ ψ))`. Delete the scratch file before the commit.
-  - [ ] Walk the audit list and repair every reddened site by *fixing forward* (adding the
-        now-needed `simp only`/`rw` step), never by removing an attribute.
+  - [x] Walk the audit list and repair every reddened site by *fixing forward* (adding the
+        now-needed `simp only`/`rw` step), never by removing an attribute. *(deviation: no repair
+        was needed — the tag batch reddened **zero** sites tree-wide; `lake build` went from
+        2517/2517 green to 2517/2517 green with 0 errors. The audit list was regenerated as 258
+        lines, not the plan's 48; since 258 is a superset the blast-radius model was not
+        falsified, and no failure occurred at any site on or off the list.)*
 - **Timing:** 1.5 hours
 - **Depends on:** 2
 - **Verification Tier:** full
-- **Commit Mode:** atomic-batch — the tag set is one pre-declared objective; intermediate
+- **Commit Mode:** atomic-batch
+
+**Sequencing deviation recorded here:** Phase 7's three (in the event, five) `Truth.lean` A-17
+lemmas were landed in *this* phase's edit rather than their own. They are purely additive — no
+attribute, no signature change, no existing proof can observe them — so they cannot strand
+anything, and `Truth.lean` sits deep enough in the import graph that each edit to it costs a
+~240-module rebuild. Landing them together paid that cost once instead of twice. Phase 7 is
+therefore reduced to its `Soundness.lean` rewrites. — the tag set is one pre-declared objective; intermediate
   per-lemma states are expected red and must not be committed.
 - **Scope Hypothesis:** "48 bare `simp`/`simp_all`/`aesop` lines, none of the eight scoped files
   carrying more than 2." Confirm by regenerating the list from `baseline.txt`'s recorded command
@@ -446,7 +457,7 @@ Phases 8 and 9 both edit `Soundness.lean` and are therefore deliberately sequent
 
 ---
 
-### Phase 7: A-17 — history-independence and gap shift [NOT STARTED]
+### Phase 7: A-17 — history-independence and gap shift [IN PROGRESS]
 
 - **Goal:** Charter step (5). Add the two A-17 lemmas beside `Truth.box_const` and collapse the
   uniformity block that currently re-derives them by hand five times.
