@@ -229,17 +229,17 @@ finding, not a number to quietly overwrite.
 
 ---
 
-### Phase 2: Break the Core -> Bundle cycle via IteratedTemporal.lean [NOT STARTED]
+### Phase 2: Break the Core -> Bundle cycle via IteratedTemporal.lean [COMPLETED]
 
 **Goal**: Move the 29 pure-syntax iterated-temporal declarations into `Syntax/SubformulaClosure/`
 and delete the single `Core -> Bundle` import edge, taking `Metalogic/`'s directory-level cycle
 count from 2 to 1.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Syntax/SubformulaClosure/IteratedTemporal.lean` with the standard
+- [x] Create `FormalSystem/Syntax/SubformulaClosure/IteratedTemporal.lean` with the standard
       copyright header, `import FormalSystem.Syntax.SubformulaClosure.NestingDepth` as its **sole**
       import, and `namespace FormalSystem.Syntax`.
-- [ ] Copy the 29 declarations **verbatim, no renames**, preserving source order within each range:
+- [x] Copy the 29 declarations **verbatim, no renames**, preserving source order within each range:
       - from `:59-196`: `iterF`, `iter_F_zero`, `iter_F_succ`, `some_future_complexity`,
         `iter_F_complexity`, `iter_F_complexity_strictly_increasing`, `iter_F_injective`,
         `iter_F_one_eq_some_future`, `iter_F_f_nesting_depth`, `closureFBound`,
@@ -250,17 +250,17 @@ count from 2 to 1.
         `iter_P_complexity_strictly_increasing`, `iter_P_injective`, `iter_P_one_eq_some_past`,
         `iter_P_p_nesting_depth`, `closurePBound`, `iter_P_exceeds_max_depth`,
         `iter_P_not_mem_closureWithNeg`, `iter_P_leaves_closure`
-- [ ] Add `import FormalSystem.Syntax.SubformulaClosure.IteratedTemporal` to `FormalSystem/Syntax.lean`
+- [x] Add `import FormalSystem.Syntax.SubformulaClosure.IteratedTemporal` to `FormalSystem/Syntax.lean`
       (after the `TemporalFormulas` line at `:12`).
-- [ ] `FormalSystem/Metalogic/Core/RestrictedMCS/Basic.lean`: replace `:12`'s
+- [x] `FormalSystem/Metalogic/Core/RestrictedMCS/Basic.lean`: replace `:12`'s
       `import FormalSystem.Metalogic.Bundle.CanonicalTaskRelation` with
       `import FormalSystem.Syntax.SubformulaClosure.IteratedTemporal`, and **delete `:459`'s
       `open FormalSystem.Metalogic.Bundle`** -- it exists solely for these names, and `:51` already
       carries `open FormalSystem.Syntax`.
-- [ ] `FormalSystem/Metalogic/Bundle/CanonicalTaskRelation.lean`: delete the three ranges, add
+- [x] `FormalSystem/Metalogic/Bundle/CanonicalTaskRelation.lean`: delete the three ranges, add
       `import FormalSystem.Syntax.SubformulaClosure.IteratedTemporal`. `:55` already has
       `open FormalSystem.Syntax`, so its remaining 32 declarations keep resolving unqualified.
-- [ ] Add `FormalSystem.Metalogic.Bundle.CanonicalTaskRelation` to
+- [x] Add `FormalSystem.Metalogic.Bundle.CanonicalTaskRelation` to
       `scripts/module-invariants-manifest.txt` under a comment marking it **temporary, deleted in
       Phase 4**. The file loses its only live importer in this phase and becomes unreachable;
       without this line C6 fails.

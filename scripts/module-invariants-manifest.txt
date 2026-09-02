@@ -49,6 +49,11 @@ FormalSystem.Metalogic.SoundnessLemmas
 FormalSystem.Metalogic.Bundle.Construction
 FormalSystem.Metalogic.SoundnessLemmas.CoValidity
 
+# TEMPORARY (task 520, phase 2 -> deleted in phase 4). Breaking the Core -> Bundle import
+# edge removed this module's only live importer outside the unreachable Bundle.lean
+# aggregator, so it is unreachable until phase 4 archives it. DELETE this line in that phase.
+FormalSystem.Metalogic.Bundle.CanonicalTaskRelation
+
 # A genuine orphan: no importer anywhere in the live tree, aggregator or otherwise. Its
 # sibling aggregator `Kamp/NfMultiAnchorBridge.lean` IS reachable (imported by
 # `Kamp/KampPrior.lean`) and does import `NfMultiAnchorBridge.OuterGate` -- but not this

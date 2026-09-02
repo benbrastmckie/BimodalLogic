@@ -10,6 +10,7 @@ import FormalSystem.Syntax.Subformulas
 import FormalSystem.Syntax.SubformulaClosure.Closure
 import FormalSystem.Syntax.SubformulaClosure.NestingDepth
 import FormalSystem.Syntax.SubformulaClosure.TemporalFormulas
+import FormalSystem.Syntax.SubformulaClosure.IteratedTemporal
 
 /-!
 # FormalSystem.Syntax - Formula Syntax

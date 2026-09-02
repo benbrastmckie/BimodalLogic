@@ -152,12 +152,29 @@ re-points: `BXCanonical/Chronicle/ChronicleTypes.lean:12` and `Bundle/TemporalCo
 | **Total** | **14** | **16** |
 
 Command: `grep -o "untl\|snce" <file> | wc -l`. `Construction.lean`, `UntilSinceCoherence.lean`
-and `ModalSaturation.lean` have zero. The Phase 5 banner carve-out must say **16**, not 14.
+and `ModalSaturation.lean` have zero.
+
+**Refinement (measured after Phase 2, and this is what the Phase 5 carve-out must state).** The
+gap above is a counting-unit difference plus a Phase-2 effect, not a disagreement:
+
+- The plan's per-file figures are **lines**; mine were **occurrences**. `SuccRelation.lean` has
+  **10 matching lines carrying 12 occurrences** (`:198` and `:360` each carry two).
+- `CanonicalTaskRelation.lean`'s 2 occurrences (`:96`, `:744` at HEAD) are docstring mentions
+  *inside the relocated block*. Phase 2 moved them to the live
+  `Syntax/SubformulaClosure/IteratedTemporal.lean` (`:81`, `:234`), so they never reach the
+  archive.
+
+**What actually travels into `Boneyard/BundleDeadHalf/`: 14 occurrences across 12 lines in 2
+files** -- `SuccRelation.lean` 12 occurrences / 10 lines, `CanonicalFrame.lean` 2 / 2. The
+plan's total of 14 is therefore correct for the archived set; only its per-file split needed
+adjusting.
 
 ## Divergences from the plan, reported before Phase 2 starts
 
-1. **`untl`/`snce` total is 16, not 14** (`SuccRelation.lean` has 12, not 10). Affects only the
-   Phase 5 banner carve-out wording.
+1. **`untl`/`snce` per-file split needed adjusting; the archived total of 14 stands.**
+   `SuccRelation.lean` has 12 occurrences across 10 lines, and `CanonicalTaskRelation.lean`'s 2
+   travel to the live `IteratedTemporal.lean` in Phase 2 rather than to the archive. The Phase 5
+   carve-out names `SuccRelation.lean` 12 and `CanonicalFrame.lean` 2 = 14, in 2 files.
 2. **The fully-qualified reference enumeration is 10 references across 6 modules** -- neither the
    report's prose figure (7) nor its matrix figure (9). The plan anticipated this and made the
    enumeration authoritative; the table in section 4 above is that enumeration.

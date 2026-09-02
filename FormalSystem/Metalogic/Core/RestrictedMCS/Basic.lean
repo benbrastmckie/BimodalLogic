@@ -9,7 +9,7 @@ import FormalSystem.Metalogic.Core.MCSProperties
 import FormalSystem.Syntax.SubformulaClosure.NestingDepth
 import Mathlib.Data.Finset.Basic
 import Mathlib.Order.Zorn
-import FormalSystem.Metalogic.Bundle.CanonicalTaskRelation
+import FormalSystem.Syntax.SubformulaClosure.IteratedTemporal
 
 /-!
 # Closure-Restricted Maximal Consistent Sets and Lindenbaum Construction
@@ -455,8 +455,6 @@ These lemmas establish that iterF iterations must eventually leave any Restricte
 because RestrictedMCS is bounded by closureWithNeg and iterF eventually leaves
 closureWithNeg.
 -/
-
-open FormalSystem.Metalogic.Bundle
 
 /--
 In any RestrictedMCS M over phi, there exists n such that iterF n phi is not in M.
