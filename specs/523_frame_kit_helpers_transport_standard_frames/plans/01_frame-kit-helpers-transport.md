@@ -500,7 +500,7 @@ the lemma is live and must be kept.
 
 ---
 
-### Phase 7: `isLeast_succ_of_isLeast_pos` and its three clients [NOT STARTED]
+### Phase 7: `isLeast_succ_of_isLeast_pos` and its three clients [COMPLETED]
 
 **Goal**: Share the Direction-B order lemma pair and retarget its three call sites.
 
@@ -544,7 +544,7 @@ the lemma is live and must be kept.
 
 ---
 
-### Phase 8: Generalise `LexCarrier` to `α ×ₗ ℤ`; `LexIntWitness` as an instance [NOT STARTED]
+### Phase 8: Generalise `LexCarrier` to `α ×ₗ ℤ`; `LexIntWitness` as an instance [COMPLETED]
 
 **Goal**: Make `LexCarrier` generic in its first factor and reduce `LexIntWitness` to an
 instantiation.

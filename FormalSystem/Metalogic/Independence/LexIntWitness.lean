@@ -8,6 +8,7 @@ import FormalSystem.Metalogic.Independence.StaticFrame
 import FormalSystem.Metalogic.Soundness
 import FormalSystem.Semantics.Correspondence.Indicator
 import FormalSystem.Semantics.DurationClassification
+import FormalSystem.Semantics.LexCarrier
 import Mathlib.Data.Prod.Lex
 import Mathlib.Algebra.Order.Monoid.Prod
 import Mathlib.Algebra.Order.Group.Int
@@ -55,7 +56,7 @@ require a single-frame `F.ValidOn φ → F.ValidOn φ.swapTemporal` closure lemm
 
 ## Main results
 
-* `lexInt_isLeast_pos`, `lexInt_not_archimedean` — the two order facts about `ℤ ×ₗ ℤ`
+* the `ℤ ×ₗ ℤ` order facts, imported from `Semantics/LexCarrier.lean`'s generic `LexInt` API
 * `lexIntStaticFrame`, `lexIntStaticFrame_mem_mod`, `lexIntStaticFrame_not_sat` — the witness
 * `validOn_nextTop_of_mem_mod_discrete` — the semantic upper-bound engine
 * `sat_discrete_ssubset_mod_axiomSet`, `mod_axiomSet_discrete_subset_isDiscrete` — the sandwich
@@ -67,78 +68,19 @@ open FormalSystem.Syntax
 open FormalSystem.Semantics
 open FormalSystem.ProofSystem
 
-/-! ## `ℤ ×ₗ ℤ`: instances, discreteness, and the failure of Archimedes -/
+/-! ## `ℤ ×ₗ ℤ`: the carrier, by instantiation
 
-example : AddCommGroup (ℤ ×ₗ ℤ) := inferInstance
-example : LinearOrder (ℤ ×ₗ ℤ) := inferInstance
-example : IsOrderedAddMonoid (ℤ ×ₗ ℤ) := inferInstance
-example : Nontrivial (ℤ ×ₗ ℤ) := inferInstance
+`Semantics/LexCarrier.lean` carries the whole `α ×ₗ ℤ` apparatus at an **arbitrary** ordered
+abelian group in the first coordinate: the four ambient instances, the `SuccOrder`/`PredOrder`
+pair, `LexInt.isLeast_pos`, and the three non-Archimedean theorems. This module is one of its two
+instantiations — the other is `ℚ ×ₗ ℤ` in `Metalogic/Z1Countermodel.lean` — and re-derives none
+of it. In particular the four-`example` instance-pinning ritual that used to sit here is gone;
+`LexCarrier.lean` carries the single surviving copy.
 
-/-- The lexicographic integer square is a bona fide temporal order. -/
-example : TemporalOrder := TemporalOrder.of (ℤ ×ₗ ℤ)
-
-/-- The least strictly positive element of `ℤ ×ₗ ℤ` is `toLex (0, 1)`. -/
-theorem lexInt_isLeast_pos :
-    IsLeast {x : ℤ ×ₗ ℤ | 0 < x} (toLex ((0 : ℤ), (1 : ℤ))) := by
-  constructor
-  · show (0 : ℤ ×ₗ ℤ) < toLex ((0 : ℤ), (1 : ℤ))
-    rw [show (0 : ℤ ×ₗ ℤ) = toLex ((0 : ℤ), (0 : ℤ)) from rfl, Prod.Lex.toLex_lt_toLex]
-    exact Or.inr ⟨rfl, by norm_num⟩
-  · intro z hz
-    have hz' : (0 : ℤ ×ₗ ℤ) < z := hz
-    rw [show (0 : ℤ ×ₗ ℤ) = toLex ((0 : ℤ), (0 : ℤ)) from rfl, show z = toLex (ofLex z) from rfl,
-      Prod.Lex.toLex_lt_toLex] at hz'
-    rw [show z = toLex (ofLex z) from rfl, Prod.Lex.toLex_le_toLex]
-    rcases hz' with h | ⟨h1, h2⟩
-    · exact Or.inl h
-    · exact Or.inr ⟨h1, h2⟩
-
-/-- Every point of `ℤ ×ₗ ℤ` has an immediate successor: add `toLex (0, 1)`. -/
-theorem lexInt_isLeast_succ (x : ℤ ×ₗ ℤ) :
-    IsLeast {z : ℤ ×ₗ ℤ | x < z} (x + toLex ((0 : ℤ), (1 : ℤ))) := by
-  refine ⟨lt_add_of_pos_right x lexInt_isLeast_pos.1, fun z hz => ?_⟩
-  have hzlt : x < z := hz
-  have hpos : (0 : ℤ ×ₗ ℤ) < z - x := sub_pos.mpr hzlt
-  have hle : toLex ((0 : ℤ), (1 : ℤ)) ≤ z - x := lexInt_isLeast_pos.2 hpos
-  have := le_sub_iff_add_le.mp hle
-  rwa [add_comm] at this
-
-/-- Every point of `ℤ ×ₗ ℤ` has an immediate predecessor: subtract `toLex (0, 1)`. -/
-theorem lexInt_isGreatest_pred (x : ℤ ×ₗ ℤ) :
-    IsGreatest {z : ℤ ×ₗ ℤ | z < x} (x - toLex ((0 : ℤ), (1 : ℤ))) := by
-  refine ⟨sub_lt_self x lexInt_isLeast_pos.1, fun z hz => ?_⟩
-  have hzlt : z < x := hz
-  have hpos : (0 : ℤ ×ₗ ℤ) < x - z := sub_pos.mpr hzlt
-  have hle : toLex ((0 : ℤ), (1 : ℤ)) ≤ x - z := lexInt_isLeast_pos.2 hpos
-  have h2 := le_sub_iff_add_le.mp hle
-  rw [add_comm] at h2
-  exact le_sub_iff_add_le.mpr h2
-
-/--
-**`ℤ ×ₗ ℤ` is not Archimedean.**
-
-`toLex (1, 0)` dominates every multiple of `toLex (0, 1)`: the multiples never move the first
-coordinate off `0`, and the lexicographic order compares first coordinates first.
+The immediate-successor and immediate-predecessor facts this module's `.Discrete` dispatch needs
+are `DurationClassification.isLeast_succ_of_isLeast_pos` and `isGreatest_pred_of_isLeast_pos`
+applied to `LexInt.isLeast_pos`, at `α := ℤ`.
 -/
-theorem lexInt_not_archimedean : ¬ Archimedean (ℤ ×ₗ ℤ) := by
-  intro h
-  have hfst : ∀ n : ℕ, (ofLex (n • (toLex ((0 : ℤ), (1 : ℤ)) : ℤ ×ₗ ℤ))).1 = 0 := by
-    intro n
-    induction n with
-    | zero => rfl
-    | succ m ih =>
-        have : (m + 1) • (toLex ((0 : ℤ), (1 : ℤ)) : ℤ ×ₗ ℤ)
-            = m • (toLex ((0 : ℤ), (1 : ℤ)) : ℤ ×ₗ ℤ) + toLex ((0 : ℤ), (1 : ℤ)) := by
-          rw [succ_nsmul]
-        rw [this]
-        show (ofLex (m • (toLex ((0 : ℤ), (1 : ℤ)) : ℤ ×ₗ ℤ))).1 + 0 = 0
-        rw [ih, add_zero]
-  obtain ⟨n, hn⟩ := h.arch (toLex ((1 : ℤ), (0 : ℤ))) lexInt_isLeast_pos.1
-  rw [show (toLex ((1 : ℤ), (0 : ℤ)) : ℤ ×ₗ ℤ) = toLex ((1 : ℤ), (0 : ℤ)) from rfl,
-    show (n • (toLex ((0 : ℤ), (1 : ℤ)) : ℤ ×ₗ ℤ))
-      = toLex (ofLex (n • (toLex ((0 : ℤ), (1 : ℤ)) : ℤ ×ₗ ℤ))) from rfl,
-    Prod.Lex.toLex_le_toLex] at hn
-  rcases hn with h1 | ⟨h1, _⟩ <;> rw [hfst n] at h1 <;> omega
 
 /-! ## The witness frame -/
 
@@ -153,7 +95,7 @@ def lexIntStaticFrame : TaskFrame := (FrameOver.staticFrame Bool (D := ℤ ×ₗ
 
 `Sat .Discrete` is `TaskFrame.IsSuccArchDiscrete`, whose successor half — a `SuccOrder` together
 with `IsSuccArchimedean` — is exactly what `Semantics.archimedean_of_succ` converts into
-`Archimedean`, and `lexInt_not_archimedean` refutes that.
+`Archimedean`, and `LexInt.not_archimedean` refutes that.
 
 The existential's `PredOrder` and `IsPredArchimedean` components are simply unused, matching
 `DurationClassification.lean`'s own recorded measurement that the transfer needs only the
@@ -162,7 +104,7 @@ successor half.
 theorem lexIntStaticFrame_not_sat :
     lexIntStaticFrame ∉ {F : TaskFrame | FrameClass.Sat FrameClass.Discrete F} := by
   rintro ⟨so, _, hsa, _⟩
-  exact lexInt_not_archimedean (@archimedean_of_succ (ℤ ×ₗ ℤ) _ _ _ so _ hsa)
+  exact LexInt.not_archimedean (@archimedean_of_succ (ℤ ×ₗ ℤ) _ _ _ so _ hsa)
 
 /--
 **The witness models every `.Discrete` axiom instance.**
@@ -174,9 +116,9 @@ and three Dedekind axioms are eliminated by `Dense ≰ Discrete` and `Dedekind �
 theorem lexIntStaticFrame_mem_mod :
     lexIntStaticFrame ∈ Semantics.Mod (AxiomSet FrameClass.Discrete) := by
   have hdisc : ∀ x : ℤ ×ₗ ℤ, ∃ y, IsLeast {z : ℤ ×ₗ ℤ | x < z} y :=
-    fun x => ⟨_, lexInt_isLeast_succ x⟩
+    fun x => ⟨_, isLeast_succ_of_isLeast_pos LexInt.isLeast_pos x⟩
   have hpred : ∀ x : ℤ ×ₗ ℤ, ∃ y, IsGreatest {z : ℤ ×ₗ ℤ | z < x} y :=
-    fun x => ⟨_, lexInt_isGreatest_pred x⟩
+    fun x => ⟨_, isGreatest_pred_of_isLeast_pos LexInt.isLeast_pos x⟩
   rintro φ ⟨ax, hax⟩
   by_cases hb : ax.minFrameClass ≤ FrameClass.Base
   · exact Validity.validOn_of_valid (axiom_valid ax hb) lexIntStaticFrame
