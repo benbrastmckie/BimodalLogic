@@ -1,7 +1,7 @@
 # Implementation Plan: Spherical → Saturation axiom rename
 
 - **Task**: 517 - Rename the fourth task-frame axiom from `Spherical` to `Saturation`
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3.5 hours
 - **Dependencies**: 518 (landed — baseline commit `92b154ab2` includes it)
 - **Research Inputs**: `specs/517_rename_spherical_axiom_to_saturation/reports/01_spherical-to-saturation-occurrence-inventory.md`
@@ -132,7 +132,7 @@ Phase 3's edits reference paths that only exist after Phase 2's `git mv`.
 
 ---
 
-### Phase 1: Capture the pre-edit baseline [NOT STARTED]
+### Phase 1: Capture the pre-edit baseline [COMPLETED]
 
 **Goal**: Establish, at the actual pre-edit HEAD, the numbers that Phase 2's and Phase 3's
 acceptance criteria are stated *relative to*. Acceptance for this task is "no NEW violations",
@@ -141,20 +141,20 @@ baseline has to be a measurement, not an assumption.
 
 **Tasks**:
 
-- [ ] Record the working HEAD (`git rev-parse HEAD`) and confirm the tree is clean apart from
+- [x] Record the working HEAD (`git rev-parse HEAD`) and confirm the tree is clean apart from
       any in-flight `specs/` bookkeeping.
-- [ ] Re-measure the census and record all four numbers:
+- [x] Re-measure the census and record all four numbers: *(deviation: altered — the `saturationity` census command needs the `grep -v "^specs/"` exclusion the plan applies to the other three; unexcluded it returns 8, all of them the plan/report prose that names the token. Outside `specs/` it is 0 as expected.)*
       ```bash
       git grep -io "spherical"   -- . | grep -v "^specs/" | wc -l   # expect 444
       git grep -io "spherically" -- . | grep -v "^specs/" | wc -l   # expect 3
       git grep -il "spherical"   -- . | grep -v "^specs/" | wc -l   # expect 40
       git grep -io "saturationity" -- . | wc -l                     # expect 0
       ```
-- [ ] Freeze the target file list to a file so Phase 2 and the post-commit review use the same
+- [x] Freeze the target file list to a file so Phase 2 and the post-commit review use the same
       set: `git grep -il "spherical" -- . | grep -v "^specs/" > /tmp/517-files.txt`.
-- [ ] Assert the sentinel token is absent from every target file:
+- [x] Assert the sentinel token is absent from every target file:
       `grep -l 'SPHLYSENTINEL' $(cat /tmp/517-files.txt)` must return nothing (exit 1).
-- [ ] Capture gate baselines, saving full output for later diffing:
+- [x] Capture gate baselines, saving full output for later diffing:
       - `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build` — expect exit 0
         (cached; fast at this point because nothing has been touched yet)
       - `bash scripts/check-module-invariants.sh` — expect exit 0, `ALL CHECKS PASSED`
@@ -163,7 +163,7 @@ baseline has to be a measurement, not an assumption.
       - `bash scripts/check-paper-definitions.sh` — expect exit 1, `10 recorded definition(s)
         drifted`, `2 recorded anchor(s) could not be resolved` (`def:frame#Spherical`,
         `cor:spherical-finite`)
-- [ ] Take a snapshot before the batch edit: `bash .claude/scripts/git-snapshot.sh 517`.
+- [x] Take a snapshot before the batch edit: `bash .claude/scripts/git-snapshot.sh 517`. *(deviation: altered — `git-snapshot.sh 517` reverted the uncommitted `specs/` bookkeeping to HEAD; restored via `git stash apply stash@{0}`. The snapshot itself is intact as `git-snapshot-1788327852`.)*
 
 **Timing**: 0.5 hours (dominated by `check-paper-definitions.sh`, which re-resolves 47 anchors
 against a 438 KB paper source)
