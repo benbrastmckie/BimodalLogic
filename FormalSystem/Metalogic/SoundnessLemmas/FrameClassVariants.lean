@@ -213,6 +213,373 @@ theorem serial_past_swap_valid :
   obtain ⟨s, hts⟩ := exists_gt t
   exact ⟨s, hts, fun h => h⟩
 
+/-- Left monotonicity of Until under `G` swaps to left monotonicity of Since under `H`:
+`H(φ' → χ') → (φ' S ψ') → (χ' S ψ')`. -/
+theorem left_mono_until_G_swap_valid (φ χ ψ : Formula) :
+    ValidIn FrameClass.Base
+      ((φ.imp χ).allFuture.imp ((Formula.untl φ ψ).imp (Formula.untl χ ψ))).swapTemporal := by
+  refine ValidIn.of_forall_total ?_
+  intro F _ M τ _hτ t
+  simp only [Formula.swap_temporal_all_future, Formula.swapTemporal]
+  simp only [TruthAt, Truth.past_iff]
+  intro h_H ⟨s, hst, h_ψs, h_guard⟩
+  exact ⟨s, hst, h_ψs, fun r hsr hrt => h_H r hrt (h_guard r hsr hrt)⟩
+
+/-- Left monotonicity of Since under `H` swaps to left monotonicity of Until under `G`:
+`G(φ' → χ') → (φ' U ψ') → (χ' U ψ')`. -/
+theorem left_mono_since_H_swap_valid (φ χ ψ : Formula) :
+    ValidIn FrameClass.Base
+      ((φ.imp χ).allPast.imp ((Formula.snce φ ψ).imp (Formula.snce χ ψ))).swapTemporal := by
+  refine ValidIn.of_forall_total ?_
+  intro F _ M τ _hτ t
+  simp only [Formula.swap_temporal_all_past, Formula.swapTemporal]
+  simp only [TruthAt, Truth.future_iff]
+  intro h_G ⟨s, hts, h_ψs, h_guard⟩
+  exact ⟨s, hts, h_ψs, fun r htr hrs => h_G r htr (h_guard r htr hrs)⟩
+
+/-- Right monotonicity of Until swaps to right monotonicity of Since:
+`H(φ' → ψ') → (χ' S φ') → (χ' S ψ')`. -/
+theorem right_mono_until_swap_valid (φ ψ χ : Formula) :
+    ValidIn FrameClass.Base
+      ((φ.imp ψ).allFuture.imp ((Formula.untl χ φ).imp (Formula.untl χ ψ))).swapTemporal := by
+  refine ValidIn.of_forall_total ?_
+  intro F _ M τ _hτ t
+  simp only [Formula.swap_temporal_all_future, Formula.swapTemporal]
+  simp only [TruthAt, Truth.past_iff]
+  intro h_H ⟨s, hst, h_φs, h_guard⟩
+  exact ⟨s, hst, h_H s hst h_φs, h_guard⟩
+
+/-- Right monotonicity of Since swaps to right monotonicity of Until:
+`G(φ' → ψ') → (χ' U φ') → (χ' U ψ')`. -/
+theorem right_mono_since_swap_valid (φ ψ χ : Formula) :
+    ValidIn FrameClass.Base
+      ((φ.imp ψ).allPast.imp ((Formula.snce χ φ).imp (Formula.snce χ ψ))).swapTemporal := by
+  refine ValidIn.of_forall_total ?_
+  intro F _ M τ _hτ t
+  simp only [Formula.swap_temporal_all_past, Formula.swapTemporal]
+  simp only [TruthAt, Truth.future_iff]
+  intro h_G ⟨s, hts, h_φs, h_guard⟩
+  exact ⟨s, hts, h_G s hts h_φs, h_guard⟩
+
+/-- The future connection axiom `φ → G(Pφ)` swaps to `φ' → H(Fφ')`: at any past `s < t`, the
+present `t` is itself the required future witness. -/
+theorem connect_future_swap_valid (φ : Formula) :
+    ValidIn FrameClass.Base (φ.imp (φ.somePast.allFuture)).swapTemporal := by
+  refine ValidIn.of_forall_total ?_
+  intro F _ M τ _hτ t
+  simp only [Formula.swap_temporal_some_past, Formula.swap_temporal_all_future,
+    Formula.swapTemporal]
+  simp only [TruthAt, Truth.past_iff, Truth.some_future_iff]
+  intro h_φt s hst
+  exact ⟨t, hst, h_φt⟩
+
+/-- The past connection axiom `φ → H(Fφ)` swaps to `φ' → G(Pφ')`, mirror of
+`connect_future_swap_valid`. -/
+theorem connect_past_swap_valid (φ : Formula) :
+    ValidIn FrameClass.Base (φ.imp (φ.someFuture.allPast)).swapTemporal := by
+  refine ValidIn.of_forall_total ?_
+  intro F _ M τ _hτ t
+  simp only [Formula.swap_temporal_some_future, Formula.swap_temporal_all_past,
+    Formula.swapTemporal]
+  simp only [TruthAt, Truth.future_iff, Truth.some_past_iff]
+  intro h_φt s hts
+  exact ⟨t, hts, h_φt⟩
+
+/-- Until enrichment swaps to Since enrichment: `p' ∧ (φ' S ψ') → φ' S (ψ' ∧ (φ' U p'))`. The
+Since-witness `s < t` also witnesses the inner Until, with `t` itself carrying `p'`. -/
+theorem enrichment_until_swap_valid (φ ψ p : Formula) :
+    ValidIn FrameClass.Base (Formula.and p (Formula.untl φ ψ) |>.imp
+        (Formula.untl φ (Formula.and ψ (Formula.snce φ p)))).swapTemporal := by
+  refine ValidIn.of_forall_total ?_
+  intro F _ M τ _hτ t
+  simp only [Formula.swapTemporal, Formula.and, Formula.neg, TruthAt]
+  intro h_conj
+  have h_pt : TruthAt M τ t p.swapTemporal := by
+    by_contra h_neg; exact h_conj (fun h_p _ => h_neg h_p)
+  have h_since : ∃ s, s < t ∧ TruthAt M τ s ψ.swapTemporal ∧
+      ∀ r, s < r → r < t → TruthAt M τ r φ.swapTemporal := by
+    by_contra h_neg; exact h_conj (fun _ h_s => h_neg h_s)
+  obtain ⟨s, hst, h_ψs, h_guard⟩ := h_since
+  refine ⟨s, hst, ?_, h_guard⟩
+  intro h_imp
+  exact h_imp h_ψs ⟨t, hst, h_pt, fun r hsr hrt => h_guard r hsr hrt⟩
+
+/-- Since enrichment swaps to Until enrichment, mirror of `enrichment_until_swap_valid`. -/
+theorem enrichment_since_swap_valid (φ ψ p : Formula) :
+    ValidIn FrameClass.Base (Formula.and p (Formula.snce φ ψ) |>.imp
+        (Formula.snce φ (Formula.and ψ (Formula.untl φ p)))).swapTemporal := by
+  refine ValidIn.of_forall_total ?_
+  intro F _ M τ _hτ t
+  simp only [Formula.swapTemporal, Formula.and, Formula.neg, TruthAt]
+  intro h_conj
+  have h_pt : TruthAt M τ t p.swapTemporal := by
+    by_contra h_neg; exact h_conj (fun h_p _ => h_neg h_p)
+  have h_until : ∃ s, t < s ∧ TruthAt M τ s ψ.swapTemporal ∧
+      ∀ r, t < r → r < s → TruthAt M τ r φ.swapTemporal := by
+    by_contra h_neg; exact h_conj (fun _ h_u => h_neg h_u)
+  obtain ⟨s, hts, h_ψs, h_guard⟩ := h_until
+  refine ⟨s, hts, ?_, h_guard⟩
+  intro h_imp
+  exact h_imp h_ψs ⟨t, hts, h_pt, fun r htr hrs => h_guard r htr hrs⟩
+
+/-- Until self-accumulation swaps to Since self-accumulation:
+`(φ' S ψ') → ((φ' ∧ (φ' S ψ')) S ψ')`. The original witness is reused, and each guard point
+inherits the Since from the same witness. -/
+theorem self_accum_until_swap_valid (φ ψ : Formula) :
+    ValidIn FrameClass.Base ((Formula.untl φ ψ).imp
+        (Formula.untl (Formula.and φ (Formula.untl φ ψ)) ψ)).swapTemporal := by
+  refine ValidIn.of_forall_total ?_
+  intro F _ M τ _hτ t
+  simp only [Formula.swapTemporal, Formula.and, Formula.neg, TruthAt]
+  intro ⟨s, hst, h_ψs, h_guard⟩
+  refine ⟨s, hst, h_ψs, fun r hsr hrt h_imp => ?_⟩
+  exact h_imp (h_guard r hsr hrt) ⟨s, hsr, h_ψs, fun q hsq hqr =>
+      h_guard q hsq (lt_trans hqr hrt)⟩
+
+/-- Since self-accumulation swaps to Until self-accumulation, mirror of
+`self_accum_until_swap_valid`. -/
+theorem self_accum_since_swap_valid (φ ψ : Formula) :
+    ValidIn FrameClass.Base ((Formula.snce φ ψ).imp
+        (Formula.snce (Formula.and φ (Formula.snce φ ψ)) ψ)).swapTemporal := by
+  refine ValidIn.of_forall_total ?_
+  intro F _ M τ _hτ t
+  simp only [Formula.swapTemporal, Formula.and, Formula.neg, TruthAt]
+  intro ⟨s, hts, h_ψs, h_guard⟩
+  refine ⟨s, hts, h_ψs, fun r htr hrs h_imp => ?_⟩
+  exact h_imp (h_guard r htr hrs) ⟨s, hrs, h_ψs, fun q hrq hqs =>
+      h_guard q (lt_trans htr hrq) hqs⟩
+
+/-- Until absorption swaps to Since absorption:
+`(φ' S (φ' ∧ (φ' S ψ'))) → (φ' S ψ')`. The inner witness `s₂` serves as the outer one, and the
+guard obligation splits by trichotomy at the intermediate point `s₁`. -/
+theorem absorb_until_swap_valid (φ ψ : Formula) :
+    ValidIn FrameClass.Base
+      ((Formula.untl φ (Formula.and φ (Formula.untl φ ψ))).imp
+        (Formula.untl φ ψ)).swapTemporal := by
+  refine ValidIn.of_forall_total ?_
+  intro F _ M τ _hτ t
+  simp only [Formula.swapTemporal, Formula.and, Formula.neg, TruthAt]
+  intro ⟨s₁, hs₁t, h_conj, h_guard₁⟩
+  have h_φs₁_and_since : TruthAt M τ s₁ φ.swapTemporal ∧
+      (∃ s₂, s₂ < s₁ ∧ TruthAt M τ s₂ ψ.swapTemporal ∧
+        ∀ q, s₂ < q → q < s₁ → TruthAt M τ q φ.swapTemporal) := by
+    constructor
+    · by_contra h_neg; exact h_conj (fun h_φ _ => h_neg h_φ)
+    · by_contra h_neg; exact h_conj (fun _ h_since => h_neg h_since)
+  obtain ⟨h_φs₁, s₂, hs₂s₁, h_ψs₂, h_guard₂⟩ := h_φs₁_and_since
+  refine ⟨s₂, lt_trans hs₂s₁ hs₁t, h_ψs₂, fun q hs₂q hqt => ?_⟩
+  rcases lt_trichotomy q s₁ with h_lt | h_eq | h_gt
+  · exact h_guard₂ q hs₂q h_lt
+  · exact h_eq ▸ h_φs₁
+  · exact h_guard₁ q h_gt hqt
+
+/-- Since absorption swaps to Until absorption, mirror of `absorb_until_swap_valid`. -/
+theorem absorb_since_swap_valid (φ ψ : Formula) :
+    ValidIn FrameClass.Base
+      ((Formula.snce φ (Formula.and φ (Formula.snce φ ψ))).imp
+        (Formula.snce φ ψ)).swapTemporal := by
+  refine ValidIn.of_forall_total ?_
+  intro F _ M τ _hτ t
+  simp only [Formula.swapTemporal, Formula.and, Formula.neg, TruthAt]
+  intro ⟨s₁, hts₁, h_conj, h_guard₁⟩
+  have h_φs₁_and_until : TruthAt M τ s₁ φ.swapTemporal ∧
+      (∃ s₂, s₁ < s₂ ∧ TruthAt M τ s₂ ψ.swapTemporal ∧
+        ∀ q, s₁ < q → q < s₂ → TruthAt M τ q φ.swapTemporal) := by
+    constructor
+    · by_contra h_neg; exact h_conj (fun h_φ _ => h_neg h_φ)
+    · by_contra h_neg; exact h_conj (fun _ h_until => h_neg h_until)
+  obtain ⟨h_φs₁, s₂, hs₁s₂, h_ψs₂, h_guard₂⟩ := h_φs₁_and_until
+  refine ⟨s₂, lt_trans hts₁ hs₁s₂, h_ψs₂, fun q htq hqs₂ => ?_⟩
+  rcases lt_trichotomy q s₁ with h_lt | h_eq | h_gt
+  · exact h_guard₁ q htq h_lt
+  · exact h_eq ▸ h_φs₁
+  · exact h_guard₂ q h_gt hqs₂
+
+/-- Until linearity swaps to Since linearity. Two Since-witnesses `s₁` and `s₂` below `t` are
+ordered by `lt_trichotomy`, and each of the three cases selects the matching disjunct. -/
+theorem linear_until_swap_valid (φ ψ χ θ : Formula) :
+    ValidIn FrameClass.Base (Formula.and (Formula.untl φ ψ) (Formula.untl χ θ)
+        |>.imp (Formula.or
+          (Formula.or
+            (Formula.untl (Formula.and φ χ) (Formula.and ψ θ))
+            (Formula.untl (Formula.and φ χ) (Formula.and ψ χ)))
+          (Formula.untl (Formula.and φ χ) (Formula.and φ θ)))).swapTemporal := by
+  refine ValidIn.of_forall_total ?_
+  intro F _ M τ _hτ t
+  simp only [Formula.swapTemporal, Formula.and, Formula.or, Formula.neg, TruthAt]
+  intro h_conj
+  have h_both : (∃ s, s < t ∧ TruthAt M τ s ψ.swapTemporal ∧
+      ∀ r, s < r → r < t → TruthAt M τ r φ.swapTemporal) ∧
+    (∃ s, s < t ∧ TruthAt M τ s θ.swapTemporal ∧
+      ∀ r, s < r → r < t → TruthAt M τ r χ.swapTemporal) := by
+    constructor
+    · by_contra h; exact h_conj (fun h1 _ => h h1)
+    · by_contra h; exact h_conj (fun _ h2 => h h2)
+  obtain ⟨⟨s₁, hs₁t, h_ψs₁, h_guard₁⟩, s₂, hs₂t, h_θs₂, h_guard₂⟩ := h_both
+  rcases lt_trichotomy s₁ s₂ with h_lt | h_eq | h_gt
+  · -- s₁ < s₂ < t: third disjunct (φ∧χ) S (φ∧θ) with witness s₂
+    intro _
+    refine ⟨s₂, hs₂t, ?_, fun r hs₂r hrt h_imp => ?_⟩
+    · intro h_neg; exact h_neg (h_guard₁ s₂ h_lt hs₂t) h_θs₂
+    · exact h_imp (h_guard₁ r (lt_trans h_lt hs₂r) hrt) (h_guard₂ r hs₂r hrt)
+  · -- s₁ = s₂: first disjunct (φ∧χ) S (ψ∧θ) with witness s₁
+    intro h_outer; exfalso; apply h_outer; intro h_inner; exfalso; apply h_inner
+    refine ⟨s₁, hs₁t, ?_, fun r hs₁r hrt h_imp => ?_⟩
+    · intro h_neg; exact h_neg h_ψs₁ (h_eq ▸ h_θs₂)
+    · exact h_imp (h_guard₁ r hs₁r hrt) (h_guard₂ r (h_eq ▸ hs₁r) hrt)
+  · -- s₂ < s₁ < t: second disjunct (φ∧χ) S (ψ∧χ) with witness s₁
+    intro h_neg; exfalso; apply h_neg; intro _
+    refine ⟨s₁, hs₁t, ?_, fun r hs₁r hrt h_imp => ?_⟩
+    · intro h_neg; exact h_neg h_ψs₁ (h_guard₂ s₁ h_gt hs₁t)
+    · exact h_imp (h_guard₁ r hs₁r hrt) (h_guard₂ r (lt_trans h_gt hs₁r) hrt)
+
+/-- Since linearity swaps to Until linearity, mirror of `linear_until_swap_valid`. -/
+theorem linear_since_swap_valid (φ ψ χ θ : Formula) :
+    ValidIn FrameClass.Base (Formula.and (Formula.snce φ ψ) (Formula.snce χ θ)
+        |>.imp (Formula.or
+          (Formula.or
+            (Formula.snce (Formula.and φ χ) (Formula.and ψ θ))
+            (Formula.snce (Formula.and φ χ) (Formula.and ψ χ)))
+          (Formula.snce (Formula.and φ χ) (Formula.and φ θ)))).swapTemporal := by
+  refine ValidIn.of_forall_total ?_
+  intro F _ M τ _hτ t
+  simp only [Formula.swapTemporal, Formula.and, Formula.or, Formula.neg, TruthAt]
+  intro h_conj
+  have h_both : (∃ s, t < s ∧ TruthAt M τ s ψ.swapTemporal ∧
+      ∀ r, t < r → r < s → TruthAt M τ r φ.swapTemporal) ∧
+    (∃ s, t < s ∧ TruthAt M τ s θ.swapTemporal ∧
+      ∀ r, t < r → r < s → TruthAt M τ r χ.swapTemporal) := by
+    constructor
+    · by_contra h; exact h_conj (fun h1 _ => h h1)
+    · by_contra h; exact h_conj (fun _ h2 => h h2)
+  obtain ⟨⟨s₁, hts₁, h_ψs₁, h_guard₁⟩, s₂, hts₂, h_θs₂, h_guard₂⟩ := h_both
+  rcases lt_trichotomy s₁ s₂ with h_lt | h_eq | h_gt
+  · -- s₁ < s₂: second disjunct (φ∧χ) U (ψ∧χ) with witness s₁
+    intro h_neg; exfalso; apply h_neg; intro _
+    refine ⟨s₁, hts₁, ?_, fun r htr hrs h_imp => ?_⟩
+    · intro h_neg; exact h_neg h_ψs₁ (h_guard₂ s₁ hts₁ h_lt)
+    · exact h_imp (h_guard₁ r htr hrs) (h_guard₂ r htr (lt_trans hrs h_lt))
+  · -- s₁ = s₂: first disjunct (φ∧χ) U (ψ∧θ) with witness s₁
+    intro h_outer; exfalso; apply h_outer; intro h_inner; exfalso; apply h_inner
+    refine ⟨s₁, hts₁, ?_, fun r htr hrs h_imp => ?_⟩
+    · intro h_neg; exact h_neg h_ψs₁ (h_eq ▸ h_θs₂)
+    · exact h_imp (h_guard₁ r htr hrs) (h_guard₂ r htr (h_eq ▸ hrs))
+  · -- s₂ < s₁: third disjunct (φ∧χ) U (φ∧θ) with witness s₂
+    intro _
+    refine ⟨s₂, hts₂, ?_, fun r htr hrs h_imp => ?_⟩
+    · intro h_neg; exact h_neg (h_guard₁ s₂ hts₂ h_gt) h_θs₂
+    · exact h_imp (h_guard₁ r htr (lt_trans hrs h_gt)) (h_guard₂ r htr hrs)
+
+/-- `(φ U ψ) → Fψ` swaps to `(φ' S ψ') → Pψ'`: the Since-witness is the past witness, and the
+guard is discarded. -/
+theorem until_F_swap_valid (φ ψ : Formula) :
+    ValidIn FrameClass.Base ((Formula.untl φ ψ).imp (Formula.someFuture ψ)).swapTemporal := by
+  refine ValidIn.of_forall_total ?_
+  intro F _ M τ _hτ t
+  simp only [Formula.swap_temporal_some_future, Formula.swapTemporal]
+  simp only [TruthAt, Truth.some_past_iff]
+  intro ⟨s, hst, h_ψs, _h_guard⟩
+  exact ⟨s, hst, h_ψs⟩
+
+/-- `(φ S ψ) → Pψ` swaps to `(φ' U ψ') → Fψ'`, mirror of `until_F_swap_valid`. -/
+theorem since_P_swap_valid (φ ψ : Formula) :
+    ValidIn FrameClass.Base ((Formula.snce φ ψ).imp (Formula.somePast ψ)).swapTemporal := by
+  refine ValidIn.of_forall_total ?_
+  intro F _ M τ _hτ t
+  simp only [Formula.swap_temporal_some_past, Formula.swapTemporal]
+  simp only [TruthAt, Truth.some_future_iff]
+  intro ⟨s, hts, h_ψs, _h_guard⟩
+  exact ⟨s, hts, h_ψs⟩
+
+/-- Forward discreteness symmetry swaps to the backward direction. From a predecessor gap `r < t`
+the reflected point `t + (t - r)` is a successor gap, since a point strictly inside the
+reflected interval maps back into `(r, t)`. -/
+theorem discrete_symm_fwd_swap_valid :
+    ValidIn FrameClass.Base ((Formula.untl Formula.bot (Formula.bot.imp Formula.bot)).imp
+      (Formula.snce Formula.bot (Formula.bot.imp Formula.bot))).swapTemporal := by
+  refine ValidIn.of_forall_total ?_
+  intro F _ M τ _hτ t
+  simp only [Formula.swapTemporal, TruthAt]
+  intro ⟨r, hrt, _h_top_r, h_guard⟩
+  refine ⟨t + (t - r), lt_add_of_pos_right t (sub_pos.mpr hrt), fun h => h, fun c htc hcs => ?_⟩
+  have h1 : r < c - (t - r) := by
+    conv_lhs => rw [(sub_sub_cancel t r).symm]
+    exact sub_lt_sub_right htc _
+  have h2 : c - (t - r) < t := by
+    conv_rhs => rw [(add_sub_cancel_right t (t - r)).symm]
+    exact sub_lt_sub_right hcs _
+  exact h_guard (c - (t - r)) h1 h2
+
+/-- Backward discreteness symmetry swaps to the forward direction, mirror of
+`discrete_symm_fwd_swap_valid`. -/
+theorem discrete_symm_bwd_swap_valid :
+    ValidIn FrameClass.Base ((Formula.snce Formula.bot (Formula.bot.imp Formula.bot)).imp
+      (Formula.untl Formula.bot (Formula.bot.imp Formula.bot))).swapTemporal := by
+  refine ValidIn.of_forall_total ?_
+  intro F _ M τ _hτ t
+  simp only [Formula.swapTemporal, TruthAt]
+  intro ⟨s, hts, _h_top_s, h_guard⟩
+  refine ⟨t - (s - t), sub_lt_self t (sub_pos.mpr hts), fun h => h, fun c hrc hct => ?_⟩
+  have h1 : t < c + (s - t) :=
+    calc t = t - (s - t) + (s - t) := (sub_add_cancel t (s - t)).symm
+      _ < c + (s - t) := add_lt_add_left hrc (s - t)
+  have h2 : c + (s - t) < s :=
+    calc c + (s - t) < t + (s - t) := add_lt_add_left hct (s - t)
+      _ = s := by rw [add_comm, sub_add_cancel]
+  exact h_guard (c + (s - t)) h1 h2
+
+/-- Forward gap propagation swaps to past propagation: a gap of width `t - r` at `t` translates to
+a gap of the same width at every `u`, by shifting the witness. -/
+theorem discrete_propagate_fwd_swap_valid :
+    ValidIn FrameClass.Base ((Formula.untl Formula.bot (Formula.bot.imp Formula.bot)).imp
+      (Formula.allFuture
+        (Formula.untl Formula.bot (Formula.bot.imp Formula.bot)))).swapTemporal := by
+  refine ValidIn.of_forall_total ?_
+  intro F _ M τ _hτ t
+  simp only [Formula.swap_temporal_all_future, Formula.swapTemporal]
+  simp only [TruthAt, Truth.past_iff]
+  intro ⟨r, hrt, _h_top_r, h_guard⟩ u _hut
+  refine ⟨u - (t - r), sub_lt_self u (sub_pos.mpr hrt), fun h => h, fun c hrc hcu => ?_⟩
+  have h1 : r < c + (t - u) := by
+    conv_lhs =>
+      rw [show r = u - (t - r) + (t - u) from by rw [sub_add_sub_cancel', sub_sub_cancel]]
+    exact add_lt_add_left hrc (t - u)
+  have h2 : c + (t - u) < t := by
+    conv_rhs => rw [show t = u + (t - u) from by rw [add_comm, sub_add_cancel]]
+    exact add_lt_add_left hcu (t - u)
+  exact h_guard (c + (t - u)) h1 h2
+
+/-- Backward gap propagation swaps to future propagation, mirror of
+`discrete_propagate_fwd_swap_valid`. -/
+theorem discrete_propagate_bwd_swap_valid :
+    ValidIn FrameClass.Base ((Formula.untl Formula.bot (Formula.bot.imp Formula.bot)).imp
+      (Formula.allPast (Formula.untl Formula.bot (Formula.bot.imp Formula.bot)))).swapTemporal := by
+  refine ValidIn.of_forall_total ?_
+  intro F _ M τ _hτ t
+  simp only [Formula.swap_temporal_all_past, Formula.swapTemporal]
+  simp only [TruthAt, Truth.future_iff]
+  intro ⟨r, hrt, _h_top_r, h_guard⟩ u _htu
+  refine ⟨u - (t - r), sub_lt_self u (sub_pos.mpr hrt), fun h => h, fun c hrc hcu => ?_⟩
+  have h1 : r < c + (t - u) := by
+    conv_lhs =>
+      rw [show r = u - (t - r) + (t - u) from by rw [sub_add_sub_cancel', sub_sub_cancel]]
+    exact add_lt_add_left hrc (t - u)
+  have h2 : c + (t - u) < t := by
+    conv_rhs => rw [show t = u + (t - u) from by rw [add_comm, sub_add_cancel]]
+    exact add_lt_add_left hcu (t - u)
+  exact h_guard (c + (t - u)) h1 h2
+
+/-- Gap necessity swaps to itself with `U` exchanged for `S`: the gap witness is a fact about the
+duration order, so it transfers unchanged to every total history. -/
+theorem discrete_box_necessity_swap_valid :
+    ValidIn FrameClass.Base ((Formula.untl Formula.bot (Formula.bot.imp Formula.bot)).imp
+      (Formula.box (Formula.untl Formula.bot (Formula.bot.imp Formula.bot)))).swapTemporal := by
+  refine ValidIn.of_forall_total ?_
+  intro F _ M τ _hτ t
+  simp only [Formula.swapTemporal, TruthAt]
+  intro ⟨r, hrt, _h_top_r, h_guard⟩ σ _h_σ_mem
+  exact ⟨r, hrt, fun h => h, h_guard⟩
+
 /-! ## Per-Axiom Validity of the Unswapped Schemas
 
 Validity of the unswapped axiom schemas at `FrameClass.Base`. The swap arms below consume these
@@ -351,293 +718,37 @@ theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) (h_fc :
   | modal_k_dist ψ χ => exact modal_k_dist_swap_valid ψ χ
   | serial_future => exact serial_future_swap_valid
   | serial_past => exact serial_past_swap_valid
-  | left_mono_until_G φ χ ψ =>
-    -- Swap of left_mono_until_G: H(φ'→χ') → snce(φ',ψ') → snce(χ',ψ')
-    refine ValidIn.of_forall_total ?_
-    intro F _ M τ _hτ t
-    simp only [Formula.swap_temporal_all_future, Formula.swapTemporal]
-    simp only [TruthAt, Truth.past_iff]
-    intro h_H ⟨s, hst, h_ψs, h_guard⟩
-    exact ⟨s, hst, h_ψs, fun r hsr hrt => h_H r hrt (h_guard r hsr hrt)⟩
-  | left_mono_since_H φ χ ψ =>
-    -- Swap of left_mono_since_H: G(φ'→χ') → untl(φ',ψ') → untl(χ',ψ')
-    refine ValidIn.of_forall_total ?_
-    intro F _ M τ _hτ t
-    simp only [Formula.swap_temporal_all_past, Formula.swapTemporal]
-    simp only [TruthAt, Truth.future_iff]
-    intro h_G ⟨s, hts, h_ψs, h_guard⟩
-    exact ⟨s, hts, h_ψs, fun r htr hrs => h_G r htr (h_guard r htr hrs)⟩
-  | right_mono_until φ ψ χ =>
-    -- swap: H(φ'→χ') → (φ' S ψ') → (χ' S ψ')
-    refine ValidIn.of_forall_total ?_
-    intro F _ M τ _hτ t
-    simp only [Formula.swap_temporal_all_future, Formula.swapTemporal]
-    simp only [TruthAt, Truth.past_iff]
-    intro h_H ⟨s, hst, h_φs, h_guard⟩
-    exact ⟨s, hst, h_H s hst h_φs, h_guard⟩
-  | right_mono_since φ ψ χ =>
-    -- swap: G(φ'→χ') → (φ' U ψ') → (χ' U ψ')
-    refine ValidIn.of_forall_total ?_
-    intro F _ M τ _hτ t
-    simp only [Formula.swap_temporal_all_past, Formula.swapTemporal]
-    simp only [TruthAt, Truth.future_iff]
-    intro h_G ⟨s, hts, h_φs, h_guard⟩
-    exact ⟨s, hts, h_G s hts h_φs, h_guard⟩
-  | connect_future φ =>
-    -- connect_future: φ → G(P(φ)), swap: swap(φ) → H(F(swap(φ)))
-    refine ValidIn.of_forall_total ?_
-    intro F _ M τ _hτ t
-    simp only [Formula.swap_temporal_some_past, Formula.swap_temporal_all_future,
-      Formula.swapTemporal]
-    simp only [TruthAt, Truth.past_iff, Truth.some_future_iff]
-    intro h_φt s hst
-    exact ⟨t, hst, h_φt⟩
-  | connect_past φ =>
-    -- connect_past: φ → H(F(φ)), swap: swap(φ) → G(P(swap(φ)))
-    refine ValidIn.of_forall_total ?_
-    intro F _ M τ _hτ t
-    simp only [Formula.swap_temporal_some_future, Formula.swap_temporal_all_past,
-      Formula.swapTemporal]
-    simp only [TruthAt, Truth.future_iff, Truth.some_past_iff]
-    intro h_φt s hts
-    exact ⟨t, hts, h_φt⟩
-  | enrichment_until φ ψ p =>
-    -- Swap of enrichment_until: p ∧ snce(φ', ψ') → snce(φ', ψ' ∧ untl(φ', p))
-    refine ValidIn.of_forall_total ?_
-    intro F _ M τ _hτ t
-    simp only [Formula.swapTemporal, Formula.and, Formula.neg, TruthAt]
-    intro h_conj
-    have h_pt : TruthAt M τ t p.swapTemporal := by
-      by_contra h_neg; exact h_conj (fun h_p _ => h_neg h_p)
-    have h_since : ∃ s, s < t ∧ TruthAt M τ s ψ.swapTemporal ∧
-        ∀ r, s < r → r < t → TruthAt M τ r φ.swapTemporal := by
-      by_contra h_neg; exact h_conj (fun _ h_s => h_neg h_s)
-    obtain ⟨s, hst, h_ψs, h_guard⟩ := h_since
-    refine ⟨s, hst, ?_, h_guard⟩
-    intro h_imp
-    exact h_imp h_ψs ⟨t, hst, h_pt, fun r hsr hrt => h_guard r hsr hrt⟩
-  | enrichment_since φ ψ p =>
-    -- Swap of enrichment_since: p ∧ untl(φ', ψ') → untl(φ', ψ' ∧ snce(φ', p))
-    refine ValidIn.of_forall_total ?_
-    intro F _ M τ _hτ t
-    simp only [Formula.swapTemporal, Formula.and, Formula.neg, TruthAt]
-    intro h_conj
-    have h_pt : TruthAt M τ t p.swapTemporal := by
-      by_contra h_neg; exact h_conj (fun h_p _ => h_neg h_p)
-    have h_until : ∃ s, t < s ∧ TruthAt M τ s ψ.swapTemporal ∧
-        ∀ r, t < r → r < s → TruthAt M τ r φ.swapTemporal := by
-      by_contra h_neg; exact h_conj (fun _ h_u => h_neg h_u)
-    obtain ⟨s, hts, h_ψs, h_guard⟩ := h_until
-    refine ⟨s, hts, ?_, h_guard⟩
-    intro h_imp
-    exact h_imp h_ψs ⟨t, hts, h_pt, fun r htr hrs => h_guard r htr hrs⟩
-  | self_accum_until φ ψ =>
-    -- Swap: (φ' S ψ') → ((φ' ∧ (φ' S ψ')) S ψ')
-    refine ValidIn.of_forall_total ?_
-    intro F _ M τ _hτ t
-    simp only [Formula.swapTemporal, Formula.and, Formula.neg, TruthAt]
-    intro ⟨s, hst, h_ψs, h_guard⟩
-    refine ⟨s, hst, h_ψs, fun r hsr hrt h_imp => ?_⟩
-    exact h_imp (h_guard r hsr hrt) ⟨s, hsr, h_ψs, fun q hsq hqr =>
-        h_guard q hsq (lt_trans hqr hrt)⟩
-  | self_accum_since φ ψ =>
-    -- Swap: (φ' U ψ') → ((φ' ∧ (φ' U ψ')) U ψ')
-    refine ValidIn.of_forall_total ?_
-    intro F _ M τ _hτ t
-    simp only [Formula.swapTemporal, Formula.and, Formula.neg, TruthAt]
-    intro ⟨s, hts, h_ψs, h_guard⟩
-    refine ⟨s, hts, h_ψs, fun r htr hrs h_imp => ?_⟩
-    exact h_imp (h_guard r htr hrs) ⟨s, hrs, h_ψs, fun q hrq hqs =>
-        h_guard q (lt_trans htr hrq) hqs⟩
-  | absorb_until φ ψ =>
-    -- Swap: (φ' S (φ' ∧ (φ' S ψ'))) → (φ' S ψ')
-    refine ValidIn.of_forall_total ?_
-    intro F _ M τ _hτ t
-    simp only [Formula.swapTemporal, Formula.and, Formula.neg, TruthAt]
-    intro ⟨s₁, hs₁t, h_conj, h_guard₁⟩
-    have h_φs₁_and_since : TruthAt M τ s₁ φ.swapTemporal ∧
-        (∃ s₂, s₂ < s₁ ∧ TruthAt M τ s₂ ψ.swapTemporal ∧
-          ∀ q, s₂ < q → q < s₁ → TruthAt M τ q φ.swapTemporal) := by
-      constructor
-      · by_contra h_neg; exact h_conj (fun h_φ _ => h_neg h_φ)
-      · by_contra h_neg; exact h_conj (fun _ h_since => h_neg h_since)
-    obtain ⟨h_φs₁, s₂, hs₂s₁, h_ψs₂, h_guard₂⟩ := h_φs₁_and_since
-    refine ⟨s₂, lt_trans hs₂s₁ hs₁t, h_ψs₂, fun q hs₂q hqt => ?_⟩
-    rcases lt_trichotomy q s₁ with h_lt | h_eq | h_gt
-    · exact h_guard₂ q hs₂q h_lt
-    · exact h_eq ▸ h_φs₁
-    · exact h_guard₁ q h_gt hqt
-  | absorb_since φ ψ =>
-    -- Swap: (φ' U (φ' ∧ (φ' U ψ'))) → (φ' U ψ')
-    refine ValidIn.of_forall_total ?_
-    intro F _ M τ _hτ t
-    simp only [Formula.swapTemporal, Formula.and, Formula.neg, TruthAt]
-    intro ⟨s₁, hts₁, h_conj, h_guard₁⟩
-    have h_φs₁_and_until : TruthAt M τ s₁ φ.swapTemporal ∧
-        (∃ s₂, s₁ < s₂ ∧ TruthAt M τ s₂ ψ.swapTemporal ∧
-          ∀ q, s₁ < q → q < s₂ → TruthAt M τ q φ.swapTemporal) := by
-      constructor
-      · by_contra h_neg; exact h_conj (fun h_φ _ => h_neg h_φ)
-      · by_contra h_neg; exact h_conj (fun _ h_until => h_neg h_until)
-    obtain ⟨h_φs₁, s₂, hs₁s₂, h_ψs₂, h_guard₂⟩ := h_φs₁_and_until
-    refine ⟨s₂, lt_trans hts₁ hs₁s₂, h_ψs₂, fun q htq hqs₂ => ?_⟩
-    rcases lt_trichotomy q s₁ with h_lt | h_eq | h_gt
-    · exact h_guard₁ q htq h_lt
-    · exact h_eq ▸ h_φs₁
-    · exact h_guard₂ q h_gt hqs₂
-  | linear_until φ ψ χ θ =>
-    -- Swap: Since-based linearity with swapped subformulas
-    refine ValidIn.of_forall_total ?_
-    intro F _ M τ _hτ t
-    simp only [Formula.swapTemporal, Formula.and, Formula.or, Formula.neg, TruthAt]
-    intro h_conj
-    have h_both : (∃ s, s < t ∧ TruthAt M τ s ψ.swapTemporal ∧
-        ∀ r, s < r → r < t → TruthAt M τ r φ.swapTemporal) ∧
-      (∃ s, s < t ∧ TruthAt M τ s θ.swapTemporal ∧
-        ∀ r, s < r → r < t → TruthAt M τ r χ.swapTemporal) := by
-      constructor
-      · by_contra h; exact h_conj (fun h1 _ => h h1)
-      · by_contra h; exact h_conj (fun _ h2 => h h2)
-    obtain ⟨⟨s₁, hs₁t, h_ψs₁, h_guard₁⟩, s₂, hs₂t, h_θs₂, h_guard₂⟩ := h_both
-    rcases lt_trichotomy s₁ s₂ with h_lt | h_eq | h_gt
-    · -- s₁ < s₂ < t: third disjunct (φ∧χ) S (φ∧θ) with witness s₂
-      intro _
-      refine ⟨s₂, hs₂t, ?_, fun r hs₂r hrt h_imp => ?_⟩
-      · intro h_neg; exact h_neg (h_guard₁ s₂ h_lt hs₂t) h_θs₂
-      · exact h_imp (h_guard₁ r (lt_trans h_lt hs₂r) hrt) (h_guard₂ r hs₂r hrt)
-    · -- s₁ = s₂: first disjunct (φ∧χ) S (ψ∧θ) with witness s₁
-      intro h_outer; exfalso; apply h_outer; intro h_inner; exfalso; apply h_inner
-      refine ⟨s₁, hs₁t, ?_, fun r hs₁r hrt h_imp => ?_⟩
-      · intro h_neg; exact h_neg h_ψs₁ (h_eq ▸ h_θs₂)
-      · exact h_imp (h_guard₁ r hs₁r hrt) (h_guard₂ r (h_eq ▸ hs₁r) hrt)
-    · -- s₂ < s₁ < t: second disjunct (φ∧χ) S (ψ∧χ) with witness s₁
-      intro h_neg; exfalso; apply h_neg; intro _
-      refine ⟨s₁, hs₁t, ?_, fun r hs₁r hrt h_imp => ?_⟩
-      · intro h_neg; exact h_neg h_ψs₁ (h_guard₂ s₁ h_gt hs₁t)
-      · exact h_imp (h_guard₁ r hs₁r hrt) (h_guard₂ r (lt_trans h_gt hs₁r) hrt)
-  | linear_since φ ψ χ θ =>
-    -- Swap: Until-based linearity with swapped subformulas
-    refine ValidIn.of_forall_total ?_
-    intro F _ M τ _hτ t
-    simp only [Formula.swapTemporal, Formula.and, Formula.or, Formula.neg, TruthAt]
-    intro h_conj
-    have h_both : (∃ s, t < s ∧ TruthAt M τ s ψ.swapTemporal ∧
-        ∀ r, t < r → r < s → TruthAt M τ r φ.swapTemporal) ∧
-      (∃ s, t < s ∧ TruthAt M τ s θ.swapTemporal ∧
-        ∀ r, t < r → r < s → TruthAt M τ r χ.swapTemporal) := by
-      constructor
-      · by_contra h; exact h_conj (fun h1 _ => h h1)
-      · by_contra h; exact h_conj (fun _ h2 => h h2)
-    obtain ⟨⟨s₁, hts₁, h_ψs₁, h_guard₁⟩, s₂, hts₂, h_θs₂, h_guard₂⟩ := h_both
-    rcases lt_trichotomy s₁ s₂ with h_lt | h_eq | h_gt
-    · -- s₁ < s₂: second disjunct (φ∧χ) U (ψ∧χ) with witness s₁
-      intro h_neg; exfalso; apply h_neg; intro _
-      refine ⟨s₁, hts₁, ?_, fun r htr hrs h_imp => ?_⟩
-      · intro h_neg; exact h_neg h_ψs₁ (h_guard₂ s₁ hts₁ h_lt)
-      · exact h_imp (h_guard₁ r htr hrs) (h_guard₂ r htr (lt_trans hrs h_lt))
-    · -- s₁ = s₂: first disjunct (φ∧χ) U (ψ∧θ) with witness s₁
-      intro h_outer; exfalso; apply h_outer; intro h_inner; exfalso; apply h_inner
-      refine ⟨s₁, hts₁, ?_, fun r htr hrs h_imp => ?_⟩
-      · intro h_neg; exact h_neg h_ψs₁ (h_eq ▸ h_θs₂)
-      · exact h_imp (h_guard₁ r htr hrs) (h_guard₂ r htr (h_eq ▸ hrs))
-    · -- s₂ < s₁: third disjunct (φ∧χ) U (φ∧θ) with witness s₂
-      intro _
-      refine ⟨s₂, hts₂, ?_, fun r htr hrs h_imp => ?_⟩
-      · intro h_neg; exact h_neg (h_guard₁ s₂ hts₂ h_gt) h_θs₂
-      · exact h_imp (h_guard₁ r htr (lt_trans hrs h_gt)) (h_guard₂ r htr hrs)
+  | left_mono_until_G φ χ ψ => exact left_mono_until_G_swap_valid φ χ ψ
+  | left_mono_since_H φ χ ψ => exact left_mono_since_H_swap_valid φ χ ψ
+  | right_mono_until φ ψ χ => exact right_mono_until_swap_valid φ ψ χ
+  | right_mono_since φ ψ χ => exact right_mono_since_swap_valid φ ψ χ
+  | connect_future φ => exact connect_future_swap_valid φ
+  | connect_past φ => exact connect_past_swap_valid φ
+  | enrichment_until φ ψ p => exact enrichment_until_swap_valid φ ψ p
+  | enrichment_since φ ψ p => exact enrichment_since_swap_valid φ ψ p
+  | self_accum_until φ ψ => exact self_accum_until_swap_valid φ ψ
+  | self_accum_since φ ψ => exact self_accum_since_swap_valid φ ψ
+  | absorb_until φ ψ => exact absorb_until_swap_valid φ ψ
+  | absorb_since φ ψ => exact absorb_since_swap_valid φ ψ
+  | linear_until φ ψ χ θ => exact linear_until_swap_valid φ ψ χ θ
+  | linear_since φ ψ χ θ => exact linear_since_swap_valid φ ψ χ θ
   -- NOTE: linear_until_a7a / linear_since_a7a removed (unsound under open guard)
   -- NOTE: until_elim / since_elim match arms removed (constructors deleted in the
   -- open-guard refactor)
-  | until_F φ ψ =>
-    -- swap of ((φ U ψ) → F(ψ)) is ((φ' S ψ') → P(ψ'))
-    refine ValidIn.of_forall_total ?_
-    intro F _ M τ _hτ t
-    simp only [Formula.swap_temporal_some_future, Formula.swapTemporal]
-    simp only [TruthAt, Truth.some_past_iff]
-    intro ⟨s, hst, h_ψs, _h_guard⟩
-    exact ⟨s, hst, h_ψs⟩
-  | since_P φ ψ =>
-    -- swap of ((φ S ψ) → P(ψ)) is ((φ' U ψ') → F(ψ'))
-    refine ValidIn.of_forall_total ?_
-    intro F _ M τ _hτ t
-    simp only [Formula.swap_temporal_some_past, Formula.swapTemporal]
-    simp only [TruthAt, Truth.some_future_iff]
-    intro ⟨s, hts, h_ψs, _h_guard⟩
-    exact ⟨s, hts, h_ψs⟩
-  | temp_linearity φ ψ =>
-    exact axiom_temp_linearity_past_valid φ.swapTemporal ψ.swapTemporal
-  | temp_linearity_past φ ψ =>
-    exact axiom_temp_linearity_valid φ.swapTemporal ψ.swapTemporal
-  | F_until_equiv φ =>
-    exact axiom_P_since_equiv_valid φ.swapTemporal
-  | P_since_equiv φ =>
-    exact axiom_F_until_equiv_valid φ.swapTemporal
+  | until_F φ ψ => exact until_F_swap_valid φ ψ
+  | since_P φ ψ => exact since_P_swap_valid φ ψ
+  | temp_linearity φ ψ => exact axiom_temp_linearity_past_valid φ.swapTemporal ψ.swapTemporal
+  | temp_linearity_past φ ψ => exact axiom_temp_linearity_valid φ.swapTemporal ψ.swapTemporal
+  | F_until_equiv φ => exact axiom_P_since_equiv_valid φ.swapTemporal
+  | P_since_equiv φ => exact axiom_F_until_equiv_valid φ.swapTemporal
   -- NOTE: until_guard / since_guard match arms removed (constructors deleted in the
   -- open-guard refactor)
   | modal_future ψ => exact swap_axiom_mf_valid ψ
-  | discrete_symm_fwd =>
-    refine ValidIn.of_forall_total ?_
-    intro F _ M τ _hτ t
-    simp only [Formula.swapTemporal, TruthAt]
-    intro ⟨r, hrt, _h_top_r, h_guard⟩
-    refine ⟨t + (t - r), lt_add_of_pos_right t (sub_pos.mpr hrt), fun h => h, fun c htc hcs => ?_⟩
-    have h1 : r < c - (t - r) := by
-      conv_lhs => rw [(sub_sub_cancel t r).symm]
-      exact sub_lt_sub_right htc _
-    have h2 : c - (t - r) < t := by
-      conv_rhs => rw [(add_sub_cancel_right t (t - r)).symm]
-      exact sub_lt_sub_right hcs _
-    exact h_guard (c - (t - r)) h1 h2
-  | discrete_symm_bwd =>
-    refine ValidIn.of_forall_total ?_
-    intro F _ M τ _hτ t
-    simp only [Formula.swapTemporal, TruthAt]
-    intro ⟨s, hts, _h_top_s, h_guard⟩
-    refine ⟨t - (s - t), sub_lt_self t (sub_pos.mpr hts), fun h => h, fun c hrc hct => ?_⟩
-    have h1 : t < c + (s - t) :=
-      calc t = t - (s - t) + (s - t) := (sub_add_cancel t (s - t)).symm
-        _ < c + (s - t) := add_lt_add_left hrc (s - t)
-    have h2 : c + (s - t) < s :=
-      calc c + (s - t) < t + (s - t) := add_lt_add_left hct (s - t)
-        _ = s := by rw [add_comm, sub_add_cancel]
-    exact h_guard (c + (s - t)) h1 h2
-  | discrete_propagate_fwd =>
-    refine ValidIn.of_forall_total ?_
-    intro F _ M τ _hτ t
-    simp only [Formula.swap_temporal_all_future, Formula.swapTemporal]
-    simp only [TruthAt, Truth.past_iff]
-    intro ⟨r, hrt, _h_top_r, h_guard⟩ u _hut
-    refine ⟨u - (t - r), sub_lt_self u (sub_pos.mpr hrt), fun h => h, fun c hrc hcu => ?_⟩
-    have h1 : r < c + (t - u) := by
-      conv_lhs =>
-        rw [show r = u - (t - r) + (t - u) from by rw [sub_add_sub_cancel', sub_sub_cancel]]
-      exact add_lt_add_left hrc (t - u)
-    have h2 : c + (t - u) < t := by
-      conv_rhs => rw [show t = u + (t - u) from by rw [add_comm, sub_add_cancel]]
-      exact add_lt_add_left hcu (t - u)
-    exact h_guard (c + (t - u)) h1 h2
-  | discrete_propagate_bwd =>
-    refine ValidIn.of_forall_total ?_
-    intro F _ M τ _hτ t
-    simp only [Formula.swap_temporal_all_past, Formula.swapTemporal]
-    simp only [TruthAt, Truth.future_iff]
-    intro ⟨r, hrt, _h_top_r, h_guard⟩ u _htu
-    refine ⟨u - (t - r), sub_lt_self u (sub_pos.mpr hrt), fun h => h, fun c hrc hcu => ?_⟩
-    have h1 : r < c + (t - u) := by
-      conv_lhs =>
-        rw [show r = u - (t - r) + (t - u) from by rw [sub_add_sub_cancel', sub_sub_cancel]]
-      exact add_lt_add_left hrc (t - u)
-    have h2 : c + (t - u) < t := by
-      conv_rhs => rw [show t = u + (t - u) from by rw [add_comm, sub_add_cancel]]
-      exact add_lt_add_left hcu (t - u)
-    exact h_guard (c + (t - u)) h1 h2
-  | discrete_box_necessity =>
-    -- swap(U(T,bot) -> □(U(T,bot))) = S(T,bot) -> □(S(T,bot))
-    refine ValidIn.of_forall_total ?_
-    intro F _ M τ _hτ t
-    simp only [Formula.swapTemporal, TruthAt]
-    intro ⟨r, hrt, _h_top_r, h_guard⟩ σ _h_σ_mem
-    exact ⟨r, hrt, fun h => h, h_guard⟩
+  | discrete_symm_fwd => exact discrete_symm_fwd_swap_valid
+  | discrete_symm_bwd => exact discrete_symm_bwd_swap_valid
+  | discrete_propagate_fwd => exact discrete_propagate_fwd_swap_valid
+  | discrete_propagate_bwd => exact discrete_propagate_bwd_swap_valid
+  | discrete_box_necessity => exact discrete_box_necessity_swap_valid
   | density _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
   | dense_indicator => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])
   | prior_UZ _ => exact absurd h_fc (by simp [Axiom.minFrameClass, LE.le])

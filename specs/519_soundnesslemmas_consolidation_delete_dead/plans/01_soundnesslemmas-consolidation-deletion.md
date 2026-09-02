@@ -445,19 +445,22 @@ line-**additive** (+~3 lines per lemma) — a line increase here is expected, no
 
 ---
 
-### Phase 7: One-line the temporal arms [NOT STARTED]
+### Phase 7: One-line the temporal arms [COMPLETED]
 
 **Goal**: Same treatment for the temporal arms, which carry the largest bodies.
 
 **Tasks**:
-- [ ] Extract named `ValidIn FrameClass.Base` lemmas for the temporal inlined arms, largest
+- [x] Extract named `ValidIn FrameClass.Base` lemmas for the temporal inlined arms, largest
       first: `linear_until` (~29 lines) and `linear_since` (~32 lines), then `until_F`, `since_P`,
       the `discrete_symm_*` arms, and the remaining temporal arms.
-- [ ] Reduce each to `exact <ctor>_swap_valid <args>`.
-- [ ] Keep every `simp only [Formula.swap_temporal_some_future, …]` /
+- [x] Reduce each to `exact <ctor>_swap_valid <args>`. *(deviation: altered — the four two-line
+      delegating arms `temp_linearity`, `temp_linearity_past`, `F_until_equiv` and `P_since_equiv`
+      were joined onto one line each as well, so all 45 arms are one line. Their existing shape is
+      unchanged otherwise: no wrapper was extracted, per Phase 6's instruction.)*
+- [x] Keep every `simp only [Formula.swap_temporal_some_future, …]` /
       `simp only [TruthAt, Truth.some_past_iff]` pair intact inside the extracted lemmas — these
       are load-bearing, not D-09 no-ops.
-- [ ] If a particular arm resists extraction, leave it inlined, record it under a
+- [x] If a particular arm resists extraction, leave it inlined, record it under a
       `#### Reasoned Exclusions` table in this phase with the evidence, and mark the phase
       `[COMPLETED WITH EXCLUSIONS]`. Never stub with `sorry`, `native_decide`, or a new `axiom`.
 
