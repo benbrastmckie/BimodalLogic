@@ -1,0 +1,26 @@
+{
+  "status": "researched",
+  "dispatch_seq": 2,
+  "summary": "Re-measured every claim in the task description against the current tree. Dead set is 5 files / 2,214 lines, not 3 / 611: breaking the Core->Bundle edge orphans CanonicalTaskRelation.lean, which cascades to SuccRelation.lean and CanonicalFrame.lean. Extraction block is 29 declarations across 3 ranges, not 24 across 2. negBoxToBoxNegBox is declared twice and every live call site resolves to the BXCanonical copy, so the fifth live helper is dneTheorem.",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/520_bundle_retirement_and_cycle_breaking/reports/01_bundle-retirement-cycle-breaking.md",
+      "summary": "Bundle retirement and Core/Bundle cycle-breaking research: verified dead-code cascade, exact import surgery, ModalSaturation consumer matrix, 4-phase ordering, gate obligations."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 0,
+  "blockers": [],
+  "next_action_hint": "plan",
+  "files_modified": [],
+  "decisions_made": [
+    "Retirement must cover 5 files, not 3 -- the stated acceptance criterion is unsatisfiable under the description's literal WORK list",
+    "The two SetMaximalConsistent.* lemmas belong in Metalogic/Core/MCSProperties.lean, not Theorems/ModalDerived.lean, to avoid widening the existing Theorems<->Metalogic edge",
+    "IteratedTemporal.lean needs exactly one import (Syntax.SubformulaClosure.NestingDepth); the extracted block is verified pure-syntax",
+    "Do not relocate ExistsTask to TemporalContent.lean -- retire Succ_implies_CanonicalR instead, it duplicates Succ.g_persistence"
+  ],
+  "dead_ends": [
+    "TableauConformance.lean's private iterF was a suspected name collision; verified non-issue -- current-namespace declarations shadow opened ones without ambiguity"
+  ]
+}

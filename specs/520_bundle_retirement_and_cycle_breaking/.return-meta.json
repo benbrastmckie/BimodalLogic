@@ -1,0 +1,16 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/520_bundle_retirement_and_cycle_breaking/reports/01_bundle-retirement-cycle-breaking.md",
+      "summary": "Verified Bundle/ dead-code and Core/Bundle cycle claims: dead set is 5 files/2214 lines (not 3/611), extraction block is 29 declarations in 3 ranges (not 24 in 2), and negBoxToBoxNegBox resolves to the BXCanonical copy; includes 4-phase ordering and C5/C6/C11 gate obligations."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1788332773_c2fa9f_520",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}

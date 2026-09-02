@@ -1483,7 +1483,7 @@
     {
       "project_number": 520,
       "project_name": "bundle_retirement_and_cycle_breaking",
-      "status": "researching",
+      "status": "researched",
       "task_type": "lean4",
       "topic": "metalogic",
       "priority": "medium",
@@ -1503,8 +1503,14 @@
         "FormalSystem/Boneyard/"
       ],
       "created": "2026-09-02T03:30:31Z",
-      "last_updated": "2026-09-02T07:09:06Z",
-      "artifacts": [],
+      "last_updated": "2026-09-02T13:42:26Z",
+      "artifacts": [
+        {
+          "path": "specs/520_bundle_retirement_and_cycle_breaking/reports/01_bundle-retirement-cycle-breaking.md",
+          "type": "report",
+          "summary": "Bundle retirement and Core/Bundle cycle-breaking research: verified dead-code cascade, exact import surgery, ModalSaturation consumer matrix, 4-phase ordering, gate obligations."
+        }
+      ],
       "session_id": "sess_1788332773_c2fa9f_520"
     },
     {
