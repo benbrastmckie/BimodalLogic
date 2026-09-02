@@ -11,10 +11,10 @@ next_project_number: 532
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,257,298,433,461,476,481,504,506,522,526 | -- | dataset-enhancement, decidability, frame-extensions, ... |
-| 2 | 193,231,282,296,463,502,523,524,527,528 | 298,433,461,522,526 | algebraic-representation, automation, dataset-enhancement, ... |
-| 3 | 178,219,464,497,525,529,530 | 193,231,463,502,523,524,528 | algebraic-representation, dataset-enhancement, decidability, ... |
-| 4 | 465,498,499,500,531 | 464,497,529,530 | algebraic-representation, decidability, metalogic |
+| 1 | 127,128,193,257,298,433,461,476,481,504,506,523,524,526 | -- | automation, dataset-enhancement, decidability, ... |
+| 2 | 178,231,282,296,463,502,525,527,528,529,530 | 193,298,433,461,523,524,526 | algebraic-representation, dataset-enhancement, decidability, ... |
+| 3 | 219,464,497,531 | 231,463,502,528,529,530 | algebraic-representation, dataset-enhancement, decidability, ... |
+| 4 | 465,498,499,500 | 464,497 | algebraic-representation, decidability |
 | 5 | 125,428 | 465,498,499 | algebraic-representation, decidability |
 | 6 | 429,501 | 125,428 | algebraic-representation, decidability |
 | 7 | 410 | 429 | decidability |
@@ -84,14 +84,13 @@ next_project_number: 532
 
 ### Metalogic
 
-522 [PLANNED] — WAVE 2 (core utilities). Fix the one representation choice that c
-  └─ 523 [NOT STARTED] — WAVE 2 (core utilities). Complete the task-frame construction kit
-    └─ 525 [NOT STARTED] — WAVE 3 (theorem layer). Put the frame-class Galois layer on Mathl
-    └─ 529 [NOT STARTED] — WAVE 5 (publication infrastructure). Turn on the two automated si
-      └─ 531 [NOT STARTED] — WAVE 5 (publication infrastructure). Publish the API documentatio
-  └─ 524 [NOT STARTED] — WAVE 3 (theorem layer). Finish the FrameClass collapse at the THE
-    └─ 530 [NOT STARTED] — WAVE 5 (publication infrastructure). Make status and counts machi
-      └─ 531 [NOT STARTED] — WAVE 5 (publication infrastructure). Publish the API documentatio (see above)
+523 [NOT STARTED] — WAVE 2 (core utilities). Complete the task-frame construction kit
+  └─ 525 [NOT STARTED] — WAVE 3 (theorem layer). Put the frame-class Galois layer on Mathl
+  └─ 529 [NOT STARTED] — WAVE 5 (publication infrastructure). Turn on the two automated si
+    └─ 531 [NOT STARTED] — WAVE 5 (publication infrastructure). Publish the API documentatio
+524 [NOT STARTED] — WAVE 3 (theorem layer). Finish the FrameClass collapse at the THE
+  └─ 530 [NOT STARTED] — WAVE 5 (publication infrastructure). Make status and counts machi
+    └─ 531 [NOT STARTED] — WAVE 5 (publication infrastructure). Publish the API documentatio (see above)
 526 [NOT STARTED] — WAVE 3 (theorem layer). Consolidate the maximal-consistent-set AP
   └─ 527 [NOT STARTED] — WAVE 4 (canonical-model infrastructure). Replace textual future/p
   └─ 528 [NOT STARTED] — WAVE 4 (algebraic infrastructure). Modernise Metalogic/Algebraic/
@@ -193,12 +192,13 @@ next_project_number: 532
 ---
 
 ### 522. Frame property representation and validity names
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: Task 518, Task 519, Task 521
 - **Research**: [522_frame_property_representation_and_validity_names/reports/01_frame-property-representation-validity-names.md]
 - **Plan**: [522_frame_property_representation_and_validity_names/plans/01_frame-property-validity-names.md]
+- **Summary**: [522_frame_property_representation_and_validity_names/summaries/01_frame-property-validity-names-summary.md]
 
 **Description**: WAVE 2 (core utilities). Fix the one representation choice that costs 47 adapter lemmas, and make the validity names carry the Dedekind/Complete distinction that nine docstrings currently defend. Findings A-04, A-07, A-15, A-16, C-08, C-09, C-10, D-20, G-05 in specs/reviews/2026-09-01-lean-engineering/{A-soundness,C-frames,D-tactics,G-ecosystem}.md; High H3 and utilities U3/U10 in the review. MEASURED STATE: Semantics/FrameProperty.lean:71 declares `def TaskFrame.IsDense (F) : Prop := DenselyOrdered F.Duration`, so `Sat .Dense F` has head symbol IsDense and is invisible to instance search (the stated reason at Validity.lean:536-543); IsSuccArchDiscrete (:118) is a bare existential over data-carrying SuccOrder/PredOrder instances, forcing positional @-application (the `haveI`-breaks-defeq trap at Validity.lean:612-616 and :820-824 is real). The entire .of_forall/.apply/.of_not adapter family exists to route around this: 21 in Validity.lean, 12 in BLValidity.lean, 6 in StrongCompleteness.lean, 8 in SetConsequence.lean. ValidDedekind (Validity.lean:711) is ValidOnFrames TaskFrame.IsComplete, NOT ValidIn .Dedekind (that is ValidDedekindDense :765); the mismatch is warned about in nine places across six files ('Read this first: ValidDedekind is NOT ValidIn .Dedekind', Validity.lean:638-648, :672-690, :748-758; FrameClassValidity.lean:45-52; Soundness.lean:966-980, :1654-1667; BLValidity.lean:26-45; BaseLanguageSoundness.lean:46-54; FrameProperty.lean:129-172) and the wrong target yields a refutable soundness theorem. BLValidity.lean is a binder-for-binder clone of Validity.lean (~30 declarations) despite the truthAt_tr bridge (BaseLanguageSoundness.lean:110,147,167). Seven spellings exist for 'axiom X is valid' (X_valid, axiom_X_valid, X_is_valid, swap_axiom_X_valid, X_swap_valid, X_valid_of_h, co_valid) and `valid` is lowercase beside ValidIn/ValidDense. 231 validity intro-chains use ~44 spellings, 53 of them naming an `_h_mem` parameter that Validity.lean:352-357 documents as removed. DESIGN CONSTRAINT (C-frames section 2): do NOT make FrameClass.Sat a typeclass -- IsSuccArchDiscrete carries data; the narrow fix is abbrev + a Prop-structure with instance-tagged projections. WORK: (1) `abbrev TaskFrame.IsDense`; `structure TaskFrame.IsSuccArchDiscrete (F) : Prop where [succ : SuccOrder F.Duration] [pred : PredOrder F.Duration] [succArch : IsSuccArchimedean F.Duration] [predArch : IsPredArchimedean F.Duration]`; a `sat_intro h` macro that destructures `fc.Sat F` into the instance cache uniformly in fc; the bridge `isSuccArchDiscrete_of_instances` and its eliminator (C-10); delete 45 of the 47 adapters, keeping the two generic ValidIn.of_forall_total / .apply_total and their BL twins; add the missing ValidDedekind.of_not (C-09) under its final name. (2) Rename ValidDedekind -> ValidComplete (it is literally ValidOnFrames IsComplete, and the paper says Complete) and ValidDedekindDense -> ValidDedekind, likewise BLValidDedekindDense -> BLValidDedekind, so ValidX = ValidIn .X for every tag; collapse the nine warnings to one cross-reference on ValidComplete. (3) One BL transfer theorem `blValidIn_iff_validIn_tr (fc) (phi) : BLValidIn fc phi <-> ValidIn fc (tr phi)` in BaseLanguageSoundness.lean, generalising blValid_iff_valid_tr and blValidDiscrete_iff_validDiscrete_tr; derive BLValidIn.mono, BLValidOnFrames.mono, the three blValid_implies_*, blValid_iff_empty_consequence and BLSchemaValidity's dn_valid_of_denselyOrdered as corollaries; keep the BL-native definitions and the native examples at BaseLanguageSoundness.lean:489-503. (4) Naming convention for axiom validity lemmas: `<axiom>_valid` / `<axiom>_swap_valid` at whatever predicate the class requires; rename the `swap_axiom_*` and `*_is_valid` stragglers; rename `valid` -> `Valid` with a deprecated alias (~200 occurrences) or document the exception once. (5) Normalise the 231 intro-chains to one spelling and rename `_h_mem`/`h_mem` to `hτ`/`_hτ` (D-20 -- no binder macro; macro hygiene makes it worse than intro). (6) Machine-check the discrete-bundle implications DurationClassification/TaskFrame.lean:836-842 state in prose, as `example`s (C-10). ACCEPTANCE: binder adapters 47 -> 2 (+2 BL); every `ValidX` is definitionally `ValidIn .X`; grep finds one 'Read this first' paragraph; BLValidity.lean's lemma layer consists of corollaries of the transfer theorem; lake build green; C2/C14 baselines unchanged (the rename is mechanical and must not reroute any proof).
 

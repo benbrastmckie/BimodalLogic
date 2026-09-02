@@ -1,7 +1,7 @@
 # Implementation Plan: Frame property representation and validity names
 
 - **Task**: 522 - Frame property representation and validity names
-- **Status**: COMPLETED
+- **Status**: [COMPLETED]
 - **Effort**: 17.5 hours
 - **Dependencies**: 518, 519, 521 (all landed; 519's `DenseValidity.lean` deletion and 521's truth
   simp-normal form are preconditions and are satisfied)

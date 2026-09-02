@@ -1,0 +1,44 @@
+{
+  "dispatch_seq": 3,
+  "task_number": 522,
+  "task_type": "lean4",
+  "status": "implemented",
+  "phases_completed": 11,
+  "phases_total": 11,
+  "continuation_required": false,
+  "session_id": "sess_1788366935_b56865_522",
+  "plan": "specs/522_frame_property_representation_and_validity_names/plans/01_frame-property-validity-names.md",
+  "summary": "specs/522_frame_property_representation_and_validity_names/summaries/01_frame-property-validity-names-summary.md",
+  "verification": {
+    "lake_build": "green",
+    "lake_build_bimodaltest": "green",
+    "check_module_invariants": "ALL CHECKS PASSED (exit 0), C1/C2/C14 all pass",
+    "sorry_count": 160,
+    "sorry_count_baseline": 160,
+    "sorry_outside_boneyard": 0,
+    "axiom_declarations": 0,
+    "acceptance_greps_empty": ["phase7_class_adapters", "phase9_ValidDedekindDense", "phase10_swap_axiom_and_is_valid"]
+  },
+  "decisions_resolved": {
+    "D1": "Plan A — @[reducible] FrameClass.Sat plus abbrev TaskFrame.IsDense; full build green, Plan B never exercised",
+    "D2": "IsSuccArchDiscrete left as the existential; bridge lemmas isSuccArchDiscrete_of_instances / IsSuccArchDiscrete.elim added in place of impossible accessors",
+    "D3": "consequence family renamed (SemanticConsequenceDedekind, SetSemanticConsequenceDedekind, semantic_deduction_dedekind, setSemanticConsequenceDedekind_mono)",
+    "D4": "three Metalogic re-export wrappers deleted, replaced by `export SoundnessLemmas (prior_UZ_valid prior_SZ_valid z1_valid)`; the four axiom_* renames carry the ValidIn .Base docstring note",
+    "D5": "valid -> Valid applied with no deprecation alias, against a nine-file allowlist",
+    "D6": "sat_intro lives beside FrameClass.Sat in Semantics/FrameClassValidity.lean",
+    "D7": "recorded once in Semantics/FrameProperty.lean; the eight `by decide` regression examples stay"
+  },
+  "acceptance_restated": {
+    "adapters": "47 -> 21 (plan predicted 47 -> 12); SatisfiableSet 4 -> 1 as planned. Gap of 9 itemised in the Phase 7 Reasoned Exclusions table: 7 .Base-fixed convenience wrappers Phase 4 forbids migrating away from, plus 2 new generic SemanticConsequenceIn adapters the plan's arithmetic omitted. The plan's own acceptance grep passes as written.",
+    "warning_sites": "collapsed to exactly one, on ValidComplete (Semantics/Validity.lean:655); the two naming-deviation-of-record blocks survive"
+  },
+  "notable_plan_defects_found": [
+    "The plan's build invocation `lake-build-guard.sh build --timeout 1800 -- lake build` exits 77 without building; the guard needs a lake SUBCOMMAND (`-- build`), not the lake binary.",
+    "Phase 7's `valid x3 / SemanticConsequence x2 / BLValid x2` deletion list contradicts Phase 4's explicit `do not touch the ~50 generic-adapter uses`; the more specific instruction was followed and the measured number reported.",
+    "Phase 10's `no theorem name declared in both Metalogic and Metalogic.SoundnessLemmas` verification bullet contradicts decision D4, which prescribes exactly that pair for four names; D4 was followed.",
+    "Phase 10's `valid -> Valid` exclusion list names only Automation/**; at least four further unrelated `valid` identifiers exist outside it (DecisionResult.valid, MergePair.valid, a test struct field, two local binders).",
+    "Phase 8's `rewrite BLValidIn.mono / BLValidOnFrames.mono / three blValid_implies_* as corollaries of the transfer theorems` is impossible by import direction; likewise deriving dn_valid_of_denselyOrdered from density_valid would invert the Semantics/ -> Metalogic/ layering."
+  ],
+  "next_steps": "Task 522 is complete; postflight can mark it COMPLETED. No follow-up task is required.",
+  "modified_file_count": 49
+}

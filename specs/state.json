@@ -1586,7 +1586,7 @@
     {
       "project_number": 522,
       "project_name": "frame_property_representation_and_validity_names",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "topic": "metalogic",
       "priority": "high",
@@ -1609,7 +1609,7 @@
         "FormalSystem/Metalogic/SoundnessLemmas/"
       ],
       "created": "2026-09-02T03:30:31Z",
-      "last_updated": "2026-09-02T17:02:29Z",
+      "last_updated": "2026-09-02T18:48:22Z",
       "artifacts": [
         {
           "path": "specs/522_frame_property_representation_and_validity_names/reports/01_frame-property-representation-validity-names.md",
@@ -1620,9 +1620,15 @@
           "path": "specs/522_frame_property_representation_and_validity_names/plans/01_frame-property-validity-names.md",
           "type": "plan",
           "summary": "Eleven-phase, 17.5-hour plan for the frame-property representation fix and the validity rename, following the research report's corrections over the task brief: reducible Sat plus abbrev IsDense with a Plan B fallback, sat_intro, adapters 47 -> 12, two BL transfer theorems, and two hazard-scoped rename passes."
+        },
+        {
+          "path": "specs/522_frame_property_representation_and_validity_names/summaries/01_frame-property-validity-names-summary.md",
+          "type": "summary",
+          "summary": "Frame-property representation fix (abbrev IsDense + @[reducible] Sat, Plan A), sat_intro, adapters 47 -> 21 (+ SatisfiableSet 4 -> 1), two BL transfer theorems, and the ValidComplete/ValidDedekind + valid -> Valid rename passes; all 11 phases green."
         }
       ],
-      "session_id": "sess_1788366935_b56865_522"
+      "session_id": "sess_1788366935_b56865_522",
+      "completion_summary": "Made FrameClass.Sat transparent to instance search (abbrev TaskFrame.IsDense plus @[reducible] FrameClass.Sat; Plan A confirmed by a full green build), added the sat_intro tactic and the IsSuccArchDiscrete bridge lemmas, migrated 21 class-specific adapter call sites onto generic fc-indexed adapters and deleted the tag-specific families (47 -> 21 adapters, SatisfiableSet 4 -> 1, acceptance grep empty), added two BL transfer theorems with the BL equivalences rewritten as one-line corollaries, and ran both rename passes: ValidDedekind -> ValidComplete, ValidDedekindDense -> ValidDedekind (so every ValidX is now definitionally ValidIn .X), the D3 consequence family, the axiom-validity name normalisation with D4's export, and valid -> Valid. lake build, lake build BimodalTest and scripts/check-module-invariants.sh are all green; the executable sorry count is unchanged at 160 (all under Boneyard/) and no axiom was introduced."
     },
     {
       "project_number": 523,
