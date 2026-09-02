@@ -1586,7 +1586,7 @@
     {
       "project_number": 522,
       "project_name": "frame_property_representation_and_validity_names",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "topic": "metalogic",
       "priority": "high",
@@ -1609,9 +1609,15 @@
         "FormalSystem/Metalogic/SoundnessLemmas/"
       ],
       "created": "2026-09-02T03:30:31Z",
-      "last_updated": "2026-09-02T04:37:44Z",
-      "artifacts": [],
-      "session_id": "sess_1788317385_2ae65c"
+      "last_updated": "2026-09-02T16:54:07Z",
+      "artifacts": [
+        {
+          "path": "specs/522_frame_property_representation_and_validity_names/reports/01_frame-property-representation-validity-names.md",
+          "type": "report",
+          "summary": "Machine-checked research on the FrameProperty representation fix and the ValidDedekind/ValidComplete rename: proves abbrev IsDense alone is insufficient (FrameClass.Sat must also be reducible), proves the recommended Prop-structure for IsSuccArchDiscrete does not compile, restates the unachievable 47->2 adapter target as 47->12, and corrects stale census figures for the rename, naming and intro-chain passes."
+        }
+      ],
+      "session_id": "sess_1788366935_b56865_522"
     },
     {
       "project_number": 523,
