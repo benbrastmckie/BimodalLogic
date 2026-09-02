@@ -1,0 +1,39 @@
+== (B) per-file 'simp only [...TruthAt...]' counts ==
+FormalSystem/Semantics/Truth.lean                              28
+FormalSystem/Semantics/BLTruth.lean                            5
+FormalSystem/Metalogic/Soundness.lean                          48
+FormalSystem/Metalogic/SoundnessLemmas/CoValidity.lean         0
+FormalSystem/Semantics/Correspondence/DurationFrames.lean      0
+FormalSystem/Metalogic/DedekindNonCompactness.lean             0
+FormalSystem/Metalogic/Independence/CoNotPriorU.lean           0
+FormalSystem/Metalogic/DiscreteNonCompactness.lean             0
+tree-wide live: 188
+
+== (A) eleven named declarations: length + TruthAt sites ==
+temp_l_valid                   start=290    lines=7     sites=0
+temp_linearity_valid           start=324    lines=14    sites=0
+discreteness_forward_valid     start=430    lines=13    sites=0
+enrichment_until_valid         start=556    lines=9     sites=0
+enrichment_since_valid         start=568    lines=9     sites=0
+absorb_until_valid             start=603    lines=13    sites=0
+absorb_since_valid             start=617    lines=12    sites=0
+linear_until_valid             start=635    lines=22    sites=0
+linear_since_valid             start=657    lines=22    sites=0
+prior_U_gap_valid              start=856    lines=40    sites=0
+prior_S_gap_valid              start=910    lines=39    sites=0
+TOTAL lines=200 sites=0
+
+== bare simp/simp_all/aesop audit (files mentioning TruthAt) ==
+264
+
+== duplicate helpers ==
+FormalSystem/Metalogic/Soundness.lean:992:  -- private `and_of_not_imp_not` helper this proof used to call here.
+FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorBracket.lean:77:private theorem temporal_truth_and_iff {sig : MonadicSignature} [Fintype sig.preds]
+FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorBracket.lean:674:    have hL' := (temporal_truth_and_iff M atomMap z0 d.2.endpointLeft.formula pL).mp hL
+FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorBracket.lean:675:    have hR' := (temporal_truth_and_iff M atomMap z1 d.2.endpointRight.formula pR).mp hR
+FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorBracket.lean:679:      (temporal_truth_and_iff M atomMap z0 d.2.endpointLeft.formula pL).mpr ⟨hL, hpL⟩,
+FormalSystem/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorBracket.lean:680:      (temporal_truth_and_iff M atomMap z1 d.2.endpointRight.formula pR).mpr ⟨hR, hpR⟩,
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:2570:private theorem and_of_not_imp_not' {P Q : Prop} (h : (P → Q → False) → False) : P ∧ Q :=
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:2602:  obtain ⟨h1, h2⟩ := and_of_not_imp_not' h_ant
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:2642:  obtain ⟨h1, h2⟩ := and_of_not_imp_not' h_ant
+FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:2779:  obtain ⟨h1, h2⟩ := and_of_not_imp_not' h_ant

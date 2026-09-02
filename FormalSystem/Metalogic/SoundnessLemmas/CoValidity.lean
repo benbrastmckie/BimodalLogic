@@ -54,12 +54,6 @@ open FormalSystem.Semantics
 
 variable {F : TaskFrame}
 
-/-- Two-conjunct extraction through the doubly-negated encoding of `Formula.and`
-(`φ ∧ ψ = ¬(φ → ¬ψ)`). Classical; the same helper appears in `Metalogic/Soundness.lean`. -/
-private theorem and_of_not_imp_not {P Q : Prop} (h : (P → Q → False) → False) : P ∧ Q :=
-  Classical.byContradiction fun hn =>
-    h fun hp hq => hn ⟨hp, hq⟩
-
 /--
 **Validity of the paper's CO principle** on dense Dedekind-complete flows:
 

@@ -1,7 +1,7 @@
 # Implementation Plan: Truth Layer Simp Normal Form
 
 - **Task**: 521 - Truth layer simp normal form
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 13.5 hours
 - **Dependencies**: Task 517 (landed), Task 518 (landed, verified), Task 519 (landed)
 - **Research Inputs**: specs/521_truth_layer_simp_normal_form/reports/01_truth-layer-simp-normal-form.md
@@ -582,7 +582,7 @@ therefore reduced to its `Soundness.lean` rewrites. — the tag set is one pre-d
 
 ---
 
-### Phase 10: `and_of_not_imp_not` consolidation and final measurement [NOT STARTED]
+### Phase 10: `and_of_not_imp_not` consolidation and final measurement [COMPLETED]
 
 - **Goal:** Delete the two in-scope `and_of_not_imp_not` copies now that every caller is converted,
   and close the task against the restated acceptance criterion with recorded numbers.
@@ -591,9 +591,14 @@ therefore reduced to its `Soundness.lean` rewrites. — the tag set is one pre-d
         among the eleven named proofs: `sep_valid` (:1131, use at :1140) and `sep_swap_valid`
         (:1198, use at :1207). Each is a local edit: delete `Formula.and`/`Formula.neg` from the
         `simp only` list, add `Truth.and_iff`, replace the helper call with
-        `(Truth.and_iff _ _).mp`. These two declarations carry 5 further sites between them; take
-        whichever of those the rewrite naturally collapses and leave the rest — they belong to the
-        deferred sweep.
+        `(Truth.and_iff _ _).mp`. *(deviation: altered — `Formula.and`/`Formula.neg` were NOT
+        deleted from either `simp only` list. Attempting that was tried and reverted: both proofs
+        run on the raw unfolded shapes downstream (`h1` is applied as a function to an
+        untl-witness tuple), and opening the inner `Formula.and` with `and_iff` breaks them. The
+        working edit splits `h_ant` with `(Truth.and_iff _ _).mp` **before** the raw `simp only`,
+        which is what actually retires the helper. In `sep_swap_valid` this works by defeq —
+        `swapTemporal` distributes through `Formula.and` — with no rewrite needed. Their 5
+        further sites stay, as this bullet allows.)*
   - [ ] Delete `Soundness.lean:153` `private theorem and_of_not_imp_not` and
         `CoValidity.lean:60`'s copy (plus its "the same helper appears in
         `Metalogic/Soundness.lean`" docstring, now false).

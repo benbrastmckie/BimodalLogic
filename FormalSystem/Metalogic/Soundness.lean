@@ -147,13 +147,6 @@ open FormalSystem.Syntax
 open FormalSystem.ProofSystem
 open FormalSystem.Semantics
 
-/-! ## Classical Logic Helper -/
-
-/-- Helper lemma for extracting conjunction from negated implication encoding. -/
-private theorem and_of_not_imp_not {P Q : Prop} (h : (P → Q → False) → False) : P ∧ Q :=
-  ⟨Classical.byContradiction (fun hP => h (fun p _ => hP p)),
-   Classical.byContradiction (fun hQ => h (fun _ q => hQ q))⟩
-
 /-- Propositional K axiom is valid. -/
 theorem prop_k_valid (φ ψ χ : Formula) :
     ⊨ ((φ.imp (ψ.imp χ)).imp ((φ.imp ψ).imp (φ.imp χ))) := by
@@ -995,9 +988,11 @@ theorem sep_valid (φ : Formula) :
   refine ValidDedekindDense.of_forall ?_
   intro F _ h_lub M τ h_mem t h_ant
   obtain ⟨Q, hQc, hQd⟩ := SoundnessLemmas.exists_countable_order_dense h_lub
+  -- `Truth.and_iff` splits the antecedent before it is unfolded, which is what retires the
+  -- private `and_of_not_imp_not` helper this proof used to call here.
+  obtain ⟨h1, h2⟩ := (Truth.and_iff _ _).mp h_ant
   simp only [TruthAt, Formula.and, Formula.neg, Formula.kPlus, Formula.kMinus,
-    Formula.top] at h_ant ⊢
-  obtain ⟨h1, h2⟩ := and_of_not_imp_not h_ant
+    Formula.top] at h1 h2 ⊢
   rintro ⟨s₂, hts₂, -, hno⟩
   have hK : ∀ v, t < v → ∃ u, t < u ∧ u < v ∧ TruthAt M τ u φ := by
     intro v htv
@@ -1062,9 +1057,12 @@ theorem sep_swap_valid (φ : Formula) :
   refine ValidDedekindDense.of_forall ?_
   intro F _ h_lub M τ h_mem t h_ant
   obtain ⟨Q, hQc, hQd⟩ := SoundnessLemmas.exists_countable_order_dense h_lub
+  -- Same split as `sep_valid`: `Truth.and_iff` in place of the private helper. `swapTemporal`
+  -- distributes definitionally through `Formula.and`, so unification reaches the conjunction
+  -- without an explicit rewrite.
+  obtain ⟨h1, h2⟩ := (Truth.and_iff _ _).mp h_ant
   simp only [Formula.and, Formula.neg, Formula.kPlus, Formula.kMinus, Formula.top,
-    Formula.swapTemporal, TruthAt] at h_ant ⊢
-  obtain ⟨h1, h2⟩ := and_of_not_imp_not h_ant
+    Formula.swapTemporal, TruthAt] at h1 h2 ⊢
   rintro ⟨s₂, hs₂t, -, hno⟩
   have hK : ∀ v, v < t → ∃ u, v < u ∧ u < t ∧ TruthAt M τ u φ.swapTemporal := by
     intro v hvt
