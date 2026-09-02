@@ -242,7 +242,7 @@ removing the copy whose docstring apologises for existing.
 
 ---
 
-### Phase 3: Retire `axiom_swap_valid` [NOT STARTED]
+### Phase 3: Retire `axiom_swap_valid` [COMPLETED]
 
 **Goal**: Replace the only two live arms of the 420-line duplicate dispatcher with two named
 lemmas in `Soundness.lean`, then delete the dispatcher and the two lemmas that become dead with

@@ -1249,6 +1249,36 @@ theorem sep_swap_valid (φ : Formula) :
       rintro ⟨v, huv, -, hw⟩
       exact hns ⟨v, huv, fun w huw hwv => hw w huw hwv⟩
 
+/-- **Density axiom swap-validity**: the swap of `GGφ → Gφ` is `HHφ → Hφ`, valid on every densely
+ordered frame. Given a `¬φ` point `s < t`, density supplies `r` with `s < r < t`, and `r` then
+witnesses `P(¬Hφ)`, which is what the swapped antecedent forbids. -/
+theorem density_swap_valid (φ : Formula) :
+    ValidDense ((φ.allFuture.allFuture.imp φ.allFuture).swapTemporal) := by
+  refine ValidDense.of_forall ?_
+  intro F _ M τ _hτ t
+  simp only [Formula.swapTemporal, Formula.allFuture, Formula.someFuture,
+    Formula.neg, TruthAt]
+  intro h_HH ⟨s, hst, h_neg_phi_s, h_guard_s⟩
+  apply h_HH
+  obtain ⟨r, hrs, hrt⟩ := exists_between hst
+  refine ⟨r, hrt, ?_, ?_⟩
+  · -- Need: ¬¬P(¬φ) at r, i.e., ¬Hφ at r; witness `s < r` with `¬φ(s)`
+    intro h_Hphi_r
+    exact h_Hphi_r ⟨s, hrs, h_neg_phi_s, fun q hq1 hq2 => h_guard_s q hq1 (lt_trans hq2 hrt)⟩
+  · -- Guard: all between r and t satisfy ⊤
+    intro q hq1 hq2
+    exact h_guard_s q (lt_trans hrs hq1) hq2
+
+/-- **Dense-indicator axiom swap-validity**: the swap of `¬U(⊤,⊥)` is `¬S(⊤,⊥)`, the past density
+indicator. `S(⊤,⊥)` at `t` needs an `s < t` with `(s,t)` empty, which density refutes. -/
+theorem dense_indicator_swap_valid :
+    ValidDense ((Formula.untl Formula.bot (Formula.bot.imp Formula.bot)).neg.swapTemporal) := by
+  refine ValidDense.of_forall ?_
+  intro F _ M τ _hτ t
+  simp only [Formula.swapTemporal, Formula.neg, TruthAt]
+  intro ⟨s, hst, _h_top, h_guard⟩
+  obtain ⟨r, hsr, hrt⟩ := exists_between hst
+  exact h_guard r hsr hrt
 /-! ## The `FrameClass`-parameterized soundness family
 
 Everything below is indexed by an arbitrary `fc : FrameClass` rather than by one of the four
@@ -1319,14 +1349,8 @@ theorem axiom_swap_validIn_min {φ : Formula} (ax : Axiom φ) :
     exact ValidIn.of_forall_total fun F _ M τ hτ t =>
       SoundnessLemmas.axiom_swap_valid_general (D := F.Duration) φ ax hbase F.toFibre M τ hτ t
   · cases ax with
-    | density a0 =>
-      exact ValidDense.of_forall fun F _ M τ hτ t =>
-        SoundnessLemmas.axiom_swap_valid (D := F.Duration) _ (Axiom.density a0) trivial
-          F.toFibre M τ hτ t
-    | dense_indicator =>
-      exact ValidDense.of_forall fun F _ M τ hτ t =>
-        SoundnessLemmas.axiom_swap_valid (D := F.Duration) _ Axiom.dense_indicator trivial
-          F.toFibre M τ hτ t
+    | density a0 => exact density_swap_valid a0
+    | dense_indicator => exact dense_indicator_swap_valid
     | prior_UZ a0 =>
       exact ValidDiscrete.of_forall fun F _ _ _ _ M τ hτ t =>
         SoundnessLemmas.prior_SZ_is_valid (D := F.Duration) a0.swapTemporal F.toFibre M τ hτ t
