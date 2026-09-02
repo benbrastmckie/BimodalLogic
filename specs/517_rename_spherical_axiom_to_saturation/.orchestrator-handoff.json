@@ -1,0 +1,96 @@
+{
+  "dispatch_seq": 6,
+  "task_number": 517,
+  "task_type": "lean4",
+  "session_id": "sess_1788324209_de679d",
+  "status": "implemented",
+  "phases_completed": 3,
+  "phases_total": 3,
+  "commits": [
+    "85bde0916",
+    "d4e288472",
+    "5b54e9e07"
+  ],
+  "verification_passed": true,
+  "acceptance": {
+    "lake_build": "exit 0",
+    "check-module-invariants.sh": "exit 0, ALL CHECKS PASSED",
+    "check-paper-definitions.sh": "10 drifted / 0 unresolvable (target met)",
+    "typst-sync-check.sh": "TOTAL_VIOLATIONS=2, no new violations vs. Phase 1 baseline",
+    "no_new_violations": true
+  },
+  "modified_files": [
+    "FormalSystem/Examples/TemporalStructures.lean",
+    "FormalSystem/Metalogic/Algebraic/FlowFrame.lean",
+    "FormalSystem/Metalogic/Decidability/BiLasso/Assembly.lean",
+    "FormalSystem/Metalogic/Decidability/BiLasso/Check.lean",
+    "FormalSystem/Metalogic/Decidability/BiLasso/Orbit.lean",
+    "FormalSystem/Metalogic/Decidability/BiLasso/README.md",
+    "FormalSystem/Metalogic/Decidability/FMP/Filtration.lean",
+    "FormalSystem/Metalogic/Decidability/FMP/FiniteModel.lean",
+    "FormalSystem/Metalogic/Decidability/FMP/README.md",
+    "FormalSystem/Metalogic/Decidability/IntPresentation.lean",
+    "FormalSystem/Metalogic/Decidability/Verified/Bridge/RegionFrame.lean",
+    "FormalSystem/Metalogic/Independence/ClockFrame.lean",
+    "FormalSystem/Metalogic/WeakCanonical/IntegerModel/ReynoldsBridge.lean",
+    "FormalSystem/Semantics.lean",
+    "FormalSystem/Semantics/Correspondence/DurationFrames.lean",
+    "FormalSystem/Semantics/Extension/Admissible.lean",
+    "FormalSystem/Semantics/Extension/Constraint.lean",
+    "FormalSystem/Semantics/Extension/Extension.lean",
+    "FormalSystem/Semantics/Extension/README.md",
+    "FormalSystem/Semantics/Extension/Step.lean",
+    "FormalSystem/Semantics/FrameAxioms.lean",
+    "FormalSystem/Semantics/IntNormalForm.lean",
+    "FormalSystem/Semantics/IntTransfer.lean",
+    "FormalSystem/Semantics/ShiftSet.lean",
+    "FormalSystem/Semantics/TaskFrame.lean",
+    "FormalSystem/Semantics/Validity.lean",
+    "README.md",
+    "Tests/BimodalTest.lean",
+    "Tests/BimodalTest/Semantics/README.md",
+    "Tests/BimodalTest/Semantics/SaturationFiniteAxiomTest.lean",
+    "Tests/BimodalTest/Semantics/TaskFrameTest.lean",
+    "docs/reference/API_REFERENCE.md",
+    "docs/user-guide/architecture.md",
+    "latex/subfiles/02-Semantics.tex",
+    "scripts/check-module-invariants.sh",
+    "specs/517_rename_spherical_axiom_to_saturation/.orchestrator-handoff.json",
+    "specs/517_rename_spherical_axiom_to_saturation/.return-meta.json",
+    "specs/517_rename_spherical_axiom_to_saturation/handoffs/phase-1-handoff-20260901.md",
+    "specs/517_rename_spherical_axiom_to_saturation/handoffs/phase-2-handoff-20260901.md",
+    "specs/517_rename_spherical_axiom_to_saturation/handoffs/phase-3-handoff-20260902.md",
+    "specs/517_rename_spherical_axiom_to_saturation/plans/01_spherical-to-saturation-rename.md",
+    "specs/517_rename_spherical_axiom_to_saturation/summaries/01_spherical-to-saturation-rename-summary.md",
+    "specs/paper-definitions-of-record.md",
+    "typst/FormalFoundations.typ",
+    "typst/SYNC-MAP.md",
+    "typst/chapters/02-semantics.typ",
+    "typst/chapters/p3-ltl-to-tm.typ",
+    "typst/notation/bimodal-notation.typ",
+    "typst/sync-check-whitelist.txt"
+  ],
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/517_rename_spherical_axiom_to_saturation/summaries/01_spherical-to-saturation-rename-summary.md",
+      "summary": "Renamed the fourth task-frame axiom Spherical -> Saturation across 40 files, preserving the three 'spherically complete' occurrences and re-keying both paper anchors."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/517_rename_spherical_axiom_to_saturation/handoffs/phase-1-handoff-20260901.md",
+      "summary": "Pre-edit baseline measurements."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/517_rename_spherical_axiom_to_saturation/handoffs/phase-2-handoff-20260901.md",
+      "summary": "Atomic rename batch, post-conditions and gate results."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/517_rename_spherical_axiom_to_saturation/handoffs/phase-3-handoff-20260902.md",
+      "summary": "Prose coherence pass and record absorption."
+    }
+  ],
+  "next_steps": "Two out-of-scope follow-ups recorded in the summary: (1) the 10 drifted paper anchors, two of them substantive (def:time-shift-histories lost its explicit translation function; def:BLplus-defined changed item emphasis) -- check-paper-definitions.sh stays exit 1 until reconciled; (2) typst-sync-check.sh's 2 aesop violations, owned by task 518's territory."
+}
