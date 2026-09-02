@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Semantics.Correspondence.FwdRecPeriodicity
+import FormalSystem.Semantics.IntNormalForm
 
 /-!
 # The `ℤ` bridge: a task frame over `ℤ` is a digraph, and its histories are walks
@@ -13,10 +14,19 @@ import FormalSystem.Semantics.Correspondence.FwdRecPeriodicity
 correspondence at an arbitrary duration group, and `FwdRecPeriodicity.lean` supplies the
 `Walk`/`MinCyc` apparatus. This module joins them at `D = ℤ`, where the frame *is* a digraph:
 
-* `step F w u := F.TaskRel w 1 u` is the one-step relation;
-* every bi-infinite walk in `step F` is a total history (`ofWalk`), because
-  *Compositionality* plus *Converse* plus *Nullity* give `Rₙ = R₁ⁿ` (`taskRel_diff`);
-* every total history is a bi-infinite walk (`hist_isWalk`).
+* `FrameOver.step F w u := F.TaskRel w 1 u` is the one-step relation;
+* every bi-infinite walk in `F.step` is a total history (`FrameOver.HFofStepPath`), because
+  *Compositionality* plus *Converse* plus *Nullity* give `Rₙ = R₁ⁿ`
+  (`FrameOver.respects_of_isStepPath`);
+* every total history is a bi-infinite walk (`TaskFrame.HF.isStepPath`).
+
+**The dictionary itself is not redefined here.** `Semantics/IntNormalForm.lean` already carries
+it, in the `IsStepPath` spelling, and this module imports it: `Walk.IsWalk F.step` and
+`IsStepPath F` are the *same* proposition, definitionally — see
+`isWalk_iff_isStepPath` below, which is `Iff.rfl`. Five `Bridge.*` re-derivations
+(`step`, `taskRel_nat`, `taskRel_diff`, `ofWalk`/`ofWalk_isTotal`, `hist_isWalk`) were deleted
+in favour of the imported versions. Where a consumer needs both directions at once, cite
+`FrameOver.mem_HF_iff_adjacent`, the pre-bundled round trip, rather than reassembling them.
 
 Under that dictionary `TaskFrame.FwdRec` **is** `Walk.AllRec`, so `Walk.periodic` applies and
 every total history of a forward-recurrent frame over `ℤ` is periodic. Feeding that into
@@ -45,7 +55,7 @@ candidate counterexample is the sum of `ℤ` and `nℤ` over `ℤ ×ₗ ℤ`, th
 
 ## Main results
 
-* `step`, `ofWalk`, `hist_isWalk` — the frame/digraph dictionary
+* `isWalk_iff_isStepPath` — the frame/digraph dictionary, as an identity with `IntNormalForm`
 * `allRec_of_fwdRec`, `hist_periodic`, `hist_deterministic` — recurrence forces periodicity
 * `density_schema_iff_fwdRec` — full-schema exactness at `ℤ`
 * `mod_densitySchema_int` — `Mod densitySchema` on the `ℤ` fibre is exactly the `FwdRec` frames
@@ -57,59 +67,17 @@ open FormalSystem.Syntax
 
 namespace Bridge
 
-/-- The one-step digraph of a task frame over `ℤ`. -/
-def step (F : FrameOver intOrder) : F.WorldState → F.WorldState → Prop :=
-  fun w u => F.TaskRel w 1 u
+/--
+**The two spellings of the `ℤ` dictionary are the same proposition.**
 
-/-- Walking `k` natural steps realizes the duration `k`: `forward_comp` iterated. -/
-theorem taskRel_nat (F : FrameOver intOrder) {σ : ℤ → F.WorldState}
-    (h : Walk.IsWalk (step F) σ) (s : ℤ) :
-    ∀ k : ℕ, F.TaskRel (σ s) (k : ℤ) (σ (s + (k : ℤ))) := by
-  intro k
-  induction k with
-  | zero => simpa using F.nullity (σ s)
-  | succ k ih =>
-      have h1 : F.TaskRel (σ (s + (k : ℤ))) 1 (σ (s + (k : ℤ) + 1)) := h (s + (k : ℤ))
-      have h2 := F.forward_comp (σ s) (σ (s + (k : ℤ))) (σ (s + (k : ℤ) + 1)) (k : ℤ) 1
-        (by positivity) (by norm_num) ih h1
-      have e1 : ((k : ℤ) + 1) = ((k + 1 : ℕ) : ℤ) := by push_cast; ring
-      have e2 : s + (k : ℤ) + 1 = s + ((k + 1 : ℕ) : ℤ) := by push_cast; ring
-      rw [e1, e2] at h2
-      exact h2
-
-/-- **Every bi-infinite walk respects the task relation at every duration**: *Compositionality*,
-*Converse* and *Nullity* together give `Rₙ = R₁ⁿ`. -/
-theorem taskRel_diff (F : FrameOver intOrder) {σ : ℤ → F.WorldState}
-    (h : Walk.IsWalk (step F) σ) (s t : ℤ) : F.TaskRel (σ s) (t - s) (σ t) := by
-  rcases le_total s t with hst | hst
-  · have hk := taskRel_nat F h s (t - s).toNat
-    rw [show (((t - s).toNat : ℤ)) = t - s by omega, show s + (t - s) = t by ring] at hk
-    exact hk
-  · have hk := taskRel_nat F h t (s - t).toNat
-    rw [show (((s - t).toNat : ℤ)) = s - t by omega, show t + (s - t) = s by ring] at hk
-    have hc := (F.converse (σ t) (s - t) (σ s)).mp hk
-    rw [show -(s - t) = t - s by ring] at hc
-    exact hc
-
-/-- The total history a bi-infinite walk determines. -/
-def ofWalk (F : FrameOver intOrder) {σ : ℤ → F.WorldState} (h : Walk.IsWalk (step F) σ) :
-    WorldHistory F.toTaskFrame where
-  domain := fun _ => True
-  nonempty_domain := ⟨0, trivial⟩
-  states := fun t _ => σ t
-  respects_task := fun s t _ _ => taskRel_diff F h s t
-  convex := fun _ _ _ _ _ _ _ => trivial
-
-theorem ofWalk_isTotal (F : FrameOver intOrder) {σ : ℤ → F.WorldState}
-    (h : Walk.IsWalk (step F) σ) : (ofWalk F h).IsTotal := fun _ => trivial
-
-/-- **Every total history is a bi-infinite walk.** -/
-theorem hist_isWalk (F : FrameOver intOrder) (τ : WorldHistory F.toTaskFrame)
-    (hτ : τ.IsTotal) : Walk.IsWalk (step F) (fun n => τ.states n (hτ n)) := by
-  intro n
-  have h := τ.respects_task n (n + 1) (hτ n) (hτ (n + 1))
-  rw [show n + 1 - n = (1 : ℤ) by ring] at h
-  exact h
+`Walk.IsWalk R σ` unfolds to `∀ n : ℤ, R (σ n) (σ (n + 1))` (`FwdRecPeriodicity.lean`) and
+`IsStepPath F f` to `∀ n : ℤ, F.step (f n) (f (n + 1))` (`IntNormalForm.lean`).
+Substituting `R := F.step` makes the two literally the same term, so this is `Iff.rfl` and not
+merely an equivalence — which is what lets the `Walk`-side results below consume
+`IntNormalForm`'s step-path apparatus with no transport.
+-/
+theorem isWalk_iff_isStepPath (F : FrameOver intOrder) (σ : ℤ → F.WorldState) :
+    Walk.IsWalk F.step σ ↔ IsStepPath F σ := Iff.rfl
 
 /-- `n` covers `n - 1` in `ℤ`. Stated standalone so that `omega` runs in a context whose atoms are
 literally `Int`; inside `allRec_of_fwdRec` the times carry `↑intOrder`'s order instance, which is
@@ -119,16 +87,16 @@ private theorem int_covers (n : ℤ) : n - 1 < n ∧ ∀ r : ℤ, n - 1 < r → 
 
 /-- **`FwdRec` over `ℤ` is exactly the digraph hypothesis `AllRec`.** -/
 theorem allRec_of_fwdRec (F : FrameOver intOrder) (hF : F.toTaskFrame.FwdRec) :
-    Walk.AllRec (step F) := by
+    Walk.AllRec F.step := by
   intro σ hσ n
-  exact hF ⟨ofWalk F hσ, ofWalk_isTotal F hσ⟩ (n - 1) n (int_covers n).1 (int_covers n).2
+  exact hF (FrameOver.HFofStepPath F σ hσ) (n - 1) n (int_covers n).1 (int_covers n).2
     (fun w => ∃ m : ℤ, n < m ∧ σ m = w) (fun r hr => ⟨r, hr, rfl⟩)
 
 /-- **Over `ℤ`, `FwdRec F` forces every total history to be periodic.** -/
 theorem hist_periodic (F : FrameOver intOrder) (hF : F.toTaskFrame.FwdRec)
     (τ : WorldHistory F.toTaskFrame) (hτ : τ.IsTotal) :
     ∃ π : ℤ, 0 < π ∧ ∀ n : ℤ, τ.states (n + π) (hτ (n + π)) = τ.states n (hτ n) :=
-  Walk.periodic (allRec_of_fwdRec F hF) (hist_isWalk F τ hτ)
+  Walk.periodic (allRec_of_fwdRec F hF) (TaskFrame.HF.isStepPath ⟨τ, hτ⟩)
 
 /--
 **The structural shape of a `FwdRec` frame over `ℤ`**: the one-step relation is *deterministic*
@@ -138,7 +106,8 @@ theorem hist_deterministic (F : FrameOver intOrder) (hF : F.toTaskFrame.FwdRec)
     (τ ρ : WorldHistory F.toTaskFrame) (hτ : τ.IsTotal) (hρ : ρ.IsTotal) (t : ℤ)
     (h : τ.states t (hτ t) = ρ.states t (hρ t)) :
     τ.states (t + 1) (hτ (t + 1)) = ρ.states (t + 1) (hρ (t + 1)) :=
-  Walk.succ_unique' (allRec_of_fwdRec F hF) (hist_isWalk F τ hτ) (hist_isWalk F ρ hρ) h
+  Walk.succ_unique' (allRec_of_fwdRec F hF) (TaskFrame.HF.isStepPath ⟨τ, hτ⟩)
+    (TaskFrame.HF.isStepPath ⟨ρ, hρ⟩) h
 
 /--
 **Full-schema exactness over `ℤ`.**
