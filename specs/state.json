@@ -1493,7 +1493,7 @@
     {
       "project_number": 520,
       "project_name": "bundle_retirement_and_cycle_breaking",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "topic": "metalogic",
       "priority": "medium",
@@ -1514,7 +1514,7 @@
         "FormalSystem/Metalogic/Algebraic/UltrafilterMCS.lean"
       ],
       "created": "2026-09-02T03:30:31Z",
-      "last_updated": "2026-09-02T13:54:29Z",
+      "last_updated": "2026-09-02T14:21:39Z",
       "artifacts": [
         {
           "path": "specs/520_bundle_retirement_and_cycle_breaking/reports/01_bundle-retirement-cycle-breaking.md",
@@ -1532,7 +1532,7 @@
     {
       "project_number": 521,
       "project_name": "truth_layer_simp_normal_form",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "topic": "metalogic",
       "priority": "high",
@@ -1553,9 +1553,15 @@
         "FormalSystem/Metalogic/Soundness.lean"
       ],
       "created": "2026-09-02T03:30:31Z",
-      "last_updated": "2026-09-02T04:37:44Z",
-      "artifacts": [],
-      "session_id": "sess_1788317385_2ae65c"
+      "last_updated": "2026-09-02T14:33:50Z",
+      "artifacts": [
+        {
+          "path": "specs/521_truth_layer_simp_normal_form/reports/01_truth-layer-simp-normal-form.md",
+          "type": "report",
+          "summary": "Truth-layer simp normal form research: re-measurement, verified lemma set, three charter defects, 7-phase ordering."
+        }
+      ],
+      "session_id": "sess_1788332773_c2fa9f_521"
     },
     {
       "project_number": 522,

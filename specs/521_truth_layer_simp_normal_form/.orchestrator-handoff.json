@@ -1,0 +1,23 @@
+{
+  "task_number": 521,
+  "phase": "research",
+  "status": "researched",
+  "dispatch_seq": 7,
+  "session_id": "sess_1788332773_c2fa9f_521",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/521_truth_layer_simp_normal_form/reports/01_truth-layer-simp-normal-form.md",
+      "summary": "Truth-layer simp normal form research: re-measurement, verified lemma set, three charter defects, 7-phase ordering."
+    }
+  ],
+  "blockers": [],
+  "decisions_required": [
+    "Choose ONE always normal form: the collected forall-s form is recommended; registering both @[simp] is verified non-confluent.",
+    "Restate the >=80% simp-site reduction gate (max 30% under the stated scope) or widen the file scope.",
+    "Confirm untl_iff/snce_iff are added to step (1); the normal form is incomplete without them.",
+    "Confirm strong_release_iff/strong_trigger_iff keep @[simp] rather than being dropped or deleted.",
+    "Approve amending NormalizationAttr.lean's 'must not acquire any other content' sentence to host truth_norm/swap_norm."
+  ],
+  "notes": "READ-ONLY dispatch: no source file modified, no lake build started. Task 518 prerequisite confirmed complete. No foreign modifications observed in the eight scoped files; task 520's edits are disjoint. Soundness.lean line numbers proved NOT stale (drift <=5 lines); only the DenseValidity.lean:302 anchor is void and it was re-established live at Soundness.lean:723."
+}

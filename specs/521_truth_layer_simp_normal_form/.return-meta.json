@@ -1,0 +1,16 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/521_truth_layer_simp_normal_form/reports/01_truth-layer-simp-normal-form.md",
+      "summary": "Re-measures every charter figure against commit 2bd4dfba2, establishes and empirically verifies a confluent/terminating @[simp] normal form for TruthAt, and reports three charter defects: non-confluent dual always forms, an unreachable 80% acceptance gate, and the inertness of @[simp] at simp-only call sites."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1788332773_c2fa9f_521",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
