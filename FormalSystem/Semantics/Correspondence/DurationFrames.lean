@@ -91,14 +91,8 @@ Combined with `Semantics.duration_dense_or_least_pos`, this is exactly the `Succ
     (hp : IsLeast {x : ↑D | 0 < x} p) : SuccOrder ↑D :=
   SuccOrder.ofSuccLeIff (fun x => x + p) (by
     intro a b
-    constructor
-    · intro h
-      exact lt_of_lt_of_le (lt_add_of_pos_right a hp.1) h
-    · intro h
-      have hmem : (0 : ↑D) < b - a := sub_pos.mpr h
-      have hle : p ≤ b - a := hp.2 hmem
-      have := le_sub_iff_add_le.mp hle
-      rwa [add_comm] at this)
+    exact ⟨fun h => lt_of_lt_of_le (isLeast_succ_of_isLeast_pos hp a).1 h,
+      fun h => (isLeast_succ_of_isLeast_pos hp a).2 h⟩)
 
 /-! ## The translation frame -/
 

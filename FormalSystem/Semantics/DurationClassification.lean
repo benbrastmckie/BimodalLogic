@@ -178,6 +178,58 @@ theorem complete_not_dense_iso_int {D : Type} [AddCommGroup D] [LinearOrder D]
   letI : Archimedean D := archimedean_of_lub h_lub
   (LinearOrderedAddCommGroup.discrete_iff_not_denselyOrdered D).mpr h_not_dense
 
+section LeastPositive
+
+variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+
+/-!
+## Immediate neighbours from a least positive element
+
+Two shared order lemmas, carried at the **weakest** hypotheses that support them:
+`[AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]` and nothing else — no `Nontrivial`, no
+`Archimedean`, no `SuccOrder`. That matters, because the three call sites they replace each
+supply the `IsLeast` witness from a *different* source (`succOrder_of_isLeast_pos` from the
+duration dichotomy, the two `LexInt` lemmas from a hand-built witness at `ℤ ×ₗ ℤ`) and none of
+them has a successor structure available at the point of use — that is what they are building.
+
+**Direction A is deliberately not merged here.** `isLeast_pos_succ_zero` below and
+`BLSchemaValidity.isGreatest_neg_pred_zero` go the *converse* way — from a successor structure
+to the least positive element — are three to four lines each, and the latter's docstring records
+its duplication as a deliberate territory split from an earlier task. Merging them would need an
+explicit note superseding that docstring.
+-/
+
+/--
+**A least strictly positive `p` makes `x + p` the immediate successor of `x`.**
+
+`x < x + p` is positivity; minimality is `p ≤ z - x` from `hp.2` applied to `0 < z - x`,
+rearranged by `le_sub_iff_add_le` and `add_comm`. No `linarith`: the binder bundle is a bare
+ordered abelian group with no ring structure, on which it does not fire.
+-/
+theorem isLeast_succ_of_isLeast_pos {p : D} (hp : IsLeast {y : D | 0 < y} p) (x : D) :
+    IsLeast {z : D | x < z} (x + p) := by
+  refine ⟨lt_add_of_pos_right x hp.1, fun z hz => ?_⟩
+  have hpos : (0 : D) < z - x := sub_pos.mpr hz
+  have hle : p ≤ z - x := hp.2 hpos
+  have := le_sub_iff_add_le.mp hle
+  rwa [add_comm] at this
+
+/--
+**The mirror: a least strictly positive `p` makes `x - p` the immediate predecessor of `x`.**
+
+Same argument read downwards, through `sub_lt_self` and a second `le_sub_iff_add_le`.
+-/
+theorem isGreatest_pred_of_isLeast_pos {p : D} (hp : IsLeast {y : D | 0 < y} p) (x : D) :
+    IsGreatest {z : D | z < x} (x - p) := by
+  refine ⟨sub_lt_self x hp.1, fun z hz => ?_⟩
+  have hpos : (0 : D) < x - z := sub_pos.mpr hz
+  have hle : p ≤ x - z := hp.2 hpos
+  have h2 := le_sub_iff_add_le.mp hle
+  rw [add_comm] at h2
+  exact le_sub_iff_add_le.mpr h2
+
+end LeastPositive
+
 section SuccessorBranch
 
 variable {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
