@@ -4,8 +4,18 @@
     "total_tasks": 42,
     "last_sync": "2026-08-24T21:34:14Z"
   },
-  "next_project_number": 532,
+  "next_project_number": 533,
   "active_projects": [
+    {
+      "project_number": 532,
+      "project_name": "worldhistory_extension_faithfulness_audit",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Audit and resolve the partial-vs-total WorldHistory faithfulness gap in the Lean semantics against the paper's extension theorem. ANCHOR SOURCE: /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex -- thm:extension (line 3155, in the Appendix beginning line 1789), which states that every partial history tau : X -> W over a task frame F is extended by some total world history sigma in H_F (proved via Zorn's lemma over partial histories ordered by extension, appealing to lem:step and def:world-history), together with its corollary cor:occurrence. Read this alongside the supporting discussion in sec:Construction (line 933), where possible worlds are defined as functions from durations to world states, and the supporting definitions and lemmas in the Appendix (def:frame, def:world-history, def:frame-properties, lem:step, lem:nullity, cor:saturation-finite, and the surrounding partial-history material). TRIGGERING QUESTION: the frame-kit transport work left one phase blocked on a quantifier mismatch. Truth.time_shift_preserves_truth (FormalSystem/Semantics/Truth.lean) and IntTransfer.truthAt_map (FormalSystem/Semantics/IntTransfer.lean) both quantify over an ARBITRARY WorldHistory with no totality hypothesis, while the TruthIso structure carries hist : F.HF equiv F'.HF and transports only TOTAL histories. The prior implementation dispatch argued that an arbitrary history cannot be reduced to a total one, because TruthAt's atom clause is an existential over the history's domain, so a partial history makes atoms false off its domain and no total history reproduces that truth-value profile -- extension in the paper's sense preserves the history but not necessarily the truth-value profile of the partial one. Determine whether that reasoning is correct, and whether thm:extension and its supporting apparatus license a different resolution. DELIVERABLE: decide between (a) widening TruthIso to a WorldHistory-level equivalence, which would unblock both transports, and (b) accepting the remaining hand-written six-case inductions -- with the decision grounded in what the paper actually proves, not in what is convenient in Lean. BROADER SCOPE: the goal is that the Lean codebase be fully faithful and aligned with the paper in BOTH content and convention. Audit how FormalSystem/Semantics/ (WorldHistory.lean, TaskFrame.lean, Truth.lean, IntTransfer.lean) represents the partial/total history distinction, whether the paper's extension theorem is stated or available in Lean at all, and whether naming and structural conventions track def:world-history and def:frame. Report every divergence found, including places where the Lean development is stronger, weaker, or differently quantified than the paper. CAUTION: an earlier research report's section 4.3 recorded time_shift_preserves_truth as \"derivable from a uniform TruthIso? yes\", which is now known to be an error -- do not treat that report as authoritative on this point.",
+      "topic": "semantics",
+      "created": "2026-09-02T22:29:10Z",
+      "last_updated": "2026-09-02T22:29:10Z"
+    },
     {
       "project_number": 517,
       "project_name": "rename_spherical_axiom_to_saturation",
@@ -1642,7 +1652,8 @@
         517,
         518,
         521,
-        522
+        522,
+        532
       ],
       "file_scope": [
         "FormalSystem/Semantics/TaskFrame.lean",

@@ -1,5 +1,5 @@
 ---
-next_project_number: 532
+next_project_number: 533
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 532
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,193,257,298,433,461,476,481,504,506,523,524,526 | -- | automation, dataset-enhancement, decidability, ... |
+| 1 | 127,128,193,257,298,433,461,476,481,504,506,523,524,526,532 | -- | automation, dataset-enhancement, decidability, ... |
 | 2 | 178,231,282,296,463,502,525,527,528,529,530 | 193,298,433,461,523,524,526 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 219,464,497,531 | 231,463,502,528,529,530 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 4 | 465,498,499,500 | 464,497 | algebraic-representation, decidability |
@@ -99,7 +99,21 @@ next_project_number: 532
 
 506 [NOT STARTED] — Fix all outstanding display/layout defects in the compiled typst 
 
+### Semantics
+
+532 [NOT STARTED] — Audit and resolve the partial-vs-total WorldHistory faithfulness 
+
 ## Tasks
+
+### 532. Worldhistory extension faithfulness audit
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: semantics
+- **Dependencies**: None
+
+**Description**: Audit and resolve the partial-vs-total WorldHistory faithfulness gap in the Lean semantics against the paper's extension theorem. ANCHOR SOURCE: /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex -- thm:extension (line 3155, in the Appendix beginning line 1789), which states that every partial history tau : X -> W over a task frame F is extended by some total world history sigma in H_F (proved via Zorn's lemma over partial histories ordered by extension, appealing to lem:step and def:world-history), together with its corollary cor:occurrence. Read this alongside the supporting discussion in sec:Construction (line 933), where possible worlds are defined as functions from durations to world states, and the supporting definitions and lemmas in the Appendix (def:frame, def:world-history, def:frame-properties, lem:step, lem:nullity, cor:saturation-finite, and the surrounding partial-history material). TRIGGERING QUESTION: the frame-kit transport work left one phase blocked on a quantifier mismatch. Truth.time_shift_preserves_truth (FormalSystem/Semantics/Truth.lean) and IntTransfer.truthAt_map (FormalSystem/Semantics/IntTransfer.lean) both quantify over an ARBITRARY WorldHistory with no totality hypothesis, while the TruthIso structure carries hist : F.HF equiv F'.HF and transports only TOTAL histories. The prior implementation dispatch argued that an arbitrary history cannot be reduced to a total one, because TruthAt's atom clause is an existential over the history's domain, so a partial history makes atoms false off its domain and no total history reproduces that truth-value profile -- extension in the paper's sense preserves the history but not necessarily the truth-value profile of the partial one. Determine whether that reasoning is correct, and whether thm:extension and its supporting apparatus license a different resolution. DELIVERABLE: decide between (a) widening TruthIso to a WorldHistory-level equivalence, which would unblock both transports, and (b) accepting the remaining hand-written six-case inductions -- with the decision grounded in what the paper actually proves, not in what is convenient in Lean. BROADER SCOPE: the goal is that the Lean codebase be fully faithful and aligned with the paper in BOTH content and convention. Audit how FormalSystem/Semantics/ (WorldHistory.lean, TaskFrame.lean, Truth.lean, IntTransfer.lean) represents the partial/total history distinction, whether the paper's extension theorem is stated or available in Lean at all, and whether naming and structural conventions track def:world-history and def:frame. Report every divergence found, including places where the Lean development is stronger, weaker, or differently quantified than the paper. CAUTION: an earlier research report's section 4.3 recorded time_shift_preserves_truth as "derivable from a uniform TruthIso? yes", which is now known to be an error -- do not treat that report as authoritative on this point.
+
+---
 
 ### 531. Docgen publication and automation suite triage
 - **Status**: [NOT STARTED]
