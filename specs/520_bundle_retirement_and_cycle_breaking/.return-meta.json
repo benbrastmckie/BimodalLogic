@@ -1,55 +1,113 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "task_number": 520,
+  "started_at": "2026-09-02T00:00:00Z",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true,
+    "gate": "check-module-invariants.sh ALL CHECKS PASSED",
+    "c2_axiom_baseline": "unchanged (byte-identical at every phase boundary)",
+    "metalogic_directory_cycles": 1,
+    "cycle_script": "scripts/check-metalogic-cycles.sh reports exactly 1 (BXCanonical <-> WeakCanonical)"
+  },
+  "modified_files": [
+    "FormalSystem/Boneyard/BundleDeadHalf/CanonicalFrame.lean",
+    "FormalSystem/Boneyard/BundleDeadHalf/CanonicalTaskRelation.lean",
+    "FormalSystem/Boneyard/BundleDeadHalf/Construction.lean",
+    "FormalSystem/Boneyard/BundleDeadHalf/ModalSaturation.lean",
+    "FormalSystem/Boneyard/BundleDeadHalf/README.md",
+    "FormalSystem/Boneyard/BundleDeadHalf/SuccRelation.lean",
+    "FormalSystem/Boneyard/BundleDeadHalf/UntilSinceCoherence.lean",
+    "FormalSystem/Boneyard/BundleSuccessorSeed/SuccExistence.lean",
+    "FormalSystem/Boneyard/ChainCompleteness/Algebraic/DeterministicChain.lean",
+    "FormalSystem/Boneyard/ChainCompleteness/Algebraic/DeterministicFMCS.lean",
+    "FormalSystem/Boneyard/ChainCompleteness/Bundle/ResolvingChain.lean",
+    "FormalSystem/Boneyard/ChainCompleteness/Bundle/TargetedChain.lean",
+    "FormalSystem/Boneyard/ChainCompleteness/Completeness/SuccChainCompleteness.lean",
+    "FormalSystem/Boneyard/DeadCanonicalModel/CanonicalIrreflexivity.lean",
+    "FormalSystem/Boneyard/DefectDirectedChain/RootScopedChain.lean",
+    "FormalSystem/Boneyard/QuasimodelOracle/OracleCoherence.lean",
+    "FormalSystem/Boneyard/README.md",
+    "FormalSystem/Boneyard/RoundRobinChain/DRMChain.lean",
+    "FormalSystem/Boneyard/ScheduleBasedBFMCS/RootScopedChain.lean",
+    "FormalSystem/Boneyard/SorriedDeclExcisions/BundleUntilSinceStep.lean",
+    "FormalSystem/Boneyard/SorriedDeclExcisions/SingletonSorriedDecls.lean",
+    "FormalSystem/Boneyard/SorriedDeclExcisions/UntilSinceCoherence.lean",
+    "FormalSystem/Boneyard/StrictSemanticsLegacy/Algebraic/UltrafilterChain.lean",
+    "FormalSystem/Boneyard/StrictSemanticsLegacy/Bundle/CanonicalConstruction.lean",
+    "FormalSystem/Boneyard/StrictSemanticsLegacy/Bundle/SuccChainFMCS.lean",
+    "FormalSystem/Boneyard/StrictSemanticsLegacy/FrameConditions/Completeness.lean",
+    "FormalSystem/Metalogic/Algebraic/UltrafilterMCS.lean",
+    "FormalSystem/Metalogic/BXCanonical/CanonicalModel.lean",
+    "FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodel.lean",
+    "FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodelBasic.lean",
+    "FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleTypes.lean",
+    "FormalSystem/Metalogic/BXCanonical/CompletenessDedekind.lean",
+    "FormalSystem/Metalogic/BXCanonical/Frame.lean",
+    "FormalSystem/Metalogic/Bundle.lean",
+    "FormalSystem/Metalogic/Bundle/README.md",
+    "FormalSystem/Metalogic/Bundle/TemporalCoherence.lean",
+    "FormalSystem/Metalogic/Bundle/WitnessSeed.lean",
+    "FormalSystem/Metalogic/Core/MCSProperties.lean",
+    "FormalSystem/Metalogic/Core/RestrictedMCS/Basic.lean",
+    "FormalSystem/Metalogic/README.md",
+    "FormalSystem/Metalogic/WeakCanonical/GroupModel/CountermodelBase.lean",
+    "FormalSystem/Metalogic/WeakCanonical/IntegerModel/ReynoldsBridge.lean",
+    "FormalSystem/Syntax.lean",
+    "FormalSystem/Syntax/SubformulaClosure/IteratedTemporal.lean",
+    "FormalSystem/Theorems.lean",
+    "FormalSystem/Theorems/ModalDerived.lean",
+    "docs/architecture/BFMCS_ARCHITECTURE.md",
+    "docs/development/MODULE_INVARIANTS.md",
+    "scripts/check-metalogic-cycles.sh",
+    "scripts/module-invariants-manifest.txt",
+    "specs/520_bundle_retirement_and_cycle_breaking/plans/01_bundle-retirement-cycle-breaking.md",
+    "specs/520_bundle_retirement_and_cycle_breaking/summaries/00_baseline.md",
+    "specs/520_bundle_retirement_and_cycle_breaking/summaries/01_bundle-retirement-cycle-breaking-summary.md"
+  ],
+  "removed_files": [
+    "FormalSystem/Metalogic/Bundle/CanonicalFrame.lean",
+    "FormalSystem/Metalogic/Bundle/CanonicalTaskRelation.lean",
+    "FormalSystem/Metalogic/Bundle/Construction.lean",
+    "FormalSystem/Metalogic/Bundle/ModalSaturation.lean",
+    "FormalSystem/Metalogic/Bundle/SuccRelation.lean",
+    "FormalSystem/Metalogic/Bundle/UntilSinceCoherence.lean"
+  ],
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/520_bundle_retirement_and_cycle_breaking/plans/01_bundle-retirement-cycle-breaking.md",
-      "summary": "Five-phase plan implementing the user's full-cascade scope decision: break the Core<->Bundle cycle, migrate the live ModalSaturation helpers, retire a six-file dead set to the archive, and restore documentation coherence."
+      "type": "summary",
+      "path": "specs/520_bundle_retirement_and_cycle_breaking/summaries/01_bundle-retirement-cycle-breaking-summary.md",
+      "summary": "Broke the Core->Bundle directory cycle, retired the six-module dead half of Bundle/ to Boneyard/BundleDeadHalf/, and made the Metalogic cycle count mechanically checkable."
+    },
+    {
+      "type": "summary",
+      "path": "specs/520_bundle_retirement_and_cycle_breaking/summaries/00_baseline.md",
+      "summary": "Phase 1 pre-edit gate state and the confirmed/diverged counts."
     }
   ],
-  "next_steps": "Run /implement 520 to execute the plan",
+  "completion_data": {
+    "completion_summary": "Relocated 29 pure-syntax iterated-temporal declarations to Syntax/SubformulaClosure/IteratedTemporal.lean and migrated seven live derivation-tree and MCS helpers to Theorems/ModalDerived.lean and Core/MCSProperties.lean, which removed the sole Core->Bundle import edge and orphaned six Bundle/ modules. Those six (2,735 lines at the start, 2,260 as archived) were git mv-ed to Boneyard/BundleDeadHalf/ with a README, all 28 archived import lines re-pointed, and the affected READMEs regenerated. Metalogic/ now has exactly one directory-level import cycle, asserted mechanically by the new scripts/check-metalogic-cycles.sh; lake build is green, check-module-invariants.sh reports ALL CHECKS PASSED, and the C2 flagship axiom baseline is byte-identical.",
+    "roadmap_items": []
+  },
+  "partial_progress": {
+    "stage": "complete",
+    "details": "All 5 phases completed and committed.",
+    "phases_completed": 5,
+    "phases_total": 5
+  },
   "metadata": {
-    "session_id": "sess_1788332773_c2fa9f_520",
-    "agent_type": "planner-agent",
+    "session_id": "sess_1788332773_c2fa9f",
+    "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
     "delegation_path": [
       "orchestrator",
-      "plan",
-      "planner-agent"
+      "implement",
+      "skill-lean-implementation"
     ],
-    "phase_count": 5,
-    "estimated_hours": 7.5,
-    "dependency_waves": [
-      [
-        1
-      ],
-      [
-        2,
-        3
-      ],
-      [
-        4
-      ],
-      [
-        5
-      ]
-    ]
-  },
-  "memory_candidates": [
-    {
-      "content": "When a plan retires live-tree Lean modules into FormalSystem/Boneyard/, check the archive's tree-wide convention banner before moving. Boneyard/README.md asserts every archived file is EVENT-FIRST (predating the guard-first untl/snce migration) and instructs anyone resurrecting a file to swap both arguments. Files retired from the live tree today are guard-first, so moving them in without a named per-directory carve-out makes the banner silently false in exactly the way it warns about -- applying its swap instruction to them inverts their meaning while still compiling. Verify with `grep -c 'untl\\|snce'` on each retiring file; a nonzero count obliges the carve-out. This class of defect is invisible to check-module-invariants.sh: C11 checks that archived imports resolve, never the semantics of archived content.",
-      "category": "INSIGHT",
-      "source_artifact": "specs/520_bundle_retirement_and_cycle_breaking/plans/01_bundle-retirement-cycle-breaking.md",
-      "confidence": 0.75,
-      "suggested_keywords": [
-        "boneyard",
-        "archive-retirement",
-        "untl-snce",
-        "guard-first",
-        "convention-banner",
-        "lean-module-retirement"
-      ]
-    }
-  ],
-  "modified_files": []
+    "compliance_check": "passed",
+    "dispatch_seq": 6
+  }
 }
