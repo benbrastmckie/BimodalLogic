@@ -1,16 +1,29 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/519_soundnesslemmas_consolidation_delete_dead/reports/01_soundnesslemmas-dead-code-reachability.md",
-      "summary": "Reachability audit of SoundnessLemmas/ dead code with per-declaration occurrence ledger, six-phase dependency-ordered plan map, risk analysis of the IsValid->ValidIn restatement (requires out-of-scope Decidable.lean edit), and line-count projection (~1,228 vs the 1,400 target)."
+      "type": "plan",
+      "path": "specs/519_soundnesslemmas_consolidation_delete_dead/plans/01_soundnesslemmas-consolidation-deletion.md",
+      "summary": "Nine-phase, build-green-at-every-boundary plan to delete the superseded SoundnessLemmas machinery, remove DenseValidity.lean and Core.lean, one-line the surviving 45-arm swap dispatcher, and retire IsValid in favour of ValidIn/ValidDiscrete."
     }
   ],
+  "next_steps": "Run /implement 519 to execute the plan",
   "metadata": {
     "session_id": "sess_1788332773_c2fa9f_519",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 9,
+    "estimated_hours": 13,
+    "dependency_waves": [[1, 2], [3], [4], [5], [6], [7], [8], [9]]
+  },
+  "memory_candidates": [
+    {
+      "content": "When a plan deletes a shared abstraction (here a local IsValid validity notion) AND separately extracts many small lemmas out of a large dispatcher stated at that abstraction, the ordering matters more than it looks. Extracting first at the doomed abstraction means the deletion phase must additionally restate every extracted lemma, which inflates the highest-risk phase by an order of magnitude. Split the abstraction's retirement along its own risk seam instead: restate the benign half (no data-carrying typeclass instances, no pinned-axiom exposure) BEFORE the extraction so the new lemmas are born in final form, and keep only the hazardous half (data instances that must be applied positionally with @ rather than installed with haveI, plus any consumer downstream of an axiom-baseline-pinned theorem) as the final isolated phase. Risk isolation is the reason for the 'isolated final phase' rule, so bundling mechanical churn into that phase defeats it.",
+      "category": "PATTERN",
+      "source_artifact": "specs/519_soundnesslemmas_consolidation_delete_dead/plans/01_soundnesslemmas-consolidation-deletion.md",
+      "confidence": 0.75,
+      "suggested_keywords": ["phase-ordering", "abstraction-retirement", "lemma-extraction", "risk-isolation", "defeq-hazard", "lean4"]
+    }
+  ]
 }

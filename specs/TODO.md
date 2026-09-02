@@ -84,7 +84,7 @@ next_project_number: 532
 
 ### Metalogic
 
-519 [RESEARCHED] — WAVE 1 (deletion). Retire the soundness machinery that the FrameC
+519 [PLANNED] — WAVE 1 (deletion). Retire the soundness machinery that the FrameC
   └─ 521 [NOT STARTED] — WAVE 2 (core utilities). Give the primary language's truth relati
     └─ 522 [NOT STARTED] — WAVE 2 (core utilities). Fix the one representation choice that c
       └─ 523 [NOT STARTED] — WAVE 2 (core utilities). Complete the task-frame construction kit
@@ -97,7 +97,7 @@ next_project_number: 532
     └─ 526 [NOT STARTED] — WAVE 3 (theorem layer). Consolidate the maximal-consistent-set AP
       └─ 527 [NOT STARTED] — WAVE 4 (canonical-model infrastructure). Replace textual future/p
       └─ 528 [NOT STARTED] — WAVE 4 (algebraic infrastructure). Modernise Metalogic/Algebraic/
-520 [RESEARCHED] — WAVE 1 (deletion). Retire the dead half of Metalogic/Bundle/ and 
+520 [PLANNING] — WAVE 1 (deletion). Retire the dead half of Metalogic/Bundle/ and 
   └─ 526 [NOT STARTED] — WAVE 3 (theorem layer). Consolidate the maximal-consistent-set AP (see above)
   └─ 529 [NOT STARTED] — WAVE 5 (publication infrastructure). Turn on the two automated si (see above)
 
@@ -218,7 +218,7 @@ next_project_number: 532
 ---
 
 ### 520. Bundle retirement and cycle breaking
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: Task 518
@@ -229,11 +229,12 @@ next_project_number: 532
 ---
 
 ### 519. Soundnesslemmas consolidation delete dead
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: Task 518
 - **Research**: [519_soundnesslemmas_consolidation_delete_dead/reports/01_soundnesslemmas-dead-code-reachability.md]
+- **Plan**: [519_soundnesslemmas_consolidation_delete_dead/plans/01_soundnesslemmas-consolidation-deletion.md]
 
 **Description**: WAVE 1 (deletion). Retire the soundness machinery that the FrameClass refactor superseded but left compiling. Findings A-01, A-02, A-08, A-09, D-03, D-04, D-05, D-09, D-11 in specs/reviews/2026-09-01-lean-engineering/{A-soundness,D-tactics}.md; Critical C6 and High H1 in the review. MEASURED STATE: FormalSystem/Metalogic/SoundnessLemmas/DenseValidity.lean carries 615 of 1,297 lines (47%) that are transitively unreachable -- axiom_locally_valid (:970, 298 lines, private, zero references), swap_axiom_{t4,ta,tl}_valid (:98-169), the four *_preserves_swap_valid lemmas (:228-279), eleven axiom_*_valid local-validity helpers (:717-874) consumed only by the dead dispatcher, axiom_density_valid (:960), and three *_preserves_* lemmas (:1268-1297); its own docstring at :215-217 records the supersession. Two 45-arm swap dispatchers, axiom_swap_valid (DenseValidity.lean:297, 416 lines) and axiom_swap_valid_general (FrameClassVariants.lean:46, 348 lines), share 321 byte-identical lines, and Soundness.lean:1337,1341 reach into the Dense one for exactly two arms (density, dense_indicator). SoundnessLemmas/Core.lean:42's IsValid D is a second monomorphic validity notion whose stated justification (circularity, universe levels) has expired -- CoValidity.lean and Separability.lean already import Semantics.Validity -- and forces .toFibre + (D := F.Duration) shims at Soundness.lean:913-935 and :1326-1356. exists_isGLB_of_lub is duplicated at Soundness.lean:1000 and Separability.lean:48 with a docstring apologising for the copy. and_of_not_imp_not is defined five times (Soundness.lean:153, DenseValidity.lean:826 and :280, CoValidity.lean:61, Decidability/Verified/Decidable.lean:2563). WORK: delete the eight dead ranges; move the four live survivors (axiom_temp_linearity_valid :875, axiom_temp_linearity_past_valid :907, axiom_F_until_equiv_valid :940, axiom_P_since_equiv_valid :950) into FrameClassVariants.lean; delete axiom_swap_valid, replacing its two live arms with `density_swap_valid` and `dense_indicator_swap_valid` beside sep_swap_valid (Soundness.lean:1217); make every arm of the surviving dispatcher a one-line `exact <ctor>_swap_valid` (the shape axiom_validIn_min at Soundness.lean:1277 already has), extracting per-constructor lemmas where they are inlined and dropping the no-op `simp only [Formula.swapTemporal, TruthAt]` lines before `intro` (D-09, validated); restate FrameClassVariants' five theorems at ValidIn/ValidDiscrete and delete IsValid and Core.lean; un-private Separability.exists_isGLB_of_lub and delete the Soundness.lean copy; keep ONE and_of_not_imp_not (it mostly disappears once task 521 lands Truth.and_iff). Add Separability to the SoundnessLemmas.lean aggregator (it is omitted today, A-10) and regenerate SoundnessLemmas/README.md. ACCEPTANCE: SoundnessLemmas/ at most ~1,400 lines (from 2,487); exactly one 45-arm swap dispatcher with one-line arms; zero declarations in the directory with only their own occurrence in the tree; lake build green; check-module-invariants.sh ALL PASS; C2 axiom baseline unchanged.
 

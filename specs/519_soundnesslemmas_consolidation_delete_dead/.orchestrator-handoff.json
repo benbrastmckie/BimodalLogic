@@ -1,15 +1,21 @@
 {
-  "dispatch_seq": 1,
+  "dispatch_seq": 3,
   "task_number": 519,
-  "phase": "research",
-  "status": "researched",
+  "phase": "plan",
+  "status": "planned",
   "session_id": "sess_1788332773_c2fa9f_519",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/519_soundnesslemmas_consolidation_delete_dead/reports/01_soundnesslemmas-dead-code-reachability.md",
-      "summary": "Reachability audit, six-phase dependency map, risk analysis, and line-count projection for the SoundnessLemmas consolidation."
+      "type": "plan",
+      "path": "specs/519_soundnesslemmas_consolidation_delete_dead/plans/01_soundnesslemmas-consolidation-deletion.md",
+      "summary": "Nine phases, ~13h, waves [[1,2],[3],[4],[5],[6],[7],[8],[9]]; lake build green at every phase boundary."
     }
   ],
-  "notes": "SCOPE GAP: FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:2413 is a live consumer of SoundnessLemmas.IsValid and must be edited to complete the IsValid deletion; it is absent from the task's declared file scope. Five dead declarations beyond those named in the task description were found (valid_at_triple, truth_at_swap_swap, and_extract, swap_axiom_F_until_equiv_valid, swap_axiom_P_since_equiv_valid). No foreign modifications observed in FormalSystem/; no lake build running."
+  "notes": "PLANNER DEVIATION (stated in the plan Overview, not silent): the IsValid -> ValidIn restatement is split across two phases rather than one. Phase 5 restates the benign .Base half (axiom_swap_valid_general plus the eight transplanted survivors at ValidIn FrameClass.Base) BEFORE arm extraction, so the ~29 lemmas Phases 6-7 create are born in final form. Phase 8 remains the final, isolated, highest-risk phase and carries the entire SuccOrder/PredOrder defeq hazard, the Decidable.lean:2413 retarget, and the only C2 exposure. Rationale: extracting at IsValid first would force Phase 8 to additionally restate ~29 signatures, making the riskiest phase a ~35-declaration edit and defeating the isolation the instruction exists to provide. Fallback to the literal single-phase ordering is documented in Rollback/Contingency. Widened file_scope (Decidability/Verified/Decidable.lean) is planned in Phase 8. All five research-only dead declarations are covered; the two that become dead only when axiom_swap_valid goes are deleted in Phase 3, in the same edit as their sole consumer. D-09 is encoded narrowly (exactly four constructor arms). and_of_not_imp_not cross-directory consolidation is an explicit non-goal.",
+  "summary": "Nine-phase implementation plan created for the SoundnessLemmas consolidation. Phases 1-2 (parallel) delete the already-dead ranges and deduplicate exists_isGLB_of_lub; 3 retires axiom_swap_valid and the two lemmas that die with it; 4 transplants the eight survivors and deletes DenseValidity.lean; 5 restates the .Base layer at ValidIn FrameClass.Base; 6-7 one-line the 45-arm dispatcher; 8 is the isolated final code phase retiring IsValid and Core.lean including the widened Decidable.lean scope; 9 regenerates docs and runs the acceptance gate. lake build green at every phase boundary.",
+  "phases_completed": 0,
+  "phases_total": 9,
+  "blockers": [],
+  "sorry_inventory": [],
+  "continuation_path": null
 }
