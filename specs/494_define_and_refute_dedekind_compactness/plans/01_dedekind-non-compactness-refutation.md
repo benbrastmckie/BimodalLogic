@@ -315,22 +315,22 @@ the transcription to match the predicted count.
 
 ---
 
-### Phase 4: The two refutations, axiom audit, and sorry check [NOT STARTED]
+### Phase 4: The two refutations, axiom audit, and sorry check [COMPLETED]
 
 **Goal**: Land `dedekind_consequence_not_compact` and `strongCompletenessDedekind_refuted`, then
 discharge the task's acceptance gate.
 
 **Tasks**:
-- [ ] Transcribe `dedekind_consequence_not_compact` (refuting `CompactDedekind`), including
+- [x] Transcribe `dedekind_consequence_not_compact` (refuting `CompactDedekind`), including
       `haveI : DenselyOrdered F.Duration := hd` before `ValidDedekindDense.apply`.
-- [ ] Transcribe `strongCompletenessDedekind_refuted` (refuting `StrongCompletenessDedekind`),
+- [x] Transcribe `strongCompletenessDedekind_refuted` (refuting `StrongCompletenessDedekind`),
       including the same `haveI` before `soundness_dedekind`.
-- [ ] Docstring both in the shape of `discrete_consequence_not_compact` /
+- [x] Docstring both in the shape of `discrete_consequence_not_compact` /
       `strongCompletenessDiscrete_refuted`, and record the axiom set inline as
       `DiscreteNonCompactness.lean` does.
-- [ ] **Sorry check**: `grep -rn "sorry" FormalSystem/Metalogic/DedekindNonCompactness.lean
+- [x] **Sorry check** *(clean: the only `sorry` substring in either file is the word `sorryAx` inside the audit docstring)*: `grep -rn "sorry" FormalSystem/Metalogic/DedekindNonCompactness.lean
       FormalSystem/Metalogic/SetConsequence.lean` returns nothing.
-- [ ] **Axiom audit**: add a temporary `#print axioms` block (or run via `lean_verify` /
+- [x] **Axiom audit** *(deviation: altered — the temporary block was made PERMANENT, matching `DiscreteNonCompactness.lean`'s house style, which keeps live `#print axioms` commands plus an `## Axiom Audit` docstring. The plan's parenthetical explicitly sanctions this. Verbatim in-tree output recorded below.)*: add a temporary `#print axioms` block (or run via `lean_verify` /
       `lake env lean`) for all four headline results —
       `dedWitness_not_satisfiable`, `dedWitness_finitely_satisfiable`,
       `dedekind_consequence_not_compact`, `strongCompletenessDedekind_refuted` — and confirm
@@ -338,7 +338,7 @@ discharge the task's acceptance gate.
       in the implementation summary. Remove the temporary block before closing the phase (or
       keep it as a commented-out audit block if that matches house style in
       `DiscreteNonCompactness.lean`).
-- [ ] `lake build` green.
+- [x] `lake build` green. *(2515 jobs, exit 0)*
 
 **Timing**: 0.75 hours
 
@@ -358,6 +358,22 @@ discharge the task's acceptance gate.
   merely a build side effect. If any result carries a fifth axiom, the phase is not complete
 - The full four-class picture now reads: Base/Dense open pending the ultraproduct chain,
   Discrete refuted, Dedekind refuted
+
+**In-tree axiom audit, verbatim `lake build` output** (the module keeps its `#print axioms`
+commands permanently, so this is emitted on every build):
+
+```
+'FormalSystem.Metalogic.qDepth_qAlpha' depends on axioms: [propext, Quot.sound]
+'FormalSystem.Metalogic.dedWitness_core' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.dedWitness_not_satisfiable' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.dedWitness_finitely_satisfiable' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.dedekind_consequence_not_compact' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.strongCompletenessDedekind_refuted' depends on axioms: [propext, Classical.choice, Quot.sound]
+```
+
+All four headline results are exactly `[propext, Classical.choice, Quot.sound]`. `qDepth_qAlpha`
+carries a strict *subset* (`[propext, Quot.sound]`) — a smaller dependency, not an extra axiom;
+recorded literally rather than rounded up.
 
 ---
 

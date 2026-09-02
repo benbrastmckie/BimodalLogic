@@ -411,4 +411,106 @@ theorem dedWitness_finitely_satisfiable (q : Atom) (L : List Formula)
     have := rTruth_alpha q N n 0 le_rfl (by omega)
     simpa using this
 
+/-! ## The two refutations -/
+
+/-- **The `FrameClass.Dedekind` set-based consequence relation is not compact.** Refutes
+`CompactDedekind` (`Metalogic/SetConsequence.lean`).
+
+`dedWitness q ⊨ ⊥` holds vacuously — the witness has no Dedekind model at all
+(`dedWitness_not_satisfiable`) — so compactness would return a *finite* sublist `L` with
+`L.foldr imp ⊥` Dedekind-valid. But `dedWitness_finitely_satisfiable` makes that same `L` true
+at a point of the `ℝ` model, and `truthAt_foldr_imp` turns the two into `False`.
+
+The `haveI : DenselyOrdered F.Duration := hd` is required: `TaskFrame.IsDense` is a `def` whose
+head is not `DenselyOrdered`, so the destructured `hd` is invisible to instance search and
+`ValidDedekindDense.apply`'s instance binder cannot be filled. Unlike the Discrete case the
+`haveI` is safe here — no `DenselyOrdered` instance is baked into `F`'s or `M`'s type, so there
+is no definitional equality to break.
+
+Sorry-free at exactly `[propext, Classical.choice, Quot.sound]`; see the axiom audit below. -/
+theorem dedekind_consequence_not_compact : ¬ CompactDedekind := by
+  intro hc
+  classical
+  set q : Atom := ⟨"q", none⟩ with hq
+  have hcons : SetSemanticConsequenceDedekindDense (dedWitness q) Formula.bot := by
+    refine SetSemanticConsequenceDedekindDense.of_forall ?_
+    intro F _ hlub M τ hτ t hall
+    exact absurd (SatisfiableSet.dedekind_of_forall F hlub M τ hτ t hall)
+      (dedWitness_not_satisfiable q)
+  obtain ⟨L, hL, hvalid⟩ := hc _ _ hcons
+  obtain ⟨F, ⟨hd, hlub⟩, M, τ, hτ, t, hsat⟩ := dedWitness_finitely_satisfiable q L hL
+  haveI : DenselyOrdered F.Duration := hd
+  have hv := ValidDedekindDense.apply hvalid F hlub M τ hτ t
+  exact (truthAt_foldr_imp M τ t L Formula.bot).mp hv (fun ψ hψ => hsat ψ hψ)
+
+/-- **Strong completeness fails for `FrameClass.Dedekind`.** Refutes
+`StrongCompletenessDedekind` (`Metalogic/SetConsequence.lean`).
+
+The same witness, one step further: strong completeness would turn `dedWitness q ⊨ ⊥` into a
+derivation from a finite sublist `L`, and `soundness_dedekind` then makes `⊥` true at the point
+of the `ℝ` model where all of `L` holds. This is the outright refutation that explains why only
+*weak* completeness (`completeness_dedekind`, Reynolds 1992 §9 Theorem 7) is available for this
+class — the refutation does not contradict that theorem, it accounts for its scope.
+
+The same `haveI : DenselyOrdered F.Duration := hd` is required, here for `soundness_dedekind`'s
+instance binder.
+
+Sorry-free at exactly `[propext, Classical.choice, Quot.sound]`; see the axiom audit below. -/
+theorem strongCompletenessDedekind_refuted : ¬ StrongCompletenessDedekind := by
+  intro hsc
+  classical
+  set q : Atom := ⟨"q", none⟩ with hq
+  have hcons : SetSemanticConsequenceDedekindDense (dedWitness q) Formula.bot := by
+    refine SetSemanticConsequenceDedekindDense.of_forall ?_
+    intro F _ hlub M τ hτ t hall
+    exact absurd (SatisfiableSet.dedekind_of_forall F hlub M τ hτ t hall)
+      (dedWitness_not_satisfiable q)
+  obtain ⟨L, hL, ⟨d⟩⟩ := hsc _ _ hcons
+  obtain ⟨F, ⟨hd, hlub⟩, M, τ, hτ, t, hsat⟩ := dedWitness_finitely_satisfiable q L hL
+  haveI : DenselyOrdered F.Duration := hd
+  exact soundness_dedekind L Formula.bot d F hlub M τ hτ t (fun ψ hψ => hsat ψ hψ)
+
+#print axioms qDepth_qAlpha
+#print axioms dedWitness_core
+#print axioms dedWitness_not_satisfiable
+#print axioms dedWitness_finitely_satisfiable
+#print axioms dedekind_consequence_not_compact
+#print axioms strongCompletenessDedekind_refuted
+
+/-! ## Axiom Audit
+
+The verbatim output of the six `#print axioms` commands above:
+
+```
+#print axioms qDepth_qAlpha
+-- depends on: [propext, Quot.sound]
+#print axioms dedWitness_core
+-- depends on: [propext, Classical.choice, Quot.sound]
+#print axioms dedWitness_not_satisfiable
+-- depends on: [propext, Classical.choice, Quot.sound]
+#print axioms dedWitness_finitely_satisfiable
+-- depends on: [propext, Classical.choice, Quot.sound]
+#print axioms dedekind_consequence_not_compact
+-- depends on: [propext, Classical.choice, Quot.sound]
+#print axioms strongCompletenessDedekind_refuted
+-- depends on: [propext, Classical.choice, Quot.sound]
+```
+
+**`sorryAx`-free throughout.** All four headline results carry exactly the three standard
+classical axioms — the identical set already carried by `discrete_consequence_not_compact` and by
+`completeness_dedekind` itself. No new axiom is introduced and no obligation is deferred.
+
+`qDepth_qAlpha` carries a strict *subset*, `[propext, Quot.sound]`: it is a purely structural
+induction on `Formula` and never reaches for choice. That is a smaller dependency, not a larger
+one, and is recorded here rather than rounded up so the audit stays literal.
+
+### Axiom classification
+
+* `propext` — propositional extensionality, entering through `simp`/`omega` normalisation.
+* `Classical.choice` — via the `classical` tactic, `Exists.choose` in `dedWitness_core`'s chain
+  construction, and Mathlib's `Real.exists_isLUB`.
+* `Quot.sound` — quotient soundness, entering through Mathlib's `List`, `Int` and `Real` API.
+
+None of the three is avoidable in this development, and none is specific to this module. -/
+
 end FormalSystem.Metalogic
