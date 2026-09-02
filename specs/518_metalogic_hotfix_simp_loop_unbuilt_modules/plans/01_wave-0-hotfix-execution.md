@@ -507,34 +507,52 @@ asserted to start with `@[simp] ` before rewriting). `normalizeFormula_id` at `:
 
 ---
 
-### Phase 7: Declare a dedicated Aesop rule set for AesopRules [NOT STARTED]
+### Phase 7: Declare a dedicated Aesop rule set for AesopRules [COMPLETED]
 
 **Goal**: `AesopRules`' 21 rules stop being registered in Aesop's **default** rule set, where they
 are picked up by plain `aesop` for every consumer of `FormalSystem.Automation`, and the module
 docstring stops documenting a defect that no longer exists.
 
 **Tasks**:
-- [ ] **Probe first.** `declare_aesop_rule_sets` is available in the pinned Mathlib
+- [x] **Probe first.** `declare_aesop_rule_sets` is available in the pinned Mathlib
       (`Mathlib/CategoryTheory/Category/Init.lean:21`, `Mathlib/Tactic/SetLike.lean:22`), but
       Mathlib places it in dedicated `Init.lean`-style modules — the same import-boundary caveat
       that bit `register_simp_attr` may apply. Empirically test whether
       `declare_aesop_rule_sets [TMLogic]` can be declared and used in the same file **before**
       committing to a layout. If it cannot, create a small separate module (mirroring Phase 6's
       `NormalizationAttr.lean` shape) and import it.
-- [ ] Retag the 21 attributes in `FormalSystem/Automation/AesopRules.lean` (285 lines) into the
+      **PROBE RESULT: the caveat DOES apply.** A single-file probe
+      (`declare_aesop_rule_sets [TMLogicProbe]` followed by
+      `@[aesop safe apply (rule_sets := [TMLogicProbe])]` in the same file) fails with
+      `no such rule set: 'TMLogicProbe'`, and Aesop's own error text spells the rule out:
+      "Declared rule sets are not visible in the current file; they only become visible once you
+      import the declaring file." The conditional second module was therefore created —
+      `FormalSystem/Automation/AesopRuleSet.lean`, mirroring `NormalizationAttr.lean` — and a
+      two-module probe compiles clean. Mathlib uses the same layout
+      (`Mathlib/Tactic/Bound/Init.lean`, whose own docstring says "Aesop rule sets only become
+      visible once the file in which they're declared is imported, so we must put this
+      declaration into its own file").
+- [x] Retag the 21 attributes in `FormalSystem/Automation/AesopRules.lean` (285 lines) into the
       `TMLogic` rule set: `@[aesop safe apply]` x10 (`:78, 84, 90, 96, 102, 108, 115, 222, 232,
       242`), `@[aesop safe forward]` x7 (`:132, 144, 156, 168, 181, 192, 204`),
       `@[aesop norm unfold]` x4 (`:258, 266, 274, 282`).
-- [ ] **Rewrite the module docstring at `:50-53` in the same change.** It currently documents the
+- [x] **Rewrite the module docstring at `:50-53` in the same change.** It currently documents the
       defect verbatim: "the rules below are registered in Aesop's DEFAULT rule set via
       `@[aesop safe apply]`; there is no separate `TMLogic` rule set declared
       (`declare_aesop_rule_sets [TMLogic]` is absent), so plain `aesop` picks them up." Leaving it
       in place after the fix would make the file self-contradicting.
-- [ ] Leave the deprecation notice at `:16-22` alone unless the retag makes it inaccurate; if it
+- [x] Leave the deprecation notice at `:16-22` alone unless the retag makes it inaccurate; if it
       does, correct it in the same change.
-- [ ] Check the two known consumers still build: `FormalSystem/Automation.lean:12` and
+- [x] Check the two known consumers still build: `FormalSystem/Automation.lean:12` and
       `Automation/Tactics/Helpers.lean:8`. Any call site relying on plain `aesop` picking these
       rules up from the default set will now need `aesop (rule_sets := [TMLogic])`.
+- [x] *(measured: **no call site relies on it.** The only live `aesop` tactic invocation anywhere
+      in `FormalSystem/` or `Tests/` outside `AesopRules.lean`'s own docstring example is
+      `ProofSystem/Derivable.lean:185`, and that file does not import `AesopRules`. Both named
+      consumers build; `lake build` and `lake build BimodalTest` are both at exit 0.)*
+- [x] *(deviation: added — `AesopRules.lean:27-28`'s "This module defines the TMLogic rule set for
+      Aesop" was rewritten to say the module *populates* the set and to name `AesopRuleSet.lean`
+      as the declaring module, on the same self-consistency reasoning as the `:50-53` rewrite.)*
 
 **Timing**: 1 hour
 
@@ -550,10 +568,13 @@ the probe in the first task — one new small rule-set-declaring module under
 no retroactive widening of the batch. Intermediate states (rules retagged into a rule set that is
 not yet declared in an imported module) are expected red and MUST NOT be committed.
 
-**Scope Hypothesis**: **21** attributes require retagging (10 + 7 + 4), not the 18 the task
-description asserted. Confirm at implementation time with
-`grep -c '@\[aesop' FormalSystem/Automation/AesopRules.lean` (expect 21) before editing. The
-line list above is a hypothesis about **where** they are; the count is the check.
+**Scope Hypothesis**: **CONFIRMED at implementation time**, with one wrinkle worth recording.
+`grep -c '@\[aesop' FormalSystem/Automation/AesopRules.lean` returns **22**, not 21 — the 22nd
+hit is `:51`, the module docstring's own description of the defect, which this phase rewrites
+anyway. The attribute count is exactly **21**: `@[aesop safe apply]` x10,
+`@[aesop safe forward]` x7, `@[aesop norm unfold]` x4, each asserted by count before rewriting,
+and `grep -c 'rule_sets := \[TMLogic\]'` is 21 after. Original hypothesis: **21** attributes
+require retagging (10 + 7 + 4), not the 18 the task description asserted.
 
 **Files to modify**:
 - `FormalSystem/Automation/AesopRules.lean` - 21 attribute retags plus the `:50-53` docstring
@@ -566,8 +587,19 @@ line list above is a hypothesis about **where** they are; the count is the check
 - `grep -n 'DEFAULT rule set' FormalSystem/Automation/AesopRules.lean` returns no hit (the
   docstring defect statement is gone)
 - `grep -c 'rule_sets' FormalSystem/Automation/AesopRules.lean` is non-zero, or the separate
-  declaring module exists and is imported
-- No consumer of `FormalSystem.Automation` regresses
+  declaring module exists and is imported — **both**: the count is 22 (21 attributes plus the
+  rewritten docstring example) and `FormalSystem/Automation/AesopRuleSet.lean` exists and is
+  imported at `AesopRules.lean:8`
+- No consumer of `FormalSystem.Automation` regresses — **verified two ways**: no live `aesop`
+  call site depended on the default set (see above), and both `lake build` (2521 jobs) and
+  `lake build BimodalTest` (2572 jobs) are at exit 0
+- **Behavioural demonstration** that the retag took effect, on the same goal:
+  plain `aesop` now reports `Tactic 'aesop' failed, made no progress` (the TM rules are out of
+  the default set), while `aesop (rule_sets := [TMLogic])` loads them and searches to goal 501
+  before hitting the *pre-existing* `DerivationTree` proof-reconstruction failure that is
+  documented verbatim at `Automation/Tactics/Helpers.lean:136` and is the original reason
+  `tm_auto` abandoned Aesop. A `no such rule set` error would have meant the retag did not take;
+  that is not what happens.
 
 ---
 
