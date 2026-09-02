@@ -1415,6 +1415,43 @@ end TaskFrame
 Three small frames used throughout the tree and the test suite, each a value of the fibre over
 the temporal order of an ambient carrier `D`. They live in `FrameOver` so that dot notation on
 a fibre-typed frame reaches them.
+
+### The `(D : TemporalOrder)` migration was measured and **declined**
+
+`trivialFrame`, `staticFrame` and `natFrame` keep an ambient bare-`Type` carrier `D` and a type
+`FrameOver (TemporalOrder.of D)`, rather than taking a `(D : TemporalOrder)` binder directly.
+That is a decision on counted evidence, not an omission, and this is its record so that it is not
+re-opened.
+
+**The measurement** (whole repository, `FormalSystem/` and `Tests/`, at the time of the count):
+
+| Constant | Occurrences | Explicit `(D := …)` | of which **concrete** (`Int`/`ℤ`/`ℚ`/`ℤ ×ₗ ℤ`) | of which **abstract** (`D`/`↑D`) |
+|---|---|---|---|---|
+| `trivialFrame` | 61 | 33 | 21 | 12 |
+| `staticFrame`  | 61 | 43 |  9 | 34 |
+| `natFrame`     | 53 | 25 | 17 |  8 |
+| **total**      | 175 | **101** | **47** | **54** |
+
+**Why that count decides it.** The migration was expected to be a mechanical
+`(D := ℤ) → (D := intOrder)` rewrite that *removed* annotations. It removes none. A concrete site
+still has to name its order — nothing in `trivialFrame`'s type determines `D`, since its
+`WorldState` is `Unit` — so all 47 concrete annotations survive the migration, merely renamed.
+Meanwhile each of the **54 abstract** sites, where the surrounding declaration binds `D : Type`
+because a neighbouring abstraction pins it to a bare type (`BFMCS` in the bundle layer,
+`FrameConditionFor`, `TemporalCarrier`, and the frame-condition family
+`C : (D : Type) → … → Prop` in the decidability bridge), would have to grow into
+`(D := TemporalOrder.of D)`. Unification cannot invert `TemporalOrder.carrier ?D =?= D`, so the
+wrapper cannot be left implicit. Net annotation count: 101 → 101, with 54 of them strictly
+longer. The phase's GO condition was a *strict decrease*; the measurement is a strict
+non-improvement.
+
+This is the same finding `TemporalOrder.of`'s own docstring records as "Kept permanently, on
+evidence", now with the counts behind it. The corresponding tidy-up that *was* taken is the
+converse one: `Examples/TemporalStructures.lean`'s `genericTimeFrame` and `genericNatFrame`,
+which are already `(D : TemporalOrder)`, are now `abbrev`s pointing at `trivialFrame` and
+`natFrame` here, so the two binder shapes share one definition rather than duplicating it.
+`TemporalOrder.of ↑D` is `D` by `rfl` (structure eta), which is what makes that direction free
+while this one is not.
 -/
 
 namespace FrameOver

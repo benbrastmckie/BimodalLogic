@@ -779,7 +779,29 @@ any reference survives, keep it and record the reason.
 
 ---
 
-### Phase 12: Recast `Aligned` as an `HF` equivalence; derive `truthAt_map` [NOT STARTED]
+### Phase 12: Recast `Aligned` as an `HF` equivalence; derive `truthAt_map` [COMPLETED WITH EXCLUSIONS]
+
+The phase's **documented fallback** is taken, exactly as written: `truthAt_map` is left in place,
+byte-identical to its pre-phase form, and `IntTransfer.lean` is not modified at all. Two
+independent obstructions, either of which alone is sufficient — the first is the one the phase
+anticipated, the second is the one Phase 10 discovered.
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| Recast `IntTransfer`'s `Aligned` as an `F.HF ≃ F'.HF` | The module carries a **recorded prohibition** against exactly this, with a measured reason: round-tripping `WorldHistory.map`/`comap` forces a *dependent* equality on the `states` field (it is indexed by a proof of `domain`, so the two round-tripped fields do not share a type until the domain equation is transported) and degenerates into `HEq` wrangling. `Aligned` is `Prop`-valued precisely to keep `st` a non-dependent equation between two `F.WorldState` terms. Overriding a recorded design decision needs an explicit note superseding it, which this plan does not authorise. | `IntTransfer.lean`'s module docstring, section "Design decision: `Aligned`, not `Equiv`" — *"Do not replace `Aligned` with an `Equiv`."* — and the same argument restated on the `Aligned` structure itself, ending *"an `HEq` showing up is the signal that the forbidden `Equiv` route was taken."* |
+| Derive `IntTransfer.truthAt_map` as a `TruthIso` instance | Independently blocked by **the same quantifier mismatch that blocks Phase 10**. `truthAt_map` is stated `∀ (σ : WorldHistory F.toTaskFrame) (σ' : WorldHistory (FrameOver.map F e).toTaskFrame), Aligned e σ σ' → …` — arbitrary histories, no totality hypothesis anywhere — while `truthAt_of_truthIso` transports `F.HF`, i.e. total histories only. Even a working `F.HF ≃ F'.HF` recast could not reach the general statement. | The `truthAt_map` declaration's own binder list; and Phase 10's blocker record above, which analyses the identical obstruction at `time_shift_preserves_truth`. |
+
+**Consequence for acceptance**, as the phase specifies: the `induction φ` criterion reads "at
+most three" here. The measured count is **four** (`truthAt_of_truthIso`,
+`truthAt_of_truthAntiIso`'s twin aside, `time_shift_preserves_truth`, `truthAt_map`,
+`truthAt_add_hist_period`) — see the Testing & Validation section for the exact ledger.
+
+**Verification**: zero `sorry` in this phase (its diff is empty in `FormalSystem/`);
+`truthAt_map` is byte-identical to its pre-phase form. Both conditions hold.
+
+#### Original phase text, retained for the record
 
 **Goal**: Bring the last transport under the generic lemma, or close cleanly without it.
 
@@ -815,7 +837,10 @@ is not, take the fallback rather than partially dismantling `truthAt_map`.
 
 ---
 
-### Phase 13: `TemporalOrder` migration go/no-go [NOT STARTED]
+### Phase 13: `TemporalOrder` migration go/no-go [COMPLETED]
+
+**Outcome: NO-GO**, on the counted evidence recorded in `TaskFrame.lean`. See the phase's
+recorded decision below and the commit message for the measurement.
 
 **Goal**: Decide, on a counted basis, whether `trivialFrame` / `staticFrame` / `natFrame` migrate to
 `(D : TemporalOrder)` — and execute whichever branch the count selects.
