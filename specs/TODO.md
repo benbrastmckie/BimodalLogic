@@ -11,10 +11,10 @@ next_project_number: 532
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,257,298,433,461,476,481,504,506,520,521 | -- | dataset-enhancement, decidability, frame-extensions, ... |
-| 2 | 231,282,296,463,502,522,526 | 298,433,461,520,521 | algebraic-representation, dataset-enhancement, decidability, ... |
+| 1 | 127,128,257,298,433,461,476,481,504,506,521 | -- | dataset-enhancement, decidability, frame-extensions, ... |
+| 2 | 231,282,296,463,502,522,526 | 298,433,461,521 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 193,219,464,523,524,527,528 | 231,463,522,526 | automation, dataset-enhancement, decidability, ... |
-| 4 | 178,465,497,525,529,530 | 193,464,502,520,523,524,528 | algebraic-representation, decidability, formula-refactor, ... |
+| 4 | 178,465,497,525,529,530 | 193,464,502,523,524,528 | algebraic-representation, decidability, formula-refactor, ... |
 | 5 | 428,498,499,500,531 | 465,497,529,530 | algebraic-representation, decidability, metalogic |
 | 6 | 125,429 | 428,498,499 | algebraic-representation, decidability |
 | 7 | 410,501 | 125,429 | algebraic-representation, decidability |
@@ -84,21 +84,18 @@ next_project_number: 532
 
 ### Metalogic
 
-520 [IMPLEMENTING] — WAVE 1 (deletion). Retire the dead half of Metalogic/Bundle/ and 
-  └─ 526 [NOT STARTED] — WAVE 3 (theorem layer). Consolidate the maximal-consistent-set AP
-    └─ 527 [NOT STARTED] — WAVE 4 (canonical-model infrastructure). Replace textual future/p
-    └─ 528 [NOT STARTED] — WAVE 4 (algebraic infrastructure). Modernise Metalogic/Algebraic/
-  └─ 529 [NOT STARTED] — WAVE 5 (publication infrastructure). Turn on the two automated si
-    └─ 531 [NOT STARTED] — WAVE 5 (publication infrastructure). Publish the API documentatio
-521 [RESEARCHED] — WAVE 2 (core utilities). Give the primary language's truth relati
+521 [PLANNING] — WAVE 2 (core utilities). Give the primary language's truth relati
   └─ 522 [NOT STARTED] — WAVE 2 (core utilities). Fix the one representation choice that c
     └─ 523 [NOT STARTED] — WAVE 2 (core utilities). Complete the task-frame construction kit
       └─ 525 [NOT STARTED] — WAVE 3 (theorem layer). Put the frame-class Galois layer on Mathl
-      └─ 529 [NOT STARTED] — WAVE 5 (publication infrastructure). Turn on the two automated si (see above)
+      └─ 529 [NOT STARTED] — WAVE 5 (publication infrastructure). Turn on the two automated si
+        └─ 531 [NOT STARTED] — WAVE 5 (publication infrastructure). Publish the API documentatio
     └─ 524 [NOT STARTED] — WAVE 3 (theorem layer). Finish the FrameClass collapse at the THE
       └─ 530 [NOT STARTED] — WAVE 5 (publication infrastructure). Make status and counts machi
         └─ 531 [NOT STARTED] — WAVE 5 (publication infrastructure). Publish the API documentatio (see above)
-  └─ 526 [NOT STARTED] — WAVE 3 (theorem layer). Consolidate the maximal-consistent-set AP (see above)
+  └─ 526 [NOT STARTED] — WAVE 3 (theorem layer). Consolidate the maximal-consistent-set AP
+    └─ 527 [NOT STARTED] — WAVE 4 (canonical-model infrastructure). Replace textual future/p
+    └─ 528 [NOT STARTED] — WAVE 4 (algebraic infrastructure). Modernise Metalogic/Algebraic/
 
 ### Publication Quality
 
@@ -207,7 +204,7 @@ next_project_number: 532
 ---
 
 ### 521. Truth layer simp normal form
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: Task 517, Task 518, Task 519
@@ -218,12 +215,13 @@ next_project_number: 532
 ---
 
 ### 520. Bundle retirement and cycle breaking
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: Task 518
 - **Research**: [520_bundle_retirement_and_cycle_breaking/reports/01_bundle-retirement-cycle-breaking.md]
 - **Plan**: [520_bundle_retirement_and_cycle_breaking/plans/01_bundle-retirement-cycle-breaking.md]
+- **Summary**: [520_bundle_retirement_and_cycle_breaking/summaries/00_baseline.md]
 
 **Description**: WAVE 1 (deletion). Retire the dead half of Metalogic/Bundle/ and break the Core<->Bundle directory cycle. Findings F-01, F-02, F-06, F-07, F-16, F-18, F-21 in specs/reviews/2026-09-01-lean-engineering/F-canonical.md; High H5 in the review. MEASURED STATE: Bundle/CanonicalFrame.lean (312 lines, 11 declarations) and Bundle/Construction.lean (253 lines, 11 declarations) have zero live cross-file consumers; BXCanonical/Frame.lean:11 imports CanonicalFrame and references nothing from it while :223-244 re-proves canonical_forward_F / canonical_backward_P as bx_forward_witness / bx_backward_witness; Bundle/README.md advertises both files as deliverables and lists three files that do not exist (FMCS.lean, CanonicalIrreflexivity.lean, SuccExistence.lean). Bundle/UntilSinceCoherence.lean (46 lines) declares nothing and exists to forward two imports to ChronicleToCountermodelBasic.lean. Bundle/SuccRelation.lean:432-543 is 85 lines of first-person proof diary ('Hmm, this may need additional infrastructure. Let me check.') around an 8-line proof, citing SuccExistence.lean five times across three files. Bundle/ModalSaturation.lean is imported by nine route modules for five general S5/propositional derivation helpers (boxDneTheorem :262, axiom5NegativeIntrospection :422, negBoxToBoxNegBox :502, SetMaximalConsistent.contrapositive :281, .neg_box_implies_box_neg_box :511) while everything named 'saturation' in it is dead. The sole Core->Bundle edge, Core/RestrictedMCS/Basic.lean:12 -> Bundle/CanonicalTaskRelation, exists only so four theorems (:469,488,573,593) can use iterF/iterP/closureFBound/closurePBound (CanonicalTaskRelation.lean:74-194, :707-849) -- 24 pure-syntax declarations that Syntax/SubformulaClosure/NestingDepth.lean:23,106 already names in its docstrings. Metalogic/README.md:115-119 records breaking this cycle as 'touches 9 files' for a different plan (relocating Basic.lean itself). WORK: move CanonicalFrame.lean, Construction.lean and UntilSinceCoherence.lean to Boneyard/ with a README (relocate ExistsTask/ExistsTaskPast to TemporalContent.lean first if SuccRelation keeps them; drop the unused import at BXCanonical/Frame.lean:11; have ChronicleToCountermodelBasic import TemporalCoherence and SuccRelation directly); create FormalSystem/Syntax/SubformulaClosure/IteratedTemporal.lean hosting the 24 iterF/iterP declarations verbatim and point both Basic.lean and CanonicalTaskRelation.lean at it (3 Lean files, no renames); create FormalSystem/Theorems/ModalDerived.lean and move the five live ModalSaturation helpers plus gDneTheorem/hDneTheorem (TemporalCoherence.lean:66,82), pastTempA (WitnessSeed.lean:567 -- fix its docstring: it is a direct Axiom.connect_past application, and `temp_a` does not exist), dneTheorem, dniTheorem; re-point the nine importers; Boneyard the saturation layer; delete the SuccRelation diary (:432-543) leaving a two-sentence note on why h_p_step is a hypothesis; fix the F-21 docstring errors (SuccRelation.lean:131-143 definitional claim contradicted by WitnessSeed.lean:47-49; UltrafilterMCS.lean:26 'contains sorries'; Construction/FMCSDef/BFMCS changelog and 'But wait' prose); delete the duplicate import at Bundle.lean:12; regenerate Bundle/README.md's architecture block and Main Theorems table; correct Metalogic/README.md's cycle count and 'Cycle 2' section. ACCEPTANCE: directory-level import cycles in Metalogic/ = 1 (BXCanonical<->WeakCanonical, the measured and documented one); Bundle/ has zero modules with no live consumer; lake build green; check-module-invariants.sh ALL PASS; C2 baseline unchanged.
 

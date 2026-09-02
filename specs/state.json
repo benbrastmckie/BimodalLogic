@@ -1493,7 +1493,7 @@
     {
       "project_number": 520,
       "project_name": "bundle_retirement_and_cycle_breaking",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "topic": "metalogic",
       "priority": "medium",
@@ -1514,7 +1514,7 @@
         "FormalSystem/Metalogic/Algebraic/UltrafilterMCS.lean"
       ],
       "created": "2026-09-02T03:30:31Z",
-      "last_updated": "2026-09-02T14:21:39Z",
+      "last_updated": "2026-09-02T15:07:03Z",
       "artifacts": [
         {
           "path": "specs/520_bundle_retirement_and_cycle_breaking/reports/01_bundle-retirement-cycle-breaking.md",
@@ -1525,6 +1525,11 @@
           "path": "specs/520_bundle_retirement_and_cycle_breaking/plans/01_bundle-retirement-cycle-breaking.md",
           "type": "plan",
           "summary": "Five-phase implementation plan, 8 hours, waves [[1],[2,3],[4],[5]]."
+        },
+        {
+          "path": "specs/520_bundle_retirement_and_cycle_breaking/summaries/00_baseline.md",
+          "type": "summary",
+          "summary": ""
         }
       ],
       "session_id": "sess_1788332773_c2fa9f_520"
@@ -1532,7 +1537,7 @@
     {
       "project_number": 521,
       "project_name": "truth_layer_simp_normal_form",
-      "status": "researched",
+      "status": "planning",
       "task_type": "lean4",
       "topic": "metalogic",
       "priority": "high",
@@ -1553,7 +1558,7 @@
         "FormalSystem/Metalogic/Soundness.lean"
       ],
       "created": "2026-09-02T03:30:31Z",
-      "last_updated": "2026-09-02T14:33:50Z",
+      "last_updated": "2026-09-02T15:05:32Z",
       "artifacts": [
         {
           "path": "specs/521_truth_layer_simp_normal_form/reports/01_truth-layer-simp-normal-form.md",
