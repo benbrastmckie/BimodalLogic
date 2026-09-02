@@ -694,15 +694,14 @@ Axioms: exactly `propext`, `Classical.choice`, `Quot.sound`; no `sorryAx`.
 #leansrc("Metalogic.BXCanonical", "completeness_dedekind_engine")
 Axioms: exactly `propext`, `Classical.choice`, `Quot.sound`; no `sorryAx`.
 
-The fourth result, over *all* task frames, is the stated formalization target and is not a theorem.#footnote[The `sorryAx` traces to a single dependency, `countermodel_discrete`, which is dead code: the live replacement `countermodel_discrete_reynolds_v2` is what `completeness_discrete` actually calls (@sec:construction). The obligation is therefore narrow and identified, which is not the same as discharged.]
+The fourth result, over *all* task frames, is machine-checked on the same footing as the other three.#footnote[Its discrete branch calls `countermodel_discrete`, a live and `sorryAx`-free theorem in `WeakCanonical/GroupModel/CountermodelBase.lean`. Do not confuse it with `countermodel_discrete_reynolds_v2`, a separate theorem in `WeakCanonical/IntegerModel/ReynoldsBridge.lean`, which is what `completeness_discrete` calls (@sec:construction). Earlier revisions of this report described `countermodel_discrete` as unreachable and as carrying a `sorry`; both claims were stale.]
 
-#theorem("Base-class completeness (outstanding)")[
-  Weak completeness over all task frames, for the Base frame class, is stated in the development as
-  `completeness`, with one proof obligation outstanding. Its axiom report contains `sorryAx`. It
-  is not an established theorem and is not used below.
+#theorem("Weak completeness, base class")[
+  Every sentence valid over every task frame is derivable in the Base frame class.
 ]
 #leansrc("Metalogic.BXCanonical", "completeness")
 #leansrc("Metalogic.WeakCanonical", "countermodel_discrete_reynolds_v2")
+Axioms: exactly `propext`, `Classical.choice`, `Quot.sound`; no `sorryAx`.
 
 Two further remarks bound what the four results above claim. First, the axiom reports quoted here
 are Lean's, and Lean's single `Classical.choice` axiom yields excluded middle and choice
@@ -990,24 +989,27 @@ The axiom reports below were taken at commit 7aae4e51c via `scripts/typst-status
     [`completeness_discrete`], [`BXCanonical/Completeness.lean`], [same], [no],
     [`countermodel_dense`], [`Chronicle/ChronicleToCountermodelBasic.lean`], [same], [no],
     [`completeness_dedekind_engine`], [`BXCanonical/CompletenessDedekind.lean`], [same], [no],
-    [`completeness`], [`BXCanonical/Completeness.lean`], [same, plus `sorryAx`], [*yes*],
+    [`completeness`], [`BXCanonical/Completeness.lean`], [same], [no],
     table.hline(),
   ),
   caption: [Axiom reports for the four completeness results and the shared dense countermodel.],
 )
 
-Outside `Boneyard/`, the development contains exactly one structural `sorry`, and it is the source
-of the single `sorryAx` above: `countermodel_discrete` in `WeakCanonical/Transfer.lean`. It is dead
-code. `completeness_discrete` routes through `countermodel_discrete_reynolds_v2` instead, which is
-a different theorem and is sorry-free; the dead chain was excised precisely because the bypass
-made it unreachable. What the `sorryAx` on the general Base-frame `completeness` records is
-therefore a stale dependency edge, not an unproved mathematical step in any result stated in this
-report --- but the edge is real, and until it is cut the theorem's axiom report says so.
+Outside `Boneyard/`, the development contains *no* structural `sorry`, and none of the five
+declarations above carries `sorryAx`. Earlier revisions of this report recorded exactly one
+structural `sorry`, attributed to `countermodel_discrete` in `WeakCanonical/Transfer.lean` and
+described as unreachable. All three claims were stale: `countermodel_discrete` lives in
+`WeakCanonical/GroupModel/CountermodelBase.lean`, it is `sorryAx`-free, and it is live ---
+`BXCanonical/Completeness.lean` calls it as the discrete branch of the Base-frame `completeness`.
+It is a distinct theorem from `countermodel_discrete_reynolds_v2`, in
+`WeakCanonical/IntegerModel/ReynoldsBridge.lean`, which is the theorem `completeness_discrete`
+routes through. Both the zero-`sorry` inventory and the axiom reports above are re-checked
+mechanically on every invariant run, not asserted here.
 
 The Lindenbaum--Tarski and Jónsson--Tarski layer of @sec:representation ---
-`LindenbaumQuotient`, `UltrafilterMCS`, `BooleanStructure` --- measures zero sorries; what carries
-the base class's `sorryAx` is the model-existence step of the Representation theorem's proof, via
-`completeness` alone.
+`LindenbaumQuotient`, `UltrafilterMCS`, `BooleanStructure` --- measures zero sorries, and so does
+the model-existence step of the Representation theorem's proof, which goes through `completeness`.
+No step of the base-class route carries `sorryAx`.
 
 #remark[
   The vocabulary above is the development's own: `FrameClass.Base`, `Dense`, `Discrete`,
@@ -1540,7 +1542,7 @@ axiom above, which is first-order.
     table.header([*Ingredient*], [*Status*]),
     table.hline(),
     [Components, free presentation, descent, factorization], [sorry-free],
-    [Model existence (base class)], [`completeness`, one `sorryAx`],
+    [Model existence (base class)], [`completeness`, sorry-free],
     [Model existence (dense, discrete, Dedekind)], [sorry-free],
     [One flow per component (saturation)], [planned; bundled-family construction sorry-free for
       finite families],

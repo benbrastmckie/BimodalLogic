@@ -241,33 +241,33 @@ before editing, and re-run it after to prove the set is empty.
 
 ---
 
-### Phase 3: Correct the typst sorryAx claims [NOT STARTED]
+### Phase 3: Correct the typst sorryAx claims [COMPLETED]
 
 **Goal**: `typst/FormalFoundations.typ` stops asserting that `completeness` carries `sorryAx` and
 stops calling the live theorem `countermodel_discrete` dead code in the wrong file.
 
 **Tasks**:
-- [ ] Re-establish ground truth before editing: `lean_verify` on
+- [x] Re-establish ground truth before editing: `lean_verify` on
       `FormalSystem.Metalogic.BXCanonical.completeness` returns
       `["propext","Classical.choice","Quot.sound"]` — no `sorryAx`. This baseline is already pinned
       under C14 at `scripts/check-module-invariants.sh:145,155`, and C14 passes.
-- [ ] `:697` (footnote) — delete/rewrite "The `sorryAx` traces to a single dependency,
+- [x] `:697` (footnote) — delete/rewrite "The `sorryAx` traces to a single dependency,
       `countermodel_discrete`, which is dead code".
-- [ ] `:699-703` — `#theorem("Base-class completeness (outstanding)")` must lose "(outstanding)",
+- [x] `:699-703` — `#theorem("Base-class completeness (outstanding)")` must lose "(outstanding)",
       "with one proof obligation outstanding", "Its axiom report contains `sorryAx`", and "It is
       not an established theorem and is not used below". It **is** established and it **is** used:
       `BXCanonical/Completeness.lean:228` calls `countermodel_discrete`.
-- [ ] `:993` — table row `[`completeness`], …, [same, plus `sorryAx`], [*yes*]` corrected.
-- [ ] `:999-1005` — "exactly one structural `sorry` … `countermodel_discrete` in
+- [x] `:993` — table row `[`completeness`], …, [same, plus `sorryAx`], [*yes*]` corrected.
+- [x] `:999-1005` — "exactly one structural `sorry` … `countermodel_discrete` in
       `WeakCanonical/Transfer.lean`. It is dead code." Wrong on the count (a tree-wide scan finds
       no live structural `sorry` outside `FormalSystem/Boneyard/`, consistent with C3), wrong on
       the file (`countermodel_discrete` is at
       `WeakCanonical/GroupModel/CountermodelBase.lean:143`), and wrong on "dead".
-- [ ] `:1007-1010` — "what carries the base class's `sorryAx` is the model-existence step of the
+- [x] `:1007-1010` — "what carries the base class's `sorryAx` is the model-existence step of the
       Representation theorem's proof, via `completeness` alone". No `sorryAx` is carried.
-- [ ] `:1543` — summary table row `[Model existence (base class)], [`completeness`, one `sorryAx`]`
+- [x] `:1543` — summary table row `[Model existence (base class)], [`completeness`, one `sorryAx`]`
       corrected.
-- [ ] Leave `:704-705`'s `#leansrc` references untouched — verified correct.
+- [x] Leave `:704-705`'s `#leansrc` references untouched — verified correct.
 
 **Timing**: 0.5 hours
 
@@ -275,8 +275,13 @@ stops calling the live theorem `countermodel_discrete` dead code in the wrong fi
 
 **Verification Tier**: local
 
-**Scope Hypothesis**: **Six** regions require correction (`:697`, `:699-703`, `:993`, `:999-1005`,
-`:1007-1010`, `:1543`), not the five the task description named. Confirm at implementation time
+**Scope Hypothesis**: **CONFIRMED at implementation time.** `grep -n 'sorryAx'` and
+`grep -n 'countermodel_discrete'` over `typst/FormalFoundations.typ` found no seventh region:
+`:681`, `:688`, `:695` were already-correct "no `sorryAx`" lines, `:705` (now `:704`) is the
+`#leansrc` block the plan says to leave alone, `:945` correctly describes
+`countermodel_discrete_reynolds_v2`, and `:987` is a table header. Exactly the six named regions
+needed correction. Original hypothesis: **Six** regions require correction (`:697`, `:699-703`,
+`:993`, `:999-1005`, `:1007-1010`, `:1543`), not the five the task description named. Confirm at implementation time
 with `grep -n 'sorryAx' typst/FormalFoundations.typ` and
 `grep -n 'countermodel_discrete' typst/FormalFoundations.typ`, and treat every hit not on the list
 above as a seventh region needing judgment rather than assuming the list is closed.
@@ -291,6 +296,10 @@ above as a seventh region needing judgment rather than assuming the list is clos
   `countermodel_discrete`
 - `typst compile typst/FormalFoundations.typ` succeeds if the document is wired for compilation;
   if it is not, record that fact explicitly rather than silently skipping the check
+  — **RESULT**: `typst` is installed and the document compiles at exit 0 (pre-existing font
+  warnings only). `bash scripts/typst-sync-check.sh` additionally PASSES all three checks
+  (backtick name resolution over 575 candidates, `generated/status.typ` count freshness,
+  machine-appendix freshness).
 
 ---
 
