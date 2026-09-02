@@ -354,7 +354,7 @@ must be reported.
 
 ---
 
-### Phase 4: Migrate `Metalogic/Soundness.lean` [NOT STARTED]
+### Phase 4: Migrate `Metalogic/Soundness.lean` [IN PROGRESS]
 
 **Goal**: Move `Soundness.lean` off the class-specific adapters and onto the generic ones, folding
 the intro-chain normalisation into the *same* per-proof edit.
@@ -403,7 +403,7 @@ means the plan's per-phase split needs revisiting before Phase 5/6 start.
 
 ---
 
-### Phase 5: Migrate `Metalogic/SoundnessLemmas/` [NOT STARTED]
+### Phase 5: Migrate `Metalogic/SoundnessLemmas/` [IN PROGRESS]
 
 **Goal**: Same migration for the `SoundnessLemmas/` territory — the second-largest intro-chain
 concentration.
