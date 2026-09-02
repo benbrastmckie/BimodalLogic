@@ -39,12 +39,16 @@ re-derives every hash below directly from the live paper file on every run.
 | Line count at three-anchor drift correction | 4290 |
 | Three-anchor drift correction re-pin (UTC) | 2026-08-12T22:55Z (`thm:extension`, `def:constraints`, `def:BLplus-semantics` re-quoted and re-hashed together in one correction; see "Drift correction (2026-08-12)" below) |
 | Coverage extension for `typst/FormalFoundations.typ` (22 new anchors: `def:S5`, `def:BX`, `def:TMplus`, `def:TMplus-f`, `def:TMplus-d`, `def:TMplus-c`, `thm:M5-valid`, `thm:TM-soundness`, `app:discrete`, `app:dense`, `app:complete`, `def:frame-properties`, `cor:spherical-finite`, `cor:tm-completeness`, `cor:tm-decidability`, `def:id`, `def:strongest`, `thm:exist`, `lem:uniq`, `thm:s4`, `thm:sym`, plus the already-tracked `CO`/`TMP-CO` pair) | `bash scripts/check-paper-definitions.sh` reported case (b) before this extension (paper checksum moved again since the 2026-08-12 three-anchor correction, but all 26 previously-tracked definitions unchanged) and case (b) again after (checksum `0584125456bdd3728eeaf671280ac8c6f6f2afeabf55761378e0c08a5706c9d9`, all 47 recorded definitions unchanged) — no drift on any newly- or previously-tracked anchor. The whole-file checksum sentinels above are deliberately **not** re-pinned to this new checksum: per the dirty-pin convention this file already documents, a re-pin is warranted only when a drift *correction* is absorbed, not on every case-(b) coverage extension: bumping the pin on every append would make the sentinel a diary of touch-events rather than a record of drift corrections. Re-run (UTC) 2026-08-13. |
+| Base commit at the ten-anchor drift correction (paper repo `git HEAD`; file dirty against it) | `fa0dbf7c053e6ecd22e9815180dd91beb2604e61` |
+| **File checksum, re-pinned at the ten-anchor drift correction (sha256, current authoritative pin)** | `7303bc9e8529b84f881b17b6f0ef3027f104a6c9ab91315c573a15e00bac0143` |
+| Line count at the ten-anchor drift correction | 4867 |
+| Ten-anchor drift correction re-pin (UTC) | 2026-09-02T23:08Z (see "Drift correction (2026-09-02): ten-anchor re-pin" below) |
 
 <!-- PAPER_PATH: /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex -->
 <!-- PAPER_REPO_ROOT: /home/benjamin/Philosophy/Papers/PossibleWorlds -->
-<!-- PINNED_COMMIT: 94f850f69f345fd8e4be2516eb3d74f944e66445 -->
-<!-- FILE_CHECKSUM: 5d700a2f05999bb697ab55e16f5a26732cbf7453dbb7d909d21fb67c70da7644 -->
-<!-- LINE_COUNT: 4856 -->
+<!-- PINNED_COMMIT: fa0dbf7c053e6ecd22e9815180dd91beb2604e61 -->
+<!-- FILE_CHECKSUM: 7303bc9e8529b84f881b17b6f0ef3027f104a6c9ab91315c573a15e00bac0143 -->
+<!-- LINE_COUNT: 4867 -->
 
 ### Rename absorption (2026-09-02): `Spherical` → `Saturation`
 
@@ -82,6 +86,53 @@ should. One item is a judgment call rather than quoted text: the entry heading `
 — directed family (used by Spherical)`` is this record's own navigation, not paper text, and
 still says *Spherical*. It was left unchanged because it falls outside this absorption's declared
 scope, and is flagged here so a later pass can decide it deliberately.
+
+### Drift correction (2026-09-02): ten-anchor re-pin
+
+The ten anchors the rename absorption above left drifted are re-quoted and re-hashed here, and the
+sentinels are re-pinned, because a drift *correction* is now being absorbed (the dirty-pin
+convention). Before this correction `check-paper-definitions.sh` reported **10 drifted, 0
+unresolvable**; after it, the quiet case-(a) pass. Paper file sha256 `7303bc9e…`, 4867 lines,
+paper repo `git HEAD` `fa0dbf7c053e6ecd22e9815180dd91beb2604e61` with the file dirty against it
+(`M JPL/possible_worlds.tex`) — the dirty-pin caveat below applies unchanged, so the checksum is
+the authoritative pin and the SHA is provenance only.
+
+Classification, anchor by anchor:
+
+| Anchor | Change | Class |
+|---|---|---|
+| `def:time-shift-histories` | The explicit translation function `\bar{a}(z) = z + d` with `y = \bar{a}(x)` is gone; the relation is now stated pointwise as `\tau(z) = \sigma(z + y - x)` for all `z \in D`. | **Substantive** (same relation, since `d = y - x` is forced; but the definiens changed shape) |
+| `def:world-history` | Last sentence: "The set of all total world histories over $\F$ is denoted $H_{\F}$" → "The set of all possible worlds over $\F$ is denoted $H_{\F}$". | Terminological — equivalent by the definition's own "total--- equivalently, a possible world" |
+| `def:frame` | `\item[\bf …]` → `\item[\it …]` on all four axioms; the fourth axiom's name *Spherical* → *Saturation* (the rename already absorbed at the key level above); the footnote moved `~\cite{Cmiel2021}` from the second sentence to the first and renamed *Spherical* → *Saturation* in its text. | Cosmetic + rename; no mathematical change |
+| `def:frame#Compositionality`, `def:frame#Seriality`, `def:frame#Limit` | `\bf` → `\it` item emphasis only. | Cosmetic |
+| `thm:extension` | Footnote wording only: *Spherical* → *Saturation* twice, and the cross-reference `cor:spherical-finite` → `cor:saturation-finite`. Statement unchanged. | Rename follow-through; cosmetic |
+| `def:task-relation` | `\bf` → `\it` on the Fiber/Cone/Segment items (reversing the 2026-08-25 `\it` → `\bf` change). | Cosmetic |
+| `def:directed` | `\item[\bf $\mathbf{\supseteq}$-Directed:]` → `\item[\it $\supseteq$-Directed:]` (and the `\subseteq` twin). | Cosmetic |
+| `def:BLplus-defined` | `\bf` → `\it` on all eight defined-operator items. | Cosmetic |
+
+**The repository's Lean statements are unaffected.** Every change above is equivalent to the
+pinned text it replaces: `WorldHistory.timeShift` was already the pointwise `σ(z + Δ)` reading
+of `def:time-shift-histories`, `H_F` (`TaskFrame.HF`) already denotes exactly the total
+histories, and the emphasis/rename changes carry no content. The two in-tree verbatim quotations
+that this correction does move — the `def:world-history` closing sentence, quoted in
+`FormalSystem/Semantics/WorldHistory.lean`, `PartialHistory.lean`, and
+`FormalSystem/Metalogic/Algebraic/FlowFrame.lean` — are updated to the live wording in the same
+change set.
+
+**Two navigation headings updated.** ``def:directed — directed family (used by Spherical)`` now
+reads *(used by Saturation)*, resolving the judgment call the rename absorption above flagged;
+and ``def:time-shift-histories — …, translation form`` now reads *…, pointwise form*, following
+the substantive change. Both headings are this record's own navigation, not quoted paper text, so
+updating them does not falsify the record. For the same reason the `def:frame` sub-anchor table's
+fourth row is re-keyed from `def:frame#Spherical` to `def:frame#Saturation` with the live text
+and hash the rename absorption already placed in the manifest — the table is the record's
+per-axiom index of the *current* pins, and it now agrees with the manifest again.
+
+**Deliberately left alone.** Every earlier narrative section keeps its historical wording
+(*Spherical*, "translation form", the 2026-08-25 note that `def:task-relation`'s items went
+`\it` → `\bf`) — those describe what the paper said at the time. `app:auto_existence` and
+`lem:history-time-shift-preservation` remain `LIVE-UNPINNED`: the Lean docstrings that cite them
+do so by name only and quote no text.
 
 ### Drift correction and coverage extension (2026-08-17): the target-state-revision re-pin
 
@@ -433,27 +484,27 @@ sha256: `bc89eea5f9bafa1e326bc8bda93b6631c49212c1f0c3253208f0cfbdb049fb1f`
 \begin{Ddef} \label{def:task-relation}
 	A \textit{task relation} on a nonempty set of \textit{world states} $W$ over a temporal order $\D$ is any parameterized relation $w \Rightarrow_x u$ for $w,u \in W$ and $x \in D^+$, extended to negative durations by the \textit{converse convention} $w \Rightarrow_{-x} u \coloneq u \Rightarrow_{x} w$ for $x \geq 0$, determining the following for any world states $w, v \in W$ and durations $x, y \in D$:
 	\begin{enumerate}[wide=0pt, labelsep=.1in, itemsep=.075in]
-		\item[\bf Fiber:] $\fib{w, x} \coloneq \set{u \in W : w \Rightarrow_x u}$.
-		\item[\bf Cone:] $(w)_x \coloneq \bigcup\limits_{\vert{y} < x} \fib{w, y}$ where $x > 0$.
-		\item[\bf Segment:] $[w, v]_x^y \coloneq \fib{w, x} \cap \fib{v, -y}$ where $x, y \geq 0$.
+		\item[\it Fiber:] $\fib{w, x} \coloneq \set{u \in W : w \Rightarrow_x u}$.
+		\item[\it Cone:] $(w)_x \coloneq \bigcup\limits_{\vert{y} < x} \fib{w, y}$ where $x > 0$.
+		\item[\it Segment:] $[w, v]_x^y \coloneq \fib{w, x} \cap \fib{v, -y}$ where $x, y \geq 0$.
 	\end{enumerate}
   \vspace{-.1in}
 \end{Ddef}
 ```
-sha256: `c12d018290feb5a12e1757aae3718593c940c3d5bd19c6bbd5d8a87bcf525193`
+sha256: `f076d52a3b75a5cdacdc86ed815c006b6bcbf78483aebd36152d1c5b04ed5b33`
 
-### `def:directed` — directed family (used by Spherical)
+### `def:directed` — directed family (used by Saturation)
 
 ```latex
 \begin{Ddef} \label{def:directed}
 	A nonempty family of sets $\mathcal{S}$ is:
 	\begin{enumerate}[wide=0pt, labelsep=.1in, itemsep=.075in]
-		\item[\bf $\mathbf{\supseteq}$-Directed:] just in case $S \subseteq S_1 \cap S_2$ for some $S \in \mathcal{S}$ whenever $S_1, S_2 \in \mathcal{S}$.
-		\item[\bf $\mathbf{\subseteq}$-Directed:] just in case $S_1, S_2 \subseteq S$ for some $S \in \mathcal{S}$ whenever $S_1, S_2 \in \mathcal{S}$.
+		\item[\it $\supseteq$-Directed:] just in case $S \subseteq S_1 \cap S_2$ for some $S \in \mathcal{S}$ whenever $S_1, S_2 \in \mathcal{S}$.
+		\item[\it $\subseteq$-Directed:] just in case $S_1, S_2 \subseteq S$ for some $S \in \mathcal{S}$ whenever $S_1, S_2 \in \mathcal{S}$.
 	\end{enumerate}
 \end{Ddef}
 ```
-sha256: `096a8398223596825ff71372dc565a77354d41fff69f8bf0b3fe485edad0c75b`
+sha256: `5164210f644bb467aadc3bd279a5774cc14b67e88bdee6b8373a2025a22031f1`
 
 ### `def:frame` — the frame definition (whole block, all four axioms)
 
@@ -461,19 +512,19 @@ sha256: `096a8398223596825ff71372dc565a77354d41fff69f8bf0b3fe485edad0c75b`
 \begin{Ddef} \label{def:frame}
 	A \textit{task frame} is any $\F = \tuple{W, \D, \Rightarrow}$ where $W$ is a nonempty set of world states, $\D$ is a temporal order, and $\Rightarrow$ is a task relation satisfying the following for $x, y \geq 0$:
 	\begin{enumerate}[wide=0pt, labelsep=.1in, itemsep=.075in]
-		\item[\bf Compositionality:] $w \Rightarrow_{x + y} v$ if and only if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some $u \in W$.
-		\item[\bf Seriality:] $w \Rightarrow_x u$ and $v \Rightarrow_x w$ for some $u, v \in W$.
-		\item[\bf Limit:] $\bigcap\limits_{x > 0} (w)_x = \set{w}$.
-		\item[\bf Spherical:] $\bigcap \mathcal{S} \neq \emptyset$ for any $\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments.%
+		\item[\it Compositionality:] $w \Rightarrow_{x + y} v$ if and only if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some $u \in W$.
+		\item[\it Seriality:] $w \Rightarrow_x u$ and $v \Rightarrow_x w$ for some $u, v \in W$.
+		\item[\it Limit:] $\bigcap\limits_{x > 0} (w)_x = \set{w}$.
+		\item[\it Saturation:] $\bigcap \mathcal{S} \neq \emptyset$ for any $\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments.%
     \footnote{
-      The nonempty fibers and segments form a \textit{ball space} on $W$ in the sense of \'{C}miel, Kuhlmann, and Kuhlmann.
-      \textit{Spherical} is the downward-directed-intersection condition $\mathbf{S}_1^d$ of the ball-space hierarchy of~\cite{Cmiel2021}--- the nest condition $\mathbf{S}_1$ with a $\supseteq$-directed system of balls in place of a nest--- and so is strictly stronger than the standard \textit{spherically complete} condition, which is $\mathbf{S}_1$ itself.
+      The nonempty fibers and segments form a \textit{ball space} on $W$ in the sense of \'{C}miel, Kuhlmann, and Kuhlmann~\cite{Cmiel2021}.
+      \textit{Saturation} is the downward-directed-intersection condition $\mathbf{S}_1^d$ of the ball-space hierarchy--- the nest condition $\mathbf{S}_1$ with a $\supseteq$-directed system of balls in place of a nest--- and so is strictly stronger than the standard \textit{spherically complete} condition, which is $\mathbf{S}_1$ itself.
     }
 	\end{enumerate}
   \vspace{-.1in}
 \end{Ddef}
 ```
-sha256: `294733a3cb5d65a1c048d850689e6d78e7a29c8b78cc8fed5d35b3ce3618583b`
+sha256: `ad9e4473a107a295ae23bdd23617523a0b24d2a64fd72d450b7711d71811e314`
 
 Four axioms, not more, not fewer — **Nullity is NOT an axiom**, it is `lem:nullity` below, DERIVED
 from Seriality and Limit. Each axiom is also tracked individually (sub-anchors of `def:frame`, no
@@ -483,10 +534,10 @@ flagging "`def:frame` changed":
 
 | Sub-anchor | Verbatim text | sha256 |
 |---|---|---|
-| `def:frame#Compositionality` | `\item[\bf Compositionality:] $w \Rightarrow_{x + y} v$ if and only if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some $u \in W$.` | `35905314d686a1676dfda8d4c7d092de8c3335104c0510e7069d6656a4ac87e3` |
-| `def:frame#Seriality` | `\item[\bf Seriality:] $w \Rightarrow_x u$ and $v \Rightarrow_x w$ for some $u, v \in W$.` | `afffcd074afce7442d2c02108f49e70c128de3d4d7ccac41833f95e2ae3cd952` |
-| `def:frame#Limit` | `\item[\bf Limit:] $\bigcap\limits_{x > 0} (w)_x = \set{w}$.` | `6acfdc8df119a71d24d863399f6e6d3aff9a507e920c8a57e9427df94224b369` |
-| `def:frame#Spherical` | `\item[\bf Spherical:] $\bigcap \mathcal{S} \neq \emptyset$ for any $\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments.%` | `92b407bc45ab62ce5bac22982c67e2555efb4a990ddf8e61fd7f1b45840bcf60` |
+| `def:frame#Compositionality` | `\item[\it Compositionality:] $w \Rightarrow_{x + y} v$ if and only if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some $u \in W$.` | `4b9248498399338eeaccb63c5e8952ca0928b87bb85bcd94f596d9c263bb64fa` |
+| `def:frame#Seriality` | `\item[\it Seriality:] $w \Rightarrow_x u$ and $v \Rightarrow_x w$ for some $u, v \in W$.` | `ad1863bf950f17906a79b469b40fddb102e4abf5bd1bfd828a2f4b4900c7dbad` |
+| `def:frame#Limit` | `\item[\it Limit:] $\bigcap\limits_{x > 0} (w)_x = \set{w}$.` | `3eedd389d6cbdf5dff50f82ad9bafed30fe5eff5ec923cfdc165ca75dbe60a5f` |
+| `def:frame#Saturation` | `\item[\it Saturation:] $\bigcap \mathcal{S} \neq \emptyset$ for any $\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments.%` | `c293e9f830a2e1f0154d1ee7be2c7a121a7aa0ec4476266637e4fffaff345c60` |
 
 Note: **Compositionality is a biconditional**, not a one-directional implication — this is load
 bearing (the right-to-left direction is used directly in, e.g., the constraint-family proofs).
@@ -512,10 +563,10 @@ below which needs Zorn's lemma.
 	A \textit{world history} is any partial history whose domain $X$ is \textit{convex}, so that $y \in X$ whenever $x, z \in X$ and $x < y < z$.
   A world history is \textit{total}--- equivalently, a \textit{possible world}--- just in case $X = D$.
 	A partial history $\sigma$ \textit{extends} $\tau$ just in case $\dom{\tau} \subseteq \dom{\sigma}$ and $\tau(x) = \sigma(x)$ for all $x \in \dom{\tau}$.
-	The set of all total world histories over $\F$ is denoted $H_{\F}$.
+	The set of all possible worlds over $\F$ is denoted $H_{\F}$.
 \end{Ddef}
 ```
-sha256: `3d4679bdb4828aad40f6a0d8deb6ff5af09fa52d2181100cfe159f2a23303a15`
+sha256: `eda6a5b8704edbf3fdebe9aaa85f45de67d08d4e3ab644b94a289b04cff22d9a`
 
 Layering, exactly as the paper states it: **partial history** (nonempty domain, no convexity
 requirement) → **world history** (convex domain) → **total** / **possible world** (`X = D`). The
@@ -529,11 +580,11 @@ point). `H_F` denotes only the *total* histories.
 \begin{Tthm} \label{thm:extension}
 	Every partial history $\tau : X \to W$ over a task frame $\F = \tuple{W, \D, \Rightarrow}$ is extended by some total world history $\sigma \in H_{\F}$.%
 	  \footnote{
-	    The proof appeals to Zorn's lemma, and so the derivation of \textit{Occurrence} from \textit{Seriality} and \textit{Spherical} in \textbf{\ref{cor:occurrence}} is a theorem of ZFC, in contrast with the derivation of the zero loops in \textbf{\ref{lem:nullity}} and the derivation of \textit{Spherical} for finite $W$ in \textbf{\ref{cor:spherical-finite}}, both of which are choice-free.
+	    The proof appeals to Zorn's lemma, and so the derivation of \textit{Occurrence} from \textit{Seriality} and \textit{Saturation} in \textbf{\ref{cor:occurrence}} is a theorem of ZFC, in contrast with the derivation of the zero loops in \textbf{\ref{lem:nullity}} and the derivation of \textit{Saturation} for finite $W$ in \textbf{\ref{cor:saturation-finite}}, both of which are choice-free.
 	  }
 \end{Tthm}
 ```
-sha256: `1140d4819b9b0030275f249c60b7cb2fb15da97f9d07df2196d6e06508f65e38`
+sha256: `1d0131efbaef478c808b8a9ad5d141814aa25ddbb2fba426bce6d101bdabc4bb`
 
 ### `cor:occurrence` — DERIVED: every world state occurs at any prescribed time in some total world history (renamed from `thm:occurrence`; see "Drift correction" below)
 
@@ -776,20 +827,20 @@ the paper's infix. Each such site now says so explicitly. Flipping it is deferre
   \vspace{-.125in}
 	\begin{enumerate}[wide=0pt, labelsep=.1in, itemsep=.075in]
 		\begin{multicols}{2}
-			\item[\bf Past:] $\past\varphi \coloneq \top\since\varphi$.
-			\item[\bf Future:] $\future\varphi \coloneq \top\until\varphi$.
-			\item[\bf Historical:] $\Past\varphi \coloneq \neg\past\neg\varphi$.
-			\item[\bf Henceforth:] $\Future\varphi \coloneq \neg\future\neg\varphi$.
-			\item[\bf Always:] $\always\varphi \coloneq \Past\varphi \wedge \varphi \wedge \Future\varphi$.
-			\item[\bf Sometimes:] $\sometimes\varphi \coloneq \past\varphi \vee \varphi \vee \future\varphi$.
-			\item[\bf Next:] $\Next\varphi \coloneq \bot\until\varphi$.
-			\item[\bf Previous:] $\Previous\varphi \coloneq \bot\since\varphi$.
+			\item[\it Past:] $\past\varphi \coloneq \top\since\varphi$.
+			\item[\it Future:] $\future\varphi \coloneq \top\until\varphi$.
+			\item[\it Historical:] $\Past\varphi \coloneq \neg\past\neg\varphi$.
+			\item[\it Henceforth:] $\Future\varphi \coloneq \neg\future\neg\varphi$.
+			\item[\it Always:] $\always\varphi \coloneq \Past\varphi \wedge \varphi \wedge \Future\varphi$.
+			\item[\it Sometimes:] $\sometimes\varphi \coloneq \past\varphi \vee \varphi \vee \future\varphi$.
+			\item[\it Next:] $\Next\varphi \coloneq \bot\until\varphi$.
+			\item[\it Previous:] $\Previous\varphi \coloneq \bot\since\varphi$.
 		\end{multicols}
 	\end{enumerate}
   \vspace{-.25in}
 \end{Ddef}    
 ```
-sha256: `2ac6361a2b84d20dd498f3e392072862554dd964a9ab6fc54bd868ee0a5bf56e`
+sha256: `fcad976996f1346178180d69dd93196df651818705c00fe546db8bea56f3c8f5`
 
 ### `thm:BLplus-PastFuture` — DERIVED: the H/G truth conditions of the defined tense operators (the unconditional language embedding)
 
@@ -811,14 +862,14 @@ sha256: `cf9d2e2bb1bcb17e3f27d9ac76f89c340f2cce5992586c617f4202051ac8256d`
 ```
 sha256: `5d9a6febeae6e2dd4c78e1912616e75e6ae7896c929e75345b2ba6403c0693c9`
 
-### `def:time-shift-histories` — time-shift between possible worlds, translation form
+### `def:time-shift-histories` — time-shift between possible worlds, pointwise form
 
 ```latex
 \begin{Ddef} \label{def:time-shift-histories}
-	For a task frame $\F = \tuple{W, \D, \Rightarrow}$, the possible worlds $\tau, \sigma \in H_{\F}$ are \emph{time-shifted from $x$ to $y$}--- written $\tau \approx_x^y \sigma$--- \textit{iff} there exists a \textit{translation} $\bar{a} : D \to D$, $\bar{a}(z) = z + d$ for some $d \in D$, where $y = \bar{a}(x)$ and $\tau(z) = \sigma(\bar{a}(z))$ for all $z \in D$.
+	For a task frame $\F = \tuple{W, \D, \Rightarrow}$, the possible worlds $\tau, \sigma \in H_{\F}$ are \emph{time-shifted from $x$ to $y$}--- written $\tau \approx_x^y \sigma$--- \textit{iff} $\tau(z) = \sigma(z + y - x)$ for all $z \in D$.
 \end{Ddef}
 ```
-sha256: `d468e821f5d1edb0316cbc0ce3895a8148a2e460ba5e2a6f6c1b67f1c029d202`
+sha256: `0b5c05e8f579807c7701cd3d28cb8f7d00a2ec42d85eec2515c48edab355b88d`
 
 ### `def:frame-validity` — validity over a frame
 
@@ -1347,16 +1398,16 @@ human readability and are not machine-parsed. Columns: `anchor_id|kind|enclosing
 ```
 # anchor_id|kind|enclosing|locator|sha256
 def:temporal-order|env|-|-|bc89eea5f9bafa1e326bc8bda93b6631c49212c1f0c3253208f0cfbdb049fb1f
-def:task-relation|env|-|-|c12d018290feb5a12e1757aae3718593c940c3d5bd19c6bbd5d8a87bcf525193
-def:directed|env|-|-|096a8398223596825ff71372dc565a77354d41fff69f8bf0b3fe485edad0c75b
-def:frame|env|-|-|294733a3cb5d65a1c048d850689e6d78e7a29c8b78cc8fed5d35b3ce3618583b
-def:frame#Compositionality|item|def:frame|Compositionality|35905314d686a1676dfda8d4c7d092de8c3335104c0510e7069d6656a4ac87e3
-def:frame#Seriality|item|def:frame|Seriality|afffcd074afce7442d2c02108f49e70c128de3d4d7ccac41833f95e2ae3cd952
-def:frame#Limit|item|def:frame|Limit|6acfdc8df119a71d24d863399f6e6d3aff9a507e920c8a57e9427df94224b369
+def:task-relation|env|-|-|f076d52a3b75a5cdacdc86ed815c006b6bcbf78483aebd36152d1c5b04ed5b33
+def:directed|env|-|-|5164210f644bb467aadc3bd279a5774cc14b67e88bdee6b8373a2025a22031f1
+def:frame|env|-|-|ad9e4473a107a295ae23bdd23617523a0b24d2a64fd72d450b7711d71811e314
+def:frame#Compositionality|item|def:frame|Compositionality|4b9248498399338eeaccb63c5e8952ca0928b87bb85bcd94f596d9c263bb64fa
+def:frame#Seriality|item|def:frame|Seriality|ad1863bf950f17906a79b469b40fddb102e4abf5bd1bfd828a2f4b4900c7dbad
+def:frame#Limit|item|def:frame|Limit|3eedd389d6cbdf5dff50f82ad9bafed30fe5eff5ec923cfdc165ca75dbe60a5f
 def:frame#Saturation|item|def:frame|Saturation|c293e9f830a2e1f0154d1ee7be2c7a121a7aa0ec4476266637e4fffaff345c60
 lem:nullity|env|-|-|94ed018343635a8ef6671daef07eaa72da1cb49fd11043fb3aa9b391a2c9c973
-def:world-history|env|-|-|3d4679bdb4828aad40f6a0d8deb6ff5af09fa52d2181100cfe159f2a23303a15
-thm:extension|env|-|-|1140d4819b9b0030275f249c60b7cb2fb15da97f9d07df2196d6e06508f65e38
+def:world-history|env|-|-|eda6a5b8704edbf3fdebe9aaa85f45de67d08d4e3ab644b94a289b04cff22d9a
+thm:extension|env|-|-|1d0131efbaef478c808b8a9ad5d141814aa25ddbb2fba426bce6d101bdabc4bb
 cor:occurrence|env|-|-|244bb2e5f6036bbe405549501390b90f432ece28c232fd18caa8b82ab3bb9a8c
 def:constraints|env|-|-|50aadae779c7d57c810e94209614b5cdfe2590fa82c1c0793db948e8d0917e28
 lem:nesting|env|-|-|ed036f28b70b99d4294515c0f1da64a62e471aa4795394cda4d9010b1f1971a7
@@ -1367,10 +1418,10 @@ lem:step|env|-|-|b1f65f70cc243de5b32d4e2a46c35c986dd0322cf3ca0524fb76701af3e3be4
 def:BL-semantics|env|-|-|5f53774a3b8a04272bb3c8bf9d41f5cd777e8dc8b1ba30c92aa19113399b228b
 def:BLplus-language|env|-|-|a43b3df2ea2fcb96eeb156b3403a33ac51fcafd2ad4eb55e7915c07cf509f8b7
 def:BLplus-semantics|env|-|-|735c614181b042a498ec68826b234d30c9035464d9887b6fe717bab90e0705eb
-def:BLplus-defined|env|-|-|2ac6361a2b84d20dd498f3e392072862554dd964a9ab6fc54bd868ee0a5bf56e
+def:BLplus-defined|env|-|-|fcad976996f1346178180d69dd93196df651818705c00fe546db8bea56f3c8f5
 thm:BLplus-PastFuture|env|-|-|cf9d2e2bb1bcb17e3f27d9ac76f89c340f2cce5992586c617f4202051ac8256d
 thm:BLplus-NextPrevious|env|-|-|5d9a6febeae6e2dd4c78e1912616e75e6ae7896c929e75345b2ba6403c0693c9
-def:time-shift-histories|env|-|-|d468e821f5d1edb0316cbc0ce3895a8148a2e460ba5e2a6f6c1b67f1c029d202
+def:time-shift-histories|env|-|-|0b5c05e8f579807c7701cd3d28cb8f7d00a2ec42d85eec2515c48edab355b88d
 def:frame-validity|env|-|-|86a0c4b220bc43d04a2bfc14ccd14f0dab0182ff735ffde9c660e3a0ce7b2259
 def:logical-consequence|env|-|-|3af67167ee4a393d77fc8cfa8ddc065fe932bedf76a14febb8608a9001af5486
 CO|aitem|-|-|5c468c01776c449b212c98070b5bfc70951691a23905cd4d4c249bf1f5375d41

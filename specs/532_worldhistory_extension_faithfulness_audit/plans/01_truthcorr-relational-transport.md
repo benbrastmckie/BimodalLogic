@@ -302,23 +302,23 @@ a `TruthCorr.Rel` verbatim.
 
 ---
 
-### Phase 4: Re-pin `specs/paper-definitions-of-record.md` against the live paper [NOT STARTED]
+### Phase 4: Re-pin `specs/paper-definitions-of-record.md` against the live paper [COMPLETED]
 
 **Goal**: `scripts/check-paper-definitions.sh` exits 0 (quiet case (a)) with all 10 drifted
 anchors re-quoted and re-hashed, the drift classified, and the sentinels re-pinned per the
 record's own convention.
 
 **Tasks**:
-- [ ] Run `bash scripts/check-paper-definitions.sh` and capture the OLD/NEW blocks for all 10
+- [x] Run `bash scripts/check-paper-definitions.sh` and capture the OLD/NEW blocks for all 10
       anchors: `def:task-relation`, `def:directed`, `def:frame`, `def:frame#Compositionality`,
       `def:frame#Seriality`, `def:frame#Limit`, `def:world-history`, `thm:extension`,
       `def:BLplus-defined`, `def:time-shift-histories`.
-- [ ] For each, run `check-paper-definitions.sh --resolve "ANCHOR|KIND|ENCLOSING|LOCATOR"`
+- [x] For each, run `check-paper-definitions.sh --resolve "ANCHOR|KIND|ENCLOSING|LOCATOR"`
       (`env|-|-` for the eight environments; `item|def:frame|Compositionality` etc. for the
       three items) and replace the entry's fenced `latex` block and its `sha256:` line with the
       resolved text and hash. Update the manifest rows in the `MANIFEST:BEGIN/END` block to the
       new hashes.
-- [ ] Add a dated narrative section `### Drift correction (2026-09-02): ten-anchor re-pin`
+- [x] Add a dated narrative section `### Drift correction (2026-09-02): ten-anchor re-pin`
       directly under the existing "Rename absorption (2026-09-02)" section, following the shape
       of the 2026-08-17 and 2026-08-25 entries: list the 10 anchors; classify each as
       substantive or cosmetic (at minimum: `def:time-shift-histories` dropped the explicit
@@ -329,20 +329,22 @@ record's own convention.
       `def:BLplus-defined` and the three `def:frame#*` items are `\bf` → `\it` emphasis —
       cosmetic; `thm:extension` footnote wording — check and state). Record that the
       repository's Lean statements are unaffected (every change is equivalent), per the audit.
-- [ ] Update the two navigation headings that the prior pass flagged for a deliberate decision:
+- [x] Update the two navigation headings that the prior pass flagged for a deliberate decision:
       `def:directed — directed family (used by Spherical)` → `(used by Saturation)`, and
       `def:time-shift-histories — …, translation form` → `…, pointwise form`. These are the
       record's own navigation, not quoted paper text, so updating them does not falsify the
       record; say so in the narrative.
-- [ ] Re-pin the sentinels, because a drift correction is being absorbed (the dirty-pin
+- [x] Re-pin the sentinels, because a drift correction is being absorbed (the dirty-pin
       convention): update the `<!-- PINNED_COMMIT -->`, `<!-- FILE_CHECKSUM -->`,
       `<!-- LINE_COUNT -->` comments and add a provenance-table row with the paper repo's
       `git HEAD` (noting the file is dirty against it), the file sha256, line count, and UTC
       time. Measured at planning time: HEAD `14f1bee5…`, sha256 `7303bc9e…`, 4867 lines —
       re-measure at implementation time; do not copy these.
-- [ ] Do **not** edit the paper. Do not rewrite historical prose in earlier sections.
-- [ ] Run `bash scripts/check-paper-definitions.sh` → exit 0, and
+- [x] Do **not** edit the paper. Do not rewrite historical prose in earlier sections.
+- [x] Run `bash scripts/check-paper-definitions.sh` → exit 0, and
       `bash scripts/check-module-invariants.sh` → C15 still PASS.
+
+**Phase record**: measured 10 drifted / 0 unresolvable before; quiet case-(a) pass after (`check-paper-definitions.sh` exit 0). Paper repo HEAD had moved since planning (`fa0dbf7c…`, not `14f1bee5…`) but the file sha256 `7303bc9e…`/4867 lines matched; pinned the measured values. Also re-keyed the `def:frame` sub-anchor table's stale `#Spherical` row to `#Saturation` (recorded in the narrative). `check-module-invariants.sh` C15 PASS (48 anchors).
 
 **Timing**: 1.5 hours
 
