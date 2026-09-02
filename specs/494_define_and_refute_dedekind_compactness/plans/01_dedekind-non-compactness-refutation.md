@@ -266,31 +266,31 @@ uses completeness only. Wire the module into the build closure.
 
 ---
 
-### Phase 3: The ℝ model and the finite-satisfiability half [NOT STARTED]
+### Phase 3: The ℝ model and the finite-satisfiability half [COMPLETED]
 
 **Goal**: Build the `ShiftSet`-based ℝ frame with `q` true exactly at integers `1..N` and prove
 `dedWitness_finitely_satisfiable`.
 
 **Tasks**:
-- [ ] Add `import FormalSystem.Semantics.ShiftSet` to the new module. `Mathlib.Data.Real.Basic`
+- [x] Add `import FormalSystem.Semantics.ShiftSet` to the new module. `Mathlib.Data.Real.Basic`
       is redundant (ShiftSet already imports Real) — keep or drop, and note the choice.
-- [ ] Transcribe `@[reducible] noncomputable def realOrder : TemporalOrder := ⟨ℝ⟩`. **The
+- [x] Transcribe `@[reducible] noncomputable def realOrder : TemporalOrder := ⟨ℝ⟩`. **The
       `@[reducible]` is load-bearing** — cf. the `intOrder` discipline at
       `Semantics/TemporalOrder.lean:100-126`.
-- [ ] Transcribe `@[reducible] noncomputable def rShift`, discharging all seven `ShiftSet`
+- [x] Transcribe `@[reducible] noncomputable def rShift`, discharging all seven `ShiftSet`
       fields (`Carrier`, `carrier_nonempty`, `sh`, `sh_zero`, `sh_add`, `sep`, `A`). For `sep`
       (the paper's *Limit*), instantiate at `x = |u - w|` and derive `|u-w| < |u-w|`.
-- [ ] Transcribe `rM`, `rH`, and `rTruth_atom` (via `ShiftSet.forward_repr` +
+- [x] Transcribe `rM`, `rH`, and `rTruth_atom` (via `ShiftSet.forward_repr` +
       `simp [ShiftSet.ShiftTruth]`).
-- [ ] Transcribe `rTruth_gap`, `rTruth_bound`, `rTruth_alpha`. Drop the stray `⊢` from
+- [x] Transcribe `rTruth_gap`, `rTruth_bound`, `rTruth_alpha`. Drop the stray `⊢` from
       `by push_cast at hkN ⊢; omega` in `rTruth_alpha` to silence the known cosmetic warning.
-- [ ] Transcribe `dedWitness_finitely_satisfiable`, using `SatisfiableSet.dedekind_of_forall`,
+- [x] Transcribe `dedWitness_finitely_satisfiable`, using `SatisfiableSet.dedekind_of_forall`,
       `Real.exists_isLUB`, `ShiftSet.hist_isTotal`, `List.single_le_sum` and `qDepth_qAlpha` for
       the `n ≤ N` bound.
-- [ ] Add a short comment recording **why** the ω-family `{αₙ}` exists rather than the single
+- [x] Add a short comment recording **why** the ω-family `{αₙ}` exists rather than the single
       formula `G(q → F q)`: a finite unsatisfiable set refutes nothing about compactness. This
       is the design decision research §6 flags as most likely to be lost.
-- [ ] `lake build` green, with no new warnings.
+- [x] `lake build` green, with no new warnings. *(deviation: altered — dropping the `⊢` from `rTruth_alpha`'s `push_cast at hkN ⊢` silenced the warning research predicted, but a SECOND, unpredicted `'push_cast' tactic does nothing` warning surfaced at `dedWitness_finitely_satisfiable`'s `(by push_cast; omega)`; replaced with `(by omega)`. Rebuild: 2515 jobs, exit 0, zero warnings from this file.)*
 
 **Timing**: 1.5 hours
 
@@ -298,7 +298,7 @@ uses completeness only. Wire the module into the build closure.
 
 **Verification Tier**: local
 
-**Scope Hypothesis**: research §5 asserts "three sites" need explicit-ℝ restatement before
+**Scope Hypothesis** *(confirmed by count: FOUR sites, not three — `hr'` in `rTruth_gap`, `hy'` in `rTruth_bound`, and `hr'` + `hrs'` in `rTruth_alpha`. Recording the actual number as the plan directs rather than forcing the transcription to match the prediction.)*: research §5 asserts "three sites" need explicit-ℝ restatement before
 `exact_mod_cast` because `norm_cast` cannot see through `F.Duration.carrier`. Confirm by count
 at implementation time; if more or fewer sites need it, record the actual number — do not force
 the transcription to match the predicted count.

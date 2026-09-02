@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Metalogic.StrongCompleteness
+import FormalSystem.Semantics.ShiftSet
 
 /-!
 # Non-compactness of the `FrameClass.Dedekind` consequence relation
@@ -269,5 +270,145 @@ theorem dedWitness_not_satisfiable (q : Atom) :
     ¬ SatisfiableDedekindSet (dedWitness q) := by
   rintro ⟨F, ⟨-, hlub⟩, M, τ, hτ, t, h⟩
   exact dedWitness_core q M τ t hlub h
+
+/-! ## The `ℝ` model for finite satisfiability
+
+`natFrame` is unavailable here — it carries `[SuccOrder]` and `[NoMaxOrder]`, which `ℝ` cannot
+supply — and `FrameOver.staticFrame` is unusable for a different reason: its task relation forces
+constant-state histories, so no atom can change truth value along the timeline, which this
+witness requires. The working route is `Semantics/ShiftSet.lean`, which discharges all of
+`FrameOver`'s fields for any `D`-action.
+
+`Mathlib.Data.Real.Basic` is **not** imported explicitly: `Semantics/ShiftSet.lean` already
+pulls `Mathlib.Data.Real.*`, so the line would be redundant. -/
+
+/-- The temporal order `ℝ`. **The `@[reducible]` is load-bearing**: without it
+`DenselyOrdered (rShift q N).frame.Duration` fails to synthesize and `(0 : (rShift q N).Carrier)`
+fails to elaborate. This is the same reducibility discipline `Semantics/TemporalOrder.lean`
+documents for `intOrder`. -/
+@[reducible] noncomputable def realOrder : TemporalOrder := ⟨ℝ⟩
+
+/-- The shift set on `ℝ` translated by itself, with `q` true exactly at the integers `1, …, N`
+and every other atom false everywhere. `@[reducible]` for the same reason as `realOrder`.
+
+The `sep` field is the paper's *Limit* clause: given that `u` is within every positive distance
+of `w`, instantiate at `x = |u - w|` — the returned `y` must be `u - w`, giving the
+contradiction `|u - w| < |u - w|`. -/
+@[reducible] noncomputable def rShift (q : Atom) (N : ℕ) : ShiftSet realOrder where
+  Carrier := ℝ
+  carrier_nonempty := ⟨0⟩
+  sh := fun w d => w + d
+  sh_zero := by intro w; simp
+  sh_add := by intro w a b; exact add_assoc w a b
+  sep := by
+    intro w u h
+    by_contra hne
+    have hpos : (0:ℝ) < |u - w| := abs_pos.mpr (sub_ne_zero.mpr hne)
+    obtain ⟨y, hy, hu⟩ := h (|u - w|) hpos
+    have hy' : y = u - w := by rw [hu]; ring
+    rw [hy'] at hy
+    exact lt_irrefl _ hy
+  A := fun p x => p = q ∧ ∃ k : ℤ, (k:ℝ) = x ∧ 1 ≤ k ∧ k ≤ (N:ℤ)
+
+/-- The task model induced by `rShift`. -/
+noncomputable def rM (q : Atom) (N : ℕ) : TaskModel (rShift q N).frame := (rShift q N).model
+
+/-- The orbit through `0`, as a `WorldHistory`. -/
+noncomputable def rH (q : Atom) (N : ℕ) : WorldHistory (rShift q N).frame := (rShift q N).hist 0
+
+/-- Atom truth along the orbit through `0`, via `ShiftSet.forward_repr`. -/
+theorem rTruth_atom (q : Atom) (N : ℕ) (t : ℝ) :
+    TruthAt (rM q N) (rH q N) t (Formula.atom q) ↔ ∃ k : ℤ, (k:ℝ) = t ∧ 1 ≤ k ∧ k ≤ (N:ℤ) := by
+  rw [rM, rH, ShiftSet.forward_repr]
+  simp [ShiftSet.ShiftTruth]
+
+/-- `qGap q` holds at `0` in the `ℝ` model: the `q`-points are integers, hence isolated from
+below — `(⌈s⌉ - 1, s)` contains no integer for any `s`. -/
+theorem rTruth_gap (q : Atom) (N : ℕ) : TruthAt (rM q N) (rH q N) 0 (qGap q) := by
+  rw [qGap, Truth.future_iff]
+  intro s _
+  refine ⟨((⌈s⌉ : ℤ) : ℝ) - 1, by linarith [Int.ceil_lt_add_one s], id, ?_⟩
+  rintro r hr hrs hq
+  obtain ⟨k, rfl, -, -⟩ := (rTruth_atom q N _).mp hq
+  have hr' : ((⌈s⌉ : ℤ) : ℝ) - 1 < ((k : ℤ) : ℝ) := hr
+  have h1 : k < ⌈s⌉ := Int.lt_ceil.mpr hrs
+  have h2 : (⌈s⌉ : ℤ) - 1 < k := by exact_mod_cast hr'
+  omega
+
+/-- `qBound q` holds at `0` in the `ℝ` model: nothing above `N + 1` is a `q`-point. -/
+theorem rTruth_bound (q : Atom) (N : ℕ) : TruthAt (rM q N) (rH q N) 0 (qBound q) := by
+  rw [qBound, Truth.some_future_iff]
+  refine ⟨(N : ℝ) + 1, by positivity, ?_⟩
+  rw [Truth.future_iff]
+  intro y hy hq
+  obtain ⟨k, rfl, -, hk⟩ := (rTruth_atom q N _).mp hq
+  have h1 : ((k : ℤ) : ℝ) ≤ ((N : ℤ) : ℝ) := by exact_mod_cast hk
+  have h2 : ((N : ℤ) : ℝ) = (N : ℝ) := by push_cast; ring
+  have hy' : (N : ℝ) + 1 < ((k : ℤ) : ℝ) := hy
+  rw [h2] at h1
+  linarith
+
+/-- `qAlpha q n` holds at any integer `k ≥ 0` with `k + n ≤ N`: walk `k → k+1 → ⋯ → k+n`, each
+step landing on the *next* `q`-point because no integer lies strictly between consecutive
+integers.
+
+`F.Duration.carrier` is `ℝ` only up to reducible unfolding and `norm_cast` does not see through
+it, so each order hypothesis is restated as an explicit `ℝ` statement before `exact_mod_cast`. -/
+theorem rTruth_alpha (q : Atom) (N : ℕ) :
+    ∀ (n : ℕ) (k : ℤ), 0 ≤ k → k + (n : ℤ) ≤ (N : ℤ) →
+      TruthAt (rM q N) (rH q N) ((k : ℝ)) (qAlpha q n) := by
+  intro n
+  induction n with
+  | zero => intro k _ _; exact id
+  | succ m ih =>
+      intro k hk hkN
+      rw [qAlpha, Function.iterate_succ_apply']
+      refine (truthAt_qNext_iff _ _ _ q _).mpr ⟨((k : ℝ) + 1), by linarith, ?_, ?_, ?_⟩
+      · exact (rTruth_atom q N _).mpr
+          ⟨k + 1, by push_cast; ring, by omega, by push_cast at hkN; omega⟩
+      · have hih := ih (k + 1) (by omega) (by push_cast at hkN; omega)
+        rw [show ((k + 1 : ℤ) : ℝ) = (k : ℝ) + 1 by push_cast; ring] at hih
+        exact hih
+      · rintro r hr hrs hq
+        obtain ⟨j, rfl, -, -⟩ := (rTruth_atom q N _).mp hq
+        have hr' : ((k : ℤ) : ℝ) < ((j : ℤ) : ℝ) := hr
+        have hrs' : ((j : ℤ) : ℝ) < ((k : ℤ) : ℝ) + 1 := hrs
+        have h1 : k < j := by exact_mod_cast hr'
+        have h3 : j < k + 1 := by
+          have hc : ((j : ℤ) : ℝ) < ((k + 1 : ℤ) : ℝ) := by push_cast; linarith
+          exact_mod_cast hc
+        omega
+
+/-- **Every finite sublist of the witness is `FrameClass.Dedekind`-satisfiable.** The bound
+`N = (L.map qDepth).sum` dominates every index `n` with `qAlpha q n ∈ L`, because `qDepth` reads
+that index back off the formula (`qDepth_qAlpha`) and a single summand is at most the sum. The
+model is `ℝ` with `q` at the integers `1, …, N`, evaluated at `0`.
+
+This is the half that needs density, and it needs it only because `FrameClass.Dedekind` demands
+it of the witnessing frame; the unsatisfiable half (`dedWitness_core`) uses completeness alone.
+
+Note that a *finite* unsatisfiable set would refute nothing about compactness — compactness may
+hand back the whole of any finite premise set. That is precisely why `dedWitness` carries the
+infinite family `{αₙ}` rather than the single formula `G(q → F q)`. -/
+theorem dedWitness_finitely_satisfiable (q : Atom) (L : List Formula)
+    (hL : ∀ ψ ∈ L, ψ ∈ dedWitness q) : SatisfiableDedekindSet {ψ | ψ ∈ L} := by
+  classical
+  set N : ℕ := (L.map qDepth).sum with hNdef
+  refine SatisfiableSet.dedekind_of_forall (rShift q N).frame
+    (fun _ hne hbd => Real.exists_isLUB hne hbd) (rM q N) (rH q N)
+    (ShiftSet.hist_isTotal _ _) 0 ?_
+  intro ψ hψ
+  have hmem := hL ψ hψ
+  simp only [dedWitness, Set.mem_union, Set.mem_insert_iff, Set.mem_singleton_iff,
+    Set.mem_setOf_eq] at hmem
+  rcases hmem with (rfl | rfl) | ⟨n, rfl⟩
+  · exact rTruth_gap q N
+  · exact rTruth_bound q N
+  · have hn_le : n ≤ N := by
+      have hmm : qDepth (qAlpha q n) ∈ L.map qDepth := List.mem_map_of_mem hψ
+      have hle := List.single_le_sum (fun _ _ => Nat.zero_le _) _ hmm
+      rwa [qDepth_qAlpha] at hle
+    have := rTruth_alpha q N n 0 le_rfl (by omega)
+    simpa using this
 
 end FormalSystem.Metalogic
