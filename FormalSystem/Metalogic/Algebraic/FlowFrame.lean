@@ -105,26 +105,10 @@ open FormalSystem.Metalogic.Bundle
 
 /-! ## The generic Saturation helper
 
-Determinism-shaped discharge of `def:frame#Saturation`: in a frame whose fibers are all
-subsingletons, every set the axiom ranges over is a nonempty subsingleton, and a directed
-family of nonempty subsingletons has nonempty intersection. Stated for an arbitrary carrier
-`W`, with no relation in sight, so it is reusable verbatim for every deterministic frame. -/
-
-/-- A directed family (`def:directed`) of nonempty subsingleton sets has nonempty
-intersection. Pick `a` in some member `s₀`; for any member `s₁`, directedness gives a member
-`s' ⊆ s₀ ∩ s₁`, whose element must be `a` by subsingleton-ness of `s₀` — so `a ∈ s₁`. -/
-theorem sInter_nonempty_of_directed_subsingleton
-    {W : Type} {S : Set (Set W)} (hdir : TaskFrame.DirectedFamily S)
-    (hne : ∀ s ∈ S, s.Nonempty) (hsub : ∀ s ∈ S, s.Subsingleton) :
-    (⋂₀ S).Nonempty := by
-  obtain ⟨⟨s₀, hs₀⟩, hdir₂⟩ := hdir
-  obtain ⟨a, ha⟩ := hne s₀ hs₀
-  refine ⟨a, Set.mem_sInter.mpr fun s₁ hs₁ => ?_⟩
-  obtain ⟨s', hs', hsub'⟩ := hdir₂ s₀ hs₀ s₁ hs₁
-  obtain ⟨b, hb⟩ := hne s' hs'
-  have hb₀ : b ∈ s₀ ∩ s₁ := hsub' hb
-  have hba : b = a := hsub s₀ hs₀ hb₀.1 ha
-  exact hba ▸ hb₀.2
+Determinism-shaped discharge of `def:frame#Saturation` now lives once, in `TaskFrame.lean`, as
+Helper D: `TaskFrame.sInter_nonempty_of_directed_subsingleton` and its packaged form
+`TaskFrame.saturation_of_fib_subsingleton`. The copy that used to sit here was byte-identical to
+the former and has been deleted; every consumer cites the `TaskFrame` version. -/
 
 section FlowFrameConformance
 
@@ -139,6 +123,16 @@ value of the fibre `FrameOver D`, so `D` is one binder rather than a carrier plu
 side conditions. The `ℤ` originals (`multiFamTaskFrame`/`multiFamHistory`, `ReynoldsBridge.lean`)
 live in the fibre `FrameOver intOrder` and are recovered as definitional specializations by
 `ChronicleMonadicBridge.lean`'s `_int` lemmas. -/
+
+/-- Every fibre of the generic flow relation is a subsingleton: the clock is deterministic, so
+`Fib R w x ⊆ {(w.1, w.2 + x)}`. Stated on the bare relation, and **above**
+`multiFamTaskFrameGen`, so that the frame's own *Saturation* field is a citation of Helper D
+(`TaskFrame.saturation_of_fib_subsingleton`). -/
+theorem flowRel_fib_subsingleton (D : TemporalOrder) (FamIdx : Type) (w : FamIdx × ↑D) (x : ↑D) :
+    (TaskFrame.Fib (fun (p : FamIdx × ↑D) (d : ↑D) (q : FamIdx × ↑D) =>
+      p.1 = q.1 ∧ q.2 = p.2 + d) w x).Subsingleton := by
+  rintro u ⟨hu₁, hu₂⟩ u' ⟨hu'₁, hu'₂⟩
+  exact Prod.ext (hu₁.symm.trans hu'₁) (hu₂.trans hu'₂.symm)
 
 /-- A `FrameOver D` with `WorldState = FamIdx × ↑D`, at an arbitrary temporal order `D`.
 The generic form of `multiFamTaskFrame` (`ReynoldsBridge.lean`); the task relation is
@@ -176,16 +170,7 @@ noncomputable def multiFamTaskFrameGen (D : TemporalOrder) (FamIdx : Type) [None
   limit :=
     TaskFrame.limit_of_shift Prod.snd (fun _ _ _ h => h.2)
       (fun w u h => Prod.ext h.1.symm (by rw [h.2, add_zero]))
-  saturation := by
-    intro S hdir hmem
-    refine sInter_nonempty_of_directed_subsingleton hdir (fun s hs => (hmem s hs).2)
-      fun s hs => ?_
-    rcases (hmem s hs).1 with ⟨w, x, rfl⟩ | ⟨w, v, x, y, _, _, rfl⟩
-    · rintro u ⟨hu₁, hu₂⟩ u' ⟨hu'₁, hu'₂⟩
-      exact Prod.ext (hu₁.symm.trans hu'₁) (hu₂.trans hu'₂.symm)
-    · refine Set.Subsingleton.anti ?_ Set.inter_subset_left
-      rintro u ⟨hu₁, hu₂⟩ u' ⟨hu'₁, hu'₂⟩
-      exact Prod.ext (hu₁.symm.trans hu'₁) (hu₂.trans hu'₂.symm)
+  saturation := TaskFrame.saturation_of_fib_subsingleton (flowRel_fib_subsingleton D FamIdx)
 
 /-- World history for `multiFamTaskFrameGen`, visiting `(f, w₀ + t)` at each time `t`.
 Generic form of `multiFamHistory` (`ReynoldsBridge.lean`). -/
@@ -311,7 +296,7 @@ theorem multiFamGen_saturation {FamIdx : Type} [Nonempty FamIdx] (S : Set (Set (
     (hfs : ∀ s ∈ S, TaskFrame.IsFiber (multiFamTaskFrameGen D FamIdx).TaskRel s ∨
       TaskFrame.IsSegment (multiFamTaskFrameGen D FamIdx).TaskRel s) :
     (⋂₀ S).Nonempty := by
-  refine sInter_nonempty_of_directed_subsingleton hdir hne fun s hs => ?_
+  refine TaskFrame.sInter_nonempty_of_directed_subsingleton hdir hne fun s hs => ?_
   rcases hfs s hs with ⟨w, x, rfl⟩ | ⟨w, v, x, y, _, _, rfl⟩
   · exact multiFamGen_fib_subsingleton w x
   · exact (multiFamGen_fib_subsingleton w x).anti Set.inter_subset_left
@@ -352,12 +337,11 @@ theorem multiFamTaskFrameGen_limit {FamIdx : Type} [Nonempty FamIdx] :
 
 /-- *Saturation* (`def:frame#Saturation`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
 $\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments") for the generic flow
-frame, as the predicate of record. Repackages `multiFamGen_saturation`, splitting `Saturation`'s
-single per-member conjunction into that lemma's two separate hypotheses. -/
+frame, as the predicate of record: Helper D (`TaskFrame.saturation_of_fib_subsingleton`) applied
+to `multiFamGen_fib_subsingleton`. -/
 theorem multiFamTaskFrameGen_saturation {FamIdx : Type} [Nonempty FamIdx] :
     TaskFrame.Saturation (multiFamTaskFrameGen D FamIdx).TaskRel :=
-  fun S hdir hmem =>
-    multiFamGen_saturation S hdir (fun s hs => (hmem s hs).2) (fun s hs => (hmem s hs).1)
+  TaskFrame.saturation_of_fib_subsingleton multiFamGen_fib_subsingleton
 
 /-! ## The totality characterization
 

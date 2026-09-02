@@ -450,6 +450,15 @@ With this frame:
 - Box quantification ranges over all offsets, giving S5 semantics
 -/
 
+/-- Every fibre (`def:task-relation`, *Fiber* clause) of the deterministic `ℤ`-shift relation is
+a subsingleton: `Fib R w x ⊆ {w + x}`. Stated on the bare relation, and **above** `zTaskFrameV2`,
+so that the frame's own *Saturation* field is a citation of Helper D
+(`TaskFrame.saturation_of_fib_subsingleton`) rather than an inline re-proof. -/
+theorem zShiftRel_fib_subsingleton (w x : ℤ) :
+    (TaskFrame.Fib (fun (w : ℤ) (d : ℤ) (u : ℤ) => u = w + d) w x).Subsingleton := by
+  intro u hu u' hu'
+  exact (hu : u = w + x).trans (hu' : u' = w + x).symm
+
 /-- A `FrameOver intOrder` with WorldState = ℤ. Task relation: u = w + d (deterministic). -/
 noncomputable def zTaskFrameV2 : FrameOver intOrder where
   WorldState := ℤ
@@ -462,16 +471,7 @@ noncomputable def zTaskFrameV2 : FrameOver intOrder where
   converse w d u := by constructor <;> intro h <;> omega
   serial := fun w x _ => ⟨⟨w + x, rfl⟩, ⟨w - x, by omega⟩⟩
   limit := TaskFrame.limit_of_shift id (fun _ _ _ h => h) (fun _ _ h => by omega)
-  saturation := by
-    intro S hdir hmem
-    refine Algebraic.sInter_nonempty_of_directed_subsingleton hdir (fun s hs => (hmem s hs).2)
-      fun s hs => ?_
-    rcases (hmem s hs).1 with ⟨w, x, rfl⟩ | ⟨w, v, x, y, _, _, rfl⟩
-    · intro u hu u' hu'
-      exact (hu : u = w + x).trans (hu' : u' = w + x).symm
-    · refine Set.Subsingleton.anti ?_ Set.inter_subset_left
-      intro u hu u' hu'
-      exact (hu : u = w + x).trans (hu' : u' = w + x).symm
+  saturation := TaskFrame.saturation_of_fib_subsingleton zShiftRel_fib_subsingleton
 
 /-! ### `zTaskFrameV2` discharges `def:frame`'s four axioms (deterministic shift at `ℤ`)
 
@@ -484,11 +484,8 @@ directly rather than derived. -/
 /-- Every fiber (`def:task-relation`, *Fiber* clause) of `zTaskFrameV2` is a subsingleton: the
 shift is deterministic, so `Fib R w x ⊆ {w + x}`. -/
 theorem zTaskFrameV2_fib_subsingleton (w x : ℤ) :
-    (TaskFrame.Fib zTaskFrameV2.TaskRel w x).Subsingleton := by
-  intro u hu u' hu'
-  have h1 : u = w + x := hu
-  have h2 : u' = w + x := hu'
-  exact h1.trans h2.symm
+    (TaskFrame.Fib zTaskFrameV2.TaskRel w x).Subsingleton :=
+  zShiftRel_fib_subsingleton w x
 
 /-- *Seriality* (`def:frame#Seriality`, verbatim: "$w \Rightarrow_x u$ and $v \Rightarrow_x w$
 for some $u, v \in W$") for `zTaskFrameV2`: the shift supplies both `w + x` and `w - x`. -/
@@ -517,16 +514,11 @@ theorem zTaskFrameV2_limit :
   omega
 
 /-- *Saturation* (`def:frame#Saturation`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
-$\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments") for `zTaskFrameV2`:
-every fiber is a singleton and every segment is an intersection of fibers, hence a subsingleton,
-so `Algebraic.sInter_nonempty_of_directed_subsingleton` applies. -/
-theorem zTaskFrameV2_saturation : TaskFrame.Saturation zTaskFrameV2.TaskRel := by
-  intro S hdir hmem
-  refine Algebraic.sInter_nonempty_of_directed_subsingleton hdir
-    (fun s hs => (hmem s hs).2) (fun s hs => ?_)
-  rcases (hmem s hs).1 with ⟨w, x, rfl⟩ | ⟨w, v, x, y, _, _, rfl⟩
-  · exact zTaskFrameV2_fib_subsingleton w x
-  · exact (zTaskFrameV2_fib_subsingleton w x).anti Set.inter_subset_left
+$\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments") for `zTaskFrameV2`,
+as the top-level predicate of record: a one-line citation of the frame's own field, which is
+Helper D applied to `zShiftRel_fib_subsingleton`. -/
+theorem zTaskFrameV2_saturation : TaskFrame.Saturation zTaskFrameV2.TaskRel :=
+  zTaskFrameV2.saturation
 
 /-- World history with offset w₀: domain = all of ℤ, states t _ = w₀ + t. -/
 noncomputable def zHistoryV2 (w₀ : ℤ) : WorldHistory zTaskFrameV2 where
@@ -762,6 +754,15 @@ noncomputable def toCarrier {sig : MonadicSignature} [Fintype sig.preds] [Decida
     (h_lo : Z.lo = none) (h_hi : Z.hi = none) (z : ℤ) : Z.intervalCarrier :=
   ⟨z, by rw [h_lo, h_hi]; exact ⟨trivial, trivial⟩⟩
 
+/-- Every fibre of the deterministic family-indexed `ℤ`-shift relation is a subsingleton.
+Stated on the bare relation, and **above** `multiFamTaskFrame`, so that the frame's own
+*Saturation* field is a citation of Helper D. -/
+theorem famShiftRel_fib_subsingleton (FamIdx : Type) (w : FamIdx × ℤ) (x : ℤ) :
+    (TaskFrame.Fib (fun (p : FamIdx × ℤ) (d : ℤ) (q : FamIdx × ℤ) =>
+      p.1 = q.1 ∧ q.2 = p.2 + d) w x).Subsingleton := by
+  rintro u ⟨hu₁, hu₂⟩ u' ⟨hu'₁, hu'₂⟩
+  exact Prod.ext (hu₁.symm.trans hu'₁) (hu₂.trans hu'₂.symm)
+
 /-- A `FrameOver intOrder` with `WorldState = FamIdx × ℤ`. Each world state is a family index
 paired with a position. The task relation is deterministic: stepping by `d` from
 `(f, z)` reaches `(f, z + d)` (same family, shifted position). -/
@@ -782,16 +783,7 @@ noncomputable def multiFamTaskFrame (FamIdx : Type) [Nonempty FamIdx] : FrameOve
   limit :=
     TaskFrame.limit_of_shift Prod.snd (fun _ _ _ h => h.2)
       (fun w u h => Prod.ext h.1.symm (by omega))
-  saturation := by
-    intro S hdir hmem
-    refine Algebraic.sInter_nonempty_of_directed_subsingleton hdir (fun s hs => (hmem s hs).2)
-      fun s hs => ?_
-    rcases (hmem s hs).1 with ⟨w, x, rfl⟩ | ⟨w, v, x, y, _, _, rfl⟩
-    · rintro u ⟨hu₁, hu₂⟩ u' ⟨hu'₁, hu'₂⟩
-      exact Prod.ext (hu₁.symm.trans hu'₁) (hu₂.trans hu'₂.symm)
-    · refine Set.Subsingleton.anti ?_ Set.inter_subset_left
-      rintro u ⟨hu₁, hu₂⟩ u' ⟨hu'₁, hu'₂⟩
-      exact Prod.ext (hu₁.symm.trans hu'₁) (hu₂.trans hu'₂.symm)
+  saturation := TaskFrame.saturation_of_fib_subsingleton (famShiftRel_fib_subsingleton FamIdx)
 
 /-! ### `multiFamTaskFrame` discharges `def:frame`'s four axioms (by specialization)
 

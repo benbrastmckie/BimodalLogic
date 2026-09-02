@@ -148,6 +148,18 @@ theorem worldHistory_ext {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedA
 section Frame
 
 set_option linter.unusedVariables false in
+/-- Every fibre (`def:task-relation`, *Fiber* clause) of the region clock relation is a
+subsingleton: the clock is deterministic, so `Fib R s x ⊆ {(s.1, s.2 + x)}`. Stated on the bare
+relation, and **above** `regionFrame`, so that the frame's own *Saturation* field can discharge
+itself by Helper D (`TaskFrame.saturation_of_fib_subsingleton`) rather than re-proving the
+argument inline. -/
+theorem regionRel_fib_subsingleton (W D : Type) [AddCommGroup D] [LinearOrder D]
+    [IsOrderedAddMonoid D] [Nontrivial D] (s : W × D) (x : D) :
+    (TaskFrame.Fib (fun (s : W × D) (d : D) (s' : W × D) => s.1 = s'.1 ∧ s'.2 = s.2 + d)
+      s x).Subsingleton := by
+  rintro u ⟨hu₁, hu₂⟩ u' ⟨hu'₁, hu'₂⟩
+  exact Prod.ext (hu₁.symm.trans hu'₁) (hu₂.trans hu'₂.symm)
+
 /--
 The countermodel's frame: a state is a branch world together with a **time**, and the task
 relation is the deterministic clock `(w, x) ⇒_d (w, x + d)` — the structural analogue of
@@ -205,21 +217,7 @@ def regionFrame (W ι D : Type) [Nonempty W] [AddCommGroup D] [LinearOrder D]
   limit :=
     TaskFrame.limit_of_shift Prod.snd (fun _ _ _ h => h.2)
       (fun s u h => Prod.ext h.1.symm (by rw [h.2, add_zero]))
-  saturation := by
-    intro S hdir hmem
-    refine TaskFrame.sInter_nonempty_of_directed_of_univ_or_singleton hdir
-      (fun s hs => (hmem s hs).2) (fun s hs => ?_)
-    obtain ⟨hcl, hne⟩ := hmem s hs
-    obtain ⟨a, ha⟩ := hne
-    have hfib : ∀ (t : W × D) (x : D),
-        (TaskFrame.Fib (fun (s : W × D) (d : D) (s' : W × D) =>
-          s.1 = s'.1 ∧ s'.2 = s.2 + d) t x).Subsingleton := by
-      rintro t x u ⟨hu₁, hu₂⟩ u' ⟨hu'₁, hu'₂⟩
-      exact Prod.ext (hu₁.symm.trans hu'₁) (hu₂.trans hu'₂.symm)
-    refine Or.inr ⟨a, ?_⟩
-    rcases hcl with ⟨w, x, rfl⟩ | ⟨w, v, x, y, _, _, rfl⟩
-    · exact (hfib w x).eq_singleton_of_mem ha
-    · exact ((hfib w x).anti Set.inter_subset_left).eq_singleton_of_mem ha
+  saturation := TaskFrame.saturation_of_fib_subsingleton (regionRel_fib_subsingleton W D)
   converse := by
     intro s d s'
     constructor
@@ -252,9 +250,8 @@ falsification test the flag needed, and it fails to falsify. -/
 clock is deterministic, so `Fib R s x ⊆ {(s.1, s.2 + x)}`. -/
 theorem regionFrame_fib_subsingleton (W ι D : Type) [Nonempty W] [AddCommGroup D] [LinearOrder D]
     [IsOrderedAddMonoid D] [Nontrivial D] (s : W × D) (x : D) :
-    (TaskFrame.Fib (regionFrame W ι D).TaskRel s x).Subsingleton := by
-  rintro u ⟨hu₁, hu₂⟩ u' ⟨hu'₁, hu'₂⟩
-  exact Prod.ext (hu₁.symm.trans hu'₁) (hu₂.trans hu'₂.symm)
+    (TaskFrame.Fib (regionFrame W ι D).TaskRel s x).Subsingleton :=
+  regionRel_fib_subsingleton W D s x
 
 /-- *Seriality* (`def:frame#Seriality`, verbatim: "$w \Rightarrow_x u$ and $v \Rightarrow_x w$
 for some $u, v \in W$") for `regionFrame`: the clock supplies the successor `(s.1, s.2 + x)` and
@@ -288,23 +285,13 @@ theorem regionFrame_limit (W ι D : Type) [Nonempty W] [AddCommGroup D] [LinearO
     (fun s u h => (((regionFrame W ι D).nullity_identity s u).mp h).symm)
 
 /-- *Saturation* (`def:frame#Saturation`, verbatim: "$\bigcap \mathcal{S} \neq \emptyset$ for any
-$\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments") for `regionFrame`:
-every fiber is a subsingleton and every segment is an intersection of fibers, so every nonempty
-member of a directed family is a singleton and
-`TaskFrame.sInter_nonempty_of_directed_of_univ_or_singleton` applies. -/
+$\supseteq$-directed family $\mathcal{S}$ of nonempty fibers and segments") for `regionFrame`,
+as the top-level predicate of record: a one-line citation of the frame's own field, which is
+itself Helper D applied to `regionRel_fib_subsingleton`. -/
 theorem regionFrame_saturation (W ι D : Type) [Nonempty W] [AddCommGroup D] [LinearOrder D]
     [IsOrderedAddMonoid D] [Nontrivial D] :
-    TaskFrame.Saturation (regionFrame W ι D).TaskRel := by
-  intro S hdir hmem
-  refine TaskFrame.sInter_nonempty_of_directed_of_univ_or_singleton hdir
-    (fun s hs => (hmem s hs).2) (fun s hs => ?_)
-  obtain ⟨hcl, hne⟩ := hmem s hs
-  obtain ⟨a, ha⟩ := hne
-  refine Or.inr ⟨a, ?_⟩
-  rcases hcl with ⟨w, x, rfl⟩ | ⟨w, v, x, y, _, _, rfl⟩
-  · exact (regionFrame_fib_subsingleton W ι D w x).eq_singleton_of_mem ha
-  · exact ((regionFrame_fib_subsingleton W ι D w x).anti
-      Set.inter_subset_left).eq_singleton_of_mem ha
+    TaskFrame.Saturation (regionFrame W ι D).TaskRel :=
+  (regionFrame W ι D).saturation
 
 end Frame
 

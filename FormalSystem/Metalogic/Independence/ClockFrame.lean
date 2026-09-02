@@ -150,19 +150,10 @@ theorem clockRel_limit :
     exact absurd (key |y₀| hpos (le_of_lt hy₀)) (lt_irrefl _)
   rw [hu, hy₀zero, cmk_zero, add_zero]
 
-/-- *Saturation* (`def:frame#Saturation`) for the clock relation: every fiber is a singleton and
-every segment is an intersection of two fibers, so every nonempty member of a directed family is
-a singleton and `TaskFrame.sInter_nonempty_of_directed_of_univ_or_singleton` applies. -/
-theorem clockRel_saturation : TaskFrame.Saturation clockRel := by
-  intro S hdir hmem
-  refine TaskFrame.sInter_nonempty_of_directed_of_univ_or_singleton hdir
-    (fun s hs => (hmem s hs).2) (fun s hs => ?_)
-  obtain ⟨hcl, hne⟩ := hmem s hs
-  obtain ⟨a, ha⟩ := hne
-  refine Or.inr ⟨a, ?_⟩
-  rcases hcl with ⟨w, x, rfl⟩ | ⟨w, v, x, y, _, _, rfl⟩
-  · exact (clockRel_fib_subsingleton w x).eq_singleton_of_mem ha
-  · exact ((clockRel_fib_subsingleton w x).anti Set.inter_subset_left).eq_singleton_of_mem ha
+/-- *Saturation* (`def:frame#Saturation`) for the clock relation: the flow is deterministic, so
+every fibre is a subsingleton and Helper D (`TaskFrame.saturation_of_fib_subsingleton`) applies. -/
+theorem clockRel_saturation : TaskFrame.Saturation clockRel :=
+  TaskFrame.saturation_of_fib_subsingleton clockRel_fib_subsingleton
 
 /--
 **The periodic clock frame.**

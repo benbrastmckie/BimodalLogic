@@ -183,23 +183,10 @@ other four. The one field that is genuinely *not* free is `limit`; it is exactly
     show w = S.sh (S.sh w (-x)) x
     rw [S.sh_neg']
   limit := S.sep
-  saturation := by
-    -- Under a functional task relation `Fib R w x` is a singleton and `Seg R w v x y` is a
-    -- singleton or empty. Directedness then forces every member of the family to be that same
-    -- singleton, so `⋂₀ S` is it, and is nonempty. No frame machinery, no Zorn.
-    intro Sfam hdir hmem
-    obtain ⟨s, hs⟩ := hdir.1
-    obtain ⟨a, ha⟩ := (hmem s hs).2
-    have hsingle : ∀ (c : Set S.Carrier), (TaskFrame.IsFiber (fun w d u => u = S.sh w d) c ∨
-        TaskFrame.IsSegment (fun w d u => u = S.sh w d) c) → ∀ p ∈ c, ∀ q ∈ c, p = q := by
-      rintro c (⟨w, x, rfl⟩ | ⟨w, v, x, y, _, _, rfl⟩) p hp q hq
-      · exact hp.trans hq.symm
-      · exact hp.1.trans hq.1.symm
-    refine ⟨a, fun t ht => ?_⟩
-    obtain ⟨S', hS', hsub⟩ := hdir.2 s hs t ht
-    obtain ⟨b, hb⟩ := (hmem S' hS').2
-    rw [hsingle s (hmem s hs).1 a ha b (hsub hb).1]
-    exact (hsub hb).2
+  -- The task relation is *functional* (`u = sh w d`), so Helper D applies verbatim: every
+  -- fibre is a subsingleton, and `Seg` is a subset of a fibre. No frame machinery, no Zorn.
+  saturation := TaskFrame.saturation_of_fib_subsingleton
+    (TaskFrame.fib_subsingleton_of_functional (f := S.sh) (fun _ _ _ => Iff.rfl))
 
 /--
 The task frame induced by a shift set: its fibre, included into the total space.

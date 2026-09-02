@@ -1297,6 +1297,60 @@ theorem saturation_of_eq {W : Type} {R : W → D → W → Prop}
     refine Or.inr ⟨c, ?_⟩
     rw [Seg, hwc, hvc, Fib_eq_singleton hR c x, Fib_eq_singleton hR c (-y), Set.inter_self]
 
+/-! ### Helper D — the deterministic class: every fibre is a subsingleton
+
+The determinism-shaped discharge of *Saturation* (`def:frame#Saturation`). Where Helper C's
+relation is *equality*, this class covers every relation whose fibres are subsingletons —
+deterministic shifts, clocks, translations, region clocks. It is deliberately **not** routed
+through `sInter_nonempty_of_directed_of_univ_or_singleton` (whose `classical`/`by_cases` opening
+is `Classical.choice`-dependent) nor through `saturation_of_subsingleton`: the direct argument
+below is both shorter and strictly cleaner axiomatically. `Tests/BimodalTest/Semantics/
+SaturationFiniteAxiomTest.lean` pins the measured profiles —
+`sInter_nonempty_of_directed_subsingleton` and `fib_subsingleton_of_functional` depend on **no
+axioms**, and `saturation_of_fib_subsingleton` on `[propext]` alone.
+-/
+
+omit [IsOrderedAddMonoid D] in
+/-- A directed family (`def:directed`) of nonempty subsingleton sets has nonempty intersection.
+Pick `a` in some member `s₀`; for any member `s₁`, directedness gives a member `s' ⊆ s₀ ∩ s₁`,
+whose element must be `a` by subsingleton-ness of `s₀` — so `a ∈ s₁`. -/
+theorem sInter_nonempty_of_directed_subsingleton {W : Type} {S : Set (Set W)}
+    (hdir : DirectedFamily S) (hne : ∀ s ∈ S, s.Nonempty)
+    (hsub : ∀ s ∈ S, s.Subsingleton) : (⋂₀ S).Nonempty := by
+  obtain ⟨⟨s₀, hs₀⟩, hdir₂⟩ := hdir
+  obtain ⟨a, ha⟩ := hne s₀ hs₀
+  refine ⟨a, Set.mem_sInter.mpr fun s₁ hs₁ => ?_⟩
+  obtain ⟨s', hs', hsub'⟩ := hdir₂ s₀ hs₀ s₁ hs₁
+  obtain ⟨b, hb⟩ := hne s' hs'
+  have hb₀ : b ∈ s₀ ∩ s₁ := hsub' hb
+  have hba : b = a := hsub s₀ hs₀ hb₀.1 ha
+  exact hba ▸ hb₀.2
+
+omit [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D] in
+/-- A relation presented by a function — `R w x u ↔ u = f w x` — has subsingleton fibres. The
+common entry point to Helper D for the deterministic-shift family. -/
+theorem fib_subsingleton_of_functional {W : Type} {f : W → D → W} {R : W → D → W → Prop}
+    (hR : ∀ w x u, R w x u ↔ u = f w x) : ∀ w x, (Fib R w x).Subsingleton := by
+  intro w x u hu u' hu'
+  exact ((hR w x u).mp hu).trans ((hR w x u').mp hu').symm
+
+omit [IsOrderedAddMonoid D] [Nontrivial D] in
+/-- *Saturation* (`def:frame#Saturation`) from subsingleton fibres alone.
+
+`Seg R w v x y = Fib R w x ∩ Fib R v (-y)` is a subset of a fibre, so `Set.Subsingleton.anti`
+covers the segment class with no extra hypothesis — which is why the helper needs only the fibre
+hypothesis. Every member of a directed family of nonempty fibres and segments is then a nonempty
+subsingleton, and `sInter_nonempty_of_directed_subsingleton` applies. -/
+theorem saturation_of_fib_subsingleton {W : Type} {R : W → D → W → Prop}
+    (h : ∀ w x, (Fib R w x).Subsingleton) : Saturation R := by
+  intro S hdir hmem
+  refine sInter_nonempty_of_directed_subsingleton hdir (fun s hs => (hmem s hs).2)
+    (fun s hs => ?_)
+  rcases (hmem s hs).1 with ⟨w, x, rfl⟩ | ⟨w, v, x, y, _, _, rfl⟩
+  · exact h w x
+  · exact (h w x).anti Set.inter_subset_left
+
+
 end TaskFrame
 
 /-! ## Frame constants

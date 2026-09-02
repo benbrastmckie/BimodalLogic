@@ -1,7 +1,7 @@
 # Implementation Plan: Task #523
 
 - **Task**: 523 - Frame kit helpers, transport, standard frames (WAVE 2, core utilities)
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 22.5 hours
 - **Dependencies**: Tasks 517 (Saturation rename), 521 (truth simp-normal form), 522 (FrameClass.Sat / adapters / ValidDedekind renames) — all landed at HEAD
 - **Research Inputs**: specs/523_frame_kit_helpers_transport_standard_frames/reports/01_frame-kit-helpers-transport-standard-frames.md
@@ -198,7 +198,7 @@ go/no-go resolves to GO it rewrites ~160 call sites repo-wide and must not run a
 
 ---
 
-### Phase 1: Helper D and the seven Saturation sites [NOT STARTED]
+### Phase 1: Helper D and the seven Saturation sites [COMPLETED]
 
 **Goal**: Add `saturation_of_fib_subsingleton` (plus its two supporting lemmas) to `TaskFrame.lean`
 and collapse all seven duplicated Saturation bodies onto it, deleting the FlowFrame duplicate.
@@ -223,7 +223,7 @@ and collapse all seven duplicated Saturation bodies onto it, deleting the FlowFr
       `*_fib_subsingleton` lemma **before** the frame, discharge the field with Helper D, and make
       the top-level theorem a one-line citation of the field. `ReynoldsBridge.lean:835-837` already
       demonstrates the target shape.
-- [ ] Delete `Algebraic.sInter_nonempty_of_directed_subsingleton` (`FlowFrame.lean:116-127`) and
+- [x] Delete `Algebraic.sInter_nonempty_of_directed_subsingleton` (`FlowFrame.lean:116-127`) and
       **retarget** `Algebraic.multiFamTaskFrameGen_saturation` — consumed by `ReynoldsBridge:835` —
       at `TaskFrame.saturation_of_fib_subsingleton`. Do not delete that theorem.
 - [ ] Add a `#guard_msgs`-gated `#print axioms` block for all three new declarations to

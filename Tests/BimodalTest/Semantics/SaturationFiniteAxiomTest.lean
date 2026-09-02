@@ -35,7 +35,7 @@ is the absence of **Zorn**, recorded under "The no-Zorn claim" below.
 
 1. `wlem_of_saturation` — the constructive obstruction, proved without any classical tactic
    or term.
-2. Four `#guard_msgs`-gated `#print axioms` blocks pinning the axiom profiles that matter.
+2. Seven `#guard_msgs`-gated `#print axioms` blocks pinning the axiom profiles that matter.
    These are **build-breaking**: if any profile moves, this module stops compiling.
 3. The no-Zorn record, which is an import-graph argument rather than an axiom-profile one.
 
@@ -282,6 +282,34 @@ middle from classical logic, which is trivially true and says nothing whatever a
 /-- info: 'BimodalTest.Semantics.wlem_of_saturation' depends on axioms: [propext, Quot.sound] -/
 #guard_msgs in
 #print axioms wlem_of_saturation
+
+/-! ### Helper D — the deterministic class
+
+Helper D (`TaskFrame.saturation_of_fib_subsingleton` and its two supporting lemmas) discharges
+*Saturation* from subsingleton fibres alone. It exists beside `saturation_of_subsingleton`, never
+routed through it, and never routed through
+`sInter_nonempty_of_directed_of_univ_or_singleton` — whose `classical`/`by_cases` opening is
+`Classical.choice`-dependent. The three profiles below are the mechanical enforcement of that
+"beside, not through" discipline, in exactly the spirit of the tripwire above: two of the three
+depend on **no axioms at all**, and the packaged form on `[propext]` alone, so any future
+"simplification" that reroutes Helper D through either classical helper turns this block red.
+
+The `sInter_nonempty_of_directed_subsingleton` guard additionally pins a *deduplication*: a
+byte-identical copy of that lemma used to live in `Metalogic/Algebraic/FlowFrame.lean` and was
+deleted in favour of this one. If a copy reappears, it will not be covered by this guard.
+-/
+
+/-- info: 'FormalSystem.Semantics.TaskFrame.sInter_nonempty_of_directed_subsingleton' does not depend on any axioms -/
+#guard_msgs in
+#print axioms FormalSystem.Semantics.TaskFrame.sInter_nonempty_of_directed_subsingleton
+
+/-- info: 'FormalSystem.Semantics.TaskFrame.fib_subsingleton_of_functional' does not depend on any axioms -/
+#guard_msgs in
+#print axioms FormalSystem.Semantics.TaskFrame.fib_subsingleton_of_functional
+
+/-- info: 'FormalSystem.Semantics.TaskFrame.saturation_of_fib_subsingleton' depends on axioms: [propext] -/
+#guard_msgs in
+#print axioms FormalSystem.Semantics.TaskFrame.saturation_of_fib_subsingleton
 
 /-! ## The no-Zorn claim
 

@@ -115,9 +115,8 @@ theorem translationRel_fib_subsingleton {D : TemporalOrder} (w x : ↑D) :
 The seven `FrameOver` obligations: *Nullity* and *Converse* are group arithmetic;
 *Compositionality* interpolates through `w + x`; *Seriality* has `w + x` and `w - x` as the two
 witnesses; *Limit* is `TaskFrame.limit_of_shift` at the identity position function; and
-*Saturation* copies `ClockFrame.clockRel_saturation`'s argument, which transfers because the
-translation relation is deterministic and so has singleton fibres exactly as the clock relation
-does.
+*Saturation* is Helper D (`TaskFrame.saturation_of_fib_subsingleton`) applied to
+`translationRel_fib_subsingleton`, the translation relation being deterministic.
 -/
 def translationFrame (D : TemporalOrder) : FrameOver D where
   WorldState := ↑D
@@ -152,17 +151,7 @@ def translationFrame (D : TemporalOrder) : FrameOver D where
     abel
   limit := TaskFrame.limit_of_shift (D := ↑D) (fun w => w) (fun _ _ _ h => h)
     (by intro w u h; rw [show u = w + 0 from h, add_zero])
-  saturation := by
-    intro S hdir hmem
-    refine TaskFrame.sInter_nonempty_of_directed_of_univ_or_singleton hdir
-      (fun s hs => (hmem s hs).2) (fun s hs => ?_)
-    obtain ⟨hcl, hne⟩ := hmem s hs
-    obtain ⟨a, ha⟩ := hne
-    refine Or.inr ⟨a, ?_⟩
-    rcases hcl with ⟨w, x, rfl⟩ | ⟨w, v, x, y, _, _, rfl⟩
-    · exact (translationRel_fib_subsingleton w x).eq_singleton_of_mem ha
-    · exact ((translationRel_fib_subsingleton w x).anti Set.inter_subset_left).eq_singleton_of_mem
-        ha
+  saturation := TaskFrame.saturation_of_fib_subsingleton translationRel_fib_subsingleton
 
 @[simp] theorem translationFrame_taskRel {D : TemporalOrder} (w x u : ↑D) :
     (translationFrame D).TaskRel w x u ↔ u = w + x := Iff.rfl
