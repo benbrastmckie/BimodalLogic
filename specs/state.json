@@ -1393,7 +1393,7 @@
     {
       "project_number": 518,
       "project_name": "metalogic_hotfix_simp_loop_unbuilt_modules",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "topic": "metalogic",
       "priority": "high",
@@ -1412,12 +1412,17 @@
         "scripts/module-invariants-manifest.txt"
       ],
       "created": "2026-09-02T03:30:31Z",
-      "last_updated": "2026-09-02T04:52:35Z",
+      "last_updated": "2026-09-02T04:58:14Z",
       "artifacts": [
         {
           "path": "specs/518_metalogic_hotfix_simp_loop_unbuilt_modules/reports/01_wave-0-hotfix-verification.md",
           "type": "report",
           "summary": "Verification of all seven Wave 0 hotfix claims against source, with measured build probes"
+        },
+        {
+          "path": "specs/518_metalogic_hotfix_simp_loop_unbuilt_modules/plans/01_wave-0-hotfix-execution.md",
+          "type": "plan",
+          "summary": "Eight-phase Wave 0 hotfix plan covering the simp loop, C6 unreachable modules, the Bundle/Algebraic cycle, four documentation fronts, and a final acceptance gate."
         }
       ],
       "session_id": "sess_1788324209_de679d_518"

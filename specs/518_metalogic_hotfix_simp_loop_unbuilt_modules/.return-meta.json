@@ -1,16 +1,29 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/518_metalogic_hotfix_simp_loop_unbuilt_modules/reports/01_wave-0-hotfix-verification.md",
-      "summary": "Verification of all seven Wave 0 hotfix claims against source, with measured build probes; three claims corrected (register_simp_attr needs a separate module, BLSchemaValidity already reachable, Metalogic/README cycle count needs no edit) and a seven-phase decomposition."
+      "type": "plan",
+      "path": "specs/518_metalogic_hotfix_simp_loop_unbuilt_modules/plans/01_wave-0-hotfix-execution.md",
+      "summary": "Eight-phase Wave 0 hotfix plan covering the simp loop, C6 unreachable modules, the Bundle/Algebraic cycle, four documentation fronts, and a final acceptance gate."
     }
   ],
+  "next_steps": "Run /implement 518 to execute the plan",
   "metadata": {
     "session_id": "sess_1788324209_de679d_518",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 8,
+    "estimated_hours": 5.25,
+    "dependency_waves": [[1, 2, 3, 4, 5, 6, 7], [8]]
+  },
+  "memory_candidates": [
+    {
+      "content": "When decomposing a multi-front hotfix in a Lean/Lake repo, distinguish logical dependencies from shared-build-resource contention. Phases touching disjoint .lean files often have no Depends-on relationship at all, but each needs its own `lake build`, and running them concurrently makes a build failure unattributable. Record `Depends on: none` truthfully (so the wave table stays honest) and add a separate execution note serializing the build-consuming phases smallest-blast-radius-first. Modeling the build lock as a fake dependency chain misstates what blocks what and prevents genuinely parallel doc-only phases from being recognized as parallel.",
+      "category": "PATTERN",
+      "source_artifact": "specs/518_metalogic_hotfix_simp_loop_unbuilt_modules/plans/01_wave-0-hotfix-execution.md",
+      "confidence": 0.7,
+      "suggested_keywords": ["lake-build", "phase-dependencies", "wave-table", "serialization", "lean4", "task-decomposition"]
+    }
+  ]
 }
