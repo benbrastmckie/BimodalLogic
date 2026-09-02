@@ -180,28 +180,32 @@ the description named.
 
 ---
 
-### Phase 2: Correct the Formula constructor tables [NOT STARTED]
+### Phase 2: Correct the Formula constructor tables [COMPLETED]
 
 **Goal**: The two `FormalSystem/README.md` operator tables and the `Syntax/README.md` primitives
 bullet name `Formula`'s six actual constructors, using identifiers that exist.
 
 **Tasks**:
-- [ ] Confirm ground truth from `FormalSystem/Syntax/Formula.lean:76-105`: `atom`, `bot`, `imp`,
+- [x] Confirm ground truth from `FormalSystem/Syntax/Formula.lean:76-105`: `atom`, `bot`, `imp`,
       `box`, `untl`, `snce`.
-- [ ] `FormalSystem/README.md:49-58` ("Primitive Operators") — remove `Hφ | all_past φ` (`:57`)
+- [x] `FormalSystem/README.md:49-58` ("Primitive Operators") — remove `Hφ | all_past φ` (`:57`)
       and `Gφ | all_future φ` (`:58`), which are derived, not primitive; add `untl` and `snce`,
       which are absent entirely. Per the research recommendation, replace the table with a link to
       the top-level `README.md:33-69` tables, which are correct on `untl`/`snce` and on the
       derived operators.
-- [ ] `FormalSystem/README.md:60-72` ("Derived Operators") — same treatment; note the snake_case
+- [x] `FormalSystem/README.md:60-72` ("Derived Operators") — same treatment; note the snake_case
       names `some_past` (`:68`) and `some_future` (`:69`) are **dead identifiers**, not merely
       misclassified. The live names are camelCase: `allPast`, `allFuture`, `somePast`,
       `someFuture` (see `Normalization.lean:99-111`).
-- [ ] `FormalSystem/Syntax/README.md:19` — write the **corrected six-constructor list inline**
+- [x] `FormalSystem/Syntax/README.md:19` — write the **corrected six-constructor list inline**
       (`atom`, `bot`, `imp`, `box`, `untl`, `snce`), do **not** link. Top-level `README.md:32` says
       "The logic uses 5 primitive connectives" and its table omits `atom` — a defensible reading
       (`atom` is not a connective) that nevertheless conflicts with the six-constructor list this
       bullet is specifically about.
+- [x] *(deviation: added — `FormalSystem/Metalogic/Core/README.md:114,118` was a **third** drifted
+      site the Scope Hypothesis missed, citing dead `Formula.all_future` / `Formula.all_past` in a
+      `lean` code block. Corrected to `Formula.allFuture` / `Formula.allPast`, matching
+      `Core/MCSProperties.lean:251,313`.)*
 
 **Timing**: 0.5 hours
 
@@ -209,9 +213,18 @@ bullet name `Formula`'s six actual constructors, using identifiers that exist.
 
 **Verification Tier**: prose
 
-**Scope Hypothesis**: The dead snake_case identifiers `all_past` / `all_future` / `some_past` /
-`some_future` occur outside `specs/` in **exactly two files** (`FormalSystem/README.md` and
-`FormalSystem/Syntax/README.md`), closing E-03's scope. Confirm at implementation time with
+**Scope Hypothesis**: **REFUTED at implementation time.** The names occur outside `specs/` in
+**seven** files, not two. Three are genuine documentation drift and were all fixed:
+`FormalSystem/README.md`, `FormalSystem/Syntax/README.md`, and — not predicted —
+`FormalSystem/Metalogic/Core/README.md`. The other four are not documentation drift and are
+deliberately untouched: `FormalSystem/Automation/Normalization.lean` (37 hits) are **live**
+constructors of a *different* type, `EnrichedFormula` (`:344-350`), not `Formula`;
+`Tests/BimodalTest/Semantics/SemanticBenchmark.lean` and
+`Tests/BimodalTest/ProofSystem/DerivationBenchmark.lean` are the two modules already manifested
+as known-broken / not compile-checked under C6, and repairing them is a code change outside this
+hotfix; `Tests/BimodalTest/Syntax/FormulaTest.lean:99,104` are comments with no identifier use.
+The E-03 **documentation** scope is closed. Original hypothesis, for the record: the identifiers
+occur outside `specs/` in exactly two files, closing E-03's scope. Confirm at implementation time with
 `grep -rn -E 'all_past|all_future|some_past|some_future' --include='*.md' --include='*.lean' . | grep -v '^./specs/'`
 before editing, and re-run it after to prove the set is empty.
 

@@ -46,31 +46,25 @@ Bimodal is a **complete propositional intensional logic** implementing TM (Tense
 
 ## Syntax Quick Reference
 
-### Primitive Operators
+### Primitive and Derived Operators
 
-| Symbol | Lean | Reading |
-|--------|------|---------|
-| `p` | `atom "p"` | propositional variable |
-| `⊥` | `bot` | falsity (bottom) |
-| `φ → ψ` | `imp φ ψ` | implication |
-| `□φ` | `box φ` | necessity ("necessarily φ") |
-| `Hφ` | `all_past φ` | "φ has always been true" |
-| `Gφ` | `all_future φ` | "φ will always be true" |
+`Formula` (`Syntax/Formula.lean`) has **six** constructors — `atom`, `bot`, `imp`, `box`, `untl`,
+`snce`. The temporal operators `H`/`G`/`P`/`F` are *derived* from `untl`/`snce`, not primitive.
 
-### Derived Operators
+For the symbol/definition tables, see the [top-level README's Operators
+section](../README.md), which is the single maintained copy: its primitive table lists `bot`,
+`imp`, `box`, `untl`, `snce` (the five primitive *connectives* — `atom` is the sixth constructor
+but is not a connective), and its derived table gives the definition of each derived operator in
+terms of those primitives.
 
-| Symbol | Lean | Definition |
-|--------|------|------------|
-| `¬φ` | `neg φ` | `φ → ⊥` |
-| `φ ∧ ψ` | `and φ ψ` | `¬(φ → ¬ψ)` |
-| `φ ∨ ψ` | `or φ ψ` | `¬φ → ψ` |
-| `◇φ` | `diamond φ` | `¬□¬φ` (possibility) |
-| `Pφ` | `some_past φ` | `¬H¬φ` ("φ was once true") |
-| `Fφ` | `some_future φ` | `¬G¬φ` ("φ will be true") |
-| `△φ` | `always φ` | `Hφ ∧ φ ∧ Gφ` (eternal) |
-| `▽φ` | `sometimes φ` | `¬△¬φ` (sometime) |
+The Lean names for the derived operators are **camelCase**: `neg`, `top`, `and`, `or`, `diamond`,
+`someFuture`, `somePast`, `allFuture`, `allPast`, `always`, `sometimes`
+(`Syntax/Formula.lean:134-616`). The snake_case spellings that earlier revisions of this table
+used are not identifiers in this tree; use the camelCase names above.
 
-See BimodalReference Section 1 for complete syntax details.
+**Argument order.** `untl` and `snce` are *guard-first* (`untl guard event`); the top-level
+README's `U(·,·)` / `S(·,·)` notation is *event-first*. See that README's argument-order note
+before cross-referencing either against the paper.
 
 ## Proof System Overview
 

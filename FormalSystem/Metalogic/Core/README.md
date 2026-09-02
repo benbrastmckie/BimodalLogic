@@ -111,11 +111,11 @@ Essential lemmas for canonical model construction:
 ```lean
 lemma SetMaximalConsistent.all_future_all_future {S : Set Formula}
     (h_mcs : SetMaximalConsistent S) {phi : Formula}
-    (h : Formula.all_future phi ∈ S) : Formula.all_future (Formula.all_future phi) ∈ S
+    (h : Formula.allFuture phi ∈ S) : Formula.allFuture (Formula.allFuture phi) ∈ S
 
 lemma SetMaximalConsistent.all_past_all_past {S : Set Formula}
     (h_mcs : SetMaximalConsistent S) {phi : Formula}
-    (h : Formula.all_past phi ∈ S) : Formula.all_past (Formula.all_past phi) ∈ S
+    (h : Formula.allPast phi ∈ S) : Formula.allPast (Formula.allPast phi) ∈ S
 ```
 
 These use the derived 4-axiom for temporal operators.

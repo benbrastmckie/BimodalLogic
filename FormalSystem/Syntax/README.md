@@ -16,8 +16,11 @@ Core syntactic definitions for TM bimodal logic formulas.
 ## Key Definitions
 
 - `Formula`: The inductive type for TM bimodal logic formulas:
-  - Primitives: `atom`, `bot`, `imp`, `box`, `all_past`, `all_future`
-  - Derived (notation): `neg`, `top`, `or`, `and`, `diamond`, `some_past`, `some_future`, `always`, `sometimes`
+  - Constructors (six, `Formula.lean:76-105`): `atom`, `bot`, `imp`, `box`, `untl`, `snce`.
+    `untl`/`snce` are guard-first — `untl guard event` — so `untl` is Until and `snce` is Since.
+  - Derived (definitions, not constructors): `neg`, `top`, `or`, `and`, `diamond`, `someFuture`,
+    `somePast`, `allFuture`, `allPast`, `always`, `sometimes`. The temporal four are camelCase;
+    `H`/`G`/`P`/`F` are derived from `untl`/`snce`, not primitive.
 - `Atom`: Propositional atoms (string-indexed sentence letters)
 - `Context`: Type alias for `List Formula`
 - `subformulas`: List all subformulas of a formula (recursive descent)
