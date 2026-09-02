@@ -107,7 +107,7 @@ next_project_number: 532
 
 ### Semantics
 
-517 [NOT STARTED] — Rename the fourth task-frame axiom from Spherical to Saturation a
+517 [RESEARCHED] — Rename the fourth task-frame axiom from Spherical to Saturation a
 
 ## Tasks
 
@@ -255,10 +255,11 @@ next_project_number: 532
 ---
 
 ### 517. Rename spherical axiom to saturation
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: semantics
 - **Dependencies**: Task 518
+- **Research**: [517_rename_spherical_axiom_to_saturation/reports/01_spherical-to-saturation-occurrence-inventory.md]
 
 **Description**: Rename the fourth task-frame axiom from Spherical to Saturation across the Lean codebase and documentation, matching the published paper. The paper (possible_worlds.tex) now names this axiom Saturation throughout; the repository still uses Spherical. Scope: the TaskFrame.Spherical predicate and the spherical field of FrameOver in FormalSystem/Semantics/TaskFrame.lean, roughly 30 downstream lemma and instance names (spherical_of_finite, spherical_of_permissive, spherical_of_subsingleton, wlem_of_spherical, multiFamGen_spherical, and the per-frame *_spherical witnesses), the Tests/BimodalTest/Semantics/SphericalFiniteAxiomTest.lean file name and its declarations, and prose in docs/reference/API_REFERENCE.md, docs/user-guide/architecture.md, the module READMEs under FormalSystem/, latex/subfiles/02-Semantics.tex, and the typst sources (FormalFoundations.typ, chapters/02-semantics.typ, notation/bimodal-notation.typ, SYNC-MAP.md, sync-check-whitelist.txt). Preserve the substantive ball-space claim, which remains accurate: Saturation is the condition S1d, strictly stronger than spherically complete (S1) -- so the term spherically complete must survive wherever it names that weaker standard condition, and only the axiom name itself changes. README.md line 80 has already been renamed and currently carries an interim note that the Lean sources still use the old name; remove that note as part of this work. Verify with lake build and scripts/check-module-invariants.sh.
 

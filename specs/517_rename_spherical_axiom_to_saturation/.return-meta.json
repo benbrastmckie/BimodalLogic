@@ -1,0 +1,16 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/517_rename_spherical_axiom_to_saturation/reports/01_spherical-to-saturation-occurrence-inventory.md",
+      "summary": "Verified 444-occurrence inventory across 40 non-specs files partitioned 441 rename / 3 keep, with the 26-identifier Lean rename map, the paper-anchor decisions (def:frame#Saturation, cor:saturation-finite) with pre-computed checksums, gate couplings (C15, typst-sync-check, #guard_msgs), and measured baselines."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1788324209_de679d_517",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
