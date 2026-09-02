@@ -987,7 +987,7 @@
     {
       "project_number": 494,
       "project_name": "define_and_refute_dedekind_compactness",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "topic": "strong_completeness",
       "effort": "10-16 hours",
@@ -998,12 +998,21 @@
       ],
       "description": "NOW SEQUENCED BEHIND THE COMPACTNESS PARAMETERIZATION (see the REVISED note at the end); still INDEPENDENT of the ultraproduct chain. Settle the fourth frame class negatively and complete the compactness picture. CURRENT STATE: there is NO CompactDedekind definition anywhere in the tree, no StrongCompletenessDedekind, no SatisfiableDedekindSet, and no refutation -- the Dedekind row of StrongCompleteness.lean's status ledger (:84-89) rests on the scope of Reynolds 1992 section 9 Theorem 7 alone. Meanwhile the paper (cor:tm-completeness, possible_worlds.tex:4657) asserts that strong completeness 'provably fails for Z-time as well as for the dense-and-complete class R where compactness fails' -- so this is a REFUTATION target, not a proof target. DELIVERABLE PART 1: define the missing vocabulary in SetConsequence.lean mirroring the Base/Dense/Discrete groups -- SetSemanticConsequenceDedekindDense already exists (:103); add StrongCompletenessDedekind, CompactDedekind, SatisfiableDedekindSet, ModelExistenceDedekind. PART 2: refute CompactDedekind and StrongCompletenessDedekind. CRITICAL CONSTRAINT: the Discrete witness does NOT port. archWitness (DiscreteNonCompactness.lean:102) and its unsatisfiability half (:229-242) turn entirely on Order.succ_le_of_lt and exists_succ_iterate, i.e. on [SuccOrder D] + [IsSuccArchimedean D]; the Dedekind binder list is DenselyOrdered plus LUB with no successor at all, and over R the operator Formula.next = untl bot phi is vacuous, so archWitness carries no contradiction. A NEW witness is required. Model DiscreteNonCompactness.lean's structure (finitely-satisfiable half, then unsatisfiable half) but not its witness. ACCEPTANCE: both refutations sorry-free and axiom-audited; the four-class compactness picture complete (Base/Dense open pending the ultraproduct chain, Discrete refuted, Dedekind refuted). === REVISED 2026-08-31 (review: metalogic systematicity) === PART 1 IS RESCOPED. Do NOT define StrongCompletenessDedekind/CompactDedekind/SatisfiableDedekindSet/ModelExistenceDedekind by mirroring the Base/Dense/Discrete groups -- that fourth hand copy is exactly what the compactness-parameterization prerequisite collapses. After that task lands, Part 1 is a SINGLE INSTANTIATION of the FrameClass-indexed family at FrameClass.Dedekind. PART 2 IS UNCHANGED and remains the real content: a new non-compactness witness, since archWitness does not port (it turns on SuccOrder/IsSuccArchimedean and the Dedekind binder list has no successor structure; over the reals Formula.next = untl bot phi is vacuous). Grounding: specs/reviews/review-2026-08-31-metalogic-systematicity.md issue H3.",
       "created": "2026-08-26T05:15:00Z",
-      "last_updated": "2026-09-01T06:20:11Z",
+      "last_updated": "2026-09-02T00:35:54Z",
       "blocks_note": "dep on 490 is TERRITORY SERIALIZATION, not semantics: both write FormalSystem/Metalogic/SetConsequence.lean (490 adds the ModelExistence->Compact bridge theorems, 494 adds the Dedekind vocabulary group). 490 is the cheaper of the two (3-5h vs 10-16h) so it goes first. If 490 lands its theorems in a sibling file instead -- which its own description permits -- this edge can be dropped and the two run in parallel.",
       "file_scope": [
         "FormalSystem/Metalogic/StrongCompleteness.lean",
         "FormalSystem/Metalogic/DiscreteNonCompactness.lean"
-      ]
+      ],
+      "session_id": "sess_1788308014_451fe6",
+      "artifacts": [
+        {
+          "path": "specs/494_define_and_refute_dedekind_compactness/reports/01_dedekind-noncompactness-witness.md",
+          "type": "report",
+          "summary": "Confirms Part 1 is a single instantiation of the post-509 FrameClass-indexed family, designs a new Dedekind non-compactness witness (bounded next-q-point chain vs a left-gap formula), and supplies the complete module machine-verified sorry-free at [propext, Classical.choice, Quot.sound]."
+        }
+      ],
+      "next_artifact_number": 2
     },
     {
       "project_number": 495,

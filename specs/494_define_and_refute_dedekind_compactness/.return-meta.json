@@ -1,0 +1,16 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/494_define_and_refute_dedekind_compactness/reports/01_dedekind-noncompactness-witness.md",
+      "summary": "Confirms Part 1 is a single instantiation of the post-509 FrameClass-indexed family, designs a new Dedekind non-compactness witness (bounded next-q-point chain vs a left-gap formula), and supplies the complete module machine-verified sorry-free at [propext, Classical.choice, Quot.sound]."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1788308014_451fe6",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
