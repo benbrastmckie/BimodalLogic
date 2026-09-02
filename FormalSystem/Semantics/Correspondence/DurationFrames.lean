@@ -289,44 +289,6 @@ theorem permissiveModel_atom (D : TemporalOrder) (so : SuccOrder ↑D) (nm : NoM
     TruthAt (permissiveModel D so nm) (permissiveHist D so nm f) t (Formula.atom p) ↔ f t = true :=
   ⟨fun ⟨_, hv⟩ => hv, fun h => ⟨trivial, h⟩⟩
 
-/-! ## Truth-level helpers for `∧` and `△`
-
-`Truth.lean` supplies unfolding lemmas for the four tense operators but none for `Formula.and`
-or `Formula.always`, both of which the three biconditionals below consume. -/
-
-/-- `A ∧ B` is true exactly when both conjuncts are; `Formula.and` is `¬(A → ¬B)`. -/
-theorem truth_and_iff {F : TaskFrame} (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
-    (A B : Formula) :
-    TruthAt M τ t (A.and B) ↔ (TruthAt M τ t A ∧ TruthAt M τ t B) := by
-  constructor
-  · intro h
-    by_contra hn
-    exact h fun ha hb => hn ⟨ha, hb⟩
-  · rintro ⟨ha, hb⟩ h
-    exact h ha hb
-
-/-- `△ψ` holds wherever `ψ` holds at every time: `Formula.always ψ = Hψ ∧ (ψ ∧ Gψ)`. -/
-theorem truth_always_of_forall {F : TaskFrame} (M : TaskModel F) (τ : WorldHistory F)
-    (ψ : Formula) (h : ∀ u : F.Duration, TruthAt M τ u ψ) (t : F.Duration) :
-    TruthAt M τ t (Formula.always ψ) := by
-  rw [Formula.always, truth_and_iff]
-  refine ⟨by rw [Truth.past_iff]; exact fun s _ => h s, ?_⟩
-  rw [truth_and_iff]
-  exact ⟨h t, by rw [Truth.future_iff]; exact fun s _ => h s⟩
-
-/-- `△ψ` at one time yields `ψ` at *every* time — the three conjuncts partition the line. -/
-theorem truth_of_always {F : TaskFrame} (M : TaskModel F) (τ : WorldHistory F) (ψ : Formula)
-    {t : F.Duration} (h : TruthAt M τ t (Formula.always ψ)) (u : F.Duration) :
-    TruthAt M τ u ψ := by
-  rw [Formula.always, truth_and_iff] at h
-  obtain ⟨hP, hrest⟩ := h
-  rw [truth_and_iff] at hrest
-  obtain ⟨hnow, hG⟩ := hrest
-  rcases lt_trichotomy u t with hlt | heq | hgt
-  · rw [Truth.past_iff] at hP; exact hP u hlt
-  · rw [heq]; exact hnow
-  · rw [Truth.future_iff] at hG; exact hG u hgt
-
 /-! ## The three (T1) correspondence theorems
 
 The atom used by the (⇒) witnesses; any atom would do, since the refuting valuations are built
@@ -429,7 +391,7 @@ theorem validOn_df_iff_isDiscrete (D : TemporalOrder) :
     have hant : TruthAt (translationModel D A) τ.val x
         (((Formula.atom corrAtom).allPast.and (Formula.atom corrAtom)).and
           Formula.top.someFuture) := by
-      rw [truth_and_iff, truth_and_iff]
+      rw [Truth.and_iff, Truth.and_iff]
       refine ⟨⟨?_, ?_⟩, ?_⟩
       · rw [Truth.past_iff]
         intro s hs
@@ -451,7 +413,7 @@ theorem validOn_df_iff_isDiscrete (D : TemporalOrder) :
     rw [show τ.val = translationHist D from rfl, translationModel_atom] at this
     exact absurd (hz : x < z) (not_lt.mpr this)
   · intro hdisc F φ M τ t hant
-    rw [truth_and_iff, truth_and_iff] at hant
+    rw [Truth.and_iff, Truth.and_iff] at hant
     obtain ⟨⟨hH, hnow⟩, hFtop⟩ := hant
     rw [Truth.some_future_iff] at hFtop
     obtain ⟨s, hts, -⟩ := hFtop
@@ -523,7 +485,7 @@ theorem validOn_co_iff_isComplete (D : TemporalOrder) :
           obtain ⟨w, hw, hcw⟩ := (hHiff u).mp hu c (not_le.mp hlt)
           exact absurd (hc hw) (not_le.mpr hcw)
     have hco := h (translationFrame D) (Formula.atom corrAtom) M τ s₀
-      (truth_always_of_forall M τ.val _ halways s₀) hHs₀
+      ((Truth.always_iff _).mpr halways) hHs₀
     rw [Truth.future_iff] at hco
     -- `b` is an upper bound strictly above `s₀`, so `Gφ` at `s₀` puts `b` strictly below `S`.
     have hs₀b : s₀ < b := by
@@ -553,7 +515,7 @@ theorem validOn_co_iff_isComplete (D : TemporalOrder) :
         by_contra hlt
         exact hnr (hu r (not_le.mp hlt))
       exact absurd (hm.2 hub) (not_le.mpr hr)
-    have hstep := truth_of_always M τ.val _ halways m
+    have hstep := (Truth.always_iff _).mp halways m
     have hF := hstep (by rw [Truth.past_iff]; exact hmS)
     rw [Truth.some_future_iff] at hF
     obtain ⟨v, hmv, hHv⟩ := hF

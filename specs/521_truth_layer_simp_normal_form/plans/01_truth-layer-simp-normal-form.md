@@ -353,7 +353,7 @@ therefore reduced to its `Soundness.lean` rewrites. — the tag set is one pre-d
 
 ---
 
-### Phase 4: Consolidate the duplicate truth helpers [NOT STARTED]
+### Phase 4: Consolidate the duplicate truth helpers [COMPLETED]
 
 - **Goal:** Delete the three private `truth_and_iff` copies and the two `always` helpers,
   converting every call site in the same phase. `and_of_not_imp_not` is deliberately **not** in
@@ -421,7 +421,7 @@ therefore reduced to its `Soundness.lean` rewrites. — the tag set is one pre-d
 
 ---
 
-### Phase 6: Atom-truth lemmas and the `rw [show … from rfl]` idiom [NOT STARTED]
+### Phase 6: Atom-truth lemmas and the `rw [show … from rfl]` idiom [IN PROGRESS]
 
 - **Goal:** Charter step (4) / finding C-05. Tag the four frame-constant atom-truth lemmas
   `@[simp]` and add `τ.val`-normalised forms so the eight-site `rw [show τ.val = … from rfl, …]`

@@ -176,16 +176,6 @@ variable {D : TemporalOrder}
 /-- `⊤` is true everywhere. -/
 theorem truth_top : TruthAt M τ t Formula.top := fun h => h
 
-/-- `φ ∧ ψ` is true iff both conjuncts are. -/
-theorem truth_and_iff (A B : Formula) :
-    TruthAt M τ t (Formula.and A B) ↔ (TruthAt M τ t A ∧ TruthAt M τ t B) := by
-  constructor
-  · intro h
-    by_contra hc
-    exact h (fun ha hb => hc ⟨ha, hb⟩)
-  · rintro ⟨ha, hb⟩ h
-    exact h ha hb
-
 /-- `φ ∨ ψ` is true iff one disjunct is. -/
 theorem truth_or_iff (A B : Formula) :
     TruthAt M τ t (Formula.or A B) ↔ (TruthAt M τ t A ∨ TruthAt M τ t B) := by
@@ -243,7 +233,7 @@ theorem priorUGap_antecedent_true (a : Atom) :
     TruthAt clockModel clockHistory 0
       (Formula.and (Formula.untl (Formula.atom a) Formula.top)
         (Formula.atom a).neg.someFuture) :=
-  (truth_and_iff _ _).mpr ⟨untl_top_atom_true a, someFuture_neg_atom_true a⟩
+  (Truth.and_iff _ _).mpr ⟨untl_top_atom_true a, someFuture_neg_atom_true a⟩
 
 /--
 **Membership fact 3** — the substantive one: the consequent `U(¬p ∨ K⁺(¬p), p)` fails at `0`.

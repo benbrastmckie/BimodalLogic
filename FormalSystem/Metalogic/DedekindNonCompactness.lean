@@ -151,16 +151,6 @@ variable {F : TaskFrame}
 
 /-! ## Semantic characterisation of the witness formulas -/
 
-/-- Unfolding lemma for `Formula.and`. `Semantics/Truth.lean` supplies none, and an identical
-`truth_and_iff` exists at `Semantics/Correspondence/DurationFrames.lean:299`; importing that
-module here would be legal but would widen this file's import closure for three lines, so the
-local copy is kept deliberately. -/
-theorem truth_and_iff' (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration) (A B : Formula) :
-    TruthAt M τ t (A.and B) ↔ (TruthAt M τ t A ∧ TruthAt M τ t B) := by
-  constructor
-  · intro h; by_contra hn; exact h fun ha hb => hn ⟨ha, hb⟩
-  · rintro ⟨ha, hb⟩ h; exact h ha hb
-
 /-- `Xq φ` holds at `t` exactly when some later point `s` is a `q`-point satisfying `φ` with no
 `q`-point strictly between `t` and `s` — i.e. `s` is *the next* `q`-point. The uniqueness this
 gap clause provides is what the chain construction in `dedWitness_core` runs on. -/
@@ -170,10 +160,10 @@ theorem truthAt_qNext_iff (M : TaskModel F) (τ : WorldHistory F) (t : F.Duratio
       TruthAt M τ s φ ∧ ∀ r, t < r → r < s → ¬ TruthAt M τ r (Formula.atom q) := by
   constructor
   · rintro ⟨s, hts, hs, hgap⟩
-    obtain ⟨h1, h2⟩ := (truth_and_iff' M τ s _ _).mp hs
+    obtain ⟨h1, h2⟩ := (Truth.and_iff _ _).mp hs
     exact ⟨s, hts, h1, h2, fun r h1' h2' hq => hgap r h1' h2' hq⟩
   · rintro ⟨s, hts, hq, hφ, hgap⟩
-    exact ⟨s, hts, (truth_and_iff' M τ s _ _).mpr ⟨hq, hφ⟩, fun r h1 h2 hqr => hgap r h1 h2 hqr⟩
+    exact ⟨s, hts, (Truth.and_iff _ _).mpr ⟨hq, hφ⟩, fun r h1 h2 hqr => hgap r h1 h2 hqr⟩
 
 /-- `qGap q` at `t`: every later `s` has a `¬q` interval `(u, s)` immediately below it. -/
 theorem truthAt_qGap (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration) (q : Atom)
