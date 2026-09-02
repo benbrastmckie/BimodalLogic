@@ -352,25 +352,25 @@ re-scope rather than deleting.
 
 ---
 
-### Phase 5: Wire the four unreachable modules into the build graph [NOT STARTED]
+### Phase 5: Wire the four unreachable modules into the build graph [COMPLETED]
 
 **Goal**: Invariant check C6 flips from FAIL to PASS. `Metalogic/Conservativity.lean:158-162`'s
 claim that `tmCompleteDiscrete_refuted` and `not_bl_derivable_z1` are "now landed … machine-checked,
 not merely documented" becomes true of code `lake build` actually compiles.
 
 **Tasks**:
-- [ ] Record the pre-change C6 failure text from `bash scripts/check-module-invariants.sh` so the
+- [x] Record the pre-change C6 failure text from `bash scripts/check-module-invariants.sh` so the
       flip is demonstrable, not asserted.
-- [ ] Add `import FormalSystem.Metalogic.Z1Countermodel` and
+- [x] Add `import FormalSystem.Metalogic.Z1Countermodel` and
       `import FormalSystem.Metalogic.SpWitness` to `FormalSystem/Metalogic.lean` (the re-export
       block currently spans `:8-19`).
-- [ ] Do **not** edit `scripts/module-invariants-manifest.txt`. The two imports pull
+- [x] Do **not** edit `scripts/module-invariants-manifest.txt`. The two imports pull
       `TMCompletenessReduction` (via `Z1Countermodel.lean:8`) and `LexCarrier` (via
       `Z1Countermodel.lean:10`) in transitively, clearing all four C6 entries with no manifest
       change.
-- [ ] Do **not** add `LexCarrier` or `BLSchemaValidity` to `FormalSystem/Semantics.lean` — see
+- [x] Do **not** add `LexCarrier` or `BLSchemaValidity` to `FormalSystem/Semantics.lean` — see
       Non-Goals.
-- [ ] Note but do not fix the two `push_neg` deprecation warnings at `Z1Countermodel.lean:101`
+- [x] Note but do not fix the two `push_neg` deprecation warnings at `Z1Countermodel.lean:101`
       and `:148` that become visible in the main build once wired in.
 
 **Timing**: 0.5 hours
@@ -379,9 +379,20 @@ not merely documented" becomes true of code `lake build` actually compiles.
 
 **Verification Tier**: full
 
-**Scope Hypothesis**: A **two-line** diff to one file clears **all four** C6 entries
-(`SpWitness`, `Z1Countermodel`, `TMCompletenessReduction`, `LexCarrier`) with **zero** manifest
-edits. Confirm by diffing the C6 section of `check-module-invariants.sh` output before and after:
+**Scope Hypothesis**: **CONFIRMED at implementation time, exactly as predicted.** The two-line
+diff to `FormalSystem/Metalogic.lean` cleared all four C6 entries with zero manifest edits:
+
+| | before | after |
+|---|---|---|
+| C6 unmanifested unreachable live modules | 4 (FAIL) | **0 (PASS)** |
+| C7 unreachable live .lean files | 21 | 17 |
+| C7 reachable | 468 | 472 |
+| `lake build` jobs | 2515 | 2519 |
+
+The transitive pull worked as the research measured: `Z1Countermodel` brought
+`TMCompletenessReduction` (`:8`) and `LexCarrier` (`:10`) in with it. Original hypothesis: a
+**two-line** diff to one file clears **all four** C6 entries (`SpWitness`, `Z1Countermodel`,
+`TMCompletenessReduction`, `LexCarrier`) with **zero** manifest edits. Confirm by diffing the C6 section of `check-module-invariants.sh` output before and after:
 the count of unmanifested unreachable modules must go 4 -> 0. If it goes 4 -> 1 or 4 -> 2, the
 transitive-pull assumption is wrong and the remaining modules need explicit imports — add them
 rather than reaching for a manifest edit.

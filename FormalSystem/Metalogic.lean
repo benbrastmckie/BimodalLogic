@@ -17,6 +17,8 @@ import FormalSystem.Metalogic.WeakCanonical
 import FormalSystem.Metalogic.Conservativity
 import FormalSystem.Metalogic.BaseLanguageSoundness
 import FormalSystem.Metalogic.Algebraic
+import FormalSystem.Metalogic.Z1Countermodel
+import FormalSystem.Metalogic.SpWitness
 
 /-!
 # Bimodal Metalogic
