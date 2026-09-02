@@ -108,6 +108,13 @@ needed no edit (C6 passes).
 - `FormalSystem/Metalogic/SoundnessLemmas/DenseValidity.lean`
 - `FormalSystem/Metalogic/SoundnessLemmas/Core.lean`
 
+**Unchanged after verification**
+- `FormalSystem/Metalogic.lean` — the layout docstring's `SoundnessLemmas/  3 files` claim was
+  re-checked against `ls` (three `.lean` files remain: `CoValidity`, `FrameClassVariants`,
+  `Separability`). It is now deliberately correct rather than accidentally so, and needed no edit.
+- `scripts/module-invariants-manifest.txt` — neither `Core` nor `DenseValidity` was listed, and
+  C6 passes with the aggregator's new `Separability` import.
+
 **Modified**
 - `FormalSystem/Metalogic/SoundnessLemmas/FrameClassVariants.lean`
 - `FormalSystem/Metalogic/SoundnessLemmas/CoValidity.lean`
@@ -115,6 +122,5 @@ needed no edit (C6 passes).
 - `FormalSystem/Metalogic/SoundnessLemmas/README.md`
 - `FormalSystem/Metalogic/SoundnessLemmas.lean`
 - `FormalSystem/Metalogic/Soundness.lean`
-- `FormalSystem/Metalogic.lean` (layout docstring file count re-verified with `ls`; the claim was already numerically correct and is now deliberately so)
 - `FormalSystem/Metalogic/Decidability/Verified/Decidable.lean`
 - `docs/development/LEAN_STYLE_GUIDE.md`

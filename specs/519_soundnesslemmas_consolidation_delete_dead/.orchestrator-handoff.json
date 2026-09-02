@@ -1,21 +1,64 @@
 {
-  "dispatch_seq": 3,
+  "dispatch_seq": 5,
   "task_number": 519,
-  "phase": "plan",
-  "status": "planned",
-  "session_id": "sess_1788332773_c2fa9f_519",
+  "session_id": "sess_1788332773_c2fa9f",
+  "phase": "implement",
+  "status": "implemented",
+  "phases_completed": 9,
+  "phases_total": 9,
+  "blocked_phase": null,
+  "requires_user_review": false,
+  "verification": {
+    "lake_build": "green",
+    "check_module_invariants": "ALL CHECKS PASSED (full run, C1-C15)",
+    "c2_axiom_baseline": "unchanged",
+    "sorry_count": 0,
+    "new_axioms": 0
+  },
+  "acceptance_criteria_missed": [
+    "SoundnessLemmas/ measures 1457 lines against the ~1400 ceiling (CoValidity 140, FrameClassVariants 963, Separability 354). Cause: arm extraction is line-additive; the 29 extracted lemmas cost ~+228 lines of signature and docstring against the ~+90 the plan budgeted. Reported rather than trimmed, per the plan's own Phase 9 instruction. Reduction achieved: 2487 -> 1457 (41%)."
+  ],
+  "plan_deviations": [
+    "Phase 5: the ValidIn.of_forall_total opening is applied inside each arm, not before `cases h with` \u2014 opening before `cases` leaves every arm at TruthAt and breaks both the delegating arms and every lemma Phases 6-7 extract.",
+    "Phase 7: the four two-line delegating arms were joined onto one line each (no wrapper extracted, as instructed) so the one-line-arm criterion holds without qualification.",
+    "Phase 8: truthAt_of_isValid (renamed truthAt_of_validDiscrete) does not wrap ValidDiscrete.apply \u2014 that fails to synthesize SuccOrder F.toTaskFrame.Duration.carrier. It binds the four instances on D and passes them to FrameClass.Discrete.Sat positionally, which is ValidDiscrete.apply's own body.",
+    "Phase 8: Core's replacement import in FrameClassVariants.lean is ProofSystem.Derivation, not Semantics.Truth \u2014 Semantics.Validity already supplies Truth and ProofSystem.Axioms transitively."
+  ],
+  "commits": [
+    "eaf83e3cb task 519 phase 1: delete the already-dead ranges",
+    "ca937ce1c task 519 phase 2: deduplicate exists_isGLB_of_lub",
+    "65a8031d9 task 519 phase 3: retire axiom_swap_valid",
+    "72cd1e87b task 519 phase 4: transplant the survivors and delete DenseValidity.lean",
+    "f06a6210c task 519 phase 5: restate the .Base layer at ValidIn FrameClass.Base",
+    "b79cf5400 task 519 phase 6: one-line the propositional and modal arms",
+    "dcce50c7a task 519 phase 7: one-line the temporal arms",
+    "c4cb75e0a task 519 phase 8: retire IsValid and delete Core.lean",
+    "c03af2723 task 519 phase 9: documentation, manifest, and acceptance gate"
+  ],
+  "modified_files": [
+    "FormalSystem/Metalogic/Decidability/Verified/Decidable.lean",
+    "FormalSystem/Metalogic/Soundness.lean",
+    "FormalSystem/Metalogic/SoundnessLemmas.lean",
+    "FormalSystem/Metalogic/SoundnessLemmas/CoValidity.lean",
+    "FormalSystem/Metalogic/SoundnessLemmas/Core.lean",
+    "FormalSystem/Metalogic/SoundnessLemmas/DenseValidity.lean",
+    "FormalSystem/Metalogic/SoundnessLemmas/FrameClassVariants.lean",
+    "FormalSystem/Metalogic/SoundnessLemmas/README.md",
+    "FormalSystem/Metalogic/SoundnessLemmas/Separability.lean",
+    "docs/development/LEAN_STYLE_GUIDE.md",
+    "specs/519_soundnesslemmas_consolidation_delete_dead/plans/01_soundnesslemmas-consolidation-deletion.md",
+    "specs/519_soundnesslemmas_consolidation_delete_dead/summaries/01_soundnesslemmas-consolidation-summary.md"
+  ],
+  "deleted_files": [
+    "FormalSystem/Metalogic/SoundnessLemmas/Core.lean",
+    "FormalSystem/Metalogic/SoundnessLemmas/DenseValidity.lean"
+  ],
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/519_soundnesslemmas_consolidation_delete_dead/plans/01_soundnesslemmas-consolidation-deletion.md",
-      "summary": "Nine phases, ~13h, waves [[1,2],[3],[4],[5],[6],[7],[8],[9]]; lake build green at every phase boundary."
+      "type": "summary",
+      "path": "specs/519_soundnesslemmas_consolidation_delete_dead/summaries/01_soundnesslemmas-consolidation-summary.md",
+      "summary": "SoundnessLemmas/ reduced 2487 -> 1457 lines across 5 -> 3 files; duplicate swap dispatcher and local IsValid notion retired."
     }
   ],
-  "notes": "PLANNER DEVIATION (stated in the plan Overview, not silent): the IsValid -> ValidIn restatement is split across two phases rather than one. Phase 5 restates the benign .Base half (axiom_swap_valid_general plus the eight transplanted survivors at ValidIn FrameClass.Base) BEFORE arm extraction, so the ~29 lemmas Phases 6-7 create are born in final form. Phase 8 remains the final, isolated, highest-risk phase and carries the entire SuccOrder/PredOrder defeq hazard, the Decidable.lean:2413 retarget, and the only C2 exposure. Rationale: extracting at IsValid first would force Phase 8 to additionally restate ~29 signatures, making the riskiest phase a ~35-declaration edit and defeating the isolation the instruction exists to provide. Fallback to the literal single-phase ordering is documented in Rollback/Contingency. Widened file_scope (Decidability/Verified/Decidable.lean) is planned in Phase 8. All five research-only dead declarations are covered; the two that become dead only when axiom_swap_valid goes are deleted in Phase 3, in the same edit as their sole consumer. D-09 is encoded narrowly (exactly four constructor arms). and_of_not_imp_not cross-directory consolidation is an explicit non-goal.",
-  "summary": "Nine-phase implementation plan created for the SoundnessLemmas consolidation. Phases 1-2 (parallel) delete the already-dead ranges and deduplicate exists_isGLB_of_lub; 3 retires axiom_swap_valid and the two lemmas that die with it; 4 transplants the eight survivors and deletes DenseValidity.lean; 5 restates the .Base layer at ValidIn FrameClass.Base; 6-7 one-line the 45-arm dispatcher; 8 is the isolated final code phase retiring IsValid and Core.lean including the widened Decidable.lean scope; 9 regenerates docs and runs the acceptance gate. lake build green at every phase boundary.",
-  "phases_completed": 0,
-  "phases_total": 9,
-  "blockers": [],
-  "sorry_inventory": [],
-  "continuation_path": null
+  "notes": "Exclusive build access was respected: no foreign modification under FormalSystem/ was observed at any phase boundary, including the pre-Phase-8 re-check. Sibling task 520 may now proceed."
 }

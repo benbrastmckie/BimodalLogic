@@ -1,29 +1,87 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "started_at": "2026-09-02T00:00:00Z",
+  "completed_at": "2026-09-02T00:00:00Z",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 9,
+    "axiom_count_baseline": 9,
+    "build_passed": true,
+    "module_invariants": "ALL CHECKS PASSED (C1-C15, full run with build)",
+    "c2_axiom_baseline": "unchanged (C2 and C14 axiom halves both PASS)"
+  },
+  "modified_files": [
+    "FormalSystem/Metalogic/Decidability/Verified/Decidable.lean",
+    "FormalSystem/Metalogic/Soundness.lean",
+    "FormalSystem/Metalogic/SoundnessLemmas.lean",
+    "FormalSystem/Metalogic/SoundnessLemmas/CoValidity.lean",
+    "FormalSystem/Metalogic/SoundnessLemmas/Core.lean",
+    "FormalSystem/Metalogic/SoundnessLemmas/DenseValidity.lean",
+    "FormalSystem/Metalogic/SoundnessLemmas/FrameClassVariants.lean",
+    "FormalSystem/Metalogic/SoundnessLemmas/README.md",
+    "FormalSystem/Metalogic/SoundnessLemmas/Separability.lean",
+    "docs/development/LEAN_STYLE_GUIDE.md",
+    "specs/519_soundnesslemmas_consolidation_delete_dead/plans/01_soundnesslemmas-consolidation-deletion.md",
+    "specs/519_soundnesslemmas_consolidation_delete_dead/summaries/01_soundnesslemmas-consolidation-summary.md"
+  ],
+  "deleted_files": [
+    "FormalSystem/Metalogic/SoundnessLemmas/Core.lean",
+    "FormalSystem/Metalogic/SoundnessLemmas/DenseValidity.lean"
+  ],
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/519_soundnesslemmas_consolidation_delete_dead/plans/01_soundnesslemmas-consolidation-deletion.md",
-      "summary": "Nine-phase, build-green-at-every-boundary plan to delete the superseded SoundnessLemmas machinery, remove DenseValidity.lean and Core.lean, one-line the surviving 45-arm swap dispatcher, and retire IsValid in favour of ValidIn/ValidDiscrete."
+      "type": "summary",
+      "path": "specs/519_soundnesslemmas_consolidation_delete_dead/summaries/01_soundnesslemmas-consolidation-summary.md",
+      "summary": "SoundnessLemmas/ reduced 2487 -> 1457 lines across 5 -> 3 files; duplicate swap dispatcher and local IsValid notion retired."
     }
   ],
-  "next_steps": "Run /implement 519 to execute the plan",
-  "metadata": {
-    "session_id": "sess_1788332773_c2fa9f_519",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 9,
-    "estimated_hours": 13,
-    "dependency_waves": [[1, 2], [3], [4], [5], [6], [7], [8], [9]]
+  "completion_data": {
+    "completion_summary": "Retired the superseded soundness machinery under FormalSystem/Metalogic/SoundnessLemmas/: deleted DenseValidity.lean and Core.lean outright, removed the 420-line duplicate axiom_swap_valid dispatcher and the 298-line private axiom_locally_valid with the helpers they alone consumed, transplanted the eight survivors into FrameClassVariants.lean, and retired the local IsValid notion in favour of ValidIn/ValidDiscrete. The surviving 45-arm dispatcher axiom_swap_valid_general now delegates one line per arm to 29 newly extracted, docstring-carrying per-constructor lemmas. The directory went from 2,487 lines across five files to 1,457 across three; lake build is green, check-module-invariants.sh reports ALL CHECKS PASSED, and the C2/C14 axiom baselines are unchanged.",
+    "roadmap_items": []
   },
-  "memory_candidates": [
-    {
-      "content": "When a plan deletes a shared abstraction (here a local IsValid validity notion) AND separately extracts many small lemmas out of a large dispatcher stated at that abstraction, the ordering matters more than it looks. Extracting first at the doomed abstraction means the deletion phase must additionally restate every extracted lemma, which inflates the highest-risk phase by an order of magnitude. Split the abstraction's retirement along its own risk seam instead: restate the benign half (no data-carrying typeclass instances, no pinned-axiom exposure) BEFORE the extraction so the new lemmas are born in final form, and keep only the hazardous half (data instances that must be applied positionally with @ rather than installed with haveI, plus any consumer downstream of an axiom-baseline-pinned theorem) as the final isolated phase. Risk isolation is the reason for the 'isolated final phase' rule, so bundling mechanical churn into that phase defeats it.",
-      "category": "PATTERN",
-      "source_artifact": "specs/519_soundnesslemmas_consolidation_delete_dead/plans/01_soundnesslemmas-consolidation-deletion.md",
-      "confidence": 0.75,
-      "suggested_keywords": ["phase-ordering", "abstraction-retirement", "lemma-extraction", "risk-isolation", "defeq-hazard", "lean4"]
+  "acceptance_criteria": {
+    "line_ceiling_1400": {
+      "met": false,
+      "measured": 1457,
+      "breakdown": {
+        "CoValidity.lean": 140,
+        "FrameClassVariants.lean": 963,
+        "Separability.lean": 354
+      },
+      "note": "57 lines over the ~1,400 ceiling; whole gap is the anticipated line-additivity of arm extraction (29 lemmas cost ~+228 lines of signature and docstring against ~+90 budgeted). Reported rather than trimmed, per the plan's Phase 9 instruction."
+    },
+    "one_45_arm_dispatcher_one_line_arms": {
+      "met": true,
+      "arms": 45,
+      "multi_line_arms": 0
+    },
+    "zero_dead_declarations": {
+      "met": true
+    },
+    "lake_build_green": {
+      "met": true
+    },
+    "module_invariants_all_pass": {
+      "met": true
+    },
+    "c2_axiom_baseline_unchanged": {
+      "met": true
     }
-  ]
+  },
+  "phases_completed": 9,
+  "phases_total": 9,
+  "metadata": {
+    "session_id": "sess_1788332773_c2fa9f",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
+    "compliance_check": "passed",
+    "dispatch_seq": 5
+  }
 }
