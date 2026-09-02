@@ -11,10 +11,10 @@ next_project_number: 533
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,193,257,298,433,461,476,481,504,506,523,524,526,532 | -- | automation, dataset-enhancement, decidability, ... |
-| 2 | 178,231,282,296,463,502,525,527,528,529,530 | 193,298,433,461,523,524,526 | algebraic-representation, dataset-enhancement, decidability, ... |
-| 3 | 219,464,497,531 | 231,463,502,528,529,530 | algebraic-representation, dataset-enhancement, decidability, ... |
-| 4 | 465,498,499,500 | 464,497 | algebraic-representation, decidability |
+| 1 | 127,128,193,257,298,433,461,476,481,504,506,524,526,532 | -- | automation, dataset-enhancement, decidability, ... |
+| 2 | 178,231,282,296,463,502,523,527,528,530 | 193,298,433,461,524,526,532 | algebraic-representation, dataset-enhancement, decidability, ... |
+| 3 | 219,464,497,525,529 | 231,463,502,523,528 | algebraic-representation, dataset-enhancement, decidability, ... |
+| 4 | 465,498,499,500,531 | 464,497,529,530 | algebraic-representation, decidability, metalogic |
 | 5 | 125,428 | 465,498,499 | algebraic-representation, decidability |
 | 6 | 429,501 | 125,428 | algebraic-representation, decidability |
 | 7 | 410 | 429 | decidability |
@@ -84,16 +84,16 @@ next_project_number: 533
 
 ### Metalogic
 
-523 [IMPLEMENTING] — WAVE 2 (core utilities). Complete the task-frame construction kit
-  └─ 525 [NOT STARTED] — WAVE 3 (theorem layer). Put the frame-class Galois layer on Mathl
-  └─ 529 [NOT STARTED] — WAVE 5 (publication infrastructure). Turn on the two automated si
-    └─ 531 [NOT STARTED] — WAVE 5 (publication infrastructure). Publish the API documentatio
 524 [NOT STARTED] — WAVE 3 (theorem layer). Finish the FrameClass collapse at the THE
   └─ 530 [NOT STARTED] — WAVE 5 (publication infrastructure). Make status and counts machi
-    └─ 531 [NOT STARTED] — WAVE 5 (publication infrastructure). Publish the API documentatio (see above)
+    └─ 531 [NOT STARTED] — WAVE 5 (publication infrastructure). Publish the API documentatio
 526 [NOT STARTED] — WAVE 3 (theorem layer). Consolidate the maximal-consistent-set AP
   └─ 527 [NOT STARTED] — WAVE 4 (canonical-model infrastructure). Replace textual future/p
   └─ 528 [NOT STARTED] — WAVE 4 (algebraic infrastructure). Modernise Metalogic/Algebraic/
+523 [IMPLEMENTING] — WAVE 2 (core utilities). Complete the task-frame construction kit
+  └─ 525 [NOT STARTED] — WAVE 3 (theorem layer). Put the frame-class Galois layer on Mathl
+  └─ 529 [NOT STARTED] — WAVE 5 (publication infrastructure). Turn on the two automated si
+    └─ 531 [NOT STARTED] — WAVE 5 (publication infrastructure). Publish the API documentatio (see above)
 
 ### Publication Quality
 
@@ -101,15 +101,16 @@ next_project_number: 533
 
 ### Semantics
 
-532 [NOT STARTED] — Audit and resolve the partial-vs-total WorldHistory faithfulness 
+532 [RESEARCHED] — Audit and resolve the partial-vs-total WorldHistory faithfulness 
 
 ## Tasks
 
 ### 532. Worldhistory extension faithfulness audit
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: semantics
 - **Dependencies**: None
+- **Research**: [532_worldhistory_extension_faithfulness_audit/reports/01_worldhistory-extension-faithfulness-audit.md]
 
 **Description**: Audit and resolve the partial-vs-total WorldHistory faithfulness gap in the Lean semantics against the paper's extension theorem. ANCHOR SOURCE: /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex -- thm:extension (line 3155, in the Appendix beginning line 1789), which states that every partial history tau : X -> W over a task frame F is extended by some total world history sigma in H_F (proved via Zorn's lemma over partial histories ordered by extension, appealing to lem:step and def:world-history), together with its corollary cor:occurrence. Read this alongside the supporting discussion in sec:Construction (line 933), where possible worlds are defined as functions from durations to world states, and the supporting definitions and lemmas in the Appendix (def:frame, def:world-history, def:frame-properties, lem:step, lem:nullity, cor:saturation-finite, and the surrounding partial-history material). TRIGGERING QUESTION: the frame-kit transport work left one phase blocked on a quantifier mismatch. Truth.time_shift_preserves_truth (FormalSystem/Semantics/Truth.lean) and IntTransfer.truthAt_map (FormalSystem/Semantics/IntTransfer.lean) both quantify over an ARBITRARY WorldHistory with no totality hypothesis, while the TruthIso structure carries hist : F.HF equiv F'.HF and transports only TOTAL histories. The prior implementation dispatch argued that an arbitrary history cannot be reduced to a total one, because TruthAt's atom clause is an existential over the history's domain, so a partial history makes atoms false off its domain and no total history reproduces that truth-value profile -- extension in the paper's sense preserves the history but not necessarily the truth-value profile of the partial one. Determine whether that reasoning is correct, and whether thm:extension and its supporting apparatus license a different resolution. DELIVERABLE: decide between (a) widening TruthIso to a WorldHistory-level equivalence, which would unblock both transports, and (b) accepting the remaining hand-written six-case inductions -- with the decision grounded in what the paper actually proves, not in what is convenient in Lean. BROADER SCOPE: the goal is that the Lean codebase be fully faithful and aligned with the paper in BOTH content and convention. Audit how FormalSystem/Semantics/ (WorldHistory.lean, TaskFrame.lean, Truth.lean, IntTransfer.lean) represents the partial/total history distinction, whether the paper's extension theorem is stated or available in Lean at all, and whether naming and structural conventions track def:world-history and def:frame. Report every divergence found, including places where the Lean development is stronger, weaker, or differently quantified than the paper. CAUTION: an earlier research report's section 4.3 recorded time_shift_preserves_truth as "derivable from a uniform TruthIso? yes", which is now known to be an error -- do not treat that report as authoritative on this point.
 
@@ -199,7 +200,7 @@ next_project_number: 533
 - **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: metalogic
-- **Dependencies**: Task 517, Task 518, Task 521, Task 522
+- **Dependencies**: Task 517, Task 518, Task 521, Task 522, Task 532
 - **Research**: [523_frame_kit_helpers_transport_standard_frames/reports/01_frame-kit-helpers-transport-standard-frames.md]
 - **Plan**: [523_frame_kit_helpers_transport_standard_frames/plans/01_frame-kit-helpers-transport.md]
 - **Summary**: [523_frame_kit_helpers_transport_standard_frames/summaries/01_frame-kit-helpers-transport-summary.md]

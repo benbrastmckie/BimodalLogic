@@ -1,0 +1,189 @@
+import FormalSystem.Semantics.Truth
+import FormalSystem.Semantics.IntTransfer
+
+/-! Experiment: a *relational* generic transport, following `def:time-shift-histories` +
+`app:auto_existence`: a correspondence relation on (arbitrary) histories, atomic agreement on
+related pairs, and totality-surjectivity in both directions. -/
+
+namespace FormalSystem.Semantics
+
+open FormalSystem.Syntax
+
+structure TruthCorr {F F' : TaskFrame} (M : TaskModel F) (M' : TaskModel F') where
+  dur : F.Duration ≃o F'.Duration
+  Rel : WorldHistory F → WorldHistory F' → Prop
+  atom : ∀ σ σ', Rel σ σ' → ∀ (t : F.Duration) (p : Atom),
+    TruthAt M σ t (Formula.atom p) ↔ TruthAt M' σ' (dur t) (Formula.atom p)
+  total_fwd : ∀ σ : WorldHistory F, σ.IsTotal → ∃ σ', σ'.IsTotal ∧ Rel σ σ'
+  total_bwd : ∀ σ' : WorldHistory F', σ'.IsTotal → ∃ σ, σ.IsTotal ∧ Rel σ σ'
+
+namespace Truth
+
+theorem truthAt_of_truthCorr {F F' : TaskFrame} {M : TaskModel F} {M' : TaskModel F'}
+    (I : TruthCorr M M') (φ : Formula) :
+    ∀ (σ : WorldHistory F) (σ' : WorldHistory F'), I.Rel σ σ' →
+      ∀ t : F.Duration, TruthAt M σ t φ ↔ TruthAt M' σ' (I.dur t) φ := by
+  induction φ with
+  | atom p => intro σ σ' h t; exact I.atom σ σ' h t p
+  | bot => intro σ σ' _ t; exact Iff.rfl
+  | imp φ ψ ihφ ihψ =>
+      intro σ σ' h t
+      simp only [imp_iff]
+      rw [ihφ σ σ' h t, ihψ σ σ' h t]
+  | box φ ih =>
+      intro σ σ' _ t
+      simp only [box_iff]
+      constructor
+      · intro h ρ' hρ'
+        obtain ⟨ρ, hρ, hR⟩ := I.total_bwd ρ' hρ'
+        exact (ih ρ ρ' hR t).mp (h ρ hρ)
+      · intro h ρ hρ
+        obtain ⟨ρ', hρ', hR⟩ := I.total_fwd ρ hρ
+        exact (ih ρ ρ' hR t).mpr (h ρ' hρ')
+  | untl ψ φ ihψ ihφ =>
+      intro σ σ' h t
+      simp only [untl_iff]
+      constructor
+      · rintro ⟨s, hts, hs, hmin⟩
+        refine ⟨I.dur s, I.dur.lt_iff_lt.mpr hts, (ihφ σ σ' h s).mp hs, ?_⟩
+        intro r' h1 h2
+        obtain ⟨r, rfl⟩ := I.dur.surjective r'
+        exact (ihψ σ σ' h r).mp (hmin r (I.dur.lt_iff_lt.mp h1) (I.dur.lt_iff_lt.mp h2))
+      · rintro ⟨s', hts', hs', hmin'⟩
+        obtain ⟨s, rfl⟩ := I.dur.surjective s'
+        refine ⟨s, I.dur.lt_iff_lt.mp hts', (ihφ σ σ' h s).mpr hs', ?_⟩
+        intro r h1 h2
+        exact (ihψ σ σ' h r).mpr (hmin' (I.dur r) (I.dur.lt_iff_lt.mpr h1) (I.dur.lt_iff_lt.mpr h2))
+  | snce ψ φ ihψ ihφ =>
+      intro σ σ' h t
+      simp only [snce_iff]
+      constructor
+      · rintro ⟨s, hst, hs, hmin⟩
+        refine ⟨I.dur s, I.dur.lt_iff_lt.mpr hst, (ihφ σ σ' h s).mp hs, ?_⟩
+        intro r' h1 h2
+        obtain ⟨r, rfl⟩ := I.dur.surjective r'
+        exact (ihψ σ σ' h r).mp (hmin r (I.dur.lt_iff_lt.mp h1) (I.dur.lt_iff_lt.mp h2))
+      · rintro ⟨s', hst', hs', hmin'⟩
+        obtain ⟨s, rfl⟩ := I.dur.surjective s'
+        refine ⟨s, I.dur.lt_iff_lt.mp hst', (ihφ σ σ' h s).mpr hs', ?_⟩
+        intro r h1 h2
+        exact (ihψ σ σ' h r).mpr (hmin' (I.dur r) (I.dur.lt_iff_lt.mpr h1) (I.dur.lt_iff_lt.mpr h2))
+
+/-! ### Instance 1: the existing `TruthIso` is a `TruthCorr` (total-only relation). -/
+
+def TruthIso.toCorr {F F' : TaskFrame} {M : TaskModel F} {M' : TaskModel F'}
+    (I : TruthIso M M') : TruthCorr M M' where
+  dur := I.dur
+  Rel := fun σ σ' => ∃ (hσ : σ.IsTotal) (hσ' : σ'.IsTotal), I.hist ⟨σ, hσ⟩ = ⟨σ', hσ'⟩
+  atom := by
+    rintro σ σ' ⟨hσ, hσ', heq⟩ t p
+    rw [atom_iff_of_domain (hσ t) p, atom_iff_of_domain (hσ' (I.dur t)) p]
+    have := I.atom ⟨σ, hσ⟩ t p
+    rw [heq] at this
+    exact this
+  total_fwd := fun σ hσ => ⟨(I.hist ⟨σ, hσ⟩).val, (I.hist ⟨σ, hσ⟩).property, hσ, _, rfl⟩
+  total_bwd := by
+    intro σ' hσ'
+    obtain ⟨⟨τ, hτ⟩, h⟩ := I.hist.surjective ⟨σ', hσ'⟩
+    exact ⟨τ, hτ, hτ, hσ', h⟩
+
+/-! ### Instance 2: time shift, on ARBITRARY histories — derives `timeShift_preserves_truth`. -/
+
+/-- `ρ` is the `Δ`-shift of `ρ'`, pointwise: the paper's `τ ≈ σ` relation
+(`def:time-shift-histories`), read on arbitrary histories. -/
+def ShiftRel {F : TaskFrame} (Δ : F.Duration) (ρ ρ' : WorldHistory F) : Prop :=
+  (∀ z, ρ.domain z ↔ ρ'.domain (z + Δ)) ∧
+  ∀ z (h : ρ.domain z) (h' : ρ'.domain (z + Δ)), ρ.states z h = ρ'.states (z + Δ) h'
+
+theorem shiftRel_timeShift {F : TaskFrame} (Δ : F.Duration) (σ : WorldHistory F) :
+    ShiftRel Δ (σ.timeShift Δ) σ :=
+  ⟨fun _ => Iff.rfl, fun _ _ _ => rfl⟩
+
+theorem shiftRel_timeShift_neg {F : TaskFrame} (Δ : F.Duration) (ρ : WorldHistory F) :
+    ShiftRel Δ ρ (ρ.timeShift (-Δ)) := by
+  refine ⟨fun z => ?_, fun z h h' => ?_⟩
+  · show ρ.domain z ↔ ρ.domain (z + Δ + -Δ)
+    rw [add_neg_cancel_right]
+  · exact WorldHistory.states_eq_of_time_eq ρ z (z + Δ + -Δ) (add_neg_cancel_right z Δ).symm h h'
+
+def shiftCorr {F : TaskFrame} (M : TaskModel F) (Δ : F.Duration) : TruthCorr M M where
+  dur := OrderIso.addRight Δ
+  Rel := ShiftRel Δ
+  atom := by
+    rintro ρ ρ' ⟨hd, hs⟩ t p
+    show (∃ h : ρ.domain t, M.valuation (ρ.states t h) p) ↔
+      ∃ h' : ρ'.domain (t + Δ), M.valuation (ρ'.states (t + Δ) h') p
+    constructor
+    · rintro ⟨h, hv⟩
+      exact ⟨(hd t).mp h, by rw [← hs t h ((hd t).mp h)]; exact hv⟩
+    · rintro ⟨h', hv⟩
+      exact ⟨(hd t).mpr h', by rw [hs t ((hd t).mpr h') h']; exact hv⟩
+  total_fwd := fun ρ hρ =>
+    ⟨ρ.timeShift (-Δ), WorldHistory.isTotal_timeShift hρ (-Δ), shiftRel_timeShift_neg Δ ρ⟩
+  total_bwd := fun ρ' hρ' =>
+    ⟨ρ'.timeShift Δ, WorldHistory.isTotal_timeShift hρ' Δ, shiftRel_timeShift Δ ρ'⟩
+
+/-- The tree's `TimeShift.timeShift_preserves_truth`, statement unchanged (arbitrary `σ`),
+derived from the relational transport. -/
+theorem timeShift_preserves_truth' {F : TaskFrame} (M : TaskModel F)
+    (σ : WorldHistory F) (x y : F.Duration) (φ : Formula) :
+    TruthAt M (WorldHistory.timeShift σ (y - x)) x φ ↔ TruthAt M σ y φ := by
+  have h := truthAt_of_truthCorr (shiftCorr M (y - x)) φ (σ.timeShift (y - x)) σ
+    (shiftRel_timeShift (y - x) σ) x
+  have hx : x + (y - x) = y := add_sub_cancel x y
+  change TruthAt M (σ.timeShift (y - x)) x φ ↔ TruthAt M σ (x + (y - x)) φ at h
+  rw [hx] at h
+  exact h
+
+/-! ### Instance 3: `IntTransfer.truthAt_map` (arbitrary aligned histories) is also an instance. -/
+
+def alignedCorr {D E : TemporalOrder} {F : FrameOver D} (e : ↑D ≃+o ↑E)
+    (M : TaskModel F.toTaskFrame) : TruthCorr M (TaskModel.map M e) where
+  dur := e.toOrderIso
+  Rel := Aligned e
+  atom := by
+    intro σ σ' ha t p
+    show (∃ h : σ.domain t, M.valuation (σ.states t h) p) ↔
+      ∃ h' : σ'.domain (e t), M.valuation (σ'.states (e t) h') p
+    constructor
+    · rintro ⟨h, hv⟩
+      have h' : σ'.domain (e t) := (ha.dom (e t)).mpr (by simpa using h)
+      refine ⟨h', ?_⟩
+      rw [ha.st (e t) h' (by simpa using h),
+        σ.states_eq_of_time_eq (e.symm (e t)) t (by simp) _ h]
+      exact hv
+    · rintro ⟨h', hv⟩
+      have h : σ.domain t := by simpa using (ha.dom (e t)).mp h'
+      refine ⟨h, ?_⟩
+      rw [ha.st (e t) h' (by simpa using h),
+        σ.states_eq_of_time_eq (e.symm (e t)) t (by simp) _ h] at hv
+      exact hv
+  total_fwd := fun σ hσ =>
+    ⟨WorldHistory.map σ e, isTotal_map e (aligned_map e σ) hσ, aligned_map e σ⟩
+  total_bwd := fun σ' hσ' =>
+    ⟨WorldHistory.comap e σ', fun s => hσ' (e s), aligned_comap e σ'⟩
+
+end Truth
+end FormalSystem.Semantics
+
+namespace FormalSystem.Semantics
+open FormalSystem.Syntax Truth
+
+/-- `IntTransfer.truthAt_map`, statement unchanged, derived from the relational transport. -/
+theorem truthAt_map' {D E : TemporalOrder} {F : FrameOver D} (e : ↑D ≃+o ↑E)
+    (M : TaskModel F.toTaskFrame) (φ : Formula) :
+    ∀ (σ : WorldHistory F.toTaskFrame) (σ' : WorldHistory (FrameOver.map F e).toTaskFrame),
+      Aligned e σ σ' → ∀ t : ↑D, (TruthAt M σ t φ ↔ TruthAt (TaskModel.map M e) σ' (e t) φ) :=
+  fun σ σ' ha t => truthAt_of_truthCorr (alignedCorr e M) φ σ σ' ha t
+
+/-- `truthAt_of_truthIso`, statement unchanged, derived from the relational transport. -/
+theorem truthAt_of_truthIso' {F F' : TaskFrame} {M : TaskModel F} {M' : TaskModel F'}
+    (I : TruthIso M M') (φ : Formula) (τ : F.HF) (t : F.Duration) :
+    TruthAt M τ.val t φ ↔ TruthAt M' (I.hist τ).val (I.dur t) φ :=
+  truthAt_of_truthCorr (Truth.TruthIso.toCorr I) φ τ.val (I.hist τ).val ⟨τ.property, (I.hist τ).property, rfl⟩ t
+
+#print axioms Truth.truthAt_of_truthCorr
+#print axioms Truth.timeShift_preserves_truth'
+#print axioms truthAt_map'
+#print axioms truthAt_of_truthIso'
+end FormalSystem.Semantics

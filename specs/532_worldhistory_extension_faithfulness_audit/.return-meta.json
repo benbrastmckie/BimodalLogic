@@ -1,0 +1,21 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/532_worldhistory_extension_faithfulness_audit/reports/01_worldhistory-extension-faithfulness-audit.md",
+      "summary": "Audit of partial/total WorldHistory fidelity vs thm:extension; prior reasoning confirmed correct but off-target (paper defines truth only on H_F); decision: relational TruthCorr transport (paper's own shape) derives timeShift_preserves_truth and truthAt_map unchanged, machine-checked; 30-item divergence table incl. 10-anchor record drift."
+    },
+    {
+      "type": "experiment",
+      "path": "specs/532_worldhistory_extension_faithfulness_audit/reports/TruthCorr-experiment.lean.txt",
+      "summary": "Compiling Lean experiment (zero sorry) defining TruthCorr and deriving timeShift_preserves_truth, truthAt_map, and truthAt_of_truthIso from it."
+    }
+  ],
+  "metadata": {
+    "session_id": "team-lead-532",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
