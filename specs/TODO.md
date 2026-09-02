@@ -11,13 +11,13 @@ next_project_number: 532
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,257,298,433,461,476,481,504,506,521 | -- | dataset-enhancement, decidability, frame-extensions, ... |
-| 2 | 231,282,296,463,502,522,526 | 298,433,461,521 | algebraic-representation, dataset-enhancement, decidability, ... |
-| 3 | 193,219,464,523,524,527,528 | 231,463,522,526 | automation, dataset-enhancement, decidability, ... |
-| 4 | 178,465,497,525,529,530 | 193,464,502,523,524,528 | algebraic-representation, decidability, formula-refactor, ... |
-| 5 | 428,498,499,500,531 | 465,497,529,530 | algebraic-representation, decidability, metalogic |
-| 6 | 125,429 | 428,498,499 | algebraic-representation, decidability |
-| 7 | 410,501 | 125,429 | algebraic-representation, decidability |
+| 1 | 127,128,257,298,433,461,476,481,504,506,522,526 | -- | dataset-enhancement, decidability, frame-extensions, ... |
+| 2 | 193,231,282,296,463,502,523,524,527,528 | 298,433,461,522,526 | algebraic-representation, automation, dataset-enhancement, ... |
+| 3 | 178,219,464,497,525,529,530 | 193,231,463,502,523,524,528 | algebraic-representation, dataset-enhancement, decidability, ... |
+| 4 | 465,498,499,500,531 | 464,497,529,530 | algebraic-representation, decidability, metalogic |
+| 5 | 125,428 | 465,498,499 | algebraic-representation, decidability |
+| 6 | 429,501 | 125,428 | algebraic-representation, decidability |
+| 7 | 410 | 429 | decidability |
 | 8 | 411 | 410 | decidability |
 | 9 | 430 | 411 | decidability |
 | 10 | 177,412 | 193,430,530 | decidability, formula-refactor |
@@ -84,18 +84,17 @@ next_project_number: 532
 
 ### Metalogic
 
-521 [PLANNED] — WAVE 2 (core utilities). Give the primary language's truth relati
-  └─ 522 [NOT STARTED] — WAVE 2 (core utilities). Fix the one representation choice that c
-    └─ 523 [NOT STARTED] — WAVE 2 (core utilities). Complete the task-frame construction kit
-      └─ 525 [NOT STARTED] — WAVE 3 (theorem layer). Put the frame-class Galois layer on Mathl
-      └─ 529 [NOT STARTED] — WAVE 5 (publication infrastructure). Turn on the two automated si
-        └─ 531 [NOT STARTED] — WAVE 5 (publication infrastructure). Publish the API documentatio
-    └─ 524 [NOT STARTED] — WAVE 3 (theorem layer). Finish the FrameClass collapse at the THE
-      └─ 530 [NOT STARTED] — WAVE 5 (publication infrastructure). Make status and counts machi
-        └─ 531 [NOT STARTED] — WAVE 5 (publication infrastructure). Publish the API documentatio (see above)
-  └─ 526 [NOT STARTED] — WAVE 3 (theorem layer). Consolidate the maximal-consistent-set AP
-    └─ 527 [NOT STARTED] — WAVE 4 (canonical-model infrastructure). Replace textual future/p
-    └─ 528 [NOT STARTED] — WAVE 4 (algebraic infrastructure). Modernise Metalogic/Algebraic/
+522 [NOT STARTED] — WAVE 2 (core utilities). Fix the one representation choice that c
+  └─ 523 [NOT STARTED] — WAVE 2 (core utilities). Complete the task-frame construction kit
+    └─ 525 [NOT STARTED] — WAVE 3 (theorem layer). Put the frame-class Galois layer on Mathl
+    └─ 529 [NOT STARTED] — WAVE 5 (publication infrastructure). Turn on the two automated si
+      └─ 531 [NOT STARTED] — WAVE 5 (publication infrastructure). Publish the API documentatio
+  └─ 524 [NOT STARTED] — WAVE 3 (theorem layer). Finish the FrameClass collapse at the THE
+    └─ 530 [NOT STARTED] — WAVE 5 (publication infrastructure). Make status and counts machi
+      └─ 531 [NOT STARTED] — WAVE 5 (publication infrastructure). Publish the API documentatio (see above)
+526 [NOT STARTED] — WAVE 3 (theorem layer). Consolidate the maximal-consistent-set AP
+  └─ 527 [NOT STARTED] — WAVE 4 (canonical-model infrastructure). Replace textual future/p
+  └─ 528 [NOT STARTED] — WAVE 4 (algebraic infrastructure). Modernise Metalogic/Algebraic/
 
 ### Publication Quality
 
@@ -204,12 +203,13 @@ next_project_number: 532
 ---
 
 ### 521. Truth layer simp normal form
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: Task 517, Task 518, Task 519
 - **Research**: [521_truth_layer_simp_normal_form/reports/01_truth-layer-simp-normal-form.md]
 - **Plan**: [521_truth_layer_simp_normal_form/plans/01_truth-layer-simp-normal-form.md]
+- **Summary**: [521_truth_layer_simp_normal_form/summaries/01_truth-layer-simp-normal-form-summary.md]
 
 **Description**: WAVE 2 (core utilities). Give the primary language's truth relation the @[simp] API its base-language mirror already has, and register the named simp set every truth-level proof should use. This is the highest-leverage single change in the review: five territory reviewers converged on it independently (A-03, C-04, B-13, D-06, D-07, D-10, D-21, C-05, C-17, A-13, A-17 in specs/reviews/2026-09-01-lean-engineering/{A-soundness,C-frames,B-completeness,D-tactics}.md; High H2 and utility U2/U13 in the review). MEASURED STATE: Semantics/BLTruth.lean:137-196 has neg_iff, top_true, and_iff, or_iff, diamond_iff, somePast_iff, someFuture_iff, always_iff, all @[simp]. Semantics/Truth.lean has none of and/or/neg/top/always/diamond, and its primitive clauses imp_iff (:192), box_iff (:237), bot_false (:182) are not @[simp], while strong_release_iff/strong_trigger_iff are @[simp] with zero uses. Consequences: truth_and_iff exists in four private copies (Correspondence/DurationFrames.lean:298, DedekindNonCompactness.lean:158 -- with a docstring choosing to duplicate rather than widen imports, Independence/CoNotPriorU.lean:180, Decidability/Verified/Decidable.lean:1408); 279 `simp only [...TruthAt...]` lists across the live scope (229 in the core scope); 144 simp lists naming Formula.neg and 51 naming Formula.and; 85 by_contra and ~60 hand-rolled `exact h_conj (fun ...)` de-conjunctions; proof comments such as `-- Goal: (((D1->F)->D2)->F) -> D3. For D1: intro h; exfalso; apply h; ...` at Soundness.lean:779. Validated: `Truth.imp_iff` is a drop-in for `simp only [TruthAt]` at DenseValidity.lean:302; the and_iff/or_iff proofs already compile in BLTruth. WORK: (1) in the Truth namespace of Semantics/Truth.lean add @[simp] neg_iff, top_true, and_iff, or_iff, diamond_iff, always_iff (both the three-conjunct form BLTruth uses and a collected `forall s` form, since DurationFrames.truth_of_always does that trichotomy by hand), kPlus_iff/kMinus_iff, and tag imp_iff/box_iff/bot_false; decide strong_release_iff/strong_trigger_iff deliberately (drop the attribute or delete). (2) `register_simp_attr truth_norm` covering the TruthAt equations plus every characterisation lemma, and `macro "truth_simp" loc? => simp only [truth_norm] loc?`; a `swap_norm` set over the nine Formula.swap_temporal_* lemmas. (3) Delete the four truth_and_iff copies, DurationFrames' truth_always_of_forall/truth_of_always, CoValidity.always_elim (:73), the surviving and_of_not_imp_not; move validOn_iff_total (Correspondence/FwdRec.lean:73) to Semantics/Validity.lean beside TaskFrame.ValidOn as TaskFrame.validOn_iff_total (C-17). (4) Tag the frame-constant atom-truth lemmas @[simp] (translationModel_atom, permissiveModel_atom, clock_atom_truth, zTruth_atom) and add the tau.val-normalised forms so the 8-site `rw [show tau.val = ... from rfl, ...]` idiom at DurationFrames.lean:409-531 becomes `simp` (C-05). (5) Add truthAt_atomFree_history_indep and truthAt_gap_shift beside Truth.box_const (:733) and derive discrete_box_necessity_valid and the four uniformity-axiom proofs (Soundness.lean:825-912) from them (A-17). (6) Rewrite the ~10 worst soundness proofs named in A-03 (linear_until_valid :715, linear_since_valid :752, temp_linearity_valid :347, enrichment_*_valid :610/:632, absorb_*_valid :673/:692, discreteness_forward_valid :472, temp_l_valid :293, the two Prior gap lemmas) against the new API as the proof that the set works; the mechanical sweep of the remaining soundness-layer sites is task 193's re-scoped charter. State the chosen simp-normal form in Truth.lean's module docstring. SEQUENCING: after task 518 (the global fold/unfold loop must be out of the default simp set before new @[simp] lemmas land) and after 519 (so DenseValidity's 600 dead lines are not rewritten). ACCEPTANCE: zero private copies of truth_and_iff / and_of_not_imp_not in the live tree; `simp only [...TruthAt...]` sites in the touched files down by at least 80%; the ten named proofs each at most half their current length; lake build green; C2 baseline unchanged.
 

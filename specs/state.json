@@ -1537,7 +1537,7 @@
     {
       "project_number": 521,
       "project_name": "truth_layer_simp_normal_form",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "topic": "metalogic",
       "priority": "high",
@@ -1563,7 +1563,7 @@
         "FormalSystem/Semantics/Correspondence/FwdRecBridge.lean"
       ],
       "created": "2026-09-02T03:30:31Z",
-      "last_updated": "2026-09-02T15:14:51Z",
+      "last_updated": "2026-09-02T16:31:33Z",
       "artifacts": [
         {
           "path": "specs/521_truth_layer_simp_normal_form/reports/01_truth-layer-simp-normal-form.md",
@@ -1573,6 +1573,11 @@
         {
           "path": "specs/521_truth_layer_simp_normal_form/plans/01_truth-layer-simp-normal-form.md",
           "type": "plan",
+          "summary": ""
+        },
+        {
+          "path": "specs/521_truth_layer_simp_normal_form/summaries/01_truth-layer-simp-normal-form-summary.md",
+          "type": "summary",
           "summary": ""
         }
       ],
