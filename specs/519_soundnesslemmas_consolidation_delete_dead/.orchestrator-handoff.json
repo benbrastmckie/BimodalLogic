@@ -1,0 +1,15 @@
+{
+  "dispatch_seq": 1,
+  "task_number": 519,
+  "phase": "research",
+  "status": "researched",
+  "session_id": "sess_1788332773_c2fa9f_519",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/519_soundnesslemmas_consolidation_delete_dead/reports/01_soundnesslemmas-dead-code-reachability.md",
+      "summary": "Reachability audit, six-phase dependency map, risk analysis, and line-count projection for the SoundnessLemmas consolidation."
+    }
+  ],
+  "notes": "SCOPE GAP: FormalSystem/Metalogic/Decidability/Verified/Decidable.lean:2413 is a live consumer of SoundnessLemmas.IsValid and must be edited to complete the IsValid deletion; it is absent from the task's declared file scope. Five dead declarations beyond those named in the task description were found (valid_at_triple, truth_at_swap_swap, and_extract, swap_axiom_F_until_equiv_valid, swap_axiom_P_since_equiv_valid). No foreign modifications observed in FormalSystem/; no lake build running."
+}

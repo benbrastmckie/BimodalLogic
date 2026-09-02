@@ -1,0 +1,16 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/519_soundnesslemmas_consolidation_delete_dead/reports/01_soundnesslemmas-dead-code-reachability.md",
+      "summary": "Reachability audit of SoundnessLemmas/ dead code with per-declaration occurrence ledger, six-phase dependency-ordered plan map, risk analysis of the IsValid->ValidIn restatement (requires out-of-scope Decidable.lean edit), and line-count projection (~1,228 vs the 1,400 target)."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1788332773_c2fa9f_519",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}

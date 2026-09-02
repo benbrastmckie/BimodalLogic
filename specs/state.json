@@ -1454,7 +1454,7 @@
     {
       "project_number": 519,
       "project_name": "soundnesslemmas_consolidation_delete_dead",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "topic": "metalogic",
       "priority": "high",
@@ -1466,17 +1466,24 @@
         "FormalSystem/Metalogic/SoundnessLemmas/",
         "FormalSystem/Metalogic/SoundnessLemmas.lean",
         "FormalSystem/Metalogic/Soundness.lean",
-        "FormalSystem/Metalogic/SoundnessLemmas/README.md"
+        "FormalSystem/Metalogic/SoundnessLemmas/README.md",
+        "FormalSystem/Metalogic/Decidability/Verified/Decidable.lean"
       ],
       "created": "2026-09-02T03:30:31Z",
-      "last_updated": "2026-09-02T03:30:31Z",
-      "artifacts": [],
-      "session_id": "sess_1788317385_2ae65c"
+      "last_updated": "2026-09-02T13:42:11Z",
+      "artifacts": [
+        {
+          "path": "specs/519_soundnesslemmas_consolidation_delete_dead/reports/01_soundnesslemmas-dead-code-reachability.md",
+          "type": "report",
+          "summary": "Reachability audit, six-phase dependency map, risk analysis, and line-count projection for the SoundnessLemmas consolidation."
+        }
+      ],
+      "session_id": "sess_1788332773_c2fa9f_519"
     },
     {
       "project_number": 520,
       "project_name": "bundle_retirement_and_cycle_breaking",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "lean4",
       "topic": "metalogic",
       "priority": "medium",
@@ -1496,9 +1503,9 @@
         "FormalSystem/Boneyard/"
       ],
       "created": "2026-09-02T03:30:31Z",
-      "last_updated": "2026-09-02T03:30:31Z",
+      "last_updated": "2026-09-02T07:09:06Z",
       "artifacts": [],
-      "session_id": "sess_1788317385_2ae65c"
+      "session_id": "sess_1788332773_c2fa9f_520"
     },
     {
       "project_number": 521,
