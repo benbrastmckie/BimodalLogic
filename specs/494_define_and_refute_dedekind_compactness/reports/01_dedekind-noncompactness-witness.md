@@ -1,6 +1,13 @@
 # Dedekind Non-Compactness: Vocabulary Instantiation and a New Witness
 
 **Task**: 494 — define_and_refute_dedekind_compactness
+- **Started**: TBD
+- **Completed**: TBD
+- **Effort**: TBD
+- **Dependencies**: TBD
+- **Sources/Inputs**: TBD
+- **Artifacts**: TBD
+- **Standards**: TBD
 **Type**: lean4 · **Session**: sess_1788308014_451fe6 · **Dispatch**: 1
 
 ## Executive summary

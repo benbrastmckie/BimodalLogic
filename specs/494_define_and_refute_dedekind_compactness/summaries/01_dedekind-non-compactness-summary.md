@@ -5,6 +5,10 @@
 - **Plan**: `specs/494_define_and_refute_dedekind_compactness/plans/01_dedekind-non-compactness-refutation.md`
 - **Research**: `specs/494_define_and_refute_dedekind_compactness/reports/01_dedekind-noncompactness-witness.md`
 - **Status**: All five phases [COMPLETED]
+- **Started**: TBD
+- **Completed**: TBD
+- **Artifacts**: TBD
+- **Standards**: TBD
 
 ## What Was Built
 

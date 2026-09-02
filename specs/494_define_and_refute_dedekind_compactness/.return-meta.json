@@ -50,10 +50,27 @@
     "session_id": "sess_1788308014_451fe6",
     "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
     "compliance_check": "passed",
     "phases_completed": 5,
     "phases_total": 5,
-    "deviations": 6
+    "deviations": 6,
+    "cycles_used": 3,
+    "final_state": "completed",
+    "detected_defects": [
+      {
+        "task": 494,
+        "defect_class": "ARTIFACTS_SHAPE_MISMATCH",
+        "attributed_source_path": "agent-system/extensions/lean/agents/lean-implementation-agent.md",
+        "detecting_site": "skill-orchestrate/SKILL.md:stage-5-handoff-present-probe",
+        "cycle": 2,
+        "detail": "handoff .artifacts is an object keyed by type, not an array; .artifacts[0].path resolves null",
+        "record_result": "evt_1788310626273_kP6Xbc"
+      }
+    ]
   }
 }
