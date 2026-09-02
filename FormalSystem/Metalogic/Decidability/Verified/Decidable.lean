@@ -2369,7 +2369,7 @@ none of them consumes `OrdWithin` and none has an ordering obligation at all. Wh
 exactly the consequent of a discreteness axiom whose antecedent the branch already carries, at
 the very same label — so each proof is one instantiation of an already-proved validity lemma
 followed by semantic modus ponens against `hst.sat`. There is no new mathematics here and none
-should be attempted: `prior_UZ_is_valid`, `prior_SZ_is_valid` and `z1_is_valid`
+should be attempted: `prior_UZ_valid`, `prior_SZ_valid` and `z1_valid`
 (`Metalogic/SoundnessLemmas/FrameClassVariants.lean`) already do the `SuccOrder`/`PredOrder`
 descent work, and re-deriving it inside the decidability tree would be several hundred lines of
 duplicated Mathlib.
@@ -2424,7 +2424,7 @@ theorem truthAt_of_validDiscrete {F : FrameOver (TemporalOrder.of D)} {M : TaskM
 /-- `T(F ψ)` gives `T(U(ψ, ¬ψ))` at the **same** label — the consequent of Prior-UZ, whose
 antecedent is the source formula. On a discrete order `F ψ` has a *nearest* `ψ`-point, and `¬ψ`
 guards the interval strictly below it; that is the whole content, and it is
-`prior_UZ_is_valid`. -/
+`prior_UZ_valid`. -/
 theorem ruleSound_priorUZ : RuleSound carrierDiscrete .priorUZ := by
   intro D _ _ _ _ hC F M hist tv b sf ord hmem hst _
   obtain ⟨hs, hp, ha, hb⟩ := hC
@@ -2453,7 +2453,7 @@ theorem ruleSound_priorUZ : RuleSound carrierDiscrete .priorUZ := by
         rw [List.mem_singleton] at hc
         subst hc
         simpa [SatAt, SignedFormula.pos] using
-          truthAt_of_validDiscrete (SoundnessLemmas.prior_UZ_is_valid ψ) (hist l.world)
+          truthAt_of_validDiscrete (SoundnessLemmas.prior_UZ_valid ψ) (hist l.world)
             (hst.histTotal l.world) (tv l.time) hsrc
 
 /-- `T(P ψ)` gives `T(S(ψ, ¬ψ))` at the same label — Prior-SZ, the exact time reversal of
@@ -2486,13 +2486,13 @@ theorem ruleSound_priorSZ : RuleSound carrierDiscrete .priorSZ := by
         rw [List.mem_singleton] at hc
         subst hc
         simpa [SatAt, SignedFormula.pos] using
-          truthAt_of_validDiscrete (SoundnessLemmas.prior_SZ_is_valid ψ) (hist l.world)
+          truthAt_of_validDiscrete (SoundnessLemmas.prior_SZ_valid ψ) (hist l.world)
             (hst.histTotal l.world) (tv l.time) hsrc
 
 /-- `T(G(Gφ → φ))` together with `T(F(Gφ))` at the same label gives `T(Gφ)` there — Z1, the
 discrete backward-induction axiom. Unlike the other two `.Discrete` rules this one is *binary*:
 its second premise is read off the branch by `branch.contains` rather than from the source
-formula, so the proof instantiates `z1_is_valid` and then applies it to **two** hypotheses, the
+formula, so the proof instantiates `z1_valid` and then applies it to **two** hypotheses, the
 source's `hst.sat` and the partner's. -/
 theorem ruleSound_z1Rule : RuleSound carrierDiscrete .z1Rule := by
   intro D _ _ _ _ hC F M hist tv b sf ord hmem hst _
@@ -2536,7 +2536,7 @@ theorem ruleSound_z1Rule : RuleSound carrierDiscrete .z1Rule := by
       rw [List.mem_singleton] at hc
       subst hc
       simpa [SatAt, SignedFormula.pos] using
-        truthAt_of_validDiscrete (SoundnessLemmas.z1_is_valid inner) (hist l.world)
+        truthAt_of_validDiscrete (SoundnessLemmas.z1_valid inner) (hist l.world)
           (hst.histTotal l.world) (tv l.time) hsrc hfgs
 
 /-!

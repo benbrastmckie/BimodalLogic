@@ -45,7 +45,7 @@ and MT is valid, this is immediate.
 **Proof**: The swapped form is `(box φ.swapTemporal).imp φ.swapTemporal`.
 At any triple (M, τ, t), if box φ.swap holds, then φ.swap holds at (M, τ, t) specifically.
 -/
-theorem swap_axiom_mt_valid (φ : Formula) :
+theorem mt_swap_valid (φ : Formula) :
     ValidIn FrameClass.Base ((Formula.box φ).imp φ).swapTemporal := by
   refine ValidIn.of_forall_total ?_
   intro F _ M τ hτ t
@@ -63,7 +63,7 @@ This is still M4, just applied to swapped formula.
 "φ.swap holds at all total histories at t"
 holds at all total histories at t (trivially, as this is a global property).
 -/
-theorem swap_axiom_m4_valid (φ : Formula) :
+theorem m4_swap_valid (φ : Formula) :
     ValidIn FrameClass.Base ((Formula.box φ).imp (Formula.box (Formula.box φ))).swapTemporal := by
   refine ValidIn.of_forall_total ?_
   intro F _ M τ _hτ t
@@ -81,7 +81,7 @@ This is still MB, just applied to swapped formula.
 at σ.
 The diamond means "there exists some total history where it holds". We have τ witnessing this.
 -/
-theorem swap_axiom_mb_valid (φ : Formula) :
+theorem mb_swap_valid (φ : Formula) :
     ValidIn FrameClass.Base (φ.imp (Formula.box φ.diamond)).swapTemporal := by
   refine ValidIn.of_forall_total ?_
   intro F _ M τ hτ t
@@ -101,7 +101,7 @@ histories σ at time t, P(swap φ) holds at σ (i.e., swap φ holds at all times
 Totality of the shifted history is `WorldHistory.isTotal_timeShift`; no shift-closure side
 condition is required.
 -/
-theorem swap_axiom_mf_valid (φ : Formula) :
+theorem mf_swap_valid (φ : Formula) :
     ValidIn FrameClass.Base
       ((Formula.box φ).imp (Formula.box (Formula.allFuture φ))).swapTemporal := by
   refine ValidIn.of_forall_total ?_
@@ -592,8 +592,10 @@ future- and past-directed forms.
 The proof uses linearity of D (the `lt_trichotomy` from `LinearOrder`). Given witnesses
 s1 > t for φ and s2 > t for ψ, either s1 < s2 (take r = s1, giving F(φ ∧ F(ψ))),
 s1 = s2 (giving F(φ ∧ ψ)), or s2 < s1 (take r = s2, giving F(F(φ) ∧ ψ)).
+
+This is the `ValidIn .Base` form of the `⊨`-shaped `Metalogic.temp_linearity_valid` (`Metalogic/Soundness.lean`); the two are equated by `Validity.valid_iff_validIn_base`.
 -/
-theorem axiom_temp_linearity_valid (φ ψ : Formula) :
+theorem temp_linearity_valid (φ ψ : Formula) :
     ValidIn FrameClass.Base (Formula.and (Formula.someFuture φ) (Formula.someFuture ψ) |>.imp
       (Formula.or (Formula.someFuture (Formula.and φ ψ))
         (Formula.or (Formula.someFuture (Formula.and φ (Formula.someFuture ψ)))
@@ -625,8 +627,10 @@ theorem axiom_temp_linearity_valid (φ ψ : Formula) :
 
 /-- Past temporal linearity axiom validity (BX11'):
 `P(φ) ∧ P(ψ) → P(φ ∧ ψ) ∨ P(φ ∧ P(ψ)) ∨ P(P(φ) ∧ ψ)` is locally valid.
-Mirror of `axiom_temp_linearity_valid` for the past direction. -/
-theorem axiom_temp_linearity_past_valid (φ ψ : Formula) :
+Mirror of `temp_linearity_valid` for the past direction.
+
+This is the `ValidIn .Base` form of the `⊨`-shaped `Metalogic.temp_linearity_past_valid` (`Metalogic/Soundness.lean`); the two are equated by `Validity.valid_iff_validIn_base`. -/
+theorem temp_linearity_past_valid (φ ψ : Formula) :
     ValidIn FrameClass.Base (Formula.and (Formula.somePast φ) (Formula.somePast ψ) |>.imp
       (Formula.or (Formula.somePast (Formula.and φ ψ))
         (Formula.or (Formula.somePast (Formula.and φ (Formula.somePast ψ)))
@@ -659,8 +663,10 @@ theorem axiom_temp_linearity_past_valid (φ ψ : Formula) :
 /-- F-Until equivalence axiom validity (BX12):
 `F(φ) → (⊤ U φ)` is locally valid.
 If there exists s ≥ t with φ(s), then ⊤ U φ holds at t (take witness s, guard ⊤ = ¬⊥ is trivially
-satisfied). -/
-theorem axiom_F_until_equiv_valid (φ : Formula) :
+satisfied).
+
+This is the `ValidIn .Base` form of the `⊨`-shaped `Metalogic.F_until_equiv_valid` (`Metalogic/Soundness.lean`); the two are equated by `Validity.valid_iff_validIn_base`. -/
+theorem F_until_equiv_valid (φ : Formula) :
     ValidIn FrameClass.Base ((Formula.someFuture φ).imp
       (Formula.untl (Formula.bot.imp Formula.bot) φ)) := by
   refine ValidIn.of_forall_total ?_
@@ -670,8 +676,10 @@ theorem axiom_F_until_equiv_valid (φ : Formula) :
   exact ⟨s, hts, h_φs, fun _ _ _ hf => absurd hf not_false⟩
 
 /-- P-Since equivalence axiom validity (BX12'):
-`P(φ) → (⊤ S φ)` is locally valid. Past dual of F-Until equivalence. -/
-theorem axiom_P_since_equiv_valid (φ : Formula) :
+`P(φ) → (⊤ S φ)` is locally valid. Past dual of F-Until equivalence.
+
+This is the `ValidIn .Base` form of the `⊨`-shaped `Metalogic.P_since_equiv_valid` (`Metalogic/Soundness.lean`); the two are equated by `Validity.valid_iff_validIn_base`. -/
+theorem P_since_equiv_valid (φ : Formula) :
     ValidIn FrameClass.Base ((Formula.somePast φ).imp
       (Formula.snce (Formula.bot.imp Formula.bot) φ)) := by
   refine ValidIn.of_forall_total ?_
@@ -707,9 +715,9 @@ theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) (h_fc :
   cases h with
   | prop_k ψ χ ρ => exact prop_k_swap_valid ψ χ ρ
   | prop_s ψ χ => exact prop_s_swap_valid ψ χ
-  | modal_t ψ => exact swap_axiom_mt_valid ψ
-  | modal_4 ψ => exact swap_axiom_m4_valid ψ
-  | modal_b ψ => exact swap_axiom_mb_valid ψ
+  | modal_t ψ => exact mt_swap_valid ψ
+  | modal_4 ψ => exact m4_swap_valid ψ
+  | modal_b ψ => exact mb_swap_valid ψ
   | modal_5_collapse ψ => exact modal_5_collapse_swap_valid ψ
   | ex_falso ψ => exact ex_falso_swap_valid ψ
   | peirce ψ χ => exact peirce_swap_valid ψ χ
@@ -735,13 +743,13 @@ theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) (h_fc :
   -- open-guard refactor)
   | until_F φ ψ => exact until_F_swap_valid φ ψ
   | since_P φ ψ => exact since_P_swap_valid φ ψ
-  | temp_linearity φ ψ => exact axiom_temp_linearity_past_valid φ.swapTemporal ψ.swapTemporal
-  | temp_linearity_past φ ψ => exact axiom_temp_linearity_valid φ.swapTemporal ψ.swapTemporal
-  | F_until_equiv φ => exact axiom_P_since_equiv_valid φ.swapTemporal
-  | P_since_equiv φ => exact axiom_F_until_equiv_valid φ.swapTemporal
+  | temp_linearity φ ψ => exact temp_linearity_past_valid φ.swapTemporal ψ.swapTemporal
+  | temp_linearity_past φ ψ => exact temp_linearity_valid φ.swapTemporal ψ.swapTemporal
+  | F_until_equiv φ => exact P_since_equiv_valid φ.swapTemporal
+  | P_since_equiv φ => exact F_until_equiv_valid φ.swapTemporal
   -- NOTE: until_guard / since_guard match arms removed (constructors deleted in the
   -- open-guard refactor)
-  | modal_future ψ => exact swap_axiom_mf_valid ψ
+  | modal_future ψ => exact mf_swap_valid ψ
   | discrete_symm_fwd => exact discrete_symm_fwd_swap_valid
   | discrete_symm_bwd => exact discrete_symm_bwd_swap_valid
   | discrete_propagate_fwd => exact discrete_propagate_fwd_swap_valid
@@ -769,7 +777,7 @@ constraint `h.minFrameClass ≤ .Discrete` structurally excludes the density axi
 /-- Prior-UZ is valid on discrete orders: F(φ) → U(φ, ¬φ).
 The nearest future witness where φ holds satisfies Until with ¬φ as guard.
 Uses Nat.find for well-founded descent on the succ chain. -/
-theorem prior_UZ_is_valid (φ : Formula) :
+theorem prior_UZ_valid (φ : Formula) :
     ValidDiscrete (φ.someFuture.imp (Formula.untl φ.neg φ)) := by
   refine ValidIn.of_forall_total ?_
   intro F hF M τ _hτ t
@@ -809,8 +817,8 @@ theorem prior_UZ_is_valid (φ : Formula) :
     exact hk₀_min j hj_lt
 
 /-- Prior-SZ is valid on discrete orders: P(φ) → S(φ, ¬φ).
-Mirror of prior_UZ_is_valid using pred chain and IsPredArchimedean. -/
-theorem prior_SZ_is_valid (φ : Formula) :
+Mirror of prior_UZ_valid using pred chain and IsPredArchimedean. -/
+theorem prior_SZ_valid (φ : Formula) :
     ValidDiscrete (φ.somePast.imp (Formula.snce φ.neg φ)) := by
   refine ValidIn.of_forall_total ?_
   intro F hF M τ _hτ t
@@ -850,7 +858,7 @@ theorem prior_SZ_is_valid (φ : Formula) :
 
 /-- Z1 is valid on discrete orders: G(Gφ→φ) → (FGφ→Gφ).
 Backward induction from the Gφ witness using IsSuccArchimedean. -/
-theorem z1_is_valid (φ : Formula) :
+theorem z1_valid (φ : Formula) :
     ValidDiscrete ((φ.allFuture.imp φ).allFuture.imp
       (φ.allFuture.someFuture.imp φ.allFuture)) := by
   refine ValidIn.of_forall_total ?_
@@ -913,7 +921,7 @@ theorem z1_is_valid (φ : Formula) :
 
 /-- Z1 past dual is valid on discrete orders: H(Hφ→φ) → (PHφ→Hφ).
 Backward induction using IsPredArchimedean. -/
-theorem z1_past_is_valid (φ : Formula) :
+theorem z1_past_valid (φ : Formula) :
     ValidDiscrete ((φ.allPast.imp φ).allPast.imp
       (φ.allPast.somePast.imp φ.allPast)) := by
   refine ValidIn.of_forall_total ?_

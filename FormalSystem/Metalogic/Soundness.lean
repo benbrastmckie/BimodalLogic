@@ -757,22 +757,17 @@ theorem discrete_box_necessity_valid :
   intro F M τ _hτ t
   exact fun h σ _ => (Truth.truthAt_atomFree_history_indep M _ rfl τ σ t).mp h
 
-/-- Prior-UZ is valid on discrete orders: F(φ) → U(φ, ¬φ).
-If φ holds at some future time, there is a nearest future time where φ holds. -/
-theorem prior_UZ_valid (φ : Formula) :
-    ValidDiscrete (φ.someFuture.imp (Formula.untl φ.neg φ)) :=
-  SoundnessLemmas.prior_UZ_is_valid φ
+/-! ### The three discrete Prior/Z1 validities, re-exported rather than re-wrapped
 
-/-- Prior-SZ is valid on discrete orders: P(φ) → S(φ, ¬φ).
-If φ held at some past time, there is a nearest past time where φ held. -/
-theorem prior_SZ_valid (φ : Formula) : ValidDiscrete (φ.somePast.imp (Formula.snce φ.neg φ)) :=
-  SoundnessLemmas.prior_SZ_is_valid φ
+`prior_UZ_valid`, `prior_SZ_valid` and `z1_valid` are proved once, in
+`SoundnessLemmas/FrameClassVariants.lean`. This module used to restate each as a one-line wrapper
+theorem of the same name; after the axiom-validity name normalisation that would
+put two identically-named theorems in sibling namespaces (`FormalSystem.Metalogic` and
+`FormalSystem.Metalogic.SoundnessLemmas`), which is a resolution hazard at every site that opens
+both. They are `export`ed instead, so `Metalogic.prior_UZ_valid` still resolves and there is
+exactly one theorem behind the name. -/
 
-/-- Z1 is valid on discrete orders: G(Gφ→φ) → (FGφ→Gφ).
-Backward induction from the Gφ witness using IsSuccArchimedean. -/
-theorem z1_valid (φ : Formula) : ValidDiscrete
-    ((φ.allFuture.imp φ).allFuture.imp (φ.allFuture.someFuture.imp φ.allFuture)) :=
-  SoundnessLemmas.z1_is_valid φ
+export SoundnessLemmas (prior_UZ_valid prior_SZ_valid z1_valid)
 
 /-! ## Validity-preserving forms of the two necessitation rules
 
@@ -1035,7 +1030,7 @@ Unlike the Prior pair -- where `Formula.swapTemporal` carries `prior_U_gap` onto
 definitionally (verified by `rfl`), so those two lemmas cover each other's swap -- Sep is not
 self-covering under the swap: `(sep φ).swapTemporal` exchanges `K⁺`/`K⁻` and `U`/`S`, and the
 result is NOT an instance of `Axiom.sep`. It is therefore a genuinely separate semantic fact and
-gets its own lemma, matching the tree's `swap_axiom_*_valid` convention in
+gets its own lemma, matching the tree's `<axiom>_swap_valid` convention in
 `SoundnessLemmas/FrameClassVariants.lean` (none bundled with its unswapped partner).
 
 Stated separately from `sep_valid` rather than folded into a conjunction with it: the two are
@@ -1202,9 +1197,9 @@ theorem axiom_swap_validIn_min {φ : Formula} (ax : Axiom φ) :
   · cases ax with
     | density a0 => exact density_swap_valid a0
     | dense_indicator => exact dense_indicator_swap_valid
-    | prior_UZ a0 => exact SoundnessLemmas.prior_SZ_is_valid a0.swapTemporal
-    | prior_SZ a0 => exact SoundnessLemmas.prior_UZ_is_valid a0.swapTemporal
-    | z1 a0 => exact SoundnessLemmas.z1_past_is_valid a0.swapTemporal
+    | prior_UZ a0 => exact SoundnessLemmas.prior_SZ_valid a0.swapTemporal
+    | prior_SZ a0 => exact SoundnessLemmas.prior_UZ_valid a0.swapTemporal
+    | z1 a0 => exact SoundnessLemmas.z1_past_valid a0.swapTemporal
     | prior_U_gap a0 => exact prior_S_gap_valid a0.swapTemporal
     | prior_S_gap a0 => exact prior_U_gap_valid a0.swapTemporal
     | sep a0 => exact sep_swap_valid a0

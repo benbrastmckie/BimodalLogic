@@ -926,7 +926,7 @@ unchanged after the pass — that invariant is the real guard against Hazard 1.
 
 ---
 
-### Phase 10: The naming pass [NOT STARTED]
+### Phase 10: The naming pass [IN PROGRESS]
 
 **Goal**: One spelling for axiom-validity lemmas, and `Valid` for the base validity predicate —
 without creating same-named theorems across sibling namespaces or breaking `Automation`.
