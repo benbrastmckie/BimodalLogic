@@ -590,7 +590,7 @@ with a fresh `grep -rn "LexCarrier\|LexIntWitness" --include=*.lean .` before ge
 
 ---
 
-### Phase 9: `TruthIso` structure and the generic `truthAt_of_truthIso` [NOT STARTED]
+### Phase 9: `TruthIso` structure and the generic `truthAt_of_truthIso` [COMPLETED]
 
 **Goal**: Land the one generic truth-transport lemma. **Structure and generic proof only — no
 derivations in this phase.**

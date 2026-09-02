@@ -1059,4 +1059,114 @@ theorem truthAt_gap_iff_cogap (M : TaskModel F) (τ : WorldHistory F) (t : F.Dur
 
 end Truth
 
+/-! ## Truth isomorphisms — the generic transport
+
+Five hand-written `induction φ` transport proofs used to sit across `Semantics/` and
+`Independence/`, each ~70-230 lines, each re-running the same six-constructor case analysis to
+say that some particular reindexing of times and histories preserves truth. `TruthIso` is the
+data such a reindexing consists of, and `truthAt_of_truthIso` is the induction, run once.
+
+### Why `hist` is an honest equivalence and not a map
+
+`TruthAt`'s `box` clause quantifies over **all** total histories of the frame. Transporting it
+therefore needs both directions: the forward direction of `↔` must produce, for an arbitrary
+total history of `F'`, a total history of `F` to feed the hypothesis. A one-way
+`F.HF → F'.HF` cannot do that, and the hand-written proofs paid for the gap with bespoke
+round-trip cancellation lemmas (`TimeShift.truth_double_shift_cancel` was exactly such a lemma,
+existing only to serve `time_shift_preserves_truth`'s box case). With `hist : F.HF ≃ F'.HF` the
+round trip is `Equiv.surjective` and the bespoke lemmas become deletable.
+
+### Why `atom` is quantified over all histories
+
+For the same reason: the `atom` field has to hold at every `τ : F.HF`, not at one distinguished
+history, because the `box` case applies the induction hypothesis at a history the caller did not
+choose. A per-history atom hypothesis would not survive the box case — which is precisely why
+`Correspondence/FwdRecPeriodicity.truthAt_add_hist_period` is **not** an instance of this
+structure and keeps its own induction; see its docstring.
+-/
+
+/--
+**A truth isomorphism between two task models.**
+
+`dur` reindexes times by an order isomorphism, `hist` reindexes total histories by an
+equivalence, and `atom` says the two models agree on atomic truth under that reindexing. The
+three together are exactly what `truthAt_of_truthIso`'s six cases consume: `dur`'s order
+preservation for `untl`/`snce`, `hist`'s surjectivity for `box`, and `atom` for `atom`.
+-/
+structure TruthIso {F F' : TaskFrame} (M : TaskModel F) (M' : TaskModel F') where
+  /-- Times reindex by an order isomorphism — order preservation is what `untl`/`snce` need. -/
+  dur : F.Duration ≃o F'.Duration
+  /-- Total histories reindex by an **equivalence**; see the section note on why not a map. -/
+  hist : F.HF ≃ F'.HF
+  /-- Atomic truth agrees under the reindexing, at **every** total history. -/
+  atom : ∀ (τ : F.HF) (t : F.Duration) (p : Atom),
+    M.valuation (τ.val.states t (τ.property t)) p ↔
+      M'.valuation ((hist τ).val.states (dur t) ((hist τ).property (dur t))) p
+
+namespace Truth
+
+/--
+**The generic truth transport.**
+
+One `induction φ` over `Formula`'s six constructors, discharging every transport a `TruthIso`
+can express. The body is written against the `truth_norm` characterisation lemmas
+(`Automation/TruthNormAttr.lean`) — `imp_iff`, `box_iff`, `untl_iff`, `snce_iff` — rather than
+`simp only [TruthAt]`, which is what keeps it short.
+
+The `box` case is where `hist` being an equivalence is spent: `I.hist.surjective` produces the
+`F`-side history the hypothesis needs from an arbitrary `F'`-side one, with no round-trip
+cancellation lemma. The `untl` and `snce` cases spend `dur`'s surjectivity the same way on the
+guard's bounded quantifier, and `OrderIso.lt_iff_lt` in both directions on the bounds.
+-/
+theorem truthAt_of_truthIso {F F' : TaskFrame} {M : TaskModel F} {M' : TaskModel F'}
+    (I : TruthIso M M') (φ : Formula) (τ : F.HF) (t : F.Duration) :
+    TruthAt M τ.val t φ ↔ TruthAt M' (I.hist τ).val (I.dur t) φ := by
+  induction φ generalizing τ t with
+  | atom p =>
+      rw [atom_iff_of_domain (τ.property t) p,
+        atom_iff_of_domain ((I.hist τ).property (I.dur t)) p]
+      exact I.atom τ t p
+  | bot => simp
+  | imp φ ψ ihφ ihψ =>
+      simp only [imp_iff]
+      rw [ihφ τ t, ihψ τ t]
+  | box φ ih =>
+      simp only [box_iff]
+      constructor
+      · intro h σ' hσ'
+        obtain ⟨τ', hτ'⟩ := I.hist.surjective ⟨σ', hσ'⟩
+        have key := (ih τ' t).mp (h _ τ'.property)
+        rw [hτ'] at key
+        exact key
+      · intro h σ hσ
+        exact (ih ⟨σ, hσ⟩ t).mpr (h _ (I.hist ⟨σ, hσ⟩).property)
+  | untl ψ φ ihψ ihφ =>
+      simp only [untl_iff]
+      constructor
+      · rintro ⟨s, hts, hs, hmin⟩
+        refine ⟨I.dur s, I.dur.lt_iff_lt.mpr hts, (ihφ τ s).mp hs, ?_⟩
+        intro r' h1 h2
+        obtain ⟨r, rfl⟩ := I.dur.surjective r'
+        exact (ihψ τ r).mp (hmin r (I.dur.lt_iff_lt.mp h1) (I.dur.lt_iff_lt.mp h2))
+      · rintro ⟨s', hts', hs', hmin'⟩
+        obtain ⟨s, rfl⟩ := I.dur.surjective s'
+        refine ⟨s, I.dur.lt_iff_lt.mp hts', (ihφ τ s).mpr hs', ?_⟩
+        intro r h1 h2
+        exact (ihψ τ r).mpr (hmin' (I.dur r) (I.dur.lt_iff_lt.mpr h1) (I.dur.lt_iff_lt.mpr h2))
+  | snce ψ φ ihψ ihφ =>
+      simp only [snce_iff]
+      constructor
+      · rintro ⟨s, hst, hs, hmin⟩
+        refine ⟨I.dur s, I.dur.lt_iff_lt.mpr hst, (ihφ τ s).mp hs, ?_⟩
+        intro r' h1 h2
+        obtain ⟨r, rfl⟩ := I.dur.surjective r'
+        exact (ihψ τ r).mp (hmin r (I.dur.lt_iff_lt.mp h1) (I.dur.lt_iff_lt.mp h2))
+      · rintro ⟨s', hst', hs', hmin'⟩
+        obtain ⟨s, rfl⟩ := I.dur.surjective s'
+        refine ⟨s, I.dur.lt_iff_lt.mp hst', (ihφ τ s).mpr hs', ?_⟩
+        intro r h1 h2
+        exact (ihψ τ r).mpr (hmin' (I.dur r) (I.dur.lt_iff_lt.mpr h1) (I.dur.lt_iff_lt.mpr h2))
+
+end Truth
+
 end FormalSystem.Semantics
