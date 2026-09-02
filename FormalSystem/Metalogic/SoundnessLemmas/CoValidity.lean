@@ -73,10 +73,12 @@ Hilbert-side companion is `FormalSystem.Theorems.DedekindDerived.co_derived`. Se
 `Formula.co` for the source citation and the operator-resolution warning.
 -/
 theorem co_valid (φ : Formula) : ValidDedekindDense (Formula.co φ) := by
-  -- `ValidDedekindDense.of_forall` restores the pre-abbreviation binder shape: the frame, its
-  -- density instance, the LUB hypothesis, the model, the history, its totality, and the time.
-  refine ValidDedekindDense.of_forall ?_
-  intro F _ h_lub M τ _h_sc t
+  -- `ValidIn.of_forall_total` restores the frame-condition-explicit binder shape; `sat_intro`
+  -- then splits `Sat .Dedekind F` into the density instance and the LUB hypothesis, keeping the
+  -- latter under the caller's own name.
+  refine ValidIn.of_forall_total ?_
+  intro F h_lub M τ _hτ t
+  sat_intro h_lub
   simp only [Formula.co]
   intro h_tri h_H
   have h_all := (Truth.always_iff _).mp h_tri

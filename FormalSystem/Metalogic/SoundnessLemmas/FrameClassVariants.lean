@@ -48,10 +48,10 @@ At any triple (M, τ, t), if box φ.swap holds, then φ.swap holds at (M, τ, t)
 theorem swap_axiom_mt_valid (φ : Formula) :
     ValidIn FrameClass.Base ((Formula.box φ).imp φ).swapTemporal := by
   refine ValidIn.of_forall_total ?_
-  intro F _ M τ h_mem t
+  intro F _ M τ hτ t
   simp only [Formula.swapTemporal, TruthAt]
   intro h_box_swap_φ
-  exact h_box_swap_φ τ h_mem
+  exact h_box_swap_φ τ hτ
 
 /--
 Modal 4 axiom (M4) is self-dual under swap: `box φ -> box box φ` swaps to `box(swap φ) -> box
@@ -84,11 +84,11 @@ The diamond means "there exists some total history where it holds". We have τ w
 theorem swap_axiom_mb_valid (φ : Formula) :
     ValidIn FrameClass.Base (φ.imp (Formula.box φ.diamond)).swapTemporal := by
   refine ValidIn.of_forall_total ?_
-  intro F _ M τ h_mem t
+  intro F _ M τ hτ t
   simp only [Formula.swapTemporal, Formula.diamond, Formula.neg]
   simp only [TruthAt]
   intro h_swap_φ σ _h_σ_mem h_all_not
-  exact h_all_not τ h_mem h_swap_φ
+  exact h_all_not τ hτ h_swap_φ
 
 /--
 Modal-Future axiom (MF) swaps to a valid formula: `box φ -> box Fφ` swaps to `box(swap φ) -> box
@@ -771,8 +771,9 @@ The nearest future witness where φ holds satisfies Until with ¬φ as guard.
 Uses Nat.find for well-founded descent on the succ chain. -/
 theorem prior_UZ_is_valid (φ : Formula) :
     ValidDiscrete (φ.someFuture.imp (Formula.untl φ.neg φ)) := by
-  refine ValidDiscrete.of_forall ?_
-  intro F _ _ _ _ M τ _hτ t
+  refine ValidIn.of_forall_total ?_
+  intro F hF M τ _hτ t
+  sat_intro hF
   simp only [Formula.neg, TruthAt, Truth.some_future_iff]
   intro ⟨s, hts, hs⟩
   obtain ⟨n, hn⟩ := (Order.succ_le_of_lt hts).exists_succ_iterate
@@ -811,8 +812,9 @@ theorem prior_UZ_is_valid (φ : Formula) :
 Mirror of prior_UZ_is_valid using pred chain and IsPredArchimedean. -/
 theorem prior_SZ_is_valid (φ : Formula) :
     ValidDiscrete (φ.somePast.imp (Formula.snce φ.neg φ)) := by
-  refine ValidDiscrete.of_forall ?_
-  intro F _ _ _ _ M τ _hτ t
+  refine ValidIn.of_forall_total ?_
+  intro F hF M τ _hτ t
+  sat_intro hF
   simp only [Formula.neg, TruthAt, Truth.some_past_iff]
   intro ⟨s, hst, hs⟩
   obtain ⟨n, hn⟩ := (Order.le_pred_of_lt hst).exists_pred_iterate
@@ -851,8 +853,9 @@ Backward induction from the Gφ witness using IsSuccArchimedean. -/
 theorem z1_is_valid (φ : Formula) :
     ValidDiscrete ((φ.allFuture.imp φ).allFuture.imp
       (φ.allFuture.someFuture.imp φ.allFuture)) := by
-  refine ValidDiscrete.of_forall ?_
-  intro F _ _ _ _ M τ _hτ t
+  refine ValidIn.of_forall_total ?_
+  intro F hF M τ _hτ t
+  sat_intro hF
   simp only [TruthAt, Truth.future_iff, Truth.some_future_iff]
   intro h_GGpIp ⟨s₀, hts₀, hs₀⟩
   obtain ⟨n₀, hn₀⟩ := (Order.succ_le_of_lt hts₀).exists_succ_iterate
@@ -913,8 +916,9 @@ Backward induction using IsPredArchimedean. -/
 theorem z1_past_is_valid (φ : Formula) :
     ValidDiscrete ((φ.allPast.imp φ).allPast.imp
       (φ.allPast.somePast.imp φ.allPast)) := by
-  refine ValidDiscrete.of_forall ?_
-  intro F _ _ _ _ M τ _hτ t
+  refine ValidIn.of_forall_total ?_
+  intro F hF M τ _hτ t
+  sat_intro hF
   simp only [TruthAt, Truth.past_iff, Truth.some_past_iff]
   intro h_HHpIp ⟨s₀, hs₀t, hs₀⟩
   obtain ⟨n₀, hn₀⟩ := (Order.le_pred_of_lt hs₀t).exists_pred_iterate
