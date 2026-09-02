@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Syntax.Atom
+import FormalSystem.Automation.TruthNormAttr
 
 /-!
 # Formula - Syntax for Bimodal Logic TM
@@ -759,6 +760,20 @@ theorem swap_temporal_strong_trigger (φ ψ : Formula) :
     (Formula.strongTrigger φ ψ).swapTemporal = Formula.strongRelease φ.swapTemporal
       ψ.swapTemporal := by
   simp [strongRelease, strongTrigger, and, swapTemporal, swap_temporal_neg]
+
+/-! ### The `swap_norm` simp set
+
+The eleven `swap_temporal_*` lemmas above push `swapTemporal` through the connectives. Four of
+them (`some_future`, `some_past`, `all_future`, `all_past`) also carry `@[simp]`; the other seven
+do not, so before this set the complete family was only reachable by naming all eleven. Tagging
+them here, in the declaring module, is what guarantees membership at every use site — simp-set
+membership is an environment extension, so it has to be established upstream of the users, not
+at them. Use as `simp only [swap_norm]`. -/
+
+attribute [swap_norm] swap_temporal_involution swap_temporal_diamond swap_temporal_neg
+  swap_temporal_some_future swap_temporal_some_past swap_temporal_all_future
+  swap_temporal_all_past swap_temporal_next swap_temporal_prev
+  swap_temporal_strong_release swap_temporal_strong_trigger
 
 /--
 Formula requires the single-family/single-time hypotheses in buildSeedAux.

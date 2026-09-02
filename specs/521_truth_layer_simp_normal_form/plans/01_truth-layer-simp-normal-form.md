@@ -238,7 +238,7 @@ Phases 8 and 9 both edit `Soundness.lean` and are therefore deliberately sequent
 
 ---
 
-### Phase 2: The untagged `Truth` API and the named-set tags [NOT STARTED]
+### Phase 2: The untagged `Truth` API and the named-set tags [COMPLETED]
 
 - **Goal:** Add every new characterization lemma to the `Truth` namespace **without `@[simp]`**,
   tag them into `truth_norm`, tag the swap lemmas into `swap_norm`, and state the chosen normal
@@ -383,16 +383,19 @@ Phases 8 and 9 both edit `Soundness.lean` and are therefore deliberately sequent
 
 ---
 
-### Phase 5: Move `validOn_iff_total` to `Semantics/Validity.lean` [NOT STARTED]
+### Phase 5: Move `validOn_iff_total` to `Semantics/Validity.lean` [COMPLETED]
 
 - **Goal:** Charter step (3)'s relocation (finding C-17). Fully independent of Phases 1-4 and 6-9.
 - **Tasks:**
   - [ ] Move `validOn_iff_total` from `Semantics/Correspondence/FwdRec.lean:75` to
         `Semantics/Validity.lean`, beside `TaskFrame.ValidOn`, renamed `TaskFrame.validOn_iff_total`.
   - [ ] Update the internal use at `FwdRec.lean:96` and the doc bullet at `FwdRec.lean:41`.
-  - [ ] Update the one external caller, `Correspondence/FwdRecBridge.lean:158`.
-  - [ ] Confirm `FwdRec.lean` still needs its remaining imports; drop any that only served the
-        moved lemma.
+  - [x] Update the one external caller, `Correspondence/FwdRecBridge.lean:158`. *(deviation:
+        altered — the lemma now lives inside `namespace TaskFrame`, so all three references are
+        spelled `TaskFrame.validOn_iff_total`, not the bare name.)*
+  - [x] Confirm `FwdRec.lean` still needs its remaining imports; drop any that only served the
+        moved lemma. *(deviation: skipped the drop — `FwdRec.lean` has exactly one import,
+        `Correspondence.Galois`, still required by the rest of the file.)*
 - **Timing:** 0.75 hours
 - **Depends on:** none
 - **Verification Tier:** interface

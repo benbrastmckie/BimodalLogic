@@ -257,6 +257,21 @@ def TaskFrame.ValidOn (F : TaskFrame) (φ : Formula) : Prop :=
 namespace TaskFrame
 
 /--
+**The bridge between the two validity shapes.**
+
+`TaskFrame.ValidOn` quantifies over the bundled subtype `F.HF`; correspondence arguments are
+naturally written with the history and its totality proof unbundled. One term in each direction,
+because `TaskFrame.HF` is a subtype and `.val`/`.property` are its projections.
+
+Stated here, beside `TaskFrame.ValidOn` itself, rather than in the one correspondence module that
+first needed it: the unbundling is a fact about the definition, not about any particular
+correspondence argument, and its callers now sit in more than one module.
+-/
+theorem validOn_iff_total (F : TaskFrame) (φ : Formula) :
+    F.ValidOn φ ↔ ∀ (M : TaskModel F) (τ : WorldHistory F), τ.IsTotal → ∀ t, TruthAt M τ t φ :=
+  ⟨fun h M τ hτ t => h M ⟨τ, hτ⟩ t, fun h M τ t => h M τ.val τ.property t⟩
+
+/--
 Frame-relative validity is **never vacuous**: no frame validates `⊥`.
 
 Without this, `F.ValidOn` would be satisfied trivially by any frame whose `H_F` happened to be

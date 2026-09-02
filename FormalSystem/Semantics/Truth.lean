@@ -7,6 +7,7 @@ Authors: Benjamin Brast-McKie
 import FormalSystem.Semantics.TaskModel
 import FormalSystem.Semantics.WorldHistory
 import FormalSystem.Syntax.Formula
+import FormalSystem.Automation.TruthNormAttr
 
 /-!
 # Truth - Truth Evaluation in Task Semantics
@@ -67,6 +68,55 @@ temporal order), NOT just times in `dom(τ)`. This is a deliberate design choice
 - Basic truth lemmas (e.g., `bot` is always false)
 - Truth evaluation examples
 - Time-shift preservation theorems for temporal operators
+
+## Simp-normal form
+
+The `Truth.*` characterization lemmas below are the truth layer's **simp normal form**: each
+rewrites a `TruthAt`-headed goal about a compound formula into the corresponding meta-level
+connective, so a proof never has to unfold the `Formula.and` / `Formula.or` / `Formula.neg`
+definition chain by hand. The family is confluent and terminating; twelve alternative spellings
+of the same formula were each checked to converge on the normal form under bare `simp`.
+
+| Formula | Lemma | Normal form (RHS) |
+|---|---|---|
+| `¬φ` | `neg_iff` | `¬ TruthAt M τ t φ` |
+| `⊤` | `top_true` | `True` (the lemma is the proof, not an `Iff`) |
+| `⊥` | `bot_false` | `False` |
+| `φ → ψ` | `imp_iff` | `TruthAt … φ → TruthAt … ψ` |
+| `φ ∧ ψ` | `and_iff` | `TruthAt … φ ∧ TruthAt … ψ` |
+| `φ ∨ ψ` | `or_iff` | `TruthAt … φ ∨ TruthAt … ψ` |
+| `□φ` | `box_iff` | `∀ σ, σ.IsTotal → TruthAt M σ t φ` |
+| `◇φ` | `diamond_iff` | `∃ σ, σ.IsTotal ∧ TruthAt M σ t φ` |
+| `ψ U φ` | `untl_iff` | the `untl` clause |
+| `ψ S φ` | `snce_iff` | the `snce` clause |
+| `Fφ` | `some_future_iff` | `∃ s, t < s ∧ TruthAt M τ s φ` |
+| `Pφ` | `some_past_iff` | `∃ s, s < t ∧ TruthAt M τ s φ` |
+| `Gφ` | `future_iff` | `∀ s, t < s → TruthAt M τ s φ` |
+| `Hφ` | `past_iff` | `∀ s, s < t → TruthAt M τ s φ` |
+| `△φ` | `always_iff` | `∀ s, TruthAt M τ s φ` |
+| `K⁺φ` | `kPlus_iff` | `∀ s, t < s → ∃ r, t < r ∧ r < s ∧ TruthAt M τ r φ` |
+| `K⁻φ` | `kMinus_iff` | `∀ s, s < t → ∃ r, s < r ∧ r < t ∧ TruthAt M τ r φ` |
+| `M(φ,ψ)` | `strong_release_iff` | the `untl` clause with a nested `and` |
+| `ST(φ,ψ)` | `strong_trigger_iff` | the `snce` clause with a nested `and` |
+
+All of the above are tagged into the `truth_norm` simp set declared in
+`FormalSystem/Automation/TruthNormAttr.lean`, alongside `TruthAt`'s own defining equations, so
+`simp only [truth_norm]` — or equivalently the `truth_simp` macro — opens the whole family at
+once.
+
+**`always` has two forms, and only one may carry the attribute.** `always_iff` (the collected
+`∀ s` form) is the normal form and is the tagged one. `always_iff_tri` (the three-conjunct
+past/present/future form, mirroring `BLTruth.always_iff`) is the **introduction** form and is
+deliberately left plain. The two are logically equivalent but syntactically distinct, so tagging
+both makes `simp` apply whichever was declared first and silently strand every proof written
+against the other; that failure was reproduced rather than merely anticipated. Build an `always`
+with `always_iff_tri`, eliminate one with `always_iff`.
+
+**A caveat when rewriting an existing `simp only` list.** Adding these names to a list that still
+mentions `Formula.and` / `Formula.or` / `Formula.neg` is a no-op: simp rewrites bottom-up, so the
+syntax-unfolding lemmas fire on the argument before the `TruthAt`-headed characterization lemma
+can match. The syntax lemmas have to come **out** of the list as the characterization lemmas go
+in.
 
 ## Note on Bridge Theorems
 
@@ -339,6 +389,161 @@ with ψ holding at all intermediate times.
       ∃ s : F.Duration, s < t ∧ TruthAt M τ s (Formula.and ψ φ) ∧
         ∀ r : F.Duration, s < r → r < t → TruthAt M τ r ψ := by
   simp [Formula.strongTrigger, Formula.and, TruthAt]
+
+
+/-! ### The derived Boolean operators
+
+`Formula.neg`, `top`, `and` and `or` are all `def` abbreviations over `imp`/`bot`, so without
+these four the only way to reason about a conjunction is to unfold the definition chain by hand
+with `simp only [Formula.and, Formula.neg, TruthAt]` and finish with `tauto`. That idiom is what
+this family retires. -/
+
+/-- Truth of `¬φ`. -/
+@[truth_norm] theorem neg_iff
+    {F : TaskFrame} {M : TaskModel F} {τ : WorldHistory F} {t : F.Duration}
+    (φ : Formula) :
+    TruthAt M τ t φ.neg ↔ ¬ TruthAt M τ t φ := Iff.rfl
+
+/-- `⊤` is true everywhere. -/
+@[truth_norm] theorem top_true
+    {F : TaskFrame} {M : TaskModel F} {τ : WorldHistory F} {t : F.Duration} :
+    TruthAt M τ t Formula.top := id
+
+/-- Truth of `φ ∧ ψ`. Classical: `and` is the double-negated implication. -/
+@[truth_norm] theorem and_iff
+    {F : TaskFrame} {M : TaskModel F} {τ : WorldHistory F} {t : F.Duration}
+    (φ ψ : Formula) :
+    TruthAt M τ t (φ.and ψ) ↔ (TruthAt M τ t φ ∧ TruthAt M τ t ψ) := by
+  simp only [Formula.and, Formula.neg, TruthAt]
+  tauto
+
+/-- Truth of `φ ∨ ψ`. Classical: `or` is `¬φ → ψ`. -/
+@[truth_norm] theorem or_iff
+    {F : TaskFrame} {M : TaskModel F} {τ : WorldHistory F} {t : F.Duration}
+    (φ ψ : Formula) :
+    TruthAt M τ t (φ.or ψ) ↔ (TruthAt M τ t φ ∨ TruthAt M τ t ψ) := by
+  simp only [Formula.or, Formula.neg, TruthAt]
+  tauto
+
+/-- Truth of `◇φ` (`¬□¬φ`): `φ` holds at *some* total history at the current time. The classical
+`¬∀¬ ↔ ∃` step over `box_iff`. -/
+@[truth_norm] theorem diamond_iff
+    {F : TaskFrame} {M : TaskModel F} {τ : WorldHistory F} {t : F.Duration}
+    (φ : Formula) :
+    TruthAt M τ t φ.diamond ↔ ∃ σ : WorldHistory F, σ.IsTotal ∧ TruthAt M σ t φ := by
+  simp only [Formula.diamond, Formula.neg, TruthAt]
+  constructor
+  · intro h; by_contra hc; push Not at hc; exact h (fun σ hσ hφ => hc σ hσ hφ)
+  · rintro ⟨σ, hσ, hφ⟩ h; exact h σ hσ hφ
+
+/-! ### The primitive temporal clauses
+
+`untl_iff` and `snce_iff` restate `TruthAt`'s own `untl`/`snce` equations as biconditionals. They
+look redundant next to `simp only [TruthAt]`, and they are not: once the characterization family
+is the normal form, a proof no longer opens `TruthAt` at all, so a raw `untl`/`snce` head would
+have nothing to reduce it. These two are what keep the family complete on the primitives. Both
+are guard-first / event-second, matching `TruthAt`. -/
+
+/-- Truth of `ψ U φ` (guard `ψ`, event `φ`): the `untl` clause of `TruthAt`, as a biconditional. -/
+@[truth_norm] theorem untl_iff
+    {F : TaskFrame} {M : TaskModel F} {τ : WorldHistory F} {t : F.Duration}
+    (ψ φ : Formula) :
+    TruthAt M τ t (Formula.untl ψ φ) ↔
+      ∃ s : F.Duration, t < s ∧ TruthAt M τ s φ ∧
+        ∀ r : F.Duration, t < r → r < s → TruthAt M τ r ψ := Iff.rfl
+
+/-- Truth of `ψ S φ` (guard `ψ`, event `φ`): the `snce` clause of `TruthAt`, as a biconditional. -/
+@[truth_norm] theorem snce_iff
+    {F : TaskFrame} {M : TaskModel F} {τ : WorldHistory F} {t : F.Duration}
+    (ψ φ : Formula) :
+    TruthAt M τ t (Formula.snce ψ φ) ↔
+      ∃ s : F.Duration, s < t ∧ TruthAt M τ s φ ∧
+        ∀ r : F.Duration, s < r → r < t → TruthAt M τ r ψ := Iff.rfl
+
+/-! ### Temporal `always`
+
+**Only one of the two `always` characterizations may ever carry `@[simp]`.** They are logically
+equivalent but syntactically distinct normal forms, so tagging both makes `simp` apply whichever
+was declared first and silently strand every proof written against the other — a failure that was
+reproduced, not hypothesised. The **collected `∀ s` form, `always_iff`, is the normal form** and
+is the one that carries the attribute. `always_iff_tri` is the three-conjunct introduction form
+that mirrors `BLTruth.always_iff` and is the proof route to the collected form; it is deliberately
+plain, and must stay untagged by both `@[simp]` and `@[truth_norm]`. -/
+
+/-- Truth of `△φ` (`Hφ ∧ (φ ∧ Gφ)`) in three-conjunct form: past, present, future.
+
+The **introduction** form — this is the shape you build an `always` from, and the association
+mirrors `Formula.always` and `BLTruth.always_iff`. It is **not** the simp normal form and must
+never be tagged; see the section note above. Use `always_iff` for elimination. -/
+theorem always_iff_tri
+    {F : TaskFrame} {M : TaskModel F} {τ : WorldHistory F} {t : F.Duration}
+    (φ : Formula) :
+    TruthAt M τ t φ.always ↔
+      (∀ s : F.Duration, s < t → TruthAt M τ s φ) ∧ TruthAt M τ t φ ∧
+        (∀ s : F.Duration, t < s → TruthAt M τ s φ) := by
+  simp only [Formula.always, and_iff, past_iff, future_iff]
+
+/-- Truth of `△φ`, collected: `φ` holds at **every** time. The simp normal form for `always`.
+
+Collapsing the three strict cases into one unrestricted `∀ s` is what removes the hand-rolled
+`lt_trichotomy` case split that every `always` elimination otherwise has to perform. -/
+@[truth_norm] theorem always_iff
+    {F : TaskFrame} {M : TaskModel F} {τ : WorldHistory F} {t : F.Duration}
+    (φ : Formula) :
+    TruthAt M τ t φ.always ↔ ∀ s : F.Duration, TruthAt M τ s φ := by
+  rw [always_iff_tri]
+  constructor
+  · rintro ⟨hp, hn, hf⟩ s
+    rcases lt_trichotomy s t with h | h | h
+    · exact hp s h
+    · exact h ▸ hn
+    · exact hf s h
+  · intro h
+    exact ⟨fun s _ => h s, h t, fun s _ => h s⟩
+
+/-! ### The density operators -/
+
+/-- Truth of `K⁺φ` (`¬(¬φ U ⊤)`): between the present and every strictly future time there is an
+intermediate time at which `φ` holds. -/
+@[truth_norm] theorem kPlus_iff
+    {F : TaskFrame} {M : TaskModel F} {τ : WorldHistory F} {t : F.Duration}
+    (φ : Formula) :
+    TruthAt M τ t φ.kPlus ↔
+      ∀ s : F.Duration, t < s → ∃ r : F.Duration, t < r ∧ r < s ∧ TruthAt M τ r φ := by
+  simp only [Formula.kPlus, Formula.neg, Formula.top, TruthAt]
+  constructor
+  · intro h s hs
+    by_contra hc
+    push Not at hc
+    exact h ⟨s, hs, id, fun r h1 h2 hr => hc r h1 h2 hr⟩
+  · rintro h ⟨s, hs, -, hall⟩
+    obtain ⟨r, h1, h2, hr⟩ := h s hs
+    exact hall r h1 h2 hr
+
+/-- Truth of `K⁻φ` (`¬(¬φ S ⊤)`): the past dual of `kPlus_iff`. -/
+@[truth_norm] theorem kMinus_iff
+    {F : TaskFrame} {M : TaskModel F} {τ : WorldHistory F} {t : F.Duration}
+    (φ : Formula) :
+    TruthAt M τ t φ.kMinus ↔
+      ∀ s : F.Duration, s < t → ∃ r : F.Duration, s < r ∧ r < t ∧ TruthAt M τ r φ := by
+  simp only [Formula.kMinus, Formula.neg, Formula.top, TruthAt]
+  constructor
+  · intro h s hs
+    by_contra hc
+    push Not at hc
+    exact h ⟨s, hs, id, fun r h1 h2 hr => hc r h1 h2 hr⟩
+  · rintro h ⟨s, hs, -, hall⟩
+    obtain ⟨r, h1, h2, hr⟩ := h s hs
+    exact hall r h1 h2 hr
+
+/-! ### `truth_norm` membership for the pre-existing lemmas
+
+`TruthAt`'s own defining equations together with the characterization lemmas declared above this
+block. `always_iff_tri` is deliberately absent — see the `always` section note. -/
+
+attribute [truth_norm] TruthAt bot_false imp_iff box_iff some_future_iff some_past_iff
+  future_iff past_iff strong_release_iff strong_trigger_iff
+
 
 end Truth
 

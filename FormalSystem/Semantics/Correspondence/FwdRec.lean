@@ -38,7 +38,6 @@ candidate counterexample.
 ## Main results
 
 * `TaskFrame.FwdRec` — the frame condition, over bundled frames
-* `validOn_iff_total` — the bridge from the `∀ M τ hτ t, TruthAt …` shape to `TaskFrame.ValidOn`
 * `validOn_atomic_density_iff_fwdRec` — the atomic correspondence, at arbitrary `D`
 -/
 
@@ -65,17 +64,6 @@ def TaskFrame.FwdRec (F : TaskFrame) : Prop :=
     ∀ A : F.WorldState → Prop,
       (∀ r, s < r → A (τ.val.states r (τ.property r))) → A (τ.val.states s (τ.property s))
 
-/--
-**The bridge between the two validity shapes.**
-
-`TaskFrame.ValidOn` quantifies over the bundled subtype `F.HF`; correspondence arguments are
-naturally written with the history and its totality proof unbundled. One term in each direction,
-because `TaskFrame.HF` is a subtype and `.val`/`.property` are its projections.
--/
-theorem validOn_iff_total (F : TaskFrame) (φ : Formula) :
-    F.ValidOn φ ↔ ∀ (M : TaskModel F) (τ : WorldHistory F), τ.IsTotal → ∀ t, TruthAt M τ t φ :=
-  ⟨fun h M τ hτ t => h M ⟨τ, hτ⟩ t, fun h M τ t => h M τ.val τ.property t⟩
-
 /-! ## The atomic correspondence -/
 
 /--
@@ -93,7 +81,7 @@ theorem validOn_atomic_density_iff_fwdRec (F : TaskFrame) :
     (∀ p : Atom,
         F.ValidOn ((Formula.atom p).allFuture.allFuture.imp (Formula.atom p).allFuture))
       ↔ F.FwdRec := by
-  simp only [validOn_iff_total]
+  simp only [TaskFrame.validOn_iff_total]
   constructor
   · intro h τ t s hts hcov A hA
     let M : TaskModel F := ⟨fun w _ => A w⟩
