@@ -1,16 +1,29 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/494_define_and_refute_dedekind_compactness/reports/01_dedekind-noncompactness-witness.md",
-      "summary": "Confirms Part 1 is a single instantiation of the post-509 FrameClass-indexed family, designs a new Dedekind non-compactness witness (bounded next-q-point chain vs a left-gap formula), and supplies the complete module machine-verified sorry-free at [propext, Classical.choice, Quot.sound]."
+      "type": "plan",
+      "path": "specs/494_define_and_refute_dedekind_compactness/plans/01_dedekind-non-compactness-refutation.md",
+      "summary": "Five-phase sequential plan transcribing and re-verifying the research-verified Dedekind non-compactness module in tree, with axiom audit and a grep-driven documentation reconciliation phase."
+    }
+  ],
+  "next_steps": "Run /implement 494 to execute the plan",
+  "memory_candidates": [
+    {
+      "content": "In the BimodalLogic Lean tree, lakefile.lean declares 'lean_lib FormalSystem where roots := #[`FormalSystem]' -- an import-closure root, NOT a source glob. A newly created .lean file under FormalSystem/ is therefore NEVER compiled by 'lake build' until some module already in the closure imports it (chain: FormalSystem.lean -> FormalSystem/FormalSystem.lean -> Metalogic.lean -> leaf). Consequence for planning: the aggregator import line must land in the SAME phase that creates a new module, not in a later documentation phase. Deferring it produces phases that report green while the new code was never type-checked -- a silent false-green. When planning any new-module work in a roots-based Lake project, treat 'wire the import into the aggregator' as part of file creation, and verify by touching the file and confirming it recompiles.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/494_define_and_refute_dedekind_compactness/plans/01_dedekind-non-compactness-refutation.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["lakefile", "lean-lib-roots", "lake-build", "new-module", "false-green", "phase-sequencing"]
     }
   ],
   "metadata": {
     "session_id": "sess_1788308014_451fe6",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 6,
+    "dependency_waves": [[1], [2], [3], [4], [5]]
   }
 }

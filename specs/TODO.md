@@ -92,7 +92,7 @@ next_project_number: 518
 
 ### Strong Completeness
 
-494 [RESEARCHED] — NOW SEQUENCED BEHIND THE COMPACTNESS PARAMETERIZATION (see the RE
+494 [PLANNED] — NOW SEQUENCED BEHIND THE COMPACTNESS PARAMETERIZATION (see the RE
 
 ## Tasks
 
@@ -532,11 +532,12 @@ DELIVERABLE: a grounding report answering, with citations to specific pages read
 
 ### 494. Define and refute dedekind compactness
 - **Effort**: 10-16 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: strong_completeness
 - **Dependencies**: Task 490, Task 493, Task 509
 - **Research**: [494_define_and_refute_dedekind_compactness/reports/01_dedekind-noncompactness-witness.md]
+- **Plan**: [494_define_and_refute_dedekind_compactness/plans/01_dedekind-non-compactness-refutation.md]
 
 **Description**: NOW SEQUENCED BEHIND THE COMPACTNESS PARAMETERIZATION (see the REVISED note at the end); still INDEPENDENT of the ultraproduct chain. Settle the fourth frame class negatively and complete the compactness picture. CURRENT STATE: there is NO CompactDedekind definition anywhere in the tree, no StrongCompletenessDedekind, no SatisfiableDedekindSet, and no refutation -- the Dedekind row of StrongCompleteness.lean's status ledger (:84-89) rests on the scope of Reynolds 1992 section 9 Theorem 7 alone. Meanwhile the paper (cor:tm-completeness, possible_worlds.tex:4657) asserts that strong completeness 'provably fails for Z-time as well as for the dense-and-complete class R where compactness fails' -- so this is a REFUTATION target, not a proof target. DELIVERABLE PART 1: define the missing vocabulary in SetConsequence.lean mirroring the Base/Dense/Discrete groups -- SetSemanticConsequenceDedekindDense already exists (:103); add StrongCompletenessDedekind, CompactDedekind, SatisfiableDedekindSet, ModelExistenceDedekind. PART 2: refute CompactDedekind and StrongCompletenessDedekind. CRITICAL CONSTRAINT: the Discrete witness does NOT port. archWitness (DiscreteNonCompactness.lean:102) and its unsatisfiability half (:229-242) turn entirely on Order.succ_le_of_lt and exists_succ_iterate, i.e. on [SuccOrder D] + [IsSuccArchimedean D]; the Dedekind binder list is DenselyOrdered plus LUB with no successor at all, and over R the operator Formula.next = untl bot phi is vacuous, so archWitness carries no contradiction. A NEW witness is required. Model DiscreteNonCompactness.lean's structure (finitely-satisfiable half, then unsatisfiable half) but not its witness. ACCEPTANCE: both refutations sorry-free and axiom-audited; the four-class compactness picture complete (Base/Dense open pending the ultraproduct chain, Discrete refuted, Dedekind refuted). === REVISED 2026-08-31 (review: metalogic systematicity) === PART 1 IS RESCOPED. Do NOT define StrongCompletenessDedekind/CompactDedekind/SatisfiableDedekindSet/ModelExistenceDedekind by mirroring the Base/Dense/Discrete groups -- that fourth hand copy is exactly what the compactness-parameterization prerequisite collapses. After that task lands, Part 1 is a SINGLE INSTANTIATION of the FrameClass-indexed family at FrameClass.Dedekind. PART 2 IS UNCHANGED and remains the real content: a new non-compactness witness, since archWitness does not port (it turns on SuccOrder/IsSuccArchimedean and the Dedekind binder list has no successor structure; over the reals Formula.next = untl bot phi is vacuous). Grounding: specs/reviews/review-2026-08-31-metalogic-systematicity.md issue H3.
 
