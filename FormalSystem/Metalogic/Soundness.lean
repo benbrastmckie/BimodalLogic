@@ -811,14 +811,14 @@ theorem temporal_necessitation_preserves_valid {φ : Formula} (h : ⊨ φ) : ⊨
 
 Soundness for `FrameClass.Dedekind`: Reynolds' axiomatization US/R for real flow.
 
-**The target is `ValidDedekindDense`, NOT `ValidDedekind`, and that is deliberate.**
+**The target is `ValidDedekindDense`, NOT `ValidComplete`, and that is deliberate.**
 `FrameClass.Dedekind` sits strictly above `FrameClass.Dense` (see the `FrameClass` docstring
 in `ProofSystem/Axioms.lean`), so `Axiom.density` and `Axiom.dense_indicator` are admissible in
 a `.Dedekind` derivation. Both are FALSE on `ℤ` -- for `density`, take `φ` true exactly at times
 `≥ t + 2`, so `GGφ` holds at `t` while `Gφ` fails; for `dense_indicator`, `U(⊤,⊥)` is true on
 `ℤ` because every point has an immediate successor. And `ℤ` satisfies every binder of
-`ValidDedekind` (Mathlib gives it a `ConditionallyCompleteLinearOrder` instance). So a
-`soundness_dedekind` targeting `ValidDedekind` would be **refutable**. Do not "simplify" it.
+`ValidComplete` (Mathlib gives it a `ConditionallyCompleteLinearOrder` instance). So a
+`soundness_dedekind` targeting `ValidComplete` would be **refutable**. Do not "simplify" it.
 -/
 
 /-! ### Semantic validity of the three Reynolds axioms
@@ -964,7 +964,7 @@ which consume only the linear order and the least-upper-bound hypothesis. `AddCo
 `IsOrderedAddMonoid`, `DenselyOrdered` and `Nontrivial` together with the LUB hypothesis force
 the flow to be Archimedean and hence separable; `SoundnessLemmas.exists_countable_order_dense`
 extracts the countable order-dense `Q` that the argument runs on. Do not attempt to weaken the
-binder set to `ValidDedekind`.
+binder set to `ValidComplete`.
 
 **Shape of the proof.** Negating the implication gives, at `t`: (i) φ accumulates at `t` from the
 right, (ii) no φ-point just above `t` begins a φ-free gap (Reynolds' relative-density condition),
@@ -1521,7 +1521,7 @@ This is the Dedekind analogue of `soundness_dense` and `soundness_discrete`. Giv
 Dedekind-compatible derivation `Γ ⊢ φ`, if all formulas in `Γ` are true at some configuration
 on a dense Dedekind-complete frame, then `φ` is also true there.
 
-**The conclusion is stated over the `ValidDedekindDense` binder set, NOT `ValidDedekind`.**
+**The conclusion is stated over the `ValidDedekindDense` binder set, NOT `ValidComplete`.**
 `FrameClass.Dedekind` lies above `FrameClass.Dense`, so `Axiom.density` and
 `Axiom.dense_indicator` are admissible in `d`; both are false on `ℤ`, and `ℤ` is
 Dedekind-complete (Mathlib's `ConditionallyCompleteLinearOrder ℤ`). Dropping the

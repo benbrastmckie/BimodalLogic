@@ -38,7 +38,7 @@ There is deliberately **no** density-free `BLValidDedekind`, and the soundness t
 
 Adding `[DenselyOrdered D]` deletes exactly the `ℤ` branch of the Hölder dichotomy and nothing
 else (`Semantics/DurationClassification.lean`). This is the BL-native form of the argument
-`Semantics/Validity.lean` records for `ValidDedekind` on the BL⁺ side; note that BL⁺'s version
+`Semantics/Validity.lean` records for `ValidComplete` on the BL⁺ side; note that BL⁺'s version
 additionally leans on `Axiom.dense_indicator` (`¬(⊥ U ⊤)`), which has no BL counterpart at all
 since BL has no `untl`. Do not "simplify" the target.
 
@@ -276,9 +276,9 @@ All three are now corollaries of the single `BLValidIn.mono`, routed through
 hand-written binder-discarding lambdas.
 
 Two members of the BL⁺ family have no mirror here, both for the same reason: they mention
-`ValidDedekind`, whose BL counterpart is deliberately not defined (see the module docstring).
-Those are `Validity.valid_implies_validDedekind` and
-`Validity.validDedekindDense_of_validDedekind`. -/
+`ValidComplete`, whose BL counterpart is deliberately not defined (see the module docstring).
+Those are `Validity.valid_implies_validComplete` and
+`Validity.validDedekindDense_of_validComplete`. -/
 
 /-- `BLValid` is `BLValidIn` at the unconstrained class: `Sat .Base` is `True`. The BL mirror of
 `Validity.valid_iff_validIn_base`. -/

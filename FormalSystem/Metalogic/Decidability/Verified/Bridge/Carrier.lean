@@ -56,11 +56,11 @@ Each arm reproduces exactly the extra binders its validity predicate adds to `va
 The `AddCommGroup` / `LinearOrder` / `IsOrderedAddMonoid` / `Nontrivial` binders are shared by all
 four predicates, so they sit on the class head rather than in `FrameConditionFor`.
 
-`.Dedekind` targets **`ValidDedekindDense`, not `ValidDedekind`** — this matters and is not a
+`.Dedekind` targets **`ValidDedekindDense`, not `ValidComplete`** — this matters and is not a
 simplification opportunity. `FrameClass.Dedekind` sits above `FrameClass.Dense`, so `density` and
 `dense_indicator` are admissible in a `.Dedekind` derivation, and both are false on `ℤ` — which
 is Dedekind-complete. Dropping the density binder here would make the matching soundness
-direction refutable. The full argument is in `ValidDedekind`'s docstring in `Validity.lean`.
+direction refutable. The full argument is in `ValidComplete`'s docstring in `Validity.lean`.
 
 ## The four carriers
 
@@ -79,7 +79,7 @@ open FormalSystem.ProofSystem
 /-! ## The per-class frame condition -/
 
 /--
-The least-upper-bound property, in the exact shape `ValidDedekind`/`ValidDedekindDense` bind it —
+The least-upper-bound property, in the exact shape `ValidComplete`/`ValidDedekindDense` bind it —
 an explicit `Prop` binder rather than a `ConditionallyCompleteLinearOrder` instance swap. Stated
 here in that shape deliberately, so a `.Dedekind` carrier's `frame_condition` can be handed to
 those predicates verbatim.

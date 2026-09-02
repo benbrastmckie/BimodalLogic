@@ -168,12 +168,12 @@ frame's existing `LinearOrder` continues to apply, with no instance-unification 
 flow; by `Semantics.complete_duration_discrete_or_dense` its models are `{ℤ, ℝ}` up to
 order-and-group isomorphism. The dense-and-complete narrowing is `TaskFrame.IsDedekind`.
 
-**Reciprocal pointer for `ValidDedekind`.** `Semantics/Validity.lean`'s `ValidDedekind` is
+**Reciprocal pointer for `ValidComplete`.** `Semantics/Validity.lean`'s `ValidComplete` is
 `ValidOnFrames TaskFrame.IsComplete` — this bare clause — and is therefore *not*
 `ValidIn FrameClass.Dedekind`, which is the dense-and-complete `IsDedekind` below. The two read as
-if they matched and do not; `ValidDedekind`'s own docstring states the mismatch from the other
+if they matched and do not; `ValidComplete`'s own docstring states the mismatch from the other
 side. The soundness target for `FrameClass.Dedekind` is `ValidDedekindDense`, never
-`ValidDedekind`.
+`ValidComplete`.
 -/
 def TaskFrame.IsComplete (F : TaskFrame) : Prop :=
   ∀ s : Set F.Duration, s.Nonempty → BddAbove s → ∃ x, IsLUB s x

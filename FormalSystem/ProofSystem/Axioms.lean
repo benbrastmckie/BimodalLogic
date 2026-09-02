@@ -510,7 +510,7 @@ inadmissible in `DerivationTree .Dedekind` and so could not host Reynolds' syste
 **Soundness caveat.** Because `density` and `dense_indicator` are admissible at `.Dedekind`
 and both are FALSE on ℤ (which is nonetheless conditionally complete), the soundness theorem
 for this class must target the *dense* Dedekind predicate `ValidDedekindDense`, not the
-density-free `ValidDedekind`. See `FormalSystem/Semantics/Validity.lean`.
+density-free `ValidComplete`. See `FormalSystem/Semantics/Validity.lean`.
 
 **The paper's TM⁺_c has no frame class here, and that is a real gap rather than an omission.**
 TM⁺_c is completeness *simpliciter*: no density binder, so by
@@ -520,7 +520,7 @@ picks that class out. The two branches are covered separately and exhaustively �
 complete-but-discrete branch is *exactly* `ℤ` by `Semantics.complete_not_dense_iso_int`, and is
 handled by `FrameClass.Discrete` / `ValidDiscrete`; the dense branch is `FrameClass.Dedekind` /
 `ValidDedekindDense` — but their intersection is not itself a frame class, and adding one would
-require an axiom set for `Th(ℤ) ∩ Th(ℝ)` that this tree does not have. `ValidDedekind` exists as
+require an axiom set for `Th(ℤ) ∩ Th(ℝ)` that this tree does not have. `ValidComplete` exists as
 a predicate matching the TM⁺_c binder set, but is deliberately not a soundness target; its own
 docstring in `Semantics/Validity.lean` explains why.
 

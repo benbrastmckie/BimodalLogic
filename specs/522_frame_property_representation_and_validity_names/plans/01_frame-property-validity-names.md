@@ -784,7 +784,7 @@ before and after, and report both.
 
 ---
 
-### Phase 9: The rename pass [NOT STARTED]
+### Phase 9: The rename pass [IN PROGRESS]
 
 **Goal**: Make `ValidX = ValidIn .X` true for every tag, name the outlier `ValidComplete`, and
 collapse 15 repeated warning paragraphs to one cross-reference — without touching the unrelated

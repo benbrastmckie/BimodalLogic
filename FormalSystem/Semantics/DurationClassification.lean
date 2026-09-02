@@ -25,7 +25,7 @@ Every lemma below takes the repository's standard duration binders — `AddCommG
   `h_lub : ∀ s : Set D, s.Nonempty → BddAbove s → ∃ x, IsLUB s x`
 
 rather than a `ConditionallyCompleteLinearOrder D` instance. That choice is deliberate and is
-explained at `ValidDedekind` in `FormalSystem/Semantics/Validity.lean`: it keeps every
+explained at `ValidComplete` in `FormalSystem/Semantics/Validity.lean`: it keeps every
 `[LinearOrder D]`-indexed lemma applicable with no instance-unification risk.
 
 ## The classification

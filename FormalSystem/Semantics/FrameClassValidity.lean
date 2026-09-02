@@ -61,7 +61,7 @@ every `DerivationTree`/`Derivable` signature that names them; that is deliberate
 
 **Why `Sat` lives here and `ValidIn` does not.** `ValidIn` is defined through `TaskFrame.ValidOn`
 (`def:frame-validity`), which is declared in `Semantics/Validity.lean`; and `Validity.lean`'s own
-class-restricted predicates (`ValidDense`, `ValidDiscrete`, `ValidDedekind`, `ValidDedekindDense`)
+class-restricted predicates (`ValidDense`, `ValidDiscrete`, `ValidComplete`, `ValidDedekindDense`)
 are in turn defined as instances of `ValidIn`/`ValidOnFrames`. Those two facts cannot both be
 satisfied with `ValidIn` downstream of `Validity.lean`. Of the two acceptable resolutions, this
 tree takes the second: `Sat` — which is about frames alone and needs no validity notion — stays in

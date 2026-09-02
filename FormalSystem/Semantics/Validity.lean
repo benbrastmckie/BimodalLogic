@@ -347,7 +347,7 @@ underneath; nothing here duplicates it.
 
 `ValidOnFrames` is stated over an arbitrary `P : TaskFrame → Prop`, and `ValidIn fc` is its
 instance at `fc.Sat`. This is not generality for its own sake — it is what lets **one**
-monotonicity lemma cover every validity bridge in the tree. `ValidDedekind` is
+monotonicity lemma cover every validity bridge in the tree. `ValidComplete` is
 `ValidOnFrames TaskFrame.IsComplete`, `def:frame-properties`' bare Complete clause, and no
 `FrameClass` constructor denotes that class (see the `FrameClass` docstring in
 `ProofSystem/Axioms.lean`), so it cannot be `ValidIn`-anything. Against a tag-only primitive it,
@@ -359,7 +359,7 @@ collapse.
 `φ` is valid on every frame satisfying `P`.
 
 The frame-predicate-indexed primitive that every class-restricted validity notion in this module
-is an instance of. `ValidIn` below is the instance at a `FrameClass` tag; `ValidDedekind` is the
+is an instance of. `ValidIn` below is the instance at a `FrameClass` tag; `ValidComplete` is the
 instance at `TaskFrame.IsComplete`, which no tag denotes.
 -/
 def ValidOnFrames (P : TaskFrame → Prop) (φ : Formula) : Prop :=
@@ -486,7 +486,7 @@ end Validity
 class of frames quantified over can only preserve validity.
 
 Every validity bridge in the tree is a corollary of this one statement — the four `valid`-to-
-class-restricted bridges, the `ValidDedekind`-to-`ValidDedekindDense` bridge, and `ValidIn.mono`
+class-restricted bridges, the `ValidComplete`-to-`ValidDedekindDense` bridge, and `ValidIn.mono`
 below. Before this lemma each was written out by hand against its own inlined binder list.
 -/
 theorem ValidOnFrames.mono {P Q : TaskFrame → Prop} {φ : Formula} (h : ∀ F, Q F → P F)
@@ -652,8 +652,8 @@ alone is now a single rewrite.
 def ValidDiscrete (φ : Formula) : Prop := ValidIn ProofSystem.FrameClass.Discrete φ
 
 /--
-**Read this first: `ValidDedekind` is NOT `ValidIn .Dedekind`.** The shared word is misleading and
-the two denote different frame classes. `ValidDedekind` is `ValidOnFrames TaskFrame.IsComplete` —
+**Read this first: `ValidComplete` is NOT `ValidIn .Dedekind`.** The shared word is misleading and
+the two denote different frame classes. `ValidComplete` is `ValidOnFrames TaskFrame.IsComplete` —
 `def:frame-properties`' *bare* Complete clause, which `ℤ` satisfies. `ValidIn .Dedekind` is
 `ValidDedekindDense`, the dense-and-complete class, and **that** is the target of
 `soundness_dedekind`. The mismatch follows from a naming decision recorded in full at
@@ -685,7 +685,7 @@ risk.
 **`DenselyOrdered` is deliberately ABSENT from this binder list.** The integers carry a
 Mathlib `ConditionallyCompleteLinearOrder` instance
 (`Mathlib/Data/Int/ConditionallyCompleteOrder.lean`), so `ℤ` satisfies every binder of
-`ValidDedekind`. Including density here would silently narrow the predicate to real flow
+`ValidComplete`. Including density here would silently narrow the predicate to real flow
 alone; the density-carrying variant is the separate `ValidDedekindDense` below.
 
 That "ℤ satisfies every binder" observation is not an isolated curiosity: it is the **discrete
@@ -705,7 +705,7 @@ in `FormalSystem/ProofSystem/Axioms.lean`), so `Axiom.density` (`GGφ → Gφ`) 
 Both are FALSE on `ℤ`: for `density`, take `φ` true exactly at times `≥ t + 2`, so `GGφ` holds
 at `t` while `Gφ` fails; for `dense_indicator`, `⊥ U ⊤` is true on `ℤ` because every point has
 an immediate successor. Since `ℤ` also satisfies `TaskFrame.IsComplete`, a
-`soundness_dedekind : DerivationTree .Dedekind … → ValidDedekind` would be refutable.
+`soundness_dedekind : DerivationTree .Dedekind … → ValidComplete` would be refutable.
 `soundness_dedekind` therefore targets `ValidDedekindDense`. This predicate is landed as the
 strictly weaker statement and as the target of the forgetful bridge from `valid`.
 
@@ -721,7 +721,7 @@ writing the refutable version requires naming a different predicate rather than 
 that just looking at the behaviour of temporal formulas". So no single axiom characterises this
 class; `Axiom.prior_U_gap` / `Axiom.prior_S_gap` / `Axiom.sep` are the definable-gap proxy.
 -/
-def ValidDedekind (φ : Formula) : Prop := ValidOnFrames TaskFrame.IsComplete φ
+def ValidComplete (φ : Formula) : Prop := ValidOnFrames TaskFrame.IsComplete φ
 
 /--
 A formula is valid over **dense Dedekind-complete** temporal orders. This is the real-flow
@@ -730,7 +730,7 @@ not merely a paradigm one.
 
 **This is `ValidIn .Dedekind`** — `FrameClass.Sat .Dedekind` is `TaskFrame.IsDedekind`, the
 conjunction of `def:frame-properties`' Dense and Complete clauses — and it is therefore the
-predicate the `.Dedekind` tag denotes, whatever its name may suggest about `ValidDedekind`. The
+predicate the `.Dedekind` tag denotes, whatever its name may suggest about `ValidComplete`. The
 binder shape this definition used to have is recovered by the generic
 `ValidIn.of_forall_total` / `ValidIn.apply_total` followed by `sat_intro`, which splits
 `IsDedekind` into the density instance and the least-upper-bound hypothesis.
@@ -741,16 +741,16 @@ binder shape this definition used to have is recovered by the generic
 hypothesis is *either* `≃+o ℤ` *or* densely ordered, and by
 `FormalSystem.Semantics.complete_not_dense_iso_int` those branches are exclusive. So adding
 `DenselyOrdered` deletes precisely the `ℤ` branch of the Hölder dichotomy and nothing else —
-which is why `ℤ` is excluded here even though it satisfies every binder of `ValidDedekind`.
+which is why `ℤ` is excluded here even though it satisfies every binder of `ValidComplete`.
 (Getting from "dense and complete" to a literal `≃+o ℝ` needs one further step this repository
 does not carry; the composition path and the reason it is out of scope are recorded in the
 `DurationClassification` module docstring.)
 
-**This is the target of `soundness_dedekind`**, not `ValidDedekind`. The reason is spelled out
-in the `ValidDedekind` docstring above and is worth restating, because the weaker-looking
+**This is the target of `soundness_dedekind`**, not `ValidComplete`. The reason is spelled out
+in the `ValidComplete` docstring above and is worth restating, because the weaker-looking
 predicate is the wrong one: `FrameClass.Dedekind` lies above `FrameClass.Dense`, so `density`
 and `dense_indicator` are admissible in a `.Dedekind` derivation, and both are false on `ℤ` —
-which is Dedekind-complete. Do not "simplify" `soundness_dedekind` to target `ValidDedekind`;
+which is Dedekind-complete. Do not "simplify" `soundness_dedekind` to target `ValidComplete`;
 the result would be refutable.
 
 The placement of `Dedekind` above `Dense` is itself primary-source: Reynolds 1992 (printed
@@ -770,7 +770,7 @@ are kept as named lemmas so that a call site can cite the correspondence explici
 future edit which pulls the two apart fails here rather than somewhere downstream.
 `valid_iff_validIn_base` is the one that still carries a proof: `valid` is not yet an abbreviation.
 
-Note the shape of the last one: `ValidDedekind` is **not** `ValidIn .Dedekind`. See its own
+Note the shape of the last one: `ValidComplete` is **not** `ValidIn .Dedekind`. See its own
 docstring, and `TaskFrame.IsComplete`'s. -/
 
 /-- `valid` is `ValidIn` at the unconstrained class: `Sat .Base` is `True`, so the tag imposes
@@ -799,15 +799,15 @@ least-upper-bound hypothesis is exactly the conjunction `TaskFrame.IsDedekind` t
 theorem validDedekindDense_iff_validIn_dedekind (φ : Formula) :
     ValidDedekindDense φ ↔ ValidIn ProofSystem.FrameClass.Dedekind φ := Iff.rfl
 
-/-- `ValidDedekind` is `ValidOnFrames TaskFrame.IsComplete` — and therefore **not** any `ValidIn`.
+/-- `ValidComplete` is `ValidOnFrames TaskFrame.IsComplete` — and therefore **not** any `ValidIn`.
 
 `def:frame-properties`' bare Complete clause admits `ℤ`, and no `FrameClass` constructor denotes
 that class (`ProofSystem/Axioms.lean`'s `FrameClass` docstring says so explicitly: there is no
 axiom set here for `Th(ℤ) ∩ Th(ℝ)`). That this predicate still lands inside the collapse — with its
 bridge to `ValidDedekindDense` falling out of `ValidOnFrames.mono` like every other bridge — is the
 whole reason the primitive is indexed by a frame predicate rather than by a tag. -/
-theorem validDedekind_iff_validOnFrames_isComplete (φ : Formula) :
-    ValidDedekind φ ↔ ValidOnFrames TaskFrame.IsComplete φ := Iff.rfl
+theorem validComplete_iff_validOnFrames_isComplete (φ : Formula) :
+    ValidComplete φ ↔ ValidOnFrames TaskFrame.IsComplete φ := Iff.rfl
 
 /--
 Validity implies validity over dense orders: every valid formula is ValidDense.
@@ -823,10 +823,10 @@ theorem valid_implies_valid_discrete {φ : Formula} (h : valid φ) : ValidDiscre
 
 /--
 Validity implies validity over Dedekind-complete orders: every valid formula is
-`ValidDedekind`. The least-upper-bound hypothesis is simply discarded — `valid` already
+`ValidComplete`. The least-upper-bound hypothesis is simply discarded — `valid` already
 quantifies over every `D` satisfying the weaker binder set.
 -/
-theorem valid_implies_validDedekind {φ : Formula} (h : valid φ) : ValidDedekind φ :=
+theorem valid_implies_validComplete {φ : Formula} (h : valid φ) : ValidComplete φ :=
   ValidOnFrames.mono (fun _ _ => trivial) ((valid_iff_validIn_base φ).mp h)
 
 /--
@@ -837,15 +837,15 @@ theorem valid_implies_validDedekindDense {φ : Formula} (h : valid φ) : ValidDe
   ValidIn.mono (ProofSystem.FrameClass.base_le _) ((valid_iff_validIn_base φ).mp h)
 
 /--
-`ValidDedekind` is strictly stronger than `ValidDedekindDense`: adding the `DenselyOrdered`
+`ValidComplete` is strictly stronger than `ValidDedekindDense`: adding the `DenselyOrdered`
 binder restricts the class of temporal types quantified over, so validity on all
 Dedekind-complete orders entails validity on the dense ones.
 
 This is the bridge that makes the SETTLED soundness target coherent: `soundness_dedekind`
 proves the weaker `ValidDedekindDense`, and anything genuinely established at
-`ValidDedekind` can be transported into it via this lemma.
+`ValidComplete` can be transported into it via this lemma.
 -/
-theorem validDedekindDense_of_validDedekind {φ : Formula} (h : ValidDedekind φ) :
+theorem validDedekindDense_of_validComplete {φ : Formula} (h : ValidComplete φ) :
     ValidDedekindDense φ :=
   ValidOnFrames.mono (fun _ => TaskFrame.isComplete_of_isDedekind) h
 
