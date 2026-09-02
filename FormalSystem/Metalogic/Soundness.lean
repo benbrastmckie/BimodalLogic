@@ -991,19 +991,6 @@ and — since the collapse onto `soundness_in` — the single `axiom_validIn_min
 than once per frame class.
 -/
 
-/-- A greatest lower bound from a least-upper-bound hypothesis: `inf B` is recovered as the
-least upper bound of `B`'s set of lower bounds, via `isLUB_lowerBounds`. This is the bridge the
-past-directed `prior_S_gap_valid` needs, since the `ValidDedekindDense` binder set supplies only
-the upward-completeness hypothesis. `BddBelow B` is definitionally `(lowerBounds B).Nonempty`
-and so is passed straight through as the nonemptiness argument; any member of `B` is an upper
-bound of `lowerBounds B`. -/
-private theorem exists_isGLB_of_lub {D : Type} [LinearOrder D]
-    (h_lub : ∀ s : Set D, s.Nonempty → BddAbove s → ∃ x, IsLUB s x)
-    {B : Set D} (hne : B.Nonempty) (hbdd : BddBelow B) : ∃ x, IsGLB B x := by
-  obtain ⟨a, ha⟩ := hne
-  obtain ⟨x, hx⟩ := h_lub (lowerBounds B) hbdd ⟨a, fun _ hb => hb ha⟩
-  exact ⟨x, isLUB_lowerBounds.mp hx⟩
-
 /-- **Prior-U gap axiom validity**: `U(⊤,φ) ∧ F(¬φ) → U(¬φ ∨ K⁺(¬φ), φ)` is valid on every
 dense Dedekind-complete duration group.
 
@@ -1068,9 +1055,9 @@ The infimum dual of `prior_U_gap_valid` (Reynolds 1992, printed p.168, likewise 
 proof). Here `B` is the set of left endpoints of φ-intervals ending at `t` -- the `u < t` such
 that φ holds at every `r` strictly between `u` and `t` -- and the witness is `s = inf B`.
 
-The binder set provides only a least-upper-bound hypothesis, so `exists_isGLB_of_lub` is the
-bridge: it derives a greatest lower bound of `B` as the least upper bound of `B`'s lower-bound
-set, via `isLUB_lowerBounds`. This costs nothing extra in hypotheses, whereas the alternative
+The binder set provides only a least-upper-bound hypothesis, so
+`SoundnessLemmas.exists_isGLB_of_lub` is the bridge: it derives a greatest lower bound of `B` as
+the least upper bound of `B`'s lower-bound set, via `isLUB_lowerBounds`. This costs nothing extra in hypotheses, whereas the alternative
 negation route (`x ↦ -x` reverses the order) would drag in the additive group structure.
 
 The trichotomy branches in the final step run in the mirror order to the Prior-U case: for `r`
@@ -1092,7 +1079,7 @@ theorem prior_S_gap_valid (φ : Formula) :
     intro u hu
     by_contra huv
     exact hnpv (hu.2 v (lt_of_not_ge huv) hvt)
-  obtain ⟨s, hs⟩ := exists_isGLB_of_lub h_lub ⟨s0, hs0B⟩ hBbdd
+  obtain ⟨s, hs⟩ := SoundnessLemmas.exists_isGLB_of_lub h_lub ⟨s0, hs0B⟩ hBbdd
   have hst : s < t := lt_of_le_of_lt (hs.1 hs0B) hs0t
   have hguard : ∀ r : F.Duration, s < r → r < t → TruthAt M τ r φ := by
     intro r hsr hrt

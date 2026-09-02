@@ -210,7 +210,7 @@ Phase 9's task list. If any name reports a live consumer, stop and report rather
 
 ---
 
-### Phase 2: Deduplicate `exists_isGLB_of_lub` [NOT STARTED]
+### Phase 2: Deduplicate `exists_isGLB_of_lub` [COMPLETED]
 
 **Goal**: Collapse the two copies of `exists_isGLB_of_lub` to the single `Separability.lean` one,
 removing the copy whose docstring apologises for existing.

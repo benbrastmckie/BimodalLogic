@@ -40,12 +40,14 @@ is where it is produced.
 
 namespace FormalSystem.Metalogic.SoundnessLemmas
 
-/-- A greatest lower bound from a least-upper-bound hypothesis, via `isLUB_lowerBounds`.
+/-- A greatest lower bound from a least-upper-bound hypothesis: `inf B` is recovered as the least
+upper bound of `B`'s set of lower bounds, via `isLUB_lowerBounds`. `BddBelow B` is definitionally
+`(lowerBounds B).Nonempty` and so is passed straight through as the nonemptiness argument; any
+member of `B` is an upper bound of `lowerBounds B`.
 
-Deliberate duplicate of the identically-named helper in `Metalogic/Soundness.lean`: that copy is
-`private` and so unreachable from this module, and it must stay where it is because
-`prior_S_gap_valid` uses it. Kept `private` here too. -/
-private theorem exists_isGLB_of_lub {D : Type} [LinearOrder D]
+Public because `Metalogic/Soundness.lean`'s `prior_S_gap_valid` consumes it as well as
+`sep_order_mirror` below. -/
+theorem exists_isGLB_of_lub {D : Type} [LinearOrder D]
     (h_lub : ∀ s : Set D, s.Nonempty → BddAbove s → ∃ x, IsLUB s x)
     {B : Set D} (hne : B.Nonempty) (hbdd : BddBelow B) : ∃ x, IsGLB B x := by
   obtain ⟨a, ha⟩ := hne
