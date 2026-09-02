@@ -298,24 +298,8 @@ theorem temp_l_valid (φ : Formula) :
     ⊨ (φ.always.imp (Formula.allFuture (Formula.allPast φ))) := by
   refine valid.of_forall_total ?_
   intro F M τ _h_mem t
-  simp only [TruthAt, Truth.future_iff, Truth.past_iff]
-  intro h_always s _hts r hrs
-  simp only [Formula.always, Formula.and, Formula.neg, TruthAt,
-    Truth.future_iff, Truth.past_iff] at h_always
-  -- Under strict semantics, always encodes: (∀ u < t, φ(u)) ∧ ((φ(t) → (∀ v > t, φ(v)) → ⊥) → ⊥)
-  have h1 :
-    (∀ (u : F.Duration), u < t → TruthAt M τ u φ) ∧
-    ((TruthAt M τ t φ →
-      (∀ (v : F.Duration), t < v → TruthAt M τ v φ) → False) → False) :=
-    and_of_not_imp_not h_always
-  obtain ⟨h_past, h_middle⟩ := h1
-  have h2 : TruthAt M τ t φ ∧ (∀ (v : F.Duration), t < v → TruthAt M τ v φ) :=
-    and_of_not_imp_not h_middle
-  obtain ⟨h_now, h_future⟩ := h2
-  rcases lt_trichotomy r t with h_lt | h_eq | h_gt
-  · exact h_past r h_lt
-  · exact h_eq ▸ h_now
-  · exact h_future r h_gt
+  simp only [Truth.imp_iff, Truth.always_iff, Truth.future_iff, Truth.past_iff]
+  exact fun h_always _ _ r _ => h_always r
 
 /-- MF axiom validity: `□φ → □(Fφ)` is valid. Time-shift invariance carries no side condition:
 totality of the shifted history is `WorldHistory.isTotal_timeShift`. -/
@@ -351,32 +335,12 @@ theorem temp_linearity_valid (φ ψ : Formula) :
           (Formula.someFuture (Formula.and (Formula.someFuture φ) ψ))))) := by
   refine valid.of_forall_total ?_
   intro F M τ _h_mem t
-  simp only [Formula.and, Formula.or, Formula.neg, TruthAt,
-    Truth.some_future_iff]
-  intro h_conj
-  -- Extract F(phi) and F(psi) witnesses from the conjunction
-  have h_F_phi : ∃ s, t < s ∧ TruthAt M τ s φ := by
-    by_contra h_no
-    exact h_conj (fun h1 _ => h_no h1)
-  have h_F_psi : ∃ s, t < s ∧ TruthAt M τ s ψ := by
-    by_contra h_no
-    exact h_conj (fun _ h2 => h_no h2)
-  obtain ⟨s1, hs1t, h_phi_s1⟩ := h_F_phi
-  obtain ⟨s2, hs2t, h_psi_s2⟩ := h_F_psi
-  rcases lt_trichotomy s1 s2 with h_lt | h_eq | h_gt
-  · -- s1 < s2: second disjunct F(φ ∧ F(ψ))
-    intro _
-    intro h_neg_second
-    exfalso
-    exact h_neg_second ⟨s1, hs1t, fun h_imp => h_imp h_phi_s1 ⟨s2, h_lt, h_psi_s2⟩⟩
-  · -- s1 = s2: first disjunct F(φ ∧ ψ)
-    subst h_eq
-    intro h_neg_first
-    exfalso
-    exact h_neg_first ⟨s1, hs1t, fun h_imp => h_imp h_phi_s1 h_psi_s2⟩
-  · -- s2 < s1: third disjunct F(F(φ) ∧ ψ)
-    intro _; intro _
-    exact ⟨s2, hs2t, fun h_imp => h_imp ⟨s1, h_gt, h_phi_s1⟩ h_psi_s2⟩
+  simp only [Truth.imp_iff, Truth.and_iff, Truth.or_iff, Truth.some_future_iff]
+  rintro ⟨⟨s₁, hs₁t, hφ⟩, s₂, hs₂t, hψ⟩
+  rcases lt_trichotomy s₁ s₂ with h | h | h
+  · exact .inr (.inl ⟨s₁, hs₁t, hφ, s₂, h, hψ⟩)
+  · exact .inl ⟨s₁, hs₁t, hφ, h ▸ hψ⟩
+  · exact .inr (.inr ⟨s₂, hs₂t, ⟨s₁, h, hφ⟩, hψ⟩)
 
 /-- Past temporal linearity axiom validity (BX11'):
 `P(φ) ∧ P(ψ) → P(φ ∧ ψ) ∨ P(φ ∧ P(ψ)) ∨ P(P(φ) ∧ ψ)` is valid.
@@ -476,14 +440,8 @@ theorem discreteness_forward_valid (φ : Formula) :
       (Formula.allPast φ).someFuture) := by
   refine ValidDiscrete.of_forall ?_
   intro F _h_succ _h_pred _h_succ_arch _h_pred_arch M τ _h_mem t
-  simp only [Formula.and, Formula.neg, TruthAt,
-    Truth.some_future_iff, Truth.past_iff]
-  intro h_conj
-  have h1 := and_of_not_imp_not h_conj
-  have ⟨_h_F_top, h_phi_and_H⟩ := h1
-  have h2 := and_of_not_imp_not h_phi_and_H
-  have ⟨h_phi, h_H⟩ := h2
-  have _h_nomax : NoMaxOrder F.Duration := inferInstance
+  simp only [Truth.imp_iff, Truth.and_iff, Truth.some_future_iff, Truth.past_iff]
+  rintro ⟨-, h_phi, h_H⟩
   exact ⟨Order.succ t, Order.lt_succ_of_not_isMax (not_isMax t), fun r hr => by
     rcases lt_or_eq_of_le (Order.le_of_lt_succ hr) with h | h
     · exact h_H r h
@@ -607,17 +565,9 @@ theorem enrichment_until_valid (φ ψ p : Formula) :
       (Formula.untl φ (Formula.and ψ (Formula.snce φ p)))) := by
   refine valid.of_forall_total ?_
   intro F M τ _h_mem t
-  simp only [Formula.and, Formula.neg, TruthAt]
-  intro h_conj
-  have h_pt : TruthAt M τ t p := by
-    by_contra h_neg; exact h_conj (fun h_p _ => h_neg h_p)
-  have h_until : ∃ s, t < s ∧ TruthAt M τ s ψ ∧
-      ∀ r, t < r → r < s → TruthAt M τ r φ := by
-    by_contra h_neg; exact h_conj (fun _ h_u => h_neg h_u)
-  obtain ⟨s, hts, h_ψs, h_guard⟩ := h_until
-  refine ⟨s, hts, ?_, h_guard⟩
-  intro h_imp
-  exact h_imp h_ψs ⟨t, hts, h_pt, fun r htr hrs => h_guard r htr hrs⟩
+  simp only [Truth.imp_iff, Truth.and_iff, Truth.untl_iff, Truth.snce_iff]
+  rintro ⟨h_pt, s, hts, h_ψs, h_guard⟩
+  exact ⟨s, hts, ⟨h_ψs, t, hts, h_pt, h_guard⟩, h_guard⟩
 
 /-- BX13': Since-Until enrichment (Burgess A3b, Xu axiom (4)):
 `p ∧ snce(φ, ψ) → snce(φ, ψ ∧ untl(φ, p))`.
@@ -627,17 +577,9 @@ theorem enrichment_since_valid (φ ψ p : Formula) :
       (Formula.snce φ (Formula.and ψ (Formula.untl φ p)))) := by
   refine valid.of_forall_total ?_
   intro F M τ _h_mem t
-  simp only [Formula.and, Formula.neg, TruthAt]
-  intro h_conj
-  have h_pt : TruthAt M τ t p := by
-    by_contra h_neg; exact h_conj (fun h_p _ => h_neg h_p)
-  have h_since : ∃ s, s < t ∧ TruthAt M τ s ψ ∧
-      ∀ r, s < r → r < t → TruthAt M τ r φ := by
-    by_contra h_neg; exact h_conj (fun _ h_s => h_neg h_s)
-  obtain ⟨s, hst, h_ψs, h_guard⟩ := h_since
-  refine ⟨s, hst, ?_, h_guard⟩
-  intro h_imp
-  exact h_imp h_ψs ⟨t, hst, h_pt, fun r hsr hrt => h_guard r hsr hrt⟩
+  simp only [Truth.imp_iff, Truth.and_iff, Truth.untl_iff, Truth.snce_iff]
+  rintro ⟨h_pt, s, hst, h_ψs, h_guard⟩
+  exact ⟨s, hst, ⟨h_ψs, t, hst, h_pt, h_guard⟩, h_guard⟩
 
 /-- BX5: Self-accumulation of Until: `(φ U ψ) → ((φ ∧ (φ U ψ)) U ψ)`.
 Given φ U ψ with witness s ≥ t: same witness s. Endpoint ψ(s) is unchanged.
@@ -669,16 +611,8 @@ theorem absorb_until_valid (φ ψ : Formula) :
     ⊨ ((Formula.untl φ (Formula.and φ (Formula.untl φ ψ))).imp (Formula.untl φ ψ)) := by
   refine valid.of_forall_total ?_
   intro F M τ _h_mem t
-  simp only [Formula.and, Formula.neg, TruthAt]
-  intro ⟨s₁, hts₁, h_conj, h_guard₁⟩
-  -- Extract φ(s₁) and (φ U ψ)(s₁) from the conjunction (encoded as double negation)
-  have h_φs₁_and_until : TruthAt M τ s₁ φ ∧
-      (∃ s₂, s₁ < s₂ ∧ TruthAt M τ s₂ ψ ∧
-        ∀ q, s₁ < q → q < s₂ → TruthAt M τ q φ) := by
-    constructor
-    · by_contra h_neg; exact h_conj (fun h_φ _ => h_neg h_φ)
-    · by_contra h_neg; exact h_conj (fun _ h_until => h_neg h_until)
-  obtain ⟨h_φs₁, s₂, hs₁s₂, h_ψs₂, h_guard₂⟩ := h_φs₁_and_until
+  simp only [Truth.imp_iff, Truth.and_iff, Truth.untl_iff]
+  rintro ⟨s₁, hts₁, ⟨h_φs₁, s₂, hs₁s₂, h_ψs₂, h_guard₂⟩, h_guard₁⟩
   -- Witness s₂ for the result. Guard covers (t, s₂) via three zones.
   refine ⟨s₂, lt_trans hts₁ hs₁s₂, h_ψs₂, fun q htq hqs₂ => ?_⟩
   rcases lt_trichotomy q s₁ with h_lt | h_eq | h_gt
@@ -691,15 +625,8 @@ theorem absorb_since_valid (φ ψ : Formula) :
     ⊨ ((Formula.snce φ (Formula.and φ (Formula.snce φ ψ))).imp (Formula.snce φ ψ)) := by
   refine valid.of_forall_total ?_
   intro F M τ _h_mem t
-  simp only [Formula.and, Formula.neg, TruthAt]
-  intro ⟨s₁, hs₁t, h_conj, h_guard₁⟩
-  have h_φs₁_and_since : TruthAt M τ s₁ φ ∧
-      (∃ s₂, s₂ < s₁ ∧ TruthAt M τ s₂ ψ ∧
-        ∀ q, s₂ < q → q < s₁ → TruthAt M τ q φ) := by
-    constructor
-    · by_contra h_neg; exact h_conj (fun h_φ _ => h_neg h_φ)
-    · by_contra h_neg; exact h_conj (fun _ h_since => h_neg h_since)
-  obtain ⟨h_φs₁, s₂, hs₂s₁, h_ψs₂, h_guard₂⟩ := h_φs₁_and_since
+  simp only [Truth.imp_iff, Truth.and_iff, Truth.snce_iff]
+  rintro ⟨s₁, hs₁t, ⟨h_φs₁, s₂, hs₂s₁, h_ψs₂, h_guard₂⟩, h_guard₁⟩
   refine ⟨s₂, lt_trans hs₂s₁ hs₁t, h_ψs₂, fun q hs₂q hqt => ?_⟩
   rcases lt_trichotomy q s₁ with h_lt | h_eq | h_gt
   · exact h_guard₂ q hs₂q h_lt
@@ -827,17 +754,7 @@ theorem discrete_symm_fwd_valid :
       (Formula.snce Formula.bot (Formula.bot.imp Formula.bot))) := by
   refine valid.of_forall_total ?_
   intro F M τ _h_mem t
-  simp only [TruthAt]
-  intro ⟨s, hts, _h_top_s, h_guard⟩
-  refine ⟨t - (s - t), sub_lt_self t (sub_pos.mpr hts), fun h => h, fun c hrc hct => ?_⟩
-  -- c ∈ (t-(s-t), t), so c+(s-t) ∈ (t, s), but (t,s) is empty
-  have h1 : t < c + (s - t) :=
-    calc t = t - (s - t) + (s - t) := (sub_add_cancel t (s - t)).symm
-      _ < c + (s - t) := add_lt_add_left hrc (s - t)
-  have h2 : c + (s - t) < s :=
-    calc c + (s - t) < t + (s - t) := add_lt_add_left hct (s - t)
-      _ = s := by rw [add_comm, sub_add_cancel]
-  exact h_guard (c + (s - t)) h1 h2
+  exact fun h => (Truth.truthAt_gap_iff_cogap M τ t).mp h
 
 /-- Discrete symmetry backward: S(⊤,⊥) → U(⊤,⊥).
 If there is a gap (r, t) with r < t, then (t, t+(t-r)) is also empty by translation. -/
@@ -846,17 +763,7 @@ theorem discrete_symm_bwd_valid :
       (Formula.untl Formula.bot (Formula.bot.imp Formula.bot))) := by
   refine valid.of_forall_total ?_
   intro F M τ _h_mem t
-  simp only [TruthAt]
-  intro ⟨r, hrt, _h_top_r, h_guard⟩
-  refine ⟨t + (t - r), lt_add_of_pos_right t (sub_pos.mpr hrt), fun h => h, fun c htc hcs => ?_⟩
-  -- c ∈ (t, t+(t-r)), so c-(t-r) ∈ (r, t), but (r,t) is empty
-  have h1 : r < c - (t - r) := by
-    conv_lhs => rw [(sub_sub_cancel t r).symm]
-    exact sub_lt_sub_right htc _
-  have h2 : c - (t - r) < t := by
-    conv_rhs => rw [(add_sub_cancel_right t (t - r)).symm]
-    exact sub_lt_sub_right hcs _
-  exact h_guard (c - (t - r)) h1 h2
+  exact fun h => (Truth.truthAt_gap_iff_cogap M τ t).mpr h
 
 /-- Discrete propagation forward: U(⊤,⊥) → G(U(⊤,⊥)).
 If there is a gap (t, s), then for any u > t, (u, u+(s-t)) is also empty. -/
@@ -865,17 +772,7 @@ theorem discrete_propagate_fwd_valid :
       (Formula.allFuture (Formula.untl Formula.bot (Formula.bot.imp Formula.bot)))) := by
   refine valid.of_forall_total ?_
   intro F M τ _h_mem t
-  simp only [TruthAt, Truth.future_iff]
-  intro ⟨s, hts, _h_top_s, h_guard⟩ u _htu
-  refine ⟨u + (s - t), lt_add_of_pos_right u (sub_pos.mpr hts), fun h => h, fun c huc hcs => ?_⟩
-  -- c ∈ (u, u+(s-t)), so c-(u-t) ∈ (t, s), but (t,s) is empty
-  have h1 : t < c - (u - t) := by
-    conv_lhs => rw [(sub_sub_cancel u t).symm]
-    exact sub_lt_sub_right huc _
-  have h2 : c - (u - t) < s := by
-    conv_rhs => rw [show s = u + (s - t) - (u - t) from by rw [add_sub_sub_cancel, sub_add_cancel]]
-    exact sub_lt_sub_right hcs _
-  exact h_guard (c - (u - t)) h1 h2
+  exact fun h => (Truth.future_iff _).mpr fun u _ => Truth.truthAt_gap_shift M τ t u h
 
 /-- Discrete propagation backward: U(⊤,⊥) → H(U(⊤,⊥)).
 If there is a gap (t, s), then for any u < t, (u, u+(s-t)) is also empty. -/
@@ -884,17 +781,7 @@ theorem discrete_propagate_bwd_valid :
       (Formula.allPast (Formula.untl Formula.bot (Formula.bot.imp Formula.bot)))) := by
   refine valid.of_forall_total ?_
   intro F M τ _h_mem t
-  simp only [TruthAt, Truth.past_iff]
-  intro ⟨s, hts, _h_top_s, h_guard⟩ u _hut
-  refine ⟨u + (s - t), lt_add_of_pos_right u (sub_pos.mpr hts), fun h => h, fun c huc hcs => ?_⟩
-  -- c ∈ (u, u+(s-t)), so c-(u-t) ∈ (t, s), but (t,s) is empty
-  have h1 : t < c - (u - t) := by
-    conv_lhs => rw [(sub_sub_cancel u t).symm]
-    exact sub_lt_sub_right huc _
-  have h2 : c - (u - t) < s := by
-    conv_rhs => rw [show s = u + (s - t) - (u - t) from by rw [add_sub_sub_cancel, sub_add_cancel]]
-    exact sub_lt_sub_right hcs _
-  exact h_guard (c - (u - t)) h1 h2
+  exact fun h => (Truth.past_iff _).mpr fun u _ => Truth.truthAt_gap_shift M τ t u h
 
 /-- Discrete box necessity: U(⊤,⊥) → □(U(⊤,⊥)).
 If there is a gap (t, s) at history τ, then for any total history σ,
@@ -904,9 +791,7 @@ theorem discrete_box_necessity_valid :
       (Formula.box (Formula.untl Formula.bot (Formula.bot.imp Formula.bot)))) := by
   refine valid.of_forall_total ?_
   intro F M τ _h_mem t
-  simp only [TruthAt]
-  intro ⟨s, hts, _h_top_s, h_guard⟩ σ _h_σ_mem
-  exact ⟨s, hts, fun h => h, h_guard⟩
+  exact fun h σ _ => (Truth.truthAt_atomFree_history_indep M _ rfl τ σ t).mp h
 
 /-- Prior-UZ is valid on discrete orders: F(φ) → U(φ, ¬φ).
 If φ holds at some future time, there is a nearest future time where φ holds. -/

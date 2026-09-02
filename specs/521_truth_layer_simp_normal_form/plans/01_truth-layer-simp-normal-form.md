@@ -457,7 +457,7 @@ therefore reduced to its `Soundness.lean` rewrites. — the tag set is one pre-d
 
 ---
 
-### Phase 7: A-17 — history-independence and gap shift [IN PROGRESS]
+### Phase 7: A-17 — history-independence and gap shift [COMPLETED]
 
 - **Goal:** Charter step (5). Add the two A-17 lemmas beside `Truth.box_const` and collapse the
   uniformity block that currently re-derives them by hand five times.
@@ -480,10 +480,11 @@ therefore reduced to its `Soundness.lean` rewrites. — the tag set is one pre-d
         `discrete_symm_fwd_valid` (:825) and `discrete_symm_bwd_valid` (:844). The researcher did
         not prove these but reports the argument is the mirror image with no visible obstruction
         (marked `[reasoned]`, not verified).
-  - [ ] If the dual does not land inside this phase's budget, leave those two proofs unchanged,
-        mark the phase `[COMPLETED WITH EXCLUSIONS]` and add a `#### Reasoned Exclusions` table
-        naming both, the reason, and the compile evidence. They are outside the eleven named
-        declarations and metric (A) does not depend on them.
+  - [x] If the dual does not land inside this phase's budget, leave those two proofs unchanged,
+        mark the phase `[COMPLETED WITH EXCLUSIONS]` … *(deviation: not needed — the dual landed.
+        `Truth.truthAt_gap_iff_cogap` was proved, so `discrete_symm_fwd_valid` and
+        `discrete_symm_bwd_valid` are each a single term and no exclusion is recorded. The
+        researcher's `[reasoned]` estimate held.)*
 - **Timing:** 2.0 hours
 - **Depends on:** 3
 - **Verification Tier:** interface
@@ -499,7 +500,7 @@ therefore reduced to its `Soundness.lean` rewrites. — the tag set is one pre-d
 
 ---
 
-### Phase 8: Rewrite the seven smaller named soundness proofs [NOT STARTED]
+### Phase 8: Rewrite the seven smaller named soundness proofs [COMPLETED]
 
 - **Goal:** The first half of charter step (6). Rewrite against the new API, using the researcher's
   compiled `linear_until_valid` as the pattern.
