@@ -397,28 +397,28 @@ their final form and never need restating. This is the benign half of the `IsVal
 
 ---
 
-### Phase 6: One-line the propositional and modal arms [NOT STARTED]
+### Phase 6: One-line the propositional and modal arms [COMPLETED]
 
 **Goal**: Extract per-constructor lemmas out of the inlined propositional, modal, and seriality
 arms of `axiom_swap_valid_general`, leaving each arm a one-line `exact <name> …`.
 
 **Tasks**:
-- [ ] For each inlined propositional/modal/seriality arm, extract a named lemma stated at
+- [x] For each inlined propositional/modal/seriality arm, extract a named lemma stated at
       `ValidIn FrameClass.Base` immediately above the dispatcher, with a docstring, and reduce the
       arm to `exact <ctor>_swap_valid <args>`. Arms in scope: `prop_k`, `prop_s`,
       `modal_5_collapse`, `ex_falso`, `peirce`, `modal_k_dist`, `serial_future`, `serial_past`,
       and the remaining non-temporal inlined arms between them.
-- [ ] **D-09, narrow form**: drop the no-op `simp only [Formula.swapTemporal, TruthAt]` line at
+- [x] **D-09, narrow form**: drop the no-op `simp only [Formula.swapTemporal, TruthAt]` line at
       **exactly four** arms — `prop_k`, `prop_s`, `ex_falso`, `modal_k_dist` — where `TruthAt … (φ.imp ψ)`
       is definitionally an arrow (`Truth.imp_iff` is `rfl`, `Truth.lean:192`). Keep it everywhere
       it exposes a quantifier via `Truth.future_iff`/`Truth.past_iff`, including `serial_future`
       and `serial_past`, which pair it with `Truth.some_past_iff`/`Truth.some_future_iff`. If a
       further candidate looks removable, the test is: the next tactic is `intro` or `exact` and
       the goal is propositional. Blanket removal breaks the build.
-- [ ] Leave the 8 `absurd h_fc` arms for non-Base constructors alone — already one-line.
-- [ ] Leave the 4 existing one-line delegating arms (`modal_t`, `modal_4`, `modal_b`,
+- [x] Leave the 8 `absurd h_fc` arms for non-Base constructors alone — already one-line.
+- [x] Leave the 4 existing one-line delegating arms (`modal_t`, `modal_4`, `modal_b`,
       `modal_future`) and the 4 two-line delegating arms alone.
-- [ ] Do not over-optimise the extracted proofs. Sibling task 522 rewrites their `simp only`
+- [x] Do not over-optimise the extracted proofs. Sibling task 522 rewrites their `simp only`
       calls; this phase's job is to leave them as small named lemmas rather than inline blocks.
 
 **Timing**: 2 hours

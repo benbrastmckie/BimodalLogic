@@ -116,6 +116,103 @@ theorem swap_axiom_mf_valid (φ : Formula) :
       (WorldHistory.isTotal_timeShift h_σ_mem (s - t))
   exact (TimeShift.time_shift_preserves_truth M σ t s φ.swapTemporal).mp h_at_shifted
 
+/-- Propositional K swaps to itself at swapped subformulas: swap distributes over `imp`, and
+`TruthAt` at an implication is definitionally an arrow, so this is the K combinator. -/
+theorem prop_k_swap_valid (φ ψ χ : Formula) :
+    ValidIn FrameClass.Base
+      ((φ.imp (ψ.imp χ)).imp ((φ.imp ψ).imp (φ.imp χ))).swapTemporal := by
+  refine ValidIn.of_forall_total ?_
+  intro F _ M τ _hτ t
+  intro h_abc h_ab h_a
+  exact h_abc h_a (h_ab h_a)
+
+/-- Propositional S swaps to itself at swapped subformulas: the K combinator of the pair. -/
+theorem prop_s_swap_valid (φ ψ : Formula) :
+    ValidIn FrameClass.Base (φ.imp (ψ.imp φ)).swapTemporal := by
+  refine ValidIn.of_forall_total ?_
+  intro F _ M τ _hτ t
+  intro h_a _
+  exact h_a
+
+/-- Modal 5 collapse swaps to itself: `◇□φ → □φ` is self-dual under the temporal swap, since the
+swap touches no modal operator. The `box`/`diamond` pair is the S5 collapse over total histories,
+which does not mention time at all. -/
+theorem modal_5_collapse_swap_valid (φ : Formula) :
+    ValidIn FrameClass.Base (φ.box.diamond.imp φ.box).swapTemporal := by
+  refine ValidIn.of_forall_total ?_
+  intro F _ M τ _hτ t
+  simp only [Formula.swapTemporal, Formula.diamond, Formula.neg]
+  simp only [TruthAt]
+  intro h_diamond_box σ h_σ_mem
+  by_contra h_not_psi
+  apply h_diamond_box
+  intro ρ h_ρ_mem h_box_at_rho
+  have h_psi_at_sigma := h_box_at_rho σ h_σ_mem
+  exact h_not_psi h_psi_at_sigma
+
+/-- Ex falso swaps to itself at a swapped consequent. -/
+theorem ex_falso_swap_valid (φ : Formula) :
+    ValidIn FrameClass.Base (Formula.bot.imp φ).swapTemporal := by
+  refine ValidIn.of_forall_total ?_
+  intro F _ M τ _hτ t
+  intro h_bot
+  exfalso
+  exact h_bot
+
+/-- Peirce's law swaps to itself at swapped subformulas; the proof is the classical case split on
+whether the swapped antecedent holds. -/
+theorem peirce_swap_valid (φ ψ : Formula) :
+    ValidIn FrameClass.Base (((φ.imp ψ).imp φ).imp φ).swapTemporal := by
+  refine ValidIn.of_forall_total ?_
+  intro F _ M τ _hτ t
+  simp only [Formula.swapTemporal, TruthAt]
+  intro h_peirce
+  by_cases h : TruthAt M τ t φ.swapTemporal
+  · exact h
+  · have h_imp : TruthAt M τ t (φ.swapTemporal.imp ψ.swapTemporal) := by
+      unfold TruthAt
+      intro h_psi
+      exfalso
+      exact h h_psi
+    exact h_peirce h_imp
+
+/-- Modal K distribution swaps to itself: the swap fixes `□`, so this is K at swapped
+subformulas. -/
+theorem modal_k_dist_swap_valid (φ ψ : Formula) :
+    ValidIn FrameClass.Base ((φ.imp ψ).box.imp (φ.box.imp ψ.box)).swapTemporal := by
+  refine ValidIn.of_forall_total ?_
+  intro F _ M τ _hτ t
+  intro h_box_imp h_box_psi σ h_σ_mem
+  exact h_box_imp σ h_σ_mem (h_box_psi σ h_σ_mem)
+
+/-- Future seriality swaps to past seriality: `⊤ → F⊤` becomes `⊤ → P⊤`, witnessed by
+`exists_lt`. -/
+theorem serial_future_swap_valid :
+    ValidIn FrameClass.Base
+      ((Formula.bot.imp Formula.bot).imp
+        (Formula.someFuture (Formula.bot.imp Formula.bot))).swapTemporal := by
+  refine ValidIn.of_forall_total ?_
+  intro F _ M τ _hτ t
+  simp only [Formula.swap_temporal_some_future, Formula.swapTemporal]
+  simp only [TruthAt, Truth.some_past_iff]
+  intro _
+  obtain ⟨s, hst⟩ := exists_lt t
+  exact ⟨s, hst, fun h => h⟩
+
+/-- Past seriality swaps to future seriality: `⊤ → P⊤` becomes `⊤ → F⊤`, witnessed by
+`exists_gt`. -/
+theorem serial_past_swap_valid :
+    ValidIn FrameClass.Base
+      ((Formula.bot.imp Formula.bot).imp
+        (Formula.somePast (Formula.bot.imp Formula.bot))).swapTemporal := by
+  refine ValidIn.of_forall_total ?_
+  intro F _ M τ _hτ t
+  simp only [Formula.swap_temporal_some_past, Formula.swapTemporal]
+  simp only [TruthAt, Truth.some_future_iff]
+  intro _
+  obtain ⟨s, hts⟩ := exists_gt t
+  exact ⟨s, hts, fun h => h⟩
+
 /-! ## Per-Axiom Validity of the Unswapped Schemas
 
 Validity of the unswapped axiom schemas at `FrameClass.Base`. The swap arms below consume these
@@ -243,76 +340,17 @@ theorem axiom_swap_valid_general (φ : Formula) (h : Axiom φ) (h_fc :
       h.minFrameClass ≤ FrameClass.Base)
     : ValidIn FrameClass.Base φ.swapTemporal := by
   cases h with
-  | prop_k ψ χ ρ =>
-    refine ValidIn.of_forall_total ?_
-    intro F _ M τ _hτ t
-    simp only [Formula.swapTemporal, TruthAt]
-    intro h_abc h_ab h_a
-    exact h_abc h_a (h_ab h_a)
-  | prop_s ψ χ =>
-    refine ValidIn.of_forall_total ?_
-    intro F _ M τ _hτ t
-    simp only [Formula.swapTemporal, TruthAt]
-    intro h_a _
-    exact h_a
+  | prop_k ψ χ ρ => exact prop_k_swap_valid ψ χ ρ
+  | prop_s ψ χ => exact prop_s_swap_valid ψ χ
   | modal_t ψ => exact swap_axiom_mt_valid ψ
   | modal_4 ψ => exact swap_axiom_m4_valid ψ
   | modal_b ψ => exact swap_axiom_mb_valid ψ
-  | modal_5_collapse ψ =>
-    refine ValidIn.of_forall_total ?_
-    intro F _ M τ _hτ t
-    simp only [Formula.swapTemporal, Formula.diamond, Formula.neg]
-    simp only [TruthAt]
-    intro h_diamond_box σ h_σ_mem
-    by_contra h_not_psi
-    apply h_diamond_box
-    intro ρ h_ρ_mem h_box_at_rho
-    have h_psi_at_sigma := h_box_at_rho σ h_σ_mem
-    exact h_not_psi h_psi_at_sigma
-  | ex_falso ψ =>
-    refine ValidIn.of_forall_total ?_
-    intro F _ M τ _hτ t
-    simp only [Formula.swapTemporal, TruthAt]
-    intro h_bot
-    exfalso
-    exact h_bot
-  | peirce ψ χ =>
-    refine ValidIn.of_forall_total ?_
-    intro F _ M τ _hτ t
-    simp only [Formula.swapTemporal, TruthAt]
-    intro h_peirce
-    by_cases h : TruthAt M τ t ψ.swapTemporal
-    · exact h
-    · have h_imp : TruthAt M τ t (ψ.swapTemporal.imp χ.swapTemporal) := by
-        unfold TruthAt
-        intro h_psi
-        exfalso
-        exact h h_psi
-      exact h_peirce h_imp
-  | modal_k_dist ψ χ =>
-    refine ValidIn.of_forall_total ?_
-    intro F _ M τ _hτ t
-    simp only [Formula.swapTemporal, TruthAt]
-    intro h_box_imp h_box_psi σ h_σ_mem
-    exact h_box_imp σ h_σ_mem (h_box_psi σ h_σ_mem)
-  | serial_future =>
-    -- swap of serial_future (⊤ → F⊤) is (⊤ → P⊤), need exists_lt
-    refine ValidIn.of_forall_total ?_
-    intro F _ M τ _hτ t
-    simp only [Formula.swap_temporal_some_future, Formula.swapTemporal]
-    simp only [TruthAt, Truth.some_past_iff]
-    intro _
-    obtain ⟨s, hst⟩ := exists_lt t
-    exact ⟨s, hst, fun h => h⟩
-  | serial_past =>
-    -- swap of serial_past (⊤ → P⊤) is (⊤ → F⊤), need exists_gt
-    refine ValidIn.of_forall_total ?_
-    intro F _ M τ _hτ t
-    simp only [Formula.swap_temporal_some_past, Formula.swapTemporal]
-    simp only [TruthAt, Truth.some_future_iff]
-    intro _
-    obtain ⟨s, hts⟩ := exists_gt t
-    exact ⟨s, hts, fun h => h⟩
+  | modal_5_collapse ψ => exact modal_5_collapse_swap_valid ψ
+  | ex_falso ψ => exact ex_falso_swap_valid ψ
+  | peirce ψ χ => exact peirce_swap_valid ψ χ
+  | modal_k_dist ψ χ => exact modal_k_dist_swap_valid ψ χ
+  | serial_future => exact serial_future_swap_valid
+  | serial_past => exact serial_past_swap_valid
   | left_mono_until_G φ χ ψ =>
     -- Swap of left_mono_until_G: H(φ'→χ') → snce(φ',ψ') → snce(χ',ψ')
     refine ValidIn.of_forall_total ?_
