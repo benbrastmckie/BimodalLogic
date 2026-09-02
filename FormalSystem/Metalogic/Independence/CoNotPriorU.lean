@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Metalogic.Independence.LoopingDuration
+import FormalSystem.Semantics.ShiftSet
 import FormalSystem.Metalogic.Soundness
 import Mathlib.NumberTheory.Real.Irrational
 import Mathlib.Algebra.Order.Archimedean.Real.Basic
@@ -394,95 +395,72 @@ def reflect (τ : WorldHistory clockFrame) (hτ : τ.IsTotal) : WorldHistory clo
 theorem reflect_isTotal (τ : WorldHistory clockFrame) (hτ : τ.IsTotal) :
     (reflect τ hτ).IsTotal := fun _ => trivial
 
+/-- Reflecting twice is the identity on total histories: `-(-t) = t` in the times and
+`cneg (cneg w) = w` in the states. This is what makes `reflect` an **equivalence** on `H_F`
+rather than merely a map, which is what `TruthAntiIso.hist` requires. -/
+private theorem reflect_reflect (τ : clockFrame.HF) :
+    reflect (reflect τ.val τ.property) (reflect_isTotal _ _) = τ.val := by
+  refine ShiftSet.wh_ext
+    (funext fun z => propext ⟨fun _ => τ.property z, fun _ => trivial⟩) ?_
+  intro r _ h'
+  show cneg (cneg (τ.val.states (-(-r)) (τ.property (-(-r))))) = τ.val.states r h'
+  exact (cneg_cneg _).trans
+    (WorldHistory.states_eq_of_time_eq τ.val (-(-r)) r (neg_neg r) _ h')
+
+/-- Time reversal as an involutive equivalence of `H_clockFrame`. -/
+noncomputable def clockReflectEquiv : clockFrame.HF ≃ clockFrame.HF where
+  toFun := fun τ => ⟨reflect τ.val τ.property, reflect_isTotal _ _⟩
+  invFun := fun τ => ⟨reflect τ.val τ.property, reflect_isTotal _ _⟩
+  left_inv := fun τ => Subtype.ext (reflect_reflect τ)
+  right_inv := fun τ => Subtype.ext (reflect_reflect τ)
+
+/--
+**The clock frame's time-reversal anti-isomorphism.**
+
+`dur` is negation on `ℚ` — order-reversing, which is exactly what `TruthAntiIso` asks for and
+what `TruthIso` cannot express — `hist` is `clockReflectEquiv`, and `atom` is `onArc_neg`: the
+arc valuation is symmetric under `w ↦ -w`, which is the whole reason this countermodel was built
+with a uniform valuation.
+-/
+noncomputable def clockMirrorIso : TruthAntiIso clockModel clockModel where
+  dur := Equiv.neg ℚ
+  dur_rev := fun _ _ => neg_lt_neg_iff
+  hist := clockReflectEquiv
+  atom := by
+    intro τ t _
+    have hstates : τ.val.states (-(-t)) (τ.property (-(-t))) = τ.val.states t (τ.property t) :=
+      WorldHistory.states_eq_of_time_eq τ.val (-(-t)) t (neg_neg t) _ _
+    show OnArc (τ.val.states t (τ.property t)) ↔
+      OnArc (cneg (τ.val.states (-(-t)) (τ.property (-(-t)))))
+    calc OnArc (τ.val.states t (τ.property t))
+        ↔ OnArc (τ.val.states (-(-t)) (τ.property (-(-t)))) := by rw [hstates]
+      _ ↔ OnArc (cneg (τ.val.states (-(-t)) (τ.property (-(-t))))) := (onArc_neg _).symm
+
 /--
 **The mirror lemma.** If `σ` is the time reversal of `τ` — pointwise, `σ(-x) = -τ(x)` — then `σ`
 at `-t` satisfies `φ.swapTemporal` exactly when `τ` at `t` satisfies `φ`.
 
-Stated relationally (over a *pair* of histories tied by the reversal equation) rather than through
-`reflect` alone. That is what makes the `□` case work in both directions without needing `reflect`
-to be an involution on the nose: the case supplies whichever of the two histories it is missing by
-constructing its reflection.
+An instantiation of `Truth.truthAt_of_truthAntiIso` at `clockMirrorIso`, replacing the 80-line
+hand-written six-case induction this used to carry. The statement is unchanged, relational form
+included: it still quantifies over a *pair* of histories tied by the reversal equation rather
+than over `reflect` alone. Collapsing the pair to `reflect` is now one extensionality step,
+where before it was what made the `□` case work in both directions — that job has moved into
+`TruthAntiIso.hist` being an honest equivalence.
 -/
 theorem truthAt_mirror (φ : Formula) :
     ∀ (τ σ : WorldHistory clockFrame) (hτ : τ.IsTotal) (hσ : σ.IsTotal),
       (∀ x : ℚ, σ.states (-x) (hσ (-x)) = cneg (τ.states x (hτ x))) →
       ∀ t : ℚ, (TruthAt clockModel σ (-t) φ.swapTemporal ↔ TruthAt clockModel τ t φ) := by
-  induction φ with
-  | atom p =>
-      intro τ σ hτ hσ hrel t
-      constructor
-      · rintro ⟨_, hv⟩
-        refine ⟨hτ t, ?_⟩
-        show OnArc (τ.states t (hτ t))
-        have hv' : OnArc (σ.states (-t) (hσ (-t))) := hv
-        rw [hrel t] at hv'
-        exact (onArc_neg _).mp hv'
-      · rintro ⟨_, hv⟩
-        refine ⟨hσ (-t), ?_⟩
-        show OnArc (σ.states (-t) (hσ (-t)))
-        rw [hrel t]
-        exact (onArc_neg _).mpr hv
-  | bot => intro _ _ _ _ _ _; exact Iff.rfl
-  | imp A B ihA ihB =>
-      intro τ σ hτ hσ hrel t
-      constructor
-      · intro h hA
-        exact (ihB τ σ hτ hσ hrel t).mp (h ((ihA τ σ hτ hσ hrel t).mpr hA))
-      · intro h hA
-        exact (ihB τ σ hτ hσ hrel t).mpr (h ((ihA τ σ hτ hσ hrel t).mp hA))
-  | box A ihA =>
-      intro τ σ hτ hσ _ t
-      constructor
-      · intro h ρ hρ
-        have hrel1 : ∀ x : ℚ,
-            (reflect ρ hρ).states (-x) (reflect_isTotal ρ hρ (-x)) = cneg (ρ.states x (hρ x)) := by
-          intro x
-          show cneg (ρ.states (- -x) (hρ (- -x))) = cneg (ρ.states x (hρ x))
-          rw [states_congr (neg_neg x) (hρ (- -x)) (hρ x)]
-        exact (ihA ρ (reflect ρ hρ) hρ (reflect_isTotal ρ hρ) hrel1 t).mp
-          (h (reflect ρ hρ) (reflect_isTotal ρ hρ))
-      · intro h ρ hρ
-        have hrel2 : ∀ x : ℚ,
-            ρ.states (-x) (hρ (-x)) =
-              cneg ((reflect ρ hρ).states x (reflect_isTotal ρ hρ x)) := by
-          intro x
-          exact (cneg_cneg (ρ.states (-x) (hρ (-x)))).symm
-        exact (ihA (reflect ρ hρ) ρ (reflect_isTotal ρ hρ) hρ hrel2 t).mpr
-          (h (reflect ρ hρ) (reflect_isTotal ρ hρ))
-  | untl B A ihB ihA =>
-      intro τ σ hτ hσ hrel t
-      constructor
-      · rintro ⟨s, hs, hev, hg⟩
-        refine ⟨-s, by linarith, ?_, ?_⟩
-        · have hiA := ihA τ σ hτ hσ hrel (-s)
-          rw [neg_neg] at hiA
-          exact hiA.mp hev
-        · intro r hr1 hr2
-          have hiB := ihB τ σ hτ hσ hrel r
-          exact hiB.mp (hg (-r) (by linarith) (by linarith))
-      · rintro ⟨s, hs, hev, hg⟩
-        refine ⟨-s, by linarith, (ihA τ σ hτ hσ hrel s).mpr hev, ?_⟩
-        intro r hr1 hr2
-        have hiB := ihB τ σ hτ hσ hrel (-r)
-        rw [neg_neg] at hiB
-        exact hiB.mpr (hg (-r) (by linarith) (by linarith))
-  | snce B A ihB ihA =>
-      intro τ σ hτ hσ hrel t
-      constructor
-      · rintro ⟨s, hs, hev, hg⟩
-        refine ⟨-s, by linarith, ?_, ?_⟩
-        · have hiA := ihA τ σ hτ hσ hrel (-s)
-          rw [neg_neg] at hiA
-          exact hiA.mp hev
-        · intro r hr1 hr2
-          have hiB := ihB τ σ hτ hσ hrel r
-          exact hiB.mp (hg (-r) (by linarith) (by linarith))
-      · rintro ⟨s, hs, hev, hg⟩
-        refine ⟨-s, by linarith, (ihA τ σ hτ hσ hrel s).mpr hev, ?_⟩
-        intro r hr1 hr2
-        have hiB := ihB τ σ hτ hσ hrel (-r)
-        rw [neg_neg] at hiB
-        exact hiB.mpr (hg (-r) (by linarith) (by linarith))
+  intro τ σ hτ hσ hrel t
+  have hσeq : σ = reflect τ hτ := by
+    refine ShiftSet.wh_ext (funext fun z => propext ⟨fun _ => trivial, fun _ => hσ z⟩) ?_
+    intro r h _
+    show σ.states r h = cneg (τ.states (-r) (hτ (-r)))
+    have hx := hrel (-r)
+    rw [neg_neg] at hx
+    exact hx
+  subst hσeq
+  exact (Truth.truthAt_of_truthAntiIso clockMirrorIso φ ⟨τ, hτ⟩ t).symm
 
 /--
 The form `temporal_duality` consumes: a formula true at every total history and every time of the

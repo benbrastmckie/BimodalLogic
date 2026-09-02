@@ -745,7 +745,7 @@ any reference survives, keep it and record the reason.
 
 ---
 
-### Phase 11: The anti-isomorphism twin and `truthAt_mirror` [NOT STARTED]
+### Phase 11: The anti-isomorphism twin and `truthAt_mirror` [COMPLETED]
 
 **Goal**: Add the order-reversing twin and derive the mirror transport.
 

@@ -1108,4 +1108,110 @@ theorem truthAt_of_truthIso {F F' : TaskFrame} {M : TaskModel F} {M' : TaskModel
 
 end Truth
 
+/-! ## The anti-isomorphism twin
+
+`TruthIso` transports truth along an *order-preserving* reindexing of time. A time **reversal**
+is order-reversing, so it cannot be one — and the formula it transports to is not `φ` but
+`φ.swapTemporal`, since reversing time exchanges `untl` with `snce`. `TruthAntiIso` is that
+twin, and `truthAt_of_truthAntiIso` its generic lemma.
+
+`Formula.swapTemporal` (`Syntax/Formula.lean`) fixes `atom` and `bot`, distributes through `imp`
+and `box`, and exchanges `untl` with `snce` — exactly the six-case shape the twin's induction
+needs, one clause per constructor with no residue.
+-/
+
+/--
+**An anti-isomorphism between two task models**: `TruthIso` with time reversed.
+
+`dur` is a bare `Equiv` plus an explicit reversal condition rather than an
+`F.Duration ≃o (F'.Duration)ᵒᵈ`. The two carry the same content, and the `≃o`-into-the-dual
+spelling would force every use site to insert `OrderDual.toDual`/`ofDual` round trips into
+statements that are otherwise about the carrier itself.
+
+`hist` and `atom` are unchanged from `TruthIso`, and for the same reasons: the `box` clause of
+`TruthAt` is time-symmetric, so reversal does not touch it, and it still ranges over all total
+histories — which is what forces `hist` to be an equivalence and `atom` to be quantified over
+every history.
+-/
+structure TruthAntiIso {F F' : TaskFrame} (M : TaskModel F) (M' : TaskModel F') where
+  /-- Times reindex by an equivalence... -/
+  dur : F.Duration ≃ F'.Duration
+  /-- ...which **reverses** the order. This is the whole difference from `TruthIso`. -/
+  dur_rev : ∀ s t : F.Duration, dur s < dur t ↔ t < s
+  /-- Total histories reindex by an equivalence, exactly as in `TruthIso`. -/
+  hist : F.HF ≃ F'.HF
+  /-- Atomic truth agrees under the reindexing, at every total history. -/
+  atom : ∀ (τ : F.HF) (t : F.Duration) (p : Atom),
+    M.valuation (τ.val.states t (τ.property t)) p ↔
+      M'.valuation ((hist τ).val.states (dur t) ((hist τ).property (dur t))) p
+
+namespace Truth
+
+/--
+**The generic truth transport across an anti-isomorphism.**
+
+The order-preserving twin of `truthAt_of_truthIso`, concluding at `φ.swapTemporal`. Its `atom`,
+`bot`, `imp` and `box` cases are the same arguments, since `swapTemporal` is the identity on the
+first two and structural on the second two; only `untl` and `snce` differ, and they differ by
+exchanging places and reading every bound through `dur_rev` instead of `OrderIso.lt_iff_lt`.
+
+Note on `swap_norm`: the plan for this work specified writing the body against that simp set.
+`swap_norm` collects the eleven `Formula.swap_temporal_*` lemmas, which push `swapTemporal`
+through the **derived** operators (`neg`, `diamond`, `someFuture`, `next`, …). A six-constructor
+induction needs the *base* equations of `Formula.swapTemporal` instead, and those are not in the
+set — nor should they be, since adding them would make `swap_norm` unfold the definition at every
+call site. `simp only [Formula.swapTemporal, …]` is therefore what the base cases use; `swap_norm`
+remains the right tool for a caller reasoning about a derived operator.
+-/
+theorem truthAt_of_truthAntiIso {F F' : TaskFrame} {M : TaskModel F} {M' : TaskModel F'}
+    (I : TruthAntiIso M M') (φ : Formula) (τ : F.HF) (t : F.Duration) :
+    TruthAt M τ.val t φ ↔ TruthAt M' (I.hist τ).val (I.dur t) φ.swapTemporal := by
+  induction φ generalizing τ t with
+  | atom p =>
+      rw [Formula.swapTemporal, atom_iff_of_domain (τ.property t) p,
+        atom_iff_of_domain ((I.hist τ).property (I.dur t)) p]
+      exact I.atom τ t p
+  | bot => simp [Formula.swapTemporal]
+  | imp φ ψ ihφ ihψ =>
+      simp only [Formula.swapTemporal, imp_iff]
+      rw [ihφ τ t, ihψ τ t]
+  | box φ ih =>
+      simp only [Formula.swapTemporal, box_iff]
+      constructor
+      · intro h σ' hσ'
+        obtain ⟨τ', hτ'⟩ := I.hist.surjective ⟨σ', hσ'⟩
+        have key := (ih τ' t).mp (h _ τ'.property)
+        rw [hτ'] at key
+        exact key
+      · intro h σ hσ
+        exact (ih ⟨σ, hσ⟩ t).mpr (h _ (I.hist ⟨σ, hσ⟩).property)
+  | untl ψ φ ihψ ihφ =>
+      simp only [Formula.swapTemporal, untl_iff, snce_iff]
+      constructor
+      · rintro ⟨s, hts, hs, hg⟩
+        refine ⟨I.dur s, (I.dur_rev s t).mpr hts, (ihφ τ s).mp hs, ?_⟩
+        intro r' h1 h2
+        obtain ⟨r, rfl⟩ := I.dur.surjective r'
+        exact (ihψ τ r).mp (hg r ((I.dur_rev r t).mp h2) ((I.dur_rev s r).mp h1))
+      · rintro ⟨s', hs't, hs', hg'⟩
+        obtain ⟨s, rfl⟩ := I.dur.surjective s'
+        refine ⟨s, (I.dur_rev s t).mp hs't, (ihφ τ s).mpr hs', ?_⟩
+        intro r h1 h2
+        exact (ihψ τ r).mpr (hg' (I.dur r) ((I.dur_rev s r).mpr h2) ((I.dur_rev r t).mpr h1))
+  | snce ψ φ ihψ ihφ =>
+      simp only [Formula.swapTemporal, snce_iff, untl_iff]
+      constructor
+      · rintro ⟨s, hst, hs, hg⟩
+        refine ⟨I.dur s, (I.dur_rev t s).mpr hst, (ihφ τ s).mp hs, ?_⟩
+        intro r' h1 h2
+        obtain ⟨r, rfl⟩ := I.dur.surjective r'
+        exact (ihψ τ r).mp (hg r ((I.dur_rev r s).mp h2) ((I.dur_rev t r).mp h1))
+      · rintro ⟨s', hts', hs', hg'⟩
+        obtain ⟨s, rfl⟩ := I.dur.surjective s'
+        refine ⟨s, (I.dur_rev t s).mp hts', (ihφ τ s).mpr hs', ?_⟩
+        intro r h1 h2
+        exact (ihψ τ r).mpr (hg' (I.dur r) ((I.dur_rev t r).mpr h2) ((I.dur_rev r s).mpr h1))
+
+end Truth
+
 end FormalSystem.Semantics
