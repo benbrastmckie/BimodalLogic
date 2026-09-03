@@ -52,9 +52,9 @@ links here rather than restating them.**
 
 | Quantity | Value |
 |----------|------:|
-| Archived `.lean` files | 162 |
-| Archived lines | 90,535 |
-| Top-level subdirectories | 36 |
+| Archived `.lean` files | 163 |
+| Archived lines | 90,797 |
+| Top-level subdirectories | 37 |
 | Archive directories in the repository | 1 |
 
 Those figures are a snapshot; the **live** source is the invariant script, which recomputes them
@@ -164,6 +164,7 @@ The Boneyard serves three roles:
 | [QuasimodelOracle](#quasimodeloracle) | 3 | 1,477 | BXCanonical/ | Oracle approach abandoned: 25+ sorry gaps, BX11 perpetual deferral obstruction | 107 |
 | [RabinovichPath](#rabinovichpath) | 4 | 1,294 | WeakCanonical/Kamp/ | Rabinovich generalized approach — no live downstream consumers | 302 |
 | RestrictedMCSDeferral | 1 | 772 | Metalogic/Core/RestrictedMCS/ | Deferral-restricted MCS (deferralClosure) variant of the successor seed construction; no live consumers | -- |
+| RestrictedMCSBoundedness | 1 | 262 | Metalogic/Core/RestrictedMCS/ | `iterF`/`iterP` boundedness for `RestrictedMCS`; zero live references, and its advertised consumer `succ_chain_fam` is itself archived under `StrictSemanticsLegacy/` — see subdirectory README | -- |
 | [RoundRobinChain](#roundrobinchain) | 2 | 2,537 | BXCanonical/ | Round-robin chain: BX11 perpetual deferral makes depth-0 base case unprovable | 107 |
 | [ScheduleBasedBFMCS](#scheduledbasedbfmcs) | 1 | 226 | BXCanonical/RootScopedChain.lean | Schedule-based BFMCS chain; Lindenbaum step loses F-obligations, bypassed by Chronicle | 130 |
 | [SorriedDeclExcisions](#sorrieddeclexcisions) | 6 | 3,342 | Metalogic/ (various), Bundle/ | Dead-sorry closure excisions: verified-dead declaration closures carrying statement-position sorries; never-built archive files (`#exit` guarded) — see section for inventory | -- |
@@ -177,7 +178,7 @@ The Boneyard serves three roles:
 | VecEADecomposition | 1 | 334 | WeakCanonical/Kamp/ | Syntactic VBracketFormula negation and Prop 4.3 support; bypassed by the NF-specific Prop 4.3 approach — see subdirectory README | -- |
 | [XuLemma321Legacy](#xulemma321legacy) | 0 | -- | RRelation.lean | Blocked proof-by-contradiction for Xu 3.2.1; BX9 unsound under open guard semantics | 115 |
 | VacuousKEquiv.lean (root) | 1 | 35 | Theorems/ | Vacuous K-equivalence proof, standalone | -- |
-| **Total** | **92** | **58,476** | | | |
+| **Total** | **93** | **58,738** | | | |
 
 Counts are measured from the tree (`find <subdir> -name "*.lean" | wc -l` and `wc -l` over
 those files); line counts include the normalized `ARCHIVED (Boneyard)` headers and `#exit`

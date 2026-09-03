@@ -237,7 +237,7 @@ record the deviation in the phase notes.
 
 ---
 
-### Phase 3: Retire the four boundedness lemmas [NOT STARTED]
+### Phase 3: Retire the four boundedness lemmas [COMPLETED]
 
 **Goal**: Remove 157 lines of unreferenced boundedness machinery from `Core/RestrictedMCS/`,
 retiring it to the Boneyard rather than refactoring it.
@@ -246,8 +246,12 @@ retiring it to the Boneyard rather than refactoring it.
 - [ ] Re-confirm zero consumers of `restricted_mcs_F_bounded` (`Basic.lean:486-554`),
       `restricted_mcs_P_bounded` (`:591-660`), `restricted_mcs_iter_F_bound` (`:467`), and
       `restricted_mcs_iter_P_bound` (`:571`).
-- [ ] Move all four declarations, with their docstrings, into a new Boneyard module under
-      `FormalSystem/Boneyard/` (sibling-aggregator convention per invariant C8), with a header
+- [x] Move all four declarations, with their docstrings, into a new Boneyard module under
+      `FormalSystem/Boneyard/` *(deviation: altered — C8 explicitly skips `Boneyard`, so the
+      sibling-aggregator convention does not apply there. Followed the archive's own documented
+      standard instead (`Boneyard/README.md`, "How to Archive Files"): a new subdirectory
+      `RestrictedMCSBoundedness/` with a `README.md` and `Boundedness.lean`, plus a Directory
+      Inventory row and refreshed archive counts.)*, with a header
       note recording why they were retired and that `succ_chain_fam` — their advertised consumer —
       lives at `FormalSystem/Boneyard/StrictSemanticsLegacy/Bundle/SuccChainFMCS.lean`.
 - [ ] Delete the four declarations and the two now-orphaned source comments from
