@@ -188,10 +188,5 @@ theorem tmCompleteDedekind_iff_forwardDedekind :
     TMComplete FrameClass.Dedekind ↔ Forward FrameClass.Dedekind :=
   tmComplete_iff_forward completeness_dedekind
 
-#print axioms tmComplete_iff_forward
-#print axioms tmCompleteBase_iff_forwardBase
-#print axioms tmCompleteDiscrete_iff_forwardDiscrete
-#print axioms tmCompleteDense_iff_forwardDense
-#print axioms tmCompleteDedekind_iff_forwardDedekind
 
 end FormalSystem.Metalogic

@@ -288,29 +288,18 @@ theorem notStrongCompletenessDiscrete : ¬ StrongCompletenessDiscrete :=
   not_strongCompleteness_of_witness (archWitness_finitely_satisfiable ⟨"p", none⟩)
     (archWitness_not_satisfiable ⟨"p", none⟩)
 
-#print axioms truthAt_next_iff
-#print axioms truthAt_next_iterate
-#print axioms archWitness_finitely_satisfiable
-#print axioms archWitness_not_satisfiable
 #print axioms notCompactDiscrete
-#print axioms notStrongCompletenessDiscrete
 
 /-! ## Axiom Audit
 
-```
-#print axioms truthAt_next_iff
--- depends on: [propext, Classical.choice, Quot.sound]
-#print axioms truthAt_next_iterate
--- depends on: [propext, Classical.choice, Quot.sound]
-#print axioms archWitness_finitely_satisfiable
--- depends on: [propext, Classical.choice, Quot.sound]
-#print axioms archWitness_not_satisfiable
--- depends on: [propext, Classical.choice, Quot.sound]
-#print axioms notCompactDiscrete
--- depends on: [propext, Classical.choice, Quot.sound]
-#print axioms notStrongCompletenessDiscrete
--- depends on: [propext, Classical.choice, Quot.sound]
-```
+`#print axioms notCompactDiscrete` above is the only in-file directive this module keeps: it is
+one of the five termini named in the C2/C14 manifest contract. **The rest of this module's
+axiom audit lives in `scripts/check-module-invariants.sh`'s C14 heredoc pair**, which pins
+`truthAt_next_iff`, `truthAt_next_iterate`, `archWitness_finitely_satisfiable`,
+`archWitness_not_satisfiable` and `notStrongCompletenessDiscrete` by exact string equality
+against a recorded baseline. That is a stronger guarantee than the hand-transcribed output block
+that used to sit here, which could and did drift out of step with the declarations it claimed to
+report.
 
 **`sorryAx`-free throughout.** Every declaration in this module carries exactly the three
 standard classical axioms, the identical set already carried by `completeness_dense`,

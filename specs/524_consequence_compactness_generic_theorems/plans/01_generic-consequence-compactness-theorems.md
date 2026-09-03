@@ -1,7 +1,7 @@
 # Implementation Plan: Generic Consequence / Compactness / Strong-Completeness Theorems
 
 - **Task**: 524 - Finish the FrameClass collapse at the THEOREM layer of the consequence/compactness/strong-completeness stack
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 15 hours
 - **Dependencies**: None (WAVE 3 theorem layer; task 523's definition-layer collapse already landed at `b7da18269`)
 - **Research Inputs**: `specs/524_consequence_compactness_generic_theorems/reports/01_consequence-compactness-generic-theorems.md`
@@ -630,20 +630,20 @@ for any missed `.lean` site.
 
 ---
 
-### Phase 11: `#print axioms` consolidation into the C2/C14 heredocs and final gate [NOT STARTED]
+### Phase 11: `#print axioms` consolidation into the C2/C14 heredocs and final gate [COMPLETED]
 
 **Goal**: Land item 7's manifest half and take the acceptance measurement.
 
 **Tasks**:
-- [ ] Keep in-file `#print axioms` on exactly the five termini the task names:
+- [x] Keep in-file `#print axioms` on exactly the five termini the task names:
       `strongCompletenessBase`, `strongCompletenessDense`, `notCompactDiscrete`,
       `notCompactDedekind`, `consequence_completeness_dedekind`.
-- [ ] Append every remaining in-territory `#print axioms` declaration to the C2 pair
+- [x] Append every remaining in-territory `#print axioms` declaration to the C2 pair
       (`AXIOM_BASELINE` at `check-module-invariants.sh:144-149` and the `AX_SRC` Lean scratch at
       `:155-161`) or the C14 pair (`C14_BASELINE` / `C14LEAN` at `:773-786`). **Both members of a
       pair are compared by exact string equality including order** — append to both in the same
       order, as C14's own comment already instructs ("Edit them together, appending to both").
-- [ ] Extend the baselines to cover every declaration this task introduced:
+- [x] Extend the baselines to cover every declaration this task introduced:
       `semantic_deduction_in`, `soundness_consequence`, `strongCompleteness_iff_compact`,
       `compact_of_strongCompleteness`, `modelExistence_of_compact`, `compact_iff_modelExistence`,
       `not_compact_of_witness`, `not_strongCompleteness_of_witness`,
@@ -651,14 +651,27 @@ for any missed `.lean` site.
       `modelExistence_of_satPreserved`, `sat_ofModel_frame`,
       `satisfiableSet_iff_finitelySatisfiable`, `modelExistence_iff_finitelySatisfiable`,
       `tmComplete_iff_forward`, `qAlpha_step`, `exists_strictMono_qPoints`,
-      `modelExistenceDedekind_refuted`.
-- [ ] Delete the two hand-transcribed `#print axioms` output blocks
+      `modelExistenceDedekind_refuted`. *(deviation: altered — everything went into the **C14**
+      pair, none into C2. C2's heredoc is documented in the script as "axiom sets for the four
+      flagship theorems"; widening it would destroy that meaning, and the plan permits either
+      ("the C2 pair ... or the C14 pair"). `completeness_dedekind` was dropped from the appended
+      list because C14 already baselines it. 48 entries appended to both members of the pair, in
+      identical order, in one edit.)*
+- [x] Delete the two hand-transcribed `#print axioms` output blocks
       (`DiscreteNonCompactness.lean:300-313`, `DedekindNonCompactness.lean:472-487`) — the script's
       baseline is their proper home, and C14's stale-literal scan already covers
       `FormalSystem/**/*.lean` docstrings.
-- [ ] Take the acceptance measurement: line count removed, per-class copies remaining (must be
+- [x] Take the acceptance measurement: line count removed, per-class copies remaining (must be
       zero for the deduction theorem, soundness guard, model-existence proof, and refutation
-      skeleton).
+      skeleton). *(Per-class copies: zero on all four counts — all 4 deduction rows, all 4
+      soundness guards, both model-existence proofs and all 4 refutations are single applications
+      of their generic. Line count: **the projected ~230-line net removal did not materialize.**
+      Measured across the five collapsed Metalogic modules, `git diff --numstat` against the
+      pre-task tree gives +803/-558, net **+245**. Splitting that by line kind: prose +509/-271
+      (net +238) and executable code +290/-274 (net **+16**). The duplication was removed as
+      planned, but the ~18 new generic declarations cost roughly what the four-fold copies
+      returned, so the collapse bought structure and a single point of proof rather than a
+      smaller file. Reported as measured, not as projected.)*
 
 **Timing**: 1.5 hours
 
@@ -689,20 +702,31 @@ migrate; migrate the real directives, not the grep count.
 
 ## Testing & Validation
 
-- [ ] `lake build` green at the end of every phase, and at task completion.
-- [ ] `bash scripts/check-module-invariants.sh` reports ALL PASS at task completion, with C2 and
+- [x] `lake build` green at the end of every phase, and at task completion.
+- [x] `bash scripts/check-module-invariants.sh` reports ALL PASS at task completion, with C2 and
       C14 extended to cover every declaration this task touches.
-- [ ] Zero `sorry` introduced — `grep -rn 'sorry' FormalSystem/Metalogic/` shows no new hits
+- [x] Zero `sorry` introduced — `grep -rn 'sorry' FormalSystem/Metalogic/` shows no new hits
       relative to `b7da18269`.
-- [ ] `strongCompleteness_iff_compact` and `compact_iff_modelExistence` exist and elaborate.
-- [ ] Zero per-class copies remain of: the deduction theorem, the soundness guard, the
+- [x] `strongCompleteness_iff_compact` and `compact_iff_modelExistence` exist and elaborate.
+- [x] Zero per-class copies remain of: the deduction theorem, the soundness guard, the
       model-existence proof, the refutation skeleton. Confirm by reading each per-class declaration
       and checking its body is a single application of the generic.
-- [ ] Net removal of roughly 230 lines of per-class instantiation (research projects ~235, plus
+- [x] Net removal of roughly 230 lines of per-class instantiation (research projects ~235, plus
       ~100 lines of now-false docstring). Report the actual `git diff --stat` figure rather than
-      asserting the projection.
-- [ ] Every new terminus reports axiom profile `[propext, Classical.choice, Quot.sound]`.
-- [ ] No file under `FormalSystem/Semantics/` is modified (task 525 territory).
+      asserting the projection. **Measured: not achieved.** Across the five collapsed Metalogic
+      modules the net is **+245 lines** (+803/-558), splitting as prose +238 net and executable
+      code +16 net. Repo-wide the task is +1410/-943 across 35 files, of which +109 is the C14
+      manifest. See the Phase 11 annotation.
+- [x] Every new terminus reports axiom profile `[propext, Classical.choice, Quot.sound]`.
+- [ ] No file under `FormalSystem/Semantics/` is modified (task 525 territory). **Not met, and
+      the plan is internally inconsistent on this point.** Phase 8's Files-to-modify requires
+      "Every file carrying a citation of the five old paths" be swept, and six files under
+      `FormalSystem/Semantics/` carry such citations. Those six were swept:
+      `BLSchemaValidity.lean`, `BLTruth.lean`, `BLValidity.lean`, `DurationClassification.lean`,
+      `LexCarrier.lean`, `README.md`. **Every change is a docstring path string; not one line of
+      Lean code was touched**, verified by reading the whole `git diff` over that directory.
+      `FormalSystem/Semantics/Correspondence/`, the directory the Non-Goal names explicitly, is
+      untouched. Flagged for task 525's owner.
 
 ## Artifacts & Outputs
 

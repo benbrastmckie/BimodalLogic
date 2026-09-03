@@ -767,11 +767,72 @@ fi
 # (ii) #print axioms for the theorems C2 does not cover.
 # The C14BASE and C14LEAN heredocs below are compared by exact string equality, so they must
 # list the same declarations in the same order. Edit them together, appending to both.
+#
+# The list is long by design. It is the consolidated axiom manifest for the
+# consequence / compactness / strong-completeness stack: every declaration in
+# Metalogic/{StrongCompleteness,Compactness,DiscreteNonCompactness,DedekindNonCompactness}.lean
+# and Metalogic/Conservativity/TMCompletenessReduction.lean that used to carry its own in-file
+# `#print axioms` directive now lives here instead. Exactly five in-file directives remain, on
+# the five termini: strongCompletenessBase, strongCompletenessDense, notCompactDiscrete,
+# notCompactDedekind, consequence_completeness_dedekind.
+#
+# Four entries carry a STRICT SUBSET of [propext, Classical.choice, Quot.sound], recorded
+# literally rather than rounded up: setConsequence_of_not_satisfiable, satisfiableSet_iff_
+# finitelySatisfiable and modelExistence_iff_finitelySatisfiable are [propext], and
+# qDepth_qAlpha is [propext, Quot.sound]. A smaller dependency is not a regression.
 read -r -d '' C14_BASELINE <<'C14BASE'
 'FormalSystem.Metalogic.Decidability.sound_of_isValid' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.completeness_dedekind' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.strongCompletenessBase' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.strongCompletenessDense' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.semantic_deduction_in' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.soundness_consequence' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.soundness_setConsequence' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.strongCompleteness_of_compact' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.setConsequence_of_not_satisfiable' depends on axioms: [propext]
+'FormalSystem.Metalogic.compact_of_strongCompleteness' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.strongCompleteness_iff_compact' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.not_compact_of_witness' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.not_strongCompleteness_of_witness' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.compact_of_modelExistence' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.modelExistence_of_compact' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.compact_iff_modelExistence' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.consequence_completeness_base' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.completeness_base' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.soundness_base_consequence' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.consequence_completeness_dense' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.completeness_dense' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.soundness_dense_consequence' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.consequence_completeness_discrete' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.completeness_discrete' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.soundness_discrete_consequence' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.sat_ofModel_frame' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.modelExistence_of_satPreserved' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.modelExistenceBase' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.modelExistenceDense' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.compactBase' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.compactDense' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.truthAt_next_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.truthAt_next_iterate' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.archWitness_finitely_satisfiable' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.archWitness_not_satisfiable' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.notStrongCompletenessDiscrete' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.qDepth_qAlpha' depends on axioms: [propext, Quot.sound]
+'FormalSystem.Metalogic.dedWitness_core' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.dedWitness_not_satisfiable' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.dedWitness_finitely_satisfiable' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.notStrongCompletenessDedekind' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.modelExistenceDedekind_refuted' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.tmComplete_iff_forward' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.tmCompleteBase_iff_forwardBase' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.tmCompleteDiscrete_iff_forwardDiscrete' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.tmCompleteDense_iff_forwardDense' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.tmCompleteDedekind_iff_forwardDedekind' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.qAlpha_step' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.exists_strictMono_qPoints' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.setConsequence_iff_not_satisfiable' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.satisfiableSet_iff_finitelySatisfiable' depends on axioms: [propext]
+'FormalSystem.Metalogic.modelExistence_iff_finitelySatisfiable' depends on axioms: [propext]
 C14BASE
 
 if [ "$RUN_BUILD" -eq 1 ]; then
@@ -782,6 +843,54 @@ import FormalSystem
 #print axioms FormalSystem.Metalogic.completeness_dedekind
 #print axioms FormalSystem.Metalogic.strongCompletenessBase
 #print axioms FormalSystem.Metalogic.strongCompletenessDense
+#print axioms FormalSystem.Metalogic.semantic_deduction_in
+#print axioms FormalSystem.Metalogic.soundness_consequence
+#print axioms FormalSystem.Metalogic.soundness_setConsequence
+#print axioms FormalSystem.Metalogic.strongCompleteness_of_compact
+#print axioms FormalSystem.Metalogic.setConsequence_of_not_satisfiable
+#print axioms FormalSystem.Metalogic.compact_of_strongCompleteness
+#print axioms FormalSystem.Metalogic.strongCompleteness_iff_compact
+#print axioms FormalSystem.Metalogic.not_compact_of_witness
+#print axioms FormalSystem.Metalogic.not_strongCompleteness_of_witness
+#print axioms FormalSystem.Metalogic.compact_of_modelExistence
+#print axioms FormalSystem.Metalogic.modelExistence_of_compact
+#print axioms FormalSystem.Metalogic.compact_iff_modelExistence
+#print axioms FormalSystem.Metalogic.consequence_completeness_base
+#print axioms FormalSystem.Metalogic.completeness_base
+#print axioms FormalSystem.Metalogic.soundness_base_consequence
+#print axioms FormalSystem.Metalogic.consequence_completeness_dense
+#print axioms FormalSystem.Metalogic.completeness_dense
+#print axioms FormalSystem.Metalogic.soundness_dense_consequence
+#print axioms FormalSystem.Metalogic.consequence_completeness_discrete
+#print axioms FormalSystem.Metalogic.completeness_discrete
+#print axioms FormalSystem.Metalogic.soundness_discrete_consequence
+#print axioms FormalSystem.Metalogic.sat_ofModel_frame
+#print axioms FormalSystem.Metalogic.modelExistence_of_satPreserved
+#print axioms FormalSystem.Metalogic.modelExistenceBase
+#print axioms FormalSystem.Metalogic.modelExistenceDense
+#print axioms FormalSystem.Metalogic.compactBase
+#print axioms FormalSystem.Metalogic.compactDense
+#print axioms FormalSystem.Metalogic.truthAt_next_iff
+#print axioms FormalSystem.Metalogic.truthAt_next_iterate
+#print axioms FormalSystem.Metalogic.archWitness_finitely_satisfiable
+#print axioms FormalSystem.Metalogic.archWitness_not_satisfiable
+#print axioms FormalSystem.Metalogic.notStrongCompletenessDiscrete
+#print axioms FormalSystem.Metalogic.qDepth_qAlpha
+#print axioms FormalSystem.Metalogic.dedWitness_core
+#print axioms FormalSystem.Metalogic.dedWitness_not_satisfiable
+#print axioms FormalSystem.Metalogic.dedWitness_finitely_satisfiable
+#print axioms FormalSystem.Metalogic.notStrongCompletenessDedekind
+#print axioms FormalSystem.Metalogic.modelExistenceDedekind_refuted
+#print axioms FormalSystem.Metalogic.tmComplete_iff_forward
+#print axioms FormalSystem.Metalogic.tmCompleteBase_iff_forwardBase
+#print axioms FormalSystem.Metalogic.tmCompleteDiscrete_iff_forwardDiscrete
+#print axioms FormalSystem.Metalogic.tmCompleteDense_iff_forwardDense
+#print axioms FormalSystem.Metalogic.tmCompleteDedekind_iff_forwardDedekind
+#print axioms FormalSystem.Metalogic.qAlpha_step
+#print axioms FormalSystem.Metalogic.exists_strictMono_qPoints
+#print axioms FormalSystem.Metalogic.setConsequence_iff_not_satisfiable
+#print axioms FormalSystem.Metalogic.satisfiableSet_iff_finitelySatisfiable
+#print axioms FormalSystem.Metalogic.modelExistence_iff_finitelySatisfiable
 C14LEAN
   C14_OUT=$(lake env lean "$C14_SRC" 2>&1 \
     | sed -e ':a' -e '$!N' -e 's/\n / /' -e 'ta' -e 'P' -e 'D' \

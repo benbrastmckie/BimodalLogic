@@ -490,32 +490,19 @@ refutation. -/
 theorem modelExistenceDedekind_refuted : ¬ ModelExistenceDedekind :=
   fun h => notCompactDedekind (compact_of_modelExistence h)
 
-#print axioms qDepth_qAlpha
-#print axioms dedWitness_core
-#print axioms dedWitness_not_satisfiable
-#print axioms dedWitness_finitely_satisfiable
 #print axioms notCompactDedekind
-#print axioms notStrongCompletenessDedekind
-#print axioms modelExistenceDedekind_refuted
 
 /-! ## Axiom Audit
 
-The verbatim output of the six `#print axioms` commands above:
-
-```
-#print axioms qDepth_qAlpha
--- depends on: [propext, Quot.sound]
-#print axioms dedWitness_core
--- depends on: [propext, Classical.choice, Quot.sound]
-#print axioms dedWitness_not_satisfiable
--- depends on: [propext, Classical.choice, Quot.sound]
-#print axioms dedWitness_finitely_satisfiable
--- depends on: [propext, Classical.choice, Quot.sound]
-#print axioms notCompactDedekind
--- depends on: [propext, Classical.choice, Quot.sound]
-#print axioms notStrongCompletenessDedekind
--- depends on: [propext, Classical.choice, Quot.sound]
-```
+`#print axioms notCompactDedekind` above is the only in-file directive this module keeps: it is
+one of the five termini named in the C2/C14 manifest contract. **The rest of this module's axiom
+audit lives in `scripts/check-module-invariants.sh`'s C14 heredoc pair**, which pins
+`qDepth_qAlpha`, `dedWitness_core`, `dedWitness_not_satisfiable`,
+`dedWitness_finitely_satisfiable`, `notStrongCompletenessDedekind`,
+`modelExistenceDedekind_refuted`, `qAlpha_step` and `exists_strictMono_qPoints` by exact string
+equality against a recorded baseline. That is a stronger guarantee than the hand-transcribed
+output block that used to sit here, which could and did drift out of step with the declarations
+it claimed to report.
 
 **`sorryAx`-free throughout.** All four headline results carry exactly the three standard
 classical axioms — the identical set already carried by `notCompactDiscrete` and by
@@ -523,13 +510,14 @@ classical axioms — the identical set already carried by `notCompactDiscrete` a
 
 `qDepth_qAlpha` carries a strict *subset*, `[propext, Quot.sound]`: it is a purely structural
 induction on `Formula` and never reaches for choice. That is a smaller dependency, not a larger
-one, and is recorded here rather than rounded up so the audit stays literal.
+one, and the C14 baseline records it literally rather than rounding it up, so the audit stays
+honest.
 
 ### Axiom classification
 
 * `propext` — propositional extensionality, entering through `simp`/`omega` normalisation.
-* `Classical.choice` — via the `classical` tactic, `Exists.choose` in `dedWitness_core`'s chain
-  construction, and Mathlib's `Real.exists_isLUB`.
+* `Classical.choice` — via the `classical` tactic, `Exists.choose` in
+  `exists_strictMono_qPoints`'s chain construction, and Mathlib's `Real.exists_isLUB`.
 * `Quot.sound` — quotient soundness, entering through Mathlib's `List`, `Int` and `Real` API.
 
 None of the three is avoidable in this development, and none is specific to this module. -/

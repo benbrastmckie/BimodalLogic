@@ -212,12 +212,6 @@ the same set carried by the engines and by the ultraproduct layer they consume, 
 absent throughout. `strongCompletenessBase` and `strongCompletenessDense` are additionally
 pinned by the C14 headline axiom baseline in `scripts/check-module-invariants.sh`. -/
 
-#print axioms sat_ofModel_frame
-#print axioms modelExistence_of_satPreserved
-#print axioms modelExistenceBase
-#print axioms modelExistenceDense
-#print axioms compactBase
-#print axioms compactDense
 #print axioms strongCompletenessBase
 #print axioms strongCompletenessDense
 

@@ -782,7 +782,6 @@ Reynolds' §9 Theorem 7 is discharged with no `sorryAx` and no new axiom: exactl
 `completeness_discrete`. -/
 
 #print axioms consequence_completeness_dedekind
-#print axioms completeness_dedekind
 
 /-! ## Consequence completeness for `FrameClass.Base`
 
@@ -1119,27 +1118,6 @@ fourteen above: it is likewise a reduction rather than a terminus, taking `Model
 a hypothesis. It too replaces what were two per-class bridges. The termini these two reductions
 reduce to are audited where they are proved, in `Metalogic/Compactness.lean`. -/
 
-#print axioms semantic_deduction_in
-#print axioms soundness_consequence
-#print axioms soundness_setConsequence
 
-#print axioms strongCompleteness_of_compact
-#print axioms setConsequence_of_not_satisfiable
-#print axioms compact_of_strongCompleteness
-#print axioms strongCompleteness_iff_compact
-#print axioms not_compact_of_witness
-#print axioms not_strongCompleteness_of_witness
-#print axioms compact_of_modelExistence
-#print axioms modelExistence_of_compact
-#print axioms compact_iff_modelExistence
-#print axioms consequence_completeness_base
-#print axioms completeness_base
-#print axioms soundness_base_consequence
-#print axioms consequence_completeness_dense
-#print axioms completeness_dense
-#print axioms soundness_dense_consequence
-#print axioms consequence_completeness_discrete
-#print axioms completeness_discrete
-#print axioms soundness_discrete_consequence
 
 end FormalSystem.Metalogic
