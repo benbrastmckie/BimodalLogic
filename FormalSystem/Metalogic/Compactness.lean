@@ -35,6 +35,11 @@ The construction, in outline:
 * Finite satisfiability supplies, per index, a frame/model/history/time witness. Each such
   witness is turned into a shift set by `ShiftSet.ofModel`, and the pointwise family is combined
   by `Ultraproduct.uShiftSet`, which needs no side hypotheses.
+* That construction is written **once**, as `modelExistence_of_satPreserved`, parameterized by a
+  single hypothesis `hpres` saying that `fc.Sat` survives the ultraproduct. `modelExistenceBase`
+  and `modelExistenceDense` are its two instantiations; they used to be two copies of the body.
+  `hpres` is false at `.Discrete` and `.Dedekind`, which is why only two rows of the table are
+  proved here — see that theorem's docstring.
 * Łoś's theorem for this construction, `Ultraproduct.los_truthAt`, transports truth at the
   ultraproduct back to eventual truth along the family. `ShiftSet.forward_repr` and
   `ShiftSet.reverse_repr` mediate between the orbit-history form Łoś speaks about and truth in
@@ -73,70 +78,98 @@ open FormalSystem.Semantics.Ultraproduct
 
 namespace FormalSystem.Metalogic
 
+/-- **The frame condition survives `ShiftSet.ofModel`.**
+
+`ShiftSet.ofModel F M` is a shift set on `F.Duration`, but `(ShiftSet.ofModel F M).frame` is
+**not** `F`: its carrier is `F.HF`, the total histories of `F`, so a `fc.Sat F` hypothesis does
+not land on it by `rfl` and the two frames are genuinely different objects. It does transport,
+because every `FrameClass.Sat` clause constrains the *duration* order alone and `ofModel` leaves
+that order untouched — so case analysis on the tag closes all four branches with the hypothesis
+handed straight back.
+
+Homed in this module rather than in `Semantics/ShiftSet.lean`: its only consumer is
+`modelExistence_of_satPreserved` immediately below. The converse
+(`fc.Sat F` from `fc.Sat (ofModel F M).frame`) is deliberately not stated — nothing wants it. -/
+theorem sat_ofModel_frame {fc : ProofSystem.FrameClass} {F : TaskFrame} (M : TaskModel F)
+    (h : fc.Sat F) :
+    fc.Sat (ShiftSet.ofModel F M).frame := by
+  cases fc <;> exact h
+
+/--
+**Model existence at any frame class whose `Sat` survives the ultraproduct.**
+
+The one model-existence proof. `modelExistenceBase` and `modelExistenceDense` below were, before
+this generalization, two copies of the body verbatim, differing only in what they put in the
+frame-condition slot of the witness; that slot is now the single hypothesis `hpres`, and the
+construction — index by `Idx Γ`, choose a witness per index, shift-set each one, combine by
+`uShiftSet (idxUF Γ)`, and pull truth back through Łoś — is written once.
+
+**What `hpres` says, and why it is the whole of the class-dependence.** Given an ultrafilter and
+a family of shift sets each of whose frames satisfies `fc`, the ultraproduct's frame satisfies
+`fc` too. Nothing else about `fc` enters: the index type, the ultrafilter, the choice of
+witnesses and the Łoś transport are all uniform in the tag.
+
+**`hpres` is false at `.Discrete` and at `.Dedekind`, and that is not a gap in this proof.** An
+ultraproduct of Archimedean orders need not be Archimedean, and an ultraproduct of
+Dedekind-complete orders need not be Dedekind-complete — the standard nonstandard-analysis
+phenomenon, in both cases. So this route is unavailable at those two tags, and no reformulation
+of `hpres` recovers it: `discrete_consequence_not_compact`
+(`Metalogic/DiscreteNonCompactness.lean`) and `dedekind_consequence_not_compact`
+(`Metalogic/DedekindNonCompactness.lean`) *refute* compactness at those classes outright, and
+`compact_of_modelExistence` would turn a model-existence proof into exactly the compactness
+those two theorems deny. The failure of `hpres` at half the table is therefore the machine-checked
+shape of a real mathematical obstruction, not a missing lemma.
+
+**`T` is an explicit binder on purpose.** With it implicit, the `S i` projection in the Dense
+discharge below elaborates against `S : I → TemporalOrder` and fails with `Invalid field 'frame'`;
+`I` may stay implicit because the application sites determine it from `u`.
+-/
+theorem modelExistence_of_satPreserved {fc : ProofSystem.FrameClass}
+    (hpres : ∀ {I : Type} (u : Ultrafilter I) (T : I → TemporalOrder)
+      (S : ∀ i, ShiftSet (T i)), (∀ i, fc.Sat (S i).frame) → fc.Sat (uShiftSet u S).frame) :
+    ModelExistence fc := by
+  classical
+  intro Γ hfin
+  choose F hF M τ hτ t ht using fun (i : Idx Γ) => hfin i.val i.property
+  refine ⟨(uShiftSet (idxUF Γ) (fun i => ShiftSet.ofModel (F i) (M i))).frame,
+    hpres (idxUF Γ) (fun i => (F i).Duration) (fun i => ShiftSet.ofModel (F i) (M i))
+      (fun i => sat_ofModel_frame (M i) (hF i)),
+    (uShiftSet (idxUF Γ) (fun i => ShiftSet.ofModel (F i) (M i))).model,
+    (uShiftSet (idxUF Γ) (fun i => ShiftSet.ofModel (F i) (M i))).hist
+      (omk (fun i => (⟨τ i, hτ i⟩ : (F i).HF))),
+    ShiftSet.hist_isTotal _ _, Ultraproduct.mk (fun i => t i), ?_⟩
+  intro ψ hψ
+  refine (los_truthAt (fun i => ShiftSet.ofModel (F i) (M i)) _ _ ψ).mpr ?_
+  refine (eventually_mem Γ hψ).mono ?_
+  intro i hi
+  exact (ShiftSet.forward_repr _ _ _ ψ).mpr
+    ((ShiftSet.reverse_repr (F i) (M i) ⟨τ i, hτ i⟩ (t i) ψ).mpr (ht i ψ hi))
+
 /--
 **Model existence for `FrameClass.Base`.** Every finitely satisfiable `Γ : Set Formula` has a
 single model satisfying all of `Γ` at once.
 
-The witness is the ultraproduct, over `idxUF Γ`, of the per-index models supplied by finite
-satisfiability. `eventually_mem` puts each `ψ ∈ Γ` in eventually every index list, and
-`los_truthAt` converts that eventual per-index truth into truth at the ultraproduct.
+`modelExistence_of_satPreserved` at `.Base`, where `Sat .Base` is `True` and the preservation
+hypothesis is discharged by `trivial` with nothing to check.
 -/
-theorem modelExistenceBase : ModelExistenceBase := by
-  classical
-  intro Γ hfin
-  choose F _hF M τ hτ t ht using fun (i : Idx Γ) => hfin i.val i.property
-  refine ⟨(uShiftSet (idxUF Γ) (fun i => ShiftSet.ofModel (F i) (M i))).frame,
-    trivial,
-    (uShiftSet (idxUF Γ) (fun i => ShiftSet.ofModel (F i) (M i))).model,
-    (uShiftSet (idxUF Γ) (fun i => ShiftSet.ofModel (F i) (M i))).hist
-      (omk (fun i => (⟨τ i, hτ i⟩ : (F i).HF))),
-    ShiftSet.hist_isTotal _ _, Ultraproduct.mk (fun i => t i), ?_⟩
-  intro ψ hψ
-  refine (los_truthAt (fun i => ShiftSet.ofModel (F i) (M i)) _ _ ψ).mpr ?_
-  refine (eventually_mem Γ hψ).mono ?_
-  intro i hi
-  exact (ShiftSet.forward_repr _ _ _ ψ).mpr
-    ((ShiftSet.reverse_repr (F i) (M i) ⟨τ i, hτ i⟩ (t i) ψ).mpr (ht i ψ hi))
+theorem modelExistenceBase : ModelExistenceBase :=
+  modelExistence_of_satPreserved (fun _ _ _ _ => trivial)
 
 /--
-**Model existence for `FrameClass.Dense`.** As `modelExistenceBase`, with the density of the
-witness frame carried through the construction.
+**Model existence for `FrameClass.Dense`.** `modelExistence_of_satPreserved` at `.Dense`, where
+the preservation hypothesis is a real obligation and is discharged by instance synthesis.
 
-`SatisfiableDenseSet` carries an extra frame-condition binder per index, so `choose` extracts
-one more component. Reinstalling that family as an instance with `haveI` lets instance synthesis
-find the ultraproduct's own `DenselyOrdered` instance; this installs a *new* instance family on
-the per-index durations rather than re-installing one already baked into a frame's type, which
-is why it is safe here.
-
-**Why the witness slot is type-ascribed.** Since `SatisfiableDenseSet` became
-`SatisfiableSet FrameClass.Dense`, that slot's type is `FrameClass.Sat .Dense F`, which unfolds
-to `TaskFrame.IsDense F` — a plain `def` whose head symbol is not `DenselyOrdered`. Instance
-synthesis reduces only at reducible transparency, so a **bare** `inferInstance` cannot see
-through it and fails with `type class instance expected`. Ascribing the expected type names
-`DenselyOrdered …` directly, synthesis succeeds there, and the result unifies with `Sat .Dense F`
-by ordinary definitional unfolding. The type ascription is what makes the *bare*
-`inferInstance` unnecessary; `SatisfiableSet.of_forall` (`Metalogic/SetConsequence.lean`) takes
-the frame condition as a plain `fc.Sat F` argument, so nothing downstream needs it as an instance
-binder.
+`Sat .Dense` unfolds to `DenselyOrdered` on the duration, so `hS` is precisely a family of
+density instances on the per-index durations. Reinstalling that family with `haveI` lets synthesis
+find the ultraproduct's own `DenselyOrdered` instance (declared in
+`Semantics/Ultraproduct/Carrier.lean`); this installs a *new* instance family on the per-index
+durations rather than re-installing one already baked into a frame's type, which is why it is
+safe here.
 -/
-theorem modelExistenceDense : ModelExistenceDense := by
-  classical
-  intro Γ hfin
-  choose F hd M τ hτ t ht using fun (i : Idx Γ) => hfin i.val i.property
-  haveI : ∀ i, DenselyOrdered ((F i).Duration : Type) := hd
-  refine ⟨(uShiftSet (idxUF Γ) (fun i => ShiftSet.ofModel (F i) (M i))).frame,
-    (inferInstance : DenselyOrdered
-      (uShiftSet (idxUF Γ) (fun i => ShiftSet.ofModel (F i) (M i))).frame.Duration),
-    (uShiftSet (idxUF Γ) (fun i => ShiftSet.ofModel (F i) (M i))).model,
-    (uShiftSet (idxUF Γ) (fun i => ShiftSet.ofModel (F i) (M i))).hist
-      (omk (fun i => (⟨τ i, hτ i⟩ : (F i).HF))),
-    ShiftSet.hist_isTotal _ _, Ultraproduct.mk (fun i => t i), ?_⟩
-  intro ψ hψ
-  refine (los_truthAt (fun i => ShiftSet.ofModel (F i) (M i)) _ _ ψ).mpr ?_
-  refine (eventually_mem Γ hψ).mono ?_
-  intro i hi
-  exact (ShiftSet.forward_repr _ _ _ ψ).mpr
-    ((ShiftSet.reverse_repr (F i) (M i) ⟨τ i, hτ i⟩ (t i) ψ).mpr (ht i ψ hi))
+theorem modelExistenceDense : ModelExistenceDense :=
+  modelExistence_of_satPreserved (fun u T S hS => by
+    haveI : ∀ i, DenselyOrdered ((S i).frame.Duration : Type) := hS
+    exact (inferInstance : DenselyOrdered (uShiftSet u S).frame.Duration))
 
 /-- **Compactness for `FrameClass.Base`**, from model existence via the class-generic bridge
 `compact_of_modelExistence`. `ModelExistenceBase` *is* `ModelExistence .Base` and `CompactBase`
@@ -166,12 +199,15 @@ theorem strongCompletenessDense : StrongCompletenessDense :=
 
 /-! ### Axiom audit
 
-All six declarations of this module are termini, not reductions: no hypothesis remains
-undischarged. Each is expected to report exactly `propext`, `Classical.choice` and `Quot.sound`,
+`sat_ofModel_frame` and `modelExistence_of_satPreserved` are reductions; the other six
+declarations of this module are termini, with no hypothesis left undischarged. Each is expected
+to report exactly `propext`, `Classical.choice` and `Quot.sound`,
 the same set carried by the engines and by the ultraproduct layer they consume, with `sorryAx`
 absent throughout. `strongCompletenessBase` and `strongCompletenessDense` are additionally
 pinned by the C14 headline axiom baseline in `scripts/check-module-invariants.sh`. -/
 
+#print axioms sat_ofModel_frame
+#print axioms modelExistence_of_satPreserved
 #print axioms modelExistenceBase
 #print axioms modelExistenceDense
 #print axioms compactBase

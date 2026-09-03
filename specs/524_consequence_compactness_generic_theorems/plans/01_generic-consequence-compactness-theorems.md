@@ -225,29 +225,29 @@ counts in the phase commit message.
 
 ---
 
-### Phase 3: `modelExistence_of_satPreserved` and the `sat_ofModel_frame` bridge [NOT STARTED]
+### Phase 3: `modelExistence_of_satPreserved` and the `sat_ofModel_frame` bridge [COMPLETED]
 
 **Goal**: Land item 4 — one generic model-existence proof parameterized by an ultraproduct-closure
 hypothesis on `fc.Sat`, with the two existing near-identical proofs as instantiations.
 
 **Tasks**:
-- [ ] Add `sat_ofModel_frame {fc} {F} (M : TaskModel F) (h : fc.Sat F) : fc.Sat (ShiftSet.ofModel F M).frame := by cases fc <;> exact h`
-      to `Compactness.lean`. **Home it here, not in `Semantics/`** — its only consumer lives here,
+- [x] Add `sat_ofModel_frame {fc} {F} (M : TaskModel F) (h : fc.Sat F) : fc.Sat (ShiftSet.ofModel F M).frame := by cases fc <;> exact h`
+      to `Compactness.lean` *(deviation: altered — `FrameClass` is not opened in this module, so the binder reads `{fc : ProofSystem.FrameClass}`)*. **Home it here, not in `Semantics/`** — its only consumer lives here,
       and `Semantics/ShiftSet.lean` / `Semantics/FrameClassValidity.lean` are adjacent to task 525's
       territory. Do not state the converse `sat_frame_of_sat_ofModel` unless a consumer appears.
-- [ ] Add `modelExistence_of_satPreserved {fc} (hpres : ∀ {I : Type} (u : Ultrafilter I) (T : I → TemporalOrder) (S : ∀ i, ShiftSet (T i)), (∀ i, fc.Sat (S i).frame) → fc.Sat (uShiftSet u S).frame) : ModelExistence fc`,
+- [x] Add `modelExistence_of_satPreserved {fc} (hpres : ∀ {I : Type} (u : Ultrafilter I) (T : I → TemporalOrder) (S : ∀ i, ShiftSet (T i)), (∀ i, fc.Sat (S i).frame) → fc.Sat (uShiftSet u S).frame) : ModelExistence fc`,
       reusing `modelExistenceBase`'s existing body verbatim after the `refine`.
       **`T` must be an explicit binder.** With `{T}` implicit, the `S i` projection in the Dense
       discharge elaborates `S : I → TemporalOrder` and fails with `Invalid field 'frame'`. `I` may
       stay implicit.
-- [ ] Rewrite `modelExistenceBase` (`:84`) as `modelExistence_of_satPreserved (fun _ _ _ _ => trivial)`.
-- [ ] Rewrite `modelExistenceDense` (`:122`) as the `DenselyOrdered` discharge shown in the report.
-- [ ] Write the docstring the generalization unlocks: `hpres` is **false** at `.Discrete` and
+- [x] Rewrite `modelExistenceBase` (`:84`) as `modelExistence_of_satPreserved (fun _ _ _ _ => trivial)`.
+- [x] Rewrite `modelExistenceDense` (`:122`) as the `DenselyOrdered` discharge shown in the report.
+- [x] Write the docstring the generalization unlocks: `hpres` is **false** at `.Discrete` and
       `.Dedekind` (ultraproducts of Archimedean orders need not be Archimedean; of
       Dedekind-complete orders need not be complete), and `discrete_consequence_not_compact` /
       `dedekind_consequence_not_compact` are the machine-checked proof that no route around it
       exists. This docstring replaces the four-module status prose.
-- [ ] Delete the now-stale type-ascription explanation at `Compactness.lean:110-121`, which
+- [x] Delete the now-stale type-ascription explanation at `Compactness.lean:110-121`, which
       describes `TaskFrame.IsDense` as "a plain `def`" — it is an `abbrev` since
       `FrameProperty.lean:97`.
 
@@ -269,7 +269,7 @@ hypothesis on `fc.Sat`, with the two existing near-identical proofs as instantia
 
 ---
 
-### Phase 4: The shared refutation skeleton and `strongCompleteness_iff_compact` [NOT STARTED]
+### Phase 4: The shared refutation skeleton and `strongCompleteness_iff_compact` [IN PROGRESS]
 
 **Goal**: Land the interleaved half of items 2 and 3 — the three generic lemmas that the four
 refutations and the two iffs both depend on. This is the phase boundary the dependency edges force:
