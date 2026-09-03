@@ -186,6 +186,32 @@ def StrongCompleteness (fc : FrameClass) : Prop :=
   ∀ (Γ : Set Formula) (φ : Formula),
     SetSemanticConsequenceOn fc Γ φ → SetDerivable fc Γ φ
 
+/-- **Weak completeness at `fc`** — the single-formula statement: every `fc`-valid formula is
+derivable from the empty context at `fc`.
+
+This is the third member of the family, sitting below `StrongCompleteness` above and beside
+`Compact`, and it is the name the rest of the tree was missing. Every theorem in
+`Metalogic/StrongCompleteness.lean` and `Metalogic/TMCompletenessReduction.lean` that used to
+carry a longhand `engine : ∀ ψ : Formula, ValidIn fc ψ → Derivable fc [] ψ` hypothesis now
+quotes this one name instead; the four hypotheses were the same predicate written out four
+times.
+
+**The four `BXCanonical` engines inhabit it on the nose**, with no transport and no `rfl`
+lemma: `Valid`, `ValidDense`, `ValidDiscrete` and `ValidDedekind` are all abbreviations over
+`ValidIn` at a literal tag (`Semantics/Validity.lean`), so `completeness_base`,
+`completeness_dense`, `completeness_discrete` and `completeness_dedekind`
+(`Metalogic/StrongCompleteness.lean`) *are* `WeakCompleteness .Base` / `.Dense` / `.Discrete` /
+`.Dedekind` by type rather than by convention.
+
+Stating it here rather than in `Metalogic/StrongCompleteness.lean` costs nothing: its two
+ingredients `ValidIn` and `Derivable` are already imported by this module (`:8`, `:10`), and
+placing it beside `StrongCompleteness` keeps the whole `Prop`-valued vocabulary of the
+completeness programme in one layer. The `strongCompleteness_iff_compact` bridge that consumes
+it must still live downstream, for the same import-cycle reason recorded under `## Downstream`
+above. -/
+def WeakCompleteness (fc : FrameClass) : Prop :=
+  ∀ ψ : Formula, ValidIn fc ψ → Derivable fc [] ψ
+
 /-! ### What the per-class recoveries cost
 
 Six of the ten per-class names below are recovered from these four definitions **on the nose**,

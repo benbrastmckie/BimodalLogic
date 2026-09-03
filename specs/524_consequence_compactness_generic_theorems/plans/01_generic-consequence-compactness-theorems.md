@@ -1,7 +1,7 @@
 # Implementation Plan: Generic Consequence / Compactness / Strong-Completeness Theorems
 
 - **Task**: 524 - Finish the FrameClass collapse at the THEOREM layer of the consequence/compactness/strong-completeness stack
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 15 hours
 - **Dependencies**: None (WAVE 3 theorem layer; task 523's definition-layer collapse already landed at `b7da18269`)
 - **Research Inputs**: `specs/524_consequence_compactness_generic_theorems/reports/01_consequence-compactness-generic-theorems.md`
@@ -131,30 +131,30 @@ file: Phase 1 owns `StrongCompleteness.lean` + `SetConsequence.lean`, Phase 2 ow
 
 ---
 
-### Phase 1: Generic deduction, soundness guard, and `WeakCompleteness` [NOT STARTED]
+### Phase 1: Generic deduction, soundness guard, and `WeakCompleteness` [COMPLETED]
 
 **Goal**: Name the three missing generic facts of item 1 and retype the engine layer onto
 `WeakCompleteness`, so every downstream phase has a single hypothesis to quote.
 
 **Tasks**:
-- [ ] Add `def WeakCompleteness (fc : FrameClass) : Prop := ∀ ψ : Formula, ValidIn fc ψ → Derivable fc [] ψ`
+- [x] Add `def WeakCompleteness (fc : FrameClass) : Prop := ∀ ψ : Formula, ValidIn fc ψ → Derivable fc [] ψ`
       to `SetConsequence.lean`, beside `StrongCompleteness` (its two ingredients are already
       imported at `:8,10`).
-- [ ] Add `semantic_deduction_in {fc} (Γ φ) : SemanticConsequenceIn fc Γ φ ↔ ValidIn fc (Γ.foldr Formula.imp φ)`
+- [x] Add `semantic_deduction_in {fc} (Γ φ) : SemanticConsequenceIn fc Γ φ ↔ ValidIn fc (Γ.foldr Formula.imp φ)`
       to `StrongCompleteness.lean` (must live there — it needs `truthAt_foldr_imp`; stating it in
       `SetConsequence.lean` is an import cycle, as the docstrings at `:322-325`/`:398-401` record).
-- [ ] Add `soundness_consequence {fc} (Γ φ) (h : Derivable fc Γ φ) : SemanticConsequenceIn fc Γ φ`
+- [x] Add `soundness_consequence {fc} (Γ φ) (h : Derivable fc Γ φ) : SemanticConsequenceIn fc Γ φ`
       to `StrongCompleteness.lean`, adjacent to `soundness_setConsequence` (`:949`) so the finite
       and `Set Formula` halves of B-02 read as one pair.
-- [ ] Collapse `semantic_deduction_{dedekind,base,dense,discrete}` (`:238`, `:615`, `:728`, `:851`)
+- [x] Collapse `semantic_deduction_{dedekind,base,dense,discrete}` (`:238`, `:615`, `:728`, `:851`)
       to one-line instantiations. Expect the Base row's diff to differ from the other three: it
       currently routes through `Valid.of_forall_total` / `SemanticConsequence.of_forall` / `.apply`.
-- [ ] Collapse `soundness_{dedekind,base,dense,discrete}_consequence` (`:508`, `:658`, `:772`,
+- [x] Collapse `soundness_{dedekind,base,dense,discrete}_consequence` (`:508`, `:658`, `:772`,
       `:893`) to one-line instantiations.
-- [ ] Add `consequence_completeness_of_engine` and retype the three longhand engine hypotheses
+- [x] Add `consequence_completeness_of_engine` and retype the three longhand engine hypotheses
       (`strongCompleteness_of_compact` at `:358`, `consequence_completeness_dedekind_of_engine` at
       `:487`, `completeness_dedekind_of_engine` at `:526`) to take `WeakCompleteness fc`.
-- [ ] State the four `BXCanonical` corollaries as `WeakCompleteness .X` witnesses:
+- [x] State the four `BXCanonical` corollaries as `WeakCompleteness .X` witnesses:
       `completeness_base`, `completeness_dense`, `completeness_discrete`, `completeness_dedekind`
       inhabit them on the nose — no transport, no `rfl` lemma.
 
