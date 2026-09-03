@@ -1,7 +1,7 @@
 # Implementation Plan: Task #523
 
 - **Task**: 523 - Frame kit helpers, transport, standard frames (WAVE 2, core utilities)
-- **Status**: [PARTIAL]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 22.5 hours
 - **Dependencies**: Tasks 517 (Saturation rename), 521 (truth simp-normal form), 522 (FrameClass.Sat / adapters / ValidDedekind renames) — all landed at HEAD
 - **Research Inputs**: specs/523_frame_kit_helpers_transport_standard_frames/reports/01_frame-kit-helpers-transport-standard-frames.md
@@ -643,7 +643,7 @@ transports untouched.
 
 ---
 
-### Phase 10: Derive the shift and period transports; delete `truth_double_shift_cancel` [BLOCKED]
+### Phase 10: Derive the shift and period transports; delete `truth_double_shift_cancel` [COMPLETED]
 
 **BLOCKER** (Phase 10):
 - **What failed**: the phase's first task — "Derive `Truth.time_shift_preserves_truth` as an
@@ -704,34 +704,54 @@ met. This phase's status marker is left as recorded.
   gives the goal directly. Three lemmas and ~75 lines gone for a one-line change.
 - `truthAt_add_hist_period`'s docstring cross-reference explaining why it is not an instance.
 
-**Not done**: the `time_shift_preserves_truth` derivation. It keeps its own `induction φ`, so
-`Semantics/` + `Independence/` currently carry **three** truth-transport inductions
-(`truthAt_of_truthIso`, `time_shift_preserves_truth`, `truthAt_add_hist_period`) rather than the
-criterion's two.
+**Closure (resumed dispatch, session `sess_1788396924_3fde5e`)**: every task of this phase is now
+on the tree, re-verified item by item at HEAD `162f38511` (task 532's postflight) before the
+marker was advanced. The `time_shift_preserves_truth` derivation the blocker record names as "not
+done" landed in task 532 phase 2 (commit `62ac3e7c2`), as `Truth.truthAt_of_truthCorr` at
+`TimeShift.shiftCorr` — a relational instance rather than the `TruthIso` instance this phase
+specified, which is the only shape that reaches the arbitrary-`σ` statement (see the blocker
+record). Measured at closure: `truth_double_shift_cancel` and both `time_shift_time_shift_neg_*`
+lemmas have zero repo occurrences; the hand-written `time_shift_preserves_truth` induction is
+gone (`Truth.lean:787-795` is a 5-line derivation, statement byte-identical); `truthAt_add_period`
+is `truthAt_of_truthIso` at `loopingTruthIso`; `truthAt_add_hist_period`'s statement and `hper`
+are byte-identical to the phase-9 commit `23d7c50cb`, with the cross-reference docstring at
+`FwdRecPeriodicity.lean:377-394`. Guarded detached full build at closure: exit 0, 2520 jobs, zero
+`sorry` warnings. No Lean file was modified by the closing dispatch.
 
 **Goal**: Reduce the two largest transports to instances and collect the deletion bonus.
 
 **Tasks**:
-- [ ] Derive `Truth.time_shift_preserves_truth` (`:655-887`, **233 lines** — it moved from `:450`;
+- [x] Derive `Truth.time_shift_preserves_truth` (`:655-887`, **233 lines** — it moved from `:450`;
       task 521 inserted ~205 lines above it) as an instance with `dur := (· + (y − x))` and
-      `hist := timeShift · Δ`, whose inverse is `timeShift · (−Δ)`.
-- [ ] Derive `LoopingDuration.truthAt_add_period` (`:98-165`, 68 lines) as an instance with
+      `hist := timeShift · Δ`, whose inverse is `timeShift · (−Δ)`. *(deviation: altered — derived
+      as `Truth.truthAt_of_truthCorr` at `TimeShift.shiftCorr M (y − x)` with `dur :=
+      OrderIso.addRight Δ` and the relation `ShiftRel Δ` in place of an `F.HF ≃ F.HF` `hist`, because
+      no `TruthIso` instance reaches the arbitrary-`σ` statement (blocker record above). Landed by
+      task 532 phase 2, commit `62ac3e7c2`; statement byte-identical; now `TimeShift.timeShift_preserves_truth`
+      after Phase 14's rename.)*
+- [x] Derive `LoopingDuration.truthAt_add_period` (`:98-165`, 68 lines) as an instance with
       `dur := (· + π)`. It shares `dur` with the shift case exactly, which is why the two land
       together. Its box case reaches into other histories, so its period must stay **frame-uniform**.
-- [ ] **Delete `Truth.truth_double_shift_cancel` (`:584-633`, ~50 lines)** — a sixth live six-case
+      *(completed — `loopingTruthIso` with `dur := OrderIso.addRight π`, `hist := Equiv.refl _`;
+      `LoopingDuration.lean:104-127`; commit `81a13d7d8`)*
+- [x] **Delete `Truth.truth_double_shift_cancel` (`:584-633`, ~50 lines)** — a sixth live six-case
       induction existing only to serve `time_shift_preserves_truth`'s box case. With `hist` an honest
       equivalence, `Equiv.symm_apply_apply` supplies the round trip. This is the bonus the original
-      review missed.
-- [ ] Add a docstring cross-reference to `FwdRecPeriodicity.truthAt_add_hist_period` (`:356-420`)
+      review missed. *(deviation: altered — deleted in commit `81a13d7d8`, but unlocked by
+      re-instantiating the consumer's own IH at `(ρ, y, x)` rather than by `Equiv.symm_apply_apply`;
+      the consumer induction itself was then deleted by task 532. Zero repo occurrences at closure.)*
+- [x] Add a docstring cross-reference to `FwdRecPeriodicity.truthAt_add_hist_period` (`:356-420`)
       explaining **why it is not an instance**: its hypothesis `hper : ∀ x, τ.states (x+π) _ =
       τ.states x _` is about *one* history, while `TruthIso.atom` must range over *all* histories
       because `TruthAt`'s `box` clause does; its box case is discharged by `Truth.box_time_const` and
       never touches the IH. `FwdRecPeriodicity.lean:349-352` already documents this distinction in
       prose — cite it. **Do not** feed it a uniform hypothesis: that would strictly weaken the theorem
-      and break its consumer.
-- [ ] The two remaining `time_shift_*` lemmas consumed only by `truth_double_shift_cancel`
+      and break its consumer. *(completed — `FwdRecPeriodicity.lean:377-394`, naming both
+      `TruthCorr` and `TruthIso`; statement and `hper` byte-identical to commit `23d7c50cb`)*
+- [x] The two remaining `time_shift_*` lemmas consumed only by `truth_double_shift_cancel`
       (`time_shift_time_shift_neg_domain_iff`, `time_shift_time_shift_neg_states`, 3 refs each) become
-      dead here — delete them, further shrinking Phase 14's rename surface.
+      dead here — delete them, further shrinking Phase 14's rename surface. *(completed — zero repo
+      occurrences of either name; commit `81a13d7d8`)*
 
 **Timing**: 2 hours
 
@@ -753,7 +773,13 @@ any reference survives, keep it and record the reason.
 - Guarded detached build exits 0
 - `grep -rn "truth_double_shift_cancel" --include=*.lean .` returns zero hits
 - `grep -c "induction φ" FormalSystem/Semantics/Truth.lean` counts exactly one (the generic lemma)
+  *(measured at closure: three code-level `induction φ` — `truthAt_of_truthCorr` `:638` (the
+  generic lemma), `truthAt_of_truthAntiIso` `:1126` (Phase 11's twin, which this bullet predates),
+  and `truthAt_atomFree_history_indep` `:893` (a non-transport landed by task 521 before this plan
+  was written). Zero hand-written transport inductions remain, which is the bullet's intent; its
+  literal count was stale at planning time.)*
 - `truthAt_add_hist_period`'s statement and hypothesis are byte-identical to their pre-phase form
+  *(verified against commit `23d7c50cb`)*
 
 ---
 
