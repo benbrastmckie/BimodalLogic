@@ -1,0 +1,37 @@
+{
+  "dispatch_seq": 5,
+  "status": "implemented",
+  "summary": "Task 526 carried to completion. Phase 6 was found uncommitted in the working tree at handover, re-verified independently (full guarded lake build green, check-module-invariants ALL CHECKS PASSED, C2 matching baseline) and committed. Phases 3, 4, 7, 8, 9, 10 and 11 were then implemented, each verified by a full guarded build and committed separately as it went green. Final gate: lake build 2522 jobs successful; check-module-invariants ALL CHECKS PASSED across B0 and C1-C15 plus C9D, with the C2 flagship axiom baseline unchanged and C3 structural sorries at ZERO.",
+  "phases_completed": 11,
+  "phases_total": 11,
+  "plan_markers_verified": true,
+  "phase_markers": {
+    "1": "COMPLETED", "2": "COMPLETED", "3": "COMPLETED", "4": "COMPLETED",
+    "5": "COMPLETED", "6": "COMPLETED", "7": "COMPLETED", "8": "COMPLETED",
+    "9": "COMPLETED", "10": "COMPLETED", "11": "COMPLETED"
+  },
+  "commits": [
+    "40e4cc3e4 task 526 phase 6: DerivationTree.ofWeakeningNil and its BaseLanguage twin",
+    "4bebf5796 task 526 phase 3: retire the four RestrictedMCS boundedness lemmas to the Boneyard",
+    "1f240e3f8 task 526 phase 4: one bot_not_mem, four copies deleted, nine call sites re-pointed",
+    "12b3429cb task 526 phase 7: mp_of_theorem sweep A, 57 sites in the two Chronicle core files",
+    "37219eda3 task 526 phase 8: mp_of_theorem sweep B, 57 sites across RRelation, CanonicalModel, CounterexampleElimination",
+    "26ec53ef1 task 526 phase 9: mp_of_theorem sweep C, 38 sites across Bundle, Frame, ReflexiveCanonical",
+    "1619eb9c1 task 526 phase 10: mp_of_theorem sweep D, 44 sites across the 16-file tail",
+    "fd40e255b task 526 phase 11: Core/README.md refresh, mcs_auto rejection record, final gate"
+  ],
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/526_core_mcs_api_consolidation/plans/01_core-mcs-api-consolidation.md",
+      "summary": "All 11 phases marked [COMPLETED]; acceptance checklist ticked; six deviations annotated inline on their own checklist items."
+    },
+    {
+      "type": "summary",
+      "path": "specs/526_core_mcs_api_consolidation/summaries/01_core-mcs-api-consolidation-summary.md",
+      "summary": "Per-phase outcomes with commits, an acceptance-criteria evidence table, the authoritative scope findings, and the plan-deviation record."
+    }
+  ],
+  "blockers": [],
+  "continuation_path": "None required. All phases are complete, verified and committed; the working tree carries no uncommitted task-526 work. Remaining dirty files (.claude-extensions.json, specs/events.jsonl, specs/TODO.md, specs/state.json, a deleted task-523 metadata file) are not this task's and were left untouched. No push and no PR were made."
+}
