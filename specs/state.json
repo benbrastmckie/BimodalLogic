@@ -1777,7 +1777,7 @@
     {
       "project_number": 524,
       "project_name": "consequence_compactness_generic_theorems",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "topic": "metalogic",
       "priority": "medium",
@@ -1803,7 +1803,7 @@
         "scripts/check-module-invariants.sh"
       ],
       "created": "2026-09-02T03:30:31Z",
-      "last_updated": "2026-09-03T04:13:48Z",
+      "last_updated": "2026-09-03T07:11:57Z",
       "artifacts": [
         {
           "type": "report",
@@ -1814,9 +1814,14 @@
           "type": "plan",
           "path": "specs/524_consequence_compactness_generic_theorems/plans/01_generic-consequence-compactness-theorems.md",
           "summary": "11-phase plan collapsing the consequence/compactness/strong-completeness theorem layer onto generic FrameClass declarations, with the Conservativity/ reorganization and C2/C14 manifest extension."
+        },
+        {
+          "path": "specs/524_consequence_compactness_generic_theorems/summaries/01_generic-consequence-compactness-theorems-summary.md",
+          "type": "summary",
+          "summary": "Collapsed the consequence/compactness/strong-completeness theorem layer onto generic FrameClass declarations, reorganized Metalogic/Conservativity/, and consolidated the axiom manifest."
         }
       ],
-      "session_id": "sess_1788407456_70233f_524",
+      "session_id": "sess_1788416566_823cec_524",
       "memory_candidates": [
         {
           "content": "When a Lean repo's per-class theorem copies are collapsed onto generic FrameClass declarations, the phase boundaries must be cut along the actual dependency edges rather than along the work-item numbering. In BimodalLogic task 524 the compactness triangle (item 2) and the shared refutation skeleton (item 3) interleave in both directions: compact_of_strongCompleteness feeds not_strongCompleteness_of_witness, while not_compact_of_witness feeds modelExistence_of_compact. Treating the items as two sequential phases would deadlock. The general pattern: when two work items each supply a lemma the other consumes, split by lemma (all mutually-independent generics in one phase, all the theorems that consume both in the next) instead of by item.",

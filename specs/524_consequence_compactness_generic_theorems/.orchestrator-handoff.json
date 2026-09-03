@@ -1,0 +1,39 @@
+{
+  "dispatch_seq": 1,
+  "status": "implemented",
+  "summary": "Task 524 complete: the consequence/compactness/strong-completeness theorem layer is now generic in FrameClass. strongCompleteness_iff_compact and compact_iff_modelExistence both exist; the deduction theorem, soundness guard, model-existence proof and refutation skeleton each exist once, with every per-class name a one-line instantiation (measured: 0 of 4, 0 of 4, 0 of 2, 0 of 4 copies remaining). Metalogic/Conservativity/ created with a sibling aggregator holding the prohibition narrative; twelve dead SetConsequence declarations and the Core.MaximalConsistent import deleted; the not<PropName> naming scheme adopted; 48 in-file #print axioms directives consolidated into the C14 manifest with five termini kept in-file. lake build green (2522 jobs); scripts/check-module-invariants.sh ALL CHECKS PASSED; zero sorries; zero new axioms (7 before, 7 after).",
+  "phases_completed": 11,
+  "phases_total": 11,
+  "plan_markers_verified": true,
+  "artifacts": [
+    "specs/524_consequence_compactness_generic_theorems/plans/01_generic-consequence-compactness-theorems.md",
+    "specs/524_consequence_compactness_generic_theorems/summaries/01_generic-consequence-compactness-theorems-summary.md",
+    "specs/524_consequence_compactness_generic_theorems/handoffs/phase-1-handoff-20260902T2340.md",
+    "specs/524_consequence_compactness_generic_theorems/handoffs/phase-2-handoff-20260902T2355.md",
+    "specs/524_consequence_compactness_generic_theorems/handoffs/phase-3-handoff-20260903T0010.md",
+    "specs/524_consequence_compactness_generic_theorems/handoffs/phase-5-handoff-20260903T0035.md",
+    "specs/524_consequence_compactness_generic_theorems/handoffs/phase-7-handoff-20260903T0110.md",
+    "specs/524_consequence_compactness_generic_theorems/handoffs/phase-8-handoff-20260903T0230.md",
+    "specs/524_consequence_compactness_generic_theorems/handoffs/phase-10-handoff-20260903T0300.md"
+  ],
+  "blockers": [],
+  "notes_for_user": [
+    "Phase 10 is [COMPLETED WITH EXCLUSIONS]. One occurrence of the old name discrete_consequence_not_compact remains, in FormalSystem/Semantics/Ultraproduct/Carrier.lean docstring prose. FormalSystem/Semantics/ is task 525's territory and this plan's Risks table says to stop and report rather than edit there. No invariant covers it (C5/C12/C13 are markdown-only), so the gate stays green. One-line follow-up for task 525.",
+    "Six files under FormalSystem/Semantics/ WERE modified, against the plan's Non-Goals: BLSchemaValidity.lean, BLTruth.lean, BLValidity.lean, DurationClassification.lean, LexCarrier.lean, README.md. The plan is internally inconsistent here — Phase 8 requires every file citing the five moved module paths to be swept, and these six do. Every change is a docstring path string; no Lean code was touched. FormalSystem/Semantics/Correspondence/, the directory the Non-Goal names explicitly, is untouched. Flag to task 525.",
+    "The ~230-line net removal acceptance criterion was NOT met. Measured across the five collapsed Metalogic modules: +803/-558, net +245. Split by line kind: prose +509/-271 (net +238), executable code +290/-274 (net +16). The duplication is genuinely gone, but the ~18 new generic declarations cost about what the four-fold copies returned. Reported as measured rather than as projected, per the plan's own instruction.",
+    "modelExistenceDedekind_refuted is homed in DedekindNonCompactness.lean, not SetConsequence.lean as the plan's Phase 5 file list says — the planned placement is an import cycle.",
+    "Four declarations carry a strict SUBSET of the standard three axioms and are baselined literally rather than rounded up: setConsequence_of_not_satisfiable, satisfiableSet_iff_finitelySatisfiable and modelExistence_iff_finitelySatisfiable are [propext]; qDepth_qAlpha is [propext, Quot.sound]."
+  ],
+  "continuation_path": null,
+  "metadata": {
+    "session_id": "sess_1788416566_823cec",
+    "task_number": 524,
+    "task_type": "lean4",
+    "agent_type": "lean-implementation-agent",
+    "commits": [
+      "2850cf38a", "9c058c153", "a198c27c5", "7033f4c69", "039c3f897",
+      "d582b670a", "bcd5f6862", "35843d724", "cd91a736a", "77ce00b54",
+      "67553949d", "b7ba02adc"
+    ]
+  }
+}
