@@ -8,7 +8,6 @@ import FormalSystem.Syntax.Formula
 import FormalSystem.Semantics.Truth
 import FormalSystem.Semantics.Validity
 import FormalSystem.ProofSystem.Derivable
-import FormalSystem.Metalogic.Core.MaximalConsistent
 
 /-!
 # The Set-Based Consequence Layer
@@ -36,17 +35,20 @@ stated here and **discharged elsewhere**: all four are proved in
 `Metalogic/Compactness.lean`, by `compactBase`, `modelExistenceBase`, `compactDense` and
 `modelExistenceDense`, via an ultraproduct construction. `CompactDiscrete` and
 `StrongCompletenessDiscrete` are different in kind: they are not proved but **refuted**, in
-`Metalogic/DiscreteNonCompactness.lean`, by `discrete_consequence_not_compact` and
-`strongCompletenessDiscrete_refuted`. The Base/Dense statements and the Discrete ones must not
+`Metalogic/DiscreteNonCompactness.lean`, by `notCompactDiscrete` and
+`notStrongCompletenessDiscrete`. The Base/Dense statements and the Discrete ones must not
 be read as sharing a status — the Base and Dense questions are settled positively, the Discrete
 one negatively.
 
 ## Design
 
 * `SetDerivable` is deliberately shaped to match `Core.SetConsistent`
-  (`Core/MaximalConsistent.lean:96`) so that the two compose without an adapter: a derivation is
-  a finite object and can cite only finitely many premises, so finitary set-derivability is the
-  only derivability notion a finitary proof system can support over `Set Formula`.
+  (`Metalogic/Core/MaximalConsistent.lean`) so that the two compose without an adapter: a
+  derivation is a finite object and can cite only finitely many premises, so finitary
+  set-derivability is the only derivability notion a finitary proof system can support over
+  `Set Formula`. This module does **not** import `Core/MaximalConsistent.lean` — the shaping is a
+  design constraint honoured here, not a dependency; the bridge lemmas that did consume that
+  import had no consumers of their own and were deleted with it.
 * Each `SetSemanticConsequence*` predicate is the corresponding validity predicate's binder list
   taken verbatim from `FormalSystem/Semantics/Validity.lean`, with the premise hypothesis
   `(∀ ψ ∈ Γ, TruthAt M τ t ψ)` inserted before the conclusion — the same surgery that
@@ -106,15 +108,6 @@ def SetConsequenceOnFrames (P : TaskFrame → Prop) (Γ : Set Formula) (φ : For
 set: the semantic mirror of `SetDerivable fc` above, indexed by the same tag. -/
 def SetSemanticConsequenceOn (fc : FrameClass) (Γ : Set Formula) (φ : Formula) : Prop :=
   SetConsequenceOnFrames fc.Sat Γ φ
-
-/-- Set-based semantic consequence over `FrameClass.Base` — the unconstrained class, since
-`Sat .Base` is `True`. -/
-def SetSemanticConsequenceBase (Γ : Set Formula) (φ : Formula) : Prop :=
-  SetSemanticConsequenceOn FrameClass.Base Γ φ
-
-/-- Set-based semantic consequence over `FrameClass.Dense`. -/
-def SetSemanticConsequenceDense (Γ : Set Formula) (φ : Formula) : Prop :=
-  SetSemanticConsequenceOn FrameClass.Dense Γ φ
 
 /-- Set-based semantic consequence over `FrameClass.Discrete`. Stated for completeness of the
 layer; strong completeness at this class is refuted by non-compactness. -/
@@ -398,13 +391,6 @@ theorem setConsequence_iff_not_satisfiable {fc : FrameClass} {Γ : Set Formula} 
 
 /-! ## Monotonicity -/
 
-/-- Set-derivability is monotone in the premise set: a derivation citing finitely many
-    premises from `Γ` cites those same premises from any superset. -/
-theorem setDerivable_mono {fc : FrameClass} {Γ Δ : Set Formula} {φ : Formula}
-    (h_sub : Γ ⊆ Δ) (h : SetDerivable fc Γ φ) : SetDerivable fc Δ φ := by
-  obtain ⟨L, hL, hd⟩ := h
-  exact ⟨L, fun ψ hψ => h_sub (hL ψ hψ), hd⟩
-
 /-- **The one monotonicity-in-`Γ` lemma.** Set-consequence over any frame predicate is monotone
 in the premise set. The four per-class copies below are one-line corollaries; before the collapse
 each was a separate four-line proof differing only in how many binders its `intro` consumed. -/
@@ -413,36 +399,6 @@ theorem setConsequenceOnFrames_mono {P : TaskFrame → Prop} {Γ Δ : Set Formul
   intro F hF M τ hτ t h_all
   exact h F hF M τ hτ t (fun ψ hψ => h_all ψ (h_sub hψ))
 
-/-- **Monotonicity in the frame class**, the semantic analogue of `DerivationTree.lift`: a larger
-class tag denotes a more constrained collection of frames, so consequence climbs the order. The
-order-direction argument itself lives once, in `FrameClass.Sat.anti`. -/
-theorem setSemanticConsequenceOn_mono_fc {fc₁ fc₂ : FrameClass} {Γ : Set Formula} {φ : Formula}
-    (h_le : fc₁ ≤ fc₂) (h : SetSemanticConsequenceOn fc₁ Γ φ) :
-    SetSemanticConsequenceOn fc₂ Γ φ :=
-  fun F hF => h F (FrameClass.Sat.anti h_le hF)
-
-/-- Base set-consequence is monotone in the premise set. -/
-theorem setSemanticConsequenceBase_mono {Γ Δ : Set Formula} {φ : Formula}
-    (h_sub : Γ ⊆ Δ) (h : SetSemanticConsequenceBase Γ φ) : SetSemanticConsequenceBase Δ φ :=
-  setConsequenceOnFrames_mono h_sub h
-
-/-- Dense set-consequence is monotone in the premise set. -/
-theorem setSemanticConsequenceDense_mono {Γ Δ : Set Formula} {φ : Formula}
-    (h_sub : Γ ⊆ Δ) (h : SetSemanticConsequenceDense Γ φ) : SetSemanticConsequenceDense Δ φ :=
-  setConsequenceOnFrames_mono h_sub h
-
-/-- Discrete set-consequence is monotone in the premise set. -/
-theorem setSemanticConsequenceDiscrete_mono {Γ Δ : Set Formula} {φ : Formula}
-    (h_sub : Γ ⊆ Δ) (h : SetSemanticConsequenceDiscrete Γ φ) :
-    SetSemanticConsequenceDiscrete Δ φ :=
-  setConsequenceOnFrames_mono h_sub h
-
-/-- Dense Dedekind-complete set-consequence is monotone in the premise set. -/
-theorem setSemanticConsequenceDedekind_mono {Γ Δ : Set Formula} {φ : Formula}
-    (h_sub : Γ ⊆ Δ) (h : SetSemanticConsequenceDedekind Γ φ) :
-    SetSemanticConsequenceDedekind Δ φ :=
-  setConsequenceOnFrames_mono h_sub h
-
 /-! ## Finite restriction and agreement with the finite-context layer -/
 
 /-- Every set-derivation restricts to a finite context. Definitional, but worth naming: it is
@@ -450,40 +406,6 @@ theorem setSemanticConsequenceDedekind_mono {Γ Δ : Set Formula} {φ : Formula}
 theorem setDerivable_iff_exists_finite {fc : FrameClass} (Γ : Set Formula) (φ : Formula) :
     SetDerivable fc Γ φ ↔ ∃ L : List Formula, (∀ ψ ∈ L, ψ ∈ Γ) ∧ Derivable fc L φ :=
   Iff.rfl
-
-/-- A finite context is set-derivable from its own carrier set. -/
-theorem setDerivable_of_derivable {fc : FrameClass} (Γ : Context) (φ : Formula)
-    (h : Derivable fc Γ φ) : SetDerivable fc (Core.contextToSet Γ) φ :=
-  ⟨Γ, fun _ hψ => hψ, h⟩
-
-/-- …and conversely, so the set layer is a conservative extension of the finite layer.
-
-    `Derivable.weaken` (`ProofSystem/Derivable.lean:147`) wants a `Context` subset relation
-    `L ⊆ Γ`, whereas the set-derivation supplies `∀ ψ ∈ L, ψ ∈ Core.contextToSet Γ`. Since
-    `Core.contextToSet Γ = {φ | φ ∈ Γ}` (`Core/MaximalConsistent.lean:123`) these are
-    definitionally the same statement, and the eta-expansion below is all that is needed. -/
-theorem derivable_of_setDerivable_contextToSet {fc : FrameClass} (Γ : Context) (φ : Formula)
-    (h : SetDerivable fc (Core.contextToSet Γ) φ) : Derivable fc Γ φ := by
-  obtain ⟨L, hL, hd⟩ := h
-  exact hd.weaken (fun _ hx => hL _ hx)
-
-/-- Membership gives derivability: the singleton context `[φ]` derives `φ` by the assumption
-    rule (`ProofSystem/Derivation.lean:105`), and `Derivable` is `Nonempty (DerivationTree …)`
-    (`ProofSystem/Derivable.lean:69`), so the outer anonymous constructor is `Nonempty.intro`. -/
-theorem setDerivable_of_mem {fc : FrameClass} {Γ : Set Formula} {φ : Formula} (h : φ ∈ Γ) :
-    SetDerivable fc Γ φ :=
-  ⟨[φ], by simpa using h, ⟨DerivationTree.assumption _ _ (by simp)⟩⟩
-
-/-! ## The bridge to `Core.SetConsistent` -/
-
-/-- Deriving `⊥` from a set refutes its consistency. `Core.SetConsistent`
-    (`Core/MaximalConsistent.lean:96`) unfolds to `∀ L, (∀ φ ∈ L, φ ∈ S) → Consistent L` and
-    `Consistent` (`:67`) to `¬Derivable fc Γ Formula.bot`, both definitionally, so the finite
-    witness of the set-derivation applies directly. -/
-theorem not_setConsistent_of_setDerivable_bot {fc : FrameClass} {Γ : Set Formula}
-    (h : SetDerivable fc Γ Formula.bot) : ¬ Core.SetConsistent (fc := fc) Γ := by
-  obtain ⟨L, hL, hd⟩ := h
-  exact fun hcons => hcons L hL hd
 
 /-! ## Strong completeness, compactness and model existence for `FrameClass.Base`
 
@@ -496,8 +418,8 @@ obligation for Base strong completeness — the single-formula engine hypothesis
 the whole of what remained. `compactBase` now supplies it, and
 `strongCompletenessBase` collects the result.
 
-Each definition is its Dense sibling with `SetSemanticConsequenceBase` / `Valid` in place of
-`SetSemanticConsequenceDense` / `ValidDense` and the `[DenselyOrdered D]` binder dropped —
+Each definition is its Dense sibling with `SetSemanticConsequenceOn .Base` / `Valid` in place of
+`SetSemanticConsequenceOn .Dense` / `ValidDense` and the `[DenselyOrdered D]` binder dropped —
 there is no third axis of variation.
 
 Base's status is **proved**, the same status as Dense and distinct from both Discrete and
@@ -507,8 +429,8 @@ sharing a status.
 -/
 
 /-- **Strong completeness for `FrameClass.Base`** — the statement. The
-    `StrongCompletenessDense` statement with `SetSemanticConsequenceBase` in place of
-    `SetSemanticConsequenceDense` and `FrameClass.Base` as the derivability target. Proved as
+    `StrongCompletenessDense` statement with `SetSemanticConsequenceOn .Base` in place of
+    `SetSemanticConsequenceOn .Dense` and `FrameClass.Base` as the derivability target. Proved as
     `strongCompletenessBase` in `FormalSystem/Metalogic/Compactness.lean`; not proved here,
     which supplies vocabulary only. -/
 def StrongCompletenessBase : Prop := StrongCompleteness FrameClass.Base
@@ -558,7 +480,7 @@ collects the result.
 /-- **Strong completeness for `FrameClass.Dense`** — the reserved statement. Note that
     `FrameClass` (`ProofSystem/Axioms.lean:519`) has constructors `Base | Dense | Discrete |
     Dedekind`; there is no `.DedekindDense` constructor, and `FrameClass.Dense` is the correct
-    target for the `SetSemanticConsequenceDense` relation. -/
+    target for the `SetSemanticConsequenceOn .Dense` relation. -/
 def StrongCompletenessDense : Prop := StrongCompleteness FrameClass.Dense
 
 /-- Semantic compactness of the Dense consequence relation, stated in the form the
@@ -590,7 +512,7 @@ These three definitions are **statements, not results** — and unlike their Bas
 counterparts above they are settled *negatively*. Both `CompactDiscrete` and
 `StrongCompletenessDiscrete` are *refuted* downstream in
 `Metalogic/DiscreteNonCompactness.lean`, by
-`discrete_consequence_not_compact` and `strongCompletenessDiscrete_refuted` respectively, which
+`notCompactDiscrete` and `notStrongCompletenessDiscrete` respectively, which
 exhibit the premise set `{F p} ∪ {¬Xⁿ p : n ∈ ℕ}` as finitely satisfiable over `ℤ` yet
 unsatisfiable over every Archimedean discrete carrier. Nothing about those refutations is
 imported here; this module supplies only the vocabulary they are stated in.
@@ -600,9 +522,9 @@ in scope via `SetSemanticConsequenceDiscrete` above.
 -/
 
 /-- **Strong completeness for `FrameClass.Discrete`** — the `StrongCompletenessDense` statement
-    with `SetSemanticConsequenceDiscrete` in place of `SetSemanticConsequenceDense`.
+    with `SetSemanticConsequenceDiscrete` in place of `SetSemanticConsequenceOn .Dense`.
 
-    **This statement is false.** See `strongCompletenessDiscrete_refuted`. It is stated here so
+    **This statement is false.** See `notStrongCompletenessDiscrete`. It is stated here so
     that the refutation has something to name; it is not a reserved obligation. -/
 def StrongCompletenessDiscrete : Prop := StrongCompleteness FrameClass.Discrete
 
@@ -628,7 +550,7 @@ def SatisfiableDiscreteSet (Γ : Set Formula) : Prop := SatisfiableSet FrameClas
     `CompactDense`: a set-consequence yields a *finite* premise list whose `foldr`-implication
     into the conclusion is Discrete-valid.
 
-    **This statement is false.** See `discrete_consequence_not_compact`. -/
+    **This statement is false.** See `notCompactDiscrete`. -/
 def CompactDiscrete : Prop := Compact FrameClass.Discrete
 
 /-! ## Strong completeness, compactness, satisfiability and model existence for
@@ -637,8 +559,8 @@ def CompactDiscrete : Prop := Compact FrameClass.Discrete
 The fourth and last row of the `FrameClass`-indexed family, completing the table. Like the
 Discrete block above, these are **statements, not results**, and two of them are settled
 *negatively*: `CompactDedekind` and `StrongCompletenessDedekind` are *refuted* downstream in
-`Metalogic/DedekindNonCompactness.lean`, by `dedekind_consequence_not_compact` and
-`strongCompletenessDedekind_refuted` respectively, which exhibit the premise set
+`Metalogic/DedekindNonCompactness.lean`, by `notCompactDedekind` and
+`notStrongCompletenessDedekind` respectively, which exhibit the premise set
 `{G(⊤ S ¬q), F(G ¬q)} ∪ {Xqⁿ⊤ : n ∈ ℕ}` as finitely satisfiable over `ℝ` yet unsatisfiable over
 every Dedekind-complete carrier. That witness is a *new* one: `DiscreteNonCompactness.lean`'s
 `archWitness` does not port, because `Formula.next` is vacuously false on a densely ordered
@@ -654,10 +576,10 @@ No import change is required: `DenselyOrdered` is already in scope via
 -/
 
 /-- **Strong completeness for `FrameClass.Dedekind`** — the `StrongCompletenessDense` statement
-    with `SetSemanticConsequenceDedekind` in place of `SetSemanticConsequenceDense` and
+    with `SetSemanticConsequenceDedekind` in place of `SetSemanticConsequenceOn .Dense` and
     `FrameClass.Dedekind` as the derivability target.
 
-    **This statement is false.** See `strongCompletenessDedekind_refuted` in
+    **This statement is false.** See `notStrongCompletenessDedekind` in
     `Metalogic/DedekindNonCompactness.lean`. It is stated here so that the refutation has
     something to name; it is not a reserved obligation. Reynolds 1992 §9 Theorem 7 remains
     correctly cited elsewhere as the *weak* completeness result for this class — the refutation
@@ -668,7 +590,7 @@ def StrongCompletenessDedekind : Prop := StrongCompleteness FrameClass.Dedekind
     `CompactDense`: a set-consequence yields a *finite* premise list whose `foldr`-implication
     into the conclusion is Dedekind-valid.
 
-    **This statement is false.** See `dedekind_consequence_not_compact` in
+    **This statement is false.** See `notCompactDedekind` in
     `Metalogic/DedekindNonCompactness.lean`. -/
 def CompactDedekind : Prop := Compact FrameClass.Dedekind
 
@@ -695,9 +617,9 @@ def SatisfiableDedekindSet (Γ : Set Formula) : Prop := SatisfiableSet FrameClas
     `Metalogic/DedekindNonCompactness.lean`, which draws it as the immediate corollary it always
     was: `ModelExistence fc → Compact fc` is `compact_of_modelExistence`
     (`Metalogic/StrongCompleteness.lean`), and `CompactDedekind` is refuted, so a model-existence
-    proof at this class would yield the very compactness `dedekind_consequence_not_compact`
+    proof at this class would yield the very compactness `notCompactDedekind`
     denies. The refutation lives in that module rather than beside this definition because it
-    consumes `dedekind_consequence_not_compact`, and that module imports this one. -/
+    consumes `notCompactDedekind`, and that module imports this one. -/
 def ModelExistenceDedekind : Prop := ModelExistence FrameClass.Dedekind
 
 end FormalSystem.Metalogic
