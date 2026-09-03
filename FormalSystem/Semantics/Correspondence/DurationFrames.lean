@@ -63,6 +63,9 @@ adjudication of record is `specs/paper-definitions-of-record.md`'s reading note 
 
 * `translationFrame`, `permissiveFrame` — the two witness frames
 * `noMaxOrder_of_duration`, `succOrder_of_isLeast_pos` — the glue
+* `translationHF`, `permissiveHF` — each witness frame's reference total history, bundled
+* `translation_realizes`, `translation_realizes_allPast`, `translation_realizes_allFuture`,
+  `permissive_realizes` — the atom-realisation step, named once instead of rebuilt inline
 * `validOn_df_iff_isDiscrete`, `validOn_dn_iff_denselyOrdered`, `validOn_co_iff_isComplete` —
   the three (T1) biconditionals
 -/
@@ -131,6 +134,40 @@ def translationModel (D : TemporalOrder) (A : Set ↑D) :
     TruthAt (translationModel D A) (translationHist D) t (Formula.atom p) ↔ t ∈ A :=
   ⟨fun ⟨_, hv⟩ => hv, fun h => ⟨trivial, h⟩⟩
 
+/-- The translation frame's **reference total history**, bundled as an `HF`.
+
+This is the history every (⇒) witness below evaluates along; naming it here is what lets those
+proofs mention the history once rather than rebuild the `⟨_, _⟩` pair and then carry a `hτ`
+equation through every `simp only`. -/
+def translationHF (D : TemporalOrder) : (translationFrame D).toTaskFrame.HF :=
+  ⟨translationHist D, translationHist_isTotal D⟩
+
+/--
+**Atom realisation.** The translation frame realises an arbitrary `A ⊆ ↑D` as the truth set of an
+atom along its reference history.
+
+This is the step the (⇒) directions of `validOn_df_iff_isDiscrete` and `validOn_co_iff_isComplete`
+turn on: pick `A`, and the atom's extension *is* `A`. Any atom does — the valuation is built from
+`A`, not read off a fixed one.
+-/
+theorem translation_realizes (D : TemporalOrder) (A : Set ↑D) (p : Atom) (t : ↑D) :
+    TruthAt (translationModel D A) (translationHF D).val t (Formula.atom p) ↔ t ∈ A :=
+  translationModel_atom D A p t
+
+/-- `translation_realizes` under `H`: `Hp` at `u` says every time strictly below `u` lies in `A`. -/
+theorem translation_realizes_allPast (D : TemporalOrder) (A : Set ↑D) (p : Atom) (u : ↑D) :
+    TruthAt (translationModel D A) (translationHF D).val u (Formula.atom p).allPast
+      ↔ ∀ r < u, r ∈ A := by
+  rw [Truth.past_iff]
+  exact forall_congr' fun r => forall_congr' fun _ => translation_realizes D A p r
+
+/-- `translation_realizes` under `G`: `Gp` at `u` says every time strictly above `u` lies in `A`. -/
+theorem translation_realizes_allFuture (D : TemporalOrder) (A : Set ↑D) (p : Atom) (u : ↑D) :
+    TruthAt (translationModel D A) (translationHF D).val u (Formula.atom p).allFuture
+      ↔ ∀ r, u < r → r ∈ A := by
+  rw [Truth.future_iff]
+  exact forall_congr' fun r => forall_congr' fun _ => translation_realizes D A p r
+
 /-! ## The permissive frame's history and model
 
 `permissiveFrame` itself now lives in `Semantics/Frames/Standard.lean`; only the history and
@@ -171,6 +208,26 @@ def permissiveModel (D : TemporalOrder) (so : SuccOrder ↑D) (nm : NoMaxOrder �
     (f : ↑D → Bool) (p : Atom) (t : ↑D) :
     TruthAt (permissiveModel D so nm) (permissiveHist D so nm f) t (Formula.atom p) ↔ f t = true :=
   ⟨fun ⟨_, hv⟩ => hv, fun h => ⟨trivial, h⟩⟩
+
+/-- The permissive frame's **reference total history** at the state assignment `f`, bundled as an
+`HF`. The twin of `translationHF`, for the one (⇒) witness that runs on `permissiveFrame`. -/
+def permissiveHF (D : TemporalOrder) (so : SuccOrder ↑D) (nm : NoMaxOrder ↑D) (f : ↑D → Bool) :
+    (permissiveFrame D so nm).toTaskFrame.HF :=
+  ⟨permissiveHist D so nm f, permissiveHist_isTotal D so nm f⟩
+
+/--
+**Atom realisation, permissive twin.** The permissive frame realises an arbitrary `f : ↑D → Bool`
+as the truth set of an atom along its reference history.
+
+The counterpart of `translation_realizes` for `validOn_dn_iff_denselyOrdered`, whose (⇒) witness
+is the permissive frame rather than the translation frame. Without it that proof would be the
+one of the three left unconverted.
+-/
+theorem permissive_realizes (D : TemporalOrder) (so : SuccOrder ↑D) (nm : NoMaxOrder ↑D)
+    (f : ↑D → Bool) (p : Atom) (t : ↑D) :
+    TruthAt (permissiveModel D so nm) (permissiveHF D so nm f).val t (Formula.atom p)
+      ↔ f t = true :=
+  permissiveModel_atom D so nm f p t
 
 /-! ## The three (T1) correspondence theorems
 

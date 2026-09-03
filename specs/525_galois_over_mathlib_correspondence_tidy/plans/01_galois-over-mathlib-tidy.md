@@ -285,28 +285,29 @@ parallel wave-1 dispatch shares one `lake build`; if run in parallel, serialise 
 
 ---
 
-### Phase 3: Add the atom-realisation layer to `DurationFrames.lean` [NOT STARTED]
+### Phase 3: Add the atom-realisation layer to `DurationFrames.lean` [COMPLETED]
 
 - **Goal:** The named realisation lemmas exist, carry a `(p : Atom)` binder, and typecheck. Purely
   additive — no existing proof is touched in this phase, so the tree stays green throughout.
 
 - **Tasks:**
-  - [ ] Add `def translationHF (D : TemporalOrder) : (translationFrame D).toTaskFrame.HF := ⟨translationHist D, translationHist_isTotal D⟩`
+  - [x] Add `def translationHF (D : TemporalOrder) : (translationFrame D).toTaskFrame.HF := ⟨translationHist D, translationHist_isTotal D⟩`
         with a docstring naming it the translation frame's reference total history.
-  - [ ] Add `theorem translation_realizes (D : TemporalOrder) (A : Set ↑D) (p : Atom) (t : ↑D) : TruthAt (translationModel D A) (translationHF D).val t (Formula.atom p) ↔ t ∈ A := translationModel_atom D A p t`,
+  - [x] Add `theorem translation_realizes (D : TemporalOrder) (A : Set ↑D) (p : Atom) (t : ↑D) : TruthAt (translationModel D A) (translationHF D).val t (Formula.atom p) ↔ t ∈ A := translationModel_atom D A p t`,
         docstringed as **Atom realisation**: the translation frame realises an arbitrary `A ⊆ ↑D` as
         the truth set of an atom along its reference history.
-  - [ ] Add `translation_realizes_allPast` and `translation_realizes_allFuture` (the `rw [Truth.past_iff]`
+  - [x] Add `translation_realizes_allPast` and `translation_realizes_allFuture` (the `rw [Truth.past_iff]`
         / `rw [Truth.future_iff]` then `forall_congr'` twice form from report §3.1). Note
         `translation_realizes_allPast` is the real payload: it is *exactly* the 11-line inline `hHiff`
         currently hand-built inside `validOn_co_iff_isComplete`, and the same step
         `validOn_df_iff_isDiscrete` performs twice ad hoc.
-  - [ ] Add the permissive twin the review missed:
+  - [x] Add the permissive twin the review missed:
         `def permissiveHF (D : TemporalOrder) (so : SuccOrder ↑D) (nm : NoMaxOrder ↑D) (f : ↑D → Bool) : (permissiveFrame D so nm).toTaskFrame.HF := ⟨permissiveHist D so nm f, permissiveHist_isTotal D so nm f⟩`.
-  - [ ] Add `theorem permissive_realizes (D : TemporalOrder) (so : SuccOrder ↑D) (nm : NoMaxOrder ↑D) (f : ↑D → Bool) (p : Atom) (t : ↑D) : TruthAt (permissiveModel D so nm) (permissiveHF D so nm f).val t (Formula.atom p) ↔ f t = true := permissiveModel_atom D so nm f p t`.
-  - [ ] Add the new names to the module header's inventory list (which currently enumerates
+  - [x] Add `theorem permissive_realizes (D : TemporalOrder) (so : SuccOrder ↑D) (nm : NoMaxOrder ↑D) (f : ↑D → Bool) (p : Atom) (t : ↑D) : TruthAt (permissiveModel D so nm) (permissiveHF D so nm f).val t (Formula.atom p) ↔ f t = true := permissiveModel_atom D so nm f p t`.
+  - [x] Add the new names to the module header's inventory list (which currently enumerates
         `translationFrame`, `permissiveFrame`, and the three (T1) biconditionals).
-  - [ ] **Optional stretch, droppable and not part of acceptance:** `translationHist` and
+  - [ ] *(not taken — the plan marks this optional, droppable and outside acceptance; budget went
+        to Phases 4-6 instead.)* **Optional stretch, droppable and not part of acceptance:** `translationHist` and
         `permissiveHist` still build the `domain := fun _ => True` record literally, which
         `WorldHistory.ofTotal` (`Semantics/WorldHistory.lean:143`, with `ofTotal_isTotal` :152 and
         `@[simp] ofTotal_domain` :166) exists to replace — its docstring at `:130` explicitly says
