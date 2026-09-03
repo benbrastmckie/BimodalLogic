@@ -779,8 +779,7 @@ theorem limit_F_resolution (fc : FrameClass) (A : Set Formula)
       (Formula.untl (Formula.bot.imp Formula.bot) φ)) :=
     DerivationTree.axiom [] _ (Axiom.F_until_equiv φ) trivial
   have h_until : Formula.untl (Formula.bot.imp Formula.bot) φ ∈ LimitF fc A h_mcs x :=
-    SetMaximalConsistent.implication_property h_mcs_x
-      (theorem_in_mcs h_mcs_x h_bx12) h_F
+    SetMaximalConsistent.mp_of_theorem h_mcs_x h_bx12 h_F
   exact limit_satisfies_c5_weak fc A h_mcs x hx _ φ h_until
 
 /--
@@ -801,8 +800,7 @@ theorem limit_P_resolution (fc : FrameClass) (A : Set Formula)
       (Formula.snce (Formula.bot.imp Formula.bot) φ)) :=
     DerivationTree.axiom [] _ (Axiom.P_since_equiv φ) trivial
   have h_since : Formula.snce (Formula.bot.imp Formula.bot) φ ∈ LimitF fc A h_mcs x :=
-    SetMaximalConsistent.implication_property h_mcs_x
-      (theorem_in_mcs h_mcs_x h_bx12') h_P
+    SetMaximalConsistent.mp_of_theorem h_mcs_x h_bx12' h_P
   exact limit_satisfies_c5'_weak fc A h_mcs x hx _ φ h_since
 
 /-! ## C4 Satisfaction in the Limit
@@ -1071,8 +1069,7 @@ theorem h_content_sub_imp_g_content_sub {fc : FrameClass} {A B : Set Formula}
   have h_ax : DerivationTree fc [] (ψ.neg.imp (ψ.neg.someFuture.allPast)) :=
     DerivationTree.axiom [] _ (Axiom.connect_past ψ.neg) trivial
   have h_HF : Formula.allPast (Formula.someFuture ψ.neg) ∈ B :=
-    SetMaximalConsistent.implication_property h_mcs_B
-      (theorem_in_mcs h_mcs_B h_ax) h_neg_ψ
+    SetMaximalConsistent.mp_of_theorem h_mcs_B h_ax h_neg_ψ
   -- F(¬ψ) ∈ HContent(B) ⊆ A
   have h_F_neg_ψ_A : Formula.someFuture ψ.neg ∈ A := h_hBA h_HF
   -- G(¬¬ψ) ∈ A from G(ψ) via DNI under G, then contradiction with F(¬ψ)
@@ -1148,8 +1145,7 @@ theorem limit_forward_G (fc : FrameClass) (A : Set Formula)
     DerivationTree.axiom [] _ (Axiom.until_F top φ.neg) trivial
   have h_until_not : Formula.untl top φ.neg ∉ LimitF fc A h_mcs x := by
     intro h_in
-    exact h_F_not (SetMaximalConsistent.implication_property h_mcs_x
-      (theorem_in_mcs h_mcs_x h_bx10) h_in)
+    exact h_F_not (SetMaximalConsistent.mp_of_theorem h_mcs_x h_bx10 h_in)
   have h_neg_until : (Formula.untl top φ.neg).neg ∈ LimitF fc A h_mcs x := by
     rcases SetMaximalConsistent.negation_complete h_mcs_x (Formula.untl top φ.neg) with h | h
     · exact absurd h h_until_not
@@ -1202,8 +1198,7 @@ theorem limit_backward_H (fc : FrameClass) (A : Set Formula)
     DerivationTree.axiom [] _ (Axiom.since_P top φ.neg) trivial
   have h_since_not : Formula.snce top φ.neg ∉ LimitF fc A h_mcs x := by
     intro h_in
-    exact h_P_not (SetMaximalConsistent.implication_property h_mcs_x
-      (theorem_in_mcs h_mcs_x h_bx10') h_in)
+    exact h_P_not (SetMaximalConsistent.mp_of_theorem h_mcs_x h_bx10' h_in)
   have h_neg_since : (Formula.snce top φ.neg).neg ∈ LimitF fc A h_mcs x := by
     rcases SetMaximalConsistent.negation_complete h_mcs_x (Formula.snce top φ.neg) with h | h
     · exact absurd h h_since_not

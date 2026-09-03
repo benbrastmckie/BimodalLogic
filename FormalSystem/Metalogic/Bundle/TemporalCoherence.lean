@@ -72,7 +72,7 @@ lemma neg_all_future_to_some_future_neg (M : Set Formula)
       (Formula.neg (Formula.someFuture (Formula.neg phi)))).imp
                      (Formula.someFuture (Formula.neg phi))) :=
     (dneTheorem (Formula.someFuture (Formula.neg phi))).lift (by cases fc <;> trivial)
-  exact SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_dne) h_neg_G
+  exact SetMaximalConsistent.mp_of_theorem h_mcs h_dne h_neg_G
 
 /--
 Transform neg(H phi) membership to P(neg phi) membership in an MCS.
@@ -90,7 +90,7 @@ lemma neg_all_past_to_some_past_neg (M : Set Formula) (h_mcs : SetMaximalConsist
       (Formula.neg (Formula.somePast (Formula.neg phi)))).imp
                      (Formula.somePast (Formula.neg phi))) :=
     (dneTheorem (Formula.somePast (Formula.neg phi))).lift (by cases fc <;> trivial)
-  exact SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_dne) h_neg_H
+  exact SetMaximalConsistent.mp_of_theorem h_mcs h_dne h_neg_H
 
 /--
 Double negation elimination in MCS: if neg(neg phi) in MCS, then phi in MCS.

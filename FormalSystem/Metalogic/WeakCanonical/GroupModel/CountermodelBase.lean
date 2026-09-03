@@ -380,10 +380,8 @@ theorem countermodel_discrete (A : Set Formula)
         have h_box_q : Formula.box ψ ∈ LimitF FrameClass.Base f'.val f'.property.1 q :=
           (box_stable_in_limit_f FrameClass.Base f'.val f'.property.1 ψ q hq).mpr h_box_N'
         have h_ψ_q : ψ ∈ LimitF FrameClass.Base f'.val f'.property.1 q :=
-          SetMaximalConsistent.implication_property
-            (limit_c0 FrameClass.Base f'.val f'.property.1 q hq)
-            (theorem_in_mcs (limit_c0 FrameClass.Base f'.val f'.property.1 q hq)
-              (DerivationTree.axiom [] _ (Axiom.modal_t ψ) trivial)) h_box_q
+          SetMaximalConsistent.mp_of_theorem (limit_c0 FrameClass.Base f'.val f'.property.1 q hq)
+            (DerivationTree.axiom [] _ (Axiom.modal_t ψ) trivial) h_box_q
         rw [← effectiveFormula_id_of_sub h_sub_ψ] at h_ψ_q
         exact (limitdom_temporal_truth_effective f'.val f'.property.1 φ ψ ⟨q, hq⟩).mpr h_ψ_q
       -- Step 7: Transfer TemporalTruth from limitdom_{f'} to Q_{f'}

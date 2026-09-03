@@ -82,8 +82,7 @@ theorem imp_iff_mcs {fc : FrameClass} {S : Set Formula} (h_mcs : SetMaximalConsi
       -- prop_s: ψ → (φ → ψ), so (φ → ψ) ∈ S
       have h_ax : DerivationTree fc [] (ψ.imp (φ.imp ψ)) :=
         DerivationTree.axiom [] _ (Axiom.prop_s ψ φ) (FrameClass.base_le fc)
-      exact SetMaximalConsistent.implication_property h_mcs
-        (theorem_in_mcs h_mcs h_ax) h_ψ
+      exact SetMaximalConsistent.mp_of_theorem h_mcs h_ax h_ψ
     · -- φ ∉ S. Then ¬φ ∈ S.
       have h_neg_φ : φ.neg ∈ S := by
         cases SetMaximalConsistent.negation_complete h_mcs φ with
@@ -159,8 +158,7 @@ theorem box_iff_mcs (w : BXPoint) (φ : Formula) :
     -- □φ → φ by modal_t
     have h_ax : DerivationTree FrameClass.Base [] (Formula.box φ |>.imp φ) :=
       DerivationTree.axiom [] _ (Axiom.modal_t φ) trivial
-    exact SetMaximalConsistent.implication_property v.is_mcs
-      (theorem_in_mcs v.is_mcs h_ax) h_box_v
+    exact SetMaximalConsistent.mp_of_theorem v.is_mcs h_ax h_box_v
   · -- (∀ v ~ w, φ ∈ v) → □φ ∈ w
     intro h_all
     by_contra h_not_box
@@ -195,8 +193,7 @@ theorem box_iff_mcs (w : BXPoint) (φ : Formula) :
     -- We derived: φ.box.neg → φ.neg.neg.box.neg
     -- φ.neg.neg.box.neg = Formula.diamond (φ.neg) = ◇(¬φ)
     have h_dia_neg : Formula.diamond φ.neg ∈ w.formulas :=
-      SetMaximalConsistent.implication_property w.is_mcs
-        (theorem_in_mcs w.is_mcs h_neg_box_to_dia) h_neg_box
+      SetMaximalConsistent.mp_of_theorem w.is_mcs h_neg_box_to_dia h_neg_box
     -- ◇(¬φ) ∈ w, so by bx_modal_witness there exists v ~ w with ¬φ ∈ v
     obtain ⟨v, h_equiv, h_neg_in⟩ := bx_modal_witness w φ.neg h_dia_neg
     -- ¬φ ∈ v means φ ∉ v

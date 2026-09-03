@@ -289,9 +289,8 @@ theorem chronicle_mem_of_box_mem {fc : FrameClass} (N : Set Formula)
       (Chronicle.cantorBfmcsDense fc N hN hbox).evalFamily.mcs q :=
     (Chronicle.box_stable_in_rooted_cantor_fmcs_dense fc N hN hbox ψ 0 q).mpr h_box_N
   have h_mcs_q := (Chronicle.cantorBfmcsDense fc N hN hbox).evalFamily.is_mcs q
-  exact SetMaximalConsistent.implication_property h_mcs_q
-    (theorem_in_mcs h_mcs_q
-      (DerivationTree.axiom [] _ (Axiom.modal_t ψ) (FrameClass.base_le _))) h_box_q
+  exact SetMaximalConsistent.mp_of_theorem h_mcs_q
+    (DerivationTree.axiom [] _ (Axiom.modal_t ψ) (FrameClass.base_le _)) h_box_q
 
 open FormalSystem.Metalogic.WeakCanonical in
 open FormalSystem.Metalogic.BXCanonical.Chronicle in

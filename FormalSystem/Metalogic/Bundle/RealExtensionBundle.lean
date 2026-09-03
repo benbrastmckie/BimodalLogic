@@ -101,8 +101,7 @@ theorem box_forward_in_fmcs {fc : FrameClass} {D : Type} [Preorder D]
     (f : FMCS (fc := fc) D) {a b : D} (hab : a < b) (ψ : Formula)
     (hbox : Formula.box ψ ∈ f.mcs a) : Formula.box ψ ∈ f.mcs b := by
   have hG : Formula.allFuture (Formula.box ψ) ∈ f.mcs a :=
-    SetMaximalConsistent.implication_property (f.is_mcs a)
-      (theorem_in_mcs (f.is_mcs a) (Combinators.temporalFutureDerived ψ)) hbox
+    SetMaximalConsistent.mp_of_theorem (f.is_mcs a) (Combinators.temporalFutureDerived ψ) hbox
   exact f.forward_G a b (Formula.box ψ) hab hG
 
 /--
@@ -129,15 +128,13 @@ theorem box_stable_in_fmcs {fc : FrameClass} {D : Type} [LinearOrder D]
       · exact h
     -- `□¬□φ` at `a`, by S5 negative introspection.
     have hboxneg : Formula.box (Formula.box φ).neg ∈ f.mcs a :=
-      SetMaximalConsistent.implication_property (f.is_mcs a)
-        (theorem_in_mcs (f.is_mcs a) (negBoxIntrospection φ)) hneg
+      SetMaximalConsistent.mp_of_theorem (f.is_mcs a) (negBoxIntrospection φ) hneg
     -- Push it forward to `b` and strip the box with `modal_t`.
     have hboxneg_b : Formula.box (Formula.box φ).neg ∈ f.mcs b :=
       box_forward_in_fmcs f hab (Formula.box φ).neg hboxneg
     have hneg_b : (Formula.box φ).neg ∈ f.mcs b :=
-      SetMaximalConsistent.implication_property (f.is_mcs b)
-        (theorem_in_mcs (f.is_mcs b)
-          (DerivationTree.axiom [] _ (Axiom.modal_t (Formula.box φ).neg) (FrameClass.base_le fc)))
+      SetMaximalConsistent.mp_of_theorem (f.is_mcs b)
+        (DerivationTree.axiom [] _ (Axiom.modal_t (Formula.box φ).neg) (FrameClass.base_le fc))
         hboxneg_b
     exact set_consistent_not_both (f.is_mcs b).1 (Formula.box φ) hbox_b hneg_b
   rcases lt_trichotomy s t with h | h | h

@@ -3,9 +3,9 @@
   "started_at": "2026-09-03T00:00:00Z",
   "artifacts": [],
   "partial_progress": {
-    "stage": "phase_9_complete",
-    "details": "Phases 1-9 committed and green. Remaining: 10, 11.",
-    "phases_completed": 9,
+    "stage": "phase_10_complete",
+    "details": "Phases 1-10 committed and green. Remaining: 11 (Core/README.md refresh + mcs_auto decision record + final gate).",
+    "phases_completed": 10,
     "phases_total": 11
   },
   "metadata": {

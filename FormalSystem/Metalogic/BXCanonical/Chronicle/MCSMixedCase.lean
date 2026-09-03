@@ -57,8 +57,7 @@ theorem mcs_mixed_case_absurd (fc : FrameClass) (A : Set Formula)
   have h_box_neg_box : Formula.box (Formula.box nextTop).neg ∈ A :=
     SetMaximalConsistent.neg_box_implies_box_neg_box h_mcs nextTop h_not_box_discrete
   have h_box_dense : Formula.box nextTop.neg ∈ A :=
-    SetMaximalConsistent.implication_property h_mcs
-      (theorem_in_mcs h_mcs (liftBase fc h_box_chain)) h_box_neg_box
+    SetMaximalConsistent.mp_of_theorem h_mcs (liftBase fc h_box_chain) h_box_neg_box
   exact set_consistent_not_both h_mcs.1 (Formula.box nextTop.neg) h_box_dense h_not_box_dense
 
 /--

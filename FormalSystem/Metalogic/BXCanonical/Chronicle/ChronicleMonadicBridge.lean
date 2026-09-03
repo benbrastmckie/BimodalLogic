@@ -837,9 +837,8 @@ theorem chronicleMonadic_semanticPriorU {fc : FrameClass} (hfc : FrameClass.Dede
   -- The axiom instance, at the effective formula.
   have h_thm : Formula.untl (chronicleEff root p) (Formula.or (chronicleEff root p).neg
       (Formula.kPlus (chronicleEff root p).neg)) ∈ fam.mcs t :=
-    SetMaximalConsistent.implication_property (fam.is_mcs t)
-      (theorem_in_mcs (fam.is_mcs t)
-        (DerivationTree.axiom [] _ (Axiom.prior_U_gap (chronicleEff root p)) hfc))
+    SetMaximalConsistent.mp_of_theorem (fam.is_mcs t)
+      (DerivationTree.axiom [] _ (Axiom.prior_U_gap (chronicleEff root p)) hfc)
       h_ant_mcs
   -- ... read back semantically.
   have h_truth : TemporalTruth (chronicleMonadicStructureOf root fam) (mkAtomMapFwd root) t
@@ -884,9 +883,8 @@ theorem chronicleMonadic_semanticPriorS {fc : FrameClass} (hfc : FrameClass.Dede
     simpa using h
   have h_thm : Formula.snce (chronicleEff root p) (Formula.or (chronicleEff root p).neg
       (Formula.kMinus (chronicleEff root p).neg)) ∈ fam.mcs t :=
-    SetMaximalConsistent.implication_property (fam.is_mcs t)
-      (theorem_in_mcs (fam.is_mcs t)
-        (DerivationTree.axiom [] _ (Axiom.prior_S_gap (chronicleEff root p)) hfc))
+    SetMaximalConsistent.mp_of_theorem (fam.is_mcs t)
+      (DerivationTree.axiom [] _ (Axiom.prior_S_gap (chronicleEff root p)) hfc)
       h_ant_mcs
   have h_truth : TemporalTruth (chronicleMonadicStructureOf root fam) (mkAtomMapFwd root) t
       (Formula.snce p (Formula.or p.neg (Formula.kMinus p.neg))) := by
@@ -934,9 +932,8 @@ theorem chronicleMonadic_semanticSep {fc : FrameClass} (hfc : FrameClass.Dedekin
     simpa using h
   have h_thm : Formula.kPlus (Formula.and (Formula.kPlus (chronicleEff root p))
       (Formula.kMinus (chronicleEff root p))) ∈ fam.mcs t :=
-    SetMaximalConsistent.implication_property (fam.is_mcs t)
-      (theorem_in_mcs (fam.is_mcs t)
-        (DerivationTree.axiom [] _ (Axiom.sep (chronicleEff root p)) hfc))
+    SetMaximalConsistent.mp_of_theorem (fam.is_mcs t)
+      (DerivationTree.axiom [] _ (Axiom.sep (chronicleEff root p)) hfc)
       h_ant_mcs
   have h_truth : TemporalTruth (chronicleMonadicStructureOf root fam) (mkAtomMapFwd root) t
       (Formula.kPlus (Formula.and (Formula.kPlus p) (Formula.kMinus p))) := by

@@ -86,12 +86,10 @@ theorem enriched_resolving_seed_consistent {M : Set Formula}
     h_sup (Set.mem_union_left _ (Set.mem_singleton _))
   -- ψ ∈ M' by left conjunction elimination
   have h_ψ_in : ψ ∈ M' :=
-    SetMaximalConsistent.implication_property h_M'_mcs
-      (theorem_in_mcs h_M'_mcs (lceImp ψ α)) h_conj_in
+    SetMaximalConsistent.mp_of_theorem h_M'_mcs (lceImp ψ α) h_conj_in
   -- α ∈ M' by right conjunction elimination
   have h_α_in : α ∈ M' :=
-    SetMaximalConsistent.implication_property h_M'_mcs
-      (theorem_in_mcs h_M'_mcs (rceImp ψ α)) h_conj_in
+    SetMaximalConsistent.mp_of_theorem h_M'_mcs (rceImp ψ α) h_conj_in
   -- Step 4: GContent(M) ⊆ M'
   have h_g_sub : GContent M ⊆ M' :=
     fun χ hχ => h_sup (Set.mem_union_right _ hχ)
@@ -142,16 +140,14 @@ theorem temp_linearity_mcs {M : Set Formula}
           (Formula.and (Formula.someFuture A) (Formula.someFuture B))) :=
       pairing (Formula.someFuture A) (Formula.someFuture B)
     exact SetMaximalConsistent.implication_property h_mcs
-      (SetMaximalConsistent.implication_property h_mcs
-        (theorem_in_mcs h_mcs h_pair) h_FA) h_FB
+      (SetMaximalConsistent.mp_of_theorem h_mcs h_pair h_FA) h_FB
   -- Apply BX11 axiom
   have h_ax : [] ⊢ (Formula.and (Formula.someFuture A) (Formula.someFuture B)).imp
       (Formula.or (Formula.someFuture (Formula.and A B))
         (Formula.or (Formula.someFuture (Formula.and A (Formula.someFuture B)))
           (Formula.someFuture (Formula.and (Formula.someFuture A) B)))) :=
     DerivationTree.axiom [] _ (Axiom.temp_linearity A B) trivial
-  have h_disj := SetMaximalConsistent.implication_property h_mcs
-    (theorem_in_mcs h_mcs h_ax) h_conj
+  have h_disj := SetMaximalConsistent.mp_of_theorem h_mcs h_ax h_conj
   -- Case split on the disjunction
   -- Formula.or P Q = P.neg.imp Q, so we handle it via negation completeness
   rcases SetMaximalConsistent.negation_complete h_mcs

@@ -122,8 +122,7 @@ theorem self_accum_mcs {w : BXPoint} {φ ψ : Formula}
     Formula.untl (Formula.and ψ (Formula.untl ψ φ)) φ ∈ w.formulas := by
   have h_ax : DerivationTree FrameClass.Base [] _ := DerivationTree.axiom [] _
       (Axiom.self_accum_until ψ φ) trivial
-  exact SetMaximalConsistent.implication_property w.is_mcs
-    (theorem_in_mcs w.is_mcs h_ax) h
+  exact SetMaximalConsistent.mp_of_theorem w.is_mcs h_ax h
 
 /-- Key lemma: BX10 at MCS level.
     If φ U ψ ∈ w.formulas, then F(ψ) ∈ w.formulas. -/
@@ -132,8 +131,7 @@ theorem until_F_mcs {w : BXPoint} {φ ψ : Formula}
     Formula.someFuture φ ∈ w.formulas := by
   have h_ax : DerivationTree FrameClass.Base [] _ := DerivationTree.axiom [] _ (Axiom.until_F ψ φ)
       trivial
-  exact SetMaximalConsistent.implication_property w.is_mcs
-    (theorem_in_mcs w.is_mcs h_ax) h
+  exact SetMaximalConsistent.mp_of_theorem w.is_mcs h_ax h
 
 /-- Key lemma: BX4 connectedness at MCS level.
     If φ ∈ w.formulas, then G(P(φ)) ∈ w.formulas. -/
@@ -142,8 +140,7 @@ theorem connect_future_mcs {w : BXPoint} {φ : Formula}
     Formula.allFuture (Formula.somePast φ) ∈ w.formulas := by
   have h_ax : DerivationTree FrameClass.Base [] _ := DerivationTree.axiom [] _
       (Axiom.connect_future φ) trivial
-  exact SetMaximalConsistent.implication_property w.is_mcs
-    (theorem_in_mcs w.is_mcs h_ax) h
+  exact SetMaximalConsistent.mp_of_theorem w.is_mcs h_ax h
 
 /-! ## Since-direction MCS lemmas -/
 
@@ -153,8 +150,7 @@ theorem self_accum_since_mcs {w : BXPoint} {φ ψ : Formula}
     Formula.snce (Formula.and ψ (Formula.snce ψ φ)) φ ∈ w.formulas := by
   have h_ax : DerivationTree FrameClass.Base [] _ := DerivationTree.axiom [] _
       (Axiom.self_accum_since ψ φ) trivial
-  exact SetMaximalConsistent.implication_property w.is_mcs
-    (theorem_in_mcs w.is_mcs h_ax) h
+  exact SetMaximalConsistent.mp_of_theorem w.is_mcs h_ax h
 
 /-- BX10' at MCS level. -/
 theorem since_P_mcs {w : BXPoint} {φ ψ : Formula}
@@ -162,8 +158,7 @@ theorem since_P_mcs {w : BXPoint} {φ ψ : Formula}
     Formula.somePast φ ∈ w.formulas := by
   have h_ax : DerivationTree FrameClass.Base [] _ := DerivationTree.axiom [] _ (Axiom.since_P ψ φ)
       trivial
-  exact SetMaximalConsistent.implication_property w.is_mcs
-    (theorem_in_mcs w.is_mcs h_ax) h
+  exact SetMaximalConsistent.mp_of_theorem w.is_mcs h_ax h
 
 /-- BX4' at MCS level. -/
 theorem connect_past_mcs {w : BXPoint} {φ : Formula}
@@ -171,8 +166,7 @@ theorem connect_past_mcs {w : BXPoint} {φ : Formula}
     Formula.allPast (Formula.someFuture φ) ∈ w.formulas := by
   have h_ax : DerivationTree FrameClass.Base [] _ := DerivationTree.axiom [] _
       (Axiom.connect_past φ) trivial
-  exact SetMaximalConsistent.implication_property w.is_mcs
-    (theorem_in_mcs w.is_mcs h_ax) h
+  exact SetMaximalConsistent.mp_of_theorem w.is_mcs h_ax h
 
 /-! ## Until-Defect Set and Strict-Decrease Infrastructure
 

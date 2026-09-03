@@ -1229,10 +1229,8 @@ theorem countermodel_discrete_reynolds_v2
           (box_stable_in_limit_f FrameClass.Discrete f'.val f'.property.1 ψ q hq).mpr h_box_N'
         -- Modal T: □ψ → ψ
         have h_ψ_q : ψ ∈ LimitF FrameClass.Discrete f'.val f'.property.1 q :=
-          SetMaximalConsistent.implication_property
-            (limit_c0 FrameClass.Discrete f'.val f'.property.1 q hq)
-            (theorem_in_mcs (limit_c0 FrameClass.Discrete f'.val f'.property.1 q hq)
-              (DerivationTree.axiom [] _ (Axiom.modal_t ψ) trivial)) h_box_q
+          SetMaximalConsistent.mp_of_theorem (limit_c0 FrameClass.Discrete f'.val f'.property.1 q hq)
+            (DerivationTree.axiom [] _ (Axiom.modal_t ψ) trivial) h_box_q
         -- Convert to TemporalTruth via effectiveFormula bridge
         rw [← effectiveFormula_id_of_sub h_sub_ψ] at h_ψ_q
         exact (limitdom_temporal_truth_effective f'.val f'.property.1 φ ψ ⟨q, hq⟩).mpr h_ψ_q

@@ -196,8 +196,7 @@ theorem bx_modal_witness_fc {fc : FrameClass} {A : Set Formula}
         (Context.map Formula.box L) h_box_L_in d_box_bot
       have h_ax : DerivationTree fc [] (Formula.box Formula.bot |>.imp Formula.bot) :=
         DerivationTree.axiom [] _ (Axiom.modal_t Formula.bot) trivial
-      have h_bot := SetMaximalConsistent.implication_property h_mcs
-        (theorem_in_mcs h_mcs h_ax) h_box_bot_in
+      have h_bot := SetMaximalConsistent.mp_of_theorem h_mcs h_ax h_box_bot_in
       exact h_mcs.1 [Formula.bot] (fun χ hχ => by simp only
           [List.mem_cons, List.not_mem_nil, or_false] at hχ; rw [hχ]; exact h_bot)
         ⟨DerivationTree.assumption [Formula.bot] Formula.bot (by simp)⟩
@@ -210,8 +209,7 @@ theorem bx_modal_witness_fc {fc : FrameClass} {A : Set Formula}
     · intro h_box
       have h_m4 : DerivationTree fc [] ((Formula.box χ).imp (Formula.box (Formula.box χ))) :=
         DerivationTree.axiom [] _ (Axiom.modal_4 χ) trivial
-      have h_box_box := SetMaximalConsistent.implication_property h_mcs
-        (theorem_in_mcs h_mcs h_m4) h_box
+      have h_box_box := SetMaximalConsistent.mp_of_theorem h_mcs h_m4 h_box
       exact h_bc_sub h_box_box
     · intro h_box_M
       by_contra h_not_box
@@ -222,8 +220,7 @@ theorem bx_modal_witness_fc {fc : FrameClass} {A : Set Formula}
       have h_m5 : DerivationTree fc [] ((Formula.box χ).neg.imp
           (Formula.box (Formula.box χ).neg)) :=
         liftBase fc (FormalSystem.Theorems.ModalDerived.axiom5NegativeIntrospection χ)
-      have h_box_neg_box := SetMaximalConsistent.implication_property h_mcs
-        (theorem_in_mcs h_mcs h_m5) h_neg_box
+      have h_box_neg_box := SetMaximalConsistent.mp_of_theorem h_mcs h_m5 h_neg_box
       have h_neg_box_M : (Formula.box χ).neg ∈ M := h_bc_sub h_box_neg_box
       exact set_consistent_not_both hM_mcs.1 (Formula.box χ) h_box_M h_neg_box_M
   exact ⟨M, hM_mcs, h_box_equiv, h_ψ_in⟩

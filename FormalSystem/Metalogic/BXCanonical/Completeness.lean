@@ -350,7 +350,7 @@ theorem completeness_discrete (φ : Formula) :
         (Chronicle.nextTop.neg.box.imp Chronicle.nextTop.neg) :=
       DerivationTree.axiom [] _ (Axiom.modal_t Chronicle.nextTop.neg) (FrameClass.base_le _)
     have h_in_neg_next : Chronicle.nextTop.neg ∈ M :=
-      SetMaximalConsistent.implication_property hM_mcs (theorem_in_mcs hM_mcs h_modal_t) h_box_dense
+      SetMaximalConsistent.mp_of_theorem hM_mcs h_modal_t h_box_dense
     -- Contradiction: nextTop ∈ M and ¬(nextTop) ∈ M
     exact set_consistent_not_both hM_mcs.1 Chronicle.nextTop h_in_next h_in_neg_next
   · -- Non-dense: ¬□(F'T) ∈ M. Sub-split on □(U(T,bot)).

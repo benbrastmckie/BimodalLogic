@@ -1141,10 +1141,8 @@ noncomputable def cantorBfmcsDiscrete (fc : FrameClass) (A : Set Formula)
     have h_box_in_N' : Formula.box φ ∈ N' := (h_eqN' φ).mp h_box_A
     have h_box_t' : Formula.box φ ∈ (rootedSuccDiscreteFmcs fc N' h_N' h_box_N' s').mcs t :=
       (box_stable_in_rooted_succ_discrete_fmcs fc N' h_N' h_box_N' φ s' t).mpr h_box_in_N'
-    exact SetMaximalConsistent.implication_property
-      ((rootedSuccDiscreteFmcs fc N' h_N' h_box_N' s').is_mcs t)
-      (theorem_in_mcs ((rootedSuccDiscreteFmcs fc N' h_N' h_box_N' s').is_mcs t)
-        (DerivationTree.axiom [] _ (Axiom.modal_t φ) trivial)) h_box_t'
+    exact SetMaximalConsistent.mp_of_theorem ((rootedSuccDiscreteFmcs fc N' h_N' h_box_N' s').is_mcs t)
+      (DerivationTree.axiom [] _ (Axiom.modal_t φ) trivial) h_box_t'
   modal_backward := by
     intro fam hfam φ t h_all
     obtain ⟨N, h_N, h_box_N, s, h_eqN, rfl⟩ := hfam

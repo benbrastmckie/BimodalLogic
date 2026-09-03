@@ -570,7 +570,7 @@ same multi-line scan as Phase 7.
 
 ---
 
-### Phase 10: mp_of_theorem sweep D — the remaining consumer files [NOT STARTED]
+### Phase 10: mp_of_theorem sweep D — the remaining consumer files [COMPLETED]
 
 **Goal**: Finish the sweep across the long tail so no live file retains the composite idiom.
 
@@ -594,18 +594,34 @@ same multi-line scan as Phase 7.
 **Verification Tier**: local
 
 **Scope Hypothesis**: ~35 sites across ~11 files (report §5's "12 further files / 47 sites"; the
-planning re-scan gives 11 files / 35 sites, and the discrepancy is expected because Phases 7-9 and
-the report partition the top files slightly differently). The enumeration is a hypothesis in both
-directions: the implementer's own repo-wide scan is authoritative for both the file list and the
-counts.
+planning re-scan gives 11 files / 35 sites). **Confirmed at implementation: 44 sites across 16
+files** — the plan's 11-file tail plus five files neither the report nor the re-scan listed:
+`Bundle/RealExtensionBundle.lean` (3), `Chronicle/ChronicleMonadicBridge.lean` (3),
+`WeakCanonical/IntegerModel/ReynoldsBridge.lean` (1),
+`WeakCanonical/GroupModel/CountermodelBase.lean` (1), and
+`Chronicle/ChronicleToCountermodel.lean` (1).
+
+**Repo-wide total across Phases 7-10: 196 genuine sites in 25 files** (57 + 57 + 38 + 44), which
+lands on report §5's 197 rather than the planning re-scan's 174. The re-scan undercounted for two
+reasons, both regex limitations rather than tree drift: a parenthesized MCS argument
+(`(h_mcs t)`) defeats its `\S+`, and the dot-notation form
+`h_mcs.implication_property (theorem_in_mcs h_mcs d) x` is invisible to it entirely.
+
+**`Core/MCSProperties.lean` is deliberately excluded from the sweep.** Its two matches are
+`mp_of_theorem`'s own docstring and its own body — the body *is* the composite, by definition.
+Rewriting it would make the lemma refer to itself. The repo-wide scan therefore correctly settles
+at 2 remaining occurrences, both in that one declaration, not at 0.
 
 **Files to modify**:
 - The 11 files enumerated above, plus any additional file the repo-wide scan finds
 
 **Verification**:
 - Guarded `lake build` green per file; full gate before the phase closes
-- A repo-wide multi-line scan over `FormalSystem/` excluding `Boneyard/` returns **0** occurrences
-  of the composite idiom
+- A repo-wide paren-matching scan over `FormalSystem/` excluding `Boneyard/` returns **2**
+  occurrences of the composite idiom, both inside `SetMaximalConsistent.mp_of_theorem`'s own
+  declaration in `Core/MCSProperties.lean` (its docstring and its defining body). Every *consumer*
+  site is 0. *(deviation: altered — "returns 0" as written is unachievable without making the new
+  lemma self-referential; the defining occurrence is the fixed point of the sweep, not a miss.)*
 - `bash scripts/check-module-invariants.sh` passes; C2 unchanged
 
 ---

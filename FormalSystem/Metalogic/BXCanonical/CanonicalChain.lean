@@ -53,8 +53,7 @@ theorem F_imp_top_until_mcs {w : BXPoint} {ψ : Formula}
   have h_ax : DerivationTree FrameClass.Base [] ((Formula.someFuture ψ).imp
     (Formula.untl (Formula.bot.imp Formula.bot) ψ)) :=
     DerivationTree.axiom [] _ (Axiom.F_until_equiv ψ) trivial
-  exact SetMaximalConsistent.implication_property w.is_mcs
-    (theorem_in_mcs w.is_mcs h_ax) h
+  exact SetMaximalConsistent.mp_of_theorem w.is_mcs h_ax h
 
 /-- BX12' at MCS level: if P(ψ) ∈ w then (⊤ S ψ) ∈ w. -/
 theorem P_imp_top_since_mcs {w : BXPoint} {ψ : Formula}
@@ -63,8 +62,7 @@ theorem P_imp_top_since_mcs {w : BXPoint} {ψ : Formula}
   have h_ax : DerivationTree FrameClass.Base [] ((Formula.somePast ψ).imp
     (Formula.snce (Formula.bot.imp Formula.bot) ψ)) :=
     DerivationTree.axiom [] _ (Axiom.P_since_equiv ψ) trivial
-  exact SetMaximalConsistent.implication_property w.is_mcs
-    (theorem_in_mcs w.is_mcs h_ax) h
+  exact SetMaximalConsistent.mp_of_theorem w.is_mcs h_ax h
 
 /-! ## BX6 at MCS level: absorption -/
 
@@ -77,8 +75,7 @@ theorem absorb_until_mcs {w : BXPoint} {φ ψ : Formula}
       ((Formula.untl φ (Formula.and φ (Formula.untl φ ψ))).imp
     (Formula.untl φ ψ)) :=
     DerivationTree.axiom [] _ (Axiom.absorb_until φ ψ) trivial
-  exact SetMaximalConsistent.implication_property w.is_mcs
-    (theorem_in_mcs w.is_mcs h_ax) h
+  exact SetMaximalConsistent.mp_of_theorem w.is_mcs h_ax h
 
 /-- BX6' at MCS level: absorption of Since. -/
 theorem absorb_since_mcs {w : BXPoint} {φ ψ : Formula}
@@ -88,8 +85,7 @@ theorem absorb_since_mcs {w : BXPoint} {φ ψ : Formula}
       ((Formula.snce φ (Formula.and φ (Formula.snce φ ψ))).imp
     (Formula.snce φ ψ)) :=
     DerivationTree.axiom [] _ (Axiom.absorb_since φ ψ) trivial
-  exact SetMaximalConsistent.implication_property w.is_mcs
-    (theorem_in_mcs w.is_mcs h_ax) h
+  exact SetMaximalConsistent.mp_of_theorem w.is_mcs h_ax h
 
 /-! ## Delegation: Realization.lean sorry closure
 
