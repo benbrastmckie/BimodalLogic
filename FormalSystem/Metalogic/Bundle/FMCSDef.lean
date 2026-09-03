@@ -61,7 +61,8 @@ removed because:
 2. They existed only because constant-family constructions provided them trivially
 3. Removing them simplifies all downstream family constructions
 4. The temporal backward properties (G backward, H backward) are proven via
-   contraposition using `forward_F`/`backward_P` from `TemporalCoherentFamily`
+   contraposition using restricted `forward_F`/`backward_P`
+   (`BFMCS.RestrictedTemporallyCoherent`, `Bundle/TemporalCoherence.lean`)
 
 ## References
 

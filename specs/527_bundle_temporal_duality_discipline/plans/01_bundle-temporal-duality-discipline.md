@@ -277,7 +277,22 @@ progress file and widen the batch rather than proceeding on the stated figure.
 
 ---
 
-### Phase 2: Prune the `TemporalCoherence.lean` dead-reachability set [NOT STARTED]
+### Phase 2: Prune the `TemporalCoherence.lean` dead-reachability set [COMPLETED WITH EXCLUSIONS]
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| `BFMCS.BackwardUntilSinceCoherent` (`:492` at plan time) | Live external consumer, not dead as the plan's scope hypothesis assumed | `grep -rn "\bBackwardUntilSinceCoherent\b"` finds 6 in-file_scope hits in `BXCanonical/Chronicle/ChronicleMonadicBridge.lean` (`:558, :666, :818, :867, :915`) plus a docstring mention in `Bundle/LimitMCS.lean:76` |
+| `BFMCS.ForwardUntilSinceCoherent` (`:507` at plan time) | Live external consumer, not dead as the plan's scope hypothesis assumed | `grep -rn "\bForwardUntilSinceCoherent\b"` finds 6 in-file_scope hits in `BXCanonical/Chronicle/ChronicleMonadicBridge.lean` (`:545, :665, :817, :866, :914`) plus the same `LimitMCS.lean:76` docstring mention |
+
+Both predicates are retained verbatim (unchanged statements); only the module's surrounding
+prose was refreshed to describe them as the unrestricted forms `ChronicleMonadicBridge.lean`
+consumes directly. All 13 other named declarations (`TemporalCoherentFamily`,
+`temporal_backward_G`, `temporal_backward_H`, `temporal_backward_G_with_fwd_F`,
+`temporal_backward_H_with_bwd_P`, `BFMCS.TemporallyCoherent`, `BFMCS.UntilSinceCoherent`, and
+the six dead bridge lemmas) were re-verified dead at phase start and deleted as planned; each
+returns zero hits repo-wide (Boneyard excluded) after the edit.
 
 **Goal**: Remove the full dead set in `TemporalCoherence.lean` in one pass, not just the four
 predicates the task description names.
