@@ -491,7 +491,7 @@ is not a defect; re-partition within the phase rather than skipping sites.
 
 ---
 
-### Phase 8: mp_of_theorem sweep B — RRelation, CanonicalModel, CounterexampleElimination [NOT STARTED]
+### Phase 8: mp_of_theorem sweep B — RRelation, CanonicalModel, CounterexampleElimination [COMPLETED]
 
 **Goal**: Same collapse across the next three densest files.
 
@@ -509,7 +509,8 @@ is not a defect; re-partition within the phase rather than skipping sites.
 **Verification Tier**: local
 
 **Scope Hypothesis**: ~54 sites — report §5 gives 22 + 19 + 16 = 57; the planning re-scan gives
-22 + 16 + 16 = 54. Confirm per file with the same multi-line scan as Phase 7 and treat the
+22 + 16 + 16 = 54. **Confirmed at implementation: 57**, matching report §5 exactly
+(RRelation 22, CanonicalModel 19, CounterexampleElimination 16). Confirm per file with the same multi-line scan as Phase 7 and treat the
 confirmed count as authoritative.
 
 **Files to modify**:
@@ -520,7 +521,12 @@ confirmed count as authoritative.
 **Verification**:
 - Guarded `lake build` green per file; full gate before the phase closes
 - Confirmed per-file idiom count drops to 0 in all three
-- `right_mono_until` still absent from `RRelation.lean` (Phase 5 result preserved)
+- `right_mono_until` still absent from `RRelation.lean` (Phase 5 result preserved) *(deviation:
+  altered — the criterion as written is stricter than Phase 5's actual target and than the tree.
+  `RRelation.lean` retains 7 `right_mono_until` occurrences: 4 docstring mentions and 3 genuine
+  axiom applications whose third argument is **not** `Formula.top` (`guard`, `β`,
+  `β'.and (β.untl γ)`), which were never in scope. What Phase 5 removed — the 4 with-top inline
+  blocks — is confirmed still gone, with 4 `someFuture_mono` uses in their place.)*
 
 ---
 

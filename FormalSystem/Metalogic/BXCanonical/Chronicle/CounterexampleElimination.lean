@@ -309,15 +309,13 @@ theorem burgessR3Maximal_from_h_content_sub {fc : FrameClass} {A C : Set Formula
     have h_ax_cp : DerivationTree fc [] (γ.imp (Formula.allPast (Formula.someFuture γ))) :=
       DerivationTree.axiom [] _ (Axiom.connect_past γ) trivial
     have h_HF : Formula.allPast (Formula.someFuture γ) ∈ C :=
-      SetMaximalConsistent.implication_property h_mcs_C
-        (theorem_in_mcs h_mcs_C h_ax_cp) hγ
+      SetMaximalConsistent.mp_of_theorem h_mcs_C h_ax_cp hγ
     -- H(F(γ)) ∈ C → F(γ) ∈ HContent(C) ⊆ A
     have h_F : Formula.someFuture γ ∈ A := h_hc h_HF
     -- F(γ) → U(⊤, γ) by F_until_equiv
     have h_bx12 : DerivationTree fc [] ((Formula.someFuture γ).imp (Formula.untl top γ)) :=
       DerivationTree.axiom [] _ (Axiom.F_until_equiv γ) trivial
-    exact SetMaximalConsistent.implication_property h_mcs_A
-      (theorem_in_mcs h_mcs_A h_bx12) h_F
+    exact SetMaximalConsistent.mp_of_theorem h_mcs_A h_bx12 h_F
   -- burgessRSince(C, ⊤, A): ∀ α ∈ A, S(⊤, α) ∈ C
   have h_bRS : burgessRSince C top A := by
     intro α hα
@@ -333,8 +331,7 @@ theorem burgessR3Maximal_from_h_content_sub {fc : FrameClass} {A C : Set Formula
     -- P(α) → S(⊤, α) by P_since_equiv
     have h_bx12' : DerivationTree fc [] ((Formula.somePast α).imp (Formula.snce top α)) :=
       DerivationTree.axiom [] _ (Axiom.P_since_equiv α) trivial
-    exact SetMaximalConsistent.implication_property h_mcs_C
-      (theorem_in_mcs h_mcs_C h_bx12') h_P
+    exact SetMaximalConsistent.mp_of_theorem h_mcs_C h_bx12' h_P
   exact burgessR3Maximal_exists_from_seed fc A C top h_mcs_A h_mcs_C h_bR h_bRS h_top_A
 
 /-! ## Lemma 2.10: C5 Counterexample Elimination -/
@@ -413,8 +410,7 @@ theorem eliminate_C5'_counterexample {fc : FrameClass} {χ : Chronicle}
   have h_P_η : Formula.somePast ce.η ∈ χ.f ce.x := by
     have h_ax : DerivationTree fc [] ((Formula.snce ce.ξ ce.η).imp (Formula.somePast ce.η)) :=
       DerivationTree.axiom [] _ (Axiom.since_P ce.ξ ce.η) trivial
-    exact SetMaximalConsistent.implication_property h_mcs_x
-      (theorem_in_mcs h_mcs_x h_ax) ce.since_mem
+    exact SetMaximalConsistent.mp_of_theorem h_mcs_x h_ax ce.since_mem
   have h_seed := past_temporal_witness_seed_consistent (χ.f ce.x) h_mcs_x ce.η h_P_η
   obtain ⟨C, h_sup, h_C_mcs⟩ := set_lindenbaum _ h_seed
   have h_η_C : ce.η ∈ C := h_sup (Set.mem_union_left _ (Set.mem_singleton _))
@@ -1137,10 +1133,8 @@ private noncomputable def c5_forward_walk (fc : FrameClass)
                   (Formula.and ξ (Formula.untl ξ η)) with h | h
                 · exact absurd h h_conj_not_f
                 · exact h
-              exact SetMaximalConsistent.implication_property h_mcs_x'
-                (theorem_in_mcs h_mcs_x'
-                  (liftBase fc (FormalSystem.Theorems.Propositional.demorganDisjNegBackward η
-                    (Formula.and ξ (Formula.untl ξ η)))))
+              exact SetMaximalConsistent.mp_of_theorem h_mcs_x' (liftBase fc (FormalSystem.Theorems.Propositional.demorganDisjNegBackward η
+                    (Formula.and ξ (Formula.untl ξ η))))
                 (conj_mcs fc h_mcs_x' η.neg (Formula.and ξ (Formula.untl ξ η)).neg h1 h2)
             obtain ⟨B', D, B'', hB', hB'', hD_mcs, hη_D, h_B_sub_D, hBB', hBB'', _⟩ :=
               lemma_2_8 fc h_mcs_start h_mcs_x' h_r3m_adj h_r3m_adj.1 h_gc_adj ξ η h_until_start
@@ -1167,10 +1161,8 @@ private noncomputable def c5_forward_walk (fc : FrameClass)
                       (Formula.and ξ (Formula.untl ξ η)) with h | h
                     · exact absurd h h_conj_not_f
                     · exact h
-                  exact SetMaximalConsistent.implication_property h_mcs_x'
-                    (theorem_in_mcs h_mcs_x'
-                      (liftBase fc (FormalSystem.Theorems.Propositional.demorganDisjNegBackward η
-                        (Formula.and ξ (Formula.untl ξ η)))))
+                  exact SetMaximalConsistent.mp_of_theorem h_mcs_x' (liftBase fc (FormalSystem.Theorems.Propositional.demorganDisjNegBackward η
+                        (Formula.and ξ (Formula.untl ξ η))))
                     (conj_mcs fc h_mcs_x' η.neg (Formula.and ξ (Formula.untl ξ η)).neg h1 h2)
                 obtain ⟨B', D, B'', hB', hB'', hD_mcs, hη_D, h_B_sub_D, hBB', hBB'', _⟩ :=
                   lemma_2_8 fc h_mcs_start h_mcs_x' h_r3m_adj h_r3m_adj.1 h_gc_adj ξ η
@@ -1191,8 +1183,8 @@ private noncomputable def c5_forward_walk (fc : FrameClass)
                 η.neg h_eta_neg_g
               obtain ⟨B', D, B'', hB', hB'', hD_mcs, h_dne_D, h_B_sub_D, hBB', hBB''⟩ := h_sp
               exact ⟨B', D, B'', hB', hB'', hD_mcs,
-                SetMaximalConsistent.implication_property hD_mcs
-                  (theorem_in_mcs hD_mcs (FormalSystem.Theorems.Propositional.doubleNegation η))
+                SetMaximalConsistent.mp_of_theorem hD_mcs
+                  (FormalSystem.Theorems.Propositional.doubleNegation η)
                       h_dne_D,
                 h_B_sub_D, hBB', hBB'', hBB' h_xi_g2⟩
             · obtain ⟨B', D, B'', hB', hB'', hD, hη, hBB', h_B_sub_D, hBB'', h_xi_B'⟩ :=
@@ -1856,10 +1848,8 @@ private noncomputable def c5_backward_walk (fc : FrameClass)
                   (Formula.and ξ (Formula.snce ξ η)) with h | h
                 · exact absurd h h_conj_not_f
                 · exact h
-              exact SetMaximalConsistent.implication_property h_mcs_x''
-                (theorem_in_mcs h_mcs_x''
-                  (liftBase fc (FormalSystem.Theorems.Propositional.demorganDisjNegBackward η
-                    (Formula.and ξ (Formula.snce ξ η)))))
+              exact SetMaximalConsistent.mp_of_theorem h_mcs_x'' (liftBase fc (FormalSystem.Theorems.Propositional.demorganDisjNegBackward η
+                    (Formula.and ξ (Formula.snce ξ η))))
                 (conj_mcs fc h_mcs_x'' η.neg (Formula.and ξ (Formula.snce ξ η)).neg h1 h2)
             obtain ⟨B', D, B'', hB', hB'', hD_mcs, hη_D, h_B_sub_D, hBB', hBB'', _⟩ :=
               lemma_2_8_since fc h_mcs_x'' h_mcs_start h_r3m_adj h_r3m_adj.1 h_gc_adj ξ η
@@ -1886,10 +1876,8 @@ private noncomputable def c5_backward_walk (fc : FrameClass)
                       (Formula.and ξ (Formula.snce ξ η)) with h | h
                     · exact absurd h h_conj_not_f
                     · exact h
-                  exact SetMaximalConsistent.implication_property h_mcs_x''
-                    (theorem_in_mcs h_mcs_x''
-                      (liftBase fc (FormalSystem.Theorems.Propositional.demorganDisjNegBackward η
-                        (Formula.and ξ (Formula.snce ξ η)))))
+                  exact SetMaximalConsistent.mp_of_theorem h_mcs_x'' (liftBase fc (FormalSystem.Theorems.Propositional.demorganDisjNegBackward η
+                        (Formula.and ξ (Formula.snce ξ η))))
                     (conj_mcs fc h_mcs_x'' η.neg (Formula.and ξ (Formula.snce ξ η)).neg h1 h2)
                 obtain ⟨B', D, B'', hB', hB'', hD_mcs, hη_D, h_B_sub_D, hBB', hBB'', _⟩ :=
                   lemma_2_8_since fc h_mcs_x'' h_mcs_start h_r3m_adj h_r3m_adj.1 h_gc_adj ξ η
@@ -1910,8 +1898,8 @@ private noncomputable def c5_backward_walk (fc : FrameClass)
                 η.neg h_eta_neg_g
               obtain ⟨B', D, B'', hB', hB'', hD_mcs, h_dne_D, h_B_sub_D, hBB', hBB''⟩ := h_sp
               exact ⟨B', D, B'', hB', hB'', hD_mcs,
-                SetMaximalConsistent.implication_property hD_mcs
-                  (theorem_in_mcs hD_mcs (FormalSystem.Theorems.Propositional.doubleNegation η))
+                SetMaximalConsistent.mp_of_theorem hD_mcs
+                  (FormalSystem.Theorems.Propositional.doubleNegation η)
                       h_dne_D,
                 h_B_sub_D, hBB', hBB'', hBB'' h_xi_g2⟩
             · obtain ⟨B', D, B'', hB', hB'', hD_mcs, hη_D, hBB', h_B_sub_D, hBB'', h_xi_B''⟩ :=
@@ -2401,8 +2389,7 @@ noncomputable def eliminatePotentialCounterexample (fc : FrameClass)
                   have h_dm := liftBase fc
                       (FormalSystem.Theorems.Propositional.demorganDisjNegBackward pc.η
                       (Formula.and pc.ξ (Formula.untl pc.ξ pc.η)))
-                  exact SetMaximalConsistent.implication_property h_mcs_x'
-                    (theorem_in_mcs h_mcs_x' h_dm) h_neg_conj
+                  exact SetMaximalConsistent.mp_of_theorem h_mcs_x' h_dm h_neg_conj
                 obtain ⟨B'2, D2, B''2, h_B'2, h_B''2, h_D2_mcs, h_eta_D2, h_B_sub_D2, h_B_sub_B'2,
                     h_B_sub_B''2, _⟩ :=
                   lemma_2_8 fc h_mcs_x h_mcs_x' h_r3m_adj h_r3m_adj.1 h_gc_adj pc.ξ pc.η h_until
@@ -2439,8 +2426,7 @@ noncomputable def eliminatePotentialCounterexample (fc : FrameClass)
                       have h_dm := liftBase fc
                           (FormalSystem.Theorems.Propositional.demorganDisjNegBackward pc.η
                           (Formula.and pc.ξ (Formula.untl pc.ξ pc.η)))
-                      exact SetMaximalConsistent.implication_property h_mcs_x'
-                        (theorem_in_mcs h_mcs_x' h_dm) h_neg_conj
+                      exact SetMaximalConsistent.mp_of_theorem h_mcs_x' h_dm h_neg_conj
                     have h_l28 := lemma_2_8 fc h_mcs_x h_mcs_x' h_r3m_adj h_r3m_adj.1 h_gc_adj
                       pc.ξ pc.η h_until h_neg_disj
                     obtain ⟨B'5, D5, B''5, h_B'5, h_B''5, h_D5_mcs, h_eta_D5, h_B_sub_D5,
@@ -2472,8 +2458,7 @@ noncomputable def eliminatePotentialCounterexample (fc : FrameClass)
                   have h_eta_D5 : pc.η ∈ D5 := by
                     have h_dne : DerivationTree fc [] (pc.η.neg.neg.imp pc.η) :=
                       FormalSystem.Theorems.Propositional.doubleNegation pc.η
-                    exact SetMaximalConsistent.implication_property h_D5_mcs
-                      (theorem_in_mcs h_D5_mcs h_dne) h_eta_neg_neg_D5
+                    exact SetMaximalConsistent.mp_of_theorem h_D5_mcs h_dne h_eta_neg_neg_D5
                   exact ⟨B'5, D5, B''5, h_B'5, h_B''5, h_D5_mcs, h_eta_D5, h_B_sub_D5, h_B_sub_B'5,
                       h_B_sub_B''5, h_B_sub_B'5 h_xi_g6⟩
                 · -- xi ∉ g: use lemma_2_7 which returns xi ∈ B' directly
@@ -2967,10 +2952,8 @@ noncomputable def eliminatePotentialCounterexample (fc : FrameClass)
                       · exact h
                     exact conj_mcs fc h_mcs_x'' pc.η.neg
                       (Formula.and pc.ξ (Formula.snce pc.ξ pc.η)).neg h_eta_neg_x''_local h2
-                  exact SetMaximalConsistent.implication_property h_mcs_x''
-                    (theorem_in_mcs h_mcs_x''
-                      (liftBase fc (FormalSystem.Theorems.Propositional.demorganDisjNegBackward pc.η
-                        (Formula.and pc.ξ (Formula.snce pc.ξ pc.η))))) h_neg_conj_x''
+                  exact SetMaximalConsistent.mp_of_theorem h_mcs_x'' (liftBase fc (FormalSystem.Theorems.Propositional.demorganDisjNegBackward pc.η
+                        (Formula.and pc.ξ (Formula.snce pc.ξ pc.η)))) h_neg_conj_x''
                 obtain ⟨B', D, B'', hB', hB'', hD_mcs, hη_D, h_B_sub_D, h_B_sub_B', h_B_sub_B'',
                     _⟩ := lemma_2_8_since fc h_mcs_x'' h_mcs_x h_r3m_adj h_r3m_adj.1 h_gc_adj
                   pc.ξ pc.η h_since h_neg_disj_x''
@@ -3000,11 +2983,9 @@ noncomputable def eliminatePotentialCounterexample (fc : FrameClass)
                           · exact h
                         exact conj_mcs fc h_mcs_x'' pc.η.neg
                           (Formula.and pc.ξ (Formula.snce pc.ξ pc.η)).neg h_eta_neg_x''_local h2
-                      exact SetMaximalConsistent.implication_property h_mcs_x''
-                        (theorem_in_mcs h_mcs_x''
-                          (liftBase fc (FormalSystem.Theorems.Propositional.demorganDisjNegBackward
+                      exact SetMaximalConsistent.mp_of_theorem h_mcs_x'' (liftBase fc (FormalSystem.Theorems.Propositional.demorganDisjNegBackward
                               pc.η
-                            (Formula.and pc.ξ (Formula.snce pc.ξ pc.η))))) h_neg_conj_x''
+                            (Formula.and pc.ξ (Formula.snce pc.ξ pc.η)))) h_neg_conj_x''
                     obtain ⟨B', D, B'', hB', hB'', hD_mcs, hη_D, h_B_sub_D, h_B_sub_B',
                         h_B_sub_B'', _⟩ := lemma_2_8_since fc h_mcs_x'' h_mcs_x h_r3m_adj
                         h_r3m_adj.1 h_gc_adj
@@ -3031,9 +3012,8 @@ noncomputable def eliminatePotentialCounterexample (fc : FrameClass)
                   obtain ⟨B', D, B'', h_B', h_B'', h_D_mcs, h_eta_neg_neg_D, h_B_sub_D, h_B_sub_B',
                       h_B_sub_B''⟩ := h_split
                   have h_eta_D : pc.η ∈ D :=
-                    SetMaximalConsistent.implication_property h_D_mcs
-                      (theorem_in_mcs h_D_mcs (FormalSystem.Theorems.Propositional.doubleNegation
-                          pc.η)) h_eta_neg_neg_D
+                    SetMaximalConsistent.mp_of_theorem h_D_mcs (FormalSystem.Theorems.Propositional.doubleNegation
+                          pc.η) h_eta_neg_neg_D
                   exact ⟨B', D, B'', h_B', h_B'', h_D_mcs, h_eta_D, h_B_sub_D, h_B_sub_B',
                       h_B_sub_B'', h_B_sub_B'' h_xi_g2⟩
                 · obtain ⟨B', D, B'', hB', hB'', hD, hη, h_B_sub_B', h_B_sub_D, h_B_sub_B'',
