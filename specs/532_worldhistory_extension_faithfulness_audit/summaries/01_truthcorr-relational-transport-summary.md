@@ -1,6 +1,11 @@
 # Implementation Summary: Task #532 — TruthCorr relational transport
 
 - **Task**: 532 — Audit and resolve the partial-vs-total WorldHistory faithfulness gap
+- **Status**: TBD
+- **Started**: TBD
+- **Completed**: TBD
+- **Artifacts**: TBD
+- **Standards**: TBD
 - **Plan**: `plans/01_truthcorr-relational-transport.md` (6 phases, all `[COMPLETED]`)
 - **Session**: sess_1788388902_211d42 (dispatch 3)
 - **Type**: lean4

@@ -1,6 +1,13 @@
 # WorldHistory Extension Faithfulness Audit
 
 **Task**: 532 — Audit and resolve the partial-vs-total `WorldHistory` faithfulness gap against
+- **Started**: TBD
+- **Completed**: TBD
+- **Effort**: TBD
+- **Dependencies**: TBD
+- **Sources/Inputs**: TBD
+- **Artifacts**: TBD
+- **Standards**: TBD
 `thm:extension`.
 **Anchor source**: `/home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex`
 (`sec:Construction` l.933; Appendix `app:TaskSemantics` l.2757–3700; `def:frame` l.2831;
