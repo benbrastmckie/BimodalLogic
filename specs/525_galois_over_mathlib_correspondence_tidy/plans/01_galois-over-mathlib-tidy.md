@@ -1,7 +1,7 @@
 # Implementation Plan: Task #525
 
 - **Task**: 525 - Galois over Mathlib + correspondence tidy (WAVE 3, theorem layer)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 5.5 hours
 - **Dependencies**: None blocking. Task 523 (frame kit / `Semantics/Frames/Standard.lean`) already landed and is the reason `DurationFrames.lean` is 409 lines rather than 563.
 - **Research Inputs**: specs/525_galois_over_mathlib_correspondence_tidy/reports/01_galois-over-mathlib-correspondence-tidy.md
