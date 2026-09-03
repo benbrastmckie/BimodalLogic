@@ -1898,7 +1898,7 @@
     {
       "project_number": 526,
       "project_name": "core_mcs_api_consolidation",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "topic": "metalogic",
       "priority": "medium",
@@ -1924,9 +1924,15 @@
         "FormalSystem/Metalogic/BaseLanguageSoundness.lean"
       ],
       "created": "2026-09-02T03:30:31Z",
-      "last_updated": "2026-09-02T03:30:31Z",
-      "artifacts": [],
-      "session_id": "sess_1788317385_2ae65c"
+      "last_updated": "2026-09-03T07:26:32Z",
+      "artifacts": [
+        {
+          "path": "specs/526_core_mcs_api_consolidation/reports/01_core-mcs-api-consolidation.md",
+          "type": "report",
+          "summary": "Core MCS API consolidation research: six viable consolidations compiled against the live tree; mcs_auto Aesop experiment returned a negative result; new 197-site mp_of_theorem idiom identified."
+        }
+      ],
+      "session_id": "sess_1788416566_823cec_526"
     },
     {
       "project_number": 527,
