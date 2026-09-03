@@ -84,10 +84,10 @@ next_project_number: 533
 
 ### Metalogic
 
-524 [NOT STARTED] — WAVE 3 (theorem layer). Finish the FrameClass collapse at the THE
+524 [RESEARCHING] — WAVE 3 (theorem layer). Finish the FrameClass collapse at the THE
   └─ 530 [NOT STARTED] — WAVE 5 (publication infrastructure). Make status and counts machi
     └─ 531 [NOT STARTED] — WAVE 5 (publication infrastructure). Publish the API documentatio
-525 [NOT STARTED] — WAVE 3 (theorem layer). Put the frame-class Galois layer on Mathl
+525 [RESEARCHED] — WAVE 3 (theorem layer). Put the frame-class Galois layer on Mathl
 526 [NOT STARTED] — WAVE 3 (theorem layer). Consolidate the maximal-consistent-set AP
   └─ 527 [NOT STARTED] — WAVE 4 (canonical-model infrastructure). Replace textual future/p
   └─ 528 [NOT STARTED] — WAVE 4 (algebraic infrastructure). Modernise Metalogic/Algebraic/
@@ -174,17 +174,18 @@ next_project_number: 533
 ---
 
 ### 525. Galois over mathlib correspondence tidy
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: Task 523
+- **Research**: [525_galois_over_mathlib_correspondence_tidy/reports/01_galois-over-mathlib-correspondence-tidy.md]
 
 **Description**: WAVE 3 (theorem layer). Put the frame-class Galois layer on Mathlib's polarity API and tidy the correspondence modules. Findings C-06, C-14, C-18, C-21, C-24, C-25, G-06, G-13 in specs/reviews/2026-09-01-lean-engineering/{C-frames,G-ecosystem}.md; utility U8 in the review. MEASURED STATE: Semantics/Correspondence/Galois.lean:90-139 defines Th/Mod/th_anti/mod_anti/subset_mod_th/subset_th_mod/mod_th_mod/th_mod_th/GaloisClosed/galoisClosed_mod by hand; with r := fun F φ => F.ValidOn φ these are, verbatim, Mathlib.Order.Concept's upperPolar (Mathlib/Order/Concept.lean:48), lowerPolar (:53), gc_upperPolar_lowerPolar (:70), upperPolar_lowerPolar_upperPolar / lowerPolar_upperPolar_lowerPolar (:137,:142), Order.IsExtent (:184) and isExtent_iff (:188) -- verified locally in the pinned Mathlib. The repo has zero GaloisConnection occurrences. The mapping table is in C-frames C-06 and G-ecosystem section 3.2 (the latter frames it as `@GaloisConnection (Set Formula) (Set TaskFrame)ᵒᵈ _ _ Mod Th` in the shape of PrimeSpectrum.gc / MvPolynomial.zeroLocus_vanishingIdeal_galoisConnection; the two are reconciled: Concept's polars ARE that connection, so instantiate them and get both APIs). Reuse frees Order.IsExtent.iInter (intersections of Galois-closed classes), .univ, upperPolar_empty, GaloisConnection.l_sup / l_iSup (`Mod (S₁ ∪ S₂) = Mod S₁ ∩ Mod S₂`, useful for AxiomSet as a union of per-axiom sets in the Independence/ sandwiches), u_top, lt_iff_lt, and the Concept complete lattice. galoisClosed_of_indicator (:158) takes two arguments both call sites derive from one Iff (C-24). The three (T1) biconditionals in DurationFrames.lean (:354,:419,:485; 65/66/78 lines) each hand-build the same witness frame/history and never name the realisation step (C-18). RationalWitness/LexIntWitness prove `Sat .Dedekind ⊊ Mod (AxiomSet .Dedekind)` and the Discrete analogue -- definability results, not axiom independence -- and Independence.lean:17-19's docstring says 'the one result' above a six-module list (C-21). Separability.lean carries a private copy `arch_of_lub` of DurationClassification.archimedean_of_lub (:125) (G-13). DO NOT take the ClosureOperator step (G-ecosystem 3.3: the OrderDual coercions cost more than they save) and do NOT replace Walk/MinCyc (C-14: not in Mathlib; only per_period ↔ Function.Periodic is worth hooking up, and that is in task 523). WORK: (1) `def validOnRel (F : TaskFrame) (φ : Formula) : Prop := F.ValidOn φ`; `abbrev Th := upperPolar validOnRel`, `abbrev Mod := lowerPolar validOnRel`, `abbrev GaloisClosed := Order.IsExtent validOnRel`; keep the six theorem names as one-line re-exports with their docstrings; add mod_th_gc as the explicit GaloisConnection and the free corollaries (IsExtent.iInter, l_sup/l_iSup, u_top) as named theorems; verify the abbrevs elaborate at `Set TaskFrame : Type 1` before committing, falling back to `theorem th_eq_upperPolar : Th = upperPolar validOnRel := rfl` if not. (2) galoisClosed_of_indicator_iff as the primary entry point; retarget the two Indicator.lean corollaries. (3) `translation_realizes (D) (A : Set D)` naming the atom-realisation step; rewrite the three (T1) proofs to open with it (209 -> ~110 lines). (4) Decide C-21's relocation: check whether RationalWitness/LexIntWitness genuinely need Metalogic.Soundness or whether StaticFrame's constant-truth calculus suffices; if the latter, move them to Semantics/Correspondence/NonClosure.lean beside Indicator.lean; either way fix Independence.lean's and Independence/README.md's opening paragraphs to describe all three result families and add reciprocal pointers. (5) Promote or parameterise corrAtom (C-25). (6) Delete Separability's arch_of_lub copy and import DurationClassification's. Update Correspondence/README.md. ACCEPTANCE: Galois.lean's theorem bodies are Mathlib projections; the four free lemmas exist and are named; the three (T1) proofs visibly parallel; zero private Archimedean copies; lake build green; C2 baseline unchanged (galoisClosed_* are ledger entries).
 
 ---
 
 ### 524. Consequence compactness generic theorems
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: Task 521, Task 522

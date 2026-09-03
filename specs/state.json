@@ -1777,7 +1777,7 @@
     {
       "project_number": 524,
       "project_name": "consequence_compactness_generic_theorems",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "lean4",
       "topic": "metalogic",
       "priority": "medium",
@@ -1803,14 +1803,14 @@
         "scripts/check-module-invariants.sh"
       ],
       "created": "2026-09-02T03:30:31Z",
-      "last_updated": "2026-09-02T03:30:31Z",
+      "last_updated": "2026-09-03T03:51:47Z",
       "artifacts": [],
-      "session_id": "sess_1788317385_2ae65c"
+      "session_id": "sess_1788407456_70233f_524"
     },
     {
       "project_number": 525,
       "project_name": "galois_over_mathlib_correspondence_tidy",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "topic": "metalogic",
       "priority": "medium",
@@ -1828,9 +1828,15 @@
         "FormalSystem/Semantics/DurationClassification.lean"
       ],
       "created": "2026-09-02T03:30:31Z",
-      "last_updated": "2026-09-02T03:30:31Z",
-      "artifacts": [],
-      "session_id": "sess_1788317385_2ae65c"
+      "last_updated": "2026-09-03T04:02:32Z",
+      "artifacts": [
+        {
+          "type": "report",
+          "path": "specs/525_galois_over_mathlib_correspondence_tidy/reports/01_galois-over-mathlib-correspondence-tidy.md",
+          "summary": "Compile-verified research for all six work items: Mathlib Order.Concept polars replace the hand-rolled Th/Mod layer (abbrevs elaborate at Type 1, 6 projections + 7 free lemmas typecheck); iff-form indicator makes both Indicator corollaries one-liners; atom-realisation lemmas need a permissive twin the review missed; C-21 relocation refused (Metalogic.Soundness genuinely required, edge explicitly refused in-tree); corrAtom parameterised not promoted; arch_of_lub deletion is a drop-in with an acyclic 3-module import edge plus three docstrings to repair."
+        }
+      ],
+      "session_id": "sess_1788407456_70233f_525"
     },
     {
       "project_number": 526,

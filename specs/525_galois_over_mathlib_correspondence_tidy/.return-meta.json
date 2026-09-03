@@ -1,0 +1,16 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/525_galois_over_mathlib_correspondence_tidy/reports/01_galois-over-mathlib-correspondence-tidy.md",
+      "summary": "Compile-verified research for all six work items: Mathlib Order.Concept polars replace the hand-rolled Th/Mod layer (abbrevs elaborate at Type 1, 6 projections + 7 free lemmas typecheck); iff-form indicator makes both Indicator corollaries one-liners; atom-realisation lemmas need a permissive twin the review missed; C-21 relocation refused (Metalogic.Soundness genuinely required, edge explicitly refused in-tree); corrAtom parameterised not promoted; arch_of_lub deletion is a drop-in with an acyclic 3-module import edge plus three docstrings to repair."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1788407456_70233f_525",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
