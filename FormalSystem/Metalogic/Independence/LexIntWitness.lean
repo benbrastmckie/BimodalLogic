@@ -159,7 +159,7 @@ theorem validOn_nextTop_of_mem_mod_discrete {F : TaskFrame}
     F.ValidOn (Formula.next Formula.top) := by
   intro M τ x
   obtain ⟨p, hp⟩ := TaskFrame.exists_pos_of_nontrivial (D := F.Duration.carrier)
-  have hstep := hF _ ⟨Axiom.prior_UZ Formula.top, by decide⟩ M τ x
+  have hstep := hF ⟨Axiom.prior_UZ Formula.top, by decide⟩ M τ x
   have hF_top : TruthAt M τ.val x (Formula.someFuture Formula.top) := by
     rw [Truth.some_future_iff]
     exact ⟨x + p, lt_add_of_pos_right x hp, fun h => h⟩

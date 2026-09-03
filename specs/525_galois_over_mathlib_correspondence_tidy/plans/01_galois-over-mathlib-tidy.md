@@ -1,7 +1,7 @@
 # Implementation Plan: Task #525
 
 - **Task**: 525 - Galois over Mathlib + correspondence tidy (WAVE 3, theorem layer)
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 5.5 hours
 - **Dependencies**: None blocking. Task 523 (frame kit / `Semantics/Frames/Standard.lean`) already landed and is the reason `DurationFrames.lean` is 409 lines rather than 563.
 - **Research Inputs**: specs/525_galois_over_mathlib_correspondence_tidy/reports/01_galois-over-mathlib-correspondence-tidy.md
@@ -152,53 +152,65 @@ parallel wave-1 dispatch shares one `lake build`; if run in parallel, serialise 
 
 ---
 
-### Phase 1: Re-base the Galois layer on `Mathlib.Order.Concept` [NOT STARTED]
+### Phase 1: Re-base the Galois layer on `Mathlib.Order.Concept` [COMPLETED]
 
 - **Goal:** `Galois.lean`'s connection theorems become one-line Mathlib projections; the explicit
   `GaloisConnection`, the free corollaries, the compatibility lemma, and the iff-shaped indicator
   entry point all exist and typecheck.
 
 - **Tasks:**
-  - [ ] Add `import Mathlib.Order.Concept` to `Galois.lean` (verified to import cleanly into this
+  - [x] Add `import Mathlib.Order.Concept` to `Galois.lean` (verified to import cleanly into this
         legacy, non-`module` tree despite Concept being a `module`-system file with
         `@[expose] public section`).
-  - [ ] Add `Order` to the `open` line — `open FormalSystem.Syntax FormalSystem.ProofSystem Order` —
+  - [x] Add `Order` to the `open` line — `open FormalSystem.Syntax FormalSystem.ProofSystem Order` —
         or fully qualify `Order.IsExtent`. Probes used `open Order` with no clash.
-  - [ ] Introduce the relation and re-base the two maps, keeping both docstrings verbatim:
+  - [x] Introduce the relation and re-base the two maps, keeping both docstrings verbatim:
         `def validOnRel (F : TaskFrame) (φ : Formula) : Prop := F.ValidOn φ`;
         `abbrev Th : Set TaskFrame → Set Formula := upperPolar validOnRel`;
         `abbrev Mod : Set Formula → Set TaskFrame := lowerPolar validOnRel`.
-  - [ ] Re-base `GaloisClosed`: `abbrev GaloisClosed : Set TaskFrame → Prop := Order.IsExtent validOnRel`.
-  - [ ] Replace the six theorem **bodies** only, keeping every name and docstring:
+  - [x] Re-base `GaloisClosed`: `abbrev GaloisClosed : Set TaskFrame → Prop := Order.IsExtent validOnRel`.
+  - [x] Replace the six theorem **bodies** only, keeping every name and docstring:
         `th_anti h := upperPolar_anti _ h`; `mod_anti h := lowerPolar_anti _ h`;
         `subset_mod_th K := subset_lowerPolar_upperPolar _ K`;
         `subset_th_mod S := subset_upperPolar_lowerPolar _ S`;
         `mod_th_mod S := lowerPolar_upperPolar_lowerPolar _ S`;
         `th_mod_th K := upperPolar_lowerPolar_upperPolar _ K`;
         and `galoisClosed_mod S := Order.isExtent_lowerPolar`.
-  - [ ] Add the compatibility lemma with its docstring:
+  - [x] Add the compatibility lemma with its docstring:
         `theorem galoisClosed_iff {K : Set TaskFrame} : GaloisClosed K ↔ Mod (Th K) = K := Order.isExtent_iff`.
-  - [ ] Adjust `galoisClosed_of_indicator` to wrap its result in `Order.isExtent_iff.mpr` (its body
+  - [x] Adjust `galoisClosed_of_indicator` to wrap its result in `Order.isExtent_iff.mpr` (its body
         currently produces the equation via `Set.Subset.antisymm`). Keep the two-argument form — C-24
         says keep it, and the iff form below is defined in terms of it.
-  - [ ] Add `galoisClosed_of_indicator_iff` as the primary entry point (item 2's Lean half; the
+  - [x] Add `galoisClosed_of_indicator_iff` as the primary entry point (item 2's Lean half; the
         `Indicator.lean` retarget is Phase 2):
         `theorem galoisClosed_of_indicator_iff {K : Set TaskFrame} (φ : Formula) (h : ∀ F : TaskFrame, F.ValidOn φ ↔ F ∈ K) : GaloisClosed K := galoisClosed_of_indicator φ (fun F hF => (h F).mpr hF) (fun F hv => (h F).mp hv)`.
-  - [ ] Add the explicit connection with its docstring:
+  - [x] Add the explicit connection with its docstring:
         `theorem mod_th_gc : GaloisConnection (α := Set Formula) (β := (Set TaskFrame)ᵒᵈ) (OrderDual.toDual ∘ Mod) (Th ∘ OrderDual.ofDual) := gc_lowerPolar_upperPolar validOnRel`.
         Include it for discoverability (it satisfies G-06's "zero `GaloisConnection` occurrences
         repo-wide"), but **derive nothing from it** — the polar lemmas above are dual-free and shorter.
-  - [ ] Add the free corollaries as named theorems with docstrings: `galoisClosed_iInter`
+  - [x] Add the free corollaries as named theorems with docstrings: `galoisClosed_iInter`
         (`Order.IsExtent.iInter f hf`), `galoisClosed_inter` (`h.inter h'`), `galoisClosed_univ`
         (`Order.IsExtent.univ`), `mod_union` (`lowerPolar_union _ S₁ S₂`), `mod_iUnion`
         (`lowerPolar_iUnion _ f`), `mod_empty` (`lowerPolar_empty _`), `th_empty` (`upperPolar_empty _`).
-  - [ ] Rewrite the module header's **## Import seam** section. It currently asserts the module imports
+  - [x] Rewrite the module header's **## Import seam** section. It currently asserts the module imports
         `Semantics/Validity.lean` **only**; that sentence becomes false. The new Mathlib edge opens no
         `Semantics → ProofSystem`-style seam, so the seam claim itself survives — change the wording,
         not the claim.
-  - [ ] Update the header's **## Main results** narration with the new names.
-  - [ ] Re-run the consumer grep for `GaloisClosed` across the repo and confirm nothing consumes it as
-        an equation before closing the phase.
+  - [x] Update the header's **## Main results** narration with the new names.
+  - [x] Re-run the consumer grep for `GaloisClosed` across the repo and confirm nothing consumes it as
+        an equation before closing the phase. *(confirmed: produced only in `Indicator.lean` (twice),
+        otherwise mentioned only in docstrings/READMEs; no equation-shaped consumer.)*
+  - [x] **Fix-forward (unplanned, in-phase per the Risks-table mitigation):** three downstream call
+        sites broke on the re-basing. The cause was **not** the `@[simp]` set the risk row
+        anticipated but the *binder info* on Concept's polars: `F ∈ Mod S` is now
+        `∀ ⦃φ⦄, φ ∈ S → validOnRel F φ`, whose `φ` is **strict implicit**, so an application that
+        passed `φ` positionally shifts every later argument by one. Producing a `Mod` membership
+        with `fun _ h => …` is unaffected; only applications are. Repaired by dropping the
+        positional `φ`, which is then inferred from the expected type:
+        `RationalWitness.lean:198` (`hF (Formula.next Formula.top).neg ⟨…⟩` -> `hF ⟨…⟩`),
+        `LexIntWitness.lean:162` (`hF _ ⟨…⟩ M τ x` -> `hF ⟨…⟩ M τ x`), and
+        `FwdRecBridge.lean:149` (`h _ ⟨φ, rfl⟩` -> `h ⟨φ, rfl⟩`). All three are inside this task's
+        declared territory. Full `lake build` green afterwards (2521 jobs).
 
 - **Timing:** 1.5 hours
 
@@ -218,6 +230,10 @@ parallel wave-1 dispatch shares one `lake build`; if run in parallel, serialise 
   - `FormalSystem/Semantics/Correspondence/Galois.lean` — new import, `open Order`, `validOnRel`,
     re-based `Th`/`Mod`/`GaloisClosed`, 7 re-based bodies, 10 added declarations, header seam and
     main-results rewrite.
+  - *(added during implementation, fix-forward)* `FormalSystem/Metalogic/Independence/RationalWitness.lean`,
+    `FormalSystem/Metalogic/Independence/LexIntWitness.lean`,
+    `FormalSystem/Semantics/Correspondence/FwdRecBridge.lean` — one-token strict-implicit call-site
+    repairs each; see the fix-forward task item above.
 
 - **Verification:**
   - `lake build` green across the whole tree (this is the phase that can perturb the global simp set).

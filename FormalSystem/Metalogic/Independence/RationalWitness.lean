@@ -195,6 +195,6 @@ theorem mod_axiomSet_dedekind_subset_sat_dense :
     Semantics.Mod (AxiomSet FrameClass.Dedekind) ⊆
       {F : TaskFrame | FrameClass.Sat FrameClass.Dense F} :=
   fun F hF => (validOn_neg_nextTop_iff F).mp
-    (hF (Formula.next Formula.top).neg ⟨Axiom.dense_indicator, by decide⟩)
+    (hF ⟨Axiom.dense_indicator, by decide⟩)
 
 end FormalSystem.Metalogic.Independence

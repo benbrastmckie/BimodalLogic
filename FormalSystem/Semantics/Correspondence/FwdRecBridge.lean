@@ -146,7 +146,7 @@ theorem mod_densitySchema_int :
   rw [← density_schema_iff_fwdRec F]
   constructor
   · intro h φ
-    exact h _ ⟨φ, rfl⟩
+    exact h ⟨φ, rfl⟩
   · rintro h φ ⟨ψ, rfl⟩
     exact h ψ
 
