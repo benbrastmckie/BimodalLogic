@@ -25,7 +25,7 @@ TM bimodal logic system. These are foundational for canonical model construction
 - `MaximalConsistent`: List-based maximal consistency definition
 - `SetConsistent`: Set-based consistency definition
 - `SetMaximalConsistent`: Set-based maximal consistency definition
-- `ConsistentSupersets`: The set of consistent supersets of a base set
+- `exists_maximal_of_chainClosed`: Generic Zorn argument for chain-closed predicates
 - `set_lindenbaum`: Lindenbaum's lemma - every consistent set extends to MCS
 - Chain consistency lemmas for Zorn's lemma application
 
@@ -280,19 +280,34 @@ This is the key lemma enabling canonical model construction.
 -/
 
 /--
-The set of consistent extensions of a base set S.
-Used for Zorn's lemma application.
--/
-def ConsistentSupersets {fc : FrameClass} (S : Set Formula) : Set (Set Formula) :=
-  {T | S ⊆ T ∧ SetConsistent (fc := fc) T}
+Generic Zorn argument for a chain-closed predicate on sets of formulas.
 
-/--
-A consistent set is in its own consistent supersets.
+If `P` is preserved by unions of nonempty chains, then every set satisfying `P`
+extends to one that is maximal with respect to `P`: no formula can be added
+without falsifying `P`.
+
+Both Lindenbaum lemmas in this development (`set_lindenbaum` here, and
+`restricted_lindenbaum` in `RestrictedMCS/Basic.lean`) are instantiations of
+this lemma; the closure restriction of the restricted variant belongs in the
+instantiation, not in the statement.
 -/
-lemma self_mem_consistent_supersets {fc : FrameClass} {S : Set Formula}
-    (h : SetConsistent (fc := fc) S) :
-    S ∈ ConsistentSupersets (fc := fc) S :=
-  ⟨Set.Subset.refl S, h⟩
+theorem exists_maximal_of_chainClosed {P : Set Formula → Prop}
+    (hchain : ∀ C : Set (Set Formula), (∀ T ∈ C, P T) → IsChain (· ⊆ ·) C → C.Nonempty →
+      P (⋃₀ C))
+    {S : Set Formula} (hS : P S) :
+    ∃ M : Set Formula, S ⊆ M ∧ P M ∧ ∀ ψ : Formula, ψ ∉ M → ¬ P (insert ψ M) := by
+  let CS : Set (Set Formula) := {T | S ⊆ T ∧ P T}
+  have hch : ∀ C ⊆ CS, IsChain (· ⊆ ·) C → C.Nonempty → ∃ ub ∈ CS, ∀ T ∈ C, T ⊆ ub := by
+    intro C hCsub hCchain hCne
+    refine ⟨⋃₀ C, ⟨?_, ?_⟩, fun T hT => Set.subset_sUnion_of_mem hT⟩
+    · obtain ⟨T, hT⟩ := hCne
+      exact Set.Subset.trans (hCsub hT).1 (Set.subset_sUnion_of_mem hT)
+    · exact hchain C (fun T hT => (hCsub hT).2) hCchain hCne
+  obtain ⟨M, hSM, hmax⟩ := zorn_subset_nonempty CS hch S ⟨Set.Subset.refl S, hS⟩
+  refine ⟨M, hSM, hmax.prop.2, ?_⟩
+  intro ψ hψ hP
+  exact hψ (hmax.le_of_ge ⟨Set.Subset.trans hSM (Set.subset_insert ψ M), hP⟩
+    (Set.subset_insert ψ M) (Set.mem_insert ψ M))
 
 /--
 Set-based Lindenbaum's Lemma: Every consistent set can be extended to a
@@ -302,54 +317,10 @@ Uses `zorn_subset_nonempty` from Mathlib.Order.Zorn.
 -/
 theorem set_lindenbaum {fc : FrameClass} (S : Set Formula) (hS : SetConsistent (fc := fc) S) :
     ∃ M : Set Formula, S ⊆ M ∧ SetMaximalConsistent (fc := fc) M := by
-  -- Define the collection of consistent supersets
-  let CS := ConsistentSupersets (fc := fc) S
-  -- Show CS satisfies the chain condition for Zorn's lemma
-  have hchain : ∀ C ⊆ CS, IsChain (· ⊆ ·) C → C.Nonempty →
-      ∃ ub ∈ CS, ∀ T ∈ C, T ⊆ ub := by
-    intro C hCsub hCchain hCne
-    -- The upper bound is the union of the chain
-    use ⋃₀ C
-    constructor
-    · -- Show ⋃₀ C ∈ CS, i.e., S ⊆ ⋃₀ C and SetConsistent (fc := fc) (⋃₀ C)
-      constructor
-      · -- S ⊆ ⋃₀ C: Since C is nonempty, pick any T ∈ C, then S ⊆ T ⊆ ⋃₀ C
-        obtain ⟨T, hT⟩ := hCne
-        have hST : S ⊆ T := (hCsub hT).1
-        exact Set.Subset.trans hST (Set.subset_sUnion_of_mem hT)
-      · -- SetConsistent (fc := fc) (⋃₀ C): Use consistent_chain_union
-        apply consistent_chain_union hCchain hCne
-        intro T hT
-        exact (hCsub hT).2
-    · -- Show ∀ T ∈ C, T ⊆ ⋃₀ C
-      intro T hT
-      exact Set.subset_sUnion_of_mem hT
-  -- Apply Zorn's lemma
-  have hSmem : S ∈ CS := self_mem_consistent_supersets hS
-  obtain ⟨M, hSM, hmax⟩ := zorn_subset_nonempty CS hchain S hSmem
-  -- hmax : Maximal (fun x => x ∈ CS) M
-  -- This means M ∈ CS and ∀ T, M ⊆ T → T ∈ CS → M = T
-  have hMmem : M ∈ CS := hmax.prop
-  obtain ⟨_, hMcons⟩ := hMmem
-  -- M is maximal in CS. Show it's SetMaximalConsistent.
-  use M
-  constructor
-  · exact hSM
-  · -- Show SetMaximalConsistent (fc := fc) M
-    constructor
-    · exact hMcons
-    · -- Show ∀ φ ∉ M, ¬SetConsistent (fc := fc) (insert φ M)
-      intro φ hφnotM hcons_insert
-      -- If insert φ M were consistent, then insert φ M ∈ CS
-      have h_insert_mem : insert φ M ∈ CS := by
-        constructor
-        · exact Set.Subset.trans hSM (Set.subset_insert φ M)
-        · exact hcons_insert
-      -- M is maximal: if insert φ M ∈ CS and M ⊆ insert φ M, then insert φ M ⊆ M
-      have h_le : M ⊆ insert φ M := Set.subset_insert φ M
-      have h_subset : insert φ M ⊆ M := hmax.le_of_ge h_insert_mem h_le
-      have hφM : φ ∈ M := h_subset (Set.mem_insert φ M)
-      exact hφnotM hφM
+  obtain ⟨M, hSM, hM, hmax⟩ :=
+    exists_maximal_of_chainClosed (P := SetConsistent (fc := fc))
+      (fun _C hc hchain hne => consistent_chain_union hchain hne hc) hS
+  exact ⟨M, hSM, hM, hmax⟩
 
 /-!
 ## Helper Lemmas for MCS Properties

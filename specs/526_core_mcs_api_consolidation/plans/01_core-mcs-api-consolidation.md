@@ -188,7 +188,7 @@ insertions only.
 
 ---
 
-### Phase 2: One Zorn lemma and two instantiations [NOT STARTED]
+### Phase 2: One Zorn lemma and two instantiations [COMPLETED]
 
 **Goal**: Replace the two hand-rolled Zorn arguments with one generic
 `exists_maximal_of_chainClosed` plus two thin instantiations, and delete the four dead superset

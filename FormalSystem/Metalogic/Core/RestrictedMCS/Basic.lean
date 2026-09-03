@@ -268,22 +268,6 @@ Extend a consistent set to a closure-restricted MCS.
 -/
 
 /--
-The set of closure-restricted consistent extensions of a base set.
-Used for Zorn's lemma application.
--/
-def RestrictedConsistentSupersets (phi : Formula) (S : Set Formula)
-    (fc : FrameClass := FrameClass.Base) : Set (Set Formula) :=
-  {T | S ⊆ T ∧ RestrictedConsistent phi T fc}
-
-/--
-A restricted consistent set is in its own restricted consistent supersets.
--/
-lemma self_mem_restricted_consistent_supersets {S : Set Formula}
-    (h : RestrictedConsistent phi S fc) :
-    S ∈ RestrictedConsistentSupersets phi S fc :=
-  ⟨Set.Subset.refl S, h⟩
-
-/--
 Chain union lemma: The union of a chain of restricted consistent sets is restricted consistent.
 -/
 theorem restricted_consistent_chain_union {phi : Formula} {C : Set (Set Formula)}
@@ -309,69 +293,24 @@ process terminates. This is the critical property that enables BFMCS saturation
 to terminate.
 
 **Proof Strategy**:
-1. Apply Zorn's lemma to RestrictedConsistentSupersets
+1. Instantiate `exists_maximal_of_chainClosed` at `RestrictedConsistent phi · fc`
 2. Chain union is restricted consistent (by restricted_consistent_chain_union)
 3. Maximal element is a RestrictedMCS
 -/
 theorem restricted_lindenbaum (phi : Formula) (S : Set Formula)
     (h_restricted : ClosureRestricted phi S) (h_cons : SetConsistent (fc := fc) S) :
     ∃ M : Set Formula, S ⊆ M ∧ RestrictedMCS phi M fc := by
-  -- Define the collection of restricted consistent supersets
-  let RCS := RestrictedConsistentSupersets phi S fc
-  -- Show RCS satisfies the chain condition for Zorn's lemma
-  have hchain : ∀ C ⊆ RCS, IsChain (· ⊆ ·) C → C.Nonempty →
-      ∃ ub ∈ RCS, ∀ T ∈ C, T ⊆ ub := by
-    intro C hCsub hCchain hCne
-    -- The upper bound is the union of the chain
-    use ⋃₀ C
-    constructor
-    · -- Show ⋃₀ C ∈ RCS
-      constructor
-      · -- S ⊆ ⋃₀ C: Since C is nonempty, pick any T ∈ C, then S ⊆ T ⊆ ⋃₀ C
-        obtain ⟨T, hT⟩ := hCne
-        have hST : S ⊆ T := (hCsub hT).1
-        exact Set.Subset.trans hST (Set.subset_sUnion_of_mem hT)
-      · -- RestrictedConsistent phi (⋃₀ C) fc
-        apply restricted_consistent_chain_union hCchain hCne
-        intro T hT
-        exact (hCsub hT).2
-    · -- Show ∀ T ∈ C, T ⊆ ⋃₀ C
-      intro T hT
-      exact Set.subset_sUnion_of_mem hT
-  -- S is restricted consistent
-  have h_S_rc : RestrictedConsistent phi S fc := ⟨h_restricted, h_cons⟩
-  -- S ∈ RCS
-  have hSmem : S ∈ RCS := self_mem_restricted_consistent_supersets h_S_rc
-  -- Apply Zorn's lemma
-  obtain ⟨M, hSM, hmax⟩ := zorn_subset_nonempty RCS hchain S hSmem
-  -- hmax : Maximal (fun x => x ∈ RCS) M
-  have hMmem : M ∈ RCS := hmax.prop
-  obtain ⟨_, hMrc⟩ := hMmem
-  -- M is maximal in RCS. Show it's RestrictedMCS.
-  use M
-  constructor
-  · exact hSM
-  · -- Show RestrictedMCS phi M fc
-    constructor
-    · exact hMrc
-    · -- Show ∀ psi ∈ closureWithNeg phi, psi ∉ M → ¬SetConsistent (fc := fc) (insert
-      -- psi M)
-      intro psi h_psi_clos h_psi_not_M hcons_insert
-      -- If insert psi M were consistent, then insert psi M ∈ RCS
-      have h_insert_restricted : ClosureRestricted phi (insert psi M) := by
-        intro chi h_mem
-        cases Set.mem_insert_iff.mp h_mem with
-        | inl h_eq => exact h_eq ▸ h_psi_clos
-        | inr h_in_M => exact hMrc.1 h_in_M
-      have h_insert_mem : insert psi M ∈ RCS := by
-        constructor
-        · exact Set.Subset.trans hSM (Set.subset_insert psi M)
-        · exact ⟨h_insert_restricted, hcons_insert⟩
-      -- M is maximal: if insert psi M ∈ RCS and M ⊆ insert psi M, then insert psi M ⊆ M
-      have h_le : M ⊆ insert psi M := Set.subset_insert psi M
-      have h_subset : insert psi M ⊆ M := hmax.le_of_ge h_insert_mem h_le
-      have h_psi_M : psi ∈ M := h_subset (Set.mem_insert psi M)
-      exact h_psi_not_M h_psi_M
+  obtain ⟨M, hSM, hM, hmax⟩ :=
+    exists_maximal_of_chainClosed (P := fun T => RestrictedConsistent phi T fc)
+      (fun _C hc hchain hne => restricted_consistent_chain_union hchain hne hc)
+      (⟨h_restricted, h_cons⟩ : RestrictedConsistent phi S fc)
+  refine ⟨M, hSM, hM, ?_⟩
+  intro psi h_psi_clos h_psi_not hcons_insert
+  refine hmax psi h_psi_not ⟨?_, hcons_insert⟩
+  intro chi h_mem
+  cases Set.mem_insert_iff.mp h_mem with
+  | inl h_eq => exact h_eq ▸ h_psi_clos
+  | inr h_in => exact hM.1 h_in
 
 /-!
 ## Constructing Restricted MCS from a Formula

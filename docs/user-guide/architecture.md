@@ -761,7 +761,7 @@ construction with **set-based** maximal consistent sets.
 -- This is the key result enabling completeness
 theorem set_lindenbaum (S : Set Formula) (hS : SetConsistent S) :
     ∃ M : Set Formula, S ⊆ M ∧ SetMaximalConsistent M := by
-  -- Apply Zorn's lemma to ConsistentSupersets S
+  -- Instantiate exists_maximal_of_chainClosed at SetConsistent
   -- Chain union consistency: consistent_chain_union
   -- Upper bound exists for every chain
   -- Proven in FormalSystem/Metalogic/Core/MaximalConsistent.lean:303,
