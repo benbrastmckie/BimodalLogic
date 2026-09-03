@@ -30,8 +30,16 @@ reverse, and vice versa).
 
 ## Key Theorems
 
-- `forward_temporal_witness_seed_consistent`: If F(psi) ∈ MCS M, then the forward seed is consistent
-- `past_temporal_witness_seed_consistent`: If P(psi) ∈ MCS M, then the past seed is consistent
+- `allFuture_neg_of_gseed_inconsistent`: shared future-side core -- if F(psi) ∈ MCS M, then
+  `ForwardTemporalWitnessSeed M psi` is consistent
+- `forward_temporal_witness_seed_consistent` / `until_witness_seed_consistent`: both direct
+  applications of the future-side core (`UntilWitnessSeed` was a byte-identical duplicate of
+  `ForwardTemporalWitnessSeed` and has been removed)
+- `allPast_neg_of_hseed_inconsistent`: past-side core, mirroring the future core; its
+  `bot`-derivation branch is obtained from the future core's by `Formula.swapTemporal` +
+  `DerivationTree.temporal_duality` + `Formula.swap_temporal_involution`
+  (`allPast_bot_imp_neg_deriv`) rather than a second hand derivation
+- `past_temporal_witness_seed_consistent`: application of the past-side core
 - `g_content_subset_implies_h_content_reverse`: GContent(M) ⊆ M' implies HContent(M') ⊆ M
 - `h_content_subset_implies_g_content_reverse`: HContent(M) ⊆ M' implies GContent(M') ⊆ M
 
@@ -134,8 +142,48 @@ lemma g_content_subset_forward_temporal_witness_seed (M : Set Formula) (psi : Fo
   Set.subset_union_right
 
 /--
-Forward temporal witness seed consistency: If F(psi) is in an MCS M, then
-`{psi} ∪ GContent(M)` is consistent.
+Shared syntactic core: `⊢ G(⊥) → G(¬chi)` for arbitrary `chi`, via `prop_s` + temporal
+necessitation + temporal K distribution + modus ponens. This is the one genuinely
+future-specific, purely syntactic (context-free) step inside the forward witness-seed
+consistency argument below; its past dual (`allPast_bot_imp_neg_deriv`) is obtained by
+duality rather than a second hand derivation through `pastNecessitation`/`pastKDist`.
+-/
+private noncomputable def allFuture_bot_imp_neg_deriv {fc : FrameClass} (chi : Formula) :
+    DerivationTree fc []
+      ((Formula.allFuture Formula.bot).imp (Formula.allFuture (Formula.neg chi))) :=
+  let h_bot_imp_neg : ⊢[fc] Formula.bot.imp (Formula.neg chi) :=
+    DerivationTree.axiom [] _ (Axiom.prop_s Formula.bot chi) (FrameClass.base_le fc)
+  let h_G_ef : ⊢[fc] Formula.allFuture (Formula.bot.imp (Formula.neg chi)) :=
+    DerivationTree.temporal_necessitation _ h_bot_imp_neg
+  let h_K : ⊢[fc] (Formula.allFuture (Formula.bot.imp (Formula.neg chi))).imp
+                   ((Formula.allFuture Formula.bot).imp (Formula.allFuture (Formula.neg chi))) :=
+    DerivationTree.lift (FrameClass.base_le fc)
+        (FormalSystem.Theorems.TemporalDerived.temporalKDistDerived Formula.bot (Formula.neg chi))
+  DerivationTree.modus_ponens [] _ _ h_K h_G_ef
+
+/--
+Past dual of `allFuture_bot_imp_neg_deriv`: `⊢ H(⊥) → H(¬psi)`, obtained by
+`Formula.swapTemporal` + `DerivationTree.temporal_duality` + `Formula.swap_temporal_involution`
+-- the `past_tf_deriv` technique (`Algebraic/FlowFrame.lean`) -- applied to the future core
+above at the swapped formula `psi.swapTemporal`, then unswapped back to `psi` by involution.
+-/
+private noncomputable def allPast_bot_imp_neg_deriv {fc : FrameClass} (psi : Formula) :
+    DerivationTree fc []
+      ((Formula.allPast Formula.bot).imp (Formula.allPast (Formula.neg psi))) := by
+  have h_fut := allFuture_bot_imp_neg_deriv (fc := fc) (Formula.swapTemporal psi)
+  have h_dual := DerivationTree.temporal_duality _ h_fut
+  have h_eq : Formula.swapTemporal ((Formula.allFuture Formula.bot).imp
+      (Formula.allFuture (Formula.neg (Formula.swapTemporal psi)))) =
+      (Formula.allPast Formula.bot).imp (Formula.allPast (Formula.neg psi)) := by
+    simp [Formula.swapTemporal, Formula.swap_temporal_involution, Formula.swap_temporal_neg]
+  rw [h_eq] at h_dual
+  exact h_dual
+
+/--
+Shared future-side core: `SetConsistent (fc := fc) (ForwardTemporalWitnessSeed M psi)`.
+`forward_temporal_witness_seed_consistent` and `until_witness_seed_consistent` both reduce to
+applications of this core (the latter because `UntilWitnessSeed` is byte-identical to
+`ForwardTemporalWitnessSeed`).
 
 **Proof Strategy** (irreflexive-compatible, no T-axiom needed):
 Suppose `{psi} ∪ GContent(M)` is inconsistent. Then there exist `L ⊆ {psi} ∪ GContent(M)`
@@ -147,11 +195,10 @@ Case 1 (psi ∈ L): By deduction, `L \ {psi} ⊢ ¬psi`. By generalized temporal
 
 Case 2 (psi ∉ L): All of L are in GContent(M), so `G chi ∈ M` for each `chi ∈ L`.
 From `L ⊢ ⊥`, by generalized temporal K, `G(L) ⊢ G(⊥)`. Since all of `G(L)` are in M,
-`G(⊥) ∈ M`. From `⊢ ⊥ → ¬psi`, by temporal necessitation `⊢ G(⊥ → ¬psi)`, by temporal K
-distribution `⊢ G(⊥) → G(¬psi)`, so `G(¬psi) ∈ M`. But `F(psi) = ¬G(¬psi) ∈ M`.
-Contradiction.
+`G(⊥) ∈ M`. By `allFuture_bot_imp_neg_deriv`, `G(⊥) → G(¬psi)`, so `G(¬psi) ∈ M`. But
+`F(psi) = ¬G(¬psi) ∈ M`. Contradiction.
 -/
-theorem forward_temporal_witness_seed_consistent {fc : FrameClass} (M : Set Formula)
+theorem allFuture_neg_of_gseed_inconsistent {fc : FrameClass} (M : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) M)
     (psi : Formula) (h_F : Formula.someFuture psi ∈ M) :
     SetConsistent (fc := fc) (ForwardTemporalWitnessSeed M psi) := by
@@ -215,26 +262,26 @@ theorem forward_temporal_witness_seed_consistent {fc : FrameClass} (M : Set Form
     have h_G_bot_in_M : Formula.allFuture Formula.bot ∈ M :=
       SetMaximalConsistent.closed_under_derivation h_mcs (Context.map Formula.allFuture L)
         h_G_L_in_M d_G_bot
-    -- ⊢ ⊥ → ¬psi by prop_s (weakening): ⊢ ⊥ → (psi → ⊥) = ⊢ ⊥ → ¬psi
-    have h_bot_imp_neg : ⊢[fc] Formula.bot.imp (Formula.neg psi) :=
-      DerivationTree.axiom [] _ (Axiom.prop_s Formula.bot psi) (FrameClass.base_le fc)
-    -- By temporal necessitation: ⊢ G(⊥ → ¬psi)
-    have h_G_ef : ⊢[fc] Formula.allFuture (Formula.bot.imp (Formula.neg psi)) :=
-      DerivationTree.temporal_necessitation _ h_bot_imp_neg
-    -- By temporal K distribution: ⊢ G(⊥ → ¬psi) → (G(⊥) → G(¬psi))
-    have h_K : ⊢[fc] (Formula.allFuture (Formula.bot.imp (Formula.neg psi))).imp
-                     ((Formula.allFuture Formula.bot).imp
-                         (Formula.allFuture (Formula.neg psi))) :=
-      DerivationTree.lift (FrameClass.base_le fc)
-          (FormalSystem.Theorems.TemporalDerived.temporalKDistDerived Formula.bot (Formula.neg psi))
-    -- Modus ponens twice: G(¬psi) ∈ M
+    -- G(⊥) → G(¬psi) by the shared syntactic core
     have h_G_imp : ⊢[fc] (Formula.allFuture Formula.bot).imp
         (Formula.allFuture (Formula.neg psi)) :=
-      DerivationTree.modus_ponens [] _ _ h_K h_G_ef
+      allFuture_bot_imp_neg_deriv (fc := fc) psi
     have h_G_neg_psi : Formula.allFuture (Formula.neg psi) ∈ M :=
       SetMaximalConsistent.mp_of_theorem h_mcs h_G_imp h_G_bot_in_M
     -- Contradiction: F(psi) and G(neg psi) cannot both be in MCS
     exact some_future_all_future_neg_absurd h_mcs psi h_F h_G_neg_psi
+
+/--
+Forward temporal witness seed consistency: If F(psi) is in an MCS M, then
+`{psi} ∪ GContent(M)` is consistent.
+
+Application of the shared core `allFuture_neg_of_gseed_inconsistent`.
+-/
+theorem forward_temporal_witness_seed_consistent {fc : FrameClass} (M : Set Formula)
+    (h_mcs : SetMaximalConsistent (fc := fc) M)
+    (psi : Formula) (h_F : Formula.someFuture psi ∈ M) :
+    SetConsistent (fc := fc) (ForwardTemporalWitnessSeed M psi) :=
+  allFuture_neg_of_gseed_inconsistent M h_mcs psi h_F
 
 /-!
 ## Past Temporal Witness Seed
@@ -255,12 +302,12 @@ lemma h_content_subset_past_temporal_witness_seed (M : Set Formula) (psi : Formu
   Set.subset_union_right
 
 /--
-Past temporal witness seed consistency: If P(psi) is in an MCS M, then
-`{psi} ∪ HContent(M)` is consistent.
-
-Symmetric to `forward_temporal_witness_seed_consistent`, using H and P instead of G and F.
+Past-side core, mirroring `allFuture_neg_of_gseed_inconsistent`: uses `generalizedPastK` for
+the direction-native branch (Case 1) and the duality-derived `allPast_bot_imp_neg_deriv` for
+the `bot`-derivation branch (Case 2), in place of a second hand derivation through
+`pastNecessitation`/`pastKDist`.
 -/
-theorem past_temporal_witness_seed_consistent {fc : FrameClass} (M : Set Formula)
+theorem allPast_neg_of_hseed_inconsistent {fc : FrameClass} (M : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) M)
     (psi : Formula) (h_P : Formula.somePast psi ∈ M) :
     SetConsistent (fc := fc) (PastTemporalWitnessSeed M psi) := by
@@ -322,208 +369,53 @@ theorem past_temporal_witness_seed_consistent {fc : FrameClass} (M : Set Formula
     have h_H_bot_in_M : Formula.allPast Formula.bot ∈ M :=
       SetMaximalConsistent.closed_under_derivation h_mcs (Context.map Formula.allPast L)
         h_H_L_in_M d_H_bot
-    -- ⊢ ⊥ → ¬psi by prop_s
-    have h_bot_imp_neg : ⊢[fc] Formula.bot.imp (Formula.neg psi) :=
-      DerivationTree.axiom [] _ (Axiom.prop_s Formula.bot psi) (FrameClass.base_le fc)
-    -- By past necessitation: ⊢ H(⊥ → ¬psi)
-    have h_H_ef : ⊢[fc] Formula.allPast (Formula.bot.imp (Formula.neg psi)) :=
-      FormalSystem.Theorems.pastNecessitation _ h_bot_imp_neg
-    -- By past K distribution: ⊢ H(⊥ → ¬psi) → (H(⊥) → H(¬psi))
-    have h_K : ⊢[fc] (Formula.allPast (Formula.bot.imp (Formula.neg psi))).imp
-                     ((Formula.allPast Formula.bot).imp (Formula.allPast (Formula.neg psi))) :=
-      FormalSystem.Theorems.pastKDist Formula.bot (Formula.neg psi)
-    -- Modus ponens twice: H(¬psi) ∈ M
+    -- H(⊥) → H(¬psi) by the duality-derived core
     have h_H_imp : ⊢[fc] (Formula.allPast Formula.bot).imp (Formula.allPast (Formula.neg psi)) :=
-      DerivationTree.modus_ponens [] _ _ h_K h_H_ef
+      allPast_bot_imp_neg_deriv (fc := fc) psi
     have h_H_neg_psi : Formula.allPast (Formula.neg psi) ∈ M :=
       SetMaximalConsistent.mp_of_theorem h_mcs h_H_imp h_H_bot_in_M
     -- Contradiction: P(psi) and H(neg psi) cannot both be in MCS
     exact some_past_all_past_neg_absurd h_mcs psi h_P h_H_neg_psi
 
+/--
+Past temporal witness seed consistency: If P(psi) is in an MCS M, then
+`{psi} ∪ HContent(M)` is consistent.
+
+Application of the shared core `allPast_neg_of_hseed_inconsistent`, whose past-only
+`bot`-derivation branch is itself obtained from the future core by
+`Formula.swapTemporal` + `DerivationTree.temporal_duality` + `Formula.swap_temporal_involution`
+(see `allPast_bot_imp_neg_deriv` above) rather than a second hand proof.
+-/
+theorem past_temporal_witness_seed_consistent {fc : FrameClass} (M : Set Formula)
+    (h_mcs : SetMaximalConsistent (fc := fc) M)
+    (psi : Formula) (h_P : Formula.somePast psi ∈ M) :
+    SetConsistent (fc := fc) (PastTemporalWitnessSeed M psi) :=
+  allPast_neg_of_hseed_inconsistent M h_mcs psi h_P
+
 /-!
 ## Until Temporal Witness Seed
 
-When `φ U ψ ∈ M` (MCS), we need to eventually find a successor where ψ holds.
-The until witness seed `{ψ} ∪ GContent(M)` is consistent, proven using the
-`until_induction` axiom with `χ = ⊥`.
+When `φ U ψ ∈ M` (MCS), we need to eventually find a successor where ψ holds. The witness
+seed used is `ForwardTemporalWitnessSeed M ψ` -- `UntilWitnessSeed` was a byte-identical
+duplicate (`{ψ} ∪ GContent M`) and has been removed; `until_witness_seed_consistent` is now
+a direct application of `allFuture_neg_of_gseed_inconsistent`.
 -/
-
-/-- Until witness seed: `{ψ} ∪ GContent(M)`. -/
-def UntilWitnessSeed (M : Set Formula) (ψ : Formula) : Set Formula :=
-  {ψ} ∪ GContent M
-
-/-- ψ is in its own UntilWitnessSeed. -/
-lemma psi_mem_until_witness_seed (M : Set Formula) (ψ : Formula) :
-    ψ ∈ UntilWitnessSeed M ψ :=
-  Set.mem_union_left _ (Set.mem_singleton ψ)
-
-/-- GContent is a subset of UntilWitnessSeed. -/
-lemma g_content_subset_until_witness_seed (M : Set Formula) (ψ : Formula) :
-    GContent M ⊆ UntilWitnessSeed M ψ :=
-  Set.subset_union_right
 
 /--
 Until witness seed consistency: If `φ U ψ ∈ M` and M is MCS, then
-`{ψ} ∪ GContent(M)` is consistent.
+`ForwardTemporalWitnessSeed M ψ` (`= {ψ} ∪ GContent(M)`) is consistent.
 
-**Proof Strategy**:
-Suppose `{ψ} ∪ GContent(M)` is inconsistent. Then `G(¬ψ) ∈ M` (by the same
-argument as forward_temporal_witness_seed_consistent).
-
-Now apply `until_induction` with `χ = ⊥`:
-  `G(ψ → ⊥) ∧ G((φ ∧ ⊥) → G(⊥)) → ((φ U ψ) → ⊥)`
-
-- `G(ψ → ⊥) = G(¬ψ)` — we have this.
-- `G((φ ∧ ⊥) → G(⊥))` — provable since `(φ ∧ ⊥) → G(⊥)` is provable (ex falso).
-
-Therefore `(φ U ψ) → ⊥ ∈ M`, i.e., `¬(φ U ψ) ∈ M`, contradicting `φ U ψ ∈ M`.
+By BX10 (`untilImpF`), `φ U ψ ∈ M` gives `F(ψ) ∈ M`; the rest is
+`allFuture_neg_of_gseed_inconsistent`.
 -/
 theorem until_witness_seed_consistent (M : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M)
     (φ ψ : Formula) (h_U : Formula.untl φ ψ ∈ M) :
-    SetConsistent (fc := FrameClass.Base) (UntilWitnessSeed M ψ) := by
-  intro L hL_sub ⟨d⟩
-  -- Extract G(¬ψ) ∈ M from the inconsistency of {ψ} ∪ GContent(M)
-  -- (Same argument as forward_temporal_witness_seed_consistent)
-  have h_G_neg_psi : Formula.allFuture (Formula.neg ψ) ∈ M := by
-    by_cases h_psi_in : ψ ∈ L
-    · -- Case: ψ ∈ L — derive G(¬ψ) via generalized temporal K
-      let L_filt := L.filter (fun y => decide (y ≠ ψ))
-      have h_perm := cons_filter_neq_perm h_psi_in
-      have d_reord : DerivationTree FrameClass.Base (ψ :: L_filt) Formula.bot :=
-        derivationExchange d (fun x => (h_perm x).symm)
-      have d_neg : L_filt ⊢ Formula.neg ψ :=
-        deductionTheorem L_filt ψ Formula.bot d_reord
-      have h_G_filt_in_M : ∀ chi ∈ L_filt, Formula.allFuture chi ∈ M := by
-        intro chi h_mem
-        have h_and := List.mem_filter.mp h_mem
-        have h_in_L := h_and.1
-        have h_ne : chi ≠ ψ := by simp only [decide_eq_true_eq] at h_and; exact h_and.2
-        have h_in_seed := hL_sub chi h_in_L
-        simp only [UntilWitnessSeed, Set.mem_union, Set.mem_singleton_iff] at h_in_seed
-        rcases h_in_seed with h_eq | h_gcontent
-        · exact absurd h_eq h_ne
-        · exact h_gcontent
-      have d_G_neg : (Context.map Formula.allFuture L_filt) ⊢ Formula.allFuture (Formula.neg ψ) :=
-        FormalSystem.Theorems.generalizedTemporalK L_filt (Formula.neg ψ) d_neg
-      have h_G_context_in_M : ∀ f ∈ Context.map Formula.allFuture L_filt, f ∈ M := by
-        intro f h_mem
-        rw [Context.mem_map_iff] at h_mem
-        rcases h_mem with ⟨chi, h_chi_in, h_eq⟩
-        rw [← h_eq]
-        exact h_G_filt_in_M chi h_chi_in
-      exact SetMaximalConsistent.closed_under_derivation h_mcs
-        (Context.map Formula.allFuture L_filt) h_G_context_in_M d_G_neg
-    · -- Case: ψ ∉ L — all of L ⊆ GContent(M), derive G(⊥) then G(¬ψ)
-      have h_G_all_in_M : ∀ chi ∈ L, Formula.allFuture chi ∈ M := by
-        intro chi h_mem
-        have h_in_seed := hL_sub chi h_mem
-        simp only [UntilWitnessSeed, Set.mem_union, Set.mem_singleton_iff] at h_in_seed
-        rcases h_in_seed with h_eq | h_gcontent
-        · exact absurd h_eq (fun h => h_psi_in (h ▸ h_mem))
-        · exact h_gcontent
-      have d_G_bot : (Context.map Formula.allFuture L) ⊢ Formula.allFuture Formula.bot :=
-        FormalSystem.Theorems.generalizedTemporalK L Formula.bot d
-      have h_G_L_in_M : ∀ f ∈ Context.map Formula.allFuture L, f ∈ M := by
-        intro f h_mem
-        rw [Context.mem_map_iff] at h_mem
-        rcases h_mem with ⟨chi, h_chi_in, h_eq⟩
-        rw [← h_eq]
-        exact h_G_all_in_M chi h_chi_in
-      have h_G_bot_in_M : Formula.allFuture Formula.bot ∈ M :=
-        SetMaximalConsistent.closed_under_derivation h_mcs
-          (Context.map Formula.allFuture L) h_G_L_in_M d_G_bot
-      have h_bot_imp_neg : [] ⊢ Formula.bot.imp (Formula.neg ψ) :=
-        DerivationTree.axiom [] _ (Axiom.prop_s Formula.bot ψ) trivial
-      have h_G_ef : [] ⊢ Formula.allFuture (Formula.bot.imp (Formula.neg ψ)) :=
-        DerivationTree.temporal_necessitation _ h_bot_imp_neg
-      have h_K : [] ⊢ (Formula.allFuture (Formula.bot.imp (Formula.neg ψ))).imp
-                       ((Formula.allFuture Formula.bot).imp
-                           (Formula.allFuture (Formula.neg ψ))) :=
-        FormalSystem.Theorems.TemporalDerived.temporalKDistDerived Formula.bot (Formula.neg ψ)
-      have h_G_imp : [] ⊢ (Formula.allFuture Formula.bot).imp
-          (Formula.allFuture (Formula.neg ψ)) :=
-        DerivationTree.modus_ponens [] _ _ h_K h_G_ef
-      exact SetMaximalConsistent.mp_of_theorem h_mcs h_G_imp h_G_bot_in_M
-  -- BX10 contradiction: (φ U ψ) → F(ψ) by BX10, and F(ψ) = ¬G(¬ψ), contradicting G(¬ψ) ∈ M
-  have h_F_psi : ψ.someFuture ∈ M :=
+    SetConsistent (fc := FrameClass.Base) (ForwardTemporalWitnessSeed M ψ) := by
+  have h_F_psi : Formula.someFuture ψ ∈ M :=
     SetMaximalConsistent.mp_of_theorem h_mcs
       (FormalSystem.Theorems.TemporalDerived.untilImpF φ ψ) h_U
-  exact some_future_all_future_neg_absurd h_mcs ψ h_F_psi h_G_neg_psi
-
-/--
-Since witness seed consistency: If `φ S ψ ∈ M` and M is MCS, then
-`{ψ} ∪ HContent(M)` is consistent.
-
-Symmetric to `until_witness_seed_consistent`, using BX10' (sinceImpP) and H instead of G.
--/
-theorem since_witness_seed_consistent (M : Set Formula)
-    (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) M)
-    (φ ψ : Formula) (h_S : Formula.snce φ ψ ∈ M) :
-    SetConsistent (fc := FrameClass.Base) (PastTemporalWitnessSeed M ψ) := by
-  intro L hL_sub ⟨d⟩
-  -- Extract H(¬ψ) ∈ M from the inconsistency of {ψ} ∪ HContent(M)
-  have h_H_neg_psi : Formula.allPast (Formula.neg ψ) ∈ M := by
-    by_cases h_psi_in : ψ ∈ L
-    · let L_filt := L.filter (fun y => decide (y ≠ ψ))
-      have h_perm := cons_filter_neq_perm h_psi_in
-      have d_reord : DerivationTree FrameClass.Base (ψ :: L_filt) Formula.bot :=
-        derivationExchange d (fun x => (h_perm x).symm)
-      have d_neg : L_filt ⊢ Formula.neg ψ :=
-        deductionTheorem L_filt ψ Formula.bot d_reord
-      have h_H_filt_in_M : ∀ chi ∈ L_filt, Formula.allPast chi ∈ M := by
-        intro chi h_mem
-        have h_and := List.mem_filter.mp h_mem
-        have h_in_L := h_and.1
-        have h_ne : chi ≠ ψ := by simp only [decide_eq_true_eq] at h_and; exact h_and.2
-        have h_in_seed := hL_sub chi h_in_L
-        simp only [PastTemporalWitnessSeed, Set.mem_union, Set.mem_singleton_iff] at h_in_seed
-        rcases h_in_seed with h_eq | h_hcontent
-        · exact absurd h_eq h_ne
-        · exact h_hcontent
-      have d_H_neg : (Context.map Formula.allPast L_filt) ⊢ Formula.allPast (Formula.neg ψ) :=
-        FormalSystem.Theorems.generalizedPastK L_filt (Formula.neg ψ) d_neg
-      have h_H_context_in_M : ∀ f ∈ Context.map Formula.allPast L_filt, f ∈ M := by
-        intro f h_mem
-        rw [Context.mem_map_iff] at h_mem
-        rcases h_mem with ⟨chi, h_chi_in, h_eq⟩
-        rw [← h_eq]
-        exact h_H_filt_in_M chi h_chi_in
-      exact SetMaximalConsistent.closed_under_derivation h_mcs
-        (Context.map Formula.allPast L_filt) h_H_context_in_M d_H_neg
-    · have h_H_all_in_M : ∀ chi ∈ L, Formula.allPast chi ∈ M := by
-        intro chi h_mem
-        have h_in_seed := hL_sub chi h_mem
-        simp only [PastTemporalWitnessSeed, Set.mem_union, Set.mem_singleton_iff] at h_in_seed
-        rcases h_in_seed with h_eq | h_hcontent
-        · exact absurd h_eq (fun h => h_psi_in (h ▸ h_mem))
-        · exact h_hcontent
-      have d_H_bot : (Context.map Formula.allPast L) ⊢ Formula.allPast Formula.bot :=
-        FormalSystem.Theorems.generalizedPastK L Formula.bot d
-      have h_H_L_in_M : ∀ f ∈ Context.map Formula.allPast L, f ∈ M := by
-        intro f h_mem
-        rw [Context.mem_map_iff] at h_mem
-        rcases h_mem with ⟨chi, h_chi_in, h_eq⟩
-        rw [← h_eq]
-        exact h_H_all_in_M chi h_chi_in
-      have h_H_bot_in_M : Formula.allPast Formula.bot ∈ M :=
-        SetMaximalConsistent.closed_under_derivation h_mcs
-          (Context.map Formula.allPast L) h_H_L_in_M d_H_bot
-      have h_bot_imp_neg : [] ⊢ Formula.bot.imp (Formula.neg ψ) :=
-        DerivationTree.axiom [] _ (Axiom.prop_s Formula.bot ψ) trivial
-      have h_H_ef : [] ⊢ Formula.allPast (Formula.bot.imp (Formula.neg ψ)) :=
-        FormalSystem.Theorems.pastNecessitation _ h_bot_imp_neg
-      have h_K : [] ⊢ (Formula.allPast (Formula.bot.imp (Formula.neg ψ))).imp
-                       ((Formula.allPast Formula.bot).imp (Formula.allPast (Formula.neg ψ))) :=
-        FormalSystem.Theorems.pastKDist Formula.bot (Formula.neg ψ)
-      have h_H_imp : [] ⊢ (Formula.allPast Formula.bot).imp (Formula.allPast (Formula.neg ψ)) :=
-        DerivationTree.modus_ponens [] _ _ h_K h_H_ef
-      exact SetMaximalConsistent.mp_of_theorem h_mcs h_H_imp h_H_bot_in_M
-  -- BX10' contradiction: (φ S ψ) → P(ψ) by BX10', and P(ψ) = ¬H(¬ψ), contradicting H(¬ψ) ∈ M
-  have h_P_psi : ψ.somePast ∈ M :=
-    SetMaximalConsistent.mp_of_theorem h_mcs
-      (FormalSystem.Theorems.TemporalDerived.sinceImpP φ ψ) h_S
-  exact some_past_all_past_neg_absurd h_mcs ψ h_P_psi h_H_neg_psi
+  exact allFuture_neg_of_gseed_inconsistent M h_mcs ψ h_F_psi
 
 /-!
 ## GContent/HContent Duality

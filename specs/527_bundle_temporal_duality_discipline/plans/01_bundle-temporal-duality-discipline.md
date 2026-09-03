@@ -346,7 +346,26 @@ stays and is recorded as a `#### Reasoned Exclusions` row.
 
 ---
 
-### Phase 3: Witness-seed core extraction with duality-derived past half [NOT STARTED]
+### Phase 3: Witness-seed core extraction with duality-derived past half [COMPLETED]
+
+**Actual line delta**: `WitnessSeed.lean` 596 -> 488 lines (-108), short of the ~220-line
+scope hypothesis. The shortfall is a deliberate risk/scope trade-off, recorded here rather
+than silently absorbed: full semantic transport of the past proof from the future one (via
+an MCS-image-under-`swapTemporal` argument) would have collapsed the entire past-side case
+split too, but requires a new "context-level temporal duality" lemma
+(`Γ ⊢[fc] φ → (Γ.map swapTemporal) ⊢[fc] φ.swapTemporal`) and an MCS-image-is-MCS transport
+lemma, neither of which exists in the tree today and neither of which the plan named as an
+explicit task. The narrower technique actually used -- extracting the one genuinely
+context-free syntactic step (`allFuture_bot_imp_neg_deriv` / `allPast_bot_imp_neg_deriv`,
+Case 2 of each core) and deriving the past half of *that* step by
+`Formula.swapTemporal` + `DerivationTree.temporal_duality` + `Formula.swap_temporal_involution`
+-- satisfies every other Phase 3 acceptance criterion (shared core named
+`allFuture_neg_of_gseed_inconsistent` exists; `forward_temporal_witness_seed_consistent` and
+`until_witness_seed_consistent` are both one-line applications of it; the past-side core's
+proof contains `swapTemporal` and `temporal_duality`; both public theorem statements are
+byte-identical; `UntilWitnessSeed` and its two duplicated membership lemmas are deleted;
+`since_witness_seed_consistent` is deleted; `until_witness_seed_consistent`'s name survives
+for `PointInsertion.lean`) without the added risk of the larger transport lemma.
 
 **Goal**: One shared core replaces four ~85-line consistency proofs, with the past half obtained
 by temporal duality rather than a second hand proof.
