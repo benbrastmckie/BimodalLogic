@@ -11,8 +11,8 @@ next_project_number: 533
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,193,257,298,433,461,476,481,504,506,523,524,526 | -- | automation, dataset-enhancement, decidability, ... |
-| 2 | 178,231,282,296,463,502,525,527,528,529,530 | 193,298,433,461,523,524,526 | algebraic-representation, dataset-enhancement, decidability, ... |
+| 1 | 127,128,193,257,298,433,461,476,481,504,506,524,525,526,529 | -- | automation, dataset-enhancement, decidability, ... |
+| 2 | 178,231,282,296,463,502,527,528,530 | 193,298,433,461,524,526 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 3 | 219,464,497,531 | 231,463,502,528,529,530 | algebraic-representation, dataset-enhancement, decidability, ... |
 | 4 | 465,498,499,500 | 464,497 | algebraic-representation, decidability |
 | 5 | 125,428 | 465,498,499 | algebraic-representation, decidability |
@@ -84,16 +84,15 @@ next_project_number: 533
 
 ### Metalogic
 
-523 [IMPLEMENTING] — WAVE 2 (core utilities). Complete the task-frame construction kit
-  └─ 525 [NOT STARTED] — WAVE 3 (theorem layer). Put the frame-class Galois layer on Mathl
-  └─ 529 [NOT STARTED] — WAVE 5 (publication infrastructure). Turn on the two automated si
-    └─ 531 [NOT STARTED] — WAVE 5 (publication infrastructure). Publish the API documentatio
 524 [NOT STARTED] — WAVE 3 (theorem layer). Finish the FrameClass collapse at the THE
   └─ 530 [NOT STARTED] — WAVE 5 (publication infrastructure). Make status and counts machi
-    └─ 531 [NOT STARTED] — WAVE 5 (publication infrastructure). Publish the API documentatio (see above)
+    └─ 531 [NOT STARTED] — WAVE 5 (publication infrastructure). Publish the API documentatio
+525 [NOT STARTED] — WAVE 3 (theorem layer). Put the frame-class Galois layer on Mathl
 526 [NOT STARTED] — WAVE 3 (theorem layer). Consolidate the maximal-consistent-set AP
   └─ 527 [NOT STARTED] — WAVE 4 (canonical-model infrastructure). Replace textual future/p
   └─ 528 [NOT STARTED] — WAVE 4 (algebraic infrastructure). Modernise Metalogic/Algebraic/
+529 [NOT STARTED] — WAVE 5 (publication infrastructure). Turn on the two automated si
+  └─ 531 [NOT STARTED] — WAVE 5 (publication infrastructure). Publish the API documentatio (see above)
 
 ### Publication Quality
 
@@ -195,7 +194,7 @@ next_project_number: 533
 ---
 
 ### 523. Frame kit helpers transport standard frames
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: Task 517, Task 518, Task 521, Task 522, Task 532

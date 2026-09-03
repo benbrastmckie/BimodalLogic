@@ -1,6 +1,13 @@
 # Research Report: Frame Kit Helpers, Truth Transport, Standard Frames
 
 - **Task**: 523 — WAVE 2 (core utilities)
+- **Started**: TBD
+- **Completed**: TBD
+- **Effort**: TBD
+- **Dependencies**: TBD
+- **Sources/Inputs**: TBD
+- **Artifacts**: TBD
+- **Standards**: TBD
 - **Type**: lean4
 - **Date**: 2026-09-02
 - **Baseline**: `lake build` green at HEAD (`fea304614`, 2517 jobs, exit 0)

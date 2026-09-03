@@ -1,115 +1,74 @@
 {
-  "status": "partial",
-  "requires_user_review": true,
-  "blocked_phase": 10,
-  "review_reason": "Phase 10 blocked: Truth.time_shift_preserves_truth is stated for an ARBITRARY WorldHistory with no totality hypothesis, while TruthIso.hist is an F.HF equiv F'.HF and transports total histories only. The research report's section 4.3 table records this transport as derivable, which is the error. Phase 12's IntTransfer.truthAt_map has the identical quantification. Unblocking needs a PLANNING decision between widening TruthIso to a WorldHistory-level equivalence (which would also unblock phase 12) and accepting the two remaining inductions -- not an implementation decision.",
-  "phases_completed": 13,
-  "phases_total": 14,
-  "verification": {
-    "verification_passed": false,
-    "sorry_count": 0,
-    "vacuous_count": 0,
-    "axiom_count": 10,
-    "axiom_count_baseline": 10,
-    "build_passed": true,
-    "test_build_passed": true,
-    "module_invariants_passed": true,
-    "c2_flagship_axioms_unchanged": true,
-    "build_output": "lake-build-guard.sh build --timeout 1800 -- build: exit 0 (2520 jobs). lake build BimodalTest: exit 0. scripts/check-module-invariants.sh: exit 0, C2 at baseline, C3 structural sorry inventory ZERO.",
-    "failure_reason": "Build, tests and invariants are all green and the diff carries zero sorry and zero new axioms. verification_passed is false solely because phase 10 is [BLOCKED] and phase 12 closed [COMPLETED WITH EXCLUSIONS]; the acceptance criterion 'at most two induction-phi truth transports' is not met (measured five, of which two are the new generic lemmas)."
-  },
-  "partial_progress": {
-    "stage": "phases_1_9_and_11_14_complete_phase_10_blocked",
-    "details": "12 of 14 phases [COMPLETED], 1 [COMPLETED WITH EXCLUSIONS] (phase 12, documented fallback), 1 [BLOCKED] (phase 10). Every phase committed at a green build.",
-    "phases_completed": 13,
-    "phases_total": 14
-  },
-  "modified_files": [
-    "FormalSystem/Semantics/Frames/Standard.lean",
-    "FormalSystem/Metalogic/SoundnessLemmas/DiscreteOrder.lean",
-    "FormalSystem/Semantics/TaskFrame.lean",
-    "FormalSystem/Semantics/Truth.lean",
-    "FormalSystem/Semantics/WorldHistory.lean",
-    "FormalSystem/Semantics/ShiftSet.lean",
-    "FormalSystem/Semantics/IntNormalForm.lean",
-    "FormalSystem/Semantics/LexCarrier.lean",
-    "FormalSystem/Semantics/DurationClassification.lean",
-    "FormalSystem/Semantics.lean",
-    "FormalSystem/Semantics/README.md",
-    "FormalSystem/Semantics/Correspondence/DurationFrames.lean",
-    "FormalSystem/Semantics/Correspondence/FwdRecBridge.lean",
-    "FormalSystem/Semantics/Correspondence/FwdRecPeriodicity.lean",
-    "FormalSystem/Metalogic/SoundnessLemmas/FrameClassVariants.lean",
-    "FormalSystem/Metalogic/Independence.lean",
-    "FormalSystem/Metalogic/Independence/ClockFrame.lean",
-    "FormalSystem/Metalogic/Independence/CoNotPriorU.lean",
-    "FormalSystem/Metalogic/Independence/LexIntWitness.lean",
-    "FormalSystem/Metalogic/Independence/LoopingDuration.lean",
-    "FormalSystem/Metalogic/Algebraic/FlowFrame.lean",
-    "FormalSystem/Metalogic/WeakCanonical/IntegerModel/ReynoldsBridge.lean",
-    "FormalSystem/Metalogic/Decidability/Verified/Bridge/RegionFrame.lean",
-    "FormalSystem/Metalogic/Decidability/Verified/Decidable.lean",
-    "FormalSystem/Metalogic/Decidability/Propositional/Decidable.lean",
-    "FormalSystem/Metalogic/Decidability/BiLasso/BoxOracle.lean",
-    "FormalSystem/Metalogic/Decidability/BiLasso/Check.lean",
-    "FormalSystem/Metalogic/Decidability/BiLasso/Extraction.lean",
-    "FormalSystem/Metalogic/Soundness.lean",
-    "FormalSystem/Examples/TemporalStructures.lean",
-    "FormalSystem/Boneyard/StrictSemanticsLegacy/Bundle/CanonicalConstruction.lean",
-    "Tests/BimodalTest/Semantics/SaturationFiniteAxiomTest.lean",
-    "Tests/BimodalTest/Semantics/TruthTest.lean",
-    "scripts/module-invariants-manifest.txt"
-  ],
+  "status": "implemented",
+  "started_at": "2026-09-02T00:00:00Z",
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/523_frame_kit_helpers_transport_standard_frames/summaries/01_frame-kit-helpers-transport-summary.md",
-      "summary": "Frame-kit consolidation: Helper D and Helper B completed, ofTotal, the TruthIso/TruthAntiIso transport pair, DiscreteOrder order-duals, LexCarrier generalised, Frames/Standard.lean; phase 10 blocked on a quantifier mismatch the research report got wrong."
+      "summary": "Implementation summary updated for Phase 10 closure: status IMPLEMENTED, blocker resolution via task 532's TruthCorr, induction-phi ledger at three, resumed-dispatch verification rows."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/523_frame_kit_helpers_transport_standard_frames/handoffs/phase-10-handoff-20260903T010116Z.md",
+      "summary": "Phase 10 closure record: per-item evidence, build result, and the two closure decisions."
     }
   ],
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 8,
+    "build_passed": true,
+    "notes": "No Lean file modified in this dispatch. Guarded detached full build exit 0 (2520 jobs, 0 sorry warnings, 0 errors). check-module-invariants.sh ALL CHECKS PASSED. Sorry census: 8 hits, all pre-existing in Boneyard/StrictSemanticsLegacy/ (not built). Vacuous grep: 1 pre-existing hit, Examples/TemporalStructures.lean:496, a genuine proof of a True-valued domain fact. ^axiom count 8, equal to the post-task-532 baseline."
+  },
   "completion_data": {
-    "completion_summary": "Completed 12 of 14 phases of the task-frame construction kit: Saturation Helper D (eight duplicated bodies collapsed, three new axiom-profile guards), the Helper B permissive family, WorldHistory.ofTotal, the abstract-P DiscreteOrder cores with their D-op duals, the Z step-path dictionary by import, LexCarrier generalised to a-lex-Z, and Frames/Standard.lean with the three Semantics.lean aggregation gaps closed. The TruthIso and TruthAntiIso generic transports landed and absorbed three hand-written six-case inductions. Phase 10 is BLOCKED and phase 12 closed with exclusions: both target transports quantify over ARBITRARY world histories while TruthIso transports total ones only, an obstruction the research report recorded as derivable. Build, test build and check-module-invariants.sh are all green, with zero sorry and no new axioms.",
+    "completion_summary": "Closed Phase 10, the last open phase, on re-verification: task 532's relational TruthCorr had already derived timeShift_preserves_truth (the blocked item), and the phase's other deliverables (truthAt_add_period via loopingTruthIso, truth_double_shift_cancel and two dead lemmas deleted, the truthAt_add_hist_period cross-reference) were on the tree from dispatch 1. All 14 phases are closed with a green guarded build and invariants check; no Lean file changed in this dispatch.",
     "roadmap_items": []
   },
-  "metadata": {
-    "session_id": "sess_1788377349_296ecf",
-    "agent_type": "lean-implementation-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
-    "compliance_check": "passed",
-    "phase_outcomes": {
-      "1": "COMPLETED", "2": "COMPLETED", "3": "COMPLETED", "4": "COMPLETED",
-      "5": "COMPLETED", "6": "COMPLETED", "7": "COMPLETED", "8": "COMPLETED",
-      "9": "COMPLETED", "10": "BLOCKED", "11": "COMPLETED",
-      "12": "COMPLETED WITH EXCLUSIONS", "13": "COMPLETED (NO-GO)", "14": "COMPLETED"
-    },
-    "line_delta": {"files_changed": 34, "insertions": 1450, "deletions": 1297, "net": 153,
-      "planned_net": -737,
-      "shortfall_causes": ["phases 10 and 12 did not delete time_shift_preserves_truth (233 lines) or truthAt_map (72 lines)", "the remainder is the recorded-reason documentation every phase's task list called for"]},
-    "plan_figures_corrected": 5
-  },
+  "modified_files": [
+    "specs/523_frame_kit_helpers_transport_standard_frames/plans/01_frame-kit-helpers-transport.md",
+    "specs/523_frame_kit_helpers_transport_standard_frames/summaries/01_frame-kit-helpers-transport-summary.md",
+    "specs/523_frame_kit_helpers_transport_standard_frames/handoffs/phase-10-handoff-20260903T010116Z.md",
+    "specs/523_frame_kit_helpers_transport_standard_frames/.orchestrator-handoff.json"
+  ],
   "memory_candidates": [
     {
-      "content": "When consolidating N hand-written `induction` proofs behind one generic transport structure, the FIRST thing to check is the quantifier domain of each target's binders, not the shape of its reindexing. In BimodalLogic task 523 a research report classified five truth-transport proofs as instances of one `TruthIso` whose history field was an equivalence of TOTAL histories (`F.HF`), and two of the five were in fact stated over ARBITRARY histories with no totality hypothesis. Those two are unreachable from the structure and no rearrangement of its fields fixes it: the atom clause `exists ht : tau.domain t, ...` makes atoms FALSE off a partial history's domain, which no total history reproduces. Generalisation: before designing a shared abstraction over a family of similar theorems, diff their BINDER LISTS, not their proof bodies -- a hypothesis one member carries and another omits is exactly what the abstraction cannot bridge, and it is invisible in a table of `dur` maps and box-case discharges.",
-      "category": "PATTERN",
-      "source_artifact": "specs/523_frame_kit_helpers_transport_standard_frames/summaries/01_frame-kit-helpers-transport-summary.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["generic transport", "quantifier mismatch", "total history", "induction consolidation", "binder list diff", "lean abstraction design"]
-    },
-    {
-      "content": "A `def`-wrapped structure record in Lean 4 is opaque at `implicit`/`reducible` transparency, and that breaks `rw` and `simp` in a way whose error message does not name the cause. Symptom: `rw` reports 'Did not find an occurrence of the pattern X' on a goal that visibly contains X, with a trailing note 'The target expression is not type-correct under the implicit transparency level'. Seen twice in one task: (a) after replacing literal `WorldHistory` records with a `WorldHistory.ofTotal` constructor, every call site whose `simp` set unfolded an alias of it needed `WorldHistory.ofTotal` added alongside, because the unfolded term's lambda had the concrete binder type while the expected type needed delta on a semireducible `def`; (b) `Equiv.apply_symm_apply` / `OrderIso.apply_symm_apply` refused to rewrite `e (e.symm x)` where the ambient type was `TaskFrame.HF F`, itself a plain `def` for a subtype. Workarounds that DO elaborate: obtain a preimage with `.surjective` and `subst`/`rw` on the resulting equation instead of rewriting with the symm lemma; or add the constructor to the offending `simp` set.",
-      "category": "GOTCHA",
-      "source_artifact": "specs/523_frame_kit_helpers_transport_standard_frames/summaries/01_frame-kit-helpers-transport-summary.md",
-      "confidence": 0.8,
-      "suggested_keywords": ["lean4", "implicit transparency", "rw pattern not found", "semireducible def", "Equiv.apply_symm_apply", "simp unfolding"]
-    },
-    {
-      "content": "A migration justified as 'mechanical: rewrite (D := Z) to (D := intOrder)' must be re-counted before it is executed, and the count must distinguish CONCRETE from ABSTRACT argument sites. In BimodalLogic task 523 the plan's go/no-go input said three frame constants carried 57/61/50 references 'essentially all of the form (D := Z)'. Measured: 175 occurrences carrying 101 explicit annotations, of which only 47 were concrete. The migration removed ZERO annotations -- a concrete site still has to name its order when nothing in the frame's type determines it -- and would have made the other 54 strictly longer, because unification cannot invert a projection like `TemporalOrder.carrier ?D =?= D`. A counted NO-GO with the table recorded in the touched docstring is a legitimate deliverable, not a failure.",
-      "category": "PATTERN",
+      "content": "When a plan phase is [BLOCKED] and a later task resolves the blocker on the tree, the resumed dispatch should not re-implement: probe each checklist item against the live tree (reference counts, byte-identical statement diffs against the pre-phase commit, build), annotate deviations inline where the landed shape differs from the specified one, and close the marker. A truth-transport stated for arbitrary histories cannot be an instance of a total-history equivalence (F.HF ≃ F'.HF); the relational TruthCorr shape (Prop-valued Rel plus totality-existence in both directions) is what reaches it.",
+      "category": "INSIGHT",
       "source_artifact": "specs/523_frame_kit_helpers_transport_standard_frames/summaries/01_frame-kit-helpers-transport-summary.md",
       "confidence": 0.75,
-      "suggested_keywords": ["go/no-go", "re-measure before migrating", "named argument count", "unification cannot invert projection", "bundled vs bare carrier"]
+      "suggested_keywords": [
+        "blocked-phase",
+        "resumed-dispatch",
+        "TruthCorr",
+        "TruthIso",
+        "truth-transport",
+        "re-verification"
+      ]
     }
   ],
-  "next_steps": "Decide the TruthIso widening question (summary section 'The blocker'), then re-dispatch phases 10 and 12."
+  "reflection": {
+    "what_worked": "Reading the plan's Phase 10 resolution note first, then probing every checklist item on the tree before touching the marker, made the closure a verification exercise rather than a re-implementation.",
+    "what_was_hard": "Deciding between [COMPLETED] and [COMPLETED WITH EXCLUSIONS]: no item was excluded, but two landed in a different shape than specified, so they were annotated as altered deviations rather than exclusions.",
+    "what_was_missed": "The plan's 'grep -c induction φ counts exactly one' verification bullet was stale at planning time (a non-transport induction from task 521 already existed); it is annotated with the measured figure rather than forced.",
+    "successes": "All 14 phases closed; build and invariants green; no Lean change needed."
+  },
+  "next_steps": "Entry reconcile may promote task 523 to completed; no further plan phases remain.",
+  "metadata": {
+    "session_id": "sess_1788396924_3fde5e",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
+    "phases_completed": 14,
+    "phases_total": 14,
+    "compliance_check": "passed",
+    "git_checkpoint": "118d9857e",
+    "cycles_used": 1,
+    "final_state": "completed",
+    "detected_defects": []
+  }
 }

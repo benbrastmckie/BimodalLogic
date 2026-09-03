@@ -1705,7 +1705,7 @@
     {
       "project_number": 523,
       "project_name": "frame_kit_helpers_transport_standard_frames",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "topic": "metalogic",
       "priority": "medium",
@@ -1737,7 +1737,7 @@
         "FormalSystem/Examples/TemporalStructures.lean"
       ],
       "created": "2026-09-02T03:30:31Z",
-      "last_updated": "2026-09-02T19:30:04Z",
+      "last_updated": "2026-09-03T01:02:43Z",
       "artifacts": [
         {
           "path": "specs/523_frame_kit_helpers_transport_standard_frames/reports/01_frame-kit-helpers-transport-standard-frames.md",
@@ -1752,10 +1752,10 @@
         {
           "path": "specs/523_frame_kit_helpers_transport_standard_frames/summaries/01_frame-kit-helpers-transport-summary.md",
           "type": "summary",
-          "summary": "Frame-kit consolidation: Helper D and Helper B completed, ofTotal, the TruthIso/TruthAntiIso transport pair, DiscreteOrder order-duals, LexCarrier generalised, Frames/Standard.lean; phase 10 blocked on a quantifier mismatch the research report got wrong."
+          "summary": "Updated implementation summary: status IMPLEMENTED, Phase 10 resolution, induction-phi ledger at three, resumed-dispatch verification rows"
         }
       ],
-      "session_id": "sess_1788377349_296ecf_523",
+      "session_id": "sess_1788396924_3fde5e",
       "memory_candidates": [
         {
           "content": "In this repo, a consolidation target protected by a #guard_msgs-gated `#print axioms` block is specified by its axiom profile, not just its statement. Tests/BimodalTest/Semantics/SaturationFiniteAxiomTest.lean pins four such profiles and its own prose names the wrong consolidation ('route the subsingleton case through the general lemma'). When planning a helper that subsumes such a site, the helper must be ADDITIVE: added beside the guarded lemma, never routed through it, and never routed through a helper whose `classical`/`by_cases` opening drags in Classical.choice. A direct proof can be both shorter and strictly cleaner axiomatically than reuse -- measured here: saturation_of_fib_subsingleton is [propext]-only, while the existing univ_or_singleton route is Classical.choice-dependent. Generalisation: when a test pins a non-functional property (axiom profile, allocation count, elaboration time), treat DRY consolidation as constrained by that property, and verify the profile rather than the build.",
@@ -1771,7 +1771,8 @@
             "propext"
           ]
         }
-      ]
+      ],
+      "completion_summary": "Closed Phase 10, the last open phase, on re-verification: task 532's relational TruthCorr had already derived timeShift_preserves_truth (the blocked item), and the phase's other deliverables (truthAt_add_period via loopingTruthIso, truth_double_shift_cancel and two dead lemmas deleted, the truthAt_add_hist_period cross-reference) were on the tree from dispatch 1. All 14 phases are closed with a green guarded build and invariants check; no Lean file changed in this dispatch."
     },
     {
       "project_number": 524,

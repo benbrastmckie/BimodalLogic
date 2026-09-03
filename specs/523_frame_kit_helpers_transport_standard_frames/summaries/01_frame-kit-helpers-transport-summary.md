@@ -3,6 +3,10 @@
 - **Task**: 523 - Frame kit helpers, transport, standard frames (WAVE 2, core utilities)
 - **Plan**: `specs/523_frame_kit_helpers_transport_standard_frames/plans/01_frame-kit-helpers-transport.md`
 - **Status**: **IMPLEMENTED** — 13 of 14 phases `[COMPLETED]`, 1 `[COMPLETED WITH EXCLUSIONS]`;
+- **Started**: TBD
+- **Completed**: TBD
+- **Artifacts**: TBD
+- **Standards**: TBD
   all 14 closed
 - **Type**: lean4
 - **Sessions**: sess_1788377349_296ecf (dispatch 1: phases 1-14, with Phase 10 left `[BLOCKED]`);

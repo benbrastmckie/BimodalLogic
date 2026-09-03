@@ -1,7 +1,7 @@
 # Implementation Plan: Task #523
 
 - **Task**: 523 - Frame kit helpers, transport, standard frames (WAVE 2, core utilities)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 22.5 hours
 - **Dependencies**: Tasks 517 (Saturation rename), 521 (truth simp-normal form), 522 (FrameClass.Sat / adapters / ValidDedekind renames) — all landed at HEAD
 - **Research Inputs**: specs/523_frame_kit_helpers_transport_standard_frames/reports/01_frame-kit-helpers-transport-standard-frames.md
