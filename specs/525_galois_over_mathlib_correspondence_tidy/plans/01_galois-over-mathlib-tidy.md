@@ -244,25 +244,28 @@ parallel wave-1 dispatch shares one `lake build`; if run in parallel, serialise 
 
 ---
 
-### Phase 2: Retarget `Indicator.lean` to the iff entry point [NOT STARTED]
+### Phase 2: Retarget `Indicator.lean` to the iff entry point [COMPLETED]
 
 - **Goal:** Both closure corollaries are one-line applications of `galoisClosed_of_indicator_iff`, and
   the module header states the full four-part closed/not-closed picture in one place.
 
 - **Tasks:**
-  - [ ] Rewrite `galoisClosed_sat_dense` as
+  - [x] Rewrite `galoisClosed_sat_dense` as
         `galoisClosed_of_indicator_iff _ validOn_neg_nextTop_iff` (3 lines -> 1). The defeq
         `F ∈ {F | FrameClass.Sat FrameClass.Dense F}` ≡ `DenselyOrdered F.Duration` holds, as the
         existing docstring already asserts, so no bridging lemma is needed.
-  - [ ] Rewrite `galoisClosed_isDiscrete` as
+  - [x] Rewrite `galoisClosed_isDiscrete` as
         `galoisClosed_of_indicator_iff _ validOn_nextTop_iff_isDiscrete` (3 lines -> 1).
-  - [ ] Update both corollary docstrings, which currently narrate "one application of
+  - [x] Update both corollary docstrings, which currently narrate "one application of
         `galoisClosed_of_indicator` at `φ := …`, with `hmem` the `.mpr` and `hback` the `.mp`" — that
         two-argument framing is exactly what the iff form absorbs, so the narration must change.
-  - [ ] Add the `RationalWitness.lean` half to the module header. It already names
+  - [x] Add the `RationalWitness.lean` half to the module header. It already names
         `LexIntWitness.lean` (at `:41` and `:147`); adding `RationalWitness.lean` completes the
         four-part picture in one place: dense closed / paper-discrete closed / `Sat .Discrete` not
-        closed / `Sat .Dedekind` not closed.
+        closed / `Sat .Dedekind` not closed. *(Rendered as a four-row table under a new
+        "## The closed and the not-closed, in one place" heading, replacing the former
+        "## The two Discrete classes are different" heading; the Discrete-split explanation is
+        preserved verbatim beneath it as a `###` subsection.)*
 
 - **Timing:** 0.5 hours
 
@@ -273,6 +276,9 @@ parallel wave-1 dispatch shares one `lake build`; if run in parallel, serialise 
 - **Scope Hypothesis:** This phase asserts exactly two corollaries in `Indicator.lean` produce
   `GaloisClosed` and both retarget cleanly. Confirm by `grep -n 'galoisClosed' FormalSystem/Semantics/Correspondence/Indicator.lean`
   and reading every hit; a third producer, if one appears, is in scope for this phase.
+  *(Confirmed at implementation time: the grep returns 11 hits, of which exactly two —
+  `galoisClosed_sat_dense` at `:133` and `galoisClosed_isDiscrete` at `:151` — are producers; the
+  rest are prose. No third producer. Both are now single-line.)*
 
 - **Files to modify:**
   - `FormalSystem/Semantics/Correspondence/Indicator.lean` — two proof bodies, two docstrings, header

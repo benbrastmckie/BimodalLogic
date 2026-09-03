@@ -29,9 +29,22 @@ pure order condition on the frame's duration group. Two of them, in fact, and th
 biconditional is not obtained by transporting a condition at `0` along translations.
 
 Each of the two is an *indicator* in the sense of `Galois.galoisClosed_of_indicator`, so both
-closure results below are single applications of that lemma with no per-class argument.
+closure results below are single applications of its iff-shaped entry point
+`galoisClosed_of_indicator_iff`, with no per-class argument.
 
-## The two Discrete classes are different, and this file is where the difference shows
+## The closed and the not-closed, in one place
+
+The two corollaries below are the **closed** half of a four-part picture; the other half lives in
+`Metalogic/Independence/`, and the two halves are only intelligible together:
+
+| Class | Closed? | Where |
+|---|---|---|
+| `FrameClass.Sat FrameClass.Dense` | yes | `galoisClosed_sat_dense`, below |
+| `{F \| F.IsDiscrete}` (the paper's bare clause) | yes | `galoisClosed_isDiscrete`, below |
+| `FrameClass.Sat FrameClass.Discrete` | **no** | `LexIntWitness.lean`'s `sat_discrete_ssubset_mod_axiomSet` |
+| `FrameClass.Sat FrameClass.Dedekind` | **no** | `RationalWitness.lean`'s `sat_dedekind_ssubset_mod_axiomSet` |
+
+### Why the Discrete row splits
 
 `TaskFrame.IsDiscrete` — `def:frame-properties`' bare Discrete clause, guarded by `(∃ y, x < y)` —
 is the class `X⊤` indicates, and it *is* Galois-closed (`galoisClosed_isDiscrete`).
@@ -42,6 +55,11 @@ narrowing to ℤ-time. It is strictly stronger, and it is **not** Galois-closed 
 `Mod (AxiomSet .Discrete)` and outside it. Stating the closure corollary below over
 `Sat .Discrete` would therefore contradict that witness. The corollary is over `{F | F.IsDiscrete}`
 and must stay there.
+
+The Dedekind row does not split the same way: `Sat .Dense` (the row that *is* closed) is the
+paper's bare Dense clause, while `Sat .Dedekind` adds Dedekind completeness, which
+`RationalWitness.lean`'s static frame over `ℚ` satisfies axiomatically without satisfying
+semantically.
 
 ## Main results
 
@@ -122,8 +140,9 @@ theorem validOn_nextTop_iff_isDiscrete (F : TaskFrame) :
 /--
 **The dense class is Galois-closed**: `Mod (Th (Sat .Dense)) = Sat .Dense`.
 
-One application of `galoisClosed_of_indicator` at `φ := ¬X⊤`, with `hmem` the `.mpr` and `hback`
-the `.mp` of `validOn_neg_nextTop_iff`.
+One application of `galoisClosed_of_indicator_iff` at `φ := ¬X⊤`, handed
+`validOn_neg_nextTop_iff` whole — the iff entry point absorbs the split into `hmem` and `hback`
+that the two-argument form would need.
 
 `Sat .Dense` unfolds to `TaskFrame.IsDense`, which is `DenselyOrdered F.Duration`, so no
 translation between the two spellings is needed. Note that no proof theory enters: that `¬X⊤` is
@@ -132,15 +151,13 @@ plays no role in the argument.
 -/
 theorem galoisClosed_sat_dense :
     GaloisClosed {F : TaskFrame | FrameClass.Sat FrameClass.Dense F} :=
-  galoisClosed_of_indicator (Formula.next Formula.top).neg
-    (fun _ hF => (validOn_neg_nextTop_iff _).mpr hF)
-    (fun _ h => (validOn_neg_nextTop_iff _).mp h)
+  galoisClosed_of_indicator_iff _ validOn_neg_nextTop_iff
 
 /--
 **The paper-Discrete class is Galois-closed**: `Mod (Th {F | F.IsDiscrete}) = {F | F.IsDiscrete}`.
 
-One application of `galoisClosed_of_indicator` at `φ := X⊤`, via
-`validOn_nextTop_iff_isDiscrete`.
+One application of `galoisClosed_of_indicator_iff` at `φ := X⊤`, handed
+`validOn_nextTop_iff_isDiscrete` whole.
 
 **This is `TaskFrame.IsDiscrete`, the paper's bare Discrete clause — NOT
 `FrameClass.Sat FrameClass.Discrete`.** The latter is `TaskFrame.IsSuccArchDiscrete`, the ℤ-time
@@ -150,9 +167,7 @@ Restating this corollary over `Sat .Discrete` would contradict that witness.
 -/
 theorem galoisClosed_isDiscrete :
     GaloisClosed {F : TaskFrame | F.IsDiscrete} :=
-  galoisClosed_of_indicator (Formula.next Formula.top)
-    (fun _ hF => (validOn_nextTop_iff_isDiscrete _).mpr hF)
-    (fun _ h => (validOn_nextTop_iff_isDiscrete _).mp h)
+  galoisClosed_of_indicator_iff _ validOn_nextTop_iff_isDiscrete
 
 /-- Spot-check of the framing in `galoisClosed_sat_dense`'s docstring: `Axiom.dense_indicator`'s
 `minFrameClass` really is `FrameClass.Dense`, by `rfl`. -/
