@@ -418,7 +418,16 @@ progress file.
 
 ---
 
-### Phase 4: `multiFamTaskFrame` as a definitional specialization [NOT STARTED]
+### Phase 4: `multiFamTaskFrame` as a definitional specialization [COMPLETED]
+
+**Deviation note**: replacing the `where`-block with `Algebraic.multiFamTaskFrameGen intOrder
+FamIdx` broke one downstream `omega` call in `multiFam_total_eq`
+(`ReynoldsBridge.lean`, `key` sub-lemma) -- `omega` could no longer close
+`(σ.states t ht).2 = (σ.states 0 ⋯).2 + t` from `h₂ : (σ.states t ht).2 = (σ.states 0 ⋯).2 +
+(t - 0)` once the extra unfolding layer was introduced (interactive `lean_goal` reported the
+tactic closing the goal, but batch `lake build` did not -- the batch compile was treated as
+authoritative). Replaced `omega` with the equivalent `rw [h₂, sub_zero]`, which is
+unfolding-independent. No other downstream proof needed adjustment.
 
 **Goal**: One frame-construction site; exactly one `rfl` certification of the generic identity.
 

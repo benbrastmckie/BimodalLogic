@@ -754,48 +754,24 @@ noncomputable def toCarrier {sig : MonadicSignature} [Fintype sig.preds] [Decida
     (h_lo : Z.lo = none) (h_hi : Z.hi = none) (z : ℤ) : Z.intervalCarrier :=
   ⟨z, by rw [h_lo, h_hi]; exact ⟨trivial, trivial⟩⟩
 
-/-- Every fibre of the deterministic family-indexed `ℤ`-shift relation is a subsingleton.
-Stated on the bare relation, and **above** `multiFamTaskFrame`, so that the frame's own
-*Saturation* field is a citation of Helper D. -/
-theorem famShiftRel_fib_subsingleton (FamIdx : Type) (w : FamIdx × ℤ) (x : ℤ) :
-    (TaskFrame.Fib (fun (p : FamIdx × ℤ) (d : ℤ) (q : FamIdx × ℤ) =>
-      p.1 = q.1 ∧ q.2 = p.2 + d) w x).Subsingleton := by
-  rintro u ⟨hu₁, hu₂⟩ u' ⟨hu'₁, hu'₂⟩
-  exact Prod.ext (hu₁.symm.trans hu'₁) (hu₂.trans hu'₂.symm)
-
 /-- A `FrameOver intOrder` with `WorldState = FamIdx × ℤ`. Each world state is a family index
 paired with a position. The task relation is deterministic: stepping by `d` from
-`(f, z)` reaches `(f, z + d)` (same family, shifted position). -/
-noncomputable def multiFamTaskFrame (FamIdx : Type) [Nonempty FamIdx] : FrameOver intOrder where
-  WorldState := FamIdx × ℤ
-  worldNonempty := inferInstance
-  TaskRel := fun p d q => p.1 = q.1 ∧ q.2 = p.2 + d
-  nullity_identity := fun p q => by
-    constructor
-    · rintro ⟨h1, h2⟩; ext <;> [exact h1; omega]
-    · rintro h; subst h; exact ⟨rfl, by omega⟩
-  comp := TaskFrame.comp_of
-    (fun w v x y _ _ h => ⟨(w.1, w.2 + x), ⟨rfl, rfl⟩, h.1, by omega⟩)
-    (fun _ _ _ _ _ _ _ ⟨h1, h2⟩ ⟨h3, h4⟩ => ⟨h1.trans h3, by omega⟩)
-  converse := fun _ _ _ => by constructor <;> (rintro ⟨h1, h2⟩; exact ⟨h1.symm, by omega⟩)
-  serial := fun w x _ =>
-    ⟨⟨(w.1, w.2 + x), rfl, rfl⟩, ⟨(w.1, w.2 - x), rfl, by omega⟩⟩
-  limit :=
-    TaskFrame.limit_of_shift Prod.snd (fun _ _ _ h => h.2)
-      (fun w u h => Prod.ext h.1.symm (by omega))
-  saturation := TaskFrame.saturation_of_fib_subsingleton (famShiftRel_fib_subsingleton FamIdx)
+`(f, z)` reaches `(f, z + d)` (same family, shifted position).
+
+Definitional specialization of `Algebraic.multiFamTaskFrameGen` at the `ℤ` fibre -- see
+`## multiFamTaskFrame discharges def:frame's four axioms` below for why this is exact, not
+approximate: the two frames' `WorldState` and `TaskRel` coincide syntactically, and every
+other field is a `Prop`, so this is the one frame-construction site rather than a second
+independent one. -/
+noncomputable def multiFamTaskFrame (FamIdx : Type) [Nonempty FamIdx] : FrameOver intOrder :=
+  Algebraic.multiFamTaskFrameGen intOrder FamIdx
 
 /-! ### `multiFamTaskFrame` discharges `def:frame`'s four axioms (by specialization)
 
-`multiFamTaskFrame FamIdx` and `multiFamTaskFrameGen ℤ FamIdx` (`FlowFrame.lean`) have the same
-carrier `FamIdx × ℤ` and the same task relation, and their remaining fields are `Prop`s, so the
-two frames are **definitionally equal** — `multiFamTaskFrame FamIdx = multiFamTaskFrameGen
-intOrder FamIdx` holds by `rfl`, both being values of the fibre `FrameOver intOrder`. The four axiom facts are therefore *derived* from the generic frame's,
-not re-proved: `multiFamTaskFrameGen_serial` and its siblings apply directly. -/
-
-/-- The `ℤ` multi-family frame is definitionally the generic flow frame at the `ℤ` fibre. -/
-theorem multiFamTaskFrame_eq_gen (FamIdx : Type) [Nonempty FamIdx] :
-    multiFamTaskFrame FamIdx = Algebraic.multiFamTaskFrameGen intOrder FamIdx := rfl
+`multiFamTaskFrame` is now *literally* `Algebraic.multiFamTaskFrameGen intOrder FamIdx`, not
+merely definitionally equal to it, so the four axiom facts below are directly `Algebraic`
+applications -- there is no longer a separate `rfl` certification to state, since the identity
+is the definition. -/
 
 /-- *Seriality* (`def:frame#Seriality`, verbatim: "$w \Rightarrow_x u$ and $v \Rightarrow_x w$
 for some $u, v \in W$") for `multiFamTaskFrame`, by specialization of
@@ -877,7 +853,7 @@ theorem multiFam_total_eq {FamIdx : Type} [Nonempty FamIdx]
       σ.respects_task 0 t (htot 0) ht
     refine Prod.ext h₁.symm ?_
     show (σ.states t ht).2 = (σ.states 0 (htot 0)).2 + t
-    omega
+    rw [h₂, sub_zero]
   refine ⟨(σ.states 0 (htot 0)).1, (σ.states 0 (htot 0)).2, ?_⟩
   obtain ⟨⟨dom, nedom, sts, resp⟩, conv⟩ := σ
   have hdom : dom = fun _ => True :=
