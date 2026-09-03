@@ -1,0 +1,16 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/524_consequence_compactness_generic_theorems/reports/01_consequence-compactness-generic-theorems.md",
+      "summary": "FrameClass collapse at the theorem layer: all eight work items verified constructible, with the mathematically load-bearing declarations for items 1-6 elaborated clean against the built library; four corrections to the task's measured state."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1788407456_70233f_524",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}

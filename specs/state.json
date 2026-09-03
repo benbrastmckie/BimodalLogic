@@ -1777,7 +1777,7 @@
     {
       "project_number": 524,
       "project_name": "consequence_compactness_generic_theorems",
-      "status": "researching",
+      "status": "researched",
       "task_type": "lean4",
       "topic": "metalogic",
       "priority": "medium",
@@ -1803,8 +1803,14 @@
         "scripts/check-module-invariants.sh"
       ],
       "created": "2026-09-02T03:30:31Z",
-      "last_updated": "2026-09-03T03:51:47Z",
-      "artifacts": [],
+      "last_updated": "2026-09-03T04:05:39Z",
+      "artifacts": [
+        {
+          "type": "report",
+          "path": "specs/524_consequence_compactness_generic_theorems/reports/01_consequence-compactness-generic-theorems.md",
+          "summary": "FrameClass collapse at the theorem layer: all eight work items verified constructible, with the mathematically load-bearing declarations for items 1-6 elaborated clean against the built library; four corrections to the task's measured state."
+        }
+      ],
       "session_id": "sess_1788407456_70233f_524"
     },
     {
