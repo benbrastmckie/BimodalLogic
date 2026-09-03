@@ -11,13 +11,13 @@ next_project_number: 533
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,193,257,298,433,461,476,481,504,506,524,526,529 | -- | automation, dataset-enhancement, decidability, ... |
-| 2 | 178,231,282,296,463,502,527,528,530 | 193,298,433,461,524,526 | algebraic-representation, dataset-enhancement, decidability, ... |
-| 3 | 219,464,497,531 | 231,463,502,528,529,530 | algebraic-representation, dataset-enhancement, decidability, ... |
-| 4 | 465,498,499,500 | 464,497 | algebraic-representation, decidability |
-| 5 | 125,428 | 465,498,499 | algebraic-representation, decidability |
-| 6 | 429,501 | 125,428 | algebraic-representation, decidability |
-| 7 | 410 | 429 | decidability |
+| 1 | 127,128,193,257,298,433,461,476,481,504,506,524,529 | -- | automation, dataset-enhancement, decidability, ... |
+| 2 | 178,231,282,296,463,502,526,530 | 193,298,433,461,524 | algebraic-representation, dataset-enhancement, decidability, ... |
+| 3 | 219,464,527,528,531 | 231,463,526,529,530 | dataset-enhancement, decidability, metalogic |
+| 4 | 465,497 | 464,502,528 | algebraic-representation, decidability |
+| 5 | 428,498,499,500 | 465,497 | algebraic-representation, decidability |
+| 6 | 125,429 | 428,498,499 | algebraic-representation, decidability |
+| 7 | 410,501 | 125,429 | algebraic-representation, decidability |
 | 8 | 411 | 410 | decidability |
 | 9 | 430 | 411 | decidability |
 | 10 | 177,412 | 193,430,530 | decidability, formula-refactor |
@@ -85,11 +85,11 @@ next_project_number: 533
 ### Metalogic
 
 524 [IMPLEMENTING] — WAVE 3 (theorem layer). Finish the FrameClass collapse at the THE
+  └─ 526 [NOT STARTED] — WAVE 3 (theorem layer). Consolidate the maximal-consistent-set AP
+    └─ 527 [NOT STARTED] — WAVE 4 (canonical-model infrastructure). Replace textual future/p
+    └─ 528 [NOT STARTED] — WAVE 4 (algebraic infrastructure). Modernise Metalogic/Algebraic/
   └─ 530 [NOT STARTED] — WAVE 5 (publication infrastructure). Make status and counts machi
     └─ 531 [NOT STARTED] — WAVE 5 (publication infrastructure). Publish the API documentatio
-526 [NOT STARTED] — WAVE 3 (theorem layer). Consolidate the maximal-consistent-set AP
-  └─ 527 [NOT STARTED] — WAVE 4 (canonical-model infrastructure). Replace textual future/p
-  └─ 528 [NOT STARTED] — WAVE 4 (algebraic infrastructure). Modernise Metalogic/Algebraic/
 529 [NOT STARTED] — WAVE 5 (publication infrastructure). Turn on the two automated si
   └─ 531 [NOT STARTED] — WAVE 5 (publication infrastructure). Publish the API documentatio (see above)
 
@@ -166,7 +166,7 @@ next_project_number: 533
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: metalogic
-- **Dependencies**: Task 520, Task 521
+- **Dependencies**: Task 520, Task 521, Task 524
 
 **Description**: WAVE 3 (theorem layer). Consolidate the maximal-consistent-set API in Metalogic/Core/ so the three completeness routes consume one set of lemmas, and run the MCS-automation experiment. Findings B-11, B-12, F-09, F-10, F-15, F-22, A-14, D-12 in specs/reviews/2026-09-01-lean-engineering/{B-completeness,F-canonical,A-soundness,D-tactics}.md; utilities U11/U14/U15 in the review. MEASURED STATE: restricted_lindenbaum (Core/RestrictedMCS/Basic.lean:316, 59 lines) re-proves set_lindenbaum's Zorn argument (Core/MaximalConsistent.lean:303, 50 lines) line for line, differing only in a four-line closure-preservation obligation; restricted_mcs_F_bounded (:488) and restricted_mcs_P_bounded (:593) are byte-identical modulo iterF/iterP renaming (one differing line, a comment) and hand-roll a well-founded minimum with truncated subtraction that Nat.find gives directly -- 154 lines for one 25-line lemma; bot_not_in_mcs is proved three times with the same script (BXCanonical/TruthLemma.lean:69, WeakCanonical/TruthLemma.lean:57, inlined at Algebraic/FlowFrame.lean:695) and never in Core/, so WeakCanonical/Transfer.lean:455,892,986,1036 reach across to the BXCanonical copy -- an accidental cross-route dependency; the four-step idiom `notNotIntro -> temporal_necessitation -> DerivationTree.axiom (Axiom.right_mono_until φ ψ Formula.top) -> modus_ponens` is written out 14 times in Bundle/ (and at BXCanonical/Chronicle/RRelation.lean:1264,1287) though Theorems/TemporalDerived.lean:407,418 name it fMono/pMono; CanonicalTask_backward (Bundle/CanonicalTaskRelation.lean:286) is an inductive provably equal to CanonicalTask_forward with arguments swapped (:501), so four supporting lemmas re-induct; the `weakening`-at-empty-context scaffold (h_eq/h_height_eq/h_term + decreasing_by) is duplicated at Soundness.lean:1422-1429 and BaseLanguageSoundness.lean:382-393 and soundness_in and derivable_valid_and_swap_validIn use two different induction idioms for one recursion. The MCS API is a five-lemma forward-chaining set with 869 call sites (theorem_in_mcs 340, implication_property 315, negation_complete 139, closed_under_derivation 38, neg_excludes 37) and zero aesop use; five of the twenty longest proofs in the core scope are UltrafilterMCS.lean membership bookkeeping. WORK: (1) `exists_maximal_of_chainClosed {P : Set Formula → Prop} {A}` in Core/MaximalConsistent.lean; set_lindenbaum and restricted_lindenbaum as instantiations. (2) `restricted_mcs_iter_bounded {it b op}` via Nat.find on `fun n => it (n+1) phi ∉ M`; F/P as one-line instantiations (this consumes the IteratedTemporal.lean relocation from task 520). (3) `SetMaximalConsistent.bot_not_mem` in Core/MCSProperties.lean; delete the two copies; replace FlowFrame's inlined branch; re-point Transfer.lean. (4) `someFuture_mono` / `somePast_mono` in Theorems/TemporalDerived.lean; replace the 14+2 inline blocks. (5) `def CanonicalTask_backward u n v := CanonicalTask_forward v n u`; collapse its lemma family (or Boneyard the family if 520 leaves it unconsumed). (6) `DerivationTree.ofWeakeningNil` + height lemma in ProofSystem/Derivation.lean with a BL twin; unify the two soundness inductions. (7) EXPERIMENT (D-12, not validated): a NAMED Aesop rule set `declare_aesop_rule_sets [MCS]` in a new Core/MCSAesop.lean -- safe forward: implication_property, closed_under_derivation, neg_excludes, theorem_in_mcs; unsafe 50%: negation_complete (the only branching rule); norm simp: Set.mem_insert_iff, Set.mem_singleton_iff, List.mem_cons; `macro "mcs_auto"`. Trial it on RestrictedMCS/Basic.lean:137 (restricted_mcs_negation_complete, 136 lines) and one UltrafilterMCS lemma; keep it only if it shortens both, and record the outcome either way in Core/README.md so the question is not reopened. Update Core/README.md ('Last verified' 2026-05-29 against a directory last changed 2026-08-25). ACCEPTANCE: one Zorn lemma, one iteration-boundedness lemma, one bot_not_mem in the live tree; zero inline right_mono_until-with-top idioms in Bundle/; Transfer.lean no longer imports BXCanonical for a one-liner; mcs_auto decision recorded; lake build green; C2 baseline unchanged.
 
