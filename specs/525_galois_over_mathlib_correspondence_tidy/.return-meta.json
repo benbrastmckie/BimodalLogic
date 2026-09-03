@@ -1,32 +1,36 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true,
+    "notes": "sorry_count/vacuous_count/axiom_count are deltas introduced by this task, all zero. Absolute repo state: check-module-invariants.sh C3 PASS (structural sorry inventory ZERO across FormalSystem/, Boneyard/ excluded); `grep -c '^axiom ' FormalSystem/` = 9, identical to the pre-task baseline at b7da18269; the single grep hit for the vacuous-definition pattern is FormalSystem/Examples/TemporalStructures.lean:496 `int_domain_universal ... := trivial`, a genuine theorem whose goal reduces to True, pre-existing since task 523 and untouched here. C2 flagship axiom baseline PASS/unchanged. check-metalogic-cycles.sh PASS. readme-lint.sh PASS."
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/525_galois_over_mathlib_correspondence_tidy/plans/01_galois-over-mathlib-tidy.md",
-      "summary": "Six-phase plan re-basing the frame-class Galois layer on Mathlib.Order.Concept and tidying the correspondence modules, 5.5 hours across three dependency waves."
+      "type": "summary",
+      "path": "specs/525_galois_over_mathlib_correspondence_tidy/summaries/01_galois-over-mathlib-tidy-summary.md",
+      "summary": "Th/Mod/GaloisClosed re-based on Mathlib.Order.Concept's polars, the atom-realisation layer added and the three (T1) proofs made parallel, corrAtom and the private Archimedean copy deleted, READMEs repaired."
     }
   ],
-  "next_steps": "Run /implement 525 to execute the plan",
-  "metadata": {
-    "session_id": "sess_1788407456_70233f_525",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 6,
-    "estimated_hours": 5.5,
-    "dependency_waves": [[1, 3, 5], [2, 4], [6]]
+  "completion_data": {
+    "completion_summary": "Re-based the frame-class Th/Mod/GaloisClosed layer on Mathlib.Order.Concept's upperPolar/lowerPolar/Order.IsExtent of a new validOnRel relation, turning all seven connection theorems into one-line Mathlib projections and adding mod_th_gc, galoisClosed_iff, galoisClosed_of_indicator_iff and seven free closure/union corollaries. Named the atom-realisation step in DurationFrames.lean (translationHF/permissiveHF plus four realisation lemmas) and rewrote the three (T1) correspondence proofs over it into a visibly parallel five-step shape, 207 to 165 lines, deleting private def corrAtom in favour of Atom.mkBase \"p\". Deleted Separability.lean's private arch_of_lub copy in favour of Semantics.archimedean_of_lub, repairing the four docstrings that deletion falsified, and regenerated both affected README module tables. Full lake build green, C2 flagship axiom baseline unchanged, zero sorries.",
+    "roadmap_items": []
   },
-  "memory_candidates": [
-    {
-      "content": "When re-basing a hand-rolled Galois/adjunction layer onto Mathlib, prefer the polarity API in Mathlib.Order.Concept (upperPolar/lowerPolar/Order.IsExtent) over deriving everything from an explicit GaloisConnection. The GaloisConnection route forces one side through OrderDual (e.g. mod_th_mod via .dual.u_l_u_eq_u, plus simp cleanup), while Concept supplies dual-free direct lemmas: lowerPolar_upperPolar_lowerPolar, upperPolar_lowerPolar_upperPolar, lowerPolar_union (a plain @[simp] lemma, not GaloisConnection.l_sup), lowerPolar_empty. Still declare the GaloisConnection as a named theorem for discoverability, but derive nothing from it. Two further gotchas: defining the closure predicate as Order.IsExtent changes it from a fixed-point equation to a range membership -- equivalent by Order.isExtent_iff but NOT defeq, so audit consumers and ship a one-line `iff` compat lemma; and importing a Mathlib module for its lemmas also injects its @[simp] lemmas into the default simp set for every downstream module, which is a whole-tree build risk, not a single-module one.",
-      "category": "PATTERN",
-      "source_artifact": "specs/525_galois_over_mathlib_correspondence_tidy/plans/01_galois-over-mathlib-tidy.md",
-      "confidence": 0.8,
-      "suggested_keywords": ["mathlib", "galois-connection", "order-concept", "polar", "isextent", "simp-set"]
-    }
-  ],
-  "modified_files": [
-    "specs/525_galois_over_mathlib_correspondence_tidy/plans/01_galois-over-mathlib-tidy.md"
-  ]
+  "partial_progress": {
+    "stage": "complete",
+    "details": "All 6 phases COMPLETED.",
+    "phases_completed": 6,
+    "phases_total": 6
+  },
+  "metadata": {
+    "session_id": "sess_1788407456_70233f",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "dispatch_seq": 6,
+    "compliance_check": "passed",
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"]
+  }
 }

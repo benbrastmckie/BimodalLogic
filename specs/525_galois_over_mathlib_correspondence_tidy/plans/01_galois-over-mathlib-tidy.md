@@ -493,38 +493,44 @@ parallel wave-1 dispatch shares one `lake build`; if run in parallel, serialise 
 
 ---
 
-### Phase 6: Repair the two READMEs and confirm the baselines [NOT STARTED]
+### Phase 6: Repair the two READMEs and confirm the baselines [COMPLETED]
 
 - **Goal:** Both READMEs describe the tree as it now is, and the C2 axiom baseline is confirmed
   unchanged.
 
 - **Tasks:**
-  - [ ] `Metalogic/Independence/README.md`: rewrite the opening paragraph. It currently reads "The
+  - [x] `Metalogic/Independence/README.md`: rewrite the opening paragraph. It currently reads "The
         result carried here is that the paper's `CO` principle does **not** derive Reynolds's
         `Axiom.prior_U_gap`…" — singular, and two witnesses out of date. Rewrite to the three result
         families over six modules, **mirroring `Metalogic/Independence.lean:20-31`'s wording**, which
         is already correct and already narrates its own repair. Do not modify `Independence.lean`.
-  - [ ] `Metalogic/Independence/README.md`: regenerate the module table's Lines column with
+  - [x] `Metalogic/Independence/README.md`: regenerate the module table's Lines column with
         `scripts/readme-inventory.sh FormalSystem/Metalogic/Independence`. Note the script emits
         `<!-- TODO: add description -->` placeholders — use it for **line counts only** and preserve
         every existing Description cell verbatim.
-  - [ ] `Semantics/Correspondence/README.md`: regenerate the module table's Lines column the same way,
+  - [x] `Semantics/Correspondence/README.md`: regenerate the module table's Lines column the same way,
         with `scripts/readme-inventory.sh FormalSystem/Semantics/Correspondence`, **after** Phases 1-5
         have landed so the counts are final.
-  - [ ] `Semantics/Correspondence/README.md`: fix the `DurationFrames.lean` Description cell, which
+  - [x] `Semantics/Correspondence/README.md`: fix the `DurationFrames.lean` Description cell, which
         still claims the file contains the translation and permissive frames. Those now live in
         `Semantics/Frames/Standard.lean`; the file retains only the histories and models.
-  - [ ] `Semantics/Correspondence/README.md`: add the reciprocal "See also" to the **Key Results**
+  - [x] `Semantics/Correspondence/README.md`: add the reciprocal "See also" to the **Key Results**
         section naming `sat_dedekind_ssubset_mod_axiomSet` and `sat_discrete_ssubset_mod_axiomSet` as
         the non-closure complement of `galoisClosed_sat_dense` / `galoisClosed_isDiscrete`. The
         **Related Documentation** section already points at the Independence README; Key Results does
         not.
-  - [ ] `Semantics/Correspondence/README.md`: update the `Galois.lean` and `Indicator.lean` Description
+  - [x] `Semantics/Correspondence/README.md`: update the `Galois.lean` and `Indicator.lean` Description
         cells to name the new declarations added in Phases 1-2.
-  - [ ] Update the **Last verified** date on both READMEs.
-  - [ ] Run `scripts/readme-lint.sh` if it applies to these paths.
-  - [ ] Run `scripts/check-module-invariants.sh` and confirm the C2 baseline is unchanged.
-  - [ ] Run a final full `lake build`.
+  - [x] Update the **Last verified** date on both READMEs.
+  - [x] Run `scripts/readme-lint.sh` if it applies to these paths.
+  - [x] Run `scripts/check-module-invariants.sh` and confirm the C2 baseline is unchanged.
+  - [x] Run a final full `lake build`. *(Green; also re-confirmed by the invariants script's own
+        C1, which builds both `FormalSystem` and `BimodalTest`.)*
+  - [x] *(beyond the enumerated list, same phase)* `Semantics/Correspondence/README.md`: the opening
+        prose and the first **Key Results** bullet still described `galoisClosed_of_indicator` as
+        the lemma call sites apply, and did not mention the Mathlib re-basing at all. Both updated,
+        since the phase's goal is that the README "describes the tree as it now is". Also recorded
+        the new `Mathlib.Order.Concept` edge in **Dependencies**.
 
 - **Timing:** 0.5 hours
 
@@ -538,7 +544,13 @@ parallel wave-1 dispatch shares one `lake build`; if run in parallel, serialise 
   four of six rows and `Independence/README.md`'s in four of six. These counts were measured before
   Phases 1-5 ran and **all of them will have moved** — do not transcribe any number from this plan.
   Regenerate both tables from `scripts/readme-inventory.sh` against the post-Phase-5 tree and diff
-  against what is written.
+  against what is written. *(Done. Measured outcome: `Correspondence/README.md` was stale in **six**
+  of six rows, not four — Galois 183->290, Indicator 161->176, DurationFrames 563->459, FwdRec
+  131->119, FwdRecPeriodicity 445->485, FwdRecBridge 186->155. `Independence/README.md` was stale in
+  four of six as predicted — ClockFrame 240->236, CoNotPriorU 584->552, LoopingDuration 273->235,
+  LexIntWitness 258->200; RationalWitness 200 and StaticFrame 323 were already correct. No number
+  was transcribed from this plan; all twelve cells were regenerated and cross-checked against
+  `wc -l`.)*
 
 - **Files to modify:**
   - `FormalSystem/Metalogic/Independence/README.md`
@@ -554,24 +566,35 @@ parallel wave-1 dispatch shares one `lake build`; if run in parallel, serialise 
 
 ## Testing & Validation
 
-- [ ] `lake build` green across the whole tree, with zero `sorry` introduced by any phase.
-- [ ] `scripts/check-module-invariants.sh` passes and the C2 baseline is unchanged (C2 covers
+- [x] `lake build` green across the whole tree, with zero `sorry` introduced by any phase.
+- [x] `scripts/check-module-invariants.sh` passes and the C2 baseline is unchanged (C2 covers
       `BXCanonical.completeness`, `.completeness_dense`, `.completeness_discrete`,
       `.Chronicle.countermodel_dense` plus two checked separately; `galoisClosed_*` are not C2 entries,
       so "unchanged" is the expected result and a change is a defect).
-- [ ] `scripts/check-metalogic-cycles.sh` passes (Phase 5's new import edge).
-- [ ] `Galois.lean`'s six connection theorem bodies are each a single Mathlib projection.
-- [ ] `galoisClosed_iInter`, `galoisClosed_inter`, `galoisClosed_univ`, `mod_union`, `mod_iUnion`,
+- [x] `scripts/check-metalogic-cycles.sh` passes (Phase 5's new import edge).
+- [x] `Galois.lean`'s six connection theorem bodies are each a single Mathlib projection.
+- [x] `galoisClosed_iInter`, `galoisClosed_inter`, `galoisClosed_univ`, `mod_union`, `mod_iUnion`,
       `mod_empty`, `th_empty`, `mod_th_gc`, `galoisClosed_iff` and `galoisClosed_of_indicator_iff` all
       exist as named declarations.
-- [ ] `Th K = {φ | ∀ F ∈ K, F.ValidOn φ}` closes by `rfl` (re-based definitions are defeq to what they
+- [x] `Th K = {φ | ∀ F ∈ K, F.ValidOn φ}` closes by `rfl` (re-based definitions are defeq to what they
       replaced).
-- [ ] Both `Indicator.lean` closure corollaries are one-liners.
-- [ ] The three (T1) proofs' (⇒) openings read as visibly parallel.
-- [ ] `grep -rn corrAtom FormalSystem/` and `grep -rn arch_of_lub FormalSystem/` both return nothing.
-- [ ] Both README module tables match `wc -l` on the final tree.
-- [ ] `git status --short` shows no modification outside this task's declared file set (task 524 is
-      concurrently active).
+- [x] Both `Indicator.lean` closure corollaries are one-liners.
+- [x] The three (T1) proofs' (⇒) openings read as visibly parallel.
+- [x] `grep -rn corrAtom FormalSystem/` and `grep -rn arch_of_lub FormalSystem/` both return nothing.
+- [x] Both README module tables match `wc -l` on the final tree.
+- [x] `git status --short` shows no modification outside this task's declared file set (task 524 is
+      concurrently active). *(Task 524's concurrent edits to `Metalogic/SetConsequence.lean` and
+      `Metalogic/StrongCompleteness.lean` are present in the working tree throughout; both are in
+      this dispatch's forbidden set and were never staged or committed here.)*
+
+**Measured results**: `lake build` green (2521 jobs) and `lake build BimodalTest` green;
+`scripts/check-module-invariants.sh` ALL CHECKS PASSED, with **C2 PASS — all four flagship axiom
+sets match baseline** (`propext, Classical.choice, Quot.sound` for each of
+`BXCanonical.completeness`, `.completeness_dense`, `.completeness_discrete`,
+`.Chronicle.countermodel_dense`) and C3 PASS (structural sorry inventory ZERO across
+`FormalSystem/`, Boneyard excluded); `scripts/check-metalogic-cycles.sh` PASS;
+`scripts/readme-lint.sh` PASS. `grep -rn 'axiom ' FormalSystem/` count unchanged at 9 against the
+pre-task baseline (`b7da18269`).
 
 ## Artifacts & Outputs
 

@@ -1,0 +1,25 @@
+{
+  "task_number": 525,
+  "dispatch_seq": 6,
+  "phase": "implement",
+  "status": "implemented",
+  "phases_completed": 6,
+  "phases_total": 6,
+  "blocked_phase": null,
+  "build_green": true,
+  "c2_baseline_unchanged": true,
+  "acceptance": {
+    "galois_bodies_are_mathlib_projections": true,
+    "free_lemmas_exist_and_named": true,
+    "three_t1_proofs_visibly_parallel": true,
+    "zero_private_archimedean_copies": true,
+    "lake_build_green": true,
+    "c2_baseline_unchanged": true
+  },
+  "artifacts": {
+    "plan": "specs/525_galois_over_mathlib_correspondence_tidy/plans/01_galois-over-mathlib-tidy.md",
+    "summary": "specs/525_galois_over_mathlib_correspondence_tidy/summaries/01_galois-over-mathlib-tidy-summary.md"
+  },
+  "notes": "Phase 1's realised risk was strict-implicit binder info on Mathlib's polars, not the @[simp] set; three call sites repaired in-phase. Phase 5 found a fourth falsified docstring beyond the planned three. Task 524's concurrent Metalogic/ edits were never staged here.",
+  "session_id": "sess_1788407456_70233f"
+}
