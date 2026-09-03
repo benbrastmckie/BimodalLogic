@@ -1,7 +1,7 @@
 # Implementation Plan: Core MCS API Consolidation
 
 - **Task**: 526 - Consolidate the maximal-consistent-set API in `FormalSystem/Metalogic/Core/` so the three completeness routes consume one set of lemmas; resolve the MCS-automation question
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 14 hours
 - **Dependencies**: 524 (serialized `BaseLanguageSoundness.lean` access; landed)
 - **Research Inputs**: `specs/526_core_mcs_api_consolidation/reports/01_core-mcs-api-consolidation.md`
@@ -148,7 +148,7 @@ given build contention on this tree.
 
 ---
 
-### Phase 1: Core/MCSProperties.lean additions [NOT STARTED]
+### Phase 1: Core/MCSProperties.lean additions [COMPLETED]
 
 **Goal**: Land every new `Core/MCSProperties.lean` declaration in a single edit, so the tree pays
 one near-full rebuild for all of them, and so the later sweep phases never collide on this file.

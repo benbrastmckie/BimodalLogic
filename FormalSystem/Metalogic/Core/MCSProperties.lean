@@ -22,6 +22,8 @@ needed for the Representation layer's canonical model construction.
 - `SetMaximalConsistent.closed_under_derivation`: Derivable formulas are in MCS
 - `SetMaximalConsistent.implication_property`: Modus ponens reflected in membership
 - `SetMaximalConsistent.negation_complete`: Either φ or ¬φ in MCS
+- `SetConsistent.bot_not_mem` / `SetMaximalConsistent.bot_not_mem`: `⊥` is never a member
+- `SetMaximalConsistent.mp_of_theorem`: Modus ponens through an MCS against a theorem
 - `temporal4Past`: Derived temporal 4 axiom for past
 - `SetMaximalConsistent.all_future_all_future`: Gφ ∈ S → GGφ ∈ S
 - `SetMaximalConsistent.all_past_all_past`: Hφ ∈ S → HHφ ∈ S
@@ -374,6 +376,41 @@ theorem SetMaximalConsistent.neg_excludes {fc : FrameClass} {S : Set Formula}
     (phi : Formula) (h_neg : phi.neg ∈ S) : phi ∉ S := by
   intro h_phi
   exact set_consistent_not_both h_mcs.1 phi h_phi h_neg
+
+/--
+A consistent set never contains `⊥`.
+
+If `⊥ ∈ S` then the singleton context `[⊥]` is drawn from `S` and derives `⊥`
+immediately, contradicting consistency.
+-/
+theorem SetConsistent.bot_not_mem {fc : FrameClass} {S : Set Formula}
+    (h : SetConsistent (fc := fc) S) : Formula.bot ∉ S := by
+  intro h_bot
+  exact h [Formula.bot]
+    (fun ψ hψ => by
+      simp only [List.mem_cons, List.not_mem_nil, or_false] at hψ; rw [hψ]; exact h_bot)
+    ⟨DerivationTree.assumption [Formula.bot] Formula.bot (by simp)⟩
+
+/--
+A maximal consistent set never contains `⊥`.
+
+Immediate from `SetConsistent.bot_not_mem` applied to the consistency component.
+-/
+theorem SetMaximalConsistent.bot_not_mem {fc : FrameClass} {S : Set Formula}
+    (h : SetMaximalConsistent (fc := fc) S) : Formula.bot ∉ S :=
+  SetConsistent.bot_not_mem h.1
+
+/--
+Modus ponens through an MCS against a *theorem* of the system.
+
+Collapses the composite idiom
+`implication_property h (theorem_in_mcs h d) hφ` into a single application: given a
+closed derivation of `φ → ψ` and `φ ∈ S`, conclude `ψ ∈ S`.
+-/
+theorem SetMaximalConsistent.mp_of_theorem {fc : FrameClass} {S : Set Formula} {φ ψ : Formula}
+    (h : SetMaximalConsistent (fc := fc) S) (d : DerivationTree fc [] (φ.imp ψ))
+    (hφ : φ ∈ S) : ψ ∈ S :=
+  SetMaximalConsistent.implication_property h (theorem_in_mcs h d) hφ
 
 /--
 Contraposition helper: if ⊢ A → B and B → ⊥ ∈ S, then A → ⊥ ∈ S (for MCS S).
