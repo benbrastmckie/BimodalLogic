@@ -169,7 +169,7 @@ theorem limitdom_temporal_truth_effective {fc : FrameClass} (A : Set Formula)
     intro t
     constructor
     · exact False.elim
-    · intro h; exact absurd h (BXCanonical.bot_not_in_mcs (limit_c0 fc A h_mcs t.val t.property))
+    · intro h; exact absurd h (SetMaximalConsistent.bot_not_mem (limit_c0 fc A h_mcs t.val t.property))
   | imp f₁ f₂ ih₁ ih₂ =>
     intro t
     simp only [TemporalTruth, limitdomEffectiveFormula, effectiveFormula]
@@ -282,7 +282,7 @@ theorem limitdom_semantic_prior_UZ {fc : FrameClass} (A : Set Formula)
       (BXCanonical.imp_iff_mcs (limit_c0 fc A h_mcs z hz) _ _).mpr (fun h => h)
     have h_bot : Formula.bot ∈ LimitF fc A h_mcs z :=
       (BXCanonical.imp_iff_mcs (limit_c0 fc A h_mcs z hz) _ _).mp h_neg_top h_top
-    exact absurd h_bot (BXCanonical.bot_not_in_mcs (limit_c0 fc A h_mcs z hz))
+    exact absurd h_bot (SetMaximalConsistent.bot_not_mem (limit_c0 fc A h_mcs z hz))
   -- Step 3: Apply MCS-level Prior-UZ axiom
   have h_prior := theorem_in_mcs (limit_c0 fc A h_mcs t.val t.property)
     (DerivationTree.axiom [] _ (Axiom.prior_UZ eff_ψ) h_fc)
@@ -326,7 +326,7 @@ theorem limitdom_semantic_prior_SZ {fc : FrameClass} (A : Set Formula)
       (BXCanonical.imp_iff_mcs (limit_c0 fc A h_mcs z hz) _ _).mpr (fun h => h)
     have h_bot : Formula.bot ∈ LimitF fc A h_mcs z :=
       (BXCanonical.imp_iff_mcs (limit_c0 fc A h_mcs z hz) _ _).mp h_neg_top h_top
-    exact absurd h_bot (BXCanonical.bot_not_in_mcs (limit_c0 fc A h_mcs z hz))
+    exact absurd h_bot (SetMaximalConsistent.bot_not_mem (limit_c0 fc A h_mcs z hz))
   have h_prior := theorem_in_mcs (limit_c0 fc A h_mcs t.val t.property)
     (DerivationTree.axiom [] _ (Axiom.prior_SZ eff_ψ) h_fc)
   have h_since : Formula.snce eff_ψ.neg eff_ψ ∈ LimitF fc A h_mcs t.val :=

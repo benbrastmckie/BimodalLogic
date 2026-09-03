@@ -89,22 +89,6 @@ These properties establish that MCS membership behaves like truth.
 -/
 
 /--
-Bot is never in a consistent MCS.
--/
-theorem bot_not_in_mcs {phi : Formula} (S : ClosureMCSBundle phi fc) :
-    Formula.bot ∉ S.carrier := by
-  intro h_bot
-  -- If bot ∈ S, then [bot] ⊢[fc] bot, contradicting consistency
-  have h_deriv : DerivationTree fc [Formula.bot] Formula.bot :=
-    DerivationTree.assumption [Formula.bot] Formula.bot List.mem_cons_self
-  have h_cons := closure_mcs_consistent S.is_mcs
-  apply h_cons [Formula.bot]
-  · intro ψ hψ
-    simp only [List.mem_singleton] at hψ
-    exact hψ ▸ h_bot
-  · exact ⟨h_deriv⟩
-
-/--
 Filtration lemma for Bot: bot is never "true" in the filtered model.
 -/
 theorem filtration_lemma_bot (phi : Formula) (w : FilteredWorld phi fc)
@@ -112,7 +96,7 @@ theorem filtration_lemma_bot (phi : Formula) (w : FilteredWorld phi fc)
     ¬filteredMcsTruth phi Formula.bot h_clos w := by
   obtain ⟨S, hS⟩ := Quotient.exists_rep w
   simp only [← hS, filteredMcsTruth, mcsTruth]
-  exact bot_not_in_mcs S
+  exact SetConsistent.bot_not_mem (closure_mcs_consistent S.is_mcs)
 
 /--
 An MCS cannot contain both a formula and its negation.

@@ -25,8 +25,8 @@ transfer along the temporal accessibility relations.
 
 ## Status
 
-All declarations in this file are sorry-free:
-- bot_not_in_mcs
+All declarations in this file are sorry-free (⊥-exclusion is inherited from
+`Core`'s `SetMaximalConsistent.bot_not_mem` rather than re-proved here):
 - G forward, G backward (2 lemmas) — uses g_content_closed_derivation
 - H forward, H backward (2 lemmas) — uses h_content_closed_derivation
 
@@ -51,16 +51,6 @@ open FormalSystem.Metalogic.Bundle
 open FormalSystem.Theorems.Propositional
 open FormalSystem.Theorems.Combinators
 open FormalSystem.Theorems
-
-/-! ## Bot exclusion: Proved (sorry-free) -/
-
-theorem bot_not_in_mcs (x : ReflCanDomain) : Formula.bot ∉ x.val := by
-  have h_mcs := x.property
-  intro h
-  have : Consistent [Formula.bot] :=
-    h_mcs.1 [Formula.bot] (fun ψ hψ => by simp only
-        [List.mem_cons, List.not_mem_nil, or_false] at hψ; subst hψ; exact h)
-  exact this ⟨DerivationTree.assumption [Formula.bot] _ (by simp)⟩
 
 /-! ## G (allFuture): Fully Proved (sorry-free) -/
 

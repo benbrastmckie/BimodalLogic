@@ -877,7 +877,7 @@ theorem limit_dom_has_succ (fc : FrameClass) (A : Set Formula)
     limit_satisfies_c5_strong fc A h_mcs x hx Formula.bot topFormula h_next
   refine ⟨y, hy, hxy, fun w hw hxw hwy => ?_⟩
   have h_bot := h_guard w hw hxw hwy
-  exact bot_not_in_mcs (limit_c0 fc A h_mcs w hw) h_bot
+  exact SetMaximalConsistent.bot_not_mem (limit_c0 fc A h_mcs w hw) h_bot
 
 /--
 Predecessor witness in the discrete case: given `S(⊤,⊥) ∈ LimitF(x)`, there
@@ -893,7 +893,7 @@ theorem limit_dom_has_pred (fc : FrameClass) (A : Set Formula)
     limit_satisfies_c5'_strong fc A h_mcs x hx Formula.bot topFormula h_since
   refine ⟨y, hy, hyx, fun w hw hyw hwx => ?_⟩
   have h_bot := h_guard w hw hyw hwx
-  exact bot_not_in_mcs (limit_c0 fc A h_mcs w hw) h_bot
+  exact SetMaximalConsistent.bot_not_mem (limit_c0 fc A h_mcs w hw) h_bot
 
 /--
 From `U(⊤,⊥) ∈ LimitF(x)`, derive `S(⊤,⊥) ∈ LimitF(x)` using the

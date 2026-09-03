@@ -679,12 +679,7 @@ theorem bundleFlow_truth_lemma (B : BFMCS (fc := fc) D) (root : Formula)
     simp only [TruthAt]
     constructor
     · intro h_mem
-      exfalso
-      have h_cons := (fam.val.is_mcs (w₀ + t)).1
-      have h_deriv : DerivationTree fc [Formula.bot] Formula.bot :=
-        DerivationTree.assumption [Formula.bot] Formula.bot (by simp)
-      exact h_cons [Formula.bot] (fun psi hpsi => by simp only
-          [List.mem_cons, List.not_mem_nil, or_false] at hpsi; rw [hpsi]; exact h_mem) ⟨h_deriv⟩
+      exact SetMaximalConsistent.bot_not_mem (fam.val.is_mcs (w₀ + t)) h_mem
     · intro h; exact h.elim
   | imp ψ χ ih_ψ ih_χ =>
     have h_ψ_sub : ψ ∈ subformulaClosure root := closure_imp_left root ψ χ h_sub

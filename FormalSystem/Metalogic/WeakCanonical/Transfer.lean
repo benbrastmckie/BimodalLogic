@@ -452,7 +452,7 @@ theorem chronicle_temporal_truth {fc : FrameClass} (M : ChronicleAsPriorModel fc
     intro t _h_section
     simp only [TemporalTruth]
     exact ⟨False.elim, fun h => absurd h
-      (FormalSystem.Metalogic.BXCanonical.bot_not_in_mcs (M.fmcs_is_mcs t))⟩
+      (SetMaximalConsistent.bot_not_mem (M.fmcs_is_mcs t))⟩
   | imp φ₁ φ₂ ih₁ ih₂ =>
     intro t h_section
     simp only [TemporalTruth, Formula.predFormulas] at *
@@ -889,7 +889,7 @@ theorem chronicle_temporal_truth_effective {fc : FrameClass}
     constructor
     · exact False.elim
     · intro h; exact absurd h
-        (FormalSystem.Metalogic.BXCanonical.bot_not_in_mcs (M.fmcs_is_mcs t))
+        (SetMaximalConsistent.bot_not_mem (M.fmcs_is_mcs t))
   | imp φ₁ φ₂ ih₁ ih₂ =>
     intro t
     simp only [TemporalTruth, effectiveFormula]
@@ -983,7 +983,7 @@ theorem chronicle_semantic_prior_UZ {fc : FrameClass}
       (FormalSystem.Metalogic.BXCanonical.imp_iff_mcs (M.fmcs_is_mcs z) _ _).mpr (fun h => h)
     have h_bot : Formula.bot ∈ M.fmcs z :=
       (FormalSystem.Metalogic.BXCanonical.imp_iff_mcs (M.fmcs_is_mcs z) _ _).mp h_neg_top h_top
-    exact absurd h_bot (FormalSystem.Metalogic.BXCanonical.bot_not_in_mcs (M.fmcs_is_mcs z))
+    exact absurd h_bot (SetMaximalConsistent.bot_not_mem (M.fmcs_is_mcs z))
   -- Step 3: Apply MCS-level Prior-UZ: F(eff_ψ) → U(eff_ψ, ¬eff_ψ) ∈ fmcs(t)
   have h_prior := M.prior_UZ_valid t eff_ψ
   -- prior_UZ_valid gives: (F(eff_ψ) → U(eff_ψ, ¬eff_ψ)) ∈ fmcs(t)
@@ -1033,7 +1033,7 @@ theorem chronicle_semantic_prior_SZ {fc : FrameClass}
       (FormalSystem.Metalogic.BXCanonical.imp_iff_mcs (M.fmcs_is_mcs z) _ _).mpr (fun h => h)
     have h_bot : Formula.bot ∈ M.fmcs z :=
       (FormalSystem.Metalogic.BXCanonical.imp_iff_mcs (M.fmcs_is_mcs z) _ _).mp h_neg_top h_top
-    exact absurd h_bot (FormalSystem.Metalogic.BXCanonical.bot_not_in_mcs (M.fmcs_is_mcs z))
+    exact absurd h_bot (SetMaximalConsistent.bot_not_mem (M.fmcs_is_mcs z))
   -- Step 3: Apply MCS-level Prior-SZ
   have h_prior := M.prior_SZ_valid t eff_ψ
   have h_since : Formula.snce eff_ψ.neg eff_ψ ∈ M.fmcs t :=
