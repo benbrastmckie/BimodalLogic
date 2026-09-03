@@ -1964,7 +1964,7 @@
     {
       "project_number": 527,
       "project_name": "bundle_temporal_duality_discipline",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "topic": "metalogic",
       "priority": "medium",
@@ -1982,9 +1982,15 @@
         "FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleMonadicBridge.lean"
       ],
       "created": "2026-09-02T03:30:31Z",
-      "last_updated": "2026-09-02T03:30:31Z",
-      "artifacts": [],
-      "session_id": "sess_1788317385_2ae65c"
+      "last_updated": "2026-09-03T16:20:48Z",
+      "artifacts": [
+        {
+          "path": "specs/527_bundle_temporal_duality_discipline/reports/01_bundle-temporal-duality-discipline.md",
+          "type": "report",
+          "summary": "Re-measures F-04/F-05/F-08/F-14/F-17/F-20 against current tree (post-520, post-526): stale anchors, larger dead-code set in TemporalCoherence.lean, asymmetric Filter rewrite in LimitMCS.lean, and a revised 550-830 line reduction estimate."
+        }
+      ],
+      "session_id": "sess_1788452448_db626d"
     },
     {
       "project_number": 528,
