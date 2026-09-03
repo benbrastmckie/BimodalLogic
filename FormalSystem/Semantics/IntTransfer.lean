@@ -43,13 +43,19 @@ equation between two `F.WorldState` terms, because `(FrameOver.map F e).WorldSta
 *definitionally* `F.WorldState`. Its one genuine transport is discharged by the tree's existing
 `WorldHistory.states_eq_of_time_eq`. Do not replace `Aligned` with an `Equiv`.
 
+`Aligned e` is, verbatim, the `Rel` field of a `Semantics.TruthCorr` (`alignedCorr` below): the
+generic relational transport `Truth.truthAt_of_truthCorr` asks for a relation on histories, atomic
+agreement on related pairs, and existence of a related total history in each direction — never
+for an inverse. That is why no `Equiv` was ever needed, and why `truthAt_map` is now a one-line
+instance of the generic lemma rather than its own induction.
+
 ## Recorded tactic traps
 
 Two measured failures, recorded so a future editor does not re-hit them:
 
 * `simpa` does **not** close `(WorldHistory.comap e ρ').domain s` from `ρ'.domain (e s)`. The
   equality is *definitional* and `simp` normalizes straight past it. Use the bare term
-  `fun s => hρ' (e s)` (`truthAt_map`, `box` case).
+  `fun s => hρ' (e s)` (`alignedCorr.total_bwd`).
 * `linarith` does not fire on the bare `AddCommGroup` + `LinearOrder` bundle these lemmas run
   on — there is no ring structure. (This one bites in `DurationClassification.lean`'s
   `succ_eq_add_succ_zero`, not here, but it is the same binder bundle.)
@@ -60,7 +66,9 @@ Two measured failures, recorded so a future editor does not re-hit them:
 - `TaskModel.map`, `WorldHistory.map`, `WorldHistory.comap`: the model and history transports.
 - `Aligned`, `aligned_map`, `aligned_comap`, `isTotal_map`: the `HEq`-free correspondence
   between a history and its transport.
-- `truthAt_map`: `TruthAt M σ t φ ↔ TruthAt (M.map e) σ' (e t) φ` for aligned `σ`, `σ'`.
+- `alignedCorr`: `Aligned e` packaged as a `TruthCorr M (M.map e)`.
+- `truthAt_map`: `TruthAt M σ t φ ↔ TruthAt (M.map e) σ' (e t) φ` for aligned `σ`, `σ'` —
+  `Truth.truthAt_of_truthCorr` at `alignedCorr`.
 - `ValidInt`: validity over `ℤ`-frames only.
 - `validDiscrete_iff_validInt`: **carrier normalization** — `ValidDiscrete φ ↔ ValidInt φ`.
 -/
@@ -276,92 +284,56 @@ theorem aligned_comap {F : FrameOver D} (e : ↑D ≃+o ↑E)
     exact WorldHistory.states_eq_of_time_eq σ' n (e (e.symm n)) (by simp) h' h
 
 /--
+**The frame transport is a truth correspondence.** `Aligned e` is the relation, `e` (as an order
+isomorphism) the time reindexing, and the two totality witnesses are `WorldHistory.map` (forward,
+with `isTotal_map`) and `WorldHistory.comap` (backward).
+
+The `atom` field is the only place any real work happens: it is the domain/state agreement of
+`Aligned` unfolded at one time, with `σ.states_eq_of_time_eq` bridging `e.symm (e t)` and `t`.
+
+Trap, recorded: in `total_bwd`, `(WorldHistory.comap e σ').domain s` follows from
+`σ'.domain (e s)` **definitionally**, and `simpa` normalizes past it and fails. The bare term
+`fun s => hσ' (e s)` is the proof.
+-/
+def alignedCorr {F : FrameOver D} (e : ↑D ≃+o ↑E) (M : TaskModel F.toTaskFrame) :
+    TruthCorr M (TaskModel.map M e) where
+  dur := e.toOrderIso
+  Rel := Aligned e
+  atom := by
+    intro σ σ' ha t p
+    show (∃ h : σ.domain t, M.valuation (σ.states t h) p) ↔
+      ∃ h' : σ'.domain (e t), M.valuation (σ'.states (e t) h') p
+    constructor
+    · rintro ⟨h, hv⟩
+      have h' : σ'.domain (e t) := (ha.dom (e t)).mpr (by simpa using h)
+      refine ⟨h', ?_⟩
+      rw [ha.st (e t) h' (by simpa using h),
+        σ.states_eq_of_time_eq (e.symm (e t)) t (by simp) _ h]
+      exact hv
+    · rintro ⟨h', hv⟩
+      have h : σ.domain t := by simpa using (ha.dom (e t)).mp h'
+      refine ⟨h, ?_⟩
+      rw [ha.st (e t) h' (by simpa using h),
+        σ.states_eq_of_time_eq (e.symm (e t)) t (by simp) _ h] at hv
+      exact hv
+  total_fwd := fun σ hσ =>
+    ⟨WorldHistory.map σ e, isTotal_map e (aligned_map e σ) hσ, aligned_map e σ⟩
+  total_bwd := fun σ' hσ' =>
+    -- TRAP: `simpa` fails here; `(comap e σ').domain s` is *definitionally* `σ'.domain (e s)`.
+    ⟨WorldHistory.comap e σ', fun s => hσ' (e s), aligned_comap e σ'⟩
+
+/--
 **Truth transfers across the frame transport.** For aligned histories `σ` and `σ'`, `φ` holds at
 `t` in `M` along `σ` exactly when it holds at `e t` in `M.map e` along `σ'`.
 
-The induction is on `φ`, generalizing over **both** histories and the time. That generalization
-is exactly what makes the two hard cases go through: `box` swaps the history (it quantifies over
-all histories of the ambient frame, so the forward direction consumes `WorldHistory.comap`), and
-`untl`/`snce` move the time. `box` is the only case that touches `comap`; `untl` and `snce` are
-pure order transfer, riding on `map_lt_map_iff`.
-
-Trap, recorded: in the `box` forward case, `(WorldHistory.comap e ρ').domain s` follows from
-`ρ'.domain (e s)` **definitionally**, and `simpa` normalizes past it and fails. The bare term
-`fun s => hρ' (e s)` is the proof.
+This is `Truth.truthAt_of_truthCorr` at the instance `alignedCorr e M`; the six-case induction
+lives there, generalised over both histories and the time exactly as this theorem's statement is.
+Statement unchanged (arbitrary aligned pair), so `validDiscrete_iff_validInt` is untouched.
 -/
 theorem truthAt_map {F : FrameOver D} (e : ↑D ≃+o ↑E) (M : TaskModel F.toTaskFrame) (φ : Formula) :
     ∀ (σ : WorldHistory F.toTaskFrame) (σ' : WorldHistory (FrameOver.map F e).toTaskFrame), Aligned e σ σ' →
-      ∀ t : ↑D, (TruthAt M σ t φ ↔ TruthAt (TaskModel.map M e) σ' (e t) φ) := by
-  induction φ with
-  | atom p =>
-    intro σ σ' ha t
-    constructor
-    · rintro ⟨ht, hv⟩
-      have ht' : σ'.domain (e t) := (ha.dom (e t)).mpr (by simpa using ht)
-      refine ⟨ht', ?_⟩
-      have := ha.st (e t) ht' (by simpa using ht)
-      show (TaskModel.map M e).valuation (σ'.states (e t) ht') p
-      rw [this]
-      show M.valuation (σ.states (e.symm (e t)) _) p
-      rw [σ.states_eq_of_time_eq (e.symm (e t)) t (by simp) _ ht]
-      exact hv
-    · rintro ⟨ht', hv⟩
-      have ht : σ.domain t := by
-        have := (ha.dom (e t)).mp ht'
-        simpa using this
-      refine ⟨ht, ?_⟩
-      have heq := ha.st (e t) ht' (by simpa using ht)
-      rw [heq] at hv
-      rw [σ.states_eq_of_time_eq (e.symm (e t)) t (by simp) _ ht] at hv
-      exact hv
-  | bot => intro σ σ' ha t; exact Iff.rfl
-  | imp ψ χ ihψ ihχ =>
-    intro σ σ' ha t
-    exact imp_congr (ihψ σ σ' ha t) (ihχ σ σ' ha t)
-  | box ψ ih =>
-    intro σ σ' ha t
-    constructor
-    · intro h ρ' hρ'
-      -- TRAP: `simpa` fails here; `(comap e ρ').domain s` is *definitionally* `ρ'.domain (e s)`.
-      exact (ih (WorldHistory.comap e ρ') ρ' (aligned_comap e ρ') t).mp
-        (h _ (fun s => hρ' (e s)))
-    · intro h ρ hρ
-      exact (ih ρ (WorldHistory.map ρ e) (aligned_map e ρ) t).mpr
-        (h _ (isTotal_map e (aligned_map e ρ) hρ))
-  | untl ψ χ ihψ ihχ =>
-    intro σ σ' ha t
-    constructor
-    · rintro ⟨s, hts, hχ, hψ⟩
-      refine ⟨e s, (map_lt_map_iff e).mpr hts, (ihχ σ σ' ha s).mp hχ, ?_⟩
-      intro r htr hrs
-      have hr : t < e.symm r := by simpa using (map_lt_map_iff e.symm).mpr htr
-      have hr2 : e.symm r < s := by simpa using (map_lt_map_iff e.symm).mpr hrs
-      have := (ihψ σ σ' ha (e.symm r)).mp (hψ _ hr hr2)
-      simpa using this
-    · rintro ⟨s, hts, hχ, hψ⟩
-      refine ⟨e.symm s, ?_, ?_, ?_⟩
-      · simpa using (map_lt_map_iff e.symm).mpr hts
-      · refine (ihχ σ σ' ha (e.symm s)).mpr ?_; simpa using hχ
-      · intro r htr hrs
-        refine (ihψ σ σ' ha r).mpr (hψ (e r) ((map_lt_map_iff e).mpr htr) ?_)
-        simpa using (map_lt_map_iff e).mpr hrs
-  | snce ψ χ ihψ ihχ =>
-    intro σ σ' ha t
-    constructor
-    · rintro ⟨s, hts, hχ, hψ⟩
-      refine ⟨e s, (map_lt_map_iff e).mpr hts, (ihχ σ σ' ha s).mp hχ, ?_⟩
-      intro r hsr hrt
-      have hr : s < e.symm r := by simpa using (map_lt_map_iff e.symm).mpr hsr
-      have hr2 : e.symm r < t := by simpa using (map_lt_map_iff e.symm).mpr hrt
-      have := (ihψ σ σ' ha (e.symm r)).mp (hψ _ hr hr2)
-      simpa using this
-    · rintro ⟨s, hts, hχ, hψ⟩
-      refine ⟨e.symm s, ?_, ?_, ?_⟩
-      · simpa using (map_lt_map_iff e.symm).mpr hts
-      · refine (ihχ σ σ' ha (e.symm s)).mpr ?_; simpa using hχ
-      · intro r hsr hrt
-        refine (ihψ σ σ' ha r).mpr (hψ (e r) ?_ ((map_lt_map_iff e).mpr hrt))
-        simpa using (map_lt_map_iff e).mpr hsr
+      ∀ t : ↑D, (TruthAt M σ t φ ↔ TruthAt (TaskModel.map M e) σ' (e t) φ) :=
+  fun σ σ' ha t => Truth.truthAt_of_truthCorr (alignedCorr e M) φ σ σ' ha t
 
 /--
 A formula is **`ℤ`-valid** if it is true in every model over a `ℤ`-frame, at every total

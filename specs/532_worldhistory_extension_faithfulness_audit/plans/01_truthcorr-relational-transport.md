@@ -257,30 +257,32 @@ before and after: the set of call sites is identical and the build is green.
 
 ---
 
-### Phase 3: Derive `IntTransfer.truthAt_map` from `alignedCorr`; delete its induction [NOT STARTED]
+### Phase 3: Derive `IntTransfer.truthAt_map` from `alignedCorr`; delete its induction [COMPLETED]
 
 **Goal**: `truthAt_map` keeps its exact statement (arbitrary aligned pair) and is a one-line
 consequence of `truthAt_of_truthCorr` at the `alignedCorr` instance; `Aligned` is documented as
 a `TruthCorr.Rel` verbatim.
 
 **Tasks**:
-- [ ] In `FormalSystem/Semantics/IntTransfer.lean`, immediately before `truthAt_map`, port
+- [x] In `FormalSystem/Semantics/IntTransfer.lean`, immediately before `truthAt_map`, port
       `def alignedCorr (e : ↑D ≃+o ↑E) (M) : TruthCorr M (TaskModel.map M e)` with
       `dur := e.toOrderIso`, `Rel := Aligned e`, `atom` = the existing `truthAt_map` `atom` case
       verbatim (`ha.dom`, `ha.st`, `σ.states_eq_of_time_eq (e.symm (e t)) t`),
       `total_fwd` via `WorldHistory.map`/`isTotal_map`/`aligned_map`, `total_bwd` via
       `WorldHistory.comap`/`aligned_comap` with the bare-term totality proof
       `fun s => hσ' (e s)` (recorded trap: `simpa` does not close it).
-- [ ] Replace the body of `truthAt_map` with
+- [x] Replace the body of `truthAt_map` with
       `fun σ σ' ha t => truthAt_of_truthCorr (alignedCorr e M) φ σ σ' ha t`. Statement unchanged.
-- [ ] Update `truthAt_map`'s docstring (drop the induction narrative; keep the recorded
+- [x] Update `truthAt_map`'s docstring (drop the induction narrative; keep the recorded
       `simpa` trap, now living in `alignedCorr.total_bwd`), and the module docstring's
       "Design decision: `Aligned`, not `Equiv`" and "Main results" bullets: `Aligned` is the
       `Rel` field of a `TruthCorr`, which is why no `Equiv` was ever needed; the prohibition
       "Do not replace `Aligned` with an `Equiv`" stays.
-- [ ] `lake build`; `#print axioms IntTransfer.truthAt_map` before (from `git stash` or the
+- [x] `lake build`; `#print axioms IntTransfer.truthAt_map` before (from `git stash` or the
       HEAD build) and after; record both in the phase record. `Classical.choice` appearing via
       `≃+o` is expected and acceptable; `sorryAx` is not.
+
+**Phase record**: `#print axioms truthAt_map` before (HEAD `.olean`) = `[propext, Classical.choice, Quot.sound]`; after = identical; `alignedCorr` and `validDiscrete_iff_validInt` likewise. `grep -c "induction φ" IntTransfer.lean` = 0. Scoped build 1338 jobs, full build 2520 jobs, both exit 0; invariants ALL CHECKS PASSED. Statement header byte-identical to HEAD.
 
 **Timing**: 1 hour
 
@@ -368,7 +370,7 @@ the count differs, absorb the actual set and record the delta in the narrative.
 
 ---
 
-### Phase 5: Lean docstring hygiene — citations by `\label`, convex wording, `H_F` quotes [NOT STARTED]
+### Phase 5: Lean docstring hygiene — citations by `\label`, convex wording, `H_F` quotes [IN PROGRESS]
 
 **Goal**: No raw paper line numbers remain in `Truth.lean` or `WorldHistory.lean`; the convex
 docstring says "equivalent to" rather than "exactly"; every verbatim `def:world-history` quote in
