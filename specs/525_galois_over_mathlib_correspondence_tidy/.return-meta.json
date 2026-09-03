@@ -1,16 +1,32 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/525_galois_over_mathlib_correspondence_tidy/reports/01_galois-over-mathlib-correspondence-tidy.md",
-      "summary": "Compile-verified research for all six work items: Mathlib Order.Concept polars replace the hand-rolled Th/Mod layer (abbrevs elaborate at Type 1, 6 projections + 7 free lemmas typecheck); iff-form indicator makes both Indicator corollaries one-liners; atom-realisation lemmas need a permissive twin the review missed; C-21 relocation refused (Metalogic.Soundness genuinely required, edge explicitly refused in-tree); corrAtom parameterised not promoted; arch_of_lub deletion is a drop-in with an acyclic 3-module import edge plus three docstrings to repair."
+      "type": "plan",
+      "path": "specs/525_galois_over_mathlib_correspondence_tidy/plans/01_galois-over-mathlib-tidy.md",
+      "summary": "Six-phase plan re-basing the frame-class Galois layer on Mathlib.Order.Concept and tidying the correspondence modules, 5.5 hours across three dependency waves."
     }
   ],
+  "next_steps": "Run /implement 525 to execute the plan",
   "metadata": {
     "session_id": "sess_1788407456_70233f_525",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 6,
+    "estimated_hours": 5.5,
+    "dependency_waves": [[1, 3, 5], [2, 4], [6]]
+  },
+  "memory_candidates": [
+    {
+      "content": "When re-basing a hand-rolled Galois/adjunction layer onto Mathlib, prefer the polarity API in Mathlib.Order.Concept (upperPolar/lowerPolar/Order.IsExtent) over deriving everything from an explicit GaloisConnection. The GaloisConnection route forces one side through OrderDual (e.g. mod_th_mod via .dual.u_l_u_eq_u, plus simp cleanup), while Concept supplies dual-free direct lemmas: lowerPolar_upperPolar_lowerPolar, upperPolar_lowerPolar_upperPolar, lowerPolar_union (a plain @[simp] lemma, not GaloisConnection.l_sup), lowerPolar_empty. Still declare the GaloisConnection as a named theorem for discoverability, but derive nothing from it. Two further gotchas: defining the closure predicate as Order.IsExtent changes it from a fixed-point equation to a range membership -- equivalent by Order.isExtent_iff but NOT defeq, so audit consumers and ship a one-line `iff` compat lemma; and importing a Mathlib module for its lemmas also injects its @[simp] lemmas into the default simp set for every downstream module, which is a whole-tree build risk, not a single-module one.",
+      "category": "PATTERN",
+      "source_artifact": "specs/525_galois_over_mathlib_correspondence_tidy/plans/01_galois-over-mathlib-tidy.md",
+      "confidence": 0.8,
+      "suggested_keywords": ["mathlib", "galois-connection", "order-concept", "polar", "isextent", "simp-set"]
+    }
+  ],
+  "modified_files": [
+    "specs/525_galois_over_mathlib_correspondence_tidy/plans/01_galois-over-mathlib-tidy.md"
+  ]
 }
