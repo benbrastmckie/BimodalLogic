@@ -446,7 +446,7 @@ and `:410-418` are post-task-524 and will drift.
 
 ---
 
-### Phase 7: mp_of_theorem sweep A — Chronicle core [NOT STARTED]
+### Phase 7: mp_of_theorem sweep A — Chronicle core [COMPLETED]
 
 **Goal**: Collapse the composite MCS idiom in the two densest files.
 
@@ -468,7 +468,12 @@ and `:410-418` are post-task-524 and will drift.
 **Verification Tier**: local
 
 **Scope Hypothesis**: ~50 sites — report §5 gives 34 + 25 = 59; a conservative planning re-scan
-gives 32 + 18 = 50. Confirm per file at implementation time with a multi-line-aware scan, e.g.
+gives 32 + 18 = 50. **Confirmed at implementation: 57** (PointInsertion 32,
+ChronicleToCountermodelBasic 25). The planning re-scan's regex undercounts because
+`implication_property\s+\S+\s*\(\s*theorem_in_mcs` cannot match a *parenthesized* MCS argument
+(e.g. `(h_mcs t)`) and cannot match the dot-notation surface form
+`h_mcs.implication_property (theorem_in_mcs h_mcs d) x` at all. A paren-matching parser was used
+instead, and its counts are the ones recorded here. Confirm per file at implementation time with a multi-line-aware scan, e.g.
 `python3 -c "import re,sys;print(len(re.findall(r'implication_property\s+\S+\s*\(\s*theorem_in_mcs', open(sys.argv[1]).read(), re.S)))" <file>`,
 and treat the confirmed count as authoritative over both numbers above. A count outside this range
 is not a defect; re-partition within the phase rather than skipping sites.

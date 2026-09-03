@@ -102,8 +102,8 @@ theorem limit_dom_no_max (fc : FrameClass) (A : Set Formula)
   have h_top : (Formula.bot.imp Formula.bot) ∈ LimitF fc A h_mcs x :=
     theorem_in_mcs h_mcs_x (FormalSystem.Theorems.Combinators.identity Formula.bot)
   have h_F_top : Formula.someFuture (Formula.bot.imp Formula.bot) ∈ LimitF fc A h_mcs x :=
-    SetMaximalConsistent.implication_property h_mcs_x
-      (theorem_in_mcs h_mcs_x (DerivationTree.axiom [] _ Axiom.serial_future trivial)) h_top
+    SetMaximalConsistent.mp_of_theorem h_mcs_x
+      (DerivationTree.axiom [] _ Axiom.serial_future trivial) h_top
   obtain ⟨y, hy, hxy, _⟩ := limit_F_resolution fc A h_mcs x hx _ h_F_top
   exact ⟨y, hy, hxy⟩
 
@@ -122,8 +122,8 @@ theorem limit_dom_no_min (fc : FrameClass) (A : Set Formula)
   have h_top : (Formula.bot.imp Formula.bot) ∈ LimitF fc A h_mcs x :=
     theorem_in_mcs h_mcs_x (FormalSystem.Theorems.Combinators.identity Formula.bot)
   have h_P_top : Formula.somePast (Formula.bot.imp Formula.bot) ∈ LimitF fc A h_mcs x :=
-    SetMaximalConsistent.implication_property h_mcs_x
-      (theorem_in_mcs h_mcs_x (DerivationTree.axiom [] _ Axiom.serial_past trivial)) h_top
+    SetMaximalConsistent.mp_of_theorem h_mcs_x
+      (DerivationTree.axiom [] _ Axiom.serial_past trivial) h_top
   obtain ⟨y, hy, hyx, _⟩ := limit_P_resolution fc A h_mcs x hx _ h_P_top
   exact ⟨y, hy, hyx⟩
 
@@ -331,47 +331,42 @@ theorem box_stable_in_limit_f (fc : FrameClass) (A : Set Formula)
       · exact h
     -- Box(¬(Box φ)) ∈ A by S5 negative introspection
     have h_box_neg : Formula.box (Formula.box φ).neg ∈ A :=
-      SetMaximalConsistent.implication_property h_mcs
-        (theorem_in_mcs h_mcs (liftBase fc (negBoxToBoxNegBox φ))) h_neg_box_A
+      SetMaximalConsistent.mp_of_theorem h_mcs (liftBase fc (negBoxToBoxNegBox φ)) h_neg_box_A
     -- Propagate Box(¬(Box φ)) to LimitF(x)
     have h_box_neg_x : (Formula.box φ).neg ∈ LimitF fc A h_mcs x := by
       rcases lt_trichotomy 0 x with h_pos | rfl | h_neg
       · -- x > 0: use G propagation
-        have h_G := SetMaximalConsistent.implication_property h_mcs
-          (theorem_in_mcs h_mcs (FormalSystem.Theorems.Combinators.temporalFutureDerived
-              (Formula.box φ).neg))
+        have h_G := SetMaximalConsistent.mp_of_theorem h_mcs (FormalSystem.Theorems.Combinators.temporalFutureDerived
+              (Formula.box φ).neg)
           h_box_neg
         rw [← limit_f_zero fc A h_mcs] at h_G
         have h_G' := limit_forward_G fc A h_mcs 0 x (zero_mem_limit_dom fc A h_mcs) hx h_pos
           (Formula.box (Formula.box φ).neg) h_G
-        exact SetMaximalConsistent.implication_property (limit_c0 fc A h_mcs x hx)
-          (theorem_in_mcs (limit_c0 fc A h_mcs x hx)
-            (DerivationTree.axiom [] _ (Axiom.modal_t (Formula.box φ).neg) trivial)) h_G'
+        exact SetMaximalConsistent.mp_of_theorem (limit_c0 fc A h_mcs x hx)
+          (DerivationTree.axiom [] _ (Axiom.modal_t (Formula.box φ).neg) trivial) h_G'
       · -- x = 0: LimitF(0) = A
         rw [limit_f_zero]; exact h_neg_box_A
       · -- x < 0: use H propagation
         have h_box_box_neg : Formula.box (Formula.box (Formula.box φ).neg) ∈ A :=
-          SetMaximalConsistent.implication_property h_mcs
-            (theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.modal_4 (Formula.box φ).neg)
-                trivial))
+          SetMaximalConsistent.mp_of_theorem h_mcs (DerivationTree.axiom [] _ (Axiom.modal_4 (Formula.box φ).neg)
+                trivial)
             h_box_neg
-        have h_H := SetMaximalConsistent.implication_property h_mcs
-          (theorem_in_mcs h_mcs (liftBase fc (boxToPast (Formula.box (Formula.box φ).neg))))
+        have h_H := SetMaximalConsistent.mp_of_theorem h_mcs
+          (liftBase fc (boxToPast (Formula.box (Formula.box φ).neg)))
               h_box_box_neg
         rw [← limit_f_zero fc A h_mcs] at h_H
         have h_H' := limit_backward_H fc A h_mcs 0 x (zero_mem_limit_dom fc A h_mcs) hx h_neg
           (Formula.box (Formula.box φ).neg) h_H
-        exact SetMaximalConsistent.implication_property (limit_c0 fc A h_mcs x hx)
-          (theorem_in_mcs (limit_c0 fc A h_mcs x hx)
-            (DerivationTree.axiom [] _ (Axiom.modal_t (Formula.box φ).neg) trivial)) h_H'
+        exact SetMaximalConsistent.mp_of_theorem (limit_c0 fc A h_mcs x hx)
+          (DerivationTree.axiom [] _ (Axiom.modal_t (Formula.box φ).neg) trivial) h_H'
     -- Contradiction: Box φ and ¬(Box φ) both in LimitF(x)
     exact set_consistent_not_both (limit_c0 fc A h_mcs x hx).1 (Formula.box φ) h_box_x h_box_neg_x
   · -- Forward: Box φ ∈ A → Box φ ∈ LimitF(x)
     intro h_box_A
     rcases lt_trichotomy 0 x with h_pos | rfl | h_neg
     · -- x > 0: use G propagation (temporalFutureDerived: □φ → G(□φ))
-      have h_G := SetMaximalConsistent.implication_property h_mcs
-        (theorem_in_mcs h_mcs (FormalSystem.Theorems.Combinators.temporalFutureDerived φ)) h_box_A
+      have h_G := SetMaximalConsistent.mp_of_theorem h_mcs
+        (FormalSystem.Theorems.Combinators.temporalFutureDerived φ) h_box_A
       rw [← limit_f_zero fc A h_mcs] at h_G
       exact limit_forward_G fc A h_mcs 0 x (zero_mem_limit_dom fc A h_mcs) hx h_pos
         (Formula.box φ) h_G
@@ -379,10 +374,10 @@ theorem box_stable_in_limit_f (fc : FrameClass) (A : Set Formula)
       rw [limit_f_zero]; exact h_box_A
     · -- x < 0: use H propagation (modal_4: □φ → □□φ, boxToPast: □(□φ) → H(□φ))
       have h_box_box : Formula.box (Formula.box φ) ∈ A :=
-        SetMaximalConsistent.implication_property h_mcs
-          (theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.modal_4 φ) trivial)) h_box_A
-      have h_H := SetMaximalConsistent.implication_property h_mcs
-        (theorem_in_mcs h_mcs (liftBase fc (boxToPast (Formula.box φ)))) h_box_box
+        SetMaximalConsistent.mp_of_theorem h_mcs
+          (DerivationTree.axiom [] _ (Axiom.modal_4 φ) trivial) h_box_A
+      have h_H := SetMaximalConsistent.mp_of_theorem h_mcs
+        (liftBase fc (boxToPast (Formula.box φ))) h_box_box
       rw [← limit_f_zero fc A h_mcs] at h_H
       exact limit_backward_H fc A h_mcs 0 x (zero_mem_limit_dom fc A h_mcs) hx h_neg
         (Formula.box φ) h_H
@@ -434,40 +429,38 @@ theorem box_dense_gives_density (fc : FrameClass) (N : Set Formula)
   intro x hx
   -- F'T ∈ N (from □(F'T) by modal_t)
   have h_ft_N : nextTop.neg ∈ N :=
-    SetMaximalConsistent.implication_property h_N
-      (theorem_in_mcs h_N (DerivationTree.axiom [] _ (Axiom.modal_t nextTop.neg) trivial))
+    SetMaximalConsistent.mp_of_theorem h_N
+      (DerivationTree.axiom [] _ (Axiom.modal_t nextTop.neg) trivial)
       h_box_dense
   -- G(□(F'T)) ∈ N (from □(F'T) by temporalFutureDerived)
   have h_G_box : Formula.allFuture (Formula.box nextTop.neg) ∈ N :=
-    SetMaximalConsistent.implication_property h_N
-      (theorem_in_mcs h_N (FormalSystem.Theorems.Combinators.temporalFutureDerived nextTop.neg))
+    SetMaximalConsistent.mp_of_theorem h_N
+      (FormalSystem.Theorems.Combinators.temporalFutureDerived nextTop.neg)
       h_box_dense
   -- H(□(F'T)) ∈ N (from □(F'T) → □□(F'T) → H(□(F'T)))
   have h_box_box : Formula.box (Formula.box nextTop.neg) ∈ N :=
-    SetMaximalConsistent.implication_property h_N
-      (theorem_in_mcs h_N (DerivationTree.axiom [] _ (Axiom.modal_4 nextTop.neg) trivial))
+    SetMaximalConsistent.mp_of_theorem h_N
+      (DerivationTree.axiom [] _ (Axiom.modal_4 nextTop.neg) trivial)
       h_box_dense
   have h_H_box : Formula.allPast (Formula.box nextTop.neg) ∈ N :=
-    SetMaximalConsistent.implication_property h_N
-      (theorem_in_mcs h_N (liftBase fc (boxToPast (Formula.box nextTop.neg)))) h_box_box
+    SetMaximalConsistent.mp_of_theorem h_N
+      (liftBase fc (boxToPast (Formula.box nextTop.neg))) h_box_box
   -- Now propagate to x ∈ LimitDom
   rcases lt_trichotomy 0 x with h_pos | rfl | h_neg
   · -- x > 0: G(□(F'T)) ∈ LimitF(0) = N, propagate via limit_forward_G
     rw [← limit_f_zero fc N h_N] at h_G_box
     have h_box_x := limit_forward_G fc N h_N 0 x (zero_mem_limit_dom fc N h_N) hx h_pos
       (Formula.box nextTop.neg) h_G_box
-    exact SetMaximalConsistent.implication_property (limit_c0 fc N h_N x hx)
-      (theorem_in_mcs (limit_c0 fc N h_N x hx)
-        (DerivationTree.axiom [] _ (Axiom.modal_t nextTop.neg) trivial)) h_box_x
+    exact SetMaximalConsistent.mp_of_theorem (limit_c0 fc N h_N x hx)
+      (DerivationTree.axiom [] _ (Axiom.modal_t nextTop.neg) trivial) h_box_x
   · -- x = 0: LimitF(0) = N
     rw [limit_f_zero]; exact h_ft_N
   · -- x < 0: H(□(F'T)) ∈ LimitF(0) = N, propagate via limit_backward_H
     rw [← limit_f_zero fc N h_N] at h_H_box
     have h_box_x := limit_backward_H fc N h_N 0 x (zero_mem_limit_dom fc N h_N) hx h_neg
       (Formula.box nextTop.neg) h_H_box
-    exact SetMaximalConsistent.implication_property (limit_c0 fc N h_N x hx)
-      (theorem_in_mcs (limit_c0 fc N h_N x hx)
-        (DerivationTree.axiom [] _ (Axiom.modal_t nextTop.neg) trivial)) h_box_x
+    exact SetMaximalConsistent.mp_of_theorem (limit_c0 fc N h_N x hx)
+      (DerivationTree.axiom [] _ (Axiom.modal_t nextTop.neg) trivial) h_box_x
 
 /--
 Shifted FMCS on Rat: `mcs t := CantorFDense(t + offset)`.
@@ -564,10 +557,8 @@ noncomputable def cantorBfmcsDense (fc : FrameClass) (A : Set Formula)
     have h_box_in_N' : Formula.box φ ∈ N' := (h_eqN' φ).mp h_box_A
     have h_box_t' : Formula.box φ ∈ (rootedCantorFmcsDense fc N' h_N' h_box_N' s').mcs t :=
       (box_stable_in_rooted_cantor_fmcs_dense fc N' h_N' h_box_N' φ s' t).mpr h_box_in_N'
-    exact SetMaximalConsistent.implication_property
-      ((rootedCantorFmcsDense fc N' h_N' h_box_N' s').is_mcs t)
-      (theorem_in_mcs ((rootedCantorFmcsDense fc N' h_N' h_box_N' s').is_mcs t)
-        (DerivationTree.axiom [] _ (Axiom.modal_t φ) trivial)) h_box_t'
+    exact SetMaximalConsistent.mp_of_theorem ((rootedCantorFmcsDense fc N' h_N' h_box_N' s').is_mcs t)
+      (DerivationTree.axiom [] _ (Axiom.modal_t φ) trivial) h_box_t'
   modal_backward := by
     intro fam hfam φ t h_all
     obtain ⟨N, h_N, h_box_N, s, h_eqN, rfl⟩ := hfam
@@ -905,8 +896,8 @@ theorem next_top_gives_since (fc : FrameClass) (A : Set Formula)
     (h_next : nextTop ∈ LimitF fc A h_mcs x) :
     Formula.snce Formula.bot topFormula ∈ LimitF fc A h_mcs x := by
   have h_mcs_x := limit_c0 fc A h_mcs x hx
-  exact SetMaximalConsistent.implication_property h_mcs_x
-    (theorem_in_mcs h_mcs_x (DerivationTree.axiom [] _ Axiom.discrete_symm_fwd trivial))
+  exact SetMaximalConsistent.mp_of_theorem h_mcs_x
+    (DerivationTree.axiom [] _ Axiom.discrete_symm_fwd trivial)
     h_next
 
 /--
@@ -1178,39 +1169,36 @@ theorem box_discrete_gives_discreteness (fc : FrameClass) (N : Set Formula)
   intro x hx
   -- U(T,bot) ∈ N (from □(U(T,bot)) by modal_t)
   have h_nt_N : nextTop ∈ N :=
-    SetMaximalConsistent.implication_property h_N
-      (theorem_in_mcs h_N (DerivationTree.axiom [] _ (Axiom.modal_t nextTop) trivial))
+    SetMaximalConsistent.mp_of_theorem h_N
+      (DerivationTree.axiom [] _ (Axiom.modal_t nextTop) trivial)
       h_box_discrete
   -- G(□(U(T,bot))) ∈ N (from □(U(T,bot)) by temporalFutureDerived)
   have h_G_box : Formula.allFuture (Formula.box nextTop) ∈ N :=
-    SetMaximalConsistent.implication_property h_N
-      (theorem_in_mcs h_N (FormalSystem.Theorems.Combinators.temporalFutureDerived nextTop))
+    SetMaximalConsistent.mp_of_theorem h_N
+      (FormalSystem.Theorems.Combinators.temporalFutureDerived nextTop)
       h_box_discrete
   -- H(□(U(T,bot))) ∈ N (from □(U(T,bot)) → □□(U(T,bot)) → H(□(U(T,bot))))
   have h_box_box : Formula.box (Formula.box nextTop) ∈ N :=
-    SetMaximalConsistent.implication_property h_N
-      (theorem_in_mcs h_N (DerivationTree.axiom [] _ (Axiom.modal_4 nextTop) trivial))
+    SetMaximalConsistent.mp_of_theorem h_N
+      (DerivationTree.axiom [] _ (Axiom.modal_4 nextTop) trivial)
       h_box_discrete
   have h_H_box : Formula.allPast (Formula.box nextTop) ∈ N :=
-    SetMaximalConsistent.implication_property h_N
-      (theorem_in_mcs h_N (liftBase fc (boxToPast (Formula.box nextTop)))) h_box_box
+    SetMaximalConsistent.mp_of_theorem h_N (liftBase fc (boxToPast (Formula.box nextTop))) h_box_box
   -- Now propagate to x ∈ LimitDom
   rcases lt_trichotomy 0 x with h_pos | rfl | h_neg
   · -- x > 0: G(□(U(T,bot))) ∈ LimitF(0) = N, propagate via limit_forward_G
     rw [← limit_f_zero fc N h_N] at h_G_box
     have h_box_x := limit_forward_G fc N h_N 0 x (zero_mem_limit_dom fc N h_N) hx h_pos
       (Formula.box nextTop) h_G_box
-    exact SetMaximalConsistent.implication_property (limit_c0 fc N h_N x hx)
-      (theorem_in_mcs (limit_c0 fc N h_N x hx)
-        (DerivationTree.axiom [] _ (Axiom.modal_t nextTop) trivial)) h_box_x
+    exact SetMaximalConsistent.mp_of_theorem (limit_c0 fc N h_N x hx)
+      (DerivationTree.axiom [] _ (Axiom.modal_t nextTop) trivial) h_box_x
   · -- x = 0: LimitF(0) = N
     rw [limit_f_zero]; exact h_nt_N
   · -- x < 0: H(□(U(T,bot))) ∈ LimitF(0) = N, propagate via limit_backward_H
     rw [← limit_f_zero fc N h_N] at h_H_box
     have h_box_x := limit_backward_H fc N h_N 0 x (zero_mem_limit_dom fc N h_N) hx h_neg
       (Formula.box nextTop) h_H_box
-    exact SetMaximalConsistent.implication_property (limit_c0 fc N h_N x hx)
-      (theorem_in_mcs (limit_c0 fc N h_N x hx)
-        (DerivationTree.axiom [] _ (Axiom.modal_t nextTop) trivial)) h_box_x
+    exact SetMaximalConsistent.mp_of_theorem (limit_c0 fc N h_N x hx)
+      (DerivationTree.axiom [] _ (Axiom.modal_t nextTop) trivial) h_box_x
 
 end FormalSystem.Metalogic.BXCanonical.Chronicle
