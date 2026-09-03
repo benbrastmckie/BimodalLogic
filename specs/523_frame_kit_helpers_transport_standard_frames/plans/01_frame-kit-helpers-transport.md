@@ -681,6 +681,18 @@ transports untouched.
   `time_shift_preserves_truth`'s statement** to the total-history case to force the derivation
   through. Its `σ` is genuinely general and its consumers are entitled to that.
 
+**Resolution (task 532, plan `specs/532_worldhistory_extension_faithfulness_audit/plans/01_truthcorr-relational-transport.md`)**:
+the quantifier mismatch is resolved by neither option (1) nor (2) above but by a *relational*
+generic transport, `Semantics.TruthCorr` + `Truth.truthAt_of_truthCorr` (a `Prop`-valued
+correspondence on arbitrary histories, atomic agreement on related pairs, totality-existence in
+both directions — the paper's own proof shape from `def:time-shift-histories` /
+`app:auto_existence`). `TimeShift.timeShift_preserves_truth` is now derived from it at the
+instance `shiftCorr` with its statement byte-identical (arbitrary `σ`), and `truth_double_shift_cancel`
+stays deleted. The `induction φ` acceptance criterion now reads "at most three truth-transport
+`induction φ` in `Semantics/` + `Independence/`" (two generic — `truthAt_of_truthCorr`,
+`truthAt_of_truthAntiIso` — plus the per-history exception `truthAt_add_hist_period`), and it is
+met. This phase's status marker is left as recorded.
+
 **Landed in this phase despite the blocker** (all green, all committed):
 - `LoopingDuration.truthAt_add_period` derived from `loopingTruthIso`: 68 lines → 12.
 - `Truth.truth_double_shift_cancel` **deleted**, and with it
@@ -800,6 +812,13 @@ most three" here. The measured count is **four** (`truthAt_of_truthIso`,
 
 **Verification**: zero `sorry` in this phase (its diff is empty in `FormalSystem/`);
 `truthAt_map` is byte-identical to its pre-phase form. Both conditions hold.
+
+**Resolution (task 532)**: both exclusions above are resolved without overriding the recorded
+`Aligned`-not-`Equiv` prohibition. `Aligned e` is exactly the `Rel` field of a
+`Semantics.TruthCorr` (`IntTransfer.alignedCorr`), and `truthAt_map` is derived from
+`Truth.truthAt_of_truthCorr` at that instance with its statement byte-identical and its own
+induction deleted; `IntTransfer.lean` contains zero `induction φ`. The acceptance criterion is
+restated as in the Phase 10 resolution note: at most three truth-transport `induction φ`, met.
 
 #### Original phase text, retained for the record
 

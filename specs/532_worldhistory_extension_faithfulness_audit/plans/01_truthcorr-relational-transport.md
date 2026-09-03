@@ -1,7 +1,7 @@
 # Implementation Plan: Task #532
 
 - **Task**: 532 - Audit and resolve the partial-vs-total WorldHistory faithfulness gap
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 7 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/532_worldhistory_extension_faithfulness_audit/reports/01_worldhistory-extension-faithfulness-audit.md; verified experiment specs/532_worldhistory_extension_faithfulness_audit/reports/TruthCorr-experiment.lean.txt
@@ -441,30 +441,30 @@ hypothesis, the grep output is the fact.
 
 ---
 
-### Phase 6: Closure — full gate set, `induction φ` ledger, cross-record updates [IN PROGRESS]
+### Phase 6: Closure — full gate set, `induction φ` ledger, cross-record updates [COMPLETED]
 
 **Goal**: The whole task is verified against the complete gate set, the transport-induction
 ledger is measured and recorded, and the paused prior plan's blocker record points at the
 resolution.
 
 **Tasks**:
-- [ ] Run the full gate set from a clean state: `lake build` (exit 0, zero `sorry` in
+- [x] Run the full gate set from a clean state: `lake build` (exit 0, zero `sorry` in
       `FormalSystem/`), `bash scripts/check-module-invariants.sh` (ALL CHECKS PASSED),
       `bash scripts/check-paper-definitions.sh` (exit 0), `bash scripts/readme-lint.sh` if
       `FormalSystem/Semantics/README.md` was touched.
-- [ ] Measure the ledger: `grep -rn "induction φ" FormalSystem/Semantics FormalSystem/Metalogic/Independence`
+- [x] Measure the ledger: `grep -rn "induction φ" FormalSystem/Semantics FormalSystem/Metalogic/Independence`
       and classify every hit. Expected truth-transport inductions: `Truth.truthAt_of_truthCorr`,
       `Truth.truthAt_of_truthAntiIso`, `FwdRecPeriodicity.truthAt_add_hist_period` (three).
       Expected non-transport inductions (unchanged): `Truth.truthAt_atomFree_history_indep`,
       `ShiftSet.forward_repr`, `ShiftSet.reverse_repr`. Record the measured table in the
       implementation summary.
-- [ ] `lean_verify` (or `#print axioms`) on `Truth.truthAt_of_truthCorr`,
+- [x] `lean_verify` (or `#print axioms`) on `Truth.truthAt_of_truthCorr`,
       `TimeShift.timeShift_preserves_truth`, `truthAt_map`, `Truth.truthAt_of_truthIso`: no
       `sorryAx`; axiom sets ⊆ {`propext`, `Classical.choice`, `Quot.sound`}. Record them.
-- [ ] `FormalSystem/Semantics/README.md`: extend the `Truth.lean` row to mention the relational
+- [x] `FormalSystem/Semantics/README.md`: extend the `Truth.lean` row to mention the relational
       truth transport (`TruthCorr` / `truthAt_of_truthCorr`) if the README's row convention
       admits it; otherwise leave it and say so.
-- [ ] Append a short resolution note to
+- [x] Append a short resolution note to
       `specs/523_frame_kit_helpers_transport_standard_frames/plans/01_frame-kit-helpers-transport.md`
       under the Phase 10 blocker record and the Phase 12 exclusion row (specs-only; task
       references are permitted there): the quantifier mismatch is resolved by the relational
@@ -472,10 +472,12 @@ resolution.
       acceptance criterion now reads "at most three truth-transport `induction φ` in
       `Semantics/` + `Independence/`" (two generic + the per-history exception). Do not change
       the phase status markers of that plan.
-- [ ] Confirm no file outside `specs/**` contains "task 523" or "task 532":
+- [x] Confirm no file outside `specs/**` contains "task 523" or "task 532":
       `grep -rn "task 5[23][23]" FormalSystem docs scripts --include=* 2>/dev/null` (or run
       `scripts/check-task-references.sh` if present in this checkout).
-- [ ] Commit per the git-workflow convention.
+- [x] Commit per the git-workflow convention.
+
+**Phase record**: ledger measured = 3 transport (`truthAt_of_truthCorr`, `truthAt_of_truthAntiIso`, `truthAt_add_hist_period`) + 3 non-transport (`truthAt_atomFree_history_indep`, `ShiftSet.forward_repr`, `ShiftSet.reverse_repr`). Axioms recorded in the summary; no `sorryAx`. `lake build` 2520/exit 0; invariants ALL CHECKS PASSED; paper-defs exit 0; task-reference lint PASS; `readme-lint.sh` FAIL is pre-existing (2 README-less directories `Semantics/Frames/`, `Semantics/Ultraproduct/`, 0 broken references) and unrelated. README `Truth.lean` row extended (row convention admits it). 523 plan annotated under Phase 10 blocker and Phase 12 exclusions.
 
 **Timing**: 0.5 hours
 
@@ -494,20 +496,20 @@ resolution.
 
 ## Testing & Validation
 
-- [ ] `lake build` green at the end of every Lean phase (1, 2, 3, 5, 6); zero new `sorry`
-- [ ] `TimeShift.timeShift_preserves_truth`, `IntTransfer.truthAt_map`, `Truth.truthAt_of_truthIso`:
+- [x] `lake build` green at the end of every Lean phase (1, 2, 3, 5, 6); zero new `sorry`
+- [x] `TimeShift.timeShift_preserves_truth`, `IntTransfer.truthAt_map`, `Truth.truthAt_of_truthIso`:
       declaration headers byte-identical to `git show HEAD`
-- [ ] All consumer sites of the three theorems compile with no edits (enumerated in Phase 2's
+- [x] All consumer sites of the three theorems compile with no edits (enumerated in Phase 2's
       scope hypothesis; `LoopingDuration.lean`; `validDiscrete_iff_validInt`)
-- [ ] `grep -c "induction φ" FormalSystem/Semantics/IntTransfer.lean` = 0;
+- [x] `grep -c "induction φ" FormalSystem/Semantics/IntTransfer.lean` = 0;
       `FormalSystem/Semantics/Truth.lean` contains exactly three (`truthAt_of_truthCorr`,
       `truthAt_of_truthAntiIso`, `truthAt_atomFree_history_indep`)
-- [ ] `bash scripts/check-paper-definitions.sh` exits 0
-- [ ] `bash scripts/check-module-invariants.sh` ALL CHECKS PASSED (C15 included)
-- [ ] No `HEq`, no `WorldHistory ≃`, no `sorry`, no new axiom anywhere in the diff
-- [ ] No raw paper line numbers in `Truth.lean`/`WorldHistory.lean`; no "total world histories
+- [x] `bash scripts/check-paper-definitions.sh` exits 0
+- [x] `bash scripts/check-module-invariants.sh` ALL CHECKS PASSED (C15 included)
+- [x] No `HEq`, no `WorldHistory ≃`, no `sorry`, no new axiom anywhere in the diff
+- [x] No raw paper line numbers in `Truth.lean`/`WorldHistory.lean`; no "total world histories
       over $\F$" verbatim quote remains in `FormalSystem/**`
-- [ ] No task-number references in files outside `specs/**`
+- [x] No task-number references in files outside `specs/**`
 
 ## Artifacts & Outputs
 
