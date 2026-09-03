@@ -415,7 +415,7 @@ parallel wave-1 dispatch shares one `lake build`; if run in parallel, serialise 
 
 ---
 
-### Phase 5: Delete the private Archimedean copy and repair its three docstrings [NOT STARTED]
+### Phase 5: Delete the private Archimedean copy and repair its three docstrings [IN PROGRESS]
 
 - **Goal:** Zero private Archimedean copies in the tree; the new import edge is in place and measured;
   and the three docstrings the deletion falsifies are corrected in the same change.

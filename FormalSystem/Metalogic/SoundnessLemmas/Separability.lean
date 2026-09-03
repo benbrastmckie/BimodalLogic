@@ -6,6 +6,7 @@ Authors: Benjamin Brast-McKie
 
 import Mathlib.Algebra.Order.Archimedean.Basic
 import Mathlib.Data.Set.Countable
+import FormalSystem.Semantics.DurationClassification
 
 /-!
 # Separability of a Dense Dedekind-Complete Duration Group
@@ -13,6 +14,13 @@ import Mathlib.Data.Set.Countable
 Pure order/group theory supporting the validity of Reynolds' Sep axiom (Reynolds 1992, §7
 lemma 10). Nothing here mentions formulas or truth; the file is imported by
 `Metalogic/Soundness.lean`, which supplies the semantic glue.
+
+The Archimedean step is **not** re-proved here: it is
+`FormalSystem.Semantics.archimedean_of_lub` (`Semantics/DurationClassification.lean`), the public
+`Semantics`-layer statement of the same fact, imported directly. That import is the file's one
+non-Mathlib edge; it reaches exactly three `Semantics` modules (`DurationClassification`,
+`TaskFrame`, `TemporalOrder`) and no `FormalSystem.Metalogic` module, so it is acyclic by
+measurement.
 
 ## Why the algebraic hypotheses are load-bearing
 
@@ -63,34 +71,6 @@ private theorem exists_half_le {D : Type} [AddCommGroup D] [LinearOrder D] [IsOr
   calc min c (a - c) + min c (a - c) ≤ c + (a - c) :=
         add_le_add (min_le_left _ _) (min_le_right _ _)
     _ = a := by abel
-
-/-- The least-upper-bound hypothesis forces an ordered group to be Archimedean.
-
-If some `y > 0` had all its multiples bounded by `x`, the set `{n • y}` would have a supremum `s`;
-but `s - y < s` so some `n • y` exceeds `s - y`, whence `(n+1) • y > s`, contradicting that `s`
-bounds the set. There is no route to this through Mathlib: the available instances
-(`ConditionallyCompleteLinearOrderedField.to_archimedean`) require a field.
-
-Deliberate duplicate of `FormalSystem.Semantics.archimedean_of_lub`
-(`Semantics/DurationClassification.lean`), which is the public `Semantics`-layer statement of
-the same fact and the one the `FrameClass` / `Validity` docstrings cite. This copy stays
-`private` and stays here because `exists_countable_order_dense` below uses it and moving it
-would drag the Reynolds Sep chain into a rebase for no gain. -/
-private theorem arch_of_lub {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D]
-    (h_lub : ∀ s : Set D, s.Nonempty → BddAbove s → ∃ x, IsLUB s x) : Archimedean D := by
-  refine ⟨fun x y hy => ?_⟩
-  by_contra hcon
-  simp only [not_exists, not_le] at hcon
-  have hbdd : BddAbove (Set.range (fun n : ℕ => n • y)) := by
-    refine ⟨x, ?_⟩; rintro _ ⟨n, rfl⟩; exact (hcon n).le
-  obtain ⟨s, hs⟩ := h_lub (Set.range (fun n : ℕ => n • y))
-    ⟨(0:ℕ) • y, Set.mem_range_self 0⟩ hbdd
-  have h1 : s - y < s := by simpa using sub_lt_self s hy
-  obtain ⟨_, ⟨n, rfl⟩, hn, -⟩ := hs.exists_between h1
-  have hle : (n+1) • y ≤ s := hs.1 ⟨n+1, rfl⟩
-  have h3 : s - y < n • y := hn
-  have h2 : s < (n+1) • y := by rw [succ_nsmul]; exact sub_lt_iff_lt_add.mp h3
-  exact absurd hle (not_le_of_gt h2)
 
 /-- A sequence of positive elements decreasing below every positive bound: repeatedly halving a
 fixed positive `a` gives `d n` with `2^n • d n ≤ a`, and Archimedean-ness turns that into
@@ -145,7 +125,7 @@ theorem exists_countable_order_dense {D : Type} [AddCommGroup D] [LinearOrder D]
     [IsOrderedAddMonoid D] [DenselyOrdered D] [Nontrivial D]
     (h_lub : ∀ s : Set D, s.Nonempty → BddAbove s → ∃ x, IsLUB s x) :
     ∃ Q : Set D, Q.Countable ∧ ∀ x y : D, x < y → ∃ q ∈ Q, x < q ∧ q < y := by
-  have harch : Archimedean D := arch_of_lub h_lub
+  have harch : Archimedean D := Semantics.archimedean_of_lub h_lub
   obtain ⟨d, hdpos, hdsmall⟩ := exists_null_seq (D := D)
   refine ⟨Set.range (fun p : ℤ × ℕ => p.1 • d p.2), Set.countable_range _, ?_⟩
   intro x y hxy

@@ -2560,9 +2560,10 @@ three were reused rather than re-proved; it is not right for these two.)
 route — see `truthAt_sep` below. Its validity genuinely needs `exists_countable_order_dense`,
 which is a substantial order-theoretic development and not a thirty-line argument, so it is
 **reused** from `SoundnessLemmas/Separability.lean` rather than re-proved. That reuse is
-available precisely because `Separability.lean` imports only Mathlib and mentions neither
-formulas nor truth, which makes the import edge acyclic by inspection; the refused edge is the
-one into `Metalogic/Soundness.lean`, and it stays refused. With `sepRule` proved the `.Dedekind`
+available precisely because `Separability.lean` mentions neither formulas nor truth and its only
+non-Mathlib import is `Semantics/DurationClassification.lean`, itself pure order/group theory,
+which keeps the import edge acyclic; the refused edge is the one into
+`Metalogic/Soundness.lean`, and it stays refused. With `sepRule` proved the `.Dedekind`
 family is complete.
 -/
 
@@ -2752,10 +2753,14 @@ together with `h_lub` force the carrier to be Archimedean and hence separable. T
 what `exists_countable_order_dense` extracts, and it is why this rule needed an import edge where
 the Prior-gap pair did not.
 
-**On the import.** `SoundnessLemmas/Separability.lean` imports **only** Mathlib
-(`Algebra.Order.Archimedean.Basic`, `Data.Set.Countable`) — it mentions neither formulas nor
-truth — so the edge into this tree is acyclic by inspection and is a strictly weaker dependency
-than the `FrameClassVariants` edge already present. It is emphatically **not** an edge to
+**On the import.** `SoundnessLemmas/Separability.lean` imports Mathlib
+(`Algebra.Order.Archimedean.Basic`, `Data.Set.Countable`) plus the single `FormalSystem` module
+`Semantics/DurationClassification.lean`, from which it takes `archimedean_of_lub`. It mentions
+neither formulas nor truth. That one edge is measured, not assumed: the transitive `FormalSystem`
+closure of `DurationClassification` is exactly three modules — `Semantics.DurationClassification`,
+`Semantics.TaskFrame`, `Semantics.TemporalOrder` — and contains **no** `FormalSystem.Metalogic`
+module, so the edge into this tree remains acyclic and is still a strictly weaker dependency than
+the `FrameClassVariants` edge already present. It is emphatically **not** an edge to
 `Metalogic/Soundness.lean`, which remains refused, nor to the `WeakCanonical` tree. Mathlib
 itself was searched first and does not carry this lemma in usable form: its countable-dense
 results are stated for `SeparableSpace`/`OrderTopology`, and reaching them from an ordered group

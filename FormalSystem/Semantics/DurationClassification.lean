@@ -57,11 +57,14 @@ the omission is a scoped decision rather than a gap:
 
 ## Relation to `Metalogic/SoundnessLemmas/Separability.lean`
 
-That file carries a `private` copy of the same Archimedean argument (`arch_of_lub`), used there
-to feed Reynolds' separability lemma. It is `private` and sits in the `Metalogic` layer, so it
-is unreachable from `Semantics`; `archimedean_of_lub` below is the public `Semantics`-layer
-statement of the same fact. The duplication is deliberate and is noted in both places rather
-than resolved by moving the helper, which would drag `Metalogic` proofs into a rebase.
+That file feeds Reynolds' separability lemma with the Archimedean step, and it consumes
+`archimedean_of_lub` below directly — it used to carry a `private` copy (`arch_of_lub`) instead.
+The copy is gone. The stated reason for keeping it, that resolving the duplication "would drag
+`Metalogic` proofs into a rebase", did not survive measurement: the transitive `FormalSystem`
+closure of this module is exactly three modules (`Semantics.DurationClassification`,
+`Semantics.TaskFrame`, `Semantics.TemporalOrder`) and contains no `FormalSystem.Metalogic`
+module, so the edge `Separability.lean → DurationClassification.lean` is acyclic and cheap.
+`archimedean_of_lub` is now the single statement of this fact in the tree.
 
 ## Main results
 

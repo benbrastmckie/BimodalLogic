@@ -12,7 +12,7 @@ Dedekind-class separability axiom.
 |------|-------|-------------|
 | `CoValidity.lean` | 140 | `co_valid`: semantic validity of the paper's CO principle `△(Hφ → F Hφ) → (Hφ → Gφ)` on dense Dedekind-complete flows. Not a soundness case — CO is a derived theorem here, not an `Axiom` constructor |
 | `FrameClassVariants.lean` | 963 | The per-axiom swap-validity and validity lemmas at `FrameClass.Base`, the 45-arm dispatcher `axiom_swap_valid_general` that delegates to them one line per arm, and the four discrete Prior/z1 lemmas at `ValidDiscrete`; consumed by `Metalogic/Soundness.lean`'s `axiom_swap_validIn_min` |
-| `Separability.lean` | 354 | Separability of dense Dedekind-complete duration groups and the order-theoretic core of the Sep axiom (Reynolds 1992, §7 lemma 10) |
+| `Separability.lean` | 334 | Separability of dense Dedekind-complete duration groups and the order-theoretic core of the Sep axiom (Reynolds 1992, §7 lemma 10) |
 
 ## Key Results
 
