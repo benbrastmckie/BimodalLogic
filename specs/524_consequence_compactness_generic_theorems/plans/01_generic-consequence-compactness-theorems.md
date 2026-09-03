@@ -353,26 +353,26 @@ they must share a phase.
 
 ---
 
-### Phase 6: `TMComplete` / `Forward` generic in `fc` [NOT STARTED]
+### Phase 6: `TMComplete` / `Forward` generic in `fc` [COMPLETED]
 
 **Goal**: Land item 6. The bridge B-22 asks for already exists as a theorem, so the only hypothesis
 needed is `WeakCompleteness fc`.
 
 **Tasks**:
-- [ ] Add `def TMComplete (fc : FrameClass) : Prop` and `def Forward (fc : FrameClass) : Prop` to
+- [x] Add `def TMComplete (fc : FrameClass) : Prop` and `def Forward (fc : FrameClass) : Prop` to
       `TMCompletenessReduction.lean`. Both stay `def`s.
-- [ ] Add `tmComplete_iff_forward {fc} (engine : WeakCompleteness fc) : TMComplete fc ↔ Forward fc`,
+- [x] Add `tmComplete_iff_forward {fc} (engine : WeakCompleteness fc) : TMComplete fc ↔ Forward fc`,
       using `blValidIn_iff_validIn_tr` (`BaseLanguageSoundness.lean:177`) and `soundness_validIn`.
       The conclusion is an `Iff`, not either side, so the module's "unasserted `def`, never a
       theorem conclusion" prohibition discipline (`:28-33`) is preserved — say so in the docstring.
-- [ ] Restate `TMCompleteBase`/`ForwardBase`/`TMCompleteDiscrete`/`ForwardDiscrete` as
+- [x] Restate `TMCompleteBase`/`ForwardBase`/`TMCompleteDiscrete`/`ForwardDiscrete` as
       instantiations, and rewrite `tmCompleteBase_iff_forwardBase` /
       `tmCompleteDiscrete_iff_forwardDiscrete` as `tmComplete_iff_forward completeness_base` /
       `… completeness_discrete`.
-- [ ] Add the two free rows the generalization yields: `tmComplete_iff_forward completeness_dense`
+- [x] Add the two free rows the generalization yields: `tmComplete_iff_forward completeness_dense`
       and `… completeness_dedekind`.
-- [ ] Confirm `open FormalSystem.BaseLanguage` and `open FormalSystem.Metalogic.Conservativity` are
-      in scope (already present at `:71,73`).
+- [x] Confirm `open FormalSystem.BaseLanguage` and `open FormalSystem.Metalogic.Conservativity` are
+      in scope (already present at `:71,73`). *(deviation: altered — both were already in scope as the plan says, but a new `import FormalSystem.Metalogic.StrongCompleteness` was required: the module previously imported only `BaseLanguageSoundness` and `BXCanonical`, and `WeakCompleteness`, the four `completeness_*` engines and `soundness_validIn` all live downstream of that import. No cycle: nothing in `StrongCompleteness.lean`'s import closure reaches this module.)*
 
 **Timing**: 1 hour
 
@@ -392,37 +392,45 @@ needed is `WeakCompleteness fc`.
 
 ---
 
-### Phase 7: `PointedModel` and the satisfiability bridges [NOT STARTED]
+### Phase 7: `PointedModel` and the satisfiability bridges [COMPLETED]
 
 **Goal**: Land item 5 — restate `SatisfiableSet` over a named structure and add the two bridge
 iffs, so compactness reads as "satisfiable iff finitely satisfiable".
 
 **Tasks**:
-- [ ] Add `structure PointedModel (fc : FrameClass) (Γ : Set Formula)` with the seven named fields
+- [x] Add `structure PointedModel (fc : FrameClass) (Γ : Set Formula)` with the seven named fields
       (`Frame`, `inClass`, `Model`, `hist`, `htotal`, `time`, `models`).
-- [ ] Redefine `SatisfiableSet fc Γ := Nonempty (PointedModel fc Γ)`.
-- [ ] Add `def PointedModel.mono` — a **`def`, not a `theorem`**; `PointedModel` lives in `Type`,
+- [x] Redefine `SatisfiableSet fc Γ := Nonempty (PointedModel fc Γ)`.
+- [x] Add `def PointedModel.mono` — a **`def`, not a `theorem`**; `PointedModel` lives in `Type`,
       and stating it as a theorem fails with "type of theorem … is not a proposition".
-- [ ] Add `SatisfiableSet.mono`, `def FinitelySatisfiableSet`, and
+- [x] Add `SatisfiableSet.mono`, `def FinitelySatisfiableSet`, and
       `SatisfiableSet.finitelySatisfiable`.
-- [ ] Retype the single `SatisfiableSet.of_forall` (`:260`) as `PointedModel.of` returning
+- [x] Retype the single `SatisfiableSet.of_forall` (`:260`) as `PointedModel.of` returning
       `PointedModel fc Γ`; keep a `SatisfiableSet.of_forall` wrapper if any call site wants the
       `Nonempty` form directly.
-- [ ] Add `modelExistence_iff_finitelySatisfiable` and
+- [x] Add `modelExistence_iff_finitelySatisfiable` and
       `satisfiableSet_iff_finitelySatisfiable (hme : ModelExistence fc)`, routing the task's "given
       `Compact fc`" phrasing through Phase 5's `compact_iff_modelExistence`. Watch the coercion
       trap: `(by simpa using hL)` alone fails at `{a | a ∈ L} ⊆ Γ` versus `∀ ψ ∈ L, ψ ∈ Γ`; write
       `intro ψ hψ; exact hL ψ (by simpa using hψ)`.
-- [ ] Add `setConsequence_iff_not_satisfiable {fc} {Γ} {φ} : SetSemanticConsequenceOn fc Γ φ ↔ ¬ SatisfiableSet fc (Γ ∪ {φ.neg})`,
+- [x] Add `setConsequence_iff_not_satisfiable {fc} {Γ} {φ} : SetSemanticConsequenceOn fc Γ φ ↔ ¬ SatisfiableSet fc (Γ ∪ {φ.neg})`,
       and re-derive Phase 4's `setConsequence_of_not_satisfiable` from it as the `mpr` at
       `Γ ∪ {φ.neg} := Γ`. Keep both.
-- [ ] Delete the ten-line anonymous-binder warning in the `SatisfiableDiscreteSet` docstring
+- [x] Delete the ten-line anonymous-binder warning in the `SatisfiableDiscreteSet` docstring
       (`SetConsequence.lean:544-553`) — the structure's field names make it obsolete.
-- [ ] Confirm the six existing destructuring sites still compile unchanged
+- [x] Confirm the six existing destructuring sites still compile unchanged
       (`compact_of_modelExistence`, `archWitness_not_satisfiable`, `dedWitness_not_satisfiable`,
       the four refutations, `modelExistence{Base,Dense}`'s `refine`). Research verified `rcases`
       auto-flattens through `Nonempty` + a single-constructor structure; treat a failure here as a
-      surprise worth reporting, not as expected churn.
+      surprise worth reporting, not as expected churn. *(deviation: altered — all six listed
+      destructuring sites did compile unchanged, as predicted. One *other* site needed a rewrite:
+      `modelExistence_of_satPreserved`'s `choose F hF M τ hτ t ht using …`
+      (`Compactness.lean`), which fails with "expected a term of the shape `∀ xs, ∃ a, p xs a`"
+      because `SatisfiableSet` is no longer an `∃`-chain. It is not a destructuring site and did
+      not exist before Phase 3 created it. Replaced with
+      `let P : ∀ i, PointedModel fc _ := fun i => (hfin i.val i.property).some` plus the named
+      field projections, which is strictly more readable than the six `choose` outputs it
+      replaced.)*
 
 **Timing**: 2 hours
 

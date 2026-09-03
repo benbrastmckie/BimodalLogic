@@ -141,20 +141,49 @@ further down are instantiations of these four, and each inherits its status from
 discharged (Base and Dense: proved, in `Metalogic/Compactness.lean`; Discrete: refuted, in
 `Metalogic/DiscreteNonCompactness.lean`). -/
 
+/-- **A pointed model of `Γ` over the frames of `fc`.** The witness data that satisfiability
+asserts the existence of, as a named structure with named fields rather than a seven-component
+anonymous existential.
+
+`SatisfiableSet fc Γ` below is `Nonempty` of this. The change is one of presentation, not of
+content: `rcases`/`obtain` auto-flattens through `Nonempty` plus a single-constructor structure,
+so every existing destructuring site — `compact_of_modelExistence`, `archWitness_not_satisfiable`,
+`dedWitness_not_satisfiable`, the refutation skeleton, `modelExistence{Base,Dense}`'s `refine` —
+compiles against the old pattern unchanged. What the structure buys is the *other* direction: a
+proof that wants one component can now write `P.time` or `P.inClass` instead of destructuring
+seven binders to reach it, and a docstring can name a field instead of counting positions.
+
+The `inClass` field holds the frame condition. At `.Discrete` that is
+`TaskFrame.IsSuccArchDiscrete Frame` (`Semantics/FrameProperty.lean`), itself a four-component
+nested existential which neither the structure nor the anonymous constructor unfolds, so a
+destructuring pattern still needs exactly one nesting pair there. -/
+structure PointedModel (fc : FrameClass) (Γ : Set Formula) where
+  /-- The witnessing frame. -/
+  Frame : TaskFrame
+  /-- Its membership in the class: `fc`'s frame condition, read off the tag by `FrameClass.Sat`. -/
+  inClass : fc.Sat Frame
+  /-- A model over that frame. -/
+  Model : TaskModel Frame
+  /-- The history at which `Γ` is witnessed. -/
+  hist : WorldHistory Frame
+  /-- That history is total. -/
+  htotal : hist.IsTotal
+  /-- The time at which `Γ` is witnessed. -/
+  time : Frame.Duration
+  /-- Every member of `Γ` is true there. -/
+  models : ∀ ψ ∈ Γ, TruthAt Model hist time ψ
+
 /-- Satisfiability of a possibly-infinite set over the frames of `fc`: some frame satisfying
 `fc`, together with a model, a total history and a time, makes every member of `Γ` true at
 once. This is `FormulaSatisfiable` (`Validity.lean`) at `ValidIn fc`'s binder list, with the
 conclusion generalised from a single formula to `∀ ψ ∈ Γ`.
 
-The frame condition sits in an **anonymous** existential binder holding `fc.Sat F`. At
-`.Discrete` that is `TaskFrame.IsSuccArchDiscrete F` (`Semantics/FrameProperty.lean`), itself a
-four-component nested existential which the anonymous constructor does not unfold, so a
-destructuring pattern needs exactly one nesting pair there. The `SatisfiableSet.*_of_forall`
-adapters below restore the pre-collapse flat binder shape at introduction sites. -/
+Stated as `Nonempty (PointedModel fc Γ)` rather than as a bare `∃`-chain, so that the witness
+data carries field names — see `PointedModel` directly above, including why this is source-
+compatible with the existing destructuring sites. `PointedModel.of` / `SatisfiableSet.of_forall`
+below restore the flat binder shape at introduction sites. -/
 def SatisfiableSet (fc : FrameClass) (Γ : Set Formula) : Prop :=
-  ∃ (F : TaskFrame) (_ : fc.Sat F) (M : TaskModel F)
-    (τ : WorldHistory F) (_ : τ.IsTotal) (t : F.Duration),
-    ∀ ψ ∈ Γ, TruthAt M τ t ψ
+  Nonempty (PointedModel fc Γ)
 
 /-- The model-existence form, which is what an ultraproduct construction proves directly: finite
 satisfiability of every finite sublist lifts to satisfiability of the whole set. Uniform in `fc`
@@ -278,15 +307,94 @@ the four discrete instances flat reaches that slot through
 `Metalogic/DedekindNonCompactness.lean` and `Metalogic/DiscreteNonCompactness.lean` use at their
 introduction sites. -/
 
-/-- Introduce `SatisfiableSet` at an arbitrary tag from a witness frame, its frame condition, and
-a model/history/time at which every member of `Γ` is true. This replaced the four
+/-- Build a `PointedModel` from the flat binder shape: a witness frame, its frame condition, and
+a model/history/time at which every member of `Γ` is true. A `def`, not a `theorem` —
+`PointedModel` lives in `Type`, so a `theorem` here fails with "type of theorem is not a
+proposition". -/
+def PointedModel.of {fc : FrameClass} {Γ : Set Formula} (F : TaskFrame)
+    (hF : fc.Sat F) (M : TaskModel F) (τ : WorldHistory F) (hτ : τ.IsTotal) (t : F.Duration)
+    (h : ∀ ψ ∈ Γ, TruthAt M τ t ψ) : PointedModel fc Γ :=
+  ⟨F, hF, M, τ, hτ, t, h⟩
+
+/-- Introduce `SatisfiableSet` at an arbitrary tag from the same flat binder shape — `PointedModel.of`
+wrapped in `Nonempty.intro`, retained under its original name because every introduction site in
+the tree calls it. This replaced the four
 `SatisfiableSet.{base,dense,discrete,dedekind}_of_forall` adapters: each of those was this lemma
 at a fixed tag with `fc.Sat F` unfolded to that class's frame condition, which is the only thing
 that made four copies look necessary. -/
 theorem SatisfiableSet.of_forall {fc : FrameClass} {Γ : Set Formula} (F : TaskFrame)
     (hF : fc.Sat F) (M : TaskModel F) (τ : WorldHistory F) (hτ : τ.IsTotal) (t : F.Duration)
     (h : ∀ ψ ∈ Γ, TruthAt M τ t ψ) : SatisfiableSet fc Γ :=
-  ⟨F, hF, M, τ, hτ, t, h⟩
+  ⟨PointedModel.of F hF M τ hτ t h⟩
+
+/-! ### Monotonicity and finite satisfiability -/
+
+/-- **A pointed model of `Δ` is a pointed model of every subset of `Δ`.** Only the `models` field
+changes; the frame, model, history and time are carried across untouched. A `def`, not a
+`theorem`, for the same `Type`-valued reason as `PointedModel.of`. -/
+def PointedModel.mono {fc : FrameClass} {Γ Δ : Set Formula} (h_sub : Γ ⊆ Δ)
+    (P : PointedModel fc Δ) : PointedModel fc Γ :=
+  { P with models := fun ψ hψ => P.models ψ (h_sub hψ) }
+
+/-- **Satisfiability is antitone in the premise set**: a model of a larger set models any subset
+of it. `PointedModel.mono` under `Nonempty`. -/
+theorem SatisfiableSet.mono {fc : FrameClass} {Γ Δ : Set Formula} (h_sub : Γ ⊆ Δ)
+    (h : SatisfiableSet fc Δ) : SatisfiableSet fc Γ :=
+  h.elim fun P => ⟨P.mono h_sub⟩
+
+/-- **Finite satisfiability**: every finite sublist of `Γ` is satisfiable. The hypothesis of
+`ModelExistence` and of `not_compact_of_witness` (`Metalogic/StrongCompleteness.lean`), named so
+that compactness can be read as "satisfiable iff finitely satisfiable" rather than as a
+quantifier chain. -/
+def FinitelySatisfiableSet (fc : FrameClass) (Γ : Set Formula) : Prop :=
+  ∀ L : List Formula, (∀ ψ ∈ L, ψ ∈ Γ) → SatisfiableSet fc {ψ | ψ ∈ L}
+
+/-- **Satisfiable implies finitely satisfiable**, unconditionally and at every class. The easy
+direction of the equivalence; `SatisfiableSet.mono` is the whole proof. -/
+theorem SatisfiableSet.finitelySatisfiable {fc : FrameClass} {Γ : Set Formula}
+    (h : SatisfiableSet fc Γ) : FinitelySatisfiableSet fc Γ :=
+  fun _ hL => h.mono (fun ψ hψ => hL ψ hψ)
+
+/-- **Model existence is exactly the converse direction**, by unfolding. Recorded as an `Iff.rfl`
+so that `ModelExistence fc` can be quoted in either phrasing without a transport step. -/
+theorem modelExistence_iff_finitelySatisfiable {fc : FrameClass} :
+    ModelExistence fc ↔ ∀ Γ : Set Formula, FinitelySatisfiableSet fc Γ → SatisfiableSet fc Γ :=
+  Iff.rfl
+
+/-- **"Satisfiable iff finitely satisfiable"** — compactness in its model-theoretic phrasing, at
+any class supplying model existence.
+
+The `mp` direction is unconditional (`SatisfiableSet.finitelySatisfiable`); the `mpr` direction
+*is* model existence. Given `Compact fc` instead, route through `compact_iff_modelExistence`
+(`Metalogic/StrongCompleteness.lean`) to obtain the `hme` this wants. -/
+theorem satisfiableSet_iff_finitelySatisfiable {fc : FrameClass} (hme : ModelExistence fc)
+    (Γ : Set Formula) : SatisfiableSet fc Γ ↔ FinitelySatisfiableSet fc Γ :=
+  ⟨SatisfiableSet.finitelySatisfiable, hme Γ⟩
+
+/-- **Set-consequence is refutation-unsatisfiability**, at any class: `Γ ⊨ φ` exactly when
+`Γ ∪ {¬φ}` has no model.
+
+`Formula.neg φ` is `φ.imp ⊥` (`Syntax/Formula.lean`) and `TruthAt M τ t ⊥` is `False`
+(`Semantics/Truth.lean`), so `TruthAt M τ t φ.neg` is *definitionally* `TruthAt M τ t φ → False`;
+no `truthAt_neg` lemma is needed or exists, in either direction of this proof.
+
+`setConsequence_of_not_satisfiable` (`Metalogic/StrongCompleteness.lean`) is the special case
+where `Γ` itself is already unsatisfiable, and is kept separately because that is the form all
+four refutations consume. -/
+theorem setConsequence_iff_not_satisfiable {fc : FrameClass} {Γ : Set Formula} {φ : Formula} :
+    SetSemanticConsequenceOn fc Γ φ ↔ ¬ SatisfiableSet fc (Γ ∪ {φ.neg}) := by
+  constructor
+  · rintro h ⟨F, hF, M, τ, hτ, t, hsat⟩
+    exact hsat φ.neg (Set.mem_union_right _ rfl)
+      (h F hF M τ hτ t (fun ψ hψ => hsat ψ (Set.mem_union_left _ hψ)))
+  · intro h
+    refine SetSemanticConsequenceOn.of_forall_total ?_
+    intro F hF M τ hτ t hall
+    by_contra hnφ
+    refine h (SatisfiableSet.of_forall F hF M τ hτ t ?_)
+    rintro ψ (hψ | rfl)
+    · exact hall ψ hψ
+    · exact hnφ
 
 /-! ## Monotonicity -/
 
@@ -513,11 +621,7 @@ def StrongCompletenessDiscrete : Prop := StrongCompleteness FrameClass.Discrete
     frame-condition slot, and an elimination pattern needs exactly one nesting pair,
     `⟨F, ⟨_, _, _, _⟩, M, τ, hτ, t, h⟩` — or a single `hF` passed straight back to
     `ValidIn.apply_total`.
-
-    Inside that nesting the four binders stay **anonymous**. When this existential is
-    destructured, use bare `_` names and let instance synthesis recover them: naming them and
-    re-installing with `haveI` drops the value and breaks definitional equality with the
-    instances baked into `F`'s and `M`'s types. -/
+ -/
 def SatisfiableDiscreteSet (Γ : Set Formula) : Prop := SatisfiableSet FrameClass.Discrete Γ
 
 /-- Semantic compactness of the Discrete consequence relation, in the same shape as

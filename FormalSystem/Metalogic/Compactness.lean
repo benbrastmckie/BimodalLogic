@@ -130,20 +130,26 @@ theorem modelExistence_of_satPreserved {fc : ProofSystem.FrameClass}
     ModelExistence fc := by
   classical
   intro Γ hfin
-  choose F hF M τ hτ t ht using fun (i : Idx Γ) => hfin i.val i.property
-  refine ⟨(uShiftSet (idxUF Γ) (fun i => ShiftSet.ofModel (F i) (M i))).frame,
-    hpres (idxUF Γ) (fun i => (F i).Duration) (fun i => ShiftSet.ofModel (F i) (M i))
-      (fun i => sat_ofModel_frame (M i) (hF i)),
-    (uShiftSet (idxUF Γ) (fun i => ShiftSet.ofModel (F i) (M i))).model,
-    (uShiftSet (idxUF Γ) (fun i => ShiftSet.ofModel (F i) (M i))).hist
-      (omk (fun i => (⟨τ i, hτ i⟩ : (F i).HF))),
-    ShiftSet.hist_isTotal _ _, Ultraproduct.mk (fun i => t i), ?_⟩
+  -- `SatisfiableSet` is `Nonempty (PointedModel …)`, not a bare `∃`-chain, so `choose` does not
+  -- apply here; `Nonempty.some` extracts the per-index witness instead, and its named fields
+  -- replace what `choose`'s six output names used to stand for.
+  let P : ∀ i : Idx Γ, PointedModel fc {ψ | ψ ∈ i.val} := fun i => (hfin i.val i.property).some
+  refine SatisfiableSet.of_forall
+    (uShiftSet (idxUF Γ) (fun i => ShiftSet.ofModel (P i).Frame (P i).Model)).frame
+    (hpres (idxUF Γ) (fun i => (P i).Frame.Duration)
+      (fun i => ShiftSet.ofModel (P i).Frame (P i).Model)
+      (fun i => sat_ofModel_frame (P i).Model (P i).inClass))
+    (uShiftSet (idxUF Γ) (fun i => ShiftSet.ofModel (P i).Frame (P i).Model)).model
+    ((uShiftSet (idxUF Γ) (fun i => ShiftSet.ofModel (P i).Frame (P i).Model)).hist
+      (omk (fun i => (⟨(P i).hist, (P i).htotal⟩ : (P i).Frame.HF))))
+    (ShiftSet.hist_isTotal _ _) (Ultraproduct.mk (fun i => (P i).time)) ?_
   intro ψ hψ
-  refine (los_truthAt (fun i => ShiftSet.ofModel (F i) (M i)) _ _ ψ).mpr ?_
+  refine (los_truthAt (fun i => ShiftSet.ofModel (P i).Frame (P i).Model) _ _ ψ).mpr ?_
   refine (eventually_mem Γ hψ).mono ?_
   intro i hi
   exact (ShiftSet.forward_repr _ _ _ ψ).mpr
-    ((ShiftSet.reverse_repr (F i) (M i) ⟨τ i, hτ i⟩ (t i) ψ).mpr (ht i ψ hi))
+    ((ShiftSet.reverse_repr (P i).Frame (P i).Model ⟨(P i).hist, (P i).htotal⟩ (P i).time ψ).mpr
+      ((P i).models ψ hi))
 
 /--
 **Model existence for `FrameClass.Base`.** Every finitely satisfiable `Γ : Set Formula` has a
